@@ -49,8 +49,8 @@ const armed = /confirm/i.test(a1.after.unpub)
    credit with anything left. So Saturday's credits ARE already spent, and the warning is right to fire. */
 ck('A: Wisp\'s and Outlaw\'s Saturday credits are already spent (no "18 Jul … left" on the tracker)', !/18 Jul/.test(wisp.text || '') && !/18 Jul/.test(outlaw.text || ''),
   'no Saturday credit with anything left', { wisp: wisp.text, outlaw: outlaw.text })
-ck('A: so the first tap warns and arms "Withdraw — confirm" (AM37)', armed && /bid against/i.test(a1.toast || '') && a1.after.tag === 'ORIG',
-  'toast "Heads up … bid against …", "Withdraw — confirm", day still ORIG', a1)
+ck('A: so the first tap warns and arms "Withdraw — confirm" (AM37)', armed && /OIL credits are already spent on the Leave War/i.test(a1.toast || '') && a1.after.tag === 'ORIG',
+  'toast "Some of … OIL credits are already spent on the Leave War …", "Withdraw — confirm", day still ORIG', a1)
 if (armed) {
   /* Astra rank 33 / Fable §5-8: an armed warning should not survive leaving the page */
   await lwOpen(page)
@@ -92,8 +92,8 @@ note('B: Dash on the tracker', tr1)
 
 const b2 = await tapUnpublish(SUN, 'B3-sun-first-tap')
 note('B: Sunday — first tap', b2)
-ck('B: first tap warns and arms "Withdraw — confirm" (AM37)', /confirm/i.test(b2.after.unpub) && /bid against/i.test(b2.toast || '') && b2.after.tag === 'ORIG',
-  'toast "Heads up … bid against …", button "Withdraw — confirm", day still ORIG', b2)
+ck('B: first tap warns and arms "Withdraw — confirm" (AM37)', /confirm/i.test(b2.after.unpub) && /OIL credits are already spent on the Leave War/i.test(b2.toast || '') && b2.after.tag === 'ORIG',
+  'toast "Some of … OIL credits are already spent on the Leave War …", button "Withdraw — confirm", day still ORIG', b2)
 const b3 = await tapUnpublish(SUN, 'B4-sun-second-tap')
 note('B: Sunday — second tap', b3)
 ck('B: second tap withdraws (day back to a draft)', b3.after.tag === 'DRAFT', 'DRAFT', b3.after.tag)

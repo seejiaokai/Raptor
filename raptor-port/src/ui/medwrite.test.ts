@@ -329,7 +329,7 @@ describe('several files on one entry', () => {
     const r = INPUTS[0]
     const d = draftOf(r); d.docIds = []
     expect(commitInputEdit(r, d)).toBe(false)
-    expect(TOASTS.join(' ')).toContain('Keep at least one document')
+    expect(TOASTS.join(' ')).toContain('Keep at least one document on this entry. Add the replacement before removing the last file.')
   })
   it('a pre-feature row with no file still edits freely bare', () => {
     const r = plant({ person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 13' })

@@ -266,6 +266,191 @@
   color: #F5E3BF;
 }
 
+/* one bold a row, the name (D826); the instruction is the row's own link — the same amber family, never the page's cyan */
+.syncclash .row b {
+  color: #FFF0D6;
+  font-weight: 700;
+}
+
+.clashgo {
+  appearance: none;
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  color: #FFF0D6;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 240, 214, .45);
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.clashgo:hover {
+  text-decoration-color: currentColor;
+}
+
+.clashgo:focus-visible,
+.clashline:focus-visible,
+.clashrow:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* ---- THE CLASH NOTE ON A PHONE ([LW-CLASH-NOTE-PHONE] — owner D805, D823, D827: the drawing "A+", approved as drawn
+   13 Oct 26; the design of record scripts/handpass/dl-clash.mjs, modes N-closed / N-open — these are its rules, with
+   its own values). A slim line the width of the screen under the two lines of buttons, that opens its list in place.
+   Drawn only on a phone (ui/Chrome.tsx, the same width as the phone block below), so it needs no media rule.
+   The note's own amber, as lines: the strip's edge and wash above, and its two inks.
+   THE LINE'S EDGES ARE THE BUTTONS' ABOVE IT — 10px, the second line's own side padding — not the screen's. */
+.clashnote {
+  border-bottom: 1px solid rgba(229, 168, 59, .5);
+}
+
+.clashline {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  padding: 6px 10px;
+  border: 0;
+  background: rgba(229, 168, 59, .16);
+  color: #FFF0D6;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.clashline .clash-toggle {
+  margin-left: auto;
+  font-weight: 600;
+  color: #F5E3BF;
+}
+
+/* "Show" and "Hide" carry a drawn arrow, as the stage button does (below): a letter arrow comes from whichever font
+   the phone falls back to, at that font's size */
+.clashline .clash-toggle::after {
+  content: '';
+  display: inline-block;
+  margin-left: 5px;
+  vertical-align: 1px;
+  border: 3.5px solid transparent;
+  border-top: 4.5px solid currentColor;
+  border-bottom: 0;
+  opacity: .85;
+}
+
+.clashline .clash-toggle.clash-up::after {
+  border-top: 0;
+  border-bottom: 4.5px solid currentColor;
+}
+
+/* ONE GRID FOR THE WHOLE LIST (D823 — "this but neater like alignment"), each row a subgrid of it, so every row's parts
+   start at the same place: the name | the day | what to do, right-aligned, its arrow riding inside it — and under them,
+   across the whole row, what clashes. The name's column is as wide as the roster's longest callsign (`.clashsizer`,
+   below) but never more than two-fifths of the line; the day never shrinks or wraps; THE INSTRUCTION IS THE COLUMN THAT
+   GIVES WAY — on wider letters it wraps inside its own column and no word is cut. NO HEIGHT LIMIT, NO SCROLL INSIDE:
+   a long list pushes the grid down, and Hide is the way back. */
+.clashlist {
+  display: grid;
+  grid-template-columns: fit-content(40%) max-content minmax(0, 1fr);
+  column-gap: 10px;
+  margin: 0;
+  padding: 0 10px;
+  border-top: 1px solid rgba(229, 168, 59, .5);
+  background: rgba(229, 168, 59, .08);
+}
+
+.clashrow {
+  appearance: none;
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  align-items: start;
+  margin: 0;
+  padding: 7px 0;
+  border: 0;
+  border-top: 1px solid rgba(229, 168, 59, .22);
+  background: none;
+  color: #F5E3BF;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.clashrow:first-child {
+  border-top: 0;
+}
+
+.clashrow .clash-who {
+  font-weight: 700;
+  color: #FFF0D6;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.clashrow .clash-day {
+  color: #FFF0D6;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.clashrow .clash-do {
+  font-weight: 500;
+  color: #FFF0D6;
+  text-align: right;
+}
+
+.clashrow .clash-what {
+  grid-column: 1 / -1;
+  color: #F5E3BF;
+  opacity: .85;
+}
+
+/* every callsign of the roster, unseen and with no height, in the names' column: it is what makes that column as wide
+   as the longest one, in whatever letters the phone draws — so the day starts in the same place on every visit */
+.clashsizer {
+  grid-column: 1;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.clashsizer i {
+  display: block;
+  font-style: normal;
+}
+
+/* a browser with no subgrid (an iPhone older than iOS 16): each row is its own grid, so the first two columns are
+   given a width of their own to keep the names and the days in line */
+@supports not (grid-template-columns: subgrid) {
+  .clashlist {
+    display: block;
+  }
+
+  .clashrow {
+    width: 100%;
+    grid-template-columns: 7em 6.4em minmax(0, 1fr);
+    column-gap: 10px;
+  }
+
+  .clashsizer {
+    display: none;
+  }
+}
+
 /* ---- the stage: card wrapper around the matrix ---- */
 .stage {
   padding: 14px 20px 28px;

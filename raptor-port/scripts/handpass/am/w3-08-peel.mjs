@@ -82,7 +82,7 @@ for (const w of which) {
     const h6 = await head(page, 6)
     const lw1 = await lwRead(page, ['Dash'], '2026-07-19')
     note('Sunday unpublish', { tap: u, head: brief(h6), dashBefore: lw0, dashAfter: lw1 })
-    check('Astra32: a weekend whose credits nobody has spent unpublishes on ONE tap (no warning)', h6.tag === 'DRAFT' && !(u.toasts || []).some(t => /Heads up/.test(t)), `${h6.tag} ${JSON.stringify(u.toasts)}`)
+    check('Astra32: a weekend whose credits nobody has spent unpublishes on ONE tap (no warning)', h6.tag === 'DRAFT' && !(u.toasts || []).some(t => /OIL credits are already spent on the Leave War/.test(t)), `${h6.tag} ${JSON.stringify(u.toasts)}`)
     check('AM46: Sunday\'s credit leaves the Leave War with it', /[FH]O/.test(lw0.Dash) && !/[FH]O/.test(lw1.Dash), `${JSON.stringify(lw0)} → ${JSON.stringify(lw1)}`)
   } catch (e) { check('script ran to the end', false, String(e && e.stack || e).slice(0, 700)); await shot(page, P('zz-crash')).catch(() => {}) }
   check('no console errors during the walk', errors.length === 0, JSON.stringify(errors).slice(0, 400))

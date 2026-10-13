@@ -112,7 +112,7 @@ describe('moving the take-off earlier past an existing brief', () => {
     expect(txtSet(`${P}.to`, '09:00'), 'the take-off is never refused').toBe(true)
     expect(f.to).toBe('09:00')
     expect(f.br, 'the brief it stranded is cleared').toBe('')
-    expect(said.join(' ')).toMatch(/10:30 brief was after the new take-off/i)
+    expect(said.join(' ')).toBe('The 10:30 brief was after the new take-off, so it was removed')
   })
 
   it('the clear goes through the funnel — marked pending, and in the changes list', () => {

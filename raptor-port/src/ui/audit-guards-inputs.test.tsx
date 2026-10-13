@@ -48,7 +48,7 @@ describe('an unsupported (protected) week is read-only from the input surfaces (
       expect(setInpField(r, 'str', '10:00'), 'in-place cell edit refused too').toBe(false)
       expect(removeInput(r), 'removal refused too').toBe(false)
       expect(INPUTS.includes(r), 'the input was not removed').toBe(true)
-      expect(said.join(' ')).toMatch(/locked/i)
+      expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
     } finally { SCHED.amV = amV; SCHED.cur = cur }
   })
 
@@ -61,7 +61,7 @@ describe('an unsupported (protected) week is read-only from the input surfaces (
       const drafted: any = { person: 'dj', type: 'Meeting', allday: true, start: '2026-07-13' }
       expect(commitNewInput(drafted), 'create refused on a locked week').toBe(false)
       expect(INPUTS.length, 'no input was added').toBe(before)
-      expect(said.join(' ')).toMatch(/locked/i)
+      expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
     } finally { SCHED.amV = amV; SCHED.cur = cur }
   })
 
@@ -74,7 +74,7 @@ describe('an unsupported (protected) week is read-only from the input surfaces (
       const d: any = draftOf(r); d.allday = true
       expect(commitInputEdit(r, d), 'refused: the input is on a stashed protected week').toBe(false)
       expect(removeInput(r), 'delete refused too').toBe(false)
-      expect(said.join(' ')).toMatch(/locked/i)
+      expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
     } finally { stashClear() }
   })
 })

@@ -1,0 +1,513 @@
+[
+ {
+  "surface": "Clash note [phone]",
+  "key": "where it sits",
+  "expected": "a note of its own AFTER the two lines of buttons, the width of the screen — never inside the second line",
+  "saw": "{\"cls\":\"clashnote\",\"inFilters\":false,\"afterFilters\":true,\"box\":\"0,125 390×78\",\"vw\":390}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "ONE clash starts open",
+  "expected": "the line says \"⚠ 1 clash with the schedule\" and offers Hide; the list is open",
+  "saw": "{\"line\":\"⚠ 1 clash with the schedule Hide\",\"expanded\":\"true\",\"rows\":1}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "the row's words",
+  "expected": "Fable · Sat 18 Jul · Decide the bid › — then \"Weekend/PH work earns …, but the day holds LL\"",
+  "saw": "{\"who\":\"Fable\",\"day\":\"Sat 18 Jul\",\"go\":\"Decide the bid ›\",\"what\":\"Weekend/PH work earns FO, but the day holds LL\",\"whoL\":10,\"dayL\":82,\"doR\":380,\"dayLines\":1,\"whatLines\":1,\"doLines\":1,\"nameCut\":false,\"h\":46,\"onTop\":true,\"tag\":\"BUTTON\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "the two lines above are untouched",
+  "expected": "the second line as tall as with no clash (34), its stage name cut no more than before (false), no sideways scroll",
+  "saw": "{\"filtersH\":34,\"filtersBottom\":125,\"gridTop\":203,\"stageCut\":false,\"overflow\":false}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "SEVERAL start closed",
+  "expected": "the line counts them and offers Show; no list",
+  "saw": "{\"line\":\"⚠ 6 clashes with the schedule Show\",\"expanded\":\"false\",\"rows\":0}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "closed, the grid starts high",
+  "expected": "the grid's card starts one slim line lower than with no clash (the line is about 30 tall)",
+  "saw": "{\"gridTop\":156,\"noClash\":125,\"lineH\":30}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "the line's edges are the buttons' above it",
+  "expected": "its words start where the first button starts",
+  "saw": "{\"linePadL\":\"10px\",\"firstButtonLeft\":10}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "Show opens the list in place",
+  "expected": "6 rows, each a button, the line now offers Hide",
+  "saw": "{\"line\":\"⚠ 6 clashes with the schedule Hide\",\"rows\":6,\"tags\":[\"BUTTON\"]}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "the columns are in line",
+  "expected": "every name starts at one edge, every day at one edge, every instruction ends at one edge; every day on ONE line; no name cut",
+  "saw": "{\"who\":[10],\"day\":[83],\"doRight\":[380],\"dayLines\":[1,1,1,1,1,1],\"nameCut\":[false,false,false,false,false,false]}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "every row the same shape",
+  "expected": "two lines a row — who, the day, what to do; then what clashes — so one height, to the pixel of the rule between rows",
+  "saw": "{\"heights\":[46,47,47,47,47,47],\"whatLines\":[1,1,1,1,1,1],\"doLines\":[1,1,1,1,1,1]}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "the names' column is the roster's",
+  "expected": "sized by every callsign on the roster, not by who happens to clash",
+  "saw": "{\"sizer\":50,\"roster\":50}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "no scroll inside the list",
+  "expected": "a long list pushes the grid down; it never scrolls inside itself",
+  "saw": "{\"innerScroll\":false}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "nothing lies over a row",
+  "expected": "a finger at each row's centre meets that row",
+  "saw": "[true,true,true,true,true,true]",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "open, the two lines above are still untouched",
+  "expected": "second line 34 tall, no sideways scroll",
+  "saw": "{\"filtersH\":34,\"filtersBottom\":125,\"gridTop\":438,\"stageCut\":false,\"overflow\":false}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "in letters a seventh wider",
+  "expected": "every day still on one line, the columns still in line, no name cut, nothing off the screen — the instruction is the part that may wrap",
+  "saw": "{\"dayLines\":[1,1,1,1,1,1],\"who\":[10],\"day\":[92],\"doRight\":[380],\"nameCut\":[false,false,false,false,false,false],\"doLines\":[1,1,1,1,1,1],\"overflow\":false}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "a tap on a clash",
+  "expected": "opens Fable's Sat 18 Jul — the sheet where the bid is decided (Ack · Approve · Refuse on it)",
+  "saw": "{\"tid\":\"daylist-sheet\",\"head\":\"FableSat 18 Jul✕Two of these can’t both stand on the same ti\",\"buttons\":[\"✕\",\"Ack\",\"Approve\",\"Refuse\",\"⇄Move\",\"Delete\"]}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "Hide is the way back",
+  "expected": "the list closes; the line offers Show again",
+  "saw": "{\"line\":\"⚠ 6 clashes with the schedule Show\",\"rows\":0}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "his choice is kept for the visit",
+  "expected": "opened by him, it is still open after a look at another page",
+  "saw": "{\"line\":\"⚠ 6 clashes with the schedule Hide\",\"rows\":6}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "a member",
+  "expected": "sees no clash note",
+  "saw": "notes on screen: 0",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [desk]",
+  "key": "where it sits",
+  "expected": "the strip, inside the stage line as before (one block under the buttons), no phone line",
+  "saw": "{\"cls\":\"syncclash\",\"inFilters\":true,\"line\":null,\"box\":\"20,156 1400×50\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [desk]",
+  "key": "its words",
+  "expected": "each clash: the name · the day · what clashes as a sentence. Then the instruction ›",
+  "saw": "[\"Fable · Sat 18 Jul · Weekend/PH work earns FO, but the day holds LL. Decide the bid ›\",\"Sidewinder · Sat 18 Jul · Weekend/PH work earns HO*, but the day holds OL. Decide the bid ›\",\"Ranger · Sat 18 Jul · Weekend/PH work earns *HO, but the day holds OL. Decide the bid ›\"]",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [desk]",
+  "key": "no sideways scroll",
+  "expected": "the page is no wider than the screen",
+  "saw": "{\"filtersH\":103,\"filtersBottom\":215,\"gridTop\":215,\"stageCut\":false,\"overflow\":false}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [desk]",
+  "key": "by keyboard: Tab after Legend",
+  "expected": "lands on the first clash's instruction, wearing the app's ring",
+  "saw": "button[clash-go-0] \"Decide the bid ›\" · outline 2px rgb(59, 198, 232) · 87×16 · solid 2px rgb(59, 198, 232)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [desk]",
+  "key": "Enter on \"Decide the bid ›\"",
+  "expected": "opens Fable's Sat 18 Jul — the sheet where the bid is decided",
+  "saw": "{\"tid\":\"daylist-sheet\",\"head\":\"FableSat 18 Jul✕Two of these can’t both stand on the same ti\",\"buttons\":[\"✕\",\"Ack\",\"Approve\",\"Refuse\",\"⇄Move\",\"Delete\"]}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [phone]",
+  "key": "L6 — its box",
+  "expected": "the width of the screen, less its margins at most; its words on ONE unbroken line; itself on top at its own centre",
+  "saw": "{\"box\":\"98,732 195×94\",\"w\":195,\"top\":732,\"wordsLines\":2,\"onTop\":true,\"vw\":390,\"vh\":844}",
+  "verdict": "FAIL — {\"box\":\"98,732 195×94\",\"w\":195,\"top\":732,\"wordsLines\":2,\"onTop\":true,\"vw\":390,\"vh\":844}"
+ },
+ {
+  "surface": "The bar that stays [desk]",
+  "key": "its box",
+  "expected": "its words on one line; itself on top at its own centre",
+  "saw": "{\"box\":\"527,832 387×50\",\"w\":386.78125,\"top\":832,\"wordsLines\":1,\"onTop\":true,\"vw\":1440,\"vh\":900}",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [phone]",
+  "key": "L4 — its two buttons",
+  "expected": "Back / Add (the form behind it says Add)",
+  "saw": "Back / Add",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [phone]",
+  "key": "L3 — the title and the sentence, the words of record",
+  "expected": "OIL: <who>, Range brief · \"This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve HO, half a day of OIL?\" in ordinary letters",
+  "saw": "OIL: Ranger, Range brief · This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve HO, half a day of OIL? · letters: none",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [phone]",
+  "key": "the answers and the small print",
+  "expected": "Yes: credit HO · No OIL · \"…so published work the same day can raise the credit.\"",
+  "saw": "Yes: credit HO · No OIL · The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the day, so published work the same day can raise the credit.",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [phone]",
+  "key": "L1 — the answers sit flat under the question",
+  "expected": "a row of their own: no patch, no line under it, no box round it, starting at the question's left edge",
+  "saw": "{\"rowClass\":\"oilconf-answers\",\"rowBg\":\"rgba(0, 0, 0, 0)\",\"rowBorder\":\"0px\",\"wornSeg\":false,\"boxed\":false,\"left\":0}",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [phone]",
+  "key": "L2 — the ✕",
+  "expected": "in the head's corner (its right edge within the head's own padding), not following the title",
+  "saw": "15px from the head's right edge; 118px after the title's last letter; the sheet is 346 wide",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question before a swap [phone]",
+  "key": "its two buttons are its own",
+  "expected": "Don’t swap / Swap",
+  "saw": "Don’t swap / Swap",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question before a swap [phone]",
+  "key": "L1, L2 — flat answers, the ✕ in the corner",
+  "expected": "as at a save",
+  "saw": "{\"rowClass\":\"oilconf-answers\",\"wornSeg\":false,\"boxed\":false,\"xGap\":15}",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question [phone]",
+  "key": "L5 — a picked \"No OIL\"",
+  "expected": "the outline look, the same as a picked Yes",
+  "saw": "{\"text\":\"No OIL\",\"bg\":\"rgb(26, 31, 38)\",\"edge\":\"rgb(59, 198, 232)\",\"ink\":\"rgb(59, 198, 232)\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [phone]",
+  "key": "L6 — on the Scheduler Board",
+  "expected": "a band: the last line of the board's own bar, edge to edge, 36 tall, words and both buttons on ONE line, nothing cut, the line under it amber, itself on top, one bar only",
+  "saw": "{\"where\":\"sb-top\",\"box\":\"0,76 390×36\",\"h\":36,\"left\":0,\"right\":390,\"vw\":390,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"kids\":[\"Not swapped — OIL not answered:14–212 h16 12.5px\",\"Answer OIL:232–324 h26 12.5px\",\"OK:332–376 h26 12.5px\"],\"buttonsH\":[26],\"fit\":\"1\",\"tight\":false,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"onTop\":true,\"count\":1,\"save\":null}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [phone]",
+  "key": "D840 — the same in letters a seventh wider",
+  "expected": "STILL one line, 36 tall, nothing cut — its letters a step smaller if they must be",
+  "saw": "{\"where\":\"sb-top\",\"box\":\"0,76 390×36\",\"h\":36,\"left\":0,\"right\":390,\"vw\":390,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"kids\":[\"Not swapped — OIL not answered:14–229 h16 11.75px\",\"Answer OIL:240–327 h26 11.75px\",\"OK:335–376 h26 11.75px\"],\"buttonsH\":[26],\"fit\":\"0.94\",\"tight\":false,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"onTop\":true,\"count\":1,\"save\":null}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [phone]",
+  "key": "D831 — on Edit Schedule, the board closed",
+  "expected": "the bar is still up (nothing was swapped), now the last line of the TOP bar: edge to edge, 36 tall, one line, nothing cut, the line under it amber — not Edit Schedule's cyan (D841)",
+  "saw": "{\"where\":\"topbar\",\"box\":\"0,48 390×36\",\"h\":36,\"left\":0,\"right\":390,\"vw\":390,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"kids\":[\"Not swapped — OIL not answered:14–212 h16 12.5px\",\"Answer OIL:232–324 h26 12.5px\",\"OK:332–376 h26 12.5px\"],\"buttonsH\":[26],\"fit\":\"1\",\"tight\":false,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"onTop\":true,\"count\":1,\"save\":null,\"page\":{\"barBottom\":85,\"cls\":\"topbar editing has-undo oil-waiting\"}}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [phone]",
+  "key": "D840 — on Edit Schedule in letters a seventh wider",
+  "expected": "STILL one line, nothing cut",
+  "saw": "{\"where\":\"topbar\",\"box\":\"0,48 390×36\",\"h\":36,\"left\":0,\"right\":390,\"vw\":390,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"kids\":[\"Not swapped — OIL not answered:14–229 h16 11.75px\",\"Answer OIL:240–327 h26 11.75px\",\"OK:335–376 h26 11.75px\"],\"buttonsH\":[26],\"fit\":\"0.94\",\"tight\":false,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"onTop\":true,\"count\":1,\"save\":null}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [phone]",
+  "key": "nothing is under it",
+  "expected": "just below the band the page begins — the band covers none of it",
+  "saw": "{\"tag\":\"DIV\",\"inBand\":false,\"y\":84}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [phone]",
+  "key": "OK closes it",
+  "expected": "the bar is gone, the top bar gives its line back, and Edit Schedule's own cyan edge is back",
+  "saw": "{\"bars\":0,\"cls\":\"topbar editing has-undo\",\"edge\":\"rgba(59, 198, 232, 0.5)\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [desk]",
+  "key": "L4 — its two buttons",
+  "expected": "Back / Add (the form behind it says Add)",
+  "saw": "Back / Add",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [desk]",
+  "key": "L3 — the title and the sentence, the words of record",
+  "expected": "OIL: <who>, Range brief · \"This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve HO, half a day of OIL?\" in ordinary letters",
+  "saw": "OIL: Ranger, Range brief · This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve HO, half a day of OIL? · letters: none",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [desk]",
+  "key": "the answers and the small print",
+  "expected": "Yes: credit HO · No OIL · \"…so published work the same day can raise the credit.\"",
+  "saw": "Yes: credit HO · No OIL · The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the day, so published work the same day can raise the credit.",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [desk]",
+  "key": "L1 — the answers sit flat under the question",
+  "expected": "a row of their own: no patch, no line under it, no box round it, starting at the question's left edge",
+  "saw": "{\"rowClass\":\"oilconf-answers\",\"rowBg\":\"rgba(0, 0, 0, 0)\",\"rowBorder\":\"0px\",\"wornSeg\":false,\"boxed\":false,\"left\":0}",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [desk]",
+  "key": "L2 — the ✕",
+  "expected": "in the head's corner (its right edge within the head's own padding), not following the title",
+  "saw": "15px from the head's right edge; 212px after the title's last letter; the sheet is 440 wide",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question before a swap [desk]",
+  "key": "its two buttons are its own",
+  "expected": "Don’t swap / Swap",
+  "saw": "Don’t swap / Swap",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question before a swap [desk]",
+  "key": "L1, L2 — flat answers, the ✕ in the corner",
+  "expected": "as at a save",
+  "saw": "{\"rowClass\":\"oilconf-answers\",\"wornSeg\":false,\"boxed\":false,\"xGap\":15}",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question",
+  "key": "K7 — opens with the keyboard on…",
+  "expected": "its first answer (\"Yes: credit HO\"), nothing picked",
+  "saw": "button[oil-yes] \"Yes: credit HO\" · NO RING · 99×25",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question",
+  "key": "L2 — Tab, four times from the first answer",
+  "expected": "No OIL, then Don’t swap, then the ✕ LAST, then round to the first answer — never out of the sheet",
+  "saw": "button[oil-no] \"No OIL\"  |  button[oilconf-cancel] \"Don’t swap\"  |  button.x \"Close\"  |  button[oil-yes] \"Yes: credit HO\" · still inside: true",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question",
+  "key": "K10 — the ring on an answer, the ✕ and a foot button",
+  "expected": "the app's own: solid 2px rgb(59, 198, 232)",
+  "saw": "solid 2px rgb(59, 198, 232)  |  solid 2px rgb(59, 198, 232)  |  solid 2px rgb(59, 198, 232)",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question",
+  "key": "Space on \"Yes\"",
+  "expected": "picks it; \"Swap\" comes alive",
+  "saw": "Swap is live",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question",
+  "key": "L5 — a picked answer",
+  "expected": "the outline look: its edge and its words rgb(59, 198, 232), its ground NOT the main button's solid fill",
+  "saw": "{\"text\":\"Yes: credit HO\",\"bg\":\"rgb(26, 31, 38)\",\"edge\":\"rgb(59, 198, 232)\",\"ink\":\"rgb(59, 198, 232)\"} · main button rgb(59, 198, 232)",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question",
+  "key": "Escape",
+  "expected": "nothing is swapped; the bar stays",
+  "saw": "sheet closed; bar up",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [desk]",
+  "key": "L6 — on the Scheduler Board",
+  "expected": "a band: the last line of the board's own bar, edge to edge, 36 tall, words and both buttons on ONE line, nothing cut, the line under it amber, itself on top, one bar only",
+  "saw": "{\"where\":\"sb-top\",\"box\":\"0,109 1440×36\",\"h\":36,\"left\":0,\"right\":1440,\"vw\":1440,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"kids\":[\"Not swapped — OIL not answered:1065–1264 h16 12.5px\",\"Answer OIL:1274–1366 h26 12.5px\",\"OK:1376–1420 h26 12.5px\"],\"buttonsH\":[26],\"fit\":\"1\",\"tight\":false,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"onTop\":true,\"count\":1,\"save\":null}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [desk]",
+  "key": "D840 — the same in letters a seventh wider",
+  "expected": "STILL one line, 36 tall, nothing cut — its letters a step smaller if they must be",
+  "saw": "{\"where\":\"sb-top\",\"box\":\"0,109 1440×36\",\"h\":36,\"left\":0,\"right\":1440,\"vw\":1440,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"kids\":[\"Not swapped — OIL not answered:1035–1264 h16 12.5px\",\"Answer OIL:1274–1366 h26 12.5px\",\"OK:1376–1420 h26 12.5px\"],\"buttonsH\":[26],\"fit\":\"1\",\"tight\":false,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"onTop\":true,\"count\":1,\"save\":null}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays",
+  "key": "K8 — where the keyboard is when the bar appears",
+  "expected": "on \"Answer OIL\"",
+  "saw": "button[oilbar-answer] \"Answer OIL\" · outline 2px rgb(59, 198, 232) · 93×26",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays",
+  "key": "K10 — the ring on \"Answer OIL\"",
+  "expected": "the app's own, set off the filled button: solid 2px rgb(59, 198, 232) offset 2px",
+  "saw": "solid 2px rgb(59, 198, 232) offset 2px",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays",
+  "key": "Tab from \"Answer OIL\"",
+  "expected": "its OK",
+  "saw": "button[oilbar-ok] \"OK\" · outline 2px rgb(59, 198, 232) · 44×26",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays",
+  "key": "Enter on \"Answer OIL\"",
+  "expected": "the question comes back, the keyboard on its first answer",
+  "saw": "question back; keyboard on button[oil-yes] \"Yes: credit HO\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays",
+  "key": "Escape on the question, a second time",
+  "expected": "the bar again, the keyboard on \"Answer OIL\" again",
+  "saw": "bar up; keyboard on button[oilbar-answer] \"Answer OIL\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays",
+  "key": "K9 — Escape, with the keyboard on the bar",
+  "expected": "closes the bar, as OK does",
+  "saw": "bar before up, after gone",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays",
+  "key": "after all of it, nothing was swapped",
+  "expected": "Range brief still holds its own man",
+  "saw": "RANGE BRIEF:bane | Hangar open day:nick",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [desk]",
+  "key": "D831 — on Edit Schedule, the board closed",
+  "expected": "the bar is still up (nothing was swapped), now the last line of the TOP bar: edge to edge, 36 tall, one line, nothing cut, the line under it amber — not Edit Schedule's cyan (D841)",
+  "saw": "{\"where\":\"topbar\",\"box\":\"0,57 1440×36\",\"h\":36,\"left\":0,\"right\":1440,\"vw\":1440,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"kids\":[\"Not swapped — OIL not answered:1065–1264 h16 12.5px\",\"Answer OIL:1274–1366 h26 12.5px\",\"OK:1376–1420 h26 12.5px\"],\"buttonsH\":[26],\"fit\":\"1\",\"tight\":false,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"onTop\":true,\"count\":1,\"save\":null,\"page\":{\"barBottom\":94,\"cls\":\"topbar editing has-undo oil-waiting\"}}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [desk]",
+  "key": "nothing is under it",
+  "expected": "just below the band the page begins — the band covers none of it",
+  "saw": "{\"tag\":\"DIV\",\"inBand\":false,\"y\":93}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [desk]",
+  "key": "OK closes it",
+  "expected": "the bar is gone, the top bar gives its line back, and Edit Schedule's own cyan edge is back",
+  "saw": "{\"bars\":0,\"cls\":\"topbar editing has-undo\",\"edge\":\"rgba(59, 198, 232, 0.5)\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Both bars [phone]",
+  "key": "on the Scheduler Board",
+  "expected": "\"Not saved\" is the line ABOVE the OIL bar; both 36 tall and one width, one under the other with no gap and no overlap; the OIL bar is the board bar's last line, one line, nothing cut; the line under them amber; their buttons one height",
+  "saw": "{\"where\":\"sb-top\",\"oil\":\"0,112 390×36\",\"oilH\":36,\"save\":\"0,76 390×36\",\"saveH\":36,\"saveAbove\":true,\"touching\":true,\"sameWidth\":true,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"buttonsH\":[26,26],\"retryH\":26,\"bars\":1}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Both bars [phone]",
+  "key": "on Edit Schedule",
+  "expected": "the same two lines along the bottom of the top bar: \"Not saved\" above, the OIL bar the last line, the line under them amber — never Edit Schedule's cyan",
+  "saw": "{\"where\":\"topbar\",\"oil\":\"0,84 390×36\",\"oilH\":36,\"save\":\"0,48 390×36\",\"saveH\":36,\"saveAbove\":true,\"touching\":true,\"sameWidth\":true,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"buttonsH\":[26,26],\"retryH\":26,\"bars\":1}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Both bars [phone]",
+  "key": "OK on the OIL bar",
+  "expected": "\"Not saved\" alone is now the top bar's last line, 36 tall, and the line under it is amber too",
+  "saw": "{\"bars\":0,\"saveLast\":true,\"saveH\":36,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"cls\":\"topbar editing has-undo save-failed\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Both bars [phone]",
+  "key": "with no bar up",
+  "expected": "Edit Schedule's own cyan edge is back",
+  "saw": "{\"cls\":\"topbar editing has-undo\",\"edge\":\"rgba(59, 198, 232, 0.5)\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Both bars [desk]",
+  "key": "on the Scheduler Board",
+  "expected": "\"Not saved\" is the line ABOVE the OIL bar; both 36 tall and one width, one under the other with no gap and no overlap; the OIL bar is the board bar's last line, one line, nothing cut; the line under them amber; their buttons one height",
+  "saw": "{\"where\":\"sb-top\",\"oil\":\"0,145 1440×36\",\"oilH\":36,\"save\":\"0,109 1440×36\",\"saveH\":36,\"saveAbove\":true,\"touching\":true,\"sameWidth\":true,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"buttonsH\":[26,26],\"retryH\":26,\"bars\":1}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Both bars [desk]",
+  "key": "on Edit Schedule",
+  "expected": "the same two lines along the bottom of the top bar: \"Not saved\" above, the OIL bar the last line, the line under them amber — never Edit Schedule's cyan",
+  "saw": "{\"where\":\"topbar\",\"oil\":\"0,93 1440×36\",\"oilH\":36,\"save\":\"0,57 1440×36\",\"saveH\":36,\"saveAbove\":true,\"touching\":true,\"sameWidth\":true,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"buttonsH\":[26,26],\"retryH\":26,\"bars\":1}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Both bars [desk]",
+  "key": "OK on the OIL bar",
+  "expected": "\"Not saved\" alone is now the top bar's last line, 36 tall, and the line under it is amber too",
+  "saw": "{\"bars\":0,\"saveLast\":true,\"saveH\":36,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"cls\":\"topbar editing has-undo save-failed\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Both bars [desk]",
+  "key": "with no bar up",
+  "expected": "Edit Schedule's own cyan edge is back",
+  "saw": "{\"cls\":\"topbar editing has-undo\",\"edge\":\"rgba(59, 198, 232, 0.5)\"}",
+  "verdict": "works"
+ }
+]

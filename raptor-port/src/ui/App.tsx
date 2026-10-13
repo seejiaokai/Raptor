@@ -55,5 +55,5 @@ export function App() {
   const who = roleOf()
   if (who === 'pending' || who === 'off') return <AccessScreen />
   if (who === 'guest') return <GuestApp />
-  return <><Shell /><SchedBoard /><CxDialog /><SortAllDialog /><InputEditor /><MedMoveConfirm /><OilWait /><OilBar /><DocViewer /><DutyTplModal /><WaveTplModal /><DayTplModal /><DraftsModal /><SecDefaultSnackbar /><AvailWindow /><ChangesWindow /><DaysWindow /><SansSettings /><InputsSettings /><OilDayList /></>
+  return <><Shell /><SchedBoard /><CxDialog /><SortAllDialog /><InputEditor /><MedMoveConfirm /><OilWait /><DocViewer /><DutyTplModal /><WaveTplModal /><DayTplModal /><DraftsModal /><SecDefaultSnackbar /><AvailWindow /><ChangesWindow /><DaysWindow /><SansSettings /><InputsSettings /><OilDayList /></>
 }

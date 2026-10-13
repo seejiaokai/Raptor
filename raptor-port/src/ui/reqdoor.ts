@@ -299,7 +299,7 @@ function leave(p: Place, then?: () => boolean | void, said?: string): boolean {
     /* (the words name the ACT, not a button: "use ✕ …" pointed at a control only the Scheduler Board's row has — on Edit
        Schedule's week the same act is "Undo" on the input's line under Personal Inputs. Found by the job's walk, share H —
        12 Oct 26; the door check wants a refusal to name a door the person can see.) */
-    HOOKS.toast(`${cs} is the last on this input — take the input off the programme, or delete it in its own window`, 'warn')
+    HOOKS.toast(`${cs} is the last on this input. Take the input off the programme, or delete it in its own window.`, 'warn')
     return false
   }
   const { out, spoke } = quietly(() => saveBatchX(() => {

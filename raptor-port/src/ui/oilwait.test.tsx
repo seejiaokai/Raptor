@@ -344,7 +344,7 @@ describe('ON SCREEN — the question\'s own sheet with the waiting change\'s wor
       await act(async () => { expect(rowPut(rowKey(), 'pike')).toBe('asked') })
       const sheet = tid('oilconf')!
       expect(sheet, 'the question is up').toBeTruthy()
-      expect(sheet.querySelector('.airpop-head b')!.textContent).toBe(`OIL — ${cs('pike')}, ${TITLE}`)
+      expect(sheet.querySelector('.airpop-head b')!.textContent).toBe(`OIL: ${cs('pike')}, ${TITLE}`)
       expect(tid('oilconf-lead')!.textContent, 'a statement of what is waiting').toBe(`Putting ${cs('pike')} in place of ${cs('bane')}`)
       expect(tid('oilconf-cancel')!.textContent).toBe('Don’t swap')
       expect(tid('oilconf-save')!.textContent).toBe('Swap')
@@ -567,9 +567,11 @@ describe('the wires the break tests found bare', () => {
     expect(live(iid).date, 'not moved').toBe('Jul 18')
   })
   /* THE WALK (C3, A's and D's notes — 13 Oct 26): the passing note ("Input added") is drawn at the foot of the screen,
-     where the bar stands — and the bar STAYS, so every note raised while it is up landed on its words and half its
-     "Answer OIL" button. While the bar is up the note sits above it. */
-  it('a passing note never lands on the bar: while the bar is up the note sits above it — one already showing moves up when the bar arrives', async () => {
+     where the bar stood — and the bar STAYS, so every note raised while it was up landed on its words and half its
+     "Answer OIL" button; the note was then lifted above it. SINCE 14 OCT 26 THE BAR IS NOT AT THE FOOT AT ALL (owner
+     D831, D840): it is a band in the top bar's own last line, so a note at the foot cannot land on it and keeps its
+     own place whether the bar is up or not. */
+  it('a passing note never lands on the bar: the bar is a band in the top bar, and the note keeps its place at the foot while it is up', async () => {
     await boot()
     file(['bane'], SAT, { [SAT_ISO]: 0.5 })
     ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -582,11 +584,21 @@ describe('the wires the break tests found bare', () => {
       expect(note().style.bottom, 'no bar: at the foot, as ever').toBe('26px')
       await act(async () => { expect(rowPut(rowKey(), 'pike')).toBe('asked') })
       await act(async () => { leaveOilWait() })
-      expect(document.querySelector('[data-testid="oilbar"]'), 'the bar is up').toBeTruthy()
-      expect(parseFloat(note().style.bottom), 'the note already showing has moved clear of the bar').toBeGreaterThanOrEqual(60)
+      const bar = document.querySelector('[data-testid="oilbar"]') as HTMLElement
+      expect(bar, 'the bar is up').toBeTruthy()
+      /* under the bar in front: the Scheduler Board's own while the board is open (it lies over the top bar), the top
+         bar's otherwise — and only ever ONE of the two */
+      expect(document.querySelectorAll('[data-testid="oilbar"]'), 'one bar').toHaveLength(1)
+      const onBoard = !!bar.closest('.sb-top')
+      expect(bar.className, 'a band').toBe(onBoard ? 'oilband' : 'oilband is-top')
+      expect(bar.closest('.sb-top, .topbar'), 'inside a bar, never floating at the foot').toBeTruthy()
+      expect(document.querySelector('.topbar')!.classList.contains('oil-waiting'), 'the top bar makes room for it only where it carries it').toBe(!onBoard)
+      expect(document.querySelector('.secdef-snack.oilbar'), 'nothing of it is left at the foot').toBeNull()
+      expect(note().style.bottom, 'the note already showing stays where it was').toBe('26px')
       realToast('Schedule updated', 'ok')
-      expect(parseFloat(note().style.bottom), 'and one raised while the bar is up').toBeGreaterThanOrEqual(60)
+      expect(note().style.bottom, 'and one raised while the bar is up is at the foot too').toBe('26px')
       await act(async () => { oilBarOk() })
+      expect(document.querySelector('.topbar')!.classList.contains('oil-waiting'), 'the bar gone, the room goes').toBe(false)
       realToast('Schedule updated', 'ok')
       expect(note().style.bottom, 'the bar gone: the foot again').toBe('26px')
     } finally { await act(async () => { root.unmount() }); const t = note(); if (t) t.remove() }

@@ -245,6 +245,19 @@ button.trdate-x:hover{color:var(--ink);background:transparent}
 button.trdate-x:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 /* the marking pop-up's two dates take the pop-up's width, as the boxes they replace did */
 button.datebox.trpopdate{display:flex;width:100%}
+/* A DATE NO MARK CARRIES YET IS DRAWN DIM (the design look of 13 Oct 26 — L15; owner D830). An event not yet done showed
+   "Done on (when marked): Tue 13 Oct 2026", and with Fails at 0 "Failed on: Tue 13 Oct 2026", both in full white: each
+   read as a record of something that had happened. Until a mark or a failure carries the day (Pop.jsx says when), the
+   date wears the colour an empty box's words wear (ui/scheduler/26-date-calendar.css `.is-empty` — the quiet ink, which
+   is --muted here), and turns white the moment one does. No word changes. */
+button.datebox.trpopdate.is-notyet .datebox-txt{color:var(--muted)}
+/* ON A DESKTOP THE SIDE PANEL'S COLUMN OF DATE BOXES HAS ONE WIDTH (the design look of 13 Oct 26 — L16; owner D830). A
+   box is as wide as its words, so it grew when it got a date and shrank when its ✕ took the date off — the ✕ and the
+   arrow were never where the last one was ("Pick a date" 98px; "Tue 13 Oct 2026" with its ✕ 128px, measured on the
+   look's desktop). 144px, the width the failures list gives a date box: room for the widest date, so no box is
+   narrower than it was when filled, and a wider one would still grow rather than be cut. The row has 173px for it.
+   Not on a phone: there the two-across grid below already gives every box its column's width. */
+@media(min-width:1051px){ .curGrid .field .trdatebox{min-width:144px} }
 /* While the Tracker reloads the next person's own course and student (D376) the last
    person's page is hidden — never shown, never pressed — and one line says why. */
 .tr-root.resuming>*:not(.resumenote){visibility:hidden}

@@ -77,9 +77,9 @@ function Body({ from, to, name, fresh }: { from: string; to: string; name: strin
             return (
               <InputCard key={o.iid} id={o.iid} tid="odl" facts={cardOf([r], undefined, when)} when={when} late="" onOpen={() => openInput(r)}
                 action={<>
-                  <button type="button" className={'upconf-seg' + (p === 'y' ? ' on-keep' : '')} aria-pressed={p === 'y'}
+                  <button type="button" className={'upconf-seg' + (p === 'y' ? ' on-pick' : '')} aria-pressed={p === 'y'}
                     data-testid={`odl-yes-${o.iid}`} onClick={() => pick(o.iid, 'y')}>Yes · {o.amt === 1 ? 'FO' : 'HO'}</button>
-                  <button type="button" className={'upconf-seg' + (p === 'n' ? ' odl-no' : '')} aria-pressed={p === 'n'}
+                  <button type="button" className={'upconf-seg' + (p === 'n' ? ' on-pick' : '')} aria-pressed={p === 'n'}
                     data-testid={`odl-no-${o.iid}`} onClick={() => pick(o.iid, 'n')}>No</button>
                 </>} />
             )

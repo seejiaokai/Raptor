@@ -1,0 +1,148 @@
+<title>OIL Bar Under the Top Bar</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* layout: one reading column; each statement sits beside the real screens that show it, and every picture opens full
+   size. The house look of the earlier mock-up pages (design-look-13oct.html) — same tokens, same faces. */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --ink:#141a21; --ink-2:#4a5663; --edge:#d5dbe2;
+  --accent:#0b7f9c; --accent-soft:#e0f3f8; --ok:#1d7a4c; --ok-soft:#e3f4ea; --warn:#9a5b00; --warn-soft:#fbeed6;
+  --shot:#0c1014; --veil:rgba(4,6,8,.94); --chip:#151b22; --chip-ink:#e9eef3; --chip-edge:#5b6672;
+  --display:'Barlow Condensed','Arial Narrow',Arial,sans-serif;
+  --body:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0c1014; --panel:#151b22; --ink:#e9eef3; --ink-2:#9aa7b4; --edge:#2a333d;
+  --accent:#3cc6e8; --accent-soft:#12303a; --ok:#58c98d; --ok-soft:#12301f; --warn:#e3a53c; --warn-soft:#33260c;
+  --shot:#07090c; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0c1014; --panel:#151b22; --ink:#e9eef3; --ink-2:#9aa7b4; --edge:#2a333d;
+  --accent:#3cc6e8; --accent-soft:#12303a; --ok:#58c98d; --ok-soft:#12301f; --warn:#e3a53c; --warn-soft:#33260c;
+  --shot:#07090c; color-scheme:dark }
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:flex;flex-direction:column;gap:22px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,6vw,44px);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:.01em}
+.lede{color:var(--ink-2);max-width:66ch;margin:8px 0 0}
+p{margin:0}
+.how{background:var(--accent-soft);padding:12px 14px;border-radius:6px;max-width:70ch}
+.how b{color:var(--accent)}
+h2{font-family:var(--display);font-weight:700;font-size:26px;line-height:1.1;margin:22px 0 0;text-wrap:balance}
+h2 small{display:block;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:700;margin-bottom:2px}
+.item{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:20px;align-items:start}
+.item.stack{grid-template-columns:minmax(0,1fr)}
+.txt{min-width:0;display:flex;flex-direction:column;gap:10px}
+.head{display:flex;gap:12px;align-items:baseline}
+.num{font-family:var(--display);font-weight:700;font-size:34px;line-height:1;color:var(--accent);min-width:1.1em;white-space:nowrap}
+h3{font-family:var(--display);font-weight:600;font-size:24px;line-height:1.15;margin:0;text-wrap:balance}
+.lab{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);display:block;margin-bottom:2px}
+.rec{background:var(--ok-soft);border-radius:6px;padding:10px 12px}
+.rec .lab{color:var(--ok)}
+.note{background:var(--warn-soft);border-radius:6px;padding:10px 12px}
+.note .lab{color:var(--warn)}
+.shots{min-width:0;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start}
+figure{margin:0;flex:1 1 150px;min-width:0;max-width:230px;display:flex;flex-direction:column;gap:6px}
+figure.wide{flex-basis:100%;max-width:none}
+.zoom{display:block;width:100%;padding:0;border:1px solid var(--edge);border-radius:8px;background:var(--shot);cursor:zoom-in;overflow:hidden}
+.zoom:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.zoom img{display:block;width:100%;height:auto}
+figcaption{font-size:14px;color:var(--ink-2);line-height:1.35}
+.tag{display:inline-block;font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;border-radius:4px;padding:1px 6px;margin-right:4px;vertical-align:1px}
+.tag.real{background:var(--accent-soft);color:var(--accent)}
+.tag.drawn{background:var(--warn-soft);color:var(--warn)}
+.ask{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.ask ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:14px;max-width:72ch}
+.ask li b{font-weight:600}
+.pick{color:var(--ok);font-weight:600}
+ul.tight{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;max-width:72ch}
+#lb{position:fixed;inset:0;background:var(--veil);z-index:10;overflow:auto;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px));cursor:zoom-out;text-align:center}
+#lb img{max-width:none;width:min(100%,560px);height:auto;border-radius:6px}
+#lb.wideimg img{width:min(100%,1400px)}
+#lb.big img{width:auto;max-width:none}
+#lbx{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:12px;z-index:11;font:600 15px var(--body);padding:10px 16px;border-radius:999px;border:1px solid var(--chip-edge);background:var(--chip);color:var(--chip-ink)}
+@media (max-width:720px){ .item{grid-template-columns:minmax(0,1fr);padding:14px} h3{font-size:22px} figure{max-width:none} h2{font-size:24px} }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>The OIL bar, under the top bar</h1>
+    <p class="lede">You ruled on 13 October that “Not swapped — OIL not answered” moves from the foot of the screen to the band under the top bar, where the “Not saved” warning sits, and that you see it drawn before it is built. This is that drawing. Nothing of it is built yet. Tap any picture to see it full size.</p>
+  </header>
+
+  <p class="how"><b>How to read the pictures.</b> <span class="tag real">Built</span> is the app as it stands, at your iPhone’s size (390 wide) or a desktop’s (1440 wide). <span class="tag drawn">Drawn</span> is the same real screen with the bar drawn in its new place; nothing behind the drawn bar works yet. The pictures were taken in a Windows browser, so the letters are slightly narrower than on your iPhone.</p>
+
+  <h2><small>1 · On a phone</small>Scheduler Board</h2>
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">A</span><h3>One line under the board’s own bar</h3></div>
+      <p><span class="lab">What changes</span>Today the bar floats at the foot, half the screen wide, over the names in Available crew. Drawn, it is one line across the screen directly under the board’s buttons: the words on the left, “Answer OIL” and “OK” on the right. It covers nothing. The board moves down by that one line while the bar is up.</p>
+      <p><span class="lab">What is the same</span>The words, the two buttons and what each does. It still stays until you tap one of them.</p>
+      <p><span class="lab">The look</span>The band is the “Not saved” warning’s own: the same height and the same amber. “Answer OIL” keeps its cyan, as the one button to press.</p>
+      <p class="note"><span class="lab">Wider letters</span>Your iPhone’s letters are wider than these. If the words and both buttons do not fit one line, the words keep one unbroken line and the buttons go under them at the right. No word is cut. The third picture shows that case in letters a seventh wider. To be seen on your own phone before it is called done.</p>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom" type="button"><img src="2026-10-14-oil-band/band-phone-0-today-board.png" alt="Phone, Scheduler Board as built: a small box at the foot of the screen, Not swapped, OIL not answered on two lines with Answer OIL and OK under them, lying over the Available crew list" loading="lazy"></button><figcaption><span class="tag real">Built</span>Today: at the foot, 195 wide, 94 tall.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="2026-10-14-oil-band/band-phone-1-drawn-board.png" alt="Phone, Scheduler Board: an amber line across the screen under the board's two rows of buttons, Not swapped, OIL not answered at the left, a cyan Answer OIL and an OK button at the right" loading="lazy"></button><figcaption><span class="tag drawn">Drawn</span>One line, 36 tall, nothing covered.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="2026-10-14-oil-band/band-phone-2-drawn-board-wider-letters.png" alt="Phone, the same band in wider letters: the words on one line, the two buttons on a second line at the right" loading="lazy"></button><figcaption><span class="tag drawn">Drawn</span>Wider letters: two lines, 66 tall.</figcaption></figure>
+    </div>
+  </section>
+
+  <h2><small>2 · On a phone</small>Edit Schedule, and both warnings at once</h2>
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">B</span><h3>Along the bottom of the top bar</h3></div>
+      <p><span class="lab">On Edit Schedule</span>The same line sits along the bottom of the app’s top bar, exactly where “Not saved” sits. The week moves down by one line.</p>
+      <p><span class="lab">When a save has also failed</span>Both lines show, “Not saved” on top and the OIL line under it. “Not saved” goes first because it is about losing work.</p>
+      <p><span class="lab">On the Inputs calendar</span>A drag there can raise the same question. The line would sit under the calendar’s own bar, as “Not saved” does. Not drawn; it is the same line.</p>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom" type="button"><img src="2026-10-14-oil-band/band-phone-4-today-week.png" alt="Phone, Edit Schedule as built: the bar floating at the foot of the screen over the week" loading="lazy"></button><figcaption><span class="tag real">Built</span>Today, on Edit Schedule.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="2026-10-14-oil-band/band-phone-5-drawn-week.png" alt="Phone, Edit Schedule: the amber line along the bottom of the top bar, above the row of week buttons" loading="lazy"></button><figcaption><span class="tag drawn">Drawn</span>Under the top bar.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="2026-10-14-oil-band/band-phone-7-drawn-week-both-warnings.png" alt="Phone, Edit Schedule: two amber lines under the top bar, Not saved, keep this page open with Retry, and under it Not swapped, OIL not answered with Answer OIL and OK" loading="lazy"></button><figcaption><span class="tag drawn">Drawn</span>Both at once: “Not saved” on top.</figcaption></figure>
+    </div>
+  </section>
+
+  <h2><small>3 · On a desktop</small>The same line, at the right</h2>
+  <section class="item stack">
+    <div class="txt">
+      <p>On a desktop the words and buttons sit at the right end of the line, as “Not saved” and its Retry do. Today’s desktop bar reads well at the foot; it moves so the bar lives in one place on every screen, as you ruled.</p>
+    </div>
+    <div class="shots">
+      <figure class="wide"><button class="zoom" type="button" data-wide="1"><img src="2026-10-14-oil-band/band-desk-0-today-board.png" alt="Desktop, Scheduler Board as built: the bar on one line at the foot of the screen" loading="lazy"></button><figcaption><span class="tag real">Built</span>Today: at the foot of the board.</figcaption></figure>
+      <figure class="wide"><button class="zoom" type="button" data-wide="1"><img src="2026-10-14-oil-band/band-desk-1-drawn-board.png" alt="Desktop, Scheduler Board: an amber line under the board's two rows of buttons, the words and the two buttons at its right end" loading="lazy"></button><figcaption><span class="tag drawn">Drawn</span>Under the board’s own bar.</figcaption></figure>
+      <figure class="wide"><button class="zoom" type="button" data-wide="1"><img src="2026-10-14-oil-band/band-desk-7-drawn-week-both-warnings-close-up.png" alt="Desktop close-up, Edit Schedule: Not saved, keep this page open with Retry on one amber line, and under it Not swapped, OIL not answered with Answer OIL and OK" loading="lazy"></button><figcaption><span class="tag drawn">Drawn</span>Edit Schedule, close up, both warnings.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item stack">
+    <div class="txt">
+      <span class="lab">By keyboard, built with it</span>
+      <ul class="tight">
+        <li>When the line appears, the keyboard goes to “Answer OIL”. Today it is over a hundred Tab presses away.</li>
+        <li>Escape closes the line, as OK does.</li>
+        <li>A passing note raised while the line is up goes back to its usual place at the foot. It no longer has to sit above the bar.</li>
+      </ul>
+    </div>
+  </section>
+
+  <h2><small>What I need from you</small>One answer</h2>
+  <section class="ask">
+    <ol>
+      <li><b>Build the bar as drawn?</b> The case: you drag Tally onto Ranger on the Scheduler Board and close the OIL question without answering. One amber line appears under the board’s buttons with “Answer OIL” and “OK”, and stays until you tap one. <span class="pick">Recommended: yes.</span> Say “build it”, or say what is off.</li>
+    </ol>
+    <p style="color:var(--ink-2);max-width:72ch">Two things in the drawing are my call and yours to overrule: the line takes the “Not saved” amber, and “Not saved” sits on top when both show.</p>
+  </section>
+</div>
+
+<div id="lb" hidden></div>
+<button id="lbx" type="button" hidden>Close</button>
+<script>
+(function(){
+  var lb=document.getElementById('lb'), im=lb.appendChild(document.createElement('img')), x=document.getElementById('lbx'), last=null
+  function shut(){ lb.hidden=true; x.hidden=true; lb.classList.remove('big'); lb.classList.remove('wideimg'); if(last) last.focus() }
+  document.querySelectorAll('.zoom').forEach(function(b){
+    b.addEventListener('click',function(){ var s=b.querySelector('img'); last=b; im.src=s.src; im.alt=s.alt; lb.classList.toggle('wideimg', !!b.getAttribute('data-wide')); lb.hidden=false; x.hidden=false; lb.scrollTop=0; x.focus() })
+  })
+  im.addEventListener('click',function(e){ e.stopPropagation(); lb.classList.toggle('big') })
+  lb.addEventListener('click',shut); x.addEventListener('click',shut)
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!lb.hidden) shut() })
+})()
+</script>

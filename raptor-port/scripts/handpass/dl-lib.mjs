@@ -13,8 +13,11 @@ import { fileURLToPath } from 'node:url'
 const HERE = dirname(fileURLToPath(import.meta.url))
 export const ROOT = resolve(HERE, '..', '..')
 export const BASE = process.env.DL_BASE || 'http://localhost:4173'
-export const SHOTS = resolve(ROOT, 'docs/mock/2026-10-13-design-look')
-export const OUT = resolve(ROOT, 'docs/mock/2026-10-13-design-look/keyboard.json')
+/* THE RE-CHECK WRITES ELSEWHERE (docs/bug-check-order.md §5 "The re-walk"): the look's own pictures and key record are
+   the evidence of what was found and stay as they were. A later run names its own folder — DL_SHOTS, a path from the
+   app's root — and its pictures and its keyboard.json land there. */
+export const SHOTS = resolve(ROOT, process.env.DL_SHOTS || 'docs/mock/2026-10-13-design-look')
+export const OUT = resolve(SHOTS, 'keyboard.json')
 mkdirSync(SHOTS, { recursive: true })
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 const launchOptions = existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {}

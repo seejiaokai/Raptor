@@ -255,7 +255,7 @@ describe('ALL AVAIL stays when anyone leaves; taken off itself, it leaves (D757 
     await boot()
     file(['allavail'])
     expect(rowTake(rowKey())).toBe('refused')
-    expect(SAID.join(' ')).toMatch(/ALL AVAIL is the last on this input/)
+    expect(SAID.join(' ')).toBe('ALL AVAIL is the last on this input. Take the input off the programme, or delete it in its own window.')
     expect(people()).toEqual(['allavail'])
   })
   it('dragged from one input\'s row onto another\'s it MOVES — never in both', async () => {

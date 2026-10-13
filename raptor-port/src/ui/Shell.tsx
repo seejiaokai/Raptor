@@ -68,6 +68,7 @@ import { oilPendingFor } from '../leavewar/sync'
 import { AdminPage } from './AdminPage'
 import { HelpPage } from './HelpPage'
 import { SaveStatus, useSaveFailed } from './SaveStatus'
+import { OilBar, useOilBarTop } from './OilWaitSheet'
 import { bugAlert } from '../state/reports'
 import { UndoPair, SyncChip, BellButton, BellList, globalUndoEngine, trackerUndoEngine, useTrackerUndoVersion, fastSync } from './topbits'
 
@@ -320,17 +321,22 @@ export function Shell() {
      THE EVENT SAYS WHY (`saveBand`), because a resize also means "the screen turned" to some listeners: the Tracker
      shuts its open Tools set on one, and a person choosing a tool would lose it when a save failed or landed behind
      them (Astra's second read, R2-1). A listener that only re-measures needs no change. */
-  const saveFailedWas = useRef(saveFailed)
+  /* …AND SO HAS THE BAR THAT WAITS ON AN OIL ANSWER (owner D831, D840 — ui/OilWaitSheet.tsx): "Not swapped — OIL not
+     answered" is a line of the same kind in the same place, under the failed-save warning where both are up. The room
+     under the bar changes by a line when either comes or goes, so the same one event tells the same listeners. */
+  const oilTop = useOilBarTop()
+  const bands = (saveFailed ? 1 : 0) + (oilTop ? 1 : 0)
+  const bandsWas = useRef(bands)
   useEffect(() => {
-    if (saveFailedWas.current === saveFailed) return
-    saveFailedWas.current = saveFailed
+    if (bandsWas.current === bands) return
+    bandsWas.current = bands
     window.dispatchEvent(Object.assign(new Event('resize'), { saveBand: true }))
-  }, [saveFailed])
+  }, [bands])
   const topbar = useMemo(() => (
       /* The top bar wears a blue-tinted gradient while on Edit Schedule (owner,
          22 Aug 26) so it is unmistakable from the near-identical View-only mode
          at a glance — both widths; View-only keeps the neutral dark. */
-      <div className={'topbar' + (page === 'editsched' ? ' editing' : '') + (pairOn ? ' has-undo' : '') + (saveFailed ? ' save-failed' : '')}>
+      <div className={'topbar' + (page === 'editsched' ? ' editing' : '') + (pairOn ? ' has-undo' : '') + (saveFailed ? ' save-failed' : '') + (oilTop ? ' oil-waiting' : '')}>
         <button className="burger" id="burger" aria-label="Menu" onClick={() => { setDrawer(true); notify() }}><span></span><span></span><span></span></button>
         <div className="mark">
           <svg className="rglyph" viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z" /></svg>
@@ -359,6 +365,7 @@ export function Shell() {
             aria-label={waiting ? `Admin — ${waiting} waiting for access` : undefined}>Admin{waiting > 0 && <span className="navbadge" id="admWaitBadge">{waiting}</span>}</a>
         </nav>
         <SaveStatus />
+        <OilBar />
         <div className="spring">
           {/* Undo / redo live at the TOP now (owner, Aug 26 — "so I'll always
               see it when I'm editing to undo if needed"), in the sticky bar
@@ -467,7 +474,7 @@ export function Shell() {
   /* the changes clock's number and its open state are read inside the memo, so they are its deps too (the gate found it,
      29 Sep 26: "Mark all as seen" used to be an Undo step, and the undo version's bump was what repainted this bar — once
      a seen mark stopped being a step, the clock kept its stale number) */
-  ), [page, admin, mine, mineCs, canSwitch, waiting, fastSync(), uv, tuv, pairOn, eng.canUndo, eng.canRedo, eng.undoTitle, eng.redoTitle, bellLit(), bugAlert(), oilPend, accAlert, clockNew, !!CHGWIN, saveFailed])
+  ), [page, admin, mine, mineCs, canSwitch, waiting, fastSync(), uv, tuv, pairOn, eng.canUndo, eng.canRedo, eng.undoTitle, eng.redoTitle, bellLit(), bugAlert(), oilPend, accAlert, clockNew, !!CHGWIN, saveFailed, oilTop])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">
@@ -630,7 +637,7 @@ export function Shell() {
   return (
     /* .save-failed here as well as on the bar: the two movable windows are drawn OUTSIDE the shell (ui/App.tsx), and their
        opening spot moves down with the band too (17-save-status.css) */
-    <div id="shell" className={saveFailed ? 'save-failed' : undefined}>
+    <div id="shell" className={[saveFailed ? 'save-failed' : '', oilTop ? 'oil-waiting' : ''].filter(Boolean).join(' ') || undefined}>
       {topbar}
       {/* [ONE-DOOR] (D305): his own "Welcome back — check your quals and CAT", after a Restore */}
       <WelcomeBack />

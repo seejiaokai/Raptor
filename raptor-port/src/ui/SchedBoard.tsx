@@ -33,6 +33,7 @@ import { editingText } from './textedit'
 import { useBoardVersion, useVersion, useUndoVersion } from './useStore'
 import { UndoPair, SyncChip, BellButton, globalUndoEngine } from './topbits'
 import { SaveBand } from './SaveStatus'
+import { OilBand } from './OilWaitSheet'
 import { clickedOutside } from './outside'
 
 export function SchedBoard() {
@@ -499,7 +500,7 @@ export function SchedBoard() {
           {open && HOOKS.editMode() && oilShown(SBDAY) && <button className={'abtn sb-daybtn sb-oilbtn' + (oilModeOn(SBDAY) ? ' on' : '')} id="sbOil"
             aria-pressed={oilModeOn(SBDAY)} disabled={DPREV.has(SBDAY)}
             title={oilModeOn(SBDAY) ? 'Leave OIL mode and edit the schedule again' : 'Show who earns OIL on this day, and change it'}
-            onClick={() => { if (SBDAY != null) { const on = toggleOilMode(SBDAY); HOOKS.toast(on ? 'OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning' : 'Back to editing the schedule'); notify() } }}>
+            onClick={() => { if (SBDAY != null) { const on = toggleOilMode(SBDAY); HOOKS.toast(on ? 'OIL Earn: tap a puck to stop that man earning from that event, or an item to stop the whole item earning' : 'Back to editing the schedule'); notify() } }}>
             <span className="bi">◧</span><span className="bl"> OIL Earn</span></button>}
           {/* [UNDO-TOPBAR] (D349, 28 Sep 26): on a desktop Sort all sits BEFORE Undo, in this desktop-only wrapper (the
               approved mock-up); on a phone it is in the ⋯ menu beside the highlighter. Sort all — every section on this day at once, not one row like
@@ -608,6 +609,9 @@ export function SchedBoard() {
             warning cannot be seen from here — the board carries it, on a line of its own at the bottom of its bar.
             INSIDE .sb-top like the strip above, so --sb-topH follows it and nothing below is covered. */}
         <SaveBand active={open} />
+        {/* THE BAR THAT WAITS ON AN OIL ANSWER (owner D831, D840): the same kind of line in the same place — under the
+            failed-save warning where both are up — for the same reason: from here the top bar's cannot be seen. */}
+        <OilBand active={open} />
       </div>
       <div className="sb-main" ref={mainRef}>
         <div className={'sb-boardwrap' + (HISTMODE ? ' hist-on' : '')} ref={wrapRef}>

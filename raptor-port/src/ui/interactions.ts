@@ -444,7 +444,7 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
       if (k && T.closest('.st-del')) {
         const lab = STORE_CFG.find(([x]) => x === k)?.[1] || k
         delStore(k); storesSave(); paint(); place()
-        HOOKS.toast(`${lab} removed from the list — every jet carrying it keeps it. Add it back and the chips return.`)
+        HOOKS.toast(`${lab} removed from the list. Every jet carrying it keeps it. Add it back and the chips return.`)
         /* queueHold too: if this jet carries the removed store its own
            on-chip vanishes from the remarks cell, shifting the C button
            that place() just anchored to — re-run it once the week repaints. */
@@ -853,7 +853,7 @@ export function routeClick(e: MouseEvent) {
       const late = lateMates(inp).filter((r: any) => isLateInput(r))
       const hide = late.some((r: any) => view.lateShown(r))
       for (const r of late.length ? late : [inp]) if (view.lateShown(r) === hide) view.toggleLateOff(r)
-      HOOKS.toast(hide ? 'LATE mark hidden — the Inputs page still shows it' : 'LATE mark shown', 'ok')
+      HOOKS.toast(hide ? 'LATE mark hidden. The Inputs page still shows it.' : 'LATE mark shown', 'ok')
     }
     notify(); return
   }
@@ -1130,7 +1130,10 @@ export function routeClick(e: MouseEvent) {
     view.setOilDay(null)
     if (oilCreditBidAgainst(di) && !view.unpubArmed(di)) {
       view.setUnpubArm(di)
-      HOOKS.toast(`Heads up — ${DAYS[di]?.dow || 'this day'}’s OIL credits are bid against on the Leave War. Unpublishing withdraws them until you republish. Tap again to confirm.`, 'warn')
+      /* (owner D837 + D839, 14 Oct 26 — N4. "Heads up —" was an announcement and went; "are bid against" was not
+         something anyone says and had two readings. "Already spent" is what the check above asks: taking this day's
+         credit away would put a credited person's OIL balance below zero — leavewar/sync.ts oilCreditBidAgainst.) */
+      HOOKS.toast(`Some of ${DAYS[di]?.dow || 'this day'}’s OIL credits are already spent on the Leave War. Unpublishing withdraws them until you republish. Tap again to confirm.`, 'warn')
       notify(); return
     }
     const armedWithdraw = oilCreditBidAgainst(di)       // the two-tap path: its OIL credits leave the war too
@@ -1147,10 +1150,13 @@ export function routeClick(e: MouseEvent) {
          working copy again, with the version before it the issued schedule; the Original makes the day a draft again. */
       const dow = DAYS[di]?.dow || 'The day', wl = verLabel(was)
       const now = dayApproved(di) ? dayCurVer(di) : null
+      /* THE WORDS (owner D837, 14 Oct 26 — N2, N3): a done thing, then sentences — each dash, semicolon and dot between
+         two thoughts became a full stop or its linking word. The OIL sentence says "withdrawn", the word the warning on
+         the tap before used for the same thing ("Unpublishing withdraws them"), and "republished", the app's word. */
       HOOKS.toast((verSeq(was) === 0 || now == null
-        ? `${dow} unpublished — it is a draft again; publishing reissues the ${wl}`
-        : `${dow}: ${wl} withdrawn — its changes are back on the working copy as pending; ${verLabel(now)} is the issued schedule; publishing again reissues ${wl}`)
-        + (armedWithdraw ? ' · its OIL credits leave the Leave War until it is published again' : ''))
+        ? `${dow} unpublished. It is a draft again, and publishing reissues the ${wl}.`
+        : `${dow}: ${wl} withdrawn. Its changes are back on the working copy as pending, and ${verLabel(now)} is the issued schedule. Publishing reissues ${wl}.`)
+        + (armedWithdraw ? ' Its OIL credits are withdrawn from the Leave War until it is republished.' : ''))
     }
     notify(); return
   }
@@ -1400,10 +1406,10 @@ export function routeClick(e: MouseEvent) {
     const yr = String(mkp.dataset.mkperiod || '')
     const made = createOilPeriodFor(yr)
     if (made === 'created') {
-      HOOKS.toast(`The ${yr} leave war period is created — set its bidding window here`, 'ok')
+      HOOKS.toast(`The ${yr} leave war period is created. Set its bidding window here.`, 'ok')
       view.setPage('leavewar'); notify()
     } else if (made === 'overlap') {
-      HOOKS.toast(`A leave war already covers part of ${yr} — open the Leave War and extend it instead`, 'warn')
+      HOOKS.toast(`A leave war already covers part of ${yr}. Open the Leave War and extend it instead.`, 'warn')
     } else {
       HOOKS.toast(`The ${yr} period could not be created`, 'warn')
     }
@@ -1425,7 +1431,9 @@ export function routeClick(e: MouseEvent) {
       const key = view.warnMuteKey(w), names = (w.who || []).map((id: any) => PEOPLE[id] ? PEOPLE[id].cs : id).join(', ')
       const words = `${names}${names ? ' — ' : ''}${w.msg || ''}`
       const shown = schedWriteValue(SCHED_TYPES.warnMute, () => view.toggleWarnOff(key), { key: hideDetail(!w.off, di, words) })
-      HOOKS.toast(shown ? 'Warning flagged again' : 'Warning hidden — no flag, not counted. It returns if the day changes', 'ok')
+      /* (owner D838 + D839, 14 Oct 26 — N15: "if the day changes" was read as "when tomorrow comes". The hide is keyed to
+         the warning's own words — engine/warnhide.ts — so it is the WARNING changing that brings it back.) */
+      HOOKS.toast(shown ? 'Warning flagged again' : 'Warning hidden: no flag, not counted. It returns if the warning changes.', 'ok')
       /* a mute is an undo step now (owner, Aug 26 — "when I click undo I should
          revert my hidden warning changes"): WARNOFF rides the history snapshot,
          so push one after toggling. toggleWarnOff no-ops for a non-scheduler and
@@ -1593,8 +1601,8 @@ export function routeClick(e: MouseEvent) {
       markEdit(`st:${di}.${gi}.${li}.${ai}`, was, a.role)
       view.afterSchedMutate(); notify()
       HOOKS.toast(a.spare
-        ? 'Line is SPARE now — standing by, checked for availability and currency only'
-        : 'Line is MAIN now — fully cross-checked', 'ok')
+        ? 'Line is SPARE now: standing by, checked for availability and currency only'
+        : 'Line is MAIN now: fully cross-checked', 'ok')
     }
     e.stopPropagation(); return
   }

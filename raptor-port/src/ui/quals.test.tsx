@@ -1121,3 +1121,26 @@ describe('the frozen quals header', () => {
     expect(grp!.textContent).toMatch(/Assigned pilots · \d+/)
   })
 })
+
+/* "ADD QUALIFICATIONS" OPENS THE ADMIN PAGE AND SAYS NOTHING (owner D837, 14 Oct 26 — the passing note N33, removed).
+   The link under the table used to raise "Shortcut to the Admin page (Django-style backend in the full build)." — the
+   builder's talk on screen, against his standing rule that the app's words read as a finished product (25 Aug 26). The
+   note is gone and the link goes where it said it led. Last in this file: it leaves the Quals page. */
+describe('N33 — "Add qualifications" raises no note', () => {
+  it('a press says nothing, and the Admin page is the page on screen', async () => {
+    const said: string[] = []
+    const real = HOOKS.toast
+    HOOKS.toast = ((m: any) => { said.push(String(m)) }) as any
+    try {
+      const nav = (p: string) => $$('.nav a[data-page]').find(a => a.dataset.page === p)!
+      expect(nav('quals').className, 'it starts on Quals').toContain('on')
+      await click($('#qAddQual'))
+      expect(said, 'no note at all').toEqual([])
+      expect(nav('admin').className, 'the Admin page').toContain('on')
+      expect(nav('quals').className).not.toContain('on')
+    } finally { HOOKS.toast = real; await act(async () => { setPage('quals'); notify() }) }
+  })
+  it('nothing on the Quals page speaks of the build', () => {
+    expect(host.textContent).not.toMatch(/Django|full build/i)
+  })
+})

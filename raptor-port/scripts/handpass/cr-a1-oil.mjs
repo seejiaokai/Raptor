@@ -52,7 +52,7 @@ bk.ck('S11.5', 'Undo, Undo → both pucks earn again (both bars back), the mode 
 u = await door(page, 'board', 'undo')
 const noteAfterDoor = await txt(page, `dn:${SAT}.0`)
 const pD = await bk.shot(page, 'sat-left-oil')
-bk.ck('S11.6', 'the next Undo only LEAVES the mode: "Left OIL Earn — the next undo would change the day itself"; the note untouched', u.toasts.some(t => /Left OIL Earn — the next undo would change the day itself/.test(t)) && !(await oilOn(page)) && noteAfterDoor === 'OIL WALK NOTE', { u, noteAfterDoor }, pD)
+bk.ck('S11.6', 'the next Undo only LEAVES the mode: "Left OIL Earn without undoing. The next undo would change the day itself."; the note untouched', u.toasts.some(t => /Left OIL Earn without undoing\. The next undo would change the day itself\./.test(t)) && !(await oilOn(page)) && noteAfterDoor === 'OIL WALK NOTE', { u, noteAfterDoor }, pD)
 u = await door(page, 'board', 'undo')
 const noteBack = await txt(page, `dn:${SAT}.0`)
 const pE = await bk.shot(page, 'sat-note-undone')

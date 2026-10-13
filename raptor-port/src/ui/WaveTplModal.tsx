@@ -77,7 +77,7 @@ export function WaveTplModal() {
   const commitTime = (id: string, li: number, field: 'to' | 'ld', raw: string) => {
     const v = raw.trim()
     if (v && !hmOK(v)) {
-      HOOKS.toast(`${v} is not a time — try 0900 or 09:00`, 'warn')
+      HOOKS.toast(`${v} is not a time. Try 0900 or 09:00.`, 'warn')
       setWaveTplLine(id, li, field, timeBuf.current)
     } else {
       setWaveTplLine(id, li, field, waveTime(v))

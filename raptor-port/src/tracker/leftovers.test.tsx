@@ -16,7 +16,7 @@ import ShowAllPanel from './components/ShowAllPanel.jsx'
 import Pop from './components/Pop.jsx'
 import SidePanel from './components/SidePanel.jsx'
 import { initStore, resetSession } from '../state/store'
-import { boxValue, pickDate } from '../ui/datecal-testkit'
+import { boxValue, calPage, pickDate } from '../ui/datecal-testkit'
 import { fireEvent, screen } from '@testing-library/react'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -211,6 +211,22 @@ async function pickStudent() {
   expect(C.active, 'the premise: a student is picked').toBeTruthy()
   return C.active
 }
+/* A DAY AFTER TODAY, PICKED ON THE CALENDAR ALL THE SAME. Since the look of 13 Oct 26 (L14, owner D830) the calendars of
+   Done on, Failed on, the two Last Flown boxes and the failures list's rows take no tap on a day after today — so D374's refusal is no longer met
+   by an ordinary pick. It STAYS, as the safety net, and the tests that proved it through the box still do, re-expressed
+   (never weakened): the calendar is opened while the squadron's clock reads some days ahead (the boxes are drawn again
+   by that clock, so those days are offered), the clock is put back, and the day is tapped. The pick reaches the store
+   by the box's own wire, and the store — on today's clock — refuses it and says why. */
+async function pickAhead(box: () => HTMLElement, iso: string, ahead = 10) {
+  vi.useFakeTimers({ toFake: ['Date'] })
+  try {
+    vi.setSystemTime(new Date(Date.now() + ahead * 86400000))
+    await act(async () => { C.notify(); await tick() })
+    fireEvent.click(box()); await act(async () => { await tick() })
+  } finally { vi.useRealTimers() }
+  expect(screen.getByTestId('dcal').getAttribute('data-max'), 'the premise: the calendar was opened on a later day’s clock').toBe(dayAfter(C.isoToday(), ahead))
+  pickDate(box(), iso); await act(async () => { await tick() })
+}
 
 describe('[TRK-RETEST-NOTES] C5 — a date box saves when you leave it, never a half-typed day', () => {
   /* RE-EXPRESSED 13 Oct 26 for the app's own date box (owner D801 — the Tracker's date boxes open the app's one calendar;
@@ -335,7 +351,7 @@ describe('[TRK-RETEST-NOTES] C5 + D374 — the grading pop-up’s boxes on scree
     try {
       const box = () => host.querySelector('#popDoneDate') as HTMLElement
       expect(box().tagName).toBe('BUTTON')
-      pickDate(box(), dayAfter(C.isoToday(), 3)); await act(async () => { await tick() })
+      await pickAhead(box, dayAfter(C.isoToday(), 3))
       expect(host.querySelector('#popDoneWarn')?.textContent, 'the refusal says why, under the box').toBe(C.NOT_YET)
       expect(C.pop, 'a pick on the calendar closed the pop-up it floats over').toBeTruthy()
       pickDate(box(), dayAfter(C.isoToday(), -2)); await act(async () => { await tick() })
@@ -368,7 +384,7 @@ describe('[TRK-RETEST-NOTES] C5 + D374 — the grading pop-up’s boxes on scree
       fireEvent.click(host.querySelector('#popFailPlus')!); await act(async () => { await tick() })
       expect(C.failOf(s, f)).toBe(n + 1)
       expect(C.failDates(s, f), 'the failure is on the day picked').toContain(day)
-      pickDate(box(), dayAfter(C.isoToday(), 4)); await act(async () => { await tick() })
+      await pickAhead(box, dayAfter(C.isoToday(), 4))
       expect(host.querySelector('#popFailWarn')?.textContent, 'refused at the pick — not left for the + to find').toBe(C.NOT_YET)
       /* a day that is not whole (a year still 0202 in an old record) never reaches the app's box as a date */
       await act(async () => { C.popDoneChanged('0202-09-17'); C.popFailDateChanged('0202-09-17'); await tick() })
@@ -1219,7 +1235,7 @@ describe('[TRK-DATE-BOXES] the read of 13 Oct 26', () => {
     try {
       const box = () => host.querySelector('#popDoneDate') as HTMLElement
       const kept = boxValue(box())
-      pickDate(box(), dayAfter(C.isoToday(), 5)); await act(async () => { await tick() })
+      await pickAhead(box, dayAfter(C.isoToday(), 5))
       expect(host.querySelector('#popDoneWarn')?.textContent).toBe(C.NOT_YET)
       expect(boxValue(box()), 'the box shows the day the mark keeps').toBe(kept)
       await new Promise(r => setTimeout(r, 450))
@@ -1271,7 +1287,7 @@ describe('[TRK-DATE-BOXES] the read of 13 Oct 26', () => {
     const { host, root } = await sideUp()
     try {
       const box = () => host.querySelector('#lastCurr') as HTMLElement
-      pickDate(box(), dayAfter(C.isoToday(), 6)); await act(async () => { await tick() })
+      await pickAhead(box, dayAfter(C.isoToday(), 6))
       expect(box().closest('.trdatebox')!.querySelector('.datewarn')?.textContent).toBe(C.NOT_YET)
       /* he opens the calendar again and closes it, or picks the day the box already holds: the box is right — no line */
       await new Promise(r => setTimeout(r, 450))
@@ -1336,5 +1352,218 @@ describe('[TRK-DATE-BOXES] the read of 13 Oct 26', () => {
       expect(screen.getByTestId('dcal').getAttribute('data-min')).toBe('1900-01-01')
       fireEvent.click(screen.getByTestId('dcal-scrim')); await act(async () => { await tick() })
     } finally { await act(async () => { root.unmount() }); host.remove() }
+  })
+})
+
+/* THE DESIGN LOOK OF 13 OCT 26 — the Tracker's date boxes (docs/handpass/2026-10-13-design-look.md §3, §6; the words he
+   approved docs/mock/design-look-13oct.html; owner D830 — "L1 to L17 and K1 to K4, K7 to K10, K12", none left out).
+   L14: a future day looked pickable, was picked, and was then refused. L15: a date read as a fact before anything was
+   marked. K12: Delete or Backspace on a filled box did nothing. Each test here was written first and failed first. */
+describe('[LOOK-13OCT-SMALL-FIXES] the Tracker’s date boxes — L14, L15, K12', () => {
+  const sideUp = async () => render(<Live draw={() => <SidePanel zoom={1} />} />)
+  /* open a box's calendar, look at tomorrow on it, tap it, and close whatever is still up */
+  const tapTomorrow = async (box: HTMLElement) => {
+    const today = C.isoToday(), tomorrow = dayAfter(today, 1)
+    fireEvent.click(box); await act(async () => { await tick() })
+    const max = screen.getByTestId('dcal').getAttribute('data-max')
+    calPage(+today.slice(0, 4), +today.slice(5, 7))
+    const todayLive = !(screen.getByTestId('dcal-day-' + today) as HTMLButtonElement).disabled
+    calPage(+tomorrow.slice(0, 4), +tomorrow.slice(5, 7))
+    const d = screen.getByTestId('dcal-day-' + tomorrow) as HTMLButtonElement
+    const seen = { max, todayLive, faint: d.classList.contains('is-out'), takesNoTap: d.disabled }
+    fireEvent.click(d); await act(async () => { await tick() })
+    const stillUp = !!document.querySelector('[data-testid="dcal-card"]')
+    if (stillUp) { fireEvent.click(screen.getByTestId('dcal-scrim')); await act(async () => { await tick() }) }
+    return { ...seen, stillUp }
+  }
+
+  it('L14 — both Last Flown boxes offer no day after today: tomorrow is faint and takes no tap, and nothing is saved or refused; Upchit and the end dates still offer every day', async () => {
+    const s = await pickStudent()
+    const today = C.isoToday(), tomorrow = dayAfter(today, 1)
+    const was = { ...C.dates[s] }, pace = { ...C.paceOf(s) }
+    const { host, root } = await sideUp()
+    try {
+      for (const id of ['lastSyll', 'lastCurr']) {
+        const box = () => host.querySelector('#' + id) as HTMLElement
+        /* the last day offered is the squadron's today — the day D374's refusal measures against (`isoToday`) */
+        expect(await tapTomorrow(box()), id).toEqual({ max: today, todayLive: true, faint: true, takesNoTap: true, stillUp: true })
+        expect(C.dates[s][id] || '', id + ': nothing saved').toBe(was[id] || '')
+        expect(box().closest('.trdatebox')!.querySelector('.datewarn'), id + ': there was nothing to refuse').toBeNull()
+      }
+      /* a planned day — Upchit, the two end dates — is any day (D374): no last date, and tomorrow is picked */
+      const free: [string, () => any][] = [['upchit', () => C.dates[s].upchit], ['targetIn', () => C.paceOf(s).target], ['targetIn2', () => C.paceOf(s).target2]]
+      for (const [id, read] of free) {
+        expect(await tapTomorrow(host.querySelector('#' + id) as HTMLElement), id).toEqual({ max: null, todayLive: true, faint: false, takesNoTap: false, stillUp: false })
+        expect(read(), id + ': tomorrow is saved').toBe(tomorrow)
+      }
+    } finally {
+      await C.setUpchit(s, was.upchit || ''); await C.setTarget(s, pace.target || ''); await C.setTarget2(s, pace.target2 || '')
+      await act(async () => { root.unmount() }); host.remove()
+    }
+  })
+
+  /* a row of the full failures list is a "Failed on" day too, and refuses a day after today as the others do (D374's
+     second reading; core.js `setFailDate`) — so its calendar offers none either (the coordinator's ruling on the batch,
+     14 Oct 26: the look named four boxes; this is the fifth place the same refusal lives) */
+  it('L14 — a row of the full failures list offers no day after today: tomorrow is faint and takes no tap, nothing is saved and no refusal is said', async () => {
+    const s = await pickStudent()
+    const ev = await freshEvent(s, 5)
+    const today = C.isoToday(), day = dayAfter(today, -4)
+    await fail(s, ev, day)
+    const { host, root } = await sideUp()
+    try {
+      C.openFailLog(s); await act(async () => { await tick() })
+      const box = () => host.querySelector('#failLog .frow[data-ev="' + ev + '"] button.datebox') as HTMLElement
+      expect(box(), 'the premise: the failure’s row is drawn').toBeTruthy()
+      expect(boxValue(box())).toBe(day)
+      expect(await tapTomorrow(box())).toEqual({ max: today, todayLive: true, faint: true, takesNoTap: true, stillUp: true })
+      expect(C.failDates(s, ev), 'nothing saved').toEqual([day])
+      expect(box().closest('.trdatebox')!.querySelector('.datewarn'), 'there was nothing to refuse').toBeNull()
+    } finally {
+      C.closeFailLog()
+      C.openPop(ev, { clientX: 5, clientY: 5 }); await C.popFail(-1); C.closePop()
+      await act(async () => { root.unmount() }); host.remove()
+    }
+  })
+
+  it('L14 — the marking pop-up’s Done on and Failed on offer no day after today either', async () => {
+    const s = await pickStudent()
+    const ev = await freshEvent(s, 6)
+    C.openPop(ev, { clientX: 5, clientY: 5 })
+    const { host, root } = await render(<Live draw={() => <Pop />} />)
+    try {
+      const today = C.isoToday()
+      for (const id of ['popDoneDate', 'popFailDate']) {
+        expect(await tapTomorrow(host.querySelector('#' + id) as HTMLElement), id).toEqual({ max: today, todayLive: true, faint: true, takesNoTap: true, stillUp: true })
+      }
+      expect(C.popDoneDate, 'Done on keeps its day').toBe(today)
+      expect(C.popFailDate, 'Failed on keeps its day').toBe(today)
+      expect(C.popMsg, 'there was nothing to refuse').toBeNull()
+      expect(C.pop, 'the pop-up is still open').toBeTruthy()
+    } finally { C.closePop(); await act(async () => { root.unmount() }); host.remove() }
+  })
+
+  it('L15 — a date no mark carries yet is drawn dim: Done on until the event is done, Failed on until a failure is ON the day in the box; the words do not change', async () => {
+    const s = await pickStudent()
+    const ev = await freshEvent(s, 6)
+    const today = C.isoToday(), earlier = dayAfter(today, -3)
+    C.openPop(ev, { clientX: 5, clientY: 5 })
+    const { host, root } = await render(<Live draw={() => <Pop />} />)
+    try {
+      const dim = (id: string) => (host.querySelector('#' + id) as HTMLElement).classList.contains('is-notyet')
+      const press = async (id: string) => { fireEvent.click(host.querySelector('#' + id)!); await act(async () => { await tick() }) }
+      const words = () => (host.querySelector('#popDoneRow .mini')!.textContent || '')
+      /* nothing marked, Fails 0: both dates are only where a mark WOULD land */
+      expect(C.failOf(s, ev), 'the premise: no failure yet').toBe(0)
+      expect(dim('popDoneDate')).toBe(true); expect(dim('popFailDate')).toBe(true)
+      expect(boxValue(host.querySelector('#popDoneDate') as HTMLElement), 'the date is still there, only dim').toBe(today)
+      expect(words().startsWith('Done on (when marked)')).toBe(true)
+      expect(host.querySelector('#popFailDate'), 'Failed on is not hidden at Fails 0: its day is set before + is pressed').toBeTruthy()
+      /* + records a failure on the day in the box: that day is now a record */
+      await press('popFailPlus')
+      expect(C.failDates(s, ev)).toEqual([today])
+      expect(dim('popFailDate'), 'a failure carries the day').toBe(false)
+      expect(dim('popDoneDate'), 'Done on is a different mark: still not done').toBe(true)
+      /* another day picked for the NEXT failure: no failure is on it yet */
+      await act(async () => { C.popFailDateChanged(earlier, false); await tick() })
+      expect(dim('popFailDate'), 'no failure is on this day').toBe(true)
+      await press('popFailPlus')
+      expect(dim('popFailDate')).toBe(false)
+      /* − takes back the latest day (D371): the failure on the day in the box is still there */
+      await press('popFailMinus')
+      expect(C.failDates(s, ev)).toEqual([earlier]); expect(dim('popFailDate')).toBe(false)
+      await press('popFailMinus')
+      expect(C.failOf(s, ev)).toBe(0); expect(dim('popFailDate'), 'Fails back to 0').toBe(true)
+      /* the grade: the pop-up closes; opened again, Done on is the day the mark has — white */
+      await act(async () => { await C.popGrade('dco') })
+      C.openPop(ev, { clientX: 5, clientY: 5 }); await act(async () => { await tick() })
+      expect(C.isDone(s, ev), 'the premise: the event is done').toBeTruthy()
+      expect(dim('popDoneDate'), 'a mark carries the day').toBe(false)
+      expect(words().startsWith('Done on')).toBe(true); expect(words()).not.toContain('(when marked)')
+      expect(dim('popFailDate'), 'and Failed on is still its own').toBe(true)
+    } finally {
+      if (!C.pop) C.openPop(ev, { clientX: 5, clientY: 5 })
+      await act(async () => { await C.popGrade('0') })
+      C.closePop(); await act(async () => { root.unmount() }); host.remove()
+    }
+  })
+
+  it('K12 — Delete or Backspace on a box that holds a date takes the date off, as its ✕ does: one undo step, the keyboard still on the box', async () => {
+    const s = await pickStudent()
+    const day = dayAfter(C.isoToday(), -2)
+    await C.setUpchit(s, day); await C.setTarget(s, day)
+    const { host, root } = await sideUp()
+    try {
+      const box = (id: string) => host.querySelector('#' + id) as HTMLElement
+      const x = (id: string) => box(id).parentElement!.querySelector('.trdate-x')
+      expect(x('upchit'), 'the premise: the box has its ✕').toBeTruthy()
+      const before = depth()
+      box('upchit').focus()
+      await key(box('upchit'), 'Delete'); await act(async () => { await tick() })
+      expect(C.dates[s].upchit || '', 'Delete took the date off').toBe('')
+      expect(boxValue(box('upchit'))).toBe(''); expect(x('upchit')).toBeNull()
+      expect(depth(), 'one step, as the ✕ makes').toBe(before + 1)
+      expect(document.activeElement, 'the keyboard is still on the box').toBe(box('upchit'))
+      /* on the box now empty the key has nothing to take off */
+      await key(box('upchit'), 'Delete'); await key(box('upchit'), 'Backspace'); await act(async () => { await tick() })
+      expect(depth(), 'nothing more was changed').toBe(before + 1)
+      /* Backspace does the same, on a narrow box too (End date A) */
+      box('targetIn').focus()
+      await key(box('targetIn'), 'Backspace'); await act(async () => { await tick() })
+      expect(C.paceOf(s).target || '', 'Backspace took the date off').toBe('')
+      expect(document.activeElement).toBe(box('targetIn'))
+      /* and Undo brings a date back, as it does after the ✕ */
+      await act(async () => { await C.doUndo() })
+      expect(C.paceOf(s).target).toBe(day)
+    } finally { await C.setTarget(s, ''); await act(async () => { root.unmount() }); host.remove() }
+  })
+
+  it('K12 — a box whose date cannot be taken off (a Last Flown day that comes from the flights — D123) keeps it', async () => {
+    const s = await pickStudent()
+    const f = C.SYL.filter((e: any) => e.type === 'flight' && !C.gradeOf(s, e.id))[0].id
+    C.openPop(f, { clientX: 5, clientY: 5 }); C.popDoneChanged(dayAfter(C.isoToday(), -5)); await C.popGrade('dco')
+    await C.setLastSyll(s, '')   /* whatever was put in by hand is gone: Last Flown is the flights' day */
+    const flown = C.dates[s].lastSyll
+    expect(flown, 'the premise: a flight done sets Last Flown').toBeTruthy()
+    const { host, root } = await sideUp()
+    try {
+      const box = host.querySelector('#lastSyll') as HTMLElement
+      expect(box.parentElement!.querySelector('.trdate-x'), 'the premise: no ✕').toBeNull()
+      const before = depth()
+      box.focus()
+      await key(box, 'Delete'); await key(box, 'Backspace'); await act(async () => { await tick() })
+      expect(C.dates[s].lastSyll).toBe(flown)
+      expect(depth()).toBe(before)
+    } finally { await act(async () => { root.unmount() }); host.remove() }
+  })
+
+  it('K12 — the key is the BOX’s: the Tracker’s own Delete key, which deletes what is selected on a chart being arranged, never hears it', async () => {
+    const s = await pickStudent()
+    await C.setUpchit(s, dayAfter(C.isoToday(), -2))
+    const { host, root } = await sideUp()
+    if (C.sylDirty) await C.saveChangesClick()
+    /* as the Tracker's page wires it (App.jsx): every key that reaches the document is handed to the Delete handler */
+    const del = vi.fn((e: any) => C.handleDeleteKey(e))
+    document.addEventListener('keydown', del)
+    C.toggleArrange()
+    try {
+      C.selectAllClick()
+      const box = host.querySelector('#upchit') as HTMLElement
+      box.focus()
+      /* on the box with a date (it is taken off), then on the box now empty (nothing to take off): neither is the chart's */
+      await key(box, 'Delete'); await act(async () => { await tick() })
+      await key(box, 'Backspace'); await key(box, 'Delete'); await act(async () => { await tick() })
+      expect(del, 'the Tracker’s Delete handler ran for a key pressed on a date box').not.toHaveBeenCalled()
+      expect(C.dates[s].upchit || '', 'the box’s own date was taken off').toBe('')
+      expect(C.dlg, 'no "Delete …?" question').toBeNull()
+      expect(C.sylDirty, 'nothing of the chart was deleted').toBe(false)
+      /* the premise: the wire is live — any other key pressed on the box does reach it */
+      await key(box, 'a')
+      expect(del).toHaveBeenCalledTimes(1)
+    } finally {
+      document.removeEventListener('keydown', del)
+      await clearQuestions(); if (C.arrangeMode) C.toggleArrange(); if (C.sylDirty) await C.saveChangesClick()
+      await act(async () => { root.unmount() }); host.remove()
+    }
   })
 })

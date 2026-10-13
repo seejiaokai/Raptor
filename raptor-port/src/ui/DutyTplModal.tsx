@@ -63,7 +63,7 @@ export function DutyTplModal() {
   const commitTime = (id: string, ri: number, field: 'str' | 'end', raw: string) => {
     const v = raw.trim()
     if (v && !hmOK(v)) {
-      HOOKS.toast(`${v} is not a time — try 0900 or 09:00`, 'warn')
+      HOOKS.toast(`${v} is not a time. Try 0900 or 09:00.`, 'warn')
       setTplRow(id, ri, field, timeBuf.current)
     } else {
       setTplRow(id, ri, field, tplTime(v))

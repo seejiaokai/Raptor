@@ -55,7 +55,7 @@ for (const w of which) {
     await editWeek(page)
     const a5 = await tapUnpub(page, 5)
     note('setup Sat Unpublish tap 1', a5)
-    check('AM37: Sat Unpublish with a bid against arms and warns ("Withdraw — confirm")', a5.after && /Withdraw — confirm/.test(a5.after.text) && a5.toasts.some(t => /Heads up/.test(t)), JSON.stringify(a5.after) + ' ' + JSON.stringify(a5.toasts))
+    check('AM37: Sat Unpublish with a bid against arms and warns ("Withdraw — confirm")', a5.after && /Withdraw — confirm/.test(a5.after.text) && a5.toasts.some(t => /OIL credits are already spent on the Leave War/.test(t)), JSON.stringify(a5.after) + ' ' + JSON.stringify(a5.toasts))
     await dayShot('b-sat-armed', 5)
 
     await go(page, 'viewsched')

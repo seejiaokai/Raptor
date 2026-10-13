@@ -374,7 +374,7 @@
   "n": 38,
   "name": "a record that has gone closes its window and says so",
   "file": "src/ui/inputedit.tsx",
-  "find": "if (!now) { HOOKS.toast('That input was removed while its window was open — the window has closed', 'warn'); close(); return }",
+  "find": "if (!now) { HOOKS.toast('That input was removed while its window was open, so the window has closed', 'warn'); close(); return }",
   "put": "if (!now) return",
   "tests": [
    "src/ui/editorwindow.test.tsx"

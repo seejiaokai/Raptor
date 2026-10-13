@@ -211,14 +211,11 @@
 .secdef-btn:hover{border-color:var(--ink-3);color:var(--ink)}
 .secdef-btn.yes{background:var(--accent);border-color:var(--accent);color:#05222b}
 .secdef-btn.yes:hover{filter:brightness(1.06)}
-/* THE BAR THAT STAYS — "Not swapped — OIL not answered · Answer OIL · OK" ([OIL-ASK-NOTIFY], owner D783 (2): "the flash
-   and a bar that stays"; the pictures of record docs/mock/2026-10-12-oil-notify/*-swap-5-after-stays.png). The "Set as
-   default" bar's own look, exactly as drawn — with the one difference that is its job: it sits OVER the full-screen
-   Scheduler Board (the board is 400; a question's sheet, 460 and up, still covers it). On a phone the two buttons
-   drop under the words, side by side, as drawn. (A first cut made its words and buttons a size bigger: on a phone
-   the buttons then stacked one over the other and the bar stood twice as tall as the picture he approved — seen on
-   the built screen beside it, 13 Oct 26.) */
-.secdef-snack.oilbar{z-index:440}
+/* the app's ring, set a little off the button so it shows round the filled one too (the design look's K10, D830) */
+.secdef-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* (THE BAR THAT STAYS — "Not swapped — OIL not answered · Answer OIL · OK" — wore this offer's look at the foot of the
+   screen until 14 Oct 26. It is a band under the top bar now, beside the failed-save warning: 17-save-status.css
+   `.oilband`, ui/OilWaitSheet.tsx — owner D831, D840.) */
 /* the statement above the question a waiting change is asked with (ui/OilConfirm.tsx `lead`) */
 .oilconf-lead{margin:0 0 10px}
 .addrow:hover{border-color:var(--ok);color:#9BE3B4}
@@ -397,7 +394,15 @@
 .airpop-box{background:var(--panel);border:1px solid var(--edge);border-radius:14px;width:520px;max-width:100%;max-height:80vh;overflow:auto}
 .airpop-head{padding:12px 15px;border-bottom:1px solid var(--edge);display:flex;align-items:center}
 .airpop-head b{font-size:15px;font-weight:700}
-.airpop-head .x{background:none;border:none;color:var(--ink-2);cursor:pointer;font-size:18px}
+/* THE ✕ SITS IN THE HEAD'S CORNER, on every window of this family (the design look's L2, owner D830 — 13 Oct 26). Nothing
+   pushed it right, so it followed the title — "OIL — Tally, Range brief ✕" — and moved with the length of the name,
+   nowhere near the corner the window behind keeps its own in. `margin-left:auto` takes the row's spare room, so what
+   stands beside the title (a cancelled input's CX mark, D771) stays beside it. "Jump to a date" already sends its Today
+   icon right that way; there the ✕ simply follows it. By keyboard the ✕ is the LAST stop of a question sheet
+   (ui/sheetfocus.ts). Its ring is the app's (K10) — it wore the browser's own. */
+.airpop-head .x{background:none;border:none;color:var(--ink-2);cursor:pointer;font-size:18px;margin-left:auto;flex:0 0 auto}
+.airpop-head .wc-today + .x{margin-left:0}
+.airpop-head .x:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-radius:6px}
 /* The "Go to today" button in the "Jump to a date" header (WeekCal). It and
    the ✕ cluster at the right — margin-left:auto is on the today button now, so
    the ✕ that used to carry it follows on the today button's own right margin.

@@ -101,7 +101,7 @@ describe('publication refuses on a protected week (P2-REV2-03)', () => {
     const before = SCHED.als.length
     publishALDay(di)
     expect(SCHED.als.length, 'no AL was issued').toBe(before)
-    expect(said.join(' ')).toMatch(/locked/i)
+    expect(said.join(' ')).toBe('Monday is locked. It was published by an older version of the app, so it can’t be amended here.')
   })
 
   it('alIssue is the backstop — it pushes no record on a protected week', () => {

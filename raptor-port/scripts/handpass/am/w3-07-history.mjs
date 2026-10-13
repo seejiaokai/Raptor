@@ -54,7 +54,7 @@ for (const w of which) {
     check('R12/AM49: every Edit history line fits the list (none is cut off at the right edge)', !(hl.clipped || []).length, JSON.stringify(hl.clipped))
     const R = hl.rows || []
     note('S35 (record): a line for Publish day / Publish AL1 / Unpublish / Undo-Redo?', {
-      publishDay: R.filter(x => /published — APPROVED|Publish day|published as|was published/i.test(x)).length || 'NONE',
+      publishDay: R.filter(x => /published and approved|Publish day|published as|was published/i.test(x)).length || 'NONE',
       publishAL: R.filter(x => /Published AL\d|Publish AL\d|issued as AL/i.test(x)).length || 'NONE',
       unpublish: R.filter(x => /Unpublish(?!ed edit)|pulled back|taken back|withdrawn/i.test(x)).length || 'NONE (silent by AM35)',
       undoRedo: R.filter(x => /^\w+\s+(Undo|Redo)|Undid|Redid/i.test(x)).length || 'NONE' })

@@ -4,16 +4,18 @@
    this pins the day-header rendering: the button shows only on the edit surface of a
    published day that is not being previewed, and wears the amber confirm face while
    armed. */
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
-import { SCHED, signOf, dayApproved, dayCurVer } from '../engine/publish'
+import { SCHED, signOf, dayApproved, dayCurVer, verLabel } from '../engine/publish'
+import { HOOKS } from '../engine/hooks'
 import { initStore } from '../state/store'
-import { commitSetDayApproved } from '../state/sched-commit'
+import { commitSetDayApproved, commitPublishALDay } from '../state/sched-commit'
 import { setSession } from '../state/auth'
 import * as view from '../state/view'
 import { _resetDisclosure } from '../state/disclosure'
 import { dayStatHTML } from './html'
+import { routeClick } from './interactions'
 
 
 const DSNAP = JSON.stringify(DAYS)
@@ -66,5 +68,48 @@ describe('the §6.6 confirm face', () => {
     const armed = dayStatHTML(0, true)
     expect(armed).toContain('dunpub warn')
     expect(armed).toContain('Withdraw — confirm')
+  })
+})
+
+/* WHAT UNPUBLISH SAYS (owner D837, 14 Oct 26 — the passing notes N2 and N3; the words of record:
+   docs/superpowers/briefs/2026-10-13-wording-recheck.md). The real button, pressed through the app's own click
+   route, and the note it raises read whole: a done thing, then sentences — no dash, no semicolon. (The warning on the
+   first of two taps, N4, and the OIL sentence that follows a two-tap withdrawal need a Leave War whose credits are
+   spent; their words are pinned where they are written, ui/noteswords.test.ts.) */
+describe('what Unpublish says (N2, N3)', () => {
+  let said: string[] = []
+  const realToast = HOOKS.toast
+  let host: HTMLDivElement
+  beforeEach(() => {
+    said = []
+    HOOKS.toast = ((m: any) => { said.push(String(m)) }) as any
+    view.setPage('editsched')
+    host = document.createElement('div'); document.body.appendChild(host)
+    host.addEventListener('click', e => routeClick(e as MouseEvent))
+  })
+  afterEach(() => { HOOKS.toast = realToast; host.remove() })
+  const press = () => {
+    host.innerHTML = dayStatHTML(0, true)
+    ;(host.querySelector('[data-unpub="0"]') as HTMLElement).dispatchEvent(new MouseEvent('click', { bubbles: true }))
+  }
+
+  it('the Original withdrawn: the day is a draft again', () => {
+    sign(0); commitSetDayApproved(0, true)
+    said = []
+    press()
+    expect(dayApproved(0), 'it is a draft again').toBe(false)
+    expect(said).toEqual(['Monday unpublished. It is a draft again, and publishing reissues the Original.'])
+  })
+
+  it('an amendment withdrawn: its changes wait again, and the version before it is the issued schedule', () => {
+    sign(0); commitSetDayApproved(0, true)
+    const row = (DAYS[0] as any).dutywaves[0].rows[0]
+    row.end = row.end === '1700' ? '1730' : '1700'          // a change on the published day
+    sign(0); commitPublishALDay(0)
+    expect(verLabel(dayCurVer(0)), 'AL1 is out').toBe('AL1')
+    said = []
+    press()
+    expect(said).toEqual([`Monday: AL1 withdrawn. Its changes are back on the working copy as pending, and ${verLabel(dayCurVer(0))} is the issued schedule. Publishing reissues AL1.`])
+    expect(verLabel(dayCurVer(0)), 'the Original is the issued schedule again').not.toBe('AL1')
   })
 })

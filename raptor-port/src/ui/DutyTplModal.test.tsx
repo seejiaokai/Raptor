@@ -194,7 +194,7 @@ describe('time-cell guard rails', () => {
       await focusOut(strIn)                          // commit — refused
     })
     expect(DUTYTPL_CFG[1]!.rows[0]!.str).toBe('07:00')    // reverted
-    expect(toasts.some(t => t.includes('is not a time'))).toBe(true)
+    expect(toasts.some(t => t === '2500 is not a time. Try 0900 or 09:00.')).toBe(true)
   })
 
   it('a valid time is canonicalised to hh:mm on blur — the colon appears on its own', async () => {

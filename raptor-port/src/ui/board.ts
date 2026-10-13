@@ -861,7 +861,7 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.lflag != null) {
     const r = acRef(ds.lflag); if (!r || !r.a) return
     r.a.flag = !r.a.flag; markEdit(`fr:${ds.lflag}`); afterSchedMutate(); notify()
-    return toast(r.a.flag ? 'Red box — flagged for the next scheduler' : 'Red box cleared')
+    return toast(r.a.flag ? 'Red box: flagged for the next scheduler' : 'Red box cleared')
   }
   if (ds.ldel != null) {
     const r = acRef(ds.ldel); if (!r || !r.a) return
@@ -950,7 +950,7 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.pflag != null) {
     const [di, ri] = ds.pflag.split('.').map(Number); const x = DAYS[di].allhands[ri]
     x.flag = !x.flag; markEdit(`ap:${di}.${ri}.prog`); afterSchedMutate(); notify()
-    return toast(x.flag ? 'Red box — flagged for the next scheduler' : 'Red box cleared')
+    return toast(x.flag ? 'Red box: flagged for the next scheduler' : 'Red box cleared')
   }
   /* the ⓘ info-only flip (owner, 1 Sep 26) rides the same shape as the red box:
      through the funnel, marked on the row's own key so a flip on a published
@@ -959,7 +959,7 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.pinfo != null) {
     const [di, ri] = ds.pinfo.split('.').map(Number); const x = DAYS[di].allhands[ri]
     x.info = !x.info; markEdit(`ap:${di}.${ri}.prog`); afterSchedMutate(); notify()
-    return toast(x.info ? 'Info only — this item is no longer checked against the rules, and earns nobody any OIL' : 'This item is checked against the rules again')
+    return toast(x.info ? 'This item is info only: no longer checked against the rules, and earns nobody any OIL' : 'This item is checked against the rules again and can earn OIL')
   }
   /* ---- duty / sim / ground rows (the panels added Aug 26) ---------------
      Same shapes as the p* programme branches: adds mark the new row's name
@@ -987,14 +987,16 @@ export function boardMbtn(e: MouseEvent) {
     const di = +ds.oilmode
     const on = toggleOilMode(di)
     notify()
-    return toast(on ? 'OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning' : 'Back to editing the schedule')
+    /* (owner D838 + D839, 14 Oct 26 — N9: the button reads "OIL Earn", so the note names it that, not "OIL mode"; and
+       "take a man off that event" was read as taking him off the SCHEDULE. The same words: ui/SchedBoard.tsx.) */
+    return toast(on ? 'OIL Earn: tap a puck to stop that man earning from that event, or an item to stop the whole item earning' : 'Back to editing the schedule')
   }
   if (ds.oilblank != null) {
     const di = +ds.oilblank
     const on = !oilBlanketOn(di)
     setOilBlanket(di, on)
     notify()
-    return act(di, on ? 'Nothing on this day earns OIL — anything added later is covered too' : 'This day can earn again — the marks underneath are back')
+    return act(di, on ? 'Nothing on this day earns OIL, including anything added later' : 'This day can earn OIL again, and the marks underneath are back')
   }
   if (ds.daytpladd != null) {
     const di = +ds.daytpladd
@@ -1034,7 +1036,7 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.drflag != null) {
     const [di, wi, ri] = ds.drflag.split('.').map(Number); const x = DAYS[di].dutywaves[wi].rows[ri]
     x.flag = !x.flag; markEdit(`dr:${di}.${wi}.${ri}.role`); afterSchedMutate(); notify()
-    return toast(x.flag ? 'Red box — flagged for the next scheduler' : 'Red box cleared')
+    return toast(x.flag ? 'Red box: flagged for the next scheduler' : 'Red box cleared')
   }
   if (ds.sradd != null) {
     const [di, kind] = ds.sradd.split('.')
@@ -1073,7 +1075,7 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.srflag != null) {
     const [di, kind, ri] = ds.srflag.split('.'); const x = DAYS[+di].sims[kind][+ri]
     x.flag = !x.flag; markEdit(`sr:${di}.${kind}.${ri}.label`); afterSchedMutate(); notify()
-    return toast(x.flag ? 'Red box — flagged for the next scheduler' : 'Red box cleared')
+    return toast(x.flag ? 'Red box: flagged for the next scheduler' : 'Red box cleared')
   }
   if (ds.gradd != null) {
     const d = DAYS[+ds.gradd]; d.ground = d.ground || []
@@ -1127,11 +1129,11 @@ export function boardMbtn(e: MouseEvent) {
     if (onInputRow(`g:${di}.${ri}`)) {
       const on = !x.flag
       if (rowMark(`g:${di}.${ri}`, 'flag', on) !== 'done') return
-      return toast(on ? 'Red box — flagged for the next scheduler' : 'Red box cleared')
+      return toast(on ? 'Red box: flagged for the next scheduler' : 'Red box cleared')
     }
     x.flag = !x.flag; markEdit(`gr:${di}.${ri}.prog`)
     afterSchedMutate(); notify()
-    return toast(x.flag ? 'Red box — flagged for the next scheduler' : 'Red box cleared')
+    return toast(x.flag ? 'Red box: flagged for the next scheduler' : 'Red box cleared')
   }
   /* ⓘ info-only, ground twin of ds.pinfo above */
   if (ds.grinfo != null) {
@@ -1139,11 +1141,11 @@ export function boardMbtn(e: MouseEvent) {
     if (onInputRow(`g:${di}.${ri}`)) {
       const on = !x.info
       if (rowMark(`g:${di}.${ri}`, 'info', on) !== 'done') return
-      return toast(on ? 'Info only — this item is no longer checked against the rules, and earns nobody any OIL' : 'This item is checked against the rules again')
+      return toast(on ? 'This item is info only: no longer checked against the rules, and earns nobody any OIL' : 'This item is checked against the rules again and can earn OIL')
     }
     x.info = !x.info; markEdit(`gr:${di}.${ri}.prog`)
     afterSchedMutate(); notify()
-    return toast(x.info ? 'Info only — this item is no longer checked against the rules, and earns nobody any OIL' : 'This item is checked against the rules again')
+    return toast(x.info ? 'This item is info only: no longer checked against the rules, and earns nobody any OIL' : 'This item is checked against the rules again and can earn OIL')
   }
 }
 
@@ -1285,9 +1287,11 @@ export function boardArmClick(e: MouseEvent) {
        not. Say which mask is on, so the way to change it is obvious. */
     if (oilItemMasked(di, item)) {
       e.stopPropagation()
+      /* (owner D838, 14 Oct 26 — N12: a fact, then what to do. The item switch's own line below and the ALL AVAIL
+         window's copy, ui/AvailWindow.tsx, are not on his list of 13 Oct 26 and keep their dash until he says.) */
       return toast(oilBlanketOn(di)
-        ? 'Nothing on this day earns — turn that off first'
-        : 'This event earns nobody any OIL — turn the event back on first')
+        ? 'Nothing on this day earns. Turn that off first.'
+        : 'This event earns nobody any OIL. Turn the event back on first.')
     }
     const on = toggleOilPerson(di, person, item)
     notify(); e.stopPropagation()
@@ -1434,7 +1438,7 @@ export function addWave(di: number, kind: any) {
      Adding a wave creates only the wave. */
   const fi = placeAddedWave(di, kind)
   markStructuralAdd(`wl:${di}.${fi}`); afterSchedMutate(); notify()
-  toast(S.label + ' added — standalone, ' + (S.all ? 'every seat checked for availability, SC currency, front seat and overlapping places only' : 'SPARE is checked for availability, SC currency, front seat and overlapping SC seats or the SC desk only'))
+  toast(S.label + ' added: standalone, ' + (S.all ? 'every seat checked for availability, SC currency, front seat and overlapping places only' : 'SPARE is checked for availability, SC currency, front seat and overlapping SC seats or the SC desk only'))
 }
 
 /* the Add-a-wave chooser, verbatim (a body-level popup, just as the reference
@@ -1798,7 +1802,7 @@ export function addWaveFromTpl(di: any, id: string) {
 export let SBWIDE = false
 export function toggleWide() {
   SBWIDE = !SBWIDE
-  toast(SBWIDE ? 'Desktop layout — pan sideways to read the whole day' : 'Phone layout')
+  toast(SBWIDE ? 'Desktop layout: pan sideways to read the whole day' : 'Phone layout')
 }
 /* …but not into the next person's: a sign-in or sign-out puts the standard layout back
    ([ACCOUNTS] — what the next person inherits; Astra's code read, 26 Sep 26) */

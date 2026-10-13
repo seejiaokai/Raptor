@@ -4505,6 +4505,7 @@ N33 stays removed), with the clash note's words and the OIL question's; the two 
 **D838** — the notes left whole on 13 Oct have their dashes changed in the same build, every word kept. **D839** — the ten
 wordings a fresh reader tripped on are all taken, each replacing its note's wording in the other two lists. Not yet built:
 `OUTSTANDING.md` `[NOTES-SHORTER]`. Their relatives that were not on the page wait for the whole-app words pass (D808).
+**THE BAR THAT STAYS IS ALWAYS ONE LINE (owner D840, 14 Oct 26 — "I prefer the one line", of the page that drew it in its new place, `docs/mock/oil-band-14oct.html`):** "Not swapped — OIL not answered · Answer OIL · OK" is built in the band under the top bar as drawn (D831), its words and both buttons on one line at every phone width — where the letters are too wide its letters go a step smaller, no word is cut and the buttons never drop under the words; "Not saved" sits above it when both show. **And the line under a bar is the bar's own amber (owner D841, 14 Oct 26 — "The bottom line is cyan that's weird"):** while either bar is up the top bar's bottom edge is amber, not Edit Schedule's cyan, and goes back when the bars go; the two bars are one height.
 They are put to him on ONE page with the phone's clash note (D805) and a look, by the design guide, over the designs built on the
 night of 13 Oct 26 and the ones coming — keyboard use included (owner D807): `OUTSTANDING.md` `[DESIGN-LOOK-13OCT]`.
 The same going-over of EVERY page's notes, hints, labels and small print — less clutter; a note the screen already says may be
@@ -10580,6 +10581,8 @@ of the current mode may be pinned. Undo/Redo follows the restored row; addition 
 a deleted pin. Planning-only Undo/Redo returns to Member Calendar, where notes and pucks live.
 
 ## The failed-save warning has a band of its own (owner, 5 Oct 26 — D586, D587; `[SAVE-NOTE-COVERS]`)
+
+**THE LINE UNDER IT IS AMBER (owner D841, 14 Oct 26):** while the warning is up — or the bar that waits on an OIL answer, which has the same band (D831, D840) — the top bar's own bottom edge is the band's amber, never Edit Schedule's cyan; it returns to the page's own when the bands go.
 
 **The rule (D587):** when a save has failed, the warning — "⚠ Not saved — keep this page open" and **Retry** — fills a
 line of its own along the BOTTOM OF THE TOP BAR, edge to edge. The top bar is one line (36px, `--save-band`) taller

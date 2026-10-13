@@ -61,8 +61,12 @@ export default function Pop() {
             shows the day the mark keeps, and that day picked again is no change, so nothing else would clear it (the
             read of 13 Oct 26 — F7). On an event not yet done the refused day is still in the box, and its line stays. */}
         <span style={{ display: 'block' }} onClickCapture={() => { if (done && core.popMsg && core.popMsg.where === 'done') core.popDoneChanged(core.popDoneDate, false); }}>
-          <AppDateBox id="popDoneDate" className="trpopdate" label="Done on" value={core.isWholeDay(core.popDoneDate) ? core.popDoneDate : ''}
-            today={core.isoToday()} min="1900-01-01"
+          {/* SINCE THE DESIGN LOOK OF 13 OCT 26 (owner D830). L14: a day after today is faint on this calendar and takes
+              no tap (`max` — the squadron's today, the day D374's refusal measures against); the refusal's line
+              stays, as the safety net. L15: until the event is DONE its date is only the day a grade would carry,
+              so it is drawn dim (`is-notyet`, tracker.css) and turns white the moment a mark carries it. */}
+          <AppDateBox id="popDoneDate" className={'trpopdate' + (done ? '' : ' is-notyet')} label="Done on" value={core.isWholeDay(core.popDoneDate) ? core.popDoneDate : ''}
+            today={core.isoToday()} min="1900-01-01" max={core.isoToday()}
             onChange={v => { core.popDoneChanged(v, false); core.popDoneCommit(false); }} />
         </span>
         {core.popMsg && core.popMsg.where === 'done' ? <div className="datewarn" id="popDoneWarn" role="status">{core.popMsg.text}</div> : null}
@@ -78,8 +82,11 @@ export default function Pop() {
         <button className="sm" id="popFailPlus" title="Record another failure on the day below" onClick={() => core.popFail(1)}>+</button>
       </div>
       <div className="mini" style={{ marginTop: 5, marginBottom: 3 }}>Failed on</div>
-      <AppDateBox id="popFailDate" className="trpopdate" label="Failed on" value={core.isWholeDay(core.popFailDate) ? core.popFailDate : ''}
-        today={core.isoToday()} min="1900-01-01"
+      {/* L14, L15 as Done on above. This date is only where the NEXT + lands: it is drawn dim until a failure of this
+          event is ON that day — at Fails 0, and again when another day is picked for the next one. The box is not
+          hidden at Fails 0: its day is set BEFORE + is pressed. */}
+      <AppDateBox id="popFailDate" className={'trpopdate' + (fd.includes(core.popFailDate) ? '' : ' is-notyet')} label="Failed on" value={core.isWholeDay(core.popFailDate) ? core.popFailDate : ''}
+        today={core.isoToday()} min="1900-01-01" max={core.isoToday()}
         onChange={v => { core.popFailDateChanged(v, false); core.popFailCommit(false); }} />
       {core.popMsg && core.popMsg.where === 'fail' ? <div className="datewarn" id="popFailWarn" role="status">{core.popMsg.text}</div> : null}
       {fd.length ? (

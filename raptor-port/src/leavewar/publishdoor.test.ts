@@ -21,10 +21,12 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
+import { PEOPLE } from '../engine/people'
+import { toast as uiToast, toastBatch, clearToast } from '../ui/toast'
 import { SCHED, signOf } from '../engine/publish'
 import { stashClear } from '../engine/weekstash'
 import { initStore as raptorInitStore } from '../state/store'
-import { commitSetDayApproved } from '../state/sched-commit'
+import { commitSetDayApproved, commitPublishALDay } from '../state/sched-commit'
 import { setSession } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import { advanceStage, getState, initStore as lwInitStore, lwHistInit, rawState, setBidState, setCell, setPeople, setRole } from './state/store'
@@ -214,3 +216,82 @@ describe('publishing a weekend nobody earns OIL for', () => {
   })
 })
 
+/* ====================================================================== */
+/*  THE PUBLISH NOTE AND THE DAY'S OIL LINE NAME THE DAY ONCE (D837, N1)  */
+/* ====================================================================== */
+/* Owner, 14 Oct 26 (D837 — the passing note N1; the words of record:
+   docs/superpowers/briefs/2026-10-13-wording-recheck.md, List 1 and "For the builder"). Publishing a day says "Monday
+   published and approved" — no dash, no capitals, and no full stop while it stands alone. Where the same day's OIL line
+   follows it, the app says the two as one: the day once, at the head, with its date, and each a sentence.
+
+   THE REAL NOTE, THROUGH THE REAL PUBLISH: the app's own toast and its own join are wired here as main.tsx wires them,
+   and what is read is the note on the screen — every test above listens to the pieces, which is not what a scheduler
+   sees.
+
+   AND WHAT MUST NOT MOVE. The OIL line's other form ("… earned nobody any OIL — …"), the bid line and the "no leave war
+   period" line are not on his list of 13 Oct 26: their words and their dot are pinned here as they were. After an
+   amendment's receipt the OIL line keeps its own day, joined by the dot, as before. */
+describe('the note on the screen after a publish (N1)', () => {
+  const text = () => (document.getElementById('toastEl') as HTMLElement | null)?.textContent || ''
+  const keepBatch = HOOKS.toastBatch
+  beforeEach(() => { HOOKS.toast = uiToast; HOOKS.toastBatch = toastBatch })
+  afterEach(() => { HOOKS.toastBatch = keepBatch; clearToast(); document.getElementById('toastEl')?.remove() })
+  const satDesks = () => ((DAYS[5] as any).dutywaves ?? [])[0]
+  const BID = `${String((PEOPLE as any).plasma.cs)}'s LL bid on 18 Jul now sits on published work — the day is flagged, the bid is still live`
+
+  it('shown alone: "Monday published and approved" — no full stop', () => {
+    setRole('admin')
+    publish(0)
+    expect(text()).toBe('Monday published and approved')
+  })
+
+  it('with the same day\'s OIL line: the day once, with its date, and two sentences', () => {
+    setRole('admin')
+    satDesks().rows.push({ role: 'SXO', id: 'dj', str: '0800', end: '1800' })   // someone still earns
+    satDesks().rows[0].str = ''; satDesks().rows[0].end = ''                    // and the SDO desk is blank
+    publish(5)
+    expect(text()).toBe('Saturday 18 Jul published and approved. The SDO desk has no usable times, so nobody on it earns OIL.')
+  })
+
+  it('the Common Programme wears its heading\'s capitals in that sentence, as his wording has it', () => {
+    setRole('admin')
+    ;(DAYS[5] as any).allhands = [{ prog: 'OPS BRIEF', str: '', end: '', who: ['bane'] }]   // named, no times; the SDO desk earns
+    publish(5)
+    expect(text()).toBe('Saturday 18 Jul published and approved. The Common Programme has no usable times, so nobody on it earns OIL.')
+  })
+
+  it('the bid line rides behind the pair, its own words and its dot unchanged', () => {
+    setRole('admin')
+    satDesks().rows.push({ role: 'SXO', id: 'plasma', str: '0800', end: '1800' })
+    satDesks().rows[0].str = ''; satDesks().rows[0].end = ''
+    expect(setCell('plasma', SAT, 'LL')).toBe(true)
+    publish(5)
+    expect(text()).toBe(`Saturday 18 Jul published and approved. The SDO desk has no usable times, so nobody on it earns OIL. · ${BID}`)
+  })
+
+  it('NOT CHANGED — the bid line alone behind the publish note: the dot, and its words as they were', () => {
+    setRole('admin')
+    expect(setCell('plasma', SAT, 'LL')).toBe(true)
+    publish(5)
+    expect(text()).toBe(`Saturday published and approved · ${BID}`)
+  })
+
+  it('NOT CHANGED — the OIL line\'s other form: its own day, its dash and the dot, word for word', () => {
+    setRole('admin')
+    for (const dw of (DAYS[5] as any).dutywaves ?? []) for (const r of dw.rows ?? []) { r.str = ''; r.end = '' }
+    publish(5)
+    expect(text()).toBe('Saturday published and approved · Saturday 18 Jul earned nobody any OIL — the SDO desk has no usable times')
+  })
+
+  it('after an amendment\'s receipt the OIL line keeps its own day, joined by the dot as before', () => {
+    setRole('admin')
+    publish(5)
+    expect(text(), 'the seed Saturday earns: the publish note alone').toBe('Saturday published and approved')
+    satDesks().rows.push({ role: 'SXO', id: 'dj', str: '0800', end: '1800' })
+    satDesks().rows[0].str = ''; satDesks().rows[0].end = ''
+    const g = signOf(5); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    commitPublishALDay(5)
+    expect(text()).toMatch(/^Published AL1 · .+ · Saturday 18 Jul: the SDO desk has no usable times, so nobody on it earns OIL$/)
+    expect(text()).not.toContain('published and approved')
+  })
+})

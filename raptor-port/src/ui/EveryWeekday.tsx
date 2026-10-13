@@ -93,7 +93,9 @@ export function EveryWeekday({ wd, from: from0, onClose }: {
         <button type="button" className={'every-opt' + (ends ? ' lit' : '')} data-testid="every-until-date" aria-pressed={ends} onClick={() => edit(setEnds)(true)}>A date</button>
       </div>
       {ends && (
-        <DateBox className="every-date" testid="every-until" label="The date it ends" markWd={wd} min={validIso(from) ? from : undefined} value={until} onChange={edit(setUntil)} />
+        /* on a phone its calendar's card says "UNTIL" — this window's own word over the box (the design look of
+           13 Oct 26, L9; D830); aloud the box is still "The date it ends" */
+        <DateBox className="every-date" testid="every-until" label="The date it ends" cardName="Until" markWd={wd} min={validIso(from) ? from : undefined} value={until} onChange={edit(setUntil)} />
       )}
 
       <p className="every-says" data-testid="every-says">

@@ -407,6 +407,105 @@ describe('a phone turned on its side with the calendar up (the walk, 13 Oct 26)'
   })
 })
 
+/* THE DESIGN LOOK OF 13 OCT 26 (owner D830). L14: a form may tell its box the LAST date that may be picked (the Tracker's
+   boxes that refuse a day after today). L9: on a phone the card sits in the middle of the screen, over the box that
+   opened it, and looked the same for every box — so on a phone it says which date it is for. */
+describe('a last date that may be picked (L14)', () => {
+  it('the box hands it to its calendar: the dates after it take no tap', () => {
+    const onChange = vi.fn()
+    render(<DateBox testid="box" label="Done on" value="2026-11-03" max="2026-11-03" onChange={onChange} />)
+    fireEvent.click(t('box'))
+    expect(t('dcal').getAttribute('data-max')).toBe('2026-11-03')
+    expect((t('dcal-day-2026-11-04') as HTMLButtonElement).disabled).toBe(true)
+    expect(t('dcal-day-2026-11-04').classList.contains('is-out')).toBe(true)
+    fireEvent.click(t('dcal-day-2026-11-04'))
+    expect(onChange).not.toHaveBeenCalled()
+    expect(layer(), 'a tap on a date that may not be picked closed the calendar').toBeTruthy()
+    fireEvent.click(t('dcal-day-2026-11-02'))
+    expect(onChange).toHaveBeenCalledWith('2026-11-02')
+  })
+  it('a box told none offers every date, as before', () => {
+    render(<Box />)
+    fireEvent.click(t('box'))
+    expect(t('dcal').getAttribute('data-max')).toBeNull()
+    expect(document.querySelector('.dcal-grid .is-out')).toBeNull()
+  })
+})
+
+describe('on a phone the card says which date it is for (L9)', () => {
+  const realMM = window.matchMedia
+  const screenIs = (phone: boolean) => { (window as any).matchMedia = (q: string) => ({ matches: phone && /max-width:\s*620px/.test(q), addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} }) }
+  afterEach(() => { (window as any).matchMedia = realMM })
+
+  it('one line at the top of the card with the box’s own name; the same words on every month', () => {
+    screenIs(true)
+    render(<Box />)
+    fireEvent.click(t('box'))
+    const name = t('dcal-name')
+    expect(name.textContent).toBe('From')
+    /* the first thing in the card, above the calendar's head */
+    expect(t('dcal-card').firstElementChild).toBe(name)
+    /* the card already says its name to a screen reader ("From — pick a date"): the line is for the eye, not said twice */
+    expect(name.getAttribute('aria-hidden')).toBe('true')
+    fireEvent.click(t('dcal-next')); fireEvent.click(t('dcal-title'))
+    expect(t('dcal-name').textContent).toBe('From')
+  })
+  it('on a desktop the panel hangs under its own box and carries no such line', () => {
+    screenIs(false)
+    render(<Box />)
+    fireEvent.click(t('box'))
+    expect(q('dcal-name')).toBeNull()
+  })
+  it('a box with no name gets no empty line', () => {
+    screenIs(true)
+    render(<DateBox testid="box" label="" value="2026-11-05" onChange={() => {}} />)
+    fireEvent.click(t('box'))
+    expect(t('dcal-card')).toBeTruthy()
+    expect(q('dcal-name')).toBeNull()
+  })
+  /* A box's SPOKEN name is not always the word its screen puts over it: under "Until" the Calendar window's box is
+     called "The date it ends" aloud, and the page he approved shows the card saying "UNTIL". A form may give the card's
+     line its own word (`cardName`); what a screen reader is told — the box's name and the card's — does not change. */
+  it('a form may give the card’s line its own word; the box’s spoken name and the card’s are left as they were', () => {
+    screenIs(true)
+    render(<DateBox testid="box" label="The date it ends" cardName="Until" value="2026-11-05" onChange={() => {}} />)
+    expect(t('box').getAttribute('aria-label')).toBe('The date it ends: Thu 5 Nov 2026')
+    fireEvent.click(t('box'))
+    expect(t('dcal-name').textContent).toBe('Until')
+    expect(t('dcal-card').getAttribute('aria-label')).toBe('The date it ends — pick a date')
+    expect(t('box').getAttribute('aria-label')).toBe('The date it ends: Thu 5 Nov 2026')
+  })
+  it('the card’s own word is enough by itself: a box given one and no spoken name still gets its line', () => {
+    screenIs(true)
+    render(<DateBox testid="box" label="" cardName="Until" value="2026-11-05" onChange={() => {}} />)
+    fireEvent.click(t('box'))
+    expect(t('dcal-name').textContent).toBe('Until')
+  })
+  it('the card’s own word is a phone’s too: on a desktop there is still no line', () => {
+    screenIs(false)
+    render(<DateBox testid="box" label="The date it ends" cardName="Until" value="2026-11-05" onChange={() => {}} />)
+    fireEvent.click(t('box'))
+    expect(q('dcal-name')).toBeNull()
+  })
+  it('the line follows the screen: it goes when a phone turned on its side becomes desktop-wide, and comes back', () => {
+    screenIs(true)
+    render(<Box />)
+    fireEvent.click(t('box'))
+    expect(q('dcal-name')).toBeTruthy()
+    screenIs(false); fireEvent(window, new Event('resize'))
+    expect(q('dcal-name')).toBeNull()
+    screenIs(true); fireEvent(window, new Event('resize'))
+    expect(t('dcal-name').textContent).toBe('From')
+  })
+  it('the keyboard still opens on the picked date, and Tab still goes round the card’s own stops — the line is not one', () => {
+    screenIs(true)
+    render(<Box />)
+    fireEvent.click(t('box'))
+    expect(document.activeElement).toBe(t('dcal-day-2026-11-05'))
+    expect(t('dcal-name').tabIndex).toBe(-1)
+  })
+})
+
 describe('two boxes on one form', () => {
   it('only one calendar is up at a time, and each picks for its own box', () => {
     function Two() {

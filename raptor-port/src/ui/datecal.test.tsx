@@ -344,6 +344,286 @@ describe('a sideways finger turns the month (D800)', () => {
   })
 })
 
+/* THE DESIGN LOOK OF 13 OCT 26 (docs/handpass/2026-10-13-design-look.md; owner D830 — "L1 to L17 and K1 to K4, K7 to
+   K10, K12", none left out). What the look found missing on the calendar itself: an UPPER limit (L14 — the Tracker's
+   boxes that refuse a day after today showed tomorrow as pickable), and four keys (K1–K4). Each test below was written
+   first and failed first. The keys are pinned as a table: each key × the dates showing / the lists open / a first or
+   last date in the way / a month's edge / a year's edge. */
+describe('a last date that may be picked (L14 — `max`, the mirror of `min`)', () => {
+  it('a date after it is faint, says so, and a tap on it picks nothing', () => {
+    const onPick = vi.fn()
+    render(<DateCal value="" at="2026-11-01" max="2026-11-12" today="2026-11-03" onPick={onPick} />)
+    expect(t('dcal').getAttribute('data-max')).toBe('2026-11-12')
+    expect((day('2026-11-13') as HTMLButtonElement).disabled).toBe(true)
+    expect(has('2026-11-13', 'is-out')).toBe(true)
+    expect((day('2026-11-12') as HTMLButtonElement).disabled).toBe(false)
+    expect(has('2026-11-12', 'is-out')).toBe(false)
+    fireEvent.click(day('2026-11-13'))
+    expect(onPick).not.toHaveBeenCalled()
+    fireEvent.click(day('2026-11-12'))
+    expect(onPick).toHaveBeenCalledWith('2026-11-12')
+  })
+  it('with none told, no date is faint and nothing says there is one', () => {
+    render(<DateCal value="" at="2026-11-01" today="2026-11-03" onPick={() => {}} />)
+    expect(t('dcal').getAttribute('data-max')).toBeNull()
+    expect(t('dcal-grid').querySelector('.is-out')).toBeNull()
+  })
+  it('a first and a last date together leave only the dates between them', () => {
+    render(<DateCal value="" at="2026-11-01" min="2026-11-10" max="2026-11-12" today="2026-11-03" onPick={() => {}} />)
+    const live = [...t('dcal-grid').querySelectorAll('button')].filter(b => !b.disabled).map(b => b.getAttribute('data-iso'))
+    expect(live).toEqual(['2026-11-10', '2026-11-11', '2026-11-12'])
+  })
+  it('the arrow keys never walk past it, as they never walk before the first', () => {
+    render(<DateCal value="2026-11-12" max="2026-11-12" today="2026-11-03" onPick={() => {}} />)
+    day('2026-11-12').focus()
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowRight' })
+    expect(document.activeElement).toBe(day('2026-11-12'))
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowDown' })
+    expect(document.activeElement).toBe(day('2026-11-12'))
+    fireEvent.keyDown(document.activeElement!, { key: 'PageDown' })
+    expect(document.activeElement).toBe(day('2026-11-12')); expect(calMonth()).toBe('2026-11')
+    /* and back from it is free */
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowLeft' })
+    expect(document.activeElement).toBe(day('2026-11-11'))
+  })
+  it('the tab stop is never a date past it; a month wholly past it has no date to stop on', () => {
+    const stops = () => [...t('dcal-grid').querySelectorAll('button')].filter(b => b.tabIndex === 0).map(b => b.getAttribute('data-iso'))
+    /* today is past the last date: the stop is the first date that may be picked, not today */
+    render(<DateCal value="" at="2026-11-01" max="2026-11-02" today="2026-11-03" onPick={() => {}} />)
+    expect(stops()).toEqual(['2026-11-01'])
+    fireEvent.click(t('dcal-next'))
+    expect(stops()).toEqual([])
+  })
+  it('with nothing picked and today already past it, the calendar opens on ITS month — as it opens on a first date still to come', () => {
+    render(<DateCal value="" max="2026-08-20" today="2026-11-03" onPick={() => {}} />)
+    expect(calMonth()).toBe('2026-08')
+  })
+})
+
+describe('the keys the look found missing on the dates (K1, K2 — D830)', () => {
+  const at = (iso: string) => { day(iso).focus(); return (key: string, extra: object = {}) => fireEvent.keyDown(document.activeElement!, { key, ...extra }) }
+  const on = () => document.activeElement!.getAttribute('data-iso')
+
+  it('K1 — Home is the Monday of the week and End its Sunday (the weeks run Monday first — D797)', () => {
+    render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)
+    const key = at('2026-11-05')                                          // a Thursday
+    key('Home'); expect(on()).toBe('2026-11-02')
+    key('Home'); expect(on(), 'on the Monday already: it stays').toBe('2026-11-02')
+    key('End'); expect(on()).toBe('2026-11-08')
+    key('End'); expect(on(), 'on the Sunday already: it stays').toBe('2026-11-08')
+  })
+  it('K1 — the key is the calendar’s own: the page behind does not jump to its top or its foot', () => {
+    render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)
+    day('2026-11-05').focus()
+    /* fireEvent answers false when the key was taken */
+    expect(fireEvent.keyDown(document.activeElement!, { key: 'Home' })).toBe(false)
+    expect(fireEvent.keyDown(document.activeElement!, { key: 'End' })).toBe(false)
+  })
+  it('K1 — at a month’s edge the week’s end is in the next month, and the calendar turns to it', () => {
+    render(<DateCal value="2026-11-01" today="2026-11-03" onPick={() => {}} />)
+    /* 1 Nov 2026 is a Sunday: its week began on Monday 26 Oct */
+    at('2026-11-01')('Home')
+    expect(calMonth()).toBe('2026-10'); expect(on()).toBe('2026-10-26')
+    /* Monday 30 Nov: its week ends on Sunday 6 Dec */
+    calShow(2026, 11)
+    at('2026-11-30')('End')
+    expect(calMonth()).toBe('2026-12'); expect(on()).toBe('2026-12-06')
+  })
+  it('K1 — at a year’s edge too', () => {
+    render(<DateCal value="2027-01-01" today="2026-11-03" onPick={() => {}} />)
+    at('2027-01-01')('Home')                                              // a Friday
+    expect(calMonth()).toBe('2026-12'); expect(on()).toBe('2026-12-28')
+    at('2026-12-31')('End')                                               // a Thursday
+    expect(calMonth()).toBe('2027-01'); expect(on()).toBe('2027-01-03')
+  })
+  it('K1 — a week’s end that may not be picked is not walked onto: the keyboard stays where it is', () => {
+    const a = render(<DateCal value="2026-11-05" min="2026-11-04" today="2026-11-03" onPick={() => {}} />)
+    at('2026-11-05')('Home')
+    expect(on()).toBe('2026-11-05'); a.unmount()
+    render(<DateCal value="2026-11-05" max="2026-11-06" today="2026-11-03" onPick={() => {}} />)
+    at('2026-11-05')('End')
+    expect(on()).toBe('2026-11-05')
+  })
+
+  it('K2 — Shift + Page Down / Up is a year; Page Down / Up alone is still a month', () => {
+    render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)
+    const key = at('2026-11-05')
+    key('PageDown', { shiftKey: true }); expect(calMonth()).toBe('2027-11'); expect(on()).toBe('2027-11-05')
+    key('PageUp', { shiftKey: true }); key('PageUp', { shiftKey: true }); expect(calMonth()).toBe('2025-11'); expect(on()).toBe('2025-11-05')
+    key('PageDown'); expect(calMonth()).toBe('2025-12'); expect(on()).toBe('2025-12-05')
+    key('PageUp'); expect(calMonth()).toBe('2025-11'); expect(on()).toBe('2025-11-05')
+  })
+  it('K2 — from the 29th of February it is the 28th a year on, and a year back', () => {
+    render(<DateCal value="2028-02-29" today="2026-11-03" onPick={() => {}} />)
+    at('2028-02-29')('PageDown', { shiftKey: true })
+    expect(calMonth()).toBe('2029-02'); expect(on()).toBe('2029-02-28')
+    calShow(2028, 2)
+    at('2028-02-29')('PageUp', { shiftKey: true })
+    expect(calMonth()).toBe('2027-02'); expect(on()).toBe('2027-02-28')
+  })
+  it('K2 — from a year’s last day it is the next year’s last day, never a day into the year after', () => {
+    render(<DateCal value="2026-12-31" today="2026-11-03" onPick={() => {}} />)
+    at('2026-12-31')('PageDown', { shiftKey: true })
+    expect(on()).toBe('2027-12-31')
+    at('2027-12-31')('PageUp', { shiftKey: true })
+    expect(on()).toBe('2026-12-31')
+  })
+  it('K2 — a year on that may not be picked is not walked onto', () => {
+    const a = render(<DateCal value="2026-11-05" max="2027-06-01" today="2026-11-03" onPick={() => {}} />)
+    at('2026-11-05')('PageDown', { shiftKey: true })
+    expect(calMonth()).toBe('2026-11'); expect(on()).toBe('2026-11-05'); a.unmount()
+    render(<DateCal value="2026-11-05" min="2026-01-01" today="2026-11-03" onPick={() => {}} />)
+    at('2026-11-05')('PageUp', { shiftKey: true })
+    expect(calMonth()).toBe('2026-11'); expect(on()).toBe('2026-11-05')
+  })
+  it('K1, K2 — with the lists open those keys are not the lists’: nothing moves and the key is not taken', () => {
+    render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)
+    fireEvent.click(t('dcal-title'))
+    for (const which of ['dcal-months', 'dcal-years']) {
+      for (const [key, shiftKey] of [['Home', false], ['End', false], ['PageDown', true], ['PageUp', true]] as const) {
+        expect(fireEvent.keyDown(t(which), { key, shiftKey }), `${key} on ${which}`).toBe(true)
+      }
+    }
+    expect(t('dcal-title').textContent).toContain('November 2026')
+    expect(t('dcal-lists')).toBeTruthy()
+  })
+})
+
+describe('the keyboard’s way into and out of the month-and-year lists (K3, K4 — D830)', () => {
+  /* a click made by a key has no pointer's count (`detail` 0) — as the date box tells the two apart (ui/DateBox.tsx) */
+  const byKey = { detail: 0 }, byPointer = { detail: 1 }
+  const on = () => document.activeElement!.getAttribute('data-iso')
+
+  it('K3 — Enter on the title opens the lists with the keyboard IN the month list', () => {
+    render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)
+    t('dcal-title').focus()
+    fireEvent.click(t('dcal-title'), byKey)
+    expect(t('dcal-lists')).toBeTruthy()
+    expect(document.activeElement).toBe(t('dcal-months'))
+    /* and the arrows are at once the list's */
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowDown' })
+    expect(t('dcal-title').textContent).toContain('December 2026')
+  })
+  it('K3 — a tap or a click on the title opens the lists and takes the keyboard nowhere', () => {
+    render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)
+    t('dcal-title').focus()
+    fireEvent.click(t('dcal-title'), byPointer)
+    expect(t('dcal-lists')).toBeTruthy()
+    expect(document.activeElement).toBe(t('dcal-title'))
+  })
+  it('K3 — Enter on the title with the lists open brings the dates back, the keyboard still on the title (as built)', () => {
+    render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)
+    t('dcal-title').focus()
+    fireEvent.click(t('dcal-title'), byPointer)
+    fireEvent.click(t('dcal-title'), byKey)
+    expect(q('dcal-lists')).toBeNull(); expect(t('dcal-grid')).toBeTruthy()
+    expect(document.activeElement).toBe(t('dcal-title'))
+  })
+
+  it('K4 — Enter in the month list closes the lists onto that month’s dates, the keyboard on the 1st where nothing of it is picked', () => {
+    const onPick = vi.fn()
+    render(<DateCal value="2026-11-05" today="2026-11-03" onPick={onPick} />)
+    fireEvent.click(t('dcal-title'), byKey)
+    fireEvent.keyDown(t('dcal-months'), { key: 'ArrowDown' })
+    expect(fireEvent.keyDown(t('dcal-months'), { key: 'Enter' }), 'the key is taken').toBe(false)
+    expect(q('dcal-lists')).toBeNull()
+    expect(calMonth()).toBe('2026-12')
+    expect(on()).toBe('2026-12-01')
+    expect(onPick, 'choosing a month picks no date').not.toHaveBeenCalled()
+    /* the arrows are the dates' again */
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowRight' })
+    expect(on()).toBe('2026-12-02')
+  })
+  it('K4 — Enter in the year list does the same', () => {
+    render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)
+    fireEvent.click(t('dcal-title'), byKey)
+    fireEvent.keyDown(t('dcal-years'), { key: 'ArrowDown' })
+    fireEvent.keyDown(t('dcal-years'), { key: 'Enter' })
+    expect(q('dcal-lists')).toBeNull()
+    expect(calMonth()).toBe('2027-11'); expect(on()).toBe('2027-11-01')
+  })
+  it('K4 — the keyboard lands on the picked date where the month holds it, else on today', () => {
+    const a = render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)
+    fireEvent.click(t('dcal-title'), byKey)
+    fireEvent.keyDown(t('dcal-months'), { key: 'Enter' })
+    expect(on()).toBe('2026-11-05'); a.unmount()
+    render(<DateCal value="" at="2027-02-01" today="2026-11-03" onPick={() => {}} />)
+    fireEvent.click(t('dcal-title'), byKey)
+    fireEvent.click(calRow('months', 'November')); fireEvent.click(calRow('years', '2026'))
+    fireEvent.keyDown(t('dcal-years'), { key: 'Enter' })
+    expect(calMonth()).toBe('2026-11'); expect(on()).toBe('2026-11-03')
+  })
+  it('K4 — the months go round at the year’s edge: Enter on January, reached below December, shows that January', () => {
+    render(<DateCal value="2026-12-10" today="2026-11-03" onPick={() => {}} />)
+    fireEvent.click(t('dcal-title'), byKey)
+    fireEvent.keyDown(t('dcal-months'), { key: 'ArrowDown' })
+    fireEvent.keyDown(t('dcal-months'), { key: 'Enter' })
+    /* the year is the other list's (as built): January of the year shown */
+    expect(calMonth()).toBe('2026-01'); expect(on()).toBe('2026-01-01')
+  })
+  it('K4 — with a first date in the way the keyboard lands on the first date that may be picked', () => {
+    render(<DateCal value="" at="2026-11-01" min="2026-12-10" today="2026-11-03" onPick={() => {}} />)
+    fireEvent.click(t('dcal-title'), byKey)
+    fireEvent.click(calRow('months', 'December'))
+    fireEvent.keyDown(t('dcal-months'), { key: 'Enter' })
+    expect(calMonth()).toBe('2026-12'); expect(on()).toBe('2026-12-10')
+  })
+  it('K4 — a month with no date that may be picked: the dates come back and the keyboard is on the title, never on nothing', () => {
+    render(<DateCal value="" at="2026-11-01" max="2026-11-20" today="2026-11-03" onPick={() => {}} />)
+    fireEvent.click(t('dcal-title'), byKey)
+    fireEvent.keyDown(t('dcal-months'), { key: 'ArrowDown' })
+    fireEvent.keyDown(t('dcal-months'), { key: 'Enter' })
+    expect(calMonth()).toBe('2026-12'); expect(q('dcal-lists')).toBeNull()
+    expect(document.activeElement).toBe(t('dcal-title'))
+  })
+  it('K4 — every other key in a list is as it was: the arrows move a row, and nothing else is taken', () => {
+    render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)
+    fireEvent.click(t('dcal-title'), byKey)
+    expect(fireEvent.keyDown(t('dcal-months'), { key: ' ' })).toBe(true)
+    expect(fireEvent.keyDown(t('dcal-months'), { key: 'Tab' })).toBe(true)
+    expect(t('dcal-lists')).toBeTruthy()
+    expect(fireEvent.keyDown(t('dcal-months'), { key: 'ArrowUp' })).toBe(false)
+    expect(t('dcal-title').textContent).toContain('October 2026')
+  })
+})
+
+describe('Enter on the calendar never sends the form it is drawn in', () => {
+  /* Enter on a button is a click; a button that is not said to be a plain one SENDS its form. Every button of the
+     calendar says so — pinned here because a calendar drawn inside its form (D797) has a form around it. */
+  it('every button of it is a plain button, with the dates showing and with the lists open', () => {
+    render(<DateCal mode="run" from="2026-11-09" to="2026-11-12" today="2026-11-03" onRun={() => {}} foot="x" />)
+    const plain = () => [...t('dcal').querySelectorAll('button')].map(b => b.getAttribute('type'))
+    expect(plain().length).toBeGreaterThan(30); expect(new Set(plain())).toEqual(new Set(['button']))
+    fireEvent.click(t('dcal-title'))
+    expect(plain().length).toBeGreaterThan(1); expect(new Set(plain())).toEqual(new Set(['button']))
+  })
+  it('a date, the title, Today, an arrow and Enter in a list: none of them sends the form', () => {
+    const sent = vi.fn((e: { preventDefault: () => void }) => e.preventDefault())
+    const onPick = vi.fn()
+    render(<form onSubmit={sent}><DateCal value="2026-11-05" today="2026-11-03" onPick={onPick} /><button data-testid="send">Save</button></form>)
+    fireEvent.click(day('2026-11-19')); fireEvent.click(t('dcal-next')); fireEvent.click(t('dcal-today'))
+    fireEvent.click(t('dcal-title')); fireEvent.keyDown(t('dcal-months'), { key: 'Enter' })
+    expect(onPick).toHaveBeenCalledWith('2026-11-19')
+    expect(sent).not.toHaveBeenCalled()
+    /* the premise: this form does send when its own button is pressed */
+    fireEvent.click(t('send'))
+    expect(sent).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('the title’s words (L13 — D830)', () => {
+  it('the month, the year and the small arrow sit together inside the title, so its keyboard ring can go round the words and not the room kept beside them', () => {
+    render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)
+    const words = t('dcal-title').querySelector('.dcal-tw')!
+    expect(words, 'the title has no element round its words').toBeTruthy()
+    expect(t('dcal-title').children).toHaveLength(1)
+    expect(words.querySelector('.dcal-my')!.textContent).toBe('November 2026')
+    expect(words.querySelector('i')!.textContent).toBe('›')
+    fireEvent.click(t('dcal-title'))
+    expect(t('dcal-title').querySelector('.dcal-tw i')!.textContent).toBe('▾')
+  })
+})
+
 describe('a control tapped repeatedly does not move', () => {
   it('the test kit’s page-turner lands on any month by the arrows alone', () => {
     render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)

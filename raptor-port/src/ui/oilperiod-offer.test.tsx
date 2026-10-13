@@ -18,6 +18,7 @@ import { memoryBackend } from '../leavewar/state/storage'
 
 const SAT = 5
 let saved: any
+let said: string[] = []
 let host: HTMLDivElement
 
 beforeEach(() => {
@@ -28,7 +29,8 @@ beforeEach(() => {
   HOOKS.oilEarningDay = (di: number) => di === SAT
   HOOKS.oilDayISO = (di: number) => (di === SAT ? '2028-02-12' : '')
   HOOKS.oilNoPeriod = (di: number) => (di === SAT ? '2028' : '')
-  HOOKS.toast = () => {}
+  said = []
+  HOOKS.toast = ((m: any) => { said.push(String(m)) }) as any
   SCHED.dayOK = {}; SCHED.sign = {}
   view.DWOPEN.add(SAT)
   validate()
@@ -61,6 +63,18 @@ describe('the day offers to create the leave war period it says is missing', () 
     expect(w, 'the period exists now').toBeTruthy()
     expect(w!.period.stage, 'in draft — opening it for bidding stays his act').toBe('draft')
     expect(view.CURPAGE, 'and he is taken there to set the bidding window').toBe('leavewar')
+  })
+
+  /* the words (owner D838, 14 Oct 26 — N31, N32: a fact, then what to do; each dash became a full stop) */
+  it('it says the period is created; pressed again, that one already covers the year', () => {
+    setRole('admin')
+    draw()
+    offer()!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    expect(said).toEqual(['The 2028 leave war period is created. Set its bidding window here.'])
+    said = []
+    draw()
+    offer()!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    expect(said).toEqual(['A leave war already covers part of 2028. Open the Leave War and extend it instead.'])
   })
 
   it('THE CONTROL — a member sees the reason but is offered no button', () => {

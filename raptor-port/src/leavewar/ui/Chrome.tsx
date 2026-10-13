@@ -6,7 +6,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { biddingClosed, canReopen, evaluatePeriod, FIGURES, isBiddable, isDuty, nextStage, previousStage, stageLabel } from '../engine'
 import { CODE_GLOSSARY } from '../engine/codes'
-import { getClashes, getClashVersion, subscribeClashes, type ClashWayOut } from '../sync'
+import { getClashes, getClashVersion, openInputWindow, subscribeClashes, type ClashWayOut, type SyncClash } from '../sync'
 import {
   advanceStage,
   clearBidWindow,
@@ -18,7 +18,7 @@ import {
 } from '../state/store'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
-import { shortDate, shortSpan, spanInYear } from './dates'
+import { dayLabel, shortDate, shortSpan, spanInYear } from './dates'
 import { usePhone } from './phone'
 import { WarSheet } from './WarSheet'
 import { clearNewWarAsk, peekNewWarAsk, subscribeNewWarAsk, type WarAsk } from './warask'
@@ -35,14 +35,25 @@ const LIST_WIDTH = 244
 const LEGEND_WIDTH = 312
 /** Same, for the phone's stage menu (`.stagemenu`) — the two stage moves behind the stage button (D678). */
 const STAGE_MENU_WIDTH = 224
-/** What each clash line says after its dash — where the admin can actually undo it ([ABSENCE-SMALL-SEEN] 1,
- *  28 Sep 26; the reason for each is at `clashWayOut` in sync.ts). "Resolve on the sheet" sent him to a sheet with no
- *  control on it whenever the leave in the way was filed on the Inputs page. */
+/** What each clash tells the admin to do — where it can actually be undone ([ABSENCE-SMALL-SEEN] 1, 28 Sep 26; the reason
+ *  for each is at `clashWayOut` in sync.ts). "Resolve on the sheet" sent him to a sheet with no control on it whenever
+ *  the leave in the way was filed on the Inputs page.
+ *  THE WORDS OF RECORD (owner D827, D837 — 14 Oct 26; docs/superpowers/briefs/2026-10-13-wording-recheck.md, the second
+ *  table): each is an instruction that starts with its verb, and is the clash's own link — a tap goes where it says. */
 const WAY_OUT: Record<ClashWayOut, string> = {
-  bid: 'decide the bid on the sheet',
-  war: 'send the leave back or delete it on the sheet',
-  'war-published': 'the leave is published: step the war back to BIDDING CLOSED to change it',
-  inputs: 'change the leave on the Inputs page',
+  bid: 'Decide the bid',
+  war: 'Send the leave back or delete it',
+  'war-published': 'Step the war back to Bidding Closed',
+  inputs: 'Change the leave on Inputs',
+}
+/** What clashes, as a sentence — today's words less the name and the date, which stand beside it (D825: every key word
+ *  kept). Where the leave in the way is PUBLISHED the sentence says so: it is the reason the instruction is to step the
+ *  war back, and the old line's "the leave is published" must not be lost with its dash. */
+export function clashWhat(c: SyncClash): string {
+  const held = `${c.wayOut === 'war-published' ? 'published ' : ''}${c.bidCode}`
+  return c.kind === 'duty'
+    ? `Weekend/PH work earns ${c.inputCode}, but the day holds ${held}`
+    : `The input is ${c.inputCode}, but the bid is ${held}`
 }
 
 export function Topbar() {
@@ -221,6 +232,34 @@ export function StageBar() {
   const clashes = getClashes()
   const [picking, setPicking] = useState(false)
   const { people, period, grid, states, views, requirements, role } = getState()
+  /* THE CLASH NOTE ([LW-CLASH-NOTE-PHONE] — owner D805, D823, D827: "A+", approved as drawn on 13 Oct 26; the design of
+     record is docs/mock/design-look-13oct.html and scripts/handpass/dl-clash.mjs, modes N-closed / N-open).
+     ON A PHONE it was one amber box squeezed into what the second line's four buttons left — 100 of 390 wide, 294 tall
+     for two clashes — because that line does not wrap (D678). It is a slim line of its own under the two lines, the
+     width of the screen, that opens its list in place: one row a clash, every row the same two-line shape.
+     · ONE CLASH STARTS OPEN, MORE START CLOSED, and once he has pressed Show or Hide his choice is kept for the visit.
+     · A TAP GOES WHERE THE INSTRUCTION SAYS (`goClash`): the day opened for that person — the sheet a tap on his cell
+       opens — or, for leave filed on the Inputs page, that leave's own window there.
+     · NO INNER SCROLL: a long list pushes the grid down, and Hide is the way back.
+     A TABLET AND A DESKTOP KEEP THE STRIP WHERE AND AS IT WAS (D679) — it says each clash in the same words, and its
+     instruction is a link that goes to the same place. */
+  const [clashPick, setClashPick] = useState<boolean | null>(null)
+  const clashOpen = clashPick ?? clashes.length === 1
+  const whoOf = (id: string) => people.find(p => p.id === id)?.callsign ?? id
+  /* the day as the day's own sheets say it — "Sat 18 Jul" — with its year only where that is not the year on screen */
+  const yearHere = period.days[0]?.date.slice(0, 4)
+  const clashDay = (date: string) => `${dayLabel(date)}${date.slice(0, 4) !== yearHere ? ` ${date.slice(2, 4)}` : ''}`
+  const goClash = (c: SyncClash) => {
+    if (c.wayOut === 'inputs' && c.iid && openInputWindow(c.iid)) return
+    /* the list covers every period: put the clash's own on screen first, then ask the grid for the day and the person */
+    if (c.war && c.war !== period.id) selectWar(c.war)
+    focusDay(c.date, { open: c.person })
+  }
+  // kind AND both codes AND the index join the key (review fix, 19 Aug 26 — kind alone was not enough): two
+  // split-clashes, or a split-clash beside an ingest clash, legitimately share one person, date and kind (a full-day LL
+  // plus a PM OML against one approved bid), and a duplicate key drops one row on repaint — hiding a clash the admin
+  // must resolve. The list is re-derived whole on every pass, so the index is a safe tiebreak, not a reorder hazard.
+  const clashKey = (c: SyncClash, i: number) => `${c.kind ?? 'leave'}-${c.person}-${c.date}-${c.inputCode}-${c.bidCode}-${i}`
   const dates = period.days.map(d => d.date)
   // Duplicates the same evaluatePeriod call Matrix makes internally. Both
   // stay self-contained (no prop plumbing between them) so Matrix keeps
@@ -371,6 +410,7 @@ export function StageBar() {
   )
 
   return (
+    <>
     <div className="filters">
       {!phone && <span className="lab">Stage</span>}
       {stageMenu ? (
@@ -599,26 +639,15 @@ export function StageBar() {
           stands, and the ADMIN resolves it on the sheet — so the strip is
           admin-only, the way every other resolution control here is. It
           re-derives on every inbound pass and holds nothing of its own. */}
-      {role === 'admin' && clashes.length > 0 && (
+      {role === 'admin' && clashes.length > 0 && !phone && (
         <div className="syncclash" data-testid="sync-clashes">
           <span className="n">
             {clashes.length} clash{clashes.length === 1 ? '' : 'es'} with the schedule
           </span>
           {clashes.map((c, i) => (
-            // kind AND both codes AND the index join the key (review fix,
-            // 19 Aug 26 — kind alone was not enough): two split-clashes, or a
-            // split-clash beside an ingest clash, legitimately share one
-            // person, date and kind (a full-day LL plus a PM OML against one
-            // approved bid), and a duplicate key drops one strip row on
-            // repaint — hiding a clash the admin must resolve. The list is
-            // re-derived whole on every pass, so the index is a safe
-            // tiebreak, not a reorder hazard.
-            <span className="row" key={`${c.kind ?? 'leave'}-${c.person}-${c.date}-${c.inputCode}-${c.bidCode}-${i}`}>
-              {c.kind === 'duty'
-                ? <>{(people.find(p => p.id === c.person)?.callsign ?? c.person)}: weekend/PH work
-                    earns {c.inputCode} but {shortDate(c.date)} holds {c.bidCode} — {WAY_OUT[c.wayOut]}</>
-                : <>{(people.find(p => p.id === c.person)?.callsign ?? c.person)}: input {c.inputCode} vs
-                    bid {c.bidCode} on {shortDate(c.date)} — {WAY_OUT[c.wayOut]}</>}
+            <span className="row" key={clashKey(c, i)}>
+              <b>{whoOf(c.person)}</b> · {clashDay(c.date)} · {clashWhat(c)}.{' '}
+              <button type="button" className="clashgo" data-testid={`clash-go-${i}`} onClick={() => goClash(c)}>{WAY_OUT[c.wayOut]}{'\u00a0'}›</button>
             </span>
           ))}
         </div>
@@ -628,5 +657,45 @@ export function StageBar() {
           distinction decides where a `position: fixed` sheet actually lands. */}
       {picking && <WindowSheet onClose={() => setPicking(false)} />}
     </div>
+    {/* THE PHONE'S CLASH NOTE — after the two lines, never inside the second (above). Admin only, as the strip is. */}
+    {role === 'admin' && clashes.length > 0 && phone && (
+      <div className="clashnote" data-testid="sync-clashes">
+        <button
+          type="button"
+          className="clashline"
+          data-testid="clash-line"
+          aria-expanded={clashOpen}
+          aria-controls="lw-clash-list"
+          onClick={() => setClashPick(!clashOpen)}
+        >
+          <span className="clash-n"><span aria-hidden="true">⚠ </span>{clashes.length} clash{clashes.length === 1 ? '' : 'es'} with the schedule</span>{' '}
+          {/* its small arrow is drawn by the stylesheet, as the stage button's is — a "▾" letter comes from whatever
+              font the phone falls back to. (The space before it is for a screen reader: the button's name is its
+              words run together, and "…the scheduleHide" is not a word.) */}
+          <span className={`clash-toggle${clashOpen ? ' clash-up' : ''}`}>{clashOpen ? 'Hide' : 'Show'}</span>
+        </button>
+        {clashOpen && (
+          /* EVERY PART WEARS A NAME OF THE NOTE'S OWN (`clash-…`): the schedule's stylesheet is one global sheet and
+             already owns `.day` (a day of the week) and `.go` (a wave) — a bare `go` here made the line 46 tall
+             instead of 30 on the check's first walk, 14 Oct 26 */
+          <div className="clashlist" id="lw-clash-list" data-testid="clash-list">
+            {clashes.map((c, i) => (
+              <button type="button" className="clashrow" key={clashKey(c, i)} data-testid={`clash-row-${i}`} onClick={() => goClash(c)}>
+                <span className="clash-who">{whoOf(c.person)}</span>
+                <span className="clash-day">{clashDay(c.date)}</span>
+                <span className="clash-do">{WAY_OUT[c.wayOut]}{'\u00a0'}›</span>
+                <span className="clash-what">{clashWhat(c)}</span>
+              </button>
+            ))}
+            {/* THE NAMES' COLUMN IS AS WIDE AS THE ROSTER'S LONGEST CALLSIGN, so every day starts in the same place on
+                every visit, whoever happens to be clashing (D826 — Fable's read of the drawing). Sized by the roster
+                itself: every callsign, unseen and with no height, in the first column — in the list's own letters,
+                whatever font the phone draws them in. Never read out. */}
+            <span className="clashsizer" aria-hidden="true">{people.map(p => <i key={p.id}>{p.callsign}</i>)}</span>
+          </div>
+        )}
+      </div>
+    )}
+    </>
   )
 }

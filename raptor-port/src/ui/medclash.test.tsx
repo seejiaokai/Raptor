@@ -226,7 +226,7 @@ describe('the upload control with several files', () => {
     expect(document.querySelectorAll('.docfield .docchip').length).toBe(1)
     await click(document.querySelectorAll('.docfield .docdel')[0])
     await click($('#inpEditSave'))
-    expect(TOASTS.join(' ')).toContain('Keep at least one document')
+    expect(TOASTS.join(' ')).toContain('Keep at least one document on this entry. Add the replacement before removing the last file.')
     expect($('#inpEditSave'), 'the dialog stayed open, nothing typed is lost').toBeTruthy()
     expect(rows('OML')[0].docId, 'the record keeps its file').toBe(a)
   })

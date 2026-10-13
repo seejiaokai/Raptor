@@ -183,8 +183,10 @@ function FailLog() {
               <span className="chip failchip">{x.label}</span>
               <span className="mini">{core.ordinal(x.i + 1)} failure{core.infoFor(x.id).name ? ' · ' + core.infoFor(x.id).name : ''}</span>
               {/* picked on the app's calendar since 13 Oct 26 (D801) — a pick is the save, and the list
-                  re-sorts by day (D371) at once; before that it was typed, and saved when the box was left */}
-              <DateBox value={x.date || ''} title={x.label + ' failed on'}
+                  re-sorts by day (D371) at once; before that it was typed, and saved when the box was left.
+                  A failure's day refuses a day after today (D374 — `setFailDate`), so its calendar offers none
+                  (`noFuture` — the design look of 13 Oct 26, L14, D830; ruled into the batch on 14 Oct 26). */}
+              <DateBox value={x.date || ''} title={x.label + ' failed on'} noFuture
                 onCommit={v => core.setFailDate(s, x.id, x.i, v)} />
             </div>
           ))
@@ -333,9 +335,11 @@ export default function SidePanel({ zoom }) {
         <div className="curGrid">
           {/* the date boxes are the app's own since 13 Oct 26 (D801 — DateBox.jsx): a day picked is saved at once.
               Keyed by student and field, so a Crew switch never carries a refusal's line across. The two Last Flown
-              boxes offer "take this date off" only for a day put in by hand (D123). */}
-          <div className="field"><label>Last Flown (Syllabus)</label><DateBox key={s + ':lastSyll'} id="lastSyll" title="Last Flown (Syllabus)" clearable={!!core.dates[s].handSyll} value={core.dates[s].lastSyll || ''} onCommit={v => core.setLastSyll(s, v)} /></div>
-          <div className="field"><label>Last Flown (Currency)</label><DateBox key={s + ':lastCurr'} id="lastCurr" title="Last Flown (Currency)" clearable={!!core.dates[s].handCurr} value={core.dates[s].lastCurr || ''} onCommit={v => core.setLastCurr(s, v)} /></div>
+              boxes offer "take this date off" only for a day put in by hand (D123) — and, since the design look of
+              13 Oct 26 (L14, D830), no day after today on their calendars: they refuse one (D374), as the rows of the
+              full failures list above do. Upchit and the end dates are planned days and offer every day. */}
+          <div className="field"><label>Last Flown (Syllabus)</label><DateBox key={s + ':lastSyll'} id="lastSyll" title="Last Flown (Syllabus)" noFuture clearable={!!core.dates[s].handSyll} value={core.dates[s].lastSyll || ''} onCommit={v => core.setLastSyll(s, v)} /></div>
+          <div className="field"><label>Last Flown (Currency)</label><DateBox key={s + ':lastCurr'} id="lastCurr" title="Last Flown (Currency)" noFuture clearable={!!core.dates[s].handCurr} value={core.dates[s].lastCurr || ''} onCommit={v => core.setLastCurr(s, v)} /></div>
           <div className="field"><label>No. of Down Days</label><input type="number" min="0" id="downDays" value={core.dates[s].downDays || ''} style={{ width: 80 }} onChange={e => core.setDownDays(s, e.target.value)} /></div>
           <div className="field"><label>Upchit Date</label><DateBox key={s + ':upchit'} id="upchit" title="Upchit date" value={core.dates[s].upchit || ''} onCommit={v => core.setUpchit(s, v)} /></div>
         </div>

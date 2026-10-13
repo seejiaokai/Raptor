@@ -59,7 +59,7 @@ describe('Pile 1 whole-form medical preflight', () => {
     expect(JSON.stringify(getState().wars)).toBe(war)
     expect(HIST.stack).toHaveLength(history)
     expect(INPEDIT).toBeTruthy()
-    expect(said.join(' ')).toMatch(/locked/i)
+    expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
   })
 
   it.each([true, false])('refuses ticked protected removals before adding or editing an upchit (new=%s)', isNew => {
@@ -82,6 +82,6 @@ describe('Pile 1 whole-form medical preflight', () => {
     expect(JSON.stringify(getState().wars)).toBe(war)
     expect(HIST.stack).toHaveLength(history)
     expect(INPEDIT).toBeTruthy()
-    expect(said.join(' ')).toMatch(/locked/i)
+    expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
   })
 })

@@ -33,6 +33,7 @@ import { standsOn } from '../engine/overlay'
 import { PEOPLE, isSpecial, whoId } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
+import { LOCKED_WEEK_NOTE } from '../engine/publish'
 import { logAction, elogSweep, todayIso } from '../engine/editlog'
 import { elogReason } from '../state/changelines'
 import { stampPlaced, stampChanged } from '../state/inputstamp'
@@ -646,7 +647,7 @@ export function normalizeInputDraft(draft: any, except: any):
      freely. rowDocIds reads the draft's list and the bare docId alike. */
   if (needsDoc(draft.type) && !rowDocIds(draft).length
       && except && needsDoc(except.type) && rowDocIds(except).length) {
-    HOOKS.toast('Keep at least one document on this entry — add the replacement before removing the last file', 'warn'); return null
+    HOOKS.toast('Keep at least one document on this entry. Add the replacement before removing the last file.', 'warn'); return null
   }
   /* the medical refusals (owner, 27 Aug 26) — same-type overlap says "edit
      that entry"; an upchit has to be a single date closing something real */
@@ -878,7 +879,8 @@ function protectedInput(...rows: any[]): boolean {
   const dates = protectedDates()
   if (!dates.length) return false
   const hit = rows.some(r => r && dates.some((dt: any) => inputCoversDate(r, dt)))
-  if (hit) HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+  /* (the locked week's one sentence — engine/publish.ts LOCKED_WEEK_NOTE, owner D837: said by all four doors of this file) */
+  if (hit) HOOKS.toast(LOCKED_WEEK_NOTE, 'warn')
   return hit
 }
 /* a row-like {date,endDate,yr} built from a NORMALIZED draft, for the protection
@@ -896,7 +898,7 @@ export const medPlanProtected = (plan: any[]) => (plan || []).some((p: any) =>
   (p.row && inputProtected(p.row)) ||
   (p.tail && inputProtected({ date: ordLabel(p.tail.startOrd, p.row?.yr), endDate: p.tail.endOrd > p.tail.startOrd ? ordLabel(p.tail.endOrd, p.row?.yr) : undefined, yr: p.row?.yr })))
 
-const medicalLocked = () => HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+const medicalLocked = () => HOOKS.toast(LOCKED_WEEK_NOTE, 'warn')
 
 /* Check every kept segment and its cascade against the unchanged model. Forms
    run this before committing segment one; the sibling writer also guards itself. */
@@ -1001,7 +1003,7 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
       ? upchitTrimPlan(draft.person, dateOrd(date, row.yr), row).map((p: any) => ({ ...p, why: 'closed by the upchit' }))
       : null
   if (medPlan && medPlanProtected(medPlan)) {
-    HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+    HOOKS.toast(LOCKED_WEEK_NOTE, 'warn')
     return false
   }
   const ok = writeInputsBatch(() => {
@@ -1020,7 +1022,7 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
          ground context can only offer activity types. */
       const di = dateIx(date)
       if (di >= 0 && !isUnavail(row.type) && !acceptInput(di, row, 'g'))
-        HOOKS.toast('An identical row is already on the Ground Programme — added under Personal Inputs instead', 'warn')
+        HOOKS.toast('An identical row is already on the Ground Programme, so this one was added under Personal Inputs instead', 'warn')
     }
     /* every OTHER add puts an activity input on the programme (owner, Aug 26 — the default is "on the programme") —
        worked out after this command, from the request ([DB-READINESS] phase 6 (c) — state/holderbase.ts): the filing
@@ -1093,7 +1095,9 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
      A draft naming someone else for an input that holds several is refused — it used to be passed over in silence,
      saving nothing of it and moving the late date all the same. */
   if (idsOf(r).length > 1 && draft.person != null && draft.person !== '' && !holds(r, draft.person)) {
-    HOOKS.toast('Who is in this input is changed in its own window', 'warn')
+    /* (owner D837 + D839, 14 Oct 26 — N24: "is changed in its own window" was read as a report that something had just
+       been changed, not as the rule; this line and reassignInput's below are a pair and are worded alike) */
+    HOOKS.toast('Open this input’s own window to change who is in it', 'warn')
     return false
   }
   /* write-path role backstop (owner, 22 Aug 26): moving an input onto a
@@ -1128,7 +1132,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
       ? upchitTrimPlan(draft.person, dateOrd(date, baseYear()), r).map((p: any) => ({ ...p, why: 'closed by the upchit' }))
       : null
   if (medPlan && medPlanProtected(medPlan)) {
-    HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+    HOOKS.toast(LOCKED_WEEK_NOTE, 'warn')
     return false
   }
   /* A HAND-OVER WRITES THE REQUEST ALONE ([DB-READINESS] group A, phase 6 (a)). Until phase 6 the week stash joined this
@@ -1503,7 +1507,7 @@ export function reassignInput(iid: any, personId: any): boolean {
   /* …AND A PLACEHOLDER IS NEVER THE SOURCE EITHER ([INPUT-ALL-AVAIL]; both first-round plan readers, 9 Oct 26). An input
      filed for ALL AVAIL / ALL carries the filer's one OIL answer for everyone behind it (D711 (1)); dragging a man onto
      it would turn it into that man's own input by a gesture that asks nothing. Its own window is the one door. */
-  if (isSpecial(from)) { HOOKS.toast(`An input for ${PEOPLE[from].cs} is changed in its own window — open it to change who it is for`, 'warn'); return false }
+  if (isSpecial(from)) { HOOKS.toast(`An ${PEOPLE[from].cs} input can only be changed in its own window. Open it to change who it is for.`, 'warn'); return false }
   if (from === personId) return false           // dropped back on themselves — nothing to say
   const was = PEOPLE[from] ? PEOPLE[from].cs : String(from || '')
   /* ONE MAN OF SEVERAL REPLACED IN THE LIST (the one-rule build, step 2 (g); the plan §4.6 — "he is REPLACED in the list
@@ -2319,7 +2323,7 @@ export function InputEditor() {
     if (shown.current !== r) return
     const now = INPUTS.find((x: any) => x.iid === r.iid)
     if (!now) {
-      HOOKS.toast('That input was removed while its window was open — the window has closed', 'warn'); close(); return
+      HOOKS.toast('That input was removed while its window was open, so the window has closed', 'warn'); close(); return
     }
     if (now !== r) { keepDraft.current = true; setInpEdit(now); notify(); return }
     /* THE PEOPLE, FOLLOWED: a man added or taken off behind the window is added or taken off in it, and said once */
@@ -2542,7 +2546,7 @@ export function InputEditor() {
          to one was SAVED through it with none of them asked. A medical entry is one person's own: the others are taken
          out and saved first, and the kind is changed after — by the one-person save, which asks them all. */
       if (needsDoc(draft.type) || isUpchit(draft.type)) {
-        HOOKS.toast('A medical entry is one person’s own. Take the other people out and save first — then change its kind.', 'warn')
+        HOOKS.toast('A medical entry is one person’s own. Take the other people out and save, then change its kind.', 'warn')
         return
       }
       /* ONE QUESTION, ONE ANSWER, FOR THE INPUT (owner D762): asked of the one record against the new hours. Someone
@@ -3015,6 +3019,9 @@ export function InputEditor() {
           first, and was "Ace +2" from the moment it was saved). */}
       {oilConf && <OilConfirm who={grouped && ppl.length > 1 ? inputWho({ people: ppl.map(p => ({ p })) }) : oilConf.who} typeLabel={oilConf.typeLabel}
         plan={oilConf.plan} prev={oilConf.prev}
+        /* its right-hand button says what the form's own does — "Add" for a new input, "Save" for a change (the
+           sheet's default); the left-hand one is "Back" for both (the design look's L4, owner D830) */
+        yesLabel={isNew ? 'Add' : undefined}
         onCancel={() => { const shut = oilConf.shut; setOilConf(null); if (shut) close() }}
         onSave={dec => { setOilConf(null); doSave([], dec) }} />}
       {/* the medical-document ask (owner, [SYNC-INTEG]): "No document" resumes

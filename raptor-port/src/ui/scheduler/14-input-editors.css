@@ -160,6 +160,14 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
   font:inherit;font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:7px;cursor:pointer}
 .upconf-seg.on-keep{background:var(--accent);border-color:transparent;color:var(--accent-ink)}
 .upconf-seg.on-rem{background:var(--hard);border-color:transparent;color:#14060A}
+/* the app's ring on a choice — it wore the browser's own white one (the design look's K10, owner D830, 13 Oct 26) */
+.upconf-seg:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* A PICKED OIL ANSWER TAKES THE OUTLINE LOOK (L5, D830) — the look a picked choice has elsewhere ("No end", the Inputs
+   page's Calendar / List switch: 25-inputs-calendar.css): dark, with a cyan edge and cyan words. Filled as solid as
+   the sheet's main button, two solid cyan buttons stood in one small window and the eye no longer knew which to press.
+   The OIL question (ui/OilConfirm.tsx) and the day's one list of them (ui/OilDayList.tsx) alike, a Yes and a No alike.
+   The upchit and the medical-clash sheets keep `.on-keep` / `.on-rem` — they were not on the page he approved. */
+.upconf-seg.on-pick{border-color:var(--accent);background:var(--panel-2);color:var(--accent)}
 .upconf-need{font-size:11.5px;color:var(--ink-3)}
 /* THE CLASH SHEET'S ROWS ARE FLAT (owner, 28 Aug 26 — "remove the box around
    the buttons. It looks unclean"): no card fill, border or radius — each clash
@@ -188,7 +196,10 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
    what it adds is styled here. The day grid reuses .rangecal/.rc-* wholesale:
    applicable days light in the OIL cyan, everything else is inert. */
 .oilconf-what{font-size:12.5px;color:var(--ink);margin:0 0 10px}
-.oilconf-modes .seg{margin-left:0}
+/* THE ANSWERS SIT FLAT UNDER THE QUESTION, starting at its left edge (L1, D830). They were wrapped in the upchit
+   sheet's boxed row and in `.seg` — which is also the week strip's rule (02-shell.css), so they wore its patch and its
+   bottom line too: a box in a box in a window. A row of the sheet's own; no card, no strip. */
+.oilconf-answers{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}
 /* the medical-document ask ([SYNC-INTEG]) reuses the OIL sheet's frame; its one
    line of body copy matches the OIL "what" line. z-index above upconf so it can
    sit over the upchit/clash sheets when both a document AND an upchit are pending. */

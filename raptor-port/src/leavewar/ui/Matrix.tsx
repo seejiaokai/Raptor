@@ -1,7 +1,7 @@
 import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type RefCallback, type TouchEvent } from 'react'
 import { dayLabel, shortDate, shortSpan } from './dates'
 import { addDays, biddingClosed, canDecide, canEditCell, canEditRow, catClass, catText, codeOf, columnKindFor, displayCell, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, figureForLeave, figureLines, dayName, inBidWindow, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, defaultFocusDate, type Person, type Period, type DayInfo, type Grid } from '../engine'
-import { awardsOnDay, balanceAfterFill, clearRecordById, figureCtxOf, oilOnDay, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
+import { awardsOnDay, balanceAfterFill, clearRecordById, figureCtxOf, oilOnDay, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
@@ -2986,6 +2986,13 @@ export function Matrix() {
       if (wrap && cell && columnInView(cell.getBoundingClientRect(), wrap.getBoundingClientRect(), frozenWidth(wrap))) return
     }
     jumpTo(focusDate)
+    /* …AND OPENED FOR ONE PERSON, where the ask said so — the clash note's tap (D827; state/store.ts takeFocusOpen).
+       The very call a tap on his cell makes (`rowApi.setOpen`), so the sheet that opens — the bid's, the day's list,
+       a posting's — is the one that tap would open, decided there and not here. Taken once: a later draw opens
+       nothing. Someone no longer on the roster is jumped to and nothing more. */
+    const who = takeFocusOpen(focusDate)
+    const p = who ? people.find(x => x.id === who) : undefined
+    if (p) rowApi.current.setOpen({ id: p.id, callsign: p.callsign, date: focusDate })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focusSeq, focusDate])
 
