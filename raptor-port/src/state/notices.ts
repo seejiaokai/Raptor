@@ -42,6 +42,7 @@ export type NoticePart =
   | { k: 'cx'; why?: string }                      // cancelled, with its reason (D760)
   | { k: 'uncx' }                                  // brought back
   | { k: 'off' } | { k: 'on' }                     // taken off the programme / put back on it
+  | { k: 'unav' } | { k: 'unavoff' }               // filed under Unavailable / taken out of it (D815)
   | { k: 'when'; a?: string; b?: string; t?: string }   // what it is NOW: its day(s) where they moved, its hours where they did
   | { k: 'add'; who: string[] }                    // others put in — ids; a placeholder is one of them
   | { k: 'rem'; who: string[] }                    // others taken out
@@ -95,7 +96,12 @@ function common(b: any, a: any, him: string): NoticePart[] {
   const why = String(a.cxr || '').trim()
   if (a.cx && (!b.cx || String(b.cxr || '').trim() !== why)) out.push(why ? { k: 'cx', why } : { k: 'cx' })
   else if (b.cx && !a.cx) out.push({ k: 'uncx' })
-  if (b.acc !== 'r' && a.acc === 'r') out.push({ k: 'off' })
+  /* A FILING UNDER UNAVAILABLE IS NOT THE PROGRAMME (owner D815, 13 Oct 26). These two knew only "taken off" against
+     everything else, so an Other filed with "→ Unavail" told its man "Back on the programme", and taken out again
+     "Taken off the programme" — it was on neither. Asked FIRST; the two lines below keep their meaning. */
+  if (a.acc === 'u' && b.acc !== 'u') out.push({ k: 'unav' })
+  else if (b.acc === 'u' && a.acc === 'r') out.push({ k: 'unavoff' })
+  else if (b.acc !== 'r' && a.acc === 'r') out.push({ k: 'off' })
   else if (b.acc === 'r' && a.acc !== 'r') out.push({ k: 'on' })
   const days = firstDay(b) !== firstDay(a) || lastDay(b) !== lastDay(a)
   const time = hours(b) !== hours(a)
@@ -287,6 +293,8 @@ function partWords(p: NoticePart): string {
     case 'uncx': return 'Un-cancelled'
     case 'off': return 'Taken off the programme'
     case 'on': return 'Back on the programme'
+    case 'unav': return 'Filed under Unavailable'
+    case 'unavoff': return 'Taken out of Unavailable'
     case 'when': {
       const days = p.a ? (p.b && p.b !== p.a ? `${noticeDay(p.a)} – ${noticeDay(p.b)}` : noticeDay(p.a)) : ''
       return 'Now ' + [days, p.t || ''].filter(Boolean).join(' ')

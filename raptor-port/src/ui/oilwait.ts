@@ -22,22 +22,32 @@ import { posKey, ridWriteKey } from '../engine/rowids'
 import { notify } from '../state/store'
 import { OILWAIT, OILBAR, setOilWait, setOilBar, type OilWait, type OilWaitKind } from '../state/view'
 import { landOn } from './lift'
+import { clearToast } from './toast'
 
 /** the three kinds' words: the sheet's two buttons, and the bar */
 export const WAIT_WORDS: Record<OilWaitKind, { no: string; yes: string; not: string }> = {
   swap: { no: 'Don’t swap', yes: 'Swap', not: 'Not swapped — OIL not answered' },
   add: { no: 'Don’t add', yes: 'Add', not: 'Not added — OIL not answered' },
   move: { no: 'Don’t move', yes: 'Move', not: 'Not moved — OIL not answered' },
+  /* an input put BACK on the programme (the scheduler's Accept on its card or line — owner D793, 13 Oct 26) */
+  back: { no: 'Don’t put back', yes: 'Put back', not: 'Not put back — OIL not answered' },
+  /* an input of kind Other FILED under Unavailable (the scheduler's "→ Unavail" — owner D804, 13 Oct 26: every kind
+     that can earn is asked, wherever it is filed) */
+  file: { no: 'Don’t file', yes: 'File', not: 'Not filed — OIL not answered' },
 }
 /* the row, the seat or the men on them are no longer what the question was asked about */
 const CHANGED: Record<OilWaitKind, string> = {
   swap: 'That row has changed — not swapped',
   add: 'That row has changed — not added',
   move: 'That has changed — not moved',
+  back: 'That input has changed — not put back',
+  file: 'That input has changed — not filed',
 }
 
 /** A door holds its change: nothing is written, the question is put. */
-export function holdForOil(w: OilWait): void { setOilBar(null); setOilWait(w); notify() }
+/* (a note still on screen from the step before is taken down: on a phone on its side it lay over the question's two
+   buttons — the walk of the Inputs batch, 13 Oct 26; the question is what he is to read now) */
+export function holdForOil(w: OilWait): void { setOilBar(null); setOilWait(w); clearToast(); notify() }
 /** The gesture's own ending for the change now waiting (the landing flash, the "already busy" note, the arm put
  *  down) — set by the caller that was answered 'asked'; `pre` is read just before the write, `post` runs after it. */
 export function oilWaitThen(pre: () => any, post: (pre: any, landed: string | null) => void): void {

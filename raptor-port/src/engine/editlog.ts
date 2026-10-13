@@ -70,7 +70,8 @@ export type ELogRow = {
   wdays?: string[]    //   and before
   sub?: string        // the PERSON a Quals, Leave War or absence line is about, by his id (a rename never loses it — Astra 03)
   fld?: string        //   and which of his details (q, seat, pers, san, sxo, archived, deleted, cs, a qualification's key;
-                      //   'roster' — added to the roster; 'posting' — a posting out or in, [CHG-BY-ITEM])
+                      //   'roster' — added to the roster; 'posting' — a posting out or in, [CHG-BY-ITEM]; 'whose' — an input of one
+                      //   handed to another man, who is in `sub` (state/changelines.ts — 13 Oct 26, so History tells it on his puck))
   sect?: string       // what a line with no key is about — 'abs' (an absence, the Leave War), 'quals', 'day' — which the
                       //   changes window reads to file it under its item (ui/changesmodel.ts itemOf; Group by Where went, D345)
   key: string         // the slot key, '' for a structural note

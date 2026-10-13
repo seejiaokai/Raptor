@@ -103,6 +103,21 @@ describe('a bar moves by the days between where it was grabbed and where it is d
     m.bars[0].dispatchEvent(ptr('pointerup', 200, 10, 'touch'))
     expect([row.date, row.endDate]).toEqual(['Jul 8', 'Jul 12'])
   })
+  /* A RED CHECK RUN WITH EVERY TEST PASSED (GitHub, 13 Oct 26 — "ReferenceError: document is not defined", from this
+     file). Every drag that ends leaves a 350ms timer behind it, to retire the guard that eats the drag's own release
+     click; a test file that ends inside those 350ms has its page taken away first, and the timer then reached for a
+     page that was gone. On a real page it can never happen — but the run goes red, now and then, for nothing. */
+  it('the timer that retires a drag’s click guard does nothing once the page is gone', () => {
+    vi.useFakeTimers()
+    const row = input({ date: 'Jul 6', endDate: 'Jul 10' })
+    const m = month(row.iid)
+    drag(m.bars[0], m.day(8), m.day(10))
+    const doc = globalThis.document
+    try {
+      ;(globalThis as any).document = undefined
+      expect(() => vi.advanceTimersByTime(400)).not.toThrow()
+    } finally { (globalThis as any).document = doc }
+  })
   it('one move is one Undo step, and Undo puts it back whole', () => {
     const row = input({ date: 'Jul 6', endDate: 'Jul 10' })
     histInit()

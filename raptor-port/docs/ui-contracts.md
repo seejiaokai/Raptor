@@ -4473,12 +4473,43 @@ Three things stay decided:
   notice and one list; and a newer notice whose live days hold all of an older one's takes its place. A live holiday
   line is never one of the lines the bell cuts at thirty — the bell's tap leaves a scheduler's own question on that
   day to it.
-- **TO BE BUILT — one more door (owner D793, 13 Oct 26 — "Yes it should wait on it"):** an input taken off the
-  programme whose day has since become a holiday, put back by the scheduler's Accept, waits on its OIL question as a
-  swap does — the question first, put back only on an answer, the bar if it is left unanswered. Today the Accept asks
-  nothing (`OUTSTANDING.md` `[OIL-ACCEPT-BACK-UNASKED]`). An Undo of the take-off asks nothing, then as now.
+- **ONE MORE DOOR — an input put BACK on the programme (owner D793, 13 Oct 26 — "Yes it should wait on it"; built
+  13 Oct 26 with the Inputs batch, `ui/interactions.ts` — the `[data-acc]` handler).** A scheduler's "Accept" (and
+  "→ Ground") on a taken-off input that needs an OIL answer and has none puts the question FIRST and puts nothing back:
+  the sheet's first line "Putting Ranger's Range brief back on the programme" ("2 people's …" for a shared input, headed
+  for everyone the one answer is written for — D762), its buttons "Don't put back" / "Put back". Answered: the answer
+  and the put-back are ONE command — one Undo takes both away; on a published day the put-back then waits to go out,
+  and an issued row put back as it went out wears no mark. Not answered: nothing is put back, the Accept button flashes,
+  and the bar stays — "Not put back — OIL not answered" · Answer OIL · OK. The put-back is tried and thrown away before
+  the question, so one the save would refuse is refused in its own words and nobody is asked; a put-back refused AFTER
+  the answer throws the whole step away (the answer is never kept alone). "Answer OIL" on an input that has since been
+  put back, deleted or moved off that card's day says "That input has changed — not put back". **Nothing asks:** the
+  take-off; the app's Undo of a take-off (an Undo never asks); a working day; an input already answered (a No is an
+  answer). **"→ Unavail" WAITS TOO (owner D804, 13 Oct 26 — "For others just ask the OIL question"; it replaced D803 of the same morning):** an Other filed under Unavailable where it needs an answer is not filed until it is answered — the same sheet, headed "Filing <who>'s <input> under Unavailable", its buttons "Don’t file" / "File"; left unanswered the bar reads "Not filed — OIL not answered"; answered, the answer and the filing are one step and one Undo; changed meanwhile, "That input has changed — not filed". A note still on screen from the step before is taken down when ANY OIL question is put (on
+  a phone on its side it lay over the question's two buttons). Pins: `ui/oilwait.test.tsx` (ON9), `e2e/oilwait.spec.ts`.
+
+## The passing notes' wording — to be shortened (owner D806, 13 Oct 26)
+
+**Not yet built.** His iPhone pictures: the note after publishing a day and the one after unpublishing it each ran five lines over
+the schedule ("Monday published — APPROVED · Monday 13 Jul: the common programme has no usable times, so nobody on it earns
+OIL"; "Monday unpublished — it is a draft again; publishing reissues the Original · its OIL credits leave the Leave War until it
+is published again"). The rule for a passing note from here on: what happened, then the ONE thing he must know, the day named
+once — and no warning dropped to save words. The shorter wordings are put to him before and after, then built:
+`OUTSTANDING.md` `[NOTES-SHORTER]`. Where they are written today: `engine/publish.ts`, `state/sched-commit.ts`.
+They are put to him on ONE page with the phone's clash note (D805) and a look, by the design guide, over the designs built on the
+night of 13 Oct 26 and the ones coming — keyboard use included (owner D807): `OUTSTANDING.md` `[DESIGN-LOOK-13OCT]`.
+The same going-over of EVERY page's notes, hints, labels and small print — less clutter; a note the screen already says may be
+removed, and help still wanted may sit under one short "How it works" fold — is a job of its own, later (owner D808):
+the words half of `OUTSTANDING.md` `[UI-SLEEK-PASS]`.
+The rules such a going-over is held to — taken from three outside design skills and from his own rulings — are being gathered into
+ONE design guide of our own that loads by itself for interface work (owner D812): `OUTSTANDING.md` `[SKILL-FUSION-JAKUB]`.
+That guide is written FIRST, and the interface jobs after it are judged against it — the calendar's design included (owner D813).
 
 ## The bell's list of notices (owner D755 (3), D760, D769 — 12 Oct 26; the one-rule build's step 7)
+
+**A filing under Unavailable has its own two lines (owner D815, 13 Oct 26):** "Filed under Unavailable" when a scheduler files a
+member's input there, "Taken out of Unavailable" when it is taken out — the parts `unav` / `unavoff` (`state/notices.ts`), tested
+ahead of "Taken off the programme" / "Back on the programme", which read wrongly for both until then.
 
 *The pictures of record: `docs/mock/2026-10-12-one-rule/bell-desk-list-shorter.png`, `bell-phone-list-shorter.png`,
 `bell-desk-empty.png`. Built: `ui/topbits.tsx` (`bellTap`, `BellList`, `openNotice`), `state/notices.ts`,
@@ -4886,6 +4917,7 @@ width, so its dot sits at the column's far right, not after the words — always
 there either). The bubble now also answers the board's wave-title box (`data-wsel` → `wl:`, a jump lands on it) and an
 input's own row (`iu:<iid>` — the input's lines touching that row's day). This supersedes "no new per-cell markup" below:
 the dot is an attribute and a paint, no node, set only while History is on.
+**A seat of a Ground Programme row that came from an input also answers for the input's lines about the man standing on it** (`[HIST-DOT-INPUT-ROW]`, 13 Oct 26 — `histbubble.ts seatInputLines`): the line that put him in (marked `one`) or handed the input to him (`fld: 'whose'`) dots his puck and is told in its bubble; a man who was simply filed with the input wears none; what happened to the input as a whole stays on the input's own row and in the changes window. Pin: `ui/reqdoor.test.tsx`.
 
 **28 Sep 26 (`[DRAFT-PENDING]` — D116, D168):** History mode IS the one changes window open — the board's `#sbHist`
 opens and closes the window on the board's day, the bubbles with it; the admin's top-bar icon and a day's chip open it
@@ -9026,6 +9058,10 @@ the month strip, the window engine, the frozen-names mechanics, the quick-flick
 swipe, and everything a member sees.
 
 ## Logic search and controls
+
+**TO BE RE-LAID — not yet built (owner D809, 13 Oct 26):** everything that can be edited gathered at the top of the page, everything
+that only explains a rule below it, each part arranged into its types; a picture first — `OUTSTANDING.md` `[LOGIC-PAGE-LAYOUT]`.
+The search and the controls kept in sight (below) must go on working over both parts.
 
 **D561/D563, 4 Oct 26 — built on codex/workflow-ui, owner look and remaining reads pending:** keep the search box in view while scrolling,
 alongside the controls already kept visible: All, Warnings, Advisories, Notes, Fired this week, Edit rules

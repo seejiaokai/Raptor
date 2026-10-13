@@ -820,6 +820,8 @@ function onPointerUp(e: PointerEvent) {
        belongs to the drag that installed it. */
     const eat = (ev: Event) => { ev.stopPropagation(); ev.preventDefault() }
     const dropEat = () => {
+      /* the 350ms timer below can outlive the page in a test run (a file that ends inside it) — ui/caldrag.ts's twin */
+      if (typeof document === 'undefined') return
       document.removeEventListener('click', eat, { capture: true } as any)
       document.removeEventListener('pointerdown', dropEat, { capture: true } as any)
     }

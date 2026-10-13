@@ -32,7 +32,7 @@ import { globalRedo, globalUndo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import { installGlobalUndo } from '../state/undo-wire'
 import { setPage } from '../state/view'
-import { commitInput, draftOf } from '../ui/inputedit'
+import { commitInput, draftOf, oilAnswered, oilGate, oilSignDay, oilUnansweredDay } from '../ui/inputedit'
 import { saveOilDay } from '../ui/oilday'
 import * as pops from '../ui/pops'
 import { bellOn, bellTap, openNotice } from '../ui/topbits'
@@ -43,7 +43,7 @@ import {
   setDayEvent, setPeople, setRole, updateEventType,
 } from './state/store'
 import { memoryBackend } from './state/storage'
-import { holidaysIn, oilOpenOn, wireLeaveWarSync } from './sync'
+import { holidaysIn, oilOpenOn, oilPendingFor, wireLeaveWarSync } from './sync'
 
 const toast = HOOKS.toast
 const ISNAP = JSON.stringify(INPUTS)
@@ -105,6 +105,60 @@ describe('what the list holds — every input of the day that needs an OIL answe
     const now = oilOpenOn(FRI, FRI).map(o => o.iid)
     expect(now).toContain(m.range)
     expect(now).not.toContain(m.board); expect(now).not.toContain(m.gate); expect(now).not.toContain(leave)
+  })
+  /* A CANCELLED INPUT IS NEVER ASKED, AND AN INFORMATION-ONLY ONE NEITHER (owner D814, 13 Oct 26 — "Canceled input
+     doesn't need to ask OIL"): it can earn nothing (D760), so it stands in no list, wears no "OIL?" sign, lights no
+     bell and no door prices a question for it. All worked out live: the mark off, every one of them is back. */
+  it('(D814) a cancelled input and an information-only one are not listed, wear no "OIL?" sign, light no bell and are priced no question — the mark off again, all four are back', () => {
+    const m = three()
+    expect(holidayAdd(ph(FRI)).ok).toBe(true)
+    const listed = () => oilOpenOn(FRI, FRI).map(o => o.iid)
+    const bell = (pid: string) => oilPendingFor(pid).map(x => x.iid)
+    const asks = (iid: string) => oilGate(draftOf(rec(iid)), rec(iid)).kind
+    for (const iid of [m.gate, m.board]) {
+      expect(listed(), 'the premise: listed').toContain(iid)
+      expect(oilUnansweredDay(rec(iid)), 'the premise: an unanswered day').toBe(FRI)
+      expect(oilSignDay(rec(iid)), 'the premise: the "OIL?" sign for a scheduler').toBe(FRI)
+      expect(asks(iid), 'the premise: a door would ask').toBe('ask')
+    }
+    expect(bell('harpoon'), 'the premise: his own input lights his bell').toContain(m.gate)
+    rec(m.gate).cx = true; rec(m.board).info = true
+    expect(listed(), 'the one that is neither stays').toContain(m.range)
+    for (const iid of [m.gate, m.board]) {
+      expect(listed(), 'not in the one list').not.toContain(iid)
+      expect(oilUnansweredDay(rec(iid)), 'no unanswered day').toBe('')
+      expect(oilSignDay(rec(iid)), 'no "OIL?" sign').toBe('')
+      expect(asks(iid), 'no door asks').toBe('none')
+    }
+    expect(bell('harpoon'), 'no bell').not.toContain(m.gate)
+    delete rec(m.gate).cx; delete rec(m.board).info
+    for (const iid of [m.gate, m.board]) {
+      expect(listed(), 'the mark off: listed again').toContain(iid)
+      expect(oilSignDay(rec(iid)), 'and its sign').toBe(FRI)
+      expect(asks(iid), 'and a door asks').toBe('ask')
+    }
+    expect(bell('harpoon')).toContain(m.gate)
+  })
+  it('(D814) an answer given before the input was cancelled stays on the record, and the "change my answer" button goes with the mark', () => {
+    const m = three()
+    expect(holidayAdd(ph(FRI)).ok).toBe(true)
+    rec(m.gate).oil = { [FRI]: 1 }
+    expect(oilAnswered(rec(m.gate)), 'the premise: an answer to change').toBe(true)
+    rec(m.gate).cx = true
+    expect(rec(m.gate).oil, 'the answer is kept').toEqual({ [FRI]: 1 })
+    expect(oilAnswered(rec(m.gate)), 'nothing to revise while it is cancelled').toBe(false)
+    expect(oilGate(draftOf(rec(m.gate)), rec(m.gate), true).kind, 'and the revise door prices nothing').toBe('none')
+  })
+  /* (the narrow read of D814's fix, 13 Oct 26 — no test held it) */
+  it('(D814) a day made a holiday when every unanswered input on it is cancelled or information-only tells nobody and opens no list', () => {
+    const m = three()
+    /* EVERY input in the world (the demo week has its own on that Friday), half by each mark */
+    ;(INPUTS as any[]).forEach((r, i) => { if (i % 2) r.cx = true; else r.info = true })
+    expect(rec(m.range).cx || rec(m.range).info, 'the premise: the three are marked too').toBe(true)
+    expect(holidayAdd(ph(FRI)).ok).toBe(true)
+    expect(oilOpenOn(FRI, FRI), 'nothing is listed').toEqual([])
+    expect(hol('nact'), 'no scheduler is told').toHaveLength(0)
+    expect(pops.OILLIST, 'and no list opens').toBeNull()
   })
   it('an input that runs past the holiday lists only its days IN the run — and says the day it runs till', () => {
     const long = file('Det prep', 'Duty', ['pike'], { endDate: 'Jul 18', allday: true })

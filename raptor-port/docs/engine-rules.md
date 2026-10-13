@@ -2420,6 +2420,21 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   - **A replacement voids the answer** — it was the first man's own — and the question is asked again (the door).
   - **A cancelled or information-only input earns nobody OIL** — `landedStanding` asks the input's own marks first,
     for every day it covers, and still falls back to the row for the rest (a row issued before the build).
+    **And it is never ASKED (owner D814, 13 Oct 26 — "Canceled input doesn't need to ask OIL"; information-only the
+    same, the agent's reading):** `inputs.ts oilNeverEarns` (the input's own `cx` / `info`) makes `oilGate` answer
+    "nothing to ask" at every door, and `oilSilent` (that, or taken off the programme) is the ONE test the "OIL?" tag,
+    the day's one list and the bell's scan leave an input out by. An answer already given stays on the record; the
+    mark taken off, the input needs its answer again: its sign, its place in the list and its own man's bell come back
+    by themselves — but taking the mark off asks nothing itself, and the schedulers' holiday line (a stored notice) does
+    not come back for it. **RULED, not yet built (owner D816, 13 Oct 26):** taking the mark off an input that has no
+    answer for a non-working day puts the OIL question first, as "Accept" does — `OUTSTANDING.md` `[OIL-UNCANCEL-UNASKED]`.
+  - **Leave and medical inputs never earn OIL and are never asked; every other kind that can earn is asked, and its
+    answer decides — wherever it is filed** (owner D804, 13 Oct 26 — "As long as leave and medical they don't earn
+    oil. For others just ask the OIL question, it may or may not credit OIL" — it replaced D803 of the same morning; `inputs.ts oilAsks` is the list of kinds
+    that ask). So an input of kind Other FILED under Unavailable ("→ Unavail") keeps its question, its "OIL?" tag and
+    its place in the one list and the bell's line, and earns on its Yes only (`landedStanding` reads it as never
+    landed, which credits the man's own answer — as it always did); and the button itself puts the question first,
+    as "Accept" does (`ui-contracts.md`, the put-back). An overseas duty asks and earns as before.
   - **OIL Earn's reasons:** a man's own one-person input keeps his words; an input of several, and the men behind
     ALL AVAIL, say whoever filed it.
   - **A day issued before the build keeps the OIL it went out with** (D48, D142): its frozen block is read by the

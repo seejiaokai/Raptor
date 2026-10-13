@@ -404,7 +404,8 @@ export function setSecDefOffer(v: number | null){ SECDEFOFFER = v; if(v!=null) s
    HERE, beside SECDEFOFFER and for its reason: both name rows of the week on screen, so a week, a page or a sign-in
    that changes under them must take them away — and state/ cannot reach into ui/. They name rows by their IDS, never
    their places (the page behind the bar works — D641 — so a row may have moved or gone before "Answer OIL").
-     kind    which words: swap / add / move (ui/oilwait.ts WAIT_WORDS);
+     kind    which words: swap / add / move / back (a put-back, D793) / file (a filing under Unavailable, D804) —
+             ui/oilwait.ts WAIT_WORDS;
      lead    the sheet's own first line — "Swapping Tally and Ranger";
      gate    the question itself (ui/inputedit.tsx oilGate's 'ask');
      redo    the door's own call WITH the answer: the change and the answer in ONE command; 'done' | 'refused' | 'none'
@@ -413,7 +414,7 @@ export function setSecDefOffer(v: number | null){ SECDEFOFFER = v; if(v!=null) s
      places  what flashes when it is not answered (row-id keys; `sel:` + a selector for a place that is not a seat);
      pre/post the CALLER's own ending for the gesture, run round the write when the answer comes — the landing flash,
              the "already busy" note, the arm put down (the drag, the armed tap); `landed` is where he stands then. */
-export type OilWaitKind = 'swap' | 'add' | 'move'
+export type OilWaitKind = 'swap' | 'add' | 'move' | 'back' | 'file'
 export interface OilWait {
   kind: OilWaitKind
   lead: string
