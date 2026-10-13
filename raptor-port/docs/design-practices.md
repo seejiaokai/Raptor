@@ -40,7 +40,11 @@ when that one is live.)*
    - **the screens are not wordy** (D726), and a note the screen already says may go (D808) — **but nothing already on
      screen is reworded or removed on this guide's word alone: each change is put to him before and after** (D726, D808);
    - **never at a cost of speed** (D765; `performance.md` Part 1) — an effect that costs a frame on his phone is not taken;
-   - **a visual change is a picture to him first** (D541), on the real app at his phone's size and a desktop's.
+   - **a visual change is a picture to him first** (D541), on the real app at his phone's size and a desktop's — **and
+     whatever is put to him about a design or interface change, a question, a suggestion, a finding or a recommendation
+     to delete, comes with a picture or mock-up in which the area talked about is marked, never words alone** (D853,
+     14 Oct 26 — "Always show me a picture or mock up highlighting the area u are talking about"): the area outlined and
+     enlarged where it is small; before beside after where a change is proposed.
 2. **The measured contracts** — `ui-contracts.md`, the stylesheets ("measured contracts, not preferences") and the
    product invariants of `raptor-port/CLAUDE.md` (pucks never wrap; sim notes stay one line; the login page stays simple).
 3. **This guide.**
