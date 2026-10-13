@@ -21,6 +21,16 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/faster-checks -->
+### `claude/faster-checks` — THE CHECKS ON GITHUB SPLIT SO A PULL REQUEST WAITS ABOUT HALF AS LONG (D822); IN A PULL REQUEST, WAITING FOR ITS OWN CHECKS AND HIS "MERGE LIVE" — written 13 Oct 26 — verify before use
+- **Why:** nine merges on 13 Oct 26 took about three hours — `unit (raptor)` ran 17 to 19 minutes on one free machine and every merge waited on it. His word: "Yes speed up the checks".
+- **Shipped on this branch:** `.github/workflows/deploy.yml` — the raptor unit tests as FOUR shards, the raptor browser tests as TWO, and `.impeccable/**` skipped like the documents. Proved here first: one quarter of the unit tests is 119 of 473 files (63 seconds on his PC); the two browser halves list 223 + 223 = 446 tests, the whole. The first run with that split (pull request 504): raptor unit 5 to 8 minutes, raptor browser 6 and 7 — and the Leave War's heavier unit half 15m28s, so the Leave War's unit tests are FOUR shards too. A pull request now shows SEVENTEEN passing checks, not eleven. Records: D822; three used-up one-off permissions archived (D752, D779, D784); `raptor-port/docs/gates-and-deploy.md`.
+- **Unfinished:** its own run on GitHub (the first with the new split — read the times: the slowest leg should be about 7 to 9 minutes) and his "merge live". **Not built, filed:** `[MERGE-ONCE-RECORDS]` — merging finished jobs as one pull request, and making the record files merge without clashing.
+- **Branch:** `claude/faster-checks`, cut from `main`, in the checkout `.claude/worktrees/one-date-calendar-step-one-55ba13`.
+- **Gates:** no app code changes; the document check green; the split proved as above.
+- **Pick up here:** `gh pr list --head claude/faster-checks`; then the block of `claude/design-guide` below (the design page is next — D813).
+<!-- /now -->
+
 <!-- now:claude/design-guide -->
 ### `claude/design-guide` — THE NIGHT'S FIVE PULL REQUESTS ARE ALL LIVE (13 Oct 26); THE ONE DESIGN GUIDE (D812, D813) IS APPROVED (D819) AND MERGED FROM THIS BRANCH, PULL REQUEST 500 — documents only — written 13 Oct 26 — verify before use
 - **Where it started:** the night of 13 Oct 26 (D799 — one chat, five jobs) and the day after it, in the same chat. **All five merged on his word that afternoon** ("merge live 499 and merge live 495"; then D817, "auto merge the rest one after another"): 499 the Leave War's row drawing in its own file · 495 step one of the one date calendar · 496 the Tracker's date boxes · 498 the Inputs pages' rulings file · 497 the Inputs batch (D793) with the day's additions — D804 ("→ Unavail" puts the OIL question first), D814 (a cancelled or information-only input is never asked), D815 (the member's bell: "Filed under Unavailable" / "Taken out of Unavailable"). Their checks: the evidence sheets under `raptor-port/docs/handpass/2026-10-13-*.md`.

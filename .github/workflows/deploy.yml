@@ -25,6 +25,18 @@
 # file list by a hash of each path — a fixed split, not duration-aware; the
 # two halves carry ~595 s / ~433 s of the serial run's per-file times, the
 # heavy files 5/4). Expected critical path after the shard: ~5 min.
+#
+# SPLIT AGAIN ON 13 Oct 26 (owner D822 - "Yes speed up the checks"). The app had
+# grown and nobody had re-split: `unit (raptor)` alone ran 17 to 19 minutes on
+# its one runner (473 files, 8,129 tests; it was 4m38s above), and nine merges
+# in one afternoon each waited on it - about three hours. The raptor unit leg
+# is now FOUR shards and the raptor browser leg (9 to 10 minutes) TWO, each on
+# its own free runner. MEASURED on the first run with that split (pull
+# request 504): raptor unit 4m49s to 7m54s, raptor browser 6m02s / 7m24s - and
+# the Leave War's heavier unit half 15m28s (4 to 8 minutes earlier that day),
+# the slowest leg by seven minutes. So the Leave War unit leg is FOUR shards
+# too. A pull request now shows SEVENTEEN passing checks, not eleven.
+# No larger runner is used: they are billed by the minute even on a public repo.
 name: Deploy to GitHub Pages
 
 # Docs-only changes skip the whole workflow (15 Aug 26): nothing under these
@@ -37,12 +49,15 @@ name: Deploy to GitHub Pages
 # them — without this, every edit to the guard would bill a full gate run.
 # `.gitattributes` is NOT skipped any more (Fable CI-PATHS-001, 23 Sep 26): it decides the bytes every
 # job checks out — line endings broke the PC runner's first trial — so a change to it runs the gates.
+# `.impeccable/**` IS skipped (13 Oct 26, D822): the design skill's own settings and its saved looks - nothing in
+# src/ imports them - so a change of documents and that folder runs the Docs guard alone, not a full gate run.
 on:
   push:
     branches: [main]
     paths-ignore:
       - '**.md'
       - '.claude/**'
+      - '.impeccable/**'
       - 'raptor-port/scripts/docsize*.mjs'
       - 'raptor-port/scripts/backlog-archive.mjs'
       - '.github/workflows/docs-guard.yml'
@@ -51,6 +66,7 @@ on:
     paths-ignore:
       - '**.md'
       - '.claude/**'
+      - '.impeccable/**'
       - 'raptor-port/scripts/docsize*.mjs'
       - 'raptor-port/scripts/backlog-archive.mjs'
       - '.github/workflows/docs-guard.yml'
@@ -244,11 +260,25 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # four shards since 13 Oct 26 (D822): one runner took 17 to 19 minutes for 473 files
           - project: raptor
+            shard: 1/4
+          - project: raptor
+            shard: 2/4
+          - project: raptor
+            shard: 3/4
+          - project: raptor
+            shard: 4/4
+          # the Leave War in four too (13 Oct 26, the first run with the split above): its heavier half took 15m28s on that
+          # run - 4 to 8 minutes on the day's earlier ones - and was the slowest leg by seven minutes
           - project: leavewar
-            shard: 1/2
+            shard: 1/4
           - project: leavewar
-            shard: 2/2
+            shard: 2/4
+          - project: leavewar
+            shard: 3/4
+          - project: leavewar
+            shard: 4/4
     steps:
       - uses: actions/checkout@v4
         with:
@@ -276,7 +306,7 @@ jobs:
   # serves the port itself (playwright.config.ts webServer) and keeps the
   # 3-worker / one-retry CI settings from 15 Aug 26.
   geometry:
-    name: geometry (${{ matrix.project }})
+    name: geometry (${{ matrix.project }}${{ matrix.shard && format(' {0}', matrix.shard) || '' }})
     if: >-
       vars.CI_ON_GITHUB == 'true'
       || !github.event.repository.private
@@ -286,7 +316,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [raptor, lw-phone, lw-desktop]
+        include:
+          # two shards since 13 Oct 26 (D822): the raptor project alone ran 9 to 10 minutes
+          - project: raptor
+            shard: 1/2
+          - project: raptor
+            shard: 2/2
+          - project: lw-phone
+          - project: lw-desktop
     steps:
       - uses: actions/checkout@v4
         with:
@@ -309,7 +346,7 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Geometry
         working-directory: raptor-port
-        run: npx playwright test --project=${{ matrix.project }}
+        run: npx playwright test --project=${{ matrix.project }} ${{ matrix.shard && format('--shard={0}', matrix.shard) || '' }}
 
   # The vendored OCU Progress Tracker's own browser suite (7 Sep 26, the
   # Tracker merge) — 345 checks from the standalone repo, driven through
