@@ -429,7 +429,7 @@ or `null` where the app did (a posting run on its date, a delete); `at` when (ms
 was called then (its title, else its kind) and `day` its first day then (yyyy-mm-dd) — kept on the notice because the
 input may since have been renamed, moved or deleted; `what` what happened, as a list of parts (data, never a
 sentence): `{k:'in'}` he was put in · `{k:'out'}` he was taken out · `{k:'del'}` deleted · `{k:'cx', why?}` cancelled ·
-`{k:'uncx'}` brought back · `{k:'off'}` / `{k:'on'}` taken off the programme / put back · `{k:'when', a?, b?, t?}` its
+`{k:'uncx'}` brought back · `{k:'off'}` / `{k:'on'}` taken off the programme / put back · `{k:'unav'}` / `{k:'unavoff'}` filed under Unavailable / taken out of it (D815) · `{k:'when', a?, b?, t?}` its
 day(s) and hours as they are now · `{k:'add', who}` / `{k:'rem', who}` others (ids, a placeholder among them) put in or
 taken out · `{k:'title', was}` renamed · `{k:'rmk'}` its remark changed.
 *(13 Oct 26, `[OIL-ASK-NOTIFY]`: a second kind rides the same record — a day made a holiday, `iid` empty and `what` =

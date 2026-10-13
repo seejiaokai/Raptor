@@ -271,11 +271,11 @@ it; no high or medium finding.**
 | Comments that still name three kinds; `landedStanding`'s "a kind that never lands" | both | two corrected; the test's and the spec's `describe` titles still say "put BACK" for the filing's tests, and the gate's `dest === 'g' or 'u'` is always true where it stands — left, filed with `[ONE-RULE-LEFTOVERS]`'s kind of tidiness, not fixed |
 
 **D814's change gets a narrow read of its own** (a fix is new code — the order's §5): one fresh Opus reader, the commit
-and the finding it answers. {{NARROW}}
+and the finding it answers. **Done** — `docs/handpass/parts/ib/read-d814-opus.md` (404,886 tokens): each of the six edits right; all thirteen callers of the gate hand it the saved record; 27 other readers of "needs an answer" — 17 agree, 9 do not apply, none still asks; a published day's count, sign-offs and credit do not move. **One finding, MEDIUM, and it is the other side of the fix, not a fault in it:** now that a cancelled input is quiet everywhere, taking the CX (or ⓘ) OFF is the moment its question re-opens — and that door asks nothing: the input stands live and unanswered with only its "OIL?" sign and its own man's bell, and where the day was made a holiday while it was cancelled, no scheduler's bell line covers it. **His to rule — FILED: `[OIL-UNCANCEL-UNASKED]`.** D814's reading (3) ("the three signs come back by themselves") is corrected in the ruling's row and in `engine-rules.md`: the sign, the day's list and the member's bell do; the SCHEDULERS' holiday line is a stored notice and does not. Two low notes on the tests: one of the six edits (a repaint signature) is held by no test — left, it changes no answer; and SIX of the D814 tests fail without the fix, not seven ("the mark taken off again" is a guard) — the commit's count is one high. One pin added on the reader's list: a holiday declared on a day whose only unanswered input is cancelled tells nobody.
 
 **The gates:** on D804's change (`cf0d9061f` and the records after it) — the whole set in one run under the PC's lock:
 unit 10922 / 10922 (624 files) · build clean · tfin 728 / 0 · e2e 781 passed, 0 failed, 57 skipped · smoke 445 / 0 ·
-rulecheck OK · docsize OK. On D814's: {{GATES2}}
+rulecheck OK · docsize OK. On D814's: the whole set in one run under the lock on `8cf82d7ab` — unit 10931 / 10931 (624 files) · build clean · tfin 728 / 0 · e2e 781 passed, 0 failed, 57 skipped · smoke 445 / 0 · rulecheck OK · docsize OK. **And after D815** (below): the whole set once more — see the handoff's gate line.
 
 **His look, added to §13's card:** 7. An input of kind Other, taken off the programme on a holiday → **→ Unavail**:
 the question comes first ("Don't file" / "File"); left, the bar reads "Not filed — OIL not answered". 8. Cancel an
@@ -284,3 +284,11 @@ input on the board (CX), take it off, **Accept**: it goes back at once — no qu
 **Told, not asked:** the filing's three phrases ("Don't file", "File", "Not filed — OIL not answered") and "That input
 has changed — not filed"; an information-only input is treated as a cancelled one for the question; an answer given
 before an input was cancelled stays on the record and counts again if the mark comes off.
+
+**Added on his word the same afternoon — D815 ("Yes in 497"): the member's bell for a filing under Unavailable.** The
+fault the Opus read of D804 found (the table above): Ranger's Other filed with "→ Unavail" told him "Back on the
+programme", and taken out again "Taken off the programme". His two approved sentences: **"Filed under Unavailable"**,
+**"Taken out of Unavailable"** (`src/state/notices.ts` — two new parts, asked before the two that were there;
+`src/engine/schema.ts` and `docs/data-schema.md` name them). Test first (`ui/bellnotices.test.tsx`, "(D815)" — it
+failed on "Back on the programme"): the take-off, the filing, the take-out and a put-back, each read off Ranger's bell;
+the two lines that were right stay as they were. Words in a list only — no look beyond the unit test; break 37.

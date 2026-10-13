@@ -149,6 +149,17 @@ describe('what the list holds — every input of the day that needs an OIL answe
     expect(oilAnswered(rec(m.gate)), 'nothing to revise while it is cancelled').toBe(false)
     expect(oilGate(draftOf(rec(m.gate)), rec(m.gate), true).kind, 'and the revise door prices nothing').toBe('none')
   })
+  /* (the narrow read of D814's fix, 13 Oct 26 — no test held it) */
+  it('(D814) a day made a holiday when every unanswered input on it is cancelled or information-only tells nobody and opens no list', () => {
+    const m = three()
+    /* EVERY input in the world (the demo week has its own on that Friday), half by each mark */
+    ;(INPUTS as any[]).forEach((r, i) => { if (i % 2) r.cx = true; else r.info = true })
+    expect(rec(m.range).cx || rec(m.range).info, 'the premise: the three are marked too').toBe(true)
+    expect(holidayAdd(ph(FRI)).ok).toBe(true)
+    expect(oilOpenOn(FRI, FRI), 'nothing is listed').toEqual([])
+    expect(hol('nact'), 'no scheduler is told').toHaveLength(0)
+    expect(pops.OILLIST, 'and no list opens').toBeNull()
+  })
   it('an input that runs past the holiday lists only its days IN the run — and says the day it runs till', () => {
     const long = file('Det prep', 'Duty', ['pike'], { endDate: 'Jul 18', allday: true })
     /* filed across the Friday and the Saturday: the Saturday asked at once — answered here as its window would */

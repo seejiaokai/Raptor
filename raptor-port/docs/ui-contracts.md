@@ -4507,6 +4507,10 @@ That guide is written FIRST, and the interface jobs after it are judged against 
 
 ## The bell's list of notices (owner D755 (3), D760, D769 — 12 Oct 26; the one-rule build's step 7)
 
+**A filing under Unavailable has its own two lines (owner D815, 13 Oct 26):** "Filed under Unavailable" when a scheduler files a
+member's input there, "Taken out of Unavailable" when it is taken out — the parts `unav` / `unavoff` (`state/notices.ts`), tested
+ahead of "Taken off the programme" / "Back on the programme", which read wrongly for both until then.
+
 *The pictures of record: `docs/mock/2026-10-12-one-rule/bell-desk-list-shorter.png`, `bell-phone-list-shorter.png`,
 `bell-desk-empty.png`. Built: `ui/topbits.tsx` (`bellTap`, `BellList`, `openNotice`), `state/notices.ts`,
 `state/noticeseen.ts`, `scheduler/02-shell.css` (`.bell-list`, `.bl-*`). Pins: `ui/bellnotices.test.tsx`.*

@@ -51,6 +51,7 @@ import { useVersion } from './useStore'
 import { NOTICES, noticesFor, noticeWords, noticeAge } from '../state/notices'
 import { isUnread, unreadFor, markNoticeRead, markAllNoticesRead } from '../state/noticeseen'
 import { bellOn, bellTap, bellListOpen, closeBellList, BellButton, BellList } from './topbits'
+import { routeClick } from './interactions'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 const ISNAP = JSON.stringify(INPUTS)
@@ -223,6 +224,39 @@ describe('who is told, and in what words (D755 (3), D760, D769 — the plan §4.
     const u = globalUndo()
     expect(u.ok, 'the scheduler\'s own Undo puts it back — ' + String((u as any).reason || '')).toBe(true)
     expect(told(RANGER), 'an Undo takes the notice away with the change — nobody is told "it was undone" (R11)').toEqual([`${TITLE} · Wed 15 Jul — You were added · ${cs(SABER)}`])
+  })
+  /* A FILING UNDER UNAVAILABLE HAS ITS OWN TWO LINES (owner D815, 13 Oct 26 — "Yes in 497"; found by the Opus read of the
+     Unavailable button's change). The bell knew only "taken off" against everything else: an Other taken off the
+     programme and then filed with "→ Unavail" told its man "Back on the programme" — it is not — and taken out again,
+     "Taken off the programme" — it was never on it. The button is pressed as the page presses it, through the click
+     router; Wednesday is a working day, so no OIL question stands in the way. */
+  it('(D815) filed under Unavailable by "→ Unavail", then taken out again: the bell says so in those words — never "Back on the programme"', async () => {
+    await boot()
+    const acc = (dest: 'u' | 'x' | 'g') => {
+      const b = document.createElement('button')
+      b.dataset.acc = dest; b.dataset.accd = String(WED); b.dataset.acck = String(inpId(rec()))
+      document.body.appendChild(b)
+      try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+    }
+    file([RANGER], WED, { type: 'Other' }); tick()
+    setBoardDay(WED); press({ grdel: `${WED}.${riOf()}` })
+    expect(rec().acc, 'the premise: taken off the programme').toBe('r')
+    expect(told(RANGER)[0]).toBe(`${TITLE} · Wed 15 Jul — Taken off the programme · ${cs(SABER)}`)
+    tick()
+    acc('u')
+    expect(rec().acc, 'filed under Unavailable').toBe('u')
+    expect(told(RANGER)[0]).toBe(`${TITLE} · Wed 15 Jul — Filed under Unavailable · ${cs(SABER)}`)
+    tick()
+    acc('x')
+    expect(rec().acc, 'taken out of Unavailable').toBe('r')
+    expect(told(RANGER)[0]).toBe(`${TITLE} · Wed 15 Jul — Taken out of Unavailable · ${cs(SABER)}`)
+    expect(told(RANGER).filter(l => /Back on the programme/.test(l)), 'never "Back on the programme" for a filing').toEqual([])
+    expect(told(RANGER).filter(l => /Taken off the programme/.test(l)), 'and "Taken off the programme" once only — the real take-off').toHaveLength(1)
+    /* …and the two lines that were right stay as they were: put back on the programme from "taken off" */
+    tick()
+    acc('g')
+    expect(rec().acc).toBe('g')
+    expect(told(RANGER)[0]).toBe(`${TITLE} · Wed 15 Jul — Back on the programme · ${cs(SABER)}`)
   })
   it('whoever FILED it is told too, when he is not in it — and a member\'s change to an input he filed for others tells them, not him', async () => {
     await boot()

@@ -340,5 +340,15 @@
     "tests": [
       "src/leavewar/holnotice.test.tsx"
     ]
+  },
+  {
+    "n": 37,
+    "name": "D815: a filing under Unavailable has its own line on the member's bell",
+    "file": "src/state/notices.ts",
+    "find": "  if (a.acc === 'u' && b.acc !== 'u') out.push({ k: 'unav' })\n  else if (b.acc === 'u' && a.acc === 'r') out.push({ k: 'unavoff' })\n  else if (b.acc !== 'r' && a.acc === 'r') out.push({ k: 'off' })",
+    "put": "  if (b.acc !== 'r' && a.acc === 'r') out.push({ k: 'off' })",
+    "tests": [
+      "src/ui/bellnotices.test.tsx"
+    ]
   }
 ]
