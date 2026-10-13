@@ -533,6 +533,23 @@
         "--strictPort"
       ],
       "port": 4241
+    },
+    {
+      "name": "ib-walk",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-ib1",
+        "--port",
+        "4187",
+        "--strictPort"
+      ],
+      "port": 4187
     }
   ]
 }
