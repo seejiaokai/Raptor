@@ -482,6 +482,8 @@ describe('ON SCREEN — the one list as drawn (docs/mock/2026-10-12-oil-notify/*
       /* one pick, and the same button again un-picks it */
       await click(tid(`odl-no-${m.board}`))
       expect(tid(`odl-no-${m.board}`)!.getAttribute('aria-pressed')).toBe('true')
+      /* a picked No wears the outline look a picked Yes does (the design look's L5, owner D830 — it replaces D783's grey) */
+      expect(tid(`odl-no-${m.board}`)!.className).toBe('upconf-seg on-pick')
       expect(tid('odl-count')!.textContent).toBe(`1 of ${n} answered`)
       expect((tid('odl-save') as HTMLButtonElement).disabled).toBe(false)
       await click(tid(`odl-no-${m.board}`))

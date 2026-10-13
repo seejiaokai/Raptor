@@ -168,20 +168,6 @@
   "verdict": "works"
  },
  {
-  "surface": "The bar that stays [phone]",
-  "key": "L6 — its box",
-  "expected": "the width of the screen, less its margins at most; its words on ONE unbroken line; itself on top at its own centre",
-  "saw": "{\"box\":\"98,732 195×94\",\"w\":195,\"top\":732,\"wordsLines\":2,\"onTop\":true,\"vw\":390,\"vh\":844}",
-  "verdict": "FAIL — {\"box\":\"98,732 195×94\",\"w\":195,\"top\":732,\"wordsLines\":2,\"onTop\":true,\"vw\":390,\"vh\":844}"
- },
- {
-  "surface": "The bar that stays [desk]",
-  "key": "its box",
-  "expected": "its words on one line; itself on top at its own centre",
-  "saw": "{\"box\":\"527,832 387×50\",\"w\":386.78125,\"top\":832,\"wordsLines\":1,\"onTop\":true,\"vw\":1440,\"vh\":900}",
-  "verdict": "works"
- },
- {
   "surface": "OIL question at a new input's save [phone]",
   "key": "L4 — its two buttons",
   "expected": "Back / Add (the form behind it says Add)",
@@ -509,5 +495,523 @@
   "expected": "Edit Schedule's own cyan edge is back",
   "saw": "{\"cls\":\"topbar editing has-undo\",\"edge\":\"rgba(59, 198, 232, 0.5)\"}",
   "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [phone]",
+  "key": "L9 — the card names its box",
+  "expected": "one line of small capitals at the top of the card: \"FROM\"",
+  "saw": "\"From\" drawn uppercase, 324×16 at the card's top (first in the card: dcal-name); the title starts 1px under it; one line: true",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [phone]",
+  "key": "D824 — the picked date, opened by a click or a tap",
+  "expected": "the bright disc, no ring round it",
+  "saw": "[data-testid=\"dcal-day-2026-10-15\"] — no ring; disc rgb(59, 198, 232)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Month-and-year lists [phone]",
+  "key": "L13 — the lists opened by a finger",
+  "expected": "the chosen month and year both the plain ink, heavy; no ring (a ring is a keyboard’s)",
+  "saw": "\"October\" rgb(241, 244, 247) (weight 800), \"2026\" rgb(241, 244, 247) (weight 800); the plain ink is rgb(241, 244, 247); ring not drawn",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [phone]",
+  "key": "L9 — Until’s card",
+  "expected": "its line reads \"UNTIL\" — the window’s own word over the box (aloud the box is still \"The date it ends\")",
+  "saw": "\"Until\" drawn uppercase; the box says aloud \"The date it ends: no date picked\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [phone]",
+  "key": "L8 — today, where it cannot be picked",
+  "expected": "keeps its soft disc (it still marks today); its number is the quiet ink at the faint dates’ strength — not bright cyan, not heavy; it takes no tap",
+  "saw": "2026-10-14: classes \"dcal-d is-today is-out\", switched off: true; disc rgba(59, 198, 232, 0.14); number color(srgb 0.541176 0.588235 0.639216 / 0.55) (the quiet ink is rgb(138, 150, 163), the accent rgb(59, 198, 232)), weight 500, whole-date strength 1",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [phone]",
+  "key": "L12 — the faint dates",
+  "expected": "the quiet ink at .55 — about 2.7 to 1 against the card (it was about 2.0) — plain weight, and still under half a weekend date’s strength",
+  "saw": "date \"2\": rgb(138, 150, 163) at strength 0.55, weight 500 → 2.68 to 1 against the card; a weekend date that may be picked: rgb(138, 150, 163) at 1 → 5.92 to 1",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [phone]",
+  "key": "L8 — the standing-out weekday, where it cannot be picked",
+  "expected": "plain weight and the quiet ink at the faint dates’ strength — while a Thursday that may be picked stays heavy and full ink",
+  "saw": "Thursday \"1\" before the start: rgb(138, 150, 163) at 0.55, weight 500; the start itself (2026-10-15): rgb(241, 244, 247), weight 800; the plain ink is rgb(241, 244, 247)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [phone]",
+  "key": "L17 — a weekend inside a picked run",
+  "expected": "the Saturday and the Sunday inside the run are the plain ink at full strength, as every date in it is — a weekend date outside it stays quiet",
+  "saw": "run 2026-10-02 to 2026-10-05: Saturday 2026-10-03 rgb(241, 244, 247) at 1 (classes \"dcal-d is-we is-in is-mid\"), Sunday 2026-10-04 rgb(241, 244, 247) at 1 (classes \"dcal-d is-we is-in is-mid\"); outside it, the weekend date \"10\" is rgb(138, 150, 163); the plain ink rgb(241, 244, 247), the quiet ink rgb(138, 150, 163)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [phone]",
+  "key": "L11 — the sentence under a run",
+  "expected": "the plain ink, bold — not cyan: it is not a button",
+  "saw": "\"Fri 2 Oct 2026 to Mon 5 Oct 2026\" is rgb(241, 244, 247), weight 700; the plain ink rgb(241, 244, 247), the accent rgb(59, 198, 232)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "L9 — a desktop panel carries no such line",
+  "expected": "no name line: the panel hangs under its own box",
+  "saw": "no line",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "D824 — the picked date, opened by a click or a tap",
+  "expected": "the bright disc, no ring round it",
+  "saw": "[data-testid=\"dcal-day-2026-10-15\"] — no ring; disc rgb(59, 198, 232)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "opens with the keyboard on…",
+  "expected": "the picked date",
+  "saw": "the keyboard is on 2026-10-15; the box holds 2026-10-15",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "Arrow keys",
+  "expected": "a day right, a week down, a day left and a week up — back where it began",
+  "saw": "2026-10-15 → right 2026-10-16 → down 2026-10-23 → left, up 2026-10-15",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "D824 — the ring while the keyboard is on a date",
+  "expected": "the app’s cyan ring, 2px, round the date the keyboard is on",
+  "saw": "solid 2px rgb(59, 198, 232)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "Page Up / Page Down",
+  "expected": "the same day a month on, and back",
+  "saw": "2026-10-15 in 2026-10 → PageDown 2026-11-15 in 2026-11 → PageUp 2026-10-15 in 2026-10",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "K1 — Home / End",
+  "expected": "Home: the Monday of that week; End: its Sunday",
+  "saw": "on 2026-10-15 (weekday 3, 0 = Monday): Home → 2026-10-12, then End → 2026-10-18; the calendar on 2026-10",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "K2 — Shift + Page Down / Up",
+  "expected": "the same day a YEAR on, and back (Page alone stays a month)",
+  "saw": "2026-10-18 → Shift+PageDown 2027-10-18 (calendar on 2027-10) → Shift+PageUp 2026-10-18 (calendar on 2026-10)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "Tab, five times",
+  "expected": "round inside the card: the title → Today → the two arrows → back on the date it left",
+  "saw": "from 2026-10-18: dcal-title | dcal-today | dcal-prev | dcal-next | dcal-day-2026-10-18; still inside the card: true",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "a key for today",
+  "expected": "none: \"t\" moves nothing — the Today button is one Tab from the title",
+  "saw": "\"t\" on 2026-10-18 → 2026-10-18",
+  "verdict": "works"
+ },
+ {
+  "surface": "Month-and-year lists [desk]",
+  "key": "L13 — the title’s ring",
+  "expected": "round its words only (the app’s cyan, 2px); the title itself keeps its fixed room of ten letters’ width",
+  "saw": "the title 170px wide (10.00 × its 17px letters), its own ring: no ring; the words \"October 2026›\" 130.7px wide, their ring: solid 2px rgb(59, 198, 232)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Month-and-year lists [desk]",
+  "key": "K3 — Enter on the title",
+  "expected": "the lists open with the keyboard IN the month list",
+  "saw": "the lists are open; the keyboard is on dcal-months",
+  "verdict": "works"
+ },
+ {
+  "surface": "Month-and-year lists [desk]",
+  "key": "L13 — the keyboard in the month list",
+  "expected": "the app’s cyan ring round the MONTH list; the chosen month and year both the plain ink, heavy — neither cyan",
+  "saw": "ring solid 2px rgb(59, 198, 232), from 0px to 172.2px across the lists; the months list runs 0px to 172.2px; \"October\" is rgb(241, 244, 247) (weight 800), \"2026\" is rgb(241, 244, 247) (weight 800); the plain ink is rgb(241, 244, 247)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Month-and-year lists [desk]",
+  "key": "Arrow Up / Down in a list",
+  "expected": "the month after, and back (the months go round; the year is the other list’s)",
+  "saw": "2026-10 → down 2026-11 → up 2026-10",
+  "verdict": "works"
+ },
+ {
+  "surface": "Month-and-year lists [desk]",
+  "key": "L13 — the keyboard in the year list",
+  "expected": "the ring moves to the YEAR list; both words still the plain ink",
+  "saw": "after Tab the keyboard is on dcal-years; ring solid 2px rgb(59, 198, 232), from 172.2px to 310px across the lists; the years list runs 172.2px to 310px; \"October\" is rgb(241, 244, 247) (weight 800), \"2026\" is rgb(241, 244, 247) (weight 800); the plain ink is rgb(241, 244, 247)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Month-and-year lists [desk]",
+  "key": "Home / End / Page keys in a list",
+  "expected": "not the lists’ keys: nothing moves (the arrows move a list)",
+  "saw": "2026-10 → End 2026-10 → Shift+PageDown 2026-10; the lists still open",
+  "verdict": "works"
+ },
+ {
+  "surface": "Month-and-year lists [desk]",
+  "key": "K4 — Enter in a list",
+  "expected": "the lists close onto the dates of the month chosen, the keyboard on that month’s one stop (the picked date, else today, else the 1st)",
+  "saw": "chose 2027-10 in the year list; after Enter the lists are closed, the calendar on 2027-10, the keyboard on 2027-10-01 (tab stop: true)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "Escape",
+  "expected": "closes the calendar only; the window behind stays; the keyboard is back on the box",
+  "saw": "calendar closed, window still open, keyboard on every-from",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date box [desk]",
+  "key": "Space on the box, a week down, then Enter on the date",
+  "expected": "opens; picks the date a week on; closes; the keyboard is back on the box",
+  "saw": "opened true; 2026-10-15 → 2026-10-22; calendar closed; keyboard on every-from",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "L8 — today, where it cannot be picked",
+  "expected": "keeps its soft disc (it still marks today); its number is the quiet ink at the faint dates’ strength — not bright cyan, not heavy; it takes no tap",
+  "saw": "2026-10-14: classes \"dcal-d is-today is-out\", switched off: true; disc rgba(59, 198, 232, 0.14); number color(srgb 0.541176 0.588235 0.639216 / 0.55) (the quiet ink is rgb(138, 150, 163), the accent rgb(59, 198, 232)), weight 500, whole-date strength 1",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "L12 — the faint dates",
+  "expected": "the quiet ink at .55 — about 2.7 to 1 against the card (it was about 2.0) — plain weight, and still under half a weekend date’s strength",
+  "saw": "date \"2\": rgb(138, 150, 163) at strength 0.55, weight 500 → 2.68 to 1 against the card; a weekend date that may be picked: rgb(138, 150, 163) at 1 → 5.92 to 1",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "L8 — the standing-out weekday, where it cannot be picked",
+  "expected": "plain weight and the quiet ink at the faint dates’ strength — while a Thursday that may be picked stays heavy and full ink",
+  "saw": "Thursday \"1\" before the start: rgb(138, 150, 163) at 0.55, weight 500; the start itself (2026-10-22): rgb(241, 244, 247), weight 800; the plain ink is rgb(241, 244, 247)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "L17 — a weekend inside a picked run",
+  "expected": "the Saturday and the Sunday inside the run are the plain ink at full strength, as every date in it is — a weekend date outside it stays quiet",
+  "saw": "run 2026-10-02 to 2026-10-05: Saturday 2026-10-03 rgb(241, 244, 247) at 1 (classes \"dcal-d is-we is-in is-mid\"), Sunday 2026-10-04 rgb(241, 244, 247) at 1 (classes \"dcal-d is-we is-in is-mid\"); outside it, the weekend date \"10\" is rgb(138, 150, 163); the plain ink rgb(241, 244, 247), the quiet ink rgb(138, 150, 163)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "L11 — the sentence under a run",
+  "expected": "the plain ink, bold — not cyan: it is not a button",
+  "saw": "\"Fri 2 Oct 2026 to Mon 5 Oct 2026\" is rgb(241, 244, 247), weight 700; the plain ink rgb(241, 244, 247), the accent rgb(59, 198, 232)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [phone]",
+  "key": "L9 — the card over Upchit",
+  "expected": "its line names the box: \"UPCHIT DATE\"",
+  "saw": "\"Upchit date\" drawn uppercase",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [phone]",
+  "key": "L14 — Upchit, a planned day",
+  "expected": "no last date: tomorrow is offered like any other day",
+  "saw": "the calendar says last day null; tomorrow (2026-10-15): classes \"dcal-d\", switched off: false",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [phone]",
+  "key": "L16 — a phone is as it was",
+  "expected": "the desktop’s one width does not reach a phone: each box takes its column of the two-across grid, and a full date is not cut",
+  "saw": "empty (\"\", \"\", \"\"): #lastSyll 179.5px, #lastCurr 179.5px, #upchit 179.5px; with Upchit holding \"2026-10-14\": #lastSyll 179.5px, #lastCurr 179.5px, #upchit 179.5px; Upchit reads \"Wed 14 Oct 2026\" (cut: false), its ✕ ends 0.8px inside the box's right edge; the column's least width is set to 0px",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [phone]",
+  "key": "L9 — the card over Last Flown (Syllabus)",
+  "expected": "its line names the box: /^Last Flown \\(Syllabus\\)$/",
+  "saw": "\"Last Flown (Syllabus)\" drawn uppercase",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [phone]",
+  "key": "L14 — Last Flown (Syllabus): a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"\" (before: \"\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [phone]",
+  "key": "L9 — the card over Last Flown (Currency)",
+  "expected": "its line names the box: /^Last Flown \\(Currency\\)$/",
+  "saw": "\"Last Flown (Currency)\" drawn uppercase",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [phone]",
+  "key": "L14 — Last Flown (Currency): a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"\" (before: \"\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [phone]",
+  "key": "L15 — before anything is marked",
+  "expected": "Done on and Failed on both show their date in the dim colour of an empty box; no word changes; Failed on is there at Fails 0",
+  "saw": "\"Done on (when marked)\": \"Wed 14 Oct 2026\" drawn rgb(138, 150, 163) (dim class: true); Fails 0, Failed on: \"Wed 14 Oct 2026\" drawn rgb(138, 150, 163) (dim class: true); the dim colour is rgb(138, 150, 163), the plain ink rgb(241, 244, 247)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [phone]",
+  "key": "L9 — the card over Done on",
+  "expected": "its line names the box: /^Done on$/",
+  "saw": "\"Done on\" drawn uppercase",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [phone]",
+  "key": "L14 — Done on: a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"2026-10-14\" (before: \"2026-10-14\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [phone]",
+  "key": "L9 — the card over Failed on",
+  "expected": "its line names the box: /^Failed on$/",
+  "saw": "\"Failed on\" drawn uppercase",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [phone]",
+  "key": "L14 — Failed on: a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"2026-10-14\" (before: \"2026-10-14\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [phone]",
+  "key": "the pop-up after its calendars were looked at",
+  "expected": "still open: closing a calendar closes the calendar only",
+  "saw": "the pop-up is open",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [phone]",
+  "key": "L15 — after + records a failure",
+  "expected": "Failed on turns the plain ink (a failure is on that day); Done on is still dim (the event is not done)",
+  "saw": "Fails 1; Failed on \"Wed 14 Oct 2026\" drawn rgb(241, 244, 247) (dim class: false); Done on \"Wed 14 Oct 2026\" drawn rgb(138, 150, 163) (dim class: true); the plain ink rgb(241, 244, 247), the dim colour rgb(138, 150, 163)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [phone]",
+  "key": "L15 — after the event is marked done",
+  "expected": "Done on turns the plain ink (a mark carries the day) and its label reads \"Done on\"",
+  "saw": "\"Done on\": \"Wed 14 Oct 2026\" drawn rgb(241, 244, 247) (dim class: false); the plain ink rgb(241, 244, 247)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [phone]",
+  "key": "L9 — the card over a row of the full failures list",
+  "expected": "its line names the box: / failed on$/",
+  "saw": "\"ST-01 failed on\" drawn uppercase",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [phone]",
+  "key": "L14 — a row of the full failures list: a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"2026-10-14\" (before: \"2026-10-14\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [desk]",
+  "key": "L14 — Upchit, a planned day",
+  "expected": "no last date: tomorrow is offered like any other day",
+  "saw": "the calendar says last day null; tomorrow (2026-10-15): classes \"dcal-d\", switched off: false",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [desk]",
+  "key": "L16 — the side panel’s column of date boxes",
+  "expected": "one width for the three boxes, the same empty and filled, wide enough for a full date with its ✕ (never under the 128px a filled box had)",
+  "saw": "empty (\"\", \"\", \"\"): #lastSyll 144px, #lastCurr 144px, #upchit 144px; with Upchit holding \"2026-10-14\": #lastSyll 144px, #lastCurr 144px, #upchit 144px; Upchit reads \"Wed 14 Oct 2026\" (cut: false), its ✕ ends 1px inside the box's right edge; the column's least width is set to 144px",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [desk]",
+  "key": "L14 — Last Flown (Syllabus): a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"\" (before: \"\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [desk]",
+  "key": "L14 — Last Flown (Currency): a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"\" (before: \"\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [desk]",
+  "key": "K12 — Delete on a box that holds a date",
+  "expected": "takes the date off, as its ✕ does; the keyboard stays on the box",
+  "saw": "\"2026-10-14\" → \"\"; keyboard on #upchit",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [desk]",
+  "key": "K12 — Backspace on a box that holds a date",
+  "expected": "the same: the date is taken off and the keyboard stays on the box",
+  "saw": "filled again by keys with \"2026-10-14\" → \"\"; keyboard on #upchit",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [desk]",
+  "key": "Tab onto the ✕, then Enter",
+  "expected": "the ✕ is the next stop, with a ring; Enter takes the date off and the keyboard returns to the box",
+  "saw": "after Tab the keyboard is on button.sm \"Take the date off — Upchit date\" · outline 2px rgb(59, 198, 232) · 26×34; \"2026-10-14\" → \"\"; keyboard on #upchit",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [desk]",
+  "key": "K12 — Delete on a date box while the chart is being arranged",
+  "expected": "the box’s own date is taken off; the chart is untouched and asks no \"Delete …?\" question",
+  "saw": "210 events on the chart, all selected; Delete on Upchit (\"2026-10-14\" → \"\"): question asked false, events 210; Backspace on the box now empty: question asked false, events 210; the same key pressed on the page: the chart asks \"Delete these 210 events from this syllabus? ST-01, ST-02, ACG-01, ACG-02, ACG-03\" (answered Cancel), events 210",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "L15 — before anything is marked",
+  "expected": "Done on and Failed on both show their date in the dim colour of an empty box; no word changes; Failed on is there at Fails 0",
+  "saw": "\"Done on (when marked)\": \"Wed 14 Oct 2026\" drawn rgb(138, 150, 163) (dim class: true); Fails 0, Failed on: \"Wed 14 Oct 2026\" drawn rgb(138, 150, 163) (dim class: true); the dim colour is rgb(138, 150, 163), the plain ink rgb(241, 244, 247)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "L14 — Done on: a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"2026-10-14\" (before: \"2026-10-14\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "L14 — Failed on: a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"2026-10-14\" (before: \"2026-10-14\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "the pop-up after its calendars were looked at",
+  "expected": "still open: closing a calendar closes the calendar only",
+  "saw": "the pop-up is open",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "L15 — after + records a failure",
+  "expected": "Failed on turns the plain ink (a failure is on that day); Done on is still dim (the event is not done)",
+  "saw": "Fails 1; Failed on \"Wed 14 Oct 2026\" drawn rgb(241, 244, 247) (dim class: false); Done on \"Wed 14 Oct 2026\" drawn rgb(138, 150, 163) (dim class: true); the plain ink rgb(241, 244, 247), the dim colour rgb(138, 150, 163)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "L15 — after the event is marked done",
+  "expected": "Done on turns the plain ink (a mark carries the day) and its label reads \"Done on\"",
+  "saw": "\"Done on\": \"Wed 14 Oct 2026\" drawn rgb(241, 244, 247) (dim class: false); the plain ink rgb(241, 244, 247)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "opens with the keyboard on…",
+  "expected": "something inside the pop-up",
+  "saw": "div#board \"ST-01 ST-02 ACG-01 ACG-02 ACG-03 ACG-04 ACG-05 ACG-06 ACG-07\" · NO RING · 1084×735",
+  "verdict": "OPEN — K6, not in this batch: the keyboard is on div#board \"ST-01 ST-02 ACG-01 ACG-02 ACG-03 ACG-04 ACG-05 ACG-06 ACG-07\""
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "Tab, ten times",
+  "expected": "goes round INSIDE the pop-up",
+  "saw": "button#fzOut \"−\"  |  button#fzIn \"+\"  |  button#fzReset \"reset\"  |  button#ordCrew \"⇅ Reorder\"  |  button#addStu \"+ Add\"  |  button#lastSyll \"Last Flown (Syllabus): no date picked\"  |  button#lastCurr \"Last Flown (Currency): no date picked\"  |  input#downDays \"\"  |  button#upchit \"Upchit date: no date picked\"  |  input#epwIn \"\" · still inside: false",
+  "verdict": "OPEN — K6, not in this batch: Tab leaves the pop-up"
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "Enter on \"Done on\", then Escape",
+  "expected": "the calendar opens; Escape closes the calendar only, and the keyboard is back on the box",
+  "saw": "opened true; after Escape: calendar closed, pop-up still open; keyboard on #popDoneDate",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "Escape again",
+  "expected": "closes the pop-up; the keyboard returns to the event that opened it",
+  "saw": "pop-up closed; keyboard on nothing (the page)",
+  "verdict": "OPEN — K6, not in this batch: the pop-up closes and the keyboard is left on nothing"
+ },
+ {
+  "surface": "Tracker's date box [desk]",
+  "key": "L14 — a row of the full failures list: a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"2026-10-14\" (before: \"2026-10-14\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "A puck on the Scheduler Board",
+  "key": "Enter, then Space, on a puck the keyboard is on",
+  "expected": "it is picked up (armed) as a tap does on a phone — then arrows or Tab to a seat and Enter to put it down",
+  "saw": "on span.puck \"WardenIP\" (NO RING) — before {\"arm\":false,\"body\":\"sb-lock sb-board-up\",\"sel\":0} · after Enter {\"arm\":false,\"body\":\"sb-lock sb-board-up\",\"sel\":0} · after Space {\"arm\":false,\"body\":\"sb-lock sb-board-up\",\"sel\":0}",
+  "verdict": "OPEN — K11 ([KBD-PUCK]), not in this batch: nothing happens — the keyboard can stand on a puck but cannot pick it up"
+ },
+ {
+  "surface": "A puck on the Scheduler Board",
+  "key": "Delete on a puck",
+  "expected": "takes the man off the seat (as dragging him off does), with Undo",
+  "saw": "the keyboard is still on the puck: nothing happened",
+  "verdict": "OPEN — K11 ([KBD-PUCK]), not in this batch: nothing happens"
+ },
+ {
+  "surface": "The crew list",
+  "key": "Tab stops among its pucks",
+  "expected": "each name can be reached and picked up by keys",
+  "saw": "0 names on screen, 0 a Tab stop",
+  "verdict": "OPEN — K11 ([KBD-PUCK]), not in this batch: recorded only — 0 names on screen, 0 a Tab stop"
+ },
+ {
+  "surface": "Edit Schedule's week",
+  "key": "Tab stops among its pucks",
+  "expected": "each puck can be reached",
+  "saw": "512 pucks on screen, 440 a Tab stop",
+  "verdict": "OPEN — K11 ([KBD-PUCK]), not in this batch: recorded only — 512 pucks on screen, 440 a Tab stop"
+ },
+ {
+  "surface": "Tracker's chart",
+  "key": "Tab stops among its events",
+  "expected": "an event can be reached and its marking pop-up opened with Enter",
+  "saw": "210 events drawn, 0 a Tab stop (role none)",
+  "verdict": "OPEN — K5 ([TRK-KBD-CHART]), not in this batch: an event cannot be opened or marked without a mouse or a finger"
  }
 ]

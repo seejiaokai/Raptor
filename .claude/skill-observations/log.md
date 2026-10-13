@@ -451,3 +451,33 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** A brief for reading a guide, rule or skill always carries: (1) apply it to N named real cases and show the result; (2) construct a case that passes every rule and is still wrong; (3) tabulate rule-yields against what the author did. And stop at three rounds: say what was not re-read after the last fixes instead of opening a fourth.
 
 **Principle:** A rule is reviewed by running it, not by reading it; ask the reviewer for outputs and counter-examples, and the faults in the text find themselves.
+
+### Observation 584: A drawing's parts had names of their own; the build shortened them, and a bare name met one the app's global stylesheet already owned
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** [LW-CLASH-NOTE-PHONE] — building an approved mock-up (a list drawn into the running app by an injection script) as real markup
+**Skill:** brainstorming (`mockups-on-the-real-app.md` — from the picture to the build); impeccable (building a drawn design)
+**Type:** open-source
+**Phase/Area:** Build — turning an injected mock-up into the component
+
+**Issue:** The injection script drew the list with prefixed class names (`dn-line`, `dn-go`, `dn-who`). The build renamed them to short ones inside the component's own class (`.clashline .go`, `.clashrow .day`). The app has one global stylesheet that already owns `.go` (a wave) and `.day` (a day of the week); the wave's margin and border reached the new span and the line stood 46 px tall instead of 30. Unit tests could not see it (no stylesheet); the first scripted run on the built screen did, because it asserted the line's measured height against the drawing's figure. The same job was FIXING an older case of exactly this (`.seg`).
+
+**Suggested improvement:** In the mock-up guide's "from the picture to the build" step: keep the drawing's prefixed names, or prefix every new class with the component's own word; before using any bare class name in an app with a global sheet, search the stylesheets for it. And the built screen's first check re-measures the figures the drawing printed (heights, edges), not only its words. A cheap unit guard: every class inside the new component starts with its prefix.
+
+**Principle:** A scoped selector limits where YOUR rule lands, not which of the app's rules land on you; a new name is free only after a search says so, and a drawing's measured figures are assertions for the build.
+
+### Observation 585: Two helpers reported a typecheck PASS from a command that checked no file
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** A three-job batch built with two same-model helpers, each told to run the typecheck
+**Skill:** New skill candidate: briefing a build helper (today in each brief; `dispatching-parallel-agents`, `verification-before-completion`)
+**Type:** open-source
+**Phase/Area:** Verification — the command a brief names
+
+**Issue:** The host's brief named a typecheck command from memory (`tsc --noEmit -p .`). The project's root config is a solution file with no sources (it only references the app's and the tooling's configs), so the command exits 0 having read nothing. Both helpers ran it and reported PASS; the host caught it only because its own run printed nothing at all for a tree that was mid-edit.
+
+**Suggested improvement:** A brief names verification commands copied from the project's own scripts (the build's, the gate's), never composed; and a check that a helper will lean on is first proved able to fail (one deliberate error) — or the helper is told to do so once. verification-before-completion: "exit 0 with no output" is asked "did it read anything?".
+
+**Principle:** A check is evidence only after it has been seen to fail; a command that cannot go red proves the command, not the code.

@@ -107,7 +107,8 @@ Leave War's event sheet) and D646 ("How this works" made shorter).
   scheduler board slides up (`boardup`, keyed on `:not([hidden])` so
   `sb-wide` toggles never replay it), and the toast fades via an inline
   `transition:opacity` plus a WAAPI rise (`toast.ts` — the keyframes carry
-  the base `translateX(-50%)`, and the call is guarded by the InputsCal
+  the base `translateX(-50%)` on a desktop; on a phone the note is held 12px from each side and not shifted at all, so
+  there they carry none (D828, 14 Oct 26 — `placeToast` sets the place on every note), and the call is guarded by the InputsCal
   idiom: `typeof animate === 'function'` + reduced-motion matchMedia,
   try/caught so motion can never eat a toast). The single off-switch for
   the CSS half is the blanket
@@ -122,9 +123,11 @@ Leave War's event sheet) and D646 ("How this works" made shorter).
   through `HOOKS.toastBatch`) every toast is gathered and shown as ONE line, joined by " · " in the order spoken,
   identical lines once, the strongest colour kept; a publish that throws shows nothing; a nested batch joins its outer
   one (`ui/toast.ts toastBatch`). Only a publish batches — every other toast still replaces the last. **Unpublish says
-  what it did** (`interactions.ts`): "Sat: AL2 withdrawn — its changes are back on the working copy as pending; AL1 is the
-  issued schedule; publishing again reissues AL2", or for the Original "Sat unpublished — it is a draft again; publishing
-  reissues the Original", with the OIL credits line when there is one. Pinned by `ui/toastbatch.test.ts`; walked `scripts/handpass/sf/sf-d1-toast.mjs`.
+  what it did** (`interactions.ts`; the words of record D837, 14 Oct 26): "Sat: AL2 withdrawn. Its changes are back on the
+  working copy as pending, and AL1 is the issued schedule. Publishing reissues AL2.", or for the Original "Sat unpublished. It
+  is a draft again, and publishing reissues the Original.", with the OIL credits sentence when there is one. **Two notes of a
+  publish that name the SAME day say it once** (`toast.ts` `ToastPart`): "Monday 13 Jul published and approved. The Common
+  Programme has no usable times, so nobody on it earns OIL." — every other pair is joined by the dot as before. Pinned by `ui/toastbatch.test.ts`; walked `scripts/handpass/sf/sf-d1-toast.mjs`.
 - **The phone day-head is TWO FIXED ROWS on every day** (owner, 25 Aug 26 —
   "Because of the word today, the layout is not the same … keep it
   similar"): row one is the title + date (+"· Today") with the turn-pattern
@@ -2286,7 +2289,7 @@ commitInput(rec, draft, people, opts)` — it runs every refusal first, for ever
 `commitInputEdit` for what the input SAYS and `engine/inputown.ts putPerson` / `takePerson` for who is in it. The
 dialog's Save goes through `commitInput` where the input holds several people or several are picked, and through
 `commitInputEdit` for an input of one — which still saves what an input says and re-points an input of ONE person, and
-refuses a draft naming someone outside an input of several ("Who is in this input is changed in its own window").
+refuses a draft naming someone outside an input of several ("Open this input’s own window to change who is in it" — the words of record, D839).
 `removeInput` is the ONE delete — a whole input of several included, asked first ("Delete this input for all 3
 people?"); the separate `removeEntry` is gone. The "accepted-row relink" itself went earlier — `[DB-READINESS]` group A
 phase 6 (c), 1 Oct 26: a save writes the request alone and its row is re-made when its week is read, `engine/overlay.ts
@@ -4431,11 +4434,21 @@ Three things stay decided:
   under a question's sheet (460). "Not swapped — OIL not answered" / "Not added — …" / "Not moved — …", then **Answer
   OIL** (the door is asked afresh: the question returns, or "That row has changed — not swapped") and **OK** (closes
   it). It has NO timer; a week, a page or a sign-in that changes under it takes it away. On a phone the words take two
-  lines and the two buttons sit side by side under them. **Both pucks flash at every door** (the check's walk, C2 —
+  lines and the two buttons sit side by side under them. ***[SINCE 14 OCT 26 THE BAR IS A BAND UNDER THE TOP BAR, ONE LINE
+  ALWAYS — owner D831, D840, D841; `[LOOK-13OCT-SMALL-FIXES]`: `.oilband` (`ui/OilWaitSheet.tsx`, `17-save-status.css`), the
+  failed-save warning's own band — the last line of the top bar (fixed, its top measured; the bar one line taller,
+  `.topbar.oil-waiting`) or, in the flow, of a full-screen surface's own bar (the Scheduler Board, the Medical view opened
+  full — `OilBand`, and then the top bar's copy is not drawn). Where a save has failed too, "Not saved" is the line above it.
+  Its words and both buttons share ONE line at every width: where the letters are too wide the bar steps its own letters and
+  gaps down (`--oil-fit`), then closes its buttons up; no word is cut. The line under a band is amber, never Edit Schedule's
+  cyan. The keyboard goes to "Answer OIL" as it appears and Escape, pressed on the bar, closes it (the look's L7). A passing
+  note keeps its own place at the foot — the bar is no longer there to cover. The sentence about a phone's two lines, above,
+  is the look it had before. Pinned by `ui/oilconfirm-look.test.tsx`, `ui/oilwait.test.tsx`, `e2e/oilwait.spec.ts`; walked
+  `scripts/handpass/dl-oil.mjs`, `dl-band-built.mjs`.]*** **Both pucks flash at every door** (the check's walk, C2 —
   13 Oct 26): on the Unavailable row the door is handed a person, never his seat, so the drag hands the seat he was
   dragged from to the wait (`ui/oilwait.ts oilWaitAlso`). **A passing note never lands on the bar** (the walk's C3): the
   note is drawn at the foot too, a layer above, and the bar stays — so while the bar is up the note sits just above it
-  (`ui/toast.ts placeToast`, which the bar calls as it arrives, so a note already showing moves clear).
+  (`ui/toast.ts placeToast`, which the bar calls as it arrives, so a note already showing moves clear). *[Until 14 Oct 26: the bar is no longer at the foot — above.]*
 - **Nothing moves — and the screen says so** (the Opus read of the finished code, C1 — 13 Oct 26). The door's save is
   tried and thrown away before the question is put, and the rules ran inside it: `state/store.ts tryInputsBatch` runs
   them again on the world as it stands, so the day's issues and the rings on its pucks behind the question, and under
@@ -4490,7 +4503,7 @@ Three things stay decided:
 
 ## The passing notes' wording — to be shortened (owner D806, 13 Oct 26)
 
-**Not yet built.** His iPhone pictures: the note after publishing a day and the one after unpublishing it each ran five lines over **AND A SHORTER WORDING KEEPS EVERY KEY WORD (owner D825, 13 Oct 26 — "some of them I feel like the key words are gone. Too summarised"):** what happened, why, what it costs and where to put it right all stay; only filler is cut; a wording that cannot lose a word without losing a fact is left as it is. **RULED 13 Oct 26 on the design page's third version (`docs/mock/design-look-13oct.html`):** the redone wordings are approved as drafted there and are built (D829); on a phone a passing note takes the screen's full width less a small margin — today it is centred in a way that leaves it half the screen (D828); and the bar that stays after an unanswered OIL question takes the band under the top bar where the "Not saved" warning sits, a picture first (D831 — it narrows D783 as to the bar's place only).
+**BUILT 14 Oct 26 (`[NOTES-SHORTER]`, with the clash note and the look's small fixes — the check: `docs/handpass/2026-10-14-three-builds.md`):** every wording of record below is in the app (their relatives that were not on his page are not — D808), pinned to the letter by `src/ui/noteswords.test.ts` and by each note's own test; the locked-week sentence has ONE source for its seven places (`engine/publish.ts LOCKED_WEEK_NOTE`, `lockedDayNote`); and on a phone the note is held 12px from each side of the screen, its words centred as the picture put to him drew them, a desktop's as it was (`ui/toast.ts placeToast`, `ui/toastplace.test.tsx`). **THE OIL QUESTION (the look's L1–L5, K7, K10 — D830, its words D837, D839):** the title "OIL: Tally, Range brief"; the reason and the question one ordinary sentence ("This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve HO, half a day of OIL?"); its answers flat under it in a row of their own (`.oilconf-answers` — they had worn the week strip's `.seg`), a picked one in the outline look (`.on-pick`, in the day's one list too — a picked Yes and a picked No alike, which replaces D783's grey No); "Yes: credit HO"; at an input's own save Back / Add or Back / Save; the first answer has the keyboard as it opens. The several-days form keeps its words (D808). **EVERY SMALL WINDOW OF THAT FAMILY (`.airpop-head`):** the ✕ in the head's corner; in a question sheet it is the LAST Tab stop (`ui/sheetfocus.ts`); the app's ring on the answers, the ✕ and the bar's buttons. *What follows is the record of how it was ruled.* His iPhone pictures: the note after publishing a day and the one after unpublishing it each ran five lines over **AND A SHORTER WORDING KEEPS EVERY KEY WORD (owner D825, 13 Oct 26 — "some of them I feel like the key words are gone. Too summarised"):** what happened, why, what it costs and where to put it right all stay; only filler is cut; a wording that cannot lose a word without losing a fact is left as it is. **RULED 13 Oct 26 on the design page's third version (`docs/mock/design-look-13oct.html`):** the redone wordings are approved as drafted there and are built (D829); on a phone a passing note takes the screen's full width less a small margin — today it is centred in a way that leaves it half the screen (D828); and the bar that stays after an unanswered OIL question takes the band under the top bar where the "Not saved" warning sits, a picture first (D831 — it narrows D783 as to the bar's place only).
 the schedule ("Monday published — APPROVED · Monday 13 Jul: the common programme has no usable times, so nobody on it earns
 OIL"; "Monday unpublished — it is a draft again; publishing reissues the Original · its OIL credits leave the Leave War until it
 is published again"). The rule for a passing note from here on: what happened, then the ONE thing he must know, the day named
@@ -4503,8 +4516,7 @@ only what was ruled for the passing notes, and D829's wordings are rechecked aga
 notes reworked by the guide (N1–N4, N7, N10, N11, N14, N16, N19, N24, N26; N8 is not built, the app can no longer show it;
 N33 stays removed), with the clash note's words and the OIL question's; the two bars he ruled with a dash stay as they are.
 **D838** — the notes left whole on 13 Oct have their dashes changed in the same build, every word kept. **D839** — the ten
-wordings a fresh reader tripped on are all taken, each replacing its note's wording in the other two lists. Not yet built:
-`OUTSTANDING.md` `[NOTES-SHORTER]`. Their relatives that were not on the page wait for the whole-app words pass (D808).
+wordings a fresh reader tripped on are all taken, each replacing its note's wording in the other two lists. Built 14 Oct 26 (above). Their relatives that were not on the page wait for the whole-app words pass (D808).
 **THE BAR THAT STAYS IS ALWAYS ONE LINE (owner D840, 14 Oct 26 — "I prefer the one line", of the page that drew it in its new place, `docs/mock/oil-band-14oct.html`):** "Not swapped — OIL not answered · Answer OIL · OK" is built in the band under the top bar as drawn (D831), its words and both buttons on one line at every phone width — where the letters are too wide its letters go a step smaller, no word is cut and the buttons never drop under the words; "Not saved" sits above it when both show. **And the line under a bar is the bar's own amber (owner D841, 14 Oct 26 — "The bottom line is cyan that's weird"):** while either bar is up the top bar's bottom edge is amber, not Edit Schedule's cyan, and goes back when the bars go; the two bars are one height.
 They are put to him on ONE page with the phone's clash note (D805) and a look, by the design guide, over the designs built on the
 night of 13 Oct 26 and the ones coming — keyboard use included (owner D807): `OUTSTANDING.md` `[DESIGN-LOOK-13OCT]`.
@@ -7082,7 +7094,16 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
   MON … SUN, the dates as round discs in SIX rows always; today on a soft accent disc, the picked date on the full one, a
   Saturday and a Sunday quiet. **A tap on a date picks it — no tick, no Reset, no Clear.** The title has a fixed room and
   the card a fixed height, so the arrows, the Today icon and everything under the month stand still as months change
-  (the standing rule). Keyboard: one tab stop on the dates, the arrow keys walk them, Page Up / Down a month.
+  (the standing rule). Keyboard: one tab stop on the dates, the arrow keys walk them, Page Up / Down a month — **and,
+  since 14 Oct 26 (the design look's K1–K4, D830): Home / End the week's Monday and Sunday, Shift + Page Up / Down a year,
+  Enter on the title opens the lists with the keyboard in the month list, Enter in a list returns to the dates of that
+  month.** A date that may not be picked is never walked onto. **`max` mirrors `min`** (L14): the Tracker's boxes that refuse
+  a day after today — Done on, Failed on, the failures list's rows, the two Last Flown — offer none on their calendars; the
+  refusal stays as the safety net. A date that may not be picked is faint and plain whatever else it is — today keeps its
+  disc (L8); the faint dates are the quiet ink at .55 (L12); inside a run every date is full strength and the run's sentence
+  is plain ink (L17, L11); in the lists the keyboard's place is a ring over that list, and the title's ring goes round its
+  words (L13). **On a phone the card's first line names its box** — "FROM", "UNTIL", "DONE ON" (L9; `cardName` where the
+  box's spoken name is longer). Pinned by `ui/datecal.test.tsx`, `ui/datebox.test.tsx`, `ui/datecal-look.test.ts`.
   **A sideways finger on its dates turns its month too (D800, 13 Oct 26)** — the Calendar window's own gesture
   (`ui/sideswipe.ts`), wherever the calendar is drawn; a swipe that begins on a date picks nothing; the lists scroll and
   are not swiped.
@@ -9380,7 +9401,8 @@ screen:
     "today" is the squadron's day (D374), not the device's; no day before 1900 is offered (the
     store refuses one). Each box says what it is to a screen reader ("Upchit date: …"), its ✕
     says whose date it takes off, and the keyboard stays on the box after it. A refusal's line
-    goes at the next press on its box. Delete or Backspace on a date box does nothing to a
+    goes at the next press on its box. Delete or Backspace on a box that holds a date takes the date off, as its ✕
+    does (the design look's K12, D830 — 14 Oct 26), and the key goes no further: it does nothing to a
     chart being arranged. Two days picked in one box are two undo steps (a pick is not typing —
     the two-second fold stays for the pace and the down days, which are typed). No box can hold a half-typed day any more — a day is picked whole
     (what [TRK-RETEST-NOTES] C5 guarded against). A day after today is refused in Done on, Failed on

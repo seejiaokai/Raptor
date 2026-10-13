@@ -201,33 +201,24 @@ describe('a tap on a clash goes where its instruction says (D827)', () => {
     const sheet = document.querySelector('[data-testid="daylist-sheet"]')
     return { sheet, approve: sheet?.querySelector('[data-testid^="dl-approve-"]') ?? null }
   }
-  it('on the page: "Decide the bid" opens the sheet where that bid is decided, for that person and that day', () => {
+  /* ONE draw of the whole page for both claims: the page with its year of days is the dearest thing these tests draw
+     (it ran past the suite's 20 seconds under the full run's load when drawn three times), so it has a minute. The
+     PHONE's row makes the very same call (the test above pins what it asks of the store), and the whole route on a
+     real phone is e2e/leavewar.spec.ts. */
+  it('on the page: "Decide the bid" opens the sheet where that bid is decided, for that person and that day — and a sheet he then closes is not opened again by a later draw', () => {
     aBid()
-    const { getByTestId } = render(<LeaveWarPage active={true} />)
+    const { getByTestId, rerender } = render(<LeaveWarPage active={true} />)
     expect(decidingSheet().sheet, 'no sheet is open before the tap').toBeNull()
     fireEvent.click(getByTestId('clash-go-0'))
     const { sheet, approve } = decidingSheet()
     expect(flat(sheet), 'his day, by name and date').toMatch(new RegExp(`^${cs('plasma')}Sat 18 Jul`))
     expect(approve, 'the bid’s own Approve is on it').toBeTruthy()
-  })
-
-  it('on a phone the row does the same', () => {
-    asPhone(); aBid()
-    const { getByTestId } = render(<LeaveWarPage active={true} />)
-    fireEvent.click(getByTestId('clash-row-0'))
-    expect(decidingSheet().approve).toBeTruthy()
-  })
-
-  it('the sheet he then closes is not opened again by a later draw of the page', () => {
-    aBid()
-    const { getByTestId, rerender } = render(<LeaveWarPage active={true} />)
-    fireEvent.click(getByTestId('clash-go-0'))
     fireEvent.click(getByTestId('daylist-close'))
     expect(decidingSheet().sheet).toBeNull()
     rerender(<LeaveWarPage active={false} />)
     rerender(<LeaveWarPage active={true} />)
     expect(decidingSheet().sheet, 'leaving the tab and coming back opens nothing').toBeNull()
-  })
+  }, 60_000)
 })
 
 describe('on a phone the note is a line of its own that opens its list (D805, D823, D827)', () => {

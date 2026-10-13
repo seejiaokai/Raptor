@@ -1,5 +1,36 @@
 # The file map — where each source file lives and what it does
 
+`[LW-CLASH-NOTE-PHONE]`, `[NOTES-SHORTER]`, `[LOOK-13OCT-SMALL-FIXES]` — the three approved builds of 14 Oct 26, one batch
+(D827, D828, D830, D831, D837–D841). **No new source file; what each existing one gained:**
+`src/leavewar/ui/Chrome.tsx` — the clash note: on a phone a line of its own after the two lines of buttons that opens its
+list (`clashWhat`, `goClash`), on wider screens the strip in the same words; `src/leavewar/ui/chrome.css` (its rules, every
+class named `clash…`); `src/leavewar/state/store.ts` — `focusDay(date, { open })` and `takeFocusOpen`, taken once by
+`src/leavewar/ui/Matrix.tsx`; `src/leavewar/sync.ts` — a clash carries its period and, where leave filed on the Inputs page
+is in the way, that input (`war`, `iid`), `openInputWindow`, and the OIL line's two halves for the publish note's join.
+`src/ui/toast.ts` — a note's third argument (`ToastPart`: two notes about one day name it once) and the phone's width;
+`src/engine/publish.ts` — `LOCKED_WEEK_NOTE`, `lockedDayNote` (one source for seven places). `src/ui/OilConfirm.tsx` — the
+words of record, the flat answers' row, the outline look, Back / Add; `src/ui/sheetfocus.ts` — the ✕ last by keyboard, and
+a sheet may name where the keys land; `src/ui/OilWaitSheet.tsx` — the bar as a band (`OilBar` the top bar's, `OilBand` a
+full-screen surface's, `useOilBarTop`), one line always, its keyboard; `src/ui/Shell.tsx`, `SchedBoard.tsx`,
+`MedicalView.tsx`, `SaveStatus.tsx` (where the band sits, and "Not saved" above it); `src/ui/scheduler/17-save-status.css`
+(`.oilband`, the amber line under a band), `08-windows-tools.css` (the ✕ in the corner), `14-input-editors.css`
+(`.oilconf-answers`, `.on-pick`). `src/ui/DateCal.tsx`, `DateBox.tsx` — `max`, Home / End, Shift+Page, Enter on the title
+and in a list, the phone card's name (`cardName`); `26-date-calendar.css`; `src/tracker/components/DateBox.jsx`
+(`noFuture`, Delete), `Pop.jsx`, `SidePanel.jsx`, `src/tracker/tracker.css`.
+**New tests:** `src/leavewar/clashperiod.test.tsx` (a clash in another period), `src/ui/oilconfirm-look.test.tsx` (the OIL
+question's words, look and keys; the bar), `src/ui/datecal-look.test.ts` (the calendar's and the Tracker boxes' style
+rules, read as contracts), `src/ui/noteswords.test.ts` (every reworded note to the letter, read off the source — words, not
+behaviour), `src/engine/lockednote.test.ts`, `src/ui/toastplace.test.tsx`, `src/ui/unpublish-button.test.tsx`,
+`src/ui/oilperiod-offer.test.tsx`; `src/leavewar/clashwayout.test.tsx`, `src/ui/toastbatch.test.ts`,
+`src/leavewar/publishdoor.test.ts`, `e2e/leavewar.spec.ts` and `e2e/oilwait.spec.ts` extended.
+**New, outside `src/`:** the bar's drawing `docs/mock/oil-band-14oct.html` with `docs/mock/2026-10-14-oil-band/` and its
+script `scripts/handpass/dl-band.mjs`; the check's sheet `docs/handpass/2026-10-14-three-builds.md`, its pictures and key
+record `docs/img/handpass/2026-10-14-three-builds/`, the walkers' brief
+`docs/superpowers/briefs/2026-10-14-three-builds-walk-brief.md`; the walk's scripts, each line an assertion —
+`scripts/handpass/dl-clash-built.mjs`, `dl-band-built.mjs`, `dl-check.mjs` (the shared grammar of a check), and `dl-oil.mjs`,
+`dl-cal.mjs`, `dl-trk.mjs`, `dl-keys.mjs` rewritten from records of what was found into checks of what was built
+(`dl-lib.mjs` takes its folder from `DL_SHOTS`); the walkers' own scripts `scripts/handpass/tb/`.
+
 `[DESIGN-LOOK-13OCT]` — the design page of 13 Oct 26 (D805, D806, D807): NO source file changed. **New, all outside `src/`:**
 the page `docs/mock/design-look-13oct.html` and its pictures `docs/mock/2026-10-13-design-look/` (with `keyboard.json`,
 one row per key pressed); the record for the next agent `docs/handpass/2026-10-13-design-look.md`; the scripts that

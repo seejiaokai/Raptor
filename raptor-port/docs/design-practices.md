@@ -326,7 +326,7 @@ built on his word — it is not a statement that the app does it today.**
 | A menu button | Enter, Space or ↓ opens it on its first item; arrows move; Escape closes and returns to the button |
 | A fold ("How this works", a section) | its heading is a real button; Enter and Space open and close it; it says whether it is open |
 | A list to pick from | arrows move the choice; Enter picks; one Tab stop |
-| A date calendar | arrows by day and week; Page Up / Down by month; Enter or Space picks; a way to today; Home / End to the week's ends (**not built in today's calendar — a gap for the sweep**); a way to clear ON THE BOX where a date may be empty (the calendar itself has none — D796) |
+| A date calendar | arrows by day and week; Page Up / Down by month; Enter or Space picks; a way to today; Home / End to the week's ends (built 14 Oct 26 with Shift + Page for a year — the sweep's K1, K2: D830); a way to clear ON THE BOX where a date may be empty (the calendar itself has none — D796) |
 | A text box | Enter and Escape keep the meanings the schedule gives them (D544, D732); Tab follows the ruled route on the schedule (D554, D555) |
 | A dangerous question | the keyboard starts on the SAFE answer |
 
