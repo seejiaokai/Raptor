@@ -42,6 +42,8 @@ describe('[LW-ROWS-SPLIT] opening an unrelated sheet repaints no row and no mont
     count.month = 0; count.row = 0
     fireEvent.click(screen.getByTestId('person-ramp'))
     expect(count.row, 'PersonRow is memoised: no row ran again').toBe(0)
-    expect(count.month, 'PersonMonth is memoised: no month ran again').toBe(0)
+    /* (no month ran either — but that is the ROW's memo at work: a month is reached only through its row. The month's
+       own memo is not pinned by any test — `OUTSTANDING.md` `[LW-MONTH-MEMO-UNPINNED]`) */
+    expect(count.month, 'no month ran again').toBe(0)
   })
 })

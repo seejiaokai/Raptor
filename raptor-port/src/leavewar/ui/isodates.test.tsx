@@ -70,7 +70,12 @@ describe('the sentences built beside the sheets', () => {
     for (const w of why) expect(w, w).not.toMatch(/\$\{it\.date\}/)
   })
   it('the move banner\'s refusal and the PO tag\'s hover print the day day-first', () => {
-    const s = src('./Matrix.tsx')
+    /* the move banner is the grid file's; the PO tag's hover went to MatrixRows.tsx with the rows ([LW-ROWS-SPLIT],
+       13 Oct 26 — the Opus read: read from Matrix.tsx alone, the two PO checks passed whatever the rows file said) */
+    const rows = src('./MatrixRows.tsx')
+    expect(rows, 'the premise: the PO tag\'s hover sentences are in the rows file').toMatch(/posts out /)
+    expect(rows).toMatch(/was posted out /)
+    const s = src('./Matrix.tsx') + rows
     expect(s).not.toMatch(/That lands on \$\{r\.at\}/)
     expect(s).not.toMatch(/posts out \$\{addDays\(/)
     expect(s).not.toMatch(/was posted out \$\{addDays\(/)

@@ -1,0 +1,32 @@
+[
+  {
+    "n": 1,
+    "name": "a row's markup is recorded: a class on a day cell changed is caught",
+    "file": "src/leavewar/ui/MatrixRows.tsx",
+    "find": "className=\"who\"",
+    "put": "className=\"who2\"",
+    "tests": [
+      "src/leavewar/ui/matrix-rows.test.tsx"
+    ]
+  },
+  {
+    "n": 2,
+    "name": "PersonRow is memoised",
+    "file": "src/leavewar/ui/MatrixRows.tsx",
+    "find": "export const PersonRow = memo(function PersonRow(",
+    "put": "export const PersonRow = ((x: any) => x)(function PersonRow(",
+    "tests": [
+      "src/leavewar/ui/matrix-rows-memo.test.tsx"
+    ]
+  },
+  {
+    "n": 4,
+    "name": "the PO tag's hover is read from the rows file: an ISO date printed there is caught",
+    "file": "src/leavewar/ui/MatrixRows.tsx",
+    "find": "posts out ${shortDate(addDays(p.to!, 1))}",
+    "put": "posts out ${addDays(p.to!, 1)}",
+    "tests": [
+      "src/leavewar/ui/isodates.test.tsx"
+    ]
+  }
+]

@@ -2,8 +2,9 @@
    out of Matrix.tsx on 13 Oct 26 (`[LW-ROWS-SPLIT]` — owner D493, D775; Astra's tidiness read §1). A move, not a
    rewrite: every line below is as it stood there, with `export` added to what the grid file still uses. Matrix.tsx
    keeps the controller — state, geometry, selection, the sheets; this file is the paint job of one person's row.
-   Nothing on screen changed: `matrix-rows.test.tsx` recorded every row before the move and holds it after. The
-   memo firewall is these two components' own (`docs/performance.md` §E) — a prop added here is a repaint to argue for. */
+   Nothing on screen changed: `matrix-rows.test.tsx` recorded every row before the move and holds it after. The row
+   memo and the per-month memo are these two components' own (`docs/performance.md` §E — "Day cells stay one memoised
+   `PersonMonth` per month") — a prop added here is a repaint to argue for; `matrix-rows-memo.test.tsx` pins the row's. */
 import { memo, useMemo, type MutableRefObject, type PointerEvent as ReactPointerEvent, type RefCallback } from 'react'
 import { shortDate } from './dates'
 import { addDays, canEditCell, canEditRow, catClass, catText, codeOf, displayCell, inSquadron, beforeFirstStint, lastDayIn, isBiddable, isDuty, figureLines, isWeekend, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureCtx } from '../engine'
@@ -12,7 +13,6 @@ import { FigureCell, show } from './FigureCell'
 import { touchesAM, touchesPM, winsOf, type DayView } from '../engine/dayview'
 import type { Portion } from '../engine'
 import { outcomeOf } from '../engine'
-import { leaveInputAt } from '../sync'
 import type { Views } from '../engine/dayview'
 
 /* The two kinds of row the one drag machine (startRowDrag) can reorder. */

@@ -1,6 +1,6 @@
 import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type RefCallback, type TouchEvent } from 'react'
 import { dayLabel, shortDate, shortSpan } from './dates'
-import { addDays, balanceOf, biddingClosed, canDecide, canEditCell, canEditRow, catClass, catText, codeOf, columnKindFor, displayCell, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, beforeFirstStint, lastDayIn, postingSheetFor, isBiddable, isDuty, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, figureForLeave, figureLines, dayName, inBidWindow, isWeekend, monthsIn, oilLedgerOf, parseCell, raptorOwns, shiftedFrom, stateOf, defaultFocusDate, type Group, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureCtx } from '../engine'
+import { addDays, biddingClosed, canDecide, canEditCell, canEditRow, catClass, catText, codeOf, columnKindFor, displayCell, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, figureForLeave, figureLines, dayName, inBidWindow, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, defaultFocusDate, type Person, type Period, type DayInfo, type Grid } from '../engine'
 import { awardsOnDay, balanceAfterFill, clearRecordById, figureCtxOf, oilOnDay, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
@@ -34,7 +34,7 @@ import { leaveInputAt, openDays, postOut, postOutProblem, undoPostOut, undoPostO
 import { columnInView } from './inview'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
-import { GROUP_DRAG, GROUP_PRIO_DRAG, MANNING_DRAG, NO_QUALS, PersonMonth, PersonRow, type QualPill, type RowApi, type RowDragCfg, cellOpenable, freeHalfBeside, ownAwardAlone, setPhWidth } from './MatrixRows'
+import { GROUP_DRAG, GROUP_PRIO_DRAG, MANNING_DRAG, NO_QUALS, PersonRow, type QualPill, type RowApi, type RowDragCfg, freeHalfBeside, ownAwardAlone, setPhWidth } from './MatrixRows'
 import './matrix.css'
 
 /** A posting through the store, or the sentence saying why it was refused (the absence-record re-test, AB5, 26 Sep
