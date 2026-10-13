@@ -176,7 +176,9 @@ const FILES = [
   /* 80 -> 90, 28 Sep 26 (owner, D390): the recording steps now say where a full row and its short line go, and how a
      merge across the slim-down runs — live rules every chat that records a ruling follows (D141: the ceiling rises
      with its reason). */
-  ['DECISIONS.md',                       1,   90],
+  /* DECISIONS.md 90 -> 92 (13 Oct 26, D802): the map gained ONE row - the Inputs pages' own rulings file - and that
+     row belongs there (D141: a line needed where it sits). Two lines of room, not a target. */
+  ['DECISIONS.md',                       1,   92],
 ]
 /* THE AREA RULINGS FILES — a tripwire in UTF-8 BYTES of the whole file, frontmatter and every section included (owner,
    D390 narrowing D141, 28 Sep 26): since each ruling became ONE short line, a line count cannot see a file growing
@@ -202,7 +204,12 @@ const RULING_BYTES = [
      still whole) - fifteen rulings on how the one-rule job is run and reviewed (D752-D766) and two on the order of work
      since. None is spent or replaced, and a ruling is never trimmed (D136). The spent one-off permissions among them
      (D749, D746 - the shared-row job's readers) are for the next rulings pass to mark and archive, not for this number. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 28000],
+  /* how-we-work 28000 -> 30000 (13 Oct 26): the file crossed the marker (28,480 bytes) when the night's rulings on how
+     the run itself is worked (D799) and where the Inputs pages' rulings live (D802) met the skill-notes review's
+     (D794, D810, D811) and D785-D790. None is trimmed (D136). The one-off permissions among them that are now spent
+     (the skill-notes review's, the one-rule and shared-row jobs' readers) are for the rulings pass to mark and archive -
+     OUTSTANDING.md [RULINGS-SPENT-PASS] - which is what brings this file back down, not this number. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 30000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
@@ -221,7 +228,14 @@ const RULING_BYTES = [
   /* scheduler 106000 -> 109000 (13 Oct 26): 106,294 bytes with D795-D797 - his answers on the Calendar window on a phone
      and the one date calendar, all live (D795 is narrowed by D796, not replaced). His question [SCHEDULER-RULINGS-SIZE]
      is still WITH HIM and still due - put to him again the same day; this is room until he answers, not a target. */
-  ['.claude/rules/decisions/scheduler.md', 2, 109000],
+  /* scheduler 109000 -> 90000, and a NEW area, the Inputs pages, 32000 (13 Oct 26 - owner D802, his answer to
+     [SCHEDULER-RULINGS-SIZE]: "the Inputs pages get a rulings file of their own"). 101 rulings moved out of the
+     scheduler's file whole, by the script (backlog-archive.mjs --rulings --move-rows), none reworded: the Inputs list
+     and calendar, the SANS calendar, the Calendar window, an input's own window and card. The scheduler's file holds
+     84,3xx bytes after it (218 rulings, its settled notes and its pointer) and the new file 27,1xx; each marker is set about a tenth above what its file holds - a
+     tripwire for the next look, never a number to cut to (D141), and a ruling is never trimmed (D136). */
+  ['.claude/rules/decisions/scheduler.md', 2, 90000],
+  ['.claude/rules/decisions/inputs.md', 2, 32000],
   /* 12000 until 12 Oct 26: raised for D780–D782 (the OIL question a holiday or a swap leaves open) — three live
      rulings of this area, none replaced; a rulings file is never trimmed (D136, D390) */
   ['.claude/rules/decisions/oil.md',     2, 14000],
