@@ -49,6 +49,7 @@ import { answerOilWait, leaveOilWait, oilBarAgain, oilBarOk, WAIT_WORDS } from '
 import { markLand, pendingLand } from './lift'
 import { commitChipMove } from './caldrag'
 import { reassignInput } from './inputedit'
+import { routeClick } from './interactions'
 import { toast as realToast } from './toast'
 import { WARN } from '../engine/validate'
 import { warnKey } from '../state/dropflag'
@@ -688,5 +689,137 @@ describe('the two code reads — each claim reproduced before it was believed', 
     leaveOilWait()
     expect(row.classList.contains('lift-land'), 'the man on the row').toBe(true)
     expect(source.classList.contains('lift-land'), 'and the puck that was dragged, again').toBe(true)
+  })
+})
+
+/* AN INPUT PUT BACK ON THE PROGRAMME WAITS ON ITS OIL QUESTION TOO (owner D793, 13 Oct 26 — "Yes it should wait on it";
+   `[OIL-ACCEPT-BACK-UNASKED]`, found by the Opus read of [OIL-ASK-NOTIFY]). An input is taken off the programme; its day
+   is then made a holiday, or it never had an answer; a scheduler puts it back with "Accept" on its card or line. It now
+   needs an OIL answer — and the Accept asked nothing. D783's rule at one more door: the question FIRST, the put-back
+   only on an answer; not answered, it is not put back and the bar says so. An Undo of the take-off asks nothing — an
+   Undo never asks a question (D793's reading 3). The button is pressed here the way the page presses it: through the
+   click router, on a button carrying the card's own three marks. */
+describe('an input put BACK on the programme where it needs an OIL answer is NOT put back until it is answered (D793) (ON9)', () => {
+  const press = (dest: 'g' | 'x', di = SAT, title = TITLE) => {
+    const b = document.createElement('button')
+    b.dataset.acc = dest; b.dataset.accd = String(di); b.dataset.acck = String(inpId(rec(di, title)))
+    document.body.appendChild(b)
+    try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+  }
+  /* on the programme with no answer (the state a day made a holiday afterwards leaves), then taken off by a scheduler */
+  const takenOff = (oil?: Record<string, number>, di = SAT) => {
+    file(['bane'], di, oil)
+    expect(riOf(di), 'the premise: it is on the programme').toBeGreaterThanOrEqual(0)
+    press('x', di)
+    expect(rec(di).acc, 'the premise: taken off').toBe('r'); expect(riOf(di)).toBe(-1)
+    SAID = []
+  }
+
+  it('Accept on an input with no answer: nothing is put back, and the question waits with its own words', async () => {
+    await boot()
+    takenOff()
+    const was = world()
+    press('g')
+    expect(world(), 'NOTHING moved: the inputs, the day, the history, the bell, Undo').toBe(was)
+    expect(riOf(), 'not on the programme').toBe(-1)
+    const w = view.OILWAIT!
+    expect(w, 'the question waits').toBeTruthy()
+    expect(w.kind).toBe('back')
+    expect(w.lead).toBe(`Putting ${cs('bane')}'s ${TITLE} back on the programme`)
+    expect(w.gate.plan).toEqual([{ iso: SAT_ISO, amt: 0.5 }])
+    expect(pops.INPEDIT, 'no window of the input behind it').toBeNull()
+    expect(SAID, 'and nothing is said yet').toEqual([])
+  })
+
+  it('answered: it is back on the programme WITH its answer — one step, and one Undo takes both away', async () => {
+    await boot()
+    takenOff()
+    press('g')
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    expect(view.OILWAIT).toBeNull(); expect(view.OILBAR).toBeNull()
+    expect(riOf(), 'on the programme again').toBeGreaterThanOrEqual(0)
+    expect(rec().acc).toBe('g')
+    expect(rec().oil, 'the answer given with the put-back').toEqual({ [SAT_ISO]: 0.5 })
+    expect(SAID.join(' | ')).toContain(`${cs('bane')}'s ${TITLE} added to the ground programme`)
+    globalUndo()
+    expect(riOf(), 'ONE Undo: off the programme again').toBe(-1)
+    expect(rec().acc).toBe('r')
+    expect(rec().oil || {}, 'and unanswered again').toEqual({})
+  })
+
+  it('a No is an answer: it is put back, and counted for nothing', async () => {
+    await boot()
+    takenOff()
+    press('g')
+    expect(answerOilWait({ [SAT_ISO]: 0 })).toBe(true)
+    expect(riOf()).toBeGreaterThanOrEqual(0)
+    expect(rec().oil).toEqual({ [SAT_ISO]: 0 })
+  })
+
+  it('not answered: it is NOT put back; the bar says so; "Answer OIL" brings the question back; "OK" only closes', async () => {
+    await boot()
+    takenOff()
+    const was = world()
+    press('g')
+    leaveOilWait()
+    expect(world(), 'nothing made, nobody told').toBe(was)
+    expect(view.OILWAIT).toBeNull()
+    expect(view.OILBAR!.text).toBe('Not put back — OIL not answered')
+    expect(WAIT_WORDS.back).toEqual({ no: 'Don’t put back', yes: 'Put back', not: 'Not put back — OIL not answered' })
+    oilBarAgain()
+    expect(view.OILBAR, 'the bar goes while the question is up').toBeNull()
+    expect(view.OILWAIT!.kind).toBe('back')
+    expect(answerOilWait({ [SAT_ISO]: 0.5 }), 'and answered from there it is put back').toBe(true)
+    expect(riOf()).toBeGreaterThanOrEqual(0)
+    press('x'); press('g'); leaveOilWait(); oilBarOk()
+    expect(view.OILBAR).toBeNull(); expect(view.OILWAIT).toBeNull()
+  })
+
+  it('where nothing is to be asked — it is answered already, or the day is a working day — Accept puts it back at once, as before', async () => {
+    await boot()
+    takenOff({ [SAT_ISO]: 0 })
+    press('g')
+    expect(view.OILWAIT, 'answered already (a No is an answer): no question').toBeNull()
+    expect(riOf()).toBeGreaterThanOrEqual(0)
+    expect(SAID.join(' | ')).toContain('added to the ground programme')
+    takenOff(undefined, WED)
+    press('g', WED)
+    expect(view.OILWAIT, 'a working day: no question').toBeNull()
+    expect(riOf(WED)).toBeGreaterThanOrEqual(0)
+  })
+
+  it('an Undo of the take-off puts the input back as it was and asks nothing (D793, reading 3)', async () => {
+    await boot()
+    takenOff()
+    globalUndo()
+    expect(riOf(), 'back on the programme').toBeGreaterThanOrEqual(0)
+    expect(view.OILWAIT, 'an Undo never asks a question').toBeNull()
+    expect(view.OILBAR).toBeNull()
+  })
+
+  it('"Answer OIL" after it was put back another way says so and asks nothing', async () => {
+    await boot()
+    takenOff()
+    press('g'); leaveOilWait()
+    globalUndo()                                   // the take-off undone: it is on the programme again
+    expect(riOf()).toBeGreaterThanOrEqual(0)
+    SAID = []
+    const was = world()
+    oilBarAgain()
+    expect(view.OILWAIT, 'no question for a put-back that is no longer one').toBeNull()
+    expect(world(), 'and nothing written').toBe(was)
+    expect(SAID.join(' | ')).toMatch(/has changed — not put back/)
+  })
+
+  it('on a PUBLISHED day nothing waits to go out until the answer is given', async () => {
+    await boot()
+    takenOff()
+    sign(SAT); commitSetDayApproved(SAT, true)
+    expect(dayPendingItems(SAT).length, 'the premise: nothing pending').toBe(0)
+    press('g')
+    expect(view.OILWAIT!.kind).toBe('back')
+    expect(dayPendingItems(SAT).length, 'asked: still nothing pending').toBe(0)
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    expect(dayPendingItems(SAT).length, 'answered: the put-back waits to go out').toBeGreaterThan(0)
   })
 })

@@ -29,8 +29,8 @@ import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
 import { iuParts } from '../engine/keys'
-import { howMany, reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
-import { oilWaitThen } from './oilwait'
+import { howMany, reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt, commitInputEdit, draftOf, dryRun, oilGate, saveBatchX } from './inputedit'
+import { oilWaitThen, holdForOil } from './oilwait'
 import { openAvailWinFrom } from './AvailWindow'
 import { withDaySnap, lateMates } from './html'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu, switchDraft, SBWOPEN } from './board'
@@ -668,6 +668,11 @@ export function routeClick(e: MouseEvent) {
     const di = +ab.dataset.accd!, k = ab.dataset.acck!, dest = ab.dataset.acc!
     const inp = INPUTS.find((x: any) => inpId(x) === k)
     if (!inp) { HOOKS.toast('That input is no longer there', 'warn'); return }
+    const find = () => INPUTS.find((x: any) => inpId(x) === k)
+    /* THE PUT-BACK OR THE TAKE-OFF ITSELF, and what it says. `oil`: the answer a put-back is made WITH (below) — the
+       answer and the put-back are then ONE command, one Undo. (The body keeps the indentation it had before it was
+       given a name, so the change reads as the change.) */
+    const run = (inp: any, oil?: Record<string, number>): boolean => {
     /* read BEFORE the write: which day's row an Undo takes off ([REQ-DOOR-WORDS] 2 — the card is drawn on every day the
        request covers, its one row stands on one of them), and whether an Accept adopts a row already standing
        ([REQ-ORPHAN-ROW] 3 — a "taken off" request whose own row came back with a plan) */
@@ -695,7 +700,9 @@ export function routeClick(e: MouseEvent) {
       }
     }
     const armWas = view.armedRowKey()
-    let ok = dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
+    let ok = oil
+      ? saveBatchX(() => { const x = find(); return !!x && !!commitInputEdit(x, draftOf(x), undefined, undefined, { sched: true, oil }) && !!acceptInput(di, find(), dest) }).ok
+      : dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
     if (armWas && view.armedRowKey() !== armWas) view.disarmSlot()
     if (ok) {
       /* SAID ONCE, to the scheduler and to the log, in the same words — the
@@ -730,7 +737,8 @@ export function routeClick(e: MouseEvent) {
          second writer here doubled it (Fable's final read, F1 — the test that pinned "one line" set its input up raw,
          which hid the double) */
       HOOKS.toast(said, 'ok')
-      view.afterSchedMutate()
+      /* (made with its answer, it was its own command already — a second one here would be a second Undo step) */
+      if (!oil) view.afterSchedMutate()
     } else {
       /* A REFUSED PRESS IS NEVER SILENT ([HUMAN-RETEST] walk W4-F3, 24 Sep 26): "→ Ground" on an
          input whose row is already on the programme, or on a locked week, used to do nothing at
@@ -747,6 +755,39 @@ export function routeClick(e: MouseEvent) {
         : away ? `${cs}'s ${inpLabel(inp)} is already on the programme — on ${isoDayWords(away.iso)}; load that week to change it`
         : `${cs}'s ${inpLabel(inp)} can't be changed here right now`, 'warn')
     }
+    return !!ok
+    }
+    /* AN INPUT PUT BACK ON THE PROGRAMME WAITS ON ITS OIL QUESTION, AS A SWAP DOES (owner D793, 13 Oct 26 — "Yes it
+       should wait on it"; D783's rule at one more door; `[OIL-ACCEPT-BACK-UNASKED]`). An input taken off the programme
+       whose day was then made a holiday — or that never had an answer — came back at a scheduler's Accept with nobody
+       asked. Now: where the input needs an answer the question comes FIRST and NOTHING is written; answered, the answer
+       and the put-back are one command; not answered, it is not put back and the bar says so ("Not put back — OIL not
+       answered" · Answer OIL · OK — ui/oilwait.ts). The put-back is TRIED and thrown away first, so one the save would
+       refuse (its row already on the programme, a locked week) is refused in its own words and nobody is asked a
+       question for it. The take-off asks nothing, and neither does an Undo of it (an Undo never asks — D793 reading 3). */
+    const press = (): string => {
+      const r = find()
+      if (!r) return 'none'
+      const off = (x: any) => !!x && x.acc !== 'g' && x.acc !== 'u'
+      let g: ReturnType<typeof oilGate> | null = null
+      if (dest !== 'x' && off(r)) { const say = HOOKS.toast; HOOKS.toast = () => {}; try { g = oilGate(draftOf(r), r) } finally { HOOKS.toast = say } }
+      if (!g || g.kind !== 'ask' || !dryRun(() => !!acceptInput(di, find(), dest))) {
+        const x = find()                       // a tried save puts every record back as a new object
+        return x && run(x) ? 'done' : 'refused'
+      }
+      const now = find()!
+      const many = idsOf(now).length, lead1 = leadOf(now)
+      const who = many > 1 ? howMany(idsOf(now)) : PEOPLE[lead1] ? PEOPLE[lead1].cs : lead1
+      holdForOil({
+        kind: 'back', lead: `Putting ${who}'s ${inpLabel(now)} back on the programme`,
+        places: [`sel:[data-acck="${k}"]`],
+        gate: { who: g.who, typeLabel: g.typeLabel, plan: g.plan, prev: g.prev },
+        redo: oil => { const x = find(); return !x || !off(x) ? 'none' : run(x, oil) ? 'done' : 'refused' },
+        ask: () => { const x = find(); return !x || !off(x) ? 'none' : press() },
+      })
+      return 'asked'
+    }
+    if (dest === 'x') run(inp); else press()
     return
   }
 

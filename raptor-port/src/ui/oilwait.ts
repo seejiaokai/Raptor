@@ -28,12 +28,15 @@ export const WAIT_WORDS: Record<OilWaitKind, { no: string; yes: string; not: str
   swap: { no: 'Don’t swap', yes: 'Swap', not: 'Not swapped — OIL not answered' },
   add: { no: 'Don’t add', yes: 'Add', not: 'Not added — OIL not answered' },
   move: { no: 'Don’t move', yes: 'Move', not: 'Not moved — OIL not answered' },
+  /* an input put BACK on the programme (the scheduler's Accept on its card or line — owner D793, 13 Oct 26) */
+  back: { no: 'Don’t put back', yes: 'Put back', not: 'Not put back — OIL not answered' },
 }
 /* the row, the seat or the men on them are no longer what the question was asked about */
 const CHANGED: Record<OilWaitKind, string> = {
   swap: 'That row has changed — not swapped',
   add: 'That row has changed — not added',
   move: 'That has changed — not moved',
+  back: 'That input has changed — not put back',
 }
 
 /** A door holds its change: nothing is written, the question is put. */
