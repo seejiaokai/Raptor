@@ -13,7 +13,9 @@ import { fileURLToPath } from 'node:url'
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const WHICH = process.argv[2] || 'phone'
 const [W, H, TOUCH] = WHICH === 'desktop' ? [1440, 900, false] : [390, 844, true]
-const OUT = resolve(ROOT, `docs/img/handpass/2026-10-13-tracker-date-boxes/look-${WHICH}`)
+/* LOOK_OUT: a run made as a DETECTOR (the break tests run this against builds broken on purpose) writes its pictures
+   somewhere else — the evidence folder holds only pictures of the true build */
+const OUT = process.env.LOOK_OUT ? resolve(process.env.LOOK_OUT, `look-${WHICH}`) : resolve(ROOT, `docs/img/handpass/2026-10-13-tracker-date-boxes/look-${WHICH}`)
 if (existsSync(OUT)) for (const f of readdirSync(OUT)) rmSync(join(OUT, f))
 mkdirSync(OUT, { recursive: true })
 console.log(`trk-datebox-look VERSION 6 — ${WHICH} ${W}x${H} -> ${OUT}`)

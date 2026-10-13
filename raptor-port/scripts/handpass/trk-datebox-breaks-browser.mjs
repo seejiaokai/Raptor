@@ -11,6 +11,8 @@
 // half-way, check `git status` and run `npm run build`.
 import { readFileSync, writeFileSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 
 const BREAKS = [
   { n: 1, name: 'a press on the calendar is kept from the page behind — the marking pop-up stays open under it',
@@ -33,7 +35,9 @@ const BREAKS = [
     expect: /FAIL .*takes the pop-up’s width/ },
 ]
 const only = process.argv[2] ? new Set(process.argv[2].split(',')) : null
-const run = cmd => spawnSync(cmd, { shell: true, encoding: 'utf8', timeout: 600000 })
+/* the look's pictures of a BROKEN build go to a scratch folder, never over the evidence pictures */
+const SCRATCH = join(tmpdir(), 'trk-datebox-breaks')
+const run = cmd => spawnSync(cmd, { shell: true, encoding: 'utf8', timeout: 600000, env: { ...process.env, LOOK_OUT: SCRATCH } })
 function put(file, text) { for (let i = 0; ; i++) { try { writeFileSync(file, text); return } catch (e) { if (i > 11) throw new Error(`could not write ${file} — CHECK IT IS NOT LEFT BROKEN: ${e}`); Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 250) } } }
 const out = []
 try {
