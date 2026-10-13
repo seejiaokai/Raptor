@@ -206,10 +206,21 @@ describe('undo / redo on the bar, for everyone (core.js)', () => {
     expect(await core.doUndo()).toBe(false)
   })
 
-  it('keystrokes into one date box within two seconds are ONE step', async () => {
+  /* RE-EXPRESSED 13 Oct 26 (owner D801 — a date is PICKED on the app's calendar, never typed; the read of the Tracker's
+     date boxes, F4). This test typed "2026-01-0" then "2026-01-05" into Last Flown and proved the two keystrokes were one
+     step. The rule it pinned still stands where a box is typed (the down days here; the pace) — and a date box has no
+     keystrokes any more: each day picked is a step of its own, so one Undo goes back one pick. */
+  it('keystrokes into one TYPED box within two seconds are ONE step; a date is picked, and each day picked is a step of its own', async () => {
     ;(core.dates as any)[Z] = { lastSyll: null, lastCurr: null }
-    await core.setLastCurr(Z, '2026-01-0'); await core.setLastCurr(Z, '2026-01-05')
+    await core.setDownDays(Z, '3'); await core.setDownDays(Z, '31')
+    expect(core.undoWhat()).toBe('the down days for STUDENT Z')
+    await core.doUndo()
+    expect((core.dates as any)[Z].downDays, 'both keystrokes were one step').toBeUndefined()
+    expect(core.canUndo()).toBe(false)
+    await core.setLastCurr(Z, '2026-01-04'); await core.setLastCurr(Z, '2026-01-05')
     expect(core.undoWhat()).toBe('Last Flown (Currency) for STUDENT Z')
+    await core.doUndo()
+    expect((core.dates as any)[Z].lastCurr, 'one Undo takes back ONE pick').toBe('2026-01-04')
     await core.doUndo()
     expect((core.dates as any)[Z].lastCurr).toBeNull()
     expect(core.canUndo()).toBe(false)
@@ -301,14 +312,18 @@ describe('dated failures and the day an event was done (core.js)', () => {
     delete (core.marks as any)[Z]['ST-03']
   })
 
-  it('re-dating one failure from the full list is one step per box and leaves the others alone', async () => {
+  /* RE-EXPRESSED 13 Oct 26 (D801; the read's F4): the two re-datings were two KEYSTROKES into one box and had to be one
+     step. A failure's day is picked now — two days picked are two steps, and the other failure is still left alone. */
+  it('re-dating one failure from the full list is one step per day picked and leaves the others alone', async () => {
     core.openPop('ST-02', at); await core.popFail(1); await core.popFail(1); core.closePop()
     await core.setFailDate(Z, 'ST-02', 0, '2026-07-01')
     await core.setFailDate(Z, 'ST-02', 0, '2026-07-02')
     expect(core.failDates(Z, 'ST-02')).toEqual(['2026-07-02', today])
     expect(core.undoWhat()).toBe('the date of ST-02 for STUDENT Z')
     await core.doUndo()
-    expect(core.failDates(Z, 'ST-02'), 'both keystrokes were one step').toEqual([today, today])
+    expect(core.failDates(Z, 'ST-02'), 'one Undo takes back ONE pick').toEqual(['2026-07-01', today])
+    await core.doUndo()
+    expect(core.failDates(Z, 'ST-02'), 'and the next, the one before it').toEqual([today, today])
   })
 
   it('a grade is dated the day it is pressed; the box re-dates it afterwards; Not done drops the day', async () => {

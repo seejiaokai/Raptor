@@ -349,5 +349,15 @@
     "tests": [
       "src/tracker/leftovers.test.tsx"
     ]
+  },
+  {
+    "n": 36,
+    "name": "a TYPED box still folds its keystrokes into one undo step (the down days) — the fold left only the date boxes",
+    "file": "src/tracker/app/core.js",
+    "find": "pushMarkUndo(s, 'the down days', 'downDays');",
+    "put": "pushMarkUndo(s, 'the down days');",
+    "tests": [
+      "src/tracker/tracker.test.tsx"
+    ]
   }
 ]
