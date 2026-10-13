@@ -31,6 +31,9 @@ export const WAIT_WORDS: Record<OilWaitKind, { no: string; yes: string; not: str
   move: { no: 'Don’t move', yes: 'Move', not: 'Not moved — OIL not answered' },
   /* an input put BACK on the programme (the scheduler's Accept on its card or line — owner D793, 13 Oct 26) */
   back: { no: 'Don’t put back', yes: 'Put back', not: 'Not put back — OIL not answered' },
+  /* an input of kind Other FILED under Unavailable (the scheduler's "→ Unavail" — owner D804, 13 Oct 26: every kind
+     that can earn is asked, wherever it is filed) */
+  file: { no: 'Don’t file', yes: 'File', not: 'Not filed — OIL not answered' },
 }
 /* the row, the seat or the men on them are no longer what the question was asked about */
 const CHANGED: Record<OilWaitKind, string> = {
@@ -38,6 +41,7 @@ const CHANGED: Record<OilWaitKind, string> = {
   add: 'That row has changed — not added',
   move: 'That has changed — not moved',
   back: 'That input has changed — not put back',
+  file: 'That input has changed — not filed',
 }
 
 /** A door holds its change: nothing is written, the question is put. */

@@ -1147,3 +1147,7 @@ Quals-tick-lifts-the-count integration — are pinned in
     re-derives, and the Raptor input the approval had minted is retracted — the
     behaviour `sync.ts`'s wiring note already anticipated. Pinned in
     `state/store.test.ts` §undo / redo and `ui/chrome.test.tsx`.
+
+## On a phone the "clashes with the schedule" note is squeezed at the right of the top row (owner D805, 13 Oct 26)
+
+His iPhone picture: the amber note takes whatever width the top row's buttons leave it — about a third of the screen — so two sentences wrap three words a line, the row grows to a third of the screen's height, and the round menu button lies over its corner. To be redesigned — its layout and where it sits — with a picture put to him first: `OUTSTANDING.md` `[LW-CLASH-NOTE-PHONE]`. The strip is `src/leavewar/ui/Chrome.tsx` (`.syncclash`, admin only).

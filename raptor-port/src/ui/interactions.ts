@@ -783,7 +783,11 @@ export function routeClick(e: MouseEvent) {
        and the put-back are one command; not answered, it is not put back and the bar says so ("Not put back — OIL not
        answered" · Answer OIL · OK — ui/oilwait.ts). The put-back is TRIED and thrown away first, so one the save would
        refuse (its row already on the programme, a locked week) is refused in its own words and nobody is asked a
-       question for it. The take-off asks nothing, and neither does an Undo of it (an Undo never asks — D793 reading 3). */
+       question for it. The take-off asks nothing, and neither does an Undo of it (an Undo never asks — D793 reading 3).
+       "→ UNAVAIL" WAITS THE SAME WAY (owner D804, 13 Oct 26 — "As long as leave and medical they don't earn oil. For
+       others just ask the OIL question, it may or may not credit OIL"): an Other filed under Unavailable is still a
+       kind that asks and earns on its Yes (engine/oilev.ts landedStanding), so filing it there with nobody asked left
+       the same open question D793 closed at Accept. Its own words — "Filing … under Unavailable", "Not filed". */
     const press = (): string => {
       const r = find()
       if (!r) return 'none'
@@ -792,8 +796,7 @@ export function routeClick(e: MouseEvent) {
          can be changed under it (the Opus read, F5 — a row was written on a day it no longer covered) */
       const here = (x: any) => !!DAYS[di] && inputCoversDate(x, DAYS[di].dt)
       let g: ReturnType<typeof oilGate> | null = null
-      /* (only the PROGRAMME: "→ Unavail" files an Other under Unavailable, where it is off the programme — nothing asks) */
-      if (dest === 'g' && off(r)) { const say = HOOKS.toast; HOOKS.toast = () => {}; try { g = oilGate(draftOf(r), r) } finally { HOOKS.toast = say } }
+      if ((dest === 'g' || dest === 'u') && off(r)) { const say = HOOKS.toast; HOOKS.toast = () => {}; try { g = oilGate(draftOf(r), r) } finally { HOOKS.toast = say } }
       if (!g || g.kind !== 'ask' || !dryRun(() => !!acceptInput(di, find(), dest))) {
         const x = find()                       // a tried save puts every record back as a new object
         return x && run(x) ? 'done' : 'refused'
@@ -802,7 +805,9 @@ export function routeClick(e: MouseEvent) {
       const many = idsOf(now).length, lead1 = leadOf(now)
       const who = many > 1 ? howMany(idsOf(now)) : PEOPLE[lead1] ? PEOPLE[lead1].cs : lead1
       holdForOil({
-        kind: 'back', lead: `Putting ${who}'s ${inpLabel(now)} back on the programme`,
+        ...(dest === 'u'
+          ? { kind: 'file' as const, lead: `Filing ${who}'s ${inpLabel(now)} under Unavailable` }
+          : { kind: 'back' as const, lead: `Putting ${who}'s ${inpLabel(now)} back on the programme` }),
         places: [`sel:[data-acck="${k}"]`],
         /* headed for EVERYONE the one answer is written for (D762), as every other door of the question says it */
         gate: { who: inputWho(now) || g.who, typeLabel: g.typeLabel, plan: g.plan, prev: g.prev },

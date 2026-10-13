@@ -207,5 +207,7 @@ does one lookup more for a seat of an input's row).
 
 **HIS ANSWER, 13 Oct 26 — D803:** *"Unavail will not earn oil. So why ask oil question?"*, then *"Means that everything in medical and leave inputs will not earn oil"*. The button stays as built (it asks nothing) and the recommendation above is withdrawn. The question was badly put — no example, and "it still needs its OIL answer" stated as if settled. Reading the code for his answer found what is really open, and older than this batch: an "Other" filed under Unavailable still earns on its Yes and still wears its "OIL?" tag. Put to him again with an example, recommended "earns nothing, never asked": `[UNAVAIL-FILE-OIL-ASK]`.
 
+**HIS SECOND ANSWER, the same morning — D804 (it replaces D803):** *"Disregard my unavailable statement on OIL. As long as leave and medical they don’t earn oil. For others just ask the OIL question, it may or may not credit OIL."* The recommendation "earns nothing" is refused: an Other filed under Unavailable goes on asking and earning on its Yes, as built. "Just ask the OIL question" is read as yes to the question first put — "→ Unavail" puts the question first, as "Accept" does — and that is built on this branch; its check is §14.
+
 **Told, not asked:** the three new phrases; left unanswered, the Accept button itself flashes; a note still on screen is
 taken down when any OIL question is put; a man who replaced an input's only person wears History's dot too.
