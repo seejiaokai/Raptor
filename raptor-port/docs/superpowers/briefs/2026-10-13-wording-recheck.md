@@ -1,8 +1,8 @@
-# The wordings of 13 Oct 26, rechecked against the writing guide (`[SKILL-FUSION-WRITING]` step 4 — D833, D834)
+# The wordings of 13 Oct 26, rechecked against the writing guide — APPROVED 14 Oct 26, THE WORDINGS OF RECORD (`[SKILL-FUSION-WRITING]` step 4 — D833, D834; D837, D838, D839)
 
 **What this is.** Every wording he approved on the design page (`raptor-port/docs/mock/design-look-13oct.html` — the
 passing notes N1–N33, D829; the clash note's words, D827; the OIL question's words, D830) read again against the
-finished writing guide (`raptor-port/docs/design-practices.md` §1, §1a, §1b). **PROPOSED, NOT APPROVED, NOTHING BUILT.**
+finished writing guide (`raptor-port/docs/design-practices.md` §1, §1a, §1b). **APPROVED BY HIM ON 14 OCT 26 — "All approved as recommended": List 1 and the two tables are D837, List 2 is D838, List 3 is D839 — all ten rows, each REPLACING its note's wording in Lists 1 and 2 (N4, N6, N9, N10's second line, N15, N19, N24, N28, "Left OIL Earn", the OIL question's small print). The two ruled bars stay as they are. NOTHING IS BUILT YET: these are the words to build, in place of the design page's §2 (D829, replaced).**
 The page that puts it to him: `raptor-port/docs/mock/writing-guide-13oct.html`. The designs he approved stand; only
 words are here.
 
@@ -12,7 +12,7 @@ guide's third read — a fresh Opus reader and Fable, blind to each other — ch
 every "checked in the app" against the code (`2026-10-13-writing-guide-reads-2.md`). Word counts are a check, never a
 target (§1a test 11), counted by a script; **"longer" marks a wording that ends longer than the app's today** (§1b).
 
-## List 1 — the thirteen he approved reworded (D829): twelve to build, one that can never show
+## List 1 — the thirteen he approved reworded: twelve to build, one that can never show (APPROVED — D837)
 
 | # | In the app today | Approved 13 Oct | Proposed now | What changed from the approved wording — and what is cut or swapped since today | Words: today · approved · now |
 |---|---|---|---|---|---|
@@ -31,7 +31,7 @@ target (§1a test 11), counted by a script; **"longer" marks a wording that ends
 | N26 | A medical entry is one person's own. Take the other people out and save first — then change its kind. | A medical entry is one person's own — take the other people out and save, then change its kind | A medical entry is one person's own. Take the other people out and save, then change its kind. | the dash the approved wording had put in goes back to today's full stop. Since today: "first" cut (a helper word — "then" carries the order) | 19 · 18 · 18 |
 | N33 | Shortcut to the Admin page (Django-style backend in the full build). | removed | removed, as approved | — | — |
 
-## List 2 — left whole on 13 Oct: the dash changes; in three a link word or a subject comes in where the dash hid it
+## List 2 — left whole on 13 Oct: the dash changes; in three a link word or a subject comes in where the dash hid it (APPROVED, in the same build — D838)
 
 | # | In the app today | Proposed now | The dash became |
 |---|---|---|---|
@@ -58,7 +58,7 @@ target (§1a test 11), counted by a script; **"longer" marks a wording that ends
 
 N18, N20, N21 and every "Only a scheduler can …" have no dash and are left as they are.
 
-## List 3 — what the fresh reader tripped on (wordings the app has today; each a small change of its own)
+## List 3 — what the fresh reader tripped on (APPROVED, all ten — D839; each replaces its note's wording above)
 
 | # | The words | How a fresh reader took them | Proposed | Words: today · now |
 |---|---|---|---|---|
@@ -78,7 +78,7 @@ reissues the Original" (which Original) in N2; which chips return in N30; "the n
 war back" (whose war); where "only" falls in N13 (not checked in the app, so not moved). A scheduler at the screen has
 what the cold reader lacked.
 
-## The clash note's words (D827) and the OIL question's (D830)
+## The clash note's words (D827) and the OIL question's (D830) — APPROVED, D837
 
 | Where | Approved 13 Oct | Proposed now | What changed |
 |---|---|---|---|
@@ -93,7 +93,7 @@ what the cold reader lacked.
 | Its answer button | Yes — credit HO | Yes: credit HO | the dash → a colon. The page of 13 Oct called this "ruled"; no ruling fixes its dash, so it goes through the guide (the third read) |
 | Its other buttons | No OIL · Don't swap · Swap; Back / Add; Back / Save | the same | — |
 
-## Wordings he has ruled, with a dash, listed with the guide's wording beside them (§1b test 2 — his to take or leave)
+## Wordings he has ruled, with a dash — LEFT AS THEY ARE, as recommended (D837 reading 3)
 
 | Ruled | As the guide would say it | Recommended |
 |---|---|---|

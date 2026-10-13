@@ -168,8 +168,8 @@ and for any text being changed. Written as tests, like §1a.*
 happened, what it means for you and what to do, in a sentence a person would say. Calm, exact, brief. Not a form
 ("Operation completed"), not a telegram ("Published — no times — no OIL"), not a mate ("All done!").
 
-**When the aims pull apart, this order (the agent's reading of D833, the later ruling, beside D825 — it narrows D806's
-"fewest words" and D726 by a word or two where speech reads better; his to correct):** every fact first (§1a's
+**When the aims pull apart, this order (approved by him — D836, 14 Oct 26, "All approved as recommended"; it narrows
+D806's "fewest words" and D726 by a word or two where speech reads better):** every fact first (§1a's
 protected list); then a sentence a person would say; then as short as those two allow. A sentence that reads like
 speech may be a word or two LONGER than the clipped one it replaces. It is taken when the cold reader (test 11) gets
 every fact in one reading; the change shows the words added as well as the words cut (§1a test 8); and a wording that
@@ -491,4 +491,4 @@ are out (D812; D810's precedent), written on the list of jobs that went without 
 D834):** read three times, each time by a fresh Opus reader and by Fable on his word, each blind to the other — the first
 draft's reads `superpowers/briefs/2026-10-13-writing-guide-reads.md`, the second draft's and what was taken from each
 `superpowers/briefs/2026-10-13-writing-guide-reads-2.md`, which also holds the third draft's read, done with the tool he
-sent beside it (D835); its approval is his.
+sent beside it (D835). **He approved it on 14 Oct 26 (D836)**; it goes live with its branch on his "merge live".

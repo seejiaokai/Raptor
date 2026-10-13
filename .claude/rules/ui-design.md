@@ -38,8 +38,7 @@ fix to behaviour, a test, a comment) — the skill's detector already runs after
    or the word that links two facts; a swap keeps every name, number and qualifier; the note stays a sentence; each
    change shows the exact words cut, added or swapped and is read cold by someone who has not seen the original; a note
    that cannot lose a word is left whole — the guide's §1a. **How the app speaks (D833, D834):** as a capable colleague
-   would say it aloud — every fact first, then a sentence a person would say, then as short as those allow (the agent's
-   reading until he rules); where a dash would join two parts: a full stop or a colon after an opening done thing and before an
+   would say it aloud — every fact first, then a sentence a person would say, then as short as those allow (his D836); where a dash would join two parts: a full stop or a colon after an opening done thing and before an
    instruction; otherwise the linking word, else a comma for a renaming, else a colon where the first part is only a
    name or the second only spells it out, else a full stop — a dash only as a named choice, never two in a note; no fact or link added on a guess; the squadron's words and the app's own names
    kept, everyday words for the rest; "you", never "we"; one steady voice, plainer as the stakes rise; pairs and

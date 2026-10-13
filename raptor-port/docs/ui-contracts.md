@@ -4498,6 +4498,13 @@ once — and no warning dropped to save words. The shorter wordings are put to h
 `OUTSTANDING.md` `[NOTES-SHORTER]`. Where they are written today: `engine/publish.ts`, `state/sched-commit.ts`.
 **The method has ONE home — `design-practices.md` §1a (shortening) and §1b (how the app speaks, D833); this note records
 only what was ruled for the passing notes, and D829's wordings are rechecked against that guide before they are built (D833).**
+**THE WORDINGS OF RECORD (owner, 14 Oct 26 — "All approved as recommended"; they replace D829's and the design page's §2):**
+`docs/superpowers/briefs/2026-10-13-wording-recheck.md`, as put to him on `docs/mock/writing-guide-13oct.html`. **D837** — the
+notes reworked by the guide (N1–N4, N7, N10, N11, N14, N16, N19, N24, N26; N8 is not built, the app can no longer show it;
+N33 stays removed), with the clash note's words and the OIL question's; the two bars he ruled with a dash stay as they are.
+**D838** — the notes left whole on 13 Oct have their dashes changed in the same build, every word kept. **D839** — the ten
+wordings a fresh reader tripped on are all taken, each replacing its note's wording in the other two lists. Not yet built:
+`OUTSTANDING.md` `[NOTES-SHORTER]`. Their relatives that were not on the page wait for the whole-app words pass (D808).
 They are put to him on ONE page with the phone's clash note (D805) and a look, by the design guide, over the designs built on the
 night of 13 Oct 26 and the ones coming — keyboard use included (owner D807): `OUTSTANDING.md` `[DESIGN-LOOK-13OCT]`.
 The same going-over of EVERY page's notes, hints, labels and small print — less clutter; a note the screen already says may be

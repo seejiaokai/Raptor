@@ -126,6 +126,11 @@ Tracker's own notes.
 
 ## 5a. His answers (13 Oct 26, late) — "1. a+ build it 2. Yes 3. All good. 4 yes 5 ok"
 
+**THE WORDS CHANGED ON 14 OCT 26 — the designs below stand, their WORDS do not:** the writing guide was finished first
+(D833) and every wording here was rechecked against it; he approved the rechecked wordings (D837, D838, D839 — D829 is
+replaced). The words to build are `raptor-port/docs/superpowers/briefs/2026-10-13-wording-recheck.md`, not this page's §2
+nor the L3 table's "Shorter" column.
+
 The clash note's A+ is approved as drawn and built (D827). A passing note takes a phone's full width (D828). The wordings of the page's §2 are approved as drafted (D829). **The small fixes approved — D830:** L1 to L17 and K1 to K4, K7 to K10, K12, none left out, one batch with its own check before calendar step two; K5, K6 and K11 stay jobs of their own. The bar that stays takes the band under the top bar, a picture first (D831).
 
 ## 6. Fable's read (owner D826, 13 Oct 26 — "Ask fable go read the entire thing he hasn’t read and see what can be improved")
