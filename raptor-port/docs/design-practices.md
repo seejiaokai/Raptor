@@ -89,6 +89,14 @@ outside guides read then — Microsoft's and Apple's writing guides, Nielsen Nor
 checklist, Anthropic's document skill (`superpowers/briefs/2026-10-13-writing-skills-research.md`). Written as TESTS:
 "be concise" names no test, and an instruction with no test is how facts get cut.*
 
+**ITS STANDING USE (owner D833, 13 Oct 26):** the writing guide — this method, §1 above and the part on how the app speaks that
+D833 adds — is a companion to this design guide and to the design skill, used EVERY time text in the app is written or
+changed, new text as well as old: the Logic page's wording (D809), the whole-app words pass (D808), every note, label,
+hint and question. Its aim, in his words: "intuitive clean simple smooth less verbose more human text with less -" —
+fewer dashes among them (the agent's reading of "less -"). **THE PART ON HOW THE APP SPEAKS IS NOT YET WRITTEN** — it is
+drafted next, read by the same two readers, and the wordings he approved on 13 Oct 26 (D827, D829, D830) are rechecked
+against the finished guide before any of them is built.
+
 **Shorter is never thinner.** Shortening takes out words; summarising takes out facts. Before a word is touched, name
 what the note must still say afterwards — **the protected list: what happened · why · what it costs · where to put it
 right · every name and every number.**
