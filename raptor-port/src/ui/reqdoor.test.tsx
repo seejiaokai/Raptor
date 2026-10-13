@@ -56,6 +56,7 @@ import { _resetDisclosure } from '../state/disclosure'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { setPage, setBoardDay } from '../state/view'
 import * as view from '../state/view'
+import { refreshHistDots, storyOf } from './histbubble'
 import { commitInput, commitNewInput, draftOf, setInpField } from './inputedit'
 import { rowPut, rowTake, rowMove, onInputRow, isRowMan } from './reqdoor'
 import { answerOilWait } from './oilwait'
@@ -1088,5 +1089,50 @@ describe('after the dead code went out — one row, one hand (D755, D756; D661 a
       acc('x')
       expect(SAID).toEqual([`2 people and ALL AVAIL's ${TITLE} taken off the programme`])
     })
+  })
+})
+
+/* HISTORY'S GOLD DOT ON AN INPUT'S ROW OF THE PROGRAMME (`[HIST-DOT-INPUT-ROW]` — the one-rule job's walk, share L, L13,
+   12 Oct 26). With History on, a man added to an input by a drop on its row left no gold dot anywhere on that row: the
+   changes window listed the act and a tap landed on his puck, but the puck itself wore nothing and its bubble said
+   nothing. His line is the INPUT's (filed by its id, marked as his); the dot's painter marked a programme seat only for
+   a line filed under that seat's own key. A seat of a row that came from an input now answers for the input's lines
+   about the person standing on it — the dot and the bubble's story alike, so the two cannot disagree. */
+describe('History: the puck of a man put on an input’s row wears the gold dot, and its bubble tells his line ([HIST-DOT-INPUT-ROW])', () => {
+  const seat = (key: string) => { const el = document.createElement('span'); el.dataset.slot = key; return el }
+  const page = (...keys: string[]) => { const root = document.createElement('div'); const els = keys.map(seat); els.forEach(e => root.appendChild(e)); document.body.appendChild(root); return { root, els } }
+  afterEach(() => { view.setHistMode(false) })
+
+  it('the man put in: his puck is dotted and its story is his line; the man beside him, who was filed with the input, wears none', async () => {
+    await boot(new MemoryBackend())
+    file(['bane', 'pike'])
+    expect(rowPut(`${rowKey()}.+`, 'split')).toBe('done')
+    await Promise.resolve()
+    const { root, els } = page(keyOf('split'), keyOf('bane'), keyOf('pike'))
+    view.setHistMode(true)
+    refreshHistDots(root)
+    expect(els.map(e => e.hasAttribute('data-histdot')), 'split — put in — and only he').toEqual([true, false, false])
+    const told = storyOf(els[0]!)
+    expect(told.map((r: any) => r.lbl).join(' | '), 'the bubble tells the line that put him in').toMatch(new RegExp(`${cs('split')} · .* · added`))
+    expect(storyOf(els[1]!), 'a man who was only ever filed with it has no line of his own').toEqual([])
+    /* a dot and a bubble never disagree */
+    for (const e of els) expect(e.hasAttribute('data-histdot')).toBe(storyOf(e).length > 0)
+    view.setHistMode(false); refreshHistDots(root)
+    expect(root.querySelectorAll('[data-histdot]').length, 'History off: every dot goes').toBe(0)
+    root.remove()
+  })
+
+  it('a plain programme row beside it is untouched: a seat is dotted only for its own lines', async () => {
+    await boot(new MemoryBackend())
+    file(['bane'])
+    expect(rowPut(`${rowKey()}.+`, 'split')).toBe('done')
+    await Promise.resolve()
+    /* a seat address on ANOTHER row of that day, where split does not stand */
+    const other = `g:${WED}.${riOf() + 40}`
+    const { root, els } = page(other)
+    view.setHistMode(true)
+    refreshHistDots(root)
+    expect(els[0]!.hasAttribute('data-histdot')).toBe(false)
+    root.remove()
   })
 })

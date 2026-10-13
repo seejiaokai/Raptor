@@ -2,11 +2,11 @@ import { HOOKS } from '../engine/hooks'
 import { elogAllFor, elogWhen, elogWho, elogVal, elogKeySet, ELOG, rowTouches, dateOfDi } from '../engine/editlog'
 import { ridKey } from '../engine/rowids'
 import { seatRow, iuParts } from '../engine/keys'
-import { rowPlaces, rowRef } from '../engine/slots'
+import { rowPlaces, rowRef, slotVal } from '../engine/slots'
 import { rowItemKey } from '../engine/oil'
 import { isStandalone } from '../engine/waves'
 import { DAYS } from '../engine/data'
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, whoId } from '../engine/people'
 import { inpById, inpLabel, idsOf, isUnavail } from '../engine/inputs'
 import type { ELogRow } from '../engine/editlog'
 import { HISTMODE, SBDAY, esc } from '../state/view'
@@ -309,7 +309,29 @@ export function storyOf(el: HTMLElement): ELogRow[] {
     return ELOG.rows.filter(r => (r.iid === iid || (r.iids || []).includes(iid)) && (!day || rowTouches(r, day))
       && (!at.person || !(r as any).one || !oneMansRow(iid) || String(r.sub || '') === at.person))
   }
-  return elogAllFor(key)
+  /* …and a seat of a row that CAME from an input tells the input's lines about the man standing on it too, in the
+     order they were written (seatInputLines, below) */
+  const own = elogAllFor(key), his = seatInputLines(key, el)
+  return his.length ? ELOG.rows.filter(r => own.includes(r) || his.includes(r)) : own
+}
+/* A SEAT OF A PROGRAMME ROW THAT CAME FROM AN INPUT ALSO ANSWERS FOR THE INPUT'S LINES ABOUT THE PERSON STANDING ON IT
+   (`[HIST-DOT-INPUT-ROW]` — the one-rule job's walk, share L, L13). A man put in by a drop on the row is a line of the
+   INPUT (filed by its id, with his id in `sub` and the mark `one` — state/changelines.ts), not of the seat's key, so
+   his puck wore no gold dot and its bubble said nothing, while the changes window listed the act and a tap landed on
+   him. Only the lines that are HIS (`one`): what happened to the input as a whole is told on the input's own row and
+   in the changes window, and would otherwise dot every puck on the row for one change. The ONE answer the bubble and
+   the dots share — `rows`: the input's lines where the caller has them looked up already (the dots' pass). */
+function seatInputLines(key: string, el: HTMLElement, rows?: (iid: string) => ELogRow[]): ELogRow[] {
+  const m = /^g:(\d+)\.(\d+)(?:\.x\d+)?$/.exec(key)
+  if (!m) return []
+  const row: any = ((((DAYS as any)[+m[1]!] || {}).ground) || [])[+m[2]!]
+  const iid = row && row.src ? String(row.src) : ''
+  if (!iid) return []
+  const v = slotVal(key), who = String(whoId(v) || v || '')
+  if (!who) return []
+  const day = dayOfCell(el)
+  const of = rows ? rows(iid) : ELOG.rows.filter(r => r.iid === iid || (r.iids || []).includes(iid))
+  return of.filter(r => !!(r as any).one && String(r.sub || '') === who && (!day || rowTouches(r, day)))
 }
 
 /* "from → to" with the arrow only when there is a before worth naming; a
@@ -479,7 +501,7 @@ export function refreshHistDots(root: ParentNode | null | undefined) {
          wore a dot; the one parse site Fable's F16 list missed, found by the one-rule job's walk, share J, J2 — 12 Oct
          26. A line about ONE man put in or taken out is on HIS row alone, as his bubble tells it — storyOf, above.) */
       ? (() => { const at = iuParts(k), day = dayOfCell(el); return (byInp.get(at ? at.iid : k.slice(3)) || []).some(r => (!day || rowTouches(r, day)) && (!at || !at.person || !(r as any).one || !oneMansRow(at.iid) || String(r.sub || '') === at.person)) })()
-      : set.has(rk)
+      : set.has(rk) || seatInputLines(k, el, id => byInp.get(id) || []).length > 0
     const want = has && !seen.has(`${sec}|${rk}`)
     if (want) seen.add(`${sec}|${rk}`)
     if (want !== el.hasAttribute('data-histdot')) { if (want) el.setAttribute('data-histdot', ''); else el.removeAttribute('data-histdot') }
