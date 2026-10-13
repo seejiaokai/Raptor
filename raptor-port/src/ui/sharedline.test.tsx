@@ -18,7 +18,7 @@
    people of the one record. Every assertion about what is on screen is as it was. */
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { InputsPage } from './InputsPage'
 import { InputEditor } from './inputedit'
 import { initStore, notify, setSession, undo, writeInputs } from '../state/store'
@@ -69,6 +69,13 @@ const as = async (who: 'admin' | 'member') => act(async () => {
 })
 
 beforeEach(async () => {
+  /* THE DAY IS HELD AT WEDNESDAY 14 OCT 26 — the day the List's fixtures here are dated from ("Oct 14", "Oct 17",
+     "Oct 20"). The List opens on a window of days that starts TODAY (InputsPage `initialRange`), so on the real clock
+     these tests went red as each date passed (8 Oct first — the note at "a date the List still shows" below) and six
+     of them were due to on 15 Oct (the fresh read of 14 Oct 26, R1 — proved by running this file with the clock moved
+     on). Only the date is held (ui/placeholderlist.test.tsx does the same); timers run as they always did. */
+  vi.useFakeTimers({ toFake: ['Date'] })
+  vi.setSystemTime(new Date(2026, 9, 14, 12, 0, 0))
   INPUTS.splice(0, INPUTS.length, ...JSON.parse(seed))
   const mem = new Map<string, string>()
   storeBackend.impl = { getItem: k => mem.get(k) ?? null, setItem: (k, v) => mem.set(k, v), keys: () => [...mem.keys()] }
@@ -83,6 +90,7 @@ afterEach(async () => {
   await act(async () => { root.unmount(); setInpEdit(null) })
   HOOKS.toast = realToast
   host.remove(); _resetFloatWins()
+  vi.useRealTimers()
 })
 
 describe('a day opened: a shared input is one line', () => {

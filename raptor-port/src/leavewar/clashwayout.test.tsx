@@ -23,7 +23,7 @@ import { initStore as raptorInitStore } from '../state/store'
 import { CURPAGE, setPage } from '../state/view'
 import { INPEDIT, setInpEdit } from '../ui/pops'
 import { projectPeople } from './state/raptorRoster'
-import { advanceStage, getState, initStore as lwInitStore, reopenStage, setBidState, setCell, setPeople, setRole, takeFocusOpen } from './state/store'
+import { advanceStage, focusDay, getState, initStore as lwInitStore, reopenStage, setBidState, setCell, setPeople, setRole, takeFocusOpen } from './state/store'
 import { memoryBackend } from './state/storage'
 import { getClashes, installAbsenceDoor, runOilPass, syncAbsences } from './sync'
 import { LeaveWarPage } from './LeaveWarPage'
@@ -147,15 +147,15 @@ describe('a tap on a clash goes where its instruction says (D827)', () => {
     expect(CURPAGE, 'he stays on the Leave War').toBe('leavewar')
   })
 
+  /* (The first cut of this test could not fail — the fresh read of 14 Oct 26, R4: its one assertion stood inside an `if`
+     that the under-manned list had to satisfy, and it asked about the under-manned day while the ask left over was for
+     the clash's Saturday, which answers "nobody" whether or not the ask was dropped. It asks for the SAME day now.) */
   it('an ordinary jump afterwards drops an "open" nobody took up', () => {
     aBid()
     const { getByTestId } = render(<StageBar />)
-    fireEvent.click(getByTestId('clash-go-0'))
-    act(() => { getByTestId('undermanned').click() })          // any later use of the strip must not inherit it
-    /* the under-manned list's own jump is the plain ask */
-    const s = getState()
-    act(() => { (document.querySelector('[data-testid^="undermanned-day-"]') as HTMLElement | null)?.click() })
-    if (getState().focusSeq !== s.focusSeq) expect(takeFocusOpen(getState().focusDate!)).toBeNull()
+    fireEvent.click(getByTestId('clash-go-0'))            // the ask: open the Saturday for plasma (no grid here to take it)
+    act(() => { focusDay(SAT) })                           // the plain ask the under-manned list makes — for that same day
+    expect(takeFocusOpen(SAT), 'a plain jump to the very day must not open it for him').toBeNull()
   })
 
   it('leave the war approved, and the same once published: the day is opened for him too', () => {
@@ -278,6 +278,24 @@ describe('on a phone the note is a line of its own that opens its list (D805, D8
     rerender(<StageBar />)
     expect(queryByTestId('clash-list'), 'not sprung open again').toBeNull()
     expect(flat(getByTestId('clash-line'))).toBe('⚠ 1 clash with the schedule Show')
+  })
+
+  /* HIS SHOW / HIDE IS ABOUT THE NOTE IN FRONT OF HIM (the fresh read of 14 Oct 26, R3). The Leave War page stays drawn for
+     the whole sign-in, and the choice was never forgotten: after one Hide, a lone clash raised an hour later started
+     closed — against "one starts open, more start closed" (D827). When the last clash goes the note goes, and the next
+     one starts by the rule again. */
+  it('his Hide is forgotten once the last clash has gone: the next lone clash starts open again', () => {
+    asPhone(); aBid()
+    const { getByTestId, queryByTestId } = render(<StageBar />)
+    fireEvent.click(getByTestId('clash-line'))           // he hides the one clash
+    expect(queryByTestId('clash-list')).toBeNull()
+    act(() => { setCell('plasma', SAT, ''); runOilPass() })            // the bid is taken off: nothing clashes, the note goes
+    expect(getClashes(), 'the fixture: no clash is left').toHaveLength(0)
+    expect(queryByTestId('sync-clashes'), 'no note while nothing clashes').toBeNull()
+    act(() => { setCell('plasma', SAT, 'LL'); runOilPass() })          // …and a clash comes again
+    expect(getClashes(), 'the fixture: one clash again').toHaveLength(1)
+    expect(flat(getByTestId('clash-line'))).toBe('⚠ 1 clash with the schedule Hide')
+    expect(getByTestId('clash-list').querySelectorAll('button.clashrow')).toHaveLength(1)
   })
 
   it('the names’ column is sized by the whole roster — every callsign, unseen and never read out', () => {

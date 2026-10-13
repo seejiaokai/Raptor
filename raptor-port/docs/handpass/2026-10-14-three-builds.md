@@ -79,38 +79,38 @@ Marks: **has it** (seen and operated on that surface — the walk's picture or l
 
 | The window | ✕ in the corner | ✕ last by keyboard (a question sheet) | Else in its head |
 |---|---|---|---|
-| The OIL question | | | — |
-| The upchit question | | | — |
-| The medical-clash question | | | — |
-| "No medical document" | | | — |
-| The board's cancel-reason dialog | | | — |
-| The board's "Sort all" | | | — |
-| An input's own window | | must not — not a question sheet; its keys are its own, as built | the title, a cancelled input's CX mark beside it |
-| The document viewer | | must not — as above | — |
-| "Jump to a date" | | must not — as above | the Today icon, left of the ✕ |
-| A day's pop-up on the week | | must not — as above | — |
-| The Traffic window | | must not — as above | — |
+| The OIL question | has it — W3 X1 both sizes; `dl-oil.mjs` | has it — W3 T1 (opens on its first answer; ✕ last; Shift+Tab from the first goes to it); `oilconfirm-look.test.tsx` | — |
+| The upchit question | has it — W3 X5 both sizes | has it — W3 T1 on X5 | — (its answers still wear the stray strip — §0, question 4) |
+| The medical-clash question | has it — W3 X6 both sizes | has it — W3 T1 on X6 | — (the same strip — §0, question 4) |
+| "No medical document" | has it — W3 X4 both sizes | has it — W3 T1 on X4 | — |
+| The board's cancel-reason dialog | has it — W3 X9 both sizes | has it — W3 T1 on X9: ✕ last, Shift+Tab to it, Tab never leaves; it opens in its reason box (a box to type in), and its chips wear the browser's ring — filed (§9, find 5) | — |
+| The board's "Sort all" | has it — W3 X10 both sizes | has it — W3 T1 on X10 | — |
+| An input's own window | has it — W3 X2, X3 both sizes (the movable window: its own head, not this rule's — unchanged by the batch) | must not — not a question sheet; its keys are its own, as built | the title; a cancelled input's CX mark — by the ✕, not by the title, as built on 12 Oct (§0, question 3) |
+| The document viewer | has it — W3 X7 both sizes | must not — as above | — |
+| "Jump to a date" | has it — W3 X8 both sizes (the Today icon 6 left of the ✕) | must not — as above | the Today icon, left of the ✕ |
+| A day's pop-up on the week | has it — W3 X11 both sizes | must not — as above | — |
+| The Traffic window | has it by the one shared rule — NOT WALKED: no walker opened it (the day's pop-up, drawn by the same file with the same head, was — X11) | must not — as above | — |
 
 ### 2c. The OIL question (`OilConfirm`) — every caller
 
 | Who opens it | Words of record | Flat answers, outline when picked | Its two buttons | First answer has the keyboard |
 |---|---|---|---|---|
-| A new input's own save (an input's window) | | | Back / Add | |
-| A change's save (an input's window) | | | Back / Save | |
-| A question raised from the input's row on the schedule (the window shuts with it) | | | Back / Save | |
-| The desktop Inputs list's "OIL?" chip | | | Back / Save | |
-| A swap, an add, a move, a put-back, a filing that waits (5 kinds) | | | its own pair ("Don't swap / Swap" …) — unchanged | |
-| The several-days form (any caller) | must not — its words were not on the page he approved (D808) | | as its caller | |
+| A new input's own save (an input's window) | has it — `dl-oil.mjs` both sizes; `oilconfirm-look.test.tsx` | has it — `dl-oil.mjs` (flat row, the outline look, one ring — D842) | Back / Add — `dl-oil.mjs`; W3 X1 | has it — `dl-oil.mjs`; W3 T1 |
+| A change's save (an input's window) | has it — W3 O2 both sizes | has it — one component | Back / Save — W3 O2 | has it — one component (`oilconfirm-look.test.tsx` K7) |
+| A question raised from the input's row on the schedule (the window shuts with it) | has it — one component; NOT WALKED by this route (its words and buttons are the change's save's, above) | has it — one component | Back / Save — `oilconfirm.test.tsx` | has it — one component |
+| The desktop Inputs list's "OIL?" chip | has it — W3 O3 (desktop — the chip is the desktop list's) | has it — one component | Back / Save — W3 O3 | has it — one component |
+| A swap, an add, a move, a put-back, a filing that waits (5 kinds) | has it — `dl-oil.mjs` (the swap), W3 B1 / B4 (the move), `e2e/oilwait.spec.ts` (the swap; the three put-backs) | has it — `dl-oil.mjs`; `e2e/oilwait.spec.ts` (D842) | its own pair ("Don't swap / Swap" …) — unchanged; `e2e/oilwait.spec.ts` | has it — `dl-oil.mjs` |
+| The several-days form (any caller) | must not — its words were not on the page he approved (D808) | has it — W3 O1 both sizes (three flat answers, the picked one outlined) | as its caller — W3 O1 | has it — on "All days": `oilconfirm-look.test.tsx` K7 |
 | The day's one list of OIL questions (not this sheet — its own buttons) | must not — its words are its own | has it — a picked Yes and a picked No both outline (D830's L5; it replaces D783's grey No) | — | — |
 
 ### 2d. The bar that waits on an OIL answer
 
 | Where it can be up | The band, one line | Keyboard goes to it; Escape closes it | With "Not saved" too |
 |---|---|---|---|
-| Edit Schedule's week (the top bar) | | | |
-| The Scheduler Board (its own bar) | | | |
-| The Inputs page — the calendar's drag, an input's Accept / → Unavail (the top bar) | | | |
-| The Medical view opened full | | | |
+| Edit Schedule's week (the top bar) | has it — `dl-oil.mjs` both sizes, in wider letters too | has it — `dl-oil.mjs`; a held Escape's repeat does not close it (the read's R2 — `oilconfirm-look.test.tsx`) | has it — `dl-band-built.mjs`: "Not saved" above, both 36 tall, the amber line (D841) |
+| The Scheduler Board (its own bar) | has it — `dl-oil.mjs`; `e2e/oilwait.spec.ts` at three sizes | has it — `dl-oil.mjs` | has it — `dl-band-built.mjs` (the two touching, no gap) |
+| The Inputs page — the calendar's drag, an input's Accept / → Unavail (the top bar) | has it — W3 B1 (a real drag on the calendar, both sizes), B2 (390, 360 and 320 wide: one line, nothing cut) | has it — W3 B3 | has it by the one top bar — NOT WALKED on this page (the same bar as Edit Schedule's, walked there) |
+| The Medical view opened full | must not, because no screen opens the Medical view full today — it is a tab of the Inputs page (D620, D626), covered by the row above (the fresh read; the band's line in that view is unreachable code, left in place beside the save warning's) | — | — |
 | Any other page | must not — a change of page takes the bar away (state/view.ts), as before | — | — |
 | A window, a sheet, the phone's menu | must not — a short visit; the bar's own is there when it closes (D587's rule for the save warning) | — | — |
 
@@ -127,13 +127,13 @@ The helper's table, checked by the host against the callers: §7.
 
 | The gesture | Its door | What else could hear it | Result |
 |---|---|---|---|
-| A tap on the phone's clash line | a `<button>` in the note | nothing — a real button in the page's flow | |
-| A tap on a clash row / the desktop's instruction | `goClash` → the store's `focusDay(date, { open })`, taken ONCE by the grid; or `openInputWindow` | the grid's own jump (the under-manned list uses the same call without `open`); a later draw of the grid | |
-| Home, End, Shift+Page on the calendar's dates | the calendar's own `onKey`, on the dates only | the form the calendar sits in (Admin → Data); the window behind a floating one | |
-| Enter on the calendar's title, and in a list | the title's click (a key's); the list's `onKey` | a form's submit | |
-| Delete / Backspace on a Tracker date box | the box's row, stopped there | the Tracker's page-wide Delete (it deletes what is selected on a chart being arranged) | |
-| Escape on the bar | the bar's own element — never the page | whatever the keyboard is on when it is NOT on the bar: a window, a text box, the schedule's Escape | |
-| Tab inside a question sheet | the sheets' one document listener (it existed) — now it also steps round the ✕ | the schedule's own Tab route, a page's handler: it already ran before them | |
+| A tap on the phone's clash line | a `<button>` in the note | nothing — a real button in the page's flow | walked — W1 C6, C7; `dl-clash-built.mjs` |
+| A tap on a clash row / the desktop's instruction | `goClash` → the store's `focusDay(date, { open })`, taken ONCE by the grid; or `openInputWindow` | the grid's own jump (the under-manned list uses the same call without `open`); a later draw of the grid | walked — W1 C2 to C5, C11; tested — `clashwayout.test.tsx` (taken once; a plain jump to the same day drops it — rewritten after the read's R4, red with the drop cut) |
+| Home, End, Shift+Page on the calendar's dates | the calendar's own `onKey`, on the dates only | the form the calendar sits in (Admin → Data); the window behind a floating one | walked — `dl-cal.mjs`; tested — `datecal.test.tsx` |
+| Enter on the calendar's title, and in a list | the title's click (a key's); the list's `onKey` | a form's submit; **and the browser's own scrolling of a list by End, Home, Page and Space — it was heard, and chose a year sixty on (§9, find 6): fixed** | walked — `dl-cal.mjs`; tested — `datecal.test.tsx` |
+| Delete / Backspace on a Tracker date box | the box's row, stopped there | the Tracker's page-wide Delete (it deletes what is selected on a chart being arranged) | walked — `dl-trk.mjs`; tested — `leftovers.test.tsx` K12 |
+| Escape on the bar | the bar's own element — never the page | whatever the keyboard is on when it is NOT on the bar: a window, a text box, the schedule's Escape | whatever the keyboard is on when it is NOT on the bar: a window, a text box, the schedule's Escape; **and the REPEATS of the Escape that closed the question (the read's R2): fixed** | walked — W3 B3, `dl-oil.mjs`; tested — `oilconfirm-look.test.tsx` |
+| Tab inside a question sheet | the sheets' one document listener (it existed) — now it also steps round the ✕ | the schedule's own Tab route, a page's handler: it already ran before them | walked — W3 T1 on six sheets; tested — `oilconfirm-look.test.tsx`, `outside.test.tsx` |
 
 ## 4. The walk's size (D607, D608)
 
@@ -341,6 +341,31 @@ step two's (`[ONE-DATE-CALENDAR]`).
    already serving on their port, and one was (the walk's): the cut never reached the build they ran on. Cut again
    WITH a rebuild: red ("offset 2px", wanted "-1px"); rule put back, rebuilt: green. A break test of a stylesheet rule
    needs its own build — written into the skill notes.
+8. **The fresh, blind Opus read of the finished code (D790) — 4 findings: 1 wrong result, 1 misleading, 2 untidy**
+   (`docs/superpowers/briefs/2026-10-14-three-builds-read.md`; read at the commit of the walk's results — the two
+   wording commits that followed, D843 to D845, it read too and found nothing against). Each applied from its own
+   words, test first:
+   - **R1 (wrong result) — a second test file with a date about to come due.** `src/ui/sharedline.test.tsx` read the
+     real clock against fixtures dated 14, 17 and 20 Oct: six of its tests would have failed from 15 Oct, on every
+     branch — the fault `placeholderlist.test.tsx` had on the 14th. The reader proved it by running the file with the
+     clock moved on. **Fixed:** the day is held at 14 Oct 26 in that file, as in the other. Older than this batch.
+   - **R2 (misleading) — Escape held a moment too long took the question AND the bar.** Escape closes the question; the
+     bar comes up with the keyboard on "Answer OIL" (this batch's K8) — so the key's own repeats landed on the bar,
+     and the first closed it (this batch's K9): nothing left saying the swap was not made (D783). **Fixed:** a repeat
+     is not a press on the bar (`ui/OilWaitSheet.tsx`); `oilconfirm-look.test.tsx` — red first.
+   - **R3 (untidy) — his Show / Hide outlived the note it was about.** The Leave War's top row stays drawn for the
+     whole sign-in and the choice was never forgotten, so after one Hide the next lone clash started closed (D827:
+     one starts open). **Fixed:** the choice is forgotten when the last clash goes (`leavewar/ui/Chrome.tsx`);
+     `clashwayout.test.tsx` — red first (the line read "Show").
+   - **R4 (untidy) — a test that could not fail.** "An ordinary jump afterwards drops an 'open' nobody took up"
+     asserted inside an `if`, about a different day. **Rewritten** to ask for the same day; with the drop cut from the
+     store it goes red (cut by hand, restored; now wire 32 of the list).
+   - **A row with no code behind it:** §2d's "The Medical view opened full" — no screen opens it full today. The row
+     now says so.
+   - **Its recommendation taken:** the whole unit suite run once with the clock moved on 20 days and once 200, to
+     answer "does any other file share R1's fault" for every file — §11.
+   **Break tests after the read: five more wires (32 to 36 — the four fixes above with a line to cut, and the
+   refusal under the day's switch said from the event's mark).**
 
 ## 10. Break tests, errors seen, what was not walked
 

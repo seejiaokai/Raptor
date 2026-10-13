@@ -244,6 +244,11 @@ export function StageBar() {
      A TABLET AND A DESKTOP KEEP THE STRIP WHERE AND AS IT WAS (D679) — it says each clash in the same words, and its
      instruction is a link that goes to the same place. */
   const [clashPick, setClashPick] = useState<boolean | null>(null)
+  /* HIS SHOW / HIDE IS A CHOICE ABOUT THE NOTE IN FRONT OF HIM (the fresh read of 14 Oct 26, R3). This row stays drawn
+     for the whole sign-in, and the choice was never forgotten: after one Hide a lone clash raised an hour later started
+     closed, after one Show several started open. When the last clash goes the note goes, and the next one starts by
+     the rule again — one open, several closed (D827). */
+  useEffect(() => { if (clashes.length === 0) setClashPick(null) }, [clashes.length])
   const clashOpen = clashPick ?? clashes.length === 1
   const whoOf = (id: string) => people.find(p => p.id === id)?.callsign ?? id
   /* the day as the day's own sheets say it — "Sat 18 Jul" — with its year only where that is not the year on screen */

@@ -163,6 +163,20 @@ describe('the bar that stays — the keyboard (L7, K8, K9)', () => {
     expect(tid('oilbar')).toBeNull()
     expect(OILBAR).toBeNull()
   })
+  /* A KEY HELD A MOMENT TOO LONG (the fresh read of 14 Oct 26, R2). Escape closes the question; the bar comes up and the
+     keyboard is put on "Answer OIL" (K8) in that same turn — so the key's own REPEATS arrive on the bar, and the first
+     of them closed it as OK does: the question gone, the pucks flashed, and nothing left saying the swap was not made
+     (D783 (2): "a bar that stays until tapped"). A repeat is not a press on the bar. */
+  it('K9 — a REPEAT of an Escape already held is not a press on the bar: it stays; a fresh press closes it', async () => {
+    await mount(<OilBar />)
+    await raise()
+    const held = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true, repeat: true })
+    await act(async () => { tid('oilbar-answer')!.dispatchEvent(held) })
+    expect(tid('oilbar'), 'the bar is still there').toBeTruthy()
+    expect(OILBAR, 'and still waiting').toBeTruthy()
+    await act(async () => { tid('oilbar-answer')!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
+    expect(tid('oilbar')).toBeNull()
+  })
   /* ONE BAR ON SCREEN (D831): under a full-screen surface's own bar while that surface is in front — and then the top
      bar's copy is not drawn at all, so there is never a second "Answer OIL" to tab to */
   it('a full-screen surface carries the bar under its own bar, and the top bar’s copy stands down while it does', async () => {

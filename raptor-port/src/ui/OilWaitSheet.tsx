@@ -81,7 +81,10 @@ function Bar({ top }: { top?: boolean }) {
      appears the keyboard goes to "Answer OIL" — after the question's own sheet has handed the keys back
      (ui/sheetfocus.ts; an unmounting sheet's hand-back runs before this) — and Escape, pressed while the keyboard is on
      the bar, closes it as OK does. Heard on the bar itself, never on the page: with the keyboard anywhere else Escape
-     belongs to whatever it is on — a window, a text box, the schedule's own Escape — and is not taken from it. */
+     belongs to whatever it is on — a window, a text box, the schedule's own Escape — and is not taken from it.
+     A REPEAT of the Escape that closed the question is not a press on the bar (the fresh read of 14 Oct 26, R2): the
+     keyboard is put here in the same turn the question closes, so a key held a moment too long sent its repeats to
+     the bar and took the question and the bar away together — nothing left saying the change was not made. */
   useEffect(() => { answer.current?.focus({ preventScroll: true }) }, [])
   const text = b ? b.text : ''
   useLayoutEffect(() => {
@@ -105,7 +108,7 @@ function Bar({ top }: { top?: boolean }) {
   if (!b) return null
   return (
     <div className={'oilband' + (top ? ' is-top' : '')} role="status" data-testid="oilbar" ref={el}
-      onKeyDown={e => { if (e.key === 'Escape') { e.stopPropagation(); oilBarOk() } }}>
+      onKeyDown={e => { if (e.key === 'Escape') { e.stopPropagation(); if (!e.repeat) oilBarOk() } }}>
       <span className="oil-msg" data-testid="oilbar-text">{b.text}</span>
       <button type="button" ref={answer} className="yes" data-testid="oilbar-answer" onClick={oilBarAgain}>Answer OIL</button>
       <button type="button" data-testid="oilbar-ok" onClick={oilBarOk}>OK</button>
