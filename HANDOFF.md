@@ -21,6 +21,23 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/lw-rows-split -->
+### `claude/lw-rows-split` — `[LW-ROWS-SPLIT]`: THE LEAVE WAR'S ROW DRAWING MOVED TO ITS OWN FILE — THE MOVE IS MADE AND ITS PINNING TEST PASSES; ITS FULL CHECK IS NOT DONE; THE LAST JOB OF THE NIGHT OF 13 OCT 26 (D799 — one chat, unattended) — written 13 Oct 26 — verify before use
+- **THE WHOLE NIGHT, job by job** (each on its own branch, nothing merged, each waiting for his look and "merge live" — the full account is the block of `claude/inputs-rulings-file`: `git show claude/inputs-rulings-file:HANDOFF.md`): pull request **495** step one of the one date calendar · **496** the Tracker's date boxes (stacked on 495) · **497** the Inputs / schedule batch, D793 (one question parked for him: `[UNAVAIL-FILE-OIL-ASK]`) · **498** the Inputs pages' rulings file, D802 (stacked on 495, documents only) · `[TRK-FILE-TRANSFER-SPLIT]` looked at and STOPPED at its own stop condition (recorded in `OUTSTANDING.md` on 498's branch) · **this job.** The night's rulings — D798 (replaced by D801), D799, D800, D801, D802 — are recorded on 495's branch. Next free number: D803 — verify.
+- **Done on this branch (cut from `main`; local commits — NOT pushed yet):** (1) the test written FIRST — `raptor-port/src/leavewar/ui/matrix-rows.test.tsx` records every row's whole markup (an admin and a member; open, closed, published) into `src/leavewar/ui/__rows__/*.html`, made on the code BEFORE the move, the date held; (2) the move, by a script (no line retyped): 507 lines — the row-drag configurations, `QualPill`, `RowApi`, `freeHalfBeside`, `ownAwardPresent`, `ownAwardAlone`, `cellOpenable`, the two props types, `PersonRow`, `PersonMonth` — from `Matrix.tsx` to the new `MatrixRows.tsx`, `export` added to the thirteen names the grid file still uses, each file's imports pruned to what it uses. The type check passes and the pinning test passes on the moved code with the record unchanged.
+- **STILL TO DO, in order — tier FULL by the tidiness read (`raptor-port/docs/superpowers/briefs/2026-10-03-code-tidy-audit-astra.md` §1: permissions and the OIL display are drawn there):**
+  1. Confirm the move is ONLY a move: `git diff HEAD~1 -- raptor-port/src/leavewar/ui/Matrix.tsx` shows only deleted lines, the one new import and pruned imports; every deleted line is in `MatrixRows.tsx` (a script that compares the block's lines).
+  2. The whole gate set under the PC's lock (`cd raptor-port && node scripts/gatelock.mjs run`) — the Leave War's unit project and its three browser projects are the ones that matter.
+  3. Proof by recording on the BUILT app (`raptor-port/docs/walk-scripts.md` §8): build `main` and this branch, open the Leave War as an admin and as a member at a desktop and a phone, in each of two or three states, and compare the grid's markup (`#page-leavewar .mx` outerHTML) byte for byte between the two builds; pictures of each.
+  4. The two reads, blind to each other (D790 — permissions and OIL): a fresh Opus reader and Fable, briefed that this is a MOVE (what to hunt: a line changed in the move; an import that changed a binding; the memo boundary — `PersonRow` / `PersonMonth` must still be the same `memo` components with the same props; anything the pruned imports removed that had a side effect).
+  5. Break tests (a line of `PersonMonth` changed → the pinning test fails; the memo removed → `repaint.test.tsx`).
+  6. The evidence sheet `raptor-port/docs/handpass/2026-10-13-lw-rows-split.md`, the walk ledger's row, the backlog item archived by the script (its home: `raptor-port/docs/file-map.md`), `[NO-ASTRA-LIST]`, this block rewritten, push, pull request (base `main`).
+- **Branch:** `claude/lw-rows-split`, in the checkout `.claude/worktrees/one-date-calendar-step-one-55ba13` (its `raptor-port\node_modules` is a junction — remove with `cmd //c rmdir`).
+- **Gates:** not run on this branch yet (only the type check and the one test file).
+- **For him:** nothing to look at for this job — nothing on screen changes; the evidence is the recording.
+- **Pick up here:** `git status`, `git log --oneline -4`, then step 1 above.
+<!-- /now -->
+
 <!-- now:claude/skill-observation-review-258b48 -->
 ### `claude/skill-observation-review-258b48` — `[SKILL-OBS-REVIEW]` (D794), THE REVIEW OF THE SKILL NOTES: DONE, APPROVED BY HIM (D811) AND INSTALLED ON THIS BRANCH; ITS PULL REQUEST WAITS FOR HIS "MERGE LIVE" — written 13 Oct 26, about 10:00 — verify before use
 - **Where it started:** his opening line (run the review as its own documents-only job) with "u can use opus to do the review solely" — D810: Opus ran it, and ONE fresh, blind Opus reader read the drafted guide changes; no Fable; the missing ChatGPT reads are on the no-ChatGPT list.
