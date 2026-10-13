@@ -4376,3 +4376,15 @@ gained is listed in `.claude/skills/SUPERPOWERS-VENDORED.md` change 5 and `.clau
 ### [HIST-DOT-INPUT-ROW] History's gold dot is not drawn on an input's Ground Programme row for a person put in or taken out (the one-rule job's walk, share L — L13, 12 Oct 26)
 **Found, NOT FIXED — low; with the next Inputs / History batch.** With History on, a man added to an input by a drop on its row, or taken out by a right-click, leaves no gold dot on that row — not on his puck, the row's name or its boxes. The changes window lists both acts, names him, and a tap lands on his puck (fixed in the check — `raptor-port/docs/handpass/2026-10-12-one-rule.md` §9.6); the Unavailable list's rows and the one line under Personal Inputs do wear the dot. **Why:** those acts are lines of the INPUT (filed by its id), and the dot's painter marks a programme cell only for a line filed by that cell's own key (`raptor-port/src/ui/histbubble.ts refreshHistDots`, `storyOf`). **The build:** a cell of a row that came from an input also answers for the input's lines about the person standing on it — the dot, and the bubble's story; a failing test first (`src/ui/histjump.test.tsx` has the pattern).
 
+
+*Moved here 2026-10-13 by backlog-archive.mjs ([LW-ROWS-SPLIT]). Forward facts: `raptor-port/docs/file-map.md`.*
+
+### [LW-ROWS-SPLIT] The Leave War's row drawing moves out of its grid file — APPROVED D493 (2 Oct 26), to build with the next Leave War batch
+**DONE 13 Oct 26** on `claude/lw-rows-split` (his word to start: D799): 507 lines moved by a script to `raptor-port/src/leavewar/ui/MatrixRows.tsx`; proved a move line for line, by a record of every row made before it, and by recording the built app before and after (8 views identical byte for byte); read by Fable and a fresh Opus reader. Its check: `raptor-port/docs/handpass/2026-10-13-lw-rows-split.md`. Filed by it: `[LW-MONTH-MEMO-UNPINNED]`, `[LW-ROWS-STALE-NOTES]`.
+**D775 (12 Oct 26) - the Tracker tidy-up: done AFTER the one-rule job is merged, as a job of its own - not with its area’s feature batch (D493 narrowed) - started on his word, in a chat of its own.**
+From Astra's tidiness read (its §1 — read it before building: what must stay identical, the tests that pin it, the test to
+write FIRST). `PersonRow`, `PersonMonth`, their props and row-only predicates leave `src/leavewar/ui/Matrix.tsx` (about 4,700
+lines) for a new `MatrixRows.tsx`; the grid file keeps its state, geometry, selection and sheets. Nothing on screen changes.
+New file → `docs/file-map.md` in the same change. Tier by the order's questions at build time (Astra says FULL: permissions
+and the OIL display are drawn there). **Place — D493, D485: with the next Leave War feature batch, never alone.**
+
