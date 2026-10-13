@@ -2420,6 +2420,11 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   - **A replacement voids the answer** — it was the first man's own — and the question is asked again (the door).
   - **A cancelled or information-only input earns nobody OIL** — `landedStanding` asks the input's own marks first,
     for every day it covers, and still falls back to the row for the rest (a row issued before the build).
+    **And it is never ASKED (owner D814, 13 Oct 26 — "Canceled input doesn't need to ask OIL"; information-only the
+    same, the agent's reading):** `inputs.ts oilNeverEarns` (the input's own `cx` / `info`) makes `oilGate` answer
+    "nothing to ask" at every door, and `oilSilent` (that, or taken off the programme) is the ONE test the "OIL?" tag,
+    the day's one list and the bell's scan leave an input out by. An answer already given stays on the record; the
+    mark taken off, the input needs its answer again and the three signs come back by themselves.
   - **Leave and medical inputs never earn OIL and are never asked; every other kind that can earn is asked, and its
     answer decides — wherever it is filed** (owner D804, 13 Oct 26 — "As long as leave and medical they don't earn
     oil. For others just ask the OIL question, it may or may not credit OIL" — it replaced D803 of the same morning; `inputs.ts oilAsks` is the list of kinds

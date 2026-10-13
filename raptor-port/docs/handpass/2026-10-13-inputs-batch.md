@@ -211,3 +211,76 @@ does one lookup more for a seat of an input's row).
 
 **Told, not asked:** the three new phrases; left unanswered, the Accept button itself flashes; a note still on screen is
 taken down when any OIL question is put; a man who replaced an input's only person wears History's dot too.
+
+## 14. Added the same day, on his rulings of the morning — "→ Unavail" waits on its OIL question (D804), and a cancelled input is never asked (D814)
+
+**Where it stands:** built, test first; walked by the host on the real screens; both blind reads done; the whole gate
+set green on the D804 change, to be run once more on D814's. **The pull request waits for that run, then his look.**
+
+`Walk: docs/handpass/2026-10-13-inputs-batch.md §14 · 16 pictures · 2 surfaces (the Scheduler Board's card, Edit Schedule's week line) at a desktop and a phone, by the app's own controls · 28 checks, all passed — and the browser test of both buttons at three sizes · MISSING: none open — no helper walked: a short look by the host, sized below`
+
+**What he ruled (13 Oct 26):** D803, then D804 which replaced it — leave and medical inputs never earn OIL and are
+never asked; every other kind that can earn is asked and its answer decides, wherever it is filed; "→ Unavail" puts
+the question first, as "Accept" does (his confirmation: "Yes oil should be asked for others even if it goes to ground
+programme or unavailable"). D814 — "Canceled input doesn't need to ask OIL"; information-only the same (the agent's
+reading, told to him).
+
+**The eight questions:** 1 (earned leave) YES — who is asked, never what is credited; 2 (the published record) YES — a
+filing on a published day waits to go out; 5 (a gesture) YES — a button gains a waiting mode. Tier FULL, as the batch.
+
+**The roll-call, added rows:**
+
+| The thing | Every place | Has it | Proved by |
+|---|---|---|---|
+| "→ Unavail" waits where the input needs an answer | the board's card; the week's line (one click router) | has it | the look, 4 runs; e2e at 3 sizes |
+| | a working day; an input already answered (a No too) | MUST NOT ask | unit |
+| | the take-out from Unavailable; an Undo | MUST NOT ask (D793 reading 3) | unit |
+| | every other way an asking input comes to stand under Unavailable | Fable: 22 ways, none a gap; Opus: 21, ONE — a published version loaded back onto the working copy (older; his to rule — filed) | the reads |
+| A cancelled or information-only input is not asked | every door that prices the question (the one gate): a save, the put-back, the filing, the revise button | has it | unit, breaks 31–32 |
+| | the "OIL?" sign; the day's one list; the bell's scan; the "change my answer" button | has it — ONE test for all (`oilSilent`) | unit, breaks 33–36 |
+| | the OIL it earns | unchanged — it earned nothing already (D760) | not touched |
+
+**Sizing (written before the look):** type C (an existing button gains a waiting mode it already has at its twin) and a
+guard in the one gate. What only a look could find: the second button's sheet and bar on the real board and the real
+week at a phone's size. What the tests hold: every state, the one step, a published day, the words. The ledger: C —
+eight walks of fifteen found a fault. Chosen: the HOST's own short look by the app's controls (file an Other on a
+working Friday, make the Friday a holiday, "Later", take it off, "→ Unavail", "Don't file", "Answer OIL", Yes, "File",
+one Undo) on the board and on the week, at a desktop and a phone — `scripts/handpass/ib/d804-look.mjs`, pictures
+`docs/img/handpass/2026-10-13-inputs-batch/d804/` — beside the browser test. D814 changes no screen but the absence of
+a sign: no further look; its doors are pressed in the unit tests through the app's own click router and its own
+cancel door.
+
+**The look:** 28 of 28 passed (its first run failed 4 on the script's own expectation — the two buttons are drawn in
+capitals). The host opened the question's sheet on a phone, the bar on the week, the two buttons, and the filed row.
+
+**The break tests** (`scripts/handpass/breaks/2026-10-13-inputs-batch.json`): 1–3 and 25–28 re-run on D804's change —
+7 of 7 caught (break 2 re-expressed: it read "only the programme asks" until D804); 31–36 on D814's — 6 of 6 caught.
+
+**The two blind reads of D804's change** (D790 — OIL: a fresh Opus reader and Fable; brief
+`docs/superpowers/briefs/2026-10-13-unavail-file-read.md`; reports `docs/handpass/parts/ib/read-d804-fable.md`
+(358,538 tokens) and `read-d804-opus.md` (482,010)). **Both: right and complete at its own door; nothing broken beside
+it; no high or medium finding.**
+
+| The claim | Who | What was done |
+|---|---|---|
+| A cancelled (or information-only) input is still asked at every door, and wears its sign — older, app-wide | both (low) | put to him → **D814**; FIXED, tests first (seven), breaks 31–36 |
+| The member's bell says "Back on the programme" when his input is FILED UNDER UNAVAILABLE, and "Taken off the programme" when it is taken out of there — older; the bell knows only "taken off" and everything else | Opus (low; reproduced) | FILED — two new sentences for the bell are his to approve: `[BELL-UNAVAIL-WORDS]` |
+| A published version loaded back onto the working copy puts an input back under Unavailable, or back on the programme, with nobody asked — not an Undo, so no ruling covers it; its "OIL?" sign and the list do count it afterwards | Opus (low; reproduced) | FILED as a question for him: `[OIL-LOAD-VERSION-UNASKED]` |
+| No test held, for the filing's own kind: a published day; an input of several | both | two tests added (they pass — pins) |
+| Two of the seven new tests fail without the change in their set-up, not on the claim in their name; one passes either way (a guard) | both | as the commit said; left |
+| Comments that still name three kinds; `landedStanding`'s "a kind that never lands" | both | two corrected; the test's and the spec's `describe` titles still say "put BACK" for the filing's tests, and the gate's `dest === 'g' or 'u'` is always true where it stands — left, filed with `[ONE-RULE-LEFTOVERS]`'s kind of tidiness, not fixed |
+
+**D814's change gets a narrow read of its own** (a fix is new code — the order's §5): one fresh Opus reader, the commit
+and the finding it answers. {{NARROW}}
+
+**The gates:** on D804's change (`cf0d9061f` and the records after it) — the whole set in one run under the PC's lock:
+unit 10922 / 10922 (624 files) · build clean · tfin 728 / 0 · e2e 781 passed, 0 failed, 57 skipped · smoke 445 / 0 ·
+rulecheck OK · docsize OK. On D814's: {{GATES2}}
+
+**His look, added to §13's card:** 7. An input of kind Other, taken off the programme on a holiday → **→ Unavail**:
+the question comes first ("Don't file" / "File"); left, the bar reads "Not filed — OIL not answered". 8. Cancel an
+input on the board (CX), take it off, **Accept**: it goes back at once — no question, and its card wears no "OIL?".
+
+**Told, not asked:** the filing's three phrases ("Don't file", "File", "Not filed — OIL not answered") and "That input
+has changed — not filed"; an information-only input is treated as a cancelled one for the question; an answer given
+before an input was cancelled stays on the record and counts again if the mark comes off.
