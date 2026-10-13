@@ -140,7 +140,7 @@ describe('the editor', () => {
     const doc = docAdd(new Blob(['x'], { type: 'image/png' }) as any).id
     await act(async () => { setInpEdit({ _new: true, _ctx: 'u', person: 'bane', type: 'ATT B', date: 'Jul 13', endDate: 'Jul 18', allday: true, yr: 2026, remarks: '', docId: doc }); notify() })
     await click($('#inpEditSave'))
-    await click($('[data-testid="medclash-0"] .seg button'))               // "ATT B replaces"
+    await click($('[data-testid="medclash-0"] .upconf-ans button'))               // "ATT B replaces"
     await refusing(async () => { await click($('[data-testid="medclash-save"]')) })
     expect(said(/Input added/), 'never "Input added"').toBe(false)
     expect(said(/not saved/i)).toBe(true)

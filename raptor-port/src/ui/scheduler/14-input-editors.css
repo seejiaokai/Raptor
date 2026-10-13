@@ -155,7 +155,11 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .upconf-fit{font-size:12.5px;font-weight:700;color:#A8E6BC;margin:0 0 12px}
 .upconf-left{display:flex;align-items:center;gap:8px;background:var(--panel-2);
   border:1px solid var(--edge);border-radius:8px;padding:7px 9px;margin-bottom:6px;font-size:12.5px;color:var(--ink)}
-.upconf-left .seg{margin-left:auto;display:flex;gap:4px;flex:0 0 auto}
+/* THE ANSWERS OF A ROW — Keep / Remove, "ATT B replaces" / "Keep ATT C till …" — at its right, FLAT (owner D849, 14 Oct 26
+   — "3 yes"). They were wrapped in `.seg`, which is also the week strip's rule (02-shell.css): its darker patch, its
+   8px 20px of padding and its line underneath came with it — the fault L1 took off the OIL question, on the two
+   sheets D830's list did not hold. A wrapper of the sheets' own: no fill, no line, no padding. */
+.upconf-left .upconf-ans{margin-left:auto;display:flex;gap:4px;flex:0 0 auto}
 .upconf-seg{appearance:none;background:var(--bg);border:1px solid var(--edge-2);color:var(--ink-2);
   font:inherit;font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:7px;cursor:pointer}
 .upconf-seg.on-keep{background:var(--accent);border-color:transparent;color:var(--accent-ink)}
@@ -182,8 +186,15 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
    the pills hold together on their own line when the phone runs out */
 .upconf-left.medclash-row,.upconf-left.medclash-tail{background:none;border:0;
   border-radius:0;padding:5px 0;flex-wrap:wrap}
-.upconf-left.medclash-row .seg,.upconf-left.medclash-tail .seg{margin-left:auto;
+.upconf-left.medclash-row .upconf-ans,.upconf-left.medclash-tail .upconf-ans{margin-left:auto;
   flex-wrap:wrap;justify-content:flex-end}
+/* A CLASH'S TWO ANSWERS TAKE A LINE OF THEIR OWN under its sentence, at the right (owner D849, 14 Oct 26 — "3 yes", the
+   picture of record docs/mock/2026-10-14-leftovers/q3-medclash-after.png; "on the medical clash the buttons stay at the
+   right"). With the strip's padding gone the pair could otherwise ride beside a short sentence on one sheet and under
+   a long one on the next; the picture drew it under, always. The leftover line under a clash was not drawn and keeps
+   its own flow. */
+.upconf-left.medclash-row{row-gap:10px}
+.upconf-left.medclash-row .upconf-ans{margin-left:0;flex:1 0 100%;gap:6px}
 /* the leftover question hangs OFF the clash above it — indented and a step
    quieter, so it reads as a follow-up to that clash, not a new one. Its
    default (Remove) shows in the red 'on-rem' seg so a straight Save is

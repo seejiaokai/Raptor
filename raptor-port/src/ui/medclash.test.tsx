@@ -83,7 +83,7 @@ describe('the clash sheet gates a different-type overlap', () => {
     const depth = HIST.stack.length
     await openMedAdd('ATT B', 'Jul 13', 'Jul 18')
     await click($('#inpEditSave'))
-    await click($('[data-testid="medclash-0"] .seg button'))               // "ATT B replaces"
+    await click($('[data-testid="medclash-0"] .upconf-ans button'))               // "ATT B replaces"
     await click($('[data-testid="medclash-save"]'))
     expect(c.endDate).toBe('Jul 12')
     expect(rows('ATT B').map(spanOf)).toEqual(['Jul 13-Jul 18'])
@@ -93,7 +93,7 @@ describe('the clash sheet gates a different-type overlap', () => {
     const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 15' })
     await openMedAdd('ATT B', 'Jul 13', 'Jul 18')
     await click($('#inpEditSave'))
-    const keep = $('[data-testid="medclash-0"] .seg').querySelectorAll('button')[1]
+    const keep = $('[data-testid="medclash-0"] .upconf-ans').querySelectorAll('button')[1]
     expect(keep.textContent, 'the keep button says what survives').toBe('Keep ATT C till Jul 15')
     await click(keep)
     await click($('[data-testid="medclash-save"]'))
@@ -105,7 +105,7 @@ describe('the clash sheet gates a different-type overlap', () => {
     const depth = HIST.stack.length
     await openMedAdd('ATT B', 'Jul 10', 'Jul 20')
     await click($('#inpEditSave'))
-    await click($('[data-testid="medclash-0"] .seg').querySelectorAll('button')[1])
+    await click($('[data-testid="medclash-0"] .upconf-ans').querySelectorAll('button')[1])
     await click($('[data-testid="medclash-save"]'))
     expect(c.date + '-' + c.endDate).toBe('Jul 13-Jul 14')
     expect(rows('ATT B').map(spanOf).sort()).toEqual(['Jul 10-Jul 12', 'Jul 15-Jul 20'])
@@ -120,7 +120,7 @@ describe('the clash sheet gates a different-type overlap', () => {
     const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 20' })
     await openMedAdd('ATT B', 'Jul 13', 'Jul 14')
     await click($('#inpEditSave'))
-    const pills = $('[data-testid="medclash-0"] .seg').querySelectorAll('button')
+    const pills = $('[data-testid="medclash-0"] .upconf-ans').querySelectorAll('button')
     expect(pills, 'one pill only — keeping whole would swallow the entry').toHaveLength(1)
     expect(pills[0].className, 'and it is pre-selected').toContain('on-keep')
     expect($('[data-testid="medclash-tail-0"]')!.textContent, 'the leftover is up at once').toContain('Jul 15 – Jul 20')
@@ -139,7 +139,7 @@ describe('the clash sheet gates a different-type overlap', () => {
     await click($('#inpEditSave'))
     /* the entry sits wholly inside ATT C, so replace is forced and the
        leftover question is up without a click */
-    expect($('[data-testid="medclash-0"] .seg').querySelectorAll('button')).toHaveLength(1)
+    expect($('[data-testid="medclash-0"] .upconf-ans').querySelectorAll('button')).toHaveLength(1)
     expect($('[data-testid="medclash-tail-0"]'), 'the leftover is asked at once').toBeTruthy()
     expect($('[data-testid="medclash-tail-0"]')!.textContent).toContain('Jul 14 – Jul 15')
     expect($('[data-testid="medclash-tail-0"]')!.textContent, 'the removal is shown, not silent').toContain('will be removed')
@@ -152,7 +152,7 @@ describe('the clash sheet gates a different-type overlap', () => {
     const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 15' })
     await openMedAdd('ATT B', 'Jul 12', 'Jul 13')
     await click($('#inpEditSave'))
-    await click($('[data-testid="medclash-tail-0"] .seg').querySelectorAll('button')[1])   // "Keep them"
+    await click($('[data-testid="medclash-tail-0"] .upconf-ans').querySelectorAll('button')[1])   // "Keep them"
     await click($('[data-testid="medclash-save"]'))
     expect(c.endDate).toBe('Jul 11')
     const tail = rows('ATT C').find((r: any) => r !== c)
@@ -165,11 +165,11 @@ describe('the clash sheet gates a different-type overlap', () => {
     plant({ person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 15' })
     await openMedAdd('ATT B', 'Jul 8', 'Jul 13')
     await click($('#inpEditSave'))
-    expect($('[data-testid="medclash-0"] .seg').querySelectorAll('button')).toHaveLength(2)
+    expect($('[data-testid="medclash-0"] .upconf-ans').querySelectorAll('button')).toHaveLength(2)
     expect($('[data-testid="medclash-tail-0"]'), 'no leftover until the new entry takes the days').toBeFalsy()
-    await click($('[data-testid="medclash-0"] .seg button'))               // "ATT B replaces" → leftover appears
+    await click($('[data-testid="medclash-0"] .upconf-ans button'))               // "ATT B replaces" → leftover appears
     expect($('[data-testid="medclash-tail-0"]')!.textContent).toContain('Jul 14 – Jul 15')
-    await click($('[data-testid="medclash-0"] .seg').querySelectorAll('button')[1])   // switch to "Keep ATT C till Jul 15"
+    await click($('[data-testid="medclash-0"] .upconf-ans').querySelectorAll('button')[1])   // switch to "Keep ATT C till Jul 15"
     expect($('[data-testid="medclash-tail-0"]'), 'no leftover when the old status is kept whole').toBeFalsy()
   })
   // The 28 Aug review's finding: when a KEPT middle status splits the new
@@ -183,11 +183,11 @@ describe('the clash sheet gates a different-type overlap', () => {
     await click($('#inpEditSave'))
     // clash 0 = ATT C covers the whole entry → replace is FORCED, its
     // leftover question up without a click; KEEP that leftover
-    expect($('[data-testid="medclash-0"] .seg').querySelectorAll('button')).toHaveLength(1)
+    expect($('[data-testid="medclash-0"] .upconf-ans').querySelectorAll('button')).toHaveLength(1)
     expect($('[data-testid="medclash-tail-0"]')!.textContent, 'the leftover is past the ENTRY end').toContain('Jul 21 – Jul 25')
-    await click($('[data-testid="medclash-tail-0"] .seg').querySelectorAll('button')[1])   // Keep them
+    await click($('[data-testid="medclash-tail-0"] .upconf-ans').querySelectorAll('button')[1])   // Keep them
     // clash 1 = OML: keep it in the middle (splits the new ATT B around it)
-    await click($('[data-testid="medclash-1"] .seg').querySelectorAll('button')[1])
+    await click($('[data-testid="medclash-1"] .upconf-ans').querySelectorAll('button')[1])
     await click($('[data-testid="medclash-save"]'))
     expect(INPUTS.indexOf(c), 'the original ATT C head is gone (started on the entry)').toBe(-1)
     expect(rows('ATT C').map(spanOf), 'the kept leftover is whole, past the entry — not dropped, not overlapping').toEqual(['Jul 21-Jul 25'])

@@ -42,7 +42,12 @@
 
    `tools` (D683: "+note and pucks can shift … to beside the day title"): a window's own few buttons, drawn in the bar
    between its title and its cross. A press on one is the button's, never the bar's — it does not start a drag, and on
-   a phone it does not send the panel to its other height. */
+   a phone it does not send the panel to its other height.
+
+   `mark` (owner D849, 14 Oct 26 — "2 yes"; D771: "beside the window's title"): something the window SAYS about what it
+   holds — a cancelled input's red CX tag and its reason — drawn straight after the title. Not a tool: it does nothing,
+   so the bar is dragged by it as by the title. The title then takes only the room its words need and the mark what is
+   left, so a long reason is cut short before the title is (22-float-windows.css `.has-mark`). */
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { frontWin, phoneLayout, raiseWin, useFloatWin, type FloatBox } from './floatwin'
 import { useVersion } from './useStore'
@@ -82,7 +87,7 @@ function gone(id: string): boolean {
 /* how far the bar must be dragged for the panel to go to its other height — less is a wobble, and it stays put */
 const PULL = 40
 
-export function FloatWin({ id, title, sub, onClose, testid, className, rests, tallFirst, tools, children }: {
+export function FloatWin({ id, title, sub, onClose, testid, className, rests, tallFirst, tools, mark, children }: {
   /** which window this is — its remembered place and its turn in front are kept by it; one window per id at a time */
   id: string
   title: string
@@ -99,6 +104,8 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
   tallFirst?: boolean
   /** the window's own buttons, in the bar after the title (D683) */
   tools?: ReactNode
+  /** what the window says about what it holds, straight after its title — a mark, never a control */
+  mark?: ReactNode
   children: ReactNode
 }) {
   useVersion()                                         // which window is in front is said through the app's own signal
@@ -256,10 +263,11 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
       data-testid={testid}
       onPointerDownCapture={() => { if (forward(id)) notify() }}
     >
-      <div className="win-bar" {...bar}>
+      <div className={'win-bar' + (mark ? ' has-mark' : '')} {...bar}>
         {/* the app's own six-dot grip, "drag me" (D40) */}
         <span className="win-grip" aria-hidden="true">&#10303;</span>
         <span className="win-ttl">{title}{sub ? <small>{sub}</small> : null}</span>
+        {mark ? <span className="win-mark">{mark}</span> : null}
         {tools ? <span className="win-tools">{tools}</span> : null}
         <button type="button" className="win-x" data-testid={testid ? `${testid}-x` : undefined} onClick={onClose} title="Close" aria-label={`Close ${title}`}>&#10005;</button>
       </div>

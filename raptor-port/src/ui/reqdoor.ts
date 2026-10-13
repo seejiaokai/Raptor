@@ -192,14 +192,18 @@ function gated(o: {
 }
 
 /* THE NOTE AFTER SOMEONE WAS PUT IN (D755 (1), D762). The person follows the input's one answer; nothing was written
-   for him. (The OIL question no longer FOLLOWS the add — where the input has no answer it was asked first: `gated`.) */
+   for him. (The OIL question no longer FOLLOWS the add — where the input has no answer it was asked first: `gated`.)
+   THE PUCK ON THE ROW IS THE SIGN (owner D854, 14 Oct 26 — "Yes to all", of the picture that marked "<name> added to
+   <row>" where it stands; the design guide's §1, D850: feedback is the screen's, a note only for what the screen does
+   not show). So a plain add says nothing. The note is still raised where it has something to say that the puck does
+   not: the input's OIL answer is No, so he is on the row and NOT counted for OIL — said in the words it always had. */
 function afterPut(inp: any, said: string, spoke: boolean): void {
   let tail = ''
   if (oilAsks(inp.type)) {
     const plan = oilAskPlan(inp), ans = (inp.oil || {}) as Record<string, number>
     if (plan.length && plan.every((p: any) => ans[p.iso] === 0)) tail = ' — not counted for OIL'
   }
-  if (!spoke) HOOKS.toast(said + tail, 'ok')
+  if (!spoke && tail) HOOKS.toast(said + tail, 'ok')
 }
 
 /* SOMEONE JOINS — appended to the input's list, by the input's own save; with the input's one OIL answer where the
@@ -294,7 +298,7 @@ export function rowPut(key: any, id: any, seat?: SeatTake, oil?: Oil): RowAnswer
    off this way: an input holds at least one person (the plan §4.1), and the words name the two doors there are.
    `then` runs INSIDE the command, after he has left; a `false` from it refuses the whole command. */
 function leave(p: Place, then?: () => boolean | void, said?: string): boolean {
-  const ids = people(p.inp), cs = csOf(p.at), name = inpLabel(p.inp)
+  const ids = people(p.inp), cs = csOf(p.at)
   if (ids.length < 2) {
     /* (the words name the ACT, not a button: "use ✕ …" pointed at a control only the Scheduler Board's row has — on Edit
        Schedule's week the same act is "Undo" on the input's line under Personal Inputs. Found by the job's walk, share H —
@@ -308,7 +312,9 @@ function leave(p: Place, then?: () => boolean | void, said?: string): boolean {
     return true
   }))
   if (!out.ok) return false
-  if (!spoke) HOOKS.toast(said || `${cs} taken out of ${name}`, 'ok')
+  /* a caller's own words are said (a move names where he went); a plain take-off says nothing — the puck gone from the
+     row is the sign, and Undo is lit (owner D854, 14 Oct 26; it read "<name> taken out of <row>") */
+  if (!spoke && said) HOOKS.toast(said, 'ok')
   return true
 }
 

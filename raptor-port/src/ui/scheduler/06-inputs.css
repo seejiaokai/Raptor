@@ -240,9 +240,20 @@
   100%{box-shadow:inset 0 0 0 2px rgba(30,134,255,0),0 0 9px rgba(30,134,255,0)}
 }
 .innew>td{animation:inflash 6s ease-out 1;position:relative}
-/* a flash is decoration; for anyone who has asked for less motion the row is
-   simply already settled */
-@media (prefers-reduced-motion:reduce){.innew>td{animation:none}}
+/* THE MARK IS FEEDBACK, NOT DECORATION (owner D850, D851 — 14 Oct 26; the design guide's §1 and §5): since "Input added"
+   is no longer said where the new input can be seen, the box IS what says it. For anyone who has asked for less motion
+   it used to be switched off whole, which would leave that reader nothing. There it shows STEADY — the same box, no
+   fade — and goes when its six seconds are up (the class comes off: InputsPage's FLASH_MS). */
+@media (prefers-reduced-motion:reduce){
+  .innew>td{animation:none;box-shadow:inset 0 0 0 2px #1E86FF,0 0 9px rgba(30,134,255,.5)}
+  /* the row's FIRST cell carries its kind's coloured edge as a shadow of its own (above: `#inBody tr.in-red>td:first-child`),
+     and that rule out-ranks the one line above — while the box is animated the animation wins, but a steady box is an
+     ordinary declaration: without these three the first cell kept its edge and wore no box (found by the walk of
+     14 Oct 26, a desktop List with less motion asked for). The box, with the edge under it. */
+  #inBody tr.innew.in-red>td:first-child{box-shadow:inset 0 0 0 2px #1E86FF,0 0 9px rgba(30,134,255,.5),inset 3px 0 0 var(--hard)}
+  #inBody tr.innew.in-amb>td:first-child{box-shadow:inset 0 0 0 2px #1E86FF,0 0 9px rgba(30,134,255,.5),inset 3px 0 0 var(--adv)}
+  #inBody tr.innew.in-san>td:first-child{box-shadow:inset 0 0 0 2px #1E86FF,0 0 9px rgba(30,134,255,.5),inset 3px 0 0 var(--san)}
+}
 /* ON A PHONE THE LIST IS NOT THIS TABLE (owner D718, D723 — 10 Oct 26). Under 820px `ui/InputsPage.tsx` draws the input
    card under a heading a day (ui/InputCard.tsx; its styles are 25-inputs-calendar.css `.icard…`) and no table at all —
    so the rules that restyled each table row into a card there (18 and 22 Aug 26), and the inline editor's phone

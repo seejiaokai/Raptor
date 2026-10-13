@@ -200,7 +200,7 @@ describe('a person ADDED where the input has no answer yet waits the same way (D
     expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
     expect(people()).toEqual(['bane', 'pike', 'split'])
     expect(rec().oil).toEqual({ [SAT_ISO]: 0.5 })
-    expect(SAID.join(' | ')).toContain(`${cs('split')} added to ${TITLE}`)
+    expect(SAID.join(' | '), 'the puck is the sign: no note (owner D854)').not.toContain('added to')
     globalUndo()
     expect(people(), 'ONE Undo').toEqual(['bane', 'pike'])
     expect(rec().oil, 'and it is unanswered again').toBeUndefined()

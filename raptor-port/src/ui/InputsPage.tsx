@@ -726,7 +726,7 @@ export function InputsPage() {
               const lates = facesOf(r).filter((f: any) => isLateInput(f))
                 .sort((a: any, b: any) => csOf(a.person).localeCompare(csOf(b.person), undefined, { sensitivity: 'base' }))
               return (
-                <tr key={inx} className={rowCls} data-iid={r.iid}
+                <tr key={inx} className={rowCls} data-iid={r.iid} data-fresh={flash.indexOf(r) >= 0 ? r.iid : undefined}
                   /* A CLICK ON THE ROW OPENS THE INPUT (D718, D723 — the pencil and the cross are gone). Not a press on
                      one of the row's own controls: its Name button opens it by itself, and the paperclip and the OIL
                      chips of the last cell do their own work. */
@@ -860,7 +860,7 @@ export function InputsPage() {
           free round trip, scroll position and all, rather than a re-navigate
           that has to rebuild the list from scratch */}
       {sansUp && <SansCal />}
-      {calUp && <InputsCal fPerson={fPerson} fType={fType} fSearch={fSearch}
+      {calUp && <InputsCal fPerson={fPerson} fType={fType} fSearch={fSearch} lit={flash.map(r => String(r.iid))}
         seedIso={range.from || isoOf(new Date())} lead={<>{tabsRow}{views}</>} tools={tools} under={filterSummary} onClearFilters={clearFilters} />}
       {tab === 'med' && <MedicalView />}
       {/* the OIL ask (owner, 28 Aug 26) — the desktop row's OIL chip: Save runs the

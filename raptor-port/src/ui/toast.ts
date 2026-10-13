@@ -24,6 +24,9 @@ export let toastT:any=null;
    publishFlagsBids pass one. */
 export type ToastPart={day:number|string,head:string,body:string,after?:string};
 let BATCH:Array<{msg:string,kind:any,part?:ToastPart}>|null=null;
+/** how many notes the batch that is open has been handed so far — 0 where none is open. The input's window asks it
+ *  (ui/inputedit.tsx `saidSaved`): a save that said something of its own keeps "Input added" beside it, in the one note. */
+export function toastHeld():number{ return BATCH?BATCH.filter(m=>m.msg).length:0 }
 const RANK=(k:any)=>k==='hard'?3:k==='warn'?2:1;
 const sentence=(s:string)=>s.charAt(0).toUpperCase()+s.slice(1)+'.';
 export function toastBatch<T>(fn:()=>T):T{

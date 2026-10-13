@@ -588,7 +588,7 @@ export function SchedBoard() {
               belongs beside the section it acts on. The desktop edit-week page's
               "+ Add wave" (#addGo) went with it; the board is the one place a
               wave is created now, and it is reachable on desktop too. */}
-          <button className="abtn primary" id="sbDone" onClick={() => { HOOKS.toast('Schedule updated'); closeScheduler() }}><span className="bi">✓</span><span className="bl"> Done</span></button>
+          <button className="abtn primary" id="sbDone" onClick={() => closeScheduler()}><span className="bi">✓</span><span className="bl"> Done</span></button>
           {/* ✕ CLOSE IS GONE (owner D349, 28 Sep 26 — "What does tick or close do? is it the same function?"; told yes,
               he approved "✓ Done only"): ✓ Done is the one way out. Escape and a tap on the scrim still close the board. */}
         </div>

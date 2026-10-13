@@ -51,7 +51,7 @@ describe('Pile 1 whole-form medical preflight', () => {
     saveEditor()
     const clashes = screen.getAllByTestId(/^medclash-\d+$/)
     for (const clash of clashes) {
-      const buttons = clash.querySelectorAll('.seg button')
+      const buttons = clash.querySelectorAll('.upconf-ans button')
       fireEvent.click(buttons[clash.textContent!.includes('ATT C') ? 1 : 0])
     }
     fireEvent.click(screen.getByTestId('medclash-save'))
@@ -76,7 +76,7 @@ describe('Pile 1 whole-form medical preflight', () => {
     open(isNew ? { ...row, _new: true, _ctx: 'up' } : row)
     fireEvent.change(screen.getByLabelText('Remarks'), { target: { value: 'Changed medical paperwork' } })
     saveEditor()
-    fireEvent.click(screen.getByTestId('upconf-left-0').querySelectorAll('.seg button')[1])
+    fireEvent.click(screen.getByTestId('upconf-left-0').querySelectorAll('.upconf-ans button')[1])
     fireEvent.click(screen.getByTestId('upconf-save'))
     expect(JSON.stringify(INPUTS)).toBe(before)
     expect(JSON.stringify(getState().wars)).toBe(war)

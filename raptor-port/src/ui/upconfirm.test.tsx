@@ -106,7 +106,11 @@ describe('the forced Keep/Remove on later-dated entries', () => {
        over the entries already says "choose for each" and Keep / Remove stand right there — D846's rule) */
     expect($('.upconf-need'), 'no hint in the foot: the dimmed button and the heading say it').toBeNull()
     expect($('[data-testid="upconf"]')?.textContent || document.body.textContent || '').not.toContain('Choose Keep or Remove for each entry above')
-    const seg = $('[data-testid="upconf-left-0"] .seg')!
+    /* THE ANSWERS SIT FLAT (owner D849, 14 Oct 26 — "3 yes"): they were wrapped in `.seg`, which is also the week
+       strip's rule (02-shell.css), so they wore its darker patch and its line underneath — the fault L1 took off the
+       OIL question. A wrapper of the sheet's own now. What it looks like on screen is the browser test's. */
+    expect($('[data-testid="upconf"] .seg, [data-testid="upconf-left-0"] .seg'), 'the week strip\'s class is not worn').toBeNull()
+    const seg = $('[data-testid="upconf-left-0"] .upconf-ans')!
     await click(seg.querySelectorAll('button')[0])            // Keep
     expect(($('[data-testid="upconf-save"]') as HTMLButtonElement).disabled).toBe(false)
   })
@@ -114,7 +118,7 @@ describe('the forced Keep/Remove on later-dated entries', () => {
     const { now, later } = seed()
     await openUpchitAdd('Jul 12')
     await click($('#inpEditSave'))
-    await click($('[data-testid="upconf-left-0"] .seg')!.querySelectorAll('button')[0])
+    await click($('[data-testid="upconf-left-0"] .upconf-ans')!.querySelectorAll('button')[0])
     await click($('[data-testid="upconf-save"]'))
     expect(now.endDate).toBe('Jul 11')
     expect(INPUTS.indexOf(later), 'kept').toBeGreaterThanOrEqual(0)
@@ -125,7 +129,7 @@ describe('the forced Keep/Remove on later-dated entries', () => {
     const depth = HIST.stack.length
     await openUpchitAdd('Jul 12')
     await click($('#inpEditSave'))
-    await click($('[data-testid="upconf-left-0"] .seg')!.querySelectorAll('button')[1])
+    await click($('[data-testid="upconf-left-0"] .upconf-ans')!.querySelectorAll('button')[1])
     await click($('[data-testid="upconf-save"]'))
     expect(now.endDate).toBe('Jul 11')
     expect(INPUTS.indexOf(later), 'removed with the upchit').toBe(-1)

@@ -16,7 +16,7 @@
    pure rule of "till said once" (inputcard-model.test.ts). */
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { InputsPage, rangeWords } from './InputsPage'
 import { InputEditor } from './inputedit'
 import { initStore, notify, setSession, writeInputs } from '../state/store'
@@ -486,5 +486,120 @@ describe('the phone’s list has the same one button (V1)', () => {
     expect($('[data-testid="win-inputedit"]')).toBeTruthy()
     expect($('#inpEditPop .rc-read')!.textContent).toBe('pick a start date')
     expect(($('#inpEditPerson') as HTMLSelectElement).selectedOptions[0].textContent, 'filed for whoever is signed in').toBe(cs(admin))
+  })
+})
+
+/* THE JUST-ADDED MARK IS THE FEEDBACK (owner D851, 14 Oct 26 — "Why 1 needs an input added note? Isint it obvious when the
+   input appears after it's been added? And should be have a short flash of cyan on the exterior just like when I add an
+   item in the scheduled board?"; D854 — "Yes to all": the board's blue box of about six seconds, and "Input updated"
+   the same; the design guide's §1, D850). Wherever the Inputs page shows an input it has just been shown — the List's
+   row, the phone's card, the opened day's card, the month's bar — that thing wears the mark (`.innew`) and names the
+   input it is for (`data-fresh`, which ui/seen.ts reads to leave the passing note unsaid). The opened day's card wore
+   none until this build. Whether the note is then said is decided on the SCREEN (ui/seen.test.ts, and a real browser:
+   e2e/feedback-marks.spec.ts) — jsdom lays nothing out, so here every save still says its words. */
+describe('an input just saved wears the just-added mark wherever the page shows it (D851, D854)', () => {
+  const newest = () => INPUTS[0] as any
+  const lit = (el: Element | null, iid: string, where: string) => {
+    expect(el, where).toBeTruthy()
+    expect(el!.classList.contains('innew'), `${where}: the mark`).toBe(true)
+    expect(el!.getAttribute('data-fresh'), `${where}: it says which input the mark is for`).toBe(iid)
+  }
+  it('the desktop List: the new row', async () => {
+    await mount(false)
+    await click($('#inNew'))
+    await click($('#inpEdCal [data-cal="2026-07-14"]'))
+    await click($('#inpEditSave'))
+    lit(tr(newest()), newest().iid, 'the row')
+  })
+  it('the phone List: the new card', async () => {
+    await mount(true)
+    await click($('#inNew'))
+    await click($('#inpEdCal [data-cal="2026-07-14"]'))
+    await click($('#inpEditSave'))
+    lit($(`[data-testid="inl-row-${newest().iid}"]`), newest().iid, 'the card')
+  })
+  it('a day opened on the calendar: the new input’s CARD — and the bar behind the day does not light too', async () => {
+    await mount(false, 'cal')
+    const before = await file({ date: 'Oct 21' })
+    await openDay('2026-10-21')
+    await click($('#icPopAdd'))
+    await click($('#inpEditSave'))
+    const r = newest()
+    expect(r.iid, 'a new input').not.toBe(before.iid)
+    lit($(`[data-testid="idy-row-${r.iid}"]`), r.iid, 'the day’s card')
+    expect($(`[data-testid="idy-row-${before.iid}"]`)!.classList.contains('innew'), 'the input that was there already is not lit').toBe(false)
+    expect($$(`.ib-bar[data-iid="${r.iid}"]`).some(b => b.classList.contains('innew') || b.hasAttribute('data-fresh')), 'the bar behind').toBe(false)
+  })
+  it('the month with no day open: its bar', async () => {
+    await mount(false, 'cal')
+    const r = await file({ date: 'Oct 21', remarks: 'before' })
+    await act(async () => { setInpEdit(r); notify() })          // its window (a real press on a bar is the browser test's)
+    await type('#inpEditRmk', 'after')
+    await click($('#inpEditSave'))
+    expect(live(r.iid).remarks).toBe('after')
+    const bars = $$(`.ib-bar[data-iid="${r.iid}"]`)
+    expect(bars.length).toBeGreaterThan(0)
+    for (const b of bars) lit(b, r.iid, 'the bar')
+    expect($('.ib-day.is-open'), 'and no day opens over the month (D672)').toBeNull()
+  })
+  it('an input CHANGED wears it as one added does (D854 — "Input updated")', async () => {
+    await mount(false)
+    const r = await file({ remarks: 'before' })
+    expect(tr(r)!.classList.contains('innew'), 'not lit while nothing was done to it').toBe(false)
+    await click(tr(r)!.querySelector('[data-testid="in-open"]'))
+    await type('#inpEditRmk', 'after')
+    await click($('#inpEditSave'))
+    lit(tr(live(r.iid)), r.iid, 'the changed row')
+  })
+  it('the mark comes off when its six seconds are up — class and name both', async () => {
+    vi.useFakeTimers()
+    try {
+      await mount(false)
+      await click($('#inNew'))
+      await click($('#inpEdCal [data-cal="2026-07-14"]'))
+      await click($('#inpEditSave'))
+      const r = newest()
+      lit(tr(r), r.iid, 'the row')
+      await act(async () => { vi.advanceTimersByTime(5900) })
+      expect(tr(r)!.classList.contains('innew'), 'still up just before').toBe(true)
+      await act(async () => { vi.advanceTimersByTime(200) })
+      expect(tr(r)!.classList.contains('innew')).toBe(false)
+      expect(tr(r)!.hasAttribute('data-fresh')).toBe(false)
+    } finally { vi.useRealTimers() }
+  })
+})
+
+/* WHERE THE NOTE IS STILL SAID AT ONCE, ON A PAGE THAT IS LAID OUT (the window's own half of the rule — ui/inputedit.tsx
+   `saidSaved`; the screen's half is ui/seen.test.ts). The browser's two answers are handed in, as there: the page has a
+   width, and nothing stands at any point — so nothing is ever "in view" here, and what is tested is WHEN the words come. */
+describe('the save’s note on a laid-out page: left to the screen only where the Inputs page is in front (D851, D854)', () => {
+  const said: string[] = []
+  const layOut = () => {
+    ;(document.documentElement as any).getBoundingClientRect = () => ({ top: 0, left: 0, width: 1440, height: 900, right: 1440, bottom: 900, x: 0, y: 0, toJSON() {} })
+    ;(document as any).elementFromPoint = () => null
+  }
+  beforeEach(() => { said.length = 0; vi.useFakeTimers(); layOut(); HOOKS.toast = ((m: any) => { said.push(String(m)) }) as any })
+  afterEach(() => { vi.useRealTimers(); delete (document as any).elementFromPoint; delete (document.documentElement as any).getBoundingClientRect })
+  const change = async (r: any) => {
+    await act(async () => { setInpEdit(live(r.iid)); notify() })
+    await type('#inpEditRmk', 'after')
+    await click($('#inpEditSave'))
+  }
+  it('the Inputs page in front: nothing is said in the same breath — the screen is asked first, and here answers "not seen"', async () => {
+    await mount(false)
+    const r = await file({ remarks: 'before' })
+    await change(r)
+    expect(live(r.iid).remarks).toBe('after')
+    expect(said, 'not at once').toEqual([])
+    await act(async () => { vi.advanceTimersByTime(1000) })
+    expect(said, 'and said once the screen has answered').toEqual(['Input updated'])
+  })
+  it('another page in front (a save made from the schedule): the words at once, as always — nothing there wears the mark', async () => {
+    await mount(false)
+    const r = await file({ remarks: 'before' })
+    await act(async () => { setPage('editsched'); notify() })
+    await change(r)
+    expect(live(r.iid).remarks).toBe('after')
+    expect(said).toEqual(['Input updated'])
   })
 })

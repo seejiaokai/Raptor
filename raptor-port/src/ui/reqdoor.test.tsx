@@ -177,7 +177,7 @@ describe('a person put on the row JOINS the input (D755) (GI6)', () => {
       expect(rowOf().rid, 'the same row').toBe(rid)
       expect(onRow(), where).toEqual(['bane', 'pike', 'split'])
       expect(lines() - before, 'one line in the change history').toBe(1)
-      expect(SAID.join(' | ')).toContain(`${cs('split')} added to ${TITLE}`)
+      expect(SAID.join(' | '), 'the puck is the sign: no note (owner D854)').not.toContain('added to')
       expect(isLateInput(rec()), 'nobody reads late for it (D741) (GI8)').toBe(false)
       globalUndo()
       expect(people(), 'ONE Undo').toEqual(['bane', 'pike'])
@@ -329,7 +329,7 @@ describe('a puck taken off the row takes that person out of the input (D755) (GI
     expect(rowTake(keyOf('pike'))).toBe('done')
     expect(people()).toEqual(['bane', 'split'])
     expect(rowOf().rid).toBe(rid)
-    expect(SAID.join(' | ')).toContain(`${cs('pike')} taken out of ${TITLE}`)
+    expect(SAID.join(' | '), 'the puck is the sign: no note (owner D854)').not.toContain('taken out of')
     /* the first to join leaves: the next takes the name box */
     expect(rowTake(keyOf('bane'))).toBe('done')
     expect(onRow()).toEqual(['split'])
@@ -438,8 +438,7 @@ describe('THE BELT in the engine, and the doors that reach the input (the plan\'
     expect(applyDrop(cellEl(`${rowKey()}.+`), 0, 0)).toBe(true)
     expect(people()).toEqual(['bane', 'pike', 'allavail'])
     expect(onRow(), 'and the row says what its input says').toEqual(['bane', 'pike', 'allavail'])
-    expect(SAID).toEqual([`ALL AVAIL added to ${TITLE}`])
-    expect(SAID.join(' ')).not.toMatch(/filed on its own/i)
+    expect(SAID, 'the puck is the sign: no note (owner D854)').toEqual([])
   })
 })
 
@@ -572,7 +571,7 @@ describe('ALL AVAIL / ALL on an input\'s row — every hand (D750, D753, D755, D
       expect(drop(fromSeat(seat), seatEl(rowKey()))).toBe(true)
       expect(people()).toEqual([A, flew])
       expect(slotVal(seat), 'the seat he came from keeps him').toBe(flew)
-      expect(SAID.join(' | ')).toContain(`${cs(flew)} added to ${TITLE}`)
+      expect(SAID.join(' | '), 'the puck is the sign: no note (owner D854)').not.toContain('added to')
       globalUndo()
       expect([people(), slotVal(seat)]).toEqual([[A], flew])
     })
@@ -651,7 +650,7 @@ describe('ALL AVAIL / ALL on an input\'s row — every hand (D750, D753, D755, D
       file(['bane', A])
       SAID = []
       expect(drop(fromSeat(keyOf(A)), document.body)).toBe(true)
-      expect(SAID).toEqual([`ALL AVAIL taken out of ${TITLE}`])
+      expect(SAID, 'the puck is the sign: no note (owner D854)').toEqual([])
       expect([people(), onRow()]).toEqual([['bane'], ['bane']])
       globalUndo()
       expect([people(), onRow()], 'Undo').toEqual([['bane', A], ['bane', A]])
@@ -793,7 +792,7 @@ describe('ALL AVAIL / ALL on an input\'s row — every hand (D750, D753, D755, D
       SAID = []
       await rightClick(keyOf(A))
       expect(people()).toEqual(['bane'])
-      expect(SAID).toEqual([`ALL AVAIL taken out of ${TITLE}`])
+      expect(SAID, 'the puck is the sign: no note (owner D854)').toEqual([])
       SAID = []
       await rightClick(rowKey(WED, K2))
       expect(people(WED, K2), 'the last on its input: it stays').toEqual([A])
@@ -841,8 +840,7 @@ describe('ALL AVAIL / ALL on an input\'s row — every hand (D750, D753, D755, D
       SAID = []
       expect(rowTake(keyOf('pike'))).toBe('done')
       expect([people(), onRow()]).toEqual([['bane', A], ['bane', A]])
-      expect(SAID).toEqual([`${cs('pike')} taken out of ${TITLE}`])
-      expect(SAID.join(' ')).not.toMatch(/came off/i)
+      expect(SAID, 'the puck is the sign: no note (owner D854)').toEqual([])
       globalUndo()
       expect([people(), onRow()]).toEqual([['bane', 'pike', A], ['bane', 'pike', A]])
     })

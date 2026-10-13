@@ -100,7 +100,9 @@ export function MedClashConfirm({ who, newType, span, clashes, aOrd, bOrd, onSav
               <div key={i}>
                 <div className="upconf-left medclash-row" data-testid={`medclash-${i}`}>
                   <span>{c.row.type} {rowSpan(c.row)} · both cover <b>{win(c)}</b></span>
-                  <span className="seg">
+                  {/* flat (owner D849, 14 Oct 26 — "3 yes"): not `.seg`, the week strip's rule, whose darker patch and line
+                      underneath these wore; the buttons stay at the right (14-input-editors.css `.upconf-ans`) */}
+                  <span className="upconf-ans">
                     <button className={'upconf-seg' + (choiceOf(i) === 'new' ? ' on-keep' : '')}
                       onClick={() => setChoice(ch => ({ ...ch, [i]: 'new' }))}>{newType} replaces</button>
                     {!forced(c) &&
@@ -114,7 +116,7 @@ export function MedClashConfirm({ who, newType, span, clashes, aOrd, bOrd, onSav
                       {tchoice === 'remove'
                         ? <em className="medclash-tailnote"> — will be removed</em>
                         : <em className="medclash-tailnote"> — kept on file</em>}</span>
-                    <span className="seg">
+                    <span className="upconf-ans">
                       <button className={'upconf-seg' + (tchoice === 'remove' ? ' on-rem' : '')}
                         onClick={() => setTail(t => ({ ...t, [i]: 'remove' }))}>Remove those days</button>
                       <button className={'upconf-seg' + (tchoice === 'keep' ? ' on-keep' : '')}

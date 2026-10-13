@@ -1016,9 +1016,14 @@ describe('board lifecycle', () => {
   })
 
   it('Done closes the board', async () => {
-    await click($('#sbDone'))
+    /* …AND SAYS NOTHING (owner D854, 14 Oct 26 — "Yes to all"): it raised "Schedule updated" every time, changed or
+       not; the board closing is the sign, and every change was saved as it was made */
+    const toast = HOOKS.toast, said: string[] = []
+    HOOKS.toast = (m: any) => { said.push(String(m)) }
+    try { await click($('#sbDone')) } finally { HOOKS.toast = toast }
     expect(SBDAY).toBe(null)
     expect(($('#schedBoard') as any).hidden).toBe(true)
+    expect(said, 'no passing note').toEqual([])
   })
 
   it('logout closes the scheduler board', async () => {
