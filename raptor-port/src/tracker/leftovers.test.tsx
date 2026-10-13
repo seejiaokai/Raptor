@@ -16,6 +16,8 @@ import ShowAllPanel from './components/ShowAllPanel.jsx'
 import Pop from './components/Pop.jsx'
 import SidePanel from './components/SidePanel.jsx'
 import { initStore, resetSession } from '../state/store'
+import { boxValue, pickDate } from '../ui/datecal-testkit'
+import { fireEvent, screen } from '@testing-library/react'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 const C: any = core
@@ -205,36 +207,42 @@ async function pickStudent() {
 }
 
 describe('[TRK-RETEST-NOTES] C5 — a date box saves when you leave it, never a half-typed day', () => {
-  it('typing "1", a pause, then "7" saves only the 17th, as ONE step, when the box is left', async () => {
+  /* RE-EXPRESSED 13 Oct 26 for the app's own date box (owner D801 — the Tracker's date boxes open the app's one calendar;
+     a tap picks, no tick). These tests typed into the phone's date box and proved that a day half typed was never
+     saved. A day is PICKED now, whole — there is no half-typed day — so each promise is kept in the terms of the new
+     box: looking (opening the calendar, turning its months) saves nothing; a pick saves the day, once; the same day
+     picked again saves nothing; a date is taken off by the button beside the box, which hands over '' as an emptied
+     box did. (That a half-typed YEAR is refused is still the store's own rule — `isWholeDay`, tested below.) */
+  it('a day picked on the calendar is saved once; looking saves nothing; the same day again saves nothing; a date is taken off by its button', async () => {
     const { DateBox } = await import('./components/DateBox.jsx')
     const saved: string[] = []
     /* the box's owner keeps the saved day, as the side panel's store does */
     function Owner() { const [v, setV] = useState('2026-09-20'); return <DateBox id="dbx" value={v} onCommit={(x: string) => { saved.push(x); setV(x) }} /> }
     const { host, root } = await render(<Owner />)
     try {
-      const box = host.querySelector('#dbx') as HTMLInputElement
-      const type = (v: string) => act(async () => {
-        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(box, v)
-        box.dispatchEvent(new Event('input', { bubbles: true }))
-      })
-      await type('2026-09-01'); await type('2026-09-17')
-      expect(saved, 'nothing saved while typing — the 1st on the way to the 17th is not a day').toEqual([])
-      expect(box.value, 'the box shows what is typed').toBe('2026-09-17')
-      await act(async () => { box.dispatchEvent(new FocusEvent('blur')); box.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
-      expect(saved, 'leaving the box saves the day typed').toEqual(['2026-09-17'])
-      await type('0202-09-17')
-      await act(async () => { box.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
-      expect(saved, 'a half-typed year is never saved').toEqual(['2026-09-17'])
-      expect(box.value, 'and the box goes back to the saved day').toBe('2026-09-17')
-      await type('2026-09-17')
-      await act(async () => { box.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
-      expect(saved, 'the same day retyped saves nothing').toEqual(['2026-09-17'])
-      await type('2026-09-18')
-      await key(box, 'Enter')
-      expect(saved, 'Enter saves too').toEqual(['2026-09-17', '2026-09-18'])
-      await type('')
-      await act(async () => { box.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
-      expect(saved, 'a box emptied on purpose saves the empty').toEqual(['2026-09-17', '2026-09-18', ''])
+      const box = () => host.querySelector('#dbx') as HTMLElement
+      expect(box().tagName, 'the app’s own box — nothing of the phone’s date box is left').toBe('BUTTON')
+      expect(host.querySelector('input[type="date"]')).toBeNull()
+      expect(boxValue(box())).toBe('2026-09-20')
+      /* looking: open it, turn the months, close it by a tap outside */
+      fireEvent.click(box()); fireEvent.click(screen.getByTestId('dcal-next')); fireEvent.click(screen.getByTestId('dcal-prev')); fireEvent.click(screen.getByTestId('dcal-scrim')); await act(async () => { await tick() })
+      expect(saved, 'nothing saved by looking').toEqual([])
+      expect(boxValue(box())).toBe('2026-09-20')
+      pickDate(box(), '2026-09-17'); await act(async () => { await tick() })
+      expect(saved, 'a pick saves the day picked').toEqual(['2026-09-17'])
+      expect(boxValue(box()), 'the box shows the saved day').toBe('2026-09-17')
+      pickDate(box(), '2026-09-17'); await act(async () => { await tick() })
+      expect(saved, 'the same day picked again saves nothing').toEqual(['2026-09-17'])
+      pickDate(box(), '2026-09-18'); await act(async () => { await tick() })
+      expect(saved, 'and the next day is one more save').toEqual(['2026-09-17', '2026-09-18'])
+      const off = host.querySelector('.trdate-x') as HTMLElement
+      expect(off, 'a box that holds a date offers to take it off').toBeTruthy()
+      expect(off.getAttribute('aria-label')).toBe('Take this date off')
+      fireEvent.click(off); await act(async () => { await tick() })
+      expect(saved, 'a date taken off on purpose saves the empty').toEqual(['2026-09-17', '2026-09-18', ''])
+      expect(boxValue(box())).toBe('')
+      expect(box().textContent).toContain('Pick a date')
+      expect(host.querySelector('.trdate-x'), 'an empty box has nothing to take off').toBeNull()
     } finally { await act(async () => { root.unmount() }); host.remove() }
   })
 
@@ -312,25 +320,28 @@ describe('[TRK-RETEST-NOTES] C8 + D374 — a day after today is refused in Done 
 })
 
 describe('[TRK-RETEST-NOTES] C5 + D374 — the grading pop-up’s boxes on screen', () => {
-  it('a future Done on shows its one line; Escape keeps a day typed as it closes the pop-up', async () => {
+  it('a future Done on shows its one line; a day picked is kept; and the pop-up stays open while its date is picked on the calendar over it', async () => {
     const s = await pickStudent()
     const f = C.SYL.filter((e: any) => e.type === 'flight')[2].id
     C.openPop(f, { clientX: 5, clientY: 5 }); await C.popGrade('dco')
     C.openPop(f, { clientX: 5, clientY: 5 })
     const { host, root } = await render(<Live draw={() => <Pop />} />)
     try {
-      const box = host.querySelector('#popDoneDate') as HTMLInputElement
-      const type = (v: string) => act(async () => {
-        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(box, v)
-        box.dispatchEvent(new Event('input', { bubbles: true }))
-      })
-      await type(dayAfter(C.isoToday(), 3))
-      await act(async () => { box.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
+      const box = () => host.querySelector('#popDoneDate') as HTMLElement
+      expect(box().tagName).toBe('BUTTON')
+      pickDate(box(), dayAfter(C.isoToday(), 3)); await act(async () => { await tick() })
       expect(host.querySelector('#popDoneWarn')?.textContent, 'the refusal says why, under the box').toBe(C.NOT_YET)
-      await type(dayAfter(C.isoToday(), -2))
+      expect(C.pop, 'a pick on the calendar closed the pop-up it floats over').toBeTruthy()
+      pickDate(box(), dayAfter(C.isoToday(), -2)); await act(async () => { await tick() })
       expect(host.querySelector('#popDoneWarn'), 'the line goes with the next change').toBeNull()
-      await key(box, 'Escape')
-      expect(C.marks[s][f].d, 'Escape keeps the day typed').toBe(dayAfter(C.isoToday(), -2))
+      expect(C.marks[s][f].d, 'the day picked is the day the mark has').toBe(dayAfter(C.isoToday(), -2))
+      expect(boxValue(box())).toBe(dayAfter(C.isoToday(), -2))
+      expect(C.pop, 'the pop-up is still open').toBeTruthy()
+      /* Escape with the calendar up closes the calendar; the day is kept */
+      fireEvent.click(box()); await act(async () => { await tick() })
+      fireEvent.keyDown(document.activeElement!, { key: 'Escape' }); await act(async () => { await tick() })
+      expect(document.querySelector('[data-testid="dcal-card"]')).toBeNull()
+      expect(C.marks[s][f].d).toBe(dayAfter(C.isoToday(), -2))
     } finally { C.closePop(); await act(async () => { root.unmount() }); host.remove() }
   })
 })
@@ -821,31 +832,31 @@ describe('[TRK-BAKE-STALE] baking an exported chart file into the shipped charts
 
 /* ---------- the roll-call, looped: every date box the side panel draws, as it is wired ---------- */
 describe('[TRK-RETEST-NOTES] C5 — the roll-call: each side-panel date box saves only when LEFT', () => {
-  it('Last Flown ×2, Upchit, End date A, End date B and a failures-list row: typing saves nothing; leaving the box saves the day', async () => {
+  /* RE-EXPRESSED 13 Oct 26 (D801): every one of the Tracker's date boxes is the app's own — looking saves nothing, a pick
+     saves the day. One loop over every KIND of box the side panel draws, each by name. */
+  it('Last Flown ×2, Upchit, End date A, End date B and a failures-list row: each is the app’s own box — looking saves nothing; a pick saves the day', async () => {
     const s = await pickStudent()
     const ev = await freshEvent(s, 4)
     await fail(s, ev, dayAfter(C.isoToday(), -30))
     const { host, root } = await render(<Live draw={() => <SidePanel zoom={1} />} />)
     try {
       C.openFailLog(s); await act(async () => { await tick() })
-      const type = (el: HTMLInputElement, v: string) => act(async () => {
-        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(el, v)
-        el.dispatchEvent(new Event('input', { bubbles: true }))
-      })
-      const leave = (el: HTMLInputElement) => act(async () => { el.dispatchEvent(new FocusEvent('focusout', { bubbles: true })); await tick() })
       const boxes: [string, () => any][] = [
         ['#lastSyll', () => C.dates[s].lastSyll], ['#lastCurr', () => C.dates[s].lastCurr], ['#upchit', () => C.dates[s].upchit],
         ['#targetIn', () => C.paceOf(s).target], ['#targetIn2', () => C.paceOf(s).target2],
-        ['#failLog .frow[data-ev="' + ev + '"] input[type=date]', () => C.failDates(s, ev)[0]],
+        ['#failLog .frow[data-ev="' + ev + '"] button.datebox', () => C.failDates(s, ev)[0]],
       ]
+      expect(host.querySelector('input[type="date"]'), 'a phone’s date box is still drawn in the side panel').toBeNull()
       for (const [sel, read] of boxes) {
-        const el = host.querySelector(sel) as HTMLInputElement
-        expect(el, sel + ' is drawn').toBeTruthy()
+        const el = () => host.querySelector(sel) as HTMLElement
+        expect(el(), sel + ' is drawn').toBeTruthy()
+        expect(el().tagName, sel).toBe('BUTTON')
         const was = read(), day = dayAfter(C.isoToday(), -12)
-        await type(el, dayAfter(C.isoToday(), -25)); await type(el, day)
-        expect(read(), sel + ': nothing saved while typing').toBe(was)
-        await leave(host.querySelector(sel) as HTMLInputElement)
-        expect(read(), sel + ': leaving the box saves the day').toBe(day)
+        fireEvent.click(el()); fireEvent.click(screen.getByTestId('dcal-prev')); fireEvent.click(screen.getByTestId('dcal-scrim')); await act(async () => { await tick() })
+        expect(read(), sel + ': nothing saved by looking').toBe(was)
+        pickDate(el(), day); await act(async () => { await tick() })
+        expect(read(), sel + ': a pick saves the day').toBe(day)
+        expect(boxValue(el()), sel + ': and the box reads it').toBe(day)
       }
     } finally { C.closeFailLog(); await act(async () => { root.unmount() }); host.remove() }
   })
@@ -976,9 +987,8 @@ describe('the walk’s findings (walker b, 28 Sep 26) — a refused day is never
     function Owner() { const [v, setV] = useState('2026-09-10'); setOuter = setV; return <DateBox id="dbw" value={v} onCommit={() => 'refused'} /> }
     const { host, root } = await render(<Owner />)
     try {
-      const box = host.querySelector('#dbw') as HTMLInputElement
-      await act(async () => { Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(box, '2026-09-11'); box.dispatchEvent(new Event('input', { bubbles: true })) })
-      await act(async () => { box.dispatchEvent(new FocusEvent('focusout', { bubbles: true })); await tick() })
+      /* picked on the calendar since 13 Oct 26 (D801) — it was typed and the box left */
+      pickDate(host.querySelector('#dbw') as HTMLElement, '2026-09-11'); await act(async () => { await tick() })
       expect(host.querySelector('.datewarn')?.textContent).toBe('refused')
       await act(async () => { setOuter('') })
       expect(host.querySelector('.datewarn'), 'the saved day changed under it: the line goes').toBeNull()
