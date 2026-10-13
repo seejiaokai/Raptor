@@ -70,20 +70,25 @@ export function DateBox(p: {
      MADE BY A POINTER a small see-through patch stands where that click landed and takes the click that may follow
      there: by place AND time, as the Leave War guards its Move button (leavewar/ui/select.ts MOVE_SETTLE — a time
      alone ate deliberate quick clicks elsewhere). It is an element of the layer's own class, on the page itself, so a
-     Leave War sheet's tap shield lets it through as it does the calendar. A pick by the keyboard leaves none. */
+     Leave War sheet's tap shield lets it through as it does the calendar. A pick by the keyboard leaves none.
+     AND THE TAP THAT OPENS THE CALENDAR LEAVES ONE TOO (the read of the Tracker's date boxes, 13 Oct 26 — F1): on a
+     phone the card is put in the middle of the screen, so it can land under the finger that opened it, and the second
+     half of a double tap fell on a date — which in the Tracker is saved at once. Where the card is under its box the
+     second half fell on the veil and shut the calendar it had just opened. The patch lies OVER the card (its z-index). */
   const [patch, setPatch] = useState<{ x: number; y: number } | null>(null)
   const patchTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const dropPatch = () => { if (patchTimer.current) clearTimeout(patchTimer.current); patchTimer.current = null; setPatch(null) }
   useEffect(() => () => { if (patchTimer.current) clearTimeout(patchTimer.current) }, [])
   /* a box switched off while its calendar is up is closed for good — not left to spring open when it is switched on */
   useEffect(() => { if (p.disabled && open) setOpen(false) }, [p.disabled, open])
+  const standPatch = (at: { x: number; y: number }) => {
+    if (patchTimer.current) clearTimeout(patchTimer.current)
+    setPatch(at)
+    patchTimer.current = setTimeout(() => { patchTimer.current = null; setPatch(null) }, SETTLE_MS)
+  }
   const close = (at?: { x: number; y: number } | null) => {
     setOpen(false)
-    if (at) {
-      if (patchTimer.current) clearTimeout(patchTimer.current)
-      setPatch(at)
-      patchTimer.current = setTimeout(() => { patchTimer.current = null; setPatch(null) }, SETTLE_MS)
-    }
+    if (at) standPatch(at)
     const b = box.current
     const kb = document.activeElement
     /* the keyboard returns to the box — unless he has already put it somewhere else on the page */
@@ -102,7 +107,7 @@ export function DateBox(p: {
         aria-haspopup="dialog"
         aria-expanded={open}
         disabled={p.disabled}
-        onClick={() => { if (open) close(); else { dropPatch(); setOpen(true) } }}
+        onClick={e => { if (open) close(); else { setOpen(true); if (e.detail > 0) standPatch({ x: e.clientX, y: e.clientY }); else dropPatch() } }}
       >
         <span className="datebox-txt">{has ? sayDateY(p.value) : 'Pick a date'}</span>
         <span className="datebox-v" aria-hidden="true">&#9662;</span>

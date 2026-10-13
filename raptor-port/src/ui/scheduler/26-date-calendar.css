@@ -45,7 +45,7 @@ button.datebox:disabled{opacity:.55;cursor:default}
 @keyframes dcal-in{from{opacity:0}}
 /* the patch that takes the second click of a double-click, for a moment after the calendar has gone (ui/DateBox.tsx):
    the layer's own layer, seen through, its place and size written on it */
-.dcal-layer.dcal-patch{background:transparent;touch-action:none}
+.dcal-layer.dcal-patch{background:transparent;touch-action:none;z-index:601}
 /* a phone: the card in the middle of the screen, as drawn — never wider than the screen less a finger's margin */
 .dcal-layer.is-phone .dcal-scrim{background:rgba(4,7,10,.52)}
 .dcal-layer.is-phone .dcal-card{left:50%;top:50%;transform:translate(-50%,-50%);width:min(350px,calc(100vw - 24px));max-width:none;border-radius:16px}
