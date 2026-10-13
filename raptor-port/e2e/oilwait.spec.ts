@@ -184,4 +184,75 @@ for (const size of SIZES) {
       expect(errs).toEqual([])
     })
   })
+
+  /* AN INPUT PUT BACK ON THE PROGRAMME WAITS ON ITS OIL QUESTION (owner D793, 13 Oct 26 — "Yes it should wait on it").
+     The whole route a scheduler takes, by the app's own controls: an input filed on a working Friday (nothing is asked);
+     the Friday made a public holiday, its list left for later (so the input has no answer); the input taken off the
+     programme on the Scheduler Board; then "Accept" on its card. The question comes first and nothing is put back. */
+  test.describe(`${size.name} — an input put back on the programme waits on its OIL question (D793, ON9)`, () => {
+    test.use(size.use as any)
+    test('Accept puts the question and puts nothing back; "Don\'t put back" leaves the bar; "Answer OIL" then "Put back" makes it, with its answer', async ({ page }) => {
+      const errs = noErrors(page)
+      await login(page)
+      const press = (sel: string) => (size.tap ? page.locator(sel).tap() : page.locator(sel).click())
+      const FRI_DI = 4
+      const iid = await fileIt(page, size.tap, FRI, { type: 'Training', people: ['bane'], from: '09:00', to: '12:00', title: 'Range brief' })
+      /* Friday becomes a public holiday; its list is left for later */
+      await go(page, 'inputs')
+      await press('#inGear')
+      await press('[data-testid="iset-days"]')
+      if (await page.locator('[data-testid="days-tab-holidays"]').count()) await press('[data-testid="days-tab-holidays"]')
+      await press('[data-testid="hol-add"]')
+      await press('[data-testid="hol-kind-ph"]')
+      await page.fill('[data-testid="hol-name"]', 'National Day')
+      for (let i = 0; i < 14 && !(await page.locator(`[data-testid="holcal-day-${FRI}"]`).count()); i++) await press('[data-testid="holcal-prev-month"]')
+      for (let i = 0; i < 40 && !(await page.locator(`[data-testid="holcal-day-${FRI}"]`).count()); i++) await press('[data-testid="holcal-next-month"]')
+      await press(`[data-testid="holcal-day-${FRI}"]`)
+      await press('[data-testid="hol-save"]')
+      await expect(page.locator('[data-testid="odl-lead"]')).toHaveText('National Day is now a public holiday.')
+      await page.locator('[data-testid="win-inputsset-x"]').evaluate((e: HTMLElement) => e.click()).catch(() => {})
+      await page.locator('[data-testid="odl-later"]').evaluate((e: HTMLElement) => e.click())
+      await expect(page.locator('[data-testid="win-oilday"]')).toHaveCount(0)
+      await page.locator('[data-testid="win-days"] .win-x').evaluate((e: HTMLElement) => e.click()).catch(() => {})
+      expect(await page.evaluate(i => (window as any).INPUTS.find((r: any) => r.iid === i).oil || {}, iid), 'the premise: no answer').toEqual({})
+      /* the Scheduler Board, Friday: the input is on the programme; a scheduler takes it off */
+      await go(page, 'editsched')
+      await page.locator(`#eWeek [data-sbday="${FRI_DI}"]`).first().evaluate((e: HTMLElement) => { e.scrollIntoView({ block: 'center', inline: 'center' }); e.click() })
+      await expect(page.locator('#sbBoard .sb-sec').first()).toBeAttached()
+      const rows = () => page.evaluate(di => ((window as any).DAYS[di].ground || []).filter((r: any) => r && r.src).map((r: any) => `${String(r.prog).toLowerCase()}:${r.who}`), FRI_DI)
+      expect(await rows(), 'the premise: on the programme').toEqual(['range brief:bane'])
+      /* (on the board a landed input is taken off by the ✕ at the end of its own row of the Ground Programme) */
+      const ri = await page.evaluate(([di, i]) => ((window as any).DAYS[di as number].ground || []).findIndex((r: any) => r && r.src === i), [FRI_DI, iid] as const)
+      const off = page.locator(`#sbBoard [data-grdel="${FRI_DI}.${ri}"]`).first()
+      await off.evaluate((e: HTMLElement) => e.scrollIntoView({ block: 'center' }))
+      if (size.tap) await off.tap(); else await off.click()
+      await expect.poll(rows, { message: 'taken off the programme' }).toEqual([])
+      /* "Accept" on its card: the question, and nothing put back */
+      /* its card is under Personal Inputs, a panel of the board that opens folded */
+      if (!(await page.locator(`#schedBoard [data-acc="g"][data-acck="${iid}"]:visible`).count())) await page.locator(`#schedBoard [data-pitog="${FRI_DI}"]`).first().evaluate((e: HTMLElement) => { e.scrollIntoView({ block: 'center' }); e.click() })
+      const acc = page.locator(`#schedBoard [data-acc="g"][data-acck="${iid}"]:visible`).first()
+      await acc.evaluate((e: HTMLElement) => e.scrollIntoView({ block: 'center' }))
+      if (size.tap) await acc.tap(); else await acc.click()
+      await expect(page.locator('[data-testid="oilconf-lead"]')).toHaveText('Putting Ranger’s Range brief back on the programme'.replace('’', "'"))
+      await expect(page.locator('[data-testid="oilconf-cancel"]')).toHaveText('Don’t put back')
+      await expect(page.locator('[data-testid="oilconf-save"]')).toHaveText('Put back')
+      await expect(page.locator('[data-testid="oilconf-save"]')).toBeDisabled()
+      expect(await rows(), 'nothing put back').toEqual([])
+      expect(await whollyIn(page, '[data-testid="oilconf"] .airpop-box', ['[data-testid="oilconf-cancel"]', '[data-testid="oilconf-save"]']), 'both buttons are wholly inside the question’s card, at any height').toBe(true)
+      /* not answered: the bar, on top and inside the screen */
+      await press('[data-testid="oilconf-cancel"]')
+      await expect(page.locator('[data-testid="oilbar-text"]')).toHaveText('Not put back — OIL not answered')
+      expect(await onTopAndInside(page, '[data-testid="oilbar"]')).toEqual({ there: true, top: true, inside: true })
+      expect(await rows()).toEqual([])
+      /* answered: put back, with its answer */
+      await press('[data-testid="oilbar-answer"]')
+      await press('[data-testid="oil-yes"]')
+      await press('[data-testid="oilconf-save"]')
+      await expect(page.locator('[data-testid="oilconf"]')).toHaveCount(0)
+      await expect(page.locator('[data-testid="oilbar"]')).toHaveCount(0)
+      expect(await rows(), 'on the programme again').toEqual(['range brief:bane'])
+      expect(await page.evaluate(i => (window as any).INPUTS.find((r: any) => r.iid === i).oil, iid)).toEqual({ [FRI]: 0.5 })
+      expect(errs).toEqual([])
+    })
+  })
 }

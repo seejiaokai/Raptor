@@ -770,7 +770,8 @@ export function routeClick(e: MouseEvent) {
       if (!r) return 'none'
       const off = (x: any) => !!x && x.acc !== 'g' && x.acc !== 'u'
       let g: ReturnType<typeof oilGate> | null = null
-      if (dest !== 'x' && off(r)) { const say = HOOKS.toast; HOOKS.toast = () => {}; try { g = oilGate(draftOf(r), r) } finally { HOOKS.toast = say } }
+      /* (only the PROGRAMME: "→ Unavail" files an Other under Unavailable, where it is off the programme — nothing asks) */
+      if (dest === 'g' && off(r)) { const say = HOOKS.toast; HOOKS.toast = () => {}; try { g = oilGate(draftOf(r), r) } finally { HOOKS.toast = say } }
       if (!g || g.kind !== 'ask' || !dryRun(() => !!acceptInput(di, find(), dest))) {
         const x = find()                       // a tried save puts every record back as a new object
         return x && run(x) ? 'done' : 'refused'

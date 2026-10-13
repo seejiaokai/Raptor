@@ -700,7 +700,7 @@ describe('the two code reads — each claim reproduced before it was believed', 
    Undo never asks a question (D793's reading 3). The button is pressed here the way the page presses it: through the
    click router, on a button carrying the card's own three marks. */
 describe('an input put BACK on the programme where it needs an OIL answer is NOT put back until it is answered (D793) (ON9)', () => {
-  const press = (dest: 'g' | 'x', di = SAT, title = TITLE) => {
+  const press = (dest: 'g' | 'x' | 'u', di = SAT, title = TITLE) => {
     const b = document.createElement('button')
     b.dataset.acc = dest; b.dataset.accd = String(di); b.dataset.acck = String(inpId(rec(di, title)))
     document.body.appendChild(b)
@@ -786,6 +786,19 @@ describe('an input put BACK on the programme where it needs an OIL answer is NOT
     press('g', WED)
     expect(view.OILWAIT, 'a working day: no question').toBeNull()
     expect(riOf(WED)).toBeGreaterThanOrEqual(0)
+  })
+
+  /* "→ Unavail" files an input of kind Other under Unavailable — off the programme. D793 is about the programme: nothing asks */
+  it('"→ Unavail" (an Other filed under Unavailable) asks nothing: it is not put on the programme', async () => {
+    await boot()
+    file(['bane'], SAT, undefined, { type: 'Other' })
+    press('x')
+    if (rec().acc !== 'r') return                    // an Other that never stood on the programme has nothing to take off
+    SAID = []
+    press('u')
+    expect(view.OILWAIT, 'no question for a filing under Unavailable').toBeNull()
+    expect(view.OILBAR).toBeNull()
+    expect(rec().acc).toBe('u')
   })
 
   it('an Undo of the take-off puts the input back as it was and asks nothing (D793, reading 3)', async () => {
