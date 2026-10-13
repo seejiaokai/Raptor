@@ -10,6 +10,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
+import { boxValue } from './datecal-testkit'
 import { initStore, notify, resetSession } from '../state/store'
 import { storeBackend, HOOKS } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
@@ -162,7 +163,7 @@ describe('D310 / D322 / D323 — Archive and Restore on the row', () => {
     await click($('#accList [data-person="rocky"] .acc-tap')); await click($('#accEdArchive'))
     await click($('#accArchToggle'))
     await click($('#accArchList [data-person="rocky"] .acc-tap'))
-    expect(($('#accArPostIn') as HTMLInputElement).value).toBe(effectiveToday())
+    expect(boxValue($('#accArPostIn'))).toBe(effectiveToday())
     expect(buttons()).toEqual(['Restore', 'Delete', 'Cancel'])
     await click($('#accArRestore'))
     expect(P('rocky').archived).toBe(false)
@@ -205,14 +206,20 @@ describe('D310 / D322 / D323 — Archive and Restore on the row', () => {
 
   /* the refusal's words come from the one body (sync.ts restoreProblem — the post-in on or before the day he left is
      pinned in leavewar/onedoor.test.ts, where the war runs); here: a refusal is SHOWN on the row and nothing changes */
-  it('D308: a refused post-in date is said on the row, and nothing changes', async () => {
+  /* RE-EXPRESSED for the app's own date box ([ONE-DATE-CALENDAR], 13 Oct 26). This test emptied the post-in box to get
+     a refusal; the box cannot be emptied now (D796 — no Reset), so "Pick the post-in date" has no door on this form
+     (the writer still refuses a missing date — state/roster-add.ts, leavewar/sync.ts restoreProblem). What it proved
+     is kept by the refusal the form can still reach here: it is SHOWN on the row and nothing changes. */
+  it('D308: a refused Restore is said on the row, and nothing changes; the post-in box always holds a date', async () => {
     await users()
     await click($('#accList [data-person="rocky"] .acc-tap')); await click($('#accEdArchive'))
     await click($('#accArchToggle'))
     await click($('#accArchList [data-person="rocky"] .acc-tap'))
-    await type($('#accArPostIn') as HTMLInputElement, '')
+    expect(boxValue($('#accArPostIn'))).toBe(effectiveToday())
+    expect($('#accArPostIn').tagName).toBe('BUTTON')
+    await type($('#accArCs') as HTMLInputElement, '')
     await click($('#accArRestore'))
-    expect($('#accArErr').textContent).toBe('Pick the post-in date')
+    expect($('#accArErr').textContent).toBe('Type the callsign or name')
     expect(P('rocky').archived).toBe(true)
   })
 
@@ -262,14 +269,14 @@ describe('D309 / D308 — Give access · Refuse; the post-in date on every door 
     expect($(`[data-approve="${rq.id}"]`).textContent).toBe('Give access')
     expect($(`[data-decline="${rq.id}"]`).textContent).toBe('Refuse')
     await click($(`[data-approve="${rq.id}"]`))
-    expect(($('#apvPostIn') as HTMLInputElement).value).toBe(effectiveToday())
+    expect(boxValue($('#apvPostIn'))).toBe(effectiveToday())
     await click($('#apvModeRoster'))
     expect($('#apvPostIn'), 'a man already on the roster: no post-in asked').toBeFalsy()
   })
 
   it('Add a person asks the post-in date, opening on today', async () => {
     await users()
-    expect(($('#accAddPostIn') as HTMLInputElement).value).toBe(effectiveToday())
+    expect(boxValue($('#accAddPostIn'))).toBe(effectiveToday())
     expect($('#accAddNote').textContent).toBe('Makes his Quals row, and his sign-in if you give one. The Leave War counts him from the post-in date.')
   })
 })

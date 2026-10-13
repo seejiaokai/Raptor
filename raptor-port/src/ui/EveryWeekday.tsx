@@ -17,6 +17,7 @@ import { MoonIcon, SunIcon } from './icons'
 import { getFlyPlan, removeFlyRule, setFlyRule, type FlySave } from '../state/flyplan'
 import { validIso, type FlyCls, type FlyRule } from '../state/flyplan-model'
 import { WD_LONG, sayDateY } from './daysfmt'
+import { DateBox } from './DateBox'
 
 type Cls = 'day' | 'night' | 'nf'
 /* a rule is never "no flying set" from this form: a Saturday has none until he says otherwise, and a rule that said
@@ -80,8 +81,11 @@ export function EveryWeekday({ wd, from: from0, onClose }: {
         ))}
       </div>
 
+      {/* THE APP'S OWN DATE BOX, opening the app's own calendar over this window (owner D786, D795, D796 — the phone's
+          date box ran off his iPhone's screen; ui/DateBox.tsx). Any date may be picked, the weekday standing out: a
+          start on another day begins the rule on the first such day after it, as it always has. */}
       <label className="every-lab" htmlFor="everyFrom">From</label>
-      <input type="date" id="everyFrom" className="every-date" data-testid="every-from" value={from} onChange={e => edit(setFrom)(e.target.value)} />
+      <DateBox id="everyFrom" className="every-date" testid="every-from" label="From" markWd={wd} value={from} onChange={edit(setFrom)} />
 
       <div className="every-lab" id="everyUntilLab">Until</div>
       <div className="every-seg two" role="group" aria-labelledby="everyUntilLab">
@@ -89,7 +93,7 @@ export function EveryWeekday({ wd, from: from0, onClose }: {
         <button type="button" className={'every-opt' + (ends ? ' lit' : '')} data-testid="every-until-date" aria-pressed={ends} onClick={() => edit(setEnds)(true)}>A date</button>
       </div>
       {ends && (
-        <input type="date" className="every-date" data-testid="every-until" aria-label="The date it ends" min={validIso(from) ? from : undefined} value={until} onChange={e => edit(setUntil)(e.target.value)} />
+        <DateBox className="every-date" testid="every-until" label="The date it ends" markWd={wd} min={validIso(from) ? from : undefined} value={until} onChange={edit(setUntil)} />
       )}
 
       <p className="every-says" data-testid="every-says">

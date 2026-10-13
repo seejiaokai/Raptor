@@ -10,6 +10,8 @@
 // auto-archive pass reads.
 
 import { fireEvent, render, screen } from '@testing-library/react'
+/* a posting's date is picked on the app's own calendar since [ONE-DATE-CALENDAR] (D796, D797) — the box was the phone's own */
+import { boxValue, pickDate } from '../../ui/datecal-testkit'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { getState, initStore, setAccountLookup, setPostingBlockLookup, setPostOut, setRole } from '../state/store'
 import { countsFor, inSquadron } from '../engine'
@@ -93,7 +95,7 @@ describe('placing and managing PO from the grid', () => {
     fireEvent.click(screen.getByTestId('bid-postout'))
     // The date seeds with the tapped day; "Overseas Sqn" — the old "Archive on PO date" — is chosen by default
     // ([POST-OUT-OUTCOMES], D229, D294: the four chips; D300: the button just "Post out").
-    expect((screen.getByTestId('po-date') as HTMLInputElement).value).toBe(day)
+    expect(boxValue(screen.getByTestId('po-date'))).toBe(day)
     expect(screen.getByTestId('po-overseas').getAttribute('aria-pressed')).toBe('true')
     expect(screen.getByTestId('po-confirm').textContent).toBe('Post out')
     fireEvent.click(screen.getByTestId('po-confirm'))
@@ -109,14 +111,14 @@ describe('placing and managing PO from the grid', () => {
     // PO date, moves it, flips the archive switch, or undoes the whole thing.
     fireEvent.click(screen.getByTestId(`cell-${id}-${day}`))
     expect(screen.queryByTestId('bid-picker')).toBeNull()
-    expect((screen.getByTestId('postout-date') as HTMLInputElement).value).toBe(day)
+    expect(boxValue(screen.getByTestId('postout-date'))).toBe(day)
     fireEvent.click(screen.getByTestId('postout-overseas'))    // tapped again → none: off the manpower, nothing else
     expect(p().poArchive).toBe(false)
     expect(p().poOutcome).toBe('none')
     // An EARLIER date: the tapped day stays struck, so the sheet stays up.
     // (Moving it past the tapped day un-strikes that cell and the sheet
     // rightly gives way to the bid picker — the sheet is derived state.)
-    fireEvent.change(screen.getByTestId('postout-date'), { target: { value: '2026-06-10' } })
+    pickDate(screen.getByTestId('postout-date'), '2026-06-10')
     expect(p().to).toBe('2026-06-09')
     fireEvent.click(screen.getByTestId('postout-undo'))
     expect(p().to).toBeNull()
@@ -129,7 +131,7 @@ describe('placing and managing PO from the grid', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${id}-2026-06-15`))
     fireEvent.click(screen.getByTestId('bid-postout'))
-    fireEvent.change(screen.getByTestId('po-date'), { target: { value: '2026-09-01' } })
+    pickDate(screen.getByTestId('po-date'), '2026-09-01')
     fireEvent.click(screen.getByTestId('po-overseas'))         // un-chosen: the custom case, nothing but the posting
     fireEvent.click(screen.getByTestId('po-confirm'))
     const p = getState().people.find(x => x.id === id)!
@@ -173,7 +175,7 @@ describe('the Post out sheet, its date moved past the day that opened it', () =>
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${id}-2026-08-12`))
     expect(screen.getByTestId('postout-sheet')).toBeTruthy()
-    fireEvent.change(screen.getByTestId('postout-date'), { target: { value: '2026-08-14' } })
+    pickDate(screen.getByTestId('postout-date'), '2026-08-14')
     expect(getState().people.find(p => p.id === id)!.to).toBe('2026-08-13')
     expect(screen.getByTestId('postout-sheet')).toBeTruthy()
     expect(screen.queryByTestId('bid-picker')).toBeNull()

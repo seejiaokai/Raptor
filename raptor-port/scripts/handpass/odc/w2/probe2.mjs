@@ -1,0 +1,21 @@
+import { openWorld, tools, adminCategory } from './lib.mjs'
+console.log('probe2 VERSION 1')
+const w = await openWorld('desktop')
+const t = tools(w, 'probe2')
+const { page } = w
+// add a man quickly, post in in 10 days
+await adminCategory(page, '^Users')
+await page.locator('#accAddPostIn').scrollIntoViewIfNeeded()
+await page.fill('#accAddCs', 'Probey'); await page.fill('#accAddIni', 'PB')
+await page.selectOption('#accAddSeat', 'FCP'); await page.selectOption('#accAddCat', 'C')
+await t.press('#accAddPostIn'); await t.pick(t.addDays(10))
+await t.press('#accAdd'); await page.waitForTimeout(500)
+await page.evaluate(() => window.go('leavewar')); await page.waitForTimeout(800)
+await page.evaluate(() => window.lwSetRole('admin')); await page.waitForTimeout(300)
+await t.press('[data-testid="month-OCT"]'); await page.waitForTimeout(800)
+console.log('cells with probey:', await page.$$eval('[data-testid*="robey"]', os => os.slice(0, 6).map(o => o.getAttribute('data-testid') + ' | ' + o.className)))
+console.log('row text matches:', await page.evaluate(() => [...document.querySelectorAll('*')].filter(e => e.children.length === 0 && /Probey/i.test(e.textContent)).map(e => e.tagName + '.' + e.className + ' ' + (e.closest('[data-testid]') || {}).getAttribute?.('data-testid')).slice(0, 5)))
+console.log('all cell-testids sample for a name e.g. ranger:', await page.$$eval('[data-testid^="cell-ranger"]', os => os.slice(0, 3).map(o => o.getAttribute('data-testid'))))
+console.log('groups:', await page.$$eval('.mx-group, [data-grow], .grp', os => os.slice(0, 15).map(o => (o.textContent || '').trim().slice(0, 30))))
+console.log('errors', w.errors)
+await w.browser.close()

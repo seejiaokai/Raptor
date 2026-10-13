@@ -1,0 +1,10 @@
+import { start, openCalendarWindow, press, shot, text, rect, vis } from './lib.mjs'
+console.log('probe VERSION 2')
+const L = await start(390, 844)
+await openCalendarWindow(L)
+const dump = async (root) => console.log(JSON.stringify(await L.page.evaluate(r => [...document.querySelectorAll(r + ' [data-testid], ' + r + ' button')].map(e => ({ t: e.getAttribute('data-testid'), tag: e.tagName, txt: (e.innerText || '').replace(/\s+/g, ' ').slice(0, 40), v: e.getBoundingClientRect().width > 0, r: [Math.round(e.getBoundingClientRect().left), Math.round(e.getBoundingClientRect().top), Math.round(e.getBoundingClientRect().width), Math.round(e.getBoundingClientRect().height)] })).filter(x => x.v), root)), '\n')
+console.log('win children:', JSON.stringify(await L.page.evaluate(() => [...document.querySelector('[data-testid="win-days"]').children].map(c => ({ tag: c.tagName, cls: c.className, t: c.getAttribute('data-testid'), txt: c.innerText.slice(0, 30), r: (b => [Math.round(b.left), Math.round(b.top), Math.round(b.width), Math.round(b.height)])(c.getBoundingClientRect()) })))))
+await press(L, '[data-testid="days-tab-holidays"]')
+await dump('[data-testid="win-days"]')
+await shot(L, 'probe-hol')
+await L.browser.close()

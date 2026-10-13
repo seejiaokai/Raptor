@@ -1,4 +1,5 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { boxValue, pickDate } from '../../ui/datecal-testkit'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { advanceStage, getState, initStore, setCell, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
@@ -144,8 +145,11 @@ describe('a refused post-out on the selection sheet', () => {
     const onPostOut = vi.fn(() => 'Posted in on 10 Jan 26 — the post-out has to be after that day.')
     mount(rampTwo, { onDone, onPostOut })
     fireEvent.click(screen.getByTestId('sel-postout'))
-    fireEvent.change(screen.getByTestId('sel-po-date'), { target: { value: '2026-01-05' } })
+    /* the date is picked on the app's own calendar ([ONE-DATE-CALENDAR], D796) — and is the date the posting is asked for */
+    pickDate(screen.getByTestId('sel-po-date'), '2026-01-05')
+    expect(boxValue(screen.getByTestId('sel-po-date'))).toBe('2026-01-05')
     fireEvent.click(screen.getByTestId('sel-po-confirm'))
+    expect(onPostOut).toHaveBeenCalledWith('ramp', '2026-01-05', expect.anything())
     expect(onDone).not.toHaveBeenCalled()
     expect(screen.getByTestId('sel-note').textContent).toMatch(/the post-out has to be after that day/)
   })

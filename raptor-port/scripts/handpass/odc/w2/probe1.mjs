@@ -1,0 +1,21 @@
+import { openWorld, tools, adminCategory } from './lib.mjs'
+console.log('probe1 VERSION 1')
+const w = await openWorld('desktop')
+const t = tools(w, 'probe')
+const { page } = w
+await adminCategory(page, '^Users')
+await page.locator('#accAddPostIn').scrollIntoViewIfNeeded()
+console.log('PostIn text:', await t.text('#accAddPostIn'), '| data-value:', await t.val('#accAddPostIn'))
+console.log('today (browser):', await page.evaluate(() => new Date().toString()))
+console.log('seat options:', await page.$$eval('#accAddSeat option', os => os.map(o => o.value + '=' + o.textContent)))
+await page.selectOption('#accAddSeat', { index: 1 })
+console.log('cat options:', await page.$$eval('#accAddCat option', os => os.map(o => o.value + '=' + o.textContent)))
+await t.shot('users')
+// leave war: list a few cell ids
+await page.evaluate(() => window.go('leavewar')); await page.waitForTimeout(800)
+await page.evaluate(() => window.lwSetRole && window.lwSetRole('admin')); await page.waitForTimeout(300)
+console.log('months:', await page.$$eval('[data-testid^="month-"]', os => os.map(o => o.getAttribute('data-testid'))))
+console.log('cells sample:', await page.$$eval('[data-testid^="cell-"]', os => os.slice(0, 5).map(o => o.getAttribute('data-testid'))))
+await t.shot('lw')
+console.log('errors', w.errors)
+await w.browser.close()

@@ -4,7 +4,7 @@
    between read away), D305 (his first sign-in after Restore: "Welcome back — check your quals and CAT", Check my quals
    opens his own row). The calendar is fixed at 27 Sep 26 so the dates below are the demo war's. */
 import { expect, test, type Page } from '@playwright/test'
-import { login } from './app'
+import { login, pickDate } from './app'
 
 const TODAY = new Date(2026, 8, 27, 9, 0, 0)
 const VIEWS = [['desktop', { width: 1440, height: 900 }], ['phone', { width: 390, height: 844 }]] as const
@@ -54,7 +54,8 @@ for (const [label, vp] of VIEWS) {
     await users(page, phone)
     await page.click('#accArchToggle')
     await page.locator('#accArchList [data-person="rocky"] .acc-tap').click()
-    await page.fill('#accArPostIn', '2026-10-19')
+    /* picked on the app's own calendar ([ONE-DATE-CALENDAR], 13 Oct 26 — the box was the phone's date box) */
+    await pickDate(page, '#accArPostIn', '2026-10-19')
     await page.click('#accArRestore')
     await expect(page.locator('#accList [data-person="rocky"]')).toHaveCount(1)
     await expect(page.locator('[data-testid="dot-signin-rocky"]')).toHaveAttribute('aria-label', 'Can sign in')

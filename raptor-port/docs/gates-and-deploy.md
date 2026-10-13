@@ -53,6 +53,16 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   tests appended at the same place share their closing lines: read the join, not only the markers.
   **(6) On this shared PC, stop only what you started, by its own id** — the harness's task id, the process id noted at
   launch, the port. Never by a program's name: `taskkill /IM codex.exe` ends every chat's reviewer.
+- **Bringing `main` into an OLD worktree after the working guides changed needs two things set on his PC — both were
+  set on 13 Oct 26** (met after the skills review, pull request #494, changed files under `.claude/skills/`). The app's
+  own update (`sync_with_base_branch`) is the only way to bring protected guide files into a worktree, and it refused
+  twice: first until HE confirmed the repository's origin in the app (the three-lines menu at the window's top-left →
+  Help → Troubleshooting → Review Pinned Git Origins → Confirm; the "Get help" in the account menu is the support
+  page, not this); then with "Committer identity unknown", because the app's merge does not use the repository's own
+  git name and e-mail and his PC had none set for git as a whole. On his word, the PC-wide pair was set to the one
+  GitHub already records for his own merges (`git config --global user.name` / `user.email`). If either refusal is met
+  again on another PC: the same two steps — or start the work in a NEW worktree cut from `main` and merge the old
+  branch into it, which needs neither when the old branch changes no protected file.
 - **`gatelock.mjs run --from <folder>` is read from the folder the command runs in** (met 7 Oct 26): started from inside
   `raptor-port/` with `--from raptor-port`, it looks for `raptor-port/raptor-port`, and all seven gates "FAIL" in 0 seconds
   with empty logs — a launch fault, not a result. From inside `raptor-port/` leave `--from` out (it defaults to that folder).

@@ -45,6 +45,7 @@ import {
   postingHeldNote, postingPendingTag, archivedLine, archivePerson, restoreArchivedPerson, restoreArchivedAs, restoreProblem,
 } from '../leavewar/sync'
 import './postout.css'
+import { DateBox } from './DateBox'
 
 const P = (pid: string): any => (PEOPLE as any)[pid]
 const cs = (pid: string) => (P(pid) ? String(P(pid).cs) : '')
@@ -70,7 +71,7 @@ const done = (bad: string | null, ok: string) => { if (bad) HOOKS.toast(bad, 'wa
 function PostInField(p: { id: string; value: string; onChange: (v: string) => void }) {
   return (
     <div className="mfield"><label htmlFor={p.id}>Post in</label>
-      <input type="date" id={p.id} value={p.value} onChange={e => p.onChange(e.target.value)} /></div>
+      <DateBox id={p.id} label="Post in" value={p.value} onChange={p.onChange} /></div>
   )
 }
 

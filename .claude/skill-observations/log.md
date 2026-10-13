@@ -88,3 +88,66 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In `weekly-review.md`: extend Step 1's reconciliation guard to the output — "the dispositions table has exactly one row per header; check it by machine before the read and before the install" — and add to Step 8 that the reader's brief names the writer's own doubts as targets, asks for exact replacement text, and lets the reader write one file, its report.
 
 **Principle:** A review of many items needs an account in which every item appears exactly once and a machine says so; and a reviewer told where the author is unsure finds more than one asked whether the work is good.
+
+## 2026-10-13
+
+### Observation 560: A fit fix for a phone's own control, proved only on another platform, was recorded as done and failed on the real phone
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** [CAL-PHONE-SWIPE-FIT] — reading the Calendar window before its questions and picture (branch claude/cal-phone-swipe-fit-2affa0; numbered from 560 by agreement with the parallel skills-review chat, which keeps 542–559)
+**Skill:** impeccable (reference/adapt.md); also the bug-check order's walk step
+**Type:** open-source
+**Phase/Area:** Adapt — "Verify adaptations"; the walk's device caveats
+
+**Issue:** A date box drawn by the phone's own browser ran off a window's edge on the owner's iPhone. Five days earlier the same box had been given "fit" style rules after an earlier picture of his, measured as fitting in a Windows browser, and written up as fixed. It still ran off on the real phone. The desktop browser cannot reproduce the fault at all (it draws that control differently), so the first fix was never proven — and nothing in the record said so.
+
+**Suggested improvement:** In adapt.md's verify step (and the walk's device caveats): when the faulty part is a control the platform draws itself (a date, time, select or file box), say plainly that an emulated walk cannot prove a fix to it; then EITHER replace it with the product's own control, which behaves the same everywhere, OR mark the fix "unproven until seen on the device" in the evidence and on the owner's look card. A second style-only attempt after a first one failed on the device needs a stated reason.
+
+**Principle:** A fix can only be called done on the surface where the fault can be reproduced. Where the fault lives in a platform-drawn control that the test environment draws differently, prefer removing the dependency over tuning it blind — and never record a blind fix as proven.
+
+### Observation 561: The handoff told him to pick the unmerged branch with no new worktree — the app refused, because the old chat's worktree still holds that branch
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** [ONE-DATE-CALENDAR] — handing the build of step one to a fresh chat (branch claude/cal-phone-swipe-fit-2affa0, itself an app-made worktree)
+**Skill:** session-handoff (and the always-loaded rule .claude/rules/doc-structure.md, D368's line: "an unmerged branch continuing: that claude/<name> branch")
+**Type:** internal
+**Phase/Area:** Step 1 — the ready-to-paste opening line and the picker advice
+
+**Issue:** The handoff's standing advice for an unmerged branch is "pick that branch in the new-chat picker — no new worktree". The owner did exactly that and the app answered "Couldn't check out the branch": the finishing chat runs in a worktree of its own that still has the branch checked out, and git opens a branch in one folder only. The app's hint ("uncommitted changes — commit or stash") pointed at the wrong cause. He had to send a picture and wait for a second set of instructions. The same handoff had already needed two corrections that evening (main had moved under the branch; the app's update of a worktree needed two settings on his PC).
+
+**Suggested improvement:** In the skill's Step 1 and in D368's line: when the finishing chat is itself in a worktree, the advice is "pick the branch AND tick worktree" (the new chat gets its own folder cut from the branch, under its own branch name, and renames the handoff block to it) — "no new worktree" holds only when the branch is checked out nowhere. Before giving the opening line, run `git worktree list` and say which case applies; and check `git rev-list --count HEAD..origin/main` so a branch behind main is brought level BEFORE the handoff is given, not discovered after.
+
+**Principle:** A handoff instruction is a procedure someone else will execute on a machine whose state the writer can inspect — so inspect it. State the precondition each step relies on (where the branch is checked out, whether the base has moved) and verify it before handing the step over.
+
+### Observation 562: A test that "typed" into a control that had become a button still passed — it never checked the value it typed
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** [ONE-DATE-CALENDAR] step one — every date box that was the phone's own replaced by a button that opens the app's calendar
+**Skill:** test-driven-development (re-expressing older tests); the bug-check order's roll-call row "a change that REMOVES or replaces a control"
+**Type:** open-source
+**Phase/Area:** After the build, the sweep of older tests of the replaced control
+
+**Issue:** After the date boxes became buttons, the affected test files were run and the failures re-expressed (open the calendar, tap a date). One older test did not fail: it fired a change event at the box — now a button, so the event did nothing — and went on to assert only the refusal text, never the date. It passed for the wrong reason and would have stayed that way; it was found only by searching the tests for every WRITE to the replaced control, not by reading the red list.
+
+**Suggested improvement:** In the re-expression step: after replacing a control with another kind of element, search every test (unit and browser) for writes to the old control — by its id, test id and label — and re-express each one, green or red; then make each re-expressed test assert the value the control handed on (the writer was asked for THAT date), so the same silent pass cannot return. One line in the roll-call rule for a replaced control: "its tests are found by searching for the control, not by what went red".
+
+**Principle:** A red list names the tests that noticed a change; it says nothing about the tests that should have. When a control changes kind, the tests to re-express are found by searching for the control.
+
+### Observation 563: A new worktree has none of the installed packages — the handoff named the old folder's link, and the first test run of the new chat failed
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** [ONE-DATE-CALENDAR] step one — a fresh chat in a new app-made worktree cut from the unmerged branch
+**Skill:** session-handoff (Step 1 — what the next chat needs before its first command); using-git-worktrees
+**Type:** internal
+**Phase/Area:** The handoff block's "Branch" line; the first minutes of a chat in a new worktree
+
+**Issue:** The handoff block said that the FINISHING chat's worktree reaches the installed packages through a folder link to the main checkout's. The new chat's worktree is another folder and had none; its first test run stopped on a missing package, and the cause had to be worked out (the block's sentence was about a different folder) before the link was made by hand (`cmd //c mklink /J`). The block also said its built bundle was stale — true of the old folder; the new one had no bundle at all.
+
+**Suggested improvement:** In the skill's Step 1, where the handoff tells him to tick "worktree": add a line to the block's Pick-up — "a new worktree has no installed packages and no built bundle: link `raptor-port/node_modules` to the main checkout's before the first test (`cmd //c "mklink /J node_modules <main>aptor-port
+ode_modules"`), and build before any look" — and say that facts about THIS folder (a link, a stale bundle) do not carry to the next one.
+
+**Principle:** A handoff describes a machine state. A fact that belongs to the finishing chat's folder must be marked as such, and what the next chat's folder will LACK is worth more to it than what the old one holds.

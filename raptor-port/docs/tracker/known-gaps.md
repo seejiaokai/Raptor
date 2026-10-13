@@ -341,3 +341,7 @@ he reports it again, ask which button he pressed and what the status line said.
   accepted, not open work. **Moved here 22 Sep 26 (D29)** from
   `[TRK-LEDGER]` in `OUTSTANDING.md`, which was archived: the fact had no other
   home, and an archived file is searched, never read. Full story: PR #387.
+
+## The Tracker's date boxes are the app's own (D801, 13 Oct 26)
+
+A date on a course, "Done on" and "Failed on" open the app's one date calendar (`src/ui/DateBox.tsx`) — a tap picks, no tick (his ruling D801; D798 before it). Built with `[ONE-DATE-CALENDAR]` step one; the design: `docs/superpowers/specs/2026-10-13-one-date-calendar.md`.

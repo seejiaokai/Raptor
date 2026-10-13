@@ -1,0 +1,711 @@
+[
+ {
+  "n": 1,
+  "name": "Every weekday: the From box hands its date to the form",
+  "file": "src/ui/EveryWeekday.tsx",
+  "find": "markWd={wd} value={from} onChange={edit(setFrom)}",
+  "put": "markWd={wd} value={from} onChange={() => {}}",
+  "tests": [
+   "src/ui/everyweekday.test.tsx"
+  ]
+ },
+ {
+  "n": 2,
+  "name": "Every weekday: the Until box hands its date to the form",
+  "file": "src/ui/EveryWeekday.tsx",
+  "find": "value={until} onChange={edit(setUntil)}",
+  "put": "value={until} onChange={() => {}}",
+  "tests": [
+   "src/ui/everyweekday.test.tsx"
+  ]
+ },
+ {
+  "n": 3,
+  "name": "Every weekday: under Until a date before the start is faint",
+  "file": "src/ui/EveryWeekday.tsx",
+  "find": "min={validIso(from) ? from : undefined} value={until}",
+  "put": "value={until}",
+  "tests": [
+   "src/ui/everyweekday.test.tsx"
+  ]
+ },
+ {
+  "n": 4,
+  "name": "Every weekday: the From calendar makes the weekday stand out",
+  "file": "src/ui/EveryWeekday.tsx",
+  "find": "label=\"From\" markWd={wd}",
+  "put": "label=\"From\"",
+  "tests": [
+   "src/ui/everyweekday.test.tsx"
+  ]
+ },
+ {
+  "n": 5,
+  "name": "Admin: a date picked disarms the clearing button",
+  "file": "src/ui/AdminPage.tsx",
+  "find": "onChange={x => { set(x); setB(''); setArmed(-1) }}",
+  "put": "onChange={x => { set(x); setB('') }}",
+  "tests": [
+   "src/ui/adminclear.test.tsx"
+  ]
+ },
+ {
+  "n": 6,
+  "name": "Admin: a date picked reaches the form",
+  "file": "src/ui/AdminPage.tsx",
+  "find": "<DateBox id={id} label={lbl} value={v}",
+  "put": "<DateBox id={id} label={lbl} value={\"\"}",
+  "tests": [
+   "src/ui/adminclear.test.tsx"
+  ]
+ },
+ {
+  "n": 7,
+  "name": "Admin: a run tapped disarms",
+  "file": "src/ui/AdminPage.tsx",
+  "find": "onRun={(f, t) => { setA(f); setB(t); setArmed(-1) }}",
+  "put": "onRun={(f, t) => { setA(f); setB(t) }}",
+  "tests": [
+   "src/ui/adminclear.test.tsx"
+  ]
+ },
+ {
+  "n": 8,
+  "name": "Admin: a run reaches the form, both ends",
+  "file": "src/ui/AdminPage.tsx",
+  "find": "onRun={(f, t) => { setA(f); setB(t); setArmed(-1) }}",
+  "put": "onRun={(f, t) => { setA(f); setB(f); setArmed(-1) }}",
+  "tests": [
+   "src/ui/adminclear.test.tsx"
+  ]
+ },
+ {
+  "n": 9,
+  "name": "Admin: a date carried into the range is a run of one day",
+  "file": "src/ui/AdminPage.tsx",
+  "find": "if (m === 'range' && a && (!b || b < a)) setB(a)",
+  "put": "",
+  "tests": [
+   "src/ui/adminclear.test.tsx"
+  ]
+ },
+ {
+  "n": 10,
+  "name": "Admin: the range is ONE calendar drawn only in that mode",
+  "file": "src/ui/AdminPage.tsx",
+  "find": "    {mode === 'range'\n      ? <div className=\"mfield\"><label>Dates</label>",
+  "put": "    {mode !== 'on'\n      ? <div className=\"mfield\"><label>Dates</label>",
+  "tests": [
+   "src/ui/adminclear.test.tsx"
+  ]
+ },
+ {
+  "n": 11,
+  "name": "Leave War: PO from hands its date to the sheet",
+  "file": "src/leavewar/ui/BidPicker.tsx",
+  "find": "onChange={v => { setPostErr(''); setDelArmed(false); setPoDate(v) }}",
+  "put": "onChange={() => { setPostErr(''); setDelArmed(false) }}",
+  "tests": [
+   "src/leavewar/ui/po.test.tsx",
+   "src/leavewar/ui/pi.test.tsx"
+  ]
+ },
+ {
+  "n": 12,
+  "name": "Leave War: PI from hands its date to the sheet",
+  "file": "src/leavewar/ui/BidPicker.tsx",
+  "find": "onChange={v => { setPostErr(''); setPiDate(v) }}",
+  "put": "onChange={() => { setPostErr('') }}",
+  "tests": [
+   "src/leavewar/ui/pi.test.tsx",
+   "src/leavewar/ui/po.test.tsx"
+  ]
+ },
+ {
+  "n": 13,
+  "name": "Leave War: the Post out sheet commits a picked date",
+  "file": "src/leavewar/ui/BidPicker.tsx",
+  "find": "onChange={v => { setDelArm(false); setErr(onChange(v, outcome) || '') }}",
+  "put": "onChange={() => { setDelArm(false) }}",
+  "tests": [
+   "src/leavewar/ui/po.test.tsx",
+   "src/leavewar/ui/pi.test.tsx"
+  ]
+ },
+ {
+  "n": 14,
+  "name": "Leave War: the Post in sheet commits a picked date",
+  "file": "src/leavewar/ui/BidPicker.tsx",
+  "find": "onChange={v => setErr(onChange(v) || '')}",
+  "put": "onChange={() => {}}",
+  "tests": [
+   "src/leavewar/ui/pi.test.tsx",
+   "src/leavewar/ui/po.test.tsx"
+  ]
+ },
+ {
+  "n": 15,
+  "name": "Leave War: a locked Post out date cannot be opened",
+  "file": "src/leavewar/ui/BidPicker.tsx",
+  "find": "value={poFrom} disabled={locked}",
+  "put": "value={poFrom}",
+  "tests": [
+   "src/leavewar/ui/po.test.tsx",
+   "src/leavewar/ui/pi.test.tsx",
+   "src/leavewar/ui/onedoor-sheets.test.tsx"
+  ]
+ },
+ {
+  "n": 16,
+  "name": "Leave War: a locked Post in date cannot be opened",
+  "file": "src/leavewar/ui/BidPicker.tsx",
+  "find": "value={piFrom} disabled={locked}",
+  "put": "value={piFrom}",
+  "tests": [
+   "src/leavewar/ui/po.test.tsx",
+   "src/leavewar/ui/pi.test.tsx",
+   "src/leavewar/ui/onedoor-sheets.test.tsx"
+  ]
+ },
+ {
+  "n": 17,
+  "name": "Leave War: the block panel PO from hands its date on",
+  "file": "src/leavewar/ui/SelectSheet.tsx",
+  "find": "onChange={v => { setDelArmed(false); setPoDate(v) }}",
+  "put": "onChange={() => { setDelArmed(false) }}",
+  "tests": [
+   "src/leavewar/ui/selectsheet.test.tsx"
+  ]
+ },
+ {
+  "n": 18,
+  "name": "Leave War: the touch shield lets the calendar through",
+  "file": "src/leavewar/ui/Sheet.tsx",
+  "find": "el?.closest('.bidsheet, .dcal-layer')",
+  "put": "el?.closest('.bidsheet')",
+  "tests": [
+   "src/leavewar/ui/datebox-sheet.test.tsx"
+  ]
+ },
+ {
+  "n": 19,
+  "name": "Date box: Escape is taken before the window behind",
+  "file": "src/ui/DateBox.tsx",
+  "find": "window.addEventListener('keydown', onKey, true)\n    return () => window.removeEventListener('keydown', onKey, true)",
+  "put": "document.body.addEventListener('keydown', onKey)\n    return () => document.body.removeEventListener('keydown', onKey)",
+  "tests": [
+   "src/ui/datebox.test.tsx",
+   "src/ui/everyweekday.test.tsx",
+   "src/leavewar/ui/datebox-sheet.test.tsx"
+  ]
+ },
+ {
+  "n": 20,
+  "name": "Date box: the same date picked again is no change",
+  "file": "src/ui/DateBox.tsx",
+  "find": "onPick={(iso, at) => { close(at); if (iso !== p.value) p.onChange(iso) }}",
+  "put": "onPick={(iso, at) => { close(at); p.onChange(iso) }}",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 21,
+  "name": "Date box: a tap on a date closes the calendar",
+  "file": "src/ui/DateBox.tsx",
+  "find": "onPick={(iso, at) => { close(at); if (iso !== p.value) p.onChange(iso) }}",
+  "put": "onPick={(iso, at) => { void at; if (iso !== p.value) p.onChange(iso) }}",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 22,
+  "name": "Date box: a tap on the veil closes it",
+  "file": "src/ui/DateBox.tsx",
+  "find": "data-testid=\"dcal-scrim\" onClick={() => onClose(pt.current)}",
+  "put": "data-testid=\"dcal-scrim\"",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 23,
+  "name": "Date box: a press in the calendar is not heard by the form behind",
+  "file": "src/ui/DateBox.tsx",
+  "find": "onClick={mine} onPointerDown={mine}",
+  "put": "onPointerDown={mine}",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 24,
+  "name": "Date box: a key in the calendar is not heard by the form behind",
+  "file": "src/ui/DateBox.tsx",
+  "find": "onMouseDown={mine} onKeyDown={mine}>",
+  "put": "onMouseDown={mine}>",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 25,
+  "name": "Date box: Tab goes round inside the card",
+  "file": "src/ui/DateBox.tsx",
+  "find": "      if (e.key !== 'Tab') return\n",
+  "put": "      if (e.key !== 'NoSuchKey') return\n",
+  "tests": [
+   "src/ui/datebox.test.tsx",
+   "src/leavewar/ui/datebox-sheet.test.tsx"
+  ]
+ },
+ {
+  "n": 26,
+  "name": "Date box: a turned phone - the layout is asked again",
+  "file": "src/ui/DateBox.tsx",
+  "find": "const on = () => setPhone(phoneLayout())",
+  "put": "const on = () => {}",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 27,
+  "name": "Date box: a phone card gives back the desktop panel place",
+  "file": "src/ui/DateBox.tsx",
+  "find": "if (phone) { n.style.left = ''; n.style.top = ''; return }",
+  "put": "if (phone) return",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 28,
+  "name": "Date box: the keyboard returns to the box",
+  "file": "src/ui/DateBox.tsx",
+  "find": "!!(kb as HTMLElement).closest?.('.dcal-layer'))) b.focus({ preventScroll: true })",
+  "put": "!!(kb as HTMLElement).closest?.('.dcal-layer'))) void 0",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 29,
+  "name": "Date box: the keyboard goes onto the calendar as it opens",
+  "file": "src/ui/DateBox.tsx",
+  "find": "    if (to) to.focus({ preventScroll: true })\n  }, [])",
+  "put": "    void to\n  }, [])",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 30,
+  "name": "Date box: a second tap on the open box closes it",
+  "file": "src/ui/DateBox.tsx",
+  "find": "onClick={() => { if (open) close(); else { dropPatch(); setOpen(true) } }}",
+  "put": "onClick={() => { dropPatch(); setOpen(true) }}",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 31,
+  "name": "Date box: a switched-off box opens nothing",
+  "file": "src/ui/DateBox.tsx",
+  "find": "{open && !p.disabled && createPortal(",
+  "put": "{(open || p.disabled) && createPortal(",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 32,
+  "name": "Date box: an empty box opens on the month it is told",
+  "file": "src/ui/DateBox.tsx",
+  "find": "at={p.at || (validIso(p.min) ? p.min : undefined)}",
+  "put": "at={undefined}",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 33,
+  "name": "Date box: the box says what it holds in words",
+  "file": "src/ui/DateBox.tsx",
+  "find": "{has ? sayDateY(p.value) : 'Pick a date'}",
+  "put": "{has ? p.value : 'Pick a date'}",
+  "tests": [
+   "src/ui/datebox.test.tsx",
+   "src/ui/everyweekday.test.tsx"
+  ]
+ },
+ {
+  "n": 34,
+  "name": "Calendar: weeks start on Monday",
+  "file": "src/ui/DateCal.tsx",
+  "find": "  const lead = weekdayOf(dates[0])\n",
+  "put": "  const lead = (weekdayOf(dates[0]) + 1) % 7\n",
+  "tests": [
+   "src/ui/datecal.test.tsx"
+  ]
+ },
+ {
+  "n": 35,
+  "name": "Calendar: six rows always",
+  "file": "src/ui/DateCal.tsx",
+  "find": "for (let i = 0; i < 42; i++) {",
+  "put": "for (let i = 0; i < lead + dates.length; i++) {",
+  "tests": [
+   "src/ui/datecal.test.tsx"
+  ]
+ },
+ {
+  "n": 36,
+  "name": "Calendar: a date before the first may not be picked",
+  "file": "src/ui/DateCal.tsx",
+  "find": "const may = (iso: string) => !p.min || iso >= p.min",
+  "put": "const may = (_iso: string) => true",
+  "tests": [
+   "src/ui/datecal.test.tsx",
+   "src/ui/datebox.test.tsx",
+   "src/ui/everyweekday.test.tsx"
+  ]
+ },
+ {
+  "n": 37,
+  "name": "Calendar: a tap before a one-day run starts over there",
+  "file": "src/ui/DateCal.tsx",
+  "find": "if (!from || from !== to || iso < from) p.onRun?.(iso, iso)",
+  "put": "if (!from || from !== to) p.onRun?.(iso, iso)",
+  "tests": [
+   "src/ui/datecal.test.tsx"
+  ]
+ },
+ {
+  "n": 38,
+  "name": "Calendar: a tap on a new day starts a finished run over",
+  "file": "src/ui/DateCal.tsx",
+  "find": "if (!from || from !== to || iso < from) p.onRun?.(iso, iso)",
+  "put": "if (!from || iso < from) p.onRun?.(iso, iso)",
+  "tests": [
+   "src/ui/datecal.test.tsx",
+   "src/ui/adminclear.test.tsx"
+  ]
+ },
+ {
+  "n": 39,
+  "name": "Calendar: the Today icon brings the dates back",
+  "file": "src/ui/DateCal.tsx",
+  "find": "const goToday = () => { setLists(false); setYm(ymOf(today)) }",
+  "put": "const goToday = () => { setYm(ymOf(today)) }",
+  "tests": [
+   "src/ui/datecal.test.tsx"
+  ]
+ },
+ {
+  "n": 40,
+  "name": "Calendar: the Today icon goes to today, picking nothing",
+  "file": "src/ui/DateCal.tsx",
+  "find": "const goToday = () => { setLists(false); setYm(ymOf(today)) }",
+  "put": "const goToday = () => { setLists(false); tap(today) }",
+  "tests": [
+   "src/ui/datecal.test.tsx",
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 41,
+  "name": "Calendar: the months go round",
+  "file": "src/ui/DateCal.tsx",
+  "find": "onChange={i => { setMi(i); setYm(v => ({ y: v.y, m: mod12(i) + 1 })) }}",
+  "put": "onChange={i => { setMi(i); setYm(v => ({ y: v.y, m: Math.abs(i % 12) + 1 })) }}",
+  "tests": [
+   "src/ui/datecal.test.tsx"
+  ]
+ },
+ {
+  "n": 42,
+  "name": "Calendar: the weekday that stands out is marked on its dates",
+  "file": "src/ui/DateCal.tsx",
+  "find": "    if (p.markWd === wd) cls.push('is-mk')\n",
+  "put": "",
+  "tests": [
+   "src/ui/datecal.test.tsx",
+   "src/ui/everyweekday.test.tsx"
+  ]
+ },
+ {
+  "n": 43,
+  "name": "Calendar: today is marked",
+  "file": "src/ui/DateCal.tsx",
+  "find": "    if (iso === today) cls.push('is-today')\n",
+  "put": "",
+  "tests": [
+   "src/ui/datecal.test.tsx"
+  ]
+ },
+ {
+  "n": 44,
+  "name": "Calendar: the band of a run",
+  "file": "src/ui/DateCal.tsx",
+  "find": "const band = !!from && to > from && iso >= from && iso <= to",
+  "put": "const band = !!from && iso >= from && iso <= to",
+  "tests": [
+   "src/ui/datecal.test.tsx"
+  ]
+ },
+ {
+  "n": 45,
+  "name": "Calendar: the keyboard never walks onto a date that may not be picked",
+  "file": "src/ui/DateCal.tsx",
+  "find": "    e.preventDefault()\n    if (!may(to2)) return\n",
+  "put": "    e.preventDefault()\n",
+  "tests": [
+   "src/ui/datecal.test.tsx"
+  ]
+ },
+ {
+  "n": 46,
+  "name": "Calendar: one tab stop on the dates",
+  "file": "src/ui/DateCal.tsx",
+  "find": "tabIndex={iso === stop ? 0 : -1}",
+  "put": "tabIndex={0}",
+  "tests": [
+   "src/ui/datecal.test.tsx"
+  ]
+ },
+ {
+  "n": 47,
+  "name": "Calendar: the lists hide the arrows",
+  "file": "src/ui/DateCal.tsx",
+  "find": "{!lists && <button type=\"button\" className=\"dcal-nav\" data-testid={`${tid}-prev`}",
+  "put": "{<button type=\"button\" className=\"dcal-nav\" data-testid={`${tid}-prev`}",
+  "tests": [
+   "src/ui/datecal.test.tsx"
+  ]
+ },
+ {
+  "n": 48,
+  "name": "Calendar: the year list re-centres as it is walked",
+  "file": "src/ui/DateCal.tsx",
+  "find": "if (Math.abs(value - base) > SPAN / 2) { setBase(value); return }",
+  "put": "",
+  "tests": [
+   "src/ui/datecal.test.tsx"
+  ]
+ },
+ {
+  "n": 49,
+  "name": "Calendar: it opens on the month of its date",
+  "file": "src/ui/DateCal.tsx",
+  "find": "ymOf(validIso(from) ? from : validIso(p.at) ? p.at :",
+  "put": "ymOf(validIso(p.at) ? p.at :",
+  "tests": [
+   "src/ui/datecal.test.tsx",
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 50,
+  "name": "Date box: a pick by a pointer leaves the patch that takes a second click",
+  "file": "src/ui/DateBox.tsx",
+  "find": "    if (at) {\n      if (patchTimer.current)",
+  "put": "    if (at && false) {\n      if (patchTimer.current)",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 51,
+  "name": "Date box: a pick by the keyboard leaves no patch",
+  "file": "src/ui/DateBox.tsx",
+  "find": "pt.current = e.detail > 0 ? { x: e.clientX, y: e.clientY } : null",
+  "put": "pt.current = { x: e.clientX, y: e.clientY }",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 52,
+  "name": "Date box: the patch goes by itself after a moment",
+  "file": "src/ui/DateBox.tsx",
+  "find": "patchTimer.current = setTimeout(() => { patchTimer.current = null; setPatch(null) }, SETTLE_MS)",
+  "put": "patchTimer.current = setTimeout(() => { patchTimer.current = null }, SETTLE_MS)",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 53,
+  "name": "Date box: the patch takes the click and is spent by it",
+  "file": "src/ui/DateBox.tsx",
+  "find": "onClick={e => { e.stopPropagation(); dropPatch() }}",
+  "put": "onClick={() => {}}",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 54,
+  "name": "Date box: opening the box again takes the patch away",
+  "file": "src/ui/DateBox.tsx",
+  "find": "else { dropPatch(); setOpen(true) }",
+  "put": "else { setOpen(true) }",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 55,
+  "name": "Date box: the wheel scrolls nothing behind the calendar",
+  "file": "src/ui/DateBox.tsx",
+  "find": "!e.target.closest('.dcal-col')) e.preventDefault() }",
+  "put": "!e.target.closest('.dcal-col')) void 0 }",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 56,
+  "name": "Date box: the wheel still scrolls a month-and-year list",
+  "file": "src/ui/DateBox.tsx",
+  "find": "!e.target.closest('.dcal-col')) e.preventDefault() }",
+  "put": "!e.target.closest('.dcal-nothing')) e.preventDefault() }",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 57,
+  "name": "Date box: a box switched off while open is closed for good",
+  "file": "src/ui/DateBox.tsx",
+  "find": "  useEffect(() => { if (p.disabled && open) setOpen(false) }, [p.disabled, open])\n",
+  "put": "",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 58,
+  "name": "Admin: a single date picked drops a range old end",
+  "file": "src/ui/AdminPage.tsx",
+  "find": "onChange={x => { set(x); setB(''); setArmed(-1) }}",
+  "put": "onChange={x => { set(x); setArmed(-1) }}",
+  "tests": [
+   "src/ui/adminclear.test.tsx"
+  ]
+ },
+ {
+  "n": 59,
+  "name": "Swipe: fifty pixels and no less",
+  "file": "src/ui/sideswipe.ts",
+  "find": "if (Math.abs(dx) < SWIPE_MIN || Math.abs(dx) <= Math.abs(dy)) return",
+  "put": "if (Math.abs(dx) <= Math.abs(dy)) return",
+  "tests": [
+   "src/ui/dayswipe.test.tsx"
+  ]
+ },
+ {
+  "n": 60,
+  "name": "Swipe: more sideways than up-and-down",
+  "file": "src/ui/sideswipe.ts",
+  "find": "if (Math.abs(dx) < SWIPE_MIN || Math.abs(dx) <= Math.abs(dy)) return",
+  "put": "if (Math.abs(dx) < SWIPE_MIN) return",
+  "tests": [
+   "src/ui/dayswipe.test.tsx"
+  ]
+ },
+ {
+  "n": 61,
+  "name": "Swipe: the click that could follow is swallowed",
+  "file": "src/ui/sideswipe.ts",
+  "find": "    swallowClick()\n    onSwipe(",
+  "put": "    onSwipe(",
+  "tests": [
+   "src/ui/dayswipe.test.tsx"
+  ]
+ },
+ {
+  "n": 62,
+  "name": "Swipe: the guard is retired by the next press",
+  "file": "src/ui/sideswipe.ts",
+  "find": "    document.addEventListener('pointerdown', offAll, true)\n    timer",
+  "put": "    timer",
+  "tests": [
+   "src/ui/dayswipe.test.tsx"
+  ]
+ },
+ {
+  "n": 63,
+  "name": "Swipe: two fingers are never a swipe",
+  "file": "src/ui/sideswipe.ts",
+  "find": "if (!t || e.touches.length !== 1) { st = null; return }",
+  "put": "if (!t) { st = null; return }",
+  "tests": [
+   "src/ui/dayswipe.test.tsx"
+  ]
+ },
+ {
+  "n": 64,
+  "name": "Swipe: a touch the browser took away is dropped",
+  "file": "src/ui/sideswipe.ts",
+  "find": "const onCancel = () => { st = null }",
+  "put": "const onCancel = () => {}",
+  "tests": [
+   "src/ui/dayswipe.test.tsx"
+  ]
+ },
+ {
+  "n": 65,
+  "name": "Swipe: left is the next",
+  "file": "src/ui/sideswipe.ts",
+  "find": "onSwipe(dx < 0 ? 1 : -1, s.from)",
+  "put": "onSwipe(dx < 0 ? -1 : 1, s.from)",
+  "tests": [
+   "src/ui/dayswipe.test.tsx"
+  ]
+ },
+ {
+  "n": 66,
+  "name": "Calendar window: the gap between the two parts is neither",
+  "file": "src/ui/DaysWindow.tsx",
+  "find": "inMonth ? 'month' : live.current.tabbed ? live.current.tab : null",
+  "put": "inMonth ? 'month' : live.current.tab",
+  "tests": [
+   "src/ui/dayswipe.test.tsx"
+  ]
+ },
+ {
+  "n": 67,
+  "name": "Calendar window: on the Holidays list a swipe turns the YEAR",
+  "file": "src/ui/DaysWindow.tsx",
+  "find": "const part = inHol ? 'holidays' : inMonth",
+  "put": "const part = inHol ? 'month' : inMonth",
+  "tests": [
+   "src/ui/dayswipe.test.tsx"
+  ]
+ },
+ {
+  "n": 68,
+  "name": "Calendar window: the swipe is wired at all",
+  "file": "src/ui/DaysWindow.tsx",
+  "find": "<div className=\"days-parts\" data-testid=\"days-parts\" ref={parts}>",
+  "put": "<div className=\"days-parts\" data-testid=\"days-parts\">",
+  "tests": [
+   "src/ui/dayswipe.test.tsx"
+  ]
+ },
+ {
+  "n": 69,
+  "name": "Holidays list: what was said about the year left behind goes with it",
+  "file": "src/ui/HolidaysPanel.tsx",
+  "find": "  useEffect(() => { setWhy('') }, [year])\n",
+  "put": "",
+  "tests": [
+   "src/ui/dayswipe.test.tsx",
+   "src/ui/holidayspanel.test.tsx"
+  ]
+ }
+]
