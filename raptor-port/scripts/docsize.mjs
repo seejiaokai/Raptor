@@ -204,7 +204,12 @@ const RULING_BYTES = [
      still whole) - fifteen rulings on how the one-rule job is run and reviewed (D752-D766) and two on the order of work
      since. None is spent or replaced, and a ruling is never trimmed (D136). The spent one-off permissions among them
      (D749, D746 - the shared-row job's readers) are for the next rulings pass to mark and archive, not for this number. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 28000],
+  /* how-we-work 28000 -> 30000 (13 Oct 26): the file crossed the marker (28,480 bytes) when the night's rulings on how
+     the run itself is worked (D799) and where the Inputs pages' rulings live (D802) met the skill-notes review's
+     (D794, D810, D811) and D785-D790. None is trimmed (D136). The one-off permissions among them that are now spent
+     (the skill-notes review's, the one-rule and shared-row jobs' readers) are for the rulings pass to mark and archive -
+     OUTSTANDING.md [RULINGS-SPENT-PASS] - which is what brings this file back down, not this number. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 30000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
