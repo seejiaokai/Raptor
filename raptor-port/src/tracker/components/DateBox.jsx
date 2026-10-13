@@ -27,13 +27,28 @@ import { DateBox as AppDateBox } from '../../ui/DateBox';
    where its arrow was (inside, not beside: beside it the narrow boxes cut their date short), which hands over ''
    exactly as an emptied box did. The wrapper's class is `trdatebox`: `datebox` is the app's own box's name on
    the one global stylesheet, and the two looks met once (ui/scheduler/26-date-calendar.css). */
+/* AFTER THE READ OF THE FINISHED CODE (a fresh, blind Opus reader, 13 Oct 26):
+   - "take this date off" SETTLES: for a moment after it is pressed, a press on this box's row reaches nothing. In the
+     failures list the rows are in the order of their days, so the failure that loses its day drops to the foot and the
+     next one slides up under the finger — the second half of a double press took ITS day off too; on any other box it
+     fell on the box and opened the calendar (F2). 400ms, the app box's own settle.
+   - the keyboard goes back onto the box when the button that was pressed is taken away (F6).
+   - a refusal's line goes at the next press on the box or in its calendar: the same day picked again is no change,
+     so nothing else would ever clear it (F7).
+   - `title` is what the date IS, said to a screen reader before the date and in the button's own name (F6).
+   - `clearable` (default yes): the two Last Flown boxes offer the button only for a day put in BY HAND — a day that
+     comes from the flights marked done cannot be taken off (D123; F3).
+   - the calendar's "today" is the squadron's (D374), and no day before 1900 is offered — the store refuses one (F5, F9). */
+const OFF_SETTLE_MS = 400;
 /** `narrow`: a box with no room for the weekday (End date A and B, three across in their card) shows the date without it.
-    @param {{ value?: string, onCommit: (v: string) => any, id?: string, title?: string, style?: object, narrow?: boolean }} props */
-export function DateBox({ value, onCommit, id, title, style, narrow }) {
+    @param {{ value?: string, onCommit: (v: string) => any, id?: string, title?: string, style?: object, narrow?: boolean, clearable?: boolean }} props */
+export function DateBox({ value, onCommit, id, title, style, narrow, clearable = true }) {
   const saved = value || '';
   const [warn, setWarn] = useState('');
   const gone = useRef(false);
-  useEffect(() => () => { gone.current = true; }, []);
+  const offAt = useRef(0);
+  const row = useRef(null);
+  useEffect(() => { gone.current = false; return () => { gone.current = true; }; }, []);
   /* the line belongs to the day it refused: when the saved day changes under the box (a
      re-sort of the failures list moved another failure into this row), it goes (walker b F-b4) */
   useEffect(() => { setWarn(''); }, [saved]);
@@ -43,11 +58,23 @@ export function DateBox({ value, onCommit, id, title, style, narrow }) {
     const said = await onCommit(v);
     if (!gone.current) setWarn(typeof said === 'string' ? said : '');
   };
+  const off = () => {
+    offAt.current = Date.now();
+    hand('');
+    const b = row.current && row.current.querySelector('button.datebox');
+    if (b) b.focus({ preventScroll: true });
+  };
+  const press = e => {
+    if (Date.now() - offAt.current < OFF_SETTLE_MS) { e.stopPropagation(); e.preventDefault(); return; }
+    if (warn) setWarn('');
+  };
+  const has = !!saved && clearable;
+  const today = core.isoToday();
   return (
     <span className="trdatebox" style={style}>
-      <span className={'trdatebox-row' + (saved ? ' has-x' : '')}>
-        <AppDateBox id={id} label={title || 'Date'} value={saved} onChange={hand} noWeekday={!!narrow} />
-        {saved ? <button type="button" className="sm trdate-x" title="Take this date off" aria-label="Take this date off" onClick={() => hand('')}>&#10005;</button> : null}
+      <span className={'trdatebox-row' + (has ? ' has-x' : '')} ref={row} onClickCapture={press}>
+        <AppDateBox id={id} label={title || 'Date'} value={saved} onChange={hand} noWeekday={!!narrow} today={today} min="1900-01-01" />
+        {has ? <button type="button" className="sm trdate-x" title={title ? 'Take the date off — ' + title : 'Take this date off'} aria-label={title ? 'Take the date off — ' + title : 'Take this date off'} onClick={off}>&#10005;</button> : null}
       </span>
       {warn ? <span className="datewarn" role="status">{warn}</span> : null}
     </span>

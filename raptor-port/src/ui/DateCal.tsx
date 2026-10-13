@@ -237,7 +237,7 @@ export function DateCal(p: {
   }
 
   return (
-    <div className={'dcal' + (p.markWd != null ? ' is-marked' : '')} data-testid={tid} data-month={dates[0].slice(0, 7)}>
+    <div className={'dcal' + (p.markWd != null ? ' is-marked' : '')} data-testid={tid} data-month={dates[0].slice(0, 7)} data-today={today} data-min={p.min || undefined}>
       <div className="dcal-hd">
         <button type="button" className={'dcal-title' + (lists ? ' is-open' : '')} data-testid={`${tid}-title`} aria-expanded={lists}
           aria-label={`${MONTHS[ym.m - 1]} ${ym.y} — ${lists ? 'show the dates' : 'choose the month and year'}`} onClick={openLists}>

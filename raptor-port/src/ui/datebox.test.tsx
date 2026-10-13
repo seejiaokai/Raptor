@@ -62,6 +62,14 @@ describe('the box', () => {
   /* the Tracker's two End date boxes are 108px wide on a phone: "Wed 28 Oct 2026" was cut to "Wed 28 Oct 20…" there
      (the host's look, 13 Oct 26). A box told it is narrow leaves the weekday out of what it SHOWS — the date is whole,
      still in words — and still says the whole of it to a screen reader. */
+  /* the Tracker's "today" is the squadron's day, not the device's (D374): a form that keeps its own today hands it on,
+     and the calendar marks THAT day and opens an empty box on its month (the read of 13 Oct 26 — F5) */
+  it('a form with a today of its own: the calendar marks that day, and an empty box opens on its month', () => {
+    render(<DateBox testid="tb" label="Upchit date" value="" today="2031-03-10" onChange={() => {}} />)
+    fireEvent.click(t('tb'))
+    expect(calMonth()).toBe('2031-03')
+    expect(t('dcal-day-2031-03-10').classList.contains('is-today')).toBe(true)
+  })
   it('a narrow box leaves the weekday out of its words, never out of what it says aloud', () => {
     render(<DateBox testid="nb" label="End date A" value="2026-10-28" noWeekday onChange={() => {}} />)
     expect(t('nb').querySelector('.datebox-txt')!.textContent).toBe('28 Oct 2026')
@@ -255,6 +263,30 @@ describe('the keyboard stays in the calendar while it is up', () => {
    time alone would eat a deliberate quick click somewhere else. */
 describe('the same tap made twice does nothing more', () => {
   const at = { detail: 1, clientX: 140, clientY: 260 }
+  /* THE OPENING TAP TOO (the read of the Tracker's date boxes, 13 Oct 26 — F1): on a phone the calendar's card is put in
+     the middle of the screen, so it can land under the finger that opened it — and the second half of a double tap then
+     fell on a date, which in the Tracker is SAVED at once. The tap that opens the calendar leaves the same patch. */
+  it('the tap that OPENS the calendar leaves a patch where it landed: the second half of a double tap picks nothing', () => {
+    const onChange = vi.fn()
+    render(<Box onChange={onChange} />)
+    fireEvent.click(t('box'), at)
+    expect(layer(), 'the calendar is open').toBeTruthy()
+    const patch = t('dcal-patch')
+    expect(patch.style.left).toBe('128px'); expect(patch.style.top).toBe('248px')
+    fireEvent.pointerDown(patch); fireEvent.mouseDown(patch); fireEvent.click(patch, at)
+    expect(layer(), 'the calendar is still open — the second click closed nothing').toBeTruthy()
+    expect(q('dcal-patch'), 'the patch is spent by the click it took').toBeNull()
+    expect(onChange).not.toHaveBeenCalled()
+    /* and a date tapped after that is picked as ever */
+    fireEvent.click(t('dcal-day-2026-11-19'))
+    expect(onChange).toHaveBeenCalledWith('2026-11-19')
+  })
+  it('a box opened by the keyboard leaves no patch', () => {
+    render(<Box />)
+    fireEvent.click(t('box'))
+    expect(layer()).toBeTruthy()
+    expect(q('dcal-patch')).toBeNull()
+  })
   it('a date picked by a pointer leaves a patch where the click landed, and it takes the click that follows', () => {
     const behind = vi.fn()
     render(<div onClick={behind}><Box /></div>)

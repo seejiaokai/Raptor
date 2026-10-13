@@ -1,11 +1,12 @@
 # The Tracker's date boxes (`[TRK-DATE-BOXES]`, D801) — the bug check (WALK, sized small)
 
 **Where it stands (night of 13 Oct 26):** built, tests re-expressed first; the host's own scripted walk at a phone and a
-desktop — four faults of fit found and fixed (§6); 19 unit breaks and 6 browser breaks, every one caught (§8); its
-finished code read by a fresh, blind Opus reader (§9); the whole gate set in one run (§10). **Left: his look (the card,
+desktop — four faults of fit found and fixed (§6); its finished code read by a fresh, blind Opus reader — nine claims,
+none false: eight fixed tests-first, one a reading of D123 built and told to him (§9); 35 unit breaks and 9 browser
+breaks, every one caught (§8); the whole gate set in one run, twice — before the read's fixes and after (§10). **Left: his look (the card,
 §11) and his "merge live" — after step one's, which this branch is cut from.**
 
-`Walk: docs/handpass/2026-10-13-tracker-date-boxes.md · 26 pictures (the host's scripted walk, 13 at each of two sizes) · 8 surfaces (the roll-call's eight date boxes, each seen and operated) · 10 scenarios walked (5 at each size) · MISSING: none open — 4 faults of fit fixed, 1 older unsteady test steadied`
+`Walk: docs/handpass/2026-10-13-tracker-date-boxes.md · 30 pictures (the host's scripted walk, 15 at each of two sizes) · 8 surfaces (the roll-call's eight date boxes, each seen and operated) · 12 scenarios walked (6 at each size) · MISSING: none open — 4 faults of fit fixed by the walk, 8 by the read (the double taps re-walked), 1 older unsteady test steadied`
 
 Branch `claude/tracker-date-boxes`, cut from `claude/one-date-calendar-step-one-55ba13`. Ruling D801
 (`grep -h '^| D801 |' .claude/decisions-full/*.md`). The design: `docs/superpowers/specs/2026-10-13-one-date-calendar.md`
@@ -93,6 +94,7 @@ door was added; one was removed — typing a date as figures.
 | S3 | A day after today in Done on: the month turned by the arrow, the day refused with its one line inside the pop-up, the refused day left in the box (not turned into today); the calendar re-opens on that month; a day put right takes the line away | PASS (the first version of the script expected the box to go back — the store's rule of 28 Sep 26 says it stays; the script was wrong, not the app) |
 | S4 | The failures list: one failure recorded by the pop-up's own +; the row's box inside the list, words whole; the calendar on top of the list; Escape closes the calendar first and the list stays; a pick lands in the row and the list stays; Escape then closes the list | PASS after fix 4 |
 | S5 | Upchit: a pick; a reload — still there; "take this date off" — empty, the button gone; a reload — still empty | PASS |
+| S6 | (added after the read) A DOUBLE TAP on Upchit, put in the middle of the screen: the calendar is open, nothing picked — on the phone the card lies under the finger; a tap on a date after that picks it; a double tap on "take this date off": the date goes and no calendar opens under the second half | PASS (it fails on the build before the read's fixes — browser breaks 7, 8, 9) |
 
 **Found and fixed (each seen in a picture and a measurement; none was a failing test before the walk):**
 1. **"Take this date off" beside the box cut the date short** — "Tue 13 Oct 2026" became "Tue 13 Oct 20…" in a
@@ -119,8 +121,9 @@ No console or page error at either size.
 
 ## 8. The break tests
 
-**Unit — `scripts/handpass/breaks/2026-10-13-tracker-date-boxes.json`: 19 of 19 caught.** Four were NOT caught at the
-first run, and each said something true: (1) the Tracker box's own "same day" guard was dead — the app's box already
+**Unit — `scripts/handpass/breaks/2026-10-13-tracker-date-boxes.json`: 35 of 35 caught** (19 for the build, 16 for the
+read's fixes — one of those not caught at its first run: nothing took a HAND-put Last Flown (Syllabus) day off; the test
+was strengthened). Of the first nineteen, four were NOT caught at the first run, and each said something true: (1) the Tracker box's own "same day" guard was dead — the app's box already
 hands over a date only when it differs; the dead line went, and the break now cuts the live one; (15, 16) nothing picked
 a day in Failed on through the box itself — a test was written; (17) a day that is not whole reaching the box — the same test.
 
@@ -140,14 +143,31 @@ a day in Failed on through the box itself — a test was written; (17) a day tha
 **The card — on the Tracker branch's preview link, on his own iPhone, in the Tracker:**
 1. Info tab → Currency & Flex → tap **Last Flown (Syllabus)**: the calendar opens in the middle of the screen; tap a
    date — it closes and the box reads the day in words.
-2. The small **✕ at the right end of that box**: tap it — the date is taken off.
-3. **End date A**: pick a date — it reads without the weekday ("28 Oct 2026"), not cut short.
-4. Flow chart → tap a ball → **Done on**: the calendar opens over the pop-up; pick a date — the pop-up is still there.
-5. In that pop-up press **+** beside Fails, close it, Info tab → tap the word **Failures** → the row's date box: the
+2. The small **✕ at the right end of that box**: tap it — the date he put in is taken off (and if a flight is marked
+   done, the box shows that flight's day instead of going blank).
+3. **Double-tap a date box** (Upchit is a good one): the calendar should open and stay — nothing picked by the second tap.
+   No test browser can stand in for a real finger here.
+4. **End date A**: pick a date — it reads without the weekday ("28 Oct 2026"), not cut short.
+5. Flow chart → tap a ball → **Done on**: the calendar opens over the pop-up; pick a date — the pop-up is still there.
+6. In that pop-up press **+** beside Fails, close it, Info tab → tap the word **Failures** → the row's date box: the
    calendar opens over the list; pick — the list is still there.
 
-**Told, not asked (the agent's readings of D801 — his to overrule):** a date is saved the moment it is picked; a box that
-holds a date has a small ✕ inside its right end that takes the date off; End date A and B leave the weekday out; a date
-can no longer be typed as figures; the Tracker's other dates still read dd/mm/yy.
+**Told, not asked (the agent's readings — his to overrule):**
+- a date is saved the moment it is picked (D801's row said so);
+- a box that holds a date has a small ✕ INSIDE its right end that takes the date off — D801's row said "beside the
+  box"; beside it, the narrow boxes cut their date short;
+- **on the two Last Flown boxes the ✕ shows only for a day he put in by hand, and taking it off shows the latest flight
+  marked done** — the reading of D123 ("Last Flown is the latest day actually flown"). Before, emptying the box left
+  both Last Flown days blank even with flights on record;
+- End date A and B leave the weekday out (no room, three across);
+- a date can no longer be typed as figures; the Tracker's other dates still read dd/mm/yy — so the marking pop-up shows
+  both forms a line apart ("Tue 13 Oct 2026" over "ST-02 05/10/26");
+- a day after today picked in Done on of an event not yet done stays in the box with its line until put right (as
+  built on 28 Sep 26);
+- two days picked one after the other are two Undo steps.
+
+**Filed, not his card:** `[TRK-DATEBOX-SAFARI-ZOOM]` — on an iPad or desktop Safari between 621 and 1050px wide, whether
+the calendar sits under its box in the Tracker's side panel (the panel is drawn zoomed there) is unproved; a phone is
+not affected.
 
 **Questions waiting for him:** none from this job.

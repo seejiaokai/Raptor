@@ -2,7 +2,6 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 import * as core from '../app/core.js';
 import { DateBox as AppDateBox } from '../../ui/DateBox';
 
-/* the browser flags a date box as part-typed (its value then reads empty) */
 
 export default function Pop() {
   const p = core.pop;
@@ -49,8 +48,8 @@ export default function Pop() {
       {/* Done on: the day the grade carries. Today by default, so pressing DCO
           dates the event the day it was pressed; change it first and the
           grade lands on that day; change it after and the mark is re-dated
-          when the box is LEFT (blur, Enter, or Escape as it closes the pop-up —
-          never per keystroke,
+          at once — a day is PICKED on the app's calendar since 13 Oct 26 (D801;
+          before that it was typed, and re-dated when the box was left —
           [TRK-RETEST-NOTES] C5). A day after today is refused, with one line
           saying why (D374). A flight's day is also its Last Flown, as before. */}
       <div id="popDoneRow" style={{ marginTop: 8, borderTop: '1px dashed var(--line)', paddingTop: 8 }}>
@@ -58,8 +57,14 @@ export default function Pop() {
           {done ? 'Done on' : 'Done on (when marked)'}{isFlight ? ' — sets Last Flown' : ''}
         </div>
         {/* the app's own date box since 13 Oct 26 (owner D801): a day is picked whole, and a pick is the commit */}
-        <AppDateBox id="popDoneDate" className="trpopdate" label="Done on" value={core.isWholeDay(core.popDoneDate) ? core.popDoneDate : ''}
-          onChange={v => { core.popDoneChanged(v, false); core.popDoneCommit(false); }} />
+        {/* a refusal's line on an event already DONE goes at the next press on the box or in its calendar: the box
+            shows the day the mark keeps, and that day picked again is no change, so nothing else would clear it (the
+            read of 13 Oct 26 — F7). On an event not yet done the refused day is still in the box, and its line stays. */}
+        <span style={{ display: 'block' }} onClickCapture={() => { if (done && core.popMsg && core.popMsg.where === 'done') core.popDoneChanged(core.popDoneDate, false); }}>
+          <AppDateBox id="popDoneDate" className="trpopdate" label="Done on" value={core.isWholeDay(core.popDoneDate) ? core.popDoneDate : ''}
+            today={core.isoToday()} min="1900-01-01"
+            onChange={v => { core.popDoneChanged(v, false); core.popDoneCommit(false); }} />
+        </span>
         {core.popMsg && core.popMsg.where === 'done' ? <div className="datewarn" id="popDoneWarn" role="status">{core.popMsg.text}</div> : null}
       </div>
       {/* Failures: each + records one failure ON the day in the box (today
@@ -74,6 +79,7 @@ export default function Pop() {
       </div>
       <div className="mini" style={{ marginTop: 5, marginBottom: 3 }}>Failed on</div>
       <AppDateBox id="popFailDate" className="trpopdate" label="Failed on" value={core.isWholeDay(core.popFailDate) ? core.popFailDate : ''}
+        today={core.isoToday()} min="1900-01-01"
         onChange={v => { core.popFailDateChanged(v, false); core.popFailCommit(false); }} />
       {core.popMsg && core.popMsg.where === 'fail' ? <div className="datewarn" id="popFailWarn" role="status">{core.popMsg.text}</div> : null}
       {fd.length ? (

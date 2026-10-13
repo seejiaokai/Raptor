@@ -6,7 +6,7 @@
 
    Its own file so the Tracker engine boots fresh (vitest gives every file its own module
    instance) — the same shape as retest.test.tsx. */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { act, useState, useSyncExternalStore } from 'react'
 import { createRoot } from 'react-dom/client'
 import * as core from './app/core.js'
@@ -217,7 +217,7 @@ describe('[TRK-RETEST-NOTES] C5 — a date box saves when you leave it, never a 
      a tap picks, no tick). These tests typed into the phone's date box and proved that a day half typed was never
      saved. A day is PICKED now, whole — there is no half-typed day — so each promise is kept in the terms of the new
      box: looking (opening the calendar, turning its months) saves nothing; a pick saves the day, once; the same day
-     picked again saves nothing; a date is taken off by the button beside the box, which hands over '' as an emptied
+     picked again saves nothing; a date is taken off by the button in the box's right end, which hands over '' as an emptied
      box did. (That a half-typed YEAR is refused is still the store's own rule — `isWholeDay`, tested below.) */
   it('a day picked on the calendar is saved once; looking saves nothing; the same day again saves nothing; a date is taken off by its button', async () => {
     const { DateBox } = await import('./components/DateBox.jsx')
@@ -1125,5 +1125,216 @@ describe('the final code reads (28 Sep 26)', () => {
       for (let i = 0; i < 10 && C.dlg; i++) { C.dlgClose(null); await tick() }
       await p
     }
+  })
+})
+
+/* THE READ OF THE FINISHED CODE (a fresh, blind Opus reader, 13 Oct 26 — docs/handpass/parts/trk-datebox/read-opus.md).
+   Each test here was written first and failed first. */
+describe('[TRK-DATE-BOXES] the read of 13 Oct 26', () => {
+  const sideUp = async () => render(<Live draw={() => <SidePanel zoom={1} />} />)
+
+  it('F2 — "take this date off" pressed twice in the failures list takes the day off ONE failure, not the one that slides up under it', async () => {
+    const s = await pickStudent(); const ev = await freshEvent(s, 5)
+    const d1 = dayAfter(C.isoToday(), -9), d2 = dayAfter(C.isoToday(), -6)
+    await fail(s, ev, d1); await fail(s, ev, d2)
+    expect(C.failDates(s, ev)).toEqual([d1, d2])
+    const { host, root } = await sideUp()
+    try {
+      C.openFailLog(s); await act(async () => { await tick() })
+      const x = () => host.querySelector('#failLog .frow[data-ev="' + ev + '"] .trdate-x') as HTMLElement
+      fireEvent.click(x()); await act(async () => { await tick() })
+      /* the later failure is now the first row, and its ✕ is where the finger still is */
+      fireEvent.click(x()); await act(async () => { await tick() })
+      expect(C.failDates(s, ev), 'one day taken off — the other failure keeps its day').toEqual([d2, null])
+    } finally { C.closeFailLog(); await act(async () => { root.unmount() }); host.remove() }
+  })
+
+  it('F2 — on a side-panel box the second press of a double press opens nothing', async () => {
+    const s = await pickStudent()
+    await C.setUpchit(s, dayAfter(C.isoToday(), -3))
+    const { host, root } = await sideUp()
+    try {
+      const row = () => (host.querySelector('#upchit') as HTMLElement).parentElement!
+      fireEvent.click(row().querySelector('.trdate-x')!); await act(async () => { await tick() })
+      expect(C.dates[s].upchit || '').toBe('')
+      fireEvent.click(host.querySelector('#upchit')!); await act(async () => { await tick() })
+      expect(document.querySelector('[data-testid="dcal-card"]'), 'the second half of the double press is not a tap on the box').toBeNull()
+    } finally { await act(async () => { root.unmount() }); host.remove() }
+  })
+
+  /* D123 — "Last Flown is the latest day actually flown": a day put in by hand and then TAKEN OFF leaves Last Flown on
+     the latest flight marked done, and blank only where no flight is done (the agent's reading of D123, told to him) */
+  it('F3 — taking the date off a Last Flown box puts it back to the latest flight done; with no flight done it is blank', async () => {
+    const s = await pickStudent()
+    const flights = C.SYL.filter((e: any) => e.type === 'flight' && !C.gradeOf(s, e.id))
+    const f = flights[0].id, day = dayAfter(C.isoToday(), -4)
+    /* no flight done on this student yet? then blank is right */
+    const anyDone = C.SYL.some((e: any) => e.type === 'flight' && C.DONE.has(C.gradeOf(s, e.id)))
+    if (!anyDone) {
+      await C.setLastSyll(s, dayAfter(C.isoToday(), -20)); await C.setLastSyll(s, '')
+      expect(C.dates[s].lastSyll || '', 'no flight done: blank').toBe('')
+    }
+    C.openPop(f, { clientX: 5, clientY: 5 }); C.popDoneChanged(day); await C.popGrade('dco')
+    const flown = C.dates[s].lastSyll
+    expect(flown, 'the premise: a flight done sets Last Flown').toBeTruthy()
+    await C.setLastSyll(s, '')
+    expect(C.dates[s].lastSyll, 'Last Flown (Syllabus) is the latest flight done').toBe(flown)
+    /* a later day put in by hand stands (D123) — and taken off, both boxes are the flights' day again */
+    await C.setLastSyll(s, dayAfter(C.isoToday(), -1))
+    expect(C.dates[s].lastSyll).toBe(dayAfter(C.isoToday(), -1))
+    await C.setLastSyll(s, '')
+    expect(C.dates[s].lastSyll, 'the hand day taken off: the flights’ day').toBe(flown)
+    expect(C.dates[s].lastCurr, 'and Last Flown (Currency) with it').toBe(flown)
+    await C.setLastCurr(s, dayAfter(C.isoToday(), -1)); await C.setLastCurr(s, '')
+    expect(C.dates[s].lastCurr, 'the same for Last Flown (Currency)').toBe(flown)
+  })
+
+  it('F3 — a Last Flown day that comes from the flights offers no "take this date off"; one put in by hand does, and taking it off shows the flights’ day', async () => {
+    const s = await pickStudent()
+    const f = C.SYL.filter((e: any) => e.type === 'flight' && !C.gradeOf(s, e.id))[0].id
+    C.openPop(f, { clientX: 5, clientY: 5 }); C.popDoneChanged(dayAfter(C.isoToday(), -5)); await C.popGrade('dco')
+    await C.setLastSyll(s, '')   /* whatever was put in by hand before is gone: Last Flown is the flights' day */
+    const flown = C.dates[s].lastSyll
+    const { host, root } = await sideUp()
+    try {
+      const x = (id: string) => (host.querySelector('#' + id) as HTMLElement).parentElement!.querySelector('.trdate-x') as HTMLElement | null
+      expect(boxValue(host.querySelector('#lastSyll') as HTMLElement)).toBe(flown)
+      expect(x('lastSyll'), 'the flights’ day cannot be taken off').toBeNull()
+      expect(x('lastCurr')).toBeNull()
+      pickDate(host.querySelector('#lastCurr') as HTMLElement, C.isoToday()); await act(async () => { await tick() })
+      expect(x('lastCurr'), 'a day put in by hand can').toBeTruthy()
+      expect(x('lastSyll'), 'and only that box').toBeNull()
+      fireEvent.click(x('lastCurr')!); await act(async () => { await tick() })
+      expect(boxValue(host.querySelector('#lastCurr') as HTMLElement), 'back to the latest flight done').toBe(flown)
+      expect(x('lastCurr')).toBeNull()
+    } finally { await act(async () => { root.unmount() }); host.remove() }
+  })
+
+  it('F7 — in the marking pop-up, on an event already done, a refusal’s line goes when Done on is pressed again', async () => {
+    const s = await pickStudent()
+    const f = C.SYL.filter((e: any) => e.type === 'flight' && !C.gradeOf(s, e.id))[0].id
+    C.openPop(f, { clientX: 5, clientY: 5 }); await C.popGrade('dco')
+    C.openPop(f, { clientX: 5, clientY: 5 })
+    const { host, root } = await render(<Live draw={() => <Pop />} />)
+    try {
+      const box = () => host.querySelector('#popDoneDate') as HTMLElement
+      const kept = boxValue(box())
+      pickDate(box(), dayAfter(C.isoToday(), 5)); await act(async () => { await tick() })
+      expect(host.querySelector('#popDoneWarn')?.textContent).toBe(C.NOT_YET)
+      expect(boxValue(box()), 'the box shows the day the mark keeps').toBe(kept)
+      await new Promise(r => setTimeout(r, 450))
+      fireEvent.click(box()); await act(async () => { await tick() })
+      expect(host.querySelector('#popDoneWarn'), 'the line went with the next press').toBeNull()
+      expect(C.marks[s][f].d, 'and nothing was re-dated').toBe(kept)
+      fireEvent.click(screen.getByTestId('dcal-scrim')); await act(async () => { await tick() })
+    } finally { C.closePop(); await act(async () => { root.unmount() }); host.remove() }
+  })
+
+  it('F4 — two days picked in one box, one straight after the other, are TWO undo steps (a pick is never typing)', async () => {
+    const s = await pickStudent()
+    await C.setUpchit(s, ''); await new Promise(r => setTimeout(r, 5))
+    const a = dayAfter(C.isoToday(), -8), b = dayAfter(C.isoToday(), -7)
+    const before = depth()
+    await C.setUpchit(s, a); await C.setUpchit(s, b)
+    expect(depth(), 'one step a pick').toBe(before + 2)
+    await C.doUndo()
+    expect(C.dates[s].upchit, 'one Undo goes back ONE pick').toBe(a)
+    const t0 = depth()
+    await C.setTarget(s, a); await C.setTarget(s, b); await C.setTarget2(s, a); await C.setTarget2(s, b)
+    await C.setLastCurr(s, a); await C.setLastCurr(s, b)
+    expect(depth(), 'the end dates and Last Flown too').toBe(t0 + 6)
+  })
+
+  it('F6 — each box says what it is to a screen reader, its ✕ says whose date it takes off, and the keyboard stays on the box after it', async () => {
+    const s = await pickStudent()
+    const day = dayAfter(C.isoToday(), -2)
+    await C.setUpchit(s, day); await C.setTarget(s, day); await C.setTarget2(s, day); await C.setLastSyll(s, day)
+    const { host, root } = await sideUp()
+    try {
+      const name = (id: string) => (host.querySelector('#' + id) as HTMLElement).getAttribute('aria-label') || ''
+      expect(name('lastSyll')).toMatch(/^Last Flown \(Syllabus\): /)
+      expect(name('lastCurr')).toMatch(/^Last Flown \(Currency\): /)
+      expect(name('upchit')).toMatch(/^Upchit date: /)
+      expect(name('targetIn')).toMatch(/^End date A: /)
+      expect(name('targetIn2')).toMatch(/^End date B: /)
+      const x = (host.querySelector('#upchit') as HTMLElement).parentElement!.querySelector('.trdate-x') as HTMLElement
+      expect(x.getAttribute('aria-label')).toBe('Take the date off — Upchit date')
+      x.focus(); fireEvent.click(x); await act(async () => { await tick() })
+      expect(C.dates[s].upchit || '').toBe('')
+      expect(document.activeElement, 'the keyboard is on the box, not on nothing').toBe(host.querySelector('#upchit'))
+    } finally { await act(async () => { root.unmount() }); host.remove() }
+  })
+
+  it('F7 — a refusal’s line goes when the box is pressed again', async () => {
+    const s = await pickStudent()
+    await C.setLastCurr(s, dayAfter(C.isoToday(), -3))
+    const { host, root } = await sideUp()
+    try {
+      const box = () => host.querySelector('#lastCurr') as HTMLElement
+      pickDate(box(), dayAfter(C.isoToday(), 6)); await act(async () => { await tick() })
+      expect(box().closest('.trdatebox')!.querySelector('.datewarn')?.textContent).toBe(C.NOT_YET)
+      /* he opens the calendar again and closes it, or picks the day the box already holds: the box is right — no line */
+      await new Promise(r => setTimeout(r, 450))
+      fireEvent.click(box()); await act(async () => { await tick() })
+      expect(box().closest('.trdatebox')!.querySelector('.datewarn'), 'the line went with the next press').toBeNull()
+      fireEvent.click(screen.getByTestId('dcal-scrim')); await act(async () => { await tick() })
+    } finally { await act(async () => { root.unmount() }); host.remove() }
+  })
+
+  it('F8 — Delete or Backspace with the keyboard on a date box deletes nothing of the chart being arranged', async () => {
+    const s = await pickStudent()
+    await C.setUpchit(s, dayAfter(C.isoToday(), -2))
+    const { host, root } = await sideUp()
+    if (C.sylDirty) await C.saveChangesClick()
+    C.toggleArrange()
+    try {
+      C.selectAllClick()
+      const box = host.querySelector('#upchit') as HTMLElement
+      await C.handleDeleteKey({ key: 'Delete', target: box, preventDefault() {} })
+      await C.handleDeleteKey({ key: 'Backspace', target: box.parentElement!.querySelector('.trdate-x'), preventDefault() {} })
+      await tick()
+      expect(C.dlg, 'no "Delete …?" question — the key was pressed on a date box').toBeNull()
+      expect(C.sylDirty, 'nothing deleted').toBe(false)
+    } finally { await clearQuestions(); if (C.arrangeMode) C.toggleArrange(); if (C.sylDirty) await C.saveChangesClick(); await act(async () => { root.unmount() }); host.remove() }
+  })
+
+  it('F5 — the calendar’s "today" is the squadron’s day (Singapore’s), not the device’s', async () => {
+    const tz = process.env.TZ
+    vi.useFakeTimers({ toFake: ['Date'] })
+    try {
+      /* 20:00 UTC on 13 Oct: 04:00 on the 14th in Singapore, 09:00 on the 13th on a device set to Midway */
+      vi.setSystemTime(new Date('2026-10-13T20:00:00Z')); process.env.TZ = 'Pacific/Midway'
+      expect(new Date().getDate(), 'the premise: the device’s own day is the 13th').toBe(13)
+      expect(C.isoToday()).toBe('2026-10-14')
+      const s = await pickStudent()
+      await C.setUpchit(s, '')
+      const { host, root } = await sideUp()
+      try {
+        fireEvent.click(host.querySelector('#upchit')!); await act(async () => { await tick() })
+        expect(screen.getByTestId('dcal').getAttribute('data-today'), 'the side panel’s box').toBe('2026-10-14')
+        expect(screen.getByTestId('dcal-day-2026-10-14').classList.contains('is-today')).toBe(true)
+        fireEvent.click(screen.getByTestId('dcal-scrim')); await act(async () => { await tick() })
+      } finally { await act(async () => { root.unmount() }); host.remove() }
+      const f = C.SYL.filter((e: any) => e.type === 'flight')[6].id
+      C.openPop(f, { clientX: 5, clientY: 5 })
+      const pop = await render(<Live draw={() => <Pop />} />)
+      try {
+        fireEvent.click(pop.host.querySelector('#popFailDate')!); await act(async () => { await tick() })
+        expect(screen.getByTestId('dcal').getAttribute('data-today'), 'the marking pop-up’s box').toBe('2026-10-14')
+        fireEvent.click(screen.getByTestId('dcal-scrim')); await act(async () => { await tick() })
+      } finally { C.closePop(); await act(async () => { pop.root.unmount() }); pop.host.remove() }
+    } finally { vi.useRealTimers(); if (tz === undefined) delete process.env.TZ; else process.env.TZ = tz }
+  })
+
+  it('F9 — a Tracker box offers no day before 1900 (the store refuses one), and an empty box still opens on today’s month', async () => {
+    const s = await pickStudent()
+    await C.setUpchit(s, '')
+    const { host, root } = await sideUp()
+    try {
+      fireEvent.click(host.querySelector('#upchit')!); await act(async () => { await tick() })
+      expect(screen.getByTestId('dcal').getAttribute('data-month'), 'opens on the squadron’s today').toBe(C.isoToday().slice(0, 7))
+      expect(screen.getByTestId('dcal').getAttribute('data-min')).toBe('1900-01-01')
+      fireEvent.click(screen.getByTestId('dcal-scrim')); await act(async () => { await tick() })
+    } finally { await act(async () => { root.unmount() }); host.remove() }
   })
 })

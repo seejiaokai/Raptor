@@ -19,7 +19,7 @@ const BREAKS = [
     file: 'src/ui/DateBox.tsx', find: 'onClick={mine} onPointerDown={mine}', put: 'onPointerDown={mine}',
     expect: /FAIL .*(marking pop-up is still up|could not finish)/ },
   { n: 2, name: 'End date A is a narrow box: its date is never cut short',
-    file: 'src/tracker/components/SidePanel.jsx', find: 'id="targetIn" narrow value', put: 'id="targetIn" value',
+    file: 'src/tracker/components/SidePanel.jsx', find: 'title="End date A" narrow value', put: 'title="End date A" value',
     expect: /FAIL .*no box’s words are cut short/ },
   { n: 3, name: 'a box that holds a date keeps its words clear of "take this date off"',
     file: 'src/tracker/tracker.css', find: '.trdatebox-row.has-x>button.datebox{padding-right:26px}\n', put: '',
@@ -33,6 +33,15 @@ const BREAKS = [
   { n: 6, name: 'Done on and Failed on take the pop-up’s width',
     file: 'src/tracker/tracker.css', find: 'button.datebox.trpopdate{display:flex;width:100%}', put: '',
     expect: /FAIL .*takes the pop-up’s width/ },
+  { n: 7, name: 'the tap that opens the calendar leaves its patch OVER the card — the second half of a double tap picks nothing',
+    file: 'src/ui/scheduler/26-date-calendar.css', find: '.dcal-layer.dcal-patch{background:transparent;touch-action:none;z-index:601}', put: '.dcal-layer.dcal-patch{background:transparent;touch-action:none;z-index:599}',
+    expect: /FAIL .*(nothing was picked by the second half|open after the double tap)/ },
+  { n: 8, name: 'the tap that opens the calendar leaves a patch at all',
+    file: 'src/ui/DateBox.tsx', find: 'if (e.detail > 0) standPatch({ x: e.clientX, y: e.clientY }); else dropPatch()', put: 'dropPatch()',
+    expect: /FAIL .*(nothing was picked by the second half|open after the double tap)/ },
+  { n: 9, name: '"take this date off" settles: the second half of a double tap on it opens nothing',
+    file: 'src/tracker/components/DateBox.jsx', find: "    if (Date.now() - offAt.current < OFF_SETTLE_MS) { e.stopPropagation(); e.preventDefault(); return; }\n", put: '',
+    expect: /FAIL .*no calendar opened under the second half/ },
 ]
 const only = process.argv[2] ? new Set(process.argv[2].split(',')) : null
 /* the look's pictures of a BROKEN build go to a scratch folder, never over the evidence pictures */

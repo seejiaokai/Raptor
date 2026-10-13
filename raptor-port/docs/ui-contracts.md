@@ -9321,7 +9321,20 @@ screen:
     carries "take this date off" (✕) inside its right end, where its arrow was** — the calendar
     has no Clear (D796), and an emptied box still means something here (no Upchit, no end date,
     a failure with no day; Done on and Failed on have none: empty there means today, and they
-    are never empty). No box can hold a half-typed day any more — a day is picked whole
+    are never empty). **On the two Last Flown boxes the ✕ is offered only for a day put in BY
+    HAND, and taking it off shows the latest flight marked done — blank only where no flight is
+    done** (the agent's reading of D123, told to him: Last Flown IS the latest day flown, so a
+    day that comes from the flights cannot be taken off). The ✕ SETTLES: for 400ms after it a
+    press on that box's row reaches nothing (in the failures list the next failure slides up
+    under the finger, and a double press took its day off too). **A double tap on a box opens
+    the calendar and picks nothing:** the tap that opens it leaves the app box's small patch
+    where it landed, over the card (on a phone the card lands under the finger). The calendar's
+    "today" is the squadron's day (D374), not the device's; no day before 1900 is offered (the
+    store refuses one). Each box says what it is to a screen reader ("Upchit date: …"), its ✕
+    says whose date it takes off, and the keyboard stays on the box after it. A refusal's line
+    goes at the next press on its box. Delete or Backspace on a date box does nothing to a
+    chart being arranged. Two days picked in one box are two undo steps (a pick is not typing —
+    the two-second fold stays for the pace and the down days, which are typed). No box can hold a half-typed day any more — a day is picked whole
     (what [TRK-RETEST-NOTES] C5 guarded against). A day after today is refused in Done on, Failed on
     and both Last Flown boxes, with one line under the box saying why; Upchit
     and the end dates take any day (D374, 28 Sep 26). **The grading pop-up never

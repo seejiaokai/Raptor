@@ -3,7 +3,7 @@
 // inside the screen and its card, its words not cut, the calendar wholly on the screen and on top, the marking pop-up
 // still up after a pick) and saves a picture a step. It writes only under this checkout.
 //   npm run build && node scripts/handpass/trk-datebox-look.mjs [phone|desktop]
-// VERSION 6
+// VERSION 7
 import { chromium } from '@playwright/test'
 import { createServer } from 'node:http'
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync } from 'node:fs'
@@ -18,7 +18,7 @@ const [W, H, TOUCH] = WHICH === 'desktop' ? [1440, 900, false] : [390, 844, true
 const OUT = process.env.LOOK_OUT ? resolve(process.env.LOOK_OUT, `look-${WHICH}`) : resolve(ROOT, `docs/img/handpass/2026-10-13-tracker-date-boxes/look-${WHICH}`)
 if (existsSync(OUT)) for (const f of readdirSync(OUT)) rmSync(join(OUT, f))
 mkdirSync(OUT, { recursive: true })
-console.log(`trk-datebox-look VERSION 6 — ${WHICH} ${W}x${H} -> ${OUT}`)
+console.log(`trk-datebox-look VERSION 7 — ${WHICH} ${W}x${H} -> ${OUT}`)
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 const DIST = resolve(ROOT, 'dist')
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon', '.woff2': 'font/woff2' }
@@ -187,7 +187,7 @@ await step('a date is kept across a reload; "take this date off" empties it, and
   await press(`[data-testid="dcal-day-${c.month}-09"]`); await page.waitForTimeout(400)
   check(await page.locator('#upchit').getAttribute('data-value') === `${c.month}-09`, 'Upchit holds the day picked', await page.locator('#upchit').getAttribute('data-value'))
   const x = await page.evaluate(() => { const b = document.getElementById('upchit'), o = b.parentElement.querySelector('.trdate-x'); if (!o) return null; const r = o.getBoundingClientRect(), q = b.getBoundingClientRect(), f = b.closest('.field').getBoundingClientRect(); return { w: Math.round(r.width), h: Math.round(r.height), boxH: Math.round(q.height), right: Math.round(r.right), fieldRight: Math.round(f.right), label: o.getAttribute('aria-label') } })
-  check(!!x && x.right <= x.fieldRight + 1 && x.label === 'Take this date off', 'the box that holds a date offers "Take this date off", inside its field', x)
+  check(!!x && x.right <= x.fieldRight + 1 && /^Take the date off — Upchit date$/.test(x.label), 'the box that holds a date offers "take the date off", by its name, inside its field', x)
   await shot('upchit-picked')
   await openTracker(false); await toInfo()
   check(await page.locator('#upchit').getAttribute('data-value') === `${c.month}-09`, 'after a reload Upchit still holds it', await page.locator('#upchit').getAttribute('data-value'))
@@ -198,6 +198,31 @@ await step('a date is kept across a reload; "take this date off" empties it, and
   await openTracker(false); await toInfo()
   check((await page.locator('#upchit').getAttribute('data-value') || '') === '', 'after a reload Upchit is still empty', await page.locator('#upchit').innerText())
 
+})
+
+await step('a double tap: on a box it opens the calendar and saves nothing; on "take this date off" it takes ONE date off (the read, F1 and F2)', async () => {
+  await toInfo()
+  /* Upchit is empty here (the step before). Put it in the middle of the screen — where a phone's calendar card lands */
+  await page.locator('#upchit').evaluate(e => e.scrollIntoView({ block: 'center' })); await page.waitForTimeout(200)
+  const at = await page.locator('#upchit').evaluate(e => { const r = e.getBoundingClientRect(); return { x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2) } })
+  if (TOUCH) { await page.touchscreen.tap(at.x, at.y); await page.touchscreen.tap(at.x, at.y) } else await page.mouse.dblclick(at.x, at.y)
+  await page.waitForTimeout(600)
+  const open = await page.locator('[data-testid="dcal-card"]').count()
+  const under = open ? await page.evaluate(p => { const b = document.querySelector('[data-testid="dcal-card"]').getBoundingClientRect(); return p.x >= b.left && p.x <= b.right && p.y >= b.top && p.y <= b.bottom }, at) : null
+  console.log(`  the calendar's card ${under ? 'lies under the place tapped' : 'does not lie under the place tapped'} at this size`)
+  check(open === 1, 'the calendar is open after the double tap — not opened and shut', open)
+  check((await page.locator('#upchit').getAttribute('data-value') || '') === '', 'nothing was picked by the second half of the tap', await page.locator('#upchit').innerText())
+  await shot('double-tap-box')
+  /* and a deliberate tap, later, still picks */
+  const k = await page.locator('[data-testid="dcal"]').getAttribute('data-month')
+  await press(`[data-testid="dcal-day-${k}-12"]`); await page.waitForTimeout(500)
+  check(await page.locator('#upchit').getAttribute('data-value') === `${k}-12`, 'a tap on a date after that picks it', await page.locator('#upchit').getAttribute('data-value'))
+  /* the same double tap on "take this date off": the date goes, and the second half opens nothing */
+  const xa = await page.locator('#upchit ~ .trdate-x').evaluate(e => { const r = e.getBoundingClientRect(); return { x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2) } })
+  if (TOUCH) { await page.touchscreen.tap(xa.x, xa.y); await page.touchscreen.tap(xa.x, xa.y) } else await page.mouse.dblclick(xa.x, xa.y)
+  await page.waitForTimeout(600)
+  check((await page.locator('#upchit').getAttribute('data-value') || '') === '' && !(await page.locator('[data-testid="dcal-card"]').count()), 'the date is off and no calendar opened under the second half', await page.locator('[data-testid="dcal-card"]').count())
+  await shot('double-tap-take-off')
 })
 
 console.log(`\n${fails ? fails + ' FAILED' : 'no failed check'} · ${n} pictures · ${errors.length ? 'ERRORS: ' + errors.join(' | ') : 'no console or page errors'}`)

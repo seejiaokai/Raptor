@@ -24,8 +24,8 @@
     "n": 3,
     "name": "the Tracker's box: \"take this date off\" hands over the empty",
     "file": "src/tracker/components/DateBox.jsx",
-    "find": "onClick={() => hand('')}",
-    "put": "onClick={() => {}}",
+    "find": "    hand('');\n    const b = row.current",
+    "put": "    const b = row.current",
     "tests": [
       "src/tracker/leftovers.test.tsx"
     ]
@@ -34,8 +34,8 @@
     "n": 4,
     "name": "the Tracker's box: an empty box has nothing to take off",
     "file": "src/tracker/components/DateBox.jsx",
-    "find": "{saved ? <button type=\"button\" className=\"sm trdate-x\"",
-    "put": "{true ? <button type=\"button\" className=\"sm trdate-x\"",
+    "find": "const has = !!saved && clearable;",
+    "put": "const has = clearable;",
     "tests": [
       "src/tracker/leftovers.test.tsx"
     ]
@@ -54,7 +54,7 @@
     "n": 6,
     "name": "the Tracker's box: a box that holds a date is marked so its arrow gives way to the take-off button",
     "file": "src/tracker/components/DateBox.jsx",
-    "find": "(saved ? ' has-x' : '')",
+    "find": "(has ? ' has-x' : '')",
     "put": "''",
     "tests": [
       "src/tracker/leftovers.test.tsx"
@@ -74,8 +74,8 @@
     "n": 8,
     "name": "End date A is a narrow box",
     "file": "src/tracker/components/SidePanel.jsx",
-    "find": "id=\"targetIn\" narrow value",
-    "put": "id=\"targetIn\" value",
+    "find": "title=\"End date A\" narrow value",
+    "put": "title=\"End date A\" value",
     "tests": [
       "src/tracker/leftovers.test.tsx"
     ]
@@ -84,8 +84,8 @@
     "n": 9,
     "name": "End date B is a narrow box",
     "file": "src/tracker/components/SidePanel.jsx",
-    "find": "id=\"targetIn2\" narrow value",
-    "put": "id=\"targetIn2\" value",
+    "find": "title=\"End date B\" narrow value",
+    "put": "title=\"End date B\" value",
     "tests": [
       "src/tracker/leftovers.test.tsx"
     ]
@@ -94,8 +94,8 @@
     "n": 10,
     "name": "a box with room keeps its weekday (Upchit is not narrow)",
     "file": "src/tracker/components/SidePanel.jsx",
-    "find": "id=\"upchit\" value",
-    "put": "id=\"upchit\" narrow value",
+    "find": "title=\"Upchit date\" value",
+    "put": "title=\"Upchit date\" narrow value",
     "tests": [
       "src/tracker/leftovers.test.tsx"
     ]
@@ -186,6 +186,166 @@
     "file": "src/tracker/components/Modals.jsx",
     "find": "e.preventDefault(); (e.shiftKey ? last : first).focus();",
     "put": "e.preventDefault(); first.focus();",
+    "tests": [
+      "src/tracker/leftovers.test.tsx"
+    ]
+  },
+  {
+    "n": 20,
+    "name": "the read F1: the tap that opens the calendar leaves a patch (the second half of a double tap picks nothing)",
+    "file": "src/ui/DateBox.tsx",
+    "find": "if (e.detail > 0) standPatch({ x: e.clientX, y: e.clientY }); else dropPatch()",
+    "put": "dropPatch()",
+    "tests": [
+      "src/ui/datebox.test.tsx"
+    ]
+  },
+  {
+    "n": 21,
+    "name": "the read F2: \"take this date off\" settles — a second press reaches nothing",
+    "file": "src/tracker/components/DateBox.jsx",
+    "find": "    if (Date.now() - offAt.current < OFF_SETTLE_MS) { e.stopPropagation(); e.preventDefault(); return; }\n",
+    "put": "",
+    "tests": [
+      "src/tracker/leftovers.test.tsx"
+    ]
+  },
+  {
+    "n": 22,
+    "name": "the read F3: Last Flown (Syllabus) taken off goes back to the latest flight done",
+    "file": "src/tracker/app/core.js",
+    "find": "else { delete d.handSyll; delete d.handCurr; }\n  stamp(d); if (!v) settleLastFlown(s);",
+    "put": "else { delete d.handSyll; delete d.handCurr; }\n  stamp(d);",
+    "tests": [
+      "src/tracker/leftovers.test.tsx"
+    ]
+  },
+  {
+    "n": 23,
+    "name": "the read F3: Last Flown (Currency) taken off goes back to the latest flight done",
+    "file": "src/tracker/app/core.js",
+    "find": "if (v) d.handCurr = true; else delete d.handCurr;\n  stamp(d); if (!v) settleLastFlown(s);",
+    "put": "if (v) d.handCurr = true; else delete d.handCurr;\n  stamp(d);",
+    "tests": [
+      "src/tracker/leftovers.test.tsx"
+    ]
+  },
+  {
+    "n": 24,
+    "name": "the read F3: a Last Flown day that comes from the flights offers no \"take this date off\"",
+    "file": "src/tracker/components/SidePanel.jsx",
+    "find": "clearable={!!core.dates[s].handSyll}",
+    "put": "clearable",
+    "tests": [
+      "src/tracker/leftovers.test.tsx"
+    ]
+  },
+  {
+    "n": 25,
+    "name": "the read F4: two picks in one box are two undo steps (Upchit)",
+    "file": "src/tracker/app/core.js",
+    "find": "pushMarkUndo(s, 'the upchit date');",
+    "put": "pushMarkUndo(s, 'the upchit date', 'upchit');",
+    "tests": [
+      "src/tracker/leftovers.test.tsx"
+    ]
+  },
+  {
+    "n": 26,
+    "name": "the read F4: two picks in one box are two undo steps (End date B)",
+    "file": "src/tracker/app/core.js",
+    "find": "pushMarkUndo(s, 'End date B');",
+    "put": "pushMarkUndo(s, 'End date B', 'target2');",
+    "tests": [
+      "src/tracker/leftovers.test.tsx"
+    ]
+  },
+  {
+    "n": 27,
+    "name": "the read F5: the side panel's calendar marks the squadron's today",
+    "file": "src/tracker/components/DateBox.jsx",
+    "find": "noWeekday={!!narrow} today={today} min",
+    "put": "noWeekday={!!narrow} min",
+    "tests": [
+      "src/tracker/leftovers.test.tsx"
+    ]
+  },
+  {
+    "n": 28,
+    "name": "the read F5: the marking pop-up's calendar marks the squadron's today",
+    "file": "src/tracker/components/Pop.jsx",
+    "find": "        today={core.isoToday()} min=\"1900-01-01\"\n        onChange",
+    "put": "        min=\"1900-01-01\"\n        onChange",
+    "tests": [
+      "src/tracker/leftovers.test.tsx"
+    ]
+  },
+  {
+    "n": 29,
+    "name": "the read F5: the app's box hands its form's today to the calendar",
+    "file": "src/ui/DateBox.tsx",
+    "find": " today={p.today} box={box.current}",
+    "put": " box={box.current}",
+    "tests": [
+      "src/ui/datebox.test.tsx"
+    ]
+  },
+  {
+    "n": 30,
+    "name": "the read F6: a box says what it is (Upchit)",
+    "file": "src/tracker/components/SidePanel.jsx",
+    "find": "id=\"upchit\" title=\"Upchit date\" value",
+    "put": "id=\"upchit\" value",
+    "tests": [
+      "src/tracker/leftovers.test.tsx"
+    ]
+  },
+  {
+    "n": 31,
+    "name": "the read F6: the keyboard goes back onto the box after \"take this date off\"",
+    "file": "src/tracker/components/DateBox.jsx",
+    "find": "    if (b) b.focus({ preventScroll: true });\n",
+    "put": "",
+    "tests": [
+      "src/tracker/leftovers.test.tsx"
+    ]
+  },
+  {
+    "n": 32,
+    "name": "the read F7: a refusal's line goes at the next press on the box",
+    "file": "src/tracker/components/DateBox.jsx",
+    "find": "    if (warn) setWarn('');\n",
+    "put": "",
+    "tests": [
+      "src/tracker/leftovers.test.tsx"
+    ]
+  },
+  {
+    "n": 33,
+    "name": "the read F7: the same in the marking pop-up, on an event already done",
+    "file": "src/tracker/components/Pop.jsx",
+    "find": "onClickCapture={() => { if (done && core.popMsg && core.popMsg.where === 'done') core.popDoneChanged(core.popDoneDate, false); }}",
+    "put": "onClickCapture={() => {}}",
+    "tests": [
+      "src/tracker/leftovers.test.tsx"
+    ]
+  },
+  {
+    "n": 34,
+    "name": "the read F8: Delete on a date box deletes nothing of the chart",
+    "file": "src/tracker/app/core.js",
+    "find": "  if (e.target && e.target.closest && e.target.closest('.trdatebox, button.datebox')) return;\n",
+    "put": "",
+    "tests": [
+      "src/tracker/leftovers.test.tsx"
+    ]
+  },
+  {
+    "n": 35,
+    "name": "the read F9: no day before 1900 is offered",
+    "file": "src/tracker/components/DateBox.jsx",
+    "find": "today={today} min=\"1900-01-01\" />",
+    "put": "today={today} />",
     "tests": [
       "src/tracker/leftovers.test.tsx"
     ]

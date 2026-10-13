@@ -63,6 +63,9 @@ export function DateBox(p: {
   /** a box too narrow for the weekday (the Tracker's End date A and B, 108px on a phone): it SHOWS "28 Oct 2026" — the
    *  date whole, never cut to "Wed 28 Oct 20…" — and still says the weekday to a screen reader */
   noWeekday?: boolean
+  /** the form's own "today", where it is not the device's (the Tracker's is the squadron's day — D374): the day the
+   *  calendar marks, and the month an empty box opens on */
+  today?: string
 }) {
   const [open, setOpen] = useState(false)
   const box = useRef<HTMLButtonElement>(null)
@@ -73,20 +76,25 @@ export function DateBox(p: {
      MADE BY A POINTER a small see-through patch stands where that click landed and takes the click that may follow
      there: by place AND time, as the Leave War guards its Move button (leavewar/ui/select.ts MOVE_SETTLE — a time
      alone ate deliberate quick clicks elsewhere). It is an element of the layer's own class, on the page itself, so a
-     Leave War sheet's tap shield lets it through as it does the calendar. A pick by the keyboard leaves none. */
+     Leave War sheet's tap shield lets it through as it does the calendar. A pick by the keyboard leaves none.
+     AND THE TAP THAT OPENS THE CALENDAR LEAVES ONE TOO (the read of the Tracker's date boxes, 13 Oct 26 — F1): on a
+     phone the card is put in the middle of the screen, so it can land under the finger that opened it, and the second
+     half of a double tap fell on a date — which in the Tracker is saved at once. Where the card is under its box the
+     second half fell on the veil and shut the calendar it had just opened. The patch lies OVER the card (its z-index). */
   const [patch, setPatch] = useState<{ x: number; y: number } | null>(null)
   const patchTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const dropPatch = () => { if (patchTimer.current) clearTimeout(patchTimer.current); patchTimer.current = null; setPatch(null) }
   useEffect(() => () => { if (patchTimer.current) clearTimeout(patchTimer.current) }, [])
   /* a box switched off while its calendar is up is closed for good — not left to spring open when it is switched on */
   useEffect(() => { if (p.disabled && open) setOpen(false) }, [p.disabled, open])
+  const standPatch = (at: { x: number; y: number }) => {
+    if (patchTimer.current) clearTimeout(patchTimer.current)
+    setPatch(at)
+    patchTimer.current = setTimeout(() => { patchTimer.current = null; setPatch(null) }, SETTLE_MS)
+  }
   const close = (at?: { x: number; y: number } | null) => {
     setOpen(false)
-    if (at) {
-      if (patchTimer.current) clearTimeout(patchTimer.current)
-      setPatch(at)
-      patchTimer.current = setTimeout(() => { patchTimer.current = null; setPatch(null) }, SETTLE_MS)
-    }
+    if (at) standPatch(at)
     const b = box.current
     const kb = document.activeElement
     /* the keyboard returns to the box — unless he has already put it somewhere else on the page */
@@ -105,7 +113,7 @@ export function DateBox(p: {
         aria-haspopup="dialog"
         aria-expanded={open}
         disabled={p.disabled}
-        onClick={() => { if (open) close(); else { dropPatch(); setOpen(true) } }}
+        onClick={e => { if (open) close(); else { setOpen(true); if (e.detail > 0) standPatch({ x: e.clientX, y: e.clientY }); else dropPatch() } }}
       >
         <span className="datebox-txt">{has ? (p.noWeekday ? sayDateY(p.value).replace(/^\S+ /, '') : sayDateY(p.value)) : 'Pick a date'}</span>
         <span className="datebox-v" aria-hidden="true">&#9662;</span>
@@ -113,7 +121,7 @@ export function DateBox(p: {
       {open && !p.disabled && createPortal(
         <Layer
           label={p.label} value={has ? p.value : ''} min={p.min} markWd={p.markWd}
-          at={p.at || (validIso(p.min) ? p.min : undefined)} box={box.current}
+          at={p.at || (validIso(p.today) ? p.today : validIso(p.min) ? p.min : undefined)} today={p.today} box={box.current}
           onPick={(iso, at) => { close(at); if (iso !== p.value) p.onChange(iso) }}
           onClose={close}
         />, document.body)}
@@ -126,8 +134,8 @@ export function DateBox(p: {
   )
 }
 
-function Layer({ label, value, min, markWd, at, box, onPick, onClose }: {
-  label: string; value: string; min?: string; markWd?: number; at?: string
+function Layer({ label, value, min, markWd, at, today, box, onPick, onClose }: {
+  label: string; value: string; min?: string; markWd?: number; at?: string; today?: string
   box: HTMLElement | null
   /** `at` — where the click that picked landed; null for a pick by the keyboard */
   onPick: (iso: string, at: { x: number; y: number } | null) => void
@@ -231,7 +239,7 @@ function Layer({ label, value, min, markWd, at, box, onPick, onClose }: {
     <div className={'dcal-layer' + (phone ? ' is-phone' : '')} ref={layer} onClickCapture={e => { pt.current = e.detail > 0 ? { x: e.clientX, y: e.clientY } : null }} onClick={mine} onPointerDown={mine} onMouseDown={mine} onKeyDown={mine}>
       <div className="dcal-scrim" data-testid="dcal-scrim" onClick={() => onClose(pt.current)} />
       <div className="dcal-card" ref={card} role="dialog" aria-modal="true" aria-label={`${label} — pick a date`} data-testid="dcal-card">
-        <DateCal value={value} min={min} markWd={markWd} at={at} onPick={iso => onPick(iso, pt.current)} />
+        <DateCal value={value} min={min} markWd={markWd} at={at} today={today} onPick={iso => onPick(iso, pt.current)} />
       </div>
     </div>
   )
