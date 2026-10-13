@@ -41,7 +41,7 @@ describe('the phone’s own date box', () => {
   it('the search can see one when there is one', () => {
     /* a pattern that matched nothing would pass the test above with an empty list on both sides — and so would a walk
        that read no file: the walk must have read the two components that own a date box */
-    const read = files(SRC).map(f => relative(SRC, f).replace(/\/g, '/'))
+    const read = files(SRC).map(f => relative(SRC, f).replace(/\\/g, '/'))
     expect(read).toContain('ui/DateBox.tsx'); expect(read).toContain('tracker/components/DateBox.jsx')
     expect(NATIVE.test('<input type="date" id="x" />')).toBe(true)
     expect(NATIVE.test("el.type = 'date'")).toBe(true)
