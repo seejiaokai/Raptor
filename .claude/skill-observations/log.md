@@ -406,3 +406,18 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** In the look's report step: every row a machine record marks as a gap appears on the page by number, or in "considered and left" with its reason — and the count is checked by a script, not by eye. In clarify: each rewrite is read back COLD for its literal meaning, without the original beside it, before the pair is shown. In a mock-up's script: name which part gives way when the letters are wider, and draw that case.
 
 **Principle:** Evidence that is gathered by machine must reach the report by count, not by recollection; and a rewrite is checked by someone who does not already know what it is meant to say.
+
+### Observation 581: Three sources recorded as "would not open" had only moved — a second read reached all three by following the redirect or using a real browser
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** [SKILL-FUSION-WRITING] — the second read of outside writing guides (D833); the first read's note listed GOV.UK's, Google Material's and the US plain-language site's pages as "NOT read (redirects, an empty page, not found)"
+**Skill:** New skill candidate: reading outside sources for a guide (today a helper's brief; `anthropic-skills:deep-research` where it is used)
+**Type:** open-source
+**Phase/Area:** Research — fetching a source; what the record says of one that failed
+
+**Issue:** The fetch tool does not follow a redirect to another host: it returns the new address and stops. It also returns only a title for a page drawn by script. The first read took both as "the source would not open" and judged without them — and they were the three most relevant sources (one holds the only published rule on dashes). The second read fetched the address each redirect named (two hops for one of them) and opened the scripted page in a real browser: all three were read in an hour. The fetch tool also answers through a small model, so a page read that way is an account of the page, not the page — the first note did say so.
+
+**Suggested improvement:** In a research brief: a source is recorded as unread only after (1) the address a redirect names has been fetched, hop by hop, and (2) a page that came back empty has been opened in a real browser. The record says, for each source, how it was read — word for word, or a tool's account — and for each one not read, what was tried.
+
+**Principle:** "Would not open" is a finding about the tool until the redirect has been followed and a real browser tried; a source set that silently lost its most relevant members biases the conclusion as surely as a bad source does.

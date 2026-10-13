@@ -214,7 +214,11 @@ const RULING_BYTES = [
      (D794, D810, D811) and D785-D790. None is trimmed (D136). The one-off permissions among them that are now spent
      (the skill-notes review's, the one-rule and shared-row jobs' readers) are for the rulings pass to mark and archive -
      OUTSTANDING.md [RULINGS-SPENT-PASS] - which is what brings this file back down, not this number. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 30000],
+  /* how-we-work 30000 -> 32000 (13 Oct 26, late): the file stood at 29,812 bytes and crossed the marker with D835 - his
+     direction that the writing guide, once approved, is adopted for how the agent writes to him too. A general ruling
+     every chat must carry; none is trimmed (D136). The spent one-off permissions still wait for [RULINGS-SPENT-PASS],
+     which is what brings this file down. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 32000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,

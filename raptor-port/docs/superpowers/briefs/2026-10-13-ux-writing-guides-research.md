@@ -75,7 +75,10 @@ tests:
 - **On dashes the guides do not agree.** Google says avoid the long dash; GOV.UK bans it only in ranges; **Mailchimp
   uses it** for an aside and suggests it in place of a semicolon. So "fewer dashes" rests on his own word (D833) and on
   Google's reason — a dash is a break a comma, a full stop or a new sentence says more plainly — not on any agreed rule.
-- **Two popular reasons were checked and NOT taken.** That screen readers stumble on a dash: the tests found disagree
+  **He then ruled on it himself (D834, the same evening):** "dash feels very AI. Humans don't usually write like
+  that. Maybe : might be used … if u want to use - for some cases u can too if it makes sense." So the guide's order
+  is the linking word, a colon, a comma, a full stop, and a dash only as a named choice.
+- **Two popular reasons were checked and NOT taken as the guide's reasons.** That screen readers stumble on a dash: the tests found disagree
   (some pause, some say "dash", it depends on the person's settings) and none tested this app. That a dash "looks
   machine-written": a claim from 2025 opinion pieces, with no baseline; the one article that weighed it says it is not a
   reliable sign. Neither is used as a reason in the guide.
@@ -107,8 +110,24 @@ tests:
 
 **Not taken:** a brand personality or voice chart ("bold", "with a wink", dry humour); warmth, apology and
 encouragement as aims; "we"; emoji; exclamation marks; reading-grade scores and length targets (as before); "prune every
-word"; dropping the full stop from a sentence (Google's rule — the app's notes are sentences); the two dash arguments
-in §3; anything about marketing, onboarding, search or translation.
+word"; the two dash arguments in §3; anything about marketing, onboarding, search or translation. **Taken in part:**
+Google's rule on the full stop — a note of one sentence takes none, a note of two or more ends each with one — because
+that is what the app's notes already do.
+
+## 5. The tool he sent — `blader/humanizer` (read in full, 13 Oct 26, after §1b's second draft)
+
+A skill (MIT) that rewrites machine-sounding prose, drawn from Wikipedia's "Signs of AI writing": twenty-six patterns,
+strongest first, each with a before and an after, and a check that the rewrite added and dropped no fact. **It is the
+best of the writing skills read on this job** — it has tests where the Strunk-based ones have maxims — **but it is
+written for essays, articles and replies, not for a two-line note on a screen.** Its own reason for the dash is the
+guide's: "a dash lets the writer skip choosing how two clauses relate"; and it calls one dash "weak alone", a text full
+of them not — which fits his D834. **Taken, in our words (§1b test 12):** the announcing opener ("heads up", "quick
+note"); the "not X, but Y" frame where nobody thought X; the closing line that only repeats; lists of three for the
+sound; "serves as", "features", "offers" where "is" or "has" will do; the stock words; a bold label and a colon on every
+line; text about how it was made. **Not taken:** its rules for essays (hedges, citations, sales language about places,
+chat leftovers, knowledge cut-offs), its ban on every dash (he allows one where it makes sense), curly quotation marks
+(the app prints them on purpose). **Not installed** (D486, D812). Where it would earn its place whole is the agent's
+own long messages and reports to him — his to say.
 
 ## Sources opened
 

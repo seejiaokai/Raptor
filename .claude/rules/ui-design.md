@@ -34,13 +34,17 @@ fix to behaviour, a test, a comment) — the skill's detector already runs after
    unasked; what happened, then the one thing he must know; no warning dropped to save words; an error says how to put
    it right; a button starts with its verb. **Shortening is not summarising (D825, D832):** the box is
    measured before the words; a word is cut only if the note states the same facts without it — padding, a thing said
-   twice, an announcement, an intensifier or a hedge — never a clause's verb or the word that links two facts; the note
-   stays a sentence; each change shows the exact words cut, added or swapped and is read cold by someone who has not
-   seen the original; a note that cannot lose a word is left whole — the guide's §1a. **How the app speaks (D833):** as
-   a capable colleague would say it aloud — every fact first, then a sentence a person would say, then as short as
-   those allow; two thoughts joined by a word or a full stop, not a dash, a semicolon or a middle dot; the squadron's
-   words kept, everyday words for the rest; "you", never "we"; one steady voice, plainer as the stakes rise; pairs and
-   families worded alike; a wording he has ruled keeps its form until he says — the guide's §1b.
+   twice, an announcement, an intensifier or a hedge, or a helper word proved by the cold read — never a clause's verb
+   or the word that links two facts; a swap keeps every name, number and qualifier; the note stays a sentence; each
+   change shows the exact words cut, added or swapped and is read cold by someone who has not seen the original; a note
+   that cannot lose a word is left whole — the guide's §1a. **How the app speaks (D833, D834):** as a capable colleague
+   would say it aloud — every fact first, then a sentence a person would say, then as short as those allow (the agent's
+   reading until he rules); where a dash would join two parts: the linking word, else a colon where the first part is
+   only a name or the second only spells it out, else a comma for a renaming, else a full stop — a dash only as a
+   named choice, never two in a note; no fact or link added on a guess; the squadron's words and the app's own names
+   kept, everyday words for the rest; "you", never "we"; one steady voice, plainer as the stakes rise; pairs and
+   families worded alike; none of the habits that mark machine-written text; a new wording with a reason, a cost or an
+   instruction is read cold by someone else; a wording he has ruled stays until he says — the guide's §1b.
 3. **Keyboard:** anything new can be opened, used and closed without a mouse; Escape closes what opened last; the
    keyboard returns to the button that opened a thing; focus is always visible and never hidden under a bar that
    stays. Its keyboard set is written beside its picture.
