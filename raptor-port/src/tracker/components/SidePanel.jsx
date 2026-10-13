@@ -369,12 +369,12 @@ export default function SidePanel({ zoom }) {
           </div>
           <div className="o">
             <div className="t">End date A</div>
-            <DateBox key={s + ':target'} id="targetIn" value={myPace.target || ''} onCommit={v => core.setTarget(s, v)} />
+            <DateBox key={s + ':target'} id="targetIn" narrow value={myPace.target || ''} onCommit={v => core.setTarget(s, v)} />
             <div className="r" style={{ marginTop: 6 }}>{reqEpw}{reqEpw !== '—' && reqEpw !== 'past' ? ' /wk' : ''}</div><div className="mini">req. pace</div>
           </div>
           <div className="o">
             <div className="t">End date B</div>
-            <DateBox key={s + ':target2'} id="targetIn2" value={myPace.target2 || ''} onCommit={v => core.setTarget2(s, v)} />
+            <DateBox key={s + ':target2'} id="targetIn2" narrow value={myPace.target2 || ''} onCommit={v => core.setTarget2(s, v)} />
             <div className="r" style={{ marginTop: 6 }}>{reqEpw2}{reqEpw2 !== '—' && reqEpw2 !== 'past' ? ' /wk' : ''}</div><div className="mini">req. pace</div>
           </div>
         </div>

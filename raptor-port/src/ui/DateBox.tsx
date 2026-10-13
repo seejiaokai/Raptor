@@ -60,6 +60,9 @@ export function DateBox(p: {
   /** the month an empty box opens on — a date in it */
   at?: string
   disabled?: boolean
+  /** a box too narrow for the weekday (the Tracker's End date A and B, 108px on a phone): it SHOWS "28 Oct 2026" — the
+   *  date whole, never cut to "Wed 28 Oct 20…" — and still says the weekday to a screen reader */
+  noWeekday?: boolean
 }) {
   const [open, setOpen] = useState(false)
   const box = useRef<HTMLButtonElement>(null)
@@ -104,7 +107,7 @@ export function DateBox(p: {
         disabled={p.disabled}
         onClick={() => { if (open) close(); else { dropPatch(); setOpen(true) } }}
       >
-        <span className="datebox-txt">{has ? sayDateY(p.value) : 'Pick a date'}</span>
+        <span className="datebox-txt">{has ? (p.noWeekday ? sayDateY(p.value).replace(/^\S+ /, '') : sayDateY(p.value)) : 'Pick a date'}</span>
         <span className="datebox-v" aria-hidden="true">&#9662;</span>
       </button>
       {open && !p.disabled && createPortal(

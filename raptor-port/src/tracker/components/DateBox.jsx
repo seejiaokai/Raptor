@@ -21,13 +21,15 @@ import { DateBox as AppDateBox } from '../../ui/DateBox';
    SINCE 13 OCT 26 THE BOX ITSELF IS THE APP'S OWN (owner D801 — "All as recommended": the app's one date calendar, a
    tap picks, no tick; D798 before it). The phone's date box is gone, and with it the typing the paragraph above is
    about: a day is PICKED, whole, so there is no half-typed day to wait out — a pick is the commit, one undo step, and
-   the same day picked again commits nothing. What this file still owns is unchanged: `onCommit` may answer with the
+   the same day picked again commits nothing (the app's box hands over a date only when it differs from the one held). What this file still owns is unchanged: `onCommit` may answer with the
    reason a day was refused (D374) and it shows on one line under the box; a day's box can still be EMPTIED — the app's
-   calendar has no Clear (D796), so a small "take this date off" button stands beside a box that holds a date and hands
-   over '' exactly as an emptied box did. The wrapper's class is `trdatebox`: `datebox` is the app's own box's name on
+   calendar has no Clear (D796), so a box that holds a date carries a small "take this date off" button in its right end,
+   where its arrow was (inside, not beside: beside it the narrow boxes cut their date short), which hands over ''
+   exactly as an emptied box did. The wrapper's class is `trdatebox`: `datebox` is the app's own box's name on
    the one global stylesheet, and the two looks met once (ui/scheduler/26-date-calendar.css). */
-/** @param {{ value?: string, onCommit: (v: string) => any, id?: string, title?: string, style?: object }} props */
-export function DateBox({ value, onCommit, id, title, style }) {
+/** `narrow`: a box with no room for the weekday (End date A and B, three across in their card) shows the date without it.
+    @param {{ value?: string, onCommit: (v: string) => any, id?: string, title?: string, style?: object, narrow?: boolean }} props */
+export function DateBox({ value, onCommit, id, title, style, narrow }) {
   const saved = value || '';
   const [warn, setWarn] = useState('');
   const gone = useRef(false);
@@ -36,7 +38,6 @@ export function DateBox({ value, onCommit, id, title, style }) {
      re-sort of the failures list moved another failure into this row), it goes (walker b F-b4) */
   useEffect(() => { setWarn(''); }, [saved]);
   const hand = async v => {
-    if (v === saved) return;
     if (v !== '' && !core.isWholeDay(v)) return;
     setWarn('');
     const said = await onCommit(v);
@@ -44,8 +45,8 @@ export function DateBox({ value, onCommit, id, title, style }) {
   };
   return (
     <span className="trdatebox" style={style}>
-      <span className="trdatebox-row">
-        <AppDateBox id={id} label={title || 'Date'} value={saved} onChange={hand} />
+      <span className={'trdatebox-row' + (saved ? ' has-x' : '')}>
+        <AppDateBox id={id} label={title || 'Date'} value={saved} onChange={hand} noWeekday={!!narrow} />
         {saved ? <button type="button" className="sm trdate-x" title="Take this date off" aria-label="Take this date off" onClick={() => hand('')}>&#10005;</button> : null}
       </span>
       {warn ? <span className="datewarn" role="status">{warn}</span> : null}

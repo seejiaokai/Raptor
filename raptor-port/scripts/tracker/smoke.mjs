@@ -1593,6 +1593,9 @@ await pg.waitForTimeout(800);
   await openPop('ST-02');
   ok('marking DCO dates the event the day it was pressed', (await boxDay('#popDoneDate')) === today, await boxDay('#popDoneDate'));
   await pickDay('#popDoneDate', '2026-08-10'); await pg.waitForTimeout(300);
+  /* the calendar is a layer over the whole page, and the page closes the pop-up on a click outside it: the months
+     turned and the date tapped just now were all clicks outside the pop-up (owner D801 - "the pop-up stays open") */
+  ok('the marking pop-up stays open while its date is picked on the calendar over it', (await pg.locator('#pop').count()) === 1 && (await boxDay('#popDoneDate')) === '2026-08-10', await boxDay('#popDoneDate').catch(() => 'no pop-up'));
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(200);
   await openPop('ST-02');
   ok('the day can be changed afterwards, and it sticks', (await boxDay('#popDoneDate')) === '2026-08-10', await boxDay('#popDoneDate'));

@@ -222,8 +222,8 @@ button:disabled:hover{border-color:var(--line)}
 /* The full lowdown (a .lullcal, z 70): one row per failure — chip, which
    failure it is, a date box. minmax(0,1fr), never 1fr (a date box would push
    the row wider than the panel). */
-.faillog .frow{display:grid;grid-template-columns:auto minmax(0,1fr) 128px;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid var(--line)}
-.faillog .frow input[type=date]{width:100%;min-width:0}
+.faillog .frow{display:grid;grid-template-columns:auto minmax(0,1fr) 144px;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid var(--line)}
+.faillog .frow .trdatebox{width:100%;min-width:0}
 .faillog .frow .mini{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .faillog .lullhd .failtot{margin-left:0}
 /* The pop-up's list of this student's failures on the event, each with its day. */
@@ -232,10 +232,17 @@ button:disabled:hover{border-color:var(--line)}
    so the one line of refusal (a day after today, D374) can sit right under it; the wrapper
    takes the box's place in every row, grid and card, so the box keeps its width. */
 .trdatebox{display:flex;flex-direction:column;gap:2px;min-width:0}
-/* the app's own date box (D801) with, beside it, the small button that takes a date off — the box takes the room */
-.trdatebox-row{display:flex;align-items:stretch;gap:4px;min-width:0}
+/* the app's own date box (D801). A box that holds a date carries its "take this date off" INSIDE its right end, where
+   its arrow was — never beside it: the box keeps its whole width for its words (End date A and B on a phone are 108px
+   wide, a failures row's box 144px; a button beside the box cut "Tue 13 Oct 2026" short in both — the host's look,
+   13 Oct 26). A sibling laid over the box, not a button inside a button. */
+.trdatebox-row{position:relative;display:flex;min-width:0}
 .trdatebox-row>button.datebox{flex:1 1 auto;min-width:0}
-.trdate-x{flex:0 0 auto}
+.trdatebox-row.has-x>button.datebox{padding-right:26px}
+.trdatebox-row.has-x>button.datebox .datebox-v{display:none}
+button.trdate-x{position:absolute;top:1px;right:1px;bottom:1px;width:26px;padding:0;border:0;border-radius:0 7px 7px 0;background:transparent;color:var(--muted);font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer}
+button.trdate-x:hover{color:var(--ink);background:transparent}
+button.trdate-x:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 /* the marking pop-up's two dates take the pop-up's width, as the boxes they replace did */
 button.datebox.trpopdate{display:flex;width:100%}
 /* While the Tracker reloads the next person's own course and student (D376) the last

@@ -117,6 +117,12 @@ describe('[TRK-DLG-LEFTOVERS] B1 — the door behind the question is shut', () =
       expect(host.querySelector('#behindLayout')!.hasAttribute('inert'), 'the chart behind the shade').toBe(true)
       expect(host.querySelector('#dlgModal')!.hasAttribute('inert'), 'never the question itself').toBe(false)
       const ok = host.querySelector('#dlgOk') as HTMLElement, input = host.querySelector('#dlgInput') as HTMLElement
+      /* THE BOX PUTS THE KEYBOARD IN ITS TEXT BOX A MOMENT AFTER IT OPENS (Modals.jsx — a 30ms timer). Wait for THAT,
+         never for a length of time ([TRK-DLG-FOCUS-UNSTEADY], steadied 13 Oct 26; D87's rule): on a loaded machine the
+         timer fired between the two key presses below, saw the keyboard on a BUTTON and put it back in the text box —
+         and "Shift+Tab from the first goes to the last" found it there, one run in three. */
+      for (let i = 0; i < 400 && document.activeElement !== input; i++) await act(async () => { await new Promise(r => setTimeout(r, 5)) })
+      expect(document.activeElement, 'the box takes the keyboard into its text box by itself').toBe(input)
       ok.focus(); await key(ok, 'Tab')
       expect(document.activeElement, 'Tab from the last control goes to the first').toBe(input)
       await key(input, 'Tab', { shiftKey: true })
@@ -342,6 +348,32 @@ describe('[TRK-RETEST-NOTES] C5 + D374 — the grading pop-up’s boxes on scree
       fireEvent.keyDown(document.activeElement!, { key: 'Escape' }); await act(async () => { await tick() })
       expect(document.querySelector('[data-testid="dcal-card"]')).toBeNull()
       expect(C.marks[s][f].d).toBe(dayAfter(C.isoToday(), -2))
+    } finally { C.closePop(); await act(async () => { root.unmount() }); host.remove() }
+  })
+  /* written for the break tests of 13 Oct 26 (D801): nothing picked a day in Failed on through the box itself — the
+     tests before this one speak to the store directly — so the box's own wire to it could be cut unseen */
+  it('Failed on: a day picked is the day the next + lands on; a day after today is refused the moment it is picked; a day that is not whole reads as an empty box', async () => {
+    const s = await pickStudent()
+    const f = C.SYL.filter((e: any) => e.type === 'flight')[3].id
+    C.openPop(f, { clientX: 5, clientY: 5 })
+    const { host, root } = await render(<Live draw={() => <Pop />} />)
+    try {
+      const box = () => host.querySelector('#popFailDate') as HTMLElement
+      const day = dayAfter(C.isoToday(), -5)
+      pickDate(box(), day); await act(async () => { await tick() })
+      expect(C.popFailDate, 'the day picked is held for the next +').toBe(day)
+      expect(boxValue(box())).toBe(day)
+      expect(host.querySelector('#popFailWarn')).toBeNull()
+      const n = C.failOf(s, f)
+      fireEvent.click(host.querySelector('#popFailPlus')!); await act(async () => { await tick() })
+      expect(C.failOf(s, f)).toBe(n + 1)
+      expect(C.failDates(s, f), 'the failure is on the day picked').toContain(day)
+      pickDate(box(), dayAfter(C.isoToday(), 4)); await act(async () => { await tick() })
+      expect(host.querySelector('#popFailWarn')?.textContent, 'refused at the pick — not left for the + to find').toBe(C.NOT_YET)
+      /* a day that is not whole (a year still 0202 in an old record) never reaches the app's box as a date */
+      await act(async () => { C.popDoneChanged('0202-09-17'); C.popFailDateChanged('0202-09-17'); await tick() })
+      expect(boxValue(host.querySelector('#popDoneDate') as HTMLElement), 'Done on').toBe('')
+      expect(boxValue(box()), 'Failed on').toBe('')
     } finally { C.closePop(); await act(async () => { root.unmount() }); host.remove() }
   })
 })
@@ -857,6 +889,13 @@ describe('[TRK-RETEST-NOTES] C5 — the roll-call: each side-panel date box save
         pickDate(el(), day); await act(async () => { await tick() })
         expect(read(), sel + ': a pick saves the day').toBe(day)
         expect(boxValue(el()), sel + ': and the box reads it').toBe(day)
+        /* End date A and B stand three across in their card (108px on a phone): they show the date without its
+           weekday so it is never cut short; every other box has the room and shows it */
+        const words = el().querySelector('.datebox-txt')!.textContent || ''
+        expect(/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun) /.test(words), sel + ': "' + words + '"').toBe(!/^#targetIn/.test(sel))
+        /* and a box that holds a date carries its "take this date off" in its own right end */
+        expect(el().parentElement!.classList.contains('has-x'), sel).toBe(true)
+        expect(el().parentElement!.querySelector('.trdate-x'), sel).toBeTruthy()
       }
     } finally { C.closeFailLog(); await act(async () => { root.unmount() }); host.remove() }
   })
