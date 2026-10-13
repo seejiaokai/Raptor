@@ -286,3 +286,63 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** Either the runner judges a break by the test run's exit code and keeps only the first lines of its output (a larger buffer, or output sent to a file), or `walk-scripts.md` says: "a break aimed at a test that compares a large record is run with the output cut short — the runner cannot hold it." And a test that pins a large record should fail with a short message naming the first place the two differ, not the whole of both.
 
 **Principle:** A check's verdict should come from the result, not from being able to hold everything the result printed. A tool that fails on large output turns a pass into an unknown.
+
+### Observation 573: A pull request stacked on another branch showed two green ticks and had run none of the real checks
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** Merging the night's five pull requests one after another; two of them were stacked on the first
+**Skill:** shipping (the loop; the checks); session-handoff
+**Type:** internal
+**Phase/Area:** Reading a pull request's checks before a merge
+
+**Issue:** Two pull requests were based on another pull request's branch, not on `main`. GitHub runs the full set only for a pull request aimed at `main`, so each showed two passing ticks (the preview's) and nothing else. After the base merged, pointing them at `main` did NOT start the checks either — only a new push did. One was caught seconds before a merge that would have gone in on the preview's ticks alone.
+
+**Suggested improvement:** In `shipping.md` §The checks, one line: "a pull request based on another branch runs no checks — before merging it, point it at `main` AND push a commit (an empty one will do), then read the full list: fewer than the usual eleven is not green."
+
+**Principle:** "All checks passed" is only a claim about the checks that ran. Count them against what should have run before believing the colour.
+
+### Observation 574: An edit anchored on a heading's words landed in the paragraph that merely mentioned the heading
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** Rewriting this chat's block in `HANDOFF.md` with a script
+**Skill:** session-handoff; doc-structure
+**Type:** internal
+**Phase/Area:** Scripted edits to the records
+
+**Issue:** The script found where to insert a block with a search for the text "## Now". The file's opening paragraph also says "`## Now` holds one block per…", and the first match was that sentence — the block was written into the introduction. The document check caught it ("a block's end marker closes no block"), and the file was restored and redone with the search tied to the start of a line.
+
+**Suggested improvement:** In the handoff guide's notes on scripted edits: "find a heading by its whole line (a newline before and after), never by its words — the guide files talk about their own headings in prose."
+
+**Principle:** A document that explains its own structure contains every structural marker at least twice. Anchor on position, not on words.
+
+### Observation 575: The document check, run in the middle of a merge, reported a fault that was the merge itself
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** Bringing `main` into a branch that also touches the app's code, several times in one afternoon
+**Skill:** doc-structure (the check that keeps it); shipping
+**Type:** internal
+**Phase/Area:** Resolving conflicts in the records, then running the check
+
+**Issue:** With a merge resolved but not yet committed, the check said "a size marker changed in a change that also touches the app's code — move it to a documents-only commit". Nothing of the kind had been done: the marker's change came in with `main`, and the check reads everything uncommitted as one change. Committed, the same tree passed. The first time cost a few minutes of looking for a fault that was not there.
+
+**Suggested improvement:** Either the check recognises a merge in progress and compares against the merge's two parents, or `shipping.md` says: "after resolving a merge, commit it before running the document check — run mid-merge it reads the other side's changes as yours."
+
+**Principle:** A check that reads "what is uncommitted" cannot tell your change from one you are in the middle of receiving. Finish receiving first.
+
+### Observation 576: A question put to him without an example was answered about something else — twice in one morning
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** The one question parked for him overnight ("should the Unavailable button ask the OIL question too?") and the two that followed
+**Skill:** plain-language; record-decisions (questions put to him)
+**Type:** internal
+**Phase/Area:** Putting a parked question to him
+
+**Issue:** The parked question named a button and a rule and gave no worked case. His answer was about leave and medical inputs — a different thing — and it was first recorded as a ruling on the wrong subject, then corrected, then replaced the same morning when the question was finally put with one named person, one day and what the screen shows. The same happened with "un-cancel", a word the app does not use: he had approved a job he then had to ask the meaning of. A memory note already says a question needs a worked example; it was not applied to a question written during an unattended run.
+
+**Suggested improvement:** In the unattended-run rule (`doc-structure.md` §In his workflow, and the evidence sheet's "Questions waiting for him"): the parked question's shape is fixed — "the case (a named person, a day, what he pressed) · what the app does today · the choice · recommended". And: a word that is not on any screen is not used in a question.
+
+**Principle:** A question is only as good as the picture the reader forms of it. If he could answer it about a different situation than the one you mean, it is not yet a question.

@@ -21,16 +21,6 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/pan-timer-guard -->
-### `claude/pan-timer-guard` — ONE SMALL FIX: THE LIVE APP'S CHECK RUN FOR PULL REQUEST 497 WAS MARKED FAILED WITH EVERY TEST PASSING — A TIMER THAT OUTLIVED ITS TEST; FIXED HERE, WAITING FOR ITS CHECKS AND HIS "MERGE LIVE" — written 13 Oct 26 — verify before use
-- **What happened:** after pull request 497 was merged (13 Oct 26), `main`'s own run failed in the unit job: 473 files and 8,129 tests passed, then one unhandled error — the phone week's deferred "jump to today" (`raptor-port/src/ui/pan.ts`, a 120ms timer) fired after a test file had ended and its page was gone ("document is not defined"). Not a fault of the app (a browser always has its page) and not of 497's code; the same family as the two timers guarded on 13 Oct in `ui/caldrag.ts` and `ui/drag.ts`. Vercel's live copy for 497 was built and is up.
-- **Shipped on this branch:** the week's own tidy-up clears that timer, and the timer does nothing where there is no page; two tests in `raptor-port/src/ui/pan.test.tsx` (the first failed before the fix). Nothing a person sees changes: on a phone the week still jumps to today.
-- **Unfinished:** its checks on GitHub, then his "merge live" (D817 covered three named pull requests and is spent). After it is live, `main`'s run should be green again — look.
-- **Branch:** `claude/pan-timer-guard`, cut from `main`, in the checkout `.claude/worktrees/one-date-calendar-step-one-55ba13`.
-- **Gates:** the whole set in one run under the PC's lock on `1792e7784` — unit 11069 / 11069 (632 files) · build clean · tfin 728 / 0 · e2e 801 passed, 0 failed, 57 skipped · smoke 446 / 0 · rulecheck OK · docsize OK.
-- **Pick up here:** `gh pr list --head claude/pan-timer-guard`; then the block below (the design page is next — D813).
-<!-- /now -->
-
 <!-- now:claude/design-guide -->
 ### `claude/design-guide` — THE NIGHT'S FIVE PULL REQUESTS ARE ALL LIVE (13 Oct 26); THE ONE DESIGN GUIDE (D812, D813) IS APPROVED (D819) AND MERGED FROM THIS BRANCH, PULL REQUEST 500 — documents only — written 13 Oct 26 — verify before use
 - **Where it started:** the night of 13 Oct 26 (D799 — one chat, five jobs) and the day after it, in the same chat. **All five merged on his word that afternoon** ("merge live 499 and merge live 495"; then D817, "auto merge the rest one after another"): 499 the Leave War's row drawing in its own file · 495 step one of the one date calendar · 496 the Tracker's date boxes · 498 the Inputs pages' rulings file · 497 the Inputs batch (D793) with the day's additions — D804 ("→ Unavail" puts the OIL question first), D814 (a cancelled or information-only input is never asked), D815 (the member's bell: "Filed under Unavailable" / "Taken out of Unavailable"). Their checks: the evidence sheets under `raptor-port/docs/handpass/2026-10-13-*.md`.
@@ -40,6 +30,7 @@ the later merge keeps both (D78).
 - **Branch:** `claude/design-guide`, cut from `main`, in the checkout `.claude/worktrees/one-date-calendar-step-one-55ba13` (its `raptor-port\node_modules` is a junction — remove with `cmd //c rmdir`). A new chat for the design page: a NEW worktree on `main` once pull request 500 is live (or on this branch if he wants the page before he has read the guide).
 - **Gates:** documents only — `npm run docsize` green. The app's last full run is the Inputs batch's (the gate baseline below).
 - **Traps met today, for the next chat:** a pull request STACKED on another branch gets no check run on GitHub — retarget it to `main` AND push a commit (an empty one will do) before believing its ticks; after any merge of the records, `node raptor-port/scripts/backlog-archive.mjs --rulings` rebuilds the rulings map; the document check run in the middle of a merge reports a size marker "changed in a code change" — commit the merge first; this session may not write into another worktree's files (a hook refuses) — one checkout, branches switched in turn.
+- **After this block was written (13 Oct 26):** pull request 500 (the guide) is LIVE; pull request 497's run on `main` was marked failed with every test passing — a timer in the phone week that outlived its test — fixed and LIVE as pull request 501 (his "merge live"), and `main`'s run is green again (`fcf20e1ea`). Nothing is open. The day's working notes are in the skill log (573–576).
 - **Pick up here:** `git fetch`; confirm pull request 500 is merged and live. Then the design page (D807), in a fresh chat on a new worktree from `main`.
 <!-- /now -->
 
