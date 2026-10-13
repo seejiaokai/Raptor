@@ -10,7 +10,7 @@ import { initStore, setSession, notify, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { ROSDAY, setRosDay } from '../state/view'
 import * as view from '../state/view'
-import { hsSet, panDays, panHold, rosDayFollow, weekScrollMax } from './pan'
+import { hsSet, initPan, panDays, panHold, rosDayFollow, weekScrollMax } from './pan'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -501,5 +501,46 @@ describe('week panning (tfin)', () => {
     closest.mockRestore()
     target.remove()
     Object.defineProperty(window, 'innerWidth', { value: oldWidth, configurable: true })
+  })
+})
+
+/* THE PHONE'S DEFERRED JUMP TO TODAY MUST NOT OUTLIVE THE WEEK (13 Oct 26). On a phone the week jumps to today's column
+   120ms after it is set up. The live app's own check run for pull request 497 was marked failed with every test passing:
+   that timer fired after a test file had ended and its page was gone - "document is not defined" (the same family as
+   the two timers guarded the night before, ui/caldrag.ts and ui/drag.ts). The week's own tidy-up now takes the timer
+   with it, and the timer itself does nothing where there is no page. */
+describe('the deferred jump to today on a phone is taken down with the week', () => {
+  it('stopped before its 120ms are up, it never runs: nothing is looked up afterwards', () => {
+    vi.useFakeTimers()
+    const oldWidth = window.innerWidth
+    Object.defineProperty(window, 'innerWidth', { value: 390, configurable: true })
+    try {
+      const stop = initPan()
+      const q = vi.spyOn(document, 'querySelector')
+      stop()
+      vi.advanceTimersByTime(500)
+      expect(q.mock.calls.filter(c => c[0] === '#vWeek .day.today'), 'the jump did not run after the week was taken down').toEqual([])
+      q.mockRestore()
+    } finally {
+      Object.defineProperty(window, 'innerWidth', { value: oldWidth, configurable: true })
+      vi.useRealTimers()
+    }
+  })
+  it('THE CONTROL - left standing, the jump does run', () => {
+    vi.useFakeTimers()
+    const oldWidth = window.innerWidth
+    Object.defineProperty(window, 'innerWidth', { value: 390, configurable: true })
+    let stop = () => {}
+    try {
+      stop = initPan()
+      const q = vi.spyOn(document, 'querySelector')
+      vi.advanceTimersByTime(500)
+      expect(q.mock.calls.filter(c => c[0] === '#vWeek .day.today').length, 'it looked for today').toBeGreaterThanOrEqual(1)
+      q.mockRestore()
+    } finally {
+      stop()
+      Object.defineProperty(window, 'innerWidth', { value: oldWidth, configurable: true })
+      vi.useRealTimers()
+    }
   })
 })

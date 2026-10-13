@@ -624,15 +624,20 @@ export function initPan() {
   /* [ONE-DOOR] (D305; the walk's pictures, 27 Sep 26): the jump is SIDEWAYS, but scrollIntoView also scrolls the page
      down to the day card — which carried his "Welcome back" note, drawn above the week, off the top of the screen on the
      sign-in it exists for. While that note is up, the page stays where it was; the sideways jump still lands on today. */
-  if (window.innerWidth <= 820) setTimeout(() => {
+  /* …AND IT IS TAKEN DOWN WITH THE WEEK (13 Oct 26). The guard above was not enough: the live app's own check run was
+     marked failed, every test passing, when this timer fired after a test file had ended and its page had gone
+     ("document is not defined"). The tidy-up below now clears it, and it does nothing where there is no page. */
+  const jumpT = window.innerWidth <= 820 ? setTimeout(() => {
+    if (typeof document === 'undefined') return
     const t = document.querySelector('#vWeek .day.today')
     if (!t || typeof t.scrollIntoView !== 'function') return
     const y = window.scrollY
     t.scrollIntoView({ inline: 'start', block: 'nearest' })
     if (document.getElementById('welcomeBack') && window.scrollY !== y) window.scrollTo(window.scrollX, y)
-  }, 120)
+  }, 120) : 0
   return () => {
     clearTimeout(ROSDAY_T)
+    if (jumpT) clearTimeout(jumpT)
     document.removeEventListener('wheel', onWheel)
     document.removeEventListener('scroll', onDocScroll, true)
     document.removeEventListener('scroll', onDotsScroll, true)
