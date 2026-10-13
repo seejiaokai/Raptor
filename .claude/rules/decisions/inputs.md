@@ -4,27 +4,47 @@ paths:
   - raptor-port/src/ui/Input*.tsx
   - raptor-port/src/ui/input*.ts*
   - raptor-port/src/ui/Sans*.tsx
-  - raptor-port/src/ui/sans*.ts
+  - raptor-port/src/ui/sans*.ts*
   - raptor-port/src/ui/DaysWindow.tsx
   - raptor-port/src/ui/HolidaysPanel.tsx
   - raptor-port/src/ui/EveryWeekday.tsx
   - raptor-port/src/ui/PeoplePick.tsx
   - raptor-port/src/ui/RangeCal.tsx
   - raptor-port/src/ui/OilDayList.tsx
-  - raptor-port/src/ui/cal*.ts
+  - raptor-port/src/ui/cal*.ts*
   - raptor-port/src/ui/oilday.ts
+  - raptor-port/src/ui/CutFields.tsx
+  - raptor-port/src/ui/placed*.ts*
+  - raptor-port/src/ui/whoplaced.test.tsx
+  - raptor-port/src/ui/daysfmt.ts
+  - raptor-port/src/ui/dayswindow.test.tsx
+  - raptor-port/src/ui/sideswipe.ts
+  - raptor-port/src/ui/TypeLegend.tsx
+  - raptor-port/src/ui/holidayspanel.test.tsx
+  - raptor-port/src/ui/everyweekday.test.tsx
+  - raptor-port/src/ui/peoplepick.test.tsx
+  - raptor-port/src/ui/memberinput.test.tsx
+  - raptor-port/src/leavewar/engine/holidays.ts
+  - raptor-port/src/leavewar/holidays.test.ts
   - raptor-port/src/ui/scheduler/*input*.css
   - raptor-port/src/ui/scheduler/*sans*.css
   - raptor-port/src/ui/scheduler/*days*.css
-  - raptor-port/src/engine/inputs.ts
-  - raptor-port/src/engine/inputown.ts
-  - raptor-port/src/state/plan.ts
+  - raptor-port/src/engine/input*.ts
+  - raptor-port/src/engine/late*.test.ts
+  - raptor-port/src/engine/sans*.test.ts
+  - raptor-port/src/state/plan*.ts
+  - raptor-port/src/state/cutoff.ts
+  - raptor-port/src/state/memberfile*.ts
+  - raptor-port/src/state/sansfly.test.ts
+  - raptor-port/src/state/demosans.test.ts
   - raptor-port/src/state/flyplan*.ts
-  - raptor-port/src/state/inputstamp.ts
-  - raptor-port/src/state/inputgate-hook.ts
+  - raptor-port/src/state/input*.ts
   - raptor-port/e2e/input*.spec.ts
   - raptor-port/e2e/inputs*.spec.ts
-  - raptor-port/docs/**/*inputs*
+  - raptor-port/docs/**/*input*
+  - raptor-port/docs/mock/note-with-pucks.html
+  - raptor-port/docs/mock/card-questions.html
+  - raptor-port/docs/mock/cal-swipe-fit.html
   - raptor-port/docs/**/*sans*
   - raptor-port/docs/**/*calendar*
 ---
@@ -49,10 +69,17 @@ one loads with): the one rule of a row that came from an input — **D755, D756,
 input IS the input; one record with its people), **D734–D745, D748, D776** (the schedule's one row for a shared input:
 its pucks are its people, its time and remark are the input's, a tap opens the input's own window), **D760** (a CX on
 its row cancels the input), **D661–D663, D736, D737** (one row; the changes window; the Unavailable list); what an input
-is filed FOR — **D700, D702, D711, D713, D714, D717** (ALL / ALL AVAIL; the kind "Event"; the kind under a title on the
-schedule's row); the OIL question an input raises — **D660, D682, D753, D762** (one answer for everyone in it) and, in
-`oil.md`, **D780–D783, D793**; inputs on a published day — **D174–D178**; the app's one date calendar — **D796, D797,
-D800** (this file keeps the Calendar window's own: D786, D795); every window on a phone — **D641, D686, D703, D706**;
+is filed FOR — **D700, D702, D711, D713, D714, D716, D717, D778** (ALL / ALL AVAIL; the kind "Event"; a Personal input
+like an Event for its people; an input's own title wherever the kind's name stands, and the kind under it on the
+schedule's row); a cancelled input's look on its card, the list and the month's bar — **D767** (its place and its
+window are here: D768, D771); the small choices of these pages answered "yes to all" — **D731** (it settles a shared
+input's OIL line and the day title's Escape too); a request moved to another day — **D468**; a leave stretched or
+trimmed over a published day — **D189**; the LATE mark's own rules (it is a mark, not a warning; it measures the
+input's last change; downchits are exempt; the Inputs page keeps printing it) — `scheduler.md` §Settled before this
+list → The late-input mark (the cut-off's rulings are here: D628, D639); the OIL question an input raises — **D660, D682, D753, D762** (one answer for everyone in it) and, in
+`oil.md`, **D780–D783, D793**, and who earns from a request's row — **D18, D46, D470**; inputs on a published day — **D174–D178**; the app's one date calendar — **D796, D797,
+D800** (this file keeps the Calendar window's own: D786, D795); the windows of these pages can be dragged and leave the page behind them working — **D641**; every window on a phone —
+**D686, D703, D706**;
 the bell — **D769**; a delete's list — **D710**. The Leave War's rows the SANS calendar reads, and its event sheet —
 **D634, D636, D637, D640, D642–D645, D665, D668**, in `scheduler.md` too. Settled before the rulings list began (the
 Inputs month calendar's day popover, "no repeat-weeks", Manage users on Admin): `scheduler.md` §Settled before this list
@@ -67,17 +94,14 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 | D795 | 13 Oct 26 | IN THE CALENDAR WINDOW, AS DRAWN: "EVERY <WEEKDAY>"'S FROM DATE AND UNTIL'S "A DATE" ARE THE APP'S OWN DATE FIELD, OPENING THE APP'S OWN CALENDAR (D796) — NOT THE PHONE'S DATE BOX; ANY DATE MAY BE PICKED, THE WEEKDAY STANDING OUT; THE SWIPE IS THE INPUTS CALENDAR'S, ANYWHERE ON THE MONTH OR THE HOLIDAYS LIST, AND NEVER PRESSES A DATE'S BUTTON. — changed by D796 |
 | D792 | 13 Oct 26 | "DELETE" IN AN INPUT’S OWN WINDOW DELETES AT ONCE AND ASKS NOTHING — AS BUILT; UNDO BRINGS THE INPUT BACK. |
 | D786 | 13 Oct 26 | IN THE CALENDAR WINDOW ON A PHONE, A SWIPE SIDEWAYS ON THE MONTH GOES TO THE NEXT OR THE LAST MONTH, AND ON THE HOLIDAYS LIST TO THE NEXT OR THE LAST YEAR; AND THE "EVERY <WEEKDAY>" WINDOW’S FROM DATE BOX FITS INSIDE THE WINDOW AT ANY PHONE WIDTH. |
-| D778 | 12 Oct 26 | A PERSONAL INPUT IS THE SAME AS AN EVENT FOR EVERYTHING ABOUT PEOPLE — SEVERAL PEOPLE (D776), ALL AVAIL OR ALL ON A ONE-DAY ONE, A MEMBER MAY FILE IT FOR OTHER PEOPLE UNDER THE SAME SWITCH — AND IT IS STILL NOT WORK: NO OIL QUESTION, NOTHING EARNED. |
 | D777 | 12 Oct 26 | THE "OIL?" SIGN IS APPROVED AS DRAWN: ON AN INPUT'S CARD — A DAY OPENED ON THE INPUTS CALENDAR, AND THE INPUTS LIST ON A PHONE — A SMALL OUTLINED "OIL?" TAG ON THE TOP LINE, LEFT OF THE HOURS, WHERE NOBODY HAS ANSWERED ITS OIL QUESTION; AND THE DESKTOP LIST'S "OIL?" BUTTON SHOWS FOR AN INPUT OF SEVERAL PEOPLE TOO. THE MONTH'S BARS GET NOTHING. |
 | D773 | 12 Oct 26 | THE INPUTS LIST'S "EXPORT TO EXCEL" BUTTON AND THE FILE IT WRITES ARE REMOVED — HE DOES NOT NEED AN EXPORT OF INPUTS. |
 | D772 | 12 Oct 26 | THE INPUTS CSV EXPORT STAYS AS IT IS: A CANCELLED INPUT'S LINES ARE WRITTEN LIKE ANY OTHER, WITH NO COLUMN SAYING IT IS CANCELLED. — changed by D773 |
 | D771 | 12 Oct 26 | A CANCELLED INPUT'S OWN WINDOW SAYS IT IS CANCELLED: THE SAME SMALL RED CX TAG AND ITS REASON IN RED, BESIDE THE WINDOW'S TITLE — READ ONLY. |
 | D770 | 12 Oct 26 | A PERSON WHO IS THE ONLY NAMED PERSON IN AN INPUT THAT ALSO HOLDS ALL AVAIL OR ALL READS THE INPUT AND MAY TAKE HIMSELF OUT, BUT DOES NOT CHANGE IT FOR EVERYONE — WHOEVER FILED IT, OR A SCHEDULER, DOES. |
 | D768 | 12 Oct 26 | A CANCELLED INPUT KEEPS ITS PLACE IN THE DAY'S ORDER ON THE INPUTS CALENDAR — IT IS NOT SORTED LAST, ON A PHONE OR A DESKTOP. |
-| D767 | 12 Oct 26 | A CANCELLED INPUT ON THE INPUTS CALENDAR'S CARD AND THE LIST'S ROW SHOWS A SMALL RED "CX" TAG BEFORE ITS TITLE, THE TITLE STRUCK THROUGH, AND THE REASON AFTER IT IN RED; ON THE MONTH'S BAR ITS WORDS ARE STRUCK THROUGH AND THE BAR FADED, WITH NO TAG. |
 | D763 | 11 Oct 26 | WHO IS IN AN INPUT IS CHANGED ONLY BY WHOEVER FILED IT OR BY A SCHEDULER: A PERSON WHO IS IN A SHARED INPUT HE DID NOT FILE DOES NOT ADD ANYONE TO IT — HE MAY ALWAYS TAKE HIMSELF OUT. |
 | D732 | 10 Oct 26 | ESCAPE WHILE THE DAY'S TITLE IS BEING TYPED PUTS THE TITLE BACK AS IT WAS AND LEAVES THE DAY OPEN; A SECOND ESCAPE CLOSES THE DAY — THE SAME MANNERS AS A PLANNING NOTE'S BOX (D731 (9)). |
-| D731 | 10 Oct 26 | THE SMALL CHOICES OF THE INPUTS PAGES ARE ANSWERED "YES TO ALL" — EACH AS RECOMMENDED ON THE PICTURES PAGE (1 TO 5 AND 7 TO 12; 6 WITHDRAWN AS NO FAULT) — AND THE SECOND BATCH IS BUILT ON HIS WORD: THE TEN READY SMALL FAULTS AND THESE ANSWERS AS ONE BATCH, TESTS FIRST, WITH ITS OWN CHECK; NO MERGE WITHOUT "MERGE LIVE". — changed by D762 |
 | D730 | 10 Oct 26 | THE SMALL FAULTS OF THE LAST THREE INPUTS CHECKS THAT NEED NO CHOICE FROM HIM ARE FIXED AS A SECOND BATCH AFTER THE DESIGN VET’S BUILD — ITS OWN TESTS AND ITS OWN CHECK, ONLY IF TIME IS LEFT THAT NIGHT; THOSE THAT NEED HIS CHOICE STAY IN A LIST FOR HIM; NO MERGE. |
 | D729 | 10 Oct 26 | THE DESIGN VET'S FIVE CHANGES TO THE INPUTS CALENDAR AND LIST ARE APPROVED AS DRAWN: THE LIST'S OWN ADD FORM BECOMES ONE "+ INPUT" BUTTON; THE DESKTOP LIST SAYS "BY SABER" ONLY WHERE SOMEONE ELSE FILED IT; THE WINDOW'S INSTRUCTIONS GO; A SHARED BAR LEADS WITH ITS COUNT AND A TIMED BAR IS LIGHTER; THE SETTINGS AND SMALL WORDS ARE SHORTER. |
 | D728 | 10 Oct 26 | ON AN INPUT'S CARD THE AUTOMATIC "TILL <DATE>" IS LEFT OUT OF THE REMARK — THE CARD'S CORNER ALREADY SAYS IT; AND LATER, AS ITS OWN JOB, THE APP STOPS WRITING "TILL <DATE>" INTO REMARKS AND EVERY SCREEN PRINTS IT FROM THE INPUT'S OWN DATES. |
@@ -90,7 +114,6 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 | D720 | 9 Oct 26 | ON AN INPUT'S CARD THE SMALL PRINT SAYS "BY SABER" — NOT "FOR RANGER": THE CARD ALREADY NAMES THE PERSON IT IS FOR, AND THE ROOM IS SAVED. |
 | D719 | 9 Oct 26 | WHAT AN INPUT'S CARD MUST DO, IN HIS WORDS: STAY SHORT; AND A LONG TITLE OR A LONG REMARK IS NEVER CUT OFF BY WHAT STANDS AT ITS RIGHT — IT WRAPS AND THE CARD GROWS DOWNWARD. IDEAS ARE PUT TO HIM AS A PROPER MOCK-UP BEFORE ANYTHING IS BUILT. |
 | D718 | 9 Oct 26 | HIS DIRECTION: THE INPUTS LIST'S CARD TAKES THE OPENED DAY'S CARD LAYOUT; ITS PENCIL AND CROSS GO — A TAP ON THE CARD OPENS THE INPUT TO EDIT OR DELETE IT, AS ON THE DAY; AND THE KIND'S LOOK WAS TO BE ONE LOOK EVERYWHERE — SETTLED SINCE: SMALL GREY CAPITALS ON THE CARDS (D723), THE PILL KEPT ON THE DESKTOP LIST (D727). — changed by D727 |
-| D716 | 9 Oct 26 | AN INPUT'S OWN TITLE, AS RECOMMENDED: (1) ONLY THE "DUTY & OTHER COMMITMENTS" KINDS TAKE ONE, NEVER LEAVE OR MEDICAL; (2) THE TITLE SHOWS WHEREVER THE KIND'S NAME STANDS AS A NAME, THE KIND SMALL BESIDE IT WHERE THERE IS ROOM; (3) "OTHER" TAKES THE SAME TITLE BOX AND ITS REMARKS BECOME PLAIN REMARKS; (4) THE REMARKS STAY AS THEY ARE. |
 | D715 | 9 Oct 26 | HIS DIRECTION: AN INPUT CAN CARRY A NAME OF ITS OWN — ON THE INPUTS PAGE, CHOOSING THE KIND FILLS IN A TITLE ("EVENT") THAT THE PERSON MAY CHANGE, FOR MOST KINDS, NOT ONLY EVENT; WHICH KINDS, WHERE IT SHOWS, "OTHER" AND THE REMARKS ARE SETTLED BY D716. — changed by D716 |
 | D712 | 9 Oct 26 | ALL / ALL AVAIL IS NOT OFFERED FOR A "FLY WITH" OR A "PERSONAL" INPUT — ONLY FOR TRAINING, MEETING, APPOINTMENT, DUTY AND OTHER. — changed by D778 |
 | D709 | 9 Oct 26 | A NOTE OF WORDS ALONE KEEPS ITS SMALL "+" (ADD PEOPLE) BESIDE ITS PENCIL AND CROSS — AS BUILT. |
@@ -167,4 +190,5 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 | D571 | 5 Oct 26 | BASE THE SANS CALENDAR'S SHORTAGE COLOURS ON HOW MANY MORE FLYING PEOPLE ARE NEEDED — IN THREE STEPS, YELLOW, AMBER, RED (D618). — changed by D618 |
 | D570 | 5 Oct 26 | THE SANS CALENDAR'S DAILY REQUIREMENT AND SHORTAGE COLOURS ARE FOR FLYING ONLY. |
 | D569 | 5 Oct 26 | ADD A SANS FLYING CALENDAR: THE DAY'S DEMAND COMES FROM THE LEAVE WAR, FOR PILOTS AND WSOS EACH (D617), WITH EDITABLE YELLOW / AMBER / RED BASELINES BY HOW MANY MORE ARE NEEDED (D618). COUNT EACH PERSON ONCE WITH THEIR HOURS VISIBLE; MEMBERS SEE DAY COMMITMENTS AND ADD THEIR OWN WITH CUSTOM TIMES. REMARKS HAS NO PLACEHOLDER. — changed by D618, D617, D573, D572, D571, D570 |
+| D547 | 4 Oct 26 | THE NEW INPUT POPUP IS REACHABLE BY SCROLLING ON THE OWNER'S IPHONE AND NEEDS NO FIX FOR THAT BEHAVIOUR. |
 | D364 | 29 Sep 26 | ANOTHER PERSON'S INPUT, OPENED READ ONLY, DRAWS ITS LOCKED FIELDS AS VALUES — NO BOX, NO ARROW, TICK BOXES AND BUTTONS DIMMED, NOT REMOVED — KEPT AS BUILT. |

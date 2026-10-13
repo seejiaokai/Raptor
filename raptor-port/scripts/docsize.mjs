@@ -176,7 +176,9 @@ const FILES = [
   /* 80 -> 90, 28 Sep 26 (owner, D390): the recording steps now say where a full row and its short line go, and how a
      merge across the slim-down runs — live rules every chat that records a ruling follows (D141: the ceiling rises
      with its reason). */
-  ['DECISIONS.md',                       1,   90],
+  /* DECISIONS.md 90 -> 92 (13 Oct 26, D802): the map gained ONE row - the Inputs pages' own rulings file - and that
+     row belongs there (D141: a line needed where it sits). Two lines of room, not a target. */
+  ['DECISIONS.md',                       1,   92],
 ]
 /* THE AREA RULINGS FILES — a tripwire in UTF-8 BYTES of the whole file, frontmatter and every section included (owner,
    D390 narrowing D141, 28 Sep 26): since each ruling became ONE short line, a line count cannot see a file growing
@@ -222,10 +224,10 @@ const RULING_BYTES = [
      and the one date calendar, all live (D795 is narrowed by D796, not replaced). His question [SCHEDULER-RULINGS-SIZE]
      is still WITH HIM and still due - put to him again the same day; this is room until he answers, not a target. */
   /* scheduler 109000 -> 90000, and a NEW area, the Inputs pages, 32000 (13 Oct 26 - owner D802, his answer to
-     [SCHEDULER-RULINGS-SIZE]: "the Inputs pages get a rulings file of their own"). 104 rulings moved out of the
+     [SCHEDULER-RULINGS-SIZE]: "the Inputs pages get a rulings file of their own"). 101 rulings moved out of the
      scheduler's file whole, by the script (backlog-archive.mjs --rulings --move-rows), none reworded: the Inputs list
      and calendar, the SANS calendar, the Calendar window, an input's own window and card. The scheduler's file holds
-     82,7xx bytes after it and the new file 28,3xx; each marker is set about a tenth above what its file holds - a
+     84,3xx bytes after it (218 rulings, its settled notes and its pointer) and the new file 27,1xx; each marker is set about a tenth above what its file holds - a
      tripwire for the next look, never a number to cut to (D141), and a ruling is never trimmed (D136). */
   ['.claude/rules/decisions/scheduler.md', 2, 90000],
   ['.claude/rules/decisions/inputs.md', 2, 32000],
