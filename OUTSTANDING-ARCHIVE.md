@@ -4402,3 +4402,30 @@ lines) for a new `MatrixRows.tsx`; the grid file keeps its state, geometry, sele
 New file → `docs/file-map.md` in the same change. Tier by the order's questions at build time (Astra says FULL: permissions
 and the OIL display are drawn there). **Place — D493, D485: with the next Leave War feature batch, never alone.**
 
+
+*Moved here 2026-10-13 by backlog-archive.mjs ([UNAVAIL-FILE-OIL-ASK]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [UNAVAIL-FILE-OIL-ASK] "→ Unavail" puts the OIL question first, as "Accept" does (his ruling D804, 13 Oct 26) — BUILT on the Inputs batch's branch, waiting for his look and "merge live"
+**AND, the same afternoon — D814 ("Canceled input doesn’t need to ask OIL"):** a cancelled input, and an information-only one, is never asked — no door prices a question for it and it wears no "OIL?" sign, stands in no list and lights no bell (`oilNeverEarns`, `oilSilent` in `raptor-port/src/engine/inputs.ts`). Built on the same branch; the sheet's §14.
+
+**Answered and built.** Put to him three times in one morning — the first time badly, with no example: (1) "should '→ Unavail' ask too?" → *"Unavail will not earn oil. So why ask oil question?"*, then *"Means that everything in medical and leave inputs will not earn oil"* (D803); (2) with an example, "should an Other filed under Unavailable earn nothing, like leave?" → *"Disregard my unavailable statement on OIL. As long as leave and medical they don’t earn oil. For others just ask the OIL question, it may or may not credit OIL."* — **D804**, which replaces D803: leave and medical never earn and are never asked; every other kind that can earn is asked and its answer decides, wherever it is filed. So an Other filed under Unavailable goes on earning on its Yes and asking while unanswered (as built — nothing changed), and the button "→ Unavail" now puts the question first where the input needs an answer (`raptor-port/src/ui/interactions.ts`, a fifth kind of wait `file` in `raptor-port/src/ui/oilwait.ts`; "Don’t file" / "File" / "Not filed — OIL not answered"). The agent's reading of "just ask the OIL question" — told to him, his to overrule. Its check: `raptor-port/docs/handpass/2026-10-13-inputs-batch.md` §14. Ruling: D804.
+
+
+*Moved here 2026-10-13 by backlog-archive.mjs ([BELL-UNAVAIL-WORDS]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [BELL-UNAVAIL-WORDS] The member's bell says "Back on the programme" when his input is filed under Unavailable (found 13 Oct 26 by the Opus read of D804's change) — OPEN, low; two new sentences are his to approve
+**APPROVED AND BUILT 13 Oct 26 — D815 ("Yes in 497"):** the two sentences as proposed, "Filed under Unavailable" and "Taken out of Unavailable"; fixed on the Inputs batch's branch, test first (`raptor-port/src/state/notices.ts`; the sheet's §14).
+
+**Found, NOT FIXED — older than the Inputs batch.** A scheduler takes Ranger's "Other" off the programme and files it with "→ Unavail": the scheduler's own note says "Ranger's Range brief filed under Unavailable", but Ranger's bell reads **"Back on the programme"** — it is not; and taken out again his bell reads **"Taken off the programme"** — it was never on it. Because an Other lands on the programme by itself, "taken off" is the only state the button is offered from, so EVERY filing sends the wrong line. Cause: `raptor-port/src/state/notices.ts` — the part that names a change of filing knows only "taken off" against everything else (its `common`, and `partWords`). **The fix:** two more parts — "Filed under Unavailable" and "Taken out of Unavailable", the scheduler's note's own words — tested before the two lines that are there; one test beside the notices' own. **His to approve:** the two sentences (the bell's wording is D769's). With `[NOTES-SHORTER]` (D806), where the app's notes are gone over anyway. The read: `raptor-port/docs/handpass/parts/ib/read-d804-opus.md` (F1).
+
+
+*Moved here 2026-10-13 by backlog-archive.mjs ([TRK-DATE-BOXES]). Forward facts: `raptor-port/docs/tracker/known-gaps.md`.*
+
+### [TRK-DATE-BOXES] The Tracker's date boxes are the app's own date box and calendar (his ruling D801, 13 Oct 26) — BUILT 13 Oct 26 ON `claude/tracker-date-boxes`, WAITING FOR HIS LOOK AND "MERGE LIVE" AFTER STEP ONE'S
+
+**Built (D801 — "All as recommended"):** all EIGHT of the Tracker's date boxes — Last Flown (Syllabus), Last Flown (Currency), Upchit Date, End date A, End date B, each row of the full failures list, and "Done on" and "Failed on" in the marking pop-up — open the app's one date calendar: a tap picks, saves and closes it; no tick; the pop-up and the failures list stay open under it. The branch is CUT FROM `claude/one-date-calendar-step-one-55ba13` (it needs the calendar) and merges AFTER step one, on his word. Its check (tier WALK, sized small — the host's own scripted walk at a phone and a desktop): `raptor-port/docs/handpass/2026-10-13-tracker-date-boxes.md`. The contract: `raptor-port/docs/ui-contracts.md` §The Tracker tab → Marking; the traps: `raptor-port/docs/tracker/known-gaps.md` (its last section).
+
+**Told to him, not asked (the agent's readings of D801 — his to overrule):** a date is saved the moment it is picked (it was saved when the typed box was left); a box that holds a date carries a small "take this date off" (✕) inside its right end — the app's calendar has no Clear, and an emptied box means something in the Tracker; End date A and B show the date without its weekday (three across, there is no room); the Tracker's other dates stay dd/mm/yy; a date can no longer be typed as figures; **on the two Last Flown boxes the ✕ shows only for a day put in by hand, and taking it off shows the latest flight marked done — blank only where no flight is done (the agent's reading of D123; before, emptying the box left both Last Flown days blank with flights on record)**; two days picked one after the other are two Undo steps.
+
+**Not touched:** the lull periods' own calendar (a range picked on a calendar the Tracker draws itself) — step two of `[ONE-DATE-CALENDAR]` does not name it either; put to him with step two.
+
