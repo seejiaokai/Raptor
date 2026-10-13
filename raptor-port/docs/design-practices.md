@@ -62,7 +62,8 @@ a choice; an empty place says one thing); his D726, D806, D808.*
   named once. Never "successfully", never "please", no exclamation.
 - **No warning is dropped to save words.** A note that carries a consequence (a published day will earn nobody OIL;
   unpublishing takes its OIL off the Leave War) keeps the consequence, said shorter.
-- **An error says how to put it right, beside where it went wrong** — "Enter a time as 08:00", not "Invalid time". A
+- **An error says how to put it right, beside where it went wrong** — the form that WILL work, not only the one that did
+  not: "Enter a time as 08:00", not "Invalid time". A
   refused press is never silent, and says why in the app's own words.
 - **A button starts with its verb and names its object where two could be confused:** "Put back", "Don't file",
   "Delete counter" — never a bare "OK" / "Yes" / "No" under a question that does not itself say what will happen.
@@ -77,8 +78,43 @@ a choice; an empty place says one thing); his D726, D806, D808.*
   things as the screen already does (the app's own words: the schedule, the working copy, an amendment, an input).
 - **A switch is labelled for what ON does.** A link or a fold says where it leads ("How this works"), never "Click here".
 - **An empty place says one short thing and offers one button** — what this is, and how to fill it.
+- **No joke and no chatty word in a note people see often** — it wears out by the third time.
 - **Sentence case; one capitalisation rule for each kind of element.** The app's small-capitals headings and its
   capitals on puck-row buttons are part of the Raptor look and stay.
+
+### 1a. Shortening words already on screen — the method (D832)
+
+*His D825 (13 Oct 26 — "some of them I feel like the key words are gone. Too summarised"), that day's own lessons, and the
+outside guides read then — Microsoft's and Apple's writing guides, Nielsen Norman on error messages, one UX-writing
+checklist, Anthropic's document skill (`superpowers/briefs/2026-10-13-writing-skills-research.md`). Written as TESTS:
+"be concise" names no test, and an instruction with no test is how facts get cut.*
+
+**Shorter is never thinner.** Shortening takes out words; summarising takes out facts. Before a word is touched, name
+what the note must still say afterwards — **the protected list: what happened · why · what it costs · where to put it
+right · every name and every number.**
+
+1. **Measure the box before the words.** A note that "runs long" is first measured where it sits, at the smallest size
+   the app ships: the box's width against the screen's, and how many lines it takes. The box and the words are reported
+   as two separate findings — the box is often the cheaper fix (13 Oct 26: every passing note was half a phone's width).
+2. **Only four kinds of word may be cut:** a padding phrase with a shorter equal ("in order to" → "to") · a thing said
+   twice in the same note · an announcement or a courtesy ("Heads up", "Note that", "please") · an intensifier or a
+   hedge ("very", "just", "quite", "actually"). **Anything else is content and stays.**
+3. **Swap before you delete.** The first move is a shorter phrase that means the same; taking a word out is the second.
+4. **It is still a sentence.** The small joining words stay — the, a, that, who, to, from, is. Never telegram style:
+   "no times — no OIL from it" is a summary, not a shorter sentence.
+5. **A named thing is never traded for "it", "this" or a vaguer word.** A note is read alone, later, with nothing beside it.
+6. **A word that is both a thing and an action** (input, file, post, mark, record, report, amend) keeps the small word
+   that settles which is meant.
+7. **"Your" and "we" go only where they carry nothing** — "your row", set against someone else's, is a fact.
+8. **Show the cut.** Each change is put to him as three things: today's wording · the shorter one · the exact words cut,
+   each with which of the four kinds it is. A cut that fits none of the four is not made.
+9. **Read it cold.** Each new wording is read WITHOUT the original beside it — by a reader who has never seen the
+   original, wherever one is to hand — against four questions: what happened, why, what does it cost, where do I put it
+   right? An answer that differs from the original's is a lost fact, and the wording goes back (13 Oct 26: "anything
+   added later too" read as the opposite of what it replaced).
+10. **"Left whole" is a proper result.** A note that cannot lose a word without losing a fact is left as it is (D825) —
+    and made easier to READ instead: two short sentences with what happened first, or a headline with its detail under it.
+11. **A word count is never a target.** A length is only a sanity check — a warning of fifteen words is not wordy.
 
 ## 2. Keyboard and focus
 
@@ -236,6 +272,9 @@ state nobody drew.
 - **Three weights:** it misleads, hides how to recover, or cannot be used by keyboard · it is inconsistent or cluttered
   · it is polish.
 - A short **"considered and left"** list — and why.
+- **What a machine recorded reaches the report by count, not by recollection:** every gap a key-by-key or measured
+  record holds is on the page by its number, or under "considered and left" with its reason (13 Oct 26: a gap in the
+  key record was reasoned away and left off the page; a second reader found it).
 - **Nothing is changed by a look.** Findings go to him, in rounds of at most four with a recommended answer each (D541).
 
 ## Where each piece came from

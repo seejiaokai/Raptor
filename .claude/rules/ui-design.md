@@ -32,7 +32,9 @@ fix to behaviour, a test, a comment) — the skill's detector already runs after
 2. **Words:** every word earns its place or goes (D726); a note is shortened, removed where the screen says it already,
    or moved under one short "How this works" fold (D808) — each put to him before and after, nothing built reworded
    unasked; what happened, then the one thing he must know; no warning dropped to save words; an error says how to put
-   it right; a button starts with its verb.
+   it right; a button starts with its verb. **Shortening is not summarising (D825, D832):** only padding, a thing said
+   twice, an announcement and a hedge may be cut; the note stays a sentence; each change shows the exact words cut and is
+   read cold; a note that cannot lose a word is left whole — the guide's §1a.
 3. **Keyboard:** anything new can be opened, used and closed without a mouse; Escape closes what opened last; the
    keyboard returns to the button that opened a thing; focus is always visible and never hidden under a bar that
    stays. Its keyboard set is written beside its picture.
