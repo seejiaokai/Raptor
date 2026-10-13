@@ -221,7 +221,14 @@ const RULING_BYTES = [
   /* scheduler 106000 -> 109000 (13 Oct 26): 106,294 bytes with D795-D797 - his answers on the Calendar window on a phone
      and the one date calendar, all live (D795 is narrowed by D796, not replaced). His question [SCHEDULER-RULINGS-SIZE]
      is still WITH HIM and still due - put to him again the same day; this is room until he answers, not a target. */
-  ['.claude/rules/decisions/scheduler.md', 2, 109000],
+  /* scheduler 109000 -> 90000, and a NEW area, the Inputs pages, 32000 (13 Oct 26 - owner D802, his answer to
+     [SCHEDULER-RULINGS-SIZE]: "the Inputs pages get a rulings file of their own"). 104 rulings moved out of the
+     scheduler's file whole, by the script (backlog-archive.mjs --rulings --move-rows), none reworded: the Inputs list
+     and calendar, the SANS calendar, the Calendar window, an input's own window and card. The scheduler's file holds
+     82,7xx bytes after it and the new file 28,3xx; each marker is set about a tenth above what its file holds - a
+     tripwire for the next look, never a number to cut to (D141), and a ruling is never trimmed (D136). */
+  ['.claude/rules/decisions/scheduler.md', 2, 90000],
+  ['.claude/rules/decisions/inputs.md', 2, 32000],
   /* 12000 until 12 Oct 26: raised for D780–D782 (the OIL question a holiday or a swap leaves open) — three live
      rulings of this area, none replaced; a rulings file is never trimmed (D136, D390) */
   ['.claude/rules/decisions/oil.md',     2, 14000],
