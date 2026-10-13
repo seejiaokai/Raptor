@@ -3,7 +3,7 @@
     "n": 1,
     "name": "D793: a put-back that needs an OIL answer puts the question first",
     "file": "src/ui/interactions.ts",
-    "find": "if (dest === 'g' && off(r)) { const say = HOOKS.toast;",
+    "find": "if ((dest === 'g' || dest === 'u') && off(r)) { const say = HOOKS.toast;",
     "put": "if (false && off(r)) { const say = HOOKS.toast;",
     "tests": [
       "src/ui/oilwait.test.tsx"
@@ -11,10 +11,10 @@
   },
   {
     "n": 2,
-    "name": "D793: only the programme asks — '→ Unavail' asks nothing",
+    "name": "D804: \"→ Unavail\" waits on the question too (it read \"only the programme asks\" until D804 replaced D803)",
     "file": "src/ui/interactions.ts",
-    "find": "if (dest === 'g' && off(r)) { const say = HOOKS.toast;",
-    "put": "if (dest !== 'x' && off(r)) { const say = HOOKS.toast;",
+    "find": "if ((dest === 'g' || dest === 'u') && off(r)) { const say = HOOKS.toast;",
+    "put": "if (dest === 'g' && off(r)) { const say = HOOKS.toast;",
     "tests": [
       "src/ui/oilwait.test.tsx"
     ]
@@ -235,6 +235,46 @@
     "file": "src/ui/oilwait.ts",
     "find": "setOilWait(w); clearToast(); notify() }",
     "put": "setOilWait(w); notify() }",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 27,
+    "name": "D804: the filing's own first line on the question's sheet, and its own kind",
+    "file": "src/ui/interactions.ts",
+    "find": "? { kind: 'file' as const, lead: `Filing ${who}'s ${inpLabel(now)} under Unavailable` }",
+    "put": "? { kind: 'back' as const, lead: `Putting ${who}'s ${inpLabel(now)} back on the programme` }",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 28,
+    "name": "D804: the bar's own words for a filing left unanswered",
+    "file": "src/ui/oilwait.ts",
+    "find": "not: 'Not filed — OIL not answered' }",
+    "put": "not: 'Not put back — OIL not answered' }",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 29,
+    "name": "D804: \"Answer OIL\" after the input changed says it in the filing's words",
+    "file": "src/ui/oilwait.ts",
+    "find": "file: 'That input has changed — not filed',",
+    "put": "file: 'That input has changed — not put back',",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 30,
+    "name": "D804: the sheet's two buttons for a filing",
+    "file": "src/ui/oilwait.ts",
+    "find": "file: { no: 'Don’t file', yes: 'File',",
+    "put": "file: { no: 'Don’t put back', yes: 'Put back',",
     "tests": [
       "src/ui/oilwait.test.tsx"
     ]

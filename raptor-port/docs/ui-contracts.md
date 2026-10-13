@@ -4496,6 +4496,11 @@ OIL"; "Monday unpublished — it is a draft again; publishing reissues the Origi
 is published again"). The rule for a passing note from here on: what happened, then the ONE thing he must know, the day named
 once — and no warning dropped to save words. The shorter wordings are put to him before and after, then built:
 `OUTSTANDING.md` `[NOTES-SHORTER]`. Where they are written today: `engine/publish.ts`, `state/sched-commit.ts`.
+They are put to him on ONE page with the phone's clash note (D805) and a look, by the design guide, over the designs built on the
+night of 13 Oct 26 and the ones coming — keyboard use included (owner D807): `OUTSTANDING.md` `[DESIGN-LOOK-13OCT]`.
+The same going-over of EVERY page's notes, hints, labels and small print — less clutter; a note the screen already says may be
+removed, and help still wanted may sit under one short "How it works" fold — is a job of its own, later (owner D808):
+the words half of `OUTSTANDING.md` `[UI-SLEEK-PASS]`.
 
 ## The bell's list of notices (owner D755 (3), D760, D769 — 12 Oct 26; the one-rule build's step 7)
 
@@ -8997,6 +9002,10 @@ the month strip, the window engine, the frozen-names mechanics, the quick-flick
 swipe, and everything a member sees.
 
 ## Logic search and controls
+
+**TO BE RE-LAID — not yet built (owner D809, 13 Oct 26):** everything that can be edited gathered at the top of the page, everything
+that only explains a rule below it, each part arranged into its types; a picture first — `OUTSTANDING.md` `[LOGIC-PAGE-LAYOUT]`.
+The search and the controls kept in sight (below) must go on working over both parts.
 
 **D561/D563, 4 Oct 26 — built on codex/workflow-ui, owner look and remaining reads pending:** keep the search box in view while scrolling,
 alongside the controls already kept visible: All, Warnings, Advisories, Notes, Fired this week, Edit rules
