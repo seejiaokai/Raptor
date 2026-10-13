@@ -209,10 +209,10 @@ export function dayShownPendCount(di:any){di=+di;return dayApproved(di)?dayPendi
    inputs.ts frozenInputMatch step 4, Fable's code read F2), so the words read one edit */
 /* `people`: AN INPUT OF SEVERAL NAMES ITS PEOPLE ON ITS ONE LINE (owner D736 — set in dayPendingItemsIn, below, from the
    live record's list, else the copy the issued version froze: engine/inputs.ts idsOf) — for the one line's words
-   ("Range safety brief · 4 people"), its names and its tap. `mates` is set by nothing since the one-rule build
-   (12 Oct 26, D756): an input is one record, so there are no other items of "the same entry" to stand for —
-   engine/entryfold.ts foldEntries, which set it, is removed. The record keeps every entry (D109). */
-export type PendItem = PendUnit & { axis: 'content'|'filing'|'input'|'oil'|'warn'|'hide', inp?: DeltaEntry, val?: DeltaEntry, rows?: PendUnit[], oilFold?: boolean, was?: any, now?: any, mates?: PendItem[], people?: string[],
+   ("Range safety brief · 4 people"), its names and its tap. (The older `mates` — other items of "the same entry" — went
+   with engine/entryfold.ts foldEntries, which set it: since the one-rule build, 12 Oct 26, D756, an input is one
+   record and there are none; the field and its three readers were removed on 13 Oct 26.) The record keeps every entry (D109). */
+export type PendItem = PendUnit & { axis: 'content'|'filing'|'input'|'oil'|'warn'|'hide', inp?: DeltaEntry, val?: DeltaEntry, rows?: PendUnit[], oilFold?: boolean, was?: any, now?: any, people?: string[],
   /* `pp`: ONE PERSON put in (`on`) or taken out (`off`) of an input — its own item (the people step, below; D736);
      `pplApart`: an input's own item whose people are counted apart, beside it — its words then say nothing of them */
   pp?: { p: string, role: 'on'|'off'|'move', from?: any }, pplApart?: boolean };

@@ -403,7 +403,7 @@ written, its CALENDAR day (ISO — the week it belongs to) and, for an absence, 
 (`wdate`–`wend`), the input it is about, the part of the day a line with no key belongs to, for a Quals line the person it
 is about and which of his details (`sub`, `fld` — by id, so a rename never loses it; Astra's final read), for an absence
 line the person too (`sub`) and — for one record of an input filed for several people — that filing's group id (`grp`, the
-record's own `Input.grp`; 8 Oct 26, D663: the changes window files the men of one filing under one item *[since the one-rule build, 12 Oct 26: `grp` is not written on a new line — an input of several is one record and its own lines are one each, under its first person; a line for ONE person put in or taken out carries `one` and that person in `sub`; stored lines that carry `grp` still group, read only]*), every input a war decision is about when more than one (`iids` — a moved day is re-filed as a
+record's own `Input.grp`; 8 Oct 26, D663: the changes window files the men of one filing under one item *[since the one-rule build, 12 Oct 26: `grp` is not written on a new line — an input of several is one record and its own lines are one each, under its first person; a line for ONE person put in or taken out carries `one` and that person in `sub`; the hand-over line of an input of one — its only person replaced — carries `fld: 'whose'` with the NEW person in `sub` (13 Oct 26, `[HIST-DOT-INPUT-ROW]`: History tells it on his puck); stored lines that carry `grp` still group, read only]*), every input a war decision is about when more than one (`iids` — a moved day is re-filed as a
 new record), and its exact days when they are not one run (`days`, `wdays` — a gap day stays untouched), the slot key, a frozen label
 of what it was, before and after (a person key keeps the person's ID — `elogVal` says his live callsign). **Durable since
 `[DRAFT-PENDING]` (28 Sep 26, D336 (b)):** loaded at boot, kept across sign-in and sign-out, never a command record (undo
@@ -429,7 +429,7 @@ or `null` where the app did (a posting run on its date, a delete); `at` when (ms
 was called then (its title, else its kind) and `day` its first day then (yyyy-mm-dd) — kept on the notice because the
 input may since have been renamed, moved or deleted; `what` what happened, as a list of parts (data, never a
 sentence): `{k:'in'}` he was put in · `{k:'out'}` he was taken out · `{k:'del'}` deleted · `{k:'cx', why?}` cancelled ·
-`{k:'uncx'}` brought back · `{k:'off'}` / `{k:'on'}` taken off the programme / put back · `{k:'when', a?, b?, t?}` its
+`{k:'uncx'}` brought back · `{k:'off'}` / `{k:'on'}` taken off the programme / put back · `{k:'unav'}` / `{k:'unavoff'}` filed under Unavailable / taken out of it (D815) · `{k:'when', a?, b?, t?}` its
 day(s) and hours as they are now · `{k:'add', who}` / `{k:'rem', who}` others (ids, a placeholder among them) put in or
 taken out · `{k:'title', was}` renamed · `{k:'rmk'}` its remark changed.
 *(13 Oct 26, `[OIL-ASK-NOTIFY]`: a second kind rides the same record — a day made a holiday, `iid` empty and `what` =

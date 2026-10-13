@@ -1,0 +1,354 @@
+[
+  {
+    "n": 1,
+    "name": "D793: a put-back that needs an OIL answer puts the question first",
+    "file": "src/ui/interactions.ts",
+    "find": "if ((dest === 'g' || dest === 'u') && off(r)) { const say = HOOKS.toast;",
+    "put": "if (false && off(r)) { const say = HOOKS.toast;",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 2,
+    "name": "D804: \"→ Unavail\" waits on the question too (it read \"only the programme asks\" until D804 replaced D803)",
+    "file": "src/ui/interactions.ts",
+    "find": "if ((dest === 'g' || dest === 'u') && off(r)) { const say = HOOKS.toast;",
+    "put": "if (dest === 'g' && off(r)) { const say = HOOKS.toast;",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 3,
+    "name": "D793: a put-back the save would refuse is tried first — nobody is asked a question for it",
+    "file": "src/ui/interactions.ts",
+    "find": "if (!g || g.kind !== 'ask' || !dryRun(() => !!acceptInput(di, find(), dest))) {",
+    "put": "if (!g || g.kind !== 'ask') {",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 4,
+    "name": "D793: the answer is written with the put-back",
+    "file": "src/ui/interactions.ts",
+    "find": "commitInputEdit(x, draftOf(x), undefined, undefined, { sched: true, oil })",
+    "put": "commitInputEdit(x, draftOf(x), undefined, undefined, { sched: true })",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 5,
+    "name": "D793: the put-back is made with the answer — not the answer alone",
+    "file": "src/ui/interactions.ts",
+    "find": "          if (!acceptInput(di, find(), dest)) { HOOKS.toast(refusalWords(find() || x), 'warn'); throw new CmdRefused('the put-back was refused') }\n",
+    "put": "",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 6,
+    "name": "D793: the answer and the put-back are ONE step — they are saved as one batch",
+    "file": "src/ui/interactions.ts",
+    "find": "      ? saveBatchX(() => {\n          const x = find()",
+    "put": "      ? ((f: () => boolean) => ({ ok: f() }))(() => {\n          const x = find()",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 7,
+    "name": "D793: an answer for an input no longer off the programme makes nothing",
+    "file": "src/ui/interactions.ts",
+    "find": "redo: oil => { const x = find(); return !x || !off(x) || !here(x) ? 'none' : run(x, oil) ? 'done' : 'refused' },",
+    "put": "redo: oil => { const x = find(); return !x || !here(x) ? 'none' : run(x, oil) ? 'done' : 'refused' },",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 8,
+    "name": "D793: 'Answer OIL' asks the door afresh — and says so when the input has changed",
+    "file": "src/ui/interactions.ts",
+    "find": "ask: () => { const x = find(); return !x || !off(x) || !here(x) ? 'none' : press() },",
+    "put": "ask: () => { const x = find(); return !x || !here(x) ? 'none' : press() },",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 9,
+    "name": "D793: the bar's 'Answer OIL' brings the question back",
+    "file": "src/ui/interactions.ts",
+    "find": "ask: () => { const x = find(); return !x || !off(x) || !here(x) ? 'none' : press() },",
+    "put": "ask: () => 'refused',",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 10,
+    "name": "D793: the new kind's words",
+    "file": "src/ui/oilwait.ts",
+    "find": "not: 'Not put back — OIL not answered' },",
+    "put": "not: 'Not moved — OIL not answered' },",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 11,
+    "name": "D793: the sheet's first line names the input and whose it is",
+    "file": "src/ui/interactions.ts",
+    "find": "kind: 'back', lead: `Putting ${who}'s ${inpLabel(now)} back on the programme`,",
+    "put": "kind: 'back', lead: `Putting it back on the programme`,",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 13,
+    "name": "the gold dot: a seat of an input's row is dotted for the line that put its man in",
+    "file": "src/ui/histbubble.ts",
+    "find": "      : set.has(rk) || seatInputLines(k, el, id => byInp.get(id) || []).length > 0",
+    "put": "      : set.has(rk)",
+    "tests": [
+      "src/ui/reqdoor.test.tsx"
+    ]
+  },
+  {
+    "n": 14,
+    "name": "the gold dot: the bubble tells that line (a dot and a bubble never disagree)",
+    "file": "src/ui/histbubble.ts",
+    "find": "  return his.length ? ELOG.rows.filter(r => own.includes(r) || his.includes(r)) : own",
+    "put": "  return own",
+    "tests": [
+      "src/ui/reqdoor.test.tsx"
+    ]
+  },
+  {
+    "n": 15,
+    "name": "the gold dot: only the lines that are ONE man's own",
+    "file": "src/ui/histbubble.ts",
+    "find": "  return of.filter(r => (!!(r as any).one || r.fld === 'whose') && String(r.sub || '') === who && (!day || rowTouches(r, day)))",
+    "put": "  return of.filter(r => String(r.sub || '') === who && (!day || rowTouches(r, day)))",
+    "tests": [
+      "src/ui/reqdoor.test.tsx"
+    ]
+  },
+  {
+    "n": 16,
+    "name": "the gold dot: only the man the line is about",
+    "file": "src/ui/histbubble.ts",
+    "find": "  return of.filter(r => (!!(r as any).one || r.fld === 'whose') && String(r.sub || '') === who && (!day || rowTouches(r, day)))",
+    "put": "  return of.filter(r => (!!(r as any).one || r.fld === 'whose') && (!day || rowTouches(r, day)))",
+    "tests": [
+      "src/ui/reqdoor.test.tsx"
+    ]
+  },
+  {
+    "n": 18,
+    "name": "the drag's click-guard timer does nothing once the page is gone",
+    "file": "src/ui/caldrag.ts",
+    "find": "      if (typeof document === 'undefined') return\n",
+    "put": "",
+    "tests": [
+      "src/ui/barmove.test.tsx"
+    ]
+  },
+  {
+    "n": 19,
+    "name": "Fable's read F1: a put-back refused after the answer throws the whole step away — the answer is not kept alone",
+    "file": "src/ui/interactions.ts",
+    "find": "throw new CmdRefused('the put-back was refused') }",
+    "put": "return false }",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 20,
+    "name": "the Opus read F1: an issued row put back with its answer wears no 'goes out' mark",
+    "file": "src/ui/interactions.ts",
+    "find": "          reconcileIssuedMarks([di])\n",
+    "put": "",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 21,
+    "name": "the Opus read F2: the question for an input of several is headed for everyone",
+    "file": "src/ui/interactions.ts",
+    "find": "gate: { who: inputWho(now) || g.who,",
+    "put": "gate: { who: g.who,",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 22,
+    "name": "the Opus read F4: a tried save arms no 'just added' flash",
+    "file": "src/state/store.ts",
+    "find": "  const flash = HOOKS.flashAdded\n  HOOKS.flashAdded = () => {}\n",
+    "put": "  const flash = HOOKS.flashAdded\n",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 23,
+    "name": "the Opus read F5: 'Answer OIL' after the input left this card's day puts nothing back (the bar's ask)",
+    "file": "src/ui/interactions.ts",
+    "find": "ask: () => { const x = find(); return !x || !off(x) || !here(x) ? 'none' : press() },",
+    "put": "ask: () => { const x = find(); return !x || !off(x) ? 'none' : press() },",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 24,
+    "name": "the Opus read F3: the hand-over line is marked so the new man's puck can tell it",
+    "file": "src/state/changelines.ts",
+    "find": "to: cs(A[0]), fld: 'whose' }))",
+    "put": "to: cs(A[0]) }))",
+    "tests": [
+      "src/ui/reqdoor.test.tsx"
+    ]
+  },
+  {
+    "n": 25,
+    "name": "the Opus read F3: a seat tells its man's hand-over line",
+    "file": "src/ui/histbubble.ts",
+    "find": "(!!(r as any).one || r.fld === 'whose') && String(r.sub || '') === who",
+    "put": "!!(r as any).one && String(r.sub || '') === who",
+    "tests": [
+      "src/ui/reqdoor.test.tsx"
+    ]
+  },
+  {
+    "n": 26,
+    "name": "the walk: a note from the step before is taken down when the question is put",
+    "file": "src/ui/oilwait.ts",
+    "find": "setOilWait(w); clearToast(); notify() }",
+    "put": "setOilWait(w); notify() }",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 27,
+    "name": "D804: the filing's own first line on the question's sheet, and its own kind",
+    "file": "src/ui/interactions.ts",
+    "find": "? { kind: 'file' as const, lead: `Filing ${who}'s ${inpLabel(now)} under Unavailable` }",
+    "put": "? { kind: 'back' as const, lead: `Putting ${who}'s ${inpLabel(now)} back on the programme` }",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 28,
+    "name": "D804: the bar's own words for a filing left unanswered",
+    "file": "src/ui/oilwait.ts",
+    "find": "not: 'Not filed — OIL not answered' }",
+    "put": "not: 'Not put back — OIL not answered' }",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 29,
+    "name": "D804: \"Answer OIL\" after the input changed says it in the filing's words",
+    "file": "src/ui/oilwait.ts",
+    "find": "file: 'That input has changed — not filed',",
+    "put": "file: 'That input has changed — not put back',",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 30,
+    "name": "D804: the sheet's two buttons for a filing",
+    "file": "src/ui/oilwait.ts",
+    "find": "file: { no: 'Don’t file', yes: 'File',",
+    "put": "file: { no: 'Don’t put back', yes: 'Put back',",
+    "tests": [
+      "src/ui/oilwait.test.tsx"
+    ]
+  },
+  {
+    "n": 31,
+    "name": "D814: no door prices a question for a cancelled or information-only input",
+    "file": "src/ui/inputedit.tsx",
+    "find": "  if (oilNeverEarns(prevRow)) return { kind: 'none' }\n",
+    "put": "",
+    "tests": [
+      "src/ui/oilwait.test.tsx",
+      "src/leavewar/holnotice.test.tsx"
+    ]
+  },
+  {
+    "n": 32,
+    "name": "D814: an information-only input is never asked either (not only a cancelled one)",
+    "file": "src/engine/inputs.ts",
+    "find": "export function oilNeverEarns(inp:any){return !!inp&&(!!inp.cx||!!inp.info);}",
+    "put": "export function oilNeverEarns(inp:any){return !!inp&&(!!inp.cx);}",
+    "tests": [
+      "src/ui/oilwait.test.tsx",
+      "src/leavewar/holnotice.test.tsx"
+    ]
+  },
+  {
+    "n": 33,
+    "name": "D814: the day's one list leaves a cancelled input out",
+    "file": "src/leavewar/sync.ts",
+    "find": "if (!row || !row.iid || !oilAsks(row.type) || oilSilent(row)) continue",
+    "put": "if (!row || !row.iid || !oilAsks(row.type) || row.acc === 'r') continue",
+    "tests": [
+      "src/leavewar/holnotice.test.tsx"
+    ]
+  },
+  {
+    "n": 34,
+    "name": "D814: the bell's scan leaves a cancelled input out",
+    "file": "src/leavewar/sync.ts",
+    "find": "if ((!ownOf(row) && !filedByHim(row)) || !oilAsks(row.type) || oilSilent(row)) continue",
+    "put": "if ((!ownOf(row) && !filedByHim(row)) || !oilAsks(row.type) || row.acc === 'r') continue",
+    "tests": [
+      "src/leavewar/holnotice.test.tsx"
+    ]
+  },
+  {
+    "n": 35,
+    "name": "D814: the \"OIL?\" sign leaves a cancelled input out",
+    "file": "src/ui/inputedit.tsx",
+    "find": "  if (!row || !oilAsks(row.type) || oilSilent(row)) return ''\n",
+    "put": "  if (!row || !oilAsks(row.type) || row.acc === 'r') return ''\n",
+    "tests": [
+      "src/leavewar/holnotice.test.tsx"
+    ]
+  },
+  {
+    "n": 36,
+    "name": "D814: no answer to change on a cancelled input",
+    "file": "src/ui/inputedit.tsx",
+    "find": "  if (!row || !oilAsks(row.type) || oilSilent(row)) return false\n",
+    "put": "  if (!row || !oilAsks(row.type) || row.acc === 'r') return false\n",
+    "tests": [
+      "src/leavewar/holnotice.test.tsx"
+    ]
+  },
+  {
+    "n": 37,
+    "name": "D815: a filing under Unavailable has its own line on the member's bell",
+    "file": "src/state/notices.ts",
+    "find": "  if (a.acc === 'u' && b.acc !== 'u') out.push({ k: 'unav' })\n  else if (b.acc === 'u' && a.acc === 'r') out.push({ k: 'unavoff' })\n  else if (b.acc !== 'r' && a.acc === 'r') out.push({ k: 'off' })",
+    "put": "  if (b.acc !== 'r' && a.acc === 'r') out.push({ k: 'off' })",
+    "tests": [
+      "src/ui/bellnotices.test.tsx"
+    ]
+  }
+]

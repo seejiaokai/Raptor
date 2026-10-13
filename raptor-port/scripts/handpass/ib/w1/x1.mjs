@@ -1,0 +1,21 @@
+import * as L from './ibl.mjs'
+const size = process.argv[2] || 'desktop'
+const b = await L.launch()
+const s = await L.session(b, size)
+const { page } = s
+const r = await L.route(s)
+console.log('route', JSON.stringify(r))
+console.log('rows after takeoff', JSON.stringify(await L.rowsOf(page, L.FRI_DI)), 'oil', JSON.stringify(await L.oilOf(page, r.iid)))
+console.log('undo btn', JSON.stringify(await L.findUndoBtn(page)))
+await L.openPI(s, L.FRI_DI)
+console.log(await page.evaluate(() => [...document.querySelectorAll('#schedBoard .pinp')].map(e => e.innerText.slice(0, 300)).join('|')))
+console.log('acc', await L.accBtn(page, r.iid).count())
+const t = await L.pressAccept(s, L.FRI_DI, r.iid)
+console.log('accept text', t)
+console.log('lead', await L.txt(page, '[data-testid="oilconf-lead"]'))
+console.log('cancel', await L.txt(page, '[data-testid="oilconf-cancel"]'), 'save', await L.txt(page, '[data-testid="oilconf-save"]'), await page.locator('[data-testid="oilconf-save"]').isDisabled())
+console.log('fit', JSON.stringify(await L.whollyIn(page, '[data-testid="oilconf"] .airpop-box', ['[data-testid="oilconf-cancel"]', '[data-testid="oilconf-save"]'])))
+console.log('top', JSON.stringify(await L.onTopAndInside(page, '[data-testid="oilconf"] .airpop-box')))
+console.log('shot', await L.shot(s, 'x1-' + size))
+console.log('errs', JSON.stringify(s.errs))
+await b.close()

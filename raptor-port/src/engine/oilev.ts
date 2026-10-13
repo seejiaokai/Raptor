@@ -383,7 +383,7 @@ function landedStanding(row: any): OilInputEv['stand'] {
      re-expressed tests, 12 Oct 26). */
   if (row.cx) return 'cx'
   if (row.info) return 'info'
-  if (acc === 'r' || acc === 'u') return 'unlanded'       // dormant, or a kind that never lands
+  if (acc === 'r' || acc === 'u') return 'unlanded'       // dormant, or filed under Unavailable (it has no row)
   const key = String(inpId(row))
   for (let i = 0; i < DAYS.length; i++) {
     /* the request's STANDING row — never a dead `kept` one another day holds (overlay.ts standsOn; Astra's round-3 read,

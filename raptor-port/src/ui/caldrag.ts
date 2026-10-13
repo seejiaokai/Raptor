@@ -262,6 +262,8 @@ export function initCalDrag(root: HTMLElement, opts: {
   function installClickEater() {
     const eat = (ev: Event) => { ev.stopPropagation(); ev.preventDefault() }
     const off = () => {
+      /* the 350ms timer below can outlive the page in a test run (a file that ends inside it): nothing to retire then */
+      if (typeof document === 'undefined') return
       document.removeEventListener('click', eat, { capture: true } as any)
       document.removeEventListener('pointerdown', off, { capture: true } as any)
     }

@@ -25,6 +25,7 @@ import { stashClear } from '../engine/weekstash'
 import { SCHED, signOf, dayPendingItems } from '../engine/publish'
 import { ELOG } from '../engine/editlog'
 import { slotVal } from '../engine/slots'
+import * as slots from '../engine/slots'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { NOTICES } from '../state/notices'
 import { initStore, weekStashSnap, weekDirty, loadWeek, writeFill, resetSession } from '../state/store'
@@ -41,14 +42,15 @@ import { _resetDisclosure } from '../state/disclosure'
 import { commitSetDayApproved, schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { setPage, setBoardDay } from '../state/view'
 import * as view from '../state/view'
-import { commitInput, draftOf } from './inputedit'
-import { rowPut, rowMove } from './reqdoor'
+import { commitInput, commitInputEdit, draftOf, inputWho } from './inputedit'
+import { rowPut, rowMove, rowMark } from './reqdoor'
 import * as pops from './pops'
 import { applyDrop, setDrag } from './drag'
 import { answerOilWait, leaveOilWait, oilBarAgain, oilBarOk, WAIT_WORDS } from './oilwait'
 import { markLand, pendingLand } from './lift'
 import { commitChipMove } from './caldrag'
 import { reassignInput } from './inputedit'
+import { routeClick } from './interactions'
 import { toast as realToast } from './toast'
 import { WARN } from '../engine/validate'
 import { warnKey } from '../state/dropflag'
@@ -688,5 +690,431 @@ describe('the two code reads — each claim reproduced before it was believed', 
     leaveOilWait()
     expect(row.classList.contains('lift-land'), 'the man on the row').toBe(true)
     expect(source.classList.contains('lift-land'), 'and the puck that was dragged, again').toBe(true)
+  })
+})
+
+/* AN INPUT PUT BACK ON THE PROGRAMME WAITS ON ITS OIL QUESTION TOO (owner D793, 13 Oct 26 — "Yes it should wait on it";
+   `[OIL-ACCEPT-BACK-UNASKED]`, found by the Opus read of [OIL-ASK-NOTIFY]). An input is taken off the programme; its day
+   is then made a holiday, or it never had an answer; a scheduler puts it back with "Accept" on its card or line. It now
+   needs an OIL answer — and the Accept asked nothing. D783's rule at one more door: the question FIRST, the put-back
+   only on an answer; not answered, it is not put back and the bar says so. An Undo of the take-off asks nothing — an
+   Undo never asks a question (D793's reading 3). The button is pressed here the way the page presses it: through the
+   click router, on a button carrying the card's own three marks. */
+describe('an input put BACK on the programme where it needs an OIL answer is NOT put back until it is answered (D793) (ON9)', () => {
+  const press = (dest: 'g' | 'x' | 'u', di = SAT, title = TITLE) => {
+    const b = document.createElement('button')
+    b.dataset.acc = dest; b.dataset.accd = String(di); b.dataset.acck = String(inpId(rec(di, title)))
+    document.body.appendChild(b)
+    try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+  }
+  /* on the programme with no answer (the state a day made a holiday afterwards leaves), then taken off by a scheduler */
+  const takenOff = (oil?: Record<string, number>, di = SAT) => {
+    file(['bane'], di, oil)
+    expect(riOf(di), 'the premise: it is on the programme').toBeGreaterThanOrEqual(0)
+    press('x', di)
+    expect(rec(di).acc, 'the premise: taken off').toBe('r'); expect(riOf(di)).toBe(-1)
+    SAID = []
+  }
+
+  it('Accept on an input with no answer: nothing is put back, and the question waits with its own words', async () => {
+    await boot()
+    takenOff()
+    const was = world()
+    press('g')
+    expect(world(), 'NOTHING moved: the inputs, the day, the history, the bell, Undo').toBe(was)
+    expect(riOf(), 'not on the programme').toBe(-1)
+    const w = view.OILWAIT!
+    expect(w, 'the question waits').toBeTruthy()
+    expect(w.kind).toBe('back')
+    expect(w.lead).toBe(`Putting ${cs('bane')}'s ${TITLE} back on the programme`)
+    expect(w.gate.plan).toEqual([{ iso: SAT_ISO, amt: 0.5 }])
+    expect(pops.INPEDIT, 'no window of the input behind it').toBeNull()
+    expect(SAID, 'and nothing is said yet').toEqual([])
+  })
+
+  it('answered: it is back on the programme WITH its answer — one step, and one Undo takes both away', async () => {
+    await boot()
+    takenOff()
+    press('g')
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    expect(view.OILWAIT).toBeNull(); expect(view.OILBAR).toBeNull()
+    expect(riOf(), 'on the programme again').toBeGreaterThanOrEqual(0)
+    expect(rec().acc).toBe('g')
+    expect(rec().oil, 'the answer given with the put-back').toEqual({ [SAT_ISO]: 0.5 })
+    expect(SAID.join(' | ')).toContain(`${cs('bane')}'s ${TITLE} added to the ground programme`)
+    globalUndo()
+    expect(riOf(), 'ONE Undo: off the programme again').toBe(-1)
+    expect(rec().acc).toBe('r')
+    expect(rec().oil || {}, 'and unanswered again').toEqual({})
+  })
+
+  it('a No is an answer: it is put back, and counted for nothing', async () => {
+    await boot()
+    takenOff()
+    press('g')
+    expect(answerOilWait({ [SAT_ISO]: 0 })).toBe(true)
+    expect(riOf()).toBeGreaterThanOrEqual(0)
+    expect(rec().oil).toEqual({ [SAT_ISO]: 0 })
+  })
+
+  it('not answered: it is NOT put back; the bar says so; "Answer OIL" brings the question back; "OK" only closes', async () => {
+    await boot()
+    takenOff()
+    const was = world()
+    press('g')
+    leaveOilWait()
+    expect(world(), 'nothing made, nobody told').toBe(was)
+    expect(view.OILWAIT).toBeNull()
+    expect(view.OILBAR!.text).toBe('Not put back — OIL not answered')
+    expect(WAIT_WORDS.back).toEqual({ no: 'Don’t put back', yes: 'Put back', not: 'Not put back — OIL not answered' })
+    oilBarAgain()
+    expect(view.OILBAR, 'the bar goes while the question is up').toBeNull()
+    expect(view.OILWAIT!.kind).toBe('back')
+    expect(answerOilWait({ [SAT_ISO]: 0.5 }), 'and answered from there it is put back').toBe(true)
+    expect(riOf()).toBeGreaterThanOrEqual(0)
+    press('x'); press('g'); leaveOilWait(); oilBarOk()
+    expect(view.OILBAR).toBeNull(); expect(view.OILWAIT).toBeNull()
+  })
+
+  it('where nothing is to be asked — it is answered already, or the day is a working day — Accept puts it back at once, as before', async () => {
+    await boot()
+    takenOff({ [SAT_ISO]: 0 })
+    press('g')
+    expect(view.OILWAIT, 'answered already (a No is an answer): no question').toBeNull()
+    expect(riOf()).toBeGreaterThanOrEqual(0)
+    expect(SAID.join(' | ')).toContain('added to the ground programme')
+    takenOff(undefined, WED)
+    press('g', WED)
+    expect(view.OILWAIT, 'a working day: no question').toBeNull()
+    expect(riOf(WED)).toBeGreaterThanOrEqual(0)
+  })
+
+  /* "→ UNAVAIL" WAITS ON THE QUESTION TOO (owner D804, 13 Oct 26 — "As long as leave and medical they don't earn oil.
+     For others just ask the OIL question, it may or may not credit OIL"; it replaced D803 of the same morning). An
+     input of kind Other filed under Unavailable is still one of the kinds that asks, and earns on its Yes — so the
+     button that files it there no longer files it with nobody asked (this test read "asks nothing" until then: D793's
+     words were "on the programme"). The same door, the same rule: the question first, the filing only on an answer. */
+  const otherOff = (oil?: Record<string, number>, di = SAT) => {
+    file(['bane'], di, oil, { type: 'Other' })
+    press('x', di)
+    expect(rec(di).acc, 'the premise: an Other lands on the programme and was taken off').toBe('r')
+    SAID = []
+  }
+  it('(D804) "→ Unavail" on an Other with no answer: nothing is filed, and the question waits with its own words', async () => {
+    await boot()
+    otherOff()
+    const was = world()
+    press('u')
+    expect(world(), 'NOTHING moved: the inputs, the day, the history, the bell, Undo').toBe(was)
+    expect(rec().acc, 'not filed under Unavailable').toBe('r')
+    const w = view.OILWAIT!
+    expect(w, 'the question waits').toBeTruthy()
+    expect(w.kind).toBe('file')
+    expect(w.lead).toBe(`Filing ${cs('bane')}'s ${TITLE} under Unavailable`)
+    expect(w.gate.plan).toEqual([{ iso: SAT_ISO, amt: 0.5 }])
+    expect(pops.INPEDIT, 'no window of the input behind it').toBeNull()
+    expect(SAID, 'and nothing is said yet').toEqual([])
+  })
+
+  it('(D804) answered: it is filed under Unavailable WITH its answer — one step, and one Undo takes both away', async () => {
+    await boot()
+    otherOff()
+    press('u')
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    expect(view.OILWAIT).toBeNull(); expect(view.OILBAR).toBeNull()
+    expect(rec().acc, 'filed under Unavailable').toBe('u')
+    expect(riOf(), 'and not on the programme').toBe(-1)
+    expect(rec().oil, 'the answer given with the filing').toEqual({ [SAT_ISO]: 0.5 })
+    expect(SAID.join(' | ')).toContain(`${cs('bane')}'s ${TITLE} filed under Unavailable`)
+    globalUndo()
+    expect(rec().acc, 'ONE Undo: taken off again, not filed').toBe('r')
+    expect(rec().oil || {}, 'and unanswered again').toEqual({})
+  })
+
+  it('(D804) a No is an answer: it is filed, and counted for nothing', async () => {
+    await boot()
+    otherOff()
+    press('u')
+    expect(answerOilWait({ [SAT_ISO]: 0 })).toBe(true)
+    expect(rec().acc).toBe('u')
+    expect(rec().oil).toEqual({ [SAT_ISO]: 0 })
+  })
+
+  it('(D804) not answered: it is NOT filed; the bar says so in its own words; "Answer OIL" brings the question back; "OK" only closes', async () => {
+    await boot()
+    otherOff()
+    const was = world()
+    press('u')
+    leaveOilWait()
+    expect(world(), 'nothing made, nobody told').toBe(was)
+    expect(view.OILWAIT).toBeNull()
+    expect(view.OILBAR!.text).toBe('Not filed — OIL not answered')
+    expect(WAIT_WORDS.file).toEqual({ no: 'Don’t file', yes: 'File', not: 'Not filed — OIL not answered' })
+    oilBarOk()
+    expect(view.OILBAR).toBeNull(); expect(view.OILWAIT).toBeNull()
+    expect(world(), 'OK only closes: nothing filed').toBe(was)
+    press('u'); leaveOilWait(); oilBarAgain()
+    expect(view.OILBAR, 'the bar goes while the question is up').toBeNull()
+    expect(view.OILWAIT!.kind).toBe('file')
+    expect(answerOilWait({ [SAT_ISO]: 0.5 }), 'and answered from there it is filed').toBe(true)
+    expect(rec().acc).toBe('u')
+    press('x'); press('u')
+    expect(view.OILWAIT, 'taken out and filed again: it is answered now, so nothing is asked').toBeNull()
+    expect(rec().acc).toBe('u')
+  })
+
+  it('(D804) where nothing is to be asked — it is answered already, or the day is a working day — "→ Unavail" files it at once, as before', async () => {
+    await boot()
+    otherOff({ [SAT_ISO]: 0 })
+    press('u')
+    expect(view.OILWAIT, 'answered already (a No is an answer): no question').toBeNull()
+    expect(rec().acc).toBe('u')
+    expect(SAID.join(' | ')).toContain('filed under Unavailable')
+    otherOff(undefined, WED)
+    press('u', WED)
+    expect(view.OILWAIT, 'a working day: no question').toBeNull()
+    expect(rec(WED).acc).toBe('u')
+  })
+
+  it('(D804) "Answer OIL" after it was put on the programme another way says so in the filing\'s words and asks nothing', async () => {
+    await boot()
+    otherOff()
+    press('u'); leaveOilWait()
+    globalUndo()                                   // the take-off undone: it is on the programme again
+    expect(riOf()).toBeGreaterThanOrEqual(0)
+    SAID = []
+    const was = world()
+    oilBarAgain()
+    expect(view.OILWAIT, 'no question for a filing that is no longer one').toBeNull()
+    expect(world(), 'and nothing written').toBe(was)
+    expect(SAID.join(' | ')).toMatch(/has changed — not filed/)
+  })
+
+  it('(D804) taking it back OUT of Unavailable asks nothing, and its answer stays on the record', async () => {
+    await boot()
+    otherOff()
+    press('u')
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    SAID = []
+    press('x')
+    expect(view.OILWAIT, 'a take-off never asks').toBeNull()
+    expect(rec().acc).toBe('r')
+    expect(rec().oil, 'the answer is the input\'s: it stays').toEqual({ [SAT_ISO]: 0.5 })
+    expect(SAID.join(' | ')).toContain('taken out of Unavailable')
+  })
+
+  /* A CANCELLED INPUT IS NEVER ASKED (owner D814, 13 Oct 26 — "Canceled input doesn't need to ask OIL"; found by both
+     reads of the change above: every door priced the question from the input's dates and kind alone, so a cancelled
+     input — which earns nobody OIL, D760 — was still asked at the put-back and the filing). Information-only the same:
+     it earns nothing either. The mark is the INPUT's (D760), put on by the board's own door (ui/reqdoor.ts rowMark). */
+  for (const [what, name] of [['cx', 'cancelled'], ['info', 'information-only']] as const) {
+    it(`(D814) a ${name} input put back with Accept is asked nothing — it can earn nothing: it goes back at once`, async () => {
+      await boot()
+      file(['bane'], SAT)
+      expect(rowMark(rowKey(), what, true, 'weather')).toBe('done')
+      expect(rec()[what], `the premise: the input itself is ${name} (D760)`).toBe(true)
+      press('x')
+      expect(rec().acc).toBe('r')
+      SAID = []
+      press('g')
+      expect(view.OILWAIT, 'no question').toBeNull(); expect(view.OILBAR).toBeNull()
+      expect(riOf(), 'on the programme again').toBeGreaterThanOrEqual(0)
+      expect(rec().oil || {}, 'and no answer was written for it').toEqual({})
+    })
+    it(`(D814) a ${name} Other filed with "→ Unavail" is asked nothing: it is filed at once`, async () => {
+      await boot()
+      file(['bane'], SAT, undefined, { type: 'Other' })
+      expect(rowMark(rowKey(), what, true, 'weather')).toBe('done')
+      press('x'); SAID = []
+      press('u')
+      expect(view.OILWAIT, 'no question').toBeNull(); expect(view.OILBAR).toBeNull()
+      expect(rec().acc).toBe('u')
+      expect(SAID.join(' | ')).toContain('filed under Unavailable')
+    })
+  }
+  it('(D814) the mark taken off again, the input needs its answer again: the next put-back asks', async () => {
+    await boot()
+    file(['bane'], SAT)
+    expect(rowMark(rowKey(), 'cx', true, 'weather')).toBe('done')
+    expect(rowMark(rowKey(), 'cx', false)).toBe('done')
+    expect(!!rec().cx, 'the premise: no longer cancelled').toBe(false)
+    press('x'); SAID = []
+    press('g')
+    expect(view.OILWAIT, 'the question is back').toBeTruthy()
+    expect(view.OILWAIT!.kind).toBe('back')
+    expect(riOf(), 'and nothing is put back until it is answered').toBe(-1)
+  })
+
+  it('an Undo of the take-off puts the input back as it was and asks nothing (D793, reading 3)', async () => {
+    await boot()
+    takenOff()
+    globalUndo()
+    expect(riOf(), 'back on the programme').toBeGreaterThanOrEqual(0)
+    expect(view.OILWAIT, 'an Undo never asks a question').toBeNull()
+    expect(view.OILBAR).toBeNull()
+  })
+
+  it('"Answer OIL" after it was put back another way says so and asks nothing', async () => {
+    await boot()
+    takenOff()
+    press('g'); leaveOilWait()
+    globalUndo()                                   // the take-off undone: it is on the programme again
+    expect(riOf()).toBeGreaterThanOrEqual(0)
+    SAID = []
+    const was = world()
+    oilBarAgain()
+    expect(view.OILWAIT, 'no question for a put-back that is no longer one').toBeNull()
+    expect(world(), 'and nothing written').toBe(was)
+    expect(SAID.join(' | ')).toMatch(/has changed — not put back/)
+  })
+
+  it('a put-back the save itself would refuse is refused in its own words — nobody is asked a question for it first', async () => {
+    await boot()
+    takenOff()
+    const was = world()
+    /* the card of a day the app does not hold: the save refuses it */
+    const b = document.createElement('button')
+    b.dataset.acc = 'g'; b.dataset.accd = '99'; b.dataset.acck = String(inpId(rec()))
+    document.body.appendChild(b)
+    try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+    expect(view.OILWAIT, 'no question was put for it').toBeNull()
+    expect(view.OILBAR).toBeNull()
+    expect(world(), 'and nothing was kept of the try').toBe(was)
+    expect(SAID.join(' | '), 'it said why').toMatch(/can't be changed here right now/)
+  })
+
+  /* THE READS OF THE FINISHED CODE (13 Oct 26 — a fresh, blind Opus reader and Fable; docs/handpass/parts/ib/). Each
+     claim below was written as a test first, and failed first. */
+  it('(the Opus read, F1) put back WITH its answer on a published day that went out with the row: the row is as issued again — no "goes out" mark is left on it', async () => {
+    await boot()
+    file(['bane'], SAT)
+    sign(SAT); commitSetDayApproved(SAT, true)
+    press('x')
+    expect(dayPendingItems(SAT).length, 'the premise: the take-off waits to go out').toBeGreaterThan(0)
+    press('g')
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    expect(riOf()).toBeGreaterThanOrEqual(0)
+    expect(Object.keys(SCHED.pending).filter(k => /^gr:/.test(k)), 'no mark on a row that is exactly what was issued').toEqual([])
+  })
+
+  it('(the Opus read, F2) the question for an input of several is headed for everyone its one answer is written for', async () => {
+    await boot()
+    file(['pike', 'bane', 'split'], SAT)
+    press('x')
+    press('g')
+    expect(view.OILWAIT!.gate.who).toBe(inputWho(rec()))
+    expect(view.OILWAIT!.lead).toBe(`Putting 3 people's ${TITLE} back on the programme`)
+  })
+
+  it('(the Opus read, F4) the put-back that is tried and thrown away leaves no "just added" flash behind it', async () => {
+    await boot()
+    takenOff()
+    view.FRESHADD.clear()                          // what the filing itself lit, long ago
+    press('g')
+    expect(view.OILWAIT!.kind).toBe('back')
+    expect([...view.FRESHADD], 'nothing was added — nothing flashes as added').toEqual([])
+  })
+
+  it('(the Opus read, F5) "Answer OIL" after the input was moved to a day this card is not of: it says the input has changed, and puts nothing back', async () => {
+    await boot()
+    takenOff()
+    press('g'); leaveOilWait()
+    const r = rec()
+    expect(commitInputEdit(r, { ...draftOf(r), start: '2026-07-25', end: '' }, undefined, undefined, { oil: { '2026-07-25': 0 } }), 'the premise: moved to the next Saturday, answered there').toBe(true)
+    const moved = INPUTS.find((x: any) => x.title === TITLE) as any
+    expect(moved.acc, 'the premise: still taken off').toBe('r')
+    SAID = []
+    oilBarAgain()
+    expect(SAID.join(' | ')).toMatch(/has changed — not put back/)
+    expect((INPUTS.find((x: any) => x.title === TITLE) as any).acc, 'left as it was').toBe('r')
+    expect(ground().some((g: any) => g && g.src), 'no row written on a day the input no longer covers').toBe(false)
+  })
+
+  it('(the walk, seen in passing) a note from the step before does not sit over the question: it is taken down when the question is put', async () => {
+    await boot()
+    takenOff()
+    realToast('Ground item removed — back under Personal Inputs', 'ok')
+    const el = document.getElementById('toastEl') as HTMLElement
+    expect(el && el.style.opacity, 'the premise: a note is up').toBe('1')
+    press('g')
+    expect(view.OILWAIT!.kind).toBe('back')
+    expect(el.style.opacity, 'the note is taken down — on a phone on its side it lay over the question’s two buttons').toBe('0')
+  })
+
+  /* Fable's read of the finished code, F1 (13 Oct 26): the answer is written first and the put-back second, in one
+     batch — and a batch whose body only ANSWERS false is still committed. A put-back refused at that moment (the
+     world changed under the question) left the answer written and nothing put back: half of the one step. */
+  it('a put-back refused AFTER the answer was given keeps nothing — not the answer either — and says why', async () => {
+    await boot()
+    takenOff()
+    press('g')
+    expect(view.OILWAIT!.kind).toBe('back')
+    const was = world()
+    const spy = vi.spyOn(slots, 'acceptInput').mockReturnValue(false)
+    try { expect(answerOilWait({ [SAT_ISO]: 0.5 }), 'not made').toBe(false) } finally { spy.mockRestore() }
+    expect(rec().oil || {}, 'no answer was kept without its put-back').toEqual({})
+    expect(rec().acc).toBe('r')
+    expect(world(), 'nothing was kept of the refused step').toBe(was)
+    expect(SAID.length, 'it said why — once').toBe(1)
+  })
+
+  /* written for the break tests: the ANSWER (not the bar's "Answer OIL") arriving after the input was put back another
+     way — the page works under the question's sheet from the keyboard, and another door can land it */
+  it('an answer given after the input was put back another way makes nothing and says the input has changed', async () => {
+    await boot()
+    takenOff()
+    press('g')
+    expect(view.OILWAIT!.kind).toBe('back')
+    expect(slots.acceptInput(SAT, rec(), 'g'), 'the premise: put back by another door').toBe(true)
+    view.afterSchedMutate()
+    expect(view.OILWAIT, 'the premise: the question is still up').toBeTruthy()
+    SAID = []
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(false)
+    expect(SAID.join(' | ')).toMatch(/has changed — not put back/)
+    expect(rec().oil || {}, 'no answer written for a put-back that was not made').toEqual({})
+  })
+
+  it('on a PUBLISHED day nothing waits to go out until the answer is given', async () => {
+    await boot()
+    takenOff()
+    sign(SAT); commitSetDayApproved(SAT, true)
+    expect(dayPendingItems(SAT).length, 'the premise: nothing pending').toBe(0)
+    press('g')
+    expect(view.OILWAIT!.kind).toBe('back')
+    expect(dayPendingItems(SAT).length, 'asked: still nothing pending').toBe(0)
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    expect(dayPendingItems(SAT).length, 'answered: the put-back waits to go out').toBeGreaterThan(0)
+  })
+
+  /* THE FILING'S OWN PINS (the two reads of D804, 13 Oct 26 — both probed these on scratch tests and found them right;
+     nothing held them for the "file" kind) */
+  it('(D804, the reads) "→ Unavail" on a PUBLISHED day: nothing waits to go out and no sign-off falls until the answer is given; one Undo puts it all back', async () => {
+    await boot()
+    otherOff()
+    sign(SAT); commitSetDayApproved(SAT, true)
+    const signed = JSON.stringify(SCHED.sign[SAT])
+    expect(dayPendingItems(SAT).length, 'the premise: nothing pending').toBe(0)
+    press('u')
+    expect(view.OILWAIT!.kind).toBe('file')
+    expect(dayPendingItems(SAT).length, 'asked: still nothing pending').toBe(0)
+    expect(JSON.stringify(SCHED.sign[SAT]), 'and the four sign-offs stand').toBe(signed)
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    expect(rec().acc).toBe('u')
+    expect(dayPendingItems(SAT).length, 'answered: the filing waits to go out').toBeGreaterThan(0)
+    globalUndo()
+    expect(rec().acc, 'ONE Undo').toBe('r')
+    expect(dayPendingItems(SAT).length, 'nothing pending again').toBe(0)
+  })
+  it('(D804, the reads) an Other of several filed with "→ Unavail": the question is headed for everyone, and ONE answer is written on the one record', async () => {
+    await boot()
+    file(['pike', 'bane', 'split'], SAT, undefined, { type: 'Other' })
+    press('x')
+    press('u')
+    expect(view.OILWAIT!.gate.who).toBe(inputWho(rec()))
+    expect(view.OILWAIT!.lead).toBe(`Filing 3 people's ${TITLE} under Unavailable`)
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    expect(rec().acc).toBe('u')
+    expect(rec().oil, 'one answer, on the input').toEqual({ [SAT_ISO]: 0.5 })
+    expect(people(), 'and its people are as they were').toEqual(['pike', 'bane', 'split'])
   })
 })

@@ -300,16 +300,16 @@ function faceWords(di: number): Words & { rows?: CrowdRow[] } {
 }
 /* A SHARED INPUT'S ONE LINE (owner D736 — "one line, naming its people"; D663's words in the changes window; the plan
    2026-10-10-group-input-one-row-plan.md §4.8). The item is the input's own — one record since the one-rule build
-   (D756) — and carries its people (`people`, set by engine/publish.ts dayPendingItemsIn; `mates`, which
-   engine/entryfold.ts set before it was removed, is set by nothing now): it is led by the INPUT — "Range safety
+   (D756) — and carries its people (`people`, set by engine/publish.ts dayPendingItemsIn; the older `mates`, which
+   engine/entryfold.ts set, went with it — `[ONE-RULE-LEFTOVERS]`, 13 Oct 26): it is led by the INPUT — "Range safety
    brief · 4 people" — its people named under it A to Z (`names`, drawn as `pl-names`), and then says what changed in
    the first man's own words, which are every man's: the act is the same. No man's name stands in front of it. Who and
    when, and the tap (to the one row), are the first's. */
 function foldedWords(di: number, it: PendItem): Words & { names: string[] } {
-  const w = pendItemWords(di, { ...it, mates: undefined, people: undefined } as PendItem)
+  const w = pendItemWords(di, { ...it, people: undefined } as PendItem)
   const ids = it.people && it.people.length ? it.people : []
   const names = ids.map(cs).filter(Boolean).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
-  return { ...w, where: `${entryName(di, it)} · ${names.length || ((it.mates || []).length + 1)} people`, names }
+  return { ...w, where: `${entryName(di, it)} · ${names.length || 1} people`, names }
 }
 /* what a shared input is called on its one line: its own name (title, else kind) — from the live record, else the copy
    the issued version froze, else the row that carried it */
@@ -330,7 +330,7 @@ function entryName(di: number, it: PendItem): string {
 const wentWith =(row: any): string => { const p = ((row && row.more) || []).map((v: any) => whoId(v)).filter((x: any) => x && isSpecial(x)).map(cs); return p.length ? ` · ${p.join(', ')} came off with him` : '' }
 export function pendItemWords(di: number, it: PendItem): Words {
   /* an input of several: one line, led by the input and naming its people (D736) — never a person's own line (`pp`) */
-  if ((it.mates && it.mates.length) || (it.people && it.people.length > 1 && !it.pp)) return foldedWords(di, it)
+  if (it.people && it.people.length > 1 && !it.pp) return foldedWords(di, it)
   const e: any = it.entry || {}
   if (it.val) {
     /* a request whose filing moved too — filed, taken off, deleted — keeps the request's own words below ("on the

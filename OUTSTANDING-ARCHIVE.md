@@ -4364,6 +4364,19 @@ gained is listed in `.claude/skills/SUPERPOWERS-VENDORED.md` change 5 and `.clau
 `.claude/skill-observations/archive/log-2026-10-13.md`.
 
 
+*Moved here 2026-10-13 by backlog-archive.mjs ([OIL-ACCEPT-BACK-UNASKED]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [OIL-ACCEPT-BACK-UNASKED] An input put BACK on the programme after its day became a holiday comes back with no OIL answer and nobody asked (the Opus read of `[OIL-ASK-NOTIFY]`, 13 Oct 26 — OLDER) — OPEN
+
+**Found by reading, NOT FIXED — older than that job, low.** An input is taken off the programme (its card’s ✕); its weekday is then made a public holiday — the one list and the schedulers’ bell line leave it out, rightly (it is off the programme), and if it was the only input on the day nobody is told at all; a scheduler later puts it back (Accept on its card, or Undo of the take-off). It now needs an OIL answer; the scheduler is asked nothing. It is not silent — its card wears "OIL?", it is on the one list the moment it is back if the holiday’s line exists, and the bell of whoever answers for it lights — but the Accept itself puts no question (`raptor-port/src/ui/interactions.ts` Accept → `engine/slots.ts acceptInput`). **Recommended:** at Accept, where the input now needs an answer and the reader is a scheduler, put the question FIRST and put it back only on an answer — the rule of D783, at one more door (a failing test first; its own short look). **ANSWERED 13 Oct 26 — D793 (*"Yes it should wait on it"*): the Accept waits on the question as a swap does — the question first, put back only on an answer; an Undo of the take-off asks nothing (the agent's reading). TO BUILD.** **Place:** the agent’s — with the next Inputs / schedule batch (D490). The read: `raptor-port/docs/superpowers/briefs/2026-10-13-reads/oil-ask-notify-code-opus.md` F7; the check’s record: `raptor-port/docs/handpass/2026-10-13-oil-ask-notify.md` §12 C11.
+
+
+*Moved here 2026-10-13 by backlog-archive.mjs ([HIST-DOT-INPUT-ROW]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [HIST-DOT-INPUT-ROW] History's gold dot is not drawn on an input's Ground Programme row for a person put in or taken out (the one-rule job's walk, share L — L13, 12 Oct 26)
+**Found, NOT FIXED — low; with the next Inputs / History batch.** With History on, a man added to an input by a drop on its row, or taken out by a right-click, leaves no gold dot on that row — not on his puck, the row's name or its boxes. The changes window lists both acts, names him, and a tap lands on his puck (fixed in the check — `raptor-port/docs/handpass/2026-10-12-one-rule.md` §9.6); the Unavailable list's rows and the one line under Personal Inputs do wear the dot. **Why:** those acts are lines of the INPUT (filed by its id), and the dot's painter marks a programme cell only for a line filed by that cell's own key (`raptor-port/src/ui/histbubble.ts refreshHistDots`, `storyOf`). **The build:** a cell of a row that came from an input also answers for the input's lines about the person standing on it — the dot, and the bubble's story; a failing test first (`src/ui/histjump.test.tsx` has the pattern).
+
+
 *Moved here 2026-10-13 by backlog-archive.mjs ([SCHEDULER-RULINGS-SIZE]). Forward facts: `.claude/rules/decisions/inputs.md`.*
 
 ### [SCHEDULER-RULINGS-SIZE] The scheduler's rulings file has reached the size D611 said to look again at — one file, or an area of its own for the Inputs pages? (11 Oct 26 — a question for him)

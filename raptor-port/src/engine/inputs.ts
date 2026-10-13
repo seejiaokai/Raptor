@@ -816,6 +816,15 @@ export function inputSilent(inp:any){return !!inp&&(!!inp.cx||!!inp.info);}
    never landed at all, e.g. filed onto a published day — still counts, which
    is why dormancy is this explicit marker and not "no acc". */
 export function inputDormant(inp:any){return !!inp&&inp.acc==='r';}
+/* AN INPUT THAT CAN EARN NOTHING IS NOT ASKED THE OIL QUESTION (owner D814, 13 Oct 26 — "Canceled input doesn't need
+   to ask OIL"; information-only the same — the agent's reading, told to him). A cancelled or ⓘ input earns nobody
+   OIL (D760; oilev.ts landedStanding reads these same two marks FIRST), yet every door priced its question from the
+   dates and kind alone, and the "OIL?" sign, the day's one list and the bell left out only a taken-off input.
+   oilNeverEarns: the input's own marks — asked of the SAVED record by the gate (ui/inputedit.tsx oilGate).
+   oilSilent: that, or dormant — the ONE test the three signs leave an input out by. Worked out live: the mark off
+   again, the input needs its answer again and they come back by themselves. An answer already given stays. */
+export function oilNeverEarns(inp:any){return !!inp&&(!!inp.cx||!!inp.info);}
+export function oilSilent(inp:any){return inputDormant(inp)||oilNeverEarns(inp);}
 /* inputs use machine-readable date + minute fields so the validator can reason about them.
    s/e are minutes-from-midnight; allday inputs cover the whole day. */
 /* The `mod` stamps are spread either side of the demo week's input deadline on
