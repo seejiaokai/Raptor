@@ -2426,7 +2426,8 @@ were `FS`/`HS` until the 28 Aug 26 rename.
     the day's one list and the bell's scan leave an input out by. An answer already given stays on the record; the
     mark taken off, the input needs its answer again: its sign, its place in the list and its own man's bell come back
     by themselves — but taking the mark off asks nothing itself, and the schedulers' holiday line (a stored notice) does
-    not come back for it: `OUTSTANDING.md` `[OIL-UNCANCEL-UNASKED]`, his to rule.
+    not come back for it. **RULED, not yet built (owner D816, 13 Oct 26):** taking the mark off an input that has no
+    answer for a non-working day puts the OIL question first, as "Accept" does — `OUTSTANDING.md` `[OIL-UNCANCEL-UNASKED]`.
   - **Leave and medical inputs never earn OIL and are never asked; every other kind that can earn is asked, and its
     answer decides — wherever it is filed** (owner D804, 13 Oct 26 — "As long as leave and medical they don't earn
     oil. For others just ask the OIL question, it may or may not credit OIL" — it replaced D803 of the same morning; `inputs.ts oilAsks` is the list of kinds
