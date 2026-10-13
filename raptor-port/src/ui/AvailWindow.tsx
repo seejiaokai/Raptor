@@ -32,7 +32,7 @@ import { useVersion } from './useStore'
 import { canEditSched } from '../state/auth'
 import { esc, selectPerson } from '../state/view'
 import { personPuckHTML, personWarnMsgs, withChipWorld } from './html'
-import { oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oilItemMasked, oilFromWords, oilItemLabel, oilItemHistName, oilPersonSays, oilNoAskWhy, oilHeldClaimHint, oilEligible, inertWhy, evOf, OIL_OPEN_END } from './oilmode'
+import { DAY_EARNS_NOTHING, oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oilItemMasked, oilFromWords, oilItemLabel, oilItemHistName, oilPersonSays, oilNoAskWhy, oilHeldClaimHint, oilEligible, inertWhy, evOf, OIL_OPEN_END } from './oilmode'
 import { draftVerLabel } from '../engine/drafts'
 import { oilSentOf, oilReadPass } from '../engine/oilev'
 import { logAction } from '../engine/editlog'
@@ -281,8 +281,8 @@ export function AvailWindow() {
          then said "X earns nothing from this event", which is not why. */
       if (oilItemMasked(di, item)) {
         HOOKS.toast(oilBlanketOn(di)
-          ? 'Nothing on this day earns — turn that off first'
-          : 'This event earns nobody any OIL — turn the event back on first')
+          ? DAY_EARNS_NOTHING
+          : 'This event earns nobody any OIL. Turn the event back on first.')
         return
       }
       const seat = r.querySelector('[data-oilp]') as HTMLElement | null
@@ -340,7 +340,7 @@ export function AvailWindow() {
       : m.noAsk ? `${m.noAsk.charAt(0).toUpperCase()}${m.noAsk.slice(1)}.`
       : ver ? 'Who earned OIL on the day as it was issued.'
       : masked ? (oilBlanketOn(di)
-        ? 'Nothing on this day earns. Turn that off to switch men one by one.'
+        ? 'Nothing on this day earns. Turn off “Nothing today earns” to switch men one by one.'
         : 'This event earns nobody. Turn it back on to switch men one by one.')
       /* an input filed for ALL AVAIL / ALL whose filer said No, or has not answered ([INPUT-ALL-AVAIL], D711 (1)): the
          men listed earn nothing until one is tapped — the hint says that, not the opposite */

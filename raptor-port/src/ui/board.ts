@@ -43,7 +43,7 @@ import { esc } from '../state/view'
 import { notify, notifyBoard, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
-import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemMasked, oilItemCellHTML, oilItemHistName, oilPersonSays } from './oilmode'
+import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemMasked, oilItemCellHTML, oilItemHistName, oilPersonSays, DAY_EARNS_NOTHING } from './oilmode'
 import { rowItemKey } from '../engine/oil'
 import { oilReadPass } from '../engine/oilev'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn, boxHTML } from './board-html'
@@ -1287,10 +1287,10 @@ export function boardArmClick(e: MouseEvent) {
        not. Say which mask is on, so the way to change it is obvious. */
     if (oilItemMasked(di, item)) {
       e.stopPropagation()
-      /* (owner D838, 14 Oct 26 — N12: a fact, then what to do. The item switch's own line below and the ALL AVAIL
-         window's copy, ui/AvailWindow.tsx, are not on his list of 13 Oct 26 and keep their dash until he says.) */
+      /* (owner D838, 14 Oct 26 — N12: a fact, then what to do; the day's sentence names its switch and has one source,
+         ui/oilmode.ts — D844. The event's own OIL mark below and the ALL AVAIL window say the same words: D843.) */
       return toast(oilBlanketOn(di)
-        ? 'Nothing on this day earns. Turn that off first.'
+        ? DAY_EARNS_NOTHING
         : 'This event earns nobody any OIL. Turn the event back on first.')
     }
     const on = toggleOilPerson(di, person, item)
@@ -1334,7 +1334,7 @@ export function boardArmClick(e: MouseEvent) {
   if (oit) {
     const di = +(oit.dataset.oilday || -1), item = oit.dataset.oilitem || ''
     if (!oilModeOn(di)) return
-    if (oilBlanketOn(di)) { e.stopPropagation(); return toast('Nothing on this day earns — turn that off first') }
+    if (oilBlanketOn(di)) { e.stopPropagation(); return toast(DAY_EARNS_NOTHING) }
     const on = toggleOilItem(di, item)
     notify(); e.stopPropagation()
     const nm = oilItemName(di, item)

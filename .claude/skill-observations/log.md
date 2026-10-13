@@ -481,3 +481,48 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** A brief names verification commands copied from the project's own scripts (the build's, the gate's), never composed; and a check that a helper will lean on is first proved able to fail (one deliberate error) — or the helper is told to do so once. verification-before-completion: "exit 0 with no output" is asked "did it read anything?".
 
 **Principle:** A check is evidence only after it has been seen to fail; a command that cannot go red proves the command, not the code.
+
+### Observation 586: A break test of a stylesheet rule passed with the rule cut: the browser tests reused a preview already serving
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** A three-job batch's bug check - a browser test written to pin a one-line stylesheet fix, then broken on purpose
+**Skill:** verification-before-completion; the walk-scripts guide (`raptor-port/docs/walk-scripts.md` - break tests)
+**Type:** open-source
+**Phase/Area:** Verification - proving a new browser test can fail
+
+**Issue:** The fix's rule was cut and the new browser test run: green. The test runner is configured to reuse a server already on its port, and the walk's preview was serving the build made BEFORE the cut - the cut never reached what the test ran on. Cut again, rebuilt, run: red. The same trap makes any single browser-test run after a source change silently test the old build while a preview is up.
+
+**Suggested improvement:** In the walk-scripts guide's break-test section and the project guide's live-view rule: a browser test's verdict belongs to the BUILD it ran on - rebuild before it whenever source changed and a preview is serving, and for a break test of a rule no unit test can reach (a stylesheet's), cut, BUILD, run, restore, BUILD. Print the build's time or commit in the run's first line.
+
+**Principle:** A test's result is a fact about the artefact it ran against, not about the working tree; where a runner can reuse a running server, 'I changed the source and ran the test' proves nothing until the build is known to be the changed one.
+
+### Observation 587: An assertion that 'nothing moved' read the screen before the movement had finished - and the unit test beside it asked for the cause of the fault
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** The same bug check - a calendar's month-and-year lists, keys that should do nothing
+**Skill:** the walk-scripts guide (`raptor-port/docs/walk-scripts.md` - asserting an absence); test-driven-development
+**Type:** open-source
+**Phase/Area:** Walk script - asserting that a key does nothing
+
+**Issue:** A walk script pressed End in a scrolling list, waited 450ms and asserted the year unchanged: it passed. The browser's own scroll for that key takes about 750ms to settle, and only then is the row in the band read as the choice - End chose a year sixty years on. The script went red one run in four, when the NEXT key raced the settling. The unit test for the same keys asserted 'the key is not taken' (default not prevented) - in a real browser exactly what lets the box scroll; the test world has no scrolling, so it could never see the consequence.
+
+**Suggested improvement:** In the walk-scripts guide: an assertion of ABSENCE ('nothing moves', 'no note', 'no question') names what would have moved and waits out the slowest path by which it could (an animation, a debounce, a timer) - or reads the cause directly (scroll position over time). And when a unit test asserts an event is LEFT to the browser on an element that scrolls, holds focus or submits, write beside it what the browser then does with it.
+
+**Principle:** Absence is only evidence after the longest route to presence has had time to run; and 'leave the key to the browser' is a behaviour, not a no-op - on a scrollable, focusable box the browser's default is itself a feature someone must want.
+
+### Observation 588: A new script written over an older one of the same name - the write tool said 'updated' and the host read past it
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** The same bug check - adding one more walk script to a folder of earlier jobs' scripts
+**Skill:** New skill candidate: adding files to a shared scripts folder (today nowhere; the Write tool's own result is the only signal)
+**Type:** open-source
+**Phase/Area:** File creation - choosing a name
+
+**Issue:** The host wrote a new walk script under a short obvious name. A script of that name already existed from the previous day's job (a different purpose, named in the file map). The tool's result read 'updated' rather than 'created'; the host missed it for several steps and ran, edited and cited the new file under the old one's name before a search of the file map showed the clash. The old file was restored from git and the new one renamed; had the old one been uncommitted it would have been lost.
+
+**Suggested improvement:** Before creating a file in a folder other jobs write to: list the folder (or search the file map) for the name; treat a create that reports 'updated' as a stop. In this repo's walk-scripts guide: a new script's name carries its job's word (as this batch's others did: '-built').
+
+**Principle:** A name is free only after a look says so (the same rule as a class name in a global stylesheet, entry 584); and a tool's 'updated' on what was meant as a create is an alarm, not a synonym.

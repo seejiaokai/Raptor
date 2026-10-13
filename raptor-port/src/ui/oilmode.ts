@@ -521,6 +521,15 @@ export function toggleOilPerson(di: any, person: any, item: string): boolean {
  *  doing different things: this one leaves the mode, that one closes the whole
  *  board. Measured at 390px before changing it — five characters shorter than
  *  the label that overflowed, and it still fits with room to spare. */
+/* WHAT A TAP SAYS UNDER THE DAY'S SWITCH — ONE SENTENCE, ONE SOURCE, AND IT NAMES THE SWITCH (owner D844, 14 Oct 26).
+   With "Nothing today earns" on, a tap that would switch one man or one event is refused. The note said "Nothing on
+   this day earns. Turn that off first." — and he asked what "that" was: the sentence only made sense to whoever
+   remembered pressing the switch. It quotes the switch's own label now (the button drawn below — keep the two the same;
+   src/ui/noteswords.test.ts pins both), in the curly quotes the app names a control in. Said from three places: a man's
+   puck and an event's own OIL mark (ui/board.ts) and a man in the ALL AVAIL window (ui/AvailWindow.tsx). Until the walk
+   of 14 Oct only the first had the approved words — and that one cannot be tapped, the puck being inert there — while
+   the two a person can see kept the old ones (D843). The event's own refusal already names what to turn back on. */
+export const DAY_EARNS_NOTHING = 'Nothing on this day earns. Turn off “Nothing today earns” first.'
 export function dayBarHTML(di: any, tplBtn: string, canEdit = true): string {
   /* a reader who cannot edit the day is not offered the mode at all, rather than
      offered it and refused at the click (Fable, 21 Sep 26) */

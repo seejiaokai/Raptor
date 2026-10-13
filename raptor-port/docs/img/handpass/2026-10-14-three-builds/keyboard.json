@@ -791,20 +791,6 @@
   "verdict": "works"
  },
  {
-  "surface": "The publish note [desk]",
-  "key": "N1 — the note he pictured, by the screen's own \"Publish day\"",
-  "expected": "Saturday 18 Jul published and approved. The Common Programme has no usable times, so nobody on it earns OIL.",
-  "saw": "Saturday 18 Jul published and approved. The Common Programme has no usable times, so nobody on it earns OIL.",
-  "verdict": "works"
- },
- {
-  "surface": "The publish note [desk]",
-  "key": "no page error",
-  "expected": "none",
-  "saw": "none",
-  "verdict": "works"
- },
- {
   "surface": "Date calendar [desk]",
   "key": "L9 — a desktop panel carries no such line",
   "expected": "no name line: the panel hangs under its own box",
@@ -1052,6 +1038,62 @@
  {
   "surface": "The publish note [phone]",
   "key": "no page error",
+  "expected": "none",
+  "saw": "none",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [phone]",
+  "key": "N12 — a tap on an event's OIL mark with the day's switch on",
+  "expected": "Nothing on this day earns. Turn off “Nothing today earns” first. — the name quoted is the switch's own label, read off the screen (\"Nothing today earns\")",
+  "saw": "Nothing on this day earns. Turn off “Nothing today earns” first.",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [phone]",
+  "key": "N12 — a man's puck under the day's switch",
+  "expected": "not a control there: no puck is a tap target (which is why the sentence is said from the event's mark)",
+  "saw": "0 tappable pucks",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [phone]",
+  "key": "no page error (the board)",
+  "expected": "none",
+  "saw": "none",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [desk]",
+  "key": "N1 — the note he pictured, by the screen's own \"Publish day\"",
+  "expected": "Saturday 18 Jul published and approved. The Common Programme has no usable times, so nobody on it earns OIL.",
+  "saw": "Saturday 18 Jul published and approved. The Common Programme has no usable times, so nobody on it earns OIL.",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [desk]",
+  "key": "no page error",
+  "expected": "none",
+  "saw": "none",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [desk]",
+  "key": "N12 — a tap on an event's OIL mark with the day's switch on",
+  "expected": "Nothing on this day earns. Turn off “Nothing today earns” first. — the name quoted is the switch's own label, read off the screen (\"Nothing today earns\")",
+  "saw": "Nothing on this day earns. Turn off “Nothing today earns” first.",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [desk]",
+  "key": "N12 — a man's puck under the day's switch",
+  "expected": "not a control there: no puck is a tap target (which is why the sentence is said from the event's mark)",
+  "saw": "0 tappable pucks",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [desk]",
+  "key": "no page error (the board)",
   "expected": "none",
   "saw": "none",
   "verdict": "works"

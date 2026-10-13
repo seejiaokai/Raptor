@@ -9,7 +9,35 @@ look's record), `docs/superpowers/briefs/2026-10-13-wording-recheck.md` (the wor
 
 ## 0. Questions waiting for him (a minute's read)
 
-*(filled at the close — §11)*
+Nothing below held the build; each is a choice that is his, with what the walk saw and a recommended answer.
+
+1. **The sentence you approved cannot be seen; its two copies kept the old words.** With "Nothing today earns" switched
+   on for a day in OIL Earn, a tap on an event's own OIL mark (say the SDO desk's), or on a man in the ALL AVAIL
+   window, says "Nothing on this day earns — turn that off first". The wording you approved — "Nothing on this day
+   earns. Turn that off first." — was listed for a man's puck, which cannot be tapped there (it is greyed, on
+   purpose, since September). **Recommended: change those two copies to the approved wording.** Waits on it: two
+   sentences; nothing else. (§9, find 4.)
+   **ANSWERED THE SAME DAY — "Yes" (D843), then "What is turn 'that' off mean for 'that'" and "Clearer" (D844):** the
+   sentence names the switch — `Nothing on this day earns. Turn off “Nothing today earns” first.` — from one source,
+   in all three places; the ALL AVAIL window's hint names it the same way, and that window's copy of the event's
+   refusal takes its approved full stop. BUILT, tests first: `src/ui/oilmode.test.tsx` (the event's OIL mark tapped
+   under the switch — and no man's puck a tap target there), `src/ui/availwin.test.tsx` (a man tapped in the window),
+   `src/ui/noteswords.test.ts` (the one source, the switch's own label, the old words gone).
+2. **On a phone a note raised while a window is open lies over the window's title and ✕ for about three seconds** —
+   it goes to the top there (your choice of 10 Oct, so it is not over the window's buttons), and it is full width now
+   (D828), so it covers the whole head instead of its middle. Picture: `w2/ntop-phone-note-with-window-up.png`; the
+   same over an open Leave War day sheet's lower part, `w1/c4-phone-tap-opens-the-sheet.png`. **Recommended: leave it
+   for now and look at it on your iPhone** — three seconds, and a tap on the ✕ still works under it; if it bothers
+   you, the note can sit just under the window's head instead. Waits on it: nothing built.
+3. **In a cancelled input's own window the red CX tag and its reason stand at the right, by the ✕, not next to the
+   title** — as built on 12 Oct (D771 says "beside the window's title"). Picture: `w3/x03-desk-cancelled-input-window.png`.
+   **Recommended: move them to follow the title, in the next small batch.** Waits on it: nothing in this batch.
+4. **Two more question sheets wear the stray darker strip the OIL question just lost** (L1): "Keep / Remove" on an
+   upchit and "ATT B replaces / Keep ATT C" on a medical clash. Pictures: `w3/o05-phone-upchit-answer-buttons-close-up.png`,
+   `w3/o05-phone-clash-answer-buttons-close-up.png`. **Recommended: the same fix, in the next small batch.**
+5. **The Leave War's top row on a desktop gained nothing; on a phone the open clash list pushes the grid down** — with
+   two clashes open the grid starts 250 down an 844-tall screen (125 with none), with four 344. As drawn and approved
+   (D827); said here so the look on his iPhone has the figure beside it. No answer needed unless it bothers him.
 
 ## 1. The eight questions, and the tier
 
@@ -114,15 +142,15 @@ The helper's table, checked by the host against the callers: §7.
    keys' state table, the Tracker's Delete, the bar's keyboard.
 3. **What the ledger says.** Walks of types B, C and D found faults in most jobs (the calendar's walk the day before:
    three walkers, a real fault in a card drawn off the screen); words-only walks found none.
-4. **The walk chosen.** The host first: six scripts written as assertions of the right behaviour, a phone and a
-   desktop each, a picture at every step (`dl-clash-built`, `dl-oil`, `dl-band-built`, `dl-cal`, `dl-trk`, `dl-keys`
-   — about 150 lines). Then THREE Sonnet walkers on the one frozen build, each its own worlds, 49 scenarios by the
+4. **The walk chosen.** The host first: seven scripts written as assertions of the right behaviour, a phone and a
+   desktop each, a picture at every step (`dl-clash-built`, `dl-oil`, `dl-band-built`, `dl-cal`, `dl-trk`, `dl-notes-built`, `dl-keys`
+   — 151 lines). Then THREE Sonnet walkers on the one frozen build, each its own worlds, 49 scenarios by the
    screen's own controls: W1 the clash note (12), W2 the notes by the gesture that raises each (21), W3 the eleven
    heads, the question sheets, the OIL question's other forms, the band and the calendar card's name (16). Sizes: a
    phone (390) and a desktop (1440), with 360, 430 / 431 and 320 where a width is the point. No short screen: nothing
    here is a viewport-tall column. **Sized up from the two helpers first told to him**, because the notes alone are
    seventeen gestures. Carried by a test, not walked: §8.
-5. **Its row in the ledger:** added at the close.
+5. **Its row in the ledger:** `docs/walk-ledger.md`, 14 Oct 26.
 
 ## 5. The host's own walk — the scripts, as assertions
 
@@ -133,13 +161,14 @@ The key record of every line: `docs/img/handpass/2026-10-14-three-builds/keyboar
 | Script | What it asserts | Lines, phone / desktop |
 |---|---|---|
 | `dl-clash-built.mjs` | the clash note: where it sits, one clash open and several closed, the row's words, the two lines above untouched, the columns in line, every row one shape, the names' column sized by the roster, no inner scroll, nothing over a row, wider letters, a tap opens the day for the person, Hide, his choice kept, a member sees none; the desktop's strip, its words, the instruction by keyboard | 19 / 5 |
-| `dl-oil.mjs` | the OIL question at a new input's save and before a swap: Back / Add, the words of record, flat answers, the ✕ in the corner, the first answer has the keyboard, ✕ last, the app's ring, the picked outline look; the bar on the board and on Edit Schedule as a band, one line, in wider letters too, nothing under it, by keyboard, OK | 13 / 25 |
+| `dl-oil.mjs` | the OIL question at a new input's save and before a swap: Back / Add, the words of record, flat answers, the ✕ in the corner, the first answer has the keyboard, ✕ last, the app's ring, the picked outline look; the bar on the board and on Edit Schedule as a band, one line, in wider letters too, nothing under it, by keyboard, OK | 14 / 26 |
 | `dl-band-built.mjs` | both bars at once, on real storage: "Not saved" above, both 36 tall and touching, the line under them amber; "Not saved" alone amber too; with no bar, Edit Schedule's cyan edge back | 4 / 4 |
 | `dl-cal.mjs` | the date calendar: the phone card's name, the ring a keyboard's only, the four keys to their exact dates, the lists' ring and Enter, a date that cannot be picked faint and plain (today's disc kept), the faint dates' strength, a run's weekend dates and its sentence | 9 / 24 |
 | `dl-trk.mjs` | the Tracker's boxes: no day after today on the five kinds that refuse one, Upchit still takes tomorrow, a date dim until a mark carries it, one width on a desktop, Delete and Backspace, the Tracker's own Delete not fired | 17 / 16 |
+| `dl-notes-built.mjs` | the publish note he pictured (N1), raised by the screen's own four names and "Publish day" on a Saturday with men who earn and a man on a Common Programme row with no times: the words to the letter, the day named once with its date; on a phone 12 from each edge and two lines | 3 / 2 |
 | `dl-keys.mjs` | records only — the two keyboard jobs NOT in this batch (`[KBD-PUCK]`, `[TRK-KBD-CHART]`), written OPEN, never judged | 0 / 8 OPEN |
 
-**Result of the host's runs on the final build: every line `works`; 8 lines OPEN (the two filed jobs); no page error in any run.**
+**Result of the host's runs on the final build (rebuilt after the walkers, all seven scripts run again at both sizes): 151 lines — 143 `works`, 8 OPEN (the two filed jobs), none failing; no page error in any run.**
 The first run of `dl-clash-built.mjs` found one fault (§9, find 1); the first runs of `dl-oil.mjs`'s both-bars step and of
 `dl-band-built.mjs` found the script's own mistakes (a throwaway world cannot fail a save; the script read the hidden
 top bar's warning instead of the board's) — written here as the script's, not the app's.
@@ -213,6 +242,11 @@ step two's (`[ONE-DATE-CALENDAR]`).
 | The Tracker's own Delete is not fired from a date box | `src/tracker/leftovers.test.tsx` K12 | a document listener wired as the app wires it is not called; the walk's `dl-trk.mjs` proves the same on the page |
 | The bar under a full-screen surface, the top bar's copy standing down | `src/ui/oilconfirm-look.test.tsx` | the two components side by side; on screen: `e2e/oilwait.spec.ts`, `dl-oil.mjs` |
 | N7's seven places | `src/engine/lockednote.test.ts` | counted in the source; the two engine doors pressed |
+| N24 — "An ALL AVAIL input can only be changed in its own window…" | `src/ui/placeholderdoors.test.tsx`, `src/ui/noteswords.test.ts` | the door called directly: it is said only for a drop on an Unavailable row, where an ALL AVAIL input can never be filed — a guard no screen gesture reaches today (§9, find 4) |
+| N4 — the warning before an Unpublish whose OIL is already spent on the Leave War | `src/ui/unpublish-button.test.tsx`, `src/ui/noteswords.test.ts` | the real button pressed twice; the walk did not make a man with that day's OIL spent |
+| N12 — the sentence on a man's puck under the day's switch | `src/ui/noteswords.test.ts` | the words only: that puck is not a control there, so no tap raises it (§0, question 1) |
+| A picked answer with the keyboard on it shows one ring (D842) | `e2e/oilwait.spec.ts` (the swap that waits) | a real screen: Space on "Yes", the ring read; red with the rule cut and the build remade |
+| The calendar's lists keep End, Home, Page and Space from the browser | `src/ui/datecal.test.tsx` | the cause (the key is taken); what it prevents — a year sixty years on — is `dl-cal.mjs`'s line, on the page |
 
 ## 9. What the walk found, and each disposition
 
@@ -321,7 +355,9 @@ band's one line and its stacking, the amber line, the clash list's columns. Thos
 `e2e/leavewar.spec.ts`, `e2e/oilwait.spec.ts` (in the gates) and by the walk's scripts; the calendar's and the Tracker
 boxes' rules are read as contracts by `src/ui/datecal-look.test.ts`.
 
-*(errors seen, and what was not walked: filled at the close)*
+**Errors seen.** No page error and no failed request in any of the host's runs (each script ends on that line) or in any walker's (each share says so). The first full gate run failed three unit files and nothing else — `oilconfirm.test.tsx` (old words, re-expressed), `clashwayout.test.tsx` (one page-level test timing out under the run's load; merged into one, sixty seconds allowed) and `placeholderlist.test.tsx` (thirteen tests; a date that had come due on 14 Oct — it fails the same on the commit the branch was cut at; the date is now held).
+
+**Not walked, and why.** N4 and N24 by their gestures (§8). W3's O3 on a phone (the brief asked for a desktop). A clash in a second leave period (a published weekend in another year — §8). His iPhone itself: every phone figure here is a Windows browser at a phone's size, which draws narrower letters than Apple's — the bar is made to fit wider ones (`dl-oil.mjs` widens the letters and asserts one line still), but the three things to SEE on his iPhone are his look (§11). Not in this batch at all: a puck by keyboard, the Tracker's chart by keyboard (the 8 OPEN lines).
 
 ## 11. The gates, and the look card
 

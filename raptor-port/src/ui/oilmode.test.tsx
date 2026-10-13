@@ -170,6 +170,23 @@ describe('the mode itself (§2.1)', () => {
     expect((DAYS[SAT] as any).oild.people, 'the person mark survived underneath').toBeTruthy()
   })
 
+  /* UNDER THE DAY'S SWITCH A TAP ON AN EVENT'S OWN OIL MARK IS REFUSED — AND THE NOTE NAMES THE SWITCH (owner D843, D844,
+     14 Oct 26). The walk of that day found the wording he had approved sat on a man's puck, which is not a control
+     under the switch (asserted here: no tap target), while THIS tap — the one a person can make — kept the old words;
+     he then asked what "that" in "Turn that off first" meant. The sentence quotes the switch's own label. */
+  it('D844 — with "Nothing today earns" on, a tap on an event\'s OIL mark names the switch to turn off, and writes nothing', async () => {
+    await click(oilBtn())
+    await click($('#sbBoard [data-oilblank]'))
+    expect($('#sbBoard [data-oilblank]')!.textContent, 'the switch\'s own label — the name the note quotes').toBe('Nothing today earns')
+    const before = JSON.stringify((DAYS[SAT] as any).oild)
+    const said: string[] = [], was = HOOKS.toast
+    HOOKS.toast = (m: any) => { said.push(String(m)) }
+    try { await click(groundRowEl(1).querySelector('[data-oilitem]')) } finally { HOOKS.toast = was }
+    expect(said, 'one note, the sentence whole').toEqual(['Nothing on this day earns. Turn off “Nothing today earns” first.'])
+    expect(JSON.stringify((DAYS[SAT] as any).oild), 'nothing written under the switch').toBe(before)
+    expect($$('#sbBoard .sb-panel.grnd [data-oilp]').length, 'and no man\'s puck is a tap target there').toBe(0)
+  })
+
   /* [ALL-AVAIL-WINDOW] (D38) — OIL8/OIL15 still hold, through the new door: the
      sentinel now STAYS a sentinel on the row and its counter opens the window
      that holds the men behind it. The rulings are about the men being reachable
