@@ -292,3 +292,7 @@ programme", and taken out again "Taken off the programme". His two approved sent
 `src/engine/schema.ts` and `docs/data-schema.md` name them). Test first (`ui/bellnotices.test.tsx`, "(D815)" — it
 failed on "Back on the programme"): the take-off, the filing, the take-out and a put-back, each read off Ranger's bell;
 the two lines that were right stay as they were. Words in a list only — no look beyond the unit test; break 37.
+
+**The merge (D817, 13 Oct 26 — "Can u auto merge the rest one after another"):** his one word for the three pull requests
+left — 496, 498, then this one (497) last; each only when up to date with the live app and green. He was told first that he
+had not looked at this batch's additions on a preview, and that "hold 497" stops it.
