@@ -10,7 +10,7 @@
    the code BEFORE the move and must stand unchanged after it. (A deliberate change to how a row is drawn updates the
    record in the same change, on purpose: `npx vitest run src/leavewar/ui/matrix-rows.test.tsx -u`.) */
 import { act, render } from '@testing-library/react'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { advanceStage, initStore, setBidState, setCell, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence, elevenCounters } from '../testkit'
@@ -35,7 +35,10 @@ function world() {
 }
 
 describe('[LW-ROWS-SPLIT] the rows of the Leave War are drawn exactly as they were', () => {
-  beforeEach(world)
+  /* THE CLOCK IS HELD: the grid draws its window of months around today, so a record made on one day would not match
+     on another. Only the date is held (15 Jan 2026, inside the seed's war) — timers run as they do. */
+  beforeEach(() => { vi.useFakeTimers({ toFake: ['Date'] }); vi.setSystemTime(new Date(2026, 0, 15, 9, 0, 0)); world() })
+  afterEach(() => { vi.useRealTimers() })
 
   it('open bidding, as an admin — every row and heading', async () => {
     act(() => { setRole('admin') })
