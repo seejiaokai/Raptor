@@ -205,5 +205,7 @@ does one lookup more for a seat of an input's row).
 |---|---|---|---|
 | 1 | An input of kind "Other" that was taken off can be filed under Unavailable ("→ Unavail") instead of put back on the programme. It then counts again and still needs its OIL answer. Should "→ Unavail" put the OIL question first too, as "Accept" now does? Example: Ranger's "Other" on a public holiday, taken off; a scheduler presses "→ Unavail" — today it is filed there at once and nobody is asked; its "OIL?" tag and the bell still say it needs an answer. | Yes — the same rule at that button | nothing built waits; as built it asks nothing there (D793 says "on the programme") |
 
+**HIS ANSWER, 13 Oct 26 — D803:** *"Unavail will not earn oil. So why ask oil question?"*, then *"Means that everything in medical and leave inputs will not earn oil"*. The button stays as built (it asks nothing) and the recommendation above is withdrawn. The question was badly put — no example, and "it still needs its OIL answer" stated as if settled. Reading the code for his answer found what is really open, and older than this batch: an "Other" filed under Unavailable still earns on its Yes and still wears its "OIL?" tag. Put to him again with an example, recommended "earns nothing, never asked": `[UNAVAIL-FILE-OIL-ASK]`.
+
 **Told, not asked:** the three new phrases; left unanswered, the Accept button itself flashes; a note still on screen is
 taken down when any OIL question is put; a man who replaced an input's only person wears History's dot too.

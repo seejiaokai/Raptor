@@ -4485,8 +4485,9 @@ Three things stay decided:
   the answer throws the whole step away (the answer is never kept alone). "Answer OIL" on an input that has since been
   put back, deleted or moved off that card's day says "That input has changed — not put back". **Nothing asks:** the
   take-off; the app's Undo of a take-off (an Undo never asks); a working day; an input already answered (a No is an
-  answer); **"→ Unavail"** (an Other filed under Unavailable — D793 says "on the programme"; put to him, `OUTSTANDING.md`
-  `[UNAVAIL-FILE-OIL-ASK]`). A note still on screen from the step before is taken down when ANY OIL question is put (on
+  answer); **"→ Unavail"** (an Other filed under Unavailable — D793 says "on the programme"; put to him 13 Oct 26, and
+  after his answer D803 the button stays as it is — what such an input EARNS is the question still his,
+  `OUTSTANDING.md` `[UNAVAIL-FILE-OIL-ASK]`). A note still on screen from the step before is taken down when ANY OIL question is put (on
   a phone on its side it lay over the question's two buttons). Pins: `ui/oilwait.test.tsx` (ON9), `e2e/oilwait.spec.ts`.
 
 ## The bell's list of notices (owner D755 (3), D760, D769 — 12 Oct 26; the one-rule build's step 7)

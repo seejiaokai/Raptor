@@ -2420,6 +2420,12 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   - **A replacement voids the answer** — it was the first man's own — and the question is asked again (the door).
   - **A cancelled or information-only input earns nobody OIL** — `landedStanding` asks the input's own marks first,
     for every day it covers, and still falls back to the row for the rest (a row issued before the build).
+  - **Leave and medical inputs earn nobody OIL and are never asked the OIL question** (`inputs.ts oilAsks` leaves
+    their kinds out) — said again by him on 13 Oct 26 (D803: "Unavail will not earn oil … everything in medical and
+    leave inputs"). **An input of kind Other FILED under Unavailable ("→ Unavail") is a different thing and is not
+    settled:** the button asks nothing, but `landedStanding` reads such an input as never landed, which credits on the
+    man's own Yes (`oilev.test.ts` pins that), and its "OIL?" tag, the one list and the bell's line still count it —
+    put to him with an example, `OUTSTANDING.md` `[UNAVAIL-FILE-OIL-ASK]`. An overseas duty asks and earns as before.
   - **OIL Earn's reasons:** a man's own one-person input keeps his words; an input of several, and the men behind
     ALL AVAIL, say whoever filed it.
   - **A day issued before the build keeps the OIL it went out with** (D48, D142): its frozen block is read by the
