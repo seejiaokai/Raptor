@@ -55,6 +55,9 @@ Success is a week planned, checked and published with less effort and nothing mi
 
 - **The Raptor look stays:** dark, dense, the talon logo, and colours that each mean something (the table in
   `design-practices.md` §4).
+- **Cleaner, in the way Apple's interfaces are — and intuitive** (D821: "raptor style design but cleaner look like
+  apple, intuitive design that doesn't require a lot of instructions … placement of buttons and everything just makes
+  sense"). Apple's cleanliness and sense of place — not its light colours, its single accent or its empty space.
 - **Pucks stay as they are and never wrap; buttons keep their size.**
 - **The login page stays simple.**
 - A working screen stays dense: "sleek" here is fewer words and fewer boxes, never more empty space.
@@ -70,10 +73,12 @@ Success is a week planned, checked and published with less effort and nothing mi
 ## Product Principles
 
 1. **Efficiency for the scheduler first** — fewer steps, fewer words, nothing that moves under the hand.
-2. **The app cross-checks so people do not have to** — a problem is flagged where it is made, in plain words.
-3. **One record, seen the same everywhere** — the schedule, the inputs, leave and OIL always agree.
-4. **A published record changes only in the open** — by amendment, with who and what.
-5. **Nothing is paid for with speed.**
+2. **Intuitive before instructed** — where a thing sits and what it is called should make a hint unnecessary; a
+   screen that needs an instruction is redesigned before it is explained (D821).
+3. **The app cross-checks so people do not have to** — a problem is flagged where it is made, in plain words.
+4. **One record, seen the same everywhere** — the schedule, the inputs, leave and OIL always agree.
+5. **A published record changes only in the open** — by amendment, with who and what.
+6. **Nothing is paid for with speed.**
 
 ## Accessibility & Inclusion
 

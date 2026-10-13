@@ -29,6 +29,10 @@ when that one is live.)*
 1. **His rulings** — always. The ones that bound almost every design choice:
    - **the buttons keep their size** (D487) — nothing here makes a control bigger or smaller without his word;
    - **the Raptor look stays** (D765) — dark, dense, its colours each carrying a meaning (§4);
+   - **cleaner, in the way Apple's interfaces are, and intuitive enough to need few instructions** (D821 — "placement of
+     buttons and everything just makes sense"): Apple's CLEANLINESS — fewer boxes and lines, a clear order of
+     importance, the same thing in the same place on every screen — never its light colours, its one accent or its
+     empty space;
    - **a scheduler's screen is designed for the desktop first** and must still serve a small correction on a phone; **a
      member's screen for the phone first**; and a scheduler's screen is judged by efficiency — fewer steps (D820);
    - **a working screen stays dense** (D812; first said of the Inputs pages — D688, D696, D653) — "sleek" here is fewer
@@ -111,6 +115,10 @@ built on his word — it is not a statement that the app does it today.**
 
 *From the layout guide of `jakubkrehel/skills` and the Apple design skill of 11 Oct 26 (emphasis before another box; one
 main button; hair-thin lines); his D726, D765, D809.*
+
+**The test for any screen (D821): could someone use it without reading its hint?** A screen that needs an instruction is
+a design not yet clear. Put the design right first — where the control sits, what it is called, what it sits beside —
+and only then shorten, remove or fold the instruction (§1), each change shown to him before and after.
 
 - **Group with the space already there and a change of surface before another box — never added height on a working
   screen** (§0: D688, D696). Most of what reads as clutter is borders: a box inside a box inside a window. Let a
