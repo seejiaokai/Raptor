@@ -27,7 +27,7 @@ the later merge keeps both (D78).
 - **Shipped on this branch:** the week's own tidy-up clears that timer, and the timer does nothing where there is no page; two tests in `raptor-port/src/ui/pan.test.tsx` (the first failed before the fix). Nothing a person sees changes: on a phone the week still jumps to today.
 - **Unfinished:** its checks on GitHub, then his "merge live" (D817 covered three named pull requests and is spent). After it is live, `main`'s run should be green again — look.
 - **Branch:** `claude/pan-timer-guard`, cut from `main`, in the checkout `.claude/worktrees/one-date-calendar-step-one-55ba13`.
-- **Gates:** see this branch's pull request; the local run's counts are in the commit that closes it.
+- **Gates:** the whole set in one run under the PC's lock on `1792e7784` — unit 11069 / 11069 (632 files) · build clean · tfin 728 / 0 · e2e 801 passed, 0 failed, 57 skipped · smoke 446 / 0 · rulecheck OK · docsize OK.
 - **Pick up here:** `gh pr list --head claude/pan-timer-guard`; then the block below (the design page is next — D813).
 <!-- /now -->
 
@@ -120,7 +120,9 @@ his ruling — DONE 7 Oct 26 on `claude/docs-tidy-7-oct` (D609: options 1 to 6; 
 
 ## Gate baseline
 
-**The latest counts watched — 13 Oct 26, `claude/inputs-schedule-batch` at `9c1762414` — `main` with the Inputs / schedule batch (D793) and every fix of its full check (NOT `main`'s code), the whole gate set under the PC lock with nothing else running, in one run: unit 10916 / 10916 (624 files) · build clean · tfin 728 / 0 · e2e 778 passed, 0 failed, 57 skipped · smoke 445 / 0 · rulecheck OK · docsize OK. (The first run of that day, before the walk, had one Leave War browser test fail at its month-button step — alone 3 of 3: `[LW-REQ-PICK-MONTH-UNSTEADY]`.)
+**The latest counts watched — 13 Oct 26 (the afternoon), `claude/pan-timer-guard` at `1792e7784` — `main` with all five of the night's pull requests and the design guide, plus the one timer cleared (so: `main`'s code but for that), the whole gate set under the PC lock with nothing else running, in one run: unit 11069 / 11069 (632 files) · build clean · tfin 728 / 0 · e2e 801 passed, 0 failed, 57 skipped · smoke 446 / 0 · rulecheck OK · docsize OK.
+
+**Before that — 13 Oct 26, `claude/inputs-schedule-batch` at `9c1762414` — `main` with the Inputs / schedule batch (D793) and every fix of its full check (NOT `main`'s code), the whole gate set under the PC lock with nothing else running, in one run: unit 10916 / 10916 (624 files) · build clean · tfin 728 / 0 · e2e 778 passed, 0 failed, 57 skipped · smoke 445 / 0 · rulecheck OK · docsize OK. (The first run of that day, before the walk, had one Leave War browser test fail at its month-button step — alone 3 of 3: `[LW-REQ-PICK-MONTH-UNSTEADY]`.)
 
 **Before that — 13 Oct 26 (the night, later), `claude/tracker-date-boxes` at `679bd5755` — step one with the Tracker's date boxes on top and every fix of its read (NOT `main`'s code), the whole gate set under the PC lock with nothing else running, in one run: unit 11022 / 11022 (630 files — on `679bd5755`; the rest on `e8e300cd2`, only test files between them) · build clean · tfin 728 / 0 · e2e 795 passed, 0 failed, 57 skipped · smoke 446 / 0 · rulecheck OK · docsize OK (over one size marker by 480, deferred — D29). Perf and the adapted probes were not run for this job (the Tracker's own page).
 
