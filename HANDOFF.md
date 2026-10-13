@@ -21,6 +21,23 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/inputs-rulings-file -->
+### `claude/inputs-rulings-file` — D802: THE INPUTS PAGES' RULINGS IN A FILE OF THEIR OWN (documents only); AND WHERE THE WHOLE NIGHT OF 13 OCT 26 STANDS (D799 — one chat, unattended) — written 13 Oct 26 — verify before use
+- **THE NIGHT, JOB BY JOB — every one on a branch of its own, nothing merged, each waiting for his look and "merge live":**
+  1. **Step one of the one date calendar** — `claude/one-date-calendar-step-one-55ba13`, pull request 495 (base `main`). Its block is below.
+  2. **The Tracker's date boxes (D801)** — `claude/tracker-date-boxes`, pull request 496, STACKED on 495 (it merges after it). Its block is on that branch (`git show claude/tracker-date-boxes:HANDOFF.md`).
+  3. **The small Inputs / schedule batch (D793)** — `claude/inputs-schedule-batch`, pull request 497 (base `main`). Its block is on that branch. One question of his is parked there: `[UNAVAIL-FILE-OIL-ASK]`.
+  4. **This job — D802**, on this branch, cut from step one's (D802's own row is recorded there): its read by a fresh, blind Opus reader is RUNNING (report `raptor-port/docs/handpass/parts/rulings/read-opus.md`) — when it is back: act on its findings, archive `[SCHEDULER-RULINGS-SIZE]` by the script, run the document check, push, open the pull request based on step one's branch.
+  5. **NOT STARTED — `[TRK-FILE-TRANSFER-SPLIT]`, then `[LW-ROWS-SPLIT]`** (D775; D799 is his word to start). Each is tier FULL by the tidiness read that proposed it (`raptor-port/docs/superpowers/briefs/2026-10-03-code-tidy-audit-astra.md` §3, §1): a boundary test FIRST, the split through a small explicit interface (the Tracker's has a stop condition — if it needs a catch-all "core context", stop and report), nothing on screen may change (prove it by recording — `raptor-port/docs/walk-scripts.md` §8), then the full check with Fable beside a fresh Opus reader (saved data; permissions and OIL on the Leave War's rows). Each on a new branch from `main`.
+  - NOT tonight, by his rulings: calendar step two (D800), the Tracker's progress graph (D774), the sleek-interface pass (D765).
+- **On this branch:** 104 rulings moved WHOLE by the script (`backlog-archive.mjs --rulings --move-rows`) from `.claude/rules/decisions/scheduler.md` (and its full rows) to the new `.claude/rules/decisions/inputs.md` (and `.claude/decisions-full/inputs.md`) — every row's bytes unchanged, 215 stay; a ruling that governs both an Inputs page and the schedule stayed in the scheduler's file. Each file points at the other; the new file is named in `doc-structure.md`, `record-decisions.md`, `AGENTS.md` and the map; size markers: scheduler 90,000 bytes, inputs 32,000 (`raptor-port/scripts/docsize.mjs`). Three skill notes (567–569; 564–566 are on the Tracker's branch).
+- **The night's rulings:** D798 (replaced by D801), D799, D800, D801, D802 — recorded on step one's branch, so on this one too. Next free number: D803 — verify.
+- **Merging order for him:** 495 first; then 496 and this one (both stacked on 495 — GitHub re-points them to `main` when 495 merges; `main` is merged in first, D78); 497 at any time. The backlog and the handoff will meet in those merges — each branch touched only its own items and its own block.
+- **Branch:** `claude/inputs-rulings-file`, in the checkout `.claude/worktrees/one-date-calendar-step-one-55ba13` (its `raptor-port\node_modules` is a junction — remove with `cmd //c rmdir`).
+- **Gates:** documents only — the document check (`cd raptor-port && npm run docsize`).
+- **Pick up here:** `git status`, `git log --oneline -5`; finish line 4 if it is not finished; then line 5, from `main`.
+<!-- /now -->
+
 <!-- now:claude/one-date-calendar-step-one-55ba13 -->
 ### `claude/one-date-calendar-step-one-55ba13` — `[ONE-DATE-CALENDAR]` STEP ONE IS BUILT, CHECKED AND IN A PULL REQUEST, WAITING FOR HIS LOOK ON HIS IPHONE AND "MERGE LIVE"; THE NIGHT OF 13 OCT 26 RUNS ON, UNATTENDED, IN THE SAME CHAT (D799) — written 13 Oct 26, night — verify before use
 - **Where it started:** his opening line — build step one (D786, D795, D796, D797), a failing test first. Going to sleep he ruled **D799: "run all in this chat and compact smartly"** — the night's jobs one after another in ONE chat, each on its own branch, no merge; a question never stops the run (D596); the state is in this file and the backlog before any compaction (D667, D766). Then "All as recommended for questions 1-4": **D800** (a sideways finger turns the new calendar's month; step two waits for his look), **D801** (the Tracker's date boxes: a tap picks, no tick — D798 replaced), **D802** (the Inputs pages get a rulings file of their own).

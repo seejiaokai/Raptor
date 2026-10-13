@@ -151,3 +151,48 @@ resolved statuses always carry their resolution date
 ode_modules"`), and build before any look" — and say that facts about THIS folder (a link, a stale bundle) do not carry to the next one.
 
 **Principle:** A handoff describes a machine state. A fact that belongs to the finishing chat's folder must be marked as such, and what the next chat's folder will LACK is worth more to it than what the old one holds.
+
+### Observation 567: The walker's brief named a control that is not there — the host's own browser test of the route was written AFTER the brief, and corrected it
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** The Inputs / schedule batch (D793) — one Sonnet walker, a brief written by the host. (Numbered past 564–566, which are on the open branch claude/tracker-date-boxes and not in this copy of the log.)
+**Skill:** bug-check (the walk — `raptor-port/docs/walk-scripts.md`, writing a walker's brief)
+**Type:** internal
+**Phase/Area:** The order of the host's own run and the walker's brief
+
+**Issue:** The brief told the walker to take an input off the programme with a button it named and to press "Accept" on its card. Written from the code: the button exists in the source. On the real board the take-off is a different control (the ✕ at the end of the row), and the card with "Accept" is inside a panel that opens folded — so the first control named was not on screen at all. This was found only because the host then wrote a browser test of the same route for the gates, which failed three times on exactly those steps before anything of the app was wrong. Had the walker gone first, its first hour would have been spent finding the route.
+
+**Suggested improvement:** In `walk-scripts.md`, under writing a walker's brief: "the route every scenario starts from is DRIVEN by the host first — a browser test or a look script that passes — and the brief names that file as the recipe. Control names in a brief come from that passing run, never from reading the source: the source says what exists, not what is on screen, visible, in which panel."
+
+**Principle:** A brief written from the code describes the code. The route a helper must walk is proved by walking it once before the brief is written.
+
+### Observation 568: A new path that skips the usual ending of a write dropped a duty that ending performed — found by a blind reader, not by any test of the path
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** The Inputs / schedule batch (D793) — the put-back made WITH its OIL answer is its own command and so does not call the schedule's usual ending
+**Skill:** raptor-executor (inspect before editing); bug-check (the reads)
+**Type:** internal
+**Phase/Area:** Giving one branch of an existing handler a different ending
+
+**Issue:** Every "Accept" ended in the schedule's standard ending (the epilogue that validates, saves and reconciles the "goes out" marks). The new answered path is saved as one input batch, so the builder skipped that ending for it — "a second command would be a second Undo step" — and tested the Undo. The ending also reconciled the marks on an issued row; with it skipped, a row put back exactly as issued kept a "goes out" mark. Every test of the new path published the day AFTER the take-off, so no test had an issued row to put back. A fresh reader found it by listing what the skipped call does.
+
+**Suggested improvement:** In the executor's guide, under minimal changes: "when a new branch SKIPS a call the other branches make (an epilogue, an after-step, a notify), write down — in the comment beside the skip — each thing that call does, and for each either show where the new branch gets it or say why it does not need it." And in the bug-check brief for readers, keep the line that asked for it: "what does the changed path no longer run?"
+
+**Principle:** Skipping a shared ending is a change to everything that ending does, not only to the one effect you meant to avoid. List its effects before skipping it.
+
+### Observation 569: A rulings move was refused twice by its own script for reasons that were one line each — the refusal named the fix, and both were the builder's set-up slips
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** D802 — the Inputs pages' rulings moved to a file of their own with `backlog-archive.mjs --rulings --move-rows`
+**Skill:** record-decisions / doc-structure (a NEW area file); session work with the mover script
+**Type:** internal
+**Phase/Area:** Setting up a new area file before the mover runs
+
+**Issue:** A new area needs four things before a row can move into it: the file with its short table, a row in the map, a byte tripwire, and (the script makes it) the full-text file. The builder's set-up left the map row's last cell empty — the map reader then did not see the row and the move was put back whole with "not in the map"; and a placeholder string was written into the checker's tripwire list by a patch that did not match, which removed the scheduler's own tripwire. Both were caught by the script's own all-or-nothing check — nothing was lost — but each cost a round, and the dry run did not show the first (it reports the map as rewritten).
+
+**Suggested improvement:** In `DECISIONS.md`'s steps (or `record-decisions.md` §Keeping the list whole): a four-line recipe for a NEW area — "(1) the file: `paths:`, title, preamble, the short table's header; (2) its map row with at least one D-number in the last cell (the script rewrites it); (3) its row in `RULING_BYTES`, added beside the others — never a placeholder; (4) `--dry-run`, then the move, then a row-by-row compare against the base". And have `--dry-run` run the same inventory the real run does.
+
+**Principle:** An all-or-nothing script turns set-up slips into refusals, which is right — but a rehearsal that skips the real run's last check rehearses the wrong thing.
