@@ -31,8 +31,11 @@
 # its one runner (473 files, 8,129 tests; it was 4m38s above), and nine merges
 # in one afternoon each waited on it - about three hours. The raptor unit leg
 # is now FOUR shards and the raptor browser leg (9 to 10 minutes) TWO, each on
-# its own free runner; the slowest leg should be the Leave War's (about 7 to
-# 8 minutes). A pull request now shows FIFTEEN passing checks, not eleven.
+# its own free runner. MEASURED on the first run with that split (pull
+# request 504): raptor unit 4m49s to 7m54s, raptor browser 6m02s / 7m24s - and
+# the Leave War's heavier unit half 15m28s (4 to 8 minutes earlier that day),
+# the slowest leg by seven minutes. So the Leave War unit leg is FOUR shards
+# too. A pull request now shows SEVENTEEN passing checks, not eleven.
 # No larger runner is used: they are billed by the minute even on a public repo.
 name: Deploy to GitHub Pages
 
@@ -266,10 +269,16 @@ jobs:
             shard: 3/4
           - project: raptor
             shard: 4/4
+          # the Leave War in four too (13 Oct 26, the first run with the split above): its heavier half took 15m28s on that
+          # run - 4 to 8 minutes on the day's earlier ones - and was the slowest leg by seven minutes
           - project: leavewar
-            shard: 1/2
+            shard: 1/4
           - project: leavewar
-            shard: 2/2
+            shard: 2/4
+          - project: leavewar
+            shard: 3/4
+          - project: leavewar
+            shard: 4/4
     steps:
       - uses: actions/checkout@v4
         with:
