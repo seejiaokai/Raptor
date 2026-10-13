@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as core from '../app/core.js';
-import { isComposing } from './keys.js';
+import { DateBox as AppDateBox } from '../../ui/DateBox';
 
 /* A DATE BOX THAT SAVES WHEN YOU LEAVE IT ([TRK-RETEST-NOTES] C5, 28 Sep 26).
    The side panel's date boxes saved on every keystroke, and a browser's date box
@@ -16,38 +16,38 @@ import { isComposing } from './keys.js';
    One commit is one undo step; the same day retyped commits nothing.
    `onCommit` may answer with words — the reason a day was refused (a day after
    today, D374) — and they show on one line under the box until the next change.
-   Key it by student AND field, so a Crew switch never carries a draft across. */
+   Key it by student AND field, so a Crew switch never carries a draft across.
+
+   SINCE 13 OCT 26 THE BOX ITSELF IS THE APP'S OWN (owner D801 — "All as recommended": the app's one date calendar, a
+   tap picks, no tick; D798 before it). The phone's date box is gone, and with it the typing the paragraph above is
+   about: a day is PICKED, whole, so there is no half-typed day to wait out — a pick is the commit, one undo step, and
+   the same day picked again commits nothing. What this file still owns is unchanged: `onCommit` may answer with the
+   reason a day was refused (D374) and it shows on one line under the box; a day's box can still be EMPTIED — the app's
+   calendar has no Clear (D796), so a small "take this date off" button stands beside a box that holds a date and hands
+   over '' exactly as an emptied box did. The wrapper's class is `trdatebox`: `datebox` is the app's own box's name on
+   the one global stylesheet, and the two looks met once (ui/scheduler/26-date-calendar.css). */
 /** @param {{ value?: string, onCommit: (v: string) => any, id?: string, title?: string, style?: object }} props */
 export function DateBox({ value, onCommit, id, title, style }) {
   const saved = value || '';
-  const [draft, setDraft] = useState(null);
   const [warn, setWarn] = useState('');
-  /* the latest of each, for the commit that runs as the box goes away */
-  const live = useRef({});
-  live.current = { draft, saved, onCommit };
   const gone = useRef(false);
-  const commit = async (el) => {
-    const { draft: v, saved: was, onCommit: hand } = live.current;
-    if (v == null) return;
-    live.current.draft = null;
-    if (!gone.current) setDraft(null);
-    if (v === was) return;
-    if (v === '') {
-      if (gone.current || (el && el.validity && el.validity.badInput)) return;
-    } else if (!core.isWholeDay(v)) return;
-    const said = await hand(v);
-    if (!gone.current) setWarn(typeof said === 'string' ? said : '');
-  };
-  useEffect(() => () => { gone.current = true; commit(null); }, []);
+  useEffect(() => () => { gone.current = true; }, []);
   /* the line belongs to the day it refused: when the saved day changes under the box (a
      re-sort of the failures list moved another failure into this row), it goes (walker b F-b4) */
   useEffect(() => { setWarn(''); }, [saved]);
+  const hand = async v => {
+    if (v === saved) return;
+    if (v !== '' && !core.isWholeDay(v)) return;
+    setWarn('');
+    const said = await onCommit(v);
+    if (!gone.current) setWarn(typeof said === 'string' ? said : '');
+  };
   return (
-    <span className="datebox">
-      <input type="date" id={id} title={title} style={style} value={draft ?? saved}
-        onChange={e => { setWarn(''); setDraft(e.target.value); }}
-        onBlur={e => { commit(e.target); }}
-        onKeyDown={e => { if (e.key === 'Enter' && !isComposing(e)) commit(e.currentTarget); }} />
+    <span className="trdatebox" style={style}>
+      <span className="trdatebox-row">
+        <AppDateBox id={id} label={title || 'Date'} value={saved} onChange={hand} />
+        {saved ? <button type="button" className="sm trdate-x" title="Take this date off" aria-label="Take this date off" onClick={() => hand('')}>&#10005;</button> : null}
+      </span>
       {warn ? <span className="datewarn" role="status">{warn}</span> : null}
     </span>
   );

@@ -231,7 +231,13 @@ button:disabled:hover{border-color:var(--line)}
 /* A date box that saves when it is LEFT (DateBox.jsx, [TRK-RETEST-NOTES] C5) wraps its box
    so the one line of refusal (a day after today, D374) can sit right under it; the wrapper
    takes the box's place in every row, grid and card, so the box keeps its width. */
-.datebox{display:flex;flex-direction:column;gap:2px;min-width:0}
+.trdatebox{display:flex;flex-direction:column;gap:2px;min-width:0}
+/* the app's own date box (D801) with, beside it, the small button that takes a date off — the box takes the room */
+.trdatebox-row{display:flex;align-items:stretch;gap:4px;min-width:0}
+.trdatebox-row>button.datebox{flex:1 1 auto;min-width:0}
+.trdate-x{flex:0 0 auto}
+/* the marking pop-up's two dates take the pop-up's width, as the boxes they replace did */
+button.datebox.trpopdate{display:flex;width:100%}
 /* While the Tracker reloads the next person's own course and student (D376) the last
    person's page is hidden — never shown, never pressed — and one line says why. */
 .tr-root.resuming>*:not(.resumenote){visibility:hidden}
