@@ -748,19 +748,19 @@ describe('the earn half, on the working copy (Fable S6, S7)', () => {
     expect(JSON.stringify((DAYS[SAT] as any).oild || {}), 'no decision written under the mask').toBe(before)
   })
 
-  /* THE DAY'S SWITCH, AND THE SENTENCE NAMES IT (owner D843, D844 — 14 Oct 26). The walk found that the wording he had
+  /* THE DAY'S SWITCH, AND THE SENTENCE SAYS WHAT TO TURN OFF (owner D843, D844, D845 — 14 Oct 26). The walk found that the wording he had
      approved was on a puck nobody can tap, and that this tap — one a person CAN make — still said "turn that off first";
-     he then asked what "that" was. It quotes the switch's own label. */
-  it('the whole day switched off: the tap names the switch to turn off, and writes nothing (D843, D844)', async () => {
+     he then asked what "that" was, and gave the words himself: "Turn off the switch first." (D845) */
+  it('the whole day switched off: the tap says to turn off the switch first, and writes nothing (D843, D845)', async () => {
     await earnSat()
     await act(async () => { setOilBlanket(SAT, true); notify() })
     const before = JSON.stringify((DAYS[SAT] as any).oild || {})
     toasts = []
     await click(rows().find(r => r.dataset.awp === 'plasma')!.querySelector('.puck'))
-    expect(toasts, 'one note, the sentence whole').toEqual(['Nothing on this day earns. Turn off “Nothing today earns” first.'])
+    expect(toasts, 'one note, the sentence whole').toEqual(['Nothing on this day earns. Turn off the switch first.'])
     expect(JSON.stringify((DAYS[SAT] as any).oild || {}), 'no decision written under the switch').toBe(before)
-    expect($('.availwin .win-foot').textContent || '', 'and the hint names it the same way')
-      .toContain('Nothing on this day earns. Turn off “Nothing today earns” to switch men one by one.')
+    expect($('.availwin .win-foot').textContent || '', 'and the hint says it the same way')
+      .toContain('Nothing on this day earns. Turn off the switch to change men one by one.')
   })
 
   it('and under the mask the hint says what IS true, not "tap to stop a man earning" (walk W2)', async () => {

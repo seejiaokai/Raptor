@@ -23,6 +23,12 @@ Nothing below held the build; each is a choice that is his, with what the walk s
    refusal takes its approved full stop. BUILT, tests first: `src/ui/oilmode.test.tsx` (the event's OIL mark tapped
    under the switch — and no man's puck a tap target there), `src/ui/availwin.test.tsx` (a man tapped in the window),
    `src/ui/noteswords.test.ts` (the one source, the switch's own label, the old words gone).
+   **AND AGAIN, SHOWN IT BUILT — "Maybe nothing on this day earns. Turn off the switch first", then "1" (D845):** his own
+   shorter wording, chosen over "the day's switch" (put to him because every event's mark and every man's puck is a
+   switch there too). `Nothing on this day earns. Turn off the switch first.` — the WORDING OF RECORD, from the one
+   source; the window's hint "…Turn off the switch to change men one by one." Tests re-expressed first (red), then the
+   words; on screen by `dl-notes-built.mjs`: the tap on an event's OIL mark under the switch says it, one line on a
+   phone (38 tall), no man's puck a tap target there (picture `note-phone-2-under-the-days-switch.png`, opened).
 2. **On a phone a note raised while a window is open lies over the window's title and ✕ for about three seconds** —
    it goes to the top there (your choice of 10 Oct, so it is not over the window's buttons), and it is full width now
    (D828), so it covers the whole head instead of its middle. Picture: `w2/ntop-phone-note-with-window-up.png`; the

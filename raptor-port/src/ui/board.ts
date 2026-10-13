@@ -1287,8 +1287,8 @@ export function boardArmClick(e: MouseEvent) {
        not. Say which mask is on, so the way to change it is obvious. */
     if (oilItemMasked(di, item)) {
       e.stopPropagation()
-      /* (owner D838, 14 Oct 26 — N12: a fact, then what to do; the day's sentence names its switch and has one source,
-         ui/oilmode.ts — D844. The event's own OIL mark below and the ALL AVAIL window say the same words: D843.) */
+      /* (owner D838, 14 Oct 26 — N12: a fact, then what to do; the day's sentence says what to turn off and has one source,
+         ui/oilmode.ts — D844, D845. The event's own OIL mark below and the ALL AVAIL window say the same words: D843.) */
       return toast(oilBlanketOn(di)
         ? DAY_EARNS_NOTHING
         : 'This event earns nobody any OIL. Turn the event back on first.')

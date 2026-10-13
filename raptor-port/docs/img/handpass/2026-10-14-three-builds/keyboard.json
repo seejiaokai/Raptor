@@ -1045,8 +1045,15 @@
  {
   "surface": "The publish note [phone]",
   "key": "N12 — a tap on an event's OIL mark with the day's switch on",
-  "expected": "Nothing on this day earns. Turn off “Nothing today earns” first. — the name quoted is the switch's own label, read off the screen (\"Nothing today earns\")",
-  "saw": "Nothing on this day earns. Turn off “Nothing today earns” first.",
+  "expected": "Nothing on this day earns. Turn off the switch first. (the switch pressed just before reads \"Nothing today earns\")",
+  "saw": "Nothing on this day earns. Turn off the switch first.",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [phone]",
+  "key": "N12 on a phone — one line",
+  "expected": "one line: 38 tall (the wording that quoted the switch's name ran to two)",
+  "saw": "38 tall",
   "verdict": "works"
  },
  {
@@ -1080,8 +1087,8 @@
  {
   "surface": "The publish note [desk]",
   "key": "N12 — a tap on an event's OIL mark with the day's switch on",
-  "expected": "Nothing on this day earns. Turn off “Nothing today earns” first. — the name quoted is the switch's own label, read off the screen (\"Nothing today earns\")",
-  "saw": "Nothing on this day earns. Turn off “Nothing today earns” first.",
+  "expected": "Nothing on this day earns. Turn off the switch first. (the switch pressed just before reads \"Nothing today earns\")",
+  "saw": "Nothing on this day earns. Turn off the switch first.",
   "verdict": "works"
  },
  {

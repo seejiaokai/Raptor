@@ -57,8 +57,8 @@ try {
   await L.close(w)
 }
 
-/* N12 — THE REFUSAL UNDER THE DAY'S SWITCH NAMES THE SWITCH (owner D843, D844, 14 Oct 26 — "What is turn 'that' off mean",
-   then "Clearer"). A world of its own, Saturday not published: the Scheduler Board, OIL Earn, the day's own switch
+/* N12 — THE REFUSAL UNDER THE DAY'S SWITCH SAYS WHAT TO TURN OFF, IN HIS WORDS (owner D843, D844, D845, 14 Oct 26 — "What is
+   turn 'that' off mean", then his own "Turn off the switch first"). A world of its own, Saturday not published: the Scheduler Board, OIL Earn, the day's own switch
    pressed, then a tap on an event's own OIL mark — the tap a person CAN make (a man's puck is not a control there). */
 const w2 = await L.world(K), q = w2.page
 const errs2 = []; q.on('pageerror', e => errs2.push(String(e)))
@@ -78,8 +78,9 @@ try {
   await press2('#schedBoard [data-oilitem]:visible')
   const t2 = await shown2()
   await L.pic(w2, `note-${K}-2-under-the-days-switch`)
-  const WANT2 = `Nothing on this day earns. Turn off “${label}” first.`
-  ok('N12 — a tap on an event\'s OIL mark with the day\'s switch on', `${WANT2} — the name quoted is the switch's own label, read off the screen ("${label}")`, t2 ? t2.text : 'NO NOTE', !!t2 && t2.text === WANT2 && label === 'Nothing today earns')
+  const WANT2 = 'Nothing on this day earns. Turn off the switch first.'
+  ok('N12 — a tap on an event\'s OIL mark with the day\'s switch on', `${WANT2} (the switch pressed just before reads "${label}")`, t2 ? t2.text : 'NO NOTE', !!t2 && t2.text === WANT2)
+  if (w2.phone && t2) { const h = await q.evaluate(() => Math.round(document.getElementById('toastEl').getBoundingClientRect().height)); ok('N12 on a phone — one line', 'one line: 38 tall (the wording that quoted the switch\'s name ran to two)', `${h} tall`, h === 38) }
   ok('N12 — a man\'s puck under the day\'s switch', 'not a control there: no puck is a tap target (which is why the sentence is said from the event\'s mark)', `${pucks} tappable pucks`, pucks === 0)
   ok('no page error (the board)', 'none', errs2.length ? errs2.join(' | ') : 'none', !errs2.length)
 } finally {

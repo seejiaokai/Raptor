@@ -37,14 +37,13 @@ const BUILT: [string, string, string, number][] = [
   ['N10 — info only, off (List 3 row 8)', 'ui/board.ts', "'This item is checked against the rules again and can earn OIL'", 3],
   ['N11 — nothing today earns, on', 'ui/board.ts', "'Nothing on this day earns OIL, including anything added later'", 1],
   ['N11 — nothing today earns, off', 'ui/board.ts', "'This day can earn OIL again, and the marks underneath are back'", 1],
-  /* N12's first sentence NAMES THE SWITCH (owner D844, 14 Oct 26 — "What is turn ‘that’ off mean", then "Clearer"), and it has ONE
-     source, beside the switch whose name it quotes — said from a man's puck, an event's own OIL mark and the ALL AVAIL
-     window alike (D843: the two a person can see are worded as the puck's is) */
-  ['N12 — the sentence under the day’s switch, its one source', 'ui/oilmode.ts', "export const DAY_EARNS_NOTHING = 'Nothing on this day earns. Turn off “Nothing today earns” first.'", 1],
-  ['N12 — …whose quoted name is the switch’s own label', 'ui/oilmode.ts', '>Nothing today earns</button>', 1],
+  /* N12's first sentence SAYS WHAT TO TURN OFF, in his own words (owner D845, 14 Oct 26 — "Turn off the switch first"; before
+     it D844, "What is turn ‘that’ off mean"), and it has ONE source, beside the switch — said from a man's puck, an
+     event's own OIL mark and the ALL AVAIL window alike (D843: the two a person can see are worded as the puck's is) */
+  ['N12 — the sentence under the day’s switch, its one source', 'ui/oilmode.ts', "export const DAY_EARNS_NOTHING = 'Nothing on this day earns. Turn off the switch first.'", 1],
   ['N12 — a puck under the day’s switch, and the event’s own OIL mark', 'ui/board.ts', 'DAY_EARNS_NOTHING', 3],
   ['N12 — a man in the ALL AVAIL window', 'ui/AvailWindow.tsx', 'DAY_EARNS_NOTHING', 2],
-  ['N12 — the ALL AVAIL window’s hint names the switch the same way', 'ui/AvailWindow.tsx', "'Nothing on this day earns. Turn off “Nothing today earns” to switch men one by one.'", 1],
+  ['N12 — the ALL AVAIL window’s hint says it the same way', 'ui/AvailWindow.tsx', "'Nothing on this day earns. Turn off the switch to change men one by one.'", 1],
   ['N12 — the event’s refusal in the ALL AVAIL window, as approved', 'ui/AvailWindow.tsx', "'This event earns nobody any OIL. Turn the event back on first.'", 1],
   ['N12 — a puck under an item’s switch', 'ui/board.ts', "'This event earns nobody any OIL. Turn the event back on first.'", 1],
   ['N13 — a standby wave added', 'ui/board.ts', "S.label + ' added: standalone, ' + (S.all ? 'every seat checked for availability, SC currency, front seat and overlapping places only'", 1],
@@ -107,6 +106,8 @@ const GONE: [string, string][] = [
   ['ui/board.ts', 'urn that off'],
   ['ui/AvailWindow.tsx', 'urn that off'],
   ['ui/AvailWindow.tsx', 'earns nobody any OIL — turn'],
+  ['ui/oilmode.ts', "Turn off “Nothing today earns” first.'"],
+  ['ui/AvailWindow.tsx', 'Turn off “Nothing today earns”'],
   ['ui/inputedit.tsx', 'was open — the window has closed'],
   ['ui/inputedit.tsx', 'save first — then change its kind'],
   ['ui/reqdoor.ts', 'is the last on this input —'],

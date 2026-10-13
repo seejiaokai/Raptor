@@ -340,7 +340,7 @@ export function AvailWindow() {
       : m.noAsk ? `${m.noAsk.charAt(0).toUpperCase()}${m.noAsk.slice(1)}.`
       : ver ? 'Who earned OIL on the day as it was issued.'
       : masked ? (oilBlanketOn(di)
-        ? 'Nothing on this day earns. Turn off “Nothing today earns” to switch men one by one.'
+        ? 'Nothing on this day earns. Turn off the switch to change men one by one.'
         : 'This event earns nobody. Turn it back on to switch men one by one.')
       /* an input filed for ALL AVAIL / ALL whose filer said No, or has not answered ([INPUT-ALL-AVAIL], D711 (1)): the
          men listed earn nothing until one is tapped — the hint says that, not the opposite */
