@@ -1,8 +1,12 @@
 # `[ONE-DATE-CALENDAR]` step one — the bug check (WALK)
 
-**Where it stands:** built, tests first; the host's own look at six sizes (§6); the browser tests green (§8). **In hand:**
-the walk by three helpers (§7), the break tests (§9), the blind read of the finished code (§10), the gates (§12), his look
-on his own iPhone (§13).
+**Where it stands (the close, night of 13 Oct 26):** built, tests first; the host's look at six sizes (§6); walked by three
+helpers — no failure, two faults, fixed (§7); 69 unit breaks and 14 browser breaks, every one caught (§9); its finished
+code read by a fresh, blind Opus reader — eight claims: seven fixed, one filed (§10); the whole gate set green in one run
+(§12). **Left: his look on his own iPhone (the card, §13) and his "merge live".**
+
+`Walk: docs/handpass/2026-10-13-one-date-calendar.md · 375 pictures (285 the walkers', 90 the host's look) · 14 surfaces (the roll-call's date boxes, each seen and operated) + the swipe's 3 · 45 scenarios walked · MISSING: none open — 2 faults fixed red-first, 2 older things filed, the rest as built`
+Carried by a test, not walked — listed apart in §11.
 
 Branch `claude/one-date-calendar-step-one-55ba13`. Rulings D786, D795, D796, D797, D798
 (`grep -h '^| D79[5-8] |' .claude/decisions-full/*.md`). The design of record
@@ -227,7 +231,9 @@ calendar open over a blocking sheet the sheet pulled the keyboard back behind th
 **What only a browser sees** (`breaks-browser.mjs`, one build a break — `…one-date-calendar.browser.json`, 12): the
 layer above every window and sheet; the swiped part reaching the window's foot; `touch-action`; the title's fixed room;
 six rows; the patch; the wheel; the turned phone; the panel above its box; the year list placed outright; Post in and
-the upchit date handing their date on. *(Result written at the close — §12.)*
+the upchit date handing their date on; and, added: a phone's card giving back the desktop's place, the calendar's own
+swipe (D800). **14 breaks, 14 caught** — one at its second writing: the double-click guard's first break only shortened
+the patch's life to nothing, which in the test browser is still long enough; with the patch taken out the test fails.
 
 ## 10. The read of the finished code
 
@@ -284,7 +290,16 @@ fix commit is the first thing to add if he wants more before "merge live".
 
 ## 12. The gates
 
-*(filled from the one run)*
+ONE run of the whole set, under the PC's lock with nothing else running, on the code of the commit named in
+`HANDOFF.md` §Gate baseline: unit 11006 / 11006 (630 files) · build clean · tfin 728 / 0 · e2e 792 passed, 1 failed, 57 skipped · smoke 445 / 0 · rulecheck OK · docsize OK — about 18 minutes. The one failure is the known unsteady Leave War phone test ("several Required cells are picked with a drag…", filed as `[LW-REQ-PICK-MONTH-UNSTEADY]`), which this work does not touch: by itself, three times over, 3 of 3.
+
+After it, on the same bundle: `npm run perf` and `npm run probes:adapted` — the counts beside the gates' in `HANDOFF.md`.
+
+**Added after the walk, on his answers of that night:** D800 — a sideways finger on the new calendar's dates turns its
+month (`datecal.test.tsx`, five red first; a real finger in `e2e/datecal.spec.ts`; a browser break). It is one more
+listener of the Calendar window's own gesture on one more element; it was not walked by a helper — the browser test
+drives it with real touch events at a phone's size, and his iPhone is the proof of the feel (§13). D801 — the Tracker's
+date boxes — is NOT in this check: its own branch and its own check.
 
 ## 13. His look, and what is parked for him
 
@@ -306,11 +321,14 @@ Escape closes the calendar first and the window behind on a second press; on a d
 the panel; in Admin's "A date range" one tap is already a whole run of one day; an arrow press in the Calendar window
 does not slide the month in (a swipe does) — the Inputs calendar slides on both.
 
-**Questions waiting for him** (each with its default — D596, D799):
+**The four questions put to him that night, and his answers:**
 
-| # | The question, in the app's words | Recommended | What waits on it |
+| # | The question, in the app's words | His answer ("All as recommended for questions 1-4") | What it became |
 |---|---|---|---|
-| 1 | Should a sideways finger turn the month of the new calendar itself — as it does on his iPhone's? | Yes | a small addition to step one or two; today its arrows and lists turn it |
-| 2 | The Tracker's three date boxes: a tap picks, or a tick at the top (D798)? | A tap picks, everywhere | building them — not in step one |
-| 3 | Calendar step two tonight? | No — his look at step one first | step two is not started |
-| 4 | The scheduler's list of rulings has outgrown its marker again: one list, or the Inputs pages their own? | Their own | a documents-only job |
+| 1 | Should a sideways finger turn the month of the new calendar itself — as it does on his iPhone's? | Yes — D800 | built into this step (§12) |
+| 2 | The Tracker's three date boxes: a tap picks, or a tick at the top? | A tap picks, no tick — D801 (D798 replaced) | its own branch, cut from this one |
+| 3 | Calendar step two tonight? | No — his look at step one first (D800) | not started |
+| 4 | The scheduler's list of rulings: one list, or the Inputs pages their own? | Their own — D802 | a documents-only job of its own |
+
+**Nothing is waiting for an answer.** Add to the card: on any date box's calendar, **slide a finger left and right on the
+dates** — the month should turn, and a slide begun on a date should pick nothing.
