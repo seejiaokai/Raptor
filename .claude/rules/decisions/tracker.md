@@ -194,5 +194,6 @@ does everything — marking, charts, students, courses, syllabi AND the File men
 23 Sep 26, superseding the 7 Sep "file portion is the admin's"); the Tracker
 reads no role, so never add an admin gate to it. CSS is scoped under
 `#page-tracker` with five Raptor collisions reset at the top of the wrapper.
+*[Since 13 Oct 26 (D801) two Tracker components — `components/DateBox.jsx`, `components/Pop.jsx` — draw Raptor's own date box (`ui/DateBox.tsx`, `ui/DateCal.tsx`, `ui/scheduler/26-date-calendar.css`): a standalone export carries those with it — `docs/tracker/known-gaps.md`, last sections.]*
 Gaps and the carried-over traps: `docs/tracker/known-gaps.md`; the working loop
 with the owner's chart file: `scripts/tracker/bake-user-charts.mjs`.

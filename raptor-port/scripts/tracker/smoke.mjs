@@ -449,6 +449,24 @@ await pg.click('#saClose'); await pg.waitForTimeout(200);
 }
 
 /* ---- pop-up editor: compact, and above the Show All panel ---- */
+/* THE TRACKER'S DATE BOXES ARE THE APP'S OWN since 13 Oct 26 (owner D801 — the app's one date calendar; a tap picks, no
+   tick). A check that once TYPED a day into the phone's date box opens the box's calendar, turns to the month by its
+   arrows — reading the calendar's own month each time — and taps the day; a check that read a box's value reads the
+   day the box holds (`data-value`, '' when it holds none). */
+const boxDay = async sel => (await pg.locator(sel).first().getAttribute('data-value')) || '';
+async function pickDay(sel, iso) {
+  await pg.locator(sel).first().click();
+  await pg.waitForSelector('[data-testid="dcal-card"]');
+  const want = +iso.slice(0, 4) * 12 + +iso.slice(5, 7);
+  for (let i = 0; i < 480; i++) {
+    const at = await pg.locator('[data-testid="dcal"]').getAttribute('data-month');
+    const d = want - (+at.slice(0, 4) * 12 + +at.slice(5, 7));
+    if (!d) break;
+    await pg.click(d > 0 ? '[data-testid="dcal-next"]' : '[data-testid="dcal-prev"]');
+  }
+  await pg.click(`[data-testid="dcal-day-${iso}"]`);
+  await pg.waitForSelector('[data-testid="dcal-card"]', { state: 'detached' });
+}
 const clickBall = id => pg.evaluate(i => {
   const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === i);
   g.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -800,7 +818,7 @@ const pace = await pg.evaluate(() => {
     .find(c => /pace/i.test((c.querySelector('h3') || {}).textContent || ''));
   if (!card) return null;
   const side = document.getElementById('side').getBoundingClientRect();
-  const dates = [...card.querySelectorAll('input[type=date]')].map(i => i.getBoundingClientRect());
+  const dates = [...card.querySelectorAll('button.datebox')].map(i => i.getBoundingClientRect());
   const grids = [...card.querySelectorAll('div')].map(d => d.scrollWidth - d.clientWidth);
   return {
     dates: dates.length,
@@ -1416,16 +1434,16 @@ await pg.waitForTimeout(800);
    A lull period is set so at least one app-written date is guaranteed on
    screen: without that, an empty panel satisfies "no month names" trivially. */
 {
-  await pg.evaluate(async () => {
-    const el = document.getElementById('lastSyll');
-    const set = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-    set.call(el, '2028-08-20');
-    el.dispatchEvent(new Event('input', { bubbles: true }));
-    el.dispatchEvent(new Event('change', { bubbles: true }));
-    await new Promise(r => setTimeout(r, 500));
-  });
+  /* a day picked on the box's calendar (it was typed by script until 13 Oct 26) */
+  await pickDay('#lastSyll', '2026-08-20'); await pg.waitForTimeout(500);
   const dates = await pg.evaluate(() => {
+    /* THE BOX'S OWN WORDS ARE STILL LEFT OUT, as they were when the device drew them: since 13 Oct 26 the box is the
+       app's own and reads its day in words ("Thu 20 Aug 2026" — owner D795, D801), as his phone's box read "Aug 16,
+       2026". The choice of 16 Aug is about every OTHER date the Tracker writes: numeric, day first. */
+    const boxes = [...document.querySelectorAll('.side button.datebox')];
+    boxes.forEach(b => { b.dataset.wasDisplay = b.style.display; b.style.display = 'none'; });
     const txt = document.querySelector('.side').innerText || '';
+    boxes.forEach(b => { b.style.display = b.dataset.wasDisplay || ''; delete b.dataset.wasDisplay; });
     return {
       spelled: [...new Set(txt.match(/\b\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b/g) || [])],
       numeric: txt.match(/\b\d{2}\/\d{2}\/\d{2}\b/g) || [],
@@ -1510,7 +1528,7 @@ await pg.waitForTimeout(800);
   const log = await pg.evaluate(() => ({
     open: !!document.querySelector('#failLog'),
     rows: [...document.querySelectorAll('#failLog .frow')].map(r => r.querySelector('.failchip').textContent.trim()),
-    dates: [...document.querySelectorAll('#failLog .frow input[type=date]')].map(i => i.value),
+    dates: [...document.querySelectorAll('#failLog .frow button.datebox')].map(i => i.dataset.value || ''),
     total: (document.getElementById('failLogTotal') || {}).textContent || '',
   }));
   ok('the Failures title opens the full list, one row per failure with its date',
@@ -1519,8 +1537,7 @@ await pg.waitForTimeout(800);
   /* a date box saves when it is LEFT or on Enter, not as typed ([TRK-RETEST-NOTES] C5, 28 Sep 26).
      Enter, not Tab: in Chrome a Tab inside a date box steps to its next part (day → month →
      year) before it leaves the box, so after fill() one Tab never left it (the leftovers' gates) */
-  await pg.fill('#failLog .frow[data-ev="ST-01"][data-fi="1"] input[type=date]', '2026-08-01');
-  await pg.press('#failLog .frow[data-ev="ST-01"][data-fi="1"] input[type=date]', 'Enter'); await pg.waitForTimeout(300);
+  await pickDay('#failLog .frow[data-ev="ST-01"][data-fi="1"] button.datebox', '2026-08-01'); await pg.waitForTimeout(300);
   const redated = await pg.evaluate(() => [...document.querySelectorAll('#failChips .failchip')].map(c => c.dataset.date));
   /* the failures follow their DAYS (owner, 28 Sep 26 — D371): the one re-dated to 1 Aug is now the plain code */
   ok('changing a day in the list re-dates that one failure, and the labels follow the days',
@@ -1533,14 +1550,14 @@ await pg.waitForTimeout(800);
   await pg.evaluate(() => { const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === 'ST-01'); g.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
   await pg.waitForSelector('#popFailDate');
   const popList = await pg.evaluate(() => ({
-    box: document.getElementById('popFailDate').value,
+    box: document.getElementById('popFailDate').dataset.value || '',
     days: [...document.querySelectorAll('#popFailDates .fdate')].map(e => e.dataset.date),
     labels: [...document.querySelectorAll('#popFailDates .fdate b')].map(e => e.textContent),
   }));
   ok('the pop-up lists this student’s failures on the event with their days',
     popList.box === today && popList.labels.join(',') === 'ST-01,ST-01X,ST-01XX' && popList.days[0] === '2026-08-01',
     `box ${popList.box} · ${popList.labels.join(', ')} · ${popList.days.join(', ')}`);
-  await pg.fill('#popFailDate', '2026-08-15'); await pg.waitForTimeout(150);
+  await pickDay('#popFailDate', '2026-08-15'); await pg.waitForTimeout(150);
   await pg.click('#popFailPlus'); await pg.waitForTimeout(400);
   const dated = await pg.evaluate(() => [...document.querySelectorAll('#failChips .failchip')].map(c => c.textContent.trim() + '@' + c.dataset.date));
   ok('a + records the failure on the day in the "Failed on" box',
@@ -1571,14 +1588,17 @@ await pg.waitForTimeout(800);
     await pg.waitForSelector('#popDoneDate');
   };
   await openPop('ST-02');
-  ok('the Done on box offers today before a grade', (await pg.inputValue('#popDoneDate')) === today, await pg.inputValue('#popDoneDate'));
+  ok('the Done on box offers today before a grade', (await boxDay('#popDoneDate')) === today, await boxDay('#popDoneDate'));
   await pg.locator('#pop .opts button', { hasText: 'DCO' }).click(); await pg.waitForTimeout(500);
   await openPop('ST-02');
-  ok('marking DCO dates the event the day it was pressed', (await pg.inputValue('#popDoneDate')) === today, await pg.inputValue('#popDoneDate'));
-  await pg.fill('#popDoneDate', '2026-08-10'); await pg.waitForTimeout(300);
+  ok('marking DCO dates the event the day it was pressed', (await boxDay('#popDoneDate')) === today, await boxDay('#popDoneDate'));
+  await pickDay('#popDoneDate', '2026-08-10'); await pg.waitForTimeout(300);
+  /* the calendar is a layer over the whole page, and the page closes the pop-up on a click outside it: the months
+     turned and the date tapped just now were all clicks outside the pop-up (owner D801 - "the pop-up stays open") */
+  ok('the marking pop-up stays open while its date is picked on the calendar over it', (await pg.locator('#pop').count()) === 1 && (await boxDay('#popDoneDate')) === '2026-08-10', await boxDay('#popDoneDate').catch(() => 'no pop-up'));
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(200);
   await openPop('ST-02');
-  ok('the day can be changed afterwards, and it sticks', (await pg.inputValue('#popDoneDate')) === '2026-08-10', await pg.inputValue('#popDoneDate'));
+  ok('the day can be changed afterwards, and it sticks', (await boxDay('#popDoneDate')) === '2026-08-10', await boxDay('#popDoneDate'));
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(200);
   /* Details mode's bubble answers for THIS student: grade, day, failures. */
   await pg.hover('#failChips .failchip:nth-child(4)'); await pg.waitForTimeout(200);
@@ -1591,7 +1611,7 @@ await pg.waitForTimeout(800);
   await openPop('ST-02');
   await pg.locator('#pop .opts button', { hasText: 'Not done' }).click(); await pg.waitForTimeout(500);
   await openPop('ST-02');
-  ok('Not done drops the day again', (await pg.inputValue('#popDoneDate')) === today, await pg.inputValue('#popDoneDate'));
+  ok('Not done drops the day again', (await boxDay('#popDoneDate')) === today, await boxDay('#popDoneDate'));
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(200);
 
   /* Unbounded by nature, so the list must never grow the panel without limit. */
@@ -1899,7 +1919,7 @@ const dateRoom = await pg.evaluate(() => {
   const card = [...document.querySelectorAll('#side .card')]
     .find(c => /pace/i.test((c.querySelector('h3') || {}).textContent || ''));
   const cr = card.getBoundingClientRect();
-  const ins = [...card.querySelectorAll('input[type=date]')];
+  const ins = [...card.querySelectorAll('button.datebox')];
   /* What a whole date costs in THIS engine, so the margin is a ratio and not a
      number that only means something in Chromium. */
   const probe = document.createElement('span');
@@ -2230,12 +2250,12 @@ await pg.keyboard.press('Escape'); await pg.waitForTimeout(250);
   ok('the pace box can be cleared to type a new number',
     (await pg.inputValue('#epwIn')) === '', `shows "${await pg.inputValue('#epwIn')}"`);
   await pg.fill('#epwIn', '3.5'); await pg.waitForTimeout(300);
-  await pg.fill('#targetIn', '2027-03-01'); await pg.press('#targetIn', 'Enter'); await pg.waitForTimeout(300);   /* Enter: a Tab only steps inside a date box */
-  const aPace = await pg.inputValue('#epwIn'), aTgt = await pg.inputValue('#targetIn');
+  await pickDay('#targetIn', '2027-03-01'); await pg.waitForTimeout(300);   /* Enter: a Tab only steps inside a date box */
+  const aPace = await pg.inputValue('#epwIn'), aTgt = await boxDay('#targetIn');
   ok('a pace typed in stays put', aPace === '3.5', `shows "${aPace}"`);
 
   await pickStudent(B); await pg.waitForTimeout(500);
-  const bPace = await pg.inputValue('#epwIn'), bTgt = await pg.inputValue('#targetIn');
+  const bPace = await pg.inputValue('#epwIn'), bTgt = await boxDay('#targetIn');
   ok('a second student has their own pace, not the first one\'s',
     bPace !== '3.5', `${A}=${aPace} ${B}=${bPace}`);
   ok('a second student has their own end date',
@@ -2243,8 +2263,8 @@ await pg.keyboard.press('Escape'); await pg.waitForTimeout(250);
 
   await pickStudent(A); await pg.waitForTimeout(500);
   ok('switching back returns that student\'s own pace and end date',
-    (await pg.inputValue('#epwIn')) === '3.5' && (await pg.inputValue('#targetIn')) === '2027-03-01',
-    `pace=${await pg.inputValue('#epwIn')} end=${await pg.inputValue('#targetIn')}`);
+    (await pg.inputValue('#epwIn')) === '3.5' && (await boxDay('#targetIn')) === '2027-03-01',
+    `pace=${await pg.inputValue('#epwIn')} end=${await boxDay('#targetIn')}`);
 
   /* And it must survive a reload, which is where a per-course store would show. */
   await openTracker(pg);
@@ -2254,7 +2274,7 @@ await pg.keyboard.press('Escape'); await pg.waitForTimeout(250);
     (await pg.inputValue('#epwIn')) !== '3.5', `${B} shows ${await pg.inputValue('#epwIn')}`);
   await pickStudent(A); await pg.waitForTimeout(500);
   ok('per-student end date survives a reload',
-    (await pg.inputValue('#targetIn')) === '2027-03-01', `${A} shows ${await pg.inputValue('#targetIn')}`);
+    (await boxDay('#targetIn')) === '2027-03-01', `${A} shows ${await boxDay('#targetIn')}`);
 }
 
 ok('Escape leaves the period alone rather than half-changing it',
@@ -4094,10 +4114,10 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   ok('two flight events found to test Last Flown with', flights.length === 2, flights.join(', '));
   const grade = async (id, iso, what) => {
     await clickBall(id); await pg.waitForSelector('#popDoneDate');
-    await pg.fill('#popDoneDate', iso); await pg.waitForTimeout(150);
+    await pickDay('#popDoneDate', iso); await pg.waitForTimeout(150);
     await pg.locator('#pop button', { hasText: what }).click(); await pg.waitForTimeout(400);
   };
-  const flown = async () => `${await pg.inputValue('#lastCurr')} / ${await pg.inputValue('#lastSyll')}`;
+  const flown = async () => `${await boxDay('#lastCurr')} / ${await boxDay('#lastSyll')}`;
   await grade(flights[0], '2026-08-20', 'DCO');
   ok('marking a flight done sets Last Flown to its date', await flown() === '2026-08-20 / 2026-08-20', await flown());
   await grade(flights[1], '2026-08-05', 'DCO');

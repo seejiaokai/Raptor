@@ -152,6 +152,51 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 **Principle:** A handoff describes a machine state. A fact that belongs to the finishing chat's folder must be marked as such, and what the next chat's folder will LACK is worth more to it than what the old one holds.
 
+### Observation 564: A class name added to the one global stylesheet was already the Tracker's — the roll-call listed where the new box is DRAWN, never who already used its name
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** [ONE-DATE-CALENDAR] step one, found on starting the Tracker's date boxes (D801)
+**Skill:** bug-check (the roll-call, order §6); raptor-executor (inspect before editing)
+**Type:** internal
+**Phase/Area:** The roll-call's question "where is this drawn" for a change that adds a stylesheet rule
+
+**Issue:** The app's new date box was styled by a class named `datebox` on the scheduler's stylesheet, which is one global sheet for all three apps. The Tracker already wrapped each of ITS date boxes in an element of that same class, so the new look (a border, a height, a flex row) reached every Tracker date box. The roll-call had fourteen rows — every place the new box is drawn — and all fourteen were right; three walkers and a blind read passed it. None of them looks at a place the change does not draw in. It was found only when the next job opened the Tracker's file.
+
+**Suggested improvement:** In the roll-call step, for any change that ADDS a class, an id or a `data-` name to a shared stylesheet or a shared query: one more row — "who already uses this name" — answered by a search of all three apps' sources (`grep -rn "datebox" src/`) BEFORE the name is chosen, with the result written in the table. Prefer a selector that names the element kind too (`button.datebox`).
+
+**Principle:** A roll-call of "everywhere I draw it" cannot find a collision with something that was already there. A new NAME on shared ground needs its own search — for the name, not for the feature.
+
+### Observation 565: A look script that passed everything had picked a date in one box of five — the narrow boxes were only ever seen empty
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** The Tracker's date boxes (D801) — the host's scripted look at a phone and a desktop
+**Skill:** bug-check (the host's look; `raptor-port/docs/walk-scripts.md`)
+**Type:** internal
+**Phase/Area:** What state a fit check is run in
+
+**Issue:** The first version of the look checked "no box's words are cut short" on all five side-panel boxes and passed at both sizes. Four of the five were EMPTY ("Pick a date" — short words). Only when the script was made to put a date in every box did two of them (108px wide on a phone, three across in their card) show "Wed 28 Oct 20…", and a third place (the failures list) the same. The check was true and worthless: it measured the shortest words each box can hold. The same run also wrote a wrong expectation ("a refused day goes back") that the app's own ruled behaviour contradicted — the look's author had not read the store's comment first.
+
+**Suggested improvement:** In `walk-scripts.md`, under the fit checks: "a fit check is run with the LONGEST content the control can hold, in EVERY instance — fill each box (the widest weekday and month: a Wednesday in a long month), then measure; an empty control proves nothing about fit". And: an expectation about what a control does after a refusal is taken from the rule's own text (the ruling's full row, the code's comment), not from what seems natural.
+
+**Principle:** A fit check proves only the content it was run with. Fill every instance with its worst case before measuring; a pass on the default state is a pass on the easiest input.
+
+### Observation 566: The break run used the look script as its detector and overwrote the committed evidence pictures with pictures of broken builds
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** The Tracker's date boxes (D801) — browser break tests whose detector was the host's look script
+**Skill:** bug-check (break tests, order §8.4; `raptor-port/docs/walk-scripts.md` on break-test lists)
+**Type:** internal
+**Phase/Area:** A script that both proves and records
+
+**Issue:** The look script empties its pictures folder and writes new pictures on every run — right for a look, since stale pictures must not survive. The browser break script ran that same look against six deliberately broken builds, so the folder of committed evidence pictures was replaced, six times, by pictures of broken screens; `git status` showed them deleted or changed mid-run. Nothing was lost (they were committed, and the look was run again on the true build), but a stop half-way would have left broken-build pictures sitting in the evidence folder.
+
+**Suggested improvement:** In `walk-scripts.md`: a look or walk script takes its output folder from an environment variable (`LOOK_OUT`), defaulting to the evidence folder; any script that runs it as a DETECTOR (break tests, a re-run to reproduce) passes a scratch folder. And the break script's closing step re-runs the look on the true build, or says that it must be.
+
+**Principle:** A script that records evidence must not be reused as a detector without redirecting what it writes: proof runs and record runs need different output folders.
+
 ### Observation 567: The walker's brief named a control that is not there — the host's own browser test of the route was written AFTER the brief, and corrected it
 
 **Status:** OPEN

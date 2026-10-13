@@ -60,6 +60,12 @@ export function DateBox(p: {
   /** the month an empty box opens on — a date in it */
   at?: string
   disabled?: boolean
+  /** a box too narrow for the weekday (the Tracker's End date A and B, 108px on a phone): it SHOWS "28 Oct 2026" — the
+   *  date whole, never cut to "Wed 28 Oct 20…" — and still says the weekday to a screen reader */
+  noWeekday?: boolean
+  /** the form's own "today", where it is not the device's (the Tracker's is the squadron's day — D374): the day the
+   *  calendar marks, and the month an empty box opens on */
+  today?: string
 }) {
   const [open, setOpen] = useState(false)
   const box = useRef<HTMLButtonElement>(null)
@@ -109,13 +115,13 @@ export function DateBox(p: {
         disabled={p.disabled}
         onClick={e => { if (open) close(); else { setOpen(true); if (e.detail > 0) standPatch({ x: e.clientX, y: e.clientY }); else dropPatch() } }}
       >
-        <span className="datebox-txt">{has ? sayDateY(p.value) : 'Pick a date'}</span>
+        <span className="datebox-txt">{has ? (p.noWeekday ? sayDateY(p.value).replace(/^\S+ /, '') : sayDateY(p.value)) : 'Pick a date'}</span>
         <span className="datebox-v" aria-hidden="true">&#9662;</span>
       </button>
       {open && !p.disabled && createPortal(
         <Layer
           label={p.label} value={has ? p.value : ''} min={p.min} markWd={p.markWd}
-          at={p.at || (validIso(p.min) ? p.min : undefined)} box={box.current}
+          at={p.at || (validIso(p.today) ? p.today : validIso(p.min) ? p.min : undefined)} today={p.today} box={box.current}
           onPick={(iso, at) => { close(at); if (iso !== p.value) p.onChange(iso) }}
           onClose={close}
         />, document.body)}
@@ -128,8 +134,8 @@ export function DateBox(p: {
   )
 }
 
-function Layer({ label, value, min, markWd, at, box, onPick, onClose }: {
-  label: string; value: string; min?: string; markWd?: number; at?: string
+function Layer({ label, value, min, markWd, at, today, box, onPick, onClose }: {
+  label: string; value: string; min?: string; markWd?: number; at?: string; today?: string
   box: HTMLElement | null
   /** `at` — where the click that picked landed; null for a pick by the keyboard */
   onPick: (iso: string, at: { x: number; y: number } | null) => void
@@ -233,7 +239,7 @@ function Layer({ label, value, min, markWd, at, box, onPick, onClose }: {
     <div className={'dcal-layer' + (phone ? ' is-phone' : '')} ref={layer} onClickCapture={e => { pt.current = e.detail > 0 ? { x: e.clientX, y: e.clientY } : null }} onClick={mine} onPointerDown={mine} onMouseDown={mine} onKeyDown={mine}>
       <div className="dcal-scrim" data-testid="dcal-scrim" onClick={() => onClose(pt.current)} />
       <div className="dcal-card" ref={card} role="dialog" aria-modal="true" aria-label={`${label} — pick a date`} data-testid="dcal-card">
-        <DateCal value={value} min={min} markWd={markWd} at={at} onPick={iso => onPick(iso, pt.current)} />
+        <DateCal value={value} min={min} markWd={markWd} at={at} today={today} onPick={iso => onPick(iso, pt.current)} />
       </div>
     </div>
   )

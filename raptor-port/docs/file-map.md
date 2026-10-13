@@ -885,6 +885,16 @@ fit at four phone widths, the controls standing still, the lists really scrolled
 `scripts/handpass/odc-look.mjs` - the host's look of step one's bug check: every date box reached by the app's own
 controls, measured and pictured at six sizes. The check: `docs/handpass/2026-10-13-one-date-calendar.md`; the walkers'
 and the reader's briefs `docs/superpowers/briefs/2026-10-13-one-date-calendar-walk.md`, `…-read.md`.
+`src/tracker/components/DateBox.jsx` - THE TRACKER'S DATE BOX (D801, 13 Oct 26): the app's `ui/DateBox.tsx` inside the
+Tracker's own contract (`onCommit` may answer with a refusal's words; "take this date off" inside the box's right end;
+`narrow` for the two End date boxes). `Pop.jsx`'s Done on and Failed on use the app's box bare. Pins:
+`tracker/leftovers.test.tsx`, `ui/nodatebox.test.ts` (no phone's date box is left anywhere), `ui/datebox.test.tsx`
+(`noWeekday`); in a browser `scripts/tracker/smoke.mjs` (`pickDay`, `boxDay`).
+`scripts/handpass/trk-datebox-look.mjs` - the host's look of that job's check: each of the Tracker's eight date boxes
+reached by the Tracker's own controls at a phone and a desktop, measured and pictured, through to a reload.
+`scripts/handpass/trk-datebox-breaks-browser.mjs` - its browser break tests: break one rule, build, run the look, put it
+back (the unit list: `scripts/handpass/breaks/2026-10-13-tracker-date-boxes.json`). The check:
+`docs/handpass/2026-10-13-tracker-date-boxes.md`.
 STEP 4, THE SANS CALENDAR (plan §3.5; D617-D619, D626, D630, D635, D646-D651, D664):
 `src/ui/sanscal-model.ts` - how the ONE resolver's answer is READ onto a SANS date (`sansCell`: the sun or moon, or the
 tag NF / the holiday's short form; the still-needed pair or nothing; F, O, A as pairs) and who an opened day lists
@@ -1187,3 +1197,4 @@ Final fresh R2 brief/report: `docs/superpowers/briefs/2026-10-05-inputs-sans-ast
 and `docs/handpass/2026-10-05-inputs-sans-astra-final-r2.md`; immutable after dispatch.
 `src/leavewar/schedlate.test.ts` (11 Oct 26, `[GROUP-INPUT-ONE-ROW]` step 1 — D741, D742): a change made from a row on the
 schedule (`setInpField`, `reassignInput`) leaves the late date alone for a scheduler; the window still stamps it.
+`src/leavewar/ui/MatrixRows.tsx` - THE ROWS OF THE LEAVE WAR'S GRID (`[LW-ROWS-SPLIT]`, 13 Oct 26 - D493, D775): `PersonRow`, `PersonMonth`, their props, the row-drag configurations and the row-only predicates (`cellOpenable`, `freeHalfBeside`, `ownAwardAlone`), moved whole out of `Matrix.tsx`, which keeps the controller - state, geometry, selection, sheets. Pinned by `matrix-rows.test.tsx` and its recorded rows (`src/leavewar/ui/__rows__/`): every row's markup as an admin and a member, open, closed and published.

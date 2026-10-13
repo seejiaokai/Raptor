@@ -4017,29 +4017,39 @@ export function afterToday(v) { return typeof v === 'string' && v !== '' && v > 
 /* Each setter below also returns at once when the box holds the day already saved:
    a date retyped to what it was made an undo step that took back nothing (the
    leftovers' baseline walk, E). */
+/* A LAST FLOWN DAY TAKEN OFF GOES BACK TO THE LATEST FLIGHT MARKED DONE — blank only where no flight is done (owner
+   D123, "Last Flown is the latest day actually flown"; the read of the Tracker's date boxes, 13 Oct 26 — F3: one tap on
+   "take this date off" left both boxes blank with flights on record, and nothing put them back but the next grade).
+   Where the box already shows the flights' day there is nothing to take off, and no undo step is made. */
+const flightFlown = s => latestFlown(marks[s], id => !!(byid[id] && byid[id].type === 'flight')) || '';
+/* A DATE IS PICKED NOW, NEVER TYPED (D801, 13 Oct 26): the seven date setters no longer ask pushMarkUndo to fold a
+   second change to the same box inside two seconds into the first — that was for keystrokes; two picks are two steps
+   (the read — F4). The pace and the down days are still typed and still fold. */
 export async function setLastSyll(s, v) {
   if (afterToday(v)) return NOT_YET;
   if (((dates[s] && dates[s].lastSyll) || '') === (v || '')) return;
-  pushMarkUndo(s, 'Last Flown (Syllabus)', 'lastSyll');
+  if (!v && dates[s] && flightFlown(s) && flightFlown(s) === (dates[s].lastSyll || '') && flightFlown(s) === (dates[s].lastCurr || '')) return;
+  pushMarkUndo(s, 'Last Flown (Syllabus)');
   const d = dates[s]; d.lastSyll = v; d.lastCurr = v;
   if (v) { d.handSyll = true; d.handCurr = true; } else { delete d.handSyll; delete d.handCurr; }
-  stamp(d); await saveDates(s); renderSide();
+  stamp(d); if (!v) settleLastFlown(s); await saveDates(s); renderSide();
 }
 export async function setLastCurr(s, v) {
   if (afterToday(v)) return NOT_YET;
   if (((dates[s] && dates[s].lastCurr) || '') === (v || '')) return;
-  pushMarkUndo(s, 'Last Flown (Currency)', 'lastCurr');
+  if (!v && dates[s] && flightFlown(s) && flightFlown(s) === (dates[s].lastCurr || '')) return;
+  pushMarkUndo(s, 'Last Flown (Currency)');
   const d = dates[s]; d.lastCurr = v;
   if (v) d.handCurr = true; else delete d.handCurr;
-  stamp(d); await saveDates(s); renderSide();
+  stamp(d); if (!v) settleLastFlown(s); await saveDates(s); renderSide();
 }
 export async function setDownDays(s, v) { if (((dates[s] && dates[s].downDays) || '') === (v || '')) return; pushMarkUndo(s, 'the down days', 'downDays'); dates[s].downDays = v; stamp(dates[s]); await saveDates(s); renderSide(); }
-export async function setUpchit(s, v) { if (((dates[s] && dates[s].upchit) || '') === (v || '')) return; pushMarkUndo(s, 'the upchit date', 'upchit'); dates[s].upchit = v; stamp(dates[s]); await saveDates(s); renderSide(); }
+export async function setUpchit(s, v) { if (((dates[s] && dates[s].upchit) || '') === (v || '')) return; pushMarkUndo(s, 'the upchit date'); dates[s].upchit = v; stamp(dates[s]); await saveDates(s); renderSide(); }
 /* v is kept verbatim — an empty or half-typed box must stay as typed. epwOf()
    does the coercion for the arithmetic. */
 export async function setEpw(s, v) { if (String(paceOf(s).epw ?? '') === String(v ?? '')) return; pushMarkUndo(s, 'the pace', 'epw'); pace[s] = { ...paceOf(s), epw: v }; await savePace(s); renderSide(); }
-export async function setTarget(s, v) { if ((paceOf(s).target || '') === (v || '')) return; pushMarkUndo(s, 'End date A', 'target'); pace[s] = { ...paceOf(s), target: v }; await savePace(s); renderSide(); }
-export async function setTarget2(s, v) { if ((paceOf(s).target2 || '') === (v || '')) return; pushMarkUndo(s, 'End date B', 'target2'); pace[s] = { ...paceOf(s), target2: v }; await savePace(s); renderSide(); }
+export async function setTarget(s, v) { if ((paceOf(s).target || '') === (v || '')) return; pushMarkUndo(s, 'End date A'); pace[s] = { ...paceOf(s), target: v }; await savePace(s); renderSide(); }
+export async function setTarget2(s, v) { if ((paceOf(s).target2 || '') === (v || '')) return; pushMarkUndo(s, 'End date B'); pace[s] = { ...paceOf(s), target2: v }; await savePace(s); renderSide(); }
 /* Asks first: adding a period takes two deliberate clicks, and removing one
    took one stray tap on its ×, with no undo ([HUMAN-RETEST] W2-F4). Since D372
    (28 Sep 26) it IS a step ↶ takes back; the question stays. */
@@ -4417,7 +4427,7 @@ export async function setDoneDate(s, id, iso) {
   if (afterToday(iso)) return NOT_YET;
   if ((marks[s][id].d || '') === (iso || '')) return;
   trkGesture(() => {   // [CMDL-FINISH] §4 (Class A) — re-date + a flight's Last-Flown as ONE envelope
-    pushMarkUndo(s, 'the date on ' + id, 'doneDate:' + id);
+    pushMarkUndo(s, 'the date on ' + id);
     marks[s][id].d = iso || isoToday();
     stamp(marks[s][id]);
     saveMarks(s); renderSide();
@@ -4432,7 +4442,7 @@ export async function setFailDate(s, id, i, iso) {
   const fd = failDates(s, id); if (i < 0 || i >= fd.length) return;
   if ((fd[i] || null) === (iso || null)) return;
   trkGesture(() => {   // [CMDL-FINISH] §4 (Class A)
-    pushMarkUndo(s, 'the date of ' + failLabel(id, i), 'failDate:' + id + ':' + i);
+    pushMarkUndo(s, 'the date of ' + failLabel(id, i));
     fd[i] = iso || null; marks[s][id].fd = sortFails(fd);   /* re-dated: back in the order of the days (D371) */
     stamp(marks[s][id]);
     saveMarks(s); renderSide();
@@ -5576,6 +5586,9 @@ export async function handleDeleteKey(e) {
      deleted a selected line (the leftovers' walk, walker a F2). Ctrl+Z already waits. */
   if (dlg) return;
   if (!arrangeMode) return;
+  /* a date box is a place the key used to EDIT (it cleared a typed date): since the boxes became buttons (D801) the
+     key pressed there fell through to the chart and deleted the selected line (the read of 13 Oct 26 — F8) */
+  if (e.target && e.target.closest && e.target.closest('.trdatebox, button.datebox')) return;
   if (selLine && !selBalls.size) {
     const t0 = e.target, g0 = (t0 && t0.tagName || '').toLowerCase();
     if (g0 === 'input' || g0 === 'textarea' || g0 === 'select' || (t0 && t0.isContentEditable)) return;
