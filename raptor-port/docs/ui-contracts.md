@@ -4473,10 +4473,21 @@ Three things stay decided:
   notice and one list; and a newer notice whose live days hold all of an older one's takes its place. A live holiday
   line is never one of the lines the bell cuts at thirty — the bell's tap leaves a scheduler's own question on that
   day to it.
-- **TO BE BUILT — one more door (owner D793, 13 Oct 26 — "Yes it should wait on it"):** an input taken off the
-  programme whose day has since become a holiday, put back by the scheduler's Accept, waits on its OIL question as a
-  swap does — the question first, put back only on an answer, the bar if it is left unanswered. Today the Accept asks
-  nothing (`OUTSTANDING.md` `[OIL-ACCEPT-BACK-UNASKED]`). An Undo of the take-off asks nothing, then as now.
+- **ONE MORE DOOR — an input put BACK on the programme (owner D793, 13 Oct 26 — "Yes it should wait on it"; built
+  13 Oct 26 with the Inputs batch, `ui/interactions.ts` — the `[data-acc]` handler).** A scheduler's "Accept" (and
+  "→ Ground") on a taken-off input that needs an OIL answer and has none puts the question FIRST and puts nothing back:
+  the sheet's first line "Putting Ranger's Range brief back on the programme" ("2 people's …" for a shared input, headed
+  for everyone the one answer is written for — D762), its buttons "Don't put back" / "Put back". Answered: the answer
+  and the put-back are ONE command — one Undo takes both away; on a published day the put-back then waits to go out,
+  and an issued row put back as it went out wears no mark. Not answered: nothing is put back, the Accept button flashes,
+  and the bar stays — "Not put back — OIL not answered" · Answer OIL · OK. The put-back is tried and thrown away before
+  the question, so one the save would refuse is refused in its own words and nobody is asked; a put-back refused AFTER
+  the answer throws the whole step away (the answer is never kept alone). "Answer OIL" on an input that has since been
+  put back, deleted or moved off that card's day says "That input has changed — not put back". **Nothing asks:** the
+  take-off; the app's Undo of a take-off (an Undo never asks); a working day; an input already answered (a No is an
+  answer); **"→ Unavail"** (an Other filed under Unavailable — D793 says "on the programme"; put to him, `OUTSTANDING.md`
+  `[UNAVAIL-FILE-OIL-ASK]`). A note still on screen from the step before is taken down when ANY OIL question is put (on
+  a phone on its side it lay over the question's two buttons). Pins: `ui/oilwait.test.tsx` (ON9), `e2e/oilwait.spec.ts`.
 
 ## The bell's list of notices (owner D755 (3), D760, D769 — 12 Oct 26; the one-rule build's step 7)
 
@@ -4886,6 +4897,7 @@ width, so its dot sits at the column's far right, not after the words — always
 there either). The bubble now also answers the board's wave-title box (`data-wsel` → `wl:`, a jump lands on it) and an
 input's own row (`iu:<iid>` — the input's lines touching that row's day). This supersedes "no new per-cell markup" below:
 the dot is an attribute and a paint, no node, set only while History is on.
+**A seat of a Ground Programme row that came from an input also answers for the input's lines about the man standing on it** (`[HIST-DOT-INPUT-ROW]`, 13 Oct 26 — `histbubble.ts seatInputLines`): the line that put him in (marked `one`) or handed the input to him (`fld: 'whose'`) dots his puck and is told in its bubble; a man who was simply filed with the input wears none; what happened to the input as a whole stays on the input's own row and in the changes window. Pin: `ui/reqdoor.test.tsx`.
 
 **28 Sep 26 (`[DRAFT-PENDING]` — D116, D168):** History mode IS the one changes window open — the board's `#sbHist`
 opens and closes the window on the board's day, the bubbles with it; the admin's top-bar icon and a day's chip open it
