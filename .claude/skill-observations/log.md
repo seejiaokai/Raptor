@@ -196,3 +196,48 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** In `DECISIONS.md`'s steps (or `record-decisions.md` §Keeping the list whole): a four-line recipe for a NEW area — "(1) the file: `paths:`, title, preamble, the short table's header; (2) its map row with at least one D-number in the last cell (the script rewrites it); (3) its row in `RULING_BYTES`, added beside the others — never a placeholder; (4) `--dry-run`, then the move, then a row-by-row compare against the base". And have `--dry-run` run the same inventory the real run does.
 
 **Principle:** An all-or-nothing script turns set-up slips into refusals, which is right — but a rehearsal that skips the real run's last check rehearses the wrong thing.
+
+### Observation 570: The quick type check the builder ran while iterating was not the build's own — a move of code passed it and then failed the first full gate run
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** `[LW-ROWS-SPLIT]` — the Leave War's row drawing moved to a file of its own (branch `claude/lw-rows-split`; this note is written on `claude/inputs-rulings-file`, the night's documents-only branch, because the log there holds the night's other notes — numbered past 564–566 on the Tracker branch and 567–569 here)
+**Skill:** raptor-executor (Verification without self-approval); the project guide's Build & verify
+**Type:** internal
+**Phase/Area:** Checking a change before the full gate run
+
+**Issue:** After the move the builder ran a bare type check (`npx tsc --noEmit -p .`), which passed. The build's own type check is stricter (it refuses a type name imported as a value) and failed on three names — found only by the first full gate run, under the PC's lock, about fifteen minutes in. Both blind readers then reported the same three as their top finding. A whole gate run and two readers' attention went on something one command would have shown in a minute.
+
+**Suggested improvement:** In the project guide's Token discipline or Build & verify, one line: "while iterating, the type check is the BUILD's own (`npm run build`, or its type-check half) — a bare `tsc --noEmit -p .` uses a different set-up and passes what the build refuses." And in the executor's guide: run the build once before taking the lock for the full set.
+
+**Principle:** A faster stand-in for a gate is only worth running if it refuses what the gate refuses. Check which configuration the real gate uses before trusting a shortcut to it.
+
+### Observation 571: Putting a file back with `git checkout --` after a hand-run break test also threw away two edits not yet committed
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** `[LW-ROWS-SPLIT]` — a break test run by hand because its output was too large for the break runner
+**Skill:** bug-check order (the break tests); `raptor-port/docs/walk-scripts.md`
+**Type:** internal
+**Phase/Area:** Running a break test by hand
+
+**Issue:** The break runner restores the file it breaks from a copy it took. Run by hand, the builder restored the file with `git checkout -- <file>` — which restores the last COMMIT, not the file as it stood. Two edits made after the last commit (a reader's finding fixed, a comment corrected) went with the break and had to be made again; nothing warned.
+
+**Suggested improvement:** In `walk-scripts.md`, beside the break-test section: "a break run by hand is run on a COMMITTED tree (commit first, even a work-in-progress commit), or the file is copied aside and copied back — never restored with `git checkout --`, which also discards whatever was not yet committed."
+
+**Principle:** "Put it back" by way of version control puts back the last commit, not the last state. Before a deliberate break, make the state you want back a state that exists somewhere.
+
+### Observation 572: The break runner reported an ERROR, not a caught break, when the failing test's output was a very large recorded-markup difference
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** `[LW-ROWS-SPLIT]` — break 1 changed a class on a row; the test that pins every row's whole markup (about 375,000 characters of record) failed as it should
+**Skill:** bug-check order (the break tests); `raptor-port/scripts/handpass/breaks.mjs`
+**Type:** internal
+**Phase/Area:** Break tests against a test that compares a large recorded file
+
+**Issue:** The test failed correctly, but its failure message is the whole difference between two very large records, and the runner could not hold the output: it reported an error for that break. An error reads as "the list is wrong", not "caught" — the builder had to run the break by hand to learn it was caught, and say so in the evidence sheet. (Running it by hand is also what led to Observation 571.)
+
+**Suggested improvement:** Either the runner judges a break by the test run's exit code and keeps only the first lines of its output (a larger buffer, or output sent to a file), or `walk-scripts.md` says: "a break aimed at a test that compares a large record is run with the output cut short — the runner cannot hold it." And a test that pins a large record should fail with a short message naming the first place the two differ, not the whole of both.
+
+**Principle:** A check's verdict should come from the result, not from being able to hold everything the result printed. A tool that fails on large output turns a pass into an unknown.
