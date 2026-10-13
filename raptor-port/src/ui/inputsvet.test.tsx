@@ -598,7 +598,9 @@ describe('an input just saved wears the just-added mark wherever the page shows 
     vi.useFakeTimers()
     const proto = HTMLElement.prototype as any, real = proto.scrollIntoView
     const went: string[] = []
-    proto.scrollIntoView = function (this: HTMLElement) { went.push(this.getAttribute('data-fresh') || '(not a marked card)') }
+    /* the day's own window only: the List stays mounted under the calendar and brings its own row on screen as well
+       (the break test of 14 Oct 26: counting that call too, this stayed green with the window sent to the wrong card) */
+    proto.scrollIntoView = function (this: HTMLElement) { if (this.closest('[data-testid="win-inputsday"]')) went.push(this.getAttribute('data-fresh') || '(not a marked card)') }
     try {
       await mount(false, 'cal')
       await openDay('2026-10-21')
@@ -666,6 +668,17 @@ describe('the save’s note on a laid-out page: left to the screen only where th
     await act(async () => { setPage('editsched'); notify() })
     await change(r)
     expect(live(r.iid).remarks).toBe('after')
+    expect(said).toEqual(['Input updated'])
+  })
+  /* …and a SHARED input's save, which asks the page to show the input whatever page is in front (the plain edit asks
+     only on the Inputs page — so with the page test taken out of `show`, the case above stayed green: the break test
+     of 14 Oct 26). */
+  it('another page in front, a shared input changed: the words at once too', async () => {
+    await mount(false)
+    const g = await shared([others()[0], others()[1]], { remarks: 'before' })
+    await act(async () => { setPage('editsched'); notify() })
+    await change(g.rows[0])
+    expect(live(g.rows[0].iid).remarks).toBe('after')
     expect(said).toEqual(['Input updated'])
   })
   /* THE SAVE HAD A WORD OF ITS OWN (D851: "the note stays … where the save has a warning to give"). The Leave War's rules

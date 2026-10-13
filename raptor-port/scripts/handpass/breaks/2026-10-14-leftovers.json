@@ -14,7 +14,7 @@
   "name": "the note is said although the saved input is seen wearing its mark",
   "file": "src/ui/seen.ts",
   "find": "    if (first.some(inView)) { tell(words); return }",
-  "put": "    if (first.some(inView)) { tell(words) }",
+  "put": "    if (first.some(inView)) { HOOKS.toast(words, kind); return }",
   "tests": [
    "src/ui/seen.test.ts"
   ]

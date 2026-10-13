@@ -96,7 +96,7 @@
   },
   {
    "n": 14,
-   "name": "the desktop row is keyed by its place: a second input takes the first one's box",
+   "name": "the desktop row is keyed by its place - NOT SEEN BY A BROWSER TEST, and why: with the box put back to nought on every light (break 13) the second row shows a whole box however the row is keyed; what the key decides is which row draws which input - the unit list, break 29, caught",
    "file": "src/ui/InputsPage.tsx",
    "find": "<tr key={r.iid} className={rowCls}",
    "put": "<tr key={inx} className={rowCls}"

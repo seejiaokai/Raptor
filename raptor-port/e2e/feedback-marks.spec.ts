@@ -94,6 +94,11 @@ test('D851 — the desktop List, a second input added four seconds after the fir
   await page.setViewportSize({ width: 1440, height: 900 })
   await login(page); await go(page, 'inputs')
   await page.locator('#inListBtn').click()
+  /* every date shown, so the first input stays in the List when the second arrives ("+ Input" lets go of the row it
+     was holding at the head): the two rows then change places, which is where a row keyed by its place took the
+     other's box. With the first one gone from the list the second row was a new one anyway, and this stayed green on
+     a build broken that way (the browser break test of 14 Oct 26). */
+  await page.locator('#inRangeBtn').click(); await page.locator('#inRangeAll').click()
   const add = async (nth: number) => { await page.locator('#inNew').click(); await page.locator('#inpEdCal [data-cal]').nth(nth).click(); await page.locator('#inpEditSave').click(); return newest(page) }
   const a = await add(14)
   await expect(page.locator(`#inBody tr[data-iid="${a}"]`)).toHaveClass(/\binnew\b/)
@@ -103,8 +108,8 @@ test('D851 — the desktop List, a second input added four seconds after the fir
   await page.waitForTimeout(2500)                // 6.5 s after the first, 2.5 s after the second
   const rowB = await markOf(page, `#inBody tr[data-iid="${b}"]`), rowA = await markOf(page, `#inBody tr[data-iid="${a}"]`)
   expect([rowB!.innew, rowB!.painted], 'the second row: its own six seconds, not what was left of the first row\'s').toEqual([true, true])
-  /* (the first input may have left the List: "+ Input" lets go of the row it was holding at the head) */
-  expect(rowA ? rowA.innew : false, 'the first row\'s have ended').toBe(false)
+  expect(rowA, 'the first input is still listed').not.toBeNull()
+  expect(rowA!.innew, 'the first row\'s six seconds have ended').toBe(false)
 })
 
 test('D854 — the month with no day open: a changed input’s bar wears the mark, no note, and no day opens over the month', async ({ page }) => {
@@ -253,8 +258,20 @@ test('D849 (3) — the medical-clash and the upchit questions: their answers sit
     await expect(doc.or(page.locator('[data-testid="medclash"], [data-testid="upconf"]')).first()).toBeVisible()
     if (await doc.count()) await doc.click()
   }
-  /* the medical clash: ATT C stands on 13–15 Oct, ATT B is filed over 14–16 */
+  /* the medical clash: ATT C stands on 13–15 Oct */
   await page.evaluate(who => (window as any).fileInput({ iid: 'fm-c', person: who, type: 'ATT C', date: 'Oct 13', endDate: 'Oct 15', yr: 2026, allday: true }), who)
+  /* …FIRST WITH ONE ANSWER: ATT B on the 14th alone lies wholly inside it, so there is no "Keep" to offer. One short
+     button would fit beside the sentence — it still takes a line of its own, at the right, as drawn (with two long
+     answers the pair wraps under the sentence whatever the rule says: the browser break test of 14 Oct 26) */
+  await newMed('ATT B', '2026-10-14')
+  await expect(page.locator('[data-testid="medclash"]')).toBeVisible()
+  expect(await flat('[data-testid="medclash"]', '[data-testid="medclash-0"]'), 'one answer: still under the sentence, at the right').toEqual(
+    { seg: false, bg: 'rgba(0, 0, 0, 0)', line: '0px', pad: '0px', under: true, endsAtRight: true, n: 1, oneLine: true })
+  await page.locator('[data-testid="medclash"] .airpop-foot .abtn.ghost').click()
+  await page.locator('[data-testid="win-inputedit-x"]').click()
+  { const lose = page.locator('[data-testid="inped-swap-go"], [data-testid="inped-leave-go"]'); if (await lose.count()) await lose.first().click() }
+  await page.locator('[data-testid="win-inputsday-x"]').click()
+  /* …then with two: ATT B is filed over 14–16 */
   await newMed('ATT B', '2026-10-14', '2026-10-16')
   await expect(page.locator('[data-testid="medclash"]')).toBeVisible()
   expect(await flat('[data-testid="medclash"]', '[data-testid="medclash-0"]'), 'flat, on a line of their own under the sentence, ending at the right').toEqual(
