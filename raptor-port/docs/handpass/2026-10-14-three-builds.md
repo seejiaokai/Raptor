@@ -379,6 +379,17 @@ step two's (`[ONE-DATE-CALENDAR]`).
    reader before he approves the wording (D70, D810); the same hint on the upchit and medical-clash questions is
    filed as a delete candidate, not deleted (`[BATCH-14OCT-LEFTOVERS]`).
 
+10a. **The rule's first use on text he had not circled (D847 — the rule's wording approved; D848 — "Delete all three but for this
+   one is there a way to make it known that each day holds 1 status").** Shown two marked pictures, he had the hint
+   deleted from the upchit question and from the medical-clash question, and that question's small print with it; the
+   fact he wanted kept is the sheet's heading ("A day holds one status: choose who holds these days"). Tests first
+   (`upconfirm.test.tsx`, `medmove.test.tsx` — both red: the hint was there). On the rebuilt build,
+   `scripts/handpass/dl-sheets.mjs` reaches both sheets by the screen's own controls (the walker W3's fixture) and
+   asserts each: the foot is its two buttons, no hint, no small print, the main button still waits, the heading's words
+   — phone and desktop, all `works`; pictures `sheet-phone-1-medical-clash.png`, `sheet-phone-2-upchit.png`, opened.
+   The whole gate set was not re-run locally (three deleted texts and one heading in two sheets); GitHub's run on the
+   push covers it.
+
 ## 10. Break tests, errors seen, what was not walked
 
 **Break tests — `scripts/handpass/breaks/2026-10-14-three-builds.json`, 31 wires, each cut once

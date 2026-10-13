@@ -102,7 +102,10 @@ describe('the forced Keep/Remove on later-dated entries', () => {
     await click($('#inpEditSave'))
     const save = $('[data-testid="upconf-save"]') as HTMLButtonElement
     expect(save.disabled, 'unanswered leftover blocks the save').toBe(true)
-    expect($('.upconf-need'), 'and the sheet says why').toBeTruthy()
+    /* (it used to say why — "Choose Keep or Remove for each entry above". Deleted on his word, D848, 14 Oct 26: the heading
+       over the entries already says "choose for each" and Keep / Remove stand right there — D846's rule) */
+    expect($('.upconf-need'), 'no hint in the foot: the dimmed button and the heading say it').toBeNull()
+    expect($('[data-testid="upconf"]')?.textContent || document.body.textContent || '').not.toContain('Choose Keep or Remove for each entry above')
     const seg = $('[data-testid="upconf-left-0"] .seg')!
     await click(seg.querySelectorAll('button')[0])            // Keep
     expect(($('[data-testid="upconf-save"]') as HTMLButtonElement).disabled).toBe(false)

@@ -1118,5 +1118,61 @@
   "expected": "the bar is gone, the top bar gives its line back, and Edit Schedule's own cyan edge is back",
   "saw": "{\"bars\":0,\"cls\":\"topbar editing has-undo\",\"edge\":\"rgba(59, 198, 232, 0.5)\"}",
   "verdict": "works"
+ },
+ {
+  "surface": "Medical-clash question [phone]",
+  "key": "D848 — its heading carries the fact he kept",
+  "expected": "A day holds one status: choose who holds these days",
+  "saw": "A day holds one status: choose who holds these days",
+  "verdict": "works"
+ },
+ {
+  "surface": "Medical-clash question [phone]",
+  "key": "D848 — no hint in the foot, no small print",
+  "expected": "the foot is Cancel and Save; nothing under the answers; Save still waits",
+  "saw": "{\"foot\":[\"Cancel\",\"Save\"],\"hint\":\"\",\"smallPrint\":[],\"saveWaits\":true}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Upchit question [phone]",
+  "key": "D848 — no hint in the foot",
+  "expected": "the foot is Cancel and Save upchit; Save upchit still waits; the heading over the entries still says to choose for each",
+  "saw": "{\"foot\":[\"Cancel\",\"Save upchit\"],\"hint\":\"\",\"saveWaits\":true,\"heads\":[\"Saving this upchit will\",\"Still on file after it — choose for each\"]}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The two sheets [phone]",
+  "key": "no page error",
+  "expected": "none",
+  "saw": "none",
+  "verdict": "works"
+ },
+ {
+  "surface": "Medical-clash question [desk]",
+  "key": "D848 — its heading carries the fact he kept",
+  "expected": "A day holds one status: choose who holds these days",
+  "saw": "A day holds one status: choose who holds these days",
+  "verdict": "works"
+ },
+ {
+  "surface": "Medical-clash question [desk]",
+  "key": "D848 — no hint in the foot, no small print",
+  "expected": "the foot is Cancel and Save; nothing under the answers; Save still waits",
+  "saw": "{\"foot\":[\"Cancel\",\"Save\"],\"hint\":\"\",\"smallPrint\":[],\"saveWaits\":true}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Upchit question [desk]",
+  "key": "D848 — no hint in the foot",
+  "expected": "the foot is Cancel and Save upchit; Save upchit still waits; the heading over the entries still says to choose for each",
+  "saw": "{\"foot\":[\"Cancel\",\"Save upchit\"],\"hint\":\"\",\"saveWaits\":true,\"heads\":[\"Saving this upchit will\",\"Still on file after it — choose for each\"]}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The two sheets [desk]",
+  "key": "no page error",
+  "expected": "none",
+  "saw": "none",
+  "verdict": "works"
  }
 ]

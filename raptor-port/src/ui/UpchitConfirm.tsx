@@ -71,7 +71,9 @@ export function UpchitConfirm({ who, dateLabel, effects, onSave, onCancel }: {
           </>}
         </div>
         <div className="airpop-foot upconf-foot">
-          {!ready && <span className="upconf-need">Choose Keep or Remove for each entry above</span>}
+          {/* (no "Choose Keep or Remove for each entry above" here — owner D848, 14 Oct 26, by D846's rule: the heading over
+              the entries already says "choose for each", Keep / Remove stand right there, and the button below is dimmed
+              until each has an answer) */}
           <span style={{ flex: 1 }}></span>
           <button className="abtn ghost" onClick={onCancel}>Cancel</button>
           <button className="abtn primary" data-testid="upconf-save" disabled={!ready}

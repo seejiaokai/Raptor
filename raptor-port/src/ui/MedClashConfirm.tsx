@@ -88,7 +88,11 @@ export function MedClashConfirm({ who, newType, span, clashes, aOrd, bOrd, onSav
         <div className="airpop-head"><b>{newType} — {who}, {span}</b>
           <button className="x" aria-label="Close" onClick={onCancel}>✕</button></div>
         <div className="airpop-body upconf-body">
-          <div className="upconf-h">Days covered by another status — choose who holds them</div>
+          {/* THE HEADING CARRIES THE ONE FACT HE ASKED TO KEEP (owner D848, 14 Oct 26 — "is there a way to make it known that each
+              day holds 1 status"). The sheet's small print said it ("…every day holds one status, and the new entry is filed
+              around whatever you keep") and went with the foot's hint by D846's rule — text that explains how the app works where
+              the answers already say what each does. It read "Days covered by another status — choose who holds them". */}
+          <div className="upconf-h">A day holds one status: choose who holds these days</div>
           {clashes.map((c: any, i: number) => {
             const tl = leftover(c, i)
             const tchoice = tail[i] || 'remove'
@@ -119,11 +123,8 @@ export function MedClashConfirm({ who, newType, span, clashes, aOrd, bOrd, onSav
                   </div>)}
               </div>)
           })}
-          <div className="upconf-none">The days each status keeps stay exactly as chosen — every day holds one
-            status, and the new entry is filed around whatever you keep.</div>
         </div>
         <div className="airpop-foot upconf-foot">
-          {!ready && <span className="upconf-need">Choose for each clash above</span>}
           <span style={{ flex: 1 }}></span>
           <button className="abtn ghost" onClick={onCancel}>Cancel</button>
           <button className="abtn primary" data-testid="medclash-save" disabled={!ready}
