@@ -1490,7 +1490,7 @@ Found by the war re-walker on the rebuilt app; no record is harmed and each refu
 re-test applied elsewhere (item D, W5-F4: a half is offered only when it can be taken) is not kept here:
 1. **A morning the WAR approved, then a tap on that day:** the bid sheet offers Whole day (already picked) and AM, and
    pressing LL is refused "That time is already taken by LL — clear it first." The same morning filed on the Inputs page
-   offers only PM (the free half, `Matrix.tsx freeHalfBeside`, runs only for Inputs-filed leave — `raptorOwns`).
+   offers only PM (the free half, `MatrixRows.tsx freeHalfBeside`, runs only for Inputs-filed leave — `raptorOwns`).
    Pictures: `docs/img/handpass/2026-09-26-absence/rewalk/w3/rw-w3-11-{desktop,phone}-A-whole-a-sheet`, `-A-whole-b-after-LL`,
    `-C-inputs-filed-sheet`.
 2. **A refused bid under a medical filed since:** the tap list still offers Approve and Ack on it; both are refused in
@@ -1888,13 +1888,13 @@ its own item — `[LW-ROWS-SPLIT]`, `[CSS-SPLIT-BY-SCREEN]`, `[TRK-FILE-TRANSFER
 saved-data reading (the report's §4) is looked at again at `[DB-STEP]`, which replaces it; the Leave War's link to the schedule
 (§5) is not split unless a later feature has to work heavily inside it — put it to him then.
 
-### [LW-ROWS-SPLIT] The Leave War's row drawing moves out of its grid file — APPROVED D493 (2 Oct 26), to build with the next Leave War batch
-**D775 (12 Oct 26) - the Tracker tidy-up: done AFTER the one-rule job is merged, as a job of its own - not with its area’s feature batch (D493 narrowed) - started on his word, in a chat of its own.**
-From Astra's tidiness read (its §1 — read it before building: what must stay identical, the tests that pin it, the test to
-write FIRST). `PersonRow`, `PersonMonth`, their props and row-only predicates leave `src/leavewar/ui/Matrix.tsx` (about 4,700
-lines) for a new `MatrixRows.tsx`; the grid file keeps its state, geometry, selection and sheets. Nothing on screen changes.
-New file → `docs/file-map.md` in the same change. Tier by the order's questions at build time (Astra says FULL: permissions
-and the OIL display are drawn there). **Place — D493, D485: with the next Leave War feature batch, never alone.**
+### [LW-MONTH-MEMO-UNPINNED] Nothing pins the Leave War month's own redraw guard — and one cell changed redraws every month of every row (found 13 Oct 26 by `[LW-ROWS-SPLIT]`'s break tests) — OPEN, low
+
+**Found, NOT FIXED — older behaviour, nothing a person sees wrong.** Each person's row on the Leave War is drawn as twelve month blocks, each meant to be left alone when its days have not changed (`PersonMonth`, a `memo` — `raptor-port/src/leavewar/ui/MatrixRows.tsx`; `raptor-port/docs/performance.md` §E: "Day cells stay one memoised `PersonMonth` per month"). Two things: (1) no test fails when that guard is taken off — the new `matrix-rows-memo.test.tsx` pins the ROW's guard only (a month is reached only through its row); (2) measured while trying to pin it: a change to ONE cell of the war (`setCell`) redraws every month of every row drawn (5,840 month-draws for 16 rows in the unit test, the same as a first draw) — so on a cell write the month's guard saves nothing as the grid stands, because every row is handed the whole grid and the whole set of day views afresh. **To do, with the next Leave War batch (D490):** find which prop of `PersonMonth` changes for an untouched month on a cell write (the read `raptor-port/docs/handpass/parts/lwrows/read-opus.md` F4 has a recipe that did NOT work as written), decide whether it should — it is the phone's cost of a bid — and pin the guard with a test that fails when it is removed. Measure on the built app before changing anything (`raptor-port/docs/performance.md` Part 1).
+
+### [LW-ROWS-STALE-NOTES] A few notes and comments still name `Matrix.tsx` for code that moved to `MatrixRows.tsx` (13 Oct 26) — OPEN, documents only
+
+**Found by the two reads of `[LW-ROWS-SPLIT]`, partly fixed.** Five were corrected with the move (`ui-contracts.md` twice, `CountRows.tsx`, `FigureCell.tsx`, one backlog line). The readers tabled more, each with its correction: `raptor-port/docs/handpass/parts/lwrows/read-opus.md` (its table of 13) and `read-fable.md` (F4). Left: the ones in `raptor-port/docs/performance.md` (ledger entries — a record of past work, which named the file as it was: judge each, do not rewrite history), `raptor-port/docs/leavewar/known-gaps.md`, and comments in other Leave War files. A documents-only pass; no check beyond the document check.
 
 ### [INSIGHTS-CLOSE-STAYS-VISIBLE] Keep the Insights close cross at the top while scrolling — D562, 4 Oct 26
 Owner's two private phone photos show the Week insights title/cross at the top initially, then out of view after
@@ -2180,6 +2180,7 @@ with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
 | `[ALL-AVAIL-AS-MEMBER]` — its FINISHED CODE, with `[PERSONAL-SEVERAL]` and `[OIL-ASK-LIST-SEVERAL]`; LIVE on his "merge live" of 12 Oct 26 (D779) | Fable, three times (the walked build, the nine fixes, the last round); a fresh Opus reader once, blind, as a trial — not an independent read (D67) | a ChatGPT read of the finished code (`raptor-port/docs/handpass/2026-10-12-one-rule.md` §10g, §14) |
 | `[ALL-AVAIL-AS-MEMBER]` — its PLAN (`raptor-port/docs/superpowers/plans/2026-10-11-one-rule-plan.md`) | Fable, on his word (D758) | the one ChatGPT reader D758 names. **His word on the build is given — D764: it starts on Fable's read alone, and at the merge he decides whether to wait for a ChatGPT read of the finished code.** |
 | `[OIL-ASK-NOTIFY]` — a day made a holiday afterwards, the one list, a swap whose OIL question is not answered; BUILT and FULL-checked 13 Oct 26 | its PLAN: Fable, 12 Oct 26 (ten findings, all taken — the plan's §5a); its finished CODE: Fable, 13 Oct 26, on his word (D784 — three findings, all fixed), and a fresh Opus reader beside it, blind (the one test of D789 — eight findings, all dispositioned; NOT an independent read, D67): `raptor-port/docs/handpass/2026-10-13-oil-ask-notify.md` §12 | Astra’s and Sol 6.1’s reads of the plan and of the finished code. **His word at the merge — D791 (13 Oct 26, "Merge live"): it goes live on Fable’s read and the fresh Opus read, without waiting.** |
+| `[LW-ROWS-SPLIT]` — the Leave War's row drawing moved to its own file (13 Oct 26, the night's run — D799) | Fable and a fresh Opus reader, blind to each other (D790 — permissions and the OIL display are drawn in the moved lines) | a ChatGPT read of the finished code (`raptor-port/docs/handpass/2026-10-13-lw-rows-split.md`) |
 | `[SKILL-OBS-REVIEW]` — the guide changes drafted by the skill-notes review of 13 Oct 26 (branch `claude/skill-observation-review-258b48`), and with them the two lines `[WALK-FINGER-NOT-LOCATOR]` proposed for the checking guide (D811); installed 13 Oct 26 on his "Approve all" | one fresh, blind Opus reader — an Opus that did not write them — on his word (D810: "u can use opus to do the review solely"); not Fable | D70's two reads of a changed working guide (Astra's and Sol 6.1's) |
 
 ### [SCHEDULER-RULINGS-SIZE] The scheduler's rulings file has reached the size D611 said to look again at — one file, or an area of its own for the Inputs pages? (11 Oct 26 — a question for him)
