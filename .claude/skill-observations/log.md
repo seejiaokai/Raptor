@@ -346,3 +346,33 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** In the unattended-run rule (`doc-structure.md` §In his workflow, and the evidence sheet's "Questions waiting for him"): the parked question's shape is fixed — "the case (a named person, a day, what he pressed) · what the app does today · the choice · recommended". And: a word that is not on any screen is not used in a question.
 
 **Principle:** A question is only as good as the picture the reader forms of it. If he could answer it about a different situation than the one you mean, it is not yet a question.
+
+### Observation 577: A complaint about wordy notes was half a layout fault — the box was measured only after the words had been drafted
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** [DESIGN-LOOK-13OCT] — the design page: the shorter passing notes (D806), drawn before and after on the built app at a phone's size
+**Skill:** impeccable (reference/clarify.md); the design guide §1 (words on screen)
+**Type:** open-source
+**Phase/Area:** Clarify — before shortening any words
+
+**Issue:** The owner sent two pictures of a passing note five lines deep and asked for shorter words. The backlog item drafted shorter wordings and nothing else. Only when the built note was drawn at the phone's size and its box measured did it show that the box was half the screen wide (a box centred by "left: 50%" can only be as wide as the half it starts in). The same words in a full-width box were three lines; shorter words alone left it at three as well; both together made two. A second surface (a bar that stays) had the same cause.
+
+**Suggested improvement:** In clarify.md's first step, and the guide's §1: before rewording a note, a label or a hint that "runs long", measure the box it sits in at the smallest shipped width — its width against the screen's, its line count — and report the words and the box as two separate findings. A wording pass that never measured the box says so.
+
+**Principle:** "Too wordy" is a report of how much room the words take, not of how many there are. Measure the container before editing the text; the cheaper half of the fix is often not in the words.
+
+### Observation 578: The design skill's critique saves its snapshot where this repo's document check refuses a new document
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** [DESIGN-LOOK-13OCT] — /impeccable critique, the "Persist the snapshot" step
+**Skill:** impeccable (reference/critique.md — Persist the Snapshot); .claude/skills/TASK-OBSERVER-VENDORED.md's sibling note for impeccable, if one is kept
+**Type:** internal
+**Phase/Area:** Critique — persistence
+
+**Issue:** The helper wrote the snapshot to the repository root's .impeccable/critique/. The document check then failed the turn: a new document outside raptor-port/docs/. The snapshot was moved by hand to docs/handpass/parts/ and the record points there — so the skill's own "trend" and a later /impeccable polish will not find it. Two older snapshots sit in the skill's folders from before the check existed.
+
+**Suggested improvement:** Decide once, in the project's note on the vendored design skill: either the document check lets .impeccable/critique/ through (it is the skill's own store, like its config), or critique is told here to skip persistence and write its scores into the look's own record under docs/handpass/. Until then a critique in this repo ends with a moved file and a broken trend.
+
+**Principle:** A vendored tool's own store and the host project's filing rule have to be reconciled once, in writing — otherwise every run pays for the clash again, and the tool's later steps silently lose what an earlier step saved.

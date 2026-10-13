@@ -165,7 +165,12 @@ const FILES = [
      This branch adds two open items - [ONE-DATE-CALENDAR], and what was put to him under [CAL-PHONE-SWIPE-FIT] -
      neither finished. The file was not scanned again for finished items here; an open item is never trimmed to fit
      (D141, D29). Set about 60 lines above what the file holds, as the first of these notes says. */
-  ['OUTSTANDING.md',                     1, 2460],
+  /* 2460 -> 2530, 13 Oct 26 (the design page, `[DESIGN-LOOK-13OCT]` - documents and pictures only): 2,470 lines. The
+     look filed three found-not-fixed items ([LOOK-13OCT-SMALL-FIXES], [KBD-PUCK], [TRK-KBD-CHART]) and wrote what was
+     put to him into three open ones; none is finished. The one item whose heading says "merged" ([GLOBAL-UNDO]) still
+     carries seven open deferrals; the priority list's finished stories are [PRIORITY-LIST-REWRITE]'s, a job that needs
+     a reader. An open item is never trimmed to fit (D141, D29). About 60 lines above what the file holds, as before. */
+  ['OUTSTANDING.md',                     1, 2530],
   /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
      and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
      (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only

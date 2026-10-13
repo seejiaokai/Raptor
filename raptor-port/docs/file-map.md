@@ -1,5 +1,13 @@
 # The file map — where each source file lives and what it does
 
+`[DESIGN-LOOK-13OCT]` — the design page of 13 Oct 26 (D805, D806, D807): NO source file changed. **New, all outside `src/`:**
+the page `docs/mock/design-look-13oct.html` and its pictures `docs/mock/2026-10-13-design-look/` (with `keyboard.json`,
+one row per key pressed); the record for the next agent `docs/handpass/2026-10-13-design-look.md`; the scripts that
+took the pictures, `scripts/handpass/dl-lib.mjs` (helpers), `dl-cal.mjs` (the date calendar and its keys), `dl-trk.mjs`
+(the Tracker's date boxes), `dl-oil.mjs` (the OIL question and its bar), `dl-keys.mjs` (a puck and the Tracker's chart by
+keys), `dl-clash.mjs` (the Leave War's clash note as built, and three options DRAWN IN by injection), `dl-notes.mjs`
+(the publish and unpublish notes before and after). They are pictures and mock-ups, not gates.
+
 `[ALL-AVAIL-AS-MEMBER]` — the one-rule job's check, its last round (12 Oct 26, evening): the Opus trial read's eight
 real faults fixed, `[PERSONAL-SEVERAL]` (D776, D778) and `[OIL-ASK-LIST-SEVERAL]` (D777) built. No new source file.
 **New tests:** `src/leavewar/trialread.test.ts` (the read's claims 2, 4, 5 and 9, through the real doors) and
