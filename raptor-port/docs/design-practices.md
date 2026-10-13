@@ -6,10 +6,11 @@ No outside skill is installed whole (D486, D491, D623). It is written FIRST and 
 against it — the calendar's design included (D813).
 
 **How it is used automatically.** `.claude/rules/ui-design.md` loads by itself whenever a file under `raptor-port/src/`
-or a mock-up is opened, and points here. The second route D812 names — the design skill's own product record naming
-this guide, so every `/impeccable` reads it — is **NOT built yet** (`OUTSTANDING.md` `[UI-SLEEK-PASS]` step 1: the skill
-has no record of this app, and writing one needs his answers); until it is, `/impeccable` reaches this guide through
-that rule file.
+or a mock-up is opened, and points here. And the design skill has its own record of this app — `PRODUCT.md`, beside this
+file, written from his answers (D820; `[SKILL-FUSION-JAKUB]`) — which every `/impeccable` pointed at one of the app's files
+prints first, and which names this guide. (The app is declared a project of its own in `.impeccable/config.json`, so the
+skill asks for a target inside `raptor-port/` rather than reporting that no record exists. The skill's OTHER record, of the
+look itself — `DESIGN.md` — is not written: `OUTSTANDING.md` `[UI-SLEEK-PASS]` step 1.)
 
 **The design skill itself is used without being asked for** (owner D819, 13 Oct 26 — and the guide approved as drafted): for a design job — a new screen or
 control, a restyle, a look over something built, a pass over a page's words, a mock-up — the agent invokes `impeccable`
@@ -28,6 +29,12 @@ when that one is live.)*
 1. **His rulings** — always. The ones that bound almost every design choice:
    - **the buttons keep their size** (D487) — nothing here makes a control bigger or smaller without his word;
    - **the Raptor look stays** (D765) — dark, dense, its colours each carrying a meaning (§4);
+   - **cleaner, in the way Apple's interfaces are, and intuitive enough to need few instructions** (D821 — "placement of
+     buttons and everything just makes sense"): Apple's CLEANLINESS — fewer boxes and lines, a clear order of
+     importance, the same thing in the same place on every screen — never its light colours, its one accent or its
+     empty space;
+   - **a scheduler's screen is designed for the desktop first** and must still serve a small correction on a phone; **a
+     member's screen for the phone first**; and a scheduler's screen is judged by efficiency — fewer steps (D820);
    - **a working screen stays dense** (D812; first said of the Inputs pages — D688, D696, D653) — "sleek" here is fewer
      words and fewer boxes, never more empty space;
    - **the screens are not wordy** (D726), and a note the screen already says may go (D808) — **but nothing already on
@@ -108,6 +115,10 @@ built on his word — it is not a statement that the app does it today.**
 
 *From the layout guide of `jakubkrehel/skills` and the Apple design skill of 11 Oct 26 (emphasis before another box; one
 main button; hair-thin lines); his D726, D765, D809.*
+
+**The test for any screen (D821): could someone use it without reading its hint?** A screen that needs an instruction is
+a design not yet clear. Put the design right first — where the control sits, what it is called, what it sits beside —
+and only then shorten, remove or fold the instruction (§1), each change shown to him before and after.
 
 - **Group with the space already there and a change of surface before another box — never added height on a working
   screen** (§0: D688, D696). Most of what reads as clutter is borders: a box inside a box inside a window. Let a
