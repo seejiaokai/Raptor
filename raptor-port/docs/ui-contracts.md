@@ -4496,6 +4496,8 @@ OIL"; "Monday unpublished — it is a draft again; publishing reissues the Origi
 is published again"). The rule for a passing note from here on: what happened, then the ONE thing he must know, the day named
 once — and no warning dropped to save words. The shorter wordings are put to him before and after, then built:
 `OUTSTANDING.md` `[NOTES-SHORTER]`. Where they are written today: `engine/publish.ts`, `state/sched-commit.ts`.
+**The method has ONE home — `design-practices.md` §1a (shortening) and §1b (how the app speaks, D833); this note records
+only what was ruled for the passing notes, and D829's wordings are rechecked against that guide before they are built (D833).**
 They are put to him on ONE page with the phone's clash note (D805) and a look, by the design guide, over the designs built on the
 night of 13 Oct 26 and the ones coming — keyboard use included (owner D807): `OUTSTANDING.md` `[DESIGN-LOOK-13OCT]`.
 The same going-over of EVERY page's notes, hints, labels and small print — less clutter; a note the screen already says may be

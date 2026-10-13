@@ -54,12 +54,17 @@ a picture is put to him, never "fixed".
 *From the writing guide of `jakubkrehel/skills` and the Apple design skill (a note for what is done, a question only for
 a choice; an empty place says one thing); his D726, D806, D808.*
 
+**§1, §1a and §1b together are THE WRITING GUIDE (owner D833, 13 Oct 26):** what each kind of text says (here), how
+text already on screen is shortened (§1a), and how the app speaks (§1b). It is used every time text in the app is
+written or changed.
+
 - **Every word earns its place or goes.** What the screen already shows is a candidate to go (a hint that repeats its
   own label, a count the list makes obvious). Three ends for any note, each put to him before and after: **shortened**,
   **removed**, or **moved under one short "How this works" fold** for that page — as the two calendars have (D628, D646).
 - **A passing note says one of three things:** it is happening ("Saving…"), it is done ("Saved"), or it failed and what
   to do ("Not saved — keep this page open"). What happened, then the ONE thing he must know. The day or the person is
-  named once. Never "successfully", never "please", no exclamation.
+  named once. Never "successfully", never "please", no exclamation. That is for a NEW note; one already on screen
+  keeps every fact it carries (§1a, D825).
 - **No warning is dropped to save words.** A note that carries a consequence (a published day will earn nobody OIL;
   unpublishing takes its OIL off the Leave War) keeps the consequence, said shorter.
 - **An error says how to put it right, beside where it went wrong** — the form that WILL work, not only the one that did
@@ -76,6 +81,8 @@ a choice; an empty place says one thing); his D726, D806, D808.*
   asks "Really delete?" (D677).
 - **One name for one thing, everywhere.** If the button says "Unpublish", the note does not say "withdrawn". Name
   things as the screen already does (the app's own words: the schedule, the working copy, an amendment, an input).
+- **A word that is both a thing and an action** (input, file, post, mark, record, report, amend) **keeps the small
+  word that settles which is meant** — in a new label as in a shortened note ("File the input", "an input was filed").
 - **A switch is labelled for what ON does.** A link or a fold says where it leads ("How this works"), never "Click here".
 - **An empty place says one short thing and offers one button** — what this is, and how to fill it.
 - **No joke and no chatty word in a note people see often** — it wears out by the third time.
@@ -89,40 +96,125 @@ outside guides read then — Microsoft's and Apple's writing guides, Nielsen Nor
 checklist, Anthropic's document skill (`superpowers/briefs/2026-10-13-writing-skills-research.md`). Written as TESTS:
 "be concise" names no test, and an instruction with no test is how facts get cut.*
 
-**ITS STANDING USE (owner D833, 13 Oct 26):** the writing guide — this method, §1 above and the part on how the app speaks that
-D833 adds — is a companion to this design guide and to the design skill, used EVERY time text in the app is written or
-changed, new text as well as old: the Logic page's wording (D809), the whole-app words pass (D808), every note, label,
-hint and question. Its aim, in his words: "intuitive clean simple smooth less verbose more human text with less -" —
-fewer dashes among them (the agent's reading of "less -"). **THE PART ON HOW THE APP SPEAKS IS NOT YET WRITTEN** — it is
-drafted next, read by the same two readers, and the wordings he approved on 13 Oct 26 (D827, D829, D830) are rechecked
-against the finished guide before any of them is built.
+**ITS STANDING USE (owner D833, 13 Oct 26):** the writing guide — §1 above, this method and §1b on how the app speaks — is
+a companion to this design guide and to the design skill, used EVERY time text in the app is written or changed, new
+text as well as old: the Logic page's wording (D809), the whole-app words pass (D808), every note, label, hint and
+question. Its aim, in his words: "intuitive clean simple smooth less verbose more human text with less -" — fewer
+dashes among them (the agent's reading of "less -"). The wordings he approved on 13 Oct 26 (D827, D829, D830) are
+rechecked against the finished guide and put to him again before any of them is built.
 
 **Shorter is never thinner.** Shortening takes out words; summarising takes out facts. Before a word is touched, name
 what the note must still say afterwards — **the protected list: what happened · why · what it costs · where to put it
-right · every name and every number.**
+right · every name and every number.** This is the method for the first of §1's three ends — a note that stays and gets
+shorter. Removing a note or folding it is §1's own decision, put to him as such.
 
 1. **Measure the box before the words.** A note that "runs long" is first measured where it sits, at the smallest size
    the app ships: the box's width against the screen's, and how many lines it takes. The box and the words are reported
    as two separate findings — the box is often the cheaper fix (13 Oct 26: every passing note was half a phone's width).
-2. **Only four kinds of word may be cut:** a padding phrase with a shorter equal ("in order to" → "to") · a thing said
-   twice in the same note · an announcement or a courtesy ("Heads up", "Note that", "please") · an intensifier or a
-   hedge ("very", "just", "quite", "actually"). **Anything else is content and stays.**
+   A wording pass that never measured the box says so in its report.
+2. **A word is cut only if the note states the same facts without it (D825).** Four kinds nearly always pass: a padding
+   phrase with a shorter equal ("in order to" → "to") · a thing said twice in the same note (the day named once, D806 —
+   and if the mention dropped carried more than the one kept, a date, "show the cut" says so) · an announcement or a
+   courtesy ("Heads up", "Note that", "please") · an intensifier or a hedge ("very", "just", "quite", "actually"). A
+   fifth passes only by proof — a helper word round a fact ("it is", "it has been", "now") — when the cold read (9)
+   gives the same answers. **Two things are never filler: a phrase that carries a clause's verb ("is covered", "will not
+   earn"), and the word that links two facts (so, because, but, until)** — the link IS the why or the cost, and it is
+   never traded for a dash or a colon (§1b test 2). Anything else is content and stays.
 3. **Swap before you delete.** The first move is a shorter phrase that means the same; taking a word out is the second.
-4. **It is still a sentence.** The small joining words stay — the, a, that, who, to, from, is. Never telegram style:
-   "no times — no OIL from it" is a summary, not a shorter sentence.
+4. **The fact keeps its subject and its verb.** Never telegram style: "no times — no OIL from it" lost WHAT had no times
+   and WHO earns nothing. A helper word after the fact may be trimmed ("so it has been cleared" → "so it was cleared");
+   the thing the note is about, what it did, and the small words that make it a sentence (the, a, that, who, to, from,
+   is) may not go.
 5. **A named thing is never traded for "it", "this" or a vaguer word.** A note is read alone, later, with nothing beside it.
-6. **A word that is both a thing and an action** (input, file, post, mark, record, report, amend) keeps the small word
-   that settles which is meant.
-7. **"Your" and "we" go only where they carry nothing** — "your row", set against someone else's, is a fact.
-8. **Show the cut.** Each change is put to him as three things: today's wording · the shorter one · the exact words cut,
-   each with which of the four kinds it is. A cut that fits none of the four is not made.
-9. **Read it cold.** Each new wording is read WITHOUT the original beside it — by a reader who has never seen the
-   original, wherever one is to hand — against four questions: what happened, why, what does it cost, where do I put it
-   right? An answer that differs from the original's is a lost fact, and the wording goes back (13 Oct 26: "anything
-   added later too" read as the opposite of what it replaced).
+6. **A word that is both a thing and an action keeps its small word** — the rule is §1's, for new labels too.
+7. **"Your" goes only where it carries nothing** — "your row", set against someone else's, is a fact. ("We" is never
+   the app's word: §1b test 7.)
+8. **Show the change.** Each one is put to him as three things: today's wording · the new one · the exact words cut,
+   added or swapped — each cut with its kind (one of the four, or the fifth with its proof), each mark replaced with
+   the word that replaced it. A cut that fits no kind is not made.
+9. **Read it cold — by someone else.** Each new wording is given ALONE to a fresh reader — a helper started for it,
+   never the chat that wrote it (13 Oct 26: the writer, knowing what was meant, could not see that "anything added later
+   too" could be read as the opposite of what it replaced). The reader writes down: what happened, why, what does it
+   cost, where do I put it right, and can any part be read two ways? — then restates every claim of the note in their
+   own words, each named thing and number included. The writer sets those answers beside the original's, claim by
+   claim; one that differs, or a second reading, is a lost fact and the wording goes back.
 10. **"Left whole" is a proper result.** A note that cannot lose a word without losing a fact is left as it is (D825) —
-    and made easier to READ instead: two short sentences with what happened first, or a headline with its detail under it.
+    and, where it is still hard to read, the same words split into two sentences or a headline with its detail under
+    it, no word lost, is offered to him as a change of its own, with its picture (D541). Never done unasked.
 11. **A word count is never a target.** A length is only a sanity check — a warning of fifteen words is not wordy.
+
+### 1b. How the app speaks (D833)
+
+*His D833 (13 Oct 26 — "intuitive clean simple smooth less verbose more human text with less -"; and "U can use skill or
+guides online to help you design and shape this … And reviews on what's good"), and the outside guides read at their
+source that day — GOV.UK's writing guidelines, Google's Material content guide, Apple's writing page, Microsoft's and
+Atlassian's voice pages, the US plain-language guide, Nielsen Norman's tone study and its piece on expert readers
+(`superpowers/briefs/2026-10-13-ux-writing-guides-research.md`, with what cuts against each). For NEW text, and for any
+text being changed. Written as tests, like §1a.*
+
+**The voice, in one line:** the app speaks as a capable colleague on the scheduling desk would — it tells you what
+happened, what it means for you and what to do, in a sentence a person would say. Calm, exact, brief. Not a form
+("Operation completed"), not a telegram ("Published — no times — no OIL"), not a mate ("All done!").
+
+**When the aims pull apart, this order (the agent's reading of D833 beside D825 — his to correct):** every fact first
+(§1a's protected list); then a sentence a person would say; then as short as those two allow. A sentence that reads
+like speech may be a word or two LONGER than the clipped one it replaces. It is taken when it reads faster, and the
+change shows the words added as well as the words cut (§1a test 8).
+
+1. **Say it aloud.** Read the wording out as if to the person it is for, across the desk. A wording nobody would say
+   that way is rewritten until somebody would.
+2. **Two thoughts are joined by a word or a full stop — not by a mark** (his "less -"). Where two thoughts meet, name
+   what the mark stands for — and, so, because, but, until, then — and write that word, or end the sentence. The link
+   is a fact (§1a test 2): a dash leaves the reader to guess it. This is the long dash first, and its cousins doing the
+   same job: the semicolon (often misread), the middle dot between clauses, the slash for "and" or "or", brackets round
+   an afterthought, a colon doing a dash's work. **A mark stays where it joins no thoughts:** a hyphen inside a word; a
+   range as the app prints it; the dot or slash between the ITEMS of a label, a chip or a row ("ALL AVAIL · 27",
+   "Yes · FO / HO"); a colon after a label that names what follows. **A wording he has ruled keeps its marks until he
+   says** ("Not saved — keep this page open", D587; "Not swapped — OIL not answered", D783): §0 — nothing on screen is
+   reworded on this guide's word alone.
+3. **One thought a sentence, and what happened comes first** — then what it means for the person, then what to do. A
+   sentence past about 25 words usually holds two thoughts: a sign to look, never a limit (§1a test 11).
+4. **A sentence has its verb; one done thing may be two words.** "Saved", "Monday published", "Note hidden" are how a
+   person says a single done thing. The moment a note carries a second fact — a reason, a cost, an instruction — it is
+   written as sentences, each with its subject and its verb (§1a test 4).
+5. **The squadron's words stay; everyday words for the rest.** OIL, AL, CX, SANS, FO, HO, crew rest, brief, take-off
+   are the reader's own trade: never explained, never swapped for a plainer word. Everything else takes the short
+   common word — "needs", not "requires"; "before", not "prior to"; "shows", not "is displayed" — and a verb rather than
+   a noun made from one ("publishing reissues the Original", not "publication results in a reissue"). The present
+   tense for what is true now. Never a builder's word (the product bar: the words read as a finished product).
+6. **Say what is, and what will work.** "Publish the day first", not "Changes can't be published on an unpublished
+   day". Never two negatives in one sentence. Contractions as people say them ("can't", "don't", "isn't") — but where
+   "not" is the whole point of a warning it is written out and stands beside its verb: "will not earn OIL".
+7. **The person is "you"; the app is nobody.** "You" and "your" where the person acts or owns the thing. Never "we",
+   "I", "our" or "the system". When another person did it, name them ("Saber took over Tuesday"). When the app did it,
+   say what happened to the thing ("The 07:30 brief was cleared") — a passive is right there, and better than an
+   invented actor. No "please", "sorry" or "oops" (§1), and no blame: "Enter a time as 08:00", never "You entered an
+   invalid time".
+8. **One steady voice, plainer as the stakes rise.** A success and a refusal are said in the same calm way. A cost is
+   stated as a fact, in the plainest sentence of the note, neither dressed up nor softened: "Nobody on it earns OIL."
+   No capitals to stress a word inside a note ("APPROVED"), no exclamation mark, no alarm word ("Warning!", "Heads up")
+   — the app's colours already say stop, look, fine (§4). Exact before friendly: no cheer, no joke (§1). (The small
+   capitals of headings and puck-row buttons are the Raptor look, not stress — §1.)
+9. **A pair speaks as a pair; a family speaks alike.** The on-note and the off-note of one switch are the same sentence
+   turned round ("Line is SPARE …" / "Line is MAIN …"). Every refusal of one kind starts the same way ("Only a
+   scheduler can …"). Before writing a note, find its nearest relatives in the app and match their shape — or change
+   them together, put to him as one.
+10. **A name that needs no hint.** A button is named for what it will do, and the note after it, the bell and the
+    change history use that same word (§1). A thing is named by what the person sees or does, never by how it is
+    built. Before a new name is coined, look for one the app already uses (the screens; the word list when
+    `[WORD-LIST]` is written). A label that needs a hint to be understood is rewritten before the hint is (§3's test).
+11. **Checked by someone else.** A new wording that carries a reason, a cost or an instruction gets §1a test 9's cold
+    read: the writer first lists the facts it must carry; a fresh reader, given the wording alone, answers the same
+    questions; the two are compared. A label, or a note of one done thing, needs only test 1.
+
+**Three of the app's notes, as this guide would say them** — to show the tests at work; the wordings of record are the
+ones he approves:
+
+| On screen on 13 Oct 26 | As the guide would say it | What changed |
+|---|---|---|
+| The 07:30 brief was after the new take-off, so it has been cleared | The 07:30 brief was after the new take-off, so it was cleared. | "has been" → "was"; the link "so" stays |
+| Nothing on this day earns OIL — anything added later is covered too | Nothing on this day earns OIL, and nothing added to it later will. | the dash → "and"; the second thought keeps a verb of its own |
+| This week is locked — it was published by an older version and can't be edited | This week is locked. It was published by an older version, so it can't be edited. | the dash → a full stop; "and" → "so", the link the note meant |
 
 ## 2. Keyboard and focus
 
@@ -281,8 +373,9 @@ state nobody drew.
   · it is polish.
 - A short **"considered and left"** list — and why.
 - **What a machine recorded reaches the report by count, not by recollection:** every gap a key-by-key or measured
-  record holds is on the page by its number, or under "considered and left" with its reason (13 Oct 26: a gap in the
-  key record was reasoned away and left off the page; a second reader found it).
+  record holds is on the page by its number, or under "considered and left" with its reason; the report states both
+  counts — the record's gaps and the page's — and a script compares them, never the eye (13 Oct 26: a gap in the key
+  record was reasoned away and left off the page; a second reader found it).
 - **Nothing is changed by a look.** Findings go to him, in rounds of at most four with a recommended answer each (D541).
 
 ## Where each piece came from
@@ -292,6 +385,7 @@ state nobody drew.
 | `jakubkrehel/skills` (read at the source 13 Oct 26) — the writing, accessibility, layout, "break" and "state-machine" guides | MIT, © Jakub Krehel | §1, §2's table (itself the W3C ARIA practices' patterns), §3, §7, §8's format — rewritten in our words |
 | `jakubkrehel/make-interfaces-feel-better` (read 2 Oct 26 and 13 Oct 26) | MIT, © Jakub Krehel | §5's "never animate everything", §6's figures, corners and touch target — as narrowed by D489; its rules on icons were NOT taken |
 | `rukkiecodes/claude-apple-design-system` (read 12 Oct 26 and 13 Oct 26) | MIT, © 2026 rukkiecodes | §4's two rules and its one-table idea; §3's "surface before a box", "one main button", hair-thin lines; §1's "a note for what is done, a question only for a choice" and "an empty place says one thing"; §5's timings; §6's three weights and one corner scale; §8's "place, rule, fix" — its light, airy, one-accent look was NOT taken |
+| The outside writing guides read 13 Oct 26 — Microsoft's and Apple's writing guides, Nielsen Norman Group (error messages; the tone study; expert readers), GOV.UK's writing guidelines, Google's Material content guide, Atlassian's and Mailchimp's voice pages, the US plain-language guide, one UX-writing checklist, Anthropic's document skill | each publisher's own — read, nothing copied | §1a's tests and §1b, in our words. What was read, what reviewers say of each, what cuts against and what was NOT taken: `superpowers/briefs/2026-10-13-writing-skills-research.md` and `…-ux-writing-guides-research.md` |
 
 **Not taken from any of them:** converting the app's colours, a choice of fonts (the app loads none), icon rules,
 animation recipes for another toolkit, translation rules, phone-app parts, and any program a skill tells an agent to

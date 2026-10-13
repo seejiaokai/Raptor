@@ -32,9 +32,15 @@ fix to behaviour, a test, a comment) — the skill's detector already runs after
 2. **Words:** every word earns its place or goes (D726); a note is shortened, removed where the screen says it already,
    or moved under one short "How this works" fold (D808) — each put to him before and after, nothing built reworded
    unasked; what happened, then the one thing he must know; no warning dropped to save words; an error says how to put
-   it right; a button starts with its verb. **Shortening is not summarising (D825, D832):** only padding, a thing said
-   twice, an announcement and a hedge may be cut; the note stays a sentence; each change shows the exact words cut and is
-   read cold; a note that cannot lose a word is left whole — the guide's §1a.
+   it right; a button starts with its verb. **Shortening is not summarising (D825, D832):** the box is
+   measured before the words; a word is cut only if the note states the same facts without it — padding, a thing said
+   twice, an announcement, an intensifier or a hedge — never a clause's verb or the word that links two facts; the note
+   stays a sentence; each change shows the exact words cut, added or swapped and is read cold by someone who has not
+   seen the original; a note that cannot lose a word is left whole — the guide's §1a. **How the app speaks (D833):** as
+   a capable colleague would say it aloud — every fact first, then a sentence a person would say, then as short as
+   those allow; two thoughts joined by a word or a full stop, not a dash, a semicolon or a middle dot; the squadron's
+   words kept, everyday words for the rest; "you", never "we"; one steady voice, plainer as the stakes rise; pairs and
+   families worded alike; a wording he has ruled keeps its form until he says — the guide's §1b.
 3. **Keyboard:** anything new can be opened, used and closed without a mouse; Escape closes what opened last; the
    keyboard returns to the button that opened a thing; focus is always visible and never hidden under a bar that
    stays. Its keyboard set is written beside its picture.
