@@ -34,7 +34,7 @@ import { leaveInputAt, openDays, postOut, postOutProblem, undoPostOut, undoPostO
 import { columnInView } from './inview'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
-import { GROUP_DRAG, GROUP_PRIO_DRAG, MANNING_DRAG, NO_QUALS, PersonMonth, PersonRow, QualPill, RowApi, RowDragCfg, cellOpenable, freeHalfBeside, ownAwardAlone, setPhWidth } from './MatrixRows'
+import { GROUP_DRAG, GROUP_PRIO_DRAG, MANNING_DRAG, NO_QUALS, PersonMonth, PersonRow, type QualPill, type RowApi, type RowDragCfg, cellOpenable, freeHalfBeside, ownAwardAlone, setPhWidth } from './MatrixRows'
 import './matrix.css'
 
 /** A posting through the store, or the sentence saying why it was refused (the absence-record re-test, AB5, 26 Sep
