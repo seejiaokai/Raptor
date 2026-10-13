@@ -4501,6 +4501,8 @@ night of 13 Oct 26 and the ones coming — keyboard use included (owner D807): `
 The same going-over of EVERY page's notes, hints, labels and small print — less clutter; a note the screen already says may be
 removed, and help still wanted may sit under one short "How it works" fold — is a job of its own, later (owner D808):
 the words half of `OUTSTANDING.md` `[UI-SLEEK-PASS]`.
+The rules such a going-over is held to — taken from three outside design skills and from his own rulings — are being gathered into
+ONE design guide of our own that loads by itself for interface work (owner D812): `OUTSTANDING.md` `[SKILL-FUSION-JAKUB]`.
 
 ## The bell's list of notices (owner D755 (3), D760, D769 — 12 Oct 26; the one-rule build's step 7)
 
