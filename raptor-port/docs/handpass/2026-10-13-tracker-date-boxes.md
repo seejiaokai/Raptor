@@ -128,15 +128,48 @@ hands over a date only when it differs; the dead line went, and the break now cu
 a day in Failed on through the box itself — a test was written; (17) a day that is not whole reaching the box — the same test.
 
 **In a browser — `scripts/handpass/trk-datebox-breaks-browser.mjs` (break, build, run the walk at both sizes, put back):**
-{{BBREAKS}}
+**9 of 9 caught.** (1) a press on the calendar kept from the page behind — the pop-up stays open; (2) End date A a
+narrow box; (3) a box's words clear of "take this date off"; (4) the button inside the box, not after it; (5) the
+failures list's date column; (6) Done on and Failed on at the pop-up's width; and for the read's fixes — (7) the
+opening tap's patch lying OVER the card, (8) the patch being left at all, (9) "take this date off" settling. Breaks 1
+and 3 to 6 were run before the read's fixes (their rules are untouched since); 2 and 7 to 9 after. The first run used
+the walk script as its detector and overwrote the evidence pictures with pictures of broken builds — retaken on the
+true build, and a detector run now writes to a scratch folder (skill note 566).
 
 ## 9. The read of the finished code
 
-{{READ}}
+A fresh, blind Opus reader (D790 — the builder's model, a fresh chat that had not seen the builder's check; brief
+`docs/superpowers/briefs/2026-10-13-tracker-date-boxes-read.md`; report `docs/handpass/parts/trk-datebox/read-opus.md`;
+389,152 tokens). **Nine claims — 0 high, 3 medium, 5 low, 1 small; none false.** Each was read against the code by the
+host; every fix has a test that failed first and a break that proves it (§8).
+
+| # | The claim | What was done |
+|---|---|---|
+| F1 medium | A double tap on a date box could pick and SAVE a day nobody chose: on a phone the calendar's card lands under the finger, and nothing guarded the tap that opens it | FIXED in the app's box (it protects every form): the opening tap leaves the same small patch a pick leaves, over the card. Unit tests; a browser test in the gate (`e2e/datecal.spec.ts`); walked (S6) |
+| F2 medium | A double press on "take this date off" in the failures list took the day off TWO failures — the next one slides up under the finger | FIXED: the button settles for 400ms. Unit test; walked (S6) |
+| F3 medium, his to decide | "Take this date off" on a Last Flown box left BOTH Last Flown days blank with flights on record (older store behaviour, now one tap away) | BUILT as D123's own words say — "Last Flown is the latest day actually flown": the button shows only for a day put in by hand, and taking it off shows the latest flight marked done (blank only where no flight is done). **The agent's reading, told to him (§11) — his to overrule.** Unit tests |
+| F4 low | Two days picked in one box inside two seconds were one undo step (a fold written for typing) | FIXED: the seven date setters no longer fold; the pace and the down days (still typed) do |
+| F5 low | The calendar marked the DEVICE's day as today; the Tracker refuses by the squadron's day (D374) | FIXED: the Tracker hands the calendar its own today. Test with the device set to another time zone |
+| F6 low | A screen reader heard five boxes called "Date"; the keyboard was left on nothing after the ✕ | FIXED: each box is named, the ✕ says whose date it takes off, the keyboard goes back onto the box |
+| F7 low | A refusal's line stayed under a box that was now right (the same day picked again is no change) | FIXED: the line goes at the next press on the box — in the side panel and, for an event already done, in the pop-up |
+| F8 low | With the keyboard on a date box, Delete in "Edit chart layout" deleted the selected line (the key used to edit the typed box) | FIXED: the key does nothing there |
+| F9 small | A year before 1900 could be picked and was dropped without a word | FIXED: no day before 1900 is offered |
+
+**Its rulings of the builder's readings:** all supported; two it marked "to tell him" — the ✕ sits INSIDE the box where
+D801's row said "beside" (§6 says why), and a refused day in Done on of an event not yet done stays in the box. Both are
+in §11. **Unproved, for his devices:** on an iPad or desktop Safari between 621 and 1050px wide the calendar is placed
+from a box measured under the side panel's zoom — Chromium is right; Safari was not available to run. Filed in §11's card.
+**Its notes for the records** (stale comments in `Pop.jsx`, `SidePanel.jsx`, a test's note; the standalone export now
+needs the app's date box) — all corrected.
 
 ## 10. The gates
 
-{{GATES}}
+The whole set in ONE run under the PC's lock with nothing else running, TWICE:
+
+1. **Before the read's fixes, on `2418d92c1`:** unit 11008 / 11008 (630 files) · build clean · tfin 728 / 0 · e2e 794 passed, 0 failed, 57 skipped · smoke 446 / 0 · rulecheck OK · docsize OK (over one size marker by 480, deferred — D29).
+2. **After them, on `e8e300cd2`:** build clean · tfin 728 / 0 · e2e 795 passed, 0 failed, 57 skipped · smoke 446 / 0 · rulecheck OK · docsize OK — and **unit 11020 of 11022: two older tests failed, rightly.** Both lived in a file the builder had not run (`tracker.test.tsx`) and pinned "two keystrokes into one DATE box inside two seconds are one undo step" — the fold the read's F4 took off the date boxes. They were re-expressed, not weakened (a typed box — the down days — still folds, proved by break 36; a date picked twice is two steps), and the unit suite was run again whole, under the lock, on `679bd5755`: **11022 / 11022 (630 files).** Only test files changed between the two.
+
+Not run for this job: `npm run perf` and the adapted probes — nothing of the week's or the board's drawing is touched (the Tracker is a page of its own; step one's run of the same night stands for the calendar).
 
 ## 11. His look, and what he is told
 
