@@ -59,6 +59,23 @@ describe('the box', () => {
     expect(t('box').getAttribute('aria-haspopup')).toBe('dialog')
     expect(t('box').getAttribute('aria-expanded')).toBe('false')
   })
+  /* the Tracker's two End date boxes are 108px wide on a phone: "Wed 28 Oct 2026" was cut to "Wed 28 Oct 20…" there
+     (the host's look, 13 Oct 26). A box told it is narrow leaves the weekday out of what it SHOWS — the date is whole,
+     still in words — and still says the whole of it to a screen reader. */
+  /* the Tracker's "today" is the squadron's day, not the device's (D374): a form that keeps its own today hands it on,
+     and the calendar marks THAT day and opens an empty box on its month (the read of 13 Oct 26 — F5) */
+  it('a form with a today of its own: the calendar marks that day, and an empty box opens on its month', () => {
+    render(<DateBox testid="tb" label="Upchit date" value="" today="2031-03-10" onChange={() => {}} />)
+    fireEvent.click(t('tb'))
+    expect(calMonth()).toBe('2031-03')
+    expect(t('dcal-day-2031-03-10').classList.contains('is-today')).toBe(true)
+  })
+  it('a narrow box leaves the weekday out of its words, never out of what it says aloud', () => {
+    render(<DateBox testid="nb" label="End date A" value="2026-10-28" noWeekday onChange={() => {}} />)
+    expect(t('nb').querySelector('.datebox-txt')!.textContent).toBe('28 Oct 2026')
+    expect(t('nb').getAttribute('aria-label')).toBe('End date A: Wed 28 Oct 2026')
+    expect(boxValue(t('nb'))).toBe('2026-10-28')
+  })
 })
 
 describe('opening it', () => {
