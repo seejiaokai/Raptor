@@ -915,6 +915,22 @@ describe('an input put BACK on the programme where it needs an OIL answer is NOT
     expect(SAID.length, 'it said why — once').toBe(1)
   })
 
+  /* written for the break tests: the ANSWER (not the bar's "Answer OIL") arriving after the input was put back another
+     way — the page works under the question's sheet from the keyboard, and another door can land it */
+  it('an answer given after the input was put back another way makes nothing and says the input has changed', async () => {
+    await boot()
+    takenOff()
+    press('g')
+    expect(view.OILWAIT!.kind).toBe('back')
+    expect(slots.acceptInput(SAT, rec(), 'g'), 'the premise: put back by another door').toBe(true)
+    view.afterSchedMutate()
+    expect(view.OILWAIT, 'the premise: the question is still up').toBeTruthy()
+    SAID = []
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(false)
+    expect(SAID.join(' | ')).toMatch(/has changed — not put back/)
+    expect(rec().oil || {}, 'no answer written for a put-back that was not made').toEqual({})
+  })
+
   it('on a PUBLISHED day nothing waits to go out until the answer is given', async () => {
     await boot()
     takenOff()

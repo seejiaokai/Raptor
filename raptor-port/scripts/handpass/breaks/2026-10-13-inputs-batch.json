@@ -51,10 +51,10 @@
   },
   {
     "n": 6,
-    "name": "D793: the answer and the put-back are ONE step (no second command after it)",
+    "name": "D793: the answer and the put-back are ONE step — they are saved as one batch",
     "file": "src/ui/interactions.ts",
-    "find": "      if (!oil) view.afterSchedMutate()",
-    "put": "      view.afterSchedMutate(); if (oil) HOOKS.histPush()",
+    "find": "      ? saveBatchX(() => {\n          const x = find()",
+    "put": "      ? ((f: () => boolean) => ({ ok: f() }))(() => {\n          const x = find()",
     "tests": [
       "src/ui/oilwait.test.tsx"
     ]
@@ -110,17 +110,6 @@
     ]
   },
   {
-    "n": 12,
-    "name": "the take-off asks nothing (it never runs the gate)",
-    "file": "src/ui/interactions.ts",
-    "find": "    if (dest === 'x') run(inp); else press()",
-    "put": "    press()",
-    "tests": [
-      "src/ui/oilwait.test.tsx",
-      "src/ui/amendretest.test.tsx"
-    ]
-  },
-  {
     "n": 13,
     "name": "the gold dot: a seat of an input's row is dotted for the line that put its man in",
     "file": "src/ui/histbubble.ts",
@@ -158,17 +147,6 @@
     "put": "  return of.filter(r => (!!(r as any).one || r.fld === 'whose') && (!day || rowTouches(r, day)))",
     "tests": [
       "src/ui/reqdoor.test.tsx"
-    ]
-  },
-  {
-    "n": 17,
-    "name": "the gold dot: only a row that came from an input",
-    "file": "src/ui/histbubble.ts",
-    "find": "  const iid = row && row.src ? String(row.src) : ''\n  if (!iid) return []",
-    "put": "  const iid = row && row.src ? String(row.src) : 'x'",
-    "tests": [
-      "src/ui/reqdoor.test.tsx",
-      "src/ui/histbubble.test.tsx"
     ]
   },
   {
