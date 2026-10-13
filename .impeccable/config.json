@@ -1,1 +1,1 @@
-{"detector":{"ignoreRules":[],"ignoreFiles":["raptor-port/src/engine/**","**/*.test.*"],"ignoreValues":[]}}
+{"detector":{"ignoreRules":[],"ignoreFiles":["raptor-port/src/engine/**","**/*.test.*"],"ignoreValues":[]},"projectRoots":["raptor-port"]}
