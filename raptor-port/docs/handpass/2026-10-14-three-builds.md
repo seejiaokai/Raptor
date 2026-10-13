@@ -392,4 +392,42 @@ boxes' rules are read as contracts by `src/ui/datecal-look.test.ts`.
 
 ## 11. The gates, and the look card
 
-*(filled at the close)*
+**The gates — the whole set under the PC lock, in order, nothing else running (`node scripts/gatelock.mjs run`).**
+
+| Run | Unit | Build | The original's assertions | Browser tests | The Tracker's suite | Rule check | Documents |
+|---|---|---|---|---|---|---|---|
+| 1 — before the walk (the batch as first built) | FAIL in three files, every other file green: old words in `oilconfirm.test.tsx`; a page-level test timing out in `clashwayout.test.tsx`; thirteen tests of `placeholderlist.test.tsx` whose date had come due (the same on the commit the branch was cut at) — all three put right | clean | 728 / 0 | 803 passed, 0 failed, 59 skipped | PASS | OK | OK |
+| 2 — the final run, on the tree with every fix of the walk and the read (committed straight after, unchanged) | **11310 / 11310 (637 files)** | clean | **728 / 0** | **802 passed, 1 failed, 59 skipped** — the one failure is the Leave War's Required-panel test at a phone's size, at its month-button step: the test already filed as unsteady (`[LW-REQ-PICK-MONTH-UNSTEADY]`, 8 Oct 26 — nothing of this batch is on its path); run alone straight after, 3 of 3 | **446 / 0** | OK | OK |
+
+**The unit suite with the clock moved on (the read's recommendation — does any other file read the real clock against a
+date that will pass?):** with the clock 20 days on, 11310 / 11310 (637 files) — nothing else is about to come due; with it 200 days on (May 2027), 11307 / 11310 — three tests of `src/ui/inputs.test.tsx` fail ("the date window › opens on today…", "…keeps a span that began before today…", "a new input announces itself › rides the top row…"): a longer fuse of the same fault, filed in `[BATCH-14OCT-LEFTOVERS]` (e), not fixed here.
+
+Perf and the adapted probes were not run: nothing on the dense week, the board's rows or the Leave War's grid is drawn
+differently (the clash note is chrome above the grid; the band is the top bar's).
+
+**Walk:** tier WALK — the host's seven scripts (151 lines: 143 works, 8 OPEN records of two filed jobs, 0 failing) on
+a phone 390×844 and a desktop 1440×900, then three Sonnet walkers on the frozen build (W1 12 / 12; W2 28 of 32; W3
+92 of 96 judged — each FAIL taken to the code, none a fault of the build), a re-walk of all seven scripts on the
+rebuilt build and of the two reworded notes; pictures in `docs/img/handpass/2026-10-14-three-builds/` (the host's, and
+`w1/`, `w2/`, `w3/`), the ones cited in §0 and §9 opened. 36 break tests. One fresh Opus read: four findings, applied.
+
+**The look card — for him, on his iPhone (the preview link; sign in as usual). Three things, about five minutes.**
+
+1. **The Leave War's clash list.** Open the Leave War. If the amber line "⚠ 1 clash with the schedule" (or "N
+   clashes…") is there, it is one slim line under the two rows of buttons — not a box squeezed at the right. Tap
+   it: the list opens in place, each clash two lines (who · the day · what to do, then why). Tap a clash: that day
+   opens for that person. Tap the line again: it closes. *If no clash shows, the demo has none today — a weekend day
+   published with someone working it who also holds a leave bid makes one.*
+2. **A passing note, the full width.** On Edit Schedule publish any day (the four names, then "Publish day"): the
+   note at the foot runs nearly edge to edge, one or two lines — not a narrow five-line box in the middle.
+3. **The OIL bar under the top bar.** On the Inputs calendar open a Saturday, add a Training input for one man with
+   times (the OIL question comes: answer Yes, then Add). Now press and drag that input's bar to the Sunday beside it:
+   the OIL question comes again — press "Don't move". The amber bar "Not moved — OIL not answered · Answer OIL ·
+   OK" sits under the top bar, ON ONE LINE, and nothing is covered at the foot. "Answer OIL" brings the question
+   back; "OK" closes the bar. *What to tell me: whether its words look cramped or small on your phone — Apple's
+   letters are wider than the ones it was measured in, and it shrinks them a little to stay on one line. (The walk
+   raised it this way with a mouse at a phone's size; if the drag is awkward under a finger, say so — that is worth
+   knowing too.)*
+
+**What is NOT evidence here:** his iPhone itself (every phone figure is a Windows browser at a phone's size); a ChatGPT
+read (the job is on `[NO-ASTRA-LIST]`).
