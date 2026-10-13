@@ -39,9 +39,9 @@ fix to behaviour, a test, a comment) — the skill's detector already runs after
    change shows the exact words cut, added or swapped and is read cold by someone who has not seen the original; a note
    that cannot lose a word is left whole — the guide's §1a. **How the app speaks (D833, D834):** as a capable colleague
    would say it aloud — every fact first, then a sentence a person would say, then as short as those allow (the agent's
-   reading until he rules); where a dash would join two parts: the linking word, else a colon where the first part is
-   only a name or the second only spells it out, else a comma for a renaming, else a full stop — a dash only as a
-   named choice, never two in a note; no fact or link added on a guess; the squadron's words and the app's own names
+   reading until he rules); where a dash would join two parts: a full stop or a colon after an opening done thing and before an
+   instruction; otherwise the linking word, else a comma for a renaming, else a colon where the first part is only a
+   name or the second only spells it out, else a full stop — a dash only as a named choice, never two in a note; no fact or link added on a guess; the squadron's words and the app's own names
    kept, everyday words for the rest; "you", never "we"; one steady voice, plainer as the stakes rise; pairs and
    families worded alike; none of the habits that mark machine-written text; a new wording with a reason, a cost or an
    instruction is read cold by someone else; a wording he has ruled stays until he says — the guide's §1b.

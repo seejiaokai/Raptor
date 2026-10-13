@@ -349,7 +349,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 577: A complaint about wordy notes was half a layout fault — the box was measured only after the words had been drafted
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-14) — the design guide §1a test 1 (measure the box before the words; a pass that did not says so); on the branch, awaiting his approval of the guide's wording (D832)
 **Date:** 2026-10-13
 **Session context:** [DESIGN-LOOK-13OCT] — the design page: the shorter passing notes (D806), drawn before and after on the built app at a phone's size
 **Skill:** impeccable (reference/clarify.md); the design guide §1 (words on screen)
@@ -379,7 +379,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 579: "Shorten it" was answered with summaries — the owner sent the list back: "the key words are gone"
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-14) — the design guide §1a tests 2, 3, 4 and 8 (a word is cut only if the note states the same facts without it; show the change); on the branch, awaiting his approval (D832)
 **Date:** 2026-10-13
 **Session context:** [DESIGN-LOOK-13OCT] / [NOTES-SHORTER] — 33 shorter wordings for the app's passing notes, put to him before and after; his answer the same evening (D825)
 **Skill:** impeccable (reference/clarify.md); the design guide §1 (words on screen); plain-language (the same failure as a "condensed record that changed what the original meant", D138)
@@ -394,7 +394,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 580: A gap the machine record held never reached the page; a redraft said the opposite of its original — both caught only by a second model's read
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-14) — the design guide §1a test 9 (the cold read by someone else) and §8 (counts compared by a script); the wider-letters line is in the mock-up guide; on the branch, awaiting his approval (D832)
 **Date:** 2026-10-13
 **Session context:** [DESIGN-LOOK-13OCT] — Fable's read of the whole design page, on the owner's word (D826), after the host's own look and a fresh Opus reader's
 **Skill:** impeccable (reference/critique.md — synthesis; reference/clarify.md); the design guide §8 (how a look is reported)
@@ -421,3 +421,33 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** In a research brief: a source is recorded as unread only after (1) the address a redirect names has been fetched, hop by hop, and (2) a page that came back empty has been opened in a real browser. The record says, for each source, how it was read — word for word, or a tool's account — and for each one not read, what was tried.
 
 **Principle:** "Would not open" is a finding about the tool until the redirect has been followed and a real browser tried; a source set that silently lost its most relevant members biases the conclusion as surely as a bad source does.
+
+### Observation 582: "Checked in the app" was written from a note's words, not from whether its branch can run — one of thirteen approved wordings was a note the app can no longer show
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** [SKILL-FUSION-WRITING] — the wordings of 13 Oct rechecked against the writing guide; the third read (a fresh Opus reader and Fable, blind) asked to confirm every "checked in the app" in the record against the code
+**Skill:** impeccable (reference/clarify.md — Audit the language); the design guide §1a test 8 and §1b test 2; plain-language ("Verified vs assumed")
+**Type:** open-source
+**Phase/Area:** Clarify — establishing what a string means before rewording it
+
+**Issue:** The writer reworded a two-tap warning ("pick it again to confirm") and wrote "checked in the app: nothing is replaced until the second pick" — from the string and the lines round it. The function that would raise it had stopped returning that state three weeks earlier (its own comment says so); the note is dead code. The owner had approved a shorter wording of it on a page, a first reader had "confirmed" the check, and only the second reader, who followed the call to its source, found it. The same pass found a fix written on a guess ("returns if the day's schedule changes" — it is keyed to the warning's own words) and a family counted as three strings that is seven. When the two readers disagreed on the dead note, the host settled it by reading the function, not by weighing the reports.
+
+**Suggested improvement:** In clarify's audit and the guide's §1a: before a string is reworded, find (1) every place it is raised — by search, with the count stated — and (2) for each, the condition that reaches it, followed one call up; a string no path reaches is reported as dead, not reworded. "Checked in the app" in a record names the function read. And in any multi-reader round: two readers who disagree on a FACT are settled by the primary source, at once, before either report is folded in.
+
+**Principle:** A wording is checked against the behaviour that raises it, not against its own words; and a disagreement between reviewers about a fact is a question for the source, never a vote.
+
+### Observation 583: Each of three read rounds of a guide found faults the last had missed — and nearly all came from making the reader APPLY the guide to real cases and to the code, not from reading it
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** [SKILL-FUSION-WRITING] — a writing guide read three times by two blind readers (D832, D833, D835)
+**Skill:** New skill candidate: briefing a reader of a working guide (today in each brief; `claudex-loop` for plans); writing-skills
+**Type:** open-source
+**Phase/Area:** Review — what the brief asks the reader to do
+
+**Issue:** Round one asked "is the draft faithful and sound" and returned wording fixes. Rounds two and three added three tasks to the brief: reword eight real notes by the guide alone and say whether two careful writers would land apart; try to construct a rewording that passes every test and still reverses a fact; run the new rule over eleven named cases and tabulate what it yields against what the record did. Those tasks produced the heavy findings — a link word guessed, an order of branches that could not be applied as written, two fixes from the previous round contradicting each other — which a reading of the guide's text had passed twice. A separate cold reader, given only the outputs, found what all the guide-readers missed (a flying word that means "approved").
+
+**Suggested improvement:** A brief for reading a guide, rule or skill always carries: (1) apply it to N named real cases and show the result; (2) construct a case that passes every rule and is still wrong; (3) tabulate rule-yields against what the author did. And stop at three rounds: say what was not re-read after the last fixes instead of opening a fourth.
+
+**Principle:** A rule is reviewed by running it, not by reading it; ask the reviewer for outputs and counter-examples, and the faults in the text find themselves.

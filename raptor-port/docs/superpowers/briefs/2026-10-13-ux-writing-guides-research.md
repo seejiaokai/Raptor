@@ -81,7 +81,8 @@ tests:
 - **Two popular reasons were checked and NOT taken as the guide's reasons.** That screen readers stumble on a dash: the tests found disagree
   (some pause, some say "dash", it depends on the person's settings) and none tested this app. That a dash "looks
   machine-written": a claim from 2025 opinion pieces, with no baseline; the one article that weighed it says it is not a
-  reliable sign. Neither is used as a reason in the guide.
+  reliable sign. The first is not used. The second is now his own reason (D834), and test 12 lists the dash among
+  the machine-written habits: the guide rests on his word there; the evidence for it is still opinion.
 - **On contractions the guides do not agree.** Google, Microsoft and Mailchimp say use them; GOV.UK avoids the negative
   ones because a reader in a hurry can miss the "not". The guide takes both: as people say them, but "not" written out
   where it is the whole point of a warning.
@@ -126,7 +127,12 @@ note"); the "not X, but Y" frame where nobody thought X; the closing line that o
 sound; "serves as", "features", "offers" where "is" or "has" will do; the stock words; a bold label and a colon on every
 line; text about how it was made. **Not taken:** its rules for essays (hedges, citations, sales language about places,
 chat leftovers, knowledge cut-offs), its ban on every dash (he allows one where it makes sense), curly quotation marks
-(the app prints them on purpose). **Not installed** (D486, D812). Where it would earn its place whole is the agent's
+(the app prints them on purpose) — **and every rule of it that this guide rules the other way, so that a later agent
+with the tool beside it does not over-apply it:** against the passive and the missing subject ("The 07:30 brief was
+cleared", "Saved"), against sentences that open alike (a family of notes is worded alike on purpose), against a row
+of fragments or a bare negative ("no flag, not counted"), on hyphens after a noun ("scheduler-only"), on capitals
+where they are a name (MAIN, SPARE), against bold, arrows and symbols that are a ruled look. §1b test 12 carries the
+same list. **Not installed** (D486, D812). Where it would earn its place whole is the agent's
 own long messages and reports to him — his to say.
 
 ## Sources opened

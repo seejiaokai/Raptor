@@ -1,0 +1,251 @@
+<title>Writing Guide, 13 October</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* layout: one reading column. The guide first, as twelve short checks each with a line from the app; then the reworded
+   notes as before-and-after lists that read down on a phone; then four numbered choices. The house look of the earlier
+   pages (design-look-13oct.html): same tokens, same faces. */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --ink:#141a21; --ink-2:#4a5663; --edge:#d5dbe2;
+  --accent:#0b7f9c; --accent-soft:#e0f3f8; --ok:#1d7a4c; --ok-soft:#e3f4ea; --warn:#9a5b00; --warn-soft:#fbeed6;
+  --bad:#b3261e; --bad-soft:#fbe4e2; --quote:#eef1f4;
+  --display:'Barlow Condensed','Arial Narrow',Arial,sans-serif;
+  --body:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0c1014; --panel:#151b22; --ink:#e9eef3; --ink-2:#9aa7b4; --edge:#2a333d;
+  --accent:#3cc6e8; --accent-soft:#12303a; --ok:#58c98d; --ok-soft:#12301f; --warn:#e3a53c; --warn-soft:#33260c;
+  --bad:#ff8a80; --bad-soft:#3a1614; --quote:#1c242d; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0c1014; --panel:#151b22; --ink:#e9eef3; --ink-2:#9aa7b4; --edge:#2a333d;
+  --accent:#3cc6e8; --accent-soft:#12303a; --ok:#58c98d; --ok-soft:#12301f; --warn:#e3a53c; --warn-soft:#33260c;
+  --bad:#ff8a80; --bad-soft:#3a1614; --quote:#1c242d; color-scheme:dark }
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:flex;flex-direction:column;gap:22px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,6vw,44px);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:.01em}
+.lede{color:var(--ink-2);max-width:66ch;margin:8px 0 0}
+p{margin:0}
+.how{background:var(--accent-soft);padding:12px 14px;border-radius:6px;max-width:72ch}
+.how b{color:var(--accent)}
+nav.jump{display:flex;flex-wrap:wrap;gap:8px}
+nav.jump a{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--accent);border:1px solid var(--edge);background:var(--panel);border-radius:999px;padding:6px 14px}
+a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+h2{font-family:var(--display);font-weight:700;font-size:26px;line-height:1.1;margin:22px 0 0;text-wrap:balance}
+h2 small{display:block;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:700;margin-bottom:2px}
+.voice{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:10px;max-width:76ch}
+.voice .big{font-family:var(--display);font-weight:600;font-size:24px;line-height:1.2;text-wrap:balance}
+.lab{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);display:block;margin-bottom:2px}
+.checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.check{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.check h3{font-family:var(--display);font-weight:600;font-size:21px;line-height:1.15;margin:0;display:flex;gap:10px;align-items:baseline}
+.check h3 .n{font-weight:700;color:var(--accent);font-size:24px;min-width:1.1em}
+.check p{color:var(--ink-2)}
+.eg{background:var(--quote);border-radius:6px;padding:8px 10px;font-size:15px;line-height:1.4;display:flex;flex-direction:column;gap:4px}
+.eg .was{color:var(--ink-2)}
+.eg .now{font-weight:500}
+.eg i{font-style:normal;font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin-right:6px}
+.eg .now i{color:var(--ok)}
+.rec{background:var(--ok-soft);border-radius:6px;padding:10px 12px;max-width:72ch}
+.rec .lab{color:var(--ok)}
+.note{background:var(--warn-soft);border-radius:6px;padding:10px 12px;max-width:72ch}
+.note .lab{color:var(--warn)}
+.scroll{overflow-x:auto;border:1px solid var(--edge);border-radius:10px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:15px;line-height:1.4}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--edge)}
+tr:last-child td{border-bottom:0}
+th{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+td.n{font-family:var(--display);font-weight:700;color:var(--accent);white-space:nowrap;font-size:17px}
+td.was,td.mid{color:var(--ink-2);min-width:190px}
+td.now{min-width:210px;font-weight:500}
+td.why{color:var(--ink-2);min-width:200px;font-size:14px}
+td.why b{color:var(--ink);font-weight:600}
+.cnt{display:block;font-variant-numeric:tabular-nums;font-size:13px;color:var(--ink-2);margin-top:4px;font-weight:400}
+.tag{display:inline-block;font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;border-radius:4px;padding:1px 6px;margin-right:4px;vertical-align:1px}
+.tag.long{background:var(--warn-soft);color:var(--warn)}
+.tag.back{background:var(--accent-soft);color:var(--accent)}
+.tag.same{background:var(--ok-soft);color:var(--ok)}
+tr.grp td{background:var(--bg);font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.ask{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.ask ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:14px;max-width:72ch}
+.ask li b{font-weight:600}
+.pick{color:var(--ok);font-weight:600}
+ul.tight{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;max-width:72ch}
+@media (max-width:720px){ .checks{grid-template-columns:minmax(0,1fr)} h2{font-size:24px}
+  /* a phone: every before-and-after list reads down, never sideways */
+  table.ba,table.ba tbody,table.ba tr,table.ba td{display:block;width:auto;min-width:0}
+  table.ba thead{display:none}
+  table.ba tr{padding:10px 12px;border-bottom:1px solid var(--edge)}
+  table.ba tr:last-child{border-bottom:0}
+  table.ba td{padding:0;border:0}
+  table.ba td[data-l]::before{content:attr(data-l);display:block;font:700 12px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-top:8px}
+  table.ba td.now[data-l]::before{color:var(--ok)}
+  table.ba tr.grp td{margin:0} }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Writing guide, 13 October</h1>
+    <p class="lede">Two things on one page. First the guide for every word the app shows, in plain terms, for you to approve. Then every wording you approved on 13 October, read again against it, with what changed. Nothing in the app has been changed, and nothing is built until you answer.</p>
+  </header>
+
+  <nav class="jump" aria-label="Sections">
+    <a href="#guide">1 · The guide</a><a href="#l1">2 · Your thirteen</a><a href="#l2">3 · Dash only</a><a href="#l3">4 · Fresh reader</a><a href="#other">5 · Clash note and OIL</a><a href="#ask">6 · Your choices</a>
+  </nav>
+
+  <!-- ============================== 1 · THE GUIDE ============================== -->
+  <h2 id="guide"><small>1 · The guide</small>How the app speaks</h2>
+
+  <div class="voice">
+    <p class="big">The app speaks as a capable colleague on the scheduling desk would. It tells you what happened, what it means for you and what to do, in a sentence a person would say.</p>
+    <p>Calm, exact, brief. It is not a form (“Operation completed”), not a telegram (“Published, no times, no OIL”) and not a mate (“All done!”).</p>
+    <p><span class="lab">Where it comes from</span>Your own words, the best outside guides on writing for screens (GOV.UK, Google, Apple, Microsoft, Atlassian, the US plain-language guide), the one measured study of tone, and the tool you sent. Nothing was installed. The good parts are written into our own guide in our own words.</p>
+  </div>
+
+  <div class="checks">
+    <div class="check"><h3><span class="n">1</span>Every fact stays</h3>
+      <p>What happened, why, what it costs, where to put it right, every name and every number. Only filler is cut. This is your ruling of 13 October.</p>
+      <div class="eg"><span class="was"><i>Lost a fact</i>Common Programme has no times</span><span class="now"><i>Kept</i>The Common Programme has no usable times</span></div></div>
+    <div class="check"><h3><span class="n">2</span>Say it aloud</h3>
+      <p>Each wording is read out as if to the person across the desk. If nobody would say it that way, it is rewritten.</p>
+      <div class="eg"><span class="was"><i>Trips</i>Its OIL credits leave the Leave War</span><span class="now"><i>Says well</i>Its OIL credits are withdrawn from the Leave War</span></div></div>
+    <div class="check"><h3><span class="n">3</span>A dash is not how the app joins two thoughts</h3>
+      <p>Your ruling. In order: the linking word (so, because, but). A comma where the second part only renames the first. A colon where the first part is only a name. A full stop for a new thought or an instruction. A dash only where nothing else reads as well, and never two in a note.</p>
+      <div class="eg"><span class="was"><i>Today</i>The 07:30 brief was after the new take-off — cleared</span><span class="now"><i>Guide</i>The 07:30 brief was after the new take-off, so it was cleared</span></div></div>
+    <div class="check"><h3><span class="n">4</span>The linking word is a fact, and it is never guessed</h3>
+      <p>“So” and “because” say why. The writer reads the link from what the app does, and says how it is known. Where it cannot be told, the note becomes two sentences.</p>
+      <div class="eg"><span class="was"><i>Guessed</i>You left OIL Earn, so the next undo will change the day</span><span class="now"><i>Checked</i>Left OIL Earn without undoing. The next undo would change the day itself.</span></div></div>
+    <div class="check"><h3><span class="n">5</span>What happened first</h3>
+      <p>Then what it means for you. Then what to do. One done thing may be two words (“Saved”, “Monday published”). Anything after it is a full sentence.</p></div>
+    <div class="check"><h3><span class="n">6</span>The squadron’s words stay</h3>
+      <p>OIL, AL, CX, SANS, FO, HO, PH, crew rest, MAIN, SPARE and the names the screens already use are never swapped or explained away. Everything else takes the short everyday word.</p>
+      <div class="eg"><span class="was"><i>Not</i>requires · prior to · is displayed</span><span class="now"><i>But</i>needs · before · shows</span></div></div>
+    <div class="check"><h3><span class="n">7</span>Say what will work, with the reason</h3>
+      <p>A refusal says why and what to do instead. “Not” is written out where it is the whole point of a warning.</p>
+      <div class="eg"><span class="now"><i>Guide</i>Monday is still a draft. Publish the day first, then its changes.</span></div></div>
+    <div class="check"><h3><span class="n">8</span>You, never we</h3>
+      <p>The app is nobody. No “we”, no “please”, no “sorry”, no “oops”, no blame. When another person did it, the note names them.</p></div>
+    <div class="check"><h3><span class="n">9</span>One steady voice</h3>
+      <p>A success and a refusal sound the same. A cost is said plainly. No capitals to stress a word, no exclamation mark, no “Heads up”. The app’s own names in capitals (MAIN, SPARE, ALL AVAIL) keep them.</p></div>
+    <div class="check"><h3><span class="n">10</span>A pair speaks as a pair</h3>
+      <p>The on-note and the off-note of one switch are the same sentence turned round. Refusals of one kind start the same way.</p>
+      <div class="eg"><span class="now"><i>Guide</i>Line is SPARE now: … · Line is MAIN now: …</span></div></div>
+    <div class="check"><h3><span class="n">11</span>Nothing added, and read by someone else</h3>
+      <p>A rewording claims nothing today’s wording does not. Each one is then read cold by a fresh reader who has never seen the old wording. If their answers differ, it goes back.</p></div>
+    <div class="check"><h3><span class="n">12</span>None of the habits that mark machine writing</h3>
+      <p>From the tool you sent: the dash everywhere, the opener that announces instead of saying, “not X, but Y” where nobody thought X, a closing line that only repeats, lists of three for the sound, the stock words (crucial, key, robust, seamless, ensure).</p></div>
+  </div>
+
+  <p class="how"><b>How it was checked.</b> The guide was read three times before reaching you, each time by a fresh Opus reader and by Fable, neither seeing the other’s report. They found real faults and all are fixed. The heaviest: an early draft let the writer <b>guess</b> a linking word, and a guess can turn a note round (check 4 shows the case). The third read was done with the tool you sent beside it, and it also checked every reworded note against the app’s code. That is how it found that one of your thirteen (N8) is a note the app can no longer show.</p>
+
+  <p class="note"><span class="lab">One reading of mine for you to confirm</span>When the aims pull apart I have put them in this order: every fact first, then a sentence a person would say, then as short as those two allow. So a human sentence is sometimes a word or two longer than the clipped one you approved. Where a wording ends longer than what the app shows today, it is marked <span class="tag long">Longer</span> below. If you would rather have short win over human, say so and I redo the list.</p>
+
+  <!-- ============================== 2 · LIST 1 ============================== -->
+  <h2 id="l1"><small>2 · The thirteen you approved</small>Read again against the guide: twelve to build, one that can never show</h2>
+  <p class="lede" style="margin:0">Each row shows what the app says today, what you approved on 13 October, and what the guide now gives. The small figures are word counts, counted by a script: today, approved, now. The filler you already approved cutting stays cut: “Heads up”, a second “Monday”, an “again”, a “first”.</p>
+
+  <div class="scroll"><table class="ba">
+    <thead><tr><th>#</th><th>In the app today</th><th>Approved 13 Oct</th><th>Proposed now</th><th>What changed, and why</th></tr></thead>
+    <tbody>
+      <tr><td class="n">N1</td><td class="was" data-l="Today">Monday published — APPROVED · Monday 13 Jul: the common programme has no usable times, so nobody on it earns OIL</td><td class="mid" data-l="Approved 13 Oct">Monday published — approved · Common Programme has no usable times: nobody on it earns OIL</td><td class="now" data-l="Proposed now">Monday 13 Jul published and approved. The Common Programme has no usable times, so nobody on it earns OIL.<span class="cnt">19 · 14 · 19 words</span></td><td class="why" data-l="What changed">The dash becomes “and”. The dot becomes a full stop. <b>“So” comes back</b>: it is the why. <b>“13 Jul” comes back</b>: a number is never dropped. “Approved” stays in small letters, as you approved it.</td></tr>
+      <tr><td class="n">N2</td><td class="was" data-l="Today">Monday unpublished — it is a draft again; publishing reissues the Original · its OIL credits leave the Leave War until it is published again</td><td class="mid" data-l="Approved 13 Oct">Monday unpublished — a draft again; publishing reissues the Original · its OIL credits leave the Leave War until it is republished</td><td class="now" data-l="Proposed now">Monday unpublished. It is a draft again, and publishing reissues the Original. Its OIL credits are withdrawn from the Leave War until it is republished.<span class="cnt">23 · 20 · 25 words <span class="tag long">Longer</span></span></td><td class="why" data-l="What changed">Three marks become two full stops and an “and”. <b>“It is” comes back</b>: a sentence keeps its subject and verb. “Leave” becomes “are withdrawn from”: “leave the Leave War” trips when said aloud, and “withdraws” is the word the warning one tap earlier (N4) already uses.</td></tr>
+      <tr><td class="n">N3</td><td class="was" data-l="Today">Monday: AL2 withdrawn — its changes are back on the working copy as pending; AL1 is the issued schedule; publishing again reissues AL2</td><td class="mid" data-l="Approved 13 Oct">The same, less “again”</td><td class="now" data-l="Proposed now">Monday: AL2 withdrawn. Its changes are back on the working copy as pending, and AL1 is the issued schedule. Publishing reissues AL2.<span class="cnt">22 · 21 · 22 words</span></td><td class="why" data-l="What changed">The dash and the last semicolon become full stops. The first semicolon becomes “and”. No word lost.</td></tr>
+      <tr><td class="n">N4</td><td class="was" data-l="Today">Heads up — Monday’s OIL credits are bid against on the Leave War. Unpublishing withdraws them until you republish. Tap again to confirm.</td><td class="mid" data-l="Approved 13 Oct">Monday’s OIL credits are bid against on the Leave War — unpublishing withdraws them until you republish. Tap again to confirm.</td><td class="now" data-l="Proposed now">Monday’s OIL credits are bid against on the Leave War. Unpublishing withdraws them until you republish. Tap again to confirm.<span class="cnt">22 · 20 · 20 words</span></td><td class="why" data-l="What changed">The dash I had put in goes back to the full stop the app has today. “Heads up” stays cut. See also row 4 of the fresh reader’s list.</td></tr>
+      <tr><td class="n">N7</td><td class="was" data-l="Today">This week is locked — it was published by an older version and can’t be edited</td><td class="mid" data-l="Approved 13 Oct">This week is locked — published by an older version, it can’t be edited</td><td class="now" data-l="Proposed now">This week is locked. It was published by an older version of the app, so it can’t be edited.<span class="cnt">15 · 13 · 19 words <span class="tag long">Longer</span></span></td><td class="why" data-l="What changed">The dash becomes a full stop. “And” becomes “so”, checked in the app: the lock is because of the older version. <b>“Of the app” is added</b>, because “an older version” can be read as an older version of the schedule, such as AL1. Its twin changes with it: “Monday is locked. It was published by an older version of the app, so it can’t be amended here.”</td></tr>
+      <tr><td class="n">N8</td><td class="was" data-l="Today">Applying “Standard Monday” replaces your unpublished edits on Monday — open Templates and pick it again to confirm</td><td class="mid" data-l="Approved 13 Oct">“Standard Monday” replaces your unpublished edits on Monday — pick it again in Templates to confirm</td><td class="now" data-l="Proposed now">Nothing to reword<span class="cnt"><span class="tag back">Never shown</span></span></td><td class="why" data-l="What changed"><b>The app can no longer show this note.</b> Since 25 September a template is applied on the first pick on a draft day and refused on a published one, so the “pick it again” warning has nothing left to guard. The third read found this in the app’s code. The dead line goes in the whole-app words job.</td></tr>
+      <tr><td class="n">N10</td><td class="was" data-l="Today">Info only — this item is no longer checked against the rules, and earns nobody any OIL<br>This item is checked against the rules again</td><td class="mid" data-l="Approved 13 Oct">Info only — no longer checked against the rules, earns nobody any OIL<br>Checked against the rules again</td><td class="now" data-l="Proposed now">This item is info only: no longer checked against the rules, and earns nobody any OIL<br>This item is checked against the rules again<span class="cnt">16 and 8 · 12 and 5 · 16 and 8 words</span></td><td class="why" data-l="What changed"><b>“This item is” comes back</b>, first, in both lines. The dash becomes a colon, as you suggested. A fresh reader took a bare “Info only:” to mean “for your information”.</td></tr>
+      <tr><td class="n">N11</td><td class="was" data-l="Today">Nothing on this day earns OIL — anything added later is covered too<br>This day can earn again — the marks underneath are back</td><td class="mid" data-l="Approved 13 Oct">Nothing on this day earns OIL, including anything added later<br>This day can earn again — its marks are back</td><td class="now" data-l="Proposed now">Nothing on this day earns OIL, including anything added later<br>This day can earn OIL again, and the marks underneath are back<span class="cnt">12 and 10 · 10 and 9 · 10 and 12 words <span class="tag long">Longer</span></span></td><td class="why" data-l="What changed">First line as you approved it. Second line: the dash becomes “and”. <b>“Underneath” comes back</b>: it is not filler, and the bar on the same screen says “the marks underneath”. “OIL” is added so the two lines match.</td></tr>
+      <tr><td class="n">N14</td><td class="was" data-l="Today">Line is SPARE now — standing by, checked for availability and currency only<br>Line is MAIN now — fully cross-checked</td><td class="mid" data-l="Approved 13 Oct">The same, less “now”</td><td class="now" data-l="Proposed now">Line is SPARE now: standing by, checked for availability and currency only<br>Line is MAIN now: fully cross-checked<span class="cnt">12 and 6 · 11 and 5 · 12 and 6 words <span class="tag back">“Now” is back</span></span></td><td class="why" data-l="What changed">Without “now” a fresh reader took the line for a standing fact, not a change just made. So “now” was not filler. Today’s words, whole. The dash becomes a colon.</td></tr>
+      <tr><td class="n">N16</td><td class="was" data-l="Today">Note now shows on the view-only schedule<br>Note is scheduler-only again</td><td class="mid" data-l="Approved 13 Oct">Note shows on the view-only schedule<br>Note is scheduler-only again</td><td class="now" data-l="Proposed now">Today’s wording, whole<span class="cnt">7 and 4 · 6 and 4 · 7 and 4 words <span class="tag back">“Now” is back</span></span></td><td class="why" data-l="What changed">The same reason as N14. There was never a dash in it.</td></tr>
+      <tr><td class="n">N19</td><td class="was" data-l="Today">The 07:30 brief was after the new take-off, so it has been cleared</td><td class="mid" data-l="Approved 13 Oct">The 07:30 brief was after the new take-off — cleared</td><td class="now" data-l="Proposed now">The 07:30 brief was after the new take-off, so it was cleared<span class="cnt">13 · 9 · 12 words</span></td><td class="why" data-l="What changed"><b>“So it was” comes back</b> in place of the dash. “Has been” becomes “was”. See also row 3 of the fresh reader’s list.</td></tr>
+      <tr><td class="n">N24</td><td class="was" data-l="Today">An input for ALL AVAIL is changed in its own window — open it to change who it is for<br>Who is in this input is changed in its own window</td><td class="mid" data-l="Approved 13 Oct">An ALL AVAIL input is changed in its own window — open it to change who it is for<br>The second line the same</td><td class="now" data-l="Proposed now">An ALL AVAIL input is changed in its own window. Open it to change who it is for.<br>Who is in this input is changed in its own window<span class="cnt">19 and 11 · 18 and 11 · 18 and 11 words</span></td><td class="why" data-l="What changed">The dash becomes a full stop. See also row 9 of the fresh reader’s list.</td></tr>
+      <tr><td class="n">N26</td><td class="was" data-l="Today">A medical entry is one person’s own. Take the other people out and save first — then change its kind.</td><td class="mid" data-l="Approved 13 Oct">A medical entry is one person’s own — take the other people out and save, then change its kind</td><td class="now" data-l="Proposed now">A medical entry is one person’s own. Take the other people out and save, then change its kind.<span class="cnt">19 · 18 · 18 words</span></td><td class="why" data-l="What changed">The dash I had put in goes back to today’s full stop.</td></tr>
+      <tr><td class="n">N33</td><td class="was" data-l="Today">Shortcut to the Admin page (Django-style backend in the full build).</td><td class="mid" data-l="Approved 13 Oct">Removed</td><td class="now" data-l="Proposed now">Removed, as you approved</td><td class="why" data-l="What changed">No change.</td></tr>
+    </tbody></table></div>
+
+  <!-- ============================== 3 · LIST 2 ============================== -->
+  <h2 id="l2"><small>3 · Left whole on 13 October</small>The dash changes. Every word stays.</h2>
+  <p class="lede" style="margin:0">These are the notes you approved as “left whole”. Each keeps every word. The dash becomes whatever it stood for, and in four of them a linking word or a subject comes in where the dash had hidden it. Those are marked <span class="tag long">Longer</span> with the count, today then now.</p>
+
+  <div class="scroll"><table class="ba">
+    <thead><tr><th>#</th><th>In the app today</th><th>Proposed now</th><th>The dash became</th></tr></thead>
+    <tbody>
+      <tr><td class="n">N6</td><td class="was" data-l="Today">Monday is still draft — publish the day before publishing its changes</td><td class="now" data-l="Proposed now">Monday is still draft. Publish the day before publishing its changes.</td><td class="why" data-l="The dash became">A full stop. See row 1 of the fresh reader’s list.</td></tr>
+      <tr><td class="n">N9</td><td class="was" data-l="Today">OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning</td><td class="now" data-l="Proposed now">OIL mode: tap a puck to take a man off that event, or an item to stop the whole item earning</td><td class="why" data-l="The dash became">A colon. “OIL mode” is only a name. See row 2.</td></tr>
+      <tr><td class="n">N12</td><td class="was" data-l="Today">Nothing on this day earns — turn that off first<br>This event earns nobody any OIL — turn the event back on first</td><td class="now" data-l="Proposed now">Nothing on this day earns. Turn that off first.<br>This event earns nobody any OIL. Turn the event back on first.</td><td class="why" data-l="The dash became">A full stop.</td></tr>
+      <tr><td class="n">N13</td><td class="was" data-l="Today">SC added — standalone, every seat checked for availability, SC currency, front seat and overlapping places only</td><td class="now" data-l="Proposed now">SC added: standalone, every seat checked for availability, SC currency, front seat and overlapping places only</td><td class="why" data-l="The dash became">A colon. The rest only spells out what was added.</td></tr>
+      <tr><td class="n">N15</td><td class="was" data-l="Today">Warning hidden — no flag, not counted. It returns if the day changes</td><td class="now" data-l="Proposed now">Warning hidden: no flag, not counted. It returns if the day changes.</td><td class="why" data-l="The dash became">A colon. See row 5.</td></tr>
+      <tr><td class="n">N17</td><td class="was" data-l="Today">Desktop layout — pan sideways to read the whole day</td><td class="now" data-l="Proposed now">Desktop layout: pan sideways to read the whole day</td><td class="why" data-l="The dash became">A colon. A name.</td></tr>
+      <tr><td class="n">N22</td><td class="was" data-l="Today">Keep at least one document on this entry — add the replacement before removing the last file</td><td class="now" data-l="Proposed now">Keep at least one document on this entry. Add the replacement before removing the last file.</td><td class="why" data-l="The dash became">A full stop.</td></tr>
+      <tr><td class="n">N23</td><td class="was" data-l="Today">An identical row is already on the Ground Programme — added under Personal Inputs instead</td><td class="now" data-l="Proposed now">An identical row is already on the Ground Programme, so this one was added under Personal Inputs instead</td><td class="why" data-l="The dash became">“So”, checked in the app. “This one was” is added as the subject. <span class="tag long">Longer</span> 14 then 18 words.</td></tr>
+      <tr><td class="n">N25</td><td class="was" data-l="Today">That input was removed while its window was open — the window has closed</td><td class="now" data-l="Proposed now">That input was removed while its window was open, so the window has closed</td><td class="why" data-l="The dash became">“So”. <span class="tag long">Longer</span> 13 then 14 words.</td></tr>
+      <tr><td class="n">N27</td><td class="was" data-l="Today">Ranger is the last on this input — take the input off the programme, or delete it in its own window</td><td class="now" data-l="Proposed now">Ranger is the last on this input. Take the input off the programme, or delete it in its own window.</td><td class="why" data-l="The dash became">A full stop.</td></tr>
+      <tr><td class="n">N28</td><td class="was" data-l="Today">Bane needs the DAAR instructor mark before NAAR can carry it — the tick comes off instead</td><td class="now" data-l="Proposed now">Bane needs the DAAR instructor mark before NAAR can carry it, so the tick comes off instead</td><td class="why" data-l="The dash became">“So”, checked in the app. <span class="tag long">Longer</span> 16 then 17 words. See row 6.</td></tr>
+      <tr><td class="n">N29</td><td class="was" data-l="Today">NVG removed from the LoX. Nobody’s record changed — add it back and the ticks return.</td><td class="now" data-l="Proposed now">NVG removed from the LoX. Nobody’s record changed. Add it back and the ticks return.</td><td class="why" data-l="The dash became">A full stop.</td></tr>
+      <tr><td class="n">N30</td><td class="was" data-l="Today">AIM-9 removed from the list — every jet carrying it keeps it. Add it back and the chips return.</td><td class="now" data-l="Proposed now">AIM-9 removed from the list. Every jet carrying it keeps it. Add it back and the chips return.</td><td class="why" data-l="The dash became">A full stop.</td></tr>
+      <tr><td class="n">N31</td><td class="was" data-l="Today">The 2027 leave war period is created — set its bidding window here</td><td class="now" data-l="Proposed now">The 2027 leave war period is created. Set its bidding window here.</td><td class="why" data-l="The dash became">A full stop.</td></tr>
+      <tr><td class="n">N32</td><td class="was" data-l="Today">A leave war already covers part of 2027 — open the Leave War and extend it instead</td><td class="now" data-l="Proposed now">A leave war already covers part of 2027. Open the Leave War and extend it instead.</td><td class="why" data-l="The dash became">A full stop.</td></tr>
+      <tr><td class="n">·</td><td class="was" data-l="Today">2590 is not a time — try 0900 or 09:00</td><td class="now" data-l="Proposed now">2590 is not a time. Try 0900 or 09:00.</td><td class="why" data-l="The dash became">A full stop.</td></tr>
+      <tr><td class="n">·</td><td class="was" data-l="Today">Red box — flagged for the next scheduler</td><td class="now" data-l="Proposed now">Red box: flagged for the next scheduler</td><td class="why" data-l="The dash became">A colon. A name.</td></tr>
+      <tr><td class="n">·</td><td class="was" data-l="Today">LATE mark hidden — the Inputs page still shows it</td><td class="now" data-l="Proposed now">LATE mark hidden. The Inputs page still shows it.</td><td class="why" data-l="The dash became">A full stop. “Still” already says the contrast.</td></tr>
+      <tr><td class="n">·</td><td class="was" data-l="Today">Left OIL Earn — the next undo would change the day itself</td><td class="now" data-l="Proposed now">Left OIL Earn. The next undo would change the day itself.</td><td class="why" data-l="The dash became">A full stop. See row 7.</td></tr>
+      <tr class="grp"><td colspan="4">No dash joining thoughts in them, so no change</td></tr>
+      <tr><td class="n">·</td><td class="was" colspan="3">N5 “Published AL2 · 3 items on Monday only · approved by Saber · 2 days with changes still held” (its dots stand between short facts, like a receipt) · N18 · N20 · N21 · every “Only a scheduler can …”.</td></tr>
+    </tbody></table></div>
+
+  <!-- ============================== 4 · LIST 3 ============================== -->
+  <h2 id="l3"><small>4 · What a fresh reader tripped on</small>Ten wordings the app has today</h2>
+  <p class="lede" style="margin:0">The guide has every new wording read by someone who has never seen the old one. That reader also tripped on words nobody had touched. Each is a small change of its own, and each replaces the wording in the lists above if you take it.</p>
+
+  <div class="scroll"><table class="ba">
+    <thead><tr><th>#</th><th>The words</th><th>How a fresh reader took them</th><th>Proposed</th></tr></thead>
+    <tbody>
+      <tr><td class="n">1</td><td class="was" data-l="The words">N6 “Publish the day before publishing its changes”</td><td class="mid" data-l="Read as">“The day before” is Sunday.</td><td class="now" data-l="Proposed">Monday is still a draft. Publish the day first, then its changes.</td></tr>
+      <tr><td class="n">2</td><td class="was" data-l="The words">N9 “tap a puck to take a man off that event”</td><td class="mid" data-l="Read as">Taking him off the schedule, not only off earning. Also, the note says “OIL mode” where the button says “OIL Earn”.</td><td class="now" data-l="Proposed">OIL Earn: tap a puck to stop that man earning from that event, or an item to stop the whole item earning</td></tr>
+      <tr><td class="n">3</td><td class="was" data-l="The words">N19 “so it was cleared”</td><td class="mid" data-l="Read as">“Cleared” as in approved, like cleared for take-off.</td><td class="now" data-l="Proposed">The 07:30 brief was after the new take-off, so it was removed</td></tr>
+      <tr><td class="n">4</td><td class="was" data-l="The words">N4 “are bid against”</td><td class="mid" data-l="Read as">Not something anyone says. Two readings.</td><td class="now" data-l="Proposed">Some of Monday’s OIL credits are already spent on the Leave War. Unpublishing withdraws them until you republish. Tap again to confirm.</td></tr>
+      <tr><td class="n">5</td><td class="was" data-l="The words">N15 “It returns if the day changes”</td><td class="mid" data-l="Read as">When tomorrow comes.</td><td class="now" data-l="Proposed">Warning hidden: no flag, not counted. It returns if the warning changes.</td></tr>
+      <tr><td class="n">6</td><td class="was" data-l="The words">N28 “before NAAR can carry it … the tick comes off instead”</td><td class="mid" data-l="Read as">Could not tell what “it” is, or which tick.</td><td class="now" data-l="Proposed">Bane needs the DAAR instructor mark before NAAR can carry one, so the NAAR tick comes off instead</td></tr>
+      <tr><td class="n">7</td><td class="was" data-l="The words">“Left OIL Earn. The next undo would change the day itself.”</td><td class="mid" data-l="Read as">Could not tell whether the undo was done. It was not.</td><td class="now" data-l="Proposed">Left OIL Earn without undoing. The next undo would change the day itself.</td></tr>
+      <tr><td class="n">8</td><td class="was" data-l="The words">N10, second line: “This item is checked against the rules again”</td><td class="mid" data-l="Read as">The first line took two things away, the checks and the OIL. This names only one coming back.</td><td class="now" data-l="Proposed">This item is checked against the rules again and can earn OIL</td></tr>
+      <tr><td class="n">9</td><td class="was" data-l="The words">N24 “is changed in its own window”</td><td class="mid" data-l="Read as">A report that something was just changed, not a rule.</td><td class="now" data-l="Proposed">An ALL AVAIL input can only be changed in its own window. Open it to change who it is for.<br>Open this input’s own window to change who is in it</td></tr>
+      <tr><td class="n">10</td><td class="was" data-l="The words">The OIL question: “… so published work the same day can raise it”</td><td class="mid" data-l="Read as">Raise what: the credit, or the balance?</td><td class="now" data-l="Proposed">… so published work the same day can raise the credit.</td></tr>
+    </tbody></table></div>
+
+  <p class="how"><b>Each of these was checked in the app before I wrote it.</b> For example row 4: the warning shows when someone has already spent that OIL, so losing the credit would put their balance below zero. And row 5: a hidden warning comes back when the warning itself changes, which is what you asked for in August. Row 8 adds a claim the app does not make today, so by the guide it is yours to add, not mine. Rows 1, 6, 7, 8 and 9 end one to four words longer than today.</p>
+
+  <!-- ============================== 5 · CLASH NOTE AND OIL QUESTION ============================== -->
+  <h2 id="other"><small>5 · The clash note and the OIL question</small>The designs stand. Only these words change.</h2>
+
+  <div class="scroll"><table class="ba">
+    <thead><tr><th>Where</th><th>Approved 13 Oct</th><th>Proposed now</th><th>What changed</th></tr></thead>
+    <tbody>
+      <tr class="grp"><td colspan="4">The Leave War’s clash note</td></tr>
+      <tr><td class="n">Line</td><td class="mid" data-l="Approved 13 Oct">2 clashes with the schedule · Show / Hide</td><td class="now" data-l="Proposed now">The same</td><td class="why" data-l="What changed"><span class="tag same">No change</span></td></tr>
+      <tr><td class="n">Weekend clash</td><td class="mid" data-l="Approved 13 Oct">Weekend/PH work earns FO, but the day holds LL</td><td class="now" data-l="Proposed now">The same</td><td class="why" data-l="What changed"><span class="tag same">No change</span> “Weekend/PH” is the squadron’s own pair and keeps its slash.</td></tr>
+      <tr><td class="n">Leave clash</td><td class="mid" data-l="Approved 13 Oct">Input OML against bid LL</td><td class="now" data-l="Proposed now">The input is OML, but the bid is LL</td><td class="why" data-l="What changed">A sentence with its verbs, in the shape of the line above. <span class="tag long">Longer</span> than the five words you approved: nine.</td></tr>
+      <tr><td class="n">What to do</td><td class="mid" data-l="Approved 13 Oct">Decide the bid · Change the leave on Inputs · Send the leave back or delete it · Step back to Bidding Closed</td><td class="now" data-l="Proposed now">The first three the same. The last: Step the war back to Bidding Closed</td><td class="why" data-l="What changed">“The war” comes back. It is the thing that steps back, and today’s wording names it.</td></tr>
+      <tr><td class="n">Desktop line</td><td class="mid" data-l="Approved 13 Oct">… holds LL — Decide the bid</td><td class="now" data-l="Proposed now">… holds LL. Decide the bid ›</td><td class="why" data-l="What changed">The dash becomes a full stop.</td></tr>
+      <tr class="grp"><td colspan="4">The OIL question</td></tr>
+      <tr><td class="n">Title</td><td class="mid" data-l="Approved 13 Oct">OIL — Tally, Range brief</td><td class="now" data-l="Proposed now">OIL: Tally, Range brief</td><td class="why" data-l="What changed">The dash becomes a colon.</td></tr>
+      <tr><td class="n">Question</td><td class="mid" data-l="Approved 13 Oct">This input falls on a non-working day — Sat 18 Jul (weekend / PH). Does it deserve HO — half a day of OIL?</td><td class="now" data-l="Proposed now">This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve HO, half a day of OIL?</td><td class="why" data-l="What changed">Two dashes become commas. The date now comes first, so “(weekend/PH)” stands beside “a non-working day”, the words it explains. “Weekend/PH” is spelt as the clash note spells it.</td></tr>
+      <tr><td class="n">Small print</td><td class="mid" data-l="Approved 13 Oct">The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the day, so published work the same day can raise it.</td><td class="now" data-l="Proposed now">The same</td><td class="why" data-l="What changed"><span class="tag same">No change</span> Row 10 of the fresh reader’s list offers one word.</td></tr>
+      <tr><td class="n">Buttons</td><td class="mid" data-l="Approved 13 Oct">Yes — credit HO · No OIL · Don’t swap · Swap · Back / Add · Back / Save</td><td class="now" data-l="Proposed now">Yes: credit HO. The rest the same.</td><td class="why" data-l="What changed">The dash becomes a colon. This button was listed as “ruled” on the last page, but no ruling of yours fixes its dash, so it goes through the guide like the rest.</td></tr>
+    </tbody></table></div>
+
+  <p class="how"><b>Sister notes.</b> About ten more notes are close relatives of the ones on this page but were not on the 13 October list, for example the second form of the OIL line in N1 and the copies of “is not a time”. They are written down for the whole-app words job and are not changed here.</p>
+
+  <p class="rec"><span class="lab">Wordings you ruled that have a dash: I recommend leaving them</span>“Not saved — keep this page open”, and “Not swapped — OIL not answered” with its four siblings. Each is a short headline and its reason, where a dash reads well, and you said a dash can stay where it makes sense. By the guide they would read “Not saved. Keep this page open.” and “Not swapped, because OIL was not answered”. Say if you want them changed.</p>
+
+  <!-- ============================== 6 · CHOICES ============================== -->
+  <h2 id="ask"><small>6 · What I need from you</small>Four answers</h2>
+  <div class="ask">
+    <ol>
+      <li><b>The guide.</b> Approve it as section 1 describes it? That includes my order: every fact, then a sentence a person would say, then short. <span class="pick">Recommended: yes.</span></li>
+      <li><b>Your thirteen, and the clash note and OIL question words (sections 2 and 5).</b> All as proposed? Name any number you want kept as you approved it. <span class="pick">Recommended: all as proposed.</span></li>
+      <li><b>The dash-only list (section 3).</b> Change these in the same build, or leave them for the whole-app words job you set aside? <span class="pick">Recommended: the same build.</span> They are on the list you already read, and the dash is the thing you asked to lose.</li>
+      <li><b>The fresh reader’s ten (section 4).</b> Take all, or name the rows to leave? <span class="pick">Recommended: all ten.</span></li>
+    </ol>
+    <p style="color:var(--ink-2);max-width:72ch">A short answer is enough, for example: “1 yes 2 all 3 same build 4 all but 8”.</p>
+  </div>
+
+  <p class="note"><span class="lab">Not needed now</span>You asked whether the guide could later shape how I write to you as well. Yes, and I recommend it. It is recorded as a step of its own after you approve this guide: I draft the change to my own writing rule, it is read by the same two readers, and you approve its wording. The tool you sent fits that step best, since it is written for longer text.</p>
+</div>

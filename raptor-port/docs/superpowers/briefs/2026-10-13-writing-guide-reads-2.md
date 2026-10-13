@@ -113,4 +113,61 @@ would a person say it. **What it changed:**
    had begun.
 3. **How the head-word dash was settled** (above) — neither reader's wording, his D834 applied.
 
-A third reader's confirming pass over the third draft is recorded below when it returns.
+## The third read — with the tool he sent beside the guide (D835; commit `bb25709a9`)
+
+**His word:** "U might need to review it again with the link I just sent u". A fresh Opus reader and Fable, each blind,
+read the third draft, the recheck record (`2026-10-13-wording-recheck.md`) row by row against the guide AND against the
+app's code, and `blader/humanizer` in full. **Both verdicts, for the guide and for the record: READY WITH THESE
+CHANGES.** Both confirmed every second-round finding is in the third draft. **All of the below is applied** (the
+fourth draft; the record rewritten; the page corrected). **No fourth read was run** — three rounds is the cap for a
+design read (the standing practice of 19 Sep 26); what is left is his approval.
+
+**Where the two agree (applied):**
+1. **Test 2's order could not be applied as written** — "take the first that is TRUE" with the link first makes "so"
+   or "and" win everywhere, the colon fired before the comma, and a fact followed by an instruction was unwritten. Now:
+   two shapes take no link word (an opening done thing; what to do after a fact), then link → comma → colon → full stop
+   → dash, with "and" and "so" each bounded.
+2. **Test 12 let one "Heads up" stand** (the tool acts on its first five patterns on one sighting) **and said nothing
+   of the tool's rules this guide rules against** — both now written into the test and the research note's §5.
+3. **The guide's example table taught wordings the cold read had rejected** — its three rows replaced.
+4. **"Longer" marks were missing** on every row that ends longer than today's but one — added, with both counts.
+5. **N7 sits in seven places, not three, and its twin had no proposed wording** — both in the record.
+6. **A hidden warning does not return "if the day's schedule changes"** — it is keyed to the warning's own words
+   (`raptor-port/src/engine/warnhide.ts`): the writer's fix had been a guess. Now "It returns if the warning changes."
+
+**Where they differ — settled by the host reading the code or by the guide's own aim:**
+- **N8.** *Opus:* confirmed, "the first pick only arms". *Fable:* the note can never show — `pickDayTpl` no longer
+  returns the state that raises it (D96). **The code says Fable is right** (its own comment: "'armed' is no longer
+  returned"). N8 is struck; nothing to build. The writer's "checked in the app" had read the note's words, not whether
+  its branch can run.
+- **An opening done thing and a dash** ("LATE mark hidden — the Inputs page still shows it"). *Opus:* test 2's order
+  joins it — "…hidden, but the Inputs page still shows it". *Fable:* a full stop where a sentence follows, a colon
+  where a phrase does, never a link word. **Taken: Fable's** — it needs no judgement of which link is "true", and it
+  never adds a word. So LATE, AIM-9 and Left OIL Earn take full stops.
+- **N4's plainer wording.** *Fable:* "A Leave War bid already uses Monday's OIL credits." *Opus:* the code checks
+  spent OIL of any kind, not "a bid" — "Some of Monday's OIL credits are already spent on the Leave War." **Taken:
+  Opus's**, the one the code supports.
+- **N14.** *Opus:* keep today's order, "Line is SPARE now: …". Taken (Fable noted the unshown move).
+
+**One reader only (applied):**
+- *Opus:* test 1's second check was circular (every mark left out includes the ones test 2 puts in); test 8's capitals
+  fix had reopened "APPROVED" (now: a state said as an ordinary word is not a name); §1a named "is covered" as never
+  cut while N11's approved line cuts it (now: a clause may become a phrase only as a swap the cold read passes); the
+  middle dot's mixed case; the full-stop rule's three gaps (a two-word head, notes the app joins, prose); the research
+  note §3 contradicted test 12; D835's line in §1 said more than he did (now "a direction he raised, not yet a
+  change"); N1's other shapes and N2 / N4 using two words for one event (now both "withdraw"); the OIL question's
+  bracket beside the wrong word; "OIL mode" is not the button's name ("OIL Earn"); N11 keeps "underneath"; the ruled
+  bar's guide wording used a colon where "because" is meant; List 1 must show what is cut since TODAY, not only since
+  the approved wording; N24's second line.
+- *Fable:* "Yes — credit HO" was listed as ruled with no ruling behind it — it now goes through the guide; one pair
+  spelt two ways ("weekend/PH", "weekend / PH"); a link or button at a note's end takes no full stop; the passive in
+  the writer's first N4 fix hid the actor; the relatives the builder would miss.
+- *Opus's "only" row (N13) is dropped:* moving the word was not checked in the app.
+
+**Flagged for D835, designed by nobody yet — the tests of §1b that would go wrong on the agent's own messages to
+him:** what happened first (the plain-language rule leads with what it means for him); two-word done things and no
+full stop; squadron words never explained (he gets a term defined once); never "I" (a report must say what the agent
+did and did not check); no alarm word because colours say it (a message has no colours); families worded alike (in
+prose, the tool's repeated-openings tell); a fresh reader for every wording (that is every message); "as short as
+those allow" against "never thin out the reasoning". And the tool's own §26 — the decision first, for a reader who
+already has the context — fits messages and is in no test.

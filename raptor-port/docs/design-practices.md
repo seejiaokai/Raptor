@@ -56,10 +56,12 @@ a choice; an empty place says one thing); his D726, D806, D808.*
 
 **§1, §1a and §1b together are THE WRITING GUIDE (owner D833, 13 Oct 26):** what each kind of text says (here), how
 text already on screen is shortened (§1a), and how the app speaks (§1b). It is used every time text in the app is
-written or changed. **Its wider use (owner D835, 13 Oct 26 — "We could adopt it for how we communicate too? And
-write"):** once he has approved it, the part that fits prose is adopted for how the agent writes to him and for what it
-writes for him to read — a step of its own, drafted into `../../.claude/rules/plain-language.md`, read and put to him
-first. Until then that rule governs every message to him as it stands.
+written or changed. **Its wider use (owner D835, 13 Oct 26 — "Perhaps after we have developed a great skill to use. We could
+adopt it for how we communicate too? And write"):** a direction he raised, not yet a change. The agent's reading, his
+to correct: once he has approved the guide, the part that fits prose is drafted into
+`../../.claude/rules/plain-language.md` for how the agent writes to him and for what it writes for him to read, read
+by the guide's readers and put to him — adopted only on his word. Until then that rule governs every message to him
+as it stands.
 
 - **Every word earns its place or goes.** What the screen already shows is a candidate to go (a hint that repeats its
   own label, a count the list makes obvious). Three ends for any note, each put to him before and after: **shortened**,
@@ -122,13 +124,14 @@ shorter. Removing a note or folding it is §1's own decision, put to him as such
    intensifier or a hedge ("very", "just", "quite", "actually"). A fifth passes only by proof — a helper word beside a
    verb that stays ("has been cleared" → "was cleared"; "now"; an "again" the verb already says) — when the cold read
    (9) gives the same answers. A clause's own subject and verb are never the helper: "it is a draft again" keeps "it
-   is" (4). **Two things are never filler: a phrase that carries a clause's verb ("is covered", "will not earn"), and
+   is" (4). **Two things are never filler: a phrase that carries a clause's verb ("has no usable times", "will not earn"), and
    the word that links two facts (and, so, because, but, until, then)** — the link IS the why or the cost, and it is
    never traded for a dash or a colon (§1b test 2). Anything else is content and stays.
 3. **Swap before you delete.** The first move is a shorter phrase that means the same; taking a word out is the second.
    A swap keeps every name, number and qualifier of the phrase it replaces — "usable" in "no usable times",
    "unpublished" in "unpublished edits", "credits" in "OIL credits". A word that goes inside a swap is a cut: it takes
-   a kind (8) and is shown as cut.
+   a kind (8) and is shown as cut. A clause may become a phrase only as a swap shown as one, when the cold read (9)
+   gives the same answers ("anything added later is covered too" → "including anything added later").
 4. **The fact keeps its subject and its verb.** Never telegram style: "no times — no OIL from it" lost WHAT had no times
    and WHO earns nothing. A helper word after the fact may be trimmed ("so it has been cleared" → "so it was cleared");
    the thing the note is about, what it did, and the small words that make it a sentence (the, a, that, who, to, from,
@@ -176,48 +179,62 @@ wording does not — a link word, an actor ("you"), a second half to match its p
 checked and the claim is shown under "added".
 
 1. **Say it aloud.** Read the wording out as if to the person it is for, across the desk. Three checks, each written
-   down: every sentence has its subject and verb, or is one done thing (test 4); it still reads aloud with every mark
-   left out — where it breaks is test 2's; and no word a person would not say across a desk ("per", "via", "prior to",
-   "utilise", "is displayed", a string of three nouns). One that passes and still reads stiff goes to the cold reader
+   down: every sentence has its subject and verb, or is one done thing (test 4); it still reads aloud with every dash,
+   semicolon, middle dot, slash and bracket left out — where it breaks, test 2 chooses the join; and no word a person
+   would not say across a desk ("per", "via", "prior to", "utilise", "is displayed", a string of three nouns that is
+   not one of the app's own names). One that passes and still reads stiff goes to the cold reader
    with "would you say this?" (test 11).
 2. **A dash is not how the app joins two thoughts** (his D833 "less -"; D834, 13 Oct 26 — "dash feels very AI. Humans
    don't usually write like that. Maybe : might be used … if u want to use - for some cases u can too if it makes
-   sense"). Where a dash stands between two parts, take the first of these that is TRUE of them:
-   - **a link** — and, so, because, but, until, then: write that word. The link is a fact (§1a test 2), and the writer
+   sense").
+   **Two shapes take no link word.** (a) A note that opens on one done thing in a word or two — something happened:
+   published, hidden, added, removed, left (test 4): a full stop where what follows is a sentence ("Monday unpublished.
+   It is a draft again."; "LATE mark hidden. The Inputs page still shows it."), a colon where it is not ("Warning
+   hidden: no flag, not counted"); two done things make one lead with "and" ("Monday 13 Jul published and approved").
+   (b) What to do after a fact (test 3): the instruction is its own sentence ("Nothing on this day earns. Turn that
+   off first.").
+   **Otherwise, take the first of these that is TRUE of the two parts:**
+   - **a link** — so, because, but, until, then, and: write that word. The link is a fact (§1a test 2), and the writer
      does not guess it: it is read from where the app raises the note (what was pressed, what the app then did), and
-     the change shows the word with how it is known ("— → because: Undo left OIL Earn instead of undoing"). Where it
-     cannot be told, the two parts become two sentences in the same order, and the cold reader writes down which link
-     they supplied.
-   - **the first part is only a name** — a mode, a state or a switch that makes no claim of its own ("Info only: …",
-     "OIL mode: …"); **or the second part is not a sentence of its own and only spells the first one out** ("Line is
-     SPARE: standing by, checked for availability and currency only"): a colon. Never a colon where "so" or "because"
-     is meant — it hides the link as the dash did.
-   - **the second part only renames the thing just before it** ("HO, half a day of OIL"; "Sat 18 Jul, a non-working
-     day"): a comma.
+     the change shows the word with how it is known. Where it cannot be told, the two parts become two sentences in
+     the same order, and the cold reader writes down which link they supplied. A second part that only says what the
+     first MEANS is not a "so". "And" is a link only where the second part adds a second fact about the same thing,
+     said in one breath ("It is a draft again, and publishing reissues the Original"); it is never the default join.
+   - **the second part is a name or a noun phrase for the thing named just before it** ("HO, half a day of OIL"; "Sat
+     18 Jul, a non-working day"): a comma.
+   - **the first part is only a name** — a mode, a layout, a switch, a box: it says nothing happened ("Desktop layout:
+     …", "Red box: …"); **or the second part is not a sentence of its own and only spells the first one out** ("Line is
+     SPARE now: standing by, checked for availability and currency only"): a colon. Never a colon where "so" or
+     "because" is meant — it hides the link as the dash did.
    - **a new thought** — each part could stand as a sentence and no link word is true: a full stop.
    - **a dash, where none of those reads as well** — a choice, named in the change (§1a test 8), never a habit; no more
      than one in a note.
 
-   The semicolon and the middle dot between two parts that each have a verb go through the same order. **A mark stays
-   where it joins no thoughts:** the middle dot between verbless facts set side by side, in a note as in a row
-   ("Published AL2 · 3 items on Monday only · approved by Saber", "ALL AVAIL · 27"); a slash where the screen or the
-   squadron writes the pair as one name ("weekend/PH", "F/O/A", "Yes · FO / HO") — any other slash in running words
-   becomes "or" or "and"; brackets that say what the word before them covers ("a non-working day (weekend/PH)") — an
-   afterthought goes into the sentence; a hyphen inside a word; a range as the app prints it. **A wording he has
-   ruled with a dash in it may stay** ("Not saved — keep this page open", D587; "Not swapped — OIL not answered",
-   D783): it is listed for him with this guide's wording beside it, his to take or leave (D754), never changed
-   unasked (§0). The wordings approved on 13 Oct 26 (D827, D829, D830) are not these — D833 and D834 send them back
-   through this test before they are built.
+   The semicolon, and the middle dot where either part is a sentence with its subject and verb, go through the same
+   order. **A mark stays where it joins no thoughts:** the middle dot between facts none of which is a sentence, in a
+   note as in a row ("Published AL2 · 3 items on Monday only · approved by Saber", "ALL AVAIL · 27"); a slash where
+   the screen or the squadron writes the pair as one name ("weekend/PH", "F/O/A", "Yes · FO / HO") — any other slash in
+   running words becomes "or" or "and"; brackets that say what the word before them covers ("a non-working day
+   (weekend/PH)") — an afterthought goes into the sentence; a hyphen inside a word; a range as the app prints it. **A
+   wording he has ruled with a dash in it may stay** ("Not saved — keep this page open", D587; "Not swapped — OIL not
+   answered", D783): it is listed for him with this guide's wording beside it, his to take or leave (D754), never
+   changed unasked (§0). The wordings approved on 13 Oct 26 (D827, D829, D830) are not these — D833 and D834 send them
+   back through this test before they are built.
 3. **What happened comes first** — then what it means for the person, then what to do — in a new note; a note already
    on screen keeps its order unless the new order is put to him as a change of its own. A sentence holds one thought,
    or two joined by their link word (test 2). One past about 25 words usually holds more: a sign to look, never a
    limit (§1a test 11).
 4. **A sentence has its verb; one done thing may be two words.** "Saved", "Monday published", "Note hidden" are how a
-   person says a single done thing — and they stay that way at the head of a longer note, ended with a full stop
-   ("Monday published."). Every fact after it — a reason, a cost, an instruction — is a sentence with its subject and
-   its verb (§1a test 4). A note may open on its bare subject as a log line does ("Line is SPARE", "Note is
-   scheduler-only again"); inside the sentence the small words stay. **A note of one sentence takes no full stop, as
-   the app's notes do today; a note of two or more ends each with one, the last included.**
+   person says a single done thing — and they stay that way at the head of a longer note; test 2 says what follows the
+   head (a full stop before a sentence, a colon before a phrase). A fact that follows as its own sentence — a reason,
+   a cost, an instruction — has its subject and its verb (§1a test 4); one that follows a colon may be a phrase. A
+   note may open on its bare subject as a log line does ("Line is SPARE now", "Note is scheduler-only again"); inside
+   the sentence the small words stay. **A note of one sentence takes no full stop, as most of the app's notes do
+   today; a note of two or more ends each with one, the last included** — a two-word head counts as a sentence, a part
+   after a colon or a comma does not, a question keeps its question mark, and a button or a link after a sentence
+   takes none. Where the app joins two notes as it shows them (the publish note and the day's OIL warning), the join
+   adds the full stops, so each note shown alone still has none. Text read as prose — the Logic page, a "How this
+   works" fold, a window's paragraph — ends every sentence with one.
 5. **The squadron's words and the app's own names stay; everyday words for the rest.** OIL, AL, CX, SANS, FO, HO, LL,
    PH, crew rest, brief, take-off, currency, and the names the screens already print (the Original, the working copy,
    pending, issued, MAIN, SPARE, ALL AVAIL — §1's one name for one thing) are examples, not the whole list: a word the
@@ -242,7 +259,8 @@ checked and the claim is shown under "added".
    stated as a fact, in the plainest sentence of the note, neither dressed up nor softened: "Nobody on it earns OIL."
    No capitals to stress a word inside a note ("WARNING: …", "NO OIL"), no exclamation mark, no alarm word ("Warning!",
    "Heads up") — the app's colours already say stop, look, fine (§4). A name the screen itself prints in capitals
-   (MAIN, SPARE, ALL AVAIL, LATE, ORIG) keeps them in a note: that is its name, not stress. Exact before friendly: no
+   (MAIN, SPARE, ALL AVAIL, LATE, ORIG) keeps them in a note: that is its name, not stress. A state said as an ordinary word of its sentence is not a name:
+   "Monday published and approved", though the day's panel prints APPROVED. Exact before friendly: no
    cheer, no joke (§1). (The small capitals of headings and puck-row buttons are the Raptor look, not stress — §1.)
 9. **A pair speaks as a pair; a family speaks alike.** The on-note and the off-note of one switch are the same sentence
    turned round ("Line is SPARE …" / "Line is MAIN …") — the same words with the state changed; it never gives one
@@ -260,23 +278,35 @@ checked and the claim is shown under "added".
     questions; the two are compared. A label, or a note of one done thing, needs only test 1.
 12. **None of the habits that mark machine-written text** (the `blader/humanizer` skill he sent on 13 Oct 26, read in
     full; itself drawn from Wikipedia's "Signs of AI writing"). They matter most in longer text — the Logic page's
-    explanations (D809), a "How this works" fold — and each is a default nobody chose: the dash as the all-purpose
-    join (test 2) · an opener that announces instead of saying ("Heads up", "Quick note", "Note that") · a "not X, but
-    Y" frame where nobody thought X · a closing line that only repeats the point just made · things listed in threes
-    for the sound of it · a longer verb where "is" or "has" will do ("serves as", "features", "offers") · the stock
-    words (crucial, key, robust, seamless, ensure, enhance, additionally, simply) · a bold label and a colon on every
-    line of a list · a line about how the text or the app was made instead of what it is for. One of these alone can
-    be a person's choice; two in one text is a rewrite. And its check on any rewrite is this guide's own: nothing
-    added, nothing dropped (§1a tests 8 and 9).
+    explanations (D809), a "How this works" fold — and each is a default nobody chose. **Rewritten on one sighting:**
+    the dash as the all-purpose join (test 2) · an opener that announces instead of saying ("Heads up", "Quick note",
+    "Note that" — test 8, §1a test 2) · a "not X, but Y" frame where nobody thought X, also split over two sentences
+    ("This is not X. It is Y.") or left as a clipped tail ("…, no guessing") · a closing line that only repeats the
+    point just made · an objection answered that nobody raised ("To be clear", "This is not to say"). **One alone can
+    be a person's choice; two in one text is a rewrite:** things listed in threes for the sound of it · a longer verb
+    where "is" or "has" will do ("serves as", "features", "offers") · an "-ing" tail bolted onto a fact to make it
+    sound deeper ("…, ensuring everyone sees the same day") · the stock words (crucial, pivotal, robust, seamless,
+    enhance, additionally, simply, "key" as an adjective) · a bold label and a colon on every line of a list · a line
+    about how the text or the app was made instead of what it is for. **These rules of the tool are NOT applied to the
+    app's text, because this guide rules the other way:** against the passive and the missing subject (test 7 keeps
+    "The 07:30 brief was cleared" and never invents "the system"; test 4 keeps "Saved", "Note hidden") · against
+    sentences that open alike, and "vary the sentence length" (test 9: a pair and a family are worded alike on
+    purpose) · against a row of fragments or a bare negative (a phrase after a colon, and "no flag, not counted", are
+    test 2's and test 6's) · on hyphens after a noun (the app's names keep theirs: "scheduler-only", "view-only") · on
+    capitals where the capitals are a name (test 8) · against bold, arrows, ticks and symbols where they are a ruled
+    look or carry a meaning (§4) · against curly quotation marks (the app prints them on purpose) · its ban on every
+    dash (D834 allows one, named) · and its rules for essays and replies — hedges, citations, sales language, chat
+    leftovers, knowledge cut-offs. A short sentence that states a cost ("Nobody on it earns OIL.") is a fact, not a
+    closer. And its check on any rewrite is this guide's own: nothing added, nothing dropped (§1a tests 8 and 9).
 
 **Three of the app's notes, as this guide would say them** — to show the tests at work; the wordings of record are the
 ones he approves:
 
 | On screen on 13 Oct 26 | As the guide would say it | What changed |
 |---|---|---|
-| The 07:30 brief was after the new take-off, so it has been cleared | The 07:30 brief was after the new take-off, so it was cleared | "has been" → "was" (a helper word; the cold read gives the same answers); the link "so" stays |
-| Info only — this item is no longer checked against the rules, and earns nobody any OIL | Info only: this item is no longer checked against the rules, and earns nobody any OIL | the dash → a colon ("Info only" is the switch's name); no word cut |
-| This week is locked — it was published by an older version and can't be edited | This week is locked. It was published by an older version, so it can't be edited. | the dash → a full stop; "and" → "so", a link ADDED and checked in the app (the week is locked because an older version published it); "it" added; one word longer than today |
+| That input was removed while its window was open — the window has closed | That input was removed while its window was open, so the window has closed | the dash → "so", a link the words themselves give; one word longer than today |
+| Desktop layout — pan sideways to read the whole day | Desktop layout: pan sideways to read the whole day | the dash → a colon ("Desktop layout" is only a name); no word cut |
+| This week is locked — it was published by an older version and can't be edited | This week is locked. It was published by an older version of the app, so it can't be edited. | the dash → a full stop; "and" → "so", a link ADDED and checked in the app (the week is locked because an older version of the app published it); "of the app" ADDED ("an older version" read as an older version of the schedule); four words longer than today |
 
 ## 2. Keyboard and focus
 
@@ -458,6 +488,7 @@ download and run.
 its writer: by Astra and Sol 6.1 (D70, D590). This first draft: one fresh, blind Opus reader while the ChatGPT readers
 are out (D812; D810's precedent), written on the list of jobs that went without a ChatGPT reader (D761) — its report:
 `superpowers/briefs/2026-10-13-design-guide-read.md`. **The writing guide (§1's additions, §1a, §1b — D832, D833,
-D834):** read twice, each time by a fresh Opus reader and by Fable on his word, each blind to the other — the first
+D834):** read three times, each time by a fresh Opus reader and by Fable on his word, each blind to the other — the first
 draft's reads `superpowers/briefs/2026-10-13-writing-guide-reads.md`, the second draft's and what was taken from each
-`superpowers/briefs/2026-10-13-writing-guide-reads-2.md`; its approval is his.
+`superpowers/briefs/2026-10-13-writing-guide-reads-2.md`, which also holds the third draft's read, done with the tool he
+sent beside it (D835); its approval is his.
