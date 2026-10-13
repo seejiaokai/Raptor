@@ -11,18 +11,19 @@
    iPhone gave that box a width of its own and it ran off the form's edge (his pictures, 8 and 13 Oct 26; D786).
    min-width 0 / max-width 100%: it is never wider than the room its form gives it, and a long date is cut with "…"
    before the box grows. Each form gives it that form's own box look beside this (`.every-date`, `.mfield`, the Leave
-   War's `.dateinput`). ---- */
-.datebox{display:inline-flex;align-items:center;justify-content:space-between;gap:8px;box-sizing:border-box;min-width:0;max-width:100%;
+   War's `.dateinput`). `button.datebox`, not `.datebox`: the Tracker wraps each of ITS date boxes in an element of that
+   same class name (tracker/components/DateBox.jsx), and this look reached every one of them (found 13 Oct 26). ---- */
+button.datebox{display:inline-flex;align-items:center;justify-content:space-between;gap:8px;box-sizing:border-box;min-width:0;max-width:100%;
   min-height:36px;margin:0;padding:8px 10px;border-radius:9px;border:1px solid var(--edge);background:var(--bg);color:var(--ink);
   font-family:inherit;font-size:13px;font-weight:600;line-height:1.2;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .datebox-txt{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
 .datebox-v{flex:0 0 auto;font-size:11px;line-height:1;color:var(--ink-3)}
-.datebox.is-empty .datebox-txt{color:var(--ink-3)}
-.datebox:hover:not(:disabled){border-color:var(--ink-3)}
-.datebox.is-open,.datebox.is-open:hover{border-color:var(--accent)}
-.datebox.is-open .datebox-v{color:var(--accent)}
-.datebox:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-.datebox:disabled{opacity:.55;cursor:default}
+button.datebox.is-empty .datebox-txt{color:var(--ink-3)}
+button.datebox:hover:not(:disabled){border-color:var(--ink-3)}
+button.datebox.is-open,button.datebox.is-open:hover{border-color:var(--accent)}
+button.datebox.is-open .datebox-v{color:var(--accent)}
+button.datebox:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button.datebox:disabled{opacity:.55;cursor:default}
 /* in a form that stacks a label over its box (Admin's, a new person's) the box takes the form's width, as the box it
    replaced did there */
 .mfield > .datebox{width:100%}

@@ -300,6 +300,22 @@ for (const width of [320, 360, 390, 440]) {
   })
 }
 
+/* THE TRACKER'S OWN DATE BOXES ARE NOT THIS STEP'S — and the app's date-box look must not reach them. The Tracker wraps
+   each of its date boxes in an element of its own that had the SAME class name as the app's new date box, so on the
+   first build of this step every one of them wore the new box's border, padding and pointer (found 13 Oct 26, starting
+   the Tracker's own job — no check of step one had opened the Tracker, because step one does not touch it). The
+   roll-call's lesson: a new class name on one global stylesheet is searched for in all three apps before it is used. */
+test('the Tracker’s own date boxes are untouched: the app’s date-box look does not reach them', async ({ browser, baseURL }) => {
+  const { context, page } = await world(browser, baseURL, DESK, false)
+  await go(page, 'tracker')
+  await page.waitForSelector('#flowSvg .ball', { timeout: 20000 })
+  const wrap = page.locator('#page-tracker #lastSyll').locator('xpath=..')
+  await expect(wrap, 'the Tracker’s Last Flown box is not on the page — the test proves nothing').toHaveCount(1)
+  const st = await wrap.evaluate(e => { const c = getComputedStyle(e); return { tag: e.tagName, border: c.borderTopWidth, padding: c.paddingLeft, pointer: c.cursor === 'pointer' } })
+  expect(st).toEqual({ tag: 'SPAN', border: '0px', padding: '0px', pointer: false })
+  await context.close()
+})
+
 test('a sideways phone (844 × 390): the whole calendar is on the screen', async ({ browser, baseURL }) => {
   const { context, page, press } = await world(browser, baseURL, { width: 844, height: 390 }, true)
   await openCalendarWindow(page, press)
