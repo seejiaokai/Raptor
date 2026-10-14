@@ -23,7 +23,7 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify, loadWeek, commitSetDayApproved, commitPublishALDay } from '../state/store'
 import { schedWrite, schedWriteValue, SCHED_TYPES, commitUnpublish } from '../state/sched-commit'
-import { oilCreditBidAgainst, createOilPeriodFor, oilOpenOn } from '../leavewar/sync'
+import { oilCreditBidAgainst, createOilPeriodFor, oilOpenOn, dayFacts } from '../leavewar/sync'
 import { scrollToWarnFocus, queueHold, warnWeekId, bringIntoView } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
@@ -1255,7 +1255,12 @@ export function routeClick(e: MouseEvent) {
     /* WHICH INPUTS STAND ON THIS DAY BEFORE THE LOAD — on its programme or under Unavailable — so that what the load
        PUTS BACK can be told from what was there all along (owner D818, below) */
     const stands = (x: any) => !!x && (x.acc === 'g' || x.acc === 'u') && !!DAYS[di] && inputCoversDate(x, DAYS[di].dt)
-    const stood = new Set(INPUTS.filter(stands).map((x: any) => String(inpId(x))))
+    const iso = dayIso(CURWEEK, di)
+    /* …standing there AND already needing an answer: those were his to answer before the load and are not its doing. An
+       input that stood there silent — cancelled, information-only — and comes out of the load live is counted, should
+       a load ever bring one back so (the scenario designer's S30: the un-cancel's gap must not return by this door). */
+    const openWas = new Set(oilOpenOn(iso, iso).map(o => o.iid))
+    const stood = new Set(INPUTS.filter((x: any) => stands(x) && openWas.has(String(inpId(x)))).map((x: any) => String(inpId(x))))
     if (!loadVersionToWorkingCopy(di, ver)) { HOOKS.toast('That version is no longer available', 'warn'); notify(); return }
     view.setDayPreview(di, null)
     view.afterSchedMutate()
@@ -1288,13 +1293,14 @@ export function routeClick(e: MouseEvent) {
        reading (leavewar/sync.ts oilOpenOn — never a cancelled or information-only input, D814; one under Unavailable
        counts, D804). Nothing is added and nothing opens where none needs one. The list is a scheduler's, as the load
        is; what is answered there notifies nobody (D781), and "Later" leaves the "OIL?" signs and the bell as they are. */
-    const iso = dayIso(CURWEEK, di)
     const open = new Set(oilOpenOn(iso, iso).map(o => o.iid))
     const need = INPUTS.filter((x: any) => stands(x) && !stood.has(String(inpId(x))) && open.has(String(inpId(x)))).length
     const saidAll = said + (need ? ` · ${need} input${need === 1 ? ' needs' : 's need'} an OIL answer` : '')
     logAction(di, saidAll)
     HOOKS.toast(saidAll)
-    if (need) setOilList({ from: iso, to: iso, name: '', fresh: false })
+    /* the list names the holiday where the day is one; on a plain weekend it says nothing of a holiday */
+    const facts = dayFacts(iso)
+    if (need) setOilList({ from: iso, to: iso, name: facts.kind === 'ph' ? String((facts as any).name || '') : '', fresh: false, plain: facts.kind !== 'ph' })
     notify(); return
   }
 

@@ -38,10 +38,10 @@ export function OilDayList() {
   useEffect(() => { if (refused) setOilList(null) }, [refused])
   if (!o || refused) return null
   /* a list opened for another run of dates is another list: its picks start empty */
-  return <Body key={`${o.from}|${o.to}`} from={o.from} to={o.to} name={o.name} fresh={!!o.fresh} />
+  return <Body key={`${o.from}|${o.to}`} from={o.from} to={o.to} name={o.name} fresh={!!o.fresh} plain={!!o.plain} />
 }
 
-function Body({ from, to, name, fresh }: { from: string; to: string; name: string; fresh: boolean }) {
+function Body({ from, to, name, fresh, plain }: { from: string; to: string; name: string; fresh: boolean; plain: boolean }) {
   useWarFacts()                                        // a holiday taken away, a period changed: the list is read again
   const [picks, setPicks] = useState<Record<string, OilPick | undefined>>({})
   const open = oilOpenOn(from, to)
@@ -58,7 +58,7 @@ function Body({ from, to, name, fresh }: { from: string; to: string; name: strin
   /* the input's own window, where everything else about it is (the day's cards open it the same way) */
   const openInput = (r: any) => { setInpEdit(r); setPage('inputs'); notify() }
   return (
-    <FloatWin id="oilday" title={`OIL — ${noticeRun(from, to)}`} sub={name ? `Public holiday · ${name}` : 'Public holiday'}
+    <FloatWin id="oilday" title={`OIL — ${noticeRun(from, to)}`} sub={plain ? undefined : name ? `Public holiday · ${name}` : 'Public holiday'}
       testid="win-oilday" className="oildaywin" onClose={close}>
       {/* a holiday with no name of its own is named by its day — never by the preset's word ("PH is now…": the walk, E1) */}
       {fresh && <p className="odl-lead" data-testid="odl-lead">{name ? `${name} is now a public holiday.`

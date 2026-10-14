@@ -1250,6 +1250,21 @@ describe('taking the cancel off an input with no OIL answer waits on the OIL que
     expect(rec().info, 'one Undo').toBe(true)
     expect(rec().oil).toBeUndefined()
   })
+  /* the scenario designer's S2: both marks on one input. While EITHER stands it can earn nothing (D814), so the first to
+     come off has nothing to ask; the question comes with the LAST one. */
+  it('cancelled AND information-only: the first mark off asks nothing, the last one asks', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    expect(rowMark(rowKey(), 'info', true)).toBe('done')
+    expect(rowMark(rowKey(), 'cx', false), 'still information-only: nothing to ask').toBe('done')
+    expect(view.OILWAIT).toBeNull()
+    expect(!!rec().cx).toBe(false)
+    expect(rec().oil, 'and no answer was written').toBeUndefined()
+    expect(rowMark(rowKey(), 'info', false), 'the last mark: the question').toBe('asked')
+    expect(view.OILWAIT!.kind).toBe('uninfo')
+    expect(rec().info, 'nothing changed until it is answered').toBe(true)
+  })
   it('a cancel put ON, and the red box either way, ask nothing', async () => {
     await boot()
     file(['bane'], SAT)
@@ -1325,7 +1340,8 @@ describe('a published version loaded back: how many inputs need an OIL answer, a
     const said = SAID.join(' | ')
     expect(said).toContain('loaded onto the working copy')
     expect(said, 'the tail, in his words').toContain(' · 1 input needs an OIL answer')
-    expect(pops.OILLIST, 'the day\'s one list is open, for that day').toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false })
+    /* (`plain`: a Saturday is a weekend, not a public holiday — the list's heading must not call it one) */
+    expect(pops.OILLIST, 'the day\'s one list is open, for that day').toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true })
     expect(view.OILWAIT, 'the load itself was not held').toBeNull()
   })
   it('the input it put back is already answered: nothing is added and no list opens', async () => {
@@ -1366,7 +1382,7 @@ describe('a published version loaded back: how many inputs need an OIL answer, a
     for (let i = 0; i < 2 && riOf() < 0; i++) pressRouted(b => { b.dataset.restore = String(SAT); b.dataset.rver = ver })
     expect(riOf(SAT, TITLE)).toBeGreaterThanOrEqual(0); expect(riOf(SAT, SECOND)).toBeGreaterThanOrEqual(0)
     expect(SAID.join(' | ')).toContain(' · 1 input needs an OIL answer')
-    expect(pops.OILLIST).toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false })
+    expect(pops.OILLIST).toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true })
   })
   it('an unanswered input that was on the programme all along is not "put back" by the load: no tail (the bell and its "OIL?" sign already carry it)', async () => {
     await boot()
