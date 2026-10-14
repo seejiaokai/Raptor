@@ -1,5 +1,7 @@
 # The file map — where each source file lives and what it does
 
+The one look of the just-added mark (owner D860, D861 — 15 Oct 26). **New:** `src/ui/markring-css.test.ts` (the marks' styles read off disk: no glow anywhere, the List's one box, a bar wearing the ring shows no landing flash); `scripts/handpass/ring-look.mjs` (pictures of the look). **What each existing file gained:** `src/ui/highlights.ts` — `paintFreshAdds` rings a note's own box; `src/ui/scheduler/06-inputs.css` — the List's one box (`.innew>td::after`), no glow; `src/ui/scheduler/25-inputs-calendar.css` — no glow, no landing flash under the ring; tests `src/ui/board.test.tsx`, `e2e/feedback-marks.spec.ts`.
+
 `[BATCH-14OCT-LEFTOVERS]` — the three leftovers and three note deletions (D849, D851, D854; built on the night of 14 Oct 26).
 **New:** `src/ui/seen.ts` — is a just-saved input IN VIEW wearing its mark (`inView`: its head, middle and foot its own on
 screen), and the save's note said only where it is not (`noteUnlessSeen`; a screen reader told the words in `#srSay`);

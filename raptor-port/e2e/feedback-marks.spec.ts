@@ -34,16 +34,24 @@ async function notesFor(p: Page, ms = 1300) {
   while (Date.now() < end) { const n = await noteNow(p); if (n && !seen.includes(n)) seen.push(n); await p.waitForTimeout(60) }
   return seen
 }
-/* the mark on what `sel` finds: worn, PAINTED (a table row's box is drawn on its cells — every one), and in view at its
-   head, middle and foot (owner D672's "in view": wholly on screen, nothing over it) */
+/* the mark on what `sel` finds: worn, PAINTED, and in view at its head, middle and foot (owner D672's "in view": wholly on
+   screen, nothing over it). A desktop List row is painted as ONE box round the whole row (owner D861, 15 Oct 26 — "I want
+   a box, so it's standardised"): every cell carries the top and bottom line, the first cell the left side, the last
+   the right side, and no cell a side in between — a box per cell is NOT painted. A card or a bar: its own ring. */
 const markOf = (p: Page, sel: string) => p.evaluate(([sel, BLUE]) => {
   const el = document.querySelector(sel)
   if (!el) return null
   const cells = el.tagName === 'TR' ? [...el.querySelectorAll(':scope > td')] : [el]
   const b = el.getBoundingClientRect(), x = b.left + b.width / 2, in1 = Math.min(3, b.height / 4)
   const at = [b.top + in1, b.top + b.height / 2, b.bottom - in1].map(y => { const h = document.elementFromPoint(x, y); return !!h && (h === el || el.contains(h)) })
-  return { innew: el.classList.contains('innew'), fresh: el.getAttribute('data-fresh'), painted: cells.every(c => getComputedStyle(c).boxShadow.includes(BLUE)),
-    anim: getComputedStyle(cells[0]).animationName, inView: at.every(Boolean) }
+  const blue = (w: string, c: string) => w === '2px' && c.includes(BLUE)
+  const oneBox = () => cells.every((c, i) => { const a = getComputedStyle(c, '::after'), first = i === 0, last = i === cells.length - 1
+    return blue(a.borderTopWidth, a.borderTopColor) && blue(a.borderBottomWidth, a.borderBottomColor)
+      && (first ? blue(a.borderLeftWidth, a.borderLeftColor) : a.borderLeftWidth === '0px')
+      && (last ? blue(a.borderRightWidth, a.borderRightColor) : a.borderRightWidth === '0px') })
+  const isRow = el.tagName === 'TR'
+  return { innew: el.classList.contains('innew'), fresh: el.getAttribute('data-fresh'), painted: isRow ? oneBox() : getComputedStyle(el).boxShadow.includes(BLUE),
+    anim: isRow ? getComputedStyle(cells[0], '::after').animationName : getComputedStyle(el).animationName, inView: at.every(Boolean) }
 }, [sel, BLUE] as const)
 const newest = (p: Page) => p.evaluate(() => String((window as any).INPUTS[0].iid))
 const crew = (p: Page, n: number) => p.evaluate(n => { const P = (window as any).PEOPLE; return Object.keys(P).filter(id => !P[id].san && !P[id].archived && !P[id].deleted && !P[id].special && !P[id].pers)[n] }, n)
@@ -141,7 +149,7 @@ test('D850, D851 — the desktop List with less motion asked for: every cell of 
   await expect(page.locator(row)).toHaveClass(/\binnew\b/)
   await page.waitForTimeout(700)                 // the page comes to the row
   const m = await markOf(page, row)
-  expect(m, 'steady — no animation — and painted on every cell, the first with its coloured edge included').toEqual({ innew: true, fresh: id, painted: true, anim: 'none', inView: true })
+  expect(m, 'steady — no animation — and painted as ONE box round the whole row').toEqual({ innew: true, fresh: id, painted: true, anim: 'none', inView: true })
   expect(await notesFor(page)).toEqual([])
   /* gone when its six seconds are up — the class and the box */
   await expect(page.locator(row)).not.toHaveClass(/\binnew\b/, { timeout: 8000 })
@@ -286,4 +294,47 @@ test('D849 (3) — the medical-clash and the upchit questions: their answers sit
   await expect(page.locator('[data-testid="upconf"]')).toBeVisible()
   expect(await flat('[data-testid="upconf"]', '[data-testid="upconf-left-0"]'), 'flat, at the right of the entry’s own box').toEqual(
     { seg: false, bg: 'rgba(0, 0, 0, 0)', line: '0px', pad: '0px', under: false, endsAtRight: true, n: 2, oneLine: true })
+})
+
+/* ONE MARK, ONE LOOK (owner D860, 15 Oct 26 — "the blue ring … on scheduler board … doesn't have glow. Like the one u
+   designed for inputs. Can u match the blue ring like the one on scheduler board for the input. And also … the blue
+   ring for the edit schedule board is not at the perimeter of the note. Fix that visual"). The board's just-added
+   ring is a plain inset ring with no glow (16 Aug 26: an outer glow was swallowed on some sides); every input mark now
+   wears exactly that, and a note added on the board is ringed on its own box, not its whole row. */
+const shadowOf = (p: Page, sel: string) => p.evaluate(sel => { const el = document.querySelector(sel); if (!el) return null
+  const cells = el.tagName === 'TR' ? [...el.querySelectorAll(':scope > td')] : [el]
+  return cells.map(c => getComputedStyle(c).boxShadow) }, sel)
+/* a shadow that is NOT inset spreads outside the box — the glow */
+const glows = (list: string[] | null) => !!list && list.some(bs => bs.split(/,(?![^(]*\))/).some(part => /rgba?\(30, 134, 255/.test(part) && !/inset/.test(part)))
+test('D860 — the input marks wear the board’s plain ring, no glow: the opened day’s card, the month’s bar and the List’s row', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await login(page); await go(page, 'inputs')
+  await month(page, 2026, 10)
+  await page.locator('#inpCal [data-icday="2026-10-22"]').click()
+  await page.locator('#icPopAdd').click()
+  await page.locator('#inpEditRmk').fill('ring check')
+  await page.locator('#inpEditSave').click()
+  const id = await newest(page)
+  const card = `[data-testid="win-inputsday"] [data-testid="idy-row-${id}"]`
+  await expect(page.locator(card)).toHaveClass(/\binnew\b/)
+  const c = await shadowOf(page, card)
+  expect(c && c.some(bs => bs.includes(BLUE)), 'the card is ringed: ' + JSON.stringify(c)).toBe(true)
+  expect(glows(c), 'and the ring has no glow: ' + JSON.stringify(c)).toBe(false)
+})
+test('D860 — a note added on the Scheduler Board is ringed on its own box, with no glow', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await login(page); await go(page, 'editsched')
+  await page.locator('#eWeek [data-sbday="0"]').first().evaluate((e: HTMLElement) => { e.scrollIntoView({ block: 'center', inline: 'center' }); e.click() })
+  await page.locator('#schedBoard .sb-sec').first().waitFor({ state: 'attached' })
+  const before = await page.locator('#schedBoard .sb-nrow').count()
+  await page.locator('#schedBoard [data-nadd="0"]').first().click()
+  const box = `#schedBoard [data-bfld="dn:0.${before}"]`
+  await expect(page.locator(box)).toHaveClass(/\bsb-fresh\b/)
+  await expect(page.locator('#schedBoard .sb-nrow.sb-fresh'), 'never the whole row').toHaveCount(0)
+  const g = await page.evaluate(sel => { const b = document.querySelector(sel) as HTMLElement, row = b.closest('.sb-nrow') as HTMLElement
+    const r = b.getBoundingClientRect(), rr = row.getBoundingClientRect(), cs = getComputedStyle(b)
+    return { shadow: cs.boxShadow, radius: cs.borderTopLeftRadius, insideRow: r.left > rr.left + 10 && r.right < rr.right - 10 } }, box)
+  expect(g.shadow.includes(BLUE), 'the box wears the ring: ' + g.shadow).toBe(true)
+  expect(glows([g.shadow]), 'no glow: ' + g.shadow).toBe(false)
+  expect(g.insideRow, 'the ring is the note box\'s own edge, clear of the grip and the ✕').toBe(true)
 })
