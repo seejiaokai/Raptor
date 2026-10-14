@@ -722,6 +722,8 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 **Principle:** Where a safer way costs nothing extra, a rule phrased as a condition to judge each time ("unless it contains X") fails under load; phrase it as an unconditional default ("always do Y").
 
+Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit script inserting a test wrote each `\\b` of a regex as a BACKSPACE byte and each escaped apostrophe as a bare one — the file first failed to parse, then every `\b` assertion matched nothing; two more inline fixes (`sed` replacements) mangled it again before a script written with the file tool put it right. The guard is the one already proposed and approved to build — `[SHELL-SCRIPT-GUARD]` (D811): a script is written to a file, always.
+
 ### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
 
 **Status:** OPEN

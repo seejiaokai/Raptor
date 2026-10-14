@@ -2960,10 +2960,18 @@ export function Matrix() {
     /* (The four Required / Available rows — FlyRows.tsx — are NOT here: they sit at the foot of the Manning block
        (D665), above where the drawer starts. While they sat in the Events block, for a few hours on 8 Oct 26, each
        needed a box here or every roster row in the drawer stood four rows too high — a row added to that block does.) */
+    /* Each row's Rearrange landing mark, by the SAME tests as its real row in the roster <tbody> below (the group
+       heading's `dragOver === g`, the person row's `over`), so the line reads across the drawer too (owner D883). */
     ...rosterSequence().map((item): DrawerRow =>
-      item.kind === 'group' ? { kind: 'group', key: `group-${item.g}`, folded: folded.has(item.g) }
+      item.kind === 'group' ? {
+        kind: 'group', key: `group-${item.g}`, folded: folded.has(item.g),
+        over: dragOver === item.g && draggingId !== item.g ? (dragAfter ? 'dragover after' : 'dragover') : '',
+      }
         : item.kind === 'catsub' ? { kind: 'catsub', key: `subcat-${item.g}-${item.cat}` }
-          : { kind: 'person', key: `row-${item.p.id}`, p: item.p, me: item.p.id === viewer }),
+          : {
+            kind: 'person', key: `row-${item.p.id}`, p: item.p, me: item.p.id === viewer,
+            over: draggingId && dragOver === item.p.id && draggingId !== item.p.id ? (dragAfter ? 'dragover after' : 'dragover') : '',
+          }),
   ]
 
   // The under-manned list asks for a day the same way the month strip asks

@@ -20,6 +20,13 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/backlog-work-session-12d909 -->
+### `claude/backlog-work-session-12d909` — `[LW-LANDING-LINE-FIGURES]` BUILT AND CHECKED, waiting for his "merge live"; calendar step two may start (D889) — written 15 Oct 26 — verify before use
+- **Built:** the Leave War's landing line in Rearrange now runs unbroken through the figures (D883). Cause: the figures drawer is a second table over the days, so the real row's line ran under it; the drawer's row now wears the same mark (`FiguresDrawer.tsx`, `Matrix.tsx drawerRows`, `matrix.css`). Tier LOOK; walked 39/39 by a real drag, mouse and touch (`scripts/handpass/lwlanding-drag.mjs`); evidence `raptor-port/docs/handpass/2026-10-15-lw-landing-line.md`; tests `figdrawer.test.tsx` (red before the fix), `rowglow.test.ts`. The whole gate set green in one run (§Gate baseline).
+- **Rulings this chat:** D889 (his look at calendar step one given — "happy with the built calander look"; step two may start, after this fix). D888 is the glow-off chat's (its branch, documents only, not yet on `main` — bringing it in here was refused by the permission check; it rides with its own next pull request or his word).
+- **Open for him:** "merge live" for this branch (a pull request: the fix, its tests, the records). His question that turn, answered, not a ruling: Microsoft's App Builder / vibe.powerapps.com retirement does not touch Raptor or its planned code app — one question to the IT side to confirm code apps are untouched.
+- **Running when written:** none. **Pick up here:** his "merge live" → merge, Vercel READY, the main folder level; then calendar step two (`[ONE-DATE-CALENDAR]`, D889) — its questions and pictures to him first (D541, D853), a fresh chat on `main` is the better place (this one carries the fix's context only).
+<!-- /now -->
 <!-- now:claude/glow-off-compact-bands-window-40b514 -->
 ### `claude/glow-off-compact-bands-window-40b514` — `[GUIDE-NO-GLOW]` BUILT AND CHECKED, waiting for his "merge live"; D885's hook line in — written 15 Oct 26 — verify before use
 - **Earlier on this branch, LIVE:** pull request 512 (`[GLOW-OFF]`, `[COMPACT-BANDS-WINDOW]`, D877–D879).
@@ -30,6 +37,8 @@ the later merge keeps both (D78).
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (15 Oct 26, later):** `[GUIDE-NO-GLOW]` is LIVE (pull request 513) → `[LW-LANDING-LINE-FIGURES]` BUILT on `claude/backlog-work-session-12d909`, waiting for his "merge live" → **calendar step two (`[ONE-DATE-CALENDAR]`) — his look at step one is GIVEN (D889), so it may start** → the Logic page (D809) and the whole-app words pass (D808), each its own job.
 
 **RIGHT NOW (15 Oct 26):** the three builds, the leftovers batch, the one-look ring and the small OIL job are LIVE (pull request 506 — the paragraph below is done to its "NEXT") → `[OVERNIGHT-SKILL]` LIVE as `/overnight` (D869 — pull request 508) → `[COMPACT-WHEN-MOD]` LIVE (D872 — pull request 509; its four checks owed by the next new chat) → his three small jobs of 15 Oct (`[OIL-PLAN-SWITCH-UNASKED]`, `[GUIDE-ONE-MARK]`, `[GLOW-PLACES-LOOK]` — D865, D866) → calendar step two (`[ONE-DATE-CALENDAR]`, after his iPhone look at step one) → the Logic page (D809) and the whole-app words pass (D808), each its own job.
 
@@ -76,6 +85,8 @@ his ruling — DONE 7 Oct 26 on `claude/docs-tidy-7-oct` (D609: options 1 to 6; 
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
 ## Gate baseline
+
+**The latest counts watched — 15 Oct 26 (evening), `claude/backlog-work-session-12d909`, `main` with `[LW-LANDING-LINE-FIGURES]` (NOT `main`'s code), the whole gate set under the PC lock in one run: build clean · tfin 728 / 0 · unit 11407 / 11407 (641 files) · e2e 817 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN.**
 
 **The latest counts watched — 15 Oct 26 (later), `claude/glow-off-compact-bands-window-40b514`, `[GUIDE-NO-GLOW]` built: build clean · tfin 728 / 0 · unit 11404 / 11404 (641 files) · e2e 816 passed, 1 failed (this change's, fixed and passed alone) , 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK.** Before it: **15 Oct 26, `claude/glow-off-compact-bands-window-40b514` — `main` with `[GLOW-OFF]` and `[COMPACT-BANDS-WINDOW]` (NOT `main`'s code), the whole gate set under the PC lock in one run, before D879's one-line chip change: build clean · tfin 728 / 0 · unit 11397 / 11397 (640 files) · e2e 816 passed, 1 failed, 59 skipped — the failure the Leave War phone test "Undo and Redo leave the grid where it is…", which passed 3 of 3 run alone under the lock (a timing slip under load, not this job) · smoke 446 / 0 · rulecheck OK · docsize OK. After D879: the stylesheet and Inputs calendar tests re-run (7 files, green).**
 

@@ -2623,6 +2623,22 @@
     inset 0 -1px 0 rgba(59, 198, 232, .55),
     inset -1px 0 0 var(--edge-2);
 }
+/* The Rearrange LANDING LINE across the drawer (owner D883, 15 Oct 26 — "a blue
+   line through even through the counters"). The drawer is a second table laid
+   over the grid, so the real row's line (`.mx tbody tr.dragover td:not(.who)`,
+   further down) runs UNDER it and the line broke across the figures; the drawer's
+   row wears the same `dragover` / `dragover after` classes and draws the same 3px
+   line here. Three rules, each just above the one it must beat: any cell (a
+   heading's empty box has no shadow of its own); a figure box, which `.fig`
+   above sets to none (0,3,0); and the last box, whose drawer edge (`.fig.last`,
+   and the viewer's own row's (0,5,3) rule just above) it keeps under the line —
+   later in the file, so it wins that tie. */
+.mxdrawer .mx tbody tr.dragover td,
+.mxdrawer .mx tbody tr.dragover td.bal { box-shadow: inset 0 3px 0 var(--accent); }
+.mxdrawer .mx tbody tr.dragover.after td,
+.mxdrawer .mx tbody tr.dragover.after td.bal { box-shadow: inset 0 -3px 0 var(--accent); }
+.mxdrawer .mx tbody tr.dragover td.fig.last { box-shadow: inset 0 3px 0 var(--accent), inset -1px 0 0 var(--edge-2); }
+.mxdrawer .mx tbody tr.dragover.after td.fig.last { box-shadow: inset 0 -3px 0 var(--accent), inset -1px 0 0 var(--edge-2); }
 /* A title cell is a FIXED box the words are painted inside. The title is taken
    out of the cell's own flow (`position: absolute`) so it cannot push the
    header row taller than the height it was told — with the words in flow the

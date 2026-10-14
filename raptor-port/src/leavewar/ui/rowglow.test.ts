@@ -141,6 +141,37 @@ describe('a dragged row keeps its frozen cells opaque', () => {
       expect(body.trim().replace(/;$/, '').endsWith('var(--mrow-ring, 0 0 transparent)'), `${sel} keeps the ring as the BOTTOM layer`).toBe(true)
     }
   })
+
+  /* THE FIGURES DRAWER (owner D883, 15 Oct 26 — "a blue line through even
+     through the counters"). The drawer is a second table laid OVER the grid, so
+     the real row's bar runs underneath it: the drawer's copy of the row draws
+     the same 3px line, and it must out-rank the drawer's own box rules — `.fig`
+     sets every box's shadow to none, `.fig.last` carries the drawer's right
+     edge, and the viewer's own row has its band. The last box keeps its edge
+     under the line. That the row WEARS the class is `figdrawer.test.tsx`. */
+  it('the landing bar runs on through the figures drawer, at 3px, top edge or bottom', () => {
+    for (const [sel, edge] of [
+      ['.mxdrawer .mx tbody tr.dragover td', 'inset 0 3px 0'],
+      ['.mxdrawer .mx tbody tr.dragover td.bal', 'inset 0 3px 0'],
+      ['.mxdrawer .mx tbody tr.dragover td.fig.last', 'inset 0 3px 0'],
+      ['.mxdrawer .mx tbody tr.dragover.after td', 'inset 0 -3px 0'],
+      ['.mxdrawer .mx tbody tr.dragover.after td.bal', 'inset 0 -3px 0'],
+      ['.mxdrawer .mx tbody tr.dragover.after td.fig.last', 'inset 0 -3px 0'],
+    ] as const) {
+      const body = bodiesFor(sel).join(' ')
+      expect(body, `${sel} draws the 3px landing bar`).toContain(`${edge} var(--accent)`)
+      expect(body, `${sel} — no light round it (owner D882, D887)`).not.toMatch(/\d+px \d+px var\(--accent\)|rgba\(59, 198, 232/)
+    }
+    // A figure box: `.fig` (0,3,0) and `.fig.last` (0,4,0) set their own shadow.
+    expect(beats('.mxdrawer .mx tbody tr.dragover td.bal', '.mxdrawer .mx .fig')).toBe(true)
+    expect(beats('.mxdrawer .mx tbody tr.dragover td.bal', '.mxdrawer .mx .fig.last')).toBe(true)
+    expect(beats('.mxdrawer .mx tbody tr.dragover td.bal', '.mxdrawer .mx tbody tr.me td')).toBe(true)
+    // The last box ties the viewer's own row's last box (0,5,3) — so it must come LATER in the file.
+    for (const sel of ['.mxdrawer .mx tbody tr.dragover td.fig.last', '.mxdrawer .mx tbody tr.dragover.after td.fig.last']) {
+      expect(indexOf(sel), `${sel} comes after the viewer row's last-box rule`).toBeGreaterThan(indexOf('.mxdrawer .mx tbody tr.me td.fig.last'))
+      expect(bodiesFor(sel).join(' '), `${sel} keeps the drawer's right edge`).toContain('inset -1px 0 0 var(--edge-2)')
+    }
+  })
 })
 
 describe('the viewer\'s own row is lit by LINES, never by a wash', () => {

@@ -16,6 +16,10 @@ switch (`src/ui/board.ts switchDraft`) share; `scripts/handpass/ps-walk.mjs` (th
 `scripts/handpass/glow-look.mjs` (`[GLOW-PLACES-LOOK]`'s pictures — each glowing place today beside a no-glow version).
 `scripts/handpass/noglow-look.mjs` (`[GUIDE-NO-GLOW]`'s pictures — the places that still glow after D877, D879, each today beside no glow, `docs/mock/2026-10-15-noglow-places/`).
 `scripts/handpass/noglow-drag.mjs` (`[GUIDE-NO-GLOW]` place 8 by a real mouse drag in the Leave War's Rearrange).
+`scripts/handpass/lwlanding-drag.mjs` (`[LW-LANDING-LINE-FIGURES]`, D883 — the Leave War's landing line through the figures
+drawer by a real drag, mouse and touch, as assertions with pictures; `DL_BEFORE=1` pictures the build before the fix).
+**Changed by it:** `src/leavewar/ui/FiguresDrawer.tsx` (`DrawerOver` — the drawer's row wears the landing mark),
+`src/leavewar/ui/Matrix.tsx` (`drawerRows` sets it), `src/leavewar/ui/matrix.css` (the drawer's line).
 `scripts/handpass/noglow-onlook.mjs` (`[GUIDE-NO-GLOW]` question 6's third look: Rearrange on in the filter chip's pale blue fill, no glow).
 `src/ui/noglow-css.test.ts` (the whole app's roll-call for D880–D882, D887: no stylesheet under src/ lights a mark's own colour round it, blurred or as a 3px+ see-through band; the sign-in logo the one exception); `scripts/handpass/noglow-rollcall.mjs` (`[GUIDE-NO-GLOW]`'s second doors on the built change: the SANS calendar's puck, Show SANS on, View-only Sched's today card — a check line each); `scripts/handpass/noglow-more.mjs` (`[GUIDE-NO-GLOW]` round 3's places from the fresh read: the sign-in logo, the Leave War's balance bar, the Fast sync dot, Admin → Users' dots).
 **Changed:** `src/ui/board.ts` — the switch's note in short sentences; `src/ui/DraftsModal.tsx` — "Select" closes the plan
