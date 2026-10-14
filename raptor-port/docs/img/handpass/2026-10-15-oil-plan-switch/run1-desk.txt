@@ -1,0 +1,17 @@
+ps-walk v1
+   inputs calendar on JULY 2026
+   pic P0-holiday-list-desk.png
+== PASS  P desk · P0 the fixture
+     saw: plans {"live":"dr2","all":[{"id":"dr1","name":"Plan A"},{"id":"dr2","name":"Plan B"}]}; asked at the filing: false; publish {"published":true,"version":"ORIG","signSelects":4}; the holiday's list {"head":"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕","count":"2 to answer","ids":["imv82rf55phsgbv","imv82rhuvl4zh1p"],"reach":true,"noteOver":false}; the input {"cx":false,"cxr":"","info":false,"oil":null,"date":"Jul 17","acc":"g"}
+   pic P1-to-plan-a-week-desk.png
+== FAIL  P desk · P1 to Plan A by the plans menu (week)
+     saw: note "Friday is now "Plan A". 2 differences from the Original are pending."; a list: null; the input {"cx":false,"cxr":"","info":false,"oil":null,"date":"Jul 17","acc":""}; live dr1
+   pic P2-back-to-plan-b-week-desk.png
+== FAIL  P desk · P2 back to Plan B by the plans menu (week)
+     saw: note "Friday is now "Plan B". 1 difference from the Original is pending. 1 input needs an OIL answer."; the list {"head":"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕","count":"2 to answer","ids":["imv82rf55phsgbv","imv82rhuvl4zh1p"],"reach":true,"noteOver":false}; the input {"cx":false,"cxr":"","info":false,"oil":null,"date":"Jul 17","acc":"g"}
+   pic P3-editor-select-week-desk.png
+== FAIL  P desk · P3 the same by the plan editor's "Select" (week)
+     saw: to A: note "Friday is now "Plan A". 2 differences from the Original are pending.", a list null; to B: note "Friday is now "Plan B". 1 difference from the Original is pending. 1 input needs an OIL answer.", the list {"head":"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕","count":"2 to answer","ids":["imv82rf55phsgbv","imv82rhuvl4zh1p"],"reach":false,"noteOver":false}; after "Done" the list {"head":"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕","count":"2 to answer","ids":["imv82rf55phsgbv","
+   pic P4-answered-back-week-desk.png
+== FAIL  P desk · P4 answered in the list; away and back again
+     saw: the list closed on Save: true; the input {"cx":false,"cxr":"","info":false,"oil":{"2026-07-17":0.5},"date":"Jul 17","acc":"g"}; back on Plan B: note "Friday is now "Plan B". 1 difference from the Original is pending.", a list null; the input {"cx":false,"cxr":"","info":false,"oil":{"2026-07-17":0.5},"date":"Jul 17","acc":"g"}
