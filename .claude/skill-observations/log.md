@@ -661,3 +661,18 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** Replace the command everywhere with one that lists every run of the branch's last pushed commit (`--limit 6 --json status,workflowName,headSha`) and pushes only when none is queued or running.
 
 **Principle:** A "latest item" query answers "is anything running?" only when one thing runs at a time; when one event starts several jobs, ask about the event, not the newest row.
+
+### Observation 598: A guard that holds something back was built "fail open" and still could refuse the system's own recovery
+
+**Status:** OPEN
+**Date:** 2026-10-15
+**Session context:** [COMPACT-WHEN-MOD] — a hook that holds an automatic compaction until the agent has saved its state (D870); found by the fresh reader
+**Skill:** New skill candidate: writing a hook that can refuse an action (today nowhere; `.claude/hooks/compact-guard.mjs` is the worked example)
+**Type:** open-source
+**Phase/Area:** Design of a blocking hook
+
+**Issue:** The guard let everything through on any error or unreadable input, and the writer called that "fail open". But the same event (an automatic compaction) is fired both for an ordinary early compaction and for the app's recovery from a request that has already overrun; refusing the second makes the request fail, and every retry saw the same stale reading and was refused again. "Fail open on error" did not cover "a valid input that means something else". The writer's own tests checked the cases it had imagined; the reader built the case where the reading was stale.
+
+**Suggested improvement:** For any hook that can refuse: list every situation in which the platform fires that event (from its documentation), and for each say whether refusing is safe; refuse only in the one situation the rule is for, identified positively (a narrow window of values, not inside a helper, a fresh reading, never twice on the same state). And a brief for its reader asks for the case where refusing breaks the platform's own recovery.
+
+**Principle:** A guard is safe only if it can tell the case it guards from the platform's own recovery path; when the two arrive as the same event, refuse narrowly and never twice on unchanged state.
