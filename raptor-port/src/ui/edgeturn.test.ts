@@ -188,6 +188,20 @@ describe('the pan at a canvas\'s edge', () => {
     expect(steps.length).toBe(3)
   })
 
+  /* found by the walk (15 Oct 26): on a desktop the canvas's box runs on below the window's foot — its edge is the one
+     the person SEES, the window's, or a ball carried to the foot never pans */
+  it('a canvas taller than the window pans at the window\'s foot, where its edge is seen', async () => {
+    const { EDGE_STEP, edgePan } = await import('./edgescroll')
+    const tall = document.createElement('div')
+    tall.getBoundingClientRect = () => ({ top: 0, bottom: 2000, left: 0, right: 350, width: 350, height: 2000, x: 0, y: 0, toJSON() {} }) as DOMRect
+    document.body.appendChild(tall)
+    const steps: Array<[number, number]> = []
+    const p = edgePan({ box: tall, touch: false, x: 175, y: 300, onPan: (dx, dy) => steps.push([dx, dy]) })
+    p.point(175, window.innerHeight - 4); run(1)
+    expect(steps).toEqual([[0, EDGE_STEP]])
+    p.stop()
+  })
+
   it('a drag that began at an edge does not pan that way until it has left it', async () => {
     const { edgePan } = await import('./edgescroll')
     const steps: Array<[number, number]> = []

@@ -165,12 +165,19 @@ export function edgePan(opts: {
   let x = opts.x, y = opts.y, raf = 0, live = true
   const w = opts.touch ? TOUCH_EDGE : EDGE
   const side = (p: number, lo: number, hi: number): -1 | 0 | 1 => (p < lo + w ? -1 : p > hi - w ? 1 : 0)
-  const r0 = opts.box.getBoundingClientRect()
+  /* the edges are the canvas's as SEEN — cut to the screen: on a desktop Edit chart layout's box runs on below the
+     window's foot, and an edge under the foot is one no pointer can reach (found by the walk, 15 Oct 26) */
+  const seen = () => {
+    const r = opts.box.getBoundingClientRect()
+    const W = window.innerWidth || r.right, H = window.innerHeight || r.bottom
+    return { left: Math.max(r.left, 0), right: Math.min(r.right, W), top: Math.max(r.top, 0), bottom: Math.min(r.bottom, H) }
+  }
+  const r0 = seen()
   let heldX = side(x, r0.left, r0.right), heldY = side(y, r0.top, r0.bottom)
   const tick = () => {
     raf = 0
     if (!live) return
-    const r = opts.box.getBoundingClientRect()
+    const r = seen()
     if (heldX && side(x, r.left, r.right) !== heldX) heldX = 0
     if (heldY && side(y, r.top, r.bottom) !== heldY) heldY = 0
     let dx = edgeStep(x, r.left, r.right, opts.touch), dy = edgeStep(y, r.top, r.bottom, opts.touch)

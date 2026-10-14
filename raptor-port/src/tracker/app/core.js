@@ -3339,7 +3339,9 @@ function wireBoard() {
         if (pinching) return;   /* a second finger starts nothing: it is a pinch */
         e.stopPropagation();
         const key = selEdge; pushUndo();
-        const bend = ev2 => { const pt = svgPt(ev2); edgeMeta[key] = { ...(edgeMeta[key] || {}), mid: { x: Math.round(pt.x), y: Math.round(pt.y) } }; schedDragPaint(); };
+        /* the square rides the finger too (found by the walk, 15 Oct 26 — D899): it was drawn again only on the release,
+           so while the canvas panned under a held finger it slid off with the chart and looked dropped */
+        const bend = ev2 => { const pt = svgPt(ev2); edgeMeta[key] = { ...(edgeMeta[key] || {}), mid: { x: Math.round(pt.x), y: Math.round(pt.y) } }; lh.setAttribute('x', (pt.x - 6).toFixed(1)); lh.setAttribute('y', (pt.y - 6).toFixed(1)); schedDragPaint(); };
         const fe = followEdge(e, bend);
         const mv = ev2 => { fe.point(ev2); bend(ev2); };
         const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
