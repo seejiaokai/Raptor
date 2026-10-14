@@ -41,7 +41,8 @@ describe('the lift recipe — one box, drawn INSIDE the line', () => {
     const m = bodyOf(':root').match(/--lift-box:\s*([^;]+)/)
     expect(m, ':root declares --lift-box').toBeTruthy()
     const v = m![1]!.replace(/\s+/g, ' ').trim()
-    expect(v).toBe('inset 0 0 0 2px var(--accent), inset 0 0 12px rgba(59,198,232,.30)')
+    /* the plain ring: its soft inner glow went with D877 (15 Oct 26 — "all no glow") */
+    expect(v).toBe('inset 0 0 0 2px var(--accent)')
     for (const l of layers(v)) expect(l.startsWith('inset'), `${l} is inset`).toBe(true)
   })
   /* THE RECIPE IS A COLOUR, NOT A SHAPE (7 Sep 26). `.lift{border-radius:8px}`

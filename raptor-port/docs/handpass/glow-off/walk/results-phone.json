@@ -1,0 +1,122 @@
+[
+ {
+  "id": "W1",
+  "size": "phone",
+  "what": "a flying line picked up by its grip",
+  "expected": "the plain blue ring inside the line, no glow (a black drop shadow under a ghost is allowed)",
+  "saw": "lifted sb-line.rowdrag.lift — glow none; ring box: rgb(59, 198, 232) 0px 0px 0px 2px inset; outline 3px none rgb(241, 244, 247)",
+  "verdict": "PASS"
+ },
+ {
+  "id": "W2",
+  "size": "phone",
+  "what": "the dropped line's landing flash",
+  "expected": "its ring and tint, no glow",
+  "saw": "glow none; ring ::after: rgb(59, 198, 232) 0px 0px 0px 2px inset; outline 3px none rgb(241, 244, 247)",
+  "verdict": "PASS"
+ },
+ {
+  "id": "W4",
+  "size": "phone",
+  "what": "a red warning tapped (day 0): \"Piston — RU BFM & STANDARDISATION MEETING clash ✕\"",
+  "expected": "its crew ringed in red, no glow",
+  "saw": "3 pucks lit — glow none; ring box: rgb(240, 85, 95) 0px 0px 0px 2px; outline 2px solid rgb(240, 85, 95)",
+  "verdict": "PASS"
+ },
+ {
+  "id": "W5",
+  "size": "phone",
+  "what": "a amber warning tapped (day 0): \"Piston — No time for the RU BFM flight brief — STANDARDISATION MEETING sits inside 11:20–1\"",
+  "expected": "its crew ringed in amber, no glow",
+  "saw": "3 pucks lit — glow none; ring box: rgb(240, 85, 95) 0px 0px 0px 2px; outline 2px solid rgb(229, 168, 59)",
+  "verdict": "PASS"
+ },
+ {
+  "id": "W6",
+  "size": "phone",
+  "what": "a grey warning tapped (day 0): \"Piston — Piston has a long work day: 12h05, 10:40 → 22:45 (last landing 20:45 + 2h debrief\"",
+  "expected": "its crew ringed in grey, no glow",
+  "saw": "3 pucks lit — glow none; ring box: rgb(240, 85, 95) 0px 0px 0px 2px; outline 2px solid rgb(138, 150, 163)",
+  "verdict": "PASS"
+ },
+ {
+  "id": "W7",
+  "size": "phone",
+  "what": "the time boxes a tapped warning lights (day 0: \"RU takes off and lands at the same time (13:40) — one of the two is wrong; the day still e\")",
+  "expected": "the inset ring, no glow",
+  "saw": "glow none; ring box: rgb(229, 168, 59) 0px 0px 0px 2px inset; outline 3px none rgb(241, 244, 247)",
+  "verdict": "PASS"
+ },
+ {
+  "id": "W8",
+  "size": "phone",
+  "what": "highlight chip A: a puck it lights",
+  "expected": "the blue ring, no glow",
+  "saw": "9 lit — glow none; ring box: rgb(59, 198, 232) 0px 0px 0px 2px; outline 3px none rgb(251, 250, 240)",
+  "verdict": "PASS"
+ },
+ {
+  "id": "W9",
+  "size": "phone",
+  "what": "his own puck (day 1)",
+  "expected": "purple fill and ring, no glow",
+  "saw": "glow none; ring box: rgb(240, 182, 255) 0px 0px 0px 2px; outline 3px none rgb(255, 255, 255)",
+  "verdict": "PASS"
+ },
+ {
+  "id": "W10",
+  "size": "phone",
+  "what": "OIL Earn on Saturday: a puck that earns (0 half-day pucks)",
+  "expected": "the green ring, no glow",
+  "saw": "glow none; ring box: rgb(47, 166, 92) 0px 0px 0px 2px; outline 3px none rgb(234, 251, 243)",
+  "verdict": "PASS"
+ },
+ {
+  "id": "W12",
+  "size": "phone",
+  "what": "G3: a line dragged into a just-added line's place within six seconds",
+  "expected": "recorded as seen (older behaviour); no glow on either mark",
+  "saw": "no line wears both marks at once",
+  "verdict": "PASS"
+ },
+ {
+  "id": "W11",
+  "size": "phone",
+  "what": "Edit Schedule's week: a red warning tapped",
+  "expected": "its crew ringed in red, no glow",
+  "saw": "glow none; ring box: rgb(240, 85, 95) 0px 0px 0px 2px; outline 2px solid rgb(240, 85, 95)",
+  "verdict": "PASS"
+ },
+ {
+  "id": "W3a",
+  "size": "phone",
+  "what": "an Inputs calendar bar picked up",
+  "expected": "the plain ring, no glow (its black drop shadow allowed)",
+  "saw": "glow none; ring box: rgb(59, 198, 232) 0px 0px 0px 2px inset | box: rgba(0, 0, 0, 0.5) 0px 8px 20px 0px; outline 3px none rgb(255, 255, 255)",
+  "verdict": "PASS"
+ },
+ {
+  "id": "W3b",
+  "size": "phone",
+  "what": "the bar dropped a day later: its landing flash",
+  "expected": "its ring and tint, no glow",
+  "saw": "glow none; ring ::after: rgb(59, 198, 232) 0px 0px 0px 2px inset; outline 3px none rgb(255, 255, 255)",
+  "verdict": "PASS"
+ },
+ {
+  "id": "W3c",
+  "size": "phone",
+  "what": "Undo: the bar put back wears the landing flash",
+  "expected": "its ring and tint, no glow",
+  "saw": "glow none; ring box: rgb(30, 134, 255) 0px 0px 0px 2px inset; outline 3px none rgb(255, 255, 255)",
+  "verdict": "PASS"
+ },
+ {
+  "id": "ERR",
+  "size": "phone",
+  "what": "the browser's error list",
+  "expected": "empty",
+  "saw": "empty",
+  "verdict": "PASS"
+ }
+]

@@ -32,8 +32,10 @@
      A CONSTANT, never toggled: a custom property that changes on a grid ancestor
      re-resolves every descendant's style (the Leave War column window's standing
      rule). Every layer is INSET so nothing of it can be clipped — see the .lift
-     block near .sb-fresh for the whole story. */
-  --lift-box:inset 0 0 0 2px var(--accent), inset 0 0 12px rgba(59,198,232,.30);
+     block near .sb-fresh for the whole story.
+     NO GLOW (owner D877, 15 Oct 26 — "all no glow"): the soft inner glow it wore beside the ring went, so a picked-up
+     or just-landed thing wears the plain ring, as the just-added mark does (D860). Still one recipe for every drag. */
+  --lift-box:inset 0 0 0 2px var(--accent);
   --hard:#F0555F; --adv:#E5A83B; --ok:#57C97A;
   --flight:#3BC6E8;
   /* seat colours (kept from the working file) */

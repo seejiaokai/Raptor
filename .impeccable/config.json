@@ -1,1 +1,23 @@
-{"detector":{"ignoreRules":[],"ignoreFiles":["raptor-port/src/engine/**","**/*.test.*"],"ignoreValues":[]},"projectRoots":["raptor-port"]}
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [
+      "raptor-port/src/engine/**",
+      "**/*.test.*"
+    ],
+    "ignoreValues": [
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "raptor-port/src/ui/scheduler/00-foundation-login.css"
+        ],
+        "createdAt": "2026-10-14T14:51:44.225Z",
+        "reason": "agent: the match is the word <img> inside a CSS comment about native drag images; a stylesheet holds no img tag"
+      }
+    ]
+  },
+  "projectRoots": [
+    "raptor-port"
+  ]
+}
