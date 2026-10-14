@@ -2123,6 +2123,19 @@ describe('the just-added blue box (14 Aug 26)', () => {
     expect(go[0].querySelector('.sb-line.sb-fresh'), 'and its own first line is not boxed twice').toBeFalsy()
   })
 
+  /* (owner D860, 15 Oct 26 — "the blue ring for the edit schedule board is not at the perimeter of the note. Fix that
+     visual") a note's row is a grip, its number, its box and its ✕ — the thing added is the BOX, so the ring hugs it */
+  it('a new note line is ringed on its own box — not round its grip, its number and its ✕', async () => {
+    const before = $$('#sbBoard .sb-nrow').length
+    await click($('#sbBoard [data-nadd="0"]'))
+    expect($$('#sbBoard .sb-nrow').length).toBe(before + 1)
+    const fresh = $$('#sbBoard .sb-fresh')
+    expect(fresh.length, 'exactly one thing wears the ring').toBe(1)
+    expect(fresh[0].classList.contains('nin'), 'the note\'s own box').toBe(true)
+    expect(fresh[0].getAttribute('data-bfld')).toBe(`dn:0.${before}`)
+    expect($$('#sbBoard .sb-nrow.sb-fresh').length, 'never the whole row').toBe(0)
+  })
+
   it('the AMT + Block boxes all three new rows', async () => {
     await click($('#sbBoard [data-sblkadd]'))
     expect($$('#sbBoard .sb-panel.simr .sb-arow.sb-fresh').length, 'BRIEF, BOX and DEBRIEF each boxed').toBe(3)

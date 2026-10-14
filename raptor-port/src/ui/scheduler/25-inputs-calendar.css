@@ -293,15 +293,19 @@ body.in-cal{padding-bottom:0}
    D854 — it stands in place of "Input added" / "Input updated" where the input can be seen). A bar with hours keeps
    its coloured left edge under the box (`.timed` draws that edge as a shadow of its own). For a reader who asked for
    less motion the box shows steady and goes without its fade (the guide's §5; 06-inputs.css). */
+/* (no glow — the board's ring, owner D860: 06-inputs.css) — and a bar that wears it shows NO landing flash before it
+   (owner D861 — "same thing no glow": the quick cyan flash came first, then the ring; now only the ring). A bar that
+   lands without the ring (a drag, an Undo) keeps its landing flash. */
+.ib-bar.innew.lift-land::after{content:none}
 .icard.innew,.ib-bar.innew{animation:inflash 6s ease-out 1}
 @keyframes inflash-timed{
-  0%,90.83%{box-shadow:inset 0 0 0 2px #1E86FF,0 0 9px rgba(30,134,255,.5),inset 3px 0 0 var(--ib-c)}
-  100%{box-shadow:inset 0 0 0 2px rgba(30,134,255,0),0 0 9px rgba(30,134,255,0),inset 3px 0 0 var(--ib-c)}
+  0%,90.83%{box-shadow:inset 0 0 0 2px #1E86FF,inset 3px 0 0 var(--ib-c)}
+  100%{box-shadow:inset 0 0 0 2px rgba(30,134,255,0),inset 3px 0 0 var(--ib-c)}
 }
 .ib-bar.timed.innew{animation-name:inflash-timed}
 @media (prefers-reduced-motion:reduce){
-  .icard.innew,.ib-bar.innew{animation:none;box-shadow:inset 0 0 0 2px #1E86FF,0 0 9px rgba(30,134,255,.5)}
-  .ib-bar.timed.innew{box-shadow:inset 0 0 0 2px #1E86FF,0 0 9px rgba(30,134,255,.5),inset 3px 0 0 var(--ib-c)}
+  .icard.innew,.ib-bar.innew{animation:none;box-shadow:inset 0 0 0 2px #1E86FF}
+  .ib-bar.timed.innew{box-shadow:inset 0 0 0 2px #1E86FF,inset 3px 0 0 var(--ib-c)}
 }
 /* THE LIST'S DAY HEADING on a phone (D723): "SAT 18 JUL" and, at the right, how many inputs stand under it */
 .icard-day{display:flex;align-items:baseline;gap:8px;margin:14px 2px 6px;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}

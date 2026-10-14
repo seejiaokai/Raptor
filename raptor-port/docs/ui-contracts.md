@@ -3544,6 +3544,16 @@ so it reads as one app-wide behaviour rather than a pile of per-button
 rules, and `transform:scale()` on purpose: it never reflows, so no measured
 layout contract in this file moves when a button is pressed.
 
+**ONE MARK, ONE LOOK — AND ON THE EDGE OF THE THING ADDED (owner D860, D861 — 15 Oct 26).** Every just-added mark is the
+board's `.sb-fresh` ring: inset, 2px, `#1E86FF`, NO outer glow — the opened day's card, the month's bar and the
+Inputs List's row lost the glow they wore (D860; pinned by `src/ui/markring-css.test.ts`). A note added on the
+Scheduler Board is ringed on its own box (`highlights.ts paintFreshAdds` boxes a `.sb-nrow`'s `[data-bfld]` field, not
+the row with its grip, number and ✕); every other added row keeps its ring round the row. The desktop Inputs List draws
+ONE box round the whole row (D861): each cell draws its share on a `::after` layer — top and bottom on every cell, the
+left side on the first, the right on the last — fading as the ring fades; the row's coloured left edge stays inside it.
+A month's bar that wears the ring shows no landing flash before it (D861: `.ib-bar.innew.lift-land::after{content:none}`);
+a bar that lands without it (a drag, an Undo) keeps its landing flash. Pictures: `docs/img/handpass/2026-10-15-ring/`.
+
 **The just-added row's flash is now the SAME steady shape everywhere it
 appears — the board's `.sb-fresh` box (see §Selection highlight above) and
 the Inputs table's `.innew` are ONE timing, not two.** The old `.innew`

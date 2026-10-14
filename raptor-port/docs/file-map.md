@@ -1,5 +1,7 @@
 # The file map — where each source file lives and what it does
 
+The one look of the just-added mark (owner D860, D861 — 15 Oct 26). **New:** `src/ui/markring-css.test.ts` (the marks' styles read off disk: no glow anywhere, the List's one box, a bar wearing the ring shows no landing flash); `scripts/handpass/ring-look.mjs` (pictures of the look). **What each existing file gained:** `src/ui/highlights.ts` — `paintFreshAdds` rings a note's own box; `src/ui/scheduler/06-inputs.css` — the List's one box (`.innew>td::after`), no glow; `src/ui/scheduler/25-inputs-calendar.css` — no glow, no landing flash under the ring; tests `src/ui/board.test.tsx`, `e2e/feedback-marks.spec.ts`.
+
 `[OIL-UNCANCEL-UNASKED]` and `[OIL-LOAD-VERSION-UNASKED]` — the small OIL job (D816, D818; built on the night of 14 Oct 26).
 **New:** `e2e/oil-uncancel-load.spec.ts` (what only a browser can say: the bar's longest words on one line at a phone's
 width and at 320, the day's one list above the full-screen board — in the `raptor` project of `playwright.config.ts`);

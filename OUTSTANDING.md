@@ -1196,6 +1196,7 @@ of the format he wants the tables written in (one table, his way), the publisher
 2,000 limit is.
 
 ### [LW-REQ-PICK-MONTH-UNSTEADY] The Required-panel browser test's month-button step failed once inside a full run — test-only (filed 8 Oct 26)
+**A second unsteady Leave War test, the same kind (15 Oct 26):** `e2e/leavewar.spec.ts` "the grid draws a window of months over year-wide placeholders…" (desktop) failed once inside a full run — its five-second wait for December to leave the drawn months ran out — on a change that touches no Leave War file (the just-added ring, D860), and passed 3 of 3 alone straight after. Steady it with this item: wait on the drawing having settled, not on a fixed five seconds (D87).
 `raptor-port/e2e/leavewar.spec.ts` "several Required cells are picked with a drag and given one number, and the panel
 leaves the grid behind it working" (lw-phone) failed once in the full gate run on `claude/inputs-sans-calendar`
 (`a35fc26b`, 656 of 657): with the Required panel up it presses the second month button, waits for the grid to have

@@ -202,7 +202,10 @@ export function paintFreshAdds(){
     const go=h&&h.closest('.sb-go'); if(go&&!targets.has(go))targets.set(go,k); } });
   wrap.querySelectorAll('[data-bfld]').forEach((el:any)=>{
     const k=el.dataset.bfld; if(!FRESHADD.has(k))return;
-    const box=el.closest('.sb-line,.sb-arow,.sb-nrow,.sb-psub'); if(box&&!targets.has(box))targets.set(box,k);
+    /* a NOTE line is ringed on its own box (owner D860, 15 Oct 26 — "the blue ring … is not at the perimeter of the
+       note. Fix that visual"): its row is a grip, a number, the box and a ✕, and the thing added is the box. Every
+       other row — a line, a ground or duty row, a block — IS the thing added, and keeps its ring round the row. */
+    const box=el.closest('.sb-nrow')?el:el.closest('.sb-line,.sb-arow,.sb-psub'); if(box&&!targets.has(box))targets.set(box,k);
   });
   const list=[...targets.keys()];
   list.forEach((el:any)=>{
