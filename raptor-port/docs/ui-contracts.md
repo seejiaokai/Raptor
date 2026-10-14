@@ -7364,7 +7364,7 @@ left edge, 4 px right — inside its own row; measured by `scripts/handpass/grip
 points of 81 round the grip, a man's 9 → 20); pinned in `src/leavewar/ui/rowglow.test.ts`. **Still to check (D896, his "Yes check the rest too"):** the Tracker chart's drags
 (a ball, a line's end, a bend handle) do not pan the chart at its edge (read in the code); the Inputs month calendar's drag
 across days sits in a month that does not scroll — **answered D897: yes, a drag held at the month's edge turns to the next
-(or the last) month and the pick carries on into it.** Both its own job, not built yet.
+(or the last) month and the pick carries on into it.** Both its own job, not built yet. **D898:** the month's edge turn is built without a picture first — the agent decides the edge and the hold and tells him. **D899:** what the Tracker check finds short (its drags carried to the chart's edge pan it) is fixed the same night.
 
 Four asks from the same sitting, all on the Leave War grid:
 

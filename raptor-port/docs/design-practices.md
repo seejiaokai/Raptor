@@ -555,7 +555,7 @@ shows no landing flash, §4), a new flag's flash, the board sliding up; a look d
 
 ## 5a. Dragging
 
-*His finds of 15 Oct 26 on the Leave War's Rearrange — D890–D893; the wording approved D895 (read by one fresh reader).*
+*His finds of 15 Oct 26 on the Leave War's Rearrange — D890–D893; the wording approved D895 (read by one fresh reader); the backlog item was `[GUIDE-DRAG-RULES]`.*
 
 - **One drop, one landing line.** Anything dragged into a new place in a list — a row, a heading, a note — shows where it
   will land with ONE line, in ONE place. The lower half of one row and the upper half of the row under it are the same

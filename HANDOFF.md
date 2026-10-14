@@ -20,14 +20,19 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/backlog-work-session-12d909 -->
-### `claude/backlog-work-session-12d909` — LIVE (pull request 514, merged 15 Oct 26 on his "merge live"); one documents commit after it (D897) — written 15 Oct 26 — verify before use
-- **LIVE (`main` e67e00e7, its run green, Vercel READY, the main folder level):** the Leave War's landing line through the figures (D883); one landing line a gap — the grid, the ⚙ Groups and Who wins lists, an Inputs day's notes (D890, D891); a drag held at the edge scrolls — Rearrange, the ⚙ lists, an Inputs day's notes and pucks, Quals' headings (D892, D893; `raptor-port/src/ui/edgescroll.ts`); the Rearrange grips' larger invisible touch area (his find); the design guide §5a "Dragging" (D894, D895). Evidence `raptor-port/docs/handpass/2026-10-15-lw-landing-line.md`. His phone look was skipped (flagged; he did not say wait).
-- **Not on `main`:** this branch's last commit — D897 (documents only). Merge it with the next pull request that goes, or on his word.
-- **Rulings this chat:** D889–D897. D888 is the glow-off chat's (its branch's documents commits, not on `main` — bringing them in here was refused by the permission check).
-- **Archive at the next documents pass (live, finished):** `[LW-LANDING-LINE-FIGURES]`, `[DRAG-ONE-LINE-ELSEWHERE]`, `[LW-REARRANGE-EDGE-SCROLL]`, `[LW-COUNTER-GRIP-REACH]`, `[GUIDE-DRAG-RULES]` (`node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>`; homes: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/design-practices.md`).
-- **Next, in order:** (1) D896 + D897 — `[DRAG-EDGE-SCROLL-ELSEWHERE]`: the Tracker chart's drags (a ball, a line's end, a bend handle) do not pan at the chart's edge (read in the code, not walked) — check and put to him; the Inputs month calendar's drag across days turns the month at its edge (D897 — which edge and the hold, drawn for him first); reuse `src/ui/edgescroll.ts`. (2) Calendar step two (`[ONE-DATE-CALENDAR]`, D889 — his look given). A fresh chat on `main` for each (this one is near full).
-- **Running when written:** none.
+<!-- now:claude/drag-edge-scroll-elsewhere-51bfc4 -->
+### `claude/drag-edge-scroll-elsewhere-51bfc4` — THE NIGHT OF 15 OCT 26 (/overnight, unattended) — written 15 Oct 26 — verify before use
+- **After a compaction: re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time.**
+- **His selection (8 hours, all on this ONE branch, cut from `main` e67e00e7 with `claude/backlog-work-session-12d909`'s D897 commit merged in; one pull request at the end):**
+  1. Tidy-up — D897 brought in; the five finished items of pull request 514 archived. **DONE.**
+  2. **Build D897 + D898: the Inputs month turns at its edge under a drag across days** (the pick carrying on into the next month); the agent decides the edge and the hold (no picture first — D898) and tells him in the morning; also the bar moved by days, if the same edge rule fits it. Reuse `raptor-port/src/ui/edgescroll.ts`; the drag is `src/ui/calpick.ts` (the pick) and `src/ui/caldrag.ts` (a bar by days), on `src/ui/InputsCal.tsx`. Tier and walk sized by `raptor-port/docs/bug-check-order.md`; one fresh, blind Opus read of the code (D790). ~3 h.
+  3. **D896 + D899: the Tracker chart's drags** (a ball, a line's end, a bend handle) — checked against the guide's §5a; what falls short (no pan at the chart's edge, read in the code) FIXED tonight; walked; the same Opus read. ~2½ h.
+  4. **Calendar step two (`[ONE-DATE-CALENDAR]`) — its pictures and questions for him**, documents only, reusing the 13 Oct pictures; nothing built. ~1 h.
+- **His answers:** question 1 yes (the Tracker fixed tonight — D899); question 2 yes (the month built tonight — D898). Not tonight: `[OVERNIGHT-RETRY-TRIAL]` (a setting takes hold only in a chat started after it is set). His side question (the Scion article) answered in the chat: not available, nothing to adopt — repeat it in the morning report.
+- **Reads owed:** a ChatGPT read of both builds — onto `[NO-ASTRA-LIST]` when the check closes (D761).
+- **Questions waiting for him:** none yet.
+- **Rulings this chat:** D898 (Inputs), D899 (Tracker).
+- **Running when written:** nothing.
 <!-- /now -->
 <!-- now:claude/glow-off-compact-bands-window-40b514 -->
 ### `claude/glow-off-compact-bands-window-40b514` — `[GUIDE-NO-GLOW]` BUILT AND CHECKED, waiting for his "merge live"; D885's hook line in — written 15 Oct 26 — verify before use
