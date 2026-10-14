@@ -8,9 +8,9 @@ import { readSchedulerCss } from '../testing/scheduler-css'
    any of them fails here. jsdom paints nothing, so the file is the witness; the walk saw them on screen.
 
    And (owner D879, the same day — "Yes take the glow off", after its pictures) the picked person's chip in the Inputs
-   calendar's "Add people" window. NOT ruled, and left as they are on purpose: the SANS puck's purple stripe
-   (`.puck.san::after`), and a dragged thing's dark drop shadow under its ring (`0 8px 20px` black — depth, not a glow of a
-   colour). */
+   calendar's "Add people" window. Left as it is on purpose: a dragged thing's dark drop shadow under its ring (`0 8px 20px`
+   black — depth, not a glow of a colour). The SANS puck's stripe, not ruled here, lost its light later (D882) — the whole
+   app's roll-call is `noglow-css.test.ts`. */
 import { describe, it, expect } from 'vitest'
 
 const css = readSchedulerCss().replace(/\/\*[\s\S]*?\*\//g, '')

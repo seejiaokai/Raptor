@@ -198,7 +198,8 @@ scheduler half of the group — the board DOM ceiling, the dragged ghost, the pe
   `bidFrom..bidTo`, shown only while `stage==='open'`. Colour `rgba(74,140,100,.80)`
   + low-opacity halo (the lighter of two faded greens he compared; deeper
   `rgba(56,104,76,.78)` was the other) — don't brighten or swap to `--ok` without
-  asking. OUTLINE ONLY — he declined the faint-green wash (built, one-line add if he
+  asking. *[AMENDED 15 Oct 26 by D881: no glow and no halo — the green border alone (the design guide's "no mark in
+  this app glows", D887).]* OUTLINE ONLY — he declined the faint-green wash (built, one-line add if he
   asks; don't re-pitch). `ui-contracts.md` §The open-bidding box; pin
   `e2e/leavewar.spec.ts`.
 - **The tab opens on the war being bid on, at the start of its bidding window**

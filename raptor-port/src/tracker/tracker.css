@@ -334,11 +334,10 @@ svg.perf .found{filter:none;stroke-width:3.2}
 svg.perf .ball:hover{filter:none}
 svg.perf .edgehit{pointer-events:none}
 #flowSvg.arrange{touch-action:none}
-.avail{filter:drop-shadow(0 0 5px #ffd23f)}
+/* no glow (owner D881, 15 Oct 26): the gold ring alone */
 /* The searched ball. Turquoise rather than the accent blue (--accent), which
-   already means "selected" while editing, and it carries a glow those rings do
-   not — two ways to tell them apart, not one. */
-.found{filter:drop-shadow(0 0 6px #00e5c8)}
+   already means "selected" while editing, and it sits further out than they do —
+   two ways to tell them apart. Its glow went (owner D881, 15 Oct 26). */
 .flowwrap{min-width:max-content}
 #flowSvg.arrange .ball{cursor:grab}#flowSvg.arrange .ball:active{cursor:grabbing}
 .numbadge{font:700 9px Arial;fill:#fff}.numbg{fill:#11141a;stroke:#5a6172;stroke-width:0.8}

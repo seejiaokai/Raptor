@@ -230,7 +230,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 | D274 | 27 Sep 26 | Three of the five-flags batch's four visible changes are approved as built — his own flagged puck without the glow, Leave War ⚙ Reset order, a swap inside one crowd without "already on"; the room beside the ‹ arrow was not approved. — changed by D275 |
 | D272 | 27 Sep 26 | IN OIL EARN MODE HIS OWN PUCK SHOWS THE GREEN OIL RING, NOT THE PURPLE ONE — the purple fill stays. |
 | D271 | 27 Sep 26 | A MAN PUT ON A ROW HE IS ALREADY ON IS REFUSED — ONE MAN, ONCE PER ROW. |
-| D270 | 27 Sep 26 | On your own puck a flag's ring wins over the purple "this is you" ring — amber, thin red, grey, dotted, as on anyone's puck, with no glow; the purple fill stays; in OIL Earn mode the green OIL ring shows too (D272). — changed by D272 |
+| D270 | 27 Sep 26 | On your own puck a flag's ring wins over the purple "this is you" ring — amber, thin red, grey, dotted, as on anyone's puck, with no glow; the purple fill stays; in OIL Earn mode the green OIL ring shows too (D272). — changed by D877, D272 |
 | D263 | 27 Sep 26 | THE CHANGE HISTORY RECORDS EVERY CHANGE TO AN ABSENCE, NOT ONLY ITS FILING AND REMOVAL |
 | D212 | 26 Sep 26 | THE FOUR SIGN-OFFS STAY AS THEY ARE: AN ADMIN PICKS ALL FOUR NAMES |
 | D189 | 26 Sep 26 | Keep it: when a leave or downchit is stretched or trimmed, every published day it still covers reads "1 pending" and its sign-offs fall, because the "till <date>" note it printed is now out of date; View-only Sched keeps the old words until the next AL. |
