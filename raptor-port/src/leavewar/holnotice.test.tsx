@@ -284,7 +284,7 @@ describe('the holiday tells the schedulers — never silent (D780), one notice a
     const ver = String(dayCurVer(FRI_DI))
     for (let i = 0; i < 2 && !onProg(); i++) press(b => { b.dataset.restore = String(FRI_DI); b.dataset.rver = ver })
     expect(onProg(), 'the load put its row back').toBe(true)
-    expect(SAID.join(' | '), 'the tail, in his words').toContain(' · 1 input needs an OIL answer')
+    expect(SAID.join(' | '), 'the tail, in his words').toContain(' 1 input needs an OIL answer.')
     expect(pops.OILLIST, 'the one list of that day, named for the holiday — and not marked plain').toEqual({ from: FRI, to: FRI, name: 'National Day', fresh: false })
     ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
     const host = document.createElement('div'); document.body.appendChild(host)
@@ -324,7 +324,7 @@ describe('the holiday tells the schedulers — never silent (D780), one notice a
     const ver = String(dayCurVer(di))
     for (let i = 0; i < 2 && !onProg(); i++) press(b => { b.dataset.restore = String(di); b.dataset.rver = ver })
     expect(onProg(), 'the load put its row back').toBe(true)
-    expect(SAID.join(' | ')).toContain(' · 1 input needs an OIL answer')
+    expect(SAID.join(' | ')).toContain(' 1 input needs an OIL answer.')
     ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
     const host = document.createElement('div'); document.body.appendChild(host)
     const root = createRoot(host)

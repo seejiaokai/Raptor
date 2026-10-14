@@ -42,7 +42,7 @@ async function holiday(w, iso, name) {
 { /* ───── R1: an input of two days ───── */
   const w = await L.world(SIZE), p = w.page, S = `R ${T}`
   try {
-    await part(w, S, 'R1 an input Thu–Fri put back by a load of Thursday; Friday a holiday with no answer', 'the note ends "· 1 input needs an OIL answer"; the one list opens for Fri 17 Jul, headed as the holiday, with the input on it; its foot promises the schedulers’ bells', async () => {
+    await part(w, S, 'R1 an input Thu–Fri put back by a load of Thursday; Friday a holiday with no answer', 'the note ends "1 input needs an OIL answer."; the one list opens for Fri 17 Jul, headed as the holiday, with the input on it; its foot promises the schedulers’ bells', async () => {
       /* filed on Thursday for two days, through the form's own calendar */
       await inputsCal(w, '2026-07-13'); await openAdd(w, THU_ISO)
       await fillForm(w, { type: 'Meeting', person: 'bane', allday: true, title: 'Det prep' })
@@ -68,9 +68,9 @@ async function holiday(w, iso, name) {
       const ft = await foot(p)
       await L.pic(w, `R1-two-day-loaded-${T}`)
       const on = await rec(p, id)
-      rowOut(S, 'R1 an input Thu–Fri put back by a load of Thursday; Friday a holiday with no answer', 'the note ends "· 1 input needs an OIL answer"; the one list opens for Fri 17 Jul, headed as the holiday, with the input on it; its foot promises the schedulers’ bells',
+      rowOut(S, 'R1 an input Thu–Fri put back by a load of Thursday; Friday a holiday with no answer', 'the note ends "1 input needs an OIL answer."; the one list opens for Fri 17 Jul, headed as the holiday, with the input on it; its foot promises the schedulers’ bells',
         `filed ${J(filed)} (its row on day ${di}); asked at the save: ${askedAtSave}; publish ${J(pub)}; the holiday's own list ${J(hl)}; taken off ${J(off)}; note "${r.note}"; the list ${J(r.list)}; its foot "${ft}"; after ${J(on)}`,
-        !askedAtSave && di === THU && pub.published && off.acc !== 'g' && / · 1 input needs an OIL answer$/.test(r.note) && !!r.list && /OIL — Fri 17 Jul/.test(r.list.head) && /Public holiday · Walk holiday/.test(r.list.head) && r.list.ids.includes(id) && r.list.reach === true && ft === 'What is left goes to the schedulers’ bells' && on.acc === 'g')
+        !askedAtSave && di === THU && pub.published && off.acc !== 'g' && / 1 input needs an OIL answer\.$/.test(r.note) && !!r.list && /OIL — Fri 17 Jul/.test(r.list.head) && /Public holiday · Walk holiday/.test(r.list.head) && r.list.ids.includes(id) && r.list.reach === true && ft === 'What is left goes to the schedulers’ bells' && on.acc === 'g')
     })
   } finally { await L.close(w) }
 }

@@ -38,7 +38,7 @@ const undo = async p => { await p.evaluate(() => { const b = [...document.queryS
         `asked at the filing: ${A.asked}/${B.asked}; publish ${J(pub)}; the holiday's list ${J(h.list)}; after Save ${J(after)}; A ${J(a)}; B ${J(b)}`,
         !A.asked && !B.asked && pub.published && !!h.list && h.list.ids.includes(A.id) && h.list.ids.includes(B.id) && !!a.oil && a.oil[FRI_ISO] != null && !b.oil)
     })
-    await part(w, S, 'L1 both taken off; the Original loaded back', 'the note ends "· 1 input needs an OIL answer"; that day\'s one list opens with that input and without the answered one, headed as a public holiday, reachable; the load is made', async () => {
+    await part(w, S, 'L1 both taken off; the Original loaded back', 'the note ends "1 input needs an OIL answer."; that day\'s one list opens with that input and without the answered one, headed as a public holiday, reachable; the load is made', async () => {
       await board(w, FRI)
       await rowBtn(w, FRI, A.id, 'grdel'); await L.sleep(300)
       await rowBtn(w, FRI, B.id, 'grdel'); await L.sleep(300)
@@ -48,9 +48,9 @@ const undo = async p => { await p.evaluate(() => { const b = [...document.queryS
       const r = await loadVersion(w, FRI, where)
       await L.pic(w, `L1-loaded-${where}-${T}`)
       const on = { a: await rec(p, A.id), b: await rec(p, B.id) }
-      rowOut(S, 'L1 both taken off; the Original loaded back', 'the note ends "· 1 input needs an OIL answer"; that day\'s one list opens with that input and without the answered one, headed as a public holiday, reachable; the load is made',
+      rowOut(S, 'L1 both taken off; the Original loaded back', 'the note ends "1 input needs an OIL answer."; that day\'s one list opens with that input and without the answered one, headed as a public holiday, reachable; the load is made',
         `from the ${where}; taken off: A ${J(off.a)}, B ${J(off.b)}; the button "${r.first}"${r.second ? ' then "' + r.second + '"' : ''}; note "${r.note}"; the list ${J(r.list)}; back on: A ${J(on.a)}, B ${J(on.b)}`,
-        off.a.acc !== 'g' && off.b.acc !== 'g' && / · 1 input needs an OIL answer$/.test(r.note) && !!r.list && r.list.ids.includes(B.id) && !r.list.ids.includes(A.id) && /Public holiday/.test(r.list.head) && r.list.reach === true && on.a.acc === 'g' && on.b.acc === 'g')
+        off.a.acc !== 'g' && off.b.acc !== 'g' && / 1 input needs an OIL answer\.$/.test(r.note) && !!r.list && r.list.ids.includes(B.id) && !r.list.ids.includes(A.id) && /Public holiday/.test(r.list.head) && r.list.reach === true && on.a.acc === 'g' && on.b.acc === 'g')
       if (r.list && r.list.noteOver) rowOut(S, 'L1b the note and the list\'s buttons', 'the passing note is not over the list\'s buttons', 'the note overlaps a button of the list while it shows', false)
     })
     await part(w, S, 'L2 answered in the list; taken off and loaded again', 'the answer is written from the list; the second load says nothing of OIL and opens no list', async () => {
@@ -66,7 +66,7 @@ const undo = async p => { await p.evaluate(() => { const b = [...document.queryS
       await L.pic(w, `L2-loaded-again-${T}`)
       rowOut(S, 'L2 answered in the list; taken off and loaded again', 'the answer is written from the list; the second load says nothing of OIL and opens no list',
         `the list closed on Save: ${gone}; B ${J(b1)}; the second load's note "${r.note}"; a list: ${J(r.list)}`,
-        gone && !!b1.oil && b1.oil[FRI_ISO] != null && /loaded onto the working copy/.test(r.note) && !/OIL/.test(r.note) && !r.list)
+        gone && !!b1.oil && b1.oil[FRI_ISO] != null && / is back to /.test(r.note) && !/OIL/.test(r.note) && !r.list)
     })
   } finally { await L.close(w) }
 }

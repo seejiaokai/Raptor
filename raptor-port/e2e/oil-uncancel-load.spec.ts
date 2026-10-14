@@ -175,7 +175,7 @@ test('D818 — a published version loaded back from the Scheduler Board: the not
   const load = page.locator(`#schedBoard button[data-restore="4"][data-rver="${ver}"]`)
   await load.first().click()                                   // arms the confirm: there is an unpublished edit to discard
   await load.first().click()
-  await expect.poll(() => noteNow(page)).toMatch(/^Friday: Original loaded onto the working copy .* · 1 input needs an OIL answer$/)
+  await expect.poll(() => noteNow(page)).toBe('Friday is back to the Original. Viewers still see the Original. 1 input needs an OIL answer.')   // (owner D863)
   expect((await rec(page, id))!.acc, 'the load put it back on the programme').toBe('g')
   /* the day's one list: open, headed as the holiday, with this input — and above the full-screen board */
   const win = tid(page, 'win-oilday')

@@ -4450,6 +4450,16 @@ Three things stay decided:
   "Restored" (the ⓘ mark: "This item is checked against the rules again and can earn OIL"). Changed meanwhile: "That
   input has changed — not un-cancelled" / "— left as it is". Where nothing is to be asked the mark comes off at once, as
   before. The words are one source: `ui/oilwait.ts WAIT_WORDS` / `CHANGED`, `ui/reqdoor.ts UNMARKED`.
+- **The load's note is short plain sentences (owner D863, 15 Oct 26 — "Shorten it").** "Friday is back to the Original.
+  Viewers still see the Original. Det prep is on Saturday again too. 1 input needs an OIL answer." — what the day is back
+  to; what viewers still see (only on a published day); each request that came back onto or went off the programme with
+  its row, by its own name and the days that read it too; a row left out ("Ranger's Meeting is left out because it is
+  on Tuesday's programme."); a member's change that stays pending ("1 change to a member's input stays pending. A load
+  never puts back a member's own input."); and the OIL count. The count of unpublished edits replaced is not said — the
+  confirming button just said "Discard N edits & load". "<day> is already at the Original." the same way. Built in
+  `ui/interactions.ts` and `engine/drafts.ts` (`rowsLeftSentences`, `inputsLeftSaid`); the plan switch's note keeps its
+  older clauses (`rowsLeftSaid`) until its own words are looked at. **And an input of several days is counted, and the
+  list opens for the day that needs the answer (owner D862 — "Ok keep").**
 - **A published version loaded back says what it left to answer (owner D818; built 14 Oct 26,
   `[OIL-LOAD-VERSION-UNASKED]`).** The load is made as before; its note ends " · 1 input needs an OIL answer" (" · 3
   inputs need an OIL answer") where an input it put back has none, and that day's one list opens — over the full-screen

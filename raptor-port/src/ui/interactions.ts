@@ -17,7 +17,7 @@ import { posKey } from '../engine/rowids'
 import { closePendList } from './pendlist'
 import { openChanges } from './changesopen'
 import { weekDates } from '../engine/editlog'
-import { dayDrafts, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED, ROWSLEFT, rowsLeftSaid, inputsLeftSaid, reconcileIssuedMarks } from '../engine/drafts'
+import { dayDrafts, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED, ROWSLEFT, rowsLeftSentences, inputsLeftSaid, reconcileIssuedMarks } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -1239,7 +1239,7 @@ export function routeClick(e: MouseEvent) {
       /* …and when all that is pending is a member's input, "already at" alone reads untrue beside its "1 pending": say
          the input stays pending (Fable F5; found by the host's walk, 26 Sep 26 — the load never ran, so its own
          sentence could not say it) */
-      HOOKS.toast(`${DAYS[di].dow} is already at ${verLabel(ver)}` + inputsLeftSaid(di))
+      HOOKS.toast(`${DAYS[di].dow} is already at ${verLabel(ver) === 'Original' ? 'the Original' : verLabel(ver)}.` + inputsLeftSaid(di))   // (D863: sentences)
       notify(); return
     }
     /* the confirm gate: with real unpublished divergence on the day, arm on the
@@ -1287,14 +1287,23 @@ export function routeClick(e: MouseEvent) {
     const left = LOADLEFT.length
     /* …and a request whose one row the version took away is off the programme on the other days it covers too — named,
        never silent (walker B3) */
-    const movedDays = [...new Set(LOADMOVED.flatMap(m => m.days))]
-    const said = `${DAYS[di].dow}: ${verLabel(ver)} loaded onto the working copy`
-      + (dayApproved(di) ? ` — viewers still see ${verLabel(dayCurVer(di))} until you publish` : '')
-      + (replaced ? ` · ${replaced} unpublished edit${replaced === 1 ? '' : 's'} replaced` : '')
-      + (left ? ` · ${left} request${left === 1 ? '' : 's'} also cover${left === 1 ? 's' : ''} another day — left as filed` : '')
-      + (LOADMOVED.length ? ` · ${LOADMOVED.length} request${LOADMOVED.length === 1 ? '' : 's'} ${LOADMOVED.every(m => m.on) ? 'came back onto' : LOADMOVED.some(m => m.on) ? 'moved on or off' : 'came off'} the programme with ${LOADMOVED.length === 1 ? 'its' : 'their'} row — ${movedDays.join(', ')} ${movedDays.length === 1 ? 'reads' : 'read'} that too` : '')
+    /* THE NOTE IS SHORT PLAIN SENTENCES (owner D863, 15 Oct 26 — "Shorten it"): what the day is back to; what viewers
+       still see; what else came back or stayed out, each in a sentence of its own; and (below) how many inputs need an
+       OIL answer. The count of unpublished edits replaced is no longer said: the button just pressed to confirm the load
+       said "Discard N edits & load". (The long form it replaced: "<day>: <version> loaded onto the working copy —
+       viewers still see … until you publish · N unpublished edits replaced · …".) */
+    const the = (v: any) => { const l = verLabel(v); return l === 'Original' ? 'the Original' : l }
+    const FULL: Record<string, string> = { Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday', Sat: 'Saturday', Sun: 'Sunday' }
+    const dayList = (ds: string[]) => ds.map(d => FULL[d] || d).join(' and ')
+    const said = `${DAYS[di].dow} is back to ${the(ver)}.`
+      + (dayApproved(di) ? ` Viewers still see ${the(dayCurVer(di))}.` : '')
+      + (left ? ` ${left} request${left === 1 ? ' stays' : 's stay'} as filed because ${left === 1 ? 'it covers' : 'they cover'} another day.` : '')
+      /* each request that came back onto (or went off) the programme with its row, by its own name, and the other days
+         that read it too */
+      + LOADMOVED.map(m => { const x: any = (INPUTS as any[]).find((r: any) => String(inpId(r)) === m.id); const what = x ? inpLabel(x) : 'A request'
+          return m.on ? ` ${what} is on ${dayList(m.days)} again too.` : ` ${what} is off ${dayList(m.days)} too.` }).join('')
       /* …and a row the version held for a request that now stands on another day stayed out — one request, one row (D175) */
-      + rowsLeftSaid(ROWSLEFT)
+      + rowsLeftSentences(ROWSLEFT)
       /* …and a member's input changed since the day was issued, which stays pending (a member's record is his — Fable F5) */
       + inputsLeftSaid(di)
     /* …AND HOW MANY OF THE INPUTS IT PUT BACK STILL NEED AN OIL ANSWER — with that day's ONE list of them opened (owner
@@ -1308,7 +1317,7 @@ export function routeClick(e: MouseEvent) {
     const open = openNow()
     const back = INPUTS.filter((x: any) => stands(x) && !stood.has(String(inpId(x))) && open.has(String(inpId(x))))
     const need = back.length
-    const saidAll = said + (need ? ` · ${need} input${need === 1 ? ' needs' : 's need'} an OIL answer` : '')
+    const saidAll = said + (need ? ` ${need} input${need === 1 ? ' needs' : 's need'} an OIL answer.` : '')
     logAction(di, saidAll)
     HOOKS.toast(saidAll)
     /* THE LIST OPENS FOR THE DAYS THOSE INPUTS NEED AN ANSWER FOR — the loaded day, almost always; another day of a

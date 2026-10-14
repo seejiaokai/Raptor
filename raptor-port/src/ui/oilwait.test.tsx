@@ -1402,8 +1402,8 @@ describe('a published version loaded back: how many inputs need an OIL answer, a
     load()
     expect(riOf(), 'the load put its row back').toBeGreaterThanOrEqual(0)
     const said = SAID.join(' | ')
-    expect(said).toContain('loaded onto the working copy')
-    expect(said, 'the tail, in his words').toContain(' · 1 input needs an OIL answer')
+    expect(said).toContain('Saturday is back to the Original.')   // the shortened note (owner D863)
+    expect(said, 'the tail, in his words').toContain(' 1 input needs an OIL answer.')
     /* (`plain`: a Saturday is a weekend, not a public holiday — the list's heading must not call it one) */
     expect(pops.OILLIST, 'the day\'s one list is open, for that day').toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true })
     expect(view.OILWAIT, 'the load itself was not held').toBeNull()
@@ -1416,7 +1416,7 @@ describe('a published version loaded back: how many inputs need an OIL answer, a
     SAID = []
     load()
     expect(riOf()).toBeGreaterThanOrEqual(0)
-    expect(SAID.join(' | ')).toContain('loaded onto the working copy')
+    expect(SAID.join(' | ')).toContain(' is back to ')
     expect(SAID.join(' | ')).not.toContain('OIL answer')
     expect(pops.OILLIST).toBeNull()
   })
@@ -1445,7 +1445,7 @@ describe('a published version loaded back: how many inputs need an OIL answer, a
     const ver = String(dayCurVer(SAT))
     for (let i = 0; i < 2 && riOf() < 0; i++) pressRouted(b => { b.dataset.restore = String(SAT); b.dataset.rver = ver })
     expect(riOf(SAT, TITLE)).toBeGreaterThanOrEqual(0); expect(riOf(SAT, SECOND)).toBeGreaterThanOrEqual(0)
-    expect(SAID.join(' | ')).toContain(' · 1 input needs an OIL answer')
+    expect(SAID.join(' | ')).toContain(' 1 input needs an OIL answer.')
     expect(pops.OILLIST).toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true })
   })
   /* (the fresh read, F1) An input of several days has ONE row, on its first day. Its unanswered day can be another day
@@ -1467,8 +1467,11 @@ describe('a published version loaded back: how many inputs need an OIL answer, a
     const ver = String(dayCurVer(FRI))
     for (let i = 0; i < 2 && !stands(); i++) pressRouted(b => { b.dataset.restore = String(FRI); b.dataset.rver = ver })
     expect(stands(), 'the load put it back: ' + SAID.join(' | ')).toBe(true)
-    expect(SAID.join(' | '), 'counted, though Friday itself has nothing to answer').toContain(' · 1 input needs an OIL answer')
+    expect(SAID.join(' | '), 'counted, though Friday itself has nothing to answer').toContain(' 1 input needs an OIL answer.')
     expect(pops.OILLIST, 'the list opens for the day that needs the answer').toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true })
+    /* the note, shortened (owner D863, 15 Oct 26 — "Shorten it"): short sentences, every fact kept but the edits the
+       confirming button already counted */
+    expect(SAID.join(' | ')).toBe('Friday is back to the Original. Viewers still see the Original. ' + TITLE + ' is on Saturday again too. 1 input needs an OIL answer.')
   })
   it('an unanswered input that was on the programme all along is not "put back" by the load: no tail (the bell and its "OIL?" sign already carry it)', async () => {
     await boot()
@@ -1480,7 +1483,7 @@ describe('a published version loaded back: how many inputs need an OIL answer, a
     const ver = String(dayCurVer(SAT))
     for (let i = 0; i < 2 && riOf(SAT, SECOND) < 0; i++) pressRouted(b => { b.dataset.restore = String(SAT); b.dataset.rver = ver })
     expect(riOf(SAT, SECOND)).toBeGreaterThanOrEqual(0)
-    expect(SAID.join(' | ')).toContain('loaded onto the working copy')
+    expect(SAID.join(' | ')).toContain(' is back to ')
     expect(SAID.join(' | ')).not.toContain('OIL answer')
     expect(pops.OILLIST).toBeNull()
   })
