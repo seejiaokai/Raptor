@@ -218,7 +218,9 @@ const RULING_BYTES = [
      direction that the writing guide, once approved, is adopted for how the agent writes to him too. A general ruling
      every chat must carry; none is trimmed (D136). The spent one-off permissions still wait for [RULINGS-SPENT-PASS],
      which is what brings this file down. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 32000],
+  /* how-we-work 32000 -> 34000 (15 Oct 26): 32,994 bytes with D856-D859 (the unattended night of 14 Oct) and D864 (one
+     pull request for the night's work) - all live; none is trimmed (D136). [RULINGS-SPENT-PASS] still brings it down. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 34000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
@@ -243,11 +245,15 @@ const RULING_BYTES = [
      and calendar, the SANS calendar, the Calendar window, an input's own window and card. The scheduler's file holds
      84,3xx bytes after it (218 rulings, its settled notes and its pointer) and the new file 27,1xx; each marker is set about a tenth above what its file holds - a
      tripwire for the next look, never a number to cut to (D141), and a ruling is never trimmed (D136). */
-  ['.claude/rules/decisions/scheduler.md', 2, 90000],
+  /* scheduler 90000 -> 92000 (15 Oct 26): 90,523 bytes with D860 and D866 - his correction of the just-added mark and
+     his answers on it, live; none is trimmed (D136). Room for the next rulings, not a target. */
+  ['.claude/rules/decisions/scheduler.md', 2, 92000],
   ['.claude/rules/decisions/inputs.md', 2, 32000],
   /* 12000 until 12 Oct 26: raised for D780–D782 (the OIL question a holiday or a swap leaves open) — three live
      rulings of this area, none replaced; a rulings file is never trimmed (D136, D390) */
-  ['.claude/rules/decisions/oil.md',     2, 14000],
+  /* oil 14000 -> 15500 (15 Oct 26): 14,617 bytes with D862, D863 and D865 - his answers on the small OIL job, live;
+     none is trimmed (D136). Room for the next rulings, not a target. */
+  ['.claude/rules/decisions/oil.md',     2, 15500],
   ['.claude/rules/decisions/leave-war.md', 2, 37000],
   ['.claude/rules/decisions/tracker.md', 2, 19000],
   /* 2 Oct 26 ([DOCS-SIZE-PASS]): a new area — the nine rulings on what the IT flow guide shows and when it is rebuilt
