@@ -92,7 +92,7 @@ async function holiday(w, iso, name) {
       await L.pic(w, `R2-unnamed-holiday-${T}`)
       rowOut(S, 'R2 a load on a holiday with no name of its own', 'the list is headed "Public holiday" alone — never "Public holiday · PH"',
         `publish ${J(pub)}; the holiday's own list ${J(hl)}; note "${r.note}"; the list ${J(r.list)}`,
-        pub.published && /OIL answer$/.test(r.note) && !!r.list && /Public holiday/.test(r.list.head) && !/Public holiday ·/.test(r.list.head) && r.list.ids.includes(A.id))
+        pub.published && /OIL answer.$/.test(r.note) && !!r.list && /Public holiday/.test(r.list.head) && !/Public holiday ·/.test(r.list.head) && r.list.ids.includes(A.id))
     })
   } finally { await L.close(w) }
 }

@@ -1,47 +1,5 @@
 [
  {
-  "surface": "R desk",
-  "key": "R1 an input Thu–Fri put back by a load of Thursday; Friday a holiday with no answer",
-  "expected": "the note ends \"· 1 input needs an OIL answer\"; the one list opens for Fri 17 Jul, headed as the holiday, with the input on it; its foot promises the schedulers’ bells",
-  "saw": "filed {\"date\":\"Jul 16\",\"endDate\":\"Jul 17\",\"acc\":\"g\",\"oil\":null} (its row on day 3); asked at the save: false; publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; the holiday's own list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7g7diglrmuha\",\"imv7g7f12ntzh5r\"],\"reach\":true,\"noteOver\":false}; taken off {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 16\",\"acc\":\"r\"}; note \"Thursday: Original loaded onto the working copy — viewers still see Original until you publish · 1 unpublished edit replaced · 1 request came back onto the programme with its row — Fri reads that too · 1 input needs an OIL answer\"; the list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7g7diglrmuha\",\"imv7g7f12ntzh5r\"],\"reach\":true,\"noteOver\":false}; its foot \"What is left goes to the schedulers’ bells\"; after {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 16\",\"acc\":\"g\"}",
-  "verdict": "PASS"
- },
- {
-  "surface": "R desk",
-  "key": "R2 a load on a holiday with no name of its own",
-  "expected": "the list is headed \"Public holiday\" alone — never \"Public holiday · PH\"",
-  "saw": "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; the holiday's own list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7g7rpjzzssby\",\"imv7g7t25a4f5ps\"],\"reach\":true,\"noteOver\":false}; note \"Friday: Original loaded onto the working copy — viewers still see Original until you publish · 1 unpublished edit replaced · 1 input needs an OIL answer\"; the list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7g7rpjzzssby\",\"imv7g7t25a4f5ps\"],\"reach\":true,\"noteOver\":false}",
-  "verdict": "PASS"
- },
- {
-  "surface": "R desk",
-  "key": "R3 the flash after \"Don’t un-cancel\", a row taken off above it meanwhile",
-  "expected": "the cancelled input’s own CX button flashes — at the place its row has now",
-  "saw": "its row was 1, is 0; asked \"Un-cancelling Ranger's Range brief\", then again \"Un-cancelling Ranger's Range brief\"; flashing: \"5.0\"; the input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
-  "verdict": "PASS"
- },
- {
-  "surface": "R phone",
-  "key": "R1 an input Thu–Fri put back by a load of Thursday; Friday a holiday with no answer",
-  "expected": "the note ends \"· 1 input needs an OIL answer\"; the one list opens for Fri 17 Jul, headed as the holiday, with the input on it; its foot promises the schedulers’ bells",
-  "saw": "filed {\"date\":\"Jul 16\",\"endDate\":\"Jul 17\",\"acc\":\"g\",\"oil\":null} (its row on day 3); asked at the save: false; publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; the holiday's own list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7g8mkijflnyf\",\"imv7g8o44fzjahx\"],\"reach\":true,\"noteOver\":false}; taken off {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 16\",\"acc\":\"r\"}; note \"Thursday: Original loaded onto the working copy — viewers still see Original until you publish · 1 unpublished edit replaced · 1 request came back onto the programme with its row — Fri reads that too · 1 input needs an OIL answer\"; the list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7g8mkijflnyf\",\"imv7g8o44fzjahx\"],\"reach\":true,\"noteOver\":false}; its foot \"What is left goes to the schedulers’ bells\"; after {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 16\",\"acc\":\"g\"}",
-  "verdict": "PASS"
- },
- {
-  "surface": "R phone",
-  "key": "R2 a load on a holiday with no name of its own",
-  "expected": "the list is headed \"Public holiday\" alone — never \"Public holiday · PH\"",
-  "saw": "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; the holiday's own list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7g90eat60uo7\",\"imv7g91p0xtsol2\"],\"reach\":true,\"noteOver\":false}; note \"Friday: Original loaded onto the working copy — viewers still see Original until you publish · 1 unpublished edit replaced · 1 input needs an OIL answer\"; the list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7g90eat60uo7\",\"imv7g91p0xtsol2\"],\"reach\":true,\"noteOver\":false}",
-  "verdict": "PASS"
- },
- {
-  "surface": "R phone",
-  "key": "R3 the flash after \"Don’t un-cancel\", a row taken off above it meanwhile",
-  "expected": "the cancelled input’s own CX button flashes — at the place its row has now",
-  "saw": "its row was 1, is 0; asked \"Un-cancelling Ranger's Range brief\", then again \"Un-cancelling Ranger's Range brief\"; flashing: \"5.0\"; the input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
-  "verdict": "PASS"
- },
- {
   "surface": "U phone",
   "key": "U0 the fixture: filed on a working day, cancelled, moved to Saturday while cancelled",
   "expected": "cancelled with its reason; the move asks nothing (D814); no answer",
@@ -185,21 +143,21 @@
   "surface": "L desk",
   "key": "L0 two inputs on a published Friday; Friday made a public holiday",
   "expected": "filed on a working day with no question; published; the holiday opens the one list with both (and whatever else of that day is open); one answered, one left",
-  "saw": "asked at the filing: false/false; publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; the holiday's list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"3 to answer\",\"ids\":[\"imv7gcqqlrt8scn\",\"imv7gcs1fe4dkbh\",\"imv7gctarhzgvy1\"],\"reach\":true,\"noteOver\":false}; after Save null; A {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; B {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "saw": "asked at the filing: false/false; publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; the holiday's list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"3 to answer\",\"ids\":[\"imv7nuq8rrdlctj\",\"imv7nurjlyhvgle\",\"imv7nustezoqc1t\"],\"reach\":true,\"noteOver\":false}; after Save null; A {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; B {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
   "verdict": "PASS"
  },
  {
   "surface": "L desk",
   "key": "L1 both taken off; the Original loaded back",
-  "expected": "the note ends \"· 1 input needs an OIL answer\"; that day's one list opens with that input and without the answered one, headed as a public holiday, reachable; the load is made",
-  "saw": "from the week; taken off: A {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"r\"}, B {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"r\"}; the button \"Load onto working copy\" then \"Discard 2 edits & load — confirm\"; note \"Friday: Original loaded onto the working copy — viewers still see Original until you publish · 2 unpublished edits replaced · 1 input needs an OIL answer\"; the list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7gcqqlrt8scn\",\"imv7gctarhzgvy1\"],\"reach\":true,\"noteOver\":false}; back on: A {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}, B {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "expected": "the note ends \"1 input needs an OIL answer.\"; that day's one list opens with that input and without the answered one, headed as a public holiday, reachable; the load is made",
+  "saw": "from the week; taken off: A {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"r\"}, B {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"r\"}; the button \"Load onto working copy\" then \"Discard 2 edits & load — confirm\"; note \"Friday is back to the Original. Viewers still see the Original. 1 input needs an OIL answer.\"; the list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7nuq8rrdlctj\",\"imv7nustezoqc1t\"],\"reach\":true,\"noteOver\":false}; back on: A {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}, B {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
   "verdict": "PASS"
  },
  {
   "surface": "L desk",
   "key": "L2 answered in the list; taken off and loaded again",
   "expected": "the answer is written from the list; the second load says nothing of OIL and opens no list",
-  "saw": "the list closed on Save: true; B {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; the second load's note \"Friday: Original loaded onto the working copy — viewers still see Original until you publish · 1 unpublished edit replaced\"; a list: null",
+  "saw": "the list closed on Save: true; B {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; the second load's note \"Friday is back to the Original. Viewers still see the Original.\"; a list: null",
   "verdict": "PASS"
  },
  {
@@ -221,6 +179,48 @@
   "key": "E3 changed meanwhile: the bar up, Undo, then \"Answer OIL\"",
   "expected": "RECORD (Q6): the Undo takes the move to Saturday back, so nothing is to be asked — \"Answer OIL\" un-cancels it at once on its working day, or the bar has gone; never a Saturday answer on a Wednesday input",
   "saw": "the bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; after Undo the input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 15\",\"acc\":\"g\"}, the bar {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; \"Answer OIL\": a question null, note \"Restored\"; the input then {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 15\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "R phone",
+  "key": "R1 an input Thu–Fri put back by a load of Thursday; Friday a holiday with no answer",
+  "expected": "the note ends \"1 input needs an OIL answer.\"; the one list opens for Fri 17 Jul, headed as the holiday, with the input on it; its foot promises the schedulers’ bells",
+  "saw": "filed {\"date\":\"Jul 16\",\"endDate\":\"Jul 17\",\"acc\":\"g\",\"oil\":null} (its row on day 3); asked at the save: false; publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; the holiday's own list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7nwf8jm61nnz\",\"imv7nwgu0vhyaz0\"],\"reach\":true,\"noteOver\":false}; taken off {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 16\",\"acc\":\"r\"}; note \"Thursday is back to the Original. Viewers still see the Original. Det prep is on Friday again too. 1 input needs an OIL answer.\"; the list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7nwf8jm61nnz\",\"imv7nwgu0vhyaz0\"],\"reach\":true,\"noteOver\":false}; its foot \"What is left goes to the schedulers’ bells\"; after {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 16\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "R phone",
+  "key": "R2 a load on a holiday with no name of its own",
+  "expected": "the list is headed \"Public holiday\" alone — never \"Public holiday · PH\"",
+  "saw": "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; the holiday's own list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7nwszkm0kg78\",\"imv7nwub6sj7sx5\"],\"reach\":true,\"noteOver\":false}; note \"Friday is back to the Original. Viewers still see the Original. 1 input needs an OIL answer.\"; the list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7nwszkm0kg78\",\"imv7nwub6sj7sx5\"],\"reach\":true,\"noteOver\":false}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "R phone",
+  "key": "R3 the flash after \"Don’t un-cancel\", a row taken off above it meanwhile",
+  "expected": "the cancelled input’s own CX button flashes — at the place its row has now",
+  "saw": "its row was 1, is 0; asked \"Un-cancelling Ranger's Range brief\", then again \"Un-cancelling Ranger's Range brief\"; flashing: \"5.0\"; the input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "R desk",
+  "key": "R1 an input Thu–Fri put back by a load of Thursday; Friday a holiday with no answer",
+  "expected": "the note ends \"1 input needs an OIL answer.\"; the one list opens for Fri 17 Jul, headed as the holiday, with the input on it; its foot promises the schedulers’ bells",
+  "saw": "filed {\"date\":\"Jul 16\",\"endDate\":\"Jul 17\",\"acc\":\"g\",\"oil\":null} (its row on day 3); asked at the save: false; publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; the holiday's own list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7nxhqi6268vg\",\"imv7nxjaojusy22\"],\"reach\":true,\"noteOver\":false}; taken off {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 16\",\"acc\":\"r\"}; note \"Thursday is back to the Original. Viewers still see the Original. Det prep is on Friday again too. 1 input needs an OIL answer.\"; the list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7nxhqi6268vg\",\"imv7nxjaojusy22\"],\"reach\":true,\"noteOver\":false}; its foot \"What is left goes to the schedulers’ bells\"; after {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 16\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "R desk",
+  "key": "R2 a load on a holiday with no name of its own",
+  "expected": "the list is headed \"Public holiday\" alone — never \"Public holiday · PH\"",
+  "saw": "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; the holiday's own list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7nxvvlf29l9v\",\"imv7nxx59r9tvge\"],\"reach\":true,\"noteOver\":false}; note \"Friday is back to the Original. Viewers still see the Original. 1 input needs an OIL answer.\"; the list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7nxvvlf29l9v\",\"imv7nxx59r9tvge\"],\"reach\":true,\"noteOver\":false}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "R desk",
+  "key": "R3 the flash after \"Don’t un-cancel\", a row taken off above it meanwhile",
+  "expected": "the cancelled input’s own CX button flashes — at the place its row has now",
+  "saw": "its row was 1, is 0; asked \"Un-cancelling Ranger's Range brief\", then again \"Un-cancelling Ranger's Range brief\"; flashing: \"5.0\"; the input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
   "verdict": "PASS"
  }
 ]
