@@ -7,13 +7,14 @@
      W9 his own puck ("this is you")                               W10 OIL Earn on a weekend: a puck that earns
      W11 Edit Schedule's week: a warning tapped there lights its crew too
      W12 the guide read's G3: a line dragged into a just-added line's place inside its six seconds (what shows, pictured)
+     W13 a puck's drag ghost   W14 a section dragged on Edit Schedule's week   W15 a row of the Leave War's settings list
    usage: DL_BASE=http://localhost:4181 DL_SHOTS=docs/handpass/glow-off/<run> node scripts/handpass/glowoff-walk.mjs [phone|desk] */
 import * as L from './dl-lib.mjs'
 import { board, closeBoard } from './ou-lib.mjs'
 import { writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
-console.log('glowoff-walk v10')
+console.log('glowoff-walk v12')
 const SIZE = process.argv[2] === 'phone' ? 'phone' : 'desk', T = SIZE
 const w = await L.world(SIZE), p = w.page
 const MON = 0, SAT = 5
@@ -247,6 +248,40 @@ try {
     if (l2) await L.pic(w, `W3c-bar-undo-landed-${T}`, { around: sel, pad: 30 })
     out('W3c', 'Undo: the bar put back wears the landing flash', 'its ring and tint, no glow', l2 ? say(g2) : 'no landing flash on the bar after Undo', l2 ? verdictOf(g2, x => x.shadows.some(s => /0px 0px 0px 2px/.test(s))) : false)
   } else out('W3', 'an Inputs calendar bar', '', 'no bar on the month shown', null)
+  /* W13–W15: the other places that wear the picked-up look — a puck dragged on the board (its ghost), a section dragged on
+     Edit Schedule's week, a row of the Leave War's settings list. Each is held mid-drag, read and pictured, then let go
+     where it started (a press-and-move back), so nothing is changed. */
+  const holdRead = async (id, what, gripSel, liftSel, root = null) => {
+    /* the first grip that is really under the pointer once scrolled to — on the desktop week a day can sit off to the side */
+    const ok = await p.evaluate(s => {
+      document.querySelectorAll('[data-gg]').forEach(e => e.removeAttribute('data-gg'))
+      for (const e of document.querySelectorAll(s)) {
+        e.scrollIntoView({ block: 'center' }); const r = e.getBoundingClientRect()
+        const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
+        if (r.width && (hit === e || e.contains(hit))) { e.setAttribute('data-gg', '1'); return true }
+      }
+      return false
+    }, gripSel)
+    if (!ok) { out(id, what, '', `nothing on screen to drag (${gripSel})`, null); return }
+    await L.sleep(200)
+    const g = await center('[data-gg]')
+    await p.mouse.move(g.x, g.y); await p.mouse.down()
+    for (let i = 1; i <= 8; i++) { await p.mouse.move(g.x + i * 3, g.y + i * 6); await L.sleep(40) }
+    await L.sleep(200)
+    const seen = await p.evaluate(s => { document.querySelectorAll('[data-gw]').forEach(e => e.removeAttribute('data-gw')); const e = document.querySelector(s); if (!e) return null; e.setAttribute('data-gw', '1'); return [...e.classList].join('.') }, liftSel)
+    const gl = seen ? await glowOf('[data-gw]') : null
+    if (seen) await L.pic(w, `${id}-${T}`, { around: root || '[data-gw]', pad: 30 })
+    for (let i = 7; i >= 0; i--) { await p.mouse.move(g.x + i * 3, g.y + i * 6); await L.sleep(30) }
+    await p.mouse.up(); await L.sleep(400)
+    out(id, what, 'the plain ring, no glow (a black drop shadow allowed)', seen ? `${seen} — ${say(gl)}` : `no picked-up look appeared (${liftSel})`, seen ? verdictOf(gl, x => x.shadows.some(s => /0px 0px 0px 2px/.test(s))) : false)
+  }
+  await L.go(w, 'editsched'); await board(w, MON)
+  await holdRead('W13-puck-ghost', 'a puck dragged on the board: the ghost under the finger', '#schedBoard .sb-line .puck[data-slot], #schedBoard .sb-line [data-slot] .puck', '.dragimg.lift, .tdghost.lift')
+  await closeBoard(w)
+  await holdRead('W14-week-section', 'a section dragged on Edit Schedule\'s week by its grip', '#eWeek .secgrip', '#eWeek .lift')
+  await L.go(w, 'leavewar'); await L.sleep(800)
+  await p.evaluate(() => document.querySelector('[data-testid="settings-open"]')?.click()); await L.sleep(600)
+  await holdRead('W15-lw-settings-row', 'a row of the Leave War\'s settings list dragged by its grip', '.set-grow[data-grow] .set-grip:not(.off)', '.set-grow.dragging, .crow-wrap.gs-row.dragging')
 } catch (e) { console.log('STOPPED:', e.message); out('RUN', 'the walk', 'ran to the end', `stopped: ${e.message}`, false) }
 finally {
   out('ERR', 'the browser\'s error list', 'empty', w.errors.length ? w.errors.join(' | ').slice(0, 400) : 'empty', w.errors.length === 0)

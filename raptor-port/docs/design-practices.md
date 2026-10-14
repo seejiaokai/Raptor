@@ -492,7 +492,7 @@ pictures to him — a look does not report each instance, and nothing is recolou
 | A green outline round the Leave War's dates | bidding is open | owner, 1 Sep 26 |
 | Orange on a Leave War day | no leave that day | the Leave War's event types |
 
-- **One mark, one look (owner D860, D861, D854, 15 Oct 26; carried here by D866, approved D876).** The just-added mark
+- **One mark, one look (owner D860, D861, D854, 15 Oct 26; carried here by D866 — `[GUIDE-ONE-MARK]` — approved D876).** The just-added mark
   looks the same wherever the app wears it: a thing just added, and on the Inputs pages an input just changed or put
   back by Undo (D854). Today that is the Scheduler Board, the Inputs calendar's month and its opened day, and the Inputs
   List. The mark is the plain selection-blue ring, 2px, with no glow, for about six seconds, its last half second a fade

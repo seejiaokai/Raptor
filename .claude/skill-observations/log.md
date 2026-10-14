@@ -736,3 +736,33 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** In bug-check-order §6's wording roll-call (and the executor rule): search each exact old phrase ALONE, list FILES (not lines) with no cap, and treat a capped or truncated result as no result. When a change adds a new source file, also search the tests for registers that enumerate files ("every file that …") and run them before the full gates.
 
 **Principle:** A search whose output is truncated proves nothing about what it did not print; search for the exact phrase on its own, list files rather than lines, and never cap the list you are using as a completeness check.
+
+### Observation 603: A picture helper framing an element off screen pictures the top bar, silently
+
+**Status:** OPEN
+**Date:** 2026-10-15
+**Session context:** `[GLOW-OFF]` walk (`scripts/handpass/glowoff-walk.mjs`), phone size
+**Skill:** none — the walk-script guide (`raptor-port/docs/walk-scripts.md` §5) and the shared driver `scripts/handpass/dl-lib.mjs pic()`
+**Type:** internal
+**Phase/Area:** walk pictures
+
+**Issue:** `pic(w, name, { around: sel })` clips the screenshot to the element's box clamped to the screen. When the first match of `sel` was scrolled above the screen (a lit puck on a long phone board), the clip collapsed to the top of the screen and the "W4 red warning" picture showed the top bar — while the step's measurement (read from the element itself) was right and PASSed. Only opening the picture caught it.
+
+**Suggested improvement:** `pic()` scrolls the framed element into view (block centre) before measuring, or refuses with an error when its box is not inside the viewport; §5 of the walk-script guide gains one line: "a framed picture scrolls its subject into view first — a box off screen is clamped to the edge and pictures the wrong thing".
+
+**Principle:** A helper that silently clamps a request it cannot honour produces confident wrong evidence; make it honour the request or fail loudly.
+
+### Observation 604: A drag aimed by a fraction of a row's height can land back in place at another size
+
+**Status:** OPEN
+**Date:** 2026-10-15
+**Session context:** `[GLOW-OFF]` walk — the board's line drag
+**Skill:** none — `raptor-port/docs/walk-scripts.md` §4 (steps)
+**Type:** internal
+**Phase/Area:** walk gestures
+
+**Issue:** The drag moved the pointer 1.6 line-heights below the grip. On the desktop that landed in the next formation; on the phone (taller lines, a different stack) the same script's drop resolved to the line's own place — no move, so correctly no landing flash — and the step read as a FAIL of the app. A small probe that dragged the same way passed, which cost three re-runs to separate. Aiming at the target element's own measured box (just below the middle of the next formation's first line) fixed it at both sizes. Also: the landing flash is painted after the board's redraw, so a single look 60ms after the drop missed it — a wait for the element fixed that.
+
+**Suggested improvement:** §4 of the walk-script guide: "a drag is aimed at the TARGET's measured box, never by a distance from the grip; before judging a drop, record what moved (the order before and after) — a drop that landed in place is the script's, not the app's"; and "a mark painted after a redraw is waited for, never looked for once".
+
+**Principle:** Express a gesture in terms of the thing it acts on, and record the state change it should cause, so a gesture that missed is told apart from an app that failed.

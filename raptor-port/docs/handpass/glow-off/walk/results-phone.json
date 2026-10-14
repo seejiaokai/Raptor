@@ -112,6 +112,30 @@
   "verdict": "PASS"
  },
  {
+  "id": "W13-puck-ghost",
+  "size": "phone",
+  "what": "a puck dragged on the board: the ghost under the finger",
+  "expected": "the plain ring, no glow (a black drop shadow allowed)",
+  "saw": "puck.sm.dim.dragimg.lift — glow none; ring box: rgb(59, 198, 232) 0px 0px 0px 2px inset | ::before: rgb(59, 198, 232) 0px 0px 0px 2px inset | ::before: rgba(0, 0, 0, 0.6) 0px 8px 20px 0px; outline 3px none rgb(251, 250, 240)",
+  "verdict": "PASS"
+ },
+ {
+  "id": "W14-week-section",
+  "size": "phone",
+  "what": "a section dragged on Edit Schedule's week by its grip",
+  "expected": "the plain ring, no glow (a black drop shadow allowed)",
+  "saw": "dsec.secdrag.lift — glow none; ring box: rgb(59, 198, 232) 0px 0px 0px 2px inset; outline 3px none rgb(241, 244, 247)",
+  "verdict": "PASS"
+ },
+ {
+  "id": "W15-lw-settings-row",
+  "size": "phone",
+  "what": "a row of the Leave War's settings list dragged by its grip",
+  "expected": "the plain ring, no glow (a black drop shadow allowed)",
+  "saw": "set-grow.dragging — glow none; ring box: rgb(59, 198, 232) 0px 0px 0px 2px inset; outline 3px none rgb(241, 244, 247)",
+  "verdict": "PASS"
+ },
+ {
   "id": "ERR",
   "size": "phone",
   "what": "the browser's error list",
