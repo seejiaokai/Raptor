@@ -150,3 +150,20 @@ Personal Inputs with its answer).
 
 **A narrow read of the fixes** (they rewrite the load's count) by a second fresh Opus reader — the brief
 `docs/superpowers/briefs/2026-10-14-oil-uncancel-load-narrow-read-brief.md`; its result is in §9.
+
+## 7. The break tests — `scripts/handpass/breaks/2026-10-14-oil-uncancel-load.json`
+
+One rule broken at a time, its tests run, the line put back: **32 breaks, 31 caught, 1 explained.** First run: 26
+caught. Five were not, and one had gone stale as the fixes moved a line:
+
+| Break | First run | What was done |
+|---|---|---|
+| 9 — the answer arriving after the input was brought back another way | not caught | a test written ("the ANSWER arriving after … an Undo under the open question"); caught |
+| 11 — "Answer OIL" for someone who may no longer edit the schedule | not caught | a test written; caught |
+| 12 — a take-off the save would refuse is asked a question first | not caught | a test written; caught |
+| 17 — the list not opened | stale | its line had moved with the fix for F1; pointed at the new line; caught |
+| 27 — an unnamed holiday named by the preset word | not caught | the list's name was worked out in two places, one masking the other; made one place, and caught |
+| 25 — the load's "already standing and already open" half removed | not caught | **explained:** a load never changes an input's cancel, its ⓘ mark or its OIL answer, so an input standing on the day before the load is open before it exactly when it is open after it; the count is the same either way. Kept as a guard should a load ever bring a marked input back live |
+
+What a break test cannot reach — what only a browser draws — is in the browser test `e2e/oil-uncancel-load.spec.ts`
+and its own breaks (§8).

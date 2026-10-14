@@ -286,7 +286,7 @@
   "n": 29,
   "name": "the read F3, the other way: the promise is never made, though the schedulers were told",
   "file": "src/ui/OilDayList.tsx",
-  "find": "const belled = rows.some(x => x.o.days.some(d => !!holidayLineOn(me(), d)))",
+  "find": "const belled = rows.some(x => !picks[x.o.iid] && x.o.days.some(d => holidayLineAny(d)))",
   "put": "const belled = false",
   "tests": [
    "src/leavewar/holnotice.test.tsx"
@@ -320,6 +320,26 @@
   "put": "setOilList({ from: iso, to: iso,",
   "tests": [
    "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 33,
+  "name": "the narrow read L1: the promise is made for a row already picked",
+  "file": "src/ui/OilDayList.tsx",
+  "find": "rows.some(x => !picks[x.o.iid] && x.o.days.some(",
+  "put": "rows.some(x => x.o.days.some(",
+  "tests": [
+   "src/leavewar/holnotice.test.tsx"
+  ]
+ },
+ {
+  "n": 34,
+  "name": "the narrow read L2: only one scheduler's bell is asked (Saber's)",
+  "file": "src/state/notices.ts",
+  "find": "const s = noticeSpan(n); if (s && s.a <= iso && iso <= s.b && noticeLive(n)) return true }",
+  "put": "const s = n.to === 'stiff' ? noticeSpan(n) : null; if (s && s.a <= iso && iso <= s.b && noticeLive(n)) return true }",
+  "tests": [
+   "src/leavewar/holnotice.test.tsx"
   ]
  }
 ]

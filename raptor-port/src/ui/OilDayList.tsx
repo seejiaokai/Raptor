@@ -20,8 +20,7 @@
 import { useEffect, useState } from 'react'
 import { INPUTS } from '../engine/inputs'
 import { canEditSched } from '../state/auth'
-import { noticeRun, holidayLineOn } from '../state/notices'
-import { me } from '../state/perms'
+import { noticeRun, holidayLineAny } from '../state/notices'
 import { notify, setPage } from '../state/store'
 import { oilOpenOn, useWarFacts } from '../leavewar/sync'
 import { FloatWin } from './FloatWindow'
@@ -57,8 +56,10 @@ function Body({ from, to, name, fresh, plain }: { from: string; to: string; name
      could earn (a stored notice — leavewar/sync.ts tellHoliday). The list is also opened by a published version loaded
      back (owner D818), on a plain weekend or on a holiday made while the input was off the programme: no bell has a
      line for those, and what is left stays on the input's "OIL?" sign and its own answerer's bell — so nothing is
-     promised. Asked of the days still unanswered, through the one reader the bell itself uses. */
-  const belled = rows.some(x => x.o.days.some(d => !!holidayLineOn(me(), d)))
+     promised. Asked of the rows still UNPICKED (what is left), and of any scheduler's line, not only the reader's own
+     (the narrow read of the fix, L1 and L2): with the told holiday's input picked and only a plain Saturday's left,
+     nothing is promised; and a scheduler with no line of his own still reads what is true of the others' bells. */
+  const belled = rows.some(x => !picks[x.o.iid] && x.o.days.some(d => holidayLineAny(d)))
   const close = () => { setOilList(null); notify() }
   const pick = (iid: string, v: OilPick) => setPicks(p => ({ ...p, [iid]: p[iid] === v ? undefined : v }))
   const all = (v: OilPick) => setPicks(Object.fromEntries(rows.map(x => [x.o.iid, v])))

@@ -358,6 +358,44 @@ describe('the holiday tells the schedulers — never silent (D780), one notice a
       expect(tid('odl-left')!.textContent, 'nothing is promised').toBe('')
     })
   })
+  /* (the narrow read of the fixes, L1 and L2 — 14 Oct 26) THE FOOT'S PROMISE IS ABOUT WHAT IS LEFT, AND ABOUT THE
+     SCHEDULERS' BELLS — not the reader's own. Asked of the rows still unpicked: with the told holiday's input picked
+     and only a plain Saturday's left, no bell carries what is left. And asked of ANY scheduler's line: a scheduler who
+     has none of his own (his sign-in was off when the holiday was made) is still told the truth — the others' bells
+     carry it. */
+  it('the foot promises the schedulers’ bells only for what is LEFT unpicked — and whether or not the reader has a line of his own', async () => {
+    const fri = file('Range brief', 'Training', ['bane'])
+    expect(commitInput(null, draftOf({ person: 'pike', type: 'Training', title: 'Saturday brief', date: 'Jul 18', yr: 2026, allday: false, s: 540, e: 600, remarks: '' }), ['pike'])).toBe(true)
+    const sat = String((INPUTS.find((x: any) => x.title === 'Saturday brief') as any).iid)
+    const wd = ACCOUNTS_LIST.find(a => String(a.pid) === 'nact')!
+    expect(updateAccount(wd.id, { on: false }), 'Warden’s sign-in is off when the holiday is made').toBeNull()
+    expect(holidayAdd(ph(FRI)).ok).toBe(true)
+    expect(hol('stiff'), 'Saber was told').toHaveLength(1)
+    expect(hol('nact'), 'Warden was not').toHaveLength(0)
+    ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
+    const host = document.createElement('div'); document.body.appendChild(host)
+    const root = createRoot(host)
+    const tid = (t: string) => document.querySelector(`[data-testid="${t}"]`) as HTMLElement | null
+    const left = () => tid('odl-left')!.textContent
+    const SAYS = 'What is left goes to the schedulers’ bells'
+    try {
+      await act(async () => { pops.setOilList({ from: FRI, to: SAT, name: '', fresh: false, plain: true }); root.render(<App />) })
+      expect(tid(`odl-yes-${fri}`)).toBeTruthy(); expect(tid(`odl-yes-${sat}`)).toBeTruthy()
+      expect(left(), 'nothing picked: the holiday’s input is left, and the bells carry it').toBe(SAYS)
+      /* everything on the holiday picked (its own input, and whatever else of that Friday was open), the Saturday’s not */
+      await act(async () => { tid('odl-yesall')!.click() })
+      await act(async () => { tid(`odl-yes-${sat}`)!.click() })
+      expect(left(), 'only the plain Saturday’s is left: no bell carries that').toBe('')
+      await act(async () => { tid(`odl-yes-${fri}`)!.click() })
+      expect(left(), 'un-picked: left again').toBe(SAYS)
+      /* Warden, switched on again and signed in: no line of his own for this holiday — the other schedulers’ bells have it */
+      expect(updateAccount(wd.id, { on: true })).toBeNull()
+      await act(async () => { setSession({ user: 'wd', role: 'admin', name: 'wd' }); setMe('nact'); pops.setOilList({ from: FRI, to: FRI, name: 'National Day', fresh: false }); notify() })
+      expect(line('nact'), 'the premise: no line of his own').toHaveLength(0)
+      expect(tid(`odl-yes-${fri}`), 'the list is his to answer too').toBeTruthy()
+      expect(left(), 'what is left IS on the schedulers’ bells').toBe(SAYS)
+    } finally { await act(async () => { root.unmount() }) }
+  })
   it('an admin whose sign-in is switched off is not told (the break tests, 13 Oct 26)', () => {
     three()
     const wd = ACCOUNTS_LIST.find(a => String(a.pid) === 'nact')!
