@@ -60,7 +60,7 @@ function glowsIn(rule: Rule): string[] {
       else if (blur > 0 && !nearBlack(c) && inset && blur > 2) found.push(`light into it "${layer}"`)
       /* a halo is a BAND: 3px or wider (the ruled ones were 3–4px — Rearrange's, the docked panels', the dots'); a 1–2px
          see-through ring is a thin line drawn as a shadow (the picked list rows, the bid sheet's switch, an event chip),
-         and a keyframe's fully transparent end is nothing at all */
+         and a keyframe's fully transparent end is nothing at all — the line his D888 ("Leave them") settled */
       else if (!inset && blur === 0 && spread >= 3 && c[3] > 0 && c[3] < 0.5 && !nearBlack(c)) found.push(`a halo "${layer}"`)
     }
   }

@@ -3567,7 +3567,9 @@ guide's rule, D880–D882, D887): the take ring, the open-bidding box, his own L
 (D881); today's day card, the SANS stripe's light, the Leave War's landing line, Rearrange / Show SANS while on — the
 filter chip's pale fill (D882); the docked balance bar and move banner's band, the Fast sync and Admin → Users' dots'
 bands (D887). Kept: the sign-in logo's light and the page's faint wash, the app's own sign (D887). The whole app's
-roll-call: `src/ui/noglow-css.test.ts`.
+roll-call: `src/ui/noglow-css.test.ts`. **And a thin ring is a line (owner D888, "Leave them"):** the 1–2px see-through
+rings round a picked issue or check line, a picked event preset and a group's colour square stay — a halo is a band of 3px or
+more.
 
 **The just-added row's flash is now the SAME steady shape everywhere it
 appears — the board's `.sb-fresh` box (see §Selection highlight above) and
