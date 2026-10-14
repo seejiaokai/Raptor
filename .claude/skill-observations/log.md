@@ -632,6 +632,8 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 **Principle:** A check that reads the working tree is only as still as the tree. Put the fast, tree-reading checks first, or keep the tree still until they have run.
 
+Met again 15 Oct 26 (`[LW-REARRANGE-EDGE-SCROLL]`), worse: CODE under `raptor-port/src` was edited while the gate set ran (a function call added before its import), and the Tracker smoke — which builds the app itself — built the half-made file and failed in 3 s. Nothing was wrong with the finished code; the run was void and had to be repeated (~15 min). The guard proposed, now for code too: while this checkout holds the gate lock, a hook refuses an edit under `raptor-port/src` (and a document the document check reads) — or the runner works from a copy of the last commit (`git worktree add` at HEAD) so the tree it checks cannot move under it. A habit ("don't edit while it runs") already failed twice.
+
 ### Observation 596: A guide for an unattended run sent its plan as a message and so ended the turn - the night could not start until he woke
 
 **Status:** OPEN

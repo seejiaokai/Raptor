@@ -7361,7 +7361,9 @@ is dead until left; after each step the thing under the still pointer is read ag
 walked by `scripts/handpass/edgescroll-walk.mjs`. **The grips (his find — a counter's "much hard to activate"):** each
 Rearrange grip takes a press over a larger invisible area (the guide §6, D487) — 4 px above and below, toward the cell's
 left edge, 4 px right — inside its own row; measured by `scripts/handpass/grip-reach.mjs` (a phone: a counter's 6 → 16
-points of 81 round the grip, a man's 9 → 20); pinned in `src/leavewar/ui/rowglow.test.ts`.
+points of 81 round the grip, a man's 9 → 20); pinned in `src/leavewar/ui/rowglow.test.ts`. **Still to check (D896, his "Yes check the rest too"):** the Tracker chart's drags
+(a ball, a line's end, a bend handle) do not pan the chart at its edge (read in the code); the Inputs month calendar's drag
+across days sits in a month that does not scroll — whether a drag at its edge turns the month is his to say. Its own job.
 
 Four asks from the same sitting, all on the Leave War grid:
 

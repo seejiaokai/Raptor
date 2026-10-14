@@ -2302,7 +2302,7 @@ the real row's line ran UNDER it; the drawer's row now wears the same landing ma
 **And round two, the same branch (D890 — his find on the preview):** one landing line a gap, not two a few pixels apart;
 re-walked 41/41. The other places with the same two positions: `[DRAG-ONE-LINE-ELSEWHERE]`.
 
-### [GUIDE-DRAG-RULES] The design guide carries two rules for every drag — one landing line a gap; a drag at the edge of what scrolls scrolls it (his word, 15 Oct 26 — D894) — DRAFTED AND READ 15 Oct 26 (one fresh reader, seven findings taken — version 2 in `raptor-port/docs/superpowers/specs/2026-10-15-guide-drag-rules.md`), WAITING FOR HIS APPROVAL OF THE WORDING
+### [GUIDE-DRAG-RULES] The design guide carries two rules for every drag — one landing line a gap; a drag at the edge of what scrolls scrolls it (his word, 15 Oct 26 — D894) — APPROVED 15 Oct 26 (D895) and IN THE GUIDE as §5a "Dragging" (`raptor-port/docs/design-practices.md`); the draft and its read: `raptor-port/docs/superpowers/specs/2026-10-15-guide-drag-rules.md`. Archive once live.
 **His words:** *"This is also part of design skill that u should incorporate. The 2 things I flagged out. The rearrange and
 drag outside screen. Note it"*. The guide: `raptor-port/docs/design-practices.md`; the two rulings behind them D890/D891 and
 D892/D893. A working-guide change: drafted, read by one fresh reader, his approval of the wording (D852, D70) — then in.
@@ -2318,7 +2318,7 @@ own drag selection does (`raptor-port/src/leavewar/ui/select.ts` EDGE / edgeScro
 Both grips are the same small ⠿ glyph with no wider touch area (`raptor-port/src/leavewar/ui/matrix.css` `.mx .counts .who
   .drag`, `.whorow .drag`); what differs is to be measured on the built app (`scripts/handpass/grip-reach.mjs`).
 
-### [DRAG-EDGE-SCROLL-ELSEWHERE] Other drags that do not scroll when held at the screen's edge (found 15 Oct 26, his question with D892) — HIS "YES" (D893): the Inputs calendar's two drags and Quals' heading drag BUILT 15 Oct 26 (the notes and Quals walked; the puck drag inside a note compiled and its own tests run, not walked); STILL NAMED TO HIM, not changed: the Tracker's ball drag (not checked), the Inputs month calendar's bar drag (found by the guide's read)
+### [DRAG-EDGE-SCROLL-ELSEWHERE] Other drags that do not scroll when held at the screen's edge (found 15 Oct 26, his question with D892) — HIS "YES" (D893): the Inputs calendar's two drags and Quals' heading drag BUILT 15 Oct 26 (the notes and Quals walked; the puck drag inside a note compiled and its own tests run, not walked); NEXT, HIS "Yes check the rest too" (D896): the Tracker chart's drags (do not pan at the chart's edge, read in the code) and the Inputs month calendar's drag across days (a month that does not scroll — turn the month at the edge? his to say) — its own job, a fresh chat
 **Named to him (D852), not changed.** Scroll at an edge already: the Scheduler Board's and Edit Schedule's puck drags
 (`src/ui/drag.ts`) and line / wave / section drags (`src/ui/rowdrag.ts`); the Leave War's day-cell drag selection and its
 Move (`src/leavewar/ui/select.ts`). Do NOT (read in the code, 15 Oct 26): the Leave War's ⚙ Settings Groups and Who wins

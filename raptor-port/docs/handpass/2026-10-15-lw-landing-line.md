@@ -110,6 +110,8 @@ invisible area inside its row (the guide §6, D487): a counter's 16, a man's 20;
 ## 6. Gates
 The whole gate set under the PC lock, in one run, on this branch with the fix (NOT `main`'s code): build clean · tfin 728 / 0 · unit 11407 / 11407 (641 files) · e2e 817 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN.
 
+Rounds three and four (D891–D893), the whole gate set under the lock in one run on the committed code: build clean · tfin 728 / 0 · unit 11418 / 11418 (642 files) · e2e 817 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN.
+
 ## 7. The closing lines
 - Walk: 39/39 PASS — desktop 1440×900 (mouse) and phone 390×844 (touch), drawer open and closed, a man's row both
   halves and a group heading; pictures opened (`L1`–`L4`, before `B1`–`B4` and `N8`).

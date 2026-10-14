@@ -553,6 +553,24 @@ shows no landing flash, §4), a new flag's flash, the board sliding up; a look d
 - A pressed button may give a little; a sheet slides up; a window grows in; a passing note fades. Each is offered to
   him as a picture or a short clip first, and measured on a phone before it is kept.
 
+## 5a. Dragging
+
+*His finds of 15 Oct 26 on the Leave War's Rearrange — D890–D893; the wording approved D895 (read by one fresh reader).*
+
+- **One drop, one landing line.** Anything dragged into a new place in a list — a row, a heading, a note — shows where it
+  will land with ONE line, in ONE place. The lower half of one row and the upper half of the row under it are the same
+  drop, so they draw the same line, on the top edge of the row under; only under the last row of a list, or above a
+  heading the row cannot land on, is the line drawn on a row's bottom edge. Two lines a few pixels apart for one drop
+  make him ask which is which. A thing dropped ONTO a place — a puck onto a seat, a chip onto a day, a Quals heading onto
+  the column whose place it takes — marks that one place, once. A look drags slowly across every gap to check it.
+- **Carried to the edge, the view follows.** Anything carried by a drag scrolls what it sits in when it is held near
+  that box's edge — the page, a window's list, a table that runs sideways — in the direction the thing can move (a row
+  up and down, a column sideways), at an edge distance and speed the app already uses, never new numbers, so it can be
+  carried to a place out of view (`src/ui/edgescroll.ts` holds the Leave War's). It stays on for a reader who asked for
+  less motion: it is the drag itself, not an effect. A look carries one thing to a place off the screen, on a phone and
+  on a desktop.
+- A drag already built that does otherwise is named to him, not changed (D852).
+
 ## 6. Small polish — check for these
 
 *From `make-interfaces-feel-better`, as narrowed by the review of 2 Oct 26 (D489); the Apple design skill (three weights,

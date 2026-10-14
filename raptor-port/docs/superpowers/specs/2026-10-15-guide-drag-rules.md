@@ -36,7 +36,7 @@ and strand a drag — it stays on (the reader's reading, said to him as such). (
 named to him, not changed (D852) — e.g. the Inputs month calendar's bar drag, the Tracker's ball drag. (7) Not "small
 polish" — both of his finds stop or mislead the work: a short section of their own, §5a "Dragging", after §5 Motion.
 
-## Version 2 — what is put to him
+## Version 2 — APPROVED 15 Oct 26 (D895, "3. Ok"), in the guide as §5a
 
 **§5a. Dragging** *(his finds of 15 Oct 26 on the Leave War's Rearrange — D890–D894)*
 
