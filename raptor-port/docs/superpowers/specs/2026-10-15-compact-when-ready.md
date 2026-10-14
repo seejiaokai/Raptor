@@ -24,7 +24,11 @@ before it is switched on; nothing in it may make compaction later than the app's
    shows once it applies).
 2. **A reminder at 80%, 85%, 90%, 95%** — a hook after each tool use reads the fullness from the record and, once per
    band, tells the agent: finish the step in hand, commit, push, rewrite this chat's `HANDOFF.md` block as a handoff
-   would, then mark "ready"; start no new helper, walk or gate run until then.
+   would; start no new helper, walk or gate run until then. **Then judge (D871):** if the job is nearly done (the work
+   left fits in the room left, the handoff written) and he is using the chat, do not compact — ask him once, in one
+   line with that judgement, whether to hand off to a fresh chat; if he is away (his word that he is leaving a big job
+   unattended, or an /overnight run), or he does not answer and the chat keeps filling, mark "ready" and let the
+   compaction come at that clean point.
 3. **"Ready"** — a one-line command the agent runs after that checkpoint; it leaves a small mark beside the checkout's
    git data (never committed).
 4. **A guard before an automatic compaction** — holds it back while the chat is under 90% full and no fresh "ready"
