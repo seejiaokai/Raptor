@@ -42,7 +42,7 @@ import { validate, WARN, officialWarn, withOfficialWarn } from '../engine/valida
 import { acceptInput } from '../engine/slots'
 import { draftVerLabel } from '../engine/drafts'
 import { oilSeatDeco, withChipWorld } from './html'
-import { toggleOilPerson, toggleOilItem, oilFromWords } from './oilmode'
+import { toggleOilPerson, toggleOilItem, oilFromWords, setOilBlanket } from './oilmode'
 import { commitUnpublish } from '../state/sched-commit'
 import { elogRows } from '../engine/editlog'
 
@@ -743,8 +743,24 @@ describe('the earn half, on the working copy (Fable S6, S7)', () => {
     const before = JSON.stringify((DAYS[SAT] as any).oild || {})
     toasts = []
     await click(rows().find(r => r.dataset.awp === 'plasma')!.querySelector('.puck'))
-    expect(toasts.join(' '), 'the board\'s own words').toContain('This event earns nobody any OIL — turn the event back on first')
+    /* (the wording he approved for N12's second line — this copy had kept its dash until D844's reading 3, 14 Oct 26) */
+    expect(toasts.join(' '), 'the board\'s own words').toContain('This event earns nobody any OIL. Turn the event back on first.')
     expect(JSON.stringify((DAYS[SAT] as any).oild || {}), 'no decision written under the mask').toBe(before)
+  })
+
+  /* THE DAY'S SWITCH, AND THE SENTENCE SAYS WHAT TO TURN OFF (owner D843, D844, D845 — 14 Oct 26). The walk found that the wording he had
+     approved was on a puck nobody can tap, and that this tap — one a person CAN make — still said "turn that off first";
+     he then asked what "that" was, and gave the words himself: "Turn off the switch first." (D845) */
+  it('the whole day switched off: the tap says to turn off the switch first, and writes nothing (D843, D845)', async () => {
+    await earnSat()
+    await act(async () => { setOilBlanket(SAT, true); notify() })
+    const before = JSON.stringify((DAYS[SAT] as any).oild || {})
+    toasts = []
+    await click(rows().find(r => r.dataset.awp === 'plasma')!.querySelector('.puck'))
+    expect(toasts, 'one note, the sentence whole').toEqual(['Nothing on this day earns. Turn off the switch first.'])
+    expect(JSON.stringify((DAYS[SAT] as any).oild || {}), 'no decision written under the switch').toBe(before)
+    expect($('.availwin .win-foot').textContent || '', 'and the hint says it the same way')
+      .toContain('Nothing on this day earns. Turn off the switch to change men one by one.')
   })
 
   it('and under the mask the hint says what IS true, not "tap to stop a man earning" (walk W2)', async () => {

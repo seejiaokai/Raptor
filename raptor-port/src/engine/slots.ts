@@ -359,7 +359,7 @@ export function txtSet(path:any,v:any){
      hmOK, not parseHM, is the question: parseHM is the shared loose reader
      and stays loose (time.ts). */
   if(TIME_TXT.test(String(path))){
-    if(v&&!hmOK(v)){HOOKS.toast(`${v} is not a time — try 0900 or 09:00`,'warn');return false;}
+    if(v&&!hmOK(v)){HOOKS.toast(`${v} is not a time. Try 0900 or 09:00.`,'warn');return false;}
     const m=parseHM(v);v=(m==null)?'':hhmm(m);
   }
   const was=String(r.o[r.k]==null?'':r.o[r.k]);
@@ -415,7 +415,8 @@ export function txtSet(path:any,v:any){
     if(w&&!w.standalone&&toM!=null&&br!=null&&toM>=VCONF.briefLead&&br>toM){
       const bwas=String(r.o.br);
       r.o.br=''; noteChange(`ff:${a[0]}.${a[1]}.${a[2]}.br`,bwas,'');
-      HOOKS.toast(`The ${bwas} brief was after the new take-off, so it has been cleared`,'warn');
+      /* "removed", not "cleared" (owner D837 + D839, 14 Oct 26 — N19): a reader took "cleared" for approved, as in cleared for take-off */
+      HOOKS.toast(`The ${bwas} brief was after the new take-off, so it was removed`,'warn');
     }
   }
   return true;

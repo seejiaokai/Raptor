@@ -270,7 +270,7 @@ describe('A5 — an OIL day in another year carries its year', () => {
     await openOn(r)
     expect(tid('oil-unanswered')!.textContent).toMatch(/Not answered yet — 9 Jan 2027/)
     await click(tid('oil-answer'))
-    expect($('[data-testid="oilconf"] .upconf-h')!.textContent).toMatch(/9 Jan 2027/)
+    expect($('[data-testid="oilconf-ask"]')!.textContent).toMatch(/9 Jan 2027/)
     await click($('[data-testid="oilconf"] .abtn.ghost'))
     await closeWin(); await toList()
     expect((tr(r)!.querySelector('[data-oilask]') as HTMLElement).title).toMatch(/9 Jan 2027/)
@@ -402,21 +402,21 @@ describe('A8 — a group’s OIL question is headed for the group, by every door
     const ppl = others().slice(0, 2)
     const rec = await sharedRec(ppl, { ...SAT, oil: { '2026-10-17': 1 } })
     await openOn(rec); await click(tid('oil-revise'))
-    expect(head()).toBe(`OIL — ${az1(ppl)} +1, Duty`)
+    expect(head()).toBe(`OIL: ${az1(ppl)} +1, Duty`)
     expect(tid('win-inputedit')!.getAttribute('aria-label'), 'the same words as the window’s title').toContain(`${az1(ppl)} +1`)
   })
   it('"Answer…" on a shared duty nobody answered', async () => {
     const ppl = others().slice(0, 3)
     const rec = await sharedRec(ppl, { ...SAT })
     await openOn(rec); await click(tid('oil-answer'))
-    expect(head()).toBe(`OIL — ${az1(ppl)} +2, Duty`)
+    expect(head()).toBe(`OIL: ${az1(ppl)} +2, Duty`)
   })
   it('the question that follows a move onto a weekend (a bar’s drag)', async () => {
     const ppl = others().slice(0, 2)
     const rec = await sharedRec(ppl, { ...SAT })
     await act(async () => { askOilIfPending(live(rec.iid)) })
     expect($$('[data-testid="oilconf"]')).toHaveLength(1)
-    expect(head()).toBe(`OIL — ${az1(ppl)} +1, Duty`)
+    expect(head()).toBe(`OIL: ${az1(ppl)} +1, Duty`)
   })
   /* the walk's own find (10 Oct 26): a NEW group's question at the save led with whoever was PICKED first ("Ranger +2"),
      and the same input, once saved, was "Ace +2" at its title and at every other door */
@@ -428,7 +428,7 @@ describe('A8 — a group’s OIL question is headed for the group, by every door
     await click(tid('pp-several'))
     for (const id of rest) await click($(`#inpEditPop [data-pp="${id}"]`))
     await click($('#inpEditSave'))
-    expect(head()).toBe(`OIL — ${az[0]} +2, Duty`)
+    expect(head()).toBe(`OIL: ${az[0]} +2, Duty`)
   })
   /* RETIRED BY D762, AND WHAT STANDS IN ITS PLACE. This was "THE CONTROL — a man's OWN answer inside a shared input is
      headed with his name alone": no man in an input of several gives an answer of his own now. The answer is the
@@ -440,7 +440,7 @@ describe('A8 — a group’s OIL question is headed for the group, by every door
     await as('member'); await openOn(rec)
     expect(tid('oil-revise-own'), 'no button of his own').toBeNull()
     await click(tid('oil-revise'))
-    expect(head()).toBe(`OIL — ${az1(ppl)} +1, Duty`)
+    expect(head()).toBe(`OIL: ${az1(ppl)} +1, Duty`)
     /* a MEMBER's answer passes the check on what his command changed (state/perms.ts — "0 or exactly what the record's
        hours price"), which asks the Leave War which days ask the question. The app installs that at boot
        (leavewar/sync.ts wireLeaveWarSync → setOilPlan(oilAskPlan)); this file's harness wires no war, so the one line
@@ -454,7 +454,7 @@ describe('A8 — a group’s OIL question is headed for the group, by every door
   it('THE CONTROL — an ordinary one-person input is headed with its person', async () => {
     const r = await single({ ...SAT, oil: { '2026-10-17': 1 } })
     await openOn(r); await click(tid('oil-revise'))
-    expect(head()).toBe(`OIL — ${cs(r.person)}, Duty`)
+    expect(head()).toBe(`OIL: ${cs(r.person)}, Duty`)
   })
 })
 
@@ -739,7 +739,7 @@ describe('the schedule’s dialog on a shared input speaks for the ENTRY — the
     expect($$('#inpEditPop .inped-oilsum').map(x => x.textContent)).toEqual(['Not answered yet — 17 Oct'])
     expect($$('#inpEditPop [data-testid="oil-answer"], #inpEditPop [data-testid="oil-revise"]')).toHaveLength(1)
     await click(tid('oil-answer'))
-    expect($('[data-testid="oilconf"] .airpop-head b')!.textContent, 'asked for both').toBe(`OIL — ${az1(ppl)} +1, Duty`)
+    expect($('[data-testid="oilconf"] .airpop-head b')!.textContent, 'asked for both').toBe(`OIL: ${az1(ppl)} +1, Duty`)
     await click(tid('oil-yes')); await click(tid('oilconf-save'))
     expect(live(rec.iid).oil, 'one answer, on the one record').toEqual({ '2026-10-17': 1 })
     expect(idsOf(live(rec.iid)), 'for both of its people').toEqual(ppl)

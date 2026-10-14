@@ -26,6 +26,14 @@
    by everything else in it, so these take the plain pointer and their own taps */
 .floatwin .win-tools{display:flex;align-items:center;gap:6px;flex:0 0 auto;cursor:default;touch-action:manipulation}
 .floatwin .win-tools .abtn{white-space:nowrap}
+/* a MARK that follows the title (FloatWindow.tsx `mark`; owner D849 — a cancelled input's CX tag and reason "follow the
+   title, not the ✕"). The title gives up the room it does not need, the mark takes what is left and is cut short first;
+   the cross stays in the corner. Part of the bar: it drags the window as the title does. */
+.floatwin .win-bar.has-mark .win-ttl{flex:0 1 auto}
+/* …but never to nothing: where the title alone would fill the bar (several names over several days, on a phone) the
+   mark keeps the room of the tag itself, and it is the title that is cut — a window that no longer said "cancelled"
+   would be worse than a shortened title (D771; the fresh read of 14 Oct 26). */
+.floatwin .win-mark{flex:1 1 0;min-width:46px;display:flex;align-items:center;overflow:hidden}
 .floatwin .win-body{flex:1;min-height:0;overflow:auto;padding:10px 12px 12px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 /* A PHONE: the window starts at the bottom of the screen (D641, reading 3) — the stylesheet's panel, as the two older
    windows have it; its bar drags it up and down (floatwin.ts keeps only its top), and the page above it still takes

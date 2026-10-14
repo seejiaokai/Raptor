@@ -4830,11 +4830,27 @@ export function deletableIn(cells: readonly { personId: string; date: string }[]
  * the store is already the channel they share. It is not persisted; where
  * someone was last looking is not a fact about the leave war.
  */
-export function focusDay(date: string, opts?: { ifHidden?: boolean }): void {
+export function focusDay(date: string, opts?: { ifHidden?: boolean; open?: string }): void {
   /* `ifHidden` — the soft ask (D670): the matrix jumps only when the day's column is not already on screen. What Undo
      and Redo send (state/undo-wire.ts snapView), so a change he is looking at is taken back where he is looking. */
+  /* `open` — a person's id: the ask is "bring that day into view AND open it for him" (below). Every other ask drops
+     an `open` nobody has taken up, so it cannot spring up later on some other day. */
+  focusOpenAsk = opts && opts.open ? { person: opts.open, date } : null
   state = { ...state, focusDate: date, focusSeq: state.focusSeq + 1, focusSoft: !!(opts && opts.ifHidden) }
   notify()
+}
+
+/* "OPEN THAT DAY FOR THAT PERSON" — the clash note's tap ([LW-CLASH-NOTE-PHONE], owner D827, 13 Oct 26: "Decide the bid
+   must land on the thing to decide, not only near it"). The under-manned list only jumps to its day; a clash names a
+   person as well, and the sheet where his bid is decided is the one a tap on his cell opens. The stage strip and the
+   grid share nothing but the store (see `focusDay`), so the ask rides the same call — and is TAKEN ONCE by the grid
+   (`takeFocusOpen`), never kept in the war's state: a grid drawn again later must not reopen a sheet he has closed. */
+let focusOpenAsk: { person: string; date: string } | null = null
+/** The person the last `focusDay(date, { open })` asked to open that day for — handed over once, then forgotten. */
+export function takeFocusOpen(date: string): string | null {
+  const a = focusOpenAsk
+  focusOpenAsk = null
+  return a && a.date === date ? a.person : null
 }
 
 /** Put a different leave war on screen. Unknown ids are ignored rather than

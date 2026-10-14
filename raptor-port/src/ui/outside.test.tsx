@@ -96,8 +96,12 @@ describe('RF2 a question sheet keeps the keyboard until it is answered', () => {
     const behind = document.createElement('input'); document.body.prepend(behind)
     await act(async () => root.render(<DocConfirm who="Ranger" typeLabel="Downchit" onUpload={() => {}} onNoDoc={() => {}} />))
     const sheet = document.querySelector('.upconf-pop')!, box = sheet.querySelector('.airpop-box') as HTMLElement
-    const stops = [...box.querySelectorAll<HTMLElement>('button')]
-    expect(stops.length).toBeGreaterThan(1)
+    /* the order the keys go round in: the sheet's own buttons, then the head's ✕ LAST, though it is written first
+       (the design look's L2, owner D830 — 13 Oct 26: the first Tab used to land on "Close") */
+    const all = [...box.querySelectorAll<HTMLElement>('button')], x = box.querySelector<HTMLElement>('.airpop-head .x')!
+    expect(all[0], 'the ✕ is still written first in the head').toBe(x)
+    const stops = [...all.filter(n => n !== x), x]
+    expect(stops.length).toBeGreaterThan(2)
     expect(document.activeElement, 'the sheet has the keyboard on opening').toBe(box)
     expect((await key(box, true)).defaultPrevented, 'Shift+Tab from the sheet itself').toBe(true)
     expect(document.activeElement).toBe(stops.at(-1))

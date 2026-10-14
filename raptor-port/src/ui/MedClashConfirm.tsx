@@ -88,7 +88,11 @@ export function MedClashConfirm({ who, newType, span, clashes, aOrd, bOrd, onSav
         <div className="airpop-head"><b>{newType} — {who}, {span}</b>
           <button className="x" aria-label="Close" onClick={onCancel}>✕</button></div>
         <div className="airpop-body upconf-body">
-          <div className="upconf-h">Days covered by another status — choose who holds them</div>
+          {/* THE HEADING CARRIES THE ONE FACT HE ASKED TO KEEP (owner D848, 14 Oct 26 — "is there a way to make it known that each
+              day holds 1 status"). The sheet's small print said it ("…every day holds one status, and the new entry is filed
+              around whatever you keep") and went with the foot's hint by D846's rule — text that explains how the app works where
+              the answers already say what each does. It read "Days covered by another status — choose who holds them". */}
+          <div className="upconf-h">A day holds one status: choose who holds these days</div>
           {clashes.map((c: any, i: number) => {
             const tl = leftover(c, i)
             const tchoice = tail[i] || 'remove'
@@ -96,7 +100,9 @@ export function MedClashConfirm({ who, newType, span, clashes, aOrd, bOrd, onSav
               <div key={i}>
                 <div className="upconf-left medclash-row" data-testid={`medclash-${i}`}>
                   <span>{c.row.type} {rowSpan(c.row)} · both cover <b>{win(c)}</b></span>
-                  <span className="seg">
+                  {/* flat (owner D849, 14 Oct 26 — "3 yes"): not `.seg`, the week strip's rule, whose darker patch and line
+                      underneath these wore; the buttons stay at the right (14-input-editors.css `.upconf-ans`) */}
+                  <span className="upconf-ans">
                     <button className={'upconf-seg' + (choiceOf(i) === 'new' ? ' on-keep' : '')}
                       onClick={() => setChoice(ch => ({ ...ch, [i]: 'new' }))}>{newType} replaces</button>
                     {!forced(c) &&
@@ -110,7 +116,7 @@ export function MedClashConfirm({ who, newType, span, clashes, aOrd, bOrd, onSav
                       {tchoice === 'remove'
                         ? <em className="medclash-tailnote"> — will be removed</em>
                         : <em className="medclash-tailnote"> — kept on file</em>}</span>
-                    <span className="seg">
+                    <span className="upconf-ans">
                       <button className={'upconf-seg' + (tchoice === 'remove' ? ' on-rem' : '')}
                         onClick={() => setTail(t => ({ ...t, [i]: 'remove' }))}>Remove those days</button>
                       <button className={'upconf-seg' + (tchoice === 'keep' ? ' on-keep' : '')}
@@ -119,11 +125,8 @@ export function MedClashConfirm({ who, newType, span, clashes, aOrd, bOrd, onSav
                   </div>)}
               </div>)
           })}
-          <div className="upconf-none">The days each status keeps stay exactly as chosen — every day holds one
-            status, and the new entry is filed around whatever you keep.</div>
         </div>
         <div className="airpop-foot upconf-foot">
-          {!ready && <span className="upconf-need">Choose for each clash above</span>}
           <span style={{ flex: 1 }}></span>
           <button className="abtn ghost" onClick={onCancel}>Cancel</button>
           <button className="abtn primary" data-testid="medclash-save" disabled={!ready}

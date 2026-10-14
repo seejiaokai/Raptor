@@ -235,17 +235,36 @@ export function InputsPage() {
   const [lookSun, setLookSun] = useState(LOOK_CFG.toSunday)
   const [calOpen, setCalOpen] = useState(false)
   const [sort, setSort] = useState({ key: 'start', dir: 1 })
-  /* Rows just added, newest first, and rows still flashing. Both hold the input
+  /* Rows just added, newest first, and rows still flashing. The pinned rows hold the input
      OBJECT rather than its index: adding, deleting or undoing renumbers INPUTS
-     underneath us. */
+     underneath us. THE LIT ONES ARE HELD BY ID (the fresh read of the leftovers batch, 14 Oct 26 — F1): a refused
+     command puts every record back as a NEW object, and a light held by object went out on the List while the
+     calendar, which was handed ids, kept it. One rule for both now. */
   /* the OIL ask (owner, 28 Aug 26) — the oilGate payload plus the commit to run on Save: the desktop row's OIL chip.
      (The upchit's summary, the medical clash and the document question were the add form's and the pencil's; both are
      gone — D718, D729 — and an input opened or added from here asks them through its window's own sheets.) */
   const [oilConf, setOilConf] = useState<any>(null)
   const [pinned, setPinned] = useState<any[]>([])
-  const [flash, setFlash] = useState<any[]>([])
-  const timers = useRef<any[]>([])
-  useEffect(() => () => timers.current.forEach(clearTimeout), [])
+  const [flash, setFlash] = useState<string[]>([])
+  const isLit = (r: any) => flash.indexOf(String(r.iid)) >= 0
+  /* ONE TIMER AN INPUT, started again by every light (F1): the six seconds were one timer from the FIRST light, never
+     cleared — an input saved a second time four seconds in lost its mark two seconds later, and saved at 5.6 s showed
+     neither box nor note (the note is left unsaid while the mark is on it — ui/seen.ts). */
+  const flashT = useRef(new Map<string, ReturnType<typeof setTimeout>>())
+  useEffect(() => () => { flashT.current.forEach(t => clearTimeout(t)); flashT.current.clear() }, [])
+  /* …AND THE BOX ITSELF STARTS AGAIN. It is a stylesheet animation, and one that is already running does not start
+     over because the class is still there: its clock is put back to nought on whatever wears this input's mark — a
+     table row's box is on its cells. (Never by re-making the row: its Name button is what the window hands the
+     keyboard back to.) No browser, no clocks: jsdom has no getAnimations. */
+  const [relit, setRelit] = useState<{ id: string } | null>(null)
+  useLayoutEffect(() => {
+    if (!relit) return
+    document.querySelectorAll('[data-fresh]').forEach(el => {
+      if (el.getAttribute('data-fresh') !== relit.id) return
+      /* (motion is decoration: nothing here may throw out of a layout effect — the narrow read of the fixes) */
+      try { for (const n of [el, ...Array.from(el.children)]) for (const a of ((n as any).getAnimations?.() ?? [])) a.currentTime = 0 } catch (_) { /* the mark still shows; only its clock is the first light's */ }
+    })
+  }, [relit])
   useEffect(()=>()=>clearInpReveal(),[])
 
   /* SCROLL THE NEW ROW INTO VIEW (owner — "once an input is made, the view
@@ -274,8 +293,11 @@ export function InputsPage() {
        whatever input the page has just been shown: one added, one changed, one put back by Undo (the month's bar
        has always flashed for all three — `[CAL-CHECK-SEEN]`, "its row does not flash on Undo or Redo"). It comes off
        on a timer; the pin waits for him. */
-    setFlash(f=>[row,...f.filter(x=>x!==row)])
-    timers.current.push(setTimeout(()=>setFlash(f=>f.filter(x=>x!==row)),FLASH_MS))
+    const id=String(row.iid)
+    setFlash(f=>[id,...f.filter(x=>x!==id)])
+    clearTimeout(flashT.current.get(id))
+    flashT.current.set(id,setTimeout(()=>{ flashT.current.delete(id); setFlash(f=>f.filter(x=>x!==id)) },FLASH_MS))
+    setRelit({id})
   },[reveal])
   useEffect(() => {
     if (!justAddedIid) return
@@ -660,7 +682,7 @@ export function InputsPage() {
                   const when = cardWhen(r, b0 != null ? isoOfOrd(b0) : g.iso, g.iso)
                   /* the card is handed the input's ONE record, as a list of one (ui/inputcard-model.ts) */
                   return <InputCard key={r.iid} id={r.iid} tid="inl" row facts={cardOf([r], undefined, when)} when={when}
-                    late={lateNoteOf([r], lateWord)} oil={oilSignNote(oilSignDay(r))} flash={flash.indexOf(r) >= 0} onOpen={() => openInput(r)} />
+                    late={lateNoteOf([r], lateWord)} oil={oilSignNote(oilSignDay(r))} flash={isLit(r)} onOpen={() => openInput(r)} />
                 })}
               </Fragment>
             ))}
@@ -717,7 +739,7 @@ export function InputsPage() {
               /* LIT WHERE THE PAGE WAS JUST SHOWN IT (the host's own find in the walk's pictures, 10 Oct 26 — a just-added
                  shared row stayed dark while it stood under another of its records): the record IS the row now, so
                  the light is asked of it. The phone's card asks the same question the same way. */
-              const rowCls = ['in-' + inputTone(r.type), ...(flash.indexOf(r) >= 0 ? ['innew'] : [])].join(' ')
+              const rowCls = ['in-' + inputTone(r.type), ...(isLit(r) ? ['innew'] : [])].join(' ')
               /* WHO IS LATE (the one-rule plan §4.5 "The late mark"): the input is late when its own late date is; a
                  person in it is late when HIS own is later still — a person added after the cut-off can be late alone.
                  Asked of one FACE a person (engine/inputs.ts facesOf: the record's fields with his id and his own late
@@ -726,7 +748,10 @@ export function InputsPage() {
               const lates = facesOf(r).filter((f: any) => isLateInput(f))
                 .sort((a: any, b: any) => csOf(a.person).localeCompare(csOf(b.person), undefined, { sensitivity: 'base' }))
               return (
-                <tr key={inx} className={rowCls} data-iid={r.iid}
+                /* KEYED BY THE INPUT, not by its place in the list (F1): a new input is put at the list's head, so every
+                   row below it changed place — and the row that had drawn the input before it went on to draw the new
+                   one, still wearing the older one's box four seconds into its six */
+                <tr key={r.iid} className={rowCls} data-iid={r.iid} data-fresh={isLit(r) ? r.iid : undefined}
                   /* A CLICK ON THE ROW OPENS THE INPUT (D718, D723 — the pencil and the cross are gone). Not a press on
                      one of the row's own controls: its Name button opens it by itself, and the paperclip and the OIL
                      chips of the last cell do their own work. */
@@ -860,7 +885,7 @@ export function InputsPage() {
           free round trip, scroll position and all, rather than a re-navigate
           that has to rebuild the list from scratch */}
       {sansUp && <SansCal />}
-      {calUp && <InputsCal fPerson={fPerson} fType={fType} fSearch={fSearch}
+      {calUp && <InputsCal fPerson={fPerson} fType={fType} fSearch={fSearch} lit={flash} litAt={relit}
         seedIso={range.from || isoOf(new Date())} lead={<>{tabsRow}{views}</>} tools={tools} under={filterSummary} onClearFilters={clearFilters} />}
       {tab === 'med' && <MedicalView />}
       {/* the OIL ask (owner, 28 Aug 26) — the desktop row's OIL chip: Save runs the

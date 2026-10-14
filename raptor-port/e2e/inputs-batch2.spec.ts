@@ -315,8 +315,9 @@ for (const where of ['the List', 'the opened day'] as const) {
     await page.locator('#inpEditRmk').fill('weekly sync')
     await page.locator('#inpEditRmk').press('Enter')
     await expect.poll(() => page.evaluate(() => (window as any).INPUTS.length)).toBe(before + 1)
-    /* the note says the save happened; by then any second window the key press could open would be up */
-    await expect(page.locator('#toastEl')).toContainText('Input added')
+    /* the new input wearing its mark says the save happened (owner D851, 14 Oct 26: no "Input added" note where it can be
+       seen arriving — it was the note this step waited on); by then any second window the key press could open would be up */
+    await expect(page.locator('.innew[data-fresh]:visible').first()).toBeVisible()
     await expect(page.locator('[data-testid="win-inputedit"]'), 'no blank "New input" opens again').toHaveCount(0)
     expect(await page.evaluate(() => (window as any).INPUTS.length), 'and nothing more was saved').toBe(before + 1)
   })

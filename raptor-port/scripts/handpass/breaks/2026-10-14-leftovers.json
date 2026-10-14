@@ -1,0 +1,375 @@
+[
+ {
+  "n": 1,
+  "name": "in view: a thing covered at one of its three points still counts as seen",
+  "file": "src/ui/seen.ts",
+  "find": "    if (!hit || !(hit === el || el.contains(hit))) return false\n",
+  "put": "",
+  "tests": [
+   "src/ui/seen.test.ts"
+  ]
+ },
+ {
+  "n": 2,
+  "name": "the note is said although the saved input is seen wearing its mark",
+  "file": "src/ui/seen.ts",
+  "find": "    if (first.some(inView)) { tell(words); return }",
+  "put": "    if (first.some(inView)) { HOOKS.toast(words, kind); return }",
+  "tests": [
+   "src/ui/seen.test.ts"
+  ]
+ },
+ {
+  "n": 3,
+  "name": "a screen reader is told nothing",
+  "file": "src/ui/seen.ts",
+  "find": "live.textContent = words",
+  "put": "live.textContent = ''",
+  "tests": [
+   "src/ui/seen.test.ts"
+  ]
+ },
+ {
+  "n": 4,
+  "name": "where nothing is laid out the note is not said at once",
+  "file": "src/ui/seen.ts",
+  "find": "if (!iid || !laidOut()) { HOOKS.toast(words, kind); return }",
+  "put": "if (!iid) { HOOKS.toast(words, kind); return }",
+  "tests": [
+   "src/ui/seen.test.ts"
+  ]
+ },
+ {
+  "n": 5,
+  "name": "a mark that is not laid out is waited for like one on its way",
+  "file": "src/ui/seen.ts",
+  "find": "return b.width > 0 && b.height > 0 })) { say(); return }",
+  "put": "return false })) { say(); return }",
+  "tests": [
+   "src/ui/seen.test.ts"
+  ]
+ },
+ {
+  "n": 6,
+  "name": "a save made with another page in front is left to the screen",
+  "file": "src/ui/inputedit.tsx",
+  "find": "want && !!row && revealInput(row) && CURPAGE === 'inputs'",
+  "put": "want && !!row && revealInput(row)",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ },
+ {
+  "n": 7,
+  "name": "a save that said a word of its own loses \"Input updated\" from the one note",
+  "file": "src/ui/inputedit.tsx",
+  "find": "if (!shown || toastHeld()) HOOKS.toast(words, 'ok')",
+  "put": "if (!shown) HOOKS.toast(words, 'ok')",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ },
+ {
+  "n": 8,
+  "name": "the batch never says what it holds",
+  "file": "src/ui/toast.ts",
+  "find": "return BATCH?BATCH.filter(m=>m.msg).length:0",
+  "put": "return 0",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ },
+ {
+  "n": 9,
+  "name": "the page is never said to have been asked to show the input (the note always at once)",
+  "file": "src/state/view.ts",
+  "find": "  return INPREVEAL!==was\n",
+  "put": "  return false\n",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ },
+ {
+  "n": 10,
+  "name": "the opened day's card wears no mark",
+  "file": "src/ui/InputsCal.tsx",
+  "find": " when={when} flash={lit.includes(it.key)}\n",
+  "put": " when={when}\n",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ },
+ {
+  "n": 11,
+  "name": "the bar behind an open day lights too",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "const barLit=(key:string)=>popIso==null&&lit.includes(key)",
+  "put": "const barLit=(key:string)=>lit.includes(key)",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ },
+ {
+  "n": 12,
+  "name": "the month's bar wears no mark",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "const barLit=(key:string)=>popIso==null&&lit.includes(key)",
+  "put": "const barLit=(key:string)=>key===''",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ },
+ {
+  "n": 13,
+  "name": "the calendar is not told which inputs are lit",
+  "file": "src/ui/InputsPage.tsx",
+  "find": " lit={flash}",
+  "put": "",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ },
+ {
+  "n": 14,
+  "name": "a card does not say which input its mark is for",
+  "file": "src/ui/InputCard.tsx",
+  "find": " data-fresh={flash ? id : undefined}",
+  "put": "",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ },
+ {
+  "n": 15,
+  "name": "the desktop row does not say which input its mark is for",
+  "file": "src/ui/InputsPage.tsx",
+  "find": " data-fresh={isLit(r) ? r.iid : undefined}",
+  "put": "",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ },
+ {
+  "n": 16,
+  "name": "the bar does not say which input its mark is for",
+  "file": "src/ui/InputsCal.tsx",
+  "find": " data-fresh={barLit(sg.item.key) ? sg.item.key : undefined}",
+  "put": "",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ },
+ {
+  "n": 17,
+  "name": "the cancelled tag is one of the window's tools again (by the ✕)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "      mark={cxMark || undefined}>",
+  "put": "      tools={cxMark || undefined}>",
+  "tests": [
+   "src/ui/inputcx.test.tsx"
+  ]
+ },
+ {
+  "n": 18,
+  "name": "the bar does not know it carries a mark",
+  "file": "src/ui/FloatWindow.tsx",
+  "find": "'win-bar' + (mark ? ' has-mark' : '')",
+  "put": "'win-bar'",
+  "tests": [
+   "src/ui/inputcx.test.tsx"
+  ]
+ },
+ {
+  "n": 19,
+  "name": "the mark is drawn after the tools",
+  "file": "src/ui/FloatWindow.tsx",
+  "find": "        {mark ? <span className=\"win-mark\">{mark}</span> : null}\n        {tools ? <span className=\"win-tools\">{tools}</span> : null}",
+  "put": "        {tools ? <span className=\"win-tools\">{tools}</span> : null}\n        {mark ? <span className=\"win-mark\">{mark}</span> : null}",
+  "tests": [
+   "src/ui/inputcx.test.tsx",
+   "src/ui/inputsday.test.tsx"
+  ]
+ },
+ {
+  "n": 20,
+  "name": "the upchit question's answers wear the strip's class",
+  "file": "src/ui/UpchitConfirm.tsx",
+  "find": "<span className=\"upconf-ans\">",
+  "put": "<span className=\"seg upconf-ans\">",
+  "tests": [
+   "src/ui/upconfirm.test.tsx"
+  ]
+ },
+ {
+  "n": 21,
+  "name": "the medical clash's answers wear the strip's class",
+  "file": "src/ui/MedClashConfirm.tsx",
+  "find": "<span className=\"upconf-ans\">\n                    <button className={'upconf-seg' + (choiceOf(i) === 'new'",
+  "put": "<span className=\"seg upconf-ans\">\n                    <button className={'upconf-seg' + (choiceOf(i) === 'new'",
+  "tests": [
+   "src/ui/medclash.test.tsx"
+  ]
+ },
+ {
+  "n": 22,
+  "name": "a plain add says \"added to\" again",
+  "file": "src/ui/reqdoor.ts",
+  "find": "if (!spoke && tail) HOOKS.toast(said + tail, 'ok')",
+  "put": "if (!spoke) HOOKS.toast(said + tail, 'ok')",
+  "tests": [
+   "src/ui/reqdoor.test.tsx",
+   "src/ui/phmember.test.tsx",
+   "src/ui/oilwait.test.tsx",
+   "src/ui/oilplaceholderclaim.test.tsx"
+  ]
+ },
+ {
+  "n": 23,
+  "name": "an add to an input answered No no longer says \"not counted for OIL\"",
+  "file": "src/ui/reqdoor.ts",
+  "find": "if (!spoke && tail) HOOKS.toast(said + tail, 'ok')",
+  "put": "",
+  "tests": [
+   "src/ui/reqdoor.test.tsx",
+   "src/ui/phmember.test.tsx",
+   "src/ui/oilwait.test.tsx",
+   "src/ui/oilplaceholderclaim.test.tsx"
+  ]
+ },
+ {
+  "n": 24,
+  "name": "a plain take-off says \"taken out of\" again",
+  "file": "src/ui/reqdoor.ts",
+  "find": "if (!spoke && said) HOOKS.toast(said, 'ok')",
+  "put": "if (!spoke) HOOKS.toast(said || `${cs} taken out of it`, 'ok')",
+  "tests": [
+   "src/ui/reqdoor.test.tsx",
+   "src/ui/phmember.test.tsx",
+   "src/ui/oilwait.test.tsx",
+   "src/ui/oilplaceholderclaim.test.tsx"
+  ]
+ },
+ {
+  "n": 25,
+  "name": "a move no longer says where he went",
+  "file": "src/ui/reqdoor.ts",
+  "find": "if (!spoke && said) HOOKS.toast(said, 'ok')",
+  "put": "",
+  "tests": [
+   "src/ui/reqdoor.test.tsx",
+   "src/ui/phmember.test.tsx",
+   "src/ui/oilwait.test.tsx",
+   "src/ui/oilplaceholderclaim.test.tsx"
+  ]
+ },
+ {
+  "n": 26,
+  "name": "the board's Done says \"Schedule updated\" again",
+  "file": "src/ui/SchedBoard.tsx",
+  "find": "onClick={() => closeScheduler()}",
+  "put": "onClick={() => { HOOKS.toast('Schedule updated'); closeScheduler() }}",
+  "tests": [
+   "src/ui/board.test.tsx"
+  ]
+ },
+ {
+  "n": 27,
+  "name": "the six seconds are not started again by a second save (the first timer still takes the mark off)",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "    clearTimeout(flashT.current.get(id))\n",
+  "put": "",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ },
+ {
+  "n": 28,
+  "name": "the box itself is not started again",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "a.currentTime = 0 }",
+  "put": "void a }",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ },
+ {
+  "n": 29,
+  "name": "the desktop row is keyed by its place in the list again",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "<tr key={r.iid} className={rowCls}",
+  "put": "<tr key={inx} className={rowCls}",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ },
+ {
+  "n": 30,
+  "name": "the opened day goes to the first lit card, not the one just saved",
+  "file": "src/ui/InputsCal.tsx",
+  "find": ".find(el=>el.getAttribute('data-fresh')===newest) as any",
+  "put": "[0] as any",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ },
+ {
+  "n": 31,
+  "name": "the opened day is moved again when an older mark runs out",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "  },[newest,popIso,litAt])\n",
+  "put": "  },[lit.join('|'),popIso,litAt])\n",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ },
+ {
+  "n": 32,
+  "name": "the late words replace a note raised since the save asked",
+  "file": "src/ui/seen.ts",
+  "find": "if (toastCount() !== at) tell(words); else HOOKS.toast(words, kind)",
+  "put": "HOOKS.toast(words, kind)",
+  "tests": [
+   "src/ui/seen.test.ts"
+  ]
+ },
+ {
+  "n": 33,
+  "name": "the screen reader's region is made only when it is filled",
+  "file": "src/ui/seen.ts",
+  "find": "  region()\n  /* the note, come late",
+  "put": "  /* the note, come late",
+  "tests": [
+   "src/ui/seen.test.ts"
+  ]
+ },
+ {
+  "n": 34,
+  "name": "the count of notes shown never moves",
+  "file": "src/ui/toast.ts",
+  "find": "  SHOWN++;\n",
+  "put": "",
+  "tests": [
+   "src/ui/seen.test.ts"
+  ]
+ },
+ {
+  "n": 35,
+  "name": "nothing on the List is ever lit",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "const isLit = (r: any) => flash.indexOf(String(r.iid)) >= 0",
+  "put": "const isLit = (r: any) => r === null",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ },
+ {
+  "n": 36,
+  "name": "the same input lit again with its day open does not bring the window to its card",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "  },[newest,popIso,litAt])\n",
+  "put": "  },[newest,popIso])\n",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ }
+]

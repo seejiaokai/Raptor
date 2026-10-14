@@ -192,7 +192,7 @@ describe('D177 / D178 — an input change after publishing waits for the admin',
     expect(INPUTS.some((r: any) => r.remarks === 'KEEP ON LOAD'), 'the member\'s record is his').toBe(true)
     expect(dayShownPendCount(MON)).toBe(1)
     /* …and the load's sentence says why the day still reads pending (Fable's code read F5; the plan's layer 1) */
-    expect(inputsLeftSaid(MON)).toBe(" · 1 member input change stays pending — a load cannot put back a member's own record")
+    expect(inputsLeftSaid(MON)).toBe(" 1 change to a member's input stays pending. A load never puts back a member's own input.")   // (owner D863)
   })
 
   it('an accepted request edited after publishing is ONE change — its re-landed row folds into it', () => {

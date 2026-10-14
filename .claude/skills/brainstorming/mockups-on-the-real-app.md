@@ -87,6 +87,10 @@ someone.
   first that the mode the app is opened in can show the state under test (a
   memory-only start cannot produce a failed save).
 
+- **A fit drawn in the test browser's letters is not a fit on his device.** Say in the drawing's script which part
+  gives way when the letters are wider (a date must not be the one that breaks), and draw that case — the same list in
+  letters about a seventh wider — beside the plain one. It shows what yields; only his own device proves the fit.
+
 ## Showing It
 
 - A change to the LOOK or LAYOUT of a surface the owner uses daily gets a

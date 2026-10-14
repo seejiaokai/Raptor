@@ -22,7 +22,7 @@ import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { storeBackend, HOOKS } from '../engine/hooks'
 import { stashClear } from '../engine/weekstash'
-import { SCHED, signOf, dayPendingItems } from '../engine/publish'
+import { SCHED, signOf, dayPendingItems, setDayApproved, dayCurVer } from '../engine/publish'
 import { ELOG } from '../engine/editlog'
 import { slotVal } from '../engine/slots'
 import * as slots from '../engine/slots'
@@ -30,6 +30,8 @@ import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { NOTICES } from '../state/notices'
 import { initStore, weekStashSnap, weekDirty, loadWeek, writeFill, resetSession } from '../state/store'
 import { setSession, setMe, DEFAULT_ME } from '../state/auth'
+import * as auth from '../state/auth'
+import * as store from '../state/store'
 import { hydrate, wirePersist } from '../state/persist'
 import { bootStorage } from '../storage/boot'
 import { settingsAdapter } from '../storage/adapters'
@@ -42,6 +44,7 @@ import { _resetDisclosure } from '../state/disclosure'
 import { commitSetDayApproved, schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { setPage, setBoardDay } from '../state/view'
 import * as view from '../state/view'
+import { closeScheduler, askCx, cxCommit } from './board'
 import { commitInput, commitInputEdit, draftOf, inputWho } from './inputedit'
 import { rowPut, rowMove, rowMark } from './reqdoor'
 import * as pops from './pops'
@@ -79,7 +82,7 @@ function resetWorld() {
   SCHED.signBind = {}; SCHED.drafts = {}; SCHED.curDraft = {}; SCHED.retired = {}; SCHED.correcting = {}
   view.WARNOFF.clear(); view.disarmSlot()
   view.setOilWait(null); view.setOilBar(null)
-  pops.setInpEdit(null); pops.setOilAsk(null)
+  pops.setInpEdit(null); pops.setOilAsk(null); pops.setOilList(null)
   stashClear()
 }
 async function boot(be = new MemoryBackend()) {
@@ -199,7 +202,7 @@ describe('a person ADDED where the input has no answer yet waits the same way (D
     expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
     expect(people()).toEqual(['bane', 'pike', 'split'])
     expect(rec().oil).toEqual({ [SAT_ISO]: 0.5 })
-    expect(SAID.join(' | ')).toContain(`${cs('split')} added to ${TITLE}`)
+    expect(SAID.join(' | '), 'the puck is the sign: no note (owner D854)').not.toContain('added to')
     globalUndo()
     expect(people(), 'ONE Undo').toEqual(['bane', 'pike'])
     expect(rec().oil, 'and it is unanswered again').toBeUndefined()
@@ -344,7 +347,7 @@ describe('ON SCREEN — the question\'s own sheet with the waiting change\'s wor
       await act(async () => { expect(rowPut(rowKey(), 'pike')).toBe('asked') })
       const sheet = tid('oilconf')!
       expect(sheet, 'the question is up').toBeTruthy()
-      expect(sheet.querySelector('.airpop-head b')!.textContent).toBe(`OIL — ${cs('pike')}, ${TITLE}`)
+      expect(sheet.querySelector('.airpop-head b')!.textContent).toBe(`OIL: ${cs('pike')}, ${TITLE}`)
       expect(tid('oilconf-lead')!.textContent, 'a statement of what is waiting').toBe(`Putting ${cs('pike')} in place of ${cs('bane')}`)
       expect(tid('oilconf-cancel')!.textContent).toBe('Don’t swap')
       expect(tid('oilconf-save')!.textContent).toBe('Swap')
@@ -567,9 +570,11 @@ describe('the wires the break tests found bare', () => {
     expect(live(iid).date, 'not moved').toBe('Jul 18')
   })
   /* THE WALK (C3, A's and D's notes — 13 Oct 26): the passing note ("Input added") is drawn at the foot of the screen,
-     where the bar stands — and the bar STAYS, so every note raised while it is up landed on its words and half its
-     "Answer OIL" button. While the bar is up the note sits above it. */
-  it('a passing note never lands on the bar: while the bar is up the note sits above it — one already showing moves up when the bar arrives', async () => {
+     where the bar stood — and the bar STAYS, so every note raised while it was up landed on its words and half its
+     "Answer OIL" button; the note was then lifted above it. SINCE 14 OCT 26 THE BAR IS NOT AT THE FOOT AT ALL (owner
+     D831, D840): it is a band in the top bar's own last line, so a note at the foot cannot land on it and keeps its
+     own place whether the bar is up or not. */
+  it('a passing note never lands on the bar: the bar is a band in the top bar, and the note keeps its place at the foot while it is up', async () => {
     await boot()
     file(['bane'], SAT, { [SAT_ISO]: 0.5 })
     ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -582,11 +587,33 @@ describe('the wires the break tests found bare', () => {
       expect(note().style.bottom, 'no bar: at the foot, as ever').toBe('26px')
       await act(async () => { expect(rowPut(rowKey(), 'pike')).toBe('asked') })
       await act(async () => { leaveOilWait() })
-      expect(document.querySelector('[data-testid="oilbar"]'), 'the bar is up').toBeTruthy()
-      expect(parseFloat(note().style.bottom), 'the note already showing has moved clear of the bar').toBeGreaterThanOrEqual(60)
+      const bar = document.querySelector('[data-testid="oilbar"]') as HTMLElement
+      expect(bar, 'the bar is up').toBeTruthy()
+      /* under the bar in front: the Scheduler Board's own while the board is open (it lies over the top bar), the top
+         bar's otherwise — and only ever ONE of the two */
+      expect(document.querySelectorAll('[data-testid="oilbar"]'), 'one bar').toHaveLength(1)
+      const onBoard = !!bar.closest('.sb-top')
+      expect(bar.className, 'a band').toBe(onBoard ? 'oilband' : 'oilband is-top')
+      expect(bar.closest('.sb-top, .topbar'), 'inside a bar, never floating at the foot').toBeTruthy()
+      expect(document.querySelector('.topbar')!.classList.contains('oil-waiting'), 'the top bar makes room for it only where it carries it').toBe(!onBoard)
+      expect(document.querySelector('.secdef-snack.oilbar'), 'nothing of it is left at the foot').toBeNull()
+      expect(note().style.bottom, 'the note already showing stays where it was').toBe('26px')
       realToast('Schedule updated', 'ok')
-      expect(parseFloat(note().style.bottom), 'and one raised while the bar is up').toBeGreaterThanOrEqual(60)
+      expect(note().style.bottom, 'and one raised while the bar is up is at the foot too').toBe('26px')
+      /* THE BOARD CLOSED WITH THE BAR STILL UP (nothing was swapped): the top bar carries it now — one bar still — and
+         the top bar and the shell both say so, which is what makes the room for it and moves what hangs under the bar
+         (17-save-status.css). The break test of 14 Oct 26 found nothing watched this: with the class cut, every test
+         stayed green. */
+      await act(async () => { closeScheduler() })
+      const top = document.querySelector('[data-testid="oilbar"]') as HTMLElement
+      expect(document.querySelectorAll('[data-testid="oilbar"]'), 'still one bar').toHaveLength(1)
+      expect(top.className, 'the top bar\u2019s own').toBe('oilband is-top')
+      expect(top.closest('#shell .topbar'), 'inside the top bar').toBeTruthy()
+      expect(document.querySelector('#shell .topbar')!.classList.contains('oil-waiting'), 'the top bar makes room').toBe(true)
+      expect(document.getElementById('shell')!.classList.contains('oil-waiting'), 'and the shell says so to the windows beside it').toBe(true)
       await act(async () => { oilBarOk() })
+      expect(document.getElementById('shell')!.classList.contains('oil-waiting')).toBe(false)
+      expect(document.querySelector('.topbar')!.classList.contains('oil-waiting'), 'the bar gone, the room goes').toBe(false)
       realToast('Schedule updated', 'ok')
       expect(note().style.bottom, 'the bar gone: the foot again').toBe('26px')
     } finally { await act(async () => { root.unmount() }); const t = note(); if (t) t.remove() }
@@ -932,11 +959,14 @@ describe('an input put BACK on the programme where it needs an OIL answer is NOT
       expect(SAID.join(' | ')).toContain('filed under Unavailable')
     })
   }
-  it('(D814) the mark taken off again, the input needs its answer again: the next put-back asks', async () => {
+  /* (the cancel is taken back by UNDO here, which asks nothing — D793 reading 3. Taken off by the row's own button it now
+     asks first itself: owner D816, the block "taking the cancel off … (ON10)" at the foot of this file. Until D816 this
+     test took it off by the button, which answered 'done' and left the input live with no answer.) */
+  it('(D814) the cancel taken back, the input needs its answer again: the next put-back asks', async () => {
     await boot()
     file(['bane'], SAT)
     expect(rowMark(rowKey(), 'cx', true, 'weather')).toBe('done')
-    expect(rowMark(rowKey(), 'cx', false)).toBe('done')
+    globalUndo()
     expect(!!rec().cx, 'the premise: no longer cancelled').toBe(false)
     press('x'); SAID = []
     press('g')
@@ -1116,5 +1146,345 @@ describe('an input put BACK on the programme where it needs an OIL answer is NOT
     expect(rec().acc).toBe('u')
     expect(rec().oil, 'one answer, on the input').toEqual({ [SAT_ISO]: 0.5 })
     expect(people(), 'and its people are as they were').toEqual(['pike', 'bane', 'split'])
+  })
+})
+
+/* TAKING THE CANCEL OFF AN INPUT THAT HAS NO OIL ANSWER PUTS THE QUESTION FIRST (owner D816, 13 Oct 26 — "Ok go with your
+   recommendation yes"; `[OIL-UNCANCEL-UNASKED]`; the other half of D814: a cancelled input is never asked, so the moment
+   its question comes back is when the cancel comes off — and that button asked nothing). His words: "taking the cancel
+   off an input that has no OIL answer for a non-working day puts the OIL question first, as 'Accept' does — nothing is
+   un-cancelled until it is answered; where it is already answered, or nothing is to be asked, it is un-cancelled at
+   once and the answer counts again." Readings told to him: the information-only mark the same; not answered, the bar
+   that stays says so; the answer and the un-cancel are ONE step and ONE Undo; an Undo of a cancel still asks nothing.
+   Driven through the row's own door (ui/reqdoor.ts rowMark) and the board's own two calls (askCx / cxCommit). The
+   input is filed with NO answer — the state a day made a holiday afterwards leaves. */
+describe('taking the cancel off an input with no OIL answer waits on the OIL question (D816) (ON10)', () => {
+  const cancel = (di = SAT) => expect(rowMark(rowKey(di), 'cx', true, 'WX'), 'a cancel asks nothing').toBe('done')
+  it('no answer: nothing is un-cancelled — the question waits, in the un-cancel\'s own words', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    expect(view.OILWAIT, 'the cancel itself asked nothing').toBeNull()
+    const was = world(); SAID = []
+    expect(rowMark(rowKey(), 'cx', false)).toBe('asked')
+    expect(world(), 'NOTHING moved: the input, the day, the history, the bell, Undo').toBe(was)
+    expect(rec().cx, 'still cancelled').toBe(true)
+    const w = view.OILWAIT!
+    expect(w, 'the question waits').toBeTruthy()
+    expect(w.kind).toBe('uncx')
+    expect(w.lead).toBe(`Un-cancelling ${cs('bane')}'s ${TITLE}`)
+    expect(w.gate.plan).toEqual([{ iso: SAT_ISO, amt: 0.5 }])
+    expect(WAIT_WORDS.uncx).toEqual({ no: 'Don’t un-cancel', yes: 'Un-cancel', not: 'Not un-cancelled — OIL not answered' })
+    expect(SAID, 'and nothing is said yet').toEqual([])
+  })
+  it('answered Yes: un-cancelled AND answered in ONE step — one Undo brings the cancel back and takes the answer away', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    expect(rowMark(rowKey(), 'cx', false)).toBe('asked')
+    SAID = []
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    expect(view.OILWAIT).toBeNull(); expect(view.OILBAR).toBeNull()
+    expect(!!rec().cx, 'un-cancelled').toBe(false)
+    expect(rec().cxr, 'its reason gone with it').toBeUndefined()
+    expect(rec().oil, 'and the answer written').toEqual({ [SAT_ISO]: 0.5 })
+    expect(SAID.join(' | '), 'the board\'s own word for it').toContain('Restored')
+    globalUndo()
+    expect(rec().cx, 'ONE Undo: cancelled again…').toBe(true)
+    expect(rec().cxr).toBe('WX')
+    expect(rec().oil, '…and unanswered again').toBeUndefined()
+  })
+  it('answered No: un-cancelled, and the No is kept as its answer', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    expect(rowMark(rowKey(), 'cx', false)).toBe('asked')
+    expect(answerOilWait({ [SAT_ISO]: 0 })).toBe(true)
+    expect(!!rec().cx).toBe(false)
+    expect(rec().oil).toEqual({ [SAT_ISO]: 0 })
+  })
+  it('not answered: it stays cancelled and the bar says so; "Answer OIL" brings the question back; "OK" only closes', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    const was = world()
+    expect(rowMark(rowKey(), 'cx', false)).toBe('asked')
+    leaveOilWait()
+    expect(view.OILWAIT).toBeNull()
+    expect(view.OILBAR!.text).toBe('Not un-cancelled — OIL not answered')
+    expect(world(), 'nothing was written').toBe(was)
+    oilBarAgain()
+    expect(view.OILWAIT!.kind, 'the question again').toBe('uncx')
+    leaveOilWait(); oilBarOk()
+    expect(view.OILBAR).toBeNull()
+    expect(rec().cx).toBe(true)
+  })
+  it('already answered: un-cancelled at once, and the answer counts again — no question', async () => {
+    await boot()
+    file(['bane'], SAT, { [SAT_ISO]: 0.5 })
+    cancel()
+    expect(rowMark(rowKey(), 'cx', false)).toBe('done')
+    expect(view.OILWAIT).toBeNull()
+    expect(!!rec().cx).toBe(false)
+    expect(rec().oil).toEqual({ [SAT_ISO]: 0.5 })
+  })
+  it('a working day: at once — nothing is to be asked', async () => {
+    await boot()
+    file(['bane'], WED)
+    cancel(WED)
+    expect(rowMark(rowKey(WED), 'cx', false)).toBe('done')
+    expect(view.OILWAIT).toBeNull()
+    expect(!!rec(WED).cx).toBe(false)
+  })
+  it('the information-only mark comes off the same way, in its own words', async () => {
+    await boot()
+    file(['bane'], SAT)
+    expect(rowMark(rowKey(), 'info', true), 'putting it on asks nothing').toBe('done')
+    const was = world()
+    expect(rowMark(rowKey(), 'info', false)).toBe('asked')
+    expect(world()).toBe(was)
+    expect(view.OILWAIT!.kind).toBe('uninfo')
+    expect(WAIT_WORDS.uninfo).toEqual({ no: 'Don’t change', yes: 'Change', not: 'Not changed — OIL not answered' })
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    expect(!!rec().info, 'the mark is off').toBe(false)
+    expect(rec().oil).toEqual({ [SAT_ISO]: 0.5 })
+    globalUndo()
+    expect(rec().info, 'one Undo').toBe(true)
+    expect(rec().oil).toBeUndefined()
+  })
+  /* the scenario designer's S2: both marks on one input. While EITHER stands it can earn nothing (D814), so the first to
+     come off has nothing to ask; the question comes with the LAST one. */
+  it('cancelled AND information-only: the first mark off asks nothing, the last one asks', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    expect(rowMark(rowKey(), 'info', true)).toBe('done')
+    expect(rowMark(rowKey(), 'cx', false), 'still information-only: nothing to ask').toBe('done')
+    expect(view.OILWAIT).toBeNull()
+    expect(!!rec().cx).toBe(false)
+    expect(rec().oil, 'and no answer was written').toBeUndefined()
+    expect(rowMark(rowKey(), 'info', false), 'the last mark: the question').toBe('asked')
+    expect(view.OILWAIT!.kind).toBe('uninfo')
+    expect(rec().info, 'nothing changed until it is answered').toBe(true)
+  })
+  it('a cancel put ON, and the red box either way, ask nothing', async () => {
+    await boot()
+    file(['bane'], SAT)
+    expect(rowMark(rowKey(), 'flag', true)).toBe('done')
+    expect(rowMark(rowKey(), 'flag', false)).toBe('done')
+    expect(rowMark(rowKey(), 'cx', true, 'OPS')).toBe('done')
+    expect(view.OILWAIT).toBeNull(); expect(view.OILBAR).toBeNull()
+  })
+  it('an Undo of a cancel asks nothing (D793 reading 3)', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    globalUndo()
+    expect(!!rec().cx, 'the Undo took the cancel off').toBe(false)
+    expect(view.OILWAIT).toBeNull(); expect(view.OILBAR).toBeNull()
+  })
+  it('changed meanwhile — brought back by an Undo while the question waited at the bar: it says so and makes nothing', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    expect(rowMark(rowKey(), 'cx', false)).toBe('asked')
+    leaveOilWait()
+    globalUndo()                                    // the cancel itself is taken back: the input is live again
+    expect(!!rec().cx).toBe(false)
+    SAID = []
+    oilBarAgain()
+    expect(view.OILWAIT, 'no question for an input that is no longer cancelled').toBeNull()
+    expect(SAID.join(' | ')).toContain('That input has changed — not un-cancelled')
+  })
+  /* written for the break tests (14 Oct 26): three guards of the door that no test had reached */
+  it('the ANSWER arriving after the input was brought back another way — an Undo under the open question: nothing is made, no answer is written, and it says the input has changed', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    expect(rowMark(rowKey(), 'cx', false)).toBe('asked')
+    globalUndo()                                    // under the question's sheet, from the keyboard: the cancel is taken back
+    expect(!!rec().cx, 'the premise: live again').toBe(false)
+    SAID = []
+    expect(answerOilWait({ [SAT_ISO]: 0.5 }), 'not made').toBe(false)
+    expect(rec().oil, 'no answer written onto an input the question was not about any more').toBeUndefined()
+    expect(SAID.join(' | ')).toContain('That input has changed — not un-cancelled')
+  })
+  it('a take-off the save itself would refuse is refused in its own words — nobody is asked a question for it first', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    SAID = []
+    const spy = vi.spyOn(store, 'writeInputsBatch').mockReturnValue(false)
+    try { expect(rowMark(rowKey(), 'cx', false)).toBe('refused') } finally { spy.mockRestore() }
+    expect(view.OILWAIT, 'no question for a change that cannot be made').toBeNull()
+    expect(rec().cx, 'still cancelled').toBe(true)
+    expect(SAID.length, 'it said why').toBeGreaterThan(0)
+  })
+  it('"Answer OIL" for someone who may no longer edit the schedule: no question, nothing made', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    expect(rowMark(rowKey(), 'cx', false)).toBe('asked')
+    leaveOilWait()
+    const spy = vi.spyOn(auth, 'canEditSched').mockReturnValue(false)
+    try { oilBarAgain() } finally { spy.mockRestore() }
+    expect(view.OILWAIT, 'nobody who cannot edit the schedule is asked').toBeNull()
+    expect(rec().cx, 'still cancelled').toBe(true)
+    expect(rec().oil).toBeUndefined()
+  })
+  it('through the board\'s own cancel sheet: no "Restored" while it waits — "Restored" once it is answered', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    SAID = []
+    const k = rowKey()
+    askCx(ground()[riOf()], null, 'this item', undefined, (c: boolean, why: string) => rowMark(k, 'cx', c, why) === 'done')
+    cxCommit(false, '')
+    expect(SAID, 'nothing is said while it waits').toEqual([])
+    expect(view.OILWAIT!.kind).toBe('uncx')
+    expect(rec().cx).toBe(true)
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    expect(SAID).toEqual(['Restored'])
+  })
+})
+
+/* THE FLASH FOLLOWS THE INPUT, NOT THE PLACE ITS ROW HAD (the fresh read of the finished code, F4 — 14 Oct 26). The wait
+   named its row's button by the row's position, taken once; a row taken off above it meanwhile, and "Answer OIL" then
+   "Don't un-cancel" flashed another row's button. The place is worked out when the question is put, every time. */
+describe('the un-cancel that waits names its row by where the input stands NOW (D816; the read, F4)', () => {
+  it('a row taken off above it while the bar is up: "Answer OIL" asks again with the button of the row it stands on now', async () => {
+    await boot()
+    file(['bane'], SAT)
+    file(['pike'], SAT, undefined, { title: SECOND, s: 600, e: 660 })
+    const late = riOf(SAT, TITLE) > riOf(SAT, SECOND) ? TITLE : SECOND, other = late === TITLE ? SECOND : TITLE
+    expect(rowMark(rowKey(SAT, late), 'cx', true, 'WX')).toBe('done')
+    const was = riOf(SAT, late)
+    expect(rowMark(rowKey(SAT, late), 'cx', false)).toBe('asked')
+    expect(view.OILWAIT!.places).toEqual([`sel:[data-grcx="${SAT}.${was}"]`])
+    leaveOilWait()
+    expect(view.OILBAR, 'the bar is up').toBeTruthy()
+    const b = document.createElement('button'); b.dataset.acc = 'x'; b.dataset.accd = String(SAT); b.dataset.acck = String(inpId(rec(SAT, other))); document.body.appendChild(b)
+    try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+    const now = riOf(SAT, late)
+    expect(now, 'the premise: its row has moved up').toBeLessThan(was)
+    expect(view.OILBAR, 'the premise: the bar outlives another row taken off').toBeTruthy()
+    oilBarAgain()
+    expect(view.OILWAIT, 'asked again').toBeTruthy()
+    expect(view.OILWAIT!.places, 'the button of the row it stands on now — and no other').toEqual([`sel:[data-grcx="${SAT}.${now}"]`])
+  })
+})
+
+/* A PUBLISHED VERSION LOADED BACK SAYS HOW MANY INPUTS STILL NEED AN OIL ANSWER, AND OPENS THE DAY'S ONE LIST (owner D818,
+   13 Oct 26 — "B"; `[OIL-LOAD-VERSION-UNASKED]`). His ruling: "after a published version is loaded back onto the working
+   copy, the app says how many of the inputs it put back still need an OIL answer and opens that day's one list of them
+   — the load itself is not held." Readings told to him: the list is D782's own, for the day that was loaded; nothing is
+   added where none needs an answer; a cancelled input does not count (D814). The load is made through its own routed
+   button, as the app's preview bar makes it; the day is published by the engine's own publish. */
+describe('a published version loaded back: how many inputs need an OIL answer, and the day\'s one list opens (D818) (ON11)', () => {
+  const pressRouted = (set: (b: HTMLElement) => void) => {
+    const b = document.createElement('button'); set(b); document.body.appendChild(b)
+    try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+  }
+  const takeOff = () => pressRouted(b => { b.dataset.acc = 'x'; b.dataset.accd = String(SAT); b.dataset.acck = String(inpId(rec())) })
+  /* the load: its first press arms the confirm where the working copy has changes to discard, the second makes it */
+  const load = () => {
+    const ver = String(dayCurVer(SAT))
+    for (let i = 0; i < 2 && riOf() < 0; i++) pressRouted(b => { b.dataset.restore = String(SAT); b.dataset.rver = ver })
+  }
+  const publishSat = () => { sign(SAT); setDayApproved(SAT, true) }
+  it('an unanswered input the load put back: the note says "1 input needs an OIL answer" and the list opens for that day', async () => {
+    await boot()
+    file(['bane'], SAT)                       // on Saturday's programme, with no answer
+    publishSat()
+    takeOff()
+    expect(riOf(), 'the premise: taken off the programme since it was published').toBe(-1)
+    SAID = []
+    load()
+    expect(riOf(), 'the load put its row back').toBeGreaterThanOrEqual(0)
+    const said = SAID.join(' | ')
+    expect(said).toContain('Saturday is back to the Original.')   // the shortened note (owner D863)
+    expect(said, 'the tail, in his words').toContain(' 1 input needs an OIL answer.')
+    /* (`plain`: a Saturday is a weekend, not a public holiday — the list's heading must not call it one) */
+    expect(pops.OILLIST, 'the day\'s one list is open, for that day').toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true })
+    expect(view.OILWAIT, 'the load itself was not held').toBeNull()
+  })
+  it('the input it put back is already answered: nothing is added and no list opens', async () => {
+    await boot()
+    file(['bane'], SAT, { [SAT_ISO]: 0.5 })
+    publishSat()
+    takeOff()
+    SAID = []
+    load()
+    expect(riOf()).toBeGreaterThanOrEqual(0)
+    expect(SAID.join(' | ')).toContain(' is back to ')
+    expect(SAID.join(' | ')).not.toContain('OIL answer')
+    expect(pops.OILLIST).toBeNull()
+  })
+  it('a cancelled input put back does not count (D814): no tail, no list', async () => {
+    await boot()
+    file(['bane'], SAT)
+    expect(rowMark(rowKey(), 'cx', true, 'WX')).toBe('done')
+    publishSat()
+    takeOff()
+    SAID = []
+    load()
+    expect(riOf()).toBeGreaterThanOrEqual(0)
+    expect(rec().cx).toBe(true)
+    expect(SAID.join(' | ')).not.toContain('OIL answer')
+    expect(pops.OILLIST).toBeNull()
+  })
+  it('two inputs put back, one answered: it counts the one', async () => {
+    await boot()
+    file(['bane'], SAT)
+    file(['pike'], SAT, { [SAT_ISO]: 0.5 }, { title: SECOND })
+    publishSat()
+    pressRouted(b => { b.dataset.acc = 'x'; b.dataset.accd = String(SAT); b.dataset.acck = String(inpId(rec(SAT, TITLE))) })
+    pressRouted(b => { b.dataset.acc = 'x'; b.dataset.accd = String(SAT); b.dataset.acck = String(inpId(rec(SAT, SECOND))) })
+    expect([riOf(SAT, TITLE), riOf(SAT, SECOND)]).toEqual([-1, -1])
+    SAID = []
+    const ver = String(dayCurVer(SAT))
+    for (let i = 0; i < 2 && riOf() < 0; i++) pressRouted(b => { b.dataset.restore = String(SAT); b.dataset.rver = ver })
+    expect(riOf(SAT, TITLE)).toBeGreaterThanOrEqual(0); expect(riOf(SAT, SECOND)).toBeGreaterThanOrEqual(0)
+    expect(SAID.join(' | ')).toContain(' 1 input needs an OIL answer.')
+    expect(pops.OILLIST).toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true })
+  })
+  /* (the fresh read, F1) An input of several days has ONE row, on its first day. Its unanswered day can be another day
+     than the one loaded — and the load still put it back, and it still needs its answer: it is counted, and the list
+     opens for the day that needs the answer. */
+  it('an input of two days put back by a load of its FIRST day, its unanswered day the second: counted, and the list opens for that day', async () => {
+    await boot()
+    const FRI = 4
+    /* Fri 17 – Sat 18, filed with no answer for its Saturday (the state a late holiday, or an older filing, leaves) */
+    expect(commitInput(null, draftOf({ person: 'bane', type: 'Meeting', title: TITLE, date: 'Jul 17', endDate: 'Jul 18', yr: 2026, allday: true, remarks: '' }), ['bane'])).toBe(true)
+    const two = () => { const l = INPUTS.filter((x: any) => x.title === TITLE) as any[]; expect(l).toHaveLength(1); return l[0] }
+    const stands = () => two().acc === 'g' || two().acc === 'u'
+    expect(stands(), 'the premise: it stands on the schedule (' + two().acc + ')').toBe(true)
+    expect(two().oil, 'the premise: no answer').toBeUndefined()
+    sign(FRI); setDayApproved(FRI, true)
+    pressRouted(b => { b.dataset.acc = 'x'; b.dataset.accd = String(FRI); b.dataset.acck = String(inpId(two())) })
+    expect(stands(), 'the premise: taken off since Friday was published').toBe(false)
+    SAID = []
+    const ver = String(dayCurVer(FRI))
+    for (let i = 0; i < 2 && !stands(); i++) pressRouted(b => { b.dataset.restore = String(FRI); b.dataset.rver = ver })
+    expect(stands(), 'the load put it back: ' + SAID.join(' | ')).toBe(true)
+    expect(SAID.join(' | '), 'counted, though Friday itself has nothing to answer').toContain(' 1 input needs an OIL answer.')
+    expect(pops.OILLIST, 'the list opens for the day that needs the answer').toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true })
+    /* the note, shortened (owner D863, 15 Oct 26 — "Shorten it"): short sentences, every fact kept but the edits the
+       confirming button already counted */
+    expect(SAID.join(' | ')).toBe('Friday is back to the Original. Viewers still see the Original. ' + TITLE + ' is on Saturday again too. 1 input needs an OIL answer.')
+  })
+  it('an unanswered input that was on the programme all along is not "put back" by the load: no tail (the bell and its "OIL?" sign already carry it)', async () => {
+    await boot()
+    file(['bane'], SAT)
+    file(['pike'], SAT, { [SAT_ISO]: 0.5 }, { title: SECOND })
+    publishSat()
+    pressRouted(b => { b.dataset.acc = 'x'; b.dataset.accd = String(SAT); b.dataset.acck = String(inpId(rec(SAT, SECOND))) })
+    SAID = []
+    const ver = String(dayCurVer(SAT))
+    for (let i = 0; i < 2 && riOf(SAT, SECOND) < 0; i++) pressRouted(b => { b.dataset.restore = String(SAT); b.dataset.rver = ver })
+    expect(riOf(SAT, SECOND)).toBeGreaterThanOrEqual(0)
+    expect(SAID.join(' | ')).toContain(' is back to ')
+    expect(SAID.join(' | ')).not.toContain('OIL answer')
+    expect(pops.OILLIST).toBeNull()
   })
 })

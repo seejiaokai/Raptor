@@ -37,7 +37,7 @@ import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
 import { notify as raptorNotify, subscribe as raptorSubscribe, getVersion as raptorVersion, writeInputsBatch } from '../state/store'
-import { setDaysWin, setOilList } from '../ui/pops'
+import { setDaysWin, setInpEdit, setOilList } from '../ui/pops'
 import { lwSyncTurn } from './state/store'
 import {
   addDays,
@@ -677,8 +677,12 @@ function publishLeaveClashes(): void {
              Order the pair here rather than letting the wording flip. */
           const [a, b] = pair[1].kind === 'credit' && pair[0].kind !== 'credit' ? [pair[1], pair[0]] : pair
           const duty = a.kind === 'credit' || b.kind === 'credit'
+          const holders = duty ? [b] : [a, b]
+          const wayOut = clashWayOut(holders, war.period?.stage === 'published')
+          /* the leave filed on the Inputs page that is in the way — what "Change the leave on Inputs" opens (D827) */
+          const filed = wayOut === 'inputs' ? holders.find(c => c.kind === 'absence' && !c.lw) : undefined
           out.push({ person, date, inputCode: notationOf(a.code, a.win), bidCode: notationOf(b.code, b.win), ...(duty ? { kind: 'duty' as const } : {}),
-            wayOut: clashWayOut(duty ? [b] : [a, b], war.period?.stage === 'published') })
+            wayOut, war: String(war.period?.id ?? ''), ...(filed ? { iid: String(filed.id) } : {}) })
         }
       }
     }
@@ -720,6 +724,11 @@ export interface SyncClash {
   kind?: 'duty'
   /** Where it is undone (`clashWayOut`) — so the strip never sends him to a sheet with no control on it. */
   wayOut: ClashWayOut
+  /** The leave period that holds the date — the list covers every period, and a tap on a clash must put ITS period on
+   *  screen before it opens the day ([LW-CLASH-NOTE-PHONE], owner D827). */
+  war: string
+  /** `wayOut: 'inputs'` only: the Input in the way, whose own window the tap opens. */
+  iid?: string
 }
 
 /* Re-derived on every pass, never persisted — a clash list is a view of two
@@ -900,7 +909,7 @@ function holidaySpan(a: string, b: string): { a: string; b: string; name: string
    list's empty name box) is saved under the preset's own word (holidayWord), and that word is not a name: the list
    then said "PH is now a public holiday." under "Public holiday · PH" (the check's walk, E1 — 13 Oct 26). Read as '',
    and each reader says it its own way: the list names the day, the bell's line says "Public holiday". */
-function holidayOwnName(iso: string): string { const n = dayFacts(iso).name; return n && n !== holidayWord('ph') ? n : '' }
+export function holidayOwnName(iso: string): string { const n = dayFacts(iso).name; return n && n !== holidayWord('ph') ? n : '' }
 /* the schedulers — every account that is an admin, switched on and tied to a person (state/accounts.ts) */
 const schedulerIds = (): string[] => ACCOUNTS_LIST.filter(a => isAdminAccount(a) && a.on && !!a.pid).map(a => String(a.pid))
 /* A WORKING DAY WAS MADE A HOLIDAY — called by the war's store INSIDE the command that did it (state/store.ts
@@ -1328,7 +1337,16 @@ const WEEKDAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', '
  * Weekends and public holidays only, and only from the RESOLVED ISSUED
  * snapshot — the same evidence the credit itself is drawn from, so the warning
  * can never disagree with the OIL. */
-function oilBlindLine(iso: string, day: any, spans: Record<string, OilWork[]>): string | null {
+/* `told` — THE FIRST FORM, IN TWO HALVES, FOR THE NOTE THAT FOLLOWS THE DAY'S OWN PUBLISH NOTE (owner D837, 14 Oct 26 —
+   the passing note N1). `line` is the sentence exactly as it has always been said, and is what is shown wherever this
+   note stands by itself or behind an amendment's receipt. `told` hands the one join that may fuse it with "Monday
+   published and approved" (ui/toast.ts toastBatch) the day it names and what it says of it, so the pair reads "Monday
+   13 Jul published and approved. The Common Programme has no usable times, so nobody on it earns OIL." — the day once.
+   There, and only there, the Common Programme wears the capitals of its heading on the schedule, as his approved
+   wording has it. The second form ("… earned nobody any OIL — …") is not on his list of 13 Oct 26 and has no `told`:
+   it is joined by the dot, as before, and so are the two lines below that may ride behind either form. */
+type BlindLine = { line: string; told?: { head: string; body: string } }
+function oilBlindLine(iso: string, day: any, spans: Record<string, OilWork[]>): BlindLine | null {
   const blind = dayOilBlind(day)
   if (!blind.length) return null
   const earners = Object.values(spans).filter(sp => workSpans(sp).length).length
@@ -1340,9 +1358,10 @@ function oilBlindLine(iso: string, day: any, spans: Record<string, OilWork[]>): 
   /* "no USABLE times", for the same reason as the day's own warning (the
      follow-up code read, G1): a nought-minute standalone shift is on this list
      and it HAS two times typed on it. */
+  const so = `no usable times, so nobody on ${blind.length > 1 ? 'them' : 'it'} earns OIL`
   return earners
-    ? `${when}: ${desks} no usable times, so nobody on ${blind.length > 1 ? 'them' : 'it'} earns OIL`
-    : `${when} earned nobody any OIL — ${desks} no usable times`
+    ? { line: `${when}: ${desks} ${so}`, told: { head: when, body: `${desks.replace('the common programme', 'the Common Programme')} ${so}` } }
+    : { line: `${when} earned nobody any OIL — ${desks} no usable times` }
 }
 
 export function publishFlagsBids(di: number): void {
@@ -1373,8 +1392,11 @@ export function publishFlagsBids(di: number): void {
      silent-OIL warning, the whole point of the ruling. Both lines are collected
      and delivered together. */
   const lines: string[] = []
-  const blindLine = oilBlindLine(iso, snap.d, spans)
-  if (blindLine) lines.push(blindLine)
+  const blind = oilBlindLine(iso, snap.d, spans)
+  if (blind) lines.push(blind.line)
+  /* said as ONE toast, as before; where the blind line is its first form, the toast also carries that line's two halves
+     and whatever follows it (`after`), for the join with the day's own publish note (oilBlindLine above) */
+  const say = () => HOOKS.toast(lines.join(' · '), 'warn', blind?.told && { day: di, ...blind.told, after: lines.slice(1).join(' · ') })
   const war = warHolding(rawState().wars, iso)
   /* amber, like the Inputs page's twin (N18, 21 Sep 26): this is a warning,
      not the face the app says "Saved" in. Both exits, because the day with
@@ -1386,7 +1408,7 @@ export function publishFlagsBids(di: number): void {
        there is nowhere for the credit to be written. The day's own warning list
        says the same thing and carries the way out. */
     lines.push(`there is no leave war period for ${iso.slice(0, 4)}, so no OIL can be earned for this day — create the period on the Leave War`)
-    HOOKS.toast(lines.join(' · '), 'warn'); return
+    say(); return
   }
   const said: string[] = []
   for (const [person, sp] of Object.entries(spans)) {
@@ -1399,7 +1421,7 @@ export function publishFlagsBids(di: number): void {
     }
   }
   if (said.length) lines.push(`${said.join(', ')} now sits on published work — the day is flagged, the bid is still live`)
-  if (lines.length) HOOKS.toast(lines.join(' · '), 'warn')
+  if (lines.length) say()
 }
 
 /* [GLOBAL-UNDO] §6.6 — the Unpublish button's warn. Unpublishing a loaded-week day
@@ -2463,6 +2485,21 @@ export function openDays(iso: string): void {
   if (!validIso(iso)) return
   setDaysWin(iso)
   raptorNotify()
+}
+
+/** THE WAR'S DOOR TO AN INPUT'S OWN WINDOW — the clash note's "Change the leave on Inputs" ([LW-CLASH-NOTE-PHONE], owner
+ *  D827, 13 Oct 26: a tap opens "the leave's own window on the Inputs page"). The day's sheet has no control for leave
+ *  filed there (it says so), which is why the clash sends him here. Like `openDays`, only a flag is reached (ui/pops.ts
+ *  — the window is the scheduler's, drawn at the app's own level, and is its own gate on who may change what): the
+ *  Inputs page is brought to the front and the input's window opened on it. False where the input is gone — the
+ *  caller then opens the day instead, so the tap never does nothing. */
+export function openInputWindow(iid: string): boolean {
+  const row = INPUTS.find((r: any) => String(r.iid) === String(iid))
+  if (!row) return false
+  if (CURPAGE !== 'inputs') setPage('inputs')
+  setInpEdit(row)
+  raptorNotify()
+  return true
 }
 
 /** THE WAR'S NEW-PERIOD SHEET, ASKED FOR FROM DAYS, on a run of dates no leave period covers (the plan §3.4). The

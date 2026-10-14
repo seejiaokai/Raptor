@@ -16,7 +16,7 @@
    pure rule of "till said once" (inputcard-model.test.ts). */
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { InputsPage, rangeWords } from './InputsPage'
 import { InputEditor } from './inputedit'
 import { initStore, notify, setSession, writeInputs } from '../state/store'
@@ -32,6 +32,8 @@ import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/stat
 import { memoryBackend } from '../leavewar/state/storage'
 import { _resetFloatWins } from './FloatWindow'
 import { setInpEdit } from './pops'
+import { toast as theToast, toastBatch as theBatch } from './toast'
+import { setInputGate } from '../state/inputgate-hook'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement, root: Root
@@ -486,5 +488,235 @@ describe('the phone’s list has the same one button (V1)', () => {
     expect($('[data-testid="win-inputedit"]')).toBeTruthy()
     expect($('#inpEditPop .rc-read')!.textContent).toBe('pick a start date')
     expect(($('#inpEditPerson') as HTMLSelectElement).selectedOptions[0].textContent, 'filed for whoever is signed in').toBe(cs(admin))
+  })
+})
+
+/* THE JUST-ADDED MARK IS THE FEEDBACK (owner D851, 14 Oct 26 — "Why 1 needs an input added note? Isint it obvious when the
+   input appears after it's been added? And should be have a short flash of cyan on the exterior just like when I add an
+   item in the scheduled board?"; D854 — "Yes to all": the board's blue box of about six seconds, and "Input updated"
+   the same; the design guide's §1, D850). Wherever the Inputs page shows an input it has just been shown — the List's
+   row, the phone's card, the opened day's card, the month's bar — that thing wears the mark (`.innew`) and names the
+   input it is for (`data-fresh`, which ui/seen.ts reads to leave the passing note unsaid). The opened day's card wore
+   none until this build. Whether the note is then said is decided on the SCREEN (ui/seen.test.ts, and a real browser:
+   e2e/feedback-marks.spec.ts) — jsdom lays nothing out, so here every save still says its words. */
+describe('an input just saved wears the just-added mark wherever the page shows it (D851, D854)', () => {
+  const newest = () => INPUTS[0] as any
+  const lit = (el: Element | null, iid: string, where: string) => {
+    expect(el, where).toBeTruthy()
+    expect(el!.classList.contains('innew'), `${where}: the mark`).toBe(true)
+    expect(el!.getAttribute('data-fresh'), `${where}: it says which input the mark is for`).toBe(iid)
+  }
+  it('the desktop List: the new row', async () => {
+    await mount(false)
+    await click($('#inNew'))
+    await click($('#inpEdCal [data-cal="2026-07-14"]'))
+    await click($('#inpEditSave'))
+    lit(tr(newest()), newest().iid, 'the row')
+  })
+  it('the phone List: the new card', async () => {
+    await mount(true)
+    await click($('#inNew'))
+    await click($('#inpEdCal [data-cal="2026-07-14"]'))
+    await click($('#inpEditSave'))
+    lit($(`[data-testid="inl-row-${newest().iid}"]`), newest().iid, 'the card')
+  })
+  it('a day opened on the calendar: the new input’s CARD — and the bar behind the day does not light too', async () => {
+    await mount(false, 'cal')
+    const before = await file({ date: 'Oct 21' })
+    await openDay('2026-10-21')
+    await click($('#icPopAdd'))
+    await click($('#inpEditSave'))
+    const r = newest()
+    expect(r.iid, 'a new input').not.toBe(before.iid)
+    lit($(`[data-testid="idy-row-${r.iid}"]`), r.iid, 'the day’s card')
+    expect($(`[data-testid="idy-row-${before.iid}"]`)!.classList.contains('innew'), 'the input that was there already is not lit').toBe(false)
+    expect($$(`.ib-bar[data-iid="${r.iid}"]`).some(b => b.classList.contains('innew') || b.hasAttribute('data-fresh')), 'the bar behind').toBe(false)
+  })
+  it('the month with no day open: its bar', async () => {
+    await mount(false, 'cal')
+    const r = await file({ date: 'Oct 21', remarks: 'before' })
+    await act(async () => { setInpEdit(r); notify() })          // its window (a real press on a bar is the browser test's)
+    await type('#inpEditRmk', 'after')
+    await click($('#inpEditSave'))
+    expect(live(r.iid).remarks).toBe('after')
+    const bars = $$(`.ib-bar[data-iid="${r.iid}"]`)
+    expect(bars.length).toBeGreaterThan(0)
+    for (const b of bars) lit(b, r.iid, 'the bar')
+    expect($('.ib-day.is-open'), 'and no day opens over the month (D672)').toBeNull()
+  })
+  it('an input CHANGED wears it as one added does (D854 — "Input updated")', async () => {
+    await mount(false)
+    const r = await file({ remarks: 'before' })
+    expect(tr(r)!.classList.contains('innew'), 'not lit while nothing was done to it').toBe(false)
+    await click(tr(r)!.querySelector('[data-testid="in-open"]'))
+    await type('#inpEditRmk', 'after')
+    await click($('#inpEditSave'))
+    lit(tr(live(r.iid)), r.iid, 'the changed row')
+  })
+  /* THE FRESH READ'S F1 (14 Oct 26). The six seconds were ONE timer started by the first light and never cleared, and the
+     box's own clock (a stylesheet animation) is not started again while the class stays on: saved a second time four
+     seconds in, the row lost its mark two seconds later — and saved at 5.6 s it showed neither box nor note. */
+  it('saved again inside its six seconds: the mark runs six seconds from THAT save, and its box starts again', async () => {
+    vi.useFakeTimers()
+    try {
+      await mount(false)
+      const r = await file({ remarks: 'before' })
+      const row = () => tr(live(r.iid))!
+      const change = async (words: string) => { await click(row().querySelector('[data-testid="in-open"]')); await type('#inpEditRmk', words); await click($('#inpEditSave')) }
+      await change('one')
+      lit(row(), r.iid, 'the row')
+      await act(async () => { vi.advanceTimersByTime(4000) })
+      /* the box's clock on each cell, as a browser keeps it: four seconds in */
+      const cells = [...row().children] as any[]
+      const clocks = cells.map(() => ({ currentTime: 4000 }))
+      cells.forEach((c, i) => { c.getAnimations = () => [clocks[i]] })
+      await change('two')
+      expect(clocks.map(c => c.currentTime), 'the box starts again on every cell').toEqual(clocks.map(() => 0))
+      await act(async () => { vi.advanceTimersByTime(2100) })
+      expect(row().classList.contains('innew'), 'still lit 2.1 s after the second save — 6.1 s after the first').toBe(true)
+      await act(async () => { vi.advanceTimersByTime(4000) })
+      expect(row().classList.contains('innew'), 'and off six seconds after the second').toBe(false)
+      expect(row().hasAttribute('data-fresh')).toBe(false)
+    } finally { vi.useRealTimers() }
+  })
+  /* …and the desktop row was keyed by its PLACE in the list: a second input added took the first one's row — and with
+     it the first one's box, four seconds old. A row is its input's own. */
+  it('a second input added: the first input keeps its own row, and each is lit', async () => {
+    await mount(false)
+    await click($('#inNew')); await click($('#inpEdCal [data-cal="2026-07-14"]')); await click($('#inpEditSave'))
+    const a = newest(), rowA = tr(a)
+    await click($('#inNew')); await click($('#inpEdCal [data-cal="2026-07-15"]')); await click($('#inpEditSave'))
+    const b = newest()
+    expect(b.iid).not.toBe(a.iid)
+    expect(tr(live(a.iid)), 'the first input is still drawn by the row it had').toBe(rowA)
+    lit(tr(b), b.iid, 'the new row')
+    lit(tr(live(a.iid)), a.iid, 'the first, for what is left of its own six seconds')
+  })
+  /* THE READ'S F2: in an opened day the window was brought to the FIRST lit card in the day's order, not the one just
+     saved — and moved again, under his hand, when an older mark ran out. */
+  it('an opened day is brought to the card JUST saved, and is not moved again when an older mark runs out', async () => {
+    vi.useFakeTimers()
+    const proto = HTMLElement.prototype as any, real = proto.scrollIntoView
+    const went: string[] = []
+    /* the day's own window only: the List stays mounted under the calendar and brings its own row on screen as well
+       (the break test of 14 Oct 26: counting that call too, this stayed green with the window sent to the wrong card) */
+    proto.scrollIntoView = function (this: HTMLElement) { if (this.closest('[data-testid="win-inputsday"]')) went.push(this.getAttribute('data-fresh') || '(not a marked card)') }
+    try {
+      await mount(false, 'cal')
+      await openDay('2026-10-21')
+      await click($('#icPopAdd')); await type('#inpEditStart', '07:00'); await type('#inpEditEnd', '08:00'); await click($('#inpEditSave'))
+      const first = newest().iid
+      await act(async () => { vi.advanceTimersByTime(3000) })
+      await click($('#icPopAdd')); await type('#inpEditStart', '20:00'); await type('#inpEditEnd', '21:00'); await click($('#inpEditSave'))
+      const second = newest().iid
+      expect(second).not.toBe(first)
+      const cards = $$('[data-testid="win-inputsday"] .icard.innew').map(c => c.getAttribute('data-fresh'))
+      expect(cards, 'both are lit, the earlier one first in the day').toEqual([first, second])
+      expect(went[went.length - 1], 'the window goes to the one just saved').toBe(second)
+      const moves = went.length
+      await act(async () => { vi.advanceTimersByTime(3100) })                  // the first mark's six seconds end
+      expect($$('[data-testid="win-inputsday"] .icard.innew').map(c => c.getAttribute('data-fresh')), 'only the second is still lit').toEqual([second])
+      expect(went.length, 'and the window is not moved a second time').toBe(moves)
+    } finally { proto.scrollIntoView = real; vi.useRealTimers() }
+  })
+  /* THE NARROW READ OF THE FIXES (14 Oct 26 — L1): the same input lit AGAIN while its day stays open — changed so that it
+     sorts to the other end of the day — is the card "just saved" too; the newest id had not changed, so the window was
+     not brought to it. */
+  it('the same input saved again with its day open: the window is brought to its card again', async () => {
+    vi.useFakeTimers()
+    const proto = HTMLElement.prototype as any, real = proto.scrollIntoView
+    const went: string[] = []
+    proto.scrollIntoView = function (this: HTMLElement) { if (this.closest('[data-testid="win-inputsday"]')) went.push(this.getAttribute('data-fresh') || '(not a marked card)') }
+    try {
+      await mount(false, 'cal')
+      await openDay('2026-10-21')
+      await click($('#icPopAdd')); await type('#inpEditStart', '07:00'); await type('#inpEditEnd', '08:00'); await click($('#inpEditSave'))
+      const id = newest().iid, n = went.length
+      expect(went[n - 1]).toBe(id)
+      await act(async () => { vi.advanceTimersByTime(3000) })
+      await click($(`[data-testid="idy-row-${id}"] [data-testid="idy-open"]`))
+      await type('#inpEditStart', '20:00'); await type('#inpEditEnd', '21:00'); await click($('#inpEditSave'))
+      expect(live(id).s, 'the change was saved').toBe(20 * 60)
+      expect(went.length, 'the window went to it once more').toBe(n + 1)
+      expect(went[went.length - 1]).toBe(id)
+    } finally { proto.scrollIntoView = real; vi.useRealTimers() }
+  })
+  it('the mark comes off when its six seconds are up — class and name both', async () => {
+    vi.useFakeTimers()
+    try {
+      await mount(false)
+      await click($('#inNew'))
+      await click($('#inpEdCal [data-cal="2026-07-14"]'))
+      await click($('#inpEditSave'))
+      const r = newest()
+      lit(tr(r), r.iid, 'the row')
+      await act(async () => { vi.advanceTimersByTime(5900) })
+      expect(tr(r)!.classList.contains('innew'), 'still up just before').toBe(true)
+      await act(async () => { vi.advanceTimersByTime(200) })
+      expect(tr(r)!.classList.contains('innew')).toBe(false)
+      expect(tr(r)!.hasAttribute('data-fresh')).toBe(false)
+    } finally { vi.useRealTimers() }
+  })
+})
+
+/* WHERE THE NOTE IS STILL SAID AT ONCE, ON A PAGE THAT IS LAID OUT (the window's own half of the rule — ui/inputedit.tsx
+   `saidSaved`; the screen's half is ui/seen.test.ts). The browser's two answers are handed in, as there: the page has a
+   width, and nothing stands at any point — so nothing is ever "in view" here, and what is tested is WHEN the words come. */
+describe('the save’s note on a laid-out page: left to the screen only where the Inputs page is in front (D851, D854)', () => {
+  const said: string[] = []
+  const layOut = () => {
+    ;(document.documentElement as any).getBoundingClientRect = () => ({ top: 0, left: 0, width: 1440, height: 900, right: 1440, bottom: 900, x: 0, y: 0, toJSON() {} })
+    ;(document as any).elementFromPoint = () => null
+  }
+  beforeEach(() => { said.length = 0; vi.useFakeTimers(); layOut(); HOOKS.toast = ((m: any) => { said.push(String(m)) }) as any })
+  afterEach(() => { vi.useRealTimers(); delete (document as any).elementFromPoint; delete (document.documentElement as any).getBoundingClientRect })
+  const change = async (r: any) => {
+    await act(async () => { setInpEdit(live(r.iid)); notify() })
+    await type('#inpEditRmk', 'after')
+    await click($('#inpEditSave'))
+  }
+  it('the Inputs page in front: nothing is said in the same breath — the screen is asked first, and here answers "not seen"', async () => {
+    await mount(false)
+    const r = await file({ remarks: 'before' })
+    await change(r)
+    expect(live(r.iid).remarks).toBe('after')
+    expect(said, 'not at once').toEqual([])
+    await act(async () => { vi.advanceTimersByTime(1000) })
+    expect(said, 'and said once the screen has answered').toEqual(['Input updated'])
+  })
+  it('another page in front (a save made from the schedule): the words at once, as always — nothing there wears the mark', async () => {
+    await mount(false)
+    const r = await file({ remarks: 'before' })
+    await act(async () => { setPage('editsched'); notify() })
+    await change(r)
+    expect(live(r.iid).remarks).toBe('after')
+    expect(said).toEqual(['Input updated'])
+  })
+  /* …and a SHARED input's save, which asks the page to show the input whatever page is in front (the plain edit asks
+     only on the Inputs page — so with the page test taken out of `show`, the case above stayed green: the break test
+     of 14 Oct 26). */
+  it('another page in front, a shared input changed: the words at once too', async () => {
+    await mount(false)
+    const g = await shared([others()[0], others()[1]], { remarks: 'before' })
+    await act(async () => { setPage('editsched'); notify() })
+    await change(g.rows[0])
+    expect(live(g.rows[0].iid).remarks).toBe('after')
+    expect(said).toEqual(['Input updated'])
+  })
+  /* THE SAVE HAD A WORD OF ITS OWN (D851: "the note stays … where the save has a warning to give"). The Leave War's rules
+     speak from inside the save, through the inputs door's one gate (state/inputgate-hook.ts) — stood in for here by a
+     gate that says a sentence and lets the save through. With the app's real note and its real batch, on a laid-out
+     Inputs page: the two are ONE note, at once, as they were before the mark took the plain note's place. */
+  it('the save said a word of its own: "Input updated" stays beside it in the one note, at once', async () => {
+    await mount(false)
+    const r = await file({ remarks: 'before' })
+    const realBatch = HOOKS.toastBatch
+    HOOKS.toast = theToast as any; HOOKS.toastBatch = theBatch as any
+    setInputGate({ snapshot: () => null, apply: () => { HOOKS.toast('The leave is cut for the ATT C', 'warn') }, vetRestore: () => {} })
+    try {
+      await change(r)
+      expect(live(r.iid).remarks).toBe('after')
+      expect(document.getElementById('toastEl')?.textContent).toBe('The leave is cut for the ATT C · Input updated')
+    } finally { setInputGate(null); HOOKS.toastBatch = realBatch; document.getElementById('toastEl')?.remove() }
   })
 })

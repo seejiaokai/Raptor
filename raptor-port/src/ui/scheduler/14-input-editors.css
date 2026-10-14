@@ -155,11 +155,28 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .upconf-fit{font-size:12.5px;font-weight:700;color:#A8E6BC;margin:0 0 12px}
 .upconf-left{display:flex;align-items:center;gap:8px;background:var(--panel-2);
   border:1px solid var(--edge);border-radius:8px;padding:7px 9px;margin-bottom:6px;font-size:12.5px;color:var(--ink)}
-.upconf-left .seg{margin-left:auto;display:flex;gap:4px;flex:0 0 auto}
+/* THE ANSWERS OF A ROW — Keep / Remove, "ATT B replaces" / "Keep ATT C till …" — at its right, FLAT (owner D849, 14 Oct 26
+   — "3 yes"). They were wrapped in `.seg`, which is also the week strip's rule (02-shell.css): its darker patch, its
+   8px 20px of padding and its line underneath came with it — the fault L1 took off the OIL question, on the two
+   sheets D830's list did not hold. A wrapper of the sheets' own: no fill, no line, no padding. */
+.upconf-left .upconf-ans{margin-left:auto;display:flex;gap:4px;flex:0 0 auto}
 .upconf-seg{appearance:none;background:var(--bg);border:1px solid var(--edge-2);color:var(--ink-2);
   font:inherit;font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:7px;cursor:pointer}
 .upconf-seg.on-keep{background:var(--accent);border-color:transparent;color:var(--accent-ink)}
 .upconf-seg.on-rem{background:var(--hard);border-color:transparent;color:#14060A}
+/* the app's ring on a choice — it wore the browser's own white one (the design look's K10, owner D830, 13 Oct 26) */
+.upconf-seg:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* A PICKED OIL ANSWER TAKES THE OUTLINE LOOK (L5, D830) — the look a picked choice has elsewhere ("No end", the Inputs
+   page's Calendar / List switch: 25-inputs-calendar.css): dark, with a cyan edge and cyan words. Filled as solid as
+   the sheet's main button, two solid cyan buttons stood in one small window and the eye no longer knew which to press.
+   The OIL question (ui/OilConfirm.tsx) and the day's one list of them (ui/OilDayList.tsx) alike, a Yes and a No alike.
+   The upchit and the medical-clash sheets keep `.on-keep` / `.on-rem` — they were not on the page he approved. */
+.upconf-seg.on-pick{border-color:var(--accent);background:var(--panel-2);color:var(--accent)}
+/* ONE RING, NEVER TWO (owner D842, 14 Oct 26 — "Double blue ring", of the built question with a picked answer that had the
+   keyboard on it). The picked answer's cyan edge and the keyboard's cyan ring, set a little off the button, drew two
+   rings one inside the other. On a picked answer the keyboard's ring is drawn ON its edge: one ring, a little thicker.
+   An answer that is not picked keeps the ring off its grey edge, as above. */
+.upconf-seg.on-pick:focus-visible{outline-offset:-1px}
 .upconf-need{font-size:11.5px;color:var(--ink-3)}
 /* THE CLASH SHEET'S ROWS ARE FLAT (owner, 28 Aug 26 — "remove the box around
    the buttons. It looks unclean"): no card fill, border or radius — each clash
@@ -169,8 +186,15 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
    the pills hold together on their own line when the phone runs out */
 .upconf-left.medclash-row,.upconf-left.medclash-tail{background:none;border:0;
   border-radius:0;padding:5px 0;flex-wrap:wrap}
-.upconf-left.medclash-row .seg,.upconf-left.medclash-tail .seg{margin-left:auto;
+.upconf-left.medclash-row .upconf-ans,.upconf-left.medclash-tail .upconf-ans{margin-left:auto;
   flex-wrap:wrap;justify-content:flex-end}
+/* A CLASH'S TWO ANSWERS TAKE A LINE OF THEIR OWN under its sentence, at the right (owner D849, 14 Oct 26 — "3 yes", the
+   picture of record docs/mock/2026-10-14-leftovers/q3-medclash-after.png; "on the medical clash the buttons stay at the
+   right"). With the strip's padding gone the pair could otherwise ride beside a short sentence on one sheet and under
+   a long one on the next; the picture drew it under, always. The leftover line under a clash was not drawn and keeps
+   its own flow. */
+.upconf-left.medclash-row{row-gap:10px}
+.upconf-left.medclash-row .upconf-ans{margin-left:0;flex:1 0 100%;gap:6px}
 /* the leftover question hangs OFF the clash above it — indented and a step
    quieter, so it reads as a follow-up to that clash, not a new one. Its
    default (Remove) shows in the red 'on-rem' seg so a straight Save is
@@ -188,14 +212,16 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
    what it adds is styled here. The day grid reuses .rangecal/.rc-* wholesale:
    applicable days light in the OIL cyan, everything else is inert. */
 .oilconf-what{font-size:12.5px;color:var(--ink);margin:0 0 10px}
-.oilconf-modes .seg{margin-left:0}
+/* THE ANSWERS SIT FLAT UNDER THE QUESTION, starting at its left edge (L1, D830). They were wrapped in the upchit
+   sheet's boxed row and in `.seg` — which is also the week strip's rule (02-shell.css), so they wore its patch and its
+   bottom line too: a box in a box in a window. A row of the sheet's own; no card, no strip. */
+.oilconf-answers{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}
 /* the medical-document ask ([SYNC-INTEG]) reuses the OIL sheet's frame; its one
    line of body copy matches the OIL "what" line. z-index above upconf so it can
    sit over the upchit/clash sheets when both a document AND an upchit are pending. */
 .airpop.docconf-pop{z-index:472}
 .docconf-what{font-size:12.5px;color:var(--ink-2);margin:2px 0 0}
 .oilconf-count{font-size:11.5px;color:var(--ink-2);margin:8px 0 2px}
-.oilconf-note{font-size:11px;color:var(--ink-3);margin:10px 0 0}
 .rangecal.oilcal{margin:10px auto 0}
 /* the OIL revise chip on an inputs-table row (owner, 29 Aug 26): a recorded
    weekend/PH OIL decision is changed here, in place — the chip only draws

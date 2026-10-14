@@ -58,8 +58,11 @@ function useFollowTheBar(el: { current: HTMLElement | null }, s: Status) {
     if (!bar) return
     const place = () => {
       const bottom = Math.round(bar.getBoundingClientRect().bottom)
+      /* …and where the bar that waits on an OIL answer has the bar's last line (ui/OilWaitSheet.tsx — D831, D840), the
+         failed-save warning is the line ABOVE it: losing work is the graver of the two */
+      const under = bar.querySelector<HTMLElement>('.oilband.is-top')
       n.style.top = s === 'failed'
-        ? `${Math.max(0, bottom - n.offsetHeight - (parseFloat(getComputedStyle(bar).borderBottomWidth) || 0))}px`
+        ? `${Math.max(0, bottom - n.offsetHeight - (under ? under.offsetHeight : 0) - (parseFloat(getComputedStyle(bar).borderBottomWidth) || 0))}px`
         : `${Math.max(6, bottom + 6)}px`
     }
     place()

@@ -1046,7 +1046,7 @@ describe('STEP 3 — product faults, reported and left red: the placeholder lead
     expect(sheet, 'the question').toBeTruthy()
     const head = sheet.querySelector('.airpop-head b')!.textContent || ''
     expect(head).not.toMatch(/^OIL — ALL AVAIL/)
-    expect(head).toBe(`OIL — ${inputWho({ people: [{ p: a }, { p: 'allavail' }] })}, Duty`)
+    expect(head).toBe(`OIL: ${inputWho({ people: [{ p: a }, { p: 'allavail' }] })}, Duty`)
   })
 
   /* The same count the host fixed in the window's sentences (above), left in the window's SMALL PRINT (ui/placedline.ts

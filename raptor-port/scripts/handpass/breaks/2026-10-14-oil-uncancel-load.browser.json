@@ -1,0 +1,35 @@
+{
+ "spec": "e2e/oil-uncancel-load.spec.ts",
+ "grep": ".",
+ "port": 4174,
+ "breaks": [
+  {
+   "n": 1,
+   "name": "the bar's words no longer shrink to fit: at a phone's width the longest sentence it carries pushes a button off the line",
+   "file": "src/ui/scheduler/17-save-status.css",
+   "find": "font-size:calc(12.5px * var(--oil-fit,1));font-weight:600;color:#E5C24A;white-space:nowrap",
+   "put": "font-size:17px;font-weight:600;color:#E5C24A;white-space:nowrap"
+  },
+  {
+   "n": 2,
+   "name": "the list a load opens stands UNDER the full-screen Scheduler Board",
+   "file": "src/ui/scheduler/22-float-windows.css",
+   "find": ".floatwin.front{z-index:411}",
+   "put": ".floatwin.front{z-index:391}"
+  },
+  {
+   "n": 3,
+   "name": "the board's cancel sheet un-cancels at once (the door's wait never reached from the screen)",
+   "file": "src/ui/reqdoor.ts",
+   "find": "    if (g && g.kind === 'ask') {\n      TRYING = true",
+   "put": "    if (false) {\n      TRYING = true"
+  },
+  {
+   "n": 4,
+   "name": "the load opens no list",
+   "file": "src/ui/interactions.ts",
+   "find": "    if (need) {\n      const days",
+   "put": "    if (false) {\n      const days"
+  }
+ ]
+}

@@ -1,5 +1,76 @@
 # The file map — where each source file lives and what it does
 
+The one look of the just-added mark (owner D860, D861 — 15 Oct 26). **New:** `src/ui/markring-css.test.ts` (the marks' styles read off disk: no glow anywhere, the List's one box, a bar wearing the ring shows no landing flash); `scripts/handpass/ring-look.mjs` (pictures of the look). **What each existing file gained:** `src/ui/highlights.ts` — `paintFreshAdds` rings a note's own box; `src/ui/scheduler/06-inputs.css` — the List's one box (`.innew>td::after`), no glow; `src/ui/scheduler/25-inputs-calendar.css` — no glow, no landing flash under the ring; tests `src/ui/board.test.tsx`, `e2e/feedback-marks.spec.ts`.
+
+`[OIL-UNCANCEL-UNASKED]` and `[OIL-LOAD-VERSION-UNASKED]` — the small OIL job (D816, D818; built on the night of 14 Oct 26).
+**New:** `e2e/oil-uncancel-load.spec.ts` (what only a browser can say: the bar's longest words on one line at a phone's
+width and at 320, the day's one list above the full-screen board — in the `raptor` project of `playwright.config.ts`);
+`scripts/handpass/ou-lib.mjs`, `ou-walk.mjs`, `ou-walk-2.mjs` (the job's walk, as assertions with pictures; the
+library makes its fixtures by the app's own controls). **What each existing file gained:** `src/ui/reqdoor.ts` —
+`rowMark` holds a cancel or an ⓘ mark taken off an input for the OIL question where one is owed, `unmark` (the mark off
+and the answer on, one command), `UNMARKED` (the two notes' words, one source — `src/ui/board.ts` reads them);
+`src/ui/oilwait.ts` — the words of the two new waiting changes; `src/state/view.ts` — `OilWaitKind` gains `uncx`,
+`uninfo`; `src/ui/interactions.ts` — the load's door counts what it put back that needs an OIL answer and opens the
+day's one list; `src/ui/pops.ts` and `src/ui/OilDayList.tsx` — `plain` (a weekend's list is not headed "Public
+holiday"). **Tests:** `src/ui/oilwait.test.tsx` (blocks ON10, ON11), `src/leavewar/holnotice.test.tsx` (the list a load
+opens on a holiday); `src/state/p6c-requestonread.test.ts`, `src/ui/inputmarks-scenarios.test.tsx`,
+`src/ui/noteswords.test.ts` given the new rule.
+
+`[BATCH-14OCT-LEFTOVERS]` — the three leftovers and three note deletions (D849, D851, D854; built on the night of 14 Oct 26).
+**New:** `src/ui/seen.ts` — is a just-saved input IN VIEW wearing its mark (`inView`: its head, middle and foot its own on
+screen), and the save's note said only where it is not (`noteUnlessSeen`; a screen reader told the words in `#srSay`);
+`src/ui/seen.test.ts`; `e2e/feedback-marks.spec.ts` (what only a browser can say: the mark painted and in view, no note
+drawn, the cancelled tag's place, the flat answers — in the `raptor` project of `playwright.config.ts`);
+`scripts/handpass/lo-walk.mjs` (the batch's walk, as assertions with pictures). **What each existing file gained:**
+`src/ui/inputedit.tsx` — `show`, `saidSaved` (where the save's note is left to the screen) and the cancelled tag handed to
+the window as its `mark`; `src/ui/FloatWindow.tsx` — `mark`, drawn straight after the title; `src/ui/InputsCal.tsx` — `lit`
+(the inputs the page has just been shown), `barLit`, the day's card lit and brought into the window's view;
+`src/ui/InputsPage.tsx` and `src/ui/InputCard.tsx` — `data-fresh` on whatever wears the mark; `src/ui/toast.ts` —
+`toastHeld`; `src/state/view.ts` — `revealInput` answers whether the page was asked; `src/ui/reqdoor.ts` — `afterPut` and
+`leave` say nothing for a plain add or take-off; `src/ui/SchedBoard.tsx` — Done says nothing; `src/ui/UpchitConfirm.tsx`,
+`src/ui/MedClashConfirm.tsx` — `.upconf-ans`; the stylesheets `scheduler/06-inputs.css`, `25-inputs-calendar.css` (the mark,
+steady for less motion), `14-input-editors.css`, `22-float-windows.css`.
+
+`[LW-CLASH-NOTE-PHONE]`, `[NOTES-SHORTER]`, `[LOOK-13OCT-SMALL-FIXES]` — the three approved builds of 14 Oct 26, one batch
+(D827, D828, D830, D831, D837–D841). **No new source file; what each existing one gained:**
+`src/leavewar/ui/Chrome.tsx` — the clash note: on a phone a line of its own after the two lines of buttons that opens its
+list (`clashWhat`, `goClash`), on wider screens the strip in the same words; `src/leavewar/ui/chrome.css` (its rules, every
+class named `clash…`); `src/leavewar/state/store.ts` — `focusDay(date, { open })` and `takeFocusOpen`, taken once by
+`src/leavewar/ui/Matrix.tsx`; `src/leavewar/sync.ts` — a clash carries its period and, where leave filed on the Inputs page
+is in the way, that input (`war`, `iid`), `openInputWindow`, and the OIL line's two halves for the publish note's join.
+`src/ui/toast.ts` — a note's third argument (`ToastPart`: two notes about one day name it once) and the phone's width;
+`src/engine/publish.ts` — `LOCKED_WEEK_NOTE`, `lockedDayNote` (one source for seven places). `src/ui/OilConfirm.tsx` — the
+words of record, the flat answers' row, the outline look, Back / Add; `src/ui/sheetfocus.ts` — the ✕ last by keyboard, and
+a sheet may name where the keys land; `src/ui/OilWaitSheet.tsx` — the bar as a band (`OilBar` the top bar's, `OilBand` a
+full-screen surface's, `useOilBarTop`), one line always, its keyboard; `src/ui/Shell.tsx`, `SchedBoard.tsx`,
+`MedicalView.tsx`, `SaveStatus.tsx` (where the band sits, and "Not saved" above it); `src/ui/scheduler/17-save-status.css`
+(`.oilband`, the amber line under a band), `08-windows-tools.css` (the ✕ in the corner), `14-input-editors.css`
+(`.oilconf-answers`, `.on-pick`). `src/ui/DateCal.tsx`, `DateBox.tsx` — `max`, Home / End, Shift+Page, Enter on the title
+and in a list, the phone card's name (`cardName`); `26-date-calendar.css`; `src/tracker/components/DateBox.jsx`
+(`noFuture`, Delete), `Pop.jsx`, `SidePanel.jsx`, `src/tracker/tracker.css`.
+**New tests:** `src/leavewar/clashperiod.test.tsx` (a clash in another period), `src/ui/oilconfirm-look.test.tsx` (the OIL
+question's words, look and keys; the bar), `src/ui/datecal-look.test.ts` (the calendar's and the Tracker boxes' style
+rules, read as contracts), `src/ui/noteswords.test.ts` (every reworded note to the letter, read off the source — words, not
+behaviour), `src/engine/lockednote.test.ts`, `src/ui/toastplace.test.tsx`, `src/ui/unpublish-button.test.tsx`,
+`src/ui/oilperiod-offer.test.tsx`; `src/leavewar/clashwayout.test.tsx`, `src/ui/toastbatch.test.ts`,
+`src/leavewar/publishdoor.test.ts`, `e2e/leavewar.spec.ts` and `e2e/oilwait.spec.ts` extended.
+**New, outside `src/`:** the bar's drawing `docs/mock/oil-band-14oct.html` with `docs/mock/2026-10-14-oil-band/` and its
+script `scripts/handpass/dl-band.mjs`; the check's sheet `docs/handpass/2026-10-14-three-builds.md`, its pictures and key
+record `docs/img/handpass/2026-10-14-three-builds/`, the walkers' brief
+`docs/superpowers/briefs/2026-10-14-three-builds-walk-brief.md`; the walk's scripts, each line an assertion —
+`scripts/handpass/dl-clash-built.mjs`, `dl-band-built.mjs`, `dl-sheets.mjs` (the upchit and medical-clash questions without their hints, D848), `dl-feedback-mock.mjs` (a DRAWING: "Input added" as built and drawn with the board's mark instead, and three more notes outlined where they stand - D850, D853; pictures in `docs/mock/2026-10-14-feedback/`), `dl-leftover-mock.mjs` (a DRAWING, not a check: before and after for his three leftover questions, pictures in `docs/mock/2026-10-14-leftovers/`), `dl-notes-built.mjs` (the publish note he pictured, raised by
+the screen's own "Publish day"), `dl-check.mjs` (the shared grammar of a check), and `dl-oil.mjs`,
+`dl-cal.mjs`, `dl-trk.mjs`, `dl-keys.mjs` rewritten from records of what was found into checks of what was built
+(`dl-lib.mjs` takes its folder from `DL_SHOTS`); the walkers' own scripts `scripts/handpass/tb/`.
+
+`[DESIGN-LOOK-13OCT]` — the design page of 13 Oct 26 (D805, D806, D807): NO source file changed. **New, all outside `src/`:**
+the page `docs/mock/design-look-13oct.html` and its pictures `docs/mock/2026-10-13-design-look/` (with `keyboard.json`,
+one row per key pressed); the record for the next agent `docs/handpass/2026-10-13-design-look.md`; the scripts that
+took the pictures, `scripts/handpass/dl-lib.mjs` (helpers), `dl-cal.mjs` (the date calendar and its keys), `dl-trk.mjs`
+(the Tracker's date boxes), `dl-oil.mjs` (the OIL question and its bar), `dl-keys.mjs` (a puck and the Tracker's chart by
+keys), `dl-clash.mjs` (the Leave War's clash note as built, and three options DRAWN IN by injection), `dl-notes.mjs`
+(the publish and unpublish notes before and after). They are pictures and mock-ups, not gates.
+
 `[ALL-AVAIL-AS-MEMBER]` — the one-rule job's check, its last round (12 Oct 26, evening): the Opus trial read's eight
 real faults fixed, `[PERSONAL-SEVERAL]` (D776, D778) and `[OIL-ASK-LIST-SEVERAL]` (D777) built. No new source file.
 **New tests:** `src/leavewar/trialread.test.ts` (the read's claims 2, 4, 5 and 9, through the real doors) and

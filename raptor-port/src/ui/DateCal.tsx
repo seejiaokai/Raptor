@@ -24,9 +24,16 @@
 
    THE MONTH TURNS BY ITS TWO ARROWS, BY THE LISTS, AND BY A SIDEWAYS FINGER ON THE DATES (D800).
 
+   ITS KEYS (the design guide's §2; the last four from the design look of 13 Oct 26 — K1–K4, owner D830). On the dates,
+   which are ONE tab stop: the arrows a day or a week, Page Up / Down a month and with Shift a year, Home / End the
+   week's Monday and Sunday, Enter or Space picks (a button's own); a date that may not be picked (`min`, `max`) is
+   never walked onto. On the title: Enter opens the lists with the keyboard in the month list. In a list: the arrows a
+   row, Enter back to the dates of that month. Escape and Tab are not the calendar's — where it floats they are its
+   layer's (ui/DateBox.tsx), and a calendar drawn inside a form leaves them to the form.
+
    Its look: ui/scheduler/26-date-calendar.css. Its class names are prefixed (`dcal-`, `is-`): the scheduler's sheet is
    one global sheet, and its week already owns `.day` (23-days.css says how that was found). */
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react'
 import { addDays, monthDates, validIso, weekdayOf } from '../state/flyplan-model'
 import { MONTHS, isoToday, sayDateY } from './daysfmt'
 import { initSideSwipe, slideIn } from './sideswipe'
@@ -47,10 +54,12 @@ const mod12 = (i: number) => ((i % 12) + 12) % 12
    THE CHOSEN ROW is the one in the band across the middle: a finger or a mouse wheel scrolls the list and the row that
    comes to rest there is chosen (the browser's own scroll snapping lands it; `settle` reads it once the scrolling has
    stopped); a tap on a row, or an arrow key, chooses it and the list scrolls it into the band. */
-function Wheel({ value, label, onChange, name, tid }: {
+function Wheel({ value, label, onChange, onEnter, name, tid }: {
   value: number
   label: (i: number) => string
   onChange: (i: number) => void
+  /** Enter in the list — the row in the band is the choice already, so the calendar goes back to its dates */
+  onEnter: () => void
   name: string
   tid: string
 }) {
@@ -95,6 +104,16 @@ function Wheel({ value, label, onChange, name, tid }: {
     timer.current = setTimeout(settle, 110)
   }
   const onKey = (e: KeyboardEvent) => {
+    /* ENTER IS THE WAY BACK TO THE DATES (the design look of 13 Oct 26 — K4; owner D830). It did nothing here, and the
+       only way back was to go up to the title and press it again. A row is chosen as it comes into the band, so Enter
+       has nothing left to choose: it closes the lists onto that month. */
+    if (e.key === 'Enter') { e.preventDefault(); onEnter(); return }
+    /* …AND THE KEYS THAT ARE NOT A LIST'S DO NOTHING HERE (the check's walk of 14 Oct 26). The list is a scrolling box
+       that holds the keyboard, so the browser scrolled it for Home, End, Page Up, Page Down and Space by itself — and
+       a row left in the band when the scrolling stops IS the choice (settle, above): End ran the years to the foot of
+       their window and chose 2086 from 2026, Page Down and Space six years on, each by a key the calendar gives no
+       meaning in a list. The arrows move a list one row; a wheel or a finger scrolls it; no other key moves it. */
+    if (e.key === 'Home' || e.key === 'End' || e.key === 'PageUp' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); return }
     if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return
     e.preventDefault()
     onChange(value + (e.key === 'ArrowDown' ? 1 : -1))
@@ -128,6 +147,9 @@ export function DateCal(p: {
   markWd?: number
   /** the first date that may be picked; earlier ones are faint */
   min?: string
+  /** the last date that may be picked; later ones are faint — `min`'s mirror in everything (the design look of
+   *  13 Oct 26 — L14, owner D830: the Tracker's boxes that refuse a day after today showed tomorrow as pickable) */
+  max?: string
   /** the month to open on when no date is picked — a date in it */
   at?: string
   /** today's date; the real one unless a test holds it still */
@@ -142,7 +164,7 @@ export function DateCal(p: {
   const today = p.today || isoToday()
   const from = run ? p.from || '' : p.value || ''
   const to = run ? p.to || p.from || '' : p.value || ''
-  const [ym, setYm] = useState(() => ymOf(validIso(from) ? from : validIso(p.at) ? p.at : validIso(p.min) && p.min > today ? p.min : today))
+  const [ym, setYm] = useState(() => ymOf(validIso(from) ? from : validIso(p.at) ? p.at : validIso(p.min) && p.min > today ? p.min : validIso(p.max) && p.max < today ? p.max : today))
   const [lists, setLists] = useState(false)
   /* the month list's own number: it goes round, so it is kept apart from the month it stands for */
   const [mi, setMi] = useState(0)
@@ -150,11 +172,22 @@ export function DateCal(p: {
   const [kb, setKb] = useState<string | null>(null)
   const want = useRef<string | null>(null)
   const grid = useRef<HTMLDivElement>(null)
+  /* where the keyboard goes once the lists have opened or closed BY A KEY (K3, K4): into the month list, or back onto
+     the dates */
+  const wantIn = useRef<'' | 'list' | 'dates'>('')
+  const root = useRef<HTMLDivElement>(null)
 
   const dates = monthDates(ym.y, ym.m)
-  const may = (iso: string) => !p.min || iso >= p.min
+  const may = (iso: string) => (!p.min || iso >= p.min) && (!p.max || iso <= p.max)
   const step = (by: number) => setYm(({ y, m }) => { const n = y * 12 + (m - 1) + by; return { y: Math.floor(n / 12), m: (n % 12) + 1 } })
-  const openLists = () => { setMi(ym.m - 1); setLists(v => !v) }
+  /* THE TITLE OPENS THE LISTS — AND A KEY TAKES THE KEYBOARD INTO THE MONTH LIST (the design look of 13 Oct 26 — K3;
+     owner D830). Enter on the title opened them and left the keyboard on the title: a further Tab was needed before an
+     arrow did anything. A click made by a key carries no pointer's count (`detail` 0 — how ui/DateBox.tsx tells the two
+     apart); a tap or a mouse click moves the keyboard nowhere, as before. Closing them from the title leaves the
+     keyboard on the title, as built. */
+  const openLists = (e: MouseEvent) => { setMi(ym.m - 1); if (!lists && e.detail === 0) wantIn.current = 'list'; setLists(v => !v) }
+  /* Enter in a list (K4): the dates of the month chosen, with the keyboard back on them */
+  const closeLists = () => { wantIn.current = 'dates'; setLists(false) }
   const goToday = () => { setLists(false); setYm(ymOf(today)) }
 
   const tap = (iso: string) => {
@@ -175,6 +208,18 @@ export function DateCal(p: {
     const el = grid.current?.querySelector<HTMLElement>(`[data-iso="${iso}"]`)
     if (el) { want.current = null; el.focus({ preventScroll: true }) }
   })
+  useLayoutEffect(() => {
+    const to = wantIn.current
+    const n = root.current
+    if (!to || !n) return
+    wantIn.current = ''
+    /* back on the dates: the month's one tab stop (the picked date, else today, else the first that may be picked).
+       A month with no date that may be picked has none — the keyboard goes to the title rather than to nothing */
+    const el = to === 'list'
+      ? n.querySelector<HTMLElement>('.dcal-col')
+      : n.querySelector<HTMLElement>('.dcal-grid button[tabindex="0"]') || n.querySelector<HTMLElement>('.dcal-title')
+    if (el) el.focus({ preventScroll: true })
+  })
   const onKey = (e: KeyboardEvent) => {
     const cur = (e.target as HTMLElement).getAttribute?.('data-iso')
     if (!cur) return
@@ -183,9 +228,15 @@ export function DateCal(p: {
     else if (e.key === 'ArrowRight') to2 = addDays(cur, 1)
     else if (e.key === 'ArrowUp') to2 = addDays(cur, -7)
     else if (e.key === 'ArrowDown') to2 = addDays(cur, 7)
+    /* HOME AND END ARE THE WEEK'S TWO ENDS — its Monday and its Sunday (D797), into the month beside this one where the
+       week crosses a month's end, as the arrows go (the design look of 13 Oct 26 — K1; owner D830; the design guide's
+       §2: "Home / End to the week's ends"). Before, nothing moved. */
+    else if (e.key === 'Home') to2 = addDays(cur, -weekdayOf(cur))
+    else if (e.key === 'End') to2 = addDays(cur, 6 - weekdayOf(cur))
     else if (e.key === 'PageUp' || e.key === 'PageDown') {
-      /* the same day of the month before or after — its last day, where that month is shorter */
-      const n = +cur.slice(0, 4) * 12 + (+cur.slice(5, 7) - 1) + (e.key === 'PageDown' ? 1 : -1)
+      /* the same day of the month before or after — its last day, where that month is shorter. WITH SHIFT, A YEAR
+         (K2 — D830): it went one month, and a far date needed the lists. */
+      const n = +cur.slice(0, 4) * 12 + (+cur.slice(5, 7) - 1) + (e.key === 'PageDown' ? 1 : -1) * (e.shiftKey ? 12 : 1)
       const md = monthDates(Math.floor(n / 12), (n % 12) + 1)
       to2 = md[Math.min(+cur.slice(8, 10), md.length) - 1]
     } else return
@@ -237,11 +288,13 @@ export function DateCal(p: {
   }
 
   return (
-    <div className={'dcal' + (p.markWd != null ? ' is-marked' : '')} data-testid={tid} data-month={dates[0].slice(0, 7)} data-today={today} data-min={p.min || undefined}>
+    <div className={'dcal' + (p.markWd != null ? ' is-marked' : '')} ref={root} data-testid={tid} data-month={dates[0].slice(0, 7)} data-today={today} data-min={p.min || undefined} data-max={p.max || undefined}>
       <div className="dcal-hd">
         <button type="button" className={'dcal-title' + (lists ? ' is-open' : '')} data-testid={`${tid}-title`} aria-expanded={lists}
           aria-label={`${MONTHS[ym.m - 1]} ${ym.y} — ${lists ? 'show the dates' : 'choose the month and year'}`} onClick={openLists}>
-          <span className="dcal-my">{MONTHS[ym.m - 1]} {ym.y}</span><i aria-hidden="true">{lists ? '▾' : '›'}</i>
+          {/* the words and their small arrow in one element: the title is a fixed room (the stylesheet's 10em), and its
+              keyboard ring goes round THIS — not round the empty room beside the words (L13 — D830) */}
+          <span className="dcal-tw"><span className="dcal-my">{MONTHS[ym.m - 1]} {ym.y}</span><i aria-hidden="true">{lists ? '▾' : '›'}</i></span>
         </button>
         {/* the page with today's number — the icon "Jump to a date" has (08-windows-tools.css `.wc-today`) */}
         <button type="button" className="wc-today" data-testid={`${tid}-today`} aria-label="Go to today" title="Go to today" onClick={goToday}>
@@ -254,9 +307,9 @@ export function DateCal(p: {
       {lists ? (
         <div className="dcal-lists" data-testid={`${tid}-lists`}>
           <div className="dcal-band" aria-hidden="true" />
-          <Wheel tid={`${tid}-months`} name="Month" value={mi} label={i => MONTHS[mod12(i)]}
+          <Wheel tid={`${tid}-months`} name="Month" value={mi} label={i => MONTHS[mod12(i)]} onEnter={closeLists}
             onChange={i => { setMi(i); setYm(v => ({ y: v.y, m: mod12(i) + 1 })) }} />
-          <Wheel tid={`${tid}-years`} name="Year" value={ym.y} label={i => String(i)} onChange={y => setYm(v => ({ y, m: v.m }))} />
+          <Wheel tid={`${tid}-years`} name="Year" value={ym.y} label={i => String(i)} onEnter={closeLists} onChange={y => setYm(v => ({ y, m: v.m }))} />
         </div>
       ) : (
         <>

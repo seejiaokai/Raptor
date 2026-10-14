@@ -34,6 +34,11 @@ export const WAIT_WORDS: Record<OilWaitKind, { no: string; yes: string; not: str
   /* an input of kind Other FILED under Unavailable (the scheduler's "→ Unavail" — owner D804, 13 Oct 26: every kind
      that can earn is asked, wherever it is filed) */
   file: { no: 'Don’t file', yes: 'File', not: 'Not filed — OIL not answered' },
+  /* the CANCEL taken off an input that has no OIL answer (the board's CX on its row — owner D816, 13 Oct 26: "as
+     'Accept' does — nothing is un-cancelled until it is answered"; the three wordings are his to change) */
+  uncx: { no: 'Don’t un-cancel', yes: 'Un-cancel', not: 'Not un-cancelled — OIL not answered' },
+  /* …and the information-only mark taken off, which is treated the same (D816 reading 1) */
+  uninfo: { no: 'Don’t change', yes: 'Change', not: 'Not changed — OIL not answered' },
 }
 /* the row, the seat or the men on them are no longer what the question was asked about */
 const CHANGED: Record<OilWaitKind, string> = {
@@ -42,6 +47,8 @@ const CHANGED: Record<OilWaitKind, string> = {
   move: 'That has changed — not moved',
   back: 'That input has changed — not put back',
   file: 'That input has changed — not filed',
+  uncx: 'That input has changed — not un-cancelled',
+  uninfo: 'That input has changed — left as it is',
 }
 
 /** A door holds its change: nothing is written, the question is put. */
@@ -112,7 +119,9 @@ export function oilBarAgain(): void {
     /* …and the places: a door that is handed no seat (the Unavailable row's) builds the wait again without the puck
        the drag had added (oilWaitAlso), and a second "Don't swap" flashed one puck, not both (Fable's read of the
        finished code, F3; the Opus read, F6 — 13 Oct 26). A place that is gone resolves to nothing in `flash`. */
-    if (OILWAIT) for (const pl of w.places) if (!OILWAIT.places.includes(pl)) OILWAIT.places.push(pl)
+    /* (not for a mark taken off an input: its one place is the row's own button, addressed by POSITION, and its door
+       has just found it afresh — the old one may now be another row's: the read of 14 Oct 26, F4) */
+    if (OILWAIT && w.kind !== 'uncx' && w.kind !== 'uninfo') for (const pl of w.places) if (!OILWAIT.places.includes(pl)) OILWAIT.places.push(pl)
   }
   else if (a === 'done') { if (w.post) w.post(pre, w.landed ?? null) }
   else if (a !== 'refused') HOOKS.toast(CHANGED[w.kind], 'warn')

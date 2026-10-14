@@ -125,6 +125,15 @@ export function amFormatOf(sc:any,weekKey?:any){
    unreadable case (state/store.ts applyWeekModel), so this one term makes the
    loaded damaged week read-only just like an unsupported one. */
 export function protectedWeek(){return amFormatOf(SCHED,CURWEEK)==='unsupported'||isPreservedWeek(CURWEEK);}
+/* WHAT A LOCKED WEEK SAYS — ONE SOURCE FOR ITS SEVEN DOORS (owner D837, 14 Oct 26 — the passing note N7 and its twin).
+   The sentence stood as a typed copy at each door (state/store.ts once, ui/inputedit.tsx four times, twice below), so a
+   rewording could reach six of them and leave the seventh saying the old words. "Edited" is the week's — an input or a
+   row that cannot be changed; "amended here" is the day's — a publish refused. The words of record, with what changed
+   and why ("of the app": "an older version" was read as an older version of the SCHEDULE — the Original, AL1; "so": the
+   week is locked BECAUSE its saved format is an older version's): docs/superpowers/briefs/2026-10-13-wording-recheck.md.
+   Pinned at every door by engine/lockednote.test.ts. */
+export const LOCKED_WEEK_NOTE='This week is locked. It was published by an older version of the app, so it can’t be edited.';
+export const lockedDayNote=(dow:any)=>`${dow||'This day'} is locked. It was published by an older version of the app, so it can’t be amended here.`;
 /* Phase 2 (P2-IMPL-04): a PRE-Phase-2 book saved EMPTY (a parked draft with no
    publication content) classifies as 'current' and stays editable — but it has no
    amV stamp, so the instant it gains content (its first approve/AL) it would
@@ -432,7 +441,7 @@ export function setDayApproved(di:any,on:any){
      at the entry, before the signed/no-op checks below, so the quarantine is the
      first word. Unsupported ≠ unresolvable: this is checked by the WEEK key
      (protectedWeek → amFormatOf(SCHED,CURWEEK)), not by whether verIds resolve. */
-  if(on&&protectedWeek())return toast(`${(DAYS[di]||{}).dow||'This day'} is locked — it was published by an older version and can’t be amended here`);
+  if(on&&protectedWeek())return toast(lockedDayNote((DAYS[di]||{}).dow));
   /* Phase 2 (§9): a published day can NEVER be un-approved — the reopen "beak"
      lost its un-publish job. This path only ever FIRST-approves a draft day;
      changing a published day means editing its working draft and publishing the
@@ -471,7 +480,13 @@ export function setDayApproved(di:any,on:any){
   freezeWarn(SCHED.orig[di],di);
   if(SCHED.correcting)delete SCHED.correcting[di];   // [GLOBAL-UNDO] §6.1 — reissuing the Original closes any correction
   reflow(); histPush();
-  toast(`${DAYS[di].dow} published — APPROVED`);
+  /* "PUBLISHED AND APPROVED", AND WHICH DAY IT IS ABOUT (owner D837, 14 Oct 26 — the passing note N1). Shown alone the
+     note is these words, with no full stop. The third argument tells the one join that may follow it (ui/toast.ts
+     toastBatch — the publish command's) which day this note names at its head and what it says of it: when the day's
+     OIL line comes next it names the same day, and the two are then said as "Monday 13 Jul published and approved.
+     The Common Programme has no usable times, so nobody on it earns OIL." — the day once, with its date. Anything
+     else that hears a toast (a test's listener, a toast outside a batch) takes the first argument and nothing more. */
+  toast(`${DAYS[di].dow} published and approved`,undefined,{day:di,head:DAYS[di].dow,body:'published and approved'});
 }
 /* Phase 2 (§9) removed reissueReopened: a published version is FROZEN — it is
    never re-issued in place. A reopen no longer exists; changing a published day
@@ -1310,8 +1325,9 @@ export function publishALDay(di:any){
      book FIRST — before the draft/changes/signature checks — so it cannot slip
      through on a book whose verIds merely happen to resolve. The preserved-blob
      writeback would otherwise discard the issue on reload (a silent lost AL). */
-  if(protectedWeek())return toast(`${(DAYS[di]||{}).dow||'This day'} is locked — it was published by an older version and can’t be amended here`);
-  if(!dayApproved(di))return toast(`${DAYS[di].dow} is still draft — publish the day before publishing its changes`);
+  if(protectedWeek())return toast(lockedDayNote((DAYS[di]||{}).dow));
+  /* (owner D838 + D839, 14 Oct 26 — N6: "publish the day before publishing its changes" was read as "publish Sunday") */
+  if(!dayApproved(di))return toast(`${DAYS[di].dow} is still a draft. Publish the day first, then its changes.`);
   /* the same mint as the first publish above, for the same reason: every read
      in this turn — the delta, the signature binding, the frozen block — must
      see one set of row ids (Fable, 21 Sep 26). */

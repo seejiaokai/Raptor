@@ -167,7 +167,18 @@ export function rowsLeftSaid(list: Array<{ who: string, what: string, days: stri
    still reads them pending, so the sentence says why. Read AFTER the load. '' when there are none. */
 export function inputsLeftSaid(di: any): string {
   const n = dayPendingItems(+di).filter((x: any) => !!x.val && !x.inp).length
-  return n ? ` · ${n} member input change${n === 1 ? ' stays' : 's stay'} pending — a load cannot put back a member's own record` : ''
+  /* a sentence of its own (owner D863, 15 Oct 26 — the load's note is short plain sentences) */
+  return n ? ` ${n === 1 ? "1 change to a member's input stays" : n + " changes to members' inputs stay"} pending. A load never puts back a member's own input.` : ''
+}
+/* THE SAME FACTS AS rowsLeftSaid, AS SENTENCES — for the load's note (owner D863, 15 Oct 26 — "Shorten it"). The plan
+   switch's note keeps rowsLeftSaid's clauses until its own words are looked at. '' when nothing was left out. */
+export function rowsLeftSentences(list: Array<{ who: string, what: string, days: string[], dead?: boolean, unknown?: boolean }>): string {
+  return (list || []).map(x => {
+    const whose = x.who ? `${x.who}'s ${x.what}` : x.what
+    return x.dead ? ` ${x.who} is left out: he has been deleted.`
+      : x.unknown ? ` ${whose} is left out. It may be on another week that could not be read: load that week, then accept it here if it is not.`
+      : ` ${whose} is left out because it is on ${x.days.join(' and ')}'s programme.`
+  }).join('')
 }
 
 /* the day's draft list — empty array (not undefined) when the day has none,

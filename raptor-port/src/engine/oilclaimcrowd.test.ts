@@ -481,7 +481,7 @@ describe('THE DOORS make the record these fixtures put in — and it earns the s
     expect(paidNow()).toEqual(['bane'])
     expect(rowPut(keyOf(r), 'allavail')).toBe('done')
     expect(idsOf(r).map(String)).toEqual(['bane', 'allavail'])
-    expect(SAID.join(' | ')).toContain('ALL AVAIL added to')
+    expect(SAID.join(' | '), 'the puck is the sign: no note (owner D854)').not.toContain('added to')
     expect(paidNow()).toEqual(['bane', 'plasma', 'stiff'])
     expect(oilEvidence(SAT).sent[itemOf(r)]).toEqual(['stiff', 'plasma'])
   })

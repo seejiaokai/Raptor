@@ -116,13 +116,13 @@ const dropOn = async (di: number, ph: string, el?: HTMLElement) => {
 
 describe('ALL AVAIL / ALL dropped on a Personal input\'s row joins the input, as on any input\'s (D776, D778)', () => {
   for (const ph of ['allavail', 'all']) {
-    it(`${ph} — THE DROP on its "+ add": it is one of the input's people, stands on its row, and the app says so`, async () => {
+    it(`${ph} — THE DROP on its "+ add": it is one of the input's people, stands on its row, and nothing more is said (D854)`, async () => {
       await filed(TUE)
       expect(await dropOn(TUE, ph), 'the drop is taken').not.toBe(false)
       expect(idsOf(rec()).map(String), 'beside the man who filed it').toEqual(['ignite', ph])
       expect(String(placeholderOf(rec()).p)).toBe(ph)
       expect([rowOf(TUE).who, rowOf(TUE).more]).toEqual(['ignite', [ph]])
-      expect(SAID.join(' | ')).toContain(`${cs(ph)} added to`)
+      expect(SAID.join(' | '), 'the puck is the sign: no note (owner D854)').not.toContain('added to')
       expect(SAID.join(' | '), 'no refusal of any kind').not.toMatch(/is for|one person/)
     })
 

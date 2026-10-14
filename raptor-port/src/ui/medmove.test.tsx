@@ -68,6 +68,13 @@ describe('the calendar drag of a medical onto a different-type medical', () => {
     await mount()
     expect($('[data-testid="medclash"]'), 'the clash sheet is up').toBeTruthy()
     expect(($('[data-testid="medclash-save"]') as HTMLButtonElement).disabled, 'no default: Save waits for a choice').toBe(true)
+    /* NO HINT IN THE FOOT AND NO SMALL PRINT (owner D848, 14 Oct 26 — "Delete all three"; D846's rule). "Choose for each
+       clash above" stood beside a button that already waits under the answers, and the paragraph under them told how
+       the app files the days. The one fact he asked to keep — a day holds one status — is the sheet's heading. */
+    const sheetText = $('[data-testid="medclash"]')!.textContent || ''
+    expect($('[data-testid="medclash"] .upconf-need'), 'no hint in the foot').toBeNull()
+    expect(sheetText).not.toMatch(/Choose for each clash above|stay exactly as chosen|filed around whatever you keep/)
+    expect($('[data-testid="medclash"] .upconf-h')!.textContent, 'the heading carries the one fact kept').toBe('A day holds one status: choose who holds these days')
   })
 
   it('answered, it moves the medical and cuts the other exactly as chosen — one undo step, "Moved to" said', async () => {

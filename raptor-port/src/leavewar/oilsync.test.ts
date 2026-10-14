@@ -239,7 +239,7 @@ describe('the ownership partition against wires 1+2', () => {
     expect(v.all.some(c => c.kind === 'credit')).toBe(true)      // and the credit is banked
     expect(v.amber).toBe(true)                                   // the day needs a human
     expect(getClashes()).toContainEqual(
-      { person: 'plasma', date: SAT, inputCode: 'FO', bidCode: 'LL', kind: 'duty', wayOut: 'war' })   // war-approved leave: sent back or deleted on the sheet
+      { person: 'plasma', date: SAT, inputCode: 'FO', bidCode: 'LL', kind: 'duty', wayOut: 'war', war: getState().wars[0].period.id })   // war-approved leave: sent back or deleted on the sheet; and the period that holds the day (D827)
   })
 
   it('leave WINS an owned cell and the passes stay stable — no flip-flop', () => {

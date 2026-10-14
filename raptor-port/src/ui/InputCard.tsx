@@ -54,7 +54,9 @@ export function InputCard({ id, facts, when, late, oil, tid, row, onOpen, onKey,
   onOpen: () => void
   /** a key on the card's button that is not Enter or Space — the day's Delete */
   onKey?: (e: ReactKeyboardEvent) => void
-  /** just saved: the list's flash */
+  /** just saved, changed or brought back: it wears the app's one just-added mark for its six seconds (`.innew`), on the
+   *  list and in the opened day alike, and says which input the mark is for (`data-fresh` — ui/seen.ts reads it to
+   *  decide whether the save's passing note is still needed: owner D851, D854) */
   flash?: boolean
   /** the card's own buttons, at the right of its words row — the one list's "Yes · HO" / "No" ([OIL-ASK-NOTIFY], owner
    *  D783: "one line an input, on the input's own card"; ui/OilDayList.tsx). A press on one is the button's own. */
@@ -66,7 +68,7 @@ export function InputCard({ id, facts, when, late, oil, tid, row, onOpen, onKey,
   const label = [names, title, kind, when].filter(Boolean).join(', ') + (cx ? ', cancelled' + (why ? ' — ' + why : '') : '')
     + (late ? ', late' : '') + (oil ? ', OIL question not answered' : '') + (by ? `, placed by ${by}` : '')
   return (
-    <div className={'icard ' + tone + (flash ? ' innew' : '')} data-popiid={id} data-iid={row ? id : undefined} data-testid={`${tid}-row-${id}`}
+    <div className={'icard ' + tone + (flash ? ' innew' : '')} data-popiid={id} data-iid={row ? id : undefined} data-fresh={flash ? id : undefined} data-testid={`${tid}-row-${id}`}
       onClick={ev => { if (!(ev.target as HTMLElement).closest('button')) onOpen() }}>
       <div className="icard-top">
         <span className="icard-corner">

@@ -199,7 +199,7 @@ describe('the record behind the window goes, or is put back by Undo', () => {
     await type('#inpEditRmk', 'mine')
     await act(async () => { removeInput(live(r.iid)); notify() })
     expect(win()).toBeNull()
-    expect(said.join(' | ')).toMatch(/removed|deleted/i)
+    expect(said.join(' | ')).toContain('That input was removed while its window was open, so the window has closed')
     expect(INPEDIT).toBeNull()
   })
   it('a change behind it taken back by Undo: the window follows the record as it now is, and keeps what he typed', async () => {

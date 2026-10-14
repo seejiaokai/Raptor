@@ -47,7 +47,10 @@ Success is a week planned, checked and published with less effort and nothing mi
   the schedule is built; publishing with four sign-offs, and amendments after a day is signed off.
 - It must stay fast on a phone — an effect or a layout that costs speed is not taken.
 - It must work on both an iPhone and a desktop.
-- The words on screen are plain and read as a finished product.
+- The words on screen are plain and read as a finished product. How the app speaks — as a capable colleague on the
+  scheduling desk would say it aloud: every fact kept, calm, exact, brief, the squadron's own words kept, a dash only
+  where nothing else reads as well (D834) — is `design-practices.md` §1b; §1, §1a and §1b together are the writing
+  guide (D833).
 - No unit designation anywhere: the squadron is "a fighter squadron".
 - Undecided here, his to place: the Tracker's progress graph.
 

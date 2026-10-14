@@ -20,7 +20,7 @@
 import { useEffect, useState } from 'react'
 import { INPUTS } from '../engine/inputs'
 import { canEditSched } from '../state/auth'
-import { noticeRun } from '../state/notices'
+import { noticeRun, holidayLineAny } from '../state/notices'
 import { notify, setPage } from '../state/store'
 import { oilOpenOn, useWarFacts } from '../leavewar/sync'
 import { FloatWin } from './FloatWindow'
@@ -38,10 +38,10 @@ export function OilDayList() {
   useEffect(() => { if (refused) setOilList(null) }, [refused])
   if (!o || refused) return null
   /* a list opened for another run of dates is another list: its picks start empty */
-  return <Body key={`${o.from}|${o.to}`} from={o.from} to={o.to} name={o.name} fresh={!!o.fresh} />
+  return <Body key={`${o.from}|${o.to}`} from={o.from} to={o.to} name={o.name} fresh={!!o.fresh} plain={!!o.plain} />
 }
 
-function Body({ from, to, name, fresh }: { from: string; to: string; name: string; fresh: boolean }) {
+function Body({ from, to, name, fresh, plain }: { from: string; to: string; name: string; fresh: boolean; plain: boolean }) {
   useWarFacts()                                        // a holiday taken away, a period changed: the list is read again
   const [picks, setPicks] = useState<Record<string, OilPick | undefined>>({})
   const open = oilOpenOn(from, to)
@@ -51,6 +51,15 @@ function Body({ from, to, name, fresh }: { from: string; to: string; name: strin
   const order = monthItems(found.map(x => x.r), { fPerson: 'all', fType: 'all', fSearch: '' } as any).map(it => it.rows[0])
   const rows = found.slice().sort((x, y) => order.indexOf(x.r) - order.indexOf(y.r))
   const done = rows.filter(x => picks[x.o.iid]).length
+  /* "WHAT IS LEFT GOES TO THE SCHEDULERS' BELLS" IS SAID ONLY WHERE IT IS TRUE (the fresh read of the finished code, F3 —
+     14 Oct 26). A scheduler's bell carries an OIL line only for a day that was MADE a holiday while something on it
+     could earn (a stored notice — leavewar/sync.ts tellHoliday). The list is also opened by a published version loaded
+     back (owner D818), on a plain weekend or on a holiday made while the input was off the programme: no bell has a
+     line for those, and what is left stays on the input's "OIL?" sign and its own answerer's bell — so nothing is
+     promised. Asked of the rows still UNPICKED (what is left), and of any scheduler's line, not only the reader's own
+     (the narrow read of the fix, L1 and L2): with the told holiday's input picked and only a plain Saturday's left,
+     nothing is promised; and a scheduler with no line of his own still reads what is true of the others' bells. */
+  const belled = rows.some(x => !picks[x.o.iid] && x.o.days.some(d => holidayLineAny(d)))
   const close = () => { setOilList(null); notify() }
   const pick = (iid: string, v: OilPick) => setPicks(p => ({ ...p, [iid]: p[iid] === v ? undefined : v }))
   const all = (v: OilPick) => setPicks(Object.fromEntries(rows.map(x => [x.o.iid, v])))
@@ -58,7 +67,7 @@ function Body({ from, to, name, fresh }: { from: string; to: string; name: strin
   /* the input's own window, where everything else about it is (the day's cards open it the same way) */
   const openInput = (r: any) => { setInpEdit(r); setPage('inputs'); notify() }
   return (
-    <FloatWin id="oilday" title={`OIL — ${noticeRun(from, to)}`} sub={name ? `Public holiday · ${name}` : 'Public holiday'}
+    <FloatWin id="oilday" title={`OIL — ${noticeRun(from, to)}`} sub={plain ? undefined : name ? `Public holiday · ${name}` : 'Public holiday'}
       testid="win-oilday" className="oildaywin" onClose={close}>
       {/* a holiday with no name of its own is named by its day — never by the preset's word ("PH is now…": the walk, E1) */}
       {fresh && <p className="odl-lead" data-testid="odl-lead">{name ? `${name} is now a public holiday.`
@@ -77,16 +86,16 @@ function Body({ from, to, name, fresh }: { from: string; to: string; name: strin
             return (
               <InputCard key={o.iid} id={o.iid} tid="odl" facts={cardOf([r], undefined, when)} when={when} late="" onOpen={() => openInput(r)}
                 action={<>
-                  <button type="button" className={'upconf-seg' + (p === 'y' ? ' on-keep' : '')} aria-pressed={p === 'y'}
+                  <button type="button" className={'upconf-seg' + (p === 'y' ? ' on-pick' : '')} aria-pressed={p === 'y'}
                     data-testid={`odl-yes-${o.iid}`} onClick={() => pick(o.iid, 'y')}>Yes · {o.amt === 1 ? 'FO' : 'HO'}</button>
-                  <button type="button" className={'upconf-seg' + (p === 'n' ? ' odl-no' : '')} aria-pressed={p === 'n'}
+                  <button type="button" className={'upconf-seg' + (p === 'n' ? ' on-pick' : '')} aria-pressed={p === 'n'}
                     data-testid={`odl-no-${o.iid}`} onClick={() => pick(o.iid, 'n')}>No</button>
                 </>} />
             )
           })}
         </>}
       <div className="odl-foot">
-        <span className="upconf-need" data-testid="odl-left">{rows.length && done < rows.length ? 'What is left goes to the schedulers’ bells' : ''}</span>
+        <span className="upconf-need" data-testid="odl-left">{belled && rows.length && done < rows.length ? 'What is left goes to the schedulers’ bells' : ''}</span>
         {rows.length === 0
           ? <button type="button" className="abtn primary" data-testid="odl-close" onClick={close}>Close</button>
           : <>

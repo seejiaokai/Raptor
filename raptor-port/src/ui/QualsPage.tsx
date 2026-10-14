@@ -13,7 +13,7 @@ import './postout.css'
 import { openAdminUsers } from './adminopen'
 import { updatePersonField } from '../state/quals-write'
 import { esc, BACKPROMPT, clearBack, QUALSFOCUS, focusQualsRow } from '../state/view'
-import { notify } from '../state/store'
+import { notify, setPage } from '../state/store'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (a roster write now
    emits a people/<personId> change). Same behaviour + the change stream. */
 import { persistPeople } from '../state/people-settings-commit'
@@ -359,7 +359,7 @@ export function QualsPage() {
        there — the arrow would have nowhere to sit and the order would look
        arbitrary, so it falls back to the callsign it opens on */
     setSort(s => s.key === k ? { key: 'cs', dir: 1 } : s)
-    HOOKS.toast(`${c.h} removed from the LoX. Nobody's record changed — add it back and the ticks return.`)
+    HOOKS.toast(`${c.h} removed from the LoX. Nobody's record changed. Add it back and the ticks return.`)
   }
 
   const addQual = () => {
@@ -712,7 +712,12 @@ export function QualsPage() {
       <div className="qhelp">
         Similar to a LoX and integrated with the board — a person's <b>CAT</b> drives their puck's qualification chip colour and the validator rules.
         A check (✓) means the person holds that qualification. In edit mode, click a cell to toggle it. Archive, restore and delete are on Admin → Users.
-        <a id="qAddQual" onClick={() => HOOKS.toast('Shortcut to the Admin page (Django-style backend in the full build).')}> Add qualifications</a> · <a id="qUses">Set which quals your squadron uses</a> · <a id="qAdminLink">Admin page</a>
+        {/* "Add qualifications" OPENS THE ADMIN PAGE AND SAYS NOTHING (owner D837, 14 Oct 26 — the passing note N33,
+            removed). It used to raise a note that spoke of the build ("Django-style backend in the full build") — the
+            builder's talk on screen, against his standing rule that the app's words read as a finished product (25 Aug
+            26). The note is gone; the link goes where the note said it led. The Admin page is its own gate: anyone
+            who is not an admin is told so there (AdminPage.tsx, #admDeny). */}
+        <a id="qAddQual" onClick={() => { setPage('admin'); notify() }}> Add qualifications</a> · <a id="qUses">Set which quals your squadron uses</a> · <a id="qAdminLink">Admin page</a>
       </div>
       {/* the seat view + Add person, right above the table (owner, 15 Aug 26).
           The four seat buttons keep their ids so every caller and test that

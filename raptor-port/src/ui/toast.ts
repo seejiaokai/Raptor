@@ -10,8 +10,25 @@ export let toastT:any=null;
    command rolled back; nothing it said is true). Only the publish command opens one (state/sched-commit.ts
    commitPublish, through HOOKS.toastBatch) — scoped, never a global "same breath" join: other code says a failure after
    a success on purpose (Astra 03). A batch opened inside a batch is the outer one's. */
-let BATCH:Array<{msg:string,kind:any}>|null=null;
+/* TWO NOTES ABOUT ONE DAY NAME IT ONCE (owner D837, 14 Oct 26 — the passing note N1; the words of record:
+   docs/superpowers/briefs/2026-10-13-wording-recheck.md, "For the builder"). Publishing Monday said "Monday published —
+   APPROVED · Monday 13 Jul: the common programme has no usable times, so nobody on it earns OIL": the day twice, and two
+   sentences held apart by a dot. A note may now say, beside its words, which day it names at its head and what it says
+   of that day (`part` — the third argument of toast). Where two such notes about the SAME day follow one another in a
+   batch, they are said as one: the day once, at the head, in the fuller of the two names (the one with its date), and
+   each note's own words as a sentence — the join adds the capital and the full stops, so each note shown alone still
+   has none (the writing guide's §1b test 4). `after` is whatever else the second note carried, joined as it always was.
+   NOTHING ELSE IS JOINED DIFFERENTLY: a note with no `part` — an amendment's receipt ("Published AL2 · 3 items…"), the
+   OIL line's other form, the two lines that ride behind it — keeps its own words and the dot, and so does a `part`
+   whose neighbour names another day or none. Only engine/publish.ts setDayApproved and leavewar/sync.ts
+   publishFlagsBids pass one. */
+export type ToastPart={day:number|string,head:string,body:string,after?:string};
+let BATCH:Array<{msg:string,kind:any,part?:ToastPart}>|null=null;
+/** how many notes the batch that is open has been handed so far — 0 where none is open. The input's window asks it
+ *  (ui/inputedit.tsx `saidSaved`): a save that said something of its own keeps "Input added" beside it, in the one note. */
+export function toastHeld():number{ return BATCH?BATCH.filter(m=>m.msg).length:0 }
 const RANK=(k:any)=>k==='hard'?3:k==='warn'?2:1;
+const sentence=(s:string)=>s.charAt(0).toUpperCase()+s.slice(1)+'.';
 export function toastBatch<T>(fn:()=>T):T{
   if(BATCH)return fn();
   BATCH=[];
@@ -21,7 +38,18 @@ export function toastBatch<T>(fn:()=>T):T{
     const got=BATCH; BATCH=null;
     if(ok&&got.length){
       const said:string[]=[]; let kind:any=undefined;
-      for(const m of got){ if(m.msg&&!said.includes(m.msg))said.push(m.msg); if(RANK(m.kind)>RANK(kind))kind=m.kind; }
+      /* `last` — the part of the note said last, while that note still stands whole at the end of `said` */
+      let last:ToastPart|null=null;
+      for(const m of got){
+        if(RANK(m.kind)>RANK(kind))kind=m.kind;
+        if(!m.msg||said.includes(m.msg))continue;
+        const a=last, b=m.part;
+        if(a&&b&&a.day===b.day&&b.head.startsWith(a.head)){
+          said[said.length-1]=`${b.head} ${a.body}. ${sentence(b.body)}${b.after?' · '+b.after:''}`;
+          last=null; continue;
+        }
+        said.push(m.msg); last=b||null;
+      }
       if(said.length)toast(said.join(' · '),kind);
     }
   }
@@ -37,23 +65,43 @@ export function toastBatch<T>(fn:()=>T):T{
    it; NOT when one closes — a note is not moved about while it is being read for no reason.
    "A window" is the shell's: the Leave War's sheets and the schedule's dialogs are other chassis, not pictured to him
    for this choice, and keep the note where it was (told to him as a reading). */
+/* …AND HOW WIDE IT IS ON A PHONE (owner D828, 13 Oct 26 — "on a phone a passing note takes the screen's full width less
+   a small margin — never half the screen; the desktop's note stays as it is"). The note is centred by `left:50%` and a
+   shift back of half its own width; a box placed that way has only the screen's right half to be wide in, so on a phone
+   it was never more than 195 of 390 across and his two notes ran five lines deep. Nobody chose that width. On a phone
+   the note is now held 12px from each side and not shifted, its words centred in it as the picture put to him drew
+   them (docs/mock/2026-10-13-design-look/note-phone-*-wide.png); a desktop keeps `left:50%` and the shift, exactly as
+   before. Set HERE and not where the note is made, because the one element is made once and reused: a window narrowed
+   or a phone turned between two notes must be answered by the next note. "A phone" is the shell's own answer
+   (ui/floatwin.ts phoneLayout — the stylesheet's ≤620px), the same one `up` below asks. The rise-in in toast() reads
+   `data-wide` to keep its movement in step with this place. */
 export function placeToast(){
   const t=$('toastEl'); if(!t)return;
-  const up=phoneLayout()&&!!document.querySelector('.floatwin');
+  const phone=phoneLayout();
+  if(phone)t.dataset.wide='1'; else delete t.dataset.wide;
+  t.style.left=phone?'12px':'50%';
+  t.style.right=phone?'12px':'';
+  t.style.transform=phone?'none':'translateX(-50%)';
+  t.style.textAlign=phone?'center':'';
+  const up=phone&&!!document.querySelector('.floatwin');
   /* …AND NEVER ON THE BAR THAT STAYS ([OIL-ASK-NOTIFY] — the check's walk, 13 Oct 26: "Not swapped — OIL not answered ·
      Answer OIL · OK" stands at the foot until it is tapped (D783 (2)), exactly where a note is drawn, and the note is the
      layer above — so every note raised while it was up, and one still showing when it arrived, covered its words and half
      its "Answer OIL" button). While that bar is up the note sits just above it; ui/OilWaitSheet.tsx calls this when the
      bar arrives. The "Set as default" offer goes by itself after seven seconds and is left as it was. */
-  const bar=up?null:document.querySelector('.secdef-snack.oilbar') as HTMLElement|null;
   t.dataset.at=up?'top':'foot';
   t.style.top=up?'calc(env(safe-area-inset-top, 0px) + 10px)':'';
-  t.style.bottom=up?'auto':bar?`${18+(bar.offsetHeight||50)+8}px`:'26px';
+  t.style.bottom=up?'auto':'26px';
 }
 /* kind==='warn' tints the toast amber — used when something was allowed but is
    not right, e.g. dropping crew who are not current for the shift. */
-export function toast(msg:any,kind:any){
-  if(BATCH){ BATCH.push({msg:String(msg==null?'':msg).trim(),kind}); return; }
+/* how many notes have been SHOWN — a note that is waiting to be said asks it, so as not to replace one raised since
+   (ui/seen.ts; the fresh read of the leftovers batch, 14 Oct 26 — F3) */
+let SHOWN=0;
+export function toastCount():number{ return SHOWN }
+export function toast(msg:any,kind:any,part?:ToastPart){
+  if(BATCH){ BATCH.push({msg:String(msg==null?'':msg).trim(),kind,part}); return; }
+  SHOWN++;
   let t=$('toastEl'); if(!t){t=document.createElement('div');t.id='toastEl';
     /* above the scheduler board (400) and the drag ghost (520) — a toast raised
    from inside the board used to render behind it */
@@ -80,13 +128,18 @@ export function toast(msg:any,kind:any){
      InputsCal's month slide: no animate() in jsdom, and reduced-motion
      opts out (WAAPI is the one motion the CSS blanket cannot reach). The
      keyframes carry the base translateX(-50%) — dropping it would walk the
-     toast off-centre for the length of the animation. */
+     toast off-centre for the length of the animation. On a phone the note is
+     not shifted at all (D828 — placeToast), so there the keyframes carry no
+     translateX: with it the full-width note would slide in from half a screen
+     to the left. */
   try{
-    if(typeof (t as any).animate==='function'&&!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches))
+    if(typeof (t as any).animate==='function'&&!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)){
+      const shift=t.dataset.wide?'':'translateX(-50%) ';
       (t as any).animate(
         /* it rises into its place at the foot, and drops into it at the top */
-        [{transform:`translateX(-50%) translateY(${t.dataset.at==='top'?-8:8}px)`},{transform:'translateX(-50%)'}],
+        [{transform:`${shift}translateY(${t.dataset.at==='top'?-8:8}px)`},{transform:shift?'translateX(-50%)':'none'}],
         {duration:200,easing:'cubic-bezier(.22,.61,.36,1)'})
+    }
   }catch(_){/* motion is decoration — a throw here must never eat the toast */}
   /* HOW LONG IT HOLDS — long enough to READ (owner, 21 Sep 26: "the inputs
      bubble warning timing is a bit too short as well to read it. Maybe

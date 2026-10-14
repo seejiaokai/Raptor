@@ -288,9 +288,25 @@ body.in-cal{padding-bottom:0}
    its place among the day's bars (D768). */
 .ib-bar.is-cx{text-decoration:line-through;text-decoration-color:rgba(255,255,255,.9);text-decoration-thickness:1px;opacity:.6}
 .icard-latenote{display:block}
-/* just saved on the list: the row's own flash (06-inputs.css @keyframes inflash) */
-.icard.innew{animation:inflash 6s ease-out 1}
-@media (prefers-reduced-motion:reduce){.icard.innew{animation:none}}
+/* JUST SAVED, CHANGED OR BROUGHT BACK — the app's one just-added mark (06-inputs.css @keyframes inflash: the board's
+   blue box, held, fading only at its end), on the list's card, the opened day's card and the month's bar (owner D851,
+   D854 — it stands in place of "Input added" / "Input updated" where the input can be seen). A bar with hours keeps
+   its coloured left edge under the box (`.timed` draws that edge as a shadow of its own). For a reader who asked for
+   less motion the box shows steady and goes without its fade (the guide's §5; 06-inputs.css). */
+/* (no glow — the board's ring, owner D860: 06-inputs.css) — and a bar that wears it shows NO landing flash before it
+   (owner D861 — "same thing no glow": the quick cyan flash came first, then the ring; now only the ring). A bar that
+   lands without the ring (a drag, an Undo) keeps its landing flash. */
+.ib-bar.innew.lift-land::after{content:none}
+.icard.innew,.ib-bar.innew{animation:inflash 6s ease-out 1}
+@keyframes inflash-timed{
+  0%,90.83%{box-shadow:inset 0 0 0 2px #1E86FF,inset 3px 0 0 var(--ib-c)}
+  100%{box-shadow:inset 0 0 0 2px rgba(30,134,255,0),inset 3px 0 0 var(--ib-c)}
+}
+.ib-bar.timed.innew{animation-name:inflash-timed}
+@media (prefers-reduced-motion:reduce){
+  .icard.innew,.ib-bar.innew{animation:none;box-shadow:inset 0 0 0 2px #1E86FF}
+  .ib-bar.timed.innew{box-shadow:inset 0 0 0 2px #1E86FF,inset 3px 0 0 var(--ib-c)}
+}
 /* THE LIST'S DAY HEADING on a phone (D723): "SAT 18 JUL" and, at the right, how many inputs stand under it */
 .icard-day{display:flex;align-items:baseline;gap:8px;margin:14px 2px 6px;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
 .icard-day:first-child{margin-top:4px}
@@ -531,8 +547,9 @@ body.in-cal{padding-bottom:0}
 .icard-words.has-act .icard-by{margin-left:auto}
 .icard-act{display:inline-flex;gap:6px;flex:none;margin-left:auto}
 .icard-words.has-act .icard-by + .icard-act{margin-left:0}
-/* a chosen No, in quiet grey (D783) — a Yes wears the app's own "picked" colour (.upconf-seg.on-keep) */
-.upconf-seg.odl-no{background:var(--edge-2);border-color:transparent;color:var(--ink)}
+/* a chosen Yes and a chosen No both wear the outline look a picked OIL answer has (14-input-editors.css `.on-pick` —
+   the design look's L5, owner D830, 13 Oct 26: "a picked Yes or No reads the same in both" the question and this list).
+   It replaces D783's quiet grey for a chosen No. */
 .odl-foot{display:flex;align-items:center;gap:8px;padding:14px 0 2px}
 /* LATER AND SAVE STAY IN SIGHT WHILE THE CARDS SCROLL (the check's walk, B4b — 13 Oct 26). The list is as tall as what
    is in it up to the window's limit, then its cards scroll inside the window (.floatwin .win-body) — and the foot was

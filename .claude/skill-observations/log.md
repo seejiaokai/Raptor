@@ -346,3 +346,288 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** In the unattended-run rule (`doc-structure.md` §In his workflow, and the evidence sheet's "Questions waiting for him"): the parked question's shape is fixed — "the case (a named person, a day, what he pressed) · what the app does today · the choice · recommended". And: a word that is not on any screen is not used in a question.
 
 **Principle:** A question is only as good as the picture the reader forms of it. If he could answer it about a different situation than the one you mean, it is not yet a question.
+
+### Observation 577: A complaint about wordy notes was half a layout fault — the box was measured only after the words had been drafted
+
+**Status:** ACTIONED (2026-10-14) — the design guide §1a test 1 (measure the box before the words; a pass that did not says so); on the branch, awaiting his approval of the guide's wording (D832)
+**Date:** 2026-10-13
+**Session context:** [DESIGN-LOOK-13OCT] — the design page: the shorter passing notes (D806), drawn before and after on the built app at a phone's size
+**Skill:** impeccable (reference/clarify.md); the design guide §1 (words on screen)
+**Type:** open-source
+**Phase/Area:** Clarify — before shortening any words
+
+**Issue:** The owner sent two pictures of a passing note five lines deep and asked for shorter words. The backlog item drafted shorter wordings and nothing else. Only when the built note was drawn at the phone's size and its box measured did it show that the box was half the screen wide (a box centred by "left: 50%" can only be as wide as the half it starts in). The same words in a full-width box were three lines; shorter words alone left it at three as well; both together made two. A second surface (a bar that stays) had the same cause.
+
+**Suggested improvement:** In clarify.md's first step, and the guide's §1: before rewording a note, a label or a hint that "runs long", measure the box it sits in at the smallest shipped width — its width against the screen's, its line count — and report the words and the box as two separate findings. A wording pass that never measured the box says so.
+
+**Principle:** "Too wordy" is a report of how much room the words take, not of how many there are. Measure the container before editing the text; the cheaper half of the fix is often not in the words.
+
+### Observation 578: The design skill's critique saves its snapshot where this repo's document check refuses a new document
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** [DESIGN-LOOK-13OCT] — /impeccable critique, the "Persist the snapshot" step
+**Skill:** impeccable (reference/critique.md — Persist the Snapshot); .claude/skills/TASK-OBSERVER-VENDORED.md's sibling note for impeccable, if one is kept
+**Type:** internal
+**Phase/Area:** Critique — persistence
+
+**Issue:** The helper wrote the snapshot to the repository root's .impeccable/critique/. The document check then failed the turn: a new document outside raptor-port/docs/. The snapshot was moved by hand to docs/handpass/parts/ and the record points there — so the skill's own "trend" and a later /impeccable polish will not find it. Two older snapshots sit in the skill's folders from before the check existed.
+
+**Suggested improvement:** Decide once, in the project's note on the vendored design skill: either the document check lets .impeccable/critique/ through (it is the skill's own store, like its config), or critique is told here to skip persistence and write its scores into the look's own record under docs/handpass/. Until then a critique in this repo ends with a moved file and a broken trend.
+
+**Principle:** A vendored tool's own store and the host project's filing rule have to be reconciled once, in writing — otherwise every run pays for the clash again, and the tool's later steps silently lose what an earlier step saved.
+
+### Observation 579: "Shorten it" was answered with summaries — the owner sent the list back: "the key words are gone"
+
+**Status:** ACTIONED (2026-10-14) — the design guide §1a tests 2, 3, 4 and 8 (a word is cut only if the note states the same facts without it; show the change); on the branch, awaiting his approval (D832)
+**Date:** 2026-10-13
+**Session context:** [DESIGN-LOOK-13OCT] / [NOTES-SHORTER] — 33 shorter wordings for the app's passing notes, put to him before and after; his answer the same evening (D825)
+**Skill:** impeccable (reference/clarify.md); the design guide §1 (words on screen); plain-language (the same failure as a "condensed record that changed what the original meant", D138)
+**Type:** open-source
+**Phase/Area:** Clarify — rewriting existing copy shorter
+
+**Issue:** Asked to make wordy notes shorter, the first draft rewrote each note as a summary: named things became pronouns, reasons and consequences were dropped or compressed ("the common programme has no usable times, so nobody on it earns OIL" became "no times — no OIL from it"). The owner read it as key words gone. Redone with one test per word — would the sentence still say the same fact without it — the honest result was fourteen notes with filler cut (a day said twice, "Heads up", "it has been") and nineteen left whole. Nothing in the method had asked for the cut words to be listed, so the loss was invisible until he read it.
+
+**Suggested improvement:** In clarify.md and the guide's §1: a shortening is shown as before, after, and the exact words cut. A cut is allowed only for a word the sentence says the same without; a named thing, a number, a reason, a consequence and the place to fix it are never cut. A note that cannot lose a word that way is reported as "left whole", and the next question is its box, not its words.
+
+**Principle:** Shortening removes words; summarising removes facts. Show the removed words, and the difference polices itself.
+
+### Observation 580: A gap the machine record held never reached the page; a redraft said the opposite of its original — both caught only by a second model's read
+
+**Status:** ACTIONED (2026-10-14) — the design guide §1a test 9 (the cold read by someone else) and §8 (counts compared by a script); the wider-letters line is in the mock-up guide; on the branch, awaiting his approval (D832)
+**Date:** 2026-10-13
+**Session context:** [DESIGN-LOOK-13OCT] — Fable's read of the whole design page, on the owner's word (D826), after the host's own look and a fresh Opus reader's
+**Skill:** impeccable (reference/critique.md — synthesis; reference/clarify.md); the design guide §8 (how a look is reported)
+**Type:** open-source
+**Phase/Area:** Critique — from evidence to report; Clarify — checking a rewrite
+
+**Issue:** (1) The keyboard sweep wrote one row per key pressed, with a verdict. One row marked a gap (Delete on a filled date box does nothing) was reasoned away while the page was written and silently left off its list. Nothing compared the record's gap rows with the page's. (2) One shortened wording ("Nothing on this day earns OIL — anything added later too") could be read as the opposite of its original; the writer, knowing the meaning, could not see it. (3) A drawing's "every row the same shape" was proved only in the test browser's letters, and the column allowed to shrink was the date. A same-model reader given the pictures found none of the three; a different model given the page, the record and the source found all three.
+
+**Suggested improvement:** In the look's report step: every row a machine record marks as a gap appears on the page by number, or in "considered and left" with its reason — and the count is checked by a script, not by eye. In clarify: each rewrite is read back COLD for its literal meaning, without the original beside it, before the pair is shown. In a mock-up's script: name which part gives way when the letters are wider, and draw that case.
+
+**Principle:** Evidence that is gathered by machine must reach the report by count, not by recollection; and a rewrite is checked by someone who does not already know what it is meant to say.
+
+### Observation 581: Three sources recorded as "would not open" had only moved — a second read reached all three by following the redirect or using a real browser
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** [SKILL-FUSION-WRITING] — the second read of outside writing guides (D833); the first read's note listed GOV.UK's, Google Material's and the US plain-language site's pages as "NOT read (redirects, an empty page, not found)"
+**Skill:** New skill candidate: reading outside sources for a guide (today a helper's brief; `anthropic-skills:deep-research` where it is used)
+**Type:** open-source
+**Phase/Area:** Research — fetching a source; what the record says of one that failed
+
+**Issue:** The fetch tool does not follow a redirect to another host: it returns the new address and stops. It also returns only a title for a page drawn by script. The first read took both as "the source would not open" and judged without them — and they were the three most relevant sources (one holds the only published rule on dashes). The second read fetched the address each redirect named (two hops for one of them) and opened the scripted page in a real browser: all three were read in an hour. The fetch tool also answers through a small model, so a page read that way is an account of the page, not the page — the first note did say so.
+
+**Suggested improvement:** In a research brief: a source is recorded as unread only after (1) the address a redirect names has been fetched, hop by hop, and (2) a page that came back empty has been opened in a real browser. The record says, for each source, how it was read — word for word, or a tool's account — and for each one not read, what was tried.
+
+**Principle:** "Would not open" is a finding about the tool until the redirect has been followed and a real browser tried; a source set that silently lost its most relevant members biases the conclusion as surely as a bad source does.
+
+### Observation 582: "Checked in the app" was written from a note's words, not from whether its branch can run — one of thirteen approved wordings was a note the app can no longer show
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** [SKILL-FUSION-WRITING] — the wordings of 13 Oct rechecked against the writing guide; the third read (a fresh Opus reader and Fable, blind) asked to confirm every "checked in the app" in the record against the code
+**Skill:** impeccable (reference/clarify.md — Audit the language); the design guide §1a test 8 and §1b test 2; plain-language ("Verified vs assumed")
+**Type:** open-source
+**Phase/Area:** Clarify — establishing what a string means before rewording it
+
+**Issue:** The writer reworded a two-tap warning ("pick it again to confirm") and wrote "checked in the app: nothing is replaced until the second pick" — from the string and the lines round it. The function that would raise it had stopped returning that state three weeks earlier (its own comment says so); the note is dead code. The owner had approved a shorter wording of it on a page, a first reader had "confirmed" the check, and only the second reader, who followed the call to its source, found it. The same pass found a fix written on a guess ("returns if the day's schedule changes" — it is keyed to the warning's own words) and a family counted as three strings that is seven. When the two readers disagreed on the dead note, the host settled it by reading the function, not by weighing the reports.
+
+**Suggested improvement:** In clarify's audit and the guide's §1a: before a string is reworded, find (1) every place it is raised — by search, with the count stated — and (2) for each, the condition that reaches it, followed one call up; a string no path reaches is reported as dead, not reworded. "Checked in the app" in a record names the function read. And in any multi-reader round: two readers who disagree on a FACT are settled by the primary source, at once, before either report is folded in.
+
+**Principle:** A wording is checked against the behaviour that raises it, not against its own words; and a disagreement between reviewers about a fact is a question for the source, never a vote.
+
+### Observation 583: Each of three read rounds of a guide found faults the last had missed — and nearly all came from making the reader APPLY the guide to real cases and to the code, not from reading it
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** [SKILL-FUSION-WRITING] — a writing guide read three times by two blind readers (D832, D833, D835)
+**Skill:** New skill candidate: briefing a reader of a working guide (today in each brief; `claudex-loop` for plans); writing-skills
+**Type:** open-source
+**Phase/Area:** Review — what the brief asks the reader to do
+
+**Issue:** Round one asked "is the draft faithful and sound" and returned wording fixes. Rounds two and three added three tasks to the brief: reword eight real notes by the guide alone and say whether two careful writers would land apart; try to construct a rewording that passes every test and still reverses a fact; run the new rule over eleven named cases and tabulate what it yields against what the record did. Those tasks produced the heavy findings — a link word guessed, an order of branches that could not be applied as written, two fixes from the previous round contradicting each other — which a reading of the guide's text had passed twice. A separate cold reader, given only the outputs, found what all the guide-readers missed (a flying word that means "approved").
+
+**Suggested improvement:** A brief for reading a guide, rule or skill always carries: (1) apply it to N named real cases and show the result; (2) construct a case that passes every rule and is still wrong; (3) tabulate rule-yields against what the author did. And stop at three rounds: say what was not re-read after the last fixes instead of opening a fourth.
+
+**Principle:** A rule is reviewed by running it, not by reading it; ask the reviewer for outputs and counter-examples, and the faults in the text find themselves.
+
+### Observation 584: A drawing's parts had names of their own; the build shortened them, and a bare name met one the app's global stylesheet already owned
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** [LW-CLASH-NOTE-PHONE] — building an approved mock-up (a list drawn into the running app by an injection script) as real markup
+**Skill:** brainstorming (`mockups-on-the-real-app.md` — from the picture to the build); impeccable (building a drawn design)
+**Type:** open-source
+**Phase/Area:** Build — turning an injected mock-up into the component
+
+**Issue:** The injection script drew the list with prefixed class names (`dn-line`, `dn-go`, `dn-who`). The build renamed them to short ones inside the component's own class (`.clashline .go`, `.clashrow .day`). The app has one global stylesheet that already owns `.go` (a wave) and `.day` (a day of the week); the wave's margin and border reached the new span and the line stood 46 px tall instead of 30. Unit tests could not see it (no stylesheet); the first scripted run on the built screen did, because it asserted the line's measured height against the drawing's figure. The same job was FIXING an older case of exactly this (`.seg`).
+
+**Suggested improvement:** In the mock-up guide's "from the picture to the build" step: keep the drawing's prefixed names, or prefix every new class with the component's own word; before using any bare class name in an app with a global sheet, search the stylesheets for it. And the built screen's first check re-measures the figures the drawing printed (heights, edges), not only its words. A cheap unit guard: every class inside the new component starts with its prefix.
+
+**Principle:** A scoped selector limits where YOUR rule lands, not which of the app's rules land on you; a new name is free only after a search says so, and a drawing's measured figures are assertions for the build.
+
+### Observation 585: Two helpers reported a typecheck PASS from a command that checked no file
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** A three-job batch built with two same-model helpers, each told to run the typecheck
+**Skill:** New skill candidate: briefing a build helper (today in each brief; `dispatching-parallel-agents`, `verification-before-completion`)
+**Type:** open-source
+**Phase/Area:** Verification — the command a brief names
+
+**Issue:** The host's brief named a typecheck command from memory (`tsc --noEmit -p .`). The project's root config is a solution file with no sources (it only references the app's and the tooling's configs), so the command exits 0 having read nothing. Both helpers ran it and reported PASS; the host caught it only because its own run printed nothing at all for a tree that was mid-edit.
+
+**Suggested improvement:** A brief names verification commands copied from the project's own scripts (the build's, the gate's), never composed; and a check that a helper will lean on is first proved able to fail (one deliberate error) — or the helper is told to do so once. verification-before-completion: "exit 0 with no output" is asked "did it read anything?".
+
+**Principle:** A check is evidence only after it has been seen to fail; a command that cannot go red proves the command, not the code.
+
+### Observation 586: A break test of a stylesheet rule passed with the rule cut: the browser tests reused a preview already serving
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** A three-job batch's bug check - a browser test written to pin a one-line stylesheet fix, then broken on purpose
+**Skill:** verification-before-completion; the walk-scripts guide (`raptor-port/docs/walk-scripts.md` - break tests)
+**Type:** open-source
+**Phase/Area:** Verification - proving a new browser test can fail
+
+**Issue:** The fix's rule was cut and the new browser test run: green. The test runner is configured to reuse a server already on its port, and the walk's preview was serving the build made BEFORE the cut - the cut never reached what the test ran on. Cut again, rebuilt, run: red. The same trap makes any single browser-test run after a source change silently test the old build while a preview is up.
+
+**Suggested improvement:** In the walk-scripts guide's break-test section and the project guide's live-view rule: a browser test's verdict belongs to the BUILD it ran on - rebuild before it whenever source changed and a preview is serving, and for a break test of a rule no unit test can reach (a stylesheet's), cut, BUILD, run, restore, BUILD. Print the build's time or commit in the run's first line.
+
+**Principle:** A test's result is a fact about the artefact it ran against, not about the working tree; where a runner can reuse a running server, 'I changed the source and ran the test' proves nothing until the build is known to be the changed one.
+
+### Observation 587: An assertion that 'nothing moved' read the screen before the movement had finished - and the unit test beside it asked for the cause of the fault
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** The same bug check - a calendar's month-and-year lists, keys that should do nothing
+**Skill:** the walk-scripts guide (`raptor-port/docs/walk-scripts.md` - asserting an absence); test-driven-development
+**Type:** open-source
+**Phase/Area:** Walk script - asserting that a key does nothing
+
+**Issue:** A walk script pressed End in a scrolling list, waited 450ms and asserted the year unchanged: it passed. The browser's own scroll for that key takes about 750ms to settle, and only then is the row in the band read as the choice - End chose a year sixty years on. The script went red one run in four, when the NEXT key raced the settling. The unit test for the same keys asserted 'the key is not taken' (default not prevented) - in a real browser exactly what lets the box scroll; the test world has no scrolling, so it could never see the consequence.
+
+**Suggested improvement:** In the walk-scripts guide: an assertion of ABSENCE ('nothing moves', 'no note', 'no question') names what would have moved and waits out the slowest path by which it could (an animation, a debounce, a timer) - or reads the cause directly (scroll position over time). And when a unit test asserts an event is LEFT to the browser on an element that scrolls, holds focus or submits, write beside it what the browser then does with it.
+
+**Principle:** Absence is only evidence after the longest route to presence has had time to run; and 'leave the key to the browser' is a behaviour, not a no-op - on a scrollable, focusable box the browser's default is itself a feature someone must want.
+
+### Observation 588: A new script written over an older one of the same name - the write tool said 'updated' and the host read past it
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** The same bug check - adding one more walk script to a folder of earlier jobs' scripts
+**Skill:** New skill candidate: adding files to a shared scripts folder (today nowhere; the Write tool's own result is the only signal)
+**Type:** open-source
+**Phase/Area:** File creation - choosing a name
+
+**Issue:** The host wrote a new walk script under a short obvious name. A script of that name already existed from the previous day's job (a different purpose, named in the file map). The tool's result read 'updated' rather than 'created'; the host missed it for several steps and ran, edited and cited the new file under the old one's name before a search of the file map showed the clash. The old file was restored from git and the new one renamed; had the old one been uncommitted it would have been lost.
+
+**Suggested improvement:** Before creating a file in a folder other jobs write to: list the folder (or search the file map) for the name; treat a create that reports 'updated' as a stop. In this repo's walk-scripts guide: a new script's name carries its job's word (as this batch's others did: '-built').
+
+**Principle:** A name is free only after a look says so (the same rule as a class name in a global stylesheet, entry 584); and a tool's 'updated' on what was meant as a create is an alarm, not a synonym.
+
+### Observation 589: A mark that lasts a few seconds holds state too - the walk sized "no new control" and never pressed twice inside its lifetime
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** A small batch that put a six-second "just added" mark in place of a passing note; the bug check was sized SHORT because no control was new
+**Skill:** the checking guide (`raptor-port/docs/bug-check-order.md` §7.4, the state table; §7.0 sizing)
+**Type:** open-source
+**Phase/Area:** Walk sizing - deciding whether a state table is owed
+
+**Issue:** The sizing step reasoned "no new control, every screen walked this week" and walked single saves. The fresh code read then found three faults, every one an ORDER of action against a thing with a lifetime: a second save inside the six seconds (one timer never restarted; a stylesheet animation that does not start again while its class stays; a list row keyed by its place), two lit cards in one day (the window went to the older), and a note said late over a warning raised meanwhile. §7.4 asks for a state table for "a control that holds state between presses"; a mark with a timer and a note that waits are not controls, so the table was not written.
+
+**Suggested improvement:** In §7.4 and in the walk ledger's type D row: anything that holds state between presses gets the state table - a control, AND a transient mark, a timer, a note that waits, an animation. The minimum rows for a transient: the same trigger again inside its lifetime; a second, different trigger inside it; the thing removed, hidden or re-made while it runs; and its end arriving while another is running. A walk of single presses cannot find any of them.
+
+**Principle:** Lifetime is state. A thing that is only on screen for six seconds has a before, a during and an after, and every press that can land in "during" is an order of action nobody walked unless it was listed.
+
+### Observation 590: The browser tests' default port was another chat's server - a run without the port set would have tested someone else's build
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** The same batch - running one browser test file from a second worktree on a PC where another chat's preview held the default port
+**Skill:** the gates-and-deploy guide (`raptor-port/docs/gates-and-deploy.md`); verification-before-completion
+**Type:** open-source
+**Phase/Area:** Verification - which build a browser test ran against
+
+**Issue:** The preview tool refused the default port ("in use by another chat's dev server"). The browser-test runner reuses any server already on its port when run locally, so `npx playwright test` with no port set would have run this branch's tests against the OTHER chat's bundle and reported whatever that build did. It was caught only because the preview start failed first; the runner itself says nothing.
+
+**Suggested improvement:** In the gates guide and the shipping rule's paragraph on the lock: a chat names its own port for every browser run (the environment setting the runner reads), and the first step of any browser test is to prove whose build is on that port - for example a build stamp the page exposes, compared with the commit in hand. Until such a stamp exists: start the preview through the preview tool first; a refusal there is the signal.
+
+**Principle:** A reused server makes a test's verdict a fact about whatever is listening, not about the checkout. On a machine shared by several chats, "which build did this run against" has to be answered by the build, not assumed from the folder the command was typed in.
+
+### Observation 591: He asked the same pre-sleep questions for the third night running - and asked for them to become a command
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** An unattended overnight run: what can be built without him, what must be asked before he sleeps, how the state is kept across a compaction
+**Skill:** New skill candidate: overnight-run (filed as `[OVERNIGHT-SKILL]`, his word D859)
+**Type:** open-source
+**Phase/Area:** Session start of an unattended run
+
+**Issue:** Each night he asks: how long is the job in hand, what else is outstanding, what can run unattended, what do you need from me before I sleep - then gives the same permissions (decide yourself, this chat, compact, save to the repo, no merge). The agent answers from the handoff and the backlog each time, records a one-off permission each time, and re-derives the same rules (D596, D667, D766) from four places.
+
+**Suggested improvement:** A skill that does it in one call: read the handoff and the backlog's order; list what is ruled and buildable and what is not and why; at most four questions with a recommended answer each (design ones with a picture); record the night's permission; state each job's check; write the state into the repo before the first job and at every commit; park his choices in one list; never merge; one notification; a morning report with pictures and a numbered "what you do now". Its worked example is the night of 14 Oct 26 (the rulings D856 to D859 and that chat's handoff block).
+
+**Principle:** A question the user asks every time is a missing command. The cost of the ritual is not the minute it takes him but the chance that one night a permission is assumed that he did not give.
+
+### Observation 592: A walk helper copied from another walk stepped the wrong way through a date picker - the two walks ran on different clocks
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** Writing a walk script for the small OIL job (a day made a public holiday through the Calendar window, then a published version loaded back)
+**Skill:** walk scripts guide (`raptor-port/docs/walk-scripts.md`)
+**Type:** internal
+**Phase/Area:** Walk libraries - reuse of a helper across walk worlds
+
+**Issue:** The "make a holiday" steps were copied from an earlier walk's library, which pressed "next month" until the date appeared. That library ran with the browser's clock set to the demo week; this one runs on the real clock, months after the demo week, so the picker opened on today's month and the date lay BEHIND it. The script timed out on a date that was never drawn, and three parts reported NOT WALKED. The same copy also assumed a published version's id was its label ("ORIG"); the app's id is the day's date and a number.
+
+**Suggested improvement:** In the walk-scripts guide, under writing a library: (1) a calendar is stepped by READING the month it shows and comparing it with the month wanted, never by a fixed direction; (2) an id used in a selector is read from the page (the first version the menu lists), never assumed from its label; (3) a helper copied from another walk states the clock that walk ran on.
+
+**Principle:** A helper lifted from another harness carries that harness's world with it - its clock, its ids. Read the state from the screen at the moment of use instead of inheriting an assumption that was only ever true next door.
+
+### Observation 593: A reader, a walker and the break tests want three different things held still - their order was worked out by hand
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** The small OIL job's FULL check, run unattended: a fresh code reader and a walk helper started together, with break tests and a new browser test still to run
+**Skill:** bug-check order (`raptor-port/docs/bug-check-order.md` section 4)
+**Type:** internal
+**Phase/Area:** Sequencing the parts of a check on one checkout
+
+**Issue:** The order says: nobody rebuilds the build a walker is served; nothing rewrites the source a reader reads; a break test rewrites source; a browser test builds. With one checkout and one served folder, that leaves exactly one safe order - reader (handed a commit) and walker (on the served build) together, documents and NEW tests written meanwhile, then break tests, then the build and the browser tests, then the gates - and it had to be reasoned out from four separate sentences. Getting it wrong costs a false finding (10 Oct) or a mixed walk (23 Sep).
+
+**Suggested improvement:** One small table in section 4: for each activity (walker, reader, break test, browser test or build, unit test, document edit) what it needs held still and what it changes - and the standard order for a single checkout. Say that a reader told to read at a commit may still RUN a unit file from the working tree, so break tests wait for it all the same.
+
+**Principle:** When several checks share one working copy, each one's precondition is another's side effect. Write the dependency table once instead of re-deriving the schedule under load.
+
+### Observation 594: A designer's open question was parked as "leave it" - and the code reader then showed it was the very gap the ruling closes
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** The small OIL job, unattended: the scenario designer asked what a load does with an input of several days whose unanswered day is not the day loaded; the host parked it for the owner with the recommendation "leave it"
+**Skill:** bug-check order (`raptor-port/docs/bug-check-order.md`, the unattended-run paragraph and section 4 on scenario design)
+**Type:** internal
+**Phase/Area:** Parking a question during an unattended run
+
+**Issue:** The host treated the designer's question as a product choice and parked it with a recommended answer that happened to be the cheaper one (no change). The fresh code reader, starting from the ruling's own words, showed a road on which that answer left nobody told at all - the exact fault the ruling was made to end. The parked recommendation had been written without asking "on which road does my recommended answer leave the ruling unmet?".
+
+**Suggested improvement:** In the order's paragraph on parking a choice: before a question is parked with the recommendation "leave it as built", the agent writes the worst road for that recommendation - the setup on which "as built" most plainly fails the ruling's own sentence - and parks it only if that road is acceptable under the ruling. If it is not, it is a finding to fix, and what is parked is the reading that changed.
+
+**Principle:** "Leave it" is a recommendation like any other and needs its own adversarial case. A question a designer raises is a candidate finding until the ruling's own words have been tried against the answer you would give.
+
+### Observation 595: A record edited while the gate run was going failed the run's last check - nothing was wrong with the app
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** The whole gate set running in the background (about 18 minutes); the host used the time to write the backlog, the rulings' records and the handoff
+**Skill:** shipping rule, the checks (`.claude/rules/shipping.md`) and the gate runner (`raptor-port/scripts/gatelock.mjs`)
+**Type:** internal
+**Phase/Area:** What may be edited while the gates run
+
+**Issue:** The document check is the last gate of the set and reads the working files. A line added to a rulings record during the run (a branch name in backticks, read as a file that does not exist) failed it, so the run as a whole reported a failure although every code gate had passed. The honest report then needs a sentence explaining a failure that was never about the code.
+
+**Suggested improvement:** Either the runner runs the document check FIRST (it takes seconds and reads only documents), so later document work cannot fail a run already judged; or the rule says: while the gate set runs, documents may be drafted in the scratch folder but are written into the repo only after the run ends. And in the rulings guide: a branch name in a home cell is written without backticks - backticks there mean a file.
+
+**Principle:** A check that reads the working tree is only as still as the tree. Put the fast, tree-reading checks first, or keep the tree still until they have run.

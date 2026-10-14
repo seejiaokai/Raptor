@@ -61,7 +61,9 @@ export function UpchitConfirm({ who, dateLabel, effects, onSave, onCancel }: {
             {effects.leftovers.map((r: any, i: number) => (
               <div className="upconf-left" key={i} data-testid={`upconf-left-${i}`}>
                 <span>{r.type} {span(r)}</span>
-                <span className="seg">
+                {/* flat, in a wrapper of the sheet's own: `.seg` is the week strip's rule too, and gave these its darker patch
+                    and its line underneath (owner D849, 14 Oct 26 — "3 yes"; L1's fix, on the sheets D830's list did not hold) */}
+                <span className="upconf-ans">
                   <button className={'upconf-seg' + (choice[i] === 'keep' ? ' on-keep' : '')}
                     onClick={() => setChoice(c => ({ ...c, [i]: 'keep' }))}>Keep</button>
                   <button className={'upconf-seg' + (choice[i] === 'remove' ? ' on-rem' : '')}
@@ -71,7 +73,9 @@ export function UpchitConfirm({ who, dateLabel, effects, onSave, onCancel }: {
           </>}
         </div>
         <div className="airpop-foot upconf-foot">
-          {!ready && <span className="upconf-need">Choose Keep or Remove for each entry above</span>}
+          {/* (no "Choose Keep or Remove for each entry above" here — owner D848, 14 Oct 26, by D846's rule: the heading over
+              the entries already says "choose for each", Keep / Remove stand right there, and the button below is dimmed
+              until each has an answer) */}
           <span style={{ flex: 1 }}></span>
           <button className="abtn ghost" onClick={onCancel}>Cancel</button>
           <button className="abtn primary" data-testid="upconf-save" disabled={!ready}

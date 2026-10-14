@@ -233,6 +233,24 @@ describe('Save', () => {
     expect(t('every-from').getAttribute('aria-label')).toBe('From: Thu 5 Nov 2026')
     expect(t('every-until').getAttribute('aria-label')).toBe('The date it ends: no date picked')
   })
+  /* L9 (the design look of 13 Oct 26; owner D830): on a phone the calendar's card says which date it is for — in the
+     WINDOW's own words, "From" and "Until", as the page he approved shows. The Until box's spoken name stays "The date
+     it ends" (the line above): only the card's line takes the screen's word. */
+  it('on a phone each box’s calendar says which date it is for, in the window’s own words — "From", "Until"', () => {
+    const realMM = window.matchMedia
+    ;(window as any).matchMedia = (query: string) => ({ matches: /max-width:\s*620px/.test(query), addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} })
+    try {
+      openEvery(3)
+      fireEvent.click(t('every-until-date'))
+      fireEvent.click(t('every-from'))
+      expect(t('dcal-name').textContent).toBe('From')
+      fireEvent.click(t('dcal-scrim'))
+      fireEvent.click(t('every-until'))
+      expect(t('dcal-name').textContent).toBe('Until')
+      expect(t('every-until').getAttribute('aria-label')).toBe('The date it ends: no date picked')
+      expect(t('dcal-card').getAttribute('aria-label')).toBe('The date it ends — pick a date')
+    } finally { (window as any).matchMedia = realMM }
+  })
   it('the calendar it opens makes the weekday stand out, and any date may still be picked (D795 — "Any date")', () => {
     openEvery(3)
     fireEvent.click(t('every-from'))

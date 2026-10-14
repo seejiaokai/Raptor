@@ -1,0 +1,1178 @@
+[
+ {
+  "surface": "A puck on the Scheduler Board",
+  "key": "Enter, then Space, on a puck the keyboard is on",
+  "expected": "it is picked up (armed) as a tap does on a phone — then arrows or Tab to a seat and Enter to put it down",
+  "saw": "on span.puck \"WardenIP\" (NO RING) — before {\"arm\":false,\"body\":\"sb-lock sb-board-up\",\"sel\":0} · after Enter {\"arm\":false,\"body\":\"sb-lock sb-board-up\",\"sel\":0} · after Space {\"arm\":false,\"body\":\"sb-lock sb-board-up\",\"sel\":0}",
+  "verdict": "OPEN — K11 ([KBD-PUCK]), not in this batch: nothing happens — the keyboard can stand on a puck but cannot pick it up"
+ },
+ {
+  "surface": "A puck on the Scheduler Board",
+  "key": "Delete on a puck",
+  "expected": "takes the man off the seat (as dragging him off does), with Undo",
+  "saw": "the keyboard is still on the puck: nothing happened",
+  "verdict": "OPEN — K11 ([KBD-PUCK]), not in this batch: nothing happens"
+ },
+ {
+  "surface": "The crew list",
+  "key": "Tab stops among its pucks",
+  "expected": "each name can be reached and picked up by keys",
+  "saw": "0 names on screen, 0 a Tab stop",
+  "verdict": "OPEN — K11 ([KBD-PUCK]), not in this batch: recorded only — 0 names on screen, 0 a Tab stop"
+ },
+ {
+  "surface": "Edit Schedule's week",
+  "key": "Tab stops among its pucks",
+  "expected": "each puck can be reached",
+  "saw": "512 pucks on screen, 440 a Tab stop",
+  "verdict": "OPEN — K11 ([KBD-PUCK]), not in this batch: recorded only — 512 pucks on screen, 440 a Tab stop"
+ },
+ {
+  "surface": "Tracker's chart",
+  "key": "Tab stops among its events",
+  "expected": "an event can be reached and its marking pop-up opened with Enter",
+  "saw": "210 events drawn, 0 a Tab stop (role none)",
+  "verdict": "OPEN — K5 ([TRK-KBD-CHART]), not in this batch: an event cannot be opened or marked without a mouse or a finger"
+ },
+ {
+  "surface": "Both bars [phone]",
+  "key": "on the Scheduler Board",
+  "expected": "\"Not saved\" is the line ABOVE the OIL bar; both 36 tall and one width, one under the other with no gap and no overlap; the OIL bar is the board bar's last line, one line, nothing cut; the line under them amber; their buttons one height",
+  "saw": "{\"where\":\"sb-top\",\"oil\":\"0,112 390×36\",\"oilH\":36,\"save\":\"0,76 390×36\",\"saveH\":36,\"saveAbove\":true,\"touching\":true,\"sameWidth\":true,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"buttonsH\":[26,26],\"retryH\":26,\"bars\":1}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Both bars [phone]",
+  "key": "on Edit Schedule",
+  "expected": "the same two lines along the bottom of the top bar: \"Not saved\" above, the OIL bar the last line, the line under them amber — never Edit Schedule's cyan",
+  "saw": "{\"where\":\"topbar\",\"oil\":\"0,84 390×36\",\"oilH\":36,\"save\":\"0,48 390×36\",\"saveH\":36,\"saveAbove\":true,\"touching\":true,\"sameWidth\":true,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"buttonsH\":[26,26],\"retryH\":26,\"bars\":1}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Both bars [phone]",
+  "key": "OK on the OIL bar",
+  "expected": "\"Not saved\" alone is now the top bar's last line, 36 tall, and the line under it is amber too",
+  "saw": "{\"bars\":0,\"saveLast\":true,\"saveH\":36,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"cls\":\"topbar editing has-undo save-failed\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Both bars [phone]",
+  "key": "with no bar up",
+  "expected": "Edit Schedule's own cyan edge is back",
+  "saw": "{\"cls\":\"topbar editing has-undo\",\"edge\":\"rgba(59, 198, 232, 0.5)\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Both bars [desk]",
+  "key": "on the Scheduler Board",
+  "expected": "\"Not saved\" is the line ABOVE the OIL bar; both 36 tall and one width, one under the other with no gap and no overlap; the OIL bar is the board bar's last line, one line, nothing cut; the line under them amber; their buttons one height",
+  "saw": "{\"where\":\"sb-top\",\"oil\":\"0,145 1440×36\",\"oilH\":36,\"save\":\"0,109 1440×36\",\"saveH\":36,\"saveAbove\":true,\"touching\":true,\"sameWidth\":true,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"buttonsH\":[26,26],\"retryH\":26,\"bars\":1}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Both bars [desk]",
+  "key": "on Edit Schedule",
+  "expected": "the same two lines along the bottom of the top bar: \"Not saved\" above, the OIL bar the last line, the line under them amber — never Edit Schedule's cyan",
+  "saw": "{\"where\":\"topbar\",\"oil\":\"0,93 1440×36\",\"oilH\":36,\"save\":\"0,57 1440×36\",\"saveH\":36,\"saveAbove\":true,\"touching\":true,\"sameWidth\":true,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"buttonsH\":[26,26],\"retryH\":26,\"bars\":1}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Both bars [desk]",
+  "key": "OK on the OIL bar",
+  "expected": "\"Not saved\" alone is now the top bar's last line, 36 tall, and the line under it is amber too",
+  "saw": "{\"bars\":0,\"saveLast\":true,\"saveH\":36,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"cls\":\"topbar editing has-undo save-failed\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Both bars [desk]",
+  "key": "with no bar up",
+  "expected": "Edit Schedule's own cyan edge is back",
+  "saw": "{\"cls\":\"topbar editing has-undo\",\"edge\":\"rgba(59, 198, 232, 0.5)\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [phone]",
+  "key": "L9 — the card over Upchit",
+  "expected": "its line names the box: \"UPCHIT DATE\"",
+  "saw": "\"Upchit date\" drawn uppercase",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [phone]",
+  "key": "L14 — Upchit, a planned day",
+  "expected": "no last date: tomorrow is offered like any other day",
+  "saw": "the calendar says last day null; tomorrow (2026-10-15): classes \"dcal-d\", switched off: false",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [phone]",
+  "key": "L16 — a phone is as it was",
+  "expected": "the desktop’s one width does not reach a phone: each box takes its column of the two-across grid, and a full date is not cut",
+  "saw": "empty (\"\", \"\", \"\"): #lastSyll 179.5px, #lastCurr 179.5px, #upchit 179.5px; with Upchit holding \"2026-10-14\": #lastSyll 179.5px, #lastCurr 179.5px, #upchit 179.5px; Upchit reads \"Wed 14 Oct 2026\" (cut: false), its ✕ ends 0.8px inside the box's right edge; the column's least width is set to 0px",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [phone]",
+  "key": "L9 — the card over Last Flown (Syllabus)",
+  "expected": "its line names the box: /^Last Flown \\(Syllabus\\)$/",
+  "saw": "\"Last Flown (Syllabus)\" drawn uppercase",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [phone]",
+  "key": "L14 — Last Flown (Syllabus): a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"\" (before: \"\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [phone]",
+  "key": "L9 — the card over Last Flown (Currency)",
+  "expected": "its line names the box: /^Last Flown \\(Currency\\)$/",
+  "saw": "\"Last Flown (Currency)\" drawn uppercase",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [phone]",
+  "key": "L14 — Last Flown (Currency): a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"\" (before: \"\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [phone]",
+  "key": "L15 — before anything is marked",
+  "expected": "Done on and Failed on both show their date in the dim colour of an empty box; no word changes; Failed on is there at Fails 0",
+  "saw": "\"Done on (when marked)\": \"Wed 14 Oct 2026\" drawn rgb(138, 150, 163) (dim class: true); Fails 0, Failed on: \"Wed 14 Oct 2026\" drawn rgb(138, 150, 163) (dim class: true); the dim colour is rgb(138, 150, 163), the plain ink rgb(241, 244, 247)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [phone]",
+  "key": "L9 — the card over Done on",
+  "expected": "its line names the box: /^Done on$/",
+  "saw": "\"Done on\" drawn uppercase",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [phone]",
+  "key": "L14 — Done on: a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"2026-10-14\" (before: \"2026-10-14\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [phone]",
+  "key": "L9 — the card over Failed on",
+  "expected": "its line names the box: /^Failed on$/",
+  "saw": "\"Failed on\" drawn uppercase",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [phone]",
+  "key": "L14 — Failed on: a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"2026-10-14\" (before: \"2026-10-14\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [phone]",
+  "key": "the pop-up after its calendars were looked at",
+  "expected": "still open: closing a calendar closes the calendar only",
+  "saw": "the pop-up is open",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [phone]",
+  "key": "L15 — after + records a failure",
+  "expected": "Failed on turns the plain ink (a failure is on that day); Done on is still dim (the event is not done)",
+  "saw": "Fails 1; Failed on \"Wed 14 Oct 2026\" drawn rgb(241, 244, 247) (dim class: false); Done on \"Wed 14 Oct 2026\" drawn rgb(138, 150, 163) (dim class: true); the plain ink rgb(241, 244, 247), the dim colour rgb(138, 150, 163)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [phone]",
+  "key": "L15 — after the event is marked done",
+  "expected": "Done on turns the plain ink (a mark carries the day) and its label reads \"Done on\"",
+  "saw": "\"Done on\": \"Wed 14 Oct 2026\" drawn rgb(241, 244, 247) (dim class: false); the plain ink rgb(241, 244, 247)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [phone]",
+  "key": "L9 — the card over a row of the full failures list",
+  "expected": "its line names the box: / failed on$/",
+  "saw": "\"ST-01 failed on\" drawn uppercase",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [phone]",
+  "key": "L14 — a row of the full failures list: a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"2026-10-14\" (before: \"2026-10-14\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [desk]",
+  "key": "L14 — Upchit, a planned day",
+  "expected": "no last date: tomorrow is offered like any other day",
+  "saw": "the calendar says last day null; tomorrow (2026-10-15): classes \"dcal-d\", switched off: false",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [desk]",
+  "key": "L16 — the side panel’s column of date boxes",
+  "expected": "one width for the three boxes, the same empty and filled, wide enough for a full date with its ✕ (never under the 128px a filled box had)",
+  "saw": "empty (\"\", \"\", \"\"): #lastSyll 144px, #lastCurr 144px, #upchit 144px; with Upchit holding \"2026-10-14\": #lastSyll 144px, #lastCurr 144px, #upchit 144px; Upchit reads \"Wed 14 Oct 2026\" (cut: false), its ✕ ends 1px inside the box's right edge; the column's least width is set to 144px",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [desk]",
+  "key": "L14 — Last Flown (Syllabus): a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"\" (before: \"\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [desk]",
+  "key": "L14 — Last Flown (Currency): a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"\" (before: \"\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [desk]",
+  "key": "K12 — Delete on a box that holds a date",
+  "expected": "takes the date off, as its ✕ does; the keyboard stays on the box",
+  "saw": "\"2026-10-14\" → \"\"; keyboard on #upchit",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [desk]",
+  "key": "K12 — Backspace on a box that holds a date",
+  "expected": "the same: the date is taken off and the keyboard stays on the box",
+  "saw": "filled again by keys with \"2026-10-14\" → \"\"; keyboard on #upchit",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [desk]",
+  "key": "Tab onto the ✕, then Enter",
+  "expected": "the ✕ is the next stop, with a ring; Enter takes the date off and the keyboard returns to the box",
+  "saw": "after Tab the keyboard is on button.sm \"Take the date off — Upchit date\" · outline 2px rgb(59, 198, 232) · 26×34; \"2026-10-14\" → \"\"; keyboard on #upchit",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box [desk]",
+  "key": "K12 — Delete on a date box while the chart is being arranged",
+  "expected": "the box’s own date is taken off; the chart is untouched and asks no \"Delete …?\" question",
+  "saw": "210 events on the chart, all selected; Delete on Upchit (\"2026-10-14\" → \"\"): question asked false, events 210; Backspace on the box now empty: question asked false, events 210; the same key pressed on the page: the chart asks \"Delete these 210 events from this syllabus? ST-01, ST-02, ACG-01, ACG-02, ACG-03\" (answered Cancel), events 210",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "L15 — before anything is marked",
+  "expected": "Done on and Failed on both show their date in the dim colour of an empty box; no word changes; Failed on is there at Fails 0",
+  "saw": "\"Done on (when marked)\": \"Wed 14 Oct 2026\" drawn rgb(138, 150, 163) (dim class: true); Fails 0, Failed on: \"Wed 14 Oct 2026\" drawn rgb(138, 150, 163) (dim class: true); the dim colour is rgb(138, 150, 163), the plain ink rgb(241, 244, 247)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "L14 — Done on: a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"2026-10-14\" (before: \"2026-10-14\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "L14 — Failed on: a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"2026-10-14\" (before: \"2026-10-14\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "the pop-up after its calendars were looked at",
+  "expected": "still open: closing a calendar closes the calendar only",
+  "saw": "the pop-up is open",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "L15 — after + records a failure",
+  "expected": "Failed on turns the plain ink (a failure is on that day); Done on is still dim (the event is not done)",
+  "saw": "Fails 1; Failed on \"Wed 14 Oct 2026\" drawn rgb(241, 244, 247) (dim class: false); Done on \"Wed 14 Oct 2026\" drawn rgb(138, 150, 163) (dim class: true); the plain ink rgb(241, 244, 247), the dim colour rgb(138, 150, 163)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "L15 — after the event is marked done",
+  "expected": "Done on turns the plain ink (a mark carries the day) and its label reads \"Done on\"",
+  "saw": "\"Done on\": \"Wed 14 Oct 2026\" drawn rgb(241, 244, 247) (dim class: false); the plain ink rgb(241, 244, 247)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "opens with the keyboard on…",
+  "expected": "something inside the pop-up",
+  "saw": "div#board \"ST-01 ST-02 ACG-01 ACG-02 ACG-03 ACG-04 ACG-05 ACG-06 ACG-07\" · NO RING · 1084×735",
+  "verdict": "OPEN — K6, not in this batch: the keyboard is on div#board \"ST-01 ST-02 ACG-01 ACG-02 ACG-03 ACG-04 ACG-05 ACG-06 ACG-07\""
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "Tab, ten times",
+  "expected": "goes round INSIDE the pop-up",
+  "saw": "button#fzOut \"−\"  |  button#fzIn \"+\"  |  button#fzReset \"reset\"  |  button#ordCrew \"⇅ Reorder\"  |  button#addStu \"+ Add\"  |  button#lastSyll \"Last Flown (Syllabus): no date picked\"  |  button#lastCurr \"Last Flown (Currency): no date picked\"  |  input#downDays \"\"  |  button#upchit \"Upchit date: no date picked\"  |  input#epwIn \"\" · still inside: false",
+  "verdict": "OPEN — K6, not in this batch: Tab leaves the pop-up"
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "Enter on \"Done on\", then Escape",
+  "expected": "the calendar opens; Escape closes the calendar only, and the keyboard is back on the box",
+  "saw": "opened true; after Escape: calendar closed, pop-up still open; keyboard on #popDoneDate",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up [desk]",
+  "key": "Escape again",
+  "expected": "closes the pop-up; the keyboard returns to the event that opened it",
+  "saw": "pop-up closed; keyboard on nothing (the page)",
+  "verdict": "OPEN — K6, not in this batch: the pop-up closes and the keyboard is left on nothing"
+ },
+ {
+  "surface": "Tracker's date box [desk]",
+  "key": "L14 — a row of the full failures list: a day after today",
+  "expected": "the last day offered is the squadron’s today; tomorrow is faint and takes no tap; nothing is saved and nothing is refused (today itself may be picked)",
+  "saw": "the calendar says today 2026-10-14, last day 2026-10-14; today’s date switched off: false; tomorrow (2026-10-15): classes \"dcal-d is-out\", switched off: true, drawn at strength 0.55; a press on it landed on dcal-day-2026-10-15; after it the calendar is still up, the box holds \"2026-10-14\" (before: \"2026-10-14\"), refusal line: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "L9 — a desktop panel carries no such line",
+  "expected": "no name line: the panel hangs under its own box",
+  "saw": "no line",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "D824 — the picked date, opened by a click or a tap",
+  "expected": "the bright disc, no ring round it",
+  "saw": "[data-testid=\"dcal-day-2026-10-15\"] — no ring; disc rgb(59, 198, 232)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "opens with the keyboard on…",
+  "expected": "the picked date",
+  "saw": "the keyboard is on 2026-10-15; the box holds 2026-10-15",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "Arrow keys",
+  "expected": "a day right, a week down, a day left and a week up — back where it began",
+  "saw": "2026-10-15 → right 2026-10-16 → down 2026-10-23 → left, up 2026-10-15",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "D824 — the ring while the keyboard is on a date",
+  "expected": "the app’s cyan ring, 2px, round the date the keyboard is on",
+  "saw": "solid 2px rgb(59, 198, 232)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "Page Up / Page Down",
+  "expected": "the same day a month on, and back",
+  "saw": "2026-10-15 in 2026-10 → PageDown 2026-11-15 in 2026-11 → PageUp 2026-10-15 in 2026-10",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "K1 — Home / End",
+  "expected": "Home: the Monday of that week; End: its Sunday",
+  "saw": "on 2026-10-15 (weekday 3, 0 = Monday): Home → 2026-10-12, then End → 2026-10-18; the calendar on 2026-10",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "K2 — Shift + Page Down / Up",
+  "expected": "the same day a YEAR on, and back (Page alone stays a month)",
+  "saw": "2026-10-18 → Shift+PageDown 2027-10-18 (calendar on 2027-10) → Shift+PageUp 2026-10-18 (calendar on 2026-10)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "Tab, five times",
+  "expected": "round inside the card: the title → Today → the two arrows → back on the date it left",
+  "saw": "from 2026-10-18: dcal-title | dcal-today | dcal-prev | dcal-next | dcal-day-2026-10-18; still inside the card: true",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "a key for today",
+  "expected": "none: \"t\" moves nothing — the Today button is one Tab from the title",
+  "saw": "\"t\" on 2026-10-18 → 2026-10-18",
+  "verdict": "works"
+ },
+ {
+  "surface": "Month-and-year lists [desk]",
+  "key": "L13 — the title’s ring",
+  "expected": "round its words only (the app’s cyan, 2px); the title itself keeps its fixed room of ten letters’ width",
+  "saw": "the title 170px wide (10.00 × its 17px letters), its own ring: no ring; the words \"October 2026›\" 130.7px wide, their ring: solid 2px rgb(59, 198, 232)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Month-and-year lists [desk]",
+  "key": "K3 — Enter on the title",
+  "expected": "the lists open with the keyboard IN the month list",
+  "saw": "the lists are open; the keyboard is on dcal-months",
+  "verdict": "works"
+ },
+ {
+  "surface": "Month-and-year lists [desk]",
+  "key": "L13 — the keyboard in the month list",
+  "expected": "the app’s cyan ring round the MONTH list; the chosen month and year both the plain ink, heavy — neither cyan",
+  "saw": "ring solid 2px rgb(59, 198, 232), from 0px to 172.2px across the lists; the months list runs 0px to 172.2px; \"October\" is rgb(241, 244, 247) (weight 800), \"2026\" is rgb(241, 244, 247) (weight 800); the plain ink is rgb(241, 244, 247)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Month-and-year lists [desk]",
+  "key": "Arrow Up / Down in a list",
+  "expected": "the month after, and back (the months go round; the year is the other list’s)",
+  "saw": "2026-10 → down 2026-11 → up 2026-10",
+  "verdict": "works"
+ },
+ {
+  "surface": "Month-and-year lists [desk]",
+  "key": "L13 — the keyboard in the year list",
+  "expected": "the ring moves to the YEAR list; both words still the plain ink",
+  "saw": "after Tab the keyboard is on dcal-years; ring solid 2px rgb(59, 198, 232), from 172.2px to 310px across the lists; the years list runs 172.2px to 310px; \"October\" is rgb(241, 244, 247) (weight 800), \"2026\" is rgb(241, 244, 247) (weight 800); the plain ink is rgb(241, 244, 247)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Month-and-year lists [desk]",
+  "key": "Home / End / Page keys in a list",
+  "expected": "not the lists’ keys: nothing moves (the arrows move a list)",
+  "saw": "2026-10 → End 2026-10 → Shift+PageDown 2026-10 → PageDown 2026-10 → Space 2026-10 → Home 2026-10 (each read 1.3s after its key); the lists still open",
+  "verdict": "works"
+ },
+ {
+  "surface": "Month-and-year lists [desk]",
+  "key": "K4 — Enter in a list",
+  "expected": "the lists close onto the dates of the month chosen, the keyboard on that month’s one stop (the picked date, else today, else the 1st)",
+  "saw": "chose 2027-10 in the year list; after Enter the lists are closed, the calendar on 2027-10, the keyboard on 2027-10-01 (tab stop: true)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "Escape",
+  "expected": "closes the calendar only; the window behind stays; the keyboard is back on the box",
+  "saw": "calendar closed, window still open, keyboard on every-from",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date box [desk]",
+  "key": "Space on the box, a week down, then Enter on the date",
+  "expected": "opens; picks the date a week on; closes; the keyboard is back on the box",
+  "saw": "opened true; 2026-10-15 → 2026-10-22; calendar closed; keyboard on every-from",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "L8 — today, where it cannot be picked",
+  "expected": "keeps its soft disc (it still marks today); its number is the quiet ink at the faint dates’ strength — not bright cyan, not heavy; it takes no tap",
+  "saw": "2026-10-14: classes \"dcal-d is-today is-out\", switched off: true; disc rgba(59, 198, 232, 0.14); number color(srgb 0.541176 0.588235 0.639216 / 0.55) (the quiet ink is rgb(138, 150, 163), the accent rgb(59, 198, 232)), weight 500, whole-date strength 1",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "L12 — the faint dates",
+  "expected": "the quiet ink at .55 — about 2.7 to 1 against the card (it was about 2.0) — plain weight, and still under half a weekend date’s strength",
+  "saw": "date \"2\": rgb(138, 150, 163) at strength 0.55, weight 500 → 2.68 to 1 against the card; a weekend date that may be picked: rgb(138, 150, 163) at 1 → 5.92 to 1",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "L8 — the standing-out weekday, where it cannot be picked",
+  "expected": "plain weight and the quiet ink at the faint dates’ strength — while a Thursday that may be picked stays heavy and full ink",
+  "saw": "Thursday \"1\" before the start: rgb(138, 150, 163) at 0.55, weight 500; the start itself (2026-10-22): rgb(241, 244, 247), weight 800; the plain ink is rgb(241, 244, 247)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "L17 — a weekend inside a picked run",
+  "expected": "the Saturday and the Sunday inside the run are the plain ink at full strength, as every date in it is — a weekend date outside it stays quiet",
+  "saw": "run 2026-10-02 to 2026-10-05: Saturday 2026-10-03 rgb(241, 244, 247) at 1 (classes \"dcal-d is-we is-in is-mid\"), Sunday 2026-10-04 rgb(241, 244, 247) at 1 (classes \"dcal-d is-we is-in is-mid\"); outside it, the weekend date \"10\" is rgb(138, 150, 163); the plain ink rgb(241, 244, 247), the quiet ink rgb(138, 150, 163)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [desk]",
+  "key": "L11 — the sentence under a run",
+  "expected": "the plain ink, bold — not cyan: it is not a button",
+  "saw": "\"Fri 2 Oct 2026 to Mon 5 Oct 2026\" is rgb(241, 244, 247), weight 700; the plain ink rgb(241, 244, 247), the accent rgb(59, 198, 232)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [phone]",
+  "key": "L9 — the card names its box",
+  "expected": "one line of small capitals at the top of the card: \"FROM\"",
+  "saw": "\"From\" drawn uppercase, 324×16 at the card's top (first in the card: dcal-name); the title starts 1px under it; one line: true",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [phone]",
+  "key": "D824 — the picked date, opened by a click or a tap",
+  "expected": "the bright disc, no ring round it",
+  "saw": "[data-testid=\"dcal-day-2026-10-15\"] — no ring; disc rgb(59, 198, 232)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Month-and-year lists [phone]",
+  "key": "L13 — the lists opened by a finger",
+  "expected": "the chosen month and year both the plain ink, heavy; no ring (a ring is a keyboard’s)",
+  "saw": "\"October\" rgb(241, 244, 247) (weight 800), \"2026\" rgb(241, 244, 247) (weight 800); the plain ink is rgb(241, 244, 247); ring not drawn",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [phone]",
+  "key": "L9 — Until’s card",
+  "expected": "its line reads \"UNTIL\" — the window’s own word over the box (aloud the box is still \"The date it ends\")",
+  "saw": "\"Until\" drawn uppercase; the box says aloud \"The date it ends: no date picked\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [phone]",
+  "key": "L8 — today, where it cannot be picked",
+  "expected": "keeps its soft disc (it still marks today); its number is the quiet ink at the faint dates’ strength — not bright cyan, not heavy; it takes no tap",
+  "saw": "2026-10-14: classes \"dcal-d is-today is-out\", switched off: true; disc rgba(59, 198, 232, 0.14); number color(srgb 0.541176 0.588235 0.639216 / 0.55) (the quiet ink is rgb(138, 150, 163), the accent rgb(59, 198, 232)), weight 500, whole-date strength 1",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [phone]",
+  "key": "L12 — the faint dates",
+  "expected": "the quiet ink at .55 — about 2.7 to 1 against the card (it was about 2.0) — plain weight, and still under half a weekend date’s strength",
+  "saw": "date \"2\": rgb(138, 150, 163) at strength 0.55, weight 500 → 2.68 to 1 against the card; a weekend date that may be picked: rgb(138, 150, 163) at 1 → 5.92 to 1",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [phone]",
+  "key": "L8 — the standing-out weekday, where it cannot be picked",
+  "expected": "plain weight and the quiet ink at the faint dates’ strength — while a Thursday that may be picked stays heavy and full ink",
+  "saw": "Thursday \"1\" before the start: rgb(138, 150, 163) at 0.55, weight 500; the start itself (2026-10-15): rgb(241, 244, 247), weight 800; the plain ink is rgb(241, 244, 247)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [phone]",
+  "key": "L17 — a weekend inside a picked run",
+  "expected": "the Saturday and the Sunday inside the run are the plain ink at full strength, as every date in it is — a weekend date outside it stays quiet",
+  "saw": "run 2026-10-02 to 2026-10-05: Saturday 2026-10-03 rgb(241, 244, 247) at 1 (classes \"dcal-d is-we is-in is-mid\"), Sunday 2026-10-04 rgb(241, 244, 247) at 1 (classes \"dcal-d is-we is-in is-mid\"); outside it, the weekend date \"10\" is rgb(138, 150, 163); the plain ink rgb(241, 244, 247), the quiet ink rgb(138, 150, 163)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar [phone]",
+  "key": "L11 — the sentence under a run",
+  "expected": "the plain ink, bold — not cyan: it is not a button",
+  "saw": "\"Fri 2 Oct 2026 to Mon 5 Oct 2026\" is rgb(241, 244, 247), weight 700; the plain ink rgb(241, 244, 247), the accent rgb(59, 198, 232)",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [phone]",
+  "key": "N1 — the note he pictured, by the screen's own \"Publish day\"",
+  "expected": "Saturday 18 Jul published and approved. The Common Programme has no usable times, so nobody on it earns OIL.",
+  "saw": "Saturday 18 Jul published and approved. The Common Programme has no usable times, so nobody on it earns OIL.",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [phone]",
+  "key": "N1 on a phone — the full width, and how tall",
+  "expected": "the screen's width less 12 each side; two lines — 54 tall, where a one-line note is 38 (it was five lines in the half-width box)",
+  "saw": "{\"text\":\"Saturday 18 Jul published and approved. The Common Programme has no usable times, so nobody on it earns OIL.\",\"opacity\":\"1\",\"left\":12,\"right\":12,\"lines\":null,\"h\":54,\"lh\":\"normal\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [phone]",
+  "key": "no page error",
+  "expected": "none",
+  "saw": "none",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [phone]",
+  "key": "N12 — a tap on an event's OIL mark with the day's switch on",
+  "expected": "Nothing on this day earns. Turn off the switch first. (the switch pressed just before reads \"Nothing today earns\")",
+  "saw": "Nothing on this day earns. Turn off the switch first.",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [phone]",
+  "key": "N12 on a phone — one line",
+  "expected": "one line: 38 tall (the wording that quoted the switch's name ran to two)",
+  "saw": "38 tall",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [phone]",
+  "key": "N12 — a man's puck under the day's switch",
+  "expected": "not a control there: no puck is a tap target (which is why the sentence is said from the event's mark)",
+  "saw": "0 tappable pucks",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [phone]",
+  "key": "no page error (the board)",
+  "expected": "none",
+  "saw": "none",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [desk]",
+  "key": "N1 — the note he pictured, by the screen's own \"Publish day\"",
+  "expected": "Saturday 18 Jul published and approved. The Common Programme has no usable times, so nobody on it earns OIL.",
+  "saw": "Saturday 18 Jul published and approved. The Common Programme has no usable times, so nobody on it earns OIL.",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [desk]",
+  "key": "no page error",
+  "expected": "none",
+  "saw": "none",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [desk]",
+  "key": "N12 — a tap on an event's OIL mark with the day's switch on",
+  "expected": "Nothing on this day earns. Turn off the switch first. (the switch pressed just before reads \"Nothing today earns\")",
+  "saw": "Nothing on this day earns. Turn off the switch first.",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [desk]",
+  "key": "N12 — a man's puck under the day's switch",
+  "expected": "not a control there: no puck is a tap target (which is why the sentence is said from the event's mark)",
+  "saw": "0 tappable pucks",
+  "verdict": "works"
+ },
+ {
+  "surface": "The publish note [desk]",
+  "key": "no page error (the board)",
+  "expected": "none",
+  "saw": "none",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [phone]",
+  "key": "the answers and the small print",
+  "expected": "Yes: credit HO · No OIL · \"…so published work the same day can raise the credit.\"",
+  "saw": "Yes: credit HO · No OIL · The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the day, so published work the same day can raise the credit.",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [desk]",
+  "key": "the answers and the small print",
+  "expected": "Yes: credit HO · No OIL · \"…so published work the same day can raise the credit.\"",
+  "saw": "Yes: credit HO · No OIL · The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the day, so published work the same day can raise the credit.",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "where it sits",
+  "expected": "a note of its own AFTER the two lines of buttons, the width of the screen — never inside the second line",
+  "saw": "{\"cls\":\"clashnote\",\"inFilters\":false,\"afterFilters\":true,\"box\":\"0,125 390×78\",\"vw\":390}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "ONE clash starts open",
+  "expected": "the line says \"⚠ 1 clash with the schedule\" and offers Hide; the list is open",
+  "saw": "{\"line\":\"⚠ 1 clash with the schedule Hide\",\"expanded\":\"true\",\"rows\":1}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "the row's words",
+  "expected": "Fable · Sat 18 Jul · Decide the bid › — then \"Weekend/PH work earns …, but the day holds LL\"",
+  "saw": "{\"who\":\"Fable\",\"day\":\"Sat 18 Jul\",\"go\":\"Decide the bid ›\",\"what\":\"Weekend/PH work earns FO, but the day holds LL\",\"whoL\":10,\"dayL\":82,\"doR\":380,\"dayLines\":1,\"whatLines\":1,\"doLines\":1,\"nameCut\":false,\"h\":46,\"onTop\":true,\"tag\":\"BUTTON\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "the two lines above are untouched",
+  "expected": "the second line as tall as with no clash (34), its stage name cut no more than before (false), no sideways scroll",
+  "saw": "{\"filtersH\":34,\"filtersBottom\":125,\"gridTop\":203,\"stageCut\":false,\"overflow\":false}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "SEVERAL start closed",
+  "expected": "the line counts them and offers Show; no list",
+  "saw": "{\"line\":\"⚠ 6 clashes with the schedule Show\",\"expanded\":\"false\",\"rows\":0}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "closed, the grid starts high",
+  "expected": "the grid's card starts one slim line lower than with no clash (the line is about 30 tall)",
+  "saw": "{\"gridTop\":156,\"noClash\":125,\"lineH\":30}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "the line's edges are the buttons' above it",
+  "expected": "its words start where the first button starts",
+  "saw": "{\"linePadL\":\"10px\",\"firstButtonLeft\":10}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "Show opens the list in place",
+  "expected": "6 rows, each a button, the line now offers Hide",
+  "saw": "{\"line\":\"⚠ 6 clashes with the schedule Hide\",\"rows\":6,\"tags\":[\"BUTTON\"]}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "the columns are in line",
+  "expected": "every name starts at one edge, every day at one edge, every instruction ends at one edge; every day on ONE line; no name cut",
+  "saw": "{\"who\":[10],\"day\":[83],\"doRight\":[380],\"dayLines\":[1,1,1,1,1,1],\"nameCut\":[false,false,false,false,false,false]}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "every row the same shape",
+  "expected": "two lines a row — who, the day, what to do; then what clashes — so one height, to the pixel of the rule between rows",
+  "saw": "{\"heights\":[46,47,47,47,47,47],\"whatLines\":[1,1,1,1,1,1],\"doLines\":[1,1,1,1,1,1]}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "the names' column is the roster's",
+  "expected": "sized by every callsign on the roster, not by who happens to clash",
+  "saw": "{\"sizer\":50,\"roster\":50}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "no scroll inside the list",
+  "expected": "a long list pushes the grid down; it never scrolls inside itself",
+  "saw": "{\"innerScroll\":false}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "nothing lies over a row",
+  "expected": "a finger at each row's centre meets that row",
+  "saw": "[true,true,true,true,true,true]",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "open, the two lines above are still untouched",
+  "expected": "second line 34 tall, no sideways scroll",
+  "saw": "{\"filtersH\":34,\"filtersBottom\":125,\"gridTop\":438,\"stageCut\":false,\"overflow\":false}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "in letters a seventh wider",
+  "expected": "every day still on one line, the columns still in line, no name cut, nothing off the screen — the instruction is the part that may wrap",
+  "saw": "{\"dayLines\":[1,1,1,1,1,1],\"who\":[10],\"day\":[92],\"doRight\":[380],\"nameCut\":[false,false,false,false,false,false],\"doLines\":[1,1,1,1,1,1],\"overflow\":false}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "a tap on a clash",
+  "expected": "opens Fable's Sat 18 Jul — the sheet where the bid is decided (Ack · Approve · Refuse on it)",
+  "saw": "{\"tid\":\"daylist-sheet\",\"head\":\"FableSat 18 Jul✕Two of these can’t both stand on the same ti\",\"buttons\":[\"✕\",\"Ack\",\"Approve\",\"Refuse\",\"⇄Move\",\"Delete\"]}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "Hide is the way back",
+  "expected": "the list closes; the line offers Show again",
+  "saw": "{\"line\":\"⚠ 6 clashes with the schedule Show\",\"rows\":0}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "his choice is kept for the visit",
+  "expected": "opened by him, it is still open after a look at another page",
+  "saw": "{\"line\":\"⚠ 6 clashes with the schedule Hide\",\"rows\":6}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [phone]",
+  "key": "a member",
+  "expected": "sees no clash note",
+  "saw": "notes on screen: 0",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [desk]",
+  "key": "where it sits",
+  "expected": "the strip, inside the stage line as before (one block under the buttons), no phone line",
+  "saw": "{\"cls\":\"syncclash\",\"inFilters\":true,\"line\":null,\"box\":\"20,156 1400×50\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [desk]",
+  "key": "its words",
+  "expected": "each clash: the name · the day · what clashes as a sentence. Then the instruction ›",
+  "saw": "[\"Fable · Sat 18 Jul · Weekend/PH work earns FO, but the day holds LL. Decide the bid ›\",\"Sidewinder · Sat 18 Jul · Weekend/PH work earns HO*, but the day holds OL. Decide the bid ›\",\"Ranger · Sat 18 Jul · Weekend/PH work earns *HO, but the day holds OL. Decide the bid ›\"]",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [desk]",
+  "key": "no sideways scroll",
+  "expected": "the page is no wider than the screen",
+  "saw": "{\"filtersH\":103,\"filtersBottom\":215,\"gridTop\":215,\"stageCut\":false,\"overflow\":false}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [desk]",
+  "key": "by keyboard: Tab after Legend",
+  "expected": "lands on the first clash's instruction, wearing the app's ring",
+  "saw": "button[clash-go-0] \"Decide the bid ›\" · outline 2px rgb(59, 198, 232) · 87×16 · solid 2px rgb(59, 198, 232)",
+  "verdict": "works"
+ },
+ {
+  "surface": "Clash note [desk]",
+  "key": "Enter on \"Decide the bid ›\"",
+  "expected": "opens Fable's Sat 18 Jul — the sheet where the bid is decided",
+  "saw": "{\"tid\":\"daylist-sheet\",\"head\":\"FableSat 18 Jul✕Two of these can’t both stand on the same ti\",\"buttons\":[\"✕\",\"Ack\",\"Approve\",\"Refuse\",\"⇄Move\",\"Delete\"]}",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [phone]",
+  "key": "L4 — its two buttons",
+  "expected": "Back / Add (the form behind it says Add)",
+  "saw": "Back / Add",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [phone]",
+  "key": "L3 — the title and the sentence, the words of record",
+  "expected": "OIL: <who>, Range brief · \"This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve HO, half a day of OIL?\" in ordinary letters",
+  "saw": "OIL: Ranger, Range brief · This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve HO, half a day of OIL? · letters: none",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [phone]",
+  "key": "the answers — and no small print, no \"Choose an option above\" (D846)",
+  "expected": "Yes: credit HO · No OIL; nothing under them; the foot holds its two buttons only",
+  "saw": "Yes: credit HO · No OIL · small print: \"\" · hint: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [phone]",
+  "key": "L1 — the answers sit flat under the question",
+  "expected": "a row of their own: no patch, no line under it, no box round it, starting at the question's left edge",
+  "saw": "{\"rowClass\":\"oilconf-answers\",\"rowBg\":\"rgba(0, 0, 0, 0)\",\"rowBorder\":\"0px\",\"wornSeg\":false,\"boxed\":false,\"left\":0}",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [phone]",
+  "key": "L2 — the ✕",
+  "expected": "in the head's corner (its right edge within the head's own padding), not following the title",
+  "saw": "15px from the head's right edge; 118px after the title's last letter; the sheet is 346 wide",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question before a swap [phone]",
+  "key": "its two buttons are its own",
+  "expected": "Don’t swap / Swap",
+  "saw": "Don’t swap / Swap",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question before a swap [phone]",
+  "key": "L1, L2 — flat answers, the ✕ in the corner",
+  "expected": "as at a save",
+  "saw": "{\"rowClass\":\"oilconf-answers\",\"wornSeg\":false,\"boxed\":false,\"xGap\":15}",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question [phone]",
+  "key": "L5 — a picked \"No OIL\"",
+  "expected": "the outline look, the same as a picked Yes",
+  "saw": "{\"text\":\"No OIL\",\"bg\":\"rgb(26, 31, 38)\",\"edge\":\"rgb(59, 198, 232)\",\"ink\":\"rgb(59, 198, 232)\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [phone]",
+  "key": "L6 — on the Scheduler Board",
+  "expected": "a band: the last line of the board's own bar, edge to edge, 36 tall, words and both buttons on ONE line, nothing cut, the line under it amber, itself on top, one bar only",
+  "saw": "{\"where\":\"sb-top\",\"box\":\"0,76 390×36\",\"h\":36,\"left\":0,\"right\":390,\"vw\":390,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"kids\":[\"Not swapped — OIL not answered:14–212 h16 12.5px\",\"Answer OIL:232–324 h26 12.5px\",\"OK:332–376 h26 12.5px\"],\"buttonsH\":[26],\"fit\":\"1\",\"tight\":false,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"onTop\":true,\"count\":1,\"save\":null}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [phone]",
+  "key": "D840 — the same in letters a seventh wider",
+  "expected": "STILL one line, 36 tall, nothing cut — its letters a step smaller if they must be",
+  "saw": "{\"where\":\"sb-top\",\"box\":\"0,76 390×36\",\"h\":36,\"left\":0,\"right\":390,\"vw\":390,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"kids\":[\"Not swapped — OIL not answered:14–229 h16 11.75px\",\"Answer OIL:240–327 h26 11.75px\",\"OK:335–376 h26 11.75px\"],\"buttonsH\":[26],\"fit\":\"0.94\",\"tight\":false,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"onTop\":true,\"count\":1,\"save\":null}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [phone]",
+  "key": "D831 — on Edit Schedule, the board closed",
+  "expected": "the bar is still up (nothing was swapped), now the last line of the TOP bar: edge to edge, 36 tall, one line, nothing cut, the line under it amber — not Edit Schedule's cyan (D841)",
+  "saw": "{\"where\":\"topbar\",\"box\":\"0,48 390×36\",\"h\":36,\"left\":0,\"right\":390,\"vw\":390,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"kids\":[\"Not swapped — OIL not answered:14–212 h16 12.5px\",\"Answer OIL:232–324 h26 12.5px\",\"OK:332–376 h26 12.5px\"],\"buttonsH\":[26],\"fit\":\"1\",\"tight\":false,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"onTop\":true,\"count\":1,\"save\":null,\"page\":{\"barBottom\":85,\"cls\":\"topbar editing has-undo oil-waiting\"}}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [phone]",
+  "key": "D840 — on Edit Schedule in letters a seventh wider",
+  "expected": "STILL one line, nothing cut",
+  "saw": "{\"where\":\"topbar\",\"box\":\"0,48 390×36\",\"h\":36,\"left\":0,\"right\":390,\"vw\":390,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"kids\":[\"Not swapped — OIL not answered:14–229 h16 11.75px\",\"Answer OIL:240–327 h26 11.75px\",\"OK:335–376 h26 11.75px\"],\"buttonsH\":[26],\"fit\":\"0.94\",\"tight\":false,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"onTop\":true,\"count\":1,\"save\":null}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [phone]",
+  "key": "nothing is under it",
+  "expected": "just below the band the page begins — the band covers none of it",
+  "saw": "{\"tag\":\"DIV\",\"inBand\":false,\"y\":84}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [phone]",
+  "key": "OK closes it",
+  "expected": "the bar is gone, the top bar gives its line back, and Edit Schedule's own cyan edge is back",
+  "saw": "{\"bars\":0,\"cls\":\"topbar editing has-undo\",\"edge\":\"rgba(59, 198, 232, 0.5)\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [desk]",
+  "key": "L4 — its two buttons",
+  "expected": "Back / Add (the form behind it says Add)",
+  "saw": "Back / Add",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [desk]",
+  "key": "L3 — the title and the sentence, the words of record",
+  "expected": "OIL: <who>, Range brief · \"This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve HO, half a day of OIL?\" in ordinary letters",
+  "saw": "OIL: Ranger, Range brief · This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve HO, half a day of OIL? · letters: none",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [desk]",
+  "key": "the answers — and no small print, no \"Choose an option above\" (D846)",
+  "expected": "Yes: credit HO · No OIL; nothing under them; the foot holds its two buttons only",
+  "saw": "Yes: credit HO · No OIL · small print: \"\" · hint: \"\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [desk]",
+  "key": "L1 — the answers sit flat under the question",
+  "expected": "a row of their own: no patch, no line under it, no box round it, starting at the question's left edge",
+  "saw": "{\"rowClass\":\"oilconf-answers\",\"rowBg\":\"rgba(0, 0, 0, 0)\",\"rowBorder\":\"0px\",\"wornSeg\":false,\"boxed\":false,\"left\":0}",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question at a new input's save [desk]",
+  "key": "L2 — the ✕",
+  "expected": "in the head's corner (its right edge within the head's own padding), not following the title",
+  "saw": "15px from the head's right edge; 212px after the title's last letter; the sheet is 440 wide",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question before a swap [desk]",
+  "key": "its two buttons are its own",
+  "expected": "Don’t swap / Swap",
+  "saw": "Don’t swap / Swap",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question before a swap [desk]",
+  "key": "L1, L2 — flat answers, the ✕ in the corner",
+  "expected": "as at a save",
+  "saw": "{\"rowClass\":\"oilconf-answers\",\"wornSeg\":false,\"boxed\":false,\"xGap\":15}",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question",
+  "key": "K7 — opens with the keyboard on…",
+  "expected": "its first answer (\"Yes: credit HO\"), nothing picked",
+  "saw": "button[oil-yes] \"Yes: credit HO\" · NO RING · 99×25",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question",
+  "key": "L2 — Tab, four times from the first answer",
+  "expected": "No OIL, then Don’t swap, then the ✕ LAST, then round to the first answer — never out of the sheet",
+  "saw": "button[oil-no] \"No OIL\"  |  button[oilconf-cancel] \"Don’t swap\"  |  button.x \"Close\"  |  button[oil-yes] \"Yes: credit HO\" · still inside: true",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question",
+  "key": "K10 — the ring on an answer, the ✕ and a foot button",
+  "expected": "the app's own: solid 2px rgb(59, 198, 232)",
+  "saw": "solid 2px rgb(59, 198, 232)  |  solid 2px rgb(59, 198, 232)  |  solid 2px rgb(59, 198, 232)",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question",
+  "key": "Space on \"Yes\"",
+  "expected": "picks it; \"Swap\" comes alive",
+  "saw": "Swap is live",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question",
+  "key": "L5 — a picked answer",
+  "expected": "the outline look: its edge and its words rgb(59, 198, 232), its ground NOT the main button's solid fill",
+  "saw": "{\"text\":\"Yes: credit HO\",\"bg\":\"rgb(26, 31, 38)\",\"edge\":\"rgb(59, 198, 232)\",\"ink\":\"rgb(59, 198, 232)\"} · main button rgb(59, 198, 232)",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question",
+  "key": "D842 — a picked answer with the keyboard on it",
+  "expected": "ONE ring: the keyboard's ring (solid 2px rgb(59, 198, 232)) drawn on the answer's own edge (offset -1px), not a second ring round it",
+  "saw": "{\"focused\":true,\"ring\":\"solid 2px rgb(59, 198, 232)\",\"offset\":\"-1px\",\"edge\":\"1px rgb(59, 198, 232)\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question",
+  "key": "Escape",
+  "expected": "nothing is swapped; the bar stays",
+  "saw": "sheet closed; bar up",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [desk]",
+  "key": "L6 — on the Scheduler Board",
+  "expected": "a band: the last line of the board's own bar, edge to edge, 36 tall, words and both buttons on ONE line, nothing cut, the line under it amber, itself on top, one bar only",
+  "saw": "{\"where\":\"sb-top\",\"box\":\"0,109 1440×36\",\"h\":36,\"left\":0,\"right\":1440,\"vw\":1440,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"kids\":[\"Not swapped — OIL not answered:1065–1264 h16 12.5px\",\"Answer OIL:1274–1366 h26 12.5px\",\"OK:1376–1420 h26 12.5px\"],\"buttonsH\":[26],\"fit\":\"1\",\"tight\":false,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"onTop\":true,\"count\":1,\"save\":null}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [desk]",
+  "key": "D840 — the same in letters a seventh wider",
+  "expected": "STILL one line, 36 tall, nothing cut — its letters a step smaller if they must be",
+  "saw": "{\"where\":\"sb-top\",\"box\":\"0,109 1440×36\",\"h\":36,\"left\":0,\"right\":1440,\"vw\":1440,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"kids\":[\"Not swapped — OIL not answered:1035–1264 h16 12.5px\",\"Answer OIL:1274–1366 h26 12.5px\",\"OK:1376–1420 h26 12.5px\"],\"buttonsH\":[26],\"fit\":\"1\",\"tight\":false,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"onTop\":true,\"count\":1,\"save\":null}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays",
+  "key": "K8 — where the keyboard is when the bar appears",
+  "expected": "on \"Answer OIL\"",
+  "saw": "button[oilbar-answer] \"Answer OIL\" · outline 2px rgb(59, 198, 232) · 93×26",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays",
+  "key": "K10 — the ring on \"Answer OIL\"",
+  "expected": "the app's own, set off the filled button: solid 2px rgb(59, 198, 232) offset 2px",
+  "saw": "solid 2px rgb(59, 198, 232) offset 2px",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays",
+  "key": "Tab from \"Answer OIL\"",
+  "expected": "its OK",
+  "saw": "button[oilbar-ok] \"OK\" · outline 2px rgb(59, 198, 232) · 44×26",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays",
+  "key": "Enter on \"Answer OIL\"",
+  "expected": "the question comes back, the keyboard on its first answer",
+  "saw": "question back; keyboard on button[oil-yes] \"Yes: credit HO\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays",
+  "key": "Escape on the question, a second time",
+  "expected": "the bar again, the keyboard on \"Answer OIL\" again",
+  "saw": "bar up; keyboard on button[oilbar-answer] \"Answer OIL\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays",
+  "key": "K9 — Escape, with the keyboard on the bar",
+  "expected": "closes the bar, as OK does",
+  "saw": "bar before up, after gone",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays",
+  "key": "after all of it, nothing was swapped",
+  "expected": "Range brief still holds its own man",
+  "saw": "RANGE BRIEF:bane | Hangar open day:nick",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [desk]",
+  "key": "D831 — on Edit Schedule, the board closed",
+  "expected": "the bar is still up (nothing was swapped), now the last line of the TOP bar: edge to edge, 36 tall, one line, nothing cut, the line under it amber — not Edit Schedule's cyan (D841)",
+  "saw": "{\"where\":\"topbar\",\"box\":\"0,57 1440×36\",\"h\":36,\"left\":0,\"right\":1440,\"vw\":1440,\"lastLine\":true,\"oneLine\":true,\"nothingCut\":true,\"kids\":[\"Not swapped — OIL not answered:1065–1264 h16 12.5px\",\"Answer OIL:1274–1366 h26 12.5px\",\"OK:1376–1420 h26 12.5px\"],\"buttonsH\":[26],\"fit\":\"1\",\"tight\":false,\"edge\":\"rgba(229, 194, 74, 0.5)\",\"onTop\":true,\"count\":1,\"save\":null,\"page\":{\"barBottom\":94,\"cls\":\"topbar editing has-undo oil-waiting\"}}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [desk]",
+  "key": "nothing is under it",
+  "expected": "just below the band the page begins — the band covers none of it",
+  "saw": "{\"tag\":\"DIV\",\"inBand\":false,\"y\":93}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays [desk]",
+  "key": "OK closes it",
+  "expected": "the bar is gone, the top bar gives its line back, and Edit Schedule's own cyan edge is back",
+  "saw": "{\"bars\":0,\"cls\":\"topbar editing has-undo\",\"edge\":\"rgba(59, 198, 232, 0.5)\"}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Medical-clash question [phone]",
+  "key": "D848 — its heading carries the fact he kept",
+  "expected": "A day holds one status: choose who holds these days",
+  "saw": "A day holds one status: choose who holds these days",
+  "verdict": "works"
+ },
+ {
+  "surface": "Medical-clash question [phone]",
+  "key": "D848 — no hint in the foot, no small print",
+  "expected": "the foot is Cancel and Save; nothing under the answers; Save still waits",
+  "saw": "{\"foot\":[\"Cancel\",\"Save\"],\"hint\":\"\",\"smallPrint\":[],\"saveWaits\":true}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Upchit question [phone]",
+  "key": "D848 — no hint in the foot",
+  "expected": "the foot is Cancel and Save upchit; Save upchit still waits; the heading over the entries still says to choose for each",
+  "saw": "{\"foot\":[\"Cancel\",\"Save upchit\"],\"hint\":\"\",\"saveWaits\":true,\"heads\":[\"Saving this upchit will\",\"Still on file after it — choose for each\"]}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The two sheets [phone]",
+  "key": "no page error",
+  "expected": "none",
+  "saw": "none",
+  "verdict": "works"
+ },
+ {
+  "surface": "Medical-clash question [desk]",
+  "key": "D848 — its heading carries the fact he kept",
+  "expected": "A day holds one status: choose who holds these days",
+  "saw": "A day holds one status: choose who holds these days",
+  "verdict": "works"
+ },
+ {
+  "surface": "Medical-clash question [desk]",
+  "key": "D848 — no hint in the foot, no small print",
+  "expected": "the foot is Cancel and Save; nothing under the answers; Save still waits",
+  "saw": "{\"foot\":[\"Cancel\",\"Save\"],\"hint\":\"\",\"smallPrint\":[],\"saveWaits\":true}",
+  "verdict": "works"
+ },
+ {
+  "surface": "Upchit question [desk]",
+  "key": "D848 — no hint in the foot",
+  "expected": "the foot is Cancel and Save upchit; Save upchit still waits; the heading over the entries still says to choose for each",
+  "saw": "{\"foot\":[\"Cancel\",\"Save upchit\"],\"hint\":\"\",\"saveWaits\":true,\"heads\":[\"Saving this upchit will\",\"Still on file after it — choose for each\"]}",
+  "verdict": "works"
+ },
+ {
+  "surface": "The two sheets [desk]",
+  "key": "no page error",
+  "expected": "none",
+  "saw": "none",
+  "verdict": "works"
+ }
+]

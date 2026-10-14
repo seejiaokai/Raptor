@@ -76,9 +76,9 @@ describe('the doors say which request\'s row they left out, and where it stands 
     await click(rst)
     expect(rowsOf(inp), 'one request, one row').toEqual([TUE])
     const said = toasts.join(' | ')
-    expect(said).toMatch(/loaded onto the working copy/)
-    expect(said, 'whose, what and where').toContain(`${(PEOPLE as any).bane.cs} · Meeting left out — it is on Tuesday's programme`)
-    expect(elogRows()[0]?.lbl, 'the same sentence in Edit history').toContain('left out — it is on Tuesday')
+    expect(said).toMatch(/ is back to /)   // (owner D863)
+    expect(said, 'whose, what and where').toContain(`${(PEOPLE as any).bane.cs}'s Meeting is left out because it is on Tuesday's programme.`)
+    expect(elogRows()[0]?.lbl, 'the same sentence in Edit history').toContain('is left out because it is on Tuesday')
   })
   it('"Switch to this plan" on the preview banner: the plan\'s copy of the row stays out, and the sentence names it', async () => {
     const inp = twoDay()

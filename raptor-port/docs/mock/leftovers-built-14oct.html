@@ -1,0 +1,148 @@
+<title>Leftovers Built 14 Oct</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter+Tight:wght@400;500;600;700&display=swap">
+<style>
+/* layout: one column of numbered changes; each is a pair of phone pictures, before at the left and built at the right,
+   stacking to one column on a phone. The page wears the app's own dark look on purpose (single theme). */
+:root{
+  color-scheme:dark;
+  --bg:#0b0e12; --panel:#151a20; --panel-2:#1b2129; --edge:#2a323d; --ink:#eef2f6; --ink-2:#aab4c0; --ink-3:#7c8794;
+  --accent:#38c6e8; --mark:#1E86FF; --was:#f0555f; --ok:#7ad69b;
+  --display:'Barlow Condensed','Inter Tight',system-ui,sans-serif;
+  --body:'Inter Tight',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;padding-inline:16px;padding-block:22px 48px}
+.wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:34px}
+header h1{font-family:var(--display);font-weight:700;font-size:34px;letter-spacing:.02em;text-transform:uppercase;line-height:1.05;margin:0 0 8px;text-wrap:balance}
+header p{margin:0;color:var(--ink-2);max-width:62ch}
+.todo{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.todo b{font-family:var(--display);letter-spacing:.08em;text-transform:uppercase;font-size:15px;color:var(--accent)}
+.todo ol{margin:0;padding-left:20px;color:var(--ink)}
+section{display:flex;flex-direction:column;gap:12px}
+h2{font-family:var(--display);font-weight:700;font-size:24px;letter-spacing:.03em;text-transform:uppercase;margin:0;line-height:1.15;text-wrap:balance}
+h2 small{display:block;font-family:var(--body);font-weight:500;font-size:13px;letter-spacing:0;text-transform:none;color:var(--ink-3);margin-bottom:2px}
+.say{margin:0;color:var(--ink-2);max-width:66ch}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;align-items:start}
+figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+figcaption{font-size:13px;color:var(--ink-2)}
+.tag{display:inline-block;font-family:var(--display);font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:12px;padding:1px 8px;border-radius:5px;margin-right:6px;vertical-align:1px}
+.tag.was{background:var(--was);color:#1a0508}
+.tag.now{background:var(--ok);color:#06210f}
+.tag.ask{background:var(--accent);color:#04202a}
+figure button{appearance:none;border:1px solid var(--edge);background:var(--panel);border-radius:10px;padding:0;overflow:hidden;cursor:zoom-in;display:block}
+figure button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+figure img{display:block;width:100%;height:auto}
+.tall img{max-height:520px;object-fit:cover;object-position:top}
+.note{background:var(--panel);border:1px solid var(--edge);border-radius:8px;padding:8px 12px;color:var(--ink-2);max-width:66ch;margin:0}
+#zoom{position:fixed;inset:0;background:rgba(4,6,9,.94);z-index:10;overflow:auto;cursor:zoom-out;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+#zoom img{display:block;margin:0 auto;max-width:none}
+@media (prefers-reduced-motion:no-preference){figure button{transition:border-color .15s}}
+figure button:hover{border-color:var(--accent)}
+</style>
+<div class="wrap">
+  <header>
+    <h1>The leftovers, as built</h1>
+    <p>The three answers you gave and the three notes you said could go, built on the night of 14 October. Each picture is the running app at your iPhone's size. Tap a picture to see it full size.</p>
+  </header>
+
+  <div class="todo">
+    <b>What you do now</b>
+    <ol>
+      <li>Look through the six changes below.</li>
+      <li>Open the preview link on your iPhone and try one: add an input from a day on the Inputs calendar.</li>
+      <li>If you are happy, say "merge live". The four small questions at the foot can wait.</li>
+    </ol>
+  </div>
+
+  <section>
+    <h2><small>1 · your "1 yes"</small>No "Input added" where you can see it arrive</h2>
+    <p class="say">The new input appears in the day's list wearing the blue box for about six seconds, as a new row does on the Scheduler Board. No note is shown.</p>
+    <div class="pair tall">
+      <figure><button type="button" data-zoom><img src="img/f1-before.png" alt="Before: the day's window with the note Input added drawn over its title"></button><figcaption><span class="tag was">Before</span>The note lay over the window's title.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/a1-phone.png" alt="Built: the day's window, the new input's card in a blue box, no note"></button><figcaption><span class="tag now">Built</span>The new card is marked. No note.</figcaption></figure>
+    </div>
+    <p class="note">The note is still shown where you could not see the input arrive: added from the schedule, or with another window over it. And a warning that goes with a save is still said.</p>
+  </section>
+
+  <section>
+    <h2><small>2 · "yes to all"</small>No "Input updated" where the changed input is in view</h2>
+    <p class="say">A changed input's card wears the same blue box. On the month, with no day open, its bar wears it.</p>
+    <div class="pair tall">
+      <figure><button type="button" data-zoom><img src="img/f2-before.png" alt="Before: the note Input updated over the day's window"></button><figcaption><span class="tag was">Before</span>"Input updated" over the window.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/a2-phone.png" alt="Built: the changed card in a blue box, no note"></button><figcaption><span class="tag now">Built</span>The changed card is marked.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/a3-phone.png" alt="Built: the month, the changed input's bar in a blue box"></button><figcaption><span class="tag now">Built</span>On the month: its bar (Ranger, the 14th).</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2><small>The same on the Inputs List</small>The List already wore the box. It now goes without the note too</h2>
+    <div class="pair">
+      <figure><button type="button" data-zoom><img src="img/a4-phone.png" alt="Built: the phone's list, the new card in a blue box"></button><figcaption><span class="tag now">Built</span>A phone.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/a4-desk.png" alt="Built: the desktop list, the new row boxed cell by cell"></button><figcaption><span class="tag now">Built</span>A desktop. The box is drawn round each cell, as it has been since August (question 2 below).</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2><small>3 · your "2 yes"</small>A cancelled input's CX tag follows the title</h2>
+    <p class="say">The red tag and its reason stand straight after the title, not by the ✕. A long reason is cut short before the title is.</p>
+    <div class="pair">
+      <figure><button type="button" data-zoom><img src="img/q2-before.png" alt="Before: the CX tag at the right, by the close button"></button><figcaption><span class="tag was">Before</span>The tag stood by the ✕.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/b1-phone.png" alt="Built: the CX tag and Range closed straight after the title"></button><figcaption><span class="tag now">Built</span>After the title.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/b2-phone.png" alt="Built: a long reason cut short, the title whole"></button><figcaption><span class="tag now">Built</span>A long reason gives way first.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2><small>4 · your "3 yes"</small>The two question sheets' answers sit flat</h2>
+    <p class="say">No darker patch and no line under the answers. On the medical clash the two answers keep the right.</p>
+    <div class="pair">
+      <figure><button type="button" data-zoom><img src="img/q3-medclash-before.png" alt="Before: the medical clash's answers on a darker strip with a line under it"></button><figcaption><span class="tag was">Before</span>The medical clash.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/c1-phone.png" alt="Built: the medical clash's answers flat"></button><figcaption><span class="tag now">Built</span>Flat.</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><button type="button" data-zoom><img src="img/q3-upchit-before.png" alt="Before: Keep and Remove on a darker strip"></button><figcaption><span class="tag was">Before</span>The upchit question.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/c2-phone.png" alt="Built: Keep and Remove flat inside the entry's box"></button><figcaption><span class="tag now">Built</span>Flat.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2><small>5 · "yes to all"</small>No "Schedule updated" after the board's ✓ Done</h2>
+    <p class="say">Before, closing the Scheduler Board with ✓ Done always popped up a note at the bottom: "Schedule updated". It came even when you had changed nothing, and your changes are saved as you make them, so it told you nothing. Now ✓ Done just closes the board.</p>
+    <div class="pair">
+      <figure><button type="button" data-zoom><img src="img/s5-before.png" alt="Before: after Done, the note Schedule updated at the bottom of the screen, ringed in red"></button><figcaption><span class="tag was">Before</span>The note at the bottom (ringed).</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/s5-now.png" alt="Now: the same screen after Done, the same spot ringed and empty"></button><figcaption><span class="tag now">Now</span>The same moment. No note.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2><small>6 · "yes to all"</small>No note when a man is put on or taken off an input's row</h2>
+    <p class="say">Before, putting a man onto an input's row (here Ranger dragged onto the Appointment) popped up a note: "Ranger added to Appointment". Now you see his puck land on the row, and that is the sign. Two cases still speak: a refusal says why, and an input answered "No OIL" still says he isn't counted for OIL.</p>
+    <div class="pair">
+      <figure><button type="button" data-zoom><img src="img/s6-before.png" alt="Before: Ranger on the Appointment row (ringed) and the note Ranger added to Appointment (ringed)"></button><figcaption><span class="tag was">Before</span>Ranger lands on the row, and a note pops up (both ringed).</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/s6-now.png" alt="Now: Ranger on the row (ringed); where the note was, a dashed ring with No note now"></button><figcaption><span class="tag now">Now</span>Ranger lands on the row. No note.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/d2-phone.png" alt="Kept: the amber note that he is already on the row"></button><figcaption><span class="tag now">Kept</span>Put on a row he is already on: the refusal still speaks.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2><small>Not holding the merge</small>Four small things for your look</h2>
+    <div class="pair">
+      <figure><button type="button" data-zoom><img src="img/a3-close-desk.png" alt="The month's bar in its blue box, close up"></button><figcaption><span class="tag ask">1</span>On the month the bar shows its old quick flash, then the blue box. Recommended: leave it.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/a4-desk.png" alt="The desktop list's row boxed cell by cell"></button><figcaption><span class="tag ask">2</span>On the desktop List the box goes round each cell, not once round the row. Older than this batch. Recommended: leave it, or say if you want one box.</figcaption></figure>
+    </div>
+    <p class="note"><span class="tag ask">3</span>"OIL answer saved" is still said after an OIL answer given in an input's window. You have not ruled on it. Recommended: keep.</p>
+    <p class="note"><span class="tag ask">4</span>A man dragged from an input's row onto another seat is now silent too (it said "… taken out of …"). He is out of that input, and the only sign is his puck gone from the row. Recommended: leave it. Say if you want the note back for that one drag.</p>
+  </section>
+</div>
+<div id="zoom" hidden></div>
+<script>
+(function(){
+  var z=document.getElementById('zoom'), zi=document.createElement('img'), last=null;
+  function shut(){ z.hidden=true; if(zi.parentNode) z.removeChild(zi); if(last) last.focus(); }
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('[data-zoom]');
+    if(b){ last=b; var i=b.querySelector('img'); zi.src=i.src; zi.alt=i.alt; z.appendChild(zi); zi.style.width=Math.max(window.innerWidth, Math.min(i.naturalWidth/2, 1400))+'px'; z.hidden=false; z.scrollTop=0; return; }
+    if(!z.hidden) shut();
+  });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!z.hidden) shut(); });
+})();
+</script>

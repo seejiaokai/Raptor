@@ -1,0 +1,426 @@
+<title>Design Look, 13 October</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* layout: one reading column of numbered choices; each statement sits beside the real screens that show it, and every
+   picture opens full size. The house look of the earlier mock-up pages (cal-swipe-fit.html) — same tokens, same faces. */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --ink:#141a21; --ink-2:#4a5663; --edge:#d5dbe2;
+  --accent:#0b7f9c; --accent-soft:#e0f3f8; --ok:#1d7a4c; --ok-soft:#e3f4ea; --warn:#9a5b00; --warn-soft:#fbeed6;
+  --bad:#b3261e; --bad-soft:#fbe4e2;
+  --shot:#0c1014; --veil:rgba(4,6,8,.94); --chip:#151b22; --chip-ink:#e9eef3; --chip-edge:#5b6672;
+  --display:'Barlow Condensed','Arial Narrow',Arial,sans-serif;
+  --body:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0c1014; --panel:#151b22; --ink:#e9eef3; --ink-2:#9aa7b4; --edge:#2a333d;
+  --accent:#3cc6e8; --accent-soft:#12303a; --ok:#58c98d; --ok-soft:#12301f; --warn:#e3a53c; --warn-soft:#33260c;
+  --bad:#ff8a80; --bad-soft:#3a1614;
+  --shot:#07090c; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0c1014; --panel:#151b22; --ink:#e9eef3; --ink-2:#9aa7b4; --edge:#2a333d;
+  --accent:#3cc6e8; --accent-soft:#12303a; --ok:#58c98d; --ok-soft:#12301f; --warn:#e3a53c; --warn-soft:#33260c;
+  --bad:#ff8a80; --bad-soft:#3a1614;
+  --shot:#07090c; color-scheme:dark }
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:flex;flex-direction:column;gap:22px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,6vw,44px);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:.01em}
+.lede{color:var(--ink-2);max-width:66ch;margin:8px 0 0}
+p{margin:0}
+.how{background:var(--accent-soft);padding:12px 14px;border-radius:6px;max-width:70ch}
+.how b{color:var(--accent)}
+nav.jump{display:flex;flex-wrap:wrap;gap:8px}
+nav.jump a{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--accent);border:1px solid var(--edge);background:var(--panel);border-radius:999px;padding:6px 14px}
+nav.jump a:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+h2{font-family:var(--display);font-weight:700;font-size:26px;line-height:1.1;margin:22px 0 0;text-wrap:balance}
+h2 small{display:block;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:700;margin-bottom:2px}
+.item{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:20px;align-items:start}
+.item.stack{grid-template-columns:minmax(0,1fr)}
+.txt{min-width:0;display:flex;flex-direction:column;gap:10px}
+.head{display:flex;gap:12px;align-items:baseline}
+.num{font-family:var(--display);font-weight:700;font-size:34px;line-height:1;color:var(--accent);min-width:1.1em;white-space:nowrap}
+h3{font-family:var(--display);font-weight:600;font-size:24px;line-height:1.15;margin:0;text-wrap:balance}
+.lab{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);display:block;margin-bottom:2px}
+.rec{background:var(--ok-soft);border-radius:6px;padding:10px 12px}
+.rec .lab{color:var(--ok)}
+.note{background:var(--warn-soft);border-radius:6px;padding:10px 12px}
+.note .lab{color:var(--warn)}
+.shots{min-width:0;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start}
+figure{margin:0;flex:1 1 150px;min-width:0;max-width:230px;display:flex;flex-direction:column;gap:6px}
+figure.mid{flex-basis:260px;max-width:420px}
+figure.wide{flex-basis:100%;max-width:none}
+.zoom{display:block;width:100%;padding:0;border:1px solid var(--edge);border-radius:8px;background:var(--shot);cursor:zoom-in;overflow:hidden}
+.zoom:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.zoom img{display:block;width:100%;height:auto}
+figcaption{font-size:14px;color:var(--ink-2);line-height:1.35}
+figcaption b{color:var(--ink)}
+.tag{display:inline-block;font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;border-radius:4px;padding:1px 6px;margin-right:4px;vertical-align:1px}
+.tag.real{background:var(--accent-soft);color:var(--accent)}
+.tag.drawn{background:var(--warn-soft);color:var(--warn)}
+.tag.gap{background:var(--bad-soft);color:var(--bad)}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.tag.w1{background:var(--bad-soft);color:var(--bad)}
+.tag.w2{background:var(--warn-soft);color:var(--warn)}
+.tag.w3{background:var(--accent-soft);color:var(--accent)}
+.scroll{overflow-x:auto;border:1px solid var(--edge);border-radius:10px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:15px;line-height:1.4}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--edge)}
+tr:last-child td{border-bottom:0}
+th{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+td.n{font-family:var(--display);font-weight:700;color:var(--accent);white-space:nowrap;font-size:17px}
+td.was{color:var(--ink-2);min-width:230px}
+td.now{min-width:210px;font-weight:500}
+td.fig{font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.grp td{background:var(--bg);font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.ask{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.ask ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:14px;max-width:72ch}
+.ask li b{font-weight:600}
+.pick{color:var(--ok);font-weight:600}
+ul.tight{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;max-width:72ch}
+.find{border-top:1px solid var(--edge);padding-top:12px;display:flex;flex-direction:column;gap:6px;max-width:74ch}
+.find:first-of-type{border-top:0;padding-top:0}
+.find h4{margin:0;font:600 17px/1.3 var(--body)}
+.find h4 .id{font-family:var(--display);font-weight:700;color:var(--accent);font-size:19px;margin-right:6px}
+.find p{color:var(--ink-2)}
+.find p b{color:var(--ink);font-weight:600}
+#lb{position:fixed;inset:0;background:var(--veil);z-index:10;overflow:auto;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px));cursor:zoom-out;text-align:center}
+#lb img{max-width:none;width:min(100%,560px);height:auto;border-radius:6px}
+#lb.wideimg img{width:min(100%,1400px)}
+#lb.big img{width:auto;max-width:none}
+#lbx{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:12px;z-index:11;font:600 15px var(--body);padding:10px 16px;border-radius:999px;border:1px solid var(--chip-edge);background:var(--chip);color:var(--chip-ink)}
+@media (max-width:720px){ .item{grid-template-columns:minmax(0,1fr);padding:14px} h3{font-size:22px} figure{max-width:none} figure.mid{max-width:none} h2{font-size:24px}
+  /* a phone: the before/after list and the keyboard list read down, never sideways */
+  table.ba,table.ba tbody,table.ba tr,table.ba td,table.kb,table.kb tbody,table.kb tr,table.kb td{display:block;width:auto;min-width:0}
+  table.ba thead,table.kb thead{display:none}
+  table.ba tr,table.kb tr{padding:10px 12px;border-bottom:1px solid var(--edge)}
+  table.ba tr:last-child,table.kb tr:last-child{border-bottom:0}
+  table.ba td,table.kb td{padding:0;border:0}
+  table.ba tr.grp,table.kb tr.grp{background:var(--bg)}
+  table.ba td.was::before{content:'Today';display:block;font:700 12px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-top:2px}
+  table.ba td.now::before{content:'Shorter';display:block;font:700 12px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--ok);margin-top:8px}
+  table.ba td.was[colspan]::before{content:none}
+  table.kb td.where{font-weight:600}
+  table.kb td.keys{color:var(--ink-2);margin-bottom:4px} }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Design look, 13 October</h1>
+    <p class="lede">Three things you asked for on one page: ways to redo the Leave War’s clash note on a phone, the shorter passing notes before and after, and a look over what was built on the night of 13 October against the design guide, with everything a keyboard cannot yet do. Nothing in the app has been changed. Tap any picture to see it full size.</p>
+  </header>
+
+  <p class="how"><b>How to read the pictures.</b> <span class="tag real">Built</span> is the app exactly as it stands, at your iPhone’s size (390 wide) or a desktop’s (1440 wide). <span class="tag drawn">Drawn</span> is the same real screen with a proposal drawn onto it; nothing behind it works yet. The pictures were taken in a Windows browser, so the letters are slightly narrower than on your iPhone.</p>
+
+  <p class="note" style="max-width:70ch"><span class="lab">Changed since you last saw this page</span>Fable has now read all of it, on your word. Its catches are in: one wording that said the opposite of what it meant (N11), three that had still lost a key word (N2, N3, N24), the clash list made steady on wider letters, a keyboard gap the page had dropped (K12), dim weekend dates inside a picked run (L17), and a question about where the bar that stays should sit (L6). The three ways first drawn for the clash note have left the page, now you have chosen.</p>
+
+  <nav class="jump" aria-label="Sections">
+    <a href="#clash">1 · Clash note</a><a href="#notes">2 · Shorter notes</a><a href="#look">3 · The look</a><a href="#keys">4 · Keyboard</a><a href="#ask">5 · Your choices</a>
+  </nav>
+
+  <!-- ============================== 1 · THE CLASH NOTE ============================== -->
+  <h2 id="clash"><small>1 · Leave War, on a phone</small>The “clashes with the schedule” note</h2>
+
+  <section class="item stack">
+    <div class="txt">
+      <div class="head"><span class="num">Today</span><h3>What you sent a picture of</h3></div>
+      <p><span class="lab">What is wrong</span>The amber note sits inside the second row of buttons. On a phone that row never wraps, so the note gets whatever width the buttons leave: <b>100 of 390</b>. Two clashes then stand <b>294 tall</b>, the stage button is cut to “O..”, and the grid starts nearly halfway down the screen.</p>
+      <p><span class="lab">The words</span>Each clash is one sentence of about 17 words: “Fable: weekend/PH work earns FO but 18 Jul 26 holds LL — decide the bid on the sheet”.</p>
+      <p><span class="lab">On a desktop</span>The same note is one slim line under the buttons and reads well. It stays as it is, as you ruled for the desktop’s top rows.</p>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/clash-phone-0-today.png" alt="Phone, Leave War: a tall narrow amber box at the right of the second row holds two clash sentences wrapped three words a line; the grid starts far down the screen" loading="lazy"></button><figcaption><span class="tag real">Built</span>Phone, two clashes.</figcaption></figure>
+      <figure class="wide"><button class="zoom" type="button" data-wide="1"><img src="2026-10-13-design-look/clash-desk-0c-today-top.png" alt="Desktop, Leave War: one slim amber line under the stage buttons carries both clash sentences" loading="lazy"></button><figcaption><span class="tag real">Built</span>Desktop. Unchanged by any option.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">A+</span><h3>Your choice, made neater</h3></div>
+      <p><span class="lab">What is lined up</span>Every name starts at the same place. Every day starts at the same place, on every visit, because the names’ column is as wide as the roster’s longest callsign. Every instruction ends at the right edge with its arrow. The line’s edges are the edges of the buttons above it.</p>
+      <p><span class="lab">Every row the same shape</span>Two lines: who, the day and what to do on the first; what clashes on the second, across the row. One bold thing a row, the name. Each row 46 tall.</p>
+      <p><span class="lab">The key words are kept</span>“Weekend/PH work earns FO, but the day holds LL” is today’s sentence less only the name and the date, which stand above it. The instructions: “Decide the bid”, “Change the leave on Inputs”, “Send the leave back or delete it”, “Step back to Bidding Closed”.</p>
+      <p><span class="lab">What a tap does</span>It opens that day for that person, where the bid is decided, or the leave’s own window on the Inputs page. “Decide the bid” must land on the thing to decide, not only near it.</p>
+      <p><span class="lab">How it behaves</span>With one clash the list starts open. With more it starts closed, and stays as you left it for the visit. A long list pushes the grid down and “Hide” is the way back; it never scrolls inside itself. By keyboard: Enter or Space opens and closes the line, each clash is the next Tab stop, Enter goes where a tap goes.</p>
+      <p><span class="lab">Wider letters</span>Your iPhone’s letters are wider than these. The last picture is the busy case in letters a seventh wider: the day never breaks; the longest instruction is the part that gives way, onto a second line, and no word is cut. To be seen on your own phone before it is called done.</p>
+      <p><span class="lab">Cost</span>The grid starts 250 down the screen with two clashes open (today: 396), 156 with the line closed, 125 with none.</p>
+      <p class="rec"><span class="lab">If this is right</span>Say “build it”. The desktop’s line would then say each clash in these same words; its layout stays as you ruled.</p>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/clash-phone-N2-neat-open.png" alt="Phone: the amber line open with two clashes; names in one column, days in one column, Decide the bid ending at the right edge, and under each the sentence Weekend/PH work earns FO, but the day holds LL" loading="lazy"></button><figcaption><span class="tag drawn">Drawn</span>Open, the two clashes.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/clash-phone-N3-neat-open-busy.png" alt="Phone: six clashes, every row two lines, names, days and instructions each aligned, long names and long instructions included" loading="lazy"></button><figcaption><span class="tag drawn">Drawn</span>The busy case.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/clash-phone-N1-neat-closed.png" alt="Phone: the amber line closed, 2 clashes with the schedule, Show" loading="lazy"></button><figcaption><span class="tag drawn">Drawn</span>Closed.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/clash-phone-N5-neat-busy-wider-letters.png" alt="Phone: the busy case in wider letters; every day still on one line; the longest instruction wraps to a second line" loading="lazy"></button><figcaption><span class="tag drawn">Drawn</span>The busy case in wider letters, as a stand-in for your iPhone’s.</figcaption></figure>
+    </div>
+  </section>
+
+  <p style="color:var(--ink-2);max-width:70ch">The three ways first drawn (A, B and C), their measurements and what the drawing found are kept in the job’s record, off this page.</p>
+
+  <!-- ============================== 2 · THE SHORTER NOTES ============================== -->
+  <h2 id="notes"><small>2 · The passing notes</small>Shorter, and wider on a phone</h2>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">W</span><h3>Half of “wordy” is the box, not the words</h3></div>
+      <p><span class="lab">Found while measuring</span>On a phone every passing note is only <b>half the screen wide</b> (195 of 390). It is centred in a way that leaves it half the width to grow into. That is why your two notes ran five lines deep.</p>
+      <p><span class="lab">Measured</span>The unpublish note: five lines as built. The same words in a full-width box: three. With only filler cut (N2) it is still three: that note is nearly all facts, so the box does the work. The publish note (N1) goes from five lines to two.</p>
+      <p class="rec"><span class="lab">Recommended</span>The note takes the phone’s width less a small margin, and only filler is cut from the words (the list below). The desktop’s note is already wide and stays as it is.</p>
+      <p class="note"><span class="lab">The same cause</span>The bar that stays after an unanswered OIL question is half-width for the same reason. It is drawn full-width in section 3.</p>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/note-phone-unpublish-before.png" alt="Phone: the unpublish note in a box half the screen wide, five lines deep" loading="lazy"></button><figcaption><span class="tag real">Built</span>Unpublish: 25 words, five lines.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/note-phone-unpublish-before-wide.png" alt="Phone: the same words in a box the width of the screen, three lines" loading="lazy"></button><figcaption><span class="tag drawn">Drawn</span>Same words, wider box: three lines.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/note-phone-unpublish-after-wide.png" alt="Phone: Monday unpublished, its OIL is off the Leave War until republished, in a full-width box, two lines" loading="lazy"></button><figcaption><span class="tag drawn">Drawn</span>Key words kept (N2), wider box: three lines.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/note-phone-publish-before.png" alt="Phone: the publish note, five lines deep in a half-width box" loading="lazy"></button><figcaption><span class="tag real">Built</span>Publish: 21 words, five lines.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/note-phone-publish-after.png" alt="Phone: the shorter publish note in today's half-width box, three lines" loading="lazy"></button><figcaption><span class="tag drawn">Drawn</span>Key words kept (N1), today’s box: four lines.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/note-phone-publish-after-wide.png" alt="Phone: Monday published, Common Programme has no times, no OIL from it, in a full-width box, two lines" loading="lazy"></button><figcaption><span class="tag drawn">Drawn</span>Key words kept (N1), wider box: two lines.</figcaption></figure>
+    </div>
+  </section>
+
+  <p class="how"><b>The list, redone.</b> You said the first list was too summarised, with key words gone. The rule now: what happened, why, what it costs and where to put it right all stay; only filler goes, and each row says exactly what was cut. Where a note cannot lose a word without losing a fact, it is left whole and the wider box does the shortening. Of the app’s 276 passing notes, 99 run to nine words or more; these are the ones with real filler. Fable then checked each against today’s wording in the app and corrected four. The Leave War’s and the Tracker’s own notes belong to the whole-app words job you set aside for later.</p>
+
+  <div class="scroll">
+    <table class="ba">
+      <thead><tr><th>#</th><th>Today</th><th>Shorter, key words kept</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="3">After publishing and unpublishing — the two you pictured, and their family</td></tr>
+        <tr><td class="n">N1</td><td class="was">Monday published — APPROVED · Monday 13 Jul: the common programme has no usable times, so nobody on it earns OIL</td><td class="now">Monday published — approved · Common Programme has no usable times: nobody on it earns OIL<br><span style="font-weight:400;color:var(--ink-2)">Cut: the day said a second time, “so”.</span></td></tr>
+        <tr><td class="n">N2</td><td class="was">Monday unpublished — it is a draft again; publishing reissues the Original · its OIL credits leave the Leave War until it is published again</td><td class="now">Monday unpublished — a draft again; publishing reissues the Original · its OIL credits leave the Leave War until it is republished<br><span style="font-weight:400;color:var(--ink-2)">Cut: “it is”; “published again” becomes “republished”, the app’s own word. Every fact stays.</span></td></tr>
+        <tr><td class="n">N3</td><td class="was">Monday: AL2 withdrawn — its changes are back on the working copy as pending; AL1 is the issued schedule; publishing again reissues AL2</td><td class="now">Monday: AL2 withdrawn — its changes are back on the working copy as pending; AL1 is the issued schedule; publishing reissues AL2<br><span style="font-weight:400;color:var(--ink-2)">Cut: the one “again”. “Back” stays: it is the fact.</span></td></tr>
+        <tr><td class="n">N4</td><td class="was">Heads up — Monday’s OIL credits are bid against on the Leave War. Unpublishing withdraws them until you republish. Tap again to confirm.</td><td class="now">Monday’s OIL credits are bid against on the Leave War — unpublishing withdraws them until you republish. Tap again to confirm.<br><span style="font-weight:400;color:var(--ink-2)">Cut: “Heads up”.</span></td></tr>
+        <tr><td class="n">N7</td><td class="was">This week is locked — it was published by an older version and can’t be edited (six places)</td><td class="now">This week is locked — published by an older version, it can’t be edited<br><span style="font-weight:400;color:var(--ink-2)">Cut: “it was”, “and”.</span></td></tr>
+        <tr><td class="n">N8</td><td class="was">Applying “Standard Monday” replaces your unpublished edits on Monday — open Templates and pick it again to confirm</td><td class="now">“Standard Monday” replaces your unpublished edits on Monday — pick it again in Templates to confirm<br><span style="font-weight:400;color:var(--ink-2)">Cut: “Applying”, “open … and”.</span></td></tr>
+        <tr class="grp"><td colspan="3">After a switch on the schedule</td></tr>
+        <tr><td class="n">N10</td><td class="was">Info only — this item is no longer checked against the rules, and earns nobody any OIL<br>This item is checked against the rules again</td><td class="now">Info only — no longer checked against the rules, earns nobody any OIL<br>Checked against the rules again<br><span style="font-weight:400;color:var(--ink-2)">Cut: “this item is”.</span></td></tr>
+        <tr><td class="n">N11</td><td class="was">Nothing on this day earns OIL — anything added later is covered too<br>This day can earn again — the marks underneath are back</td><td class="now">Nothing on this day earns OIL, including anything added later<br>This day can earn again — its marks are back<br><span style="font-weight:400;color:var(--ink-2)">Cut: “is covered”, “underneath”. The first try (“anything added later too”) could be read as the opposite; Fable caught it.</span></td></tr>
+        <tr><td class="n">N14</td><td class="was">Line is SPARE now — standing by, checked for availability and currency only<br>Line is MAIN now — fully cross-checked</td><td class="now">Line is SPARE — standing by, checked for availability and currency only<br>Line is MAIN — fully cross-checked<br><span style="font-weight:400;color:var(--ink-2)">Cut: “now”.</span></td></tr>
+        <tr><td class="n">N16</td><td class="was">Note now shows on the view-only schedule<br>Note is scheduler-only again</td><td class="now">Note shows on the view-only schedule<br>Note is scheduler-only again<br><span style="font-weight:400;color:var(--ink-2)">Cut: “now”.</span></td></tr>
+        <tr><td class="n">N19</td><td class="was">The 07:30 brief was after the new take-off, so it has been cleared</td><td class="now">The 07:30 brief was after the new take-off — cleared<br><span style="font-weight:400;color:var(--ink-2)">Cut: “so it has been”.</span></td></tr>
+        <tr class="grp"><td colspan="3">Inputs and Quals</td></tr>
+        <tr><td class="n">N24</td><td class="was">An input for ALL AVAIL is changed in its own window — open it to change who it is for<br>Who is in this input is changed in its own window</td><td class="now">An ALL AVAIL input is changed in its own window — open it to change who it is for<br>Who is in this input is changed in its own window<br><span style="font-weight:400;color:var(--ink-2)">Both kept: they are two different refusals, and “ALL AVAIL” is the reason for the first. Cut: “An input for”.</span></td></tr>
+        <tr><td class="n">N26</td><td class="was">A medical entry is one person’s own. Take the other people out and save first — then change its kind.</td><td class="now">A medical entry is one person’s own — take the other people out and save, then change its kind<br><span style="font-weight:400;color:var(--ink-2)">Cut: “first”.</span></td></tr>
+        <tr><td class="n">N33</td><td class="was">Shortcut to the Admin page (Django-style backend in the full build).<br><span style="color:var(--bad)">Builder’s talk on screen. It breaks your standing rule that the app’s words read as a finished product.</span></td><td class="now">Remove the note. The “Admin page” link beside it already goes there, so “Add qualifications” either opens Admin too or goes; your call.</td></tr>
+        <tr class="grp"><td colspan="3">Left whole — every word in them is a fact, so nothing is cut</td></tr>
+        <tr><td class="n">—</td><td class="was" colspan="2">N5 “Published AL2 · 3 items on Monday only · approved by Saber · 2 days with changes still held” · N6 “Monday is still draft — publish the day before publishing its changes” · N9 “OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning” · N12 “Nothing on this day earns — turn that off first” · N13 “SC added — standalone, every seat checked for availability, SC currency, front seat and overlapping places only” · N15 “Warning hidden — no flag, not counted. It returns if the day changes” · N17 “Desktop layout — pan sideways to read the whole day” · N18 “Saved as the default section order for every day” · N20 to N23, N25, N27 (the Inputs refusals) · N28 “Bane needs the DAAR instructor mark before NAAR can carry it — the tick comes off instead” · N29 to N32 (Quals and the leave period) · and the ones already listed as short: “0730 is not a time — try 0900 or 09:00”, “Red box — flagged for the next scheduler”, “LATE mark hidden — the Inputs page still shows it”, “Left OIL Earn — the next undo would change the day itself”, every “Only a scheduler can …”.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ============================== 3 · THE LOOK ============================== -->
+  <h2 id="look"><small>3 · Against the design guide</small>What was built on the night of 13 October</h2>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Looked at</th><th>Phone</th><th>Desktop</th><th>By keyboard</th></tr></thead>
+      <tbody>
+        <tr><td>The date calendar: opened from a date box, its month-and-year lists, the faint dates, a run of dates in a form</td><td>yes</td><td>yes</td><td>yes, every key pressed</td></tr>
+        <tr><td>The Tracker’s date boxes: the side panel’s, the ✕ in a filled box, “Done on” and “Failed on”</td><td>yes</td><td>yes</td><td>yes</td></tr>
+        <tr><td>The OIL question before a swap, and at an input’s own save</td><td>yes</td><td>yes</td><td>yes</td></tr>
+        <tr><td>The bar that stays (“Not swapped — OIL not answered”)</td><td>yes</td><td>yes</td><td>yes</td></tr>
+        <tr><td>A puck: reached and picked up by keys</td><td>not a keyboard’s place</td><td>yes</td><td>yes</td></tr>
+        <tr class="grp"><td colspan="4">Not looked at, and why</td></tr>
+        <tr><td colspan="4">The question’s “put back” and “file” forms (the same sheet with other words on its two buttons) · the many-day form of the OIL question · the calendar over the Leave War’s posting sheets and the upchit date (walked last night; the same calendar) · a phone on its side · your iPhone’s own letters · the swipe (a finger’s, checked last night) · a screen reader.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="lede">Three reads stand behind this list: mine, pressing every control and key in the built app; a fresh reader’s, given only the pictures and the guide; and Fable’s, of the whole page.</p>
+
+  <p class="how"><b>How heavy each finding is.</b> <span class="tag w1">1</span> it misleads, hides the way back, or cannot be used. <span class="tag w2">2</span> it is inconsistent or cluttered. <span class="tag w3">3</span> polish. Each says what a person meets and the exact change proposed. <b>“Put to you”</b> marks a finding against something you approved from a picture or ruled: it is a question, not a fault.</p>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">OIL</span><h3>The OIL question before a swap</h3></div>
+      <p>The idea is right and could only belong to this app: nothing moves until the question is answered, and the two buttons say what each does. Its frame is what lets it down.</p>
+      <div class="find"><h4><span class="id">L1</span><span class="tag w2">2</span>The two answers sit in a box inside a box</h4>
+        <p><b>What you meet:</b> inside the window an outlined box; inside that a darker strip with a line under it that stops halfway across; inside that the two answers, pushed in from the left. It reads as broken. <b>Why:</b> the answers’ row is wearing a style that belongs to the week strip in the top bar. <b>Change:</b> both go. The answers sit flat under the question, starting at its left edge. You asked the same of the medical clash window on 28 Aug: “remove the box around the buttons. It looks unclean”. <i>Guide §3.</i></p></div>
+      <div class="find"><h4><span class="id">L2</span><span class="tag w2">2</span>The ✕ follows the title instead of sitting in the corner</h4>
+        <p><b>What you meet:</b> “OIL — Tally, Range brief ✕”. The cross moves with the length of the name and the title, and is nowhere near the top-right corner where the window behind it has its own. <b>Change:</b> the ✕ at the far right of the top bar. The app’s other small question windows share the fault; one change puts them all right. By keyboard the ✕ then comes last, after the answers, not first as today. <i>Guide §0, the same thing in the same place.</i></p></div>
+      <div class="find"><h4><span class="id">L3</span><span class="tag w2">2</span>The reason is shouted in capitals over two lines <span class="tag drawn">Put to you</span></h4>
+        <p><b>What you meet:</b> “THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH)” as a heading in capitals, then the question. <b>Change:</b> the same words as one ordinary sentence leading into the question. The first redraft cut the wording to about 40 words; by your word of 13 Oct that was too summarised, so the words now stay and only the look changes (the list under these pictures).</p></div>
+      <div class="find"><h4><span class="id">L4</span><span class="tag w2">2</span>At a save, “Add” becomes “Save”, and “Cancel” does not say what it cancels <span class="tag drawn">Put to you</span></h4>
+        <p><b>What you meet:</b> you press “Add” on a new input. The question comes up offering “Cancel / Save”, with the form’s own “Cancel / Add” still in sight behind it. This “Cancel” only takes you back to the form, but it reads as if it might throw the input away. The swap’s version already does it properly (“Don’t swap / Swap”). <b>Change:</b> “Back / Add” for a new input, “Back / Save” for a change. <i>Guide §1, one name for one thing.</i></p></div>
+      <div class="find"><h4><span class="id">L5</span><span class="tag w2">2</span>A picked answer is as loud as the main button <span class="tag drawn">Put to you</span></h4>
+        <p><b>What you meet:</b> once “Yes — credit HO” is picked there are two solid cyan buttons in one small window, and the eye no longer knows which one to press. Everywhere else a picked choice is dark with a cyan outline (“No end”, “Month”). <b>Change:</b> the picked answer takes that outline look; “Swap” stays the one solid button. The day’s one list of OIL questions would take the same look, so a picked Yes or No reads the same in both. <i>Guide §3, one main button a view.</i></p></div>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/oil-phone-2-question-waits.png" alt="Phone: the OIL question over the Scheduler Board. The close cross follows the title; the two answers sit on a darker patch with a line under it inside a rounded box" loading="lazy"></button><figcaption><span class="tag real">Built</span>Before a swap. L1, L2, L3.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/oil-phone-0-question-at-a-save.png" alt="Phone: the same question over a new input's form; the question offers Cancel and Save, the form behind it Cancel and Add" loading="lazy"></button><figcaption><span class="tag real">Built</span>At a save. L4: “Cancel / Save” over “Cancel / Add”.</figcaption></figure>
+      <figure class="mid"><button class="zoom" type="button"><img src="2026-10-13-design-look/oil-desk-3-question-answered.png" alt="Desktop: the question with Yes picked, filled solid cyan and ringed in white; Swap is solid cyan too" loading="lazy"></button><figcaption><span class="tag real">Built</span>Desktop, “Yes” picked by keyboard. L5: two solid cyan buttons. The white ring is the browser’s own (K10).</figcaption></figure>
+    </div>
+  </section>
+
+  <div class="scroll"><table class="ba">
+    <thead><tr><th>L3</th><th>Today</th><th>Shorter, key words kept</th></tr></thead>
+    <tbody>
+      <tr><td class="n">a</td><td class="was">OIL — Tally, Range brief</td><td class="now">Keep.</td></tr>
+      <tr><td class="n">b</td><td class="was">Swapping Tally and Ranger</td><td class="now">Keep.</td></tr>
+      <tr><td class="n">c</td><td class="was">THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH)<br>Does it deserve HO — half a day of OIL?</td><td class="now">This input falls on a non-working day — Sat 18 Jul (weekend / PH). Does it deserve HO — half a day of OIL?<br><span style="font-weight:400;color:var(--ink-2)">Every word kept. Only the look changes: an ordinary sentence, not a heading in capitals.</span></td></tr>
+      <tr><td class="n">d</td><td class="was">The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it.</td><td class="now">The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the day, so published work the same day can raise it.<br><span style="font-weight:400;color:var(--ink-2)">Cut: “whole”, “schedule”. Nothing added: the same line serves the full-day question, where there is nothing above FO.</span></td></tr>
+      <tr><td class="n">e</td><td class="was">Choose an option above</td><td class="now">Keep.</td></tr>
+      <tr><td class="n">f</td><td class="was">Yes — credit HO · No OIL · Don’t swap · Swap</td><td class="now">Keep. Ruled.</td></tr>
+    </tbody></table></div>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">Bar</span><h3>The bar that stays</h3></div>
+      <div class="find"><h4><span class="id">L6</span><span class="tag w2">2</span>On a phone it is half the screen wide, its sentence broken in two <span class="tag drawn">Put to you</span></h4>
+        <p><b>What you meet:</b> “Not swapped — OIL not / answered” with the buttons under it, in a box 195 wide and 94 tall, floating over the names in Available crew. It is the layout of the picture you approved; the cause was not seen then. The width was never chosen: the way the bar is centred means it can never be wider than half the screen. <b>Change:</b> the bar takes the phone’s width, words and both buttons on one line, 46 tall. If the line does not fit your iPhone’s wider letters, the words stay on one unbroken line with the buttons under it. To be measured on your phone before it is called done. <i>Guide §3, never what is left over.</i></p>
+        <p><b>And where it sits is yours to say.</b> You already ruled that the “Not saved” warning takes a band under the top bar, where it covers nothing. This bar is the same kind of thing, a warning that stays until you act, but it floats at the foot over the names you may tap next. <b>Recommended:</b> it takes that same band, so the two warnings that stay live in one place; I would draw it for you before it is built. If you prefer the foot, the full-width drawing here is the fix.</p></div>
+      <div class="find"><h4><span class="id">L7</span><span class="tag w1">1</span>A keyboard cannot reach it or close it</h4>
+        <p><b>What you meet:</b> after Escape on the question the bar appears and the keyboard is back on the puck. “Answer OIL” is then over a hundred Tab presses away, and Escape does nothing to the bar. <b>Change:</b> when the bar appears the keyboard goes to “Answer OIL”; Escape closes the bar as OK does. <i>Guide §2. K8, K9.</i></p></div>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/oil-phone-4-bar-stays.png" alt="Phone: a small box in the middle of the foot of the screen, the words on two lines, Answer OIL and OK under them, lying over the Available Crew list" loading="lazy"></button><figcaption><span class="tag real">Built</span>Phone: 195 wide, 94 tall.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/oil-phone-6-bar-full-width-drawn.png" alt="Phone: the bar across the full width of the screen, the words and both buttons on one line" loading="lazy"></button><figcaption><span class="tag drawn">Drawn</span>Full width: one line, 46 tall.</figcaption></figure>
+      <figure class="wide"><button class="zoom" type="button" data-wide="1"><img src="2026-10-13-design-look/oil-desk-4c-bar-close-up.png" alt="Desktop: the bar on one line, Not swapped, OIL not answered, Answer OIL, OK" loading="lazy"></button><figcaption><span class="tag real">Built</span>Desktop. Reads well; no change proposed.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">Cal</span><h3>The date calendar</h3></div>
+      <p>It reads as made for this app, and nothing on it moves under the finger: the title has a fixed room, there are always six rows, and the month-and-year lists are exactly as tall as the dates they replace. The run of dates in Admin’s form teaches itself with no hint on screen. What is left:</p>
+      <div class="find"><h4><span class="id">L8</span><span class="tag w2">2</span>A date that cannot be picked can still look alive</h4>
+        <p><b>What you meet:</b> in “Until”, dates before the start are faint, except two kinds. Today (the 13th) stays bright cyan on its disc, the liveliest thing in its row; and the Thursdays (the 1st and 8th) stay bold. A tap on any of them does nothing, with no word why. <b>Change:</b> a date that cannot be picked is faint and plain, whatever else it is. Today keeps its disc, so it still marks today.</p></div>
+      <div class="find"><h4><span class="id">L9</span><span class="tag w2">2</span>On a phone the card does not say which date it is for <span class="tag drawn">Put to you</span></h4>
+        <p><b>What you meet:</b> the centred card covers the box that opened it and looks the same for every box. On the Tracker’s panel it covers three of five date boxes; in the marking pop-up it covers both “Done on” and “Failed on”. A finger that landed on the wrong box picks a date into the wrong place with nothing to warn you. On a desktop this cannot happen: the panel hangs under its own box. <b>Change:</b> on a phone only, one line of small capitals at the top of the card with the box’s own name (“FROM”, “UNTIL”, “DONE ON”). It is the same on every month, so nothing moves. <i>Guide §3, nothing sits over what it is about.</i></p></div>
+      <div class="find"><h4><span class="id">L10</span><span class="tag w2">2</span>Four keys are missing</h4>
+        <p>Home and End, a year at a time, and the keyboard’s way into and out of the month-and-year lists: K1 to K4 in section 4.</p></div>
+      <div class="find"><h4><span class="id">L11</span><span class="tag w3">3</span>The sentence under a run of dates is cyan, though it is not a button</h4>
+        <p>“Fri 9 Oct 2026 to Wed 14 Oct 2026” in Admin reads as a link. <b>Change:</b> the ordinary white bold. <i>Guide §4, cyan means press me or picked.</i></p></div>
+      <div class="find"><h4><span class="id">L17</span><span class="tag w3">3</span>Weekend dates inside a picked run stay dim</h4>
+        <p>In Admin’s run from Fri 9 to Wed 14 Oct, the 10th and 11th are greyer than the rest, as if left out. They are in the run. <b>Change:</b> every date inside a picked run is full strength. Found by Fable.</p></div>
+      <div class="find"><h4><span class="id">L12</span><span class="tag w3">3</span>The faint dates are very faint <span class="tag drawn">Put to you</span></h4>
+        <p>You do not pick them, but you read them to find your place in the week; outdoors on a phone the row reads as nearly empty. <b>Change:</b> one small step stronger, still plainly fainter than a weekend date.</p></div>
+      <div class="find"><h4><span class="id">L13</span><span class="tag w3">3</span>In the month-and-year lists the keyboard’s place is shown by turning one word cyan</h4>
+        <p>With the keyboard on the months, “October” is cyan and “2026” white. It reads as “October is chosen, 2026 is not”. <b>Change:</b> both stay white; the list that has the keyboard wears the app’s cyan ring. The title’s own ring is also drawn round the words only, not the empty room beside them.</p></div>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/cal-phone-2-calendar-open.png" alt="Phone: the calendar card over the Every Thursday window, October 2026, the 15th a bright cyan disc, the 13th a dark disc for today, Thursdays bold" loading="lazy"></button><figcaption><span class="tag real">Built</span>“From”, tapped. L9: the card does not say “From”.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/cal-phone-7-until-faint-dates.png" alt="Phone: the Until calendar, dates before the 15th faint, but the 13th bright cyan and the 1st and 8th bold" loading="lazy"></button><figcaption><span class="tag real">Built</span>“Until”. L8: the 13, the 1 and the 8. L12: the faint dates.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/cal-phone-4-lists-open.png" alt="Phone: the month and year lists, October and 2026 in the band across the middle" loading="lazy"></button><figcaption><span class="tag real">Built</span>The title tapped.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/cal-phone-8-admin-run-in-form.png" alt="Phone: Admin, Data. A run from the 9th to the 14th banded in the calendar, and under it the dates in cyan words" loading="lazy"></button><figcaption><span class="tag real">Built</span>A run of dates. L11: the cyan sentence. L17: the dim 10 and 11.</figcaption></figure>
+      <figure class="wide"><button class="zoom" type="button" data-wide="1"><img src="2026-10-13-design-look/cal-desk-2-calendar-open.png" alt="Desktop: the calendar as a small panel right under the From box of the Every Thursday window, the Calendar window beside it" loading="lazy"></button><figcaption><span class="tag real">Built</span>Desktop: a small panel under its own box.</figcaption></figure>
+      <figure class="mid"><button class="zoom" type="button"><img src="2026-10-13-design-look/cal-desk-3-keyboard-on-a-date.png" alt="Desktop close-up: the 15th with a clear cyan ring around its disc" loading="lazy"></button><figcaption><span class="tag real">Built</span>The ring is the keyboard’s only: it shows while the arrow keys are on a date. A tap or a click never shows it; the picked date is the plain bright disc, as you prefer.</figcaption></figure>
+      <figure class="mid"><button class="zoom" type="button"><img src="2026-10-13-design-look/cal-desk-5-lists-keyboard.png" alt="Desktop close-up: the lists with the keyboard on the months; October is cyan, 2026 white" loading="lazy"></button><figcaption><span class="tag real">Built</span>L13: the month cyan, the year white.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">Trk</span><h3>The Tracker’s date boxes</h3></div>
+      <p>The ✕ inside a filled box, where the arrow was, is the right answer: no extra box, no extra column, and it says what it does.</p>
+      <div class="find"><h4><span class="id">L14</span><span class="tag w2">2</span>A future day looks pickable, is picked, and is then refused <span class="tag drawn">Put to you</span></h4>
+        <p><b>What you meet:</b> in “Done on”, “Failed on” and the two Last Flown boxes, tomorrow looks exactly like yesterday. You tap it, the calendar closes, the box goes back and a line says why (your ruling of 28 Sep). The calendar already has a look for “may not be picked”, but only for days that are too early. <b>Change:</b> on those four boxes the days after today are faint and take no tap. The refusal line stays as the safety net. <i>Better never made than put right.</i></p></div>
+      <div class="find"><h4><span class="id">L15</span><span class="tag w2">2</span>A date reads as a fact before anything is marked <span class="tag drawn">Put to you</span></h4>
+        <p><b>What you meet:</b> an event not yet done shows “Done on (when marked): Tue 13 Oct 2026”, and with Fails at 0 it shows “Failed on: Tue 13 Oct 2026” in full white. Both read as records. The second has no hint at all. <b>Change:</b> until a mark or a failure actually carries the day, the date in the box is drawn in the dim colour an empty box already uses; it turns white the moment a mark carries it. No word changes. (Hiding “Failed on” until there is a fail was weighed and left: its date is set before “+” is pressed.)</p></div>
+      <div class="find"><h4><span class="id">L16</span><span class="tag w3">3</span>On a desktop the side panel’s boxes change width when filled <span class="tag drawn">Put to you</span></h4>
+        <p><b>What you meet:</b> a box grows when it gets a date and shrinks when the ✕ clears it, so the ✕ and the arrow are never where the last one was; the column of four fields has three widths. <b>Change:</b> one width for that column’s boxes, wide enough for a full date. No box gets smaller.</p></div>
+      <div class="find"><h4><span class="id">—</span>By keyboard</h4>
+        <p>The boxes and the ✕ work by keyboard. The chart itself and the marking pop-up do not: K5 and K6 in section 4, both older than last night.</p></div>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/trk-phone-5-marking-pop-up.png" alt="Phone, Tracker: the marking pop-up with Done on, Fails 0 and Failed on, both boxes reading Tue 13 Oct 2026 in white" loading="lazy"></button><figcaption><span class="tag real">Built</span>L15: “Fails: 0”, “Failed on” today.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="2026-10-13-design-look/trk-phone-6-pop-up-calendar.png" alt="Phone, Tracker: the calendar opened from Done on, covering both date boxes; the 14th to the 31st at full strength" loading="lazy"></button><figcaption><span class="tag real">Built</span>L14: tomorrow onward looks pickable. L9: both boxes covered.</figcaption></figure>
+      <figure class="mid"><button class="zoom" type="button"><img src="2026-10-13-design-look/trk-phone-3-box-with-cross.png" alt="Phone close-up: the Upchit Date box reading Tue 13 Oct 2026 with a cross at its right end" loading="lazy"></button><figcaption><span class="tag real">Built</span>A filled box and its ✕.</figcaption></figure>
+      <figure class="wide"><button class="zoom" type="button" data-wide="1"><img src="2026-10-13-design-look/trk-desk-1-side-panel-boxes.png" alt="Desktop, Tracker: the side panel's column of date boxes at different widths" loading="lazy"></button><figcaption><span class="tag real">Built</span>Desktop. L16: the right-hand panel’s boxes.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item stack">
+    <div class="txt">
+      <span class="lab">Considered and left</span>
+      <ul class="tight">
+        <li><b>Six rows always, Monday first, no tick, Reset or Clear, the Today icon, the centred card, the small panel on a desktop.</b> Ruled.</li>
+        <li><b>The small “›” beside the month</b> as the only sign the title opens the lists, and <b>no ✕ on the calendar card</b>. Both are the iPhone’s own.</li>
+        <li><b>Two presses to answer the question</b> (pick, then “Swap”). It is the app’s pattern for every forced choice, and the several-days question needs the second button.</li>
+        <li><b>“Yes — credit HO”, “No OIL”, the bar’s bare “OK”, its staying until tapped.</b> Ruled.</li>
+        <li><b>After the flash, nothing marks the two pucks that were not swapped,</b> and the bar names nobody. You ruled the flash and the bar; “Answer OIL” brings the question back, and it names them. Say if you want the bar to name them too.</li>
+        <li><b>Buttons under a finger’s size</b> (the Tracker’s ✕, the board’s small buttons). Not a finding by measurement alone; no missed tap was shown.</li>
+        <li><b>The many greys, weights and corner sizes.</b> The sleek-interface job’s, as pictures to you, not this look’s.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================== 4 · KEYBOARD ============================== -->
+  <h2 id="keys"><small>4 · Keyboard</small>What a keyboard can and cannot do</h2>
+  <p class="lede">Every key below was pressed in the built app on a desktop and the result read off the screen.</p>
+
+  <div class="scroll">
+    <table class="kb">
+      <thead><tr><th>#</th><th>Where</th><th>Keys</th><th>What happens</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="4">The date calendar</td></tr>
+        <tr><td class="n">✓</td><td class="where">A date box</td><td class="keys">Space or Enter</td><td><span class="tag ok">Works</span>Opens the calendar with the keyboard on the picked date.</td></tr>
+        <tr><td class="n">✓</td><td class="where">The dates</td><td class="keys">Arrows · Page Up / Down · Enter</td><td><span class="tag ok">Works</span>A day or a week; a month; Enter picks, the calendar closes and the keyboard is back on the box.</td></tr>
+        <tr><td class="n">✓</td><td class="where">The calendar</td><td class="keys">Tab · Escape</td><td><span class="tag ok">Works</span>Tab goes round inside it. Escape closes the calendar only; the window behind stays.</td></tr>
+        <tr><td class="n">K1</td><td class="where">The dates</td><td class="keys">Home · End</td><td><span class="tag gap">Gap</span>Nothing moves. The guide asks for the first and last day of the week.</td></tr>
+        <tr><td class="n">K2</td><td class="where">The dates</td><td class="keys">Shift + Page Up / Down</td><td><span class="tag gap">Gap</span>Goes one month, not a year. A far date needs the lists.</td></tr>
+        <tr><td class="n">K3</td><td class="where">The month title</td><td class="keys">Enter</td><td><span class="tag gap">Gap</span>The lists open but the keyboard stays on the title; a further Tab is needed to reach the month list.</td></tr>
+        <tr><td class="n">K4</td><td class="where">A month or year list</td><td class="keys">Enter</td><td><span class="tag gap">Gap</span>Nothing. The only way back to the dates is to go back to the title and press it again. (Arrows in a list work.)</td></tr>
+        <tr class="grp"><td colspan="4">The Tracker</td></tr>
+        <tr><td class="n">✓</td><td class="where">A date box and its ✕</td><td class="keys">Tab · Enter</td><td><span class="tag ok">Works</span>The ✕ is the next Tab stop, with a clear ring; Enter takes the date off and the keyboard returns to the box.</td></tr>
+        <tr><td class="n">✓</td><td class="where">“Done on”, with its calendar up</td><td class="keys">Escape</td><td><span class="tag ok">Works</span>Closes the calendar; the marking pop-up stays.</td></tr>
+        <tr><td class="n">K12</td><td class="where">A filled date box</td><td class="keys">Delete · Backspace</td><td><span class="tag gap">Gap</span>Nothing. Only the ✕, one Tab away, takes the date off. Left off the first list; Fable caught it. The change: on a box that has a ✕, Delete or Backspace clears it.</td></tr>
+        <tr><td class="n">K5</td><td class="where">The chart</td><td class="keys">Tab</td><td><span class="tag gap">Gap</span>None of the 210 events is a Tab stop. An event cannot be opened or marked without a mouse or a finger. Older than last night.</td></tr>
+        <tr><td class="n">K6</td><td class="where">The marking pop-up</td><td class="keys">Tab · Escape</td><td><span class="tag gap">Gap</span>Opened by a click, the keyboard is not put inside it and Tab goes to the page behind. Escape closes it and leaves the keyboard on nothing. Older than last night.</td></tr>
+        <tr class="grp"><td colspan="4">The OIL question and its bar</td></tr>
+        <tr><td class="n">✓</td><td class="where">The question</td><td class="keys">Tab · Space · Escape</td><td><span class="tag ok">Works</span>Tab stays inside it; Space picks an answer and “Swap” comes alive; Escape makes no swap, raises the bar and puts the keyboard back on the puck.</td></tr>
+        <tr><td class="n">K7</td><td class="where">The question</td><td class="keys">as it opens</td><td><span class="tag gap">Gap</span>The keyboard starts on the sheet itself and the first Tab lands on ✕ Close, not on the first answer.</td></tr>
+        <tr><td class="n">K8</td><td class="where">The bar that stays</td><td class="keys">Tab</td><td><span class="tag gap">Gap</span>“Answer OIL” was 114 Tab presses away. In practice it cannot be reached.</td></tr>
+        <tr><td class="n">K9</td><td class="where">The bar that stays</td><td class="keys">Escape</td><td><span class="tag gap">Gap</span>Nothing. Only its OK closes it.</td></tr>
+        <tr><td class="n">K10</td><td class="where">The question and the bar</td><td class="keys">the ring</td><td><span class="tag gap">Gap</span>The two answers, the ✕ and the bar’s two buttons wear the browser’s own white ring, not the app’s cyan one. Visible, but nobody chose it, and it will look different again in Safari.</td></tr>
+        <tr class="grp"><td colspan="4">A puck — the question the guide left open</td></tr>
+        <tr><td class="n">K11</td><td class="where">Edit Schedule and the Scheduler Board</td><td class="keys">Tab · Enter · Space · Delete</td><td><span class="tag gap">Gap</span>The keyboard can land on a puck (440 of the week’s pucks are Tab stops) but no key does anything there: it cannot be picked up, put down, swapped or taken off. So a keyboard cannot arm a puck, and Tab crosses hundreds of stops that do nothing.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <section class="item stack">
+    <div class="txt">
+      <div class="head"><span class="num">Next</span><h3>The keys calendar step two must carry, written before it is built</h3></div>
+      <p>Step two puts the one calendar into an input’s own window, the holiday form, the Leave War’s range pickers and “Jump to a date”. There the calendar sits inside its form instead of floating over it. Its keys:</p>
+      <ul class="tight">
+        <li><b>One Tab stop for the dates.</b> Tab moves on to the form’s next box; nothing is trapped, because nothing floats.</li>
+        <li><b>Arrows</b> a day or a week · <b>Page Up / Down</b> a month · <b>Shift + Page</b> a year · <b>Home / End</b> the week’s ends.</li>
+        <li><b>Enter or Space picks.</b> For a run of dates: the first Enter is the start, the second the end, a third starts over, as a tap does.</li>
+        <li><b>Escape</b> with a run half-made drops the half; otherwise it closes the window or sheet the calendar is in. In “Jump to a date” Enter picks and jumps.</li>
+        <li><b>The month title:</b> Enter opens the lists with the keyboard in the month list; Enter in a list returns to the dates of that month.</li>
+        <li><b>Today</b> is the Today button, one Tab from the title. No extra key.</li>
+        <li><b>Where the keyboard lands:</b> on the picked date, else today, else the 1st. An arrow at the month’s edge rolls into the next month.</li>
+        <li><b>A faint date</b> can be reached by the arrows, so you keep your place, but Enter does nothing on it.</li>
+        <li><b>Escape with the lists open</b> closes the lists only. <b>Enter on a date</b> picks, and never sends the form it sits in.</li>
+        <li><b>Delete or Backspace</b> clears a box that can be empty.</li>
+        <li>In a Leave War sheet, Tab stays inside the sheet, as the sheet already keeps it.</li>
+      </ul>
+      <p class="note"><span class="lab">So step one and step two match</span>K1 to K4 above are the same keys. Building them once, in the calendar itself, gives them to every place it is used.</p>
+    </div>
+  </section>
+
+  <!-- ============================== 5 · YOUR CHOICES ============================== -->
+  <h2 id="ask"><small>5 · What I need from you</small>Where each choice stands</h2>
+  <section class="ask">
+    <ol>
+      <li><b>The clash note on a phone.</b> <span class="pick">Answered: A, made neater.</span> The drawing at the top of section 1 now carries Fable’s fixes. Say “build it”, or say what is still off.</li>
+      <li><b>Should a passing note take the phone’s full width?</b> The case: you unpublish Monday on your iPhone. Today the note is half the screen wide and five lines deep; full-width it is three, with every key word kept. <span class="pick">Recommended: yes.</span></li>
+      <li><b>The wordings (section 2), key words kept and checked by Fable.</b> The case: N1 loses only the day said twice and “so”. <span class="pick">Recommended: all as now drafted</span>; name any number you want left as it is.</li>
+      <li><b>The small fixes: one batch before calendar step two?</b> That is L1 to L17 and K1 to K4, K7 to K10, K12; name any number you want left out. <span class="pick">Recommended: yes, one small batch with its own check.</span></li>
+      <li><b>Where the bar that stays should sit (L6).</b> The case: you drag Tally onto Ranger, do not answer the OIL question, and “Not swapped — OIL not answered” appears. At the foot it floats over the crew list; as a band under the top bar it covers nothing, like the “Not saved” warning. <span class="pick">Recommended: the band</span>, drawn for you first.</li>
+    </ol>
+    <p style="color:var(--ink-2);max-width:72ch">The two bigger keyboard jobs (K11, picking up a puck by keys; K5 and K6, the Tracker’s chart) are each a job of their own, filed for you to place.</p>
+  </section>
+</div>
+
+<div id="lb" hidden></div>
+<button id="lbx" type="button" hidden>Close</button>
+<script>
+(function(){
+  var lb=document.getElementById('lb'), im=lb.appendChild(document.createElement('img')), x=document.getElementById('lbx'), last=null
+  function shut(){ lb.hidden=true; x.hidden=true; lb.classList.remove('big'); lb.classList.remove('wideimg'); if(last) last.focus() }
+  document.querySelectorAll('.zoom').forEach(function(b){
+    b.addEventListener('click',function(){ var s=b.querySelector('img'); last=b; im.src=s.src; im.alt=s.alt; lb.classList.toggle('wideimg', !!b.getAttribute('data-wide')); lb.hidden=false; x.hidden=false; lb.scrollTop=0; x.focus() })
+  })
+  im.addEventListener('click',function(e){ e.stopPropagation(); lb.classList.toggle('big') })
+  lb.addEventListener('click',shut); x.addEventListener('click',shut)
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!lb.hidden) shut() })
+})()
+</script>

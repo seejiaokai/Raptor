@@ -12,23 +12,23 @@ import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, whoId } from '../engine/people'
 import { hideDetail } from '../engine/warnhide'
 import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq, daySnapOf, rowsLeftOut } from '../engine/publish'
-import { verSeq } from '../engine/verid'
+import { verSeq, dayIso } from '../engine/verid'
 import { posKey } from '../engine/rowids'
 import { closePendList } from './pendlist'
 import { openChanges } from './changesopen'
 import { weekDates } from '../engine/editlog'
-import { dayDrafts, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED, ROWSLEFT, rowsLeftSaid, inputsLeftSaid, reconcileIssuedMarks } from '../engine/drafts'
+import { dayDrafts, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED, ROWSLEFT, rowsLeftSentences, inputsLeftSaid, reconcileIssuedMarks } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify, loadWeek, commitSetDayApproved, commitPublishALDay } from '../state/store'
 import { schedWrite, schedWriteValue, SCHED_TYPES, commitUnpublish } from '../state/sched-commit'
-import { oilCreditBidAgainst, createOilPeriodFor } from '../leavewar/sync'
+import { oilCreditBidAgainst, createOilPeriodFor, oilOpenOn, dayFacts, holidayOwnName } from '../leavewar/sync'
 import { scrollToWarnFocus, queueHold, warnWeekId, bringIntoView } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
-import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
+import { setDayPop, setAirKey, setDrawer, setInpEdit, setOilList } from './pops'
 import { iuParts } from '../engine/keys'
 import { howMany, reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt, commitInputEdit, draftOf, dryRun, oilGate, saveBatchX, inputWho } from './inputedit'
 import { oilWaitThen, holdForOil } from './oilwait'
@@ -444,7 +444,7 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
       if (k && T.closest('.st-del')) {
         const lab = STORE_CFG.find(([x]) => x === k)?.[1] || k
         delStore(k); storesSave(); paint(); place()
-        HOOKS.toast(`${lab} removed from the list — every jet carrying it keeps it. Add it back and the chips return.`)
+        HOOKS.toast(`${lab} removed from the list. Every jet carrying it keeps it. Add it back and the chips return.`)
         /* queueHold too: if this jet carries the removed store its own
            on-chip vanishes from the remarks cell, shifting the C button
            that place() just anchored to — re-run it once the week repaints. */
@@ -853,7 +853,7 @@ export function routeClick(e: MouseEvent) {
       const late = lateMates(inp).filter((r: any) => isLateInput(r))
       const hide = late.some((r: any) => view.lateShown(r))
       for (const r of late.length ? late : [inp]) if (view.lateShown(r) === hide) view.toggleLateOff(r)
-      HOOKS.toast(hide ? 'LATE mark hidden — the Inputs page still shows it' : 'LATE mark shown', 'ok')
+      HOOKS.toast(hide ? 'LATE mark hidden. The Inputs page still shows it.' : 'LATE mark shown', 'ok')
     }
     notify(); return
   }
@@ -1130,7 +1130,10 @@ export function routeClick(e: MouseEvent) {
     view.setOilDay(null)
     if (oilCreditBidAgainst(di) && !view.unpubArmed(di)) {
       view.setUnpubArm(di)
-      HOOKS.toast(`Heads up — ${DAYS[di]?.dow || 'this day'}’s OIL credits are bid against on the Leave War. Unpublishing withdraws them until you republish. Tap again to confirm.`, 'warn')
+      /* (owner D837 + D839, 14 Oct 26 — N4. "Heads up —" was an announcement and went; "are bid against" was not
+         something anyone says and had two readings. "Already spent" is what the check above asks: taking this day's
+         credit away would put a credited person's OIL balance below zero — leavewar/sync.ts oilCreditBidAgainst.) */
+      HOOKS.toast(`Some of ${DAYS[di]?.dow || 'this day'}’s OIL credits are already spent on the Leave War. Unpublishing withdraws them until you republish. Tap again to confirm.`, 'warn')
       notify(); return
     }
     const armedWithdraw = oilCreditBidAgainst(di)       // the two-tap path: its OIL credits leave the war too
@@ -1147,10 +1150,13 @@ export function routeClick(e: MouseEvent) {
          working copy again, with the version before it the issued schedule; the Original makes the day a draft again. */
       const dow = DAYS[di]?.dow || 'The day', wl = verLabel(was)
       const now = dayApproved(di) ? dayCurVer(di) : null
+      /* THE WORDS (owner D837, 14 Oct 26 — N2, N3): a done thing, then sentences — each dash, semicolon and dot between
+         two thoughts became a full stop or its linking word. The OIL sentence says "withdrawn", the word the warning on
+         the tap before used for the same thing ("Unpublishing withdraws them"), and "republished", the app's word. */
       HOOKS.toast((verSeq(was) === 0 || now == null
-        ? `${dow} unpublished — it is a draft again; publishing reissues the ${wl}`
-        : `${dow}: ${wl} withdrawn — its changes are back on the working copy as pending; ${verLabel(now)} is the issued schedule; publishing again reissues ${wl}`)
-        + (armedWithdraw ? ' · its OIL credits leave the Leave War until it is published again' : ''))
+        ? `${dow} unpublished. It is a draft again, and publishing reissues the ${wl}.`
+        : `${dow}: ${wl} withdrawn. Its changes are back on the working copy as pending, and ${verLabel(now)} is the issued schedule. Publishing reissues ${wl}.`)
+        + (armedWithdraw ? ' Its OIL credits are withdrawn from the Leave War until it is republished.' : ''))
     }
     notify(); return
   }
@@ -1233,7 +1239,7 @@ export function routeClick(e: MouseEvent) {
       /* …and when all that is pending is a member's input, "already at" alone reads untrue beside its "1 pending": say
          the input stays pending (Fable F5; found by the host's walk, 26 Sep 26 — the load never ran, so its own
          sentence could not say it) */
-      HOOKS.toast(`${DAYS[di].dow} is already at ${verLabel(ver)}` + inputsLeftSaid(di))
+      HOOKS.toast(`${DAYS[di].dow} is already at ${verLabel(ver) === 'Original' ? 'the Original' : verLabel(ver)}.` + inputsLeftSaid(di))   // (D863: sentences)
       notify(); return
     }
     /* the confirm gate: with real unpublished divergence on the day, arm on the
@@ -1246,6 +1252,27 @@ export function routeClick(e: MouseEvent) {
     view.setRestArm(null, null)   // consume the arm before loading
     if (view.ARM && view.ARM.di === di) view.disarmSlot()   // the load may remove the armed row
     const replaced = nd   // working-copy changes about to be replaced
+    /* WHICH INPUTS STAND ON THIS DAY BEFORE THE LOAD — on its programme or under Unavailable — so that what the load
+       PUTS BACK can be told from what was there all along (owner D818, below) */
+    const stands = (x: any) => !!x && (x.acc === 'g' || x.acc === 'u') && !!DAYS[di] && inputCoversDate(x, DAYS[di].dt)
+    const iso = dayIso(CURWEEK, di)
+    /* …standing there AND already needing an answer: those were his to answer before the load and are not its doing. An
+       input that stood there silent — cancelled, information-only — and comes out of the load live is counted, should
+       a load ever bring one back so (the scenario designer's S30: the un-cancel's gap must not return by this door). */
+    /* …READ OVER EVERY DAY THE INPUTS OF THIS DAY COVER, not the loaded day alone (the fresh read of the finished code,
+       F1 — 14 Oct 26): an input of several days has ONE row, on its first day, and the day it has no answer for can be
+       another of its days — a Fri–Sat input loaded back on Friday still needs its Saturday's answer, and "the inputs it
+       put back [that] still need an OIL answer" (D818) counts it. */
+    let lo = iso, hi = iso
+    for (const x of INPUTS as any[]) {
+      if (!x || !DAYS[di] || !inputCoversDate(x, DAYS[di].dt)) continue
+      const a = unfmt(x.date, x.yr) || iso, b = x.endDate ? (unfmt(x.endDate, x.yr) || a) : a
+      if (a < lo) lo = a
+      if (b > hi) hi = b
+    }
+    const openNow = () => new Map(oilOpenOn(lo, hi).map(o => [o.iid, o.days] as const))
+    const openWas = openNow()
+    const stood = new Set(INPUTS.filter((x: any) => stands(x) && openWas.has(String(inpId(x)))).map((x: any) => String(inpId(x))))
     if (!loadVersionToWorkingCopy(di, ver)) { HOOKS.toast('That version is no longer available', 'warn'); notify(); return }
     view.setDayPreview(di, null)
     view.afterSchedMutate()
@@ -1260,18 +1287,49 @@ export function routeClick(e: MouseEvent) {
     const left = LOADLEFT.length
     /* …and a request whose one row the version took away is off the programme on the other days it covers too — named,
        never silent (walker B3) */
-    const movedDays = [...new Set(LOADMOVED.flatMap(m => m.days))]
-    const said = `${DAYS[di].dow}: ${verLabel(ver)} loaded onto the working copy`
-      + (dayApproved(di) ? ` — viewers still see ${verLabel(dayCurVer(di))} until you publish` : '')
-      + (replaced ? ` · ${replaced} unpublished edit${replaced === 1 ? '' : 's'} replaced` : '')
-      + (left ? ` · ${left} request${left === 1 ? '' : 's'} also cover${left === 1 ? 's' : ''} another day — left as filed` : '')
-      + (LOADMOVED.length ? ` · ${LOADMOVED.length} request${LOADMOVED.length === 1 ? '' : 's'} ${LOADMOVED.every(m => m.on) ? 'came back onto' : LOADMOVED.some(m => m.on) ? 'moved on or off' : 'came off'} the programme with ${LOADMOVED.length === 1 ? 'its' : 'their'} row — ${movedDays.join(', ')} ${movedDays.length === 1 ? 'reads' : 'read'} that too` : '')
+    /* THE NOTE IS SHORT PLAIN SENTENCES (owner D863, 15 Oct 26 — "Shorten it"): what the day is back to; what viewers
+       still see; what else came back or stayed out, each in a sentence of its own; and (below) how many inputs need an
+       OIL answer. The count of unpublished edits replaced is no longer said: the button just pressed to confirm the load
+       said "Discard N edits & load". (The long form it replaced: "<day>: <version> loaded onto the working copy —
+       viewers still see … until you publish · N unpublished edits replaced · …".) */
+    const the = (v: any) => { const l = verLabel(v); return l === 'Original' ? 'the Original' : l }
+    const FULL: Record<string, string> = { Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday', Sat: 'Saturday', Sun: 'Sunday' }
+    const dayList = (ds: string[]) => ds.map(d => FULL[d] || d).join(' and ')
+    const said = `${DAYS[di].dow} is back to ${the(ver)}.`
+      + (dayApproved(di) ? ` Viewers still see ${the(dayCurVer(di))}.` : '')
+      + (left ? ` ${left} request${left === 1 ? ' stays' : 's stay'} as filed because ${left === 1 ? 'it covers' : 'they cover'} another day.` : '')
+      /* each request that came back onto (or went off) the programme with its row, by its own name, and the other days
+         that read it too */
+      + LOADMOVED.map(m => { const x: any = (INPUTS as any[]).find((r: any) => String(inpId(r)) === m.id); const what = x ? inpLabel(x) : 'A request'
+          return m.on ? ` ${what} is on ${dayList(m.days)} again too.` : ` ${what} is off ${dayList(m.days)} too.` }).join('')
       /* …and a row the version held for a request that now stands on another day stayed out — one request, one row (D175) */
-      + rowsLeftSaid(ROWSLEFT)
+      + rowsLeftSentences(ROWSLEFT)
       /* …and a member's input changed since the day was issued, which stays pending (a member's record is his — Fable F5) */
       + inputsLeftSaid(di)
-    logAction(di, said)
-    HOOKS.toast(said)
+    /* …AND HOW MANY OF THE INPUTS IT PUT BACK STILL NEED AN OIL ANSWER — with that day's ONE list of them opened (owner
+       D818, 13 Oct 26 — "B": "after a published version is loaded back onto the working copy, the app says how many of
+       the inputs it put back still need an OIL answer and opens that day's one list of them — the load itself is not
+       held"). A load can put several inputs back at once, so it is not a door that waits as Accept is (D793): it is
+       made, and then says so. "Put back" = standing on the day now and not before; "needs an answer" is the list's own
+       reading (leavewar/sync.ts oilOpenOn — never a cancelled or information-only input, D814; one under Unavailable
+       counts, D804). Nothing is added and nothing opens where none needs one. The list is a scheduler's, as the load
+       is; what is answered there notifies nobody (D781), and "Later" leaves the "OIL?" signs and the bell as they are. */
+    const open = openNow()
+    const back = INPUTS.filter((x: any) => stands(x) && !stood.has(String(inpId(x))) && open.has(String(inpId(x))))
+    const need = back.length
+    const saidAll = said + (need ? ` ${need} input${need === 1 ? ' needs' : 's need'} an OIL answer.` : '')
+    logAction(di, saidAll)
+    HOOKS.toast(saidAll)
+    /* THE LIST OPENS FOR THE DAYS THOSE INPUTS NEED AN ANSWER FOR — the loaded day, almost always; another day of a
+       several-day input where that is the one unanswered (F1). It names the holiday where every such day is one — by
+       the holiday's OWN name, never the preset's word ("Public holiday · PH": the read's F2; sync.ts holidayOwnName is
+       what the holiday's own save and the bell read it through) — and on a plain weekend says nothing of a holiday. */
+    if (need) {
+      const days = [...new Set(back.flatMap((x: any) => open.get(String(inpId(x))) || []))].sort()
+      const allPh = days.length > 0 && days.every(d => dayFacts(d).kind === 'ph')
+      const names = allPh ? [...new Set(days.map(d => holidayOwnName(d)))] : []
+      setOilList({ from: days[0] || iso, to: days[days.length - 1] || iso, name: names.length === 1 ? names[0]! : '', fresh: false, plain: !allPh })
+    }
     notify(); return
   }
 
@@ -1400,10 +1458,10 @@ export function routeClick(e: MouseEvent) {
     const yr = String(mkp.dataset.mkperiod || '')
     const made = createOilPeriodFor(yr)
     if (made === 'created') {
-      HOOKS.toast(`The ${yr} leave war period is created — set its bidding window here`, 'ok')
+      HOOKS.toast(`The ${yr} leave war period is created. Set its bidding window here.`, 'ok')
       view.setPage('leavewar'); notify()
     } else if (made === 'overlap') {
-      HOOKS.toast(`A leave war already covers part of ${yr} — open the Leave War and extend it instead`, 'warn')
+      HOOKS.toast(`A leave war already covers part of ${yr}. Open the Leave War and extend it instead.`, 'warn')
     } else {
       HOOKS.toast(`The ${yr} period could not be created`, 'warn')
     }
@@ -1425,7 +1483,9 @@ export function routeClick(e: MouseEvent) {
       const key = view.warnMuteKey(w), names = (w.who || []).map((id: any) => PEOPLE[id] ? PEOPLE[id].cs : id).join(', ')
       const words = `${names}${names ? ' — ' : ''}${w.msg || ''}`
       const shown = schedWriteValue(SCHED_TYPES.warnMute, () => view.toggleWarnOff(key), { key: hideDetail(!w.off, di, words) })
-      HOOKS.toast(shown ? 'Warning flagged again' : 'Warning hidden — no flag, not counted. It returns if the day changes', 'ok')
+      /* (owner D838 + D839, 14 Oct 26 — N15: "if the day changes" was read as "when tomorrow comes". The hide is keyed to
+         the warning's own words — engine/warnhide.ts — so it is the WARNING changing that brings it back.) */
+      HOOKS.toast(shown ? 'Warning flagged again' : 'Warning hidden: no flag, not counted. It returns if the warning changes.', 'ok')
       /* a mute is an undo step now (owner, Aug 26 — "when I click undo I should
          revert my hidden warning changes"): WARNOFF rides the history snapshot,
          so push one after toggling. toggleWarnOff no-ops for a non-scheduler and
@@ -1593,8 +1653,8 @@ export function routeClick(e: MouseEvent) {
       markEdit(`st:${di}.${gi}.${li}.${ai}`, was, a.role)
       view.afterSchedMutate(); notify()
       HOOKS.toast(a.spare
-        ? 'Line is SPARE now — standing by, checked for availability and currency only'
-        : 'Line is MAIN now — fully cross-checked', 'ok')
+        ? 'Line is SPARE now: standing by, checked for availability and currency only'
+        : 'Line is MAIN now: fully cross-checked', 'ok')
     }
     e.stopPropagation(); return
   }

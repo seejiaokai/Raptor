@@ -59,6 +59,7 @@ import * as view from '../state/view'
 import { commitInput, draftOf, saveBatchX, removeInput } from './inputedit'
 import { reqRowText } from './reqrow'
 import { rowMark, rowPut, rowTake } from './reqdoor'
+import { answerOilWait } from './oilwait'
 import { boardMbtn, cxCommit, CXT, boardHTML } from './board'
 import * as pops from './pops'
 import { dayHTML } from './html'
@@ -137,7 +138,12 @@ const file = (ppl: string[], di = WED, oil?: Record<string, number>, over: any =
 /* the board's own buttons, as a scheduler presses them */
 const press = (data: Record<string, string>) => { const b = document.createElement('button'); b.className = 'mbtn'; Object.assign(b.dataset, data); document.body.appendChild(b); boardMbtn({ target: b } as any); b.remove() }
 const cx = (di = WED, reason = 'WX') => { setBoardDay(di); press({ grcx: `${di}.${riOf(di)}` }); expect(CXT, 'the reason is asked').toBeTruthy(); cxCommit(true, reason) }
-const uncx = (di = WED) => { setBoardDay(di); press({ grcx: `${di}.${riOf(di)}` }); cxCommit(false, '') }
+/* (a cancel taken off an input with no OIL answer on a weekend waits on the OIL question since owner D816: here it is
+   answered, with what the question itself proposes, so the helper still ends with the input brought back) */
+const uncx = (di = WED) => {
+  setBoardDay(di); press({ grcx: `${di}.${riOf(di)}` }); cxCommit(false, '')
+  if (view.OILWAIT) expect(answerOilWait(Object.fromEntries(view.OILWAIT.gate.plan.map(p => [p.iso, p.amt]))), 'brought back on its OIL answer').toBe(true)
+}
 const redBox = (di = WED) => { setBoardDay(di); press({ grflag: `${di}.${riOf(di)}` }) }
 const infoOnly = (di = WED) => { setBoardDay(di); press({ grinfo: `${di}.${riOf(di)}` }) }
 const rowX = (di = WED) => { setBoardDay(di); press({ grdel: `${di}.${riOf(di)}` }) }

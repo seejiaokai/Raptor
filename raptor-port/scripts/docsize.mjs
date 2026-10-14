@@ -165,7 +165,12 @@ const FILES = [
      This branch adds two open items - [ONE-DATE-CALENDAR], and what was put to him under [CAL-PHONE-SWIPE-FIT] -
      neither finished. The file was not scanned again for finished items here; an open item is never trimmed to fit
      (D141, D29). Set about 60 lines above what the file holds, as the first of these notes says. */
-  ['OUTSTANDING.md',                     1, 2460],
+  /* 2460 -> 2530, 13 Oct 26 (the design page, `[DESIGN-LOOK-13OCT]` - documents and pictures only): 2,470 lines. The
+     look filed three found-not-fixed items ([LOOK-13OCT-SMALL-FIXES], [KBD-PUCK], [TRK-KBD-CHART]) and wrote what was
+     put to him into three open ones; none is finished. The one item whose heading says "merged" ([GLOBAL-UNDO]) still
+     carries seven open deferrals; the priority list's finished stories are [PRIORITY-LIST-REWRITE]'s, a job that needs
+     a reader. An open item is never trimmed to fit (D141, D29). About 60 lines above what the file holds, as before. */
+  ['OUTSTANDING.md',                     1, 2530],
   /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
      and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
      (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only
@@ -209,7 +214,11 @@ const RULING_BYTES = [
      (D794, D810, D811) and D785-D790. None is trimmed (D136). The one-off permissions among them that are now spent
      (the skill-notes review's, the one-rule and shared-row jobs' readers) are for the rulings pass to mark and archive -
      OUTSTANDING.md [RULINGS-SPENT-PASS] - which is what brings this file back down, not this number. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 30000],
+  /* how-we-work 30000 -> 32000 (13 Oct 26, late): the file stood at 29,812 bytes and crossed the marker with D835 - his
+     direction that the writing guide, once approved, is adopted for how the agent writes to him too. A general ruling
+     every chat must carry; none is trimmed (D136). The spent one-off permissions still wait for [RULINGS-SPENT-PASS],
+     which is what brings this file down. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 32000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,

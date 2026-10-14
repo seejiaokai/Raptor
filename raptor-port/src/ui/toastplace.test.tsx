@@ -75,3 +75,61 @@ describe('D731 (1) — on a phone, while a window is open, the passing note is s
     expect(face().style.pointerEvents).toBe('none')
   })
 })
+
+/* HOW WIDE THE NOTE IS ON A PHONE (owner D828, 13 Oct 26 — "on a phone a passing note takes the screen's full width less
+   a small margin — never half the screen; the desktop's note stays as it is"). The note was centred by `left:50%` and a
+   shift back of half its own width, which leaves a box only the right half of the screen to be wide in: 195 of 390, and
+   his two notes five lines deep. jsdom has no layout, so what is pinned here is the PLACE the note is given — held 12px
+   from each side and not shifted on a phone; `left:50%` and the shift, untouched, on a desktop — and that the rise-in
+   moves it from that same place. How wide and how deep it then really is, is a look on a real phone. */
+describe('D828 — on a phone the passing note takes the screen’s width, less a small margin', () => {
+  const place = () => ({ left: face().style.left, right: face().style.right, transform: face().style.transform })
+  it('a phone: 12px from each side, and no shift of half its own width', () => {
+    asPhone(true)
+    toast('Monday unpublished. It is a draft again, and publishing reissues the Original.', undefined)
+    expect(place()).toEqual({ left: '12px', right: '12px', transform: 'none' })
+    expect(face().style.transform).not.toContain('translateX(-50%)')
+    expect(face().style.textAlign, 'its words centred in the wider box, as the picture put to him drew them').toBe('center')
+  })
+  it('a phone with a window up: the same width, at the top', async () => {
+    asPhone(true); await openWin()
+    toast('Input updated', 'ok')
+    expect(place()).toEqual({ left: '12px', right: '12px', transform: 'none' })
+    expect(face().dataset.at).toBe('top')
+  })
+  it('a desktop: exactly as it was — centred by left:50% and the shift, no right edge, no centring of its words', async () => {
+    asPhone(false)
+    toast('CSV downloaded', 'ok')
+    expect(place()).toEqual({ left: '50%', right: '', transform: 'translateX(-50%)' })
+    expect(face().style.textAlign).toBe('')
+    await openWin()
+    toast('Input updated', 'ok')
+    expect(place(), 'with a window up too').toEqual({ left: '50%', right: '', transform: 'translateX(-50%)' })
+  })
+  it('the ONE note is reused: narrowed to a phone between two notes it takes the phone’s place, and widened again the desktop’s', () => {
+    asPhone(false)
+    toast('first', undefined)
+    const el = face()
+    asPhone(true)
+    toast('second', undefined)
+    expect(face(), 'the same element').toBe(el)
+    expect(place()).toEqual({ left: '12px', right: '12px', transform: 'none' })
+    asPhone(false)
+    toast('third', undefined)
+    expect(place()).toEqual({ left: '50%', right: '', transform: 'translateX(-50%)' })
+    expect(face().style.textAlign).toBe('')
+  })
+  it('the rise-in starts from the place the note has: no sideways shift on a phone, the desktop’s shift kept', () => {
+    const frames: any[] = []
+    const realAnimate = (HTMLElement.prototype as any).animate
+    ;(HTMLElement.prototype as any).animate = function (k: any) { frames.push(k); return {} }
+    try {
+      asPhone(true)
+      toast('on a phone', undefined)
+      expect(frames.pop()).toEqual([{ transform: 'translateY(8px)' }, { transform: 'none' }])
+      asPhone(false)
+      toast('on a desktop', undefined)
+      expect(frames.pop()).toEqual([{ transform: 'translateX(-50%) translateY(8px)' }, { transform: 'translateX(-50%)' }])
+    } finally { (HTMLElement.prototype as any).animate = realAnimate }
+  })
+})

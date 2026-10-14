@@ -129,8 +129,19 @@ export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSe
   return { inputs, pucks }
 }
 
-export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under, onClearFilters }:
+/* nobody lit: one array for every render that is handed none */
+const NONE_LIT: string[] = []
+
+export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, litAt, lead, tools, under, onClearFilters }:
   { fPerson: string, fType: string, fSearch: string, seedIso?: string,
+    /** the inputs the page has just been shown — one added, one changed, one brought back by Undo — by id, for their six
+     *  seconds (ui/InputsPage.tsx `flash`, the List's own light). Each wears the app's one just-added mark where this
+     *  calendar draws it: its card in the opened day, or its bar on the month while no day is open (owner D851, D854,
+     *  14 Oct 26 — the mark is the feedback, in place of "Input added" / "Input updated"; the design guide's §1). */
+    lit?: string[],
+    /** a token that is new on EVERY light — the same input lit again leaves `lit` as it was (the narrow read of the
+     *  fixes, 14 Oct 26: saved a second time so that it moved to the other end of an open day, the window stayed) */
+    litAt?: unknown,
     /** the Inputs page's three tabs — drawn at the head of this calendar's own top row, so a desktop has ONE row of
      *  controls above the month and a phone the tabs and one tools row (the plan §3.6) */
     lead?: ReactNode,
@@ -232,6 +243,20 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
      day again and pulled the month back to it. Closing the day, opening another, or leaving the calendar spends it.
      Guarded by identity, so a NEWER reveal set while this calendar unmounts (a save that switches mode) is kept. */
   const spendReveal=()=>{ if(shown.current&&INPREVEAL===shown.current)clearInpReveal(); shown.current=null }
+  /* THE MARK ON THE MONTH (D851, D854): a lit input's bar, while no day is open over the month */
+  const barLit=(key:string)=>popIso==null&&lit.includes(key)
+  /* …AND IN THE OPENED DAY ITS CARD IS BROUGHT INTO THE WINDOW'S OWN VIEW — a day with many inputs lists the new one
+     below the fold, and a mark nobody can see is no feedback (the guide's "appears where it belongs, in view"). The
+     least movement, inside the window only; jsdom has no scrolling at all, hence the guard.
+     THE CARD JUST SAVED, and only when one is (the fresh read's F2, 14 Oct 26): `lit` is newest first. It went to the
+     FIRST lit card in the day's own order — the older of two — and, keyed on the whole list, moved the window again
+     when an older mark ran out, under his hand. */
+  const newest=lit[0]||''
+  useEffect(()=>{
+    if(popIso==null||!newest)return
+    const card=Array.from(document.querySelectorAll('[data-testid="win-inputsday"] .icard.innew')).find(el=>el.getAttribute('data-fresh')===newest) as any
+    if(card&&typeof card.scrollIntoView==='function')card.scrollIntoView({block:'nearest'})
+  },[newest,popIso,litAt])
   /* every press that opens or closes a day goes through here — the one place the reveal is spent */
   const showDay=(iso:string|null)=>{
     /* A PICKER ENDS WITH ITS DAY (Sol S2): the day closed or changed with the picker up used to leave the picker
@@ -1040,7 +1065,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                   const forAll = team && (delAsk === it.key ? askedAll.current : mayDeleteInput(r))
                   const when = cardWhen(r, it.b, iso)
                   return (
-                    <InputCard key={it.key} id={it.key} tid="idy" facts={cardOf(it.rows, undefined, when)} when={when}
+                    <InputCard key={it.key} id={it.key} tid="idy" facts={cardOf(it.rows, undefined, when)} when={when} flash={lit.includes(it.key)}
                       late={lateNoteOf(it.rows, lateWord)} oil={oilSignNote(oilSignDay(r))} onOpen={() => openInput(r)} onKey={onLineKey(it)}>
                       {delAsk === it.key && (
                         <span className="idy-ask" data-testid="idy-ask" role="alertdialog" aria-label="Delete this input?"
@@ -1277,8 +1302,10 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                   /* `timed`: an input with hours (a half day too) is drawn LIGHTER than one that takes the whole day — a tint
                      of its colour with a solid edge (D729, V4: "a one-hour appointment looks as heavy as a whole day
                      of leave"; 25-inputs-calendar.css) */
-                  <div key={sg.item.key} className={'ib-bar ' + sg.item.tone + (sg.item.allday ? '' : ' timed') + (sg.head ? '' : ' is-cont') + (sg.tail ? '' : ' is-on') + (sg.item.cx ? ' is-cx' : '')}
-                    data-iid={sg.item.key} data-icdrag data-testid={'ib-bar-' + sg.item.key} aria-hidden="true" title={tip(sg.item)}
+                  /* `innew`: just saved, changed or brought back — the just-added mark, on the month only while no day is
+                     open over it (then the day's card wears it, and the bar behind does not light too) */
+                  <div key={sg.item.key} className={'ib-bar ' + sg.item.tone + (sg.item.allday ? '' : ' timed') + (sg.head ? '' : ' is-cont') + (sg.tail ? '' : ' is-on') + (sg.item.cx ? ' is-cx' : '') + (barLit(sg.item.key) ? ' innew' : '')}
+                    data-iid={sg.item.key} data-fresh={barLit(sg.item.key) ? sg.item.key : undefined} data-icdrag data-testid={'ib-bar-' + sg.item.key} aria-hidden="true" title={tip(sg.item)}
                     style={{ gridColumn: `${sg.c0 + 1} / ${sg.c1 + 2}`, gridRow: sg.lane + 1 }}>{barText(sg.item, narrow)}</div>
                 ))}
                 {wk.more.map((more, c) => more > 0 && (

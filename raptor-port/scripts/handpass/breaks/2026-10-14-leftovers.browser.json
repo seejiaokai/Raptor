@@ -1,0 +1,105 @@
+{
+ "spec": "e2e/feedback-marks.spec.ts",
+ "grep": ".",
+ "port": 4174,
+ "breaks": [
+  {
+   "n": 1,
+   "name": "the mark is a class with no box (the animation gone)",
+   "file": "src/ui/scheduler/25-inputs-calendar.css",
+   "find": ".icard.innew,.ib-bar.innew{animation:inflash 6s ease-out 1}",
+   "put": ".icard.innew,.ib-bar.innew{}"
+  },
+  {
+   "n": 2,
+   "name": "less motion: the row's cells wear no steady box",
+   "file": "src/ui/scheduler/06-inputs.css",
+   "find": "  .innew>td{animation:none;box-shadow:inset 0 0 0 2px #1E86FF,0 0 9px rgba(30,134,255,.5)}",
+   "put": "  .innew>td{animation:none}"
+  },
+  {
+   "n": 3,
+   "name": "less motion: the row's first cell keeps its edge and wears no box (the walk's find)",
+   "file": "src/ui/scheduler/06-inputs.css",
+   "find": "  #inBody tr.innew.in-amb>td:first-child{box-shadow:inset 0 0 0 2px #1E86FF,0 0 9px rgba(30,134,255,.5),inset 3px 0 0 var(--adv)}\n",
+   "put": ""
+  },
+  {
+   "n": 4,
+   "name": "the title does not give its room up to the mark (the tag stands by the ✕)",
+   "file": "src/ui/scheduler/22-float-windows.css",
+   "find": ".floatwin .win-bar.has-mark .win-ttl{flex:0 1 auto}",
+   "put": ""
+  },
+  {
+   "n": 5,
+   "name": "a long title squeezes the tag out of the bar (the mark may shrink to nothing)",
+   "file": "src/ui/scheduler/22-float-windows.css",
+   "find": ".floatwin .win-mark{flex:1 1 0;min-width:46px;display:flex;align-items:center;overflow:hidden}",
+   "put": ".floatwin .win-mark{flex:1 1 0;min-width:0;display:flex;align-items:center;overflow:hidden}"
+  },
+  {
+   "n": 6,
+   "name": "the answers' wrapper has the strip's patch and line again",
+   "file": "src/ui/scheduler/14-input-editors.css",
+   "find": ".upconf-left .upconf-ans{margin-left:auto;display:flex;gap:4px;flex:0 0 auto}",
+   "put": ".upconf-left .upconf-ans{margin-left:auto;display:flex;gap:4px;flex:0 0 auto;padding:8px 20px;border-bottom:1px solid var(--edge);background:rgba(20,24,29,.5)}"
+  },
+  {
+   "n": 7,
+   "name": "the medical clash's answers ride beside the sentence, not on their own line",
+   "file": "src/ui/scheduler/14-input-editors.css",
+   "find": ".upconf-left.medclash-row .upconf-ans{margin-left:0;flex:1 0 100%;gap:6px}",
+   "put": ""
+  },
+  {
+   "n": 8,
+   "name": "the note is raised although the new card is in view (the screen's answer ignored)",
+   "file": "src/ui/seen.ts",
+   "find": "    if (first.some(inView)) { tell(words); return }",
+   "put": "    HOOKS.toast(words, kind); return"
+  },
+  {
+   "n": 9,
+   "name": "the board's Done says \"Schedule updated\" again",
+   "file": "src/ui/SchedBoard.tsx",
+   "find": "onClick={() => closeScheduler()}",
+   "put": "onClick={() => { HOOKS.toast('Schedule updated'); closeScheduler() }}"
+  },
+  {
+   "n": 10,
+   "name": "the opened day's card is not marked (the note comes back there)",
+   "file": "src/ui/InputsCal.tsx",
+   "find": " when={when} flash={lit.includes(it.key)}\n",
+   "put": " when={when}\n"
+  },
+  {
+   "n": 11,
+   "name": "the mark does not shrink (a long reason runs under the ✕ or pushes the title)",
+   "file": "src/ui/scheduler/22-float-windows.css",
+   "find": ".floatwin .win-mark{flex:1 1 0;min-width:46px;display:flex;align-items:center;overflow:hidden}",
+   "put": ".floatwin .win-mark{flex:0 0 auto;display:flex;align-items:center}"
+  },
+  {
+   "n": 12,
+   "name": "the box is not started again by a second save (in a real browser: gone two seconds after it)",
+   "file": "src/ui/InputsPage.tsx",
+   "find": "    clearTimeout(flashT.current.get(id))\n",
+   "put": ""
+  },
+  {
+   "n": 13,
+   "name": "the box's clock is not put back (the class stays, the fade is the first save's)",
+   "file": "src/ui/InputsPage.tsx",
+   "find": "a.currentTime = 0 }",
+   "put": "void a }"
+  },
+  {
+   "n": 14,
+   "name": "the desktop row is keyed by its place - NOT SEEN BY A BROWSER TEST, and why: with the box put back to nought on every light (break 13) the second row shows a whole box however the row is keyed; what the key decides is which row draws which input - the unit list, break 29, caught",
+   "file": "src/ui/InputsPage.tsx",
+   "find": "<tr key={r.iid} className={rowCls}",
+   "put": "<tr key={inx} className={rowCls}"
+  }
+ ]
+}

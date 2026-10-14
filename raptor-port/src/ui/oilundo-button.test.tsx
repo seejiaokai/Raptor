@@ -127,7 +127,7 @@ describe('the Undo a scheduler can actually reach honours the mode boundary', ()
     TOASTS = []
     await click($('#sbUndo'))
     expect(oilModeOn(SAT), 'it left the mode instead of reaching past the mark').toBe(false)
-    expect(TOASTS.join(' '), 'and it said so').toMatch(/Left OIL Earn/i)
+    expect(TOASTS.join(' '), 'and it said so').toBe('Left OIL Earn without undoing. The next undo would change the day itself.')
     expect(txtGet('dn:5.0'), 'and the day underneath did not move').toBe('A NOTE MADE BEFORE THE MODE')
 
     /* the press AFTER that behaves normally, outside the mode */

@@ -13,7 +13,15 @@
    behind an unanswered question. While a sheet is up, Tab and Shift+Tab go round inside it: past its last control
    to its first, before its first to its last, and a Tab pressed anywhere else on the page comes back into it. Only
    the topmost sheet answers (they open one over another); the listener is on the document, in the capture phase, so
-   it runs before the schedule's own Tab route and before any page's handler — and is taken off with the last sheet. */
+   it runs before the schedule's own Tab route and before any page's handler — and is taken off with the last sheet.
+   THE ✕ IS THE LAST STOP, NOT THE FIRST (the design look's L2 and K7, owner D830 — 13 Oct 26). The ✕ is written first in
+   a sheet's head, so the first Tab landed on "Close" — the one control nobody opened the sheet to press — before any
+   answer. It is drawn in the head's corner now (08-windows-tools.css) and the keys agree with the eye: Tab goes through
+   the sheet's own controls first and reaches the ✕ last; Shift+Tab from the first control goes to it. Only the two
+   steps around the ✕ are taken over — every other Tab is the browser's own, as before.
+   ONE SHEET MAY NAME WHERE THE KEYS LAND (`first`): the OIL question puts them on its first answer (K7) — picking an
+   answer answers nothing until the sheet's right-hand button is pressed, so nothing is one key-press from being done by
+   accident. Every other sheet still lands on its box. */
 import { useEffect, type RefObject } from 'react'
 
 const sheets: HTMLElement[] = []
@@ -24,21 +32,31 @@ function keepKeys(e: KeyboardEvent): void {
   if (!el || !el.isConnected) return
   const stops = [...el.querySelectorAll<HTMLElement>(STOPS)].filter(n => !(n as HTMLButtonElement).disabled && !n.closest('[hidden]'))
   const at = document.activeElement as HTMLElement | null
-  const first = stops[0], last = stops[stops.length - 1]
+  /* the order the keys go round in: the sheet's own, with the head's ✕ moved to the end */
+  const x = stops.find(n => n.classList.contains('x') && !!n.closest('.airpop-head'))
+  const order = x ? [...stops.filter(n => n !== x), x] : stops
+  const first = order[0], last = order[order.length - 1]
   if (!first || !last) { e.preventDefault(); el.focus({ preventScroll: true }); return }
-  if (!at || at === el || !el.contains(at)) { e.preventDefault(); (e.shiftKey ? last : first).focus({ preventScroll: true }); return }
-  if (e.shiftKey && at === first) { e.preventDefault(); last.focus({ preventScroll: true }) }
-  else if (!e.shiftKey && at === last) { e.preventDefault(); first.focus({ preventScroll: true }) }
+  const go = (n: HTMLElement) => { e.preventDefault(); n.focus({ preventScroll: true }) }
+  if (!at || at === el || !el.contains(at)) { go(e.shiftKey ? last : first); return }
+  if (e.shiftKey && at === first) { go(last); return }
+  if (!e.shiftKey && at === last) { go(first); return }
+  if (!x) return
+  /* the browser's own next stop would be the ✕ where it stands in the page — step over it, or onto it, by `order` */
+  const i = order.indexOf(at), j = stops.indexOf(at)
+  if (i < 0 || j < 0) return
+  const natural = stops[j + (e.shiftKey ? -1 : 1)], wanted = order[i + (e.shiftKey ? -1 : 1)]
+  if (wanted && natural !== wanted) go(wanted)
 }
 
 /** `open` — for a sheet that stays mounted and is shown and hidden (the board's two dialogs); a sheet that is mounted
     only while it is up leaves it at its default. */
-export function useSheetFocus(box: RefObject<HTMLElement | null>, open = true): void {
+export function useSheetFocus(box: RefObject<HTMLElement | null>, open = true, first?: (box: HTMLElement) => HTMLElement | null): void {
   useEffect(() => {
     const el = box.current
     if (!open || !el) return
     const before = document.activeElement as HTMLElement | null
-    if (!el.contains(before)) el.focus({ preventScroll: true })
+    if (!el.contains(before)) ((first && first(el)) || el).focus({ preventScroll: true })
     if (!sheets.length) document.addEventListener('keydown', keepKeys, true)
     sheets.push(el)
     return () => {

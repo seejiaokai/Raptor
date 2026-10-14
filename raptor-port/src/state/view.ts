@@ -123,9 +123,12 @@ export function requestInpReveal(row:any){
   setInpMode(mode);if(!inView)setCalMonth({y:+iso.slice(0,4),m:+iso.slice(5,7)})
   INPREVEAL={iid:row.iid,iso,mode}
 }
-export function revealInput(row:any){
-  if(!row||!INPUTS.includes(row))return
+/** …and whether the page was asked to show it (ui/inputedit.tsx `saidSaved` — only then can its note be left unsaid) */
+export function revealInput(row:any):boolean{
+  if(!row||!INPUTS.includes(row))return false
+  const was=INPREVEAL
   requestInpReveal({...row,iid:inpId(row)})
+  return INPREVEAL!==was
 }
 
 /* ---- HISTORY MODE (owner, 11 Aug 26) --------------------------------------
@@ -414,7 +417,7 @@ export function setSecDefOffer(v: number | null){ SECDEFOFFER = v; if(v!=null) s
      places  what flashes when it is not answered (row-id keys; `sel:` + a selector for a place that is not a seat);
      pre/post the CALLER's own ending for the gesture, run round the write when the answer comes — the landing flash,
              the "already busy" note, the arm put down (the drag, the armed tap); `landed` is where he stands then. */
-export type OilWaitKind = 'swap' | 'add' | 'move' | 'back' | 'file'
+export type OilWaitKind = 'swap' | 'add' | 'move' | 'back' | 'file' | 'uncx' | 'uninfo'
 export interface OilWait {
   kind: OilWaitKind
   lead: string

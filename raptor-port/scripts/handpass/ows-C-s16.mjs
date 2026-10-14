@@ -36,7 +36,7 @@ const d3 = await C.dayState(p, di, 'S16-3')
 console.log('O3', C.say(o3, d3))
 row('S16.words', 'Edit Schedule Saturday: Unpublish pressed on the ORIGINAL (second press if it armed)', `button first "${un.first}", after first "${un.afterFirst}", second press ${un.second}; first spoke: ${JSON.stringify(un.firstToasts)}; second spoke: ${JSON.stringify(un.secondToasts)}`, 'RECORDED', [])
 judge('S16.b', 'after the confirmed withdrawal', [
-  ['a warning was raised before the withdrawal (it armed and asked a second tap)', un.second === true && /bid against|Heads up/i.test((un.firstToasts || []).join(' ')), un.firstToasts],
+  ['a warning was raised before the withdrawal (it armed and asked a second tap)', un.second === true && /OIL credits are already spent on the Leave War/i.test((un.firstToasts || []).join(' ')), un.firstToasts],
   ['the day is a draft again (no ORIG tag, Publish day offered)', !/ORIG|AL/.test(d3.head.tag) || d3.head.tag === '', d3.head.tag],
   ['Leave War: no automatic FO on 18 Jul', !/FO|HO/.test(o3.cell.text), o3.cell.text],
   ['tracker: no worked record 08:30–15:00', !/08:30.15:00/.test(o3.row.replace(/ \[ARCHIVE OPENED\]/, '')) || false, o3.row.slice(0, 220)],

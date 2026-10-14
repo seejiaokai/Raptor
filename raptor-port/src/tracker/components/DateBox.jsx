@@ -39,10 +39,20 @@ import { DateBox as AppDateBox } from '../../ui/DateBox';
    - `clearable` (default yes): the two Last Flown boxes offer the button only for a day put in BY HAND — a day that
      comes from the flights marked done cannot be taken off (D123; F3).
    - the calendar's "today" is the squadron's (D374), and no day before 1900 is offered — the store refuses one (F5, F9). */
+/* AFTER THE DESIGN LOOK OF 13 OCT 26 (docs/handpass/2026-10-13-design-look.md; owner D830):
+   - `noFuture` (L14): a box that REFUSES a day after today (D374 — the two Last Flown boxes, and each row of the full
+     failures list; the marking pop-up's Done on and Failed on say the same to the app's box themselves) tells its calendar so, and
+     the calendar draws those days faint and takes no tap on them — tomorrow looked exactly like yesterday, was picked,
+     and was then refused. The last day offered is the squadron's today, the same `isoToday` the refusal measures
+     against (core.js `afterToday`); the refusal itself stays, as the safety net.
+   - Delete or Backspace on a box that holds a date takes it off, as its ✕ does (K12): the key did nothing, and only
+     the ✕, one Tab away, cleared the box. The key pressed on the box is the BOX's and goes no further — the Tracker's
+     page hears Delete at the document and deletes what is selected on a chart being arranged (core.js
+     `handleDeleteKey`, which also looks for a date box itself — the read's F8). */
 const OFF_SETTLE_MS = 400;
 /** `narrow`: a box with no room for the weekday (End date A and B, three across in their card) shows the date without it.
-    @param {{ value?: string, onCommit: (v: string) => any, id?: string, title?: string, style?: object, narrow?: boolean, clearable?: boolean }} props */
-export function DateBox({ value, onCommit, id, title, style, narrow, clearable = true }) {
+    @param {{ value?: string, onCommit: (v: string) => any, id?: string, title?: string, style?: object, narrow?: boolean, clearable?: boolean, noFuture?: boolean }} props */
+export function DateBox({ value, onCommit, id, title, style, narrow, clearable = true, noFuture }) {
   const saved = value || '';
   const [warn, setWarn] = useState('');
   const gone = useRef(false);
@@ -70,10 +80,18 @@ export function DateBox({ value, onCommit, id, title, style, narrow, clearable =
   };
   const has = !!saved && clearable;
   const today = core.isoToday();
+  const key = e => {
+    if (e.key !== 'Delete' && e.key !== 'Backspace') return;
+    if (!e.target || !e.target.closest || !e.target.closest('button.datebox')) return;
+    e.stopPropagation();
+    if (!has) return;
+    e.preventDefault();
+    off();
+  };
   return (
     <span className="trdatebox" style={style}>
-      <span className={'trdatebox-row' + (has ? ' has-x' : '')} ref={row} onClickCapture={press}>
-        <AppDateBox id={id} label={title || 'Date'} value={saved} onChange={hand} noWeekday={!!narrow} today={today} min="1900-01-01" />
+      <span className={'trdatebox-row' + (has ? ' has-x' : '')} ref={row} onClickCapture={press} onKeyDown={key}>
+        <AppDateBox id={id} label={title || 'Date'} value={saved} onChange={hand} noWeekday={!!narrow} today={today} min="1900-01-01" max={noFuture ? today : undefined} />
         {has ? <button type="button" className="sm trdate-x" title={title ? 'Take the date off — ' + title : 'Take this date off'} aria-label={title ? 'Take the date off — ' + title : 'Take this date off'} onClick={off}>&#10005;</button> : null}
       </span>
       {warn ? <span className="datewarn" role="status">{warn}</span> : null}

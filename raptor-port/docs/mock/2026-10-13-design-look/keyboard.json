@@ -1,0 +1,254 @@
+[
+ {
+  "surface": "Date calendar",
+  "key": "opens with the keyboard on…",
+  "expected": "the picked date, or today",
+  "saw": "button[dcal-day-2026-10-15] \"Thu 15 Oct 2026, picked\" · NO RING · 44×44",
+  "verdict": "look"
+ },
+ {
+  "surface": "Date calendar",
+  "key": "Arrow keys",
+  "expected": "a day left / right, a week up / down",
+  "saw": "2026-10-15 → right 2026-10-16 → down 2026-10-23 → left, up 2026-10-15",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar",
+  "key": "Page Up / Page Down",
+  "expected": "the month before / after",
+  "saw": "2026-10 → PageDown 2026-11 (on 2026-11-15) → PageUp 2026-10",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date calendar",
+  "key": "Home / End",
+  "expected": "the first / last day of the week",
+  "saw": "on 2026-10-15: Home → 2026-10-15, End → 2026-10-15",
+  "verdict": "GAP — nothing moves"
+ },
+ {
+  "surface": "Date calendar",
+  "key": "Shift + Page Down (a year on)",
+  "expected": "the same month next year (the usual pattern)",
+  "saw": "2026-10 → 2026-11",
+  "verdict": "GAP — goes one month only"
+ },
+ {
+  "surface": "Date calendar",
+  "key": "Tab, seven times",
+  "expected": "round inside the card: the dates → the title → Today → the two arrows → the dates",
+  "saw": "button[dcal-title] \"October 2026 — choose the month and year\"  |  button[dcal-today] \"Go to today\"  |  button[dcal-prev] \"Previous month\"  |  button[dcal-next] \"Next month\"  |  button[dcal-day-2026-10-15] \"Thu 15 Oct 2026, picked\"  |  button[dcal-title] \"October 2026 — choose the month and year\"  |  button[dcal-today] \"Go to today\"",
+  "verdict": "look"
+ },
+ {
+  "surface": "Date calendar",
+  "key": "a key for today",
+  "expected": "none is required — the Today button is one Tab away",
+  "saw": "\"t\" on 2026-10-15 → 2026-10-15",
+  "verdict": "by the Today button only"
+ },
+ {
+  "surface": "Month-and-year lists",
+  "key": "Enter on the title",
+  "expected": "the lists open and the keyboard goes INTO the month list",
+  "saw": "button[dcal-title] \"October 2026 — show the dates\" · outline 2px rgb(59, 198, 232) · 170×38",
+  "verdict": "GAP — the keyboard stays on the title; Tab is needed to reach a list"
+ },
+ {
+  "surface": "Month-and-year lists",
+  "key": "Arrow Up / Down in a list",
+  "expected": "the month or year before / after",
+  "saw": "2026-10 → down 2026-11",
+  "verdict": "works"
+ },
+ {
+  "surface": "Month-and-year lists",
+  "key": "Home / End / Page keys in a list",
+  "expected": "the ends of the year, or several rows at once",
+  "saw": "2026-10 → End 2026-10 → PageDown 2026-08",
+  "verdict": "works"
+ },
+ {
+  "surface": "Month-and-year lists",
+  "key": "Enter in a list",
+  "expected": "closes the lists and shows the dates of the month chosen",
+  "saw": "the lists stay open",
+  "verdict": "GAP — the only way back to the dates is the title button"
+ },
+ {
+  "surface": "Date calendar",
+  "key": "Escape",
+  "expected": "closes the calendar only; the window behind stays; the keyboard is back on the box",
+  "saw": "calendar closed, window still open, keyboard on button[every-from] \"From: Thu 15 Oct 2026\" · outline 2px rgb(59, 198, 232) · 354×42",
+  "verdict": "works"
+ },
+ {
+  "surface": "Date box",
+  "key": "Space / Enter on the box, then Enter on a date",
+  "expected": "opens; picks; closes; the keyboard is back on the box",
+  "saw": "opened true; 2026-10-15 → 2026-10-22; keyboard on button[every-from] \"From: Thu 22 Oct 2026\" · outline 2px rgb(59, 198, 232) · 354×42",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box",
+  "key": "Tab onto the box",
+  "expected": "a visible ring",
+  "saw": "button#upchit \"Upchit date: Tue 13 Oct 2026\" · NO RING · 129×36",
+  "verdict": "look"
+ },
+ {
+  "surface": "Tracker's date box",
+  "key": "Tab again",
+  "expected": "the ✕ that takes the date off, with a ring",
+  "saw": "button.sm \"Take the date off — Upchit date\" · outline 2px rgb(59, 198, 232) · 26×34",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's date box",
+  "key": "Delete or Backspace on the box",
+  "expected": "takes the date off (a way to clear ON THE BOX)",
+  "saw": "2026-10-13 → \"2026-10-13\"",
+  "verdict": "GAP — nothing happens; only the ✕ clears"
+ },
+ {
+  "surface": "Tracker's date box",
+  "key": "Enter on the ✕",
+  "expected": "takes the date off; the keyboard stays near the box",
+  "saw": "\"\" · keyboard on button#upchit \"Upchit date: no date picked\" · outline 2px rgb(59, 198, 232) · 99×36",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up",
+  "key": "opens with the keyboard on…",
+  "expected": "something inside the pop-up",
+  "saw": "div#board \"ST-01 ST-02 ACG-01 ACG-02 ACG-03 ACG-04 ACG-05 ACG-06 ACG-07\" · NO RING · 1084×735",
+  "verdict": "look"
+ },
+ {
+  "surface": "Tracker's marking pop-up",
+  "key": "Tab, ten times",
+  "expected": "goes round INSIDE the pop-up",
+  "saw": "button#fzOut \"−\"  |  button#fzIn \"+\"  |  button#fzReset \"reset\"  |  button#ordCrew \"⇅ Reorder\"  |  button#addStu \"+ Add\"  |  button#lastSyll \"Last Flown (Syllabus): no date picked\"  |  button#lastCurr \"Last Flown (Currency): no date picked\"  |  input#downDays \"\"  |  button#upchit \"Upchit date: no date picked\"  |  input#epwIn \"\" · still inside: false",
+  "verdict": "look"
+ },
+ {
+  "surface": "Tracker's marking pop-up",
+  "key": "Enter on \"Done on\", then Escape",
+  "expected": "the calendar opens; Escape closes the calendar only",
+  "saw": "opened true; after Escape: calendar closed, pop-up still open; keyboard on button#popDoneDate \"Done on: Tue 13 Oct 2026\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "Tracker's marking pop-up",
+  "key": "Escape again",
+  "expected": "closes the pop-up; the keyboard returns to the event that opened it",
+  "saw": "pop-up closed; keyboard on nothing (the page)",
+  "verdict": "look"
+ },
+ {
+  "surface": "A puck on the Scheduler Board",
+  "key": "Tab (80 presses from the top of the board)",
+  "expected": "the keyboard can land on a puck, and Enter or Space picks it up (arms it) as a tap does",
+  "saw": "48 pucks on screen, 48 of them a Tab stop (a <span>, role none); Tab reached a puck: yes",
+  "verdict": "look"
+ },
+ {
+  "surface": "OIL question",
+  "key": "opens with the keyboard on…",
+  "expected": "inside the sheet — on the safe answer, or the first choice",
+  "saw": "div.airpop-box \"OIL — Tally, Range brief✕Swapping Tally and RangerThis input\" · NO RING · 440×328",
+  "verdict": "look"
+ },
+ {
+  "surface": "OIL question",
+  "key": "Tab, seven times",
+  "expected": "goes round INSIDE the sheet: Yes, No, Don’t swap, (Swap once live), ✕",
+  "saw": "button.x \"Close\"  |  button[oil-yes] \"Yes — credit HO\"  |  button[oil-no] \"No OIL\"  |  button[oilconf-cancel] \"Don’t swap\"  |  button.x \"Close\"  |  button[oil-yes] \"Yes — credit HO\"  |  button[oil-no] \"No OIL\" · still inside: true",
+  "verdict": "look"
+ },
+ {
+  "surface": "OIL question",
+  "key": "the ring on its buttons",
+  "expected": "always visible",
+  "saw": "button[oil-no] \"No OIL\" · outline 1px rgb(16, 16, 16) · 62×25",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question",
+  "key": "Space on \"Yes\"",
+  "expected": "picks it; \"Swap\" comes alive",
+  "saw": "Swap is live",
+  "verdict": "works"
+ },
+ {
+  "surface": "OIL question",
+  "key": "Escape",
+  "expected": "nothing is swapped; the bar stays",
+  "saw": "sheet closed; bar up; keyboard on span.puck \"TallyO\" · outline 2px rgb(59, 198, 232) · 74×15",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays",
+  "key": "where the keyboard is when the bar appears",
+  "expected": "on the bar, or one Tab from it",
+  "saw": "span.puck \"TallyO\" · outline 2px rgb(59, 198, 232) · 74×15",
+  "verdict": "look"
+ },
+ {
+  "surface": "The bar that stays",
+  "key": "Tab until \"Answer OIL\" is reached",
+  "expected": "a few presses",
+  "saw": "114 presses — button[oilbar-answer] \"Answer OIL\" · outline 1px rgb(16, 16, 16) · 93×28",
+  "verdict": "GAP — 114 presses away"
+ },
+ {
+  "surface": "The bar that stays",
+  "key": "Enter on \"Answer OIL\"",
+  "expected": "the question comes back, the keyboard inside it",
+  "saw": "question back; keyboard on div.airpop-box \"OIL — Tally, Range brief✕Swapping Tally and RangerThis input\"",
+  "verdict": "works"
+ },
+ {
+  "surface": "The bar that stays",
+  "key": "Escape",
+  "expected": "closes the bar (it is what opened last)",
+  "saw": "bar before up, after still up",
+  "verdict": "GAP — Escape does nothing; only OK closes it"
+ },
+ {
+  "surface": "A puck on the Scheduler Board",
+  "key": "Enter, then Space, on a puck the keyboard is on",
+  "expected": "it is picked up (armed) as a tap does on a phone — then arrows or Tab to a seat and Enter to put it down",
+  "saw": "on span.puck \"WardenIP\" (NO RING) — before {\"arm\":false,\"body\":\"sb-lock sb-board-up\",\"sel\":0} · after Enter {\"arm\":false,\"body\":\"sb-lock sb-board-up\",\"sel\":0} · after Space {\"arm\":false,\"body\":\"sb-lock sb-board-up\",\"sel\":0}",
+  "verdict": "GAP — nothing happens: the keyboard can stand on a puck but cannot pick it up"
+ },
+ {
+  "surface": "A puck on the Scheduler Board",
+  "key": "Delete on a puck",
+  "expected": "takes the man off the seat (as dragging him off does), with Undo",
+  "saw": "nothing happened",
+  "verdict": "GAP — nothing happens"
+ },
+ {
+  "surface": "The crew list",
+  "key": "Tab stops among its pucks",
+  "expected": "each name can be reached and picked up by keys",
+  "saw": "0 names on screen, 0 a Tab stop",
+  "verdict": "look"
+ },
+ {
+  "surface": "Edit Schedule's week",
+  "key": "Tab stops among its pucks",
+  "expected": "each puck can be reached",
+  "saw": "512 pucks on screen, 440 a Tab stop",
+  "verdict": "look"
+ },
+ {
+  "surface": "Tracker's chart",
+  "key": "Tab stops among its events",
+  "expected": "an event can be reached and its marking pop-up opened with Enter",
+  "saw": "210 events drawn, 0 a Tab stop (role none)",
+  "verdict": "GAP — an event cannot be opened or marked without a mouse or a finger"
+ }
+]

@@ -57,7 +57,7 @@ describe('the input funnel is the quarantine choke-point (P2-REV2-04)', () => {
     })
     expect(INPUTS.length, 'the illegal add was rolled back').toBe(before)
     expect(INPUTS.some((r: any) => r.iid === 'zzq1'), 'the row is gone').toBe(false)
-    expect(said.join(' ')).toMatch(/locked/i)
+    expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
   })
 
   /* the rollback is histRestore — the same deep restore undo runs — so it rebuilds
@@ -74,7 +74,7 @@ describe('the input funnel is the quarantine choke-point (P2-REV2-04)', () => {
     })
     expect(INPUTS.length, 'the illegal removal was rolled back').toBe(before)
     expect(INPUTS.some((r: any) => r.iid === 'zzq2'), 'the row is still there').toBe(true)
-    expect(said.join(' ')).toMatch(/locked/i)
+    expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
   })
 
   it('rolls back an in-place field change on an input covering a protected week', () => {
@@ -86,7 +86,7 @@ describe('the input funnel is the quarantine choke-point (P2-REV2-04)', () => {
     })
     const r: any = INPUTS.find((x: any) => x.iid === 'zzq3')
     expect(r.remarks, 'the change was rolled back').toBe('orig')
-    expect(said.join(' ')).toMatch(/locked/i)
+    expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
   })
 
   it('LETS an ordinary add on a NON-protected week through untouched — no false lock', () => {
@@ -131,6 +131,6 @@ describe('the input funnel is the quarantine choke-point (P2-REV2-04)', () => {
       INPUTS.unshift({ person: 'dj', type: 'Meeting', allday: true, date: 'Jul 20', yr: 2026, iid: 'zzq6' })
     })
     expect(INPUTS.length, 'writeInputs rolls back too').toBe(before)
-    expect(said.join(' ')).toMatch(/locked/i)
+    expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
   })
 })

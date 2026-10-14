@@ -282,7 +282,7 @@ describe('the three actions that carried no key at all', () => {
     expect(DAYS[di].waves[0].formations[0].cs, 'the working copy took the loaded content').toBe(wasCs)
     const row = newest()
     expect(row, 'and it reached the list').toBeTruthy()
-    expect(row!.lbl).toContain('loaded onto the working copy')
+    expect(row!.lbl).toContain('is back to')   // the load's note, shortened (owner D863)
     expect(row!.di).toBe(di)
   })
 })

@@ -1016,9 +1016,14 @@ describe('board lifecycle', () => {
   })
 
   it('Done closes the board', async () => {
-    await click($('#sbDone'))
+    /* …AND SAYS NOTHING (owner D854, 14 Oct 26 — "Yes to all"): it raised "Schedule updated" every time, changed or
+       not; the board closing is the sign, and every change was saved as it was made */
+    const toast = HOOKS.toast, said: string[] = []
+    HOOKS.toast = (m: any) => { said.push(String(m)) }
+    try { await click($('#sbDone')) } finally { HOOKS.toast = toast }
     expect(SBDAY).toBe(null)
     expect(($('#schedBoard') as any).hidden).toBe(true)
+    expect(said, 'no passing note').toEqual([])
   })
 
   it('logout closes the scheduler board', async () => {
@@ -2116,6 +2121,19 @@ describe('the just-added blue box (14 Aug 26)', () => {
     const go = $$('#sbBoard .sb-go.sb-fresh')
     expect(go.length, 'the whole wave is boxed').toBe(1)
     expect(go[0].querySelector('.sb-line.sb-fresh'), 'and its own first line is not boxed twice').toBeFalsy()
+  })
+
+  /* (owner D860, 15 Oct 26 — "the blue ring for the edit schedule board is not at the perimeter of the note. Fix that
+     visual") a note's row is a grip, its number, its box and its ✕ — the thing added is the BOX, so the ring hugs it */
+  it('a new note line is ringed on its own box — not round its grip, its number and its ✕', async () => {
+    const before = $$('#sbBoard .sb-nrow').length
+    await click($('#sbBoard [data-nadd="0"]'))
+    expect($$('#sbBoard .sb-nrow').length).toBe(before + 1)
+    const fresh = $$('#sbBoard .sb-fresh')
+    expect(fresh.length, 'exactly one thing wears the ring').toBe(1)
+    expect(fresh[0].classList.contains('nin'), 'the note\'s own box').toBe(true)
+    expect(fresh[0].getAttribute('data-bfld')).toBe(`dn:0.${before}`)
+    expect($$('#sbBoard .sb-nrow.sb-fresh').length, 'never the whole row').toBe(0)
   })
 
   it('the AMT + Block boxes all three new rows', async () => {

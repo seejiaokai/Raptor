@@ -57,8 +57,9 @@ export function updatePersonField(pid: string, op: QualsOp): string | null {
       const next = canI ? (!cur ? true : cur === true ? 'I' : false) : !cur
       /* night AAR is signed off after day AAR, never before it */
       if (k === 'naar' && next && !p.quals.daar) { refused = `${p.cs} needs DAAR before NAAR can be ticked`; return }
-      /* and say WHY the I was not offered — the click still unticks */
-      if (k === 'naar' && qualI(p, k) && cur === true && p.quals.daar !== 'I') HOOKS.toast(`${p.cs} needs the DAAR instructor mark before NAAR can carry it — the tick comes off instead`)
+      /* and say WHY the I was not offered — the click still unticks (the words: owner D838 + D839, 14 Oct 26 — N28;
+         "carry it … the tick" left a reader unable to tell what "it" was, or which tick) */
+      if (k === 'naar' && qualI(p, k) && cur === true && p.quals.daar !== 'I') HOOKS.toast(`${p.cs} needs the DAAR instructor mark before NAAR can carry one, so the NAAR tick comes off instead`)
       /* SC night is signed off after SC day, exactly as NAAR is after DAAR */
       if (k === 'scNight' && next && !p.quals.scDay) { refused = `${p.cs} needs SC DAY before SC NIGHT can be ticked`; return }
       p.quals[k] = next

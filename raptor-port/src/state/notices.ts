@@ -252,6 +252,14 @@ export function holidayLineOn(pid: string | null | undefined, iso: string): Noti
   return null
 }
 
+/** is a holiday line live on this date for ANY scheduler — "the schedulers' bells" (ui/OilDayList.tsx's foot). A
+ *  scheduler with no line of his own (his sign-in was off when the holiday was made, or his account is newer) is still
+ *  told the truth about the others' (the narrow read of 14 Oct 26, L2). */
+export function holidayLineAny(iso: string): boolean {
+  for (const n of NOTICES) { const s = noticeSpan(n); if (s && s.a <= iso && iso <= s.b && noticeLive(n)) return true }
+  return false
+}
+
 /* ---- reading them --------------------------------------------------------------------------------------------- */
 const LIST_MAX = 30
 /** one person's notices, newest first — the bell's list (a holiday's line with nothing left to answer is left out

@@ -30,6 +30,10 @@ const iso = (y: number, m: number, d: number) =>
 /* the day the question is about, with its year where that is not the year in hand — the one label every place that
    names an OIL day uses (ui/inputedit.tsx oilDayLabel; `[CARD-CHECK-SEEN]` 8: "9 Jan" for a day of 2027) */
 const dLabel = (v: string) => oilDayLabel(v)
+/* …and, in the question's own sentence, its weekday before it — "Sat 18 Jul" (the wording of record, D837). Worked out
+   from the date's own numbers in UTC, so the day never shifts with the zone the browser is in. */
+const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const dowLabel = (v: string) => `${DOW[new Date(Date.UTC(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10))).getUTCDay()]} ${dLabel(v)}`
 
 /* the multi-select month grid — only `days` are live, everything else inert */
 function OilDayCal({ days, sel, onToggle }: {
@@ -78,7 +82,21 @@ function OilDayCal({ days, sel, onToggle }: {
    record docs/mock/2026-10-12-oil-notify/*-swap-3-question-waits.png): a swap, an add or a move that raises the
    question is not made until it is answered, so the sheet says what is waiting ("Swapping Tally and Ranger" — a
    statement above the question, never a second question) and its two buttons say what each does ("Don’t swap" /
-   "Swap"). Without them it is the input's own save, as it always was: Cancel / Save. Drawn by ui/OilWaitSheet.tsx. */
+   "Swap"). Without them it is the input's own save: Back / Save, or Back / Add where the form behind it is adding a new
+   input — never "Cancel", which over the form's own Cancel read as if it might throw the input away (the design look's
+   L4, owner D830, 13 Oct 26). Drawn by ui/OilWaitSheet.tsx.
+
+   THE WORDS ARE THE WRITING GUIDE'S (owner D837, D839 — 14 Oct 26; the wordings of record
+   docs/superpowers/briefs/2026-10-13-wording-recheck.md): the title "OIL: Tally, Range brief", the reason and the question
+   as one ordinary sentence (it was a heading in capitals — the look's L3), "Yes: credit HO", "…can raise the credit".
+   THE SEVERAL-DAYS FORM KEEPS ITS WORDS: it was not on the page he approved, and goes to the whole-app words pass (D808).
+
+   THE ANSWERS SIT FLAT UNDER THE QUESTION (L1): they were wrapped in `.seg`, which is also the week strip's rule
+   (02-shell.css) — so they wore its patch and its line, inside the boxed row of the upchit sheet: a box in a box. They
+   have a row of their own now (`.oilconf-answers`). A PICKED ANSWER TAKES THE OUTLINE LOOK (L5, `.on-pick`): filled as
+   solid as the main button, the eye no longer knew which to press — the right-hand button stays the one solid one.
+   THE FIRST ANSWER TAKES THE KEYBOARD AS THE SHEET OPENS (K7), and the ✕ is the last Tab stop (L2 — ui/sheetfocus.ts).
+   Picking an answer answers nothing by itself: the right-hand button still has to be pressed. */
 export function OilConfirm({ who, typeLabel, plan, prev, onSave, onCancel, lead, noLabel, yesLabel }: {
   who: string
   typeLabel: string
@@ -92,7 +110,8 @@ export function OilConfirm({ who, typeLabel, plan, prev, onSave, onCancel, lead,
 }) {
   const multi = plan.length > 1
   const amt = plan[0].amt                                    // one window → one standing for every day
-  const amtWord = amt === 1 ? 'FO — a full day' : 'HO — half a day'
+  const amtWord = amt === 1 ? 'FO — a full day' : 'HO — half a day'          // the several-days form's, left whole (D808)
+  const amtName = amt === 1 ? 'FO, a full day' : 'HO, half a day'             // the one-day question's (D837)
   /* the forced choice — unset until the filer picks, even on a re-ask; the
      prior answers only pre-seed WHICH days "some" starts from */
   const [mode, setMode] = useState<'' | 'yes' | 'no' | 'all' | 'some' | 'none'>('')
@@ -117,29 +136,27 @@ export function OilConfirm({ who, typeLabel, plan, prev, onSave, onCancel, lead,
     return () => document.removeEventListener('keydown', esc, true)
   })
   const seg = (k: typeof mode, label: string, tid: string) => (
-    <button className={'upconf-seg' + (mode === k ? ' on-keep' : '')} data-testid={tid}
+    <button type="button" className={'upconf-seg' + (mode === k ? ' on-pick' : '')} data-testid={tid} aria-pressed={mode === k}
       onClick={() => setMode(k)}>{label}</button>
   )
-  /* the sheet takes the keyboard when it opens (W12 — ui/sheetfocus.ts) */
+  /* the sheet takes the keyboard when it opens (W12 — ui/sheetfocus.ts), on its first answer (K7) */
   const boxRef = useRef<HTMLDivElement>(null)
-  useSheetFocus(boxRef)
+  useSheetFocus(boxRef, true, box => box.querySelector<HTMLElement>('.oilconf-answers .upconf-seg'))
   return (
     <div className="airpop upconf-pop oilconf-pop" data-testid="oilconf"
       onClick={e => { if (clickedSurround(e, 'upconf-pop')) onCancel() }}>
       <div className="airpop-box upconf-box" ref={boxRef} tabIndex={-1} style={{ outline: 'none' }}>
-        <div className="airpop-head"><b>OIL — {who}, {typeLabel}</b>
+        <div className="airpop-head"><b>OIL: {who}, {typeLabel}</b>
           <button className="x" aria-label="Close" onClick={onCancel}>✕</button></div>
         <div className="airpop-body upconf-body">
           {lead && <div className="oilconf-what oilconf-lead" data-testid="oilconf-lead"><b>{lead}</b></div>}
           {multi ? <>
             <div className="upconf-h">This input covers {plan.length} non-working days (weekend / PH)</div>
             <div className="oilconf-what">Each confirmed day earns <b>{amtWord}</b> of OIL. Which days does it deserve?</div>
-            <div className="upconf-left oilconf-modes">
-              <span className="seg">
-                {seg('all', 'All days', 'oil-all')}
-                {seg('some', 'Only some days…', 'oil-some')}
-                {seg('none', 'No OIL', 'oil-none')}
-              </span>
+            <div className="oilconf-answers">
+              {seg('all', 'All days', 'oil-all')}
+              {seg('some', 'Only some days…', 'oil-some')}
+              {seg('none', 'No OIL', 'oil-none')}
             </div>
             {mode === 'some' && <>
               <OilDayCal days={plan.map(p => p.iso)} sel={sel} onToggle={toggle} />
@@ -148,21 +165,22 @@ export function OilConfirm({ who, typeLabel, plan, prev, onSave, onCancel, lead,
               </div>
             </>}
           </> : <>
-            <div className="upconf-h">This input falls on a non-working day — {dLabel(plan[0].iso)} (weekend / PH)</div>
-            <div className="oilconf-what">Does it deserve <b>{amtWord}</b> of OIL?</div>
-            <div className="upconf-left oilconf-modes">
-              <span className="seg">
-                {seg('yes', `Yes — credit ${amt === 1 ? 'FO' : 'HO'}`, 'oil-yes')}
-                {seg('no', 'No OIL', 'oil-no')}
-              </span>
+            <div className="oilconf-what" data-testid="oilconf-ask">This input falls on {dowLabel(plan[0].iso)}, a non-working day (weekend/PH). Does it deserve <b>{amtName}</b> of OIL?</div>
+            <div className="oilconf-answers">
+              {seg('yes', `Yes: credit ${amt === 1 ? 'FO' : 'HO'}`, 'oil-yes')}
+              {seg('no', 'No OIL', 'oil-no')}
             </div>
           </>}
-          <div className="oilconf-note">The credit lands on the Leave War as {amt === 1 ? 'an FO' : 'an HO'} cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it.</div>
+          {/* (NO SMALL PRINT HERE, AND NO "CHOOSE AN OPTION ABOVE" IN THE FOOT — owner D846, 14 Oct 26: he circled both on the
+              built question, "these are the examples of things u can delete and they are self explanatory". The sentence said
+              where the credit lands and that published work the same day can raise it — how the app works, not what to do;
+              the Leave War shows the credit as it ends up. The hint said a button was waiting with the answers right above
+              it. The design guide's §1 carries the rule; the upchit question and the day's one list keep their hint until he
+              has seen them.) */}
         </div>
         <div className="airpop-foot upconf-foot">
-          {!ready && <span className="upconf-need">Choose an option above</span>}
           <span style={{ flex: 1 }}></span>
-          <button className="abtn ghost" data-testid="oilconf-cancel" onClick={onCancel}>{noLabel || 'Cancel'}</button>
+          <button className="abtn ghost" data-testid="oilconf-cancel" onClick={onCancel}>{noLabel || 'Back'}</button>
           <button className="abtn primary" data-testid="oilconf-save" disabled={!ready} onClick={save}>{yesLabel || 'Save'}</button>
         </div>
       </div>

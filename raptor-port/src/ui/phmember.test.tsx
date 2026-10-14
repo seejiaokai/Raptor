@@ -151,7 +151,7 @@ describe('ALL AVAIL put on an input\'s row JOINS the input (D755, D757 step 3 �
     expect(onRow(), 'the row is a whole copy of the input').toEqual(['pike', 'bane', 'allavail'])
     expect(drawn(), 'named A to Z by callsign, then the placeholder').toEqual([...['bane', 'pike'].sort((a, b) => cs(a).localeCompare(cs(b))), 'allavail'])
     expect(inputLines([rec()]).map((l: any) => l.person), 'the rules read a line a NAMED person — it blocks nobody').toEqual(['pike', 'bane'])
-    expect(SAID.join(' | ')).toContain(`ALL AVAIL added to ${TITLE}`)
+    expect(SAID.join(' | '), 'the puck is the sign: no note (owner D854)').not.toContain('added to')
     expect(ELOG.rows.length, 'one line of the change history').toBe(steps + 1)
     expect(globalUndo()).toBeTruthy()
     expect(people()).toEqual(['pike', 'bane'])
@@ -249,13 +249,13 @@ describe('ALL AVAIL stays when anyone leaves; taken off itself, it leaves (D757 
     SAID = []
     expect(rowTake(keyOf('allavail'))).toBe('done')
     expect(people()).toEqual(['bane'])
-    expect(SAID).toEqual([`ALL AVAIL taken out of ${TITLE}`])
+    expect(SAID, 'the puck is the sign: no note (owner D854)').toEqual([])
   })
   it('alone on the row it is the last: refused, saying how', async () => {
     await boot()
     file(['allavail'])
     expect(rowTake(rowKey())).toBe('refused')
-    expect(SAID.join(' ')).toMatch(/ALL AVAIL is the last on this input/)
+    expect(SAID.join(' ')).toBe('ALL AVAIL is the last on this input. Take the input off the programme, or delete it in its own window.')
     expect(people()).toEqual(['allavail'])
   })
   it('dragged from one input\'s row onto another\'s it MOVES — never in both', async () => {

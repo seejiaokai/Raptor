@@ -1,0 +1,905 @@
+[
+ {
+  "surface": "S11 phone",
+  "key": "S11a fixture",
+  "expected": "filed Friday, cancelled, published, Friday made a holiday; no list for the cancelled input (D814)",
+  "saw": "filed asked false; publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; board after publish {\"chip\":\"ORIG\",\"pend\":\"7 changes\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":null,\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":null}; the holiday's list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"1 to answer\",\"ids\":[\"imv7eq6u3ky5q07\"],\"reach\":true,\"noteOver\":false}, note \"\"; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 phone",
+  "key": "S11b the board before the un-cancel",
+  "expected": "RECORD: what the holiday alone leaves pending",
+  "saw": "board {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}}; its pending list reads {\"opened\":true,\"txt\":\"⠿ Changes · Friday 17/7 Published · 1 change waiting to go out as AL1 Hide ▾ ✕ History on: Tap a gold dot on the schedule New to you 0 All changes 7 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change What this day earns changed Tap a change to go to it.\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S12 phone",
+  "key": "S12a not answered",
+  "expected": "pending unchanged, sign-offs intact, still cancelled with its reason",
+  "saw": "sheet {\"head\":\"OIL: Ranger, Range brief\",\"lead\":\"Un-cancelling Ranger's Range brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true}; bar {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}; board {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}} (before {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}})",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 phone",
+  "key": "S11c Answer OIL → Yes → Un-cancel",
+  "expected": "after Yes + Un-cancel: one more pending change than before; sign-offs still down (D103)",
+  "saw": "sheet {\"head\":\"OIL: Ranger, Range brief\",\"lead\":\"Un-cancelling Ranger's Range brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true}; note \"Restored\"; input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; board {\"chip\":\"ORIG\",\"pend\":\"2 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}} (before {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}})",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 phone",
+  "key": "S11d the pending list names its people",
+  "expected": "one item naming Ranger and Range brief; the other item (if any) was there before",
+  "saw": "the list reads {\"opened\":true,\"txt\":\"Waiting to go out as AL1 · 2 changes Ranger · Range brief Saber 14/10 09:04 CX (WX) → not cancelled What this day earns changed Tap a change to go to it.\"}; before the un-cancel it read {\"opened\":true,\"txt\":\"⠿ Changes · Friday 17/7 Published · 1 change waiting to go out as AL1 Hide ▾ ✕ History on: Tap a gold dot on the schedule New to you 0 All changes 7 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change What this day earns changed Tap a change to go to it.\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S12 phone",
+  "key": "S12b Undo of the answered un-cancel",
+  "expected": "pending as before the un-cancel; sign-offs as before; cancelled with its reason, no answer",
+  "saw": "input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}; board {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}} (before {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}})",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S12 phone",
+  "key": "S12c Redo",
+  "expected": "un-cancelled with its answer again, no question, pending +1",
+  "saw": "input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; a question null; board {\"chip\":\"ORIG\",\"pend\":\"2 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 phone",
+  "key": "S11e the issued face in View-only Sched",
+  "expected": "still cancelled (struck / CX) on Friday",
+  "saw": "faces {\"n\":1,\"struck\":1,\"cxrows\":1,\"ctx\":\"CX DUE WXRANGE BRIEF TRAINING 09:00 10:00 Ranger IP LATE\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 phone",
+  "key": "S11e2 the member sees the issued face",
+  "expected": "still cancelled (struck / CX) on Friday for the member too",
+  "saw": "faces {\"n\":1,\"struck\":1,\"cxrows\":1,\"ctx\":\"CX DUE WXRANGE BRIEF TRAINING 09:00 10:00 Ranger IP LATE\"}; an OIL question or list open: 0",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 phone",
+  "key": "S11f the Leave War cell before the amendment",
+  "expected": "no HO or FO credit on Fri 17",
+  "saw": "cell {\"Ranger\":{\"text\":\"\",\"cls\":\"evoff act\"}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 phone",
+  "key": "S11g after Publish AL1",
+  "expected": "the amendment goes out; the Leave War shows an HO/FO for Ranger on Fri 17",
+  "saw": "publish {\"published\":true,\"version\":\"AL1\",\"signSelects\":4}; board {\"chip\":\"AL1\",\"pend\":\"16 changes\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":null,\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":null}; cell {\"Ranger\":{\"text\":\"HO*\",\"cls\":\"duty evoff act\"}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S9 desk",
+  "key": "S9a0 as designed: file, cancel, holiday, then Undo",
+  "expected": "RECORD: the first Undo takes back the holiday or the cancel",
+  "saw": "A is imv7exvyn28jxgp; holidays list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"1 to answer\",\"ids\":[\"imv7exumru46cem\"],\"reach\":true,\"noteOver\":false}; after Undo: sheet null, input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}, note \"Undid: a public holiday on 17 Jul\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S9 desk",
+  "key": "S9a fixture",
+  "expected": "cancelled on the holiday with no question",
+  "saw": "B is imv7ey56jn2zaom; A is imv7exvyn28jxgp; holidays list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7exumru46cem\",\"imv7ey56jn2zaom\"],\"reach\":true,\"noteOver\":false}; note \"\"; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S9 desk",
+  "key": "S9b Undo of the cancel",
+  "expected": "no question, no bar; the input live again (the OIL? tag is read on its Inputs card below)",
+  "saw": "row before {\"row\":\"⠿ TRAINING Ranger IP + ADD CXⓘ■✕\",\"oilq\":false}; after Undo: sheet null, bar null, input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}, row {\"row\":\"⠿ TRAINING Ranger IP + ADD CXⓘ■✕\",\"oilq\":false}, note \"Undid: a personal input\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S9 desk",
+  "key": "S9b the OIL? tag on the Inputs card",
+  "expected": "the input shows the outlined OIL? tag (nobody has answered)",
+  "saw": "card {\"text\":\"LATE OIL? 11:00–12:00 RangerTRAINING Hangar brief By Saber\",\"oilq\":true,\"cx\":false,\"struck\":false}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S9 desk",
+  "key": "S9b the schedulers bell (RECORD)",
+  "expected": "RECORD: whether the schedulers bell carries a line for the input",
+  "saw": "bell {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":true,\"cls\":\"bellbtn on\"},\"txt\":\"Walk holidayFri 17 Jul 2 inputs need an OIL answer · Saber now Mark all read\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S9 desk",
+  "key": "S9c the answerers own side",
+  "expected": "bell lit; pressing it opens the OIL question for Hangar brief",
+  "saw": "note at sign-in \"\"; bell {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":true,\"cls\":\"bellbtn on\"},\"txt\":null}; after the press: question \"OIL: Ranger, Hangar brief ✕ This input falls on Fri 17 Jul, a non-working day (weekend/PH). Does it deserve HO, half a day of OIL? Yes: credit HO No OIL Back Save\", note \"Weekend/PH work — confirm your OIL\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S9 desk",
+  "key": "S9d CX on again, then off",
+  "expected": "on: no question and cancelled; off: the question first, still cancelled",
+  "saw": "on: sheet null, input {\"cx\":true,\"cxr\":\"WX2\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}; off: sheet {\"head\":\"OIL: Ranger, Hangar brief\",\"lead\":\"Un-cancelling Ranger's Hangar brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true}, input {\"cx\":true,\"cxr\":\"WX2\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S9 phone",
+  "key": "S9a0 as designed: file, cancel, holiday, then Undo",
+  "expected": "RECORD: the first Undo takes back the holiday or the cancel",
+  "saw": "A is imv7eymgrybbea6; holidays list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"1 to answer\",\"ids\":[\"imv7eyl85rel67v\"],\"reach\":true,\"noteOver\":false}; after Undo: sheet null, input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}, note \"Undid: a public holiday on 17 Jul\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S9 phone",
+  "key": "S9a fixture",
+  "expected": "cancelled on the holiday with no question",
+  "saw": "B is imv7eyv3shxjjls; A is imv7eymgrybbea6; holidays list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7eyl85rel67v\",\"imv7eyv3shxjjls\"],\"reach\":true,\"noteOver\":false}; note \"\"; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S9 phone",
+  "key": "S9b Undo of the cancel",
+  "expected": "no question, no bar; the input live again (the OIL? tag is read on its Inputs card below)",
+  "saw": "row before {\"row\":\"⠿ TRAINING Ranger IP + ADD CXⓘ■✕\",\"oilq\":false}; after Undo: sheet null, bar null, input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}, row {\"row\":\"⠿ TRAINING Ranger IP + ADD CXⓘ■✕\",\"oilq\":false}, note \"Undid: a personal input\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S9 phone",
+  "key": "S9b the OIL? tag on the Inputs card",
+  "expected": "the input shows the outlined OIL? tag (nobody has answered)",
+  "saw": "card {\"text\":\"LATE OIL? 11:00–12:00 RangerTRAINING Hangar brief By Saber\",\"oilq\":true,\"cx\":false,\"struck\":false}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S9 phone",
+  "key": "S9b the schedulers bell (RECORD)",
+  "expected": "RECORD: whether the schedulers bell carries a line for the input",
+  "saw": "bell {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":true,\"cls\":\"bellbtn on\"},\"txt\":\"Walk holidayFri 17 Jul 2 inputs need an OIL answer · Saber now Mark all read\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S9 phone",
+  "key": "S9c the answerers own side",
+  "expected": "bell lit; pressing it opens the OIL question for Hangar brief",
+  "saw": "note at sign-in \"\"; bell {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":true,\"cls\":\"bellbtn on\"},\"txt\":null}; after the press: question \"OIL: Ranger, Hangar brief ✕ This input falls on Fri 17 Jul, a non-working day (weekend/PH). Does it deserve HO, half a day of OIL? Yes: credit HO No OIL Back Save\", note \"Weekend/PH work — confirm your OIL\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S9 phone",
+  "key": "S9d CX on again, then off",
+  "expected": "on: no question and cancelled; off: the question first, still cancelled",
+  "saw": "on: sheet null, input {\"cx\":true,\"cxr\":\"WX2\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}; off: sheet {\"head\":\"OIL: Ranger, Hangar brief\",\"lead\":\"Un-cancelling Ranger's Hangar brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true}, input {\"cx\":true,\"cxr\":\"WX2\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S13 desk",
+  "key": "S13a fixture",
+  "expected": "no question; one input for three people",
+  "saw": "asked false; record {\"people\":[{\"p\":\"bane\",\"by\":\"bane\",\"at\":1791940526844},{\"p\":\"pike\",\"by\":\"bane\",\"at\":1791940526844},{\"p\":\"dj\",\"by\":\"bane\",\"at\":1791940526844}],\"type\":\"Training\",\"allday\":false,\"s\":540,\"e\":600,\"date\":\"Jul 17\",\"yr\":2026,\"remarks\":\"\",\"mod\":\"2026-10-14\",\"title\":\"Range brief\",\"iid\":\"imv7f4floytp3ce\",\"by\":\"bane\",\"modBy\":\"bane\",\"at\":1791940526844,\"modAt\":1791940526844,\"ord\":0,\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S13 desk",
+  "key": "S13b cancel, holiday",
+  "expected": "cancelled, no answer; not in the list",
+  "saw": "holiday's list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"1 to answer\",\"ids\":[\"imv7f4dd2e462z6\"],\"reach\":true,\"noteOver\":false}; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S13 desk",
+  "key": "S13c CX off for several",
+  "expected": "ONE question (one sheet), then one answer for all three; a second question does not follow",
+  "saw": "sheet {\"head\":\"OIL: Ace +2, Range brief\",\"lead\":\"Un-cancelling Ace +2's Range brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true} (sheets open: 1); note \"Restored\"; record {\"people\":[{\"p\":\"bane\",\"by\":\"bane\",\"at\":1791940526844},{\"p\":\"pike\",\"by\":\"bane\",\"at\":1791940526844},{\"p\":\"dj\",\"by\":\"bane\",\"at\":1791940526844}],\"type\":\"Training\",\"allday\":false,\"s\":540,\"e\":600,\"date\":\"Jul 17\",\"yr\":2026,\"remarks\":\"\",\"mod\":\"2026-10-14\",\"title\":\"Range brief\",\"iid\":\"imv7f4floytp3ce\",\"by\":\"bane\",\"modBy\":\"stiff\",\"at\":1791940526844,\"modAt\":1791940539157,\"ord\":0,\"acc\":\"g\",\"cx\":false,\"oil\":{\"2026-07-17\":0.5}}; a second sheet null",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S13 desk",
+  "key": "S13d the input window's OIL line (RECORD)",
+  "expected": "RECORD: one answer for all three and who gave it",
+  "saw": "card {\"text\":\"LATE 09:00–10:00 Ace, Nomad, RangerTRAINING Range brief By Ranger\",\"oilq\":false,\"cx\":false,\"struck\":false}; window opened true; its OIL part reads \"y REMARKS OIL credited on its non-working day Change… Placed by Ranger for 3 people · 14 Oct 26, 09:15 · changed by Saber · 14 Oct 26, 09:15 Date changes apply to all 3. Delete Cancel Save\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S13 desk",
+  "key": "S13e the member's bell",
+  "expected": "a line \"Un-cancelled\" naming Saber as who did it; no OIL question",
+  "saw": "bell {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":true,\"cls\":\"bellbtn on\"},\"txt\":\"Range briefFri 17 Jul Un-cancelled · Saber now Range briefFri 17 Jul Cancelled — WX · Saber now Mark all read\"}; a question open: null",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S13 desk",
+  "key": "S13f the admin's bell",
+  "expected": "no \"Un-cancelled\" line for the admin who did it",
+  "saw": "bell {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":true,\"cls\":\"bellbtn on\"},\"txt\":\"Walk holidayFri 17 Jul 1 input needs an OIL answer · Saber now Mark all read\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S13 desk",
+  "key": "S13g the Leave War after publishing",
+  "expected": "one cell each for the three, none missing",
+  "saw": "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; cells {\"Ranger\":{\"text\":\"HO*\",\"cls\":\"duty evoff act\"},\"Nomad\":{\"text\":\"HO*\\n+1\",\"cls\":\"duty evoff act mkd\"},\"Ace\":{\"text\":\"HO*\",\"cls\":\"duty evoff act\"}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S13 phone",
+  "key": "S13a fixture",
+  "expected": "no question; one input for three people",
+  "saw": "asked false; record {\"people\":[{\"p\":\"bane\",\"by\":\"bane\",\"at\":1791940564557},{\"p\":\"pike\",\"by\":\"bane\",\"at\":1791940564557},{\"p\":\"dj\",\"by\":\"bane\",\"at\":1791940564557}],\"type\":\"Training\",\"allday\":false,\"s\":540,\"e\":600,\"date\":\"Jul 17\",\"yr\":2026,\"remarks\":\"\",\"mod\":\"2026-10-14\",\"title\":\"Range brief\",\"iid\":\"imv7f58p9x33qf1\",\"by\":\"bane\",\"modBy\":\"bane\",\"at\":1791940564557,\"modAt\":1791940564557,\"ord\":0,\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S13 phone",
+  "key": "S13b cancel, holiday",
+  "expected": "cancelled, no answer; not in the list",
+  "saw": "holiday's list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"1 to answer\",\"ids\":[\"imv7f56b5mh5gtd\"],\"reach\":true,\"noteOver\":false}; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S13 phone",
+  "key": "S13c CX off for several",
+  "expected": "ONE question (one sheet), then one answer for all three; a second question does not follow",
+  "saw": "sheet {\"head\":\"OIL: Ace +2, Range brief\",\"lead\":\"Un-cancelling Ace +2's Range brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true} (sheets open: 1); note \"Restored\"; record {\"people\":[{\"p\":\"bane\",\"by\":\"bane\",\"at\":1791940564557},{\"p\":\"pike\",\"by\":\"bane\",\"at\":1791940564557},{\"p\":\"dj\",\"by\":\"bane\",\"at\":1791940564557}],\"type\":\"Training\",\"allday\":false,\"s\":540,\"e\":600,\"date\":\"Jul 17\",\"yr\":2026,\"remarks\":\"\",\"mod\":\"2026-10-14\",\"title\":\"Range brief\",\"iid\":\"imv7f58p9x33qf1\",\"by\":\"bane\",\"modBy\":\"stiff\",\"at\":1791940564557,\"modAt\":1791940576556,\"ord\":0,\"acc\":\"g\",\"cx\":false,\"oil\":{\"2026-07-17\":0.5}}; a second sheet null",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S13 phone",
+  "key": "S13d the input window's OIL line (RECORD)",
+  "expected": "RECORD: one answer for all three and who gave it",
+  "saw": "card {\"text\":\"LATE 09:00–10:00 Ace, Nomad, RangerTRAINING Range brief By Ranger\",\"oilq\":false,\"cx\":false,\"struck\":false}; window opened true; its OIL part reads \"y REMARKS OIL credited on its non-working day Change… Placed by Ranger for 3 people · 14 Oct 26, 09:16 · changed by Saber · 14 Oct 26, 09:16 Date changes apply to all 3. Delete Cancel Save\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S13 phone",
+  "key": "S13e the member's bell",
+  "expected": "a line \"Un-cancelled\" naming Saber as who did it; no OIL question",
+  "saw": "bell {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":true,\"cls\":\"bellbtn on\"},\"txt\":\"Range briefFri 17 Jul Un-cancelled · Saber now Range briefFri 17 Jul Cancelled — WX · Saber now Mark all read\"}; a question open: null",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S13 phone",
+  "key": "S13f the admin's bell",
+  "expected": "no \"Un-cancelled\" line for the admin who did it",
+  "saw": "bell {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":true,\"cls\":\"bellbtn on\"},\"txt\":\"Walk holidayFri 17 Jul 1 input needs an OIL answer · Saber now Mark all read\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S13 phone",
+  "key": "S13g the Leave War after publishing",
+  "expected": "one cell each for the three, none missing",
+  "saw": "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; cells {\"Ranger\":{\"text\":\"HO*\",\"cls\":\"duty evoff act\"},\"Nomad\":{\"text\":\"HO*\\n+1\",\"cls\":\"duty evoff act mkd\"},\"Ace\":{\"text\":\"HO*\",\"cls\":\"duty evoff act\"}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S20 desk",
+  "key": "S20a fixture",
+  "expected": "cancelled with its reason, on Sat 18, no answer",
+  "saw": "input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}; asked at the move: false",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S20 desk",
+  "key": "S20b the board stepped to the next day",
+  "expected": "RECORD: the bar and \"Answer OIL\" from Sunday",
+  "saw": "bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; on Sunday the bar {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; \"Answer OIL\": {\"had\":true,\"q\":{\"head\":\"OIL: Ranger, Range brief\",\"lead\":\"Un-cancelling Ranger's Range brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true},\"note\":\"\",\"r\":{\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S20 desk",
+  "key": "S20c Done",
+  "expected": "RECORD: the bar after Done",
+  "saw": "bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; after Done {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S20 desk",
+  "key": "S20d the page changed",
+  "expected": "the bar gone on the other page and gone on coming back",
+  "saw": "bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; on Leave War null; back on Edit Schedule null",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S20 desk",
+  "key": "S20e the week changed",
+  "expected": "the bar gone after stepping to the next week",
+  "saw": "bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; week stepped true; bar null; after stepping back null",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S20 desk",
+  "key": "S20f member view",
+  "expected": "the bar gone, or \"Answer OIL\" does not un-cancel",
+  "saw": "bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; after Done {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; in the member view: bar null, sheet null; \"Answer OIL\" there: null; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S20 desk",
+  "key": "S20g sign out and in",
+  "expected": "the bar gone for the member and gone again on the admin's return; still cancelled",
+  "saw": "bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; as the member null; admin back null; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S20 desk",
+  "key": "S20h another admin",
+  "expected": "the bar gone",
+  "saw": "there is no second admin account on this world (only Saber, `ad`); making one is Admin → Users work outside this scenario",
+  "verdict": "NOT WALKED"
+ },
+ {
+  "surface": "S20 desk",
+  "key": "S20i reload",
+  "expected": "still cancelled with WX, no answer; the bar gone",
+  "saw": "bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; after the reload null; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S21 desk",
+  "key": "S21 fixture",
+  "expected": "cancelled, no answer",
+  "saw": "input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S21 desk",
+  "key": "S21a OIL Earn on with the bar up",
+  "expected": "the bar gone",
+  "saw": "bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; OIL Earn pressed true; the bar null; a question null",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S21 desk",
+  "key": "S21b CX in OIL Earn (RECORD)",
+  "expected": "RECORD",
+  "saw": "CX buttons on the board in OIL Earn: 0; not pressed: locator.evaluate: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#schedBoard [data; the cancel sheet null; an OIL question null; bar null; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S22 desk",
+  "key": "S22a the member's card and window",
+  "expected": "no un-cancel control; still cancelled",
+  "saw": "card {\"text\":\"LATE 09:00–10:00 RangerTRAINING CXRange briefWX By Saber\",\"oilq\":false,\"cx\":false,\"struck\":true}; its buttons [\"idy-late:LATE\"]; window opened true: {\"btns\":[\"Several people\",\"?\",\"‹\",\"›\",\"13\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\",\"14\",\"15\",\"16\",\"17\",\"18\",\"19\",\"20\",\"21\",\"22\",\"23\",\"24\",\"25\",\"26\",\"27\",\"28\",\"29\",\"30\",\"31\",\"Delete\",\"Cancel\",\"Save\"],\"cxTag\":false,\"text\":\"PERSON Ranger Several people TYPE ? LL OL OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Fly with Personal Appointment Duty Event OD Other TITLE DATES ‹ JUL 2026 › 13 Mo Tu We Th Fr Sa Su 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 \"}; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S22 desk",
+  "key": "S22a View-only Sched (member)",
+  "expected": "no CX button on any row",
+  "saw": "view-only week: {\"cxButtons\":0,\"text\":true}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S22 desk",
+  "key": "S22b fixture",
+  "expected": "working copy live and answered; the issued version showing it cancelled",
+  "saw": "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S22 desk",
+  "key": "S22c a preview",
+  "expected": "no OIL question, no bar, nothing changed (the working copy stays live and answered)",
+  "saw": "preview {\"grcx\":0,\"previewBar\":true}; no CX button in the preview; the cancel sheet null; question null; bar null; input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S17 desk",
+  "key": "S17a Personal on Saturday",
+  "expected": "no question, no bar; un-cancelled at once",
+  "saw": "asked at filing false; cancelled {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}; after CX off: question null, bar null, note \"Restored\", input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S17 desk",
+  "key": "S17b Personal on a holiday",
+  "expected": "no question, no bar; un-cancelled at once",
+  "saw": "holiday's list {\"count\":\"1 to answer\",\"has\":false}; cancelled {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}; after CX off: question null, bar null, note \"Restored\", input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S17 desk",
+  "key": "S17c a working-day input",
+  "expected": "no question, no bar; un-cancelled at once",
+  "saw": "filing asked false; cancelled {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 15\",\"acc\":\"g\"}; after CX off: question null, bar null, note \"Restored\", input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 15\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S17 desk",
+  "key": "S17d the scheduler's own Ground row",
+  "expected": "no question; un-cancelled at once",
+  "saw": "rows 1 to 2; cancelled {\"cx\":true,\"src\":\"\"}; after CX off: question null, bar null, note \"Restored\", row {\"cx\":false}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S17 desk",
+  "key": "S17e leave / medical / overseas duty",
+  "expected": "CX off on a leave and a medical input at once; on an overseas duty the question",
+  "saw": "NOT WALKED: Saturday's Unavailable section offers no CX or information-only control on any row (its buttons read {\"text\":\"⠿ UNAVAILABLE leave, medical and overseas duty — times and remarks type in place, clear a time for all day + ADD ITEM START END PEOPLE RMKS LL LATE C Ranger IP \",\"buttons\":[\"+ ADD\",\"LL\",\"LATE\",\"OD\",\"LATE\"],\"cx\":0}), so there is no door to press CX off on a leave, a medical or an overseas-duty input from the board",
+  "verdict": "NOT WALKED"
+ },
+ {
+  "surface": "S17 phone",
+  "key": "S17a Personal on Saturday",
+  "expected": "no question, no bar; un-cancelled at once",
+  "saw": "asked at filing false; cancelled {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}; after CX off: question null, bar null, note \"Restored\", input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S17 phone",
+  "key": "S17b Personal on a holiday",
+  "expected": "no question, no bar; un-cancelled at once",
+  "saw": "holiday's list {\"count\":\"1 to answer\",\"has\":false}; cancelled {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}; after CX off: question null, bar null, note \"Restored\", input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S17 phone",
+  "key": "S17c a working-day input",
+  "expected": "no question, no bar; un-cancelled at once",
+  "saw": "filing asked false; cancelled {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 15\",\"acc\":\"g\"}; after CX off: question null, bar null, note \"Restored\", input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 15\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S17 phone",
+  "key": "S17d the scheduler's own Ground row",
+  "expected": "no question; un-cancelled at once",
+  "saw": "rows 1 to 2; cancelled {\"cx\":true,\"src\":\"\"}; after CX off: question null, bar null, note \"Restored\", row {\"cx\":false}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S17 phone",
+  "key": "S17e leave / medical / overseas duty",
+  "expected": "CX off on a leave and a medical input at once; on an overseas duty the question",
+  "saw": "NOT WALKED: Saturday's Unavailable section offers no CX or information-only control on any row (its buttons read {\"text\":\"⠿ UNAVAILABLE leave, medical and overseas duty — times and remarks type in place, clear a time for all day + ADD ITEM START END LL LATE C Ranger IP OD LATE Noma\",\"buttons\":[\"+ ADD\",\"LL\",\"LATE\",\"OD\",\"LATE\"],\"cx\":0}), so there is no door to press CX off on a leave, a medical or an overseas-duty input from the board",
+  "verdict": "NOT WALKED"
+ },
+ {
+  "surface": "S16 desk",
+  "key": "S16a fixture",
+  "expected": "answered Yes at the filing, then cancelled",
+  "saw": "asked true; {\"people\":[\"bane\"],\"who\":null,\"cx\":true,\"cxr\":\"WX\",\"oil\":{\"2026-07-18\":0.5},\"date\":\"Jul 18\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S16 desk",
+  "key": "S16b person changed while cancelled",
+  "expected": "no OIL question while cancelled; still cancelled; the old answer not carried to the new man",
+  "saw": "question null; note \"\"; input now {\"people\":[\"pike\"],\"who\":null,\"cx\":true,\"cxr\":\"WX\",\"oil\":null,\"date\":\"Jul 18\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S16 desk",
+  "key": "S16c CX off",
+  "expected": "the question names the new man; after Yes + Un-cancel it is live with his answer",
+  "saw": "sheet {\"head\":\"OIL: Nomad, Range brief\",\"lead\":\"Un-cancelling Nomad's Range brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true}; note \"Restored\"; input {\"people\":[\"pike\"],\"who\":null,\"cx\":false,\"cxr\":\"\",\"oil\":{\"2026-07-18\":0.5},\"date\":\"Jul 18\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S14 desk",
+  "key": "S14a fixture",
+  "expected": "filed with no question on a working day; cancelled; not in the holiday list",
+  "saw": "asked false; input {\"people\":[\"allavail\"],\"who\":null,\"cx\":true,\"cxr\":\"WX\",\"oil\":null,\"date\":\"Jul 17\"}; holiday's list {\"count\":\"1 to answer\",\"has\":false}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S14 desk",
+  "key": "S14b CX off for an ALL AVAIL input",
+  "expected": "one question (heading recorded); after publishing the men behind it show an HO/FO",
+  "saw": "sheet {\"head\":\"OIL: ALL AVAIL, Crew briefing\",\"lead\":\"Un-cancelling ALL AVAIL's Crew briefing\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true}; note \"Restored\"; input {\"people\":[\"allavail\"],\"who\":null,\"cx\":false,\"cxr\":\"\",\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\"}; publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; Leave War cells {\"Ace\":{\"text\":\"HO*\",\"cls\":\"duty evoff act\"},\"Nomad\":{\"text\":\"OD\",\"cls\":\"evoff act\"},\"Saber\":{\"text\":\"HO*\",\"cls\":\"duty evoff act\"}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S14 desk",
+  "key": "S14c the filer's bell (RECORD)",
+  "expected": "RECORD",
+  "saw": "bell {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":true,\"cls\":\"bellbtn on\"},\"txt\":\"Crew briefingFri 17 Jul Un-cancelled · Saber now Crew briefingFri 17 Jul Cancelled — WX · Saber now Range briefSat 18 Jul You were taken off · Saber now Range briefSat 18 Jul Cancelled — WX · Saber now Range briefSat 18 Jul You were added · Saber now Mark all read\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S15 desk",
+  "key": "S15a fixture",
+  "expected": "cancelled, no answer, on Fri 17",
+  "saw": "asked false; {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S15 desk",
+  "key": "S15b dragged to Saturday while cancelled",
+  "expected": "no question; moved to Sat 18; still cancelled; no answer",
+  "saw": "question null; note \"Moved to 18 Jul\"; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S15 desk",
+  "key": "S15c CX off on Saturday",
+  "expected": "the OIL question first; nothing un-cancelled yet",
+  "saw": "question {\"head\":\"OIL: Ranger, Range brief\",\"lead\":\"Un-cancelling Ranger's Range brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true}; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S15 desk",
+  "key": "S15d answered",
+  "expected": "Un-cancelled with the answer",
+  "saw": "input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-18\":0.5},\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S23 desk",
+  "key": "S23a fixture",
+  "expected": "cancelled; issues recorded as the baseline",
+  "saw": "person id harpoon; asked false; holiday's list false; issues {\"head\":\"⚠ 9 issues\",\"lines\":[\"Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island\",\"Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Trident, Relay — 2 people are double turning: Trident, Relay\"],\"all\":11}; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 15\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S23 desk",
+  "key": "S23b behind the open question",
+  "expected": "issues as before (no clash for Trident)",
+  "saw": "question {\"head\":\"OIL: Trident, Range brief\",\"lead\":\"Un-cancelling Trident's Range brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true}; issues {\"head\":\"⚠ 9 issues\",\"lines\":[\"Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island\",\"Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Trident, Relay — 2 people are double turning: Trident, Relay\"],\"all\":11}; baseline {\"head\":\"⚠ 9 issues\",\"lines\":[\"Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island\",\"Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Trident, Relay — 2 people are double turning: Trident, Relay\"],\"all\":11}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S23 desk",
+  "key": "S23b under the bar after \"Don't un-cancel\"",
+  "expected": "issues as before; still cancelled",
+  "saw": "bar {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; issues {\"head\":\"⚠ 9 issues\",\"lines\":[\"Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island\",\"Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Trident, Relay — 2 people are double turning: Trident, Relay\"],\"all\":11}; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 15\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S23 desk",
+  "key": "S23c after the un-cancel",
+  "expected": "the issues now include a clash naming Trident",
+  "saw": "issues {\"head\":\"⚠ 11 issues\",\"lines\":[\"Trident — RANGE BRIEF & VL ACM clash\",\"Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island\",\"Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Trident — No time for the VL ACM flight brief — RANGE BRIEF sits inside 08:15–10:35 (brief 08:15)\"],\"all\":13}; baseline {\"head\":\"⚠ 9 issues\",\"lines\":[\"Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island\",\"Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Trident, Relay — 2 people are double turning: Trident, Relay\"],\"all\":11}; input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-15\":0.5},\"date\":\"Jul 15\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S27 desk",
+  "key": "S27a the load (RECORD of the S24 sentence)",
+  "expected": "EXPECTED (S24): a note ending \"· 2 inputs need an OIL answer\" (B and C); the list opens for Friday listing B and C, not A, D or F",
+  "saw": "ids {\"A\":\"imv7fpvzxmag5br\",\"B\":\"imv7fpyfwhb1dts\",\"C\":\"imv7fq0jtncbpb2\",\"D\":\"imv7fq1ukq58p0q\",\"E\":\"imv7fq5hjqkgarn\",\"F\":\"imv7fq6sw6pvouh\"}; fixture: publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}, holiday list {\"count\":\"5 to answer\",\"ids\":[\"imv7fpun85vwo9b\",\"imv7fpvzxmag5br\",\"imv7fpyfwhb1dts\",\"imv7fq0jtncbpb2\",\"imv7fq5hjqkgarn\"]}; from the week: button \"Load onto working copy\" then \"Discard 3 edits & load — confirm\"; note \"Friday: Original loaded onto the working copy — viewers still see Original until you publish · 3 unpublished edits replaced · 2 inputs need an OIL answer\"; list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"4 to answer\",\"ids\":[\"imv7fpun85vwo9b\",\"imv7fpyfwhb1dts\",\"imv7fq0jtncbpb2\",\"imv7fq5hjqkgarn\"],\"reach\":true,\"noteOver\":false}; list text \"⠿ OIL — Fri 17 Jul Public holiday · Walk holiday ✕ 4 TO ANSWER Yes to all No to all All day NomadOD Overseas duty — exercise, off island Yes · FO No 10:00–11:00 Ace, Nomad, RangerTRAINING Hangar brief By Ranger Yes · HO No 11:00–12:00 NomadTRAINING Engine brief By Saber Yes · HO No 14:00–15:00 ALL AVAILEVENT Crew briefing By Saber Yes · HO No What is left goes to the schedulers’ bells Later Save\"; list buttons [\"win-oilday-x:✕\",\"odl-yesall:Yes to all\",\"odl-noall:No to all\",\"odl-yes-imv7fpun85vwo9b:Yes · FO\",\"odl-no-imv7fpun85vwo9b:No\",\"odl-yes-imv7fpyfwhb1dts:Yes · HO\",\"odl-no-imv7fpyfwhb1dts:No\",\"odl-yes-imv7fq0jtncbpb2:Yes · HO\",\"odl-no-imv7fq0jtncbpb2:No\",\"odl-yes-imv7fq5hjqkgarn:Yes · HO\",\"odl-no-imv7fq5hjqkgarn:No\",\"odl-later:Later\",\"odl-save:Save\"]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S27 desk",
+  "key": "S27b \"Later\": admin side",
+  "expected": "the list closes; B and C wear the OIL? tag; the schedulers' bell reads as before",
+  "saw": "bell before {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":true,\"cls\":\"bellbtn on\"},\"txt\":\"Walk holidayFri 17 Jul 2 inputs need an OIL answer · Saber now Mark all read\"}; the list closed true; note \"Friday: Original loaded onto the working copy — viewers still see Original until you publish · 3 unpublished edits replaced · 2 inputs need an OIL answer\"; B's card {\"text\":\"LATE OIL? 10:00–11:00 Ace, Nomad, RangerTRAINING Hangar brief By Ranger\",\"oilq\":true,\"cx\":false,\"struck\":false}; C's card {\"text\":\"LATE OIL? 11:00–12:00 NomadTRAINING Engine brief By Saber\",\"oilq\":true,\"cx\":false,\"struck\":false}; bell after {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":true,\"cls\":\"bellbtn on\"},\"txt\":\"Walk holidayFri 17 Jul 4 inputs need an OIL answer · Saber now Mark all read\"}",
+  "verdict": "FAIL"
+ },
+ {
+  "surface": "S27 desk",
+  "key": "S27b \"Later\": B's filer (Ranger)",
+  "expected": "his bell asks him an OIL question for Hangar brief",
+  "saw": "member bell {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":true,\"cls\":\"bellbtn on\"},\"txt\":null}; after pressing it a question: \"OIL: Ace +2, Hangar brief ✕ This input falls on Fri 17 Jul, a non-working day (weekend/PH). Does it deserve HO, half a day of OIL? Yes: credit HO No OIL Back Save\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S27 desk",
+  "key": "S27c reopened from the bell",
+  "expected": "pressing the bell's line opens the day's list with B and C",
+  "saw": "the bell line pressed: \"4 inputs need an OIL answer · Saber\"; list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"4 to answer\",\"ids\":[\"imv7fpun85vwo9b\",\"imv7fpyfwhb1dts\",\"imv7fq0jtncbpb2\",\"imv7fq5hjqkgarn\"],\"reach\":true,\"noteOver\":false}; buttons [\"win-oilday-x:✕\",\"odl-yesall:Yes to all\",\"odl-noall:No to all\",\"odl-yes-imv7fpun85vwo9b:Yes · FO\",\"odl-no-imv7fpun85vwo9b:No\",\"odl-yes-imv7fpyfwhb1dts:Yes · HO\",\"odl-no-imv7fpyfwhb1dts:No\",\"odl-yes-imv7fq0jtncbpb2:Yes · HO\",\"odl-no-imv7fq0jtncbpb2:No\",\"odl-yes-imv7fq5hjqkgarn:Yes · HO\",\"odl-no-imv7fq5hjqkgarn:No\",\"odl-later:Later\",\"odl-save:Save\"]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S27 desk",
+  "key": "S27c \"Yes to all\", Save",
+  "expected": "the list closes; B and C answered Yes; no OIL? tag on their cards; the bell has no OIL line",
+  "saw": "Yes to all pressed true; note \"OIL answered for 4 inputs\"; list after null; B {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; C {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; cards {\"text\":\"LATE 10:00–11:00 Ace, Nomad, RangerTRAINING Hangar brief By Ranger\",\"oilq\":false,\"cx\":false,\"struck\":false} / {\"text\":\"LATE 11:00–12:00 NomadTRAINING Engine brief By Saber\",\"oilq\":false,\"cx\":false,\"struck\":false}; bell {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":false,\"cls\":\"bellbtn\"},\"txt\":\"Nothing new\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S27 desk",
+  "key": "S27c nobody notified of the answer (RECORD)",
+  "expected": "RECORD: Ranger's bell after the answer",
+  "saw": "member bell {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":true,\"cls\":\"bellbtn on\"},\"txt\":\"Hangar briefFri 17 Jul Back on the programme · Saber now Hangar briefFri 17 Jul Taken off the programme · Saber now LLFri 17 Jul You were added · Saber now Range briefFri 17 Jul You were added · Saber now Mark all read\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S28 desk",
+  "key": "S28a set-up",
+  "expected": "published; holiday; all three off the programme",
+  "saw": "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; list [\"imv7ftnqsufmrog\",\"imv7ftp3vx6yu9t\",\"imv7ftqf14fkg9v\",\"imv7ftrou2tuo7t\"]; on the programme: [false,false,false]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S28 desk",
+  "key": "S28b deleted and moved inputs",
+  "expected": "neither counted; no blank card; no error",
+  "saw": "X deleted true; Y moved (asked false) {\"acc\":\"r\",\"date\":\"Jul 16\"}; load: button \"Load onto working copy\" then \"Discard 3 edits & load — confirm\"; note \"Friday: Original loaded onto the working copy — viewers still see Original until you publish · 3 unpublished edits replaced · 2 member input changes stay pending — a load cannot put back a member's own record · 1 input needs an OIL answer\"; list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv7ftnqsufmrog\",\"imv7ftrou2tuo7t\"],\"reach\":true,\"noteOver\":false}; errors added 0",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S28 desk",
+  "key": "S28c an input Fri–Mon with Monday a holiday",
+  "expected": "RECORD (Q4)",
+  "saw": "NOT WALKED: not reached — building a Fri–Mon span through the form and a second holiday did not fit the time",
+  "verdict": "NOT WALKED"
+ },
+ {
+  "surface": "S28 desk",
+  "key": "S28d a two-day holiday",
+  "expected": "RECORD (Q4)",
+  "saw": "NOT WALKED: not reached in the time",
+  "verdict": "NOT WALKED"
+ },
+ {
+  "surface": "S27 phone",
+  "key": "S27a the load (RECORD of the S24 sentence)",
+  "expected": "EXPECTED (S24): a note ending \"· 2 inputs need an OIL answer\" (B and C); the list opens for Friday listing B and C, not A, D or F",
+  "saw": "ids {\"A\":\"imv7ftp211cdyec\",\"B\":\"imv7ftrjbvs5mw5\",\"C\":\"imv7fttnq7kruba\",\"D\":\"imv7ftuxykrxxrr\",\"E\":\"imv7ftyh901jfxv\",\"F\":\"imv7ftztitc2eu7\"}; fixture: publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}, holiday list {\"count\":\"5 to answer\",\"ids\":[\"imv7ftnqnlk7dlr\",\"imv7ftp211cdyec\",\"imv7ftrjbvs5mw5\",\"imv7fttnq7kruba\",\"imv7ftyh901jfxv\"]}; from the board: button \"Load onto working copy\" then \"Discard 3 edits & load — confirm\"; note \"Friday: Original loaded onto the working copy — viewers still see Original until you publish · 3 unpublished edits replaced · 2 inputs need an OIL answer\"; list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"4 to answer\",\"ids\":[\"imv7ftnqnlk7dlr\",\"imv7ftrjbvs5mw5\",\"imv7fttnq7kruba\",\"imv7ftyh901jfxv\"],\"reach\":true,\"noteOver\":false}; list text \"⠿ OIL — Fri 17 Jul Public holiday · Walk holiday ✕ 4 TO ANSWER Yes to all No to all All day NomadOD Overseas duty — exercise, off island Yes · FO No 10:00–11:00 Ace, Nomad, RangerTRAINING Hangar brief By Ranger Yes · HO No 11:00–12:00 NomadTRAINING Engine brief By Saber Yes · HO No 14:00–15:00 ALL AVAILEVENT Crew briefing By Saber Yes · HO No What is left goes to the schedulers’ bells Later Save\"; list buttons [\"win-oilday-x:✕\",\"odl-yesall:Yes to all\",\"odl-noall:No to all\",\"odl-yes-imv7ftnqnlk7dlr:Yes · FO\",\"odl-no-imv7ftnqnlk7dlr:No\",\"odl-yes-imv7ftrjbvs5mw5:Yes · HO\",\"odl-no-imv7ftrjbvs5mw5:No\",\"odl-yes-imv7fttnq7kruba:Yes · HO\",\"odl-no-imv7fttnq7kruba:No\",\"odl-yes-imv7ftyh901jfxv:Yes · HO\",\"odl-no-imv7ftyh901jfxv:No\",\"odl-later:Later\",\"odl-save:Save\"]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S27 phone",
+  "key": "S27b \"Later\": admin side",
+  "expected": "the list closes; B and C wear the OIL? tag; the schedulers' bell reads as before",
+  "saw": "bell before {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":true,\"cls\":\"bellbtn on\"},\"txt\":\"Walk holidayFri 17 Jul 2 inputs need an OIL answer · Saber now Mark all read\"}; the list closed true; note \"Friday: Original loaded onto the working copy — viewers still see Original until you publish · 3 unpublished edits replaced · 2 inputs need an OIL answer\"; B's card {\"text\":\"LATE OIL? 10:00–11:00 Ace, Nomad, RangerTRAINING Hangar brief By Ranger\",\"oilq\":true,\"cx\":false,\"struck\":false}; C's card {\"text\":\"LATE OIL? 11:00–12:00 NomadTRAINING Engine brief By Saber\",\"oilq\":true,\"cx\":false,\"struck\":false}; bell after {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":true,\"cls\":\"bellbtn on\"},\"txt\":\"Walk holidayFri 17 Jul 4 inputs need an OIL answer · Saber now Mark all read\"}",
+  "verdict": "FAIL"
+ },
+ {
+  "surface": "S27 phone",
+  "key": "S27b \"Later\": B's filer (Ranger)",
+  "expected": "his bell asks him an OIL question for Hangar brief",
+  "saw": "member bell {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":true,\"cls\":\"bellbtn on\"},\"txt\":null}; after pressing it a question: \"OIL: Ace +2, Hangar brief ✕ This input falls on Fri 17 Jul, a non-working day (weekend/PH). Does it deserve HO, half a day of OIL? Yes: credit HO No OIL Back Save\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S27 phone",
+  "key": "S27c reopened from the bell",
+  "expected": "pressing the bell's line opens the day's list with B and C",
+  "saw": "the bell line pressed: \"4 inputs need an OIL answer · Saber\"; list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"4 to answer\",\"ids\":[\"imv7ftnqnlk7dlr\",\"imv7ftrjbvs5mw5\",\"imv7fttnq7kruba\",\"imv7ftyh901jfxv\"],\"reach\":true,\"noteOver\":false}; buttons [\"win-oilday-x:✕\",\"odl-yesall:Yes to all\",\"odl-noall:No to all\",\"odl-yes-imv7ftnqnlk7dlr:Yes · FO\",\"odl-no-imv7ftnqnlk7dlr:No\",\"odl-yes-imv7ftrjbvs5mw5:Yes · HO\",\"odl-no-imv7ftrjbvs5mw5:No\",\"odl-yes-imv7fttnq7kruba:Yes · HO\",\"odl-no-imv7fttnq7kruba:No\",\"odl-yes-imv7ftyh901jfxv:Yes · HO\",\"odl-no-imv7ftyh901jfxv:No\",\"odl-later:Later\",\"odl-save:Save\"]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S27 phone",
+  "key": "S27c \"Yes to all\", Save",
+  "expected": "the list closes; B and C answered Yes; no OIL? tag on their cards; the bell has no OIL line",
+  "saw": "Yes to all pressed true; note \"OIL answered for 4 inputs\"; list after null; B {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; C {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; cards {\"text\":\"LATE 10:00–11:00 Ace, Nomad, RangerTRAINING Hangar brief By Ranger\",\"oilq\":false,\"cx\":false,\"struck\":false} / {\"text\":\"LATE 11:00–12:00 NomadTRAINING Engine brief By Saber\",\"oilq\":false,\"cx\":false,\"struck\":false}; bell {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":false,\"cls\":\"bellbtn\"},\"txt\":\"Nothing new\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S27 phone",
+  "key": "S27c nobody notified of the answer (RECORD)",
+  "expected": "RECORD: Ranger's bell after the answer",
+  "saw": "member bell {\"sel\":\"#notifyBell\",\"badge\":{\"text\":\"\",\"dot\":true,\"cls\":\"bellbtn on\"},\"txt\":\"Hangar briefFri 17 Jul Back on the programme · Saber now Hangar briefFri 17 Jul Taken off the programme · Saber now LLFri 17 Jul You were added · Saber now Range briefFri 17 Jul You were added · Saber now Mark all read\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S29 desk",
+  "key": "S29 set-up",
+  "expected": "published; holiday; X and Y off the programme; W cancelled",
+  "saw": "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; on programme [false,false]; W {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S29 desk",
+  "key": "S29d load with the bar up",
+  "expected": "RECORD: the bar after the load and \"Answer OIL\"",
+  "saw": "bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; after Done {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; load note \"Friday: Original loaded onto the working copy — viewers still see Original until you publish · 2 unpublished edits replaced · 2 inputs need an OIL answer\"; list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"3 to answer\",\"ids\":[\"imv7furbsv3tst0\",\"imv7fusnvuxe872\",\"imv7futxomo6i0s\"],\"reach\":true,\"noteOver\":false}; bar after the load {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; W {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}; Answer OIL {\"q\":{\"head\":\"OIL: Ace, Engine brief\",\"lead\":\"Un-cancelling Ace's Engine brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true},\"note\":\"\",\"r\":{\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S29 desk",
+  "key": "S29a Undo after the load",
+  "expected": "RECORD",
+  "saw": "load note \"Friday: Original loaded onto the working copy — viewers still see Original until you publish · 2 unpublished edits replaced · 2 inputs need an OIL answer\"; list [\"imv7furbsv3tst0\",\"imv7fusnvuxe872\",\"imv7futxomo6i0s\"]; X on the programme true; after one Undo: X on the programme false, list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"1 to answer\",\"ids\":[\"imv7furbsv3tst0\"],\"reach\":true,\"noteOver\":false}, note \"Undid: a change to the schedule\"; Yes on a line then Save: {\"id\":\"imv7furbsv3tst0\",\"rec\":{\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":1},\"date\":\"Jul 15\",\"acc\":\"\"},\"note\":\"OIL answered for 1 input\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S29 desk",
+  "key": "S29c load twice",
+  "expected": "the second load adds no second list window and no second OIL tail",
+  "saw": "first: note \"Friday: Original loaded onto the working copy — viewers still see Original until you publish · 2 unpublished edits replaced · 2 inputs need an OIL answer\", list windows 1; second: note \"Friday is already at Original\", list windows 1",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S29 desk",
+  "key": "S29b answer then Undo twice",
+  "expected": "RECORD",
+  "saw": "load note \"Friday: Original loaded onto the working copy — viewers still see Original until you publish · 2 unpublished edits replaced · 2 inputs need an OIL answer\"; list [\"imv7fusnvuxe872\",\"imv7futxomo6i0s\"]; saved {\"note\":\"OIL answered for 2 inputs\",\"x\":{\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"},\"y\":{\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}}; after Undo 1 {\"x\":{\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"},\"y\":{\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"},\"onX\":true}; after Undo 2 {\"x\":{\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"r\"},\"y\":{\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"r\"},\"onX\":false,\"l\":null}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S29 desk",
+  "key": "S29e \"Switch to this plan\" on a saved plan holding taken-off inputs",
+  "expected": "RECORD (Q5)",
+  "saw": "NOT WALKED: not reached in the time (a saved plan with taken-off inputs needs its own set-up)",
+  "verdict": "NOT WALKED"
+ },
+ {
+  "surface": "S29 desk",
+  "key": "S29f a day template on an unpublished holiday",
+  "expected": "RECORD",
+  "saw": "NOT WALKED: not reached in the time",
+  "verdict": "NOT WALKED"
+ },
+ {
+  "surface": "S11 desk",
+  "key": "S11a fixture",
+  "expected": "filed Friday, cancelled, published, Friday made a holiday; no list for the cancelled input (D814)",
+  "saw": "filed asked false; publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; board after publish {\"chip\":\"ORIG\",\"pend\":\"7 changes\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":null,\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":null}; the holiday's list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"1 to answer\",\"ids\":[\"imv7fz68k92f4ww\"],\"reach\":true,\"noteOver\":false}, note \"\"; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 desk",
+  "key": "S11b the board before the un-cancel",
+  "expected": "RECORD: what the holiday alone leaves pending",
+  "saw": "board {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}}; its pending list reads {\"opened\":true,\"txt\":\"⠿ Changes · Friday 17/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 7 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change What this day earns changed Tap a change to go to it.\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S12 desk",
+  "key": "S12a not answered",
+  "expected": "pending unchanged, sign-offs intact, still cancelled with its reason",
+  "saw": "sheet {\"head\":\"OIL: Ranger, Range brief\",\"lead\":\"Un-cancelling Ranger's Range brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true}; bar {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}; board {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}} (before {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}})",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 desk",
+  "key": "S11c Answer OIL → Yes → Un-cancel",
+  "expected": "after Yes + Un-cancel: one more pending change than before; sign-offs still down (D103)",
+  "saw": "sheet {\"head\":\"OIL: Ranger, Range brief\",\"lead\":\"Un-cancelling Ranger's Range brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true}; note \"Restored\"; input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; board {\"chip\":\"ORIG\",\"pend\":\"2 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}} (before {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}})",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 desk",
+  "key": "S11d the pending list names its people",
+  "expected": "one item naming Ranger and Range brief; the other item (if any) was there before",
+  "saw": "the list reads {\"opened\":true,\"txt\":\"Waiting to go out as AL1 · 2 changes Ranger · Range brief Saber 14/10 09:39 CX (WX) → not cancelled What this day earns changed Tap a change to go to it.\"}; before the un-cancel it read {\"opened\":true,\"txt\":\"⠿ Changes · Friday 17/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 7 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change What this day earns changed Tap a change to go to it.\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S12 desk",
+  "key": "S12b Undo of the answered un-cancel",
+  "expected": "pending as before the un-cancel; sign-offs as before; cancelled with its reason, no answer",
+  "saw": "input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}; board {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}} (before {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}})",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S12 desk",
+  "key": "S12c Redo",
+  "expected": "un-cancelled with its answer again, no question, pending +1",
+  "saw": "input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; a question null; board {\"chip\":\"ORIG\",\"pend\":\"2 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 desk",
+  "key": "S11e the issued face in View-only Sched",
+  "expected": "still cancelled (struck / CX) on Friday",
+  "saw": "faces {\"n\":1,\"struck\":1,\"cxrows\":1,\"ctx\":\"CX DUE WXRANGE BRIEF TRAINING 09:00 10:00 Ranger IP LATE\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 desk",
+  "key": "S11e2 the member sees the issued face",
+  "expected": "still cancelled (struck / CX) on Friday for the member too",
+  "saw": "faces {\"n\":1,\"struck\":1,\"cxrows\":1,\"ctx\":\"CX DUE WXRANGE BRIEF TRAINING 09:00 10:00 Ranger IP LATE\"}; an OIL question or list open: 0",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 desk",
+  "key": "S11f the Leave War cell before the amendment",
+  "expected": "no HO or FO credit on Fri 17",
+  "saw": "cell {\"Ranger\":{\"text\":\"\",\"cls\":\"evoff act\"}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 desk",
+  "key": "S11g after Publish AL1",
+  "expected": "the amendment goes out; the Leave War shows an HO/FO for Ranger on Fri 17",
+  "saw": "publish {\"published\":true,\"version\":\"AL1\",\"signSelects\":4}; board {\"chip\":\"AL1\",\"pend\":\"16 changes\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":null,\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":null}; cell {\"Ranger\":{\"text\":\"HO*\",\"cls\":\"duty evoff act\"}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S20 phone",
+  "key": "S20a fixture",
+  "expected": "cancelled with its reason, on Sat 18, no answer",
+  "saw": "input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}; asked at the move: false",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S20 phone",
+  "key": "S20b the board stepped to the next day",
+  "expected": "RECORD: the bar and \"Answer OIL\" from Sunday",
+  "saw": "bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; on Sunday the bar {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; \"Answer OIL\": {\"had\":true,\"q\":{\"head\":\"OIL: Ranger, Range brief\",\"lead\":\"Un-cancelling Ranger's Range brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true},\"note\":\"\",\"r\":{\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S20 phone",
+  "key": "S20c Done",
+  "expected": "RECORD: the bar after Done",
+  "saw": "bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; after Done {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S20 phone",
+  "key": "S20d the page changed",
+  "expected": "the bar gone on the other page and gone on coming back",
+  "saw": "bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; on Leave War null; back on Edit Schedule null",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S20 phone",
+  "key": "S20e the week changed",
+  "expected": "the bar gone after stepping to the next week",
+  "saw": "bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; week stepped true by Next day pressed twice (Sat to Sun to Mon of the next week); bar null; after stepping back null",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S20 phone",
+  "key": "S20f member view",
+  "expected": "the bar gone, or \"Answer OIL\" does not un-cancel",
+  "saw": "bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; after Done {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; in the member view: bar null, sheet null; \"Answer OIL\" there: null; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S20 phone",
+  "key": "S20g sign out and in",
+  "expected": "the bar gone for the member and gone again on the admin's return; still cancelled",
+  "saw": "bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; as the member null; admin back null; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S20 phone",
+  "key": "S20h another admin",
+  "expected": "the bar gone",
+  "saw": "there is no second admin account on this world (only Saber, `ad`); making one is Admin → Users work outside this scenario",
+  "verdict": "NOT WALKED"
+ },
+ {
+  "surface": "S20 phone",
+  "key": "S20i reload",
+  "expected": "still cancelled with WX, no answer; the bar gone",
+  "saw": "bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; after the reload null; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S21 phone",
+  "key": "S21 fixture",
+  "expected": "cancelled, no answer",
+  "saw": "input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S21 phone",
+  "key": "S21a OIL Earn on with the bar up",
+  "expected": "the bar gone",
+  "saw": "bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; OIL Earn pressed true; the bar null; a question null",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S21 phone",
+  "key": "S21b CX in OIL Earn (RECORD)",
+  "expected": "RECORD",
+  "saw": "CX buttons on the board in OIL Earn: 0; not pressed: locator.evaluate: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#schedBoard [data; the cancel sheet null; an OIL question null; bar null; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S22 phone",
+  "key": "S22a the member's card and window",
+  "expected": "no un-cancel control; still cancelled",
+  "saw": "card {\"text\":\"LATE 09:00–10:00 RangerTRAINING CXRange briefWX By Saber\",\"oilq\":false,\"cx\":false,\"struck\":true}; its buttons [\"idy-late:LATE\"]; window opened true: {\"btns\":[\"Several people\",\"?\",\"‹\",\"›\",\"13\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\",\"14\",\"15\",\"16\",\"17\",\"18\",\"19\",\"20\",\"21\",\"22\",\"23\",\"24\",\"25\",\"26\",\"27\",\"28\",\"29\",\"30\",\"31\",\"Delete\",\"Cancel\",\"Save\"],\"cxTag\":false,\"text\":\"PERSON Ranger Several people TYPE ? LL OL OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Fly with Personal Appointment Duty Event OD Other TITLE DATES ‹ JUL 2026 › 13 Mo Tu We Th Fr Sa Su 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 \"}; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S22 phone",
+  "key": "S22a View-only Sched (member)",
+  "expected": "no CX button on any row",
+  "saw": "view-only week: {\"cxButtons\":0,\"text\":true}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S22 phone",
+  "key": "S22b fixture",
+  "expected": "working copy live and answered; the issued version showing it cancelled",
+  "saw": "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S22 phone",
+  "key": "S22c a preview",
+  "expected": "no OIL question, no bar, nothing changed (the working copy stays live and answered)",
+  "saw": "preview {\"grcx\":0,\"previewBar\":true}; no CX button in the preview; the cancel sheet null; question null; bar null; input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ }
+]

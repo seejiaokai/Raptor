@@ -215,7 +215,9 @@ export function globalUndoEngine(): UndoEngine {
     undoTitle: us.undoLabel ? `Undo — ${us.undoLabel}` : (us.undoWhy || 'Undo'),
     redoTitle: us.redoLabel ? `Redo — ${us.redoLabel}` : (us.redoWhy || 'Redo'),
     undo: () => {
-      if (oilUndoBoundary()) { HOOKS.toast('Left OIL Earn — the next undo would change the day itself', 'ok'); notify(); return }
+      /* (owner D838 + D839, 14 Oct 26: "without undoing" — a reader could not tell whether the undo had been done; this
+         press closes the mode and undoes nothing) */
+      if (oilUndoBoundary()) { HOOKS.toast('Left OIL Earn without undoing. The next undo would change the day itself.', 'ok'); notify(); return }
       const r = globalUndo(); if (!r.ok && r.reason) HOOKS.toast(r.reason, 'warn'); notify()
     },
     redo: () => { const r = globalRedo(); if (!r.ok && r.reason) HOOKS.toast(r.reason, 'warn'); notify() },

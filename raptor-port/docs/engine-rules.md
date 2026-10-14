@@ -2425,12 +2425,24 @@ were `FS`/`HS` until the 28 Aug 26 rename.
     "nothing to ask" at every door, and `oilSilent` (that, or taken off the programme) is the ONE test the "OIL?" tag,
     the day's one list and the bell's scan leave an input out by. An answer already given stays on the record; the
     mark taken off, the input needs its answer again: its sign, its place in the list and its own man's bell come back
-    by themselves — but taking the mark off asks nothing itself, and the schedulers' holiday line (a stored notice) does
-    not come back for it. **RULED, not yet built (owner D816, 13 Oct 26):** taking the mark off an input that has no
-    answer for a non-working day puts the OIL question first, as "Accept" does — `OUTSTANDING.md` `[OIL-UNCANCEL-UNASKED]`.
-    **And, ruled the same day, not yet built (owner D818):** after a published version is loaded back onto the working copy,
-    the app says how many of the inputs it put back still need an OIL answer and opens that day's one list — the load
-    itself is not held: `OUTSTANDING.md` `[OIL-LOAD-VERSION-UNASKED]`.
+    by themselves — and the schedulers' holiday line (a stored notice) does not come back for it. **TAKING THE MARK OFF
+    ASKS FIRST (owner D816, 13 Oct 26 — "taking the cancel off an input that has no OIL answer for a non-working day puts
+    the OIL question first, as 'Accept' does"; built 14 Oct 26, `[OIL-UNCANCEL-UNASKED]`):** `ui/reqdoor.ts rowMark`,
+    taking `cx` or `info` off, asks the gate of the input AS IT WILL STAND (without that mark); where the gate says
+    "ask", the take-off is tried and thrown away (`dryRun`), then held (`holdForOil`, kinds `uncx` / `uninfo`) —
+    nothing is written until the answer, and the answer and the un-cancel are ONE command (`unmark`, one Undo). Already
+    answered, a working day, a leave / medical / personal input, or the other mark still on it: at once, no question.
+    An Undo of a cancel, a Redo, a saved plan switched to: ask nothing (D793 reading 3). **A published version loaded
+    back (owner D818, same day; built 14 Oct 26, `[OIL-LOAD-VERSION-UNASKED]`)** is not held: after it,
+    `ui/interactions.ts` counts the inputs standing on the day that need an answer NOW and did not stand there needing
+    one before the load (`leavewar/sync.ts oilOpenOn` read before and after — over EVERY day those inputs cover, since
+    an input of several days has one row and its unanswered day may be another than the one loaded: the fresh read's
+    F1 — kept on his word, D862), adds "N input(s) need(s) an OIL answer." to the load's note (short sentences since D863), and opens the one list for the days those
+    inputs need an answer for — the loaded day, almost always (`ui/pops.ts setOilList`; named by the holiday's own
+    name through `sync.ts holidayOwnName`, and `plain` where a day of it is not a public holiday, so a weekend's
+    list is not headed "Public holiday"). The list is the day's WHOLE open list (D782), so it may show more than N; its
+    foot promises "the schedulers’ bells" only where a scheduler's holiday line is live for a day still unanswered.
+    Pins: `ui/oilwait.test.tsx` (ON10, ON11), `leavewar/holnotice.test.tsx`, `e2e/oil-uncancel-load.spec.ts`.
   - **Leave and medical inputs never earn OIL and are never asked; every other kind that can earn is asked, and its
     answer decides — wherever it is filed** (owner D804, 13 Oct 26 — "As long as leave and medical they don't earn
     oil. For others just ask the OIL question, it may or may not credit OIL" — it replaced D803 of the same morning; `inputs.ts oilAsks` is the list of kinds

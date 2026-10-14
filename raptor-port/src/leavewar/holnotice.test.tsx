@@ -35,6 +35,9 @@ import { setPage } from '../state/view'
 import { commitInput, draftOf, oilAnswered, oilGate, oilSignDay, oilUnansweredDay } from '../ui/inputedit'
 import { saveOilDay } from '../ui/oilday'
 import * as pops from '../ui/pops'
+import { routeClick } from '../ui/interactions'
+import { DAYS } from '../engine/data'
+import { signOf, setDayApproved, dayCurVer } from '../engine/publish'
 import { bellOn, bellTap, openNotice } from '../ui/topbits'
 import { App } from '../ui/App'
 import { projectPeople } from './state/raptorRoster'
@@ -256,6 +259,141 @@ describe('the holiday tells the schedulers — never silent (D780), one notice a
       /* a run of days with no name */
       await act(async () => { pops.setOilList({ from: THU, to: FRI, name: '', fresh: true }); notify() })
       expect(tid('odl-lead')!.textContent).toBe('Thu 16 – Fri 17 Jul are now public holidays.')
+    } finally { await act(async () => { root.unmount() }) }
+  })
+  /* THE LIST OPENED BY A PUBLISHED VERSION LOADED BACK (owner D818, 13 Oct 26). The load can land on any non-working
+     day: on a public holiday the list names it, as the holiday's own list does; on a plain weekend it must not call
+     the day a public holiday (the scenario designer's Q8). The rule of the count is ui/oilwait.test.tsx (ON11). */
+  it('(D818) a published version loaded back on a public holiday: the note counts the input it put back, and the list opens NAMING the holiday — drawn "plain" (a weekend), it carries no "Public holiday" line', async () => {
+    const id = file('Range brief', 'Training', ['bane'])
+    const FRI_DI = DAYS.findIndex((d: any) => d.dt === 'Jul 17')
+    const press = (set: (b: HTMLElement) => void) => {
+      const b = document.createElement('button'); set(b); document.body.appendChild(b)
+      try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+    }
+    const onProg = () => DAYS[FRI_DI].ground.some((g: any) => String(g.src) === id)
+    expect(onProg(), 'the premise: on the programme of Friday').toBe(true)
+    setPage('editsched')                                                     // the load is Edit Schedule's
+    { const g = signOf(FRI_DI); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
+    setDayApproved(FRI_DI, true)
+    expect(holidayAdd(ph(FRI)).ok).toBe(true)
+    pops.setOilList(null)                                                    // the holiday's own list: left for later
+    press(b => { b.dataset.acc = 'x'; b.dataset.accd = String(FRI_DI); b.dataset.acck = id })
+    expect(onProg(), 'the premise: taken off the programme since it was published').toBe(false)
+    SAID = []
+    const ver = String(dayCurVer(FRI_DI))
+    for (let i = 0; i < 2 && !onProg(); i++) press(b => { b.dataset.restore = String(FRI_DI); b.dataset.rver = ver })
+    expect(onProg(), 'the load put its row back').toBe(true)
+    expect(SAID.join(' | '), 'the tail, in his words').toContain(' 1 input needs an OIL answer.')
+    expect(pops.OILLIST, 'the one list of that day, named for the holiday — and not marked plain').toEqual({ from: FRI, to: FRI, name: 'National Day', fresh: false })
+    ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
+    const host = document.createElement('div'); document.body.appendChild(host)
+    const root = createRoot(host)
+    const tid = (t: string) => document.querySelector(`[data-testid="${t}"]`) as HTMLElement | null
+    try {
+      await act(async () => { root.render(<App />) })
+      expect(tid('win-oilday')!.textContent, 'headed as the holiday it is').toContain('Public holiday · National Day')
+      expect(tid('odl-left')!.textContent, 'the schedulers were told of this holiday, so what is left IS on their bells').toBe('What is left goes to the schedulers’ bells')
+      expect(tid(`odl-yes-${id}`), 'the input it put back is on the list').toBeTruthy()
+      await act(async () => { pops.setOilList({ from: FRI, to: FRI, name: '', fresh: false, plain: true }); notify() })
+      expect(tid('win-oilday'), 'still the list').toBeTruthy()
+      expect(tid('win-oilday')!.textContent, 'a plain weekend is not called a public holiday').not.toContain('Public holiday')
+    } finally { await act(async () => { root.unmount() }) }
+  })
+  /* (the fresh read of the finished code, F2 and F3 — 14 Oct 26) A holiday made while the input was OFF the programme
+     told no scheduler of it (it could earn nothing then). The load puts it back: the note counts it and the list opens —
+     headed "Public holiday" alone where the holiday has no name of its own (never the preset's word, "PH"), and with no
+     promise that what is left goes to the schedulers' bells: no bell carries a line for it. */
+  /* the same road as the test above, by its own controls: published, (a holiday made,) taken off, loaded back, the list drawn */
+  const loadedBack = async (iso: string, id: string, holiday: null | { name: string }, see: (tid: (t: string) => HTMLElement | null) => void) => {
+    const di = DAYS.findIndex((d: any) => d.dt === 'Jul ' + +iso.slice(8))
+    const press = (set: (b: HTMLElement) => void) => {
+      const b = document.createElement('button'); set(b); document.body.appendChild(b)
+      try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+    }
+    const onProg = () => DAYS[di].ground.some((g: any) => String(g.src) === id)
+    expect(onProg(), 'the premise: on the programme').toBe(true)
+    setPage('editsched')
+    { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
+    setDayApproved(di, true)
+    if (holiday) expect(holidayAdd({ kind: 'ph', name: holiday.name, from: iso, to: iso }).ok).toBe(true)
+    pops.setOilList(null)
+    press(b => { b.dataset.acc = 'x'; b.dataset.accd = String(di); b.dataset.acck = id })
+    expect(onProg(), 'the premise: taken off since it was published').toBe(false)
+    SAID = []
+    const ver = String(dayCurVer(di))
+    for (let i = 0; i < 2 && !onProg(); i++) press(b => { b.dataset.restore = String(di); b.dataset.rver = ver })
+    expect(onProg(), 'the load put its row back').toBe(true)
+    expect(SAID.join(' | ')).toContain(' 1 input needs an OIL answer.')
+    ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
+    const host = document.createElement('div'); document.body.appendChild(host)
+    const root = createRoot(host)
+    try {
+      await act(async () => { root.render(<App />) })
+      see(t => document.querySelector(`[data-testid="${t}"]`) as HTMLElement | null)
+    } finally { await act(async () => { root.unmount() }) }
+  }
+  /* (the fresh read of the finished code, F2 — 14 Oct 26) a holiday with no name of its own is stored under the preset's
+     word; the list a load opens is headed "Public holiday" alone, as the holiday's own list and the bell's are */
+  it('(D818) a load on a holiday with NO name of its own: the list is headed "Public holiday" alone — never "Public holiday · PH"', async () => {
+    /* (on the Thursday: the published days of this file's world outlive a test, and Friday is the test above's) */
+    const id = file('Range brief', 'Training', ['bane'], { date: 'Jul 16' })
+    await loadedBack(THU, id, { name: '' }, tid => {
+      expect(pops.OILLIST, 'named by nothing').toEqual({ from: THU, to: THU, name: '', fresh: false })
+      expect(tid('win-oilday')!.textContent).toContain('Public holiday')
+      expect(tid('win-oilday')!.textContent).not.toContain('Public holiday ·')
+      expect(tid(`odl-yes-${id}`)).toBeTruthy()
+    })
+  })
+  /* (the read's F3) a scheduler's bell carries an OIL line only for a day that was MADE a holiday; a plain Saturday has
+     none — so the list's foot does not promise that what is left goes to the schedulers' bells */
+  it('(D818) a load on a plain Saturday: the list says nothing of a holiday and promises no bell', async () => {
+    expect(commitInput(null, draftOf({ person: 'bane', type: 'Training', title: 'Saturday brief', date: 'Jul 18', yr: 2026, allday: false, s: 540, e: 600, remarks: '' }), ['bane'])).toBe(true)
+    const id = String((INPUTS.find((x: any) => x.title === 'Saturday brief') as any).iid)
+    expect(rec(id).oil, 'the premise: no answer').toBeUndefined()
+    await loadedBack(SAT, id, null, tid => {
+      expect(pops.OILLIST).toEqual({ from: SAT, to: SAT, name: '', fresh: false, plain: true })
+      expect(tid(`odl-yes-${id}`), 'the input it put back is on the list').toBeTruthy()
+      expect(tid('win-oilday')!.textContent).not.toContain('Public holiday')
+      expect(tid('odl-left')!.textContent, 'nothing is promised').toBe('')
+    })
+  })
+  /* (the narrow read of the fixes, L1 and L2 — 14 Oct 26) THE FOOT'S PROMISE IS ABOUT WHAT IS LEFT, AND ABOUT THE
+     SCHEDULERS' BELLS — not the reader's own. Asked of the rows still unpicked: with the told holiday's input picked
+     and only a plain Saturday's left, no bell carries what is left. And asked of ANY scheduler's line: a scheduler who
+     has none of his own (his sign-in was off when the holiday was made) is still told the truth — the others' bells
+     carry it. */
+  it('the foot promises the schedulers’ bells only for what is LEFT unpicked — and whether or not the reader has a line of his own', async () => {
+    const fri = file('Range brief', 'Training', ['bane'])
+    expect(commitInput(null, draftOf({ person: 'pike', type: 'Training', title: 'Saturday brief', date: 'Jul 18', yr: 2026, allday: false, s: 540, e: 600, remarks: '' }), ['pike'])).toBe(true)
+    const sat = String((INPUTS.find((x: any) => x.title === 'Saturday brief') as any).iid)
+    const wd = ACCOUNTS_LIST.find(a => String(a.pid) === 'nact')!
+    expect(updateAccount(wd.id, { on: false }), 'Warden’s sign-in is off when the holiday is made').toBeNull()
+    expect(holidayAdd(ph(FRI)).ok).toBe(true)
+    expect(hol('stiff'), 'Saber was told').toHaveLength(1)
+    expect(hol('nact'), 'Warden was not').toHaveLength(0)
+    ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
+    const host = document.createElement('div'); document.body.appendChild(host)
+    const root = createRoot(host)
+    const tid = (t: string) => document.querySelector(`[data-testid="${t}"]`) as HTMLElement | null
+    const left = () => tid('odl-left')!.textContent
+    const SAYS = 'What is left goes to the schedulers’ bells'
+    try {
+      await act(async () => { pops.setOilList({ from: FRI, to: SAT, name: '', fresh: false, plain: true }); root.render(<App />) })
+      expect(tid(`odl-yes-${fri}`)).toBeTruthy(); expect(tid(`odl-yes-${sat}`)).toBeTruthy()
+      expect(left(), 'nothing picked: the holiday’s input is left, and the bells carry it').toBe(SAYS)
+      /* everything on the holiday picked (its own input, and whatever else of that Friday was open), the Saturday’s not */
+      await act(async () => { tid('odl-yesall')!.click() })
+      await act(async () => { tid(`odl-yes-${sat}`)!.click() })
+      expect(left(), 'only the plain Saturday’s is left: no bell carries that').toBe('')
+      await act(async () => { tid(`odl-yes-${fri}`)!.click() })
+      expect(left(), 'un-picked: left again').toBe(SAYS)
+      /* Warden, switched on again and signed in: no line of his own for this holiday — the other schedulers’ bells have it */
+      expect(updateAccount(wd.id, { on: true })).toBeNull()
+      await act(async () => { setSession({ user: 'wd', role: 'admin', name: 'wd' }); setMe('nact'); pops.setOilList({ from: FRI, to: FRI, name: 'National Day', fresh: false }); notify() })
+      expect(line('nact'), 'the premise: no line of his own').toHaveLength(0)
+      expect(tid(`odl-yes-${fri}`), 'the list is his to answer too').toBeTruthy()
+      expect(left(), 'what is left IS on the schedulers’ bells').toBe(SAYS)
     } finally { await act(async () => { root.unmount() }) }
   })
   it('an admin whose sign-in is switched off is not told (the break tests, 13 Oct 26)', () => {
@@ -482,6 +620,8 @@ describe('ON SCREEN — the one list as drawn (docs/mock/2026-10-12-oil-notify/*
       /* one pick, and the same button again un-picks it */
       await click(tid(`odl-no-${m.board}`))
       expect(tid(`odl-no-${m.board}`)!.getAttribute('aria-pressed')).toBe('true')
+      /* a picked No wears the outline look a picked Yes does (the design look's L5, owner D830 — it replaces D783's grey) */
+      expect(tid(`odl-no-${m.board}`)!.className).toBe('upconf-seg on-pick')
       expect(tid('odl-count')!.textContent).toBe(`1 of ${n} answered`)
       expect((tid('odl-save') as HTMLButtonElement).disabled).toBe(false)
       await click(tid(`odl-no-${m.board}`))

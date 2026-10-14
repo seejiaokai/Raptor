@@ -49,6 +49,12 @@ button.datebox:disabled{opacity:.55;cursor:default}
 /* a phone: the card in the middle of the screen, as drawn — never wider than the screen less a finger's margin */
 .dcal-layer.is-phone .dcal-scrim{background:rgba(4,7,10,.52)}
 .dcal-layer.is-phone .dcal-card{left:50%;top:50%;transform:translate(-50%,-50%);width:min(350px,calc(100vw - 24px));max-width:none;border-radius:16px}
+/* ON A PHONE THE CARD SAYS WHICH DATE IT IS FOR (the design look of 13 Oct 26 — L9; owner D830): one line with the box's
+   own name ("FROM", "UNTIL", "DONE ON"), drawn by ui/DateBox.tsx on a phone only — there the card sits in the middle of
+   the screen, over the box that opened it. The weekday line's own small capitals. ONE line always, a long name cut with
+   "…" before it wraps: the card is the same height for every box and on every month, so nothing under it moves. */
+.dcal-name{padding:0 4px 2px;font-size:10px;line-height:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media (prefers-reduced-motion:reduce){.dcal-card{animation:none}}
 
 /* ---- THE CALENDAR ---- */
@@ -65,7 +71,15 @@ button.datebox:disabled{opacity:.55;cursor:default}
 .dcal-title i{flex:0 0 10px;font-style:normal;font-size:14px;line-height:1;text-align:center;color:var(--accent)}
 .dcal-title.is-open i{font-size:12px}
 .dcal-title.is-open{color:var(--accent)}
-.dcal-title:focus-visible,.dcal-nav:focus-visible,.dcal .wc-today:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.dcal-nav:focus-visible,.dcal .wc-today:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+/* THE TITLE'S KEYBOARD RING GOES ROUND ITS WORDS, not round the room kept beside them (the design look of 13 Oct 26 —
+   L13; owner D830): drawn on the title's own box it ran the full 10em, most of it empty for a short month. The words
+   and their arrow sit in one element (ui/DateCal.tsx) that takes the title's own spacing — so they sit exactly where
+   they did, on a narrow phone too — and wears the ring. The title itself is unchanged: the same room, the same press
+   (D487 — buttons keep their size). */
+.dcal-tw{display:inline-flex;align-items:center;gap:inherit;min-width:0;border-radius:6px}
+.dcal-title:focus-visible{outline:none}
+.dcal-title:focus-visible .dcal-tw{outline:2px solid var(--accent);outline-offset:3px}
 /* the Today icon is "Jump to a date"'s own (08-windows-tools.css `.wc-today`); here it follows the title */
 .dcal .wc-today{margin:0;flex:0 0 auto}
 .dcal-sp{flex:1 1 0;min-width:0}
@@ -90,18 +104,36 @@ button.datebox:disabled{opacity:.55;cursor:default}
 .dcal.is-marked .dcal-d.is-we b{color:var(--ink-3)}
 .dcal.is-marked .dcal-d.is-mk b{color:var(--ink);font-weight:800}
 @media (hover:hover){.dcal .dcal-d:not(:disabled):hover b{background:var(--raised)}}
-/* a date that may not be picked is faint */
+/* a date that may not be picked is faint — the quiet ink at .55: about 2.7 to 1 against the card, where .4 was about
+   2.0 (worked out from the app's colour values; a weekend date, the same ink at full strength, is about 5.9). You do
+   not pick them, but you read them to find your place in the week, and outdoors on a phone the row read as nearly
+   empty (the design look of 13 Oct 26 — L12; owner D830). */
 .dcal .dcal-d.is-out{cursor:default}
-.dcal .dcal-d.is-out b{color:var(--ink-3);opacity:.4;font-weight:500}
+.dcal .dcal-d.is-out b{color:var(--ink-3);opacity:.55;font-weight:500}
 /* today on a soft accent disc; the picked date on the full one */
 .dcal .dcal-d.is-today b{background:rgba(59,198,232,.14);color:var(--accent);font-weight:800;opacity:1}
 .dcal .dcal-d.is-sel b,.dcal .dcal-d.is-sel:hover b{background:var(--accent);color:var(--accent-ink);font-weight:800}
+/* A DATE THAT MAY NOT BE PICKED IS FAINT AND PLAIN WHATEVER ELSE IT IS (the design look of 13 Oct 26 — L8; owner D830).
+   In "Until" the dates before the start were faint except two kinds: today kept its bright number (its rule, above,
+   comes after the faint one and put its strength back), and the weekday that stands out stayed bold and full ink (its
+   rule binds tighter than the faint one). Both looked alive and took no tap. So the standing-out weekday is plain and
+   quiet where it may not be picked; and today keeps its DISC — it still marks today — with its number as faint as its
+   neighbours': the quiet ink at the faint dates' own strength, written into the colour, because fading the whole date
+   would take the disc down with it. The date already picked is left as it was. */
+.dcal.is-marked .dcal-d.is-out:not(.is-sel) b{color:var(--ink-3);font-weight:500}
+.dcal .dcal-d.is-out.is-today:not(.is-sel) b{color:color-mix(in srgb,var(--ink-3) 55%,transparent);font-weight:500;opacity:1}
 .dcal .dcal-d:focus-visible b{outline:2px solid var(--accent);outline-offset:2px}
 /* a run: the days between its two ends on a soft band that joins them */
 .dcal-d.is-in::before{content:'';position:absolute;left:0;right:0;top:3px;bottom:3px;background:rgba(59,198,232,.16)}
 .dcal-d.is-from::before{left:50%}
 .dcal-d.is-to::before{right:50%}
-.dcal-foot{padding:8px 4px 0;font-size:12.5px;font-weight:700;line-height:1.35;color:var(--accent)}
+/* every date INSIDE a run is full strength: a Saturday and a Sunday in it stayed in the weekend's quiet ink, as if left
+   out of it (the design look of 13 Oct 26 — L17, found by Fable; owner D830). Its two ends keep the picked disc's own
+   number, today its own, and a date that may not be picked stays faint. */
+.dcal .dcal-d.is-we.is-in:not(.is-sel):not(.is-today):not(.is-out) b{color:var(--ink)}
+/* the run said in words: the plain ink, bold — it was the accent, and read as a link (the design look of 13 Oct 26 —
+   L11; owner D830; the design guide's §4: the accent means "press me" or "picked") */
+.dcal-foot{padding:8px 4px 0;font-size:12.5px;font-weight:700;line-height:1.35;color:var(--ink)}
 
 /* ---- THE MONTH-AND-YEAR LISTS: months beside years, each SCROLLED, the chosen pair in a band across the middle, the
    rows fading away from it (D796 — his second photo). As tall as the weekday line and the six rows it stands in for,
@@ -118,7 +150,15 @@ button.datebox:disabled{opacity:.55;cursor:default}
 .dcal-opt{height:44px;display:flex;align-items:center;justify-content:center;scroll-snap-align:center;font-size:19px;font-weight:600;color:var(--ink);
   font-variant-numeric:tabular-nums;cursor:pointer}
 .dcal-opt.is-at{font-weight:800}
-.dcal-col:focus-visible .dcal-opt.is-at{color:var(--accent)}
+/* THE LIST THAT HAS THE KEYBOARD WEARS THE APP'S RING (the design look of 13 Oct 26 — L13; owner D830). The keyboard's
+   place was shown by turning that list's chosen word the accent: "October" cyan beside a white "2026" read as "October
+   is chosen, 2026 is not". Both words stay the plain ink. The ring is drawn by the lists' own box, over the list's
+   column, and not on the list itself: a list fades its rows away at its top and foot (the mask above), and a ring drawn
+   on it would fade away with them. The two columns are 1.25 to 1 (`.dcal-lists`), so the months' ring ends where the
+   years' begins. A keyboard's only (`:focus-visible`), as the ring on a date is (D824). */
+.dcal-lists:has(> .dcal-col:focus-visible)::after{content:'';position:absolute;top:0;bottom:0;left:0;right:44.444%;border-radius:12px;
+  outline:2px solid var(--accent);outline-offset:-2px;pointer-events:none}
+.dcal-lists:has(> .dcal-col ~ .dcal-col:focus-visible)::after{left:55.556%;right:0}
 
 /* a narrow phone (320px): the head's five things still sit on one line */
 @media (max-width:359px){

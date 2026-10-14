@@ -438,7 +438,7 @@ describe('a shared input is never turned into a medical entry by the group\u2019
     if (fix) await click(fix)
     said.length = 0
     await click($('#inpEditSave'))
-    expect(said.join(' | ')).toMatch(/medical entry is one person/i)
+    expect(said.join(' | ')).toBe('A medical entry is one person’s own. Take the other people out and save, then change its kind.')
     expect(live(g.iid).type, 'nothing was written').toBe('Meeting')
     expect(inIt(g.iid), 'nobody was taken out').toEqual([a, b])
     expect($$('[data-testid="docconf"], [data-testid="oilconf"]')).toHaveLength(0)

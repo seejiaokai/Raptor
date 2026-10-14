@@ -36,7 +36,7 @@ import { PEOPLE } from '../engine/people'
 import { HOOKS, storeBackend } from '../engine/hooks'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
-import { _resetFloatWins } from './FloatWindow'
+import { FloatWin, _resetFloatWins } from './FloatWindow'
 import { setInpEdit } from './pops'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -303,6 +303,21 @@ describe('the schedule\'s own line of a cancelled input (D767 reading 3) — ui/
 /* D771 (12 Oct 26 — "Yes for both"): "a cancelled input's own window says it is cancelled: the same small red CX tag
    and its reason in red, beside the window's title — read only". A person who taps his cancelled card must not open a
    window that looks live; only a scheduler cancels or brings back, on its row on the schedule (D760 reading 2). */
+/* THE WINDOW SHELL'S OWN ORDER (owner D849; ui/FloatWindow.tsx): a mark follows the title and stands BEFORE the window's
+   tools. The input's window never carries both, so nothing watched which came first (the break test of 14 Oct 26). */
+describe('a window that carries a mark and tools: grip, title, mark, tools, ✕', () => {
+  it('the mark is drawn straight after the title, the tools after it', async () => {
+    const box = document.createElement('div'); document.body.appendChild(box)
+    const r = createRoot(box)
+    await act(async () => { r.render(<FloatWin id="both" title="Tue 14 Jul" onClose={() => {}} mark={<span data-testid="m">CX</span>} tools={<button type="button">+ Note</button>}><p>body</p></FloatWin>) })
+    try {
+      const bar = box.querySelector('.win-bar')!
+      expect(Array.from(bar.children).map(c => (c as HTMLElement).className.split(' ')[0])).toEqual(['win-grip', 'win-ttl', 'win-mark', 'win-tools', 'win-x'])
+      expect(bar.classList.contains('has-mark')).toBe(true)
+    } finally { await act(async () => { r.unmount() }); box.remove(); _resetFloatWins() }
+  })
+})
+
 describe('the input\'s own window says it is cancelled (D771)', () => {
   const openIt = async (r: any) => { await act(async () => { setInpEdit(live(r.iid)); notify() }) }
   it('the red CX tag and the reason, beside the window\'s title — and nothing in the window cancels or brings back', async () => {
@@ -316,6 +331,17 @@ describe('the input\'s own window says it is cancelled (D771)', () => {
     expect(mark.querySelectorAll('button, input, select').length, 'read only: a mark, never a control').toBe(0)
     const head = mark.closest('.win-bar, .airpop-head')
     expect(head, 'it stands in the window\'s title bar').toBeTruthy()
+    /* …AND IT FOLLOWS THE TITLE, NOT THE ✕ (owner D849, 14 Oct 26 — "2 yes", of the before-and-after picture; D771's own
+       words are "beside the window's title"). Built on 12 Oct as one of the movable window's head tools, it stood at the
+       right, by the cross. It is a mark of the title's now: the thing straight after the title, never among the tools. */
+    expect(mark.closest('.win-tools'), 'not one of the window\'s tools').toBeNull()
+    const after = (mark.closest('.win-mark') || mark).previousElementSibling as HTMLElement
+    expect(after && (after.classList.contains('win-ttl') || after.id === 'inpEditTitle'), 'the title is what stands before it').toBe(true)
+    if (head!.classList.contains('win-bar')) {
+      expect(head!.classList.contains('has-mark'), 'the bar knows it carries a mark (the title then gives the room up to it)').toBe(true)
+      const order = Array.from(head!.children).map(c => (c as HTMLElement).className.split(' ')[0])
+      expect(order).toEqual(['win-grip', 'win-ttl', 'win-mark', 'win-x'])
+    }
   })
   it('no reason typed: the tag alone (D767 reading 4)', async () => {
     await mount(false)
@@ -330,6 +356,7 @@ describe('the input\'s own window says it is cancelled (D771)', () => {
     const a = await file()
     await openIt(a)
     expect($('[data-testid="inped-cx"]')).toBeNull()
+    expect($('.win-bar.has-mark, .win-mark'), 'and a bar with no mark is the bar it always was').toBeNull()
     await act(async () => { setInpEdit(null); notify() })
     const b = await file({ cx: false, cxr: 'WX' })
     await openIt(b)

@@ -235,14 +235,35 @@
    the table's own colour and the hover rule still works afterwards.
    InputsPage's FLASH_MS mirrors this 6000ms so the class comes off the row
    right as the animation finishes, not mid-hold. */
+/* NO GLOW — the board's own ring (owner D860, 15 Oct 26: "the blue ring … on scheduler board … doesn't have glow. Like
+   the one u designed for inputs. Can u match the blue ring like the one on scheduler board"). Every input mark is the
+   board's `.sb-fresh` ring: inset, 2px, the one blue, nothing outside the box (the board dropped its glow on 16 Aug 26
+   when a clipping parent swallowed it on some sides). Pinned by ui/markring-css.test.ts. */
 @keyframes inflash{
-  0%,90.83%{box-shadow:inset 0 0 0 2px #1E86FF,0 0 9px rgba(30,134,255,.5)}
-  100%{box-shadow:inset 0 0 0 2px rgba(30,134,255,0),0 0 9px rgba(30,134,255,0)}
+  0%,90.83%{box-shadow:inset 0 0 0 2px #1E86FF}
+  100%{box-shadow:inset 0 0 0 2px rgba(30,134,255,0)}
 }
-.innew>td{animation:inflash 6s ease-out 1;position:relative}
-/* a flash is decoration; for anyone who has asked for less motion the row is
-   simply already settled */
-@media (prefers-reduced-motion:reduce){.innew>td{animation:none}}
+/* ONE BOX ROUND THE WHOLE ROW (owner D861, 15 Oct 26 — "I want a box, so it's standardised"). A table row cannot wear a
+   box of its own (a <tr>'s shadow sits under its cells'), and a box on every cell drew one box per cell. So each cell
+   draws its SHARE of one box on a layer over itself — the top and bottom lines on every cell, the left side on the
+   first, the right side on the last — and the cells, collapsed against each other (.intbl), join them into one. The
+   layer fades as the ring does (the same 6s, the hold to 90.83%), and it sits OVER the cell, so the row's own coloured
+   left edge (the first cell's shadow, above) stays inside the box untouched, moving or steady. */
+@keyframes inflashbox{0%,90.83%{opacity:1}100%{opacity:0}}
+.innew>td{position:relative}
+.innew>td::after{content:'';position:absolute;inset:0;pointer-events:none;border-top:2px solid #1E86FF;border-bottom:2px solid #1E86FF;
+  animation:inflashbox 6s ease-out 1 forwards}
+.innew>td:first-child::after{border-left:2px solid #1E86FF;border-radius:6px 0 0 6px}
+.innew>td:last-child::after{border-right:2px solid #1E86FF;border-radius:0 6px 6px 0}
+/* THE MARK IS FEEDBACK, NOT DECORATION (owner D850, D851 — 14 Oct 26; the design guide's §1 and §5): since "Input added"
+   is no longer said where the new input can be seen, the box IS what says it. For anyone who has asked for less motion
+   it used to be switched off whole, which would leave that reader nothing. There it shows STEADY — the same box, no
+   fade — and goes when its six seconds are up (the class comes off: InputsPage's FLASH_MS). */
+@media (prefers-reduced-motion:reduce){
+  /* steady: the same one box, no fade. (Drawn on its own layer, it no longer fights the first cell's coloured edge —
+     the three extra rules the walk of 14 Oct 26 needed for a box drawn as the cells' own shadow are gone with it.) */
+  .innew>td::after{animation:none}
+}
 /* ON A PHONE THE LIST IS NOT THIS TABLE (owner D718, D723 — 10 Oct 26). Under 820px `ui/InputsPage.tsx` draws the input
    card under a heading a day (ui/InputCard.tsx; its styles are 25-inputs-calendar.css `.icard…`) and no table at all —
    so the rules that restyled each table row into a card there (18 and 22 Aug 26), and the inline editor's phone

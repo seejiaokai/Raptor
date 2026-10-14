@@ -45,6 +45,10 @@ const SETTLE_PX = 24
 export function DateBox(p: {
   /** what the date is — the name a screen reader says before the date ("From: Thu 5 Nov 2026") */
   label: string
+  /** the word a phone's card shows for this box (the line of small capitals at its top — L9), where the screen's own
+   *  word for it is not its spoken name: under "Until" the Calendar window's box is "The date it ends" aloud, and its
+   *  card says "UNTIL". Without it the card shows `label`. It changes nothing a screen reader is told. */
+  cardName?: string
   /** the date held, "yyyy-mm-dd"; "" for none */
   value: string
   /** a date was picked — always a real date, and only when it differs from the one held */
@@ -55,6 +59,9 @@ export function DateBox(p: {
   className?: string
   /** the first date that may be picked */
   min?: string
+  /** the last date that may be picked — the calendar draws the later ones faint and takes no tap on them (the design
+   *  look of 13 Oct 26 — L14, owner D830: the Tracker's boxes that refuse a day after today) */
+  max?: string
   /** a weekday that stands out on the calendar (0 = Monday) */
   markWd?: number
   /** the month an empty box opens on — a date in it */
@@ -120,7 +127,7 @@ export function DateBox(p: {
       </button>
       {open && !p.disabled && createPortal(
         <Layer
-          label={p.label} value={has ? p.value : ''} min={p.min} markWd={p.markWd}
+          label={p.label} name={p.cardName || p.label} value={has ? p.value : ''} min={p.min} max={p.max} markWd={p.markWd}
           at={p.at || (validIso(p.today) ? p.today : validIso(p.min) ? p.min : undefined)} today={p.today} box={box.current}
           onPick={(iso, at) => { close(at); if (iso !== p.value) p.onChange(iso) }}
           onClose={close}
@@ -134,8 +141,9 @@ export function DateBox(p: {
   )
 }
 
-function Layer({ label, value, min, markWd, at, today, box, onPick, onClose }: {
-  label: string; value: string; min?: string; markWd?: number; at?: string; today?: string
+function Layer({ label, name, value, min, max, markWd, at, today, box, onPick, onClose }: {
+  /** `label` is said (the card's spoken name); `name` is shown (a phone's line at the top of the card) */
+  label: string; name: string; value: string; min?: string; max?: string; markWd?: number; at?: string; today?: string
   box: HTMLElement | null
   /** `at` — where the click that picked landed; null for a pick by the keyboard */
   onPick: (iso: string, at: { x: number; y: number } | null) => void
@@ -239,7 +247,14 @@ function Layer({ label, value, min, markWd, at, today, box, onPick, onClose }: {
     <div className={'dcal-layer' + (phone ? ' is-phone' : '')} ref={layer} onClickCapture={e => { pt.current = e.detail > 0 ? { x: e.clientX, y: e.clientY } : null }} onClick={mine} onPointerDown={mine} onMouseDown={mine} onKeyDown={mine}>
       <div className="dcal-scrim" data-testid="dcal-scrim" onClick={() => onClose(pt.current)} />
       <div className="dcal-card" ref={card} role="dialog" aria-modal="true" aria-label={`${label} — pick a date`} data-testid="dcal-card">
-        <DateCal value={value} min={min} markWd={markWd} at={at} today={today} onPick={iso => onPick(iso, pt.current)} />
+        {/* ON A PHONE THE CARD SAYS WHICH DATE IT IS FOR (the design look of 13 Oct 26 — L9; owner D830). The centred
+            card covers the box that opened it and looked the same for every box: on the Tracker's panel it covers
+            three of five date boxes, in its marking pop-up both "Done on" and "Failed on" — a finger that landed on
+            the wrong box picked a date into the wrong place with nothing to say so. One line with the box's own name,
+            the same on every month, so nothing under it moves. Not on a desktop: the panel hangs under its own box.
+            The card already says the name to a screen reader (its label above), so the line is not said twice. */}
+        {phone && name ? <div className="dcal-name" data-testid="dcal-name" aria-hidden="true">{name}</div> : null}
+        <DateCal value={value} min={min} max={max} markWd={markWd} at={at} today={today} onPick={iso => onPick(iso, pt.current)} />
       </div>
     </div>
   )

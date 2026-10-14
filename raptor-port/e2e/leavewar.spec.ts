@@ -6384,3 +6384,100 @@ test('the posting dates are the app’s own date boxes: the calendar opens on to
   await expect(page.locator('[data-testid="cell-slipway-2026-07-17"]'), 'the day after the new date is not struck').toHaveClass(/gone/)
   await expect(page.locator('[data-testid="cell-slipway-2026-07-15"]'), 'a day before the new date is struck').not.toHaveClass(/gone/)
 })
+
+/* THE CLASH NOTE ([LW-CLASH-NOTE-PHONE] — owner D805, D823, D827: "A+", approved as drawn 13 Oct 26; its words D837).
+   ON A PHONE the note was a box squeezed into what the second line's four buttons left — 100 of 390 wide, 294 tall for
+   two clashes, the grid starting halfway down the screen. It is a slim line of its own under the two lines that opens
+   its list in place. What only a real screen can show is pinned here: where it sits, that the two lines above are
+   untouched, the columns in line, nothing over a row, and that a tap opens the day FOR that person. The words, the
+   start-open rule and the tap's two destinations are unit-tested (src/leavewar/clashwayout.test.tsx); the check's own
+   walk is scripts/handpass/dl-clash-built.mjs.
+   The fixture is the developer's bridge: Saturday 18 Jul 26 published with the seed's duty officer and one more man on
+   a programme row, each then given a bid on that day. */
+const CLASH_DAY = '2026-07-18'
+async function twoClashes(page: Page) {
+  await lwRole(page, 'admin')
+  await page.evaluate(d => {
+    const W = window as any, di = 5
+    W.DAYS[di].ground.push({ prog: 'Range brief', str: '09:00', end: '12:00', who: '', rmks: '' }); W.afterSchedMutate()
+    W.fillSlot(`g:${di}.${W.DAYS[di].ground.length - 1}.+`, 'bane'); W.afterSchedMutate()
+    const g = W.signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    W.setDayApproved(di, true); W.afterSchedMutate()
+    if (W.clearToast) W.clearToast()
+    W.lwSetCell('plasma', d, 'LL'); W.lwSetCell('bane', d, 'OL')
+  }, CLASH_DAY)
+  await expect(page.locator('[data-testid="sync-clashes"]')).toBeVisible()
+}
+const daySheetFor = async (page: Page, who: string) => {
+  const sheet = page.locator('#page-leavewar [role="dialog"][data-testid="daylist-sheet"]')
+  await expect(sheet, 'the day opens for that person').toBeVisible()
+  await expect(sheet).toContainText(who)
+  await expect(sheet).toContainText('Sat 18 Jul')
+  await expect(sheet.locator('[data-testid^="dl-approve-"]'), 'the sheet where the bid is decided').toBeVisible()
+}
+
+test('on a phone the clash note is a slim line under the two lines of buttons; it opens its list in place, in aligned columns, and a tap opens that day for that person', async ({ page }) => {
+  test.skip(!isPhone(), 'a phone-size design (D827); the desktop keeps its strip — the test below (D679)')
+  await page.setViewportSize({ width: 390, height: 844 })
+  await lwRole(page, 'admin')
+  const before = await page.evaluate(() => { const f = document.querySelector('#page-leavewar .filters')!.getBoundingClientRect(); return { filtersH: Math.round(f.height), gridTop: Math.round(document.querySelector('#page-leavewar .stage')!.getBoundingClientRect().top) } })
+  await twoClashes(page)
+  const read = () => page.evaluate(() => {
+    const pg = document.querySelector('#page-leavewar')!, n = pg.querySelector('[data-testid="sync-clashes"]')!, filters = pg.querySelector('.filters')!
+    const line = n.querySelector('[data-testid="clash-line"]')!, r = n.getBoundingClientRect(), list = n.querySelector('[data-testid="clash-list"]')
+    const rows = [...n.querySelectorAll('.clashrow')].map(row => {
+      const q = (c: string) => row.querySelector(c)!.getBoundingClientRect(), rr = row.getBoundingClientRect(), lh = parseFloat(getComputedStyle(row).lineHeight)
+      const hit = document.elementFromPoint(rr.left + rr.width / 2, rr.top + rr.height / 2)
+      return { whoL: Math.round(q('.clash-who').left), dayL: Math.round(q('.clash-day').left), doR: Math.round(q('.clash-do').right), dayLines: Math.round(q('.clash-day').height / lh), h: Math.round(rr.height), onTop: !!hit && (hit === row || row.contains(hit)) }
+    })
+    return {
+      inFilters: filters.contains(n), next: filters.nextElementSibling === n, left: Math.round(r.left), width: Math.round(r.width), vw: innerWidth,
+      line: (line.textContent || '').replace(/\s+/g, ' ').trim(), lineH: Math.round(line.getBoundingClientRect().height), expanded: line.getAttribute('aria-expanded'),
+      filtersH: Math.round(filters.getBoundingClientRect().height), gridTop: Math.round(pg.querySelector('.stage')!.getBoundingClientRect().top),
+      rows, innerScroll: !!list && list.scrollHeight > list.clientHeight + 1, sideways: document.documentElement.scrollWidth > innerWidth,
+    }
+  })
+  let m = await read()
+  expect(m.inFilters, 'never inside the second line of buttons').toBe(false)
+  expect(m.next, 'straight after the two lines').toBe(true)
+  expect([m.left, m.width], 'the width of the screen').toEqual([0, m.vw])
+  expect(m.line).toBe('⚠ 2 clashes with the schedule Show')
+  expect(m.expanded, 'several clashes start closed').toBe('false')
+  expect(m.lineH, 'a slim line — the schedule’s own styles must not reach it (it stood 46 tall when one did)').toBeLessThanOrEqual(34)
+  expect(m.filtersH, 'the second line of buttons is untouched').toBe(before.filtersH)
+  expect(m.gridTop - before.gridTop, 'closed, the grid starts one slim line lower').toBeLessThanOrEqual(36)
+  expect(m.sideways).toBe(false)
+
+  await page.locator('[data-testid="clash-line"]').tap()
+  await expect(page.locator('[data-testid="clash-list"]')).toBeVisible()
+  m = await read()
+  expect(m.line).toBe('⚠ 2 clashes with the schedule Hide')
+  expect(m.rows).toHaveLength(2)
+  expect(new Set(m.rows.map(r => r.whoL)).size, 'every name starts at one edge').toBe(1)
+  expect(new Set(m.rows.map(r => r.dayL)).size, 'every day starts at one edge').toBe(1)
+  expect(new Set(m.rows.map(r => r.doR)).size, 'every instruction ends at one edge').toBe(1)
+  expect(m.rows.every(r => r.dayLines === 1), 'the day never wraps').toBe(true)
+  expect(m.rows.every(r => r.onTop), 'nothing lies over a row').toBe(true)
+  expect(m.innerScroll, 'the list never scrolls inside itself').toBe(false)
+  expect(m.filtersH).toBe(before.filtersH)
+  expect(m.sideways).toBe(false)
+
+  const who = (await page.locator('[data-testid="clash-row-0"] .clash-who').textContent())!.trim()
+  await page.locator('[data-testid="clash-row-0"]').tap()
+  await daySheetFor(page, who)
+})
+
+test('on a tablet and a desktop the clash note stays the strip under the stage line, in the same words, and its instruction is a link that opens the day for that person', async ({ page }) => {
+  test.skip(isPhone(), 'the wider sizes keep the strip (D679); the phone has its own test above')
+  await twoClashes(page)
+  const strip = page.locator('#page-leavewar .filters > .syncclash[data-testid="sync-clashes"]')
+  await expect(strip, 'inside the stage line, as before').toBeVisible()
+  await expect(page.locator('[data-testid="clash-line"]'), 'no phone line').toHaveCount(0)
+  const rows = (await strip.locator('.row').allTextContents()).map(t => t.replace(/ /g, ' ').replace(/\s+/g, ' ').trim())
+  expect(rows).toHaveLength(2)
+  for (const t of rows) expect(t).toMatch(/^.+ · Sat 18 Jul · Weekend\/PH work earns \*?[FH]O\*?, but the day holds (LL|OL)\. Decide the bid ›$/)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false)
+  const who = rows[0]!.split(' · ')[0]!
+  await page.locator('[data-testid="clash-go-0"]').click()
+  await daySheetFor(page, who)
+})

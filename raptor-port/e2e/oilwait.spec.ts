@@ -71,6 +71,30 @@ const onTopAndInside = (p: Page, sel: string) => p.evaluate(sel => {
   return { there: true, top: hit === b || b.contains(hit), inside: r.left >= -0.5 && r.top >= -0.5 && r.right <= window.innerWidth + 0.5 && r.bottom <= window.innerHeight + 0.5 }
 }, sel)
 
+/* THE BAR IS A BAND UNDER THE BAR IN FRONT, ONE LINE ALWAYS ([LOOK-13OCT-SMALL-FIXES] — owner D831, D840, D841;
+   ui/OilWaitSheet.tsx, 17-save-status.css). What only a real screen can say: it is the last line of the bar it sits
+   under, edge to edge, the failed-save warning's own height; its words and both buttons share ONE line and none of
+   them is cut; and the line under it is amber. `wider` asks again in letters about a seventh wider — a stand-in for
+   his iPhone's — where the bar must STILL be one line: its letters step down, nothing wraps, nothing is cut. */
+const bandFacts = (p: Page, wider = false) => p.evaluate(async wider => {
+  const b = document.querySelector('[data-testid="oilbar"]') as HTMLElement
+  if (wider) { b.style.letterSpacing = '.075em'; window.dispatchEvent(new Event('resize')); await new Promise(r => requestAnimationFrame(() => r(null))) }
+  const r = b.getBoundingClientRect(), under = (b.closest('.sb-top') || b.closest('.topbar')) as HTMLElement
+  const kids = [...b.children].map(k => { const q = k.getBoundingClientRect(); return { mid: Math.round(q.top + q.height / 2), left: q.left, right: q.right, h: Math.round(q.height), cut: (k as HTMLElement).scrollWidth > (k as HTMLElement).clientWidth + 0.5 } })
+  const msg = b.querySelector('[data-testid="oilbar-text"]') as HTMLElement, lh = parseFloat(getComputedStyle(msg).lineHeight) || msg.getBoundingClientRect().height
+  const out = {
+    cls: b.className.replace(/ is-tight/, ''), height: Math.round(r.height), left: Math.round(r.left), right: Math.round(r.right), vw: innerWidth,
+    lastLineOfItsBar: !!under && Math.abs(under.getBoundingClientRect().bottom - r.bottom) <= 1.5,
+    oneLine: new Set(kids.map(k => k.mid)).size === 1 && msg.getBoundingClientRect().height <= lh * 1.4,
+    nothingCut: kids.every(k => !k.cut) && b.scrollWidth <= b.clientWidth + 0.5 && kids.every(k => k.left >= r.left - 0.5 && k.right <= r.right + 0.5),
+    buttons: kids.slice(1).map(k => k.h), fit: b.style.getPropertyValue('--oil-fit') || '1',
+    edgeUnder: under ? getComputedStyle(under).borderBottomColor : '', only: document.querySelectorAll('[data-testid="oilbar"]').length,
+  }
+  if (wider) { b.style.letterSpacing = ''; window.dispatchEvent(new Event('resize')) }
+  return out
+}, wider)
+const AMBER_EDGE = 'rgba(229, 194, 74, 0.5)'
+
 for (const size of SIZES) {
   test.describe(`${size.name} — the swap that waits (ON1, ON6)`, () => {
     test.use(size.use as any)
@@ -110,9 +134,25 @@ for (const size of SIZES) {
       await press('[data-testid="oilconf-cancel"]')
       await expect(page.locator('[data-testid="oilbar-text"]')).toHaveText('Not swapped — OIL not answered')
       expect(await onTopAndInside(page, '[data-testid="oilbar"]')).toEqual({ there: true, top: true, inside: true })
+      /* …as a band: the last line of the board's own bar, edge to edge, one line, the line under it amber (D831, D840, D841) */
+      const band = await bandFacts(page)
+      expect(band, 'the band under the board\'s bar').toMatchObject({ cls: 'oilband', height: 36, left: 0, right: band.vw, lastLineOfItsBar: true, oneLine: true, nothingCut: true, edgeUnder: AMBER_EDGE, only: 1 })
+      expect(new Set(band.buttons).size, 'its two buttons are one height').toBe(1)
+      const wide = await bandFacts(page, true)
+      expect(wide, 'in wider letters it is STILL one line, nothing cut').toMatchObject({ height: 36, oneLine: true, nothingCut: true })
       expect(await ground(page)).toEqual(before)
       /* answered: the swap, with its answer */
       await press('[data-testid="oilbar-answer"]')
+      /* ONE RING, NEVER TWO (owner D842, 14 Oct 26 — "Double blue ring"). An answer picked BY KEYBOARD is both picked
+         and under the keyboard: the picked look's cyan edge and the keyboard's cyan ring, set a little off the button,
+         drew two rings one inside the other. The keyboard's ring is drawn ON the picked answer's own edge. Only a real
+         screen has a cascade to ask (jsdom loads no stylesheet), so the pin is here. */
+      await page.locator('[data-testid="oil-yes"]').focus()
+      await page.keyboard.press('Space')
+      const ring = await page.locator('[data-testid="oil-yes"]').evaluate(e => { const s = getComputedStyle(e); return { picked: e.classList.contains('on-pick'), keyboardOnIt: e.matches(':focus-visible'), ring: `${s.outlineStyle} ${s.outlineWidth}`, offset: s.outlineOffset } })
+      expect(ring, 'a picked answer with the keyboard on it wears ONE ring, on its own edge').toEqual({ picked: true, keyboardOnIt: true, ring: 'solid 2px', offset: '-1px' })
+      const plain = await page.locator('[data-testid="oil-no"]').evaluate(e => { (e as HTMLElement).focus(); return getComputedStyle(e).outlineOffset })
+      expect(plain, 'an answer that is NOT picked keeps the ring a little off its grey edge').toBe('2px')
       await press('[data-testid="oil-yes"]')
       await press('[data-testid="oilconf-save"]')
       await expect(page.locator('[data-testid="oilconf"]')).toHaveCount(0)

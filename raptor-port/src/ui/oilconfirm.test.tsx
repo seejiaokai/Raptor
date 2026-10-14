@@ -83,6 +83,9 @@ describe('the OIL ask gates a weekend/PH duty-&-commitments save', () => {
     expect($('[data-testid="oilconf"]'), 'the OIL sheet is up').toBeTruthy()
     expect(mine().length, 'nothing written yet').toBe(0)
     expect(($('[data-testid="oilconf-save"]') as HTMLButtonElement).disabled, 'no default — Save waits').toBe(true)
+    /* a NEW input's form says "Add", so the question over it says Back / Add — never "Cancel", which over the form's
+       own Cancel read as if it might throw the input away (the design look's L4, owner D830 — 13 Oct 26) */
+    expect([$('[data-testid="oilconf-cancel"]')!.textContent, $('[data-testid="oilconf-save"]')!.textContent]).toEqual(['Back', 'Add'])
     await click($('[data-testid="oilconf"] .x'))
     expect($('[data-testid="oilconf"]')).toBeFalsy()
     expect(mine().length, 'cancel wrote nothing').toBe(0)
@@ -92,7 +95,7 @@ describe('the OIL ask gates a weekend/PH duty-&-commitments save', () => {
     const ix0 = HIST.ix
     await openAdd({ type: 'Duty', date: 'Jul 18' })          // all-day → FO suggested
     await click($('#inpEditSave'))
-    expect($('[data-testid="oilconf"]')!.textContent).toContain('FO — a full day')
+    expect($('[data-testid="oilconf"]')!.textContent).toContain('Does it deserve FO, a full day of OIL?')   // the words of record (D837)
     await click($('[data-testid="oil-yes"]'))
     await click($('[data-testid="oilconf-save"]'))
     const r = mine()[0]
@@ -112,7 +115,7 @@ describe('the OIL ask gates a weekend/PH duty-&-commitments save', () => {
   it('a timed input under six hours offers HO, and Yes records the half', async () => {
     await openAdd({ type: 'Meeting', date: 'Jul 18', allday: false, s: 8 * 60, e: 12 * 60 })
     await click($('#inpEditSave'))
-    expect($('[data-testid="oilconf"]')!.textContent).toContain('HO — half a day')
+    expect($('[data-testid="oilconf"]')!.textContent).toContain('Does it deserve HO, half a day of OIL?')
     await click($('[data-testid="oil-yes"]'))
     await click($('[data-testid="oilconf-save"]'))
     expect(mine()[0].oil).toEqual({ '2026-07-18': 0.5 })

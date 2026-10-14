@@ -53,6 +53,54 @@ describe('toastBatch — the toast module', () => {
   })
 })
 
+/* TWO NOTES ABOUT ONE DAY NAME IT ONCE (owner D837, 14 Oct 26 — the passing note N1; the words of record:
+   docs/superpowers/briefs/2026-10-13-wording-recheck.md). A note may say which day it names at its head and what it says
+   of it (the third argument). Two such notes about the same day, one after the other, are said as one: the day once, in
+   the fuller name, each note's words a sentence. Everything else in a batch is joined by the dot, as before — which is
+   what keeps an amendment's receipt, the OIL line's other form and the lines that ride behind it exactly as they were.
+   The real pair, through the real publish: leavewar/publishdoor.test.ts. */
+describe('toastBatch — two notes about the same day are said as one', () => {
+  afterEach(() => clearToast())
+  const pub = { day: 0, head: 'Monday', body: 'published and approved' }
+  const oil = { day: 0, head: 'Monday 13 Jul', body: 'the Common Programme has no usable times, so nobody on it earns OIL' }
+  const OIL_ALONE = 'Monday 13 Jul: the common programme has no usable times, so nobody on it earns OIL'
+  it('the day is named once, at the head, with its date; the join adds the capital and the full stops', () => {
+    toastBatch(() => { toast('Monday published and approved', undefined, pub); toast(OIL_ALONE, 'warn', oil) })
+    expect(text()).toBe('Monday 13 Jul published and approved. The Common Programme has no usable times, so nobody on it earns OIL.')
+    expect(tint(), 'still in the warning\'s colour').toBe('var(--adv)')
+  })
+  it('a note shown alone keeps its own words and takes no full stop — in a batch or out of one', () => {
+    toastBatch(() => { toast('Monday published and approved', undefined, pub) })
+    expect(text()).toBe('Monday published and approved')
+    toast(OIL_ALONE, 'warn', oil)
+    expect(text()).toBe(OIL_ALONE)
+  })
+  it('what the second note carried behind its first line rides behind the pair, joined by the dot as it always was', () => {
+    const after = 'Plasma\'s LL bid on 13 Jul now sits on published work — the day is flagged, the bid is still live'
+    toastBatch(() => { toast('Monday published and approved', undefined, pub); toast(`${OIL_ALONE} · ${after}`, 'warn', { ...oil, after }) })
+    expect(text()).toBe(`Monday 13 Jul published and approved. The Common Programme has no usable times, so nobody on it earns OIL. · ${after}`)
+  })
+  it('after a note that names no day — an amendment\'s receipt — the OIL line keeps its own day and the dot', () => {
+    toastBatch(() => { toast('Published AL2 · 3 items on Monday only · approved by Saber', undefined); toast(OIL_ALONE, 'warn', oil) })
+    expect(text()).toBe(`Published AL2 · 3 items on Monday only · approved by Saber · ${OIL_ALONE}`)
+  })
+  it('a second note with no day of its own — the OIL line\'s other form — is joined by the dot, word for word', () => {
+    const other = 'Monday 13 Jul earned nobody any OIL — the common programme has no usable times'
+    toastBatch(() => { toast('Monday published and approved', undefined, pub); toast(other, 'warn') })
+    expect(text()).toBe(`Monday published and approved · ${other}`)
+  })
+  it('two notes about DIFFERENT days are never said as one', () => {
+    toastBatch(() => { toast('Monday published and approved', undefined, pub); toast('Tuesday 14 Jul: the SDO desk has no usable times, so nobody on it earns OIL', 'warn', { day: 1, head: 'Tuesday 14 Jul', body: 'the SDO desk has no usable times, so nobody on it earns OIL' }) })
+    expect(text()).toBe('Monday published and approved · Tuesday 14 Jul: the SDO desk has no usable times, so nobody on it earns OIL')
+  })
+  it('…nor two whose heads are not one day\'s two names, nor two with another note between them', () => {
+    toastBatch(() => { toast('Monday published and approved', undefined, pub); toast('Mon 13 Jul: x', 'warn', { day: 0, head: 'Mon 13 Jul', body: 'x' }) })
+    expect(text()).toBe('Monday published and approved · Mon 13 Jul: x')
+    toastBatch(() => { toast('Monday published and approved', undefined, pub); toast('Saved', undefined); toast(OIL_ALONE, 'warn', oil) })
+    expect(text()).toBe(`Monday published and approved · Saved · ${OIL_ALONE}`)
+  })
+})
+
 describe('the publish says what it published AND what the OIL check found — one line', () => {
   const ISNAP = JSON.stringify(INPUTS), DSNAP = JSON.stringify(DAYS)
   const keep = { toast: HOOKS.toast, batch: HOOKS.toastBatch }

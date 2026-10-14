@@ -36,6 +36,7 @@ import { monthCells } from './InputsCal'
 import { TODAY, keyToIso } from './weeknav'
 import { CalIcon } from './icons'
 import { SaveBand } from './SaveStatus'
+import { OilBand } from './OilWaitSheet'
 
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -195,6 +196,8 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
           cross of its own). As a TAB of the Inputs page (D620, D626) it sits in the page, under the tabs: the top bar is
           in view and carries the warning itself, as it does for the Inputs calendar ([SAVE-NOTE-COVERS], D587). */}
       {onClose && <SaveBand />}
+      {/* …and the bar that waits on an OIL answer, where one is up behind this view (D831) */}
+      {onClose && <OilBand />}
       <div className="med-body">
         <section className="medsec med-down">
           <div className="medsec-h">Medically Down<span className="medsec-n">{down.length}</span>

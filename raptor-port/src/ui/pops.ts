@@ -152,8 +152,10 @@ export function setBellList(open: boolean, at = '') { BELLLIST = open; BELLAT = 
    Closed = null; open = the run of dates it is for, the holiday's name, and `fresh` — it opened by itself the moment
    the holiday was saved, so it says "<name> is now a public holiday." (from the bell's line it does not). What it LISTS
    is read live, never held here. One of the windows that do NOT block the page (D641), so not in windowOverSchedule. */
-export let OILLIST: null | { from: string; to: string; name: string; fresh: boolean } = null
-export function setOilList(v: null | { from: string; to: string; name: string; fresh?: boolean }) { OILLIST = v ? { from: v.from, to: v.to || v.from, name: v.name || '', fresh: !!v.fresh } : null }
+/* `plain` — the day is NOT a public holiday (a weekend): the list was opened by a published version loaded back (owner
+   D818), which can land on any non-working day, and its heading must not call a Saturday a public holiday */
+export let OILLIST: null | { from: string; to: string; name: string; fresh: boolean; plain?: boolean } = null
+export function setOilList(v: null | { from: string; to: string; name: string; fresh?: boolean; plain?: boolean }) { OILLIST = v ? { from: v.from, to: v.to || v.from, name: v.name || '', fresh: !!v.fresh, ...(v.plain ? { plain: true } : {}) } : null }
 export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DAYPOP', reset: () => setDayPop(null) },
   { name: 'INSIGHTS', reset: () => setInsights(false) },

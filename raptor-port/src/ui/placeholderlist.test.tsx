@@ -26,7 +26,7 @@
        naming an input that holds people AND a placeholder. */
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { InputsPage } from './InputsPage'
 import { InputEditor, commitInput, commitInputEdit, draftOf } from './inputedit'
 import { dayEntries } from './InputsCal'
@@ -96,7 +96,14 @@ const world = () => JSON.stringify({ i: INPUTS, log: ELOG.rows.length, undo: [HI
 const rowEl = (iid: string) => $(`#inBody tr[data-iid="${iid}"]`)
 const shown = () => $$('#inBody tr[data-iid]').map(tr => tr.getAttribute('data-iid')!)
 
+/* THE DAY IS HELD AT TUESDAY 13 OCT 26 — the day every fixture here is dated ("Oct 13"). The List opens on a window of
+   days that starts TODAY (InputsPage `initialRange`), so on the real clock these tests passed on 13 Oct 26 and went red
+   the morning after, on every branch, with nothing changed: yesterday's inputs are simply not in the List. Found by the
+   full check of 14 Oct 26 (docs/handpass/2026-10-14-three-builds.md) and proved on an untouched copy of the branch.
+   Only the date is held (ui/adminclear.test.tsx does the same); timers run as they always did. */
 beforeEach(async () => {
+  vi.useFakeTimers({ toFake: ['Date'] })
+  vi.setSystemTime(new Date(2026, 9, 13, 12, 0, 0))
   INPUTS.splice(0, INPUTS.length, ...JSON.parse(seed))
   const mem = new Map<string, string>()
   storeBackend.impl = { getItem: k => mem.get(k) ?? null, setItem: (k, v) => mem.set(k, v), keys: () => [...mem.keys()] }
@@ -113,6 +120,7 @@ afterEach(async () => {
   await act(async () => { root.unmount(); setInpEdit(null) })
   HOOKS.toast = realToast
   host.remove(); _resetFloatWins()
+  vi.useRealTimers()
 })
 
 describe('the person filter — Everyone, ALL and ALL AVAIL are three different choices, in all three places', () => {
