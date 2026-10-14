@@ -3553,10 +3553,17 @@ ONE box round the whole row (D861): each cell draws its share on a `::after` lay
 left side on the first, the right on the last — fading as the ring fades; the row's coloured left edge stays inside it.
 A month's bar that wears the ring shows no landing flash before it (D861: `.ib-bar.innew.lift-land::after{content:none}`);
 a bar that lands without it (a drag, an Undo) keeps its landing flash. Pictures: `docs/img/handpass/2026-10-15-ring/`.
-**And the board's other glows go (owner D877, 15 Oct 26 — RULED, NOT YET BUILT, filed as `[GLOW-OFF]`):** the landing
-flash and the picked-up look (`--lift-box`), the crew and the time boxes a tapped warning lights (`.puck.wfoc`,
-`.badtm.wfoc`), a puck earning OIL (`.puck.oilglow`), his own puck (`.puck.me`) and a highlighted puck (`.puck.hl`) each
-keep their ring and lose the glow; the pictures of record are `docs/mock/2026-10-15-glow-places/` (each "no glow" frame).
+**And the board's other glows go (owner D877, 15 Oct 26 — BUILT 15 Oct 26, `[GLOW-OFF]`; the places drawn for him by
+`[GLOW-PLACES-LOOK]`):** the landing flash and the picked-up look (`--lift-box` is now the plain `inset 0 0 0 2px` ring —
+one recipe, so every drag in the app lost the glow: the board, the Inputs calendar, the Leave War's settings lists), the
+crew a tapped warning lights (`.puck.wfoc` and its amber, grey and dashed-echo forms: the outline in the warning's colour
+and the 1px dark line inside it), the time boxes it lights (`.badtm.wfoc`, the inset ring), a puck earning OIL
+(`.puck.oilglow` — a half day now wears the same green ring as a full day; its amount tag tells them apart), his own
+puck (`.puck.me` — the purple fill and ring) and a highlighted puck (`.puck.hl`) each keep their ring and lose the glow.
+Pinned by `src/ui/glowoff-css.test.ts`; the pictures of record `docs/mock/2026-10-15-glow-places/`; the walk
+`docs/handpass/2026-10-15-glow-off.md`. **And the picked person's chip in the Inputs calendar's "Add people" window** (`.ic-pickp.on`, owner D879 — "Yes take the
+glow off", after the pictures `G9-pick-chip-*`) keeps its thin blue ring (`0 0 0 1px`) and loses its glow. **Still glowing,
+not ruled:** the SANS puck's purple stripe (`.puck.san::after`).
 
 **The just-added row's flash is now the SAME steady shape everywhere it
 appears — the board's `.sb-fresh` box (see §Selection highlight above) and

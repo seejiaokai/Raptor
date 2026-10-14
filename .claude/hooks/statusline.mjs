@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // The status line — [COMPACT-WHEN-MOD] (his question of 14 Oct 26, D857; D868, D870). One short line under the chat
 // so HE can see how full it is, which only the agent could read before:
-//   "Chat 36% full"   ·   from 80%: "Chat 82% full · compact at the next clean point"   ·   marked: "… · ready"
+//   "Chat 36% full"   ·   from 75% of the app's room (D878): "Chat 77% full · compact at the next clean point"   ·   marked: "… · ready"
 // Claude Code hands a status line the fullness itself (context_window.used_percentage); when it does not, the
 // figure is read from the chat's record as the hooks read it. Prints nothing it cannot work out.
 import { fileURLToPath } from 'node:url';

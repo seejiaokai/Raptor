@@ -10,15 +10,15 @@ import { readSchedulerCss } from '../testing/scheduler-css'
 
    D270 / D272 (27 Sep 26) — ON HIS OWN PUCK, ANY OTHER RING WINS OVER THE PURPLE "THIS IS YOU" RING: "Q2 yes" (a flag's
    ring — amber, thin red, grey, the dotted cause ring, as another man's puck shows it) and "question 2 yes" (in OIL Earn
-   mode the green OIL ring). The purple FILL stays and says "you"; unflagged, the purple ring and its glow stay. So for
+   mode the green OIL ring). The purple FILL stays and says "you"; unflagged, the purple ring stays (its glow went, D877). So for
    EVERY set of ring classes a puck can wear (ui/html.ts `puck` — the severity, the red box, the trace, the OIL mode),
    the ring that WINS on `.puck.me` must be the one that wins on a plain `.puck` — resolved rule by rule (!important,
    then specificity, then order), never read off one selector, because a rule that merely exists proves nothing about
    which one paints (Fable's read of the first cut, 26 Sep 26: it passed while the purple glow won).
 
-   What is NOT a flag and keeps its glow: the purple "you" ring on an unflagged puck, and the clicked-warning focus
-   (`.puck.wfoc` — the rule that a clicked warning lights its crew in the warning colours, a transient answer to a tap,
-   not a standing flag).
+   D877 (15 Oct 26 — "all no glow"): what was NOT a flag and kept its glow — the purple "you" ring on an unflagged puck,
+   and the clicked-warning focus (`.puck.wfoc`) — lost it too; each keeps its ring. Pinned for every place he ruled on
+   in glowoff-css.test.ts.
 
    WHAT THIS DOES NOT PROVE (Astra's read, 27 Sep 26): it resolves rules written on the puck itself — `.puck` plus
    classes and `:not()`. Rules that reach a puck through a CONTEXT (the crew list's standby / busy inset, the drag
@@ -78,7 +78,7 @@ const TRACE = [[], ['boxdot']]
 const OIL = [[], ['oilglow'], ['oilglow', 'half'], ['oildim']]
 const SETS = SEV.flatMap(a => BOX.flatMap(b => TRACE.flatMap(c => OIL.map(d => [...a, ...b, ...c, ...d]))))
 const RINGED = (s: string[]) => s.some(c => ['warn', 'boxred', 'boxdash', 'boxdot', 'oilglow'].includes(c))
-const PURPLE = '0 0 0 2px #F0B6FF,0 0 12px 1px rgba(155,47,174,.7)'
+const PURPLE = '0 0 0 2px #F0B6FF'
 
 /* every rule whose selector draws a flag ring on a puck: the three red rings (.boxred / .boxdash / .boxdot) AND the
    severity rings under them (.warn — amber, .warn.hard — thin red, .warn.note — grey; Astra's read, 26 Sep 26) */
@@ -132,18 +132,19 @@ describe('D270 / D272 — on his own puck, any other ring wins over the purple "
     expect(shadowWin(['me', 'boxdot']), 'the dotted ring alone, nothing purple behind it').toBe('none')
     expect(outlineWin(['me', 'boxdot'])).toBe('var(--dot-w,1.5px) dotted var(--hard)')
     expect(shadowWin(['me', 'warn', 'hard', 'boxred'])).toBe('0 0 0 2px var(--hard)')
-    expect(shadowWin(['me', 'oilglow'])).toBe('0 0 0 2px var(--oil),0 0 8px rgba(47,166,92,.5)')
+    expect(shadowWin(['me', 'oilglow'])).toBe('0 0 0 2px var(--oil)')
     expect(shadowWin(['me', 'oilglow', 'half'])).toBe('0 0 0 2px var(--oil)')
   })
-  it('with nothing else to say, his puck keeps the purple ring and its glow — in OIL mode too when he earns nothing', () => {
+  it('with nothing else to say, his puck keeps the purple ring, with no glow (D877) — in OIL mode too when he earns nothing', () => {
     for (const s of SETS.filter(s => !RINGED(s))) expect(shadowWin(['me', ...s]), s.join('.') || '(unflagged)').toBe(PURPLE)
-    expect(layers(PURPLE).some(l => blurOf(l) > 0), 'the "you" glow is a glow').toBe(true)
+    expect(layers(PURPLE).every(l => blurOf(l) === 0), 'the "you" ring carries no glow').toBe(true)
   })
   it('the purple FILL stays on every one of them — it is what says "you"', () => {
     for (const s of SETS) expect(fillWin(['me', ...s]), s.join('.') || '(unflagged)').toBe('var(--me)')
   })
-  it('what is NOT a flag keeps its glow: the clicked-warning focus', () => {
+  it('the clicked-warning focus is not a flag, and since D877 it carries no glow either — its ring stays', () => {
     const wf = RULES.find(r => r.sels.includes('.puck.wfoc'))!
-    expect(layers(shadowOf(wf.body)!).some(l => blurOf(l) > 0), 'the clicked-warning focus stays lit').toBe(true)
+    expect(wf.body, 'the warning-coloured ring').toMatch(/outline:2px solid var\(--hard\)/)
+    expect(layers(shadowOf(wf.body)!).every(l => blurOf(l) === 0), 'the clicked-warning focus has no glow').toBe(true)
   })
 })

@@ -15,7 +15,7 @@ if (process.argv.includes('--away')) {
   const p = awayPath(cwd);
   if (!p) { console.log('Not inside a git checkout — no mark written.'); process.exit(1); }
   writeFileSync(p, JSON.stringify({ at: Date.now() }));
-  console.log('Away: the guard is off — the app compacts at about 85% by itself (until --back, or 16 hours).');
+  console.log('Away: the guard is off — the app compacts by itself at about 845,000 tokens (96% of its 880,000 room) (until --back, or 16 hours).');
 } else if (process.argv.includes('--back')) {
   clearAway(cwd);
   console.log('Back: the guard holds a compaction for a clean point again.');

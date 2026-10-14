@@ -55,10 +55,10 @@
 .mbtn.oilbtn.on{background:var(--oil);border-color:var(--oil);color:#04220f}
 .mbtn.oilblank.on{background:var(--adv);border-color:var(--adv);color:#12100a}
 .oilnote{padding:4px 8px;font-size:11px;color:var(--ink-2)}
-/* a puck that earns: the whole puck rings green. A HALF day is an outline only
-   — the same solid/outline distinction the owner asked for. */
-.puck.oilglow{box-shadow:0 0 0 2px var(--oil),0 0 8px rgba(47,166,92,.5)}
-.puck.oilglow.half{box-shadow:0 0 0 2px var(--oil)}
+/* a puck that earns: the whole puck rings green. A HALF day was an outline only beside the full day's glow; with the
+   glow gone (owner D877, 15 Oct 26 — "all no glow") both wear the same green ring, and the amount tag on the puck
+   (`.role.oilamt`, its half-day colour below) is what tells a half day from a full one. */
+.puck.oilglow{box-shadow:0 0 0 2px var(--oil)}
 .puck.oildim{opacity:.5}
 .puck .role.oilamt{background:var(--oil);color:#04220f}
 .puck .role.oilamt.half{background:var(--oil-half);color:#04220f}

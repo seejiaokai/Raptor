@@ -1,5 +1,14 @@
 # The file map — where each source file lives and what it does
 
+`[GLOW-OFF]` — the board's other glows go, each keeping its ring (D877; built 15 Oct 26). **New:** `src/ui/glowoff-css.test.ts`
+(each place he ruled on read off the stylesheet: its ring kept, no blurred layer); `scripts/handpass/glowoff-walk.mjs` (the
+job's walk, as assertions with pictures — each place reached by the app's own controls, its computed shadows read);
+`scripts/handpass/glowoff-pickchip.mjs` (the Inputs calendar picker's picked chip today beside a no-glow version — for his
+answer). **Changed:** `src/ui/scheduler/00-foundation-login.css` (`--lift-box` the plain ring), `04-pucks-sections.css`
+(`.puck.me`, `.puck.hl`), `08-windows-tools.css` (`.puck.wfoc` and its forms), `12-schedule-editing.css` (`.badtm.wfoc`),
+`18-oil-board.css` (`.puck.oilglow`; the half-day rule went — the same ring now). **Tests:** `src/ui/flagglow-css.test.ts`,
+`src/ui/lift-css.test.ts` read the plain rings. `[COMPACT-BANDS-WINDOW]` (D878) changed only `.claude/hooks/`.
+
 `[OIL-PLAN-SWITCH-UNASKED]` — "Switch to this plan" says what it left to answer (D865; built 15 Oct 26). **New:**
 `src/ui/oilputback.ts` — what a whole-day replacement put back that still needs an OIL answer, read before it and told
 after it, the list opened (`oilPutBackWatch`, `oilNeedSaid`): the one body the load (`src/ui/interactions.ts`) and the

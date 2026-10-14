@@ -201,9 +201,11 @@
    never glows (D164) because no flag ring here draws a glow. Earning NOTHING in OIL Earn mode (`.oildim`, not in the
    list) his puck keeps this ring, faded with it — his "Keep", D277. Pinned by flagglow-css.test.ts, which resolves the
    winning ring for his puck and for another man's, flag by flag, and requires them equal. */
-.puck.me:not(.warn):not(.boxred):not(.boxdash):not(.boxdot):not(.oilglow){box-shadow:0 0 0 2px #F0B6FF,0 0 12px 1px rgba(155,47,174,.7)!important}
+/* NO GLOW (owner D877, 15 Oct 26 — "all no glow"): his puck keeps its purple fill and ring; the purple glow round the
+   ring went, and so did the blue glow round a puck a highlight chip lights (`.puck.hl` below — its ring stays). */
+.puck.me:not(.warn):not(.boxred):not(.boxdash):not(.boxdot):not(.oilglow){box-shadow:0 0 0 2px #F0B6FF!important}
 .puck.me .nm{color:#fff;font-weight:700}
-.puck.hl{box-shadow:0 0 0 2px var(--accent),0 0 10px -1px rgba(59,198,232,.7);border-color:var(--accent)}
+.puck.hl{box-shadow:0 0 0 2px var(--accent);border-color:var(--accent)}
 /* half-visible, not gone (owner, 7 Aug 26 — was .18, which made the rest
    of the week unreadable while anything was selected) */
 .puck.dim{opacity:.5}

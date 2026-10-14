@@ -101,3 +101,21 @@ not yet seen — they need a chat that reaches 80%.
 chat against the app's own room and the first note comes well before the compaction (the agent's reading: about 75% of
 880,000, the guard's window from there to the compaction point). His permission to change the hooks for that fix; tested
 and read by one fresh reader before it is switched on. Built as its own job.
+
+**Built (15 Oct 26, branch `claude/glow-off-compact-bands-window-40b514`) — `[COMPACT-BANDS-WINDOW]`, D878.** Every figure the
+hooks give is now a percentage of the APP'S room, read as the app reads it: the `autoCompactWindow` setting in the project's
+local settings, else its shared settings (the folder the hooks sit in), else his own; else the whole 1,000,000
+(`compact-lib.mjs appRoom`). With 880,000: the notes at 75, 80, 85 and 90% of it — the first at 660,000, some 185,000 before
+the app compacts at 96% (about 845,000); the guard holds an automatic compaction from 90% of the room (792,000 — the last note,
+just below the app's own attempt; the fresh read's finding 1) to under 900,000
+tokens (90% of the model's whole room, as before — about 102% of the app's room, so it can hold the app's own attempt for
+a clean point and never holds near the true limit); the status line's "compact at the next clean point" from 75%, so it
+agrees with the app's own figure. On a room of the whole 1M (no setting) the backstop is 90% as first built and the notes
+start at 750,000. Pieces 2, 4 and 6 above read with these figures. **Checked:** 16 tests (`node --test
+.claude/hooks/compact-hooks.test.mjs`) — the room read (the first file that sets it, local first, nonsense ignored, a
+test's override), this checkout's figures (the note at 660,000, at least 180,000 before the compaction, the backstop at
+900,000), and the hooks run as the app runs them: silent at 650,000, the note at 665,000 ("76% full, about 665k of the
+app's 880k"), the app's own attempt at 846,000 held, one at 901,000 never held, the status line from 75%. The same record
+at 665,000 run through the hooks on `main` gives no note at all. The overnight guide's two lines that named 80% now name
+the first note (D878). **Switched on** only by his "merge live" and the main folder brought level (`[MAIN-CHECKOUT-STALE]`):
+the app runs the hooks from the main folder. Read by one fresh reader before he approves it (D878, D70).
