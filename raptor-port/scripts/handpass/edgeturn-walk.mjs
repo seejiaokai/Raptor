@@ -34,6 +34,7 @@ async function hand(w) {
     down: async (x, y) => { await t('touchStart', x, y); at = { x, y }; await L.sleep(80) },
     to: async (x, y, steps = 12) => { for (let i = 1; i <= steps; i++) { await t('touchMove', at.x + (x - at.x) * i / steps, at.y + (y - at.y) * i / steps); await L.sleep(25) } at = { x, y } },
     up: async () => { await t('touchEnd'); await L.sleep(350) },
+    cancel: async () => { await cdp.send('Input.dispatchTouchEvent', { type: 'touchCancel', touchPoints: [] }); await L.sleep(200) },
   }
 }
 
@@ -421,8 +422,8 @@ async function trackerWalk(w, size) {
   const end11 = await centre('#flowSvg .lend[data-i="0"]')
   if (end11 && d0) {
     await H.down(end11.x, end11.y); await H.to(bx11.r - 6, end11.y); await L.sleep(700)
-    if (w.phone) { const cdp = await w.ctx.newCDPSession(p); await cdp.send('Input.dispatchTouchEvent', { type: 'touchCancel', touchPoints: [] }) }
-    else { await p.evaluate(() => window.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true, pointerId: 1 }))); await p.mouse.up() }
+    if (w.phone) await H.cancel()
+    else { await p.evaluate(() => window.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true, pointerId: 1, pointerType: 'mouse' })) /* the mouse's own pointer (Chromium: 1) */); await p.mouse.up() }
     await L.sleep(200)
     const va = await viewT(p); await L.sleep(800); const vb = await viewT(p)
     const d1 = await p.evaluate(id => document.querySelector(`#flowSvg .linehit[data-lid="${id}"]`)?.getAttribute('d'), lid)

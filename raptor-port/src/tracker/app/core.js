@@ -3338,19 +3338,29 @@ function wireBoard() {
       lh.addEventListener('pointerdown', e => {
         if (pinching) return;   /* a second finger starts nothing: it is a pinch */
         e.stopPropagation();
-        const key = selEdge, meta0 = edgeMeta[key] ? { ...edgeMeta[key] } : null; pushUndo();
+        /* what the press changes, kept to be put back by a cancel (round two's R1): the bend, and both undo lists — the
+           step it pushes clears Redo and may trim the oldest */
+        const key = selEdge, meta0 = edgeMeta[key] ? { ...edgeMeta[key] } : null, u0 = undoStack.slice(), r0 = redoStack.slice(), pid = e.pointerId;
+        pushUndo(); const mine = undoStack[undoStack.length - 1];
         /* the square rides the finger too (found by the walk, 15 Oct 26 — D899): it was drawn again only on the release,
            so while the canvas panned under a held finger it slid off with the chart and looked dropped */
         const bend = ev2 => { const pt = svgPt(ev2); edgeMeta[key] = { ...(edgeMeta[key] || {}), mid: { x: Math.round(pt.x), y: Math.round(pt.y) } }; lh.setAttribute('x', (pt.x - 6).toFixed(1)); lh.setAttribute('y', (pt.y - 6).toFixed(1)); schedDragPaint(); };
         const fe = followEdge(e, bend);
-        const mv = ev2 => { fe.point(ev2); bend(ev2); };
+        const mv = ev2 => { if (ev2.pointerId !== pid) return; fe.point(ev2); bend(ev2); };
         const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
         /* drawn again, not wired again (the night's code read, F1): wireBoard added a second listener to this same square
            on every release, so each later drag ran two, four, eight copies — each its own edge pan, at that many times the speed */
-        const up = () => { if (fingerStop === stop) fingerStop = null; stop(); markDirty(); saveLayout(); renderBoard(); };
+        const up = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); markDirty(); saveLayout(); renderBoard(); };
         /* A CANCELLED TOUCH (a call, the system — the night's code read, F3) never sends a release: without this the edge
            pan ran on for good, rewriting the bend every frame. It puts the bend back as it was, and its undo step goes. */
-        const cancel = () => { if (fingerStop === stop) fingerStop = null; stop(); if (meta0) edgeMeta[key] = meta0; else delete edgeMeta[key]; undoStack.pop(); notify(); renderBoard(); };
+        const cancel = ev2 => {
+          if (ev2.pointerId !== pid) return;   /* another finger's cancel is not this drag's (round two's R2) */
+          if (fingerStop === stop) fingerStop = null; stop();
+          if (meta0) edgeMeta[key] = meta0; else delete edgeMeta[key];
+          if (undoStack[undoStack.length - 1] === mine) { undoStack = u0; redoStack = r0; }
+          else { const i = undoStack.lastIndexOf(mine); if (i >= 0) undoStack.splice(i, 1); }
+          notify(); renderBoard();
+        };
         window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     }
@@ -3358,14 +3368,15 @@ function wireBoard() {
     document.querySelectorAll('#flowSvg .endhandle').forEach(h => {
       h.addEventListener('pointerdown', e => {
         if (pinching) return;
-        e.stopPropagation(); const end = h.dataset.end;
+        e.stopPropagation(); const end = h.dataset.end, pid = e.pointerId;
         const carry = ev2 => { const pt = svgPt(ev2); h.setAttribute('cx', pt.x.toFixed(1)); h.setAttribute('cy', pt.y.toFixed(1)); highlightPort(pt); };
         const fe = followEdge(e, carry);
-        const mv = ev2 => { fe.point(ev2); carry(ev2); };
+        /* each of the four handle drags hears its own pointer only (round two's R2): a second finger's cancel or lift is not its */
+        const mv = ev2 => { if (ev2.pointerId !== pid) return; fe.point(ev2); carry(ev2); };
         const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
-        const up = ev2 => { if (fingerStop === stop) fingerStop = null; stop(); applyEndSnap(end, svgPt(ev2)); };
+        const up = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); applyEndSnap(end, svgPt(ev2)); };
         /* a cancelled touch snaps nothing (its place can read 0,0): the end goes back where it was (F3) */
-        const cancel = () => { if (fingerStop === stop) fingerStop = null; stop(); renderBoard(); };
+        const cancel = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); renderBoard(); };
         window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     });
@@ -3390,7 +3401,7 @@ function wireBoard() {
         if (pinching) return;
         e.stopPropagation(); e.preventDefault();
         const id = h.dataset.lid, i = +h.dataset.i, L = lineById(id); if (!L) return;
-        const P0 = L.pts.map(p => ({ x: p.x, y: p.y }));
+        const P0 = L.pts.map(p => ({ x: p.x, y: p.y })), pid = e.pointerId;
         const prevV = i > 0 && Math.abs(P0[i].x - P0[i - 1].x) < 0.5;
         const nextV = i < P0.length - 1 && Math.abs(P0[i].x - P0[i + 1].x) < 0.5;
         let moved = false;
@@ -3401,11 +3412,12 @@ function wireBoard() {
           p[i].x = pt.x; p[i].y = pt.y; refreshLine(id);
         };
         const fe = followEdge(e, shape);
-        const mv = ev2 => { fe.point(ev2); shape(ev2); };
+        const mv = ev2 => { if (ev2.pointerId !== pid) return; fe.point(ev2); shape(ev2); };
         const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
         /* a cancelled touch puts the line back as it was (F3) */
-        const cancel = () => { if (fingerStop === stop) fingerStop = null; stop(); L.pts = P0.map(p => ({ x: p.x, y: p.y })); renderBoard(); };
-        const up = () => {
+        const cancel = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); L.pts = P0.map(p => ({ x: p.x, y: p.y })); renderBoard(); };
+        const up = ev2 => {
+          if (ev2.pointerId !== pid) return;
           if (fingerStop === stop) fingerStop = null; stop();
           if (moved) { pushUndo(); markDirty(); saveLayout(); } renderBoard();
         };
@@ -3422,7 +3434,7 @@ function wireBoard() {
         const o = first
           ? (Math.abs(base[0].x - base[1].x) < 0.5 ? 'v' : 'h')
           : (Math.abs(base[base.length - 1].x - base[base.length - 2].x) < 0.5 ? 'v' : 'h');
-        const was = L[key], pts0 = Array.isArray(L.pts) ? L.pts.map(p => ({ x: p.x, y: p.y })) : L.pts;
+        const was = L[key], pts0 = Array.isArray(L.pts) ? L.pts.map(p => ({ x: p.x, y: p.y })) : L.pts, pid = e.pointerId;
         L[key] = null;
         const carry = ev2 => {
           const pt = svgPt(ev2);
@@ -3431,11 +3443,12 @@ function wireBoard() {
           highlightPort(pt);
         };
         const fe = followEdge(e, carry);
-        const mv = ev2 => { fe.point(ev2); carry(ev2); };
+        const mv = ev2 => { if (ev2.pointerId !== pid) return; fe.point(ev2); carry(ev2); };
         const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
         /* a cancelled touch puts the line and its end's link back as they were (F3) */
-        const cancel = () => { if (fingerStop === stop) fingerStop = null; stop(); L.pts = pts0; L[key] = was; renderBoard(); };
+        const cancel = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); L.pts = pts0; L[key] = was; renderBoard(); };
         const up = ev2 => {
+          if (ev2.pointerId !== pid) return;
           if (fingerStop === stop) fingerStop = null; stop();
           pushUndo();
           const pt = svgPt(ev2), sn = snapAnchor(pt, id);
