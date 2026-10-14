@@ -6,6 +6,45 @@ reader has read the wording and he has approved it. **Version 2**, after the rea
 (`../briefs/2026-10-15-reads/guide-no-glow-opus.md`: two must, five should, three low — all taken; the reader: no second
 read needed, as they add places and a hold rather than change what is asked).
 
+## Version 3 — set to his answers (D881, D882, D883), for round 3
+Every place found still glowing goes (D881 places 1–4, D882 places 5–8; place 9 is a leftover style nothing draws), and
+the Rearrange button's "on" takes the filter chip's fill (D882). So the rule no longer needs "the places that still glow
+stay until he rules", and it covers more than rings: a stripe (the SANS puck), a box (the bidding box), a line (the
+landing line), a button that is on. Version 2 below is kept as it was read; version 3 replaces it.
+
+**Where it goes.** `raptor-port/docs/design-practices.md` §4, as a new point directly after "One mark, one look"; one row
+in §4's colour table; and one line in §0's list, after "the Raptor look stays":
+> - **nothing glows** (D880) — a mark is a plain line or fill in its colour; a dark shadow that lifts a thing is depth, not a glow (§4);
+
+The colour table's new row, after "Cyan (the app's one accent)":
+> | A pale cyan fill with cyan words and edge | a button or switch that is on, and a picked filter chip | D882; the stylesheets |
+
+**The point (version 3):**
+- **Nothing in this app glows (owner D164, D860, D877, D879, D880, D881, D882 — 24 Sep and 15 Oct 26).** A mark the app
+  draws to say something about a thing — a ring round a thing picked, highlighted, just added or just landed, the crew a
+  tapped warning lights, a puck that earns OIL, his own puck or row, a seat a man can take, an event he can fly next or
+  the one a search found, the stripe that says SANS, the box round the days open for bidding, the line where a dragged
+  row will land, today's day card — is a plain line, edge or fill in its colour, with no soft light spreading out from it
+  or into it. Its colour, its width and whether it is solid, dashed or dotted carry the meaning; a glow adds none and
+  blurs the edge it marks. A shadow in the mark's own colour is a glow. A button or switch that is on shows it by the
+  filter chip's "on" look — a pale cyan fill, cyan words and a cyan edge — never by a glow or a halo; a solid cyan fill
+  stays the main button's (D882). A dark shadow that lifts a thing off the page — a window, a menu, a thing being
+  dragged — is depth, not a glow, and stays. A new glow, on anything, is his to rule, never added without his word.
+  (His words: "a ring in this app never glows", D880; the places that lost theirs: a flagged puck, D164; the just-added
+  mark, D860; the board's other marks, D877; the picked person's chip, D879; the take ring, the bidding box, his own
+  row's ring and the Tracker's rings, D881; today's card, the SANS stripe, the landing line, and "on" as the chip's fill,
+  D882. That a stripe, a box, a line and a button come under the rule with the rings, and that a shadow in the mark's own
+  colour counts as a glow, began as the agent's reading of D881 and D882; he approved them as written here, D8xx.)
+
+**In the same change (D201):** `raptor-port/docs/ui-contracts.md` §"No flag ring glows" — its closing "two glows are NOT
+flags and stay" and the just-added box passage's "inset + soft glow" are corrected to the plain ring (D877, D860), and the
+section names D880–D882; every stylesheet comment that describes a glow being taken off ("ON now GLOWS, not just tints",
+the bidding box's "low-opacity halo", the Tracker's "carries a glow those rings do not") is corrected with its rule; the
+leftover `.title .calview` style (place 9) is removed. The build itself — the nine places — rides the same branch, with
+its own check.
+
+## Version 2 (as read; replaced by version 3 above)
+
 ## Where it goes
 `raptor-port/docs/design-practices.md` §4 (colour), as a new point directly after "One mark, one look"; and one line in
 §0's list of his rulings that bound almost every design choice, after "the Raptor look stays":
@@ -34,6 +73,11 @@ None was in his rulings of 15 Oct 26; nothing is changed until he says.
 
 **Places 1 to 4 RULED 15 Oct 26 — D881 ("No glow for all looks good"): each loses its glow and keeps its line; built with
 the guide change, after the wording's approval (round 3).**
+
+**Places 5 to 8 RULED 15 Oct 26 — D882 ("I agree to all your recommendations"): each loses its glow; the Rearrange
+button and the Show SANS switch show "on" by the filter chip's pale blue fill (`.fchip.on`), no halo, no glow. So every
+place found goes, and the wording (round 3) can say nothing in the app glows. And D883: the Leave War's landing line runs
+unbroken across the whole row, counters included (filed as `[LW-LANDING-LINE-FIGURES]`).**
 
 **Rings the rule as worded covers:**
 1. **The green "he can take this seat" ring** (`.oktake`, `src/ui/scheduler/03-week.css`) — with a person picked, an empty

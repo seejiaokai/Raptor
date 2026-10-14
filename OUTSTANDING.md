@@ -2278,7 +2278,8 @@ on his approval, and none of the nine places changes before he rules on it.
 No-Glow Places"); round 1 RULED — places 1 to 4 lose their glow (D881); round 2 (places 5 to 8) put to him; place 9 is a
 leftover style nothing draws (removed with the guide change). Round 3: the wording, set to his answers.
 
-### [LW-LANDING-LINE-FIGURES] On the Leave War, the blue landing line of a row dragged in Rearrange breaks across the figures columns (found 15 Oct 26, picturing `[GUIDE-NO-GLOW]` place 8) — OPEN, a small fix of its own
+### [LW-LANDING-LINE-FIGURES] On the Leave War, the blue landing line of a row dragged in Rearrange breaks across the figures columns (found 15 Oct 26, picturing `[GUIDE-NO-GLOW]` place 8) — OPEN, a small fix of its own; HIS INTENT CONFIRMED (D883)
+**D883: the line runs unbroken across the name, the counters and the days.** Check a dragged group heading too (D876).
 **Found, NOT FIXED.** Rearrange on, a man's row dragged over another (desktop, a real mouse drag — Cinch over Warden):
 the blue line shows on the name column and across the day columns, but not across the figures columns between them
 (`raptor-port/docs/mock/2026-10-15-noglow-places/N8-landing-line-today-desk.png`). So the line reads as two pieces, not

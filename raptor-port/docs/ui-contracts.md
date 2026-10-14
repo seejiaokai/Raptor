@@ -7327,6 +7327,11 @@ rows"); the bid sheets' Delete stays dashed grey. Gates: `e2e/leavewar.spec.ts` 
 the grid" reads the three buttons' colours, and "in Rearrange the counter grip is left of the name and nothing clips"
 reads the cross's.
 
+**The landing line runs across the whole row (owner, D883, 15 Oct 26: "there should be a blue line through even through
+the counters. When rearranging.").** While a man's row or a group heading is dragged in Rearrange, the blue landing line
+runs unbroken across the name, the counters (the figures columns) and the days. Today it breaks across the figures
+columns: filed as `[LW-LANDING-LINE-FIGURES]`, not yet fixed.
+
 Four asks from the same sitting, all on the Leave War grid:
 
 - **The counter picker is COMPACT** ("much smaller and compress the data"). It
