@@ -1,0 +1,110 @@
+<title>OIL Job Built 14 Oct</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter+Tight:wght@400;500;600;700&display=swap">
+<style>
+/* layout: one column of numbered changes; each is a pair of phone pictures, before at the left and built at the right,
+   stacking to one column on a phone. The page wears the app's own dark look on purpose (single theme). */
+:root{
+  color-scheme:dark;
+  --bg:#0b0e12; --panel:#151a20; --panel-2:#1b2129; --edge:#2a323d; --ink:#eef2f6; --ink-2:#aab4c0; --ink-3:#7c8794;
+  --accent:#38c6e8; --mark:#1E86FF; --was:#f0555f; --ok:#7ad69b;
+  --display:'Barlow Condensed','Inter Tight',system-ui,sans-serif;
+  --body:'Inter Tight',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;padding-inline:16px;padding-block:22px 48px}
+.wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:34px}
+header h1{font-family:var(--display);font-weight:700;font-size:34px;letter-spacing:.02em;text-transform:uppercase;line-height:1.05;margin:0 0 8px;text-wrap:balance}
+header p{margin:0;color:var(--ink-2);max-width:62ch}
+.todo{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.todo b{font-family:var(--display);letter-spacing:.08em;text-transform:uppercase;font-size:15px;color:var(--accent)}
+.todo ol{margin:0;padding-left:20px;color:var(--ink)}
+section{display:flex;flex-direction:column;gap:12px}
+h2{font-family:var(--display);font-weight:700;font-size:24px;letter-spacing:.03em;text-transform:uppercase;margin:0;line-height:1.15;text-wrap:balance}
+h2 small{display:block;font-family:var(--body);font-weight:500;font-size:13px;letter-spacing:0;text-transform:none;color:var(--ink-3);margin-bottom:2px}
+.say{margin:0;color:var(--ink-2);max-width:66ch}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;align-items:start}
+figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+figcaption{font-size:13px;color:var(--ink-2)}
+.tag{display:inline-block;font-family:var(--display);font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:12px;padding:1px 8px;border-radius:5px;margin-right:6px;vertical-align:1px}
+.tag.was{background:var(--was);color:#1a0508}
+.tag.now{background:var(--ok);color:#06210f}
+.tag.ask{background:var(--accent);color:#04202a}
+figure button{appearance:none;border:1px solid var(--edge);background:var(--panel);border-radius:10px;padding:0;overflow:hidden;cursor:zoom-in;display:block}
+figure button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+figure img{display:block;width:100%;height:auto}
+.tall img{max-height:520px;object-fit:cover;object-position:top}
+.note{background:var(--panel);border:1px solid var(--edge);border-radius:8px;padding:8px 12px;color:var(--ink-2);max-width:66ch;margin:0}
+#zoom{position:fixed;inset:0;background:rgba(4,6,9,.94);z-index:10;overflow:auto;cursor:zoom-out;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+#zoom img{display:block;margin:0 auto;max-width:none}
+@media (prefers-reduced-motion:no-preference){figure button{transition:border-color .15s}}
+figure button:hover{border-color:var(--accent)}
+</style>
+<div class="wrap">
+  <header>
+    <h1>The small OIL job, built</h1>
+    <p>Your two rulings of 13 Oct are built on a branch of their own. Nothing is merged. Tap a picture to enlarge it.</p>
+  </header>
+  <div class="todo">
+    <b>What you do</b>
+    <ol>
+      <li>Look through the pictures.</li>
+      <li>Answer the six small points at the end, or say "all as recommended".</li>
+      <li>"Merge live" goes to the leftovers batch first. The OIL job then gets its own pull request and its own "merge live".</li>
+    </ol>
+  </div>
+
+  <section>
+    <h2><small>1 · your ruling D816</small>Taking a cancel off asks the OIL question first</h2>
+    <p class="say">Only where the input has no OIL answer for a weekend or holiday. Where it is already answered, or nothing is to be asked, it comes back at once as before.</p>
+    <div class="pair">
+      <figure><button type="button" data-zoom><img src="img/q-uncancel.png" alt="The OIL question headed Un-cancelling Ranger&#39;s Range brief, with the buttons Don&#39;t un-cancel and Un-cancel"></button><figcaption><span class="tag now">Built</span>The question, in the un-cancel&#39;s own words. "Un-cancel" waits for a Yes or a No.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/bar-uncancel.png" alt="The bar under the top bar: Not un-cancelled, OIL not answered, with Answer OIL and OK"></button><figcaption><span class="tag now">Built</span>Left unanswered: it stays cancelled, and the bar says so.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/bar-uncancel-320.png" alt="The same bar on the narrowest phone, still on one line"></button><figcaption><span class="tag now">Built</span>The narrowest phone. Still one line, both buttons on it.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/restored.png" alt="The board after the answer: the row is live again and the note says Restored"></button><figcaption><span class="tag now">Built</span>Answered: back with its HO in one step. One Undo takes both back.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2><small>The number that matters</small>After publishing, the Leave War shows the HO</h2>
+    <div class="pair">
+      <figure><button type="button" data-zoom><img src="img/leavewar-ho.png" alt="The Leave War: Ranger&#39;s row shows HO on Saturday 18 July and 0.5 in his OIL column"></button><figcaption><span class="tag now">Built</span>Ranger, Sat 18 Jul: HO, and 0.5 in his OIL column.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2><small>2 · your ruling D818</small>A published version loaded back says what it left to answer</h2>
+    <p class="say">The load is made at once, as before. Its note counts the inputs it put back that have no OIL answer, and that day's list opens, above the Scheduler Board too.</p>
+    <div class="pair">
+      <figure><button type="button" data-zoom><img src="img/load-note.png" alt="The note after the load, ending 1 input needs an OIL answer"></button><figcaption><span class="tag now">Built</span>The note, with your tail at its end.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/load-list.png" alt="The list of open OIL questions for Friday 17 July, a public holiday"></button><figcaption><span class="tag now">Built</span>The day&#39;s list, opened by the load.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2><small>Not holding the merge</small>Six small points for your look</h2>
+    <div class="pair">
+      <figure><button type="button" data-zoom><img src="img/q-info.png" alt="The OIL question headed Taking information only off Nomad&#39;s Hangar brief, with Don&#39;t change and Change"></button><figcaption><span class="tag ask">1</span>The words for the &#9432; mark are mine: this heading, "Don&#39;t change" / "Change".</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/bar-info.png" alt="The bar: Not changed, OIL not answered"></button><figcaption><span class="tag ask">1</span>...and its bar. Recommended: keep.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/load-note.png" alt="The note after the load: Friday: Original loaded onto the working copy, viewers still see Original until you publish, 2 unpublished edits replaced, 1 input needs an OIL answer"></button><figcaption><span class="tag ask">2</span>The note keeps its older sentence and adds your tail. Your example was shorter. Recommended: keep it, it says the viewers&#39; copy has not changed.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/load-list.png" alt="The list says 2 to answer under a note that said 1 input"></button><figcaption><span class="tag ask">3</span>The note says 1; the list shows 2. The list is the whole day&#39;s, and the other one was already waiting. Recommended: leave it.</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/twoday-note.png" alt="The note after loading Thursday: 1 request came back, Fri reads that too, 1 input needs an OIL answer"></button><figcaption><span class="tag ask">4</span>An input Thursday to Friday, Friday a holiday. Loading THURSDAY back counts it...</figcaption></figure>
+      <figure><button type="button" data-zoom><img src="img/twoday-list.png" alt="The list opened for Friday 17 July although Thursday was loaded"></button><figcaption><span class="tag ask">4</span>...and the list opens for Friday, the day that needs the answer. This differs from what I told you on 13 Oct (the list for the day loaded). Recommended: keep.</figcaption></figure>
+    </div>
+    <p class="note"><span class="tag ask">5</span>"Switch to this plan" (a saved plan, not a published version) can also bring back an input with no answer, and says nothing. Your ruling names a published version. Recommended: give it the same note and list as picture 2, as a small follow-up. Not built.</p>
+    <div class="pair">
+      <figure><button type="button" data-zoom><img src="img/undo-then-answer.png" alt="The board after Undo and Answer OIL: the note says Restored"></button><figcaption><span class="tag ask">6</span>The bar was up; an Undo moved the input back to a working day; "Answer OIL" then brought it back at once, with no question. Recommended: keep.</figcaption></figure>
+    </div>
+  </section>
+</div>
+<div id="zoom" hidden></div>
+<script>
+(function(){
+  var z=document.getElementById('zoom'), zi=document.createElement('img'), last=null;
+  function shut(){ z.hidden=true; if(zi.parentNode) z.removeChild(zi); if(last) last.focus(); }
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('[data-zoom]');
+    if(b){ last=b; var i=b.querySelector('img'); zi.src=i.src; zi.alt=i.alt; z.appendChild(zi); zi.style.width=Math.max(window.innerWidth, Math.min(i.naturalWidth/2, 1400))+'px'; z.hidden=false; z.scrollTop=0; return; }
+    if(!z.hidden) shut();
+  });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!z.hidden) shut(); });
+})();
+</script>

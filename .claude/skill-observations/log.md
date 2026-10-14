@@ -601,3 +601,33 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** One small table in section 4: for each activity (walker, reader, break test, browser test or build, unit test, document edit) what it needs held still and what it changes - and the standard order for a single checkout. Say that a reader told to read at a commit may still RUN a unit file from the working tree, so break tests wait for it all the same.
 
 **Principle:** When several checks share one working copy, each one's precondition is another's side effect. Write the dependency table once instead of re-deriving the schedule under load.
+
+### Observation 594: A designer's open question was parked as "leave it" - and the code reader then showed it was the very gap the ruling closes
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** The small OIL job, unattended: the scenario designer asked what a load does with an input of several days whose unanswered day is not the day loaded; the host parked it for the owner with the recommendation "leave it"
+**Skill:** bug-check order (`raptor-port/docs/bug-check-order.md`, the unattended-run paragraph and section 4 on scenario design)
+**Type:** internal
+**Phase/Area:** Parking a question during an unattended run
+
+**Issue:** The host treated the designer's question as a product choice and parked it with a recommended answer that happened to be the cheaper one (no change). The fresh code reader, starting from the ruling's own words, showed a road on which that answer left nobody told at all - the exact fault the ruling was made to end. The parked recommendation had been written without asking "on which road does my recommended answer leave the ruling unmet?".
+
+**Suggested improvement:** In the order's paragraph on parking a choice: before a question is parked with the recommendation "leave it as built", the agent writes the worst road for that recommendation - the setup on which "as built" most plainly fails the ruling's own sentence - and parks it only if that road is acceptable under the ruling. If it is not, it is a finding to fix, and what is parked is the reading that changed.
+
+**Principle:** "Leave it" is a recommendation like any other and needs its own adversarial case. A question a designer raises is a candidate finding until the ruling's own words have been tried against the answer you would give.
+
+### Observation 595: A record edited while the gate run was going failed the run's last check - nothing was wrong with the app
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** The whole gate set running in the background (about 18 minutes); the host used the time to write the backlog, the rulings' records and the handoff
+**Skill:** shipping rule, the checks (`.claude/rules/shipping.md`) and the gate runner (`raptor-port/scripts/gatelock.mjs`)
+**Type:** internal
+**Phase/Area:** What may be edited while the gates run
+
+**Issue:** The document check is the last gate of the set and reads the working files. A line added to a rulings record during the run (a branch name in backticks, read as a file that does not exist) failed it, so the run as a whole reported a failure although every code gate had passed. The honest report then needs a sentence explaining a failure that was never about the code.
+
+**Suggested improvement:** Either the runner runs the document check FIRST (it takes seconds and reads only documents), so later document work cannot fail a run already judged; or the rule says: while the gate set runs, documents may be drafted in the scratch folder but are written into the repo only after the run ends. And in the rulings guide: a branch name in a home cell is written without backticks - backticks there mean a file.
+
+**Principle:** A check that reads the working tree is only as still as the tree. Put the fast, tree-reading checks first, or keep the tree still until they have run.

@@ -141,8 +141,8 @@ the screen that asked.
   5. break tests (`scripts/handpass/breaks/2026-10-14-oil-uncancel-load.json`): the gate asked of the input as it stands (not as it will stand); the dry run skipped; `oil` not written in `unmark`; the mark not taken off in `unmark`; "Restored" not said after the answer; `again` not checking the mark; the load's `stood` set ignored (everything counts); the cancelled exclusion (use the raw list instead of `oilOpenOn`); the list not opened; the tail not added;
   6. ONE fresh Opus read of the finished code (D858) — brief first, the finder wording and the demo-data exclusion verbatim from the order's §4, the state table asked for (the wait: answered, left, asked again, changed meanwhile, a second press while one waits, sign-out, Undo while it waits, the day changed, the board closed); then a narrow read of any fix that rewrites logic;
   7. the whole gate set under the lock (`E2E_PORT=4174 node scripts/gatelock.mjs run --logs <dir>`), the evidence sheet `docs/handpass/2026-10-14-oil-uncancel-load.md` with its `Walk:` line, the records (`docs/engine-rules.md` the bullet on a cancelled input — D816, D818 built; `docs/ui-contracts.md` §The OIL question comes before the change; `docs/feature-impact.md`; `docs/file-map.md`; `OUTSTANDING.md` both items; the walk ledger's row), `HANDOFF.md`'s block rewritten, the branch pushed (it has no pull request until 505 is merged), ONE notification.
-- [x] the scenario designer's list · [x] the roll-call · [x] the host's walk (both sizes, all PASS) · [ ] the helper's walk · [ ] break tests (the list is written)
-- [ ] the fresh read · [ ] fixes · [ ] the gates · [ ] the sheet · [ ] the records · [ ] pushed; `HANDOFF.md`
+- [x] the scenario designer's list · [x] the roll-call · [x] the host's walk (both sizes, all PASS) · [x] the helper's walk (15 scenarios; one FAIL judged not a fault) · [x] break tests (34 unit: 32 caught, 2 explained; 4 browser: all caught)
+- [x] the fresh read (4 findings) · [x] fixes, tests first · [x] the narrow read of the fixes (2 low points, fixed) · [x] the re-walk on the rebuilt app · [x] the sheet · [x] the records — the gates, the push and `HANDOFF.md`: see the block in `HANDOFF.md`
 
 ## The roll-call, as found in the code (14 Oct 26, night) — for the evidence sheet
 
@@ -241,3 +241,14 @@ one browser break (the bar's words made longer than a line; the list's z-index u
 set; (e) the evidence sheet with its sizing lines and `Walk:` line, the walk ledger's row, `OUTSTANDING.md`,
 `HANDOFF.md`, the observation log; push the branch; release the lock; stop the preview `raptor-walk-2`; ONE
 notification.
+
+## State at the close of the check (14 Oct 26, night) — it replaces every state above
+
+**The job is built and checked; nothing is merged.** The whole story is the evidence sheet
+`docs/handpass/2026-10-14-oil-uncancel-load.md`; what he is asked is its §0 (seven items, each with a picture and a
+recommended answer) and the pictures page https://claude.ai/artifact/Wgbift6UqqE2DZpNDbKEfr
+(`docs/mock/oil-job-built-14oct.html`, its pictures `docs/mock/2026-10-14-oil-job/`). The two "Parked for him"
+lists above are superseded by that §0: item 4 was first parked as "leave it" and is now BUILT the other way (the
+fresh read's F1 — an input of several days put back by a load is counted, and the list opens for the day that needs
+the answer). What is left for another chat: his answers to §0; the pull request once pull request 505 is merged
+(bring `main` in first); and, only if he says so, "Switch to this plan" given the same note and list (§0 item 5).

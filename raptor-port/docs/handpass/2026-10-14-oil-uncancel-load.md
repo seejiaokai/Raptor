@@ -149,12 +149,19 @@ an input taken OFF the programme meanwhile is still asked and un-cancelled on th
 Personal Inputs with its answer).
 
 **A narrow read of the fixes** (they rewrite the load's count) by a second fresh Opus reader — the brief
-`docs/superpowers/briefs/2026-10-14-oil-uncancel-load-narrow-read-brief.md`; its result is in §9.
+`docs/superpowers/briefs/2026-10-14-oil-uncancel-load-narrow-read-brief.md`, the report whole
+`docs/superpowers/briefs/2026-10-14-oil-uncancel-load-narrow-read.md`. **No finding that makes the count wrong, opens
+the list for the wrong days, or leaves an unanswered input with no sign.** Two low points about the one sentence at
+the list's foot, both fixed test first: it was promised although the only inputs left unpicked were ones no bell
+carries (now asked of what is LEFT); and it was hidden from a scheduler who has no line of his own although the other
+schedulers' bells carry one (now asked of any scheduler's line). One naming note taken. Its other notes are §0's
+items 3 and 4.
 
 ## 7. The break tests — `scripts/handpass/breaks/2026-10-14-oil-uncancel-load.json`
 
-One rule broken at a time, its tests run, the line put back: **32 breaks, 31 caught, 1 explained.** First run: 26
-caught. Five were not, and one had gone stale as the fixes moved a line:
+One rule broken at a time, its tests run, the line put back: **34 breaks, 32 caught, 2 explained.** First run of the
+first 32: 26 caught. Five were not, and one had gone stale as the fixes moved a line; two more were added for the
+narrow read's points:
 
 | Break | First run | What was done |
 |---|---|---|
@@ -164,6 +171,68 @@ caught. Five were not, and one had gone stale as the fixes moved a line:
 | 17 — the list not opened | stale | its line had moved with the fix for F1; pointed at the new line; caught |
 | 27 — an unnamed holiday named by the preset word | not caught | the list's name was worked out in two places, one masking the other; made one place, and caught |
 | 25 — the load's "already standing and already open" half removed | not caught | **explained:** a load never changes an input's cancel, its ⓘ mark or its OIL answer, so an input standing on the day before the load is open before it exactly when it is open after it; the count is the same either way. Kept as a guard should a load ever bring a marked input back live |
+| 33 — the foot's promise made for a row already picked (the narrow read, L1) | added | caught |
+| 34 — only one scheduler's bell asked (the narrow read, L2) | added | **explained:** the rule needs two lines changed at once (an import and a call), which the runner cannot do; proved by hand — with the reader's own bell asked, the test's last assertion fails — and the file put back |
 
 What a break test cannot reach — what only a browser draws — is in the browser test `e2e/oil-uncancel-load.spec.ts`
 and its own breaks (§8).
+
+## 8. The helper's walk — ONE Sonnet 5.5 walker, the designer's remaining scenarios
+
+Its results, row by row: `docs/handpass/parts/ou-H.results.md`; its pictures (117):
+`docs/img/handpass/2026-10-14-oil-uncancel-load/H/`; its scripts `scripts/handpass/ou-h-*.mjs`. Fifteen scenarios
+(S9, S11–S17, S20–S23, S27–S29), 129 rows: **119 PASS, 2 FAIL (one scenario part, at both sizes), 8 NOT WALKED.** The
+host opened the pictures behind the published-day, shared-input and Leave War rows (S11, S13, S27).
+
+| Scenario | What was walked | Result |
+|---|---|---|
+| S11, S12 | an input cancelled, its day published, then made a holiday; un-cancelled with an answer; not answered; Undo | PASS, both sizes: ONE more change waiting, naming Ranger ("CX (WX) → not cancelled"); View-only Sched and the member still see it cancelled; no credit on the Leave War before the amendment, "HO*" after AL1 |
+| S9 | Undo of the cancel itself with the holiday in between | PASS: asks nothing; the input's card wears "OIL?", its man's bell is lit and opens the question |
+| S13, S14 | an input of three people; an ALL AVAIL input | PASS: ONE question ("Un-cancelling Ace +2's Range brief" / "…ALL AVAIL's Crew briefing"), one answer; each named person and the filer told "Un-cancelled", not the admin; all credited after publishing |
+| S15, S16 | moved onto a weekend while cancelled; handed to another man while cancelled | PASS: nothing asked while cancelled; the un-cancel asks, for the new man |
+| S17, S22 | nothing to ask; places that must not offer it | PASS: a personal input, a working day and a scheduler's own row un-cancel at once; no control un-cancels in a member's card or window, View-only Sched or a 👁 preview |
+| S20, S21 | the bar left up and the place changed; OIL Earn | PASS: the bar stays when the board's day is stepped and after ✓ Done, and still asks Saturday's question; a page, a week, the member view, a sign-out, a reload or OIL Earn take it away; the input stays cancelled each time |
+| S23 | the rules behind the open question | PASS: the day's issues and the man's ring unchanged while it waits; the clash raised once it is un-cancelled |
+| S27 | the load's list: "Later", then answers | PASS but one part — see below |
+| S28, S29 | rows a load treats specially; orders round the load | PASS for what was walked: a deleted and a moved input not counted; one Undo takes the load back and the open list shrinks; a second load says "already at Original" and opens no list |
+
+**The one FAIL, judged by the host — not a fault.** After "Later" the schedulers' bell kept its ONE line for the
+holiday, but its count read "4 inputs need an OIL answer" where it had read "2" before the load. The line counts what
+is left to answer on that holiday (his D783: the bell carries one line a holiday, counting what is left), and the load
+had just put two unanswered inputs back, so four were left. No new line, nothing marked unread. The scenario's "as it
+was" meant no new line; the walker rightly reported the changed number.
+
+**Not walked (8 rows):** a second admin's sign-in (the world has one admin account; D785 — a scheduler is always an
+admin); the cancel off a leave, medical or overseas-duty input (their rows offer no CX or ⓘ — there is no door, which
+is the roll-call's "must not"); a Fri–Mon input loaded on a day with nothing to answer (found by the fresh read as F1,
+fixed, and walked by the host as R1 below); a two-day holiday; "Switch to this plan" and a day template (§0 item 5;
+a template is refused on a published day — D96).
+
+## 9. The re-walk — `scripts/handpass/ou-walk-3.mjs`, and both earlier walks again on the rebuilt app
+
+After the fixes the app was rebuilt and everything the host had walked was walked again: U0–U6, L0–L2, E1–E3 —
+**all PASS at both sizes** — and three new parts for what the fixes touched:
+
+| Part | What was done | What the screen showed | Phone | Desktop |
+|---|---|---|---|---|
+| R1 (F1, F3) | an input Thu 16 – Fri 17 Jul filed (no question: both working days); Thursday published; Friday made a public holiday, its list left for later; the input taken off; Thursday's Original loaded back | the note ends "· 1 input needs an OIL answer"; the list opens for **Fri 17 Jul**, "Public holiday · Walk holiday", the input on it ("Det prep · till 17 Jul"); the foot reads "What is left goes to the schedulers’ bells" (they were told of this holiday) | PASS | PASS |
+| R2 (F2) | Friday made a holiday with no name of its own; an input taken off and loaded back | the list is headed "Public holiday" alone | PASS | PASS |
+| R3 (F4) | a live row above a cancelled, unanswered one on Saturday; "Don’t un-cancel"; the live row taken off; "Answer OIL", "Don’t un-cancel" | the cancelled input's own CX button flashes, at the place its row has now | PASS | PASS |
+
+**The browser test and its breaks:** `e2e/oil-uncancel-load.spec.ts` — 2 tests, both pass; four browser breaks
+(`scripts/handpass/breaks/2026-10-14-oil-uncancel-load.browser.json`), each built and run: the bar's words no longer
+shrinking to fit; the list under the full-screen board; the cancel sheet un-cancelling at once; the load opening no
+list — **4 of 4 caught.**
+
+## 10. The gates, and the report's lines
+
+The whole set under the PC's lock, in one run, on the finished code (nothing in `raptor-port/src` changed after it):
+**unit 11368 / 11368 (638 files) · build clean · tfin 728 / 0 · e2e 815 passed, 0 failed, 59 skipped · smoke 446 / 0 ·
+rulecheck OK · docsize OK** — the document check failed inside that run on a line of a rulings record written while
+it was going (a branch name written as if it were a file), was corrected, and passed by itself.
+
+`Walk: MEDIUM — the host's scripts at a phone's (390 × 844, by touch; the bar at 320 wide) and a desktop's size (1440 × 900): 16 parts a size on the rebuilt app, all PASS, pictures opened; ONE Sonnet 5.5 walker: 15 scenarios, 129 rows — 119 PASS, 2 FAIL (one part at both sizes, judged by the host not a fault: the bell's line counts what is left), 8 not walked with reasons; 156 pictures — docs/img/handpass/2026-10-14-oil-uncancel-load/`
+
+**His look:** the pictures page https://claude.ai/artifact/Wgbift6UqqE2DZpNDbKEfr and §0. **Not done by anyone:** a
+look on his own iPhone (its wider letters — the bar's one line is measured by the browser test at 390 and 320 wide in
+the test browser's font, not Apple's); a Fable read (set aside on his word, D858); a ChatGPT read (D761).
