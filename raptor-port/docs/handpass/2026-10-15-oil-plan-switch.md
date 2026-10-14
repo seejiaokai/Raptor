@@ -58,4 +58,13 @@ word only (D403). Every door was checked: none MISSING. Both fixes are one-line 
 order's §5, "a fix is new code" — more than a one-line guard). The whole gate set was run after both fixes (§6).
 
 ## 6. Gates
-(Filled in when the run ends.)
+The whole set under the PC lock, after both read fixes, in one run (15 Oct 26): **build clean · tfin 728 / 0 · e2e 817
+passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK · unit 11381 / 11384** — the three reds all this
+job's, none a fault in the app: a register of every file that reads the inputs (`src/engine/inputs-readers.test.ts`) did
+not yet list the new shared reading, and two plans-menu tests (`src/ui/draftsui.test.tsx`) read the switch's old words —
+missed by the wording search, whose output was cut short (skill observation 602). Fixed (test files only), and the whole
+unit suite re-run under the lock: **unit 11384 / 11384 (639 files)**.
+
+## 7. Status
+**Ready for his look and "merge live".** His look: on his iPhone, a published day, "Switch to this plan" from the plans
+menu to a plan that brings back an input with no OIL answer — the note's last sentence and the list opening in front.

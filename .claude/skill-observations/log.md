@@ -721,3 +721,18 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** Make it an unconditional default rather than a condition: any script longer than a one-liner is written to a file in the scratchpad with the file tool and run from there — never a here-document — and say so as one line in raptor-port/CLAUDE.md §Token discipline (or the executor rule), replacing the memory note's conditional wording. A hook that refuses a Bash command containing `<<'` with an apostrophe in its body is possible but heavier than the habit.
 
 **Principle:** Where a safer way costs nothing extra, a rule phrased as a condition to judge each time ("unless it contains X") fails under load; phrase it as an unconditional default ("always do Y").
+
+### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
+
+**Status:** OPEN
+**Date:** 15 Oct 26
+**Session context:** [OIL-PLAN-SWITCH-UNASKED] — rewording the plan switch's note; finding every test that reads the old words before the change
+**Skill:** New skill candidate: none — the roll-call rule "a wording ruling … gets its own small roll-call" (raptor-port/docs/bug-check-order.md §6)
+**Type:** open-source
+**Phase/Area:** the wording roll-call, before the full gate run
+
+**Issue:** The search for the old sentence ORed several patterns, one of them a common phrase ("nothing pending"), and was piped through `head -40` to keep it short. The common phrase filled the forty lines with unrelated hits, so two tests that read the switch's old words (`draftsui.test.tsx`) never showed; they failed only in the full unit run, a 15-minute cycle later. The same run also failed a register test that lists every file reading the inputs — a new shared file must be added to it — which a search for the module's readers would have found.
+
+**Suggested improvement:** In bug-check-order §6's wording roll-call (and the executor rule): search each exact old phrase ALONE, list FILES (not lines) with no cap, and treat a capped or truncated result as no result. When a change adds a new source file, also search the tests for registers that enumerate files ("every file that …") and run them before the full gates.
+
+**Principle:** A search whose output is truncated proves nothing about what it did not print; search for the exact phrase on its own, list files rather than lines, and never cap the list you are using as a completeness check.

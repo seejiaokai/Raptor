@@ -22,25 +22,12 @@ the later merge keeps both (D78).
 ## Now
 <!-- now:claude/checkout-stale-compaction-7ee93a -->
 ### `claude/checkout-stale-compaction-7ee93a` — THE COMPACTION SET-UP RE-CHECKED; HIS THREE SMALL JOBS OF 15 OCT IN HAND — written 15 Oct 26 — verify before use
-- **Carries** the records of `claude/handoff-overnight-skill-review-6b45a6` (`[MAIN-CHECKOUT-STALE]`, observation 600 — brought in whole; that chat's block is replaced by this one) and `claude/overnight-skill-c02843`'s (on `main` since pull request 510).
+- **Carries** the records of `claude/handoff-overnight-skill-review-6b45a6` (`[MAIN-CHECKOUT-STALE]`, observation 600 — brought in whole; that chat's block is replaced by this one) and `claude/overnight-skill-c02843`'s (on `main` since pull request 510; its block, whose one open item was the four checks below, is removed — its residue `[HANDOFF-RESET-TRACKS-MAIN]` is filed).
 - **The four checks, re-run in a new chat with the main folder on `main`:** (a) the setting IS taken — the app now counts the chat against 880,000 and compacts at 96% of that, about 845,000, which is about 85% of the whole room; but the hooks count against 1,000,000, so their first note (80%, 800,000) comes only about 45,000 before the compaction — filed as `[COMPACT-BANDS-WINDOW]`; (b) asked of him; (c), (d) cannot be seen until a chat reaches 80%. `/overnight` is in the skill list, so the skills are taken from the main folder now.
 - **His rulings this chat:** D875 (the plan-switch job: Opus builds, one fresh Opus reader, no Fable).
-- **`[OIL-PLAN-SWITCH-UNASKED]` (D865) BUILT and WALK-checked** — `raptor-port/docs/handpass/2026-10-15-oil-plan-switch.md`: the walk 10/10 at both sizes after one real fault fixed (the list under the plan editor), the load re-walked 12/12, one fresh Opus read (D875: two low findings, both fixed). The whole gate set: see the sheet. Then his look and "merge live".
+- **`[OIL-PLAN-SWITCH-UNASKED]` (D865) BUILT, WALK-checked, gates green** — `raptor-port/docs/handpass/2026-10-15-oil-plan-switch.md`: the walk 10/10 at both sizes after one real fault fixed (the list under the plan editor), the load re-walked 12/12, one fresh Opus read (D875: two low findings, both fixed), the whole gate set green (§Gate baseline). Waiting for his look and "merge live".
 - **`[GUIDE-ONE-MARK]`** drafted and read (version 2), its wording put to him. **`[GLOW-PLACES-LOOK]`** drawn and put to him as a page of pictures with four questions (each recommended "no glow").
 - **Open questions for him:** (b) — does "Chat N% full" show under the message box?; the guide's wording; the four glow questions. **Running when written:** none.
-<!-- /now -->
-<!-- now:claude/overnight-skill-c02843 -->
-### `claude/overnight-skill-c02843` — `/overnight` (PULL REQUEST 508) AND THE COMPACTION SET-UP (PULL REQUEST 509) ARE LIVE; THE SET-UP'S FOUR CHECKS IN THE APP ARE OWED BY THE NEXT NEW CHAT; NOTHING IN THE APP CHANGED — written 15 Oct 26 — verify before use
-- **Live:** both merged on his "merge live" (508, then 509 at `43a5fee29`); `main`'s check green, Vercel's live deployment READY each time.
-- **His rulings this chat (how-we-work):** D867 (he selects the night's jobs), D868 (from about 80% the agent picks when to compact), D869 (the overnight command approved), D870 (build the compaction set-up), D871 (nearly done and he is here → offer a handoff), D872 (set-up approved, guard OFF whenever he is away), D874 (a handoff is suggested whenever the agent judges a suitable point, mid-job included; replaced D873, a misreading). His general instructions' compaction line updated on his word.
-- **OWED by the first NEW chat on `main` (the design's §"Still untested", `raptor-port/docs/superpowers/specs/2026-10-15-compact-when-ready.md`):** (a) `get_usage` → `autoCompactsAtPercent` about 85 (this chat started before the setting and reads 97); (b) ask him whether "Chat N% full" shows under the message box; (c) the 80% note arriving (only when it gets there); (d) a held compaction tried again. Report what works; if (a) does not move, the set-up falls back to the notes and the handed-back block.
-- **Trap found here (observation 599):** after `git checkout -B <branch> origin/main` the branch tracks `main` and a plain push silently does nothing — three "pushed" reports were false until the pull request's head was read before the merge. Push with `git push -u origin HEAD:<branch>` and read back `git ls-remote origin <branch>`. The session-handoff guide's line that gives the reset is to be fixed (`[HANDOFF-RESET-TRACKS-MAIN]`).
-- **Branch:** `claude/overnight-skill-c02843` — rebased onto `main` after 509; carries only these records and observation 599, to go with the next job's pull request.
-- **Gates:** none owed (no app code); hook tests 13 / 13; `npm run docsize` green.
-- **Open questions for him:** none.
-- **Running when written:** none.
-- **Pick up here:** a NEW chat on `main` runs the four checks first, then takes the next job (`## Next, in order`).
-- **Opening line:** "Read HANDOFF.md — the claude/overnight-skill-c02843 block under ## Now. First run its four checks of the compaction set-up and tell me what works; then tell me the next job." **Worktree: YES — a new worktree BASED ON `main`** (pick `main`; NOT `claude/overnight-skill-c02843`).
 <!-- /now -->
 
 ## Next, in order
@@ -91,7 +78,9 @@ his ruling — DONE 7 Oct 26 on `claude/docs-tidy-7-oct` (D609: options 1 to 6; 
 
 ## Gate baseline
 
-**The latest counts watched — 14 Oct 26 (the end of the night), `claude/oil-uncancel-load-ask` — `main` with the three approved builds, the leftovers and the small OIL job (NOT `main`'s code), the whole gate set under the PC lock with nothing else running, in one run: unit 11368 / 11368 (638 files) · build clean · tfin 728 / 0 · e2e 815 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK (the document check passed on a second run by itself, after one line of a rulings record written during the run was corrected).**
+**The latest counts watched — 15 Oct 26, `claude/checkout-stale-compaction-7ee93a` — `main` with `[OIL-PLAN-SWITCH-UNASKED]` (NOT `main`'s code), the whole gate set under the PC lock in one run: build clean · tfin 728 / 0 · e2e 817 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK · unit 11381 / 11384 (three test-file reds of this job, fixed); the unit suite re-run whole under the lock: 11384 / 11384 (639 files).**
+
+**Before that — 14 Oct 26 (the end of the night), `claude/oil-uncancel-load-ask` — `main` with the three approved builds, the leftovers and the small OIL job (NOT `main`'s code), the whole gate set under the PC lock with nothing else running, in one run: unit 11368 / 11368 (638 files) · build clean · tfin 728 / 0 · e2e 815 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK (the document check passed on a second run by itself, after one line of a rulings record written during the run was corrected).**
 
 **Before that — 14 Oct 26 (night), `claude/approved-jobs-batch-build-cc42ef` with the leftovers batch on it — `main` with the three approved builds and the leftovers (NOT `main`'s code), the whole gate set under the PC lock with nothing else running, in one run: unit 11341 / 11341 (638 files) · build clean · tfin 728 / 0 · e2e 813 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK.**
 
