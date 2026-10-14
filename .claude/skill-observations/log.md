@@ -632,6 +632,8 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 **Principle:** A check that reads the working tree is only as still as the tree. Put the fast, tree-reading checks first, or keep the tree still until they have run.
 
+Met again 15 Oct 26 (`[LW-REARRANGE-EDGE-SCROLL]`), worse: CODE under `raptor-port/src` was edited while the gate set ran (a function call added before its import), and the Tracker smoke — which builds the app itself — built the half-made file and failed in 3 s. Nothing was wrong with the finished code; the run was void and had to be repeated (~15 min). The guard proposed, now for code too: while this checkout holds the gate lock, a hook refuses an edit under `raptor-port/src` (and a document the document check reads) — or the runner works from a copy of the last commit (`git worktree add` at HEAD) so the tree it checks cannot move under it. A habit ("don't edit while it runs") already failed twice.
+
 ### Observation 596: A guide for an unattended run sent its plan as a message and so ended the turn - the night could not start until he woke
 
 **Status:** OPEN
@@ -721,6 +723,8 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** Make it an unconditional default rather than a condition: any script longer than a one-liner is written to a file in the scratchpad with the file tool and run from there — never a here-document — and say so as one line in raptor-port/CLAUDE.md §Token discipline (or the executor rule), replacing the memory note's conditional wording. A hook that refuses a Bash command containing `<<'` with an apostrophe in its body is possible but heavier than the habit.
 
 **Principle:** Where a safer way costs nothing extra, a rule phrased as a condition to judge each time ("unless it contains X") fails under load; phrase it as an unconditional default ("always do Y").
+
+Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit script inserting a test wrote each `\\b` of a regex as a BACKSPACE byte and each escaped apostrophe as a bare one — the file first failed to parse, then every `\b` assertion matched nothing; two more inline fixes (`sed` replacements) mangled it again before a script written with the file tool put it right. The guard is the one already proposed and approved to build — `[SHELL-SCRIPT-GUARD]` (D811): a script is written to a file, always.
 
 ### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
 

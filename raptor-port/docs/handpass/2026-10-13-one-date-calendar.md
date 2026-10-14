@@ -312,6 +312,8 @@ date boxes — is NOT in this check: its own branch and its own check.
 
 ## 13. His look, and what is parked for him
 
+**His look is given (D889, 15 Oct 26):** *"I'm happy with the built calander look"* — step two may start.
+
 **The card — five minutes on his own iPhone, on the preview link:**
 1. Inputs → the gear → "Calendar…" → tap THU. **The From box sits inside the window** — nothing runs off the right edge.
 2. Tap From. **The calendar is in the middle of the screen.** Tap the title: **scroll the months and the years with a

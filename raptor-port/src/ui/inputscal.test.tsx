@@ -485,6 +485,35 @@ describe('one lift, every drag — the day popover (6 Sep 26)', () => {
     }
   })
 
+  /* ONE LINE A GAP (owner D891 — "Yes fix them too", after D890 on the Leave War): a note's lower half and the upper
+     half of the note below it are one drop, so ONE bar shows — on the top of the note below; the last note keeps its
+     bar on its foot. */
+  it('a note dragged over the lower half of another draws its bar on the top of the note below — one bar a gap', async () => {
+    const iso = '2026-07-24'
+    await act(async () => { addPlanPuck(iso, 'gap three'); addPlanPuck(iso, 'gap two'); addPlanPuck(iso, 'gap one'); notify() })
+    const [a, b, c] = dayIds(iso)
+    try {
+      await openPop(iso)
+      const lower = (id: string) => { $(`[data-sec="${id}"]`)!.getBoundingClientRect = () => ({ top: 0, height: 20, bottom: 20, left: 0, right: 100, width: 100, x: 0, y: 0, toJSON() {} }) as DOMRect }
+      lower(a); lower(c)
+      await act(async () => { $(`[data-sechandle="${b}"]`)!.dispatchEvent(ptr('pointerdown', 10, 60)) })
+      document.elementFromPoint = () => $(`[data-sec="${c}"]`)                     // the LAST note's lower half: its foot
+      await win('pointermove', 10, 15)
+      expect($(`[data-sec="${c}"]`)!.className).toMatch(/\bdragover after\b/)
+      await act(async () => { window.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true })) })
+      await act(async () => { $(`[data-sechandle="${c}"]`)!.dispatchEvent(ptr('pointerdown', 10, 60)) })
+      document.elementFromPoint = () => $(`[data-sec="${a}"]`)                     // the first note's lower half
+      await win('pointermove', 10, 15)
+      expect($(`[data-sec="${b}"]`)!.className, 'the bar is on the next note’s top').toMatch(/\bdragover\b/)
+      expect($(`[data-sec="${b}"]`)!.className).not.toMatch(/\bafter\b/)
+      expect($(`[data-sec="${a}"]`)!.className, 'never this note’s foot').not.toMatch(/\bdragover\b/)
+      await act(async () => { window.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true })) })
+    } finally {
+      if ($('[data-testid="win-inputsday-x"]')) await click($('[data-testid="win-inputsday-x"]'))
+      await wipe(iso)
+    }
+  })
+
   it('a seated-puck swap flashes the SLOT the puck landed in, not the one it left', async () => {
     vi.useFakeTimers()
     const iso = '2026-07-28'

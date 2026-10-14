@@ -7333,8 +7333,37 @@ reads the cross's.
 
 **The landing line runs across the whole row (owner, D883, 15 Oct 26: "there should be a blue line through even through
 the counters. When rearranging.").** While a man's row or a group heading is dragged in Rearrange, the blue landing line
-runs unbroken across the name, the counters (the figures columns) and the days. Today it breaks across the figures
-columns: filed as `[LW-LANDING-LINE-FIGURES]`, not yet fixed.
+runs unbroken across the name, the counters (the figures columns) and the days. **Built 15 Oct 26**
+(`[LW-LANDING-LINE-FIGURES]`): the figures drawer is a second table laid over the days, so the real row's line ran
+under it; the drawer's copy of the row now wears the same `dragover` / `dragover after` classes (`FiguresDrawer.tsx
+DrawerOver`, set by `Matrix.tsx drawerRows` by the real row's own tests) and draws the same 3px line (`matrix.css`).
+Pins: `src/leavewar/ui/figdrawer.test.tsx` (the classes), `src/leavewar/ui/rowglow.test.ts` (the line and its
+specificity); walked by `scripts/handpass/lwlanding-drag.mjs` (`docs/handpass/2026-10-15-lw-landing-line.md`).
+**One line a gap, in one place (owner, D890, 15 Oct 26: "Shouldn't it be just 1 position when I try to move between
+rows?").** Over the lower half of a row, or the upper half of the row below it, the SAME line shows — on the top edge
+of the row below. The drop was already one place ("after a row" resolves to "before the row that follows it", the
+commit in `Matrix.tsx startRowDrag`); the hover now names that same row (the next row of the same kind, in the same
+list), so the two halves no longer draw two lines a few pixels apart. A row's bottom edge carries the line only where
+nothing that can be landed on follows it: the last row of a list, or above a heading a man's row cannot land on. The
+row being dragged still shows no line over itself. Every row of the grid in Rearrange — a man's row, a group heading,
+the Manning block's rows (his "Counter has this rearrange issue") — **and, on his "Yes fix them too" (D891), the ⚙
+Settings Groups and "Who wins" lists (the same `startRowDrag`) and a day opened on the Inputs calendar, a note dragged
+to reorder (`InputsCal.tsx` startSecDrag): one bar a gap there too.** Walked by `scripts/handpass/onegap-lists.mjs`.
+**A row carried to the screen's edge scrolls the grid (owner, D892, 15 Oct 26: "when I drag the row of the puck down
+outside the screen, the screen doesn't pan").** In Rearrange a man's row, a group heading or a counter held near the top
+or bottom edge of the screen scrolls the grid that way, as the Scheduler's drags and the war's Move do. Filed as
+`[LW-REARRANGE-EDGE-SCROLL]` — **built 15 Oct 26** (`Matrix.tsx startRowDrag`; the ⚙ lists ride the same drag). **And (D893,
+his "Yes"):** a note or a puck dragged in a day opened on the Inputs calendar scrolls the day's list at its edge, and a
+column heading dragged on Quals scrolls the table sideways — built 15 Oct 26 (`InputsCal.tsx`, `QualsPage.tsx`). ONE edge
+scroll for all of them, `src/ui/edgescroll.ts` — the Leave War drag selection's own numbers (`select.ts` reads them
+there): a mouse 36 px from the edge at a steady 18 px a frame, a finger 48 px ramping to 15; a band the press began in
+is dead until left; after each step the thing under the still pointer is read again. Pins: `src/ui/edgescroll.test.ts`;
+walked by `scripts/handpass/edgescroll-walk.mjs`. **The grips (his find — a counter's "much hard to activate"):** each
+Rearrange grip takes a press over a larger invisible area (the guide §6, D487) — 4 px above and below, toward the cell's
+left edge, 4 px right — inside its own row; measured by `scripts/handpass/grip-reach.mjs` (a phone: a counter's 6 → 16
+points of 81 round the grip, a man's 9 → 20); pinned in `src/leavewar/ui/rowglow.test.ts`. **Still to check (D896, his "Yes check the rest too"):** the Tracker chart's drags
+(a ball, a line's end, a bend handle) do not pan the chart at its edge (read in the code); the Inputs month calendar's drag
+across days sits in a month that does not scroll — whether a drag at its edge turns the month is his to say. Its own job.
 
 Four asks from the same sitting, all on the Leave War grid:
 

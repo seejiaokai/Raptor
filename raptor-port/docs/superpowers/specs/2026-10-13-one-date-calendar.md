@@ -2,6 +2,8 @@
 
 **Rulings:** D786 (the swipe; the From box must fit), D795 (the swipe's feel; any date, the weekday standing out), D796 (ONE
 calendar of the app's own, on the iPhone calendar's pattern in the Raptor look), D797 (where it sits; Monday; two steps).
+**Step two may start (D889, 15 Oct 26):** he has looked at step one, live since 13 Oct 26, and is happy with it as built — D800's wait is met;
+step two begins with its questions and pictures put to him.
 Open each full row before acting on its detail (`grep -h '^| D797 |' .claude/decisions-full/*.md`).
 **Backlog:** `OUTSTANDING.md` `[ONE-DATE-CALENDAR]`, `[CAL-PHONE-SWIPE-FIT]`. **Branch:** `claude/cal-phone-swipe-fit-2affa0`.
 **The pictures he approved:** `docs/mock/cal-swipe-fit.html` (pictures `docs/mock/2026-10-13-cal-swipe-fit/one-*` and

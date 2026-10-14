@@ -23,6 +23,7 @@ import type { RecordSpans } from '../state/merge'
 import { creditGiver } from '../engine/warrecs'
 import { msSinceInput } from '../../state/idle'
 import { boxOf, frameLift, frameLand, landOn } from '../../ui/lift'
+import { edgeAutoScroll } from '../../ui/edgescroll'
 import { wireSelect, wireMove, wireFigureSelect, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx, type FigureSelectCtx, type FigureSelection } from './select'
 import { selectableFigure } from '../engine/counters'
 import { SettingsSheet } from './SettingsSheet'
@@ -381,16 +382,33 @@ export function Matrix() {
     const rowEl = grip.closest(cfg.sel) as HTMLElement | null
     const outer = mxOuterRef.current, wrap = wrapRef.current
     if (surface === 'grid' && rowEl && outer && wrap) frameLift(liftRef.current, boxOf(outer, rowEl, wrap))
-    const move = (ev: PointerEvent) => {
-      const el = document.elementFromPoint(ev.clientX, ev.clientY)
-      const row = el && (el as Element).closest ? (el as Element).closest(cfg.sel) : null
-      const overId = row ? cfg.idOf(row) : null
+    /* The row under the pointer, read at a point — by a move, and again after an edge scroll has slid the rows
+       under a pointer that has not moved (D892). */
+    const hoverAt = (x: number, y: number) => {
+      const el = document.elementFromPoint(x, y)
+      let row = el && (el as Element).closest ? (el as Element).closest(cfg.sel) : null
+      let overId = row ? cfg.idOf(row) : null
       /* which half decides before/after; a zero-height rect (jsdom) reads as
          "before", keeping the old semantics where layout cannot answer */
       let after = false
       if (row) {
         const r = (row as HTMLElement).getBoundingClientRect()
-        after = r.height > 0 && ev.clientY > r.top + r.height / 2
+        after = r.height > 0 && y > r.top + r.height / 2
+      }
+      /* ONE LINE A GAP (owner D890, 15 Oct 26 — "Shouldn't it be just 1 position when I try to move between rows?").
+         The lower half of a row and the upper half of the row below it are ONE drop — the commit below resolves
+         "after X" to "before the row that follows X" — but they drew two lines a few pixels apart: X's bottom edge,
+         then the next row's top. So the hover names that following row straight away, and the line is drawn once,
+         on its top edge — on the grid and on the ⚙ Settings lists (Groups, Who wins) alike (D891, "Yes fix them
+         too"). Only the row that IS the follower is taken: the next sibling of the same kind, stepping over a
+         sibling the page hides (a phone hides the CAT sub-headings). A heading or anything else a row cannot land
+         on (a group's open colour palette) keeps "after X" — its bottom edge is then the only line in that gap. Not
+         over the row being dragged: it shows no line over itself. */
+      if (row && after && overId !== dragId.current) {
+        let next = row.nextElementSibling
+        while (next && !next.matches(cfg.sel) && getComputedStyle(next).display === 'none') next = next.nextElementSibling
+        const nextId = next && next.matches(cfg.sel) ? cfg.idOf(next) : null
+        if (next && nextId) { row = next; overId = nextId; after = false }
       }
       const cur = dragOverRef.current
       if (overId !== (cur?.id ?? null) || after !== (cur?.after ?? false)) {
@@ -398,11 +416,27 @@ export function Matrix() {
         setDragOver(overId); setDragAfter(after)
       }
     }
+    /* CARRIED TO THE EDGE, THE VIEW FOLLOWS (owner D892, 15 Oct 26 — "when I drag the row of the puck down outside
+       the screen, the screen doesn't pan"). Held near the top or foot of what scrolls the rows — the page for the
+       grid, the sheet's own list for the ⚙ lists — the view runs that way at the war's own edge feel
+       (`src/ui/edgescroll.ts`, the numbers the day-cell drag selection uses), and the row under the still pointer is
+       read again after each step, so the landing line follows the rows sliding under it. */
+    let px = e.clientX, py = e.clientY
+    const auto = edgeAutoScroll({
+      from: rowEl ?? grip, axis: 'y', touch: e.pointerType === 'touch', x: px, y: py,
+      onScroll: () => hoverAt(px, py),
+    })
+    const move = (ev: PointerEvent) => {
+      px = ev.clientX; py = ev.clientY
+      auto.point(px, py)
+      hoverAt(px, py)
+    }
     // `commit` is false for a cancel (a system gesture, multi-touch, or the
     // grid unmounting mid-drag): tear down without moving anything. Without a
     // pointercancel path the pointerup never comes and the listeners — and the
     // stuck highlight — leak, most likely on the phone drag this was built for.
     const end = (commit: boolean) => {
+      auto.stop()
       window.removeEventListener('pointermove', move)
       window.removeEventListener('pointerup', up)
       window.removeEventListener('pointercancel', cancel)
@@ -2960,10 +2994,18 @@ export function Matrix() {
     /* (The four Required / Available rows — FlyRows.tsx — are NOT here: they sit at the foot of the Manning block
        (D665), above where the drawer starts. While they sat in the Events block, for a few hours on 8 Oct 26, each
        needed a box here or every roster row in the drawer stood four rows too high — a row added to that block does.) */
+    /* Each row's Rearrange landing mark, by the SAME tests as its real row in the roster <tbody> below (the group
+       heading's `dragOver === g`, the person row's `over`), so the line reads across the drawer too (owner D883). */
     ...rosterSequence().map((item): DrawerRow =>
-      item.kind === 'group' ? { kind: 'group', key: `group-${item.g}`, folded: folded.has(item.g) }
+      item.kind === 'group' ? {
+        kind: 'group', key: `group-${item.g}`, folded: folded.has(item.g),
+        over: dragOver === item.g && draggingId !== item.g ? (dragAfter ? 'dragover after' : 'dragover') : '',
+      }
         : item.kind === 'catsub' ? { kind: 'catsub', key: `subcat-${item.g}-${item.cat}` }
-          : { kind: 'person', key: `row-${item.p.id}`, p: item.p, me: item.p.id === viewer }),
+          : {
+            kind: 'person', key: `row-${item.p.id}`, p: item.p, me: item.p.id === viewer,
+            over: draggingId && dragOver === item.p.id && draggingId !== item.p.id ? (dragAfter ? 'dragover after' : 'dragover') : '',
+          }),
   ]
 
   // The under-manned list asks for a day the same way the month strip asks

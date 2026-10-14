@@ -40,10 +40,18 @@ const POP_ID = 'lw-figpop'
 export const figClass = (figures: Figure[], id: string) =>
   `bal fig${id === figures[0]?.id ? ' first' : ''}${id === figures[figures.length - 1]?.id ? ' last' : ''}`
 
+/** The Rearrange landing mark a row wears — the SAME classes as its real row
+ *  (Matrix.tsx, `tr.dragover` / `tr.dragover.after`). The drawer is a second
+ *  table laid OVER the grid, so the real row's landing line runs underneath it
+ *  and is hidden there: the copy has to draw it as well, or the line breaks
+ *  across the figures (owner D883, 15 Oct 26 — "a blue line through even
+ *  through the counters"). */
+export type DrawerOver = '' | 'dragover' | 'dragover after'
+
 export type DrawerRow =
-  | { kind: 'group'; key: string; folded: boolean }
+  | { kind: 'group'; key: string; folded: boolean; over: DrawerOver }
   | { kind: 'catsub'; key: string }
-  | { kind: 'person'; key: string; p: Person; me: boolean }
+  | { kind: 'person'; key: string; p: Person; me: boolean; over: DrawerOver }
   | { kind: 'blank'; key: string }   // an event row: an empty box across the block
 
 /** One column title, sideways and coloured — the legend the owner asked the
@@ -88,11 +96,14 @@ export function FigureTitle({ figure, open, popId, onClick }: {
  *  for a change none of them saw. Every store change still repaints every row,
  *  because `ctx` is rebuilt from the store on each one and its identity is the
  *  dependency here. */
-const DrawerPersonRow = memo(function DrawerPersonRow({ figures, ctx, p, me, selFig, onBox }: {
+const DrawerPersonRow = memo(function DrawerPersonRow({ figures, ctx, p, me, over, selFig, onBox }: {
   figures: Figure[]
   ctx: FigureCtx
   p: Person
   me: boolean
+  /** A primitive, like `selFig`: only the row being landed on (and the one it
+   *  just left) repaints as a drag moves down the roster. */
+  over: DrawerOver
   /** The SELECTED figure's id when this person is in the figure selection, else
    *  null (Matrix `figSel`, 6 Sep 26). A primitive on purpose: the memo above
    *  is what keeps a drag off the other 59 rows, so only the rows whose own
@@ -101,7 +112,7 @@ const DrawerPersonRow = memo(function DrawerPersonRow({ figures, ctx, p, me, sel
   onBox: (personId: string, figureId: string) => void
 }) {
   return (
-    <tr data-drawer-key={`row-${p.id}`} className={me ? 'me' : undefined}>
+    <tr data-drawer-key={`row-${p.id}`} className={[me ? 'me' : '', over].filter(Boolean).join(' ') || undefined}>
       {figures.map(f => (
         // The SAME `<FigureCell>` as the real cell and the band's copy, so the
         // three cannot drift. No testid — the real cell keeps `bal-<id>`; the
@@ -252,12 +263,12 @@ export function FiguresDrawer({
               <tr
                 key={r.key}
                 data-drawer-key={r.key}
-                className={r.kind === 'group' ? `grp${r.folded ? ' folded' : ''}` : r.kind === 'catsub' ? 'catsub' : undefined}
+                className={r.kind === 'group' ? `grp${r.folded ? ' folded' : ''}${r.over ? ` ${r.over}` : ''}` : r.kind === 'catsub' ? 'catsub' : undefined}
               >
                 <td className="figfill" colSpan={figures.length} />
               </tr>
             )
-            return <DrawerPersonRow key={r.key} figures={figures} ctx={ctx} p={r.p} me={r.me} selFig={selFor(r.p.id)} onBox={onBox} />
+            return <DrawerPersonRow key={r.key} figures={figures} ctx={ctx} p={r.p} me={r.me} over={r.over} selFig={selFor(r.p.id)} onBox={onBox} />
           })}
         </tbody>
       </table>
