@@ -22,7 +22,7 @@ import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay, iuParts } 
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
 import { waveHeadBoard, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown } from './html'
-import { onInputRow, rowMark } from './reqdoor'
+import { onInputRow, rowMark, UNMARKED } from './reqdoor'
 import { setInpField, howMany } from './inputedit'
 import { reqRowText } from './reqrow'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
@@ -614,7 +614,7 @@ export function cxCommit(cancel: boolean, reason: string) {
     /* the INPUT is cancelled or brought back, by its own door's one command: its own line of the change history, its
        own Undo step — and the row follows */
     CXT = null
-    if (via(cancel, reason)) toast(cancel ? cxText({ cx: true, cxr: String(reason).trim() }) : 'Restored')
+    if (via(cancel, reason)) toast(cancel ? cxText({ cx: true, cxr: String(reason).trim() }) : UNMARKED.cx)
     else notify()
     return
   }
@@ -1141,7 +1141,7 @@ export function boardMbtn(e: MouseEvent) {
     if (onInputRow(`g:${di}.${ri}`)) {
       const on = !x.info
       if (rowMark(`g:${di}.${ri}`, 'info', on) !== 'done') return
-      return toast(on ? 'This item is info only: no longer checked against the rules, and earns nobody any OIL' : 'This item is checked against the rules again and can earn OIL')
+      return toast(on ? 'This item is info only: no longer checked against the rules, and earns nobody any OIL' : UNMARKED.info)
     }
     x.info = !x.info; markEdit(`gr:${di}.${ri}.prog`)
     afterSchedMutate(); notify()

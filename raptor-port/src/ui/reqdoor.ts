@@ -400,6 +400,62 @@ export function rowMark(key: any, what: 'cx' | 'flag' | 'info', on: boolean, rea
   if (!p) return 'none'
   if (!canEditSched()) return 'refused'
   const inp = p.inp
+  /* TAKING THE CANCEL — OR THE INFORMATION-ONLY MARK — OFF PUTS THE OIL QUESTION FIRST (owner D816, 13 Oct 26 — "taking
+     the cancel off an input that has no OIL answer for a non-working day puts the OIL question first, as 'Accept' does —
+     nothing is un-cancelled until it is answered; where it is already answered, or nothing is to be asked, it is
+     un-cancelled at once and the answer counts again"; reading 1: the information-only mark the same). The other half
+     of D814: while an input wears either mark no door asks for it (it can earn nothing), so the moment its question
+     comes back is the moment the mark comes off — and this door asked nothing: its card wore "OIL?" and the member's
+     bell lit, but the scheduler who brought it back was never asked.
+     The gate is asked of the input AS IT WILL STAND — without the mark; wearing it, the gate's answer is "nothing to
+     ask". The take-off is TRIED and thrown away first, so one the save would refuse is refused in its own words and
+     nobody is asked a question for it. Putting a mark ON, and the red box either way, ask nothing; neither does an
+     Undo of a cancel (an Undo never asks — D793 reading 3: it does not come through here). */
+  if (!on && (what === 'cx' || what === 'info') && inp[what]) {
+    const iid = String(inp.iid), mark = what
+    const find = (): any => INPUTS.find((x: any) => String(x.iid) === iid)
+    const gateOf = (x: any) => { const as = { ...x, [mark]: false }; return quietGate(() => oilGate(draftOf(as), as)) }
+    const g = gateOf(inp)
+    if (g && g.kind === 'ask') {
+      TRYING = true
+      let good = false
+      try { good = dryRun(() => unmark(find(), mark) === 'done') } finally { TRYING = false }
+      if (!good) { const a = unmark(find(), mark); if (a !== 'done') notify(); return a }   // refused: said by the save itself
+      const now = find()
+      /* the bar's "Answer OIL", and the answer itself, find the input afresh: gone, or no longer wearing the mark
+         (brought back by another hand, by an Undo) → it has changed, and says so; answered meanwhile → nothing is
+         left to ask, and it is simply brought back */
+      const again = (): RowAnswer => {
+        const x = find()
+        if (!x || !x[mark]) return 'none'
+        if (!canEditSched()) return 'refused'
+        const g2 = gateOf(x)
+        if (g2 && g2.kind === 'ask') { hold(x, g2); return 'asked' }
+        const a = unmark(x, mark)
+        if (a === 'done') { HOOKS.toast(UNMARKED[mark]); notify() }
+        return a
+      }
+      const hold = (x: any, gg: any) => holdForOil({
+        kind: mark === 'cx' ? 'uncx' : 'uninfo',
+        lead: mark === 'cx' ? `Un-cancelling ${inputWho(x)}'s ${inpLabel(x)}` : `Taking “information only” off ${inputWho(x)}'s ${inpLabel(x)}`,
+        /* what flashes when it is not answered: the row's own button */
+        places: [`sel:[data-gr${mark === 'cx' ? 'cx' : 'info'}="${p.di}.${p.ri}"]`],
+        gate: { who: inputWho(x) || gg.who, typeLabel: gg.typeLabel, plan: gg.plan, prev: gg.prev },
+        /* the answer and the take-off are ONE command — one Undo step (D816 reading 3); the board's own word for a
+           row brought back is said here, because the press that asked it was answered "not done" */
+        redo: oil => {
+          const x2 = find()
+          if (!x2 || !x2[mark]) return 'none'
+          const a = unmark(x2, mark, oil)
+          if (a === 'done') HOOKS.toast(UNMARKED[mark])
+          return a
+        },
+        ask: again,
+      })
+      hold(now, gateOf(now) || g)
+      return 'asked'
+    }
+  }
   const out = saveBatchX(() => {
     if (what === 'cx') { if (on) { inp.cx = true; inp.cxr = String(reason ?? '').trim() } else { inp.cx = false; delete inp.cxr } }
     else if (on) inp[what] = true
@@ -409,6 +465,26 @@ export function rowMark(key: any, what: 'cx' | 'flag' | 'info', on: boolean, rea
   })
   if (!out.ok) return 'refused'
   notify()
+  return 'done'
+}
+/** what the board says when a mark comes off a row — said by the board for a take-off made at once, and by this door
+ *  for one made on an OIL answer (ui/board.ts reads the same two) */
+export const UNMARKED: Record<'cx' | 'info', string> = {
+  cx: 'Restored',
+  info: 'This item is checked against the rules again and can earn OIL',
+}
+/* a cancel or an information-only mark taken off the record — with the input's one OIL answer where the take-off was
+   made on it: one command, one Undo step */
+function unmark(inp: any, mark: 'cx' | 'info', oil?: Oil): RowAnswer {
+  if (!inp) return 'none'
+  const out = saveBatchX(() => {
+    if (mark === 'cx') { inp.cx = false; delete inp.cxr } else delete inp.info
+    if (oil) inp.oil = { ...oil }
+    stampChanged(inp)
+    return true
+  })
+  if (!out.ok) return 'refused'
+  if (!TRYING) notify()
   return 'done'
 }
 

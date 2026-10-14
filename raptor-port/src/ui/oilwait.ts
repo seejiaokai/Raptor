@@ -34,6 +34,11 @@ export const WAIT_WORDS: Record<OilWaitKind, { no: string; yes: string; not: str
   /* an input of kind Other FILED under Unavailable (the scheduler's "→ Unavail" — owner D804, 13 Oct 26: every kind
      that can earn is asked, wherever it is filed) */
   file: { no: 'Don’t file', yes: 'File', not: 'Not filed — OIL not answered' },
+  /* the CANCEL taken off an input that has no OIL answer (the board's CX on its row — owner D816, 13 Oct 26: "as
+     'Accept' does — nothing is un-cancelled until it is answered"; the three wordings are his to change) */
+  uncx: { no: 'Don’t un-cancel', yes: 'Un-cancel', not: 'Not un-cancelled — OIL not answered' },
+  /* …and the information-only mark taken off, which is treated the same (D816 reading 1) */
+  uninfo: { no: 'Don’t change', yes: 'Change', not: 'Not changed — OIL not answered' },
 }
 /* the row, the seat or the men on them are no longer what the question was asked about */
 const CHANGED: Record<OilWaitKind, string> = {
@@ -42,6 +47,8 @@ const CHANGED: Record<OilWaitKind, string> = {
   move: 'That has changed — not moved',
   back: 'That input has changed — not put back',
   file: 'That input has changed — not filed',
+  uncx: 'That input has changed — not un-cancelled',
+  uninfo: 'That input has changed — left as it is',
 }
 
 /** A door holds its change: nothing is written, the question is put. */

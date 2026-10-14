@@ -417,7 +417,7 @@ export function setSecDefOffer(v: number | null){ SECDEFOFFER = v; if(v!=null) s
      places  what flashes when it is not answered (row-id keys; `sel:` + a selector for a place that is not a seat);
      pre/post the CALLER's own ending for the gesture, run round the write when the answer comes — the landing flash,
              the "already busy" note, the arm put down (the drag, the armed tap); `landed` is where he stands then. */
-export type OilWaitKind = 'swap' | 'add' | 'move' | 'back' | 'file'
+export type OilWaitKind = 'swap' | 'add' | 'move' | 'back' | 'file' | 'uncx' | 'uninfo'
 export interface OilWait {
   kind: OilWaitKind
   lead: string

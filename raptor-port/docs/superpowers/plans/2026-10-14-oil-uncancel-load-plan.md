@@ -128,8 +128,9 @@ the screen that asked.
 ## Progress
 
 - [x] rulings' full rows opened; the code read; this plan written (14 Oct 26, night)
-- [ ] `commitInputEdit`'s handling of `opts.oil` on a cancelled record read
-- [ ] the tests above, red
-- [ ] D816 built · [ ] D818 built
+- [x] `commitInputEdit`'s handling of `opts.oil` read: a plain write of the answer (`r.oil = { ...oil }`); the un-cancel does the same inside its own one command (`reqdoor.ts unmark`), the mark off first
+- [x] D816's tests written and seen red (7 of 11; four already held) — `src/ui/oilwait.test.tsx`, the block "(ON10)" at its foot
+- [x] **D816 BUILT** (`reqdoor.ts rowMark` waits, `unmark`, `UNMARKED`; `oilwait.ts` the two kinds' words; `state/view.ts` the two kinds; `board.ts` reads `UNMARKED`). One older test met the new rule and was given the route that still leaves a live unanswered input (an Undo of the cancel). As built: the lead reads "Un-cancelling <who>'s <input>" / "Taking “information only” off <who>'s <input>"; changed meanwhile: "That input has changed — not un-cancelled" / "That input has changed — left as it is"; what flashes: the row's CX or ⓘ button; where the input was answered meanwhile "Answer OIL" simply brings it back and says "Restored".
+- [ ] D818's tests, red · [ ] D818 built
 - [ ] the scenario designer's list · [ ] the roll-call and the sizing lines · [ ] the walk · [ ] break tests
 - [ ] the fresh read · [ ] fixes · [ ] the gates · [ ] the sheet · [ ] the records · [ ] pushed; `HANDOFF.md`

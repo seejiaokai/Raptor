@@ -42,7 +42,7 @@ import { _resetDisclosure } from '../state/disclosure'
 import { commitSetDayApproved, schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { setPage, setBoardDay } from '../state/view'
 import * as view from '../state/view'
-import { closeScheduler } from './board'
+import { closeScheduler, askCx, cxCommit } from './board'
 import { commitInput, commitInputEdit, draftOf, inputWho } from './inputedit'
 import { rowPut, rowMove, rowMark } from './reqdoor'
 import * as pops from './pops'
@@ -957,11 +957,14 @@ describe('an input put BACK on the programme where it needs an OIL answer is NOT
       expect(SAID.join(' | ')).toContain('filed under Unavailable')
     })
   }
-  it('(D814) the mark taken off again, the input needs its answer again: the next put-back asks', async () => {
+  /* (the cancel is taken back by UNDO here, which asks nothing — D793 reading 3. Taken off by the row's own button it now
+     asks first itself: owner D816, the block "taking the cancel off … (ON10)" at the foot of this file. Until D816 this
+     test took it off by the button, which answered 'done' and left the input live with no answer.) */
+  it('(D814) the cancel taken back, the input needs its answer again: the next put-back asks', async () => {
     await boot()
     file(['bane'], SAT)
     expect(rowMark(rowKey(), 'cx', true, 'weather')).toBe('done')
-    expect(rowMark(rowKey(), 'cx', false)).toBe('done')
+    globalUndo()
     expect(!!rec().cx, 'the premise: no longer cancelled').toBe(false)
     press('x'); SAID = []
     press('g')
@@ -1141,5 +1144,153 @@ describe('an input put BACK on the programme where it needs an OIL answer is NOT
     expect(rec().acc).toBe('u')
     expect(rec().oil, 'one answer, on the input').toEqual({ [SAT_ISO]: 0.5 })
     expect(people(), 'and its people are as they were').toEqual(['pike', 'bane', 'split'])
+  })
+})
+
+/* TAKING THE CANCEL OFF AN INPUT THAT HAS NO OIL ANSWER PUTS THE QUESTION FIRST (owner D816, 13 Oct 26 — "Ok go with your
+   recommendation yes"; `[OIL-UNCANCEL-UNASKED]`; the other half of D814: a cancelled input is never asked, so the moment
+   its question comes back is when the cancel comes off — and that button asked nothing). His words: "taking the cancel
+   off an input that has no OIL answer for a non-working day puts the OIL question first, as 'Accept' does — nothing is
+   un-cancelled until it is answered; where it is already answered, or nothing is to be asked, it is un-cancelled at
+   once and the answer counts again." Readings told to him: the information-only mark the same; not answered, the bar
+   that stays says so; the answer and the un-cancel are ONE step and ONE Undo; an Undo of a cancel still asks nothing.
+   Driven through the row's own door (ui/reqdoor.ts rowMark) and the board's own two calls (askCx / cxCommit). The
+   input is filed with NO answer — the state a day made a holiday afterwards leaves. */
+describe('taking the cancel off an input with no OIL answer waits on the OIL question (D816) (ON10)', () => {
+  const cancel = (di = SAT) => expect(rowMark(rowKey(di), 'cx', true, 'WX'), 'a cancel asks nothing').toBe('done')
+  it('no answer: nothing is un-cancelled — the question waits, in the un-cancel\'s own words', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    expect(view.OILWAIT, 'the cancel itself asked nothing').toBeNull()
+    const was = world(); SAID = []
+    expect(rowMark(rowKey(), 'cx', false)).toBe('asked')
+    expect(world(), 'NOTHING moved: the input, the day, the history, the bell, Undo').toBe(was)
+    expect(rec().cx, 'still cancelled').toBe(true)
+    const w = view.OILWAIT!
+    expect(w, 'the question waits').toBeTruthy()
+    expect(w.kind).toBe('uncx')
+    expect(w.lead).toBe(`Un-cancelling ${cs('bane')}'s ${TITLE}`)
+    expect(w.gate.plan).toEqual([{ iso: SAT_ISO, amt: 0.5 }])
+    expect(WAIT_WORDS.uncx).toEqual({ no: 'Don’t un-cancel', yes: 'Un-cancel', not: 'Not un-cancelled — OIL not answered' })
+    expect(SAID, 'and nothing is said yet').toEqual([])
+  })
+  it('answered Yes: un-cancelled AND answered in ONE step — one Undo brings the cancel back and takes the answer away', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    expect(rowMark(rowKey(), 'cx', false)).toBe('asked')
+    SAID = []
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    expect(view.OILWAIT).toBeNull(); expect(view.OILBAR).toBeNull()
+    expect(!!rec().cx, 'un-cancelled').toBe(false)
+    expect(rec().cxr, 'its reason gone with it').toBeUndefined()
+    expect(rec().oil, 'and the answer written').toEqual({ [SAT_ISO]: 0.5 })
+    expect(SAID.join(' | '), 'the board\'s own word for it').toContain('Restored')
+    globalUndo()
+    expect(rec().cx, 'ONE Undo: cancelled again…').toBe(true)
+    expect(rec().cxr).toBe('WX')
+    expect(rec().oil, '…and unanswered again').toBeUndefined()
+  })
+  it('answered No: un-cancelled, and the No is kept as its answer', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    expect(rowMark(rowKey(), 'cx', false)).toBe('asked')
+    expect(answerOilWait({ [SAT_ISO]: 0 })).toBe(true)
+    expect(!!rec().cx).toBe(false)
+    expect(rec().oil).toEqual({ [SAT_ISO]: 0 })
+  })
+  it('not answered: it stays cancelled and the bar says so; "Answer OIL" brings the question back; "OK" only closes', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    const was = world()
+    expect(rowMark(rowKey(), 'cx', false)).toBe('asked')
+    leaveOilWait()
+    expect(view.OILWAIT).toBeNull()
+    expect(view.OILBAR!.text).toBe('Not un-cancelled — OIL not answered')
+    expect(world(), 'nothing was written').toBe(was)
+    oilBarAgain()
+    expect(view.OILWAIT!.kind, 'the question again').toBe('uncx')
+    leaveOilWait(); oilBarOk()
+    expect(view.OILBAR).toBeNull()
+    expect(rec().cx).toBe(true)
+  })
+  it('already answered: un-cancelled at once, and the answer counts again — no question', async () => {
+    await boot()
+    file(['bane'], SAT, { [SAT_ISO]: 0.5 })
+    cancel()
+    expect(rowMark(rowKey(), 'cx', false)).toBe('done')
+    expect(view.OILWAIT).toBeNull()
+    expect(!!rec().cx).toBe(false)
+    expect(rec().oil).toEqual({ [SAT_ISO]: 0.5 })
+  })
+  it('a working day: at once — nothing is to be asked', async () => {
+    await boot()
+    file(['bane'], WED)
+    cancel(WED)
+    expect(rowMark(rowKey(WED), 'cx', false)).toBe('done')
+    expect(view.OILWAIT).toBeNull()
+    expect(!!rec(WED).cx).toBe(false)
+  })
+  it('the information-only mark comes off the same way, in its own words', async () => {
+    await boot()
+    file(['bane'], SAT)
+    expect(rowMark(rowKey(), 'info', true), 'putting it on asks nothing').toBe('done')
+    const was = world()
+    expect(rowMark(rowKey(), 'info', false)).toBe('asked')
+    expect(world()).toBe(was)
+    expect(view.OILWAIT!.kind).toBe('uninfo')
+    expect(WAIT_WORDS.uninfo).toEqual({ no: 'Don’t change', yes: 'Change', not: 'Not changed — OIL not answered' })
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    expect(!!rec().info, 'the mark is off').toBe(false)
+    expect(rec().oil).toEqual({ [SAT_ISO]: 0.5 })
+    globalUndo()
+    expect(rec().info, 'one Undo').toBe(true)
+    expect(rec().oil).toBeUndefined()
+  })
+  it('a cancel put ON, and the red box either way, ask nothing', async () => {
+    await boot()
+    file(['bane'], SAT)
+    expect(rowMark(rowKey(), 'flag', true)).toBe('done')
+    expect(rowMark(rowKey(), 'flag', false)).toBe('done')
+    expect(rowMark(rowKey(), 'cx', true, 'OPS')).toBe('done')
+    expect(view.OILWAIT).toBeNull(); expect(view.OILBAR).toBeNull()
+  })
+  it('an Undo of a cancel asks nothing (D793 reading 3)', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    globalUndo()
+    expect(!!rec().cx, 'the Undo took the cancel off').toBe(false)
+    expect(view.OILWAIT).toBeNull(); expect(view.OILBAR).toBeNull()
+  })
+  it('changed meanwhile — brought back by an Undo while the question waited at the bar: it says so and makes nothing', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    expect(rowMark(rowKey(), 'cx', false)).toBe('asked')
+    leaveOilWait()
+    globalUndo()                                    // the cancel itself is taken back: the input is live again
+    expect(!!rec().cx).toBe(false)
+    SAID = []
+    oilBarAgain()
+    expect(view.OILWAIT, 'no question for an input that is no longer cancelled').toBeNull()
+    expect(SAID.join(' | ')).toContain('That input has changed — not un-cancelled')
+  })
+  it('through the board\'s own cancel sheet: no "Restored" while it waits — "Restored" once it is answered', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    SAID = []
+    const k = rowKey()
+    askCx(ground()[riOf()], null, 'this item', undefined, (c: boolean, why: string) => rowMark(k, 'cx', c, why) === 'done')
+    cxCommit(false, '')
+    expect(SAID, 'nothing is said while it waits').toEqual([])
+    expect(view.OILWAIT!.kind).toBe('uncx')
+    expect(rec().cx).toBe(true)
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    expect(SAID).toEqual(['Restored'])
   })
 })
