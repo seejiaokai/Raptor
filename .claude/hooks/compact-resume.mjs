@@ -27,6 +27,10 @@ export function message(branch, block) {
     'This chat was just compacted (his rulings D868, D871). Before the next change: re-read this chat\'s block in',
     'HANDOFF.md (below), the working guide in use, and the files of the step in hand — never carry on from the',
     'summary\'s memory of a file, a ruling or a test result. Note the compaction in the block with its time.',
+    // D885: Claude Code's changelog (2.1.299) says a compaction can drop the list of working guides, and that
+    // /reload-skills sends it again; it is his to type — an agent cannot run it.
+    'If a working guide you need (a skill, such as /overnight or session-handoff) is no longer listed, ask him to type',
+    '/reload-skills, which sends the list again; do the step without its guide only if he says so.',
   ].join('\n');
   if (!block) return `${head}\n\n(No HANDOFF.md block found for ${branch || 'this branch'} — read HANDOFF.md and the last commits.)`;
   const whole = `${head}\n\nThe block for ${branch}, as saved:\n\n${block}`;

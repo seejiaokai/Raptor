@@ -170,7 +170,11 @@ const FILES = [
      put to him into three open ones; none is finished. The one item whose heading says "merged" ([GLOBAL-UNDO]) still
      carries seven open deferrals; the priority list's finished stories are [PRIORITY-LIST-REWRITE]'s, a job that needs
      a reader. An open item is never trimmed to fit (D141, D29). About 60 lines above what the file holds, as before. */
-  ['OUTSTANDING.md',                     1, 2530],
+  /* 2530 -> 2590, 15 Oct 26 (`[GUIDE-NO-GLOW]`'s rounds, documents and hooks only): 2,530 lines. This chat archived the
+     one item it found finished ([COMPACT-BANDS-WINDOW]) and filed three open ones - [LW-LANDING-LINE-FIGURES] (his
+     D883), [OVERNIGHT-RETRY-TRIAL] (his D885) and the rounds' notes under [GUIDE-NO-GLOW]; none is finished. An open
+     item is never trimmed to fit (D141, D29). About 60 lines above what the file holds, as before. */
+  ['OUTSTANDING.md',                     1, 2590],
   /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
      and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
      (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only

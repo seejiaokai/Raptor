@@ -126,3 +126,10 @@ before its one-hour prompt cache runs out (`idleCompaction`, `CLAUDE_CODE_IDLE_C
 it stays on, at its default.** The guard already lets it through (it holds only from 90% of the room); the hand-back
 after a compaction gives the chat its state back. Not known: whether the desktop app does it — the changelog says
 "in the terminal".
+
+## The hand-back names /reload-skills (D885, 15 Oct 26)
+Claude Code 2.1.299: `/reload-skills` "re-sends the full skill list to Claude, which is how to get skills back after
+compaction". The note `compact-resume.mjs` prints after a compaction now ends its first part with: if a working guide
+you need is no longer listed, ask him to type `/reload-skills`; do the step without its guide only if he says so. It
+is his to type — an agent cannot run it. Pinned by the hook tests (17). In force in his chats once merged and the
+main folder is level.

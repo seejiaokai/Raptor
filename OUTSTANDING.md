@@ -2278,6 +2278,14 @@ on his approval, and none of the nine places changes before he rules on it.
 No-Glow Places"); round 1 RULED — places 1 to 4 lose their glow (D881); round 2 (places 5 to 8) put to him; place 9 is a
 leftover style nothing draws (removed with the guide change). Round 3: the wording, set to his answers.
 
+### [OVERNIGHT-RETRY-TRIAL] One /overnight run tries the setting that keeps retrying when the service is overloaded (his D885, 15 Oct 26) — OPEN, for the next night he runs /overnight
+**His yes (D885).** For that one night: before the run starts, add `"CLAUDE_CODE_RETRY_WATCHDOG": "1"` to the `env` block
+of the MAIN folder's `.claude/settings.json` (the app reads settings from there — `[MAIN-CHECKOUT-STALE]`), committed on
+the night's branch; in the morning read the run's record for any wait the setting rode out, and confirm no real failure
+was hidden (a check that failed must still read failed). Then take the setting out again unless he says keep it. Not
+known: whether the desktop app honours it — the night is the test. Optional companion, only if a wait was seen too
+short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not changed for the trial (D70).
+
 ### [LW-LANDING-LINE-FIGURES] On the Leave War, the blue landing line of a row dragged in Rearrange breaks across the figures columns (found 15 Oct 26, picturing `[GUIDE-NO-GLOW]` place 8) — OPEN, a small fix of its own; HIS INTENT CONFIRMED (D883)
 **D883: the line runs unbroken across the name, the counters and the days.** Check a dragged group heading too (D876).
 **Found, NOT FIXED.** Rearrange on, a man's row dragged over another (desktop, a real mouse drag — Cinch over Warden):
