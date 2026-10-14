@@ -15,6 +15,11 @@ import { blockFor, message } from './compact-resume.mjs';
 import { line } from './statusline.mjs';
 
 const dir = mkdtempSync(join(tmpdir(), 'compact-test-'));
+/* a throwaway git folder for the marks, so no test ever sets or clears a real checkout's "ready" or "away" mark — an
+   /overnight run that ran this file in its own worktree had its away mark cleared, the guard back on at night (the fresh
+   read of [COMPACT-BANDS-WINDOW], finding 5) */
+const gdir = mkdtempSync(join(tmpdir(), 'compact-git-'));
+spawnSync('git', ['init', '-q'], { cwd: gdir });
 const asst = (input, created, read, extra = {}) => JSON.stringify({ type: 'assistant', uuid: `u-${read}`, ...extra, message: { usage: { input_tokens: input, cache_creation_input_tokens: created, cache_read_input_tokens: read, output_tokens: 9 } } });
 const transcript = (name, lines) => { const p = join(dir, name); writeFileSync(p, lines.join('\n') + '\n'); return p; };
 const fillAt = (pct, extra = {}) => ({ tokens: pct * 10000, pct, pctNow: pct, uuid: `u${pct}`, after: 0, ...extra });
@@ -48,30 +53,31 @@ test('knows nothing when the record is missing, has no counts, or a compaction c
   assert.equal(readFill(transcript('c.jsonl', [asst(1, 1, 850000), JSON.stringify({ type: 'system', subtype: 'compact_boundary' })])), null);
 });
 
-test('the guard holds only an ordinary automatic compaction from the first note to the backstop, once per request, without a mark', () => {
-  assert.equal(decide({ trigger: 'auto', fill: fillAt(86), ready: null }), 'hold');
+test('the guard holds only an ordinary automatic compaction from 90% of the room to the backstop, once per request, without a mark', () => {
+  assert.equal(decide({ trigger: 'auto', fill: fillAt(92), ready: null }), 'hold');
   assert.equal(decide({ trigger: 'auto', fill: fillAt(HOLD_FROM), ready: null }), 'hold');
-  assert.equal(decide({ trigger: 'auto', fill: fillAt(86), ready: { at: 1 } }), 'allow');
+  assert.equal(decide({ trigger: 'auto', fill: fillAt(92), ready: { at: 1 } }), 'allow');
   assert.equal(decide({ trigger: 'auto', fill: fillAt(NEVER_HOLD_AT), ready: null }), 'allow'); // never later than the backstop
   assert.equal(decide({ trigger: 'auto', fill: null, ready: null }), 'allow'); // cannot tell → do what the app does
-  assert.equal(decide({ trigger: 'manual', fill: fillAt(86), ready: null }), 'allow'); // his /compact is never held
+  assert.equal(decide({ trigger: 'manual', fill: fillAt(92), ready: null }), 'allow'); // his /compact is never held
 });
 
 test('the guard never holds a recovery, a helper, an idle chat or a smaller model (findings 1, 5)', () => {
   assert.equal(decide({ trigger: 'auto', fill: fillAt(89, { pctNow: 104 }), ready: null }), 'allow'); // overran: first attempt goes
-  assert.equal(decide({ trigger: 'auto', fill: fillAt(86), ready: null, heldUuid: 'u86' }), 'allow'); // second try, same request
-  assert.equal(decide({ trigger: 'auto', fill: fillAt(86), ready: null, heldUuid: 'u85' }), 'hold'); // a new request since
-  assert.equal(decide({ trigger: 'auto', agentId: 'a1', fill: fillAt(86), ready: null }), 'allow'); // inside a helper
+  assert.equal(decide({ trigger: 'auto', fill: fillAt(92), ready: null, heldUuid: 'u92' }), 'allow'); // second try, same request
+  assert.equal(decide({ trigger: 'auto', fill: fillAt(92), ready: null, heldUuid: 'u91' }), 'hold'); // a new request since
+  assert.equal(decide({ trigger: 'auto', agentId: 'a1', fill: fillAt(92), ready: null }), 'allow'); // inside a helper
   assert.equal(decide({ trigger: 'auto', fill: fillAt(19.5), ready: null }), 'allow'); // a 200k model's room, or idle
   assert.equal(decide({ trigger: 'auto', fill: fillAt(HOLD_FROM - 0.1), ready: null }), 'allow');
+  assert.equal(decide({ trigger: 'auto', fill: fillAt(79.5), ready: null }), 'allow'); // 700,000 of 880,000: not the app's own attempt (the fresh read's finding 1)
 });
 
 test('the guard is off while he is away — an /overnight run or his word (D872)', () => {
-  assert.equal(decide({ trigger: 'auto', fill: fillAt(86), ready: null, away: { at: 1 } }), 'allow');
+  assert.equal(decide({ trigger: 'auto', fill: fillAt(92), ready: null, away: { at: 1 } }), 'allow');
   const here = fileURLToPath(new URL('.', import.meta.url));
-  const cmd = (arg) => spawnSync(process.execPath, [join(here, 'compact-ready.mjs'), arg], { encoding: 'utf8' });
+  const cmd = (arg) => spawnSync(process.execPath, [join(here, 'compact-ready.mjs'), arg], { encoding: 'utf8', cwd: gdir });
   const guard = () => spawnSync(process.execPath, [join(here, 'compact-guard.mjs')], {
-    input: JSON.stringify({ session_id: `away-${process.pid}-${Date.now()}`, trigger: 'auto', transcript_path: transcript('away.jsonl', [asst(0, 0, 860000)]) }), encoding: 'utf8',
+    input: JSON.stringify({ session_id: `away-${process.pid}-${Date.now()}`, trigger: 'auto', transcript_path: transcript('away.jsonl', [asst(0, 0, 860000)]), cwd: gdir }), encoding: 'utf8',
   }).stdout;
   try {
     assert.match(cmd('--away').stdout, /guard is off/);
@@ -144,10 +150,10 @@ test('each hook, run as the app runs it, exits 0, fails open on rubbish, and sta
   for (const f of ['compact-watch.mjs', 'compact-guard.mjs', 'compact-resume.mjs', 'statusline.mjs']) assert.equal(run(f, 'not json').status, 0, f);
   const sid = `test-${process.pid}-${Date.now()}`;
   const t86 = transcript('d.jsonl', [asst(0, 0, 860000)]);
-  const held = run('compact-guard.mjs', { session_id: sid, trigger: 'auto', transcript_path: t86, cwd: dir });
+  const held = run('compact-guard.mjs', { session_id: sid, trigger: 'auto', transcript_path: t86, cwd: gdir });
   assert.equal(held.status, 0);
   assert.equal(JSON.parse(held.stdout).decision, 'block');
-  assert.equal(run('compact-guard.mjs', { session_id: sid, trigger: 'auto', transcript_path: t86, cwd: dir }).stdout, ''); // same request: goes
+  assert.equal(run('compact-guard.mjs', { session_id: sid, trigger: 'auto', transcript_path: t86, cwd: gdir }).stdout, ''); // same request: goes
   assert.equal(run('compact-watch.mjs', { session_id: sid, agent_id: 'helper', transcript_path: t86 }).stdout, ''); // a helper hears nothing
   const told = JSON.parse(run('compact-watch.mjs', { session_id: sid, transcript_path: t86 }).stdout).hookSpecificOutput.additionalContext;
   assert.match(told, new RegExp(`${Math.round((860000 / WINDOW) * 100)}% full`));
@@ -173,7 +179,8 @@ test('this checkout counts against its own setting, and the first note leaves ro
   const firstNote = (BANDS[0] / 100) * WINDOW, appCompacts = 0.96 * WINDOW;
   assert.equal(firstNote, 660000);
   assert.ok(appCompacts - firstNote >= 180000, `only ${appCompacts - firstNote} tokens between the first note and the compaction`);
-  assert.equal(HOLD_FROM, BANDS[0]); // nothing is held before the agent has been told
+  assert.ok(HOLD_FROM > BANDS[0] && HOLD_FROM < 96, String(HOLD_FROM)); // told first; and just below the app's own attempt
+  assert.equal(HOLD_FROM, 90); // 792,000 of 880,000 (the fresh read's finding 1)
   assert.equal(NEVER_HOLD_TOKENS, 900000); // the backstop stays 90% of the model's whole room
   assert.ok(NEVER_HOLD_AT > 96, String(NEVER_HOLD_AT)); // the guard can hold the app's own attempt at about 96%
   // as first built the first note came at 800,000 — only about 45,000 before the compaction: the fault this fixes
@@ -187,8 +194,9 @@ test('the four hooks, run as the app runs them with the room this checkout sets:
   assert.equal(run('compact-watch.mjs', { session_id: sid, transcript_path: transcript('r1.jsonl', [asst(0, 0, 650000)]) }).stdout, ''); // 74%: silent
   const at = JSON.parse(run('compact-watch.mjs', { session_id: sid, transcript_path: transcript('r2.jsonl', [asst(0, 0, 665000)]) }).stdout).hookSpecificOutput.additionalContext;
   assert.match(at, /^This chat is 76% full \(about 665k of the app's 880k; it compacts by itself at about 96%\)/);
-  const g = run('compact-guard.mjs', { session_id: `${sid}-g`, trigger: 'auto', transcript_path: transcript('r3.jsonl', [asst(0, 0, 846000)]), cwd: dir });
+  const g = run('compact-guard.mjs', { session_id: `${sid}-g`, trigger: 'auto', transcript_path: transcript('r3.jsonl', [asst(0, 0, 846000)]), cwd: gdir });
   assert.equal(JSON.parse(g.stdout).decision, 'block'); // the app's own attempt at ~96% is held for a clean point
-  assert.equal(run('compact-guard.mjs', { session_id: `${sid}-h`, trigger: 'auto', transcript_path: transcript('r4.jsonl', [asst(0, 0, 901000)]), cwd: dir }).stdout, ''); // past 900,000: never held
+  assert.equal(run('compact-guard.mjs', { session_id: `${sid}-i`, trigger: 'auto', transcript_path: transcript('r6.jsonl', [asst(0, 0, 700000)]), cwd: gdir }).stdout, ''); // 700,000: let through
+  assert.equal(run('compact-guard.mjs', { session_id: `${sid}-h`, trigger: 'auto', transcript_path: transcript('r4.jsonl', [asst(0, 0, 901000)]), cwd: gdir }).stdout, ''); // past 900,000: never held
   assert.equal(spawnSync(process.execPath, [join(here, 'statusline.mjs')], { input: JSON.stringify({ transcript_path: transcript('r5.jsonl', [asst(0, 0, 665000)]) }), encoding: 'utf8', env: { ...process.env, CLAUDE_CONTEXT_WINDOW: '' } }).stdout, 'Chat 75.6% full'.replace('75.6', '76') + ' · compact at the next clean point');
 });

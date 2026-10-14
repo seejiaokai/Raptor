@@ -6,14 +6,14 @@
 //      would, and judge — he is here and the job is nearly done → offer him a handoff (D871); otherwise carry on.
 //   2. Once the guard has held an automatic compaction: a compaction is WAITING — at the next clean point save the
 //      state and mark "ready"; it then comes at the next step. The mark is asked for only here, so the compaction
-//      lands at that clean point and not wherever 85% is crossed later (the fresh read of 15 Oct 26, finding 3).
+//      lands at that clean point and not wherever the app's own point is crossed later (the fresh read of 15 Oct 26, finding 3).
 //
 // Why a hook and not only the guide's line: the figure is only seen when the agent thinks to ask for it; on a long
 // walk it does not. Silent inside a helper — a helper's tool use also reaches this hook, with the main chat's record,
 // and must neither get the note nor use it up (finding 2). Silent below the first band and on any error.
 import { fileURLToPath } from 'node:url';
 import { basename } from 'node:path';
-import { readFill, readState, writeState, bandOf, readInput, READY_COMMAND, WINDOW } from './compact-lib.mjs';
+import { readFill, readState, writeState, bandOf, readInput, READY_COMMAND, WINDOW, ROOM_SET } from './compact-lib.mjs';
 
 /** The note for a band just reached, or ''. Pure, for the tests. */
 export function reminder(fill, lastBand) {
@@ -21,7 +21,7 @@ export function reminder(fill, lastBand) {
   const band = bandOf(fill.pct);
   if (!band || band <= (lastBand || 0)) return '';
   return [
-    `This chat is ${Math.round(fill.pct)}% full (about ${Math.round(fill.tokens / 1000)}k of the app's ${Math.round(WINDOW / 1000)}k; it compacts by itself at about 96%) — his rulings D868, D871, D878.`,
+    `This chat is ${Math.round(fill.pct)}% full (about ${Math.round(fill.tokens / 1000)}k${ROOM_SET ? ` of the app's ${Math.round(WINDOW / 1000)}k; it compacts by itself at about 96%` : ' tokens'}) — his rulings D868, D871, D878.`,
     'At the next clean point: finish the step in hand, commit, push, and rewrite this chat\'s block in HANDOFF.md as a',
     'handoff would (the step in hand, the files it touches, open faults, questions parked, what is next). Start no new',
     'helper, walk or gate run before that. Then judge: he is using the chat and the job is nearly done → do not wait',

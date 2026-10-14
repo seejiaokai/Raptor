@@ -106,7 +106,8 @@ and read by one fresh reader before it is switched on. Built as its own job.
 hooks give is now a percentage of the APP'S room, read as the app reads it: the `autoCompactWindow` setting in the project's
 local settings, else its shared settings (the folder the hooks sit in), else his own; else the whole 1,000,000
 (`compact-lib.mjs appRoom`). With 880,000: the notes at 75, 80, 85 and 90% of it — the first at 660,000, some 185,000 before
-the app compacts at 96% (about 845,000); the guard holds an automatic compaction from that first note to under 900,000
+the app compacts at 96% (about 845,000); the guard holds an automatic compaction from 90% of the room (792,000 — the last note,
+just below the app's own attempt; the fresh read's finding 1) to under 900,000
 tokens (90% of the model's whole room, as before — about 102% of the app's room, so it can hold the app's own attempt for
 a clean point and never holds near the true limit); the status line's "compact at the next clean point" from 75%, so it
 agrees with the app's own figure. On a room of the whole 1M (no setting) the backstop is 90% as first built and the notes

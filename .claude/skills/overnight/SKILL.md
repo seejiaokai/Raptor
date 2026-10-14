@@ -101,8 +101,8 @@ block says so. Never a pull request based on another branch — it runs none of 
   records; the branch pushed — never while its checks are running (step 1's command; D151); `get_usage` read.
   **No record is written into the repo while a gate run is going** — draft it in the scratch folder (the document check
   is the run's last gate, and an edit during the run fails it).
-- **Compact smartly, by how full the chat is (D766, D867, D868).** Not at a fixed point: from about 80% full the agent
-  chooses the moment itself, without asking him — the next clean point, so a big job does not compact twice; on a
+- **Compact smartly, by how full the chat is (D766, D867, D868).** Not at a fixed point: from the first note (75% of the app's room — D878; D868's
+  "about 80%") the agent chooses the moment itself, without asking him — the next clean point, so a big job does not compact twice; on a
   night it never stops to offer a handoff (D871 — he is away). The project's compaction set-up (D870) does the rest,
   with its guard OFF at night (D872 — step 9): a note arrives from 75% of the app's own room (about 660,000 of 880,000 —
   D878); the app's own compaction comes at about 96% of it (about 845,000) whenever it gets there — nothing holds it, because a compaction refused by mistake at night would end the run;
