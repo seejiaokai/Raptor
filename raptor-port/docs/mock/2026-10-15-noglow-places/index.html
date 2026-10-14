@@ -34,14 +34,25 @@ details.place>summary{cursor:pointer;color:var(--accent)}
 ol,ul{margin:0;padding-left:20px;display:grid;gap:4px}
 #zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:grid;place-items:center;padding:16px;z-index:9;cursor:zoom-out}
 #zoom img{max-width:100%;max-height:100%;object-fit:contain}
+#zoom[hidden]{display:none}
 @media (max-width:560px){.pair{grid-template-columns:1fr}}
+.pair.one{grid-template-columns:minmax(0,640px)}
+.pair figcaption b{font-weight:700}
+.st-on{color:var(--accent)} .st-off{color:var(--ink)}
+body{padding-block-end:96px}
+#glowbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom, 0px));z-index:8;display:flex;gap:6px;align-items:center;
+  background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.25);max-width:calc(100% - 32px);flex-wrap:nowrap;justify-content:center;white-space:nowrap}
+#glowbar .gl-l{font:600 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);padding:0 6px}
+#glowbar button{font:600 14px var(--f-body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer}
+#glowbar button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--card)}
+#glowbar button:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
 </style>
 
 <main>
   <header style="display:grid;gap:8px">
     <h1>The places that still glow: round 2 of 3</h1>
     <p class="lead">You ruled that the design guide will say "a ring in this app never glows". In round 1 you said no glow for all four places: the green seat ring, the bidding box, your own name's ring and the Tracker's rings. This round puts the next four to you, each as it is today beside the same thing with only its glow taken off. Nothing in the app has changed yet, and nothing will until you have approved the guide's wording in round 3.</p>
-    <p class="sub">These are real app pictures. The landing line was pictured during a real drag with the mouse. The "no glow" picture changes one style setting and nothing else. The <span class="box"></span> dashed box in the "where" pictures is drawn in to show the place; it is not part of the app. Tap any picture to see it full size.</p>
+    <p class="sub">These are real app pictures. The landing line was pictured during a real drag with the mouse. The switch at the bottom of the screen flips every picture between glow on (today) and glow off, in place; "Flip" switches it every second, so you see the difference without tapping. Glow off changes one style setting and nothing else. The <span class="box"></span> dashed box in the "where" pictures is drawn in to show the place; it is not part of the app. Tap any picture to see it full size.</p>
   </header>
 
   <section class="place" id="q5">
@@ -156,9 +167,34 @@ ol,ul{margin:0;padding-left:20px;display:grid;gap:4px}
   </section>
 </main>
 <div id="zoom" hidden></div>
+<div id="glowbar" role="group" aria-label="Glow">
+  <span class="gl-l">Glow</span>
+  <button type="button" id="glowOn" aria-pressed="true">On</button>
+  <button type="button" id="glowOff" aria-pressed="false">Off</button>
+  <button type="button" id="glowFlip" aria-pressed="false" aria-label="Flip every second">Flip ⟳</button>
+</div>
 <script>
+/* Each before/after pair becomes ONE picture that the switch flips in place, so the eye sees only what changes. */
+const pairs=[...document.querySelectorAll('.pair')].map(p=>{
+  const [a,b]=p.querySelectorAll('img'), cap=p.querySelector('figcaption').textContent.replace(/^Today\s*·\s*/,'')
+  p.innerHTML=''; p.classList.add('one')
+  const f=p.appendChild(document.createElement('figure')), c=f.appendChild(document.createElement('figcaption'))
+  const s=f.appendChild(document.createElement('div')); s.className='shot'
+  const i=s.appendChild(document.createElement('img')); i.src=a.getAttribute('src'); i.alt=a.alt
+  return {i,c,cap,on:a.getAttribute('src'),off:b.getAttribute('src'),altOn:a.alt,altOff:b.alt}
+})
+let glow=true,timer=null
+const show=g=>{glow=g;pairs.forEach(x=>{x.i.src=g?x.on:x.off;x.i.alt=g?x.altOn:x.altOff;x.c.innerHTML=`<b class="${g?'st-on':'st-off'}">${g?'Glow on · today':'Glow off'}</b> · ${x.cap}`});
+  document.getElementById('glowOn').setAttribute('aria-pressed',String(g));document.getElementById('glowOff').setAttribute('aria-pressed',String(!g))}
+const stop=()=>{if(timer){clearInterval(timer);timer=null;document.getElementById('glowFlip').setAttribute('aria-pressed','false')}}
+document.getElementById('glowOn').onclick=()=>{stop();show(true)}
+document.getElementById('glowOff').onclick=()=>{stop();show(false)}
+document.getElementById('glowFlip').onclick=e=>{if(timer){stop();return}e.currentTarget.setAttribute('aria-pressed','true');timer=setInterval(()=>show(!glow),1000)}
+/* the off pictures are fetched once up front, so the first flip does not blink */
+pairs.forEach(x=>{const im=new Image();im.src=x.off})
+show(true)
 const z=document.getElementById('zoom'),zi=z.appendChild(document.createElement('img'));
-document.querySelectorAll('.shot img,.where img').forEach(i=>i.addEventListener('click',()=>{zi.src=i.src;zi.alt=i.alt;z.hidden=false}));
+document.addEventListener('click',e=>{const i=e.target.closest('.shot img,.where img');if(!i)return;zi.src=i.src;zi.alt=i.alt;z.hidden=false});
 z.addEventListener('click',()=>{z.hidden=true});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')z.hidden=true});
 </script>
