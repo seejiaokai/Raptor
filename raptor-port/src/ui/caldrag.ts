@@ -32,7 +32,7 @@ import { INPUTS, idsOf, inpLabel } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { landOn, liftOn, markLand } from './lift'
-import { dayAtPoint, dayEl } from './caldays'
+import { dayAtPoint, dayEl, heldOn, once } from './caldays'
 import { edgeTurn, TURN_SETTLE } from './edgescroll'
 
 /* drag.ts's own numbers, cited rather than re-derived (its tdArm/onPointerDown/
@@ -209,6 +209,8 @@ export function initCalDrag(root: HTMLElement, opts: {
     fixed: boolean,
     /** the month's side turn while lifted, and where the pointer last was (the turn re-reads the date under it) */
     turn: ReturnType<typeof edgeTurn> | null, settle: any, lx: number, ly: number,
+    /** the landed-on chip's own ears for this press (caldays.ts heldOn — Safari, after the month turned it away) */
+    off: () => void,
   } | null = null
 
   function moveGhost(x: number, y: number) {
@@ -265,6 +267,7 @@ export function initCalDrag(root: HTMLElement, opts: {
     clearTimeout(st.timer)
     clearTimeout(st.settle)
     st.turn?.stop()
+    st.off()
     if (st.ghost && st.ghost.parentNode) st.ghost.parentNode.removeChild(st.ghost)
     if (st.over) st.over.classList.remove('ic-over')
     if (st.armed) document.body.classList.remove('ic-dragging')
@@ -323,13 +326,14 @@ export function initCalDrag(root: HTMLElement, opts: {
       entry, pointerId: e.pointerId, mouse: e.pointerType === 'mouse',
       x0: e.clientX, y0: e.clientY, armed: false, ghost: null, over: null, timer: 0, fixed,
       ox: e.clientX, oy: e.clientY, gaveUp: false,
-      turn: null, settle: 0, lx: e.clientX, ly: e.clientY,
+      turn: null, settle: 0, lx: e.clientX, ly: e.clientY, off: () => {},
     }
+    st.off = heldOn(e.target, { move: onPointerMove, up: onPointerUp, cancel: onPointerCancel, touchmove: onTouchMove })
     if (!st.mouse) st.timer = setTimeout(arm, HOLD)
     // mouse arms purely off movement, in onPointerMove below — no hold timer at all
   }
 
-  function onPointerMove(e: PointerEvent) {
+  const onPointerMove = once((e: PointerEvent) => {
     if (!st || e.pointerId !== st.pointerId) return
     if (!st.armed) {
       const dx = Math.abs(e.clientX - st.x0), dy = Math.abs(e.clientY - st.y0)
@@ -366,7 +370,7 @@ export function initCalDrag(root: HTMLElement, opts: {
     st.lx = e.clientX; st.ly = e.clientY
     st.turn?.point(e.clientX, e.clientY)
     moveGhost(e.clientX, e.clientY)
-  }
+  })
 
   /* A MOUSE THAT LEAVES THE MONTH while a chip is lifted is no longer at its side: this machine hears the pointer only
      over the month, so the turn is told it is gone — or a mouse let go out there would leave the month turning on its
@@ -383,7 +387,7 @@ export function initCalDrag(root: HTMLElement, opts: {
      the calendar out from under a held chip. */
   function onTouchMove(e: TouchEvent) { if (st && st.armed) e.preventDefault() }
 
-  function onPointerUp(e: PointerEvent) {
+  const onPointerUp = once((e: PointerEvent) => {
     if (!st || e.pointerId !== st.pointerId) return
     const { entry, armed, x0, y0, ox, oy, gaveUp } = st
     const x = e.clientX, y = e.clientY
@@ -424,12 +428,12 @@ export function initCalDrag(root: HTMLElement, opts: {
         opts.onTap(entry) // never armed, barely moved — a tap, routed to the calendar's own edit
       }
     }
-  }
+  })
 
-  function onPointerCancel(e: PointerEvent) {
+  const onPointerCancel = once((e: PointerEvent) => {
     if (!st || e.pointerId !== st.pointerId) return
     clearGesture() // no commit — a cancelled gesture (an OS interruption, an unexpected second touch) leaves the model untouched
-  }
+  })
 
   root.addEventListener('pointerdown', onPointerDown, { passive: true })
   root.addEventListener('pointermove', onPointerMove, { passive: true })

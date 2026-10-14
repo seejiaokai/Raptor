@@ -24,7 +24,7 @@
    the point, so a run drawn across a bar of the Inputs month carries on), never of the event's target: a captured or a
    touch pointer keeps reporting the element it went down on. Presses that begin on a control inside a date are that
    control's own. */
-import { dayAtPoint } from './caldays'
+import { dayAtPoint, heldOn, once } from './caldays'
 import { edgeTurn, TURN_SETTLE } from './edgescroll'
 
 /** how long a finger is held still before a pick begins — past a deliberate tap, short of a wait */
@@ -51,7 +51,9 @@ export interface CalPick {
 export function initCalPick(el: HTMLElement, o: CalPick): () => void {
   let st: { iso: string; end: string; mouse: boolean; armed: boolean; ranged: boolean; x0: number; y0: number; timer: any; id: number
     /** the month's side turn, live from the moment the run begins to its release */
-    turn: ReturnType<typeof edgeTurn> | null; settle: any; x: number; y: number } | null = null
+    turn: ReturnType<typeof edgeTurn> | null; settle: any; x: number; y: number
+    /** the landed-on date's own ears for this press (caldays.ts heldOn — Safari, after a turn) */
+    off: () => void } | null = null
   let retire: (() => void) | null = null
 
   const dayAt = (x: number, y: number, fallback: EventTarget | null): string | null => dayAtPoint(el, x, y, fallback)
@@ -76,7 +78,7 @@ export function initCalPick(el: HTMLElement, o: CalPick): () => void {
     timer = setTimeout(offAll, 350)
     retire = offAll
   }
-  const drop = () => { if (st) { clearTimeout(st.timer); clearTimeout(st.settle); st.turn?.stop() } st = null }
+  const drop = () => { if (st) { clearTimeout(st.timer); clearTimeout(st.settle); st.turn?.stop(); st.off() } st = null }
   /* THE RUN CARRIED ACROSS A MONTH'S END (owner D897): held at the month's side, the month turns and the run goes on —
      its first date kept, though the month it is in is no longer drawn (a run is two dates, never a set of cells). Once
      the new month has slid in, the date now under the still pointer is read again, so what is lit is what a release
@@ -108,14 +110,15 @@ export function initCalPick(el: HTMLElement, o: CalPick): () => void {
     const iso = cell.dataset.icday!
     const mouse = e.pointerType === 'mouse'
     const rec = { iso, end: iso, mouse, armed: false, ranged: false, x0: e.clientX, y0: e.clientY, timer: 0 as any, id: e.pointerId,
-      turn: null as ReturnType<typeof edgeTurn> | null, settle: 0 as any, x: e.clientX, y: e.clientY }
+      turn: null as ReturnType<typeof edgeTurn> | null, settle: 0 as any, x: e.clientX, y: e.clientY, off: () => {} }
     if (o.canPick()) {
       if (mouse) { rec.armed = true; startTurn(rec) }   // a mouse needs no hold: its drag means nothing else here
       else rec.timer = setTimeout(() => { if (st === rec) { rec.armed = true; startTurn(rec); o.onPicking(run(rec)) } }, PICK_HOLD)
     }
     st = rec
+    rec.off = heldOn(t, { move: onMove, up: onUp, cancel: onCancel, touchmove: onTouchMove })
   }
-  const onMove = (e: PointerEvent) => {
+  const onMove = once((e: PointerEvent) => {
     if (!st || e.pointerId !== st.id) return
     if (!st.armed) {
       /* a finger that has left where it went down is not holding still: no pick will begin */
@@ -129,8 +132,8 @@ export function initCalPick(el: HTMLElement, o: CalPick): () => void {
     st.end = at
     if (st.mouse) st.ranged = true                      // a mouse has picked once it has reached a second date
     o.onPicking(run(st))
-  }
-  const onUp = (e: PointerEvent) => {
+  })
+  const onUp = once((e: PointerEvent) => {
     if (!st || e.pointerId !== st.id) return
     const s = st
     drop()
@@ -146,13 +149,13 @@ export function initCalPick(el: HTMLElement, o: CalPick): () => void {
     const dx = e.clientX - s.x0, dy = e.clientY - s.y0
     if (!s.mouse && Math.abs(dx) >= SWIPE_MIN && Math.abs(dx) > Math.abs(dy)) { o.onSwipe(dx < 0 ? 1 : -1); return }
     if (Math.abs(dx) <= PICK_SLOP && Math.abs(dy) <= PICK_SLOP) { swallowClick(); o.onTap(s.iso) }
-  }
-  const onCancel = (e: PointerEvent) => {
+  })
+  const onCancel = once((e: PointerEvent) => {
     if (!st || e.pointerId !== st.id) return
     const lit = st.armed
     drop()
     if (lit) o.onPicking(null)
-  }
+  })
   /* claimed only while a held finger is drawing a run — at every other time the page scrolls as it should */
   const onTouchMove = (e: Event) => { if (st && st.armed && !st.mouse && e.cancelable) e.preventDefault() }
   /* a long press must not raise the browser's own menu over a day that is being picked */

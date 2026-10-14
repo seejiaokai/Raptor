@@ -493,6 +493,28 @@ describe('initCalDrag — the pointer machine', () => {
       } finally { off() }
     })
 
+    /* SAFARI (§7.9): after the month turned the chip away, the finger's release goes to the chip, out of the page —
+       it must still end the gesture (the ghost down, the turns stopped), never leave the drag hanging */
+    it('Safari: a release sent to the chip after the month drew it away still ends the drag', () => {
+      vi.useFakeTimers()
+      const { root, chip } = buildCalDom('safari-row'); lendRect(root)
+      const turns: number[] = []
+      const off = initCalDrag(root, { onTap: () => {}, onTurn: d => { turns.push(d); chip.remove() } })
+      try {
+        chip.dispatchEvent(ptr('pointerdown', 10, 10, { kind: 'touch' }))
+        vi.advanceTimersByTime(200)                              // the chip's hold (180 ms): lifted
+        expect(document.body.classList.contains('ic-dragging')).toBe(true)
+        chip.dispatchEvent(ptr('pointermove', 345, 100, { kind: 'touch' }))
+        vi.advanceTimersByTime(TURN_HOLD)
+        expect(turns).toEqual([1]); expect(chip.isConnected).toBe(false)
+        chip.dispatchEvent(ptr('pointerup', 345, 100, { kind: 'touch' }))
+        expect(document.body.classList.contains('ic-dragging'), 'the drag has ended').toBe(false)
+        expect(document.querySelector('.ic-ghost')).toBeFalsy()
+        vi.advanceTimersByTime(TURN_AGAIN * 3)
+        expect(turns).toEqual([1])
+      } finally { off() }
+    })
+
     it('a chip that does not lift never turns the month', () => {
       vi.useFakeTimers()
       const { root, chip } = buildCalDom('nolift-row'); lendRect(root)

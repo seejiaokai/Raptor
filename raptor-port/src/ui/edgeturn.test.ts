@@ -153,6 +153,37 @@ describe('a run of days carried across a month\'s end', () => {
     expect(turns).toEqual([1])
   })
 
+  /* SAFARI (the bug-check order §7.9): a touch's later events go to the element it landed on even after the turn has
+     drawn it away — an element out of the page, from which an event reaches neither the month nor the window */
+  it('Safari: the finger\'s later events, sent to the date it landed on after the turn removed it, still carry the run', () => {
+    const landed = cellAt(125, 100)!
+    const on = (type: string, x: number, y: number, target: Element) => {
+      const e = new MouseEvent(type, { bubbles: true, cancelable: true, clientX: x, clientY: y, button: 0 })
+      Object.defineProperties(e, { pointerId: { value: 1 }, pointerType: { value: 'touch' }, isPrimary: { value: true } })
+      target.dispatchEvent(e)
+    }
+    on('pointerdown', 125, 100, landed)                          // 28 Oct
+    vi.advanceTimersByTime(500)                                   // the pick's hold has taken
+    on('pointermove', 345, 100, landed)
+    vi.advanceTimersByTime(TURN_HOLD)
+    expect(turns).toEqual([1])
+    expect(landed.isConnected, 'the date it landed on is gone from the page').toBe(false)
+    on('pointermove', 75, 100, landed)                           // 3 Nov — told only to the gone date
+    on('pointerup', 75, 100, landed)
+    expect(ranges).toEqual([['2026-10-28', '2026-11-03']])
+    vi.advanceTimersByTime(TURN_SETTLE + TURN_AGAIN * 3)
+    expect(turns, 'let go, nothing turns on').toEqual([1])
+  })
+
+  it('an event that reaches both the date and the window is taken once', () => {
+    ev('pointerdown', 25, 100, 'mouse'); ev('pointermove', 125, 100, 'mouse')
+    const c = cellAt(125, 100)!
+    const e = new MouseEvent('pointerup', { bubbles: true, cancelable: true, clientX: 125, clientY: 100, button: 0 })
+    Object.defineProperties(e, { pointerId: { value: 1 }, pointerType: { value: 'mouse' }, isPrimary: { value: true } })
+    c.dispatchEvent(e)                                           // bubbles on to the window: two listeners, one event
+    expect(ranges).toEqual([['2026-10-26', '2026-10-28']])
+  })
+
   it('a pick that never reaches a side never turns the month', () => {
     ev('pointerdown', 25, 100, 'mouse'); ev('pointermove', 175, 100, 'mouse')
     vi.advanceTimersByTime(TURN_HOLD * 4)
