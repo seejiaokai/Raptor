@@ -29,6 +29,7 @@ when that one is live.)*
 1. **His rulings** — always. The ones that bound almost every design choice:
    - **the buttons keep their size** (D487) — nothing here makes a control bigger or smaller without his word;
    - **the Raptor look stays** (D765) — dark, dense, its colours each carrying a meaning (§4);
+   - **no mark glows** (D880–D882, D887) — a mark is a line, edge or fill in its colour; a dark shadow that lifts a thing is depth, not a glow (§4);
    - **cleaner, in the way Apple's interfaces are, and intuitive enough to need few instructions** (D821 — "placement of
      buttons and everything just makes sense"): Apple's CLEANLINESS — fewer boxes and lines, a clear order of
      importance, the same thing in the same place on every screen — never its light colours, its one accent or its
@@ -472,7 +473,7 @@ pictures to him — a look does not report each instance, and nothing is recolou
 
 | Colour or mark | It means | Where from |
 |---|---|---|
-| Cyan (the app's one accent) | a main button; the picked date or tab; today's date; the focus outline; the picked-up look of a drag | the stylesheets |
+| Cyan (the app's one accent) | a main button (a solid fill); the picked date or tab; today's date; the focus outline; the picked-up look of a drag; and, as a pale fill with cyan words and edge, a picked filter chip and the Rearrange button and Show SANS switch while on | the stylesheets; D882 |
 | Selection blue | the puck he clicked (a fill, never a ring) — a clicked warning lights its crew in the WARNING's colours, never this blue; and the ring round a thing just added, for about six seconds, with no glow (below) | the product invariants; owner, 14 Aug 26; D860 |
 | Olive / dark green / white fill of a puck (and the Leave War's name bars) | pilot / WSO / ground crew | the Legend |
 | The CAT chip's colour (among them an amber B, a red A, a cyan C) | his level — the chip only, never the whole puck | the Legend |
@@ -508,6 +509,28 @@ pictures to him — a look does not report each instance, and nothing is recolou
   a row or a wave is ringed round itself, that any table's row is one box, that no thing wearing the mark shows another
   flash over it, and that a new kind of mark is his to rule, began as the agent's reading; he approved them as written
   here, D876.)
+- **No mark in this app glows (owner D164, D860, D877, D879, D880, D881, D882, D887 — 24 Sep and 15 Oct 26).** A mark the
+  app draws to say something about a thing — a ring round a thing picked, highlighted, just added or just landed, the crew
+  a tapped warning lights, a puck that earns OIL, his own puck or row, a seat a man can take, an event he can fly next or
+  the one a search found, the stripe that says SANS, the box round the days open for bidding, the line where a dragged row
+  will land, today's day card, a panel that pops up, a status dot — is a line, edge or fill drawn as it is, its colours
+  and a stripe's shading included, with no soft light spreading out from it or into it. Its colour, its width and whether
+  it is solid, dashed or dotted carry the meaning; a glow adds none and blurs the edge it marks. A shadow in the mark's own
+  colour is a glow, and so is a pale, see-through band of its colour round it, blurred or not (a halo); a solid ring drawn
+  as a shadow is a line. The Rearrange button and the Show SANS switch show that they are on by the filter chip's "on"
+  look — a pale cyan fill, cyan words and a cyan edge — never by a glow or a halo (D882); a new on/off control takes the
+  same look unless he rules otherwise, and the app's other "on" looks (Fast sync, the week buttons, OIL Earn, the bell)
+  stay as they are. A dark shadow that lifts a thing off the page — a window, a menu, a thing being dragged — is depth,
+  not a glow, and stays. The app's own sign is not a mark: the claw logo on the sign-in page keeps its light, and so does
+  the faint wash at the top of a page (D887). A new glow on a mark is his to rule, never added without his word. (His
+  ruling: "a ring in this app never glows" — his yes, D880. The places that lost theirs: a flagged puck, D164; the
+  just-added mark, D860; the board's other marks, D877; the picked person's chip, D879; the take ring, the bidding box,
+  his own row's ring and the Tracker's rings, D881; today's card, the SANS stripe's light, the landing line's light, and
+  Rearrange's "on" as the chip's fill, D882; the balance bar's and move banner's band, the Fast sync dot's and Admin →
+  Users' dots' bands, D887. That a stripe, a box, a line, a panel, a dot and a button come under the rule with the rings;
+  that a shadow in the mark's own colour and a halo count as a glow; that a dark shadow under a window or a menu is depth
+  too; that a new on/off control takes the chip's look; and that a new glow is his to rule, began as the agent's
+  reading; he approved them as written here, D887.)
 - **Text must be readable on what it sits on** — check the pair, not the colour alone; a dimmed thing still has to be
   readable if a person needs to read it. A contrast finding on a look he chose (the SANS calendar's soft washes, D630)
   goes to him with the small step first — never strengthened quietly.
