@@ -7,9 +7,10 @@ import { readSchedulerCss } from '../testing/scheduler-css'
    his own puck ("this is you"); a puck a highlight chip lights. A roll-call over the rules, so a glow written back into
    any of them fails here. jsdom paints nothing, so the file is the witness; the walk saw them on screen.
 
-   NOT ruled, and left as they are on purpose: the picked person chip of the Inputs calendar's "+ Pucks" picker
-   (`.ic-pickp.on` — put to him with a picture first), the SANS puck's purple stripe (`.puck.san::after`), and a dragged
-   thing's dark drop shadow under its ring (`0 8px 20px` black — depth, not a glow of a colour). */
+   And (owner D879, the same day — "Yes take the glow off", after its pictures) the picked person's chip in the Inputs
+   calendar's "Add people" window. NOT ruled, and left as they are on purpose: the SANS puck's purple stripe
+   (`.puck.san::after`), and a dragged thing's dark drop shadow under its ring (`0 8px 20px` black — depth, not a glow of a
+   colour). */
 import { describe, it, expect } from 'vitest'
 
 const css = readSchedulerCss().replace(/\/\*[\s\S]*?\*\//g, '')
@@ -36,6 +37,7 @@ const PLACES: [string, string, RegExp][] = [
   ['a puck earning OIL', '.puck.oilglow', /box-shadow:0 0 0 2px var\(--oil\)/],
   ['his own puck', '.puck.me:not(.warn):not(.boxred):not(.boxdash):not(.boxdot):not(.oilglow)', /box-shadow:0 0 0 2px #F0B6FF/],
   ['a highlighted puck', '.puck.hl', /box-shadow:0 0 0 2px var\(--accent\)/],
+  ['the picked person in the Inputs calendar\'s "Add people" window (D879)', '.ic-pickp.on', /box-shadow:0 0 0 1px var\(--accent\)/],
 ]
 
 describe('D877 — the board\'s other glows go, each keeping its ring', () => {

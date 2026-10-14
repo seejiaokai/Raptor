@@ -766,3 +766,18 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** §4 of the walk-script guide: "a drag is aimed at the TARGET's measured box, never by a distance from the grip; before judging a drop, record what moved (the order before and after) — a drop that landed in place is the script's, not the app's"; and "a mark painted after a redraw is waited for, never looked for once".
 
 **Principle:** Express a gesture in terms of the thing it acts on, and record the state change it should cause, so a gesture that missed is told apart from an app that failed.
+
+### Observation 605: A one-line follow-up change got the whole walk re-run — he asked why
+
+**Status:** OPEN
+**Date:** 2026-10-15
+**Session context:** `[GLOW-OFF]` — after his answer D879 (one CSS line: the people picker's chip), the agent re-ran the whole 18-step walk script at both sizes
+**Skill:** none — `raptor-port/docs/bug-check-order.md` §5 "the re-walk" and `raptor-port/docs/walk-scripts.md` §6
+**Type:** internal
+**Phase/Area:** re-walk sizing
+
+**Issue:** The order already says a re-walk covers only what the fixes touched. Because the walk was a script ("cheap"), the agent re-ran all of it for a one-line change: it cost minutes, ran steps unrelated to the change, and on the phone stopped at an unrelated page change before reaching the one step that mattered. The owner asked: "Why do u need a whole walk for just a change in 1 area". The chip was then checked alone, which was the right size from the start.
+
+**Suggested improvement:** walk scripts take a step filter (e.g. `ONLY=W16`), and §6 of the walk-script guide says: "a re-walk runs only the steps of the places the change touched — a script being cheap is not a reason to run all of it".
+
+**Principle:** Size a re-check by what changed, not by how cheap the tool makes repeating everything; extra steps add their own failures and noise.

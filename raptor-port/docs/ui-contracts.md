@@ -3561,8 +3561,9 @@ and the 1px dark line inside it), the time boxes it lights (`.badtm.wfoc`, the i
 (`.puck.oilglow` — a half day now wears the same green ring as a full day; its amount tag tells them apart), his own
 puck (`.puck.me` — the purple fill and ring) and a highlighted puck (`.puck.hl`) each keep their ring and lose the glow.
 Pinned by `src/ui/glowoff-css.test.ts`; the pictures of record `docs/mock/2026-10-15-glow-places/`; the walk
-`docs/handpass/2026-10-15-glow-off.md`. **Still glowing, not ruled:** the picked chip of the Inputs calendar's people picker
-(`.ic-pickp.on` — put to him with pictures, `G9-pick-chip-*`), and the SANS puck's purple stripe (`.puck.san::after`).
+`docs/handpass/2026-10-15-glow-off.md`. **And the picked person's chip in the Inputs calendar's "Add people" window** (`.ic-pickp.on`, owner D879 — "Yes take the
+glow off", after the pictures `G9-pick-chip-*`) keeps its thin blue ring (`0 0 0 1px`) and loses its glow. **Still glowing,
+not ruled:** the SANS puck's purple stripe (`.puck.san::after`).
 
 **The just-added row's flash is now the SAME steady shape everywhere it
 appears — the board's `.sb-fresh` box (see §Selection highlight above) and

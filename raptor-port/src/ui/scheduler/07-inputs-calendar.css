@@ -266,7 +266,8 @@
 .ic-pickp{background:none;border:1px solid transparent;border-radius:6px;padding:2px;cursor:pointer;
   line-height:0;display:inline-flex;transition:opacity .12s ease}
 .ic-pickp .seat{display:flex;pointer-events:none}
-.ic-pickp.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 0 10px rgba(59,198,232,.35)}
+/* the picked person: the thin blue ring with NO glow (owner D879, 15 Oct 26 — "Yes take the glow off", as the board's marks, D877) */
+.ic-pickp.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 .ic-pickp.already{opacity:.4;cursor:default}
 /* the highlight FADE — a lit category dims everyone NOT in it so the applicable
    pucks read at a glance (owner, 24 Aug 26: "fade those pucks … Not select

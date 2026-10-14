@@ -8,13 +8,14 @@
      W11 Edit Schedule's week: a warning tapped there lights its crew too
      W12 the guide read's G3: a line dragged into a just-added line's place inside its six seconds (what shows, pictured)
      W13 a puck's drag ghost   W14 a section dragged on Edit Schedule's week   W15 a row of the Leave War's settings list
+     W16 the picked person's chip in the Inputs calendar's "Add people" window (D879)
    usage: DL_BASE=http://localhost:4181 DL_SHOTS=docs/handpass/glow-off/<run> node scripts/handpass/glowoff-walk.mjs [phone|desk] */
 import * as L from './dl-lib.mjs'
 import { board, closeBoard } from './ou-lib.mjs'
 import { writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
-console.log('glowoff-walk v12')
+console.log('glowoff-walk v13')
 const SIZE = process.argv[2] === 'phone' ? 'phone' : 'desk', T = SIZE
 const w = await L.world(SIZE), p = w.page
 const MON = 0, SAT = 5
@@ -282,6 +283,23 @@ try {
   await L.go(w, 'leavewar'); await L.sleep(800)
   await p.evaluate(() => document.querySelector('[data-testid="settings-open"]')?.click()); await L.sleep(600)
   await holdRead('W15-lw-settings-row', 'a row of the Leave War\'s settings list dragged by its grip', '.set-grow[data-grow] .set-grip:not(.off)', '.set-grow.dragging, .crow-wrap.gs-row.dragging')
+  /* W16 (D879): the Inputs calendar → a day → + Note → + people; two people tapped — the picked chip's ring, no glow */
+  await L.go(w, 'inputs')
+  if (await p.locator('#inCalBtn').getAttribute('aria-pressed') !== 'true') await w.press('#inCalBtn')
+  await p.waitForSelector('#inpCal'); await L.sleep(300)
+  const wed = await p.evaluate(() => { const c = [...document.querySelectorAll('#inpCal [data-icday]')].find(c => new Date(c.dataset.icday + 'T12:00:00').getDay() === 3); return c ? c.dataset.icday : null })
+  if (wed) {
+    await p.locator(`#inpCal [data-icday="${wed}"]`).click({ position: { x: 8, y: 8 } }); await L.sleep(400)
+    await w.press('#icAddPuck'); await L.sleep(250)
+    await w.press('#icNewNotePpl'); await p.waitForSelector('.ic-pick'); await L.sleep(300)
+    for (const n of [0, 1]) { await p.locator('.ic-pick .ic-pickp[data-pickp]:not(.already)').nth(n).click(); await L.sleep(150) }
+    if (await tagEl('.ic-pick .ic-pickp.on')) {
+      const g = await glowOf('[data-gw]')
+      await L.pic(w, `W16-pick-chip-${T}`, { around: '[data-gw]', pad: 30 })
+      out('W16', `the picked chip in the Inputs calendar's "Add people" window (${wed})`, 'the thin blue ring, no glow (D879)', say(g), verdictOf(g, x => x.shadows.some(s => /0px 0px 0px 1px/.test(s))))
+    } else out('W16', 'the picked chip', '', 'no chip came on after two taps', false)
+    await p.keyboard.press('Escape'); await L.sleep(200)
+  } else out('W16', 'the picked chip', '', 'no Wednesday on the month shown', null)
 } catch (e) { console.log('STOPPED:', e.message); out('RUN', 'the walk', 'ran to the end', `stopped: ${e.message}`, false) }
 finally {
   out('ERR', 'the browser\'s error list', 'empty', w.errors.length ? w.errors.join(' | ').slice(0, 400) : 'empty', w.errors.length === 0)
