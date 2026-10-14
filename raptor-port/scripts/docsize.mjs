@@ -170,7 +170,11 @@ const FILES = [
      put to him into three open ones; none is finished. The one item whose heading says "merged" ([GLOBAL-UNDO]) still
      carries seven open deferrals; the priority list's finished stories are [PRIORITY-LIST-REWRITE]'s, a job that needs
      a reader. An open item is never trimmed to fit (D141, D29). About 60 lines above what the file holds, as before. */
-  ['OUTSTANDING.md',                     1, 2530],
+  /* 2530 -> 2590, 15 Oct 26 (`[GUIDE-NO-GLOW]`'s rounds, documents and hooks only): 2,530 lines. This chat archived the
+     one item it found finished ([COMPACT-BANDS-WINDOW]) and filed three open ones - [LW-LANDING-LINE-FIGURES] (his
+     D883), [OVERNIGHT-RETRY-TRIAL] (his D885) and the rounds' notes under [GUIDE-NO-GLOW]; none is finished. An open
+     item is never trimmed to fit (D141, D29). About 60 lines above what the file holds, as before. */
+  ['OUTSTANDING.md',                     1, 2590],
   /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
      and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
      (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only
@@ -222,7 +226,10 @@ const RULING_BYTES = [
      pull request for the night's work) - all live; none is trimmed (D136). [RULINGS-SPENT-PASS] still brings it down. */
   /* how-we-work 34000 -> 36000 (15 Oct 26): 34,520 bytes with D867-D869 (the overnight command: his correction of its
      shape, when to compact, his approval) - all live; none is trimmed (D136). [RULINGS-SPENT-PASS] still brings it down. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 36000],
+  /* how-we-work 36000 -> 38000 (15 Oct 26, later): 36,502 bytes with D876-D878 (the guide's one mark, the board's glows,
+     the compaction notes) and D880 (the guide's "a ring never glows") - all live; none is trimmed (D136).
+     [RULINGS-SPENT-PASS] still brings it down (D856-D858, D864, D875 read as spent permissions once checked row by row). */
+  ['.claude/rules/decisions/how-we-work.md', 0, 38000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,

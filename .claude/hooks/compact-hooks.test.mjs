@@ -130,6 +130,12 @@ test('after a compaction it hands back this branch\'s own block, whole — or na
   assert.match(long, /longer than the app passes on — open it in HANDOFF\.md now/);
 });
 
+test('the hand-back says how to get a missing working guide back — his /reload-skills, in every form of the note (D885)', () => {
+  for (const m of [message('claude/a', 'BLOCK'), message('claude/x', ''), message('claude/a', 'x'.repeat(12000))]) {
+    assert.match(m, /ask him to type\n?\s*\/reload-skills/);
+  }
+});
+
 test('git answers from this folder when the folder handed in is written the POSIX way (found 15 Oct 26)', () => {
   assert.ok(gitDir('/c/no/such/folder/written/the/posix/way'));
   assert.ok(gitDir(undefined));

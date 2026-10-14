@@ -3446,8 +3446,8 @@ rect 0×0, so vitest sees a zero delta by construction — the hold is gated in
 **Selection also rings where the man could GO (owner, 13 Aug 26).** In edit
 mode, `paintSelRings` (`highlights.ts`) rings every slot the selected person
 could take, judged by `slotBar` — the palette's and the drop warning's own
-oracle, so the three cannot disagree: solid bright green with a glow
-(`.oktake`) on an empty slot, dimmed green with a tint (`.oktake-f`) where he
+oracle, so the three cannot disagree: solid bright green (`.oktake`; its glow
+went 15 Oct 26, D881) on an empty slot, dimmed green with a tint (`.oktake-f`) where he
 would take over from someone, nothing where a reason bars him, and his own
 seats stay bare. Green is eligibility, never a severity (§Flag colour IS the
 tier), and SOLID on purpose — dashed stays the armed ring's identity, and an
@@ -3484,7 +3484,7 @@ matches on its `data-bfld` key climbed to its container (`.sb-arow` /
 first line deduped out (an outer target always beats one it contains); a duty
 `+ Block` records only its `dl:` header key, so its loose sibling rows are
 boxed by hand up to the next block. Board-only (adds happen there), off a
-frozen preview, inset + soft glow so it never shifts a neighbour or is clipped.
+frozen preview, an inset ring (the plain 2px ring since D860 — no glow) so it never shifts a neighbour or is clipped.
 A key renumbered by a delete inside the window just stops matching and the box
 drops a beat early — cosmetic, so it is deliberately NOT wired through
 `remapViewKeys` (which is a no-op now that `RMKOPEN`, its one-time only client,
@@ -3562,8 +3562,12 @@ and the 1px dark line inside it), the time boxes it lights (`.badtm.wfoc`, the i
 puck (`.puck.me` — the purple fill and ring) and a highlighted puck (`.puck.hl`) each keep their ring and lose the glow.
 Pinned by `src/ui/glowoff-css.test.ts`; the pictures of record `docs/mock/2026-10-15-glow-places/`; the walk
 `docs/handpass/2026-10-15-glow-off.md`. **And the picked person's chip in the Inputs calendar's "Add people" window** (`.ic-pickp.on`, owner D879 — "Yes take the
-glow off", after the pictures `G9-pick-chip-*`) keeps its thin blue ring (`0 0 0 1px`) and loses its glow. **Still glowing,
-not ruled:** the SANS puck's purple stripe (`.puck.san::after`).
+glow off", after the pictures `G9-pick-chip-*`) keeps its thin blue ring (`0 0 0 1px`) and loses its glow. **And since 15 Oct 26 no mark in the app glows** (the design
+guide's rule, D880–D882, D887): the take ring, the open-bidding box, his own Leave War row's ring, the Tracker's rings
+(D881); today's day card, the SANS stripe's light, the Leave War's landing line, Rearrange / Show SANS while on — the
+filter chip's pale fill (D882); the docked balance bar and move banner's band, the Fast sync and Admin → Users' dots'
+bands (D887). Kept: the sign-in logo's light and the page's faint wash, the app's own sign (D887). The whole app's
+roll-call: `src/ui/noglow-css.test.ts`.
 
 **The just-added row's flash is now the SAME steady shape everywhere it
 appears — the board's `.sb-fresh` box (see §Selection highlight above) and
@@ -3930,8 +3934,8 @@ purple behind it) — or earning in OIL Earn mode (the green OIL ring, full or h
 man's puck wears there, through the same rules. Earning NOTHING in OIL Earn mode (`oildim`), it keeps the purple ring,
 faded with the puck — the fade says "nothing", the purple "you" (his "Keep", D277). Until D270 the purple ring sat on every "you" puck with `!important`,
 hid the severity rings and buried the OIL ring, and `.puck.me.boxred` / `.boxdash` / `.boxdot` / `.warn` existed only to
-fight it — they are gone. Two glows are NOT flags and stay: the purple "this is you" glow on his UNFLAGGED puck and the
-clicked-warning focus (`.puck.wfoc`, a transient answer to a tap). Pinned by `src/ui/flagglow-css.test.ts`, which walks
+fight it — they are gone. *[Two glows were once kept here as NOT flags — the purple "this is you" glow on his UNFLAGGED
+puck and the clicked-warning focus (`.puck.wfoc`); both went 15 Oct 26 (D877), and no mark glows since (D880–D882, D887).]* Pinned by `src/ui/flagglow-css.test.ts`, which walks
 every ring rule for a blurred layer AND resolves the cascade for every set of ring classes a puck can wear (severity x
 red box x trace x OIL mode), requiring his puck's winning ring to equal another man's.
 
@@ -7327,6 +7331,11 @@ rows"); the bid sheets' Delete stays dashed grey. Gates: `e2e/leavewar.spec.ts` 
 the grid" reads the three buttons' colours, and "in Rearrange the counter grip is left of the name and nothing clips"
 reads the cross's.
 
+**The landing line runs across the whole row (owner, D883, 15 Oct 26: "there should be a blue line through even through
+the counters. When rearranging.").** While a man's row or a group heading is dragged in Rearrange, the blue landing line
+runs unbroken across the name, the counters (the figures columns) and the days. Today it breaks across the figures
+columns: filed as `[LW-LANDING-LINE-FIGURES]`, not yet fixed.
+
 Four asks from the same sitting, all on the Leave War grid:
 
 - **The counter picker is COMPACT** ("much smaller and compress the data"). It
@@ -7393,8 +7402,8 @@ Four asks from the same sitting, all on the Leave War grid:
   The LIT ROW itself was turned up on 6 Sep 26 (owner, from his iPhone — "make
   the glow of the view as user row a bit more obvious in the grids"): the frozen
   pair takes a lighter panel (`#173C4A`), the accent lines bracketing the row go
-  from .28 to .55, and the full-width seat bar in the name cell gains a glow past
-  its ring — which is what carries the row at a glance on a phone. The same
+  from .28 to .55, and the full-width seat bar in the name cell gained a glow past
+  its ring *[gone 15 Oct 26, D881 — the ring and the lines carry the row]*. The same
   values in the figures DRAWER's copy of the row, so the two never disagree.
   There is deliberately **no wash across the day cells**: a `td` background here
   out-ranks `.mx td.weekend`, `.evoff`, `.locked` and every other state colour
@@ -7525,7 +7534,7 @@ Four asks from the same sitting, all on the Leave War grid:
     `.ic-over`, `.pk-swap-target`, `[data-fill].dragover`, Leave War's
     `tr.dragover`) — they say where it WILL go, the flash says where it WENT, and
     the two are deliberately different vocabularies. Leave War's still runs the
-    WHOLE row at 3px with a glow on the sticky cell (2px on that cell alone was
+    WHOLE row at 3px, the sticky cell included (its glow went, D882; and it runs unbroken through the counters, D883) (2px on that cell alone was
     easy to miss under a thumb), TOP edge for an insert-before, BOTTOM for a
     lower-half hover; it still keeps `var(--mrow-ring, 0 0 transparent)` as its
     LAST box-shadow layer so a short day's amber/red ring still shows down the
@@ -7649,8 +7658,8 @@ to read "OIL" there, and `.card-hd` keeps `flex-wrap:wrap` only as a safety net.
 The ⇅ Rearrange toggle MOVED here from the grid's bracket-corner cell
 (`th.brakhd`, empty now) — the rearranging itself is hands-on-grid, and since
 6 Sep 26 this toggle is the only control (the on-grid bar is gone — §The
-on-grid rearrange bar is GONE); it GLOWS accent (`.rtbtn.on`: accent border and
-ink, plus a soft ring and halo) while live and is the ⇅ icon alone on a phone.
+on-grid rearrange bar is GONE); while live it wears the filter chip's "on" look (`.rtbtn.on`: a pale cyan
+fill, cyan ink and edge, no ring, halo or glow — D882, 15 Oct 26) and is the ⇅ icon alone on a phone.
 jsdom cannot see the single line; pinned by e2e
 (`leavewar.spec.ts` — one row, order, OIL adjacency and the member layout, at
 phone AND desktop) and unit (`settingssheet.test.tsx` — the header's controls by
@@ -7678,7 +7687,7 @@ independent causes, both fixed:
   source order, which is what stops a hover stealing a primary or armed
   button's border. Moved down, it would win.
 
-The ON state also carries a glow of its own now, so "on" is said by the button's
+The ON state also carries a look of its own (since D882 the chip's pale fill, no glow), so "on" is said by the button's
 own paint rather than by anything the browser left behind. Measured on the built
 bundle (6 Sep 26): on an iPhone-13 context `(hover: hover)` is false, and the
 button after the second tap is byte-identical to its at-rest self — resting
@@ -8426,7 +8435,7 @@ in the year or a squadron has wars in several stages. Pinned:
 ## The open-bidding box on the Leave War grid (owner, 1 Sep 26)
 
 "Can u make the border of the dates open for bidding green … the exterior box
-of the entire period" → refined to a glowing, deeper, more faded green border,
+of the entire period" → refined to a deeper, more faded green border (its glow went 15 Oct 26, D881),
 no label. It marks which columns the squadron may bid on. The contract:
 
 - **When.** Only while `period.stage === 'open'`. A draft / closed / published
@@ -8440,7 +8449,7 @@ no label. It marks which columns the squadron may bid on. The contract:
 - **How it's drawn.** ONE absolutely-positioned overlay, `.lw-bidbox`, inside
   `.mx-wrap` (which is now `position: relative`), sized in JS by
   `Matrix.tsx measureBidBox`. NOT per-cell borders: a single element gives the
-  continuous glow, and — being part of the scroller's content — it tracks the
+  continuous line, and — being part of the scroller's content — it tracks the
   horizontal scroll with no handler and none of the fling-killing scrollLeft
   writes the rest of Matrix guards against. Measured in the same layout signals
   as the month strip (period/stage/window, zoom, row-window, counts fold,
@@ -8457,12 +8466,12 @@ no label. It marks which columns the squadron may bid on. The contract:
   behind them exactly as a day cell does; it never floats over the frozen
   column. `pointer-events: none`, so it never intercepts a bid tap or a
   drag-select.
-- **Colour.** `rgba(74,140,100,.80)` border with a low-opacity green halo
-  (`box-shadow` outer + faint inset) — the owner's final pick, the lighter of
+- **Colour.** `rgba(74,140,100,.80)` border — the halo it wore (`box-shadow` outer + faint inset) went 15 Oct 26
+  (D881) — the owner's final pick, the lighter of
   two faded greens compared live (the deeper `rgba(56,104,76,.78)` was the
   other). Still darker and more desaturated than the app's bright `--ok`, and
   chosen over a brighter glow across two earlier rounds of comps. Don't swap it
-  to `--ok` or brighten the halo without asking.
+  to `--ok` without asking.
 - **Known trade-off, deliberate.** Outline only, no fill (the owner did not
   take the faint-wash option): scrolled into the MIDDLE of a long open window
   both edges are off-screen and nothing marks it until you reach an edge. The
@@ -8528,7 +8537,7 @@ The contract, in the order a reader meets it:
   drawn day count + the header's placeholder cells".
 - **The open-bidding box clips at the seam**: a bound outside the drawn
   months cuts that side (`.lw-bidbox.cut-l` / `.cut-r`, a clip-path so the
-  halo cannot ghost a false edge), the other sides keep their glow.
+  halo it once wore could not ghost a false edge), the other sides keep their line.
 - **What is NOT windowed**: the manning verdicts (all 365 days), the lock
   set, a sheet's date span, the "N days" caption — those are about the war.
 - **jsdom draws the whole year** (its rects are 0×0, so the window's lazy
@@ -9009,7 +9018,7 @@ calc(100vw - 24px)); z-index: 60`, a raised `#1d232b` ground, a `1.5px solid
 var(--accent)` ring, `0 0 0 4px rgba(59,198,232,.16)` plus a deep drop shadow,
 radius 14, and a 160 ms `lw-dockin` slide on entry that is off under
 `prefers-reduced-motion`. The first cut of the bar "visually blended in with the
-background" (owner, 6 Sep 26), which is what the ring and the glow answer. **The
+background" (owner, 6 Sep 26), which is what the ring answers (its pale band went 15 Oct 26, D887). **The
 MOVE BANNER now stops at 880px on a wide screen** — it used to run `left: 12px;
 right: 12px` — because a foot-of-screen panel spanning 1400px reads as chrome
 rather than as something that just appeared. Below 904px, which is every phone,
@@ -9671,8 +9680,8 @@ own rows are unchanged.
   would give one gesture two meanings on the same pixel. One mode at a time, and the lit
   button says which. It costs one term — `oilm` folded into the board's existing
   `stoRO`/`mvRO` gate, which every write control already reads.
-- **Every puck that earns GLOWS, and wears its figure where the qualification letter
-  sits** — solid glow = a full day, an outline only = a half. The figure is live on
+- **Every puck that earns RINGS GREEN (it glowed until D877), and wears its figure where the qualification letter
+  sits** — a full and a half day wear the same ring now; the figure tells them apart. The figure is live on
   every tap, and it is not optional: the measure is first-start-to-last-end, so
   unticking one puck often changes nothing (another event still spans the day) and
   occasionally costs half a day because that event was holding the far end. Without the

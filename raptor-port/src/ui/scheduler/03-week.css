@@ -271,12 +271,12 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
   border-radius:7px;background:rgba(59,198,232,.10)}
 /* GREEN IS ELIGIBILITY, never a severity (comp approved by the owner, 13 Aug
    26): with a person selected, a slot he could take rings solid green —
-   bright with a glow when EMPTY, dimmed with a soft tint where he would take
+   bright when EMPTY (its glow went 15 Oct 26, owner D881), dimmed with a soft tint where he would take
    over from the man in it. Solid on purpose: the armed ring owns dashed, and
    red/amber/grey stay the warning tiers. Outline + shadow only — no nodes,
    no layout, so the "screen holds still" contract is untouched. */
-.oktake{outline:2px solid var(--ok);outline-offset:1px;border-radius:4px;
-  box-shadow:0 0 8px 1px rgba(87,201,122,.75)}
+/* no glow round it (owner D881, 15 Oct 26 — the guide's "no mark in this app glows", D887): the solid green ring alone */
+.oktake{outline:2px solid var(--ok);outline-offset:1px;border-radius:4px}
 .oktake-f{outline:2px solid rgba(87,201,122,.55);outline-offset:1px;border-radius:4px;
   background:rgba(87,201,122,.14)}
 .eroster .ros-arm,.sb-roster .ros-arm{display:flex;align-items:center;gap:7px;margin:0 0 7px;padding:5px 7px;
@@ -292,7 +292,8 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .day{flex:0 0 620px;border-radius:var(--r);overflow:hidden;scroll-snap-align:start;
   background:linear-gradient(180deg,rgba(255,255,255,.028),rgba(255,255,255,0)),var(--panel);
   border:1px solid var(--edge);box-shadow:0 24px 60px -34px rgba(0,0,0,.9)}
-.day.today{border-color:rgba(59,198,232,.45);box-shadow:0 24px 60px -30px rgba(59,198,232,.35)}
+/* its blue edge says "today"; the blue light that fell below it went (owner D882, 15 Oct 26) */
+.day.today{border-color:rgba(59,198,232,.45)}
 .day-head{display:flex;align-items:baseline;gap:9px;padding:13px 15px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--edge)}
 .day-head .dow{font-size:16px;font-weight:700}
 .day-head .dt{color:var(--ink-3);font-size:12px}

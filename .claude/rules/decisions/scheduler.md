@@ -38,7 +38,7 @@ file or change one (**D655, D658, D763, D770**), what ALL / ALL AVAIL is not off
 title box (**D715**), its card and the cancelled input's place and window (**D718–D725, D727–D729, D768, D771**), its OIL sign (**D777**), the
 late cut-off (**D628, D639**), a day's class and the holidays (**D627, D631, D633, D638**), the SANS day's needs
 (**D617–D622**). A ruling that governs BOTH an Inputs page and the schedule stayed HERE.
-**Also read** — in `oil.md` (it loads by itself with the placeholder, publishing and OIL files): **D28, D31,
+**Also read** — in `leave-war.md`: **D881** (the green "he can take this seat" ring on Edit Schedule loses its glow, keeping its solid green ring — with three Leave War and Tracker places); **D882** (the light under today's day card and a SANS puck's stripe's light go too). In `oil.md` (it loads by itself with the placeholder, publishing and OIL files): **D28, D31,
 D32, D43, D46, D52** (what the ALL / ALL AVAIL pucks earn wherever they may land — the earning list follows
 the landing list), **D48, D49** (a published day and a rule change), **D19** (a weekend no Leave War period
 covers). In `people-accounts.md` (it loads by itself with the accounts, Quals and posting files): **D297, D299**
@@ -230,7 +230,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 | D274 | 27 Sep 26 | Three of the five-flags batch's four visible changes are approved as built — his own flagged puck without the glow, Leave War ⚙ Reset order, a swap inside one crowd without "already on"; the room beside the ‹ arrow was not approved. — changed by D275 |
 | D272 | 27 Sep 26 | IN OIL EARN MODE HIS OWN PUCK SHOWS THE GREEN OIL RING, NOT THE PURPLE ONE — the purple fill stays. |
 | D271 | 27 Sep 26 | A MAN PUT ON A ROW HE IS ALREADY ON IS REFUSED — ONE MAN, ONCE PER ROW. |
-| D270 | 27 Sep 26 | On your own puck a flag's ring wins over the purple "this is you" ring — amber, thin red, grey, dotted, as on anyone's puck, with no glow; the purple fill stays; in OIL Earn mode the green OIL ring shows too (D272). — changed by D272 |
+| D270 | 27 Sep 26 | On your own puck a flag's ring wins over the purple "this is you" ring — amber, thin red, grey, dotted, as on anyone's puck, with no glow; the purple fill stays; in OIL Earn mode the green OIL ring shows too (D272). — changed by D877, D272 |
 | D263 | 27 Sep 26 | THE CHANGE HISTORY RECORDS EVERY CHANGE TO AN ABSENCE, NOT ONLY ITS FILING AND REMOVAL |
 | D212 | 26 Sep 26 | THE FOUR SIGN-OFFS STAY AS THEY ARE: AN ADMIN PICKS ALL FOUR NAMES |
 | D189 | 26 Sep 26 | Keep it: when a leave or downchit is stretched or trimmed, every published day it still covers reads "1 pending" and its sign-offs fall, because the "till <date>" note it printed is now out of date; View-only Sched keeps the old words until the next AL. |

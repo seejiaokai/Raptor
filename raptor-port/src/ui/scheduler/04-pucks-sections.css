@@ -9,7 +9,8 @@
 .puck.san{position:relative}
 .puck.san::after{content:'';position:absolute;top:-1px;bottom:-1px;right:0;width:4px;
   background:linear-gradient(180deg,#F2C8FF 0%,#D98CFF 45%,#B24DEA 100%);
-  box-shadow:0 0 5px 1px rgba(214,124,255,.95),0 0 12px rgba(178,77,234,.6),inset 0 0 1px #fff;
+  /* its purple light went (owner D882, 15 Oct 26); the gradient and the 1px white line inside it stay (D651) */
+  box-shadow:inset 0 0 1px #fff;
   z-index:4}
 /* left flag chip: DT/TT double/tight turn (orange), C conflict (strong orange), CR crew-rest (red) */
 /* the chip is its own click target — it jumps to the warning behind it, while
@@ -191,7 +192,7 @@
    previously hid. The palette telling you you are busy is honest. */
 .puck.me{background-color:var(--me)!important;color:#fff!important;z-index:2;position:relative}
 /* THE "THIS IS YOU" RING STEPS ASIDE FOR ANY OTHER RING (owner, D270 and D272, 27 Sep 26 — "Q2 yes", "question 2 yes").
-   The purple FILL above always says "you"; the purple RING and its glow are drawn only while his puck has nothing else
+   The purple FILL above always says "you"; the purple RING (its glow went, D877) is drawn only while his puck has nothing else
    to say. Flagged — the amber advisory, thin red or grey note ring, a solid or dashed red box, the dotted "causes
    tomorrow's breach" ring — or earning in OIL Earn mode (the green OIL ring), his puck wears exactly the ring anyone
    else's puck wears there, and wears it through the SAME rules, because this one no longer competes. Until D270 it did,

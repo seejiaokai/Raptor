@@ -94,7 +94,7 @@ describe('a dragged row keeps its frozen cells opaque', () => {
   it('the landing bar runs the whole row at 3px, top edge or bottom', () => {
     // The `td:not(.who)` rule is the one that runs the width — a category
     // heading's cells are ordinary `td`s, so it serves both kinds of row; the
-    // `.who` and `.grphd` rules only add the glow on the sticky cell.
+    // `.who` and `.grphd` rules give the sticky cell the same line (its glow went, D882).
     for (const sel of ['.mx tbody tr.dragover td:not(.who)', '.mx tbody tr.dragover .who', '.mx tbody tr.grp.dragover td.grphd'])
       expect(bodiesFor(sel).join(' '), `${sel} draws the 3px landing bar`).toMatch(/inset 0 3px 0 var\(--accent\)/)
     for (const sel of ['.mx tbody tr.dragover.after td:not(.who)', '.mx tbody tr.dragover.after .who', '.mx tbody tr.grp.dragover.after td.grphd'])
@@ -184,7 +184,7 @@ describe('the viewer\'s own row is lit by LINES, never by a wash', () => {
   })
 })
 
-describe('the Rearrange switch rings only for a keyboard, and glows while on', () => {
+describe('the Rearrange switch rings only for a keyboard, and shows "on" by the chip look', () => {
   it('a tap leaves no ring — :focus turns the outline off', () => {
     const bodies = bodiesFor('.rtbtn:focus')
     expect(bodies.length, '.rtbtn:focus is declared').toBeGreaterThan(0)
@@ -200,11 +200,14 @@ describe('the Rearrange switch rings only for a keyboard, and glows while on', (
     expect(indexOf('.rtbtn:focus-visible')).toBeGreaterThan(indexOf('.rtbtn:focus'))
   })
 
-  it('ON glows rather than only tinting', () => {
+  /* ON wore a glow from 6 Sep 26; since 15 Oct 26 it wears the filter chip's "on" look — a pale cyan fill, cyan words, a
+     cyan edge — and no glow or halo (owner D882; the guide's "no mark in this app glows", D887). */
+  it('ON wears the filter chip\'s "on" look, with no glow (D882)', () => {
     const body = bodiesFor('.rtbtn.on').join(' ').replace(/\s+/g, ' ')
     expect(body, '.rtbtn.on is declared').not.toBe('')
-    expect(body).toMatch(/box-shadow:[^;]*rgba\(59, 198, 232, \.5\)/)
-    expect(body).toMatch(/border-color: var\(--accent\)/)
+    expect(body).toMatch(/background: rgba\(59, 198, 232, \.16\)/)
+    expect(body).toMatch(/border-color: rgba\(59, 198, 232, \.6\)/)
+    expect(body).not.toMatch(/box-shadow/)
   })
 
   /* The OTHER half of "a second click when it's turned off shouldn't glow"

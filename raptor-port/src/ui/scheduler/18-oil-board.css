@@ -48,9 +48,9 @@
 .puck.oilbar-ho .lchip{background-image:linear-gradient(var(--oil-half),var(--oil-half));background-size:4px 50%;background-position:left bottom;background-repeat:no-repeat}
 
 /* THE OIL EARN MODE (§2.1). The button lights, the board goes read-only for
-   schedule editing, and every puck that earns glows. Solid glow = a full day,
-   an outline only = a half (§2.1 item 4), so the two are distinct without
-   reading the figure. */
+   schedule editing, and every puck that earns rings green (it glowed until D877,
+   15 Oct 26; a full and a half day now wear the same ring and the amount tag
+   tells them apart — the rule below). */
 .sb-panel.oilbar.on{border-color:var(--oil)}
 .mbtn.oilbtn.on{background:var(--oil);border-color:var(--oil);color:#04220f}
 .mbtn.oilblank.on{background:var(--adv);border-color:var(--adv);color:#12100a}

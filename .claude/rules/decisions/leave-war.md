@@ -56,6 +56,9 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D883 | 15 Oct 26 | WHILE A ROW IS DRAGGED IN THE LEAVE WAR'S REARRANGE, ITS BLUE LANDING LINE RUNS UNBROKEN ACROSS THE WHOLE ROW: THE NAME, THE COUNTERS (THE FIGURES COLUMNS) AND THE DAYS. |
+| D882 | 15 Oct 26 | THE LAST FOUR PLACES LOSE THEIR GLOW TOO: THE LIGHT UNDER TODAY'S DAY CARD, A SANS PUCK'S STRIPE'S LIGHT, THE LIGHT ON THE LEAVE WAR'S LANDING LINE; AND THE REARRANGE BUTTON AND THE SHOW SANS SWITCH SHOW "ON" BY THE FILTER CHIP'S PALE BLUE FILL, BLUE WORDS AND BLUE EDGE, WITH NO HALO OR GLOW. |
+| D881 | 15 Oct 26 | FOUR MORE PLACES LOSE THEIR GLOW, EACH KEEPING ITS LINE AS IT IS: THE GREEN "HE CAN TAKE THIS SEAT" RING ON EDIT SCHEDULE; THE LEAVE WAR'S GREEN OPEN-BIDDING BOX; THE RING ON HIS OWN NAME ON THE LEAVE WAR; THE TRACKER'S GOLD "CAN FLY NEXT" AND TURQUOISE "SEARCH FOUND" RINGS. |
 | D827 | 13 Oct 26 | THE NEATER DRAWING OF THE LEAVE WAR'S CLASH NOTE ON A PHONE ("A+") IS APPROVED AS DRAWN AND IS BUILT: IT IS THE DESIGN OF RECORD — THE SLIM LINE THAT OPENS, ITS LIST IN ALIGNED COLUMNS, EVERY ROW TWO LINES, THE WORDS AS DRAWN. — changed by D837, D833 |
 | D823 | 13 Oct 26 | ON A PHONE THE LEAVE WAR'S CLASH NOTE IS THE SLIM FULL-WIDTH LINE UNDER THE TWO ROWS THAT OPENS ITS LIST IN PLACE (OPTION A OF THE DESIGN PAGE) — WITH THE LIST'S PARTS LINED UP IN COLUMNS AND EVERY ROW THE SAME SHAPE; THE NEATER DRAWING IS PUT TO HIM BEFORE IT IS BUILT. |
 | D805 | 13 Oct 26 | ON A PHONE THE LEAVE WAR'S "CLASHES WITH THE SCHEDULE" NOTE IS REDESIGNED — ITS LAYOUT AND WHERE IT SITS: NEVER A NARROW BOX SQUEEZED AT THE RIGHT OF THE TOP ROW; A PICTURE IS PUT TO HIM BEFORE ANYTHING IS BUILT. |
@@ -195,7 +198,8 @@ scheduler half of the group — the board DOM ceiling, the dragged ghost, the pe
   `bidFrom..bidTo`, shown only while `stage==='open'`. Colour `rgba(74,140,100,.80)`
   + low-opacity halo (the lighter of two faded greens he compared; deeper
   `rgba(56,104,76,.78)` was the other) — don't brighten or swap to `--ok` without
-  asking. OUTLINE ONLY — he declined the faint-green wash (built, one-line add if he
+  asking. *[AMENDED 15 Oct 26 by D881: no glow and no halo — the green border alone (the design guide's "no mark in
+  this app glows", D887).]* OUTLINE ONLY — he declined the faint-green wash (built, one-line add if he
   asks; don't re-pitch). `ui-contracts.md` §The open-bidding box; pin
   `e2e/leavewar.spec.ts`.
 - **The tab opens on the war being bid on, at the start of its bidding window**

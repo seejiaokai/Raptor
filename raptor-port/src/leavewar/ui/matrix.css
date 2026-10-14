@@ -74,31 +74,29 @@
   position: relative;
 }
 
-/* The OPEN-BIDDING box (owner, 1 Sep 26) — a glowing, deep, faded green
+/* The OPEN-BIDDING box (owner, 1 Sep 26) — a deep, faded green
    rectangle around the columns open for bidding. Drawn only while bidding is
    open; positioned and sized in JS (Matrix.tsx measureBidBox). z-index 1 so
    it paints over the day cells but UNDER the frozen callsign/counter columns
    (z 2/3) and the scrolled-in band overlay (z 4): its left edge then hides
    behind them just as the day cells do. pointer-events:none so it never
    intercepts a bid tap or a drag-select. The colour is the owner's pick —
-   the deeper, more desaturated green of the two comps, with a low-opacity
-   halo — not the app's bright --ok, on purpose. */
+   the deeper, more desaturated green of the two comps — not the app's bright
+   --ok, on purpose. Its low-opacity halo went 15 Oct 26 (owner D881). */
 .mx-wrap .lw-bidbox {
   position: absolute;
   z-index: 1;
   pointer-events: none;
   border: 2px solid rgba(74, 140, 100, .80);
   border-radius: 6px;
-  box-shadow:
-    0 0 8px 1px rgba(74, 140, 100, .30),
-    inset 0 0 6px rgba(74, 140, 100, .08);
+  /* no halo (owner D881, 15 Oct 26): the deep green line alone */
 }
 /* The column window (colwindow.ts) draws only some months, so a bidding
    window whose bound lies OUTSIDE the drawn months has no edge to paint on
-   that side: the box is clipped there (border and halo both — a plain
-   transparent border would leave the halo drawing a ghost edge at the seam)
-   while the other sides keep their full glow (the negative insets extend the
-   clip past the box to keep it). */
+   that side: the box is clipped there (its border — written when it also wore a
+   halo, which a plain transparent border would have left drawing a ghost edge
+   at the seam) while the other sides keep theirs (the negative insets extend the
+   clip past the box). */
 .mx-wrap .lw-bidbox.cut-l { clip-path: inset(-12px -12px -12px 3px); border-top-left-radius: 0; border-bottom-left-radius: 0; }
 .mx-wrap .lw-bidbox.cut-r { clip-path: inset(-12px 3px -12px -12px); border-top-right-radius: 0; border-bottom-right-radius: 0; }
 .mx-wrap .lw-bidbox.cut-l.cut-r { clip-path: inset(-12px 3px -12px 3px); }
@@ -1667,7 +1665,8 @@
    accent, not a selection colour — nothing here is selected, it is "this row
    is you". Turned UP on 6 Sep 26 (owner, from his iPhone — "make the glow of
    the view as user row a bit more obvious in the grids"): a lighter panel,
-   lines at .55 rather than .28, and a glow on the seat bar.
+   lines at .55 rather than .28, and a glow on the seat bar (that glow went
+   15 Oct 26, owner D881 — the ring alone).
      Deliberately NO wash across the day cells. A 7% accent tint was tried here
    and looked at in the browser: a `td` background on this row out-ranks
    `.mx td.weekend` and every other state colour (0,2,3 against 0,2,1), and the
@@ -1689,9 +1688,9 @@
 }
 /* The full-width seat bar (4 Sep 26) covers most of that tinted panel, so the
    "this row is you" cue rides the bar itself as a thin accent ring (bug hunt,
-   4 Sep 26) — the seat colour and ink are untouched — now with a glow past it
-   (6 Sep 26), which is what carries the row at a glance on a phone. */
-.mx tbody tr.me .who .whoedit .cs { box-shadow: inset 0 0 0 1px var(--accent), 0 0 8px rgba(59, 198, 232, .55); }
+   4 Sep 26) — the seat colour and ink are untouched. The glow past it (6 Sep 26)
+   went 15 Oct 26 (owner D881): the ring and the row's lines carry it. */
+.mx tbody tr.me .who .whoedit .cs { box-shadow: inset 0 0 0 1px var(--accent); } /* no glow past it (owner D881) */
 
 /* ---- Categorised roster (owner, 18 Aug 26) ------------------------------ */
 
@@ -1727,15 +1726,16 @@
 /* A real <button>, so iOS leaves it FOCUSED after a tap and paints its own
    ring — which read as "still on" after the second tap turned Rearrange off
    (owner, 6 Sep 26). Keyboard focus keeps a ring via :focus-visible (the house
-   idiom, see .grphd/.catchip); a tap gets none. ON now GLOWS, not just tints. */
+   idiom, see .grphd/.catchip); a tap gets none. ON's look: the rule below (D882). */
 .rtbtn { -webkit-tap-highlight-color: transparent; }
 .rtbtn:focus { outline: none; }
 .rtbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* ON wears the filter chip's "on" look — a pale cyan fill, cyan words, a cyan edge — with no halo or glow (owner D882,
+   15 Oct 26, replacing the 6 Sep "ON now GLOWS"); the Show SANS switch in the settings sheet shares it. */
 .rtbtn.on {
-  background: var(--raised);
-  border-color: var(--accent);
+  background: rgba(59, 198, 232, .16);
+  border-color: rgba(59, 198, 232, .6);
   color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(59, 198, 232, .18), 0 0 12px rgba(59, 198, 232, .5);
 }
 /* An armed destructive button (Reset counters): the first tap only asks. */
 .rtbtn.arm { border-color: rgba(255, 92, 92, .6); color: #ff5c5c; }
@@ -1849,13 +1849,13 @@
 /* The landing bar itself comes from the roster row's `tr.dragover td:not(.who)`
    rule — the whole width at 3px — since a heading's cells are ordinary `td`s
    and none of them is `.who` (that exclusion is what lifts the rule clear of
-   the manning shortfall states, and it costs a heading nothing). Only
-   the GLOW is written here, on the sticky cell the thumb is nearest; the 2px
-   on that cell alone was easy to miss under a finger. */
-.mx tbody tr.grp.dragover td.grphd { box-shadow: inset 0 3px 0 var(--accent), 0 -1px 10px rgba(59, 198, 232, .55); }
+   the manning shortfall states, and it costs a heading nothing). The sticky
+   cell gets its own rule here (the 2px on that cell alone was easy to miss
+   under a finger); its glow went 15 Oct 26 (owner D882) — the same 3px line. */
+.mx tbody tr.grp.dragover td.grphd { box-shadow: inset 0 3px 0 var(--accent); }
 /* …and the BOTTOM edge when the pointer is in the heading's lower half — the
    drop lands after it (the roster rows' `.after` rule, bug hunt 4 Sep 26). */
-.mx tbody tr.grp.dragover.after td.grphd { box-shadow: inset 0 -3px 0 var(--accent), 0 1px 10px rgba(59, 198, 232, .55); }
+.mx tbody tr.grp.dragover.after td.grphd { box-shadow: inset 0 -3px 0 var(--accent); }
 
 /* The CAT sub-heading inside an ops group — DESKTOP ONLY. On a phone the
    coloured chip carries the CAT and these headings would only cost height
@@ -2114,19 +2114,20 @@
    (bidpicker.css `.bidsheet .set-grow`) and now keeps it, while a who-wins row
    is a bare flex WRAP with no corner of its own, so the 8px is named here. */
 .crow-wrap.gs-row.dragging { border-radius: 8px; }
-/* The landing bar runs the WHOLE row, 3px, with a glow — the previous 2px on
+/* The landing bar runs the WHOLE row, 3px (its glow went 15 Oct 26, owner D882;
+   unbroken through the counters too, D883) — the previous 2px on
    the frozen cell alone was easy to miss under a thumb.
      `td:not(.who)` is not decoration: at a bare `td` this rule is (0,2,3) and
    LOSES to `.mx .counts td.amber` (0,3,1), so a manning row being landed on
    drew no bar at all on its short days — gaps in the bar on exactly the
    columns the admin is reordering the block for. Excluding `.who` (which has
-   its own glow rule below) takes it to (0,3,3), which clears the counts
+   its own rule below) takes it to (0,3,3), which clears the counts
    states; the ring rides underneath, so a day that is short still shows its
    shortfall under the bar. */
 .mx tbody tr.dragover td:not(.who) { box-shadow: inset 0 3px 0 var(--accent), var(--mrow-ring, 0 0 transparent); }
 .mx tbody tr.dragover.after td:not(.who) { box-shadow: inset 0 -3px 0 var(--accent), var(--mrow-ring, 0 0 transparent); }
-.mx tbody tr.dragover .who { box-shadow: inset 0 3px 0 var(--accent), 0 -1px 10px rgba(59, 198, 232, .55); }
-.mx tbody tr.dragover.after .who { box-shadow: inset 0 -3px 0 var(--accent), 0 1px 10px rgba(59, 198, 232, .55); }
+.mx tbody tr.dragover .who { box-shadow: inset 0 3px 0 var(--accent); } /* no light above it (owner D882) */
+.mx tbody tr.dragover.after .who { box-shadow: inset 0 -3px 0 var(--accent); }
 
 /* The frozen callsign column is only 76px on a phone, and an auto-layout
    table grows a column to its content's min-width — so anything wider than
@@ -2465,7 +2466,7 @@
    6 Sep 26): pinned to the foot of the viewport so they are reachable while
    the grid scrolls, and LOUD enough to read as a panel that popped up — the
    first cut of the bar "visually blended in with the background" (owner,
-   6 Sep 26): a raised ground, a solid accent ring and a glow, and a short
+   6 Sep 26): a raised ground, a solid accent ring (its pale band went, D887), and a short
    slide up on entry. One recipe, so the two never drift. */
 .mv-banner,
 .balbar {
@@ -2488,7 +2489,7 @@
   background: #1d232b;
   border: 1.5px solid var(--accent);
   border-radius: 14px;
-  box-shadow: 0 0 0 4px rgba(59, 198, 232, .16), 0 18px 44px rgba(0, 0, 0, .7);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, .7); /* the pale band went (owner D887); the dark shadow is depth */
   animation: lw-dockin 160ms ease-out;
 }
 /* @keyframes lw-dockin is at the FILE'S TOP LEVEL, past the closing brace at
