@@ -44,7 +44,8 @@ import { _resetDisclosure } from '../state/disclosure'
 import { commitSetDayApproved, schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { setPage, setBoardDay } from '../state/view'
 import * as view from '../state/view'
-import { closeScheduler, askCx, cxCommit } from './board'
+import { closeScheduler, askCx, cxCommit, switchDraft } from './board'
+import { draftDup, dayDrafts, curDraftId } from '../engine/drafts'
 import { commitInput, commitInputEdit, draftOf, inputWho } from './inputedit'
 import { rowPut, rowMove, rowMark } from './reqdoor'
 import * as pops from './pops'
@@ -1485,6 +1486,144 @@ describe('a published version loaded back: how many inputs need an OIL answer, a
     expect(riOf(SAT, SECOND)).toBeGreaterThanOrEqual(0)
     expect(SAID.join(' | ')).toContain(' is back to ')
     expect(SAID.join(' | ')).not.toContain('OIL answer')
+    expect(pops.OILLIST).toBeNull()
+  })
+})
+
+/* "SWITCH TO THIS PLAN" SAYS WHAT IT LEFT TO ANSWER, AS A LOAD DOES (owner D865, 15 Oct 26 — "Questions 1-6 as
+   recommend", his question 3): a saved plan switched to can put an input back on a day where it has no OIL answer for a
+   non-working day. Its note ends "N input(s) need(s) an OIL answer." and the one list opens for the days that need the
+   answer, as the load's (D818, D862); and its note is short plain sentences the same way (D863). One shared reading, so
+   the two doors cannot count it two ways (ui/oilputback.ts). Driven through the switch itself (board.ts switchDraft — the
+   one body the plans menu, the preview's "Switch to this plan" and the plan editor's "Select" all call).
+   HOW A SWITCH PUTS AN INPUT BACK — ON A PUBLISHED DAY ONLY: there a plan without the input's row, switched to, unfiles
+   it ('g' → none — slots.ts reconcileDayFiling) and nothing lands it again (slots.ts autoAcceptInput leaves a published
+   day alone); the plan WITH the row, switched back to, files it again. On a day not yet published a filed input lands
+   by itself on whichever plan is live, so a switch never brings one back there (pinned below). A request taken off by
+   hand ('r') is NOT put back by a switch either: its row may stand again, but the request reads "taken off" until
+   Accept adopts the row — and Accept asks the OIL question itself (D793). That is the settled design of 28 Sep 26 (the
+   small-fixes plan, Fable F1: "the round trip stays as today: 'r' survives it"); the last case pins that this asks
+   nothing there. */
+describe('"Switch to this plan" that brings back an unanswered input says so, and the day\'s one list opens (D865) (ON12)', () => {
+  const pressRouted = (set: (b: HTMLElement) => void) => {
+    const b = document.createElement('button'); set(b); document.body.appendChild(b)
+    try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+  }
+  /* two plans of the day: Plan A parked as the day stands now, Plan B the live copy — returns their ids */
+  const twoPlans = (di = SAT) => { draftDup(di); const b = curDraftId(di)!; const a = dayDrafts(di).find((t: any) => t.id !== b)!.id; return { a, b } }
+  /* Plan A parked WITHOUT the input's row, the input filed onto the live Plan B, the day published with it, then Plan A
+     switched to — so the input is unfiled, and Plan B switched back to brings it back */
+  const setUp = (oil?: Record<string, number>) => {
+    const p = twoPlans()
+    file(['bane'], SAT, oil)
+    sign(SAT); setDayApproved(SAT, true)
+    expect(switchDraft(SAT, p.a)).toBe(true)
+    expect(riOf(), 'the premise: Plan A has no row for it').toBe(-1)
+    expect(rec().acc, 'the premise: the switch unfiled it').toBeFalsy()
+    pops.setOilList(null); SAID = []
+    return p
+  }
+  it('an unanswered input the plan brings back: the note ends "1 input needs an OIL answer." and the list opens for that day', async () => {
+    await boot()
+    const { b } = setUp()
+    expect(switchDraft(SAT, b)).toBe(true)
+    expect(riOf(), 'Plan B put its row back').toBeGreaterThanOrEqual(0)
+    expect(rec().acc, 'and it is on the programme again').toBe('g')
+    /* Plan B is the day as it went out: nothing is pending against the Original */
+    expect(SAID.join(' | ')).toBe('Saturday is now "Plan B". Nothing is pending: it matches the Original. 1 input needs an OIL answer.')
+    expect(pops.OILLIST, 'the day\'s one list is open, for that day').toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true })
+    expect(view.OILWAIT, 'the switch itself was not held').toBeNull()
+  })
+  it('the switch AWAY says what is pending, and asks nothing: the input it unfiled needs no answer now', async () => {
+    await boot()
+    const { a } = twoPlans()
+    file(['bane'], SAT)
+    sign(SAT); setDayApproved(SAT, true)
+    SAID = []
+    expect(switchDraft(SAT, a)).toBe(true)
+    expect(SAID.join(' | ')).toBe('Saturday is now "Plan A". 1 difference from the Original is pending.')
+    expect(pops.OILLIST).toBeNull()
+  })
+  it('the input it brings back is already answered: nothing is added and no list opens', async () => {
+    await boot()
+    const { b } = setUp({ [SAT_ISO]: 0.5 })
+    expect(switchDraft(SAT, b)).toBe(true)
+    expect(riOf()).toBeGreaterThanOrEqual(0)
+    expect(SAID.join(' | ')).toBe('Saturday is now "Plan B". Nothing is pending: it matches the Original.')
+    expect(pops.OILLIST).toBeNull()
+  })
+  it('a cancelled input brought back does not count (D814): no tail, no list', async () => {
+    await boot()
+    const { a, b } = twoPlans()
+    file(['bane'], SAT)
+    expect(rowMark(rowKey(), 'cx', true, 'WX')).toBe('done')
+    sign(SAT); setDayApproved(SAT, true)
+    switchDraft(SAT, a)
+    pops.setOilList(null); SAID = []
+    expect(switchDraft(SAT, b)).toBe(true)
+    expect(riOf()).toBeGreaterThanOrEqual(0)
+    expect(rec().cx).toBe(true)
+    expect(SAID.join(' | ')).not.toContain('OIL answer')
+    expect(pops.OILLIST).toBeNull()
+  })
+  it('an unanswered input on BOTH plans is not "brought back": no tail (its "OIL?" sign and the bell already carry it)', async () => {
+    await boot()
+    file(['bane'], SAT)
+    sign(SAT); setDayApproved(SAT, true)
+    const { a } = twoPlans()                              // parked AFTER the filing: both plans carry the row
+    SAID = []
+    expect(switchDraft(SAT, a)).toBe(true)
+    expect(riOf()).toBeGreaterThanOrEqual(0)
+    expect(SAID.join(' | ')).toBe('Saturday is now "Plan A". Nothing is pending: it matches the Original.')
+    expect(pops.OILLIST).toBeNull()
+  })
+  it('a day NOT yet published: a filed input stands on every plan, so a switch brings nothing back and asks nothing', async () => {
+    await boot()
+    const { a, b } = twoPlans()                           // Plan A parked before the filing, without its row
+    file(['bane'], SAT)
+    SAID = []
+    expect(switchDraft(SAT, a)).toBe(true)
+    expect(rec().acc, 'it lands on Plan A by itself').toBe('g')
+    expect(switchDraft(SAT, b)).toBe(true)
+    expect(SAID.join(' | ')).toBe('Saturday is now "Plan A". | Saturday is now "Plan B".')
+    expect(pops.OILLIST).toBeNull()
+  })
+  it('an input of two days brought back by a plan of its FIRST day, its unanswered day the second: counted, and the list opens for that day (D862)', async () => {
+    await boot()
+    const FRI = 4
+    const { a, b } = twoPlans(FRI)
+    expect(commitInput(null, draftOf({ person: 'bane', type: 'Meeting', title: TITLE, date: 'Jul 17', endDate: 'Jul 18', yr: 2026, allday: true, remarks: '' }), ['bane'])).toBe(true)
+    const two = () => { const l = INPUTS.filter((x: any) => x.title === TITLE) as any[]; expect(l).toHaveLength(1); return l[0] }
+    expect(two().acc, 'the premise: on Friday\'s programme').toBe('g')
+    expect(two().oil, 'the premise: no answer').toBeUndefined()
+    sign(FRI); setDayApproved(FRI, true)
+    switchDraft(FRI, a)
+    expect(two().acc, 'the premise: unfiled by Plan A').toBeFalsy()
+    pops.setOilList(null); SAID = []
+    expect(switchDraft(FRI, b)).toBe(true)
+    expect(two().acc).toBe('g')
+    expect(SAID.join(' | ')).toBe('Friday is now "Plan B". Nothing is pending: it matches the Original. 1 input needs an OIL answer.')
+    expect(pops.OILLIST, 'the list opens for the day that needs the answer').toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true })
+  })
+  it('an Undo of the switch takes the row away again and opens nothing more', async () => {
+    await boot()
+    const { b } = setUp()
+    expect(switchDraft(SAT, b)).toBe(true)
+    pops.setOilList(null); SAID = []
+    globalUndo()
+    expect(riOf(), 'Plan A is live again, without the row').toBe(-1)
+    expect(pops.OILLIST).toBeNull()
+  })
+  it('a request TAKEN OFF by hand, then a plan with its row switched in: it still reads taken off, and the switch asks nothing — Accept will (the settled design of 28 Sep 26; D793)', async () => {
+    await boot()
+    file(['bane'], SAT)
+    const { a } = twoPlans()                              // Plan A parked WITH the row
+    pressRouted(btn => { btn.dataset.acc = 'x'; btn.dataset.accd = String(SAT); btn.dataset.acck = String(inpId(rec())) })
+    expect(rec().acc, 'the premise: taken off by hand').toBe('r')
+    SAID = []
+    expect(switchDraft(SAT, a)).toBe(true)
+    expect(rec().acc, 'still taken off').toBe('r')
+    expect(SAID.join(' | ')).toBe('Saturday is now "Plan A".')
     expect(pops.OILLIST).toBeNull()
   })
 })

@@ -81,7 +81,7 @@ const restampRev = (bind: any, from: any, to: any) => {
 /* ONE REQUEST, ONE ROW (owner, D175, 25 Sep 26): the requests whose row the last whole-day replacement — a load onto
    the working copy, or a plan switch — LEFT OUT because that request already stands on another loaded day
    (publish.ts rowsLeftOut), with whose it is, what, and those days' names. Read by both doors' messages right after the
-   replacement, through rowsLeftSaid — the one sentence, so the load and the switch cannot word it two ways. */
+   replacement, through rowsLeftSentences — the one wording, so the load and the switch cannot word it two ways. */
 export let ROWSLEFT: Array<{ id: string, who: string, what: string, days: string[], dead?: boolean, unknown?: boolean }> = []
 /* `kept` last, by default: a plan switch marks it against the filings as they are. The load marks it itself, AFTER putting
    back the version's filings (D98) — marked against the filing it is about to restore, a row the version issued dead
@@ -154,14 +154,6 @@ function markKept(nd: any) {
     else row.kept = true
   }
 }
-/* " · Bane · Meeting left out — it is on Tuesday's programme", one clause per request; '' when nothing was left out */
-export function rowsLeftSaid(list: Array<{ who: string, what: string, days: string[], dead?: boolean, unknown?: boolean }>): string {
-  return (list || []).map(x => x.dead
-    ? ` · ${x.who} left out — he has been deleted`
-    : x.unknown
-      ? ` · ${x.who ? x.who + ' · ' : ''}${x.what} left out — it may be on another week that could not be read; load that week, then accept it here if it is not`
-      : ` · ${x.who ? x.who + ' · ' : ''}${x.what} left out — it is on ${x.days.join(' and ')}'s programme`).join('')
-}
 /* …and the member inputs changed since the day was issued, which a load never puts back — a member's record is his, and
    it may cover other days (AM1; the plan's layer 1, built after Fable's code read F5, 26 Sep 26): after the load the day
    still reads them pending, so the sentence says why. Read AFTER the load. '' when there are none. */
@@ -170,8 +162,9 @@ export function inputsLeftSaid(di: any): string {
   /* a sentence of its own (owner D863, 15 Oct 26 — the load's note is short plain sentences) */
   return n ? ` ${n === 1 ? "1 change to a member's input stays" : n + " changes to members' inputs stay"} pending. A load never puts back a member's own input.` : ''
 }
-/* THE SAME FACTS AS rowsLeftSaid, AS SENTENCES — for the load's note (owner D863, 15 Oct 26 — "Shorten it"). The plan
-   switch's note keeps rowsLeftSaid's clauses until its own words are looked at. '' when nothing was left out. */
+/* A ROW LEFT OUT, AS A SENTENCE — for the load's note (owner D863, 15 Oct 26 — "Shorten it") and the plan switch's
+   (owner D865, 15 Oct 26 — "the same way"); it replaced the older " · Bane · Meeting left out — …" clauses, whose last
+   user the switch was. '' when nothing was left out. */
 export function rowsLeftSentences(list: Array<{ who: string, what: string, days: string[], dead?: boolean, unknown?: boolean }>): string {
   return (list || []).map(x => {
     const whose = x.who ? `${x.who}'s ${x.what}` : x.what

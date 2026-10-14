@@ -20,12 +20,13 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/handoff-overnight-skill-review-6b45a6 -->
-### `claude/handoff-overnight-skill-review-6b45a6` — THE COMPACTION SET-UP'S FOUR CHECKS RAN AND FOUND IT LOADED IN NO CHAT; THE MAIN FOLDER NOW ON `main`; THE RE-RUN IS OWED BY THE NEXT NEW CHAT — written 14 Oct 26 — verify before use
-- **Found (`[MAIN-CHECKOUT-STALE]`, observation 600):** a desktop worktree chat takes settings, hooks and skills from the MAIN checkout (`--project-config-root`; Claude Code's worktree page), which sat on `claude/after-oil-ask-notify`, 208 commits behind `main` — so check (a) read 97%, and (b)–(d) and `/overnight` could not work. **Fixed on his "yes, update the main folder":** the main checkout is on `main` at `62b649e29` (untracked walk files kept). Chats already open keep what they started with.
-- **OWED by the next NEW chat (on this branch):** the four checks again (the block below, its (a)–(d)); `/overnight` should now be in the skill list. Then the merge-steps line of `[MAIN-CHECKOUT-STALE]` (2) — a guide change, one reader, his approval — and his three small jobs of 15 Oct (`## Next, in order`).
-- **Branch:** records only (the backlog item, observation 600, this block); goes with the next job's pull request. **Gates:** none owed; `npm run docsize` green. **Open questions for him:** none. **Running when written:** none.
-- **Opening line:** "Read HANDOFF.md and the backlog item [MAIN-CHECKOUT-STALE]. The main folder is now on main: re-run the compaction set-up's four checks and tell me what works; then start his three small jobs of 15 Oct." **Worktree: YES — on THIS branch, `claude/handoff-overnight-skill-review-6b45a6`** (these records are not on `main` yet; the settings come from the main folder whatever the worktree is based on). NOT `main`, NOT `claude/overnight-skill-c02843`.
+<!-- now:claude/checkout-stale-compaction-7ee93a -->
+### `claude/checkout-stale-compaction-7ee93a` — THE COMPACTION SET-UP RE-CHECKED; HIS THREE SMALL JOBS OF 15 OCT IN HAND — written 15 Oct 26 — verify before use
+- **Carries** the records of `claude/handoff-overnight-skill-review-6b45a6` (`[MAIN-CHECKOUT-STALE]`, observation 600 — brought in whole; that chat's block is replaced by this one) and `claude/overnight-skill-c02843`'s (on `main` since pull request 510).
+- **The four checks, re-run in a new chat with the main folder on `main`:** (a) the setting IS taken — the app now counts the chat against 880,000 and compacts at 96% of that, about 845,000, which is about 85% of the whole room; but the hooks count against 1,000,000, so their first note (80%, 800,000) comes only about 45,000 before the compaction — filed as `[COMPACT-BANDS-WINDOW]`; (b) asked of him; (c), (d) cannot be seen until a chat reaches 80%. `/overnight` is in the skill list, so the skills are taken from the main folder now.
+- **His rulings this chat:** D875 (the plan-switch job: Opus builds, one fresh Opus reader, no Fable).
+- **In hand:** `[OIL-PLAN-SWITCH-UNASKED]` (D865) — tests first in `raptor-port/src/ui/oilwait.test.tsx` (ON12), the shared reading `raptor-port/src/ui/oilputback.ts`; then `[GUIDE-ONE-MARK]` and `[GLOW-PLACES-LOOK]` (D866), each ending with his look.
+- **Gates:** not yet run. **Open questions for him:** (b) — does "Chat N% full" show under the message box? **Running when written:** none.
 <!-- /now -->
 <!-- now:claude/overnight-skill-c02843 -->
 ### `claude/overnight-skill-c02843` — `/overnight` (PULL REQUEST 508) AND THE COMPACTION SET-UP (PULL REQUEST 509) ARE LIVE; THE SET-UP'S FOUR CHECKS IN THE APP ARE OWED BY THE NEXT NEW CHAT; NOTHING IN THE APP CHANGED — written 15 Oct 26 — verify before use

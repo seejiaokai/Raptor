@@ -90,7 +90,7 @@ describe('the doors say which request\'s row they left out, and where it stands 
     expect(rowsOf(inp)).toEqual([TUE])
     /* ONE ACT, ONE SENTENCE ([REQ-DOOR-WORDS] 1, 28 Sep 26): the banner now says exactly what the plans menu and the
        plan editor say (board.ts switchDraft) — it used to word the same switch its own way ("Monday switched to plan …") */
-    expect(toasts.join(' | ')).toMatch(/Switched to "Plan A" — this is now the live Mon[\s\S]*Meeting left out — it is on Tuesday's programme/)
+    expect(toasts.join(' | ')).toMatch(/Monday is now "Plan A"\.[\s\S]*Meeting is left out because it is on Tuesday's programme\./)
     expect(toasts.join(' | '), 'never the banner\'s old sentence').not.toMatch(/switched to plan/)
   })
   /* the plan editor's "Select" — its own door (Astra's roll-call row, 25 Sep 26): the day's plans selector → ✎ → Select */
@@ -103,7 +103,7 @@ describe('the doors say which request\'s row they left out, and where it stands 
     const sel = $$('#draftsModal button').find(b => b.textContent === 'Select')
     await click(sel)
     expect(rowsOf(inp)).toEqual([TUE])
-    expect(toasts.join(' | ')).toMatch(/Switched to "Plan A"[\s\S]*Meeting left out — it is on Tuesday's programme/)
+    expect(toasts.join(' | ')).toMatch(/is now "Plan A"\.[\s\S]*Meeting is left out because it is on Tuesday's programme\./)
     await click($$('#draftsModal button').find(b => b.textContent === 'Done'))
   })
 })

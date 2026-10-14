@@ -23,7 +23,7 @@ import { accountsLoad, accountByName, signIn, sessionFor, ACCOUNTS_LIST } from '
 import { PLANPUCKS, addPlanPuck } from './plan'
 import { newPersonProblem } from './roster-add'
 import { deletePerson, deleteCutoff, personKeysOnDay, effectiveToday, deletedRestoreProblem } from './person-delete'
-import { loadVersionToWorkingCopy, ROWSLEFT, rowsLeftSaid } from '../engine/drafts'
+import { loadVersionToWorkingCopy, ROWSLEFT, rowsLeftSentences } from '../engine/drafts'
 
 
 const mem: Record<string, string> = {}
@@ -191,7 +191,7 @@ describe('PO6 — loading a published version never brings a deleted man back on
     expect(loadVersionToWorkingCopy(TO_COME, dayCurVer(TO_COME))).toBeTruthy()
     for (const k of toCome) expect(slotVal(k), `${k} after the load (a day to come)`).toBe('')
     expect(ROWSLEFT.some(x => x.dead && x.who === 'Hex')).toBe(true)
-    expect(rowsLeftSaid(ROWSLEFT)).toContain('Hex left out — he has been deleted')
+    expect(rowsLeftSentences(ROWSLEFT)).toContain('Hex is left out: he has been deleted.')
     expect(loadVersionToWorkingCopy(PAST, dayCurVer(PAST))).toBeTruthy()
     for (const k of flown) expect(slotVal(k), `${k} after the load (a day he flew)`).toBe(HIM)
     expect(ROWSLEFT.some(x => x.dead), 'nothing to leave out on a day he flew').toBe(false)

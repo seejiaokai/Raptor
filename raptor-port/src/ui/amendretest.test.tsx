@@ -174,11 +174,11 @@ describe('AM23 — every count of a day\'s unpublished changes agrees with the d
     setOilBlanket(SAT, true)                        // Plan B differs ONLY in what the day earns
     const [a] = dayDrafts(SAT)
     const toA = withToasts(() => { switchDraft(SAT, a.id) })
-    expect(toA.join(' '), 'back on Plan A: it matches the issued Original').toMatch(/matches ORIG|matches Original|nothing pending/i)
+    expect(toA.join(' '), 'back on Plan A: it matches the issued Original').toMatch(/Nothing is pending: it matches the Original\./)
     const b = dayDrafts(SAT).find((t: any) => t.id !== a.id)!
     const toB = withToasts(() => { switchDraft(SAT, b.id) })
     expect(headCount(SAT), 'Plan B carries one real difference').toBe(1)
-    expect(toB.join(' '), 'and the switch message must say so, not "nothing pending"').not.toMatch(/nothing pending/i)
+    expect(toB.join(' '), 'and the switch message must say so, not "nothing pending"').not.toMatch(/nothing is pending/i)
     expect(toB.join(' ')).toMatch(/1 difference/)
   })
 })

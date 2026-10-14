@@ -18,7 +18,7 @@ import { whoId } from '../engine/people'
 import { inpId } from '../engine/inputs'
 import { stashClear, stashPut, rowElsewhere } from '../engine/weekstash'
 import { rowsLeftOut } from '../engine/publish'
-import { rowsLeftSaid } from '../engine/drafts'
+import { rowsLeftSentences } from '../engine/drafts'
 import { removeInput } from '../ui/inputedit'
 import { accCtl } from '../ui/html'
 
@@ -102,8 +102,8 @@ describe('a saved week that cannot be read — every door fails closed', () => {
     const left = rowsLeftOut(0, incoming)
     expect(left.map(x => x.id), 'left out on the unknown').toEqual([inpId(inp)])
     expect(left[0]!.away).toBe('unreadable')
-    expect(rowsLeftSaid([{ who: 'Ranger', what: 'Meeting', days: [], unknown: true }]), 'the load names the unknown, never an empty day')
-      .toBe(' · Ranger · Meeting left out — it may be on another week that could not be read; load that week, then accept it here if it is not')
+    expect(rowsLeftSentences([{ who: 'Ranger', what: 'Meeting', days: [], unknown: true }]), 'the load names the unknown, never an empty day')
+      .toBe(" Ranger's Meeting is left out. It may be on another week that could not be read: load that week, then accept it here if it is not.")
   })
   it('the delete refuses, and says why', async () => {
     const inp = unreadableW1()

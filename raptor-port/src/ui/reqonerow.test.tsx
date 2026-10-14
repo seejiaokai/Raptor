@@ -11,7 +11,7 @@ import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
 import { INPUTS, inpId } from '../engine/inputs'
 import { acceptInput, autoAcceptInput, unacceptInput } from '../engine/slots'
-import { loadVersionToWorkingCopy, draftDup, draftSelect, dayDrafts, ROWSLEFT, rowsLeftSaid } from '../engine/drafts'
+import { loadVersionToWorkingCopy, draftDup, draftSelect, dayDrafts, ROWSLEFT, rowsLeftSentences } from '../engine/drafts'
 import { SCHED, signOf, setSign, setDayApproved, dayDelta, dayDiscardCount, dayShownPendCount, dayCurVer, daySigned, notYetSigned, dayHasChanges } from '../engine/publish'
 import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
@@ -248,7 +248,7 @@ describe('D175 — a load or a plan switch never puts a request on a second day:
     expect(inp.acc, 'still on the programme — on Tuesday').toBe('g')
     expect(ROWSLEFT.map(x => x.id), 'the load says which').toEqual([inpId(inp)])
     expect(ROWSLEFT[0]!.days).toEqual(['Tuesday'])
-    const said = rowsLeftSaid(ROWSLEFT)
+    const said = rowsLeftSentences(ROWSLEFT)
     expect(said, 'whose, what, and where it is').toContain((PEOPLE as any).bane.cs)
     expect(said).toMatch(/Meeting/)
     expect(said).toMatch(/Tuesday/)
@@ -293,7 +293,7 @@ describe('D175 — a load or a plan switch never puts a request on a second day:
     loadVersionToWorkingCopy(MON, dayCurVer(MON))
     expect(rowsOf(inp), 'its one row back where the version had it (D98)').toEqual([MON])
     expect(ROWSLEFT).toEqual([])
-    expect(rowsLeftSaid(ROWSLEFT)).toBe('')
+    expect(rowsLeftSentences(ROWSLEFT)).toBe('')
   })
   it('a plan switch on a day not yet published: the parked plan\'s copy of the row is left out, and the switch says so', () => {
     const inp = request(true)
