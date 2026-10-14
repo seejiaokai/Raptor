@@ -3,11 +3,10 @@ name: overnight
 description: Use when the owner types /overnight, or says he is going to sleep or away and wants work run unattended ("I have 8 hours", "run this overnight", "what can we build while I sleep"). Before he sleeps it recommends the jobs that fit the hours he gives, he selects them and answers its questions, and it writes the night's plan into the repo; then it runs unattended in this one chat, building, checking and saving as it goes; in the morning it leaves one report.
 ---
 
-<!-- DRAFT, [OVERNIGHT-SKILL] (D859, D867) — NOT INSTALLED. A working guide of our own: drafted 15 Oct 26, read by one
-fresh, blind Opus reader (D70, D810's way while the ChatGPT readers are out — its report and what was taken:
-`raptor-port/docs/superpowers/briefs/2026-10-15-overnight-skill-read-report.md`), corrected by him the same day (D867:
-he selects the jobs; questions before it starts), then put to him. On his approval this file, without this comment,
-becomes `.claude/skills/overnight/SKILL.md`, with a row in `raptor-port/docs/file-map.md`. -->
+<!-- INSTALLED 15 Oct 26 on his "Approve" (D869) as `.claude/skills/overnight/SKILL.md` — THAT file is the live
+command; this is the draft as approved, kept as the record of [OVERNIGHT-SKILL] (D859, D867, D868): read by two fresh,
+blind Opus readers (D70, D810's way — `raptor-port/docs/superpowers/briefs/2026-10-15-overnight-skill-read-report.md`).
+A later change is made to the live file, never here. -->
 
 # Overnight — the unattended run as one command (RAPTOR, internal)
 

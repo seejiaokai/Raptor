@@ -559,7 +559,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 591: He asked the same pre-sleep questions for the third night running - and asked for them to become a command
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-15) — the `/overnight` command, `.claude/skills/overnight/SKILL.md` (his approval D869; shaped by D867, D868)
 **Date:** 2026-10-14
 **Session context:** An unattended overnight run: what can be built without him, what must be asked before he sleeps, how the state is kept across a compaction
 **Skill:** New skill candidate: overnight-run (filed as `[OVERNIGHT-SKILL]`, his word D859)
