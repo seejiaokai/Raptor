@@ -61,5 +61,26 @@
   "expected": "the answer is written from the list; the second load says nothing of OIL and opens no list",
   "saw": "the list closed on Save: true; B {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; the second load's note \"Friday is back to the Original. Viewers still see the Original.\"; a list: null",
   "verdict": "PASS"
+ },
+ {
+  "surface": "E phone",
+  "key": "E1 already answered: cancelled, then un-cancelled",
+  "expected": "no question; \"Restored\" at once; the same answer counts again — a Yes and a No alike",
+  "saw": "asked at the filing: true/true; filed {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-18\":0.5},\"date\":\"Jul 18\",\"acc\":\"g\"} / {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-18\":0},\"date\":\"Jul 18\",\"acc\":\"g\"}; cancelled {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":{\"2026-07-18\":0.5},\"date\":\"Jul 18\",\"acc\":\"g\"}; a question at the un-cancel: false/false; notes \"Restored\" / \"Restored\"; after {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-18\":0.5},\"date\":\"Jul 18\",\"acc\":\"g\"} / {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-18\":0},\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "E phone",
+  "key": "E2 a second press while one waits",
+  "expected": "the same input again: asked again, nothing changed; another input: its own question; left, the bar is the last one's and \"Answer OIL\" asks for that one; nothing is un-cancelled unanswered",
+  "saw": "X asked \"Un-cancelling Ranger's Range brief\", bar {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; X again \"Un-cancelling Ranger's Range brief\", bar {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; Y asked \"Un-cancelling Nomad's Hangar brief\", bar {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; \"Answer OIL\" then asks \"Un-cancelling Nomad's Hangar brief\"; X {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}; Y {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 18\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "E phone",
+  "key": "E3 changed meanwhile: the bar up, Undo, then \"Answer OIL\"",
+  "expected": "RECORD (Q6): the Undo takes the move to Saturday back, so nothing is to be asked — \"Answer OIL\" un-cancels it at once on its working day, or the bar has gone; never a Saturday answer on a Wednesday input",
+  "saw": "the bar before {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; after Undo the input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 15\",\"acc\":\"g\"}, the bar {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; \"Answer OIL\": a question null, note \"Restored\"; the input then {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 15\",\"acc\":\"g\"}",
+  "verdict": "PASS"
  }
 ]

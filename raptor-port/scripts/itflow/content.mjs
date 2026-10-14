@@ -257,7 +257,7 @@ export const JOURNEYS = [
       checks: [
         '+ Alt Plan renames the current day to Plan A and makes Plan B the live day.',
         'Switching is plain editing: on a published day the differences show as pending marks, no review screen.',
-        'The toast says how the plan compares with what was issued ("matches Original — nothing pending").',
+        'The toast says how the plan compares with what was issued ("Nothing is pending: it matches the Original.").',
         'Issued rows only look; Load onto working copy asks first if edits are pending.',
         '✎ Manage plans renames or deletes a plan.',
       ],

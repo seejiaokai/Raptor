@@ -145,11 +145,14 @@ export function DraftsModal() {
           <button className="abtn" disabled={!t || isLive}
             title={isLive ? 'Already the live day' : 'Make this plan the live day'}
             onClick={() => {
+              const listWas = OILLIST
               if (!t || !switchDraft(di, t.id)) return
               /* a switch that brought back an input needing an OIL answer opens the day's one list (owner D865); it
                  would sit under this window's backdrop, out of reach until "Done" (the walk, 15 Oct 26) — the plan is
-                 switched, so this window's work is done: it closes and the list is in front */
-              if (OILLIST) close(); else notify()
+                 switched, so this window's work is done: it closes and the list is in front. Only when THIS switch
+                 opened it (the fresh read, F1): a list already up — it does not block the page — leaves the editor
+                 open for its other work. */
+              if (OILLIST && OILLIST !== listWas) close(); else notify()
             }}>Select</button>
           <button className="abtn primary" onClick={close}>Done</button>
         </div>

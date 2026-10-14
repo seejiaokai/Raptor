@@ -1655,6 +1655,18 @@ describe('"Switch to this plan" that brings back an unanswered input says so, an
       expect(SAID.join(' | ')).toBe('Saturday is now "Plan A". 1 difference from the Original is pending.')
       expect(pops.OILLIST).toBeNull()
       expect(editorOpen(), 'the editor stays').toBe(true)
+      /* (the fresh read, F1) a list ALREADY open — another day's, left up, as it may be: it does not block the page — and
+         a Select that opens none: the editor stays, and the list it did not open is left as it was */
+      const other = { from: '2026-07-15', to: '2026-07-15', name: '', fresh: false, plain: true }
+      await act(async () => { pops.setOilList(other); pops.setDraftsEdit({ di: SAT, id: b }); store.notify() })
+      SAID = []
+      await select()
+      await act(async () => { pops.setDraftsEdit({ di: SAT, id: a }); store.notify() })
+      pops.setOilList(other); SAID = []
+      await select()
+      expect(SAID.join(' | ')).toBe('Saturday is now "Plan A". 1 difference from the Original is pending.')
+      expect(editorOpen(), 'the editor stays: this Select opened nothing').toBe(true)
+      expect(pops.OILLIST, 'the list that was up is left as it was').toEqual(other)
     } finally { await act(async () => { root.unmount() }); host.remove() }
   })
 })
