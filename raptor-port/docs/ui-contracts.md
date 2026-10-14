@@ -3544,7 +3544,7 @@ so it reads as one app-wide behaviour rather than a pile of per-button
 rules, and `transform:scale()` on purpose: it never reflows, so no measured
 layout contract in this file moves when a button is pressed.
 
-**ONE MARK, ONE LOOK — AND ON THE EDGE OF THE THING ADDED (owner D860, D861 — 15 Oct 26).** Every just-added mark is the
+**ONE MARK, ONE LOOK — AND ON THE EDGE OF THE THING ADDED (owner D860, D861 — 15 Oct 26; the design guide to carry it, and the other glowing places drawn for his look — D866).** Every just-added mark is the
 board's `.sb-fresh` ring: inset, 2px, `#1E86FF`, NO outer glow — the opened day's card, the month's bar and the
 Inputs List's row lost the glow they wore (D860; pinned by `src/ui/markring-css.test.ts`). A note added on the
 Scheduler Board is ringed on its own box (`highlights.ts paintFreshAdds` boxes a `.sb-nrow`'s `[data-bfld]` field, not
@@ -4450,6 +4450,7 @@ Three things stay decided:
   "Restored" (the ⓘ mark: "This item is checked against the rules again and can earn OIL"). Changed meanwhile: "That
   input has changed — not un-cancelled" / "— left as it is". Where nothing is to be asked the mark comes off at once, as
   before. The words are one source: `ui/oilwait.ts WAIT_WORDS` / `CHANGED`, `ui/reqdoor.ts UNMARKED`.
+- **The four open points settled as recommended (owner D865, 15 Oct 26):** the ⓘ mark's words stay; the list a load opens is the day's whole open list; "Switch to this plan" is to get the load's short note and list (a follow-up, not built); with the bar up, "Answer OIL" un-cancels at once where nothing is left to ask.
 - **The load's note is short plain sentences (owner D863, 15 Oct 26 — "Shorten it").** "Friday is back to the Original.
   Viewers still see the Original. Det prep is on Saturday again too. 1 input needs an OIL answer." — what the day is back
   to; what viewers still see (only on a published day); each request that came back onto or went off the programme with
