@@ -676,3 +676,18 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** For any hook that can refuse: list every situation in which the platform fires that event (from its documentation), and for each say whether refusing is safe; refuse only in the one situation the rule is for, identified positively (a narrow window of values, not inside a helper, a fresh reading, never twice on the same state). And a brief for its reader asks for the case where refusing breaks the platform's own recovery.
 
 **Principle:** A guard is safe only if it can tell the case it guards from the platform's own recovery path; when the two arrive as the same event, refuse narrowly and never twice on unchanged state.
+
+### Observation 599: Resetting a merged branch onto main left it tracking main - every push after it quietly did nothing
+
+**Status:** OPEN
+**Date:** 2026-10-15
+**Session context:** After pull request 508 merged, the chat reset its branch onto the live version (`git checkout -B <branch> origin/main`, the form the session-handoff guide gives) and carried on; nine commits were "pushed" with `git push -q`
+**Skill:** session-handoff (Step 4's template, the "Branch:" line: `git fetch origin main && git checkout -B <branch> origin/main`); shipping rule
+**Type:** internal
+**Phase/Area:** Continuing work on a branch whose pull request has merged
+
+**Issue:** `checkout -B <branch> origin/main` makes the branch track `origin/main`. With the default push setting, a plain `git push` then refuses (the upstream's name differs) - and `-q` with the output piped through `tail -1` hid the refusal. The chat told him three times that work was pushed; the pull request it opened still held the old head, and its green check was for that old head. Only reading the pull request's head commit before "merge live" caught it - the merge would have shipped almost none of the work. Nothing reached `main` (the refusal is what protected it).
+
+**Suggested improvement:** In the guide's template: `git fetch origin main && git checkout -B <branch> origin/main && git branch --unset-upstream` (or `--no-track`), and the first push `git push -u origin HEAD:<branch>`. In the shipping rule's loop: after every push, read back the remote head (`git ls-remote origin <branch>`) against `HEAD`; and before "merge live", compare the pull request's head commit with the branch's - never trust a quiet push.
+
+**Principle:** A push is done when the remote says so, not when the command exits; any quiet or filtered push needs a read-back of the remote head.
