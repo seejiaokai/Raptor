@@ -4001,8 +4001,8 @@ test.describe('the viewport meta', () => {
 })
 
 /* The green eligibility rings (owner approved the comp, 13 Aug 26): with a
-   person selected, an empty slot he could take rings bright green with a
-   glow, a filled one he could take dims with a tint, and neither is
+   person selected, an empty slot he could take rings bright green (its glow
+   went 15 Oct 26, D881), a filled one he could take dims with a tint, and neither is
    confusable with the armed dashed ring. jsdom already pins WHICH classes
    are hung and that they agree with slotBar (selrings.test.tsx); only a real
    browser can prove the paints differ and that a ring moves no layout. */
@@ -4068,10 +4068,13 @@ test.describe('the green eligibility rings', () => {
     /* both greens are SOLID — dashed stays the armed ring's identity */
     expect(r.empty!.style).toBe('solid')
     expect(r.filled!.style).toBe('solid')
-    /* bright + glow vs dimmed + tint: the empty ring glows (a box-shadow),
-       the filled one does not and carries the tint instead */
-    expect(r.empty!.shadow, 'the empty ring glows').toContain('px')
+    /* bright vs dimmed + tint: the empty ring is the full green with no tint, the filled one a fainter green over the
+       tint — and NEITHER glows (owner D881, 15 Oct 26: the empty ring's glow went; "no mark in this app glows", D887) */
+    expect(r.empty!.shadow, 'the empty ring does not glow').toBe('none')
     expect(r.filled!.shadow, 'the filled ring does not glow').toBe('none')
+    expect(r.empty!.color, 'the empty ring is the full green').toBe('rgb(87, 201, 122)')
+    expect(r.filled!.color, 'the filled ring is a fainter green').toContain('rgba(87, 201, 122, 0.55')
+    expect(r.empty!.bg, 'the empty slot carries no tint').not.toContain('rgba(87, 201, 122')
     expect(r.filled!.bg, 'the filled slot carries the green tint').toContain('rgba(87, 201, 122')
     /* and the ringed seat still measures exactly what it did bare */
     expect({ w: r.empty!.w, h: r.empty!.h }, 'the ring moved nothing').toEqual(before)
