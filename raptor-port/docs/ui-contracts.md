@@ -4430,6 +4430,22 @@ Three things stay decided:
   list, and on the Unavailable row), "Adding Tally to Range brief", "Moving Tally to Range brief", "Moving Range brief
   to Sat 18 Jul" (the calendar's drag). Its two buttons: "Don’t swap" / "Swap" — "Don’t add" / "Add" — "Don’t move" /
   "Move"; the right one is greyed until an answer is picked. ✕, Escape and a press outside are the left button.
+- **Two more changes wait on it — a mark taken off an input (owner D816; built 14 Oct 26, `[OIL-UNCANCEL-UNASKED]`).**
+  On the Scheduler Board, "Un-cancel" in the cancel sheet (or the row's ⓘ pressed off) on an input with no OIL answer
+  for a non-working day opens the same sheet, headed "Un-cancelling Ranger's Range brief" — buttons "Don’t un-cancel" /
+  "Un-cancel" — or "Taking “information only” off Ranger's Range brief" — "Don’t change" / "Change". Left unanswered the
+  input keeps its mark (and a cancel its reason), the row's button flashes, and the bar reads "Not un-cancelled — OIL
+  not answered" or "Not changed — OIL not answered" — the longest words the bar carries, on one line at 320 wide
+  (`e2e/oil-uncancel-load.spec.ts`). Answered, the mark comes off with its answer in one step and the note says
+  "Restored" (the ⓘ mark: "This item is checked against the rules again and can earn OIL"). Changed meanwhile: "That
+  input has changed — not un-cancelled" / "— left as it is". Where nothing is to be asked the mark comes off at once, as
+  before. The words are one source: `ui/oilwait.ts WAIT_WORDS` / `CHANGED`, `ui/reqdoor.ts UNMARKED`.
+- **A published version loaded back says what it left to answer (owner D818; built 14 Oct 26,
+  `[OIL-LOAD-VERSION-UNASKED]`).** The load is made as before; its note ends " · 1 input needs an OIL answer" (" · 3
+  inputs need an OIL answer") where an input it put back has none, and that day's one list opens — over the full-screen
+  Scheduler Board too, its buttons reachable — headed "Public holiday · <name>" on a holiday and with no such line on a
+  plain weekend. The list is the day's whole open list, so it may hold more lines than the note counts. Nothing is
+  added and no list opens where none needs an answer. Pictures: `docs/img/handpass/2026-10-14-oil-uncancel-load/`.
 - **Not answered:** nothing is written. The places flash with the landing flash (`.lift-land` — the puck dropped on and
   the seat dragged from; the Unavailable row's person; the calendar's chip) and **the bar** appears: `.secdef-snack.oilbar`,
   the "Set as default" bar's look, at the foot of the screen, z-index 440 — over the full-screen Scheduler Board (400),

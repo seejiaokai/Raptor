@@ -357,6 +357,14 @@ load a version onto the working copy
                            not even for the probe bridge, which exposes
                            loadVersionToWorkingCopy instead. Loading does NOT move SCHED.cur.
 ```
+**A load can put inputs back that still need an OIL answer — it says so (owner D818, built 14 Oct 26).** The load's door
+(`ui/interactions.ts`, `data-restore` — the week's preview bar and the board's own both route there) reads the day's
+open OIL questions before and after `loadVersionToWorkingCopy`; what is newly open goes into the note's tail and opens
+the day's one list (`ui/OilDayList.tsx`). A new door that puts inputs back onto a day (a saved plan switched to does
+NOT say it today — parked for him) reads the same two lists rather than counting by itself. **And a mark taken off an
+input is a change that waits on the OIL question (owner D816):** `ui/reqdoor.ts rowMark` is the one door for the
+cancel and the ⓘ mark on an input's row; any new place that offers an un-cancel goes through it, never writes `cx`.
+
 Previews freeze schedule content but read live personal-inputs and day-info —
 a known limitation, `docs/engine-rules.md` §Version snapshots. Day templates
 and drafts inherit the same limitation for the same reason — both preview

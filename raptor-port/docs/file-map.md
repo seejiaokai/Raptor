@@ -1,5 +1,19 @@
 # The file map — where each source file lives and what it does
 
+`[OIL-UNCANCEL-UNASKED]` and `[OIL-LOAD-VERSION-UNASKED]` — the small OIL job (D816, D818; built on the night of 14 Oct 26).
+**New:** `e2e/oil-uncancel-load.spec.ts` (what only a browser can say: the bar's longest words on one line at a phone's
+width and at 320, the day's one list above the full-screen board — in the `raptor` project of `playwright.config.ts`);
+`scripts/handpass/ou-lib.mjs`, `ou-walk.mjs`, `ou-walk-2.mjs` (the job's walk, as assertions with pictures; the
+library makes its fixtures by the app's own controls). **What each existing file gained:** `src/ui/reqdoor.ts` —
+`rowMark` holds a cancel or an ⓘ mark taken off an input for the OIL question where one is owed, `unmark` (the mark off
+and the answer on, one command), `UNMARKED` (the two notes' words, one source — `src/ui/board.ts` reads them);
+`src/ui/oilwait.ts` — the words of the two new waiting changes; `src/state/view.ts` — `OilWaitKind` gains `uncx`,
+`uninfo`; `src/ui/interactions.ts` — the load's door counts what it put back that needs an OIL answer and opens the
+day's one list; `src/ui/pops.ts` and `src/ui/OilDayList.tsx` — `plain` (a weekend's list is not headed "Public
+holiday"). **Tests:** `src/ui/oilwait.test.tsx` (blocks ON10, ON11), `src/leavewar/holnotice.test.tsx` (the list a load
+opens on a holiday); `src/state/p6c-requestonread.test.ts`, `src/ui/inputmarks-scenarios.test.tsx`,
+`src/ui/noteswords.test.ts` given the new rule.
+
 `[BATCH-14OCT-LEFTOVERS]` — the three leftovers and three note deletions (D849, D851, D854; built on the night of 14 Oct 26).
 **New:** `src/ui/seen.ts` — is a just-saved input IN VIEW wearing its mark (`inView`: its head, middle and foot its own on
 screen), and the save's note said only where it is not (`noteUnlessSeen`; a screen reader told the words in `#srSay`);

@@ -35,6 +35,9 @@ import { setPage } from '../state/view'
 import { commitInput, draftOf, oilAnswered, oilGate, oilSignDay, oilUnansweredDay } from '../ui/inputedit'
 import { saveOilDay } from '../ui/oilday'
 import * as pops from '../ui/pops'
+import { routeClick } from '../ui/interactions'
+import { DAYS } from '../engine/data'
+import { signOf, setDayApproved, dayCurVer } from '../engine/publish'
 import { bellOn, bellTap, openNotice } from '../ui/topbits'
 import { App } from '../ui/App'
 import { projectPeople } from './state/raptorRoster'
@@ -256,6 +259,44 @@ describe('the holiday tells the schedulers — never silent (D780), one notice a
       /* a run of days with no name */
       await act(async () => { pops.setOilList({ from: THU, to: FRI, name: '', fresh: true }); notify() })
       expect(tid('odl-lead')!.textContent).toBe('Thu 16 – Fri 17 Jul are now public holidays.')
+    } finally { await act(async () => { root.unmount() }) }
+  })
+  /* THE LIST OPENED BY A PUBLISHED VERSION LOADED BACK (owner D818, 13 Oct 26). The load can land on any non-working
+     day: on a public holiday the list names it, as the holiday's own list does; on a plain weekend it must not call
+     the day a public holiday (the scenario designer's Q8). The rule of the count is ui/oilwait.test.tsx (ON11). */
+  it('(D818) a published version loaded back on a public holiday: the note counts the input it put back, and the list opens NAMING the holiday — drawn "plain" (a weekend), it carries no "Public holiday" line', async () => {
+    const id = file('Range brief', 'Training', ['bane'])
+    const FRI_DI = DAYS.findIndex((d: any) => d.dt === 'Jul 17')
+    const press = (set: (b: HTMLElement) => void) => {
+      const b = document.createElement('button'); set(b); document.body.appendChild(b)
+      try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+    }
+    const onProg = () => DAYS[FRI_DI].ground.some((g: any) => String(g.src) === id)
+    expect(onProg(), 'the premise: on the programme of Friday').toBe(true)
+    setPage('editsched')                                                     // the load is Edit Schedule's
+    { const g = signOf(FRI_DI); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
+    setDayApproved(FRI_DI, true)
+    expect(holidayAdd(ph(FRI)).ok).toBe(true)
+    pops.setOilList(null)                                                    // the holiday's own list: left for later
+    press(b => { b.dataset.acc = 'x'; b.dataset.accd = String(FRI_DI); b.dataset.acck = id })
+    expect(onProg(), 'the premise: taken off the programme since it was published').toBe(false)
+    SAID = []
+    const ver = String(dayCurVer(FRI_DI))
+    for (let i = 0; i < 2 && !onProg(); i++) press(b => { b.dataset.restore = String(FRI_DI); b.dataset.rver = ver })
+    expect(onProg(), 'the load put its row back').toBe(true)
+    expect(SAID.join(' | '), 'the tail, in his words').toContain(' · 1 input needs an OIL answer')
+    expect(pops.OILLIST, 'the one list of that day, named for the holiday — and not marked plain').toEqual({ from: FRI, to: FRI, name: 'National Day', fresh: false })
+    ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
+    const host = document.createElement('div'); document.body.appendChild(host)
+    const root = createRoot(host)
+    const tid = (t: string) => document.querySelector(`[data-testid="${t}"]`) as HTMLElement | null
+    try {
+      await act(async () => { root.render(<App />) })
+      expect(tid('win-oilday')!.textContent, 'headed as the holiday it is').toContain('Public holiday · National Day')
+      expect(tid(`odl-yes-${id}`), 'the input it put back is on the list').toBeTruthy()
+      await act(async () => { pops.setOilList({ from: FRI, to: FRI, name: '', fresh: false, plain: true }); notify() })
+      expect(tid('win-oilday'), 'still the list').toBeTruthy()
+      expect(tid('win-oilday')!.textContent, 'a plain weekend is not called a public holiday').not.toContain('Public holiday')
     } finally { await act(async () => { root.unmount() }) }
   })
   it('an admin whose sign-in is switched off is not told (the break tests, 13 Oct 26)', () => {

@@ -141,7 +141,7 @@ the screen that asked.
   5. break tests (`scripts/handpass/breaks/2026-10-14-oil-uncancel-load.json`): the gate asked of the input as it stands (not as it will stand); the dry run skipped; `oil` not written in `unmark`; the mark not taken off in `unmark`; "Restored" not said after the answer; `again` not checking the mark; the load's `stood` set ignored (everything counts); the cancelled exclusion (use the raw list instead of `oilOpenOn`); the list not opened; the tail not added;
   6. ONE fresh Opus read of the finished code (D858) — brief first, the finder wording and the demo-data exclusion verbatim from the order's §4, the state table asked for (the wait: answered, left, asked again, changed meanwhile, a second press while one waits, sign-out, Undo while it waits, the day changed, the board closed); then a narrow read of any fix that rewrites logic;
   7. the whole gate set under the lock (`E2E_PORT=4174 node scripts/gatelock.mjs run --logs <dir>`), the evidence sheet `docs/handpass/2026-10-14-oil-uncancel-load.md` with its `Walk:` line, the records (`docs/engine-rules.md` the bullet on a cancelled input — D816, D818 built; `docs/ui-contracts.md` §The OIL question comes before the change; `docs/feature-impact.md`; `docs/file-map.md`; `OUTSTANDING.md` both items; the walk ledger's row), `HANDOFF.md`'s block rewritten, the branch pushed (it has no pull request until 505 is merged), ONE notification.
-- [ ] the scenario designer's list · [ ] the roll-call and the sizing lines · [ ] the walk · [ ] break tests
+- [x] the scenario designer's list · [x] the roll-call · [x] the host's walk (both sizes, all PASS) · [ ] the helper's walk · [ ] break tests (the list is written)
 - [ ] the fresh read · [ ] fixes · [ ] the gates · [ ] the sheet · [ ] the records · [ ] pushed; `HANDOFF.md`
 
 ## The roll-call, as found in the code (14 Oct 26, night) — for the evidence sheet
@@ -209,3 +209,35 @@ War's Event row → PH; where a fixture cannot be reached by the app's controls 
    RECORDED by the walk and shown to him.
 8. **(Q1) A published version loaded back over an input cancelled since:** what the load does to the cancel is to be
    RECORDED by the walk; whichever it is, the count now covers it.
+
+## State after the host's walk (14 Oct 26, late night) — READ THIS AFTER A COMPACTION, it replaces the state above
+
+**Done since the last state:** the host's walk, both sizes, ALL PASS, pictures opened —
+`scripts/handpass/ou-walk.mjs` (U0–U6: the question, the bar on one line at 390 and 320, the answer, Undo / Redo, the
+Leave War's "HO*" cell after publishing, the ⓘ mark) and `ou-walk-2.mjs` on `ou-lib.mjs` (L0–L2: the load on a
+public-holiday Friday, from the week on a desktop and from the Scheduler Board on a phone — the list above the board;
+E1 already answered; E2 a second press; E3 the bar, an Undo, "Answer OIL"). The reader's brief and the walker's brief
+written and committed; a fresh Opus reader (reads at `15a72901d`) and ONE Sonnet 5.5 walker (S9, S11–S17, S20–S23,
+S27–S29, on the build served at 4174 — NOT to be rebuilt until it reports) were started together. While they ran: a
+browser test `e2e/oil-uncancel-load.spec.ts` (two tests; in the `raptor` list of `playwright.config.ts`; NOT YET
+RUN — it needs a build), a unit test in `src/leavewar/holnotice.test.tsx` ("(D818) … on a public holiday"), the break
+list `scripts/handpass/breaks/2026-10-14-oil-uncancel-load.json` (25 breaks; NOT YET RUN — it rewrites source, so
+it waits for the reader), and the records (`docs/engine-rules.md`, `docs/ui-contracts.md`,
+`docs/feature-impact.md`, `docs/file-map.md`).
+
+**What the walk recorded for his list:** the list a load opens is the day's WHOLE open list ("1 input needs an OIL
+answer" over "2 to answer" — picture `L1-loaded-board-phone.png`; item 3); with the bar up, an Undo that takes the
+input back to a working day leaves the bar, and "Answer OIL" then un-cancels it at once with "Restored" (E3; item 6).
+**A fixture that cannot be reached:** a live, unanswered input on a PLAIN weekend standing on a published day — every
+road to it now asks (a filing, a move, the un-cancel), so the load's "no Public holiday line on a weekend" is held by
+unit tests and was not walked.
+
+**NEXT, in order:** (a) the reader's report → `docs/superpowers/briefs/2026-10-14-oil-uncancel-load-read.md`; the
+walker's results `docs/handpass/parts/ou-H.results.md` → open its pictures, reproduce every FAIL; (b) fixes, tests
+first; a narrow read of any fix that rewrites logic; (c) the break list (`node scripts/handpass/breaks.mjs
+scripts/handpass/breaks/2026-10-14-oil-uncancel-load.json`), a test for every break not caught; (d) under the lock:
+build, the new browser test (`E2E_PORT=4174 npx playwright test e2e/oil-uncancel-load.spec.ts --project=raptor`),
+one browser break (the bar's words made longer than a line; the list's z-index under the board), then the whole gate
+set; (e) the evidence sheet with its sizing lines and `Walk:` line, the walk ledger's row, `OUTSTANDING.md`,
+`HANDOFF.md`, the observation log; push the branch; release the lock; stop the preview `raptor-walk-2`; ONE
+notification.

@@ -1,0 +1,191 @@
+[
+ {
+  "surface": "S11 desk",
+  "key": "S11c CX off → Yes → Un-cancel",
+  "expected": "a question first; after Yes + Un-cancel one change pending; the day shows not-yet-signed (D103)",
+  "saw": "sheet {\"head\":\"OIL: Ranger, Range brief\",\"lead\":\"Un-cancelling Ranger's Range brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true}; note \"Restored\"; input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; board {\"chip\":\"ORIG\",\"pend\":\"2 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}}",
+  "verdict": "FAIL"
+ },
+ {
+  "surface": "S11 desk",
+  "key": "S11a fixture",
+  "expected": "filed Friday, cancelled, published, Friday made a holiday; no list for the cancelled input (D814)",
+  "saw": "filed asked false; publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; board after publish {\"chip\":\"ORIG\",\"pend\":\"7 changes\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":null,\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":null}; the holiday's list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"1 to answer\",\"ids\":[\"imv7ep5h49tyawi\"],\"reach\":true,\"noteOver\":false}, note \"\"; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 desk",
+  "key": "S11b the board before the un-cancel",
+  "expected": "RECORD: what the holiday alone leaves pending",
+  "saw": "board {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}}; its pending list reads {\"opened\":true,\"txt\":\"⠿ Changes · Friday 17/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 7 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change What this day earns changed Tap a change to go to it.\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S12 desk",
+  "key": "S12a not answered",
+  "expected": "pending unchanged, sign-offs intact, still cancelled with its reason",
+  "saw": "sheet {\"head\":\"OIL: Ranger, Range brief\",\"lead\":\"Un-cancelling Ranger's Range brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true}; bar {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}; board {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}} (before {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}})",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 desk",
+  "key": "S11c Answer OIL → Yes → Un-cancel",
+  "expected": "after Yes + Un-cancel: one more pending change than before; sign-offs still down (D103)",
+  "saw": "sheet {\"head\":\"OIL: Ranger, Range brief\",\"lead\":\"Un-cancelling Ranger's Range brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true}; note \"Restored\"; input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; board {\"chip\":\"ORIG\",\"pend\":\"2 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}} (before {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}})",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 desk",
+  "key": "S11d the pending list names its people",
+  "expected": "one item naming Ranger and Range brief; the other item (if any) was there before",
+  "saw": "the list reads {\"opened\":true,\"txt\":\"Waiting to go out as AL1 · 2 changes Ranger · Range brief Saber 14/10 09:03 CX (WX) → not cancelled What this day earns changed Tap a change to go to it.\"}; before the un-cancel it read {\"opened\":true,\"txt\":\"⠿ Changes · Friday 17/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 7 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change What this day earns changed Tap a change to go to it.\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S12 desk",
+  "key": "S12b Undo of the answered un-cancel",
+  "expected": "pending as before the un-cancel; sign-offs as before; cancelled with its reason, no answer",
+  "saw": "input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}; board {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}} (before {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}})",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S12 desk",
+  "key": "S12c Redo",
+  "expected": "un-cancelled with its answer again, no question, pending +1",
+  "saw": "input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; a question null; board {\"chip\":\"ORIG\",\"pend\":\"2 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 desk",
+  "key": "S11e the issued face in View-only Sched",
+  "expected": "still cancelled (struck / CX) on Friday",
+  "saw": "faces {\"n\":1,\"struck\":1,\"cxrows\":1,\"ctx\":\"CX DUE WXRANGE BRIEF TRAINING 09:00 10:00 Ranger IP LATE\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 desk",
+  "key": "S11f the Leave War cell before the amendment",
+  "expected": "no HO or FO credit on Fri 17",
+  "saw": "cell {\"Ranger\":{\"text\":\"\",\"cls\":\"evoff act\"}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 desk",
+  "key": "S11g after Publish AL1",
+  "expected": "the amendment goes out; the Leave War shows an HO/FO for Ranger on Fri 17",
+  "saw": "publish {\"published\":true,\"version\":\"AL1\",\"signSelects\":4}; board {\"chip\":\"AL1\",\"pend\":\"16 changes\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":null,\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":null}; cell {\"Ranger\":{\"text\":\"HO*\",\"cls\":\"duty evoff act\"}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 phone",
+  "key": "S11a fixture",
+  "expected": "filed Friday, cancelled, published, Friday made a holiday; no list for the cancelled input (D814)",
+  "saw": "filed asked false; publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; board after publish {\"chip\":\"ORIG\",\"pend\":\"7 changes\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":null,\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":null}; the holiday's list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"1 to answer\",\"ids\":[\"imv7eq6u3ky5q07\"],\"reach\":true,\"noteOver\":false}, note \"\"; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 phone",
+  "key": "S11b the board before the un-cancel",
+  "expected": "RECORD: what the holiday alone leaves pending",
+  "saw": "board {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}}; its pending list reads {\"opened\":true,\"txt\":\"⠿ Changes · Friday 17/7 Published · 1 change waiting to go out as AL1 Hide ▾ ✕ History on: Tap a gold dot on the schedule New to you 0 All changes 7 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change What this day earns changed Tap a change to go to it.\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S12 phone",
+  "key": "S12a not answered",
+  "expected": "pending unchanged, sign-offs intact, still cancelled with its reason",
+  "saw": "sheet {\"head\":\"OIL: Ranger, Range brief\",\"lead\":\"Un-cancelling Ranger's Range brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true}; bar {\"text\":\"Not un-cancelled — OIL not answered\",\"lines\":1,\"cut\":false,\"inside\":true,\"oneRow\":true}; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}; board {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}} (before {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}})",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 phone",
+  "key": "S11c Answer OIL → Yes → Un-cancel",
+  "expected": "after Yes + Un-cancel: one more pending change than before; sign-offs still down (D103)",
+  "saw": "sheet {\"head\":\"OIL: Ranger, Range brief\",\"lead\":\"Un-cancelling Ranger's Range brief\",\"no\":\"Don’t un-cancel\",\"yes\":\"Un-cancel\",\"yesDisabled\":true}; note \"Restored\"; input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; board {\"chip\":\"ORIG\",\"pend\":\"2 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}} (before {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}})",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 phone",
+  "key": "S11d the pending list names its people",
+  "expected": "one item naming Ranger and Range brief; the other item (if any) was there before",
+  "saw": "the list reads {\"opened\":true,\"txt\":\"Waiting to go out as AL1 · 2 changes Ranger · Range brief Saber 14/10 09:04 CX (WX) → not cancelled What this day earns changed Tap a change to go to it.\"}; before the un-cancel it read {\"opened\":true,\"txt\":\"⠿ Changes · Friday 17/7 Published · 1 change waiting to go out as AL1 Hide ▾ ✕ History on: Tap a gold dot on the schedule New to you 0 All changes 7 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change What this day earns changed Tap a change to go to it.\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S12 phone",
+  "key": "S12b Undo of the answered un-cancel",
+  "expected": "pending as before the un-cancel; sign-offs as before; cancelled with its reason, no answer",
+  "saw": "input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}; board {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}} (before {\"chip\":\"ORIG\",\"pend\":\"1 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}})",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S12 phone",
+  "key": "S12c Redo",
+  "expected": "un-cancelled with its answer again, no question, pending +1",
+  "saw": "input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; a question null; board {\"chip\":\"ORIG\",\"pend\":\"2 pending\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":\"Not yet signed\",\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":{\"t\":\"Publish AL1\",\"dis\":true}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 phone",
+  "key": "S11e the issued face in View-only Sched",
+  "expected": "still cancelled (struck / CX) on Friday",
+  "saw": "faces {\"n\":1,\"struck\":1,\"cxrows\":1,\"ctx\":\"CX DUE WXRANGE BRIEF TRAINING 09:00 10:00 Ranger IP LATE\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 phone",
+  "key": "S11e2 the member sees the issued face",
+  "expected": "still cancelled (struck / CX) on Friday for the member too",
+  "saw": "faces {\"n\":1,\"struck\":1,\"cxrows\":1,\"ctx\":\"CX DUE WXRANGE BRIEF TRAINING 09:00 10:00 Ranger IP LATE\"}; an OIL question or list open: 0",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 phone",
+  "key": "S11f the Leave War cell before the amendment",
+  "expected": "no HO or FO credit on Fri 17",
+  "saw": "cell {\"Ranger\":{\"text\":\"\",\"cls\":\"evoff act\"}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S11 phone",
+  "key": "S11g after Publish AL1",
+  "expected": "the amendment goes out; the Leave War shows an HO/FO for Ranger on Fri 17",
+  "saw": "publish {\"published\":true,\"version\":\"AL1\",\"signSelects\":4}; board {\"chip\":\"AL1\",\"pend\":\"16 changes\",\"so\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"nys\":null,\"plan\":\"Live working copy\",\"beak\":null,\"alpub\":null}; cell {\"Ranger\":{\"text\":\"HO*\",\"cls\":\"duty evoff act\"}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S9 desk",
+  "key": "S9a fixture",
+  "expected": "cancelled; no question at the holiday; not in the list",
+  "saw": "holiday's list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"1 to answer\",\"ids\":[\"imv7erhrusp47f9\"],\"reach\":true,\"noteOver\":false}; note \"\"; input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S9 desk",
+  "key": "S9b Undo of the cancel",
+  "expected": "no question; live; \"OIL?\" tag on its row (D814, D816 reading 4)",
+  "saw": "row before {\"row\":\"⠿ TRAINING Ranger IP + ADD CXⓘ■✕\",\"oilq\":false}; after Undo: sheet null, bar null, input {\"cx\":true,\"cxr\":\"WX\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}, row {\"row\":\"⠿RANGE BRIEFTrainingRangerIP+ addCXⓘ■✕\",\"oilq\":false}, note \"Undid: a public holiday on 17 Jul\"",
+  "verdict": "FAIL"
+ },
+ {
+  "surface": "S9 desk",
+  "key": "S9b the schedulers' bell (RECORD)",
+  "expected": "RECORD: whether the schedulers' bell carries a line for the input",
+  "saw": "bell {\"sel\":\"#notifyBell\",\"badge\":\"\",\"txt\":null}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S9 desk",
+  "key": "S9c the answerer's own bell",
+  "expected": "a line asking him an OIL question for Range brief",
+  "saw": "bell {\"sel\":\"#notifyBell\",\"badge\":\"\",\"txt\":null}",
+  "verdict": "FAIL"
+ },
+ {
+  "surface": "S9 desk",
+  "key": "S9d CX on again, then off",
+  "expected": "on: no question and cancelled; off: the question first, still cancelled",
+  "saw": "on: sheet null, input {\"cx\":true,\"cxr\":\"WX2\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}; off: sheet null, input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "FAIL"
+ }
+]
