@@ -9,7 +9,7 @@
      R3 (F4) two inputs on Saturday, the later row cancelled and unanswered; "Don’t un-cancel"; the other row taken off
         (the cancelled one moves up); "Answer OIL", "Don’t un-cancel": the flash is on the cancelled input's own button
    usage: DL_BASE=http://localhost:4174 DL_SHOTS=docs/img/handpass/2026-10-14-oil-uncancel-load node scripts/handpass/ou-walk-3.mjs [phone|desk] */
-import { L, rowOut, part, inputsCal, openAdd, fillForm, SAT, FRI, FRI_ISO, noteNow, rec, board, closeBoard, rowBtn, sheet, bar, list, file, fixture, uncx, closeWindows, loadVersion } from './ou-lib.mjs'
+import { L, rowOut, part, inputsCal, openAdd, fillForm, SAT, SAT_ISO, FRI, FRI_ISO, noteNow, rec, board, closeBoard, rowBtn, sheet, bar, list, file, fixture, uncx, closeWindows, loadVersion } from './ou-lib.mjs'
 import { publish } from './lib.mjs'
 
 const SIZE = process.argv[2] === 'desk' ? 'desk' : 'phone', T = SIZE, THU = 3, THU_ISO = '2026-07-16'
@@ -103,15 +103,11 @@ async function holiday(w, iso, name) {
   const flashing = () => p.evaluate(() => [...document.querySelectorAll('#schedBoard .lift-land, #schedBoard [data-grcx].lift-land')].map(e => e.getAttribute('data-grcx') || e.className).join(' | '))
   try {
     await part(w, S, 'R3 the flash after "Don’t un-cancel", a row taken off above it meanwhile', 'the cancelled input’s own CX button flashes — at the place its row has now', async () => {
-      const X = await fixture(w, 'bane', 'Range brief'), Y = await fixture(w, 'pike', 'Hangar brief')
-      /* Y's cancel is taken off for good with an answer, so there is a live row beside X's cancelled one */
+      /* a live, answered input filed on Saturday FIRST (its row above), then the cancelled, unanswered one (its row below) */
+      const high = await file(w, SAT_ISO, 'pike', 'Hangar brief', { oil: 'yes', start: '11:00', end: '12:00' })
+      const low = await fixture(w, 'bane', 'Range brief')
       await board(w, SAT)
-      await uncx(w, SAT, Y.id); await w.press('[data-testid="oil-yes"]'); await L.sleep(150); await w.press('[data-testid="oilconf-save"]'); await L.sleep(500)
       const ri = id => p.evaluate(id => window.DAYS[5].ground.findIndex(g => String(g.src) === id), id)
-      const x0 = await ri(X.id), y0 = await ri(Y.id)
-      /* the wait is put on whichever of the two stands LOWER, the other is the one taken off */
-      const low = x0 > y0 ? X : Y, high = low === X ? Y : X
-      if (low === Y) { await rowBtn(w, SAT, Y.id, 'grcx'); await p.fill('#cxReason', 'WX'); await p.locator('#cxSave').evaluate(e => e.click()); await L.sleep(500); await uncx(w, SAT, X.id); await w.press('[data-testid="oil-yes"]'); await L.sleep(150); await w.press('[data-testid="oilconf-save"]'); await L.sleep(500) }
       const was = await ri(low.id)
       await uncx(w, SAT, low.id); const q1 = await sheet(p)
       await w.press('[data-testid="oilconf-cancel"]'); await L.sleep(350)
