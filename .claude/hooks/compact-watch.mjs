@@ -25,7 +25,7 @@ export function reminder(fill, lastBand) {
     'handoff would (the step in hand, the files it touches, open faults, questions parked, what is next). Start no new',
     'helper, walk or gate run before that. Then judge: he is using the chat and the job is nearly done → do not wait',
     'for a compaction; ask him once, in one line with your judgement, whether to hand off to a fresh chat (give the',
-    'opening line). Between jobs, the usual handoff advice stands whatever the fullness (D873). Otherwise carry on —',
+    'opening line). At any point you judge suitable, the usual handoff advice stands (D874). Otherwise carry on —',
     'when a compaction is due you will be told, and mark ready then.',
     `He has said he is away (or this is an /overnight run) and the guard is still on? Switch it off: ${READY_COMMAND} --away (D872).`,
   ].join('\n');

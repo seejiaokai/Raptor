@@ -5,9 +5,9 @@ saved first, so a big job does not compact twice (a handoff to a fresh chat stay
 built now, with the check-run fix (`[RUN-CHECK-BOTH-RUNS]`), tested, read by one fresh reader and approved by him
 before it is switched on; nothing in it may make compaction later than the app's own point (97%).
 
-**When it applies (D873):** in the day, to a big job still running that would otherwise fill the chat. Between jobs
-the agent still suggests a handoff to a fresh chat at a clean, committed point, as it always has, whatever the
-fullness. At night (and when he is away) the whole run is covered, with the guard off (D872).
+**When it applies (D874, which replaced D873):** in the day, to a big job that would otherwise fill the chat before a
+suitable point to hand off comes. The agent goes on suggesting a handoff to a fresh chat whenever it judges the work
+is at a suitable point — clean, committed, little lost — as it always has, mid-job included. At night (and when he is away) the whole run is covered, with the guard off (D872).
 
 ## What was measured (15 Oct 26, this chat)
 
