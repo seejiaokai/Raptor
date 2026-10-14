@@ -132,13 +132,16 @@ export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSe
 /* nobody lit: one array for every render that is handed none */
 const NONE_LIT: string[] = []
 
-export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, lead, tools, under, onClearFilters }:
+export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, litAt, lead, tools, under, onClearFilters }:
   { fPerson: string, fType: string, fSearch: string, seedIso?: string,
     /** the inputs the page has just been shown — one added, one changed, one brought back by Undo — by id, for their six
      *  seconds (ui/InputsPage.tsx `flash`, the List's own light). Each wears the app's one just-added mark where this
      *  calendar draws it: its card in the opened day, or its bar on the month while no day is open (owner D851, D854,
      *  14 Oct 26 — the mark is the feedback, in place of "Input added" / "Input updated"; the design guide's §1). */
     lit?: string[],
+    /** a token that is new on EVERY light — the same input lit again leaves `lit` as it was (the narrow read of the
+     *  fixes, 14 Oct 26: saved a second time so that it moved to the other end of an open day, the window stayed) */
+    litAt?: unknown,
     /** the Inputs page's three tabs — drawn at the head of this calendar's own top row, so a desktop has ONE row of
      *  controls above the month and a phone the tabs and one tools row (the plan §3.6) */
     lead?: ReactNode,
@@ -253,7 +256,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, le
     if(popIso==null||!newest)return
     const card=Array.from(document.querySelectorAll('[data-testid="win-inputsday"] .icard.innew')).find(el=>el.getAttribute('data-fresh')===newest) as any
     if(card&&typeof card.scrollIntoView==='function')card.scrollIntoView({block:'nearest'})
-  },[newest,popIso])
+  },[newest,popIso,litAt])
   /* every press that opens or closes a day goes through here — the one place the reveal is spent */
   const showDay=(iso:string|null)=>{
     /* A PICKER ENDS WITH ITS DAY (Sol S2): the day closed or changed with the picker up used to leave the picker

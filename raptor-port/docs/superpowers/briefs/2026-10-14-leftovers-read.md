@@ -42,3 +42,24 @@ None that changes behaviour: the Leave War grid, the availability window, the be
 | A real screen reader on the first save of a session | Nobody. Said in the sheet. |
 | The clash and the upchit questions at 390 wide | The walk: C1, C2 at a phone's size. |
 | The quick flash and the six-second box together on a bar | A look — §0's question 1. |
+
+## The narrow read of the fix round (the same night)
+
+A second fresh Opus reader, handed only the fix round (`6a896ffb9..568a7d135`) and the table above (the order's "a fix
+is new code"; D790). **Each fix right and complete, nothing broken beside it — but for one case of F2.**
+
+| # | What a person would meet | The cause | The fix | The test that was red |
+|---|---|---|---|---|
+| L1 (low) | The same input saved AGAIN while its day stays open — changed so that it sorts to the other end of the day — moved out of the window's view and the window stayed. (Said about 0.7 s later by "Input updated", so he was told.) The same for an Undo of that change. | The scroll waited on the newest lit id and the open day; the same input lit again changes neither. | It also waits on the token that is new on every light (`ui/InputsPage.tsx` `relit` → `ui/InputsCal.tsx` `litAt`). A mark running out does not change it, so F2's "not moved again" holds. | `ui/inputsvet.test.tsx` "the same input saved again with its day open…". |
+
+**Its "worth a look":** the box's restart is now inside a try (motion is decoration) — taken. The browser test of two
+rows four seconds apart does not by itself guard the row's key — known: the unit test does (the sheet's §9). A save in
+the few thousandths of a second after an animation has ended but before its class is off finds nothing to restart —
+left: the window is milliseconds wide. After an Undo pressed inside the wait a screen reader is still told "Input
+updated" — left, said here. The reader's region could be made at boot — left. The window's other shape (the schedule's
+own dialog) gives the tag no minimum room — left: it needs a title of some forty-five characters there, which only an
+unreal callsign reaches.
+
+**Still nobody has seen in a browser:** L1, F2 and F3 (unit tests through the window's own Save and the app's real
+note); the box's restart on Safari (the browser tests prove one engine); the tag's room in his iPhone's letters; a real
+screen reader.

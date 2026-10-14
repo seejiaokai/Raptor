@@ -526,3 +526,48 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** Before creating a file in a folder other jobs write to: list the folder (or search the file map) for the name; treat a create that reports 'updated' as a stop. In this repo's walk-scripts guide: a new script's name carries its job's word (as this batch's others did: '-built').
 
 **Principle:** A name is free only after a look says so (the same rule as a class name in a global stylesheet, entry 584); and a tool's 'updated' on what was meant as a create is an alarm, not a synonym.
+
+### Observation 589: A mark that lasts a few seconds holds state too - the walk sized "no new control" and never pressed twice inside its lifetime
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** A small batch that put a six-second "just added" mark in place of a passing note; the bug check was sized SHORT because no control was new
+**Skill:** the checking guide (`raptor-port/docs/bug-check-order.md` §7.4, the state table; §7.0 sizing)
+**Type:** open-source
+**Phase/Area:** Walk sizing - deciding whether a state table is owed
+
+**Issue:** The sizing step reasoned "no new control, every screen walked this week" and walked single saves. The fresh code read then found three faults, every one an ORDER of action against a thing with a lifetime: a second save inside the six seconds (one timer never restarted; a stylesheet animation that does not start again while its class stays; a list row keyed by its place), two lit cards in one day (the window went to the older), and a note said late over a warning raised meanwhile. §7.4 asks for a state table for "a control that holds state between presses"; a mark with a timer and a note that waits are not controls, so the table was not written.
+
+**Suggested improvement:** In §7.4 and in the walk ledger's type D row: anything that holds state between presses gets the state table - a control, AND a transient mark, a timer, a note that waits, an animation. The minimum rows for a transient: the same trigger again inside its lifetime; a second, different trigger inside it; the thing removed, hidden or re-made while it runs; and its end arriving while another is running. A walk of single presses cannot find any of them.
+
+**Principle:** Lifetime is state. A thing that is only on screen for six seconds has a before, a during and an after, and every press that can land in "during" is an order of action nobody walked unless it was listed.
+
+### Observation 590: The browser tests' default port was another chat's server - a run without the port set would have tested someone else's build
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** The same batch - running one browser test file from a second worktree on a PC where another chat's preview held the default port
+**Skill:** the gates-and-deploy guide (`raptor-port/docs/gates-and-deploy.md`); verification-before-completion
+**Type:** open-source
+**Phase/Area:** Verification - which build a browser test ran against
+
+**Issue:** The preview tool refused the default port ("in use by another chat's dev server"). The browser-test runner reuses any server already on its port when run locally, so `npx playwright test` with no port set would have run this branch's tests against the OTHER chat's bundle and reported whatever that build did. It was caught only because the preview start failed first; the runner itself says nothing.
+
+**Suggested improvement:** In the gates guide and the shipping rule's paragraph on the lock: a chat names its own port for every browser run (the environment setting the runner reads), and the first step of any browser test is to prove whose build is on that port - for example a build stamp the page exposes, compared with the commit in hand. Until such a stamp exists: start the preview through the preview tool first; a refusal there is the signal.
+
+**Principle:** A reused server makes a test's verdict a fact about whatever is listening, not about the checkout. On a machine shared by several chats, "which build did this run against" has to be answered by the build, not assumed from the folder the command was typed in.
+
+### Observation 591: He asked the same pre-sleep questions for the third night running - and asked for them to become a command
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** An unattended overnight run: what can be built without him, what must be asked before he sleeps, how the state is kept across a compaction
+**Skill:** New skill candidate: overnight-run (filed as `[OVERNIGHT-SKILL]`, his word D859)
+**Type:** open-source
+**Phase/Area:** Session start of an unattended run
+
+**Issue:** Each night he asks: how long is the job in hand, what else is outstanding, what can run unattended, what do you need from me before I sleep - then gives the same permissions (decide yourself, this chat, compact, save to the repo, no merge). The agent answers from the handoff and the backlog each time, records a one-off permission each time, and re-derives the same rules (D596, D667, D766) from four places.
+
+**Suggested improvement:** A skill that does it in one call: read the handoff and the backlog's order; list what is ruled and buildable and what is not and why; at most four questions with a recommended answer each (design ones with a picture); record the night's permission; state each job's check; write the state into the repo before the first job and at every commit; park his choices in one list; never merge; one notification; a morning report with pictures and a numbered "what you do now". Its worked example is the night of 14 Oct 26 (the rulings D856 to D859 and that chat's handoff block).
+
+**Principle:** A question the user asks every time is a missing command. The cost of the ritual is not the minute it takes him but the chance that one night a permission is assumed that he did not give.

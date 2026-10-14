@@ -19,6 +19,13 @@ Nothing below held the build. Each has what the walk saw and a recommended answe
 2. **On the desktop List the blue box is drawn round each cell of the new row, not once round the row** — as it has
    been since August (the look is older than this batch; a table row cannot wear one box of its own). Picture:
    `A4-list-added-desk.png`. **Recommended: leave it;** one box round the whole row is a small job if he wants it.
+4. **A man dragged from an input's row onto another seat or row is now silent.** It said "<name> taken out of <row>";
+   that is D854's "taken out of … on a puck's drop", so it went with the rest. What changes there is the INPUT (he is
+   no longer in the meeting), and its only sign is his puck gone from a row that may have scrolled away during the
+   drag. **Recommended: leave it** — he lands somewhere he can see, and Undo is lit; say if he wants the note back for
+   this one drag.
+5. **In a cancelled input's window a long reason is cut short on a phone** (as drawn: the reason gives way before the
+   title). The whole reason is on the input's card and its row. Picture: `B2-cx-window-phone.png`. No answer needed.
 3. **"OIL answer saved" is still said** after an OIL answer given in an input's own window. It was suggested on
    14 Oct as a probable KEEP (the answer changes nothing he can see on the card when the card showed no "OIL?" tag
    before); he has not ruled it. **Recommended: keep.**
@@ -128,6 +135,11 @@ A PASS means the right behaviour. The same script is the re-walk.
 | D3 his puck taken off | PASS | PASS | off the row; no note; Undo brings him back |
 | D4 the board's Done | PASS | PASS | the board closed; no note |
 
+**The re-walk, on the build with every fix of the read in it** (`lo-walk.mjs phone`, then `desk`; the pictures in the
+folder are this run's): 40 of 40 PASS — 20 a size: A1–A6, D1–D4, B1, B2, C1, C2, A1–A5 with less motion, A8 as a member.
+56 pictures; opened by the host: the day's card, the month's bar and its close-up, the List's card and row, the
+cancelled window whole and its bar at both sizes, the two sheets, the "already on" refusal.
+
 **Errors in the browser's own list during the walk:** none.
 
 ## 6. Carried by a test, and what each proves
@@ -142,7 +154,10 @@ A PASS means the right behaviour. The same script is the re-walk.
 | No `.seg` on either sheet; every answer still works | `src/ui/upconfirm.test.tsx`, `src/ui/medclash.test.tsx` | the wrapper, and the leftover line's answers | the sheets' own buttons |
 | A plain add and a plain take-off say nothing; "not counted for OIL" still said; a refusal still said | `src/ui/reqdoor.test.tsx`, `src/ui/phmember.test.tsx`, `src/ui/oilwait.test.tsx`, `src/ui/oilplaceholderclaim.test.tsx` | the door's words, by a drop, an armed tap and a right-click | the door, the drop and the mounted app |
 | Done says nothing | `src/ui/board.test.tsx` | no note | the button |
-| In a real browser: the mark painted and in view, no note drawn, the keyboard's place, less motion on every cell, gone after six seconds; the tag's distance from the title at two widths; the flat answers | `e2e/feedback-marks.spec.ts` (8 tests) | what jsdom cannot | the app's own controls |
+| A second save inside the six seconds starts them, and the box, again; a second input keeps the first its own row; the opened day goes to the card just saved and is not moved again | `src/ui/inputsvet.test.tsx` (the read's F1, F2) | the timer an input, the box's clock, the row's key, which card the window goes to | the window's Save |
+| A note raised since the save asked is not replaced by the late words; the screen reader's region is made in time | `src/ui/seen.test.ts` (the read's F3), with the app's real note | the count of notes shown | the function directly |
+| A shared input changed with another page in front says its words at once; a bar with a mark AND tools draws the mark first | `src/ui/inputsvet.test.tsx`, `src/ui/inputcx.test.tsx` (from the break tests) | the page test on the save that always asks the page; the shell's order | the window's Save; the shell drawn alone |
+| In a real browser: the mark painted and in view, no note drawn, the keyboard's place, less motion on every cell, gone after six seconds; a card changed four seconds in still boxed 2.8 s later; two rows four seconds apart; the tag's distance from the title at two widths and under a title that fills the bar; the flat answers, with one answer and with two | `e2e/feedback-marks.spec.ts` (10 tests) | what jsdom cannot | the app's own controls |
 
 ## 7. What the walk found, and each disposition
 
@@ -155,6 +170,19 @@ A PASS means the right behaviour. The same script is the re-walk.
    picked writes "till 16 Jul" into the Remarks of a one-day, one-hour Appointment (picture `A4-list-added-phone.png`).
    Whether that is his 18 Aug 26 rule at work or a leave's words carried over to another kind was not read; it is noted
    in `[TILL-FROM-DATES]` (D728's second step), whose first question to him is exactly this.
+4. **From the fresh read (three findings, all real, all in this batch's own new code — each a failing test first, then
+   fixed; its record `docs/superpowers/briefs/2026-10-14-leftovers-read.md`):** (F1) an input saved a second time inside
+   its six seconds lost its box two seconds later — saved at about 5.6 s it showed neither box nor note — and on the
+   desktop List a second input took the first one's box: one timer an input, the box's clock put back, the row keyed by
+   its input; (F2) an opened day went to the older of two lit cards and moved again when a mark ran out: it goes to the
+   card just saved; (F3) the plain note, said late where the input cannot be seen, replaced a warning the save had
+   raised a beat after it ("LL does not go on the Ground Programme — its row has been removed"): a note raised since
+   the save asked keeps the screen. And from its "worth a look": a title that fills the bar could leave the cancelled
+   tag no room — the tag keeps its room and the title is cut; the screen reader's region is made a beat before it is
+   filled.
+5. **From the first full gate run:** four older tests still expected the removed puck note (`oilplaceholderclaim`,
+   `oilclaimcrowd`, `oilpersonalcrowd` ×2) — the note's own tests, given the new rule (a Yes says nothing; a No still
+   says "not counted for OIL").
 3. **Met in passing, older, not fixed — filed in `[BATCH-14OCT-LEFTOVERS]`:** the passing note itself is not spoken to
    a screen reader (it never was). This batch tells a screen reader the words where the note is NOT shown; where it is
    shown, the old gap stands.
@@ -171,9 +199,37 @@ A PASS means the right behaviour. The same script is the re-walk.
 - **A note covered by a window at the moment of a save** — the case the rule exists for on the Inputs page. No route
   to it was found by hand in this batch's time (the input's window closes on a save, and the other windows stand
   clear of the centre of a row); carried by `seen.test.ts` ("marked and still covered").
+- **The read's F2 and F3 on screen.** F2 needs a day of fourteen inputs and two saves three seconds apart; F3 a save
+  with the Medical tab up, or a window over the bar. Each is pinned by a unit test through the window's own Save (F2)
+  or the app's real note (F3); neither was driven in a browser.
+- **A real screen reader.** The words are in a polite region made a beat before it is filled; nobody has heard them.
+- **His iPhone's List gliding to a row far away.** If Safari's glide takes longer than the wait (680 thousandths), the
+  note is ALSO said — the safe side, the note he has always had.
 - **His iPhone's own engine.** The pictures are a Windows browser's at an iPhone's size; the box is a plain shadow and
   a six-second animation, both long supported — his look is the proof.
 
 ## 9. Break tests, the read, the gates
 
-*(filled in as each closes)*
+**Break tests — one wire broken at a time, a named test red, the line put back.** Unit:
+`scripts/handpass/breaks/2026-10-14-leftovers.json` — 36 breaks, **36 caught** on the last run of each. On the first
+run 31 of 35: the four that stayed green were one break that broke nothing (given a real one) and THREE WIRES NOTHING
+WATCHED, each given its test — the page-in-front test on a shared input's save, the order of a bar that carries a mark
+and tools, and which card an opened day goes to (the test had counted the List's own scroll too). Browser, each break
+built and run against `e2e/feedback-marks.spec.ts`: `…-leftovers.browser.json` — 14 breaks, **13 caught**; two stayed
+green at first and showed two tests too easy to fail — the clash's answers "under the sentence" (with two long answers
+they wrap there whatever the rule says: a one-answer clash added) and the two rows four seconds apart (the first had
+left the List: every date now shown). The one left NOT caught, break 14 (the desktop row keyed by its place), is
+explained, not a gap: with the box put back to nought on every light the second row is whole however the row is
+keyed; what the key decides is which row draws which input — unit break 29, caught.
+
+**The read:** one fresh, blind Opus read (D790); three findings, all real, all fixed (§7, find 4). **And a narrow read of the
+fix round by a second fresh Opus reader** (the order's "a fix is new code" — the fixes rewrote how the mark is held):
+each fix right, nothing broken beside it, and ONE low finding — the same input saved again while its day stays open
+(so that it moves to the other end of the day) did not bring the window to its card: fixed, test first. Round one of
+at most three; no second narrow read (the last fix is one more thing the scroll waits on). No Fable read (no OIL figure, published day, permission or saved
+shape). No ChatGPT read (`[NO-ASTRA-LIST]`'s standing footing).
+
+**The gates — the whole set under the PC's lock:** one run on the final code, the third of the night (the first found four older tests of the removed puck note; the second was green before the narrow read's fix): unit 11341 / 11341 (638 files) · build clean · tfin 728 / 0 · e2e 813 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK.
+
+**The closing lines.**
+`Walk: docs/handpass/2026-10-14-leftovers.md · 56 pictures · 9 surfaces · 40 orders (20 a size) · MISSING: none — 1 fault of the batch's own found and fixed, 2 older things filed`

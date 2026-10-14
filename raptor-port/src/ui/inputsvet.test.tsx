@@ -619,6 +619,28 @@ describe('an input just saved wears the just-added mark wherever the page shows 
       expect(went.length, 'and the window is not moved a second time').toBe(moves)
     } finally { proto.scrollIntoView = real; vi.useRealTimers() }
   })
+  /* THE NARROW READ OF THE FIXES (14 Oct 26 — L1): the same input lit AGAIN while its day stays open — changed so that it
+     sorts to the other end of the day — is the card "just saved" too; the newest id had not changed, so the window was
+     not brought to it. */
+  it('the same input saved again with its day open: the window is brought to its card again', async () => {
+    vi.useFakeTimers()
+    const proto = HTMLElement.prototype as any, real = proto.scrollIntoView
+    const went: string[] = []
+    proto.scrollIntoView = function (this: HTMLElement) { if (this.closest('[data-testid="win-inputsday"]')) went.push(this.getAttribute('data-fresh') || '(not a marked card)') }
+    try {
+      await mount(false, 'cal')
+      await openDay('2026-10-21')
+      await click($('#icPopAdd')); await type('#inpEditStart', '07:00'); await type('#inpEditEnd', '08:00'); await click($('#inpEditSave'))
+      const id = newest().iid, n = went.length
+      expect(went[n - 1]).toBe(id)
+      await act(async () => { vi.advanceTimersByTime(3000) })
+      await click($(`[data-testid="idy-row-${id}"] [data-testid="idy-open"]`))
+      await type('#inpEditStart', '20:00'); await type('#inpEditEnd', '21:00'); await click($('#inpEditSave'))
+      expect(live(id).s, 'the change was saved').toBe(20 * 60)
+      expect(went.length, 'the window went to it once more').toBe(n + 1)
+      expect(went[went.length - 1]).toBe(id)
+    } finally { proto.scrollIntoView = real; vi.useRealTimers() }
+  })
   it('the mark comes off when its six seconds are up — class and name both', async () => {
     vi.useFakeTimers()
     try {

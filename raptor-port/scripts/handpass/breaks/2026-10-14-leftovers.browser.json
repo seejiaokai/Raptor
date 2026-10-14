@@ -91,8 +91,8 @@
    "n": 13,
    "name": "the box's clock is not put back (the class stays, the fade is the first save's)",
    "file": "src/ui/InputsPage.tsx",
-   "find": "a.currentTime = 0",
-   "put": "void a"
+   "find": "a.currentTime = 0 }",
+   "put": "void a }"
   },
   {
    "n": 14,

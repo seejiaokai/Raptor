@@ -261,7 +261,8 @@ export function InputsPage() {
     if (!relit) return
     document.querySelectorAll('[data-fresh]').forEach(el => {
       if (el.getAttribute('data-fresh') !== relit.id) return
-      for (const n of [el, ...Array.from(el.children)]) for (const a of ((n as any).getAnimations?.() ?? [])) a.currentTime = 0
+      /* (motion is decoration: nothing here may throw out of a layout effect — the narrow read of the fixes) */
+      try { for (const n of [el, ...Array.from(el.children)]) for (const a of ((n as any).getAnimations?.() ?? [])) a.currentTime = 0 } catch (_) { /* the mark still shows; only its clock is the first light's */ }
     })
   }, [relit])
   useEffect(()=>()=>clearInpReveal(),[])
@@ -884,7 +885,7 @@ export function InputsPage() {
           free round trip, scroll position and all, rather than a re-navigate
           that has to rebuild the list from scratch */}
       {sansUp && <SansCal />}
-      {calUp && <InputsCal fPerson={fPerson} fType={fType} fSearch={fSearch} lit={flash}
+      {calUp && <InputsCal fPerson={fPerson} fType={fType} fSearch={fSearch} lit={flash} litAt={relit}
         seedIso={range.from || isoOf(new Date())} lead={<>{tabsRow}{views}</>} tools={tools} under={filterSummary} onClearFilters={clearFilters} />}
       {tab === 'med' && <MedicalView />}
       {/* the OIL ask (owner, 28 Aug 26) — the desktop row's OIL chip: Save runs the

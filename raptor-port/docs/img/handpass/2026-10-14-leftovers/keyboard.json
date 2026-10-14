@@ -3,28 +3,28 @@
   "surface": "A phone",
   "key": "A1 the opened day: a new input",
   "expected": "card marked, painted, in view; no note; a screen reader told \"Input added\"",
-  "saw": "mark {\"found\":true,\"innew\":true,\"fresh\":\"imv792zfw6cb7s9\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"inflash\",\"inView\":true,\"box\":[25,373,332,51]}; notes seen in 1.5s: []; sr: \"Input added\"; keyboard on: button#icPopAdd \"+ Input\" · NO RING · 332×38; the bar behind lit: false; still marked after 1.5s: true",
+  "saw": "mark {\"found\":true,\"innew\":true,\"fresh\":\"imv7bd0fpl91oto\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"inflash\",\"inView\":true,\"box\":[25,373,332,51]}; notes seen in 1.5s: []; sr: \"Input added\"; keyboard on: button#icPopAdd \"+ Input\" · NO RING · 332×38; the bar behind lit: false; still marked after 1.5s: true",
   "verdict": "PASS"
  },
  {
   "surface": "A phone",
   "key": "A2 the opened day: the input changed",
   "expected": "card marked again; no \"Input updated\"; a screen reader told it",
-  "saw": "after six seconds the first mark was gone, painted false; changed: {\"found\":true,\"innew\":true,\"fresh\":\"imv792zfw6cb7s9\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"inflash\",\"inView\":true,\"box\":[25,373,332,51]}; notes: []; sr: \"Input updated\"",
+  "saw": "after six seconds the first mark was gone, painted false; changed: {\"found\":true,\"innew\":true,\"fresh\":\"imv7bd0fpl91oto\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"inflash\",\"inView\":true,\"box\":[25,373,332,51]}; notes: []; sr: \"Input updated\"",
   "verdict": "PASS"
  },
  {
   "surface": "A phone",
   "key": "A3 the month, no day open: its bar",
   "expected": "the bar marked and painted; no note; no day opens",
-  "saw": "opened by a press on the bar; bar {\"found\":true,\"innew\":true,\"fresh\":\"imv792zfw6cb7s9\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px, oklab(0.461866 0.0104758 0.0664354) 3px 0px 0px 0px inset\",\"painted\":true,\"anim\":\"inflash-timed\",\"inView\":true,\"box\":[64,530,48,14]}; notes: []; days open: 0",
+  "saw": "opened by a press on the bar; bar {\"found\":true,\"innew\":true,\"fresh\":\"imv7bd0fpl91oto\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px, oklab(0.461866 0.0104758 0.0664354) 3px 0px 0px 0px inset\",\"painted\":true,\"anim\":\"inflash-timed\",\"inView\":true,\"box\":[64,530,48,14]}; notes: []; days open: 0",
   "verdict": "PASS"
  },
  {
   "surface": "A phone",
   "key": "A4 the List: a new input",
   "expected": "the row (a desktop) or card (a phone) marked, painted, in view; no note",
-  "saw": "{\"found\":true,\"innew\":true,\"fresh\":\"imv793eve3xno0b\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"inflash\",\"inView\":true,\"box\":[30,240,330,51]}; notes: []; sr: \"Input added\"",
+  "saw": "{\"found\":true,\"innew\":true,\"fresh\":\"imv7bdfzs4f9kd9\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"inflash\",\"inView\":true,\"box\":[30,240,330,51]}; notes: []; sr: \"Input added\"",
   "verdict": "PASS"
  },
  {
@@ -35,45 +35,38 @@
   "verdict": "PASS"
  },
  {
-  "surface": "A phone-lessmotion",
-  "key": "A1 the opened day: a new input",
-  "expected": "card marked, painted, in view; no note; a screen reader told \"Input added\"",
-  "saw": "mark {\"found\":true,\"innew\":true,\"fresh\":\"imv79484ms88wjb\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"none\",\"inView\":true,\"box\":[25,373,332,51]}; notes seen in 1.5s: []; sr: \"Input added\"; keyboard on: button#icPopAdd \"+ Input\" · NO RING · 332×38; the bar behind lit: false; still marked after 1.5s: true",
+  "surface": "A phone",
+  "key": "A6 a save made from the Scheduler Board",
+  "expected": "its note is said as before — the Inputs page's mark is not there",
+  "saw": "note: \"Input added to the Ground Programme\"",
   "verdict": "PASS"
  },
  {
-  "surface": "A phone-lessmotion",
-  "key": "A2 the opened day: the input changed",
-  "expected": "card marked again; no \"Input updated\"; a screen reader told it",
-  "saw": "after six seconds the first mark was (not waited for), painted true; changed: {\"found\":true,\"innew\":true,\"fresh\":\"imv79484ms88wjb\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"none\",\"inView\":true,\"box\":[25,373,332,51]}; notes: []; sr: \"Input updated\"",
+  "surface": "D phone",
+  "key": "D1 a puck put on an input's row",
+  "expected": "he is on the row; no \"added to\" note",
+  "saw": "armed g:1.5.+; shaft put on; the row before [\"dj\"], after [\"dj\",\"shaft\"]; notes: []",
   "verdict": "PASS"
  },
  {
-  "surface": "A phone-lessmotion",
-  "key": "A3 the month, no day open: its bar",
-  "expected": "the bar marked and painted; no note; no day opens",
-  "saw": "opened by a press on the bar; bar {\"found\":true,\"innew\":true,\"fresh\":\"imv79484ms88wjb\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px, color(srgb 0.422667 0.331294 0.163137) 3px 0px 0px 0px inset\",\"painted\":true,\"anim\":\"none\",\"inView\":true,\"box\":[64,530,48,14]}; notes: []; days open: 0",
+  "surface": "D phone",
+  "key": "D2 the same man put on again",
+  "expected": "refused, and it says why — a warning still shows",
+  "saw": "note: \"Anvil — already on MEETING 06:00–18:00 · not added twice\"",
   "verdict": "PASS"
  },
  {
-  "surface": "A phone-lessmotion",
-  "key": "A4 the List: a new input",
-  "expected": "the row (a desktop) or card (a phone) marked, painted, in view; no note",
-  "saw": "{\"found\":true,\"innew\":true,\"fresh\":\"imv794elwmhao4p\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"none\",\"inView\":true,\"box\":[30,240,330,51]}; notes: []; sr: \"Input added\"",
+  "surface": "D phone",
+  "key": "D3 his puck taken off the row",
+  "expected": "he is off the row; no \"taken out of\" note; Undo brings him back",
+  "saw": "after [\"dj\"]; notes: []; after Undo [\"dj\",\"shaft\"]",
   "verdict": "PASS"
  },
  {
-  "surface": "A phone-lessmotion",
-  "key": "A5 a save refused still says why",
-  "expected": "the refusal's own sentence; no mark",
-  "saw": "note: \"Pick a start date on the calendar first\"; the window still open: true",
-  "verdict": "PASS"
- },
- {
-  "surface": "A phone-member",
-  "key": "A8 a member files his own input from a day",
-  "expected": "card marked, painted, in view; no note",
-  "saw": "{\"found\":true,\"innew\":true,\"fresh\":\"imv794iuajmgqfx\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"inflash\",\"inView\":true,\"box\":[25,161,332,35]}; notes: []",
+  "surface": "D phone",
+  "key": "D4 the board's Done",
+  "expected": "the board closes; no \"Schedule updated\"",
+  "saw": "the board hidden: true; notes: []",
   "verdict": "PASS"
  },
  {
@@ -105,66 +98,73 @@
   "verdict": "PASS"
  },
  {
-  "surface": "A phone",
-  "key": "A6 a save made from the Scheduler Board",
-  "expected": "its note is said as before — the Inputs page's mark is not there",
-  "saw": "note: \"Input added to the Ground Programme\"",
+  "surface": "A phone-lessmotion",
+  "key": "A1 the opened day: a new input",
+  "expected": "card marked, painted, in view; no note; a screen reader told \"Input added\"",
+  "saw": "mark {\"found\":true,\"innew\":true,\"fresh\":\"imv7befvwiid28r\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"none\",\"inView\":true,\"box\":[25,373,332,51]}; notes seen in 1.5s: []; sr: \"Input added\"; keyboard on: button#icPopAdd \"+ Input\" · NO RING · 332×38; the bar behind lit: false; still marked after 1.5s: true",
   "verdict": "PASS"
  },
  {
-  "surface": "D phone",
-  "key": "D1 a puck put on an input's row",
-  "expected": "he is on the row; no \"added to\" note",
-  "saw": "armed g:1.4.+; shaft put on; the row before [\"dj\"], after [\"dj\",\"shaft\"]; notes: []",
+  "surface": "A phone-lessmotion",
+  "key": "A2 the opened day: the input changed",
+  "expected": "card marked again; no \"Input updated\"; a screen reader told it",
+  "saw": "after six seconds the first mark was (not waited for), painted true; changed: {\"found\":true,\"innew\":true,\"fresh\":\"imv7befvwiid28r\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"none\",\"inView\":true,\"box\":[25,373,332,51]}; notes: []; sr: \"Input updated\"",
   "verdict": "PASS"
  },
  {
-  "surface": "D phone",
-  "key": "D2 the same man put on again",
-  "expected": "refused, and it says why — a warning still shows",
-  "saw": "note: \"Anvil — already on MEETING 06:00–18:00 · not added twice\"",
+  "surface": "A phone-lessmotion",
+  "key": "A3 the month, no day open: its bar",
+  "expected": "the bar marked and painted; no note; no day opens",
+  "saw": "opened by a press on the bar; bar {\"found\":true,\"innew\":true,\"fresh\":\"imv7befvwiid28r\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px, color(srgb 0.422667 0.331294 0.163137) 3px 0px 0px 0px inset\",\"painted\":true,\"anim\":\"none\",\"inView\":true,\"box\":[64,530,48,14]}; notes: []; days open: 0",
   "verdict": "PASS"
  },
  {
-  "surface": "D phone",
-  "key": "D3 his puck taken off the row",
-  "expected": "he is off the row; no \"taken out of\" note; Undo brings him back",
-  "saw": "after [\"dj\"]; notes: []; after Undo [\"dj\",\"shaft\"]",
+  "surface": "A phone-lessmotion",
+  "key": "A4 the List: a new input",
+  "expected": "the row (a desktop) or card (a phone) marked, painted, in view; no note",
+  "saw": "{\"found\":true,\"innew\":true,\"fresh\":\"imv7bemcrck53a1\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"none\",\"inView\":true,\"box\":[30,240,330,51]}; notes: []; sr: \"Input added\"",
   "verdict": "PASS"
  },
  {
-  "surface": "D phone",
-  "key": "D4 the board's Done",
-  "expected": "the board closes; no \"Schedule updated\"",
-  "saw": "the board hidden: true; notes: []",
+  "surface": "A phone-lessmotion",
+  "key": "A5 a save refused still says why",
+  "expected": "the refusal's own sentence; no mark",
+  "saw": "note: \"Pick a start date on the calendar first\"; the window still open: true",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "A phone-member",
+  "key": "A8 a member files his own input from a day",
+  "expected": "card marked, painted, in view; no note",
+  "saw": "{\"found\":true,\"innew\":true,\"fresh\":\"imv7beqgxqo4kjg\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"inflash\",\"inView\":true,\"box\":[25,161,332,35]}; notes: []",
   "verdict": "PASS"
  },
  {
   "surface": "A desk",
   "key": "A1 the opened day: a new input",
   "expected": "card marked, painted, in view; no note; a screen reader told \"Input added\"",
-  "saw": "mark {\"found\":true,\"innew\":true,\"fresh\":\"imv79ajix06g3yz\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"inflash\",\"inView\":true,\"box\":[1007,449,404,51]}; notes seen in 1.5s: []; sr: \"Input added\"; keyboard on: button#icPopAdd \"+ Input\" · NO RING · 404×40; the bar behind lit: false; still marked after 1.5s: true",
+  "saw": "mark {\"found\":true,\"innew\":true,\"fresh\":\"imv7betrha88t1m\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"inflash\",\"inView\":true,\"box\":[1007,449,404,51]}; notes seen in 1.5s: []; sr: \"Input added\"; keyboard on: button#icPopAdd \"+ Input\" · NO RING · 404×40; the bar behind lit: false; still marked after 1.5s: true",
   "verdict": "PASS"
  },
  {
   "surface": "A desk",
   "key": "A2 the opened day: the input changed",
   "expected": "card marked again; no \"Input updated\"; a screen reader told it",
-  "saw": "after six seconds the first mark was gone, painted false; changed: {\"found\":true,\"innew\":true,\"fresh\":\"imv79ajix06g3yz\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"inflash\",\"inView\":true,\"box\":[1007,449,404,51]}; notes: []; sr: \"Input updated\"",
+  "saw": "after six seconds the first mark was gone, painted false; changed: {\"found\":true,\"innew\":true,\"fresh\":\"imv7betrha88t1m\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"inflash\",\"inView\":true,\"box\":[1007,449,404,51]}; notes: []; sr: \"Input updated\"",
   "verdict": "PASS"
  },
  {
   "surface": "A desk",
   "key": "A3 the month, no day open: its bar",
   "expected": "the bar marked and painted; no note; no day opens",
-  "saw": "opened by a press on the bar; bar {\"found\":true,\"innew\":true,\"fresh\":\"imv79ajix06g3yz\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px, oklab(0.461866 0.0104758 0.0664354) 3px 0px 0px 0px inset\",\"painted\":true,\"anim\":\"inflash-timed\",\"inView\":true,\"box\":[218,553,195,18]}; notes: []; days open: 0",
+  "saw": "opened by a press on the bar; bar {\"found\":true,\"innew\":true,\"fresh\":\"imv7betrha88t1m\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px, oklab(0.461866 0.0104758 0.0664354) 3px 0px 0px 0px inset\",\"painted\":true,\"anim\":\"inflash-timed\",\"inView\":true,\"box\":[218,553,195,18]}; notes: []; days open: 0",
   "verdict": "PASS"
  },
  {
   "surface": "A desk",
   "key": "A4 the List: a new input",
   "expected": "the row (a desktop) or card (a phone) marked, painted, in view; no note",
-  "saw": "{\"found\":true,\"innew\":true,\"fresh\":\"imv79azfiptqpjy\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"inflash\",\"inView\":true,\"box\":[32,219,1376,35]}; notes: []; sr: \"Input added\"",
+  "saw": "{\"found\":true,\"innew\":true,\"fresh\":\"imv7bf9pxahxp0q\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"inflash\",\"inView\":true,\"box\":[32,219,1376,35]}; notes: []; sr: \"Input added\"",
   "verdict": "PASS"
  },
  {
@@ -241,29 +241,29 @@
   "surface": "A desk-lessmotion",
   "key": "A1 the opened day: a new input",
   "expected": "card marked, painted, in view; no note; a screen reader told \"Input added\"",
-  "saw": "mark {\"found\":true,\"innew\":true,\"fresh\":\"imv79c05qlqsshk\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"none\",\"inView\":true,\"box\":[1007,449,404,51]}; notes seen in 1.5s: []; sr: \"Input added\"; keyboard on: button#icPopAdd \"+ Input\" · NO RING · 404×40; the bar behind lit: false; still marked after 1.5s: true",
+  "saw": "mark {\"found\":true,\"innew\":true,\"fresh\":\"imv7bgah246gps5\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"none\",\"inView\":true,\"box\":[1007,449,404,51]}; notes seen in 1.5s: []; sr: \"Input added\"; keyboard on: button#icPopAdd \"+ Input\" · NO RING · 404×40; the bar behind lit: false; still marked after 1.5s: true",
   "verdict": "PASS"
  },
  {
   "surface": "A desk-lessmotion",
   "key": "A2 the opened day: the input changed",
   "expected": "card marked again; no \"Input updated\"; a screen reader told it",
-  "saw": "after six seconds the first mark was (not waited for), painted true; changed: {\"found\":true,\"innew\":true,\"fresh\":\"imv79c05qlqsshk\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"none\",\"inView\":true,\"box\":[1007,449,404,51]}; notes: []; sr: \"Input updated\"",
+  "saw": "after six seconds the first mark was (not waited for), painted true; changed: {\"found\":true,\"innew\":true,\"fresh\":\"imv7bgah246gps5\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"none\",\"inView\":true,\"box\":[1007,449,404,51]}; notes: []; sr: \"Input updated\"",
   "verdict": "PASS"
  },
  {
   "surface": "A desk-lessmotion",
   "key": "A3 the month, no day open: its bar",
   "expected": "the bar marked and painted; no note; no day opens",
-  "saw": "opened by a press on the bar; bar {\"found\":true,\"innew\":true,\"fresh\":\"imv79c05qlqsshk\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px, color(srgb 0.422667 0.331294 0.163137) 3px 0px 0px 0px inset\",\"painted\":true,\"anim\":\"none\",\"inView\":true,\"box\":[218,553,195,18]}; notes: []; days open: 0",
+  "saw": "opened by a press on the bar; bar {\"found\":true,\"innew\":true,\"fresh\":\"imv7bgah246gps5\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px, color(srgb 0.422667 0.331294 0.163137) 3px 0px 0px 0px inset\",\"painted\":true,\"anim\":\"none\",\"inView\":true,\"box\":[218,553,195,18]}; notes: []; days open: 0",
   "verdict": "PASS"
  },
  {
   "surface": "A desk-lessmotion",
   "key": "A4 the List: a new input",
   "expected": "the row (a desktop) or card (a phone) marked, painted, in view; no note",
-  "saw": "{\"found\":true,\"innew\":true,\"fresh\":\"imv79c70fwfni9p\",\"shadow\":\"rgb(229, 168, 59) 3px 0px 0px 0px inset\",\"painted\":false,\"anim\":\"none\",\"inView\":true,\"box\":[32,219,1376,35]}; notes: []; sr: \"Input added\"",
-  "verdict": "FAIL"
+  "saw": "{\"found\":true,\"innew\":true,\"fresh\":\"imv7bghdmoalvgg\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px, rgb(229, 168, 59) 3px 0px 0px 0px inset\",\"painted\":true,\"anim\":\"none\",\"inView\":true,\"box\":[32,219,1376,35]}; notes: []; sr: \"Input added\"",
+  "verdict": "PASS"
  },
  {
   "surface": "A desk-lessmotion",
@@ -276,7 +276,7 @@
   "surface": "A desk-member",
   "key": "A8 a member files his own input from a day",
   "expected": "card marked, painted, in view; no note",
-  "saw": "{\"found\":true,\"innew\":true,\"fresh\":\"imv79cbcznrinmd\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"inflash\",\"inView\":true,\"box\":[1007,239,404,35]}; notes: []",
+  "saw": "{\"found\":true,\"innew\":true,\"fresh\":\"imv7bglrzbbg1jq\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset, rgba(30, 134, 255, 0.5) 0px 0px 9px 0px\",\"painted\":true,\"anim\":\"inflash\",\"inView\":true,\"box\":[1007,239,404,35]}; notes: []",
   "verdict": "PASS"
  }
 ]

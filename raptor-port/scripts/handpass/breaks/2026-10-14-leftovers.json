@@ -286,8 +286,8 @@
   "n": 28,
   "name": "the box itself is not started again",
   "file": "src/ui/InputsPage.tsx",
-  "find": "a.currentTime = 0",
-  "put": "void a",
+  "find": "a.currentTime = 0 }",
+  "put": "void a }",
   "tests": [
    "src/ui/inputsvet.test.tsx"
   ]
@@ -316,8 +316,8 @@
   "n": 31,
   "name": "the opened day is moved again when an older mark runs out",
   "file": "src/ui/InputsCal.tsx",
-  "find": "  },[newest,popIso])\n",
-  "put": "  },[lit.join('|'),popIso])\n",
+  "find": "  },[newest,popIso,litAt])\n",
+  "put": "  },[lit.join('|'),popIso,litAt])\n",
   "tests": [
    "src/ui/inputsvet.test.tsx"
   ]
@@ -358,6 +358,16 @@
   "file": "src/ui/InputsPage.tsx",
   "find": "const isLit = (r: any) => flash.indexOf(String(r.iid)) >= 0",
   "put": "const isLit = (r: any) => r === null",
+  "tests": [
+   "src/ui/inputsvet.test.tsx"
+  ]
+ },
+ {
+  "n": 36,
+  "name": "the same input lit again with its day open does not bring the window to its card",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "  },[newest,popIso,litAt])\n",
+  "put": "  },[newest,popIso])\n",
   "tests": [
    "src/ui/inputsvet.test.tsx"
   ]
