@@ -13,7 +13,7 @@
    usage: DL_BASE=http://localhost:4173 DL_SHOTS=docs/mock/2026-10-15-noglow-places node scripts/handpass/noglow-look.mjs [phone|desk] */
 import * as L from './dl-lib.mjs'
 
-console.log('noglow-look v7')
+console.log('noglow-look v8')
 const SIZE = process.argv[2] === 'phone' ? 'phone' : 'desk', T = SIZE
 const w = await L.world(SIZE), p = w.page
 
@@ -81,7 +81,7 @@ try {
   out.N9 = { drawnOnSchedule: await p.evaluate(() => document.querySelectorAll('.title .calview').length) }
   await L.go(w, 'inputs'); out.N9.drawnOnInputs = await p.evaluate(() => document.querySelectorAll('.title .calview').length)
 
-  /* LEAVE WAR: N2 the bidding box, N3 his own row's seat bar, N6 Rearrange pressed, N8 a row dragged over */
+  /* LEAVE WAR: N2 the bidding box, N3 his own row's seat bar, N6 Rearrange pressed, N8 a man's row dragged over (not a count row) */
   await L.go(w, 'leavewar'); await p.waitForSelector('#page-leavewar [data-testid^="row-"]', { timeout: 20000 }); await L.sleep(700)
   /* the box runs the full height of the open days, so its close-up is its top: the dates and the first rows */
   await place('N2', async () => {
@@ -101,7 +101,7 @@ try {
   })
   await place('N3', async () => { if (!await tag('.mx tbody tr.me .who .whoedit .cs')) throw new Error('no own row'); return shots('N3-own-row', NOGLOW.me, 26) })
   await place('N8', async () => {
-    const ok = await p.evaluate(() => { const rows = [...document.querySelectorAll('#page-leavewar .mx tbody tr:not(.me):not(.grp)')].filter(r => r.querySelector('.who')); const r = rows[3] || rows[0]; if (!r) return false; r.classList.add('dragover'); const c = r.querySelector('.who'); c.setAttribute('data-mk', 'a'); c.scrollIntoView({ block: 'center' }); return true })
+    const ok = await p.evaluate(() => { const rows = [...document.querySelectorAll('#page-leavewar .mx tbody tr:not(.me):not(.grp)')].filter(r => r.querySelector('.who .whoedit .cs')); const r = rows[3] || rows[0]; if (!r) return false; r.classList.add('dragover'); const c = r.querySelector('.who'); c.setAttribute('data-mk', 'a'); c.scrollIntoView({ block: 'center' }); return true })
     if (!ok) throw new Error('no row to drag over')
     const r = await shots('N8-landing-line', NOGLOW.drag, 26)
     await p.evaluate(() => document.querySelectorAll('.mx tbody tr.dragover').forEach(r => r.classList.remove('dragover')))

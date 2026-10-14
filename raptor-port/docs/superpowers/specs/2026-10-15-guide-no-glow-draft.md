@@ -32,6 +32,9 @@ and stay" — and its just-added box passage's "inset + soft glow" are corrected
 ## Places that still glow today — each put to him with a picture before anything changes (D853)
 None was in his rulings of 15 Oct 26; nothing is changed until he says.
 
+**Places 1 to 4 RULED 15 Oct 26 — D881 ("No glow for all looks good"): each loses its glow and keeps its line; built with
+the guide change, after the wording's approval (round 3).**
+
 **Rings the rule as worded covers:**
 1. **The green "he can take this seat" ring** (`.oktake`, `src/ui/scheduler/03-week.css`) — with a person picked, an empty
    seat he could take rings solid green with a green glow (his approved comp, 13 Aug 26).

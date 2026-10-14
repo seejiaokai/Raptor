@@ -15,6 +15,7 @@ after it, the list opened (`oilPutBackWatch`, `oilNeedSaid`): the one body the l
 switch (`src/ui/board.ts switchDraft`) share; `scripts/handpass/ps-walk.mjs` (the job's walk, as assertions with pictures);
 `scripts/handpass/glow-look.mjs` (`[GLOW-PLACES-LOOK]`'s pictures — each glowing place today beside a no-glow version).
 `scripts/handpass/noglow-look.mjs` (`[GUIDE-NO-GLOW]`'s pictures — the places that still glow after D877, D879, each today beside no glow, `docs/mock/2026-10-15-noglow-places/`).
+`scripts/handpass/noglow-drag.mjs` (`[GUIDE-NO-GLOW]` place 8 by a real mouse drag in the Leave War's Rearrange).
 **Changed:** `src/ui/board.ts` — the switch's note in short sentences; `src/ui/DraftsModal.tsx` — "Select" closes the plan
 editor when THIS switch opened the OIL list (it sat under the editor's backdrop);
 `src/engine/drafts.ts` — `rowsLeftSaid` removed (its last user was the switch). **Tests:** `src/ui/oilwait.test.tsx`

@@ -29,7 +29,7 @@ Tracker from anywhere else picks these up too. The general rulings are in `.clau
 was told, where it lives — **is in `.claude/decisions-full/tracker.md`, never loaded by itself: open it before acting on a
 ruling's detail or asking him about it** (`grep -h '^| D… |' .claude/decisions-full/*.md` — the shell; the Grep tool
 hides a long row). A "— changed by" tail names the later rulings that changed it. Newest first.
-**Also read** — in How we work, so already loaded: **D62** and **D63** (the Tracker's syllabus data is out of
+**Also read** — in `leave-war.md`: **D881** (the Tracker's gold "can fly next" and turquoise "search found" rings lose their glow, keeping their lines). In How we work, so already loaded: **D62** and **D63** (the Tracker's syllabus data is out of
 every privacy sweep; the aircraft type elsewhere reads "F-15" or "fighter squadron"); **D347** (every Undo / Redo
 pair — the Tracker's own included — sits in the top bar, in the same place and look as Edit Schedule's).
 

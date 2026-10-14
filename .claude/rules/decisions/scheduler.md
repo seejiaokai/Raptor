@@ -38,7 +38,7 @@ file or change one (**D655, D658, D763, D770**), what ALL / ALL AVAIL is not off
 title box (**D715**), its card and the cancelled input's place and window (**D718–D725, D727–D729, D768, D771**), its OIL sign (**D777**), the
 late cut-off (**D628, D639**), a day's class and the holidays (**D627, D631, D633, D638**), the SANS day's needs
 (**D617–D622**). A ruling that governs BOTH an Inputs page and the schedule stayed HERE.
-**Also read** — in `oil.md` (it loads by itself with the placeholder, publishing and OIL files): **D28, D31,
+**Also read** — in `leave-war.md`: **D881** (the green "he can take this seat" ring on Edit Schedule loses its glow, keeping its solid green ring — with three Leave War and Tracker places). In `oil.md` (it loads by itself with the placeholder, publishing and OIL files): **D28, D31,
 D32, D43, D46, D52** (what the ALL / ALL AVAIL pucks earn wherever they may land — the earning list follows
 the landing list), **D48, D49** (a published day and a rule change), **D19** (a weekend no Leave War period
 covers). In `people-accounts.md` (it loads by itself with the accounts, Quals and posting files): **D297, D299**
