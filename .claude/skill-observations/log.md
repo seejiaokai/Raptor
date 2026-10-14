@@ -781,3 +781,18 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** walk scripts take a step filter (e.g. `ONLY=W16`), and §6 of the walk-script guide says: "a re-walk runs only the steps of the places the change touched — a script being cheap is not a reason to run all of it".
 
 **Principle:** Size a re-check by what changed, not by how cheap the tool makes repeating everything; extra steps add their own failures and noise.
+
+### Observation 606: A close-up "around the element" fails for a mark bigger than the screen, and for a hidden copy
+
+**Status:** OPEN
+**Date:** 2026-10-15
+**Session context:** [GUIDE-NO-GLOW] — picturing the places that still glow, today beside no glow, for the owner
+**Skill:** brainstorming (its `mockups-on-the-real-app.md`)
+**Type:** open-source
+**Phase/Area:** taking the pictures of a mock-up on the real app
+
+**Issue:** The picture script cropped each close-up as "the element plus a margin". Three of eight places came out wrong on the first run: the Leave War's open-bidding box is wider and taller than the screen, so its "close-up" was the whole grid and the glow could not be seen (and after a scroll to the page top it was off to the side entirely); today's day card is taller than the screen and its light falls BELOW it, so the crop missed the light; and on Edit Schedule the first match of a selector was a hidden copy of the week with no box, so nothing was pictured. Each cost a re-run; the pictures were only caught by opening them.
+
+**Suggested improvement:** In the mock-up guide's picture step: (1) pick the n-th VISIBLE match (non-zero box), never the first match; (2) for a mark larger than the screen, or one whose effect falls outside its own box (a shadow below, a halo), crop the EDGE where the effect is — bring it into view first, then clip a fixed window round that edge; (3) open every close-up before building the page, comparing today against the changed version — a pair that looks identical means the crop missed the change, not that there is none.
+
+**Principle:** A crop rule tuned for small things silently fails for big or off-box effects; frame the place where the difference lives, and verify each before/after pair actually differs before showing it.

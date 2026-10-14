@@ -51,7 +51,13 @@ None was in his rulings of 15 Oct 26; nothing is changed until he says.
 8. **The Leave War's landing line while a row or a heading is dragged** (`tr.dragover .who`, `tr.grp.dragover td.grphd`,
    `matrix.css`) — the blue line glows on the name column.
 9. **The Inputs page's "Calendar" button** (`.title .calview`, `02-shell.css`) — a soft blue light under a filled button.
+   **Found 15 Oct 26 while picturing it: nothing draws it.** The Inputs title row has no `calview` button since the
+   calendars' rebuild (`1bf27de17`); the List / Calendar switch is ordinary `.abtn` buttons. Counted on the running app:
+   0 on Edit Schedule, 0 on Inputs. Not his to rule — a leftover style; it is removed with the guide change, nothing seen moves.
 
 ## Still to do
 The wording and the nine places, each with a picture (D853), go to him; the guide changes only on his approval, and
 none of the nine places changes before he rules on it.
+**Pictures taken 15 Oct 26** (`raptor-port/scripts/handpass/noglow-look.mjs`, both sizes, on the built app): places 1–8 in
+`raptor-port/docs/mock/2026-10-15-noglow-places/` (`N1`–`N8`, each today / noglow / where); the page put to him is that
+folder's `index.html` (an Artifact, round 1 = places 1–4). Round 2 = places 5–8; round 3 = the wording, set to his answers.

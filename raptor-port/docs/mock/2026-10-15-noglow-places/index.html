@@ -1,0 +1,110 @@
+<title>Raptor No-Glow Places</title>
+<style>
+/* Layout: one column of places; each place shows today beside no glow (phone, then desktop), the "where" frames under it, then its question. */
+:root{
+  --bg:#F3F5F7; --card:#FFFFFF; --ink:#141A21; --ink-2:#4B5763; --line:#D9DFE5; --accent:#0E8FB3; --mark:#C77800;
+  --shot:#0B0D10;
+  --f-body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; --f-mono:ui-monospace,"SF Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1318; --card:#171C22; --ink:#E8EDF2; --ink-2:#9AA6B2; --line:#2A323B; --accent:#3BC6E8; --mark:#FFB020; color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1318; --card:#171C22; --ink:#E8EDF2; --ink-2:#9AA6B2; --line:#2A323B; --accent:#3BC6E8; --mark:#FFB020; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);padding-inline:16px;padding-block:20px 48px}
+main{max-width:980px;margin:0 auto;display:grid;gap:22px}
+h1{font-size:22px;margin:0;text-wrap:balance}
+h2{font-size:17px;margin:0;text-wrap:balance}
+p{margin:0;max-width:68ch}
+.lead{color:var(--ink-2)}
+.place{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:12px}
+.num{font:600 12px var(--f-mono);letter-spacing:.06em;color:var(--accent);text-transform:uppercase}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pair figure{margin:0;display:grid;gap:6px;min-width:0}
+.pair figcaption,.where figcaption{font:600 12px var(--f-mono);letter-spacing:.04em;color:var(--ink-2);text-transform:uppercase}
+.shot{background:var(--shot);border-radius:8px;padding:10px;display:grid;place-items:center;min-height:90px;cursor:zoom-in}
+.shot img{display:block;max-width:100%;height:auto}
+.where{display:flex;flex-wrap:wrap;gap:10px}
+.where figure{margin:0;display:grid;gap:4px;width:150px}
+.where img{width:100%;border-radius:6px;border:1px solid var(--line);cursor:zoom-in}
+.q{border:1px solid var(--mark);padding:8px 12px;background:var(--bg);border-radius:8px}
+.sub{font-size:13px;color:var(--ink-2)}
+.box{display:inline-block;width:14px;height:10px;border:2px dashed var(--mark);border-radius:3px;vertical-align:-1px}
+.later{display:grid;gap:6px}
+.later li{max-width:68ch}
+ol,ul{margin:0;padding-left:20px;display:grid;gap:4px}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:grid;place-items:center;padding:16px;z-index:9;cursor:zoom-out}
+#zoom img{max-width:100%;max-height:100%;object-fit:contain}
+@media (max-width:560px){.pair{grid-template-columns:1fr}}
+</style>
+
+<main>
+  <header style="display:grid;gap:8px">
+    <h1>The places that still glow: round 1 of 3</h1>
+    <p class="lead">You ruled that the design guide will say "a ring in this app never glows". Nine places still glow. This round puts four of them to you. Each one is shown as it is today, beside the same thing with only its glow taken off. Nothing in the app has changed yet, and nothing will until you say.</p>
+    <p class="sub">These are real app pictures. Where a thing only shows during a drag, the app's own look is put on a real row and held still. The "no glow" picture changes one style setting and nothing else. The <span class="box"></span> dashed box in the "where" pictures is drawn in to show the place; it is not part of the app. Tap any picture to see it full size.</p>
+  </header>
+
+  <section class="place" id="q1">
+    <span class="num">Question 1 · Edit Schedule</span>
+    <h2>The green "he can take this seat" ring</h2>
+    <p>Pick a man's puck on Edit Schedule, and every empty seat he could take gets a solid green ring with a soft green light around it. It was your approved look on 13 Aug. Without the light, the solid green ring stays exactly as it is.</p>
+    <div class="pair"><figure><figcaption>Today · phone</figcaption><div class="shot"><img src="N1-can-take-seat-today-phone.png" alt="An empty seat ringed green, today"></div></figure>
+      <figure><figcaption>No glow · phone</figcaption><div class="shot"><img src="N1-can-take-seat-noglow-phone.png" alt="The same, no glow"></div></figure></div>
+    <div class="pair"><figure><figcaption>Today · desktop</figcaption><div class="shot"><img src="N1-can-take-seat-today-desk.png" alt="An empty seat ringed green, today, desktop"></div></figure>
+      <figure><figcaption>No glow · desktop</figcaption><div class="shot"><img src="N1-can-take-seat-noglow-desk.png" alt="The same, no glow, desktop"></div></figure></div>
+    <div class="where"><figure><img src="N1-can-take-seat-where-phone.png" alt="Where: the phone"><figcaption>Where · phone</figcaption></figure><figure><img src="N1-can-take-seat-where-desk.png" alt="Where: desktop"><figcaption>Where · desktop</figcaption></figure></div>
+    <div class="q"><b>Take the glow off the green "can take this seat" ring?</b> My pick: <b>yes</b>. The green ring alone already says it, and it would then match the board's other rings, which lost their glow today.</div>
+  </section>
+
+  <section class="place" id="q2">
+    <span class="num">Question 2 · Leave War</span>
+    <h2>The green box round the days open for bidding</h2>
+    <p>While a bidding window is open, the Leave War draws a deep green box round its days, with a faint green light spreading out from the line. It was your pick on 1 Sep. The box is taller and wider than the screen, so the close-ups show its top edge under the month buttons. On the desktop the light also leaks left over the name columns as a faint green line, where the box itself is hidden.</p>
+    <div class="pair"><figure><figcaption>Today · phone</figcaption><div class="shot"><img src="N2-bidding-box-today-phone.png" alt="The bidding box's top edge, today"></div></figure>
+      <figure><figcaption>No glow · phone</figcaption><div class="shot"><img src="N2-bidding-box-noglow-phone.png" alt="The same, no glow"></div></figure></div>
+    <div class="pair"><figure><figcaption>Today · desktop (see the faint line over the columns at the left)</figcaption><div class="shot"><img src="N2-bidding-box-today-desk.png" alt="The bidding box's top edge, today, desktop"></div></figure>
+      <figure><figcaption>No glow · desktop</figcaption><div class="shot"><img src="N2-bidding-box-noglow-desk.png" alt="The same, no glow, desktop"></div></figure></div>
+    <div class="where"><figure><img src="N2-bidding-box-where-phone.png" alt="Where: the phone"><figcaption>Where · phone</figcaption></figure><figure><img src="N2-bidding-box-where-desk.png" alt="Where: desktop"><figcaption>Where · desktop</figcaption></figure></div>
+    <div class="q"><b>Take the glow off the open-bidding box?</b> My pick: <b>yes</b>. The deep green line keeps its colour and width, and the stray line over the name columns goes with the glow.</div>
+  </section>
+
+  <section class="place" id="q3">
+    <span class="num">Question 3 · Leave War</span>
+    <h2>"This row is you": the ring on your own name</h2>
+    <p>On the Leave War your own row's name wears a thin blue ring with a blue light past it. It means the same as your own puck on the schedule ("this is you"), whose glow you took off today.</p>
+    <div class="pair"><figure><figcaption>Today · phone</figcaption><div class="shot"><img src="N3-own-row-today-phone.png" alt="Your own row's name, today"></div></figure>
+      <figure><figcaption>No glow · phone</figcaption><div class="shot"><img src="N3-own-row-noglow-phone.png" alt="The same, no glow"></div></figure></div>
+    <div class="pair"><figure><figcaption>Today · desktop</figcaption><div class="shot"><img src="N3-own-row-today-desk.png" alt="Your own row's name, today, desktop"></div></figure>
+      <figure><figcaption>No glow · desktop</figcaption><div class="shot"><img src="N3-own-row-noglow-desk.png" alt="The same, no glow, desktop"></div></figure></div>
+    <div class="where"><figure><img src="N3-own-row-where-phone.png" alt="Where: the phone"><figcaption>Where · phone</figcaption></figure><figure><img src="N3-own-row-where-desk.png" alt="Where: desktop"><figcaption>Where · desktop</figcaption></figure></div>
+    <div class="q"><b>Take the glow off your own row's ring on the Leave War?</b> My pick: <b>yes</b>. It is the same mark as your own puck, so it should look the same. The row's blue band stays.</div>
+  </section>
+
+  <section class="place" id="q4">
+    <span class="num">Question 4 · Tracker</span>
+    <h2>The Tracker's gold and turquoise rings</h2>
+    <p>On a chart, a gold ring sits round every event the student can fly next, and a turquoise ring round the event a search found. Both glow. The glow was added to tell the search ring from the blue ring an event wears while the chart is edited. Without it they still differ: turquoise is not the edit blue, and the search ring sits further out. The chart already drops the glow while it is moved or zoomed, so you have seen the plain look before.</p>
+    <div class="pair"><figure><figcaption>Today · desktop, after a search for ST-01</figcaption><div class="shot"><img src="N4-tracker-rings-today-desk.png" alt="An event with both rings, today"></div></figure>
+      <figure><figcaption>No glow · desktop</figcaption><div class="shot"><img src="N4-tracker-rings-noglow-desk.png" alt="The same, no glow"></div></figure></div>
+    <div class="pair"><figure><figcaption>Today · phone, gold rings</figcaption><div class="shot"><img src="N4-tracker-rings-today-phone.png" alt="Gold rings, today, phone"></div></figure>
+      <figure><figcaption>No glow · phone</figcaption><div class="shot"><img src="N4-tracker-rings-noglow-phone.png" alt="The same, no glow, phone"></div></figure></div>
+    <div class="where"><figure><img src="N4-tracker-rings-where-phone.png" alt="Where: the phone"><figcaption>Where · phone</figcaption></figure><figure><img src="N4-tracker-rings-where-desk.png" alt="Where: desktop"><figcaption>Where · desktop</figcaption></figure></div>
+    <div class="q"><b>Take the glow off the Tracker's gold and turquoise rings?</b> My pick: <b>yes</b>. A chart can show dozens of gold rings at once, and without the light each one reads as a clean line.</div>
+  </section>
+
+  <section class="place" id="next">
+    <span class="num">Rounds 2 and 3</span>
+    <h2>Still to come</h2>
+    <ul class="later">
+      <li><b>Round 2:</b> today's day card on the week (a soft blue light under it), the Leave War's Rearrange button while it is on, a SANS puck's purple stripe, and the Leave War's blue landing line while a row is dragged.</li>
+      <li><b>Round 3:</b> the guide's wording itself, set to your answers.</li>
+      <li><b>The ninth place needs no answer.</b> The Inputs page's old "Calendar" button had a glow, but that button was replaced when the calendar was rebuilt, and nothing on screen uses its style any more. I will remove the leftover style with the guide change. Nothing you can see changes.</li>
+    </ul>
+  </section>
+</main>
+<div id="zoom" hidden></div>
+<script>
+const z=document.getElementById('zoom'),zi=z.appendChild(document.createElement('img'));
+document.querySelectorAll('.shot img,.where img').forEach(i=>i.addEventListener('click',()=>{zi.src=i.src;zi.alt=i.alt;z.hidden=false}));
+z.addEventListener('click',()=>{z.hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')z.hidden=true});
+</script>
