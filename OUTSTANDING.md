@@ -58,6 +58,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **LIVE 15 OCT 26 (pull request 506, his "merge live"):** the small OIL job (D816, D818, with D862, D863, D865) — its check `raptor-port/docs/handpass/2026-10-14-oil-uncancel-load.md`; its items are archived; what remains of it is the three small jobs below.
 
+**BUILT 15 Oct 26 on `claude/backlog-work-session-12d909`, waiting for his "merge live" (D883, D890):** [LW-LANDING-LINE-FIGURES] — the Leave War's landing line runs through the figures, one line a gap. **His to say (D852), filed by it:** [DRAG-ONE-LINE-ELSEWHERE] — three other drag lists (the ⚙ Groups and Who wins lists, an Inputs calendar day's notes) draw two lines a gap.
+
 **His answers of 15 Oct 26 (D877, D878 — "3 all no glow 4 fix"), two jobs — LIVE 15 Oct 26 (pull request 512):** [GLOW-OFF] — the board's other glows go, each keeping its ring; walked 36/36; his iPhone look (the people picker's chip answered and built, D879). [COMPACT-BANDS-WINDOW] — the compaction notes count against the app's own room; read by one fresh reader, its findings fixed; his approval, then the main folder brought level.
 
 **His answers of 15 Oct 26 ("Questions 1-6 as recommend" — D865, D866), three small jobs — 506 is live (15 Oct 26), so each may start:** [OIL-PLAN-SWITCH-UNASKED] — "Switch to this plan" that brings back an input with no OIL answer gets the load's short note and list. [GUIDE-ONE-MARK] — the design guide carries "one mark, one look": draft, one reader, his approval of the wording. [GLOW-PLACES-LOOK] — the other places that glow (the landing flash after a drag or an Undo, the keyboard ring) drawn for his look; nothing changes before he says.
@@ -2297,6 +2299,18 @@ short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not c
 **BUILT 15 Oct 26 (tier LOOK, walked 39/39):** the cause was the figures drawer — a second table laid over the days, so
 the real row's line ran UNDER it; the drawer's row now wears the same landing mark and draws the same line. The contract:
 `raptor-port/docs/ui-contracts.md` (D883's paragraph); the check: `raptor-port/docs/handpass/2026-10-15-lw-landing-line.md`.
+**And round two, the same branch (D890 — his find on the preview):** one landing line a gap, not two a few pixels apart;
+re-walked 41/41. The other places with the same two positions: `[DRAG-ONE-LINE-ELSEWHERE]`.
+
+### [DRAG-ONE-LINE-ELSEWHERE] Three other drag lists draw two landing lines in each gap, a few pixels apart (found 15 Oct 26, his question after D890) — OPEN, his to say
+**Found, NOT CHANGED (D852: other places are named to him, never changed unasked).** D890 made the Leave War grid's
+Rearrange draw one line a gap; the same two positions — a row's bottom edge, then the next row's top — remain in: (1) the
+Leave War's ⚙ Settings Groups list (`raptor-port/src/leavewar/ui/bidpicker.css` `.set-grow.dragover` / `.after`); (2) its
+"Who wins" list (`.gs-row.dragover` / `.after`) — both through `Matrix.tsx startRowDrag`, where D890's step is limited to
+the grid; (3) a day opened on the Inputs calendar, a note dragged to reorder (`raptor-port/src/ui/InputsCal.tsx` `secOver`,
+`07-inputs-calendar.css` `.ic-sec.dragover`). Not the same: the Scheduler Board / Edit Schedule's line, wave and section
+drags (one line on the row under the pointer — `src/ui/rowdrag.ts`) and Quals' heading drag (a ring). **If he says yes:**
+(1)–(2) by lifting the grid-only limit; (3) by the same step in its own hover; a picture to him first (D852), tier LOOK.
 **D883: the line runs unbroken across the name, the counters and the days.** Check a dragged group heading too (D876).
 **Found, NOT FIXED.** Rearrange on, a man's row dragged over another (desktop, a real mouse drag — Cinch over Warden):
 the blue line shows on the name column and across the day columns, but not across the figures columns between them

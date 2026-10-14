@@ -7339,6 +7339,14 @@ under it; the drawer's copy of the row now wears the same `dragover` / `dragover
 DrawerOver`, set by `Matrix.tsx drawerRows` by the real row's own tests) and draws the same 3px line (`matrix.css`).
 Pins: `src/leavewar/ui/figdrawer.test.tsx` (the classes), `src/leavewar/ui/rowglow.test.ts` (the line and its
 specificity); walked by `scripts/handpass/lwlanding-drag.mjs` (`docs/handpass/2026-10-15-lw-landing-line.md`).
+**One line a gap, in one place (owner, D890, 15 Oct 26: "Shouldn't it be just 1 position when I try to move between
+rows?").** Over the lower half of a row, or the upper half of the row below it, the SAME line shows — on the top edge
+of the row below. The drop was already one place ("after a row" resolves to "before the row that follows it", the
+commit in `Matrix.tsx startRowDrag`); the hover now names that same row (the next row of the same kind, in the same
+list), so the two halves no longer draw two lines a few pixels apart. A row's bottom edge carries the line only where
+nothing that can be landed on follows it: the last row of a list, or above a heading a man's row cannot land on. The
+row being dragged still shows no line over itself. Every row of the grid in Rearrange — a man's row, a group heading,
+the Manning block's rows; not the ⚙ Settings lists (D852 — named to him, not changed).
 
 Four asks from the same sitting, all on the Leave War grid:
 

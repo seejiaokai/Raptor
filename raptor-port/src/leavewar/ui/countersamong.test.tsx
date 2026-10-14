@@ -155,6 +155,11 @@ describe('the drag lands a counter among the four', () => {
     const row = screen.getByTestId(REQ_P)
     row.getBoundingClientRect = () => ({ top: 40, bottom: 60, left: 0, right: 300, width: 300, height: 20, x: 0, y: 40, toJSON() {} }) as DOMRect
     press('c'); over(REQ_P); moveTo(58)
+    /* ONE LINE A GAP (owner D890 — "Counter has this rearrange issue"): the lower half of Required P is the same
+       drop as the upper half of Required W, so the ONE line is drawn on Required W's top edge — never Required P's foot */
+    expect(screen.getByTestId(REQ_W).className).toMatch(/\bdragover\b/)
+    expect(screen.getByTestId(REQ_W).className).not.toMatch(/\bafter\b/)
+    expect(screen.getByTestId(REQ_P).className).not.toMatch(/\bdragover\b/)
     lift()
     expect(manningBlockOrder()).toEqual(['a', 'b', RP, 'c', RW, AP, AW])
   })

@@ -58,6 +58,27 @@ drew (it never set it) — the break across the figures.
 column on, while the first column shows the real heading cell's shade beneath — as before this change (the drawer's
 `figfill` rules are untouched). Not filed: no fault — the box spans the drawer from the closed column's edge.
 
+## 5a. Round two — one line a gap (owner D890, 15 Oct 26)
+His look at the preview on his iPhone: in one gap the line showed in two places a few pixels apart (under Warden,
+then on top of Ranger) — "Shouldn't it be just 1 position when I try to move between rows?" The drop was already
+one place (the commit resolves "after a row" to "before the row that follows it"); only the drawing differed. **Fix:**
+on the grid, over a row's lower half, the hover names the row that follows it when that row is of the same kind
+(stepping over a sibling the page hides), so the line is drawn once, on that row's top edge; under the last row of a
+list, or above a heading, it stays on the row's foot; over the row just above the one being dragged, no line (the
+drop leaves it where it is) (`Matrix.tsx startRowDrag`). Every grid row in Rearrange — a man's row, a heading, the
+Manning rows (the Manning case by `countersamong.test.tsx`, whose drop order is unchanged — the default war has no
+counter to drag on the walk). **Tests:** `figdrawer.test.tsx` — the lower half marks the row below (grid and drawer),
+the last row keeps its foot, the row above the dragged one shows nothing; the first and third **red** with the
+change undone. **Re-walk** (`DL_SHOTS=docs/img/handpass/2026-10-15-lw-landing-line/one-gap`, its own folder): the
+same script with one more check on each lower-half step — **41 / 41 PASS**, desktop and phone; `one-gap/L2-*`
+opened: over Warden's lower half the line is on Drifter's top edge. **Load:** none — the line is a style on one row
+while a drag is on; nothing is added to the grid (his question, answered).
+**Other places with the same two positions, named to him (D852), not changed:** the Leave War's ⚙ Settings Groups list
+and its "Who wins" list (`bidpicker.css` `.set-grow` / `.gs-row`), and a day opened on the Inputs calendar — a note
+dragged to reorder (`.ic-sec`). Not the same: the Scheduler Board and Edit Schedule's line / wave / section drags
+(one line on the row under the pointer) and Quals' column headings (a ring round the heading). Filed as
+`[DRAG-ONE-LINE-ELSEWHERE]`.
+
 ## 6. Gates
 The whole gate set under the PC lock, in one run, on this branch with the fix (NOT `main`'s code): build clean · tfin 728 / 0 · unit 11407 / 11407 (641 files) · e2e 817 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN.
 
@@ -66,3 +87,6 @@ The whole gate set under the PC lock, in one run, on this branch with the fix (N
   halves and a group heading; pictures opened (`L1`–`L4`, before `B1`–`B4` and `N8`).
 - Gates: build clean · tfin 728 / 0 · unit 11407 / 11407 (641 files) · e2e 817 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK.
 - Code read: none — not required at tier LOOK (the order's §5).
+- Round two (D890) gates, one run under the lock: build clean · tfin 728 / 0 · unit 11409 / 11409 (641 files) · e2e 816 passed, 1 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK — the one failure the Leave War desktop timing test "the grid draws a window of months…" (D84; this change does not touch the window of months): alone under the lock, three times over, 3 of 3. After it, a test only: `countersamong.test.tsx` — a
+  counter over the lower half of Required P draws the line on Required W's top (his "Counter has this rearrange
+  issue"); 13 / 13, red with the change undone.

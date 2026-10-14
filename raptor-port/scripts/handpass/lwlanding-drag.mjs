@@ -80,7 +80,7 @@ const points = (page, { group, lower }) => page.evaluate(({ group, lower }) => {
     if (!a || !bRow) return null
     bRow.scrollIntoView({ block: 'center' })
     const g = a.getBoundingClientRect(), b = bRow.querySelector('td').getBoundingClientRect()
-    return { gx: g.x + g.width / 2, gy: g.y + g.height / 2, bx: b.x + Math.min(b.width / 2, 60), by: b.y + b.height * (lower ? 0.75 : 0.3) }
+    return { gx: g.x + g.width / 2, gy: g.y + g.height / 2, bx: b.x + Math.min(b.width / 2, 60), by: b.y + b.height * (lower ? 0.75 : 0.3), hovered: bRow.getAttribute('data-testid'), next: bRow.nextElementSibling?.getAttribute('data-testid') ?? null }
   }
   const rows = [...document.querySelectorAll('#page-leavewar .mx-wrap .mx tbody tr[data-testid^="row-"]')].filter(r => !r.classList.contains('me'))
   const a = rows[2], b = rows[6]
@@ -88,7 +88,7 @@ const points = (page, { group, lower }) => page.evaluate(({ group, lower }) => {
   b.scrollIntoView({ block: 'center' })
   const grip = a.querySelector('[data-testid^="drag-"]')
   const g = grip.getBoundingClientRect(), br = b.querySelector('.who').getBoundingClientRect()
-  return { gx: g.x + g.width / 2, gy: g.y + g.height / 2, bx: br.x + br.width / 2, by: br.y + br.height * (lower ? 0.75 : 0.3) }
+  return { gx: g.x + g.width / 2, gy: g.y + g.height / 2, bx: br.x + br.width / 2, by: br.y + br.height * (lower ? 0.75 : 0.3), hovered: b.getAttribute('data-testid'), next: b.nextElementSibling?.getAttribute('data-testid') ?? null }
 }, { group, lower })
 
 /** Press, travel, hold (the caller reads and pictures), then let go WITHOUT a drop. */
@@ -122,6 +122,12 @@ async function step(w, label, opts, picName) {
   }
   const s = await readLanding(w.page)
   judge(w.key, label, s)
+  /* ONE LINE A GAP (owner D890): over the lower half of a row with a man's row after it, the line is the one the row
+     below would draw over its upper half — on that row's top edge — never this row's foot */
+  if (opts.lower && !opts.group && !s.none) {
+    const want = pts.next && pts.next.startsWith('row-') ? pts.next : pts.hovered
+    ok(w.key, `${label}: one line a gap — drawn on the top of the row below (${want})`, s.key === want && s.after === (want === pts.hovered), `hovered ${pts.hovered}, marked ${s.key} on its ${s.after ? 'bottom' : 'top'} edge`)
+  }
   if (!s.none) {
     const box = await w.page.evaluate(k => { const r = document.querySelector(`#page-leavewar .mx-wrap [data-testid="${k}"]`).getBoundingClientRect(); return { y: r.y, h: r.height } }, s.key)
     const width = Math.min(w.S.w, w.phone ? w.S.w : 1100)

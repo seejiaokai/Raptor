@@ -234,13 +234,51 @@ describe('the figures drawer (owner, 6 Sep 26)', () => {
       expect(drawerRow(`row-${to}`).className).not.toMatch(/\bafter\b/)
       expect(drawerRow(`row-${other}`).className).not.toMatch(/\bdragover\b/)
       expect(drawerRow(`row-${from}`).className).not.toMatch(/\bdragover\b/)   // the row picked up never shows the line
-      // the LOWER half: the line moves to the row's foot, in the drawer as in the grid
+      /* the LOWER half: one line a gap (owner D890) — the same line as the upper half of the row below, so it is
+         drawn on THAT row's top edge, in the drawer as in the grid, and never on this row's foot */
+      const below = real.nextElementSibling as HTMLElement
+      const belowId = below.getAttribute('data-testid')!
+      expect(belowId).toMatch(/^row-/)                                            // a man's row follows (the case)
       real.getBoundingClientRect = () => ({ top: 100, bottom: 120, left: 0, right: 300, width: 300, height: 20, x: 0, y: 100, toJSON() {} }) as DOMRect
       moveTo(118)
-      expect(real.className).toMatch(/\bdragover after\b/)
-      expect(drawerRow(`row-${to}`).className).toMatch(/\bdragover after\b/)
+      expect(below.className).toMatch(/\bdragover\b/)
+      expect(below.className).not.toMatch(/\bafter\b/)
+      expect(real.className).not.toMatch(/\bdragover\b/)
+      expect(drawerRow(belowId).className).toMatch(/\bdragover\b/)
+      expect(drawerRow(belowId).className).not.toMatch(/\bafter\b/)
+      expect(drawerRow(`row-${to}`).className).not.toMatch(/\bdragover\b/)
       lift()
       expect(drawer().querySelector('.dragover')).toBeNull()                      // gone with the drop
+    }, 60_000)
+
+    it('the lower half of the LAST row of the roster keeps its line on that row\'s foot — nothing follows it', () => {
+      arrangeOpen()
+      const rows = [...document.querySelectorAll('.mx-wrap .mx tbody [data-testid^="row-"]')] as HTMLElement[]
+      const last = rows[rows.length - 1]!
+      expect(last.nextElementSibling).toBeNull()                                  // the case: the list's last row
+      const from = rows[0]!.getAttribute('data-testid')!.slice(4)
+      fireEvent.pointerDown(screen.getByTestId(`drag-${from}`), { button: 0 })
+      document.elementFromPoint = () => last.querySelector('td.who') as Element
+      last.getBoundingClientRect = () => ({ top: 100, bottom: 120, left: 0, right: 300, width: 300, height: 20, x: 0, y: 100, toJSON() {} }) as DOMRect
+      moveTo(118)
+      expect(last.className).toMatch(/\bdragover after\b/)
+      expect(drawerRow(last.getAttribute('data-testid')!).className).toMatch(/\bdragover after\b/)
+      act(() => { window.dispatchEvent(new MouseEvent('pointercancel', { bubbles: true })) })
+    }, 60_000)
+
+    it('the lower half of the row just above the one being dragged shows no line — the drop would leave it where it is', () => {
+      arrangeOpen()
+      // two neighbouring men's rows, read off the grid as drawn
+      const real = ([...document.querySelectorAll('.mx-wrap .mx tbody [data-testid^="row-"]')] as HTMLElement[])
+        .find(r => r.nextElementSibling?.getAttribute('data-testid')?.startsWith('row-'))!
+      const picked = real.nextElementSibling!.getAttribute('data-testid')!.slice(4)
+      fireEvent.pointerDown(screen.getByTestId(`drag-${picked}`), { button: 0 })
+      document.elementFromPoint = () => real.querySelector('td.who') as Element
+      real.getBoundingClientRect = () => ({ top: 100, bottom: 120, left: 0, right: 300, width: 300, height: 20, x: 0, y: 100, toJSON() {} }) as DOMRect
+      moveTo(118)
+      expect(document.querySelector('.mx-wrap .dragover')).toBeNull()
+      expect(drawer().querySelector('.dragover')).toBeNull()
+      act(() => { window.dispatchEvent(new MouseEvent('pointercancel', { bubbles: true })) })
     }, 60_000)
 
     it("a group heading landed on wears it across the drawer's empty box too", () => {

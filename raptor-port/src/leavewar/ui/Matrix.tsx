@@ -383,14 +383,28 @@ export function Matrix() {
     if (surface === 'grid' && rowEl && outer && wrap) frameLift(liftRef.current, boxOf(outer, rowEl, wrap))
     const move = (ev: PointerEvent) => {
       const el = document.elementFromPoint(ev.clientX, ev.clientY)
-      const row = el && (el as Element).closest ? (el as Element).closest(cfg.sel) : null
-      const overId = row ? cfg.idOf(row) : null
+      let row = el && (el as Element).closest ? (el as Element).closest(cfg.sel) : null
+      let overId = row ? cfg.idOf(row) : null
       /* which half decides before/after; a zero-height rect (jsdom) reads as
          "before", keeping the old semantics where layout cannot answer */
       let after = false
       if (row) {
         const r = (row as HTMLElement).getBoundingClientRect()
         after = r.height > 0 && ev.clientY > r.top + r.height / 2
+      }
+      /* ONE LINE A GAP (owner D890, 15 Oct 26 — "Shouldn't it be just 1 position when I try to move between rows?").
+         The lower half of a row and the upper half of the row below it are ONE drop — the commit below resolves
+         "after X" to "before the row that follows X" — but they drew two lines a few pixels apart: X's bottom edge,
+         then the next row's top. So on the GRID the hover names that following row straight away, and the line is
+         drawn once, on its top edge. Only the row that IS the follower is taken: the next sibling of the same kind,
+         stepping over a sibling the page hides (a phone hides the CAT sub-headings). A heading or anything else a
+         row cannot land on keeps "after X" — its bottom edge is then the only line in that gap. Not over the row
+         being dragged (it shows no line over itself), and not the ⚙ Settings lists (D852: named to him, unchanged). */
+      if (row && after && overId !== dragId.current && surface === 'grid') {
+        let next = row.nextElementSibling
+        while (next && !next.matches(cfg.sel) && getComputedStyle(next).display === 'none') next = next.nextElementSibling
+        const nextId = next && next.matches(cfg.sel) ? cfg.idOf(next) : null
+        if (next && nextId) { row = next; overId = nextId; after = false }
       }
       const cur = dragOverRef.current
       if (overId !== (cur?.id ?? null) || after !== (cur?.after ?? false)) {
