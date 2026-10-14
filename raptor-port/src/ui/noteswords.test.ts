@@ -34,7 +34,10 @@ const BUILT: [string, string, string, number][] = [
   ['N9 — OIL Earn turned on, the board’s button (List 3 row 2)', 'ui/board.ts', "'OIL Earn: tap a puck to stop that man earning from that event, or an item to stop the whole item earning'", 1],
   ['N9 — the same, the board’s top bar', 'ui/SchedBoard.tsx', "'OIL Earn: tap a puck to stop that man earning from that event, or an item to stop the whole item earning'", 1],
   ['N10 — info only, on', 'ui/board.ts', "'This item is info only: no longer checked against the rules, and earns nobody any OIL'", 3],
-  ['N10 — info only, off (List 3 row 8)', 'ui/board.ts', "'This item is checked against the rules again and can earn OIL'", 3],
+  /* one of its three places is the door's own since D816 (ui/reqdoor.ts UNMARKED — said by the board for a mark taken
+     off at once, and by the door for one taken off on an OIL answer): two stand in the board's file, one there */
+  ['N10 — info only, off (List 3 row 8)', 'ui/board.ts', "'This item is checked against the rules again and can earn OIL'", 2],
+  ['N10 — info only, off: the door’s copy (D816)', 'ui/reqdoor.ts', "'This item is checked against the rules again and can earn OIL'", 1],
   ['N11 — nothing today earns, on', 'ui/board.ts', "'Nothing on this day earns OIL, including anything added later'", 1],
   ['N11 — nothing today earns, off', 'ui/board.ts', "'This day can earn OIL again, and the marks underneath are back'", 1],
   /* N12's first sentence SAYS WHAT TO TURN OFF, in his own words (owner D845, 14 Oct 26 — "Turn off the switch first"; before
