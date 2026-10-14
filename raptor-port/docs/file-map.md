@@ -1,5 +1,16 @@
 # The file map — where each source file lives and what it does
 
+`[OIL-PLAN-SWITCH-UNASKED]` — "Switch to this plan" says what it left to answer (D865; built 15 Oct 26). **New:**
+`src/ui/oilputback.ts` — what a whole-day replacement put back that still needs an OIL answer, read before it and told
+after it, the list opened (`oilPutBackWatch`, `oilNeedSaid`): the one body the load (`src/ui/interactions.ts`) and the
+switch (`src/ui/board.ts switchDraft`) share; `scripts/handpass/ps-walk.mjs` (the job's walk, as assertions with pictures);
+`scripts/handpass/glow-look.mjs` (`[GLOW-PLACES-LOOK]`'s pictures — each glowing place today beside a no-glow version).
+**Changed:** `src/ui/board.ts` — the switch's note in short sentences; `src/ui/DraftsModal.tsx` — "Select" closes the plan
+editor when THIS switch opened the OIL list (it sat under the editor's backdrop);
+`src/engine/drafts.ts` — `rowsLeftSaid` removed (its last user was the switch). **Tests:** `src/ui/oilwait.test.tsx`
+(block ON12); `src/state/person-delete.test.ts`, `src/state/reqorphan.test.ts`, `src/ui/reqonerow.test.tsx`,
+`src/ui/reqonerow-app.test.tsx`, `src/ui/amendretest.test.tsx` read the sentences.
+
 The one look of the just-added mark (owner D860, D861 — 15 Oct 26). **New:** `src/ui/markring-css.test.ts` (the marks' styles read off disk: no glow anywhere, the List's one box, a bar wearing the ring shows no landing flash); `scripts/handpass/ring-look.mjs` (pictures of the look). **What each existing file gained:** `src/ui/highlights.ts` — `paintFreshAdds` rings a note's own box; `src/ui/scheduler/06-inputs.css` — the List's one box (`.innew>td::after`), no glow; `src/ui/scheduler/25-inputs-calendar.css` — no glow, no landing flash under the ring; tests `src/ui/board.test.tsx`, `e2e/feedback-marks.spec.ts`.
 
 `[OIL-UNCANCEL-UNASKED]` and `[OIL-LOAD-VERSION-UNASKED]` — the small OIL job (D816, D818; built on the night of 14 Oct 26).

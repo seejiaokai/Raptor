@@ -3553,6 +3553,10 @@ ONE box round the whole row (D861): each cell draws its share on a `::after` lay
 left side on the first, the right on the last — fading as the ring fades; the row's coloured left edge stays inside it.
 A month's bar that wears the ring shows no landing flash before it (D861: `.ib-bar.innew.lift-land::after{content:none}`);
 a bar that lands without it (a drag, an Undo) keeps its landing flash. Pictures: `docs/img/handpass/2026-10-15-ring/`.
+**And the board's other glows go (owner D877, 15 Oct 26 — RULED, NOT YET BUILT, filed as `[GLOW-OFF]`):** the landing
+flash and the picked-up look (`--lift-box`), the crew and the time boxes a tapped warning lights (`.puck.wfoc`,
+`.badtm.wfoc`), a puck earning OIL (`.puck.oilglow`), his own puck (`.puck.me`) and a highlighted puck (`.puck.hl`) each
+keep their ring and lose the glow; the pictures of record are `docs/mock/2026-10-15-glow-places/` (each "no glow" frame).
 
 **The just-added row's flash is now the SAME steady shape everywhere it
 appears — the board's `.sb-fresh` box (see §Selection highlight above) and
@@ -4196,8 +4200,9 @@ old `.ddraft` "Publishes …" chip is retired.
 **Plans on a published day (owner, 15 Aug 26 — the reopen-first refusal is
 gone).** Switching WORKS on a published day: `switchDraft` lets `draftSelect`'s
 rebase re-mark the day's pending set as the true diff against the issued document
-(engine-rules §Drafts), and its toast reports what that came to — "Switched to
-"X" … · 2 differences from AL1 pending" / "· matches AL1 — nothing pending". (The
+(engine-rules §Drafts), and its toast reports what that came to — "Saturday is
+now "X". 2 differences from AL1 are pending." / "… Nothing is pending: it matches AL1." (short
+plain sentences since 15 Oct 26 — D865; the long form read "Switched to "X" … · 2 differences from AL1 pending"). (The
 old "· signatures reset" clause is GONE since 15 Sep 26 — item 1a: each plan owns
 its four sign-offs, so a switch loads that plan's own sign state, it does not reset
 anything; an unsigned plan simply shows its own empty sign-off bar.) The menu
@@ -4452,7 +4457,16 @@ Three things stay decided:
   "Restored" (the ⓘ mark: "This item is checked against the rules again and can earn OIL"). Changed meanwhile: "That
   input has changed — not un-cancelled" / "— left as it is". Where nothing is to be asked the mark comes off at once, as
   before. The words are one source: `ui/oilwait.ts WAIT_WORDS` / `CHANGED`, `ui/reqdoor.ts UNMARKED`.
-- **The four open points settled as recommended (owner D865, 15 Oct 26):** the ⓘ mark's words stay; the list a load opens is the day's whole open list; "Switch to this plan" is to get the load's short note and list (a follow-up, not built); with the bar up, "Answer OIL" un-cancels at once where nothing is left to ask.
+- **The four open points settled as recommended (owner D865, 15 Oct 26):** the ⓘ mark's words stay; the list a load opens is the day's whole open list; "Switch to this plan" gets the load's short note and list (built 15 Oct 26 — the bullet below); with the bar up, "Answer OIL" un-cancels at once where nothing is left to ask.
+- **"Switch to this plan" says what it left to answer, as a load does (owner D865; built 15 Oct 26, `[OIL-PLAN-SWITCH-UNASKED]`).**
+  The switch is made as before; its note is short plain sentences — "Saturday is now "Plan B".", a row left out
+  ("Ranger's Meeting is left out because it is on Tuesday's programme."), on a published day "2 differences from AL1
+  are pending." or "Nothing is pending: it matches the Original." — and ends "1 input needs an OIL answer." where an
+  input it put back has none, the day's one list opening for the days that need it (D862's reading too). Only a
+  PUBLISHED day can be brought to that: there a plan without an input's row unfiles it and nothing lands it again, so the
+  plan with the row brings it back; on a day not yet published a filed input lands by itself on whichever plan is live.
+  A request taken off by hand stays "taken off" through a switch (the settled design of 28 Sep 26) and Accept asks its
+  question. The load and the switch read it through one body, `ui/oilputback.ts`; the pins are `ui/oilwait.test.tsx` ON11, ON12.
 - **The load's note is short plain sentences (owner D863, 15 Oct 26 — "Shorten it").** "Friday is back to the Original.
   Viewers still see the Original. Det prep is on Saturday again too. 1 input needs an OIL answer." — what the day is back
   to; what viewers still see (only on a published day); each request that came back onto or went off the programme with
@@ -4460,8 +4474,8 @@ Three things stay decided:
   on Tuesday's programme."); a member's change that stays pending ("1 change to a member's input stays pending. A load
   never puts back a member's own input."); and the OIL count. The count of unpublished edits replaced is not said — the
   confirming button just said "Discard N edits & load". "<day> is already at the Original." the same way. Built in
-  `ui/interactions.ts` and `engine/drafts.ts` (`rowsLeftSentences`, `inputsLeftSaid`); the plan switch's note keeps its
-  older clauses (`rowsLeftSaid`) until its own words are looked at. **And an input of several days is counted, and the
+  `ui/interactions.ts` and `engine/drafts.ts` (`rowsLeftSentences`, `inputsLeftSaid`); the plan switch's note uses the
+  same sentences since 15 Oct 26 (D865 — its older clauses, `rowsLeftSaid`, are gone). **And an input of several days is counted, and the
   list opens for the day that needs the answer (owner D862 — "Ok keep").**
 - **A published version loaded back says what it left to answer (owner D818; built 14 Oct 26,
   `[OIL-LOAD-VERSION-UNASKED]`).** The load is made as before; its note ends " · 1 input needs an OIL answer" (" · 3

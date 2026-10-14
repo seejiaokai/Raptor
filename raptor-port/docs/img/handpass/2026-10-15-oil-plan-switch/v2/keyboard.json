@@ -1,0 +1,72 @@
+[
+ {
+  "surface": "P desk",
+  "key": "P0 the fixture",
+  "expected": "\"+ Alt Plan\" makes Plan A (live: Plan B); the input lands on Plan B with no question; Friday published; made a holiday, its list opens with the input",
+  "saw": "plans {\"live\":\"dr2\",\"all\":[{\"id\":\"dr1\",\"name\":\"Plan A\"},{\"id\":\"dr2\",\"name\":\"Plan B\"}]}; asked at the filing: false; publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; the holiday's list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv82ul1tqfbgow\",\"imv82unr4mdvay4\"],\"reach\":true,\"noteOver\":false}; the input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "P desk",
+  "key": "P1 to Plan A by the plans menu (week)",
+  "expected": "the note \"Friday is now \"Plan A\". 2 differences from the Original are pending.\" (the late holiday and the row); no list; the input unfiled",
+  "saw": "note \"Friday is now \"Plan A\". 2 differences from the Original are pending.\"; a list: null; the input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"\"}; live dr1",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "P desk",
+  "key": "P2 back to Plan B by the plans menu (week)",
+  "expected": "the note ends \"1 input needs an OIL answer.\"; the day's one list opens with that input, headed as a public holiday, reachable; the input on the programme again",
+  "saw": "note \"Friday is now \"Plan B\". 1 difference from the Original is pending. 1 input needs an OIL answer.\"; the list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv82ul1tqfbgow\",\"imv82unr4mdvay4\"],\"reach\":true,\"noteOver\":false}; the input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "P desk",
+  "key": "P3 the same by the plan editor's \"Select\" (week)",
+  "expected": "to Plan A: the pending sentence, no list, the editor stays; back to Plan B: the OIL tail, the list opens and the editor closes, the list reachable",
+  "saw": "to A: note \"Friday is now \"Plan A\". 2 differences from the Original are pending.\", a list null, the editor open true; to B: note \"Friday is now \"Plan B\". 1 difference from the Original is pending. 1 input needs an OIL answer.\", the list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv82ul1tqfbgow\",\"imv82unr4mdvay4\"],\"reach\":true,\"noteOver\":false}, the editor open false",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "P desk",
+  "key": "P4 answered in the list; away and back again",
+  "expected": "the answer is written from the list; the switch back says nothing of OIL and opens no list",
+  "saw": "the list closed on Save: true; the input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; back on Plan B: note \"Friday is now \"Plan B\". 1 difference from the Original is pending.\", a list null; the input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "P phone",
+  "key": "P0 the fixture",
+  "expected": "\"+ Alt Plan\" makes Plan A (live: Plan B); the input lands on Plan B with no question; Friday published; made a holiday, its list opens with the input",
+  "saw": "plans {\"live\":\"dr2\",\"all\":[{\"id\":\"dr1\",\"name\":\"Plan A\"},{\"id\":\"dr2\",\"name\":\"Plan B\"}]}; asked at the filing: false; publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; the holiday's list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv82v5y6eguvd8\",\"imv82v97b8jmse8\"],\"reach\":true,\"noteOver\":false}; the input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "P phone",
+  "key": "P1 to Plan A by the plans menu (board)",
+  "expected": "the note \"Friday is now \"Plan A\". 2 differences from the Original are pending.\" (the late holiday and the row); no list; the input unfiled",
+  "saw": "note \"Friday is now \"Plan A\". 2 differences from the Original are pending.\"; a list: null; the input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"\"}; live dr1",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "P phone",
+  "key": "P2 back to Plan B by the plans menu (board)",
+  "expected": "the note ends \"1 input needs an OIL answer.\"; the day's one list opens with that input, headed as a public holiday, reachable; the input on the programme again",
+  "saw": "note \"Friday is now \"Plan B\". 1 difference from the Original is pending. 1 input needs an OIL answer.\"; the list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv82v5y6eguvd8\",\"imv82v97b8jmse8\"],\"reach\":true,\"noteOver\":false}; the input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":null,\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "P phone",
+  "key": "P3 the same by the plan editor's \"Select\" (board)",
+  "expected": "to Plan A: the pending sentence, no list, the editor stays; back to Plan B: the OIL tail, the list opens and the editor closes, the list reachable",
+  "saw": "to A: note \"Friday is now \"Plan A\". 2 differences from the Original are pending.\", a list null, the editor open true; to B: note \"Friday is now \"Plan B\". 1 difference from the Original is pending. 1 input needs an OIL answer.\", the list {\"head\":\"⠿OIL — Fri 17 JulPublic holiday · Walk holiday✕\",\"count\":\"2 to answer\",\"ids\":[\"imv82v5y6eguvd8\",\"imv82v97b8jmse8\"],\"reach\":true,\"noteOver\":false}, the editor open false",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "P phone",
+  "key": "P4 answered in the list; away and back again",
+  "expected": "the answer is written from the list; the switch back says nothing of OIL and opens no list",
+  "saw": "the list closed on Save: true; the input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}; back on Plan B: note \"Friday is now \"Plan B\". 1 difference from the Original is pending.\", a list null; the input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ }
+]

@@ -32,7 +32,8 @@ import { schedStore, SCHED_TYPES } from '../state/sched-commit'
 import { withFreshMissionRoles } from '../state/mission-roles'
 import { missionTracking } from '../engine/insights-config'
 import { resolveMissionRole } from '../engine/mission-role'
-import { dayDrafts, curDraftId, draftDup, draftSelect, ROWSLEFT, rowsLeftSaid } from '../engine/drafts'
+import { dayDrafts, curDraftId, draftDup, draftSelect, ROWSLEFT, rowsLeftSentences } from '../engine/drafts'
+import { oilPutBackWatch, oilNeedSaid } from './oilputback'
 import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
 import { openAvailWinFrom } from './AvailWindow'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
@@ -1589,20 +1590,31 @@ export function switchDraft(di: any, id: any) {
   if (id === curDraftId(di)) { toast(`"${t.name}" is already the live ${d.dow}`); return false }
   const pub = dayApproved(di), cv = pub ? dayCurVer(di) : null
   if (view.ARM && view.ARM.di === di) view.disarmSlot()   // the swap may remove the armed row
+  /* what the switch PUTS BACK that still needs an OIL answer is read before it and told after it — the load's own
+     reading (owner D865, 15 Oct 26 — "as recommend": the load's short note and list; ui/oilputback.ts). On a published
+     day a plan without an input's row unfiles it and nothing lands it again, so the plan with the row brings it back. */
+  const oilAfter = oilPutBackWatch(di)
   if (!draftSelect(di, id)) return false
   view.setDayPreview(di, null)
   afterSchedMutate(); notify()
   /* a whole-day swap passes no key through the funnel — the sentence is the
      record, exactly as it is for a rollback or an applied template */
-  /* a row the plan held for a request now on another day stayed out — named (D175), before the count it explains */
-  let said = `Switched to "${t.name}" — this is now the live ${d.dow}` + rowsLeftSaid(ROWSLEFT)
+  /* THE NOTE IS SHORT PLAIN SENTENCES, as the load's (owner D865 — "the same way" as D863): what the day is now; a row
+     the plan held for a request now on another day stayed out — named (D175), before the count it explains; on a
+     published day what is pending against the version that went out; and how many inputs need an OIL answer. (The long
+     form it replaced: "Switched to "<plan>" — this is now the live <day> · <who> · <what> left out — … · N differences
+     from AL1 pending".) */
+  const the = (v: any) => { const l = verLabel(v); return l === 'Original' ? 'the Original' : l }
+  let said = `${d.dow} is now "${t.name}".` + rowsLeftSentences(ROWSLEFT)
   if (pub && cv != null) {
     /* the day head's own count (AM23): a plan that differs only in what the day earns, or
        in a filing, is still a difference ([HUMAN-RETEST] walk S3 / Astra rank 5, 24 Sep 26) */
     const n = dayShownPendCount(di)
-    said += n ? ` · ${n} difference${n > 1 ? 's' : ''} from ${verLabel(cv)} pending`
-      : ` · matches ${verLabel(cv)} — nothing pending`
+    said += n ? ` ${n} difference${n > 1 ? 's' : ''} from ${the(cv)} ${n > 1 ? 'are' : 'is'} pending.`
+      : ` Nothing is pending: it matches ${the(cv)}.`
   }
+  const need = oilAfter()   // opens the one list where an input it put back needs an answer
+  said += oilNeedSaid(need)
   /* PER-PLAN SIGN-OFFS (owner, 15 Sep 26 — item 1a): each plan owns its four
      sign-offs (draftSelect stows the outgoing plan's and loads the incoming plan's),
      so a switch no longer "resets" anything — an unsigned plan simply shows its own
@@ -1610,6 +1622,8 @@ export function switchDraft(di: any, id: any) {
      note is gone with the day-level signature it described. */
   logAction(di, said)
   toast(said)
+  /* the list was opened after the redraw above, and the plans menu's own caller draws nothing more — draw it now */
+  if (need) notify()
   return true
 }
 /* THE PLANS MENU (owner, 15 Sep 26 — the redesign, replacing the old drafts

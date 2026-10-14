@@ -691,3 +691,48 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** In the guide's template: `git fetch origin main && git checkout -B <branch> origin/main && git branch --unset-upstream` (or `--no-track`), and the first push `git push -u origin HEAD:<branch>`. In the shipping rule's loop: after every push, read back the remote head (`git ls-remote origin <branch>`) against `HEAD`; and before "merge live", compare the pull request's head commit with the branch's - never trust a quiet push.
 
 **Principle:** A push is done when the remote says so, not when the command exits; any quiet or filtered push needs a read-back of the remote head.
+
+### Observation 600: In the desktop app a worktree chat takes its settings, hooks and skills from the MAIN checkout, so a merged change to them is dead until that folder is brought to main
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** Running the four checks of the compaction set-up (pull request 509) in a new worktree chat on `main`.
+**Skill:** session-handoff (and the merge-live routine in shipping.md)
+**Type:** open-source
+**Phase/Area:** after "merge live" — verifying that a change to `.claude/settings.json`, `.claude/hooks/` or `.claude/skills/` is actually in force
+
+**Issue:** The app still read "compacts at 97%" in a fresh chat on `main`, though `main`'s `.claude/settings.json` sets `autoCompactWindow` 880000. The chat's process was started with `--project-config-root C:\Users\User\projects\Raptor` — the main checkout — and Claude Code's worktree page says so: in a worktree session started from the desktop app, settings, hooks, skills, agents, commands and `.mcp.json` come from the main checkout's root (`${CLAUDE_PROJECT_DIR}` points there); only CLAUDE.md and `.claude/rules/` load from the worktree. The main checkout sat on an old branch 208 commits behind `main`, so the whole compaction set-up (setting, four hooks, status line) and the `/overnight` skill (pull request 508) were in force in NO chat, and every chat ran 13 Oct's hooks and skills. The previous chat's tests ran the scripts by hand, which this does not show.
+
+**Suggested improvement:** After any merge that touches `.claude/settings*.json`, `.claude/hooks/` or `.claude/skills/`, bring the main checkout to `main` (it must stay on `main`, clean of tracked changes), and verify in a NEW chat by a reading the app itself gives (get_usage, the skill list), never by running the script by hand. Add that line to the merge-live steps and the session-handoff guide.
+
+**Principle:** A configuration change is verified where the running tool actually loads it from — confirm the load path (process arguments, the tool's own documentation) before calling a hook, setting or skill "live"; a script that works when run by hand proves nothing about whether the host runs it.
+
+### Observation 601: A shell here-document holding an apostrophe failed twice in one job, though a memory note names the trap
+
+**Status:** OPEN
+**Date:** 15 Oct 26
+**Session context:** building [OIL-PLAN-SWITCH-UNASKED]; test bodies and edit scripts passed to Python through a bash here-document
+**Skill:** New skill candidate: none — the working practice behind every build (raptor-port/CLAUDE.md §Token discipline; the memory note "Bash heredoc with an apostrophe fails")
+**Type:** open-source
+**Phase/Area:** writing multi-line scripts during a build
+
+**Issue:** Twice in one job a `python - <<'PY'` here-document whose body held test code with apostrophes ("day\'s", 'it\'s') failed to parse in the shell ("unexpected EOF while looking for matching `''") and the step was redone through the file tool. The trap is already written in a memory note loaded at the start of the session ("write multi-line scripts with the Write tool and run the file; a heredoc body containing ' never parses here"), and was still not applied at the moment of writing — the condition ("unless it holds an apostrophe") has to be judged each time, and under load it is judged wrong. Smaller, apostrophe-free here-documents in the same session worked, which reinforces the habit.
+
+**Suggested improvement:** Make it an unconditional default rather than a condition: any script longer than a one-liner is written to a file in the scratchpad with the file tool and run from there — never a here-document — and say so as one line in raptor-port/CLAUDE.md §Token discipline (or the executor rule), replacing the memory note's conditional wording. A hook that refuses a Bash command containing `<<'` with an apostrophe in its body is possible but heavier than the habit.
+
+**Principle:** Where a safer way costs nothing extra, a rule phrased as a condition to judge each time ("unless it contains X") fails under load; phrase it as an unconditional default ("always do Y").
+
+### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
+
+**Status:** OPEN
+**Date:** 15 Oct 26
+**Session context:** [OIL-PLAN-SWITCH-UNASKED] — rewording the plan switch's note; finding every test that reads the old words before the change
+**Skill:** New skill candidate: none — the roll-call rule "a wording ruling … gets its own small roll-call" (raptor-port/docs/bug-check-order.md §6)
+**Type:** open-source
+**Phase/Area:** the wording roll-call, before the full gate run
+
+**Issue:** The search for the old sentence ORed several patterns, one of them a common phrase ("nothing pending"), and was piped through `head -40` to keep it short. The common phrase filled the forty lines with unrelated hits, so two tests that read the switch's old words (`draftsui.test.tsx`) never showed; they failed only in the full unit run, a 15-minute cycle later. The same run also failed a register test that lists every file reading the inputs — a new shared file must be added to it — which a search for the module's readers would have found.
+
+**Suggested improvement:** In bug-check-order §6's wording roll-call (and the executor rule): search each exact old phrase ALONE, list FILES (not lines) with no cap, and treat a capped or truncated result as no result. When a change adds a new source file, also search the tests for registers that enumerate files ("every file that …") and run them before the full gates.
+
+**Principle:** A search whose output is truncated proves nothing about what it did not print; search for the exact phrase on its own, list files rather than lines, and never cap the list you are using as a completeness check.

@@ -137,7 +137,7 @@ describe('the plans menu — the live copy, + Alt Plan, and switching', () => {
     const planA = dayDrafts(0)[0]
     const toasts = await withToasts(async () => { await click($(`.wavemenu [data-plansel="${planA.id}"]`)) })
     expect(curDraftId(0)).toBe(planA.id)
-    expect(toasts.some(t => t.includes('Switched to "Plan A"'))).toBe(true)
+    expect(toasts.some(t => t.includes('is now "Plan A".'))).toBe(true)   // the short sentences (D865)
     expect(txtGet('dn:0.0')).not.toBe('PLAN B NOTE')         // Plan A is the day as it stood
     /* and back — the stowed edit survived */
     await click($('#eWeek .day[data-day="0"] .dhtpl [data-planmenu]'))
@@ -174,13 +174,13 @@ describe('a published day: switch marks the diff toward the next AL', () => {
       await click($('#eWeek .day[data-day="2"] .dhtpl [data-planmenu]'))
       await click($(`.wavemenu [data-plansel="${planA}"]`))
     })
-    expect(t2.some(t => t.includes('matches Original — nothing pending'))).toBe(true)
+    expect(t2.some(t => t.includes('Nothing is pending: it matches the Original.'))).toBe(true)
     expect(dayPendCount(2)).toBe(0)
     const t3 = await withToasts(async () => {
       await click($('#eWeek .day[data-day="2"] .dhtpl [data-planmenu]'))
       await click($(`.wavemenu [data-plansel="${planB}"]`))
     })
-    expect(t3.some(t => t.includes('1 difference from Original pending'))).toBe(true)
+    expect(t3.some(t => t.includes('1 difference from the Original is pending.'))).toBe(true)
     /* The old "· signatures reset" switch clause is GONE (15 Sep 26 — item 1a):
        each plan now owns its own sign-offs, so a switch loads that plan's sign
        state rather than resetting anything. The toast reports only the pending diff. */
