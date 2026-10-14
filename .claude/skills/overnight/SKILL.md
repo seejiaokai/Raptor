@@ -101,14 +101,17 @@ block says so. Never a pull request based on another branch — it runs none of 
   **No record is written into the repo while a gate run is going** — draft it in the scratch folder (the document check
   is the run's last gate, and an edit during the run fails it).
 - **Compact smartly, by how full the chat is (D766, D867, D868).** Not at a fixed point: from about 80% full the agent
-  chooses the moment itself, without asking him — the next clean point, so a big job does not compact twice. Until the
-  chat can be made to compact at that moment (`[COMPACT-WHEN-MOD]`), the app does it by itself near full (the usage
-  reading names the point), and the agent keeps that harmless and the work accurate:
+  chooses the moment itself, without asking him — the next clean point, so a big job does not compact twice; on a
+  night it never stops to offer a handoff (D871 — he is away). The project's compaction set-up (D870) does the rest:
+  a reminder arrives from 80%; the app's own compaction comes at about 85% but is held, under 90%, until the agent
+  has marked "ready"; after it, the chat's saved block is handed back. Where a piece of that does not run, the app
+  compacts by itself near full, and the agent keeps that harmless and the work accurate:
   - keep the chat lean: heavy reading, walking and code reads go to helpers that return conclusions, never file dumps;
   - at each commit, the block names exactly what the rest of the night needs — the job and step in hand, the files it
     touches, the open faults, the questions parked — and what it does not;
   - from about 80% full: at the next clean point — the step in hand finished, committed, pushed, the block rewritten —
-    compact there; no new helper, walk or gate run starts above that mark until the block is written;
+    mark it with `node .claude/hooks/compact-ready.mjs`, so the compaction comes there; no new helper, walk or gate
+    run starts above that mark until the block is written;
   - **after a compaction, re-read the block, this guide and the files the step in hand touches before the next change,
     and note the compaction in the block with its time** — never carry on from the summary's memory of a file, a ruling
     or a test result.

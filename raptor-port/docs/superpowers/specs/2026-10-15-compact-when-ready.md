@@ -42,7 +42,26 @@ before it is switched on; nothing in it may make compaction later than the app's
 
 Every script is plain, readable Node (D623) and fails open: any error lets the app do what it does today.
 
-## Not yet done — waiting on his permission
+## Built (15 Oct 26) — on his explicit permission
 
-The safety check of his Claude app refused the agent's work on the hooks as "self-modification" (15 Oct 26) and asks
-for his explicit permission. Until he gives it, nothing of pieces 2–6 is written.
+The safety check of his Claude app refused the work on the hooks as "self-modification" until he wrote: *"I allow
+you to change this project's Claude settings and hooks for the compaction set-up"*. Then built: the scripts in
+`.claude/hooks/` (`compact-lib.mjs`, `compact-watch.mjs`, `compact-ready.mjs`, `compact-guard.mjs`,
+`compact-resume.mjs`, `statusline.mjs`), wired in `.claude/settings.json` (`autoCompactWindow` 880000, PostToolUse `*`,
+PreCompact `auto`, SessionStart `compact`, `statusLine`), and the check-run fix (`[RUN-CHECK-BOTH-RUNS]`) in
+`.claude/rules/shipping.md`, `HANDOFF.md`'s header and the session-handoff guide.
+
+**Checked:** eight tests (`node --test .claude/hooks/compact-hooks.test.mjs`) — the fullness read, the bands, the
+guard's five cases, the block handed back, the status line, rubbish input failing open, the POSIX-path fallback;
+the four wired commands run through bash exactly as written in the settings, on this chat's real record (39% read);
+end to end in this checkout — held without a mark, let through with one, the status line saying "ready to compact",
+the block handed back and the mark cleared. **Found and fixed by that run:** a folder handed in the POSIX way
+(`/c/Users/…`) is not a folder to Node on Windows, so the mark was written and never found — git now falls back to
+the script's own folder.
+
+**Still untested — first read in a NEW chat once this is on `main`** (the settings and hooks are taken when a chat
+starts; this chat still reads "compacts at 97%"): (a) the app's own reading of the compaction point in a new chat
+(`get_usage` → `autoCompactsAtPercent`; expected about 85); (b) whether the status line shows in the desktop app's
+Code tab; (c) whether the reminder reaches the agent after a tool use; (d) whether a held compaction is tried again
+later. If (a) does not move, the guard has nothing to hold and the set-up falls back to the reminder, the saved block
+handed back and the app's own 97% — never worse than today.

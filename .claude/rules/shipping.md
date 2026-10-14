@@ -23,8 +23,10 @@ whole in `raptor-port/docs/archive/raptor-claude-md-2026-09-24.md`. The rulings 
   on the checks → take the next change. While a preview or a check run cooks he will hand you more work: take
   it; never idle waiting on a rollout.
 - **But never push while that PR's checks are running** (D151): any push restarts the whole run and cancels the
-  one in progress, even notes-only. Look first (`gh run list --branch <branch> --limit 1`); batch, push when
-  it has finished.
+  one in progress, even notes-only. Look first — a push starts TWO runs at once, the short documents guard and the
+  full checks, so read them all: `gh run list --branch <branch> --limit 6 --json status,workflowName,headSha`, and
+  push only when no run of the branch's last pushed commit is `queued` or `in_progress` ([RUN-CHECK-BOTH-RUNS],
+  D870); batch, push when it has finished.
 - The PR's checks finish after each push: READ their conclusions on your next turn and fix a red one then —
   never discover it at "merge live" (7 Sep 26: six red runs sat unread while the branch was tested on the
   preview, and the merge waited on a fix only the checks could see).

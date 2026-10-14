@@ -7,7 +7,7 @@ in `raptor-port/docs/archive/` (the 4 Sep 26 snapshot of this file is `HANDOFF-A
 in `OUTSTANDING.md`; where each kind of fact goes is `.claude/rules/doc-structure.md`, loaded in every chat.
 
 **Before acting on a block:** `git fetch`, then check the branch and PR it names — it describes the world when it
-was written. Never push while a PR's checks are running (`gh run list --branch <branch> --limit 1`; D151).
+was written. Never push while a PR's checks are running (D151) — a push starts two runs, so read them all: `gh run list --branch <branch> --limit 6 --json status,workflowName,headSha`, none of the last pushed commit `queued` or `in_progress` (D870).
 Bring the checkout level BEFORE reading this file: a chat continuing a pushed branch runs `git pull --ff-only`; a fresh
 worktree has no upstream, so "git pull" pulls nothing there — `git fetch origin`, then `git merge --ff-only origin/main`.
 List the live chats (`ListAgents`): if the one that wrote
