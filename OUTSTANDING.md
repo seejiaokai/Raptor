@@ -2278,6 +2278,13 @@ on his approval, and none of the nine places changes before he rules on it.
 No-Glow Places"); round 1 RULED — places 1 to 4 lose their glow (D881); round 2 (places 5 to 8) put to him; place 9 is a
 leftover style nothing draws (removed with the guide change). Round 3: the wording, set to his answers.
 
+### [PROMPT-AUDIT] He runs Claude Code's guide check, `/doctor prompt-audit`, in a terminal next time (his D886, 15 Oct 26) — OPEN, his step
+**What it is:** a read-only report (Claude Code 2.1.283) of wording in the project's instruction files — CLAUDE.md, the
+`.claude/rules/` files, the skills — written for older models. **How:** in a terminal at the repo root, `claude`, then
+`/doctor prompt-audit` (or `/checkup prompt-audit`); paste or save its list into a chat. **Then:** that chat sorts the
+points by file, recommends each, and puts them to him in rounds of at most four; a guide changes only on his word and
+its read (D70). Nothing changes because the report says so.
+
 ### [OVERNIGHT-RETRY-TRIAL] One /overnight run tries the setting that keeps retrying when the service is overloaded (his D885, 15 Oct 26) — OPEN, for the next night he runs /overnight
 **His yes (D885).** For that one night: before the run starts, add `"CLAUDE_CODE_RETRY_WATCHDOG": "1"` to the `env` block
 of the MAIN folder's `.claude/settings.json` (the app reads settings from there — `[MAIN-CHECKOUT-STALE]`), committed on
