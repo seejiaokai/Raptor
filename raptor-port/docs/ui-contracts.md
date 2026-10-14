@@ -7363,7 +7363,8 @@ Rearrange grip takes a press over a larger invisible area (the guide §6, D487) 
 left edge, 4 px right — inside its own row; measured by `scripts/handpass/grip-reach.mjs` (a phone: a counter's 6 → 16
 points of 81 round the grip, a man's 9 → 20); pinned in `src/leavewar/ui/rowglow.test.ts`. **Still to check (D896, his "Yes check the rest too"):** the Tracker chart's drags
 (a ball, a line's end, a bend handle) do not pan the chart at its edge (read in the code); the Inputs month calendar's drag
-across days sits in a month that does not scroll — whether a drag at its edge turns the month is his to say. Its own job.
+across days sits in a month that does not scroll — **answered D897: yes, a drag held at the month's edge turns to the next
+(or the last) month and the pick carries on into it.** Both its own job, not built yet.
 
 Four asks from the same sitting, all on the Leave War grid:
 

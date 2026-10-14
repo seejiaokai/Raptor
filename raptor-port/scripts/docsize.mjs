@@ -229,7 +229,9 @@ const RULING_BYTES = [
   /* how-we-work 36000 -> 38000 (15 Oct 26, later): 36,502 bytes with D876-D878 (the guide's one mark, the board's glows,
      the compaction notes) and D880 (the guide's "a ring never glows") - all live; none is trimmed (D136).
      [RULINGS-SPENT-PASS] still brings it down (D856-D858, D864, D875 read as spent permissions once checked row by row). */
-  ['.claude/rules/decisions/how-we-work.md', 0, 38000],
+  /* how-we-work 38000 -> 39500 (15 Oct 26, night): 38,287 bytes with D894 and D895 (the design guide's two drag rules, his
+     word and his approval of the wording) - live; none is trimmed (D136). [RULINGS-SPENT-PASS] still brings it down. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 39500],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
@@ -263,7 +265,9 @@ const RULING_BYTES = [
   /* oil 14000 -> 15500 (15 Oct 26): 14,617 bytes with D862, D863 and D865 - his answers on the small OIL job, live;
      none is trimmed (D136). Room for the next rulings, not a target. */
   ['.claude/rules/decisions/oil.md',     2, 15500],
-  ['.claude/rules/decisions/leave-war.md', 2, 37000],
+  /* leave-war 37000 -> 39000 (15 Oct 26, night): 37,040 bytes with D890-D892 (one landing line a gap, the other lists,
+     a drag held at the edge scrolls - his finds on his iPhone) - live; none is trimmed (D136). Room, not a target. */
+  ['.claude/rules/decisions/leave-war.md', 2, 39000],
   ['.claude/rules/decisions/tracker.md', 2, 19000],
   /* 2 Oct 26 ([DOCS-SIZE-PASS]): a new area — the nine rulings on what the IT flow guide shows and when it is rebuilt
      (D403, D410-D417) moved here from How we work, which had crossed its tripwire carrying them into every chat; only
