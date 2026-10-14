@@ -73,6 +73,13 @@ neither get the notes nor use them up; the notes come back after a compaction ev
 block too long for the app to pass on is named instead of cut; Windows line endings; the ready command runs from any
 folder. Twelve tests pin them.
 
+**Approved, with the guard OFF whenever he is away (D872, 15 Oct 26 — "approve, guard off at night").** One small risk
+was left in the guard — its estimate of what came in since the last request could read low at the worst moment, and
+one refused request at night ends the run. So: `compact-ready.mjs --away` switches the guard off (an /overnight run's
+step 9, or his word that he leaves a job unattended), `--back` switches it on again (the morning report); the mark
+lapses by itself after sixteen hours. While it is off the app compacts at about 85% whenever it gets there; the 80%
+note and the saved block handed back after a compaction stay on.
+
 **Still untested — first read in a NEW chat once this is on `main`** (the settings and hooks are taken when a chat
 starts; this chat still reads "compacts at 97%"): (a) the app's own reading of the compaction point in a new chat
 (`get_usage` → `autoCompactsAtPercent`; expected about 85); (b) whether the status line shows in the desktop app's

@@ -26,6 +26,7 @@ export function reminder(fill, lastBand) {
     'helper, walk or gate run before that. Then judge: he is using the chat and the job is nearly done → do not wait',
     'for a compaction; ask him once, in one line with your judgement, whether to hand off to a fresh chat (give the',
     'opening line). Otherwise carry on — when a compaction is due you will be told, and mark ready then.',
+    `He has said he is away (or this is an /overnight run) and the guard is still on? Switch it off: ${READY_COMMAND} --away (D872).`,
   ].join('\n');
 }
 
@@ -35,7 +36,7 @@ export function waitingNote(state) {
   return [
     'A compaction is waiting: the app tried and the guard held it until the state is saved (D868).',
     `At the next clean point: commit, push, rewrite this chat's HANDOFF.md block, then run ${READY_COMMAND} — the`,
-    'compaction then comes at your next step. (Away, or an /overnight run: do it without asking him — D871.)',
+    'compaction then comes at your next step. (He is away, or an /overnight run? Run it with --away instead — D872.)',
     'After it: re-read the block, the guide in use and the files of the step in hand before the next change.',
   ].join('\n');
 }

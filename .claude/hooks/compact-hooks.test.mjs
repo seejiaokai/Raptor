@@ -64,6 +64,20 @@ test('the guard never holds a recovery, a helper, an idle chat or a smaller mode
   assert.equal(decide({ trigger: 'auto', fill: fillAt(79.9), ready: null }), 'allow');
 });
 
+test('the guard is off while he is away — an /overnight run or his word (D872)', () => {
+  assert.equal(decide({ trigger: 'auto', fill: fillAt(86), ready: null, away: { at: 1 } }), 'allow');
+  const here = fileURLToPath(new URL('.', import.meta.url));
+  const cmd = (arg) => spawnSync(process.execPath, [join(here, 'compact-ready.mjs'), arg], { encoding: 'utf8' });
+  const guard = () => spawnSync(process.execPath, [join(here, 'compact-guard.mjs')], {
+    input: JSON.stringify({ session_id: `away-${process.pid}-${Date.now()}`, trigger: 'auto', transcript_path: transcript('away.jsonl', [asst(0, 0, 860000)]) }), encoding: 'utf8',
+  }).stdout;
+  try {
+    assert.match(cmd('--away').stdout, /guard is off/);
+    assert.equal(guard(), ''); // let through
+  } finally { cmd('--back'); }
+  assert.match(guard(), /"decision":"block"/); // back: held again
+});
+
 test('the 80% note asks for the checkpoint and the handoff judgement, once per band — not for the mark (finding 3)', () => {
   assert.equal(bandOf(79.9), 0);
   assert.equal(bandOf(93), 90);
@@ -71,7 +85,8 @@ test('the 80% note asks for the checkpoint and the handoff judgement, once per b
   const r = reminder(fillAt(81.2), 0);
   assert.match(r, /81% full/);
   assert.match(r, /ask him once/); // D871
-  assert.doesNotMatch(r, /compact-ready/);
+  assert.doesNotMatch(r.replace(/compact-ready\.mjs" --away/g, ''), /compact-ready/); // only the away switch (D872), never "ready"
+  assert.match(r, /--away \(D872\)/);
   assert.equal(reminder(fillAt(83), 80), '');
   assert.match(reminder(fillAt(86), 80), /86% full/);
   assert.equal(reminder(null, 0), '');

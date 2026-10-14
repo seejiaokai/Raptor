@@ -16,15 +16,17 @@
 //     that overran shows here, so even the FIRST attempt to recover goes through;
 //   · it has not already held once on this same last request — a second attempt with no new request in between is
 //     not the app's ordinary try at the next turn, so it goes through;
-//   · no fresh "ready" mark.
+//   · no fresh "ready" mark;
+//   · he is not away — at night, or when he leaves a job unattended, the guard is OFF (his ruling D872): the app then
+//     compacts at about 85% whenever it gets there, the state being saved at every commit anyway.
 // When it holds, it notes that in the chat's state, so the reminder hook can say once that a compaction is waiting.
 import { fileURLToPath } from 'node:url';
 import { basename } from 'node:path';
-import { readFill, readReady, readInput, readState, writeState, NEVER_HOLD_AT, HOLD_FROM, READY_COMMAND } from './compact-lib.mjs';
+import { readFill, readReady, readAway, readInput, readState, writeState, NEVER_HOLD_AT, HOLD_FROM, READY_COMMAND } from './compact-lib.mjs';
 
 /** 'allow' or 'hold' — pure, for the tests. */
-export function decide({ trigger, agentId, fill, ready, heldUuid }) {
-  if (trigger !== 'auto' || agentId) return 'allow';
+export function decide({ trigger, agentId, fill, ready, heldUuid, away }) {
+  if (trigger !== 'auto' || agentId || away) return 'allow';
   if (!fill) return 'allow';
   if (fill.pct < HOLD_FROM || fill.pct >= NEVER_HOLD_AT) return 'allow';
   if ((fill.pctNow ?? fill.pct) >= NEVER_HOLD_AT) return 'allow';
@@ -37,7 +39,8 @@ function main() {
   const input = readInput();
   const fill = readFill(input.transcript_path);
   const state = readState(input.session_id);
-  const verdict = decide({ trigger: input.trigger, agentId: input.agent_id, fill, ready: readReady(input.cwd || process.cwd()), heldUuid: state.heldUuid });
+  const cwd = input.cwd || process.cwd();
+  const verdict = decide({ trigger: input.trigger, agentId: input.agent_id, fill, ready: readReady(cwd), heldUuid: state.heldUuid, away: readAway(cwd) });
   if (verdict !== 'hold') return;
   writeState(input.session_id, { ...state, heldUuid: fill.uuid || '', waiting: true, waitingTold: false });
   process.stdout.write(JSON.stringify({

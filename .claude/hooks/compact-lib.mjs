@@ -107,6 +107,22 @@ export function readReady(cwd, now = Date.now()) {
 
 export function clearReady(cwd) { const p = readyPath(cwd); if (p) try { rmSync(p, { force: true }); } catch { /* fine */ } }
 
+/** The "away" mark — he is away (an /overnight run, or his word that he leaves a job unattended): the guard is OFF
+ *  (his ruling D872 — a request refused by mistake at night ends the run, with nobody there to say "continue"). Set at
+ *  the start of the run, cleared when he is back; it lapses by itself after sixteen hours, so a forgotten mark does
+ *  not switch the guard off for good. */
+export const AWAY_FRESH_MS = 16 * 60 * 60 * 1000;
+export const awayPath = (cwd) => { const g = gitDir(cwd); return g ? join(g, 'claude-away.json') : null; };
+export function readAway(cwd, now = Date.now()) {
+  const p = awayPath(cwd);
+  if (!p || !existsSync(p)) return null;
+  try {
+    const r = JSON.parse(readFileSync(p, 'utf8'));
+    return r && typeof r.at === 'number' && now - r.at <= AWAY_FRESH_MS ? r : null;
+  } catch { return null; }
+}
+export function clearAway(cwd) { const p = awayPath(cwd); if (p) try { rmSync(p, { force: true }); } catch { /* fine */ } }
+
 /** Per-chat memory of which reminder band was last given, in the temp folder (gone at a restart — harmless). */
 const statePath = (sessionId) => join(tmpdir(), 'claude-compact', `${String(sessionId || 'unknown').replace(/[^\w-]/g, '_')}.json`);
 export function readState(sessionId) {
