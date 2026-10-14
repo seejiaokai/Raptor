@@ -20,6 +20,13 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/handoff-overnight-skill-review-6b45a6 -->
+### `claude/handoff-overnight-skill-review-6b45a6` — THE COMPACTION SET-UP'S FOUR CHECKS RAN AND FOUND IT LOADED IN NO CHAT; THE MAIN FOLDER NOW ON `main`; THE RE-RUN IS OWED BY THE NEXT NEW CHAT — written 14 Oct 26 — verify before use
+- **Found (`[MAIN-CHECKOUT-STALE]`, observation 600):** a desktop worktree chat takes settings, hooks and skills from the MAIN checkout (`--project-config-root`; Claude Code's worktree page), which sat on `claude/after-oil-ask-notify`, 208 commits behind `main` — so check (a) read 97%, and (b)–(d) and `/overnight` could not work. **Fixed on his "yes, update the main folder":** the main checkout is on `main` at `62b649e29` (untracked walk files kept). Chats already open keep what they started with.
+- **OWED by the next NEW chat (on this branch):** the four checks again (the block below, its (a)–(d)); `/overnight` should now be in the skill list. Then the merge-steps line of `[MAIN-CHECKOUT-STALE]` (2) — a guide change, one reader, his approval — and his three small jobs of 15 Oct (`## Next, in order`).
+- **Branch:** records only (the backlog item, observation 600, this block); goes with the next job's pull request. **Gates:** none owed; `npm run docsize` green. **Open questions for him:** none. **Running when written:** none.
+- **Opening line:** "Read HANDOFF.md and the backlog item [MAIN-CHECKOUT-STALE]. The main folder is now on main: re-run the compaction set-up's four checks and tell me what works; then start his three small jobs of 15 Oct." **Worktree: YES — on THIS branch, `claude/handoff-overnight-skill-review-6b45a6`** (these records are not on `main` yet; the settings come from the main folder whatever the worktree is based on). NOT `main`, NOT `claude/overnight-skill-c02843`.
+<!-- /now -->
 <!-- now:claude/overnight-skill-c02843 -->
 ### `claude/overnight-skill-c02843` — `/overnight` (PULL REQUEST 508) AND THE COMPACTION SET-UP (PULL REQUEST 509) ARE LIVE; THE SET-UP'S FOUR CHECKS IN THE APP ARE OWED BY THE NEXT NEW CHAT; NOTHING IN THE APP CHANGED — written 15 Oct 26 — verify before use
 - **Live:** both merged on his "merge live" (508, then 509 at `43a5fee29`); `main`'s check green, Vercel's live deployment READY each time.
