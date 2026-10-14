@@ -714,20 +714,6 @@
   "verdict": "NOT WALKED"
  },
  {
-  "surface": "S22 phone",
-  "key": "S22b fixture",
-  "expected": "working copy live and answered; the issued version showing it cancelled",
-  "saw": "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}",
-  "verdict": "PASS"
- },
- {
-  "surface": "S22 phone",
-  "key": "S22c a preview",
-  "expected": "no OIL question, no bar, nothing changed (the working copy stays live and answered)",
-  "saw": "preview {\"grcx\":0,\"previewBar\":true}; no CX button in the preview; the cancel sheet null; question null; bar null; input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}",
-  "verdict": "PASS"
- },
- {
   "surface": "S11 desk",
   "key": "S11a fixture",
   "expected": "filed Friday, cancelled, published, Friday made a holiday; no list for the cancelled input (D814)",
@@ -900,6 +886,20 @@
   "key": "S22a View-only Sched (member)",
   "expected": "no CX button on any row",
   "saw": "view-only week: {\"cxButtons\":0,\"text\":true}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S22 phone",
+  "key": "S22b fixture",
+  "expected": "working copy live and answered; the issued version showing it cancelled",
+  "saw": "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "S22 phone",
+  "key": "S22c a preview",
+  "expected": "no OIL question, no bar, nothing changed (the working copy stays live and answered)",
+  "saw": "preview {\"grcx\":0,\"previewBar\":true}; no CX button in the preview; the cancel sheet null; question null; bar null; input {\"cx\":false,\"cxr\":\"\",\"info\":false,\"oil\":{\"2026-07-17\":0.5},\"date\":\"Jul 17\",\"acc\":\"g\"}",
   "verdict": "PASS"
  }
 ]

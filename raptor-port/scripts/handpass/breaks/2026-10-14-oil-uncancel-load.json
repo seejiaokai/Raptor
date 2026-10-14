@@ -340,6 +340,7 @@
   "put": "const s = n.to === 'stiff' ? noticeSpan(n) : null; if (s && s.a <= iso && iso <= s.b && noticeLive(n)) return true }",
   "tests": [
    "src/leavewar/holnotice.test.tsx"
-  ]
+  ],
+  "note": "NOT CAUGHT as written, and it cannot be: asking only Saber's bell still finds a line in the test's world. The rule it stands for — any scheduler's bell, not the reader's own — needs two lines changed at once (an import and the call in ui/OilDayList.tsx), which this runner cannot do; it was proved by hand on 14 Oct 26: with the reader's own bell asked, the test's last assertion fails (\"what is left IS on the schedulers' bells: expected '' …\"), and the file was put back."
  }
 ]
