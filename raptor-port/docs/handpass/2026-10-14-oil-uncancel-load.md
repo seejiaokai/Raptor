@@ -24,8 +24,12 @@ Nothing below held the build. Each has what the walk saw and a recommended answe
 3. **The list a load opens is that day's WHOLE list of open OIL questions**, so it can hold more than the note
    counts: "1 input needs an OIL answer" over "2 to answer" (the second was already waiting before the load). Picture:
    `L1-loaded-board-phone.png`. **Recommended: leave it** — it is the day's one list (D782), and both are his to answer.
-4. **An input Friday to Monday, Monday a holiday with no answer, FRIDAY's version loaded:** not counted and no list
-   (Friday has nothing to answer); its "OIL?" tag and the bell carry Monday's. **Recommended: leave it.**
+4. **An input of several days, loaded back on a day that has nothing to answer** (Thursday to Friday, Friday a
+   holiday with no answer, THURSDAY's version loaded). First built as "not counted, no list"; the fresh reader showed
+   that where the holiday was made while the input was off the programme, nobody is ever told — the gap his ruling
+   closes. **Now built:** it is counted ("· 1 input needs an OIL answer") and the list opens for the day that needs
+   the answer ("OIL — Fri 17 Jul"), not the day loaded. Picture: `R1-two-day-loaded-desk.png`.
+   **Recommended: keep;** say if he would rather the list always open on the loaded day.
 5. **"Switch to this plan" (a saved plan, not a published version) that brings back an unanswered input says
    nothing.** His ruling names a published version. **Recommended: the same tail and list there — a small follow-up if
    he says so.** Not built.
@@ -124,3 +128,25 @@ Every row PASS at both sizes; the pictures behind every OIL and published-day ro
 | E2 | the bar up for one input: its CX again; then another input's CX; left; "Answer OIL" | asked again for the same; the other's own question; the bar is the last one's and "Answer OIL" asks for that one; neither un-cancelled | PASS | PASS |
 | E3 | the bar up, Undo (the input goes back to Wednesday, cancelled), "Answer OIL" | no question; "Restored"; un-cancelled on its working day with no answer written — §0 item 6 | RECORDED | RECORDED |
 
+
+## 6. The model reads
+
+**ONE fresh, blind Opus read of the finished code (D790; D858 — no Fable read, on his word)** — the brief
+`docs/superpowers/briefs/2026-10-14-oil-uncancel-load-read-brief.md`, the report whole
+`docs/superpowers/briefs/2026-10-14-oil-uncancel-load-read.md`. Its verdict: the un-cancel is sound — no way found to
+un-cancel with no answer where one was owed, to write an answer nobody gave, to lose one given, or to credit an input
+still wearing a mark. Four findings, none in the top class, ALL FIXED tests first:
+
+| # | What it found | What it would have meant | The fix | Its test |
+|---|---|---|---|---|
+| F1 | an input of several days put back by a load is not counted when its unanswered day is not the day loaded | a Thu–Fri input brought back on Thursday said nothing of Friday's missing OIL answer — and where Friday became a holiday while it was off the programme, no scheduler was ever told | the open questions are read over every day those inputs cover; the list opens for the days that need the answer | `oilwait.test.tsx` "an input of two days put back…" |
+| F2 | on a holiday with no name of its own the list a load opens was headed "Public holiday · PH" | the preset's word shown as if it were the holiday's name | the holiday's own name, read as its own list and the bell read it | `holnotice.test.tsx` "…NO name of its own" |
+| F3 | the list's foot said "What is left goes to the schedulers’ bells" on a plain weekend | a promise that is not kept — no scheduler's bell carries a line there | said only where a scheduler's holiday line is live for a day still unanswered | `holnotice.test.tsx` "…a plain Saturday" (and the named-holiday test: it IS said there) |
+| F4 | after a row was taken off above it, "Don’t un-cancel" flashed another row's button | the wrong row lit as "this was not un-cancelled" | the row's button is found each time the question is put; the old place is not carried into the new wait | `oilwait.test.tsx` "a row taken off above it while the bar is up…" |
+
+Two notes of the reader's that are not findings: a branch that cannot be reached (left as it is); and with the bar up,
+an input taken OFF the programme meanwhile is still asked and un-cancelled on the answer (harmless: it waits under
+Personal Inputs with its answer).
+
+**A narrow read of the fixes** (they rewrite the load's count) by a second fresh Opus reader — the brief
+`docs/superpowers/briefs/2026-10-14-oil-uncancel-load-narrow-read-brief.md`; its result is in §9.

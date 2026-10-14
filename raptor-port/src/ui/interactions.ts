@@ -1318,8 +1318,8 @@ export function routeClick(e: MouseEvent) {
     if (need) {
       const days = [...new Set(back.flatMap((x: any) => open.get(String(inpId(x))) || []))].sort()
       const allPh = days.length > 0 && days.every(d => dayFacts(d).kind === 'ph')
-      const own = allPh ? holidayOwnName(days[0]!) : ''
-      setOilList({ from: days[0] || iso, to: days[days.length - 1] || iso, name: allPh && days.every(d => holidayOwnName(d) === own) ? own : '', fresh: false, plain: !allPh })
+      const names = allPh ? [...new Set(days.map(d => holidayOwnName(d)))] : []
+      setOilList({ from: days[0] || iso, to: days[days.length - 1] || iso, name: names.length === 1 ? names[0]! : '', fresh: false, plain: !allPh })
     }
     notify(); return
   }

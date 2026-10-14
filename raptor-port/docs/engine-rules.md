@@ -2435,9 +2435,13 @@ were `FS`/`HS` until the 28 Aug 26 rename.
     An Undo of a cancel, a Redo, a saved plan switched to: ask nothing (D793 reading 3). **A published version loaded
     back (owner D818, same day; built 14 Oct 26, `[OIL-LOAD-VERSION-UNASKED]`)** is not held: after it,
     `ui/interactions.ts` counts the inputs standing on the day that need an answer NOW and did not stand there needing
-    one before the load (`leavewar/sync.ts oilOpenOn` read before and after), adds " · N input(s) need(s) an OIL answer"
-    to the load's note, and opens that day's one list (`ui/pops.ts setOilList`; `plain` where the day is a weekend, so
-    the list is not headed "Public holiday"). The list is the day's WHOLE open list (D782), so it may show more than N.
+    one before the load (`leavewar/sync.ts oilOpenOn` read before and after — over EVERY day those inputs cover, since
+    an input of several days has one row and its unanswered day may be another than the one loaded: the fresh read's
+    F1), adds " · N input(s) need(s) an OIL answer" to the load's note, and opens the one list for the days those
+    inputs need an answer for — the loaded day, almost always (`ui/pops.ts setOilList`; named by the holiday's own
+    name through `sync.ts holidayOwnName`, and `plain` where a day of it is not a public holiday, so a weekend's
+    list is not headed "Public holiday"). The list is the day's WHOLE open list (D782), so it may show more than N; its
+    foot promises "the schedulers’ bells" only where a scheduler's holiday line is live for a day still unanswered.
     Pins: `ui/oilwait.test.tsx` (ON10, ON11), `leavewar/holnotice.test.tsx`, `e2e/oil-uncancel-load.spec.ts`.
   - **Leave and medical inputs never earn OIL and are never asked; every other kind that can earn is asked, and its
     answer decides — wherever it is filed** (owner D804, 13 Oct 26 — "As long as leave and medical they don't earn

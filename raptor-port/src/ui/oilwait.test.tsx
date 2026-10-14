@@ -30,6 +30,8 @@ import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { NOTICES } from '../state/notices'
 import { initStore, weekStashSnap, weekDirty, loadWeek, writeFill, resetSession } from '../state/store'
 import { setSession, setMe, DEFAULT_ME } from '../state/auth'
+import * as auth from '../state/auth'
+import * as store from '../state/store'
 import { hydrate, wirePersist } from '../state/persist'
 import { bootStorage } from '../storage/boot'
 import { settingsAdapter } from '../storage/adapters'
@@ -1293,6 +1295,42 @@ describe('taking the cancel off an input with no OIL answer waits on the OIL que
     oilBarAgain()
     expect(view.OILWAIT, 'no question for an input that is no longer cancelled').toBeNull()
     expect(SAID.join(' | ')).toContain('That input has changed — not un-cancelled')
+  })
+  /* written for the break tests (14 Oct 26): three guards of the door that no test had reached */
+  it('the ANSWER arriving after the input was brought back another way — an Undo under the open question: nothing is made, no answer is written, and it says the input has changed', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    expect(rowMark(rowKey(), 'cx', false)).toBe('asked')
+    globalUndo()                                    // under the question's sheet, from the keyboard: the cancel is taken back
+    expect(!!rec().cx, 'the premise: live again').toBe(false)
+    SAID = []
+    expect(answerOilWait({ [SAT_ISO]: 0.5 }), 'not made').toBe(false)
+    expect(rec().oil, 'no answer written onto an input the question was not about any more').toBeUndefined()
+    expect(SAID.join(' | ')).toContain('That input has changed — not un-cancelled')
+  })
+  it('a take-off the save itself would refuse is refused in its own words — nobody is asked a question for it first', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    SAID = []
+    const spy = vi.spyOn(store, 'writeInputsBatch').mockReturnValue(false)
+    try { expect(rowMark(rowKey(), 'cx', false)).toBe('refused') } finally { spy.mockRestore() }
+    expect(view.OILWAIT, 'no question for a change that cannot be made').toBeNull()
+    expect(rec().cx, 'still cancelled').toBe(true)
+    expect(SAID.length, 'it said why').toBeGreaterThan(0)
+  })
+  it('"Answer OIL" for someone who may no longer edit the schedule: no question, nothing made', async () => {
+    await boot()
+    file(['bane'], SAT)
+    cancel()
+    expect(rowMark(rowKey(), 'cx', false)).toBe('asked')
+    leaveOilWait()
+    const spy = vi.spyOn(auth, 'canEditSched').mockReturnValue(false)
+    try { oilBarAgain() } finally { spy.mockRestore() }
+    expect(view.OILWAIT, 'nobody who cannot edit the schedule is asked').toBeNull()
+    expect(rec().cx, 'still cancelled').toBe(true)
+    expect(rec().oil).toBeUndefined()
   })
   it('through the board\'s own cancel sheet: no "Restored" while it waits — "Restored" once it is answered', async () => {
     await boot()

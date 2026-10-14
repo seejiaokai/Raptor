@@ -1,7 +1,7 @@
 /* The helper's own readers for the small OIL job walk (ou-h-<n>.mjs): the board's pending/sign-off state, the bells,
    the lists and a member sign-in. Built on ou-lib.mjs. Nothing here edits the app. */
 export * from './ou-lib.mjs'
-import { L, list, noteNow, board, closeBoard } from './ou-lib.mjs'
+import { L, list, noteNow, board, closeBoard, file, mark, rowBtn, makeHoliday, closeWindows, fillForm, FRI, FRI_ISO } from './ou-lib.mjs'
 import { publish } from './lib.mjs'
 export { publish }
 export const J = x => JSON.stringify(x)
@@ -126,4 +126,50 @@ export async function pworld(sizeKey, { who = ['ad', 'a'] } = {}) {
   await L.sleep(400)
   const press = async sel => { const l = typeof sel === 'string' ? page.locator(sel).first() : sel; if (S.phone) await l.tap(); else await l.click() }
   return { browser, ctx, page, errors, S, phone: S.phone, key: sizeKey, press }
+}
+/** the load's fixture on Friday 17 Jul, by the app's own controls (the designer's S24, trimmed to what the screens offer):
+    A (Ranger, answered Yes in the holiday's list), B (three people, filed by Ranger), C (Nomad, Training), D (cancelled),
+    E (an ALL AVAIL Event), F (leave); Friday published; Friday made a holiday; the list answered for A only ("Later"); then
+    B, C and D taken off the board. Returns the ids and what each step showed. Ends signed in as the admin, board closed. */
+export async function loadSetup(w) {
+  const p = w.page, out = {}
+  const sleep = L.sleep
+  out.A = await file(w, FRI_ISO, 'bane', 'Range brief')
+  await signAs(w, 'us', 'us')
+  out.B = await fileSev(w, FRI_ISO, ['Ranger', 'Nomad', 'Ace'], 'Hangar brief', { start: '10:00', end: '11:00' })
+  await signAs(w, 'ad', 'a')
+  out.C = await file(w, FRI_ISO, 'pike', 'Engine brief', { start: '11:00', end: '12:00' })
+  out.D = await file(w, FRI_ISO, 'dj', 'Range walk', { start: '13:00', end: '14:00' })
+  await mark(w, FRI, out.D.id, 'cx')
+  await inputsCal(w, '2026-07-13'); await openAdd(w, FRI_ISO)
+  await p.selectOption('#inpEditPop #inpEditType', 'Event'); await sleep(200)
+  await p.selectOption('#inpEditPop #inpEditPerson', { label: 'ALL AVAIL' }).catch(async () => { await p.selectOption('#inpEditPop #inpEditPerson', 'allavail') })
+  const ad = p.locator('#inpEditPop #inpEditAllday'); if (await ad.count() && await ad.isChecked()) await ad.click()
+  await p.fill('#inpEditPop #inpEditStart', '14:00'); await p.fill('#inpEditPop #inpEditEnd', '15:00')
+  if (await p.locator('#inpEditPop #inpEditOwnTitle').count()) await p.fill('#inpEditPop #inpEditOwnTitle', 'Crew briefing')
+  const b4 = await p.evaluate(() => window.INPUTS.map(x => String(x.iid)))
+  await w.press('#inpEditSave'); await sleep(800)
+  out.E = { id: await p.evaluate(b => { const n = window.INPUTS.find(x => !b.includes(String(x.iid))); return n ? String(n.iid) : null }, b4) }
+  await closeDay(w)
+  await inputsCal(w, '2026-07-13'); await openAdd(w, FRI_ISO)
+  await fillForm(w, { type: 'LL', person: 'bane', allday: true })
+  const b5 = await p.evaluate(() => window.INPUTS.map(x => String(x.iid)))
+  await w.press('#inpEditSave'); await sleep(800)
+  out.F = { id: await p.evaluate(b => { const n = window.INPUTS.find(x => !b.includes(String(x.iid))); return n ? String(n.iid) : null }, b5) }
+  await closeDay(w)
+  await board(w, FRI)
+  out.pub = await publish(p, FRI); await sleep(600)
+  await closeBoard(w)
+  out.hol = await makeHoliday(w, FRI_ISO)
+  /* answer A in the list, the rest "Later" */
+  if (out.hol.list) {
+    await w.press(`[data-testid="odl-yes-${out.A.id}"]`); await sleep(150)
+    await w.press('[data-testid="odl-save"]'); await sleep(600)
+    if (await p.locator('[data-testid="win-oilday"]').count()) { await w.press('[data-testid="odl-later"]'); await sleep(300) }
+  }
+  await closeWindows(w)
+  await board(w, FRI)
+  for (const k of ['B', 'C', 'D']) { await rowBtn(w, FRI, out[k].id, 'grdel'); await sleep(300) }
+  await closeBoard(w)
+  return out
 }

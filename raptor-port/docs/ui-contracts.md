@@ -4446,6 +4446,13 @@ Three things stay decided:
   Scheduler Board too, its buttons reachable — headed "Public holiday · <name>" on a holiday and with no such line on a
   plain weekend. The list is the day's whole open list, so it may hold more lines than the note counts. Nothing is
   added and no list opens where none needs an answer. Pictures: `docs/img/handpass/2026-10-14-oil-uncancel-load/`.
+  **Three edges, from the fresh read of the finished code (14 Oct 26):** an input of several days whose unanswered day
+  is not the day loaded is counted too, and the list then opens for the day that needs the answer (a Fri–Sat input
+  loaded back on Friday: "OIL — Sat 18 Jul"); a holiday with no name of its own is headed "Public holiday" alone,
+  never by the preset's word; and the list's foot says "What is left goes to the schedulers’ bells" only where a
+  scheduler's bell does carry a line for one of the days still unanswered — not on a plain weekend, and not on a
+  holiday made while nothing on it could earn. **And the flash** after "Don’t un-cancel" lands on the row the input
+  stands on at that moment (its button is found each time the question is put).
 - **Not answered:** nothing is written. The places flash with the landing flash (`.lift-land` — the puck dropped on and
   the seat dragged from; the Unavailable row's person; the calendar's chip) and **the bar** appears: `.secdef-snack.oilbar`,
   the "Set as default" bar's look, at the foot of the screen, z-index 440 — over the full-screen Scheduler Board (400),

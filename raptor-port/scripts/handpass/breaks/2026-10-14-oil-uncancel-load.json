@@ -1,77 +1,325 @@
 [
- { "n": 1, "name": "D816: the cancel comes off at once, the question never asked",
-   "file": "src/ui/reqdoor.ts", "find": "    if (g && g.kind === 'ask') {\n      TRYING = true", "put": "    if (false) {\n      TRYING = true",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 2, "name": "D816: the gate is asked of the input as it stands, still wearing its mark (so nothing is ever to be asked)",
-   "file": "src/ui/reqdoor.ts", "find": "const as = { ...x, [mark]: false }", "put": "const as = { ...x }",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 3, "name": "D816 reading 1: the information-only mark comes off with no question",
-   "file": "src/ui/reqdoor.ts", "find": "if (!on && (what === 'cx' || what === 'info') && inp[what]) {", "put": "if (!on && what === 'cx' && inp[what]) {",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 4, "name": "D816 reading 3: the answer is not written with the un-cancel",
-   "file": "src/ui/reqdoor.ts", "find": "    if (oil) inp.oil = { ...oil }\n", "put": "",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 5, "name": "the cancel's reason is left on an input brought back",
-   "file": "src/ui/reqdoor.ts", "find": "if (mark === 'cx') { inp.cx = false; delete inp.cxr } else delete inp.info", "put": "if (mark === 'cx') { inp.cx = false } else delete inp.info",
-   "tests": ["src/ui/oilwait.test.tsx", "src/ui/inputmarks-scenarios.test.tsx"] },
- { "n": 6, "name": "D816 reading 2: the bar's words for a cancel left on",
-   "file": "src/ui/oilwait.ts", "find": "not: 'Not un-cancelled — OIL not answered'", "put": "not: 'Not done — OIL not answered'",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 7, "name": "D816 reading 2: the ⓘ mark's buttons read as the cancel's",
-   "file": "src/ui/oilwait.ts", "find": "uninfo: { no: 'Don’t change', yes: 'Change',", "put": "uninfo: { no: 'Don’t un-cancel', yes: 'Un-cancel',",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 8, "name": "changed meanwhile: the words say nothing of the un-cancel",
-   "file": "src/ui/oilwait.ts", "find": "uncx: 'That input has changed — not un-cancelled'", "put": "uncx: 'That input has changed'",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 9, "name": "an input brought back meanwhile is un-cancelled again on the old answer",
-   "file": "src/ui/reqdoor.ts", "find": "          if (!x2 || !x2[mark]) return 'none'\n", "put": "          if (!x2) return 'none'\n",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 10, "name": "\"Answer OIL\" on the bar un-cancels at once instead of asking again",
-   "file": "src/ui/reqdoor.ts", "find": "        if (g2 && g2.kind === 'ask') { hold(x, g2); return 'asked' }\n", "put": "",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 11, "name": "\"Answer OIL\" on the bar works for someone who may not edit the schedule",
-   "file": "src/ui/reqdoor.ts", "find": "        if (!canEditSched()) return 'refused'\n        const g2", "put": "        const g2",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 12, "name": "a take-off the save would refuse is asked a question first",
-   "file": "src/ui/reqdoor.ts", "find": "      if (!good) { const a = unmark(find(), mark); if (a !== 'done') notify(); return a }", "put": "",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 13, "name": "the question is not headed in the un-cancel's own words",
-   "file": "src/ui/reqdoor.ts", "find": "lead: mark === 'cx' ? `Un-cancelling ", "put": "lead: mark === 'cx' ? `Putting back ",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 14, "name": "the ⓘ mark's wait is filed as a cancel's (its bar would read \"Not un-cancelled\")",
-   "file": "src/ui/reqdoor.ts", "find": "kind: mark === 'cx' ? 'uncx' : 'uninfo',", "put": "kind: 'uncx',",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 15, "name": "the answered un-cancel says nothing (no \"Restored\")",
-   "file": "src/ui/reqdoor.ts", "find": "          if (a === 'done') HOOKS.toast(UNMARKED[mark])\n", "put": "",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 16, "name": "D818: the load's note has no tail",
-   "file": "src/ui/interactions.ts", "find": "const saidAll = said + (need ? ` · ${need} input${need === 1 ? ' needs' : 's need'} an OIL answer` : '')", "put": "const saidAll = said",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 17, "name": "D818: the day's one list is not opened",
-   "file": "src/ui/interactions.ts", "find": "    if (need) setOilList({", "put": "    if (false) setOilList({",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 18, "name": "D818: an input that needed its answer all along is counted as put back",
-   "file": "src/ui/interactions.ts", "find": "stands(x) && !stood.has(String(inpId(x))) && open.has(String(inpId(x)))", "put": "stands(x) && open.has(String(inpId(x)))",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 19, "name": "D818: the tail says \"inputs\" for one",
-   "file": "src/ui/interactions.ts", "find": "input${need === 1 ? ' needs' : 's need'} an OIL answer", "put": "inputs need an OIL answer",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 20, "name": "D818: a plain weekend's list is headed as a public holiday (the flag never set)",
-   "file": "src/ui/interactions.ts", "find": "plain: facts.kind !== 'ph' })", "put": "plain: false })",
-   "tests": ["src/ui/oilwait.test.tsx"] },
- { "n": 21, "name": "D818: a holiday's list, opened by a load, does not name the holiday",
-   "file": "src/ui/interactions.ts", "find": "name: facts.kind === 'ph' ? String((facts as any).name || '') : ''", "put": "name: ''",
-   "tests": ["src/leavewar/holnotice.test.tsx"] },
- { "n": 22, "name": "D818: a public holiday's list is marked plain",
-   "file": "src/ui/interactions.ts", "find": "plain: facts.kind !== 'ph' })", "put": "plain: true })",
-   "tests": ["src/leavewar/holnotice.test.tsx"] },
- { "n": 23, "name": "the list drawn plain still says \"Public holiday\"",
-   "file": "src/ui/OilDayList.tsx", "find": "sub={plain ? undefined : name ?", "put": "sub={name ?",
-   "tests": ["src/leavewar/holnotice.test.tsx"] },
- { "n": 24, "name": "the flag is dropped by the list's setter",
-   "file": "src/ui/pops.ts", "find": ", ...(v.plain ? { plain: true } : {}) }", "put": " }",
-   "tests": ["src/ui/oilwait.test.tsx", "src/leavewar/holnotice.test.tsx"] },
- { "n": 25, "name": "D818: an input the load brings back from silent is not counted (only those not standing before)",
-   "file": "src/ui/interactions.ts", "find": "INPUTS.filter((x: any) => stands(x) && openWas.has(String(inpId(x))))", "put": "INPUTS.filter((x: any) => stands(x))",
-   "tests": ["src/ui/oilwait.test.tsx"] }
+ {
+  "n": 1,
+  "name": "D816: the cancel comes off at once, the question never asked",
+  "file": "src/ui/reqdoor.ts",
+  "find": "    if (g && g.kind === 'ask') {\n      TRYING = true",
+  "put": "    if (false) {\n      TRYING = true",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 2,
+  "name": "D816: the gate is asked of the input as it stands, still wearing its mark (so nothing is ever to be asked)",
+  "file": "src/ui/reqdoor.ts",
+  "find": "const as = { ...x, [mark]: false }",
+  "put": "const as = { ...x }",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 3,
+  "name": "D816 reading 1: the information-only mark comes off with no question",
+  "file": "src/ui/reqdoor.ts",
+  "find": "if (!on && (what === 'cx' || what === 'info') && inp[what]) {",
+  "put": "if (!on && what === 'cx' && inp[what]) {",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 4,
+  "name": "D816 reading 3: the answer is not written with the un-cancel",
+  "file": "src/ui/reqdoor.ts",
+  "find": "    if (oil) inp.oil = { ...oil }\n",
+  "put": "",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 5,
+  "name": "the cancel's reason is left on an input brought back",
+  "file": "src/ui/reqdoor.ts",
+  "find": "if (mark === 'cx') { inp.cx = false; delete inp.cxr } else delete inp.info",
+  "put": "if (mark === 'cx') { inp.cx = false } else delete inp.info",
+  "tests": [
+   "src/ui/oilwait.test.tsx",
+   "src/ui/inputmarks-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 6,
+  "name": "D816 reading 2: the bar's words for a cancel left on",
+  "file": "src/ui/oilwait.ts",
+  "find": "not: 'Not un-cancelled — OIL not answered'",
+  "put": "not: 'Not done — OIL not answered'",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 7,
+  "name": "D816 reading 2: the ⓘ mark's buttons read as the cancel's",
+  "file": "src/ui/oilwait.ts",
+  "find": "uninfo: { no: 'Don’t change', yes: 'Change',",
+  "put": "uninfo: { no: 'Don’t un-cancel', yes: 'Un-cancel',",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 8,
+  "name": "changed meanwhile: the words say nothing of the un-cancel",
+  "file": "src/ui/oilwait.ts",
+  "find": "uncx: 'That input has changed — not un-cancelled'",
+  "put": "uncx: 'That input has changed'",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 9,
+  "name": "an input brought back meanwhile is un-cancelled again on the old answer",
+  "file": "src/ui/reqdoor.ts",
+  "find": "          if (!x2 || !x2[mark]) return 'none'\n",
+  "put": "          if (!x2) return 'none'\n",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 10,
+  "name": "\"Answer OIL\" on the bar un-cancels at once instead of asking again",
+  "file": "src/ui/reqdoor.ts",
+  "find": "        if (g2 && g2.kind === 'ask') { hold(x, g2); return 'asked' }\n",
+  "put": "",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 11,
+  "name": "\"Answer OIL\" on the bar works for someone who may not edit the schedule",
+  "file": "src/ui/reqdoor.ts",
+  "find": "        if (!canEditSched()) return 'refused'\n        const g2",
+  "put": "        const g2",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 12,
+  "name": "a take-off the save would refuse is asked a question first",
+  "file": "src/ui/reqdoor.ts",
+  "find": "      if (!good) { const a = unmark(find(), mark); if (a !== 'done') notify(); return a }",
+  "put": "",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 13,
+  "name": "the question is not headed in the un-cancel's own words",
+  "file": "src/ui/reqdoor.ts",
+  "find": "lead: mark === 'cx' ? `Un-cancelling ",
+  "put": "lead: mark === 'cx' ? `Putting back ",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 14,
+  "name": "the ⓘ mark's wait is filed as a cancel's (its bar would read \"Not un-cancelled\")",
+  "file": "src/ui/reqdoor.ts",
+  "find": "kind: mark === 'cx' ? 'uncx' : 'uninfo',",
+  "put": "kind: 'uncx',",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 15,
+  "name": "the answered un-cancel says nothing (no \"Restored\")",
+  "file": "src/ui/reqdoor.ts",
+  "find": "          if (a === 'done') HOOKS.toast(UNMARKED[mark])\n",
+  "put": "",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 16,
+  "name": "D818: the load's note has no tail",
+  "file": "src/ui/interactions.ts",
+  "find": "const saidAll = said + (need ? ` · ${need} input${need === 1 ? ' needs' : 's need'} an OIL answer` : '')",
+  "put": "const saidAll = said",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 17,
+  "name": "D818: the day's one list is not opened",
+  "file": "src/ui/interactions.ts",
+  "find": "    if (need) {\n      const days",
+  "put": "    if (false) {\n      const days",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 18,
+  "name": "D818: an input that needed its answer all along is counted as put back",
+  "file": "src/ui/interactions.ts",
+  "find": "stands(x) && !stood.has(String(inpId(x))) && open.has(String(inpId(x)))",
+  "put": "stands(x) && open.has(String(inpId(x)))",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 19,
+  "name": "D818: the tail says \"inputs\" for one",
+  "file": "src/ui/interactions.ts",
+  "find": "input${need === 1 ? ' needs' : 's need'} an OIL answer",
+  "put": "inputs need an OIL answer",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 20,
+  "name": "D818: a plain weekend's list is headed as a public holiday (the flag never set)",
+  "file": "src/ui/interactions.ts",
+  "find": "plain: !allPh })",
+  "put": "plain: false })",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 21,
+  "name": "D818: a holiday's list, opened by a load, does not name the holiday",
+  "file": "src/ui/interactions.ts",
+  "find": "name: names.length === 1 ? names[0]! : ''",
+  "put": "name: ''",
+  "tests": [
+   "src/leavewar/holnotice.test.tsx"
+  ]
+ },
+ {
+  "n": 22,
+  "name": "D818: a public holiday's list is marked plain",
+  "file": "src/ui/interactions.ts",
+  "find": "plain: !allPh })",
+  "put": "plain: true })",
+  "tests": [
+   "src/leavewar/holnotice.test.tsx"
+  ]
+ },
+ {
+  "n": 23,
+  "name": "the list drawn plain still says \"Public holiday\"",
+  "file": "src/ui/OilDayList.tsx",
+  "find": "sub={plain ? undefined : name ?",
+  "put": "sub={name ?",
+  "tests": [
+   "src/leavewar/holnotice.test.tsx"
+  ]
+ },
+ {
+  "n": 24,
+  "name": "the flag is dropped by the list's setter",
+  "file": "src/ui/pops.ts",
+  "find": ", ...(v.plain ? { plain: true } : {}) }",
+  "put": " }",
+  "tests": [
+   "src/ui/oilwait.test.tsx",
+   "src/leavewar/holnotice.test.tsx"
+  ]
+ },
+ {
+  "n": 25,
+  "name": "D818: an input the load brings back from silent is not counted (only those not standing before)",
+  "file": "src/ui/interactions.ts",
+  "find": "INPUTS.filter((x: any) => stands(x) && openWas.has(String(inpId(x))))",
+  "put": "INPUTS.filter((x: any) => stands(x))",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ],
+  "note": "NOT CAUGHT and explained: a load never changes an input's cancel, its information-only mark or its OIL answer (the marks are written only by the row's own door and by Undo), so an input standing on the day before the load is open before it exactly when it is open after it — with or without this half of the test the count is the same. Kept as a guard should a load ever bring a marked input back live (the scenario designer's S30)."
+ },
+ {
+  "n": 26,
+  "name": "the read F1: the load counts on the loaded day alone (an input of several days, its unanswered day another one, is not counted)",
+  "file": "src/ui/interactions.ts",
+  "find": "new Map(oilOpenOn(lo, hi).map(",
+  "put": "new Map(oilOpenOn(iso, iso).map(",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 27,
+  "name": "the read F2: an unnamed holiday is named by the preset word in the list a load opens",
+  "file": "src/ui/interactions.ts",
+  "find": "days.map(d => holidayOwnName(d))",
+  "put": "days.map(d => String((dayFacts(d) as any).name || ''))",
+  "tests": [
+   "src/leavewar/holnotice.test.tsx"
+  ]
+ },
+ {
+  "n": 28,
+  "name": "the read F3: the list promises the schedulers’ bells where no bell carries a line",
+  "file": "src/ui/OilDayList.tsx",
+  "find": "{belled && rows.length && done < rows.length ?",
+  "put": "{rows.length && done < rows.length ?",
+  "tests": [
+   "src/leavewar/holnotice.test.tsx"
+  ]
+ },
+ {
+  "n": 29,
+  "name": "the read F3, the other way: the promise is never made, though the schedulers were told",
+  "file": "src/ui/OilDayList.tsx",
+  "find": "const belled = rows.some(x => x.o.days.some(d => !!holidayLineOn(me(), d)))",
+  "put": "const belled = false",
+  "tests": [
+   "src/leavewar/holnotice.test.tsx"
+  ]
+ },
+ {
+  "n": 30,
+  "name": "the read F4: the wait keeps the place its row had at the first press",
+  "file": "src/ui/reqdoor.ts",
+  "find": "\"${di}.${ri}\"]`]\n        }\n        return []",
+  "put": "\"${p.di}.${p.ri}\"]`]\n        }\n        return []",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 31,
+  "name": "the read F4: \"Answer OIL\" carries the old place into the new wait",
+  "file": "src/ui/oilwait.ts",
+  "find": "if (OILWAIT && w.kind !== 'uncx' && w.kind !== 'uninfo') for",
+  "put": "if (OILWAIT) for",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ },
+ {
+  "n": 32,
+  "name": "the read F1: the list opens for the loaded day though the unanswered day is another",
+  "file": "src/ui/interactions.ts",
+  "find": "setOilList({ from: days[0] || iso, to: days[days.length - 1] || iso,",
+  "put": "setOilList({ from: iso, to: iso,",
+  "tests": [
+   "src/ui/oilwait.test.tsx"
+  ]
+ }
 ]
