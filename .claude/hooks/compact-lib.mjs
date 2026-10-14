@@ -9,20 +9,51 @@
 // Everything fails OPEN: an unreadable record, no git, no temp folder — each returns null, and the caller then does
 // what the app would have done without these hooks. A guard that broke compaction would be worse than none.
 import { openSync, readSync, closeSync, fstatSync, readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
-import { tmpdir } from 'node:os';
+import { join, dirname } from 'node:path';
+import { tmpdir, homedir } from 'node:os';
 import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
-/** The chat's room, in tokens. The models in use have a 1M window; CLAUDE_CONTEXT_WINDOW overrides it for tests. */
-export const WINDOW = Number(process.env.CLAUDE_CONTEXT_WINDOW) || 1_000_000;
-/** From here the agent starts looking for a clean point (D868), and is reminded again every five points. */
-export const BANDS = [80, 85, 90, 95];
-/** At or above this the guard never holds a compaction back: the app's own point stays the backstop (D870). */
-export const NEVER_HOLD_AT = 90;
-/** Below this the guard never holds either — the app's lowered point is about 85%, so a compaction asked for lower down
- *  is something else: the app's compaction of an idle chat, or a chat on a model with a smaller room than the 1M this
- *  figure is measured against (the reader's findings 1 and 5, 15 Oct 26). */
-export const HOLD_FROM = 80;
+/** The model's whole room, in tokens: the models in use have a 1M window. */
+export const MODEL_WINDOW = 1_000_000;
+
+/** THE APP'S OWN ROOM — what every figure here is a percentage of ([COMPACT-BANDS-WINDOW], his ruling D878, 15 Oct 26).
+ *  The app counts the chat against the `autoCompactWindow` setting when one is set (880,000 here) and compacts at 96%
+ *  of it — about 845,000. Counted against the whole 1M, as first built, the first note came at 800,000, only about
+ *  45,000 before the compaction, and read about 10 points lower than the app's own figure. So the room is read the way
+ *  the app reads it: the setting in this project's local settings, else its shared settings (the folder these hooks
+ *  sit in — the app runs them from its project folder), else his own settings; else the whole 1M. CLAUDE_CONTEXT_WINDOW
+ *  overrides it for a test. A figure that is not a sensible token count is ignored. */
+export function appRoom(env = process.env, files = settingsFiles()) {
+  const forced = Number(env.CLAUDE_CONTEXT_WINDOW);
+  if (forced > 0) return forced;
+  for (const f of files) {
+    try {
+      const v = Number(JSON.parse(readFileSync(f, 'utf8')).autoCompactWindow);
+      if (v >= 10_000 && v <= MODEL_WINDOW) return v;
+    } catch { /* no such file, or not JSON: the next one */ }
+  }
+  return MODEL_WINDOW;
+}
+function settingsFiles() {
+  const project = join(dirname(fileURLToPath(import.meta.url)), '..');
+  return [join(project, 'settings.local.json'), join(project, 'settings.json'), join(homedir(), '.claude', 'settings.json')];
+}
+/** The chat's room, in tokens — the app's own (above). */
+export const WINDOW = appRoom();
+/** The first note comes at 75% of the app's room — about 660,000 of 880,000, some 185,000 before the app compacts at
+ *  96% of it (D878's reading) — then again every five points. On a room of the whole 1M they are 750,000 and up. */
+export const BANDS = [75, 80, 85, 90];
+/** The token count from which the guard never holds a compaction back: 90% of the model's whole room (900,000), so a
+ *  compaction is never held near the true limit (D870); the app's own point stays the backstop. As a percentage of the
+ *  app's room: about 102% of 880,000 — the guard's window runs from the first note to just past the app's own point
+ *  (the app tries again at the next request), and on a room of the whole 1M it is 90%, as first built. */
+export const NEVER_HOLD_TOKENS = Math.round(MODEL_WINDOW * 0.9);
+export const NEVER_HOLD_AT = Math.round((NEVER_HOLD_TOKENS / WINDOW) * 1000) / 10;
+/** Below this the guard never holds either — a compaction asked for lower down is something else: the app's compaction
+ *  of an idle chat, or a chat on a model with a smaller room (the reader's findings 1 and 5, 15 Oct 26). The first note's
+ *  point, so the agent has been told before anything is held. */
+export const HOLD_FROM = BANDS[0];
 /** A "ready" mark older than this is stale. Short on purpose: the mark is set only once a compaction is WAITING (the
  *  guard has held one), so it is meant for the very next attempt, not for whatever crosses the point later (finding 3). */
 export const READY_FRESH_MS = 10 * 60 * 1000;

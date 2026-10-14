@@ -10,9 +10,10 @@
 // 15 Oct 26, finding 1: overnight, that ends the run). The hook is not told which kind it is, so it holds ONLY when
 // every one of these is true, and otherwise lets the compaction run:
 //   · it is automatic (a manual /compact is never held), and not inside a helper (no agent_id);
-//   · the fullness can be read, and the last request stood from 80% to under 90% — below 80 it is an idle chat's
-//     compaction or a smaller model's room (findings 1, 5); from 90 the app's backstop stands;
-//   · with what has come in since that request added (tool output not yet sent), it is still under 90% — a request
+//   · the fullness can be read, and the last request stood from the first note's point (75% of the app's own room —
+//     D878) to under 900,000 tokens (90% of the model's whole room; about 102% of an 880,000 room) — below the first
+//     note it is an idle chat's compaction or a smaller model's room (findings 1, 5); from 900,000 the backstop stands;
+//   · with what has come in since that request added (tool output not yet sent), it is still under 900,000 — a request
 //     that overran shows here, so even the FIRST attempt to recover goes through;
 //   · it has not already held once on this same last request — a second attempt with no new request in between is
 //     not the app's ordinary try at the next turn, so it goes through;

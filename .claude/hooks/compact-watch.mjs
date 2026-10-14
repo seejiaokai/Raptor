@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // PostToolUse hook, every tool — [COMPACT-WHEN-MOD] (D868, D870, D871). Two short notes, each said once, put in front
 // of the agent after a tool use:
-//   1. Once the chat is about 80% full (and again at 85, 90, 95): find a clean point, save the state the way a handoff
+//   1. Once the chat is 75% full of the app's own room (and again at 80, 85, 90 — D878; the app compacts at about 96%
+//      of it, so the first note leaves some 185,000 tokens): find a clean point, save the state the way a handoff
 //      would, and judge — he is here and the job is nearly done → offer him a handoff (D871); otherwise carry on.
 //   2. Once the guard has held an automatic compaction: a compaction is WAITING — at the next clean point save the
 //      state and mark "ready"; it then comes at the next step. The mark is asked for only here, so the compaction
@@ -9,10 +10,10 @@
 //
 // Why a hook and not only the guide's line: the figure is only seen when the agent thinks to ask for it; on a long
 // walk it does not. Silent inside a helper — a helper's tool use also reaches this hook, with the main chat's record,
-// and must neither get the note nor use it up (finding 2). Silent below 80% and on any error.
+// and must neither get the note nor use it up (finding 2). Silent below the first band and on any error.
 import { fileURLToPath } from 'node:url';
 import { basename } from 'node:path';
-import { readFill, readState, writeState, bandOf, readInput, READY_COMMAND } from './compact-lib.mjs';
+import { readFill, readState, writeState, bandOf, readInput, READY_COMMAND, WINDOW } from './compact-lib.mjs';
 
 /** The note for a band just reached, or ''. Pure, for the tests. */
 export function reminder(fill, lastBand) {
@@ -20,7 +21,7 @@ export function reminder(fill, lastBand) {
   const band = bandOf(fill.pct);
   if (!band || band <= (lastBand || 0)) return '';
   return [
-    `This chat is ${Math.round(fill.pct)}% full (about ${Math.round(fill.tokens / 1000)}k tokens) — his rulings D868 and D871.`,
+    `This chat is ${Math.round(fill.pct)}% full (about ${Math.round(fill.tokens / 1000)}k of the app's ${Math.round(WINDOW / 1000)}k; it compacts by itself at about 96%) — his rulings D868, D871, D878.`,
     'At the next clean point: finish the step in hand, commit, push, and rewrite this chat\'s block in HANDOFF.md as a',
     'handoff would (the step in hand, the files it touches, open faults, questions parked, what is next). Start no new',
     'helper, walk or gate run before that. Then judge: he is using the chat and the job is nearly done → do not wait',
