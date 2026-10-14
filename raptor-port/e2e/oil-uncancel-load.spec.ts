@@ -30,12 +30,18 @@ const HOLCAL = { mon: '[data-testid="holcal-month"]', prev: '[data-testid="holca
 const tid = (p: Page, t: string) => p.locator(`[data-testid="${t}"]`)
 const noteNow = (p: Page) => p.evaluate(() => { const t = document.getElementById('toastEl'); return t && +getComputedStyle(t).opacity > 0.5 ? (t.textContent || '') : '' })
 const rec = (p: Page, id: string) => p.evaluate(id => { const r = (window as any).INPUTS.find((x: any) => String(x.iid) === id); return r ? { cx: !!r.cx, oil: r.oil || null, date: r.date, acc: r.acc } : null }, id)
+/* a day opened on the Inputs calendar — by the keyboard: on a phone the day's middle is under its inputs' bars */
+async function openDay(p: Page, iso: string) {
+  await p.locator(`#inpCal [data-icday="${iso}"]`).focus()
+  await p.keyboard.press('Enter')
+  await tid(p, 'win-inputsday').waitFor()
+}
 /* a one-man Training input filed on a date of July 2026 through the Inputs calendar; returns its id */
 async function file(p: Page, iso: string, title: string) {
   await go(p, 'inputs')
   if (await p.locator('#inCalBtn').getAttribute('aria-pressed') !== 'true') await p.locator('#inCalBtn').click()
   await month(p, INCAL, 2026, 7)
-  await p.locator(`#inpCal [data-icday="${iso}"]`).click()
+  await openDay(p, iso)
   await p.locator('#icPopAdd').click()
   await p.locator('#inpEditPop #inpEditType').selectOption('Training')
   await p.locator('#inpEditPop #inpEditPerson').selectOption('bane')
@@ -72,8 +78,10 @@ const bar = (p: Page) => p.evaluate(() => {
 })
 
 test('D816 — the cancel taken off on a Saturday: the question first; left, the bar on one line at a phone’s width and at 320; answered, "Restored" with its answer', async ({ browser, baseURL }) => {
+  test.setTimeout(120_000)   // one long road through six screens, by the app's own controls
   const context = await browser.newContext({ baseURL, viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true })
   const page = await context.newPage()
+  page.setDefaultTimeout(15_000)   // a step that cannot act says which one, long before the test's own limit
   try {
     await login(page)
     /* filed on a working day, cancelled on the board, its date moved to Saturday while cancelled — no question (D814) */
@@ -85,7 +93,7 @@ test('D816 — the cancel taken off on a Saturday: the question first; left, the
     await page.waitForFunction(id => (window as any).INPUTS.find((x: any) => String(x.iid) === id).cx === true, id)
     await page.locator('#sbDone').click()
     await go(page, 'inputs')
-    await page.locator('#inpCal [data-icday="2026-07-15"]').click()
+    await openDay(page, '2026-07-15')
     await page.locator(`[data-testid="idy-row-${id}"] [data-testid="idy-open"]`).click()
     await page.locator('#inpEdCal [data-cal="2026-07-18"]').click()
     await page.locator('#inpEditSave').click()
@@ -125,6 +133,7 @@ test('D816 — the cancel taken off on a Saturday: the question first; left, the
 })
 
 test('D818 — a published version loaded back from the Scheduler Board: the note counts the input it put back that needs an OIL answer, and the day’s one list stands above the board', async ({ page }) => {
+  test.setTimeout(120_000)
   await page.setViewportSize({ width: 1440, height: 900 })
   await login(page)
   const id = await file(page, '2026-07-17', 'Range brief')
@@ -153,8 +162,8 @@ test('D818 — a published version loaded back from the Scheduler Board: the not
   await tid(page, 'hol-save').click()
   await expect(tid(page, `odl-yes-${id}`), 'the holiday\'s own list carries the input').toBeVisible()
   await tid(page, 'odl-later').click()
-  for (const x of ['win-inputsset-x', 'win-days-x']) if (await tid(page, x).count()) await tid(page, x).click()
-  await page.evaluate(() => document.querySelectorAll<HTMLElement>('[data-testid="win-days"] .win-x').forEach(e => e.click()))
+  /* the Calendar window stands in front of the settings window: closed first */
+  for (const x of ['win-days-x', 'win-inputsset-x']) if (await tid(page, x).count()) await tid(page, x).click()
   /* taken off the programme, then the Original loaded back — from the board */
   await board(page, 4)
   await rowBtn(page, 4, id, 'grdel')
