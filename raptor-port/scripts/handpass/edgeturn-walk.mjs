@@ -372,6 +372,64 @@ async function trackerWalk(w, size) {
     else ok(size, 'T8: the drawn line shows a corner square in view', false, 'none')
   } else ok(size, 'T7: a drawn line, picked, shows its ends', false, JSON.stringify(lh))
 
+  /* T9 — the code read's F1: the same bend square dragged three times; the third, held at the foot, pans at the one
+     speed (no doubled copies) and each drag is one undo step */
+  await fitNow(); await useTool(/Edit lines$/)
+  const ar9 = await arrowAt()
+  if (ar9) {
+    await tapAt(ar9.x, ar9.y)
+    const u0 = await p.evaluate(() => window.__undoForTests?.().undo)
+    for (let k = 0; k < 2; k++) { const c = await centre('#flowSvg .linehandle'); if (!c) break; await H.down(c.x, c.y); await H.to(c.x + 20, c.y + 15, 4); await H.up(); await L.sleep(300) }
+    const c3 = await centre('#flowSvg .linehandle'), bx9 = await boardBox(p)
+    if (c3) {
+      const v0 = await viewT(p)
+      await H.down(c3.x, c3.y); await H.to(c3.x, bx9.b - 6); await L.sleep(500)
+      const v1 = await viewT(p)
+      await H.up(); await L.sleep(400)
+      const u1 = await p.evaluate(() => window.__undoForTests?.().undo)
+      const ran = v0 && v1 ? v0.y - v1.y : 0
+      ok(size, 'T9: a bend square dragged a third time pans at the one speed, not doubled', ran > 60 && ran < 1100, `${Math.round(ran)} px in half a second`)
+      ok(size, 'T9: three drags of the square, three undo steps', u1 - u0 === 3, `${u0} → ${u1}`)
+      for (let k = 0; k < 3; k++) { await p.keyboard.press('Control+z'); await L.sleep(250) }
+    } else ok(size, 'T9: the bend square after two drags', false, 'gone')
+  } else ok(size, 'T9: an arrow to pick', false, 'none')
+
+  /* T10 — F2: after ⤢ Fit (the chart's start in view), a ball held at the canvas's LEFT edge does not pan past where the
+     chart begins */
+  await fitNow(); await useTool(/Move$/)
+  const bx10 = await boardBox(p), v10 = await viewT(p)
+  const left = await p.evaluate(box => {
+    const b = [...document.querySelectorAll('#flowSvg .ball')].map(g => { const r = g.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 } })
+      .filter(o => o.x > box.l + 40 && o.x < box.r - 40 && o.y > box.t + 40 && o.y < box.b - 40).sort((a, c) => a.x - c.x)[0]; return b || null
+  }, bx10)
+  if (left && v10 && v10.x >= 0) {
+    await H.down(left.x, left.y); await H.to(bx10.l + 4, left.y); await L.sleep(900)
+    const v11 = await viewT(p)
+    ok(size, 'T10: with the chart\'s start in view, a ball held at the left edge pans nothing further', v11 && v11.x === v10.x, `${v10.x} → ${v11?.x}`)
+    await H.to(left.x, left.y); await H.up(); await L.sleep(300); await p.keyboard.press('Control+z'); await L.sleep(300)
+  } else ok(size, 'T10: the chart\'s start in view after ⤢ Fit, and a ball', false, JSON.stringify({ v10, left }))
+
+  /* T11 — F3: a drawn line's end held at the edge, the touch then CANCELLED: the pan stops and the line is as it was */
+  await fitNow(); await useTool(/Line$/)
+  const bx11 = await boardBox(p)
+  const A11 = { x: bx11.l + (bx11.r - bx11.l) * 0.35, y: bx11.t + (bx11.b - bx11.t) * 0.4 }
+  await tapAt(A11.x, A11.y); await tapAt(A11.x + 110, A11.y + 80)
+  const lid = await p.evaluate(() => { const e = [...document.querySelectorAll('#flowSvg .linehit')].pop(); return e ? e.getAttribute('data-lid') : null })
+  const pick11 = await p.evaluate(() => { const e = [...document.querySelectorAll('#flowSvg .linehit')].pop(); if (!e) return null; const Ln = e.getTotalLength(), q = e.getPointAtLength(Ln * 0.25), m = e.getScreenCTM(); return { x: m.a * q.x + m.c * q.y + m.e, y: m.b * q.x + m.d * q.y + m.f } })
+  if (pick11) await tapAt(pick11.x, pick11.y)
+  const d0 = await p.evaluate(id => document.querySelector(`#flowSvg .linehit[data-lid="${id}"]`)?.getAttribute('d'), lid)
+  const end11 = await centre('#flowSvg .lend[data-i="0"]')
+  if (end11 && d0) {
+    await H.down(end11.x, end11.y); await H.to(bx11.r - 6, end11.y); await L.sleep(700)
+    if (w.phone) { const cdp = await w.ctx.newCDPSession(p); await cdp.send('Input.dispatchTouchEvent', { type: 'touchCancel', touchPoints: [] }) }
+    else { await p.evaluate(() => window.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true, pointerId: 1 }))); await p.mouse.up() }
+    await L.sleep(200)
+    const va = await viewT(p); await L.sleep(800); const vb = await viewT(p)
+    const d1 = await p.evaluate(id => document.querySelector(`#flowSvg .linehit[data-lid="${id}"]`)?.getAttribute('d'), lid)
+    ok(size, 'T11: a cancelled touch at the edge stops the pan', JSON.stringify(va) === JSON.stringify(vb), `${JSON.stringify(va)} → ${JSON.stringify(vb)}`)
+    ok(size, 'T11: and the line is back as it was', d1 === d0, d1 === d0 ? 'the same' : 'CHANGED')
+  } else ok(size, 'T11: a drawn line picked, its end in view', false, JSON.stringify({ end11, d0: !!d0 }))
+
   ok(size, 'no console or page errors', w.errors.length === 0, w.errors.length ? w.errors.join(' | ').slice(0, 300) : '0')
 }
 

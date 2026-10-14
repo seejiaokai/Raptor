@@ -441,6 +441,10 @@ export function initCalDrag(root: HTMLElement, opts: {
   root.addEventListener('pointerup', onPointerUp, { passive: true })
   root.addEventListener('pointercancel', onPointerCancel, { passive: true })
   root.addEventListener('pointerleave', onPointerLeave, { passive: true })
+  /* A MOUSE LET GO OFF THE MONTH (the night's code read, F4): a mouse has no capture, so a release over the month's head or
+     anywhere off it reached nothing here — the chip stayed lifted under a free mouse, and the side turned the month by
+     itself. The window hears the release too; `once` takes it one time. Off the month it moves nothing. */
+  window.addEventListener('pointerup', onPointerUp, { passive: true })
   return () => {
     clearGesture()
     root.removeEventListener('pointerdown', onPointerDown)
@@ -449,5 +453,6 @@ export function initCalDrag(root: HTMLElement, opts: {
     root.removeEventListener('pointerup', onPointerUp)
     root.removeEventListener('pointercancel', onPointerCancel)
     root.removeEventListener('pointerleave', onPointerLeave)
+    window.removeEventListener('pointerup', onPointerUp)
   }
 }

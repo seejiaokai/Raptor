@@ -515,6 +515,28 @@ describe('initCalDrag — the pointer machine', () => {
       } finally { off() }
     })
 
+    /* the night's code read, F4: a mouse has no capture — a release off the month reached nothing, the chip stayed lifted
+       under a free mouse and the side turned the month by itself */
+    it('a mouse let go OFF the month ends the drag, moves nothing, and nothing turns after', () => {
+      vi.useFakeTimers()
+      const row: any = { person: 'bane', date: 'Jul 20', allday: true, type: 'LL', remarks: '', mod: 'now' }
+      inpId(row); INPUTS.unshift(row)
+      const { root, chip } = buildCalDom(row.iid); lendRect(root)
+      const turns: number[] = []
+      const off = initCalDrag(root, { onTap: () => {}, onTurn: d => turns.push(d) })
+      try {
+        armDrag(chip)
+        expect(document.body.classList.contains('ic-dragging')).toBe(true)
+        EFP_TARGET = null                                          // nothing of the month under the pointer
+        window.dispatchEvent(ptr('pointerup', 175, -40))           // let go above the month: only the window hears it
+        expect(document.body.classList.contains('ic-dragging'), 'the drag has ended').toBe(false)
+        expect(row.date).toBe('Jul 20')
+        root.dispatchEvent(ptr('pointermove', 345, 100))           // back over the month's side, no button held
+        vi.advanceTimersByTime(TURN_HOLD * 3)
+        expect(turns).toEqual([])
+      } finally { off() }
+    })
+
     it('a chip that does not lift never turns the month', () => {
       vi.useFakeTimers()
       const { root, chip } = buildCalDom('nolift-row'); lendRect(root)

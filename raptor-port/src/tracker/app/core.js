@@ -3338,15 +3338,20 @@ function wireBoard() {
       lh.addEventListener('pointerdown', e => {
         if (pinching) return;   /* a second finger starts nothing: it is a pinch */
         e.stopPropagation();
-        const key = selEdge; pushUndo();
+        const key = selEdge, meta0 = edgeMeta[key] ? { ...edgeMeta[key] } : null; pushUndo();
         /* the square rides the finger too (found by the walk, 15 Oct 26 — D899): it was drawn again only on the release,
            so while the canvas panned under a held finger it slid off with the chart and looked dropped */
         const bend = ev2 => { const pt = svgPt(ev2); edgeMeta[key] = { ...(edgeMeta[key] || {}), mid: { x: Math.round(pt.x), y: Math.round(pt.y) } }; lh.setAttribute('x', (pt.x - 6).toFixed(1)); lh.setAttribute('y', (pt.y - 6).toFixed(1)); schedDragPaint(); };
         const fe = followEdge(e, bend);
         const mv = ev2 => { fe.point(ev2); bend(ev2); };
-        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
-        const up = () => { if (fingerStop === stop) fingerStop = null; stop(); markDirty(); saveLayout(); wireBoard(); };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); if (e.pointerType !== 'mouse') fingerStop = stop;
+        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
+        /* drawn again, not wired again (the night's code read, F1): wireBoard added a second listener to this same square
+           on every release, so each later drag ran two, four, eight copies — each its own edge pan, at that many times the speed */
+        const up = () => { if (fingerStop === stop) fingerStop = null; stop(); markDirty(); saveLayout(); renderBoard(); };
+        /* A CANCELLED TOUCH (a call, the system — the night's code read, F3) never sends a release: without this the edge
+           pan ran on for good, rewriting the bend every frame. It puts the bend back as it was, and its undo step goes. */
+        const cancel = () => { if (fingerStop === stop) fingerStop = null; stop(); if (meta0) edgeMeta[key] = meta0; else delete edgeMeta[key]; undoStack.pop(); notify(); renderBoard(); };
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     }
     /* drag a line end onto a blue N/E/S/W point to snap / reconnect */
@@ -3357,9 +3362,11 @@ function wireBoard() {
         const carry = ev2 => { const pt = svgPt(ev2); h.setAttribute('cx', pt.x.toFixed(1)); h.setAttribute('cy', pt.y.toFixed(1)); highlightPort(pt); };
         const fe = followEdge(e, carry);
         const mv = ev2 => { fe.point(ev2); carry(ev2); };
-        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
+        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
         const up = ev2 => { if (fingerStop === stop) fingerStop = null; stop(); applyEndSnap(end, svgPt(ev2)); };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); if (e.pointerType !== 'mouse') fingerStop = stop;
+        /* a cancelled touch snaps nothing (its place can read 0,0): the end goes back where it was (F3) */
+        const cancel = () => { if (fingerStop === stop) fingerStop = null; stop(); renderBoard(); };
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     });
     document.querySelectorAll('#flowSvg .linehit').forEach(h => {
@@ -3395,12 +3402,14 @@ function wireBoard() {
         };
         const fe = followEdge(e, shape);
         const mv = ev2 => { fe.point(ev2); shape(ev2); };
-        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
+        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
+        /* a cancelled touch puts the line back as it was (F3) */
+        const cancel = () => { if (fingerStop === stop) fingerStop = null; stop(); L.pts = P0.map(p => ({ x: p.x, y: p.y })); renderBoard(); };
         const up = () => {
           if (fingerStop === stop) fingerStop = null; stop();
           if (moved) { pushUndo(); markDirty(); saveLayout(); } renderBoard();
         };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); if (e.pointerType !== 'mouse') fingerStop = stop;
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     });
     document.querySelectorAll('#flowSvg .lend').forEach(h => {
@@ -3413,6 +3422,7 @@ function wireBoard() {
         const o = first
           ? (Math.abs(base[0].x - base[1].x) < 0.5 ? 'v' : 'h')
           : (Math.abs(base[base.length - 1].x - base[base.length - 2].x) < 0.5 ? 'v' : 'h');
+        const was = L[key], pts0 = Array.isArray(L.pts) ? L.pts.map(p => ({ x: p.x, y: p.y })) : L.pts;
         L[key] = null;
         const carry = ev2 => {
           const pt = svgPt(ev2);
@@ -3422,7 +3432,9 @@ function wireBoard() {
         };
         const fe = followEdge(e, carry);
         const mv = ev2 => { fe.point(ev2); carry(ev2); };
-        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
+        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
+        /* a cancelled touch puts the line and its end's link back as they were (F3) */
+        const cancel = () => { if (fingerStop === stop) fingerStop = null; stop(); L.pts = pts0; L[key] = was; renderBoard(); };
         const up = ev2 => {
           if (fingerStop === stop) fingerStop = null; stop();
           pushUndo();
@@ -3434,7 +3446,7 @@ function wireBoard() {
           markDirty(); saveLayout(); renderBoard(); renderSide();
           flashHint(made.length ? ('Linked ' + made.join(', ')) : (sn ? 'End connected.' : 'End left loose — nothing linked yet.'));
         };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); if (e.pointerType !== 'mouse') fingerStop = stop;
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     });
   } else {
@@ -3766,7 +3778,17 @@ function followEdge(ev, move) {
   const board = document.getElementById('board');
   let last = { clientX: ev.clientX, clientY: ev.clientY };
   const ep = board ? edgePan({ box: board, touch: ev.pointerType !== 'mouse', x: ev.clientX, y: ev.clientY,
-    onPan: (dx, dy) => { view.x -= dx; view.y -= dy; applyView(); move(last); } }) : null;
+    onPan: (dx, dy) => {
+      /* NOT PAST WHERE THE CHART BEGINS (the night's code read, F2): the chart is drawn from 0 rightward and down only
+         (bounds()), so a thing carried on past its left or top edge would land at a negative place and be cut off the
+         chart outside the editor — and ⤢ Fit could not bring it back. Toward the left or the top the pan stops once the
+         chart's own corner is at the canvas's edge (or wherever the view already was, if it showed more); right and
+         down it runs on, as the chart grows that way. */
+      const nx = view.x - dx, ny = view.y - dy;
+      const x = dx < 0 ? Math.min(nx, Math.max(view.x, 0)) : nx, y = dy < 0 ? Math.min(ny, Math.max(view.y, 0)) : ny;
+      if (x === view.x && y === view.y) return;
+      view.x = x; view.y = y; applyView(); move(last);
+    } }) : null;
   return {
     point: e => { last = { clientX: e.clientX, clientY: e.clientY }; if (ep) ep.point(e.clientX, e.clientY); },
     stop: () => { if (ep) ep.stop(); },
