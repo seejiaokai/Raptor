@@ -25,6 +25,7 @@
    touch pointer keeps reporting the element it went down on. Presses that begin on a control inside a date are that
    control's own. */
 import { dayAtPoint } from './caldays'
+import { edgeTurn, TURN_SETTLE } from './edgescroll'
 
 /** how long a finger is held still before a pick begins — past a deliberate tap, short of a wait */
 export const PICK_HOLD = 400
@@ -42,10 +43,15 @@ export interface CalPick {
   onRange: (a: string, b: string) => void
   /** 1 = the next month, -1 = the one before */
   onSwipe: (dir: 1 | -1) => void
+  /** a run being drawn, held at the month's side, turns it that way (owner D897, D898 — ui/edgescroll.ts edgeTurn);
+   *  absent, the side does nothing */
+  onTurn?: (dir: 1 | -1) => void
 }
 
 export function initCalPick(el: HTMLElement, o: CalPick): () => void {
-  let st: { iso: string; end: string; mouse: boolean; armed: boolean; ranged: boolean; x0: number; y0: number; timer: any; id: number } | null = null
+  let st: { iso: string; end: string; mouse: boolean; armed: boolean; ranged: boolean; x0: number; y0: number; timer: any; id: number
+    /** the month's side turn, live from the moment the run begins to its release */
+    turn: ReturnType<typeof edgeTurn> | null; settle: any; x: number; y: number } | null = null
   let retire: (() => void) | null = null
 
   const dayAt = (x: number, y: number, fallback: EventTarget | null): string | null => dayAtPoint(el, x, y, fallback)
@@ -70,7 +76,27 @@ export function initCalPick(el: HTMLElement, o: CalPick): () => void {
     timer = setTimeout(offAll, 350)
     retire = offAll
   }
-  const drop = () => { if (st) clearTimeout(st.timer); st = null }
+  const drop = () => { if (st) { clearTimeout(st.timer); clearTimeout(st.settle); st.turn?.stop() } st = null }
+  /* THE RUN CARRIED ACROSS A MONTH'S END (owner D897): held at the month's side, the month turns and the run goes on —
+     its first date kept, though the month it is in is no longer drawn (a run is two dates, never a set of cells). Once
+     the new month has slid in, the date now under the still pointer is read again, so what is lit is what a release
+     would pick. */
+  const startTurn = (s: NonNullable<typeof st>) => {
+    if (!o.onTurn || s.turn) return
+    s.turn = edgeTurn({ el, touch: !s.mouse, x: s.x, y: s.y, onTurn: dir => {
+      if (st !== s) return
+      o.onTurn!(dir)
+      clearTimeout(s.settle)
+      s.settle = setTimeout(() => {
+        if (st !== s) return
+        const at = dayAt(s.x, s.y, null)
+        if (!at || at === s.end) return
+        s.end = at
+        if (s.mouse) s.ranged = true
+        o.onPicking(run(s))
+      }, TURN_SETTLE)
+    } })
+  }
 
   const onDown = (e: PointerEvent) => {
     if (e.isPrimary === false || (e.button != null && e.button !== 0)) return
@@ -81,10 +107,11 @@ export function initCalPick(el: HTMLElement, o: CalPick): () => void {
     drop()
     const iso = cell.dataset.icday!
     const mouse = e.pointerType === 'mouse'
-    const rec = { iso, end: iso, mouse, armed: false, ranged: false, x0: e.clientX, y0: e.clientY, timer: 0 as any, id: e.pointerId }
+    const rec = { iso, end: iso, mouse, armed: false, ranged: false, x0: e.clientX, y0: e.clientY, timer: 0 as any, id: e.pointerId,
+      turn: null as ReturnType<typeof edgeTurn> | null, settle: 0 as any, x: e.clientX, y: e.clientY }
     if (o.canPick()) {
-      if (mouse) rec.armed = true                       // a mouse needs no hold: its drag means nothing else here
-      else rec.timer = setTimeout(() => { if (st === rec) { rec.armed = true; o.onPicking(run(rec)) } }, PICK_HOLD)
+      if (mouse) { rec.armed = true; startTurn(rec) }   // a mouse needs no hold: its drag means nothing else here
+      else rec.timer = setTimeout(() => { if (st === rec) { rec.armed = true; startTurn(rec); o.onPicking(run(rec)) } }, PICK_HOLD)
     }
     st = rec
   }
@@ -95,6 +122,8 @@ export function initCalPick(el: HTMLElement, o: CalPick): () => void {
       if (Math.abs(e.clientX - st.x0) > PICK_SLOP || Math.abs(e.clientY - st.y0) > PICK_SLOP) clearTimeout(st.timer)
       return
     }
+    st.x = e.clientX; st.y = e.clientY
+    st.turn?.point(e.clientX, e.clientY)
     const at = dayAt(e.clientX, e.clientY, e.target)
     if (!at || at === st.end) return
     st.end = at

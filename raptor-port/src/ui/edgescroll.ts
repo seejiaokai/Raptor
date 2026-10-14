@@ -92,3 +92,96 @@ export function edgeAutoScroll(opts: {
     stop: () => { live = false; if (raf && typeof cancelAnimationFrame === 'function') cancelAnimationFrame(raf); raf = 0 },
   }
 }
+
+/* CARRIED TO THE EDGE OF A VIEW THAT TURNS RATHER THAN SCROLLS (owner D897, 15 Oct 26 — "should dragging to the edge
+   turn to the next month? Yes"; D898 — the edge and the hold the agent's to choose). The Inputs month does not scroll:
+   it TURNS, sideways — its ‹ › arrows, a finger's swipe and its slide all run left and right — so a drag across days,
+   or a bar moved by days, carried to the month's SIDE and held there turns it that way: the right side to the next
+   month, the left to the last; held on, it turns again every TURN_AGAIN, so a run can reach several months on.
+
+   - THE BAND is the outer EDGE of the month's side for a mouse (the app's one mouse number) and the outer HALF of a
+     finger's TOUCH_EDGE: on a phone a whole date is about 50 px wide, and the full finger band would be most of a
+     Sunday — a run ended on a Sunday and held a moment would turn the month under it. Past the side counts too, while
+     the pointer is level with the month.
+   - A HOLD of TURN_HOLD in the band before the first turn — a run carried THROUGH the band to a date there is not a
+     wish to turn; the turn is itself the sign that the hold has taken (no new mark — the design guide §5a).
+   - A band the press started in is dead until the pointer has left it, as in edgeAutoScroll above.
+   Nothing runs at rest: one timer, from the moment the pointer enters a band to the moment it leaves or lets go. */
+export const TURN_HOLD = 600     // ms in the band before the month turns
+export const TURN_AGAIN = 1000   // ms between turns while still held there
+export const TURN_SETTLE = 280   // ms after a turn before the caller re-reads the date under the pointer — past the month's own 240 ms slide
+
+export function edgeTurn(opts: {
+  el: Element
+  touch: boolean
+  x: number
+  y: number
+  onTurn: (dir: 1 | -1) => void
+}): { point: (x: number, y: number) => void; stop: () => void } {
+  let x = opts.x, y = opts.y, live = true, timer: ReturnType<typeof setTimeout> | 0 = 0, want: -1 | 0 | 1 = 0
+  const band = (): -1 | 0 | 1 => {
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return 0
+    const r = opts.el.getBoundingClientRect()
+    if (!(r.right > r.left) || y < r.top || y > r.bottom) return 0
+    const w = opts.touch ? TOUCH_EDGE / 2 : EDGE
+    return x > r.right - w ? 1 : x < r.left + w ? -1 : 0
+  }
+  let held = band()
+  const clear = () => { if (timer) clearTimeout(timer); timer = 0 }
+  const fire = () => {
+    timer = 0
+    if (!live || !want || band() !== want) return
+    opts.onTurn(want)
+    if (live) timer = setTimeout(fire, TURN_AGAIN)
+  }
+  const read = () => {
+    const b = band()
+    if (held && b !== held) held = 0
+    const now = held ? 0 : b
+    if (now === want) return
+    want = now
+    clear()
+    if (want && live) timer = setTimeout(fire, TURN_HOLD)
+  }
+  read()
+  return {
+    point: (nx, ny) => { x = nx; y = ny; read() },
+    stop: () => { live = false; clear() },
+  }
+}
+
+/* CARRIED TO THE EDGE OF A VIEW THAT PANS (owner D899, 15 Oct 26 — "Questions 1 yes": the Tracker chart's drags; the
+   design guide §5a). Edit chart layout's canvas neither scrolls nor turns: it PANS, both ways at once, by a transform
+   the caller owns. So the same feel as edgeAutoScroll — the same bands, a mouse's constant step, a finger's ramp, a
+   band the press began in dead until left — on both axes, handing the caller the step (positive: toward the right or
+   the foot) to pan by; the caller moves its view and puts the dragged thing back under the pointer. */
+export function edgePan(opts: {
+  box: Element
+  touch: boolean
+  x: number
+  y: number
+  onPan: (dx: number, dy: number) => void
+}): { point: (x: number, y: number) => void; stop: () => void } {
+  let x = opts.x, y = opts.y, raf = 0, live = true
+  const w = opts.touch ? TOUCH_EDGE : EDGE
+  const side = (p: number, lo: number, hi: number): -1 | 0 | 1 => (p < lo + w ? -1 : p > hi - w ? 1 : 0)
+  const r0 = opts.box.getBoundingClientRect()
+  let heldX = side(x, r0.left, r0.right), heldY = side(y, r0.top, r0.bottom)
+  const tick = () => {
+    raf = 0
+    if (!live) return
+    const r = opts.box.getBoundingClientRect()
+    if (heldX && side(x, r.left, r.right) !== heldX) heldX = 0
+    if (heldY && side(y, r.top, r.bottom) !== heldY) heldY = 0
+    let dx = edgeStep(x, r.left, r.right, opts.touch), dy = edgeStep(y, r.top, r.bottom, opts.touch)
+    if (heldX && Math.sign(dx) === heldX) dx = 0
+    if (heldY && Math.sign(dy) === heldY) dy = 0
+    if (dx || dy) opts.onPan(dx, dy)
+    if (live && typeof requestAnimationFrame === 'function') raf = requestAnimationFrame(tick)
+  }
+  if (typeof requestAnimationFrame === 'function') raf = requestAnimationFrame(tick)
+  return {
+    point: (nx, ny) => { x = nx; y = ny },
+    stop: () => { live = false; if (raf && typeof cancelAnimationFrame === 'function') cancelAnimationFrame(raf); raf = 0 },
+  }
+}

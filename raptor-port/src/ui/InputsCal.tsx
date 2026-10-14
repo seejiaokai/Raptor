@@ -486,6 +486,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     const offDrag = initCalDrag(el, {
       onTap: entry => live.current.tapEntry(entry),
       onSwipe: (dx, dy) => { if (Math.abs(dx) >= SWIPE_MIN && Math.abs(dx) > Math.abs(dy)) live.current.step(dx < 0 ? 1 : -1) },
+      /* carried to the month's side and held, the month turns and the bar rides on into it (owner D897, D898) */
+      onTurn: dir => live.current.step(dir),
     })
     /* a press that begins on a date: everyone may file his OWN input from his own calendar (the reach a member already
        has on the List's add form), so a pick is never refused here */
@@ -495,6 +497,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
       onPicking: setDrawn,
       onRange: (a, b) => { setKb(null); live.current.openAdd(a, b) },
       onSwipe: dir => live.current.step(dir),
+      /* a run held at the month's side turns it, and the run goes on into the next month or the last (owner D897, D898) */
+      onTurn: dir => live.current.step(dir),
     })
     return () => { offDrag(); offPick() }
   }, [])

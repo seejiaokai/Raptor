@@ -33,6 +33,7 @@ import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { landOn, liftOn, markLand } from './lift'
 import { dayAtPoint, dayEl } from './caldays'
+import { edgeTurn, TURN_SETTLE } from './edgescroll'
 
 /* drag.ts's own numbers, cited rather than re-derived (its tdArm/onPointerDown/
    onPointerMove, drag.ts ~240-338): 180ms of hold turns a touch into a
@@ -192,6 +193,9 @@ export function initCalDrag(root: HTMLElement, opts: {
   /** a finger's release after a sideways swipe that began ON a chip — its whole travel from the press, for the
    *  calendar to read as it reads a swipe over empty space (the re-walk's NEW-1, 26 Sep 26) */
   onSwipe?: (dx: number, dy: number) => void
+  /** a lifted chip held at the month's side turns the month that way (owner D897, D898 — ui/edgescroll.ts edgeTurn),
+   *  so an input can be carried into the next month or the last; absent, the side does nothing */
+  onTurn?: (dir: 1 | -1) => void
 }): () => void {
   let st: {
     entry: Entry, pointerId: number, mouse: boolean,
@@ -203,6 +207,8 @@ export function initCalDrag(root: HTMLElement, opts: {
     ghost: HTMLElement | null, over: HTMLElement | null, timer: any,
     /** the reader may not move this chip — it never lifts, a tap still opens it (W1-F3) */
     fixed: boolean,
+    /** the month's side turn while lifted, and where the pointer last was (the turn re-reads the date under it) */
+    turn: ReturnType<typeof edgeTurn> | null, settle: any, lx: number, ly: number,
   } | null = null
 
   function moveGhost(x: number, y: number) {
@@ -239,11 +245,26 @@ export function initCalDrag(root: HTMLElement, opts: {
        throwing there must never abort the drag it is decorating */
     try { navigator.vibrate?.(12) } catch (_) { /* no-op */ }
     moveGhost(st.x0, st.y0) // paints the ghost at its start point immediately, and lights any cell already under it
+    /* CARRIED TO THE MONTH'S SIDE (owner D897, D898): held there, the month turns and the chip rides on into it; the
+       move is by days from the date it was grabbed on, so a date in another month is a move like any other. Once the
+       new month has slid in, the date under the still pointer is lit again — the one a release would drop it on. */
+    if (opts.onTurn) {
+      const s = st
+      s.lx = s.x0; s.ly = s.y0
+      s.turn = edgeTurn({ el: root, touch: !s.mouse, x: s.x0, y: s.y0, onTurn: dir => {
+        if (st !== s) return
+        opts.onTurn!(dir)
+        clearTimeout(s.settle)
+        s.settle = setTimeout(() => { if (st === s) moveGhost(s.lx, s.ly) }, TURN_SETTLE)
+      } })
+    }
   }
 
   function clearGesture() {
     if (!st) return
     clearTimeout(st.timer)
+    clearTimeout(st.settle)
+    st.turn?.stop()
     if (st.ghost && st.ghost.parentNode) st.ghost.parentNode.removeChild(st.ghost)
     if (st.over) st.over.classList.remove('ic-over')
     if (st.armed) document.body.classList.remove('ic-dragging')
@@ -302,6 +323,7 @@ export function initCalDrag(root: HTMLElement, opts: {
       entry, pointerId: e.pointerId, mouse: e.pointerType === 'mouse',
       x0: e.clientX, y0: e.clientY, armed: false, ghost: null, over: null, timer: 0, fixed,
       ox: e.clientX, oy: e.clientY, gaveUp: false,
+      turn: null, settle: 0, lx: e.clientX, ly: e.clientY,
     }
     if (!st.mouse) st.timer = setTimeout(arm, HOLD)
     // mouse arms purely off movement, in onPointerMove below — no hold timer at all
@@ -341,7 +363,17 @@ export function initCalDrag(root: HTMLElement, opts: {
       }
       return
     }
+    st.lx = e.clientX; st.ly = e.clientY
+    st.turn?.point(e.clientX, e.clientY)
     moveGhost(e.clientX, e.clientY)
+  }
+
+  /* A MOUSE THAT LEAVES THE MONTH while a chip is lifted is no longer at its side: this machine hears the pointer only
+     over the month, so the turn is told it is gone — or a mouse let go out there would leave the month turning on its
+     own. Back over the month, the next move tells it where it is again. */
+  function onPointerLeave(e: PointerEvent) {
+    if (!st || e.pointerId !== st.pointerId || !st.mouse) return
+    st.turn?.point(NaN, NaN)
   }
 
   /* while armed the page must not scroll/pan under the finger — attached
@@ -404,6 +436,7 @@ export function initCalDrag(root: HTMLElement, opts: {
   root.addEventListener('touchmove', onTouchMove, { passive: false })
   root.addEventListener('pointerup', onPointerUp, { passive: true })
   root.addEventListener('pointercancel', onPointerCancel, { passive: true })
+  root.addEventListener('pointerleave', onPointerLeave, { passive: true })
   return () => {
     clearGesture()
     root.removeEventListener('pointerdown', onPointerDown)
@@ -411,5 +444,6 @@ export function initCalDrag(root: HTMLElement, opts: {
     root.removeEventListener('touchmove', onTouchMove)
     root.removeEventListener('pointerup', onPointerUp)
     root.removeEventListener('pointercancel', onPointerCancel)
+    root.removeEventListener('pointerleave', onPointerLeave)
   }
 }
