@@ -1,5 +1,6 @@
 {
-  "description": "Impeccable design detector (PostToolUse on UI edits + Stop deep pass), task-observer SessionStart activation, and the UserPromptSubmit decision-recorder that stops an owner ruling being absorbed into the work without being written down, and the Stop backlog guard that fails a turn which destroyed a filed backlog record ([DOCS-GUARD]), and the PreToolUse background-command guard that refuses a backgrounded npm/npx command which never moves into raptor-port ([BG-CWD-GUARD], D162).",
+  "description": "Impeccable design detector (PostToolUse on UI edits + Stop deep pass), task-observer SessionStart activation, and the UserPromptSubmit decision-recorder that stops an owner ruling being absorbed into the work without being written down, and the Stop backlog guard that fails a turn which destroyed a filed backlog record ([DOCS-GUARD]), and the PreToolUse background-command guard that refuses a backgrounded npm/npx command which never moves into raptor-port ([BG-CWD-GUARD], D162). And the compaction set-up ([COMPACT-WHEN-MOD], D868, D870, D871): autoCompactWindow lowers the app's own compaction to about 85% of a 1M chat; a PostToolUse reminder from 80% (compact-watch), a PreCompact guard that holds an automatic compaction under 90% until the agent marks ready (compact-guard), a SessionStart \"compact\" hook that hands back the chat's HANDOFF.md block (compact-resume), and the status line showing the fullness (statusline). Every one fails open.",
+  "autoCompactWindow": 880000,
   "hooks": {
     "PreToolUse": [
       {
@@ -28,6 +29,19 @@
             "statusMessage": "Activating task-observer"
           }
         ]
+      },
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "async": false,
+            "command": "if [ -f \"$CLAUDE_PROJECT_DIR/.claude/hooks/compact-resume.mjs\" ] && command -v node >/dev/null 2>&1; then node \"$CLAUDE_PROJECT_DIR/.claude/hooks/compact-resume.mjs\"; else exit 0; fi",
+            "timeout": 10,
+            "statusMessage": "Handing back the saved state"
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -39,6 +53,18 @@
             "command": "[ ! -f \"${CLAUDE_PROJECT_DIR}/.claude/skills/impeccable/scripts/hook.mjs\" ] || ! { node -e \"process.exit(Math.min(parseInt(process.versions.node,10),22)===22?0:1)\" 2>/dev/null || { D=\"$HOME/.impeccable\"; [ -f \"$D/node-unsupported\" ] || { mkdir -p \"$D\" 2>/dev/null && : > \"$D/node-unsupported\" 2>/dev/null && printf '%s' '{\"systemMessage\":\"The impeccable design hook is not running: no Node 22 or newer on PATH. Install one, or remove the impeccable hook from your harness settings.\"}'; }; exit 0; }; } || node \"${CLAUDE_PROJECT_DIR}/.claude/skills/impeccable/scripts/hook.mjs\"",
             "timeout": 5,
             "statusMessage": "Checking UI changes"
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "async": false,
+            "command": "if [ -f \"$CLAUDE_PROJECT_DIR/.claude/hooks/compact-watch.mjs\" ] && command -v node >/dev/null 2>&1; then node \"$CLAUDE_PROJECT_DIR/.claude/hooks/compact-watch.mjs\"; else exit 0; fi",
+            "timeout": 5
           }
         ]
       }
@@ -80,6 +106,25 @@
           }
         ]
       }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "auto",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "async": false,
+            "command": "if [ -f \"$CLAUDE_PROJECT_DIR/.claude/hooks/compact-guard.mjs\" ] && command -v node >/dev/null 2>&1; then node \"$CLAUDE_PROJECT_DIR/.claude/hooks/compact-guard.mjs\"; else exit 0; fi",
+            "timeout": 10
+          }
+        ]
+      }
     ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "command -v node >/dev/null 2>&1 && node \"${CLAUDE_PROJECT_DIR:-.}/.claude/hooks/statusline.mjs\" || true",
+    "padding": 0
   }
 }

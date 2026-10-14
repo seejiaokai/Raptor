@@ -82,8 +82,9 @@ straight to steps 8 and 9 without ending the turn.
    "THE NIGHT OF <date>", and its first line reads: "After a compaction: re-read this block, the overnight guide and the
    files of the step in hand before the next change; note the compaction here with its time." Then: his selection in order, each job's branch, check, reads and rough time, his answers, and
    "Questions waiting for him: none yet". A compaction loses nothing that is already here (D667).
-9. **Then start**, without ending the turn: call `request_keep_awake` with `until: "session_idle"`, and go to the first
-   job. Through the night, wait on a long run INSIDE the turn (a monitor or a foreground wait), never by ending the
+9. **Then start**, without ending the turn: call `request_keep_awake` with `until: "session_idle"`; switch the
+   compaction guard off for the night — `node "$(git rev-parse --show-toplevel)/.claude/hooks/compact-ready.mjs" --away`
+   (D872); and go to the first job. Through the night, wait on a long run INSIDE the turn (a monitor or a foreground wait), never by ending the
    turn: an idle session lets the PC sleep after about five minutes, and the night stops with it.
 
 **Branches.** A new job: its own branch cut from `main`. A job that needs unmerged work: cut from that branch, and the
@@ -101,14 +102,19 @@ block says so. Never a pull request based on another branch — it runs none of 
   **No record is written into the repo while a gate run is going** — draft it in the scratch folder (the document check
   is the run's last gate, and an edit during the run fails it).
 - **Compact smartly, by how full the chat is (D766, D867, D868).** Not at a fixed point: from about 80% full the agent
-  chooses the moment itself, without asking him — the next clean point, so a big job does not compact twice. Until the
-  chat can be made to compact at that moment (`[COMPACT-WHEN-MOD]`), the app does it by itself near full (the usage
-  reading names the point), and the agent keeps that harmless and the work accurate:
+  chooses the moment itself, without asking him — the next clean point, so a big job does not compact twice; on a
+  night it never stops to offer a handoff (D871 — he is away). The project's compaction set-up (D870) does the rest,
+  with its guard OFF at night (D872 — step 9): a note arrives from 80%; the app's own compaction comes at about 85%
+  whenever it gets there — nothing holds it, because a compaction refused by mistake at night would end the run;
+  after it, the chat's saved block is handed back. Any piece of that may not run — then the app compacts by itself
+  near full — so the agent keeps every compaction harmless and the work accurate:
   - keep the chat lean: heavy reading, walking and code reads go to helpers that return conclusions, never file dumps;
   - at each commit, the block names exactly what the rest of the night needs — the job and step in hand, the files it
     touches, the open faults, the questions parked — and what it does not;
-  - from about 80% full: at the next clean point — the step in hand finished, committed, pushed, the block rewritten —
-    compact there; no new helper, walk or gate run starts above that mark until the block is written;
+  - from about 80% full: at the next clean point — the step in hand finished, committed, pushed, the block rewritten;
+    no new helper, walk or gate run starts above 80% until the block is written;
+  - if ever told a compaction is waiting (the guard is on — the away mark lapsed or was never set): set it again with
+    `--away` as in step 9, so the compaction is not held;
   - **after a compaction, re-read the block, this guide and the files the step in hand touches before the next change,
     and note the compaction in the block with its time** — never carry on from the summary's memory of a file, a ruling
     or a test result.
@@ -131,7 +137,8 @@ block says so. Never a pull request based on another branch — it runs none of 
 ## Part 3 — the morning report
 
 - **Read every pull request's checks first** (step 1's command), so the report never says green on a guess.
-- **The block in `HANDOFF.md`** is rewritten by the session-handoff guide, and pushed.
+- **The block in `HANDOFF.md`** is rewritten by the session-handoff guide, and pushed. The guard goes back on:
+  `node "$(git rev-parse --show-toplevel)/.claude/hooks/compact-ready.mjs" --back` (D872).
 - **One notification**, one line: done, or blocked, and where to look.
 - **The report**, short, plain words, in this order:
   1. what is ready for his look — per job: what it does in the app, the preview link, the pictures (several pictures go

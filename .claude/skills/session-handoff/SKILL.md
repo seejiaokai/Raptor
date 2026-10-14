@@ -93,9 +93,11 @@ live" is the NORMAL end state, not an Unfinished item.**
 file is `**.md` or `.claude/**`). GitHub judges a pull request's WHOLE diff, not
 the last push: once the PR carries code, a notes-only push re-runs every gate
 AND cancels the run in progress (corrected 23 Sep 26, after exactly that; owner
-D151 — never push while a PR's checks are running). So check
-`gh run list --branch <branch> --limit 1` first, and push the handoff only when
-no run is going.
+D151 — never push while a PR's checks are running). So check first. A push
+starts two runs at once (the documents guard and the full checks), so read them
+all: `gh run list --branch <branch> --limit 6 --json
+status,workflowName,headSha` — and push the handoff only when no run of the
+branch's last pushed commit is `queued` or `in_progress` (D870).
 
 "Unfinished" means any of: work not yet pushed or not yet handed to the owner
 (a pushed PR AWAITING his "merge live" is the normal end state, not
