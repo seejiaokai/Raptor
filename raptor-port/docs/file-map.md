@@ -3,7 +3,10 @@
 `[OIL-PLAN-SWITCH-UNASKED]` — "Switch to this plan" says what it left to answer (D865; built 15 Oct 26). **New:**
 `src/ui/oilputback.ts` — what a whole-day replacement put back that still needs an OIL answer, read before it and told
 after it, the list opened (`oilPutBackWatch`, `oilNeedSaid`): the one body the load (`src/ui/interactions.ts`) and the
-switch (`src/ui/board.ts switchDraft`) share. **Changed:** `src/ui/board.ts` — the switch's note in short sentences;
+switch (`src/ui/board.ts switchDraft`) share; `scripts/handpass/ps-walk.mjs` (the job's walk, as assertions with pictures);
+`scripts/handpass/glow-look.mjs` (`[GLOW-PLACES-LOOK]`'s pictures — each glowing place today beside a no-glow version).
+**Changed:** `src/ui/board.ts` — the switch's note in short sentences; `src/ui/DraftsModal.tsx` — "Select" closes the plan
+editor when THIS switch opened the OIL list (it sat under the editor's backdrop);
 `src/engine/drafts.ts` — `rowsLeftSaid` removed (its last user was the switch). **Tests:** `src/ui/oilwait.test.tsx`
 (block ON12); `src/state/person-delete.test.ts`, `src/state/reqorphan.test.ts`, `src/ui/reqonerow.test.tsx`,
 `src/ui/reqonerow-app.test.tsx`, `src/ui/amendretest.test.tsx` read the sentences.

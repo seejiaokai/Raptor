@@ -75,6 +75,7 @@ const RECORDS: Record<string, string> = {
   'ui/InputsCal.tsx': 'the Inputs calendar',
   'ui/InputsSettings.tsx': 'the late cut-off\'s count of inputs',
   'ui/interactions.ts': 'the schedule\'s hands on an input',
+  'ui/oilputback.ts': 'what a whole-day replacement (a load, a plan switch) put back that still needs an OIL answer — reads the records (D865)',
   'ui/MedicalView.tsx': 'the Medical tab',
   'ui/MedMoveConfirm.tsx': 'the medical move\'s sheet',
   'ui/oilmode.ts': 'OIL Earn',

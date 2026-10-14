@@ -49,5 +49,13 @@ row unfiles it and nothing lands it again, so the plan with the row brings it ba
 **Walk:** host, 2 sizes, `ps-walk.mjs` 10/10 PASS (v2) after one real fault found and fixed (the list under the plan
 editor); `ou-walk-2.mjs` 12/12 PASS; pictures in `docs/img/handpass/2026-10-15-oil-plan-switch/`.
 
-## 5. Gates, the read
-(Filled in below as each ends.)
+## 5. The read (D875: one fresh, blind Opus reader; no Fable)
+`docs/superpowers/briefs/2026-10-15-reads/oil-plan-switch-code-opus.md` — **CLEAN WITH THESE CHANGES**, two low findings, both
+fixed: **F1** the plan editor closed when a list was ALREADY up and this Select opened none (the walk's fix keyed on any
+list being open) — now only when THIS switch opened it, test red first (`oilwait.test.tsx`, the editor case's last part);
+**F2** the IT guide's source quoted the switch's old words (`scripts/itflow/content.mjs`) — the deck itself is rebuilt on his
+word only (D403). Every door was checked: none MISSING. Both fixes are one-line guards, so no further narrow read (the
+order's §5, "a fix is new code" — more than a one-line guard). The whole gate set was run after both fixes (§6).
+
+## 6. Gates
+(Filled in when the run ends.)

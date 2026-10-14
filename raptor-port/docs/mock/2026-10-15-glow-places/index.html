@@ -1,0 +1,129 @@
+<title>Raptor Glow Look</title>
+<style>
+/* Layout: one column of places; each place a pair, today beside no glow, the "where" frames under it. */
+:root{
+  --bg:#F3F5F7; --card:#FFFFFF; --ink:#141A21; --ink-2:#4B5763; --line:#D9DFE5; --accent:#0E8FB3; --mark:#C77800;
+  --shot:#0B0D10;
+  --f-body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; --f-mono:ui-monospace,"SF Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1318; --card:#171C22; --ink:#E8EDF2; --ink-2:#9AA6B2; --line:#2A323B; --accent:#3BC6E8; --mark:#FFB020; color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1318; --card:#171C22; --ink:#E8EDF2; --ink-2:#9AA6B2; --line:#2A323B; --accent:#3BC6E8; --mark:#FFB020; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);padding-inline:16px;padding-block:20px 48px}
+main{max-width:980px;margin:0 auto;display:grid;gap:22px}
+h1{font-size:22px;margin:0;text-wrap:balance}
+h2{font-size:17px;margin:0;text-wrap:balance}
+p{margin:0;max-width:68ch}
+.lead{color:var(--ink-2)}
+.place{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:12px}
+.num{font:600 12px var(--f-mono);letter-spacing:.06em;color:var(--accent);text-transform:uppercase}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pair figure{margin:0;display:grid;gap:6px;min-width:0}
+.pair figcaption,.where figcaption{font:600 12px var(--f-mono);letter-spacing:.04em;color:var(--ink-2);text-transform:uppercase}
+.shot{background:var(--shot);border-radius:8px;padding:10px;display:grid;place-items:center;min-height:90px;cursor:zoom-in}
+.shot img{display:block;max-width:100%;height:auto;image-rendering:auto}
+.desk .shot{min-height:60px}
+.where{display:flex;flex-wrap:wrap;gap:10px}
+.where figure{margin:0;display:grid;gap:4px;width:150px}
+.where img{width:100%;border-radius:6px;border:1px solid var(--line);cursor:zoom-in}
+.q{border:1px solid var(--mark);padding:8px 12px;background:var(--bg);border-radius:8px}
+.q b{color:var(--ink)}
+.sub{font-size:13px;color:var(--ink-2)}
+details summary{cursor:pointer;color:var(--accent);font-weight:600}
+.box{display:inline-block;width:14px;height:10px;border:2px dashed var(--mark);border-radius:3px;vertical-align:-1px}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:grid;place-items:center;padding:16px;z-index:9;cursor:zoom-out}
+#zoom img{max-width:100%;max-height:100%;object-fit:contain}
+@media (max-width:560px){.pair{grid-template-columns:1fr}}
+</style>
+
+<main>
+  <header style="display:grid;gap:8px">
+    <h1>The other places that glow</h1>
+    <p class="lead">You took the glow off the just-added ring on 15 Oct. These are the other places on the Scheduler Board that still glow. Each is shown as it is today beside the same thing with only its glow taken off. Nothing in the app has changed.</p>
+    <p class="sub">Real app pictures: a real element given the app's own class, its flash held at its brightest. The "no glow" picture changes one style setting and nothing else. The <span class="box"></span> dashed box in the "where" pictures is drawn in to show the place; it is not part of the app. Tap any picture to see it full size.</p>
+  </header>
+
+  <section class="place" id="q1">
+    <span class="num">Question 1 · the drag</span>
+    <h2>The landing flash after a drag or an Undo, and the picked-up look</h2>
+    <p>One setting draws both: the flash a puck or a row wears for half a second when it lands, and the look of a row while it is dragged. Its glow is faint. Most of what you see is the light wash and the ring, which stay either way.</p>
+    <div class="pair"><figure><figcaption>Today · a row landed</figcaption><div class="shot"><img src="G1-landing-row-today-phone.png" alt="A flying line just landed, today"></div></figure>
+      <figure><figcaption>No glow</figcaption><div class="shot"><img src="G1-landing-row-noglow-phone.png" alt="The same, no glow"></div></figure></div>
+    <div class="pair"><figure><figcaption>Today · a puck landed in a seat</figcaption><div class="shot"><img src="G1-landing-seat-today-phone.png" alt="A puck just landed, today"></div></figure>
+      <figure><figcaption>No glow</figcaption><div class="shot"><img src="G1-landing-seat-noglow-phone.png" alt="The same, no glow"></div></figure></div>
+    <div class="pair"><figure><figcaption>Today · a row picked up</figcaption><div class="shot"><img src="G2-picked-up-today-phone.png" alt="A row being dragged, today"></div></figure>
+      <figure><figcaption>No glow</figcaption><div class="shot"><img src="G2-picked-up-noglow-phone.png" alt="The same, no glow"></div></figure></div>
+    <div class="where"><figure><img src="G1-landing-row-where-phone.png" alt="Where: the phone"><figcaption>Where · phone</figcaption></figure><figure><img src="G1-landing-row-where-desk.png" alt="Where: desktop"><figcaption>Where · desktop</figcaption></figure></div>
+    <div class="q"><b>Take the glow off the drag's flash and picked-up look?</b> My pick: <b>yes</b>. The difference is small, and the ring then matches the just-added ring you chose.</div>
+  </section>
+
+  <section class="place" id="q2">
+    <span class="num">Question 2 · a tapped warning</span>
+    <h2>The crew a tapped warning lights, and a flying line's time boxes</h2>
+    <p>Tap a warning in the day's issues list and its crew light up: red for a clash, amber for an advisory, grey for a note. A flying line whose landing time is its take-off time lights its two time boxes the same way.</p>
+    <div class="pair"><figure><figcaption>Today · red</figcaption><div class="shot"><img src="G4-warning-red-today-phone.png" alt="A puck lit red, today"></div></figure>
+      <figure><figcaption>No glow</figcaption><div class="shot"><img src="G4-warning-red-noglow-phone.png" alt="The same, no glow"></div></figure></div>
+    <div class="pair"><figure><figcaption>Today · amber</figcaption><div class="shot"><img src="G4-warning-amber-today-phone.png" alt="A puck lit amber, today"></div></figure>
+      <figure><figcaption>No glow</figcaption><div class="shot"><img src="G4-warning-amber-noglow-phone.png" alt="The same, no glow"></div></figure></div>
+    <div class="pair"><figure><figcaption>Today · grey</figcaption><div class="shot"><img src="G4-warning-grey-today-phone.png" alt="A puck lit grey, today"></div></figure>
+      <figure><figcaption>No glow</figcaption><div class="shot"><img src="G4-warning-grey-noglow-phone.png" alt="The same, no glow"></div></figure></div>
+    <div class="pair"><figure><figcaption>Today · the time boxes</figcaption><div class="shot"><img src="G6-time-boxes-today-phone.png" alt="Two time boxes lit red, today"></div></figure>
+      <figure><figcaption>No glow</figcaption><div class="shot"><img src="G6-time-boxes-noglow-phone.png" alt="The same, no glow"></div></figure></div>
+    <div class="where"><figure><img src="G4-warning-red-where-phone.png" alt="Where: the phone"><figcaption>Where · phone</figcaption></figure><figure><img src="G4-warning-red-where-desk.png" alt="Where: desktop"><figcaption>Where · desktop</figcaption></figure></div>
+    <div class="q"><b>Take the glow off the lit crew and the lit time boxes?</b> My pick: <b>yes</b>. The ring alone still picks them out of a full board, and it is the look you chose for your own flagged puck on 24 Sep (no glow).</div>
+  </section>
+
+  <section class="place" id="q3">
+    <span class="num">Question 3 · OIL Earn</span>
+    <h2>A puck that earns OIL, in OIL Earn</h2>
+    <p>With OIL Earn on, every puck that earns OIL that day wears a green ring with a glow. On a busy weekend that is many pucks glowing at once.</p>
+    <div class="pair"><figure><figcaption>Today</figcaption><div class="shot"><img src="G5-oil-earn-today-phone.png" alt="A puck earning OIL, today"></div></figure>
+      <figure><figcaption>No glow</figcaption><div class="shot"><img src="G5-oil-earn-noglow-phone.png" alt="The same, no glow"></div></figure></div>
+    <div class="where"><figure><img src="G5-oil-earn-where-phone.png" alt="Where: the phone"><figcaption>Where · phone</figcaption></figure><figure><img src="G5-oil-earn-where-desk.png" alt="Where: desktop"><figcaption>Where · desktop</figcaption></figure></div>
+    <div class="q"><b>Take the glow off the OIL ring?</b> My pick: <b>yes</b>. Many pucks glowing together reads as busy; the green ring alone says "earns".</div>
+  </section>
+
+  <section class="place" id="q4">
+    <span class="num">Question 4 · a puck picked out</span>
+    <h2>Your own puck, and a puck lit by a highlight chip</h2>
+    <p>Your own puck wears a purple ring with a purple glow ("this is you"). A puck lit by the CAT, TYPE or QUALS chips wears a cyan ring with a cyan glow.</p>
+    <div class="pair"><figure><figcaption>Today · this is you</figcaption><div class="shot"><img src="G7-this-is-you-today-phone.png" alt="Your own puck, today"></div></figure>
+      <figure><figcaption>No glow</figcaption><div class="shot"><img src="G7-this-is-you-noglow-phone.png" alt="The same, no glow"></div></figure></div>
+    <div class="pair"><figure><figcaption>Today · highlighted</figcaption><div class="shot"><img src="G8-highlight-today-phone.png" alt="A highlighted puck, today"></div></figure>
+      <figure><figcaption>No glow</figcaption><div class="shot"><img src="G8-highlight-noglow-phone.png" alt="The same, no glow"></div></figure></div>
+    <div class="where"><figure><img src="G7-this-is-you-where-phone.png" alt="Where: the phone"><figcaption>Where · phone</figcaption></figure><figure><img src="G8-highlight-where-desk.png" alt="Where: desktop"><figcaption>Where · desktop</figcaption></figure></div>
+    <div class="q"><b>Take the glow off your own puck and the highlighted pucks?</b> My pick: <b>yes</b>, for the same reason: a ring that does not glow, everywhere. Your own puck keeps its purple fill and ring.</div>
+  </section>
+
+  <section class="place" id="kb">
+    <span class="num">No question · the keyboard</span>
+    <h2>The keyboard's ring has no glow</h2>
+    <p>The ring that shows where the keyboard is, is a plain 2px outline. There is nothing to take off, so both pictures are the same.</p>
+    <div class="pair"><figure><figcaption>Today</figcaption><div class="shot"><img src="G3-keyboard-ring-today-phone.png" alt="The keyboard's ring on a button"></div></figure>
+      <figure><figcaption>"No glow" (the same)</figcaption><div class="shot"><img src="G3-keyboard-ring-noglow-phone.png" alt="The same"></div></figure></div>
+  </section>
+
+  <section class="place">
+    <span class="num">If you say yes</span>
+    <p>Each yes is a small style change with its own check and its own pictures on your phone before it goes live. If you say yes to all four, I'd also suggest the design guide carry it as a rule: <b>a ring in this app does not glow</b>. That is a question for later, after you've seen the change.</p>
+    <details><summary>The desktop pictures</summary>
+      <div style="display:grid;gap:10px;margin-top:10px" class="desk">
+        <div class="pair"><figure><figcaption>Drag · today</figcaption><div class="shot"><img src="G1-landing-seat-today-desk.png" alt=""></div></figure><figure><figcaption>No glow</figcaption><div class="shot"><img src="G1-landing-seat-noglow-desk.png" alt=""></div></figure></div>
+        <div class="pair"><figure><figcaption>Warning · today</figcaption><div class="shot"><img src="G4-warning-red-today-desk.png" alt=""></div></figure><figure><figcaption>No glow</figcaption><div class="shot"><img src="G4-warning-red-noglow-desk.png" alt=""></div></figure></div>
+        <div class="pair"><figure><figcaption>OIL · today</figcaption><div class="shot"><img src="G5-oil-earn-today-desk.png" alt=""></div></figure><figure><figcaption>No glow</figcaption><div class="shot"><img src="G5-oil-earn-noglow-desk.png" alt=""></div></figure></div>
+        <div class="pair"><figure><figcaption>This is you · today</figcaption><div class="shot"><img src="G7-this-is-you-today-desk.png" alt=""></div></figure><figure><figcaption>No glow</figcaption><div class="shot"><img src="G7-this-is-you-noglow-desk.png" alt=""></div></figure></div>
+        <div class="pair"><figure><figcaption>Highlight · today</figcaption><div class="shot"><img src="G8-highlight-today-desk.png" alt=""></div></figure><figure><figcaption>No glow</figcaption><div class="shot"><img src="G8-highlight-noglow-desk.png" alt=""></div></figure></div>
+      </div>
+    </details>
+  </section>
+</main>
+<div id="zoom" hidden><img src="G1-landing-row-today-phone.png" alt="The picture tapped, full size"></div>
+<script>
+const z = document.getElementById('zoom'), zi = z.querySelector('img')
+document.addEventListener('click', e => {
+  const im = e.target.closest('.shot img, .where img, .shot')
+  if (im) { const src = im.tagName === 'IMG' ? im.src : im.querySelector('img').src; zi.src = src; z.hidden = false; return }
+  if (e.target.closest('#zoom')) z.hidden = true
+})
+document.addEventListener('keydown', e => { if (e.key === 'Escape') z.hidden = true })
+</script>

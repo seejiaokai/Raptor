@@ -25,8 +25,9 @@ the later merge keeps both (D78).
 - **Carries** the records of `claude/handoff-overnight-skill-review-6b45a6` (`[MAIN-CHECKOUT-STALE]`, observation 600 — brought in whole; that chat's block is replaced by this one) and `claude/overnight-skill-c02843`'s (on `main` since pull request 510).
 - **The four checks, re-run in a new chat with the main folder on `main`:** (a) the setting IS taken — the app now counts the chat against 880,000 and compacts at 96% of that, about 845,000, which is about 85% of the whole room; but the hooks count against 1,000,000, so their first note (80%, 800,000) comes only about 45,000 before the compaction — filed as `[COMPACT-BANDS-WINDOW]`; (b) asked of him; (c), (d) cannot be seen until a chat reaches 80%. `/overnight` is in the skill list, so the skills are taken from the main folder now.
 - **His rulings this chat:** D875 (the plan-switch job: Opus builds, one fresh Opus reader, no Fable).
-- **In hand:** `[OIL-PLAN-SWITCH-UNASKED]` (D865) — tests first in `raptor-port/src/ui/oilwait.test.tsx` (ON12), the shared reading `raptor-port/src/ui/oilputback.ts`; then `[GUIDE-ONE-MARK]` and `[GLOW-PLACES-LOOK]` (D866), each ending with his look.
-- **Gates:** not yet run. **Open questions for him:** (b) — does "Chat N% full" show under the message box? **Running when written:** none.
+- **`[OIL-PLAN-SWITCH-UNASKED]` (D865) BUILT and WALK-checked** — `raptor-port/docs/handpass/2026-10-15-oil-plan-switch.md`: the walk 10/10 at both sizes after one real fault fixed (the list under the plan editor), the load re-walked 12/12, one fresh Opus read (D875: two low findings, both fixed). The whole gate set: see the sheet. Then his look and "merge live".
+- **`[GUIDE-ONE-MARK]`** drafted and read (version 2), its wording put to him. **`[GLOW-PLACES-LOOK]`** drawn and put to him as a page of pictures with four questions (each recommended "no glow").
+- **Open questions for him:** (b) — does "Chat N% full" show under the message box?; the guide's wording; the four glow questions. **Running when written:** none.
 <!-- /now -->
 <!-- now:claude/overnight-skill-c02843 -->
 ### `claude/overnight-skill-c02843` — `/overnight` (PULL REQUEST 508) AND THE COMPACTION SET-UP (PULL REQUEST 509) ARE LIVE; THE SET-UP'S FOUR CHECKS IN THE APP ARE OWED BY THE NEXT NEW CHAT; NOTHING IN THE APP CHANGED — written 15 Oct 26 — verify before use

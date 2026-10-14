@@ -9,11 +9,14 @@
      G4 a puck lit by a tapped warning (`.puck.wfoc`) — red, amber and grey
      G5 a puck earning OIL in OIL Earn (`.puck.oilglow`)
      G6 a flying line's time boxes lit by its warning (`.badtm.wfoc`)
+     G7 his own puck, "this is you" (`.puck.me`)
+     G8 a puck lit by a highlight chip (`.puck.hl`)
+   v2: the pucks are PLAIN ones — v1 tagged a puck already wearing its own warning ring, whose rule outranks the glow.
    usage: DL_BASE=http://localhost:4180 DL_SHOTS=docs/mock/2026-10-15-glow-places node scripts/handpass/glow-look.mjs [phone|desk] */
 import * as L from './dl-lib.mjs'
 import { board } from './ou-lib.mjs'
 
-console.log('glow-look v1')
+console.log('glow-look v3')
 const SIZE = process.argv[2] === 'phone' ? 'phone' : 'desk', T = SIZE
 const w = await L.world(SIZE), p = w.page
 const MON = 0
@@ -24,7 +27,11 @@ const NOGLOW = {
   wfoc: '.puck.wfoc,.puck.wfoc.advf,.puck.wfoc.notef{box-shadow:0 0 0 1px #0B0D10 !important}',
   oil: '.puck.oilglow{box-shadow:0 0 0 2px var(--oil) !important}',
   badtm: '.badtm.wfoc{box-shadow:inset 0 0 0 2px var(--hard) !important}',
+  me: '.puck.me:not(.warn):not(.boxred):not(.boxdash):not(.boxdot):not(.oilglow){box-shadow:0 0 0 2px #F0B6FF !important}',
+  hl: '.puck.hl{box-shadow:0 0 0 2px var(--accent) !important}',
 }
+/* a puck that wears no ring of its own (no warning, no box, not "you"), so the frame shows only the mark drawn */
+const PLAIN = '#schedBoard .sb-line .puck:not(.warn):not(.boxred):not(.boxdash):not(.boxdot):not(.me):not(.oilglow):not(.hl)'
 let sheet = null
 const noGlow = async css => { await p.evaluate(c => { let s = document.getElementById('mk-noglow'); if (!s) { s = document.createElement('style'); s.id = 'mk-noglow'; document.head.appendChild(s) } s.textContent = c || '' }, css) }
 /* hold every landing flash at its brightest (its first quarter is full strength) */
@@ -32,7 +39,7 @@ const HOLD = '.lift-land::after{animation-play-state:paused !important;animation
 /* tag a real element for the frame; returns false when the board has none */
 const tag = (sel, n = 0, k = 'a') => p.evaluate(([sel, n, k]) => { const e = document.querySelectorAll(sel)[n]; if (!e) return false; e.setAttribute('data-mk', k); e.scrollIntoView({ block: 'center', inline: 'center' }); return true }, [sel, n, k])
 const cls = (k, add, rm = []) => p.evaluate(([k, add, rm]) => document.querySelectorAll(`[data-mk="${k}"]`).forEach(e => { rm.forEach(c => e.classList.remove(c)); add.forEach(c => e.classList.add(c)) }), [k, add, rm])
-const untag = () => p.evaluate(() => document.querySelectorAll('[data-mk]').forEach(e => { e.classList.remove('lift-land', 'lift', 'wfoc', 'advf', 'notef', 'oilglow', 'badtm'); e.removeAttribute('data-mk') }))
+const untag = () => p.evaluate(() => document.querySelectorAll('[data-mk]').forEach(e => { e.classList.remove('lift-land', 'lift', 'wfoc', 'advf', 'notef', 'oilglow', 'badtm', 'hl'); e.removeAttribute('data-mk') }))
 /* the wider frame's marker: a dashed amber box round the tagged element, drawn in */
 const marker = on => p.evaluate(on => {
   document.getElementById('mk-box')?.remove(); if (!on) return
@@ -72,15 +79,19 @@ try {
   }
   /* G4 a puck lit by a tapped warning: red (a clash), amber (an advisory), grey (a note) */
   for (const [k, add] of [['red', ['wfoc']], ['amber', ['wfoc', 'advf']], ['grey', ['wfoc', 'notef']]]) {
-    if (await tag('#schedBoard .sb-line .puck')) { await cls('a', add); out['G4' + k] = await shots(`G4-warning-${k}`, NOGLOW.wfoc, 22); await untag() }
+    if (await tag(PLAIN)) { await cls('a', add); out['G4' + k] = await shots(`G4-warning-${k}`, NOGLOW.wfoc, 22); await untag() }
   }
   /* G5 a puck earning OIL, as OIL Earn draws it */
-  if (await tag('#schedBoard .sb-line .puck', 1)) { await cls('a', ['oilglow']); out.G5 = await shots('G5-oil-earn', NOGLOW.oil, 22); await untag() }
+  if (await tag(PLAIN, 1)) { await cls('a', ['oilglow']); out.G5 = await shots('G5-oil-earn', NOGLOW.oil, 22); await untag() }
   /* G6 a flying line's take-off and landing boxes lit by their warning */
   if (await tag('#schedBoard input.tm[data-bfld$=".to"]')) {
     await p.evaluate(() => { const a = document.querySelector('[data-mk="a"]'); const b = a.parentElement.querySelector('input.tm[data-bfld$=".ld"]'); if (b) b.setAttribute('data-mk', 'b') })
     await cls('a', ['badtm', 'wfoc']); await cls('b', ['badtm', 'wfoc'])
     out.G6 = await shots('G6-time-boxes', NOGLOW.badtm, 40); await untag()
   }
+  /* G7 his own puck: the signed-in man's, where the board shows him; else a plain puck given the class */
+  if (await tag('#schedBoard .sb-line .puck.me:not(.warn):not(.boxred):not(.boxdash):not(.boxdot)') || await tag(PLAIN, 2)) { await cls('a', ['me']); out.G7 = await shots('G7-this-is-you', NOGLOW.me, 22); await untag() }
+  /* G8 a puck lit by a highlight chip (CAT, TYPE, QUALS) */
+  if (await tag(PLAIN)) { await cls('a', ['hl']); out.G8 = await shots('G8-highlight', NOGLOW.hl, 22); await untag() }
   console.log(JSON.stringify(out, null, 1))
 } finally { await L.close(w) }
