@@ -155,3 +155,32 @@ session has been idle for about 5 minutes"). All fifteen findings taken into the
 close to it; F2's same command in `.claude/rules/shipping.md`, `HANDOFF.md`'s header and the session-handoff guide is
 filed as `[RUN-CHECK-BOTH-RUNS]`, not changed here (a rule and a working guide — his approval). F12's stale records:
 named to him; the two merged `## Now` blocks are this chat's handoff to clear.
+
+## The second read — after his correction D867 (15 Oct 26)
+
+One more fresh, blind Opus reader, read-only, on Part 1, the compaction and roadblock bullets and the checklists of
+the rewritten draft (D609's way: a part he changes is read again). It confirmed the rewrite follows D867, that the
+first read's fixes hold (F1 withdrawn as D867 intends; the keep-awake call and the open turn moved after his reply),
+and found six points, all taken in its wording:
+
+1. **He may sleep without replying and lose the night, unwarned** (he was told "the night has already started" before).
+   Fix: a line in the message — "Nothing starts until you reply. If you are about to sleep, reply "go" first."; a reply
+   more than about an hour late re-runs steps 1 and 3 and counts his hours from the reply; a checklist line.
+2. **When his message names the work, the keep-awake hold was skipped** (the pointer said step 8; the start moved to
+   step 9). Fix: "then steps 8 and 9 … without ending the turn."
+3. **"Go" took the recommended answers too, but the message said it picks only the recommended jobs.** Fix: the last
+   line names both.
+4. **A "not tonight" job he selects had no rule** and read as "build it" (a visual change unseen, a held job). Fix:
+   built only if his reply settles what held it; otherwise one line saying what holds it, the rest starts; the Never
+   list adds "or one step 4 holds".
+5. **The compaction bullet kept only one mark,** so the saved state could be an hour old at the app's own compaction
+   (the usage reading names 97%). Fix: from about 85% full, finish the step, commit, push and rewrite the block before
+   anything new; and the block's first line tells a compacted chat to re-read the block, the guide and the step's files
+   and to note the compaction with its time.
+6. **A roadblock question could be sent as a message that ends the turn.** Fix: written into the block, never sent.
+
+Lesser, taken: the ordering line ("the most valuable finished job does not depend on the last") restored. Its Part 1
+message for `/overnight 8` recommended four jobs — `[OIL-PLAN-SWITCH-UNASKED]` (full check, OIL), `[GUIDE-ONE-MARK]`,
+`[GLOW-PLACES-LOOK]`, steadying the Leave War tests — with "1 to 3 fit"; times are guesses (the walk ledger records
+sizes and cost, not hours). Not checked: a real night or compaction; whether the guide's text survives one; a reply
+reaching a running turn; the tier of the OIL job.
