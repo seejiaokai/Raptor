@@ -21,12 +21,12 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/glow-off-compact-bands-window-40b514 -->
-### `claude/glow-off-compact-bands-window-40b514` — `[GUIDE-NO-GLOW]` BUILT AND CHECKED, waiting for his "merge live"; D885's hook line in — written 15 Oct 26 — verify before use
-- **Earlier on this branch, LIVE:** pull request 512 (`[GLOW-OFF]`, `[COMPACT-BANDS-WINDOW]`, D877–D879).
-- **Built since (second chat, 15 Oct 26):** the design guide carries "No mark in this app glows" (`raptor-port/docs/design-practices.md` §0, §4 — D880–D882, D887, three rounds of pictures put to him, the page "Raptor No-Glow Places" = `raptor-port/docs/mock/2026-10-15-noglow-places/index.html`); the build — the take ring, the bidding box, his own row's ring, the Tracker's rings, today's card, the SANS stripe's light, the landing line's light, Rearrange / Show SANS "on" as the filter chip's pale fill, the docked panels' band, the Fast sync and Admin dots' bands; the leftover `.title .calview` gone; the sign-in logo's light kept. Pinned by `src/ui/noglow-css.test.ts` (a roll-call over every stylesheet). Evidence: `raptor-port/docs/handpass/2026-10-15-no-glow.md` (tier WALK, no code read at this tier). And D885: the compaction hand-back names `/reload-skills` (`.claude/hooks/compact-resume.mjs`, hook tests 17/17) — in force once merged and the main folder is level.
-- **Rulings this chat:** D881–D887. **Open for him:** "merge live" for this branch (a pull request, docs + styles + one hook line). **Filed, not built:** `[LW-LANDING-LINE-FIGURES]` (D883), `[OVERNIGHT-RETRY-TRIAL]` (D885 — the next /overnight night), `[PROMPT-AUDIT]` (D886 — his step).
-- **Running when written:** none. **After merge:** bring the main folder level (`[MAIN-CHECKOUT-STALE]`) so the hook line reaches his chats.
-- **Pick up here:** his "merge live" → merge, Vercel READY, main folder level; then `[LW-LANDING-LINE-FIGURES]` or the backlog's order.
+### `claude/glow-off-compact-bands-window-40b514` — `[GUIDE-NO-GLOW]` LIVE (pull request 513, 15 Oct 26); the main folder level — written 15 Oct 26 — verify before use
+- **LIVE:** pull request 513 merged on his "merge live" (`main` 3b8d969; its run green; Vercel's live app READY). No mark in the app glows (D880–D883, D887 — the design guide §0, §4; evidence `raptor-port/docs/handpass/2026-10-15-no-glow.md`; the whole-app roll-call `src/ui/noglow-css.test.ts`); D885's hand-back line names `/reload-skills`. The main folder brought level with `main` (the hook line in force for new chats). `[GUIDE-NO-GLOW]` archived. Earlier on this branch, live: pull request 512.
+- **One GitHub timeout on 513, not this job's:** `src/ui/histbubble.test.tsx` (History on a phone) ran over its 20s twice on "unit (raptor 4/4)" — passed on one re-run, 33/33 on his PC. A slow file near its limit; if it recurs, make it wait on what it needs (D87) — not filed.
+- **Rulings this chat:** D881–D887 (all recorded). **Open for him:** the five thin 1–2px see-through rings the roll-call reads as lines, not glows (the bid sheet's switch, a picked Leave War event chip, picked rows of two lists, a keyframe's last frame) — named to him, unanswered; change nothing unless he says.
+- **Filed, not built:** `[LW-LANDING-LINE-FIGURES]` (D883 — the Leave War's landing line through the counters), `[OVERNIGHT-RETRY-TRIAL]` (D885 — the next /overnight night), `[PROMPT-AUDIT]` (D886 — his step, in a terminal).
+- **Running when written:** none. **Pick up here:** a NEW job → a fresh chat on `main`; this branch's remaining commits are documents only (this block, the archive) — merge them with the next pull request that goes, or on his word.
 <!-- /now -->
 
 ## Next, in order

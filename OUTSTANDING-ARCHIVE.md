@@ -4517,3 +4517,16 @@ guard held from 75% — moved to 90%, narrowing the reading he was told), four l
 "merge live" and the main folder brought level (the app runs the hooks from there — `[MAIN-CHECKOUT-STALE]`).
 **Found, NOT FIXED.** With the main folder on `main`, a new chat reads the app's own figures as: the chat's room 880,000 (the setting `autoCompactWindow`), compaction at 96% of it — about 845,000, which is the intended "about 85%" of the whole 1,000,000. So the compaction point DID move (check (a) passes). But the notes and the guard (`.claude/hooks/compact-lib.mjs`, `WINDOW` = 1,000,000) count against the whole room: the 80% note fires at 800,000 — the app's own 91% — leaving about 45,000 before the compaction, enough to commit and write the handoff block but not to finish a step of any size; the 85% note (850,000) comes after it; and the status line, which shows the app's own figure where the app hands one, reads about 10 points higher than the notes. **Fix (proposed, not made):** count the notes and the guard against the app's own room (read `autoCompactWindow`, else 1,000,000) and set the bands below its compaction point — for example a first note at 75% of 880,000 (660,000, about 185,000 before it), the guard's window from there to the compaction point; re-run the hook tests. It is a change to the hooks (his permission for the set-up, D870) and to what the design says (`raptor-port/docs/superpowers/specs/2026-10-15-compact-when-ready.md`): one fresh reader, then his approval (D70).
 
+
+*Moved here 2026-10-15 by backlog-archive.mjs ([GUIDE-NO-GLOW]). Forward facts: `raptor-port/docs/handpass/2026-10-15-no-glow.md`, `raptor-port/docs/superpowers/specs/2026-10-15-guide-no-glow-draft.md`.*
+
+### [GUIDE-NO-GLOW] The design guide carries "a ring in this app never glows" — RULED D880 (15 Oct 26); the wording APPROVED and in the guide (D887); BUILT and WALK-checked 15 Oct 26 (`raptor-port/docs/handpass/2026-10-15-no-glow.md`) — OPEN until his "merge live"
+**His "3 yes" (D880)** to D852's question after `[GLOW-OFF]`. Version 2 of the wording, after one fresh reader
+(`raptor-port/docs/superpowers/briefs/2026-10-15-reads/guide-no-glow-opus.md` — all ten findings taken), and the NINE places
+that still glow: `raptor-port/docs/superpowers/specs/2026-10-15-guide-no-glow-draft.md`. **Next:** the wording and the nine
+places — each with a picture (D853) — go to him; `raptor-port/docs/design-practices.md` changes only
+on his approval, and none of the nine places changes before he rules on it.
+**15 Oct 26 (second chat):** pictures taken (`raptor-port/docs/mock/2026-10-15-noglow-places/`, the Artifact page "Raptor
+No-Glow Places"); round 1 RULED — places 1 to 4 lose their glow (D881); round 2 (places 5 to 8) put to him; place 9 is a
+leftover style nothing draws (removed with the guide change). Round 3: the wording, set to his answers.
+

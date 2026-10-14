@@ -2268,16 +2268,6 @@ with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
 **Delete candidates by his rule of 14 Oct 26 (D846; the guide's §1, its wording approved — D847) — DONE the same day on his word (D848 — "Delete all three"):** "Choose Keep or Remove for each entry above" (the upchit question), "Choose for each clash above" and the small print under the answers (the medical-clash question) are deleted; the one fact he asked to keep, that a day holds one status, is that sheet's heading now ("A day holds one status: choose who holds these days" — shown to him as built, his to change). Kept, and why: "What is left goes to the schedulers' bells" in the day's one list of OIL questions (a consequence he cannot see), the several-days form's "No days selected — tap the highlighted days to credit them" (an instruction for a gesture nothing else suggests). The first whole-app look under D808 lists the rest.
 **Why it is filed and not built:** D830's and D838's lists are his; a wording or a look he has not been shown is not changed unasked (the design guide's §1). His answers come first (D541 for the two that change a look).
 
-### [GUIDE-NO-GLOW] The design guide carries "a ring in this app never glows" — RULED D880 (15 Oct 26); the wording APPROVED and in the guide (D887); BUILT and WALK-checked 15 Oct 26 (`raptor-port/docs/handpass/2026-10-15-no-glow.md`) — OPEN until his "merge live"
-**His "3 yes" (D880)** to D852's question after `[GLOW-OFF]`. Version 2 of the wording, after one fresh reader
-(`raptor-port/docs/superpowers/briefs/2026-10-15-reads/guide-no-glow-opus.md` — all ten findings taken), and the NINE places
-that still glow: `raptor-port/docs/superpowers/specs/2026-10-15-guide-no-glow-draft.md`. **Next:** the wording and the nine
-places — each with a picture (D853) — go to him; `raptor-port/docs/design-practices.md` changes only
-on his approval, and none of the nine places changes before he rules on it.
-**15 Oct 26 (second chat):** pictures taken (`raptor-port/docs/mock/2026-10-15-noglow-places/`, the Artifact page "Raptor
-No-Glow Places"); round 1 RULED — places 1 to 4 lose their glow (D881); round 2 (places 5 to 8) put to him; place 9 is a
-leftover style nothing draws (removed with the guide change). Round 3: the wording, set to his answers.
-
 ### [PROMPT-AUDIT] He runs Claude Code's guide check, `/doctor prompt-audit`, in a terminal next time (his D886, 15 Oct 26) — OPEN, his step
 **What it is:** a read-only report (Claude Code 2.1.283) of wording in the project's instruction files — CLAUDE.md, the
 `.claude/rules/` files, the skills — written for older models. **How:** in a terminal at the repo root, `claude`, then
