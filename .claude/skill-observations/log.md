@@ -631,3 +631,33 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** Either the runner runs the document check FIRST (it takes seconds and reads only documents), so later document work cannot fail a run already judged; or the rule says: while the gate set runs, documents may be drafted in the scratch folder but are written into the repo only after the run ends. And in the rulings guide: a branch name in a home cell is written without backticks - backticks there mean a file.
 
 **Principle:** A check that reads the working tree is only as still as the tree. Put the fast, tree-reading checks first, or keep the tree still until they have run.
+
+### Observation 596: A guide for an unattended run sent its plan as a message and so ended the turn - the night could not start until he woke
+
+**Status:** OPEN
+**Date:** 2026-10-15
+**Session context:** Drafting the overnight command ([OVERNIGHT-SKILL], D859); found by the fresh reader's F1 and F7
+**Skill:** New skill candidate: overnight (draft `raptor-port/docs/superpowers/specs/2026-10-15-overnight-skill-draft.md`); writing-skills
+**Type:** open-source
+**Phase/Area:** Any skill that asks the user something and then must carry on without them
+
+**Issue:** The draft said: send one message with the plan and the questions; if he does not answer, the night goes on. But a message to the user is where a turn normally ends, and nothing runs after it until the user types. The same mistake hid in waiting: a long background run waited on by ending the turn leaves the session idle, and the host lets the machine sleep after a few idle minutes. The writer did not see either; a reader asked to replay a real night did.
+
+**Suggested improvement:** In a skill meant to run unattended: say explicitly that the question is written inside the running turn and the work goes straight on; that the user's reply is read at the next step; that long waits happen inside the turn; and that the keep-awake hold is asked for with the setting that outlasts the turn. Add a pre-flight line: "does any step end the turn before the work is done?"
+
+**Principle:** In an agent loop, "ask and carry on" is not the default shape - asking ends the turn. A skill that must keep running without its user has to say where the turn continues, not only what to ask.
+
+### Observation 597: "Are the checks still running?" read the newest run, and a push starts two runs at once
+
+**Status:** OPEN
+**Date:** 2026-10-15
+**Session context:** The overnight command's read (F2); filed as `[RUN-CHECK-BOTH-RUNS]`
+**Skill:** session-handoff (Step 1, the push check); the shipping rule (`.claude/rules/shipping.md`, the loop)
+**Type:** internal
+**Phase/Area:** Before pushing to a branch with an open pull request
+
+**Issue:** Three documents tell the agent to look with `gh run list --branch <b> --limit 1` before pushing (D151). Each push starts a short documents run and the long full-checks run at the same second; `--limit 1` can return the short one, which reads "completed" while the full run is still going, and the next push cancels it.
+
+**Suggested improvement:** Replace the command everywhere with one that lists every run of the branch's last pushed commit (`--limit 6 --json status,workflowName,headSha`) and pushes only when none is queued or running.
+
+**Principle:** A "latest item" query answers "is anything running?" only when one thing runs at a time; when one event starts several jobs, ask about the event, not the newest row.
