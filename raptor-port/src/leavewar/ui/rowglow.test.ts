@@ -149,6 +149,21 @@ describe('a dragged row keeps its frozen cells opaque', () => {
      sets every box's shadow to none, `.fig.last` carries the drawer's right
      edge, and the viewer's own row has its band. The last box keeps its edge
      under the line. That the row WEARS the class is `figdrawer.test.tsx`. */
+  /* A FINGER'S WAY IN (his find, 15 Oct 26 — a counter's grip "much hard to activate … compared to the pucks below"):
+     both grips take the press over a larger INVISIBLE area (the design guide §6, D487) — inside their own row (4 px
+     above and below) and short of the name beside them (4 px to the right, the gap being 5–6 px). */
+  it('the Rearrange grips — a counter’s and a man’s — take a press over a larger invisible area, inside their row', () => {
+    for (const sel of ['.mx .counts .who .drag::before', '.whorow .drag::before']) {
+      const body = bodiesFor(sel).join(' ').replace(/\s+/g, ' ')
+      expect(body, `${sel} is drawn`).toMatch(/content: ''/)
+      expect(body, `${sel} reaches 4 px above and below — no further, or it overlaps the next row's`).toMatch(/top: -4px; bottom: -4px/)
+      expect(body, `${sel} stops 4 px right — short of the name`).toMatch(/right: -4px/)
+      expect(body, `${sel} is invisible`).not.toMatch(/background|border|box-shadow/)
+    }
+    for (const sel of ['.mx .counts .who .drag', '.whorow .drag'])
+      expect(bodiesFor(sel).join(' '), `${sel} anchors its area`).toMatch(/position: relative/)
+  })
+
   it('the landing bar runs on through the figures drawer, at 3px, top edge or bottom', () => {
     for (const [sel, edge] of [
       ['.mxdrawer .mx tbody tr.dragover td', 'inset 0 3px 0'],

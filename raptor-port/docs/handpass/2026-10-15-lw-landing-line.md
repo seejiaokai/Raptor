@@ -79,6 +79,34 @@ dragged to reorder (`.ic-sec`). Not the same: the Scheduler Board and Edit Sched
 (one line on the row under the pointer) and Quals' column headings (a ring round the heading). Filed as
 `[DRAG-ONE-LINE-ELSEWHERE]`.
 
+## 5b. Round three — the other three lists (owner D891, "Yes fix them too")
+The ⚙ Settings Groups and "Who wins" lists ride the same `startRowDrag` — D890's step had been held to the grid; the
+limit is lifted. A day's notes on the Inputs calendar have their own drag (`InputsCal.tsx startSecDrag`): the same step
+there (its release already resolves "after X" to "before whatever follows X"). The picture first that D852 asks for
+was replaced, said to him, by these before / after pictures before the merge — the look is the grid's he had seen.
+**Tests:** `settingssheet.test.tsx` (Groups: the lower half marks the row below, the last movable row keeps its foot;
+Who wins: the row below), `inputscal.test.tsx` (a note's lower half marks the note below; the last note keeps its foot)
+— three **red** with the two changes undone. **Walk:** `scripts/handpass/onegap-lists.mjs`, desktop by mouse and phone
+by touch, the three notes made with the day's own "+ Note": **14 / 14 PASS**, no errors. Pictures
+(`docs/img/handpass/2026-10-15-lw-landing-line/lists/`): after `G1-groups-*`, `G2-whowins-*`, `G3-notes-*`; before
+`B-G1…B-G3` (the same hold with the bar put back on the hovered row's foot). `G1-groups-phone`, `G3-notes-phone` opened:
+one bar, on the second row's top.
+
+## 5c. Round four — a drag held at the edge scrolls (D892, D893); a counter's grip (his finds)
+**Edge scroll:** one shared piece, `src/ui/edgescroll.ts`, at the Leave War drag selection's own numbers (which
+`select.ts` now reads from it — values unchanged); plugged into the Rearrange drag (rows, headings, counters; the ⚙
+lists ride it), a day's notes and its seated pucks on the Inputs calendar, Quals' heading drag (sideways). After each
+step the thing under the still pointer is read again, so the landing mark follows. **Walk** (`edgescroll-walk.mjs`):
+**14 / 14 PASS**, desktop by mouse, phone by touch — Rearrange ran the page 0 → about 830–970 px and a row near the foot
+wore the line; a day's 30 notes ran 0 → about 600 px; Quals ran sideways (0 → 558 on an 820-wide desktop, 263 → 988 on
+a phone); each let go with no drop, order unchanged; no errors. Not walked: a seated puck dragged inside a note (its
+chip is kept under the finger as the list runs — compiled, its file's tests run). Seen, as before: run to the page's
+end, a finger on the blank strip under the last row has nothing to land on — moved up onto a row, the line shows.
+**Grip:** measured (`grip-reach.mjs`) — both ⠿ about 7 x 10 px on a phone, a counter's row 19 px against a man's 21;
+points of 81 round each that start a drag: a counter's 6, a man's 9. Each grip now takes a press over a larger
+invisible area inside its row (the guide §6, D487): a counter's 16, a man's 20; the grip looks the same (`grip/`).
+**Tests:** `src/ui/edgescroll.test.ts` (the step, the loop, the held band); `rowglow.test.ts` (the grips' area).
+
 ## 6. Gates
 The whole gate set under the PC lock, in one run, on this branch with the fix (NOT `main`'s code): build clean · tfin 728 / 0 · unit 11407 / 11407 (641 files) · e2e 817 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN.
 

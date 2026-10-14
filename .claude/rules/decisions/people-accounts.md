@@ -63,7 +63,8 @@ readings he was told, where it lives — is in `.claude/decisions-full/people-ac
 **open it before acting on a ruling's detail or asking him about it** — `grep -h '^| D323 |' .claude/decisions-full/*.md`
 (the shell; the Grep tool hides a long row). A "— changed by" tail names the later rulings that changed it. Newest first.
 **Also read** — the Leave War's posting sheets and stints: `leave-war.md` (§Architecture); what a published day keeps
-when a man is deleted or archived: `scheduler.md` (D44, D45).
+when a man is deleted or archived: `scheduler.md` (D44, D45); a Quals column heading dragged to the table's edge
+scrolls it sideways: `inputs.md` (D893).
 
 | # | Date | The rule |
 |---|---|---|

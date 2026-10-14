@@ -57,6 +57,7 @@ import { cutParts, dayWord, lateWord } from './sanscal-model'
 import { FloatWin } from './FloatWindow'
 import { WD } from './daysfmt'
 import { landOn, markLand, paintLand } from './lift'
+import { edgeAutoScroll, findScroller } from './edgescroll'
 import { bringRowOnScreen, rowOnScreen } from './onscreen'
 import { useVersion } from './useStore'
 import { useMedia } from './usemedia'
@@ -693,21 +694,40 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
       e.preventDefault()
       setSecDrag(id)
       let over: { id: string, after: boolean } | null = null
-      const move = (ev: PointerEvent) => {
-        const el = document.elementFromPoint(ev.clientX, ev.clientY)
+      /* the note under a point — by a move, and again after an edge scroll slid the notes under a still pointer */
+      const hoverAt = (x: number, y: number) => {
+        const el = document.elementFromPoint(x, y)
         const row = el && (el as Element).closest ? (el as Element).closest('[data-sec]') : null
-        const overId = row?.getAttribute('data-sec') ?? null
+        let overId = row?.getAttribute('data-sec') ?? null
         let after = false
         if (row) {
           const r = (row as HTMLElement).getBoundingClientRect()
-          after = r.height > 0 && ev.clientY > r.top + r.height / 2
+          after = r.height > 0 && y > r.top + r.height / 2
+        }
+        /* ONE LINE A GAP (owner D890 for the Leave War, D891 here — "Yes fix them too"): a note's lower half and the
+           upper half of the note below it are ONE drop (the release resolves "after X" to "before whatever follows
+           X"), so the hover names that following note and the line is drawn once, on its top edge. Only the last
+           note keeps its line on its foot; over the note just above the one being dragged, no line. */
+        if (row && after && overId !== id) {
+          const next = row.nextElementSibling
+          const nextId = next && next.matches('[data-sec]') ? next.getAttribute('data-sec') : null
+          if (nextId) { overId = nextId; after = false }
         }
         if (overId !== (over?.id ?? null) || after !== (over?.after ?? false)) {
           over = overId ? { id: overId, after } : null
           setSecOver(over)
         }
       }
+      /* CARRIED TO THE EDGE, THE VIEW FOLLOWS (owner D893, 15 Oct 26 — "Yes", after D892 on the Leave War): held near
+         the top or foot of the day's list, the list scrolls that way at the app's one edge feel (`./edgescroll`). */
+      let px = e.clientX, py = e.clientY
+      const auto = edgeAutoScroll({
+        from: e.currentTarget as Element, axis: 'y', touch: e.pointerType === 'touch', x: px, y: py,
+        onScroll: () => hoverAt(px, py),
+      })
+      const move = (ev: PointerEvent) => { px = ev.clientX; py = ev.clientY; auto.point(px, py); hoverAt(px, py) }
       const end = (commit: boolean) => {
+        auto.stop()
         window.removeEventListener('pointermove', move)
         window.removeEventListener('pointerup', up)
         window.removeEventListener('pointercancel', cancel)
@@ -778,15 +798,34 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
         return { inRow, ix, cell }
       }
       const clearLit = () => document.querySelectorAll(`[data-secpucks="${rowId}"] .pk-swap-target`).forEach(x => x.classList.remove('pk-swap-target'))
-      const move = (ev: PointerEvent) => {
-        if (!dragging && Math.abs(ev.clientX - x0) < 6 && Math.abs(ev.clientY - y0) < 6) return
-        if (!dragging) { dragging = true; chip.classList.add('pk-drag'); document.body.classList.add('ic-dragging') }
-        chip.style.transform = `translate(${ev.clientX - x0}px, ${ev.clientY - y0}px)`
-        const { ix, cell } = slotAt(ev)
+      /* CARRIED TO THE EDGE, THE VIEW FOLLOWS (owner D893): held near the top or foot of the day's list the list
+         scrolls at the app's one edge feel (`./edgescroll`). The lifted chip rides the list, so how far the list has
+         run since the press is added back into its offset — it stays under the finger — and the slot under the still
+         finger is read again. */
+      const sc = findScroller(chip, 'y')
+      const top0 = sc ? sc.el.scrollTop : 0
+      let lastX = x0, lastY = y0
+      const follow = () => {
+        const ran = sc ? sc.el.scrollTop - top0 : 0
+        chip.style.transform = `translate(${lastX - x0}px, ${lastY - y0 + ran}px)`
+        const { ix, cell } = slotAt({ clientX: lastX, clientY: lastY } as PointerEvent)
         clearLit()
         if (cell && ix >= 0 && ix !== fromIx) cell.classList.add('pk-swap-target')   // show the swap target
       }
+      let auto: ReturnType<typeof edgeAutoScroll> | null = null
+      const move = (ev: PointerEvent) => {
+        if (!dragging && Math.abs(ev.clientX - x0) < 6 && Math.abs(ev.clientY - y0) < 6) return
+        if (!dragging) {
+          dragging = true; chip.classList.add('pk-drag'); document.body.classList.add('ic-dragging')
+          // the edge scroll starts with the drag itself — a press that never drifts is a tap and scrolls nothing
+          auto = edgeAutoScroll({ from: chip, axis: 'y', touch: e.pointerType === 'touch', x: x0, y: y0, onScroll: follow })
+        }
+        lastX = ev.clientX; lastY = ev.clientY
+        auto?.point(lastX, lastY)
+        follow()
+      }
       const done = (ev: PointerEvent | null) => {
+        auto?.stop()
         window.removeEventListener('pointermove', move)
         window.removeEventListener('pointerup', up)
         window.removeEventListener('pointercancel', cancel)

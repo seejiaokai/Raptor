@@ -23,6 +23,7 @@ import { useVersion } from './useStore'
    surface in the app wears. A column is a COMPOSITE thing (a heading and a
    cell per person), so it takes the overlay frame rather than a class. */
 import { boxOf, frameLift, frameLand } from './lift'
+import { edgeAutoScroll } from './edgescroll'
 /* this page used to carry its own copy of exportCSV — which is how it missed
    the UTF-8 BOM the shared one now writes. One exporter, one encoding. */
 import { exportCSV } from './export'
@@ -474,6 +475,17 @@ export function QualsPage() {
        itself changes state. */
     let from = '', over: HTMLElement | null = null
     const clear = () => { if (over) over.classList.remove('qdrop'); over = null }
+    /* CARRIED TO THE EDGE, THE VIEW FOLLOWS (owner D893, 15 Oct 26 — "Yes", after D892): a heading held near the
+       left or right edge of the table's sideways scroll runs it that way at the app's one edge feel (`./edgescroll`),
+       and the heading under the still pointer is read again, so a column can be carried to one off the screen. */
+    let auto: ReturnType<typeof edgeAutoScroll> | null = null
+    let lx = 0, ly = 0
+    const overAt = (x: number, y: number) => {
+      const hit = document.elementFromPoint(x, y) as HTMLElement | null
+      const th = hit?.closest?.('th[data-col]') as HTMLElement | null
+      if (!th || th.dataset.col === from) return
+      if (th !== over) { clear(); over = th; th.classList.add('qdrop') }
+    }
     const onDown = (e: any) => {
       if (!live.current.canEditQuals()) return
       const th = (e.target as HTMLElement).closest('th[data-col]') as HTMLElement | null
@@ -491,9 +503,14 @@ export function QualsPage() {
          width — its clientWidth is the padding box rounded, a border and a
          fraction short of it (lift.ts boxOf) */
       if (w) frameLift(qLiftRef.current, boxOf(w, tbl, th, w.scrollLeft, 'rect'))
+      lx = e.clientX; ly = e.clientY
+      auto?.stop()
+      auto = edgeAutoScroll({ from: th, axis: 'x', touch: e.pointerType === 'touch', x: lx, y: ly, onScroll: () => { if (from) overAt(lx, ly) } })
     }
     const onMove = (e: any) => {
       if (!from) return
+      lx = e.clientX; ly = e.clientY
+      auto?.point(lx, ly)
       const th = (e.target as HTMLElement).closest?.('th[data-col]') as HTMLElement | null
       if (!th || th.dataset.col === from) return
       if (th !== over) { clear(); over = th; th.classList.add('qdrop') }
@@ -508,6 +525,7 @@ export function QualsPage() {
          keeps an unrelated click anywhere on the page — this pair of listeners
          is mounted for the life of the page, not just for the drag — from
          cutting a flash short. */
+      auto?.stop(); auto = null
       if (from && over && live.current.moveQual(from, over.dataset.col!)) qLandRef.current = from
       else if (from) frameLift(qLiftRef.current, null)
       tbl.querySelectorAll('.qdragging').forEach(x => x.classList.remove('qdragging'))
@@ -540,6 +558,7 @@ export function QualsPage() {
     return () => {
       tbl.removeEventListener('click', onClick); tbl.removeEventListener('change', onChange)
       tbl.removeEventListener('pointerdown', onDown); tbl.removeEventListener('pointermove', onMove)
+      auto?.stop()
       document.removeEventListener('pointerup', onUp); document.removeEventListener('pointercancel', onUp)
       wrap.removeEventListener('scroll', onXScroll)
     }

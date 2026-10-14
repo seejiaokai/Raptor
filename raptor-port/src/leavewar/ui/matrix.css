@@ -512,6 +512,16 @@
   -webkit-user-select: none;
 }
 .mx .counts .who .drag:active { cursor: grabbing; }
+/* A FINGER'S WAY IN (his find on his iPhone, 15 Oct 26 — "much hard to activate the rearrange on the manning
+   counter. Compared to the pucks below"). Measured at a phone's size (`scripts/handpass/grip-reach.mjs`): the ⠿ is
+   about 7 x 10 px — a counter's in a 19 px row, a man's in a 21 px one — so a fingertip found the counter's least. The
+   design guide's answer (§6, D487): a larger INVISIBLE area round a control that looks the same, never overlapping
+   its neighbour. So each grip takes the press over an area reaching toward the cell's left edge and 4 px above and
+   below — inside its own row (19 px holds 10 + 8), short of the name beside it (the 5-6 px gap holds the 4 px). */
+.mx .counts .who .drag,
+.whorow .drag { position: relative; }
+.mx .counts .who .drag::before,
+.whorow .drag::before { content: ''; position: absolute; top: -4px; bottom: -4px; left: -10px; right: -4px; }
 /* The sticky date header. z-index 3 on the corner cell so it keeps
    winning the stacking order over both the sticky header row and the
    sticky column beneath it. */

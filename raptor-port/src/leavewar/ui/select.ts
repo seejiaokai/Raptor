@@ -33,16 +33,16 @@ const TOUCH_TAP_WAIT = 400  // ms the swallow waits for the tap a finger leaves 
 const SLOWARM = 140     // ms down after which a slide past GIVEUP arms a
                         // SELECT instead of ceding — a slow, deliberate drag,
                         // never a quick scroll flick (owner, 27 Aug 26)
+import { EDGE, EDGE_STEP, TOUCH_EDGE, TOUCH_STEP_MAX } from '../../ui/edgescroll'
+
 const GIVEUP = 26       // a pre-arm slide past this is a scroll, not a select
                         // (any smaller wobble during the dwell is simply
                         // tolerated — there is no second, tighter threshold)
 const MOUSE_SLOP = 4    // a mouse arms on this move, no dwell
-const EDGE = 36         // px from an edge that auto-scrolls during a MOUSE drag
-const EDGE_STEP = 18    // px per frame of a mouse edge auto-scroll (constant)
-const TOUCH_EDGE = 48   // wider edge band for a finger, which is a fatter target
-const TOUCH_STEP_MAX = 15 // px per frame at the very edge; RAMPED down to 0 across
-                        // the band so the finger throttles the speed by how far it
-                        // pushes — the fix for the 27 Aug "columns slid away" feel
+// EDGE (a mouse's band), EDGE_STEP (its constant step), TOUCH_EDGE (a finger's wider band) and TOUCH_STEP_MAX (a
+// finger's step at the very edge, RAMPED down to 0 across the band so the finger throttles the speed by how far it
+// pushes — the fix for the 27 Aug "columns slid away" feel) live in `src/ui/edgescroll.ts` since 15 Oct 26, where every
+// other drag's edge scroll reads them too (owner D892, D893) — one feel, never two copies that drift. Values unchanged.
 
 /* The grid scrolls SIDEWAYS inside `.mx-wrap` (its `overflow-x`) but UP/DOWN
    with the page — `.mx-wrap` has no height cap, so its vertical overflow lives

@@ -249,7 +249,7 @@ describe('group colours in ⚙', () => {
 describe('drag to reorder in ⚙', () => {
   const origEFP = document.elementFromPoint
   afterEach(async () => { document.elementFromPoint = origEFP; await new Promise(r => setTimeout(r, 0)) })
-  const pointer = (type: 'pointerdown' | 'pointermove' | 'pointerup', target: EventTarget, init: PointerEventInit) =>
+  const pointer = (type: 'pointerdown' | 'pointermove' | 'pointerup' | 'pointercancel', target: EventTarget, init: PointerEventInit) =>
     act(() => { target.dispatchEvent(new PointerEvent(type, { bubbles: true, ...init })) })
 
   it('dragging IP above SXO puts IP first on the page', () => {
@@ -268,20 +268,44 @@ describe('drag to reorder in ⚙', () => {
   /* The drop bar points at the seam the row will land in: top edge for the
      upper half of the hovered row, bottom edge (`after`) for the lower half
      (bug hunt, 4 Sep 26 — the list used to show only the top bar). */
-  it('the hovered row shows the after-bar when the pointer is in its lower half', () => {
+  /* ONE LINE A GAP (owner D890, D891 — "Yes fix them too"): the lower half of a row and the upper half of the row
+     below it are one drop, so they draw ONE bar — on the top of the row below. Only the last movable row (the SANS
+     row under it never moves) keeps its bar on its foot. */
+  const growRows = () => [...document.querySelectorAll('[data-testid="group-chosen"] [data-grow]')] as HTMLElement[]
+  const lowerHalf = (el: HTMLElement) => { el.getBoundingClientRect = () => ({ top: 0, height: 20, bottom: 20, left: 0, right: 100, width: 100, x: 0, y: 0, toJSON() {} }) as DOMRect }
+  it('the lower half of a row draws the bar on the top of the row below — one bar a gap', () => {
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('settings-open'))
-    const sxo = screen.getByTestId('grow-SXO')
-    document.elementFromPoint = () => sxo
-    sxo.getBoundingClientRect = () => ({ top: 0, height: 20, bottom: 20, left: 0, right: 100, width: 100, x: 0, y: 0, toJSON() {} }) as DOMRect
-    pointer('pointerdown', screen.getByTestId('gsdrag-IP'), { pointerType: 'mouse', button: 0, clientX: 10, clientY: 40, pointerId: 1 })
+    const rows = growRows()
+    expect(rows.length).toBeGreaterThanOrEqual(3)
+    const [a, b, c] = rows as [HTMLElement, HTMLElement, HTMLElement]
+    expect(a.nextElementSibling).toBe(b)                                         // the case: two rows side by side
+    document.elementFromPoint = () => a
+    lowerHalf(a)
+    pointer('pointerdown', c.querySelector('[data-testid^="gsdrag-"]')!, { pointerType: 'mouse', button: 0, clientX: 10, clientY: 40, pointerId: 1 })
     pointer('pointermove', window, { pointerType: 'mouse', clientX: 10, clientY: 15, pointerId: 1 })
-    expect(sxo.className).toContain('dragover after')
-    pointer('pointermove', window, { pointerType: 'mouse', clientX: 10, clientY: 5, pointerId: 1 })
-    expect(sxo.className).toContain('dragover')
-    expect(sxo.className).not.toContain('after')
+    expect(b.className).toContain('dragover')
+    expect(b.className).not.toContain('after')
+    expect(a.className).not.toContain('dragover')
+    pointer('pointermove', window, { pointerType: 'mouse', clientX: 10, clientY: 5, pointerId: 1 })   // the upper half: the same row's top
+    expect(a.className).toContain('dragover')
+    expect(a.className).not.toContain('after')
     pointer('pointerup', window, { pointerType: 'mouse', clientX: 10, clientY: 5, pointerId: 1, button: 0 })
+  })
+  it('the last movable row keeps its bar on its foot — nothing it can land before follows it', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('settings-open'))
+    const rows = growRows()
+    const last = rows[rows.length - 1]!, first = rows[0]!
+    expect(last.nextElementSibling?.hasAttribute('data-grow') ?? false).toBe(false)  // the case
+    document.elementFromPoint = () => last
+    lowerHalf(last)
+    pointer('pointerdown', first.querySelector('[data-testid^="gsdrag-"]')!, { pointerType: 'mouse', button: 0, clientX: 10, clientY: 40, pointerId: 1 })
+    pointer('pointermove', window, { pointerType: 'mouse', clientX: 10, clientY: 15, pointerId: 1 })
+    expect(last.className).toContain('dragover after')
+    pointer('pointercancel', window, { pointerType: 'mouse', clientX: 10, clientY: 15, pointerId: 1 })
   })
 
   it('the SANS row has no grip — it is always at the foot', () => {
@@ -360,6 +384,25 @@ describe('one lift, every drag — the ⚙ lists (6 Sep 26)', () => {
     expect(moved.classList.contains('lift-land')).toBe(true)
     vi.advanceTimersByTime(LIFT_LAND_MS + 50)
     expect(moved.classList.contains('lift-land')).toBe(false)
+  })
+
+  /* ONE LINE A GAP on the who-wins list too (owner D891): a row's lower half draws the bar on the row below */
+  it('the who-wins list draws one bar a gap — a row’s lower half marks the top of the row below', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('settings-open'))
+    fireEvent.click(screen.getByTestId('who-wins-toggle'))
+    const rows = [...document.querySelectorAll('[data-testid="group-priority"] [data-gprio]')] as HTMLElement[]
+    const [a, b, c] = rows as [HTMLElement, HTMLElement, HTMLElement]
+    expect(a.nextElementSibling).toBe(b)                                         // the case: two rows side by side
+    document.elementFromPoint = () => a
+    a.getBoundingClientRect = lowerHalfRect
+    pointer('pointerdown', c.querySelector('[data-testid^="gpdrag-"]')!, { pointerType: 'mouse', button: 0, clientX: 10, clientY: 40, pointerId: 1 })
+    pointer('pointermove', window, { pointerType: 'mouse', clientX: 10, clientY: 15, pointerId: 1 })
+    expect(b.className).toMatch(/\bdragover\b/)
+    expect(b.className).not.toMatch(/\bafter\b/)
+    expect(a.className).not.toMatch(/\bdragover\b/)
+    pointer('pointercancel', window, { pointerType: 'mouse', clientX: 10, clientY: 15, pointerId: 1 })
   })
 
   it('a pointercancel leaves neither class behind', () => {

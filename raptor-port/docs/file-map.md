@@ -19,7 +19,16 @@ switch (`src/ui/board.ts switchDraft`) share; `scripts/handpass/ps-walk.mjs` (th
 `scripts/handpass/lwlanding-drag.mjs` (`[LW-LANDING-LINE-FIGURES]`, D883 — the Leave War's landing line through the figures
 drawer by a real drag, mouse and touch, as assertions with pictures; `DL_BEFORE=1` pictures the build before the fix).
 **Changed by it:** `src/leavewar/ui/FiguresDrawer.tsx` (`DrawerOver` — the drawer's row wears the landing mark),
-`src/leavewar/ui/Matrix.tsx` (`drawerRows` sets it), `src/leavewar/ui/matrix.css` (the drawer's line).
+`src/leavewar/ui/Matrix.tsx` (`drawerRows` sets it; `startRowDrag` draws one line a gap, D890, D891), `src/leavewar/ui/matrix.css`
+(the drawer's line), `src/ui/InputsCal.tsx` (`startSecDrag`: one line a gap for a day's notes, D891).
+`scripts/handpass/onegap-lists.mjs` (`[DRAG-ONE-LINE-ELSEWHERE]`, D891 — one bar a gap in the ⚙ Groups and Who wins lists and
+an Inputs calendar day's notes, by a real drag, mouse and touch; `DL_BEFORE=1` pictures the build before).
+`src/ui/edgescroll.ts` (D892, D893 — ONE edge scroll for every drag that lacked one: `edgeAutoScroll`, `edgeStep`,
+`findScroller` and the numbers, which `src/leavewar/ui/select.ts` now reads too); `src/ui/edgescroll.test.ts`.
+**Changed by it:** `src/leavewar/ui/Matrix.tsx` (startRowDrag), `src/ui/InputsCal.tsx` (the notes' and the seated pucks' drags),
+`src/ui/QualsPage.tsx` (the heading drag), `src/leavewar/ui/matrix.css` (the grips' invisible touch area).
+`scripts/handpass/edgescroll-walk.mjs` (the edge scroll walked: Rearrange, a day's notes, Quals; mouse and touch);
+`scripts/handpass/grip-reach.mjs` (how much round a Rearrange grip takes a press, a counter's beside a man's).
 `scripts/handpass/noglow-onlook.mjs` (`[GUIDE-NO-GLOW]` question 6's third look: Rearrange on in the filter chip's pale blue fill, no glow).
 `src/ui/noglow-css.test.ts` (the whole app's roll-call for D880–D882, D887: no stylesheet under src/ lights a mark's own colour round it, blurred or as a 3px+ see-through band; the sign-in logo the one exception); `scripts/handpass/noglow-rollcall.mjs` (`[GUIDE-NO-GLOW]`'s second doors on the built change: the SANS calendar's puck, Show SANS on, View-only Sched's today card — a check line each); `scripts/handpass/noglow-more.mjs` (`[GUIDE-NO-GLOW]` round 3's places from the fresh read: the sign-in logo, the Leave War's balance bar, the Fast sync dot, Admin → Users' dots).
 **Changed:** `src/ui/board.ts` — the switch's note in short sentences; `src/ui/DraftsModal.tsx` — "Select" closes the plan

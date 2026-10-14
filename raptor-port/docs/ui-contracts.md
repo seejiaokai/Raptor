@@ -7346,7 +7346,22 @@ commit in `Matrix.tsx startRowDrag`); the hover now names that same row (the nex
 list), so the two halves no longer draw two lines a few pixels apart. A row's bottom edge carries the line only where
 nothing that can be landed on follows it: the last row of a list, or above a heading a man's row cannot land on. The
 row being dragged still shows no line over itself. Every row of the grid in Rearrange — a man's row, a group heading,
-the Manning block's rows; not the ⚙ Settings lists (D852 — named to him, not changed).
+the Manning block's rows (his "Counter has this rearrange issue") — **and, on his "Yes fix them too" (D891), the ⚙
+Settings Groups and "Who wins" lists (the same `startRowDrag`) and a day opened on the Inputs calendar, a note dragged
+to reorder (`InputsCal.tsx` startSecDrag): one bar a gap there too.** Walked by `scripts/handpass/onegap-lists.mjs`.
+**A row carried to the screen's edge scrolls the grid (owner, D892, 15 Oct 26: "when I drag the row of the puck down
+outside the screen, the screen doesn't pan").** In Rearrange a man's row, a group heading or a counter held near the top
+or bottom edge of the screen scrolls the grid that way, as the Scheduler's drags and the war's Move do. Filed as
+`[LW-REARRANGE-EDGE-SCROLL]` — **built 15 Oct 26** (`Matrix.tsx startRowDrag`; the ⚙ lists ride the same drag). **And (D893,
+his "Yes"):** a note or a puck dragged in a day opened on the Inputs calendar scrolls the day's list at its edge, and a
+column heading dragged on Quals scrolls the table sideways — built 15 Oct 26 (`InputsCal.tsx`, `QualsPage.tsx`). ONE edge
+scroll for all of them, `src/ui/edgescroll.ts` — the Leave War drag selection's own numbers (`select.ts` reads them
+there): a mouse 36 px from the edge at a steady 18 px a frame, a finger 48 px ramping to 15; a band the press began in
+is dead until left; after each step the thing under the still pointer is read again. Pins: `src/ui/edgescroll.test.ts`;
+walked by `scripts/handpass/edgescroll-walk.mjs`. **The grips (his find — a counter's "much hard to activate"):** each
+Rearrange grip takes a press over a larger invisible area (the guide §6, D487) — 4 px above and below, toward the cell's
+left edge, 4 px right — inside its own row; measured by `scripts/handpass/grip-reach.mjs` (a phone: a counter's 6 → 16
+points of 81 round the grip, a man's 9 → 20); pinned in `src/leavewar/ui/rowglow.test.ts`.
 
 Four asks from the same sitting, all on the Leave War grid:
 

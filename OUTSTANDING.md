@@ -58,7 +58,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **LIVE 15 OCT 26 (pull request 506, his "merge live"):** the small OIL job (D816, D818, with D862, D863, D865) — its check `raptor-port/docs/handpass/2026-10-14-oil-uncancel-load.md`; its items are archived; what remains of it is the three small jobs below.
 
-**BUILT 15 Oct 26 on `claude/backlog-work-session-12d909`, waiting for his "merge live" (D883, D890):** [LW-LANDING-LINE-FIGURES] — the Leave War's landing line runs through the figures, one line a gap. **His to say (D852), filed by it:** [DRAG-ONE-LINE-ELSEWHERE] — three other drag lists (the ⚙ Groups and Who wins lists, an Inputs calendar day's notes) draw two lines a gap.
+**BUILT 15 Oct 26 on `claude/backlog-work-session-12d909`, waiting for his "merge live" (D883, D890):** [LW-LANDING-LINE-FIGURES] — the Leave War's landing line runs through the figures, one line a gap. **His finds on the preview, the same night:** [LW-REARRANGE-EDGE-SCROLL] (D892 — a row dragged to the screen's edge does not scroll; being built), [LW-COUNTER-GRIP-REACH] (a counter's grip is harder to take; being measured); named to him, his to say: [DRAG-EDGE-SCROLL-ELSEWHERE]. **Built with it on his "Yes fix them too" (D891):** [DRAG-ONE-LINE-ELSEWHERE] — the ⚙ Groups and Who wins lists and an Inputs calendar day's notes draw one line a gap too.
 
 **His answers of 15 Oct 26 (D877, D878 — "3 all no glow 4 fix"), two jobs — LIVE 15 Oct 26 (pull request 512):** [GLOW-OFF] — the board's other glows go, each keeping its ring; walked 36/36; his iPhone look (the people picker's chip answered and built, D879). [COMPACT-BANDS-WINDOW] — the compaction notes count against the app's own room; read by one fresh reader, its findings fixed; his approval, then the main folder brought level.
 
@@ -2302,7 +2302,34 @@ the real row's line ran UNDER it; the drawer's row now wears the same landing ma
 **And round two, the same branch (D890 — his find on the preview):** one landing line a gap, not two a few pixels apart;
 re-walked 41/41. The other places with the same two positions: `[DRAG-ONE-LINE-ELSEWHERE]`.
 
-### [DRAG-ONE-LINE-ELSEWHERE] Three other drag lists draw two landing lines in each gap, a few pixels apart (found 15 Oct 26, his question after D890) — OPEN, his to say
+### [GUIDE-DRAG-RULES] The design guide carries two rules for every drag — one landing line a gap; a drag at the edge of what scrolls scrolls it (his word, 15 Oct 26 — D894) — DRAFTED AND READ 15 Oct 26 (one fresh reader, seven findings taken — version 2 in `raptor-port/docs/superpowers/specs/2026-10-15-guide-drag-rules.md`), WAITING FOR HIS APPROVAL OF THE WORDING
+**His words:** *"This is also part of design skill that u should incorporate. The 2 things I flagged out. The rearrange and
+drag outside screen. Note it"*. The guide: `raptor-port/docs/design-practices.md`; the two rulings behind them D890/D891 and
+D892/D893. A working-guide change: drafted, read by one fresh reader, his approval of the wording (D852, D70) — then in.
+
+### [LW-REARRANGE-EDGE-SCROLL] In the Leave War's Rearrange a row dragged to the screen's edge does not scroll the grid (his find on his iPhone, 15 Oct 26 — D892) — BUILT 15 Oct 26 on `claude/backlog-work-session-12d909`, waiting for his "merge live" (walked 14/14 with the D893 drags, `scripts/handpass/edgescroll-walk.mjs`)
+**His words:** *"when I drag the row of the puck down outside the screen, the screen doesn't pan"*. The Rearrange drag
+(`raptor-port/src/leavewar/ui/Matrix.tsx startRowDrag` — men's rows, group headings, counters) has no edge scroll; the war's
+own drag selection does (`raptor-port/src/leavewar/ui/select.ts` EDGE / edgeScroll), as the Scheduler's drags do
+(`raptor-port/src/ui/rowdrag.ts`, `drag.ts`). The contract: `raptor-port/docs/ui-contracts.md` (D892).
+
+### [LW-COUNTER-GRIP-REACH] A counter row's Rearrange grip is much harder to take than a man's row's (his find on his iPhone, 15 Oct 26) — BUILT 15 Oct 26: measured (both ⠿ about 7 x 10 px on a phone; a counter's row 19 px, a man's 21), each grip given a larger invisible area inside its row (the guide §6, D487) — a counter's 6 → 16 of 81 points round it, a man's 9 → 20; waiting for his "merge live"
+**His words:** *"Idk why it's much hard to activate the rearrange on the manning counter. Compared to the pucks below"*.
+Both grips are the same small ⠿ glyph with no wider touch area (`raptor-port/src/leavewar/ui/matrix.css` `.mx .counts .who
+  .drag`, `.whorow .drag`); what differs is to be measured on the built app (`scripts/handpass/grip-reach.mjs`).
+
+### [DRAG-EDGE-SCROLL-ELSEWHERE] Other drags that do not scroll when held at the screen's edge (found 15 Oct 26, his question with D892) — HIS "YES" (D893): the Inputs calendar's two drags and Quals' heading drag BUILT 15 Oct 26 (the notes and Quals walked; the puck drag inside a note compiled and its own tests run, not walked); STILL NAMED TO HIM, not changed: the Tracker's ball drag (not checked), the Inputs month calendar's bar drag (found by the guide's read)
+**Named to him (D852), not changed.** Scroll at an edge already: the Scheduler Board's and Edit Schedule's puck drags
+(`src/ui/drag.ts`) and line / wave / section drags (`src/ui/rowdrag.ts`); the Leave War's day-cell drag selection and its
+Move (`src/leavewar/ui/select.ts`). Do NOT (read in the code, 15 Oct 26): the Leave War's ⚙ Settings Groups and Who wins
+lists (the same drag as Rearrange — they ride D892's build if the sheet can scroll); a day opened on the Inputs calendar —
+a note dragged to reorder and a puck dragged between notes (`src/ui/InputsCal.tsx`); Quals — a column heading dragged
+sideways past the screen's edge (`src/ui/QualsPage.tsx`). Not checked: the Tracker chart's ball drag.
+
+### [DRAG-ONE-LINE-ELSEWHERE] Three other drag lists draw two landing lines in each gap, a few pixels apart (found 15 Oct 26, his question after D890) — BUILT 15 Oct 26 on his "Yes fix them too" (D891), same branch, waiting for his "merge live"
+**BUILT (D891):** the grid-only limit on `Matrix.tsx startRowDrag`'s one-bar step lifted (Groups, Who wins); the same step in
+`InputsCal.tsx startSecDrag` (a day's notes). Tests: `settingssheet.test.tsx`, `inputscal.test.tsx` (red undone); walked
+14/14 by `scripts/handpass/onegap-lists.mjs` (`raptor-port/docs/handpass/2026-10-15-lw-landing-line.md` §5b).
 **Found, NOT CHANGED (D852: other places are named to him, never changed unasked).** D890 made the Leave War grid's
 Rearrange draw one line a gap; the same two positions — a row's bottom edge, then the next row's top — remain in: (1) the
 Leave War's ⚙ Settings Groups list (`raptor-port/src/leavewar/ui/bidpicker.css` `.set-grow.dragover` / `.after`); (2) its
