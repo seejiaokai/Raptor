@@ -18,7 +18,7 @@ import { HOOKS } from '../engine/hooks'
 import { dayApproved } from '../engine/publish'
 import { dayDrafts, curDraftId, draftRename, draftDelete, MAX_DRAFT_NAME } from '../engine/drafts'
 import { switchDraft } from './board'
-import { DRAFTSEDIT, setDraftsEdit } from './pops'
+import { DRAFTSEDIT, setDraftsEdit, OILLIST } from './pops'
 import { useVersion } from './useStore'
 import { SESSION } from '../state/auth'
 import { isAdmin } from '../state/perms'
@@ -144,7 +144,13 @@ export function DraftsModal() {
             }}>Delete plan</button>
           <button className="abtn" disabled={!t || isLive}
             title={isLive ? 'Already the live day' : 'Make this plan the live day'}
-            onClick={() => { if (t && switchDraft(di, t.id)) notify() }}>Select</button>
+            onClick={() => {
+              if (!t || !switchDraft(di, t.id)) return
+              /* a switch that brought back an input needing an OIL answer opens the day's one list (owner D865); it
+                 would sit under this window's backdrop, out of reach until "Done" (the walk, 15 Oct 26) — the plan is
+                 switched, so this window's work is done: it closes and the list is in front */
+              if (OILLIST) close(); else notify()
+            }}>Select</button>
           <button className="abtn primary" onClick={close}>Done</button>
         </div>
       </div>

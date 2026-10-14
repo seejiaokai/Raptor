@@ -706,3 +706,18 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** After any merge that touches `.claude/settings*.json`, `.claude/hooks/` or `.claude/skills/`, bring the main checkout to `main` (it must stay on `main`, clean of tracked changes), and verify in a NEW chat by a reading the app itself gives (get_usage, the skill list), never by running the script by hand. Add that line to the merge-live steps and the session-handoff guide.
 
 **Principle:** A configuration change is verified where the running tool actually loads it from — confirm the load path (process arguments, the tool's own documentation) before calling a hook, setting or skill "live"; a script that works when run by hand proves nothing about whether the host runs it.
+
+### Observation 601: A shell here-document holding an apostrophe failed twice in one job, though a memory note names the trap
+
+**Status:** OPEN
+**Date:** 15 Oct 26
+**Session context:** building [OIL-PLAN-SWITCH-UNASKED]; test bodies and edit scripts passed to Python through a bash here-document
+**Skill:** New skill candidate: none — the working practice behind every build (raptor-port/CLAUDE.md §Token discipline; the memory note "Bash heredoc with an apostrophe fails")
+**Type:** open-source
+**Phase/Area:** writing multi-line scripts during a build
+
+**Issue:** Twice in one job a `python - <<'PY'` here-document whose body held test code with apostrophes ("day\'s", 'it\'s') failed to parse in the shell ("unexpected EOF while looking for matching `''") and the step was redone through the file tool. The trap is already written in a memory note loaded at the start of the session ("write multi-line scripts with the Write tool and run the file; a heredoc body containing ' never parses here"), and was still not applied at the moment of writing — the condition ("unless it holds an apostrophe") has to be judged each time, and under load it is judged wrong. Smaller, apostrophe-free here-documents in the same session worked, which reinforces the habit.
+
+**Suggested improvement:** Make it an unconditional default rather than a condition: any script longer than a one-liner is written to a file in the scratchpad with the file tool and run from there — never a here-document — and say so as one line in raptor-port/CLAUDE.md §Token discipline (or the executor rule), replacing the memory note's conditional wording. A hook that refuses a Bash command containing `<<'` with an apostrophe in its body is possible but heavier than the habit.
+
+**Principle:** Where a safer way costs nothing extra, a rule phrased as a condition to judge each time ("unless it contains X") fails under load; phrase it as an unconditional default ("always do Y").

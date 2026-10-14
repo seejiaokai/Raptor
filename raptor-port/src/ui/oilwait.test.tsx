@@ -1626,4 +1626,35 @@ describe('"Switch to this plan" that brings back an unanswered input says so, an
     expect(SAID.join(' | ')).toBe('Saturday is now "Plan A".')
     expect(pops.OILLIST).toBeNull()
   })
+  it('the plan editor\'s "Select" (✎ in the plans menu): where the switch opens the list, the editor closes, so the list is in front — and where it opens none, the editor stays (the walk, 15 Oct 26)', async () => {
+    await boot()
+    const { a, b } = setUp()
+    ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
+    const host = document.createElement('div')
+    document.body.appendChild(host)
+    const root = createRoot(host)
+    const editorOpen = () => !!document.querySelector('#draftsModal:not([hidden])')
+    const select = async () => {
+      const sel = [...document.querySelectorAll('#draftsModal button')].find(x => x.textContent === 'Select') as HTMLButtonElement | undefined
+      expect(sel, 'the editor offers "Select"').toBeTruthy()
+      await act(async () => { sel!.click() })
+    }
+    try {
+      await act(async () => { root.render(<App />) })
+      /* the editor opened on Plan B (the live day is Plan A): Select brings the input back */
+      await act(async () => { pops.setDraftsEdit({ di: SAT, id: b }); store.notify() })
+      expect(editorOpen(), 'the editor is up').toBe(true)
+      await select()
+      expect(SAID.join(' | ')).toMatch(/ 1 input needs an OIL answer\.$/)
+      expect(pops.OILLIST, 'the list is open').toBeTruthy()
+      expect(editorOpen(), 'and the editor is gone from in front of it').toBe(false)
+      /* back to Plan A by the editor: no list is opened, and the editor stays for its other work */
+      pops.setOilList(null); SAID = []
+      await act(async () => { pops.setDraftsEdit({ di: SAT, id: a }); store.notify() })
+      await select()
+      expect(SAID.join(' | ')).toBe('Saturday is now "Plan A". 1 difference from the Original is pending.')
+      expect(pops.OILLIST).toBeNull()
+      expect(editorOpen(), 'the editor stays').toBe(true)
+    } finally { await act(async () => { root.unmount() }); host.remove() }
+  })
 })
