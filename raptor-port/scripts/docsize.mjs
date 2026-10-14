@@ -220,7 +220,9 @@ const RULING_BYTES = [
      which is what brings this file down. */
   /* how-we-work 32000 -> 34000 (15 Oct 26): 32,994 bytes with D856-D859 (the unattended night of 14 Oct) and D864 (one
      pull request for the night's work) - all live; none is trimmed (D136). [RULINGS-SPENT-PASS] still brings it down. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 34000],
+  /* how-we-work 34000 -> 36000 (15 Oct 26): 34,520 bytes with D867-D869 (the overnight command: his correction of its
+     shape, when to compact, his approval) - all live; none is trimmed (D136). [RULINGS-SPENT-PASS] still brings it down. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 36000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
