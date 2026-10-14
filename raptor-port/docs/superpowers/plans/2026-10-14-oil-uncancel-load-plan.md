@@ -163,3 +163,49 @@ time as the first whole unit run; its list is to be saved WHOLE as
 `docs/superpowers/briefs/2026-10-14-oil-uncancel-load-scenarios.md` the moment it arrives, before anything else.
 Two older tests that met D816 were given the new rule: `src/ui/oilwait.test.tsx` "(D814) the cancel taken back…" and
 `src/state/p6c-requestonread.test.ts` "Astra 1 — OIL…" (its un-cancel is now asked and answered).
+
+## State at the third commit of the check (14 Oct 26, night) — READ THIS AFTER A COMPACTION
+
+**Done:** both halves built, tests first; the whole unit suite run once (11357 tests; FIVE older tests had assumed an
+un-cancel at once — `oilwait` (D814's), `p6c-requestonread` (Astra 1), `inputmarks-scenarios` ×2 (its `uncx` helper now
+answers the question), `noteswords` N10 (one of the sentence's three places moved to `reqdoor.ts UNMARKED`) — each
+given the new rule, none weakened); the roll-call (above); the scenario designer's list SAVED:
+`docs/superpowers/briefs/2026-10-14-oil-uncancel-load-scenarios.md` (30 scenarios S1–S30, a state table, 8 questions
+Q1–Q8). **Taken from it into the build already:** the load's list no longer calls a plain weekend a public holiday
+(`pops.ts OILLIST.plain`, `OilDayList.tsx` — its Q8); the load counts what it made NEWLY open, so an input it would
+bring back from cancelled is counted (its S30); both marks on one input pinned by a test (its S2 / Q2 — the first off
+asks nothing, the last asks: that is D814 read plainly, told to him, not asked).
+
+**NEXT, in order:** (4) the sizing lines and the walk — MEDIUM: the host's own script
+`scripts/handpass/ou-walk.mjs` (model it on `scripts/handpass/lo-walk.mjs`: `L.world(size)`, `part`, `rowOut`,
+`L.pic`; the board's row buttons are `[data-grcx="<di>.<ri>"]` / `[data-grinfo=…]`, the row found by
+`DAYS[di].ground.findIndex(g => g.src === iid)`; the question's sheet `[data-testid="oilwait"]`-like — look in
+`src/ui/OilWaitSheet.tsx` for its test ids; the bar `[data-testid="oilbar"]`; the list `[data-testid="win-oilday"]`
+with `odl-` ids) at a desktop's and a phone's size for S1, S5 (every reader, **the Leave War's HO cell after
+publishing**), S6, S7 (the bar on one line at 390 and 320 wide — "Not un-cancelled — OIL not answered" is the longest
+it has carried), S8, S10, S13, S18, S19 (ii), S24–S26; and ONE Sonnet 5.5 helper on a frozen copy of the build for the
+publish orders and the members' side (S9, S11, S12, S14–S17, S20–S23, S27–S29), handed
+`docs/walk-scripts.md` and the three conditions of the order's §4. Recipe H (a holiday while marked) needs the Leave
+War's Event row → PH; where a fixture cannot be reached by the app's controls that IS a finding. (5) break tests.
+(6) the fresh Opus read (D858). (7) gates, sheet, records, HANDOFF, push, ONE notification.
+
+## Parked for him — the run's one list (each with a recommended answer; none stops the build)
+
+1. **The information-only mark's words** (his D816 gave the buttons and the bar; these two are the agent's): the
+   question is headed "Taking “information only” off <who>'s <input>"; changed meanwhile it says "That input has
+   changed — left as it is". Recommended: keep.
+2. **The load's sentence as built:** "Saturday: Original loaded onto the working copy — viewers still see … · 1 input
+   needs an OIL answer" (his tail added to the sentence the load already said). Recommended: keep the older sentence.
+3. **(Designer's Q3) The list after a load shows the day's WHOLE open list, the note counts only what the load put
+   back** — "1 input needs an OIL answer" over a list of three. Recommended: leave it — the list is the day's one
+   list (D782), and the two more were already his to answer.
+4. **(Q4) An input Fri–Mon, Monday a holiday with no answer, FRIDAY's version loaded:** not counted and no list
+   (Friday has nothing to answer); its "OIL?" tag and the bell carry it. Recommended: leave it.
+5. **(Q5) "Switch to this plan" bringing back unanswered inputs:** nothing is said (D818 names a published version).
+   Recommended: the same as a load — a small follow-up if he says so. NOT built.
+6. **(Q6) The bar is up and the input is answered, or moved to a working day, before "Answer OIL" is pressed:** as
+   built it is un-cancelled at once and says "Restored" (D816: "nothing is to be asked … at once"). Recommended: keep.
+7. **(Q7) The bar when the board's day is stepped or the board closed:** as the bar has behaved since D783 — to be
+   RECORDED by the walk and shown to him.
+8. **(Q1) A published version loaded back over an input cancelled since:** what the load does to the cancel is to be
+   RECORDED by the walk; whichever it is, the count now covers it.
