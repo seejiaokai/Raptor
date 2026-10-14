@@ -43,6 +43,7 @@ import { afterSchedMutate } from './view'
 import * as view from './view'
 import { commitNewInput, commitInputEdit, commitInput, draftOf, removeInput } from '../ui/inputedit'
 import '../ui/reqrow'      // the door a typed box of a request's row goes through (D739, D740) — it installs itself for the store's writer
+import { answerOilWait } from '../ui/oilwait'
 import { rowMark } from '../ui/reqdoor'      // …and the door a scheduler's CX / red box / information-only on a request's row goes through (D760)
 import { deletePerson } from './person-delete'
 
@@ -544,7 +545,10 @@ describe('phase 6 (c) v3, round 3 — a dead kept row is never the request\'s ro
     expect([rowOf(iid, SUN)!.row.cx, rowOf(iid, SUN)!.row.cxr], 'the Sunday landing arrives cancelled, with its reason').toEqual([true, 'WX'])
     expect(ev()!.stand, 'and a cancelled request earns nobody').toBe('cx')
     /* brought back: the live row is un-cancelled, the dead one keeps what it was issued with */
-    expect(rowMark(keyOn(SUN), 'cx', false), 'un-cancelled on its live row').toBe('done')
+    /* (a request with no OIL answer on a weekend: its un-cancel puts the OIL question first since owner D816 — answered
+       here with what the question itself proposes, and then it is brought back) */
+    expect(rowMark(keyOn(SUN), 'cx', false), 'un-cancelled on its live row: the OIL question first (D816)').toBe('asked')
+    expect(answerOilWait(Object.fromEntries(view.OILWAIT!.gate.plan.map(p => [p.iso, p.amt]))), '…and brought back on its answer').toBe(true)
     expect(rowOf(iid, SAT)!.row.kept, 'the Saturday row is still the dead kept one').toBe(true)
     expect(rowOf(iid, SAT)!.row.cx, '…and still the cancelled one').toBe(true)
     /* …and the door does not answer for it: a mark pressed on the dead row is that row's own, never the request's

@@ -143,3 +143,23 @@ the screen that asked.
   7. the whole gate set under the lock (`E2E_PORT=4174 node scripts/gatelock.mjs run --logs <dir>`), the evidence sheet `docs/handpass/2026-10-14-oil-uncancel-load.md` with its `Walk:` line, the records (`docs/engine-rules.md` the bullet on a cancelled input — D816, D818 built; `docs/ui-contracts.md` §The OIL question comes before the change; `docs/feature-impact.md`; `docs/file-map.md`; `OUTSTANDING.md` both items; the walk ledger's row), `HANDOFF.md`'s block rewritten, the branch pushed (it has no pull request until 505 is merged), ONE notification.
 - [ ] the scenario designer's list · [ ] the roll-call and the sizing lines · [ ] the walk · [ ] break tests
 - [ ] the fresh read · [ ] fixes · [ ] the gates · [ ] the sheet · [ ] the records · [ ] pushed; `HANDOFF.md`
+
+## The roll-call, as found in the code (14 Oct 26, night) — for the evidence sheet
+
+| The thing | Every place | Answer |
+|---|---|---|
+| A cancel or an information-only mark coming OFF an input | the Scheduler Board's row buttons CX and ⓘ on a row that came from an input (`ui/board.ts` → `ui/reqdoor.ts rowMark`) — the ONLY writer that clears `cx` / `info` on an input's record | WAITS on the OIL question (D816) — built |
+| | the same buttons on a row that is NOT an input's (a plain ground item) | must not: it is no input, it has no OIL question of its own (`board.ts` writes the row) |
+| | Edit Schedule's week, View-only Sched, the Inputs calendar and List, the input's own window, the Leave War | none draws such a button — a cancelled input's window only SAYS it is cancelled (D771) |
+| | Undo of a cancel; Redo of an un-cancel | asks nothing (D793 reading 3) — restores the record as it was, answer included |
+| | a day template applied (`engine/daytpl.ts` strips marks from the rows it lays) | not an input's door — TO CONFIRM in the read: a template never writes an input's record |
+| | a published version loaded back where the input was live when it went out and is cancelled now | TO CONFIRM in the read and the walk: does the load touch the input's own mark at all? If it brings it back, D818's count and list are what tell him (a load never asks) |
+| A version put back onto the working copy | "Load onto working copy" on the week's preview bar (`ui/html.ts`) and on the board's (`ui/SchedBoard.tsx`) — both the routed `data-restore` button, ONE handler (`ui/interactions.ts`) | SAYS and OPENS the list (D818) — built; both pages to be walked |
+| | a saved plan brought out; a week change; an Undo of a load | not a load of a published version: untouched — TO CONFIRM in the read whether a saved plan can put an unanswered input back (if so, a question for him, not built) |
+| The words of a wait | the question's sheet (`ui/OilWaitSheet.tsx`, two buttons from `WAIT_WORDS`), the bar that stays (a band under the top bar, and under the Scheduler Board's own bar), the changed-meanwhile note | two new kinds, drawn by the same code as the five older — the walk looks at each on a phone and a desktop |
+
+**While the chat compacts:** the scenario designer (a fresh Opus agent, blind to the code) was started at the same
+time as the first whole unit run; its list is to be saved WHOLE as
+`docs/superpowers/briefs/2026-10-14-oil-uncancel-load-scenarios.md` the moment it arrives, before anything else.
+Two older tests that met D816 were given the new rule: `src/ui/oilwait.test.tsx` "(D814) the cancel taken back…" and
+`src/state/p6c-requestonread.test.ts` "Astra 1 — OIL…" (its un-cancel is now asked and answered).
