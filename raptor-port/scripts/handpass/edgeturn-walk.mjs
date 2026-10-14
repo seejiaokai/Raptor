@@ -58,6 +58,8 @@ async function monthWalk(w, size) {
   const g = await gridBox(p)
   const hold = w.phone ? 520 : 0                      // a finger's pick takes a hold first (calpick PICK_HOLD 400)
 
+  /* each section runs on its own, so a step that fails (as a break test makes it) never hides the next */
+  try {
   /* M1 — a run drawn from 28 Oct to the month's right side, held: the month turns; the run goes on; let go on 3 Nov */
   const a = await dateAt(p, '2026-10-28')
   if (!a) { ok(size, 'M1: 28 Oct is on the month shown', false, m0); return }
@@ -104,6 +106,9 @@ async function monthWalk(w, size) {
   ok(size, 'M3: a run carried through the side band without holding does not turn the month', /October 2026/.test(await monthName(p)), await monthName(p))
   await H.up(); await L.sleep(500)
   await shut(p)
+
+  } catch (e) { ok(size, 'M1–M3 ran to their end', false, String(e).slice(0, 200)) }
+  await shut(p); await L.go(w, 'leavewar'); await L.go(w, 'inputs'); await L.sleep(500)
 
   /* M4 — an input's bar carried to the right side, held: the month turns and the bar rides on; dropped on a weekday
      of the next month, it moves there; then undone. The demo's inputs are in earlier months: step back to one. */
@@ -373,7 +378,7 @@ async function trackerWalk(w, size) {
 for (const size of SIZES) {
   const w = await L.world(size)
   try {
-    await monthWalk(w, size)
+    try { await monthWalk(w, size) } catch (e) { ok(size, 'the month\'s walk ran to its end', false, String(e).slice(0, 300)) }
     await trackerWalk(w, size)
   } catch (e) { ok(size, 'the walk ran to its end', false, String(e).slice(0, 300)) } finally { await L.close(w) }
 }
