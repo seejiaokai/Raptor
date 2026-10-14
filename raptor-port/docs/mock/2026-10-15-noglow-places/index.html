@@ -37,6 +37,9 @@ ol,ul{margin:0;padding-left:20px;display:grid;gap:4px}
 #zoom[hidden]{display:none}
 @media (max-width:560px){.pair{grid-template-columns:1fr}}
 .pair.one{grid-template-columns:minmax(0,640px)}
+.cmp{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.cmp figure{margin:0;display:grid;gap:6px;min-width:0}
+.cmp figcaption{font:600 12px var(--f-mono);letter-spacing:.04em;color:var(--ink-2);text-transform:uppercase}
 .pair figcaption b{font-weight:700}
 .st-on{color:var(--accent)} .st-off{color:var(--ink)}
 body{padding-block-end:96px}
@@ -76,7 +79,16 @@ body{padding-block-end:96px}
     <div class="pair"><figure><figcaption>Today · desktop</figcaption><div class="shot"><img src="N6-rearrange-on-today-desk.png" alt="Rearranging, today, desktop"></div></figure>
       <figure><figcaption>No glow · desktop</figcaption><div class="shot"><img src="N6-rearrange-on-noglow-desk.png" alt="The same, no glow, desktop"></div></figure></div>
     <div class="where"><figure><img src="N6-rearrange-on-where-phone.png" alt="Where: the phone"><figcaption>Where · phone</figcaption></figure><figure><img src="N6-rearrange-on-where-desk.png" alt="Where: desktop"><figcaption>Where · desktop</figcaption></figure></div>
-    <div class="q"><b>Take the halo and light off the Rearrange button (and the Show SANS switch) while on?</b> My pick: <b>yes</b>. The blue edge and words already show it is on.</div>
+    <p><b>A third look, as you asked: should "on" be shown by a glow at all?</b> I think not. A glow is faint, fades in bright light on a phone, and is the one thing you are taking out everywhere else. The app already has an "on" look for a switch: a picked filter chip gets a pale blue fill, blue words and a blue edge. A solid blue fill is out, because in the app that means "the main button, press me". The four below are fixed pictures, not flipped by the switch.</p>
+    <div class="cmp">
+      <figure><figcaption>Off</figcaption><div class="shot"><img src="N6-rearrange-off-phone.png" alt="Rearrange off"></div></figure>
+      <figure><figcaption>On · today (glow)</figcaption><div class="shot"><img src="N6-rearrange-on-today-phone.png" alt="Rearrange on, today"></div></figure>
+      <figure><figcaption>A · on, no glow</figcaption><div class="shot"><img src="N6-rearrange-on-noglow-phone.png" alt="Rearrange on, no glow"></div></figure>
+      <figure><figcaption>B · on, the chip's fill</figcaption><div class="shot"><img src="N6-rearrange-on-filled-phone.png" alt="Rearrange on, pale blue fill, no glow"></div></figure>
+      <figure><figcaption>B · desktop</figcaption><div class="shot"><img src="N6-rearrange-on-filled-desk.png" alt="Rearranging, pale blue fill, desktop"></div></figure>
+      <figure><figcaption>Off · desktop</figcaption><div class="shot"><img src="N6-rearrange-off-desk.png" alt="Rearrange off, desktop"></div></figure>
+    </div>
+    <div class="q"><b>How should the Rearrange button (and the Show SANS switch) show it is on?</b> My pick: <b>B, the pale blue fill with no glow</b>. It stands apart from "off" more clearly than the edge alone, and it is the same "on" look as the app's filter chips. A keeps only the blue edge and words.</div>
   </section>
 
   <section class="place" id="q7">
