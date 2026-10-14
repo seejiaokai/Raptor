@@ -909,7 +909,7 @@ function holidaySpan(a: string, b: string): { a: string; b: string; name: string
    list's empty name box) is saved under the preset's own word (holidayWord), and that word is not a name: the list
    then said "PH is now a public holiday." under "Public holiday · PH" (the check's walk, E1 — 13 Oct 26). Read as '',
    and each reader says it its own way: the list names the day, the bell's line says "Public holiday". */
-function holidayOwnName(iso: string): string { const n = dayFacts(iso).name; return n && n !== holidayWord('ph') ? n : '' }
+export function holidayOwnName(iso: string): string { const n = dayFacts(iso).name; return n && n !== holidayWord('ph') ? n : '' }
 /* the schedulers — every account that is an admin, switched on and tied to a person (state/accounts.ts) */
 const schedulerIds = (): string[] => ACCOUNTS_LIST.filter(a => isAdminAccount(a) && a.on && !!a.pid).map(a => String(a.pid))
 /* A WORKING DAY WAS MADE A HOLIDAY — called by the war's store INSIDE the command that did it (state/store.ts

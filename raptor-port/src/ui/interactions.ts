@@ -23,7 +23,7 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify, loadWeek, commitSetDayApproved, commitPublishALDay } from '../state/store'
 import { schedWrite, schedWriteValue, SCHED_TYPES, commitUnpublish } from '../state/sched-commit'
-import { oilCreditBidAgainst, createOilPeriodFor, oilOpenOn, dayFacts } from '../leavewar/sync'
+import { oilCreditBidAgainst, createOilPeriodFor, oilOpenOn, dayFacts, holidayOwnName } from '../leavewar/sync'
 import { scrollToWarnFocus, queueHold, warnWeekId, bringIntoView } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
@@ -1259,7 +1259,19 @@ export function routeClick(e: MouseEvent) {
     /* …standing there AND already needing an answer: those were his to answer before the load and are not its doing. An
        input that stood there silent — cancelled, information-only — and comes out of the load live is counted, should
        a load ever bring one back so (the scenario designer's S30: the un-cancel's gap must not return by this door). */
-    const openWas = new Set(oilOpenOn(iso, iso).map(o => o.iid))
+    /* …READ OVER EVERY DAY THE INPUTS OF THIS DAY COVER, not the loaded day alone (the fresh read of the finished code,
+       F1 — 14 Oct 26): an input of several days has ONE row, on its first day, and the day it has no answer for can be
+       another of its days — a Fri–Sat input loaded back on Friday still needs its Saturday's answer, and "the inputs it
+       put back [that] still need an OIL answer" (D818) counts it. */
+    let lo = iso, hi = iso
+    for (const x of INPUTS as any[]) {
+      if (!x || !DAYS[di] || !inputCoversDate(x, DAYS[di].dt)) continue
+      const a = unfmt(x.date, x.yr) || iso, b = x.endDate ? (unfmt(x.endDate, x.yr) || a) : a
+      if (a < lo) lo = a
+      if (b > hi) hi = b
+    }
+    const openNow = () => new Map(oilOpenOn(lo, hi).map(o => [o.iid, o.days] as const))
+    const openWas = openNow()
     const stood = new Set(INPUTS.filter((x: any) => stands(x) && openWas.has(String(inpId(x)))).map((x: any) => String(inpId(x))))
     if (!loadVersionToWorkingCopy(di, ver)) { HOOKS.toast('That version is no longer available', 'warn'); notify(); return }
     view.setDayPreview(di, null)
@@ -1293,14 +1305,22 @@ export function routeClick(e: MouseEvent) {
        reading (leavewar/sync.ts oilOpenOn — never a cancelled or information-only input, D814; one under Unavailable
        counts, D804). Nothing is added and nothing opens where none needs one. The list is a scheduler's, as the load
        is; what is answered there notifies nobody (D781), and "Later" leaves the "OIL?" signs and the bell as they are. */
-    const open = new Set(oilOpenOn(iso, iso).map(o => o.iid))
-    const need = INPUTS.filter((x: any) => stands(x) && !stood.has(String(inpId(x))) && open.has(String(inpId(x)))).length
+    const open = openNow()
+    const back = INPUTS.filter((x: any) => stands(x) && !stood.has(String(inpId(x))) && open.has(String(inpId(x))))
+    const need = back.length
     const saidAll = said + (need ? ` · ${need} input${need === 1 ? ' needs' : 's need'} an OIL answer` : '')
     logAction(di, saidAll)
     HOOKS.toast(saidAll)
-    /* the list names the holiday where the day is one; on a plain weekend it says nothing of a holiday */
-    const facts = dayFacts(iso)
-    if (need) setOilList({ from: iso, to: iso, name: facts.kind === 'ph' ? String((facts as any).name || '') : '', fresh: false, plain: facts.kind !== 'ph' })
+    /* THE LIST OPENS FOR THE DAYS THOSE INPUTS NEED AN ANSWER FOR — the loaded day, almost always; another day of a
+       several-day input where that is the one unanswered (F1). It names the holiday where every such day is one — by
+       the holiday's OWN name, never the preset's word ("Public holiday · PH": the read's F2; sync.ts holidayOwnName is
+       what the holiday's own save and the bell read it through) — and on a plain weekend says nothing of a holiday. */
+    if (need) {
+      const days = [...new Set(back.flatMap((x: any) => open.get(String(inpId(x))) || []))].sort()
+      const allPh = days.length > 0 && days.every(d => dayFacts(d).kind === 'ph')
+      const own = allPh ? holidayOwnName(days[0]!) : ''
+      setOilList({ from: days[0] || iso, to: days[days.length - 1] || iso, name: allPh && days.every(d => holidayOwnName(d) === own) ? own : '', fresh: false, plain: !allPh })
+    }
     notify(); return
   }
 

@@ -20,7 +20,8 @@
 import { useEffect, useState } from 'react'
 import { INPUTS } from '../engine/inputs'
 import { canEditSched } from '../state/auth'
-import { noticeRun } from '../state/notices'
+import { noticeRun, holidayLineOn } from '../state/notices'
+import { me } from '../state/perms'
 import { notify, setPage } from '../state/store'
 import { oilOpenOn, useWarFacts } from '../leavewar/sync'
 import { FloatWin } from './FloatWindow'
@@ -51,6 +52,13 @@ function Body({ from, to, name, fresh, plain }: { from: string; to: string; name
   const order = monthItems(found.map(x => x.r), { fPerson: 'all', fType: 'all', fSearch: '' } as any).map(it => it.rows[0])
   const rows = found.slice().sort((x, y) => order.indexOf(x.r) - order.indexOf(y.r))
   const done = rows.filter(x => picks[x.o.iid]).length
+  /* "WHAT IS LEFT GOES TO THE SCHEDULERS' BELLS" IS SAID ONLY WHERE IT IS TRUE (the fresh read of the finished code, F3 —
+     14 Oct 26). A scheduler's bell carries an OIL line only for a day that was MADE a holiday while something on it
+     could earn (a stored notice — leavewar/sync.ts tellHoliday). The list is also opened by a published version loaded
+     back (owner D818), on a plain weekend or on a holiday made while the input was off the programme: no bell has a
+     line for those, and what is left stays on the input's "OIL?" sign and its own answerer's bell — so nothing is
+     promised. Asked of the days still unanswered, through the one reader the bell itself uses. */
+  const belled = rows.some(x => x.o.days.some(d => !!holidayLineOn(me(), d)))
   const close = () => { setOilList(null); notify() }
   const pick = (iid: string, v: OilPick) => setPicks(p => ({ ...p, [iid]: p[iid] === v ? undefined : v }))
   const all = (v: OilPick) => setPicks(Object.fromEntries(rows.map(x => [x.o.iid, v])))
@@ -86,7 +94,7 @@ function Body({ from, to, name, fresh, plain }: { from: string; to: string; name
           })}
         </>}
       <div className="odl-foot">
-        <span className="upconf-need" data-testid="odl-left">{rows.length && done < rows.length ? 'What is left goes to the schedulers’ bells' : ''}</span>
+        <span className="upconf-need" data-testid="odl-left">{belled && rows.length && done < rows.length ? 'What is left goes to the schedulers’ bells' : ''}</span>
         {rows.length === 0
           ? <button type="button" className="abtn primary" data-testid="odl-close" onClick={close}>Close</button>
           : <>

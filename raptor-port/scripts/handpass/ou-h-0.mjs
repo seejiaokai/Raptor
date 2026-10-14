@@ -20,12 +20,9 @@ export async function bellLines(w, { keepOpen = false } = {}) {
   const p = w.page
   const sel = await p.evaluate(() => { const b = [...document.querySelectorAll('#sbBell, #notifyBell')].find(e => e.getClientRects().length); return b ? '#' + b.id : null })
   if (!sel) return { error: 'no visible bell' }
-  const badge = await p.evaluate(s => (document.querySelector(s).innerText || '').replace(/\s+/g, ' ').trim(), sel)
+  const badge = await p.evaluate(s => { const e = document.querySelector(s); const d = e.querySelector('.bdot, .bcount, .badge, [class*=dot], [class*=count]'); return { text: (e.innerText || '').replace(/\s+/g, ' ').trim(), dot: !!d && d.getClientRects().length > 0, cls: String(e.className) } }, sel)
   await p.locator(sel).evaluate(e => e.click()); await L.sleep(500)
-  const txt = await p.evaluate(() => {
-    const cands = [...document.querySelectorAll('[data-testid^="win-"], .airpop, #notifyPop, #bellPop, .notif-pop, [role=dialog]')].filter(e => e.getClientRects().length && /notif|bell|OIL|read|unread/i.test(e.textContent))
-    const e = cands[cands.length - 1]; return e ? (e.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 1500) : null
-  })
+  const txt = await p.evaluate(() => { const e = document.querySelector('[data-testid="bell-list"]'); return e && e.getClientRects().length ? (e.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 1500) : null })
   return { sel, badge, txt }
 }
 export async function closeBell(w) { await w.page.keyboard.press('Escape'); await L.sleep(250) }
@@ -71,3 +68,62 @@ export async function pendText(w) {
   return { opened: true, txt }
 }
 export async function closePend(w) { await w.page.evaluate(() => { const x = [...document.querySelectorAll('button')].find(b => b.getClientRects().length && /^[✕×]$/.test((b.textContent || '').trim()) && b.closest('[class*=win], .airpop')); if (x) x.click() }); await L.sleep(300) }
+import { inputsCal, openAdd } from './ou-lib.mjs'
+/** open a day's window on the Inputs calendar and read one input's row (tags, strike, text); closes the window */
+export async function cardOf(w, iso, id) {
+  const p = w.page
+  await inputsCal(w, iso.slice(0, 8) + '13')
+  await p.locator(`[data-icday="${iso}"]`).focus(); await p.keyboard.press('Enter')
+  await p.waitForSelector('[data-testid="win-inputsday"]'); await L.sleep(400)
+  const r = await p.evaluate(id => {
+    const row = document.querySelector(`[data-testid="idy-row-${id}"]`); if (!row) return null
+    const t = (row.innerText || '').replace(/\s+/g, ' ').trim()
+    const struck = [...row.querySelectorAll('*')].some(e => /line-through/.test(getComputedStyle(e).textDecorationLine))
+    return { text: t, oilq: /OIL\s*\?/.test(t), cx: /\bCX\b/.test(t), struck }
+  }, id)
+  return r
+}
+export async function closeDay(w) { const x = w.page.locator('[data-testid="win-inputsday-x"]'); if (await x.count()) await x.first().evaluate(e => e.click()); await L.sleep(250) }
+/** file a Training input for SEVERAL people (callsigns) as whoever is signed in; answers the OIL question where asked */
+export async function fileSev(w, iso, names, title, { oil = 'yes', start = '09:00', end = '10:00' } = {}) {
+  const p = w.page
+  await inputsCal(w, iso.slice(0, 8) + '13')
+  await openAdd(w, iso)
+  await p.selectOption('#inpEditPop #inpEditType', 'Training')
+  const sw = p.locator('#inpEditPop button.pp-sw'); if (!(await sw.evaluate(e => e.classList.contains('on')))) await w.press('#inpEditPop button.pp-sw')
+  await L.sleep(300)
+  for (const n of names) {
+    const b = p.locator('#inpEditPop button.pp-puck').filter({ hasText: new RegExp('^' + n + '(?![a-z])') }).first()
+    if (!(await b.evaluate(e => e.classList.contains('on')))) { await w.press(b); await L.sleep(150) }
+  }
+  const ad = p.locator('#inpEditPop #inpEditAllday'); if (await ad.count() && await ad.isChecked()) await ad.click()
+  await p.fill('#inpEditPop #inpEditStart', start); await p.fill('#inpEditPop #inpEditEnd', end)
+  await p.fill('#inpEditPop #inpEditOwnTitle', title)
+  const before = await p.evaluate(() => window.INPUTS.map(x => String(x.iid)))
+  await w.press('#inpEditSave'); await L.sleep(800)
+  let asked = false
+  if (await p.locator('[data-testid="oilconf"]').count()) { asked = true; await w.press(`[data-testid="oil-${oil}"]`); await L.sleep(150); await w.press('[data-testid="oilconf-save"]'); await L.sleep(700) }
+  const id = await p.evaluate(b => { const n = window.INPUTS.find(x => !b.includes(String(x.iid))); return n ? String(n.iid) : null }, before)
+  await closeDay(w)
+  return { id, asked }
+}
+/** a world on REAL storage (no "start fresh" address): a reload keeps what was saved. Same shape as L.world. */
+import { chromium } from '@playwright/test'
+import { existsSync } from 'node:fs'
+export async function pworld(sizeKey, { who = ['ad', 'a'] } = {}) {
+  const S = L.SIZES[sizeKey]
+  const CH = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
+  const browser = await chromium.launch({ headless: true, ...(existsSync(CH) ? { executablePath: CH } : {}) })
+  const ctx = await browser.newContext({ viewport: { width: S.w, height: S.h }, deviceScaleFactor: S.dpr, ...(S.phone ? { isMobile: true, hasTouch: true } : {}) })
+  const page = await ctx.newPage(); const errors = []
+  page.on('console', m => { if (m.type() === 'error') errors.push(`console: ${m.text()}`) })
+  page.on('pageerror', e => errors.push(`PAGEERROR ${e.message}`))
+  await page.goto(L.BASE + '/')
+  await page.fill('#luser', who[0]); await page.fill('#lpass', who[1])
+  await page.click('#loginForm button[type=submit]')
+  await page.waitForSelector('#vWeek .day', { state: 'attached', timeout: 20000 })
+  await page.addStyleTag({ content: '*{scroll-behavior:auto !important}' })
+  await L.sleep(400)
+  const press = async sel => { const l = typeof sel === 'string' ? page.locator(sel).first() : sel; if (S.phone) await l.tap(); else await l.click() }
+  return { browser, ctx, page, errors, S, phone: S.phone, key: sizeKey, press }
+}

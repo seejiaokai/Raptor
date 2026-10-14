@@ -435,11 +435,23 @@ export function rowMark(key: any, what: 'cx' | 'flag' | 'info', on: boolean, rea
         if (a === 'done') { HOOKS.toast(UNMARKED[mark]); notify() }
         return a
       }
+      /* THE ROW'S BUTTON, FOUND WHEN THE QUESTION IS PUT — never the place the row had at the first press (the fresh read
+         of the finished code, F4 — 14 Oct 26): with the bar up another row can be taken off above it, and "Answer OIL"
+         then "Don't un-cancel" flashed whichever row had taken the old place. The board's buttons are addressed by
+         position, so the position is read from where the input stands NOW. */
+      const placeOf = (): string[] => {
+        for (let di = 0; di < DAYS.length; di++) {
+          const d: any = DAYS[di], row = d && standsOn(d, iid)
+          const ri = row ? ((d.ground || []) as any[]).indexOf(row) : -1
+          if (ri >= 0) return [`sel:[data-gr${mark === 'cx' ? 'cx' : 'info'}="${di}.${ri}"]`]
+        }
+        return []
+      }
       const hold = (x: any, gg: any) => holdForOil({
         kind: mark === 'cx' ? 'uncx' : 'uninfo',
         lead: mark === 'cx' ? `Un-cancelling ${inputWho(x)}'s ${inpLabel(x)}` : `Taking “information only” off ${inputWho(x)}'s ${inpLabel(x)}`,
         /* what flashes when it is not answered: the row's own button */
-        places: [`sel:[data-gr${mark === 'cx' ? 'cx' : 'info'}="${p.di}.${p.ri}"]`],
+        places: placeOf(),
         gate: { who: inputWho(x) || gg.who, typeLabel: gg.typeLabel, plan: gg.plan, prev: gg.prev },
         /* the answer and the take-off are ONE command — one Undo step (D816 reading 3); the board's own word for a
            row brought back is said here, because the press that asked it was answered "not done" */

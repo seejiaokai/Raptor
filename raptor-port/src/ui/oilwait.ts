@@ -119,7 +119,9 @@ export function oilBarAgain(): void {
     /* …and the places: a door that is handed no seat (the Unavailable row's) builds the wait again without the puck
        the drag had added (oilWaitAlso), and a second "Don't swap" flashed one puck, not both (Fable's read of the
        finished code, F3; the Opus read, F6 — 13 Oct 26). A place that is gone resolves to nothing in `flash`. */
-    if (OILWAIT) for (const pl of w.places) if (!OILWAIT.places.includes(pl)) OILWAIT.places.push(pl)
+    /* (not for a mark taken off an input: its one place is the row's own button, addressed by POSITION, and its door
+       has just found it afresh — the old one may now be another row's: the read of 14 Oct 26, F4) */
+    if (OILWAIT && w.kind !== 'uncx' && w.kind !== 'uninfo') for (const pl of w.places) if (!OILWAIT.places.includes(pl)) OILWAIT.places.push(pl)
   }
   else if (a === 'done') { if (w.post) w.post(pre, w.landed ?? null) }
   else if (a !== 'refused') HOOKS.toast(CHANGED[w.kind], 'warn')

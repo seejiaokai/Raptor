@@ -1310,6 +1310,32 @@ describe('taking the cancel off an input with no OIL answer waits on the OIL que
   })
 })
 
+/* THE FLASH FOLLOWS THE INPUT, NOT THE PLACE ITS ROW HAD (the fresh read of the finished code, F4 — 14 Oct 26). The wait
+   named its row's button by the row's position, taken once; a row taken off above it meanwhile, and "Answer OIL" then
+   "Don't un-cancel" flashed another row's button. The place is worked out when the question is put, every time. */
+describe('the un-cancel that waits names its row by where the input stands NOW (D816; the read, F4)', () => {
+  it('a row taken off above it while the bar is up: "Answer OIL" asks again with the button of the row it stands on now', async () => {
+    await boot()
+    file(['bane'], SAT)
+    file(['pike'], SAT, undefined, { title: SECOND, s: 600, e: 660 })
+    const late = riOf(SAT, TITLE) > riOf(SAT, SECOND) ? TITLE : SECOND, other = late === TITLE ? SECOND : TITLE
+    expect(rowMark(rowKey(SAT, late), 'cx', true, 'WX')).toBe('done')
+    const was = riOf(SAT, late)
+    expect(rowMark(rowKey(SAT, late), 'cx', false)).toBe('asked')
+    expect(view.OILWAIT!.places).toEqual([`sel:[data-grcx="${SAT}.${was}"]`])
+    leaveOilWait()
+    expect(view.OILBAR, 'the bar is up').toBeTruthy()
+    const b = document.createElement('button'); b.dataset.acc = 'x'; b.dataset.accd = String(SAT); b.dataset.acck = String(inpId(rec(SAT, other))); document.body.appendChild(b)
+    try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+    const now = riOf(SAT, late)
+    expect(now, 'the premise: its row has moved up').toBeLessThan(was)
+    expect(view.OILBAR, 'the premise: the bar outlives another row taken off').toBeTruthy()
+    oilBarAgain()
+    expect(view.OILWAIT, 'asked again').toBeTruthy()
+    expect(view.OILWAIT!.places, 'the button of the row it stands on now — and no other').toEqual([`sel:[data-grcx="${SAT}.${now}"]`])
+  })
+})
+
 /* A PUBLISHED VERSION LOADED BACK SAYS HOW MANY INPUTS STILL NEED AN OIL ANSWER, AND OPENS THE DAY'S ONE LIST (owner D818,
    13 Oct 26 — "B"; `[OIL-LOAD-VERSION-UNASKED]`). His ruling: "after a published version is loaded back onto the working
    copy, the app says how many of the inputs it put back still need an OIL answer and opens that day's one list of them
@@ -1383,6 +1409,28 @@ describe('a published version loaded back: how many inputs need an OIL answer, a
     expect(riOf(SAT, TITLE)).toBeGreaterThanOrEqual(0); expect(riOf(SAT, SECOND)).toBeGreaterThanOrEqual(0)
     expect(SAID.join(' | ')).toContain(' · 1 input needs an OIL answer')
     expect(pops.OILLIST).toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true })
+  })
+  /* (the fresh read, F1) An input of several days has ONE row, on its first day. Its unanswered day can be another day
+     than the one loaded — and the load still put it back, and it still needs its answer: it is counted, and the list
+     opens for the day that needs the answer. */
+  it('an input of two days put back by a load of its FIRST day, its unanswered day the second: counted, and the list opens for that day', async () => {
+    await boot()
+    const FRI = 4
+    /* Fri 17 – Sat 18, filed with no answer for its Saturday (the state a late holiday, or an older filing, leaves) */
+    expect(commitInput(null, draftOf({ person: 'bane', type: 'Meeting', title: TITLE, date: 'Jul 17', endDate: 'Jul 18', yr: 2026, allday: true, remarks: '' }), ['bane'])).toBe(true)
+    const two = () => { const l = INPUTS.filter((x: any) => x.title === TITLE) as any[]; expect(l).toHaveLength(1); return l[0] }
+    const stands = () => two().acc === 'g' || two().acc === 'u'
+    expect(stands(), 'the premise: it stands on the schedule (' + two().acc + ')').toBe(true)
+    expect(two().oil, 'the premise: no answer').toBeUndefined()
+    sign(FRI); setDayApproved(FRI, true)
+    pressRouted(b => { b.dataset.acc = 'x'; b.dataset.accd = String(FRI); b.dataset.acck = String(inpId(two())) })
+    expect(stands(), 'the premise: taken off since Friday was published').toBe(false)
+    SAID = []
+    const ver = String(dayCurVer(FRI))
+    for (let i = 0; i < 2 && !stands(); i++) pressRouted(b => { b.dataset.restore = String(FRI); b.dataset.rver = ver })
+    expect(stands(), 'the load put it back: ' + SAID.join(' | ')).toBe(true)
+    expect(SAID.join(' | '), 'counted, though Friday itself has nothing to answer').toContain(' · 1 input needs an OIL answer')
+    expect(pops.OILLIST, 'the list opens for the day that needs the answer').toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true })
   })
   it('an unanswered input that was on the programme all along is not "put back" by the load: no tail (the bell and its "OIL?" sign already carry it)', async () => {
     await boot()
