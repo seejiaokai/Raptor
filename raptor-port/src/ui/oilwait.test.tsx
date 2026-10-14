@@ -22,7 +22,7 @@ import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { storeBackend, HOOKS } from '../engine/hooks'
 import { stashClear } from '../engine/weekstash'
-import { SCHED, signOf, dayPendingItems } from '../engine/publish'
+import { SCHED, signOf, dayPendingItems, setDayApproved, dayCurVer } from '../engine/publish'
 import { ELOG } from '../engine/editlog'
 import { slotVal } from '../engine/slots'
 import * as slots from '../engine/slots'
@@ -80,7 +80,7 @@ function resetWorld() {
   SCHED.signBind = {}; SCHED.drafts = {}; SCHED.curDraft = {}; SCHED.retired = {}; SCHED.correcting = {}
   view.WARNOFF.clear(); view.disarmSlot()
   view.setOilWait(null); view.setOilBar(null)
-  pops.setInpEdit(null); pops.setOilAsk(null)
+  pops.setInpEdit(null); pops.setOilAsk(null); pops.setOilList(null)
   stashClear()
 }
 async function boot(be = new MemoryBackend()) {
@@ -1292,5 +1292,94 @@ describe('taking the cancel off an input with no OIL answer waits on the OIL que
     expect(rec().cx).toBe(true)
     expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
     expect(SAID).toEqual(['Restored'])
+  })
+})
+
+/* A PUBLISHED VERSION LOADED BACK SAYS HOW MANY INPUTS STILL NEED AN OIL ANSWER, AND OPENS THE DAY'S ONE LIST (owner D818,
+   13 Oct 26 — "B"; `[OIL-LOAD-VERSION-UNASKED]`). His ruling: "after a published version is loaded back onto the working
+   copy, the app says how many of the inputs it put back still need an OIL answer and opens that day's one list of them
+   — the load itself is not held." Readings told to him: the list is D782's own, for the day that was loaded; nothing is
+   added where none needs an answer; a cancelled input does not count (D814). The load is made through its own routed
+   button, as the app's preview bar makes it; the day is published by the engine's own publish. */
+describe('a published version loaded back: how many inputs need an OIL answer, and the day\'s one list opens (D818) (ON11)', () => {
+  const pressRouted = (set: (b: HTMLElement) => void) => {
+    const b = document.createElement('button'); set(b); document.body.appendChild(b)
+    try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+  }
+  const takeOff = () => pressRouted(b => { b.dataset.acc = 'x'; b.dataset.accd = String(SAT); b.dataset.acck = String(inpId(rec())) })
+  /* the load: its first press arms the confirm where the working copy has changes to discard, the second makes it */
+  const load = () => {
+    const ver = String(dayCurVer(SAT))
+    for (let i = 0; i < 2 && riOf() < 0; i++) pressRouted(b => { b.dataset.restore = String(SAT); b.dataset.rver = ver })
+  }
+  const publishSat = () => { sign(SAT); setDayApproved(SAT, true) }
+  it('an unanswered input the load put back: the note says "1 input needs an OIL answer" and the list opens for that day', async () => {
+    await boot()
+    file(['bane'], SAT)                       // on Saturday's programme, with no answer
+    publishSat()
+    takeOff()
+    expect(riOf(), 'the premise: taken off the programme since it was published').toBe(-1)
+    SAID = []
+    load()
+    expect(riOf(), 'the load put its row back').toBeGreaterThanOrEqual(0)
+    const said = SAID.join(' | ')
+    expect(said).toContain('loaded onto the working copy')
+    expect(said, 'the tail, in his words').toContain(' · 1 input needs an OIL answer')
+    expect(pops.OILLIST, 'the day\'s one list is open, for that day').toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false })
+    expect(view.OILWAIT, 'the load itself was not held').toBeNull()
+  })
+  it('the input it put back is already answered: nothing is added and no list opens', async () => {
+    await boot()
+    file(['bane'], SAT, { [SAT_ISO]: 0.5 })
+    publishSat()
+    takeOff()
+    SAID = []
+    load()
+    expect(riOf()).toBeGreaterThanOrEqual(0)
+    expect(SAID.join(' | ')).toContain('loaded onto the working copy')
+    expect(SAID.join(' | ')).not.toContain('OIL answer')
+    expect(pops.OILLIST).toBeNull()
+  })
+  it('a cancelled input put back does not count (D814): no tail, no list', async () => {
+    await boot()
+    file(['bane'], SAT)
+    expect(rowMark(rowKey(), 'cx', true, 'WX')).toBe('done')
+    publishSat()
+    takeOff()
+    SAID = []
+    load()
+    expect(riOf()).toBeGreaterThanOrEqual(0)
+    expect(rec().cx).toBe(true)
+    expect(SAID.join(' | ')).not.toContain('OIL answer')
+    expect(pops.OILLIST).toBeNull()
+  })
+  it('two inputs put back, one answered: it counts the one', async () => {
+    await boot()
+    file(['bane'], SAT)
+    file(['pike'], SAT, { [SAT_ISO]: 0.5 }, { title: SECOND })
+    publishSat()
+    pressRouted(b => { b.dataset.acc = 'x'; b.dataset.accd = String(SAT); b.dataset.acck = String(inpId(rec(SAT, TITLE))) })
+    pressRouted(b => { b.dataset.acc = 'x'; b.dataset.accd = String(SAT); b.dataset.acck = String(inpId(rec(SAT, SECOND))) })
+    expect([riOf(SAT, TITLE), riOf(SAT, SECOND)]).toEqual([-1, -1])
+    SAID = []
+    const ver = String(dayCurVer(SAT))
+    for (let i = 0; i < 2 && riOf() < 0; i++) pressRouted(b => { b.dataset.restore = String(SAT); b.dataset.rver = ver })
+    expect(riOf(SAT, TITLE)).toBeGreaterThanOrEqual(0); expect(riOf(SAT, SECOND)).toBeGreaterThanOrEqual(0)
+    expect(SAID.join(' | ')).toContain(' · 1 input needs an OIL answer')
+    expect(pops.OILLIST).toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false })
+  })
+  it('an unanswered input that was on the programme all along is not "put back" by the load: no tail (the bell and its "OIL?" sign already carry it)', async () => {
+    await boot()
+    file(['bane'], SAT)
+    file(['pike'], SAT, { [SAT_ISO]: 0.5 }, { title: SECOND })
+    publishSat()
+    pressRouted(b => { b.dataset.acc = 'x'; b.dataset.accd = String(SAT); b.dataset.acck = String(inpId(rec(SAT, SECOND))) })
+    SAID = []
+    const ver = String(dayCurVer(SAT))
+    for (let i = 0; i < 2 && riOf(SAT, SECOND) < 0; i++) pressRouted(b => { b.dataset.restore = String(SAT); b.dataset.rver = ver })
+    expect(riOf(SAT, SECOND)).toBeGreaterThanOrEqual(0)
+    expect(SAID.join(' | ')).toContain('loaded onto the working copy')
+    expect(SAID.join(' | ')).not.toContain('OIL answer')
+    expect(pops.OILLIST).toBeNull()
   })
 })
