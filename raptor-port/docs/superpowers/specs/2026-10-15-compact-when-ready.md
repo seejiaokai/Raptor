@@ -119,3 +119,10 @@ app's 880k"), the app's own attempt at 846,000 held, one at 901,000 never held, 
 at 665,000 run through the hooks on `main` gives no note at all. The overnight guide's two lines that named 80% now name
 the first note (D878). **Switched on** only by his "merge live" and the main folder brought level (`[MAIN-CHECKOUT-STALE]`):
 the app runs the hooks from the main folder. Read by one fresh reader before he approves it (D878, D70).
+
+## Idle compaction — left on (D884, 15 Oct 26)
+Claude Code 2.1.299 added idle compaction: a chat of 200,000 tokens or more left idle about 54 minutes is compacted
+before its one-hour prompt cache runs out (`idleCompaction`, `CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS`). **His ruling D884:
+it stays on, at its default.** The guard already lets it through (it holds only from 90% of the room); the hand-back
+after a compaction gives the chat its state back. Not known: whether the desktop app does it — the changelog says
+"in the terminal".
