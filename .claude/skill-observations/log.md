@@ -571,3 +571,33 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** A skill that does it in one call: read the handoff and the backlog's order; list what is ruled and buildable and what is not and why; at most four questions with a recommended answer each (design ones with a picture); record the night's permission; state each job's check; write the state into the repo before the first job and at every commit; park his choices in one list; never merge; one notification; a morning report with pictures and a numbered "what you do now". Its worked example is the night of 14 Oct 26 (the rulings D856 to D859 and that chat's handoff block).
 
 **Principle:** A question the user asks every time is a missing command. The cost of the ritual is not the minute it takes him but the chance that one night a permission is assumed that he did not give.
+
+### Observation 592: A walk helper copied from another walk stepped the wrong way through a date picker - the two walks ran on different clocks
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** Writing a walk script for the small OIL job (a day made a public holiday through the Calendar window, then a published version loaded back)
+**Skill:** walk scripts guide (`raptor-port/docs/walk-scripts.md`)
+**Type:** internal
+**Phase/Area:** Walk libraries - reuse of a helper across walk worlds
+
+**Issue:** The "make a holiday" steps were copied from an earlier walk's library, which pressed "next month" until the date appeared. That library ran with the browser's clock set to the demo week; this one runs on the real clock, months after the demo week, so the picker opened on today's month and the date lay BEHIND it. The script timed out on a date that was never drawn, and three parts reported NOT WALKED. The same copy also assumed a published version's id was its label ("ORIG"); the app's id is the day's date and a number.
+
+**Suggested improvement:** In the walk-scripts guide, under writing a library: (1) a calendar is stepped by READING the month it shows and comparing it with the month wanted, never by a fixed direction; (2) an id used in a selector is read from the page (the first version the menu lists), never assumed from its label; (3) a helper copied from another walk states the clock that walk ran on.
+
+**Principle:** A helper lifted from another harness carries that harness's world with it - its clock, its ids. Read the state from the screen at the moment of use instead of inheriting an assumption that was only ever true next door.
+
+### Observation 593: A reader, a walker and the break tests want three different things held still - their order was worked out by hand
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** The small OIL job's FULL check, run unattended: a fresh code reader and a walk helper started together, with break tests and a new browser test still to run
+**Skill:** bug-check order (`raptor-port/docs/bug-check-order.md` section 4)
+**Type:** internal
+**Phase/Area:** Sequencing the parts of a check on one checkout
+
+**Issue:** The order says: nobody rebuilds the build a walker is served; nothing rewrites the source a reader reads; a break test rewrites source; a browser test builds. With one checkout and one served folder, that leaves exactly one safe order - reader (handed a commit) and walker (on the served build) together, documents and NEW tests written meanwhile, then break tests, then the build and the browser tests, then the gates - and it had to be reasoned out from four separate sentences. Getting it wrong costs a false finding (10 Oct) or a mixed walk (23 Sep).
+
+**Suggested improvement:** One small table in section 4: for each activity (walker, reader, break test, browser test or build, unit test, document edit) what it needs held still and what it changes - and the standard order for a single checkout. Say that a reader told to read at a commit may still RUN a unit file from the working tree, so break tests wait for it all the same.
+
+**Principle:** When several checks share one working copy, each one's precondition is another's side effect. Write the dependency table once instead of re-deriving the schedule under load.
