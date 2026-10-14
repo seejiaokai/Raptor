@@ -124,7 +124,8 @@ as it stands.
   words; he approved it as written here (D855, 14 Oct 26 — "Approve both").** When a press succeeds and the screen itself shows that it happened, that is the feedback, and no
   note says it again:
   - a thing added to a list — a row, a card, a line — appears where it belongs, in view, wearing the app's one
-    just-added mark (§4: the selection-blue box, about six seconds), as a row just added on the Scheduler Board does;
+    just-added mark (§4: the plain selection-blue ring for about six seconds, the same look everywhere), as a row just
+    added on the Scheduler Board does;
   - a changed value shows changed;
   - a removed thing is gone, and Undo brings it back.
 
@@ -472,7 +473,7 @@ pictures to him — a look does not report each instance, and nothing is recolou
 | Colour or mark | It means | Where from |
 |---|---|---|
 | Cyan (the app's one accent) | a main button; the picked date or tab; today's date; the focus outline; the picked-up look of a drag | the stylesheets |
-| Selection blue | the puck he clicked (a fill, never a ring) — a clicked warning lights its crew in the WARNING's colours, never this blue; and the box round a thing just added, for about six seconds | the product invariants; owner, 14 Aug 26 |
+| Selection blue | the puck he clicked (a fill, never a ring) — a clicked warning lights its crew in the WARNING's colours, never this blue; and the ring round a thing just added, for about six seconds, with no glow (below) | the product invariants; owner, 14 Aug 26; D860 |
 | Olive / dark green / white fill of a puck (and the Leave War's name bars) | pilot / WSO / ground crew | the Legend |
 | The CAT chip's colour (among them an amber B, a red A, a cyan C) | his level — the chip only, never the whole puck | the Legend |
 | Red ring or box | a clash or a hard breach | the Legend |
@@ -491,6 +492,22 @@ pictures to him — a look does not report each instance, and nothing is recolou
 | A green outline round the Leave War's dates | bidding is open | owner, 1 Sep 26 |
 | Orange on a Leave War day | no leave that day | the Leave War's event types |
 
+- **One mark, one look (owner D860, D861, D854, 15 Oct 26; carried here by D866, approved D876).** The just-added mark
+  looks the same wherever the app wears it: a thing just added, and on the Inputs pages an input just changed or put
+  back by Undo (D854). Today that is the Scheduler Board, the Inputs calendar's month and its opened day, and the Inputs
+  List. The mark is the plain selection-blue ring, 2px, with no glow, for about six seconds, its last half second a fade
+  (steady and without the fade for a reader who asked for less motion, §5). It sits on the edge of the thing added, its
+  own box, and leaves outside the controls its row carries for it (a grip, a number, a ✕): a note's own box, not the row
+  it sits in; a table's row as one box round the whole row, never one per cell; a line, a row or a wave that IS the
+  thing added, round itself; a new block, round its heading and each of its rows. A puck dropped in a seat wears none:
+  the puck is the sign (D854). A thing wearing the mark shows no other flash of its own over it; a flash on something
+  inside it, such as a puck dropped into a new line or its new flag, belongs to that thing. A new kind of mark is his to
+  rule, never a variant of this one. (His words: the board's plain ring with no glow, on the Inputs pages too, and a
+  note ringed on its own box, D860; the List's one box and the month's bar with no landing flash, D861; a changed input
+  in view wears the mark, and a puck in a seat none, D854. That the ring leaves a row's controls outside, that a line,
+  a row or a wave is ringed round itself, that any table's row is one box, that no thing wearing the mark shows another
+  flash over it, and that a new kind of mark is his to rule, began as the agent's reading; he approved them as written
+  here, D876.)
 - **Text must be readable on what it sits on** — check the pair, not the colour alone; a dimmed thing still has to be
   readable if a person needs to read it. A contrast finding on a look he chose (the SANS calendar's soft washes, D630)
   goes to him with the small step first — never strengthened quietly.
@@ -499,9 +516,9 @@ pictures to him — a look does not report each instance, and nothing is recolou
 
 *From the Apple design skill and `make-interfaces-feel-better`; his D765 ("never at a cost of speed"), D489.*
 
-**These rules are for NEW motion.** The motion already in the app that he asked for stays as measured — the box round a
-new thing and its fade, the picked-up look and landing flash of a drag, a new flag's flash, the board sliding up; a look
-does not report them.
+**These rules are for NEW motion.** The motion already in the app that he asked for stays as measured — the ring round a
+new thing and its fade (with no glow, §4), the picked-up look and landing flash of a drag (a month's bar wearing the ring
+shows no landing flash, §4), a new flag's flash, the board sliding up; a look does not report them.
 
 - **Quiet and quick:** about 150–240 thousandths of a second, easing out, no bounce.
 - **Only movement and fading** — never an effect that lays the page out again. **Nothing new on the week or the board's

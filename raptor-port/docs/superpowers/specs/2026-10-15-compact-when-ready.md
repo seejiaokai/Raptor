@@ -96,3 +96,8 @@ chat against 880,000 and compacts at 96% of it, about 845,000 (about 85% of the 
 1,000,000, so the first comes only about 45,000 before it — `[COMPACT-BANDS-WINDOW]`. (b) NO — he sees no status line
 under the message box in the desktop app's Code tab; the fullness reaches him only through the agent's reports. (c), (d)
 not yet seen — they need a chat that reaches 80%.
+
+**The fix approved — D878 (15 Oct 26, his "4 fix"; filed as `[COMPACT-BANDS-WINDOW]`):** the notes and the guard count the
+chat against the app's own room and the first note comes well before the compaction (the agent's reading: about 75% of
+880,000, the guard's window from there to the compaction point). His permission to change the hooks for that fix; tested
+and read by one fresh reader before it is switched on. Built as its own job.

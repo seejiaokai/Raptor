@@ -21,13 +21,14 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/checkout-stale-compaction-7ee93a -->
-### `claude/checkout-stale-compaction-7ee93a` — THE COMPACTION SET-UP RE-CHECKED; HIS THREE SMALL JOBS OF 15 OCT IN HAND — written 15 Oct 26 — verify before use
+### `claude/checkout-stale-compaction-7ee93a` — PULL REQUEST 511 ON HIS "MERGE LIVE" (15 Oct 26); HIS ANSWERS RECORDED; TWO JOBS NEXT IN A FRESH CHAT — written 15 Oct 26 — verify before use
 - **Carries** the records of `claude/handoff-overnight-skill-review-6b45a6` (`[MAIN-CHECKOUT-STALE]`, observation 600 — brought in whole; that chat's block is replaced by this one) and `claude/overnight-skill-c02843`'s (on `main` since pull request 510; its block, whose one open item was the four checks below, is removed — its residue `[HANDOFF-RESET-TRACKS-MAIN]` is filed).
 - **The four checks, re-run in a new chat with the main folder on `main`:** (a) the setting IS taken — the app now counts the chat against 880,000 and compacts at 96% of that, about 845,000, which is about 85% of the whole room; but the hooks count against 1,000,000, so their first note (80%, 800,000) comes only about 45,000 before the compaction — filed as `[COMPACT-BANDS-WINDOW]`; (b) NO — he sees no status line under the message box in the desktop app, so the agent keeps telling him the fullness in its reports; (c), (d) cannot be seen until a chat reaches 80%. `/overnight` is in the skill list, so the skills are taken from the main folder now.
-- **His rulings this chat:** D875 (the plan-switch job: Opus builds, one fresh Opus reader, no Fable).
+- **His rulings this chat:** D875 (the plan-switch job: Opus builds, one fresh Opus reader, no Fable); D876 (the guide's "one mark, one look" approved, all five readings — in `raptor-port/docs/design-practices.md` §4); D877 (the board's other glows go — `[GLOW-OFF]`); D878 (the compaction notes fixed to come in time — `[COMPACT-BANDS-WINDOW]`, his permission to change the hooks for it).
 - **`[OIL-PLAN-SWITCH-UNASKED]` (D865) BUILT, WALK-checked, gates green** — `raptor-port/docs/handpass/2026-10-15-oil-plan-switch.md`: the walk 10/10 at both sizes after one real fault fixed (the list under the plan editor), the load re-walked 12/12, one fresh Opus read (D875: two low findings, both fixed), the whole gate set green (§Gate baseline). Waiting for his look and "merge live".
-- **`[GUIDE-ONE-MARK]`** drafted and read (version 2), its wording put to him. **`[GLOW-PLACES-LOOK]`** drawn and put to him as a page of pictures with four questions (each recommended "no glow").
-- **Open questions for him:** the guide's wording; the four glow questions; his OK for `[COMPACT-BANDS-WINDOW]`. **Running when written:** none.
+- **`[GUIDE-ONE-MARK]` DONE** (D876, in the guide) and **`[GLOW-PLACES-LOOK]` DONE** (answered, D877): both marked DONE in `OUTSTANDING.md` but NOT yet archived — the archive script compares with the branch's base and their headings changed here; the next chat archives them (`node raptor-port/scripts/backlog-archive.mjs GUIDE-ONE-MARK --homes raptor-port/docs/design-practices.md`, and `GLOW-PLACES-LOOK --homes raptor-port/docs/ui-contracts.md`).
+- **Open questions for him:** none. **Running when written:** none.
+- **Pick up here (a NEW chat, a worktree on `main` once 511 is live):** (1) `[GLOW-OFF]` (D877) — tier WALK, the pictures of record `raptor-port/docs/mock/2026-10-15-glow-places/`, the picker chip shown to him first; (2) `[COMPACT-BANDS-WINDOW]` (D878) — the hooks counted against the app's own room, tested, one fresh reader, his OK before switching on; (3) archive the two DONE items above; (4) `[MAIN-CHECKOUT-STALE]` (2), the merge-steps line — a guide change, one reader, his approval.
 <!-- /now -->
 
 ## Next, in order

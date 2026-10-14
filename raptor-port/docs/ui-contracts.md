@@ -3553,6 +3553,10 @@ ONE box round the whole row (D861): each cell draws its share on a `::after` lay
 left side on the first, the right on the last — fading as the ring fades; the row's coloured left edge stays inside it.
 A month's bar that wears the ring shows no landing flash before it (D861: `.ib-bar.innew.lift-land::after{content:none}`);
 a bar that lands without it (a drag, an Undo) keeps its landing flash. Pictures: `docs/img/handpass/2026-10-15-ring/`.
+**And the board's other glows go (owner D877, 15 Oct 26 — RULED, NOT YET BUILT, filed as `[GLOW-OFF]`):** the landing
+flash and the picked-up look (`--lift-box`), the crew and the time boxes a tapped warning lights (`.puck.wfoc`,
+`.badtm.wfoc`), a puck earning OIL (`.puck.oilglow`), his own puck (`.puck.me`) and a highlighted puck (`.puck.hl`) each
+keep their ring and lose the glow; the pictures of record are `docs/mock/2026-10-15-glow-places/` (each "no glow" frame).
 
 **The just-added row's flash is now the SAME steady shape everywhere it
 appears — the board's `.sb-fresh` box (see §Selection highlight above) and
