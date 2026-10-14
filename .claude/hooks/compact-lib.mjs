@@ -19,8 +19,15 @@ export const WINDOW = Number(process.env.CLAUDE_CONTEXT_WINDOW) || 1_000_000;
 export const BANDS = [80, 85, 90, 95];
 /** At or above this the guard never holds a compaction back: the app's own point stays the backstop (D870). */
 export const NEVER_HOLD_AT = 90;
-/** A "ready" mark older than this is stale — the work has moved on since the state was written. */
-export const READY_FRESH_MS = 45 * 60 * 1000;
+/** Below this the guard never holds either — the app's lowered point is about 85%, so a compaction asked for lower down
+ *  is something else: the app's compaction of an idle chat, or a chat on a model with a smaller room than the 1M this
+ *  figure is measured against (the reader's findings 1 and 5, 15 Oct 26). */
+export const HOLD_FROM = 80;
+/** A "ready" mark older than this is stale. Short on purpose: the mark is set only once a compaction is WAITING (the
+ *  guard has held one), so it is meant for the very next attempt, not for whatever crosses the point later (finding 3). */
+export const READY_FRESH_MS = 10 * 60 * 1000;
+/** Roughly how many bytes of the record make one token — used only to estimate what came in AFTER the last request. */
+const BYTES_PER_TOKEN = 4;
 
 /** Read the last `bytes` of a file as text ('' when it cannot be read). */
 function tail(path, bytes) {
@@ -35,29 +42,38 @@ function tail(path, bytes) {
   } catch { return ''; } finally { if (fd !== undefined) try { closeSync(fd); } catch { /* nothing to do */ } }
 }
 
-/** The fullness from the transcript: { tokens, pct } of the LAST request, or null when it cannot be told — no record,
- *  no assistant entry with token counts, or a compaction recorded after it (the old figure no longer describes the
- *  chat). Reads the record's tail only, widening once when the last entries are very long. */
+/** The fullness from the transcript, or null when it cannot be told — no record, no assistant entry with token counts,
+ *  or a compaction recorded after it (the old figure no longer describes the chat). Returns:
+ *    tokens, pct — what the LAST request carried;
+ *    uuid        — that request's entry id (the guard never holds twice on the same one — finding 1);
+ *    after       — an estimate, in tokens, of what has come in since (tool output not yet sent): the bytes of the later
+ *                  lines, about four to a token. A request that overran the room shows here before it shows anywhere.
+ *  Reads the record's tail only, widening once when the last entries are very long. */
 export function readFill(transcriptPath, window = WINDOW) {
   if (!transcriptPath) return null;
   for (const bytes of [1 << 20, 8 << 20]) {
     const lines = tail(transcriptPath, bytes).split('\n');
+    let afterBytes = 0;
     for (let i = lines.length - 1; i >= 0; i--) {
       const line = lines[i];
       if (/"subtype"\s*:\s*"compact_boundary"|"isCompactSummary"\s*:\s*true/.test(line)) return null;
-      if (!line.includes('"usage"') || !line.includes('"assistant"')) continue;
-      let entry;
-      try { entry = JSON.parse(line); } catch { continue; } // the first line of a tail is usually cut short
-      if (entry.type !== 'assistant' || entry.isSidechain) continue;
-      const u = entry.message && entry.message.usage;
-      if (!u) continue;
-      const tokens = (u.input_tokens || 0) + (u.cache_creation_input_tokens || 0) + (u.cache_read_input_tokens || 0);
-      if (!tokens) continue;
-      return { tokens, pct: Math.round((tokens / window) * 1000) / 10 };
+      let entry = null;
+      if (line.includes('"usage"') && line.includes('"assistant"')) {
+        try { entry = JSON.parse(line); } catch { /* the first line of a tail is usually cut short */ }
+      }
+      const u = entry && entry.type === 'assistant' && !entry.isSidechain && entry.message && entry.message.usage;
+      const tokens = u ? (u.input_tokens || 0) + (u.cache_creation_input_tokens || 0) + (u.cache_read_input_tokens || 0) : 0;
+      if (!tokens) { afterBytes += Buffer.byteLength(line, 'utf8') + 1; continue; }
+      const after = Math.round(afterBytes / BYTES_PER_TOKEN);
+      return { tokens, pct: Math.round((tokens / window) * 1000) / 10, uuid: entry.uuid || '', after,
+        pctNow: Math.round(((tokens + after) / window) * 1000) / 10 };
     }
   }
   return null;
 }
+
+/** The command the agent runs to mark ready, from any folder of the checkout (finding 10). */
+export const READY_COMMAND = 'node "$(git rev-parse --show-toplevel)/.claude/hooks/compact-ready.mjs"';
 
 /** The checkout's git folder (a worktree has its own), or null. The "ready" mark lives there: never committed, one
  *  per checkout — and one chat works in one checkout. */

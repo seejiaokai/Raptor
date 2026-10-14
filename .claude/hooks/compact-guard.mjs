@@ -1,35 +1,49 @@
 #!/usr/bin/env node
 // PreCompact hook, automatic compactions only — [COMPACT-WHEN-MOD] (D868, D870). The app's own compaction point is
-// lowered to about 85% (the project settings' autoCompactWindow). This guard holds an automatic compaction back until
-// the agent has saved its state and marked "ready" (compact-ready.mjs), so the compaction lands at a clean point and
-// not in the middle of a walk or a gate run.
+// lowered to about 85% (the project settings' autoCompactWindow). This guard holds such a compaction back until the
+// agent has saved its state and marked "ready" (compact-ready.mjs), so it lands at a clean point and not in the
+// middle of a walk or a gate run.
 //
-// It never makes compaction LATER than the app would have made it without these hooks (D870): at 90% full or more it
-// always lets it through, and so it does when the fullness cannot be read. A manual /compact is never held. Claude
-// Code's documentation: a PreCompact hook that answers {"decision":"block"} skips a proactive automatic compaction and
-// the chat carries on uncompacted.
+// It must never make compaction LATER than the app would have made it without these hooks (D870), and it must never
+// hold a compaction the app needs to RECOVER — Claude Code's hooks page: blocking a compaction triggered to recover
+// from a context-limit error "makes the underlying error surface and the current request fail" (the fresh read of
+// 15 Oct 26, finding 1: overnight, that ends the run). The hook is not told which kind it is, so it holds ONLY when
+// every one of these is true, and otherwise lets the compaction run:
+//   · it is automatic (a manual /compact is never held), and not inside a helper (no agent_id);
+//   · the fullness can be read, and the last request stood from 80% to under 90% — below 80 it is an idle chat's
+//     compaction or a smaller model's room (findings 1, 5); from 90 the app's backstop stands;
+//   · with what has come in since that request added (tool output not yet sent), it is still under 90% — a request
+//     that overran shows here, so even the FIRST attempt to recover goes through;
+//   · it has not already held once on this same last request — a second attempt with no new request in between is
+//     not the app's ordinary try at the next turn, so it goes through;
+//   · no fresh "ready" mark.
+// When it holds, it notes that in the chat's state, so the reminder hook can say once that a compaction is waiting.
 import { fileURLToPath } from 'node:url';
 import { basename } from 'node:path';
-import { readFill, readReady, readInput, NEVER_HOLD_AT } from './compact-lib.mjs';
+import { readFill, readReady, readInput, readState, writeState, NEVER_HOLD_AT, HOLD_FROM, READY_COMMAND } from './compact-lib.mjs';
 
 /** 'allow' or 'hold' — pure, for the tests. */
-export function decide({ trigger, fill, ready }) {
-  if (trigger !== 'auto') return 'allow';
+export function decide({ trigger, agentId, fill, ready, heldUuid }) {
+  if (trigger !== 'auto' || agentId) return 'allow';
   if (!fill) return 'allow';
-  if (fill.pct >= NEVER_HOLD_AT) return 'allow';
+  if (fill.pct < HOLD_FROM || fill.pct >= NEVER_HOLD_AT) return 'allow';
+  if ((fill.pctNow ?? fill.pct) >= NEVER_HOLD_AT) return 'allow';
+  if (fill.uuid && heldUuid && fill.uuid === heldUuid) return 'allow';
   if (ready) return 'allow';
   return 'hold';
 }
 
 function main() {
   const input = readInput();
-  const verdict = decide({ trigger: input.trigger, fill: readFill(input.transcript_path), ready: readReady(input.cwd || process.cwd()) });
-  if (verdict === 'hold') {
-    process.stdout.write(JSON.stringify({
-      decision: 'block',
-      reason: 'Held until the state is saved (D868): finish the step, commit, push, rewrite this chat\'s HANDOFF.md block, then run node .claude/hooks/compact-ready.mjs.',
-    }));
-  }
+  const fill = readFill(input.transcript_path);
+  const state = readState(input.session_id);
+  const verdict = decide({ trigger: input.trigger, agentId: input.agent_id, fill, ready: readReady(input.cwd || process.cwd()), heldUuid: state.heldUuid });
+  if (verdict !== 'hold') return;
+  writeState(input.session_id, { ...state, heldUuid: fill.uuid || '', waiting: true, waitingTold: false });
+  process.stdout.write(JSON.stringify({
+    decision: 'block',
+    reason: `Held until the state is saved (D868): at the next clean point commit, push, rewrite this chat's HANDOFF.md block, then run ${READY_COMMAND}.`,
+  }));
 }
 
 if (process.argv[1] && basename(process.argv[1]) === basename(fileURLToPath(import.meta.url))) {

@@ -27,13 +27,16 @@ before it is switched on; nothing in it may make compaction later than the app's
    would; start no new helper, walk or gate run until then. **Then judge (D871):** if the job is nearly done (the work
    left fits in the room left, the handoff written) and he is using the chat, do not compact — ask him once, in one
    line with that judgement, whether to hand off to a fresh chat; if he is away (his word that he is leaving a big job
-   unattended, or an /overnight run), or he does not answer and the chat keeps filling, mark "ready" and let the
-   compaction come at that clean point.
-3. **"Ready"** — a one-line command the agent runs after that checkpoint; it leaves a small mark beside the checkout's
-   git data (never committed).
-4. **A guard before an automatic compaction** — holds it back while the chat is under 90% full and no fresh "ready"
-   mark exists; at 90% or more, or when the fullness cannot be read, it never holds (so compaction is never later
-   than the app's own point).
+   unattended, or an /overnight run), or he does not answer and the chat keeps filling, carry on — the compaction will
+   come, and a second note says when (piece 4). *(As first drafted this note asked for "ready" at once; the fresh read
+   showed the compaction would then land wherever 85% was crossed later — changed, 15 Oct 26.)*
+3. **"Ready"** — a one-line command the agent runs once told a compaction is waiting, after its checkpoint; it leaves
+   a small mark beside the checkout's git data (never committed), good for ten minutes.
+4. **A guard before an automatic compaction** — holds it back only when it is an ordinary automatic compaction outside
+   a helper, the last request stood from 80% to under 90% and is still under 90% with what came in since, it has not
+   already held on that same request, and there is no fresh "ready" mark; then it notes that one is waiting, and the
+   next tool use tells the agent once. Otherwise it never holds — so compaction is never later than the app's own
+   point, and a compaction the app needs to recover is never refused.
 5. **After a compaction** — a hook prints, into the fresh context, the instruction to re-read this chat's
    `HANDOFF.md` block, the working guide in use and the files of the step in hand before the next change, and the
    block itself; it clears the "ready" mark and the reminders.
@@ -58,6 +61,17 @@ end to end in this checkout — held without a mark, let through with one, the s
 the block handed back and the mark cleared. **Found and fixed by that run:** a folder handed in the POSIX way
 (`/c/Users/…`) is not a folder to Node on Windows, so the mark was written and never found — git now falls back to
 the script's own folder.
+
+**The fresh read (`../briefs/2026-10-15-compact-set-up-read.md`) found ten faults, all fixed, the first one serious:**
+as first built, the guard could hold a compaction the app needs to RECOVER from an overfull request, which makes that
+request fail — overnight, the end of the run. The guard now holds only an automatic compaction, outside a helper,
+with the last request from 80% to under 90% AND under 90% once what came in since is added, and never twice on the
+same request (pieces 4 above, in `compact-guard.mjs`). And "ready" is asked for only once a compaction is actually
+waiting (the guard has held one), for the next ten minutes — so the compaction lands at that clean point, not
+wherever 85% is crossed later; the 80% note asks for the checkpoint and the handoff judgement only (D871). Helpers
+neither get the notes nor use them up; the notes come back after a compaction even if the after-hook did not run; a
+block too long for the app to pass on is named instead of cut; Windows line endings; the ready command runs from any
+folder. Twelve tests pin them.
 
 **Still untested — first read in a NEW chat once this is on `main`** (the settings and hooks are taken when a chat
 starts; this chat still reads "compacts at 97%"): (a) the app's own reading of the compaction point in a new chat

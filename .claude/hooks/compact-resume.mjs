@@ -15,7 +15,7 @@ import { readInput, clearReady, writeState, git } from './compact-lib.mjs';
 /** This branch's block from HANDOFF.md, between its own markers (each anchored to the start of its line), or ''. */
 export function blockFor(handoff, branch) {
   if (!handoff || !branch) return '';
-  const lines = handoff.split('\n');
+  const lines = handoff.split(/\r?\n/); // a file written with Windows line endings still finds its block (finding 7)
   const start = lines.findIndex((l) => l === `<!-- now:${branch} -->`);
   if (start < 0) return '';
   const end = lines.findIndex((l, i) => i > start && l === '<!-- /now -->');
@@ -28,8 +28,15 @@ export function message(branch, block) {
     'HANDOFF.md (below), the working guide in use, and the files of the step in hand — never carry on from the',
     'summary\'s memory of a file, a ruling or a test result. Note the compaction in the block with its time.',
   ].join('\n');
-  return block ? `${head}\n\nThe block for ${branch}, as saved:\n\n${block}` : `${head}\n\n(No HANDOFF.md block found for ${branch || 'this branch'} — read HANDOFF.md and the last commits.)`;
+  if (!block) return `${head}\n\n(No HANDOFF.md block found for ${branch || 'this branch'} — read HANDOFF.md and the last commits.)`;
+  const whole = `${head}\n\nThe block for ${branch}, as saved:\n\n${block}`;
+  // The app passes on at most 10,000 characters of a hook's output and keeps only a preview of more; a block that long
+  // would come back cut short, so it is named and opened instead (the fresh read, finding 6 — blocks have reached 11k).
+  return whole.length <= MAX_CHARS ? whole
+    : `${head}\n\nThis chat's block for ${branch} is longer than the app passes on — open it in HANDOFF.md now, before anything else.`;
 }
+
+const MAX_CHARS = 9500;
 
 function main() {
   const input = readInput();
@@ -40,7 +47,7 @@ function main() {
   const handoff = file && existsSync(file) ? readFileSync(file, 'utf8') : '';
   process.stdout.write(message(branch, blockFor(handoff, branch)) + '\n');
   clearReady(cwd);
-  writeState(input.session_id, { band: 0 });
+  writeState(input.session_id, { band: 0, waiting: false, waitingTold: false, heldUuid: '' });
 }
 
 if (process.argv[1] && basename(process.argv[1]) === basename(fileURLToPath(import.meta.url))) {
