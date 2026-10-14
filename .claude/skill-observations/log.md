@@ -691,3 +691,18 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** In the guide's template: `git fetch origin main && git checkout -B <branch> origin/main && git branch --unset-upstream` (or `--no-track`), and the first push `git push -u origin HEAD:<branch>`. In the shipping rule's loop: after every push, read back the remote head (`git ls-remote origin <branch>`) against `HEAD`; and before "merge live", compare the pull request's head commit with the branch's - never trust a quiet push.
 
 **Principle:** A push is done when the remote says so, not when the command exits; any quiet or filtered push needs a read-back of the remote head.
+
+### Observation 600: In the desktop app a worktree chat takes its settings, hooks and skills from the MAIN checkout, so a merged change to them is dead until that folder is brought to main
+
+**Status:** OPEN
+**Date:** 2026-10-14
+**Session context:** Running the four checks of the compaction set-up (pull request 509) in a new worktree chat on `main`.
+**Skill:** session-handoff (and the merge-live routine in shipping.md)
+**Type:** open-source
+**Phase/Area:** after "merge live" — verifying that a change to `.claude/settings.json`, `.claude/hooks/` or `.claude/skills/` is actually in force
+
+**Issue:** The app still read "compacts at 97%" in a fresh chat on `main`, though `main`'s `.claude/settings.json` sets `autoCompactWindow` 880000. The chat's process was started with `--project-config-root C:\Users\User\projects\Raptor` — the main checkout — and Claude Code's worktree page says so: in a worktree session started from the desktop app, settings, hooks, skills, agents, commands and `.mcp.json` come from the main checkout's root (`${CLAUDE_PROJECT_DIR}` points there); only CLAUDE.md and `.claude/rules/` load from the worktree. The main checkout sat on an old branch 208 commits behind `main`, so the whole compaction set-up (setting, four hooks, status line) and the `/overnight` skill (pull request 508) were in force in NO chat, and every chat ran 13 Oct's hooks and skills. The previous chat's tests ran the scripts by hand, which this does not show.
+
+**Suggested improvement:** After any merge that touches `.claude/settings*.json`, `.claude/hooks/` or `.claude/skills/`, bring the main checkout to `main` (it must stay on `main`, clean of tracked changes), and verify in a NEW chat by a reading the app itself gives (get_usage, the skill list), never by running the script by hand. Add that line to the merge-live steps and the session-handoff guide.
+
+**Principle:** A configuration change is verified where the running tool actually loads it from — confirm the load path (process arguments, the tool's own documentation) before calling a hook, setting or skill "live"; a script that works when run by hand proves nothing about whether the host runs it.
