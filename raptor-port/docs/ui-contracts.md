@@ -4446,7 +4446,9 @@ Three things stay decided:
   "Un-cancel" — or "Taking “information only” off Ranger's Range brief" — "Don’t change" / "Change". Left unanswered the
   input keeps its mark (and a cancel its reason), the row's button flashes, and the bar reads "Not un-cancelled — OIL
   not answered" or "Not changed — OIL not answered" — the longest words the bar carries, on one line at 320 wide
-  (`e2e/oil-uncancel-load.spec.ts`). Answered, the mark comes off with its answer in one step and the note says
+  (`e2e/oil-uncancel-load.spec.ts`) — with wider letters too (15 Oct 26: on GitHub's machines "OK" went past a 320-wide
+  screen; tight, the bar now closes its side room and its letters may step down to about three fifths, D840; the test
+  spaces the letters out to stand for a wider face). Answered, the mark comes off with its answer in one step and the note says
   "Restored" (the ⓘ mark: "This item is checked against the rules again and can earn OIL"). Changed meanwhile: "That
   input has changed — not un-cancelled" / "— left as it is". Where nothing is to be asked the mark comes off at once, as
   before. The words are one source: `ui/oilwait.ts WAIT_WORDS` / `CHANGED`, `ui/reqdoor.ts UNMARKED`.

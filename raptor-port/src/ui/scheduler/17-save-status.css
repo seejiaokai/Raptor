@@ -87,7 +87,7 @@
 @media (hover:hover){.oilband button.yes:hover{filter:brightness(1.06)}}
 /* the app's ring, set a little off the button so it shows round the filled one too (the design look's K10, D830) */
 .oilband button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.oilband.is-tight{gap:4px}
+.oilband.is-tight{gap:4px;padding:0 8px}   /* tight, the side room closes up too (15 Oct 26: "OK" off a 320-wide screen with wider letters) */
 .oilband.is-tight button{padding:4px 6px}
 /* what moves down with the page by the warning's band (below) moves down by this one too — and by both */
 .topbar.oil-waiting ~ .week-nav{top:calc(52% + var(--save-band))}

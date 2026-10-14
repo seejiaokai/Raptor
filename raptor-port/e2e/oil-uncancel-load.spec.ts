@@ -119,6 +119,17 @@ test('D816 — the cancel taken off on a Saturday: the question first; left, the
     expect(await bar(page), 'at 390 wide').toEqual(one)
     await page.setViewportSize({ width: 320, height: 700 })
     await expect.poll(() => bar(page), { message: 'at 320 wide' }).toEqual(one)
+    /* …AND WITH WIDER LETTERS (GitHub's machines, 15 Oct 26: at 320 wide the bar kept its words on one line but pushed
+       "OK" past the screen's edge — his iPhone's letters are wider than the test browser's too, D840). The letters are
+       made wider here by spacing them out, as a wider face would; the bar must still fit, one line, both buttons in. */
+    for (const ls of ['0.6px', '0.9px']) {
+      await page.evaluate(ls => { let st = document.getElementById('__wide'); if (!st) { st = document.createElement('style'); st.id = '__wide'; document.head.appendChild(st) }
+        st.textContent = `[data-testid="oilbar"] *{letter-spacing:${ls}}` }, ls)
+      /* the bar measures itself again when its line's width changes: a phone turned, a window narrowed */
+      await page.setViewportSize({ width: 330, height: 700 }); await page.setViewportSize({ width: 320, height: 700 })
+      await expect.poll(() => bar(page), { message: `at 320 wide, letters spaced ${ls}` }).toEqual(one)
+    }
+    await page.evaluate(() => { document.getElementById('__wide')?.remove() })
     await page.setViewportSize({ width: 390, height: 844 })
     expect(await rec(page, id), 'nothing was written').toEqual({ cx: true, oil: null, date: 'Jul 18', acc: 'g' })
 

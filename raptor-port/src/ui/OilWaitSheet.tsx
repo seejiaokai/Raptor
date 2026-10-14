@@ -62,13 +62,18 @@ export function useOilBarTop(): boolean {
    fifths — and then the buttons' own side room closes up (`is-tight`). No word is cut and nothing drops to a second
    line. Measured on the page (a browser's job: there is no layout to measure in the unit tests), and again whenever
    the line's width changes — a phone turned, a window narrowed. */
-const FIT_FLOOR = 0.78, FIT_STEP = 0.03
+const FIT_FLOOR = 0.78, FIT_STEP = 0.03, TIGHT_FLOOR = 0.6
 function fitOneLine(el: HTMLElement): void {
   el.style.removeProperty('--oil-fit')
   el.classList.remove('is-tight')
   const over = () => el.scrollWidth > el.clientWidth + 0.5
   for (let f = 1 - FIT_STEP; over() && f >= FIT_FLOOR - 1e-9; f -= FIT_STEP) el.style.setProperty('--oil-fit', f.toFixed(2))
   if (over()) el.classList.add('is-tight')
+  /* …AND ON THE NARROWEST PHONES WITH WIDER LETTERS, A LITTLE FURTHER (GitHub's machines, 15 Oct 26: at 320 wide the words
+     stayed on one line but "OK" went past the screen's edge — the floor above was reached with letters wider than the
+     test browser's, as his iPhone's are). Tight, the bar's own side room closes up too (17-save-status.css) and the
+     letters may go on down to about three fifths — still one line, still both buttons, still on the screen (D840). */
+  for (let f = FIT_FLOOR - FIT_STEP; over() && f >= TIGHT_FLOOR - 1e-9; f -= FIT_STEP) el.style.setProperty('--oil-fit', f.toFixed(2))
 }
 
 /* the bar itself — the same words and the same two buttons wherever it is drawn */
