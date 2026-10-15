@@ -1,0 +1,512 @@
+{
+ "360 board wave notes": 0,
+ "360 board wave header h": 69,
+ "360 board GP line": [
+  "To take an input off, press Reject on it in Personal Inputs below."
+ ],
+ "360 board PI rows": [
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 64,
+   "btn": {
+    "l": 111,
+    "r": 158,
+    "t": 6405,
+    "b": 6423,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 64,
+   "btn": {
+    "l": 111,
+    "r": 158,
+    "t": 6469,
+    "b": 6487,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 64,
+   "btn": {
+    "l": 111,
+    "r": 158,
+    "t": 6533,
+    "b": 6551,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  }
+ ],
+ "360 week GP line": [
+  "To take an input off, press Reject on it in Personal Inputs below."
+ ],
+ "360 week PI rows": [
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 47,
+   "btn": {
+    "l": 26,
+    "r": 73,
+    "t": 3531,
+    "b": 3549,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 47,
+   "btn": {
+    "l": 26,
+    "r": 73,
+    "t": 3578,
+    "b": 3596,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 47,
+   "btn": {
+    "l": 26,
+    "r": 73,
+    "t": 3625,
+    "b": 3643,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  }
+ ],
+ "375 board wave notes": 0,
+ "375 board wave header h": 69,
+ "375 board GP line": [
+  "To take an input off, press Reject on it in Personal Inputs below."
+ ],
+ "375 board PI rows": [
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 64,
+   "btn": {
+    "l": 126,
+    "r": 173,
+    "t": 6377,
+    "b": 6395,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 64,
+   "btn": {
+    "l": 126,
+    "r": 173,
+    "t": 6441,
+    "b": 6459,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 64,
+   "btn": {
+    "l": 126,
+    "r": 173,
+    "t": 6505,
+    "b": 6523,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  }
+ ],
+ "375 week GP line": [
+  "To take an input off, press Reject on it in Personal Inputs below."
+ ],
+ "375 week PI rows": [
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 47,
+   "btn": {
+    "l": 26,
+    "r": 73,
+    "t": 3625,
+    "b": 3643,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 47,
+   "btn": {
+    "l": 26,
+    "r": 73,
+    "t": 3672,
+    "b": 3690,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 56,
+   "btn": {
+    "l": 26,
+    "r": 73,
+    "t": 3727,
+    "b": 3745,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  }
+ ],
+ "390 board wave notes": 0,
+ "390 board wave header h": 69,
+ "390 board GP line": [
+  "To take an input off, press Reject on it in Personal Inputs below."
+ ],
+ "390 board PI rows": [
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 64,
+   "btn": {
+    "l": 141,
+    "r": 188,
+    "t": 6067,
+    "b": 6085,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 64,
+   "btn": {
+    "l": 141,
+    "r": 188,
+    "t": 6131,
+    "b": 6149,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 64,
+   "btn": {
+    "l": 141,
+    "r": 188,
+    "t": 6195,
+    "b": 6213,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  }
+ ],
+ "390 week GP line": [
+  "To take an input off, press Reject on it in Personal Inputs below."
+ ],
+ "390 week PI rows": [
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 47,
+   "btn": {
+    "l": 26,
+    "r": 73,
+    "t": 3387,
+    "b": 3405,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 47,
+   "btn": {
+    "l": 26,
+    "r": 73,
+    "t": 3434,
+    "b": 3452,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 47,
+   "btn": {
+    "l": 26,
+    "r": 73,
+    "t": 3480,
+    "b": 3498,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  }
+ ],
+ "430 board wave notes": 0,
+ "430 board wave header h": 69,
+ "430 board GP line": [
+  "To take an input off, press Reject on it in Personal Inputs below."
+ ],
+ "430 board PI rows": [
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 64,
+   "btn": {
+    "l": 181,
+    "r": 228,
+    "t": 6044,
+    "b": 6062,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 64,
+   "btn": {
+    "l": 181,
+    "r": 228,
+    "t": 6108,
+    "b": 6126,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 64,
+   "btn": {
+    "l": 181,
+    "r": 228,
+    "t": 6172,
+    "b": 6190,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  }
+ ],
+ "430 week GP line": [
+  "To take an input off, press Reject on it in Personal Inputs below."
+ ],
+ "430 week PI rows": [
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 47,
+   "btn": {
+    "l": 26,
+    "r": 73,
+    "t": 3235,
+    "b": 3253,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 47,
+   "btn": {
+    "l": 26,
+    "r": 73,
+    "t": 3282,
+    "b": 3300,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 47,
+   "btn": {
+    "l": 26,
+    "r": 73,
+    "t": 3328,
+    "b": 3346,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  }
+ ],
+ "1440 board wave notes": 0,
+ "1440 board wave header h": 41,
+ "1440 board GP line": [
+  "To take an input off, press Reject on it in Personal Inputs below."
+ ],
+ "1440 board PI rows": [
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 34,
+   "btn": {
+    "l": 1002,
+    "r": 1049,
+    "t": 3336,
+    "b": 3354,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 34,
+   "btn": {
+    "l": 1002,
+    "r": 1049,
+    "t": 3370,
+    "b": 3388,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 34,
+   "btn": {
+    "l": 1002,
+    "r": 1049,
+    "t": 3404,
+    "b": 3422,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  }
+ ],
+ "1440 week GP line": [
+  "To take an input off, press Reject on it in Personal Inputs below."
+ ],
+ "1440 week PI rows": [
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 65,
+   "btn": {
+    "l": 32,
+    "r": 79,
+    "t": 3474,
+    "b": 3492,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 65,
+   "btn": {
+    "l": 32,
+    "r": 79,
+    "t": 3539,
+    "b": 3557,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  },
+  {
+   "text": "Reject",
+   "up": true,
+   "h": 68,
+   "btn": {
+    "l": 32,
+    "r": 79,
+    "t": 3607,
+    "b": 3625,
+    "w": 47
+   },
+   "overPuck": false,
+   "overRmk": false,
+   "offRow": false
+  }
+ ]
+}

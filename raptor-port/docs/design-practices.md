@@ -652,8 +652,9 @@ points here.*
 **Lesson 2 (16 Oct 26, D945 — an input row's "Undo" became "Reject").** A button is named for what it does — never with
 another control's name (the row's "Undo" was also the top bar's) and never with a word that reads as Delete (he asked
 whether "Remove" would). *Named under
-D852, not changed:* the Personal Inputs note "A removed input flags nothing until accepted again" still calls a rejected
-input "removed" — put to him with the round's pictures.
+D852, not changed:* two places still call a rejected input "removed" — the Personal Inputs note "A removed input flags
+nothing until accepted again" and a rejected row's hover text "Removed from the day — flags nothing until accepted again".
+Both wait for his answer (the night of 16–17 Oct 26, question 2).
 
 *Lesson 1 (16 Oct 26, D938 — "a scheduler's working screen carries no hint on how a row is edited…") was struck by him the same day: "Disregard this lesson" (D942).*
 

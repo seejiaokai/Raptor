@@ -55,7 +55,8 @@ After a compaction: re-read this block, the overnight guide (`.claude/skills/ove
   evening before; with the note gone (D947 — every wave) nothing on the BOARD says so (Edit Schedule's week still does,
   after the wave's name). Keep a small "(prev day)" on the board's header in that one case? Recommended: yes. Waits: only
   that cue — built as ruled. (Q2) D945 reading (4): Personal Inputs' note "A removed input flags nothing until accepted
-  again…" — "removed" → "rejected"? Recommended: yes. Waits: only that word.
+  again…" — "removed" → "rejected"? and the rejected row's hover text "Removed from the day — flags nothing until accepted
+  again" the same? Recommended: yes, both. Waits: only those words.
   (Q3) The Ground Programme row of an input prints "remark till <date>" (as rows did that carried the date), and on the
   week and board its remark BOX shows that whole text — the date inside the box, not grey after it as on Personal
   Inputs / Unavailable and in the window. Make it grey after the box there too? Recommended: yes, as a small follow-up

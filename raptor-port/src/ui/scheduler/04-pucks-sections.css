@@ -737,6 +737,10 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
 .pl-row.accd{opacity:.62}
 .sb-arow.inprow.accd{opacity:.62}
 .pl-row.accd .ntx::after{content:' · accepted';font-size:8px;letter-spacing:.06em;color:var(--ink-3)}
+/* …where the remark is followed by its printed "till <date>" (owner D948), the marker follows the date, so the row reads
+   "Keen for any wave till 13 Jul · accepted" — never the date stranded after the marker */
+.pl-row.accd .rmk .ntx:has(+.rk-till)::after{content:none}
+.pl-row.accd .rmk .rk-till::after{content:' · accepted';font-size:8px;letter-spacing:.06em;color:var(--ink-3);font-weight:400}
 .sbi-row.accd{opacity:.62}
 /* a REMOVED (dormant) input reads visibly parked — it flags NOTHING until
    accepted again (26 Aug 26 bug pass: a dormant row printed identical to a
