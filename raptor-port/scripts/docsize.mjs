@@ -268,7 +268,10 @@ const RULING_BYTES = [
   /* scheduler 92000 -> 96000 (16 Oct 26, the documents tidy after pull request 519): 94,224 bytes with the Logic page's
      rulings (D925, D928-D933, D936) - live; none is trimmed (D136). Still under the size D611 named for putting the
      split back to him (about 100,000 bytes, after D802's split). Room, not a target. */
-  ['.claude/rules/decisions/scheduler.md', 2, 96000],
+  /* scheduler 96000 -> 99000 (16 Oct 26, round 1b of the words pass): 96,097 bytes with D945 and D947 - his rulings on
+     the input's Reject button and round 1b's answers, live; none is trimmed (D136). The next rise meets D611's ~100,000
+     bytes: put the scheduler's split back to him then. Room, not a target. */
+  ['.claude/rules/decisions/scheduler.md', 2, 99000],
   /* inputs 32000 -> 37000 (16 Oct 26, the documents tidy after pull request 519): 35,026 bytes with the calendar's step
      two, the input window's and the Medical tab's rulings of 14-15 Oct (D900-D920, D927) - live; none is trimmed (D136). [RULINGS-SPENT-PASS]
      reads it for spent rows. Room, not a target. */
