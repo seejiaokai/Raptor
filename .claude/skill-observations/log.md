@@ -877,3 +877,33 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** When a ruling says some controls must NOT change (keep place / keep size), the walk script measures them (computed font-size, padding, box) on the live build and on the change, and asserts equality — a before/after table, not a picture. And a CSS note for the design guide or the walk-scripts guide: an exclusion added to a shared rule is written `:where(:not(...))` so the rule keeps its weight.
 
 **Principle:** "Unchanged" is a claim to measure against the old build, not something to see in a picture; and any selector added to a shared rule can silently change which rule wins elsewhere.
+
+### Observation 612: Draw a layout question in the state an already-ruled change will leave the screen in — and in the case it is about
+
+**Status:** OPEN
+**Date:** 2026-10-15
+**Session context:** [INPUT-NEW-DEFAULTS] — drawing his idea D913 A (time and remarks above an input's calendar) beside D917 (a new input opens on OL, ruled, not yet built)
+**Skill:** brainstorming (`mockups-on-the-real-app.md` — Judging the Proposal)
+**Type:** open-source
+**Phase/Area:** choosing the state to picture before the transform
+
+**Issue:** The first drawing of A was shot with the kind the build will open on (OL). Measured, that window already fits the phone with nothing to scroll, so A looked pointless; the case his idea was about (a commitment with a title and hours, where Remarks hides under the window's button bar) only showed when the same pictures were taken again with Event. An earlier drawing of the same question had used a saved Meeting and never showed the OL case either.
+
+**Suggested improvement:** Under "Include one BUSY state by default", add: when another change already decided will alter the screen first (a new default, a removed field), picture the proposal in that future state; and picture it in each state that changes the answer (here: a kind that fits, a kind that does not), with the measurement that shows the difference.
+
+**Principle:** A layout proposal is judged in the states that change its answer, including the state an already-decided change will produce — one state can make a good idea look useless or a bad one look fine.
+
+### Observation 613: A picture rule that lives only in files loaded with interface work is missed when the agent is only "explaining"
+
+**Status:** ACTIONED (2026-10-15) — the owner's D921 put the rule in `.claude/rules/plain-language.md`, which every chat loads, and widened it to explanations; `design-practices.md` §0 and `ui-design.md` point 1 say so.
+**Date:** 2026-10-15
+**Session context:** [INPUT-NEW-DEFAULTS] — telling him what two backlog leftovers were (a Tracker window's row arrows, the OIL question's small calendar)
+**Skill:** none (a project rule file); related: brainstorming `mockups-on-the-real-app.md`
+**Type:** internal
+**Phase/Area:** reporting to the owner
+
+**Issue:** The rule "every design or interface point comes with a picture, the area marked" (D853) was loaded and in force, yet two leftovers were explained to him twice in words alone; he asked a third time where exactly, then made the rule again (D921). The agent had read the rule as covering things PUT TO HIM to decide, and classed "what is this item" as a recap, not a design point.
+
+**Suggested improvement:** Done as D921: the rule names explanations and recaps, and sits in an always-loaded rule file. A check-before-send line could ask: "does this message name anything on screen? then is a picture attached?"
+
+**Principle:** A rule scoped by the kind of message ("a proposal") gets skipped when the agent classes its message as another kind; scope it by its trigger (anything on screen is named) instead.

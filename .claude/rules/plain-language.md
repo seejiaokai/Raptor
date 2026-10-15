@@ -29,6 +29,8 @@ but these directives stand on their own so they are in force before any project 
   whether you recommend it, and why); never only in the app's next-step box (D904, 15 Oct 26). Whenever you need his
   review, and when the work is done, the preview link and the pictures come with it; whenever a handoff is due, the
   ready-to-paste prompt (D906).
+  **Anything on screen talked about — a change, a question, or only what a backlog item is and where it sits — comes with
+  pictures of the real app, the place marked, the first time it is raised; never words alone (D853, D921).**
 
 When a technical term is genuinely unavoidable, define it in the same sentence in ordinary words,
 once — then keep using the plain phrase.

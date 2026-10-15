@@ -446,8 +446,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     shutPick()
   }
 
-  /* Seed the add-input modal exactly the way a board's "+ Add" does
-     (interactions.ts ~592-608) — same fields, same defaults — but with NO
+  /* Seed the add-input modal with the fields a board's "+ Add" seeds
+     (interactions.ts, the `data-inpadd` door) — but NOT its kind: this door opens on OL (owner D917, 15 Oct 26),
+     the board's add keeps the first commitment kind — and with NO
      canEditSched refusal: page-rights parity means everyone may file their
      OWN input from their own calendar, the same reach a member already has
      on the Inputs table's own + Add. A member's Person field is already

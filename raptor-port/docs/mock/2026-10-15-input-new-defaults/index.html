@@ -1,0 +1,109 @@
+<title>New Input Window</title>
+<style>
+/* Layout: one column of numbered questions; each a row of real screenshots, today first, the agent's pick marked. */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --ink:#152028; --ink-2:#4b5966; --edge:#d5dce2; --accent:#0f8fb3; --pick:#1d7f4e; --mark:#e07a12;
+  --f-head:'Barlow Condensed','Arial Narrow',sans-serif; --f-body:'Inter Tight',system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0d1217;--panel:#151c23;--ink:#e7edf2;--ink-2:#9aa8b5;--edge:#2a343e;--accent:#38c3e8;--pick:#4cc489;--mark:#ff9a3c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1217;--panel:#151c23;--ink:#e7edf2;--ink-2:#9aa8b5;--edge:#2a343e;--accent:#38c3e8;--pick:#4cc489;--mark:#ff9a3c;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body)}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 60px;display:flex;flex-direction:column;gap:34px}
+h1{font:700 34px/1.1 var(--f-head);letter-spacing:.02em;margin:0;text-transform:uppercase}
+h2{font:700 24px/1.15 var(--f-head);letter-spacing:.03em;margin:0;text-transform:uppercase;text-wrap:balance}
+h3{font:600 15px/1.3 var(--f-body);margin:0}
+p{margin:0;max-width:68ch}
+.lede{color:var(--ink-2)}
+section{display:flex;flex-direction:column;gap:14px}
+.q{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.q b{color:var(--accent)}
+.row{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+.row.wide{grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))}
+figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+figure img{width:100%;height:auto;border:1px solid var(--edge);border-radius:8px;cursor:zoom-in;background:#000}
+figcaption{font-size:13px;color:var(--ink-2)}
+figcaption strong{color:var(--ink)}
+.tag{display:inline-block;font:700 11px/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;padding:3px 7px;border-radius:5px;border:1px solid var(--edge);color:var(--ink-2);margin-right:6px}
+.tag.pick{color:var(--pick);border-color:var(--pick)}
+.note{font-size:13px;color:var(--ink-2)}
+.note .m{color:var(--mark);font-weight:600}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;max-width:70ch}
+dialog{border:none;padding:0;background:transparent;max-width:96vw;max-height:96vh}
+dialog img{max-width:96vw;max-height:94vh;display:block;border-radius:8px}
+dialog::backdrop{background:rgba(0,0,0,.8)}
+</style>
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <h1>New input window</h1>
+    <p class="lede">Two questions about an input's window, drawn on the real app before anything is built. Every picture is the app as it runs today; the parts drawn in are named under each picture. <span class="note"><span class="m">The dashed orange box</span> only marks the part the question is about.</span> Tap a picture to see it full size.</p>
+    <p class="note">Already decided, not a question (your D917): a new input opens on OL. The pictures in question 2 show OL picked, as it will open.</p>
+  </header>
+
+  <section>
+    <h2>1 · The pencil beside the title</h2>
+    <div class="q">
+      <p><b>Which pencil?</b> P1 inside the title box, at its right end, or P2 as a small button beside the box.</p>
+      <p><strong>My pick: P1.</strong> It takes no room: the box keeps its full width and nothing moves. A tap anywhere on the box, the pencil included, puts you in it with the kind's name ready to type over, as a tap on the box does today. P2 is a second button that does the same thing as the box, and it makes the box about 40 px shorter.</p>
+      <p class="note">Either way: the pencil shows wherever the title box shows (an Event, a Training, a Meeting and the other commitment kinds, never leave or medical), on a new input and a saved one, and not on someone else's input that you can only read. It is a line drawing in the app's own icon style and grey, so it does not look like an emoji on your iPhone. A long title stops short of the pencil and scrolls inside the box, as it does today.</p>
+    </div>
+    <h3>Close up, on a phone</h3>
+    <div class="row">
+      <figure><img src="img/pen-phone-today-close.png" alt="Title box today, no pencil"><figcaption><span class="tag">Today</span>No pencil.</figcaption></figure>
+      <figure><img src="img/pen-phone-P1-close.png" alt="Title box with a pencil inside its right end"><figcaption><span class="tag pick">P1 · my pick</span>Pencil inside the box. <em>Drawn in: the pencil.</em></figcaption></figure>
+      <figure><img src="img/pen-phone-P2-close.png" alt="Title box with a pencil button beside it"><figcaption><span class="tag">P2</span>Pencil button beside the box. <em>Drawn in: the button.</em></figcaption></figure>
+    </div>
+    <h3>The whole window on a phone (390 wide, your iPhone's size)</h3>
+    <div class="row">
+      <figure><img src="img/pen-phone-today.png" alt="New input window on a phone today"><figcaption><span class="tag">Today</span>A new input from 15 Oct on the Inputs calendar, Event picked.</figcaption></figure>
+      <figure><img src="img/pen-phone-P1.png" alt="Phone window with P1"><figcaption><span class="tag pick">P1 · my pick</span></figcaption></figure>
+      <figure><img src="img/pen-phone-P2.png" alt="Phone window with P2"><figcaption><span class="tag">P2</span></figcaption></figure>
+    </div>
+    <h3>On a desktop</h3>
+    <div class="row wide">
+      <figure><img src="img/pen-desk-today.png" alt="Desktop today"><figcaption><span class="tag">Today</span></figcaption></figure>
+      <figure><img src="img/pen-desk-P1.png" alt="Desktop with P1"><figcaption><span class="tag pick">P1 · my pick</span></figcaption></figure>
+      <figure><img src="img/pen-desk-P2.png" alt="Desktop with P2"><figcaption><span class="tag">P2</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>2 · Your idea: time and remarks above the calendar</h2>
+    <div class="q">
+      <p><b>Do you want A?</b> In an input's window, When and Remarks move above the calendar (your first idea, D913). Nothing else changes and the calendar keeps showing.</p>
+      <p><strong>My pick: yes, A, for every kind of input and every way the window opens.</strong> Most new inputs already have their dates, picked on the Inputs calendar, so the calendar is the part you have finished. For a commitment (an Event, a Training) the window is too tall for a phone today: Remarks sits under the Cancel / Add bar and you have to scroll to find it. With A, everything you still have to fill in is on screen, and the calendar is below it. For OL the window fits on the phone either way, so A changes little there.</p>
+      <p class="note">What A costs: the line that repeats the dates ("Oct 15 → Oct 16") moves to the foot with the calendar. With "+ Input" on the Inputs list, where no dates are picked yet, you fill in the time before the dates. The calendar is still in full view below, and Add still refuses an input with no dates.</p>
+    </div>
+    <h3>A commitment (Event), on a phone: the case A helps</h3>
+    <div class="row">
+      <figure><img src="img/order-event-phone-today.png" alt="Event window today on a phone"><figcaption><span class="tag">Today</span>Remarks is out of sight under the Add bar; it needs a scroll.</figcaption></figure>
+      <figure><img src="img/order-event-phone-A.png" alt="Event window with A on a phone"><figcaption><span class="tag pick">A · my pick</span>When and Remarks above the calendar, all in sight. <em>Moved, nothing restyled.</em></figcaption></figure>
+    </div>
+    <h3>OL on a phone: it fits either way</h3>
+    <div class="row">
+      <figure><img src="img/order-ol-phone-today.png" alt="OL window today on a phone"><figcaption><span class="tag">Today</span>15 → 16 Oct picked on the Inputs calendar.</figcaption></figure>
+      <figure><img src="img/order-ol-phone-A.png" alt="OL window with A on a phone"><figcaption><span class="tag pick">A · my pick</span></figcaption></figure>
+    </div>
+    <h3>On a desktop</h3>
+    <div class="row wide">
+      <figure><img src="img/order-event-desk-today.png" alt="Event window today on a desktop"><figcaption><span class="tag">Today</span>Event.</figcaption></figure>
+      <figure><img src="img/order-event-desk-A.png" alt="Event window with A on a desktop"><figcaption><span class="tag pick">A · my pick</span>Event.</figcaption></figure>
+      <figure><img src="img/order-ol-desk-today.png" alt="OL window today on a desktop"><figcaption><span class="tag">Today</span>OL.</figcaption></figure>
+      <figure><img src="img/order-ol-desk-A.png" alt="OL window with A on a desktop"><figcaption><span class="tag pick">A · my pick</span>OL.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Your answer</h2>
+    <ul>
+      <li><strong>1.</strong> P1 or P2.</li>
+      <li><strong>2.</strong> A, or keep the order as it is.</li>
+    </ul>
+    <p class="note">"Both as recommended" means P1 and A. Then I build them with the OL default (D917) as one small job, check it on both sizes and send you the preview link.</p>
+  </section>
+</div>
+<dialog id="zoom"></dialog>
+<script>
+const dlg=document.getElementById('zoom'),zi=document.createElement('img');dlg.appendChild(zi)
+document.querySelectorAll('figure img').forEach(i=>i.addEventListener('click',()=>{zi.src=i.src;zi.alt=i.alt;dlg.showModal()}))
+dlg.addEventListener('click',()=>dlg.close())
+</script>

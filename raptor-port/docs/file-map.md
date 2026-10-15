@@ -15,6 +15,8 @@ after it, the list opened (`oilPutBackWatch`, `oilNeedSaid`): the one body the l
 switch (`src/ui/board.ts switchDraft`) share; `scripts/handpass/ps-walk.mjs` (the job's walk, as assertions with pictures);
 `scripts/handpass/glow-look.mjs` (`[GLOW-PLACES-LOOK]`'s pictures — each glowing place today beside a no-glow version).
 `scripts/handpass/noglow-look.mjs` (`[GUIDE-NO-GLOW]`'s pictures — the places that still glow after D877, D879, each today beside no glow, `docs/mock/2026-10-15-noglow-places/`).
+`scripts/handpass/mock-input-defaults.mjs` (`[INPUT-NEW-DEFAULTS]`'s pictures — the title box's pencil, P1 inside the box and P2 beside it (D918), and D913's order A, When and Remarks above the calendar, for OL and for Event; today beside each, phone and desktop; `docs/img/handpass/2026-10-15-input-new-defaults/`, the page `docs/mock/2026-10-15-input-new-defaults/index.html`).
+`scripts/handpass/pics-two-leftovers.mjs` (pictures of calendar step two's two leftovers for him to place — the Tracker's ⇅ Reorder ▲ ▼ on a phone (`[TRK-REORDER-FINGER-DRAG]`) and the OIL question's "Only some days…" grid beside the one calendar (`[OIL-CONFIRM-DAYGRID]`); `docs/img/handpass/2026-10-15-two-leftovers/`).
 `scripts/handpass/noglow-drag.mjs` (`[GUIDE-NO-GLOW]` place 8 by a real mouse drag in the Leave War's Rearrange).
 `scripts/handpass/lwlanding-drag.mjs` (`[LW-LANDING-LINE-FIGURES]`, D883 — the Leave War's landing line through the figures
 drawer by a real drag, mouse and touch, as assertions with pictures; `DL_BEFORE=1` pictures the build before the fix).
@@ -1039,6 +1041,11 @@ the filter boxes), and every file that drove the form, restated for the window (
 `inputtitle.test.tsx`, `sharedline.test.tsx`, `placeholderlist.test.tsx`, `docconfirm.test.tsx`, `inputstabs.test.tsx`,
 `audit-e-window-sort.test.tsx`, `whoplaced.test.tsx`, `e2e/step4-leavewar.spec.ts`). Its look and its walk:
 `scripts/handpass/ivet-look.mjs`, `ivet-walk.mjs`; the check `docs/handpass/2026-10-10-inputs-vet-check.md`.
+**`[INPUT-NEW-DEFAULTS]` (D917, D919, D920 — 15 Oct 26):** `newInputSeed` opens on OL; the title box (`inputedit.tsx`) sits in a
+`.inped-title` wrapper with the drawn pencil `.inped-pen` (`icons.tsx PenIcon`; styled in `scheduler/14-input-editors.css`), none on a
+read-only input; the Dates block stands after Remarks. Tests `ui/inputnewdefaults.test.tsx`; `inputsvet.test.tsx` and
+`inputtitle.test.tsx` pick their own kind now. Its walk `scripts/handpass/ind-walk.mjs` (`--break`); the check
+`docs/handpass/2026-10-15-input-new-defaults.md`.
 `src/ui/InputCard.tsx` - THE INPUT CARD (owner D718–D724, 10 Oct 26 — `[INPUT-LIST-AS-DAY-CARD]`): the one card of the
 Inputs calendar's opened day and of the Inputs list on a phone. A flow of text with the LATE-and-hours corner floated at
 its right, so a shared input's names wrap round it; the card's button is a span with a button's role (a real button is
