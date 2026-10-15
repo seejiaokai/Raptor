@@ -82,6 +82,15 @@ After a compaction: re-read this block, the overnight guide (`.claude/skills/ove
   re-pinned to D948; new `engine/tilldate.test.ts` (11). **Next: the FULL check** — evidence sheet
   `raptor-port/docs/handpass/2026-10-17-r1b-till.md`, the full gates under the lock, the walk with pictures, the
   fresh blind Opus code read, then the pull request.
+  **STEP IN HAND (17 Oct, chat 75% full — the state saved here):** the FULL check. Done: the sheet
+  `raptor-port/docs/handpass/2026-10-17-r1b-till.md` (§1 tier FULL, §2 roll-call, §3 sizing, §5 carried by tests, §8
+  findings A–E). Running when saved: a Sonnet walker writing and running `raptor-port/scripts/handpass/r1b-till-walk.mjs`
+  (pictures `raptor-port/docs/img/handpass/2026-10-17-r1b-till/`, against the build served on 4180 — do NOT rebuild while
+  it runs); a fresh reader checking lesson 2's wording (D941). **Then, in order:** open the walker's pictures and reproduce
+  any FAIL; fix; the full gates under the lock (`node raptor-port/scripts/gatelock.mjs run`, ~15 min); ONE fresh, blind
+  Opus read of the finished code (`git diff main...HEAD -- raptor-port/src`, handed the sheet; D790, D903 — no Fable);
+  fixes; fill §4, §6, §7, §9 and the `Walk:` line; the walk-ledger row; open the pull request (stop watching it); job 3
+  only if time is left; the morning report.
 - **Rulings this chat:** D945–D948.
 <!-- /now -->
 
