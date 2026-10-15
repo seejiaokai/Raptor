@@ -2285,7 +2285,7 @@ saved input keeps its type; OL takes no title (D716), so the title box shows onc
 the pencil drawn on the real app and put to him (D853). **Also put to him with it:** his first idea D913 drawing A
 (time and remarks above the calendar) — reopened by D916, unanswered. Its own small job, a fresh chat on `main` after
 516 is live; a WALK check (the new input's doors, both sizes).
-**DRAWN AND PUT TO HIM 15 Oct 26 (branch `claude/input-new-defaults`) — waiting for his two answers:** the page
+**DRAWN AND PUT TO HIM 15 Oct 26 (branch `claude/input-new-defaults`) — ANSWERED "All as recommended" (D919 P1, D920 A); BUILDING on that branch:** the page
 https://claude.ai/artifact/BQa1WwKjmu62kgNv2FA4op (source `raptor-port/docs/mock/2026-10-15-input-new-defaults/index.html`,
 pictures `raptor-port/docs/img/handpass/2026-10-15-input-new-defaults/`, drawn by `scripts/handpass/mock-input-defaults.mjs`).
 (1) the pencil: P1 inside the title box at its right end (the agent's pick — no room taken, the box's grey, a line icon in
