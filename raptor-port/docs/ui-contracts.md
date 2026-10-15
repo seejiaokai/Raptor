@@ -7375,11 +7375,20 @@ points of 81 round the grip, a man's 9 → 20); pinned in `src/leavewar/ui/rowgl
 across days sits in a month that does not scroll — **answered D897: yes, a drag held at the month's edge turns to the next
 (or the last) month and the pick carries on into it.** Both its own job, not built yet. **D898:** the month's edge turn is built without a picture first — the agent decides the edge and the hold and tells him. **D899:** what the Tracker check finds short (its drags carried to the chart's edge pan it) is fixed the same night.
 
+**The ⇅ Reorder rows drag by finger and by mouse, one look (D922, D924, built 15 Oct 26 — `[TRK-REORDER-FINGER-DRAG]`).** One pointer
+machine in `Modals.jsx` OrdModalInner, shaped as a day's notes' (`InputsCal.tsx startSecDrag`): a finger takes a row by its ⠿ grip only
+(`touch-action:none` there; a finger elsewhere scrolls the list), a mouse anywhere but its buttons once it has moved 4px. The carried row
+wears the lift ring (`dragging`); ONE row wears the 2px landing line (`dragover`) on the top edge of the row it lands before, `after` (its
+foot) only under the last row — the Leave War ⚙ lists' numbers (§5a); over its own row or the gap it fills, no line, and a release there
+flashes it in place. The drop moves the window's working list only (Save order saves, Cancel drops it) and the landed row flashes the
+landing mark (`lift.ts markLand` / `paintLand`). Escape ends the carry, not the window; a cancelled touch moves nothing. The ▲ ▼ stay, the
+keyboard's way. The browser's own drag and its box round the hovered row are gone, and the notes lost "Drag a row, or use ▲/▼." (D924).
+
 **Four more drags follow the edge (D900, built 15 Oct 26 — `[DRAG-EDGE-FOUR-MORE]`).** The SANS calendar's run turns its month at the side
 exactly as the Inputs month's (`SansCal.tsx` hands `calpick.ts` its `onTurn`). The Tracker's ▣ Select box carried to Edit chart layout's
 edge pans it (`core.js startMarquee` → `followEdge`; its first corner stays where it was pressed, its far corner under the pointer; a
-cancelled touch selects nothing). The ⇅ Reorder list scrolls under a row carried to its top or foot (`Modals.jsx` — the browser's own
-drag; `dragover` feeds `edgeAutoScroll`; only a list longer than its box; a phone cannot drag these rows). The people picker's drag
+cancelled touch selects nothing). The ⇅ Reorder list scrolls under a row carried to its top or foot (`Modals.jsx` — since D924 the rows' own
+pointer drag feeds `edgeAutoScroll`, a finger's band and ramp on a phone; only a list longer than its box). The people picker's drag
 across faces scrolls the input's window — never the page behind it (D686) — its band the part of the window the faces are SEEN in,
 above the Save bar that stays at its foot, and it stops at the last face (`edgeAutoScroll` `span` / `more`).
 

@@ -4631,3 +4631,25 @@ input's first tap still starts new dates (D901). Its own small job, a fresh chat
 **BUILT:** the contract `raptor-port/docs/ui-contracts.md` ("Four more drags follow the edge"); the check `raptor-port/docs/handpass/2026-10-15-calendar-step-two.md` (walk E1–E4 at both sizes; a browser break; the Reorder list's scroll carried by `src/tracker/retest.test.tsx`). A fault the walk found and fixed: the people picker's band lay under the window's Save bar and ran past the last face. **Named to him, his to say (D900's reading — not built):** a finger drag for the ⇅ Reorder rows — a phone cannot drag them today (its ▲▼ do it); a picture before any build.
 **What:** the SANS calendar's pick across days turns its month at the side (`src/ui/SansCal.tsx` passes `onTurn` to `initCalPick`, as `InputsCal.tsx` does — the machine and the Safari guard are shared); the Tracker's ▣ Select box pans Edit chart layout at its edge (`src/tracker/app/core.js startMarquee` — `followEdge`, with its own cancel and pointer checks as the handles have); the Tracker's ⇅ Reorder list (`src/tracker/components/Modals.jsx`, a 52vh scrolling box; a phone cannot drag its rows at all today — a finger drag only if it fits the guide, said to him first) and the people picker's drag across faces (`src/ui/PeoplePick.tsx`, D685) scroll their list (`edgeAutoScroll`). **Check:** WALK — one walk script per surface pair, mouse and touch, a break test per wire. **Place (his order):** after 515 merges; a fresh chat on `main`.
 
+
+*Moved here 2026-10-15 by backlog-archive.mjs ([INPUT-NEW-DEFAULTS]). Forward facts: `raptor-port/docs/handpass/2026-10-15-input-new-defaults.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [INPUT-NEW-DEFAULTS] A new input opens on OL; a pencil beside the title box — RULED D917, D918 (15 Oct 26); after pull request 516 — OPEN
+**His words (D917, D918):** the default type OL, "the most common leave taken"; "an edit pencil icon beside the title to
+indicate that people can edit it". **Settled with him:** OL for every door that opens a NEW input (the List's "+ Input", a
+day or a dragged run on the Inputs calendar) — not for several people (never leave, D655) nor SANS "+ Commitment"; a
+saved input keeps its type; OL takes no title (D716), so the title box shows once a commitment kind is picked. **First:**
+the pencil drawn on the real app and put to him (D853). **Also put to him with it:** his first idea D913 drawing A
+(time and remarks above the calendar) — reopened by D916, unanswered. Its own small job, a fresh chat on `main` after
+516 is live; a WALK check (the new input's doors, both sizes).
+**DRAWN AND PUT TO HIM 15 Oct 26 (branch `claude/input-new-defaults`) — ANSWERED "All as recommended" (D919 P1, D920 A); BUILDING on that branch:** the page
+https://claude.ai/artifact/BQa1WwKjmu62kgNv2FA4op (source `raptor-port/docs/mock/2026-10-15-input-new-defaults/index.html`,
+pictures `raptor-port/docs/img/handpass/2026-10-15-input-new-defaults/`, drawn by `scripts/handpass/mock-input-defaults.mjs`).
+(1) the pencil: P1 inside the title box at its right end (the agent's pick — no room taken, the box's grey, a line icon in
+`ui/icons.tsx`'s style, never the ✏ glyph, which draws as an emoji on an iPhone) or P2, a square button beside the box (the
+box ~40 px shorter); (2) D913 A — When and Remarks above the calendar, for every kind and door (the agent's pick). **Measured:**
+with OL picked the window fits a 390 × 844 phone either way (no scroll); with Event (title + hours) today's Remarks lies under
+the Cancel / Add bar and needs a scroll, and with A all of it is in sight. **The agent's readings, told to him:** the pencil
+shows wherever the title box shows, new or saved, never on a read-only input; a tap on it is a tap on the box. **Then:** build
+D917 with his two answers as one small job, WALK check.
+
