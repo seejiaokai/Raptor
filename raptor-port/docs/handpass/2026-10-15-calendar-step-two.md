@@ -192,6 +192,7 @@ pace now; nothing in the app changed for it.
 **ANSWERED 15 Oct 26 — "All as recommended":** (a) left as built, a swipe reaches the rest (D908); (b) left as built (D909);
 his direction built on phones in this job (D910, answering D907); the design guide's rule drafted and put to him, and the
 Medical tab filed, each its own job (D911, D912 — `[GUIDE-ONE-ROW]`, `[MEDICAL-ONE-ROW]`). The questions as put:
+**His idea at his look (D913):** in an input's window, the time and the remarks above a calendar whose dates were already picked — drawn on the real app as his order (A) and a folded dates line (B), put to him before anything is built (`scripts/handpass/mock-input-order.mjs`, pictures `…/question/order-*.png`).
 **Questions put to him** (the page with the pictures: "Calendar step two: two questions about phones"):
 - (a) The Inputs list's date pop-up on a small phone — recommended: it scrolls inside itself; the dates stay one size.
   Waits on it: the three small-phone browser tests and any change to the pop-up.
