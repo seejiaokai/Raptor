@@ -1,0 +1,106 @@
+<title>Reorder Rows Drag</title>
+<style>
+/* Layout: one column of numbered questions; each a row of real screenshots, today first, the agent's pick marked. */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --ink:#152028; --ink-2:#4b5966; --edge:#d5dce2; --accent:#0f8fb3; --pick:#1d7f4e; --mark:#e07a12;
+  --f-head:'Barlow Condensed','Arial Narrow',sans-serif; --f-body:'Inter Tight',system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0d1217;--panel:#151c23;--ink:#e7edf2;--ink-2:#9aa8b5;--edge:#2a343e;--accent:#38c3e8;--pick:#4cc489;--mark:#ff9a3c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1217;--panel:#151c23;--ink:#e7edf2;--ink-2:#9aa8b5;--edge:#2a343e;--accent:#38c3e8;--pick:#4cc489;--mark:#ff9a3c;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body)}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 60px;display:flex;flex-direction:column;gap:34px}
+h1{font:700 34px/1.1 var(--f-head);letter-spacing:.02em;margin:0;text-transform:uppercase}
+h2{font:700 24px/1.15 var(--f-head);letter-spacing:.03em;margin:0;text-transform:uppercase;text-wrap:balance}
+p{margin:0;max-width:68ch}
+.lede{color:var(--ink-2)}
+section{display:flex;flex-direction:column;gap:14px}
+.q{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.q b{color:var(--accent)}
+.row{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+.row.wide{grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))}
+figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+figure img{width:100%;height:auto;border:1px solid var(--edge);border-radius:8px;cursor:zoom-in;background:#000}
+figcaption{font-size:13px;color:var(--ink-2)}
+figcaption strong{color:var(--ink)}
+.tag{display:inline-block;font:700 11px/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;padding:3px 7px;border-radius:5px;border:1px solid var(--edge);color:var(--ink-2);margin-right:6px}
+.tag.pick{color:var(--pick);border-color:var(--pick)}
+.note{font-size:13px;color:var(--ink-2)}
+.note .m{color:var(--mark);font-weight:600}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;max-width:70ch}
+dialog{border:none;padding:0;background:transparent;max-width:96vw;max-height:96vh}
+dialog img{max-width:96vw;max-height:94vh;display:block;border-radius:8px}
+dialog::backdrop{background:rgba(0,0,0,.8)}
+</style>
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <h1>Reorder rows: a finger drag</h1>
+    <p class="lede">The Tracker's ⇅ Reorder windows (courses, syllabi, crew) with a finger drag, as you asked (D922), drawn on the real app before anything is built. Pictures are the Syllabus order window. <span class="note"><span class="m">The dashed orange box</span> only marks what a picture is about.</span> Tap a picture to see it full size.</p>
+    <p class="note">Drawn in, not in the app yet: the six-dot grip, the white circle (your finger), the blue ring on the carried row and the blue landing line. The ring on the dropped row in picture 3 is the app's own landing mark, the one a note dropped on a day gets.</p>
+  </header>
+
+  <section>
+    <h2>How it would work</h2>
+    <div class="row">
+      <figure><img src="img/p1-today-phone.png" alt="Today on a phone: only the up and down buttons move a row"><figcaption><span class="tag">1 · today</span>On a phone only <strong>▲ ▼</strong> move a row, though the window says "Drag a row".</figcaption></figure>
+      <figure><img src="img/p2-proposed-carrying-phone.png" alt="Proposed: a row carried by its grip, one landing line"><figcaption><span class="tag pick">2 · proposed</span>A finger takes "2026" by its grip and carries it down. It wears the blue ring; <strong>one blue line</strong> shows where it will land, above "A/G - A/A 2026".</figcaption></figure>
+      <figure><img src="img/p4-proposed-dropped-phone.png" alt="Proposed: the row dropped in its new place"><figcaption><span class="tag pick">3 · proposed</span>Let go: "2026" sits in its new place and flashes the landing ring. <strong>Save order</strong> keeps it, <strong>Cancel</strong> drops it, as today.</figcaption></figure>
+    </div>
+    <ul class="note">
+      <li>The finger takes a row by its grip only. A finger anywhere else on the list scrolls it, so a long crew list still scrolls.</li>
+      <li>Carried to the top or foot of a long list, the list follows the finger. A mouse already does this (since 15 Oct). The demo lists are too short to scroll, so there is no picture of it.</li>
+      <li>The ▲ ▼ stay, and stay the keyboard's way to move a row.</li>
+      <li>The same in all three windows: courses, syllabi and crew.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>1 · The grip</h2>
+    <div class="q">
+      <p><b>Should the grip become the app's six dots ⠿?</b> Today these rows show ☰.</p>
+      <p><strong>My pick: yes.</strong> Every other drag in the app (the board's rows, the Leave War's Rearrange, a day's notes) uses ⠿, and in the Tracker ☰ already means "list" on the <strong>☰ Show All</strong> button. The grip also gets a bigger invisible area for a thumb; it does not look bigger.</p>
+    </div>
+    <div class="row">
+      <figure><img src="img/d1-today-mouse-desktop.png" alt="Today: the bar-shaped grip"><figcaption><span class="tag">today</span>☰ on each row.</figcaption></figure>
+      <figure><img src="img/d2-proposed-mouse-desktop.png" alt="Proposed: the six-dot grip"><figcaption><span class="tag pick">⠿ · my pick</span>The app's own grip.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>2 · A mouse drag on a desktop</h2>
+    <div class="q">
+      <p><b>Should a mouse drag get the same look as the finger?</b> Today a mouse drag fades the carried row and draws a <strong>box round the row it will take the place of</strong>.</p>
+      <p><strong>My pick: yes, the same look.</strong> One way of dragging in the app: the carried row ringed and one landing line in the gap, as the design guide says for every list (one drop, one landing line). The box today means "take this row's place", which reads differently from every other list.</p>
+    </div>
+    <div class="row wide">
+      <figure><img src="img/d1-today-mouse-desktop.png" alt="Today: a box round the row under the mouse"><figcaption><span class="tag">today</span>"2026" carried (faded), a box round "A/G - A/A 2026": it would go last.</figcaption></figure>
+      <figure><img src="img/d2-proposed-mouse-desktop.png" alt="Proposed: the ring and one landing line"><figcaption><span class="tag pick">same look · my pick</span>"2026" ringed, one line above "A/G - A/A 2026": it goes just above it.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>3 · The first words of the window</h2>
+    <div class="q">
+      <p><b>Delete "Drag a row, or use ▲/▼."?</b> The grip and the arrows already show it. The rest stays: "This sets the order of the Syllabus dropdown for every course." (and each window's own second sentence, such as the crew one about the slices of each ball).</p>
+      <p><strong>My pick: delete it</strong> (the design guide's rule on words that only say what the screen shows). Nothing else leaves the screen with it.</p>
+    </div>
+    <div class="row">
+      <figure><img src="img/p1-today-phone.png" alt="The window's first line on a phone"><figcaption><span class="tag">today</span>"Drag a row, or use ▲/▼." at the top of the window.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Your answer</h2>
+    <ul>
+      <li><strong>1.</strong> The six-dot grip ⠿, or keep ☰.</li>
+      <li><strong>2.</strong> The same look for a mouse, or keep today's box.</li>
+      <li><strong>3.</strong> Delete "Drag a row, or use ▲/▼.", or keep it.</li>
+    </ul>
+    <p class="note">"All as recommended" means ⠿, the same look, and delete. Then I build it as one small job, check it on a phone and a desktop size, and send you the preview link.</p>
+  </section>
+</div>
+<dialog id="zoom"></dialog>
+<script>
+const dlg=document.getElementById('zoom'),zi=document.createElement('img');dlg.appendChild(zi)
+document.querySelectorAll('figure img').forEach(i=>i.addEventListener('click',()=>{zi.src=i.src;zi.alt=i.alt;dlg.showModal()}))
+dlg.addEventListener('click',()=>dlg.close())
+</script>
