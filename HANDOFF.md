@@ -21,7 +21,7 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/whole-app-words-pass-1b-6cfe51 -->
-### `claude/whole-app-words-pass-1b-6cfe51` — the whole-app words pass (D808), round 1b: DRAWN and put to him; WAITING on his answers; the night's run builds them — written 16 Oct 26 — verify before use
+### `claude/whole-app-words-pass-1b-6cfe51` — the whole-app words pass (D808), round 1b: DRAWN and ANSWERED (D947); the night's run builds it — written 16 Oct 26 — verify before use
 - **Round 1 is live** (pull request 521, merged 16 Oct 26). This branch is cut from `main` after it; no pull request yet.
 - **Round 1b — the page of marked pictures:** https://claude.ai/artifact/LyEcfYVzbqXnsgwscLRVvM (four questions). Pictures in
   `raptor-port/docs/img/handpass/2026-10-16-words-pass/r1b/`, drawn by `raptor-port/scripts/handpass/words-r1b.mjs` on the
@@ -41,14 +41,16 @@ the later merge keeps both (D78).
 - **Owed the same day (D941):** D945 is a design correction with a point beyond its screen — write its lesson into
   `raptor-port/docs/design-practices.md` §9 ("a button is named for what it does — never with another control's name,
   never with a word that reads as Delete"), one fresh reader checks it says what he meant, and name it in the closing report.
-- **Pick up here (the night's run):** read his answers in the chat (if none, park round 1b and build only D945);
-  record them (next free number after D945); build; tests that pin each string; walk at WALK tier on phone and desktop
+- **His answers — D947 ("all as recommended except 2B 4 don't do it"):** (1) yes; (2) wording B — "To take an input off, press
+  Reject on it in Personal Inputs below."; (3) yes, board and week; (4) NO — Unavailable keeps its heading line. Build
+  exactly that, with D945's "Reject".
+- **Pick up here (the night's run):** build D945 + D947 (the drawing script's `AFTER` functions show each change; question 4 is NOT built); tests that pin each string; walk at WALK tier on phone and desktop
   (board and week, a day with an input on the Ground Programme); gates; one fresh blind Opus read of the code (D790);
   push this branch and open its pull request; never merge (his "merge live").
 - **Other places named, not proposed (D852):** the board's Ground Programme rows take three lines on a phone (their
   CX ⓘ ■ ✕ on a line of their own) — four buttons do not fit beside a puck.
 - **D946 (his, the same evening): the input's Remarks box only his own words; "till <date>" shown by default from the dates, always after the remark** — brings forward [TILL-FROM-DATES] (a FULL job). Recommended way told to him: never written into the remark; a grey "till 17 Jul" tag after the box in the window; every screen prints "Las Vegas · till 17 Jul" from the dates. Next: draw its questions (one-day input; where on the schedule's row; export) for his answer — not built unattended.
-- **Rulings this chat:** D945, D946.
+- **Rulings this chat:** D945, D946, D947.
 <!-- /now -->
 
 ## Next, in order
