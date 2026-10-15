@@ -3,7 +3,7 @@
    paragraph under the row; the row ONE line at 36 in each state an admin meets (not editing, editing, Edit quals on);
    Export reads "Export" on the phone and "Export to Excel" on a desktop and, pressed, downloads the LoX and says so; the
    filter, typed in, narrows the table; Enable editing, Edit quals and Save changes pressed in the row. Then the row's
-   room measured (not walked) on two narrower phones, 375 and 360, for the evidence sheet. Written as the RIGHT behaviour
+   room measured (not walked) on three narrower phones, 375, 360 and 320 (D937), for the evidence sheet. Written as the RIGHT behaviour
    (a PASS means correct). usage: node scripts/handpass/quals-row-walk.mjs [baseURL] [outDir] */
 import { createRequire } from 'node:module'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
@@ -24,9 +24,14 @@ async function open(dev, who) {
   p.on('pageerror', e => errors.push(e.message)); p.on('console', m => { if (m.type() === 'error') errors.push(m.text()) })
   await p.goto('/?fresh=1'); await p.fill('#luser', who); await p.fill('#lpass', who === 'ad' ? 'a' : 'us'); await p.click('#loginForm button[type=submit]')
   await p.waitForSelector('#vWeek .day', { state: 'attached' }); await p.waitForTimeout(300)
-  /* the Quals tab pressed as a person would: on a phone it is behind the menu, so the app's own page switch */
-  await p.evaluate(() => window.go('quals')); await p.waitForFunction(() => window.CURPAGE === 'quals'); await p.waitForSelector('#qtbl td.qname')
-  await p.evaluate(() => window.scrollTo(0, 0)); await p.waitForTimeout(200)
+  /* the Quals tab pressed as a person would: on a phone through the menu (☰), on a desktop its tab. Since D937 (16 Oct
+     26) the page must ARRIVE at its top — the script never scrolls it: a phone's week opens scrolled to its day */
+  const before = await p.evaluate(() => window.scrollY)
+  if (dev.isMobile) { await p.tap('#burger'); await p.waitForTimeout(300); await p.getByText('Quals', { exact: true }).locator('visible=true').first().tap() }
+  else await p.click('.nav a[data-page="quals"]')
+  await p.waitForFunction(() => window.CURPAGE === 'quals'); await p.waitForSelector('#qtbl td.qname'); await p.waitForTimeout(200)
+  const at = await p.evaluate(() => ({ y: window.scrollY, rowTop: Math.round(document.querySelector('.qbar').getBoundingClientRect().top), barBottom: Math.round((document.querySelector('.topbar') || document.querySelector('header')).getBoundingClientRect().bottom) }))
+  ok(`${dev.isMobile ? 'phone' : 'desk'} ${who}: Quals arrives at its top, the row in sight (D937)`, at.y === 0 && at.rowTop >= at.barBottom - 1, `the schedule was scrolled ${before}; ${JSON.stringify(at)}`)
   return { ctx, p }
 }
 /* the row, as it stands on screen: what is in it, each one's height, whether they share one line, whether anything
@@ -77,6 +82,8 @@ for (const [key, dev] of [['phone', PHONE], ['desk', DESK]]) {
   await press('#qEdit'); await p.waitForSelector('#qSave', { state: 'visible' }); await p.waitForTimeout(150)
   m = await row(p)
   ok(`${key} admin, editing: Save changes · Edit quals · Export · filter, one line at 36`, good(m) && m.ids.join() === 'qSave,qEditQuals,qExport,searchbox', JSON.stringify(m))
+  const saveSeen = await p.evaluate(() => [...document.querySelector('#qSave').children].filter(e => e.getBoundingClientRect().width > 1).map(e => e.textContent).join(' ').trim())
+  ok(`${key}: Save changes reads "${phone ? 'Save' : 'Save changes'}" (D937), its name still "Save changes"`, saveSeen === (phone ? 'Save' : 'Save changes') && await p.getByRole('button', { name: 'Save changes' }).count() === 1, saveSeen)
   await p.screenshot({ path: `${out}/${key}-admin-editing.png`, clip: { x: 0, y: 0, width: dev.viewport.width, height: phone ? 420 : 300 } })
   await press('#qEditQuals'); await p.waitForTimeout(200)
   m = await row(p)
@@ -96,7 +103,7 @@ for (const [key, dev] of [['phone', PHONE], ['desk', DESK]]) {
 }
 
 /* the room left on narrower phones than his (measured, for the sheet — not part of the PASS count) */
-for (const w of [375, 360]) {
+for (const w of [375, 360, 320]) {
   const { ctx, p } = await open({ ...PHONE, viewport: { width: w, height: 760 } }, 'ad')
   const s = { view: await row(p) }
   await p.tap('#qEdit'); await p.waitForTimeout(150); s.editing = await row(p)

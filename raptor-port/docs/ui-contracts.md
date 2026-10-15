@@ -4848,6 +4848,9 @@ of the row and Export reads "Export", its full words "Export to Excel" kept as i
 each button answers a finger (44). The paragraph that sat under the row ("Similar to a LoX…", with "Add qualifications",
 "Set which quals your squadron uses" and "Admin page") is deleted whole — the Admin tab is the way to Admin, and Archive,
 restore and delete are on Admin → Users (D310). Pins: `quals.test.tsx` "D935", `e2e/geometry.spec.ts` "D935".
+**And (owner D937, 16 Oct 26 — "As recommended"):** on a phone "Save changes" reads "Save" (its full words kept for a
+screen reader, as Export's), so the filter keeps room to type at 320 while editing; and the page opens at its top — the
+row in sight — however the Quals tab is opened, as the Inputs page does. Pins: `quals.test.tsx` "D937", `e2e/geometry.spec.ts` "D937".
 
 ## The Quals page's columns, sorting and View (owner, 5 Aug 26)
 

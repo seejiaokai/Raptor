@@ -4456,12 +4456,12 @@ test.describe('the frozen callsign column', () => {
    gone. Measured in each state an admin meets — not editing, editing, Edit quals on (its "✕ Edit quals" the widest) —
    at his phone's width, a narrow tablet's and a desktop's; nothing past the row's right edge, no sideways page scroll,
    and on a phone every button still answers a finger (44). */
-for (const [w, h] of [[390, 844], [600, 900], [1280, 800]]) test(`D935 Quals at ${w}: one row at 36, in every editing state`, async ({ page }) => {
+/* AND (owner D937, 16 Oct 26 — "As recommended"): on a phone "Save changes" reads "Save" as Export does, so at the
+   smallest phones (320) the filter keeps room to type while editing; and Quals opens at its top — the row in sight —
+   however it is opened (the arrival test below). */
+for (const [w, h] of [[320, 700], [390, 844], [600, 900], [1280, 800]]) test(`D935 D937 Quals at ${w}: one row at 36, in every editing state`, async ({ page }) => {
   await page.setViewportSize({ width: w, height: h })
   await login(page); await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
-  /* the app keeps the window's scroll from page to page, so Quals can arrive scrolled with its row under the top bar
-     (filed: [QUALS-ARRIVES-SCROLLED]); the row is measured where a person sees it, at the page's top */
-  await page.evaluate(() => window.scrollTo(0, 0))
   await expect(page.locator('#qDate')).toHaveCount(0)
   await expect(page.locator('.qhelp')).toHaveCount(0)
   const exp = page.getByRole('button', { name: 'Export to Excel' })
@@ -4497,7 +4497,26 @@ for (const [w, h] of [[390, 844], [600, 900], [1280, 800]]) test(`D935 Quals at 
   await check('editing', ['#qSave', '#qEditQuals', '#qExport'])
   await page.locator('#qEditQuals').click(); await expect(page.locator('#qEditQuals')).toHaveText('✕ Edit quals')
   await check('Edit quals on', ['#qSave', '#qEditQuals', '#qExport'])
+  const save = await page.locator('#qSave').evaluate(b => [...b.children].filter(e => e.getBoundingClientRect().width > 1).map(e => e.textContent).join(' ').trim())
+  expect(save, 'Save changes, as a person sees it').toBe(w <= 480 ? 'Save' : 'Save changes')
+  await expect(page.getByRole('button', { name: 'Save changes' }), 'its full words are still its name').toHaveCount(1)
   await page.locator('#qEditQuals').click(); await page.locator('#qSave').click()
+})
+
+/* QUALS OPENS AT ITS TOP (owner D937, 16 Oct 26): the app keeps the window's scroll from page to page, and a phone's
+   week opens scrolled to its day — so Quals used to arrive 120 px down, its row and the Viewing switch above the screen.
+   It now arrives at its top, as the Inputs page does, the row's buttons in reach (on top at their middle). */
+test('D937 a phone: arriving from a scrolled page shows Quals from its top, its row in reach', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await login(page)
+  await page.evaluate(() => window.scrollTo(0, 400))  /* window's: this file imports its own scrollTo helper */
+  expect(await page.evaluate(() => window.scrollY), 'the week is scrolled, as a phone leaves it').toBeGreaterThan(50)
+  await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+  expect(await page.evaluate(() => window.scrollY)).toBe(0)
+  for (const sel of ['#qEdit', '#qExport', '#qFilter', '#qViewP']) {
+    const onTop = await page.evaluate(sel => { const e = document.querySelector(sel)!, r = e.getBoundingClientRect(); const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !!hit && (hit === e || e.contains(hit)) }, sel)
+    expect(onTop, sel + ' is in reach').toBe(true)
+  }
 })
 
 /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26) — a quals COLUMN is a composite thing

@@ -25,11 +25,11 @@ the later merge keeps both (D78).
 - **After a compaction:** re-read this block and the two check sheets, `raptor-port/docs/handpass/2026-10-15-logic-medical.md` and `…/2026-10-16-quals-one-row.md`.
 - **Built (on this branch, pull request 519):** the Medical tab (D927); the Logic page (D928–D933; its passing note deleted and "Reset all" kept, D936); **Quals (D935, 16 Oct 26):** one row at 36 — Enable editing (or Save changes and Edit quals), Export, the filter — the date box gone, "Export" on a phone (≤ 480), the paragraph under the row deleted whole. Contract: `raptor-port/docs/ui-contracts.md` §The Quals page's one row.
 - **Checks (Quals):** tests red first (quals.test D935 3 new, 71/71; e2e geometry D935 3/3 at 390/600/1280; the older Quals browser tests 5/5); breaks 6/6; the walk `scripts/handpass/quals-row-walk.mjs` 21/21 (390 touch, 1280 mouse, admin and member); build and rulecheck green. A small follow-up on 519 (D902): GitHub's run is the full check — read it before "merge live". WALK tier, no model read.
-- **Put to him with Quals (the sheet's questions, pictures in `raptor-port/docs/img/handpass/2026-10-16-quals-one-row/look/`):** (1) at 320 wide while editing the filter has no room to type — recommended "Save" for "Save changes" on a phone; (2) `[QUALS-ARRIVES-SCROLLED]` — on a phone Quals opens 120 px down, its row above the screen (older; a small fix recommended). Neither is built.
-- **Not yet pushed (D151 — 519's run on the Quals push was running):** one notes-only commit after it — two traps written down (`gates-and-deploy.md`, `walk-scripts.md` §4) and skill observation 616. Push it once that run has finished. His picture page for Quals: https://claude.ai/artifact/8VYrasU4xPtFM9vfusVcZV.
+- **His answers, "As recommended" (D937), BUILT:** "Save" for "Save changes" on a phone (the filter keeps 75 px at 320 while editing); Quals opens at its top (`[QUALS-ARRIVES-SCROLLED]`). Tests red first, breaks 9/9, re-walk 30/30, the Quals browser tests 10/10 — the sheet's §9.
+- **His picture page for Quals:** https://claude.ai/artifact/8VYrasU4xPtFM9vfusVcZV (shows the two questions before his answers).
 - **Port note:** another checkout's preview holds 4173 on his PC — run a browser test here with `E2E_PORT=<free port>` or it tests that old build.
-- **Next:** his look at the preview and his answers to the two questions; then "merge live" of 519 once its run is green. Whatever he answers on (1) or (2) is a small change on this branch (or its own, his call), tests first.
-- **Rulings this chat:** none new (D935 was recorded before). Read by nobody yet: D929–D936's short lines against their full rows (D138).
+- **Next:** his look at the preview (Quals tab, on his iPhone); then "merge live" of 519 once GitHub's run of the last push is green.
+- **Rulings this chat:** D937 (people-accounts). Read by nobody yet: D929–D937's short lines against their full rows (D138).
 - **Owed, documents only (D29), carried:** the size overs — the How-we-work, Scheduler and Inputs rulings files over their markers, `plain-language.md`, `shipping.md`.
 <!-- /now -->
 

@@ -308,6 +308,11 @@ export function QualsPage() {
     setBackHl(id); notify()
   }
   /* [ONE-DOOR] (D305): the man's own "Check my quals" — his row, opened and outlined, once */
+  /* QUALS OPENS AT ITS TOP (owner D937, 16 Oct 26), as the Inputs page does (InputsPage.tsx): the app keeps the window's
+     scroll from page to page and a phone's week opens scrolled to its day, so Quals arrived 120 px down with its row of
+     buttons and the Viewing switch above the screen. This page mounts on each arrival. Only where the window IS
+     scrolled, so a layout-less test environment is never asked to scroll. */
+  useEffect(() => { if (window.scrollY) window.scrollTo(0, 0) }, [])
   useEffect(() => {
     if (!QUALSFOCUS) return
     const id = QUALSFOCUS
@@ -695,7 +700,10 @@ export function QualsPage() {
       <div className="qbar">
         <button className="abtn primary" id="qEdit" hidden={qEditing} onClick={() => setEditing(true)}>Enable editing</button>
         <button className="abtn" id="qSave" hidden={!qEditing}
-          onClick={() => { setEditing(false); setQualsEdit(false); setArmDel(''); HOOKS.toast('Quals saved') }}>Save changes</button>
+          onClick={() => { setEditing(false); setQualsEdit(false); setArmDel(''); HOOKS.toast('Quals saved') }}>
+          {/* "Save" on a phone (owner D937, 16 Oct 26), as Export below: on the smallest phones the row ran out of room
+              while editing and the filter was left its magnifier alone; the full words stay its name */}
+          <span className="qx-long">Save changes</span><span className="qx-short" aria-hidden="true">Save</span></button>
         {/* the second mode, inside edit mode and admin-only (owner, 5 Aug 26):
             which qualifications the LoX carries, and in which order. Off by
             default every time editing is switched on — reshaping the table is

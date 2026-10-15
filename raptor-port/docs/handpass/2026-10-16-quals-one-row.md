@@ -6,6 +6,7 @@ https://claude.ai/artifact/QZqDmvnF4esm4zaixiNgTA) and answered "1-4 as recommen
 `docs/img/handpass/2026-10-16-quals-one-row/` (the walk's), its `look/` folder (marked, for his look).
 
 ## Questions waiting for him
+**ANSWERED 16 Oct 26 — "As recommended" (D937): both built on this branch, tests first — see §9.**
 1. **The narrowest phones, while editing (the design guide §3: "if shorter words still do not fit, the layout is drawn
    and put to him").** At 320 wide (the smallest iPhones), with Enable editing pressed, the filter shrinks to its
    magnifier alone — the row stays one row, but there is no room to type a name. At 360 it keeps 63–77 px, at 375
@@ -85,4 +86,17 @@ The row at 600 is carried by the browser test (the same controls and route as 39
 own letters (his phone, Apple's font) are wider than Windows' — the room left at 390 (93 px at the tightest) leaves a
 margin; his look on his phone is the proof.
 
-Walk: Quals' row — 21/21 on the served build (390 touch, 1280 mouse, admin and member), room measured at 375/360/320, e2e 3/3 at 390/600/1280, breaks 6/6; two questions put to him with pictures.
+## 9. His answers (D937 — "As recommended", 16 Oct 26), built and re-walked
+- **"Save" on a phone:** "Save changes" carries its full words (kept as its name) and "Save" shown at ≤ 480, as Export.
+  The filter's room while editing at 320 is now 75–89 px (it was 23–37); 360: 115–129; 375: 130–144.
+- **Quals opens at its top:** one arrival effect in `QualsPage.tsx`, as `InputsPage.tsx` has (the page mounts on each
+  arrival). Arriving by the phone's menu from a week scrolled 120 px now lands at 0, the row right under the top bar.
+- **Tests first:** `quals.test.tsx` "D937" (red, then 72/72); `e2e/geometry.spec.ts` "D935 D937" now at 320 too and no
+  longer scrolls the page itself, plus "D937 a phone: arriving from a scrolled page…" — five red on the old build, then
+  green; the Quals browser tests with the older ones **10/10**. (The first red run of the arrival test failed on the
+  test's own slip — it called this file's own scroll helper — so its red is proved by the break below instead.)
+- **Breaks:** unit 3 of 3, browser 6 of 6 (two new: the arrival scroll removed — 4 tests went red; "Save" not shown).
+- **Re-walk** (`rewalk-d937/`, the walk now arriving through the real menu and never scrolling the page itself):
+  **30 of 30 PASS**, no page errors.
+
+Walk: Quals' row — 21/21, then after D937 30/30 on the served build (390 touch, 1280 mouse, admin and member, arriving through the menu), room measured at 375/360/320, e2e 10/10 at 320/390/600/1280, breaks 9/9; his two answers built.

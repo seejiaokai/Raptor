@@ -1147,6 +1147,17 @@ describe('D935 — Quals: one row, no paragraph under it', () => {
     for (const id of ['#qAddQual', '#qUses', '#qAdminLink']) expect($(id), id).toBeFalsy()
     expect(host.textContent).not.toMatch(/Similar to a LoX|integrated with the board|Archive, restore and delete are on/)
   })
+  /* owner D937, 16 Oct 26 ("As recommended"): on a phone "Save changes" reads "Save" too, so the filter keeps room to
+     type on the smallest phones while editing; the full words stay its name for a screen reader */
+  it('D937: Save changes keeps its full words for a screen reader, and has a short form for a phone', async () => {
+    await click($('#qEdit'))
+    const b = $('#qSave')
+    expect(b.querySelector('.qx-long')!.textContent).toBe('Save changes')
+    expect(b.querySelector('.qx-short')!.textContent).toBe('Save')
+    expect(b.querySelector('.qx-short')!.getAttribute('aria-hidden'), 'read once, not twice').toBe('true')
+    await click(b)
+    expect($('#qEdit'), 'pressing it still ends editing').toBeTruthy()
+  })
   it('nothing on the Quals page speaks of the build (N33, D837 — kept)', () => {
     expect(host.textContent).not.toMatch(/Django|full build/i)
   })
