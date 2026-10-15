@@ -34,7 +34,7 @@ fix to behaviour, a test, a comment) — the skill's detector already runs after
    beside a button that already waits, small print on how the app works where the answers already say what each does, a hint
    that reads the same on something opened many times a day — is named in every look and recommended for deletion, never
    deleted by the look: put to him with its picture and any fact that would leave the screen with it; never a warning, a
-   refusal's reason, an error's remedy or the Legend (D846; the wording approved, D847); how a row is edited on a scheduler's working screen is not kept as a hint at all (§9, lesson 1, D938); feedback is designed into the screen first — a thing
+   refusal's reason, an error's remedy or the Legend (D846; the wording approved, D847; whole again since his first lesson was struck, D942); feedback is designed into the screen first — a thing
    added shows in view wearing the Scheduler Board's just-added mark, a changed value shows changed, a removed thing is gone —
    and a passing note is raised only where the screen does not show that it happened (out of view, outside the app, later, or
    nothing changed), where the press did more or less than he would expect of it (something he did not touch changed, a credit

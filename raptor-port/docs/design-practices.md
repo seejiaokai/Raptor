@@ -117,8 +117,7 @@ as it stands.
      the screen reports are not hints.
   **Never a delete candidate:** a warning of what a press will cost ("No warning is dropped to save words", below),
   above all a consequence he cannot see on the screen and cannot take back; why a press was refused, and the way to
-  put an error right; an instruction for a gesture nothing on screen suggests (but not how a row is edited on a
-  scheduler's working screen — §9, lesson 1); the word that tells two like controls
+  put an error right; an instruction for a gesture nothing on screen suggests (whole again since D942); the word that tells two like controls
   apart; what a colour or a mark means (the Legend); and text he opens in order to read how the app works (a "How this
   works" fold, the Logic page). **Every look names its delete candidates (§8), and a deletion is still put to him
   first, never made by the look:** the text, its picture with and without it, every fact (if any) that would leave the
@@ -650,11 +649,7 @@ state nobody drew.
 he may strike or change any. Newest first. Where a lesson meets a general rule above, the lesson wins, and that rule
 points here.*
 
-1. **16 Oct 26 — D938 (the words pass, round 1).** A scheduler's working screen carries no hint on how a row is edited;
-   such a hint is deleted, not moved. And a legend holds marks and what each means, not a line of plain words with no
-   mark or label. *It narrows §1's "never a
-   delete candidate: an instruction for a gesture nothing on screen suggests" — that no longer covers how a row is edited
-   on a scheduler's working screen.*
+*Lesson 1 (16 Oct 26, D938 — "a scheduler's working screen carries no hint on how a row is edited…") was struck by him the same day: "Disregard this lesson" (D942). The list is empty until his next design correction.*
 
 ## Where each piece came from
 

@@ -17,8 +17,8 @@ Leave War's event sheet) and D646 ("How this works" made shorter).
 16 Oct 26 — "1-5 as recommended").** The board's panel names carry no subtitle (a folded Personal Inputs keeps its count:
 "3 inputs · 3 on programme ⌄"); a day's issues bar and the board's say the count and the caret, no "tap to review"; SANS
 Avail says nothing after its name; a fold shows its caret only, no "show", "hide" or "by wave · close"; the editing hint
-of Personal Inputs and Unavailable is gone from both pages, NOT moved into the Legend (D938 — a scheduler learns it once;
-a legend holds marks, not plain words); the removed-input note reads "A removed input flags nothing until accepted again.
+of Personal Inputs and Unavailable is gone from both pages, NOT moved into the Legend (D938; its point is not a
+general lesson — D942); the removed-input note reads "A removed input flags nothing until accepted again.
 Delete it here if it should go entirely."; the empty Amendments box reads "No amendments published yet." The rounds and
 their pictures: `superpowers/specs/2026-10-16-words-pass.md`.
 

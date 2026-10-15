@@ -42,3 +42,7 @@ or without his word on each lesson, and who reads it — is put to him before an
 ## Round 2 — next
 
 View-only Sched and the schedule's remaining lines: the next-week peek's "click a day to load it", "No notes yet.", the doubled "accepted" on each Personal Inputs row, the crew panel's "Placeholders · drag in" (named under D852 with round 1, picture `…/r1/desk-crew-dragin.png`).
+
+## Round 1b — his notes on the preview (16 Oct 26)
+
+**D942:** "Disregard this lesson" — lesson 1 struck from the guide's §9; D938's removal of the editing hint stands, for those lines only. **D943:** a short line beside the Ground Programme's name saying how to take an input off (Undo on its Personal Inputs row) — drawn first. **D944:** on a phone the board's Personal Inputs and Unavailable take one line less — drawn first. And his question (not a ruling): why the board's wave header carries "In-time / Rally 16:20 · 4 ac" — it is the wave's earliest report time and its aircraft count (`ui/html.ts waveHeadBoard`); the time is also the Available crew band's edge ("1ST WAVE AM–16:20") and the lines below show it.
