@@ -21,10 +21,11 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/trk-reorder-finger-drag -->
-### `claude/trk-reorder-finger-drag` — the tidy after 517 DONE; `[TRK-REORDER-FINGER-DRAG]` (D922) DRAWN and PUT TO HIM — waiting for his three answers, nothing built — written 15 Oct 26 — verify before use
-- **Drawn:** https://claude.ai/artifact/8mNLc9PU5u2ME2C4BvNosu — the grip ⠿, the mouse's look the same, delete "Drag a row, or use ▲/▼." (the backlog item has the readings and picks). On his answers: record them, build, WALK check.
-- **The tidy (done):** 517 live; `[INPUT-NEW-DEFAULTS]` archived; its chat's block removed. Still owed from it, documents only (D29): sizes OVER — the How-we-work and Inputs rulings files over their markers, `plain-language.md` and `shipping.md` a few lines over.
-- **Now:** the finger drag for the Tracker's ⇅ Reorder rows drawn on the real app and put to him (D853, D921); build only on his word, the design guide's §5a (D895); WALK check. Then `[OIL-CONFIRM-DAYGRID]` (D923), its own job.
+### `claude/trk-reorder-finger-drag` — THE NIGHT OF 15 OCT 26 (an hour, /overnight, his "Go") — job 1 `[TRK-REORDER-FINGER-DRAG]` (D922, D924) BUILT, WALKED, READ, WHOLLY GREEN — written 15 Oct 26 — verify before use
+- **After a compaction:** re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time.
+- **His selection (in order):** (1) finish `[TRK-REORDER-FINGER-DRAG]` — this branch; (2) `[GUIDE-ONE-ROW]` (D911) — the wording drafted, one fresh reader, for his approval; nothing in the app; (3) `[MEDICAL-ONE-ROW]` (D912) — the picture on the real app; nothing in the app. (2) and (3) on `claude/one-row-guide-medical`, cut from `main`. Then, his message while the night started (D925): the Logic page's mock-up with the design skill, if time allows. Questions waiting for him: none yet.
+- **Job 1 DONE:** the rows drag by the ⠿ grip on a phone and anywhere on the row with a mouse — the lift ring, one landing line a gap, the landing flash; the drag hint deleted; the browser's own drag gone (`tracker/components/Modals.jsx`, `tracker/tracker.css`). The check: `raptor-port/docs/handpass/2026-10-15-trk-reorder-drag.md` — walk 29/29 + 30/30 and the re-walk; 13 break tests caught; the code read's four minor findings fixed red first, the fixes read clean; the whole gate set green under the lock. Drawn first: https://claude.ai/artifact/8mNLc9PU5u2ME2C4BvNosu. **Next:** his iPhone look (the sheet's §10 card) and "merge live".
+- **Rulings this chat:** D924 (his answers), D925 (the Logic page is for its reader — `scheduler.md`). **Owed, documents only (D29):** the four size overs found at the start (How-we-work and Inputs rulings files, `plain-language.md`, `shipping.md`).
 <!-- /now -->
 
 ## Next, in order

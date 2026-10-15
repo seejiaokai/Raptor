@@ -67,12 +67,19 @@ row and carries nothing; a finger on a row's name carries nothing (phone); Escap
 order, the window closes; the crew list (18 rows) held at its foot runs down, still one line, the row lands 18th; a finger on the
 names scrolls the list (phone).
 
+**The re-walk** on the fixed build (`70f2adbdd`), the same script into
+`docs/img/handpass/2026-10-15-trk-reorder-drag/rewalk/`: **desk 29/29, phone 30/30**, no error.
+
 The walk script's own faults, fixed in the script: it picked the same roster person sixteen times (one added) — now a
 different one each time.
 
 ## 6. Break tests
 
-To be run: the drag's three wires — the grip's handler, the one-line-a-gap step, the landing mark.
+`node scripts/handpass/breaks.mjs scripts/handpass/breaks/trd.json` — **13 of 13 caught**, every file put back: the grip takes
+no finger; one line a gap undone; no landing mark; a finger anywhere on the row takes it; Escape left to the window; the edge
+scroll not fed by the pointer; the old hint back; and, for the code read's fixes, a second pointer's moves, a second pointer's
+lift, a grip taken while a mouse press waits, a buttonless mouse move, the window's blur ignored, the 4px threshold removed.
+Not breakable in jsdom: F3's iOS selection rules (CSS only a real iPhone shows) — on his look card.
 
 ## 7. What was NOT walked, and why
 
@@ -83,12 +90,36 @@ To be run: the drag's three wires — the grip's handler, the one-line-a-gap ste
 
 ## 8. The code read (D790 — one fresh, blind Opus reader)
 
-Running.
+**Round one** (the build commit `e8ccfee65`, given the rulings and the state table to fill; D56 in the brief) — four minor
+findings, each fixed red first in `70f2adbdd`:
+
+| # | What a person meets | Fix | Test |
+|---|---|---|---|
+| F1 | A second finger (or the mouse) took over a finger's carry — its lift dropped the row; a finger on a grip while a mouse press waited started a second drag | every listener answers only the pointer that took the row; a waiting mouse press blocks a new drag | "a second pointer neither moves nor drops…", "a finger on a grip while a mouse press waits…" |
+| F2 | A mouse release the page never heard (the right button's menu, another program) left the row stuck to the mouse, and the next click — Save order's — dropped it there | a mouse move with no button held ends the carry; the window's blur ends a carry or a waiting press | "a mouse whose release the page never heard…" |
+| F3 | On an iPhone a finger held on the grip could start text selection and cancel the touch | `-webkit-user-select:none; -webkit-touch-callout:none` on the rows | none possible in jsdom — his iPhone |
+| F4 | The 4px mouse threshold and the in-place flash were not proved | tests added; a test whose last line was always true tightened | "a mouse press … 3px is a click…", "let go on its own place…" |
+
+Sound, by the reader: the drop's arithmetic both ways, one line a gap, Escape heard before the Tracker's own, the unmount
+cleanup, the touch's capture to a grip that stays on the page, the edge scroll, the Restore rows untouched, the landing slot.
+
+**Round two** (the fix commit `70f2adbdd` alone, a second fresh Opus reader — §5 "a fix is new code"): **no defect found.** Checked: the drag's first move handed over directly (the old synthetic move would now be refused by its pointer id); every listener added has its removal on every path, unmount included; the waiting-press mark cannot stay set; `buttons` on a mouse across browsers (a finger or pen never meets the check); blur does not fire for focus moving inside the page; the iOS rules reach the grip. Its one note, not a finding: a release the page missed followed by a click with no move first would drop on the last line — it needs the pointer already resting on a button when the menu closes. The last round; nothing further carried.
 
 ## 9. The gates
 
-Running under the lock.
+The whole set under the lock, on the fixed code (`70f2adbdd`), 15 Oct 26: **unit PASS (444 s), build PASS, tfin PASS
+(728/0), e2e PASS (329 s), the Tracker smoke PASS (296 s), rulecheck PASS, docsize PASS** — wholly green. (A first run on the
+build commit was stopped part-way when the code read's findings came in; its result was never used.)
 
 ## 10. Closing lines
 
-To be written.
+**His look card (only his iPhone proves these):** (1) carry a row by its ⠿ grip in the Syllabus order window — the row
+ringed, one blue line in the gap, the row flashing where it lands; (2) hold the grip a moment before moving — no blue
+text selection or copy bubble (F3); (3) a finger on a row's name scrolls a long crew list; (4) Save order, and the Syllabus
+dropdown shows the new order. On the desktop: a mouse drag shows the same ring and line, never a box.
+
+`Walk:` WALK tier — the host, `trd-walk.mjs` on the built bundle, desktop by mouse 29/29 and phone by touch 30/30, re-walked
+29/29 and 30/30 after the fixes; pictures `docs/img/handpass/2026-10-15-trk-reorder-drag/walk/` and `…/rewalk/`, opened.
+
+`Reads:` one fresh blind Opus read (four minor, fixed red first), one fresh Opus read of the fixes (no defect). No ChatGPT
+reader (out — D790): on `[NO-ASTRA-LIST]`.
