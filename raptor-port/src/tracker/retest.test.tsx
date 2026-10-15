@@ -981,7 +981,7 @@ describe('D900 — the Reorder list scrolls at its foot under a carried row', ()
          own drag — the same claim, driven both ways */
       const efp = document.elementFromPoint
       document.elementFromPoint = () => row
-      const ev = (type: string, y: number, on: EventTarget, kind: string) => on.dispatchEvent(new PointerEvent(type, { bubbles: true, cancelable: true, clientX: 50, clientY: y, pointerId: 3, pointerType: kind, isPrimary: true, button: 0 }))
+      const ev = (type: string, y: number, on: EventTarget, kind: string) => on.dispatchEvent(new PointerEvent(type, { bubbles: true, cancelable: true, clientX: 50, clientY: y, pointerId: 3, pointerType: kind, isPrimary: true, button: 0, buttons: type === 'pointercancel' ? 0 : 1 }))
       try {
         for (const kind of ['mouse', 'touch']) {
           list.scrollTop = 0

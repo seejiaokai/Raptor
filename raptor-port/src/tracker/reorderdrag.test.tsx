@@ -11,7 +11,7 @@ import { createRoot } from 'react-dom/client'
 import * as core from './app/core.js'
 import { OrdModal } from './components/Modals.jsx'
 import { initStore, resetSession } from '../state/store'
-import { markLand, pendingLand } from '../ui/lift'
+import { markLand } from '../ui/lift'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 const C: any = core
@@ -60,7 +60,7 @@ function layOut() {
   }
 }
 const ptr = (type: string, y: number, kind: 'touch' | 'mouse', x = 20) =>
-  new PointerEvent(type, { bubbles: true, cancelable: true, clientX: x, clientY: y, pointerId: kind === 'touch' ? 7 : 1, pointerType: kind, isPrimary: true, button: 0 })
+  new PointerEvent(type, { bubbles: true, cancelable: true, clientX: x, clientY: y, pointerId: kind === 'touch' ? 7 : 1, pointerType: kind, isPrimary: true, button: 0, buttons: type === 'pointerup' || type === 'pointercancel' ? 0 : 1 })
 const win = async (type: string, y: number, kind: 'touch' | 'mouse') => { await act(async () => { window.dispatchEvent(ptr(type, y, kind)) }) }
 const yOf = (i: number, frac: number) => TOP + i * ROW_H + ROW_H * frac
 async function open(mode: 'syllabus' | 'course' | 'crew' = 'syllabus') {
@@ -182,7 +182,7 @@ describe('D922 / D924 — a finger drags a row by its grip', () => {
     await win('pointerup', yOf(2, .25), 'touch')
     const landed = rows().find(r => r.querySelector('.onm')!.textContent === before[0])!
     expect(landed.classList.contains('lift-land'), 'it flashes').toBe(true)
-    expect(pendingLand() === null || landed.classList.contains('lift-land')).toBe(true)
+    expect(rows().filter(r => r.classList.contains('lift-land')).length, 'and only it').toBe(1)
   })
 })
 
@@ -208,6 +208,69 @@ describe('D924 — a mouse drag wears the same look', () => {
     expect(rows().some(r => r.classList.contains('dragging')), 'a click is no drag').toBe(false)
     await act(async () => { down.click() })
     expect(names()).toEqual([before[1], before[0], ...before.slice(2)])
+  })
+  it('a mouse press on a row that moves 3px is a click; past 4px it is a carry (the code read, F4)', async () => {
+    await open()
+    const before = names()
+    const name = rows()[0].querySelector('.onm') as HTMLElement
+    const y0 = yOf(0, .5)
+    await act(async () => { name.dispatchEvent(ptr('pointerdown', y0, 'mouse')) })
+    await act(async () => { window.dispatchEvent(new PointerEvent('pointermove', { clientX: 20, clientY: y0 + 3, pointerId: 1, pointerType: 'mouse', buttons: 1 })) })
+    expect(rows().some(r => r.classList.contains('dragging')), '3px: not yet').toBe(false)
+    await act(async () => { window.dispatchEvent(new PointerEvent('pointermove', { clientX: 20, clientY: y0 + 6, pointerId: 1, pointerType: 'mouse', buttons: 1 })) })
+    expect(rows()[0].classList.contains('dragging'), '6px: carried').toBe(true)
+    await win('pointercancel', y0, 'mouse')
+    expect(names()).toEqual(before)
+  })
+  it('a second pointer neither moves nor drops the row a finger is carrying (the code read, F1)', async () => {
+    await open()
+    const before = names()
+    await fingerTo(0, 2, .25)                                   // the first finger (id 7) over the third row
+    const other = (type: string, y: number) => window.dispatchEvent(new PointerEvent(type, { bubbles: true, clientX: 20, clientY: y, pointerId: 9, pointerType: 'touch', isPrimary: false }))
+    await act(async () => { other('pointermove', yOf(3, .8)) })
+    expect(lined(), 'a second finger does not pull the line').toEqual([rows()[2]])
+    await act(async () => { other('pointerup', yOf(3, .8)) })
+    expect(rows()[0].classList.contains('dragging'), 'its lift does not drop the carried row').toBe(true)
+    await act(async () => { other('pointercancel', yOf(3, .8)) })
+    expect(rows()[0].classList.contains('dragging'), 'nor does its cancel').toBe(true)
+    await win('pointerup', yOf(2, .25), 'touch')
+    expect(names(), 'the first finger still lands it').toEqual([before[1], before[0], before[2], ...before.slice(3)])
+  })
+  it('a finger on a grip while a mouse press waits under its 4px starts nothing (the code read, F1)', async () => {
+    await open()
+    const name = rows()[0].querySelector('.onm') as HTMLElement
+    await act(async () => { name.dispatchEvent(ptr('pointerdown', yOf(0, .5), 'mouse')) })
+    const grip = rows()[2].querySelector('.grip') as HTMLElement
+    await act(async () => { grip.dispatchEvent(ptr('pointerdown', yOf(2, .5), 'touch')) })
+    expect(rows().some(r => r.classList.contains('dragging')), 'no second drag beside the waiting press').toBe(false)
+    await win('pointerup', yOf(0, .5), 'mouse')
+    await win('pointerup', yOf(2, .5), 'touch')
+  })
+  it('a mouse whose release the page never heard (a menu, another program) ends the carry — the next click drops nothing (the code read, F2)', async () => {
+    await open()
+    const before = names()
+    const name = rows()[0].querySelector('.onm') as HTMLElement
+    await act(async () => { name.dispatchEvent(ptr('pointerdown', yOf(0, .5), 'mouse')) })
+    await act(async () => { window.dispatchEvent(new PointerEvent('pointermove', { clientX: 20, clientY: yOf(2, .25), pointerId: 1, pointerType: 'mouse', buttons: 1 })) })
+    expect(rows()[0].classList.contains('dragging')).toBe(true)
+    /* the button came up where the page could not hear it: the next move has no button held */
+    await act(async () => { window.dispatchEvent(new PointerEvent('pointermove', { clientX: 20, clientY: yOf(3, .25), pointerId: 1, pointerType: 'mouse', buttons: 0 })) })
+    expect(rows().some(r => r.classList.contains('dragging') || r.classList.contains('dragover')), 'the carry ended').toBe(false)
+    await win('pointerup', yOf(3, .25), 'mouse')
+    expect(names(), 'and nothing moved').toEqual(before)
+    /* the window losing focus mid-carry ends it too */
+    await act(async () => { name.dispatchEvent(ptr('pointerdown', yOf(0, .5), 'mouse')) })
+    await act(async () => { window.dispatchEvent(new PointerEvent('pointermove', { clientX: 20, clientY: yOf(2, .25), pointerId: 1, pointerType: 'mouse', buttons: 1 })) })
+    await act(async () => { window.dispatchEvent(new Event('blur')) })
+    expect(rows().some(r => r.classList.contains('dragging')), 'blur ended it').toBe(false)
+    await win('pointerup', yOf(2, .25), 'mouse')
+    expect(names()).toEqual(before)
+  })
+  it('let go on its own place, the row flashes where it stands (the code read, F4)', async () => {
+    await open()
+    await fingerTo(1, 1, .3)
+    await win('pointerup', yOf(1, .3), 'touch')
+    expect(rows()[1].classList.contains('lift-land')).toBe(true)
   })
   it('a drop is not saved until Save order — Cancel leaves the dropdown as it was', async () => {
     await open()

@@ -1,37 +1,132 @@
 [
-  { "n": 1, "name": "the grip takes no finger (gripDown does nothing)",
-    "file": "src/tracker/components/Modals.jsx",
-    "find": "    if (e.pointerType === 'mouse' || dragEnd.current) return;     // a mouse is the row's own handler below",
-    "put": "    return;",
-    "tests": ["src/tracker/reorderdrag.test.tsx"] },
-  { "n": 2, "name": "one line a gap undone: a lower half lines its own row's foot",
-    "file": "src/tracker/components/Modals.jsx",
-    "find": "        else { target = j; line = j < n ? { i: j, after: false } : { i: n - 1, after: true }; }",
-    "put": "        else { target = j; line = lower ? { i, after: true } : { i, after: false }; }",
-    "tests": ["src/tracker/reorderdrag.test.tsx"] },
-  { "n": 3, "name": "no landing mark at the drop",
-    "file": "src/tracker/components/Modals.jsx",
-    "find": "      markLand(`#ordList .ordrow:nth-child(${to + 1})`);",
-    "put": "      void to;",
-    "tests": ["src/tracker/reorderdrag.test.tsx"] },
-  { "n": 4, "name": "a finger anywhere on the row takes it (the row handler accepts touch)",
-    "file": "src/tracker/components/Modals.jsx",
-    "find": "    if (e.pointerType !== 'mouse' || (e.button != null && e.button !== 0) || dragEnd.current) return;",
-    "put": "    if ((e.button != null && e.button !== 0) || dragEnd.current) return;",
-    "tests": ["src/tracker/reorderdrag.test.tsx"] },
-  { "n": 5, "name": "Escape left to the window (no capture listener)",
-    "file": "src/tracker/components/Modals.jsx",
-    "find": "    window.addEventListener('keydown', key, true);",
-    "put": "",
-    "tests": ["src/tracker/reorderdrag.test.tsx"] },
-  { "n": 6, "name": "the edge scroll not fed by the pointer",
-    "file": "src/tracker/components/Modals.jsx",
-    "find": "    const move = ev => { px = ev.clientX; py = ev.clientY; if (auto) auto.point(px, py); hoverAt(px, py); };",
-    "put": "    const move = ev => { px = ev.clientX; py = ev.clientY; hoverAt(px, py); };",
-    "tests": ["src/tracker/retest.test.tsx"] },
-  { "n": 7, "name": "the old hint back in the syllabus note",
-    "file": "src/tracker/components/Modals.jsx",
-    "find": "    note: 'This sets the order of the Syllabus dropdown for every course.',",
-    "put": "    note: 'Drag a row, or use ▲/▼. This sets the order of the Syllabus dropdown for every course.',",
-    "tests": ["src/tracker/reorderdrag.test.tsx"] }
+ {
+  "n": 1,
+  "name": "the grip takes no finger (gripDown does nothing)",
+  "file": "src/tracker/components/Modals.jsx",
+  "find": "    if (e.pointerType === 'mouse' || dragEnd.current || pressEnd.current) return;   // a mouse is the row's own handler below",
+  "put": "    return;",
+  "tests": [
+   "src/tracker/reorderdrag.test.tsx"
+  ]
+ },
+ {
+  "n": 2,
+  "name": "one line a gap undone: a lower half lines its own row's foot",
+  "file": "src/tracker/components/Modals.jsx",
+  "find": "        else { target = j; line = j < n ? { i: j, after: false } : { i: n - 1, after: true }; }",
+  "put": "        else { target = j; line = lower ? { i, after: true } : { i, after: false }; }",
+  "tests": [
+   "src/tracker/reorderdrag.test.tsx"
+  ]
+ },
+ {
+  "n": 3,
+  "name": "no landing mark at the drop",
+  "file": "src/tracker/components/Modals.jsx",
+  "find": "      markLand(`#ordList .ordrow:nth-child(${to + 1})`);",
+  "put": "      void to;",
+  "tests": [
+   "src/tracker/reorderdrag.test.tsx"
+  ]
+ },
+ {
+  "n": 4,
+  "name": "a finger anywhere on the row takes it (the row handler accepts touch)",
+  "file": "src/tracker/components/Modals.jsx",
+  "find": "    if (e.pointerType !== 'mouse' || (e.button != null && e.button !== 0) || dragEnd.current || pressEnd.current) return;",
+  "put": "    if ((e.button != null && e.button !== 0) || dragEnd.current || pressEnd.current) return;",
+  "tests": [
+   "src/tracker/reorderdrag.test.tsx"
+  ]
+ },
+ {
+  "n": 5,
+  "name": "Escape left to the window (no capture listener)",
+  "file": "src/tracker/components/Modals.jsx",
+  "find": "    window.addEventListener('keydown', key, true);",
+  "put": "",
+  "tests": [
+   "src/tracker/reorderdrag.test.tsx"
+  ]
+ },
+ {
+  "n": 6,
+  "name": "the edge scroll not fed by the pointer",
+  "file": "src/tracker/components/Modals.jsx",
+  "find": "      px = ev.clientX; py = ev.clientY; if (auto) auto.point(px, py); hoverAt(px, py);",
+  "put": "      px = ev.clientX; py = ev.clientY; hoverAt(px, py);",
+  "tests": [
+   "src/tracker/retest.test.tsx"
+  ]
+ },
+ {
+  "n": 7,
+  "name": "the old hint back in the syllabus note",
+  "file": "src/tracker/components/Modals.jsx",
+  "find": "    note: 'This sets the order of the Syllabus dropdown for every course.',",
+  "put": "    note: 'Drag a row, or use ▲/▼. This sets the order of the Syllabus dropdown for every course.',",
+  "tests": [
+   "src/tracker/reorderdrag.test.tsx"
+  ]
+ },
+ {
+  "n": 8,
+  "name": "F1: a second pointer's moves drive the drag",
+  "file": "src/tracker/components/Modals.jsx",
+  "find": "      if (ev.pointerId !== pid) return;\n      /* A MOUSE RELEASE",
+  "put": "      /* A MOUSE RELEASE",
+  "tests": [
+   "src/tracker/reorderdrag.test.tsx"
+  ]
+ },
+ {
+  "n": 9,
+  "name": "F1: a second pointer's lift drops the row",
+  "file": "src/tracker/components/Modals.jsx",
+  "find": "    const up = ev => { if (ev.pointerId === pid) end(true); };",
+  "put": "    const up = ev => { end(true); };",
+  "tests": [
+   "src/tracker/reorderdrag.test.tsx"
+  ]
+ },
+ {
+  "n": 10,
+  "name": "F1: a grip takes a finger while a mouse press waits",
+  "file": "src/tracker/components/Modals.jsx",
+  "find": "    pressEnd.current = stop;",
+  "put": "",
+  "tests": [
+   "src/tracker/reorderdrag.test.tsx"
+  ]
+ },
+ {
+  "n": 11,
+  "name": "F2: a buttonless mouse move goes on carrying",
+  "file": "src/tracker/components/Modals.jsx",
+  "find": "      if (!touch && !(ev.buttons & 1)) { end(false); return; }",
+  "put": "",
+  "tests": [
+   "src/tracker/reorderdrag.test.tsx"
+  ]
+ },
+ {
+  "n": 12,
+  "name": "F2: the window's blur ignored",
+  "file": "src/tracker/components/Modals.jsx",
+  "find": "    window.addEventListener('blur', lost);",
+  "put": "",
+  "tests": [
+   "src/tracker/reorderdrag.test.tsx"
+  ]
+ },
+ {
+  "n": 13,
+  "name": "F4: the 4px threshold removed (a mouse press is a carry at once)",
+  "file": "src/tracker/components/Modals.jsx",
+  "find": "      if (Math.abs(ev.clientX - x0) <= 4 && Math.abs(ev.clientY - y0) <= 4) return;",
+  "put": "",
+  "tests": [
+   "src/tracker/reorderdrag.test.tsx"
+  ]
+ }
 ]

@@ -192,7 +192,9 @@ button:disabled:hover{border-color:var(--line)}
 #saBody{overflow:auto;padding:10px 14px}
 .saphase{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:12px 0 5px;border-bottom:1px solid var(--line);padding-bottom:3px}
 .sarow{display:grid;grid-template-columns:14px 1fr auto;gap:8px;align-items:start;padding:7px 0;border-bottom:1px dashed var(--line)}
-.ordrow{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line);background:var(--panel2);cursor:grab;user-select:none}
+/* -webkit-user-select and -webkit-touch-callout: a finger held on the grip must not start iOS's text selection or
+   its callout, which cancel the touch and drop the row back (the code read of 15 Oct 26, F3; matrix.css says why) */
+.ordrow{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line);background:var(--panel2);cursor:grab;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .ordrow:last-child{border-bottom:0}
 /* THE APP'S ONE DRAG LOOK (owner D922, D924; the design guide §5a), the Leave War ⚙ lists' numbers
    (bidpicker.css .set-grow): the carried row wears the shared lift ring, and ONE 2px landing line lies on

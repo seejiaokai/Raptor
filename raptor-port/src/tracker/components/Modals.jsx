@@ -341,10 +341,13 @@ function OrdModalInner({ mode }) {
   const [drag, setDrag] = useState(null);      // index of the row being carried
   const [over, setOver] = useState(null);      // { i, after } — the ONE row that wears the landing line
   const dragEnd = useRef(null);                // ends the drag in flight (a cancel), or null
-  useEffect(() => () => { if (dragEnd.current) dragEnd.current(false); }, []);
+  const pressEnd = useRef(null);               // ends a mouse press still under its 4px (not yet a drag), or null
+  useEffect(() => () => { if (dragEnd.current) dragEnd.current(false); if (pressEnd.current) pressEnd.current(); }, []);
   /* the moved row flashes where it landed (lift.ts — the mark is taken at the drop, painted once React has redrawn) */
   useLayoutEffect(() => { paintLand(); });
-  const beginDrag = (from, x0, y0, touch, rowEl) => {
+  /* ONE POINTER A DRAG (the code read of 15 Oct 26, F1): every listener answers only the pointer that took the row —
+     a second finger, or the mouse while a finger carries, neither moves the line nor drops the row. */
+  const beginDrag = (from, x0, y0, touch, rowEl, pid) => {
     const box = rowEl.parentElement;
     const n = box ? box.children.length : 0;
     /* where a release would put the row: before row j (j = n: after the last), 'self' for its own place, or null */
@@ -376,13 +379,20 @@ function OrdModalInner({ mode }) {
     const auto = box && box.scrollHeight > box.clientHeight + 1
       ? edgeAutoScroll({ from: rowEl, axis: 'y', touch, x: x0, y: y0, onScroll: () => hoverAt(px, py) })
       : null;
-    const move = ev => { px = ev.clientX; py = ev.clientY; if (auto) auto.point(px, py); hoverAt(px, py); };
+    const move = ev => {
+      if (ev.pointerId !== pid) return;
+      /* A MOUSE RELEASE THE PAGE NEVER HEARD (F2) — the right button's menu took it, or it came up in another program:
+         a move with no button held ends the carry, so the next click (Save order's, say) drops nothing */
+      if (!touch && !(ev.buttons & 1)) { end(false); return; }
+      px = ev.clientX; py = ev.clientY; if (auto) auto.point(px, py); hoverAt(px, py);
+    };
     const end = commit => {
       if (auto) auto.stop();
       window.removeEventListener('pointermove', move);
       window.removeEventListener('pointerup', up);
       window.removeEventListener('pointercancel', cancel);
       window.removeEventListener('keydown', key, true);
+      window.removeEventListener('blur', lost);
       dragEnd.current = null;
       setDrag(null); setOver(null);
       if (!commit || target == null) return;
@@ -392,38 +402,48 @@ function OrdModalInner({ mode }) {
       if (target === 'self') return;            // the drag's own classes coming off re-render, and that paints it
       setList(l => { const a = [...l]; const [m] = a.splice(from, 1); a.splice(to, 0, m); return a; });
     };
-    const up = () => end(true);
-    const cancel = () => end(false);
+    const up = ev => { if (ev.pointerId === pid) end(true); };
+    const cancel = ev => { if (ev.pointerId === pid) end(false); };
+    const lost = () => end(false);                // the window lost focus mid-carry (F2)
     /* Escape ends the drag, not the window (heard before the Tracker's own Escape, which would close it) */
     const key = ev => { if (ev.key === 'Escape') { ev.preventDefault(); ev.stopImmediatePropagation(); end(false); } };
     window.addEventListener('pointermove', move);
     window.addEventListener('pointerup', up);
     window.addEventListener('pointercancel', cancel);
     window.addEventListener('keydown', key, true);
+    window.addEventListener('blur', lost);
     dragEnd.current = end;
     hoverAt(x0, y0);
+    return move;
   };
   /* a finger (or a pen) on the grip takes the row at once; the grip's touch-action keeps the list from scrolling */
   const gripDown = (e, i) => {
-    if (e.pointerType === 'mouse' || dragEnd.current) return;     // a mouse is the row's own handler below
+    if (e.pointerType === 'mouse' || dragEnd.current || pressEnd.current) return;   // a mouse is the row's own handler below
     e.preventDefault(); e.stopPropagation();
-    beginDrag(i, e.clientX, e.clientY, true, e.currentTarget.closest('.ordrow'));
+    beginDrag(i, e.clientX, e.clientY, true, e.currentTarget.closest('.ordrow'), e.pointerId);
   };
   /* a mouse anywhere on the row but its buttons, once it has moved 4px (then that move is the drag's first) */
   const rowDown = (e, i) => {
-    if (e.pointerType !== 'mouse' || (e.button != null && e.button !== 0) || dragEnd.current) return;
+    if (e.pointerType !== 'mouse' || (e.button != null && e.button !== 0) || dragEnd.current || pressEnd.current) return;
     if (e.target.closest && e.target.closest('button')) return;
-    const rowEl = e.currentTarget, x0 = e.clientX, y0 = e.clientY;
-    const stop = () => { window.removeEventListener('pointermove', wait); window.removeEventListener('pointerup', stop); window.removeEventListener('pointercancel', stop); };
+    const rowEl = e.currentTarget, x0 = e.clientX, y0 = e.clientY, pid = e.pointerId;
+    const stop = () => {
+      window.removeEventListener('pointermove', wait); window.removeEventListener('pointerup', done); window.removeEventListener('pointercancel', done); window.removeEventListener('blur', stop);
+      pressEnd.current = null;
+    };
+    const done = ev => { if (ev.pointerId === pid) stop(); };
     const wait = ev => {
+      if (ev.pointerId !== pid) return;
+      if (!(ev.buttons & 1)) { stop(); return; }   // released where the page could not hear it (F2)
       if (Math.abs(ev.clientX - x0) <= 4 && Math.abs(ev.clientY - y0) <= 4) return;
       stop();
-      beginDrag(i, x0, y0, false, rowEl);
-      window.dispatchEvent(new PointerEvent('pointermove', { clientX: ev.clientX, clientY: ev.clientY, pointerType: 'mouse' }));
+      beginDrag(i, x0, y0, false, rowEl, pid)(ev);  // this move is the drag's first
     };
     window.addEventListener('pointermove', wait);
-    window.addEventListener('pointerup', stop);
-    window.addEventListener('pointercancel', stop);
+    window.addEventListener('pointerup', done);
+    window.addEventListener('pointercancel', done);
+    window.addEventListener('blur', stop);
+    pressEnd.current = stop;
   };
   /* What can come back: deleted built-in syllabi, and deleted courses (owner,
      23 Sep 26 — D128; their records were always kept). Crew has none — a
