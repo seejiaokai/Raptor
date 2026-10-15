@@ -537,6 +537,27 @@ describe('initCalDrag — the pointer machine', () => {
       } finally { off() }
     })
 
+    /* his find on his iPhone (15 Oct 26): Safari cancels the gone chip's pointer after a turn — set aside; the finger's
+       touch events carry the drag on and end it */
+    it('Safari: after a turn the gone chip\'s pointer cancel is set aside, and its touch end ends the drag', () => {
+      vi.useFakeTimers()
+      const { root, chip } = buildCalDom('safari2-row'); lendRect(root)
+      const turns: number[] = []
+      const off = initCalDrag(root, { onTap: () => {}, onTurn: d => { turns.push(d); chip.remove() } })
+      try {
+        chip.dispatchEvent(ptr('pointerdown', 10, 10, { kind: 'touch' }))
+        vi.advanceTimersByTime(200)
+        chip.dispatchEvent(ptr('pointermove', 345, 100, { kind: 'touch' }))
+        vi.advanceTimersByTime(TURN_HOLD)
+        expect(turns).toEqual([1])
+        chip.dispatchEvent(ptr('pointercancel', 345, 100, { kind: 'touch' }))
+        expect(document.body.classList.contains('ic-dragging'), 'still lifted').toBe(true)
+        const end = new Event('touchend', { bubbles: true }); Object.defineProperty(end, 'changedTouches', { value: [{ clientX: 175, clientY: 100 }] })
+        chip.dispatchEvent(end)
+        expect(document.body.classList.contains('ic-dragging'), 'the touch end ended it').toBe(false)
+      } finally { off() }
+    })
+
     it('a chip that does not lift never turns the month', () => {
       vi.useFakeTimers()
       const { root, chip } = buildCalDom('nolift-row'); lendRect(root)

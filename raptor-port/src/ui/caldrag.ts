@@ -32,7 +32,7 @@ import { INPUTS, idsOf, inpLabel } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { landOn, liftOn, markLand } from './lift'
-import { dayAtPoint, dayEl, heldOn, once } from './caldays'
+import { dayAtPoint, dayEl, heldOn, once, strayCancel } from './caldays'
 import { edgeTurn, TURN_SETTLE } from './edgescroll'
 
 /* drag.ts's own numbers, cited rather than re-derived (its tdArm/onPointerDown/
@@ -213,6 +213,9 @@ export function initCalDrag(root: HTMLElement, opts: {
     off: () => void,
   } | null = null
 
+  /** the chip the press landed on — Safari's cancel for it, once a turn has drawn it away, is set aside (caldays.ts strayCancel) */
+  let landed: Element | null = null
+
   function moveGhost(x: number, y: number) {
     if (!st || !st.ghost) return
     st.ghost.style.left = x + 'px'
@@ -328,7 +331,8 @@ export function initCalDrag(root: HTMLElement, opts: {
       ox: e.clientX, oy: e.clientY, gaveUp: false,
       turn: null, settle: 0, lx: e.clientX, ly: e.clientY, off: () => {},
     }
-    st.off = heldOn(e.target, { move: onPointerMove, up: onPointerUp, cancel: onPointerCancel, touchmove: onTouchMove })
+    st.off = heldOn(e.target, { move: onPointerMove, up: onPointerUp, cancel: onPointerCancel, touchmove: onTouchMove }, e.pointerType === 'mouse' ? undefined : e.pointerId)
+    landed = e.target as Element
     if (!st.mouse) st.timer = setTimeout(arm, HOLD)
     // mouse arms purely off movement, in onPointerMove below — no hold timer at all
   }
@@ -432,6 +436,7 @@ export function initCalDrag(root: HTMLElement, opts: {
 
   const onPointerCancel = once((e: PointerEvent) => {
     if (!st || e.pointerId !== st.pointerId) return
+    if (strayCancel(e, landed, st.mouse)) return
     clearGesture() // no commit — a cancelled gesture (an OS interruption, an unexpected second touch) leaves the model untouched
   })
 

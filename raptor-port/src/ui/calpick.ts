@@ -24,7 +24,7 @@
    the point, so a run drawn across a bar of the Inputs month carries on), never of the event's target: a captured or a
    touch pointer keeps reporting the element it went down on. Presses that begin on a control inside a date are that
    control's own. */
-import { dayAtPoint, heldOn, once } from './caldays'
+import { dayAtPoint, heldOn, once, strayCancel } from './caldays'
 import { edgeTurn, TURN_SETTLE } from './edgescroll'
 
 /** how long a finger is held still before a pick begins — past a deliberate tap, short of a wait */
@@ -55,6 +55,8 @@ export function initCalPick(el: HTMLElement, o: CalPick): () => void {
     /** the landed-on date's own ears for this press (caldays.ts heldOn — Safari, after a turn) */
     off: () => void } | null = null
   let retire: (() => void) | null = null
+  /** the date the press landed on — Safari's cancel for it, once a turn has drawn it away, is set aside (caldays.ts strayCancel) */
+  let landed: Element | null = null
 
   const dayAt = (x: number, y: number, fallback: EventTarget | null): string | null => dayAtPoint(el, x, y, fallback)
   const run = (s: NonNullable<typeof st>) => (s.iso <= s.end ? { a: s.iso, b: s.end } : { a: s.end, b: s.iso })
@@ -116,7 +118,8 @@ export function initCalPick(el: HTMLElement, o: CalPick): () => void {
       else rec.timer = setTimeout(() => { if (st === rec) { rec.armed = true; startTurn(rec); o.onPicking(run(rec)) } }, PICK_HOLD)
     }
     st = rec
-    rec.off = heldOn(t, { move: onMove, up: onUp, cancel: onCancel, touchmove: onTouchMove })
+    rec.off = heldOn(t, { move: onMove, up: onUp, cancel: onCancel, touchmove: onTouchMove }, mouse ? undefined : e.pointerId)
+    landed = t
   }
   const onMove = once((e: PointerEvent) => {
     if (!st || e.pointerId !== st.id) return
@@ -152,6 +155,7 @@ export function initCalPick(el: HTMLElement, o: CalPick): () => void {
   })
   const onCancel = once((e: PointerEvent) => {
     if (!st || e.pointerId !== st.id) return
+    if (strayCancel(e, landed, st.mouse)) return
     const lit = st.armed
     drop()
     if (lit) o.onPicking(null)

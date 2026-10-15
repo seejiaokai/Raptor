@@ -175,6 +175,40 @@ describe('a run of days carried across a month\'s end', () => {
     expect(turns, 'let go, nothing turns on').toEqual([1])
   })
 
+  /* HIS FIND ON HIS IPHONE (15 Oct 26): carried forward into the next month the run turned, carried back to the left side
+     it did not turn back. Safari's shape of it: once the turn has drawn the landed-on date away, its pointer events for
+     that finger are cancelled, and only the finger's TOUCH events still reach the gone date. The run must go on — back
+     to the last month and a release there. */
+  it('Safari: after a turn its pointer cancel is set aside, and the finger\'s touch events carry the run back a month', () => {
+    const landed = cellAt(125, 100)!
+    const ptr = (type: string, x: number, y: number) => {
+      const e = new MouseEvent(type, { bubbles: true, cancelable: true, clientX: x, clientY: y, button: 0 })
+      Object.defineProperties(e, { pointerId: { value: 7 }, pointerType: { value: 'touch' }, isPrimary: { value: true } })
+      landed.dispatchEvent(e)
+    }
+    const touch = (type: string, x: number, y: number) => {
+      const e = new Event(type, { bubbles: true, cancelable: true })
+      Object.defineProperty(e, 'changedTouches', { value: [{ clientX: x, clientY: y, identifier: 0 }] })
+      landed.dispatchEvent(e)
+    }
+    ptr('pointerdown', 125, 100)                                  // 28 Oct
+    vi.advanceTimersByTime(500)
+    ptr('pointermove', 345, 100)
+    vi.advanceTimersByTime(TURN_HOLD)
+    expect(turns).toEqual([1]); expect(landed.isConnected).toBe(false)
+    ptr('pointercancel', 345, 100)                                // Safari: the gone date's pointer is cancelled
+    touch('touchmove', 150, 100)                                  // off the side band: no more forward turns
+    touch('touchmove', 3, 100)                                    // to the LEFT side, held
+    vi.advanceTimersByTime(TURN_HOLD)
+    expect(turns, 'it turns back').toEqual([1, -1])
+    vi.advanceTimersByTime(TURN_SETTLE)
+    touch('touchmove', 75, 100)                                   // 27 Oct, in October drawn again
+    touch('touchend', 75, 100)
+    expect(ranges).toEqual([['2026-10-27', '2026-10-28']])
+    vi.advanceTimersByTime(TURN_AGAIN * 3)
+    expect(turns).toEqual([1, -1])
+  })
+
   it('an event that reaches both the date and the window is taken once', () => {
     ev('pointerdown', 25, 100, 'mouse'); ev('pointermove', 125, 100, 'mouse')
     const c = cellAt(125, 100)!
