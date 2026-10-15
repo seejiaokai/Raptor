@@ -257,6 +257,12 @@ the Now block at the top of this file is current.*
 
 ## Deploy — the traps, all still live
 
+- **ANOTHER CHECKOUT'S PREVIEW CAN HOLD 4173, AND A BROWSER TEST THEN TESTS ITS BUILD (met 16 Oct 26, Quals' one row).**
+  Locally the browser tests reuse a server already on their port, so with another worktree's `vite preview` left on
+  4173 they ran against that checkout's OLD app and failed on what this change had removed. Before a browser run in a
+  worktree, look at who holds the port (`Get-NetTCPConnection -LocalPort 4173` → its process's command line) or run with
+  `E2E_PORT=<a free port>`.
+
 - **A NEW BROWSER-TEST FILE MUST BE NAMED IN `playwright.config.ts` (met 10 Oct 26, `[SEEN-BATCH-2]`).** The `raptor`
   project lists its spec files by name (`testMatch: /(geometry|medical|…)\.spec\.ts/`); a new `e2e/<name>.spec.ts`
   that is not added to that list is "No tests found" when run alone and is silently NOT RUN by `npm run test:e2e` —

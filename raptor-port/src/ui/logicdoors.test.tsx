@@ -25,9 +25,11 @@ const $ = (sel: string) => host.querySelector(sel) as HTMLElement | null
 const $$ = (sel: string) => [...host.querySelectorAll(sel)] as HTMLElement[]
 const tid = (id: string) => document.querySelector(`[data-testid="${id}"]`) as HTMLElement | null
 const click = async (el: Element | null) => { expect(el, 'click target exists').toBeTruthy(); await act(async () => { (el as HTMLElement).dispatchEvent(new MouseEvent('click', { bubbles: true })) }) }
-const row = (needle: string) => $$('#lgBody .lgrule').find(r => (r.textContent || '').includes(needle))!
+/* a setting's row by its name (the Logic page rewritten for its reader, D928 — 15 Oct 26: each is a Settings row) */
+const row = (name: string) => $$('#lgBody .lgset').find(r => r.dataset.lgname === name)!
 const as = async (role: 'admin' | 'main') => act(async () => { setSession({ user: role === 'admin' ? 'a' : 'user', role } as any); notify() })
-const INPUTS_ROW = 'input is due', SANS_ROW = 'SANS availability entry has a deadline', MEMBERS_ROW = 'Members may file duties and commitments for other people'
+const INPUTS_ROW = 'Inputs late cut-off', SANS_ROW = 'SANS late cut-off', MEMBERS_ROW = 'Members file for others'
+const valueOf = (name: string) => row(name).querySelector('.lgv')!.textContent || ''
 
 beforeAll(async () => {
   /* a place for settings to be kept — a switch is only reported flipped once it reads back flipped */
@@ -51,15 +53,15 @@ describe('the Logic page lists the two cut-offs and the members’ switch, each 
   })
   it('the members’ switch is stated on or off, and follows the setting', async () => {
     expect(membersFileOn()).toBe(true)
-    expect(row(MEMBERS_ROW).textContent).toMatch(/other people: on\./)
+    expect(valueOf(MEMBERS_ROW)).toMatch(/^On/)
     await act(async () => { setMembersFile(false); notify() })
-    expect(row(MEMBERS_ROW).textContent).toMatch(/other people: off\./)
+    expect(valueOf(MEMBERS_ROW)).toMatch(/^Off/)
     await act(async () => { setMembersFile(true); notify() })
   })
 })
 
 describe('each row’s button opens the SAME window its calendar’s gear opens (D639)', () => {
-  it('nothing of a cut-off is typed on the Logic page — not even in "Edit rules"', async () => {
+  it('nothing of a cut-off is typed on the Logic page — not even while editing', async () => {
     await click($('#lgEdit'))
     for (const k of ['inputLead', 'inputCutMode', 'inputCutWd', 'inputCutWeeks', 'sansLead', 'sansCutMode', 'sansCutWd', 'sansCutWeeks'])
       expect($(`[data-lgset="${k}"]`), k + ' has a box on the Logic page').toBeNull()
@@ -67,7 +69,9 @@ describe('each row’s button opens the SAME window its calendar’s gear opens 
   })
   it('the Inputs cut-off row opens the Inputs calendar’s settings, and a change saved there is the row’s new wording', async () => {
     const door = row(INPUTS_ROW).querySelector('[data-lgopen="inputs"]')
-    expect(door!.textContent).toBe('Inputs calendar settings…')
+    /* the door is the value itself (the mock-up, D928): it reads the cut-off as set, and names its window aloud */
+    expect(door!.textContent).toContain(cutRuleText('inputs'))
+    expect(door!.getAttribute('aria-label')).toContain('opens the Inputs calendar settings')
     await click(door)
     expect(tid('win-inputsset')).toBeTruthy()
     const lead = tid('iset-lead') as HTMLInputElement
@@ -86,7 +90,8 @@ describe('each row’s button opens the SAME window its calendar’s gear opens 
   })
   it('the SANS cut-off row opens the SANS calendar’s settings', async () => {
     const door = row(SANS_ROW).querySelector('[data-lgopen="sans"]')
-    expect(door!.textContent).toBe('SANS calendar settings…')
+    expect(door!.textContent).toContain(cutRuleText('sans'))
+    expect(door!.getAttribute('aria-label')).toContain('opens the SANS calendar settings')
     await click(door)
     expect(tid('win-sansset')).toBeTruthy(); expect(tid('win-inputsset')).toBeNull()
     await click(tid('sset-cancel'))

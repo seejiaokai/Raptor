@@ -54,7 +54,13 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
-| D925 | 15 Oct 26 | THE LOGIC PAGE IS DESIGNED FOR THE SCHEDULER OR ADMIN READING IT, NOT AS A DESCRIPTION OF HOW THE APP WORKS: INTUITIVE, LESS CLUTTERED, THE EDITABLE SETTINGS TOGETHER AT THE TOP (D809), EACH WITH WHAT CHANGING IT AFFECTS (THE BRIEF TIME MOVES THE AUTOMATIC B); THE APP'S FINE DETAIL LEFT OUT, A SHORT "HOW IT WORKS" ONLY WHERE NEEDED (CREW REST). |
+| D936 | 16 Oct 26 | ON THE LOGIC PAGE THE PASSING NOTE AFTER A VALUE IS CHANGED ("CREW REST → 11H") IS DELETED — THE ROW ITSELF SHOWS THE NEW VALUE AND ITS STANDARD (D850); AND ON A PHONE, WHILE EDITING, "RESET TO STANDARD" READS "RESET ALL" SO THE ROW STAYS ONE ROW, AS BUILT. |
+| D933 | 15 Oct 26 | ON THE LOGIC PAGE A CHECK'S KEY INFO IS SAID AS HIS CREW-REST EXAMPLE SAYS IT: WHO AND WHAT IT APPLIES TO, AND ITS LIMIT, IN A FEW PLAIN WORDS — FOR CREW REST: A FLYING MEMBER'S EARLIEST IN-TIME, AT LEAST THE CREW REST SETTING AFTER THE DAY BEFORE. |
+| D932 | 15 Oct 26 | ON THE LOGIC PAGE, EVERY NUMBER IN THE TEXT THAT IS AN EDITABLE SETTING IS READ FROM THAT SETTING, SO IT CHANGES THE MOMENT THE SETTING CHANGES — NEVER TYPED AS A FIXED NUMBER; AND EVERY LINE IS CORRECT FOR WHATEVER THE SETTINGS ARE. |
+| D931 | 15 Oct 26 | THE LOGIC PAGE IS A GUIDE FOR A USER WHO WANTS TO KNOW HOW THE APP'S RULES WORK IN DEPTH — WITHOUT JARGON AND WITHOUT WHAT IS NOT ESSENTIAL; EVERY LINE IS WRITTEN AND CHECKED BY READING IT AS THAT USER WOULD. |
+| D929 | 15 Oct 26 | THE LOGIC PAGE IS WRITTEN SO A MEMBER OR AN ADMIN READING IT UNDERSTANDS HOW EACH RULE APPLIES TO THEM AND HOW THE RULES AFFECT ONE ANOTHER — KEY POINTERS, NEVER THE APP'S INSIDE DETAIL. |
+| D928 | 15 Oct 26 | THE LOGIC PAGE IS BUILT AS DRAWN: TWO PARTS, SETTINGS THEN THE CHECKS, IN THE GROUPS SHOWN; EVERY CHECK LISTED WITH ONE LINE, FOUR WITH A FOLDED "HOW IT WORKS"; THE "FIRED THIS WEEK" COUNT LEAVES EACH ROW (THE FILTER STAYS); THE TWO UNUSED SETTINGS ARE REMOVED FROM THE PAGE. |
+| D925 | 15 Oct 26 | THE LOGIC PAGE IS DESIGNED FOR THE SCHEDULER OR ADMIN READING IT, NOT AS A DESCRIPTION OF HOW THE APP WORKS: INTUITIVE, LESS CLUTTERED, THE EDITABLE SETTINGS TOGETHER AT THE TOP (D809), EACH WITH WHAT CHANGING IT AFFECTS (THE BRIEF TIME MOVES THE AUTOMATIC B); THE APP'S FINE DETAIL LEFT OUT, A SHORT "HOW IT WORKS" ONLY WHERE NEEDED (CREW REST). — changed by D928 |
 | D901 | 15 Oct 26 | CALENDAR STEP TWO IS BUILT AS RECOMMENDED ON ITS PAGE: NO "CLEAR" UNDER ANY CALENDAR EXCEPT THE BIDDING DATES, WHICH KEEP A SMALL "CLEAR DATES"; TODAY IS SHOWN ON THE LEAVE WAR'S CALENDARS TOO; ONE FINGER-SIZED DATE EVERYWHERE; AND THE INPUTS LIST'S DATE FILTER MOVES IN STEP TWO TOO. |
 | D889 | 15 Oct 26 | HIS LOOK AT STEP ONE OF THE APP'S ONE DATE CALENDAR IS DONE AND HE IS HAPPY WITH IT AS BUILT, SO D800'S WAIT IS MET: CALENDAR STEP TWO MAY START — AFTER THE LEAVE WAR'S LANDING-LINE FIX, WHICH HE ASKED FOR FIRST. |
 | D877 | 15 Oct 26 | THE SCHEDULER BOARD'S OTHER GLOWS GO, EACH KEEPING ITS RING: THE LANDING FLASH AFTER A DRAG OR AN UNDO AND THE PICKED-UP LOOK; THE CREW AND THE TIME BOXES A TAPPED WARNING LIGHTS (RED, AMBER, GREY); A PUCK EARNING OIL IN OIL EARN; HIS OWN PUCK ("THIS IS YOU", ITS PURPLE FILL AND RING KEPT) AND A PUCK LIT BY A HIGHLIGHT CHIP. |
@@ -427,12 +433,15 @@ Rules: `docs/engine-rules.md` §The late-input mark. Placement: `docs/ui-contrac
     and the Logic "Wave types at a glance" group render the SAME strings. Deliberately
     NOT `SAWAVE.note` (keeps its "2 MAIN + 2 SPARE" count for the built-in popup where
     the count is real). When a kind's rule changes, update rule + `kindNote` + the
-    Logic "standby lines" row together (`logic.test.tsx` pins it).
+    Logic "standby lines" row together (`logic.test.tsx` pins it). *[AMENDED 15 Oct 26 by D928 (the Logic page
+    rewritten): the "Wave types at a glance" group and "The standby lines" are gone; each kind's `kindNote` is now one
+    check line on the Logic page (Flying lines; Standby) — still the SAME strings, still pinned by `logic.test.tsx`.]*
   - **The leave/absence "what each type costs" sentence has ONE source too** (owner,
     30 Aug 26), shared by the Inputs "?" legend and the Logic type matrix.
     `inputs.ts inputRuleText(t)`, derived from the enforced flags; both `InputsPage`
     and `logic-html.ts` read it (they'd drifted). `inputs.test.tsx`/`logic.test.tsx`
-    guard it. Deliberately still separate, don't "helpfully" merge: `SAWAVE.note`,
+    guard it. *[AMENDED 15 Oct 26 by D928: the Logic page's type matrix is gone with its rewrite — the Inputs "?"
+    legend is the sentence's one reader now, guarded by `inputs.test.tsx`.]* Deliberately still separate, don't "helpfully" merge: `SAWAVE.note`,
     the `satag` caption, the OIL-confirm prose (different jobs/voices).
 - **The DEFAULT arrangement is admin-set; the wave half is "new schedules only"**
   (owner, 29 Aug 26 pt.2). Admin → Squadron config → **Default arrangement** panel,

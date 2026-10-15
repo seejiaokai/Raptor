@@ -922,3 +922,32 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** Add to "Traps When Injecting Into a Live Page": a state reached by tapping the app's own controls leaves the last control hovered or focused; tap a neutral, non-closing element (a heading) before the picture, and say in the caption which controls the depicted flow touches.
 
 **Principle:** The steps used to reach a pictured state leave their own marks on the screen; clear the traces of the setup before the shot, or the picture shows actions the proposal does not involve.
+### Observation 615: A script that inserts under a document heading found the heading's name in the file's own prose first
+
+**Status:** OPEN
+**Date:** 2026-10-15
+**Session context:** The night run of 15 Oct 26 — writing a new chat block into HANDOFF.md under `## Now` by a Python edit (`s.index('## Now')`). Numbered past #614, which sits on the unmerged branch `claude/trk-reorder-finger-drag`.
+**Skill:** session-handoff (and overnight, which writes the night's block)
+**Type:** open-source
+**Phase/Area:** writing a block under a heading
+
+**Issue:** HANDOFF.md's opening paragraph mentions "`## Now`" in backticks, so a substring search for the heading matched the prose on line 3 and the new block landed above the heading. The document check caught it ("the block … sits outside ## Now"); nothing was lost, but only because the check exists.
+
+**Suggested improvement:** In the guides that write a HANDOFF block, say: find a heading by a whole LINE (`\n## Now\n`, or a line-anchored regex), never by its words — a file that describes its own structure names its headings in its prose. Same for any marker-based insert.
+
+**Principle:** A file that documents its own layout contains its headings' names as text; anchor every insert on the heading's full line, not on its words.
+
+### Observation 616: A browser check reused a server another checkout left on its port, and tested the wrong app
+
+**Status:** OPEN
+**Date:** 2026-10-16
+**Session context:** Quals' one row (D935) in a fresh worktree; the first run of the new browser test.
+**Skill:** New skill candidate: none — the project's checking order (bug-check-order §7.2, "Stand up the real thing")
+**Type:** open-source
+**Phase/Area:** standing up the build to test
+
+**Issue:** The browser tests reuse a server already listening on their port. Another worktree's preview held that port, so the new test ran against an older build and failed on a control this change had removed; the in-app preview had silently taken the next port. A second, smaller trap the same hour: a walk and a test read a button's words with innerText, which counts the full words kept for a screen reader, so both "failed" while the pictures were right. Written into `raptor-port/docs/gates-and-deploy.md` and `raptor-port/docs/walk-scripts.md` §4.
+
+**Suggested improvement:** In the checking order's §7.2, one line: before a browser run, confirm the server on the port is this checkout's build (its command line, or a fact only the new build has), or run on a free port.
+
+**Principle:** A test that reuses a running server proves only that server; check whose build it is before trusting a red or a green.

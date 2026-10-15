@@ -1,0 +1,152 @@
+{
+  "results": [
+    {
+      "step": "phone admin: no date box, no paragraph under the row, none of its links or words",
+      "pass": true,
+      "note": "{\"date\":false,\"para\":false,\"links\":[],\"words\":false}"
+    },
+    {
+      "step": "phone admin, not editing: Enable editing · Export · filter, one line at 36, nothing past the row",
+      "pass": true,
+      "note": "{\"ids\":[\"qEdit\",\"qExport\",\"searchbox\"],\"hs\":[36,36,36],\"oneLine\":true,\"inside\":true,\"sideways\":false,\"filterW\":190,\"exportText\":\"Export\",\"barH\":53}"
+    },
+    {
+      "step": "phone: Export reads \"Export\"",
+      "pass": true,
+      "note": "Export"
+    },
+    {
+      "step": "phone: its name for a screen reader is still \"Export to Excel\"",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "phone: Export pressed — the LoX downloads and \"CSV downloaded\" shows",
+      "pass": true,
+      "note": "142-LoX-FCP.csv"
+    },
+    {
+      "step": "phone: the filter, typed in, narrows the table",
+      "pass": true,
+      "note": "34 → 1 rows, typed \"Ace\""
+    },
+    {
+      "step": "phone admin, editing: Save changes · Edit quals · Export · filter, one line at 36",
+      "pass": true,
+      "note": "{\"ids\":[\"qSave\",\"qEditQuals\",\"qExport\",\"searchbox\"],\"hs\":[36,36,36,36],\"oneLine\":true,\"inside\":true,\"sideways\":false,\"filterW\":107,\"exportText\":\"Export\",\"barH\":53}"
+    },
+    {
+      "step": "phone admin, Edit quals on: \"✕ Edit quals\", the row still one line at 36, Add qualification below it",
+      "pass": true,
+      "note": "{\"ids\":[\"qSave\",\"qEditQuals\",\"qExport\",\"searchbox\"],\"hs\":[36,36,36,36],\"oneLine\":true,\"inside\":true,\"sideways\":false,\"filterW\":93,\"exportText\":\"Export\",\"barH\":53}"
+    },
+    {
+      "step": "phone admin: Save changes ends editing, Enable editing back in its place",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "phone member: the row one line at 36, no paragraph",
+      "pass": true,
+      "note": "{\"ids\":[\"qEdit\",\"qExport\",\"searchbox\"],\"hs\":[36,36,36],\"oneLine\":true,\"inside\":true,\"sideways\":false,\"filterW\":190,\"exportText\":\"Export\",\"barH\":53}"
+    },
+    {
+      "step": "desk admin: no date box, no paragraph under the row, none of its links or words",
+      "pass": true,
+      "note": "{\"date\":false,\"para\":false,\"links\":[],\"words\":false}"
+    },
+    {
+      "step": "desk admin, not editing: Enable editing · Export · filter, one line at 36, nothing past the row",
+      "pass": true,
+      "note": "{\"ids\":[\"qEdit\",\"qExport\",\"searchbox\"],\"hs\":[36,36,36],\"oneLine\":true,\"inside\":true,\"sideways\":false,\"filterW\":200,\"exportText\":\"Export to Excel\",\"barH\":53}"
+    },
+    {
+      "step": "desk: Export reads \"Export to Excel\"",
+      "pass": true,
+      "note": "Export to Excel"
+    },
+    {
+      "step": "desk: its name for a screen reader is still \"Export to Excel\"",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "desk: Export pressed — the LoX downloads and \"CSV downloaded\" shows",
+      "pass": true,
+      "note": "142-LoX-FCP.csv"
+    },
+    {
+      "step": "desk: the filter, typed in, narrows the table",
+      "pass": true,
+      "note": "34 → 1 rows, typed \"Ace\""
+    },
+    {
+      "step": "desk admin, editing: Save changes · Edit quals · Export · filter, one line at 36",
+      "pass": true,
+      "note": "{\"ids\":[\"qSave\",\"qEditQuals\",\"qExport\",\"searchbox\"],\"hs\":[36,36,36,36],\"oneLine\":true,\"inside\":true,\"sideways\":false,\"filterW\":200,\"exportText\":\"Export to Excel\",\"barH\":53}"
+    },
+    {
+      "step": "desk admin, Edit quals on: \"✕ Edit quals\", the row still one line at 36, Add qualification below it",
+      "pass": true,
+      "note": "{\"ids\":[\"qSave\",\"qEditQuals\",\"qExport\",\"searchbox\"],\"hs\":[36,36,36,36],\"oneLine\":true,\"inside\":true,\"sideways\":false,\"filterW\":200,\"exportText\":\"Export to Excel\",\"barH\":53}"
+    },
+    {
+      "step": "desk admin: Save changes ends editing, Enable editing back in its place",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "desk member: the row one line at 36, no paragraph",
+      "pass": true,
+      "note": "{\"ids\":[\"qEdit\",\"qExport\",\"searchbox\"],\"hs\":[36,36,36],\"oneLine\":true,\"inside\":true,\"sideways\":false,\"filterW\":200,\"exportText\":\"Export to Excel\",\"barH\":53}"
+    },
+    {
+      "step": "no page errors in the console",
+      "pass": true,
+      "note": ""
+    }
+  ],
+  "room": {
+    "360": {
+      "view": {
+        "oneLine": true,
+        "inside": true,
+        "filterW": 160,
+        "ok36": true
+      },
+      "editing": {
+        "oneLine": true,
+        "inside": true,
+        "filterW": 77,
+        "ok36": true
+      },
+      "editquals": {
+        "oneLine": true,
+        "inside": true,
+        "filterW": 63,
+        "ok36": true
+      }
+    },
+    "375": {
+      "view": {
+        "oneLine": true,
+        "inside": true,
+        "filterW": 175,
+        "ok36": true
+      },
+      "editing": {
+        "oneLine": true,
+        "inside": true,
+        "filterW": 92,
+        "ok36": true
+      },
+      "editquals": {
+        "oneLine": true,
+        "inside": true,
+        "filterW": 78,
+        "ok36": true
+      }
+    }
+  },
+  "errors": []
+}

@@ -151,6 +151,28 @@ test('a phone, the List: the row under the tabs is drawn as tall as the tabs, an
   } finally { await context.close() }
 })
 
+/* ...AND ON THE MEDICAL TAB (owner D927, 15 Oct 26 — built as drawn, D912): its "Medical" heading, which repeated the tab
+   picked above it, is gone, and the as-of button — with Today, once another date is picked — stands in the row under the
+   tabs as tall as that row's buttons on Inputs and SANS (36), on a phone and a desktop; on a phone each still answers a
+   finger (44). */
+for (const [w, h] of [[390, 844], [1280, 800]]) test(`D927 the Medical tab at ${w}: no heading, the as-of row as tall as the tabs' row (36)`, async ({ page }) => {
+  await page.setViewportSize({ width: w, height: h })
+  await login(page); await go(page, 'inputs'); await page.locator('#inMedBtn').click(); await expect(page.locator('#medView')).toBeVisible()
+  await expect(page.locator('#medView .med-title')).toHaveCount(0)
+  await expect(page.locator('#medView .ic-head')).not.toContainText(/^Medical/)
+  const hgt = (sel: string) => page.locator(sel).evaluate(n => Math.round(n.getBoundingClientRect().height))
+  const reach = (sel: string) => page.evaluate(sel => { const b = document.querySelector(sel)!, r = b.getBoundingClientRect(), x = r.left + r.width / 2; const at = (y: number) => { const h = document.elementFromPoint(x, y); return !!h && (h === b || b.contains(h)) }; let top = r.top + 1, bottom = r.bottom - 1; while (at(top - 1)) top--; while (at(bottom + 1)) bottom++; return Math.round(bottom - top) + 1 }, sel)
+  expect(await hgt('#medCalBtn'), 'the as-of button is drawn at the row height').toBe(36)
+  /* Today shows once another date is picked — it joins the row at the same height */
+  await page.locator('#medCalBtn').click(); await page.locator('[data-medday="2026-07-03"]').click()
+  await expect(page.locator('#medToday')).toBeVisible()
+  expect(await hgt('#medToday'), 'Today is drawn at the row height').toBe(36)
+  const mids = await page.evaluate(() => ['#medCalBtn', '#medToday'].map(s => { const r = document.querySelector(s)!.getBoundingClientRect(); return Math.round(r.top + r.height / 2) }))
+  expect(Math.abs(mids[0] - mids[1]), 'one row').toBeLessThanOrEqual(1)
+  if (w < 820) for (const id of ['#medCalBtn', '#medToday']) expect(await reach(id), id + ' still answers a finger').toBeGreaterThanOrEqual(44)
+  await page.locator('#medToday').click()
+})
+
 test('arriving from a scrolled page shows the Inputs page from its top, tabs in reach — and each tab leaves them in reach', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await login(page)
@@ -551,8 +573,9 @@ test('the gear: the Inputs cut-off and the members’ switch are saved from its 
   await page.locator('[data-testid="iset-memberfile"]').uncheck()
   await page.locator('[data-testid="iset-save"]').click(); await expect(win).toHaveCount(0)
   await page.reload(); await login(page); await go(page, 'logic')
-  const row = page.locator('#lgBody .lgrule', { hasText: 'input is due' })
-  await expect(row).toContainText('Thursday'); await expect(page.locator('#lgBody .lgrule', { hasText: 'Members may file duties and commitments for other people' })).toContainText('other people: off.')
+  /* the Logic page's Settings rows, by name (rewritten for its reader, D928 — 15 Oct 26) */
+  const row = page.locator('#lgBody .lgset[data-lgname="Inputs late cut-off"]')
+  await expect(row).toContainText('Thursday'); await expect(page.locator('#lgBody .lgset[data-lgname="Members file for others"] .lgv')).toHaveText(/^Off/)
   /* one setting, two ways in: the row's button opens the same window, showing what was saved */
   await row.locator('[data-lgopen="inputs"]').click(); await expect(win).toBeVisible()
   await expect(page.locator('[data-testid="iset-mode-wd"]')).toHaveAttribute('aria-pressed', 'true')

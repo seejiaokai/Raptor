@@ -637,7 +637,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   compassionate leave, joined 3 Sep 26 — an LL twin for every rule here; its
   own balance lives on the Leave War side), and
   `INPUT_TYPES` is derived from its keys — the list, the rules, the Inputs
-  page's type legend and the Logic page's matrix all read the same object, so
+  page's type legend (and, until 15 Oct 26, the Logic page's matrix — gone with its rewrite, D928) all read the same object, so
   none of them can describe a rule the engine does not apply. Fields: `name`,
   `grp` (`leave|med|duty|act`), `work`, `local`, `ground`, `half`.
   Every predicate is a lookup: `isLeave`/`isLocalLeave` off `grp`/`local`,

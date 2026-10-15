@@ -4653,3 +4653,15 @@ the Cancel / Add bar and needs a scroll, and with A all of it is in sight. **The
 shows wherever the title box shows, new or saved, never on a read-only input; a tap on it is a tap on the box. **Then:** build
 D917 with his two answers as one small job, WALK check.
 
+
+*Moved here 2026-10-15 by backlog-archive.mjs ([TRK-REORDER-FINGER-DRAG]). Forward facts: `raptor-port/docs/handpass/2026-10-15-trk-reorder-drag.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [TRK-REORDER-FINGER-DRAG] A finger drag for the Tracker's ⇅ Reorder rows — named to him by D900's reading (15 Oct 26); RULED D922 (build it, a picture first) — OPEN
+**RULED 15 Oct 26 — D922: build it** — a finger drags a row on a phone, with the app's own drag look (one landing line a gap, the list following at its edge); the ▲ ▼ stay. A picture on the real app first, then its own small job after [INPUT-NEW-DEFAULTS] (the agent's placing); WALK check.
+**Pictured for him 15 Oct 26 (D921):** picture 1, `raptor-port/docs/img/handpass/2026-10-15-two-leftovers/` (`scripts/handpass/pics-two-leftovers.mjs`).
+**Today:** on a phone the Reorder list's rows cannot be dragged (its ▲▼ move them); a mouse drag scrolls at the list's
+foot since pull request 516 (`src/tracker/components/Modals.jsx`; carried by `src/tracker/retest.test.tsx` "D900 — the
+Reorder list…"). **Next:** a picture on the real app first (D853); build only on his word, with the design guide's
+§5a dragging rules (D895).
+ **Seen in the picture:** the window's own line says "Drag a row, or use ▲/▼" — on a phone a finger cannot drag; if no finger drag is built, that line is wrong on a phone.
+**DRAWN AND PUT TO HIM 15 Oct 26 (branch `claude/trk-reorder-finger-drag`) — ANSWERED "All as recommended" (D924); BUILDING on that branch:** the page https://claude.ai/artifact/8mNLc9PU5u2ME2C4BvNosu (source `raptor-port/docs/mock/2026-10-15-trk-reorder-drag/index.html`, pictures `raptor-port/docs/img/handpass/2026-10-15-trk-reorder-drag/`, drawn by `scripts/handpass/mock-trk-reorder-drag.mjs`). The look copied from the Leave War's ⚙ lists (the lift ring, one 2px landing line on the top of the row below) and, after the drop, the app's own landing mark (`ui/lift.ts`). **The agent's readings, told to him:** a finger takes a row by its grip only (elsewhere it scrolls the list); the list follows at its edge as the mouse's does; the ▲ ▼ stay (the keyboard's way); all three windows. **Three questions, each with its pick:** (1) the grip ⠿ in place of ☰ (yes — the app's grip; ☰ means "list" on ☰ Show All); (2) a mouse drag the same look, the landing line in place of today's box round the row (yes — §5a); (3) delete "Drag a row, or use ▲/▼." (yes — D846). **Then:** build on his answers, one small job, WALK check.

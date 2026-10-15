@@ -150,7 +150,9 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
   return (
     <div className={'inpcal medview' + (onClose ? '' : ' in-page')} id="medView">
       <div className="ic-head">
-        <b className="med-title">Medical</b>
+        {/* NO "Medical" HEADING (owner D927, 15 Oct 26 — built as drawn, D912): it only repeated the name of the tab
+            picked just above it (the design guide §3, "A page's controls are one row", D926). The as-of button stands
+            alone in the row under the tabs, as tall as that row's buttons on Inputs and SANS (36 — 16-medical.css). */}
         {/* the as-of control: which day the three sections describe. A pick
             answers "who was down then"; Today returns the view to now. */}
         <button type="button" className={'abtn' + (calOpen ? ' on' : '')} id="medCalBtn"

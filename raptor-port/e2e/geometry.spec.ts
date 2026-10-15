@@ -4449,6 +4449,76 @@ test.describe('the frozen callsign column', () => {
   })
 })
 
+/* QUALS' ONE ROW (owner D935, 16 Oct 26 — built as drawn; the design guide §3, "A page's controls are one row", D926):
+   Enable editing (or Save changes and Edit quals while editing), Export and the filter stand in ONE row, every one of
+   them 36 tall — the date box that did nothing is gone, and on a phone "Export to Excel" reads "Export" (its full words
+   still its name for a screen reader) and the filter takes what is left of the row. The paragraph under the row is
+   gone. Measured in each state an admin meets — not editing, editing, Edit quals on (its "✕ Edit quals" the widest) —
+   at his phone's width, a narrow tablet's and a desktop's; nothing past the row's right edge, no sideways page scroll,
+   and on a phone every button still answers a finger (44). */
+/* AND (owner D937, 16 Oct 26 — "As recommended"): on a phone "Save changes" reads "Save" as Export does, so at the
+   smallest phones (320) the filter keeps room to type while editing; and Quals opens at its top — the row in sight —
+   however it is opened (the arrival test below). */
+for (const [w, h] of [[320, 700], [390, 844], [600, 900], [1280, 800]]) test(`D935 D937 Quals at ${w}: one row at 36, in every editing state`, async ({ page }) => {
+  await page.setViewportSize({ width: w, height: h })
+  await login(page); await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+  await expect(page.locator('#qDate')).toHaveCount(0)
+  await expect(page.locator('.qhelp')).toHaveCount(0)
+  const exp = page.getByRole('button', { name: 'Export to Excel' })
+  await expect(exp, 'its full words are still its name').toHaveCount(1)
+  /* the words a person SEES — innerText still counts the full words kept for a screen reader, clipped to 1px */
+  const seen = await exp.evaluate(b => [...b.children].filter(e => e.getBoundingClientRect().width > 1).map(e => e.textContent).join(' ').trim())
+  expect(seen, 'the words a person sees').toBe(w <= 480 ? 'Export' : 'Export to Excel')
+  const row = () => page.evaluate(() => {
+    const bar = document.querySelector('.qbar')!, br = bar.getBoundingClientRect()
+    const els = [...bar.children].filter(e => (e as HTMLElement).offsetParent !== null && !e.classList.contains('grow')) as HTMLElement[]
+    return {
+      ids: els.map(e => e.id || e.className),
+      hs: els.map(e => Math.round(e.getBoundingClientRect().height)),
+      mids: els.map(e => { const r = e.getBoundingClientRect(); return Math.round(r.top + r.height / 2) }),
+      past: els.filter(e => e.getBoundingClientRect().right > br.right + 0.5 || e.getBoundingClientRect().left < br.left - 0.5).map(e => e.id || e.className),
+      filterW: Math.round(document.querySelector('.qbar .searchbox')!.getBoundingClientRect().width),
+      sideways: document.documentElement.scrollWidth > innerWidth,
+    }
+  })
+  const reach = (sel: string) => page.evaluate(sel => { const b = document.querySelector(sel)!, r = b.getBoundingClientRect(), x = r.left + r.width / 2; const at = (y: number) => { const h = document.elementFromPoint(x, y); return !!h && (h === b || b.contains(h)) }; let top = r.top + 1, bottom = r.bottom - 1; while (at(top - 1)) top--; while (at(bottom + 1)) bottom++; return Math.round(bottom - top) + 1 }, sel)
+  const check = async (state: string, buttons: string[]) => {
+    const m = await row()
+    expect(m.ids, state + ': what stands in the row').toEqual([...buttons.map(b => b.slice(1)), 'searchbox'])
+    for (const [i, hh] of m.hs.entries()) expect(hh, `${state}: ${m.ids[i]} at the row height`).toBe(36)
+    expect(Math.max(...m.mids) - Math.min(...m.mids), state + ': one row').toBeLessThanOrEqual(1)
+    expect(m.past, state + ': nothing past the row').toEqual([])
+    expect(m.sideways, state + ': no sideways scroll').toBe(false)
+    expect(m.filterW, state + ': the filter keeps room to type in').toBeGreaterThanOrEqual(56)
+    if (w < 820) for (const b of buttons) expect(await reach(b), `${state}: ${b} answers a finger`).toBeGreaterThanOrEqual(44)
+  }
+  await check('not editing', ['#qEdit', '#qExport'])
+  await page.locator('#qEdit').click(); await expect(page.locator('#qSave')).toBeVisible()
+  await check('editing', ['#qSave', '#qEditQuals', '#qExport'])
+  await page.locator('#qEditQuals').click(); await expect(page.locator('#qEditQuals')).toHaveText('✕ Edit quals')
+  await check('Edit quals on', ['#qSave', '#qEditQuals', '#qExport'])
+  const save = await page.locator('#qSave').evaluate(b => [...b.children].filter(e => e.getBoundingClientRect().width > 1).map(e => e.textContent).join(' ').trim())
+  expect(save, 'Save changes, as a person sees it').toBe(w <= 480 ? 'Save' : 'Save changes')
+  await expect(page.getByRole('button', { name: 'Save changes' }), 'its full words are still its name').toHaveCount(1)
+  await page.locator('#qEditQuals').click(); await page.locator('#qSave').click()
+})
+
+/* QUALS OPENS AT ITS TOP (owner D937, 16 Oct 26): the app keeps the window's scroll from page to page, and a phone's
+   week opens scrolled to its day — so Quals used to arrive 120 px down, its row and the Viewing switch above the screen.
+   It now arrives at its top, as the Inputs page does, the row's buttons in reach (on top at their middle). */
+test('D937 a phone: arriving from a scrolled page shows Quals from its top, its row in reach', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await login(page)
+  await page.evaluate(() => window.scrollTo(0, 400))  /* window's: this file imports its own scrollTo helper */
+  expect(await page.evaluate(() => window.scrollY), 'the week is scrolled, as a phone leaves it').toBeGreaterThan(50)
+  await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+  expect(await page.evaluate(() => window.scrollY)).toBe(0)
+  for (const sel of ['#qEdit', '#qExport', '#qFilter', '#qViewP']) {
+    const onTop = await page.evaluate(sel => { const e = document.querySelector(sel)!, r = e.getBoundingClientRect(); const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !!hit && (hit === e || e.contains(hit)) }, sel)
+    expect(onTop, sel + ' is in reach').toBe(true)
+  }
+})
+
 /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26) — a quals COLUMN is a composite thing
    (a heading and one cell per person), so what is picked up wears the shared
    overlay frame instead of a class: ONE box, as wide as the heading and as tall

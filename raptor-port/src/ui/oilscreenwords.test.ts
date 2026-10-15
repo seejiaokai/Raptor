@@ -7,7 +7,7 @@
    NOT a scan of the source: a scan cannot tell a comment from a sentence a person reads, and the comments are a
    separate, mechanical pass. This reads what is DRAWN. */
 import { describe, expect, it } from 'vitest'
-import { lgRules } from './logic-html'
+import { lgSettings, lgChecks } from './logic-html'
 import { OIL_NO_MOVE, OIL_OPEN_END, OIL_NO_START, OIL_NO_LENGTH, OIL_FROM_ISSUED, OIL_FROM_LIVE } from './oilmode'
 
 const PAY = /\b(money|monies|pay|pays|paid|paying|unpaid|payment|payments)\b/i
@@ -22,18 +22,20 @@ const texts = (v: any, out: string[] = []): string[] => {
 const plain = (s: string) => s.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
 
 describe('no sentence a person reads calls OIL pay or money (D25)', () => {
-  it('the Logic page — every rule, its "why" included', () => {
-    const all = texts(lgRules()).map(plain)
+  it('the Logic page — every setting and every check, its fold included', () => {
+    const all = texts([lgSettings(), lgChecks()]).map(plain)
     expect(all.length, 'the page has sentences to read').toBeGreaterThan(40)
     const bad = all.filter(s => PAY.test(s)).map(s => { const m = PAY.exec(s)!; return `…${s.slice(Math.max(0, m.index - 60), m.index + 40)}…` })
     expect(bad).toEqual([])
   })
 
+  /* the page was rewritten for its reader on 15 Oct 26 (owner D928-D931): its OIL lines are shorter, and say the same
+     rules — what earns, what a published day keeps, the nought-minute sortie — in the words D25 asks for */
   it('the OIL rule still says what it said, in the words D25 asks for', () => {
-    const all = texts(lgRules()).map(plain).join(' ')
-    expect(all).toContain('an hour can never earn twice and a day can never earn more than 1.0')
-    expect(all).toContain('it keeps crediting exactly what it credited')
-    expect(all).toContain('nobody should earn from it. They do, and deliberately')
+    const all = texts([lgSettings(), lgChecks()]).map(plain).join(' ')
+    expect(all).toContain('A published day keeps its OIL until it is published again')
+    expect(all).toContain('A row with no times, or no end time, earns nothing')
+    expect(all).toContain('A flying line still earns its OIL; a standby shift earns none')
   })
 
   it('the mode\'s own messages', () => {

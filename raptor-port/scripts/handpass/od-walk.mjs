@@ -337,12 +337,13 @@ await scene('sheets', [DESK, PHONE], async s => {
   check('sheets', s, 'and no "posted out" corner on 26 Sep, a day he never left', (await here(s, 'rocky', '2026-09-26')) && !/pofin/.test(await cellCls(s, 'rocky', '2026-09-26') || ''), await cellCls(s, 'rocky', '2026-09-26'))
 })
 
-/* ---- quals: no ✕, no drawer, the help line ---- */
+/* ---- quals: no ✕, no drawer (the help line went with D935) ---- */
 await scene('quals', [DESK, PHONE], async s => {
   await signIn(s.page, 'ad', 'a'); await go(s.page, 'quals')
   await s.page.click('#qEdit'); await s.page.waitForTimeout(250)
   check('quals', s, 'no ✕ in edit mode', (await count(s, '#qtbl [data-arch]')) === 0)
-  check('quals', s, 'the help line says where archive went', /Archive, restore and delete are on Admin → Users\./.test(await text(s, '.qhelp') || ''))
+  /* the help line that said where archive went is deleted whole with the paragraph it sat in (owner D935, 16 Oct 26) */
+  check('quals', s, 'no paragraph under the row (D935)', (await count(s, '.qhelp')) === 0)
   check('quals', s, 'no Archived drawer', (await count(s, '#qArchive')) === 0)
   await shot(s, 'quals-01-edit')
   await s.page.click('#qAddToggle'); await s.page.waitForFunction(() => window.CURPAGE === 'admin')

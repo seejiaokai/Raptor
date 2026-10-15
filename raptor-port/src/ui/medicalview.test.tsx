@@ -70,6 +70,15 @@ describe('the Medical view', () => {
     await click(btn)
     expect($('#medView')).toBeTruthy()
   })
+  /* D927 (15 Oct 26, built as drawn — D912): the row under the tabs carries no "Medical" heading — it repeated the tab
+     picked just above it — and the as-of button is the row's first control. Its 36 height is a browser's to measure
+     (e2e/inputs-calendar.spec.ts, "D927"). */
+  it('D927 the row under the tabs has no heading: the as-of button leads it', () => {
+    const head = $('#medView .ic-head')
+    expect(head.querySelector('.med-title'), 'the heading is gone').toBeNull()
+    expect(head.firstElementChild?.id, 'the as-of button stands first in the row').toBe('medCalBtn')
+    expect((head.textContent || '').replace($('#medCalBtn').textContent || '', ''), 'no word "Medical" left in the row').not.toMatch(/Medical/)
+  })
   it('the three sections sort our men correctly as of today', () => {
     expect(cardsIn('med-down').map(c => c.textContent).join(' ')).toContain('ATT C')
     expect($('.medsec.med-down').textContent).toContain('till 14 Jul')

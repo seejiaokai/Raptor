@@ -1,0 +1,261 @@
+{
+  "facts": {
+    "phone-view": {
+      "today": {
+        "barH": 89,
+        "rows": 4,
+        "els": [
+          {
+            "id": "qEdit",
+            "top": 61,
+            "h": 28,
+            "w": 108
+          },
+          {
+            "id": "qDate",
+            "top": 65,
+            "h": 21,
+            "w": 120
+          },
+          {
+            "id": "qExport",
+            "top": 97,
+            "h": 28,
+            "w": 113
+          },
+          {
+            "id": "searchbox",
+            "top": 98,
+            "h": 27,
+            "w": 196
+          }
+        ]
+      },
+      "after": {
+        "barH": 61,
+        "rows": 1,
+        "els": [
+          {
+            "id": "qEdit",
+            "top": 61,
+            "h": 36,
+            "w": 108
+          },
+          {
+            "id": "qExport",
+            "top": 61,
+            "h": 36,
+            "w": 64
+          },
+          {
+            "id": "searchbox",
+            "top": 61,
+            "h": 36,
+            "w": 162
+          }
+        ]
+      },
+      "overflow": false,
+      "filterW": 162
+    },
+    "phone-editing": {
+      "today": {
+        "barH": 89,
+        "rows": 4,
+        "els": [
+          {
+            "id": "qSave",
+            "top": 61,
+            "h": 28,
+            "w": 106
+          },
+          {
+            "id": "qEditQuals",
+            "top": 61,
+            "h": 28,
+            "w": 83
+          },
+          {
+            "id": "qDate",
+            "top": 65,
+            "h": 21,
+            "w": 120
+          },
+          {
+            "id": "qExport",
+            "top": 97,
+            "h": 28,
+            "w": 113
+          },
+          {
+            "id": "searchbox",
+            "top": 98,
+            "h": 27,
+            "w": 196
+          }
+        ]
+      },
+      "after": {
+        "barH": 61,
+        "rows": 1,
+        "els": [
+          {
+            "id": "qSave",
+            "top": 61,
+            "h": 36,
+            "w": 106
+          },
+          {
+            "id": "qEditQuals",
+            "top": 61,
+            "h": 36,
+            "w": 83
+          },
+          {
+            "id": "qExport",
+            "top": 61,
+            "h": 36,
+            "w": 64
+          },
+          {
+            "id": "searchbox",
+            "top": 61,
+            "h": 36,
+            "w": 73
+          }
+        ]
+      },
+      "overflow": false,
+      "filterW": 73
+    },
+    "desk-view": {
+      "today": {
+        "barH": 53,
+        "rows": 3,
+        "els": [
+          {
+            "id": "qEdit",
+            "top": 115,
+            "h": 28,
+            "w": 108
+          },
+          {
+            "id": "qDate",
+            "top": 119,
+            "h": 21,
+            "w": 120
+          },
+          {
+            "id": "qExport",
+            "top": 115,
+            "h": 28,
+            "w": 113
+          },
+          {
+            "id": "searchbox",
+            "top": 116,
+            "h": 27,
+            "w": 196
+          }
+        ]
+      },
+      "after": {
+        "barH": 61,
+        "rows": 1,
+        "els": [
+          {
+            "id": "qEdit",
+            "top": 115,
+            "h": 36,
+            "w": 108
+          },
+          {
+            "id": "qExport",
+            "top": 115,
+            "h": 36,
+            "w": 113
+          },
+          {
+            "id": "searchbox",
+            "top": 115,
+            "h": 36,
+            "w": 196
+          }
+        ]
+      },
+      "overflow": false,
+      "filterW": 196
+    },
+    "desk-editing": {
+      "today": {
+        "barH": 53,
+        "rows": 3,
+        "els": [
+          {
+            "id": "qSave",
+            "top": 115,
+            "h": 28,
+            "w": 106
+          },
+          {
+            "id": "qEditQuals",
+            "top": 115,
+            "h": 28,
+            "w": 83
+          },
+          {
+            "id": "qDate",
+            "top": 119,
+            "h": 21,
+            "w": 120
+          },
+          {
+            "id": "qExport",
+            "top": 115,
+            "h": 28,
+            "w": 113
+          },
+          {
+            "id": "searchbox",
+            "top": 116,
+            "h": 27,
+            "w": 196
+          }
+        ]
+      },
+      "after": {
+        "barH": 61,
+        "rows": 1,
+        "els": [
+          {
+            "id": "qSave",
+            "top": 115,
+            "h": 36,
+            "w": 106
+          },
+          {
+            "id": "qEditQuals",
+            "top": 115,
+            "h": 36,
+            "w": 83
+          },
+          {
+            "id": "qExport",
+            "top": 115,
+            "h": 36,
+            "w": 113
+          },
+          {
+            "id": "searchbox",
+            "top": 115,
+            "h": 36,
+            "w": 196
+          }
+        ]
+      },
+      "overflow": false,
+      "filterW": 196
+    }
+  },
+  "errors": []
+}

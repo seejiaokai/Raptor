@@ -20,12 +20,17 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/trk-reorder-finger-drag -->
-### `claude/trk-reorder-finger-drag` — THE NIGHT OF 15 OCT 26 (an hour, /overnight, his "Go") — job 1 `[TRK-REORDER-FINGER-DRAG]` (D922, D924) BUILT, WALKED, READ, WHOLLY GREEN — written 15 Oct 26 — verify before use
-- **After a compaction:** re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time.
-- **His selection (in order):** (1) finish `[TRK-REORDER-FINGER-DRAG]` — this branch; (2) `[GUIDE-ONE-ROW]` (D911) — the wording drafted, one fresh reader, for his approval; nothing in the app; (3) `[MEDICAL-ONE-ROW]` (D912) — the picture on the real app; nothing in the app. (2) and (3) on `claude/one-row-guide-medical`, cut from `main`. Then, his message while the night started (D925): the Logic page's mock-up with the design skill, if time allows. Questions waiting for him: none yet.
-- **Job 1 DONE:** the rows drag by the ⠿ grip on a phone and anywhere on the row with a mouse — the lift ring, one landing line a gap, the landing flash; the drag hint deleted; the browser's own drag gone (`tracker/components/Modals.jsx`, `tracker/tracker.css`). The check: `raptor-port/docs/handpass/2026-10-15-trk-reorder-drag.md` — walk 29/29 + 30/30 and the re-walk; 13 break tests caught; the code read's four minor findings fixed red first, the fixes read clean; the whole gate set green under the lock. Drawn first: https://claude.ai/artifact/8mNLc9PU5u2ME2C4BvNosu. **Next:** his iPhone look (the sheet's §10 card) and "merge live".
-- **Rulings this chat:** D924 (his answers), D925 (the Logic page is for its reader — `scheduler.md`). **Owed, documents only (D29):** the four size overs found at the start (How-we-work and Inputs rulings files, `plain-language.md`, `shipping.md`).
+<!-- now:claude/one-row-guide-medical -->
+### `claude/one-row-guide-medical` — the Medical tab's one row (D927), the Logic page rewritten (D928–D933, D936) and Quals' one row (D935) ALL BUILT and WALK-checked; waiting for his look and "merge live" of pull request 519 — written 16 Oct 26 — verify before use
+- **After a compaction:** re-read this block and the two check sheets, `raptor-port/docs/handpass/2026-10-15-logic-medical.md` and `…/2026-10-16-quals-one-row.md`.
+- **Built (on this branch, pull request 519):** the Medical tab (D927); the Logic page (D928–D933; its passing note deleted and "Reset all" kept, D936); **Quals (D935, 16 Oct 26):** one row at 36 — Enable editing (or Save changes and Edit quals), Export, the filter — the date box gone, "Export" on a phone (≤ 480), the paragraph under the row deleted whole. Contract: `raptor-port/docs/ui-contracts.md` §The Quals page's one row.
+- **Checks (Quals):** tests red first (quals.test D935 3 new, 71/71; e2e geometry D935 3/3 at 390/600/1280; the older Quals browser tests 5/5); breaks 6/6; the walk `scripts/handpass/quals-row-walk.mjs` 21/21 (390 touch, 1280 mouse, admin and member); build and rulecheck green. A small follow-up on 519 (D902): GitHub's run is the full check — read it before "merge live". WALK tier, no model read.
+- **His answers, "As recommended" (D937), BUILT:** "Save" for "Save changes" on a phone (the filter keeps 75 px at 320 while editing); Quals opens at its top (`[QUALS-ARRIVES-SCROLLED]`). Tests red first, breaks 9/9, re-walk 30/30, the Quals browser tests 10/10 — the sheet's §9.
+- **His picture page for Quals:** https://claude.ai/artifact/8VYrasU4xPtFM9vfusVcZV (shows the two questions before his answers).
+- **Port note:** another checkout's preview holds 4173 on his PC — run a browser test here with `E2E_PORT=<free port>` or it tests that old build.
+- **Next:** his look at the preview (Quals tab, on his iPhone); then "merge live" of 519 once GitHub's run of the last push is green.
+- **Rulings this chat:** D937 (people-accounts). Read by nobody yet: D929–D937's short lines against their full rows (D138).
+- **Owed, documents only (D29), carried:** the size overs — the How-we-work, Scheduler and Inputs rulings files over their markers, `plain-language.md`, `shipping.md`.
 <!-- /now -->
 
 ## Next, in order

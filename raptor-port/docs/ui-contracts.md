@@ -4837,6 +4837,21 @@ invent them. The same goes for FLIGHT: the roster records none, which is why
 the column became editable when the headings learned to group by it (owner,
 5 Aug 26). Type them in; do not seed invented ones.
 
+## The Quals page's one row, and no paragraph under it (owner D935, 16 Oct 26)
+
+Built as drawn (the design guide §3, "A page's controls are one row", D926; drawing
+`scripts/handpass/mock-quals-one-row.mjs`). The row under the top bar holds Enable editing — or, while editing, Save
+changes and (an admin) Edit quals — then Export, then the filter: ONE line at every width, every control 36 tall
+(`05-quals.css` `.qbar`). The date box that stood there is gone (nothing read it). A desktop keeps the filter at its own
+width at the right and lets it shrink first when the row runs short; on a phone (≤ 480) the filter takes what is left
+of the row and Export reads "Export", its full words "Export to Excel" kept as its name for a screen reader. Below 820
+each button answers a finger (44). The paragraph that sat under the row ("Similar to a LoX…", with "Add qualifications",
+"Set which quals your squadron uses" and "Admin page") is deleted whole — the Admin tab is the way to Admin, and Archive,
+restore and delete are on Admin → Users (D310). Pins: `quals.test.tsx` "D935", `e2e/geometry.spec.ts` "D935".
+**And (owner D937, 16 Oct 26 — "As recommended"):** on a phone "Save changes" reads "Save" (its full words kept for a
+screen reader, as Export's), so the filter keeps room to type at 320 while editing; and the page opens at its top — the
+row in sight — however the Quals tab is opened, as the Inputs page does. Pins: `quals.test.tsx` "D937", `e2e/geometry.spec.ts` "D937".
+
 ## The Quals page's columns, sorting and View (owner, 5 Aug 26)
 
 The qualification columns run in a fixed order — **SANS, SXO, SCHEDULER, SC
@@ -9249,6 +9264,13 @@ swipe, and everything a member sees.
 **TO BE RE-LAID — not yet built (owner D809, 13 Oct 26):** everything that can be edited gathered at the top of the page, everything
 that only explains a rule below it, each part arranged into its types; a picture first — `OUTSTANDING.md` `[LOGIC-PAGE-LAYOUT]`.
 The search and the controls kept in sight (below) must go on working over both parts.
+**BUILT 15–16 Oct 26 (D928–D933, branch `claude/one-row-guide-medical`):** ONE row (the page's name, search, Filter — a menu of
+All / Warnings / Advisories / Notes / Fired this week (N) — ✎ Edit / Done, Reset to standard, "Reset all" on a phone ≤ 480),
+sticky as below; a Filter other than All shows only the checks; the search reaches both parts. Settings then the checks
+(`ui/logic-html.ts`): a setting's one line says what moves with it, a changed one shows "Standard X" and, while an admin
+edits, its own Reset; a check is named as the warning list names it; four folds of key points, kept open across a
+repaint; every number read from its setting (D932). The "chips", "Edit rules" (now ✎ Edit) and "rule count" of the passage
+below are gone.
 
 **D561/D563, 4 Oct 26 — built on codex/workflow-ui, owner look and remaining reads pending:** keep the search box in view while scrolling,
 alongside the controls already kept visible: All, Warnings, Advisories, Notes, Fired this week, Edit rules

@@ -1,0 +1,32 @@
+[
+ {
+  "n": 1,
+  "name": "the date box that did nothing is back in the row",
+  "file": "src/ui/QualsPage.tsx",
+  "find": "        <button className=\"abtn\" id=\"qExport\" onClick={doExport}>",
+  "put": "        <input className=\"datef\" id=\"qDate\" defaultValue=\"23/06/2026\" />\n        <button className=\"abtn\" id=\"qExport\" onClick={doExport}>",
+  "tests": [
+   "src/ui/quals.test.tsx"
+  ]
+ },
+ {
+  "n": 2,
+  "name": "a screen reader reads Export twice (the short word not hidden from it)",
+  "file": "src/ui/QualsPage.tsx",
+  "find": "<span className=\"qx-short\" aria-hidden=\"true\">Export</span>",
+  "put": "<span className=\"qx-short\">Export</span>",
+  "tests": [
+   "src/ui/quals.test.tsx"
+  ]
+ },
+ {
+  "n": 3,
+  "name": "D937: a screen reader reads Save twice (the short word not hidden from it)",
+  "file": "src/ui/QualsPage.tsx",
+  "find": "<span className=\"qx-short\" aria-hidden=\"true\">Save</span>",
+  "put": "<span className=\"qx-short\">Save</span>",
+  "tests": [
+   "src/ui/quals.test.tsx"
+  ]
+ }
+]

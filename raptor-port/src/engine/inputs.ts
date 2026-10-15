@@ -428,11 +428,11 @@ export function inpType(t:any){const u=String(t==null?'':t).trim().toUpperCase()
 export function canSpare(t:any){const m=inpMeta(t); return !!m&&m.local&&m.grp!=='med';}
 /* WHAT DOES THIS TYPE COST? — the one plain-English sentence describing what a
    man on this input may and may not be planned for. The SINGLE SOURCE for both
-   the Inputs "?" legend (InputsPage typeRule) and the Logic page's type matrix
-   (logic-html leaves): they used to hand-write their own copies and had drifted
+   the Inputs "?" legend (InputsPage typeRule) and, until the Logic page's rewrite (D928, 15 Oct 26), its type matrix:
+   they used to hand-write their own copies and had drifted
    — the Inputs gloss missed the SC-MAIN Warning nuance, the Logic matrix missed
    the SANS / Upchit lines. Both now read HERE, so a rule change lands once and a
-   guard test (logic.test / inputs.test) fails if either surface stops using it.
+   guard test (inputs.test) fails if the legend stops using it.
    Derived from the same flags the engine enforces (canSpare / shiftHardInput /
    grp / work / local), so it cannot describe a rule the engine does not apply. */
 export function inputRuleText(t:any):string{

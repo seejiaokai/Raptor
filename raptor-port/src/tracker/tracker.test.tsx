@@ -12,7 +12,7 @@
    · role.js stays import-free so Raptor reaches it WITHOUT loading the chart
      engine — a regression there would put ~280 KB of syllabus data back into
      Raptor's first download; the seam test guards that by construction. */
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { getPeople, setPeople, setWhoami } from './people.js'
@@ -268,7 +268,10 @@ describe('undo / redo on the bar, for everyone (core.js)', () => {
 describe('dated failures and the day an event was done (core.js)', () => {
   const drain = async () => { while (core.canUndo()) await core.doUndo(); while (core.canRedo()) await core.doRedo(); while (core.canUndo()) await core.doUndo() }
   const at = { clientX: 1, clientY: 1 }
-  const today = core.isoToday()
+  /* [TRK-TEST-MIDNIGHT] (16 Oct 26): the date is the app's own today, so a run that crossed midnight once read it as the
+     15th here and the app stamped the 16th. The clock's DATE is pinned for this group (only Date — every timer runs
+     as it does), and today is read after the pin. */
+  let today = ''
   /* The full list walks the CHART (chart order), so the engine has to have
      booted — the same one-off boot the crew-picker tests do; init() guards
      against a second run. */
@@ -280,8 +283,9 @@ describe('dated failures and the day an event was done (core.js)', () => {
     for (const [id, name] of [[Z, 'STUDENT Z'], [Y, 'STUDENT Y']])
       if (!core.byName(name)) (core.roster as any).push({ id, name })
   }
-  beforeAll(async () => { board = document.createElement('div'); board.id = 'board'; document.body.appendChild(board); await core.init(); seat() })
+  beforeAll(async () => { vi.useFakeTimers({ toFake: ['Date'], now: new Date('2026-10-15T04:00:00Z') }); today = core.isoToday(); board = document.createElement('div'); board.id = 'board'; document.body.appendChild(board); await core.init(); seat() })
   afterAll(() => {
+    vi.useRealTimers()
     for (const id of [Z, Y]) { const i = core.roster.findIndex((r: any) => r.id === id); if (i >= 0) (core.roster as any).splice(i, 1) }
     board.remove()
   })

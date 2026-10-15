@@ -1,0 +1,49 @@
+{
+ "spec": "e2e/geometry.spec.ts",
+ "grep": "D935|D937",
+ "port": 4180,
+ "breaks": [
+  {
+   "n": 1,
+   "name": "the row's buttons lose the row height (36)",
+   "file": "src/ui/scheduler/05-quals.css",
+   "find": ".qbar .abtn{min-height:36px;",
+   "put": ".qbar .abtn{min-height:0;"
+  },
+  {
+   "n": 2,
+   "name": "a phone keeps the long words: the short \"Export\" never shows",
+   "file": "src/ui/scheduler/05-quals.css",
+   "find": "  .qx-short{display:inline}",
+   "put": "  .qx-short{display:none}"
+  },
+  {
+   "n": 3,
+   "name": "the filter never gives way: at a narrow width the row runs past its edge",
+   "file": "src/ui/scheduler/05-quals.css",
+   "find": ".qbar .searchbox{flex:0 1 200px;min-width:0;",
+   "put": ".qbar .searchbox{flex:0 0 200px;min-width:200px;"
+  },
+  {
+   "n": 4,
+   "name": "on a phone a button no longer answers a finger (no 44 strip)",
+   "file": "src/ui/scheduler/05-quals.css",
+   "find": "  .qbar .abtn::after{content:'';position:absolute;inset:-5px 0}",
+   "put": "  .qbar .abtn::after{content:'';position:absolute;inset:0}"
+  },
+  {
+   "n": 5,
+   "name": "D937: Quals no longer opens at its top (the arrival scroll removed)",
+   "file": "src/ui/QualsPage.tsx",
+   "find": "  useEffect(() => { if (window.scrollY) window.scrollTo(0, 0) }, [])",
+   "put": "  useEffect(() => { }, [])"
+  },
+  {
+   "n": 6,
+   "name": "D937: a phone keeps \"Save changes\" (no short word)",
+   "file": "src/ui/QualsPage.tsx",
+   "find": "<span className=\"qx-short\" aria-hidden=\"true\">Save</span>",
+   "put": ""
+  }
+ ]
+}

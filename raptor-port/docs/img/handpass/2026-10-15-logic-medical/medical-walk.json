@@ -1,0 +1,50 @@
+{
+  "results": [
+    {
+      "step": "phone: no \"Medical\" heading; the as-of button at 36, under the tabs, on screen",
+      "pass": true,
+      "note": "{\"heading\":false,\"h\":36,\"under\":true,\"inScreen\":true}"
+    },
+    {
+      "step": "phone: the as-of picker opens inside the screen",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "phone: a date picked, Today joins the row at 36",
+      "pass": true,
+      "note": "{\"h\":36,\"one\":true,\"label\":\" as of 3 Jul\"}"
+    },
+    {
+      "step": "phone: Today goes back to now and leaves the row",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "desk: no \"Medical\" heading; the as-of button at 36, under the tabs, on screen",
+      "pass": true,
+      "note": "{\"heading\":false,\"h\":36,\"under\":true,\"inScreen\":true}"
+    },
+    {
+      "step": "desk: the as-of picker opens inside the screen",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "desk: a date picked, Today joins the row at 36",
+      "pass": true,
+      "note": "{\"h\":36,\"one\":true,\"label\":\" as of 3 Jul\"}"
+    },
+    {
+      "step": "desk: Today goes back to now and leaves the row",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "no page errors in the console",
+      "pass": true,
+      "note": ""
+    }
+  ],
+  "errors": []
+}
