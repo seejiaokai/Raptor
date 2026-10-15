@@ -46,6 +46,20 @@ describe('remarksTyped — the words a person typed', () => {
   })
 })
 
+describe('a remark with no date in it is returned exactly as typed — the tidy runs only where a date was cut (the fix read)', () => {
+  it('no date: nothing of it is touched', () => {
+    for (const r of ['-ve ART, cleared', '[ ] pack kit', 'Leave () placeholder', '—see the notice—', '--> Bangkok', 'Extra .5 day', 'Leave ( see note )', 'ok :)'])
+      expect(remarksTyped(r, leave()), r).toBe(r)
+  })
+  it('a date cut beside a bracket or a dash, or opening the remark before a stop: only its own place is tidied', () => {
+    expect(remarksTyped('Bangkok (till 14 Aug, back Mon)', leave())).toBe('Bangkok (back Mon)')
+    expect(remarksTyped('Bangkok—till 14 Aug—back Mon', leave())).toBe('Bangkok—back Mon')
+    expect(remarksTyped('till 14 Aug: Bangkok', leave())).toBe('Bangkok')
+    expect(remarksTyped('till 17 Jul.', leave())).toBe('')
+    expect(remarksTyped('Bali till 14 Aug?', leave())).toBe('Bali?')
+  })
+})
+
 describe('tillOf / remarksShown — what every screen prints', () => {
   it('the typed words, then "till <its last day>"; the date alone where nothing was typed', () => {
     expect(remarksShown(leave({ remarks: 'Las Vegas' }))).toBe('Las Vegas till 14 Aug')

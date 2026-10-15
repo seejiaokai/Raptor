@@ -1214,7 +1214,7 @@ export function remarksTailWord(remark:any):'on'|'till'|null{const m=DATE_TOKEN.
    "on 15 Jul" saved before the build is stored demo data and prints "… on 15 Jul till 15 Jul" until it is wiped (D56). */
 const MONTHS_RE='(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)';
 const TILL_TOKS=new RegExp(String.raw`[\s,·—–-]*\btill\s+\d{1,2}\s+${MONTHS_RE}\b`,'gi');
-const LEAD_TOK=new RegExp(String.raw`^\s*till\s+\d{1,2}\s+${MONTHS_RE}\b\s*(?:[,·—–-]+\s+)?`,'i');
+const LEAD_TOK=new RegExp(String.raw`^\s*till\s+\d{1,2}\s+${MONTHS_RE}\b\s*(?:[,·—–\-:;.]+\s+)?`,'i');
 /* the words a person typed: the date token taken out, the gap tidied. `rec` — the input or the window's draft — says
    whose remark it is: SANS availability's and an upchit's are their typed words whatever they say (B — they never carried
    the date). */
@@ -1224,11 +1224,20 @@ export function remarksTyped(remark:any,rec?:any):string{
   /* a date that OPENS the remark goes with the separator that joined it to the words after it, where one stands by itself
      ("till 17 Jul — Bangkok", "till 17 Jul, then home"); a sign attached to the next word is that word's own ("till 17 Jul
      -5°C kit" keeps its minus) — the card's rules of D728, kept. Anywhere else a date goes with the separators BEFORE it
-     ("kit, boots, till 17 Jul"), and a separator the words opened with is his ("— see the notice — till 17 Jul"). What the
-     cut leaves is tidied (the code read's finding 3): no space before a closing mark ("Bangkok, back Mon"), no empty
-     brackets ("Leave"), no separator left alone at the front (",Bangkok" → "Bangkok"). */
-  return s.replace(LEAD_TOK,'').replace(TILL_TOKS,' ')
-    .replace(/\s+([,.;:!?)\]])/g,'$1').replace(/\(\s*\)|\[\s*\]/g,'').replace(/^[,·—–-]+(?=\S)(?!\d)/,'')
+     ("kit, boots, till 17 Jul"), and a separator the words opened with is his ("— see the notice — till 17 Jul").
+     ONLY WHERE A DATE WAS CUT is anything tidied (the fix's own read, 17 Oct 26: a tidy run on every remark changed words
+     with no date in them — "-ve ART" lost its minus on every save). A remark with no date is returned as typed. Where one
+     was cut, its place is marked first and only that place is tidied (the code read's finding 3): no space before a
+     closing mark ("Bangkok, back Mon"), brackets that held only the date go ("Leave"), a date just inside a bracket takes
+     its joining separator ("Bangkok (back Mon)"), a dash after it is kept as typed ("Bangkok—back Mon"), and a separator
+     left alone at the front by a date that opened the remark goes (",Bangkok", "till 14 Aug: Bangkok", "till 17 Jul."). */
+  const lead=LEAD_TOK.exec(s);
+  let cut=!!lead;
+  let t=lead?s.slice(lead[0].length).replace(/^[,·—–\-:;.]+(?=\S|$)(?!\d)/,''):s;
+  t=t.replace(TILL_TOKS,()=>{cut=true;return '\u0000';});
+  if(!cut)return s.trim();
+  return t.replace(/\(\s*\u0000\s*\)|\[\s*\u0000\s*\]/g,'').replace(/([(\[])\s*\u0000\s*[,·—–-]*\s*/g,'$1')
+    .replace(/\s*\u0000\s*(?=[,.;:!?)\]])/g,'').replace(/\u0000(\s*)([—–-])/g,'$1$2').replace(/\u0000/g,' ')
     .replace(/\s{2,}/g,' ').trim();}
 /* 'Jul 17' (an input's own date words) → '17 Jul', the form the app prints a day in */
 const dayWords=(md:any):string=>{const m=/^([A-Za-z]{3})[a-z]*\s+(\d{1,2})\b/.exec(String(md||'').trim()); return m?`${+m[2]} ${m[1]}`:'';};

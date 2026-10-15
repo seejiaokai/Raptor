@@ -461,7 +461,7 @@ export function sliceInput(row: any, from: string, to: string, keepIid: boolean)
   /* ITS WORDS FOLLOW ITS DATES (the absence-record re-test, AB3, 26 Sep 26 — Fable F3, reproduced on screen). This
      body copied the remark verbatim, so a piece cut by a medical (the gate's sick-cuts-leave), un-approved, deleted or
      moved by the war kept "till 24 Jul" when it now ended on the 21st — on the Inputs page, the week and the board.
-     The medical trim and the war's approve-extend already rewrite the token (withRemarksTail); now every cut does.
+     (Since D948, 16 Oct 26, no cut writes a date into the remark: each piece prints its own from its dates.)
      Only a remark that CARRIES the token is touched, and the typist's other words stay where they are. D189: on a
      published day the piece still covers, the changed words are a change like any other. */
   /* (since D948, 16 Oct 26, the date is printed from the piece's own dates and never written in: a remark saved with
@@ -505,7 +505,7 @@ function cutDates(cuts: Map<string, Set<string>>): boolean {
    phase 7 — engine/warrecs.ts readCarried cuts at MAX_CARRIED_REMARK). Approving writes the remark onto the leave WITH its
    date ("… on 18 Feb"), which can carry a 200-letter remark past the limit; stored whole, the record in memory and the
    record after a reload differed, the date cut mid-word. Over the limit, the date goes first — the next approval writes
-   it again (withRemarksTail) — and the typist's own words are kept up to the limit. */
+   it again — and the typist's own words are kept up to the limit. (Since D948 nothing writes the date in.) */
 function carriedRemark(text: unknown): string {
   const s = String(text ?? '')
   return s.length <= MAX_CARRIED_REMARK ? s : remarksTyped(s).slice(0, MAX_CARRIED_REMARK)
