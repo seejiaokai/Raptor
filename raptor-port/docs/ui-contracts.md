@@ -10308,7 +10308,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   foot is reached by one swipe, which scrolls the page with the pop-up open — no scrolling inside the pop-up, no smaller
   dates (D901); with this row, 667 tall fits whole and 568 leaves only "Default window" below. **D909:** an input's
   window opened from a day may reach the top of the screen and cover the day's bar; ✕ or Cancel shows the day again.
-  **TO BE BUILT (D917, D918, 15 Oct 26 — `[INPUT-NEW-DEFAULTS]`):** a new input's window opens on OL (not where OL cannot be
+  **BUILT 15 Oct 26 (D917, D918–D920 — `[INPUT-NEW-DEFAULTS]`; the check `docs/handpass/2026-10-15-input-new-defaults.md`):** a new input's window opens on OL (not where OL cannot be
   filed — several people, SANS "+ Commitment"); the title box carries a pencil INSIDE it at its right end, in the box's grey, a line icon, a tap on it a tap on the box (D919, his pick P1 of the drawing `scripts/handpass/mock-input-defaults.mjs`); and in every input's window the Dates block stands after Remarks — When, SANS availability, a Document and Remarks above the calendar (D920, his first idea D913 A).
   **WITHDRAWN 15 Oct 26 BY D916 ("Disregard the minimising of the calendar") — not to be built; the calendar stays showing.** *[Was: TO BE BUILT (D914, 15 Oct 26 — "5B"; `[INPUT-DATES-FOLD]`):]* in an input's window, dates already picked (a day or a
   dragged run on the Inputs calendar, a saved input) show as ONE line that opens the calendar on a tap; the List's

@@ -1041,6 +1041,11 @@ the filter boxes), and every file that drove the form, restated for the window (
 `inputtitle.test.tsx`, `sharedline.test.tsx`, `placeholderlist.test.tsx`, `docconfirm.test.tsx`, `inputstabs.test.tsx`,
 `audit-e-window-sort.test.tsx`, `whoplaced.test.tsx`, `e2e/step4-leavewar.spec.ts`). Its look and its walk:
 `scripts/handpass/ivet-look.mjs`, `ivet-walk.mjs`; the check `docs/handpass/2026-10-10-inputs-vet-check.md`.
+**`[INPUT-NEW-DEFAULTS]` (D917, D919, D920 — 15 Oct 26):** `newInputSeed` opens on OL; the title box (`inputedit.tsx`) sits in a
+`.inped-title` wrapper with the drawn pencil `.inped-pen` (`icons.tsx PenIcon`; styled in `scheduler/14-input-editors.css`), none on a
+read-only input; the Dates block stands after Remarks. Tests `ui/inputnewdefaults.test.tsx`; `inputsvet.test.tsx` and
+`inputtitle.test.tsx` pick their own kind now. Its walk `scripts/handpass/ind-walk.mjs` (`--break`); the check
+`docs/handpass/2026-10-15-input-new-defaults.md`.
 `src/ui/InputCard.tsx` - THE INPUT CARD (owner D718–D724, 10 Oct 26 — `[INPUT-LIST-AS-DAY-CARD]`): the one card of the
 Inputs calendar's opened day and of the Inputs list on a phone. A flow of text with the LATE-and-hours corner floated at
 its right, so a shared input's names wrap round it; the card's button is a span with a button's role (a real button is

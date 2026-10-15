@@ -296,8 +296,12 @@ describe('the List — its form, its rows, the window a row opens, its search', 
     expect([a.type, a.title]).toEqual(['Meeting', 'Open house'])
     had.add(String(a.iid))
     await plus()
-    expect(box()!.value, 'the box shows the new input’s own kind — nothing of the last title').toBe(($('#inpEditType') as HTMLSelectElement).value)
+    /* the next new input opens on OL (owner D917, 15 Oct 26), which takes no title — so nothing of the last title can
+       show; the kind picked next shows its own name */
+    expect(($('#inpEditType') as HTMLSelectElement).value).toBe('OL')
+    expect(box(), 'OL has no title box').toBeNull()
     await choose('#inpEditType', 'Training')
+    expect(box()!.value, 'the box shows the new input’s own kind — nothing of the last title').toBe('Training')
     await pickDay()
     await click($('#inpEditSave'))
     const b = newest()

@@ -24,7 +24,7 @@ import { MedClashConfirm } from './MedClashConfirm'
 import { OilConfirm } from './OilConfirm'
 import { DocConfirm } from './DocConfirm'
 import { docAdd, docFields, docGet, rowDocIds } from '../state/docs'
-import { ClipIcon, UploadIcon } from './icons'
+import { ClipIcon, PenIcon, UploadIcon } from './icons'
 import { acceptInput } from '../engine/slots'
 import { iuParts } from '../engine/keys'
 import { ownInputOf, toPeople, putPerson, takePerson, swapPerson, pieceOf } from '../engine/inputown'
@@ -822,12 +822,15 @@ export const firstPersonalType = () => INPUT_TYPES.find((t: any) => isPersonal(t
    button … opens the same window the calendar opens"). The calendar hands in the day it was pressed on; THE LIST HANDS
    IN NONE — the window then opens with no date picked ("pick a start date"), as the List's own form always did:
    quietly dating an input nobody dated was the trap that form's first check named. Everything else is the calendar's
-   seed as it was (ui/InputsCal.tsx openAdd): filed for the signed-in person, the first "Duty & other commitments"
-   kind, its own all-day default. `_calendar` is what gives the window its date calendar and keeps the saved input in
-   view (InputEditor, below). */
+   seed as it was (ui/InputsCal.tsx openAdd): filed for the signed-in person, its kind's own all-day default.
+   `_calendar` is what gives the window its date calendar and keeps the saved input in view (InputEditor, below).
+   ITS KIND IS OL (owner D917, 15 Oct 26 — "the default type to be OL since that's the most common leave taken"), not
+   the first "Duty & other commitments" kind it opened on until then; OL takes no title (D716). Only these doors: a
+   board panel's + Add keeps `firstPersonalType`, SANS "+ Commitment" its own kind, a saved input its own. A squadron
+   whose kinds carry no OL falls back to the old start. */
 export const newInputSeed = (from?: string, until?: string) => {
   const [iso, end] = from && until && until < from ? [until, from] : [from, until]
-  const t = firstPersonalType()
+  const t = INPUT_TYPES.includes('OL') ? 'OL' : firstPersonalType()
   return { _new: true, _calendar: true, _ctx: 'i', person: me(), type: t, date: iso ? fmt(iso) : undefined,
     endDate: iso && end && end !== iso ? fmt(end) : undefined, allday: defaultAllday(t), s: 360, e: 1080 }
 }
@@ -2808,17 +2811,20 @@ export function InputEditor() {
             <span className="inped-k">Title</span>
             {/* its id is NOT `inpEditTitle`: that is the dialog's own heading where this editor opens from the schedule or
                 the board, and the two shared one id there (the check's walk, walker C — W3) */}
-            <input id="inpEditOwnTitle" aria-label="Title" maxLength={TITLE_MAX} autoComplete="off"
-              value={draft.title == null ? inpType(draft.type) : draft.title} placeholder={inpType(draft.type)}
-              onChange={e => setDraft({ ...draft, title: e.target.value })}
-              onFocus={e => { if (draft.title == null) e.target.select() }}
-              onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); save(false) } }} />
+            {/* THE PENCIL INSIDE THE BOX, AT ITS RIGHT END (owner D918 — "an edit pencil icon beside the title to indicate
+                that people can edit it"; D919, his pick P1 of the drawing scripts/handpass/mock-input-defaults.mjs). A
+                drawing, not a button: hidden from a screen reader, and the stylesheet lets a press through it to the box
+                (`.inped-pen` pointer-events) — a tap on it IS a tap on the box. The ui/icons.tsx line style, never the ✏
+                glyph, which an iPhone draws as a coloured emoji. None on an input its reader may only read. */}
+            <span className="inped-title">
+              <input id="inpEditOwnTitle" aria-label="Title" maxLength={TITLE_MAX} autoComplete="off"
+                value={draft.title == null ? inpType(draft.type) : draft.title} placeholder={inpType(draft.type)}
+                onChange={e => setDraft({ ...draft, title: e.target.value })}
+                onFocus={e => { if (draft.title == null) e.target.select() }}
+                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); save(false) } }} />
+              {!readOnly && <span className="inped-pen" aria-hidden="true"><PenIcon /></span>}
+            </span>
           </label>}
-          {/* the Unavailable add takes a RANGE (owner, 19 Aug 26 — "I can
-              select a date range as well"): the same two-click calendar the
-              Inputs page uses, owning the remarks' till-date token the same
-              way (withRemarksTail — a one-day pick reads "till <that day>",
-              and what the typist wrote around the token survives re-picks) */}
           {/* an upchit is ONE date (the write path refuses a range), picked
               plainly — defaulting to today, editable for a certificate
               signed a day or two back (owner, 27 Aug 26) */}
@@ -2828,23 +2834,6 @@ export function InputEditor() {
             <DateBox id="inpEditUpDate" label="Upchit date" value={draft.start}
               onChange={v => setDraft({ ...draft, start: v, end: '' })} />
           </label>}
-          {/* ...and a SAVED shared input's (D681 — `datesHere`, above). A saved input's dates are a finished range, so
-              the first tap is always the NEW START and the next the new end — "a tap for the start, a tap for the end";
-              a one-day input is handed to the calendar as a range of one day until that first tap, or its first tap
-              would stretch it instead (`midPick`). Its remark is not rewritten here: the save follows the "till" word
-              itself, and a remark the picker had touched would read as his own change to the window. */}
-          {(ctx === 'u' || (isNew && r._calendar) || datesHere) && <div className="inped-f">
-            <span className="inped-k">Dates</span>
-            <div className="inped-dates">
-              <RangeCal key={'cal-' + calKey} idPrefix="inpEd" start={draft.start}
-                end={datesHere && !midPick ? (draft.end || draft.start) : draft.end}
-                onPick={(s2, e2) => {
-                  if (datesHere) { setMidPick(!e2); setDatesPicked(true); setDraft({ ...draft, start: s2, end: e2 }); return }
-                  setDraft({ ...draft, start: s2, end: e2, remarks: withRemarksTail(draft.remarks, s2, e2, 'till') })
-                }} />
-              <div className="rc-read">{draft.start ? (fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' → ' + fmt(draft.end) : '')) : 'pick a start date'}</div>
-            </div>
-          </div>}
           {/* the F/O/A ticks sit ABOVE the standard timing controls now, not
               in place of them (owner rework, 14 Aug 26) — SANS Availability
               is a normal timed input with one extra field, and its single
@@ -2893,6 +2882,34 @@ export function InputEditor() {
               onChange={e => setDraft({ ...draft, remarks: e.target.value })}
               onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); save(false) } }} />
           </label>
+          {/* THE DATES STAND BELOW WHAT IS STILL TO BE FILLED IN (owner D920, 15 Oct 26 — his first idea, D913 drawing A:
+              "move the time and remarks above the calendar since I can already select the dates through the initial
+              inputs calendar"): SANS availability's F / O / A, When, a Document and Remarks come first, the calendar —
+              which keeps showing (D916) — after them, for every kind and every door; the List's "+ Input", with no
+              dates yet, fills in the time first, and its save still refuses an input with no dates. An upchit's one
+              date box (above) is not a calendar and keeps its place. */}
+          {/* the Unavailable add takes a RANGE (owner, 19 Aug 26 — "I can
+              select a date range as well"): the same two-click calendar the
+              Inputs page uses, owning the remarks' till-date token the same
+              way (withRemarksTail — a one-day pick reads "till <that day>",
+              and what the typist wrote around the token survives re-picks) */}
+          {/* ...and a SAVED shared input's (D681 — `datesHere`, above). A saved input's dates are a finished range, so
+              the first tap is always the NEW START and the next the new end — "a tap for the start, a tap for the end";
+              a one-day input is handed to the calendar as a range of one day until that first tap, or its first tap
+              would stretch it instead (`midPick`). Its remark is not rewritten here: the save follows the "till" word
+              itself, and a remark the picker had touched would read as his own change to the window. */}
+          {(ctx === 'u' || (isNew && r._calendar) || datesHere) && <div className="inped-f">
+            <span className="inped-k">Dates</span>
+            <div className="inped-dates">
+              <RangeCal key={'cal-' + calKey} idPrefix="inpEd" start={draft.start}
+                end={datesHere && !midPick ? (draft.end || draft.start) : draft.end}
+                onPick={(s2, e2) => {
+                  if (datesHere) { setMidPick(!e2); setDatesPicked(true); setDraft({ ...draft, start: s2, end: e2 }); return }
+                  setDraft({ ...draft, start: s2, end: e2, remarks: withRemarksTail(draft.remarks, s2, e2, 'till') })
+                }} />
+              <div className="rc-read">{draft.start ? (fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' → ' + fmt(draft.end) : '')) : 'pick a start date'}</div>
+            </div>
+          </div>}
           {/* REVISE A RECORDED OIL ANSWER (owner, 29 Aug 26 — a mistaken "No
               OIL" used to be revisable only by nudging the input's times).
               Drawn off the SAVED row (oilAnswered — no per-render normalize),

@@ -86,6 +86,11 @@ const mount = async (phone: boolean, view: 'table' | 'cal' = 'table') => {
   await act(async () => { root.render(<><InputsPage /><InputEditor /></>) })
   if (view === 'table') await allDates()
 }
+/* a new input opens on OL (owner D917, 15 Oct 26), which is all day: a test that types hours picks a timed kind first */
+const timed = async () => {
+  const el = $('#inpEditType') as HTMLSelectElement
+  await act(async () => { Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value')!.set!.call(el, 'Training'); el.dispatchEvent(new Event('change', { bubbles: true })) })
+}
 const openDay = async (iso: string) => act(async () => { $(`[data-icday="${iso}"]`)!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })) })
 
 beforeEach(async () => {
@@ -604,10 +609,10 @@ describe('an input just saved wears the just-added mark wherever the page shows 
     try {
       await mount(false, 'cal')
       await openDay('2026-10-21')
-      await click($('#icPopAdd')); await type('#inpEditStart', '07:00'); await type('#inpEditEnd', '08:00'); await click($('#inpEditSave'))
+      await click($('#icPopAdd')); await timed(); await type('#inpEditStart', '07:00'); await type('#inpEditEnd', '08:00'); await click($('#inpEditSave'))
       const first = newest().iid
       await act(async () => { vi.advanceTimersByTime(3000) })
-      await click($('#icPopAdd')); await type('#inpEditStart', '20:00'); await type('#inpEditEnd', '21:00'); await click($('#inpEditSave'))
+      await click($('#icPopAdd')); await timed(); await type('#inpEditStart', '20:00'); await type('#inpEditEnd', '21:00'); await click($('#inpEditSave'))
       const second = newest().iid
       expect(second).not.toBe(first)
       const cards = $$('[data-testid="win-inputsday"] .icard.innew').map(c => c.getAttribute('data-fresh'))
@@ -630,7 +635,7 @@ describe('an input just saved wears the just-added mark wherever the page shows 
     try {
       await mount(false, 'cal')
       await openDay('2026-10-21')
-      await click($('#icPopAdd')); await type('#inpEditStart', '07:00'); await type('#inpEditEnd', '08:00'); await click($('#inpEditSave'))
+      await click($('#icPopAdd')); await timed(); await type('#inpEditStart', '07:00'); await type('#inpEditEnd', '08:00'); await click($('#inpEditSave'))
       const id = newest().iid, n = went.length
       expect(went[n - 1]).toBe(id)
       await act(async () => { vi.advanceTimersByTime(3000) })
