@@ -907,3 +907,18 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** Done as D921: the rule names explanations and recaps, and sits in an always-loaded rule file. A check-before-send line could ask: "does this message name anything on screen? then is a picture attached?"
 
 **Principle:** A rule scoped by the kind of message ("a proposal") gets skipped when the agent classes its message as another kind; scope it by its trigger (anything on screen is named) instead.
+
+### Observation 615: A script that inserts under a document heading found the heading's name in the file's own prose first
+
+**Status:** OPEN
+**Date:** 2026-10-15
+**Session context:** The night run of 15 Oct 26 — writing a new chat block into HANDOFF.md under `## Now` by a Python edit (`s.index('## Now')`). Numbered past #614, which sits on the unmerged branch `claude/trk-reorder-finger-drag`.
+**Skill:** session-handoff (and overnight, which writes the night's block)
+**Type:** open-source
+**Phase/Area:** writing a block under a heading
+
+**Issue:** HANDOFF.md's opening paragraph mentions "`## Now`" in backticks, so a substring search for the heading matched the prose on line 3 and the new block landed above the heading. The document check caught it ("the block … sits outside ## Now"); nothing was lost, but only because the check exists.
+
+**Suggested improvement:** In the guides that write a HANDOFF block, say: find a heading by a whole LINE (`\n## Now\n`, or a line-anchored regex), never by its words — a file that describes its own structure names its headings in its prose. Same for any marker-based insert.
+
+**Principle:** A file that documents its own layout contains its headings' names as text; anchor every insert on the heading's full line, not on its words.
