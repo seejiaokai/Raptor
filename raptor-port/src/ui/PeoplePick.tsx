@@ -207,10 +207,30 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
       /* only the window's own list: where the window holds all its faces there is nothing to show, and the page behind a
          window is never scrolled from inside it (D686) */
       const box = findScroller(root, 'y')
-      if (box && !box.isDoc) d.auto = edgeAutoScroll({ from: root, axis: 'y', touch: d.touch, x: e.clientX, y: e.clientY, onScroll: () => {
-        const id = drag.current === d ? puckAt(root, d.lx!, d.ly!) : null
-        if (id) pass(id)
-      } })
+      /* THE BAND IS WHERE THE FACES ARE SEEN (the walk of 15 Oct 26, E4): the window's Save / Cancel bar stays at its
+         foot over the last strip of what it scrolls, so its edge is that bar's top — a finger held there is still over
+         faces, and picks each one that slides under it. And it runs only while there are faces still to bring into view
+         that way: the window holds more than the picker, and ran on to its own end, carrying the faces out of sight. */
+      /* what stays put inside the window as it scrolls (its bars), found once as the drag becomes the picker's — not the
+         picker itself, nor anything in it */
+      const stuck = box && !box.isDoc ? Array.from(box.el.querySelectorAll('*')).filter(k => !root.contains(k) && getComputedStyle(k).position === 'sticky') : []
+      const seen = (): [number, number] => {
+        const sc = box!.el, r = sc.getBoundingClientRect()
+        let lo = Math.max(r.top, 0), hi = Math.min(r.bottom, window.innerHeight)
+        for (const k of stuck) {
+          const b = k.getBoundingClientRect()
+          if (b.bottom >= hi - 1 && b.top > lo) hi = Math.min(hi, b.top)
+          else if (b.top <= lo + 1 && b.bottom < hi) lo = Math.max(lo, b.bottom)
+        }
+        return [lo, hi]
+      }
+      if (box && !box.isDoc) d.auto = edgeAutoScroll({ from: root, axis: 'y', touch: d.touch, x: e.clientX, y: e.clientY,
+        span: seen,
+        more: dir => { const r = root.getBoundingClientRect(), [lo, hi] = seen(); return dir > 0 ? r.bottom > hi + 1 : r.top < lo - 1 },
+        onScroll: () => {
+          const id = drag.current === d ? puckAt(root, d.lx!, d.ly!) : null
+          if (id) pass(id)
+        } })
     }
     d.lx = e.clientX; d.ly = e.clientY
     d.auto?.point(e.clientX, e.clientY)

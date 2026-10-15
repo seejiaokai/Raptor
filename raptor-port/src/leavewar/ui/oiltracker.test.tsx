@@ -315,6 +315,29 @@ describe('crediting OIL (admin)', () => {
     expect(screen.getByTestId('counter-name').textContent).toBe('+OIL')
   })
 
+  /* THE CREDIT'S DATE IS THE APP'S OWN DATE BOX SINCE STEP TWO OF THE ONE DATE CALENDAR (owner D901, 15 Oct 26): its
+     calendar floats on the page, outside the bar — and the tracker's "a tap outside the bar clears it" took every
+     press in it for a tap outside, so the month's arrow or a date closed the bar and nothing was picked (found by the
+     walk, 15 Oct 26 — C6). A press in the floating calendar is the bar's. */
+  it('the credit\'s date is picked on the floating calendar — a press in it keeps the bar, and the credit is saved on that date', () => {
+    setRole('admin')
+    openTracker()
+    fireEvent.click(screen.getByTestId('oil-name-slammed'))
+    fireEvent.click(screen.getByTestId('oil-date'))
+    const prev = screen.getByTestId('dcal-prev')
+    fireEvent.pointerDown(prev); fireEvent.click(prev)
+    expect(screen.queryByTestId('oil-credit-panel'), 'the bar stays').not.toBeNull()
+    const month = screen.getByTestId('dcal').getAttribute('data-month')!
+    const day = screen.getByTestId(`dcal-day-${month}-10`)
+    fireEvent.pointerDown(day); fireEvent.click(day)
+    expect(screen.queryByTestId('dcal-card'), 'a pick closes the calendar').toBeNull()
+    expect(screen.getByTestId('oil-date').getAttribute('data-value')).toBe(`${month}-10`)
+    fireEvent.change(screen.getByTestId('oil-amt'), { target: { value: '1' } })
+    fireEvent.change(screen.getByTestId('oil-reason'), { target: { value: 'Dated' } })
+    fireEvent.click(screen.getByTestId('oil-credit-save'))
+    expect(getState().ledger.at(-1)).toMatchObject({ personId: 'slammed', amount: 1, reason: 'Dated', date: `${month}-10` })
+  })
+
   it('a bad grant is refused with the reason, and nothing is written', () => {
     setRole('admin')
     openTracker()

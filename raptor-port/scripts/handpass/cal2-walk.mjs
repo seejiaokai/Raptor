@@ -63,7 +63,7 @@ for (const size of SIZES) {
   const step = async (id, label, fn) => {
     if (ONLY.length && !ONLY.includes(id)) return
     console.log(`-- [${size}] ${id} ${label}`)
-    try { await fn() } catch (e) { ok(size, `${id}: ${label} — ran to its end`, false, String(e.message || e).split('\n')[0].slice(0, 240)) }
+    try { await fn() } catch (e) { ok(size, `${id}: ${label} — ran to its end`, false, String(e.message || e).replace(/\s+/g, ' ').slice(0, 400)) }
     await reset()
   }
   const reset = async () => {
@@ -108,6 +108,7 @@ for (const size of SIZES) {
       await L.pic(w, `C1-bid-range-${size}`)
       await press(tid('bid-LL'), { scroll: false })
       await L.sleep(500)
+      if (/Tap the same leave again/.test(await text('.bidsheet[role="dialog"]'))) { await press(tid('bid-LL'), { scroll: false }); await L.sleep(500) }
       await L.pic(w, `C1-bid-filed-${size}`)
       const cells = await p.evaluate(w0 => ['2026-01-26', '2026-01-30'].map(d => (document.querySelector(`[data-testid="cell-${w0}-${d}"]`)?.textContent || '').trim()), who)
       ok(size, 'C1: filed — the run\'s days on the grid carry the leave', cells.every(c => /LL/.test(c)), cells.join(' / '))
@@ -164,7 +165,7 @@ for (const size of SIZES) {
     await step('C4', 'an event over a run of days', async () => {
       await lw()
       const id = await p.evaluate(() => { const c = [...document.querySelectorAll('[data-testid^="event-0-2026-"]')].find(e => /^event-0-2026-01-\d\d$/.test(e.getAttribute('data-testid')) && e.getBoundingClientRect().width > 8 && /^\+?$/.test((e.textContent || '').trim())); return c ? c.getAttribute('data-testid') : null })
-      if (!id) throw new Error('no empty event cell in January')
+      if (!id) throw new Error('no empty event cell in January: ' + JSON.stringify(await p.evaluate(() => [...document.querySelectorAll('[data-testid^="event-"]')].slice(0, 8).map(e => [e.getAttribute('data-testid'), (e.textContent || '').trim().slice(0, 12), Math.round(e.getBoundingClientRect().width)]))))
       await press(tid(id))
       await p.waitForSelector(tid('event-sheet'))
       await p.locator(tid('event-text')).fill('WALKEV')
@@ -213,11 +214,13 @@ for (const size of SIZES) {
       const card = await p.locator(tid('dcal-card')).evaluate(e => { const r = e.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, h = document.elementFromPoint(x, y); return { on: r.top >= 0 && r.bottom <= innerHeight && r.left >= 0 && r.right <= innerWidth, top: !!h && e.contains(h) } })
       ok(size, 'C6: its calendar is on the screen and on top of the tracker', card.on && card.top, JSON.stringify(card))
       await L.pic(w, `C6-oil-credit-date-${size}`)
-      const today = await p.locator(tid('dcal')).getAttribute('data-today')
-      await press(tid('dcal-prev'), { scroll: false })
-      const prevMonth = await p.locator(tid('dcal')).getAttribute('data-month')
+      if (process.env.WALK_DEBUG) console.log('   C6 after pic: cards', await p.locator(tid('dcal-card')).count(), 'cals', await p.locator('[data-testid="dcal-card"] .dcal').count())
+      const cal = '[data-testid="dcal-card"] .dcal'
+      const today = await p.locator(cal).getAttribute('data-today')
+      await press('[data-testid="dcal-card"] .dcal-nav[aria-label="Previous month"]', { scroll: false })
+      const prevMonth = await p.locator(cal).getAttribute('data-month')
       const pick = `${prevMonth}-10`
-      await press(tid(`dcal-day-${pick}`), { scroll: false })
+      await press(`[data-testid="dcal-card"] [data-iso="${pick}"]`, { scroll: false })
       ok(size, 'C6: a tap on a date picks it and the calendar goes', !(await has(tid('dcal-card'))) && (await p.locator(tid('oil-date')).getAttribute('data-value')) === pick, `${await p.locator(tid('oil-date')).getAttribute('data-value')} (today ${today})`)
       await p.locator(tid('oil-amt')).fill('1')
       await p.locator(tid('oil-reason')).fill('walk')
@@ -424,16 +427,19 @@ for (const size of SIZES) {
         const pucks = [...document.querySelectorAll('[data-testid="pp"] [data-pp]')].filter(e => { const r = e.getBoundingClientRect(); return r.height > 0 })
         const R = sc ? sc.getBoundingClientRect() : null
         const vis = R ? pucks.filter(e => { const r = e.getBoundingClientRect(); return r.top >= R.top && r.bottom <= R.bottom }) : []
-        return { scroller: !!sc && sc !== document.scrollingElement, top: sc ? sc.scrollTop : 0, R: R && { t: R.top, b: Math.min(R.bottom, innerHeight), l: R.left, r: R.right }, first: vis[0] && (() => { const r = vis[0].getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 } })(), n: pucks.length, body: !!body }
+        const bar = sc ? [...sc.querySelectorAll('*')].filter(k => getComputedStyle(k).position === 'sticky' && !k.closest('[data-testid="pp"]')).map(k => k.getBoundingClientRect()).filter(b => R && b.bottom >= Math.min(R.bottom, innerHeight) - 1).map(b => b.top)[0] : null
+        return { scroller: !!sc && sc !== document.scrollingElement, top: sc ? sc.scrollTop : 0, R: R && { t: R.top, b: Math.min(R.bottom, innerHeight, bar ?? 1e9), l: R.left, r: R.right }, first: vis[0] && (() => { const r = vis[0].getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 } })(), n: pucks.length, body: !!body }
       })
       if (!geo.scroller || !geo.first) { ok(size, 'E4: the window\'s faces run past its foot (something to scroll)', false, JSON.stringify(geo)); return }
       /* scroll so a face is near the top, then drag sideways first (a finger's drag starts sideways) and down to the foot */
       const H = await hand(w)
       const picked0 = await p.evaluate(() => document.querySelectorAll('[data-testid="pp"] [data-pp][aria-pressed="true"]').length)
       await H.down(geo.first.x, geo.first.y); await H.to(geo.first.x + 30, geo.first.y + 4, 4)
-      await H.to(geo.first.x + 30, geo.R.b - 6); await L.sleep(1200)
+      await H.to(geo.first.x + 30, geo.R.b - 6); await L.sleep(2500)
       const top1 = await p.evaluate(() => { let sc = document.querySelector('[data-testid="pp"]'); while (sc && !(sc.scrollHeight > sc.clientHeight + 1 && /auto|scroll/.test(getComputedStyle(sc).overflowY))) sc = sc.parentElement; return sc ? sc.scrollTop : -1 })
-      ok(size, 'E4: held at the window\'s foot, the window scrolls', top1 > geo.top + 30, `${geo.top} → ${top1}`)
+      ok(size, 'E4: held at the foot of the faces seen (above the window\'s Save bar), the window scrolls', top1 > geo.top + 30, `${geo.top} → ${top1}`)
+      const end = await p.evaluate(b => { const r = document.querySelector('[data-testid="pp"] .pp-body').getBoundingClientRect(); return { last: Math.round(r.bottom), seenFoot: Math.round(b) } }, geo.R.b)
+      ok(size, 'E4: it stops at the last face — the picker is not carried out of sight', end.last >= end.seenFoot - 2 && end.last <= end.seenFoot + 40, JSON.stringify(end))
       await L.pic(w, `E4-people-drag-${size}`)
       await H.up(); await L.sleep(400)
       const picked1 = await p.evaluate(() => document.querySelectorAll('[data-testid="pp"] [data-pp][aria-pressed="true"]').length)

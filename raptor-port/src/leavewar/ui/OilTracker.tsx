@@ -273,12 +273,17 @@ export function OilTracker({ person, onClose, onGranted }: {
   // for this in place of a Deselect button (owner, 2 Sep 26). A tap on a name
   // still (de)selects, and a tap inside the bar (its inputs, the date pop) is
   // left alone; anything else clears the selection and folds the bar away.
+  // The date pop is the app's own floating calendar since step two of the one
+  // date calendar (D901, 15 Oct 26 — ui/DateBox.tsx): it floats on the page,
+  // outside the bar, so a press in it (`.dcal-layer`, its veil and its patch
+  // too) is the bar's — or every press in it closed the bar before the date
+  // was picked (found by the walk, 15 Oct 26).
   const hasSel = admin && sel.size > 0
   useEffect(() => {
     if (!hasSel) return
     const onDown = (e: PointerEvent) => {
       const t = e.target as HTMLElement | null
-      if (t?.closest('[data-testid="oil-credit-panel"]') || t?.closest('[data-oilpick]')) return
+      if (t?.closest('[data-testid="oil-credit-panel"]') || t?.closest('[data-oilpick]') || t?.closest('.dcal-layer')) return
       setSel(new Set())
     }
     document.addEventListener('pointerdown', onDown, true)

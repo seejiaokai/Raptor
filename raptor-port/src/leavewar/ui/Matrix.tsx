@@ -703,6 +703,9 @@ export function Matrix() {
     const onDown = (e: PointerEvent) => {
       const t = e.target as HTMLElement | null
       if (t?.closest('[data-testid="balance-bar"]') || t?.closest('td.figbox[data-fig][data-person]')) return
+      // The bar's own date calendar (the OIL credit's date — the app's date box since step two of the one date
+      // calendar, D901) floats on the page, outside the bar: a press in it is the bar's (the walk, 15 Oct 26)
+      if (t?.closest('.dcal-layer')) return
       // A sheet is up: it owns this press, exactly as Escape below yields to it
       // (review, 6 Sep 26 — the two disagreed, so a tap on a sheet's scrim
       // dropped a run that the same sheet's Escape would have left alone).
@@ -710,7 +713,8 @@ export function Matrix() {
       setFigSel(null)
     }
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape' || document.querySelector('.bidsheet')) return
+      // ...and its Escape is the calendar's, which closes first (ui/DateBox.tsx), the bar only on a second press
+      if (e.key !== 'Escape' || document.querySelector('.bidsheet') || document.querySelector('.dcal-layer:not(.dcal-patch)')) return
       e.stopPropagation()
       setFigSel(null)
     }
