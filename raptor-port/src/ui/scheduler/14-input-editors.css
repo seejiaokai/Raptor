@@ -261,7 +261,9 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 /* …and the same date after an input's remark box on the schedule — the week's in-place remark and the board's box */
 .rk-till{color:var(--ink-3);white-space:nowrap;font-weight:500}
 .pl-row .rmk .rk-till{margin-left:.35em}
-.plist .pl-row .rmk .ntx.inpt{display:inline-block;min-width:2.5em;max-width:100%;vertical-align:top}
+/* inline, so the typed words and the date flow as the printed text does on View-only Sched — a block of its own pushed
+   the date onto a line of its own and a phone row grew (the gates' geometry test, 17 Oct 26) */
+.plist .pl-row .rmk .ntx.inpt{display:inline;min-height:0}
 .sb-arow .rmkt{display:flex;align-items:center;gap:6px;min-width:0}
 .sb-arow .rmkt>.ain{flex:1 1 auto;min-width:0}
 .sb-arow .rmkt>.rk-till{flex:none;font-size:11px}

@@ -161,7 +161,7 @@ describe('commitChipMove — inputs', () => {
     /* since D948 the words are kept and the date printed from the moved dates — a saved date in the remark is dropped */
     expect([a.remarks, remarksShown(a)]).toEqual(['Bali', 'Bali till 21 Jul'])
     expect(commitChipMove({ kind: 'input', iid: b.iid }, '2026-07-06', '2026-07-08')).toBe(true)
-    expect([b.remarks, remarksShown(b)], 'the war’s one-day "on 6 Jul" was its own date').toEqual(['', 'till 8 Jul'])
+    expect([b.remarks, remarksShown(b)], 'an "on" is kept as typed, never read as the date (the code read)').toEqual(['on 6 Jul', 'on 6 Jul till 8 Jul'])
     expect(commitChipMove({ kind: 'input', iid: c.iid }, '2026-07-01', '2026-07-02')).toBe(true)
     expect([c.remarks, remarksShown(c)]).toEqual(['Bali', 'Bali till 2 Jul'])
   })

@@ -1201,40 +1201,35 @@ export function remarksTailWord(remark:any):'on'|'till'|null{const m=DATE_TOKEN.
    that prints it prints the typed words, then "till <its last day>" — a one-day input too (his answer B: "till <that
    day>", as his rule of 18 Aug 26) — and a box a person types in shows the typed words alone, the date in grey after it.
    So the date can never be out of step with the dates, and nobody types round it.
-   Nothing above writes the token any more (withRemarksTail and remarksDateTail are kept for a stored remark's reading
-   only). A remark SAVED before the build may still carry one, typed or written ("Medically down till 17 Jul",
-   "till 13 Jul Bangkok", a synced leave's "on 15 Jul"): `remarksTyped` reads it as the date and leaves it out, so it is
-   printed once, from the dates. NOT for SANS availability, which never carried the date (it is filed on the SANS
-   calendar, D620) and is printed as typed; nor an upchit, which draws nothing. */
-/* A DATE TOKEN IS NARROW (the night's scenario designer, A, 17 Oct 26): "till" or "on", a day and a REAL month — never
-   "on 2 BFM", "on 1 day" or "till 6 ACs", which are a person's words. "till <day> <month>" is read as the date wherever
-   it stands (the calendar wrote it, and a "till" typed by hand says the same thing); "on <day> <month>" only where that
-   day is one of the input's own (the Leave War's one-day "on 15 Jul") — "Wedding on 12 Aug" on a leave of 10–14 Aug is
-   his. With no record to ask, no "on" is taken. */
-const TILL_TOKS=/[\s,·—–-]*\btill\s+\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\b(?:\s+\d{4})?/gi;
-const ON_TOKS=/[\s,·—–-]*\bon\s+(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\b(?:\s+\d{4})?/gi;
-const cap3=(m:string)=>m.charAt(0).toUpperCase()+m.slice(1,3).toLowerCase();
-/* the days an input (or a window's draft) runs, as the app prints a day — '17 Jul' */
-const ownDays=(rec:any):Set<string>=>{const out=new Set<string>(); if(!rec)return out;
-  for(const md of [rec.date,rec.endDate]){const w=dayWords(md); if(w)out.add(w);}
-  for(const iso of [rec.start,rec.end]){const w=isoLabel(iso); if(w)out.add(w);}
-  return out;};
+   Nothing writes the token any more (withRemarksTail, remarksDateTail and remarksTailWord above are no longer called by
+   the app; their tests still pin what they did). A remark SAVED before the build may still carry the calendar's
+   "till <day> <month>" ("Medically down till 17 Jul", "till 13 Jul Bangkok"): `remarksTyped` reads it as the date and
+   leaves it out, so it is printed once, from the dates. NOT for SANS availability, which never carried the date (it is
+   filed on the SANS calendar, D620) and is printed as typed; nor an upchit, which draws nothing. */
+/* A DATE TOKEN IS NARROW (the night's scenario designer, A, and the fresh code read, 17 Oct 26): "till", a day, and a
+   month as the calendar wrote it ("17 Jul") or spelt out ("17 July") — never a year, a time or any other word after it
+   ("till 14 Aug 0800 start" keeps its 0800; "till 3 Marines" and "till 6 ACs" are his words). "On <day> <month>" is
+   ALWAYS his ("Wedding on 12 Aug", "Flight on 10 Aug"): nothing writes it since D948, and reading it as a date by the
+   input's own days cut a person's words when the days moved (the code read's finding 1). The Leave War's one-day
+   "on 15 Jul" saved before the build is stored demo data and prints "… on 15 Jul till 15 Jul" until it is wiped (D56). */
+const MONTHS_RE='(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)';
+const TILL_TOKS=new RegExp(String.raw`[\s,·—–-]*\btill\s+\d{1,2}\s+${MONTHS_RE}\b`,'gi');
+const LEAD_TOK=new RegExp(String.raw`^\s*till\s+\d{1,2}\s+${MONTHS_RE}\b\s*(?:[,·—–-]+\s+)?`,'i');
 /* the words a person typed: the date token taken out, the gap tidied. `rec` — the input or the window's draft — says
    whose remark it is: SANS availability's and an upchit's are their typed words whatever they say (B — they never carried
-   the date), and its own days are the only "on" read as a date. */
+   the date). */
 export function remarksTyped(remark:any,rec?:any):string{
   const s=String(remark==null?'':remark);
   if(rec&&(isSansAvail(rec.type)||isUpchit(rec.type)))return s.trim();
-  const own=ownDays(rec), isDate=(w:string,d:string,mo:string)=>/^till$/i.test(w)||own.has(`${+d} ${cap3(mo)}`);
   /* a date that OPENS the remark goes with the separator that joined it to the words after it, where one stands by itself
      ("till 17 Jul — Bangkok", "till 17 Jul, then home"); a sign attached to the next word is that word's own ("till 17 Jul
      -5°C kit" keeps its minus) — the card's rules of D728, kept. Anywhere else a date goes with the separators BEFORE it
-     ("kit, boots, till 17 Jul"), and a separator the words opened with is his ("— see the notice — till 17 Jul"). */
-  const lead=LEAD_TOK.exec(s);
-  const body=lead&&isDate(lead[1]!,lead[2]!,lead[3]!)?s.slice(lead[0].length):s;
-  return body.replace(TILL_TOKS,' ').replace(ON_TOKS,(m:string,d:string,mo:string)=>own.has(`${+d} ${cap3(mo)}`)?' ':m)
+     ("kit, boots, till 17 Jul"), and a separator the words opened with is his ("— see the notice — till 17 Jul"). What the
+     cut leaves is tidied (the code read's finding 3): no space before a closing mark ("Bangkok, back Mon"), no empty
+     brackets ("Leave"), no separator left alone at the front (",Bangkok" → "Bangkok"). */
+  return s.replace(LEAD_TOK,'').replace(TILL_TOKS,' ')
+    .replace(/\s+([,.;:!?)\]])/g,'$1').replace(/\(\s*\)|\[\s*\]/g,'').replace(/^[,·—–-]+(?=\S)(?!\d)/,'')
     .replace(/\s{2,}/g,' ').trim();}
-const LEAD_TOK=/^\s*(till|on)\s+(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\b(?:\s+\d{4})?\s*(?:[,·—–-]+\s+)?/i;
 /* 'Jul 17' (an input's own date words) → '17 Jul', the form the app prints a day in */
 const dayWords=(md:any):string=>{const m=/^([A-Za-z]{3})[a-z]*\s+(\d{1,2})\b/.exec(String(md||'').trim()); return m?`${+m[2]} ${m[1]}`:'';};
 /* "till <its last day>", from its dates — '' for an input that prints none, or has no date yet */

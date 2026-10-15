@@ -2217,13 +2217,13 @@ export const GP_TAKEOFF_NOTE='To take an input off, press Reject on it in Person
    destination is genuinely ambiguous — it can be something the squadron has to
    run (ground programme) or something that simply closes the man (unavailable) —
    so it offers both. Everything else has one sensible home. An accepted row
-   shows Undo instead, which removes the ground row it created. */
+   shows Reject instead (D945; it read Undo), which removes the ground row it created. */
 export function accCtl(di:any,inp:any){
   if(!canEditSched())return `<span class="accs"></span>`;
   const k=esc(inpId(inp));
   /* 'r' (removed — dormant, see engine/inputs.ts inputDormant) is NOT
      "accepted": the row was undone, so this offers Accept again, which is the
-     one way back to a flagging state. Only 'g'/'u' show Undo. */
+     one way back to a flagging state. Only 'g'/'u' show Reject. */
   /* WHICH DAY'S ROW AN UNDO TAKES OFF ([REQ-DOOR-WORDS] 2, 28 Sep 26 — Fable's F5 on D175's branch). A request covering
      several days is drawn on each of them, but its one row stands on ONE day; the Undo on another day's card removed that
      row with nothing saying where it was. Said on the button and its title when the row is on another day. */

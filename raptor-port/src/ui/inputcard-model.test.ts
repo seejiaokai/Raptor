@@ -233,10 +233,10 @@ describe('"till <date>" is said once — by the corner (D728)', () => {
   })
   it('an input that runs into another year: the remark’s "till 1 Jan" is the corner’s "till 1 Jan 2027"', () => {
     expect(cardOf([rec({ remarks: 'Overseas leave till 1 Jan' })], P, 'till 1 Jan 2027').remark).toBe('Overseas leave')
-    expect(cardOf([rec({ remarks: 'till 1 Jan 2027' })], P, 'till 1 Jan 2027').remark).toBe('')
+    expect(cardOf([rec({ remarks: 'till 1 Jan 2027' })], P, 'till 1 Jan 2027').remark, 'a year is never read as part of the date (the code read)').toBe('2027')
   })
-  it('a date with its year is read as the date with it (D948); the words after it stay', () => {
-    expect(cardOf([rec({ remarks: 'till 17 Jul 2025 (last year’s)' })], P, corner).remark).toBe('(last year’s)')
+  it('a year after the date is his: the calendar never wrote one (the code read); the date goes, the year stays', () => {
+    expect(cardOf([rec({ remarks: 'till 17 Jul 2025 (last year’s)' })], P, corner).remark).toBe('2025 (last year’s)')
   })
   it('never mid-word, whatever the capitals', () => {
     expect(cardOf([rec({ remarks: 'Until 17 Jul stay clear' })], P, corner).remark).toBe('Until 17 Jul stay clear')

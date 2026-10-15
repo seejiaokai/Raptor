@@ -279,7 +279,7 @@ describe('a cut leave says its own last day (AB3)', () => {
     expect([a.remarks, remarksShown(a)]).toEqual(['Bali', 'Bali till 10 Feb'])
     expect([b.remarks, remarksShown(b)]).toEqual(['Bali', 'Bali till 12 Feb'])
     const c = sliceInput({ ...row, remarks: 'on 9 Feb' }, '2026-02-16', '2026-02-16', false)
-    expect([c.remarks, remarksShown(c)], 'the war’s one-day "on 9 Feb" was its own date').toEqual(['', 'till 16 Feb'])
+    expect([c.remarks, remarksShown(c)], 'an "on" is kept as typed, never read as the date (the code read)').toEqual(['on 9 Feb', 'on 9 Feb till 16 Feb'])
   })
 })
 

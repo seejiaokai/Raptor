@@ -13,7 +13,11 @@ import { remarksTyped, remarksShown, tillOf, tillOfISO, inpDetailKey } from './i
 const leave = (o: any = {}) => ({ person: 'bane', type: 'LL', date: 'Aug 10', endDate: 'Aug 14', yr: 2026, allday: true, remarks: '', ...o })
 
 describe('remarksTyped — the words a person typed', () => {
-  it('a "till <day> <month>" is the date, wherever it stands; its words are kept', () => {
+  it('a "till <day> <month>" is the date, wherever it stands; its words are kept; what the cut leaves is tidied', () => {
+    expect(remarksTyped('Bangkok till 14 Aug, back Mon', leave())).toBe('Bangkok, back Mon')
+    expect(remarksTyped('Leave (till 14 Aug)', leave())).toBe('Leave')
+    expect(remarksTyped('till 14 Aug,Bangkok', leave())).toBe('Bangkok')
+    expect(remarksTyped('Home till 14 August', leave()), 'a month spelt out').toBe('Home')
     expect(remarksTyped('Bali till 14 Aug', leave())).toBe('Bali')
     expect(remarksTyped('till 14 Aug Bangkok', leave())).toBe('Bangkok')
     expect(remarksTyped('till 14 Aug — Bangkok', leave()), 'the join after a date that opens it goes').toBe('Bangkok')
@@ -21,23 +25,24 @@ describe('remarksTyped — the words a person typed', () => {
     expect(remarksTyped('— see the notice — till 14 Aug', leave()), 'a sign the words opened with stays').toBe('— see the notice')
     expect(remarksTyped('kit, boots, till 14 Aug', leave())).toBe('kit, boots')
   })
-  it('words that only look like a date are his (A): no real month, or an "on" that is not one of its own days', () => {
+  it('words that only look like a date are his (A, and the code read): no real month, a time after it, any "on"', () => {
+    expect(remarksTyped('Brief till 14 Aug 0800 start', leave()), 'the time stays').toBe('Brief 0800 start')
+    expect(remarksTyped('till 3 Marines are back', leave())).toBe('till 3 Marines are back')
     expect(remarksTyped('Instructing on 2 BFM', leave())).toBe('Instructing on 2 BFM')
     expect(remarksTyped('Course on 1 day', leave())).toBe('Course on 1 day')
     expect(remarksTyped('till 6 ACs are back', leave())).toBe('till 6 ACs are back')
     expect(remarksTyped('Wedding on 12 Aug', leave()), 'the 12th is inside it, not its first or last day').toBe('Wedding on 12 Aug')
   })
-  it('an "on <its own day>" is the Leave War\'s one-day date — read as the date', () => {
-    expect(remarksTyped('on 10 Aug', leave({ endDate: undefined }))).toBe('')
-    expect(remarksTyped('Bali on 10 Aug', leave())).toBe('Bali')
-    expect(remarksTyped('on 10 Aug', undefined), 'with no record to ask, no "on" is taken').toBe('on 10 Aug')
+  it('"on <day> <month>" is never read as a date, even one of its own days (the code read, finding 1)', () => {
+    expect(remarksTyped('Flight on 10 Aug', leave())).toBe('Flight on 10 Aug')
+    expect(remarksTyped('on 10 Aug', leave({ endDate: undefined }))).toBe('on 10 Aug')
   })
   it('SANS availability and an upchit keep their words whole (B)', () => {
     expect(remarksTyped('Avail till 20 Jul only', { type: 'SANS Availability' })).toBe('Avail till 20 Jul only')
     expect(remarksTyped('fit till 3 Jan', { type: 'Upchit' })).toBe('fit till 3 Jan')
   })
   it('a window\'s draft (ISO dates) is asked the same way', () => {
-    expect(remarksTyped('Bali on 10 Aug', { type: 'LL', start: '2026-08-10', end: '2026-08-14' })).toBe('Bali')
+    expect(remarksTyped('Bali till 14 Aug', { type: 'LL', start: '2026-08-10', end: '2026-08-14' })).toBe('Bali')
   })
 })
 
