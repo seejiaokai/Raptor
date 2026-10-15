@@ -16,13 +16,14 @@
 
    The picker holds no state and writes nothing: its owner keeps `people` (in the order picked — the first is the one
    kept on the way back to one person, D656 reading 4) and `several`, and saves through ui/inputedit.tsx commitInput. */
-import { useRef, type ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { isUpchit, needsDoc, placeholderKind, placeholderProblem, shapeProblem } from '../engine/inputs'
 import { canEditSched } from '../state/auth'
 import { mayFileGroup, mayFileInputFor, me } from '../state/perms'
 import { fileForOtherRefusal, rosterOptions } from './inputedit'
 import { puck } from './html'
+import { edgeAutoScroll, findScroller } from './edgescroll'
 
 const cs = (id: any): string => (PEOPLE[id] ? String(PEOPLE[id].cs) : String(id ?? ''))
 const az = (ids: string[]) => [...ids].sort((a, b) => cs(a).localeCompare(cs(b), undefined, { sensitivity: 'base' }))
@@ -155,11 +156,21 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
      finger moved up or down must stay the list being scrolled (the pucks say `touch-action:pan-y` — the browser keeps
      the vertical swipe and hands the sideways one here; once it is ours it may run down into other rows). With a
      mouse any drag picks. A plain press is still the button's own click; the click a browser sends after a drag is
-     swallowed, or it would undo the first puck. Nothing is kept between presses but this one drag. */
+     swallowed, or it would undo the first puck. Nothing is kept between presses but this one drag.
+     CARRIED TO THE EDGE OF WHAT IT SCROLLS IN, THE LIST FOLLOWS (owner D900, 15 Oct 26 — "Yes they should too"; the
+     design guide §5a, D895): once the drag is the picker's, held at the top or the foot of the window (or the page) the
+     faces are in, that scrolls up or down at the app's one edge feel (ui/edgescroll.ts) — and each face that slides
+     under the still pointer is passed over, as if the pointer had moved onto it. */
   const live = useRef(people)
   live.current = people
-  const drag = useRef<{ id: string; on: boolean; x: number; y: number; active: boolean; touch: boolean; seen: Set<string> } | null>(null)
+  const drag = useRef<{
+    id: string; on: boolean; x: number; y: number; active: boolean; touch: boolean; seen: Set<string>
+    /** the edge scroll, from the moment the drag is the picker's; and where the pointer last was */
+    auto?: ReturnType<typeof edgeAutoScroll>; lx?: number; ly?: number
+  } | null>(null)
   const swallow = useRef(0)
+  /* the picker taken off the screen mid-drag (its window closed by a key): the edge scroll ends with it */
+  useEffect(() => () => { drag.current?.auto?.stop() }, [])
   const pass = (id: string) => {
     const d = drag.current
     if (!d || d.seen.has(id)) return
@@ -176,6 +187,7 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
   }
   const onDown = (e: React.PointerEvent<HTMLDivElement>) => {
     const b = (e.target as HTMLElement).closest('[data-pp]') as HTMLElement | null
+    drag.current?.auto?.stop()
     drag.current = null
     if (!b || e.button) return
     const id = b.getAttribute('data-pp')!
@@ -191,12 +203,23 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
       d.active = true
       try { e.currentTarget.setPointerCapture(e.pointerId) } catch { /* jsdom */ }
       pass(d.id)
+      const root = e.currentTarget
+      /* only the window's own list: where the window holds all its faces there is nothing to show, and the page behind a
+         window is never scrolled from inside it (D686) */
+      const box = findScroller(root, 'y')
+      if (box && !box.isDoc) d.auto = edgeAutoScroll({ from: root, axis: 'y', touch: d.touch, x: e.clientX, y: e.clientY, onScroll: () => {
+        const id = drag.current === d ? puckAt(root, d.lx!, d.ly!) : null
+        if (id) pass(id)
+      } })
     }
+    d.lx = e.clientX; d.ly = e.clientY
+    d.auto?.point(e.clientX, e.clientY)
     const id = puckAt(e.currentTarget, e.clientX, e.clientY)
     if (id) pass(id)
   }
   const onUp = () => {
     if (drag.current && drag.current.active) swallow.current = Date.now()
+    drag.current?.auto?.stop()
     drag.current = null
   }
   return (

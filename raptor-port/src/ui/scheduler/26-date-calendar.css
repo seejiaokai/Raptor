@@ -134,6 +134,14 @@ button.datebox:disabled{opacity:.55;cursor:default}
 /* the run said in words: the plain ink, bold — it was the accent, and read as a link (the design look of 13 Oct 26 —
    L11; owner D830; the design guide's §4: the accent means "press me" or "picked") */
 .dcal-foot{padding:8px 4px 0;font-size:12.5px;font-weight:700;line-height:1.35;color:var(--ink)}
+/* THE BIDDING DATES' SMALL "CLEAR DATES" (owner D901 (1), 15 Oct 26 — leavewar/ui/RangePicker.tsx): no other calendar
+   has a Clear; there no dates is an answer of its own ("Open the whole year"). Beside the run's words, at the right; a
+   quiet text button, the run's own size, so it reads as a small second choice and not as the form's main button. */
+.dcal-foot:has(.dcal-clear){display:flex;align-items:center;justify-content:space-between;gap:10px}
+.dcal-clear{flex:0 0 auto;min-height:32px;margin:-6px -4px -6px 0;padding:6px 8px;border:0;border-radius:8px;background:none;
+  color:var(--ink-2);font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dcal-clear:hover{color:var(--ink);background:var(--raised)}
+.dcal-clear:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 
 /* ---- THE MONTH-AND-YEAR LISTS: months beside years, each SCROLLED, the chosen pair in a band across the middle, the
    rows fading away from it (D796 — his second photo). As tall as the weekday line and the six rows it stands in for,

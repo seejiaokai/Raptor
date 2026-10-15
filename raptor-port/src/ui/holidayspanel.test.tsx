@@ -68,17 +68,21 @@ function open(iso = '2026-11-02') { render(<DaysWindow />); act(() => { setDaysW
 const add = () => fireEvent.click(t('hol-add'))
 /* THE DATES ARE PICKED ON THE LEAVE WAR'S OWN RANGE CALENDAR (D671): walk it to a month, tap a day */
 const MONTHS_L = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-const calAt = () => { const [m, y] = t('holcal-month').textContent!.trim().split(/\s+/); return +y * 12 + MONTHS_L.findIndex(x => x.toLowerCase() === m.toLowerCase()) }
+/* the month shown, in words ("October 2026"): the calendar's title, its small arrow left out — the app's one date
+   calendar since step two (D901) */
+const monthWords = () => t('holcal-title').querySelector('.dcal-my')!.textContent!
+const calAt = () => { const [m, y] = monthWords().trim().split(/\s+/); return +y * 12 + MONTHS_L.findIndex(x => x.toLowerCase() === m.toLowerCase()) }
 const goTo = (iso: string) => {
   let d = +iso.slice(0, 4) * 12 + (+iso.slice(5, 7) - 1) - calAt()
-  for (; d > 0; d--) fireEvent.click(t('holcal-next-month'))
-  for (; d < 0; d++) fireEvent.click(t('holcal-prev-month'))
+  for (; d > 0; d--) fireEvent.click(t('holcal-next'))
+  for (; d < 0; d++) fireEvent.click(t('holcal-prev'))
 }
 const tap = (iso: string) => { goTo(iso); fireEvent.click(t(`holcal-day-${iso}`)) }
-/** pick one day, or a run — from a clean calendar, whatever was picked before */
+/** pick one day, or a run — from a clean calendar, whatever was picked before. There is no Clear (D901 (1)): the first
+ *  day tapped twice starts a run there from any state — a finished run starts over at the first tap, a run of one day
+ *  stretches to it and then starts over at the second, and a day tapped twice is a run of that one day */
 const pick = (from: string, to?: string) => {
-  if (q('holcal-clear')) fireEvent.click(t('holcal-clear'))
-  tap(from)
+  tap(from); tap(from)
   if (to && to !== from) tap(to)
 }
 const picked = () => [t('hol-dates').getAttribute('data-from'), t('hol-dates').getAttribute('data-to')]
@@ -301,7 +305,7 @@ describe('"+ Add"', () => {
     expect(val('hol-name')).toBe(''); expect(val('hol-short')).toBe('PH')
     /* a date he did not choose is never saved (D671): none is picked for him */
     expect(picked()).toEqual(['', ''])
-    expect(t('holcal-month').textContent).toMatch(/October\s+2026/i)
+    expect(monthWords()).toMatch(/October\s+2026/i)
     expect(t('holcal-selection').textContent).toBe('Pick a start date')
     expect(q('hol-delete')).toBeNull(); expect(t('hol-save-more')).toBeTruthy()
     /* no date boxes any more — one calendar */
@@ -310,18 +314,20 @@ describe('"+ Add"', () => {
   })
   it('on another year’s list the calendar opens on that January', () => {
     open(); fireEvent.click(t('hol-next')); add()
-    expect(t('holcal-month').textContent).toMatch(/January\s+2027/i)
+    expect(monthWords()).toMatch(/January\s+2027/i)
     expect(picked()).toEqual(['', ''])
   })
-  it('it is the Leave War’s own picker: one tap is one day, a later tap makes the run, an earlier one starts again, a third starts over, Clear empties it', () => {
+  it('it is the Leave War’s own picker: one tap is one day, a later tap makes the run, an earlier one starts again, a third starts over — and there is no Clear (D901 (1))', () => {
     open(); add()
     tap('2026-11-09'); expect(picked()).toEqual(['2026-11-09', '2026-11-09'])
     tap('2026-11-11'); expect(picked()).toEqual(['2026-11-09', '2026-11-11'])
-    expect(t('holcal-day-2026-11-10').getAttribute('aria-pressed')).toBe('true')
+    /* the day between the two ends is in the run (its band); only the two ends are the picked discs */
+    expect(t('holcal-day-2026-11-10').className).toContain('is-in')
+    expect(t('holcal-day-2026-11-11').getAttribute('aria-pressed')).toBe('true')
     expect(t('holcal-selection').textContent).toMatch(/9 Nov.*11 Nov/)
     tap('2026-11-20'); expect(picked()).toEqual(['2026-11-20', '2026-11-20'])          // a third tap starts over
     tap('2026-11-18'); expect(picked()).toEqual(['2026-11-18', '2026-11-18'])          // before the start: begins there
-    fireEvent.click(t('holcal-clear')); expect(picked()).toEqual(['', ''])
+    expect(q('holcal-clear'), 'no Clear: a tap on a new day starts the dates over (D901 (1), D796)').toBeNull()
   })
   it('a run may cross into the next month: ‹ › page the calendar and the pick is kept', () => {
     open(); add()
@@ -416,7 +422,7 @@ describe('"+ Add"', () => {
     expect(val('hol-name')).toBe(''); expect(val('hol-short')).toBe('OFF')
     /* nothing is picked for the next one — and the calendar is on the month of the day after */
     expect(picked()).toEqual(['', ''])
-    expect(t('holcal-month').textContent).toMatch(/December\s+2026/i)
+    expect(monthWords()).toMatch(/December\s+2026/i)
     /* the note goes at the next edit */
     type('hol-name', 'x'); expect(q('hol-saved')).toBeNull()
   })
@@ -425,11 +431,11 @@ describe('"+ Add"', () => {
   it('…and the calendar MOVES to the day after: a holiday saved on a month’s last day leaves it on the next month', () => {
     open(); add()
     type('hol-name', 'Month end'); pick('2026-11-30')
-    expect(t('holcal-month').textContent).toMatch(/November\s+2026/i)
+    expect(monthWords()).toMatch(/November\s+2026/i)
     fireEvent.click(t('hol-save-more'))
     expect(line(2026, '2026-11-30')).toMatchObject({ to: '2026-11-30' })
     expect(picked()).toEqual(['', ''])
-    expect(t('holcal-month').textContent).toMatch(/December\s+2026/i)
+    expect(monthWords()).toMatch(/December\s+2026/i)
   })
   it('a date no leave period covers is refused in the window, and what he typed stays', () => {
     open(`${FREE}-03-01`); add()
@@ -469,7 +475,7 @@ describe('a line opens to change or delete', () => {
     expect(t('win-holiday').getAttribute('aria-label')).toBe('Change a holiday')
     expect(pressed('hol-kind-ph')).toBe('true'); expect(val('hol-name')).toBe('National Day'); expect(val('hol-short')).toBe('ND')
     expect(picked()).toEqual(['2026-08-10', '2026-08-10'])
-    expect(t('holcal-month').textContent).toMatch(/August\s+2026/i)
+    expect(monthWords()).toMatch(/August\s+2026/i)
     expect(t('hol-delete')).toBeTruthy(); expect(q('hol-save-more')).toBeNull()
   })
   it('Save changes that one record — a new name, a longer run — in one Undo step', () => {

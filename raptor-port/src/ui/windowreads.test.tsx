@@ -73,8 +73,8 @@ const as = async (who: 'admin' | 'member') => act(async () => {
   notify()
 })
 /* the window's calendar, turned back or on by whole months, then a day tapped */
-const turn = async (months: number) => { for (let i = 0; i < Math.abs(months); i++) await click($(`#inpEditPop #inpEdCal .rc-nav[aria-label="${months < 0 ? 'Previous' : 'Next'} month"]`)) }
-const day = (iso: string) => $(`#inpEditPop #inpEdCal [data-cal="${iso}"]`)
+const turn = async (months: number) => { for (let i = 0; i < Math.abs(months); i++) await click($(`#inpEditPop #inpEdCal .dcal-nav[aria-label="${months < 0 ? 'Previous' : 'Next'} month"]`)) }
+const day = (iso: string) => $(`#inpEditPop #inpEdCal [data-iso="${iso}"]`)
 
 beforeEach(async () => {
   INPUTS.splice(0, INPUTS.length, ...JSON.parse(seed))

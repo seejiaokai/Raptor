@@ -48,7 +48,7 @@ describe('the war’s top row answers it', () => {
     expect(sheet()!.className).toContain('raised')
     expect(document.querySelector('.bidscrim.raised, .sheetscrim.raised, [data-testid="sheet-scrim"].raised')).toBeTruthy()
     /* the dates are picked: the calendar opens on April and says the span */
-    expect(screen.getByTestId('war-month').textContent).toMatch(/Apr/i)
+    expect(screen.getByTestId('war').getAttribute('data-month')).toMatch(/-04$/)
     expect(screen.getByTestId('war-selection').textContent).toMatch(/1 Apr/)
     expect(screen.getByTestId('war-selection').textContent).toMatch(/31 Dec/)
     expect(peekNewWarAsk()).toBeNull()

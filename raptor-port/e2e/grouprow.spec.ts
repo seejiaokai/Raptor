@@ -32,12 +32,12 @@ async function fileGroup(p: Page, tap: boolean) {
   const pressed: string[] = await p.evaluate(sel => [...document.querySelectorAll(`${sel} [data-pp][aria-pressed="true"]`)].map(b => b.getAttribute('data-pp')!), WIN)
   for (const id of pressed) if (!ids.includes(id)) await press(`${WIN} [data-pp="${id}"]`)
   await expect(p.locator(`${WIN} [data-pp][aria-pressed="true"]`)).toHaveCount(4)
-  for (let i = 0; i < 36 && !(await p.locator(`#inpEdCal [data-cal="${ISO}"]`).count()); i++) {
-    const [m, y] = (await p.locator('#inpEdCal .rc-mon').innerText()).trim().split(/\s+/)
+  for (let i = 0; i < 36 && !(await p.locator(`#inpEdCal [data-iso="${ISO}"]`).count()); i++) {
+    const [m, y] = (await p.locator('#inpEdCal .dcal-my').innerText()).trim().split(/\s+/)
     const at = `${y}-${String(MONTHS.findIndex(x => x.startsWith(m!.toLowerCase())) + 1).padStart(2, '0')}`
     await press(`#inpEdCal button[aria-label="${at < ISO.slice(0, 7) ? 'Next' : 'Previous'} month"]`)
   }
-  await press(`#inpEdCal [data-cal="${ISO}"]`); await press(`#inpEdCal [data-cal="${ISO}"]`)
+  await press(`#inpEdCal [data-iso="${ISO}"]`); await press(`#inpEdCal [data-iso="${ISO}"]`)
   if (await p.locator('#inpEditAllday').count() && await p.locator('#inpEditAllday').isChecked()) await press('#inpEditAllday')
   await p.fill('#inpEditStart', '14:00'); await p.fill('#inpEditEnd', '15:00')
   await p.fill('#inpEditOwnTitle', TITLE)

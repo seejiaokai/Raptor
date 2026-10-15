@@ -5,48 +5,25 @@
 // don't need to keep clicking a leave input like for 2 weeks continuous") and
 // once for creating a leave war ("instead of clicking 2 calendars for start
 // and end date"). Both are the same control, so it is written once and used
-// in three places: the bid sheet, the new-war sheet, and the bidding window.
+// wherever the Leave War picks a run of dates: a leave bid, a new war, the
+// bidding dates, an event's dates, the OIL tracker's range, and the holiday
+// form in the Calendar window.
 //
-// Not a pair of `<input type="date">`. Two native pickers cannot show a range
-// at all — the first has closed before the second opens, so nothing ever
-// draws the span the person is choosing, which is the one thing they are
-// trying to see.
-//
-// The month grid runs MONDAY FIRST. Leave is asked for in working weeks, and
-// a Sunday-first calendar splits every weekend across two rows.
+// SINCE STEP TWO OF THE APP'S ONE DATE CALENDAR (owner D901, 15 Oct 26 —
+// "Proceed Calendar Step Two page as recommended") it IS that calendar
+// (ui/DateCal.tsx — D796), drawn inside its form (D797): its month-and-year
+// lists, its Today icon, the swipe, finger-sized dates in six rows, Monday
+// first. What stays this file's is what the Leave War's forms want of it —
+// the run handed over as `{ from, to }` (null for none), the run said in the
+// war's own words beneath, and, for the bidding dates alone, a small "Clear
+// dates": there no dates means "Open the whole year" (D901 (1)); every other
+// form starts its run over with a tap on a new day, as everywhere else (D796).
+// Today is shown, as on every calendar of the app (D901 (2)) — it opens on the
+// run, else `anchor`, else `min`, never on a today the war may not cover.
+// One size everywhere, a finger's (D901 (3)): the old `compact` grid is gone.
 
-import { useState } from 'react'
-import { addDays, isWeekend, weekday } from '../engine'
+import { DateCal } from '../../ui/DateCal'
 import { shortSpan } from './dates'
-import './rangepicker.css'
-
-const MONTHS = [
-  'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
-  'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER',
-]
-
-/** Monday-first column index: Monday 0 … Sunday 6. */
-function column(date: string): number {
-  return (weekday(date) + 6) % 7
-}
-
-/** The first of the month `n` months from this one, as `yyyy-mm-01`. */
-function shiftMonth(first: string, n: number): string {
-  const y = Number(first.slice(0, 4))
-  const m = Number(first.slice(5, 7)) - 1 + n
-  const year = y + Math.floor(m / 12)
-  const month = ((m % 12) + 12) % 12
-  return `${year}-${String(month + 1).padStart(2, '0')}-01`
-}
-
-/** Every date in the month of `first`, in order. Walks day by day rather than
- *  computing a length, so February and leap years need no special case. */
-function daysOfMonth(first: string): string[] {
-  const key = first.slice(0, 7)
-  const out: string[] = []
-  for (let d = first; d.slice(0, 7) === key; d = addDays(d, 1)) out.push(d)
-  return out
-}
 
 export interface Range {
   from: string
@@ -60,7 +37,7 @@ export function RangePicker({
   value,
   onChange,
   testid = 'range',
-  compact = false,
+  clear = false,
 }: {
   /** Earliest selectable date, inclusive. Days before it are shown but dead. */
   min?: string
@@ -74,120 +51,35 @@ export function RangePicker({
   value: Range | null
   onChange: (range: Range | null) => void
   testid?: string
-  /** Draw the month grid smaller (shorter cells, tighter gaps). The event
-   *  sheet asks for it so the whole sheet fits above a phone keyboard
-   *  (owner, 31 Aug 26 — "the calendar can be smaller … it takes up a lot of
-   *  vertical space"); the bid / war / bidding-window sheets leave it off. */
-  compact?: boolean
+  /** A small "Clear dates" under the calendar — the bidding dates only, where
+   *  no dates is an answer of its own (D901 (1)). */
+  clear?: boolean
 }) {
-  // Opens on the month the selection is in, or the month the bounds start in,
-  // or — failing both — January of the min year. Never on "today": this app
-  // has no clock, deliberately, and a calendar that opened on a real today
-  // would show a month the leave war may not even cover.
-  const [cursor, setCursor] = useState(() => {
-    const at = value?.from ?? anchor ?? min ?? '2026-01-01'
-    return `${at.slice(0, 7)}-01`
-  })
-
-  const selectable = (d: string) => (!min || d >= min) && (!max || d <= max)
-
-  const tap = (d: string) => {
-    if (!selectable(d)) return
-    // A complete range starts over; an incomplete one completes. Tapping
-    // BEFORE the pending start restarts there rather than making a backwards
-    // range — reaching for an earlier start is the ordinary correction, and
-    // refusing it would leave the person tapping a day that does nothing.
-    if (!value || value.from !== value.to) return onChange({ from: d, to: d })
-    if (d < value.from) return onChange({ from: d, to: d })
-    onChange({ from: value.from, to: d })
-  }
-
-  const inRange = (d: string) => !!value && d >= value.from && d <= value.to
-  const days = daysOfMonth(cursor)
-  const lead = column(days[0])
-  // Reserve a CONSTANT six week-rows, every month (owner, 2 Sep 26 — "the
-  // left and right arrow keeps jumping up and down … design it such that the
-  // arrows remain at the same spot so I don't need to keep chasing it"). A
-  // month spans 4, 5 or 6 rows, so the grid's height used to change as you
-  // paged — and because the sheet is anchored to the bottom of the screen, a
-  // shorter month let the whole sheet (its ‹ › month arrows included) drop,
-  // and a taller one pushed it back up. Padding every month out to 6 rows
-  // (42 day-cells: lead blanks + days + these trailing blanks) keeps the grid
-  // one fixed height, so nothing above or below it moves. 6 always fits: the
-  // most any month needs is a 31-day month starting Sunday (6 + 31 = 37 ≤ 42).
-  const trailing = 42 - lead - days.length
-
   return (
-    <div className={`rpick${compact ? ' compact' : ''}`} data-testid={`${testid}-picker`}>
-      <div className="rpick-hd">
-        <button
-          className="rnav"
-          data-testid={`${testid}-prev-month`}
-          aria-label="Previous month"
-          onClick={() => setCursor(shiftMonth(cursor, -1))}
-        >
-          ‹
-        </button>
-        <span className="rmon" data-testid={`${testid}-month`}>
-          {MONTHS[Number(cursor.slice(5, 7)) - 1]} {cursor.slice(0, 4)}
-        </span>
-        <button
-          className="rnav"
-          data-testid={`${testid}-next-month`}
-          aria-label="Next month"
-          onClick={() => setCursor(shiftMonth(cursor, 1))}
-        >
-          ›
-        </button>
-      </div>
-
-      <div className="rpick-grid" role="grid">
-        {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
-          <span className="rdow" key={i}>{d}</span>
-        ))}
-        {/* Blanks before the 1st, so the month starts under the right day. */}
-        {Array.from({ length: lead }, (_, i) => <span className="rblank" key={`b${i}`} />)}
-        {days.map(d => {
-          const on = inRange(d)
-          const cls = [
-            'rday',
-            on ? 'on' : '',
-            on && d === value!.from ? 'start' : '',
-            on && d === value!.to ? 'end' : '',
-            isWeekend(d) ? 'wknd' : '',
-          ].filter(Boolean).join(' ')
-          return (
-            <button
-              key={d}
-              className={cls}
-              data-testid={`${testid}-day-${d}`}
-              disabled={!selectable(d)}
-              aria-pressed={on}
-              onClick={() => tap(d)}
-            >
-              {Number(d.slice(8, 10))}
-            </button>
-          )
-        })}
-        {/* Trailing blanks pad the month out to a constant six rows — see the
-            `trailing` note above. They paint nothing, exactly like the lead
-            blanks, and only hold the grid's height steady. */}
-        {Array.from({ length: trailing }, (_, i) => <span className="rblank" key={`t${i}`} />)}
-      </div>
-
-      {/* The chosen span in words. The grid shows it too, but a person about
-          to commit a fortnight of leave should be able to read back what they
-          picked without counting squares. */}
-      <div className="rpick-ft">
-        <span className="rsel" data-testid={`${testid}-selection`}>
-          {value ? shortSpan(value.from, value.to) : 'Pick a start date'}
-        </span>
-        {value && (
-          <button className="rclear" data-testid={`${testid}-clear`} onClick={() => onChange(null)}>
-            Clear
-          </button>
-        )}
-      </div>
+    <div className="dcal-inline lw-cal" data-testid={`${testid}-picker`}>
+      <DateCal
+        mode="run"
+        tid={testid}
+        from={value?.from || ''}
+        to={value?.to || ''}
+        min={min}
+        max={max}
+        at={anchor ?? min}
+        onRun={(from, to) => onChange({ from, to })}
+        foot={
+          <>
+            {/* The chosen span in words. The grid shows it too, but a person
+                about to commit a fortnight of leave should be able to read back
+                what they picked without counting squares. */}
+            <span data-testid={`${testid}-selection`}>{value ? shortSpan(value.from, value.to) : 'Pick a start date'}</span>
+            {clear && value && (
+              <button type="button" className="dcal-clear" data-testid={`${testid}-clear`} onClick={() => onChange(null)}>
+                Clear dates
+              </button>
+            )}
+          </>
+        }
+      />
     </div>
   )
 }

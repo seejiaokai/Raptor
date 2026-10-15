@@ -466,7 +466,6 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
           <div className="bidsheet-row">
             <RangePicker
               testid="event"
-              compact
               min={period.start}
               max={period.end}
               value={range}

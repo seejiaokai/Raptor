@@ -503,7 +503,7 @@ export function OilTracker({ person, onClose, onGranted }: {
         <div key={d.id} className="oil-e take editing" data-testid={`oil-entry-${tid(d.id, d.ledgerId)}`}>
           <div className="oil-edit">
             <input type="number" step="0.5" className="oil-num" data-testid="oil-edit-amt" value={eAmt} onChange={e => setEAmt(e.target.value)} aria-label="Days" />
-            <DayChip testid="oil-edit-date" pickerId="oileditdate" value={eDate} today={today} onPick={setEDate} />
+            <DayChip testid="oil-edit-date" value={eDate} today={today} onPick={setEDate} />
             <input className="oil-text" data-testid="oil-edit-reason" maxLength={MAX_REASON} value={eReason} onChange={e => setEReason(e.target.value)} aria-label="Reason" placeholder="reason" />
             <span className="acts">
               <button className="dchip approve" data-testid="oil-edit-save" onClick={saveEdit}>Save</button>
@@ -652,7 +652,7 @@ export function OilTracker({ person, onClose, onGranted }: {
       </div>
       {mode === 'pick' && picking && (
         <div className="bidsheet-row oil-pickrow">
-          <RangePicker compact testid="oilrange" anchor={today} value={pick} onChange={setPick} />
+          <RangePicker testid="oilrange" anchor={today} value={pick} onChange={setPick} />
           <button className="tchip clear" data-testid="oilrange-done" onClick={() => setPicking(false)}>Done</button>
         </div>
       )}

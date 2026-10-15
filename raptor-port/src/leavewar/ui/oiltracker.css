@@ -397,18 +397,9 @@
     color: var(--hard);
   }
   .oil-bar .note.warn { flex-basis: 100%; }
-  .oil-daychip { position: relative; display: inline-block; }
-  .oil-pop {
-    position: absolute;
-    bottom: calc(100% + 6px);
-    left: 0;
-    z-index: 9;
-    background: var(--raised, #20262E);
-    border: 1px solid var(--edge-2);
-    border-radius: 12px;
-    padding: 6px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, .5);
-  }
+  /* the credit's date: the app's own date box (CreditForm.tsx DayChip — step two of the one date calendar, D901); its
+     calendar floats over the page, so nothing here places it */
+  .oil-bar button.datebox.oil-datebox { min-height: 32px; padding: 6px 9px; }
 
   /* ---- the settings panel, the number and text fields --------------------- */
   .oil-set { display: flex; flex-direction: column; gap: 4px; }

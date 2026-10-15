@@ -89,7 +89,7 @@ describe('the Inputs List (§3.8 rows 2, 3 and 4)', () => {
     await openList()
     const t1 = T(9)
     await click($('#inNew'))
-    await click($('#inpEdCal [data-cal="2026-07-14"]'))
+    await click($('#inpEdCal [data-iso="2026-07-14"]'))
     const n = INPUTS.length
     await click($('#inpEditSave'))
     expect(INPUTS.length, 'one input filed').toBe(n + 1)

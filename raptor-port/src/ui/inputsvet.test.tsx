@@ -254,7 +254,7 @@ describe('the empty list says which dates, in few words (V5)', () => {
     await file({ date: 'Oct 20' })
     await click($('#inRangeBtn'))
     /* the dates picker opens on July 2026 while no dates are set */
-    await click($('#inRangeCal [data-cal="2026-07-05"]')); await click($('#inRangeCal [data-cal="2026-07-09"]'))
+    await click($('#inRangeCal [data-iso="2026-07-05"]')); await click($('#inRangeCal [data-iso="2026-07-09"]'))
     expect($('#inEmpty')!.hidden).toBe(false)
     expect($('#inEmpty')!.textContent).toBe('No inputs 5–9 Jul. Try All dates.')
     expect($('#inRangeAll')!.textContent, 'the button it names').toBe('All dates')
@@ -276,7 +276,7 @@ describe('the row the list has just been shown is LIT (V1 — the form’s light
     await file({ remarks: 'something else' })
     await type('#inFSearch', 'something')
     await click($('#inNew'))
-    await click($('#inpEdCal [data-cal="2026-07-14"]'))
+    await click($('#inpEdCal [data-iso="2026-07-14"]'))
     await type('#inpEditRmk', 'a quiet one')
     const had = new Set(INPUTS.map((r: any) => r.iid))
     await click($('#inpEditSave'))
@@ -323,7 +323,7 @@ describe('the row the list has just been shown is LIT (V1 — the form’s light
       await click($('#inNew'))
       await click($('[data-testid="win-inputedit"] [data-testid="pp-several"]'))
       for (const p of order) await click($(`[data-testid="win-inputedit"] [data-pp="${p}"]`))
-      await click($('#inpEdCal [data-cal="2026-07-16"]'))
+      await click($('#inpEdCal [data-iso="2026-07-16"]'))
       await click($('#inpEditSave'))
       const made = INPUTS.filter((r: any) => !had.has(r.iid)) as any[]
       expect(made, 'one record').toHaveLength(1)
@@ -355,7 +355,7 @@ describe('the row the list has just been shown is LIT (V1 — the form’s light
       await click($('#inNew'))
       await click($('[data-testid="win-inputedit"] [data-testid="pp-several"]'))
       for (const p of [sorted[0], sorted[sorted.length - 1]]) await click($(`[data-testid="win-inputedit"] [data-pp="${p}"]`))
-      await click($('#inpEdCal [data-cal="2026-07-16"]'))
+      await click($('#inpEdCal [data-iso="2026-07-16"]'))
       await click($('#inpEditSave'))
       const made = INPUTS.filter((r: any) => !had.has(r.iid)) as any[]
       expect(made, 'one record for the three').toHaveLength(1)
@@ -399,7 +399,7 @@ describe('the window’s "Input added" is said together with whatever the save i
     const w = wire()
     try {
       await click($('#inNew'))
-      await click($('#inpEdCal [data-cal="2026-07-14"]'))
+      await click($('#inpEdCal [data-iso="2026-07-14"]'))
       await click($('#inpEditSave'))
       expect(w.seen.map(x => x[0])).toContain('Input added')
       expect(w.seen.filter(x => !x[1]), 'nothing said outside the save’s one note').toEqual([])
@@ -417,7 +417,7 @@ describe('the window’s "Input added" is said together with whatever the save i
       await click($('#inNew'))
       await click($('[data-testid="win-inputedit"] [data-testid="pp-several"]'))
       await click($(`[data-testid="win-inputedit"] [data-pp="${others()[2]}"]`))
-      await click($('#inpEdCal [data-cal="2026-07-15"]'))
+      await click($('#inpEdCal [data-iso="2026-07-15"]'))
       await click($('#inpEditSave'))
       expect(w.seen.map(x => x[0])).toContain('Input added for 2 people')
       expect(w.seen.filter(x => !x[1])).toEqual([])
@@ -465,7 +465,7 @@ describe('the "?" beside Type is offered only where it can be pressed', () => {
     await mount(false)
     await click($('#inNew'))
     await act(async () => { const s = $('#inpEditType') as HTMLSelectElement; s.value = 'ATT C'; s.dispatchEvent(new Event('change', { bubbles: true })) })
-    await click($('#inpEdCal [data-cal="2026-07-14"]'))
+    await click($('#inpEdCal [data-iso="2026-07-14"]'))
     await click($('#inTypeHelp'))
     expect($('#inTypePop'), 'the card is open').toBeTruthy()
     await click($('#inpEditSave'))                 // as the keyboard does it: no press anywhere closes the card first
@@ -509,14 +509,14 @@ describe('an input just saved wears the just-added mark wherever the page shows 
   it('the desktop List: the new row', async () => {
     await mount(false)
     await click($('#inNew'))
-    await click($('#inpEdCal [data-cal="2026-07-14"]'))
+    await click($('#inpEdCal [data-iso="2026-07-14"]'))
     await click($('#inpEditSave'))
     lit(tr(newest()), newest().iid, 'the row')
   })
   it('the phone List: the new card', async () => {
     await mount(true)
     await click($('#inNew'))
-    await click($('#inpEdCal [data-cal="2026-07-14"]'))
+    await click($('#inpEdCal [data-iso="2026-07-14"]'))
     await click($('#inpEditSave'))
     lit($(`[data-testid="inl-row-${newest().iid}"]`), newest().iid, 'the card')
   })
@@ -583,9 +583,9 @@ describe('an input just saved wears the just-added mark wherever the page shows 
      it the first one's box, four seconds old. A row is its input's own. */
   it('a second input added: the first input keeps its own row, and each is lit', async () => {
     await mount(false)
-    await click($('#inNew')); await click($('#inpEdCal [data-cal="2026-07-14"]')); await click($('#inpEditSave'))
+    await click($('#inNew')); await click($('#inpEdCal [data-iso="2026-07-14"]')); await click($('#inpEditSave'))
     const a = newest(), rowA = tr(a)
-    await click($('#inNew')); await click($('#inpEdCal [data-cal="2026-07-15"]')); await click($('#inpEditSave'))
+    await click($('#inNew')); await click($('#inpEdCal [data-iso="2026-07-15"]')); await click($('#inpEditSave'))
     const b = newest()
     expect(b.iid).not.toBe(a.iid)
     expect(tr(live(a.iid)), 'the first input is still drawn by the row it had').toBe(rowA)
@@ -646,7 +646,7 @@ describe('an input just saved wears the just-added mark wherever the page shows 
     try {
       await mount(false)
       await click($('#inNew'))
-      await click($('#inpEdCal [data-cal="2026-07-14"]'))
+      await click($('#inpEdCal [data-iso="2026-07-14"]'))
       await click($('#inpEditSave'))
       const r = newest()
       lit(tr(r), r.iid, 'the row')

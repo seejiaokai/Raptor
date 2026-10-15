@@ -111,7 +111,7 @@ for (const height of [568, 700, 844]) {
       await expect(page.locator('#inRangePop')).toHaveCount(1)
       const m = await page.evaluate(() => {
         const r = (e: Element) => e.getBoundingClientRect()
-        const pop = document.getElementById('inRangePop')!, cal = document.getElementById('inRangeCal')!, d = cal.querySelector('.rc-d')!, nav = cal.querySelector('.rc-nav')!
+        const pop = document.getElementById('inRangePop')!, cal = document.getElementById('inRangeCal')!, d = cal.querySelector('button.dcal-d')!, nav = cal.querySelector('.dcal-nav')!
         const cs = getComputedStyle(pop)
         const all = document.getElementById('inRangeAll')!, a = r(all), hit = document.elementFromPoint(a.left + a.width / 2, a.top + a.height / 2)
         return { day: { w: r(d).width, h: r(d).height }, nav: { w: r(nav).width, h: r(nav).height }, cal: r(cal).width,
@@ -121,7 +121,8 @@ for (const height of [568, 700, 844]) {
       })
       expect(m.day.h, 'a day is a finger tall').toBeGreaterThanOrEqual(32)
       expect(m.day.w, 'and a finger wide').toBeGreaterThanOrEqual(40)
-      expect(m.nav.w).toBe(28); expect(m.nav.h).toBe(28)
+      /* the month's arrows are the one calendar's own (D901 (3)) */
+      expect(m.nav.w).toBeGreaterThanOrEqual(34); expect(m.nav.h).toBeGreaterThanOrEqual(34)
       expect(Math.abs(m.cal - m.inner), 'the calendar fills its pop-up').toBeLessThanOrEqual(1)
       expect(m.wide, 'nothing runs off sideways').toBeLessThanOrEqual(390)
       expect(m.scrolled, 'the page was not moved to find it').toBe(0)
@@ -131,20 +132,22 @@ for (const height of [568, 700, 844]) {
       await page.locator('#inRangeAll').tap()
       await page.locator('#inNew').tap()
       await expect(page.locator('#inpEdCal')).toHaveCount(1)
-      const w = await page.evaluate(() => { const d = document.querySelector('#inpEdCal .rc-d')!.getBoundingClientRect(); return { h: d.height } })
+      const w = await page.evaluate(() => { const d = document.querySelector('#inpEdCal button.dcal-d')!.getBoundingClientRect(); return { h: d.height } })
       expect(Math.abs(m.day.h - w.h), 'as tall as a day of the window’s calendar').toBeLessThanOrEqual(1)
     } finally { await context.close() }
   })
 }
-test('D731 (12) — a desktop’s dates calendar keeps its small days', async ({ page }) => {
+/* SINCE STEP TWO OF THE APP'S ONE DATE CALENDAR a desktop's days are a finger's size too — one size everywhere (owner
+   D901 (3), 15 Oct 26); this pinned the small desktop days D731 (12) had kept. */
+test('D901 (3) — a desktop’s dates calendar has the one calendar’s finger-sized days, in a pop-up wide enough for them', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await login(page); await go(page, 'inputs')
   await page.locator('#inListBtn').click()
   await page.locator('#inRangeBtn').click()
-  const d = await box(page, '#inRangeCal .rc-d')
-  expect(d!.h).toBeLessThan(26)
+  const d = await box(page, '#inRangeCal button.dcal-d')
+  expect(d!.h).toBeGreaterThanOrEqual(38)
   const cal = await box(page, '#inRangeCal')
-  expect(cal!.w).toBe(212)
+  expect(cal!.w).toBe(320)
 })
 
 /* D731 (10). Two documents on one entry: a pager row more, and the viewer was a little taller than its box. */
@@ -155,7 +158,7 @@ test('D731 (10) — the viewer of an input with two documents keeps "Edit input"
   await page.locator('#inRangeBtn').click(); await page.locator('#inRangeAll').click()
   await page.locator('#inNew').click()
   await page.locator('#inpEditType').selectOption('ATT C')
-  await page.locator('#inpEdCal [data-cal]').nth(14).click()
+  await page.locator('#inpEdCal [data-iso]').nth(14).click()
   await page.locator('[data-testid="win-inputedit"] .docfield input[type=file]').first().setInputFiles([
     { name: 'cert-one.pdf', mimeType: 'application/pdf', buffer: pdf('one') }, { name: 'cert-two.pdf', mimeType: 'application/pdf', buffer: pdf('two') }])
   await page.locator('#inpEditSave').click()
@@ -304,7 +307,7 @@ for (const where of ['the List', 'the opened day'] as const) {
       await page.locator('#inListBtn').click()
       await page.locator('#inRangeBtn').click(); await page.locator('#inRangeAll').click()
       await page.locator('#inNew').click()
-      await page.locator('#inpEdCal [data-cal]').nth(14).click()
+      await page.locator('#inpEdCal [data-iso]').nth(14).click()
     } else {
       await month(page, 2026, 10)
       await page.locator('#inpCal [data-icday="2026-10-22"]').click()

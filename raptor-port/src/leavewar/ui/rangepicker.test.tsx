@@ -3,13 +3,18 @@ import { useState } from 'react'
 import { describe, expect, it } from 'vitest'
 import { RangePicker, type Range } from './RangePicker'
 
+/* SINCE STEP TWO OF THE APP'S ONE DATE CALENDAR (owner D901, 15 Oct 26) the range calendar IS that calendar
+   (ui/DateCal.tsx). Every behaviour pinned here before is pinned still; only how the test finds the parts changed
+   (docs/superpowers/briefs/2026-10-15-calendar-step-two-test-map.md). Two behaviours changed by his word, and the
+   tests say so: no Clear but the bidding dates' "Clear dates" (D901 (1)); the weekday row reads MON … SUN. */
+
 /** The picker is controlled, so testing it needs something to hold the value —
  *  the same job the three sheets do in the app. */
-function Harness({ min, max, initial = null }: { min?: string; max?: string; initial?: Range | null }) {
+function Harness({ min, max, initial = null, clear }: { min?: string; max?: string; initial?: Range | null; clear?: boolean }) {
   const [range, setRange] = useState<Range | null>(initial)
   return (
     <>
-      <RangePicker min={min} max={max} value={range} onChange={setRange} />
+      <RangePicker min={min} max={max} value={range} onChange={setRange} clear={clear} />
       <span data-testid="value">{range ? `${range.from}..${range.to}` : 'none'}</span>
     </>
   )
@@ -17,6 +22,8 @@ function Harness({ min, max, initial = null }: { min?: string; max?: string; ini
 
 const value = () => screen.getByTestId('value').textContent
 const day = (d: string) => screen.getByTestId(`range-day-${d}`)
+/** the month shown, "yyyy-mm" */
+const month = () => screen.getByTestId('range').getAttribute('data-month')
 
 describe('RangePicker', () => {
   // The whole ask: two weeks of leave in two taps, not fourteen.
@@ -35,20 +42,22 @@ describe('RangePicker', () => {
     fireEvent.click(day('2026-01-05'))
     fireEvent.click(day('2026-01-08'))
     for (const d of ['2026-01-05', '2026-01-06', '2026-01-07', '2026-01-08']) {
-      expect(day(d).className).toContain('on')
+      expect(day(d).className).toContain('is-in')
     }
-    expect(day('2026-01-04').className).not.toContain('on')
-    expect(day('2026-01-09').className).not.toContain('on')
+    expect(day('2026-01-04').className).not.toContain('is-in')
+    expect(day('2026-01-09').className).not.toContain('is-in')
   })
 
   it('marks the two ends of the span differently from its middle', () => {
     render(<Harness min="2026-01-01" max="2026-12-31" />)
     fireEvent.click(day('2026-01-05'))
     fireEvent.click(day('2026-01-08'))
-    expect(day('2026-01-05').className).toContain('start')
-    expect(day('2026-01-08').className).toContain('end')
-    expect(day('2026-01-06').className).not.toContain('start')
-    expect(day('2026-01-06').className).not.toContain('end')
+    expect(day('2026-01-05').className).toContain('is-from')
+    expect(day('2026-01-08').className).toContain('is-to')
+    expect(day('2026-01-05').className).toContain('is-sel')
+    expect(day('2026-01-08').className).toContain('is-sel')
+    expect(day('2026-01-06').className).toContain('is-mid')
+    expect(day('2026-01-06').className).not.toContain('is-sel')
   })
 
   // Reaching for an earlier start is the ordinary correction. Refusing it —
@@ -72,8 +81,9 @@ describe('RangePicker', () => {
   it('walks months without losing the selection', () => {
     render(<Harness min="2026-01-01" max="2026-12-31" />)
     fireEvent.click(day('2026-01-28'))
-    fireEvent.click(screen.getByTestId('range-next-month'))
-    expect(screen.getByTestId('range-month').textContent).toBe('FEBRUARY 2026')
+    fireEvent.click(screen.getByTestId('range-next'))
+    expect(month()).toBe('2026-02')
+    expect(screen.getByTestId('range-title').textContent).toMatch(/^February 2026/)
     fireEvent.click(day('2026-02-06'))
     expect(value()).toBe('2026-01-28..2026-02-06')
   })
@@ -82,15 +92,15 @@ describe('RangePicker', () => {
   // that crosses a year is the case this app was built for.
   it('crosses a year boundary in both directions', () => {
     render(<Harness min="2026-01-01" max="2027-12-31" initial={{ from: '2026-12-05', to: '2026-12-05' }} />)
-    fireEvent.click(screen.getByTestId('range-next-month'))
-    expect(screen.getByTestId('range-month').textContent).toBe('JANUARY 2027')
-    fireEvent.click(screen.getByTestId('range-prev-month'))
-    fireEvent.click(screen.getByTestId('range-prev-month'))
-    expect(screen.getByTestId('range-month').textContent).toBe('NOVEMBER 2026')
+    fireEvent.click(screen.getByTestId('range-next'))
+    expect(month()).toBe('2027-01')
+    fireEvent.click(screen.getByTestId('range-prev'))
+    fireEvent.click(screen.getByTestId('range-prev'))
+    expect(month()).toBe('2026-11')
   })
 
   // February is the month a "days in month" table gets wrong, and 2028 is a
-  // leap year — the picker walks day by day precisely so neither is a case.
+  // leap year — neither may be a case.
   it('draws a short February and a leap one', () => {
     render(<Harness min="2026-01-01" max="2028-12-31" initial={{ from: '2026-02-01', to: '2026-02-01' }} />)
     expect(screen.queryByTestId('range-day-2026-02-28')).toBeTruthy()
@@ -114,22 +124,22 @@ describe('RangePicker', () => {
 
   // The month has to start under the right weekday or every date reads a
   // column out. 1 Jan 2026 is a Thursday, which is column 3 Monday-first.
-  // Counted as the blanks BEFORE the first day: there are trailing blanks now
-  // too (padding every month to a constant six rows), so a total-blank count
-  // would fold the two together — the LEAD is what positions the 1st.
+  // Counted as the places BEFORE the first day: there are trailing blanks too
+  // (every month is six rows), so the LEAD is what positions the 1st.
   it('pads the first row so the 1st lands under its own weekday', () => {
     const { container } = render(<Harness min="2026-01-01" max="2026-12-31" />)
-    const cells = Array.from(container.querySelectorAll('.rpick-grid .rday, .rpick-grid .rblank'))
-    const firstDay = cells.findIndex(c => c.classList.contains('rday'))
+    const cells = Array.from(container.querySelectorAll('.dcal-grid > .dcal-d'))
+    const firstDay = cells.findIndex(c => !c.classList.contains('is-blank'))
     expect(firstDay).toBe(3)
+    expect(cells[3].getAttribute('data-iso')).toBe('2026-01-01')
   })
 
   // Monday-first, because leave is asked for in working weeks and a
   // Sunday-first grid splits every weekend across two rows.
   it('runs Monday first', () => {
-    const { container } = render(<Harness min="2026-01-01" max="2026-12-31" />)
-    expect([...container.querySelectorAll('.rdow')].map(e => e.textContent))
-      .toEqual(['M', 'T', 'W', 'T', 'F', 'S', 'S'])
+    render(<Harness min="2026-01-01" max="2026-12-31" />)
+    expect([...screen.getByTestId('range-dow').children].map(e => e.textContent))
+      .toEqual(['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'])
   })
 
   it('reads the chosen span back in words', () => {
@@ -140,33 +150,45 @@ describe('RangePicker', () => {
     expect(screen.getByTestId('range-selection').textContent).toBe('5 Jan 26 – 18 Jan 26')
   })
 
-  it('clears back to nothing', () => {
+  // NO CLEAR BUT THE BIDDING DATES (owner D901 (1), 15 Oct 26): a tap on a new day starts a run over, as on every
+  // calendar of the app (D796); only the bidding dates, where no dates means "Open the whole year", keep a small
+  // "Clear dates".
+  it('has no Clear unless its form asks for one', () => {
     render(<Harness min="2026-01-01" max="2026-12-31" />)
     fireEvent.click(day('2026-01-05'))
-    fireEvent.click(screen.getByTestId('range-clear'))
-    expect(value()).toBe('none')
+    expect(screen.queryByTestId('range-clear')).toBeNull()
+    expect(screen.queryByText(/clear/i)).toBeNull()
   })
 
-  // This app has no clock, deliberately. A calendar that opened on the real
-  // today would show a month the leave war may not even cover.
+  it('the bidding dates\' "Clear dates" clears back to nothing — and shows only while there are dates', () => {
+    render(<Harness min="2026-01-01" max="2026-12-31" clear />)
+    expect(screen.queryByTestId('range-clear')).toBeNull()
+    fireEvent.click(day('2026-01-05'))
+    expect(screen.getByTestId('range-clear').textContent).toBe('Clear dates')
+    fireEvent.click(screen.getByTestId('range-clear'))
+    expect(value()).toBe('none')
+    expect(screen.queryByTestId('range-clear')).toBeNull()
+  })
+
+  // It opens on the war's dates, not on today: a calendar that opened on today
+  // would show a month the leave war may not even cover. (Today is SHOWN now —
+  // D901 (2) — but the month it opens on is still the war's.)
   it('opens on the month the bounds start in, not on today', () => {
     render(<Harness min="2026-07-01" max="2026-09-30" />)
-    expect(screen.getByTestId('range-month').textContent).toBe('JULY 2026')
+    expect(month()).toBe('2026-07')
   })
 
   // The grid holds a CONSTANT six rows every month (owner, 2 Sep 26 — the
-  // arrows must not hop as the month length changes). The month cells (the
-  // real days plus lead/trailing blanks, but not the seven weekday headings)
-  // always number 42 = 6 × 7, so the grid is one fixed height and the sheet's
-  // ‹ › arrows never move. Walks a year, crossing 4-, 5- and 6-row months
-  // (Feb 2027 starts Monday = exactly four rows unpadded; an August starts
-  // Saturday = six).
+  // arrows must not hop as the month length changes): 42 places = 6 × 7,
+  // so the grid is one fixed height and the ‹ › arrows never move. Walks a
+  // year, crossing 4-, 5- and 6-row months (Feb 2027 starts Monday = exactly
+  // four rows unpadded; an August starts Saturday = six).
   it('keeps a constant six rows every month, so the arrows never move', () => {
     const { container } = render(<Harness min="2026-01-01" max="2029-12-31" />)
-    const cellCount = () => container.querySelectorAll('.rpick-grid .rday, .rpick-grid .rblank').length
+    const cellCount = () => container.querySelectorAll('.dcal-grid > .dcal-d').length
     expect(cellCount()).toBe(42)
     for (let i = 0; i < 13; i++) {
-      fireEvent.click(screen.getByTestId('range-next-month'))
+      fireEvent.click(screen.getByTestId('range-next'))
       expect(cellCount()).toBe(42)
     }
   })

@@ -324,7 +324,7 @@ describe('the List row, and the window it opens (the pencil editor\'s cases — 
    are RESTATED for that door — the List is still a place ALL AVAIL is filed from. */
 describe('the List\'s "+ Input" — ALL AVAIL and ALL through the window it opens', () => {
   const formUp = async () => { await listUp(); await click($('#inNew')); expect($('[data-testid="win-inputedit"]'), 'the new input’s window').toBeTruthy() }
-  const days = () => $$('#inpEdCal [data-cal]')
+  const days = () => $$('#inpEdCal [data-iso]')
   /* THE RULE SURVIVES (D711 (3); D753: "offered only where the input is a single day"); step 3 changed its words — "is
      filed one day at a time" is the plan's "is for one day" (§4.4). */
   it('ALL AVAIL over a several-day range is refused in words, and nothing is saved', async () => {
@@ -354,7 +354,7 @@ describe('the List\'s "+ Input" — ALL AVAIL and ALL through the window it open
     expect(phA().disabled, 'three days: not offered').toBe(true)
     expect($('[data-testid="pp-phwhy"]')?.textContent).toBe('ALL AVAIL is for one day')
     /* a new pick of ONE day (a tap, and the same day again) */
-    const working = days().find(d => { const iso = d.getAttribute('data-cal') || ''; const wd = new Date(iso + 'T00:00:00Z').getUTCDay(); return wd >= 1 && wd <= 5 })!
+    const working = days().find(d => { const iso = d.getAttribute('data-iso') || ''; const wd = new Date(iso + 'T00:00:00Z').getUTCDay(); return wd >= 1 && wd <= 5 })!
     await click(working); await click(working)
     expect(phA().disabled, 'one day: offered').toBe(false)
     expect($('[data-testid="pp-phwhy"]')).toBeNull()
@@ -372,7 +372,7 @@ describe('the List\'s "+ Input" — ALL AVAIL and ALL through the window it open
     await formUp()
     await pick($('#inpEditType'), 'Meeting')
     await pick($('#inpEditPerson'), 'allavail')
-    const working = days().find(d => { const iso = d.getAttribute('data-cal') || ''; const wd = new Date(iso + 'T00:00:00Z').getUTCDay(); return wd >= 1 && wd <= 5 })!
+    const working = days().find(d => { const iso = d.getAttribute('data-iso') || ''; const wd = new Date(iso + 'T00:00:00Z').getUTCDay(); return wd >= 1 && wd <= 5 })!
     await click(working)
     const before = INPUTS.length
     await click($('#inpEditSave'))

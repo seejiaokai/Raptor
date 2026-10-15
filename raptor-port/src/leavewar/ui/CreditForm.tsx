@@ -11,40 +11,22 @@
 import { useState, type KeyboardEvent, type ReactNode } from 'react'
 import type { CounterName } from '../engine'
 import { grantTo, MAX_GIVEN_BY, MAX_REASON, reasonRequired } from '../state/store'
-import { shortDate } from './dates'
-import { RangePicker } from './RangePicker'
+import { DateBox } from '../../ui/DateBox'
 import './oiltracker.css'
 
-/** A single-day picker behind a chip: the chip shows the day, a tap opens the
- *  calendar under it, a tap on a day closes it. */
-export function DayChip({ testid, pickerId, value, today, onPick }: {
+/** A single day behind a box: the box reads the day, a tap opens the app's one
+ *  date calendar over the page (ui/DateBox.tsx), a tap on a day picks it and
+ *  closes it. The date of an OIL credit is one box among the form's others, so
+ *  it opens OVER the form (owner D797; step two of the one date calendar —
+ *  D901, 15 Oct 26). It was the Leave War's range calendar bent to one day,
+ *  under a chip. */
+export function DayChip({ testid, value, today, onPick }: {
   testid: string
-  pickerId: string
   value: string
   today: string
   onPick: (d: string) => void
 }) {
-  const [open, setOpen] = useState(false)
-  return (
-    <span className="oil-daychip">
-      <button className="tchip" data-testid={testid} aria-expanded={open} onClick={() => setOpen(o => !o)}>
-        📅 {value ? shortDate(value) : 'date'} ▾
-      </button>
-      {open && (
-        <span className="oil-pop">
-          <RangePicker
-            compact
-            testid={pickerId}
-            anchor={value || today}
-            value={value ? { from: value, to: value } : null}
-            // A single day: a tap on a later day than the one shown arrives
-            // as a range starting at the shown day, so take its far end.
-            onChange={r => { if (!r) return; onPick(r.to !== value ? r.to : r.from); setOpen(false) }}
-          />
-        </span>
-      )}
-    </span>
-  )
+  return <DateBox label="Date" testid={testid} className="oil-datebox" value={value} today={today} noWeekday onChange={onPick} />
 }
 
 /**
@@ -132,7 +114,7 @@ export function CreditForm({ counter, ids, who, today, initialAmount = '1', auto
         onChange={e => { setErr(''); setAmt(e.target.value) }}
         onKeyDown={keys}
       />
-      {full && <DayChip testid="oil-date" pickerId="oildate" value={date} today={today} onPick={setDate} />}
+      {full && <DayChip testid="oil-date" value={date} today={today} onPick={setDate} />}
       {full && (
         <input className="oil-text" data-testid="oil-reason" maxLength={MAX_REASON} value={reason} placeholder="reason" aria-label="Reason" onChange={e => setReason(e.target.value)} onKeyDown={keys} />
       )}

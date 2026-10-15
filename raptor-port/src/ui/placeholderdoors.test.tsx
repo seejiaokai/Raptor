@@ -674,7 +674,7 @@ describe('the window on a saved input of people AND a placeholder (D748, D755, D
     const [a, b] = [others()[0], others()[1]]
     const r = await mixed([a, b, 'allavail'])
     await openOn(r)
-    const day = (iso: string) => $(`#inpEdCal [data-cal="${iso}"]`)
+    const day = (iso: string) => $(`#inpEdCal [data-iso="${iso}"]`)
     expect(day('2026-10-13'), 'the window carries the calendar for a saved input its reader may change').toBeTruthy()
     await click(day('2026-10-13')); await click(day('2026-10-15'))
     expect(ph('allavail').getAttribute('aria-pressed'), 'nothing is substituted for what was picked').toBe('true')

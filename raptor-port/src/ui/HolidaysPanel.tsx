@@ -241,7 +241,7 @@ export function HolidayForm({ line, year, onClose }: {
       <div className="every-lab">Dates</div>
       {/* the Leave War's own range calendar (D671); `data-from` / `data-to` say what is picked, for the tests */}
       <div className="hol-cal" data-testid="hol-dates" data-from={range ? range.from : ''} data-to={range ? range.to : ''}>
-        <RangePicker key={calKey} testid="holcal" compact anchor={anchor} value={range} onChange={r => { edit(); setRange(r) }} />
+        <RangePicker key={calKey} testid="holcal" anchor={anchor} value={range} onChange={r => { edit(); setRange(r) }} />
       </div>
 
       {saved && <p className="hol-saved" data-testid="hol-saved" role="status">{saved}</p>}

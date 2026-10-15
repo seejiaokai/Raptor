@@ -784,10 +784,10 @@ test('one holiday, one word: "ND" for a National Day on the "Calendar" month, th
   await page.locator('[data-testid="hol-name"]').fill('National Day')
   await page.locator('[data-testid="hol-short"]').fill('ND')
   for (let i = 0; i < 24; i++) {
-    const [name, year] = (await page.locator('[data-testid="holcal-month"]').innerText()).trim().toLowerCase().split(/\s+/)
+    const [name, year] = (await page.locator('[data-testid="holcal-title"] .dcal-my').innerText()).trim().toLowerCase().split(/\s+/)
     const d = 2026 * 12 + 7 - (+year * 12 + MONTHS.findIndex(x => x.startsWith(name.slice(0, 3))))
     if (!d) break
-    await page.locator(`[data-testid="${d > 0 ? 'holcal-next-month' : 'holcal-prev-month'}"]`).click()
+    await page.locator(`[data-testid="${d > 0 ? 'holcal-next' : 'holcal-prev'}"]`).click()
   }
   await page.locator('[data-testid="holcal-day-2026-08-05"]').click()
   await page.locator('[data-testid="hol-save"]').click()
@@ -830,9 +830,9 @@ test('a saved shared input: its window carries the calendar; two presses and Sav
   await expect(edWin(page)).toBeVisible()
   const cal = page.locator('#inpEditPop #inpEdCal')
   await expect(cal, 'the calendar a new input has').toBeVisible()
-  await expect(cal.locator('[data-cal="2026-10-13"]')).toHaveClass(/\bs\b/)
-  await cal.locator('[data-cal="2026-10-20"]').click()
-  await cal.locator('[data-cal="2026-10-22"]').click()
+  await expect(cal.locator('[data-iso="2026-10-13"]')).toHaveClass(/\bis-sel\b/)
+  await cal.locator('[data-iso="2026-10-20"]').click()
+  await cal.locator('[data-iso="2026-10-22"]').click()
   await expect(page.locator('#inpEditPop .rc-read')).toContainText('20')
   await expect(page.locator('#inpEditPop .rc-read')).toContainText('22')
   await page.locator('#inpEditSave').click()
@@ -857,13 +857,12 @@ test('a phone: the shared input’s calendar fits the window, a finger picks its
     const c = (await cal.boundingBox())!
     expect(c.x, 'nothing runs off the left').toBeGreaterThanOrEqual(0)
     expect(c.x + c.width, 'or the right').toBeLessThanOrEqual(390)
-    /* the calendar is the one "+ Input" already carries in this window, at its size (D487: no button is resized without
-       his word — its days are 20px tall on a phone, said on the look card); what is checked is that a finger lands on
-       the day it aimed at */
-    await cal.locator('[data-cal="2026-10-20"]').tap()
-    await expect(cal.locator('[data-cal="2026-10-20"]')).toHaveClass(/\bs\b/)
-    await cal.locator('[data-cal="2026-10-21"]').tap()
-    await expect(cal.locator('[data-cal="2026-10-21"]')).toHaveClass(/\be\b/)
+    /* the calendar is the one "+ Input" already carries in this window — the app's one date calendar since step two (D901), its days a finger's size
+       (D901 (3)); what is checked is that a finger lands on the day it aimed at */
+    await cal.locator('[data-iso="2026-10-20"]').tap()
+    await expect(cal.locator('[data-iso="2026-10-20"]')).toHaveClass(/\bis-sel\b/)
+    await cal.locator('[data-iso="2026-10-21"]').tap()
+    await expect(cal.locator('[data-iso="2026-10-21"]')).toHaveClass(/\bis-to\b/)
     await expect(page.locator('#inpEditPop .rc-read')).toContainText('21')
     const save = page.locator('#inpEditSave')
     await save.scrollIntoViewIfNeeded()
@@ -1072,7 +1071,7 @@ for (const size of [{ name: 'a desktop 1440 × 900', width: 1440, height: 900 },
    not changed. Only a real browser can measure a button. */
 test('a phone: the days of the calendar in an input’s window are a finger’s size, a saved input’s and a new one’s alike; a desktop’s are as they were (D725)', async ({ browser, baseURL, page }) => {
   const size = (p: Page) => p.evaluate(() => {
-    const d = document.querySelector('#inpEdCal .rc-d:not(.wk)')!.getBoundingClientRect(), n = document.querySelector('#inpEdCal .rc-nav')!.getBoundingClientRect()
+    const d = document.querySelector('#inpEdCal button.dcal-d:not(.is-we)')!.getBoundingClientRect(), n = document.querySelector('#inpEdCal .dcal-nav')!.getBoundingClientRect()
     const cal = document.querySelector('#inpEdCal')!.getBoundingClientRect(), win = document.querySelector('[data-testid="win-inputedit"]')!.getBoundingClientRect()
     const save = document.querySelector('#inpEditSave')!.getBoundingClientRect()
     return { w: Math.round(d.width), h: Math.round(d.height), nav: Math.round(n.height), inside: cal.left >= win.left - 0.5 && cal.right <= win.right + 0.5, saveInSight: save.bottom <= win.bottom + 0.5 && save.bottom <= innerHeight + 0.5, wide: document.documentElement.scrollWidth > innerWidth + 1 }
@@ -1083,11 +1082,12 @@ test('a phone: the days of the calendar in an input’s window are a finger’s 
     await p.locator(`[data-iid="${iid}"]`).first().locator('[data-testid="in-open"], [data-testid="inl-open"]').click()
     await expect(p.locator('#inpEdCal')).toBeVisible()
   }
-  /* a desktop: unchanged */
+  /* a desktop: a finger's size too since step two of the app's one date calendar — one size everywhere (D901 (3)) */
   await page.setViewportSize({ width: 1440, height: 900 })
   await login(page); await openSaved(page)
   const desk = await size(page)
-  expect(desk.h, 'a desktop’s day is the small one it was').toBeLessThan(26)
+  expect(desk.h, 'a desktop’s day is a finger’s size too (D901 (3))').toBeGreaterThanOrEqual(32)
+  expect(desk.inside, 'the calendar is inside the window').toBe(true)
   /* a phone */
   const ph = await phone(browser, baseURL, 844)
   try {
@@ -1382,11 +1382,11 @@ for (const height of [844, 667, 568]) {
       expect(m.wide, 'nothing runs off sideways').toBeLessThanOrEqual(390)
       /* a finger on a date meets that date, and two presses set the window of dates */
       const before = (await page.locator('#inRangeBtn').innerText()).trim()
-      const d1 = await at('#inRangePop .rc-d', 8)
+      const d1 = await at('#inRangePop button.dcal-d', 8)
       expect(d1.reached, 'a date is what a finger on it reaches').toBe(true)
       await page.touchscreen.tap(d1.x, d1.y)
       await expect(page.locator('#inRangePop .rc-read')).toContainText('pick an end date')
-      const d2 = await at('#inRangePop .rc-d', 11)
+      const d2 = await at('#inRangePop button.dcal-d', 11)
       await page.touchscreen.tap(d2.x, d2.y)
       await expect(page.locator('#inRangeBtn')).not.toHaveText(before)
       await expect(page.locator('#inRangeBtn')).toContainText('→')

@@ -213,17 +213,17 @@ describe('a new input\'s calendar and the List\'s dates picker do not share stat
     await click($('#inNew'))
     const D = (sel: string) => document.querySelector(sel) as HTMLElement
     const read = () => D('#inpEditPop .rc-read').textContent
-    await click(D('#inpEdCal [data-cal="2026-07-14"]'))
-    await click(D('#inpEdCal [data-cal="2026-07-16"]'))
+    await click(D('#inpEdCal [data-iso="2026-07-14"]'))
+    await click(D('#inpEdCal [data-iso="2026-07-16"]'))
     expect(read()).toBe('Jul 14 → Jul 16')
     /* now narrow the List's dates on the other calendar — the window stays up while the page behind it works */
     if (!$('#inRangePop')) await click($('#inRangeBtn'))
-    await click($('#inRangeCal [data-cal="2026-07-20"]'))
-    await click($('#inRangeCal [data-cal="2026-07-22"]'))
+    await click($('#inRangeCal [data-iso="2026-07-20"]'))
+    await click($('#inRangeCal [data-iso="2026-07-22"]'))
     expect(read(), 'the new input’s pick is untouched').toBe('Jul 14 → Jul 16')
     expect($('#inRangeBtn').textContent).toContain('20 Jul')
     /* and re-picking in the window does not move the List's dates */
-    await click(D('#inpEdCal [data-cal="2026-07-17"]'))
+    await click(D('#inpEdCal [data-iso="2026-07-17"]'))
     expect($('#inRangeBtn').textContent, 'the List’s dates are untouched').toContain('20 Jul')
     await click(D('#inpEditCancel'))
     await showAllDates()

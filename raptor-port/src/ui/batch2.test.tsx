@@ -289,7 +289,7 @@ describe('A6, D731 (3) — the List’s dates calendar: Escape and a press outsi
   const openPop = async () => { await toList(); await click($('#inRangeBtn')); expect($('#inRangePop')).toBeTruthy() }
   it('D731 (3): a start and an end tapped — the calendar is still up, showing the range', async () => {
     await openPop()
-    await click($('#inRangeCal [data-cal="2026-07-13"]')); await click($('#inRangeCal [data-cal="2026-07-19"]'))
+    await click($('#inRangeCal [data-iso="2026-07-13"]')); await click($('#inRangeCal [data-iso="2026-07-19"]'))
     expect($('#inRangePop'), 'still open').toBeTruthy()
     expect($('#inRangePop .rc-read')!.textContent).toBe('13 Jul → 19 Jul')
     expect($('#inRangeBtn')!.textContent).toContain('13 Jul → 19 Jul')

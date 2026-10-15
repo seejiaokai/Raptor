@@ -8,13 +8,18 @@
    carousel scrolls to it (via view.WEEKJUMP, consumed in the week's own
    repaint); on the board that day opens (boardTab).
 
-   Same look as the app's own date picker — the `.rc-*` styles RangeCal.tsx
-   uses (Monday-first grid, `‹ month ›` header). The current day is highlighted,
-   and the notional today wears a ring.
+   SINCE STEP TWO OF THE APP'S ONE DATE CALENDAR (owner D901, 15 Oct 26) its
+   month is that calendar (ui/DateCal.tsx — D796): the day being looked at is
+   the picked date, the notional today (weeknav.TODAY — the app has no clock)
+   on its soft disc. It keeps its own window, as it was (D797). Its Today icon
+   is the calendar's own, right of the year — the one this window had in its
+   head, which the calendar was given — and here it still PICKS today: the
+   window closes and the view lands there at once (D901: kept as it was). One
+   Today icon, not two.
 
    Opened from the schedule seg, the mobile calendar icon, and the board's
    top-left #sbCal — via the WEEKCAL flag (pops.ts). */
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { CURWEEK } from '../engine/waves'
 import { loadWeek, notify } from '../state/store'
 import { boardTab } from './board'
@@ -23,10 +28,7 @@ import { WEEKCAL, setWeekCal } from './pops'
 import { useVersion } from './useStore'
 import { mondayOf, keyToIso, dayIndexInWeek, TODAY } from './weeknav'
 import { clickedOutside } from './outside'
-
-const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-const iso = (y: number, m: number, d: number) =>
-  `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
+import { DateCal } from './DateCal'
 
 /** The day the user is currently looking at, as `yyyy-mm-dd`: the board's open
  *  day, else the schedule carousel's left-most visible day, else the loaded
@@ -51,21 +53,14 @@ export function WeekCal() {
   const open = WEEKCAL !== false
   const context = WEEKCAL
 
-  // Opens on the current day's month. Recomputed only when it opens (keyed on
-  // WEEKCAL), so paging months during a session is remembered until it closes.
-  // The seed is read ONCE, inside the lazy initialiser (3 Sep 26, the slow-
-  // computer cut): as a plain render-time call it re-measured all seven day
-  // boxes on EVERY store tick with the calendar closed — a forced layout of
-  // the whole week per drop, for a value nothing read. The open effect below
-  // re-seeds when the calendar actually opens, which is the only time it matters.
-  const [view, setView] = useState(() => { const seed = currentDayIso(); return { y: +seed.slice(0, 4), m: +seed.slice(5, 7) - 1 } })
-
+  /* The calendar opens on the current day's month: it is drawn afresh each time the window opens (closed, it is not
+     drawn at all), and reads the day once as it is drawn — so paging months while it is up is kept until it closes,
+     and the day is not measured on every store tick with the window closed (3 Sep 26, the slow-computer cut: that
+     re-measured all seven day boxes per drop). */
   useEffect(() => {
     if (!open) return
     openerRef.current = document.activeElement
-    const s = currentDayIso()
-    setView({ y: +s.slice(0, 4), m: +s.slice(5, 7) - 1 })
-    const t = setTimeout(() => boxRef.current?.querySelector<HTMLElement>('.rc-nav')?.focus(), 0)
+    const t = setTimeout(() => boxRef.current?.querySelector<HTMLElement>('.dcal-nav')?.focus(), 0)
     return () => clearTimeout(t)
   }, [open])
 
@@ -90,27 +85,7 @@ export function WeekCal() {
     }
     notify()
   }
-  const step = (n: number) => {
-    const m = view.m + n
-    setView({ y: view.y + Math.floor(m / 12), m: ((m % 12) + 12) % 12 })
-  }
-
-  const first = new Date(Date.UTC(view.y, view.m, 1))
-  const lead = (first.getUTCDay() + 6) % 7          // Mon=0 … Sun=6
-  const dim = new Date(Date.UTC(view.y, view.m + 1, 0)).getUTCDate()
-  const cells: (number | null)[] = []
-  for (let i = 0; i < lead; i++) cells.push(null)
-  for (let d = 1; d <= dim; d++) cells.push(d)
-  while (cells.length % 7) cells.push(null)
-
-  const curIso = currentDayIso()
   const todayIso = keyToIso(TODAY)
-  // The header "Today" button reads the notional today's date number (the app
-  // has no real clock — TODAY is the fixed planning day, weeknav.ts), so the
-  // little calendar glyph always shows the same number. It reuses pick(), which
-  // closes the popover and lands the view on that day in whichever context
-  // (board / week) opened the calendar.
-  const todayNum = +TODAY.slice(0, 2)
 
   return (
     <div className="airpop" id="weekCal" role="dialog" aria-label="Jump to a date"
@@ -118,37 +93,9 @@ export function WeekCal() {
       onClick={e => { if (clickedOutside(e, 'weekCal')) close() }}>
       <div className="airpop-box weekcal-box" ref={boxRef}>
         <div className="airpop-head"><b>Jump to a date</b>
-          <button className="wc-today" aria-label="Go to today" title="Go to today"
-            onClick={() => pick(todayIso)}>
-            <span className="wc-pg"><span className="wc-n">{todayNum}</span></span>
-          </button>
           <button className="x" aria-label="Close" onClick={close}>✕</button></div>
         <div className="airpop-body weekcal-body">
-          <div className="rangecal weekcal">
-            <div className="rc-h">
-              <button type="button" className="rc-nav" aria-label="Previous month" onClick={() => step(-1)}>‹</button>
-              <span className="rc-mon">{MON[view.m]} {view.y}</span>
-              <button type="button" className="rc-nav" aria-label="Next month" onClick={() => step(1)}>›</button>
-            </div>
-            <div className="rc-dow">{['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map(d => <span key={d}>{d}</span>)}</div>
-            <div className="rc-grid">
-              {cells.map((d, i) => {
-                if (d == null) return <span key={i} className="rc-x" />
-                const v = iso(view.y, view.m, d)
-                const wknd = i % 7 >= 5
-                const cls = 'rc-d'
-                  + (v === curIso ? ' sel' : '')
-                  + (v === todayIso ? ' today' : '')
-                  + (wknd ? ' wk' : '')
-                return (
-                  <button type="button" key={i} data-wcal={v} className={cls}
-                    aria-current={v === curIso ? 'date' : undefined}
-                    aria-label={`${d} ${MON[view.m]} ${view.y}`}
-                    onClick={() => pick(v)}>{d}</button>
-                )
-              })}
-            </div>
-          </div>
+          <DateCal tid="wcal" value={currentDayIso()} today={todayIso} onPick={pick} onToday={() => pick(todayIso)} />
           <div className="weekcal-hint">Tap any day to go to it.</div>
         </div>
       </div>

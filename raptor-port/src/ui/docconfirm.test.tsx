@@ -112,7 +112,7 @@ describe('the Inputs list’s "+ Input" prompts for a bare medical too', () => {
     await click($('#inNew'))
     expect($('[data-testid="win-inputedit"]'), 'the new input’s window').toBeTruthy()
     await setType('ATT C')
-    await click($('#inpEdCal [data-cal]'))
+    await click($('#inpEdCal [data-iso]'))
   }
   const attc = () => INPUTS.filter((r: any) => r.type === 'ATT C')
 

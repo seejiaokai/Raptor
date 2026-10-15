@@ -219,7 +219,7 @@ describe('the credit boxes', () => {
     fireEvent.click(screen.getByTestId('oil-range-pick'))
     // The picker opens on this month; page back to January 2026.
     for (let i = 0; i < 240 && !screen.queryByTestId('oilrange-day-2026-01-05'); i++) {
-      fireEvent.click(screen.getByTestId('oilrange-prev-month'))
+      fireEvent.click(screen.getByTestId('oilrange-prev'))
     }
     // 5 Jan – 31 Jan holds the day taken but not the earned day itself —
     // the box still shows, because its take is in the window.

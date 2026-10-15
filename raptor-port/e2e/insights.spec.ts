@@ -84,13 +84,13 @@ test.describe('D558 phone menu native flows',()=>{
     await login(page)
     for(const [p,id,week] of [['viewsched','viewSched','#vWeek'],['editsched','editSched','#eWeek']] as const){
       await go(page,p);await page.locator(`#${id}More`).click();await page.locator(`#page-${p} .filt-cal`).click()
-      await page.locator('[data-wcal="2026-07-22"]').click();await page.waitForFunction(()=>(window as any).CURWEEK==='20/07/2026')
+      await page.locator('[data-testid="wcal-day-2026-07-22"]').click();await page.waitForFunction(()=>(window as any).CURWEEK==='20/07/2026')
       await expect(page.locator(`#${id}MoreMenu`)).toHaveCount(0)
       await expect.poll(()=>page.locator(week).evaluate(e=>{const day=e.querySelector('.day[data-day="2"]')!.getBoundingClientRect(),w=e.getBoundingClientRect();return Math.abs(day.left-w.left)})).toBeLessThan(30)
       await page.locator(`#page-${p} .filt-cal`).click();await page.locator('#weekCal .wc-today').click();await page.waitForFunction(()=>(window as any).CURWEEK==='13/07/2026')
-      await page.locator(`#page-${p} .filt-cal`).click();await expect(page.locator('#weekCal .rc-nav').first()).toBeFocused();await page.keyboard.press('Escape');await expect(page.locator('#weekCal')).toBeHidden();expect(await page.evaluate(()=>(window as any).CURWEEK)).toBe('13/07/2026')
+      await page.locator(`#page-${p} .filt-cal`).click();await expect(page.locator('#weekCal .dcal-nav').first()).toBeFocused();await page.keyboard.press('Escape');await expect(page.locator('#weekCal')).toBeHidden();expect(await page.evaluate(()=>(window as any).CURWEEK)).toBe('13/07/2026')
     }
-    await page.locator('#eWeek [data-sbday="0"]').first().click();await page.locator('#sbCal').click();await page.locator('[data-wcal="2026-07-22"]').click()
+    await page.locator('#eWeek [data-sbday="0"]').first().click();await page.locator('#sbCal').click();await page.locator('[data-testid="wcal-day-2026-07-22"]').click()
     await expect(page.locator('#schedBoard')).toBeVisible();expect(await page.evaluate(()=>(window as any).SBDAY)).toBe(2)
   })
 })

@@ -109,6 +109,23 @@ describe('the mobile drawer', () => {
     expect($('#weekCal').hasAttribute('hidden')).toBe(true)
   })
 
+  /* STEP TWO OF THE APP'S ONE DATE CALENDAR (owner D901, 15 Oct 26): the window's month IS that calendar — the day
+     being looked at is its picked date, the notional today its soft disc, and ONE Today icon (the calendar's own,
+     which still jumps there at once). A tap on a date loads its week and closes the window. */
+  it('its month is the app\'s one date calendar: the day looked at picked, one Today icon, a tap on a date jumps there', async () => {
+    await act(async () => { loadWeek('27/07/2026') })
+    await click($('#page-viewsched .filt-cal'))
+    const cal = $('#weekCal [data-testid="wcal"]')
+    expect(cal, 'the one calendar').toBeTruthy()
+    expect(document.querySelectorAll('#weekCal .wc-today'), 'one Today icon, not two').toHaveLength(1)
+    expect($('#weekCal [data-testid="wcal-day-2026-07-27"]').getAttribute('aria-pressed')).toBe('true')
+    expect($('#weekCal [data-testid="wcal-day-2026-07-13"]').className).toContain('is-today')
+    /* a day of the notional today's week, so the tests after this one find the week they expect */
+    await click($('#weekCal [data-testid="wcal-day-2026-07-15"]'))
+    expect((await import('../engine/waves')).CURWEEK).toBe('13/07/2026')
+    expect($('#weekCal').hasAttribute('hidden')).toBe(true)
+  })
+
   it('a member drawer hides the Edit tab', async () => {
     await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
     await click($('#burger'))

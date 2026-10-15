@@ -832,3 +832,18 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** in shipping.md's D151 line, give the one safe form: `[ "$(gh run list … | length)" = "0" ] && git push`, or a small script (`node raptor-port/scripts/canpush.mjs <branch>`) that exits non-zero while any run of the branch's last pushed commit is queued or in progress — the guard inside the action, not a number to read.
 
 **Principle:** A check meant to gate an action must fail when the condition fails; a command that merely reports the condition, chained with `&&`, gates nothing.
+
+### Observation 609: A bare `cat >` at the head of a shell command waits on input for ever, and the time-out hides it as "moved to the background"
+
+**Status:** OPEN
+**Date:** 15 Oct 26
+**Session context:** calendar step two (D901) — editing files by a short script run from the shell
+**Skill:** New skill candidate: none — the project's script-writing memory notes (`bash-heredoc-apostrophes-fail`, `node-e-in-git-bash-mangles-escapes`)
+**Type:** open-source
+**Phase/Area:** writing an edit script and running it
+
+**Issue:** Twice in one chat a command began `cat > "$TMPDIR/x" 2>/dev/null; python - <<'EOF' …` (a leftover half of a "write the script, then run it" habit). `cat` with no file and no heredoc of its own reads the terminal, which never ends; after two minutes the tool moved the command to the background and the edit never ran. Nothing said why — it looked like a slow command. The second time also carried a heredoc body with apostrophes, which the project already knows fails here.
+
+**Suggested improvement:** In the project's notes on running scripts, one line: write every multi-line script with the file-writing tool and run the file; never begin a shell command with `cat >`; and give every shell command that runs a script `< /dev/null`, so anything that reads input ends at once instead of waiting.
+
+**Principle:** A command that can wait for input will, in a tool with no keyboard — close its input by default, so a slip ends in an error rather than a silent stall.
