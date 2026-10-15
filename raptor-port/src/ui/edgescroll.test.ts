@@ -62,6 +62,30 @@ describe('the loop', () => {
     expect(box.scrollTop).toBe(3 * EDGE_STEP)            // stopped with the release: nothing after it
   })
 
+  /* THE BAND IS WHERE THE DRAGGED THINGS ARE SEEN, AND THE RUN STOPS WHERE THEY END (the walk of 15 Oct 26, E4 — the
+     people picker in an input's window, D900): a bar that stays at the window's foot covers its last strip, so the
+     band is that bar's top, given by the caller; and a window holding more than the list runs only while the list has
+     more to show that way. */
+  it('a caller\'s own span moves the band to where the things are seen — above a bar that covers the foot', () => {
+    lend()
+    const { box, item } = list()
+    const a = edgeAutoScroll({ from: item, axis: 'y', touch: false, x: 50, y: 50, onScroll: () => {}, span: () => [0, 140] })
+    a.point(50, 125)                                    // inside 36 px of the bar's top (140); 75 px above the box's foot
+    run(3)
+    expect(box.scrollTop).toBe(3 * EDGE_STEP)
+    a.stop()
+  })
+  it('it runs only while there is more to show that way', () => {
+    lend()
+    const { box, item } = list()
+    let left = 2
+    const a = edgeAutoScroll({ from: item, axis: 'y', touch: false, x: 50, y: 50, onScroll: () => {}, more: d => d > 0 && left-- > 0 })
+    a.point(50, 195)
+    run(5)
+    expect(box.scrollTop).toBe(2 * EDGE_STEP)           // two frames had more to show; then the list's end: no more
+    a.stop()
+  })
+
   it('a press that STARTS in the band does not run until the pointer has left the band', () => {
     lend()
     const { box, item } = list()

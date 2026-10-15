@@ -50,7 +50,7 @@ for (const size of SIZES) {
   const press = async (sel, { scroll = true } = {}) => {
     const loc = p.locator(sel).first()
     await loc.waitFor({ state: 'attached', timeout: 8000 })
-    if (scroll) await loc.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'nearest' }))
+    if (scroll) await loc.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'center' }))
     await L.sleep(200)
     const at = await loc.evaluate(e => { const b = e.getBoundingClientRect(); const x = b.left + b.width / 2, y = b.top + b.height / 2; const h = document.elementFromPoint(x, y); return { x, y, on: x >= 0 && y >= 0 && x <= innerWidth && y <= innerHeight, ok: !!h && (h === e || e.contains(h) || h.contains(e)), over: h ? `${h.tagName}.${String(h.className).slice(0, 40)}[${h.getAttribute('data-testid') || ''}]` : 'nothing' } })
     if (!at.on) throw new Error(`off the screen: ${sel}`)
@@ -164,7 +164,7 @@ for (const size of SIZES) {
     /* C4 — an event's dates: A range on the calendar inside the sheet, saved, on the Event row */
     await step('C4', 'an event over a run of days', async () => {
       await lw()
-      const id = await p.evaluate(() => { const c = [...document.querySelectorAll('[data-testid^="event-0-2026-"]')].find(e => /^event-0-2026-01-\d\d$/.test(e.getAttribute('data-testid')) && e.getBoundingClientRect().width > 8 && /^\+?$/.test((e.textContent || '').trim())); return c ? c.getAttribute('data-testid') : null })
+      const id = await p.evaluate(() => { const c = [...document.querySelectorAll('[data-testid^="event-0-2026-"]')].find(e => /^event-0-2026-01-(1[2-9]|2\d)$/.test(e.getAttribute('data-testid')) && e.getBoundingClientRect().width > 8 && /^[+＋]?$/.test((e.textContent || '').trim())); return c ? c.getAttribute('data-testid') : null })
       if (!id) throw new Error('no empty event cell in January: ' + JSON.stringify(await p.evaluate(() => [...document.querySelectorAll('[data-testid^="event-"]')].slice(0, 8).map(e => [e.getAttribute('data-testid'), (e.textContent || '').trim().slice(0, 12), Math.round(e.getBoundingClientRect().width)]))))
       await press(tid(id))
       await p.waitForSelector(tid('event-sheet'))
@@ -180,7 +180,9 @@ for (const size of SIZES) {
       if (w.phone) await save.tap(); else await save.click()
       await L.sleep(500)
       const on = await p.evaluate(d => (document.querySelector(`[data-testid="event-0-${d}"]`)?.textContent || '').trim(), d0)
-      ok(size, 'C4: saved — the Event row carries it', /WALK|WALKEV/i.test(on) || on.length > 0, on || '(empty)')
+      await L.pic(w, `C4-event-saved-${size}`)
+      const row = await text(tid('event-row-0'))
+      ok(size, 'C4: saved — the Event row carries it', /WALKEV/i.test(row) || /WALKEV/i.test(on), row.slice(0, 120) || '(empty)')
     })
 
     /* C5 — the OIL tracker's report range: a run, Done, the window line follows */
@@ -257,7 +259,7 @@ for (const size of SIZES) {
     await step('C8', 'an input\'s own dates — new, then saved', async () => {
       await L.go(w, 'inputs')
       if (await p.locator('#inListBtn:visible').count()) await press('#inListBtn')
-      await press('#inNew')
+      await w.press('#inNew')
       await p.waitForSelector('#inpEdCal')
       await p.selectOption('#inpEditType', 'Meeting').catch(() => {})
       await toMonth('inpEdCal', '2026-06')
@@ -277,8 +279,11 @@ for (const size of SIZES) {
       /* reopened: the first tap is a new start (the window's dates are a finished run) */
       await press('#inRangeBtn'); await press('#inRangeAll')
       const row = `#page-inputs [data-iid="${made.iid}"]`
-      await press(`${row} [data-testid="in-open"], ${row} [data-testid="inl-open"], ${row}`)
+      /* the saved input reopened from the list — its own open button on a desktop, its card on a phone (D718) */
+      const opener = p.locator(`${row} [data-testid="in-open"]:visible, ${row} [data-testid="inl-open"]:visible`).first()
+      if (await opener.count()) await w.press(opener); else await w.press(p.locator(`${row}:visible`).first())
       await p.waitForSelector('#inpEdCal')
+      await toMonth('inpEdCal', '2026-07')                 // it opens on its first date's month, June
       await press('#inpEdCal [data-iso="2026-07-01"]')
       const read2 = await text('#inpEditPop .rc-read')
       ok(size, 'C8: reopened, the first tap starts new dates — not stretched', read2 === 'Jul 1', read2)
@@ -414,9 +419,13 @@ for (const size of SIZES) {
 
     /* E4 — the people picker: a drag across faces carried to the foot of the input's window scrolls it, picking on */
     await step('E4', 'the people picker\'s drag held at the window\'s foot', async () => {
+      /* a desktop 900 tall shows every face at once — nothing to scroll; a short window (a laptop's, 600) makes the faces
+         run past the window's foot, as they do on a phone */
+      if (!w.phone) { await p.setViewportSize({ width: 1440, height: 600 }); await L.sleep(400) }
       await L.go(w, 'inputs')
       if (await p.locator('#inListBtn:visible').count()) await press('#inListBtn')
-      await press('#inNew')
+      await p.evaluate(() => window.scrollTo(0, 0)); await L.sleep(200)
+      await w.press('#inNew')
       await p.waitForSelector('#inpEdCal')
       await p.selectOption('#inpEditType', 'Meeting').catch(() => {})
       await press(tid('pp-several'), { scroll: true })
@@ -439,7 +448,7 @@ for (const size of SIZES) {
       const top1 = await p.evaluate(() => { let sc = document.querySelector('[data-testid="pp"]'); while (sc && !(sc.scrollHeight > sc.clientHeight + 1 && /auto|scroll/.test(getComputedStyle(sc).overflowY))) sc = sc.parentElement; return sc ? sc.scrollTop : -1 })
       ok(size, 'E4: held at the foot of the faces seen (above the window\'s Save bar), the window scrolls', top1 > geo.top + 30, `${geo.top} → ${top1}`)
       const end = await p.evaluate(b => { const r = document.querySelector('[data-testid="pp"] .pp-body').getBoundingClientRect(); return { last: Math.round(r.bottom), seenFoot: Math.round(b) } }, geo.R.b)
-      ok(size, 'E4: it stops at the last face — the picker is not carried out of sight', end.last >= end.seenFoot - 2 && end.last <= end.seenFoot + 40, JSON.stringify(end))
+      ok(size, 'E4: it stops at the last face — the faces\' end is in sight, not carried away past it', end.last <= end.seenFoot + 2 && end.last >= end.seenFoot - 60, JSON.stringify(end))
       await L.pic(w, `E4-people-drag-${size}`)
       await H.up(); await L.sleep(400)
       const picked1 = await p.evaluate(() => document.querySelectorAll('[data-testid="pp"] [data-pp][aria-pressed="true"]').length)
@@ -447,6 +456,7 @@ for (const size of SIZES) {
       const pageTop = await p.evaluate(() => scrollY)
       ok(size, 'E4: the page behind the window did not scroll (D686)', pageTop === 0, String(pageTop))
       await p.locator('#inpEditCancel').click().catch(() => {})
+      if (!w.phone) await p.setViewportSize({ width: 1440, height: 900 })
     })
 
     ok(size, 'no console or page errors', w.errors.length === 0, w.errors.length ? w.errors.join(' | ').slice(0, 300) : '0')

@@ -2628,6 +2628,17 @@ test('OIL from the grid is the tracker\'s own credit', async ({ page }) => {
   await expect(page.locator('[data-testid="oil-credit-who"]')).toHaveText('2 people · +OIL')
   // OIL alone brings the full form — the pool whose credits are a record.
   await expect(page.locator('[data-testid="oil-date"]')).toBeVisible()
+  /* its date is the app's own date box (step two of the one date calendar, D901): the calendar floats on the page,
+     outside the bar — a press in it (the month's arrow, then a date) is the bar's, never "a press outside" that drops
+     the run (the walk of 15 Oct 26 found the OIL tracker's twin of this) */
+  await page.locator('[data-testid="oil-date"]').click()
+  await page.locator('[data-testid="dcal-card"] [data-testid="dcal-prev"]').click()
+  await expect(bar(page), 'a press in the calendar keeps the bar').toBeVisible()
+  const pickMonth = await page.locator('[data-testid="dcal-card"] [data-testid="dcal"]').getAttribute('data-month')
+  await page.locator(`[data-testid="dcal-card"] [data-testid="dcal-day-${pickMonth}-10"]`).click()
+  await expect(page.locator('[data-testid="dcal-card"]')).toHaveCount(0)
+  await expect(bar(page)).toBeVisible()
+  await expect(page.locator('[data-testid="oil-date"]')).toHaveAttribute('data-value', `${pickMonth}-10`)
   await expect(page.locator('[data-testid="oil-given"]')).toBeVisible()
   await page.locator('[data-testid="oil-amt"]').fill('1')
   await page.locator('[data-testid="oil-reason"]').fill('Det')
