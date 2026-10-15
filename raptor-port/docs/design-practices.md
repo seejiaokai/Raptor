@@ -444,6 +444,21 @@ and only then shorten, remove or fold the instruction (§1), each change shown t
   screen** (§0: D688, D696). Most of what reads as clutter is borders: a box inside a box inside a window. Let a
   slightly different background or a heading carry the grouping; keep a line only where it separates two things that
   could be confused. (Hair-thin lines, never heavy ones.)
+- **A page's controls are one row (owner D907, D910, D911; the wording approved D926 — 15 Oct 26).** The page's row is the first row under the
+  app's top bar and under the tabs that switch between pages (Inputs · SANS · Medical) — those two are not the page's
+  row. The buttons that belong to the page in view — what it adds, the dates or filter it is read by, its settings —
+  stand in that one row, at its button height (where the row holds only the page's own buttons, the height of the app's
+  other rows of controls: 36 — D698, D912), even when the row holds one button. One or two buttons never take a second
+  row of their own. Taking the row's height is this rule's one change of a button's size; any other change of size still
+  needs his word (D487). A heading that only repeats the name of the tab already picked above it is a delete candidate
+  (§1, D846), put to him with its picture; if it goes, what stood beside it joins the row. **When the row runs out of
+  room on the narrowest phone,** a button keeps its size and its place, and its words take a shorter form (the Inputs
+  list's dates button, D910) — drawn for him first; if shorter words still do not fit, the layout is drawn and put to
+  him — this guide does not choose it. Not the page's own, and not in its row: a window's or a sheet's own buttons
+  (they keep their bar — "One main button" below), the controls of one item in a list (its row carries them), and a bar
+  the app shows for a while (the "Not saved" warning, the bar that waits for an OIL answer — D587, D840). A fold is not
+  a button: where one stands alone on a row, it is put to him (the Edit Schedule's "Legend" stays, D926). The rule holds
+  on a phone and a desktop alike; where a desktop page already keeps its buttons in one row, nothing changes there.
 - **On the Logic page, what can be changed comes first and what only explains comes after**, each grouped by kind under a
   heading a person would use (D809). Elsewhere that arrangement is offered as a picture, not assumed.
 - **One main button a view, in the same place every time; the dangerous one apart from it.** A control tapped again

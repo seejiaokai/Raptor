@@ -1,4 +1,4 @@
-# The Logic page today — its inventory, for the redesign (D809, D925)
+# The Logic page today — its inventory, for the redesign (D809, D925; the design approved as drawn, D928)
 
 *A fresh Opus helper's read of `src/ui/LogicPage.tsx`, `src/ui/logic-html.ts` and `src/engine/rules.ts` (VCONF, RULE_SPEC,
 SHIFT_HARD), the night of 15 Oct 26 — saved in substance for the mock-up. The design note is

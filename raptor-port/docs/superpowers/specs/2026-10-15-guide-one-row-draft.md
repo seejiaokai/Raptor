@@ -1,6 +1,6 @@
 # The design guide's "one row of controls" rule — draft and its places (D911, D912)
 
-**Status: DRAFTED — v2, after one fresh reader's read of v1 (the night of 15 Oct 26) — for his approval** — this file is the rule's home until its wording is approved and moves into
+**Status: APPROVED (D926, 15 Oct 26 — "All as recommended") and moved into `design-practices.md` §3; the Medical tab to be built as drawn (D927); the Legend fold stays (D926)** — this file is the rule's home until its wording is approved and moves into
 `raptor-port/docs/design-practices.md`. Backlog: `[GUIDE-ONE-ROW]`, `[MEDICAL-ONE-ROW]`.
 
 ## Where it came from
