@@ -847,3 +847,18 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** In the project's notes on running scripts, one line: write every multi-line script with the file-writing tool and run the file; never begin a shell command with `cat >`; and give every shell command that runs a script `< /dev/null`, so anything that reads input ends at once instead of waiting.
 
 **Principle:** A command that can wait for input will, in a tool with no keyboard — close its input by default, so a slip ends in an error rather than a silent stall.
+
+### Observation 610: Before/after pictures of the live app need no second checkout or server
+
+**Status:** OPEN
+**Date:** 2026-10-15
+**Session context:** calendar step two — a browser gate failed on a phone size; the change had to be put to the owner with pictures of the live app beside the branch.
+**Skill:** brainstorming (mockups-on-the-real-app.md); walk-scripts.md
+**Type:** open-source
+**Phase/Area:** taking "before" pictures of the production version
+
+**Issue:** The first attempt extracted the whole main branch (picture folders included, ~4 GB) and stalled for minutes. Excluding the documents and reference folders from the archive made the copy, install and build take under a minute; and serving the built folder through the browser automation's own request routing (fulfil every request from the dist folder, index.html as the fallback) needed no second preview server, no launch-config edit and no port. One trap: the app exposes its test hooks only on a localhost address, so the routed base URL must be http://localhost:<unused port>, not a made-up host.
+
+**Suggested improvement:** Add to mockups-on-the-real-app.md (or walk-scripts.md) a "before pictures" recipe: `git archive origin/main -- <app> ':(exclude)<app>/docs'` into the scratch folder, `npm ci && vite build` there, then a picture script that routes `http://localhost:<free port>/**` to that dist folder; take the same steps on the branch's served build.
+
+**Principle:** To compare a branch with production, build production from an archive that leaves out the bulky non-code folders, and serve it from inside the test browser rather than standing up a second server.

@@ -60,6 +60,13 @@ follows), D686 (a window never scrolls the page behind it — E4 checks), D672 (
 | Tracker — ▣ Select box at the canvas edge | pans | YES — the far balls selected | the dashed box | walk E2 both; break |
 | Tracker — ⇅ Reorder list | scrolls | YES (desktop) — a phone cannot drag its rows (named to him) | the row's outline | retest.test "D900 — the Reorder list…" (red on the old code); the demo's crew list has 2 rows, nothing to scroll on screen |
 | People picker — a drag across faces | scrolls the window | YES — stops at the last face, picks on | the window's Save bar (the band is above it) | walk E4 both (after the fix); edgescroll.test; break |
+| **Added after the blind read (its five roll-call gaps):** | | | | |
+| — an OIL correction's date, edited (`oil-edit-date`) | YES — the date box, floating | YES — picked, the editor stays open, saved on the 12th | the tracker grid; on a phone the pinned names beside the row | walk G1 both |
+| — "Jump to a date" from the Scheduler Board (`#sbCal`) | YES (a phone; the desktop draws no board calendar button — C10 is its door) | YES — Thu 6 Aug's week loads and the board reopens on that day; Today back to 13 Jul, board open | the board under it | walk G2 both |
+| — the people picker in the input DIALOG (opened off the Inputs page — the schedule's Personal Inputs line, a shared input) | scrolls the dialog | YES — 2 → 18 picked on a phone, scrolled to the last face and no further | the board under the dialog | walk G4a both |
+| — the people picker in SANS "+ Commitment", several men | every face in sight — nothing to scroll (and nothing scrolls) | YES — the faces passed are picked | the SANS month beside | walk G4b both |
+| — the event sheet on a phone with the keyboard up | NOT WALKED, because no phone keyboard can be raised in the test browser | — | — | §9; his look card |
+| — the Holidays list's door into the new-period sheet | YES — the same sheet as C2 | carried | — | `warask.test` |
 
 ## 5. The sizing (§7.0)
 1. **Type of change:** a shared drawer replaced in ten places (a date picked and saved through each) + four gestures.
@@ -79,6 +86,10 @@ follows), D686 (a window never scrolls the page behind it — E4 checks), D672 (
 place at both sizes `…/after/`, each opened by the host). Desktop: 37/39 in one run, the two left (C4, E4) failing on the
 script's own reach and passing once fixed; phone: 36/38, the two left (C8, E4) the same. The steps and what was seen are
 §4's rows. Console and page errors: none, at both sizes.
+**The blind read's gaps, walked on the same build (15 Oct 26, evening):** steps G1, G2, G4a, G4b — desktop 13/13, phone
+15/15 once the script's own three slips were mended (a shared input is what opens the schedule's dialog with the picker —
+D748; a drag must start on a face not yet picked, since one that starts on a picked face takes faces off; a phone's row of
+OIL entries is swiped into view before Save). Pictures `…/gaps/`, each opened. No errors.
 
 ## 7. What the walk found, and each disposition
 1. **C6 — no OIL credit's date could be picked (FIXED, red first).** The floating calendar sits on the page, outside the
@@ -89,6 +100,12 @@ script's own reach and passing once fixed; phone: 36/38, the two left (C8, E4) t
    (FIXED, red first).** `edgeAutoScroll` gained `span` (where the dragged things are seen) and `more` (anything left to
    show that way); the picker passes the visible part above the bar and stops at its last face. `edgescroll.test.ts`'s two
    new tests failed on the old helper; the browser break (§8) went red.
+3. **Two phone questions, raised by the browser gates (§10) — WAITING FOR HIM** (§12, "Questions waiting for him").
+   The finger-sized dates make the calendar about 100 points taller on a phone. (a) On a small phone (568 tall) the
+   Inputs list's date pop-up now runs past the screen's foot, its "Next 2 weeks" and "All dates" out of reach (667 tall:
+   only "Default window" cut; his 844: fits). (b) On a phone 844 tall an input's window, opened from a day, now reaches the
+   top and covers the day's bar — the strip a finger used to bring the day forward. Before and after pictures:
+   `docs/img/handpass/2026-10-15-calendar-step-two/question/`, put to him on one page. Nothing changed before he answers.
 Not faults (the walk script's own, fixed in it): the below-zero ask on a bid; the event's bar is its own element; the
 figures column covering the grid's first days; a 900-tall desktop showing every face; the saved input reopening on June;
 the phone's list reopened by its card; "+ Input" under the bar after a scroll.
@@ -112,14 +129,35 @@ the phone's list reopened by its card; "+ Input" under the bar after a scroll.
   `edgeturn.test.ts`); his look card, §12.
 - The ⇅ Reorder list on screen: the demo's lists are too short to scroll — carried by the unit test above.
 - A member's own bid sheet: the same component and route as the admin's; not walked apart.
+- The event sheet on a phone with the keyboard up (why its compact form existed, 31 Aug 26): no phone keyboard rises in
+  the test browser — on his look card.
 
 ## 10. Gates
-*(filled when the run under the lock ends)*
+**15 Oct 26, ~18:50, the branch at ea61be768 + documents, under the lock:** build clean · tfin PASS · unit 11446 / 11446
+(643 files) · Tracker smoke PASS · rulecheck OK · docsize OK · **browser 808 passed, 9 failed, 59 skipped.** The nine:
+- **Old tests still driving the old calendar — FIXED in the tests, re-run green:** the new-period tests ("an admin creates a
+  leave war…", "overlapping dates are refused…", desktop and phone — their helper read the old month label and arrows;
+  it now reads the calendar's own month), "phone: the top-left calendar icon opens the week picker" (looked for the old
+  grid). 5 of 5 pass alone (15 Oct 26, evening).
+- **Waiting for his answer (§7, 3):** the Inputs list's date pop-up at 568 and 667 tall (`inputs-calendar` ×2,
+  `inputs-batch2` D731 (12) at 568) — question (a); "A1 — a phone: another card tapped over unsaved changes" — its
+  route was the day's bar above the input's window, now covered — question (b).
+*(The full set runs again after his answers, before the pull request.)*
 
 ## 11. The code reads
-*(a fresh, blind Opus reader and a Fable reader — D790: OIL and saved data — each given this sheet and the diff)*
+Both blind, each given this sheet and the diff (D790 — OIL and saved data): `parts/cal2/read-opus.md` and
+`parts/cal2/read-fable.md` — **no findings from either.** The Opus reader named five roll-call gaps, each now a §4 row
+(walked G1, G2, G4a, G4b; the phone keyboard on his card; the Holidays door carried by `warask.test`). Fable's three notes
+are not faults: old hand-pass scripts keep the old names (records, not gates); the Reorder list's scroll relies on
+animation frames running during a native drag (Chrome and Firefox do); `oil-edit-date` names two elements (older).
+(Since D903 no Fable read is asked for unless he calls for one; this one was asked before that ruling.)
 
 ## 12. His look card
+**Questions waiting for him** (the page with the pictures: "Calendar step two: two questions about phones"):
+- (a) The Inputs list's date pop-up on a small phone — recommended: it scrolls inside itself; the dates stay one size.
+  Waits on it: the three small-phone browser tests and any change to the pop-up.
+- (b) An input's window covering the day on his phone — recommended: leave it (✕ or Cancel shows the day). Waits on it:
+  the "A1" browser test's route.
 1. Leave War → tap a day → Pick a range: the new calendar (today's soft disc, the month and year lists); carry a run over
    a month's end and file it.
 2. Leave War → the bidding dates: "Clear dates" under the calendar; cleared, "Open the whole year".
@@ -127,6 +165,7 @@ the phone's list reopened by its card; "+ Input" under the bar after a scroll.
 4. Inputs → SANS: drag across days to the right side and hold — the month turns.
 5. An input's window → Several people → drag across faces down to the window's foot — it scrolls and picks on.
 6. Tracker → ✎ Edit chart layout → ▣ Select: draw a box to the screen's edge — the chart slides.
+7. On your phone: a Leave War event's dates with the keyboard up (type its name first) — the calendar and Save still reachable.
 
 ## The closing lines
 *(written at the end)*

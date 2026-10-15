@@ -22,11 +22,6 @@
 import { expect, test, type Locator, type Page } from '@playwright/test'
 import { elevenCounters, go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo, stageMove, calendarOnTop, dateBoxValue, pickDate, tapCalendarDate } from './app'
 
-const CAL_MONTHS = [
-  'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
-  'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER',
-]
-
 /** Open the figure picker. The whole column header is the control — the two
  *  arrows it replaced were 13px glyphs the owner could not hit on a phone.
  *
@@ -69,13 +64,12 @@ async function swipe(page: Page, from: { x: number; y: number }, dx: number) {
 /** Drive a range calendar to a span the way a person does — walk to the
  *  month, tap the start, walk on, tap the end. */
 async function pickSpan(page: Page, testid: string, from: string, to: string) {
+  // the calendar's own month, read from it each time (the app's one calendar — D901)
   const goTo = async (yyyymm: string) => {
     for (let i = 0; i < 72; i++) {
-      const shown = (await page.locator(`[data-testid="${testid}-month"]`).textContent())!
-      const [name, year] = shown.split(' ')
-      const at = `${year}-${String(CAL_MONTHS.indexOf(name) + 1).padStart(2, '0')}`
+      const at = (await page.locator(`[data-testid="${testid}"]`).getAttribute('data-month'))!
       if (at === yyyymm) return
-      await page.locator(`[data-testid="${testid}-${at < yyyymm ? 'next' : 'prev'}-month"]`).click()
+      await page.locator(`[data-testid="${testid}-${at < yyyymm ? 'next' : 'prev'}"]`).click()
     }
     throw new Error(`never reached ${yyyymm}`)
   }

@@ -459,6 +459,140 @@ for (const size of SIZES) {
       if (!w.phone) await p.setViewportSize({ width: 1440, height: 900 })
     })
 
+    /* THE BLIND READ'S ROLL-CALL GAPS (read-opus.md, 15 Oct 26) — walked, not carried:
+       G1 an OIL correction's date edited (its own date box, `oil-edit-date`); G2 "Jump to a date" from the Scheduler
+       Board (loads the week AND reopens the board on the tapped day; its Today too); G4 the people picker's drag in the
+       input DIALOG (opened off the Inputs page — the schedule's Personal Inputs line) and in SANS "+ Commitment". */
+    await step('G1', 'an OIL correction\'s date, edited', async () => {
+      await lw()
+      await press(tid('oil-tracker'))
+      await p.waitForSelector(tid('oil-sheet'))
+      const nm = await p.evaluate(() => document.querySelector('[data-testid^="oil-name-"]')?.getAttribute('data-testid') || null)
+      if (!nm) throw new Error('no name in the tracker')
+      await press(tid(nm))
+      await p.waitForSelector(tid('oil-sign'))
+      await press(tid('oil-sign'), { scroll: false })
+      await p.locator(tid('oil-amt')).fill('0.5')
+      await p.locator(tid('oil-reason')).fill('walkcorr')
+      await press(tid('oil-credit-save'), { scroll: false })
+      await L.sleep(500)
+      const entry = p.locator('.oil-e.take.corr', { hasText: 'walkcorr' }).first()
+      if (!(await entry.count())) {
+        /* the person's entries may sit behind his row — open it */
+        await press(`[data-testid="oil-row-${nm.slice(9)}"]`).catch(() => {})
+      }
+      await entry.waitFor({ state: 'attached', timeout: 5000 })
+      const eid = await entry.getAttribute('data-testid')
+      await press(`[data-testid="${eid}"]`)
+      await p.waitForSelector(tid('oil-edit-date'))
+      ok(size, 'G1: the correction opens with the app\'s own date box', await p.locator(tid('oil-edit-date')).evaluate(e => e.classList.contains('datebox')), await text(tid('oil-edit-date')))
+      const was = await p.locator(tid('oil-edit-date')).getAttribute('data-value')
+      await press(tid('oil-edit-date'))
+      await p.waitForSelector(tid('dcal-card'))
+      const card = await p.locator(tid('dcal-card')).evaluate(e => { const r = e.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, h = document.elementFromPoint(x, y); return { on: r.top >= 0 && r.bottom <= innerHeight && r.left >= 0 && r.right <= innerWidth, top: !!h && e.contains(h) } })
+      ok(size, 'G1: its calendar is on the screen, on top', card.on && card.top, JSON.stringify(card))
+      await press('[data-testid="dcal-card"] .dcal-nav[aria-label="Previous month"]', { scroll: false })
+      const pick = `${await p.locator('[data-testid="dcal-card"] .dcal').getAttribute('data-month')}-12`
+      await press(`[data-testid="dcal-card"] [data-iso="${pick}"]`, { scroll: false })
+      ok(size, 'G1: a tap picks the date, the calendar goes, the editor stays open', !(await has(tid('dcal-card'))) && await has(tid('oil-edit-save')) && (await p.locator(tid('oil-edit-date')).getAttribute('data-value')) === pick, `${was} → ${await p.locator(tid('oil-edit-date')).getAttribute('data-value')}`)
+      await L.pic(w, `G1-oil-correction-date-${size}`)
+      /* a phone's row of entries may sit part under the pinned names — swiped into view, as a finger does */
+      await press(tid('oil-edit-save'))
+      await L.sleep(500)
+      const saved = await p.evaluate(eid0 => { const e = document.querySelector(`[data-testid="${eid0}"]`) || [...document.querySelectorAll('.oil-e.take.corr')].find(x => /walkcorr/.test(x.textContent || '')); return e ? (e.querySelector('.dt')?.textContent || '').trim() : null }, eid)
+      const d = +pick.slice(8, 10)
+      ok(size, `G1: saved — the correction now reads the ${d}th`, !!saved && new RegExp(`\\b${d}\\b`).test(saved), String(saved))
+    })
+
+    await step('G2', 'Jump to a date from the Scheduler Board', async () => {
+      await L.go(w, 'editsched')
+      await p.evaluate(() => window.openScheduler(2)); await L.sleep(600)
+      await p.waitForSelector('#sbCal')
+      if (!(await p.locator('#sbCal').isVisible())) { ok(size, 'G2: the board\'s calendar button (a phone\'s; the desktop jumps from the week)', true, 'not drawn at this size — the week\'s own button is C10'); return }
+      await press('#sbCal', { scroll: false })
+      await p.waitForSelector('#weekCal [data-testid="wcal"]')
+      await press(tid('wcal-next'), { scroll: false })
+      await press(tid('wcal-day-2026-08-06'), { scroll: false })
+      await L.sleep(700)
+      const st = await p.evaluate(() => ({ wk: window.CURWEEK, day: window.SBDAY, board: !!document.querySelector('#schedBoard') && getComputedStyle(document.querySelector('#schedBoard')).display !== 'none', cal: !!document.querySelector('#weekCal:not([hidden]) [data-testid="wcal"]') }))
+      ok(size, 'G2: a date tapped loads its week and reopens the board on that day (Thu 6 Aug)', st.wk === '03/08/2026' && st.day === 3 && st.board && !st.cal, JSON.stringify(st))
+      await L.pic(w, `G2-board-jump-${size}`)
+      await press('#sbCal', { scroll: false })
+      await press(tid('wcal-today'), { scroll: false })
+      await L.sleep(700)
+      const st2 = await p.evaluate(() => ({ wk: window.CURWEEK, board: !!document.querySelector('#schedBoard') && getComputedStyle(document.querySelector('#schedBoard')).display !== 'none' }))
+      ok(size, 'G2: Today jumps back to the planning day\'s week, the board still open', st2.wk === '13/07/2026' && st2.board, JSON.stringify(st2))
+      await p.evaluate(() => window.go('viewsched')).catch(() => {})
+    })
+
+    /** a drag across the picker's faces, carried to the foot of what scrolls them: faces picked, the scroller (never
+     *  the page) moves when there is more below */
+    const faceDrag = async (id, scope) => {
+      const geo = await p.evaluate(sc0 => {
+        const pp = document.querySelector(`${sc0} [data-testid="pp"]`)
+        let sc = pp; while (sc && !(sc.scrollHeight > sc.clientHeight + 1 && /auto|scroll/.test(getComputedStyle(sc).overflowY))) sc = sc.parentElement
+        const pucks = [...document.querySelectorAll(`${sc0} [data-testid="pp"] [data-pp]`)].filter(e => e.getBoundingClientRect().height > 0)
+        const R = sc ? sc.getBoundingClientRect() : { top: 0, bottom: innerHeight }
+        const vis = pucks.filter(e => { const r = e.getBoundingClientRect(); return r.top >= Math.max(R.top, 0) && r.bottom <= Math.min(R.bottom, innerHeight) })
+        const bar = sc ? [...sc.querySelectorAll('*')].filter(k => getComputedStyle(k).position === 'sticky' && !k.closest('[data-testid="pp"]')).map(k => k.getBoundingClientRect()).filter(b => b.bottom >= Math.min(R.bottom, innerHeight) - 1).map(b => b.top)[0] : null
+        /* start on a face NOT picked — a drag that starts on a picked face takes faces off (its own rule) */
+        const v0 = vis.find(e => e.getAttribute('aria-pressed') !== 'true') || vis[0]
+        const r0 = v0 && v0.getBoundingClientRect()
+        const last = pucks.length ? Math.max(...pucks.map(e => e.getBoundingClientRect().bottom)) : 0
+        return { more: !!sc && sc !== document.scrollingElement && last > Math.min(R.bottom, innerHeight, bar ?? 1e9) + 1, top: sc ? sc.scrollTop : 0, foot: Math.min(R.bottom, innerHeight, bar ?? 1e9), first: r0 && { x: r0.left + r0.width / 2, y: r0.top + r0.height / 2 }, n: pucks.length }
+      }, scope)
+      if (!geo.first) throw new Error(`no face in sight in ${scope}: ${JSON.stringify(geo)}`)
+      const picked = () => p.evaluate(sc0 => document.querySelectorAll(`${sc0} [data-testid="pp"] [data-pp][aria-pressed="true"]`).length, scope)
+      const n0 = await picked()
+      const H = await hand(w)
+      await H.down(geo.first.x, geo.first.y); await H.to(geo.first.x + 30, geo.first.y + 4, 4)
+      await H.to(geo.first.x + 30, geo.foot - 6); await L.sleep(geo.more ? 2000 : 400)
+      const top1 = await p.evaluate(sc0 => { let sc = document.querySelector(`${sc0} [data-testid="pp"]`); while (sc && !(sc.scrollHeight > sc.clientHeight + 1 && /auto|scroll/.test(getComputedStyle(sc).overflowY))) sc = sc.parentElement; return sc ? sc.scrollTop : -1 }, scope)
+      const lastIn = await p.evaluate(([sc0, foot]) => { const b = [...document.querySelectorAll(`${sc0} [data-testid="pp"] [data-pp]`)].map(e => e.getBoundingClientRect().bottom); return Math.max(...b) <= foot + 2 }, [scope, geo.foot])
+      if (geo.more) ok(size, `${id}: held at the foot of the faces seen, what holds them scrolls — on to the last face, and no further`, top1 > geo.top && lastIn, `${geo.top} → ${top1}, last face in sight: ${lastIn}`)
+      else ok(size, `${id}: every face is in sight here — held at their foot, nothing scrolls`, top1 === geo.top, `${geo.n} faces, ${geo.top} → ${top1}`)
+      await L.pic(w, `${id}-people-drag-${size}`)
+      await H.up(); await L.sleep(400)
+      const n1 = await picked()
+      ok(size, `${id}: the faces the drag passed are picked`, n1 > n0 + 1, `${n0} → ${n1}`)
+      ok(size, `${id}: the page behind did not scroll (D686)`, (await p.evaluate(() => scrollY)) === 0, String(await p.evaluate(() => scrollY)))
+    }
+
+    await step('G4a', 'the people picker in the schedule\'s input dialog', async () => {
+      await L.go(w, 'inputs')
+      const iid = await p.evaluate(() => { const w0 = window, P = w0.PEOPLE; const crew = Object.keys(P).filter(id => !P[id].san && !P[id].archived && !P[id].deleted && !P[id].special && !P[id].pers); const iid = 'g4a-' + Date.now().toString(36); w0.fileInput({ iid, people: crew.slice(3, 5).map(p => ({ p })), type: 'Meeting', date: 'Jul 15', yr: 2026, allday: false, s: 540, e: 600 }); return iid })
+      await L.go(w, 'editsched')
+      await p.evaluate(() => window.openScheduler(2)); await L.sleep(600)
+      const fold = p.locator('#schedBoard [data-pitog="2"]').first()
+      if (await fold.count() && /show/.test(await fold.innerText())) await press('#schedBoard [data-pitog="2"]')
+      await press('#schedBoard .sb-panel.pinp .sb-arow.inprow .inpedit')
+      await p.waitForSelector('#inpEditPop:not([hidden])')
+      ok(size, 'G4a: a shared input opens as the dialog (off the Inputs page), with the people picker (D748)', await has('#inpEditPop [data-testid="pp"]'), iid)
+      if (!(await p.locator('#inpEditPop [data-testid="pp-several"][aria-pressed="true"], #inpEditPop [data-testid="pp-several"][aria-checked="true"]').count())) await press('#inpEditPop [data-testid="pp-several"]')
+      await L.sleep(300)
+      await faceDrag('G4a', '#inpEditPop')
+      await press('#inpEditClose', { scroll: false }).catch(() => {})
+      if (await has('[data-testid="inped-swap-stay"], [data-testid="inped-discard"]')) await p.keyboard.press('Escape')
+      await p.evaluate(() => window.go('viewsched')).catch(() => {})
+    })
+
+    await step('G4b', 'the people picker in SANS "+ Commitment", several men', async () => {
+      await L.go(w, 'inputs')
+      await press('button.intab:has-text("SANS")', { scroll: false })
+      await L.sleep(700)
+      const day = await p.evaluate(() => { const c = [...document.querySelectorAll('[data-testid^="sc-day-"]')].filter(e => e.offsetParent !== null && /-1[0-9]$/.test(e.getAttribute('data-testid'))); return c[3] ? c[3].getAttribute('data-testid') : null })
+      if (!day) throw new Error('no SANS day')
+      await press(tid(day))
+      await p.waitForSelector(tid('sd-add'))
+      await press(tid('sd-add'))
+      await p.waitForSelector('[data-testid="win-inputedit"] [data-testid="pp"]')
+      if (!(await p.locator('[data-testid="win-inputedit"] [data-testid="pp-several"][aria-pressed="true"], [data-testid="win-inputedit"] [data-testid="pp-several"][aria-checked="true"]').count())) await press('[data-testid="win-inputedit"] [data-testid="pp-several"]')
+      await L.sleep(300)
+      ok(size, 'G4b: "+ Commitment" offers several men', await has('[data-testid="win-inputedit"] [data-testid="pp"] [data-pp]'), 'faces drawn')
+      await faceDrag('G4b', '[data-testid="win-inputedit"]')
+      await p.locator('#inpEditCancel').click().catch(() => {})
+    })
+
     ok(size, 'no console or page errors', w.errors.length === 0, w.errors.length ? w.errors.join(' | ').slice(0, 300) : '0')
   } finally { await L.close(w) }
 }
