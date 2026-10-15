@@ -369,3 +369,7 @@ the Tracker carries `ui/edgescroll.ts` with it.** Not given the pan: the ▣ Sel
 **Older, met by the night's reads, filed:** every ball move ends in `wireBoard()` (more listeners each time — a wheel step
 zooms n+1 times; `[TRK-WIREBOARD-REPEAT]`); a ball or handle dropped left of or above the chart's start (no pan needed,
 right after ⤢ Fit) lands at a negative place and is cut off the chart outside the editor (`[TRK-BALL-OFF-CHART-LEFT]`).
+
+## The ⇅ Reorder windows on a phone — a finger drag to be built (D922, 15 Oct 26)
+
+A phone moves a row of the ⇅ Reorder windows (courses, syllabi, crew) only by its ▲ ▼; the window's line "Drag a row, or use ▲/▼" is true only for a mouse. His D922: a finger drags a row too, with the app's own drag look (one landing line a gap, the list following at its edge — the design guide §5a); the ▲ ▼ stay. A picture first; `OUTSTANDING.md` [TRK-REORDER-FINGER-DRAG].

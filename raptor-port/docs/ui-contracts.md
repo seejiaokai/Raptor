@@ -7149,6 +7149,7 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
   six-week month fits a short phone and never sits as a short box.
 - **Class names are prefixed** (`is-we`, `is-ph`, `is-off`, `is-today`, `c-day`, `c-night`, `c-nf`, `c-none`, `lit`,
   `t-ph`, `t-off`): the scheduler's stylesheet is one global sheet and the week owns `.day`.
+- **TO BE BUILT (D923, 15 Oct 26 — `[OIL-CONFIRM-DAYGRID]`): the OIL question's "Only some days…" grid becomes the one calendar's look (`ui/DateCal.tsx`), where a tap turns each separate non-working day of the input on or off** — a way of its own for that one place; every other calendar picks one date or one run. A picture first (D853, D921).
 - **A sideways finger turns the page (D786, D795 — built 13 Oct 26, `[ONE-DATE-CALENDAR]` step one; `ui/sideswipe.ts`,
   wired in `ui/DaysWindow.tsx`).** On the month it goes to the next month (left) or the last (right); on the Holidays list,
   the year. It is the Inputs calendar's own distance (`ui/calpick.ts` `SWIPE_MIN`, 50px, and more sideways than
