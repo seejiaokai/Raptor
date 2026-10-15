@@ -10432,6 +10432,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
     are buttons of the same look and size (A4). A "Changed while this window was open" note goes when the record
     comes back to the value his change was typed over, and repaints when "theirs" moves again (A10). The Quals save
     note reads "Quals saved" (A9). A5–A8 are the lines above.
+- **THE REMARK HOLDS ONLY WHAT A PERSON TYPES; "TILL <DATE>" COMES FROM THE DATES (owner D948, 16 Oct 26 — D728's step 2, [TILL-FROM-DATES]).** An input's window shows "till <date>" in grey after the Remarks box from the moment it opens, from the input's dates, one-day inputs included ("till <that day>"); it is never typed or written into the remark. Every screen prints the remark, then "till <date>" from the dates — the same look as before. *(Being built 16–17 Oct 26 on `claude/whole-app-words-pass-1b-6cfe51`; until it is live, the paragraph below and the code still describe the written token.)*
 - **THE CARD'S REMARK LEAVES OUT THE AUTOMATIC "TILL <DATE>" (owner D728, 10 Oct 26 — "1 now, 2 later").** The card's
   corner already says when a several-day input ends, so the card does not print the same words again from its
   remark; what a person typed stays, and a remark that was only the automatic words shows none. The record, the

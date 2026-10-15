@@ -2191,6 +2191,7 @@ with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
 
 ### [NO-ASTRA-LIST] The jobs that went ahead without a ChatGPT reader (Astra or Sol 6.1) — the ONE list, kept for when his subscription is back (D761, 11 Oct 26)
 **His word (D761):** *"take note of the tasks we did not have Astra involved. I may only get my subscription on 1st November onwards."* His ChatGPT allowance ran out on 11 Oct 26; wherever a record says "after 14 Oct 26", read "when ChatGPT is back — not before 1 Nov 26". **A list to put to him, not a promise:** when ChatGPT is back he says which of these reads he still wants. Add a line here in the same change that lets a job go ahead on one reader; a line leaves only when its read is done or he says it is not wanted.
+**16 Oct 26 (the night):** round 1b of the words pass (D945, D947) and the till date (D948, [TILL-FROM-DATES]) on `claude/whole-app-words-pass-1b-6cfe51` — read by one fresh, blind Opus reader (D790, D903); without Astra and Sol 6.1.
 
 | The job | Who did read it | What it went without |
 |---|---|---|
