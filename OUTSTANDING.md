@@ -48,7 +48,7 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
-**His word of 15 Oct 26 at his look (D917, D918), a small job after pull request 516:** [INPUT-NEW-DEFAULTS] — a new input opens on OL; a pencil beside the title box (a picture first); with it, D913 A put to him again.
+**LIVE 15 Oct 26 (pull request 517, his "merge live"; the item is in `OUTSTANDING-ARCHIVE.md`):** a new input opens on OL; the title box's pencil; When and Remarks above the calendar (D917, D919, D920). **Now (D922):** [TRK-REORDER-FINGER-DRAG] — the picture first, on `claude/trk-reorder-finger-drag`; then [OIL-CONFIRM-DAYGRID] (D923), its own job.
 
 **His answers of 15 Oct 26 ("All as recommended" — D911, D912), two small jobs after the calendar job, each its own:** [GUIDE-ONE-ROW] — the design guide's rule that a page's own buttons share its one row of controls: drafted, read by one fresh reader, put to him (D911). [MEDICAL-ONE-ROW] — the Medical tab's heading goes and its date button joins a row under the tabs at 36, drawn for him first (D912).
 
@@ -2276,25 +2276,6 @@ with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
 **For the whole-app words pass (D808) — sentences met on the way, not on his list, left as they are:** "Fable is recorded as working 08:00–18:00 on 18 Jul — this LL is filed anyway and flagged for someone to resolve" (`raptor-port/src/leavewar/inputgate.ts`); the day bar's hover title "Nothing on this day earns — the day blanket is on" (`raptor-port/src/ui/oilmode.ts` — "day blanket" is the code's word, not the screen's); on a desktop a two-line note's words are left-aligned where the phone's are centred; the OIL line's second form and the two lines that can ride behind it (`raptor-port/src/leavewar/sync.ts`); the several-days form of the OIL question; "common programme" in small letters wherever the day's own warning says it.
 **Delete candidates by his rule of 14 Oct 26 (D846; the guide's §1, its wording approved — D847) — DONE the same day on his word (D848 — "Delete all three"):** "Choose Keep or Remove for each entry above" (the upchit question), "Choose for each clash above" and the small print under the answers (the medical-clash question) are deleted; the one fact he asked to keep, that a day holds one status, is that sheet's heading now ("A day holds one status: choose who holds these days" — shown to him as built, his to change). Kept, and why: "What is left goes to the schedulers' bells" in the day's one list of OIL questions (a consequence he cannot see), the several-days form's "No days selected — tap the highlighted days to credit them" (an instruction for a gesture nothing else suggests). The first whole-app look under D808 lists the rest.
 **Why it is filed and not built:** D830's and D838's lists are his; a wording or a look he has not been shown is not changed unasked (the design guide's §1). His answers come first (D541 for the two that change a look).
-
-### [INPUT-NEW-DEFAULTS] A new input opens on OL; a pencil beside the title box — RULED D917, D918 (15 Oct 26); after pull request 516 — OPEN
-**His words (D917, D918):** the default type OL, "the most common leave taken"; "an edit pencil icon beside the title to
-indicate that people can edit it". **Settled with him:** OL for every door that opens a NEW input (the List's "+ Input", a
-day or a dragged run on the Inputs calendar) — not for several people (never leave, D655) nor SANS "+ Commitment"; a
-saved input keeps its type; OL takes no title (D716), so the title box shows once a commitment kind is picked. **First:**
-the pencil drawn on the real app and put to him (D853). **Also put to him with it:** his first idea D913 drawing A
-(time and remarks above the calendar) — reopened by D916, unanswered. Its own small job, a fresh chat on `main` after
-516 is live; a WALK check (the new input's doors, both sizes).
-**DRAWN AND PUT TO HIM 15 Oct 26 (branch `claude/input-new-defaults`) — ANSWERED "All as recommended" (D919 P1, D920 A); BUILDING on that branch:** the page
-https://claude.ai/artifact/BQa1WwKjmu62kgNv2FA4op (source `raptor-port/docs/mock/2026-10-15-input-new-defaults/index.html`,
-pictures `raptor-port/docs/img/handpass/2026-10-15-input-new-defaults/`, drawn by `scripts/handpass/mock-input-defaults.mjs`).
-(1) the pencil: P1 inside the title box at its right end (the agent's pick — no room taken, the box's grey, a line icon in
-`ui/icons.tsx`'s style, never the ✏ glyph, which draws as an emoji on an iPhone) or P2, a square button beside the box (the
-box ~40 px shorter); (2) D913 A — When and Remarks above the calendar, for every kind and door (the agent's pick). **Measured:**
-with OL picked the window fits a 390 × 844 phone either way (no scroll); with Event (title + hours) today's Remarks lies under
-the Cancel / Add bar and needs a scroll, and with A all of it is in sight. **The agent's readings, told to him:** the pencil
-shows wherever the title box shows, new or saved, never on a read-only input; a tap on it is a tap on the box. **Then:** build
-D917 with his two answers as one small job, WALK check.
 
 ### [TRK-REORDER-FINGER-DRAG] A finger drag for the Tracker's ⇅ Reorder rows — named to him by D900's reading (15 Oct 26); RULED D922 (build it, a picture first) — OPEN
 **RULED 15 Oct 26 — D922: build it** — a finger drags a row on a phone, with the app's own drag look (one landing line a gap, the list following at its edge); the ▲ ▼ stay. A picture on the real app first, then its own small job after [INPUT-NEW-DEFAULTS] (the agent's placing); WALK check.

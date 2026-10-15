@@ -20,13 +20,10 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/input-new-defaults -->
-### `claude/input-new-defaults` — the tidy after 516 DONE; `[INPUT-NEW-DEFAULTS]` (D917, D919, D920) BUILT, WALKED, READ, WHOLLY GREEN — waiting for his look and "merge live" — written 15 Oct 26 — verify before use
-- **The tidy (done):** 516 live; `[ONE-DATE-CALENDAR]`, `[DRAG-EDGE-FOUR-MORE]` archived; the calendar chat's block removed; its two leftovers filed — and RULED by him the same day: `[TRK-REORDER-FINGER-DRAG]` (D922: a finger drags the Tracker's Reorder rows on a phone, the app's own drag look) and `[OIL-CONFIRM-DAYGRID]` (D923: the OIL question's "only some days" becomes the one calendar's look, a tap per separate day). Each its own job after this one, a picture first (D921); pictures of today: `raptor-port/docs/img/handpass/2026-10-15-two-leftovers/`.
-- **BUILT:** a new input from the Inputs page (List "+ Input", a day, a run) opens on OL (`ui/inputedit.tsx newInputSeed`); the title box carries a drawn pencil inside its right end (`.inped-title`, `.inped-pen`, `ui/icons.tsx PenIcon`, `scheduler/14-input-editors.css`), none read-only; the Dates block stands after Remarks. Drawn first: https://claude.ai/artifact/BQa1WwKjmu62kgNv2FA4op ("All as recommended" — P1, A).
-- **Checked (WALK tier):** the sheet `raptor-port/docs/handpass/2026-10-15-input-new-defaults.md` — walk `scripts/handpass/ind-walk.mjs` 66/66 both sizes (nine doors), its break red; unit `ui/inputnewdefaults.test.tsx` (8 red on the old code); one fresh blind Opus read — no defect, one stale comment fixed; the whole gate set green under the lock (Gate baseline).
-- **Next:** his look on his iPhone and "merge live"; then `[TRK-REORDER-FINGER-DRAG]` and `[OIL-CONFIRM-DAYGRID]`, each a fresh chat on `main`, a picture first.
-- **Rulings this chat:** D919, D920 (his answers), D921 (pictures whenever anything on screen is talked about — `plain-language.md`), D922, D923. **Owed, documents only (D29):** sizes OVER by 3388 — the How-we-work and Inputs rulings files over their markers, `plain-language.md` 6 lines over, `shipping.md` 1.
+<!-- now:claude/trk-reorder-finger-drag -->
+### `claude/trk-reorder-finger-drag` — the tidy after 517 DONE; `[TRK-REORDER-FINGER-DRAG]` (D922) — the picture first, put to him before any build — written 15 Oct 26 — verify before use
+- **The tidy (done):** 517 live; `[INPUT-NEW-DEFAULTS]` archived; its chat's block removed. Still owed from it, documents only (D29): sizes OVER — the How-we-work and Inputs rulings files over their markers, `plain-language.md` and `shipping.md` a few lines over.
+- **Now:** the finger drag for the Tracker's ⇅ Reorder rows drawn on the real app and put to him (D853, D921); build only on his word, the design guide's §5a (D895); WALK check. Then `[OIL-CONFIRM-DAYGRID]` (D923), its own job.
 <!-- /now -->
 
 ## Next, in order
