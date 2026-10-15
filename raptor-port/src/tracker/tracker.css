@@ -194,9 +194,17 @@ button:disabled:hover{border-color:var(--line)}
 .sarow{display:grid;grid-template-columns:14px 1fr auto;gap:8px;align-items:start;padding:7px 0;border-bottom:1px dashed var(--line)}
 .ordrow{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line);background:var(--panel2);cursor:grab;user-select:none}
 .ordrow:last-child{border-bottom:0}
-.ordrow.drag{opacity:.45}
-.ordrow.over{outline:2px solid var(--accent);outline-offset:-2px}
-.ordrow .grip{color:var(--muted);letter-spacing:1px}
+/* THE APP'S ONE DRAG LOOK (owner D922, D924; the design guide §5a), the Leave War ⚙ lists' numbers
+   (bidpicker.css .set-grow): the carried row wears the shared lift ring, and ONE 2px landing line lies on
+   the top edge of the row it will land before — on a row's foot only under the last row (`after`). */
+#ordList .ordrow.dragging{box-shadow:var(--lift-box, inset 0 0 0 2px var(--accent))}
+#ordList .ordrow.dragover{box-shadow:inset 0 2px 0 var(--accent)}
+#ordList .ordrow.dragover.after{box-shadow:inset 0 -2px 0 var(--accent)}
+/* The grip is the app's six dots (D924). A finger takes the row HERE only: touch-action:none keeps the
+   browser from scrolling under it, while a finger anywhere else on the list still scrolls it. Its touch
+   area is larger than it looks (padding the margin gives back), inside the row's own padding — never over
+   a neighbour (the design guide §6, D487). */
+.ordrow .grip{color:var(--muted);font-size:15px;line-height:20px;padding:8px 6px;margin:-8px -6px;touch-action:none;cursor:grab}
 .ordrow .onm{flex:1;font-size:12.5px}
 .ordrow .otag{color:var(--muted);font-size:11px}
 .ordrow button{padding:2px 7px;font-size:12px}

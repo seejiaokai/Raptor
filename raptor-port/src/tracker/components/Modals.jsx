@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import * as core from '../app/core.js';
 import { isComposing } from './keys.js';
 import { edgeAutoScroll } from '../../ui/edgescroll';
+import { markLand, paintLand } from '../../ui/lift';
 
 /* ---------- generic in-page dialog (uiConfirm / uiPrompt / uiAlert / uiChoice) ---------- */
 export function DlgModal() {
@@ -292,15 +293,17 @@ export function SylModal() {
 /* ---------- reorder syllabi, courses or crew ----------
    One component, three modes. The rows, the drag handling and the ▲/▼ buttons
    are identical; only the list, the row tag and where it saves differ. Three
-   copies would mean fixing the next drag bug three times — and drag-and-drop
-   does not work by touch, so the ▲/▼ path is the only one a phone has.
-   TO BE BUILT (owner D922, D924 — "All as recommended", 15 Oct 26): a finger drags a row by its ⠿ grip, and a mouse
-   drag wears the same look — the carried row ringed, one landing line in the gap, no box; the "Drag a row, or use
-   ▲/▼." words go. */
+   copies would mean fixing the next drag bug three times.
+   A FINGER DRAGS A ROW BY ITS ⠿ GRIP, A MOUSE ANYWHERE ON IT, AND BOTH WEAR THE APP'S ONE DRAG LOOK (owner D922,
+   D924 — "All as recommended", 15 Oct 26; drawn first, docs/mock/2026-10-15-trk-reorder-drag/): the carried row
+   ringed, ONE landing line in the gap (the design guide §5a), the row flashing where it lands. The browser's own
+   drag, which does not work by touch and drew a box round the row it would replace, is gone; the ▲/▼ stay, the
+   keyboard's way. "Drag a row, or use ▲/▼." went from the notes with it (D924; the guide's rule on words that
+   only say what the screen shows, D846). */
 const ORD_MODES = {
   syllabus: {
     title: 'Syllabus order',
-    note: 'Drag a row, or use ▲/▼. This sets the order of the Syllabus dropdown for every course.',
+    note: 'This sets the order of the Syllabus dropdown for every course.',
     read: () => core.orderedSylNames(),
     /* the modal lists LABELS (unique per catalogue, §9); resolve label→id to tag */
     tag: n => { const id = core.sylIdOf(n); return (id && core.builtinOf(id)) ? (core.sylHasOwnDef(id) ? 'built-in ✎ edited' : 'built-in') : 'custom'; },
@@ -308,7 +311,7 @@ const ORD_MODES = {
   },
   course: {
     title: 'Course order',
-    note: 'Drag a row, or use ▲/▼. This sets the order of the Course dropdown, and everyone sharing this tracker sees it.',
+    note: 'This sets the order of the Course dropdown, and everyone sharing this tracker sees it.',
     /* names, not entries: the shared OrdModal renders each row as a string and
        sorts by localeCompare, and course names are unique among courses, so it
        reorders by name and saveCourseOrder maps names back to entries (the
@@ -319,7 +322,7 @@ const ORD_MODES = {
   },
   crew: {
     title: 'Crew order',
-    note: 'Drag a row, or use ▲/▼. This also sets which slice of every ball belongs to whom — first in the list is the first slice.',
+    note: 'This also sets which slice of every ball belongs to whom — first in the list is the first slice.',
     read: () => core.roster.map(r => r.name),
     tag: (n, i) => '#' + (i + 1),
     save: l => core.saveCrewOrder(l),
@@ -328,16 +331,100 @@ const ORD_MODES = {
 function OrdModalInner({ mode }) {
   const cfg = ORD_MODES[mode] || ORD_MODES.syllabus;
   const [list, setList] = useState(() => cfg.read());
-  const fromRef = useRef(null);
-  /* A ROW CARRIED TO THE LIST'S TOP OR FOOT SCROLLS IT THAT WAY (owner D900, 15 Oct 26 — "Yes they should too"; the
-     design guide §5a, D895), at Raptor's one edge feel (ui/edgescroll.ts), so a row can be taken to a place out of
-     view. The rows drag by the browser's own drag, which sends no pointer moves: its `dragover`, heard on the whole
-     page while a row is carried, says where the mouse is. A row that slides under the still mouse is marked by the
-     browser's own drag events, as before. (A phone cannot drag these rows at all — its ▲▼ do it there.) */
-  const autoRef = useRef(null);
-  const feed = e => { if (autoRef.current) autoRef.current.point(e.clientX, e.clientY); };
-  const endAuto = () => { if (autoRef.current) autoRef.current.stop(); autoRef.current = null; document.removeEventListener('dragover', feed, true); };
-  useEffect(() => endAuto, []);
+  /* THE DRAG (D922, D924). One pointer machine for a finger and a mouse, the shape of a day's notes on the Inputs
+     calendar (ui/InputsCal.tsx startSecDrag): window listeners for the life of one drag, the row under the pointer
+     read at a point, the row-half rule, one line a gap. The looks ride classes React writes from state (`dragging`,
+     `dragover`, `after`) — an imperative class would be wiped by the re-render the drag itself causes.
+     A finger takes a row by its grip only, which carries `touch-action:none` (tracker.css): anywhere else a finger
+     scrolls the list, so a long crew list still scrolls. A mouse takes it anywhere but its buttons, once it has moved
+     a few pixels — a click stays a click. */
+  const [drag, setDrag] = useState(null);      // index of the row being carried
+  const [over, setOver] = useState(null);      // { i, after } — the ONE row that wears the landing line
+  const dragEnd = useRef(null);                // ends the drag in flight (a cancel), or null
+  useEffect(() => () => { if (dragEnd.current) dragEnd.current(false); }, []);
+  /* the moved row flashes where it landed (lift.ts — the mark is taken at the drop, painted once React has redrawn) */
+  useLayoutEffect(() => { paintLand(); });
+  const beginDrag = (from, x0, y0, touch, rowEl) => {
+    const box = rowEl.parentElement;
+    const n = box ? box.children.length : 0;
+    /* where a release would put the row: before row j (j = n: after the last), 'self' for its own place, or null */
+    let target = null;
+    let px = x0, py = y0;
+    /* the row under a point — by a move, and again after an edge scroll slid the rows under a still pointer (D900) */
+    const hoverAt = (x, y) => {
+      const el = document.elementFromPoint(x, y);
+      const row = el && el.closest ? el.closest('#ordList .ordrow') : null;
+      let line = null;
+      target = null;
+      if (row && row.parentElement === box) {
+        const i = [...box.children].indexOf(row);
+        const r = row.getBoundingClientRect();
+        const lower = r.height > 0 && y > r.top + r.height / 2;
+        /* ONE LINE A GAP (§5a; D890 on the Leave War, D891): a row's lower half and the upper half of the row below it
+           are ONE drop — "before the row that follows" — so the line is drawn once, on that row's top edge; only under
+           the last row is it drawn on a row's foot */
+        const j = lower ? i + 1 : i;
+        if (j === from || j === from + 1) target = 'self';   // its own place: no line, a release flashes it in place
+        else { target = j; line = j < n ? { i: j, after: false } : { i: n - 1, after: true }; }
+      }
+      setOver(o => (o && line && o.i === line.i && o.after === line.after) || (!o && !line) ? o : line);
+    };
+    setDrag(from);
+    /* A ROW CARRIED TO THE LIST'S TOP OR FOOT SCROLLS IT THAT WAY (owner D900; §5a), at Raptor's one edge feel
+       (ui/edgescroll.ts) — only a list longer than its box: a short one has nothing to show, and the page behind the
+       window must not be scrolled in its place */
+    const auto = box && box.scrollHeight > box.clientHeight + 1
+      ? edgeAutoScroll({ from: rowEl, axis: 'y', touch, x: x0, y: y0, onScroll: () => hoverAt(px, py) })
+      : null;
+    const move = ev => { px = ev.clientX; py = ev.clientY; if (auto) auto.point(px, py); hoverAt(px, py); };
+    const end = commit => {
+      if (auto) auto.stop();
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      window.removeEventListener('pointercancel', cancel);
+      window.removeEventListener('keydown', key, true);
+      dragEnd.current = null;
+      setDrag(null); setOver(null);
+      if (!commit || target == null) return;
+      /* A COMMITTED DROP FLASHES WHERE THE ROW ENDED UP, MOVED OR NOT (the app's drops, 7 Sep 26) */
+      const to = target === 'self' ? from : (target > from ? target - 1 : target);
+      markLand(`#ordList .ordrow:nth-child(${to + 1})`);
+      if (target === 'self') return;            // the drag's own classes coming off re-render, and that paints it
+      setList(l => { const a = [...l]; const [m] = a.splice(from, 1); a.splice(to, 0, m); return a; });
+    };
+    const up = () => end(true);
+    const cancel = () => end(false);
+    /* Escape ends the drag, not the window (heard before the Tracker's own Escape, which would close it) */
+    const key = ev => { if (ev.key === 'Escape') { ev.preventDefault(); ev.stopImmediatePropagation(); end(false); } };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+    window.addEventListener('pointercancel', cancel);
+    window.addEventListener('keydown', key, true);
+    dragEnd.current = end;
+    hoverAt(x0, y0);
+  };
+  /* a finger (or a pen) on the grip takes the row at once; the grip's touch-action keeps the list from scrolling */
+  const gripDown = (e, i) => {
+    if (e.pointerType === 'mouse' || dragEnd.current) return;     // a mouse is the row's own handler below
+    e.preventDefault(); e.stopPropagation();
+    beginDrag(i, e.clientX, e.clientY, true, e.currentTarget.closest('.ordrow'));
+  };
+  /* a mouse anywhere on the row but its buttons, once it has moved 4px (then that move is the drag's first) */
+  const rowDown = (e, i) => {
+    if (e.pointerType !== 'mouse' || (e.button != null && e.button !== 0) || dragEnd.current) return;
+    if (e.target.closest && e.target.closest('button')) return;
+    const rowEl = e.currentTarget, x0 = e.clientX, y0 = e.clientY;
+    const stop = () => { window.removeEventListener('pointermove', wait); window.removeEventListener('pointerup', stop); window.removeEventListener('pointercancel', stop); };
+    const wait = ev => {
+      if (Math.abs(ev.clientX - x0) <= 4 && Math.abs(ev.clientY - y0) <= 4) return;
+      stop();
+      beginDrag(i, x0, y0, false, rowEl);
+      window.dispatchEvent(new PointerEvent('pointermove', { clientX: ev.clientX, clientY: ev.clientY, pointerType: 'mouse' }));
+    };
+    window.addEventListener('pointermove', wait);
+    window.addEventListener('pointerup', stop);
+    window.addEventListener('pointercancel', stop);
+  };
   /* What can come back: deleted built-in syllabi, and deleted courses (owner,
      23 Sep 26 — D128; their records were always kept). Crew has none — a
      removed student's marks are deleted, and the question says so. */
@@ -368,28 +455,9 @@ function OrdModalInner({ mode }) {
           {list.map((n, i) => {
             const tag = cfg.tag(n, i);
             return (
-              <div key={n} className="ordrow" draggable
-                onDragStart={e => {
-                  fromRef.current = i; try { e.dataTransfer.setData('text/plain', String(i)); e.dataTransfer.effectAllowed = 'move'; } catch (_) {} e.currentTarget.classList.add('drag');
-                  endAuto();
-                  /* only a list longer than its box: a short one has nothing to show, and the page behind the window must
-                     not be scrolled in its place */
-                  const box = e.currentTarget.parentElement;
-                  if (box && box.scrollHeight > box.clientHeight + 1) {
-                    autoRef.current = edgeAutoScroll({ from: e.currentTarget, axis: 'y', touch: false, x: e.clientX, y: e.clientY, onScroll: () => {} });
-                    document.addEventListener('dragover', feed, true);
-                  }
-                }}
-                onDragEnd={e => { endAuto(); e.currentTarget.classList.remove('drag'); document.querySelectorAll('#ordList .ordrow').forEach(r => r.classList.remove('over')); }}
-                onDragOver={e => { e.preventDefault(); e.currentTarget.classList.add('over'); }}
-                onDragLeave={e => e.currentTarget.classList.remove('over')}
-                onDrop={e => {
-                  e.preventDefault(); const to = i; const from = fromRef.current;
-                  if (from == null || from === to) return;
-                  setList(l => { const a = [...l]; const [m] = a.splice(from, 1); a.splice(to, 0, m); return a; });
-                  fromRef.current = null;
-                }}>
-                <span className="grip">☰</span>
+              <div key={n} className={'ordrow' + (drag === i ? ' dragging' : '') + (over && over.i === i ? (over.after ? ' dragover after' : ' dragover') : '')}
+                onPointerDown={e => rowDown(e, i)}>
+                <span className="grip" onPointerDown={e => gripDown(e, i)}>⠿</span>
                 <span className="onm">{n}</span>
                 <span className="otag">{tag}</span>
                 <button title="Move up" disabled={i === 0} onClick={e => { e.stopPropagation(); move(i, i - 1); }}>▲</button>
