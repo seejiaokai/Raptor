@@ -2278,7 +2278,8 @@ with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
 **Why it is filed and not built:** D830's and D838's lists are his; a wording or a look he has not been shown is not changed unasked (the design guide's §1). His answers come first (D541 for the two that change a look).
 
 ### [INPUT-DATES-FOLD] An input's window: dates already picked fold to one line that opens the calendar — RULED D914 (15 Oct 26, "5B"); after pull request 516 — OPEN
-**His "5B" (D914)** to his own idea at his look (D913): where the dates were already picked — a day or a dragged run on
+**And SANS availability (D915, "Likewise for sans availalibility"):** "+ Commitment" opened from a day or a run on the SANS
+calendar folds its dates the same way — the same window, one build. **His "5B" (D914)** to his own idea at his look (D913): where the dates were already picked — a day or a dragged run on
 the Inputs calendar, a saved input reopened — the window's Dates show as one line ("📅 Oct 15 → Oct 16 ▾") that opens the
 calendar on a tap; the List's "+ Input" (no dates yet, D729) opens with the calendar showing. On his phone the window then
 needs no scroll and is short enough that the day shows behind it (D909's side effect undone). **The drawing:**
