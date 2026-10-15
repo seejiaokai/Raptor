@@ -7384,7 +7384,7 @@ canvas that way (both axes at once; the edges as SEEN — the canvas's box cut t
 pointer; toward the left or the top the pan stops once the chart's own corner reaches the canvas's edge (the chart is
 drawn from 0 rightward and down only); a cancelled touch stops it and puts the handle's line back; each handle drag hears
 its own pointer only. NOT the ▣ Select box nor a pan of empty space (named to him). Pins: `src/ui/edgeturn.test.ts`,
-`src/ui/caldrag.test.tsx`; walked by `scripts/handpass/edgeturn-walk.mjs` (`docs/handpass/2026-10-15-edge-turn.md`).
+`src/ui/caldrag.test.tsx`; walked by `scripts/handpass/edgeturn-walk.mjs` (`docs/handpass/2026-10-15-edge-turn.md`). **D900 (15 Oct 26, his "Yes they should too"), to build:** the SANS calendar's pick turns its month at the side; the Tracker's ▣ Select box pans at the canvas edge; the Tracker's ⇅ Reorder list and the people picker's drag across faces scroll their list (filed as `[DRAG-EDGE-FOUR-MORE]`).
 
 Four asks from the same sitting, all on the Leave War grid:
 
