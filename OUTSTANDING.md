@@ -48,8 +48,6 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
-**His "5B" of 15 Oct 26 (D914), a small job after pull request 516:** [INPUT-DATES-FOLD] — in an input's window, dates already picked fold to one line that opens the calendar.
-
 **His answers of 15 Oct 26 ("All as recommended" — D911, D912), two small jobs after the calendar job, each its own:** [GUIDE-ONE-ROW] — the design guide's rule that a page's own buttons share its one row of controls: drafted, read by one fresh reader, put to him (D911). [MEDICAL-ONE-ROW] — the Medical tab's heading goes and its date button joins a row under the tabs at 36, drawn for him first (D912).
 
 **HIS FIND, 10 Oct 26 (on his iPhone) — LIVE the same day (pull request #489; the item is in `OUTSTANDING-ARCHIVE.md`):** in the changes window, a tap on a change whose seat is empty now lands on its row (`[HIST-JUMP-EMPTY-SEAT]`). Still open — small older finds met on the way, his to place: [HIST-JUMP-SEEN].
@@ -2277,7 +2275,7 @@ with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
 **Delete candidates by his rule of 14 Oct 26 (D846; the guide's §1, its wording approved — D847) — DONE the same day on his word (D848 — "Delete all three"):** "Choose Keep or Remove for each entry above" (the upchit question), "Choose for each clash above" and the small print under the answers (the medical-clash question) are deleted; the one fact he asked to keep, that a day holds one status, is that sheet's heading now ("A day holds one status: choose who holds these days" — shown to him as built, his to change). Kept, and why: "What is left goes to the schedulers' bells" in the day's one list of OIL questions (a consequence he cannot see), the several-days form's "No days selected — tap the highlighted days to credit them" (an instruction for a gesture nothing else suggests). The first whole-app look under D808 lists the rest.
 **Why it is filed and not built:** D830's and D838's lists are his; a wording or a look he has not been shown is not changed unasked (the design guide's §1). His answers come first (D541 for the two that change a look).
 
-### [INPUT-DATES-FOLD] An input's window: dates already picked fold to one line that opens the calendar — RULED D914 (15 Oct 26, "5B"); after pull request 516 — OPEN
+### [INPUT-DATES-FOLD] An input's window: dates already picked fold to one line that opens the calendar — RULED D914 (15 Oct 26, "5B"); WITHDRAWN the same night by D916 ("Disregard the minimising of the calendar") — CLOSED, not built
 **And SANS availability (D915, "Likewise for sans availalibility"):** "+ Commitment" opened from a day or a run on the SANS
 calendar folds its dates the same way — the same window, one build. **His "5B" (D914)** to his own idea at his look (D913): where the dates were already picked — a day or a dragged run on
 the Inputs calendar, a saved input reopened — the window's Dates show as one line ("📅 Oct 15 → Oct 16 ▾") that opens the
