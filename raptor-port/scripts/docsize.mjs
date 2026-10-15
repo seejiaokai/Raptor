@@ -110,11 +110,15 @@ const FILES = [
      28 Sep 26 (owner, D390): how a ruling is read and filed now that each loads as one line — open its full row
      before acting on its detail; search the full-text folder with the shell — is a live rule every session carries. */
   ['.claude/rules/record-decisions.md',  0,  160],
-  ['.claude/rules/plain-language.md',    0,   60],
+  /* plain-language 60 -> 70 and shipping 110 -> 115 (16 Oct 26, the documents tidy after pull request 519 went live): both
+     crossed with his rulings of 15 Oct 26 on when the preview link, the pictures and the handoff prompt come (D904-D906)
+     and that pictures come whenever anything on screen is talked about (D921) - live rules every chat must carry before
+     any project file is read; none is trimmed (D136, D141). Room for the next, not a target. */
+  ['.claude/rules/plain-language.md',    0,   70],
   /* NEW 24 Sep 26 (owner, D140 + D143): the two rule files every chat carries so the structure and the way a
      change ships are in force before any project file is read. Ceilings set at what they hold plus room. */
   ['.claude/rules/doc-structure.md',     0,  100],
-  ['.claude/rules/shipping.md',          0,  110],
+  ['.claude/rules/shipping.md',          0,  115],
   /* 961 -> 1000, 23 Sep 26 ([DOCS-GUARD] step 1). Already at 969: the two OIL merges (#424, #425)
      added lines inside code changes, which is exactly what F3 now allows and defers. HANDOFF must
      accept a known-issue entry during a fix (CLAUDE.md), so it carries declared headroom. */
@@ -231,7 +235,10 @@ const RULING_BYTES = [
      [RULINGS-SPENT-PASS] still brings it down (D856-D858, D864, D875 read as spent permissions once checked row by row). */
   /* how-we-work 38000 -> 39500 (15 Oct 26, night): 38,287 bytes with D894 and D895 (the design guide's two drag rules, his
      word and his approval of the wording) - live; none is trimmed (D136). [RULINGS-SPENT-PASS] still brings it down. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 39500],
+  /* how-we-work 39500 -> 42000 (16 Oct 26, the documents tidy after pull request 519): 40,313 bytes with D902-D906, D926 and
+     D911, D921 (the small-fix checks, the readers, when he is told and shown) - live; none is trimmed (D136).
+     [RULINGS-SPENT-PASS] still brings it down. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 42000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
@@ -258,8 +265,14 @@ const RULING_BYTES = [
      tripwire for the next look, never a number to cut to (D141), and a ruling is never trimmed (D136). */
   /* scheduler 90000 -> 92000 (15 Oct 26): 90,523 bytes with D860 and D866 - his correction of the just-added mark and
      his answers on it, live; none is trimmed (D136). Room for the next rulings, not a target. */
-  ['.claude/rules/decisions/scheduler.md', 2, 92000],
-  ['.claude/rules/decisions/inputs.md', 2, 32000],
+  /* scheduler 92000 -> 96000 (16 Oct 26, the documents tidy after pull request 519): 94,224 bytes with the Logic page's
+     rulings (D925, D928-D933, D936) - live; none is trimmed (D136). Still under the size D611 named for putting the
+     split back to him (about 100,000 bytes, after D802's split). Room, not a target. */
+  ['.claude/rules/decisions/scheduler.md', 2, 96000],
+  /* inputs 32000 -> 37000 (16 Oct 26, the documents tidy after pull request 519): 35,026 bytes with the calendar's step
+     two, the input window's and the Medical tab's rulings of 14-15 Oct (D900-D920, D927) - live; none is trimmed (D136). [RULINGS-SPENT-PASS]
+     reads it for spent rows. Room, not a target. */
+  ['.claude/rules/decisions/inputs.md', 2, 37000],
   /* 12000 until 12 Oct 26: raised for D780–D782 (the OIL question a holiday or a swap leaves open) — three live
      rulings of this area, none replaced; a rulings file is never trimmed (D136, D390) */
   /* oil 14000 -> 15500 (15 Oct 26): 14,617 bytes with D862, D863 and D865 - his answers on the small OIL job, live;

@@ -4665,3 +4665,65 @@ Reorder list…"). **Next:** a picture on the real app first (D853); build only 
 §5a dragging rules (D895).
  **Seen in the picture:** the window's own line says "Drag a row, or use ▲/▼" — on a phone a finger cannot drag; if no finger drag is built, that line is wrong on a phone.
 **DRAWN AND PUT TO HIM 15 Oct 26 (branch `claude/trk-reorder-finger-drag`) — ANSWERED "All as recommended" (D924); BUILDING on that branch:** the page https://claude.ai/artifact/8mNLc9PU5u2ME2C4BvNosu (source `raptor-port/docs/mock/2026-10-15-trk-reorder-drag/index.html`, pictures `raptor-port/docs/img/handpass/2026-10-15-trk-reorder-drag/`, drawn by `scripts/handpass/mock-trk-reorder-drag.mjs`). The look copied from the Leave War's ⚙ lists (the lift ring, one 2px landing line on the top of the row below) and, after the drop, the app's own landing mark (`ui/lift.ts`). **The agent's readings, told to him:** a finger takes a row by its grip only (elsewhere it scrolls the list); the list follows at its edge as the mouse's does; the ▲ ▼ stay (the keyboard's way); all three windows. **Three questions, each with its pick:** (1) the grip ⠿ in place of ☰ (yes — the app's grip; ☰ means "list" on ☰ Show All); (2) a mouse drag the same look, the landing line in place of today's box round the row (yes — §5a); (3) delete "Drag a row, or use ▲/▼." (yes — D846). **Then:** build on his answers, one small job, WALK check.
+
+*Moved here 2026-10-16 by backlog-archive.mjs ([MEDICAL-ONE-ROW]). Forward facts: `raptor-port/docs/handpass/2026-10-15-logic-medical.md`, `raptor-port/docs/superpowers/specs/2026-10-15-guide-one-row-draft.md`.*
+
+### [MEDICAL-ONE-ROW] The Medical tab's controls in one row under the tabs — RULED D912 (15 Oct 26); BUILT 15 Oct 26 (D927), WALK-checked; OPEN until his look and "merge live"
+**BUILT 15 Oct 26 (branch `claude/one-row-guide-medical`, D927):** the heading gone, the as-of button and Today at 36, a finger's 44 on a phone; tests red first (medicalview D927, e2e inputs-calendar D927 at 390 and 1280). Its check, with the Logic page's: `raptor-port/docs/handpass/2026-10-15-logic-medical.md`.
+**ANSWERED 15 Oct 26 — "All as recommended" (D927):** build as drawn — with Quals' row (drawn first), one small job, WALK check, a fresh chat on `claude/one-row-guide-medical`.
+**DRAWN AND PUT TO HIM, the night of 15 Oct 26 (branch `claude/one-row-guide-medical`):** the heading removed, the as-of button at 36 (the Inputs row's own height, measured) — on a phone the sections start 8 px higher; pictures `raptor-port/docs/img/handpass/2026-10-15-medical-one-row/`, drawn by `scripts/handpass/mock-medical-one-row.mjs`; the page https://claude.ai/artifact/1CFVksBEx3WMSg9t994FU1. Build on his word, WALK check (with the Quals row, once drawn).
+**His "All as recommended" (D912):** the "Medical" heading, which repeats the tab's name, goes; the "as of" date button
+(about 44 tall) stands in a row under the tabs at that row's button height (36), as on Inputs and SANS. Nothing else on
+the tab changes. **Next:** draw it on the real app (`.claude/skills/brainstorming/mockups-on-the-real-app.md`), today
+beside the change at phone and desktop sizes, and put it to him (D853); build only on his word. Picture of today and the
+detail: `raptor-port/docs/superpowers/specs/2026-10-15-guide-one-row-draft.md` §The places. Its own small job, after the
+calendar job (it may ride with [GUIDE-ONE-ROW]).
+
+
+*Moved here 2026-10-16 by backlog-archive.mjs ([LOGIC-PAGE-LAYOUT]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-15-logic-medical.md`.*
+
+### [LOGIC-PAGE-LAYOUT] The Logic page re-laid: what can be edited at the top, what only explains below, each arranged into its types (his direction D809, 13 Oct 26) — BUILT 15–16 Oct 26, WALK-checked; OPEN until his look and "merge live"
+**BUILT 15–16 Oct 26 (branch `claude/one-row-guide-medical`; D928–D933):** one row (Logic, search, Filter, ✎ Edit); Settings then the checks; every line written to the writing guide and read by one fresh reader before the build (all its findings taken — the lines `raptor-port/docs/superpowers/specs/2026-10-15-logic-page-lines.md`); every number read from its setting (D932, a test proves it); four folds of key points; a setting's own Reset; the strip's untrue line corrected. Its check: `raptor-port/docs/handpass/2026-10-15-logic-medical.md` (its questions for him at the head: a passing note to delete, "Reset all" on a phone).
+**ANSWERED 15 Oct 26 — "All as recommended" (D928):** build as drawn — two parts, every check with one line, four "How it works" folds, no per-row counts, the two unused settings removed. Next: every line of both parts written to the writing guide and read by one fresh reader, then the build with its own check; the "changed" strip corrected with it.
+**DRAWN AND PUT TO HIM, the night of 15 Oct 26 (his D925, branch `claude/one-row-guide-medical`):** the page https://claude.ai/artifact/QaySHx83mqvS9Dcr1Z7gYN (source `raptor-port/docs/mock/2026-10-15-logic-page/index.html`; the inventory `raptor-port/docs/superpowers/specs/2026-10-15-logic-page-inventory.md`; today's pictures `raptor-port/docs/img/handpass/2026-10-15-logic-page/today/`). Two parts — Settings (each with one line of what changing it affects, grouped by the job) and The checks (one line each, four with "How it works"); the code names, engine text, history, per-row counts and two unused settings gone; one row of controls. Four questions to him, each with a pick. The amber "changed" strip's wording is misleading today (published days keep their brief, report, debrief and OIL values) — to be corrected with the build.
+**HIS INTENT, 15 Oct 26 (D925):** the page is for the scheduler or admin to understand, not a description of the app's workings — intuitive, less cluttered; the editable settings at the top, each saying what changing it affects (the brief time moves the automatic B); fine detail out, a short "how it works" only where needed (crew rest). A mock-up with the design skill (impeccable) and his best-suggestion answer first: `raptor-port/docs/superpowers/specs/2026-10-15-logic-page-design.md`. Being drawn the night of 15 Oct 26 if time allows.
+
+**His words:** *"I want to reform how the logic page is presented. Like have an editable section all arranged at the top while the rest at the bottom. Arranged into types within them"*. **To do:** (1) list what the page holds today, rule by rule, marked "can be edited" (a number, a switch, words, a list) or "explains only" (`raptor-port/src/ui/logic-html.ts`, `raptor-port/src/ui/LogicPage.tsx`); (2) a mock-up on the real app, a phone and a desktop: the editable settings first, grouped under their types; the explanations below, under the same types; the search and the controls kept in sight (D561, `[LOGIC-STICKY-SEARCH-COMPACT]`) working over both; (3) his choice of the groups' names and order; (4) the build — no rule's value or meaning changes, only where it sits — with its own check (the Logic page's tests pin its sentences; `[LOGIC-REDRAW-DROPS-TYPING]` rides with it, the same page). After the design page of D807. A branch of its own. Ruling: D809.
+
+
+*Moved here 2026-10-16 by backlog-archive.mjs ([QUALS-ARRIVES-SCROLLED]). Forward facts: `raptor-port/docs/handpass/2026-10-16-quals-one-row.md`.*
+
+### [QUALS-ARRIVES-SCROLLED] On a phone Quals opens scrolled — its row and the Viewing switch above the screen (found 16 Oct 26, older) — FIXED 16 Oct 26 (D937) on `claude/one-row-guide-medical`, leaves with its merge
+**ANSWERED 16 Oct 26 — "As recommended" (D937): Quals opens at its top, as Inputs does — built, tests red first, re-walked 30/30 (`raptor-port/docs/handpass/2026-10-16-quals-one-row.md` §9). Logic and the other pages are not part of the ruling.**
+**Found walking Quals' one row (D935), 16 Oct 26:** opening Quals from the schedule's menu on a phone (390) lands 120 px
+down: the app keeps the window's scroll from page to page, so the row and the Viewing switch sit above the screen until
+the page is scrolled up. Not this change's — `main` does the same; the Inputs page was fixed to arrive at its top
+(`raptor-port/docs/ui-contracts.md`, "The page arrives at its top"), Quals never was. Picture:
+`raptor-port/docs/img/handpass/2026-10-16-quals-one-row/look/q2-arrives-scrolled.png`. **Recommended:** Quals arrives
+at its top too, a small fix with its own test (and a look at whether Logic and the other pages do the same). Waits on
+his word; the browser test D935 scrolls to the top before measuring, with a pointer here.
+
+
+*Moved here 2026-10-16 by backlog-archive.mjs ([TRK-TEST-MIDNIGHT]). Forward facts: `raptor-port/src/tracker/tracker.test.tsx`.*
+
+### [TRK-TEST-MIDNIGHT] Two Tracker tests fail when a run crosses midnight — test-only (filed 16 Oct 26) — FIXED 16 Oct 26 on `claude/one-row-guide-medical` (the group's date pinned; 79/79), leaves with its merge
+
+**Not a fault in the app.** `src/tracker/tracker.test.tsx` ("a grade is dated the day it is pressed…", "re-dating one
+failure from the full list…") work out today once, then the app stamps the date it reads at the press: a full run that
+crossed midnight on 15–16 Oct 26 failed both; the file alone after passed 79/79 (`raptor-port/docs/handpass/2026-10-15-logic-medical.md` §6).
+**Fix:** each test reads today at the moment it compares (or the app's clock is pinned for the file). Small, any time.
+
+
+*Moved here 2026-10-16 by backlog-archive.mjs ([GUIDE-ONE-ROW]). Forward facts: `raptor-port/docs/superpowers/specs/2026-10-15-guide-one-row-draft.md`, `raptor-port/docs/handpass/2026-10-16-quals-one-row.md`.*
+
+### [GUIDE-ONE-ROW] The design guide carries "a page's own buttons share its one row of controls" — RULED D911 (15 Oct 26); the rule IN the guide (D926); Quals BUILT 16 Oct 26 (D935), WALK-checked — OPEN until his look and "merge live"
+**QUALS BUILT 16 Oct 26 (D935, branch `claude/one-row-guide-medical`, pull request 519):** one row at 36 (Enable editing — or Save changes and Edit quals — Export, the filter), the date box gone, "Export" on a phone (≤ 480) with its full words kept for a screen reader, the filter giving way first; the paragraph under the row deleted whole. Tests red first (quals.test D935, e2e geometry D935 at 390/600/1280), breaks 6/6, the walk 21/21 — `raptor-port/docs/handpass/2026-10-16-quals-one-row.md`. **Put to him with it, ANSWERED "As recommended" (D937) and BUILT the same day:** "Save" for "Save changes" on a phone, so the filter keeps room at 320 while editing; and `[QUALS-ARRIVES-SCROLLED]`. The contract: `raptor-port/docs/ui-contracts.md` §The Quals page's one row.
+**ANSWERED 15 Oct 26 — "All as recommended" (D926):** the wording approved and IN `raptor-port/docs/design-practices.md` §3; the Legend fold stays. Left of this item: Quals' "Export to Excel" drawn for him, then built with the Medical tab (D927).
+**QUALS DRAWN AND PUT TO HIM, 15 Oct 26 (D926, D930 — branch `claude/one-row-guide-medical`):** one row (the date box that does nothing removed, every control at 36, "Export" on a phone), and his circled paragraph under it recommended for deletion (two of its three links do nothing) — https://claude.ai/artifact/QZqDmvnF4esm4zaixiNgTA, pictures `raptor-port/docs/img/handpass/2026-10-15-quals-one-row/`. **ANSWERED 16 Oct 26 (D935 — "1-4 as recommended"): build the row as drawn and delete the paragraph whole — NEXT, a fresh chat on this branch, its own WALK check.** Seen while drawing, not changed: on a phone "+ Add person" stands alone on a row under the Viewing switch (put to him on the same page).
+**DRAFTED AND PUT TO HIM, the night of 15 Oct 26 (branch `claude/one-row-guide-medical`):** v2 of the wording, after one fresh reader's read of v1 (four over-reaches taken out), with the sweep of every page — `raptor-port/docs/superpowers/specs/2026-10-15-guide-one-row-draft.md`; the page https://claude.ai/artifact/1CFVksBEx3WMSg9t994FU1 (source `raptor-port/docs/mock/2026-10-15-one-row/index.html`). Waiting for his approval of the wording and his answer on the Legend fold. The places: Quals ("Export to Excel" — drawn for him before a build), Logic ("Edit rules" — inside `[LOGIC-PAGE-LAYOUT]`).
+**His "All as recommended" (D911)** to D852's question after his correction of the Inputs list (D907, built as D910 in the
+calendar job). **Next:** draft the wording in `raptor-port/docs/superpowers/specs/2026-10-15-guide-one-row-draft.md` (its
+steps and what the draft must settle are there), one fresh reader (D70), then to him; `raptor-port/docs/design-practices.md`
+changes only on his approval. A sweep of the other pages for places that break it is part of the draft. Its own job, a
+fresh chat on `main` after the calendar job.
+
