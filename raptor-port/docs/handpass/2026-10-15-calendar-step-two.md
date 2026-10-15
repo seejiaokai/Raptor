@@ -136,6 +136,15 @@ the phone's list reopened by its card; "+ Input" under the bar after a scroll.
 - **Browser break** (one build with the SANS `onTurn`, the Select box's `fe.point` and the picker's `span` cut): the walk
   went red at E1, E2, E4 at both sizes; every file put back and the true build made again; `git status` clean.
 - **Not break-proved:** the figures bar's `.dcal-layer` guard (`Matrix.tsx`) — carried by the extended e2e test only.
+- **D910 and its two fix rounds:** `inputslist.test.tsx` "D910 — …" 15 tests — the row that draws the two buttons, the
+  pop-up from it, a desktop unchanged, a screen turned, "+ Input" from it; the short label (one month, two months, a year
+  kept, a year printed on any phone, two months of one other year, one day); the filters and the dates closing each
+  other; the page order — each new test RED on the version before it (7, then 4, then 2). Browser:
+  `e2e/inputs-calendar.spec.ts` "D910 — a phone 390 / 375 wide" (the gear's 17px glyph — 12px measured on the round
+  before; a window into next year leaves all five on one line, the switch, filter and gear unmoved; a finger 3px above
+  the dates button meets it; a tap on the blank row closes the pop-up); the small-phone pop-up and D731 (12) loops (D908);
+  "+ Input" 36 tall with its finger-sized press area; A1 on a 932-tall phone; "D909". Both Inputs browser files whole:
+  74 / 74.
 
 ## 9. Not walked, and why
 - On his iPhone: the fit of the finger-sized calendar in the Leave War's sheets with Apple's wider letters; the SANS turn
@@ -156,7 +165,7 @@ the phone's list reopened by its card; "+ Input" under the bar after a scroll.
 - **Waiting for his answer (§7, 3):** the Inputs list's date pop-up at 568 and 667 tall (`inputs-calendar` ×2,
   `inputs-batch2` D731 (12) at 568) — question (a); "A1 — a phone: another card tapped over unsaved changes" — its
   route was the day's bar above the input's window, now covered — question (b).
-*(The full set runs again after his answers, before the pull request.)*
+**FINAL — 15 Oct 26 (night), the branch with D910 and both fix rounds, the whole set under the lock in one run:** build clean · tfin 728 / 0 · unit 11461 / 11461 (643 files) · e2e 820 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK (records; sizes OVER by 1413, deferred — D29) — **WHOLLY GREEN.** The nine of the first run: five fixed in the tests (old-calendar names), four re-expressed to his answers (D908, D909) — every one green.
 
 ## 11. The code reads
 Both blind, each given this sheet and the diff (D790 — OIL and saved data): `parts/cal2/read-opus.md` and
@@ -165,6 +174,19 @@ Both blind, each given this sheet and the diff (D790 — OIL and saved data): `p
 are not faults: old hand-pass scripts keep the old names (records, not gates); the Reorder list's scroll relies on
 animation frames running during a native drag (Chrome and Firefox do); `oil-edit-date` names two elements (older).
 (Since D903 no Fable read is asked for unless he calls for one; this one was asked before that ruling.)
+**D910 (built after those reads) — its own fresh, blind Opus read** (`parts/cal2/read-opus-d910.md`): five findings,
+every one taken — the gear's ⚙ shrunk from 17px to 12px on the Inputs tab at every width, the desktop too (measured,
+then fixed); a year in the dates label could drop the gear to its own line; the page order against the screen's; the
+pop-up under open filter fields; a test's old screen height. **The fixes' own fresh, blind Opus read**
+(`parts/cal2/read-opus-d910-fixes.md`, the order's "a fix is new code"): four findings, every one taken — a tap on
+the row's blank stretch no longer closed the pop-up; the dates button's press area clipped; a test that would fail
+from January 2027; the year printed twice. **A third read was not asked for** (the agent's call within the order's cap
+of about three rounds): that round's fixes are the second reader's own exact fixes, two style lines, one label
+function and one test's walk, each pinned by a test red on the round before.
+**One fault looked for and not there:** in the small-phone test the first tap on a date after the swipe picked nothing.
+Reproduced alone: it happens only after a fast flick, while the page is still gliding — the first tap only stops the
+glide, as on any phone — and a swipe at a finger's pace, then rest, lets the first tap pick. The test swipes at that
+pace now; nothing in the app changed for it.
 
 ## 12. His look card
 **ANSWERED 15 Oct 26 — "All as recommended":** (a) left as built, a swipe reaches the rest (D908); (b) left as built (D909);
@@ -188,4 +210,6 @@ Medical tab filed, each its own job (D911, D912 — `[GUIDE-ONE-ROW]`, `[MEDICAL
 7. On your phone: a Leave War event's dates with the keyboard up (type its name first) — the calendar and Save still reachable.
 
 ## The closing lines
-*(written at the end)*
+`Walk: docs/handpass/2026-10-15-calendar-step-two.md · 101 pictures · 19 surfaces walked (7 more carried by a test, §4) · 35 orders — 18 walk steps at a desktop, 17 at a phone (C1–C10, E1–E4, G1, G2, G4a, G4b; E3 desktop only), plus D910's row at three widths and its pop-up at three heights · MISSING: 0 open — the five read gaps walked or carried (§4), D910's eight faults found by its two reads fixed red-first (§11)`
+`Docs: OUTSTANDING 190 items (+2 −1, −1 all in ARCHIVE) · DECISIONS D1–D912 (new: D903–D912) · homes OK`
+`docsize: OVER by 1413, deferred (D29)` — the rulings files (how we work 281 bytes, the Inputs pages 1127) and two rule files (4 and 1 lines): a documents-only pass, never inside this branch's code commits.

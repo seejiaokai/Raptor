@@ -862,3 +862,18 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** Add to mockups-on-the-real-app.md (or walk-scripts.md) a "before pictures" recipe: `git archive origin/main -- <app> ':(exclude)<app>/docs'` into the scratch folder, `npm ci && vite build` there, then a picture script that routes `http://localhost:<free port>/**` to that dist folder; take the same steps on the branch's served build.
 
 **Principle:** To compare a branch with production, build production from an archive that leaves out the bulky non-code folders, and serve it from inside the test browser rather than standing up a second server.
+
+### Observation 611: A control the change was told to leave alone is measured before and after, not eyeballed
+
+**Status:** OPEN
+**Date:** 2026-10-15
+**Session context:** calendar step two — moving two buttons into a toolbar row on a phone (D910), with "the other buttons keep their size" in the ruling.
+**Skill:** bug-check-order (raptor-port/docs/bug-check-order.md §9/§10 anti-pattern 21); mockups-on-the-real-app.md
+**Type:** open-source
+**Phase/Area:** the walk after a layout change
+
+**Issue:** An exclusion added to the row's shared button rule (`:not(<complex selector>)`) raised that rule's specificity, so it began to beat a later, narrower rule for a neighbouring control (the settings gear) and shrank its glyph from 17px to 12px on every screen size, the desktop included. The walk's own pictures showed the smaller gear and were "looked at"; nobody noticed, because nothing compared the untouched controls before and after. A fresh blind code reader found it from the stylesheet weights.
+
+**Suggested improvement:** When a ruling says some controls must NOT change (keep place / keep size), the walk script measures them (computed font-size, padding, box) on the live build and on the change, and asserts equality — a before/after table, not a picture. And a CSS note for the design guide or the walk-scripts guide: an exclusion added to a shared rule is written `:where(:not(...))` so the rule keeps its weight.
+
+**Principle:** "Unchanged" is a claim to measure against the old build, not something to see in a picture; and any selector added to a shared rule can silently change which rule wins elsewhere.

@@ -564,6 +564,42 @@ describe('D910 — on the narrowest phones the dates button’s words are shorte
     await pick(['2026-12-28', '2027-01-04'])
     expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 28 Dec–4 Jan 2027')
   })
+  it('on any phone a window that prints a year takes the short form too — "28 Dec–11 Jan 2027" (the read of 15 Oct 26)', async () => {
+    await open(false)   // a phone 390 wide — not the narrowest
+    await pick(['2026-12-28', '2027-01-11'])
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 28 Dec–11 Jan 2027')
+  })
+  it('two months of the same other year name the year once — "4 Jan–1 Feb 2027" (the second read of 15 Oct 26)', async () => {
+    await open(false)
+    await pick(['2027-01-04', '2027-02-01'])
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 4 Jan–1 Feb 2027')
+  })
+  it('a phone: opening the filters closes the dates pop-up, by keyboard too (no tap outside to close it)', async () => {
+    await open(false)
+    await click($('#inRangeBtn'))
+    expect($('#inRangePop')).toBeTruthy()
+    await click($('#inFiltersBtn'))
+    expect($('#inRangePop'), 'the pop-up closed').toBeNull()
+    expect($('#inFilters')!.classList.contains('open'), 'the fields opened').toBe(true)
+  })
+  it('a one-day window reads its day once', async () => {
+    await open(true)
+    await pick(['2026-10-15', '2026-10-15'])
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 15 Oct')
+  })
+  it('a phone: opening the dates closes the open filter fields, so nothing stands between the button and its pop-up (the read of 15 Oct 26)', async () => {
+    await open(false)
+    await click($('#inFiltersBtn'))
+    expect($('#inFilters')!.classList.contains('open'), 'the fields opened').toBe(true)
+    await click($('#inRangeBtn'))
+    expect($('#inRangePop'), 'the pop-up is up').toBeTruthy()
+    expect($('#inFilters')!.classList.contains('open'), 'and the fields closed').toBe(false)
+  })
+  it('a phone: the page reads the two buttons before the switch, as the screen draws them (Tab and a screen reader)', async () => {
+    await open(false)
+    const order = [...$('.inputs-top')!.querySelectorAll('#inNew, #inRangeBtn, #inListBtn, #inFiltersBtn, #inGear')].map(e => e.id)
+    expect(order).toEqual(['inNew', 'inRangeBtn', 'inListBtn', 'inFiltersBtn', 'inGear'])
+  })
   it('"All dates" reads the same at every width', async () => {
     await open(true)
     if (!$('#inRangePop')) await click($('#inRangeBtn'))

@@ -491,15 +491,20 @@ export function InputsPage() {
   const RANGE_ALL = 'All dates'
   /* ON THE NARROWEST PHONES (under 390 — an iPhone SE or mini at 375) the top row holding the List's two buttons (D910)
      runs out of room, and the switch, the filter and the gear keep their size, so the dates button says the same in
-     fewer letters: "15–29 Oct" in one month, "28 Sep–12 Oct" across two — the same dates, never cut off. */
+     fewer letters: "15–29 Oct" in one month, "28 Sep–12 Oct" across two — the same dates. On any phone a label that
+     prints a year ("28 Dec → 11 Jan 2027") is too long for the row too and takes the short form; one day reads once. */
   const fromTo = (a: string, b: string) => {
-    /* "15 Oct" / "15 Oct 2027" — the month (and a year, where fmtDay prints one) after the day */
-    const cut = (s: string) => { const i = s.indexOf(' '); return [s.slice(0, i), s.slice(i + 1)] }
-    const [ad, ar] = cut(a), [bd, br] = cut(b)
-    return ar === br ? `${ad}–${bd} ${br}` : `${a}–${b}`
+    /* "15 Oct" / "15 Oct 2027" — the day, the month, and a year where fmtDay prints one; what the two share is said once
+       ("4 Jan–1 Feb 2027", never the year twice) */
+    if (a === b) return a
+    const [ad, am, ay = ''] = a.split(' '), [bd, bm, by = ''] = b.split(' ')
+    const yr = by ? ' ' + by : ''
+    if (ay === by) return am === bm ? `${ad}–${bd} ${bm}${yr}` : `${ad} ${am}–${bd} ${bm}${yr}`
+    return `${a}–${b}`
   }
+  const short = tight || (phone && /\d{4}/.test(fmtDay(range.from) + fmtDay(range.to)))
   const rangeLabel = (!range.from && !range.to) ? RANGE_ALL
-    : tight && range.from && range.to ? fromTo(fmtDay(range.from), fmtDay(range.to))
+    : short && range.from && range.to ? fromTo(fmtDay(range.from), fmtDay(range.to))
     : (range.from ? fmtDay(range.from) : '…') + ' → ' + (range.to ? fmtDay(range.to) : '…')
   /* the arrow reads as the direction the column is going, not as a button */
   const th = (key: string, label: string) => (
@@ -575,7 +580,7 @@ export function InputsPage() {
   )
   const tools = tab !== 'inputs' ? null : (<>
     <span className="inputs-spring" />
-    <button className="abtn" id="inFiltersBtn" title="Filters" aria-label={appliedFilters.length ? `Filters, ${appliedFilters.length} set` : 'Filters'} aria-expanded={filtersOpen} aria-controls="inFilters" onClick={()=>setFiltersOpen(o=>!o)}><FilterIcon /><span className="inv-t">Filters</span>{appliedFilters.length>0&&<span className="inputs-filter-count">{appliedFilters.length}</span>}</button>
+    <button className="abtn" id="inFiltersBtn" title="Filters" aria-label={appliedFilters.length ? `Filters, ${appliedFilters.length} set` : 'Filters'} aria-expanded={filtersOpen} aria-controls="inFilters" onClick={()=>{ if (phone) setCalOpen(false); setFiltersOpen(o=>!o) }}><FilterIcon /><span className="inv-t">Filters</span>{appliedFilters.length>0&&<span className="inputs-filter-count">{appliedFilters.length}</span>}</button>
     {/* NO WORDS OVER THE THREE BOXES (D729 — V5; D726): "Person", "Type" and "Search" stood over them on a phone, where
         the boxes already read "Everyone", "All types" and "Search inputs". Each keeps its name for a screen reader. */}
     <div className={'inputs-filterfields'+(filtersOpen?' open':'')} id="inFilters">
@@ -618,7 +623,7 @@ export function InputsPage() {
     {/* the window of dates, picked on a two-click calendar: first click is the from-date, second the to-date */}
     <div className="inrange" hidden={!listUp} ref={rangeRef}>
       <button className={'abtn' + (calOpen ? ' primary' : '')} id="inRangeBtn"
-        aria-expanded={calOpen} onClick={() => setCalOpen(o => !o)}>📅 {rangeLabel}</button>
+        aria-expanded={calOpen} onClick={() => { if (phone) setFiltersOpen(false); setCalOpen(o => !o) }}>📅 <span className="inrange-t">{rangeLabel}</span></button>
       {calOpen && (
         <div className="inrange-pop" id="inRangePop">
           <RangeCal idPrefix="inRange" start={range.from} end={range.to}
@@ -681,7 +686,7 @@ export function InputsPage() {
       {/* the Inputs calendar draws the tabs and the tools in its OWN top row, beside the month's arrows — one row of
           controls above the month on a desktop, the tabs and ONE tools row on a phone (the plan §3.6: "four rows of
           buttons above the month" was a fault seen while drawing) */}
-      {!calUp && <div className="inputs-top">{tabsRow}{views}{phone && listTools}{tools}</div>}
+      {!calUp && <div className="inputs-top">{tabsRow}{phone && listTools}{views}{tools}</div>}
       {!calUp && filterSummary}
       <div className="infilter inputs-listtools" hidden={!listUp || phone}>
         {!phone && listTools}

@@ -296,7 +296,7 @@ test('A1 — a tall phone: another card tapped over unsaved changes — the ques
     await expect(page.locator('[data-testid="win-inputedit"]')).toHaveClass(/\bfront\b/)
     const keep = await box(page, '[data-testid="inped-swap-stay"]')
     expect(keep!.reached, '"Keep editing" is what a finger on it reaches — nothing lies over the question').toBe(true)
-    expect(keep!.bottom).toBeLessThanOrEqual(844)
+    expect(keep!.bottom, '"Keep editing" is on the screen').toBeLessThanOrEqual(await page.evaluate(() => innerHeight))
     await page.touchscreen.tap(keep!.x, keep!.y)
     await expect(q).toHaveCount(0)
     await expect(page.locator('#inpEditRmk')).toHaveValue('typed, not saved')
@@ -304,7 +304,8 @@ test('A1 — a tall phone: another card tapped over unsaved changes — the ques
 })
 
 /* D909 (15 Oct 26): ON HIS PHONE (844 tall) AN INPUT'S WINDOW OPENED FROM A DAY MAY REACH THE TOP AND COVER THE DAY'S BAR —
-   left as built: ✕ shows the day again, its cards a finger's to tap. Not held below the day's bar. */
+   left as built: whether or not it covers the day, its ✕ shows the day again, its cards a finger's to tap. The test does
+   not REQUIRE the cover (D909 allows it; a later change that keeps the day in sight must not fail here). */
 test('D909 — an 844-tall phone: an input’s window may cover the day; its ✕ shows the day again, its other input a tap away', async ({ browser, baseURL }) => {
   const { context, page } = await phone(browser, baseURL, 844)
   try {
@@ -315,10 +316,9 @@ test('D909 — an 844-tall phone: an input’s window may cover the day; its ✕
     await expect(page.locator('[data-testid="win-inputedit"]')).toHaveCount(1)
     const g = await page.evaluate(() => {
       const r = (s: string) => document.querySelector(s)!.getBoundingClientRect()
-      return { dayBarBottom: r('[data-testid="win-inputsday"] .win-bar').bottom, editTop: r('[data-testid="win-inputedit"]').top, editBottom: r('[data-testid="win-inputedit"]').bottom, vh: innerHeight }
+      return { editBottom: r('[data-testid="win-inputedit"]').bottom, vh: innerHeight }
     })
     expect(g.editBottom, 'the window is on the screen').toBeLessThanOrEqual(g.vh + 1)
-    expect(g.editTop, 'the input’s window may reach the top, over the day’s bar (D909)').toBeLessThan(g.dayBarBottom)
     const x = await box(page, '[data-testid="win-inputedit"] .win-bar .win-x, [data-testid="win-inputedit"] [aria-label="Close"]')
     expect(x!.reached, 'its ✕ is what a finger on it reaches').toBe(true)
     await page.touchscreen.tap(x!.x, x!.y)
