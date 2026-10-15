@@ -583,8 +583,9 @@ the held block when the caret leaves; a change needing the whole day replaced wa
 but the caret's own (`SchedBoard.tsx`). So the day's warning list and count (D509), "N pending", "Not yet signed" and
 the sign-off strip are current while he types on. **Held by design until the caret leaves its section:** the puck rings
 and marks inside that section. Inside the held block the wave header's In-time / Rally clock is corrected in place —
-text nodes only, no new markup (`html.ts refreshWaveReports`; `waveHeadTail` / `waveHeadBoard` are the one body for the
-builder and the refresh). `dayswap.ts holdingPlace` keeps the box he is typing in where it was on screen.
+text nodes only, no new markup (`html.ts refreshWaveReports`; `waveHeadTail` is the one body for the builder and the
+refresh). **The board's wave header carries no clock since 16 Oct 26** (owner D947 — "In-time / Rally 09:40 · 4 ac"
+removed from every wave; the report times are in the lines under it), so only the week's header is refreshed. `dayswap.ts holdingPlace` keeps the box he is typing in where it was on screen.
 **A save that opens a window stops the route:** `pops.ts windowOverSchedule()` — true from the moment a gesture asks for
 any window over the schedule — is asked straight after the route's blur, and the route declines while one is up; the
 four question sheets (OIL, upchit, "covers other days", "no medical document") take the keyboard when they open and
@@ -988,8 +989,11 @@ be read: "Can't tell whether … already has a row on another week — load that
 such a request says where it is instead ("On Sun 19 Jul"), a load or plan switch leaves such a row out and names the
 day; and a request whose row stands on a week that is not loaded cannot be deleted (or edited) from here — it says where to go ("Load the week of Sun 19 Jul to delete this accepted input"), and deleted from that week its row goes with it, so nothing is ever left with no request behind it. A request taken off ('r') whose row still stands on
 a loaded day is adopted back rather than duplicated ("… is on the ground programme again — its row was already there").
-The Undo on an accepted request names its day when the row is on another loaded day ("Undo · Tue"; undone: "Accept
-undone — its row came off Tuesday's programme"). Pinned by `state/reqorphan.test.ts`; the engine rule: `engine-rules.md` (a request's row and its
+The button that takes an accepted request off — **"Reject" since 16 Oct 26** (owner D945; it read "Undo") — names its
+day when the row is on another loaded day ("Reject · Tue"; pressed: "… taken off Tuesday's programme"). On a phone an
+accepted input's Reject rides its puck's line (the board: one puck, plain "Reject" only; the week: under its name) —
+D944, D947, `scheduler/13-board-rows-responsive.css`, `09-week-responsive.css`. Under the Ground Programme's heading one
+line says where an input is taken off, only where an input stands on it (D943, D947 — `html.ts GP_TAKEOFF_NOTE`). Pinned by `state/reqorphan.test.ts`; the engine rule: `engine-rules.md` (a request's row and its
 filing).
 
 **Who and when (D104).** The newest edit-log row for the change's own cells: the signed-in person's live callsign

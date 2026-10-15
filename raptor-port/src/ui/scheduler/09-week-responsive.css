@@ -266,6 +266,12 @@
      puck is exactly the column's width and never wraps. Pinned in
      e2e/geometry.spec.ts, because jsdom reports every rect as 0x0. */
   .allhands .ah-row .ppl .seat,.plist .pl-row .ppl .seat{flex-wrap:wrap;max-width:100%;row-gap:2px}
+  /* AN ACCEPTED INPUT'S REJECT SITS UNDER ITS NAME, ON THE ROW'S OWN LINES (owner D944, D947, 16 Oct 26 — the words pass,
+     round 1b: Personal Inputs one line less a row, the board's rows and the week's alike). It had a line of its own under
+     the row; the name column has room under the name beside the second time, the pucks and the remark. `accd` is only
+     ever an accepted row under Personal Inputs (html.ts inGrp), whose control is the one Reject button. */
+  .plist .pl-row.accd>.nm{grid-row:1}
+  .plist .pl-row.accd>.accs{grid-column:1;grid-row:2;align-self:end;justify-self:start;margin-left:0}
 }
 /* ---- small phones (360px Android, iPhone SE/mini) ----
    Same FIVE-column layout as every other width — CS/MSN | B/TO | LD | FCP/RCP | RMKS —

@@ -21,7 +21,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay, iuParts } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { waveHeadBoard, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown } from './html'
 import { onInputRow, rowMark, UNMARKED } from './reqdoor'
 import { setInpField, howMany } from './inputedit'
 import { reqRowText } from './reqrow'
@@ -174,7 +174,8 @@ function boardHTMLBody(di: number, pv?: boolean) {
          data-air click is handled globally (interactions.ts setAirKey → AirPop),
          which already reaches the board, so no board-side wiring is needed. */
       + `${sa || mvRO ? '' : `<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}`
-      + (sc ? '' : `<span class="asd">${waveHeadBoard(w)}</span>`)
+      /* no "In-time / Rally 09:40 · 4 ac" note here any more (owner D947, 16 Oct 26 — the words pass, round 1b): the
+         report times are in the yellow lines right under the header, and on a phone the note took a line in every wave */
       + (mvRO ? '' : `<span class="gctl">${sbSortBtn(`w.${di}.${gi}`, mvRO)}${sa ? '' : `<button class="mbtn add" data-itadd="${di}|${gi}" title="Add an ${REPORTING_LABEL} line to this wave">+ ${REPORTING_LABEL}</button>`}<button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
       + `<button class="mbtn del" data-gdel="${di}.${gi}" title="Remove this whole wave">✕ Wave</button></span>`) + `</div>`
     /* The IN TIME + WX/NOTAMS lines edit exactly as the week's do (html.ts):

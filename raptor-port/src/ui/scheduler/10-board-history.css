@@ -257,7 +257,6 @@ body.dw-lock{overflow:hidden}
 /* The fixed palette can constrain this header above the phone breakpoint.
    Wrap whole groups instead of squeezing the report/date cue or clipping controls. */
 .sb-go-h{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:7px 11px;background:var(--panel-2);border-bottom:1px solid var(--edge);font-weight:700;font-size:12px}
-.sb-go-h .asd{color:var(--ink-3);font-weight:500;font-size:11px;font-family:'JetBrains Mono',monospace;margin-left:auto;flex-shrink:0;max-width:100%}
 .sb-go-h .night{color:#FBB4B9}
 .sb-wtitle{background:var(--panel);border:1px solid var(--edge);color:var(--ink);border-radius:7px;padding:4px 8px;font-size:12px;font-weight:600;cursor:pointer}
 .sb-wtitle:focus{outline:2px solid var(--accent);outline-offset:0}

@@ -51,8 +51,20 @@ After a compaction: re-read this block, the overnight guide (`.claude/skills/ove
   typed token is printed once (the token read as the date). Drawn: `raptor-port/scripts/handpass/till-dates.mjs`,
   page https://claude.ai/artifact/E5EGxqoxCyCzhe3uzjYZjA.
 - **Pages put to him:** round 1b https://claude.ai/artifact/LyEcfYVzbqXnsgwscLRVvM; the till date (above).
-- **Questions waiting for him:** none yet.
-- **Progress:** nothing built yet. **Handed off 16 Oct 26 ~23:40 to a fresh chat for the night** (his offer; this chat was 43% full) — that chat starts at Part 1 step 9 of the overnight guide (keep-awake, the guard `--away`), then job 1.
+- **Questions waiting for him:** (Q1) the board's wave header said "(prev day)" when a wave's In-time / Rally falls the
+  evening before; with the note gone (D947 — every wave) nothing on the BOARD says so (Edit Schedule's week still does,
+  after the wave's name). Keep a small "(prev day)" on the board's header in that one case? Recommended: yes. Waits: only
+  that cue — built as ruled. (Q2) D945 reading (4): Personal Inputs' note "A removed input flags nothing until accepted
+  again…" — "removed" → "rejected"? Recommended: yes. Waits: only that word.
+- **Progress:** night chat started 16 Oct ~23:45 (keep-awake on, guard `--away`). **Job 1 BUILT** (commit "round 1b
+  built"): (a) wave header note gone (`board.ts`, `html.ts refreshWaveReports`; the e2e header test re-aimed to
+  "controls inside, no overflow"); (b) `html.ts GP_TAKEOFF_NOTE`, board `sbGroundPanel` + week `.sec-grnd`; (c) phone:
+  board `accup` (one puck, plain Reject only — "Reject · Tue" ~80px does not fit beside a puck under ~400px, keeps its
+  line) in `13-board-rows-responsive.css`; week: the button under the name (`09-week-responsive.css`, `.accd`) — the
+  agent's reading of "the same move" for the week's 4-column row; (e) "Reject" + hover text (`html.ts accCtl`); (f)
+  lesson 2 in `design-practices.md` §9 (fresh reader still owed). Tests `src/ui/words-r1b.test.tsx` (10), reqorphan
+  re-pinned. Measured `scripts/handpass/words-r1b-measure.mjs` (no overlap 360–430). **Next: job 2 (till date), then ONE
+  FULL check for both** (roll-call, sized walk, gates under the lock, one fresh blind Opus read).
 - **Rulings this chat:** D945–D948.
 <!-- /now -->
 

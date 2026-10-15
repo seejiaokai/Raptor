@@ -1203,18 +1203,15 @@ export function dayWarnHTML(di:any){
    (ui/dayswap.ts swapDayAround) — and the header went on showing the clock from before the line was edited ("21:30
    (prev day)" beside a line reading 22:30H). refreshWaveReports rewrites the header's WORDS from the model: text
    nodes only, no element replaced, nothing near the caret — and no new markup (the edit week is compared byte for
-   byte with the reference, html.test.ts). One body each for the builder and the refresh, so the two cannot drift:
-   on the week, what follows the wave's label (" · NIGHT", and the clock only when it falls on the previous day, as
-   before); on the board, the whole header note. Waves are found by the drag address every edit-mode wave carries. */
+   byte with the reference, html.test.ts). One body for the builder and the refresh, so the two cannot drift: on the
+   week, what follows the wave's label (" · NIGHT", and the clock only when it falls on the previous day, as before).
+   Waves are found by the drag address every edit-mode wave carries. The board's header note ("In-time / Rally 09:40 ·
+   4 ac") is gone (owner D947, 16 Oct 26): the report times are in the yellow lines right under it. */
 export function waveHeadTail(w:any):string{
   const sa=isStandalone(w);
   const night=!sa&&w.night&&!/night/i.test(w.label)?' · NIGHT':'';
   const r=sa?null:waveInTime(w);
   return night+(r!=null&&r<0?` · ${REPORTING_LABEL} ${stated(r,true)}`:'');
-}
-export function waveHeadBoard(w:any):string{
-  const t=waveInTime(w), n=(w.formations||[]).reduce((k:number,f:any)=>k+f.aircraft.length,0);
-  return `${REPORTING_LABEL} ${t!=null?stated(t,true):'—'} · ${n} ac`;
 }
 export function refreshWaveReports(root:ParentNode|null|undefined):void{
   if(!root)return;
@@ -1232,11 +1229,8 @@ export function refreshWaveReports(root:ParentNode|null|undefined):void{
   root.querySelectorAll<HTMLElement>('[data-move^="mv:w."]').forEach(go=>{
     const [di,gi]=String(go.dataset.move).slice(5).split('.').map(Number), w=DAYS[di!]&&DAYS[di!].waves&&DAYS[di!].waves[gi!];
     if(!w)return;
-    if(go.classList.contains('sb-go')){
-      const note=go.querySelector(':scope > .sb-go-h > .asd'), want=waveHeadBoard(w);
-      if(note&&note.textContent!==want)note.textContent=want;
-      return;
-    }
+    /* the board's wave header carries no clock to refresh since round 1b (owner D947) — see board.ts */
+    if(go.classList.contains('sb-go'))return;
     const head=go.querySelector(':scope > .go-tab > .asd'); if(!head)return;
     const want=waveHeadTail(w), texts=[...head.childNodes].filter(n=>n.nodeType===3);
     if(texts.map(n=>n.nodeValue).join('')===want)return;
@@ -1976,7 +1970,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
          the old edit-mode "· scheduler" qualifier is gone. Parity still holds —
          the reference carries the qualifier and html.test.ts normalises both to
          "GRND", tolerating its absence. */
-      h+=`<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground Programme</div>`+(grd.length?plCols():'');
+      h+=`<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground Programme</div>`+(ed&&grd.some((x:any)=>x.src)?`<div class="pl-inpnote">${GP_TAKEOFF_NOTE}</div>`:'')+(grd.length?plCols():'');
       /* A SHARED INPUT IS ONE ROW (owner D661 — "on the schedule a group input is ONE row holding everyone — not a row
          for each man"; D743, the approved pictures; [GROUP-INPUT-ONE-ROW], the plan §4.3). Underneath it is still a row a
          man: engine/grouprows.ts says which rows are one, and whose pucks the one row draws. The LEAD draws it — its
@@ -2210,6 +2204,11 @@ export function inpEditLabel(inp:any,ed:any,txt:any,cls:any){
   if(!ed)return `<span class="${cls}">${t}</span>`;
   return `<button class="${cls} inpedit" data-inpedit="${esc(inpId(inp))}" title="Edit this input — times, type, remarks or delete">${t}</button>`;
 }
+/* HOW TO TAKE AN INPUT OFF THE GROUND PROGRAMME (owner D943, worded by D947 — wording B — 16 Oct 26, the words pass,
+   round 1b): taking a member's input off is done somewhere other than where it shows, and nothing on the Ground Programme
+   said so. One line under the heading, in the removed-input note's own small style, ONLY on a day where an input stands
+   on the Ground Programme and only where it can be done (Edit Schedule's week, the Scheduler Board) — one wording for both. */
+export const GP_TAKEOFF_NOTE='To take an input off, press Reject on it in Personal Inputs below.';
 /* The accept control on a personal-input row. "Other" is the one type whose
    destination is genuinely ambiguous — it can be something the squadron has to
    run (ground programme) or something that simply closes the man (unavailable) —
@@ -2224,11 +2223,15 @@ export function accCtl(di:any,inp:any){
   /* WHICH DAY'S ROW AN UNDO TAKES OFF ([REQ-DOOR-WORDS] 2, 28 Sep 26 — Fable's F5 on D175's branch). A request covering
      several days is drawn on each of them, but its one row stands on ONE day; the Undo on another day's card removed that
      row with nothing saying where it was. Said on the button and its title when the row is on another day. */
+  /* IT READS "REJECT", NOT "UNDO" (owner D945, 16 Oct 26 — the words pass, round 1b): a button is named for what it does,
+     never with another control's name (the top bar's Undo) or a word that reads as Delete. What it does is unchanged —
+     the row comes off (or back out of Unavailable) and the input offers Accept again. The `undo` class and data-acc="x"
+     stay: they are the button's look and its route, not its words. Its hover text starts with its verb (design guide §1b). */
   if(inp.acc==='g'){
     const dj=acceptedDay(inp), other=dj>=0&&dj!==+di&&DAYS[dj]?String(DAYS[dj].dow||''):'';
-    if(other)return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="Undo — takes its row off ${esc(other)}'s ground programme">Undo · ${esc(other.slice(0,3))}</button></span>`;
+    if(other)return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="Take its row off ${esc(other)}'s ground programme">Reject · ${esc(other.slice(0,3))}</button></span>`;
   }
-  if(inp.acc&&inp.acc!=='r')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="${inp.acc==='u'?'Undo — takes it back out of Unavailable, into Personal Inputs':'Undo — removes the ground-programme row this created'}">Undo</button></span>`;
+  if(inp.acc&&inp.acc!=='r')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="${inp.acc==='u'?'Take it back out of Unavailable, into Personal Inputs':'Take its row off the ground programme'}">Reject</button></span>`;
   /* ITS ROW IS ON ANOTHER WEEK ([REQ-ORPHAN-ROW], 28 Sep 26): a request covering Sun 19 – Mon 20 Jul landed on Sunday keeps
      its one row in week 1 (D175 — one request, one row). On week 2 its card offered Accept, which made a second row; it now
      says where the row is instead. (Its filing stays this week's own, so a published Monday's count never moves by a week

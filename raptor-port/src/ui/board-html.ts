@@ -1,12 +1,13 @@
 /* The scheduler-board panel builders — sbInputsHTML, sbNotesPanel,
    sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */
+import { DAYS } from '../engine/data'
 import { rowPeopleDrawn, inputRowSeveral } from '../engine/grouprows'
 import { INPUTS, inputsOn, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, oilAsks, sansBadge, facesOf, facesDrawn, iuTail } from '../engine/inputs'
 import { PEOPLE, whoId } from '../engine/people'
 import { noteText } from '../engine/note'
 import { hhmm, fmtHM, parseHM } from '../engine/time'
 import { sevOf, chipOf } from '../engine/validate'
-import { whoArr } from '../engine/slots'
+import { whoArr, acceptedDay } from '../engine/slots'
 import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
 import { esc, PIOPEN, notePub } from '../state/view'
@@ -15,7 +16,7 @@ import { isMember } from '../state/perms'
 import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilItemOfKey, oilRowPeople, oilClaimWin, inputItemKey } from './oilmode'
 import { rowItemKey, groundItemKey } from '../engine/oil'
 import { rowKindTag, inpKindTagHTML, inpCxHTML, inpCxCls, oilSeatDeco } from './html'
-import { ORD, puck, puckMarks, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn, exemptLineOwn } from './html'
+import { ORD, puck, puckMarks, rowCls, accCtl, GP_TAKEOFF_NOTE, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn, exemptLineOwn } from './html'
 
 /* ONE CLOCK ON THE BOARD — hh:mm (owner, 30 Aug 26, reversing the 29 Aug
    4-digit pass: "most of the timing format is 08:00 … make sure everything
@@ -587,6 +588,8 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
      it stays the bare-row add for things that are not anybody's input. */
   let s=`<div class="sb-panel grnd"><div class="sb-ph">Ground Programme `
     +(ro?'':`<span class="gctl"><button class="sb-addinp" data-inpadd="${di}.g" title="Add a personal input (meeting, course…) — it goes straight onto the Ground Programme">+ Inputs</button>${sbSortBtn(`g.${di}`,ro)}<button class="mbtn add" data-gradd="${di}" title="Add a ground item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
+  /* the one line saying where an input on this list is taken off (D943, D947 — html.ts GP_TAKEOFF_NOTE, the week's twin) */
+  if(!ro&&rows.some((x:any)=>x.src))s+=`<div class="sb-pinote">${GP_TAKEOFF_NOTE}</div>`;
   if(!rows.length)s+=`<div class="sb-empty">No ground items yet — “+ Item” adds one.</div>`;
   else{
     s+=C6;
@@ -745,7 +748,14 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any,mates?:any[]){
   /* a cancelled input's red CX tag (D767 reading 3) rides the item cell too, ahead of the name — never a grid child of
      its own, for the reason the LATE chip is not (below) */
   const cxh=inpCxHTML(inp);
-  return `<div class="sb-arow c6r inprow${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${lateRowCls(inp)}${acc?dormRowCls(inp):''}"${lateRowTitle(inp)||(acc?dormRowTitle(inp):'')}${inprow}>`
+  /* ON A PHONE AN ACCEPTED INPUT'S REJECT SITS ON ITS PUCK'S LINE (owner D944, D947 — the words pass, round 1b): one line
+     less a row. `accup` asks for it; the phone rule decides (scheduler/13-board-rows-responsive.css). Only a line of ONE
+     puck — where an input holds more people there is no room beside them, and its button drops under them as before —
+     and only the plain "Reject": "Reject · Tue" (its row on another day) is about 80px, which beside a 74px puck runs into
+     the remark on a phone under ~400px wide (measured, scripts/handpass/words-r1b-measure.mjs), so it keeps its line. */
+  const dj=acceptedDay(inp);
+  const up=acc&&inp.acc&&inp.acc!=='r'&&line.length===1&&!modeRO&&!(inp.acc==='g'&&dj>=0&&dj!==+di&&DAYS[dj])?' accup':'';
+  return `<div class="sb-arow c6r inprow${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${up}${lateRowCls(inp)}${acc?dormRowCls(inp):''}"${lateRowTitle(inp)||(acc?dormRowTitle(inp):'')}${inprow}>`
     +sbGrip(true)
     /* a titled input's kind rides the same wrapper, for the same reason (D717 — html.ts inpKindTagHTML) */
     +(lc||cxh||inpKindTagHTML(inp)?`<span class="itemcell">${cxh}${itemCell}${inpKindTagHTML(inp)}${lc||''}</span>`:itemCell)
