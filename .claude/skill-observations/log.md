@@ -907,3 +907,18 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** Done as D921: the rule names explanations and recaps, and sits in an always-loaded rule file. A check-before-send line could ask: "does this message name anything on screen? then is a picture attached?"
 
 **Principle:** A rule scoped by the kind of message ("a proposal") gets skipped when the agent classes its message as another kind; scope it by its trigger (anything on screen is named) instead.
+
+### Observation 614: A touch-emulated tap leaves a hover ring on the last button in a mock-up picture
+
+**Status:** OPEN
+**Date:** 2026-10-15
+**Session context:** Drawing the Tracker's Reorder finger drag on the real app ([TRK-REORDER-FINGER-DRAG], D922); the "after the drop" frame reached its state by tapping the real ▼ buttons.
+**Skill:** brainstorming (reference: mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** Traps When Injecting Into a Live Page
+
+**Issue:** In a touch-emulated browser context (isMobile, hasTouch), the ▼ tapped to reach the state kept a blue hover/focus ring in the screenshot, so the picture showed a pressed button that the proposed flow (a drag) never touches. `element.blur()` did not remove it; a tap on a neutral element (the window's title) did. Nothing failed — only looking at the picture caught it.
+
+**Suggested improvement:** Add to "Traps When Injecting Into a Live Page": a state reached by tapping the app's own controls leaves the last control hovered or focused; tap a neutral, non-closing element (a heading) before the picture, and say in the caption which controls the depicted flow touches.
+
+**Principle:** The steps used to reach a pictured state leave their own marks on the screen; clear the traces of the setup before the shot, or the picture shows actions the proposal does not involve.

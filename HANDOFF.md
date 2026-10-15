@@ -21,7 +21,8 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/trk-reorder-finger-drag -->
-### `claude/trk-reorder-finger-drag` — the tidy after 517 DONE; `[TRK-REORDER-FINGER-DRAG]` (D922) — the picture first, put to him before any build — written 15 Oct 26 — verify before use
+### `claude/trk-reorder-finger-drag` — the tidy after 517 DONE; `[TRK-REORDER-FINGER-DRAG]` (D922) DRAWN and PUT TO HIM — waiting for his three answers, nothing built — written 15 Oct 26 — verify before use
+- **Drawn:** https://claude.ai/artifact/8mNLc9PU5u2ME2C4BvNosu — the grip ⠿, the mouse's look the same, delete "Drag a row, or use ▲/▼." (the backlog item has the readings and picks). On his answers: record them, build, WALK check.
 - **The tidy (done):** 517 live; `[INPUT-NEW-DEFAULTS]` archived; its chat's block removed. Still owed from it, documents only (D29): sizes OVER — the How-we-work and Inputs rulings files over their markers, `plain-language.md` and `shipping.md` a few lines over.
 - **Now:** the finger drag for the Tracker's ⇅ Reorder rows drawn on the real app and put to him (D853, D921); build only on his word, the design guide's §5a (D895); WALK check. Then `[OIL-CONFIRM-DAYGRID]` (D923), its own job.
 <!-- /now -->
