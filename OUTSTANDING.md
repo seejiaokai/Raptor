@@ -2285,6 +2285,16 @@ saved input keeps its type; OL takes no title (D716), so the title box shows onc
 the pencil drawn on the real app and put to him (D853). **Also put to him with it:** his first idea D913 drawing A
 (time and remarks above the calendar) — reopened by D916, unanswered. Its own small job, a fresh chat on `main` after
 516 is live; a WALK check (the new input's doors, both sizes).
+**DRAWN AND PUT TO HIM 15 Oct 26 (branch `claude/input-new-defaults`) — waiting for his two answers:** the page
+https://claude.ai/artifact/BQa1WwKjmu62kgNv2FA4op (source `raptor-port/docs/mock/2026-10-15-input-new-defaults/index.html`,
+pictures `raptor-port/docs/img/handpass/2026-10-15-input-new-defaults/`, drawn by `scripts/handpass/mock-input-defaults.mjs`).
+(1) the pencil: P1 inside the title box at its right end (the agent's pick — no room taken, the box's grey, a line icon in
+`ui/icons.tsx`'s style, never the ✏ glyph, which draws as an emoji on an iPhone) or P2, a square button beside the box (the
+box ~40 px shorter); (2) D913 A — When and Remarks above the calendar, for every kind and door (the agent's pick). **Measured:**
+with OL picked the window fits a 390 × 844 phone either way (no scroll); with Event (title + hours) today's Remarks lies under
+the Cancel / Add bar and needs a scroll, and with A all of it is in sight. **The agent's readings, told to him:** the pencil
+shows wherever the title box shows, new or saved, never on a read-only input; a tap on it is a tap on the box. **Then:** build
+D917 with his two answers as one small job, WALK check.
 
 ### [TRK-REORDER-FINGER-DRAG] A finger drag for the Tracker's ⇅ Reorder rows — named to him by D900's reading (15 Oct 26); his to place — OPEN
 **Today:** on a phone the Reorder list's rows cannot be dragged (its ▲▼ move them); a mouse drag scrolls at the list's

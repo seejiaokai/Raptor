@@ -23,7 +23,9 @@ the later merge keeps both (D78).
 <!-- now:claude/input-new-defaults -->
 ### `claude/input-new-defaults` — the tidy after pull request 516 DONE; `[INPUT-NEW-DEFAULTS]` (D917, D918) STARTED: pictures first — written 15 Oct 26 — verify before use
 - **The tidy (done):** 516 merged and Vercel Production READY for its commit; `[ONE-DATE-CALENDAR]` and `[DRAG-EDGE-FOUR-MORE]` archived (homes: the step-two sheet, `ui-contracts.md`); the calendar chat's block removed; its two "his to place" leftovers filed as `[TRK-REORDER-FINGER-DRAG]` and `[OIL-CONFIRM-DAYGRID]`.
-- **In hand:** the title pencil (D918) and his first idea D913 drawing A (time and remarks above the calendar) drawn on the real app and put to him (D853) — nothing built before his word.
+- **DRAWN AND PUT TO HIM, WAITING FOR HIS TWO ANSWERS:** the page https://claude.ai/artifact/BQa1WwKjmu62kgNv2FA4op (source `raptor-port/docs/mock/2026-10-15-input-new-defaults/index.html`; pictures `raptor-port/docs/img/handpass/2026-10-15-input-new-defaults/`, drawn by `raptor-port/scripts/handpass/mock-input-defaults.mjs` on the served build, port 4173). (1) the title pencil — P1 inside the box (the agent's pick) or P2 beside it; (2) D913 A — When and Remarks above the calendar (the agent's pick: yes, every kind and door). Detail and measurements: `OUTSTANDING.md` `[INPUT-NEW-DEFAULTS]`.
+- **Next:** record his answers as rulings (inputs.md), then build D917 (a new input opens on OL) with them as ONE small job on this branch — tests red first, a WALK check (the new input's doors — the List's "+ Input", a day, a run — both sizes), one fresh blind Opus read (D790), then the preview link. Nothing is built yet; nothing under `raptor-port/src` changed.
+- **Rulings this chat:** none yet. **Owed, documents only (D29), unchanged:** the four size markers over (how-we-work and inputs rulings, plain-language.md, shipping.md).
 <!-- /now -->
 
 ## Next, in order
