@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/whole-app-words-pass-73790e -->
+### `claude/whole-app-words-pass-73790e` — the whole-app words pass (D808) STARTED: the survey done, round 1 (Edit Schedule and the Scheduler Board's day panels) PUT TO HIM, waiting for his four answers — written 16 Oct 26 — verify before use
+- **The method (D808 as ruled, the design guide §1, §1a, §1b, §8):** one round a page or a family, at most four questions, each text shortened, deleted or moved into a fold, put to him as marked pictures of the real app before and after; nothing changed in the app until he answers; a new wording carrying a reason, a cost or an instruction gets a fresh reader's cold read first.
+- **The survey:** `raptor-port/scripts/handpass/words-survey.mjs` — every page, admin and member, desktop and phone, its pictures and every visible sentence of four words or more, `raptor-port/docs/img/handpass/2026-10-16-words-pass/survey/` (`survey.json`). Trap: the Tracker stays mounted and its text leaks into other pages' counts; the board, the SANS tab and the Leave War grid were not reached by it. Source-side list (3,532 strings in 245 files, noisy): rebuild it with the scratch inventory idea if needed.
+- **Round 1 — PUT TO HIM, page:** https://claude.ai/artifact/THbwC3DG5dtrMtxV4NPiAh — Q1 delete the board's nine panel subtitles; Q2 delete "tap to review", "press a card to edit", the fold words, and MOVE the editing line into Edit Schedule's Legend as "Personal Inputs and Unavailable: times and remarks type in place · clear a time for all day · press the type to change it" (the cold reader found "Editing:" lost its scope); Q3 the removed-input note's dash a full stop, every word kept; Q4 "No amendments published yet." alone. Pictures and their script: `…/2026-10-16-words-pass/r1/`, `raptor-port/scripts/handpass/words-r1.mjs` (it draws each "after" on the page; the build follows those exact strings). Considered and left: "all of them are under Available all day ↓"; the next week peek's line and "No notes yet." and the doubled "accepted" on each Personal Inputs row → round 2.
+- **Pick up here:** record his answers as rulings (inputs/scheduler area), build the approved ones (sources: `ui/html.ts` the week's `.pl-hint`, `.dwcue`, `.pl-inpnote`, the Available crew head; `ui/board-html.ts` the panel `.sub` lines and `.sb-pinote`; `ui/board.ts` the board's cue; `ui/ALPanel.tsx`; the Legend in the Edit Schedule head), tests that pin the words, the bug check at its tier, then round 2 (View-only Sched, the remaining schedule lines), then the other pages, one round each.
+- **Rulings this chat:** none yet.
+<!-- /now -->
 
 ## Next, in order
 

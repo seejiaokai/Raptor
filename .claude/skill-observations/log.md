@@ -951,3 +951,33 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** In the checking order's §7.2, one line: before a browser run, confirm the server on the port is this checkout's build (its command line, or a fact only the new build has), or run on a free port.
 
 **Principle:** A test that reuses a running server proves only that server; check whose build it is before trusting a red or a green.
+
+### Observation 617: Marks drawn as boxes over a page drift from their text on a phone; a mark drawn on the element cannot
+
+**Status:** OPEN
+**Date:** 2026-10-16
+**Session context:** the whole-app words pass, round 1 — before-and-after pictures of the real app with each text outlined and numbered
+**Skill:** brainstorming (`mockups-on-the-real-app.md` — Traps When Injecting Into a Live Page); `raptor-port/docs/walk-scripts.md` §5
+**Type:** open-source
+**Phase/Area:** marking the area talked about in a picture
+
+**Issue:** The first script measured each text's box and laid an absolutely placed outline over the page at those coordinates. On the desktop the boxes fitted; on a phone three of six landed a line or more below their text, and on the Scheduler Board (a layer that scrolls by itself) every box missed. The script reported no error and listed every mark as found. Drawing the mark on the element itself — an outline (it takes no room) and a numbered tag in its own `::before` — fixed all of them at once.
+
+**Suggested improvement:** In the mock-up guide's traps: mark an element with an outline and a tag on the element itself, never an overlay at measured coordinates; and an "after" picture finds its frame again after the change, since a removed line moves everything below it.
+
+**Principle:** A mark that is a copy of a position goes stale the moment anything moves; a mark carried by the thing itself cannot.
+
+### Observation 618: A line moved into a fold lost its subject; only the cold read caught it
+
+**Status:** OPEN
+**Date:** 2026-10-16
+**Session context:** the whole-app words pass, round 1 — the editing hint printed on every day's input panels proposed to move, word for word, into the page's Legend fold
+**Skill:** the design guide (`raptor-port/docs/design-practices.md` §1 — the three ends of a note, "moved under one short fold"); impeccable (reference/clarify.md)
+**Type:** open-source
+**Phase/Area:** moving text rather than deleting it
+
+**Issue:** The writer treated "moved word for word" as needing no cold read — no word changed. Labelled "Editing:" in the Legend, the line no longer said what it applied to: in its panels the heading beside it had carried that. The fresh reader asked "editing what — inputs, flights, everything?". It now opens with the two panels' names.
+
+**Suggested improvement:** §1's third end (and §1a): a text moved away from what it describes takes that thing's name with it, and a moved text gets the cold read like a reworded one — the place it stood was part of its meaning.
+
+**Principle:** Context is content: a sentence that leaves its place must carry with it whatever the place was saying for it.

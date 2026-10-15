@@ -1,0 +1,240 @@
+{
+ "desk week found": [
+  "W1: tap to review",
+  "W2: times and remarks type in place · clear a time for all day · press the type to change it · hide ⌃",
+  "W3: A removed input flags nothing until accepted again — delete it here if it should go entirely.",
+  "W4: press a card to edit",
+  "W5: times and remarks type in place · clear a time for all day · press the type to change it",
+  "W6: by wave · close ⌃"
+ ],
+ "desk week after": {
+  "cue": [
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue"
+  ],
+  "weekHints": [
+   "pi hint → caret",
+   "hint removed",
+   "hint removed",
+   "fold count",
+   "hint removed",
+   "hint removed",
+   "hint removed",
+   "hint removed",
+   "fold count",
+   "hint removed",
+   "hint removed",
+   "hint removed",
+   "hint removed",
+   "hint removed"
+  ],
+  "avail": [
+   "⌃",
+   "⌃",
+   "⌃",
+   "⌃",
+   "⌃",
+   "⌃",
+   "⌃"
+  ],
+  "inpnote": [
+   "note"
+  ]
+ },
+ "desk head found": [
+  "W7: No amendments published yet — publish a day, edit it, then publish an AL."
+ ],
+ "desk head after": {
+  "alnone": [
+   "al"
+  ],
+  "legend": [
+   "legend row"
+  ]
+ },
+ "desk board heads": [
+  "⠿Overall notes shown at the head of the day+ Note",
+  "⠿Common Programme squadron-wide — affects all⇅ Auto sort+ Item",
+  "⠿Flying waves go times, formations, crews+ Wave",
+  "⠿Duties SDO / SXO / ops desk, by block+ Block",
+  "⠿Sims AMT and OFT rows",
+  "⠿Ground Programme briefs, reviews, admin+ Inputs⇅ Auto sort+ Item",
+  "⠿Personal Inputs submitted by aircrew — accept to put it on the programme; times and remarks type in place, clear a time for all day; tap header to hide",
+  "⠿SANS Avail what SANS aircrew are offering — press a card to edit+ Add",
+  "⠿Unavailable leave, medical and overseas duty — times and remarks type in place, clear a time for all day+ Add"
+ ],
+ "desk board found": [
+  "B1: tap to review",
+  "B2: shown at the head of the day",
+  "B3: squadron-wide — affects all",
+  "B4: go times, formations, crews",
+  "B5: SDO / SXO / ops desk, by block",
+  "B6: AMT and OFT rows",
+  "B7: briefs, reviews, admin",
+  "B8: submitted by aircrew — accept to put it on the programme; times and remarks type in place, clear a time for all day; tap header to hide",
+  "B9: what SANS aircrew are offering — press a card to edit",
+  "B10: leave, medical and overseas duty — times and remarks type in place, clear a time for all day",
+  "W3: A removed input flags nothing until accepted again — delete it here if it should go entirely."
+ ],
+ "desk board after": {
+  "cue": [
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue"
+  ],
+  "boardSubs": [
+   "removed: shown at the head of the day",
+   "removed: squadron-wide — affects all",
+   "removed: go times, formations, crews",
+   "removed: SDO / SXO / ops desk, by block",
+   "removed: AMT and OFT rows",
+   "removed: briefs, reviews, admin",
+   "removed: submitted by aircrew — accept to put it ",
+   "removed: what SANS aircrew are offering — press a",
+   "removed: leave, medical and overseas duty — times"
+  ],
+  "inpnote": [
+   "note",
+   "note"
+  ]
+ },
+ "phone week found": [
+  "W1: tap to review",
+  "W2: times and remarks type in place · clear a time for all day · press the type to change it · hide ⌃",
+  "W3: A removed input flags nothing until accepted again — delete it here if it should go entirely.",
+  "W4: press a card to edit",
+  "W5: times and remarks type in place · clear a time for all day · press the type to change it",
+  "W6: by wave · close ⌃"
+ ],
+ "phone week after": {
+  "cue": [
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue"
+  ],
+  "weekHints": [
+   "pi hint → caret",
+   "hint removed",
+   "hint removed",
+   "fold count",
+   "hint removed",
+   "hint removed",
+   "hint removed",
+   "hint removed",
+   "fold count",
+   "hint removed",
+   "hint removed",
+   "hint removed",
+   "hint removed",
+   "hint removed"
+  ],
+  "avail": [
+   "⌃",
+   "⌃",
+   "⌃",
+   "⌃",
+   "⌃",
+   "⌃",
+   "⌃"
+  ],
+  "inpnote": [
+   "note"
+  ]
+ },
+ "phone head found": [
+  "W7: MISSING .al-none"
+ ],
+ "phone head after": {
+  "alnone": [
+   "al"
+  ],
+  "legend": [
+   "legend row"
+  ]
+ },
+ "phone board heads": [
+  "⠿Overall notes shown at the head of the day+ Note",
+  "⠿Common Programme squadron-wide — affects all⇅ Auto sort+ Item",
+  "⠿Flying waves go times, formations, crews+ Wave",
+  "⠿Duties SDO / SXO / ops desk, by block+ Block",
+  "⠿Sims AMT and OFT rows",
+  "⠿Ground Programme briefs, reviews, admin+ Inputs⇅ Auto sort+ Item",
+  "⠿Personal Inputs submitted by aircrew — accept to put it on the programme; times and remarks type in place, clear a time for all day; tap header to hide",
+  "⠿SANS Avail what SANS aircrew are offering — press a card to edit+ Add",
+  "⠿Unavailable leave, medical and overseas duty — times and remarks type in place, clear a time for all day+ Add"
+ ],
+ "phone board found": [
+  "B1: tap to review",
+  "B2: shown at the head of the day",
+  "B3: squadron-wide — affects all",
+  "B4: go times, formations, crews",
+  "B5: SDO / SXO / ops desk, by block",
+  "B6: AMT and OFT rows",
+  "B7: briefs, reviews, admin",
+  "B8: submitted by aircrew — accept to put it on the programme; times and remarks type in place, clear a time for all day; tap header to hide",
+  "B9: what SANS aircrew are offering — press a card to edit",
+  "B10: leave, medical and overseas duty — times and remarks type in place, clear a time for all day",
+  "W3: A removed input flags nothing until accepted again — delete it here if it should go entirely."
+ ],
+ "phone board after": {
+  "cue": [
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue",
+   "cue"
+  ],
+  "boardSubs": [
+   "removed: shown at the head of the day",
+   "removed: squadron-wide — affects all",
+   "removed: go times, formations, crews",
+   "removed: SDO / SXO / ops desk, by block",
+   "removed: AMT and OFT rows",
+   "removed: briefs, reviews, admin",
+   "removed: submitted by aircrew — accept to put it ",
+   "removed: what SANS aircrew are offering — press a",
+   "removed: leave, medical and overseas duty — times"
+  ],
+  "inpnote": [
+   "note",
+   "note"
+  ]
+ }
+}
