@@ -4348,6 +4348,10 @@ test('several Required cells are picked with a drag and given one number, and th
   await press(page.locator('[data-testid="month-strip"] button').nth(1))
   await expect.poll(() => page.locator('.mx-wrap').evaluate(el => el.scrollLeft)).toBeGreaterThan(scrollBefore + 100)
   await expect(panel).toBeVisible()
+  /* [LW-REQ-PICK-MONTH-UNSTEADY] (steadied the night of 15 Oct 26, his "yes spare"): the second press waits for the grid
+     to come to rest — once in a full run it landed while the first jump was still settling the phone's rolling window of
+     months, and the grid stayed on February. Wait on what the step needs, never a fixed time (D87). */
+  await settleGrid(page)
   await press(page.locator('[data-testid="month-strip"] button').nth(0))
   await expect.poll(() => page.locator('.mx-wrap').evaluate(el => el.scrollLeft)).toBeLessThan(scrollBefore + 100)
   /* one number, Apply: every lit cell takes it, the no-fly day keeps NF, the panel goes */
