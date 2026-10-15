@@ -95,6 +95,10 @@ input's window, `ui/WeekCal.tsx`. A bug check of its own: leave bids, periods an
   `postout-date` / `pi-date` / `postin-date` fill), and whatever fills `accAddPostIn`, `admWipeDate`, `admLogDate`,
   `inpEditUpDate` — search before building.
 
+## Step two's answers (D901, 15 Oct 26 — "Proceed Calendar Step Two page as recommended")
+
+No Clear but the bidding dates' small "Clear dates"; today shown on the Leave War's calendars too; one finger-sized date everywhere (smaller only if a sheet would not fit his iPhone, shown first); the Inputs list's date filter moves in step two too. The page and its pictures: `raptor-port/docs/mock/2026-10-15-calendar-step-two/`; what each place does today and what DateCal still lacks (Clear, a Today that picks for "Jump to a date", the saved input's first-tap rule, RangeCal's empty-end shape, test ids): `2026-10-15-calendar-step-two-survey.md`.
+
 ## Told to him, and still to tell him
 
 Told: a run's "Clear" goes; a tap outside closes; the date field is the same on a desktop. **Still to tell him (the agent's
