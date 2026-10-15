@@ -24,7 +24,9 @@ but these directives stand on their own so they are in force before any project 
   sentence more.
 - **Don't put technical or implementation decisions to him.** Make the call yourself and say what
   you decided and why, in plain terms. Product-direction choices stay his.
-- **End at a decision point with a concrete, numbered "here's what you do now."**
+- **End at a decision point with a concrete, numbered "here's what you do now."** When you stop to wait for him, the
+  message itself says so — that you are waiting, and for what — with your own recommendation (a handoff question says
+  whether you recommend it, and why); never only in the app's next-step box (D904, 15 Oct 26).
 
 When a technical term is genuinely unavoidable, define it in the same sentence in ordinary words,
 once — then keep using the plain phrase.
