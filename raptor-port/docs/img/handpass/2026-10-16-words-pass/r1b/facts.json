@@ -1,0 +1,73 @@
+{
+ "desk A found": [
+  "A ×1: In-time / Rally 09:40 · 4 ac"
+ ],
+ "desk A height before": {
+  "#schedBoard .sb-go-h": 41
+ },
+ "desk A after": [
+  "In-time / Rally 09:40 · 4 ac",
+  "In-time / Rally 16:20 · 4 ac"
+ ],
+ "desk A height after": {
+  "#schedBoard .sb-go-h": 41
+ },
+ "desk B board fromInput rows": 3,
+ "desk B board after": [
+  "added",
+  "6 renamed"
+ ],
+ "desk C heights before": {
+  "#wpPI": 209,
+  "#wpUN": 145,
+  "#wpPI .sb-arow.inprow": 34,
+  "#wpUN .sb-arow.inprow": 34
+ },
+ "desk week B after": [
+  "added",
+  "3 renamed"
+ ],
+ "phone A found": [
+  "A ×1: In-time / Rally 09:40 · 4 ac"
+ ],
+ "phone A height before": {
+  "#schedBoard .sb-go-h": 92
+ },
+ "phone A after": [
+  "In-time / Rally 09:40 · 4 ac",
+  "In-time / Rally 16:20 · 4 ac"
+ ],
+ "phone A height after": {
+  "#schedBoard .sb-go-h": 69
+ },
+ "phone B board fromInput rows": 3,
+ "phone B board after": [
+  "added",
+  "6 renamed"
+ ],
+ "phone C heights before": {
+  "#wpPI": 388,
+  "#wpUN": 217,
+  "#wpPI .sb-arow.inprow": 89,
+  "#wpUN .sb-arow.inprow": 70
+ },
+ "phone C after": [
+  "style",
+  "removed",
+  "6 renamed"
+ ],
+ "phone C heights after": {
+  "#wpPI": 313,
+  "#wpUN": 197,
+  "#wpPI .sb-arow.inprow": 64,
+  "#wpUN .sb-arow.inprow": 70
+ },
+ "phone week B after": [
+  "added",
+  "3 renamed"
+ ],
+ "phone week sections": {
+  "pinp": 264,
+  "unav": 122
+ }
+}

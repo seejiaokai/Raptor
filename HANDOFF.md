@@ -20,13 +20,35 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/whole-app-words-pass-73790e -->
-### `claude/whole-app-words-pass-73790e` — the whole-app words pass (D808): round 1 BUILT and checked (pull request 521, waiting for his "merge live"); round 1b — his three notes on the preview — RULED, TO DRAW — written 16 Oct 26 — verify before use
-- **Round 1 — BUILT, pull request https://github.com/seejiaokai/Raptor/pull/521** (preview https://raptor-git-claude-whole-app-words-pass-73790e-kai-e2f5.vercel.app): the board's nine panel subtitles, "tap to review", "press a card to edit", the fold words and the editing hint gone from Edit Schedule, View-only Sched and the board (D938, D940); the removed-input note's dash a full stop; the empty Amendments box "No amendments published yet." Check `raptor-port/docs/handpass/2026-10-16-words-pass-r1.md` (WALK, 40/40; gates in §Gate baseline). Auto-fix is ON for 521 (the app wakes the chat that holds it).
-- **His notes on the preview, recorded (16 Oct 26):** D942 — his first design lesson STRUCK ("Disregard this lesson"): §9 of `raptor-port/docs/design-practices.md` is empty again, the never-delete list whole; D938's removal stands for those lines only. **D943** — a short line beside the Ground Programme's name says how to take a member's input off (Undo on its Personal Inputs row) — draw first. **D944** — on a phone the board's Personal Inputs and Unavailable take one line less — draw first. **His question (no ruling yet):** why the board's wave header carries "In-time / Rally 16:20 · 4 ac" — answered in chat: the wave's earliest report time and its aircraft count (`ui/html.ts waveHeadBoard`, `engine/events.ts waveInTime`), board only; the time also shows in Available crew's band ("1ST WAVE AM–16:20") and the lines below it; recommended: delete it (D846 test 1) — put to him WITH the drawing.
-- **Pick up here — round 1b, ONE page of marked pictures (method: `raptor-port/scripts/handpass/words-r1.mjs` — mark on the element, re-find each "after" frame):** (1) the wave header's "In-time / Rally … · N ac" deleted on the board (recommended), phone and desktop; (2) D943's line — draft "To take an input off the programme, press Undo on its row under Personal Inputs." (the "on its row" stops it being read as the top bar's Undo), on the board's and the week's Ground Programme, only on a day where an input stands there — give it a fresh cold read first; (3) D944 — Personal Inputs on a phone: the Undo button on the line of the puck and remark (3 lines to 2; the board's rows in `ui/board-html.ts sbInpRow`); Unavailable: its entries cannot lose a line without squeezing the remark, so draw the "Item · Start · End" heading line removed instead, his to take or leave; name the week's same rows and the Ground Programme's three-line rows (CX ⓘ ■ ✕ on their own line) as other places (D852). Then his answers → rulings → build → walk at WALK tier → push to 521 (never while its checks run — D151).
-- **Lessons (D941):** none written this round — D943 and D944 restate the guide's own rules; say so in the closing report.
-- **Rulings this chat:** D938–D944.
+<!-- now:claude/whole-app-words-pass-1b-6cfe51 -->
+### `claude/whole-app-words-pass-1b-6cfe51` — the whole-app words pass (D808), round 1b: DRAWN and put to him; WAITING on his answers; the night's run builds them — written 16 Oct 26 — verify before use
+- **Round 1 is live** (pull request 521, merged 16 Oct 26). This branch is cut from `main` after it; no pull request yet.
+- **Round 1b — the page of marked pictures:** https://claude.ai/artifact/LyEcfYVzbqXnsgwscLRVvM (four questions). Pictures in
+  `raptor-port/docs/img/handpass/2026-10-16-words-pass/r1b/`, drawn by `raptor-port/scripts/handpass/words-r1b.mjs` on the
+  built app (its `AFTER` functions hold each change exactly). Recommended answers: (1) the board's wave header loses
+  "In-time / Rally 09:40 · 4 ac" (`.sb-go-h > .asd`, `ui/html.ts waveHeadBoard` and `refreshWaveReports`), phone and desktop, every
+  wave — the "+ In-time / Rally" button stays; (2) the line under Ground Programme, A: "To take an input off the programme,
+  press Reject on it in Personal Inputs below." (B shorter: "To take an input off, press Reject on it in Personal Inputs
+  below."), drawn in the removed-input note's own style, board (top of `.sb-panel.grnd .sb-pb`) and week (after
+  `.sec-grnd > .sub-h`), only on a day where an input stands on the Ground Programme; (3) on a phone an accepted input's
+  button moves up onto its puck's line (grid column 2, row 2, end-aligned; the puck and remark pinned to row 2 so the
+  grid does not push them down), board AND the week's Personal Inputs rows — measured 89 → 64 px a row; where too many
+  pucks leave no room it drops under them as today; desktop unchanged; (4) on a phone, Unavailable's "Item · Start · End"
+  heading line goes, board and week (217 → 197 px for the panel).
+- **D945 (his, while it was drawn): the input row's "Undo" button reads "Reject"** — board and week, phone and desktop;
+  "Reject · Tue" where its row is on another day (`ui/html.ts`, the accept buttons); hover text to match. Build it with
+  round 1b whatever he answers. D943's short line is narrowed to name Reject.
+- **Owed the same day (D941):** D945 is a design correction with a point beyond its screen — write its lesson into
+  `raptor-port/docs/design-practices.md` §9 ("a button is named for what it does — never with another control's name,
+  never with a word that reads as Delete"), one fresh reader checks it says what he meant, and name it in the closing report.
+- **Pick up here (the night's run):** read his answers in the chat (if none, park round 1b and build only D945);
+  record them (next free number after D945); build; tests that pin each string; walk at WALK tier on phone and desktop
+  (board and week, a day with an input on the Ground Programme); gates; one fresh blind Opus read of the code (D790);
+  push this branch and open its pull request; never merge (his "merge live").
+- **Other places named, not proposed (D852):** the board's Ground Programme rows take three lines on a phone (their
+  CX ⓘ ■ ✕ on a line of their own) — four buttons do not fit beside a puck.
+- **D946 (his, the same evening): the input's Remarks box only his own words; "till <date>" shown by default from the dates, always after the remark** — brings forward [TILL-FROM-DATES] (a FULL job). Recommended way told to him: never written into the remark; a grey "till 17 Jul" tag after the box in the window; every screen prints "Las Vegas · till 17 Jul" from the dates. Next: draw its questions (one-day input; where on the schedule's row; export) for his answer — not built unattended.
+- **Rulings this chat:** D945, D946.
 <!-- /now -->
 
 ## Next, in order
