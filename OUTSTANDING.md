@@ -2275,17 +2275,6 @@ with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
 **Delete candidates by his rule of 14 Oct 26 (D846; the guide's §1, its wording approved — D847) — DONE the same day on his word (D848 — "Delete all three"):** "Choose Keep or Remove for each entry above" (the upchit question), "Choose for each clash above" and the small print under the answers (the medical-clash question) are deleted; the one fact he asked to keep, that a day holds one status, is that sheet's heading now ("A day holds one status: choose who holds these days" — shown to him as built, his to change). Kept, and why: "What is left goes to the schedulers' bells" in the day's one list of OIL questions (a consequence he cannot see), the several-days form's "No days selected — tap the highlighted days to credit them" (an instruction for a gesture nothing else suggests). The first whole-app look under D808 lists the rest.
 **Why it is filed and not built:** D830's and D838's lists are his; a wording or a look he has not been shown is not changed unasked (the design guide's §1). His answers come first (D541 for the two that change a look).
 
-### [INPUT-DATES-FOLD] An input's window: dates already picked fold to one line that opens the calendar — RULED D914 (15 Oct 26, "5B"); WITHDRAWN the same night by D916 ("Disregard the minimising of the calendar") — CLOSED, not built
-**And SANS availability (D915, "Likewise for sans availalibility"):** "+ Commitment" opened from a day or a run on the SANS
-calendar folds its dates the same way — the same window, one build. **His "5B" (D914)** to his own idea at his look (D913): where the dates were already picked — a day or a dragged run on
-the Inputs calendar, a saved input reopened — the window's Dates show as one line ("📅 Oct 15 → Oct 16 ▾") that opens the
-calendar on a tap; the List's "+ Input" (no dates yet, D729) opens with the calendar showing. On his phone the window then
-needs no scroll and is short enough that the day shows behind it (D909's side effect undone). **The drawing:**
-`raptor-port/scripts/handpass/mock-input-order.mjs` (B), pictures `raptor-port/docs/img/handpass/2026-10-15-calendar-step-two/question/order-*.png`.
-**To settle in the build (technical):** the line's look is the app's date box or a plain button (the drawing cloned
-Cancel's); the calendar opens inside the window (D797, narrowed by D914); the keyboard reaches and opens it; a saved
-input's first tap still starts new dates (D901). Its own small job, a fresh chat on `main` after 516 is live; a WALK check.
-
 ### [GUIDE-ONE-ROW] The design guide carries "a page's own buttons share its one row of controls" — RULED D911 (15 Oct 26); NOT YET DRAFTED — OPEN
 **His "All as recommended" (D911)** to D852's question after his correction of the Inputs list (D907, built as D910 in the
 calendar job). **Next:** draft the wording in `raptor-port/docs/superpowers/specs/2026-10-15-guide-one-row-draft.md` (its

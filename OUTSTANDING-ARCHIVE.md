@@ -4587,3 +4587,17 @@ lists (the same drag as Rearrange — they ride D892's build if the sheet can sc
 a note dragged to reorder and a puck dragged between notes (`src/ui/InputsCal.tsx`); Quals — a column heading dragged
 sideways past the screen's edge (`src/ui/QualsPage.tsx`). Not checked: the Tracker chart's ball drag.
 
+
+*Moved here 2026-10-15 by backlog-archive.mjs ([INPUT-DATES-FOLD]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [INPUT-DATES-FOLD] An input's window: dates already picked fold to one line that opens the calendar — RULED D914 (15 Oct 26, "5B"); WITHDRAWN the same night by D916 ("Disregard the minimising of the calendar") — CLOSED, not built
+**And SANS availability (D915, "Likewise for sans availalibility"):** "+ Commitment" opened from a day or a run on the SANS
+calendar folds its dates the same way — the same window, one build. **His "5B" (D914)** to his own idea at his look (D913): where the dates were already picked — a day or a dragged run on
+the Inputs calendar, a saved input reopened — the window's Dates show as one line ("📅 Oct 15 → Oct 16 ▾") that opens the
+calendar on a tap; the List's "+ Input" (no dates yet, D729) opens with the calendar showing. On his phone the window then
+needs no scroll and is short enough that the day shows behind it (D909's side effect undone). **The drawing:**
+`raptor-port/scripts/handpass/mock-input-order.mjs` (B), pictures `raptor-port/docs/img/handpass/2026-10-15-calendar-step-two/question/order-*.png`.
+**To settle in the build (technical):** the line's look is the app's date box or a plain button (the drawing cloned
+Cancel's); the calendar opens inside the window (D797, narrowed by D914); the keyboard reaches and opens it; a saved
+input's first tap still starts new dates (D901). Its own small job, a fresh chat on `main` after 516 is live; a WALK check.
+
