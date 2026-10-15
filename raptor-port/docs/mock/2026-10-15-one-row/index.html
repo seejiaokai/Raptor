@@ -1,0 +1,96 @@
+<title>One Row of Controls</title>
+<style>
+/* Layout: one column of numbered questions; each a row of real screenshots, today first, the agent's pick marked. */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --ink:#152028; --ink-2:#4b5966; --edge:#d5dce2; --accent:#0f8fb3; --pick:#1d7f4e; --mark:#e07a12;
+  --f-head:'Barlow Condensed','Arial Narrow',sans-serif; --f-body:'Inter Tight',system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0d1217;--panel:#151c23;--ink:#e7edf2;--ink-2:#9aa8b5;--edge:#2a343e;--accent:#38c3e8;--pick:#4cc489;--mark:#ff9a3c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1217;--panel:#151c23;--ink:#e7edf2;--ink-2:#9aa8b5;--edge:#2a343e;--accent:#38c3e8;--pick:#4cc489;--mark:#ff9a3c;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body)}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 60px;display:flex;flex-direction:column;gap:34px}
+h1{font:700 34px/1.1 var(--f-head);letter-spacing:.02em;margin:0;text-transform:uppercase}
+h2{font:700 24px/1.15 var(--f-head);letter-spacing:.03em;margin:0;text-transform:uppercase;text-wrap:balance}
+p{margin:0;max-width:68ch}
+.lede{color:var(--ink-2)}
+section{display:flex;flex-direction:column;gap:14px}
+.q{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.q b{color:var(--accent)}
+.rule{border-left:3px solid var(--accent);padding:4px 0 4px 14px;font-size:14px;max-width:80ch}
+.row{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+.row.wide{grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))}
+figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+figure img{width:100%;height:auto;border:1px solid var(--edge);border-radius:8px;cursor:zoom-in;background:#000}
+figcaption{font-size:13px;color:var(--ink-2)}
+figcaption strong{color:var(--ink)}
+.tag{display:inline-block;font:700 11px/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;padding:3px 7px;border-radius:5px;border:1px solid var(--edge);color:var(--ink-2);margin-right:6px}
+.tag.pick{color:var(--pick);border-color:var(--pick)}
+.note{font-size:13px;color:var(--ink-2)}
+.note .m{color:var(--mark);font-weight:600}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;max-width:70ch}
+dialog{border:none;padding:0;background:transparent;max-width:96vw;max-height:96vh}
+dialog img{max-width:96vw;max-height:94vh;display:block;border-radius:8px}
+dialog::backdrop{background:rgba(0,0,0,.8)}
+</style>
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <h1>One row of controls</h1>
+    <p class="lede">Two things you asked for (D911, D912), done while you slept: the Medical tab drawn on the real app, and the design guide's new rule worded for your approval. Nothing in the app has changed. <span class="note"><span class="m">The dashed orange box</span> only marks what a picture is about.</span> Tap a picture to see it full size.</p>
+  </header>
+
+  <section>
+    <h2>1 · The Medical tab</h2>
+    <div class="q">
+      <p><b>As you ruled (D912):</b> the "Medical" heading goes (the tab right above it already says Medical), and the "as of" date button sits in the row under the tabs at 36 tall, like the buttons on Inputs and SANS. It was 44.</p>
+      <p><strong>Shall I build it as drawn?</strong> On a phone the three sections start 8 px higher; nothing else on the tab changes.</p>
+    </div>
+    <div class="row">
+      <figure><img src="img/phone-medical-today.png" alt="Medical tab today on a phone"><figcaption><span class="tag">today</span>The heading beside a taller date button.</figcaption></figure>
+      <figure><img src="img/phone-medical-proposed.png" alt="Medical tab proposed on a phone"><figcaption><span class="tag pick">drawn</span>The date button alone at 36.</figcaption></figure>
+      <figure><img src="img/phone-inputs-row-reference.png" alt="The Inputs calendar's row on a phone"><figcaption><span class="tag">the match</span>The Inputs row: its buttons are 36.</figcaption></figure>
+    </div>
+    <div class="row wide">
+      <figure><img src="img/desk-medical-today.png" alt="Medical tab today on a desktop"><figcaption><span class="tag">today · desktop</span></figcaption></figure>
+      <figure><img src="img/desk-medical-proposed.png" alt="Medical tab proposed on a desktop"><figcaption><span class="tag pick">drawn · desktop</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>2 · The rule for the design guide</h2>
+    <div class="q">
+      <p><b>The wording</b>, checked by one fresh reader (they found four places where my first draft added rules you never made, all taken out):</p>
+      <div class="rule">A page's buttons sit in one row: the first row under the top bar and the tabs. What the page adds, the dates or filter it is read by, its settings: all in that row, at its button height (36 where it holds only the page's own buttons), even when the row holds one button. One or two buttons never take a second row of their own. A heading that only repeats the tab picked above it is put to you to delete. On the narrowest phone a button keeps its size and its words get shorter, drawn for you first; if it still won't fit, the layout is drawn and put to you. Not counted: a window's own buttons, one item's own controls, and a bar that shows for a while (the "Not saved" warning, the bar that waits for an OIL answer). A fold standing alone on a row is put to you.</div>
+      <p class="note">This is the plain-words version. The guide's own text says the same with its ruling numbers: <code>docs/superpowers/specs/2026-10-15-guide-one-row-draft.md</code>.</p>
+      <p><strong>Approve this wording?</strong></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>3 · The other pages it would touch</h2>
+    <div class="q">
+      <p>I looked at the top of every page on a phone. Two places don't follow the rule, and one is a question. Nothing changes until you've seen each one drawn.</p>
+    </div>
+    <div class="row">
+      <figure><img src="img/sweep-quals.png" alt="Quals on a phone"><figcaption><span class="tag">quals</span>"Export to Excel" sits on a second row with the filter. It would join "Enable editing" and the date, drawn for you first.</figcaption></figure>
+      <figure><img src="img/sweep-logic.png" alt="Logic on a phone"><figcaption><span class="tag">logic</span>"Edit rules" alone on a row. Handled inside the Logic page's redesign (your D925), not on its own.</figcaption></figure>
+      <figure><img src="img/sweep-editsched.png" alt="Edit Schedule on a phone"><figcaption><span class="tag">question</span>The "Legend" fold sits alone on a row under the tools. A fold, not a button. <strong>Leave it?</strong> My pick: leave it, since it opens the colour key that many people look at.</figcaption></figure>
+    </div>
+    <p class="note">Fine as they are: Inputs and SANS (one row already), the Leave War and the Tracker (every row full), Admin (no buttons up there; its heading is the only sign of which page you're on).</p>
+  </section>
+
+  <section>
+    <h2>Your answer</h2>
+    <ul>
+      <li><strong>1.</strong> Build the Medical tab as drawn, or not.</li>
+      <li><strong>2.</strong> Approve the rule's wording, or say what to change.</li>
+      <li><strong>3.</strong> The Legend fold: leave it (my pick), or move it.</li>
+    </ul>
+    <p class="note">"All as recommended" means build Medical, approve the wording, leave the Legend. Then the wording goes into the guide, and Medical and Quals are built as one small job (Quals drawn for you first).</p>
+  </section>
+</div>
+<dialog id="zoom"></dialog>
+<script>
+const dlg=document.getElementById('zoom'),zi=document.createElement('img');dlg.appendChild(zi)
+document.querySelectorAll('figure img').forEach(i=>i.addEventListener('click',()=>{zi.src=i.src;zi.alt=i.alt;dlg.showModal()}))
+dlg.addEventListener('click',()=>dlg.close())
+</script>

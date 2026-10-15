@@ -20,6 +20,12 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/one-row-guide-medical -->
+### `claude/one-row-guide-medical` — THE NIGHT OF 15 OCT 26, jobs 2 and 3 (`[GUIDE-ONE-ROW]` D911, `[MEDICAL-ONE-ROW]` D912) — DRAWN AND PUT TO HIM, nothing in the app changed — written 15 Oct 26 — verify before use
+- **After a compaction:** re-read this block, the night's block on `claude/trk-reorder-finger-drag`, the overnight guide and the files of the step in hand before the next change.
+- **Done:** the one-row rule worded (v2, one fresh reader) with the sweep — `raptor-port/docs/superpowers/specs/2026-10-15-guide-one-row-draft.md`; the Medical tab drawn — `raptor-port/docs/img/handpass/2026-10-15-medical-one-row/`; both on one page for him: https://claude.ai/artifact/1CFVksBEx3WMSg9t994FU1. Also here: the Logic page's pictures of today (`raptor-port/docs/img/handpass/2026-10-15-logic-page/today/`, D925) for its mock-up.
+- **Next:** his three answers (build Medical; approve the wording; the Legend fold) — then the wording into `raptor-port/docs/design-practices.md` §3 and Medical + Quals built as one small job, WALK check. This branch carries no pull request until then. **Main moved:** pull request 518 (`claude/trk-reorder-finger-drag`) carries the tidy after 517 — merge main in after it goes live (D78).
+<!-- /now -->
 <!-- now:claude/input-new-defaults -->
 ### `claude/input-new-defaults` — the tidy after 516 DONE; `[INPUT-NEW-DEFAULTS]` (D917, D919, D920) BUILT, WALKED, READ, WHOLLY GREEN — waiting for his look and "merge live" — written 15 Oct 26 — verify before use
 - **The tidy (done):** 516 live; `[ONE-DATE-CALENDAR]`, `[DRAG-EDGE-FOUR-MORE]` archived; the calendar chat's block removed; its two leftovers filed — and RULED by him the same day: `[TRK-REORDER-FINGER-DRAG]` (D922: a finger drags the Tracker's Reorder rows on a phone, the app's own drag look) and `[OIL-CONFIRM-DAYGRID]` (D923: the OIL question's "only some days" becomes the one calendar's look, a tap per separate day). Each its own job after this one, a picture first (D921); pictures of today: `raptor-port/docs/img/handpass/2026-10-15-two-leftovers/`.

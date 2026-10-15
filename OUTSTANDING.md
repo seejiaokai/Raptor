@@ -2313,6 +2313,7 @@ picture whether it takes the one calendar (a pick of several separate days, whic
 nothing built before his word. The step-two check: `raptor-port/docs/handpass/2026-10-15-calendar-step-two.md`.
 
 ### [GUIDE-ONE-ROW] The design guide carries "a page's own buttons share its one row of controls" — RULED D911 (15 Oct 26); NOT YET DRAFTED — OPEN
+**DRAFTED AND PUT TO HIM, the night of 15 Oct 26 (branch `claude/one-row-guide-medical`):** v2 of the wording, after one fresh reader's read of v1 (four over-reaches taken out), with the sweep of every page — `raptor-port/docs/superpowers/specs/2026-10-15-guide-one-row-draft.md`; the page https://claude.ai/artifact/1CFVksBEx3WMSg9t994FU1 (source `raptor-port/docs/mock/2026-10-15-one-row/index.html`). Waiting for his approval of the wording and his answer on the Legend fold. The places: Quals ("Export to Excel" — drawn for him before a build), Logic ("Edit rules" — inside `[LOGIC-PAGE-LAYOUT]`).
 **His "All as recommended" (D911)** to D852's question after his correction of the Inputs list (D907, built as D910 in the
 calendar job). **Next:** draft the wording in `raptor-port/docs/superpowers/specs/2026-10-15-guide-one-row-draft.md` (its
 steps and what the draft must settle are there), one fresh reader (D70), then to him; `raptor-port/docs/design-practices.md`
@@ -2320,6 +2321,7 @@ changes only on his approval. A sweep of the other pages for places that break i
 fresh chat on `main` after the calendar job.
 
 ### [MEDICAL-ONE-ROW] The Medical tab's controls in one row under the tabs — RULED D912 (15 Oct 26); a picture first — OPEN
+**DRAWN AND PUT TO HIM, the night of 15 Oct 26 (branch `claude/one-row-guide-medical`):** the heading removed, the as-of button at 36 (the Inputs row's own height, measured) — on a phone the sections start 8 px higher; pictures `raptor-port/docs/img/handpass/2026-10-15-medical-one-row/`, drawn by `scripts/handpass/mock-medical-one-row.mjs`; the page https://claude.ai/artifact/1CFVksBEx3WMSg9t994FU1. Build on his word, WALK check (with the Quals row, once drawn).
 **His "All as recommended" (D912):** the "Medical" heading, which repeats the tab's name, goes; the "as of" date button
 (about 44 tall) stands in a row under the tabs at that row's button height (36), as on Inputs and SANS. Nothing else on
 the tab changes. **Next:** draw it on the real app (`.claude/skills/brainstorming/mockups-on-the-real-app.md`), today
