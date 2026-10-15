@@ -880,7 +880,7 @@ export function availHTML(d:any,di:any,ed:any){
       +`<span>Available crew</span><span class="n">${parts.join(' · ')} ⌄</span></div></div>`;
   }
   let h=`<div class="availpuck sec sec-avail"><div class="ap-h" data-avtog="${di}">`
-    +`<span>Available crew</span><span class="n">by wave · close ⌃</span></div>`;
+    +`<span>Available crew</span><span class="n">⌃</span></div>`;
   if(A.wins.length){
     A.wins.forEach((w:any,i:any)=>{const ids=active(A.byWave[i]), total=w.priorEmpty?0:ids.length+allA.length;
       h+=`<div class="ap-grp">${ORD[i]||(i+1)+'th'} wave${w.night?' · night':''} <span style="color:var(--ink-3);font-weight:500">${bandTxt(w)}</span> · ${total} can fly</div>`;
@@ -959,8 +959,7 @@ export function sansSectionHTML(d:any,di:any,ed:any){
   if(!ed)return '';
   const rows=inputsOn(d.dt).filter((inp:any)=>isSansAvail(inp.type)).flatMap((r:any)=>facesOf(r));
   if(!rows.length)return '';
-  return `<div class="sub plist one sec sec-sans"><div class="sub-h">SANS Avail`
-    +`<span class="pl-hint">press a card to edit</span></div>`
+  return `<div class="sub plist one sec sec-sans"><div class="sub-h">SANS Avail</div>`
     +sansCardsHTML(rows,di,false)+`</div>`;
 }
 export function storesView(o:any){
@@ -1132,7 +1131,6 @@ export function dayWarnHTML(di:any){
    +(dw.length
       ? `<b>⚠ ${dw.length} issue${dw.length>1?'s':''}</b>${nh?` · ${nh} warning`:''}`
       : goneW.length?`<b>⚠ ${goneW.length} to clear once signed</b>`:`<b>✓ No issues</b>`)
-   +` · <span class="dwcue">${open?'tap to collapse':'tap to review'}</span>`
    +`<span class="dwcar">${open?'▲':'▼'}</span></div>`;
   if(open){
     /* HIDING A WARNING IS ON EDIT SCHEDULE TOO (owner, 29 Aug 26 — "the hide warning option should be available on edit
@@ -2055,16 +2053,16 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
         /* the folded line counts the input once, however many people it is for */
         const onG=lines.filter((l:any)=>l[0].acc==='g').length;
         return `<div class="sub plist one sec ${cls||''}"><div class="sub-h pl-fold" data-pitog="${di}">`
-          +`<span>${title}</span><span class="pl-hint">${lines.length} input${lines.length===1?'':'s'}${onG?` · ${onG} on programme`:''} · show ⌄</span></div></div>`;
+          +`<span>${title}</span><span class="pl-hint">${lines.length} input${lines.length===1?'':'s'}${onG?` · ${onG} on programme`:''} ⌄</span></div></div>`;
       }
-      /* what is typeable is only discoverable on hover, and half the squadron
-         is on a phone where there is no hover — so the block says it once,
-         rather than every row carrying a hint it has no room for.
-         Scheduler-side only: the view-only week cannot edit anything. */
-      let s=`<div class="sub plist one sec ${cls||''}"><div class="sub-h${foldable?' pl-fold':''}"${foldable?` data-pitog="${di}"`:''}>${title}${ed?`<span class="pl-hint">times and remarks type in place · clear a time for all day · press the type to change it${foldable?' · hide ⌃':''}</span>`:''}</div>`;
+      /* NO HOW-TO LINE ON THE HEADING (owner D938, D940, 16 Oct 26 — the words pass, round 1). It said "times and
+         remarks type in place · clear a time for all day · press the type to change it" on every day; he ruled it is not
+         needed — a scheduler learns how a row is edited once — and NOT moved into the Legend either. A folding heading
+         keeps its caret, the one sign that it folds. */
+      let s=`<div class="sub plist one sec ${cls||''}"><div class="sub-h${foldable?' pl-fold':''}"${foldable?` data-pitog="${di}"`:''}>${title}${foldable?`<span class="pl-hint">⌃</span>`:''}</div>`;
       /* Housekeeping reminder (owner, Aug 26; reworded 26 Aug 26 with the
          dormancy rule — one wording with the board's sb-pinote sibling). */
-      if(acc&&ed&&rows.length)s+=`<div class="pl-inpnote">A removed input flags nothing until accepted again — delete it here if it should go entirely.</div>`;
+      if(acc&&ed&&rows.length)s+=`<div class="pl-inpnote">A removed input flags nothing until accepted again. Delete it here if it should go entirely.</div>`;
       /* Unavailable is the block the squadron reads every single day, so it
          prints even when nobody is on it — "Nil" is the answer, not a missing
          section. */

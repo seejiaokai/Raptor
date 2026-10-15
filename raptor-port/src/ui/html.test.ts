@@ -230,9 +230,13 @@ const noVerTag = (s: string) => {
   return m ? s.slice(0, idx) + s.slice(m.index + '</span>'.length) : s
 }
 
+/* Divergence (owner D940, 16 Oct 26 — the whole-app words pass, round 1): the day's issues bar no longer says "tap to
+   review" / "tap to collapse" — its ▼ / ▲ and the bar's own look say it opens. The reference keeps the cue, so lift it
+   off both sides (a no-op on the port). */
+const noDwCue = (s: string) => s.replace(/ · <span class="dwcue">tap to (?:review|collapse)<\/span>/g, '')
 describe('view-week markup parity with the reference', () => {
   it('every day of the read-only week is byte-identical (minus the input blocks)', () => {
-    const V = (s: string) => noReportingAnchor(noVerTag(noItTime(noAhRmk(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s))))))))))))
+    const V = (s: string) => noDwCue(noReportingAnchor(noVerTag(noItTime(noAhRmk(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s)))))))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},false)`)
       expect(V(dayHTML(di, false)), 'day ' + di+' '+parityWhere(V(dayHTML(di,false)),V(ref))).toBe(V(ref))
@@ -369,7 +373,7 @@ describe('view-week markup parity with the reference', () => {
        as normDrag/normDow. Collapse the reference's double space; a no-op on the
        port. */
     const normBeakWs = (s: string) => s.replace(/class="dbeak {2,}/g, 'class="dbeak ')
-    const E = (s: string) => noVerTag(normBeakWs(normDrag(normDow(noItTime(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noDhTpl(noSign(noDsec(s))))))))))))))))))
+    const E = (s: string) => noDwCue(noVerTag(normBeakWs(normDrag(normDow(noItTime(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noDhTpl(noSign(noDsec(s)))))))))))))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))

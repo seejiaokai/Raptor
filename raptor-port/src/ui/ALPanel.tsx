@@ -74,7 +74,7 @@ export function ALPanel() {
             return `<span class="al-tag" data-alc="${a.seq}" title="${esc(dowShort(a.di) + ': ' + sigTitle)}"><b>${verLabel(a.id)}</b> <i class="al-days">${dowShort(a.di)}</i> · ${alCount(a)} item${alCount(a) === 1 ? '' : 's'}${c.del ? ` · ${c.del} removal${c.del > 1 ? 's' : ''}` : ''}${c.mov ? ` · ${c.mov} reorder${c.mov > 1 ? 's' : ''}` : ''}${c.inp ? ` · ${c.inp} input change${c.inp > 1 ? 's' : ''}` : ''}${c.warn ? ' · what the day shows' : ''}${s && s.appr ? ` · <i class="al-days">appr ${esc(s.appr)}</i>` : ''}</span>`
           }).join('')
         }} />
-        : <div className="al-list"><span className="al-none">No amendments published yet — publish a day, edit it, then publish an AL.</span></div>}
+        : <div className="al-list"><span className="al-none">No amendments published yet.</span></div>}
     </div>
   )
 }

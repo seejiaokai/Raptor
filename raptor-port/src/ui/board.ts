@@ -346,7 +346,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
      are both gone; this inline control is the only way to create a wave.
      Withheld on mvRO (a frozen preview or a read-only board), which is what the
      top-bar button's `disabled={DPREV.has(SBDAY)}` guard used to do. */
-  const wvHead = mvRO ? '' : `<div class="sb-panel wv"><div class="sb-ph">Flying waves <span class="sub">go times, formations, crews</span><span class="gctl"><button class="mbtn add" data-wvadd="${di}" title="Add a flying wave">+ Wave</button></span></div></div>`
+  const wvHead = mvRO ? '' : `<div class="sb-panel wv"><div class="sb-ph">Flying waves <span class="gctl"><button class="mbtn add" data-wvadd="${di}" title="Add a flying wave">+ Wave</button></span></div></div>`
   const wavesPanel = wvHead + (fly || `<div class="sb-empty" style="padding:14px 11px">No flying waves yet${mvRO ? '' : ' — “+ Wave” above adds the first'}.</div>`)
   /* THE BOARD PANELS, emitted in the day's own order (owner, 29 Aug 26 —
      engine/order.ts secOrder). The Templates head stays pinned above; everything
@@ -463,10 +463,10 @@ export function boardWarnHTML(di: number, look = false) {
     + `<div class="wh${dw.length ? ' ' + worst : ' ok'}" data-sbwtog title="Show / hide the day's checks">`
     + `<span class="sbw-car">${SBWOPEN ? '▾' : '▸'}</span>`
     + (dw.length
-      ? `<b>⚠ ${dw.length} issue${dw.length > 1 ? 's' : ''}</b>${nh ? ` · ${nh} warning${nh > 1 ? 's' : ''}` : ''} · <span class="dwcue">${SBWOPEN ? 'tap to collapse' : 'tap to review'}</span>`
+      ? `<b>⚠ ${dw.length} issue${dw.length > 1 ? 's' : ''}</b>${nh ? ` · ${nh} warning${nh > 1 ? 's' : ''}` : ''}`
       /* every issue hidden (D475): the quiet heading, and the struck lines still under it — on a phone the heading is
          the fold's own toggle, so it says the list can be opened */
-      : `No conflicts flagged for ${esc(d.dow)} ✓` + (all.length ? ` · <span class="dwcue">${SBWOPEN ? 'tap to collapse' : 'tap to review'}</span>` : ''))
+      : `No conflicts flagged for ${esc(d.dow)} ✓`)
     + `</div>`
   if (all.length) {
     const canMute = !look && canEditSched()
