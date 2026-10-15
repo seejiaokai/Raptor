@@ -2297,12 +2297,14 @@ shows wherever the title box shows, new or saved, never on a read-only input; a 
 D917 with his two answers as one small job, WALK check.
 
 ### [TRK-REORDER-FINGER-DRAG] A finger drag for the Tracker's ⇅ Reorder rows — named to him by D900's reading (15 Oct 26); his to place — OPEN
+**Pictured for him 15 Oct 26 (D921):** `raptor-port/docs/img/handpass/2026-10-15-two-leftovers/` (`scripts/handpass/pics-two-leftovers.mjs`).
 **Today:** on a phone the Reorder list's rows cannot be dragged (its ▲▼ move them); a mouse drag scrolls at the list's
 foot since pull request 516 (`src/tracker/components/Modals.jsx`; carried by `src/tracker/retest.test.tsx` "D900 — the
 Reorder list…"). **Next:** a picture on the real app first (D853); build only on his word, with the design guide's
 §5a dragging rules (D895).
-
+ **Seen in the picture:** the window's own line says "Drag a row, or use ▲/▼" — on a phone a finger cannot drag; if no finger drag is built, that line is wrong on a phone.
 ### [OIL-CONFIRM-DAYGRID] The OIL question's own "only some days" grid is a near-copy of the old calendar — named by calendar step two (15 Oct 26); his to place — OPEN
+**Pictured for him 15 Oct 26 (D921):** `raptor-port/docs/img/handpass/2026-10-15-two-leftovers/` (`scripts/handpass/pics-two-leftovers.mjs`).
 **Seen:** step two moved every date pick in its list onto the one calendar (`src/ui/DateCal.tsx`); the OIL question's
 "only some days" day grid was not on that list and (`src/ui/OilConfirm.tsx`) still draws its own month. **Next:** put to him with a
 picture whether it takes the one calendar (a pick of several separate days, which the calendar does not do today);

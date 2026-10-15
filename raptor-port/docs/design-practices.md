@@ -45,7 +45,8 @@ when that one is live.)*
      whatever is put to him about a design or interface change, a question, a suggestion, a finding or a recommendation
      to delete, comes with a picture or mock-up in which the area talked about is marked, never words alone** (D853,
      14 Oct 26 — "Always show me a picture or mock up highlighting the area u are talking about"): the area outlined and
-     enlarged where it is small; before beside after where a change is proposed.
+     enlarged where it is small; before beside after where a change is proposed. **And when only explaining** what a backlog
+     item or a leftover is and where it sits — pictures the first time it is raised (D921, 15 Oct 26 — "Always show me pictures").
 2. **The measured contracts** — `ui-contracts.md`, the stylesheets ("measured contracts, not preferences") and the
    product invariants of `raptor-port/CLAUDE.md` (pucks never wrap; sim notes stay one line; the login page stays simple).
 3. **This guide.**
