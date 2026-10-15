@@ -1,5 +1,9 @@
 # The Logic page today — its inventory, for the redesign (D809, D925; the design approved as drawn, D928)
 
+**Who it is for (D929, 15 Oct 26):** a member or an admin reading it understands how each rule applies to them and how
+the rules affect one another — key pointers, never the app's inside detail. Every setting's line names what else moves
+with it; every check's line names the setting it reads.
+
 *A fresh Opus helper's read of `src/ui/LogicPage.tsx`, `src/ui/logic-html.ts` and `src/engine/rules.ts` (VCONF, RULE_SPEC,
 SHIFT_HARD), the night of 15 Oct 26 — saved in substance for the mock-up. The design note is
 `2026-10-15-logic-page-design.md` (on `claude/trk-reorder-finger-drag`); pictures of today:
