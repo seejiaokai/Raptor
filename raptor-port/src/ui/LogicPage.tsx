@@ -207,8 +207,8 @@ export function LogicPage() {
           return HOOKS.toast(`${spec.t} must be between ${ruleFmt(k, spec.lo)} and ${ruleFmt(k, spec.hi)}`, 'warn')
         }
         if (v === VCONF[k]) { i.classList.remove('bad'); i.value=ruleFmt(k,v); return }
+        /* no passing note (owner D936, 16 Oct 26): the row shows the new value, and its standard where it differs (D850) */
         VCONF[k] = v; lgReapply()
-        HOOKS.toast(`${spec.t} → ${ruleFmt(k, v)}${v === RULE_STD.v[k] ? ' (standard)' : ''}`)
         return
       }
       const c = t.closest('[data-lgkind]') as HTMLInputElement | null

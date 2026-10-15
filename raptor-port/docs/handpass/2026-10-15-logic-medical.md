@@ -7,6 +7,7 @@ finished code read by one fresh, blind Opus reader (D790; no Fable — D903). Qu
 Unattended from his message of 15 Oct 26 (D934).
 
 ## Questions waiting for him
+**ANSWERED 16 Oct 26 — "1-4 as recommended" (D935 for 1 and 2, D936 for 3 and 4).**
 1. **Quals' one row** — build as drawn (the date box that does nothing removed, every control at 36, "Export" on a
    phone)? Recommended: yes. Waits: the Quals build.
 2. **Quals' paragraph you circled** — delete all of it (two of its three links do nothing)? Recommended: yes.

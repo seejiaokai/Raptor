@@ -243,6 +243,22 @@ describe('the thresholds are editable, and only by an admin (tfin B52)', () => {
     expect(setRow('crewRest').querySelector('.lgstd')!.textContent).toContain('Standard 12h')
   })
 
+  /* D936 (16 Oct 26): a value changed raises no passing note — the row shows the new value and its standard (D850); a
+     refusal still says why */
+  it('D936 a changed value raises no passing note; a refused one still does', async () => {
+    const { HOOKS } = await import('../engine/hooks')
+    const was = HOOKS.toast, said: string[] = []
+    HOOKS.toast = ((m: string) => { said.push(m) }) as any
+    try {
+      await setField($('#lgBody input[data-lgset="crewRest"]') as HTMLInputElement, '11h')
+      expect(VCONF.crewRest).toBe(660)
+      expect(said, 'no note for a change the row shows').toEqual([])
+      await setField($('#lgBody input[data-lgset="crewRest"]') as HTMLInputElement, '3h')
+      expect(said.length, 'a refusal is never silent').toBe(1)
+      await setField($('#lgBody input[data-lgset="crewRest"]') as HTMLInputElement, '10h')
+    } finally { HOOKS.toast = was }
+  })
+
   it('a value outside its bounds is refused', async () => {
     const f = $('#lgBody input[data-lgset="crewRest"]') as HTMLInputElement
     await setField(f, '3h')
