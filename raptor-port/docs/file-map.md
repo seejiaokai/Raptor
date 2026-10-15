@@ -38,6 +38,7 @@ finger and is drawn again on release; the handles' cancels and own-pointer check
 (the month's run both ways, a bar carried and undone, the SANS month, eleven Tracker steps; mouse and touch);
 `scripts/handpass/trk-phone-handles-probe.mjs` (a probe — do an arrow's handles follow a finger on a phone);
 `scripts/handpass/breaks/2026-10-15-edge-turn.json` (15 breaks).
+`scripts/handpass/calstep2-pics.mjs` (`[ONE-DATE-CALENDAR]` step two's questions: each older small calendar pictured open, phone and desktop, beside the new one; `docs/mock/2026-10-15-calendar-step-two/`).
 `scripts/handpass/noglow-onlook.mjs` (`[GUIDE-NO-GLOW]` question 6's third look: Rearrange on in the filter chip's pale blue fill, no glow).
 `src/ui/noglow-css.test.ts` (the whole app's roll-call for D880–D882, D887: no stylesheet under src/ lights a mark's own colour round it, blurred or as a 3px+ see-through band; the sign-in logo the one exception); `scripts/handpass/noglow-rollcall.mjs` (`[GUIDE-NO-GLOW]`'s second doors on the built change: the SANS calendar's puck, Show SANS on, View-only Sched's today card — a check line each); `scripts/handpass/noglow-more.mjs` (`[GUIDE-NO-GLOW]` round 3's places from the fresh read: the sign-in logo, the Leave War's balance bar, the Fast sync dot, Admin → Users' dots).
 **Changed:** `src/ui/board.ts` — the switch's note in short sentences; `src/ui/DraftsModal.tsx` — "Select" closes the plan
