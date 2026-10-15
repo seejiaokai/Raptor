@@ -32,6 +32,14 @@ grid keeps them).
 the Tracker's ▣ Select box pans Edit chart layout at its edge (`core.js startMarquee` → `followEdge`, its own cancel);
 the ⇅ Reorder list scrolls under a row carried to its top or foot (`Modals.jsx` — the browser's own drag, fed by
 `dragover`); the people picker's drag across faces scrolls the input's window (`PeoplePick.tsx`, `edgeAutoScroll`).
+**D910 (his answers of 15 Oct 26, built the same evening):** on a phone the Inputs list's "+ Input" and dates button
+stand in the tabs' top row, beside the switch, the filter and the gear (`InputsPage.tsx` `listTools`, drawn in ONE of
+the two places by the page's `phone`; `.inputs-listtools` hidden on a phone); the row's button height (36); the switch,
+filter and gear never shrink for them (`25-inputs-calendar.css`); on the narrowest phones (under 390) the dates button
+reads "15–29 Oct" / "28 Sep–12 Oct" (`tight`); the pop-up hangs under the new row (`06-inputs.css`) and its own buttons
+keep their size (every `.inputs-top .abtn` rule excludes `.inrange-pop .abtn`). The desktop list is unchanged. D908
+(a small phone's pop-up foot reached by a swipe) and D909 (an input's window may cover the day on his phone): left as
+built, each pinned by a browser test.
 
 ## 3. The rulings swept
 D796, D797 (one calendar; over the form or inside it), D800 (the swipe — DateCal's own, now in every place), D824 (no ring
@@ -60,6 +68,9 @@ follows), D686 (a window never scrolls the page behind it — E4 checks), D672 (
 | Tracker — ▣ Select box at the canvas edge | pans | YES — the far balls selected | the dashed box | walk E2 both; break |
 | Tracker — ⇅ Reorder list | scrolls | YES (desktop) — a phone cannot drag its rows (named to him) | the row's outline | retest.test "D900 — the Reorder list…" (red on the old code); the demo's crew list has 2 rows, nothing to scroll on screen |
 | People picker — a drag across faces | scrolls the window | YES — stops at the last face, picks on | the window's Save bar (the band is above it) | walk E4 both (after the fix); edgescroll.test; break |
+| The Inputs list's "+ Input" and dates button on a phone (D910) | in the top row, 36 tall; the pop-up under that row | YES — "+ Input" opens the window, the dates picked and the list narrowed, "All dates" (walk C8, C9 again on the new build) | the switch, filter and gear beside them, unmoved (390: 234/306/344, as before); the filter fields' open line under the row | walk C8, C9 both (`…/built/`); `inputslist.test` "D910 — …" (7 of 9 red on the old code); e2e "the dates button opens its calendar on screen" ×3, D731 (12) ×3 |
+| — the narrowest phones, 375 and 360 wide | the row fits, nothing sideways; "15–29 Oct" | YES | the right-hand buttons at today's narrow sizes | pictures `…/built/row-375.png`, `row-360.png`; `inputslist.test` (the short label, a year kept) |
+| — the desktop list | NO, because D910 keeps the desktop as it was | — | — | picture `…/built/desk-list.png`; `inputslist.test` "a desktop…" |
 | **Added after the blind read (its five roll-call gaps):** | | | | |
 | — an OIL correction's date, edited (`oil-edit-date`) | YES — the date box, floating | YES — picked, the editor stays open, saved on the 12th | the tracker grid; on a phone the pinned names beside the row | walk G1 both |
 | — "Jump to a date" from the Scheduler Board (`#sbCal`) | YES (a phone; the desktop draws no board calendar button — C10 is its door) | YES — Thu 6 Aug's week loads and the board reopens on that day; Today back to 13 Jul, board open | the board under it | walk G2 both |
@@ -90,6 +101,9 @@ script's own reach and passing once fixed; phone: 36/38, the two left (C8, E4) t
 15/15 once the script's own three slips were mended (a shared input is what opens the schedule's dialog with the picker —
 D748; a drag must start on a face not yet picked, since one that starts on a picked face takes faces off; a phone's row of
 OIL entries is swiped into view before Save). Pictures `…/gaps/`, each opened. No errors.
+**D910 walked on its build (15 Oct 26, night):** steps C8, C9 and E4 again — desktop 12/12, phone 12/12, no errors;
+pictures `…/built/` (the row at 390, 375 and 360; the pop-up open at 844, 667 and 568 — whole at 667, "All dates" on
+screen at 568, its foot one swipe away; the desktop list unchanged), each opened.
 
 ## 7. What the walk found, and each disposition
 1. **C6 — no OIL credit's date could be picked (FIXED, red first).** The floating calendar sits on the page, outside the
@@ -153,7 +167,10 @@ animation frames running during a native drag (Chrome and Firefox do); `oil-edit
 (Since D903 no Fable read is asked for unless he calls for one; this one was asked before that ruling.)
 
 ## 12. His look card
-**Questions waiting for him** (the page with the pictures: "Calendar step two: two questions about phones"):
+**ANSWERED 15 Oct 26 — "All as recommended":** (a) left as built, a swipe reaches the rest (D908); (b) left as built (D909);
+his direction built on phones in this job (D910, answering D907); the design guide's rule drafted and put to him, and the
+Medical tab filed, each its own job (D911, D912 — `[GUIDE-ONE-ROW]`, `[MEDICAL-ONE-ROW]`). The questions as put:
+**Questions put to him** (the page with the pictures: "Calendar step two: two questions about phones"):
 - (a) The Inputs list's date pop-up on a small phone — recommended: it scrolls inside itself; the dates stay one size.
   Waits on it: the three small-phone browser tests and any change to the pop-up.
 - (b) An input's window covering the day on his phone — recommended: leave it (✕ or Cancel shows the day). Waits on it:

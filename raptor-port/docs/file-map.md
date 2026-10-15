@@ -38,7 +38,7 @@ finger and is drawn again on release; the handles' cancels and own-pointer check
 (the month's run both ways, a bar carried and undone, the SANS month, eleven Tracker steps; mouse and touch);
 `scripts/handpass/trk-phone-handles-probe.mjs` (a probe — do an arrow's handles follow a finger on a phone);
 **calendar step two (D901, 15 Oct 26) and the four more edge drags (D900):** `scripts/handpass/cal2-walk.mjs` (every step-two place picked and
-saved, the four drags; mouse and touch); `scripts/handpass/breaks/2026-10-15-calendar-step-two.json` (its unit breaks);
+saved, the four drags; mouse and touch); `scripts/handpass/mock-inputs-toolbar.mjs` (the drawing of D907/D910 — the Inputs list's two buttons moved into the top row on a phone, today beside it, the pop-up open at three heights); `scripts/handpass/breaks/2026-10-15-calendar-step-two.json` (its unit breaks);
 `docs/superpowers/briefs/2026-10-15-calendar-step-two-test-map.md` (how a test of an old calendar is re-expressed);
 `src/leavewar/ui/rangepicker.css` DELETED (the range calendar draws `DateCal.tsx`, styled by `26-date-calendar.css`);
 `src/ui/edgescroll.ts` `edgeAutoScroll` gained `span` / `more` (the people picker's band above the window's Save bar).

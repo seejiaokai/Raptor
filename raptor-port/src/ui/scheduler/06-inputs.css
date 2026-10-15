@@ -130,12 +130,13 @@
   font:inherit;font-size:13px;text-align:center}
 .inrange-cfg .la-sun{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-2)}
 /* on a phone the filter bar wraps, so the popover must not hang off the edge: it spans the ROW OF BUTTONS, not its own
-   button — so the ROW is the box it is placed against. Until 10 Oct 26 nothing was: with `.inrange` static and no
+   button — so the ROW is the box it is placed against (since D910, 15 Oct 26, the buttons stand in the tabs' top row on
+   a phone, `.inputs-top`, so that row is). Until 10 Oct 26 nothing was: with `.inrange` static and no
    placed ancestor, "top:100%" meant one SCREEN's height down the page, and the calendar opened below the fold (his find
    — the button lit and nothing appeared). It had looked right only while the List's add form stood above this row and
    pushed it a screen down; the form went with D729. Pin: e2e/inputs-calendar.spec.ts "the dates button opens its
    calendar on screen" — pressed by a finger at a point, never a locator's tap (that scrolls the target into view). */
-@media (max-width:700px){.inrange{position:static}.inputs-listtools{position:relative}.inrange-pop{left:8px;right:8px}}
+@media (max-width:700px){.inrange{position:static}.inputs-listtools,.inputs-top{position:relative}.inrange-pop{left:8px;right:8px}}
 /* ITS CALENDAR IS THE APP'S ONE DATE CALENDAR (step two — owner D901, 15 Oct 26; ui/RangeCal.tsx), drawn inside the
    pop-up, its dates a finger's size everywhere (D901 (3) — D731 (12) had made them so on a phone only). The pop-up
    shrinks to what it holds, so on a desktop the calendar is given its width; ON A PHONE IT FILLS THE POP-UP, which is

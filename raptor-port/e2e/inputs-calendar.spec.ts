@@ -1369,17 +1369,37 @@ for (const height of [844, 667, 568]) {
         const x = r.left + r.width / 2, y = r.top + r.height / 2, hit = document.elementFromPoint(x, y)
         return { x, y, top: r.top, bottom: r.bottom, left: r.left, right: r.right, reached: !!hit && (hit === e || e.contains(hit)), inPop: !!pop && !!hit && pop.contains(hit) }
       }, [sel, n] as const)
+      /* the row that holds the dates button — on a phone the tabs' top row since D910 (15 Oct 26), the List's two buttons
+         standing in it beside the switch, the filter and the gear */
       const m = await page.evaluate(() => {
-        const pop = document.getElementById('inRangePop')!.getBoundingClientRect(), row = document.querySelector('.inputs-listtools')!.getBoundingClientRect()
-        return { top: pop.top, bottom: pop.bottom, left: pop.left, right: pop.right, rowBottom: row.bottom, vw: innerWidth, vh: innerHeight, scrolled: scrollY, wide: document.documentElement.scrollWidth }
+        const pop = document.getElementById('inRangePop')!.getBoundingClientRect(), row = document.getElementById('inRangeBtn')!.closest('.inputs-top, .inputs-listtools')!.getBoundingClientRect()
+        const all = document.getElementById('inRangeAll')!.getBoundingClientRect()
+        return { top: pop.top, bottom: pop.bottom, left: pop.left, right: pop.right, rowBottom: row.bottom, allBottom: all.bottom, vw: innerWidth, vh: innerHeight, scrolled: scrollY, wide: document.documentElement.scrollWidth,
+          inTop: !!document.querySelector('.inputs-top #inRangeBtn') }
       })
+      expect(m.inTop, 'the dates button stands in the top row (D910)').toBe(true)
       expect(m.scrolled, 'the page was not moved to find it').toBe(0)
       expect(m.top, 'it opens straight under the row of buttons').toBeGreaterThanOrEqual(m.rowBottom - 1)
       expect(m.top - m.rowBottom, 'and close to it').toBeLessThanOrEqual(12)
-      expect(m.bottom, 'the whole calendar is on the screen').toBeLessThanOrEqual(m.vh)
+      /* 667 tall and up the whole calendar is on the screen; at 568 its dates and "Next 2 weeks" / "All dates" are, and
+         only its foot (an admin's "Default window") is reached by one swipe — D908 (15 Oct 26), checked below */
+      if (height >= 667) expect(m.bottom, 'the whole calendar is on the screen').toBeLessThanOrEqual(m.vh)
+      else expect(m.allBottom, '"Next 2 weeks" and "All dates" are on the screen').toBeLessThanOrEqual(m.vh)
       expect(m.left).toBeGreaterThanOrEqual(0)
       expect(m.right).toBeLessThanOrEqual(m.vw)
       expect(m.wide, 'nothing runs off sideways').toBeLessThanOrEqual(390)
+      if (height < 667) {
+        /* D908: what runs past a small phone's foot is reached by ONE SWIPE — a real finger drawn up the calendar, which
+           scrolls the page with the pop-up open — never by scrolling inside it, never by smaller dates */
+        const cdp = await context.newCDPSession(page)
+        const t = (type: string, y: number) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: type === 'touchEnd' ? [] : [{ x: 200, y, id: 1 }] } as any)
+        await t('touchStart', 480); for (let i = 1; i <= 10; i++) { await t('touchMove', 480 - i * 20); await page.waitForTimeout(16) } await t('touchEnd', 0)
+        await page.waitForTimeout(600)
+        const foot = await page.evaluate(() => { const e = document.getElementById('inRangeEdit') || document.getElementById('inRangeAll')!; return { bottom: e.getBoundingClientRect().bottom, vh: innerHeight, open: !!document.getElementById('inRangePop') } })
+        expect(foot.open, 'the pop-up stays open under the swipe').toBe(true)
+        expect(foot.bottom, 'one swipe brings its foot onto the screen (D908)').toBeLessThanOrEqual(foot.vh)
+        await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(200)
+      }
       /* a finger on a date meets that date, and two presses set the window of dates */
       const before = (await page.locator('#inRangeBtn').innerText()).trim()
       const d1 = await at('#inRangePop button.dcal-d', 8)

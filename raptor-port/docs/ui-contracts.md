@@ -10297,6 +10297,16 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   button lit and nothing appeared, once the List's add form no longer stood above the row (D729). Pin:
   `e2e/inputs-calendar.spec.ts` "the dates button opens its calendar on screen" — the page not scrolled, the whole
   calendar inside the screen, pressed by a finger at a point. The record: `docs/handpass/2026-10-10-list-dates-picker.md`.
+- **THE INPUTS LIST ON A PHONE — ONE ROW OF CONTROLS (owner D907, D910, 15 Oct 26 — "All as recommended"; built in the
+  calendar job, `docs/handpass/2026-10-15-calendar-step-two.md`).** On a phone the List's "+ Input" and dates button stand
+  in the row of the calendar / list switch, the filter and the gear — where the Calendar's month arrows, month and Today
+  stand (D705) — at that row's button height (36, D698); the switch, filter and gear keep their place and size (D687,
+  D693); on a narrow phone the dates button's words get shorter if the row runs out of room. The date pop-up hangs under
+  that row (it is the box the pop-up is placed against, as `.inputs-listtools` was — the bullet above); "Next 2 weeks"
+  and "All dates" keep their size. The desktop list is unchanged. **D908:** on a small phone what runs past the screen's
+  foot is reached by one swipe, which scrolls the page with the pop-up open — no scrolling inside the pop-up, no smaller
+  dates (D901); with this row, 667 tall fits whole and 568 leaves only "Default window" below. **D909:** an input's
+  window opened from a day may reach the top of the screen and cover the day's bar; ✕ or Cancel shows the day again.
 - **THE SMALL CHOICES OF THE INPUTS PAGES, AS BUILT (owner D731, 10 Oct 26 — "Yes to all"; `[SEEN-BATCH-2]`; the check
   `docs/handpass/2026-10-10-batch2-check.md`).** Each is a line of its own below. Tests: `ui/batch2.test.tsx`,
   `ui/toastplace.test.tsx`, `state/reqorphan.test.ts`, `ui/quals.test.tsx`, and in a real browser

@@ -48,6 +48,8 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
+**His answers of 15 Oct 26 ("All as recommended" — D911, D912), two small jobs after the calendar job, each its own:** [GUIDE-ONE-ROW] — the design guide's rule that a page's own buttons share its one row of controls: drafted, read by one fresh reader, put to him (D911). [MEDICAL-ONE-ROW] — the Medical tab's heading goes and its date button joins a row under the tabs at 36, drawn for him first (D912).
+
 **HIS FIND, 10 Oct 26 (on his iPhone) — LIVE the same day (pull request #489; the item is in `OUTSTANDING-ARCHIVE.md`):** in the changes window, a tap on a change whose seat is empty now lands on its row (`[HIST-JUMP-EMPTY-SEAT]`). Still open — small older finds met on the way, his to place: [HIST-JUMP-SEEN].
 
 **MERGED on his "merge live" of 11 Oct 26 (pull request #490; its four items — `[GROUP-INPUT-ONE-ROW]`, `[REQ-ROW-OWN-BOXES]`, `[REQ-ROW-SELF-CLASH]`, `[CAL-TOGO-ONE-ITEM]` — are in `OUTSTANDING-ARCHIVE.md`):** the schedule's one row for a shared input (D661, D662, D734–D749; the rules: `raptor-port/docs/engine-rules.md` "On a shared input's row the pucks are the input's people", "A shared input is counted once"; `raptor-port/docs/ui-contracts.md` §A shared input is ONE row on the schedule), and with it his find of the wrong ring colours (D751). Its check: `raptor-port/docs/handpass/2026-10-11-group-input-one-row.md`. Found while planning, a question for him: [INPUT-CHANGED-TELL].
@@ -2272,6 +2274,21 @@ with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
 **For the whole-app words pass (D808) — sentences met on the way, not on his list, left as they are:** "Fable is recorded as working 08:00–18:00 on 18 Jul — this LL is filed anyway and flagged for someone to resolve" (`raptor-port/src/leavewar/inputgate.ts`); the day bar's hover title "Nothing on this day earns — the day blanket is on" (`raptor-port/src/ui/oilmode.ts` — "day blanket" is the code's word, not the screen's); on a desktop a two-line note's words are left-aligned where the phone's are centred; the OIL line's second form and the two lines that can ride behind it (`raptor-port/src/leavewar/sync.ts`); the several-days form of the OIL question; "common programme" in small letters wherever the day's own warning says it.
 **Delete candidates by his rule of 14 Oct 26 (D846; the guide's §1, its wording approved — D847) — DONE the same day on his word (D848 — "Delete all three"):** "Choose Keep or Remove for each entry above" (the upchit question), "Choose for each clash above" and the small print under the answers (the medical-clash question) are deleted; the one fact he asked to keep, that a day holds one status, is that sheet's heading now ("A day holds one status: choose who holds these days" — shown to him as built, his to change). Kept, and why: "What is left goes to the schedulers' bells" in the day's one list of OIL questions (a consequence he cannot see), the several-days form's "No days selected — tap the highlighted days to credit them" (an instruction for a gesture nothing else suggests). The first whole-app look under D808 lists the rest.
 **Why it is filed and not built:** D830's and D838's lists are his; a wording or a look he has not been shown is not changed unasked (the design guide's §1). His answers come first (D541 for the two that change a look).
+
+### [GUIDE-ONE-ROW] The design guide carries "a page's own buttons share its one row of controls" — RULED D911 (15 Oct 26); NOT YET DRAFTED — OPEN
+**His "All as recommended" (D911)** to D852's question after his correction of the Inputs list (D907, built as D910 in the
+calendar job). **Next:** draft the wording in `raptor-port/docs/superpowers/specs/2026-10-15-guide-one-row-draft.md` (its
+steps and what the draft must settle are there), one fresh reader (D70), then to him; `raptor-port/docs/design-practices.md`
+changes only on his approval. A sweep of the other pages for places that break it is part of the draft. Its own job, a
+fresh chat on `main` after the calendar job.
+
+### [MEDICAL-ONE-ROW] The Medical tab's controls in one row under the tabs — RULED D912 (15 Oct 26); a picture first — OPEN
+**His "All as recommended" (D912):** the "Medical" heading, which repeats the tab's name, goes; the "as of" date button
+(about 44 tall) stands in a row under the tabs at that row's button height (36), as on Inputs and SANS. Nothing else on
+the tab changes. **Next:** draw it on the real app (`.claude/skills/brainstorming/mockups-on-the-real-app.md`), today
+beside the change at phone and desktop sizes, and put it to him (D853); build only on his word. Picture of today and the
+detail: `raptor-port/docs/superpowers/specs/2026-10-15-guide-one-row-draft.md` §The places. Its own small job, after the
+calendar job (it may ride with [GUIDE-ONE-ROW]).
 
 ### [GUIDE-NO-GLOW] The design guide carries "a ring in this app never glows" — RULED D880 (15 Oct 26); the wording APPROVED and in the guide (D887); BUILT and WALK-checked 15 Oct 26 (`raptor-port/docs/handpass/2026-10-15-no-glow.md`) — OPEN until his "merge live"
 **His "3 yes" (D880)** to D852's question after `[GLOW-OFF]`. Version 2 of the wording, after one fresh reader

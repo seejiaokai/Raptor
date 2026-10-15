@@ -103,7 +103,7 @@ test('D731 (1) — a desktop keeps the note at the foot with a window up', async
 /* D731 (12). The same sizes D725 gave the calendar in an input's window — measured against that calendar, on the same
    phone, so the two cannot drift apart. */
 for (const height of [568, 700, 844]) {
-  test(`D731 (12) — a phone ${height} tall: the days of the List’s dates calendar are a finger’s size, the calendar fills its pop-up, and all of it is on the screen`, async ({ browser, baseURL }) => {
+  test(`D731 (12) — a phone ${height} tall: the days of the List’s dates calendar are a finger’s size, the calendar fills its pop-up, and "All dates" is on the screen`, async ({ browser, baseURL }) => {
     const { context, page } = await phone(browser, baseURL, height)
     try {
       await page.locator('#inListBtn').tap()
@@ -126,7 +126,10 @@ for (const height of [568, 700, 844]) {
       expect(Math.abs(m.cal - m.inner), 'the calendar fills its pop-up').toBeLessThanOrEqual(1)
       expect(m.wide, 'nothing runs off sideways').toBeLessThanOrEqual(390)
       expect(m.scrolled, 'the page was not moved to find it').toBe(0)
-      expect(m.popBottom, 'the whole pop-up is on the screen').toBeLessThanOrEqual(m.vh)
+      /* the whole pop-up from 667 tall; on the smallest phone its foot (an admin's "Default window") is reached by one
+         swipe instead — D908, 15 Oct 26; with the List's buttons in the top row (D910) "All dates" is on the screen there */
+      if (height >= 667) expect(m.popBottom, 'the whole pop-up is on the screen').toBeLessThanOrEqual(m.vh)
+      expect(m.allBottom, '"All dates" is on the screen').toBeLessThanOrEqual(m.vh)
       expect(m.allReached, '"All dates" is what a finger on it reaches').toBe(true)
       /* …and they are the sizes of the calendar in an input's window (D725) */
       await page.locator('#inRangeAll').tap()
@@ -249,9 +252,12 @@ test('D732 — Escape while the day’s title is typed puts the title back and l
 })
 
 /* A1, on a phone: the day's window is nearly the whole screen, the input's window stands at its foot. A finger on a
-   card of the day that still shows above the input's window asks for the other input — and the question is SEEN. */
-test('A1 — a phone: another card tapped over unsaved changes — the question is in front, where a finger can answer it', async ({ browser, baseURL }) => {
-  const { context, page } = await phone(browser, baseURL)
+   card of the day that still shows above the input's window asks for the other input — and the question is SEEN.
+   ON A TALL PHONE (932 — the largest iPhones): since calendar step two the input's window carries the finger-sized
+   calendar (D901) and on an 844-tall phone reaches the top, covering the day — left so on his word (D909, 15 Oct 26;
+   the case below). Where the day still shows above it, the question must still be in front. */
+test('A1 — a tall phone: another card tapped over unsaved changes — the question is in front, where a finger can answer it', async ({ browser, baseURL }) => {
+  const { context, page } = await phone(browser, baseURL, 932)
   try {
     await month(page, 2026, 10)
     const ids = await file(page, [{ who: 1, type: 'Meeting', from: 'Oct 21', timed: [540, 600] }, { who: 2, type: 'Meeting', from: 'Oct 21', timed: [660, 720] }])
@@ -294,6 +300,31 @@ test('A1 — a phone: another card tapped over unsaved changes — the question 
     await page.touchscreen.tap(keep!.x, keep!.y)
     await expect(q).toHaveCount(0)
     await expect(page.locator('#inpEditRmk')).toHaveValue('typed, not saved')
+  } finally { await context.close() }
+})
+
+/* D909 (15 Oct 26): ON HIS PHONE (844 tall) AN INPUT'S WINDOW OPENED FROM A DAY MAY REACH THE TOP AND COVER THE DAY'S BAR —
+   left as built: ✕ shows the day again, its cards a finger's to tap. Not held below the day's bar. */
+test('D909 — an 844-tall phone: an input’s window may cover the day; its ✕ shows the day again, its other input a tap away', async ({ browser, baseURL }) => {
+  const { context, page } = await phone(browser, baseURL, 844)
+  try {
+    await month(page, 2026, 10)
+    const ids = await file(page, [{ who: 1, type: 'Meeting', from: 'Oct 21', timed: [540, 600] }, { who: 2, type: 'Meeting', from: 'Oct 21', timed: [660, 720] }])
+    await page.locator('#inpCal [data-icday="2026-10-21"]').tap()
+    await page.locator(`[data-testid="idy-row-${ids[0]}"] [data-testid="idy-open"]`).tap()
+    await expect(page.locator('[data-testid="win-inputedit"]')).toHaveCount(1)
+    const g = await page.evaluate(() => {
+      const r = (s: string) => document.querySelector(s)!.getBoundingClientRect()
+      return { dayBarBottom: r('[data-testid="win-inputsday"] .win-bar').bottom, editTop: r('[data-testid="win-inputedit"]').top, editBottom: r('[data-testid="win-inputedit"]').bottom, vh: innerHeight }
+    })
+    expect(g.editBottom, 'the window is on the screen').toBeLessThanOrEqual(g.vh + 1)
+    expect(g.editTop, 'the input’s window may reach the top, over the day’s bar (D909)').toBeLessThan(g.dayBarBottom)
+    const x = await box(page, '[data-testid="win-inputedit"] .win-bar .win-x, [data-testid="win-inputedit"] [aria-label="Close"]')
+    expect(x!.reached, 'its ✕ is what a finger on it reaches').toBe(true)
+    await page.touchscreen.tap(x!.x, x!.y)
+    await expect(page.locator('[data-testid="win-inputedit"]')).toHaveCount(0)
+    const other = await box(page, `[data-testid="idy-row-${ids[1]}"] [data-testid="idy-open"]`)
+    expect(other!.reached, 'the day is shown again, its other input a finger’s tap away').toBe(true)
   } finally { await context.close() }
 })
 

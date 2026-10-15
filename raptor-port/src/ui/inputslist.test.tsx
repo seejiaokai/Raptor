@@ -478,3 +478,96 @@ describe('the "OIL?" sign where nobody has answered an input’s OIL question (D
     for (const r of [weekday, personal, off]) expect(tag(r), r.iid).toBeNull()
   })
 })
+
+/* ON A PHONE THE LIST'S TWO BUTTONS STAND IN THE TOP ROW (owner D907, D910, 15 Oct 26 — "Why don't u move these 2 buttons
+   up and align them with the row above? And same height"; drawn by scripts/handpass/mock-inputs-toolbar.mjs, approved
+   as drawn). Where the Calendar's arrows stand, beside the switch, the filter and the gear — one row of controls, not
+   two; the desktop keeps them on their own row under the tabs. What they measure is the browser's to say
+   (e2e/inputs-calendar.spec.ts, e2e/inputs-batch2.spec.ts); here: which row draws them, and the dates button's words. */
+describe('D910 — on a phone the List’s "+ Input" and dates button stand in the top row', () => {
+  const top = () => $('.inputs-top')!
+  it('a phone: both are drawn in the row of the switch, the filter and the gear, and the row of their own is hidden', async () => {
+    await mount(true)
+    expect(top().querySelector('#inNew'), '"+ Input" in the top row').toBeTruthy()
+    expect(top().querySelector('#inRangeBtn'), 'the dates button in the top row').toBeTruthy()
+    expect(top().querySelector('#inListBtn') && top().querySelector('#inGear'), 'beside the switch and the gear').toBeTruthy()
+    expect($('.inputs-listtools')!.hidden, 'no second row').toBe(true)
+    expect($$('#inNew').length + $$('#inRangeBtn').length, 'each drawn once').toBe(2)
+  })
+  it('a phone: the dates pop-up opens from the button in the top row, and "All dates" still closes it', async () => {
+    await mount(true)
+    await click($('#inRangeBtn'))
+    expect(top().querySelector('#inRangePop'), 'the pop-up hangs under the top row').toBeTruthy()
+    await click($('#inRangeAll'))
+    expect($('#inRangePop')).toBeNull()
+    expect($('#inRangeBtn')!.textContent).toContain('All dates')
+  })
+  it('a desktop: they keep their own row under the tabs, as before (D910)', async () => {
+    await mount(false)
+    expect(top().querySelector('#inNew')).toBeNull()
+    expect($('.inputs-listtools #inNew') && $('.inputs-listtools #inRangeBtn')).toBeTruthy()
+    expect($('.inputs-listtools')!.hidden).toBe(false)
+  })
+  it('the screen narrowed to a phone while the List is up moves them into the top row; widened, back', async () => {
+    await mount(false)
+    await turn(true)
+    expect(top().querySelector('#inNew')).toBeTruthy()
+    await turn(false)
+    expect(top().querySelector('#inNew')).toBeNull()
+    expect($('.inputs-listtools #inNew')).toBeTruthy()
+  })
+  it('a "+ Input" pressed from the top row opens the input’s window, as from its old row', async () => {
+    await mount(true)
+    await click(top().querySelector('#inNew'))
+    expect($('[data-testid="win-inputedit"]'), 'the window the calendar opens').toBeTruthy()
+  })
+})
+
+/* THE NARROWEST PHONES (under 390 — an iPhone SE or mini at 375): the row runs out of room, the switch, the filter and the
+   gear keep their size, so the dates button says the same dates in fewer letters (D910). */
+describe('D910 — on the narrowest phones the dates button’s words are shorter, the dates the same', () => {
+  const narrow = (tight: boolean) => {
+    ;(window as any).matchMedia = (q: string) => ({ matches: /max-width:\s*820px/.test(q) || (tight && /max-width:\s*389px/.test(q)),
+      addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} })
+  }
+  const open = async (tight: boolean) => {
+    host = document.createElement('div'); document.body.append(host); root = createRoot(host)
+    narrow(tight)
+    await act(async () => { root.render(<><InputsPage /><InputEditor /></>) })
+  }
+  const pick = async (isos: string[]) => {
+    if (!$('#inRangePop')) await click($('#inRangeBtn'))
+    for (const iso of isos) {
+      for (let i = 0; i < 24 && !$(`#inRangePop [data-iso="${iso}"]`); i++) {
+        const at = $('#inRangePop [data-testid="inRangeCal"]')!.getAttribute('data-month')!
+        await click($(`#inRangePop [data-testid="inRangeCal-${at < iso.slice(0, 7) ? 'next' : 'prev'}"]`))
+      }
+      await click($(`#inRangePop [data-iso="${iso}"]`))
+    }
+  }
+  it('one month: "15–29 Oct", where a wider phone reads "15 Oct → 29 Oct"', async () => {
+    await open(true)
+    await pick(['2026-10-15', '2026-10-29'])
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 15–29 Oct')
+    await act(async () => { root.unmount() }); host.remove()
+    await open(false)
+    await pick(['2026-10-15', '2026-10-29'])
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 15 Oct → 29 Oct')
+  })
+  it('across two months both are named: "28 Sep–12 Oct"', async () => {
+    await open(true)
+    await pick(['2026-09-28', '2026-10-12'])
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 28 Sep–12 Oct')
+  })
+  it('a date in another year keeps its year — never merged into the other date’s month', async () => {
+    await open(true)
+    await pick(['2026-12-28', '2027-01-04'])
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 28 Dec–4 Jan 2027')
+  })
+  it('"All dates" reads the same at every width', async () => {
+    await open(true)
+    if (!$('#inRangePop')) await click($('#inRangeBtn'))
+    await click($('#inRangeAll'))
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 All dates')
+  })
+})

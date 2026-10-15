@@ -19,8 +19,8 @@
 .inputs-workspace .title{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;padding:0;margin:0}
 .inputs-workspace .abtn[aria-pressed=true]{border-color:var(--accent);background:var(--panel-2);color:var(--accent)}
 .inputs-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0 8px;min-width:0}
-.inputs-top .abtn{min-height:44px;min-width:44px;padding:8px 10px;font-size:12px;display:inline-flex;align-items:center;justify-content:center;gap:6px}
-.inputs-top .abtn .btnglyph{width:15px;height:15px;color:currentColor;flex-shrink:0}
+.inputs-top .abtn:not(.inrange-pop .abtn){min-height:44px;min-width:44px;padding:8px 10px;font-size:12px;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.inputs-top .abtn:not(.inrange-pop .abtn) .btnglyph{width:15px;height:15px;color:currentColor;flex-shrink:0}
 .inputs-spring{flex:1 1 0;min-width:0}
 
 .inputs-tabs{display:flex;gap:2px;padding:3px;border:1px solid var(--edge);border-radius:11px;background:var(--panel);flex:0 0 auto;min-width:0}
@@ -73,9 +73,9 @@
   .inputs-tabs{flex:1 0 100%}
   .intab{flex:1 1 0;padding:4px 6px}
   /* narrower, and drawn as tall as a tab — the press area stays a finger's size (D698; see the head of this file) */
-  .inputs-top .abtn{min-width:34px;padding:8px 7px}
-  .inputs-top .abtn:not(.intab){min-height:36px;position:relative}
-  .inputs-top .abtn:not(.intab)::after{content:'';position:absolute;inset:-5px 0}   /* 4px past its 1px border */
+  .inputs-top .abtn:not(.inrange-pop .abtn){min-width:34px;padding:8px 7px}
+  .inputs-top .abtn:not(.inrange-pop .abtn):not(.intab){min-height:36px;position:relative}
+  .inputs-top .abtn:not(.inrange-pop .abtn):not(.intab)::after{content:'';position:absolute;inset:-5px 0}   /* 4px past its 1px border */
   .inputs-top .inv-t{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   /* THE MONTH'S ARROWS, ITS NAME AND TODAY FIRST, WHERE THE SANS CALENDAR HAS THEM; THE SWITCH AT THE ROW'S RIGHT END
      (owner D705, 9 Oct 26 — from his iPhone: "I see sans, the month and arrows and today are on the left. Can u make
@@ -94,6 +94,15 @@
   .inputs-top .inputs-gear{order:5}
   .inputs-top .ic-nav #icPrev,.inputs-top .ic-nav #icNext{width:32px;min-width:32px;padding-left:4px;padding-right:4px}
   .inputs-top .ic-nav #icToday{width:52px;min-width:52px;padding-left:0;padding-right:0}
+  /* THE LIST'S "+ INPUT" AND DATES BUTTON IN THIS ROW (owner D907, D910, 15 Oct 26): where the Calendar's arrows stand
+     (order 1, as `.ic-nav`), at the row's button height — the rules above, as for every button of the row. The switch,
+     the filter and the gear never give up width to them (they keep their place and size — D687, D693); the dates button
+     is the one that yields, its words shortened on the narrowest phones (InputsPage.tsx `tight`). */
+  .inputs-top>.in-new,.inputs-top>.inrange{order:1}
+  .inputs-top>.in-new{flex:0 0 auto;margin-right:4px}
+  .inputs-top>.inrange{flex:0 1 auto;min-width:0}
+  .inputs-top>.inrange>.abtn{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .inputs-top .inputs-views,.inputs-top #inFiltersBtn,.inputs-top .inputs-gear{flex-shrink:0}
   #inFiltersBtn{display:inline-flex}
   .inputs-top .inputs-filterfields{display:none}
   /* OPENED, THE FIELDS GO UNDER THE WHOLE ROW (owner D693, 9 Oct 26 — from his iPhone: "Why did the setting button move?
@@ -115,7 +124,7 @@
    it - where the approved drawings stand in from both sides. 12px each side from 821px up; the room a day's window is
    given beside a month (padding-right, in :has() rules of higher weight) is unchanged. */
 @media(min-width:821px){.inputs-workspace{padding-left:12px;padding-right:12px}}
-@media(max-width:360px){.intab{font-size:12px;gap:4px;padding:4px 3px}.intab .medcount{min-width:14px;padding:2px 3px}.inputs-top{gap:4px}.inputs-top .abtn{min-width:32px;padding:8px 5px}}
+@media(max-width:360px){.intab{font-size:12px;gap:4px;padding:4px 3px}.intab .medcount{min-width:14px;padding:2px 3px}.inputs-top{gap:4px}.inputs-top .abtn:not(.inrange-pop .abtn){min-width:32px;padding:8px 5px}}
 
 /* ============================================================================================================
    THE MONTH (D626: "bars the way Google calendar does"). A week is THREE LAYERS, because a bar lies across dates and
@@ -468,7 +477,7 @@ body.in-cal{padding-bottom:0}
    the two calendars still agree. Drawn height and press areas are unchanged (D698). */
 @media(max-width:389px){
   .inputs-top{column-gap:3px}
-  .inputs-top .abtn:not(.intab){min-width:30px;padding-left:4px;padding-right:4px}
+  .inputs-top .abtn:not(.inrange-pop .abtn):not(.intab){min-width:30px;padding-left:4px;padding-right:4px}
   .inputs-top .inputs-gear{width:32px;min-width:32px}
   .inputs-top .ic-nav #icPrev,.inputs-top .ic-nav #icNext{width:30px;min-width:30px}
   .inputs-top .ic-nav #icToday{width:46px;min-width:46px}
