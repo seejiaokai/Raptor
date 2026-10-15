@@ -432,12 +432,15 @@ Rules: `docs/engine-rules.md` §The late-input mark. Placement: `docs/ui-contrac
     and the Logic "Wave types at a glance" group render the SAME strings. Deliberately
     NOT `SAWAVE.note` (keeps its "2 MAIN + 2 SPARE" count for the built-in popup where
     the count is real). When a kind's rule changes, update rule + `kindNote` + the
-    Logic "standby lines" row together (`logic.test.tsx` pins it).
+    Logic "standby lines" row together (`logic.test.tsx` pins it). *[AMENDED 15 Oct 26 by D928 (the Logic page
+    rewritten): the "Wave types at a glance" group and "The standby lines" are gone; each kind's `kindNote` is now one
+    check line on the Logic page (Flying lines; Standby) — still the SAME strings, still pinned by `logic.test.tsx`.]*
   - **The leave/absence "what each type costs" sentence has ONE source too** (owner,
     30 Aug 26), shared by the Inputs "?" legend and the Logic type matrix.
     `inputs.ts inputRuleText(t)`, derived from the enforced flags; both `InputsPage`
     and `logic-html.ts` read it (they'd drifted). `inputs.test.tsx`/`logic.test.tsx`
-    guard it. Deliberately still separate, don't "helpfully" merge: `SAWAVE.note`,
+    guard it. *[AMENDED 15 Oct 26 by D928: the Logic page's type matrix is gone with its rewrite — the Inputs "?"
+    legend is the sentence's one reader now, guarded by `inputs.test.tsx`.]* Deliberately still separate, don't "helpfully" merge: `SAWAVE.note`,
     the `satag` caption, the OIL-confirm prose (different jobs/voices).
 - **The DEFAULT arrangement is admin-set; the wave half is "new schedules only"**
   (owner, 29 Aug 26 pt.2). Admin → Squadron config → **Default arrangement** panel,

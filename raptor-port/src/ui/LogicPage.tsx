@@ -50,7 +50,7 @@ function setValue(s: LgSet, edit: boolean, admin: boolean, next: () => number): 
     : `<span class="val">${esc(s.value!())}</span>`
   /* the Insights switch (D521, D524): live while editing, read otherwise */
   if (s.kind === 'mix') return edit
-    ? `<span class="lgmix"><input id="lgMissionMix" type="checkbox" role="switch" data-lgmix="1"${missionTracking() ? ' checked' : ''} aria-label="${esc(s.name)}">${esc(s.value!())}</span>`
+    ? `<label class="lgmix"><input id="lgMissionMix" type="checkbox" role="switch" data-lgmix="1"${missionTracking() ? ' checked' : ''} aria-label="${esc(s.name)}">${esc(s.value!())}</label>`
     : `<span class="lgmix"><span id="lgMissionMix" class="lg-switch-read${missionTracking() ? ' on' : ''}" role="switch" aria-checked="${missionTracking()}" aria-disabled="true" aria-label="${esc(s.name)}"></span>${esc(s.value!())}</span>`
   const k = s.keys[0]
   return edit ? box(k) : val(k)
@@ -73,7 +73,7 @@ function settingsHTML(q: string, edit: boolean, admin: boolean): { html: string,
         : `<span class="lgk ${x.hard ? 'hard' : 'adv'}${kindOff(x.k) ? ' off' : ''}"><span>${esc(x.label)}</span><b>${x.hard ? 'Warning' : 'Advisory'}</b></span>`).join('') + `</span>` : ''
       /* a changed value says so on its row: its standard, and — while an admin edits — its own Reset (the mock-up) */
       const mark = off ? `<span class="lgstd">${std ? `Standard ${std}` : 'Changed from the standard'}`
-        + (edit ? ` · <button type="button" class="lgreset1" data-lgreset="${s.kind === 'kinds' ? 'kinds' : own.join(',')}">Reset</button>` : '') + `</span>` : ''
+        + (edit ? ` · <button type="button" class="lgreset1" data-lgreset="${s.kind === 'kinds' ? 'kinds' : own.join(',')}" aria-label="Reset ${esc(s.name)} to standard">Reset</button>` : '') + `</span>` : ''
       return `<div class="lgset${off ? ' off' : ''}${s.kind === 'kinds' ? ' lgset-kinds' : ''}${s.kind === 'text' ? ' lgset-text' : ''}" data-lgkey="${esc(s.keys.join(' '))}" data-lgname="${esc(s.name)}">`
         + `<span class="lgnm">${esc(s.name)}</span>`
         + `<span class="lgv">${setValue(s, edit, admin, next)}</span>`
@@ -221,7 +221,13 @@ export function LogicPage() {
       }
       /* the Insights switch, while editing (D521) */
       const m = t.closest('[data-lgmix]') as HTMLInputElement | null
-      if (m && lgCanEdit()) setMissionTracking(m.checked)
+      if (m && lgCanEdit()) {
+        /* the switch's markup is redrawn by the change it makes — put the keyboard back on it (the fresh code read, 15 Oct 26) */
+        const had = document.activeElement === m
+        setMissionTracking(m.checked)
+        notify()   // its On / Off is in the built markup: redraw it
+        if (had) setTimeout(() => (host.querySelector('[data-lgmix]') as HTMLElement | null)?.focus(), 0)
+      }
     }
     const onPointerDown = (e: Event) => {
       const t = (e.target as HTMLElement).closest('[data-lgset],[data-lgkind]') as HTMLElement | null
@@ -247,6 +253,9 @@ export function LogicPage() {
         if (r.dataset.lgreset === 'kinds') Object.keys(KIND_LABEL).forEach(k => { SHIFT_HARD[k] = RULE_STD.s[k] })
         else r.dataset.lgreset!.split(',').forEach(k => { if (RULE_SPEC[k]) VCONF[k] = RULE_STD.v[k] })
         ruleApply()
+        /* the Reset goes with the change it undid — the keyboard lands on the row's own box, never on the page's foot */
+        const k0 = r.dataset.lgreset!.split(',')[0]
+        setTimeout(() => (host.querySelector(k0 === 'kinds' ? '[data-lgkind]' : `[data-lgset="${k0}"]`) as HTMLElement | null)?.focus(), 0)
       }
     }
     /* a fold opened or closed — remembered, so a repaint draws it as the reader left it */
@@ -255,11 +264,15 @@ export function LogicPage() {
       if (!d.matches?.('details[data-how]')) return
       if (d.open) LGOPEN.add(d.dataset.how!); else LGOPEN.delete(d.dataset.how!)
     }
+    /* a press on a row's Reset or a door must not blur a box first: the blur's change would repaint the row and the press
+       would land on nothing (the fresh code read, 15 Oct 26) — the box keeps its focus until the press is done */
+    const onMouseDown = (e: Event) => { if ((e.target as HTMLElement).closest('[data-lgreset],[data-lgopen]')) e.preventDefault() }
+    host.addEventListener('mousedown', onMouseDown)
     host.addEventListener('change', onChange)
     host.addEventListener('pointerdown', onPointerDown)
     host.addEventListener('click', onClick)
     host.addEventListener('toggle', onToggle, true)
-    return () => { host.removeEventListener('change', onChange); host.removeEventListener('pointerdown', onPointerDown); host.removeEventListener('click', onClick); host.removeEventListener('toggle', onToggle, true) }
+    return () => { host.removeEventListener('mousedown', onMouseDown); host.removeEventListener('change', onChange); host.removeEventListener('pointerdown', onPointerDown); host.removeEventListener('click', onClick); host.removeEventListener('toggle', onToggle, true) }
   }, [])
 
   return (

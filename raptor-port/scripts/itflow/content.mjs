@@ -708,18 +708,18 @@ export const JOURNEYS = [
         steps: [
           { shot: 'settings-1', lines: [c(1, 'Squadron config'), c(2, 'Move a section (Sims up)'), c(3, 'Duty templates…')] },
           { shot: 'settings-2', lines: [see('A template editor')] },
-          { shot: 'settings-3', lines: [c(4, 'Logic: find a rule'), c(5, 'Edit rules (then Done)'), c(6, 'Change a setting'), see('What changed')] },
+          { shot: 'settings-3', lines: [c(4, 'Logic: find a rule'), c(5, '✎ Edit (then Done)'), c(6, 'Change a setting'), see('What changed')] },
           { shot: 'settings-4', lines: [see('"Rules modified" on the schedule')] },
         ],
         checks: [
-          'A member has no Admin tab; Logic is read-only for him, with no Edit rules.',
+          'A member has no Admin tab; Logic is read-only for him, with no ✎ Edit.',
           'A section nudge renumbers the list; "Reset to standard order" puts it back.',
           'A setting outside its limits is refused and put back, with the limits named.',
           'After a change every week shows "Rules modified" until "Reset to standard".',
         ],
         tests: [
           ['admin.test.tsx', 'template openers; a nudge re-orders'],
-          ['logic.test.tsx', 'Edit rules changes the engine; limits refused'],
+          ['logic.test.tsx', '✎ Edit changes the engine; limits refused'],
           ['DutyTplModal.test.tsx', 'a new template, rows, delete'],
           ['WaveTplModal.test.tsx', 'the wave editor; members never see it'],
         ],

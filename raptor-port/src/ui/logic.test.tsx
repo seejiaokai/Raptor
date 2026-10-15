@@ -17,6 +17,7 @@ import { WCODE, validate, lgFired } from '../engine/validate'
 import { WAVE_BUILTIN, kindNote } from '../engine/wavetpl'
 import { setLgEdit } from '../state/auth'
 import { LG_HIDDEN } from './logic-html'
+import { store, storeBackend } from '../engine/hooks'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -250,14 +251,56 @@ describe('the thresholds are editable, and only by an admin (tfin B52)', () => {
   })
 
   it('one setting\'s own Reset puts it back to standard, and only it', async () => {
+    /* a place for settings to be kept, for this test — what a Reset SAVED is read back below */
+    const mem = new Map<string, string>(), was = storeBackend.impl
+    storeBackend.impl = { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => { if (v === 'null') mem.delete(k); else mem.set(k, v) }, keys: () => [...mem.keys()] } as any
+    try {
     await setField($('#lgBody input[data-lgset="debrief"]') as HTMLInputElement, '1h30')
     expect(VCONF.debrief).toBe(90)
     await click(setRow('crewRest').querySelector('[data-lgreset]'))
     expect(VCONF.crewRest).toBe(720)
     expect(VCONF.debrief, 'the other change stays').toBe(90)
     expect(setRow('crewRest').classList.contains('off')).toBe(false)
+    /* a new door to a saved record is tested on what it SAVED (the bug-check order §8.8): the stored overrides keep
+       the debrief and no longer carry crew rest */
+    const saved = store.get('rules', null) as any
+    expect(saved?.v?.debrief).toBe(90)
+    expect(saved?.v && 'crewRest' in saved.v).toBe(false)
     await click(setRow('debrief').querySelector('[data-lgreset]'))
     expect(VCONF.debrief).toBe(120)
+    expect(store.get('rules', null), 'nothing off standard is stored as nothing').toBeNull()
+    } finally { storeBackend.impl = was }
+  })
+
+  /* the fresh code read (15 Oct 26): a press on a row's Reset must not blur a box first (its change would repaint the row
+     and the press land on nothing), and after a Reset the keyboard lands on the row's own box, not the page's foot */
+  it('a row\'s Reset keeps the box from blurring first, and puts the keyboard back on the row\'s box', async () => {
+    await setField($('#lgBody input[data-lgset="epBrief"]') as HTMLInputElement, '20')
+    const r = setRow('epBrief').querySelector('[data-lgreset]') as HTMLElement
+    expect(r.getAttribute('aria-label')).toBe('Reset EP sim brief to standard')
+    const down = new MouseEvent('mousedown', { bubbles: true, cancelable: true })
+    r.dispatchEvent(down)
+    expect(down.defaultPrevented, 'the box is not blurred by the press').toBe(true)
+    await click(r)
+    await act(async () => { await new Promise(res => setTimeout(res, 5)) })
+    expect(VCONF.epBrief).toBe(15)
+    expect(document.activeElement).toBe($('#lgBody input[data-lgset="epBrief"]'))
+  })
+
+  it('the Insights switch keeps the keyboard when it is flipped, and its words flip it too (a label)', async () => {
+    const sw = () => $('#lgBody [data-lgmix]') as HTMLInputElement
+    const mem = new Map<string, string>(), wasImpl = storeBackend.impl
+    storeBackend.impl = { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => { if (v === 'null') mem.delete(k); else mem.set(k, v) }, keys: () => [...mem.keys()] } as any
+    try {
+    expect(sw().closest('label'), 'the switch and its words are one label').toBeTruthy()
+    sw().focus()
+    const was = sw().checked
+    await act(async () => { sw().click(); await new Promise(res => setTimeout(res, 5)) })
+    expect(sw().checked).toBe(!was)
+    expect(document.activeElement, 'the keyboard is back on the switch').toBe(sw())
+    expect(sw().closest('label')!.textContent, 'its word follows').toBe(was ? 'Off' : 'On')
+    await act(async () => { sw().click(); await new Promise(res => setTimeout(res, 5)) })
+    } finally { storeBackend.impl = wasImpl }
   })
 
   it('review D2: a bounded text setting, its markup displayed literally', async () => {

@@ -9249,6 +9249,13 @@ swipe, and everything a member sees.
 **TO BE RE-LAID — not yet built (owner D809, 13 Oct 26):** everything that can be edited gathered at the top of the page, everything
 that only explains a rule below it, each part arranged into its types; a picture first — `OUTSTANDING.md` `[LOGIC-PAGE-LAYOUT]`.
 The search and the controls kept in sight (below) must go on working over both parts.
+**BUILT 15–16 Oct 26 (D928–D933, branch `claude/one-row-guide-medical`):** ONE row (the page's name, search, Filter — a menu of
+All / Warnings / Advisories / Notes / Fired this week (N) — ✎ Edit / Done, Reset to standard, "Reset all" on a phone ≤ 480),
+sticky as below; a Filter other than All shows only the checks; the search reaches both parts. Settings then the checks
+(`ui/logic-html.ts`): a setting's one line says what moves with it, a changed one shows "Standard X" and, while an admin
+edits, its own Reset; a check is named as the warning list names it; four folds of key points, kept open across a
+repaint; every number read from its setting (D932). The "chips", "Edit rules" (now ✎ Edit) and "rule count" of the passage
+below are gone.
 
 **D561/D563, 4 Oct 26 — built on codex/workflow-ui, owner look and remaining reads pending:** keep the search box in view while scrolling,
 alongside the controls already kept visible: All, Warnings, Advisories, Notes, Fired this week, Edit rules

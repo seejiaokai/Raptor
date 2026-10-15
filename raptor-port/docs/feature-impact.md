@@ -684,7 +684,7 @@ ON these, don't route around them):
   (`personBusy`, `dayEngaged`, `dayOilSpans`), and the crew picker stands
   down via `slotRules().infoRow` → `slotBar` '' — the picker mirrors the
   validator's silence rather than keeping a second copy of the rule. The
-  prose lives once on the Logic page. `personCount` deliberately still
+  prose lives once on the Logic page (one line since its rewrite, D928: "ⓘ info only" under Two things at once). `personCount` deliberately still
   counts it (ink on the week, like cx). Pins: `engine/infoflag.test.ts`.
 - **`rosterOptions` (`inputedit.tsx`) is the one roster list** (14 Aug 26) —
   the Inputs page's add form, its row editor and the schedule's *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*

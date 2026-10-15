@@ -183,7 +183,7 @@ export function lgChecks(): LgGroup<LgChk>[] {
         how: () => [
           'Weekend or holiday work earns OIL once the day is published.',
           `A man's day runs from his first report to his last end, gaps included: ${lgV(ruleFmt('oilFullMin', VCONF.oilFullMin))} or more is a full day (FO), less is a half (HO).`,
-          'A flight runs from its in-time (or the nominal report) to landing plus the debrief.',
+          'A flight runs from its in-time (or Report before take-off, where none is typed) to landing plus the debrief.',
           'A row with no times, or no end time, earns nothing. An Off day earns nothing.',
           'SC SPARE, AVALON and BB earn only if switched on in OIL Earn.',
           'A Duty & commitments input earns once its OIL question is answered yes.',
