@@ -372,4 +372,4 @@ right after ⤢ Fit) lands at a negative place and is cut off the chart outside 
 
 ## The ⇅ Reorder windows on a phone — a finger drag to be built (D922, 15 Oct 26)
 
-A phone moves a row of the ⇅ Reorder windows (courses, syllabi, crew) only by its ▲ ▼; the window's line "Drag a row, or use ▲/▼" is true only for a mouse. His D922: a finger drags a row too, with the app's own drag look (one landing line a gap, the list following at its edge — the design guide §5a); the ▲ ▼ stay. A picture first; `OUTSTANDING.md` [TRK-REORDER-FINGER-DRAG].
+A phone moves a row of the ⇅ Reorder windows (courses, syllabi, crew) only by its ▲ ▼; the window's line "Drag a row, or use ▲/▼" is true only for a mouse. His D922: a finger drags a row too, with the app's own drag look (one landing line a gap, the list following at its edge — the design guide §5a); the ▲ ▼ stay. A picture first; `OUTSTANDING.md` [TRK-REORDER-FINGER-DRAG]. **Drawn and answered (D924, "All as recommended"):** the grip becomes ⠿; a mouse drag wears the same look (the ring and one landing line, no box); "Drag a row, or use ▲/▼." goes from all three windows. Being built on `claude/trk-reorder-finger-drag`.

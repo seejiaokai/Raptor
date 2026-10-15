@@ -293,7 +293,10 @@ export function SylModal() {
    One component, three modes. The rows, the drag handling and the ▲/▼ buttons
    are identical; only the list, the row tag and where it saves differ. Three
    copies would mean fixing the next drag bug three times — and drag-and-drop
-   does not work by touch, so the ▲/▼ path is the only one a phone has. */
+   does not work by touch, so the ▲/▼ path is the only one a phone has.
+   TO BE BUILT (owner D922, D924 — "All as recommended", 15 Oct 26): a finger drags a row by its ⠿ grip, and a mouse
+   drag wears the same look — the carried row ringed, one landing line in the gap, no box; the "Drag a row, or use
+   ▲/▼." words go. */
 const ORD_MODES = {
   syllabus: {
     title: 'Syllabus order',
