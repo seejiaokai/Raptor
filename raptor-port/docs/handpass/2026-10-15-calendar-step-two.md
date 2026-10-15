@@ -158,6 +158,9 @@ animation frames running during a native drag (Chrome and Firefox do); `oil-edit
   Waits on it: the three small-phone browser tests and any change to the pop-up.
 - (b) An input's window covering the day on his phone — recommended: leave it (✕ or Cancel shows the day). Waits on it:
   the "A1" browser test's route.
+- **His direction (D907):** on a phone, the Inputs list's "+ Input" and dates buttons move up into the row of the calendar /
+  list switch, the filter and the gear, as tall as that row's buttons. A picture on the real app is put to him first; it
+  also takes about one row off what runs past a small phone's foot in (a).
 1. Leave War → tap a day → Pick a range: the new calendar (today's soft disc, the month and year lists); carry a run over
    a month's end and file it.
 2. Leave War → the bidding dates: "Clear dates" under the calendar; cleared, "Open the whole year".
