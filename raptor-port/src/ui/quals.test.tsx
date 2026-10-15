@@ -327,13 +327,14 @@ describe('the Quals page (tfin)', () => {
   /* [ONE-DOOR] (owner D310, 27 Sep 26 — "one door as proposed, Quals loses archive") REPLACED "an admin in editing mode
      gets the archive ✕, and it archives": archive, restore and the archived man's rename live on Admin → Users now
      (ui/onedoor-users.test.tsx, leavewar/onedoor.test.ts); Quals keeps quals, CAT, flight and initials */
-  it('D310: no archive ✕ for an admin either — no column for it; the help says where archive went', async () => {
+  /* its "the help says where archive went" half went with the paragraph that said it (owner D935, 16 Oct 26 — the
+     paragraph under the row deleted whole; the agent's reading, told to him: this pin goes with it) */
+  it('D310: no archive ✕ for an admin either — no column for it', async () => {
     await click($('#qEdit'))
     expect($('#qtbl [data-arch]'), 'no ✕ in edit mode').toBeFalsy()
     const heads = $$('#qtbl thead th').length
     const cells = $$('#qtbl tbody tr:not(.grp)')[0].querySelectorAll('td').length
     expect(cells, 'the columns stay square without the ✕ column').toBe(heads)
-    expect($('.qhelp').textContent).toContain('Archive, restore and delete are on Admin → Users.')
     await click($('#qSave'))
   })
 })
@@ -1122,25 +1123,31 @@ describe('the frozen quals header', () => {
   })
 })
 
-/* "ADD QUALIFICATIONS" OPENS THE ADMIN PAGE AND SAYS NOTHING (owner D837, 14 Oct 26 — the passing note N33, removed).
-   The link under the table used to raise "Shortcut to the Admin page (Django-style backend in the full build)." — the
-   builder's talk on screen, against his standing rule that the app's words read as a finished product (25 Aug 26). The
-   note is gone and the link goes where it said it led. Last in this file: it leaves the Quals page. */
-describe('N33 — "Add qualifications" raises no note', () => {
-  it('a press says nothing, and the Admin page is the page on screen', async () => {
-    const said: string[] = []
-    const real = HOOKS.toast
-    HOOKS.toast = ((m: any) => { said.push(String(m)) }) as any
-    try {
-      const nav = (p: string) => $$('.nav a[data-page]').find(a => a.dataset.page === p)!
-      expect(nav('quals').className, 'it starts on Quals').toContain('on')
-      await click($('#qAddQual'))
-      expect(said, 'no note at all').toEqual([])
-      expect(nav('admin').className, 'the Admin page').toContain('on')
-      expect(nav('quals').className).not.toContain('on')
-    } finally { HOOKS.toast = real; await act(async () => { setPage('quals'); notify() }) }
+/* QUALS' ONE ROW (owner D935, 16 Oct 26 — "1-4 as recommended", built as drawn: the design guide §3, "A page's controls
+   are one row", D926). The date box that did nothing is gone (no code ever read it — a copy of the original app's
+   static box); "Export to Excel" reads "Export" on a phone, the full words kept for a screen reader; and the paragraph
+   under the row ("Similar to a LoX…", with its three links) is deleted whole. Its "Add qualifications" link went to the
+   Admin page — the Admin tab is that door, and an admin adds a qualification on this page (Edit quals). The row's
+   height and its one line are a browser's to measure: e2e/geometry.spec.ts "D935". */
+describe('D935 — Quals: one row, no paragraph under it', () => {
+  it('no date box in the row; Enable editing, Export and the filter stay', () => {
+    expect($('#qDate'), 'the date box is gone').toBeFalsy()
+    expect($$('.qbar input').map(x => x.id), 'the filter is the one box in the row').toEqual(['qFilter'])
+    expect($('#qEdit') || $('#qSave')).toBeTruthy()
+    expect($('#qExport')).toBeTruthy()
   })
-  it('nothing on the Quals page speaks of the build', () => {
+  it('the export keeps its full words for a screen reader, and has a short form for a phone', () => {
+    const x = $('#qExport')
+    expect(x.querySelector('.qx-long')!.textContent).toBe('Export to Excel')
+    expect(x.querySelector('.qx-short')!.textContent).toBe('Export')
+    expect(x.querySelector('.qx-short')!.getAttribute('aria-hidden'), 'read once, not twice').toBe('true')
+  })
+  it('the paragraph under the row is gone, its three links with it', () => {
+    expect($('.qhelp'), 'no paragraph').toBeFalsy()
+    for (const id of ['#qAddQual', '#qUses', '#qAdminLink']) expect($(id), id).toBeFalsy()
+    expect(host.textContent).not.toMatch(/Similar to a LoX|integrated with the board|Archive, restore and delete are on/)
+  })
+  it('nothing on the Quals page speaks of the build (N33, D837 — kept)', () => {
     expect(host.textContent).not.toMatch(/Django|full build/i)
   })
 })

@@ -4837,6 +4837,18 @@ invent them. The same goes for FLIGHT: the roster records none, which is why
 the column became editable when the headings learned to group by it (owner,
 5 Aug 26). Type them in; do not seed invented ones.
 
+## The Quals page's one row, and no paragraph under it (owner D935, 16 Oct 26)
+
+Built as drawn (the design guide §3, "A page's controls are one row", D926; drawing
+`scripts/handpass/mock-quals-one-row.mjs`). The row under the top bar holds Enable editing — or, while editing, Save
+changes and (an admin) Edit quals — then Export, then the filter: ONE line at every width, every control 36 tall
+(`05-quals.css` `.qbar`). The date box that stood there is gone (nothing read it). A desktop keeps the filter at its own
+width at the right and lets it shrink first when the row runs short; on a phone (≤ 480) the filter takes what is left
+of the row and Export reads "Export", its full words "Export to Excel" kept as its name for a screen reader. Below 820
+each button answers a finger (44). The paragraph that sat under the row ("Similar to a LoX…", with "Add qualifications",
+"Set which quals your squadron uses" and "Admin page") is deleted whole — the Admin tab is the way to Admin, and Archive,
+restore and delete are on Admin → Users (D310). Pins: `quals.test.tsx` "D935", `e2e/geometry.spec.ts` "D935".
+
 ## The Quals page's columns, sorting and View (owner, 5 Aug 26)
 
 The qualification columns run in a fixed order — **SANS, SXO, SCHEDULER, SC

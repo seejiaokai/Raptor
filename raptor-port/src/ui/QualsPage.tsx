@@ -13,7 +13,7 @@ import './postout.css'
 import { openAdminUsers } from './adminopen'
 import { updatePersonField } from '../state/quals-write'
 import { esc, BACKPROMPT, clearBack, QUALSFOCUS, focusQualsRow } from '../state/view'
-import { notify, setPage } from '../state/store'
+import { notify } from '../state/store'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (a roster write now
    emits a people/<personId> change). Same behaviour + the change stream. */
 import { persistPeople } from '../state/people-settings-commit'
@@ -708,8 +708,13 @@ export function QualsPage() {
           <button className={'abtn' + (qualsEdit ? '' : ' primary')} id="qEditQuals"
             aria-pressed={qualsEdit}
             onClick={() => { setQualsEdit(v => !v); setArmDel('') }}>{qualsEdit ? '✕ Edit quals' : 'Edit quals'}</button>}
-        <input className="datef" id="qDate" defaultValue="23/06/2026" style={{ maxWidth: 120 }} />
-        <button className="abtn" id="qExport" onClick={doExport}>Export to Excel</button>
+        {/* ONE ROW, AT 36 (owner D935, 16 Oct 26 — built as drawn; the design guide §3, "A page's controls are one
+            row", D926). The date box that stood here is gone: nothing ever read it (a copy of the original app's
+            static box). On a phone the row runs out of room, so Export keeps its place and takes the shorter word —
+            its full words stay its name for a screen reader (as Logic's "Reset all", D936; the Inputs list's dates
+            button, D910); the filter takes what is left of the row (05-quals.css). */}
+        <button className="abtn" id="qExport" onClick={doExport}>
+          <span className="qx-long">Export to Excel</span><span className="qx-short" aria-hidden="true">Export</span></button>
         {/* Enable editing and Export stay up here (owner, 15 Aug 26); the View
             switch moved down to sit directly above the table it filters. */}
         <div className="grow"></div>
@@ -728,16 +733,12 @@ export function QualsPage() {
         <span className="qhint">Drag a heading to move its column · ✕ takes one off the LoX ·
           removing a column never changes who holds what</span>
       </div>}
-      <div className="qhelp">
-        Similar to a LoX and integrated with the board — a person's <b>CAT</b> drives their puck's qualification chip colour and the validator rules.
-        A check (✓) means the person holds that qualification. In edit mode, click a cell to toggle it. Archive, restore and delete are on Admin → Users.
-        {/* "Add qualifications" OPENS THE ADMIN PAGE AND SAYS NOTHING (owner D837, 14 Oct 26 — the passing note N33,
-            removed). It used to raise a note that spoke of the build ("Django-style backend in the full build") — the
-            builder's talk on screen, against his standing rule that the app's words read as a finished product (25 Aug
-            26). The note is gone; the link goes where the note said it led. The Admin page is its own gate: anyone
-            who is not an admin is told so there (AdminPage.tsx, #admDeny). */}
-        <a id="qAddQual" onClick={() => { setPage('admin'); notify() }}> Add qualifications</a> · <a id="qUses">Set which quals your squadron uses</a> · <a id="qAdminLink">Admin page</a>
-      </div>
+      {/* NO PARAGRAPH UNDER THE ROW (owner D935, 16 Oct 26 — "Similar to a LoX and integrated with the board…", with its
+          links "Add qualifications" · "Set which quals your squadron uses" · "Admin page", deleted whole; D930: every
+          word asked whether it is needed at all). What it said, the page shows: a ✓ is a held qualification, a cell
+          toggles in edit mode, the CAT is the puck's chip colour. Of its links only the first did anything — it opened
+          the Admin page, which its own tab opens; the other two were never wired. Archive, restore and delete live on
+          Admin → Users (D310). */}
       {/* the seat view + Add person, right above the table (owner, 15 Aug 26).
           The four seat buttons keep their ids so every caller and test that
           reaches them by #qViewP etc is unchanged; they read as one segmented

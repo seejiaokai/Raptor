@@ -50,6 +50,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **LIVE 15 Oct 26 (pull requests 517 and 518, his "merge live"; their items are in `OUTSTANDING-ARCHIVE.md`):** a new input opens on OL, the title's pencil, When and Remarks above the calendar (D917, D919, D920); the Tracker's ⇅ Reorder rows drag by finger and by mouse, one look (D922, D924). **Next, ruled the same night (D926–D928):** the Medical tab and Quals' one row, then the Logic page as drawn — `claude/one-row-guide-medical`; then [OIL-CONFIRM-DAYGRID] (D923), its own job.
 
+**16 Oct 26 — Quals' one row BUILT (D935, on `claude/one-row-guide-medical`, pull request 519), waiting for his look and "merge live";** put to him with it: the filter's room at 320 while editing, and [QUALS-ARRIVES-SCROLLED] (Quals opens scrolled on a phone — older, a small fix recommended).
+
 **His answers of 15 Oct 26 ("All as recommended" — D911, D912), two small jobs after the calendar job, each its own:** [GUIDE-ONE-ROW] — the design guide's rule that a page's own buttons share its one row of controls: drafted, read by one fresh reader, put to him (D911). [MEDICAL-ONE-ROW] — the Medical tab's heading goes and its date button joins a row under the tabs at 36, drawn for him first (D912).
 
 **HIS FIND, 10 Oct 26 (on his iPhone) — LIVE the same day (pull request #489; the item is in `OUTSTANDING-ARCHIVE.md`):** in the changes window, a tap on a change whose seat is empty now lands on its row (`[HIST-JUMP-EMPTY-SEAT]`). Still open — small older finds met on the way, his to place: [HIST-JUMP-SEEN].
@@ -214,6 +216,15 @@ or feel — his call).
 ---
 
 ## Items
+
+### [QUALS-ARRIVES-SCROLLED] On a phone Quals opens scrolled — its row and the Viewing switch above the screen (found 16 Oct 26, older) — OPEN, put to him
+**Found walking Quals' one row (D935), 16 Oct 26:** opening Quals from the schedule's menu on a phone (390) lands 120 px
+down: the app keeps the window's scroll from page to page, so the row and the Viewing switch sit above the screen until
+the page is scrolled up. Not this change's — `main` does the same; the Inputs page was fixed to arrive at its top
+(`raptor-port/docs/ui-contracts.md`, "The page arrives at its top"), Quals never was. Picture:
+`raptor-port/docs/img/handpass/2026-10-16-quals-one-row/look/q2-arrives-scrolled.png`. **Recommended:** Quals arrives
+at its top too, a small fix with its own test (and a look at whether Logic and the other pages do the same). Waits on
+his word; the browser test D935 scrolls to the top before measuring, with a pointer here.
 
 ### [TRK-TEST-MIDNIGHT] Two Tracker tests fail when a run crosses midnight — test-only (filed 16 Oct 26) — FIXED 16 Oct 26 on `claude/one-row-guide-medical` (the group's date pinned; 79/79), leaves with its merge
 
@@ -2297,7 +2308,8 @@ with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
 picture whether it takes the one calendar (a pick of several separate days, which the calendar does not do today);
 nothing built before his word. The step-two check: `raptor-port/docs/handpass/2026-10-15-calendar-step-two.md`.
 
-### [GUIDE-ONE-ROW] The design guide carries "a page's own buttons share its one row of controls" — RULED D911 (15 Oct 26); NOT YET DRAFTED — OPEN
+### [GUIDE-ONE-ROW] The design guide carries "a page's own buttons share its one row of controls" — RULED D911 (15 Oct 26); the rule IN the guide (D926); Quals BUILT 16 Oct 26 (D935), WALK-checked — OPEN until his look and "merge live"
+**QUALS BUILT 16 Oct 26 (D935, branch `claude/one-row-guide-medical`, pull request 519):** one row at 36 (Enable editing — or Save changes and Edit quals — Export, the filter), the date box gone, "Export" on a phone (≤ 480) with its full words kept for a screen reader, the filter giving way first; the paragraph under the row deleted whole. Tests red first (quals.test D935, e2e geometry D935 at 390/600/1280), breaks 6/6, the walk 21/21 — `raptor-port/docs/handpass/2026-10-16-quals-one-row.md`. **Put to him with it:** at the narrowest phones (320) while editing the filter has no room to type — recommended "Save" for "Save changes" on a phone (the sheet's question 1); and `[QUALS-ARRIVES-SCROLLED]`. The contract: `raptor-port/docs/ui-contracts.md` §The Quals page's one row.
 **ANSWERED 15 Oct 26 — "All as recommended" (D926):** the wording approved and IN `raptor-port/docs/design-practices.md` §3; the Legend fold stays. Left of this item: Quals' "Export to Excel" drawn for him, then built with the Medical tab (D927).
 **QUALS DRAWN AND PUT TO HIM, 15 Oct 26 (D926, D930 — branch `claude/one-row-guide-medical`):** one row (the date box that does nothing removed, every control at 36, "Export" on a phone), and his circled paragraph under it recommended for deletion (two of its three links do nothing) — https://claude.ai/artifact/QZqDmvnF4esm4zaixiNgTA, pictures `raptor-port/docs/img/handpass/2026-10-15-quals-one-row/`. **ANSWERED 16 Oct 26 (D935 — "1-4 as recommended"): build the row as drawn and delete the paragraph whole — NEXT, a fresh chat on this branch, its own WALK check.** Seen while drawing, not changed: on a phone "+ Add person" stands alone on a row under the Viewing switch (put to him on the same page).
 **DRAFTED AND PUT TO HIM, the night of 15 Oct 26 (branch `claude/one-row-guide-medical`):** v2 of the wording, after one fresh reader's read of v1 (four over-reaches taken out), with the sweep of every page — `raptor-port/docs/superpowers/specs/2026-10-15-guide-one-row-draft.md`; the page https://claude.ai/artifact/1CFVksBEx3WMSg9t994FU1 (source `raptor-port/docs/mock/2026-10-15-one-row/index.html`). Waiting for his approval of the wording and his answer on the Legend fold. The places: Quals ("Export to Excel" — drawn for him before a build), Logic ("Edit rules" — inside `[LOGIC-PAGE-LAYOUT]`).

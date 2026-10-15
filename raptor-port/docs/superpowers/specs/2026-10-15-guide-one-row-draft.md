@@ -37,7 +37,7 @@ button's words get shorter); that a heading repeating the tab's name is not a re
      (it changes nothing) removed, every control at 36, "Export" on a phone. **And the paragraph under the row (D930):** only a
      key point stays, every word asked whether it is needed at all; two of its three links do nothing — put to him with its
      picture before anything is built. **Answered 16 Oct 26 (D935 — "1-4 as recommended"): the row built as drawn and
-     the paragraph deleted whole — to be built with its own WALK check.**
+     the paragraph deleted whole — to be built with its own WALK check.** BUILT 16 Oct 26: `docs/handpass/2026-10-16-quals-one-row.md`.
    - **Logic** — "Edit rules" alone on a row under the filter chips (`sweep-logic.png`) — rides with the Logic page's own
      redesign (D809, D925). (Its "Logic" heading repeats nothing on screen — the top bar shows only the logo — so it is
      not a case; the line under it is a D846 candidate for that job.)

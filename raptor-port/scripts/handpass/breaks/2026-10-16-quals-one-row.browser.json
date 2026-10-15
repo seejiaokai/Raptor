@@ -1,0 +1,15 @@
+{
+ "spec": "e2e/geometry.spec.ts",
+ "grep": "D935",
+ "port": 4174,
+ "breaks": [
+  { "n": 1, "name": "the row's buttons lose the row height (36)", "file": "src/ui/scheduler/05-quals.css",
+    "find": ".qbar .abtn{min-height:36px;", "put": ".qbar .abtn{min-height:0;" },
+  { "n": 2, "name": "a phone keeps the long words: the short \"Export\" never shows", "file": "src/ui/scheduler/05-quals.css",
+    "find": "  .qx-short{display:inline}", "put": "  .qx-short{display:none}" },
+  { "n": 3, "name": "the filter never gives way: at a narrow width the row runs past its edge", "file": "src/ui/scheduler/05-quals.css",
+    "find": ".qbar .searchbox{flex:0 1 200px;min-width:0;", "put": ".qbar .searchbox{flex:0 0 200px;min-width:200px;" },
+  { "n": 4, "name": "on a phone a button no longer answers a finger (no 44 strip)", "file": "src/ui/scheduler/05-quals.css",
+    "find": "  .qbar .abtn::after{content:'';position:absolute;inset:-5px 0}", "put": "  .qbar .abtn::after{content:'';position:absolute;inset:0}" }
+ ]
+}
