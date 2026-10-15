@@ -817,3 +817,18 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** in shipping.md §The checks (and the overnight guide's "through the night"), one line: to stop a gate run, end its processes by their command line (this checkout's path), then `gatelock.mjs status` → `release`, and confirm `free` before anything builds. Better, a guard: `gatelock.mjs` kills its child tree and releases on SIGTERM / SIGINT (a structural fix, not a rule to remember).
 
 **Principle:** Stopping a wrapper is not stopping what it started; any tool that holds a shared lock should release it — and end its children — when it is itself stopped, or the stop must be verified by reading the lock, never assumed.
+
+### Observation 608: A "look before you push" check chained with `&&` does not stop the push — it only has to succeed, not say "none"
+
+**Status:** OPEN
+**Date:** 15 Oct 26
+**Session context:** the night's /overnight run, `claude/drag-edge-scroll-elsewhere-51bfc4` — pushing the spare job's commit while the pull request's checks were running
+**Skill:** overnight (internal) — and `.claude/rules/shipping.md` (D151, never push while a pull request's checks run)
+**Type:** internal
+**Phase/Area:** pushing a branch with an open pull request
+
+**Issue:** The push was written `gh run list … --jq '[…queued or in_progress…] | length' && git push`. The count printed 2 — runs were going — but `gh` succeeded, so `&&` went on and pushed, restarting the checks (D151 broken). Earlier the same night a wait-loop that compared the count to "0" before pushing held correctly.
+
+**Suggested improvement:** in shipping.md's D151 line, give the one safe form: `[ "$(gh run list … | length)" = "0" ] && git push`, or a small script (`node raptor-port/scripts/canpush.mjs <branch>`) that exits non-zero while any run of the branch's last pushed commit is queued or in progress — the guard inside the action, not a number to read.
+
+**Principle:** A check meant to gate an action must fail when the condition fails; a command that merely reports the condition, chained with `&&`, gates nothing.
