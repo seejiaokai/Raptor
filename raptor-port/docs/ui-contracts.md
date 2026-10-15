@@ -7105,6 +7105,14 @@ view. Unless it's outside the screen view then it's ok to snap into view."
   two rules was broken in the browser and seen caught; the landing's arithmetic is `ui/onscreen.test.ts`
   (`scrollToShow`), its breaks `scripts/handpass/breaks/2026-10-08-inputs-undo-landing.json`.
 
+**Every small calendar is the one date calendar — calendar step two (D901, 15 Oct 26).** The Leave War's range calendar (`leavewar/ui/RangePicker.tsx`: a leave bid's
+range, a new period, the bidding dates, an event's dates, the OIL tracker's range, the holiday form) and the input's (`ui/RangeCal.tsx`:
+an input's own dates, the Inputs list's window) draw `ui/DateCal.tsx` inside their form; "Jump to a date" (`ui/WeekCal.tsx`) in its window,
+its Today icon the calendar's own and still picking today at once (`onToday`). No Clear but the bidding dates' "Clear dates" (no dates =
+the whole year); today shown on the Leave War's calendars; one finger-sized date everywhere; an input's range waits for its end and a
+saved input's first tap starts new dates (`finished`). The OIL credit's date is the date box (`ui/DateBox.tsx`); the OIL tracker and the
+grid's figures bar count a press in the floating calendar (`.dcal-layer`) as inside their bar. Check: `docs/handpass/2026-10-15-calendar-step-two.md`.
+
 ## Days — the month (owner, D631, D633, D638, D641, D642, D664; built 8 Oct 26)
 
 The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shell (`ui/FloatWindow.tsx`).
@@ -7365,6 +7373,14 @@ points of 81 round the grip, a man's 9 → 20); pinned in `src/leavewar/ui/rowgl
 (a ball, a line's end, a bend handle) do not pan the chart at its edge (read in the code); the Inputs month calendar's drag
 across days sits in a month that does not scroll — **answered D897: yes, a drag held at the month's edge turns to the next
 (or the last) month and the pick carries on into it.** Both its own job, not built yet. **D898:** the month's edge turn is built without a picture first — the agent decides the edge and the hold and tells him. **D899:** what the Tracker check finds short (its drags carried to the chart's edge pan it) is fixed the same night.
+
+**Four more drags follow the edge (D900, built 15 Oct 26 — `[DRAG-EDGE-FOUR-MORE]`).** The SANS calendar's run turns its month at the side
+exactly as the Inputs month's (`SansCal.tsx` hands `calpick.ts` its `onTurn`). The Tracker's ▣ Select box carried to Edit chart layout's
+edge pans it (`core.js startMarquee` → `followEdge`; its first corner stays where it was pressed, its far corner under the pointer; a
+cancelled touch selects nothing). The ⇅ Reorder list scrolls under a row carried to its top or foot (`Modals.jsx` — the browser's own
+drag; `dragover` feeds `edgeAutoScroll`; only a list longer than its box; a phone cannot drag these rows). The people picker's drag
+across faces scrolls the input's window — never the page behind it (D686) — its band the part of the window the faces are SEEN in,
+above the Save bar that stays at its foot, and it stops at the last face (`edgeAutoScroll` `span` / `more`).
 
 **A drag held at the edge of a view that TURNS or PANS (D897–D899, built the night of 15 Oct 26 — `[DRAG-EDGE-SCROLL-ELSEWHERE]`).**
 *The Inputs month* (`src/ui/calpick.ts`, `src/ui/caldrag.ts` `onTurn`, wired in `InputsCal.tsx` to the month's own step):

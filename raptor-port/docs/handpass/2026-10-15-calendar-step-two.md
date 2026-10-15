@@ -1,0 +1,132 @@
+# Bug check — calendar step two (`[ONE-DATE-CALENDAR]`, D901) and four more edge drags (`[DRAG-EDGE-FOUR-MORE]`, D900)
+
+Branch `claude/calendar-edge-drag-tasks-115921`, from `main` at 6bedaec29 (pull request 515 live), built 15 Oct 26 by Opus
+on his word ("on a new branch from main build calendar step two as recommended (D901), then the four extra edge drags
+(D900)"). One check for the batch (D485), tier **FULL**.
+
+## 1. The tier — the eight questions (the order's §5)
+1. Money (OIL is owed): **YES** — the date of an OIL credit given by hand, and the OIL tracker's report range, are picked
+   on the calendars this changes; a wrong date credits the wrong day. 2. The published record: **NO** — no calendar here
+   publishes or signs. 3. Saved data: **YES** — leave bids, leave periods, the bidding dates, events, holidays and an
+   input's dates are picked through these calendars and saved (the same `yyyy-mm-dd` strings, the same writers). 4. A
+   shared drawer: **YES** — one calendar (`ui/DateCal.tsx`) in ten places; `ui/edgescroll.ts` under every edge scroll.
+   5. A new gesture: **YES** — four drags follow the edge. 6. A new surface: **NO** (the floating calendar is step one's).
+   7. Roles: **NO** — no gate changed (a member's bid sheet is the same sheet). 8. The warning list: **NO**.
+   → **FULL**.
+
+## 2. What was built
+**Step two (D901 — "as recommended on its page"):** the Leave War's range calendar (`leavewar/ui/RangePicker.tsx`: a leave
+bid's range, a new period, the bidding dates, an event's dates, the OIL tracker's range, and the holiday form) and the
+input's calendar (`ui/RangeCal.tsx`: an input's own dates, the Inputs list's window of dates) now draw the app's one date
+calendar inside their form (D797); "Jump to a date" (`ui/WeekCal.tsx`) draws it in its own window. Their own rules are
+kept: the Leave War's run and words ("26 Jan 26 – 3 Feb 26"); an input's range waits for its end and a saved input's
+first tap starts its dates anew (`DateCal finished`); "Jump to a date"'s Today picks today at once (`DateCal onToday`,
+now the calendar's own icon — one Today icon, not two). **D901 (1)** no Clear but the bidding dates' small "Clear dates"
+(`RangePicker clear`); **(2)** today on the Leave War's calendars (the soft disc); **(3)** one finger-sized date
+everywhere — the event sheet, the holiday form and the OIL tracker on a phone all still fit (pictures `…/after/`),
+so no smaller size is put to him; **(4)** the Inputs list's window moved too. The OIL credit's date — one box among
+the form's others — is the app's date box, its calendar over the page (D797's place list), not the range calendar
+bent to one day. `leavewar/ui/rangepicker.css` deleted; the dead `.rc-*` rules of these three gone (OilConfirm's own
+grid keeps them).
+**D900:** the SANS calendar's run turns its month at the side (`SansCal.tsx onTurn` — the Inputs month's machine);
+the Tracker's ▣ Select box pans Edit chart layout at its edge (`core.js startMarquee` → `followEdge`, its own cancel);
+the ⇅ Reorder list scrolls under a row carried to its top or foot (`Modals.jsx` — the browser's own drag, fed by
+`dragover`); the people picker's drag across faces scrolls the input's window (`PeoplePick.tsx`, `edgeAutoScroll`).
+
+## 3. The rulings swept
+D796, D797 (one calendar; over the form or inside it), D800 (the swipe — DateCal's own, now in every place), D824 (no ring
+after a tap), D830 (its keys), D889, D901 (this step), D725 / D731 (12) (finger-sized days — now everywhere, D901 (3)),
+D671 (the holiday form's calendar — its home updated), D681 (a saved input's first tap — kept, walked C8), D892–D900 (the
+edge rules; §5a of the design guide, D895: one landing line — no landing line is drawn by any of these four; the view
+follows), D686 (a window never scrolls the page behind it — E4 checks), D672 (undo — untouched). No ruling contradicted.
+
+## 4. The roll-call — every place the old calendars were drawn, and the four drags
+| Place | The one calendar shows | Usable (picked, saved) | Painted on the same pixels | Proof |
+|---|---|---|---|---|
+| Leave War — a leave bid's "Pick a range" | YES | YES — filed over the run, the below-zero ask answered | the sheet's How much / Which leave under it | walk C1 both; bidding.test |
+| — a new leave period | YES | YES — created and listed | the name box above | walk C2 both; wars.test |
+| — the bidding dates | YES, with "Clear dates" | YES — opened, cleared to the whole year | "Open these dates" under it | walk C3 both; window.test, rangepicker.test |
+| — an event's dates ("A range") | YES | YES — one merged bar 12 Jan – 2 Feb | presets, name above; Save under | walk C4 both |
+| — the OIL tracker's range | YES | YES — the window line follows | Done, zoom beside | walk C5 both; oiltracker.test |
+| — an OIL credit's date (tracker) | YES — the date box, floating | YES — after the fix (§7) | the tracker grid under the veil | walk C6 both; oiltracker.test (red first) |
+| — an OIL credit's date (the grid's figures bar) | YES — the same date box | YES — after the fix (§7) | the grid under the veil | e2e leavewar "OIL from the grid…" (extended) |
+| Calendar window — a holiday's dates | YES | YES — saved, in the list | the form's buttons under it | walk C7 both; holidayspanel.test |
+| An input's own window — a new input | YES | YES — saved over 29 Jun – 2 Jul | the read-out line under it | walk C8 both; inputs.test |
+| — a saved input reopened | YES | YES — first tap starts anew (Jul 1), saved 1–3 Jul | — | walk C8 both; groupeditor.test |
+| The Inputs list's window of dates | YES, in its pop-up | YES — the list narrows; All dates | the pop-up's two buttons | walk C9 both; audit-e-window-sort |
+| Jump to a date | YES, one Today icon | YES — a date loads its week; Today jumps | the hint under it | walk C10 both; odds.test |
+| OilConfirm's day grid ("only some days") | NO, because it is not on step two's list (a near-copy with its own marks — the survey's note) | — | — | named, not changed |
+| SANS calendar — a run held at the side | turns | YES — "+ Commitment" for the run across the month | the lit run | walk E1 both; break (red when cut) |
+| Tracker — ▣ Select box at the canvas edge | pans | YES — the far balls selected | the dashed box | walk E2 both; break |
+| Tracker — ⇅ Reorder list | scrolls | YES (desktop) — a phone cannot drag its rows (named to him) | the row's outline | retest.test "D900 — the Reorder list…" (red on the old code); the demo's crew list has 2 rows, nothing to scroll on screen |
+| People picker — a drag across faces | scrolls the window | YES — stops at the last face, picks on | the window's Save bar (the band is above it) | walk E4 both (after the fix); edgescroll.test; break |
+
+## 5. The sizing (§7.0)
+1. **Type of change:** a shared drawer replaced in ten places (a date picked and saved through each) + four gestures.
+2. **What only a walk can find:** a calendar that does not fit its sheet on a phone; a press in a floating layer taken by
+   a surface behind it; a band under a bar that stays; a date picked but not handed to its writer.
+3. **The ledger:** step one's calendar walk found two faults by walking (13 Oct 26); gesture changes find theirs in the
+   running app (the edge-turn rows).
+4. **The walk chosen:** the host alone (D787), one script as assertions, `scripts/handpass/cal2-walk.mjs`, desktop
+   1440×900 by a real mouse and phone 390×844 by touch (Playwright taps, CDP touch for drags): every place picked AND
+   saved and read back, both sizes; each drag at both sizes; a short desktop window (600) for E4, where the faces run past.
+   Repeated calendar arithmetic (months, leap years, the keyboard) is carried by the step-one tests (`datecal.test.tsx`)
+   and the re-expressed unit tests (§8).
+5. **The ledger row:** added (`docs/walk-ledger.md`).
+
+## 6. The walk — both sizes, every step passing on the final build
+`scripts/handpass/cal2-walk.mjs`; pictures `docs/img/handpass/2026-10-15-calendar-step-two/` (the after-pictures of every
+place at both sizes `…/after/`, each opened by the host). Desktop: 37/39 in one run, the two left (C4, E4) failing on the
+script's own reach and passing once fixed; phone: 36/38, the two left (C8, E4) the same. The steps and what was seen are
+§4's rows. Console and page errors: none, at both sizes.
+
+## 7. What the walk found, and each disposition
+1. **C6 — no OIL credit's date could be picked (FIXED, red first).** The floating calendar sits on the page, outside the
+   credit bar; the OIL tracker (and the grid's figures bar) close the bar on "a press outside it", so the month's arrow or
+   a date closed the form before the date was taken. Both now count a press in `.dcal-layer` as the bar's, and the figures
+   bar's Escape yields to an open calendar. `oiltracker.test.tsx` "…floating calendar…" failed on the old code.
+2. **E4 — the people picker's band lay under the window's Save bar, and the window scrolled past the last face
+   (FIXED, red first).** `edgeAutoScroll` gained `span` (where the dragged things are seen) and `more` (anything left to
+   show that way); the picker passes the visible part above the bar and stops at its last face. `edgescroll.test.ts`'s two
+   new tests failed on the old helper; the browser break (§8) went red.
+Not faults (the walk script's own, fixed in it): the below-zero ask on a bid; the event's bar is its own element; the
+figures column covering the grid's first days; a 900-tall desktop showing every face; the saved input reopening on June;
+the phone's list reopened by its card; "+ Input" under the bar after a scroll.
+
+## 8. The tests and the break tests
+- **127 unit tests re-expressed** on the new calendar by one sheet (`docs/superpowers/briefs/2026-10-15-calendar-step-two-test-map.md`),
+  none weakened; the four whose behaviour his ruling changed pin the new one (Clear gone; desktop days finger-sized).
+  New: `odds.test` (one Today icon, a date jumps), `rangepicker.test` (no Clear; Clear dates), `oiltracker.test` (C6),
+  `edgescroll.test` (span, more), `retest.test` (the Reorder list). e2e specs re-expressed by the same sheet; the grid's
+  figures bar test extended.
+- **Unit breaks** (`scripts/handpass/breaks/2026-10-15-calendar-step-two.json`): **12 of 12 caught** — Clear dates, the
+  run handed over, `finished`, RangeCal's start-over, `onToday`, the planning-day today, both OIL guards' tracker half, the
+  DayChip hand-over, `span`, `more`, the Reorder list's feed.
+- **Browser break** (one build with the SANS `onTurn`, the Select box's `fe.point` and the picker's `span` cut): the walk
+  went red at E1, E2, E4 at both sizes; every file put back and the true build made again; `git status` clean.
+- **Not break-proved:** the figures bar's `.dcal-layer` guard (`Matrix.tsx`) — carried by the extended e2e test only.
+
+## 9. Not walked, and why
+- On his iPhone: the fit of the finger-sized calendar in the Leave War's sheets with Apple's wider letters; the SANS turn
+  and the picker's drag under a real finger (Safari — the turn's Safari guard is the shared machine's, proved by
+  `edgeturn.test.ts`); his look card, §12.
+- The ⇅ Reorder list on screen: the demo's lists are too short to scroll — carried by the unit test above.
+- A member's own bid sheet: the same component and route as the admin's; not walked apart.
+
+## 10. Gates
+*(filled when the run under the lock ends)*
+
+## 11. The code reads
+*(a fresh, blind Opus reader and a Fable reader — D790: OIL and saved data — each given this sheet and the diff)*
+
+## 12. His look card
+1. Leave War → tap a day → Pick a range: the new calendar (today's soft disc, the month and year lists); carry a run over
+   a month's end and file it.
+2. Leave War → the bidding dates: "Clear dates" under the calendar; cleared, "Open the whole year".
+3. OIL tracker → tap a name → the date box: the calendar over the page; pick a date; Save.
+4. Inputs → SANS: drag across days to the right side and hold — the month turns.
+5. An input's window → Several people → drag across faces down to the window's foot — it scrolls and picks on.
+6. Tracker → ✎ Edit chart layout → ▣ Select: draw a box to the screen's edge — the chart slides.
+
+## The closing lines
+*(written at the end)*
