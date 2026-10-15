@@ -573,8 +573,9 @@ test('the gear: the Inputs cut-off and the members’ switch are saved from its 
   await page.locator('[data-testid="iset-memberfile"]').uncheck()
   await page.locator('[data-testid="iset-save"]').click(); await expect(win).toHaveCount(0)
   await page.reload(); await login(page); await go(page, 'logic')
-  const row = page.locator('#lgBody .lgrule', { hasText: 'input is due' })
-  await expect(row).toContainText('Thursday'); await expect(page.locator('#lgBody .lgrule', { hasText: 'Members may file duties and commitments for other people' })).toContainText('other people: off.')
+  /* the Logic page's Settings rows, by name (rewritten for its reader, D928 — 15 Oct 26) */
+  const row = page.locator('#lgBody .lgset[data-lgname="Inputs late cut-off"]')
+  await expect(row).toContainText('Thursday'); await expect(page.locator('#lgBody .lgset[data-lgname="Members file for others"] .lgv')).toHaveText(/^Off/)
   /* one setting, two ways in: the row's button opens the same window, showing what was saved */
   await row.locator('[data-lgopen="inputs"]').click(); await expect(win).toBeVisible()
   await expect(page.locator('[data-testid="iset-mode-wd"]')).toHaveAttribute('aria-pressed', 'true')

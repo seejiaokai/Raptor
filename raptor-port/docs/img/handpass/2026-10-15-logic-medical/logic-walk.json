@@ -1,0 +1,120 @@
+{
+  "results": [
+    {
+      "step": "phone: the page's controls are one row, inside the screen",
+      "pass": true,
+      "note": "{\"one\":true,\"fits\":true,\"noSide\":true,\"btnH\":[21,36,36],\"searchW\":196}"
+    },
+    {
+      "step": "phone: settings first, then the checks",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "phone: no engine names or fired counts on the page",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "phone: the crew-rest \"How it works\" opens",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "phone: the filter menu opens inside the screen",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "phone: Warnings shows red checks only, the settings hidden, the button says what is on",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "phone: a changed crew rest shows its standard and its own Reset; the check says 11h; the strip and the stamp are up",
+      "pass": true,
+      "note": "{\"std\":\"Standard 12h · Reset\",\"name\":\"Warning: Crew rest (<11h)\",\"line\":\"For a flying member: at least 11h (Crew rest) from the end of his day before to his earliest in-time, or to anything earlier that day.\",\"strip\":true,\"stamp\":true}"
+    },
+    {
+      "step": "phone: editing with a value changed, the row (Done, Reset) is still one row inside the screen",
+      "pass": true,
+      "note": "{\"one\":true,\"fits\":true,\"noSide\":true,\"btnH\":[21,36,36,36],\"searchW\":126}"
+    },
+    {
+      "step": "phone: the row's own Reset puts crew rest back to 12h; nothing is left changed",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "phone: the Inputs cut-off's value opens the Inputs calendar settings",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "desk: the page's controls are one row, inside the screen",
+      "pass": true,
+      "note": "{\"one\":true,\"fits\":true,\"noSide\":true,\"btnH\":[24,36,36],\"searchW\":420}"
+    },
+    {
+      "step": "desk: settings first, then the checks",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "desk: no engine names or fired counts on the page",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "desk: the crew-rest \"How it works\" opens",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "desk: the filter menu opens inside the screen",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "desk: Warnings shows red checks only, the settings hidden, the button says what is on",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "desk: a changed crew rest shows its standard and its own Reset; the check says 11h; the strip and the stamp are up",
+      "pass": true,
+      "note": "{\"std\":\"Standard 12h · Reset\",\"name\":\"Warning: Crew rest (<11h)\",\"line\":\"For a flying member: at least 11h (Crew rest) from the end of his day before to his earliest in-time, or to anything earlier that day.\",\"strip\":true,\"stamp\":true}"
+    },
+    {
+      "step": "desk: editing with a value changed, the row (Done, Reset) is still one row inside the screen",
+      "pass": true,
+      "note": "{\"one\":true,\"fits\":true,\"noSide\":true,\"btnH\":[24,36,36,36],\"searchW\":420}"
+    },
+    {
+      "step": "desk: the row's own Reset puts crew rest back to 12h; nothing is left changed",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "desk: the Inputs cut-off's value opens the Inputs calendar settings",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "320: editing with a value changed, one row, the search still usable",
+      "pass": true,
+      "note": "{\"one\":true,\"fits\":true,\"noSide\":true,\"btnH\":[21,36,36,36],\"searchW\":56}"
+    },
+    {
+      "step": "member: no Edit, no box, no door, the values readable",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "step": "no page errors in the console",
+      "pass": true,
+      "note": ""
+    }
+  ],
+  "errors": []
+}

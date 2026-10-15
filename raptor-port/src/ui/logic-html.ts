@@ -1,326 +1,206 @@
-/* The Logic tab's rule book — lgRules verbatim. Every value is read out
-   of the live engine objects at render time, so the page cannot drift. */
-import { VCONF, SHIFT_HARD, kindOff, ruleFmt } from '../engine/rules'
+/* The Logic page's two lists — its SETTINGS and its CHECKS — written for the person who reads them (owner D925, built
+   as drawn D928, 15 Oct 26): the editable settings first, each with one line saying what else moves with it; then every
+   check the app raises, each with one line naming the setting it reads (D929 — "how the rules are affecting one
+   another … key pointers"), four with a folded "How it works". Key points only (D930 — "ask yourself if these words are
+   needed in the first place"). Every line, word for word, and why each old row went:
+   docs/superpowers/specs/2026-10-15-logic-page-lines.md (read by one fresh reader before the build, D928).
+
+   Every value is still READ OUT OF THE LIVE OBJECTS at render time (VCONF, SHIFT_HARD, RANK, WCODE, the cut-offs), so
+   the page cannot drift from the engine; and a check's name is the warning list's OWN name for it (WCODE, through
+   wlbl), so the reader meets the same words here as on the schedule. The old rule book (lgRules) — its code names, its
+   engine-text column and its long "why" paragraphs — is in git history. */
+import { VCONF, SHIFT_HARD, KIND_LABEL, ruleFmt } from '../engine/rules'
 import { RANK, CHIP_LABEL, WCODE, chipText, wlbl } from '../engine/validate'
-import { INPUT_TYPES, inpMeta, canSpare, isLeave, isDownchit, shiftHardInput, inputRuleText, cutRuleText, inputDueISO, isoLabel } from '../engine/inputs'
-import { lgT, hm24, hhmm } from '../engine/time'
-import { WAVE_BUILTIN, kindNote } from '../engine/wavetpl'
+import { cutRuleText } from '../engine/inputs'
+import { lgT, hhmm } from '../engine/time'
+import { kindNote } from '../engine/wavetpl'
 import { esc } from '../state/view'
-import { lgCanEdit } from '../state/auth'
 import { membersFileOn } from '../state/perms'
-/* the worked example's date for a cut-off set — "Mon 3 Aug" — for the week of Mon 17 Aug 26 */
-const CUT_DAY = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-function cutDueWords(set: 'inputs' | 'sans'): string {
-  const iso = inputDueISO('17/08/2026', set)
-  return iso ? `${CUT_DAY[new Date(iso + 'T12:00:00Z').getUTCDay()]} ${isoLabel(iso)}` : ''
-}
+import { missionTracking } from '../engine/insights-config'
 
-export const LG_TIER:any={hard:'Warning',adv:'Advisory',note:'Note',set:'Setting'};
-export const lgV=(v:any)=>`<span class="val">${esc(String(v))}</span>`;
-export function lgRules(){
-  const SH=Object.keys(SHIFT_HARD).filter((k:any)=>SHIFT_HARD[k]);
-  /* every event kind the engine actually produces — 'other' is the push() default
-     and no call site uses it, so it is deliberately not listed */
-  const KIND:any={fly:'a flight',sim:'a sim',duty:'a duty post',shift:'another shift',
-    ground:'a ground event',prog:'a programme item'};
-  const chipRow=()=>`<span class="lgchips">`+Object.keys(RANK).sort((a:any,b:any)=>RANK[b]-RANK[a])
-    .map((c:any)=>`<span class="lgc"><i style="background:${
-      /* red = the rule is HARD. This list used to carry NB/SB (advisories) and
-         to omit RUN (a warning), so it disagreed with the week's own legend
-         about the 7 — owner, 10 Aug 26. Keep it in step with html.ts. */
-      c==='C'||c==='CR'||c==='Q'||c==='RUN'||c==='CPH'?'#F0555F;color:#fff':
-      c==='LD'?'#8A96A3;color:#0B0D10':'#E5A83B'}">${esc(chipText(c))}</i>${esc(wlbl(CHIP_LABEL[c]||c))}</span>`).join('')+`</span>`;
-  const matrix=()=>`<span class="lgmatrix">`+Object.keys(KIND).map((k:any)=>{
-    const hard=!!SHIFT_HARD[k], off=kindOff(k);
-    const body=lgCanEdit()
-      ? `<label class="lgtog"><input type="checkbox" data-lgkind="${k}"${hard?' checked':''}>`
-        +`${hard?'Warning':'Advisory'}</label>`
-      : `<span>${hard?'Warning — he cannot be in two places':'Advisory — you can still give him academics'}</span>`;
-    return `<span class="lgcell ${hard?'hard':'adv'}"><span class="k">${esc(KIND[k])}</span>`
-      +body+(off?`<span class="lgmod">changed</span>`:'')+`</span>`;}).join('')+`</span>`;
-  /* Every absence type the squadron books, and what each one costs. Built off
-     INPUT_META (10 Aug 26) rather than the old three-entry LEAVE_TYPES, and
-     the cell's severity follows canSpare — so this matrix cannot describe a
-     rule the engine does not apply, and a new type appears here the day it is
-     added to the table. The cost sentence itself is inputRuleText — the SAME
-     source the Inputs "?" legend reads, so the two can no longer drift; a guard
-     test pins both. (The two used to hand-write their own copies: this matrix
-     had no SANS / Upchit line, the Inputs gloss no SC-MAIN Warning nuance.) */
-  const rule=(t:any)=>inputRuleText(t);
-  /* a code only earns a spelt-out name when it IS an abbreviation — "Training
-     — training" says nothing twice. Same test offWord and the Inputs page's
-     type legend make. */
-  const tname=(t:any)=>{const n=((inpMeta(t)||{}).name)||'';
-    return n.toLowerCase()===String(t).toLowerCase()?'':n+' — ';};
-  const leaves=()=>`<span class="lgmatrix">`+INPUT_TYPES.map((k:any)=>
-    `<span class="lgcell ${canSpare(k)?'adv':'hard'}"><span class="k">${esc(k)}</span>`
-    +`<span>${esc(tname(k))}${esc(rule(k))}</span></span>`).join('')+`</span>`;
+export const LG_TIER: any = { hard: 'Warning', adv: 'Advisory', note: 'Note' }
+/* a live value inside a line, set apart as the page has always set it */
+export const lgV = (v: any) => `<span class="val">${esc(String(v))}</span>`
+const T = (k: string) => lgV(lgT(VCONF[k]))
 
+/* THE SETTINGS NOT ON THE PAGE (D928 — "the two unused settings are removed from the page"): nothing in the app reads
+   either. They stay in the engine's settings, so a stored value still loads and "Reset to standard" still clears it;
+   the guard in logic.test.tsx accounts for every setting as either shown here or named in this list. */
+export const LG_HIDDEN: Record<string, string> = { minTurn: 'nothing reads it', dur: 'nothing reads it' }
+
+/* one setting row. kind: 'num' (one box, the default), 'text' (the + In-time / Rally words), 'window' (two clock
+   boxes, the SC day window), 'kinds' (the six SC MAIN clash switches), 'door' (set in a calendar's own settings window
+   — D639; an admin's value opens it), 'mix' (the Insights switch). `keys` names every engine setting the row shows. */
+export type LgSet = { name: string, keys: string[], kind?: 'num' | 'text' | 'window' | 'kinds' | 'door' | 'mix', door?: 'inputs' | 'sans', value?: () => string, line: () => string }
+export type LgGroup<T> = { g: string, items: T[] }
+
+export function lgSettings(): LgGroup<LgSet>[] {
   return [
-  {g:'How a day is measured',
-   sub:'Before any rule can fire, the engine has to decide how much of the day each commitment actually occupies.',
-   rows:[
-    {sev:'set',set:['step','dekit'],src:()=>`VCONF.step ${VCONF.step} · VCONF.dekit ${VCONF.dekit}`,
-     t:()=>`A sortie occupies the schedule from <b>step</b>, ${lgV(lgT(VCONF.step))} before take-off, to <b>dekit</b>, ${lgV(lgT(VCONF.dekit))} after landing — not just take-off to landing.`},
-    {sev:'set',set:['briefLead'],src:()=>`VCONF.briefLead ${VCONF.briefLead}`,
-     t:()=>`The <b>flight brief</b> is the time in the line's <b>B</b> box. Where a line has none, this setting suggests one — ${lgV(lgT(VCONF.briefLead))} before take-off — and the scheduler accepts it or types their own.<span class="why">This number is a convenience, not a rule: it only works out the suggestion so nobody has to do the arithmetic. What every brief warning actually follows is the B on the line. A line left blank is still checked, against that same suggested time, so an unconfirmed line never goes silently unchecked. A published in-time moves the man's <b>report</b> time, and so his working day and his crew rest; it does not move the brief.</span>`},
-    {sev:'set',set:['reportLead','reportText'],src:()=>`VCONF.reportLead ${VCONF.reportLead} · VCONF.reportText ${VCONF.reportText}`,
-     t:()=>`The <b>nominal report</b> to the squadron is ${lgV(lgT(VCONF.reportLead))} before take-off. A flying line with no In-time / Rally entered counts its <b>OIL</b> day from this time. The <b>+ In-time / Rally</b> button uses this lead when the wave has no resolved report, followed by the words below.<span class="why">Words are one line, up to 60 characters; blank restores IN TIME + WX/NOTAMS. The normal reporting parser reads them. If you include another clock in the words, the first clock — the time the button fills in — wins.</span>`},
-    /* the SAME step key as the busy-window row above — one knob, quoted and
-       editable on both rows it governs (owner, 21 Aug 26: editing the step
-       timing must move this line too; the separate showLead key it replaced
-       is gone) */
-    {sev:'set',set:['step'],src:()=>`VCONF.step ${VCONF.step}`,
-     t:()=>`<b>Step</b>, ${lgV(lgT(VCONF.step))} before take-off, is also the line that decides how a crew-rest breach is DRAWN — it is the same step setting as above, so changing it moves both.<span class="why">A remark such as "2A: LATE SHOW" or "SHOW AT BRIEF" does not excuse crew rest and does not remove the warning: the breach is still red and still counted, because the reader has to see that rest was broken. What the remark changes is the ring. While the man still clears rest by step, his puck rings <b>dashed</b> — a scheduler sanctioned this and he does make the jet. Once rest runs past step the ring goes <b>solid</b> again: there is nothing to sanction, because he cannot walk, kit up and start engines in less than this. He is not late to the brief, he is unable to make the flight.</span>`},
-    {sev:'set',set:['debrief'],src:()=>`VCONF.debrief ${VCONF.debrief}`,
-     t:()=>`The <b>flight debrief</b> runs for ${lgV(lgT(VCONF.debrief))} after landing.`},
-    {sev:'set',set:['minTurn','dur'],src:()=>`VCONF.minTurn ${VCONF.minTurn} · VCONF.dur ${VCONF.dur}`,
-     t:()=>`<b>Not currently used:</b> <span class="val">minTurn</span> and <span class="val">dur</span> are carried in the settings but no rule reads them.<span class="why">Listed so the page accounts for every setting in the engine, used or not.</span>`},
-    {sev:'set',set:['openEnd'],src:()=>`VCONF.openEnd ${VCONF.openEnd}`,
-     t:()=>`A row with a start time and <b>no end time</b> is assumed to run ${lgV(lgT(VCONF.openEnd))}.<span class="why">Without this an open-ended meeting sitting on top of a take-off went completely unflagged.</span>`},
-    {sev:'set',src:()=>`collectEvents · shiftLine`,
-     t:()=>`A <b>standby shift</b> (SC, AVALON, BB) occupies <b>exactly the hours written on the line</b> — no step, no dekit, no brief, no debrief tail.<span class="why">It is a shift, not a sortie. Padding it like a jet used to make SC AM 07–13 and SC PM 13–19 overlap by fifty minutes and report two clean shifts as one fifteen-hour day.</span>`},
-    {sev:'set',src:()=>`win() · e<st → e+=1440`,
-     t:()=>`Anything whose end reads <b>earlier than its start</b> has crossed midnight, and is rolled into the next day.<span class="why">Left as written, the interval is inverted and can never overlap anything — which silently switches every check off for that row.</span>`},
-   ]},
-
-  {g:'In-time / Rally',
-   sub:'Reporting instructions apply to the named formations in their wave, or the whole wave when none is named.',
-   rows:[
-    {sev:'set',t:()=>`Each line uses its <b>first recognised clock</b>, such as 09:00H or 0900. Write <b>IN TIME</b>, <b>RALLY</b>, or both; an older clock-only instruction still means in-time. Remarks can stay on the line. Only this wave's formation names select crews; individual names do not. A formation-specific instruction replaces the wave-wide instruction for that activity. Duplicates use the earliest actual time, regardless of row order.`},
-    {sev:'set',t:()=>`For a flight, a reporting clock later than take-off means <b>the immediately previous day</b>. The earliest applicable in-time or rally starts the crew's reporting day; an earlier qualifying commitment can still start work or rest checks. <b>RALLY AFTER IN TIME</b>, without a clock, means rally at that formation's applicable in-time.`},
-    {sev:'hard',code:'REPORT_ORDER',t:()=>`Present stages must run <b>in-time → rally → brief → take-off → landing</b>. Equal adjacent times are allowed. A reversed pair names the formation and both times while editing; a blank B is named as the suggested brief. It remains a <b>red warning</b> in the draft and issued copy. Timing warnings never refuse publication or amendments. Missing reporting instructions do not create a compulsory field.`},
-    {sev:'adv',code:'REPORT_UNRESOLVED',t:()=>`An unrecognised reporting clock, or <b>RALLY AFTER IN TIME</b> with no applicable in-time, asks you to check the instruction. This advisory alone does not block publication; it does not pretend that an unresolved clock was understood.`},
-   ]},
-
-  {g:'Two things at once',
-   sub:'The commonest question the board answers: is this person already busy?',
-   rows:[
-    {sev:'set',src:()=>`const overlap=(a1:any,a2:any,b1:any,b2:any)=>a1<b2&&b1<a2`,
-     t:()=>`Two windows overlap only if one <b>starts before the other ends</b>. Touching end-to-end is <b>not</b> an overlap.<span class="why">This is deliberate, and it is what makes SC AM 07:00–13:00 and SC PM 13:00–19:00 read as two clean shifts rather than a clash.</span>`},
-    {sev:'hard',code:'DOUBLE_BOOK',
-     t:()=>`Two commitments at the same time for one person is a <b>Warning</b> — he cannot be in two places.<span class="why">Sortie against sortie is excluded here: that is the tight-turn rule's business, not this one.</span>`},
-    {sev:'adv',code:'SHIFT_SOFT',extra:matrix,kinds:true,
-     t:()=>`A man on an <b>SC MAIN</b> shift is graded by what he runs into — ${SH.length} kinds are hard, the rest are advisory:<span class="why">With one overlay (26 Aug 26): a personal-input commitment across the shift is graded by its TYPE — ${INPUT_TYPES.filter(shiftHardInput).join(', ')} are a <b>Warning</b>, because the shift may launch him; a Meeting stays an <b>Advisory</b>. A type the engine does not recognise — a typo, or a record from an older store — reads as the <b>Warning</b> too, never the advisory: when in doubt the engine assumes the serious case. A ground row carrying one of those words — lifted from an input or typed by hand — grades as the commitment it is, not as academics. A programme item always stays advisory.</span>`},
-    {sev:'set',src:()=>`isPersonal / isUnavail`,
-     t:()=>`Every personal input is a <b>real commitment</b>, <b>“Fly”</b> included — it clashes with a sortie and eats brief/debrief time exactly like an appointment.<span class="why">There used to be an “offer” exemption for “Available fly”, “Available duty” and “Fly”. Those first two types are gone, and a man who says he is flying elsewhere is not available for this sortie.</span>`},
-    /* no `code`: ⓘ is a per-item switch, not a validator code — the engine
-       emits nothing for an info item, which is the whole point */
-    {sev:'note',src:()=>`row.info · events.ts / avail.ts / oil.ts`,
-     t:()=>`A Ground or Common Programme item marked <b>ⓘ info only</b> is shown on the programme but <b>never checked</b>: it raises no clash, occupies nobody's time, keeps nobody busy in the crew palette and earns no OIL.<span class="why">For the mass brief or all-call that overlaps everything on purpose: the squadron still wants it printed, but an engine ringing over it would teach everyone to ignore the bell. The crew picker stands down too — arming an info item bars no one, so the picker and the warning list stay in step. Flip the ⓘ on the item's row on the scheduler board; flip it again and the checks return.</span>`},
-   ]},
-
-  {g:'Crew rest',
-   sub:'The rule the squadron cares about most, and the one with the most edge cases.',
-   rows:[
-    {sev:'hard',code:'CREW_REST',set:['crewRest'],src:()=>`VCONF.crewRest ${VCONF.crewRest}`,
-     t:()=>`Aircrew flying today must have ${lgV(lgT(VCONF.crewRest))} clear before <b>the first thing on their programme</b> — the report, or anything scheduled earlier: a meeting, a sim, a duty post, or a duty-and-commitments input with typed times.<span class="why">The owner's rule (21 Aug 26): this person needs ${lgT(VCONF.crewRest)} of rest in order to fly. An 08:00 meeting ahead of a 10:00 in-time is what starts his day, so it is what the warning measures to and names — whether it sits on the Ground Programme or came in as an input. Monday checks against the previous week's Sunday, not against nothing — a late Sunday finish can still bust a Monday report. Planning that late Sunday draws the same “Breaks Monday” box on Sunday itself the moment you make it (23 Aug 26) — the breach warning itself still only appears on Monday once next week is opened. A day with no flying asks for no rest. Exactly ${lgT(VCONF.crewRest)} is legal — the bar is strictly greater-than.</span>`},
-    /* set:['reportLead'] — the owner circled this exact row asking "is this
-       editable as well? The number?" (21 Aug 26). The 3h IS reportLead,
-       already editable further up under "The clock a day runs on"; the box
-       now also sits where the number is quoted, so he never has to know
-       which row owns it. Editing either box moves the same setting. */
-    {sev:'adv',code:'CREW_TIGHT',set:['reportLead'],
-     t:()=>`If the <b>nominal</b> ${lgT(VCONF.reportLead)} report falls inside the rest window but the instructed report does not, that is an <b>Advisory</b>, not a breach.`},
-    {sev:'set',src:()=>`prevFlyEnd → REST[di]`,
-     t:()=>`Rest is measured off the last commitment of <b>any kind</b> the day before — a sortie, a shift, a duty post, a sim, a ground event, a programme item, or a <b>duty-and-commitments input</b> all count.<span class="why">A sortie ends for rest purposes at landing + the debrief; everything else ends at its written end, with no tail added. This is the owner's 21 Aug 26 ruling: anything that ends the day prior and eats into the ${lgT(VCONF.crewRest)} is a warning, whatever kind of row it was. For inputs the same ruling names its own limits: only the Duty &amp; other commitments types except <b>Personal</b> and <b>SANS Availability</b> — leave and medical never count — and only when the input carries <b>typed times</b>; an all-day record has no timing to measure to.</span>`},
-    {sev:'set',src:()=>`nomOf · insOf`,
-     t:()=>`A shift's <b>own start time is its report time</b>: no ${lgT(VCONF.reportLead)} lead and no brief lead come off it.`},
-    /* [REST-BLANK-LINE] (D602, 6 Oct 26) — the missing-input default, said where the scheduler can read it
-       (the robustness doctrine: every default is stated somewhere the user can see). "No times", not "no
-       take-off": a typed landing with no take-off IS still the end of that day, and the first wording said
-       it was not (Astra's final read, finding 1 — pinned in logic.test.tsx). */
-    {sev:'set',src:()=>`insOf · crewRestDay`,
-     t:()=>`A flying line with <b>no times yet</b> is not measured: it neither breaks crew rest nor hides a breach another line raises. Whatever it does carry is still read — a typed <b>Brief</b>, its wave's <b>In-time / Rally</b> or an SC line's typed <b>B</b> as the report, and a typed <b>landing</b> as the end of that day, debrief included — and anything scheduled earlier that day still starts his day.<span class="why">A new line comes up blank. A man seated on one while its times are still being decided keeps every crew-rest warning his other commitments raise; the line is measured as soon as it carries a time.</span>`},
-    {sev:'set',src:()=>`saExempt · scSpare`,
-     t:()=>`An <b>SC SPARE</b> carries no crew rest in either direction — standing spare buys none for the next day, and it never closes a spare slot to anyone.`},
-   ]},
-
-  {g:'Turning and the length of the day',
-   rows:[
-    {sev:'adv',code:'TURN',set:['tightTurn'],src:()=>`VCONF.tightTurn ${VCONF.tightTurn}`,
-     t:()=>`Landing to the next take-off needs the <b>tight turn threshold</b>, ${lgV(lgT(VCONF.tightTurn))}, or the time the ground actually takes — ${lgV(lgT(VCONF.dekit))} dekit plus ${lgV(lgT(VCONF.step))} step — whichever is longer. Right now that is ${lgV(lgT(Math.max(VCONF.tightTurn,VCONF.dekit+VCONF.step)))}. Less is a tight turn.`},
-    {sev:'adv',code:'DT_SUM',
-     t:()=>`<b>Double turning</b> — <b>two or more sorties in one day, flown one after the other</b> — raises one Advisory line at the head of the day naming everyone who is on it, matching the amber DT pucks. Double turning is routine and planned, not an error.<span class="why">There is no span test: a man on two sorties is double turning whether they are back to back or a whole day apart. How tight the gap is belongs to the tight-turn rule. And two seats on the same air time are not a double turn at all — that man is double-booked, the red conflict Warning speaks for him, and this line leaves him out.</span>`},
-    {sev:'note',code:'LONGDAY',set:['longDay'],src:()=>`VCONF.longDay ${VCONF.longDay}`,
-     t:()=>`More than ${lgV(lgT(VCONF.longDay))} on the books, first commitment to last, is a <b>long work day</b> — a grey note, not a warning.`},
-    {sev:'hard',code:'DAYS_RUN',set:['maxRun'],src:()=>`VCONF.maxRun ${VCONF.maxRun}`,
-     t:()=>`Nobody may be on the programme more than <span class="val">${VCONF.maxRun}</span> days in a row — a <b>break day</b> is due. It is counted across the week boundary — last week's tail carries in, reading what the app remembers of last week (including your own edits), not just what was originally planned — so a run that started before Monday still catches. The Warning lands on the day that breaks the limit, which is the day to clear.<span class="why">Every kind of tasking counts: a flight, a duty post, a sim, a ground item, a programme row. Leave and downchits are not tasking, so a day off resets the count.</span>`},
-   ]},
-
-  {g:'Briefs and debriefs',
-   sub:'A man can be free at take-off and still have no time to prepare.',
-   rows:[
-    {sev:'adv',code:'NO_BRIEF',
-     t:()=>`Anything sitting between the <b>brief time and take-off</b> means there is no time for the flight brief — an Advisory: the clash itself already carries the Warning; the eaten brief window is the advice on top of it.<span class="why">An event that finishes at or before the brief time is fine — a stand-down 08:30–09:00 against a 10:20 brief is no issue.</span>`},
-    {sev:'adv',code:'DEBRIEF',
-     t:()=>`Anything inside <b>landing + ${lgT(VCONF.debrief)}</b> costs the flight debrief. Bad, but not unflyable — an Advisory.`},
-    {sev:'adv',code:'SIM_BRIEF',set:['epBrief'],src:()=>`VCONF.epBrief ${VCONF.epBrief}`,
-     t:()=>`An EP profile on the OFT briefs ${lgV(lgT(VCONF.epBrief))} before the box — unless its remarks name a lead (<b>BRIEF 30 PRIOR</b>, <b>30 mins prior</b>), which wins for that line; the AMT carries its <b>own BRIEF row</b>, and that row's time is the hard line.`},
-    {sev:'adv',code:'SIM_DEBRIEF',set:['simDebrief','amtDebrief'],src:()=>`VCONF.simDebrief ${VCONF.simDebrief} · VCONF.amtDebrief ${VCONF.amtDebrief}`,
-     t:()=>`A sim debriefs for ${lgV(lgT(VCONF.simDebrief))} after the box. The AMT's debrief is its <b>DEBRIEF row's own start-to-end</b> when that row carries an end; left blank, it falls back to ${lgV(lgT(VCONF.amtDebrief))} after the debrief start.`},
-    {sev:'set',set:['simLen'],src:()=>`VCONF.simLen ${VCONF.simLen}`,
-     t:()=>`A sim row with a start and <b>no end time</b> is assumed to run ${lgV(lgT(VCONF.simLen))} — its own number, not the general ${lgT(VCONF.openEnd)} other open-ended rows get.<span class="why">A box slot is a fixed block, not a meeting: assuming the meeting length under-booked every unfinished sim row by half an hour. The validator and the crew picker read this same setting, so what one flags and what the other offers cannot drift. It was a hard-coded 90 until 21 Aug 26.</span>`},
-   ]},
-
-  {g:'Qualification and currency',
-   rows:[
-    {sev:'hard',code:'QUAL',
-     t:()=>`<b>Seat rules.</b> A WSO cannot fly the front seat; <b>IW</b> is a WSO-only category and sits RCP only. The <b>rear seat is open to any pilot</b> — jet or sim, no instructor rating needed. A pilot <b>FI</b> follows the IP rules, a WSO FI the IW rules. The sim's front seat follows the same rule as the jet's.`},
-    {sev:'hard',code:'ILLEGAL_CREW',
-     t:()=>`<b>The combination matrix</b> (F-15 Table 1.5-2). An <b>OCU pilot</b> may not fly with a <b>CAT A–D WSO</b>, and an <b>OCU WSO</b> may not fly with a <b>CAT A–D pilot</b> — not authorised combinations, a Warning.<span class="why">An instructor in either seat clears the matrix: an instructor pilot (IP / IR / FI) flies with anyone, an instructor WSO with any front seat.</span>`},
-    {sev:'adv',code:'CREW_SOLO',
-     t:()=>`<b>OCU pilot with OCU WSO</b> is a <b>crew solo</b> — only allowed for sorties designated under the F-15 Basic Course Syllabus. An Advisory.`},
-    {sev:'adv',code:'CO_APPROVAL',
-     t:()=>`<b>D+C, C+D and D+D</b> (pilot + WSO) require <b>CO approval</b>. An Advisory.`},
-    {sev:'adv',code:'OCU_NO_IP',
-     t:()=>`An <b>OCU formation with no instructor</b> (IW / IP / IR / FI) in it raises an Advisory.`},
-    {sev:'adv',code:'PAX_CREW',
-     t:()=>`A <b>personnel (ground crew)</b> body in the <b>rear seat</b> — an incentive passenger — raises a <b>crew-pairing</b> Advisory: the ride is a non-standard pairing that needs approval. It reuses the <b>CP</b> flag.<span class="why">Ground crew hold no flying qualification and may ride a rear seat only. They carry just three checks — a conflict, a long working day and the seven-day run — plus this pairing advisory; every other flying rule (crew rest, the seat and combination rules, refuelling, SC currency) is off for them.</span>`},
-    {sev:'hard',code:'NO_IR',
-     t:()=>`An <b>IRT</b> — an instrument rating test — needs an <b>IR</b> (instrument rating examiner) in the crew. IRT in a formation's <b>mission</b> wants an IR anywhere in that formation; IRT in one aircraft's <b>remarks</b> wants the IR in that aircraft.`},
-    {sev:'hard',code:'AAR_QUAL',
-     t:()=>`Air-to-air refuelling currency is read <b>straight off the remarks</b>. A bare <b>AAR</b> is <b>night on a night wave</b>, day otherwise — writing <b>NAAR</b> or <b>DAAR</b> says it outright, whatever the wave.<span class="why">An <b>A:</b> tag means the front seat; a <b>B:</b> tag is ignored entirely — a WSO holds no AAR currency. <b>NO AAR / NO DAAR / NO NAAR</b> ask for nothing. Only the front seat is checked. The clock is out of this rule by the owner's call (21 Aug 26): a landing time used to tip a bare AAR to night after 19:00, and doesn't any more — the wave's own day/night setting is the whole answer.</span>`},
-    {sev:'hard',code:'AAR_INSTR',
-     t:()=>`A pilot who is <b>not</b> current may still fly a refuelling sortie as <b>training</b> — but only with someone cleared to <b>instruct</b> that AAR in the back seat. If the man behind him is an instructor pilot without the mark, the line is flagged on <b>him</b>.<span class="why">Being IP / IR / FI is not enough on its own: instructing AAR from the rear cockpit is a separate sign-off, recorded on the Quals page as an <b>I</b> in place of the tick on DAAR or NAAR. When the back seat holds the right mark for what the remarks ask, the front seat's own currency warning is <b>cleared</b> — a supervised training sortie is legal and should not read as a fault. With the back seat empty, holding a WSO, or holding a pilot who is not an instructor, nobody aboard can supervise and the front-seat warning stands instead.</span>`},
-    {sev:'hard',code:'SC_QUAL',set:['scDayFrom','scDayTo'],
-     src:()=>`VCONF.scDayFrom ${hhmm(VCONF.scDayFrom)} · VCONF.scDayTo ${hhmm(VCONF.scDayTo)}`,
-     t:()=>`<b>SC DAY</b> covers a shift sitting wholly inside ${lgV(hhmm(VCONF.scDayFrom))}–${lgV(hhmm(VCONF.scDayTo))}. Anything reaching outside it needs <b>SC NIGHT</b>. A spare is checked for currency exactly like a main.`},
-    {sev:'set',src:()=>`q.naar&&!q.daar · q.naar==='I'&&q.daar!=='I' · q.scNight&&!q.scDay`,
-     t:()=>`Night currency is signed off <b>after</b> day currency, never before: <b>NAAR</b> cannot be held without DAAR, and <b>SC NIGHT</b> cannot be held without SC DAY. Removing the day one removes the night one with it. The <b>instructor mark</b> follows the same order one rung up — the NAAR <b>I</b> needs the DAAR <b>I</b> — but withdrawing the day mark only <b>demotes</b> the night one back to a plain tick: he is still night current, he is simply no longer cleared to teach it.`},
-   ]},
-
-  {g:'Leave, downchit and personal inputs',
-   rows:[
-    {sev:'set',extra:leaves,src:()=>`INPUT_META`,
-     t:()=>`An absence is booked as one of ${lgV(INPUT_TYPES.length)} things. Every one of them closes the man for the hours it covers — flying, sims, duties and ground slots alike — from the moment it is typed. The one exception: an input a scheduler has <b>removed</b> from the Ground Programme sits in Personal Inputs and flags <b>nothing</b> until it is accepted back.<span class="why">Removing it is the scheduler saying it does not stand — a rejected request must not keep ringing warnings (owner, 26 Aug 26). Deleting the input entirely says the same thing louder.</span>`},
-    {sev:'hard',code:'LEAVE_FLY',
-     t:()=>`On leave but planned to fly, sit a sim, stand a duty or take a ground slot — a Warning, and the <b>reason</b> is printed with it.`},
-    {sev:'hard',code:'DNIF_FLY',
-     t:()=>`Medically down and planned anyway — a Warning. <b>HL</b>, <b>OML</b> and <b>ATT C</b> close everything, an SC spare included. <b>ATT B</b> is the exception: he may not fly, but a duty post, a sim seat or a ground slot is proper work for him and raises nothing.<span class="why">It is the only place the app separates “cannot fly” from “cannot come to work”. A man on ATT B is grounded, not absent.</span>`},
-    {sev:'hard',code:'INPUT_FLY',
-     t:()=>`Any other input clashing with a sortie, a sim, a duty or a ground slot — a course, a meeting, an appointment, overseas duty. Since 10 Aug 26 these count the moment they are typed; a scheduler no longer has to accept one first.`},
-    /* [BLANK-TIMES-ABSENCE] (owner, D605, 6 Oct 26) — the missing-input default of the three warnings above, said
-       where a scheduler can read it (the robustness doctrine: every default is stated somewhere the user can see).
-       Pinned in logic.test.tsx. */
-    {sev:'set',src:()=>`wholeDay · day.blank`,
-     t:()=>`A seat with <b>no times yet</b> — a new flying line, a duty, sim, ground or programme row with no start, a standby shift with blank hours — is still checked against an absence that covers the <b>whole day</b>: a man on leave, medically down or away all day is flagged the moment he is seated there, with the same warning and the same exceptions as on a seat with times. An absence for only <b>part of the day</b> waits until the seat has times.<span class="why">A new line or row comes up blank, and the struck name in the crew list used to be the only warning until a time was typed (owner, 6 Oct 26). A whole-day absence does not depend on the missing time; a part-day one has nothing to be compared with yet.</span>`},
-    {sev:'adv',code:'SANS_AVAIL',
-     t:()=>`<b>SANS Availability</b> is the opposite of every type above — it says which events a SANS body <b>is</b> offering, Fly / AMT / OFT, and when. A SANS body planted into a flying seat, an OFT box or an AMT box <b>outside what a filed SANS Availability input offers</b> — the wrong event, or outside the stated time — raises an Advisory. It wears the amber <b>A</b> flag — the planned-against-what-was-filed chip (owner, 26 Aug 26; it launched on CP, but CP says a crew <i>pairing</i> needs approval, which is not this man's problem). A flying seat is judged from the crew's <b>in-time to landing + dekit</b> (owner, 26 Aug 26): the wave's published in-time — or a typed SC B — opens the window when it shows the crew earlier than the step; with no in-time published the window stays step to dekit, and a later in-time never narrows it. A sim box is judged at its own written hours.<span class="why">Filing <b>nothing</b> raises no Advisory here — only the palette's grey-out, printed the moment a slot is armed, and the same toast on planting anyway. This is deliberate: the demo week's SANS aircrew fly with no SANS Availability record filed at all, and turning a blank record into a persistent warning would flag every one of them for something nobody has asked them to file yet.</span>`},
-    /* no `code`: this is a MARK, not a validator code — giving it one would
-       put it in the fired-rules lookup and imply the engine emits it. */
-    /* THE CUT-OFF HAS TWO SHAPES AND EACH CALENDAR ITS OWN (D628, D639, 7 Oct 26): this row and the next state the
-       rule as it is SET — engine/inputs.ts cutRuleText, the one wording the calendars' "How this works" reads too —
-       and work the example from the live values, so neither can describe a rule the squadron no longer runs. */
-    /* ONE SETTING, TWO WAYS IN (D639): each cut-off is set in its own calendar's settings window, and `open` puts a
-       button on its row here that opens that SAME window — the four values are not typed on this page (the Inputs
-       row's day box went with it, step 5, 8 Oct 26). */
-    {sev:'note',open:'inputs',src:()=>`VCONF.inputLead ${VCONF.inputLead} · VCONF.inputCutMode ${VCONF.inputCutMode} · VCONF.inputCutWd ${VCONF.inputCutWd} · VCONF.inputCutWeeks ${VCONF.inputCutWeeks}`,
-     t:()=>`A member's input is due <b>${lgV(esc(cutRuleText('inputs')))}</b> — the week being <b>its own week</b>. One last changed after that deadline is marked <b>LATE</b> wherever it appears — the week, the board, the Inputs page, and the view-only programme.<span class="why">The deadline runs with the input: it is counted back from the Monday of the week the input's own first day falls in, whatever week is on screen — so a leave for December filed in August is judged against December's deadline, not the week being viewed. The deadline day itself is still on time: an input for the week of Mon 17 Aug is due by ${esc(cutDueWords('inputs'))}, and one touched the day after is late. What is measured is the <b>last change</b>, not the first submission, so an input raised early and then amended after the deadline still reads late — the deadline exists so the week can be planned against something that has stopped moving. This is a <b>mark only</b>: it raises no warning, closes no slot and changes nothing the validator sees. <b>Downchits are exempt</b> — going DNIF is not a decision a man makes in advance, and marking the one input type that is always last-minute would only teach everyone to ignore the mark. Leave and detachments are <b>not</b> exempt: those are applied for, and applying late is the thing this is about.</span>`},
-    {sev:'note',open:'sans',src:()=>`VCONF.sansLead ${VCONF.sansLead} · VCONF.sansCutMode ${VCONF.sansCutMode} · VCONF.sansCutWd ${VCONF.sansCutWd} · VCONF.sansCutWeeks ${VCONF.sansCutWeeks}`,
-     t:()=>`A <b>SANS availability</b> entry has a deadline of its own: <b>${lgV(esc(cutRuleText('sans')))}</b>, counted from its own week in the same way. One last changed after it is marked <b>LATE</b>.<span class="why">The SANS calendar and the Inputs calendar each keep their own cut-off, so SANS people can be asked to commit on a different day from everyone's inputs. For the week of Mon 17 Aug this one is ${esc(cutDueWords('sans'))}. Everything else is the rule above: the deadline day itself is on time, what is measured is the last change, and it is a mark only.</span>`},
-    /* THE MEMBERS' SWITCH (owner D654, D655 reading 6 — "for now"; the plan §3.13): a squadron setting, flipped in the
-       Inputs calendar's settings window, listed here with the door to it (the same two-doors-one-setting shape) */
-    {sev:'set',open:'inputs',src:()=>`settings.memberfile · state/perms.ts membersFileOn`,
-     t:()=>`Members may file duties and commitments for other people: <b>${lgV(membersFileOn()?'on':'off')}</b>.<span class="why">On, a member may file a duty or another commitment (a meeting, a course, an appointment) for someone else, or for several people at once; he, the person it is for and an admin may then change or delete it. Off, a member files for himself only, and what he had filed for others is the person's own and an admin's to change. On or off, <b>leave, medical and SANS availability</b> are never a member's to file for another person.</span>`},
-    /* wire 4 — a mark on Leave War, not a validator code (no `code` for the
-       same reason inputLead above carries none) */
-    {sev:'note',set:['oilFullMin'],src:()=>`VCONF.oilFullMin ${VCONF.oilFullMin} · engine/oil.ts`,
-     t:()=>`<b>Work on a weekend or public holiday earns OIL</b>, credited automatically into Leave War when the day is <b>published</b>. ONE rule for everything: a person's worked hours for the day run START TO FINISH — from the first thing they do to the end of the last, gaps between events included, because they are still in squadron — over flying (from the line's entered <b>In-time / Rally</b> — the earliest that applies to its formation, or the nominal report where none is entered — to landing plus debrief), sims, duty rows, the Ground and Common Programme and SC MAIN shifts (a shift's written start to end — from its typed <b>B</b>, the crew's in-time, where one is filled and earlier than the start). <b>${lgV(ruleFmt('oilFullMin',VCONF.oilFullMin))}</b> or more is a FULL day (FO, 1.0), under it a HALF (HO, 0.5), regardless of the time of day or the shift's shape.<span class="why">A public holiday is whatever Leave War says it is — the PH flag on the day, or an event word tagged <b>PH</b> (the seeded <b>PH</b> type). An <b>Off day</b> declared by management (the <b>Off day</b> event tag, grey down the column) earns nothing — it is given, not worked. An SC <b>spare</b> (standing by at home) and <b>AVALON / BB</b> — seats and desks — earn nothing unless an admin switches that line or desk on in <b>OIL Earn</b>, for one that really was worked; on a published day that switch goes out with the next amendment. A row with no times written earns nothing either — the credit follows the timings as scheduled, and a guess would mint OIL from nothing. One start-to-finish measure per day means an hour can never earn twice and a day can never earn more than 1.0. An <b>ALL</b> or <b>ALL AVAIL</b> puck on a Common-Programme or Ground row credits everyone available for that event (aircrew, SANS excluded). A <b>Duty & commitments input</b> is never credited silently: the app asks its owner first, and the confirmed days count into the same start-to-finish day. The credit lands in Leave War as an FO (full) or HO (half) cell and moves the OIL balance there; if the schedule changes and the day is re-issued, the credit follows. <b>A published day keeps the OIL it went out with</b>: the nominal report, the flight debrief and this threshold are kept with each published version, so changing one of them here moves a published day's OIL only when that day is published again — until then the day shows a pending change wherever somebody's OIL would move. A report on the evening before lengthens that line's own day and earns the day before nothing. It never overwrites a leave bid — that disagreement is raised on Leave War's clash strip for a human to resolve. Every credit — an earned day or one an admin gives — shows in Leave War's <b>OIL tracker</b> with its date and reason; a day of OIL taken spends the <b>oldest</b> credit first, and a credit lasts as long as the admin's OIL policy says (a number of days or months from its own date, or forever) before what is left of it expires.</span>`},
-    /* the blind-desk warning (owner, 20 Sep 26) — the rule above says a row
-       with no times earns nothing; this is the app finally SAYING so. */
-    {sev:'hard',code:'OIL_NO_TIMES',
-     t:()=>`On a <b>weekend or public holiday</b>, a duty desk with somebody on it and <b>no start and end times</b> earns him nothing — and the day says so, on the day itself and again at the moment it is published. The warning names the desk.<span class="why">OIL is minted strictly from the times written, so a blank desk measures nothing and mints nothing. That is correct — a guess would invent leave out of thin air — but it used to happen in silence: the day was published, no OIL appeared, and nothing said why. A man's leave balance was short and no screen admitted it. The warning sits on the day while it is being built because that is where the fix is free; after the publish, correcting it costs an amendment. A blank desk with nobody on it says nothing — an empty desk owes no one. On an ordinary weekday it says nothing either, since no weekday work earns OIL at all.</span>`},
-    /* A DAY ISSUED BEFORE THESE SEATS COUNTED (owner, 22 Sep 26 — "ok fix this
-       first"). Its sibling above is a row with no usable times; this one is a
-       day whose ISSUED copy predates the app counting the people behind an
-       ALL AVAIL puck on a duty desk, a sim or an extras line. It used to read
-       "1 pending" with no cell marked and nothing in History, while the chip
-       beside the puck said "?" — so the day asked for an amendment it could not
-       explain. Caught by the guard that every code the engine can raise is
-       documented here, which is exactly what that guard is for. */
-    {sev:'adv',code:'OIL_OLD_BLOCK',
-     t:()=>`A <b>weekend or public holiday you already published</b> can say it has <b>something pending</b> the first time this app counts a seat it did not count before — an <b>ALL AVAIL</b> puck on a <b>duty desk</b>, a <b>sim</b>, or an <b>extra people</b> line. Publish the day again and the men behind that puck get their OIL. An Advisory, and only on a day that has already gone out.<span class="why">The issued copy of a day is the squadron's word about what was worked, and it keeps crediting exactly what it credited — nothing moves on its own. But the men behind that puck earned nothing from that seat, because the app was not counting it when the day went out, and they should have. So the day raises the ordinary pending mark and waits for the scheduler to acknowledge it, which is what publishing again does. It says this in words rather than leaving a bare "1 pending" behind, because the copy that went out never wrote down who was behind the puck — so there is no cell to mark and nothing to show in History, and a scheduler would otherwise be republishing blind. One amendment per affected day, once.</span>`},
-    /* the four OIL reminders on a weekend or holiday. They printed their internal code as their
-       heading until the amendment re-test gave them plain ones ([HUMAN-RETEST] walk W4-F5,
-       24 Sep 26) — which is what put them in front of the guard that every check is written up
-       here. Each says what the day is waiting for; none changes what anyone earns. */
-    {sev:'adv',code:'OIL_NO_PERIOD',
-     t:()=>`A <b>weekend or public holiday</b> with work on it that <b>no Leave War period covers</b> can earn nobody any OIL — the credit has nowhere to land. The day names the missing year and offers to create the period, before and after it is published.<span class="why">Publishing does not fix it, so the day keeps saying so after it goes out; a day that read clean here would be the lie (owner, 22 Sep 26).</span>`},
-    {sev:'adv',code:'OIL_UNPUBLISHED',
-     t:()=>`A <b>weekend or public holiday</b> with somebody down to earn OIL that is <b>not published yet</b> earns nobody anything until it is — the day reminds the scheduler to publish it before the day is out. Silent on an ordinary weekday, on an empty weekend, and the moment the day goes out.`},
-    {sev:'adv',code:'OIL_STALE_DAY',
-     t:()=>`A day published as an ordinary working day that the Leave War <b>later calls a public holiday</b> keeps earning what it went out with — nothing — until it is <b>published again</b>. The day says so, and its pending count shows the difference.<span class="why">Only the issued schedule earns OIL, in both directions (owner, 21 Sep 26): the published record is what happened, so today's calendar never moves it on its own — but it must never do that silently.</span>`},
-    {sev:'adv',code:'OIL_STALE_HOLIDAY',
-     t:()=>`The mirror of the one above: a day published as a <b>holiday</b> that the Leave War <b>no longer calls one</b> keeps its OIL until it is <b>published again</b>, which withdraws it. The day says so.`},
-    /* the nought-minute sortie (owner's ruling D49, 22 Sep 26). The rule above
-       says the credit follows the timings as scheduled; this is the one place
-       where a line's timings cannot be right and the man is paid anyway. */
-    {sev:'adv',code:'FLT_NO_LEN',
-     t:()=>`An ordinary <b>flying line</b> typed with the <b>same take-off and landing time</b> still earns the crew their OIL; a <b>standby shift</b> (SC, AVALON, BB) typed the same way earns nobody anything at all. Either way one of the two times is wrong and the day says so, on the line, on <b>any</b> day.<span class="why">The sortie itself measures nothing, so on the face of it nobody should earn from it. They do, and deliberately: a flying day runs from the report three hours before take-off to the debrief two hours after landing, and the crew did both. They were in squadron whatever the times say, which is the squadron's own fact rather than anything the times can show. So the line is never refused and no credit is taken away — the warning exists because a nought-minute sortie is always a slip of the keyboard, and it is cheaper to fix while the day is being built than after it has gone out. It names the line, not the crew: the times are the scheduler's to correct. A line that has no readable times at all is a different problem and carries the other warning — that one really does earn nobody anything. <b>A standby SHIFT is the other way round</b>: SC, AVALON and BB have no report and no debrief, so their window is the written window and one typed to the same minute earns nobody anything at all. The warning says so in those words on a shift, and the day names it — as a shift, not as a desk — in the same list as a desk with no usable times.</span>`},
-    {sev:'set',src:()=>`canSpare · sparePost`,
-     t:()=>`<b>Local keeps the man reachable</b>, so he may still be raised as an <b>SC SPARE</b> — standby is not a task, and it raises no flag. <b>Overseas cannot</b> (OL, OD), and <b>neither can any of the four medical codes</b>, HL, OML, ATT C and ATT B. Putting one of them on a spare line is a Warning.<span class="why">Standing spare means being reachable and fit to walk. Overseas he is not reachable; medically down he is not fit — which is why the medical codes are barred even though the man is on the island. Besides currency, the pilots-only front seat and not holding another SC seat in the same hours (see The standby lines), this is what IS checked on a spare line.</span>`},
-    /* the half-days (owner, 10 Aug 26) */
-    {sev:'note',src:()=>`inp.s · inp.e · slotStart · slotEnd`,
-     t:()=>`Leave and medical absences can be booked <b>AM</b> (00:00–12:00), <b>PM</b> (12:01 onwards) or all day, and a half-day only closes its own half — a man on AM leave can still be planned for an afternoon wave.<span class="why">Each slot is judged against its own hours, and a sortie's hours run from the <b>step</b>, not the take-off. So a morning absence does not free a wave that starts walking before noon: Monday's first VL takes off 12:40 and steps at 11:40, which is still the morning. A row with no times on it at all is treated as covering the whole day rather than none of it — an unknown never clears an absence.</span>`},
-   ]},
-
-  /* WAVE TYPES — the one-line summary of each "+ Wave" kind, rendered from the
-     SAME engine/wavetpl.ts kindNote the template editor prints under its kind
-     picker, so the picker and this page can never show different words (owner,
-     30 Aug 26 — "make sure these word summaries are updated when I change the
-     rules concerning them … and the logic page should be updated as well").
-     kindNote is the ONE source of the one-liner; the per-kind DETAIL is "The
-     standby lines" group just below (and the flying-wave rules above). When a
-     kind's CHECKING rule changes in validate.ts / events.ts, update all three in
-     step: the rule, kindNote (both the picker and the row here follow it), and
-     the matching detail row below. logic.test.tsx pins that every kind's kindNote
-     shows on this page, so a dropped wire fails a gate rather than drifting. */
-  {g:'Wave types at a glance',
-   sub:'The same one-line summary shown under each type in the “+ Wave” template editor. The detailed rules for each follow below.',
-   rows:WAVE_BUILTIN.map((b:any)=>({sev:'note',src:()=>`kindNote('${b.key}')`,
-     t:()=>`<b>${esc(b.label)}</b> — ${esc(kindNote(b.key))}`})),
-  },
-
-  {g:'The standby lines',
-   /* the DETAILED per-kind rules; the one-line summaries are the "Wave types at a
-      glance" group above, sourced from engine/wavetpl.ts kindNote. Keep both, plus
-      the rule in validate.ts / events.ts, in step when a kind's checking changes. */
-   sub:'SC, AVALON and BB sit outside the day’s flying count — and mostly outside the engine.',
-   rows:[
-    {sev:'set',src:()=>`saExempt · isStandalone`,
-     t:()=>`An <b>SC MAIN</b> line is fully cross-checked, at the hours written on it.`},
-    {sev:'adv',code:'SC_INTIME',
-     t:()=>`A typed <b>B</b> on an SC line is that crew's <b>in-time</b>, not a brief. On a <b>MAIN</b> it starts the crew-rest clock and the duty-hours day — and, on a weekend or public holiday, his <b>OIL</b> day, where it is earlier than the shift's start — and anything that cuts into — or ends inside — the window between the B and the shift start draws this advisory. A <b>SPARE</b> reports nowhere, so his B does nothing.<span class="why">The hard rules stay on the shift's own hours: a commitment before the shift start has not double-booked the shift yet, which is why the window reads amber rather than red — and something crossing the start itself is the conflict rule's business, said once, not twice.</span>`},
-    {sev:'set',src:()=>`scSpare`,
-     t:()=>`An <b>SC SPARE</b> is standing by, not tasked: he is checked for <b>currency</b>, for being <b>able to stand it at all</b>, for the <b>front seat</b> — a WSO may not hold a spare front seat — and for <b>not holding another SC seat, or the SC desk, in the same hours</b>. Nothing else: he may fly, sit a sim or stand an ordinary duty in the same hours and none of it raises anything; but an overseas leave or a downchit across the shift does, and so does another SC seat — MAIN or SPARE — or an SC duty desk whose hours overlap his.<span class="why">Overlap means genuinely shared minutes: SC AM 07:00–13:00 into SC PM 13:00–19:00 touch only at 13:00 and stay two clean shifts a man may hold back to back (owner, 31 Aug 26). The SC desk is the duty block whose template is marked <b>SC</b> (owner, 7 Sep 26); a MAIN on that desk is the ordinary conflict. The crew picker refuses the second seat with the same rule the warning uses, so the two never disagree. The rear spare seat carries no seat rule — offered and declined the same day.</span>`},
-    {sev:'set',src:()=>`w.noconf`,
-     t:()=>`<b>AVALON</b> and <b>BB</b> are exempt from every cross-check against the day's tasks, rest and briefs, and carry four rules of their own — the two are twins (owner, 7 Sep 26), BB's only difference being that its hours are typed rather than fixed, and a BB line left with blank hours is checked for nothing. Every man on it, jet seat or desk, must be <b>on the island</b> and <b>not medically down</b> — overseas leave, overseas duty, hospitalisation, medical leave or ATT C anywhere on the line, and ATT B on a jet seat too, though he may still man the desk. Every seat, MAIN or SPARE, needs <b>SC currency</b> for its hours — SC NIGHT on AVALON's 19:00–07:00, SC DAY on a BB shift typed inside the day. The <b>front seat is pilots-only</b>, MAIN or SPARE — a WSO there is an illegal seat. And <b>nobody holds a seat and another place in the same hours</b> — MAIN and SPARE, a seat and the desk, an AVALON seat and a BB seat; two desk roles on one man are allowed. The AVALON or BB desk is the duty block whose template is marked <b>AVALON</b> or <b>BB</b>; it earns no OIL on a weekend or holiday unless an admin switches it on in OIL Earn, and neither does a seat.<span class="why">Local leave, an off in lieu, a course or an appointment plants him with nothing raised — the point of the rule is that standing AVALON is not the same as being cross-checked against the day's tasks (owner, 11 Aug 26; the three seat rules 7 Sep 26). And the shift runs 19:00–07:00, so its morning half is judged against <b>tomorrow's</b> inputs, the same way a night sortie landing after midnight is. A man on AVALON tonight and a sortie tomorrow morning is not a rule — nothing on AVALON is an event.</span>`},
-    {sev:'set',src:()=>`slotBar · dayEvents`,
-     t:()=>`When an SC slot is armed, the crew picker judges each name against <b>that shift's own window</b>, not the whole day — so a man on SC AM is offered normally for SC PM.`},
-   ]},
-
-  {g:'What the puck shows',
-   sub:'One puck can carry several problems at once. It prints the most serious.',
-   rows:[
-    {sev:'set',extra:chipRow,src:()=>`RANK`,
-     t:()=>`Flag priority, most serious first:`},
-    {sev:'set',src:()=>`cls.push('boxred')`,
-     t:()=>`A <b>red box</b> round the whole puck marks a conflict, a crew-rest breach, a qualification problem or a missed brief. The amber flags do not draw one.`},
-    {sev:'set',src:()=>`markRing · SEVR`,
-     t:()=>`The ring round a puck takes the <b>most serious</b> tier that person carries that day: red beats amber beats grey.`},
-   ]},
-
-  {g:'Publishing and amendments',
-   rows:[
-    {sev:'set',src:()=>`daySigned · signMissing`,
-     t:()=>`A day needs all four sign-offs — <b>CUR CK, SKED CK, PLANNED BY, APPROVED BY</b> — before it can be published. Only crew holding the <b>Scheduler</b> qualification appear in the last three.`},
-    {sev:'set',src:()=>`signClear(di)`,
-     t:()=>`Publishing a day <b>spends its signatures</b>. The next amendment on that day is signed for on its own merits.`},
-    {sev:'set',src:()=>`publishALDay · alIssue`,
-     t:()=>`An <b>AL</b> is published from the day it belongs to, and takes <b>only that day's</b> unpublished edits. Other days keep theirs.`},
-    {sev:'set',src:()=>`publishableKeys`,
-     t:()=>`Only edits on a <b>published</b> day can go out as an amendment — an AL never claims to amend something that was never issued.`},
-   ]},
-  ];
+    { g: 'Crew rest and the working day', items: [
+      { name: 'Crew rest', keys: ['crewRest'], line: () => 'The rest a flyer needs before his day starts. The crew-rest warning and the tight crew-rest advisory move with it.' },
+      { name: 'Days in a row', keys: ['maxRun'], line: () => 'A day on the programme beyond this many in a row raises the red break-day warning.' },
+      { name: 'Long work day', keys: ['longDay'], line: () => 'A longer day, first commitment to last, shows the grey long-day note.' },
+      { name: 'Report before take-off', keys: ['reportLead'], line: () => 'With no in-time or rally typed, a flyer\'s day starts here: his long day, OIL and Insights hours count from it. It also sets when the tight crew-rest advisory shows. "+ In-time / Rally" fills in take-off less this time.' },
+    ] },
+    { g: 'Flying lines', items: [
+      { name: 'Brief before take-off', keys: ['briefLead'], line: () => 'Sets the suggested B on a line with no brief typed, and a blank B is checked against it. With no in-time typed, crew rest counts to this B. A published day keeps its B until it is published again.' },
+      { name: 'Step before take-off', keys: ['step'], line: () => 'A man counts as busy from step: clashes and the crew list follow it. It and dekit set the shortest tight turn. It also decides when a LATE SHOW crew-rest ring turns from dashed to solid.' },
+      { name: 'Dekit after landing', keys: ['dekit'], line: () => 'A man counts as busy until dekit. It and step set the shortest tight turn.' },
+      { name: 'Debrief after landing', keys: ['debrief'], line: () => 'Ends a flyer\'s day: tomorrow\'s crew rest, the long day, OIL and Insights hours count to here, and so does the flight debrief advisory.' },
+      { name: 'Tight turn', keys: ['tightTurn'], line: () => 'A shorter gap from landing to the next take-off is a tight turn. It is never less than dekit plus step.' },
+      { name: 'In-time / Rally words', keys: ['reportText'], kind: 'text', line: () => 'What "+ In-time / Rally" writes after the time.' },
+    ] },
+    { g: 'Sims', items: [
+      { name: 'EP sim brief', keys: ['epBrief'], line: () => 'The brief before an EP sim, unless its remarks name one.' },
+      { name: 'Sim debrief', keys: ['simDebrief'], line: () => 'The debrief after a sim.' },
+      { name: 'AMT debrief', keys: ['amtDebrief'], line: () => 'How long an AMT debrief runs when its DEBRIEF row has no end.' },
+    ] },
+    { g: 'Rows with no end time', items: [
+      { name: 'A sim', keys: ['simLen'], line: () => 'A sim with a start and no end is taken to run this long, for clashes and the crew list. It earns no OIL until its end is typed.' },
+      { name: 'Any other row', keys: ['openEnd'], line: () => 'The same for a ground, programme or duty row.' },
+    ] },
+    { g: 'Standby (SC, AVALON, BB)', items: [
+      { name: 'SC day window', keys: ['scDayFrom', 'scDayTo'], kind: 'window', line: () => 'A shift wholly inside it needs SC DAY; one reaching outside it needs SC NIGHT.' },
+      { name: 'SC MAIN clashes', keys: [], kind: 'kinds', line: () => 'What an SC MAIN man\'s clash with each shows: a red warning or an amber advisory.' },
+    ] },
+    { g: 'Inputs', items: [
+      { name: 'Inputs late cut-off', keys: ['inputLead', 'inputCutMode', 'inputCutWd', 'inputCutWeeks'], kind: 'door', door: 'inputs', value: () => cutRuleText('inputs'), line: () => 'An input last changed after it wears LATE.' },
+      { name: 'SANS late cut-off', keys: ['sansLead', 'sansCutMode', 'sansCutWd', 'sansCutWeeks'], kind: 'door', door: 'sans', value: () => cutRuleText('sans'), line: () => 'The same for SANS availability.' },
+      { name: 'Members file for others', keys: [], kind: 'door', door: 'inputs', value: () => membersFileOn() ? 'On' : 'Off', line: () => 'A member may file a duty or commitment for someone else. Never leave, medical or SANS availability.' },
+    ] },
+    { g: 'OIL', items: [
+      { name: 'Full day of OIL', keys: ['oilFullMin'], line: () => 'Weekend or holiday work this long or longer earns a full day; less earns a half.' },
+    ] },
+    { g: 'Insights', items: [
+      { name: 'Track Blue and Red sorties', keys: [], kind: 'mix', value: () => missionTracking() ? 'On' : 'Off', line: () => 'Splits Insights\' flying bars into Blue and Red, and asks Blue or Red under a formation.' },
+    ] },
+  ]
 }
+
+/* one check row. A check with a `code` is a warning, an advisory or a note the warning list raises, named as the
+   list names it; one without is a grey note — something the app does that a reader acts on. `how` is the folded
+   "How it works" — exactly four (D928). `id` keys the fold's open state and the row. */
+export type LgChk = { id: string, sev: 'hard' | 'adv' | 'note', code?: string, name?: string, line: () => string, how?: () => string[] }
+
+/* the flag order on a puck, most serious first — red where the rule is a Warning, grey for the long day, amber for
+   the rest (kept in step with the week's own legend, html.ts — owner, 10 Aug 26) */
+export const lgChipRow = () => `<span class="lgchips">` + Object.keys(RANK).sort((a: any, b: any) => RANK[b] - RANK[a])
+  .map((c: any) => `<span class="lgc"><i style="background:${
+    c === 'C' || c === 'CR' || c === 'Q' || c === 'RUN' || c === 'CPH' ? '#F0555F;color:#fff' :
+    c === 'LD' ? '#8A96A3;color:#0B0D10' : '#E5A83B'}">${esc(chipText(c))}</i>${esc(wlbl(CHIP_LABEL[c] || c))}</span>`).join('') + `</span>`
+
+export const lgChkName = (c: LgChk) => c.code ? wlbl(WCODE[c.code]) : (c.name || '')
+
+export function lgChecks(): LgGroup<LgChk>[] {
+  const turn = lgV(lgT(Math.max(VCONF.tightTurn, VCONF.dekit + VCONF.step)))
+  return [
+    { g: 'Crew rest and the working day', items: [
+      { id: 'crewrest', sev: 'hard', code: 'CREW_REST', line: () => `For a flying member: at least ${T('crewRest')} (Crew rest) from the end of his day before to his earliest in-time, or to anything earlier that day.`,
+        how: () => [
+          `Rest runs from the end of the day before to the first thing today: his in-time, his B where no in-time is typed, or anything earlier, such as a meeting.`,
+          `The day before ends at its last commitment of any kind. A flight ends at landing plus the debrief (${T('debrief')}); anything else at its written end.`,
+          'An input counts only if it is a duty or commitment, other than Personal or SANS Availability, with typed times.',
+          `Exactly ${T('crewRest')} is legal. A day with no flying asks for no rest.`,
+          'A LATE SHOW remark keeps the warning. The ring is dashed while rest still clears by step, solid after.',
+          'Monday checks last Sunday. A Sunday that breaks Monday shows a "Breaks Monday" box.',
+          'A flying line with no times yet is not measured, but a typed brief, in-time or landing on it still counts.',
+          'An SC SPARE carries no crew rest either way, and a shift\'s start is its report.',
+        ] },
+      { id: 'crewtight', sev: 'adv', code: 'CREW_TIGHT', line: () => `His rest would be short if he reported the usual ${T('reportLead')} before take-off (Report before take-off), but his typed in-time is later, so it clears.` },
+      { id: 'daysrun', sev: 'hard', code: 'DAYS_RUN', line: () => `On the programme more than ${lgV(VCONF.maxRun)} days in a row.`,
+        how: () => [
+          'Any tasking counts: a flight, a duty, a sim, a ground or programme row.',
+          'Leave or a downchit resets the count.',
+          'It counts last week\'s tail, and the warning lands on the day to clear.',
+        ] },
+      { id: 'longday', sev: 'note', code: 'LONGDAY', line: () => `More than ${T('longDay')} from first commitment to last.` },
+    ] },
+    { g: 'Two things at once', items: [
+      { id: 'doublebook', sev: 'hard', code: 'DOUBLE_BOOK', line: () => 'Two commitments overlap for one man. Touching end to end is not a clash.' },
+      { id: 'shiftsoft', sev: 'adv', code: 'SHIFT_SOFT', line: () => 'An SC MAIN man is also down for something set to Advisory under SC MAIN clashes. A commitment input across the shift is red; a meeting stays amber.' },
+      { id: 'info', sev: 'note', name: 'ⓘ info only', line: () => 'A ground or programme item marked ⓘ is printed but never checked, and earns no OIL.' },
+      { id: 'midnight', sev: 'note', name: 'Past midnight', line: () => 'A row whose end reads earlier than its start runs into the next day.' },
+    ] },
+    { g: 'Flying lines', items: [
+      { id: 'kind-fly', sev: 'note', name: 'Flying wave', line: () => esc(kindNote('fly')) },
+      { id: 'reportorder', sev: 'hard', code: 'REPORT_ORDER', line: () => 'In-time, rally, brief, take-off and landing are not in that order.',
+        how: () => [
+          'The order is in-time, rally, brief, take-off, landing. Equal times are fine.',
+          `The B on the line is what is checked. A blank B is checked as the suggested brief, take-off less ${T('briefLead')}.`,
+          'Out of order is red, but it never stops a day being published.',
+          'On an In-time / Rally line the first clock is used (09:00H or 0900). Write IN TIME, RALLY or both.',
+          'A formation\'s name makes the line that formation\'s; otherwise it is the whole wave\'s.',
+          'A clock later than take-off means the day before.',
+          'RALLY AFTER IN TIME, with no clock, means rally at that formation\'s in-time.',
+        ] },
+      { id: 'reportunres', sev: 'adv', code: 'REPORT_UNRESOLVED', line: () => 'The app cannot read an In-time / Rally line, or RALLY AFTER IN TIME has no in-time.' },
+      { id: 'nobrief', sev: 'adv', code: 'NO_BRIEF', line: () => 'Something sits between the brief and take-off. A blank B counts as the suggested one (Brief before take-off).' },
+      { id: 'debrief', sev: 'adv', code: 'DEBRIEF', line: () => `Something sits inside landing plus ${T('debrief')} (Debrief after landing).` },
+      { id: 'turn', sev: 'adv', code: 'TURN', line: () => `Less than ${turn} from landing to the next take-off (Tight turn, or Dekit plus Step if longer).` },
+      { id: 'dtsum', sev: 'adv', code: 'DT_SUM', line: () => 'Two or more sorties in one day. One line names everyone; it is routine, not an error.' },
+      { id: 'fltnolen', sev: 'adv', code: 'FLT_NO_LEN', line: () => 'A line\'s take-off and landing are the same time. A flying line still earns its OIL; a standby shift earns none.' },
+    ] },
+    { g: 'Sims', items: [
+      { id: 'simbrief', sev: 'adv', code: 'SIM_BRIEF', line: () => `Something sits inside an EP sim's ${T('epBrief')} brief (EP sim brief), or an AMT's BRIEF row.` },
+      { id: 'simdebrief', sev: 'adv', code: 'SIM_DEBRIEF', line: () => `Something sits inside a sim's ${T('simDebrief')} debrief (Sim debrief), or an AMT's DEBRIEF row (AMT debrief, where that row has no end).` },
+    ] },
+    { g: 'Qualifications and currency', items: [
+      { id: 'qual', sev: 'hard', code: 'QUAL', line: () => 'A man in a seat he may not hold, such as a WSO in the front seat. Any pilot may fly the rear seat.' },
+      { id: 'illegalcrew', sev: 'hard', code: 'ILLEGAL_CREW', line: () => 'An OCU pilot with a CAT A–D WSO, or the reverse. An instructor in either seat clears it.' },
+      { id: 'crewsolo', sev: 'adv', code: 'CREW_SOLO', line: () => 'An OCU pilot with an OCU WSO. Allowed only on sorties the syllabus names.' },
+      { id: 'coapproval', sev: 'adv', code: 'CO_APPROVAL', line: () => 'A CAT D pilot with a CAT C WSO, a CAT C pilot with a CAT D WSO, or two CAT Ds. The crew needs the CO\'s approval.' },
+      { id: 'ocunoip', sev: 'adv', code: 'OCU_NO_IP', line: () => 'An OCU formation with no instructor (IW, IP, IR or FI).' },
+      { id: 'paxcrew', sev: 'adv', code: 'PAX_CREW', line: () => 'Ground crew in a rear seat. The ride needs approval. Ground crew are checked only for clashes, the long day and days in a row.' },
+      { id: 'noir', sev: 'hard', code: 'NO_IR', line: () => 'IRT in the mission needs an IR in the formation; IRT in an aircraft\'s remarks needs one in that aircraft.' },
+      { id: 'aarqual', sev: 'hard', code: 'AAR_QUAL', line: () => 'AAR in the remarks needs the front seat\'s currency: night on a night wave, day otherwise. NAAR or DAAR says it outright.' },
+      { id: 'aarinstr', sev: 'hard', code: 'AAR_INSTR', line: () => 'A pilot not current may fly AAR as training only with an instructor in the back seat marked I for it on Quals (an I in place of the tick on DAAR or NAAR). That clears the front seat\'s currency warning; an instructor without the mark is flagged instead.' },
+      { id: 'scqual', sev: 'hard', code: 'SC_QUAL', line: () => `A standby shift wholly inside ${lgV(hhmm(VCONF.scDayFrom))} to ${lgV(hhmm(VCONF.scDayTo))} (SC day window) needs SC DAY; one reaching outside it needs SC NIGHT. A SPARE is checked the same as a MAIN.` },
+      { id: 'nightafterday', sev: 'note', name: 'Night after day', line: () => 'NAAR needs DAAR, and SC NIGHT needs SC DAY. On Quals, removing the day one removes the night one.' },
+    ] },
+    { g: 'Standby (SC, AVALON, BB)', items: [
+      /* the "+ Wave" picker's own words for each standby kind — ONE source, engine/wavetpl.ts kindNote (owner, 30 Aug
+         26: the picker and this page never tell different stories; logic.test.tsx pins it) */
+      { id: 'kind-sc', sev: 'note', name: 'SC', line: () => esc(kindNote('sc')) },
+      { id: 'kind-avalon', sev: 'note', name: 'AVALON', line: () => esc(kindNote('avalon')) },
+      { id: 'kind-bb', sev: 'note', name: 'BB', line: () => esc(kindNote('bb')) },
+      { id: 'shifthours', sev: 'note', name: 'A shift\'s hours', line: () => 'A standby shift takes exactly its written hours: no step, dekit, brief or debrief.' },
+      { id: 'scintime', sev: 'adv', code: 'SC_INTIME', line: () => 'A typed B on an SC MAIN is the crew\'s in-time, and something sits between it and the shift start. It also starts his crew rest, his long day and his OIL from that time. A SPARE\'s B does nothing.' },
+      { id: 'scarm', sev: 'note', name: 'Arming an SC seat', line: () => 'The crew list judges each man against that shift\'s hours only.' },
+    ] },
+    { g: 'Leave, downchits and inputs', items: [
+      { id: 'inputcloses', sev: 'note', name: 'An input closes its hours', line: () => 'Every input closes the man for the hours it covers, from the moment it is filed. One a scheduler has taken off the programme closes nothing.' },
+      { id: 'leavefly', sev: 'hard', code: 'LEAVE_FLY', line: () => 'A man on leave is planned for a flight, sim, duty or ground slot.' },
+      { id: 'dnif', sev: 'hard', code: 'DNIF_FLY', line: () => 'A medically down man is planned. On ATT B he may still stand a duty, sim or ground slot, but not fly.' },
+      { id: 'inputfly', sev: 'hard', code: 'INPUT_FLY', line: () => 'Any other input clashes with a planned slot: a course, a meeting, an appointment, overseas duty.' },
+      { id: 'notimes', sev: 'note', name: 'A seat with no times', line: () => 'Still checked against an absence covering the whole day; a part-day absence waits until the seat has times.' },
+      { id: 'halfdays', sev: 'note', name: 'Half days', line: () => 'Leave and medical can be AM (to 12:00), PM (from 12:01) or all day, and a half day closes only its own half. A sortie counts from its step (Step before take-off), so AM leave still clashes with a wave that steps before noon.' },
+      { id: 'spare', sev: 'note', name: 'Standing SC SPARE', line: () => 'A man on local leave may still stand SC SPARE. Overseas leave or duty (OL, OD) or a medical code (HL, OML, ATT C, ATT B) may not: that is a warning.' },
+      { id: 'sansavail', sev: 'adv', code: 'SANS_AVAIL', line: () => 'A SANS man planned outside the event or the hours he filed. Filing nothing raises nothing.' },
+      { id: 'late', sev: 'note', name: 'LATE', line: () => 'An input last changed after its cut-off (Inputs late cut-off) wears LATE: a mark, never a warning. Downchits never do.' },
+    ] },
+    { g: 'OIL', items: [
+      { id: 'oil', sev: 'note', name: 'Weekend and holiday work earns OIL', line: () => 'Work on a weekend or public holiday earns OIL once the day is published: a full day or a half, by Full day of OIL.',
+        how: () => [
+          'Weekend or holiday work earns OIL once the day is published.',
+          `A man's day runs from his first report to his last end, gaps included: ${lgV(ruleFmt('oilFullMin', VCONF.oilFullMin))} or more is a full day (FO), less is a half (HO).`,
+          'A flight runs from its in-time (or the nominal report) to landing plus the debrief.',
+          'A row with no times, or no end time, earns nothing. An Off day earns nothing.',
+          'SC SPARE, AVALON and BB earn only if switched on in OIL Earn.',
+          'A Duty & commitments input earns once its OIL question is answered yes.',
+          'A published day keeps its OIL until it is published again.',
+        ] },
+      { id: 'oilnotimes', sev: 'hard', code: 'OIL_NO_TIMES', line: () => 'On a weekend or holiday, a row with someone on it and no usable times earns nobody on it any OIL. The warning names the row.' },
+      { id: 'oilunpub', sev: 'adv', code: 'OIL_UNPUBLISHED', line: () => 'A weekend or holiday with someone to earn is not published yet. Nobody earns until it is.' },
+      { id: 'oilnoperiod', sev: 'adv', code: 'OIL_NO_PERIOD', line: () => 'No Leave War period covers this weekend or holiday, so its work earns nobody OIL. The day offers to create the period, before and after it is published.' },
+      { id: 'oilstaleday', sev: 'adv', code: 'OIL_STALE_DAY', line: () => 'A day published as a working day that the Leave War now calls a public holiday earns nothing until it is published again.' },
+      { id: 'oilstalehol', sev: 'adv', code: 'OIL_STALE_HOLIDAY', line: () => 'A day published as a holiday that the Leave War no longer calls one keeps its OIL until it is published again, which withdraws it.' },
+      { id: 'oiloldblock', sev: 'adv', code: 'OIL_OLD_BLOCK', line: () => 'A weekend or holiday published before the app counted an ALL AVAIL on a duty desk, sim or extra people line shows a pending change. Publish it again and the men behind that puck get their OIL.' },
+    ] },
+    { g: 'On the puck', items: [
+      { id: 'puck', sev: 'note', name: 'Several problems on one puck', line: () => 'It shows the most serious flag, in this order, and its ring the most serious colour. A red box round the whole puck marks a conflict, a crew-rest breach, a qualification problem or a missed brief.' + lgChipRow() },
+    ] },
+  ]
+}
+
+/* the six SC MAIN clash kinds, as the "SC MAIN clashes" setting draws them */
+export const lgKinds = () => Object.keys(KIND_LABEL).map(k => ({ k, label: KIND_LABEL[k], hard: !!SHIFT_HARD[k] }))
