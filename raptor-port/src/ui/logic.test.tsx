@@ -168,6 +168,9 @@ describe('the Logic tab, read-only (tfin B50)', () => {
   it('no row carries a "fired" count or an engine name any more (D928)', () => {
     expect($$('#lgBody .lgfired, #lgBody .lgsrc, #lgBody .code')).toHaveLength(0)
     expect(text()).not.toMatch(/VCONF\.|fired \d+×|not fired this week/)
+    /* and no broken value: a slip that joined two strings with a stray "+" once printed NaN and 0 into every row */
+    expect(text()).not.toMatch(/NaN|undefined|\[object/)
+    expect($$('#lgBody .lgchk').filter(r => r.dataset.chk !== 'puck' && /\d$/.test(r.textContent || '')).map(r => r.dataset.chk)).toEqual([])
   })
 
   it('the filter: Fired this week shows only checks the live WARN raised, and counts them', async () => {

@@ -299,7 +299,7 @@ export function LogicPage() {
           inventory's one misleading line) */}
       <div className="lgoff" id="lgOff" hidden={!checkedOff}>
         {checkedOff ? <><b>{checkedOff} setting{checkedOff > 1 ? 's' : ''} changed from the squadron standard.</b>{' '}
-          The schedule is checked against them now. A published day keeps its printed B and its OIL until it is published again.
+          {` The schedule is checked against ${checkedOff > 1 ? 'them' : 'it'} now.`} A published day keeps its printed B and its OIL until it is published again.
           {admin ? '' : ' Only an admin can change them.'}</> : null}
       </div>
       <div className="lgwrap" id="lgBody" ref={bodyRef} dangerouslySetInnerHTML={{ __html: b.html }} />
