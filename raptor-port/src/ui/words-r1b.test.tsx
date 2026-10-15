@@ -135,7 +135,27 @@ describe('on a phone the button rides its puck\'s line (D944, D947 question 3)',
   it('the phone rules: the board\'s, outside its desktop layout; the week\'s under the name', () => {
     const css = readSchedulerCss().replace(/\/\*[\s\S]*?\*\//g, '')
     expect(css).toContain('.schedboard:not(.sb-wide) .sb-arow.c6r.inprow.accup>.lctl{grid-column:2 / 3;grid-row:2;justify-self:end;align-self:center}')
-    expect(css).toContain('.schedboard:not(.sb-wide) .sb-arow.c6r.inprow.accup>.ppl,.schedboard:not(.sb-wide) .sb-arow.c6r.inprow.accup>.rmkin{grid-row:2}')
+    expect(css).toContain('.schedboard:not(.sb-wide) .sb-arow.c6r.inprow.accup>.ppl,.schedboard:not(.sb-wide) .sb-arow.c6r.inprow.accup>.rmkin,.schedboard:not(.sb-wide) .sb-arow.c6r.inprow.accup>.rmkt{grid-row:2}')
     expect(css).toContain('.plist .pl-row.accd>.accs{grid-column:1;grid-row:2;align-self:end;justify-self:start;margin-left:0}')
+  })
+})
+
+describe('the till date on the schedule\'s input rows (D948)', () => {
+  it('the week\'s Personal Inputs box holds the typed words, the date after it in grey; the board\'s the same', () => {
+    const inp = landed()
+    inp.remarks = 'Desk work till 13 Jul'                     // saved with its date in it, before the build
+    PIOPEN.add(MON)
+    const w = el(dayHTML(MON, true, true)).querySelector(`.sec-inp [data-inp^="${inpId(inp)}"][data-inp$=".rmks"]`)!
+    expect(w.textContent, 'the box: the typed words').toBe('Desk work')
+    expect(w.nextElementSibling?.className).toBe('rk-till')
+    expect(w.nextElementSibling?.textContent).toBe('till 13 Jul')
+    const b = el(sbInputsGroupPanel(DAYS[MON], MON)).querySelector(`[data-ifld^="${inpId(inp)}"][data-ifld$=".rmks"]`) as HTMLTextAreaElement
+    expect(b.value.trim(), 'the board\'s box: the typed words').toBe('Desk work')
+    expect(b.closest('.rmkt')?.querySelector('.rk-till')?.textContent).toBe('till 13 Jul')
+  })
+  it('the Ground Programme line is not drawn where no input\'s row stands — a kept row is not one (the scenario designer\'s D)', () => {
+    landed()
+    const kept = { ...DAYS[MON], ground: (DAYS[MON].ground || []).map((x: any) => x.src ? { ...x, kept: true } : x) }
+    expect(el(sbGroundPanel(kept, MON)).querySelector('.sb-pinote'), 'every input row kept: no Reject stands').toBeNull()
   })
 })

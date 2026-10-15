@@ -996,3 +996,18 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** In §0 step 2 (and the rule's short form): the lesson line quotes or closely paraphrases his words, adds no reason he did not give (a reason of the agent's goes in the ruling's readings, marked as the agent's), and is no wider than what he corrected; the reader is handed his words and the line, nothing else.
 
 **Principle:** When a person's correction becomes a rule, the risky step is generalising — every added reason or widened scope is the writer's, not theirs; check the rule against their exact words, not against the writer's understanding.
+
+### Observation 620: An overnight run's worktree may have no packages installed
+
+**Status:** OPEN
+**Date:** 2026-10-16
+**Session context:** /overnight, night of 16–17 Oct 26 — a fresh worktree switched to the night's branch; the first build failed ("tsc is not recognized") because the worktree had never had `npm ci`.
+**Skill:** overnight
+**Type:** internal
+**Phase/Area:** Part 1 step 9 (start the night)
+
+**Issue:** The night's first build stopped on a missing package folder. A fresh worktree is created per chat, and `raptor-port/node_modules` is not shared between worktrees, so every new night chat meets this — found only when a build is first attempted, mid-job.
+
+**Suggested improvement:** Step 9 gains one line: in the night's checkout, if `raptor-port/node_modules` is missing, run `npm ci` (a few minutes) before the first job — alongside keep-awake and the guard.
+
+**Principle:** An unattended run should prove its tools work before its first job, not discover a missing setup step inside the work.

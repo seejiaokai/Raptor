@@ -12,6 +12,7 @@
 // not move — only the note the Inputs page reads is rewritten. That commit
 // path also carries the member-own / scheduler-any gate, so this sheet's own
 // role check and the write path's cannot drift.
+import { remarksTyped } from '../../engine/inputs'
 import { displayCell } from '../engine'
 import { useState } from 'react'
 import { Sheet } from './Sheet'
@@ -35,7 +36,8 @@ export function RemarksSheet({
   code: string
   onClose: () => void
 }) {
-  const [remarks, setRemarks] = useState<string>(row?.remarks ?? '')
+  /* the typed words only — the leave's date is printed from its dates (D948) */
+  const [remarks, setRemarks] = useState<string>(remarksTyped(row?.remarks, row))
   // The leave's own span, read off the row — a click on any day of a 13–15 Jul
   // run edits the one note for the whole run (owner's example).
   const span = row?.endDate ? `${inputDayLabel(row.date)} → ${inputDayLabel(row.endDate)}` : inputDayLabel(row?.date)   // day-first ([LW-ISO-DATES])

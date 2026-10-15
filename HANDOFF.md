@@ -56,6 +56,12 @@ After a compaction: re-read this block, the overnight guide (`.claude/skills/ove
   after the wave's name). Keep a small "(prev day)" on the board's header in that one case? Recommended: yes. Waits: only
   that cue — built as ruled. (Q2) D945 reading (4): Personal Inputs' note "A removed input flags nothing until accepted
   again…" — "removed" → "rejected"? Recommended: yes. Waits: only that word.
+  (Q3) The Ground Programme row of an input prints "remark till <date>" (as rows did that carried the date), and on the
+  week and board its remark BOX shows that whole text — the date inside the box, not grey after it as on Personal
+  Inputs / Unavailable and in the window. Make it grey after the box there too? Recommended: yes, as a small follow-up
+  (it touches the Ground Programme's own text box, used by every row). Waits: only that look. (Q4) A one-day activity
+  on the Ground Programme now reads e.g. "Flight safety brief till 23 Jul" on 23 Jul (his answer B, every input) —
+  confirm, or leave the date off Ground Programme rows of one-day inputs? Recommended: as built (his B).
 - **Progress:** night chat started 16 Oct ~23:45 (keep-awake on, guard `--away`). **Job 1 BUILT** (commit "round 1b
   built"): (a) wave header note gone (`board.ts`, `html.ts refreshWaveReports`; the e2e header test re-aimed to
   "controls inside, no overflow"); (b) `html.ts GP_TAKEOFF_NOTE`, board `sbGroundPanel` + week `.sec-grnd`; (c) phone:
@@ -65,6 +71,17 @@ After a compaction: re-read this block, the overnight guide (`.claude/skills/ove
   lesson 2 in `design-practices.md` §9 (fresh reader still owed). Tests `src/ui/words-r1b.test.tsx` (10), reqorphan
   re-pinned. Measured `scripts/handpass/words-r1b-measure.mjs` (no overlap 360–430). **Next: job 2 (till date), then ONE
   FULL check for both** (roll-call, sized walk, gates under the lock, one fresh blind Opus read).
+  **Job 2 BUILT** (commit "till date built"): `engine/inputs.ts remarksTyped/tillOf/tillOfISO/remarksShown` (narrow
+  token: "till <day> <real month>" anywhere, "on <day> <month>" only an input's own day; SANS/upchit as typed),
+  `inpDetailKey` compares the printed remark (D189 kept for every input), `overlay.ts requestRowFields` rmks = printed
+  (the Ground Programme row keeps the date INSIDE its box — Q3 below); writers strip (window save + new input,
+  setInpField, medical trims, person delete, Leave War sync); readers print (rows, List + its search/sort, pendlist,
+  DayList) or show typed (card, Medical, DocViewer, history, bell); boxes typed + grey `.rk-till` / `.inped-till`.
+  Scenario designer's report saved (`raptor-port/docs/superpowers/briefs/2026-10-16-r1b-till-scenarios.md`); its A–D
+  fixed, E (warning reasons / crew-picker reason print the typed words, no date) decided as intended. ~50 old pins
+  re-pinned to D948; new `engine/tilldate.test.ts` (11). **Next: the FULL check** — evidence sheet
+  `raptor-port/docs/handpass/2026-10-17-r1b-till.md`, the full gates under the lock, the walk with pictures, the
+  fresh blind Opus code read, then the pull request.
 - **Rulings this chat:** D945–D948.
 <!-- /now -->
 

@@ -2513,10 +2513,9 @@ moved to the Ground Programme (owner, 19 Aug 26).
   and the toast says so. Single day, the open day.
 - **Unavailable → "+ Add"** (`data-inpadd="di.u"`). Types: leave, medical and
   OD only (`isUnavail && !isSansAvail`). The dialog carries a **date RANGE** —
-  the same two-click `RangeCal` the Inputs page uses — and owns the remarks'
-  till-date token the same way (`withRemarksTail`, single-day reads
-  "till <that day>"; the typist's own words around the token survive
-  re-picks). The seed is a COMPLETED one-day range on the open day
+  the same two-click `RangeCal` the Inputs page uses; its "till <date>" stands
+  in grey after the Remarks box from the picked dates (D948 — never written into
+  the remark; a single day reads "till <that day>"). The seed is a COMPLETED one-day range on the open day
   (`endDate = date`) so the first calendar click begins a fresh range rather
   than silently completing a span from the open day; the same-day end
   collapses off in `normalizeInputDraft`. A leave span crosses to Leave War
@@ -10436,12 +10435,29 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
     are buttons of the same look and size (A4). A "Changed while this window was open" note goes when the record
     comes back to the value his change was typed over, and repaints when "theirs" moves again (A10). The Quals save
     note reads "Quals saved" (A9). A5–A8 are the lines above.
-- **THE REMARK HOLDS ONLY WHAT A PERSON TYPES; "TILL <DATE>" COMES FROM THE DATES (owner D948, 16 Oct 26 — D728's step 2, [TILL-FROM-DATES]).** An input's window shows "till <date>" in grey after the Remarks box from the moment it opens, from the input's dates, one-day inputs included ("till <that day>"); it is never typed or written into the remark. Every screen prints the remark, then "till <date>" from the dates — the same look as before. *(Being built 16–17 Oct 26 on `claude/whole-app-words-pass-1b-6cfe51`; until it is live, the paragraph below and the code still describe the written token.)*
+- **THE REMARK HOLDS ONLY WHAT A PERSON TYPES; "TILL <DATE>" COMES FROM THE DATES (owner D948, 16 Oct 26 — D728's step 2, [TILL-FROM-DATES]).** An input's window shows "till <date>" in grey after the Remarks box from the moment it opens, from the input's dates, one-day inputs included ("till <that day>"); it is never typed or written into the remark. Every screen prints the remark, then "till <date>" from the dates — the same look as before.
+  **AS BUILT (16–17 Oct 26, `claude/whole-app-words-pass-1b-6cfe51`).** Three answers in `engine/inputs.ts`:
+  `remarksTyped(remark, rec)` (the typed words — a date saved in a remark before the build is read as the date: "till
+  <day> <real month>" anywhere, "on <day> <month>" only where it is one of the input's own days; SANS availability and an
+  upchit keep their words whole), `tillOf` / `tillOfISO` ("till <its last day>"; none for SANS availability or an upchit)
+  and `remarksShown` (the two together). **Written:** every writer stores the typed words only — the window's save and a
+  new input's, the in-place box (`setInpField`), the medical trims and splits, a person's delete, the Leave War's approve,
+  extend and cut. **Printed** (`remarksShown`): the week's and the board's read-only input rows, the desktop Inputs list
+  (its search and sort too), the pending list, the Leave War's day list. **A box** shows the typed words with
+  `.rk-till` / `.inped-till` after it: the input's window, the week's and the board's Personal Inputs and Unavailable
+  rows. **The card, the Medical card and the document viewer** show the typed words (their corner or line says the date).
+  **The Ground Programme row** made from an input carries the PRINTED remark (`engine/overlay.ts requestRowFields`): it is
+  the schedule's copy, it freezes when published and reads "1 pending" when the date moves; its box shows that text, and
+  typing there writes the typed part back to the input (`ui/reqrow.ts` compares the printed words, so a Tab through it is
+  no change). **A published day** compares the printed remark (`inpDetailKey`): a stretched or cut input reads pending
+  on each published day whose printed date moved (D189); a moved first day alone does not. Pinned:
+  `engine/tilldate.test.ts`, `ui/words-r1b.test.tsx`, `ui/inputs.test.tsx` (the window).
 - **THE CARD'S REMARK LEAVES OUT THE AUTOMATIC "TILL <DATE>" (owner D728, 10 Oct 26 — "1 now, 2 later").** The card's
   corner already says when a several-day input ends, so the card does not print the same words again from its
   remark; what a person typed stays, and a remark that was only the automatic words shows none. The record, the
   schedule's row, the desktop table and the input's window are untouched. Step 2 - the app no longer writing the date
-  into remarks at all - is `OUTSTANDING.md` `[TILL-FROM-DATES]`, not built.
+  into remarks at all - is built (D948, the paragraph above): the card now shows the typed words alone, whatever its
+  corner says (`remarksTyped`; `remarkOnce` below is kept for its tests only).
   **AS BUILT (10 Oct 26).** `ui/inputcard-model.ts remarkOnce(remark, corner)`, asked by `cardOf(rows, people, corner)`
   — both cards hand in what their corner prints (`cardWhen`). Only a "till" for the corner's OWN day goes (with the
   corner's year where it says one: "till 1 Jan" beside "till 1 Jan 2027"); a "till" for another day, a year the corner

@@ -159,20 +159,24 @@ describe('"till <date>" is said ONCE on an input’s card — the corner says it
       expect(card.querySelector('[data-testid="idy-rmk"]')!.textContent, iso).toBe('Medically down')
     }
   })
-  it('…and on its LAST day, where the corner says "All day", the remark is whole — nothing else says the date there', async () => {
+  /* CHANGED BY D948 (16 Oct 26): the card shows the typed words alone, its corner the date — on its last day too */
+  it('…and on its LAST day, where the corner says "All day", the card shows the typed words (D948)', async () => {
     await mount(false, 'cal')
     const r = await file(SEVERAL)
     await openDay('2026-10-23')
     const card = $(`[data-testid="idy-row-${r.iid}"]`)!
     expect(card.querySelector('[data-testid="idy-when"]')!.textContent).toBe('All day')
-    expect(card.querySelector('[data-testid="idy-rmk"]')!.textContent).toBe('Medically down till 23 Oct')
+    expect(card.querySelector('[data-testid="idy-rmk"]')!.textContent).toBe('Medically down')
   })
-  it('ONLY the card: the desktop list’s Remarks column, the input’s window and the record itself keep the whole remark', async () => {
+  /* CHANGED BY D948: the desktop list PRINTS the remark with its date from the dates; the window's box holds the typed
+     words with the date after it; the record is not changed by being shown */
+  it('the desktop list’s Remarks column prints "remark till date"; the window’s box the typed words, the date after it', async () => {
     await mount(false)
     const r = await file(SEVERAL)
     expect(tr(r)!.querySelector('[data-label="Remarks"]')!.textContent).toContain('Medically down till 23 Oct')
     await click(tr(r)!.querySelector('[data-testid="in-open"]'))
-    expect(($('#inpEditRmk') as HTMLInputElement).value).toBe('Medically down till 23 Oct')
+    expect(($('#inpEditRmk') as HTMLInputElement).value).toBe('Medically down')
+    expect($('[data-testid="inped-till"]')!.textContent).toBe('till 23 Oct')
     expect(live(r.iid).remarks, 'the record is not changed by being shown').toBe('Medically down till 23 Oct')
   })
 })

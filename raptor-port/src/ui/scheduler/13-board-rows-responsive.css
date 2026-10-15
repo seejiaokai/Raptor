@@ -833,7 +833,8 @@
      clipping under it. Fixed 74px pucks untouched, so the AMT droppable-hole
      geometry spec is unaffected. */
   .sb-arow.c6r>.ppl{grid-column:1 / 3}
-  .sb-arow.c6r .rmkin{grid-column:3 / -1;align-self:start}
+  .sb-arow.c6r .rmkin,.sb-arow.c6r>.rmkt{grid-column:3 / -1;align-self:start}
+  .sb-arow.c6r>.rmkt>.rmkin{grid-column:auto}
   .sb-inputs{max-height:none;overflow:visible}
   .sbi-row{grid-template-columns:84px var(--puck-w) 1fr;gap:7px}
   .sbi-row .sbi-rm{grid-column:1 / -1;font-size:10.5px;color:var(--ink-3)}
@@ -842,7 +843,7 @@
      width; the button sits at the right end of the People span, between them, so the row is two lines, not three.
      board-html.ts marks only a one-puck line `accup`; a line of more people keeps the button under them, as before.
      Not in the board's desktop layout (.sb-wide), whose rows are one line already. */
-  .schedboard:not(.sb-wide) .sb-arow.c6r.inprow.accup>.ppl,.schedboard:not(.sb-wide) .sb-arow.c6r.inprow.accup>.rmkin{grid-row:2}
+  .schedboard:not(.sb-wide) .sb-arow.c6r.inprow.accup>.ppl,.schedboard:not(.sb-wide) .sb-arow.c6r.inprow.accup>.rmkin,.schedboard:not(.sb-wide) .sb-arow.c6r.inprow.accup>.rmkt{grid-row:2}
   .schedboard:not(.sb-wide) .sb-arow.c6r.inprow.accup>.lctl{grid-column:2 / 3;grid-row:2;justify-self:end;align-self:center}
 }
 /* ---- the board in its DESKTOP layout on a phone -------------------------------
@@ -926,7 +927,7 @@
    at 1500px wide, measured), so nothing changes on an actual desktop. */
 .schedboard.sb-wide .sb-acols.c6r,.schedboard.sb-wide .sb-arow.c6r{grid-template-columns:18px 150px 54px 54px minmax(120px,1fr) minmax(150px,1fr) 92px}
 .schedboard.sb-wide .sb-acols.c6r>:nth-child(5){display:revert}
-.schedboard.sb-wide .sb-arow.c6r .rmkin{grid-column:auto}
+.schedboard.sb-wide .sb-arow.c6r .rmkin,.schedboard.sb-wide .sb-arow.c6r>.rmkt{grid-column:auto}
 /* the phone's Role-spans-two-tracks pairing (added 20 Aug 26 with the wider
    remarks) must not follow the board into .sb-wide, where c6r is a seven-track
    grid and every column stands on its own — same undo as .ppl/.lctl above */

@@ -3,7 +3,7 @@
    REAL commitNewInput/commitInputEdit over the real store, the
    boardaddinput/sync harness idiom. */
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS, dateOrd, holds } from '../engine/inputs'
+import { INPUTS, dateOrd, holds , remarksShown } from '../engine/inputs'
 import { HIST, initStore, setSession, writeInputsBatch } from '../state/store'
 import { HOOKS } from '../engine/hooks'
 import { commitNewInput, commitInputEdit, draftOf, medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, docGate } from './inputedit'
@@ -58,8 +58,8 @@ describe('an upchit trims what it closes — the upchit day is a FIT day (owner,
     const med = plant({ person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 13', remarks: 'Medically down till 13 Jul' })
     expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-12', end: '' }))).toBe(true)
     expect(med.endDate).toBe('Jul 11')
-    expect(med.remarks, 'the till-token follows the new end').toContain('till 11 Jul')
-    expect(med.remarks).toContain('Medically down')
+    /* its words kept, its date printed from the new end (D948 — the date was written into the remark before) */
+    expect([med.remarks, remarksShown(med)]).toEqual(['Medically down', 'Medically down till 11 Jul'])
   })
   it('an upchit on the start day REMOVES the row — a status covering only fit days is void', () => {
     const med = plant({ person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 13' })

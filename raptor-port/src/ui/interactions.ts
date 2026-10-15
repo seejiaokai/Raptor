@@ -7,7 +7,7 @@ import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay } from '../eng
 import { CmdRefused } from '../command'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { standsOn } from '../engine/overlay'
-import { INPUTS, DATES, withRemarksTail, inpId, inpLabel, defaultAllday, isLateInput, idsOf, leadOf, inputCoversDate } from '../engine/inputs'
+import { INPUTS, DATES, inpId, inpLabel, defaultAllday, isLateInput, idsOf, leadOf, inputCoversDate } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, whoId } from '../engine/people'
 import { hideDetail } from '../engine/warnhide'
@@ -959,7 +959,8 @@ export function routeClick(e: MouseEvent) {
          you had silently picked Jul 13–15. A completed range makes the first
          click begin a fresh one, which is what picking dates means. The
          same-day end collapses back off in normalizeInputDraft. */
-      ...(kind === 'u' ? { endDate: date, remarks: withRemarksTail('', unfmt(date), '', 'till') } : {}),
+      /* no "till" written into its remark: the window prints it after the box from the dates (owner D948) */
+      ...(kind === 'u' ? { endDate: date } : {}),
       ...(kind === 's' ? { sans: {} } : {}),
     })
     notify()

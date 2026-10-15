@@ -253,6 +253,18 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .inped-body select,.inped-body input{background:var(--bg);border:1px solid var(--edge-2);border-radius:8px;
   color:var(--ink);font:600 13px inherit;padding:8px 9px}
 .inped-body select:focus,.inped-body input:focus{outline:none;border-color:var(--accent)}
+/* THE REMARKS BOX AND ITS DATE ON ONE LINE (owner D948, 16 Oct 26 — as drawn on his page): the box holds only what is
+   typed and takes the room; "till <date>" stands after it in grey, from the dates — never in the box, never a box. */
+.inped-rmk{display:flex;align-items:center;gap:8px;min-width:0}
+.inped-body .inped-rmk input{flex:1 1 auto;min-width:0;width:auto}
+.inped-till{flex:none;white-space:nowrap;color:var(--ink-3);font-size:13px;padding:0 2px}
+/* …and the same date after an input's remark box on the schedule — the week's in-place remark and the board's box */
+.rk-till{color:var(--ink-3);white-space:nowrap;font-weight:500}
+.pl-row .rmk .rk-till{margin-left:.35em}
+.plist .pl-row .rmk .ntx.inpt{display:inline-block;min-width:2.5em;max-width:100%;vertical-align:top}
+.sb-arow .rmkt{display:flex;align-items:center;gap:6px;min-width:0}
+.sb-arow .rmkt>.ain{flex:1 1 auto;min-width:0}
+.sb-arow .rmkt>.rk-till{flex:none;font-size:11px}
 /* THE TITLE BOX'S PENCIL (owner D918, D919 — his pick P1): inside the box at its right end, in the field label's grey.
    The box keeps its full width; its typed words stop short of the pencil (the box's right padding is the pencil's room)
    and scroll inside the box as before. pointer-events:none is what makes a tap on the pencil a tap on the box. */

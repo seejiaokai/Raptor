@@ -61,7 +61,8 @@ const cs = (id: string) => String((PEOPLE as any)[id].cs)
 describe('what a request writes on its row — a whole copy of the input (D755, D756; the plan §4.3)', () => {
   it('AN INPUT OF ONE PERSON: its name, its two times, its person, its remark and its kind — and no `more`', () => {
     const f: any = requestRowFields(base)
-    expect(f).toEqual({ prog: 'TRAINING', str: '11:00', end: '12:00', who: 'bane', rmks: 'range', srcType: 'Training' })
+    /* its remark as printed — the typed words and "till <its last day>" from its dates (owner D948, 16 Oct 26) */
+    expect(f).toEqual({ prog: 'TRAINING', str: '11:00', end: '12:00', who: 'bane', rmks: 'range till 15 Jul', srcType: 'Training' })
     expect('more' in f, 'nobody to put under the name box: the key is not written').toBe(false)
     /* the same input stored with its list reads the same — an old-shaped record is a one-person input (D756) */
     expect(requestRowFields(withPeople(['bane']))).toEqual(f)
@@ -114,12 +115,13 @@ describe('what a request writes on its row — a whole copy of the input (D755, 
   })
   it('…AND WHEN ANY FIELD THE ROW SHOWS CHANGES — but not for one it does not show', () => {
     const two = withPeople(['bane', 'pike']), was = srcvOf(two)
-    for (const change of [{ s: 600 }, { e: 780 }, { remarks: 'other' }, { title: 'Range brief' }, { type: 'Meeting' }, { allday: true }]) {
+    /* its LAST DAY is on the row since D948 (16 Oct 26): the remark prints "till <its last day>", so a last day added
+       re-makes the row (as the date written into the remark did before) */
+    for (const change of [{ s: 600 }, { e: 780 }, { remarks: 'other' }, { title: 'Range brief' }, { type: 'Meeting' }, { allday: true }, { endDate: 'Jul 16' }]) {
       expect(srcvOf({ ...two, ...change }), JSON.stringify(change)).not.toBe(was)
     }
-    /* its dates are not on the row: a last day added re-makes nothing (until the one-rule build the entry mark moved
-       the hash for it) */
-    for (const change of [{ endDate: 'Jul 16' }, { yr: 2027 }, { oil: { '2026-07-18': 1 } }, { acc: 'g' }, { by: 'stiff', at: 1 }]) {
+    /* the rest of its dates are not on the row: its year, its OIL answers, its filing, who placed it re-make nothing */
+    for (const change of [{ yr: 2027 }, { oil: { '2026-07-18': 1 } }, { acc: 'g' }, { by: 'stiff', at: 1 }]) {
       expect(srcvOf({ ...two, ...change }), JSON.stringify(change)).toBe(was)
     }
   })

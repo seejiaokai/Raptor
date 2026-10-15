@@ -10,7 +10,7 @@
 // hide under another. What each line may do is the store's own permission
 // check — the buttons are only offered where it would succeed.
 import { useState, type ReactElement } from 'react'
-import { INPUTS } from '../../engine/inputs'
+import { INPUTS, remarksShown, remarksTyped } from '../../engine/inputs'
 import { biddingClosed, canDecide, canEditCell, canEditRow, codeOf, displayCell, type Period, type Role } from '../engine'
 import { AM, FULL, PM, type Contrib, type DayView, type Win } from '../engine/dayview'
 import { creditWorthText } from '../engine/credit'
@@ -139,7 +139,7 @@ export function DayListSheet({
       if (row && isLeave && period.stage === 'published' && (role === 'admin' || own)) {
         actions.push(<button key="n" className="dchip" data-testid={`dl-note-${c.id}`} onClick={() => onEditRemark(row)}>Note</button>)
       }
-      return { key: `a-${c.id}`, cls: isLeave ? 'appr' : '', text, sub: !warOwned ? 'Change it on the Inputs page.' : row?.remarks ? String(row.remarks) : '', actions }
+      return { key: `a-${c.id}`, cls: isLeave ? 'appr' : '', text, sub: !warOwned ? 'Change it on the Inputs page.' : row && remarksTyped(row.remarks, row) ? remarksShown(row) : '', actions }
     }
     if (c.kind === 'request') {
       /* "Ack" is the word everywhere since 21 Sep 26 — the button, the

@@ -4,7 +4,7 @@
 import { DAYS } from '../engine/data'
 import { mkNote, noteText } from '../engine/note'
 import { briefLeadShown } from '../engine/faceattrs'
-import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId, inputReadPass } from '../engine/inputs'
+import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId, inputReadPass, remarksTyped } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { REPORTING_LABEL } from '../engine/reporting'
@@ -1224,7 +1224,7 @@ export function boardChange(e: Event) {
     const at = iuParts('iu:' + tail), id = at ? at.iid : tail
     const inp = inpById(id)
     if (!inp) return notify()                    // deleted or undone underneath it
-    const back = () => { inf.value = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field) }
+    const back = () => { inf.value = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field) }
     if (RO) return back()
     if (setInpField(inp, field as any, inf.value, at ? at.person : null)) notify()
     else back()
@@ -1867,7 +1867,7 @@ export function boardTab(n: number) {
       else {
         const [tail, field] = ae.dataset.ifld.split('.')
         const inp = inpById((iuParts('iu:' + tail) || { iid: tail }).iid)
-        if (inp) want = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field)
+        if (inp) want = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)   // the box's typed words (D948)
       }
       /* a TIME box SHOWS fmtHM(model) — a legacy compact '0900' reads '09:00' —
          so compare the field to what the model would DISPLAY, not to its raw

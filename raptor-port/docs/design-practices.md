@@ -649,10 +649,9 @@ state nobody drew.
 he may strike or change any. Newest first. Where a lesson meets a general rule above, the lesson wins, and that rule
 points here.*
 
-**Lesson 2 (16 Oct 26, D945 — an input row's "Undo" became "Reject").** A button is named for what it does to the thing it
-sits on. It never takes the name of another control on the same screen (the row's "Undo" read as the top bar's Undo,
-which takes back the last change, whatever it was), and never a word that reads as Delete when nothing is deleted
-("Remove" did, to him). Where the row offers the opposite action, the two read as a pair: Accept and Reject. *Named under
+**Lesson 2 (16 Oct 26, D945 — an input row's "Undo" became "Reject").** A button is named for what it does — never with
+another control's name (the row's "Undo" was also the top bar's) and never with a word that reads as Delete (he asked
+whether "Remove" would). *Named under
 D852, not changed:* the Personal Inputs note "A removed input flags nothing until accepted again" still calls a rejected
 input "removed" — put to him with the round's pictures.
 

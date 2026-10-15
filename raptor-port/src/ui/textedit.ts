@@ -5,7 +5,7 @@
    model rather than by a rebuild. */
 import { DAYS } from '../engine/data'
 import { txtGet, txtSet, TIME_TXT } from '../engine/slots'
-import { inpById, inpTimeText } from '../engine/inputs'
+import { inpById, inpTimeText, remarksTyped } from '../engine/inputs'
 import { iuParts } from '../engine/keys'
 import { setInpField } from './inputedit'
 import { reqRowText } from './reqrow'
@@ -129,11 +129,11 @@ export function routeFocusOut(e: FocusEvent) {
     /* LEFT AS IT WAS, NOTHING IS SAVED ([HIST-PHONE-HIDE] walk, 28 Sep 26): a tap in and out of an empty "all day" cell —
        which a phone's History invites, a tap on a dotted input row to read its story — wrote times onto the record (0
        and 23:59, still all day) and a history line "times: all day → all day", a change nobody made */
-    const shown = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field)
+    const shown = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)
     if (String(ip.textContent || '').trim() === String(shown).trim()) return
     const ok = setInpField(inp, field as any, ip.textContent, who)
     if (ok) txtCommit()
-    else heal(ip, field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field))
+    else heal(ip, field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field))
     return
   }
   /* ONE in-time line commits itself (owner's iPhone, 21 Aug 26). The block
@@ -283,7 +283,7 @@ function refreshTextDestination(el: HTMLElement) {
     const [id, field] = (d.inp || d.ifld)!.split('.')
     const inp = inpById(id)
     if (!inp) return
-    value = field === 'rmks' ? inp.remarks || '' : inpTimeText(inp, field)
+    value = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)
   } else if (d.itline) {
     const [di, gi, ix] = d.itline.split('|').map(Number)
     value = DAYS[di]?.waves?.[gi]?.intimes?.[ix]
@@ -331,7 +331,7 @@ export function routeKeyDown(e: KeyboardEvent) {
     else if (e.key === 'Escape') {
       const [tail, field] = ic.dataset.inp!.split('.')
       const inp = inpById((iuParts('iu:' + tail) || { iid: tail }).iid); e.preventDefault()
-      if (inp) ic.textContent = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field)
+      if (inp) ic.textContent = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)
       ic.blur()
     }
     return

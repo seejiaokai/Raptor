@@ -1,8 +1,9 @@
 /* The scheduler-board panel builders — sbInputsHTML, sbNotesPanel,
    sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */
 import { DAYS } from '../engine/data'
+import { requestOfBox } from '../engine/overlay'
 import { rowPeopleDrawn, inputRowSeveral } from '../engine/grouprows'
-import { INPUTS, inputsOn, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, oilAsks, sansBadge, facesOf, facesDrawn, iuTail } from '../engine/inputs'
+import { INPUTS, inputsOn, remarksShown, remarksTyped, tillOf, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, oilAsks, sansBadge, facesOf, facesDrawn, iuTail } from '../engine/inputs'
 import { PEOPLE, whoId } from '../engine/people'
 import { noteText } from '../engine/note'
 import { hhmm, fmtHM, parseHM } from '../engine/time'
@@ -122,7 +123,8 @@ export function inTypeCls(t:any){
    in both callers and adding a sibling there would misregister every column
    after it (the c6r register lesson, see sbInpRow). */
 function sbiRmk(inp:any,dt?:any){
-  const lt=lateTag(inp), v=inp.remarks||'';
+  /* printed: the typed words, then "till <its last day>" from its dates (owner D948 — engine/inputs.ts remarksShown) */
+  const lt=lateTag(inp), v=remarksShown(inp);
   const sb=isSansAvail(inp.type)&&dt?sansBadge(inp.person,dt):'';
   const sbt=sb?`<span class="sansb" title="SANS availability">${esc(sb)}</span>`:'';
   return `<span class="sbi-rm" title="${esc(v)}">${lt}${sbt}${esc(v)||(lt||sbt?'':'—')}</span>`;
@@ -589,7 +591,8 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
   let s=`<div class="sb-panel grnd"><div class="sb-ph">Ground Programme `
     +(ro?'':`<span class="gctl"><button class="sb-addinp" data-inpadd="${di}.g" title="Add a personal input (meeting, course…) — it goes straight onto the Ground Programme">+ Inputs</button>${sbSortBtn(`g.${di}`,ro)}<button class="mbtn add" data-gradd="${di}" title="Add a ground item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
   /* the one line saying where an input on this list is taken off (D943, D947 — html.ts GP_TAKEOFF_NOTE, the week's twin) */
-  if(!ro&&rows.some((x:any)=>x.src))s+=`<div class="sb-pinote">${GP_TAKEOFF_NOTE}</div>`;
+  /* (a row whose Reject stands under Personal Inputs: its input there and the row its own — a kept or orphaned row is not) */
+  if(!ro&&rows.some((x:any)=>requestOfBox(d,x)))s+=`<div class="sb-pinote">${GP_TAKEOFF_NOTE}</div>`;
   if(!rows.length)s+=`<div class="sb-empty">No ground items yet — “+ Item” adds one.</div>`;
   else{
     s+=C6;
@@ -761,7 +764,11 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any,mates?:any[]){
     +(lc||cxh||inpKindTagHTML(inp)?`<span class="itemcell">${cxh}${itemCell}${inpKindTagHTML(inp)}${lc||''}</span>`:itemCell)
     +fld('atm','str',inpTimeText(inp,'str'),'all day')+fld('atm','end',inpTimeText(inp,'end'),'')
     +`<div class="ppl">${pk}${sbt}</div>`
-    +fld('ain rmkin','rmks',inp.remarks||'','remarks')
+    /* THE BOX HOLDS THE TYPED WORDS ONLY; "till <date>" STANDS AFTER IT IN GREY, from the input's dates (owner D948, 16 Oct
+       26 — engine/inputs.ts tillOf). The pair is ONE grid child, the wrapper (`rmkt`) standing where the box stood, so no
+       track moves (the c6r register lesson above). An input that prints no date keeps the bare box it always had. */
+    +(tillOf(inp)?`<span class="rmkt">${fld('ain rmkin','rmks',remarksTyped(inp.remarks, inp),'remarks')}<span class="rk-till">${esc(tillOf(inp))}</span></span>`
+      :fld('ain rmkin','rmks',remarksTyped(inp.remarks, inp),'remarks'))
     /* the Unavailable row of an activity input FILED there ('u') carries the Undo that takes it
        back out — its only door otherwise (→ Unavail) lives in the Personal Inputs panel, which
        drops a filed input ([HUMAN-RETEST] walk W4-F4, 24 Sep 26; html.ts inGrp is the week's twin) */

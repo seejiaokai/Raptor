@@ -22,7 +22,7 @@
 import { DAYS } from '../engine/data'
 import { REPORTING_LABEL } from '../engine/reporting'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
-import { INPUTS, inpId, inpLabel, goneRequestName, titleOf, inputCoversDate, idsOf, placeholderOf } from '../engine/inputs'
+import { INPUTS, inpId, inpLabel, goneRequestName, titleOf, inputCoversDate, idsOf, placeholderOf, remarksShown } from '../engine/inputs'
 import { officialSliceNow } from '../engine/validate'
 import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, peopleAttrsNow, faceRuleVals, faceRuleValsCompared, hidePending } from '../engine/publish'
 import type { PendItem } from '../engine/publish'
@@ -211,7 +211,8 @@ function inputWords(di: number, it: PendItem): Words {
   if (titleOf(was.type, was.title) !== titleOf(now.type, now.title)) pair(inpLabel(was), inpLabel(now))
   /* no dates: whether it covers this day is filed / moved off; its far end is another day's business (Fable F1) */
   pair(winWords(was), winWords(now))
-  if (String(was.remarks || '') !== String(now.remarks || '')) { from.push(`“${clip(was.remarks)}”`); to.push(`“${clip(now.remarks)}”`) }
+  /* as printed — the typed words and "till <its last day>" (D948): a leave stretched over a published day reads its new date here (D189) */
+  if (remarksShown(was) !== remarksShown(now)) { from.push(`“${clip(remarksShown(was))}”`); to.push(`“${clip(remarksShown(now))}”`) }
   /* THE SCHEDULER'S MARKS ARE THE INPUT'S (owner D760) — so a CX, a red box or "information only" put on its row on a
      published day is THIS line's to say, with the reason, in the words a row of the scheduler's own is said in
      (valueWords, above: "· CX (WX)", "· flagged", "· info only"). Since step 4 of the one-rule build moved the marks

@@ -23,7 +23,7 @@
 import { placedLine } from './placedline'
 import { useEffect, useState } from 'react'
 import { PEOPLE, byCrew } from '../engine/people'
-import { inpType, leadOf } from '../engine/inputs'
+import { inpType, leadOf, remarksTyped } from '../engine/inputs'
 import { medDownAsOf, pendingUpchits, upchitsWithin, medEpisode } from '../engine/medical'
 import { docHas, rowDocIds } from '../state/docs'
 import { MEDASOF, setMedAsOf } from '../state/view'
@@ -93,7 +93,8 @@ function Card({ e, line, up, docs, onOpen }: { e: any, line: string, up?: boolea
       </span>
       <span className="medcard-t">{line}</span>
       {n > 1 ? <span className="medcard-docn">{n} documents</span> : null}
-      {remarkNote(r.remarks) ? <span className="medcard-r" title={r.remarks}>{r.remarks}</span> : null}
+      {/* the typed words (its line above says the dates — D948, engine/inputs.ts remarksTyped) */}
+      {remarkNote(remarksTyped(r.remarks, r)) ? <span className="medcard-r" title={remarksTyped(r.remarks, r)}>{remarksTyped(r.remarks, r)}</span> : null}
       {/* who placed this entry and when (owner D629 — "wherever an entry is listed or opened"; ui/placedline.ts) */}
       {placedLine(r) ? <span className="medcard-placed" data-testid="medcard-placed">{placedLine(r)}</span> : null}
     </button>

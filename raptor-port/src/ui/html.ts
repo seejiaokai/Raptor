@@ -1,9 +1,10 @@
+import { requestOfBox } from '../engine/overlay'
 import { rowPeopleDrawn, inputRowSeveral } from '../engine/grouprows'
 import { DAYS } from '../engine/data'
 import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
 import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
-import { INPUTS, inputsOn, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
+import { INPUTS, inputsOn, remarksShown, remarksTyped, tillOf, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { reportingIssuesForWave,stated,REPORTING_LABEL } from '../engine/reporting'
@@ -1970,7 +1971,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
          the old edit-mode "· scheduler" qualifier is gone. Parity still holds —
          the reference carries the qualifier and html.test.ts normalises both to
          "GRND", tolerating its absence. */
-      h+=`<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground Programme</div>`+(ed&&grd.some((x:any)=>x.src)?`<div class="pl-inpnote">${GP_TAKEOFF_NOTE}</div>`:'')+(grd.length?plCols():'');
+      h+=`<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground Programme</div>`+(ed&&grd.some((x:any)=>requestOfBox(d,x))?`<div class="pl-inpnote">${GP_TAKEOFF_NOTE}</div>`:'')+(grd.length?plCols():'');
       /* A SHARED INPUT IS ONE ROW (owner D661 — "on the schedule a group input is ONE row holding everyone — not a row
          for each man"; D743, the approved pictures; [GROUP-INPUT-ONE-ROW], the plan §4.3). Underneath it is still a row a
          man: engine/grouprows.ts says which rows are one, and whose pucks the one row draws. The LEAD draws it — its
@@ -2194,10 +2195,13 @@ export function inpRmkCell(inp:any,ed:any,dt?:any){
   const lt=lateTag(inp), lc=lt?' has-late':'';
   const sb=isSansAvail(inp.type)&&dt?sansBadge(inp.person,dt):'';
   const sbt=sb?`<span class="sansb" title="SANS availability">${esc(sb)}</span>`:'';
-  const v=inp.remarks||'';
+  /* PRINTED: the typed words, then "till <its last day>" from its dates; IN A BOX: the typed words alone, the date after it
+     in grey (owner D948, 16 Oct 26 — engine/inputs.ts remarksShown, tillOf) */
+  const v=remarksShown(inp);
   if(!ed||!canEditSched())return `<span class="rmk${v?'':' rk-e'}${lc}">${lt}${sbt}<span class="ntx">${esc(v)}</span></span>`;
+  const till=tillOf(inp);
   return `<span class="rmk${lc}">${lt}${sbt}<span class="ntx txed inpt" contenteditable="true" spellcheck="false" `
-    +`data-inp="${esc(iuTail(inp))}.rmks" data-ph="remarks">${esc(v)}</span></span>`;
+    +`data-inp="${esc(iuTail(inp))}.rmks" data-ph="remarks">${esc(remarksTyped(inp.remarks, inp))}</span>${till?`<span class="rk-till">${esc(till)}</span>`:''}</span>`;
 }
 export function inpEditLabel(inp:any,ed:any,txt:any,cls:any){
   const t=esc(txt);

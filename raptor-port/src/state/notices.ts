@@ -31,7 +31,7 @@
    (state/noticeseen.ts): were reading to write to the notice, the maker's Undo of his change would be refused —
    "Ranger changed this after your action" — by the read of the very person it told. */
 import { PEOPLE } from '../engine/people'
-import { dateOrd, inpLabel, namedOf, placeholderOf } from '../engine/inputs'
+import { dateOrd, inpLabel, namedOf, placeholderOf, remarksTyped } from '../engine/inputs'
 import { hhmm } from '../engine/time'
 import { mayEditSched } from './perms'
 
@@ -83,9 +83,9 @@ const isoOf = (lbl: any, yr: any): string => {
 const firstDay = (r: any): string => isoOf(r.date, r.yr)
 const lastDay = (r: any): string => (r.endDate ? isoOf(r.endDate, r.yr) || firstDay(r) : firstDay(r))
 const hours = (r: any): string => (r.allday ? 'all day' : `${hhmm(r.s ?? 0)}–${hhmm(r.e ?? 0)}`) + (r.half ? ` ${r.half}` : '')
-/* the remark as a person typed it: the calendar's own "till 17 Jul" (engine/inputs.ts withRemarksTail) follows the
-   dates, and a change of dates is already said as one */
-const typed = (r: any): string => String(r.remarks || '').replace(/[\s,·—–-]*\btill \d{1,2} [A-Za-z]{3}(?: \d{4})?/gi, '').trim()
+/* the remark as a person typed it (engine/inputs.ts remarksTyped — since D948 the date is printed from the dates, never
+   written in), and a change of dates is already said as one */
+const typed = (r: any): string => remarksTyped(r.remarks, r)
 /* is he still someone the app can tell? */
 const here = (p: string): boolean => { const x: any = PEOPLE[p]; return !!x && !x.deleted && !x.archived && !x.special }
 

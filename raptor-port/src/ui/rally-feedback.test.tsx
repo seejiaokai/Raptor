@@ -79,7 +79,8 @@ describe('RT7 D502 live reporting feedback at the existing week/board doors',()=
   });
   it('review E both headers and the view day state the previous day without changing raw text',()=>{
     w().intimes=['23:00 IN TIME'];Object.assign(w().formations[0],{to:'01:30',ld:'03:00',br:'23:10'});
-    expect(boardHTML(0)).toContain('<span class="asd">In-time / Rally 23:00 (prev day)');
+    /* the board's wave header carries no report clock since round 1b (owner D947, 16 Oct 26) — the week's still does */
+    expect(boardHTML(0)).not.toContain('<span class="asd">');
     expect(dayHTML(0,true)).toContain('In-time / Rally 23:00 (prev day)');
     expect(dayHTML(0,false)).toContain('In-time / Rally 23:00 (prev day)');
     expect(w().intimes).toEqual(['23:00 IN TIME']);

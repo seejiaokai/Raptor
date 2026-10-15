@@ -7,7 +7,7 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, undo } from '../state/store'
-import { INPUTS, INPUT_TYPES, DATES, inputRuleText, inpId, idsOf } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, DATES, inputRuleText, inpId, idsOf, remarksShown } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { acceptInput, acceptedDay } from '../engine/slots'
 import { canEditSched } from '../state/auth'
@@ -924,9 +924,13 @@ describe('accepted rows are never stranded', () => {
    day, and a ONE-DAY pick uses that day — and everything the typist put in front
    of it is kept — `LL till 15 Jul`. The tail belongs to the calendar, so it is
    rewritten and removed by picking, never duplicated. */
-describe('the picked date writes itself into Remarks', () => {
+/* THE PICKED DATE STANDS AFTER THE REMARKS BOX, NEVER IN IT (owner D948, 16 Oct 26 — answering D946; it was "the picked
+   date writes itself into Remarks", his rule of 18 Aug 26). The box holds what is typed; "till <date>" stands after it in
+   grey from the window's dates, a one-day pick included (his answer B), and follows every pick. */
+describe('the picked date stands after the Remarks box, never in it (D948)', () => {
   const day = (d: string) => D(`#inpEdCal [data-iso="2026-07-${d}"]`)
   const rm = () => D('#inpEditRmk') as HTMLInputElement
+  const till = () => D('[data-testid="inped-till"]')?.textContent || ''
   const typeInto = async (el: any, v: string) => act(async () => {
     const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
     setter.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true }))
@@ -935,82 +939,70 @@ describe('the picked date writes itself into Remarks', () => {
   beforeAll(openNew)
   afterAll(cancelNew)
 
-  it('a lone start already reads till <that day>; the end then moves the date', async () => {
+  it('a lone start already reads till <that day> after the box; the end then moves the date; the box stays empty', async () => {
     await click(day('13'))
-    expect(rm().value, 'a one-day pick still says till <date>').toBe('till 13 Jul')
+    expect([rm().value, till()], 'a one-day pick still says till <date>').toEqual(['', 'till 13 Jul'])
     await click(day('15'))
-    expect(rm().value).toBe('till 15 Jul')
+    expect([rm().value, till()]).toEqual(['', 'till 15 Jul'])
   })
 
-  it('the typed note survives, and the tail follows the calendar', async () => {
-    await typeInto(rm(), 'LL till 15 Jul')
-    await click(day('16'))                  // a fresh start now rewrites the tail to that one day…
-    expect(rm().value, 'the tail follows the calendar, never stacks').toBe('LL till 16 Jul')
+  it('the typed note is never touched; the date after it follows the calendar', async () => {
+    await typeInto(rm(), 'LL')
+    await click(day('16'))                  // a fresh start…
+    expect([rm().value, till()]).toEqual(['LL', 'till 16 Jul'])
     await click(day('18'))                  // …and the end extends it
-    expect(rm().value).toBe('LL till 18 Jul')
-    /* re-picking rewrites the tail rather than stacking another one on */
+    expect([rm().value, till()]).toEqual(['LL', 'till 18 Jul'])
     await click(day('16')); await click(day('17'))
-    expect(rm().value).toBe('LL till 17 Jul')
+    expect([rm().value, till()]).toEqual(['LL', 'till 17 Jul'])
   })
 
-  it('a range that ends where it starts still writes till <that day>', async () => {
+  it('a range that ends where it starts says till <that day>', async () => {
     await typeInto(rm(), '')
     await click(day('20')); await click(day('20'))
-    // add() drops endDate for a one-day input, but the owner wants the tail to
-    // name that single day anyway (18 Aug 26) — the type column, not endDate, is
-    // what tells a span from a day
-    expect(rm().value).toBe('till 20 Jul')
+    expect([rm().value, till()]).toEqual(['', 'till 20 Jul'])
   })
 
-  it('a note kept AFTER the tail survives the dates changing (owner, 18 Aug 26)', async () => {
+  it('a date typed into the box by hand is left as typed while picking; the save keeps the words and prints the dates', async () => {
     await typeInto(rm(), 'till 15 Jul Bangkok')
-    // re-pick a new range: the token is rewritten IN PLACE (it no longer strips
-    // and re-appends, so Bangkok stays exactly where the typist put it) — this is
-    // the owner's own example, "till 13 Jul Bangkok" -> "till 18 Jul Bangkok"
     await click(day('16')); await click(day('18'))
-    expect(rm().value, 'Bangkok must remain').toContain('Bangkok')
-    expect(rm().value).toBe('till 18 Jul Bangkok')
+    expect([rm().value, till()]).toEqual(['till 15 Jul Bangkok', 'till 18 Jul'])
   })
 
-  /* CHANGED BY THE DOOR (D729 — V1; a reading told to him): the List's form kept its dates — and so the tail — for the
-     next add. The window closes at Add and opens FRESH: no note, no date, nothing carried onto the next input. */
-  it('Add writes the note with its tail; the next new input starts with no note and no date', async () => {
+  /* CHANGED BY THE DOOR (D729 — V1; a reading told to him): the window closes at Add and opens FRESH: no note, no date,
+     nothing carried onto the next input. */
+  it('Add saves the typed words alone, printed with their date; the next new input starts with no note and no date', async () => {
     await click(day('14')); await click(day('16'))
-    await typeInto(rm(), 'LL till 16 Jul')
+    await typeInto(rm(), 'LL')
     const n = INPUTS.length
     await addNow()
-    expect(INPUTS[0].remarks).toBe('LL till 16 Jul')
+    expect([INPUTS[0].remarks, remarksShown(INPUTS[0])]).toEqual(['LL', 'LL till 16 Jul'])
     expect(W(), 'the window closed at Add').toBeFalsy()
     await openNew()
     expect(rm().value, 'no note carried over').toBe('')
+    expect(till(), 'and no date').toBe('')
     expect(D('#inpEditPop .rc-read')!.textContent, 'and no date').toBe('pick a start date')
     await cancelNew()
     await act(async () => { undo() })
     expect(INPUTS.length).toBe(n)
   })
 
-  /* RESTATED 10 Oct 26 with the pencil's row gone (D718). The row's own calendar rewrote the remark box at every pick,
-     adding a "till" even where the remark had none. The window's calendar (D681; a one-person input's too, since this
-     change) leaves the box alone while he picks — a remark the picker had touched would read as HIS change to a window
-     that follows the record behind it — and the SAVE makes a "till" the remark carries follow the new last day
-     (commitInputEdit; D189: the wording is the app's own). What is no longer done: a "till" is not ADDED to a remark
-     that carried none. */
-  it('the window’s calendar leaves the remark box alone; the save makes its "till" follow the new dates', async () => {
+  /* A REMARK SAVED WITH ITS DATE IN IT (before D948) opens with the typed words alone, the date after the box; picking
+     touches neither the box nor the record; the save keeps the words and the date follows the new last day. */
+  it('a saved remark carrying its date opens as its words; the save writes the words, the date follows the new dates', async () => {
     await act(async () => {
       const { writeInputs } = await import('../state/store')
       writeInputs(() => INPUTS.unshift({ person: 'sufa', type: 'LL', date: 'Jul 13', endDate: 'Jul 14', allday: true, remarks: 'Bangkok till 14 Jul', mod: '' }))
     })
     const target = INPUTS[0]
     await openRow(0)
-    const ed = () => D('#inpEditRmk') as HTMLInputElement
-    expect(ed().value, 'opening the window rewrites nothing').toBe('Bangkok till 14 Jul')
+    expect([rm().value, till()], 'opened: its words, its date after the box').toEqual(['Bangkok', 'till 14 Jul'])
     await click(D('#inpEdCal [data-iso="2026-07-13"]'))
     await click(D('#inpEdCal [data-iso="2026-07-16"]'))
-    expect(ed().value, 'nor does picking').toBe('Bangkok till 14 Jul')
+    expect([rm().value, till()], 'picking moves only the date').toEqual(['Bangkok', 'till 16 Jul'])
     await click(D('#inpEditSave'))
     const saved = INPUTS.find((x: any) => x.iid === target.iid)
     expect([saved.date, saved.endDate]).toEqual(['Jul 13', 'Jul 16'])
-    expect(saved.remarks, 'the tail followed the calendar').toBe('Bangkok till 16 Jul')
+    expect([saved.remarks, remarksShown(saved)]).toEqual(['Bangkok', 'Bangkok till 16 Jul'])
     await act(async () => { undo(); undo() })
   })
 })

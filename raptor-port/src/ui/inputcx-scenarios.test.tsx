@@ -299,7 +299,7 @@ describe('PART ONE — the Inputs pages', () => {
       expect(dpart(r, 'cx')!.textContent, 'its last day').toBe('CX')
       expect(dpart(r, 'why')!.textContent).toBe('WX')
       expect(dpart(r, 'when')!.textContent).toBe('All day')
-      expect(dpart(r, 'rmk')!.textContent, 'there the corner does not say the date, so the remark is whole').toBe('Range week till 27 Oct')
+      expect(dpart(r, 'rmk')!.textContent, 'the card shows the typed words, its last day too (D948)').toBe('Range week')
     })
     it('the phone list: ONE card, under its first day, cancelled, "till 27 Oct" once', async () => {
       await mount(true)

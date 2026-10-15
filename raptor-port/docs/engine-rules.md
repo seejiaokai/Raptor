@@ -1944,8 +1944,8 @@ the input that caused them — one undo step):
   entry" that replaces the pending nag (a future surgery already filed), not
   part of the episode being closed — and instead surfaces as a LEFTOVER of
   `upchitEffects(person, x, except)`, the one body the save-time summary
-  sheet and the write both read. The remarks "till …" token is rewritten
-  (`withRemarksTail`), and the Leave War — which reads approved leave straight
+  sheet and the write both read. The trimmed record's "till …" is printed
+  from its new dates (D948 — it is no longer written into the remark), and the Leave War — which reads approved leave straight
   off the Inputs since [ARCH-STACK] step 4 (20 Sep 26) — shows the freed days at
   once. The canonical closer of
   an EXPIRED episode is dated the day AFTER its end; `pendingUpchits`' `>=`
@@ -3170,8 +3170,8 @@ stay LIVE (below), which the face draws from today and which never make the day 
   BY MAN — one man's record gone and another of his filed, of the same type or both downchits, neither with a filing
   state, is ONE edit, carried with both records (a medical takeover trims the old downchit and mints its tail with
   "till …" in its remarks: one line, not "moved off" and "filed" — F2); an upchit is out (the downchit it trims is the
-  change — but the trim writes "till <date>" into the downchit's remarks, which the face prints, so the days it still
-  covers read that one remark change — kept, owner D189 ("Q4 follow ur recommendation", 26 Sep 26): the words those days
+  change — but the trim moves the "till <date>" the face prints from the downchit's dates (D948; it was written into
+  its remarks before), so the days it still covers read that one remark change — kept, owner D189 ("Q4 follow ur recommendation", 26 Sep 26): the words those days
   printed are out of date, so each reads "1 pending" on the admin's working copy while View-only Sched keeps the old words
   until the next AL); a request taken off on one side and absent, or
   taken off on both, shows on neither face (D174, D176).

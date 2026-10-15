@@ -16,7 +16,7 @@
    bars, and who is in one is the record's own list, read through engine/inputs.ts (namedOf / placeholderOf) — never
    `person`, never how many records. A record stored before that build (one `person`) reads as the one-person input it
    is; one that still carries an old group id is one man's input too (D759 reading 10 — nothing is converted). */
-import { dateOrd, inpLabel, inpKindTag, isSansAvail, isUnavail, isUpchit, namedOf, placeholderOf } from '../engine/inputs'
+import { dateOrd, inpLabel, inpKindTag, isSansAvail, isUnavail, isUpchit, namedOf, placeholderOf , remarksShown } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import type { DayAnswer } from '../state/flyplan-model'
 
@@ -120,7 +120,8 @@ export const inputPassesPerson = (fPerson: any, r: any, people: Record<string, a
 /** does an input match the search box? — a word in its remarks, its name, or the callsign of anyone in it */
 export function inputMatchesSearch(r: any, fSearch: any, people: Record<string, any> = PEOPLE): boolean {
   const s = String(fSearch || '').trim().toLowerCase()
-  return !s || String(r.remarks || '').toLowerCase().includes(s) || inpLabel(r).toLowerCase().includes(s) ||
+  /* the remark as printed — the typed words and its "till" date (D948), so "17 Jul" still finds it */
+  return !s || remarksShown(r).toLowerCase().includes(s) || inpLabel(r).toLowerCase().includes(s) ||
     namesOf(r, people).some(n => n.toLowerCase().includes(s))
 }
 

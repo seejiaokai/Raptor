@@ -12,7 +12,7 @@
    scheduler.css and covered by the geometry gate. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
-import { INPUTS, isLateInput, inputDueISO, inpId } from '../engine/inputs'
+import { INPUTS, isLateInput, inputDueISO, inpId , tillOf } from '../engine/inputs'
 import { acceptInput } from '../engine/slots'
 import { validate, WARN } from '../engine/validate'
 import { VCONF, rulesReset } from '../engine/rules'
@@ -152,8 +152,10 @@ describe('the board', () => {
     expect(isLateInput(sufa), 'sanity: sufa is exempt').toBe(false)
     salsa.remarks = ''; sufa.remarks = ''
     const h = boardHTML(1)
-    expect(h, 'the unmarked empty remark still shows the dash').toContain('>—</span>')
-    expect(h, 'the marked one shows the badge alone').toContain('LATE</span></span>')
+    /* SINCE D948 (16 Oct 26) an input with nothing typed still prints its date ("till 14 Jul") — the dash is only ever drawn
+       where a remark prints nothing at all (SANS availability), so here neither row shows it */
+    expect(h, 'the unmarked empty remark prints its date, not the dash').toContain(`>${tillOf(sufa)}</span>`)
+    expect(h, 'the marked one prints its badge, then its date').toContain(`LATE</span>${tillOf(salsa)}</span>`)
     expect(h, 'and never pairs the badge with the placeholder').not.toContain('LATE</span>—')
   })
 

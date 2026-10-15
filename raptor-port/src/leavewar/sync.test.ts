@@ -11,7 +11,7 @@
 // notify does in the app (sync.ts `wireLeaveWarSync`).
 
 import { beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS, holds, idsOf } from '../engine/inputs'
+import { INPUTS, holds, idsOf, remarksShown } from '../engine/inputs'
 import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { commandStream } from '../command'
 import { balanceOf, figureParts, FIGURES } from './engine'
@@ -61,7 +61,8 @@ describe('approving turns the bids into the ONE Input', () => {
     expect(rows).toHaveLength(1)
     expect(idsOf(rows[0]), 'one record, its one person in its list').toEqual(['ammo'])
     expect(rows[0]).toMatchObject({ type: 'LL', date: 'Feb 2', endDate: 'Feb 4', allday: true, lw: 'y2026' })
-    expect(rows[0].remarks).toBe('till 4 Feb')
+    /* nothing written into its remark; its date is printed from its dates (owner D948, 16 Oct 26) */
+    expect([rows[0].remarks, remarksShown(rows[0])]).toEqual(['', 'till 4 Feb'])
     for (const d of ['2026-02-02', '2026-02-03', '2026-02-04']) {
       expect(raw('ammo', d)).toEqual([])                       // nothing approved is stored on the war
       expect(getState().grid.ammo[d]).toBe('LL')                // the war reads the Input
@@ -69,9 +70,10 @@ describe('approving turns the bids into the ONE Input', () => {
     }
   })
 
-  it('a single day reads "on <day>"; an AM half lands with the AM minutes', () => {
+  it('a single day prints "till <day>" (D948 — it read "on <day>"); an AM half lands with the AM minutes', () => {
     approve('ammo', ['2026-02-02'])
-    expect(lwInputs()[0].remarks).toBe('on 2 Feb')
+    /* a single day prints "till <that day>" since D948 (his answer B); it used to write "on 2 Feb" into the remark */
+    expect([lwInputs()[0].remarks, remarksShown(lwInputs()[0])]).toEqual(['', 'till 2 Feb'])
     approve('rocky', ['2026-02-10'], '*LL')
     expect(INPUTS.find((r: any) => holds(r, 'rocky') && r.lw)).toMatchObject({ allday: false, half: 'am', s: 0, e: 720 })
     expect(getState().grid.rocky['2026-02-10']).toBe('*LL')

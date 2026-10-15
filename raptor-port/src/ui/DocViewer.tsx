@@ -11,7 +11,7 @@
 import { placedLine } from './placedline'
 import { useEffect, useState } from 'react'
 import { PEOPLE } from '../engine/people'
-import { inpMeta, baseYear, leadOf } from '../engine/inputs'
+import { inpMeta, baseYear, leadOf, remarksTyped } from '../engine/inputs'
 import { fmt } from './inputedit'
 import { TODAY, keyToIso } from './weeknav'
 import { docGet, rowDocIds } from '../state/docs'
@@ -97,7 +97,7 @@ export function DocViewer() {
           <button className="x" id="docViewClose" aria-label="Close" onClick={close}>✕</button>
         </div>
         {r && <div className="airpop-body docview-body">
-          {m && <div className="docview-sub">{m.name}{r.remarks ? ` — ${r.remarks}` : ''}
+          {m && <div className="docview-sub">{m.name}{remarksTyped(r.remarks, r) ? ` — ${remarksTyped(r.remarks, r)}` : ''}
             {/* the file's own name, but only when this ENTRY holds several —
                 two scans of one certificate are otherwise identical pages */}
             {doc && rowDocIds(r).length > 1 ? <span className="docview-fname"> · {doc.name}</span> : null}</div>}
