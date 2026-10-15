@@ -52,6 +52,10 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
 
 ## 4. Steps, and what they assert
 
+- **The words a person SEES are the parts with a width, never `innerText`** (met 16 Oct 26, Quals' one row, D935). A label
+  that keeps its full words for a screen reader (clipped to 1px) beside a short form still counts both in `innerText`
+  and `textContent`: read the children whose box is wider than 1px. The walk and the browser test both tripped on it;
+  the pictures showed the right word.
 - **Press the control the app routes.** Choose it by its action attribute, and use text only to choose AMONG those — a
   label is echoed in a neighbour's caption. Aim at the control's own box (the "+ add", the button), never at a
   container's centre: once a row holds people, its centre is a man's puck.
