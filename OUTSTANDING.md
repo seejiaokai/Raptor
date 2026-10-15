@@ -215,7 +215,7 @@ or feel — his call).
 
 ## Items
 
-### [TRK-TEST-MIDNIGHT] Two Tracker tests fail when a run crosses midnight — test-only (filed 16 Oct 26)
+### [TRK-TEST-MIDNIGHT] Two Tracker tests fail when a run crosses midnight — test-only (filed 16 Oct 26) — FIXED 16 Oct 26 on `claude/one-row-guide-medical` (the group's date pinned; 79/79), leaves with its merge
 
 **Not a fault in the app.** `src/tracker/tracker.test.tsx` ("a grade is dated the day it is pressed…", "re-dating one
 failure from the full list…") work out today once, then the app stamps the date it reads at the press: a full run that
