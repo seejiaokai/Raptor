@@ -10307,6 +10307,9 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   foot is reached by one swipe, which scrolls the page with the pop-up open — no scrolling inside the pop-up, no smaller
   dates (D901); with this row, 667 tall fits whole and 568 leaves only "Default window" below. **D909:** an input's
   window opened from a day may reach the top of the screen and cover the day's bar; ✕ or Cancel shows the day again.
+  **TO BE BUILT (D914, 15 Oct 26 — "5B"; `[INPUT-DATES-FOLD]`):** in an input's window, dates already picked (a day or a
+  dragged run on the Inputs calendar, a saved input) show as ONE line that opens the calendar on a tap; the List's
+  "+ Input" opens with the calendar showing. The drawing: `scripts/handpass/mock-input-order.mjs` (B).
 - **THE SMALL CHOICES OF THE INPUTS PAGES, AS BUILT (owner D731, 10 Oct 26 — "Yes to all"; `[SEEN-BATCH-2]`; the check
   `docs/handpass/2026-10-10-batch2-check.md`).** Each is a line of its own below. Tests: `ui/batch2.test.tsx`,
   `ui/toastplace.test.tsx`, `state/reqorphan.test.ts`, `ui/quals.test.tsx`, and in a real browser
