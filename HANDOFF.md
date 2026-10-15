@@ -88,6 +88,11 @@ After a compaction: re-read this block, the overnight guide (`.claude/skills/ove
   fresh blind Opus read (3 findings, fixed) and the fix's own read (the tidy ran on every remark — fixed, only where a date
   was cut; an empty box's tap — walked, fine). Lesson 2 checked by a fresh reader and corrected. **Next:** open the pull
   request (stop watching it), read its checks; job 3 (draw round 2) only if time and the chat allow; the morning report.
+  **Pull request 522 OPEN** (Auto-fix on, set by the app; GitHub's checks running at 17 Oct). **Job 3 in progress (85%
+  full):** a helper drawing round 2 (`raptor-port/scripts/handpass/words-r2.mjs`, pictures
+  `raptor-port/docs/img/handpass/2026-10-16-words-pass/r2/`, up to four questions) — nothing in the app changes. **Then:**
+  one Artifact page for the morning (the built changes, Q1–Q4, round 2's questions — pictures), the morning report, the
+  guard back on (`compact-ready.mjs --back`), one notification.
 - **Rulings this chat:** D945–D948.
 <!-- /now -->
 
