@@ -196,8 +196,8 @@ test('in the window: on an input of several days "Several people" shows ALL AVAI
   /* the dates made three days on the window's own calendar: a tap for the start, a tap for the end. The start is tapped
      on the day BEFORE the one the window opened on — a day earlier than a start already picked is always a new start
      (ui/RangeCal.tsx), whether or not the window holds a finished range — so the two taps give 26 → 28 Oct either way */
-  await page.locator('#inpEdCal [data-cal="2026-10-26"]').click()
-  await page.locator('#inpEdCal [data-cal="2026-10-28"]').click()
+  await page.locator('#inpEdCal [data-iso="2026-10-26"]').click()
+  await page.locator('#inpEdCal [data-iso="2026-10-28"]').click()
   await expect(page.locator('#inpEditPop .rc-read')).toContainText('→')
   await expect(phGroup.locator('[data-ph="allavail"]')).toBeDisabled()
   await expect(phGroup.locator('[data-ph="all"]')).toBeDisabled()

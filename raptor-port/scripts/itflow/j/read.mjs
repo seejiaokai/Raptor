@@ -11,7 +11,7 @@ export default async function ({ fresh, go, shot, switchTo, publishDay, around, 
     { see: true, sel: '#weekSeg button.on' },
   ])
   await page.click('#weekSeg .wk-cal'); await page.waitForSelector('#weekCal .weekcal-box')
-  await shot(page, 'read-2', { x: 400, y: 215, w: 640, h: 480 }, [{ n: 3, sel: '#weekCal button[data-wcal="2026-07-15"]' }])
+  await shot(page, 'read-2', { x: 400, y: 215, w: 640, h: 480 }, [{ n: 3, sel: '#weekCal [data-testid="wcal-day-2026-07-15"]' }])
   await page.keyboard.press('Escape'); await page.mouse.click(1300, 120); await page.waitForTimeout(400)
   const pick = '#vWeek .day[data-day="1"] select[data-vwork="1"]'
   await page.selectOption(pick, 'working'); await page.waitForTimeout(500)

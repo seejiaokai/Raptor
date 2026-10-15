@@ -201,6 +201,7 @@ function WindowSheet({ onClose }: { onClose: () => void }) {
       <div className="bidsheet-row">
         <RangePicker
           testid="window"
+          clear
           min={period.start}
           max={period.end}
           value={range}

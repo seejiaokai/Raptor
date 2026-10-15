@@ -212,8 +212,8 @@ describe('adding through the board', () => {
     await setSelect($('#inpEditType'), 'OL')
     /* two clicks on the calendar: Jul 15 then Jul 17 (the view opens on the
        seeded start's month, Jul 2026) */
-    await click($('#inpEdCal [data-cal="2026-07-15"]'))
-    await click($('#inpEdCal [data-cal="2026-07-17"]'))
+    await click($('#inpEdCal [data-iso="2026-07-15"]'))
+    await click($('#inpEdCal [data-iso="2026-07-17"]'))
     expect(($('#inpEditRmk') as HTMLInputElement).value, 'the pick rewrote the tail').toBe('till 17 Jul')
     await click($('#inpEditSave'))
     expect(INPEDIT, 'the dialog closed on a good save').toBe(null)

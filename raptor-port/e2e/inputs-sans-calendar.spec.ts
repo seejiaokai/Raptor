@@ -277,7 +277,7 @@ test('a finger held on a date, then dragged, picks the run — the page standing
     await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await cdp.detach()
     await expect(page.locator('#inpEditPop .rc-read')).toHaveText('Oct 20')
     await expect(page.locator('#inpEditRmk')).toHaveValue('')
-    await page.locator('#inpEdCal [data-cal="2026-10-22"]').tap()
+    await page.locator('#inpEdCal [data-iso="2026-10-22"]').tap()
     await expect(page.locator('#inpEditPop .rc-read')).toHaveText('Oct 20 → Oct 22')
     await page.locator('[data-testid="win-inputedit-x"]').tap();await expect(page.locator('#inpEditPop')).toBeHidden()
   }finally{await context.close()}

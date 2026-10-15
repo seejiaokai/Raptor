@@ -26,7 +26,7 @@ async function month(p: Page, sel: { mon: string; prev: string; next: string }, 
   throw new Error('the calendar never reached the month asked for')
 }
 const INCAL = { mon: '#inpCal .ic-mon', prev: '#icPrev', next: '#icNext' }
-const HOLCAL = { mon: '[data-testid="holcal-month"]', prev: '[data-testid="holcal-prev-month"]', next: '[data-testid="holcal-next-month"]' }
+const HOLCAL = { mon: '[data-testid="holcal-title"] .dcal-my', prev: '[data-testid="holcal-prev"]', next: '[data-testid="holcal-next"]' }
 const tid = (p: Page, t: string) => p.locator(`[data-testid="${t}"]`)
 const noteNow = (p: Page) => p.evaluate(() => { const t = document.getElementById('toastEl'); return t && +getComputedStyle(t).opacity > 0.5 ? (t.textContent || '') : '' })
 const rec = (p: Page, id: string) => p.evaluate(id => { const r = (window as any).INPUTS.find((x: any) => String(x.iid) === id); return r ? { cx: !!r.cx, oil: r.oil || null, date: r.date, acc: r.acc } : null }, id)
@@ -95,7 +95,7 @@ test('D816 — the cancel taken off on a Saturday: the question first; left, the
     await go(page, 'inputs')
     await openDay(page, '2026-07-15')
     await page.locator(`[data-testid="idy-row-${id}"] [data-testid="idy-open"]`).click()
-    await page.locator('#inpEdCal [data-cal="2026-07-18"]').click()
+    await page.locator('#inpEdCal [data-iso="2026-07-18"]').click()
     await page.locator('#inpEditSave').click()
     await page.waitForFunction(id => (window as any).INPUTS.find((x: any) => String(x.iid) === id).date === 'Jul 18', id)
     await expect(tid(page, 'oilconf'), 'a cancelled input is asked nothing at its move').toHaveCount(0)

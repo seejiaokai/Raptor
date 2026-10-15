@@ -3846,23 +3846,34 @@ export async function addModule(type) {
 }
 let groupDrag = null, marquee = null;
 function startMarquee(e, svg) {
-  const p0 = svgPt(e); marquee = { x0: p0.x, y0: p0.y, rect: null }; try { svg.setPointerCapture(e.pointerId); } catch (_) {}
-  const stop = () => { svg.removeEventListener('pointermove', mv); svg.removeEventListener('pointerup', up); marquee = null; const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = ''; };
-  if (e.pointerType !== 'mouse') fingerStop = stop;
-  const mv = ev => {
+  const p0 = svgPt(e), pid = e.pointerId; marquee = { x0: p0.x, y0: p0.y, rect: null }; try { svg.setPointerCapture(e.pointerId); } catch (_) {}
+  /* THE BOX CARRIED TO THE CANVAS'S EDGE PANS IT (owner D900, 15 Oct 26 — "Yes they should too"): as a ball or a line's
+     end does (followEdge, D899) — its first corner stays on the chart where it was pressed, its far corner stays under
+     the pointer, so a box can take in balls that were off the screen. Nothing new while it is not at an edge. */
+  const draw = ev => {
+    if (!marquee) return;
     const p = svgPt(ev); const x = Math.min(marquee.x0, p.x), y = Math.min(marquee.y0, p.y), w = Math.abs(p.x - marquee.x0), h = Math.abs(p.y - marquee.y0); marquee.rect = { x, y, w, h };
     const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="rgba(59,198,232,.12)" stroke="${PAL.accent}" stroke-width="0.8" stroke-dasharray="4 3"/>`;
   };
-  const up = () => {
+  const fe = followEdge(e, draw);
+  const off = () => { fe.stop(); svg.removeEventListener('pointermove', mv); svg.removeEventListener('pointerup', up); svg.removeEventListener('pointercancel', cancel); };
+  const stop = () => { off(); marquee = null; const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = ''; };
+  if (e.pointerType !== 'mouse') fingerStop = stop;
+  const mv = ev => { if (ev.pointerId !== pid) return; fe.point(ev); draw(ev); };
+  /* a cancelled touch (a call, the system) selects nothing and leaves the selection as it was — and stops the pan, which
+     would otherwise run on with no release to end it (as the handles' cancel, F3) */
+  const cancel = ev => { if (ev.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); };
+  const up = ev => {
+    if (ev && ev.pointerId !== pid) return;
     if (fingerStop === stop) fingerStop = null;
-    svg.removeEventListener('pointermove', mv); svg.removeEventListener('pointerup', up);
+    off();
     const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = '';
     const r = marquee && marquee.rect; marquee = null;
     if (!r || (r.w < 3 && r.h < 3)) { selBalls = new Set(); renderBoard(); return; }
     const sel = new Set(); SYL.forEach(e2 => { const q = nodePos(e2.id); if (q.x >= r.x && q.x <= r.x + r.w && q.y >= r.y && q.y <= r.y + r.h) sel.add(e2.id); });
     selBalls = sel; renderBoard(); flashHint(sel.size + ' selected — drag any one of them to move the group.');
   };
-  svg.addEventListener('pointermove', mv); svg.addEventListener('pointerup', up);
+  svg.addEventListener('pointermove', mv); svg.addEventListener('pointerup', up); svg.addEventListener('pointercancel', cancel);
 }
 function startGroupDrag(ev) {
   perfOn(); ev.preventDefault(); const g = ev.currentTarget, id = g.dataset.id; if (!selBalls.has(id)) selBalls = new Set([id]);

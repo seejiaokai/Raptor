@@ -163,12 +163,12 @@ async function fileOnInputsPage(page: Page, f: Filing) {
   await page.selectOption('#inpEditType', f.type)
   if (f.person) await page.selectOption('#inpEditPerson', f.person)
   const walkTo = async (iso: string) => {
-    for (let i = 0; i < 36 && !(await page.locator(`#inpEdCal [data-cal="${iso}"]`).count()); i++) {
-      const [m, y] = (await page.locator('#inpEdCal .rc-mon').textContent())!.split(' ')
-      const at = `${y}-${String(MON.indexOf(m!) + 1).padStart(2, '0')}`
+    for (let i = 0; i < 36 && !(await page.locator(`#inpEdCal [data-iso="${iso}"]`).count()); i++) {
+      /* the month shown, "yyyy-mm" (the app's one date calendar since step two (D901)) */
+      const at = (await page.locator('[data-testid="inpEdCal"]').getAttribute('data-month'))!
       await page.locator(`#inpEdCal button[aria-label="${at < iso.slice(0, 7) ? 'Next' : 'Previous'} month"]`).click()
     }
-    await page.locator(`#inpEdCal [data-cal="${iso}"]`).click()
+    await page.locator(`#inpEdCal [data-iso="${iso}"]`).click()
   }
   await walkTo(f.from)
   if (f.to && f.to !== f.from) await walkTo(f.to)

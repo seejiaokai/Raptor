@@ -9,10 +9,6 @@ beforeEach(() => {
   initStore(memoryBackend())
 })
 
-const CAL_MONTHS = [
-  'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
-  'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER',
-]
 
 /** Drive the range calendar to a span, the way an admin does: walk to the
  *  month, tap the start, walk again if the end is in another month, tap the
@@ -21,10 +17,10 @@ const CAL_MONTHS = [
 function pickSpan(testid: string, from: string, to: string) {
   const goTo = (yyyymm: string) => {
     for (let i = 0; i < 72; i++) {
-      const [name, year] = screen.getByTestId(`${testid}-month`).textContent!.split(' ')
-      const at = `${year}-${String(CAL_MONTHS.indexOf(name) + 1).padStart(2, '0')}`
+      /* the month shown, "yyyy-mm" (the app's one date calendar since step two — D901) */
+      const at = screen.getByTestId(testid).getAttribute('data-month')!
       if (at === yyyymm) return
-      fireEvent.click(screen.getByTestId(at < yyyymm ? `${testid}-next-month` : `${testid}-prev-month`))
+      fireEvent.click(screen.getByTestId(at < yyyymm ? `${testid}-next` : `${testid}-prev`))
     }
     throw new Error(`never reached ${yyyymm}`)
   }

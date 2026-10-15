@@ -58,13 +58,21 @@ export function edgeAutoScroll(opts: {
   x: number
   y: number
   onScroll: () => void
+  /** the part of the scroller the dragged things are SEEN in, where it is less than the scroller's box — a bar that
+   *  stays at its foot (a window's Save / Cancel) covers its last strip, and a band drawn under that bar is a band the
+   *  pointer can only reach by leaving what it carries (the people picker — the walk of 15 Oct 26, E4) */
+  span?: () => [number, number]
+  /** whether there is anything more to bring into view that way (-1 toward the start, 1 toward the end) — a scroller
+   *  holding more than the dragged list must not run on past the list's own end */
+  more?: (dir: -1 | 1) => boolean
 }): { point: (x: number, y: number) => void; stop: () => void } {
   const s = findScroller(opts.from, opts.axis)
   let x = opts.x, y = opts.y, raf = 0, live = true
   const at = () => (opts.axis === 'y' ? y : x)
+  const seen = (sc: Scroller): [number, number] => (opts.span ? opts.span() : span(sc, opts.axis))
   const band = (p: number): -1 | 0 | 1 => {
     if (!s) return 0
-    const [lo, hi] = span(s, opts.axis)
+    const [lo, hi] = seen(s)
     const w = opts.touch ? TOUCH_EDGE : EDGE
     return p < lo + w ? -1 : p > hi - w ? 1 : 0
   }
@@ -75,9 +83,10 @@ export function edgeAutoScroll(opts: {
     if (!live || !s) return
     const p = at()
     if (held && band(p) !== held) held = 0
-    const [lo, hi] = span(s, opts.axis)
+    const [lo, hi] = seen(s)
     let d = edgeStep(p, lo, hi, opts.touch)
     if (held && Math.sign(d) === held) d = 0
+    if (d && opts.more && !opts.more(d > 0 ? 1 : -1)) d = 0
     if (d) {
       const before = opts.axis === 'y' ? s.el.scrollTop : s.el.scrollLeft
       if (opts.axis === 'y') s.el.scrollTop += d; else s.el.scrollLeft += d

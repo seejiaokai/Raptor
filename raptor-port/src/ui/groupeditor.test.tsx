@@ -515,12 +515,12 @@ describe('the input changed behind its window', () => {
    draft; only the control was missing.
    ON THE ONE RECORD (D756): "every man's record" moved alike; the one record moves, and everyone is still in it. */
 describe('the dates of a saved shared input are changed in its window (D681)', () => {
-  const day = (iso: string) => $(`#inpEditPop #inpEdCal [data-cal="${iso}"]`)
+  const day = (iso: string) => $(`#inpEditPop #inpEdCal [data-iso="${iso}"]`)
   it('the picker stands in the window, on the saved day; a tap for the start and a tap for the end stretch it for everyone — one Undo', async () => {
     const g = await shared(others().slice(0, 3))
     await openOn(g)
     expect($('#inpEditPop #inpEdCal'), 'the two-tap calendar a new input has').toBeTruthy()
-    expect(day('2026-10-13')!.className).toContain(' s')
+    expect(day('2026-10-13')!.className).toContain('is-sel')
     await click(day('2026-10-13')); await click(day('2026-10-15'))
     expect($('#inpEditPop .rc-read')!.textContent, 'the line under the calendar says what Save will write').toMatch(/13.*15/)
     await click($('#inpEditSave'))
@@ -603,7 +603,7 @@ describe('the dates of a saved shared input are changed in its window (D681)', (
     await openOn(g)
     await type('#inpEditRmk', 'mine')
     await act(async () => { commitInput(live(g.iid), { ...draftOf(live(g.iid)), start: '2026-10-22', end: '' }, [a, b]); notify() })
-    expect(day('2026-10-22') ? day('2026-10-22')!.className : $('#inpEditPop .rc-read')!.textContent, 'theirs, silently').toMatch(/ s|22 Oct|Oct 22/)
+    expect(day('2026-10-22') ? day('2026-10-22')!.className : $('#inpEditPop .rc-read')!.textContent, 'theirs, silently').toMatch(/is-sel|22 Oct|Oct 22/)
     await click($('#inpEditSave'))
     expect([live(g.iid).date, live(g.iid).remarks]).toEqual(['Oct 22', 'mine'])
     expect(inIt(g.iid)).toEqual([a, b])
@@ -616,7 +616,7 @@ describe('the dates of a saved shared input are changed in its window (D681)', (
     const r = await single()
     await openOn(r)
     expect($('#inpEditPop #inpEdCal')).toBeTruthy()
-    expect(day('2026-10-13')!.className).toContain(' s')
+    expect(day('2026-10-13')!.className).toContain('is-sel')
   })
   it('a shared SANS commitment an admin filed for two: the picker is there, and the new dates are both men’s', async () => {
     const sans = Object.keys(PEOPLE).filter(id => PEOPLE[id].san && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special)
@@ -635,7 +635,7 @@ describe('the dates of a saved shared input are changed in its window (D681)', (
 /* THE TWO BLIND READS OF THE DATE DOOR (Astra and Sol 6.1, 9 Oct 26 — docs/superpowers/briefs/2026-10-09-shared-dates-read-*.md;
    the evidence sheet §12). Each case below was SEEN failing here before its fix. */
 describe('the date door, after the two reads (9 Oct 26)', () => {
-  const day = (iso: string) => $(`#inpEditPop #inpEdCal [data-cal="${iso}"]`)
+  const day = (iso: string) => $(`#inpEditPop #inpEdCal [data-iso="${iso}"]`)
   /* Astra A1: the same day and month in ANOTHER YEAR read as "no change" — the comparison was of the printed labels,
      which carry no year inside the loaded one — and Save said "Input updated" with nothing moved */
   it('moved by exactly a year: the input moves to the year picked — never "updated" with nothing changed', async () => {
@@ -678,7 +678,7 @@ describe('the date door, after the two reads (9 Oct 26)', () => {
     await openOn(g)
     await openOn(h)
     expect(day('2026-12-10'), 'December is on the calendar').toBeTruthy()
-    expect(day('2026-12-10')!.className).toContain(' s')
+    expect(day('2026-12-10')!.className).toContain('is-sel')
     /* ...and after a half-made pick is thrown away for it */
     await act(async () => { setInpEdit(null); notify() })
     await openOn(g)
@@ -856,7 +856,7 @@ describe('outside the Inputs page nothing changes', () => {
    (D681). Nothing new is written: the one-person save always took the dates from what the window holds, and asks every
    question it asked before. */
 describe('the dates of a saved one-person input are changed in its window (D718 — the List’s pencil is gone)', () => {
-  const day = (iso: string) => $(`#inpEditPop #inpEdCal [data-cal="${iso}"]`)
+  const day = (iso: string) => $(`#inpEditPop #inpEdCal [data-iso="${iso}"]`)
   it('a tap for the start and a tap for the end stretch it; the line under the calendar says what Save will write — one Undo', async () => {
     const r = await single()
     await openOn(r)

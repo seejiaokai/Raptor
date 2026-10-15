@@ -832,3 +832,48 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** in shipping.md's D151 line, give the one safe form: `[ "$(gh run list … | length)" = "0" ] && git push`, or a small script (`node raptor-port/scripts/canpush.mjs <branch>`) that exits non-zero while any run of the branch's last pushed commit is queued or in progress — the guard inside the action, not a number to read.
 
 **Principle:** A check meant to gate an action must fail when the condition fails; a command that merely reports the condition, chained with `&&`, gates nothing.
+
+### Observation 609: A bare `cat >` at the head of a shell command waits on input for ever, and the time-out hides it as "moved to the background"
+
+**Status:** OPEN
+**Date:** 15 Oct 26
+**Session context:** calendar step two (D901) — editing files by a short script run from the shell
+**Skill:** New skill candidate: none — the project's script-writing memory notes (`bash-heredoc-apostrophes-fail`, `node-e-in-git-bash-mangles-escapes`)
+**Type:** open-source
+**Phase/Area:** writing an edit script and running it
+
+**Issue:** Twice in one chat a command began `cat > "$TMPDIR/x" 2>/dev/null; python - <<'EOF' …` (a leftover half of a "write the script, then run it" habit). `cat` with no file and no heredoc of its own reads the terminal, which never ends; after two minutes the tool moved the command to the background and the edit never ran. Nothing said why — it looked like a slow command. The second time also carried a heredoc body with apostrophes, which the project already knows fails here.
+
+**Suggested improvement:** In the project's notes on running scripts, one line: write every multi-line script with the file-writing tool and run the file; never begin a shell command with `cat >`; and give every shell command that runs a script `< /dev/null`, so anything that reads input ends at once instead of waiting.
+
+**Principle:** A command that can wait for input will, in a tool with no keyboard — close its input by default, so a slip ends in an error rather than a silent stall.
+
+### Observation 610: Before/after pictures of the live app need no second checkout or server
+
+**Status:** OPEN
+**Date:** 2026-10-15
+**Session context:** calendar step two — a browser gate failed on a phone size; the change had to be put to the owner with pictures of the live app beside the branch.
+**Skill:** brainstorming (mockups-on-the-real-app.md); walk-scripts.md
+**Type:** open-source
+**Phase/Area:** taking "before" pictures of the production version
+
+**Issue:** The first attempt extracted the whole main branch (picture folders included, ~4 GB) and stalled for minutes. Excluding the documents and reference folders from the archive made the copy, install and build take under a minute; and serving the built folder through the browser automation's own request routing (fulfil every request from the dist folder, index.html as the fallback) needed no second preview server, no launch-config edit and no port. One trap: the app exposes its test hooks only on a localhost address, so the routed base URL must be http://localhost:<unused port>, not a made-up host.
+
+**Suggested improvement:** Add to mockups-on-the-real-app.md (or walk-scripts.md) a "before pictures" recipe: `git archive origin/main -- <app> ':(exclude)<app>/docs'` into the scratch folder, `npm ci && vite build` there, then a picture script that routes `http://localhost:<free port>/**` to that dist folder; take the same steps on the branch's served build.
+
+**Principle:** To compare a branch with production, build production from an archive that leaves out the bulky non-code folders, and serve it from inside the test browser rather than standing up a second server.
+
+### Observation 611: A control the change was told to leave alone is measured before and after, not eyeballed
+
+**Status:** OPEN
+**Date:** 2026-10-15
+**Session context:** calendar step two — moving two buttons into a toolbar row on a phone (D910), with "the other buttons keep their size" in the ruling.
+**Skill:** bug-check-order (raptor-port/docs/bug-check-order.md §9/§10 anti-pattern 21); mockups-on-the-real-app.md
+**Type:** open-source
+**Phase/Area:** the walk after a layout change
+
+**Issue:** An exclusion added to the row's shared button rule (`:not(<complex selector>)`) raised that rule's specificity, so it began to beat a later, narrower rule for a neighbouring control (the settings gear) and shrank its glyph from 17px to 12px on every screen size, the desktop included. The walk's own pictures showed the smaller gear and were "looked at"; nobody noticed, because nothing compared the untouched controls before and after. A fresh blind code reader found it from the stylesheet weights.
+
+**Suggested improvement:** When a ruling says some controls must NOT change (keep place / keep size), the walk script measures them (computed font-size, padding, box) on the live build and on the change, and asserts equality — a before/after table, not a picture. And a CSS note for the design guide or the walk-scripts guide: an exclusion added to a shared rule is written `:where(:not(...))` so the rule keeps its weight.
+
+**Principle:** "Unchanged" is a claim to measure against the old build, not something to see in a picture; and any selector added to a shared rule can silently change which rule wins elsewhere.

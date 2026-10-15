@@ -294,7 +294,7 @@ describe('the List’s "+ Input" files for several people too', () => {
   const W = '[data-testid="win-inputedit"]'
   const plus = async () => { await listUp(); await click($('#inNew')); expect($(W), 'the new input’s window').toBeTruthy() }
   const form = () => $(`${W} [data-testid="pp"]`) as HTMLElement
-  const pickDate = async () => { await click($('#inpEdCal [data-cal]')) }
+  const pickDate = async () => { await click($('#inpEdCal [data-iso]')) }
   /* ONE RECORD FOR THE THREE (D756): the save used to add three records tied by one group id, each naming whoever
      filed the entry (`grpBy`); it adds ONE, whose `by` is the filer and whose every entry says he put that man in */
   it('an admin: the Person list, with "Several people" beside it — three picked, one Add, one shared input (D756: ONE record)', async () => {

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as core from '../app/core.js';
 import { isComposing } from './keys.js';
+import { edgeAutoScroll } from '../../ui/edgescroll';
 
 /* ---------- generic in-page dialog (uiConfirm / uiPrompt / uiAlert / uiChoice) ---------- */
 export function DlgModal() {
@@ -325,6 +326,15 @@ function OrdModalInner({ mode }) {
   const cfg = ORD_MODES[mode] || ORD_MODES.syllabus;
   const [list, setList] = useState(() => cfg.read());
   const fromRef = useRef(null);
+  /* A ROW CARRIED TO THE LIST'S TOP OR FOOT SCROLLS IT THAT WAY (owner D900, 15 Oct 26 — "Yes they should too"; the
+     design guide §5a, D895), at Raptor's one edge feel (ui/edgescroll.ts), so a row can be taken to a place out of
+     view. The rows drag by the browser's own drag, which sends no pointer moves: its `dragover`, heard on the whole
+     page while a row is carried, says where the mouse is. A row that slides under the still mouse is marked by the
+     browser's own drag events, as before. (A phone cannot drag these rows at all — its ▲▼ do it there.) */
+  const autoRef = useRef(null);
+  const feed = e => { if (autoRef.current) autoRef.current.point(e.clientX, e.clientY); };
+  const endAuto = () => { if (autoRef.current) autoRef.current.stop(); autoRef.current = null; document.removeEventListener('dragover', feed, true); };
+  useEffect(() => endAuto, []);
   /* What can come back: deleted built-in syllabi, and deleted courses (owner,
      23 Sep 26 — D128; their records were always kept). Crew has none — a
      removed student's marks are deleted, and the question says so. */
@@ -356,8 +366,18 @@ function OrdModalInner({ mode }) {
             const tag = cfg.tag(n, i);
             return (
               <div key={n} className="ordrow" draggable
-                onDragStart={e => { fromRef.current = i; try { e.dataTransfer.setData('text/plain', String(i)); e.dataTransfer.effectAllowed = 'move'; } catch (_) {} e.currentTarget.classList.add('drag'); }}
-                onDragEnd={e => { e.currentTarget.classList.remove('drag'); document.querySelectorAll('#ordList .ordrow').forEach(r => r.classList.remove('over')); }}
+                onDragStart={e => {
+                  fromRef.current = i; try { e.dataTransfer.setData('text/plain', String(i)); e.dataTransfer.effectAllowed = 'move'; } catch (_) {} e.currentTarget.classList.add('drag');
+                  endAuto();
+                  /* only a list longer than its box: a short one has nothing to show, and the page behind the window must
+                     not be scrolled in its place */
+                  const box = e.currentTarget.parentElement;
+                  if (box && box.scrollHeight > box.clientHeight + 1) {
+                    autoRef.current = edgeAutoScroll({ from: e.currentTarget, axis: 'y', touch: false, x: e.clientX, y: e.clientY, onScroll: () => {} });
+                    document.addEventListener('dragover', feed, true);
+                  }
+                }}
+                onDragEnd={e => { endAuto(); e.currentTarget.classList.remove('drag'); document.querySelectorAll('#ordList .ordrow').forEach(r => r.classList.remove('over')); }}
                 onDragOver={e => { e.preventDefault(); e.currentTarget.classList.add('over'); }}
                 onDragLeave={e => e.currentTarget.classList.remove('over')}
                 onDrop={e => {

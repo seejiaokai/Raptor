@@ -39,8 +39,8 @@ async function file(p: Page, rows: Array<{ who: number; also?: number[]; type: s
   }, rows)
 }
 const editorOpen = (p: Page) => p.evaluate(() => { const e = document.getElementById('inpEditPop'); return !!e && !e.hidden })
-async function phone(browser: any, baseURL: string | undefined, height = 844) {
-  const context = await browser.newContext({ baseURL, viewport: { width: 390, height }, isMobile: true, hasTouch: true })
+async function phone(browser: any, baseURL: string | undefined, height = 844, width = 390) {
+  const context = await browser.newContext({ baseURL, viewport: { width, height }, isMobile: true, hasTouch: true })
   const page: Page = await context.newPage()
   await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
   return { context, page }
@@ -784,10 +784,10 @@ test('one holiday, one word: "ND" for a National Day on the "Calendar" month, th
   await page.locator('[data-testid="hol-name"]').fill('National Day')
   await page.locator('[data-testid="hol-short"]').fill('ND')
   for (let i = 0; i < 24; i++) {
-    const [name, year] = (await page.locator('[data-testid="holcal-month"]').innerText()).trim().toLowerCase().split(/\s+/)
+    const [name, year] = (await page.locator('[data-testid="holcal-title"] .dcal-my').innerText()).trim().toLowerCase().split(/\s+/)
     const d = 2026 * 12 + 7 - (+year * 12 + MONTHS.findIndex(x => x.startsWith(name.slice(0, 3))))
     if (!d) break
-    await page.locator(`[data-testid="${d > 0 ? 'holcal-next-month' : 'holcal-prev-month'}"]`).click()
+    await page.locator(`[data-testid="${d > 0 ? 'holcal-next' : 'holcal-prev'}"]`).click()
   }
   await page.locator('[data-testid="holcal-day-2026-08-05"]').click()
   await page.locator('[data-testid="hol-save"]').click()
@@ -830,9 +830,9 @@ test('a saved shared input: its window carries the calendar; two presses and Sav
   await expect(edWin(page)).toBeVisible()
   const cal = page.locator('#inpEditPop #inpEdCal')
   await expect(cal, 'the calendar a new input has').toBeVisible()
-  await expect(cal.locator('[data-cal="2026-10-13"]')).toHaveClass(/\bs\b/)
-  await cal.locator('[data-cal="2026-10-20"]').click()
-  await cal.locator('[data-cal="2026-10-22"]').click()
+  await expect(cal.locator('[data-iso="2026-10-13"]')).toHaveClass(/\bis-sel\b/)
+  await cal.locator('[data-iso="2026-10-20"]').click()
+  await cal.locator('[data-iso="2026-10-22"]').click()
   await expect(page.locator('#inpEditPop .rc-read')).toContainText('20')
   await expect(page.locator('#inpEditPop .rc-read')).toContainText('22')
   await page.locator('#inpEditSave').click()
@@ -857,13 +857,12 @@ test('a phone: the shared input’s calendar fits the window, a finger picks its
     const c = (await cal.boundingBox())!
     expect(c.x, 'nothing runs off the left').toBeGreaterThanOrEqual(0)
     expect(c.x + c.width, 'or the right').toBeLessThanOrEqual(390)
-    /* the calendar is the one "+ Input" already carries in this window, at its size (D487: no button is resized without
-       his word — its days are 20px tall on a phone, said on the look card); what is checked is that a finger lands on
-       the day it aimed at */
-    await cal.locator('[data-cal="2026-10-20"]').tap()
-    await expect(cal.locator('[data-cal="2026-10-20"]')).toHaveClass(/\bs\b/)
-    await cal.locator('[data-cal="2026-10-21"]').tap()
-    await expect(cal.locator('[data-cal="2026-10-21"]')).toHaveClass(/\be\b/)
+    /* the calendar is the one "+ Input" already carries in this window — the app's one date calendar since step two (D901), its days a finger's size
+       (D901 (3)); what is checked is that a finger lands on the day it aimed at */
+    await cal.locator('[data-iso="2026-10-20"]').tap()
+    await expect(cal.locator('[data-iso="2026-10-20"]')).toHaveClass(/\bis-sel\b/)
+    await cal.locator('[data-iso="2026-10-21"]').tap()
+    await expect(cal.locator('[data-iso="2026-10-21"]')).toHaveClass(/\bis-to\b/)
     await expect(page.locator('#inpEditPop .rc-read')).toContainText('21')
     const save = page.locator('#inpEditSave')
     await save.scrollIntoViewIfNeeded()
@@ -1072,7 +1071,7 @@ for (const size of [{ name: 'a desktop 1440 × 900', width: 1440, height: 900 },
    not changed. Only a real browser can measure a button. */
 test('a phone: the days of the calendar in an input’s window are a finger’s size, a saved input’s and a new one’s alike; a desktop’s are as they were (D725)', async ({ browser, baseURL, page }) => {
   const size = (p: Page) => p.evaluate(() => {
-    const d = document.querySelector('#inpEdCal .rc-d:not(.wk)')!.getBoundingClientRect(), n = document.querySelector('#inpEdCal .rc-nav')!.getBoundingClientRect()
+    const d = document.querySelector('#inpEdCal button.dcal-d:not(.is-we)')!.getBoundingClientRect(), n = document.querySelector('#inpEdCal .dcal-nav')!.getBoundingClientRect()
     const cal = document.querySelector('#inpEdCal')!.getBoundingClientRect(), win = document.querySelector('[data-testid="win-inputedit"]')!.getBoundingClientRect()
     const save = document.querySelector('#inpEditSave')!.getBoundingClientRect()
     return { w: Math.round(d.width), h: Math.round(d.height), nav: Math.round(n.height), inside: cal.left >= win.left - 0.5 && cal.right <= win.right + 0.5, saveInSight: save.bottom <= win.bottom + 0.5 && save.bottom <= innerHeight + 0.5, wide: document.documentElement.scrollWidth > innerWidth + 1 }
@@ -1083,11 +1082,12 @@ test('a phone: the days of the calendar in an input’s window are a finger’s 
     await p.locator(`[data-iid="${iid}"]`).first().locator('[data-testid="in-open"], [data-testid="inl-open"]').click()
     await expect(p.locator('#inpEdCal')).toBeVisible()
   }
-  /* a desktop: unchanged */
+  /* a desktop: a finger's size too since step two of the app's one date calendar — one size everywhere (D901 (3)) */
   await page.setViewportSize({ width: 1440, height: 900 })
   await login(page); await openSaved(page)
   const desk = await size(page)
-  expect(desk.h, 'a desktop’s day is the small one it was').toBeLessThan(26)
+  expect(desk.h, 'a desktop’s day is a finger’s size too (D901 (3))').toBeGreaterThanOrEqual(32)
+  expect(desk.inside, 'the calendar is inside the window').toBe(true)
   /* a phone */
   const ph = await phone(browser, baseURL, 844)
   try {
@@ -1318,9 +1318,13 @@ test('a phone: the List opens on its cards under ONE "+ Input"; the "?" card ope
     const top = await page.evaluate(() => {
       const add = document.querySelector('#inNew')!.getBoundingClientRect()
       const first = document.querySelector('[data-testid="inl-day"], #inEmpty:not([hidden])')!.getBoundingClientRect()
-      return { addH: Math.round(add.height), addOnScreen: add.top >= 0 && add.bottom <= innerHeight, listTop: Math.round(first.top), h: innerHeight }
+      /* drawn at the top row's button height since D910 (his 'same height', 15 Oct 26) — 36 — and pressed over the row's
+         finger-sized area, 4px past each edge (D698): a finger just above or below it still meets it */
+      const b = document.querySelector('#inNew')!, hit = (y: number) => { const h = document.elementFromPoint(add.left + add.width / 2, y); return !!h && (h === b || b.contains(h)) }
+      return { addH: Math.round(add.height), press: hit(add.top - 3) && hit(add.bottom + 3), addOnScreen: add.top >= 0 && add.bottom <= innerHeight, listTop: Math.round(first.top), h: innerHeight }
     })
-    expect(top.addH, 'a finger’s size').toBeGreaterThanOrEqual(44)
+    expect(top.addH, 'the top row’s button height (D910)').toBe(36)
+    expect(top.press, 'and a finger’s press area — 3px above and below it still meet it (D698)').toBe(true)
     expect(top.addOnScreen).toBe(true)
     expect(top.listTop, 'the list starts in the top half of the screen — it used to start below a screen of form').toBeLessThan(top.h / 2)
     await page.locator('#inNew').tap()
@@ -1351,6 +1355,52 @@ test('a phone: the List opens on its cards under ONE "+ Input"; the "?" card ope
   } finally { await context.close() }
 })
 
+/* D910 — THE LIST'S TWO BUTTONS IN THE TOP ROW NEVER COST THE ROW ITS OTHER BUTTONS (the blind read of 15 Oct 26). The row's
+   rules once outweighed the gear's own and shrank its ⚙ from 17 to 12 points, on the List AND the Calendar, a desktop too;
+   and a dates label that prints a year must not push the gear onto a line of its own (D687, D693). */
+for (const [w, h] of [[390, 844], [375, 667]] as const) {
+  test(`D910 — a phone ${w} wide: the gear keeps its glyph, and a window into next year leaves the switch, the filter and the gear on the row`, async ({ browser, baseURL }) => {
+    const { context, page } = await phone(browser, baseURL, h, w)
+    try {
+      await page.locator('#inListBtn').tap()
+      const row = () => page.evaluate(() => { const t = (id: string) => Math.round(document.getElementById(id)!.getBoundingClientRect().top), l = (id: string) => Math.round(document.getElementById(id)!.getBoundingClientRect().left)
+        return { gearFont: getComputedStyle(document.getElementById('inGear')!).fontSize, tops: ['inNew', 'inRangeBtn', 'inListBtn', 'inFiltersBtn', 'inGear'].map(t), lefts: ['inListBtn', 'inFiltersBtn', 'inGear'].map(l), wide: document.documentElement.scrollWidth } })
+      const r0 = await row()
+      expect(r0.gearFont, 'the gear’s ⚙ at its own size').toBe('17px')
+      /* the dates button keeps the row's finger-sized press area: a finger just above its edge still meets it (D698) */
+      const edge = await page.evaluate(() => { const b = document.getElementById('inRangeBtn')!, r = b.getBoundingClientRect(), h = document.elementFromPoint(r.left + r.width / 2, r.top - 3); return !!h && (h === b || b.contains(h)) })
+      expect(edge, 'a finger 3px above the dates button meets it').toBe(true)
+      /* a tap on the row's blank stretch, beside the dates button, is a tap outside its pop-up and closes it */
+      await page.locator('#inRangeBtn').tap()
+      await expect(page.locator('#inRangePop')).toHaveCount(1)
+      const gap = await page.evaluate(() => { const a = document.getElementById('inRangeBtn')!.getBoundingClientRect(), v = document.querySelector('.inputs-views')!.getBoundingClientRect(); return { x: (a.right + v.left) / 2, y: a.top + a.height / 2, w: v.left - a.right } })
+      if (gap.w >= 8) {
+        await page.touchscreen.tap(gap.x, gap.y)
+        await expect(page.locator('#inRangePop'), 'a tap on the blank row closes the pop-up').toHaveCount(0)
+      }
+      /* a window from 28 Dec into January of the next year, picked on the calendar */
+      if (!(await page.locator('#inRangePop').count())) await page.locator('#inRangeBtn').tap()
+      /* walk the calendar to each date's own month, either way — the pop-up opens on the default window's month, which
+         follows the real date (the read of 15 Oct 26: a "next"-only walk would fail from January 2027) */
+      for (const iso of ['2026-12-28', '2027-01-11']) {
+        for (let i = 0; i < 36; i++) {
+          const at = (await page.locator('[data-testid="inRangeCal"]').getAttribute('data-month'))!
+          if (at === iso.slice(0, 7)) break
+          await page.locator(`[data-testid="inRangeCal-${at < iso.slice(0, 7) ? 'next' : 'prev'}"]`).tap()
+        }
+        await page.locator(`#inRangePop [data-iso="${iso}"]`).tap()
+      }
+      await page.keyboard.press('Escape')
+      await expect(page.locator('#inRangeBtn')).toContainText('28 Dec–11 Jan 2027')
+      const r1 = await row()
+      expect(new Set(r1.tops).size, 'all five on ONE line').toBe(1)
+      expect(r1.lefts, 'the switch, the filter and the gear where they were').toEqual(r0.lefts)
+      expect(r1.wide, 'nothing runs off sideways').toBeLessThanOrEqual(w)
+      expect(r1.gearFont).toBe('17px')
+    } finally { await context.close() }
+  })
+}
+
 /* THE LIST'S DATES CALENDAR OPENS UNDER ITS OWN ROW ON A PHONE (his find, 10 Oct 26: "When I click on the calander to see
    the dates it shows me this and I can't select the dates"). On a phone the picker was placed against the SCREEN — one
    screen's height down the page — so the button lit and nothing appeared. It had worked only by luck, while the List's own
@@ -1369,24 +1419,46 @@ for (const height of [844, 667, 568]) {
         const x = r.left + r.width / 2, y = r.top + r.height / 2, hit = document.elementFromPoint(x, y)
         return { x, y, top: r.top, bottom: r.bottom, left: r.left, right: r.right, reached: !!hit && (hit === e || e.contains(hit)), inPop: !!pop && !!hit && pop.contains(hit) }
       }, [sel, n] as const)
+      /* the row that holds the dates button — on a phone the tabs' top row since D910 (15 Oct 26), the List's two buttons
+         standing in it beside the switch, the filter and the gear */
       const m = await page.evaluate(() => {
-        const pop = document.getElementById('inRangePop')!.getBoundingClientRect(), row = document.querySelector('.inputs-listtools')!.getBoundingClientRect()
-        return { top: pop.top, bottom: pop.bottom, left: pop.left, right: pop.right, rowBottom: row.bottom, vw: innerWidth, vh: innerHeight, scrolled: scrollY, wide: document.documentElement.scrollWidth }
+        const pop = document.getElementById('inRangePop')!.getBoundingClientRect(), row = document.getElementById('inRangeBtn')!.closest('.inputs-top, .inputs-listtools')!.getBoundingClientRect()
+        const all = document.getElementById('inRangeAll')!.getBoundingClientRect()
+        return { top: pop.top, bottom: pop.bottom, left: pop.left, right: pop.right, rowBottom: row.bottom, allBottom: all.bottom, vw: innerWidth, vh: innerHeight, scrolled: scrollY, wide: document.documentElement.scrollWidth,
+          inTop: !!document.querySelector('.inputs-top #inRangeBtn') }
       })
+      expect(m.inTop, 'the dates button stands in the top row (D910)').toBe(true)
       expect(m.scrolled, 'the page was not moved to find it').toBe(0)
       expect(m.top, 'it opens straight under the row of buttons').toBeGreaterThanOrEqual(m.rowBottom - 1)
       expect(m.top - m.rowBottom, 'and close to it').toBeLessThanOrEqual(12)
-      expect(m.bottom, 'the whole calendar is on the screen').toBeLessThanOrEqual(m.vh)
+      /* 667 tall and up the whole calendar is on the screen; at 568 its dates and "Next 2 weeks" / "All dates" are, and
+         only its foot (an admin's "Default window") is reached by one swipe — D908 (15 Oct 26), checked below */
+      if (height >= 667) expect(m.bottom, 'the whole calendar is on the screen').toBeLessThanOrEqual(m.vh)
+      else expect(m.allBottom, '"Next 2 weeks" and "All dates" are on the screen').toBeLessThanOrEqual(m.vh)
       expect(m.left).toBeGreaterThanOrEqual(0)
       expect(m.right).toBeLessThanOrEqual(m.vw)
       expect(m.wide, 'nothing runs off sideways').toBeLessThanOrEqual(390)
+      if (height < 667) {
+        /* D908: what runs past a small phone's foot is reached by ONE SWIPE — a real finger drawn up the calendar, which
+           scrolls the page with the pop-up open — never by scrolling inside it, never by smaller dates */
+        const cdp = await context.newCDPSession(page)
+        const t = (type: string, y: number) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: type === 'touchEnd' ? [] : [{ x: 200, y, id: 1 }] } as any)
+        /* at a finger's own pace, then at rest: a fast flick leaves the page gliding, and on any phone the first tap during a
+           glide only stops it (found when the next tap on a date picked nothing — the browser's habit, not the app's) */
+        await t('touchStart', 480); for (let i = 1; i <= 10; i++) { await t('touchMove', 480 - i * 20); await page.waitForTimeout(60) } await t('touchEnd', 0)
+        await page.waitForTimeout(1500)
+        const foot = await page.evaluate(() => { const e = document.getElementById('inRangeEdit') || document.getElementById('inRangeAll')!; return { bottom: e.getBoundingClientRect().bottom, vh: innerHeight, open: !!document.getElementById('inRangePop') } })
+        expect(foot.open, 'the pop-up stays open under the swipe').toBe(true)
+        expect(foot.bottom, 'one swipe brings its foot onto the screen (D908)').toBeLessThanOrEqual(foot.vh)
+        await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(200)
+      }
       /* a finger on a date meets that date, and two presses set the window of dates */
       const before = (await page.locator('#inRangeBtn').innerText()).trim()
-      const d1 = await at('#inRangePop .rc-d', 8)
+      const d1 = await at('#inRangePop button.dcal-d', 8)
       expect(d1.reached, 'a date is what a finger on it reaches').toBe(true)
       await page.touchscreen.tap(d1.x, d1.y)
       await expect(page.locator('#inRangePop .rc-read')).toContainText('pick an end date')
-      const d2 = await at('#inRangePop .rc-d', 11)
+      const d2 = await at('#inRangePop button.dcal-d', 11)
       await page.touchscreen.tap(d2.x, d2.y)
       await expect(page.locator('#inRangeBtn')).not.toHaveText(before)
       await expect(page.locator('#inRangeBtn')).toContainText('→')

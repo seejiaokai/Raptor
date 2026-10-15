@@ -955,3 +955,39 @@ describe('[HUMAN-RETEST] the Tracker — unsaved chart edits are never dropped o
     await clean()
   })
 })
+
+/* THE ⇅ REORDER LIST FOLLOWS A ROW CARRIED TO ITS FOOT (owner D900, 15 Oct 26 — "Yes they should too"; the design guide
+   §5a, D895). Its rows drag by the browser's own drag, which sends no pointer moves: the page's `dragover` says where the
+   mouse is, and the list scrolls at Raptor's one edge feel (ui/edgescroll.ts). jsdom lays nothing out, so the list's
+   sizes are lent to it and the frames are run by hand. */
+describe('D900 — the Reorder list scrolls at its foot under a carried row', () => {
+  it('a row carried to the list\'s foot scrolls it; let go, it stops', async () => {
+    const frames: Array<() => void> = []
+    const raf = globalThis.requestAnimationFrame, caf = globalThis.cancelAnimationFrame
+    globalThis.requestAnimationFrame = ((cb: FrameRequestCallback) => { frames.push(() => cb(0)); return frames.length }) as typeof requestAnimationFrame
+    globalThis.cancelAnimationFrame = (() => { frames.length = 0 }) as typeof cancelAnimationFrame
+    const run = (n: number) => { for (let i = 0; i < n; i++) frames.splice(0).forEach(f => f()) }
+    try {
+      const { OrdModal } = await import('./components/Modals.jsx')
+      C.openOrd()
+      const host = await render(<OrdModal />)
+      const list = host.querySelector('#ordList') as HTMLElement
+      list.style.overflowY = 'auto'                       // jsdom does not expand the inline `overflow` shorthand
+      Object.defineProperty(list, 'clientHeight', { value: 200, configurable: true })
+      Object.defineProperty(list, 'scrollHeight', { value: 1000, configurable: true })
+      list.getBoundingClientRect = () => ({ top: 100, bottom: 300, left: 0, right: 400, width: 400, height: 200, x: 0, y: 100, toJSON() {} }) as DOMRect
+      const row = list.querySelector('.ordrow') as HTMLElement
+      const ev = (type: string, y: number, on: EventTarget) => on.dispatchEvent(new MouseEvent(type, { bubbles: true, cancelable: true, clientX: 50, clientY: y }))
+      await act(async () => { ev('dragstart', 120, row) })
+      expect(row.classList.contains('drag'), 'the row is being carried').toBe(true)
+      ev('dragover', 290, document)                       // the mouse at the list's foot
+      run(4)
+      expect(list.scrollTop, 'the list ran down under the carried row').toBeGreaterThan(0)
+      const at = list.scrollTop
+      await act(async () => { ev('dragend', 290, row) })
+      run(4)
+      expect(list.scrollTop, 'let go, it stops').toBe(at)
+      C.closeOrd(); host.remove()
+    } finally { globalThis.requestAnimationFrame = raf; globalThis.cancelAnimationFrame = caf }
+  })
+})

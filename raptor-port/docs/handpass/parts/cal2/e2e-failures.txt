@@ -1,0 +1,49 @@
+  1) [raptor] › e2e\inputs-batch2.spec.ts:106:7 › D731 (12) — a phone 568 tall: the days of the List’s dates calendar are a finger’s size, the calendar fills its pop-up, and all of it is on the screen 
+    Error: the whole pop-up is on the screen
+    expect(received).toBeLessThanOrEqual(expected)
+    Expected: <= 568
+    Received:    661
+      127 |       expect(m.wide, 'nothing runs off sideways').toBeLessThanOrEqual(390)
+      128 |       expect(m.scrolled, 'the page was not moved to find it').toBe(0)
+    > 129 |       expect(m.popBottom, 'the whole pop-up is on the screen').toBeLessThanOrEqual(m.vh)
+      130 |       expect(m.allReached, '"All dates" is what a finger on it reaches').toBe(true)
+  2) [raptor] › e2e\inputs-batch2.spec.ts:253:5 › A1 — a phone: another card tapped over unsaved changes — the question is in front, where a finger can answer it 
+    Error: the day’s bar still shows above the input’s window
+    expect(received).toBeTruthy()
+    Received: null
+    > 281 |       expect(bar, 'the day’s bar still shows above the input’s window').toBeTruthy()
+      283 |       await expect(page.locator('[data-testid="win-inputsday"]')).toHaveClass(/\bfront\b/)
+  3) [raptor] › e2e\geometry.spec.ts:3921:7 › the day arrows › phone: the top-left calendar icon opens the week picker 
+    Error: page.waitForSelector: Test timeout of 30000ms exceeded.
+      3933 |     expect(order.calLeft, 'the calendar icon is left of the day title').toBeLessThan(order.titleLeft)
+      3936 |     expect(await page.locator('#weekCal').isVisible()).toBe(true)
+  4) [raptor] › e2e\inputs-calendar.spec.ts:1361:7 › a phone 667 tall, the List: the dates button opens its calendar on screen, under its row; a finger picks two dates and "All dates" on it 
+    Error: the whole calendar is on the screen
+    expect(received).toBeLessThanOrEqual(expected)
+    Expected: <= 667
+    Received:    685
+      1377 |       expect(m.top, 'it opens straight under the row of buttons').toBeGreaterThanOrEqual(m.rowBottom - 1)
+      1378 |       expect(m.top - m.rowBottom, 'and close to it').toBeLessThanOrEqual(12)
+    > 1379 |       expect(m.bottom, 'the whole calendar is on the screen').toBeLessThanOrEqual(m.vh)
+      1380 |       expect(m.left).toBeGreaterThanOrEqual(0)
+      1381 |       expect(m.right).toBeLessThanOrEqual(m.vw)
+      1382 |       expect(m.wide, 'nothing runs off sideways').toBeLessThanOrEqual(390)
+  5) [raptor] › e2e\inputs-calendar.spec.ts:1361:7 › a phone 568 tall, the List: the dates button opens its calendar on screen, under its row; a finger picks two dates and "All dates" on it 
+    Error: the whole calendar is on the screen
+    expect(received).toBeLessThanOrEqual(expected)
+    Expected: <= 568
+    Received:    661
+      1377 |       expect(m.top, 'it opens straight under the row of buttons').toBeGreaterThanOrEqual(m.rowBottom - 1)
+      1378 |       expect(m.top - m.rowBottom, 'and close to it').toBeLessThanOrEqual(12)
+    > 1379 |       expect(m.bottom, 'the whole calendar is on the screen').toBeLessThanOrEqual(m.vh)
+      1380 |       expect(m.left).toBeGreaterThanOrEqual(0)
+      1381 |       expect(m.right).toBeLessThanOrEqual(m.vw)
+      1382 |       expect(m.wide, 'nothing runs off sideways').toBeLessThanOrEqual(390)
+  6) [lw-phone] › e2e\leavewar.spec.ts:3156:5 › an admin creates a leave war, and it joins the picker 
+    Error: locator.textContent: Test timeout of 30000ms exceeded.
+  7) [lw-phone] › e2e\leavewar.spec.ts:3169:5 › overlapping dates are refused, with the reason on screen 
+    Error: locator.textContent: Test timeout of 30000ms exceeded.
+  8) [lw-desktop] › e2e\leavewar.spec.ts:3156:5 › an admin creates a leave war, and it joins the picker 
+    Error: locator.textContent: Test timeout of 30000ms exceeded.
+  9) [lw-desktop] › e2e\leavewar.spec.ts:3169:5 › overlapping dates are refused, with the reason on screen 
+    Error: locator.textContent: Test timeout of 30000ms exceeded.

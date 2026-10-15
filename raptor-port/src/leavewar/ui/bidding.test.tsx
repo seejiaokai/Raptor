@@ -131,15 +131,12 @@ describe('placing a bid', () => {
 })
 
 describe('bidding over a range', () => {
-  const CAL = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
-    'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER']
-
   const goTo = (yyyymm: string) => {
     for (let i = 0; i < 72; i++) {
-      const [name, year] = screen.getByTestId('span-month').textContent!.split(' ')
-      const at = `${year}-${String(CAL.indexOf(name) + 1).padStart(2, '0')}`
+      /* the month shown, "yyyy-mm" (the app's one date calendar since step two — D901) */
+      const at = screen.getByTestId('span').getAttribute('data-month')!
       if (at === yyyymm) return
-      fireEvent.click(screen.getByTestId(at < yyyymm ? 'span-next-month' : 'span-prev-month'))
+      fireEvent.click(screen.getByTestId(at < yyyymm ? 'span-next' : 'span-prev'))
     }
     throw new Error(`never reached ${yyyymm}`)
   }
@@ -162,7 +159,7 @@ describe('bidding over a range', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     fireEvent.click(screen.getByTestId('span-range'))
-    expect(screen.getByTestId('span-month').textContent).toBe('FEBRUARY 2026')
+    expect(screen.getByTestId('span').getAttribute('data-month')).toBe('2026-02')
     expect(screen.getByTestId('span-selection').textContent).toBe('11 Feb 26')
   })
 

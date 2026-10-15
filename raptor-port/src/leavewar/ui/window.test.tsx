@@ -44,10 +44,10 @@ describe('the bidding window on screen', () => {
     fireEvent.click(screen.getByTestId('bid-window'))
     // Opens on January, because that is where the window currently starts.
     // Walking to July is what an admin actually does, so the test does it.
-    expect(screen.getByTestId('window-month').textContent).toBe('JANUARY 2026')
-    for (let i = 0; i < 6; i++) fireEvent.click(screen.getByTestId('window-next-month'))
+    expect(screen.getByTestId('window').getAttribute('data-month')).toBe('2026-01')
+    for (let i = 0; i < 6; i++) fireEvent.click(screen.getByTestId('window-next'))
     fireEvent.click(screen.getByTestId('window-day-2026-07-01'))
-    fireEvent.click(screen.getByTestId('window-next-month'))
+    fireEvent.click(screen.getByTestId('window-next'))
     fireEvent.click(screen.getByTestId('window-day-2026-08-31'))
     fireEvent.click(screen.getByTestId('window-apply'))
 
@@ -73,7 +73,7 @@ describe('the bidding window on screen', () => {
     setRole('admin')
     render(<StageBar />)
     fireEvent.click(screen.getByTestId('bid-window'))
-    fireEvent.click(screen.getByTestId('window-prev-month')) // back into 2025
+    fireEvent.click(screen.getByTestId('window-prev')) // back into 2025
     expect((screen.getByTestId('window-day-2025-12-31') as HTMLButtonElement).disabled).toBe(true)
   })
 })

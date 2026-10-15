@@ -143,6 +143,13 @@ export function DateCal(p: {
   to?: string
   /** a run: a tap made it, or began it over */
   onRun?: (from: string, to: string) => void
+  /** a run that is FINISHED even when it is one day: the next tap begins a new run, never stretches this one. An input's
+   *  own window (ui/RangeCal.tsx) holds its dates this way — a saved input's first tap starts its new dates (D901: kept
+   *  as it was) — where a run of one day is otherwise half of one, waiting for its end. */
+  finished?: boolean
+  /** the Today icon does this instead of going to today's month — "Jump to a date", whose Today goes there at once (D901:
+   *  kept as it was) */
+  onToday?: () => void
   /** a weekday that stands out (0 = Monday) — "Every Thursday" (D795); every date may still be picked */
   markWd?: number
   /** the first date that may be picked; earlier ones are faint */
@@ -188,14 +195,14 @@ export function DateCal(p: {
   const openLists = (e: MouseEvent) => { setMi(ym.m - 1); if (!lists && e.detail === 0) wantIn.current = 'list'; setLists(v => !v) }
   /* Enter in a list (K4): the dates of the month chosen, with the keyboard back on them */
   const closeLists = () => { wantIn.current = 'dates'; setLists(false) }
-  const goToday = () => { setLists(false); setYm(ymOf(today)) }
+  const goToday = () => { if (p.onToday) { p.onToday(); return } setLists(false); setYm(ymOf(today)) }
 
   const tap = (iso: string) => {
     if (!may(iso)) return
     setKb(iso)
     if (!run) { p.onPick?.(iso); return }
     /* a finished run starts over; one day stretches forward; a tap before it starts over there */
-    if (!from || from !== to || iso < from) p.onRun?.(iso, iso)
+    if (!from || from !== to || p.finished || iso < from) p.onRun?.(iso, iso)
     else p.onRun?.(from, iso)
   }
 

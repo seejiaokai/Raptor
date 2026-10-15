@@ -141,9 +141,9 @@
 .holwin .hol-f .every-lab{margin-top:12px}
 .holwin .every-date[type="text"]{font-weight:700}
 .holwin .every-date::placeholder{color:var(--ink-3);font-weight:600}
-/* the Leave War's range calendar in the holiday form (D671): its own look (leavewar/ui/rangepicker.css, scoped to
-   `.hol-cal` too), let to fill the form's width */
-.hol-cal .rpick{max-width:none}
+/* the Leave War's range calendar in the holiday form (D671) — the app's one date calendar since step two (D901), drawn
+   inside the form (leavewar/ui/RangePicker.tsx); it fills the form's width */
+.hol-cal .dcal-inline{max-width:none}
 .hol-saved{margin:10px 0 0;font-size:12.5px;font-weight:700;color:#7FDCA0}
 /* a holiday that waits for a leave period: what is kept, and the way to make the period */
 .hol-wait{margin:8px 0 0;padding:9px 11px;border:1px solid rgba(229,168,59,.45);border-radius:10px;background:rgba(229,168,59,.08)}

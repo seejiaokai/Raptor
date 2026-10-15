@@ -173,6 +173,10 @@ export function SansCal() {
       onPicking: setDrawn,
       onRange: (a, b) => { setKb(null); openSansAdd(a, b) },
       onSwipe: dir => live.current.step(dir),
+      /* a run held at the month's side turns it, and the run goes on into the next month or the last — as on the Inputs
+         month (owner D900, 15 Oct 26 — "Yes they should too"; the machine, its band, hold and Safari guard are shared:
+         ui/calpick.ts, D897, D898) */
+      onTurn: dir => live.current.step(dir),
     })
   }, [])
 

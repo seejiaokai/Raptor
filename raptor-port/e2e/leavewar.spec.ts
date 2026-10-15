@@ -22,11 +22,6 @@
 import { expect, test, type Locator, type Page } from '@playwright/test'
 import { elevenCounters, go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo, stageMove, calendarOnTop, dateBoxValue, pickDate, tapCalendarDate } from './app'
 
-const CAL_MONTHS = [
-  'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
-  'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER',
-]
-
 /** Open the figure picker. The whole column header is the control — the two
  *  arrows it replaced were 13px glyphs the owner could not hit on a phone.
  *
@@ -69,13 +64,12 @@ async function swipe(page: Page, from: { x: number; y: number }, dx: number) {
 /** Drive a range calendar to a span the way a person does — walk to the
  *  month, tap the start, walk on, tap the end. */
 async function pickSpan(page: Page, testid: string, from: string, to: string) {
+  // the calendar's own month, read from it each time (the app's one calendar — D901)
   const goTo = async (yyyymm: string) => {
     for (let i = 0; i < 72; i++) {
-      const shown = (await page.locator(`[data-testid="${testid}-month"]`).textContent())!
-      const [name, year] = shown.split(' ')
-      const at = `${year}-${String(CAL_MONTHS.indexOf(name) + 1).padStart(2, '0')}`
+      const at = (await page.locator(`[data-testid="${testid}"]`).getAttribute('data-month'))!
       if (at === yyyymm) return
-      await page.locator(`[data-testid="${testid}-${at < yyyymm ? 'next' : 'prev'}-month"]`).click()
+      await page.locator(`[data-testid="${testid}-${at < yyyymm ? 'next' : 'prev'}"]`).click()
     }
     throw new Error(`never reached ${yyyymm}`)
   }
@@ -2628,6 +2622,17 @@ test('OIL from the grid is the tracker\'s own credit', async ({ page }) => {
   await expect(page.locator('[data-testid="oil-credit-who"]')).toHaveText('2 people · +OIL')
   // OIL alone brings the full form — the pool whose credits are a record.
   await expect(page.locator('[data-testid="oil-date"]')).toBeVisible()
+  /* its date is the app's own date box (step two of the one date calendar, D901): the calendar floats on the page,
+     outside the bar — a press in it (the month's arrow, then a date) is the bar's, never "a press outside" that drops
+     the run (the walk of 15 Oct 26 found the OIL tracker's twin of this) */
+  await page.locator('[data-testid="oil-date"]').click()
+  await page.locator('[data-testid="dcal-card"] [data-testid="dcal-prev"]').click()
+  await expect(bar(page), 'a press in the calendar keeps the bar').toBeVisible()
+  const pickMonth = await page.locator('[data-testid="dcal-card"] [data-testid="dcal"]').getAttribute('data-month')
+  await page.locator(`[data-testid="dcal-card"] [data-testid="dcal-day-${pickMonth}-10"]`).click()
+  await expect(page.locator('[data-testid="dcal-card"]')).toHaveCount(0)
+  await expect(bar(page)).toBeVisible()
+  await expect(page.locator('[data-testid="oil-date"]')).toHaveAttribute('data-value', `${pickMonth}-10`)
   await expect(page.locator('[data-testid="oil-given"]')).toBeVisible()
   await page.locator('[data-testid="oil-amt"]').fill('1')
   await page.locator('[data-testid="oil-reason"]').fill('Det')
@@ -3207,24 +3212,29 @@ test('the range calendar paints the span between the two taps', async ({ page })
   await page.locator('[data-testid="bid-window"]').click()
   await expect(page.locator('[data-testid="window-sheet"]')).toBeVisible()
 
-  const bg = (d: string) => page.locator(`[data-testid="window-day-${d}"]`)
+  /* the app's one date calendar since step two (D901): a run's days are joined by a band drawn behind them, and its two ends are the picked discs */
+  const band = (d: string) => page.locator(`[data-testid="window-day-${d}"]`)
+    .evaluate(el => getComputedStyle(el, '::before').backgroundColor)
+  const disc = (d: string) => page.locator(`[data-testid="window-day-${d}"] b`)
     .evaluate(el => getComputedStyle(el).backgroundColor)
   // Cleared first, because the sheet opens showing the window that is already
   // set — Jan-Mar — so every January day starts painted and there would be no
   // unpainted day left to compare against.
   await page.locator('[data-testid="window-clear"]').click()
-  const plain = await bg('2026-01-20')
+  const plain = await band('2026-01-20'), plainDisc = await disc('2026-01-20')
 
   await page.locator('[data-testid="window-day-2026-01-12"]').click()
   await page.locator('[data-testid="window-day-2026-01-16"]').click()
 
   // Every day in the span is painted, the ends more strongly than the middle,
   // and a day outside it is untouched.
-  const middle = await bg('2026-01-14')
-  const start = await bg('2026-01-12')
+  const middle = await band('2026-01-14')
+  const start = await disc('2026-01-12')
   expect(middle).not.toBe(plain)
+  expect(start).not.toBe(plainDisc)
   expect(start).not.toBe(middle)
-  expect(await bg('2026-01-20')).toBe(plain)
+  expect(await band('2026-01-20')).toBe(plain)
+  expect(await disc('2026-01-14'), 'a middle day is not an end').toBe(plainDisc)
 })
 
 // The owner's complaint about the counter arrows was that they are too small
@@ -3235,7 +3245,7 @@ test('every control in the range calendar is a real tap target', async ({ page }
   await lwRole(page, 'admin')
   await page.locator('[data-testid="bid-window"]').click()
 
-  for (const id of ['window-day-2026-01-12', 'window-prev-month', 'window-next-month']) {
+  for (const id of ['window-day-2026-01-12', 'window-prev', 'window-next']) {
     const box = (await page.locator(`[data-testid="${id}"]`).boundingBox())!
     expect(box.width).toBeGreaterThanOrEqual(30)
     expect(box.height).toBeGreaterThanOrEqual(30)
@@ -3969,11 +3979,11 @@ test('a weekday’s heading on Days sets every such day from a date onward, and 
 /* THE HOLIDAY FORM'S DATES are picked on the Leave War's own range calendar (D671): walk it to a month, tap a day */
 const HOL_MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
 async function holTap(page: Page, iso: string, phone: boolean) {
-  const at = async () => { const [m, y] = (await page.locator('[data-testid="holcal-month"]').textContent())!.trim().toLowerCase().split(/\s+/); return +y * 12 + HOL_MONTHS.indexOf(m) }
+  const at = async () => { const [m, y] = (await page.locator('[data-testid="holcal-title"] .dcal-my').textContent())!.trim().toLowerCase().split(/\s+/); return +y * 12 + HOL_MONTHS.indexOf(m) }
   let d = +iso.slice(0, 4) * 12 + (+iso.slice(5, 7) - 1) - await at()
   const step = async (id: string) => { const b = page.locator(`[data-testid="${id}"]`); if (phone) await b.tap(); else await b.click() }
-  for (; d > 0; d--) await step('holcal-next-month')
-  for (; d < 0; d++) await step('holcal-prev-month')
+  for (; d > 0; d--) await step('holcal-next')
+  for (; d < 0; d++) await step('holcal-prev')
   await step(`holcal-day-${iso}`)
 }
 
@@ -4182,7 +4192,7 @@ test('a holiday on dates no leave period covers waits: the Leave War’s New-per
     const inSheet = await page.evaluate(([x, y]) => !!document.elementFromPoint(x, y)?.closest('[data-testid="war-sheet"]'), [sh.x + sh.w * fx, sh.y + sh.h * fy])
     expect(inSheet, `the sheet is covered at ${fx},${fy}`).toBe(true)
   }
-  await expect(tid('war-month')).toHaveText(/April 2031/i)
+  await expect(tid('war-title')).toHaveText(/April 2031/i)
   await expect(tid('war-selection')).toContainText('1 Apr 31')
   await expect(tid('war-selection')).toContainText('31 Dec 31')
   await expect(tid('war-create')).toBeDisabled()

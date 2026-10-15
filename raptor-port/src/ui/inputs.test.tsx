@@ -72,7 +72,7 @@ const openNew = async () => {
 }
 const cancelNew = async () => { if (W()) await click(D('#inpEditCancel')) }
 /* a day of July 2026 on the window's own calendar (it opens on that month while no date is picked) */
-const calDay = (iso: string) => D(`#inpEdCal [data-cal="${iso}"]`)
+const calDay = (iso: string) => D(`#inpEdCal [data-iso="${iso}"]`)
 /* the window's type list, for the tests that need a type with (or without) the AM/PM span picker */
 const setType = async (v: string) => setWin('#inpEditType', v)
 const addNow = async () => click(D('#inpEditSave'))
@@ -149,7 +149,7 @@ describe('the Inputs page (tfin)', () => {
     expect($('#intbl thead th[data-sort="recur"]'), 'the Recurring heading is gone').toBeFalsy()
     /* the add needs a start date — picked on the window's own calendar */
     await openNew()
-    await click(D('#inpEdCal [data-cal]'))
+    await click(D('#inpEdCal [data-iso]'))
     const n = INPUTS.length
     await addNow()
     expect(INPUTS.length).toBe(n + 1)
@@ -635,7 +635,7 @@ describe('the SANS Availability sub-form on the add form', () => {
 describe('the range calendar', () => {
   /* the window's own calendar — the same component the List's form used; its readout speaks the window's own
      month-first voice ("Jul 14"), where the form's said "14 Jul" */
-  const day = (d: string) => D(`#inpEdCal [data-cal="2026-07-${d}"]`)
+  const day = (d: string) => D(`#inpEdCal [data-iso="2026-07-${d}"]`)
   const readout = () => D('#inpEditPop .rc-read')!.textContent
   beforeAll(openNew)
   afterAll(cancelNew)
@@ -647,21 +647,22 @@ describe('the range calendar', () => {
   })
 
   it('starts on Monday and marks the weekend', () => {
-    const dow = [...document.querySelectorAll('#inpEdCal .rc-dow span')].map(x => x.textContent)
-    expect(dow).toEqual(['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'])
+    /* the app's one date calendar since step two (D901): its weekday row reads MON … SUN */
+    const dow = [...document.querySelectorAll('#inpEdCal .dcal-dow span')].map(x => x.textContent)
+    expect(dow).toEqual(['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'])
     // 18 Jul 2026 is a Saturday
-    expect(day('18').classList.contains('wk')).toBe(true)
-    expect(day('15').classList.contains('wk')).toBe(false)
+    expect(day('18').classList.contains('is-we')).toBe(true)
+    expect(day('15').classList.contains('is-we')).toBe(false)
   })
 
   it('two clicks make a range, and the days between are marked', async () => {
     await click(day('14'))
     expect(readout()).toBe('Jul 14')
-    expect(day('14').classList.contains('s')).toBe(true)
+    expect(day('14').classList.contains('is-sel')).toBe(true)
     await click(day('17'))
     expect(readout()).toBe('Jul 14 → Jul 17')
-    expect(day('17').classList.contains('e')).toBe(true)
-    expect(day('15').classList.contains('mid')).toBe(true)
+    expect(day('17').classList.contains('is-to')).toBe(true)
+    expect(day('15').classList.contains('is-mid')).toBe(true)
   })
 
   it('a backwards second click becomes the new start instead', async () => {
@@ -669,8 +670,9 @@ describe('the range calendar', () => {
     expect(readout()).toBe('Jul 20')
     await click(day('16'))                 // earlier — cannot be an end
     expect(readout()).toBe('Jul 16')
-    expect(day('16').classList.contains('s')).toBe(true)
-    expect(document.querySelectorAll('#inpEdCal .rc-d.e').length).toBe(0)
+    expect(day('16').classList.contains('is-sel')).toBe(true)
+    expect(document.querySelectorAll('#inpEdCal .dcal-d.is-to').length, 'no end yet').toBe(0)
+    expect(document.querySelectorAll('#inpEdCal .dcal-d.is-sel').length, 'one day picked: the start').toBe(1)
     await click(day('17'))                 // now it can close
     expect(readout()).toBe('Jul 16 → Jul 17')
   })
@@ -923,7 +925,7 @@ describe('accepted rows are never stranded', () => {
    of it is kept — `LL till 15 Jul`. The tail belongs to the calendar, so it is
    rewritten and removed by picking, never duplicated. */
 describe('the picked date writes itself into Remarks', () => {
-  const day = (d: string) => D(`#inpEdCal [data-cal="2026-07-${d}"]`)
+  const day = (d: string) => D(`#inpEdCal [data-iso="2026-07-${d}"]`)
   const rm = () => D('#inpEditRmk') as HTMLInputElement
   const typeInto = async (el: any, v: string) => act(async () => {
     const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
@@ -1002,8 +1004,8 @@ describe('the picked date writes itself into Remarks', () => {
     await openRow(0)
     const ed = () => D('#inpEditRmk') as HTMLInputElement
     expect(ed().value, 'opening the window rewrites nothing').toBe('Bangkok till 14 Jul')
-    await click(D('#inpEdCal [data-cal="2026-07-13"]'))
-    await click(D('#inpEdCal [data-cal="2026-07-16"]'))
+    await click(D('#inpEdCal [data-iso="2026-07-13"]'))
+    await click(D('#inpEdCal [data-iso="2026-07-16"]'))
     expect(ed().value, 'nor does picking').toBe('Bangkok till 14 Jul')
     await click(D('#inpEditSave'))
     const saved = INPUTS.find((x: any) => x.iid === target.iid)
@@ -1205,7 +1207,7 @@ describe('the date-window calendar puts itself away', () => {
 
   it('stays open for a press inside it, so picking a range still works', async () => {
     await click($('#inRangeBtn'))
-    await press($('#inRangeCal [data-cal="2026-07-13"]'))
+    await press($('#inRangeCal [data-iso="2026-07-13"]'))
     expect($('#inRangePop'), 'still open').toBeTruthy()
     /* and its own button still toggles it shut */
     await click($('#inRangeBtn'))
@@ -1410,7 +1412,7 @@ describe('Edit history hears an add made on this page', () => {
      Astra DP-03): "<callsign> · <type> added · <days>", exactly once */
   it('"+ Input" and Add write ONE "<callsign> · <type> added" line', async () => {
     await openNew()
-    await click(D('#inpEdCal [data-cal]'))
+    await click(D('#inpEdCal [data-iso]'))
     const before = ELOG.rows.length
     await addNow()
     const r = INPUTS[0]

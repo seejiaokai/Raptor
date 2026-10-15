@@ -179,6 +179,7 @@ export function InputsPage() {
      restyled into cards) — asked of the browser and followed live, because what is DRAWN differs there, not only how it
      is laid out: the list is the input card under a heading a day (D718, D723), and no table at all. */
   const phone = useMedia('(max-width:820px)')
+  const tight = useMedia('(max-width:389px)')   // the narrowest phones: the dates button's shorter words (below, D910)
   /* A member lands on THEIR OWN inputs (owner, 27 Aug 26) — the page is their
      paperwork first — with "Everyone" one pick away in the same filter. A
      scheduler (admin) still opens on the whole squadron. */
@@ -488,7 +489,22 @@ export function InputsPage() {
   })()
 
   const RANGE_ALL = 'All dates'
+  /* ON THE NARROWEST PHONES (under 390 — an iPhone SE or mini at 375) the top row holding the List's two buttons (D910)
+     runs out of room, and the switch, the filter and the gear keep their size, so the dates button says the same in
+     fewer letters: "15–29 Oct" in one month, "28 Sep–12 Oct" across two — the same dates. On any phone a label that
+     prints a year ("28 Dec → 11 Jan 2027") is too long for the row too and takes the short form; one day reads once. */
+  const fromTo = (a: string, b: string) => {
+    /* "15 Oct" / "15 Oct 2027" — the day, the month, and a year where fmtDay prints one; what the two share is said once
+       ("4 Jan–1 Feb 2027", never the year twice) */
+    if (a === b) return a
+    const [ad, am, ay = ''] = a.split(' '), [bd, bm, by = ''] = b.split(' ')
+    const yr = by ? ' ' + by : ''
+    if (ay === by) return am === bm ? `${ad}–${bd} ${bm}${yr}` : `${ad} ${am}–${bd} ${bm}${yr}`
+    return `${a}–${b}`
+  }
+  const short = tight || (phone && /\d{4}/.test(fmtDay(range.from) + fmtDay(range.to)))
   const rangeLabel = (!range.from && !range.to) ? RANGE_ALL
+    : short && range.from && range.to ? fromTo(fmtDay(range.from), fmtDay(range.to))
     : (range.from ? fmtDay(range.from) : '…') + ' → ' + (range.to ? fmtDay(range.to) : '…')
   /* the arrow reads as the direction the column is going, not as a button */
   const th = (key: string, label: string) => (
@@ -564,7 +580,7 @@ export function InputsPage() {
   )
   const tools = tab !== 'inputs' ? null : (<>
     <span className="inputs-spring" />
-    <button className="abtn" id="inFiltersBtn" title="Filters" aria-label={appliedFilters.length ? `Filters, ${appliedFilters.length} set` : 'Filters'} aria-expanded={filtersOpen} aria-controls="inFilters" onClick={()=>setFiltersOpen(o=>!o)}><FilterIcon /><span className="inv-t">Filters</span>{appliedFilters.length>0&&<span className="inputs-filter-count">{appliedFilters.length}</span>}</button>
+    <button className="abtn" id="inFiltersBtn" title="Filters" aria-label={appliedFilters.length ? `Filters, ${appliedFilters.length} set` : 'Filters'} aria-expanded={filtersOpen} aria-controls="inFilters" onClick={()=>{ if (phone) setCalOpen(false); setFiltersOpen(o=>!o) }}><FilterIcon /><span className="inv-t">Filters</span>{appliedFilters.length>0&&<span className="inputs-filter-count">{appliedFilters.length}</span>}</button>
     {/* NO WORDS OVER THE THREE BOXES (D729 — V5; D726): "Person", "Type" and "Search" stood over them on a phone, where
         the boxes already read "Everyone", "All types" and "Search inputs". Each keeps its name for a screen reader. */}
     <div className={'inputs-filterfields'+(filtersOpen?' open':'')} id="inFilters">
@@ -593,78 +609,87 @@ export function InputsPage() {
   const clearFilters = () => { unpin(); setFPerson(EVERYONE); setFType('all'); setFSearch(''); notify() }
   const filterSummary = appliedFilters.length>0&&<div className="inputs-filter-summary" id="inFilterSummary"><span>{appliedFilters.join(' · ')}</span><button className="abtn ghost" id="inFiltersClear" onClick={clearFilters}>Clear filters</button></div>
 
+  /* THE LIST'S OWN TWO BUTTONS — "+ Input" and the dates button (with its pop-up). ON A PHONE THEY STAND IN THE ROW OF THE
+     SWITCH, THE FILTER AND THE GEAR (owner D907, D910, 15 Oct 26 — "Why don't u move these 2 buttons up and align them
+     with the row above? And same height"; drawn by scripts/handpass/mock-inputs-toolbar.mjs and approved as drawn): where
+     the Calendar's month arrows, month and Today stand (D705), at the row's button height (D698), so the List has one
+     row of controls, not two, and the list and the date pop-up start a row higher. The pop-up then hangs under that row
+     (25-inputs-calendar.css). A desktop keeps them on a row of their own under the tabs, as before (D910). */
+  const listTools = (<>
+    {/* ONE WAY TO ADD AN INPUT (D729 — V1; the drawing docs/mock/img/inputs-vet/desk-list-drawn.png,
+        phone-list-drawn.png): the button stands first in the row, at the left of the dates button — the page's one
+        filled button, as "+ Input" is in a day opened on the calendar. */}
+    <button type="button" className="abtn primary in-new" id="inNew" data-testid="in-new" hidden={!listUp} onClick={openNew}>+ Input</button>
+    {/* the window of dates, picked on a two-click calendar: first click is the from-date, second the to-date */}
+    <div className="inrange" hidden={!listUp} ref={rangeRef}>
+      <button className={'abtn' + (calOpen ? ' primary' : '')} id="inRangeBtn"
+        aria-expanded={calOpen} onClick={() => { if (phone) setFiltersOpen(false); setCalOpen(o => !o) }}>📅 <span className="inrange-t">{rangeLabel}</span></button>
+      {calOpen && (
+        <div className="inrange-pop" id="inRangePop">
+          <RangeCal idPrefix="inRange" start={range.from} end={range.to}
+            onPick={(s2, e2) => { unpin(); setRange({ from: s2, to: e2 }) }} />
+          <div className="rc-read">{range.from
+            ? fmtDay(range.from) + (range.to ? ' → ' + fmtDay(range.to) : ' → pick an end date')
+            : 'showing every date'}</div>
+          <div className="inrange-btns">
+            {/* The quick button SAYS the squadron's setting and applies it
+                — everyone gets the same default, an admin decides what it
+                is (owner, 28 Aug 26). */}
+            <button className="abtn" id="inRangeDef" onClick={() => { unpin(); setRange(defaultRange()); setCalOpen(false) }}>{lookaheadLabel()}</button>
+            <button className="abtn" id="inRangeAll" onClick={() => { unpin(); setRange({ from: '', to: '' }); setCalOpen(false) }}>{RANGE_ALL}</button>
+          </div>
+          {/* The admin's pencil: how far ahead the page looks by default.
+              Admin only, and re-checked at the write (`setLookahead` is the
+              one path) rather than merely hidden here. */}
+          {isAdmin() && (
+            <div className="inrange-cfg" id="inRangeCfg">
+              {!lookEdit && (
+                <button className="abtn ghost" id="inRangeEdit" onClick={() => { setLookWeeks(String(LOOK_CFG.weeks)); setLookSun(LOOK_CFG.toSunday); setLookEdit(true) }}>
+                  ✎ Default window
+                </button>
+              )}
+              {lookEdit && (
+                <>
+                  <label className="la-lbl" htmlFor="inLookWeeks">Weeks ahead</label>
+                  <input id="inLookWeeks" className="la-in" inputMode="numeric" value={lookWeeks}
+                    aria-label="Weeks ahead" onChange={e => setLookWeeks(e.target.value)} />
+                  <label className="la-sun">
+                    <input type="checkbox" id="inLookSun" checked={lookSun} onChange={e => setLookSun(e.target.checked)} />
+                    run to that week&rsquo;s Sunday
+                  </label>
+                  <button className="abtn primary" id="inLookSave" onClick={() => {
+                    if (!isAdmin()) return
+                    if (!setLookahead(lookWeeks, lookSun)) {
+                      // a refused value goes back to the live one on screen,
+                      // never left looking saved
+                      setLookWeeks(String(LOOK_CFG.weeks))
+                      HOOKS.toast(`Give a number of weeks between ${LOOK_MIN} and ${LOOK_MAX}`)
+                      return
+                    }
+                    setLookEdit(false)
+                    setRange(defaultRange())
+                    HOOKS.toast(`Everyone now opens on ${lookaheadLabel().toLowerCase()}`, 'ok')
+                    notify()
+                  }}>Save</button>
+                  <button className="abtn ghost" id="inLookCancel" onClick={() => setLookEdit(false)}>Cancel</button>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  </>)
   return (
     <div className={'inputs-workspace tab-' + tab}>
       <div className="title"><h1>Inputs</h1></div>
       {/* the Inputs calendar draws the tabs and the tools in its OWN top row, beside the month's arrows — one row of
           controls above the month on a desktop, the tabs and ONE tools row on a phone (the plan §3.6: "four rows of
           buttons above the month" was a fault seen while drawing) */}
-      {!calUp && <div className="inputs-top">{tabsRow}{views}{tools}</div>}
+      {!calUp && <div className="inputs-top">{tabsRow}{phone && listTools}{views}{tools}</div>}
       {!calUp && filterSummary}
-      <div className="infilter inputs-listtools" hidden={!listUp}>
-        {/* ONE WAY TO ADD AN INPUT (D729 — V1; the drawing docs/mock/img/inputs-vet/desk-list-drawn.png,
-            phone-list-drawn.png): the button stands first in the row, at the left of the dates button — the page's one
-            filled button, as "+ Input" is in a day opened on the calendar. */}
-        <button type="button" className="abtn primary in-new" id="inNew" data-testid="in-new" hidden={!listUp} onClick={openNew}>+ Input</button>
-        {/* the window of dates, picked on a two-click calendar: first click is the from-date, second the to-date */}
-        <div className="inrange" hidden={!listUp} ref={rangeRef}>
-          <button className={'abtn' + (calOpen ? ' primary' : '')} id="inRangeBtn"
-            aria-expanded={calOpen} onClick={() => setCalOpen(o => !o)}>📅 {rangeLabel}</button>
-          {calOpen && (
-            <div className="inrange-pop" id="inRangePop">
-              <RangeCal idPrefix="inRange" start={range.from} end={range.to}
-                onPick={(s2, e2) => { unpin(); setRange({ from: s2, to: e2 }) }} />
-              <div className="rc-read">{range.from
-                ? fmtDay(range.from) + (range.to ? ' → ' + fmtDay(range.to) : ' → pick an end date')
-                : 'showing every date'}</div>
-              <div className="inrange-btns">
-                {/* The quick button SAYS the squadron's setting and applies it
-                    — everyone gets the same default, an admin decides what it
-                    is (owner, 28 Aug 26). */}
-                <button className="abtn" id="inRangeDef" onClick={() => { unpin(); setRange(defaultRange()); setCalOpen(false) }}>{lookaheadLabel()}</button>
-                <button className="abtn" id="inRangeAll" onClick={() => { unpin(); setRange({ from: '', to: '' }); setCalOpen(false) }}>{RANGE_ALL}</button>
-              </div>
-              {/* The admin's pencil: how far ahead the page looks by default.
-                  Admin only, and re-checked at the write (`setLookahead` is the
-                  one path) rather than merely hidden here. */}
-              {isAdmin() && (
-                <div className="inrange-cfg" id="inRangeCfg">
-                  {!lookEdit && (
-                    <button className="abtn ghost" id="inRangeEdit" onClick={() => { setLookWeeks(String(LOOK_CFG.weeks)); setLookSun(LOOK_CFG.toSunday); setLookEdit(true) }}>
-                      ✎ Default window
-                    </button>
-                  )}
-                  {lookEdit && (
-                    <>
-                      <label className="la-lbl" htmlFor="inLookWeeks">Weeks ahead</label>
-                      <input id="inLookWeeks" className="la-in" inputMode="numeric" value={lookWeeks}
-                        aria-label="Weeks ahead" onChange={e => setLookWeeks(e.target.value)} />
-                      <label className="la-sun">
-                        <input type="checkbox" id="inLookSun" checked={lookSun} onChange={e => setLookSun(e.target.checked)} />
-                        run to that week&rsquo;s Sunday
-                      </label>
-                      <button className="abtn primary" id="inLookSave" onClick={() => {
-                        if (!isAdmin()) return
-                        if (!setLookahead(lookWeeks, lookSun)) {
-                          // a refused value goes back to the live one on screen,
-                          // never left looking saved
-                          setLookWeeks(String(LOOK_CFG.weeks))
-                          HOOKS.toast(`Give a number of weeks between ${LOOK_MIN} and ${LOOK_MAX}`)
-                          return
-                        }
-                        setLookEdit(false)
-                        setRange(defaultRange())
-                        HOOKS.toast(`Everyone now opens on ${lookaheadLabel().toLowerCase()}`, 'ok')
-                        notify()
-                      }}>Save</button>
-                      <button className="abtn ghost" id="inLookCancel" onClick={() => setLookEdit(false)}>Cancel</button>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+      <div className="infilter inputs-listtools" hidden={!listUp || phone}>
+        {!phone && listTools}
         {/* (no export here — owner, D773, 12 Oct 26: "I don't need an export to excel function for inputs. U can remove it."
             The List's "Export to Excel" button, its file and ui/export.ts inputRows are gone; pinned by ui/inputs.test.tsx) */}
       </div>

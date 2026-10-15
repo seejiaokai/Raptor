@@ -3932,7 +3932,7 @@ test.describe('the day arrows', () => {
     })
     expect(order.calLeft, 'the calendar icon is left of the day title').toBeLessThan(order.titleLeft)
     await page.click('#sbCal')
-    await page.waitForSelector('#weekCal .rc-grid')
+    await page.waitForSelector('#weekCal [data-testid="wcal-grid"]')
     expect(await page.locator('#weekCal').isVisible()).toBe(true)
   })
 

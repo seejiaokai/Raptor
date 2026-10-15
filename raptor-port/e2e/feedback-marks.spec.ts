@@ -107,7 +107,7 @@ test('D851 — the desktop List, a second input added four seconds after the fir
      other's box. With the first one gone from the list the second row was a new one anyway, and this stayed green on
      a build broken that way (the browser break test of 14 Oct 26). */
   await page.locator('#inRangeBtn').click(); await page.locator('#inRangeAll').click()
-  const add = async (nth: number) => { await page.locator('#inNew').click(); await page.locator('#inpEdCal [data-cal]').nth(nth).click(); await page.locator('#inpEditSave').click(); return newest(page) }
+  const add = async (nth: number) => { await page.locator('#inNew').click(); await page.locator('#inpEdCal [data-iso]').nth(nth).click(); await page.locator('#inpEditSave').click(); return newest(page) }
   const a = await add(14)
   await expect(page.locator(`#inBody tr[data-iid="${a}"]`)).toHaveClass(/\binnew\b/)
   await page.waitForTimeout(4000)
@@ -143,7 +143,7 @@ test('D850, D851 — the desktop List with less motion asked for: every cell of 
   await login(page); await go(page, 'inputs')
   await page.locator('#inListBtn').click()
   await page.locator('#inNew').click()
-  await page.locator('#inpEdCal [data-cal]').nth(14).click()
+  await page.locator('#inpEdCal [data-iso]').nth(14).click()
   await page.locator('#inpEditSave').click()
   const id = await newest(page), row = `#inBody tr[data-iid="${id}"]`
   await expect(page.locator(row)).toHaveClass(/\binnew\b/)
@@ -161,7 +161,7 @@ test('D851 — a phone: the List’s new card wears the mark and no note is draw
   try {
     await page.locator('#inListBtn').tap()
     await page.locator('#inNew').tap()
-    await page.locator('#inpEdCal [data-cal]').nth(14).tap()
+    await page.locator('#inpEdCal [data-iso]').nth(14).tap()
     await page.locator('#inpEditSave').tap()
     const id = await newest(page), card = `#inList [data-iid="${id}"]`
     await expect(page.locator(card)).toHaveClass(/\binnew\b/)
@@ -260,7 +260,7 @@ test('D849 (3) — the medical-clash and the upchit questions: their answers sit
     await page.locator('#icPopAdd').click()
     await page.selectOption('#inpEditPop #inpEditType', type)
     await page.selectOption('#inpEditPop #inpEditPerson', who)
-    if (to) await page.locator(`#inpEdCal [data-cal="${to}"]`).click()
+    if (to) await page.locator(`#inpEdCal [data-iso="${to}"]`).click()
     await page.locator('#inpEditSave').click()
     const doc = page.locator('[data-testid="docconf-nodoc"]')
     await expect(doc.or(page.locator('[data-testid="medclash"], [data-testid="upconf"]')).first()).toBeVisible()

@@ -251,7 +251,8 @@ describe('the window — a Title box under Type (D715)', () => {
     const r = await filed({ title: '<b>x</b>"' })
     await openOn(r)
     expect(box()!.value).toBe('<b>x</b>"')
-    expect(win()!.querySelector('b')).toBeNull()
+    /* no <b> of the title's own markup — the calendar's dates are drawn in <b> of their own (the app's one date calendar) */
+    expect([...win()!.querySelectorAll('b')].filter(b => !b.closest('.dcal'))).toHaveLength(0)
   })
 })
 
@@ -270,7 +271,7 @@ describe('the List — its form, its rows, the window a row opens, its search', 
      calendar opens. The form's title tests are RESTATED for that door — the box, what is saved, and that nothing of one
      input's title rides onto the next. */
   const plus = async () => { await click($('#inNew')); expect(win(), '"+ Input" opened the new input’s window').toBeTruthy() }
-  const pickDay = async () => { await click($('#inpEdCal [data-cal]')) }
+  const pickDay = async () => { await click($('#inpEdCal [data-iso]')) }
 
   it('"+ Input" on the List: a Title box under Type for a titled kind, filled from the kind; none for leave', async () => {
     await toList()
@@ -501,7 +502,7 @@ describe('a shared input and the List’s own OIL question', () => {
     await click($('#inNew'))
     await choose('#inpEditType', 'Event')
     /* a Saturday of the month the window's own calendar is showing */
-    const sat = [...document.querySelectorAll('#inpEdCal [data-cal]')].find(c => new Date(c.getAttribute('data-cal') + 'T12:00:00').getDay() === 6 && !(c as HTMLButtonElement).disabled) as HTMLElement
+    const sat = [...document.querySelectorAll('#inpEdCal [data-iso]')].find(c => new Date(c.getAttribute('data-iso') + 'T12:00:00').getDay() === 6 && !(c as HTMLButtonElement).disabled) as HTMLElement
     expect(sat, 'Saturday on the window’s calendar').toBeTruthy()
     await click(sat)
     await type('#inpEditOwnTitle', 'Weekend exercise')
@@ -571,7 +572,7 @@ describe('the List’s "+ Input", filed for several people (Astra 2 — restated
     const two = Object.keys(PEOPLE).filter(id => !PEOPLE[id].special && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].san && !PEOPLE[id].pers && id !== admin).slice(0, 2)
     for (const id of two) { const b = $(`[data-pp="${id}"]`); if (b && b.getAttribute('aria-pressed') !== 'true') await click(b) }
     /* a working day of the month the window's calendar shows — no OIL question in the way */
-    const wedOf = () => [...document.querySelectorAll('#inpEdCal [data-cal]')].find(c => new Date(c.getAttribute('data-cal') + 'T12:00:00').getDay() === 3 && !(c as HTMLButtonElement).disabled) as HTMLElement
+    const wedOf = () => [...document.querySelectorAll('#inpEdCal [data-iso]')].find(c => new Date(c.getAttribute('data-iso') + 'T12:00:00').getDay() === 3 && !(c as HTMLButtonElement).disabled) as HTMLElement
     await click(wedOf())
     await type('#inpEditOwnTitle', 'Team day')
     const picked = [...document.querySelectorAll('#inpEditPop .pp-pucks button[aria-pressed="true"]')].map(b => String(b.getAttribute('data-pp'))).sort()

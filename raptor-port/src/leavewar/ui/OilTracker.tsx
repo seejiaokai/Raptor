@@ -273,12 +273,17 @@ export function OilTracker({ person, onClose, onGranted }: {
   // for this in place of a Deselect button (owner, 2 Sep 26). A tap on a name
   // still (de)selects, and a tap inside the bar (its inputs, the date pop) is
   // left alone; anything else clears the selection and folds the bar away.
+  // The date pop is the app's own floating calendar since step two of the one
+  // date calendar (D901, 15 Oct 26 — ui/DateBox.tsx): it floats on the page,
+  // outside the bar, so a press in it (`.dcal-layer`, its veil and its patch
+  // too) is the bar's — or every press in it closed the bar before the date
+  // was picked (found by the walk, 15 Oct 26).
   const hasSel = admin && sel.size > 0
   useEffect(() => {
     if (!hasSel) return
     const onDown = (e: PointerEvent) => {
       const t = e.target as HTMLElement | null
-      if (t?.closest('[data-testid="oil-credit-panel"]') || t?.closest('[data-oilpick]')) return
+      if (t?.closest('[data-testid="oil-credit-panel"]') || t?.closest('[data-oilpick]') || t?.closest('.dcal-layer')) return
       setSel(new Set())
     }
     document.addEventListener('pointerdown', onDown, true)
@@ -503,7 +508,7 @@ export function OilTracker({ person, onClose, onGranted }: {
         <div key={d.id} className="oil-e take editing" data-testid={`oil-entry-${tid(d.id, d.ledgerId)}`}>
           <div className="oil-edit">
             <input type="number" step="0.5" className="oil-num" data-testid="oil-edit-amt" value={eAmt} onChange={e => setEAmt(e.target.value)} aria-label="Days" />
-            <DayChip testid="oil-edit-date" pickerId="oileditdate" value={eDate} today={today} onPick={setEDate} />
+            <DayChip testid="oil-edit-date" value={eDate} today={today} onPick={setEDate} />
             <input className="oil-text" data-testid="oil-edit-reason" maxLength={MAX_REASON} value={eReason} onChange={e => setEReason(e.target.value)} aria-label="Reason" placeholder="reason" />
             <span className="acts">
               <button className="dchip approve" data-testid="oil-edit-save" onClick={saveEdit}>Save</button>
@@ -652,7 +657,7 @@ export function OilTracker({ person, onClose, onGranted }: {
       </div>
       {mode === 'pick' && picking && (
         <div className="bidsheet-row oil-pickrow">
-          <RangePicker compact testid="oilrange" anchor={today} value={pick} onChange={setPick} />
+          <RangePicker testid="oilrange" anchor={today} value={pick} onChange={setPick} />
           <button className="tchip clear" data-testid="oilrange-done" onClick={() => setPicking(false)}>Done</button>
         </div>
       )}
