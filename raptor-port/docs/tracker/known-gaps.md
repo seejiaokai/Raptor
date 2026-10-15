@@ -360,3 +360,12 @@ What to know before touching one:
 ## A test of the question box waits for the box's own focus (`[TRK-DLG-FOCUS-UNSTEADY]`, steadied 13 Oct 26)
 
 The Tracker's question box (`components/Modals.jsx`) puts the keyboard in its text box by a 30ms timer after it opens — and puts it BACK there if, when the timer fires, the keyboard is on anything that is not a text box. A test that presses Tab or moves focus straight after opening one races that timer: on a loaded machine it fired between two key presses and undid the second (`leftovers.test.tsx`, "Tab / Shift+Tab stay inside the box" — one full run in three, 7–13 Oct 26). The test now waits until the text box HAS the keyboard before pressing anything (D87's rule, applied to a unit test); 15 loaded runs of 15 passed, and a break of the Shift+Tab rule still fails it. Any new test of a Tracker question box does the same.
+
+## The chart editor pans at its edge (D899, the night of 15 Oct 26)
+
+`app/core.js` now imports Raptor's `ui/edgescroll.ts` (`edgePan`): a ball, a group, an arrow's end or bend square, a drawn
+line's end or corner square carried to Edit chart layout's edge pans the canvas (`followEdge`) — **a standalone export of
+the Tracker carries `ui/edgescroll.ts` with it.** Not given the pan: the ▣ Select box, a pan of empty space (named to him).
+**Older, met by the night's reads, filed:** every ball move ends in `wireBoard()` (more listeners each time — a wheel step
+zooms n+1 times; `[TRK-WIREBOARD-REPEAT]`); a ball or handle dropped left of or above the chart's start (no pan needed,
+right after ⤢ Fit) lands at a negative place and is cut off the chart outside the editor (`[TRK-BALL-OFF-CHART-LEFT]`).

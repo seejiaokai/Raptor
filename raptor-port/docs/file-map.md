@@ -29,6 +29,15 @@ an Inputs calendar day's notes, by a real drag, mouse and touch; `DL_BEFORE=1` p
 `src/ui/QualsPage.tsx` (the heading drag), `src/leavewar/ui/matrix.css` (the grips' invisible touch area).
 `scripts/handpass/edgescroll-walk.mjs` (the edge scroll walked: Rearrange, a day's notes, Quals; mouse and touch);
 `scripts/handpass/grip-reach.mjs` (how much round a Rearrange grip takes a press, a counter's beside a man's).
+`src/ui/edgescroll.ts` also (D897–D899, 15 Oct 26): `edgeTurn` (a view that TURNS — the Inputs month's sides: the band, the
+hold, the repeat) and `edgePan` (a view that PANS — the Tracker's Edit chart layout, both axes); `src/ui/edgeturn.test.ts`.
+`src/ui/caldays.ts` `heldOn`, `once` (the date or bar a finger landed on hears its gesture — Safari, after a turn).
+**Changed by it:** `src/ui/calpick.ts`, `src/ui/caldrag.ts` (`onTurn`; the window hears a lifted chip's release),
+`src/ui/InputsCal.tsx` (wires both), `src/tracker/app/core.js` (`followEdge` in six handlers; the bend square rides the
+finger and is drawn again on release; the handles' cancels and own-pointer checks). `scripts/handpass/edgeturn-walk.mjs`
+(the month's run both ways, a bar carried and undone, the SANS month, eleven Tracker steps; mouse and touch);
+`scripts/handpass/trk-phone-handles-probe.mjs` (a probe — do an arrow's handles follow a finger on a phone);
+`scripts/handpass/breaks/2026-10-15-edge-turn.json` (15 breaks).
 `scripts/handpass/noglow-onlook.mjs` (`[GUIDE-NO-GLOW]` question 6's third look: Rearrange on in the filter chip's pale blue fill, no glow).
 `src/ui/noglow-css.test.ts` (the whole app's roll-call for D880–D882, D887: no stylesheet under src/ lights a mark's own colour round it, blurred or as a 3px+ see-through band; the sign-in logo the one exception); `scripts/handpass/noglow-rollcall.mjs` (`[GUIDE-NO-GLOW]`'s second doors on the built change: the SANS calendar's puck, Show SANS on, View-only Sched's today card — a check line each); `scripts/handpass/noglow-more.mjs` (`[GUIDE-NO-GLOW]` round 3's places from the fresh read: the sign-in logo, the Leave War's balance bar, the Fast sync dot, Admin → Users' dots).
 **Changed:** `src/ui/board.ts` — the switch's note in short sentences; `src/ui/DraftsModal.tsx` — "Select" closes the plan
