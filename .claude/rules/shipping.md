@@ -21,6 +21,7 @@ whole in `raptor-port/docs/archive/raptor-claude-md-2026-09-24.md`. The rulings 
 - change → the gates green locally → commit and push to the session branch (one open PR accumulates the lot) →
   once the work is READY FOR HIS LOOK (built and checked) and its Vercel preview is Ready, send him the link — not
   after every push of unfinished work (D905, 15 Oct 26: "u are still working no need for a link as its not done yet");
+  the link and the pictures come whenever you need him to review something, with that look or question (D906);
   do NOT go quiet waiting on the checks → take the next change. While a preview or a check run cooks he will hand you more work: take
   it; never idle waiting on a rollout.
 - **But never push while that PR's checks are running** (D151): any push restarts the whole run and cancels the
