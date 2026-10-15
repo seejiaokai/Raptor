@@ -1,0 +1,200 @@
+<title>Logic Page Redesign</title>
+<style>
+/* Layout: the page around the mock is the review sheet (light/dark); the mock itself is Raptor's own dark look, its tokens
+   copied from scheduler/00-foundation-login.css, drawn twice (a 390 phone frame and a desktop frame) from one data list. */
+:root{
+  --pg:#f3f5f7; --pg-panel:#fff; --pg-ink:#152028; --pg-ink2:#4b5966; --pg-edge:#d5dce2; --pg-accent:#0f8fb3; --pg-pick:#1d7f4e; --pg-mark:#e07a12;
+  --f-head:'Barlow Condensed','Arial Narrow',sans-serif; --f-body:'Inter Tight',system-ui,-apple-system,sans-serif;
+  /* Raptor's own (00-foundation-login.css) — the mock never changes with the theme */
+  --bg:#0B0D10; --panel:#14181D; --panel-2:#1A1F26; --raised:#20262E; --edge:#2A313A; --edge-2:#39424D;
+  --ink:#F1F4F7; --ink-2:#B6C0CB; --ink-3:#8A96A3; --accent:#3BC6E8; --accent-ink:#052A34; --hard:#F0555F; --adv:#E5A83B; --ok:#57C97A;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--pg:#0d1217;--pg-panel:#151c23;--pg-ink:#e7edf2;--pg-ink2:#9aa8b5;--pg-edge:#2a343e;--pg-accent:#38c3e8;--pg-pick:#4cc489;--pg-mark:#ff9a3c;color-scheme:dark}}
+:root[data-theme="dark"]{--pg:#0d1217;--pg-panel:#151c23;--pg-ink:#e7edf2;--pg-ink2:#9aa8b5;--pg-edge:#2a343e;--pg-accent:#38c3e8;--pg-pick:#4cc489;--pg-mark:#ff9a3c;color-scheme:dark}
+body{background:var(--pg);color:var(--pg-ink);font:15px/1.5 var(--f-body)}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:16px;padding-block:28px 60px;display:flex;flex-direction:column;gap:32px}
+h1{font:700 34px/1.1 var(--f-head);letter-spacing:.02em;margin:0;text-transform:uppercase}
+h2{font:700 24px/1.15 var(--f-head);letter-spacing:.03em;margin:0;text-transform:uppercase;text-wrap:balance}
+p{margin:0;max-width:72ch}
+.lede{color:var(--pg-ink2)}
+section{display:flex;flex-direction:column;gap:14px}
+.q{background:var(--pg-panel);border:1px solid var(--pg-edge);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.q b{color:var(--pg-accent)}
+.note{font-size:13px;color:var(--pg-ink2)}
+ul,ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px;max-width:76ch}
+.pair{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));align-items:start}
+.tag{display:inline-block;font:700 11px/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;padding:3px 7px;border-radius:5px;border:1px solid var(--pg-edge);color:var(--pg-ink2);margin-right:6px}
+.tag.pick{color:var(--pg-pick);border-color:var(--pg-pick)}
+figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+figure img{width:100%;height:auto;border:1px solid var(--pg-edge);border-radius:8px;cursor:zoom-in;background:#000}
+figcaption{font-size:13px;color:var(--pg-ink2)}
+.frames{display:grid;gap:18px;grid-template-columns:minmax(0,390px) minmax(0,1fr);align-items:start}
+@media (max-width:900px){.frames{grid-template-columns:minmax(0,1fr)}}
+.frame-cap{font-size:13px;color:var(--pg-ink2);margin-bottom:6px}
+.switch{display:flex;gap:8px;flex-wrap:wrap}
+.switch button{font:600 13px var(--f-body);padding:7px 12px;border-radius:8px;border:1px solid var(--pg-edge);background:var(--pg-panel);color:var(--pg-ink);cursor:pointer}
+.switch button[aria-pressed="true"]{border-color:var(--pg-accent);color:var(--pg-accent)}
+
+/* ---- the mock, in Raptor's look ---- */
+.app{background:var(--bg);color:var(--ink);border-radius:12px;border:1px solid #000;overflow:hidden;font:14px/1.45 system-ui,-apple-system,'Segoe UI',sans-serif}
+.app .bar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:linear-gradient(#0E1116,#090B0E);border-bottom:1px solid var(--edge)}
+.app .logo{font:800 15px/1 system-ui;letter-spacing:.14em;color:var(--ink)}
+.app .logo small{display:block;font-size:9px;color:var(--ink-3);letter-spacing:.1em;font-weight:500}
+.app .head{display:flex;align-items:center;gap:8px;padding:12px 14px 10px;flex-wrap:nowrap}
+.app .ttl{font:700 20px/1.1 system-ui;margin-right:6px}
+.app .search{flex:1 1 0;white-space:nowrap;overflow:hidden;min-width:0;height:36px;border-radius:8px;background:var(--panel);border:1px solid var(--edge);color:var(--ink-3);display:flex;align-items:center;padding:0 10px;font-size:13px}
+.app .btn{height:36px;padding:0 12px;border-radius:8px;border:1px solid var(--edge-2);background:var(--raised);color:var(--ink);font:600 13px system-ui;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.app .btn.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.app .part{padding:4px 14px 14px;display:flex;flex-direction:column;gap:12px}
+.app .partttl{font:700 11px/1 system-ui;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);padding-top:6px}
+.app .grp{background:var(--panel);border:1px solid var(--edge);border-radius:10px;overflow:hidden}
+.app .grp h3{margin:0;font:700 13.5px/1.2 system-ui;padding:10px 12px;background:var(--panel-2);border-bottom:1px solid var(--edge)}
+.app .set{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:9px 12px;border-top:1px solid var(--edge)}
+.app .grp h3 + .set{border-top:0}
+.app .set .nm{font-weight:600;font-size:13.5px}
+.app .set .val{grid-row:1/3;grid-column:2;align-self:center;font:600 13px ui-monospace,Consolas,monospace;color:var(--accent);background:var(--bg);border:1px solid var(--edge);border-radius:6px;padding:5px 9px;min-width:64px;text-align:center}
+.app.editing .set .val{border-color:var(--accent);background:#0d1a20}
+.app .set .why{font-size:12.5px;color:var(--ink-2)}
+.app .set .chg{font-size:11.5px;color:var(--adv)}
+.app .set .chg a{color:var(--accent);text-decoration:none;margin-left:6px}
+.app .set .val.word{min-width:0;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.app .chips{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.app .chip{font:600 11.5px system-ui;padding:3px 8px;border-radius:999px;border:1px solid var(--edge-2);color:var(--ink-2)}
+.app .chip.r{border-color:var(--hard);color:var(--hard)} .app .chip.a{border-color:var(--adv);color:var(--adv)}
+.app .chk{display:grid;grid-template-columns:10px minmax(0,1fr);gap:2px 10px;padding:9px 12px;border-top:1px solid var(--edge)}
+.app .grp h3 + .chk{border-top:0}
+.app .dot{width:9px;height:9px;border-radius:50%;margin-top:5px;background:var(--ink-3)}
+.app .dot.r{background:var(--hard)} .app .dot.a{background:var(--adv)}
+.app .chk .nm{font-weight:600;font-size:13.5px}
+.app .chk .why{grid-column:2;font-size:12.5px;color:var(--ink-2)}
+.app details{grid-column:2;margin-top:4px}
+.app summary{font:600 12.5px system-ui;color:var(--accent);cursor:pointer;list-style:none}
+.app summary::-webkit-details-marker{display:none}
+.app summary::before{content:'▸ '} .app details[open] summary::before{content:'▾ '}
+.app details p{font-size:12.5px;color:var(--ink-2);margin:6px 0 0;max-width:none}
+.app.desk .cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
+.app.phone .cols{display:flex;flex-direction:column;gap:12px}
+dialog{border:none;padding:0;background:transparent;max-width:96vw;max-height:96vh}
+dialog img{max-width:96vw;max-height:94vh;display:block;border-radius:8px}
+dialog::backdrop{background:rgba(0,0,0,.8)}
+</style>
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <h1>The Logic page, redesigned</h1>
+    <p class="lede">Your brief (D925): a page for the scheduler and admin to understand, not a description of how the app works inside. Everything you can change sits together at the top, each with one line on what changing it affects. The app's fine detail goes. A short "How it works" stays only where you need it to act on a warning. Drawn in Raptor's own colours, from a full list of what the page holds today. Nothing in the app has changed.</p>
+  </header>
+
+  <section>
+    <h2>Today</h2>
+    <p class="note">About 7,900 words, roughly 27 screens of scrolling on a phone. Every row carries the app's internal code names on the right (for example "VCONF.step 60"), a "fired this week" count and long paragraphs of history. The "Step before take-off" setting appears twice.</p>
+    <div class="pair">
+      <figure><img src="img/desk-edit-first-screen.png" alt="The Logic page today on a desktop, Edit on"><figcaption><span class="tag">today · desktop</span>The first screen: one setting each, with a long paragraph and code names.</figcaption></figure>
+      <figure><img src="img/phone-first-screen.png" alt="The Logic page today on a phone"><figcaption><span class="tag">today · phone</span>The first screen on a phone.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Proposed</h2>
+    <div class="switch" role="group" aria-label="Show the proposal">
+      <button type="button" id="mEdit" aria-pressed="false">Show with Edit on</button>
+      <button type="button" id="mFold" aria-pressed="false">Open the "How it works" folds</button>
+    </div>
+    <div class="frames">
+      <div><div class="frame-cap">Phone, 390 wide</div><div class="app phone" id="mPhone"></div></div>
+      <div><div class="frame-cap">Desktop</div><div class="app desk" id="mDesk"></div></div>
+    </div>
+    <p class="note">The checks list shows a sample of each group here. The build lists all 79 checks this way, each in plain words. Values shown are the squadron standard. With Edit on, a value you changed shows its standard and a Reset beside it (shown on Crew rest).</p>
+  </section>
+
+  <section>
+    <h2>My suggestion, and four questions</h2>
+    <div class="q">
+      <p><b>What changes:</b></p>
+      <ul>
+        <li><strong>Two parts:</strong> "Settings" (everything you can change, grouped by the job: crew rest and the working day, flying lines, sims, rows with no end time, standby, inputs, OIL, Insights), then "The checks" (every warning, advisory and note, grouped the same way).</li>
+        <li><strong>One line under each setting</strong> says what changing it does, e.g. "Moves the suggested B on every line with no brief typed".</li>
+        <li><strong>One line under each check</strong> says when it shows. Four keep a folded "How it works": crew rest, days in a row, the brief and the order of times, and OIL.</li>
+        <li><strong>Gone:</strong> the code names and the grey column of engine text, the history, the "fired this week" count on every row (the "Fired this week" filter stays), the duplicated settings, and two settings nothing in the app reads (minimum turn, default sortie length).</li>
+        <li><strong>One row of controls:</strong> the page name, search, a Filter button (All, Warnings, Advisories, Notes, Fired this week) and Edit, following your one-row rule.</li>
+        <li><strong>Fixed while there:</strong> the amber "changed" strip today says the schedule is checked against the new values "not the published ones". Strictly, a published day keeps its brief, report, debrief and OIL values until it is published again. The strip would say so.</li>
+      </ul>
+    </div>
+    <ol>
+      <li><strong>The two parts and their groups</strong>, in this order: build as drawn? (My pick: yes. Rename or reorder any group freely.)</li>
+      <li><strong>The checks part:</strong> keep every check listed with one line each (my pick), or list only the four with "How it works"?</li>
+      <li><strong>The "fired this week" counts:</strong> drop them from each row and keep only the filter (my pick), or keep them?</li>
+      <li><strong>The two unused settings</strong> (minimum turn, default sortie length; nothing reads them): remove them from the page (my pick)?</li>
+    </ol>
+    <p class="note">"All as recommended" means all four picks. Then I write every line of both parts, get a fresh reader to check the wording, and build it with its own check.</p>
+  </section>
+</div>
+<dialog id="zoom"></dialog>
+<script>
+const SETTINGS=[
+ {g:'Crew rest and the working day',s:[
+  ['Crew rest','12h','The rest a flyer needs before his first commitment. Every crew-rest warning moves with it.','changed'],
+  ['Days in a row','6 days','The 7th day in a row raises the red break warning.'],
+  ['Long work day','12h','A day longer than this shows the grey long-day note.'],
+  ['Report before take-off','3h','Where no in-time or rally is typed: when a flyer\'s day starts (crew rest, long day, OIL, Insights hours). "+ In-time / Rally" fills in this time.']]},
+ {g:'Flying lines',s:[
+  ['Brief before take-off','2h20','Moves the suggested B on every line with no brief typed. A blank B is checked against it.'],
+  ['Step before take-off','1h','From step, a man counts as busy: clashes and the crew list follow it.'],
+  ['Dekit after landing','30 min','Until dekit, a man still counts as busy.'],
+  ['Debrief after landing','2h','When a flyer\'s day ends: next day\'s crew rest, the long day and OIL follow it.'],
+  ['Tight turn','2h','A gap from landing to the next take-off shorter than this shows the amber tight-turn note.'],
+  ['In-time / Rally words','IN TIME + WX/NOTAMS','The words "+ In-time / Rally" writes after the time.','','word']]},
+ {g:'Sims',s:[
+  ['EP sim brief','15 min','The brief before an EP sim. A clash inside it shows an advisory.'],
+  ['Sim debrief','30 min','The debrief after a sim. A clash inside it shows an advisory.'],
+  ['AMT debrief','30 min','The debrief after an AMT that has no end time.']]},
+ {g:'Rows with no end time',s:[
+  ['Sim with no end','1h30','A sim with no end time is taken to run this long: clashes, the crew list and OIL.'],
+  ['Other rows with no end','1h','The same for a ground, programme or duty row.']]},
+ {g:'Standby (SC, AVALON, BB)',s:[
+  ['SC day window','07:00 to 19:00','A shift inside it needs SC DAY currency; outside it, SC NIGHT.'],
+  ['SC MAIN clashes','','Red or amber in the warning list when an SC MAIN man clashes with:','','chips']]},
+ {g:'Inputs',s:[
+  ['Late cut-off, inputs','14 days before','After this, a member\'s input wears the LATE mark.','','door'],
+  ['Late cut-off, SANS','Wed, 2 weeks before','The same for SANS availability.','','door'],
+  ['Members file for others','On','A member may file a duty or commitment for someone else.','','door']]},
+ {g:'OIL',s:[['Full day of OIL from','6h01','Weekend or holiday work this long or longer earns a full day; shorter earns a half.']]},
+ {g:'Insights',s:[['Track Blue and Red sorties','Off','Splits Insights\' flying bars into Blue and Red, and asks Blue or Red under each formation.']]},
+];
+const CHECKS=[
+ {g:'Crew rest and the working day',c:[
+  ['r','Crew rest broken','Less than 12h between the end of yesterday\'s last commitment and today\'s first.','A flight ends at landing plus the 2h debrief; anything else ends at its written end. Today\'s first thing can be a meeting before the report. A LATE SHOW remark keeps the warning, but the ring is dashed while rest still clears by step, solid after. Monday checks last Sunday, and a Sunday that breaks Monday shows a box.'],
+  ['a','Tight crew rest','The rest is broken only if he reports at the usual 3h before take-off; his actual report time keeps it.'],
+  ['r','7 days in a row','A man is tasked on a 7th day in a row.','Any tasking counts: a flight, duty, sim, ground or programme row. Leave or a downchit resets the count. The warning lands on the day to clear, and it counts the end of last week.'],
+  ['g','Long work day','The day runs longer than 12h.']]},
+ {g:'Flying lines',c:[
+  ['r','Times out of order','In-time, rally, brief, take-off and landing are not in that order.','The B on the line is what is checked; a blank B is checked as take-off less 2h20. Out of order is red, but it never stops a day being published.'],
+  ['a','No time to brief','Something sits between the brief time and take-off.'],
+  ['a','Tight turn','Less than 2h from landing to the next take-off.']]},
+ {g:'Qualifications',c:[
+  ['r','Not qualified','A man sits in a seat his quals do not allow.'],
+  ['r','Needs an instructor','An OCU student flies without an IP.']]},
+ {g:'Leave, downchits and OIL',c:[
+  ['r','On leave and on the programme','A man on leave is seated that day.'],
+  ['r','OIL: a row with no times','A weekend row has no times, so nobody on it can earn OIL.','Weekend or holiday work earns OIL once the day is published. It is measured from the first report to the last end: 6h01 or more is a full day, less a half. SC spare and AVALON or BB earn only if switched on in OIL Earn.']]},
+];
+function build(el,phone){
+  const head=`<div class="bar"><div class="logo"><small>142</small>RAPTOR</div></div>
+   <div class="head"><span class="ttl">Logic</span><span class="search">🔍&nbsp; Search</span>
+   <span class="btn">Filter</span><span class="btn edit">✎ Edit</span></div>`;
+  const val=(x)=>{const[nm,v,why,chg,kind]=x;
+    if(kind==='chips')return `<div class="set"><span class="nm">${nm}</span><span class="why">${why}</span><div class="chips"><span class="chip r">a flight</span><span class="chip r">a sim</span><span class="chip r">a duty post</span><span class="chip r">another shift</span><span class="chip a">a ground event</span><span class="chip a">a programme item</span></div></div>`;
+    return `<div class="set"><span class="nm">${nm}</span><span class="val${kind==='word'?' word':''}">${v}${kind==='door'?' ›':''}</span><span class="why">${why}${chg?'<br><span class="chg mchg" hidden>Standard 12h <a href="#">Reset</a></span>':''}</span></div>`};
+  const sets=SETTINGS.map(g=>`<div class="grp"><h3>${g.g}</h3>${g.s.map(val).join('')}</div>`).join('');
+  const chk=([t,nm,why,how])=>`<div class="chk"><span class="dot ${t}"></span><span class="nm">${nm}</span><span class="why">${why}</span>${how?`<details><summary>How it works</summary><p>${how}</p></details>`:''}</div>`;
+  const checks=CHECKS.map(g=>`<div class="grp"><h3>${g.g}</h3>${g.c.map(chk).join('')}</div>`).join('');
+  el.innerHTML=head+`<div class="part"><div class="partttl">Settings</div><div class="cols">${sets}</div><div class="partttl">The checks</div><div class="cols">${checks}</div></div>`;
+}
+const P=document.getElementById('mPhone'),D=document.getElementById('mDesk');build(P,true);build(D,false);
+document.getElementById('mEdit').onclick=e=>{const on=e.currentTarget.getAttribute('aria-pressed')!=='true';e.currentTarget.setAttribute('aria-pressed',on);
+  for(const a of [P,D]){a.classList.toggle('editing',on);a.querySelector('.edit').classList.toggle('on',on);a.querySelector('.edit').textContent=on?'Done':'✎ Edit';
+    a.querySelectorAll('.mchg').forEach(c=>c.hidden=!on);const v=a.querySelector('.set .val');v.textContent=on?'11h':'12h'}};
+document.getElementById('mFold').onclick=e=>{const on=e.currentTarget.getAttribute('aria-pressed')!=='true';e.currentTarget.setAttribute('aria-pressed',on);document.querySelectorAll('.app details').forEach(d=>d.open=on)};
+const dlg=document.getElementById('zoom'),zi=document.createElement('img');dlg.appendChild(zi)
+document.querySelectorAll('figure img').forEach(i=>i.addEventListener('click',()=>{zi.src=i.src;zi.alt=i.alt;dlg.showModal()}))
+dlg.addEventListener('click',()=>dlg.close())
+</script>
