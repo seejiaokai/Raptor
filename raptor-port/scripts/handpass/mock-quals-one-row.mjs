@@ -6,6 +6,7 @@
    The proposal's ONE transform (option A): the date box removed (it changes nothing — no code reads it; a copy of the
    original app's static box), every control at 36 tall, the filter taking what is left of the row; on a phone the
    export button reads "Export" (D910's shorter words). Everything measured, nothing typed in.
+   Then (D930) the paragraph under the row removed too: `<size>-view-nohelp.png`.
    usage: node scripts/handpass/mock-quals-one-row.mjs [baseURL] [outDir] — the served build (preview_start raptor-walk) */
 import { createRequire } from 'node:module'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
@@ -79,6 +80,13 @@ for (const [key, dev] of [['phone', PHONE], ['desk', DESK]]) {
     await mark(p, ['.qbar'])
     await p.screenshot({ path: `${out}/${key}-${state}-proposed.png`, clip })
     facts[`${key}-${state}`] = { today, after, overflow, filterW }
+    /* D930 (15 Oct 26 — his red ring round the paragraph under the row: "Ask yourself if these words are needed in the
+       first place"): the paragraph removed as well, on top of the one row, to show what the page looks like without it */
+    if (state === 'view') {
+      await p.evaluate(() => document.querySelector('.qhelp')?.remove()); await p.waitForTimeout(100)
+      await mark(p, ['.qbar', '.qtablehead'])
+      await p.screenshot({ path: `${out}/${key}-view-nohelp.png`, clip })
+    }
     await ctx.close()
   }
 }

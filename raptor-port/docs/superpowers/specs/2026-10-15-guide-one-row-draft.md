@@ -32,6 +32,11 @@ button's words get shorter); that a heading repeating the tab's name is not a re
    `scripts/handpass/mock-medical-one-row.mjs`, pictures `docs/img/handpass/2026-10-15-medical-one-row/sweep-*.png`:
    - **Quals** — "Export to Excel" stands on a second row with the filter, under "Enable editing" and the date: the page's
      own buttons on two rows (`sweep-quals.png`).
+     Drawn for him 15 Oct 26 (D926): `scripts/handpass/mock-quals-one-row.mjs`, pictures
+     `docs/img/handpass/2026-10-15-quals-one-row/`, page https://claude.ai/artifact/QZqDmvnF4esm4zaixiNgTA — the date box
+     (it changes nothing) removed, every control at 36, "Export" on a phone. **And the paragraph under the row (D930):** only a
+     key point stays, every word asked whether it is needed at all; two of its three links do nothing — put to him with its
+     picture before anything is built.
    - **Logic** — "Edit rules" alone on a row under the filter chips (`sweep-logic.png`) — rides with the Logic page's own
      redesign (D809, D925). (Its "Logic" heading repeats nothing on screen — the top bar shows only the logo — so it is
      not a case; the line under it is a D846 candidate for that job.)
