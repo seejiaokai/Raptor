@@ -4,7 +4,7 @@ Branch `claude/one-row-guide-medical`. Built 15–16 Oct 26 by Opus, checked as 
 the two. The Logic page's every line read by one fresh Opus reader before the build (D928), all its findings taken; the
 finished code read by one fresh, blind Opus reader (D790; no Fable — D903). Quals' one row (D926) and its paragraph
 (D930) are DRAWN, not built — they wait on his two answers (https://claude.ai/artifact/QZqDmvnF4esm4zaixiNgTA).
-Unattended from about 17:45 on 15 Oct 26 (D934).
+Unattended from his message of 15 Oct 26 (D934).
 
 ## Questions waiting for him
 1. **Quals' one row** — build as drawn (the date box that does nothing removed, every control at 36, "Export" on a
