@@ -1,0 +1,94 @@
+PASS [desk] M1: a run held at the month's right side turns to the next month — October 2026 → November 2026
+PASS [desk] M1: the run is still being drawn after the turn — is-picking
+   pic M1-run-across-desk.png
+PASS [desk] M1: carried back to 3 Nov, the run is lit from the month's first date to 3 Nov — 2026-11-01,2026-11-02,2026-11-03
+PASS [desk] M1: let go — "+ Input" opens for 28 Oct to 3 Nov — New input · Oct 28 → Nov 3
+   pic M1-input-window-desk.png
+PASS [desk] M1: let go, the month turns no more — November 2026
+PASS [desk] M2: a run held at the month's left side turns back to the last month — October 2026
+PASS [desk] M2: let go — "+ Input" opens for 30 Oct to 3 Nov — New input · Oct 30 → Nov 3
+PASS [desk] M3: a run carried through the side band without holding does not turn the month — October 2026
+PASS [desk] M4: a bar held at the month's right side turns to the next month — July 2026 → August 2026
+PASS [desk] M4: carried on in the new month, ONE date is lit — the one under the pointer — 2026-08-14
+   pic M4-bar-carried-desk.png
+PASS [desk] M4: dropped on 2026-08-14, the input is on that month now — Cinder · Duty · 4 Jul · no window
+   pic M4-bar-dropped-desk.png
+PASS [desk] M4: undone, the input is back on its own date and the month turned back to it — July 2026 · bar on view: true
+PASS [desk] S: on the SANS calendar a pick held at the side does not turn the month (not in the ruling) — July 2026 → July 2026
+PASS [desk] T1: a ball held at the canvas's right edge pans the canvas (the chart slides left) — -1 → -703 (tool ✋ Move)
+PASS [desk] T1: the ball stays under the pointer — ball at 1076,582; pointer 1078,582
+   pic T1-ball-edge-desk.png
+PASS [desk] T1: let go, the canvas pans no more — {"x":-919,"y":243}
+PASS [desk] T1: the move is one undo step, and undo takes it back — 1 → 0
+PASS [desk] T2: a ball held at the canvas's foot pans it (the chart slides up) — 8 → -478
+   pic T2-ball-foot-desk.png
+PASS [desk] T3: a ball sitting at the edge (to test the dead band) — none there; carried by edgeturn.test.ts — test-carried
+PASS [desk] T4: a selected group, by one of its balls: held at the canvas's right edge, the canvas pans — {"x":504.1,"y":8} → {"x":90.1,"y":8}
+PASS [desk] T4: a selected group, by one of its balls: it stays under the pointer — at 1078,329; pointer 1078,329
+   pic T4-desk.png
+PASS [desk] T5: an arrow's orange end: held at the canvas's right edge, the canvas pans — {"x":504.1,"y":8} → {"x":-647.9,"y":8}
+PASS [desk] T5: an arrow's orange end: it stays under the pointer — at 1080,356; pointer 1078,355
+   pic T5-desk.png
+PASS [desk] T6: an arrow's bend square: held at the canvas's foot, the canvas pans — {"x":504.1,"y":8} → {"x":504.1,"y":-766}
+PASS [desk] T6: an arrow's bend square: it stays under the pointer — at 563,896; pointer 563,894
+   pic T6-desk.png
+PASS [desk] T7: a drawn line's end: held at the canvas's right edge, the canvas pans — {"x":504.1,"y":8} → {"x":-647.9,"y":8}
+PASS [desk] T7: a drawn line's end: it stays under the pointer — at 1080,458; pointer 1078,457
+   pic T7-desk.png
+PASS [desk] T8: a drawn line's corner square: held at the canvas's foot, the canvas pans — {"x":504.1,"y":8} → {"x":504.1,"y":-1144}
+PASS [desk] T8: a drawn line's corner square: it stays under the pointer — at 446,896; pointer 445,894
+   pic T8-desk.png
+PASS [desk] T9: a bend square dragged a third time pans at the one speed, not doubled — 432 px in half a second
+PASS [desk] T9: three drags of the square, three undo steps — 2 → 5
+PASS [desk] T10: with the chart's start in view, a ball held at the left edge pans nothing further — 504.1 → 504.1
+PASS [desk] T11: a cancelled touch at the edge stops the pan — {"x":-305.9,"y":8} → {"x":-305.9,"y":8}
+PASS [desk] T11: and the line is back as it was — the same
+PASS [desk] no console or page errors — 0
+PASS [phone] M1: a run held at the month's right side turns to the next month — October 2026 → November 2026
+PASS [phone] M1: the run is still being drawn after the turn — is-picking
+   pic M1-run-across-phone.png
+PASS [phone] M1: carried back to 3 Nov, the run is lit from the month's first date to 3 Nov — 2026-11-01,2026-11-02,2026-11-03
+PASS [phone] M1: let go — "+ Input" opens for 28 Oct to 3 Nov — New input · Oct 28 → Nov 3
+   pic M1-input-window-phone.png
+PASS [phone] M1: let go, the month turns no more — November 2026
+PASS [phone] M2: a run held at the month's left side turns back to the last month — October 2026
+PASS [phone] M2: let go — "+ Input" opens for 30 Oct to 3 Nov — New input · Oct 30 → Nov 3
+PASS [phone] M3: a run carried through the side band without holding does not turn the month — October 2026
+PASS [phone] M4: a bar held at the month's right side turns to the next month — July 2026 → August 2026
+PASS [phone] M4: carried on in the new month, ONE date is lit — the one under the pointer — 2026-08-14
+   pic M4-bar-carried-phone.png
+PASS [phone] M4: dropped on 2026-08-14, the input is on that month now — Cinder · Duty · 4 Jul · no window
+   pic M4-bar-dropped-phone.png
+PASS [phone] M4: undone, the input is back on its own date and the month turned back to it — July 2026 · bar on view: true
+PASS [phone] S: on the SANS calendar a pick held at the side does not turn the month (not in the ruling) — Jul 2026 → Jul 2026
+PASS [phone] T1: a ball held at the canvas's right edge pans the canvas (the chart slides left) — -1 → -552 (tool ✋ Move)
+PASS [phone] T1: the ball stays under the pointer — ball at 383,620; pointer 384,620
+   pic T1-ball-edge-phone.png
+PASS [phone] T1: let go, the canvas pans no more — {"x":-722.6,"y":186}
+PASS [phone] T1: the move is one undo step, and undo takes it back — 1 → 0
+PASS [phone] T2: a ball held at the canvas's foot pans it (the chart slides up) — 8 → -434.6
+   pic T2-ball-foot-phone.png
+PASS [phone] T3: a ball sitting at the edge (to test the dead band) — none there; carried by edgeturn.test.ts — test-carried
+PASS [phone] T4: a selected group, by one of its balls: held at the canvas's right edge, the canvas pans — {"x":121.1,"y":-796.9} → {"x":-329.4,"y":-796.9}
+PASS [phone] T4: a selected group, by one of its balls: it stays under the pointer — at 383,462; pointer 384,462
+   pic T4-phone.png
+PASS [phone] T5: an arrow's orange end: held at the canvas's right edge, the canvas pans — {"x":106.4,"y":-777.5} → {"x":-740.5,"y":-777.5}
+PASS [phone] T5: an arrow's orange end: it stays under the pointer — at 383,470; pointer 384,470
+   pic T5-phone.png
+PASS [phone] T6: an arrow's bend square: held at the canvas's foot, the canvas pans — {"x":106.4,"y":-777.4} → {"x":106.4,"y":-1313.4}
+PASS [phone] T6: an arrow's bend square: it stays under the pointer — at 200,837; pointer 200,838
+   pic T6-phone.png
+PASS [phone] T7: a drawn line's end: held at the canvas's right edge, the canvas pans — {"x":121.1,"y":-796.9} → {"x":-724.8,"y":-796.9}
+PASS [phone] T7: a drawn line's end: it stays under the pointer — at 383,530; pointer 384,530
+   pic T7-phone.png
+PASS [phone] T8: a drawn line's corner square: held at the canvas's foot, the canvas pans — {"x":106.4,"y":-777.5} → {"x":106.4,"y":-1603.9}
+PASS [phone] T8: a drawn line's corner square: it stays under the pointer — at 237,837; pointer 237,838
+   pic T8-phone.png
+PASS [phone] T9: a bend square dragged a third time pans at the one speed, not doubled — 288 px in half a second
+PASS [phone] T9: three drags of the square, three undo steps — 2 → 5
+PASS [phone] T10: with the chart's start in view, a ball held at the left edge pans nothing further — 121.1 → 121.1
+PASS [phone] T11: a cancelled touch at the edge stops the pan — {"x":106.4,"y":-777.5} → {"x":106.4,"y":-777.5}
+PASS [phone] T11: and the line is back as it was — the same
+PASS [phone] no console or page errors — 0
+
+70 / 70 PASS

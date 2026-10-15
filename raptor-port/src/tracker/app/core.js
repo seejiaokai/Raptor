@@ -16,6 +16,8 @@ import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { findEvents } from './eventOrder.js';
 import { onTrackerSessionEnd, onBeforeTrackerLogout } from '../role.js';
+/* Raptor's one edge feel (D899) — a standalone export carries this file with it: docs/tracker/known-gaps.md */
+import { edgePan } from '../../ui/edgescroll';
 import { getPeople, onPeople, whoami, whoamiId } from '../people.js';
 import { setTrackerUndo, pingTrackerUndo } from '../undo-bridge.js';
 /* the Tracker one piece per thing ([DB-READINESS] group A, phase 5b — D462): the student lists, the course list and the
@@ -3336,22 +3338,46 @@ function wireBoard() {
       lh.addEventListener('pointerdown', e => {
         if (pinching) return;   /* a second finger starts nothing: it is a pinch */
         e.stopPropagation();
-        const key = selEdge; pushUndo();
-        const mv = ev2 => { const pt = svgPt(ev2); edgeMeta[key] = { ...(edgeMeta[key] || {}), mid: { x: Math.round(pt.x), y: Math.round(pt.y) } }; schedDragPaint(); };
-        const stop = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
-        const up = () => { if (fingerStop === stop) fingerStop = null; stop(); markDirty(); saveLayout(); wireBoard(); };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); if (e.pointerType !== 'mouse') fingerStop = stop;
+        /* what the press changes, kept to be put back by a cancel (round two's R1): the bend, and both undo lists — the
+           step it pushes clears Redo and may trim the oldest */
+        const key = selEdge, meta0 = edgeMeta[key] ? { ...edgeMeta[key] } : null, u0 = undoStack.slice(), r0 = redoStack.slice(), pid = e.pointerId;
+        pushUndo(); const mine = undoStack[undoStack.length - 1];
+        /* the square rides the finger too (found by the walk, 15 Oct 26 — D899): it was drawn again only on the release,
+           so while the canvas panned under a held finger it slid off with the chart and looked dropped */
+        const bend = ev2 => { const pt = svgPt(ev2); edgeMeta[key] = { ...(edgeMeta[key] || {}), mid: { x: Math.round(pt.x), y: Math.round(pt.y) } }; lh.setAttribute('x', (pt.x - 6).toFixed(1)); lh.setAttribute('y', (pt.y - 6).toFixed(1)); schedDragPaint(); };
+        const fe = followEdge(e, bend);
+        const mv = ev2 => { if (ev2.pointerId !== pid) return; fe.point(ev2); bend(ev2); };
+        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
+        /* drawn again, not wired again (the night's code read, F1): wireBoard added a second listener to this same square
+           on every release, so each later drag ran two, four, eight copies — each its own edge pan, at that many times the speed */
+        const up = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); markDirty(); saveLayout(); renderBoard(); };
+        /* A CANCELLED TOUCH (a call, the system — the night's code read, F3) never sends a release: without this the edge
+           pan ran on for good, rewriting the bend every frame. It puts the bend back as it was, and its undo step goes. */
+        const cancel = ev2 => {
+          if (ev2.pointerId !== pid) return;   /* another finger's cancel is not this drag's (round two's R2) */
+          if (fingerStop === stop) fingerStop = null; stop();
+          if (meta0) edgeMeta[key] = meta0; else delete edgeMeta[key];
+          if (undoStack[undoStack.length - 1] === mine) { undoStack = u0; redoStack = r0; }
+          else { const i = undoStack.lastIndexOf(mine); if (i >= 0) undoStack.splice(i, 1); }
+          notify(); renderBoard();
+        };
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     }
     /* drag a line end onto a blue N/E/S/W point to snap / reconnect */
     document.querySelectorAll('#flowSvg .endhandle').forEach(h => {
       h.addEventListener('pointerdown', e => {
         if (pinching) return;
-        e.stopPropagation(); const end = h.dataset.end;
-        const mv = ev2 => { const pt = svgPt(ev2); h.setAttribute('cx', pt.x.toFixed(1)); h.setAttribute('cy', pt.y.toFixed(1)); highlightPort(pt); };
-        const stop = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
-        const up = ev2 => { if (fingerStop === stop) fingerStop = null; stop(); applyEndSnap(end, svgPt(ev2)); };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); if (e.pointerType !== 'mouse') fingerStop = stop;
+        e.stopPropagation(); const end = h.dataset.end, pid = e.pointerId;
+        const carry = ev2 => { const pt = svgPt(ev2); h.setAttribute('cx', pt.x.toFixed(1)); h.setAttribute('cy', pt.y.toFixed(1)); highlightPort(pt); };
+        const fe = followEdge(e, carry);
+        /* each of the four handle drags hears its own pointer only (round two's R2): a second finger's cancel or lift is not its */
+        const mv = ev2 => { if (ev2.pointerId !== pid) return; fe.point(ev2); carry(ev2); };
+        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
+        const up = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); applyEndSnap(end, svgPt(ev2)); };
+        /* a cancelled touch snaps nothing (its place can read 0,0): the end goes back where it was (F3) */
+        const cancel = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); renderBoard(); };
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     });
     document.querySelectorAll('#flowSvg .linehit').forEach(h => {
@@ -3375,22 +3401,27 @@ function wireBoard() {
         if (pinching) return;
         e.stopPropagation(); e.preventDefault();
         const id = h.dataset.lid, i = +h.dataset.i, L = lineById(id); if (!L) return;
-        const P0 = L.pts.map(p => ({ x: p.x, y: p.y }));
+        const P0 = L.pts.map(p => ({ x: p.x, y: p.y })), pid = e.pointerId;
         const prevV = i > 0 && Math.abs(P0[i].x - P0[i - 1].x) < 0.5;
         const nextV = i < P0.length - 1 && Math.abs(P0[i].x - P0[i + 1].x) < 0.5;
         let moved = false;
-        const mv = ev2 => {
+        const shape = ev2 => {
           const pt = svgPt(ev2); moved = true; const p = L.pts;
           if (i > 0) { if (prevV) p[i - 1].x = pt.x; else p[i - 1].y = pt.y; }
           if (i < p.length - 1) { if (nextV) p[i + 1].x = pt.x; else p[i + 1].y = pt.y; }
           p[i].x = pt.x; p[i].y = pt.y; refreshLine(id);
         };
-        const stop = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
-        const up = () => {
+        const fe = followEdge(e, shape);
+        const mv = ev2 => { if (ev2.pointerId !== pid) return; fe.point(ev2); shape(ev2); };
+        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
+        /* a cancelled touch puts the line back as it was (F3) */
+        const cancel = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); L.pts = P0.map(p => ({ x: p.x, y: p.y })); renderBoard(); };
+        const up = ev2 => {
+          if (ev2.pointerId !== pid) return;
           if (fingerStop === stop) fingerStop = null; stop();
           if (moved) { pushUndo(); markDirty(); saveLayout(); } renderBoard();
         };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); if (e.pointerType !== 'mouse') fingerStop = stop;
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     });
     document.querySelectorAll('#flowSvg .lend').forEach(h => {
@@ -3403,15 +3434,21 @@ function wireBoard() {
         const o = first
           ? (Math.abs(base[0].x - base[1].x) < 0.5 ? 'v' : 'h')
           : (Math.abs(base[base.length - 1].x - base[base.length - 2].x) < 0.5 ? 'v' : 'h');
+        const was = L[key], pts0 = Array.isArray(L.pts) ? L.pts.map(p => ({ x: p.x, y: p.y })) : L.pts, pid = e.pointerId;
         L[key] = null;
-        const mv = ev2 => {
+        const carry = ev2 => {
           const pt = svgPt(ev2);
           L.pts = endDragRebuild(base, first, o, pt); refreshLine(id);
           h.setAttribute('cx', pt.x.toFixed(1)); h.setAttribute('cy', pt.y.toFixed(1));
           highlightPort(pt);
         };
-        const stop = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
+        const fe = followEdge(e, carry);
+        const mv = ev2 => { if (ev2.pointerId !== pid) return; fe.point(ev2); carry(ev2); };
+        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
+        /* a cancelled touch puts the line and its end's link back as they were (F3) */
+        const cancel = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); L.pts = pts0; L[key] = was; renderBoard(); };
         const up = ev2 => {
+          if (ev2.pointerId !== pid) return;
           if (fingerStop === stop) fingerStop = null; stop();
           pushUndo();
           const pt = svgPt(ev2), sn = snapAnchor(pt, id);
@@ -3422,7 +3459,7 @@ function wireBoard() {
           markDirty(); saveLayout(); renderBoard(); renderSide();
           flashHint(made.length ? ('Linked ' + made.join(', ')) : (sn ? 'End connected.' : 'End left loose — nothing linked yet.'));
         };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); if (e.pointerType !== 'mouse') fingerStop = stop;
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     });
   } else {
@@ -3745,6 +3782,31 @@ export function dragScroll(el, skip) {
   };
   el.addEventListener('pointerup', stop); el.addEventListener('pointercancel', stop); el.addEventListener('pointerleave', stop);
 }
+/* CARRIED TO THE EDGE, THE CHART FOLLOWS (owner D899, 15 Oct 26 — "Questions 1 yes"; D896; the design guide §5a, D895).
+   A ball, a group of balls, a line's end or a bend square dragged to the edge of Edit chart layout's canvas pans the
+   canvas that way, at Raptor's one edge feel (ui/edgescroll.ts edgePan), and the dragged thing is put back under the
+   pointer after each step — its own move handler run again at the pointer's last place, as svgPt reads it through the
+   new view. Nothing runs at rest: from the drag's start to its end, or a pinch's stop. */
+function followEdge(ev, move) {
+  const board = document.getElementById('board');
+  let last = { clientX: ev.clientX, clientY: ev.clientY };
+  const ep = board ? edgePan({ box: board, touch: ev.pointerType !== 'mouse', x: ev.clientX, y: ev.clientY,
+    onPan: (dx, dy) => {
+      /* NOT PAST WHERE THE CHART BEGINS (the night's code read, F2): the chart is drawn from 0 rightward and down only
+         (bounds()), so a thing carried on past its left or top edge would land at a negative place and be cut off the
+         chart outside the editor — and ⤢ Fit could not bring it back. Toward the left or the top the pan stops once the
+         chart's own corner is at the canvas's edge (or wherever the view already was, if it showed more); right and
+         down it runs on, as the chart grows that way. */
+      const nx = view.x - dx, ny = view.y - dy;
+      const x = dx < 0 ? Math.min(nx, Math.max(view.x, 0)) : nx, y = dy < 0 ? Math.min(ny, Math.max(view.y, 0)) : ny;
+      if (x === view.x && y === view.y) return;
+      view.x = x; view.y = y; applyView(); move(last);
+    } }) : null;
+  return {
+    point: e => { last = { clientX: e.clientX, clientY: e.clientY }; if (ep) ep.point(e.clientX, e.clientY); },
+    stop: () => { if (ep) ep.stop(); },
+  };
+}
 function svgPt(ev) {
   const svg = document.getElementById('flowSvg'); const r = svg.getBoundingClientRect();
   return { x: (ev.clientX - r.left - view.x) / view.k, y: (ev.clientY - r.top - view.y) / view.k };
@@ -3806,11 +3868,13 @@ function startGroupDrag(ev) {
   perfOn(); ev.preventDefault(); const g = ev.currentTarget, id = g.dataset.id; if (!selBalls.has(id)) selBalls = new Set([id]);
   const p = svgPt(ev), start = {}; selBalls.forEach(bid => { const bp = nodePos(bid); start[bid] = { x: bp.x, y: bp.y }; });
   groupDrag = { px: p.x, py: p.y, start, moved: false, snap: { syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }, pushed: false }; try { g.setPointerCapture(ev.pointerId); } catch (e) {}
+  groupDrag.fe = followEdge(ev, moveGroup);
   g.addEventListener('pointermove', onGroupDrag); g.addEventListener('pointerup', endGroupDrag); g.addEventListener('pointercancel', endGroupDrag);
-  groupDrag.stop = () => { g.removeEventListener('pointermove', onGroupDrag); g.removeEventListener('pointerup', endGroupDrag); g.removeEventListener('pointercancel', endGroupDrag); groupDrag = null; perfOff(); };
+  groupDrag.stop = () => { groupDrag.fe.stop(); g.removeEventListener('pointermove', onGroupDrag); g.removeEventListener('pointerup', endGroupDrag); g.removeEventListener('pointercancel', endGroupDrag); groupDrag = null; perfOff(); };
   if (ev.pointerType !== 'mouse') fingerStop = groupDrag.stop;
 }
-function onGroupDrag(ev) {
+function onGroupDrag(ev) { if (groupDrag) groupDrag.fe.point(ev); moveGroup(ev); }
+function moveGroup(ev) {
   if (!groupDrag) return; const p = svgPt(ev); const dx = p.x - groupDrag.px, dy = p.y - groupDrag.py;
   if (!groupDrag.moved && !groupDrag.pushed) { undoStack.push(groupDrag.snap); trimUndo(); redoStack = []; groupDrag.pushed = true; notify(); }
   groupDrag.moved = true;
@@ -3821,7 +3885,7 @@ function onGroupDrag(ev) {
   schedDragPaint();
 }
 function endGroupDrag(ev) {
-  if (!groupDrag) return; const g = ev.currentTarget; if (fingerStop === groupDrag.stop) fingerStop = null;
+  if (!groupDrag) return; const g = ev.currentTarget; if (fingerStop === groupDrag.stop) fingerStop = null; groupDrag.fe.stop();
   g.removeEventListener('pointermove', onGroupDrag); g.removeEventListener('pointerup', endGroupDrag); g.removeEventListener('pointercancel', endGroupDrag);
   const moved = groupDrag.moved; groupDrag = null; flushDragPaint(); perfOff(); if (moved) { saveLayout(); renderBoard(); }
 }
@@ -3829,12 +3893,14 @@ function startDrag(ev) {
   if (!arrangeMode || pinching) return; if (tool === 'select') { startGroupDrag(ev); return; } if (tool !== 'move') return;
   ev.preventDefault(); const g = ev.currentTarget, id = g.dataset.id, p = svgPt(ev), cur = nodePos(id);
   drag = { id, g, dx: p.x - cur.x, dy: p.y - cur.y, moved: false, snap: { syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }, pushed: false }; perfOn(); try { g.setPointerCapture(ev.pointerId); } catch (e) {}
+  drag.fe = followEdge(ev, moveBall);
   g.addEventListener('pointermove', onDrag); g.addEventListener('pointerup', endDrag); g.addEventListener('pointercancel', endDrag);
   /* only a finger's gesture is the pinch's to stop — a mouse drag carries on (Fable F4) */
-  drag.stop = () => { g.removeEventListener('pointermove', onDrag); g.removeEventListener('pointerup', endDrag); g.removeEventListener('pointercancel', endDrag); drag = null; alignGuides = []; perfOff(); };
+  drag.stop = () => { drag.fe.stop(); g.removeEventListener('pointermove', onDrag); g.removeEventListener('pointerup', endDrag); g.removeEventListener('pointercancel', endDrag); drag = null; alignGuides = []; perfOff(); };
   if (ev.pointerType !== 'mouse') fingerStop = drag.stop;
 }
-function onDrag(ev) {
+function onDrag(ev) { if (drag) drag.fe.point(ev); moveBall(ev); }
+function moveBall(ev) {
   if (!drag) return; const p = svgPt(ev); let nx = p.x - drag.dx, ny = p.y - drag.dy;
   if (!drag.moved && !drag.pushed) { undoStack.push(drag.snap); trimUndo(); redoStack = []; drag.pushed = true; notify(); }
   /* smart-align: snap to any other ball's x or y within threshold */
@@ -3853,7 +3919,7 @@ function drawGuides() {
   gl.innerHTML = alignGuides.map(g => g.v ? `<line x1="${g.p}" y1="0" x2="${g.p}" y2="${bd.H}" stroke="${PAL.accent}" stroke-width="0.7" stroke-dasharray="4 4"/>` : `<line x1="0" y1="${g.p}" x2="${bd.W}" y2="${g.p}" stroke="${PAL.accent}" stroke-width="0.7" stroke-dasharray="4 4"/>`).join('');
 }
 function endDrag(ev) {
-  if (!drag) return; const g = drag.g; if (fingerStop === drag.stop) fingerStop = null;
+  if (!drag) return; const g = drag.g; if (fingerStop === drag.stop) fingerStop = null; drag.fe.stop();
   g.removeEventListener('pointermove', onDrag); g.removeEventListener('pointerup', endDrag); g.removeEventListener('pointercancel', endDrag);
   const moved = drag.moved; drag = null; alignGuides = []; flushDragPaint(); const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = ''; perfOff(); if (moved) { saveLayout(); wireBoard(); }
 }

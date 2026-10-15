@@ -29,7 +29,7 @@ Tracker from anywhere else picks these up too. The general rulings are in `.clau
 was told, where it lives — **is in `.claude/decisions-full/tracker.md`, never loaded by itself: open it before acting on a
 ruling's detail or asking him about it** (`grep -h '^| D… |' .claude/decisions-full/*.md` — the shell; the Grep tool
 hides a long row). A "— changed by" tail names the later rulings that changed it. Newest first.
-**Also read** — in `leave-war.md`: **D881** (the Tracker's gold "can fly next" and turquoise "search found" rings lose their glow, keeping their lines). In How we work, so already loaded: **D62** and **D63** (the Tracker's syllabus data is out of
+**Also read** — in `inputs.md`: **D900** (the Tracker's ▣ Select box and its ⇅ Reorder list follow the edge too, with the SANS calendar's pick and the people picker). In `leave-war.md`: **D881** (the Tracker's gold "can fly next" and turquoise "search found" rings lose their glow, keeping their lines). In How we work, so already loaded: **D62** and **D63** (the Tracker's syllabus data is out of
 every privacy sweep; the aircraft type elsewhere reads "F-15" or "fighter squadron"); **D347** (every Undo / Redo
 pair — the Tracker's own included — sits in the top bar, in the same place and look as Edit Schedule's).
 
@@ -45,6 +45,7 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D899 | 15 Oct 26 | THE TRACKER CHART'S DRAGS — A BALL, A LINE'S END, A BEND HANDLE — CARRIED TO THE CHART'S EDGE PAN THE CHART THAT WAY, AT THE FEEL OF THE APP'S OTHER EDGE SCROLLS, AND WHAT D896'S CHECK FINDS SHORT OF THE GUIDE'S TWO DRAG RULES (D895) IS FIXED ON THE NIGHT OF 15 OCT 26, NOT ONLY PUT TO HIM. |
 | D801 | 13 Oct 26 | THE TRACKER'S THREE DATE BOXES — A DATE ON A COURSE, "DONE ON" AND "FAILED ON" IN THE MARKING POP-UP — ARE THE APP'S OWN DATE BOX OPENING THE APP'S ONE CALENDAR: A TAP PICKS AND THE CALENDAR GOES — NO TICK; THE POP-UP STAYS OPEN AND THE BOX READS THE DATE IN WORDS. |
 | D566 | 4 Oct 26 | THE OWNER ACCEPTS THE SHOWN TAPERED-WING PICTURE AND AUTHORIZES USING THAT SHAPE FOR THE FLIGHT SYMBOL. |
 | D564 | 4 Oct 26 | THE OWNER REJECTS THE BLOCKY WIDE-WING FLIGHT SYMBOL AS UGLY AND ASKS TO SEE BETTER DESIGN OPTIONS. — changed by D565 |

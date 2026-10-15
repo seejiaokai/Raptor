@@ -4517,3 +4517,61 @@ guard held from 75% — moved to 90%, narrowing the reading he was told), four l
 "merge live" and the main folder brought level (the app runs the hooks from there — `[MAIN-CHECKOUT-STALE]`).
 **Found, NOT FIXED.** With the main folder on `main`, a new chat reads the app's own figures as: the chat's room 880,000 (the setting `autoCompactWindow`), compaction at 96% of it — about 845,000, which is the intended "about 85%" of the whole 1,000,000. So the compaction point DID move (check (a) passes). But the notes and the guard (`.claude/hooks/compact-lib.mjs`, `WINDOW` = 1,000,000) count against the whole room: the 80% note fires at 800,000 — the app's own 91% — leaving about 45,000 before the compaction, enough to commit and write the handoff block but not to finish a step of any size; the 85% note (850,000) comes after it; and the status line, which shows the app's own figure where the app hands one, reads about 10 points higher than the notes. **Fix (proposed, not made):** count the notes and the guard against the app's own room (read `autoCompactWindow`, else 1,000,000) and set the bands below its compaction point — for example a first note at 75% of 880,000 (660,000, about 185,000 before it), the guard's window from there to the compaction point; re-run the hook tests. It is a change to the hooks (his permission for the set-up, D870) and to what the design says (`raptor-port/docs/superpowers/specs/2026-10-15-compact-when-ready.md`): one fresh reader, then his approval (D70).
 
+
+*Moved here 2026-10-15 by backlog-archive.mjs ([LW-LANDING-LINE-FIGURES]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-LANDING-LINE-FIGURES] On the Leave War, the blue landing line of a row dragged in Rearrange breaks across the figures columns (found 15 Oct 26, picturing `[GUIDE-NO-GLOW]` place 8) — BUILT AND CHECKED 15 Oct 26 on `claude/backlog-work-session-12d909` (his word, D889), WAITING FOR HIS "MERGE LIVE"; HIS INTENT CONFIRMED (D883)
+**BUILT 15 Oct 26 (tier LOOK, walked 39/39):** the cause was the figures drawer — a second table laid over the days, so
+the real row's line ran UNDER it; the drawer's row now wears the same landing mark and draws the same line. The contract:
+`raptor-port/docs/ui-contracts.md` (D883's paragraph); the check: `raptor-port/docs/handpass/2026-10-15-lw-landing-line.md`.
+**And round two, the same branch (D890 — his find on the preview):** one landing line a gap, not two a few pixels apart;
+re-walked 41/41. The other places with the same two positions: `[DRAG-ONE-LINE-ELSEWHERE]`.
+
+
+*Moved here 2026-10-15 by backlog-archive.mjs ([DRAG-ONE-LINE-ELSEWHERE]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [DRAG-ONE-LINE-ELSEWHERE] Three other drag lists draw two landing lines in each gap, a few pixels apart (found 15 Oct 26, his question after D890) — BUILT 15 Oct 26 on his "Yes fix them too" (D891), same branch, waiting for his "merge live"
+**BUILT (D891):** the grid-only limit on `Matrix.tsx startRowDrag`'s one-bar step lifted (Groups, Who wins); the same step in
+`InputsCal.tsx startSecDrag` (a day's notes). Tests: `settingssheet.test.tsx`, `inputscal.test.tsx` (red undone); walked
+14/14 by `scripts/handpass/onegap-lists.mjs` (`raptor-port/docs/handpass/2026-10-15-lw-landing-line.md` §5b).
+**Found, NOT CHANGED (D852: other places are named to him, never changed unasked).** D890 made the Leave War grid's
+Rearrange draw one line a gap; the same two positions — a row's bottom edge, then the next row's top — remain in: (1) the
+Leave War's ⚙ Settings Groups list (`raptor-port/src/leavewar/ui/bidpicker.css` `.set-grow.dragover` / `.after`); (2) its
+"Who wins" list (`.gs-row.dragover` / `.after`) — both through `Matrix.tsx startRowDrag`, where D890's step is limited to
+the grid; (3) a day opened on the Inputs calendar, a note dragged to reorder (`raptor-port/src/ui/InputsCal.tsx` `secOver`,
+`07-inputs-calendar.css` `.ic-sec.dragover`). Not the same: the Scheduler Board / Edit Schedule's line, wave and section
+drags (one line on the row under the pointer — `src/ui/rowdrag.ts`) and Quals' heading drag (a ring). **If he says yes:**
+(1)–(2) by lifting the grid-only limit; (3) by the same step in its own hover; a picture to him first (D852), tier LOOK.
+**D883: the line runs unbroken across the name, the counters and the days.** Check a dragged group heading too (D876).
+**Found, NOT FIXED.** Rearrange on, a man's row dragged over another (desktop, a real mouse drag — Cinch over Warden):
+the blue line shows on the name column and across the day columns, but not across the figures columns between them
+(`raptor-port/docs/mock/2026-10-15-noglow-places/N8-landing-line-today-desk.png`). So the line reads as two pieces, not
+one line across the row. Likely cause, not yet checked: a figures-cell rule that sets its own `box-shadow` (the
+`.figbox` rules, `src/leavewar/ui/matrix.css`) outranks `.mx tbody tr.dragover td:not(.who)`, as the comment above
+`--mrow-ring` warns. Check on a phone too. Tier LOOK; one stylesheet test pinning the line on every cell of the row.
+
+
+*Moved here 2026-10-15 by backlog-archive.mjs ([LW-REARRANGE-EDGE-SCROLL]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-REARRANGE-EDGE-SCROLL] In the Leave War's Rearrange a row dragged to the screen's edge does not scroll the grid (his find on his iPhone, 15 Oct 26 — D892) — BUILT 15 Oct 26 on `claude/backlog-work-session-12d909`, waiting for his "merge live" (walked 14/14 with the D893 drags, `scripts/handpass/edgescroll-walk.mjs`)
+**His words:** *"when I drag the row of the puck down outside the screen, the screen doesn't pan"*. The Rearrange drag
+(`raptor-port/src/leavewar/ui/Matrix.tsx startRowDrag` — men's rows, group headings, counters) has no edge scroll; the war's
+own drag selection does (`raptor-port/src/leavewar/ui/select.ts` EDGE / edgeScroll), as the Scheduler's drags do
+(`raptor-port/src/ui/rowdrag.ts`, `drag.ts`). The contract: `raptor-port/docs/ui-contracts.md` (D892).
+
+
+*Moved here 2026-10-15 by backlog-archive.mjs ([LW-COUNTER-GRIP-REACH]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-COUNTER-GRIP-REACH] A counter row's Rearrange grip is much harder to take than a man's row's (his find on his iPhone, 15 Oct 26) — BUILT 15 Oct 26: measured (both ⠿ about 7 x 10 px on a phone; a counter's row 19 px, a man's 21), each grip given a larger invisible area inside its row (the guide §6, D487) — a counter's 6 → 16 of 81 points round it, a man's 9 → 20; waiting for his "merge live"
+**His words:** *"Idk why it's much hard to activate the rearrange on the manning counter. Compared to the pucks below"*.
+Both grips are the same small ⠿ glyph with no wider touch area (`raptor-port/src/leavewar/ui/matrix.css` `.mx .counts .who
+  .drag`, `.whorow .drag`); what differs is to be measured on the built app (`scripts/handpass/grip-reach.mjs`).
+
+
+*Moved here 2026-10-15 by backlog-archive.mjs ([GUIDE-DRAG-RULES]). Forward facts: `raptor-port/docs/design-practices.md`.*
+
+### [GUIDE-DRAG-RULES] The design guide carries two rules for every drag — one landing line a gap; a drag at the edge of what scrolls scrolls it (his word, 15 Oct 26 — D894) — APPROVED 15 Oct 26 (D895) and IN THE GUIDE as §5a "Dragging" (`raptor-port/docs/design-practices.md`); the draft and its read: `raptor-port/docs/superpowers/specs/2026-10-15-guide-drag-rules.md`. Archive once live.
+**His words:** *"This is also part of design skill that u should incorporate. The 2 things I flagged out. The rearrange and
+drag outside screen. Note it"*. The guide: `raptor-port/docs/design-practices.md`; the two rulings behind them D890/D891 and
+D892/D893. A working-guide change: drafted, read by one fresh reader, his approval of the wording (D852, D70) — then in.
+

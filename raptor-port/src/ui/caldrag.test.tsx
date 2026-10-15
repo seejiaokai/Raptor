@@ -8,7 +8,7 @@
    DOM (two `[data-icday]` cells and a chip), because jsdom has no layout and
    proving the STATE transitions (armed/not, tap-vs-drag, teardown) is what
    matters here — pixel placement is a geometry question for e2e. */
-import { beforeAll, beforeEach, afterEach, describe, expect, it } from 'vitest'
+import { beforeAll, beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 import { initStore, setSession, undo, writeInputs, histInit } from '../state/store'
 import { setMe } from '../state/auth'
 import { INPUTS, inpId, mintInpIds } from '../engine/inputs'
@@ -16,6 +16,7 @@ import { PLANPUCKS, addPlanPuck } from '../state/plan'
 import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { commitChipMove, initCalDrag } from './caldrag'
+import { TURN_AGAIN, TURN_HOLD } from './edgescroll'
 import { markLand, pendingLand } from './lift'
 import { stashClear, stashPut } from '../engine/weekstash'
 import { weekBundle } from '../engine/weeks-data'
@@ -447,6 +448,128 @@ describe('initCalDrag — the pointer machine', () => {
       expect(document.querySelector('.ic-ghost')).toBeFalsy()
       expect(row.date).toBe('Jul 20') // untouched — a cancelled gesture commits nothing
     } finally { off() }
+  })
+
+  /* CARRIED TO THE MONTH'S SIDE (owner D897, D898): a lifted chip held at the month's side turns the month that way —
+     the right to the next, again while held — and a mouse that leaves the month, or a release, stops it. The month is
+     the root, 350 px wide; jsdom lays nothing out, so its rect is lent to it and the clock is faked. */
+  describe('carried to the month\'s side', () => {
+    const lendRect = (root: HTMLElement) => {
+      root.getBoundingClientRect = () => ({ top: 0, bottom: 300, left: 0, right: 350, width: 350, height: 300, x: 0, y: 0, toJSON() {} }) as DOMRect
+    }
+    afterEach(() => { vi.useRealTimers() })
+
+    it('held at the right side, the month turns forward — again while held — and a release stops it', () => {
+      vi.useFakeTimers()
+      const { root, chip } = buildCalDom('side-row'); lendRect(root)
+      const turns: number[] = []
+      const off = initCalDrag(root, { onTap: () => {}, onTurn: d => turns.push(d) })
+      try {
+        armDrag(chip)
+        chip.dispatchEvent(ptr('pointermove', 345, 100))
+        vi.advanceTimersByTime(TURN_HOLD)
+        expect(turns).toEqual([1])
+        vi.advanceTimersByTime(TURN_AGAIN)
+        expect(turns).toEqual([1, 1])
+        chip.dispatchEvent(ptr('pointercancel', 345, 100))
+        vi.advanceTimersByTime(TURN_AGAIN * 3)
+        expect(turns).toEqual([1, 1])
+      } finally { off() }
+    })
+
+    it('a mouse that leaves the month while lifted stops the turns', () => {
+      vi.useFakeTimers()
+      const { root, chip } = buildCalDom('leave-row'); lendRect(root)
+      const turns: number[] = []
+      const off = initCalDrag(root, { onTap: () => {}, onTurn: d => turns.push(d) })
+      try {
+        armDrag(chip)
+        chip.dispatchEvent(ptr('pointermove', 345, 100))
+        vi.advanceTimersByTime(TURN_HOLD)
+        root.dispatchEvent(ptr('pointerleave', 360, 100))
+        vi.advanceTimersByTime(TURN_AGAIN * 3)
+        expect(turns).toEqual([1])
+        chip.dispatchEvent(ptr('pointercancel', 360, 100))
+      } finally { off() }
+    })
+
+    /* SAFARI (§7.9): after the month turned the chip away, the finger's release goes to the chip, out of the page —
+       it must still end the gesture (the ghost down, the turns stopped), never leave the drag hanging */
+    it('Safari: a release sent to the chip after the month drew it away still ends the drag', () => {
+      vi.useFakeTimers()
+      const { root, chip } = buildCalDom('safari-row'); lendRect(root)
+      const turns: number[] = []
+      const off = initCalDrag(root, { onTap: () => {}, onTurn: d => { turns.push(d); chip.remove() } })
+      try {
+        chip.dispatchEvent(ptr('pointerdown', 10, 10, { kind: 'touch' }))
+        vi.advanceTimersByTime(200)                              // the chip's hold (180 ms): lifted
+        expect(document.body.classList.contains('ic-dragging')).toBe(true)
+        chip.dispatchEvent(ptr('pointermove', 345, 100, { kind: 'touch' }))
+        vi.advanceTimersByTime(TURN_HOLD)
+        expect(turns).toEqual([1]); expect(chip.isConnected).toBe(false)
+        chip.dispatchEvent(ptr('pointerup', 345, 100, { kind: 'touch' }))
+        expect(document.body.classList.contains('ic-dragging'), 'the drag has ended').toBe(false)
+        expect(document.querySelector('.ic-ghost')).toBeFalsy()
+        vi.advanceTimersByTime(TURN_AGAIN * 3)
+        expect(turns).toEqual([1])
+      } finally { off() }
+    })
+
+    /* the night's code read, F4: a mouse has no capture — a release off the month reached nothing, the chip stayed lifted
+       under a free mouse and the side turned the month by itself */
+    it('a mouse let go OFF the month ends the drag, moves nothing, and nothing turns after', () => {
+      vi.useFakeTimers()
+      const row: any = { person: 'bane', date: 'Jul 20', allday: true, type: 'LL', remarks: '', mod: 'now' }
+      inpId(row); INPUTS.unshift(row)
+      const { root, chip } = buildCalDom(row.iid); lendRect(root)
+      const turns: number[] = []
+      const off = initCalDrag(root, { onTap: () => {}, onTurn: d => turns.push(d) })
+      try {
+        armDrag(chip)
+        expect(document.body.classList.contains('ic-dragging')).toBe(true)
+        EFP_TARGET = null                                          // nothing of the month under the pointer
+        window.dispatchEvent(ptr('pointerup', 175, -40))           // let go above the month: only the window hears it
+        expect(document.body.classList.contains('ic-dragging'), 'the drag has ended').toBe(false)
+        expect(row.date).toBe('Jul 20')
+        root.dispatchEvent(ptr('pointermove', 345, 100))           // back over the month's side, no button held
+        vi.advanceTimersByTime(TURN_HOLD * 3)
+        expect(turns).toEqual([])
+      } finally { off() }
+    })
+
+    /* his find on his iPhone (15 Oct 26): Safari cancels the gone chip's pointer after a turn — set aside; the finger's
+       touch events carry the drag on and end it */
+    it('Safari: after a turn the gone chip\'s pointer cancel is set aside, and its touch end ends the drag', () => {
+      vi.useFakeTimers()
+      const { root, chip } = buildCalDom('safari2-row'); lendRect(root)
+      const turns: number[] = []
+      const off = initCalDrag(root, { onTap: () => {}, onTurn: d => { turns.push(d); chip.remove() } })
+      try {
+        chip.dispatchEvent(ptr('pointerdown', 10, 10, { kind: 'touch' }))
+        vi.advanceTimersByTime(200)
+        chip.dispatchEvent(ptr('pointermove', 345, 100, { kind: 'touch' }))
+        vi.advanceTimersByTime(TURN_HOLD)
+        expect(turns).toEqual([1])
+        chip.dispatchEvent(ptr('pointercancel', 345, 100, { kind: 'touch' }))
+        expect(document.body.classList.contains('ic-dragging'), 'still lifted').toBe(true)
+        const end = new Event('touchend', { bubbles: true }); Object.defineProperty(end, 'changedTouches', { value: [{ clientX: 175, clientY: 100 }] })
+        chip.dispatchEvent(end)
+        expect(document.body.classList.contains('ic-dragging'), 'the touch end ended it').toBe(false)
+      } finally { off() }
+    })
+
+    it('a chip that does not lift never turns the month', () => {
+      vi.useFakeTimers()
+      const { root, chip } = buildCalDom('nolift-row'); lendRect(root)
+      const turns: number[] = []
+      const off = initCalDrag(root, { onTap: () => {}, onTurn: d => turns.push(d) })
+      try {
+        chip.dispatchEvent(ptr('pointerdown', 345, 100))
+        vi.advanceTimersByTime(TURN_HOLD * 3)
+        chip.dispatchEvent(ptr('pointerup', 345, 100))
+        expect(turns).toEqual([])
+      } finally { off() }
+    })
   })
 })
 

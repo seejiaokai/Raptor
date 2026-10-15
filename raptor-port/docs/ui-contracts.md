@@ -7363,7 +7363,28 @@ Rearrange grip takes a press over a larger invisible area (the guide §6, D487) 
 left edge, 4 px right — inside its own row; measured by `scripts/handpass/grip-reach.mjs` (a phone: a counter's 6 → 16
 points of 81 round the grip, a man's 9 → 20); pinned in `src/leavewar/ui/rowglow.test.ts`. **Still to check (D896, his "Yes check the rest too"):** the Tracker chart's drags
 (a ball, a line's end, a bend handle) do not pan the chart at its edge (read in the code); the Inputs month calendar's drag
-across days sits in a month that does not scroll — whether a drag at its edge turns the month is his to say. Its own job.
+across days sits in a month that does not scroll — **answered D897: yes, a drag held at the month's edge turns to the next
+(or the last) month and the pick carries on into it.** Both its own job, not built yet. **D898:** the month's edge turn is built without a picture first — the agent decides the edge and the hold and tells him. **D899:** what the Tracker check finds short (its drags carried to the chart's edge pan it) is fixed the same night.
+
+**A drag held at the edge of a view that TURNS or PANS (D897–D899, built the night of 15 Oct 26 — `[DRAG-EDGE-SCROLL-ELSEWHERE]`).**
+*The Inputs month* (`src/ui/calpick.ts`, `src/ui/caldrag.ts` `onTurn`, wired in `InputsCal.tsx` to the month's own step):
+a run of days being drawn (a mouse drag; a finger held 400 ms, then dragged) or a bar / planning note lifted to move by
+days, carried to the month's SIDE and held, turns the month that way — the right side to the next month, the left to the
+last — after 600 ms in the band, and again every second while held (`edgescroll.ts edgeTurn`: a mouse's 36 px band, a
+finger's 24 px — half the finger band, a phone's date being about 50 px wide; past the side counts while level with the
+month; a band the press began in is dead until left). The run keeps its first date; 280 ms after a turn (past the 240 ms
+slide) the date under the still pointer is read again, so what is lit is what a release picks. A bar dropped in the new
+month moves there by days (`commitChipMove` as ever — its OIL question first, one undo step; undo turns the month back,
+D672). The date or bar a finger landed on hears the rest of its gesture too (`caldays.ts heldOn`, `once` — Safari sends a
+touch's later events to the element it landed on even after the turn removed it); a mouse let go off the month ends a
+lifted chip (the window hears the release). NOT the SANS calendar's pick (the ruling names the Inputs month).
+*The Tracker's Edit chart layout* (`tracker/app/core.js followEdge`, `edgescroll.ts edgePan`): a ball, a selected group, a
+prerequisite arrow's orange end or bend square, a drawn line's end or corner square carried to the canvas's edge pans the
+canvas that way (both axes at once; the edges as SEEN — the canvas's box cut to the screen) and the thing stays under the
+pointer; toward the left or the top the pan stops once the chart's own corner reaches the canvas's edge (the chart is
+drawn from 0 rightward and down only); a cancelled touch stops it and puts the handle's line back; each handle drag hears
+its own pointer only. NOT the ▣ Select box nor a pan of empty space (named to him). Pins: `src/ui/edgeturn.test.ts`,
+`src/ui/caldrag.test.tsx`; walked by `scripts/handpass/edgeturn-walk.mjs` (`docs/handpass/2026-10-15-edge-turn.md`). **D900 (15 Oct 26, his "Yes they should too"), to build:** the SANS calendar's pick turns its month at the side; the Tracker's ▣ Select box pans at the canvas edge; the Tracker's ⇅ Reorder list and the people picker's drag across faces scroll their list (filed as `[DRAG-EDGE-FOUR-MORE]`).
 
 Four asks from the same sitting, all on the Leave War grid:
 

@@ -726,6 +726,8 @@ Met again 15 Oct 26 (`[LW-REARRANGE-EDGE-SCROLL]`), worse: CODE under `raptor-po
 
 Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit script inserting a test wrote each `\\b` of a regex as a BACKSPACE byte and each escaped apostrophe as a bare one — the file first failed to parse, then every `\b` assertion matched nothing; two more inline fixes (`sed` replacements) mangled it again before a script written with the file tool put it right. The guard is the one already proposed and approved to build — `[SHELL-SCRIPT-GUARD]` (D811): a script is written to a file, always.
 
+**Met again 15 Oct 26 (the night's /overnight run, `claude/drag-edge-scroll-elsewhere-51bfc4`):** three more shell here-document / stdin hangs in one night — `cat > file` with no input waited on stdin; a stray `python - <<'PY'` with `< /dev/null` dropped into Python's interactive prompt and looped on a Windows console error until stopped; each cost a two-to-five-minute stall. What held: every edit script WRITTEN WITH THE WRITE TOOL to the scratch folder and run as `python <file> < /dev/null`. The guard this entry proposes (scripts always a file, never a here-document) is the fix.
+
 ### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
 
 **Status:** OPEN
@@ -800,3 +802,33 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** In the mock-up guide's picture step: (1) pick the n-th VISIBLE match (non-zero box), never the first match; (2) for a mark larger than the screen, or one whose effect falls outside its own box (a shadow below, a halo), crop the EDGE where the effect is — bring it into view first, then clip a fixed window round that edge; (3) open every close-up before building the page, comparing today against the changed version — a pair that looks identical means the crop missed the change, not that there is none.
 
 **Principle:** A crop rule tuned for small things silently fails for big or off-box effects; frame the place where the difference lives, and verify each before/after pair actually differs before showing it.
+
+### Observation 607: Stopping a gate run's background task leaves the run's processes alive and the PC's lock held
+
+**Status:** OPEN
+**Date:** 15 Oct 26
+**Session context:** the night's /overnight run on `claude/drag-edge-scroll-elsewhere-51bfc4` — a full gate run (`gatelock.mjs run`) stopped on purpose, twice, because the code was about to change
+**Skill:** overnight (internal) — and `.claude/rules/shipping.md` §The checks
+**Type:** internal
+**Phase/Area:** the checks under the PC lock
+
+**Issue:** Stopping the background task that ran `node scripts/gatelock.mjs run …` ended only the shell: the `gatelock` node process, vitest and its fifteen workers ran on, and the lock stayed held (its status still showed the run). Both times they had to be found by their command lines (the worktree's path) and ended, and the lock released by hand. A chat that trusted "stopped" would have built or started a second run beside a live one — the very clash the lock exists to stop.
+
+**Suggested improvement:** in shipping.md §The checks (and the overnight guide's "through the night"), one line: to stop a gate run, end its processes by their command line (this checkout's path), then `gatelock.mjs status` → `release`, and confirm `free` before anything builds. Better, a guard: `gatelock.mjs` kills its child tree and releases on SIGTERM / SIGINT (a structural fix, not a rule to remember).
+
+**Principle:** Stopping a wrapper is not stopping what it started; any tool that holds a shared lock should release it — and end its children — when it is itself stopped, or the stop must be verified by reading the lock, never assumed.
+
+### Observation 608: A "look before you push" check chained with `&&` does not stop the push — it only has to succeed, not say "none"
+
+**Status:** OPEN
+**Date:** 15 Oct 26
+**Session context:** the night's /overnight run, `claude/drag-edge-scroll-elsewhere-51bfc4` — pushing the spare job's commit while the pull request's checks were running
+**Skill:** overnight (internal) — and `.claude/rules/shipping.md` (D151, never push while a pull request's checks run)
+**Type:** internal
+**Phase/Area:** pushing a branch with an open pull request
+
+**Issue:** The push was written `gh run list … --jq '[…queued or in_progress…] | length' && git push`. The count printed 2 — runs were going — but `gh` succeeded, so `&&` went on and pushed, restarting the checks (D151 broken). Earlier the same night a wait-loop that compared the count to "0" before pushing held correctly.
+
+**Suggested improvement:** in shipping.md's D151 line, give the one safe form: `[ "$(gh run list … | length)" = "0" ] && git push`, or a small script (`node raptor-port/scripts/canpush.mjs <branch>`) that exits non-zero while any run of the branch's last pushed commit is queued or in progress — the guard inside the action, not a number to read.
+
+**Principle:** A check meant to gate an action must fail when the condition fails; a command that merely reports the condition, chained with `&&`, gates nothing.

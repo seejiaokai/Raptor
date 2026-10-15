@@ -67,6 +67,9 @@ half).
   building".
 
 ## The checks
+- **A small follow-up fix on an open pull request whose whole set has already passed (D902, 15 Oct 26 — his "Ok")** runs only the
+  tests it touches before the push; GitHub's run of the pull request is its full check, and nothing merges until it is green.
+  A job's first push keeps the whole set on his PC.
 - **While the repo is public for a short period (D106, 25 Sep 26)** the checks run on GitHub's machines (the workflow sends a
   public repo there by itself) and his PC's runner stays STOPPED; when it goes private again, the runner starts again.
 - **They run on HIS PC** (D89): one job, a Windows service, the `pc` job in `.github/workflows/deploy.yml`; the
