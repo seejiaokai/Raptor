@@ -9261,8 +9261,8 @@ swipe, and everything a member sees.
 
 ## Logic search and controls
 
-**TO BE RE-LAID — not yet built (owner D809, 13 Oct 26):** everything that can be edited gathered at the top of the page, everything
-that only explains a rule below it, each part arranged into its types; a picture first — `OUTSTANDING.md` `[LOGIC-PAGE-LAYOUT]`.
+**RE-LAID — LIVE 16 Oct 26, pull request 519 (owner D809, 13 Oct 26; the item is in `OUTSTANDING-ARCHIVE.md`):** everything that can be edited gathered at the top of the page, everything
+that only explains a rule below it, each part arranged into its types; a picture first — `[LOGIC-PAGE-LAYOUT]`, built as the paragraph below says.
 The search and the controls kept in sight (below) must go on working over both parts.
 **BUILT 15–16 Oct 26 (D928–D933, branch `claude/one-row-guide-medical`):** ONE row (the page's name, search, Filter — a menu of
 All / Warnings / Advisories / Notes / Fired this week (N) — ✎ Edit / Done, Reset to standard, "Reset all" on a phone ≤ 480),

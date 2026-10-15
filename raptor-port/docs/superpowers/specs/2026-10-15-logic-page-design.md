@@ -1,6 +1,6 @@
 # The Logic page — designed for the person who reads it (D809, D925)
 
-**Status: a mock-up to be drawn, then put to him; nothing built before his word (D853).** Backlog: `[LOGIC-PAGE-LAYOUT]`.
+**Status: BUILT and LIVE 16 Oct 26 (pull request 519; D928–D933, D936) — the check `raptor-port/docs/handpass/2026-10-15-logic-medical.md`.** *(Was: a mock-up to be drawn, then put to him; nothing built before his word, D853.)* Backlog: `[LOGIC-PAGE-LAYOUT]`, now in `OUTSTANDING-ARCHIVE.md`.
 
 ## What he wants (D925, 15 Oct 26 — read with D809)
 The page is for the user — the scheduler or the admin — to understand, NOT a description of how the app works inside. It is
