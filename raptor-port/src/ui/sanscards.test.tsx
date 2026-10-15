@@ -113,10 +113,10 @@ describe("sbSansPanel — the board's SANS panel", () => {
     expect(html).toContain('SANS Avail')
   })
 
-  it('editable panel points at pressing a card; read-only panel carries no such hint', () => {
+  it('neither the editable nor the read-only panel carries a press-a-card hint (D940)', () => {
     const ed = sbSansPanel(DAYS[0], 0, [])
     const ro = sbSansPanel(DAYS[0], 0, [], true)
-    expect(ed).toContain('press a card to edit')
+    expect(ed).not.toContain('press a card to edit')   // D940: the hint went, the cards look pressable
     expect(ro).not.toContain('press a card to edit')
   })
 })

@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/whole-app-words-pass-73790e -->
+### `claude/whole-app-words-pass-73790e` — the whole-app words pass (D808): round 1 BUILT and checked (pull request 521, waiting for his "merge live"); round 1b — his three notes on the preview — RULED, TO DRAW — written 16 Oct 26 — verify before use
+- **Round 1 — BUILT, pull request https://github.com/seejiaokai/Raptor/pull/521** (preview https://raptor-git-claude-whole-app-words-pass-73790e-kai-e2f5.vercel.app): the board's nine panel subtitles, "tap to review", "press a card to edit", the fold words and the editing hint gone from Edit Schedule, View-only Sched and the board (D938, D940); the removed-input note's dash a full stop; the empty Amendments box "No amendments published yet." Check `raptor-port/docs/handpass/2026-10-16-words-pass-r1.md` (WALK, 40/40; gates in §Gate baseline). Auto-fix is ON for 521 (the app wakes the chat that holds it).
+- **His notes on the preview, recorded (16 Oct 26):** D942 — his first design lesson STRUCK ("Disregard this lesson"): §9 of `raptor-port/docs/design-practices.md` is empty again, the never-delete list whole; D938's removal stands for those lines only. **D943** — a short line beside the Ground Programme's name says how to take a member's input off (Undo on its Personal Inputs row) — draw first. **D944** — on a phone the board's Personal Inputs and Unavailable take one line less — draw first. **His question (no ruling yet):** why the board's wave header carries "In-time / Rally 16:20 · 4 ac" — answered in chat: the wave's earliest report time and its aircraft count (`ui/html.ts waveHeadBoard`, `engine/events.ts waveInTime`), board only; the time also shows in Available crew's band ("1ST WAVE AM–16:20") and the lines below it; recommended: delete it (D846 test 1) — put to him WITH the drawing.
+- **Pick up here — round 1b, ONE page of marked pictures (method: `raptor-port/scripts/handpass/words-r1.mjs` — mark on the element, re-find each "after" frame):** (1) the wave header's "In-time / Rally … · N ac" deleted on the board (recommended), phone and desktop; (2) D943's line — draft "To take an input off the programme, press Undo on its row under Personal Inputs." (the "on its row" stops it being read as the top bar's Undo), on the board's and the week's Ground Programme, only on a day where an input stands there — give it a fresh cold read first; (3) D944 — Personal Inputs on a phone: the Undo button on the line of the puck and remark (3 lines to 2; the board's rows in `ui/board-html.ts sbInpRow`); Unavailable: its entries cannot lose a line without squeezing the remark, so draw the "Item · Start · End" heading line removed instead, his to take or leave; name the week's same rows and the Ground Programme's three-line rows (CX ⓘ ■ ✕ on their own line) as other places (D852). Then his answers → rulings → build → walk at WALK tier → push to 521 (never while its checks run — D151).
+- **Lessons (D941):** none written this round — D943 and D944 restate the guide's own rules; say so in the closing report.
+- **Rulings this chat:** D938–D944.
+<!-- /now -->
 
 ## Next, in order
 
@@ -74,6 +82,8 @@ his ruling — DONE 7 Oct 26 on `claude/docs-tidy-7-oct` (D609: options 1 to 6; 
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
 ## Gate baseline
+
+**The latest counts watched — 16 Oct 26, `claude/whole-app-words-pass-73790e` (`main` with the words pass's round 1 — NOT `main`'s code), the whole gate set under the PC lock in one run: build clean · tfin 728 / 0 · unit 11506 / 11507 (646 files) · e2e 824 passed, 3 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK. The four failures were tests that still read the removed words (a bar's "tap to review"; a fold's "show") — each re-expressed, then its file run alone: `warnmute-week.test.ts` 11 / 11, `e2e/grouprow.spec.ts` 5 / 5 under the lock. Only test files changed after the run.**
 
 **The latest counts watched — 15 Oct 26, `claude/input-new-defaults` at `c23ca1a46` (NOT `main`'s code), the whole gate set under the PC lock in one run: build clean · tfin 728 / 0 · unit 11473 / 11473 (644 files) · e2e 820 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK (records; sizes OVER by 3388, deferred — D29) — WHOLLY GREEN.**
 

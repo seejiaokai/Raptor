@@ -169,7 +169,7 @@ export function sbInputsHTML(d:any,di:any){
    line's inputs had before the first pass of this fix. */
 export function sbNotesPanel(d:any,di:any,pv?:any,ro?:any){
   const n=d.notes||[];
-  let s=`<div class="sb-panel notes"><div class="sb-ph">Overall notes <span class="sub">shown at the head of the day</span>`
+  let s=`<div class="sb-panel notes"><div class="sb-ph">Overall notes `
     +(ro?'':`<span class="gctl"><button class="mbtn add" data-nadd="${di}" title="Add a note line">+ Note</button></span>`)+`</div><div class="sb-pb">`;
   if(!n.length)s+=`<div class="sb-empty">Nothing yet — “+ Note” adds a line that every viewer sees at the top of the day.</div>`;
   /* the three trailing controls are wrapped in one .lctl, same as every
@@ -189,7 +189,7 @@ export function sbNotesPanel(d:any,di:any,pv?:any,ro?:any){
 /* ---- board panel 2: overall programme (squadron-wide, affects everyone) --- */
 export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
   const rows=d.allhands||[];
-  let s=`<div class="sb-panel prog"><div class="sb-ph">Common Programme <span class="sub">squadron-wide — affects all</span>`
+  let s=`<div class="sb-panel prog"><div class="sb-ph">Common Programme `
     +(ro?'':`<span class="gctl">${sbSortBtn(`p.${di}`,ro)}<button class="mbtn add" data-padd="${di}" title="Add a squadron-wide item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">Nothing squadron-wide yet — “+ Item” adds a mass brief, PT, safety stand-down and the like.</div>`;
   else{
@@ -416,7 +416,7 @@ const C6_DUTY=`<div class="sb-acols c6r"><span></span><span>Role</span><span>Sta
 const C6=`<div class="sb-acols c6r"><span></span><span>Item</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span><span></span></div>`;
 export function sbDutyPanel(d:any,di:any,pv?:any,ro?:any){
   const dws=d.dutywaves||[];
-  let s=`<div class="sb-panel duty"><div class="sb-ph">Duties <span class="sub">SDO / SXO / ops desk, by block</span>`
+  let s=`<div class="sb-panel duty"><div class="sb-ph">Duties `
     +(ro?'':`<span class="gctl"><button class="mbtn add" data-dwadd="${di}" title="Add a duty block">+ Block</button></span>`)+`</div><div class="sb-pb">`;
   if(!dws.length)s+=`<div class="sb-empty">No duty blocks yet — “+ Block” adds one.</div>`;
   dws.forEach((dwv:any,wi:any)=>{
@@ -475,7 +475,7 @@ function simSpare(cells:string,slot:(i:any)=>string,from:number,ro:any):string{
 }
 export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
   const sims=d.sims||{};
-  let s=`<div class="sb-panel simr"><div class="sb-ph">Sims <span class="sub">AMT and OFT rows</span></div><div class="sb-pb">`;
+  let s=`<div class="sb-panel simr"><div class="sb-ph">Sims </div><div class="sb-pb">`;
   [['AMT','amt'],['OFT','oft']].forEach(([title,kind]:any)=>{
     const rows=sims[kind]||[];
     s+=`<div class="sb-psub"><span class="ntx">${title}</span>`
@@ -585,7 +585,7 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
      only ground-eligible types and commitNewInput accepts the new row straight
      onto this section (see interactions.ts / ui/inputedit.tsx). "+ Item" beside
      it stays the bare-row add for things that are not anybody's input. */
-  let s=`<div class="sb-panel grnd"><div class="sb-ph">Ground Programme <span class="sub">briefs, reviews, admin</span>`
+  let s=`<div class="sb-panel grnd"><div class="sb-ph">Ground Programme `
     +(ro?'':`<span class="gctl"><button class="sb-addinp" data-inpadd="${di}.g" title="Add a personal input (meeting, course…) — it goes straight onto the Ground Programme">+ Inputs</button>${sbSortBtn(`g.${di}`,ro)}<button class="mbtn add" data-gradd="${di}" title="Add a ground item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">No ground items yet — “+ Item” adds one.</div>`;
   else{
@@ -778,19 +778,22 @@ export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
   if(foldable&&rows.length&&!PIOPEN.has(di)){
     const onG=lines.filter((l:any)=>l[0].acc==='g').length;
     return `<div class="sb-panel pinp"><div class="sb-ph pl-fold" data-pitog="${di}">Personal Inputs `
-      +`<span class="sub">${lines.length} input${lines.length===1?'':'s'}${onG?` · ${onG} on programme`:''} · show ⌄</span></div></div>`;
+      +`<span class="sub">${lines.length} input${lines.length===1?'':'s'}${onG?` · ${onG} on programme`:''} ⌄</span></div></div>`;
   }
+  /* THE BOARD'S PANEL NAMES CARRY NO SUBTITLE (owner D940, 16 Oct 26 — the words pass, round 1): each grey line only said
+     what the name says, on a screen opened many times a day; the how-to half went with it (D938). An open Personal
+     Inputs keeps the caret the week's heading shows, its one sign that it folds. */
   /* this panel's own + Add MOVED to the Ground Programme header as "+ Inputs"
      (owner, 19 Aug 26) — an activity input a scheduler adds belongs on the
      programme, so the button lives where the result lands */
-  let s=`<div class="sb-panel pinp"><div class="sb-ph${foldable?' pl-fold':''}"${foldable?` data-pitog="${di}"`:''}>Personal Inputs <span class="sub">submitted by aircrew — accept to put it on the programme${acRo?'':'; times and remarks type in place, clear a time for all day; tap header to hide'}</span></div><div class="sb-pb">`;
+  let s=`<div class="sb-panel pinp"><div class="sb-ph${foldable?' pl-fold':''}"${foldable?` data-pitog="${di}"`:''}>Personal Inputs ${foldable?'<span class="sub">⌃</span>':''}</div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">No personal inputs for this day.</div>`;
   else{
     /* Housekeeping reminder (owner, Aug 26; reworded 26 Aug 26 with the
        dormancy rule): a removed input no longer flags anything, so the note
        now says that, and keeps the delete pointer for clearing the list —
        tap its type to open the editor and Delete. Editable panel only. */
-    if(!acRo)s+=`<div class="sb-pinote">A removed input flags nothing until accepted again — delete it here if it should go entirely.</div>`;
+    if(!acRo)s+=`<div class="sb-pinote">A removed input flags nothing until accepted again. Delete it here if it should go entirely.</div>`;
     if(!acRo)s+=C6;
   }
   lines.forEach((line:any[])=>{ s+=sbInpRow(di,line[0],true,acRo,acRo,undefined,line); });
@@ -806,7 +809,7 @@ export function sbUnavailPanel(d:any,di:any,day?:any,ro?:any){
      offers only leave/medical/OD types and carries a DATE RANGE, whose till
      date lands in remarks the way the Inputs page's calendar writes it */
   const addBtn=ro?'':`<button class="sb-addinp" data-inpadd="${di}.u" title="Add an unavailability (leave, medical, overseas duty) — pick a date range in the dialog">+ Add</button>`;
-  let s=`<div class="sb-panel unav"><div class="sb-ph">Unavailable <span class="sub">leave, medical and overseas duty${ro?'':' — times and remarks type in place, clear a time for all day'}</span>${addBtn}</div><div class="sb-pb">`;
+  let s=`<div class="sb-panel unav"><div class="sb-ph">Unavailable ${addBtn}</div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">Nil — everybody is available today.</div>`;
   else if(!ro)s+=C6;
   rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,false,ro,ro); });
@@ -830,7 +833,7 @@ export function sbSansPanel(d:any,di:any,day?:any,ro?:any){
      lists, so it gets its own add HERE, "likewise"): opens the same dialog,
      locked to the SANS type and offering SANS aircrew only */
   const addBtn=ro?'':`<button class="sb-addinp" data-inpadd="${di}.s" title="Add a SANS availability for this day">+ Add</button>`;
-  let s=`<div class="sb-panel sansav"><div class="sb-ph">SANS Avail <span class="sub">what SANS aircrew are offering${ro?'':' — press a card to edit'}</span>${addBtn}</div><div class="sb-pb">`;
+  let s=`<div class="sb-panel sansav"><div class="sb-ph">SANS Avail ${addBtn}</div><div class="sb-pb">`;
   s+=rows.length?sansCardsHTML(rows,di,ro):`<div class="sb-empty">No SANS availability filed for this day.</div>`;
   return s+`</div></div>`;
 }

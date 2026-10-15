@@ -65,18 +65,22 @@ one, and neither is an instruction about the work itself.
 1. **The correction is noted with the point behind it.** It is recorded as a ruling at once
    (`../../.claude/rules/record-decisions.md`); its row says the particular fix and, in one line, the point behind it:
    what it says about the app he intends — clean, intuitive (D821).
-2. **He is asked whether this guide should carry it as a rule** — in one line, with the rule as it would read. Where
-   the correction has no point beyond its own screen (it only brings a screen back to what he had already ruled), the
-   agent says so in a line and asks nothing. His yes starts a draft and nothing more: the wording is then read as any
-   change to this guide is ("Changing this guide", at its foot; D70) and put to him to approve before it counts as the guide's.
+2. **The lesson is written into this guide by itself, the same day — a line in §9, his design lessons (owner D941,
+   16 Oct 26 — "1-5 as recommended": "the design guide learns from my suggestions", D939).** One line: the lesson in
+   terms of the app he intends, its date and its ruling. One fresh reader — never the chat that wrote it — checks that the
+   line says what he meant; he is not asked first. The closing report names every lesson added, and he may strike or
+   change any. Where the correction only brings a screen back to what he had already ruled, it teaches nothing new: no line
+   is written, and the closing report names the correction so he can ask for one. A lesson that narrows a rule already in this guide says so
+   in its line, and that rule gets a short pointer to it, checked by the same fresh reader as part of the lesson. (Until 16 Oct 26 he was asked each time and the line was read and
+   approved as any change to this guide is — D852, D70; the rest of the guide, apart from a lesson's line and its pointer, still changes that way.)
 3. **Other places the same improvement would apply are named** — at most four, from what the chat already knows, each
    with what would change; if it knows of none it says so and does not go looking. They are suggestions: nothing is
    changed unasked, and one he takes up is drawn for him before it is built (D541). The list is filed with the
    whole-app pass (`OUTSTANDING.md` `[UI-SLEEK-PASS]`), where the fuller one belongs (D808, D765).
 
-(The three things are his words. How each is done — at once, asked each time there is a wider point, only on his yes,
-at most four, a picture first — and that the suggesting is a duty where he wrote "u can", began as the agent's reading;
-he approved the paragraph as written, D855, 14 Oct 26 — "Approve both".)
+(The three things are his words. How each is done — at once, at most four, a picture first — and that the suggesting is
+a duty where he wrote "u can", began as the agent's reading; he approved the paragraph as written, D855, 14 Oct 26 —
+"Approve both". The second step's way of being done is his D941, 16 Oct 26.)
 
 ## 1. Words on screen
 
@@ -113,7 +117,7 @@ as it stands.
      the screen reports are not hints.
   **Never a delete candidate:** a warning of what a press will cost ("No warning is dropped to save words", below),
   above all a consequence he cannot see on the screen and cannot take back; why a press was refused, and the way to
-  put an error right; an instruction for a gesture nothing on screen suggests; the word that tells two like controls
+  put an error right; an instruction for a gesture nothing on screen suggests (whole again since D942); the word that tells two like controls
   apart; what a colour or a mark means (the Legend); and text he opens in order to read how the app works (a "How this
   works" fold, the Logic page). **Every look names its delete candidates (§8), and a deletion is still put to him
   first, never made by the look:** the text, its picture with and without it, every fact (if any) that would leave the
@@ -638,6 +642,14 @@ state nobody drew.
   counts — the record's gaps and the page's — and a script compares them, never the eye (13 Oct 26: a gap in the key
   record was reasoned away and left off the page; a second reader found it).
 - **Nothing is changed by a look.** Findings go to him, in rounds of at most four with a recommended answer each (D541).
+
+## 9. His design lessons (D941)
+
+*What his design corrections teach, written in the same day he makes one (§0, step 2), each checked by one fresh reader;
+he may strike or change any. Newest first. Where a lesson meets a general rule above, the lesson wins, and that rule
+points here.*
+
+*Lesson 1 (16 Oct 26, D938 — "a scheduler's working screen carries no hint on how a row is edited…") was struck by him the same day: "Disregard this lesson" (D942). The list is empty until his next design correction.*
 
 ## Where each piece came from
 

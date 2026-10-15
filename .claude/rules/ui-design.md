@@ -34,7 +34,7 @@ fix to behaviour, a test, a comment) — the skill's detector already runs after
    beside a button that already waits, small print on how the app works where the answers already say what each does, a hint
    that reads the same on something opened many times a day — is named in every look and recommended for deletion, never
    deleted by the look: put to him with its picture and any fact that would leave the screen with it; never a warning, a
-   refusal's reason, an error's remedy or the Legend (D846; the wording approved, D847); feedback is designed into the screen first — a thing
+   refusal's reason, an error's remedy or the Legend (D846; the wording approved, D847; whole again since his first lesson was struck, D942); feedback is designed into the screen first — a thing
    added shows in view wearing the Scheduler Board's just-added mark, a changed value shows changed, a removed thing is gone —
    and a passing note is raised only where the screen does not show that it happened (out of view, outside the app, later, or
    nothing changed), where the press did more or less than he would expect of it (something he did not touch changed, a credit
@@ -69,6 +69,6 @@ fix to behaviour, a test, a comment) — the skill's detector already runs after
    words, the rule, what the person meets and the exact change — and goes to him in rounds of at most four.
 8. **When he corrects a design (D852)** — he says something a person sees should look, read or behave differently; not a plain
    yes or no, not an instruction about the work: note it with the point behind it (a ruling, at once); where it has a point
-   beyond its own screen, ask him whether the guide should carry it as a rule — the guide changes only on his yes and after
-   its read (D70); and name up to four other places the same improvement would apply, from what the chat already knows —
+   beyond its own screen, write the lesson into the guide's §9 (his design lessons) the same day — one fresh reader checks it
+   says what he meant, he is not asked first, and the closing report names it for him to strike (D941); every design job follows the lessons in §9; and name up to four other places the same improvement would apply, from what the chat already knows —
    suggested and filed, never changed unasked, one he takes up drawn for him before it is built.

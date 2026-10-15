@@ -951,3 +951,48 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** In the checking order's §7.2, one line: before a browser run, confirm the server on the port is this checkout's build (its command line, or a fact only the new build has), or run on a free port.
 
 **Principle:** A test that reuses a running server proves only that server; check whose build it is before trusting a red or a green.
+
+### Observation 617: Marks drawn as boxes over a page drift from their text on a phone; a mark drawn on the element cannot
+
+**Status:** OPEN
+**Date:** 2026-10-16
+**Session context:** the whole-app words pass, round 1 — before-and-after pictures of the real app with each text outlined and numbered
+**Skill:** brainstorming (`mockups-on-the-real-app.md` — Traps When Injecting Into a Live Page); `raptor-port/docs/walk-scripts.md` §5
+**Type:** open-source
+**Phase/Area:** marking the area talked about in a picture
+
+**Issue:** The first script measured each text's box and laid an absolutely placed outline over the page at those coordinates. On the desktop the boxes fitted; on a phone three of six landed a line or more below their text, and on the Scheduler Board (a layer that scrolls by itself) every box missed. The script reported no error and listed every mark as found. Drawing the mark on the element itself — an outline (it takes no room) and a numbered tag in its own `::before` — fixed all of them at once.
+
+**Suggested improvement:** In the mock-up guide's traps: mark an element with an outline and a tag on the element itself, never an overlay at measured coordinates; and an "after" picture finds its frame again after the change, since a removed line moves everything below it.
+
+**Principle:** A mark that is a copy of a position goes stale the moment anything moves; a mark carried by the thing itself cannot.
+
+### Observation 618: A line moved into a fold lost its subject; only the cold read caught it
+
+**Status:** OPEN
+**Date:** 2026-10-16
+**Session context:** the whole-app words pass, round 1 — the editing hint printed on every day's input panels proposed to move, word for word, into the page's Legend fold
+**Skill:** the design guide (`raptor-port/docs/design-practices.md` §1 — the three ends of a note, "moved under one short fold"); impeccable (reference/clarify.md)
+**Type:** open-source
+**Phase/Area:** moving text rather than deleting it
+
+**Issue:** The writer treated "moved word for word" as needing no cold read — no word changed. Labelled "Editing:" in the Legend, the line no longer said what it applied to: in its panels the heading beside it had carried that. The fresh reader asked "editing what — inputs, flights, everything?". It now opens with the two panels' names.
+
+**Suggested improvement:** §1's third end (and §1a): a text moved away from what it describes takes that thing's name with it, and a moved text gets the cold read like a reworded one — the place it stood was part of its meaning.
+
+**Principle:** Context is content: a sentence that leaves its place must carry with it whatever the place was saying for it.
+
+### Observation 619: Turning his words into a guide rule drifted twice in one line — the fresh read is what kept the lesson his
+
+**Status:** OPEN
+**Date:** 2026-10-16
+**Session context:** the whole-app words pass, round 1 — his first "design lesson" written into the design guide under his new rule D941 (lessons written in by themselves, one fresh reader)
+**Skill:** the design guide (`raptor-port/docs/design-practices.md` §0 step 2, §9); record-decisions (writing the "point behind it")
+**Type:** open-source
+**Phase/Area:** generalising an owner's correction into a standing rule
+
+**Issue:** He wrote "There isn't a need for this. Although it's such a weird way to put just words there with no label." The writer's lesson added a reason he never gave ("a scheduler learns it once"), widened "just words with no label" into "never plain instructions" in a legend, and wrote "does not repeat", which reads as "say it once somewhere". The guide's mechanism paragraph also gained a filter the option he chose did not have ("no point beyond its own screen"). The fresh reader, given only his words and the option he picked, found all of it.
+
+**Suggested improvement:** In §0 step 2 (and the rule's short form): the lesson line quotes or closely paraphrases his words, adds no reason he did not give (a reason of the agent's goes in the ruling's readings, marked as the agent's), and is no wider than what he corrected; the reader is handed his words and the line, nothing else.
+
+**Principle:** When a person's correction becomes a rule, the risky step is generalising — every added reason or widened scope is the writer's, not theirs; check the rule against their exact words, not against the writer's understanding.

@@ -76,7 +76,8 @@ describe("Edit Schedule's list", () => {
     expect(dayWarnHTML(TUE)).toMatch(/class="daywarn hard"[^>]*><b>⚠ 4 issues<\/b> · 2 warning/)
     warns(TUE).map((w: any, i: number) => w.sev === 'hard' ? i : -1).filter((i: number) => i >= 0).forEach((i: number) => hideAt(TUE, i))
     const h = dayWarnHTML(TUE)
-    expect(h).toMatch(/class="daywarn adv"[^>]*><b>⚠ 2 issues<\/b> · <span/)
+    /* the count is followed straight by the caret — no "N warning" (none is red), and no "tap to review" since D940 */
+    expect(h).toMatch(/class="daywarn adv"[^>]*><b>⚠ 2 issues<\/b><span class="dwcar">/)
     expect(h).not.toContain('warning ·')
     const rows = rowsOf(h, 'witem')
     expect(rows.filter(r => /\bhid\b/.test(r.cls)).map(r => r.ix), 'the two hard lines stay at the top, struck').toEqual([0, 1])
