@@ -892,3 +892,18 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** Under "Include one BUSY state by default", add: when another change already decided will alter the screen first (a new default, a removed field), picture the proposal in that future state; and picture it in each state that changes the answer (here: a kind that fits, a kind that does not), with the measurement that shows the difference.
 
 **Principle:** A layout proposal is judged in the states that change its answer, including the state an already-decided change will produce — one state can make a good idea look useless or a bad one look fine.
+
+### Observation 613: A picture rule that lives only in files loaded with interface work is missed when the agent is only "explaining"
+
+**Status:** ACTIONED (2026-10-15) — the owner's D921 put the rule in `.claude/rules/plain-language.md`, which every chat loads, and widened it to explanations; `design-practices.md` §0 and `ui-design.md` point 1 say so.
+**Date:** 2026-10-15
+**Session context:** [INPUT-NEW-DEFAULTS] — telling him what two backlog leftovers were (a Tracker window's row arrows, the OIL question's small calendar)
+**Skill:** none (a project rule file); related: brainstorming `mockups-on-the-real-app.md`
+**Type:** internal
+**Phase/Area:** reporting to the owner
+
+**Issue:** The rule "every design or interface point comes with a picture, the area marked" (D853) was loaded and in force, yet two leftovers were explained to him twice in words alone; he asked a third time where exactly, then made the rule again (D921). The agent had read the rule as covering things PUT TO HIM to decide, and classed "what is this item" as a recap, not a design point.
+
+**Suggested improvement:** Done as D921: the rule names explanations and recaps, and sits in an always-loaded rule file. A check-before-send line could ask: "does this message name anything on screen? then is a picture attached?"
+
+**Principle:** A rule scoped by the kind of message ("a proposal") gets skipped when the agent classes its message as another kind; scope it by its trigger (anything on screen is named) instead.

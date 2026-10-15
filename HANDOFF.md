@@ -21,11 +21,12 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/input-new-defaults -->
-### `claude/input-new-defaults` — the tidy after pull request 516 DONE; `[INPUT-NEW-DEFAULTS]` (D917, D918) STARTED: pictures first — written 15 Oct 26 — verify before use
-- **The tidy (done):** 516 merged and Vercel Production READY for its commit; `[ONE-DATE-CALENDAR]` and `[DRAG-EDGE-FOUR-MORE]` archived (homes: the step-two sheet, `ui-contracts.md`); the calendar chat's block removed; its two "his to place" leftovers filed as `[TRK-REORDER-FINGER-DRAG]` and `[OIL-CONFIRM-DAYGRID]`.
-- **DRAWN AND PUT TO HIM, WAITING FOR HIS TWO ANSWERS:** the page https://claude.ai/artifact/BQa1WwKjmu62kgNv2FA4op (source `raptor-port/docs/mock/2026-10-15-input-new-defaults/index.html`; pictures `raptor-port/docs/img/handpass/2026-10-15-input-new-defaults/`, drawn by `raptor-port/scripts/handpass/mock-input-defaults.mjs` on the served build, port 4173). (1) the title pencil — P1 inside the box (the agent's pick) or P2 beside it; (2) D913 A — When and Remarks above the calendar (the agent's pick: yes, every kind and door). Detail and measurements: `OUTSTANDING.md` `[INPUT-NEW-DEFAULTS]`.
-- **Next:** record his answers as rulings (inputs.md), then build D917 (a new input opens on OL) with them as ONE small job on this branch — tests red first, a WALK check (the new input's doors — the List's "+ Input", a day, a run — both sizes), one fresh blind Opus read (D790), then the preview link. Nothing is built yet; nothing under `raptor-port/src` changed.
-- **Rulings this chat:** none yet. **Owed, documents only (D29), unchanged:** the four size markers over (how-we-work and inputs rulings, plain-language.md, shipping.md).
+### `claude/input-new-defaults` — the tidy after 516 DONE; `[INPUT-NEW-DEFAULTS]` (D917, D919, D920) BUILT, WALKED, READ, WHOLLY GREEN — waiting for his look and "merge live" — written 15 Oct 26 — verify before use
+- **The tidy (done):** 516 live; `[ONE-DATE-CALENDAR]`, `[DRAG-EDGE-FOUR-MORE]` archived; the calendar chat's block removed; its two leftovers filed — and RULED by him the same day: `[TRK-REORDER-FINGER-DRAG]` (D922: a finger drags the Tracker's Reorder rows on a phone, the app's own drag look) and `[OIL-CONFIRM-DAYGRID]` (D923: the OIL question's "only some days" becomes the one calendar's look, a tap per separate day). Each its own job after this one, a picture first (D921); pictures of today: `raptor-port/docs/img/handpass/2026-10-15-two-leftovers/`.
+- **BUILT:** a new input from the Inputs page (List "+ Input", a day, a run) opens on OL (`ui/inputedit.tsx newInputSeed`); the title box carries a drawn pencil inside its right end (`.inped-title`, `.inped-pen`, `ui/icons.tsx PenIcon`, `scheduler/14-input-editors.css`), none read-only; the Dates block stands after Remarks. Drawn first: https://claude.ai/artifact/BQa1WwKjmu62kgNv2FA4op ("All as recommended" — P1, A).
+- **Checked (WALK tier):** the sheet `raptor-port/docs/handpass/2026-10-15-input-new-defaults.md` — walk `scripts/handpass/ind-walk.mjs` 66/66 both sizes (nine doors), its break red; unit `ui/inputnewdefaults.test.tsx` (8 red on the old code); one fresh blind Opus read — no defect, one stale comment fixed; the whole gate set green under the lock (Gate baseline).
+- **Next:** his look on his iPhone and "merge live"; then `[TRK-REORDER-FINGER-DRAG]` and `[OIL-CONFIRM-DAYGRID]`, each a fresh chat on `main`, a picture first.
+- **Rulings this chat:** D919, D920 (his answers), D921 (pictures whenever anything on screen is talked about — `plain-language.md`), D922, D923. **Owed, documents only (D29):** sizes OVER by 3388 — the How-we-work and Inputs rulings files over their markers, `plain-language.md` 6 lines over, `shipping.md` 1.
 <!-- /now -->
 
 ## Next, in order
@@ -79,6 +80,8 @@ his ruling — DONE 7 Oct 26 on `claude/docs-tidy-7-oct` (D609: options 1 to 6; 
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
 ## Gate baseline
+
+**The latest counts watched — 15 Oct 26, `claude/input-new-defaults` at `c23ca1a46` (NOT `main`'s code), the whole gate set under the PC lock in one run: build clean · tfin 728 / 0 · unit 11473 / 11473 (644 files) · e2e 820 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK (records; sizes OVER by 3388, deferred — D29) — WHOLLY GREEN.**
 
 **The latest counts watched — 15 Oct 26 (night), `claude/calendar-edge-drag-tasks-115921` with calendar step two, the four edge drags and D910 (NOT `main`'s code), the whole gate set under the PC lock in one run: build clean · tfin 728 / 0 · unit 11461 / 11461 (643 files) · e2e 820 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK (records; sizes OVER by 1413, deferred — D29) — WHOLLY GREEN.**
 
