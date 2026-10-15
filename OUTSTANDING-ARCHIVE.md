@@ -4575,3 +4575,15 @@ Both grips are the same small ⠿ glyph with no wider touch area (`raptor-port/s
 drag outside screen. Note it"*. The guide: `raptor-port/docs/design-practices.md`; the two rulings behind them D890/D891 and
 D892/D893. A working-guide change: drafted, read by one fresh reader, his approval of the wording (D852, D70) — then in.
 
+
+*Moved here 2026-10-15 by backlog-archive.mjs ([DRAG-EDGE-SCROLL-ELSEWHERE]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-15-edge-turn.md`.*
+
+### [DRAG-EDGE-SCROLL-ELSEWHERE] Other drags that do not scroll when held at the screen's edge (found 15 Oct 26, his question with D892) — the Inputs calendar's two drags and Quals' heading drag LIVE (D893, pull request 514); BUILT AND CHECKED THE NIGHT OF 15 OCT 26 (/overnight, D898, D899), WAITING FOR HIS LOOK AND "MERGE LIVE": the Inputs month turns at its side under a run of days or a bar (D897) and the Tracker chart's drags pan at its edge (D896, D899)
+**BUILT (the night of 15 Oct 26, branch `claude/drag-edge-scroll-elsewhere-51bfc4`):** the contract `raptor-port/docs/ui-contracts.md` ("A drag held at the edge of a view that TURNS or PANS"); the check `raptor-port/docs/handpass/2026-10-15-edge-turn.md` (WALK — 70/70, 15 unit breaks and a browser break, a fresh Opus read and its round two, all findings fixed). **His look:** the sheet's §12 card (his iPhone proves the Safari case). **Named to him, his to say (D852 — no change made):** (1) the SANS calendar's pick across days (it shares the machine; the ruling named the Inputs month); (2) the Tracker's ▣ Select box carried to the canvas's edge (a selection, like the Leave War's, which scrolls); (3) the Tracker's ⇅ Reorder window — its rows in a scrolling box (`components/Modals.jsx`), not draggable at all on a phone; (4) the people picker's drag across faces (`src/ui/PeoplePick.tsx`, D685) in its scrolling list.
+**Named to him (D852), not changed.** Scroll at an edge already: the Scheduler Board's and Edit Schedule's puck drags
+(`src/ui/drag.ts`) and line / wave / section drags (`src/ui/rowdrag.ts`); the Leave War's day-cell drag selection and its
+Move (`src/leavewar/ui/select.ts`). Do NOT (read in the code, 15 Oct 26): the Leave War's ⚙ Settings Groups and Who wins
+lists (the same drag as Rearrange — they ride D892's build if the sheet can scroll); a day opened on the Inputs calendar —
+a note dragged to reorder and a puck dragged between notes (`src/ui/InputsCal.tsx`); Quals — a column heading dragged
+sideways past the screen's edge (`src/ui/QualsPage.tsx`). Not checked: the Tracker chart's ball drag.
+
