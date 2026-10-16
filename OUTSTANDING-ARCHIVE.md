@@ -4761,3 +4761,12 @@ fresh chat on `main` after the calendar job.
 
 **Status: OPEN — after [CONTEXT-START-SIZE]; a cheaper model does the work, a fresh reader checks it. SCOPE (D973, his "Yes agreeed"): only `OUTSTANDING.md`, `raptor-port/docs/ui-contracts.md` and `raptor-port/docs/engine-rules.md` — about 4,500 tokens in all; the archives (only searched) are left.** The same method as the rulings (D970): a script that keeps every word and changes only the letter case, learning each word's ordinary form from the repo's own prose, every changed line checked equal in lower case. Never the app's own text, button labels, code, his quoted words, bracketed backlog tags or the marks the tools read. Ranked by what each file saves and how often it is read (the survey of 17 Oct 26 is in the start-size job's `HANDOFF.md` block). Sonnet 5.5 runs it (D588); a fresh Opus reader samples it for a lost name or short form. **Place:** after [CONTEXT-START-SIZE], before [PUSH-LOCK-GUARD].
 
+
+*Moved here 2026-10-17 by backlog-archive.mjs ([PUSH-LOCK-GUARD]). Forward facts: `raptor-port/docs/gates-and-deploy.md`.*
+
+### [PUSH-LOCK-GUARD] An automatic guard that refuses a push while the checks run or a push to main, and takes the PC lock by itself (D969, 17 Oct 26)
+
+**Status: DONE 17 Oct 26 on `claude/sharp-goldberg-6d0656` (his "As recommended for all", D976)** — `.claude/hooks/push-guard.mjs` and `gatelock.mjs exec`, 30 tests, three fresh reads; how it works: `raptor-port/docs/gates-and-deploy.md`; the reads' low-likelihood leftovers: [PUSH-GUARD-LEFTOVERS].
+
+**Status: OPEN — filed, not designed; its own small job, after [CONTEXT-START-SIZE].** Option H of the start-size page: a hook (a "mod", in his word) before `git push` that refuses while a run of the branch's last pushed commit is queued or in progress (D151, [RUN-CHECK-BOTH-RUNS]) and refuses any push to `main` (D60); and one that takes and releases the PC lock around the full checks (D228). Worth it for reliability, not for room (under half a point). Changing `.claude/hooks/` and the settings needs his word for that change and its read (D70, as D878 was). **Place:** after [CONTEXT-START-SIZE].
+

@@ -73,7 +73,7 @@ pushed and waiting for him — the normal end state, not unfinished business.
   unattended.
 - **He picks nothing; he only pastes (owner, D975, 17 Oct 26 — "the new
   Claude code interface doesn't allow us to select the branch or worktree. So
-  I'm just pasting the prompt u hand me").** The new-chat screen has no branch
+  I'm just pasting the prompt u hand me"; this wording approved, D976).** The new-chat screen has no branch
   or worktree picker: each new chat starts in a fresh worktree on a fresh
   branch of its own. So the opening line does the switching. A NEW job: "run
   `git fetch origin` and check this branch is level with `origin/main`" (the
