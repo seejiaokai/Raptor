@@ -1,0 +1,247 @@
+<title>Why a New Chat Starts Full</title>
+<style>
+/* Layout: one narrow reading column, a gauge of the chat's room at the head, then growth, then the options as cards. */
+:root {
+  --bg: #f3f5f7; --surface: #ffffff; --fg: #17202a; --muted: #5b6875; --line: #d9dee4;
+  --fixed: #8a96a3; --settings: #6aa5c9; --always: #2f6f9f; --area: #c46b2d; --sched: #9c3f12; --reads: #d9a441;
+  --good: #2e7d4f; --warn: #a86b00; --risk: #b23b3b; --accent: #2f6f9f;
+  --f-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #11161c; --surface: #19212a; --fg: #e6ebf0; --muted: #9aa7b4; --line: #2c3743;
+  --fixed: #5f6b77; --settings: #4f8fb5; --always: #6aa8d8; --area: #e08a4c; --sched: #f0a070; --reads: #e3b85a;
+  --good: #5cc28a; --warn: #e0a83a; --risk: #e57373; --accent: #6aa8d8; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #11161c; --surface: #19212a; --fg: #e6ebf0; --muted: #9aa7b4; --line: #2c3743;
+  --fixed: #5f6b77; --settings: #4f8fb5; --always: #6aa8d8; --area: #e08a4c; --sched: #f0a070; --reads: #e3b85a;
+  --good: #5cc28a; --warn: #e0a83a; --risk: #e57373; --accent: #6aa8d8; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 16px; line-height: 1.5; }
+.wrap { max-width: 44rem; margin: 0 auto; padding-inline: 16px; padding-block: 20px 48px; display: grid; gap: 28px; }
+h1, h2 { font-family: var(--f-display); font-weight: 600; letter-spacing: .01em; text-wrap: balance; margin: 0; line-height: 1.1; }
+h1 { font-size: 2.1rem; }
+h2 { font-size: 1.45rem; }
+p { margin: 0; }
+section { display: grid; gap: 12px; min-width: 0; }
+.lede { font-size: 1.08rem; }
+.muted { color: var(--muted); font-size: .9rem; }
+.eyebrow { font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+b.n { font-variant-numeric: tabular-nums; }
+/* the gauge */
+.gauge { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 10px; }
+.bar { display: flex; height: 34px; border-radius: 6px; overflow: hidden; background: var(--line); position: relative; }
+.bar span { display: block; height: 100%; }
+.scale { position: relative; height: 18px; font-size: .72rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.scale i { position: absolute; transform: translateX(-50%); font-style: normal; }
+.scale i:first-child { transform: none; } .scale i:last-child { transform: translateX(-100%); }
+.legend { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.legend li { display: grid; grid-template-columns: 14px 1fr auto; gap: 8px; align-items: baseline; font-size: .92rem; }
+.legend li > span:first-child { width: 12px; height: 12px; border-radius: 3px; align-self: center; }
+.legend .pts { font-variant-numeric: tabular-nums; font-weight: 600; }
+.legend li.group { display: block;font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; margin-top: 6px; }
+.total { display: flex; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 8px; font-weight: 600; }
+/* growth chart */
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 300px; height: auto; }
+.chart text { fill: var(--muted); font-family: var(--f-body); font-size: 11px; }
+/* test */
+.test { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.test div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; min-width: 0; }
+.test code { display: block; font-size: .78rem; line-height: 1.35; color: var(--muted); margin: 6px 0 8px; overflow-wrap: anywhere; font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; }
+.test strong { font-family: var(--f-display); font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+@media (max-width: 420px) { .test { grid-template-columns: 1fr; } }
+/* options */
+.opts { display: grid; gap: 12px; }
+.opt { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 8px; min-width: 0; }
+.opt header { display: flex; gap: 10px; align-items: baseline; justify-content: space-between; flex-wrap: wrap; }
+.opt h3 { margin: 0; font-size: 1.05rem; line-height: 1.3; flex: 1 1 16rem; }
+.opt h3 em { font-style: normal; font-family: var(--f-display); color: var(--accent); margin-right: 6px; font-size: 1.2rem; }
+.save { font-variant-numeric: tabular-nums; font-weight: 700; white-space: nowrap; }
+.facts { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: .78rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor; }
+.chip.low { color: var(--good); } .chip.med { color: var(--warn); } .chip.high { color: var(--risk); }
+.chip.who { color: var(--muted); }
+.rec { font-weight: 600; }
+.rec.yes { color: var(--good); } .rec.later { color: var(--warn); } .rec.no { color: var(--muted); }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: .92rem; }
+.tbl { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+th { font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+td.r, th.r { text-align: right; }
+ol.next { margin: 0; padding-left: 1.3rem; display: grid; gap: 6px; }
+.note { border-left: 3px solid var(--warn); padding: 8px 12px; background: var(--surface); border-radius: 0 8px 8px 0; }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600&family=Source+Sans+3:wght@400;600;700&display=swap">
+
+<div class="wrap">
+
+<header style="display:grid;gap:10px">
+  <span class="eyebrow">Raptor · measured 17 Oct 26</span>
+  <h1>Why a new chat starts 30–40% full</h1>
+  <p class="lede">An empty chat is only <b class="n">14%</b> full. The jump to 30% comes the moment it opens its first app file: that pulls in your rulings, and they have more than doubled in two weeks. They also cost almost twice what they should, because their rules are written in capital letters.</p>
+</header>
+
+<section>
+  <h2>Where the room goes</h2>
+  <p class="muted">A typical build chat after its first few steps, out of the chat's 880,000-token room. Measured from 15 chats run today and from this chat's own start.</p>
+  <div class="gauge">
+    <div class="bar" role="img" aria-label="Chat room used: 31 percent, of which rulings 14 points">
+      <span style="width:5.1%;background:var(--fixed)"></span>
+      <span style="width:3.8%;background:var(--settings)"></span>
+      <span style="width:3.8%;background:var(--always)"></span>
+      <span style="width:1.1%;background:var(--fixed);opacity:.6"></span>
+      <span style="width:2.8%;background:var(--area);opacity:.55"></span>
+      <span style="width:6.1%;background:var(--sched)"></span>
+      <span style="width:4.5%;background:var(--area)"></span>
+      <span style="width:3.6%;background:var(--reads)"></span>
+    </div>
+    <div class="scale"><i style="left:0">0%</i><i style="left:14%">14%</i><i style="left:31%">31%</i><i style="left:100%">100%</i></div>
+    <ul class="legend">
+      <li class="group">Before the first message — 14%</li>
+      <li><span style="background:var(--fixed)"></span><span>The app's own instructions and tools (fixed)</span><span class="pts">5.1</span></li>
+      <li><span style="background:var(--settings)"></span><span>Connected services and plug-ins (your app settings)</span><span class="pts">3.8</span></li>
+      <li><span style="background:var(--always)"></span><span>Rules loaded in every chat, with the general rulings</span><span class="pts">3.8</span></li>
+      <li><span style="background:var(--fixed);opacity:.6"></span><span>Your opening message and the start-up notes</span><span class="pts">1.1</span></li>
+      <li class="group">The first app file opened — +17</li>
+      <li><span style="background:var(--area);opacity:.55"></span><span>The project guide and the builder's and design rules</span><span class="pts">2.8</span></li>
+      <li><span style="background:var(--sched)"></span><span>The scheduler's rulings: they load for <em>any</em> app file, even a Medical or Quals job</span><span class="pts">6.1</span></li>
+      <li><span style="background:var(--area)"></span><span>One to three more areas' rulings (Inputs, Leave War, OIL)</span><span class="pts">4.5</span></li>
+      <li><span style="background:var(--reads)"></span><span>The job's opening reads: the checking method, the skill-notes guide, the handoff block</span><span class="pts">3.6</span></li>
+    </ul>
+    <div class="total"><span>Before any real work</span><span class="n">≈ 31%</span></div>
+  </div>
+  <p>Your rulings alone are about <b class="n">14 points</b> of that, the biggest single piece and the only one growing fast. The app's own part (about 9 points) is the same in every project and cannot be changed from here.</p>
+</section>
+
+<section>
+  <h2>Will it get worse? Yes, at this pace</h2>
+  <p class="muted">Share of the chat taken by the rulings, worked out from the files' size on each day and the measured cost of loading them.</p>
+  <div class="chart">
+    <svg viewBox="0 0 340 190" role="img" aria-label="Rulings' share of the chat rising from about 5 percent on 1 October to about 12 percent on 16 October">
+      <g stroke="var(--line)" stroke-width="1">
+        <line x1="40" y1="160" x2="330" y2="160"/><line x1="40" y1="120" x2="330" y2="120"/><line x1="40" y1="80" x2="330" y2="80"/><line x1="40" y1="40" x2="330" y2="40"/>
+      </g>
+      <text x="32" y="164" text-anchor="end">0%</text><text x="32" y="124" text-anchor="end">4%</text><text x="32" y="84" text-anchor="end">8%</text><text x="32" y="44" text-anchor="end">12%</text>
+      <!-- x: 1 Oct=50, 5 Oct=120, 9 Oct=190, 13 Oct=260, 16 Oct=312 ; y = 160 - pct*10 -->
+      <polyline fill="none" stroke="var(--sched)" stroke-width="2.5" points="50,125 120,118 190,101 260,86 312,73"/>
+      <polyline fill="none" stroke="var(--always)" stroke-width="2.5" points="50,146 120,142 190,144 260,139 312,131"/>
+      <g fill="var(--sched)"><circle cx="50" cy="125" r="3"/><circle cx="120" cy="118" r="3"/><circle cx="190" cy="101" r="3"/><circle cx="260" cy="86" r="3"/><circle cx="312" cy="73" r="4"/></g>
+      <g fill="var(--always)"><circle cx="50" cy="146" r="3"/><circle cx="120" cy="142" r="3"/><circle cx="190" cy="144" r="3"/><circle cx="260" cy="139" r="3"/><circle cx="312" cy="131" r="4"/></g>
+      <text x="312" y="64" text-anchor="end" style="fill:var(--sched);font-weight:600">Scheduler + Inputs 8.7%</text>
+      <text x="312" y="124" text-anchor="end" style="fill:var(--always);font-weight:600">General rulings 2.9%</text>
+      <text x="50" y="178" text-anchor="middle">1 Oct</text><text x="120" y="178" text-anchor="middle">5 Oct</text><text x="190" y="178" text-anchor="middle">9 Oct</text><text x="260" y="178" text-anchor="middle">13 Oct</text><text x="312" y="178" text-anchor="middle">16 Oct</text>
+    </svg>
+  </div>
+  <p>About <b class="n">30 rulings a day</b> are being added (D484 on 1 Oct, D968 today), and under the standing rules every one stays a line in the loaded list for good. That adds about <b class="n">5 points</b> to a build chat's start every two weeks. Left alone, a build chat would start near <b class="n">45%</b> in a month.</p>
+  <p>The app getting more complex is not the cause. The cause is how the rulings are kept: every line stays, including the ones a later ruling changed (220 of 754 lines say so), one-off permissions that were used up, and all of it in capitals.</p>
+  <p>It matters beyond room: every step of a chat re-reads everything loaded, so a fuller start also uses up your weekly allowance faster.</p>
+</section>
+
+<section>
+  <h2>The capital letters cost almost double</h2>
+  <p>I loaded the same 40 Inputs rulings into this chat twice, word for word, once as written and once in ordinary letters.</p>
+  <div class="test">
+    <div><span class="eyebrow">As written</span><code>THE MEDICAL TAB'S "+ MEDICAL" OPENS THE INPUT WINDOW SET TO ATT C…</code><strong>8,400</strong> <span class="muted">tokens</span></div>
+    <div><span class="eyebrow">Ordinary letters</span><code>The medical tab's "+ Medical" opens the input window set to ATT C…</code><strong>4,600</strong> <span class="muted">tokens</span></div>
+  </div>
+  <p class="muted">Same words, 45% less room. This also means the 7 Oct measurement under-read the rulings' cost by about half: it counted letters, and capitals take more room per letter.</p>
+</section>
+
+<section>
+  <h2>Your "mods" idea</h2>
+  <p>A mod is an automatic check that runs at a set moment, such as before a push. It can take over a <em>procedure</em> ("never push while the checks are running", "take the PC lock before the full checks"). It cannot take over a <em>ruling</em> about what the app must do: I need to know those while I build, so they have to be read.</p>
+  <p>The procedure text that loads in every chat is only about 1 to 2 points in all, so mods would save under half a point. They are worth having because a check that runs by itself is never forgotten, not because they free room. The room is in the rulings.</p>
+</section>
+
+<section>
+  <h2>The options</h2>
+  <p class="muted">"Points" means percent of the chat's room, on a typical build chat. Nothing has been changed. Every option keeps every ruling findable: anything that leaves the loaded list goes to the archive, which is still searched before I ask you anything.</p>
+  <div class="opts">
+
+    <article class="opt">
+      <header><h3><em>A</em>Write each ruling's one-line rule in ordinary letters, word for word</h3><span class="save">−4 to 5 pts</span></header>
+      <p>Only the letter case changes. A script checks that no word was added, dropped or changed. The tool that files new rulings writes them the same way from then on, so it doesn't creep back. About 1 point of that comes off every chat, even ones that never open app code.</p>
+      <div class="facts"><span class="chip low">Low risk</span><span class="chip who">Needs your OK: it changes how your rulings look</span></div>
+      <p class="rec yes">Recommended: yes.</p>
+    </article>
+
+    <article class="opt">
+      <header><h3><em>B</em>Move used-up one-off permissions to the archive</h3><span class="save">−0.5 pt, every chat</span></header>
+      <p>Examples: "built in this same chat, straight after…", "goes live on this merge live", the permission for one night's run. The standing rules already say these leave once used; it is overdue. I open each ruling's full record first.</p>
+      <div class="facts"><span class="chip low">Low risk</span><span class="chip who">Already allowed; I'm telling you</span></div>
+      <p class="rec yes">Recommended: yes.</p>
+    </article>
+
+    <article class="opt">
+      <header><h3><em>C</em>When a later ruling fully restates an earlier one, the earlier line goes to the archive</h3><span class="save">−2 pts</span></header>
+      <p>Example: the "till date" on an input has five lines (D946, D948, D951, D952, D953), each changed by the next. The last one says it all. Today only a ruling that is completely <em>replaced</em> leaves the list; one that is changed stays, even when its replacement says everything it said.</p>
+      <div class="facts"><span class="chip med">Medium risk: a line judged "fully restated" that wasn't would hide a detail</span><span class="chip who">Needs your ruling</span></div>
+      <p>Safeguard: a fresh reader checks every line before it moves, and a line moves only if the later ruling covers all of it.</p>
+      <p class="rec yes">Recommended: yes, after A and B.</p>
+    </article>
+
+    <article class="opt">
+      <header><h3><em>D</em>Split the scheduler's rulings by screen</h3><span class="save">−3 to 4 pts on non-schedule jobs</span></header>
+      <p>On 7 Oct you said keep them whole, and look again if the file grew by about half (D611). With the Inputs part that was split off, it has. A Medical, Quals or Tracker job would stop loading the scheduler's 262 rulings. A schedule job saves nothing.</p>
+      <div class="facts"><span class="chip med">Medium risk: a ruling in a part that didn't load</span><span class="chip who">Your call (D611)</span></div>
+      <p class="rec later">Recommended: not yet. Do A to C, measure again, then decide. A to C may be enough.</p>
+    </article>
+
+    <article class="opt">
+      <header><h3><em>E</em>Switch off connected services and plug-ins a coding chat never uses</h3><span class="save">up to −2 pts, every chat</span></header>
+      <p>For example the Google Drive and documents connectors, the second drawing tool, and the Word, PowerPoint and spreadsheet plug-ins. Your walks drive the app by script and don't use them. You can switch any back on in a moment.</p>
+      <div class="facts"><span class="chip low">No risk to the work</span><span class="chip who">Your app settings: I'll list exactly which</span></div>
+      <p class="rec yes">Recommended: try it on one chat and compare.</p>
+    </article>
+
+    <article class="opt">
+      <header><h3><em>F</em>The skill-notes guide that loads at every start</h3><span class="save">−0.5 to 1 pt, every chat</span></header>
+      <p>Still open from 7 Oct. Keep it, load a one-page short form, or stop it.</p>
+      <div class="facts"><span class="chip low">Low risk</span><span class="chip who">Your call: you set it up</span></div>
+      <p class="rec yes">Recommended: the short form.</p>
+    </article>
+
+    <article class="opt">
+      <header><h3><em>G</em>A check that stops it growing back</h3><span class="save">keeps the savings</span></header>
+      <p>The document check that runs at the end of every turn would report each loaded file's real cost, not its letter count, and list lines a later ruling has changed, ready for the next tidy-up. Like the other markers, it signals a tidy-up; it never cuts to a number.</p>
+      <div class="facts"><span class="chip low">Low risk</span><span class="chip who">Goes with A to C</span></div>
+      <p class="rec yes">Recommended: yes.</p>
+    </article>
+
+    <article class="opt">
+      <header><h3><em>H</em>Mods for the push and the PC lock</h3><span class="save">under −0.5 pt</span></header>
+      <p>An automatic guard that refuses a push while the checks are running or a push to the live version, and takes the PC lock by itself. Worth it for reliability, not for room.</p>
+      <div class="facts"><span class="chip low">Low risk</span><span class="chip who">Its own small job</span></div>
+      <p class="rec later">Recommended: later, as its own job.</p>
+    </article>
+  </div>
+</section>
+
+<section>
+  <h2>What it adds up to</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>After</th><th class="r">Empty chat</th><th class="r">Build chat, before work</th></tr></thead>
+    <tbody>
+      <tr><td>Today</td><td class="r">14%</td><td class="r">≈ 31%</td></tr>
+      <tr><td>A and B</td><td class="r">≈ 13%</td><td class="r">≈ 26%</td></tr>
+      <tr><td>+ C</td><td class="r">≈ 12.5%</td><td class="r">≈ 24%</td></tr>
+      <tr><td>+ E and F, if you choose</td><td class="r">≈ 10%</td><td class="r">≈ 21%</td></tr>
+      <tr><td>+ D, if needed later</td><td class="r">≈ 10%</td><td class="r">≈ 17% on non-schedule jobs</td></tr>
+    </tbody>
+  </table></div>
+  <p class="muted">Each figure is an estimate built from measured loads; A to C are measured again after they are done, before D is weighed.</p>
+</section>
+
+<section>
+  <h2>What I need from you</h2>
+  <ol class="next">
+    <li><b>A</b>: ordinary letters for the rulings' one-line rules, word for word? I recommend yes.</li>
+    <li><b>C</b>: an earlier ruling that a later one fully restates leaves the loaded list (archived, still searched, a fresh reader checking each)? I recommend yes.</li>
+    <li><b>E and F</b>: shall I list the exact settings to switch off, and make the short form of the skill-notes guide?</li>
+  </ol>
+  <p>Say "A B C G yes" (or any mix) and I'll do them on this branch, measure again, and bring you the before-and-after. B and G I'd do with A and C either way.</p>
+  <p class="note">Also found: the last chat's handoff note went straight onto the live version without a pull request or your "merge live". It is notes only and changes nothing in the app, but it broke your rule. I have left it as it is; reversing it would also mean touching the live version.</p>
+</section>
+
+</div>

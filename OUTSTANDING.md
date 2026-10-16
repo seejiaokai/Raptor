@@ -48,7 +48,7 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
-**NEXT (his question, 17 Oct 26) — [CONTEXT-START-SIZE]:** why a new chat starts 30–40% full, whether it grows, and options to cut it (measure, then options to him; nothing changes before he rules).
+**NEXT (his question, 17 Oct 26) — [CONTEXT-START-SIZE]:** why a new chat starts 30–40% full, whether it grows, and options to cut it — MEASURED and put to him 17 Oct 26 (options A–H on the page named in the item); waiting for his answer, nothing changed.
 
 **FOUND 17 Oct 26 — [MED-NEWYEAR]:** a medical input across New Year never shows on the Medical tab (older than pull request 524; its own small fix, after 524).
 
@@ -2171,7 +2171,7 @@ with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
 
 ### [CONTEXT-START-SIZE] Why a new chat starts 30–40% full, whether it grows with the app, and ways to cut it (his question, 17 Oct 26)
 
-**Status: OPEN — the next job (`HANDOFF.md`, the `claude/sharp-goldberg-6d0656` block); nothing changes before he rules.**
+**Status: MEASURED, OPTIONS PUT TO HIM 17 Oct 26 — waiting for his answer; nothing changed.** The page he read: `raptor-port/docs/superpowers/specs/2026-10-17-context-start-size.html` (published to him as an Artifact). **Found:** an empty chat is 14% full (125,784 of 880,000 — 9 points the app's own, 4 his connectors and plug-ins, 4 the always-loaded files); the first app file opened adds about 17 points — the project guide, and the scheduler's rulings (about 54,000 tokens), which load for ANY app file by their paths; then one to three more areas' rulings and the job's opening reads → about 31% before work (measured in 15 chats of 16–17 Oct 26 from their own records). The rulings are about 14 points and grew from about 5 to about 12 in 15 days (~30 rulings a day; every line stays, 220 of 754 carry "changed by"). **Capitals cost almost double:** the same 40 Inputs rulings loaded into the chat took 8,400 tokens as written and 4,600 in ordinary letters (the 7 Oct audit counted letters, so it under-read the rulings by about half). **Options put to him (A–H):** A ordinary letters for the short lines, word for word (−4 to 5 pts; his OK); B archive spent one-off permissions (already the rule, overdue); C a ruling a later one fully restates leaves the loaded list, a fresh reader checking each (−2 pts; his ruling); D split the scheduler's rulings — D611's "grows by about half" trigger is met — not yet, re-measure after A–C; E his connectors and plug-ins off (up to −2 pts every chat); F a short form of the skill-notes guide; G the document check reports real cost and lists "changed by" lines; H mods (push guard, PC lock) for reliability, not room. Recommended: A, B, C, G now; E and F tried; D later; H its own job.
 **His words (17 Oct 26, during pull request 524):** *"could u find out why am I using so much context for every new chat
 like 30-40% immediately and will this be unsustainable if this app becomes more complex? Is there a way to optimise it"*;
 and, a message later, whether "mods" could replace some instruction files (he had read of people who "threw away their MD

@@ -21,16 +21,17 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/sharp-goldberg-6d0656 -->
-### `claude/sharp-goldberg-6d0656` — pull request 524 LIVE (17 Oct 26); NEXT: why a new chat starts 30–40% full, and options — written 17 Oct 26, verify before use
-- **Where it started:** he asked for the Medical tab's cards (D961, D965) and "+ Medical" (D963, D964) on this branch, into pull request 524.
-- **Shipped:** pull request 524 — MERGED and LIVE 17 Oct 26 on his "merge live 524" (main's run green, Vercel production READY): the words pass round 3 (D959), the Medical card's period (D960), the cards three a row with "▯ 2" from two documents (D965–D967), "+ Medical" opening on ATT C (D968). Check: `raptor-port/docs/handpass/2026-10-17-medical-cards.md` (WALK; walk and two re-walks; two blind Opus reads, all findings fixed).
-- **Unfinished:** none of 524. Filed, not started: `[MED-NEWYEAR]` (a medical input across New Year never shows on the Medical tab — older; its own fix) and `[CONTEXT-START-SIZE]` (the next job, below).
-- **Branch:** `claude/sharp-goldberg-6d0656`, reset to `origin/main` after the merge and carrying only this handoff (docs only). The next chat continues ON it.
-- **Gates:** for 524, the whole set under the lock and GitHub's full run green on the final commit (counts in the sheet and §Gate baseline). This handoff is documents only: `npm run docsize`.
-- **Open questions for him:** none.
-- **Running when written:** none — no helper, server or lock held; this chat does nothing further once a new chat takes this block.
-- **Pick up here:** `[CONTEXT-START-SIZE]` in `OUTSTANDING.md` — measure what fills a new chat at its start (the new chat measures ITSELF first, with `mcp__ccd_session_mgmt__get_usage`, before reading anything), how each piece grows with the app, and his "mods" idea (automatic checks in place of written procedure); put him a short page of options with savings and risks, a recommendation, in plain words. Change NOTHING before he rules (D602, D609 did the same on 7 Oct 26 — read their full rows first).
-- **Opening line:** "Switch this chat to the branch claude/sharp-goldberg-6d0656 (git fetch origin, then git switch claude/sharp-goldberg-6d0656 and git pull --ff-only). Read HANDOFF.md — the claude/sharp-goldberg-6d0656 block under ## Now — then do [CONTEXT-START-SIZE] from OUTSTANDING.md: first measure how full this chat is right now, before reading anything else, then find why a new chat starts 30–40% full and put me the options with pictures or a page I can read on my phone."
+### `claude/sharp-goldberg-6d0656` — [CONTEXT-START-SIZE] measured and put to him (17 Oct 26); WAITING for his answer — written 17 Oct 26, verify before use
+- **Where it started:** his question — why a new chat starts 30–40% full, whether it grows, and how to cut it (and his "mods" idea).
+- **Done:** measured this chat's own start (14%, 125,784 of 880,000) and 15 chats' records; found the jump is the first app file pulling in the rulings files (the scheduler's ~54,000 tokens load for any app file), about 31% before work; the rulings grew from ~5 to ~12 points in 15 days; capitals cost ~1.8x (8,400 vs 4,600 tokens for the same 40 rulings). Options A–H with savings, risks and a recommendation: `raptor-port/docs/superpowers/specs/2026-10-17-context-start-size.html`, published to him as an Artifact; the findings are in `OUTSTANDING.md` `[CONTEXT-START-SIZE]`.
+- **Unfinished:** everything after his answer. Nothing was changed.
+- **Branch:** `claude/sharp-goldberg-6d0656`, documents only (the page, the backlog item, this block). No pull request yet.
+- **Gates:** documents only — `npm run docsize`.
+- **Open questions for him:** A (ordinary letters for the rulings' one-line rules, word for word — recommended yes); C (a ruling a later one fully restates leaves the loaded list, archived, a fresh reader checking each — recommended yes); E and F (list his settings to switch off; a short form of the skill-notes guide). B and G go with A and C. D (split the scheduler's rulings — D611's trigger is met) is to be weighed after A–C are measured.
+- **Also told him:** the last chat's handoff commit went to `main` directly, without a pull request or his "merge live" (notes only); left as it is.
+- **Running when written:** none.
+- **Pick up here:** record his answers as rulings first (How we work), then do what he approved on this branch: A by script with a word-for-word check (lowercase compare) and the filing tool changed to write ordinary letters; B with each full row opened; C with one fresh blind Opus reader over every line moved; G in the document check. Then measure again (a fresh chat's `get_usage`, and a load of each rulings file) and bring him before-and-after. Guide changes need their read before he approves them (D70).
+- **Opening line:** "Switch this chat to the branch claude/sharp-goldberg-6d0656 (git fetch origin, then git switch claude/sharp-goldberg-6d0656 and git pull --ff-only). Read HANDOFF.md — the claude/sharp-goldberg-6d0656 block under ## Now — then carry on [CONTEXT-START-SIZE] with my answers: <answers>."
 <!-- /now -->
 
 ## Next, in order
