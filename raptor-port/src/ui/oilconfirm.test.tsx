@@ -135,11 +135,35 @@ describe('the OIL ask gates a weekend/PH duty-&-commitments save', () => {
     expect($('[data-testid="oilconf"]')!.textContent).toContain('2 non-working days')
     await click($('[data-testid="oil-some"]'))
     expect($('[data-testid="oilcal"]'), 'the day grid is up').toBeTruthy()
-    await click($('[data-oilday="2026-07-18"]'))            // select Saturday
-    await click($('[data-oilday="2026-07-19"]'))            // select Sunday…
-    await click($('[data-oilday="2026-07-19"]'))            // …tap again to DESELECT (owner's ask)
+    await click($('[data-testid="oilcal-day-2026-07-18"]'))     // select Saturday
+    await click($('[data-testid="oilcal-day-2026-07-19"]'))     // select Sunday…
+    await click($('[data-testid="oilcal-day-2026-07-19"]'))     // …tap again to DESELECT (owner's ask)
     await click($('[data-testid="oilconf-save"]'))
     expect(mine()[0].oil).toEqual({ '2026-07-18': 1, '2026-07-19': 0 })
+  })
+
+  /* [OIL-CONFIRM-DAYGRID] — owner D923, 15 Oct 26: "use the new calendar format but allow to tap separate days for this
+     function". The grid IS the app's one calendar now, in its several-days mode; only the input's non-working days take a
+     tap, as before — the Friday of a Fri–Sun input is faint and a tap on it credits nothing; which days earn is as before. */
+  it('D923 — "some" is the app’s one calendar: only the non-working days take a tap, and the Friday credits nothing', async () => {
+    await openAdd({ type: 'Training', date: 'Jul 17', endDate: 'Jul 19' })
+    await click($('#inpEditSave'))
+    await click($('[data-testid="oil-some"]'))
+    const cal = $('[data-testid="oilcal"]')
+    expect(cal.classList.contains('dcal') && cal.classList.contains('is-many'), 'the one calendar, several-days mode').toBe(true)
+    expect(cal.getAttribute('data-month'), 'it opens on the month of the first day asked about').toBe('2026-07')
+    expect($('[data-testid="oilcal-title"]').textContent).toContain('July 2026')
+    const fri = $('[data-testid="oilcal-day-2026-07-17"]') as HTMLButtonElement
+    expect(fri.disabled && fri.classList.contains('is-out'), 'the Friday is faint and takes no tap').toBe(true)
+    for (const d of ['2026-07-18', '2026-07-19']) expect(($(`[data-testid="oilcal-day-${d}"]`) as HTMLButtonElement).disabled).toBe(false)
+    expect(($('[data-testid="oilcal-day-2026-07-25"]') as HTMLButtonElement).disabled, 'a weekend the input does not cover takes none').toBe(true)
+    await click(fri)
+    expect($('[data-testid="oil-count"]').textContent).toBe('No days selected — tap a day to credit it')
+    await click($('[data-testid="oilcal-day-2026-07-19"]'))
+    expect($('[data-testid="oilcal-day-2026-07-19"]').getAttribute('aria-pressed')).toBe('true')
+    expect($('[data-testid="oil-count"]').textContent).toBe('1 of 2 days selected — tap a day to change it')
+    await click($('[data-testid="oilconf-save"]'))
+    expect(mine()[0].oil).toEqual({ '2026-07-18': 0, '2026-07-19': 1 })
   })
 
   it('an edit whose answers still cover the plan does not re-ask', async () => {
