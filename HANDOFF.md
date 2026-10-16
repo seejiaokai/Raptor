@@ -50,9 +50,8 @@ After a compaction: re-read this block, the overnight guide and the files of the
   line's "below" points into Personal Inputs, which is folded by default on the board.
 - **Known limits, filed in the sheet:** a year typed after a date stays ("till 1 Jan 2027" → "2027"); the Leave War's old
   "on 15 Jul" in stored demo data prints "on 15 Jul till 15 Jul" until wiped (D56).
-- **Next:** his look on his iPhone; his answers to Q1–Q4 and R1–R4 (then: record them, build Q1–Q3 and round 2 on this
-  branch or a new one, a small check each); "merge live" when happy. A fresh chat for that.
-- **Rulings this chat:** none (the night ran on D945–D948).
+- **Next (17 Oct, the morning chat):** BUILD D949 (Q1–Q3), D950 (R1–R4), D951 + D953 (the till-date tick box) on this branch with ONE FULL check (D485): the eight answers and the roll-call are in the night's sheet `raptor-port/docs/handpass/2026-10-17-r1b-till.md` §1–2 (extend them for the tick box and round 2); the tick box's design of record is the B frames of `raptor-port/docs/img/handpass/2026-10-17-till-switch/` (D953's full row has the four readings). The agent's technical plan for the tick: store the hand choice WITH the default it was made against (an input's own record, new saved field — `docs/data-schema.md` and `docs/data-model.md` in the same change); the date prints when the hand choice stands (its default unchanged) or, failing that, by the default — so a date or kind change that flips the default replaces it on read, through every door; `tillOf` in `raptor-port/src/engine/inputs.ts` is the one place every screen asks. Then [ALLAVAIL-COMMON] (D954) once he answers its four questions. **The branch is checked out in the night's old checkout (`overnight-8-handoff-743ff0`) and cannot be switched to elsewhere:** the morning chat took its tip into its own checkout (`git reset --hard origin/claude/whole-app-words-pass-1b-6cfe51`) and pushes back by name (`git push origin HEAD:claude/whole-app-words-pass-1b-6cfe51`); a new chat does the same.
+- **Rulings this chat:** none (the night ran on D945–D948). The morning chat: D953, D954 (and D949–D952 answered before it).
 <!-- /now -->
 
 ## Next, in order
