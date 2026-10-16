@@ -6267,7 +6267,8 @@ form's typing intact. A single applicable day asks **Yes / No OIL**, the
 sheet naming the worth — 'HO — half a day' or 'FO — a full day', from
 `inputOilAmt` (all-day = FO, the owner's pick; timed ≤6h = HO, >6h = FO). A
 multi-day span asks **All days / Only some days… / No OIL**; 'some' opens a
-month grid (the RangeCal arithmetic, testid `oilcal`) where ONLY the
+calendar — **the app's one calendar since D923** (17 Oct 26, `[OIL-CONFIRM-DAYGRID]`: `ui/DateCal.tsx`
+`mode="many"`, testid `oilcal`, its days `oilcal-day-<iso>`) — where ONLY the
 applicable days are tappable — tap to select, tap again to deselect (the
 owner's exact ask), then Save — and every other day is inert. The offered
 days come from `leavewar/sync.ts:oilAskPlan`, which reads the exported
@@ -7212,7 +7213,7 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
   six-week month fits a short phone and never sits as a short box.
 - **Class names are prefixed** (`is-we`, `is-ph`, `is-off`, `is-today`, `c-day`, `c-night`, `c-nf`, `c-none`, `lit`,
   `t-ph`, `t-off`): the scheduler's stylesheet is one global sheet and the week owns `.day`.
-- **To be built (D923, 15 Oct 26 — `[OIL-CONFIRM-DAYGRID]`): the OIL question's "Only some days…" grid becomes the one calendar's look (`ui/DateCal.tsx`), where a tap turns each separate non-working day of the input on or off** — a way of its own for that one place; every other calendar picks one date or one run. A picture first (D853, D921).
+- **Several separate days — the OIL question's "Only some days…" only (D923, 15 Oct 26 — `[OIL-CONFIRM-DAYGRID]`, built 17 Oct 26).** `mode="many"`: `only` is the only dates that take a tap (the input's non-working days) and every other date is faint, as one before `min`; a tap turns one day on or off (`picked` / `onToggle` — the sheet keeps them); the days that take a tap are the full ink and heavy, as a weekday that stands out (D795), a picked one the bright disc, today its own look; no run band. The keys step over the faint dates the way they were going (→ from a Sunday is the next Saturday, across a month's end), Home and End to the first and last of this week's that take a tap, else they stay; the tab stop is the first day on in the month, else the first that takes a tap. Escape is the form's (the question closes, nothing written). A way of its own for that one place; every other calendar picks one date or one run. In the question's card, under 400 wide, it is drawn without its own box so its head (304px) fits (`14-input-editors.css`). Tests `ui/datecal.test.tsx`, `ui/oilconfirm.test.tsx`, `e2e/oil-someday-cal.spec.ts`; the check `docs/handpass/2026-10-17-oil-confirm-daygrid.md`.
 - **A sideways finger turns the page (D786, D795 — built 13 Oct 26, `[ONE-DATE-CALENDAR]` step one; `ui/sideswipe.ts`,
   wired in `ui/DaysWindow.tsx`).** On the month it goes to the next month (left) or the last (right); on the Holidays list,
   the year. It is the Inputs calendar's own distance (`ui/calpick.ts` `SWIPE_MIN`, 50px, and more sideways than

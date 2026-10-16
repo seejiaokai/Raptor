@@ -20,20 +20,21 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/small-fixes-1017 -->
-### `claude/small-fixes-1017` — two small fixes: the push guard's leftovers, the Inputs list's next year — written 17 Oct 26, verify before use
-- **Where it started:** the same chat as pull request 526 (the Medical cards one width, D977; [MED-NEWYEAR] closed) — LIVE 17 Oct 26 on his "merge live", so its block left here. His word: "U can do the small things quick here first".
-- **Done:** [PUSH-GUARD-LEFTOVERS] — the guard reads a variable's push target, a pipe into xargs, PowerShell's quotes and bash's `$'…'`; a quoted ">…" is a word; suggestions in single quotes; a lock is never set aside before it is judged (`.claude/hooks/push-guard.mjs`, `raptor-port/scripts/gatelock.mjs`; tests 40/40; two fresh Opus reads, every finding fixed). [INPUTS-LIST-NEXT-YEAR] — the desktop Inputs list reads each input in its own year (`raptor-port/src/ui/InputsPage.tsx`; a test through the Leave War's own write; walked before and after). Both archived. Record: `raptor-port/docs/handpass/2026-10-17-small-fixes.md`.
-- **Filed:** [TILL-NEXT-YEAR] — another year's input prints "till <date>" without its year (the shared printer; it also feeds the published-day compare, so its own job).
-- **Branch:** `claude/small-fixes-1017`, cut from `main` at pull request 526, no upstream until its first push. Waits for his "merge live".
-- **Gates:** the whole set on his PC, 17 Oct 26 — unit 11,582/11,582, build, the original 728/0, browser 839 passed, Tracker smoke 446/0, rulecheck, docsize: all green; the guard 40/40, bg-cwd 14/14.
-- **Open questions for him:** none.
+<!-- now:claude/oil-confirm-daygrid-d05aeb -->
+### `claude/oil-confirm-daygrid-d05aeb` — [OIL-CONFIRM-DAYGRID]: the OIL question's "Only some days…" as the app's one calendar (D923) — written 17 Oct 26, verify before use
+- **Where it started:** a fresh chat on `main` after pull request 527 (the two small fixes — LIVE, so its block left here; its one leftover, [TILL-NEXT-YEAR], is filed).
+- **Done:** the question's several-days form is `raptor-port/src/ui/DateCal.tsx` in a new mode (`mode="many"`, `only`, `picked`, `onToggle`), drawn by `raptor-port/src/ui/OilConfirm.tsx`; the old small month and its styles are gone; under 400 wide the calendar has no box of its own (its head did not fit); Home / End stay in the week. FULL check: `raptor-port/docs/handpass/2026-10-17-oil-confirm-daygrid.md`.
+- **Branch:** `claude/oil-confirm-daygrid-d05aeb`, cut from `main` at pull request 527. Waits for his look and "merge live".
+- **Gates:** the whole set on his PC, 17 Oct 26, on the final code — build clean · tfin 728 / 0 · unit 11592 / 11592 (651 files) · e2e 844 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK. Breaks 11 / 11; re-walk 112 PASS.
+- **Open questions for him:** none that blocks; for his look — the phone's calendar with no box, and the count line's new words.
+- **Reads:** a fresh Opus scenario designer, a fresh blind Opus code read (D790), a fresh read of the fix commits — every finding fixed or filed ([CAL-ESC-LISTS]); without Astra and Sol 6.1 (on [NO-ASTRA-LIST]).
 - **Running when written:** none.
-- **Pick up here:** read the pull request's check run; then [OIL-CONFIRM-DAYGRID] (D923) in a fresh chat — FULL check, it touches OIL.
-- **Opening line:** "Switch this chat to the branch claude/small-fixes-1017: git fetch origin, git switch claude/small-fixes-1017, git branch -u origin/claude/small-fixes-1017, git pull --ff-only. If the switch is refused because another checkout holds the branch, release it there only if that checkout is clean and on origin's commit, then switch again; otherwise stop and tell me. Then measure how full this chat is, read HANDOFF.md — the claude/small-fixes-1017 block under ## Now — and carry on from Pick up here."
+- **Pick up here:** his look (the pictures `raptor-port/docs/img/handpass/2026-10-17-oil-confirm-daygrid/look/`) and his answer on the count line's words; then his "merge live". After it, his order (D495): the Tracker batch in a fresh chat.
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (17 Oct 26, night):** pull request 527 is LIVE (the two small fixes) → [OIL-CONFIRM-DAYGRID] (D923) BUILT and FULL-checked on `claude/oil-confirm-daygrid-d05aeb`, waiting for his look and "merge live".
 
 **RIGHT NOW (17 Oct 26, evening):** pull request 526 is LIVE (the Medical cards one width, D977; [MED-NEWYEAR] closed) → the two small fixes on `claude/small-fixes-1017`, waiting for his "merge live" → [OIL-CONFIRM-DAYGRID] (D923), a fresh chat.
 
@@ -92,6 +93,8 @@ his ruling — DONE 7 Oct 26 on `claude/docs-tidy-7-oct` (D609: options 1 to 6; 
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
 ## Gate baseline
+
+**The latest counts watched — 17 Oct 26, `claude/oil-confirm-daygrid-d05aeb` at `c47dfa2ae` (`main` with [OIL-CONFIRM-DAYGRID] — NOT `main`'s code), the whole gate set under the PC lock in one run: build clean · tfin 728 / 0 · unit 11592 / 11592 (651 files) · e2e 844 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN.**
 
 **The latest counts watched — 17 Oct 26, `claude/sharp-goldberg-6d0656` (pull request 524, before the code read's fixes; NOT `main`'s code then), the whole gate set under the PC lock in one run: build clean · tfin 728 / 0 · unit 11581 / 11581 (651 files) · e2e 832 passed, 1 failed, 59 skipped — the failure the Leave War desktop timing test "the grid draws a window of months…" (`[LW-WINDOW-PRUNE-FLAKE-2]`), alone under the lock 1 of 1 · smoke 446 / 0 · rulecheck OK · docsize — one home missing, restored. After the fixes: unit 11581 / 11581 and the Medical and Inputs browser files 125 / 125 under the lock; GitHub's full run of the final commit green.**
 

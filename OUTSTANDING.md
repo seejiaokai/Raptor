@@ -52,6 +52,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **CLOSED 17 Oct 26 — [MED-NEWYEAR]:** not a fault of the app — a medical input filed across New Year through the window saves its end with its year and shows on the Medical tab; the item rested on a row planted without its year (D56). Pinned by a browser test; archived.
 
+**BUILT 17 Oct 26 on `claude/oil-confirm-daygrid-d05aeb` — [OIL-CONFIRM-DAYGRID] (D923):** the OIL question's "Only some days…" is the app's one calendar; FULL-checked; waits for his look (the phone's calendar with no box of its own, the count line's words) and "merge live". Found on the way: [CAL-ESC-LISTS] — Escape with a calendar's month list open closes the whole form; his to place.
+
 **DONE 17 Oct 26 on `claude/small-fixes-1017` — his "U can do the small things quick here first":** [PUSH-GUARD-LEFTOVERS] (the guard reads variables, xargs, PowerShell's quotes; two fresh reads) and [INPUTS-LIST-NEXT-YEAR] (the Inputs list reads each input in its own year); both archived. Found on the way: [TILL-NEXT-YEAR] — small, with the next Inputs batch.
 
 **LIVE 15 Oct 26 (pull requests 517 and 518, his "merge live"; their items are in `OUTSTANDING-ARCHIVE.md`):** a new input opens on OL, the title's pencil, When and Remarks above the calendar (D917, D919, D920); the Tracker's ⇅ Reorder rows drag by finger and by mouse, one look (D922, D924). **Next, ruled the same night (D926–D928):** the Medical tab and Quals' one row, then the Logic page as drawn — `claude/one-row-guide-medical`; then [OIL-CONFIRM-DAYGRID] (D923), its own job.
@@ -2231,6 +2233,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 | `[MEDICAL-ONE-ROW]`, `[LOGIC-PAGE-LAYOUT]` (D927–D933, D936) — the Medical tab's one row and the Logic page rewritten for its reader; LIVE 16 Oct 26 (pull request 519) | every line of the Logic page read by one fresh Opus reader before the build; the finished code by one fresh, blind Opus reader (four small, fixed and tested) — `raptor-port/docs/handpass/2026-10-15-logic-medical.md` | the ChatGPT read (Astra) of the finished code |
 | Quals' one row and its paragraph deleted, "Save" on a phone, Quals opening at its top (D935, D937); LIVE 16 Oct 26 (pull request 519) | walked and gated (WALK tier, breaks 9/9, re-walk 30/30 — `raptor-port/docs/handpass/2026-10-16-quals-one-row.md`); no model read of its own | any ChatGPT read |
 | The short ruling lines D926–D937 (recorded 15–16 Oct 26) | the host, at the writing | Astra's D138 meaning read, as for the lines above |
+| `[OIL-CONFIRM-DAYGRID]` — the OIL question's "Only some days…" as the app's one calendar (D923), built 17 Oct 26 on `claude/oil-confirm-daygrid-d05aeb` | a fresh Opus scenario designer; one fresh, blind Opus reader of the finished code (D790, D903); walked and gated (FULL — `raptor-port/docs/handpass/2026-10-17-oil-confirm-daygrid.md`) | Astra's scenario design and the two ChatGPT code reads OIL work takes (D590) |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.
@@ -2295,13 +2298,27 @@ stay readable by other models). **Place:** next, after pull request 524.
 **Delete candidates by his rule of 14 Oct 26 (D846; the guide's §1, its wording approved — D847) — DONE the same day on his word (D848 — "Delete all three"):** "Choose Keep or Remove for each entry above" (the upchit question), "Choose for each clash above" and the small print under the answers (the medical-clash question) are deleted; the one fact he asked to keep, that a day holds one status, is that sheet's heading now ("A day holds one status: choose who holds these days" — shown to him as built, his to change). Kept, and why: "What is left goes to the schedulers' bells" in the day's one list of OIL questions (a consequence he cannot see), the several-days form's "No days selected — tap the highlighted days to credit them" (an instruction for a gesture nothing else suggests). The first whole-app look under D808 lists the rest.
 **Why it is filed and not built:** D830's and D838's lists are his; a wording or a look he has not been shown is not changed unasked (the design guide's §1). His answers come first (D541 for the two that change a look).
 
-### [OIL-CONFIRM-DAYGRID] The OIL question's own "only some days" grid is a near-copy of the old calendar — named by calendar step two (15 Oct 26); RULED D923 (build it, a picture first) — OPEN
+### [OIL-CONFIRM-DAYGRID] The OIL question's own "only some days" grid is a near-copy of the old calendar — named by calendar step two (15 Oct 26); RULED D923 (build it, a picture first); BUILT and FULL-checked 17 Oct 26 on `claude/oil-confirm-daygrid-d05aeb` — OPEN until his look and "merge live"
+**BUILT 17 Oct 26:** the question's "Only some days…" is `DateCal` in a several-days mode (`mode="many"`, `only`, `picked`,
+`onToggle`); the old small month and its styles are gone; on a phone (under 400 wide) the calendar is drawn without its own
+box so its head fits; Home and End stay inside the week. The check: `raptor-port/docs/handpass/2026-10-17-oil-confirm-daygrid.md`
+(FULL — a scenario designer and a fresh, blind Opus code read; the walk at eight sizes). **For his look:** the phone's calendar
+with no box of its own, and the count line's new words ("No days selected — tap a day to credit it").
 **RULED 15 Oct 26 — D923: build it** — the one calendar's look, a tap turning each separate non-working day on or off. A picture on the real app first, then its own job after [INPUT-NEW-DEFAULTS] (the agent's placing); FULL check (it touches what earns OIL).
 **Pictured for him 15 Oct 26 (D921):** pictures 2a and 2b, `raptor-port/docs/img/handpass/2026-10-15-two-leftovers/` (`scripts/handpass/pics-two-leftovers.mjs`).
 **Seen:** step two moved every date pick in its list onto the one calendar (`src/ui/DateCal.tsx`); the OIL question's
 "only some days" day grid was not on that list and (`src/ui/OilConfirm.tsx`) still draws its own month. **Next:** put to him with a
 picture whether it takes the one calendar (a pick of several separate days, which the calendar does not do today);
 nothing built before his word. The step-two check: `raptor-port/docs/handpass/2026-10-15-calendar-step-two.md`.
+
+### [CAL-ESC-LISTS] Escape with a calendar's month-and-year lists open closes the whole form, not the lists — found 17 Oct 26 by [OIL-CONFIRM-DAYGRID]'s code read (F3); older than that job; his to place — OPEN
+**Seen:** in a calendar drawn inside a form — the OIL question's "Only some days…", an input's own window — the title opens
+the month-and-year lists; Escape there closes the whole question or window (in the question before a swap, the swap is
+not made and the bar stays), where the design guide's §2 says "Escape closes what opened last". The one calendar's header
+leaves Escape to its form (`raptor-port/src/ui/DateCal.tsx`), so it is every inline calendar's, not this job's. A calendar
+that floats (the date box) is not affected: its layer takes Escape. **The fix, if he wants it:** in `DateCal`'s list keys,
+Escape closes the lists and stops there; the two forms' Escape handlers leave a key that came from the lists alone; one
+unit test each (`oilconfirm.test.tsx`, `inputs.test.tsx`). Picture: `raptor-port/docs/img/handpass/2026-10-17-oil-confirm-daygrid/rewalk/18-S7-desk-lists.png`.
 
 ### [GUIDE-NO-GLOW] The design guide carries "a ring in this app never glows" — RULED D880 (15 Oct 26); the wording APPROVED and in the guide (D887); BUILT and WALK-checked 15 Oct 26 (`raptor-port/docs/handpass/2026-10-15-no-glow.md`) — OPEN until his "merge live"
 **His "3 yes" (D880)** to D852's question after `[GLOW-OFF]`. Version 2 of the wording, after one fresh reader
