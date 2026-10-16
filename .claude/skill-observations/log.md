@@ -1011,3 +1011,18 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** Step 9 gains one line: in the night's checkout, if `raptor-port/node_modules` is missing, run `npm ci` (a few minutes) before the first job — alongside keep-awake and the guard.
 
 **Principle:** An unattended run should prove its tools work before its first job, not discover a missing setup step inside the work.
+
+### Observation 621: A records commit pushed seconds after opening the pull request cancels its first run
+
+**Status:** OPEN
+**Date:** 2026-10-17
+**Session context:** /overnight, night of 16–17 Oct 26 — opened PR 522, then committed and pushed the night's block straight away; the push cancelled the PR's first full run (D151).
+**Skill:** overnight
+**Type:** internal
+**Phase/Area:** Part 2, "Pull requests" / "At every commit"
+
+**Issue:** The guide says to write the block at every commit and, separately, never to push while a PR's checks run. Right after opening the PR the two collide: the block is due, the run has just started, and the push restarts it (20 minutes lost).
+
+**Suggested improvement:** In "Pull requests": write and commit the block BEFORE opening the PR (the block names the PR as "to be opened"), then open it; after that, commit records locally and push only when step 1's command shows no run of the last pushed commit queued or in progress.
+
+**Principle:** When two standing rules meet at one moment, order the steps so the cheaper one goes first.
