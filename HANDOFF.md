@@ -21,14 +21,21 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/sharp-goldberg-6d0656 -->
-### THE MEDICAL TAB'S CARDS AND "+ MEDICAL" — BUILT, WALK-CHECKED, WAITING FOR HIS "MERGE LIVE 524" — `claude/sharp-goldberg-6d0656` (pull request 524, OPEN, not merged) — written 17 Oct 26
-- **On the branch, all of it checked:** the words pass round 3 (D959) and the Medical card's period (D960) — sheet `raptor-port/docs/handpass/2026-10-17-words-r3.md`; then **D965 built as drawn (with D961, D963, D964), and D966 + D967** (his answers after the code read): a card is its puck, then the kind and the period ("ATT C 13–17 Jul"), three a row on a phone (a card at most a third of the row, never narrower than its puck; a long period under its kind); Pending Upchit "OML 6–9 Jul"; Upchit Complete the date; from two documents, in every section, one page drawing and the number ("▯ 2"); "+ Medical" a filled button at the right end of the "as of" row, opening the Inputs tab's own window on HL; a save, Undo or Redo on the Medical tab no longer turns the calendars' month. Contract: `raptor-port/docs/ui-contracts.md` (the Medical view).
-- **Its check, WALK tier:** sheet `raptor-port/docs/handpass/2026-10-17-medical-cards.md` — walk 31/31 and re-walk 32/32 (`scripts/handpass/medical-walk.mjs`), two fresh blind Opus reads (the code: five finds; the fixes: three finds) all fixed, break tests all caught, the gates (counts in the sheet). Fable not used (D903).
-- **Next:** his look at the preview and his "merge live 524" → merge, `main`'s run green, Vercel's production READY, one notification. Then **his question of 17 Oct 26:** why a new chat starts 30–40% full, whether that grows with the app, and options to cut it (and his idea of "mods" — automatic checks in place of written procedure, explained to him 17 Oct 26) — measured and put to him as options with savings and risks, nothing trimmed before he rules. A first figure (this chat at 59%): loaded instructions ~8%, tool descriptions ~7% — the rest was the chat's own work. Filed for later: `[MED-NEWYEAR]`.
-- **Rulings this chat:** D966, D967 (`.claude/rules/decisions/inputs.md`).
+### `claude/sharp-goldberg-6d0656` — pull request 524 LIVE (17 Oct 26); NEXT: why a new chat starts 30–40% full, and options — written 17 Oct 26, verify before use
+- **Where it started:** he asked for the Medical tab's cards (D961, D965) and "+ Medical" (D963, D964) on this branch, into pull request 524.
+- **Shipped:** pull request 524 — MERGED and LIVE 17 Oct 26 on his "merge live 524" (main's run green, Vercel production READY): the words pass round 3 (D959), the Medical card's period (D960), the cards three a row with "▯ 2" from two documents (D965–D967), "+ Medical" opening on ATT C (D968). Check: `raptor-port/docs/handpass/2026-10-17-medical-cards.md` (WALK; walk and two re-walks; two blind Opus reads, all findings fixed).
+- **Unfinished:** none of 524. Filed, not started: `[MED-NEWYEAR]` (a medical input across New Year never shows on the Medical tab — older; its own fix) and `[CONTEXT-START-SIZE]` (the next job, below).
+- **Branch:** `claude/sharp-goldberg-6d0656`, reset to `origin/main` after the merge and carrying only this handoff (docs only). The next chat continues ON it.
+- **Gates:** for 524, the whole set under the lock and GitHub's full run green on the final commit (counts in the sheet and §Gate baseline). This handoff is documents only: `npm run docsize`.
+- **Open questions for him:** none.
+- **Running when written:** none — no helper, server or lock held; this chat does nothing further once a new chat takes this block.
+- **Pick up here:** `[CONTEXT-START-SIZE]` in `OUTSTANDING.md` — measure what fills a new chat at its start (the new chat measures ITSELF first, with `mcp__ccd_session_mgmt__get_usage`, before reading anything), how each piece grows with the app, and his "mods" idea (automatic checks in place of written procedure); put him a short page of options with savings and risks, a recommendation, in plain words. Change NOTHING before he rules (D602, D609 did the same on 7 Oct 26 — read their full rows first).
+- **Opening line:** "Switch this chat to the branch claude/sharp-goldberg-6d0656 (git fetch origin, then git switch claude/sharp-goldberg-6d0656 and git pull --ff-only). Read HANDOFF.md — the claude/sharp-goldberg-6d0656 block under ## Now — then do [CONTEXT-START-SIZE] from OUTSTANDING.md: first measure how full this chat is right now, before reading anything else, then find why a new chat starts 30–40% full and put me the options with pictures or a page I can read on my phone."
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (17 Oct 26):** pull request 524 is LIVE (the Medical tab's cards and "+ Medical", D959–D968) → `[CONTEXT-START-SIZE]` — why a new chat starts 30–40% full, and options (his question), on `claude/sharp-goldberg-6d0656` → `[MED-NEWYEAR]`, a small fix of its own.
 
 **RIGHT NOW (17 Oct 26):** pull requests 522 and 523 are LIVE (the till-date tick and round 2's words; ALL / ALL AVAIL inputs on the Common Programme) → round 3 of the whole-app words pass (D808), on `claude/sharp-goldberg-6d0656`.
 
@@ -83,6 +90,8 @@ his ruling — DONE 7 Oct 26 on `claude/docs-tidy-7-oct` (D609: options 1 to 6; 
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
 ## Gate baseline
+
+**The latest counts watched — 17 Oct 26, `claude/sharp-goldberg-6d0656` (pull request 524, before the code read's fixes; NOT `main`'s code then), the whole gate set under the PC lock in one run: build clean · tfin 728 / 0 · unit 11581 / 11581 (651 files) · e2e 832 passed, 1 failed, 59 skipped — the failure the Leave War desktop timing test "the grid draws a window of months…" (`[LW-WINDOW-PRUNE-FLAKE-2]`), alone under the lock 1 of 1 · smoke 446 / 0 · rulecheck OK · docsize — one home missing, restored. After the fixes: unit 11581 / 11581 and the Medical and Inputs browser files 125 / 125 under the lock; GitHub's full run of the final commit green.**
 
 **The latest counts watched — 16 Oct 26, `claude/whole-app-words-pass-73790e` (`main` with the words pass's round 1 — NOT `main`'s code), the whole gate set under the PC lock in one run: build clean · tfin 728 / 0 · unit 11506 / 11507 (646 files) · e2e 824 passed, 3 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK. The four failures were tests that still read the removed words (a bar's "tap to review"; a fold's "show") — each re-expressed, then its file run alone: `warnmute-week.test.ts` 11 / 11, `e2e/grouprow.spec.ts` 5 / 5 under the lock. Only test files changed after the run.**
 

@@ -48,6 +48,8 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
+**NEXT (his question, 17 Oct 26) — [CONTEXT-START-SIZE]:** why a new chat starts 30–40% full, whether it grows, and options to cut it (measure, then options to him; nothing changes before he rules).
+
 **FOUND 17 Oct 26 — [MED-NEWYEAR]:** a medical input across New Year never shows on the Medical tab (older than pull request 524; its own small fix, after 524).
 
 **LIVE 15 Oct 26 (pull requests 517 and 518, his "merge live"; their items are in `OUTSTANDING-ARCHIVE.md`):** a new input opens on OL, the title's pencil, When and Remarks above the calendar (D917, D919, D920); the Tracker's ⇅ Reorder rows drag by finger and by mouse, one look (D922, D924). **Next, ruled the same night (D926–D928):** the Medical tab and Quals' one row, then the Logic page as drawn — `claude/one-row-guide-medical`; then [OIL-CONFIRM-DAYGRID] (D923), its own job.
@@ -2166,6 +2168,25 @@ with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
 **His words (12 Oct 26, while step 3 of the one-rule job was being built):** *"can we search the web to see if there's any other similar web app that is similar to raptor and see if we can take reference from them to see if what we are doing has been done and we can learn from them"*. **Done the same night:** one helper searched the public web; its report, whole — eleven products (military squadron schedulers, flight-school schedulers, airline bidding, fatigue scoring, shift rostering), eight lessons each tied to its product, where ours does what they do not and where it appears to lack what they have, and every link opened — is `raptor-port/docs/superpowers/briefs/2026-10-12-similar-apps-research.md`. Military tools publish little; what was only a search summary is marked there.
 
 **What is his here — nothing is built until he says:** whether any of it becomes a job. The five things ours appears to lack, as the report names them: suggested filling of seats; a fatigue score beside the crew-rest rule; member-to-member swaps; phone alerts with "I have seen it"; the training syllabus telling the scheduler who needs what next. Two of its lessons touch work already in hand: telling only the people whose day changed (the bell's notices, `[ALL-AVAIL-AS-MEMBER]` step 7) and fewer, plainer screens (`[UI-SLEEK-PASS]`).
+
+### [CONTEXT-START-SIZE] Why a new chat starts 30–40% full, whether it grows with the app, and ways to cut it (his question, 17 Oct 26)
+
+**Status: OPEN — the next job (`HANDOFF.md`, the `claude/sharp-goldberg-6d0656` block); nothing changes before he rules.**
+**His words (17 Oct 26, during pull request 524):** *"could u find out why am I using so much context for every new chat
+like 30-40% immediately and will this be unsustainable if this app becomes more complex? Is there a way to optimise it"*;
+and, a message later, whether "mods" could replace some instruction files (he had read of people who "threw away their MD
+files and used Mods"). **What he was told then:** a mod is an automatic check or panel that runs at a set moment (a hook
+before a push, the document check at a turn's end); it can take over PROCEDURE rules ("always do X before Y") but not his
+rulings (what the app must do), which the agent must know while building — and the project already has some (the
+ruling-recording hook, the document check, the background-folder guard, the PC lock). **The job:** (1) the new chat
+measures its OWN start first (`mcp__ccd_session_mgmt__get_usage`), then after the reads a chat makes at its start
+(`HANDOFF.md`, the always-loaded rule files, `raptor-port/CLAUDE.md`, an area rulings file — `scheduler.md` is ~26k tokens,
+`inputs.md` ~10k); (2) how each piece grows as the app grows; (3) every loaded piece sorted into: rulings that must stay /
+procedures a hook or check could enforce instead / text that need not load at the start; (4) a short page of options with
+what each saves (tokens and %) and its risk, with a recommendation, in plain words. First figures (the 524 chat at 59–70%
+full): loaded instructions ~4%, tool descriptions ~8%; the rest was that chat's own work and reads. **Read first:** D602,
+D609 (the start-of-chat measure of 7 Oct 26), D70 (a working-guide change is read before he approves it), D623 (guides
+stay readable by other models). **Place:** next, after pull request 524.
 
 ### [MED-NEWYEAR] A medical input that runs across New Year never shows on the Medical tab (found 17 Oct 26, not fixed)
 

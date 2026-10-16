@@ -275,7 +275,10 @@ const RULING_BYTES = [
   /* inputs 32000 -> 37000 (16 Oct 26, the documents tidy after pull request 519): 35,026 bytes with the calendar's step
      two, the input window's and the Medical tab's rulings of 14-15 Oct (D900-D920, D927) - live; none is trimmed (D136). [RULINGS-SPENT-PASS]
      reads it for spent rows. Room, not a target. */
-  ['.claude/rules/decisions/inputs.md', 2, 37000],
+  /* inputs 37000 -> 42000 (17 Oct 26, the handoff after pull request 524): 39,350 bytes with the words pass round 3 and
+     the Medical tab's cards (D959-D968) - live, none trimmed (D136); the one replaced row of them (D962) is archived.
+     [RULINGS-SPENT-PASS] reads it for spent rows. Room, not a target. */
+  ['.claude/rules/decisions/inputs.md', 2, 42000],
   /* 12000 until 12 Oct 26: raised for D780–D782 (the OIL question a holiday or a swap leaves open) — three live
      rulings of this area, none replaced; a rulings file is never trimmed (D136, D390) */
   /* oil 14000 -> 15500 (15 Oct 26): 14,617 bytes with D862, D863 and D865 - his answers on the small OIL job, live;
