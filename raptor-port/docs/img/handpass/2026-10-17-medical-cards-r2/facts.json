@@ -1,0 +1,231 @@
+{
+ "phone planted": [
+  "Ranger",
+  "Saber",
+  "Drifter"
+ ],
+ "phone before": {
+  "perRow": {
+   "down": [
+    2,
+    2
+   ],
+   "pend": [
+    1
+   ],
+   "done": [
+    2
+   ]
+  },
+  "cards": [
+   "Ranger IP ATT C 29 Jun – 14 Jul 131x46 docs:0",
+   "Saber IP ATT B 13–16 Jul 100x46 docs:0",
+   "Grit C ATT C 13–17 Jul 100x46 docs:0",
+   "Vector C OML 13 Jul 94x46 docs:0",
+   "Quill IW OML 6–9 Jul 94x46 docs:0",
+   "Drifter A 9 Jul 126x45 docs:5",
+   "Zenith C 20 Jun 94x45 docs:2"
+  ],
+  "spill": false
+ },
+ "phone after-A": {
+  "perRow": {
+   "down": [
+    3,
+    1
+   ],
+   "pend": [
+    1
+   ],
+   "done": [
+    2
+   ]
+  },
+  "cards": [
+   "Ranger IP ATT C 29 Jun – 14 Jul 107x59 docs:0",
+   "Saber IP ATT B 13–16 Jul 2 107x59 docs:1",
+   "Grit C ATT C 13–17 Jul 100x59 docs:0",
+   "Vector C OML 13 Jul 94x46 docs:0",
+   "Quill IW OML 6–9 Jul 94x46 docs:0",
+   "Drifter A 9 Jul 5 94x45 docs:1",
+   "Zenith C 20 Jun 2 94x45 docs:1"
+  ],
+  "spill": false
+ },
+ "phone after-B": {
+  "perRow": {
+   "down": [
+    3,
+    1
+   ],
+   "pend": [
+    1
+   ],
+   "done": [
+    2
+   ]
+  },
+  "cards": [
+   "Ranger IP ATT C 29 Jun – 14 Jul 107x72 docs:1",
+   "Saber IP ATT B 13–16 Jul 107x72 docs:2",
+   "Grit C ATT C 13–17 Jul 107x72 docs:1",
+   "Vector C OML 13 Jul 94x46 docs:1",
+   "Quill IW OML 6–9 Jul 94x46 docs:1",
+   "Drifter A 9 Jul +2 101x45 docs:3",
+   "Zenith C 20 Jun 94x45 docs:2"
+  ],
+  "spill": false
+ },
+ "phone375 planted": [
+  "Ranger",
+  "Saber",
+  "Drifter"
+ ],
+ "phone375 before": {
+  "perRow": {
+   "down": [
+    2,
+    2
+   ],
+   "pend": [
+    1
+   ],
+   "done": [
+    2
+   ]
+  },
+  "cards": [
+   "Ranger IP ATT C 29 Jun – 14 Jul 131x46 docs:0",
+   "Saber IP ATT B 13–16 Jul 100x46 docs:0",
+   "Grit C ATT C 13–17 Jul 100x46 docs:0",
+   "Vector C OML 13 Jul 94x46 docs:0",
+   "Quill IW OML 6–9 Jul 94x46 docs:0",
+   "Drifter A 9 Jul 126x45 docs:5",
+   "Zenith C 20 Jun 94x45 docs:2"
+  ],
+  "spill": false
+ },
+ "phone375 after-A": {
+  "perRow": {
+   "down": [
+    3,
+    1
+   ],
+   "pend": [
+    1
+   ],
+   "done": [
+    2
+   ]
+  },
+  "cards": [
+   "Ranger IP ATT C 29 Jun – 14 Jul 102x59 docs:0",
+   "Saber IP ATT B 13–16 Jul 2 102x59 docs:1",
+   "Grit C ATT C 13–17 Jul 100x59 docs:0",
+   "Vector C OML 13 Jul 94x46 docs:0",
+   "Quill IW OML 6–9 Jul 94x46 docs:0",
+   "Drifter A 9 Jul 5 94x45 docs:1",
+   "Zenith C 20 Jun 2 94x45 docs:1"
+  ],
+  "spill": false
+ },
+ "phone375 after-B": {
+  "perRow": {
+   "down": [
+    3,
+    1
+   ],
+   "pend": [
+    1
+   ],
+   "done": [
+    2
+   ]
+  },
+  "cards": [
+   "Ranger IP ATT C 29 Jun – 14 Jul 102x72 docs:1",
+   "Saber IP ATT B 13–16 Jul 102x72 docs:2",
+   "Grit C ATT C 13–17 Jul 102x72 docs:1",
+   "Vector C OML 13 Jul 94x46 docs:1",
+   "Quill IW OML 6–9 Jul 94x46 docs:1",
+   "Drifter A 9 Jul +2 101x45 docs:3",
+   "Zenith C 20 Jun 94x45 docs:2"
+  ],
+  "spill": false
+ },
+ "desk planted": [
+  "Ranger",
+  "Saber",
+  "Drifter"
+ ],
+ "desk before": {
+  "perRow": {
+   "down": [
+    4
+   ],
+   "pend": [
+    1
+   ],
+   "done": [
+    2
+   ]
+  },
+  "cards": [
+   "Ranger IP ATT C 29 Jun – 14 Jul 131x46 docs:0",
+   "Saber IP ATT B 13–16 Jul 100x46 docs:0",
+   "Grit C ATT C 13–17 Jul 100x46 docs:0",
+   "Vector C OML 13 Jul 94x46 docs:0",
+   "Quill IW OML 6–9 Jul 94x46 docs:0",
+   "Drifter A 9 Jul 126x45 docs:5",
+   "Zenith C 20 Jun 94x45 docs:2"
+  ],
+  "spill": false
+ },
+ "desk after-A": {
+  "perRow": {
+   "down": [
+    4
+   ],
+   "pend": [
+    1
+   ],
+   "done": [
+    2
+   ]
+  },
+  "cards": [
+   "Ranger IP ATT C 29 Jun – 14 Jul 131x46 docs:0",
+   "Saber IP ATT B 13–16 Jul 2 123x46 docs:1",
+   "Grit C ATT C 13–17 Jul 100x46 docs:0",
+   "Vector C OML 13 Jul 94x46 docs:0",
+   "Quill IW OML 6–9 Jul 94x46 docs:0",
+   "Drifter A 9 Jul 5 94x45 docs:1",
+   "Zenith C 20 Jun 2 94x45 docs:1"
+  ],
+  "spill": false
+ },
+ "desk after-B": {
+  "perRow": {
+   "down": [
+    4
+   ],
+   "pend": [
+    1
+   ],
+   "done": [
+    2
+   ]
+  },
+  "cards": [
+   "Ranger IP ATT C 29 Jun – 14 Jul 147x46 docs:1",
+   "Saber IP ATT B 13–16 Jul 129x46 docs:2",
+   "Grit C ATT C 13–17 Jul 116x46 docs:1",
+   "Vector C OML 13 Jul 94x46 docs:1",
+   "Quill IW OML 6–9 Jul 94x46 docs:1",
+   "Drifter A 9 Jul +2 101x45 docs:3",
+   "Zenith C 20 Jun 94x45 docs:2"
+  ],
+  "spill": false
+ },
+ "errors": []
+}

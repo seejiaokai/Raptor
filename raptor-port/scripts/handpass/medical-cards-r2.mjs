@@ -19,7 +19,7 @@ const OUT = process.argv[2] || join(HERE, '../../docs/img/handpass/2026-10-17-me
 rmSync(OUT, { recursive: true, force: true }); mkdirSync(OUT, { recursive: true })
 const URL = process.env.LOOK_URL || 'http://localhost:4173/'
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
-console.log('medical-cards-r2 v1 →', OUT)
+console.log('medical-cards-r2 v3 →', OUT)
 const browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
 const errs = [], facts = {}
 
@@ -29,9 +29,9 @@ const MARK_CSS = `[data-wpn]{outline:2px solid #34c759 !important;outline-offset
 /* the three planted men: names read back for the facts */
 const PLANT = () => {
   const w = window
-  const docs = w.INPUTS.find(r => Array.isArray(r.docIds) && r.docIds.length >= 2)
-  if (!docs) return 'NO documents on file to reuse'
-  const [a, b] = docs.docIds
+  const ids = [...new Set(w.INPUTS.flatMap(r => [r.docId, ...(Array.isArray(r.docIds) ? r.docIds : [])]).filter(Boolean))]
+  if (ids.length < 2) return 'NO documents on file to reuse: ' + ids.length
+  const [a, b] = ids
   const taken = new Set(w.INPUTS.filter(r => /^(ATT [BC]|OML|HL|Upchit)$/i.test(String(r.type))).map(r => String(r.person)))
   const free = Object.keys(w.PEOPLE).filter(k => w.PEOPLE[k].cs && !taken.has(k) && !w.PEOPLE[k].archived && !w.PEOPLE[k].special)
   if (free.length < 3) return 'NOT ENOUGH free men'
@@ -43,20 +43,32 @@ const PLANT = () => {
   return [p1, p2, p3].map(k => w.PEOPLE[k].cs)
 }
 const DOC = '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>'
-/* the recommendation, drawn on the page's own nodes */
-const AFTER = docPaths => {
+/* D966, drawn two ways on the page's own nodes. Both: on a phone a card is at most a third of the row and a long
+   period goes under its kind (finding 1).
+     A (recommended) — "2 icon": from TWO documents, one page drawing with the number beside it, in every section; a card
+                       of one document shows none (every downchit carries one, so it would say nothing).
+     B               — "2 pictures of icon": one drawing a document on every card that has one; past three, "+N". */
+const AFTER = ([docPaths, v]) => {
+  document.getElementById('wp-after')?.remove()
   const st = document.createElement('style'); st.id = 'wp-after'
   st.textContent = `@media(max-width:820px){.medcard{max-width:calc((100% - 12px)/3)}}
 .medcard-row2{flex-wrap:wrap;row-gap:2px;white-space:normal}.medcard-row2>*{white-space:nowrap}
-.wp-more{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;color:var(--sec)}`
+.wp-n{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;color:var(--sec)}
+.wp-docs{display:inline-flex;align-items:center;gap:2px}`
   document.head.append(st)
   const svg = () => { const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('fill', 'none'); s.setAttribute('stroke', 'currentColor'); s.setAttribute('stroke-width', '2'); s.setAttribute('stroke-linecap', 'round'); s.setAttribute('stroke-linejoin', 'round'); s.innerHTML = docPaths; s.classList.add('medcard-doc'); return s }
   for (const c of document.querySelectorAll('.medcard')) {
-    const n = +((c.title.match(/view (\d+) documents/) || [])[1] || 1), row2 = c.querySelector('.medcard-row2')
-    const done = !!c.closest('.med-done')
-    if (!done && n >= 2) for (let i = 0; i < n; i++) row2.append(svg())
-    const icons = [...row2.querySelectorAll('.medcard-doc')]
-    if (icons.length > 3) { icons.slice(3).forEach(e => e.remove()); const m = document.createElement('span'); m.className = 'wp-more'; m.textContent = '+' + (icons.length - 3); row2.append(m) }
+    const row2 = c.querySelector('.medcard-row2'), had = row2.querySelector('.medcard-docs')
+    const r = window.INPUTS.find(x => String(x.iid) === c.dataset.medcard)
+    const own = r ? (Array.isArray(r.docIds) && r.docIds.length ? r.docIds.length : r.docId ? 1 : 0) : 0
+    /* the count is read once, from the page as built, and kept on the card: a second variant reads it, not the first's drawing */
+    if (!c.dataset.wpDocs) c.dataset.wpDocs = String(had ? had.querySelectorAll('svg').length : +((c.title.match(/view (\d+) documents/) || [])[1] || own))
+    const n = +c.dataset.wpDocs
+    row2.querySelectorAll('.medcard-docs, .wp-docs').forEach(e => e.remove())
+    const box = document.createElement('span'); box.className = 'wp-docs'
+    if (v === 'A' && n >= 2) { box.append(svg()); const m = document.createElement('span'); m.className = 'wp-n'; m.textContent = String(n); box.append(m) }
+    if (v === 'B' && n >= 1) { for (let i = 0; i < Math.min(n, 3); i++) box.append(svg()); if (n > 3) { const m = document.createElement('span'); m.className = 'wp-n'; m.textContent = '+' + (n - 3); box.append(m) } }
+    if (box.childNodes.length) row2.append(box)
   }
 }
 const mark = (page, items) => page.evaluate(([items, css]) => {
@@ -97,9 +109,11 @@ for (const size of [{ tag: 'phone', w: 390, dsf: 3, touch: true }, { tag: 'phone
   const items = [{ n: '1', who: who[0] }, { n: '2', who: who[1] }, { n: '3', who: who[2] }]
   facts[T + ' before'] = await measure(page)
   await mark(page, items); await shot(page, `${T}-before`)
-  await page.evaluate(AFTER, DOC)
-  facts[T + ' after'] = await measure(page)
-  await mark(page, items); await shot(page, `${T}-after`)
+  for (const v of ['A', 'B']) {
+    await page.evaluate(AFTER, [DOC, v])
+    facts[`${T} after-${v}`] = await measure(page)
+    await mark(page, items); await shot(page, `${T}-after-${v}`)
+  }
   await ctx.close()
 }
 writeFileSync(join(OUT, 'facts.json'), JSON.stringify({ ...facts, errors: errs }, null, 1))

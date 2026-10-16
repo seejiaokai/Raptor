@@ -6077,7 +6077,10 @@ row 1; on row 2 (`.medcard-row2`, one line, never wrapped) the kind in its secti
 **Pending Upchit** (`--adv` amber: "OML 6–9 Jul" — "was down" went, D965 narrowing D960), **Upchit Complete** (`--ok`
 green, trailing 30 days newest first: no kind and no "upchitted" — the date, then ONE page drawing a document on file,
 `.medcard-doc`, the section's green; the "N documents" pill went, the card's title still says "Tap to view N
-documents"). So a card is about its puck's width (~95) and THREE stand in a row at 390 and 375; a typed remark wraps
+documents"). **Next (D966, 17 Oct 26 — his answer after the code read):** Medically Down's and Pending Upchit's
+cards show their documents the same way, one drawing a document after the period (the pill went from them too, and a
+phone has no hover to read the title); whether a card of ONE document shows its drawing is put to him with a picture.
+So a card is about its puck's width (~95) and THREE stand in a row at 390 and 375; a typed remark wraps
 inside that width and never widens the card (`.medcard-r` takes no width of its own). The period is said as the Inputs
 pages say a range (`ui/InputsPage.tsx rangeWords`), since D960 (it was "till <date>"). **Nothing on a card says who
 placed the entry or when** (D960 — the input's window says it). Only Upchit Complete's heading carries a grey line ("the
