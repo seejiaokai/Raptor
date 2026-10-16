@@ -20,19 +20,20 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/oil-confirm-daygrid-d05aeb -->
-### `claude/oil-confirm-daygrid-d05aeb` — [OIL-CONFIRM-DAYGRID]: the OIL question's "Only some days…" as the app's one calendar (D923) — written 17 Oct 26, verify before use
-- **Where it started:** a fresh chat on `main` after pull request 527 (the two small fixes — LIVE, so its block left here; its one leftover, [TILL-NEXT-YEAR], is filed).
-- **Done:** the question's several-days form is `raptor-port/src/ui/DateCal.tsx` in a new mode (`mode="many"`, `only`, `picked`, `onToggle`), drawn by `raptor-port/src/ui/OilConfirm.tsx`; the old small month and its styles are gone; under 400 wide the calendar has no box of its own (its head did not fit); Home / End stay in the week. FULL check: `raptor-port/docs/handpass/2026-10-17-oil-confirm-daygrid.md`.
-- **Branch:** `claude/oil-confirm-daygrid-d05aeb`, cut from `main` at pull request 527 — pull request 528; his "merge live" GIVEN 17 Oct 26 (D978, both look points as recommended).
-- **Gates:** the whole set on his PC, 17 Oct 26, on the final code — build clean · tfin 728 / 0 · unit 11592 / 11592 (651 files) · e2e 844 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK. Breaks 11 / 11; re-walk 112 PASS.
-- **Open questions for him:** none — D978 answered both.
-- **Reads:** a fresh Opus scenario designer, a fresh blind Opus code read (D790), a fresh read of the fix commits — every finding fixed or filed ([CAL-ESC-LISTS]); without Astra and Sol 6.1 (on [NO-ASTRA-LIST]).
+<!-- now:claude/tracker-feature-batch-6ea3a7 -->
+### `claude/tracker-feature-batch-6ea3a7` — THE NIGHT OF 17 OCT 26 (`/overnight`): the Tracker batch begins — written 17 Oct 26, verify before use
+- **After a compaction: re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time.**
+- **His word (17 Oct 26, the opening message with `/overnight`):** start from `main`; remove the merged OIL block (pull request 528 is LIVE — done here); then the Tracker batch (D495): FIRST the approved tidy-up `[TRK-FILE-TRANSFER-SPLIT]` (D493, D775) as its own job, THEN the batch's features put to him in rounds of at most four questions, with pictures. NOT the progress graph (D774). His message named the work, so no selection step; 8 hours assumed (none given).
+- **Job 1 — `[TRK-FILE-TRANSFER-SPLIT]`, what is left of it** (the item: the 13 Oct look stopped the full move at Astra's stop condition): the three pieces that touch nothing of the store — the import's normalising (`normalizeImport`, given the store's chart catalogue as an argument; `core.js` keeps a one-line wrapper of the same name), `sameDef`, `remapStudentsSyl` — move from `raptor-port/src/tracker/app/core.js` to a new `raptor-port/src/tracker/app/fileTransfer.js` beside `fileFormat.js`, the boundary test `raptor-port/src/tracker/file-transfer-boundary.test.ts` FIRST. Nothing on screen changes. Tier FULL (saved data — how older files are read; the item's own tier), walk sized small (one export → import round trip at both widths). Reads: a fresh Opus scenario designer; a fresh blind Opus code read (D790; Fable not, D903); without Astra and Sol 6.1 → `[NO-ASTRA-LIST]`. Rough time: 3 hours, a guess.
+- **Job 2 — round 1 of the Tracker batch's questions** (nothing in the app changes): the Tracker's open backlog items sorted into features (his to decide) and faults; round 1's at most four questions, each with a recommended answer and a picture of the real app with the place marked, as one page for his morning. Rough time: 2 hours, a guess.
+- **Branch:** `claude/tracker-feature-batch-6ea3a7`, cut from `main` at pull request 528; its pull request opens when job 1's check closes.
+- **Questions waiting for him:** none yet.
 - **Running when written:** none.
-- **Pick up here:** if pull request 528 is merged and live, remove this block; next, his order (D495): the Tracker batch in a fresh chat (its card is proposed). [CAL-ESC-LISTS] is his to place.
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (17 Oct 26, the night):** pull request 528 is LIVE ([OIL-CONFIRM-DAYGRID], D978) → the Tracker batch (D495), on `claude/tracker-feature-batch-6ea3a7`: `[TRK-FILE-TRANSFER-SPLIT]` first, then his questions on the batch (the progress graph waits, D774).
 
 **RIGHT NOW (17 Oct 26, night):** pull request 527 is LIVE (the two small fixes) → [OIL-CONFIRM-DAYGRID] (D923) BUILT, FULL-checked and given "merge live" (D978 — pull request 528) → the Tracker batch (D495), a fresh chat.
 
