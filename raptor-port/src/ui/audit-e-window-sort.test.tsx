@@ -229,3 +229,32 @@ describe('a new input\'s calendar and the List\'s dates picker do not share stat
     await showAllDates()
   })
 })
+
+/* [INPUTS-LIST-NEXT-YEAR] (17 Oct 26): a leave the Leave War approves on a NEXT year's period is saved as the war writes
+   it — a bare label ('Jul 20') and its own anchor year (2027) beside it (leavewar/absences.ts inputRowFor). The list read
+   the label alone, in the loaded week's year: it printed '20 Jul' with no year, sorted it among this year's dates, and
+   counted it inside this year's two-week window. The list now reads a row's dates with its anchor year, as the schedule,
+   the Leave War and the Medical tab do. */
+describe('a next year leave approved on the Leave War', () => {
+  it('is read in its own year: out of this year\'s window, printed with its year, sorted after this year', async () => {
+    const { inputRowFor } = await import('../leavewar/absences')
+    await act(async () => {
+      INPUTS.unshift({ ...inputRowFor({ person: 'bane', code: 'LL', from: '2027-07-20', to: '2027-07-21', remarks: 'NY-WAR-LEAVE' }), mod: '' })
+      seed({ person: 'bane', date: 'Dec 30', remarks: 'NY-THIS-YEAR' })
+      notify()
+    })
+    const row = INPUTS.find((r: any) => r.remarks === 'NY-WAR-LEAVE')
+    expect([row.date, row.yr], 'the war writes a bare label and its year').toEqual(['Jul 20', 2027])
+    /* the default window is 13–27 Jul 2026: 20 Jul 2027 is not in it, 30 Dec 2026 neither */
+    if (!$('#inRangePop')) await click($('#inRangeBtn'))
+    await click($('#inRangeDef'))
+    expect(rowTexts().join('|'), 'not in this year’s two weeks').not.toContain('NY-WAR-LEAVE')
+    await showAllDates()
+    const all = rowTexts()
+    const iNext = all.findIndex(t => t.includes('NY-WAR-LEAVE')), iThis = all.findIndex(t => t.includes('NY-THIS-YEAR'))
+    expect(iNext, 'listed under All dates').toBeGreaterThanOrEqual(0)
+    expect(all[iNext], 'printed with its year').toMatch(/20 Jul 2027/)
+    expect(iNext, 'after this year\'s 30 Dec').toBeGreaterThan(iThis)
+    clean('NY-')
+  })
+})

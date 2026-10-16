@@ -4786,3 +4786,36 @@ case (D56):** a new filing across New Year is hurt the same way. **The fix:** `m
 an engine change, so the rules-engine doctrine and a test across the year, then a walk of the Medical tab "as of" 30 Dec
 and 2 Jan. **Place:** after pull request 524; small; no question for him.
 
+
+*Moved here 2026-10-17 by backlog-archive.mjs ([PUSH-GUARD-LEFTOVERS]). Forward facts: `raptor-port/docs/handpass/2026-10-17-small-fixes.md`, `raptor-port/docs/gates-and-deploy.md`.*
+
+### [PUSH-GUARD-LEFTOVERS] The push-and-lock guard's low-likelihood gaps, left by its third fresh read (17 Oct 26)
+
+**DONE 17 Oct 26 on `claude/small-fixes-1017`:** all four fixed, each with a test that fails without it; two fresh Opus reads of the fix (round 1: a regression and four gaps, all fixed; round 2: two small gaps, fixed). The record: `raptor-port/docs/handpass/2026-10-17-small-fixes.md`; what the guard reads now: `raptor-port/docs/gates-and-deploy.md`.
+**Status: OPEN — small; no question for him.** The guard ([PUSH-LOCK-GUARD], D976, `.claude/hooks/push-guard.mjs`) went on after three fresh reads; the third read's must-fix and quick items were fixed, these were left: (1) a quoted argument that begins with `>` or `<` (`-t ">8h rest"`) is taken for a redirect, so the refusal's suggested command drops it — mark words that held a quote and test the redirect only on the others; (2) PowerShell's doubled quote inside single quotes (`'it''s'`) is read as two quotes, and the suggested command re-quotes with double quotes, so `$x` would expand — read `''` as one literal quote and write the suggestion with single quotes; (3) pushes to main still unread: `B=main; git push origin $B`, `echo main | xargs git push origin`, and bash's `$'…'` quote (its `\'` is escaped) swallowing the rest of a line; (4) in `gatelock.mjs` breakLock, a third waiter making the folder in the instant it is renamed aside leaves the original unrestorable. Each with a test in `push-guard.test.mjs`. **Place:** whenever the guard is next touched.
+
+
+*Moved here 2026-10-17 by backlog-archive.mjs ([INPUTS-LIST-NEXT-YEAR]). Forward facts: `raptor-port/docs/handpass/2026-10-17-small-fixes.md`, `raptor-port/src/ui/InputsPage.tsx`.*
+
+### [INPUTS-LIST-NEXT-YEAR] The Inputs list reads a next-year input as this year's (found 8 Oct 26) — OPEN, not started
+
+**DONE 17 Oct 26 on `claude/small-fixes-1017`:** reproduced with a leave built by the Leave War's own write (it also stood inside this year's two-week window, as if the man were away now); the desktop list reads every date with the row's own year — test first, walked before and after (`raptor-port/docs/handpass/2026-10-17-small-fixes.md`). The phone list was already right. Left: the remark's "till <date>" without its year — [TILL-NEXT-YEAR].
+**What was seen, in the running build (8 Oct 26, while writing the browser test of the Inputs list's Undo landing):** with
+the list on "All dates", the demo squadron's OIL input for 15 Feb 2027 (the one the 2027 leave period carries) is shown as
+"15 Feb" — no year — and sits between this year's 17 Jan and 2 Mar rows. Saved once through the row's own editor (only
+its remarks changed) it then reads "15 Feb 2027" and moves to the foot of the list, where it belongs.
+
+**The cause, read in the code, NOT yet reproduced through the Leave War's own Approve:** an input keeps its date as a
+label and an anchor year (`yr`); the Leave War's approval writes the label WITHOUT a year and the anchor year beside it
+(`raptor-port/src/leavewar/absences.ts isoToInputDate` / `inputRowFor`), and the list orders its rows by the label alone
+(`raptor-port/src/ui/InputsPage.tsx SORTKEY.start` / `.end` — `unfmt(r.date)`, never `r.yr`). So a leave approved on a
+NEXT year's period would be listed among this year's dates, without its year, until someone edits it. New data, not only
+the demo's — which is why it is filed and not left under D56. The schedule and the Leave War read the anchor year and
+are right; whether the list's date window ("Next 2 weeks") also misreads it is to check with it.
+
+**To do:** reproduce it first through the app's own controls (make a 2027 period, approve a leave on it, open Inputs →
+List → All dates); then order, print and window the list by the label WITH its anchor year (`dateOrd(r.date, r.yr)` is
+the app's one reading of the two); a test first. **Its place:** with step 5 of the calendar job — the Inputs calendar —
+which rebuilds the Inputs screens and keeps the List behind one switch (D490: an area's small finds ride the batch that
+touches the area). Not a fault that harms a published record or OIL: the input itself is right.
+

@@ -52,6 +52,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **CLOSED 17 Oct 26 — [MED-NEWYEAR]:** not a fault of the app — a medical input filed across New Year through the window saves its end with its year and shows on the Medical tab; the item rested on a row planted without its year (D56). Pinned by a browser test; archived.
 
+**DONE 17 Oct 26 on `claude/small-fixes-1017` — his "U can do the small things quick here first":** [PUSH-GUARD-LEFTOVERS] (the guard reads variables, xargs, PowerShell's quotes; two fresh reads) and [INPUTS-LIST-NEXT-YEAR] (the Inputs list reads each input in its own year); both archived. Found on the way: [TILL-NEXT-YEAR] — small, with the next Inputs batch.
+
 **LIVE 15 Oct 26 (pull requests 517 and 518, his "merge live"; their items are in `OUTSTANDING-ARCHIVE.md`):** a new input opens on OL, the title's pencil, When and Remarks above the calendar (D917, D919, D920); the Tracker's ⇅ Reorder rows drag by finger and by mouse, one look (D922, D924). **Next, ruled the same night (D926–D928):** the Medical tab and Quals' one row, then the Logic page as drawn — `claude/one-row-guide-medical`; then [OIL-CONFIRM-DAYGRID] (D923), its own job.
 
 **LIVE 16 Oct 26 (pull request 519, his "merge live"; their items are in `OUTSTANDING-ARCHIVE.md`):** the Medical tab's one row (D927), the Logic page rewritten (D928–D933, D936), Quals' one row and its paragraph deleted (D935), "Save" on a phone and Quals opening at its top (D937); a Tracker test pinned against midnight. Its owed reads are in [NO-ASTRA-LIST].
@@ -1810,26 +1812,15 @@ each row must be read sentence by sentence first: any "if", "until" or "still" i
 it live (`DECISIONS.md` step 2). **To do:** that read, then the marks and `backlog-archive.mjs --rulings`; a documents-only
 job. **Place:** the agent's — with the next records tidy, before the next ruling that would cross the marker.
 
-### [INPUTS-LIST-NEXT-YEAR] The Inputs list reads a next-year input as this year's (found 8 Oct 26) — OPEN, not started
+### [TILL-NEXT-YEAR] An input of another year prints its "till <date>" without the year (found 17 Oct 26)
 
-**What was seen, in the running build (8 Oct 26, while writing the browser test of the Inputs list's Undo landing):** with
-the list on "All dates", the demo squadron's OIL input for 15 Feb 2027 (the one the 2027 leave period carries) is shown as
-"15 Feb" — no year — and sits between this year's 17 Jan and 2 Mar rows. Saved once through the row's own editor (only
-its remarks changed) it then reads "15 Feb 2027" and moves to the foot of the list, where it belongs.
-
-**The cause, read in the code, NOT yet reproduced through the Leave War's own Approve:** an input keeps its date as a
-label and an anchor year (`yr`); the Leave War's approval writes the label WITHOUT a year and the anchor year beside it
-(`raptor-port/src/leavewar/absences.ts isoToInputDate` / `inputRowFor`), and the list orders its rows by the label alone
-(`raptor-port/src/ui/InputsPage.tsx SORTKEY.start` / `.end` — `unfmt(r.date)`, never `r.yr`). So a leave approved on a
-NEXT year's period would be listed among this year's dates, without its year, until someone edits it. New data, not only
-the demo's — which is why it is filed and not left under D56. The schedule and the Leave War read the anchor year and
-are right; whether the list's date window ("Next 2 weeks") also misreads it is to check with it.
-
-**To do:** reproduce it first through the app's own controls (make a 2027 period, approve a leave on it, open Inputs →
-List → All dates); then order, print and window the list by the label WITH its anchor year (`dateOrd(r.date, r.yr)` is
-the app's one reading of the two); a test first. **Its place:** with step 5 of the calendar job — the Inputs calendar —
-which rebuilds the Inputs screens and keeps the List behind one switch (D490: an area's small finds ride the batch that
-touches the area). Not a fault that harms a published record or OIL: the input itself is right.
+**Status: OPEN — small; found by [INPUTS-LIST-NEXT-YEAR]'s walk.** On the Inputs list (loaded week in 2026), the demo's
+15 Feb 2027 OIL input reads "15 Feb 2027" in its date column but "till 15 Feb" in its remark: the "till <date>" every
+screen prints comes from `raptor-port/src/engine/inputs.ts tillOf` (`dayWords(endDate || date)`), which ignores the row's
+own year. Harmless on the schedule (a 2027 week loads with 2027 as its year), misleading wherever a screen shows another
+year's input. **Not a quick fix:** `tillOf` also feeds the published-day compare of the till date (D948, `engine/tilldate`)
+— adding a year there could mark published days "1 pending" — so it is its own job: the reader of the year, a test of the
+published compare, a look at the list and a card. **Place:** with the next Inputs batch; no question for him.
 
 ### [LW-WINDOWS-NONBLOCKING] The Leave War's other windows: stay up, and let the grid behind them work (D641, D642 — 7 Oct 26)
 Every Leave War window blocks the grid behind it and closes on a click outside (`src/leavewar/ui/Sheet.tsx`). D641 asked that the
@@ -2181,10 +2172,6 @@ what each saves (tokens and %) and its risk, with a recommendation, in plain wor
 full): loaded instructions ~4%, tool descriptions ~8%; the rest was that chat's own work and reads. **Read first:** D602,
 D609 (the start-of-chat measure of 7 Oct 26), D70 (a working-guide change is read before he approves it), D623 (guides
 stay readable by other models). **Place:** next, after pull request 524.
-
-### [PUSH-GUARD-LEFTOVERS] The push-and-lock guard's low-likelihood gaps, left by its third fresh read (17 Oct 26)
-
-**Status: OPEN — small; no question for him.** The guard ([PUSH-LOCK-GUARD], D976, `.claude/hooks/push-guard.mjs`) went on after three fresh reads; the third read's must-fix and quick items were fixed, these were left: (1) a quoted argument that begins with `>` or `<` (`-t ">8h rest"`) is taken for a redirect, so the refusal's suggested command drops it — mark words that held a quote and test the redirect only on the others; (2) PowerShell's doubled quote inside single quotes (`'it''s'`) is read as two quotes, and the suggested command re-quotes with double quotes, so `$x` would expand — read `''` as one literal quote and write the suggestion with single quotes; (3) pushes to main still unread: `B=main; git push origin $B`, `echo main | xargs git push origin`, and bash's `$'…'` quote (its `\'` is escaped) swallowing the rest of a line; (4) in `gatelock.mjs` breakLock, a third waiter making the folder in the instant it is renamed aside leaves the original unrestorable. Each with a test in `push-guard.test.mjs`. **Place:** whenever the guard is next touched.
 
 ### [UI-SLEEK-PASS] The interface made more minimal, intuitive and sleek — fewer words, button placement, motion, colour meaning, icons, flow; the Raptor look kept, never at a cost of speed (his direction, D765, 12 Oct 26 — AFTER the one-rule build; his to place)
 **BUILT 17 Oct 26 — D949, D950, D951 + D953 on `claude/whole-app-words-pass-1b-6cfe51` (pull request 522), FULL-checked (`raptor-port/docs/handpass/2026-10-17-tick-r2.md`): LIVE 17 Oct 26 (pull request 522 merged on his "merge live").** **D953 (17 Oct 26) — D952 drawn and answered ("1B 2-5 yes"): a tick box before the grey date, like the window's "all day" tick; readings 2–5 as drawn. To build with D949–D951.** **D952 (17 Oct 26) — draw first, then build with D949–D951:** a switch on every input for its "till <date>" (the grey date in its window), on by default except a one-day duty or other commitment; the default follows the dates; the person can still turn it.

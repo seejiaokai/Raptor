@@ -49,24 +49,51 @@ function prepare(cmd, ps) {
  *  command of its own to be read too — `out=$(npx vitest run)` runs the suite. */
 export function parse(cmd, tool) {
   const ps = /powershell/i.test(tool || ''); const s = prepare(cmd, ps);
-  const steps = []; const st = []; let words = []; let word = ''; let has = false; let subs = [];
-  const endWord = () => { if (word || has) words.push(word); word = ''; has = false; };
-  const endStep = () => {
-    endWord(); const w = words.filter((x) => x !== '{' && x !== '}');
-    if (w.length || subs.length) steps.push({ w, sub: subs });
-    words = []; subs = [];
+  // `q[n]` says word n BEGAN inside a quote ([PUSH-GUARD-LEFTOVERS] (1)): a quoted ">8h rest" is a word, never a
+  // redirect — but `2>"err.log"`, a redirect whose file name alone is quoted, is still a redirect (the fix's read)
+  const steps = []; const st = []; let words = []; let qs = []; let word = ''; let has = false; let lead = false; let subs = [];
+  // `pipeIn`: the text of the steps before this one in its pipeline (`echo main | xargs git push origin`)
+  let stepStart = 0; let pipeIn = ''; let nextPipe = '';
+  const opening = () => { if (word === '' && !has) lead = true; has = true; };
+  const endWord = () => { if (word || has) { words.push(word); qs.push(lead); } word = ''; has = false; lead = false; };
+  const endStep = (end, piped) => {
+    endWord(); const keep = words.map((x) => x !== '{' && x !== '}');
+    const w = words.filter((_, j) => keep[j]); const q = qs.filter((_, j) => keep[j]);
+    const empty = !w.length && !subs.length;
+    if (!empty) steps.push({ w, q, sub: subs, pipeIn });
+    // an empty step (the line break after `echo main |`) passes a pending pipe on rather than dropping it (round 2)
+    nextPipe = piped ? pipeIn + s.slice(stepStart, end) + ' | ' : empty ? pipeIn : '';
+    words = []; qs = []; subs = [];
   };
+  const newStep = (at) => { stepStart = at; pipeIn = nextPipe; };
   const recorded = () => st.some((e) => e.start >= 0);
   const open = (k, start) => st.push({ k, start: recorded() ? -1 : start });   // only the outermost is read on its own
   const close = (i) => { const e = st.pop(); if (e.start >= 0) subs.push(s.slice(e.start, i)); };
   for (let i = 0; i < s.length; i++) {
     const c = s[i]; const k = st.length ? st[st.length - 1].k : null;
-    if (k === 'sq') { if (c === "'") { st.pop(); if (st.length) word += c; } else word += c; continue; }
-    if (!ps && c === '\\' && /["'\\$`]/.test(s[i + 1] || '')) { word += (st.length ? c : '') + s[i + 1]; i++; continue; }
+    if (k === 'sq') {
+      // PowerShell writes a quote inside single quotes as two: 'it''s' is one word, it's ([PUSH-GUARD-LEFTOVERS] (2))
+      if (c === "'" && ps && s[i + 1] === "'") { word += st.length > 1 ? "''" : "'"; i++; continue; }
+      if (c === "'") { st.pop(); if (st.length) word += c; } else word += c;
+      continue;
+    }
+    // bash's $'…' quote, whose \' is an escaped quote, not its end ([PUSH-GUARD-LEFTOVERS] (3))
+    if (k === 'ansi') {
+      if (c === '\\' && i + 1 < s.length) { word += (st.length > 1 ? c : '') + s[i + 1]; i++; continue; }
+      if (c === "'") { st.pop(); if (st.length) word += c; } else word += c;
+      continue;
+    }
+    if (!ps && c === '\\' && /["'\\$`]/.test(s[i + 1] || '')) {
+      // inside a top-level "…" bash drops the backslash before $ ` " \ (the word is what the command receives); elsewhere
+      // it stays — the fix's read: a suggestion written back in single quotes must not keep it
+      const drop = !st.length || (k === 'dq' && st.length === 1 && s[i + 1] !== "'");
+      word += (drop ? '' : c) + s[i + 1]; i++; continue;
+    }
     if (ps && c === '`' && i + 1 < s.length) { word += (st.length ? c : '') + s[i + 1]; i++; continue; }
     if (k === 'bt') { if (c === '`') close(i); word += c; continue; }
     if (k === 'dq') {
-      if (c === '"') { st.pop(); if (st.length) word += c; }
+      if (c === '"' && ps && s[i + 1] === '"') { word += st.length > 1 ? '""' : '"'; i++; }   // PowerShell's "" inside "…"
+      else if (c === '"') { st.pop(); if (st.length) word += c; }
       else if (c === '$' && s[i + 1] === '(') { word += '$('; i++; open('paren', i + 1); }
       else if (!ps && c === '`') { word += c; open('bt', i + 1); }
       else word += c;
@@ -79,6 +106,7 @@ export function parse(cmd, tool) {
       else if (c === '$' && s[i + 1] === '(') { word += '$('; i++; open('paren', i + 1); }
       else if (c === '(') { word += c; st.push({ k: 'paren', start: -1 }); }
       else if (c === '"') { word += c; st.push({ k: 'dq', start: -1 }); }
+      else if (!ps && c === '$' && s[i + 1] === "'") { word += "$'"; i++; st.push({ k: 'ansi', start: -1 }); }
       else if (c === "'") { word += c; st.push({ k: 'sq', start: -1 }); }
       else if (!ps && c === '`') { word += c; open('bt', i + 1); }
       else word += c;
@@ -87,53 +115,73 @@ export function parse(cmd, tool) {
     // the top level
     if (c === '#' && word === '' && !has) { const nl = s.indexOf('\n', i); i = nl < 0 ? s.length : nl - 1; continue; }
     if (ps && c === '<' && s[i + 1] === '#') { const e = s.indexOf('#>', i + 2); i = e < 0 ? s.length : e + 1; continue; }
-    if (c === "'") { st.push({ k: 'sq', start: -1 }); has = true; continue; }
-    if (c === '"') { st.push({ k: 'dq', start: -1 }); has = true; continue; }
+    if (!ps && c === '$' && s[i + 1] === "'") { st.push({ k: 'ansi', start: -1 }); opening(); i++; continue; }
+    if (c === "'") { st.push({ k: 'sq', start: -1 }); opening(); continue; }
+    if (c === '"') { st.push({ k: 'dq', start: -1 }); opening(); continue; }
     if (c === '$' && s[i + 1] === '(') { word += '$('; i++; open('paren', i + 1); continue; }
     if (!ps && c === '`') { word += c; open('bt', i + 1); continue; }
-    if (c === '\n' || c === '\r' || c === ';') { endStep(); continue; }
+    if (c === '\n' || c === '\r' || c === ';') { endStep(i, false); newStep(i + 1); continue; }
     if (c === '&' || c === '|') {
       if (c === '&' && (s[i - 1] === '>' || s[i + 1] === '>')) { word += c; continue; } // 2>&1, &>file, *>&1
-      if (s[i + 1] === c) i++;
-      endStep(); continue;
+      const piped = c === '|' && s[i + 1] !== '|';                         // a single | hands this step on to the next
+      const at = i; if (s[i + 1] === c || (c === '|' && s[i + 1] === '&')) i++;   // `||`, `&&`, and bash's `|&` (a pipe)
+      endStep(at, piped); newStep(i + 1); continue;
     }
     if (c === '(' || c === ')') { endWord(); continue; }
     if (/\s/.test(c)) { endWord(); continue; }
     word += c;
   }
-  endStep();
+  endStep(s.length, false);
   return steps;
 }
 
 const MOVE = /^(cd|pushd|push-location|chdir|set-location|sl)$/i;
 const SHELL = /^(bash|sh|zsh|pwsh|powershell|cmd)(\.exe)?$/i;
 const REDIRECT = /^(\d?>>?|\*>>?|&>|<)/;                                   // 2>, >>, *> (PowerShell), &>, <
+/** Where a command's own words end: the first redirect that was not written inside quotes (-1: none). */
+const redirectAt = (w, q = []) => w.findIndex((x, j) => !q[j] && REDIRECT.test(x));
 const isGit = (w) => /^git(\.exe)?$/i.test(basename(w || ''));
-/** A word written back for a shell: quoted when it holds a space or a shell character. */
-const quoteWord = (x) => (/^[\w@%+=:,./\\-]+$/.test(x) ? x : `"${x.replace(/"/g, '\\"')}"`);
+/** A word written back for a shell: as it is when it holds no shell character, otherwise in SINGLE quotes, so a `$` in it
+ *  is never expanded — bash writes a quote inside as '\'', PowerShell as '' ([PUSH-GUARD-LEFTOVERS] (2)). */
+const quoteWord = (x, tool) => (/^[\w@%+=:,./\\-]+$/.test(x) ? x
+  : /powershell/i.test(tool || '') ? `'${x.replace(/'/g, "''")}'` : `'${x.replace(/'/g, "'\\''")}'`);
+/** A step that only sets a shell variable: `B=main`, `export B=main`, PowerShell's `$B = 'main'` — its name and value. */
+function assignment(w) {
+  const v = w[0] === 'export' || w[0] === 'set' ? w.slice(1) : w;
+  let m = v.length === 1 && /^\$?([A-Za-z_]\w*)=(.*)$/.exec(v[0]);
+  if (m) return [m[1], m[2]];
+  if (v.length === 3 && v[1] === '=' && /^\$[A-Za-z_]\w*$/.test(v[0])) return [v[0].slice(1), v[2]];
+  m = v.length === 2 && /^\$([A-Za-z_]\w*)=$/.exec(v[0]);
+  return m ? [m[1], v[1]] : null;
+}
 
 /** Every step with the folder it runs in; a `cd` (or Set-Location) moves the folder for the steps after it. A step
  *  that starts another shell with a command (`bash -c "…"`, `powershell -Command "…"`) is read as that command, and the
  *  text run inside `$( … )` is read as a command of its own. */
-function steps(cmd, cwd, tool, depth = 0) {
+function steps(cmd, cwd, tool, depth = 0, vars = {}) {
   const out = []; let here = cwd;
-  for (const { w, sub } of parse(cmd, tool)) {
-    if (depth < 3) for (const t of sub) out.push(...steps(t, here, tool, depth + 1));
+  const ps = /powershell/i.test(tool || '');
+  for (const { w, q, sub, pipeIn } of parse(cmd, tool)) {
+    if (depth < 3) for (const t of sub) out.push(...steps(t, here, tool, depth + 1, vars));
     if (!w.length) continue;
+    // a variable set by an earlier step is remembered, so `B=main; git push origin $B` is read as the push to main it is
+    // (PowerShell's names ignore case: $b and $B are one variable — the fix's read)
+    const a = assignment(w);
+    if (a) { vars[ps ? a[0].toLowerCase() : a[0]] = a[1]; continue; }
     if (MOVE.test(w[0])) {
       const target = w.slice(1).find((x) => !/^-/.test(x));
       if (target && here) here = isAbsolute(nativePath(target)) ? nativePath(target) : resolve(here, target);
       else if (target) here = nativePath(target);
       continue;
     }
-    if (w[0] === 'eval' && w.length > 1 && depth < 3) { out.push(...steps(w.slice(1).join(' '), here, tool, depth + 1)); continue; }
+    if (w[0] === 'eval' && w.length > 1 && depth < 3) { out.push(...steps(w.slice(1).join(' '), here, tool, depth + 1, vars)); continue; }
     const si = w.findIndex((x) => SHELL.test(basename(x)));
     const ci = si >= 0 ? w.findIndex((x, j) => j > si && /^(-c|-lc|-ic|-command|\/c)$/i.test(x)) : -1;
     if (ci > 0 && w[ci + 1] && depth < 3) {
-      out.push(...steps(w.slice(ci + 1).join(' '), here, /^(pwsh|powershell)/i.test(basename(w[si])) ? 'PowerShell' : 'Bash', depth + 1));
+      out.push(...steps(w.slice(ci + 1).join(' '), here, /^(pwsh|powershell)/i.test(basename(w[si])) ? 'PowerShell' : 'Bash', depth + 1, vars));
       continue;
     }
-    out.push({ w, seg: w.join(' '), cwd: here });
+    out.push({ w, q, seg: w.join(' '), cwd: here, vars: { ...vars }, ps, pipeIn: pipeIn || '' });
   }
   return out;
 }
@@ -151,21 +199,29 @@ function pushOf(step) {
     else i += 1;
   }
   if (w[i] !== 'push') return null;
-  const flags = []; const pos = [];
+  const flags = []; const pos = []; const q = step.q || []; const vars = step.vars || {};
+  // a variable an earlier step set is read for what it holds ($B, ${B}); one it did not set stays as written
+  const key = (n) => (step.ps ? n.toLowerCase() : n);
+  const fill = (x) => x.replace(/\$\{?([A-Za-z_]\w*)\}?/g, (m, n) => (key(n) in vars ? vars[key(n)] : m));
   for (let j = i + 1; j < w.length; j++) {
-    const a = w[j];
-    if (REDIRECT.test(a)) break;                                            // a redirect ends the push's words
+    const a = fill(w[j]);
+    if (!q[j] && REDIRECT.test(a)) break;                                   // a redirect ends the push's words
     if (/^(-o|--push-option|--repo|--receive-pack|--exec)$/.test(a)) { flags.push(a); j++; continue; }
     if (a.startsWith('-')) { flags.push(a); continue; }
     pos.push(a);
   }
-  return { cwd, remote: pos[0] || null, refspecs: pos.slice(1), flags, cfg, seg: step.seg };
+  // `echo main | xargs git push origin`: the target arrives on the pipe ([PUSH-GUARD-LEFTOVERS] (3))
+  const xargs = w.slice(0, gi).some((x) => /^xargs(\.exe)?$/i.test(basename(x)));
+  return { cwd, remote: pos[0] || null, refspecs: pos.slice(1), flags, cfg, seg: fill(step.seg), xargsIn: xargs ? fill(step.pipeIn || '') : null };
 }
 
 /** Where a push lands: { dsts: [branch names] } or { refuse: reason }. `deps` reads git (tests pass their own). */
 function destinations(p, deps) {
   const has = (re) => p.flags.some((f) => re.test(f));
   if (has(/^--(all|mirror|branches)$/)) return { refuse: `"git push ${p.flags.join(' ')}" pushes every branch, main among them` };
+  // a push handed its target by xargs reads it from the steps before it in its pipeline: refused when they name main
+  // (`… | grep -v main | xargs git push origin` is refused too — it errs safe)
+  if (p.xargsIn !== null && /\b(main|master)\b/.test(p.xargsIn)) return { refuse: 'the push takes its target from the pipe before it, which names main' };
   // a target written by another command ($(…):main) cannot be read here, but the text after its colon can
   if (/:(refs\/)?(heads\/)?(main|master)(?=["'\s)`]|$)/.test(p.seg)) return { refuse: 'the push names main as its target' };
   const cur = deps.branch(p.cwd);
@@ -244,9 +300,9 @@ function files(w, from) {
 }
 
 /** What a step runs, for the PC lock: 'held' (needs this chat to hold it), 'free' (needs no one else to), or null. */
-export function lockNeed(all) {
-  // a redirect ends the command's own words: `npx vitest run > out.log` names no test file
-  const cut = all.findIndex((x) => REDIRECT.test(x));
+export function lockNeed(all, q = []) {
+  // a redirect ends the command's own words: `npx vitest run > out.log` names no test file (a quoted ">…" is a word)
+  const cut = redirectAt(all, q);
   const w = cut < 0 ? all : all.slice(0, cut);
   if (w.some((x) => /^(--version|-v|-V|--help|-h|--list)$/.test(x))) return null;
   // only the word in COMMAND position counts (the third read, 17 Oct 26): `grep -rn vitest .`, `git add …/smoke.mjs` and
@@ -288,15 +344,15 @@ function needAt(w, p) {
 
 /** The command itself, written back with its quotes: from the tool that runs it (npm, npx, node, vitest, playwright) to
  *  its last word before a redirect — never a PowerShell `if ($?) {` around it. */
-function runPart(all) {
-  const cut = all.findIndex((x) => REDIRECT.test(x)); const w = cut < 0 ? all : all.slice(0, cut);
+function runPart(all, q, tool) {
+  const cut = redirectAt(all, q); const w = cut < 0 ? all : all.slice(0, cut);
   const at = w.findIndex((x) => /^(npm|npx|pnpm|node|vitest|playwright)(\.cmd|\.exe)?$/i.test(basename(x)));
-  return w.slice(at < 0 ? 0 : at).map(quoteWord).join(' ');
+  return w.slice(at < 0 ? 0 : at).map((x) => quoteWord(x, tool)).join(' ');
 }
 
 /** The reason to refuse a run for the PC lock, or null. */
 function lockVerdict(step, deps, tool) {
-  const need = lockNeed(step.w);
+  const need = lockNeed(step.w, step.q);
   if (!need) return null;
   const lock = deps.lock();
   const live = lock && lock.ageMs < STALE_MS ? lock : null;
@@ -313,7 +369,7 @@ function lockVerdict(step, deps, tool) {
   if (live && !mine) lines.push(`Held by: ${first} (${Math.round(live.ageMs / 60000)} min). Two check runs at once give false failures (D86, D228).`);
   else lines.push('Several chats share this PC; two check runs at once give false failures (D86, D228).');
   lines.push('Run it through the lock — it waits until the lock is free, takes it, runs, and always releases it:',
-    `  ${go}node "${gl}" exec "${who}" -- ${runPart(step.w)}`,
+    `  ${go}node "${gl}" exec "${who}" -- ${runPart(step.w, step.q, tool)}`,
     `or, for the whole gate set: node "${gl}" run`,
     'A full run outlasts the tool\'s default 2-minute timeout: run it in the background, or with a timeout of 600000.');
   return lines.join('\n');
@@ -328,7 +384,8 @@ export function verdict(input, deps = realDeps) {
   let note = null;
   for (const step of steps(cmd, cwd, input.tool_name)) {
     const p = pushOf(step);
-    if (p) { const v = pushVerdict(p, deps); if (v && v.refuse) return v; if (v && v.note) note = v.note; continue; }
+    if (p) {
+      const v = pushVerdict(p, deps); if (v && v.refuse) return v; if (v && v.note) note = v.note; continue; }
     const l = lockVerdict(step, deps, input.tool_name);
     if (l) return { refuse: l };
   }

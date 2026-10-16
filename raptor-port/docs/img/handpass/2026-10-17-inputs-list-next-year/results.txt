@@ -1,0 +1,8 @@
+PASS phone: the demo holds a 15 Feb 2027 input stored as 'Feb 15' + 2027 — saw "imvbcqajjpjcc96"
+PASS phone: under the default two weeks it is not listed — saw 0
+PASS phone: its day heading says the year — saw "Mon 15 Feb 20271 input"
+PASS phone: no day of this year stands after it — saw []
+PASS desktop: the demo holds a 15 Feb 2027 input stored as 'Feb 15' + 2027 — saw "imvbcqc4qoj05lf"
+PASS desktop: under the default two weeks it is not listed — saw 0
+PASS desktop: printed with its year — saw "Trident15 Feb 2027OILtill 15 Feb1 Jan 26"
+PASS desktop: no row of this year stands after it — saw []

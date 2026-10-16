@@ -43,6 +43,12 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   hours. A full run outlasts the tool's 2-minute default — run it in the background or with a 10-minute timeout. The
   guard reads a command as a shell does (quotes, `$( … )`, heredoc bodies), so a commit message or a pull request's
   text that only NAMES a check or a push is not refused. Anything the guard cannot read is let through.
+  **Since `[PUSH-GUARD-LEFTOVERS]` (17 Oct 26)** it also reads: a target held in a shell variable an earlier step set
+  (`B=main; git push origin $B`; PowerShell's names in any case), a target piped into `xargs` (refused when its pipeline
+  names main — a branch-cleanup pipe that only mentions main is refused too, which errs safe), bash's `$'…'` quote,
+  PowerShell's doubled quotes, and a quoted word beginning with `>` as a word (a redirect whose file name alone is
+  quoted stays a redirect). Its suggested command is written in single quotes, so a `$` in it never expands. A lock
+  is broken only when its owner line still says what was judged — it is never set aside first and put back.
 - **Four traps met running the checks by hand (30 Sep – 1 Oct 26, `[DB-READINESS]` phases 0–6; carried here from their
   handoff blocks when those were removed):** `gatelock.mjs run`'s gate list has NO perf — run `PORT_URL=<the build's
   address> npm run perf` under `gatelock.mjs take`; `tsc -p tsconfig.json` checks nothing here (the root config lists no

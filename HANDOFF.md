@@ -20,20 +20,22 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/medical-newyear-display-298bb6 -->
-### `claude/medical-newyear-display-298bb6` — [MED-NEWYEAR] closed (not a fault), and D977: every Medical card one even width — written 17 Oct 26, verify before use
-- **Where it started:** his opening message: level with `main` (it was; fast-forwarded past pull request 525), measure the chat (14%), do `[MED-NEWYEAR]`, remove the merged `claude/sharp-goldberg-6d0656` block (done — its leftovers are filed as `[PUSH-GUARD-LEFTOVERS]`).
-- **[MED-NEWYEAR]:** not a fault of the app — filed through the window, 28 Dec – 3 Jan saves its end as "Jan 3 2027" and the Medical tab shows it right (down 30 Dec and 2 Jan, owing an upchit 5 Jan); the item rested on a row planted without its year (D56). Pinned by a browser test; walk `raptor-port/scripts/handpass/med-newyear.mjs` 12/12; archived; observation 627.
-- **D977 (his, after the walk's pictures — "Fix", then "make them Evenly width … Wrap text as required"):** every Medical card one width — a third of the row on a phone, 120 on a desktop — built in `raptor-port/src/ui/scheduler/16-medical.css`; the browser test of the old "hug the words" rule now pins it; LOOK tier, before and after pictures `raptor-port/docs/img/handpass/2026-10-17-med-even-width{,-before}/` (after 18/18, before 8 FAIL); design-guide Lesson 5, checked by a fresh reader. Sheet: `raptor-port/docs/handpass/2026-10-17-med-newyear.md`.
-- **Branch:** `claude/medical-newyear-display-298bb6`, cut from `main` at pull request 525. Waits for his look at the pictures and his "merge live".
-- **Gates:** the whole set on his PC after D977, 17 Oct 26 — unit 11,581/11,581 (651 files), build, the original 728/0, browser 839 passed, Tracker smoke 446/0, rulecheck, docsize: all green; `e2e/medical.spec.ts` 33 with the cards' tests.
-- **Open questions for him:** none — the pictures are his look at D977 (he skipped the picture before the build).
+<!-- now:claude/small-fixes-1017 -->
+### `claude/small-fixes-1017` — two small fixes: the push guard's leftovers, the Inputs list's next year — written 17 Oct 26, verify before use
+- **Where it started:** the same chat as pull request 526 (the Medical cards one width, D977; [MED-NEWYEAR] closed) — LIVE 17 Oct 26 on his "merge live", so its block left here. His word: "U can do the small things quick here first".
+- **Done:** [PUSH-GUARD-LEFTOVERS] — the guard reads a variable's push target, a pipe into xargs, PowerShell's quotes and bash's `$'…'`; a quoted ">…" is a word; suggestions in single quotes; a lock is never set aside before it is judged (`.claude/hooks/push-guard.mjs`, `raptor-port/scripts/gatelock.mjs`; tests 40/40; two fresh Opus reads, every finding fixed). [INPUTS-LIST-NEXT-YEAR] — the desktop Inputs list reads each input in its own year (`raptor-port/src/ui/InputsPage.tsx`; a test through the Leave War's own write; walked before and after). Both archived. Record: `raptor-port/docs/handpass/2026-10-17-small-fixes.md`.
+- **Filed:** [TILL-NEXT-YEAR] — another year's input prints "till <date>" without its year (the shared printer; it also feeds the published-day compare, so its own job).
+- **Branch:** `claude/small-fixes-1017`, cut from `main` at pull request 526, no upstream until its first push. Waits for his "merge live".
+- **Gates:** the whole set on his PC, 17 Oct 26 — unit 11,582/11,582, build, the original 728/0, browser 839 passed, Tracker smoke 446/0, rulecheck, docsize: all green; the guard 40/40, bg-cwd 14/14.
+- **Open questions for him:** none.
 - **Running when written:** none.
-- **Pick up here:** read the pull request's check run; then his look and his next pick from the backlog.
-- **Opening line:** "Switch this chat to the branch claude/medical-newyear-display-298bb6: git fetch origin, git switch claude/medical-newyear-display-298bb6, git branch -u origin/claude/medical-newyear-display-298bb6, git pull --ff-only. If the switch is refused because another checkout holds the branch, release it there only if that checkout is clean and on origin's commit, then switch again; otherwise stop and tell me. Then measure how full this chat is, read HANDOFF.md — the claude/medical-newyear-display-298bb6 block under ## Now — and carry on from Pick up here."
+- **Pick up here:** read the pull request's check run; then [OIL-CONFIRM-DAYGRID] (D923) in a fresh chat — FULL check, it touches OIL.
+- **Opening line:** "Switch this chat to the branch claude/small-fixes-1017: git fetch origin, git switch claude/small-fixes-1017, git branch -u origin/claude/small-fixes-1017, git pull --ff-only. If the switch is refused because another checkout holds the branch, release it there only if that checkout is clean and on origin's commit, then switch again; otherwise stop and tell me. Then measure how full this chat is, read HANDOFF.md — the claude/small-fixes-1017 block under ## Now — and carry on from Pick up here."
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (17 Oct 26, evening):** pull request 526 is LIVE (the Medical cards one width, D977; [MED-NEWYEAR] closed) → the two small fixes on `claude/small-fixes-1017`, waiting for his "merge live" → [OIL-CONFIRM-DAYGRID] (D923), a fresh chat.
 
 **RIGHT NOW (17 Oct 26, later):** pull requests 524 and 525 are LIVE (the Medical tab's cards and "+ Medical"; the start-size follow-ons and the push-and-lock guard) → `[MED-NEWYEAR]` CLOSED as not a fault of the app, and D977 (every Medical card one even width) BUILT, on `claude/medical-newyear-display-298bb6` — waiting for his look and "merge live" → his next pick from the backlog.
 
