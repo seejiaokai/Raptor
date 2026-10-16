@@ -39,10 +39,29 @@ or without his word on each lesson, and who reads it — is put to him before an
 
 **Built 16 Oct 26** on the same branch: as drawn, with one step past the drawing — the board's open Personal Inputs keeps a ⌃ as the week's heading does (the drawing showed none; without it nothing says the heading folds). Check: `../../handpass/2026-10-16-words-pass-r1.md`.
 
+**D953 — the till-date switch, answered** (D952 drawn on the real app, page `FNzmkcBLpDZ9EYfqgV1Pqg`, by `raptor-port/scripts/handpass/till-switch.mjs`): "1B 2-5 yes" — a tick box before the grey date after the Remarks box, like the window's "all day" tick; unticked, the date is struck through there and no screen prints it; it is ticked by default except on a one-day duty or other commitment, and a date change that changes that default resets it; on a published day a change reads pending; whoever may change the input may tick it.
+
 ## Round 2 — next
+
+**Drawn 17 Oct 26 (the night run, job 3 — nothing in the app changed):** `raptor-port/scripts/handpass/words-r2.mjs`,
+pictures `raptor-port/docs/img/handpass/2026-10-16-words-pass/r2/`. Four questions put to him (the night's page): (1)
+View-only Sched's unpublished day says "Draft" twice — delete the boxed "Draft", keep the DRAFT tag; (2) the peek's "Next
+week — click a day to load it" — A "Next week" (recommended) or B "Next week: click a day to load it"; (3) Personal Inputs'
+"· accepted" (and a rejected row's "· removed") twice a row — keep the one after the type; (4) the crew panel's
+"Placeholders · drag in" → "Placeholders". Left out, with reasons: "No notes yet." (an empty box's own line), "No flying —
+ground day." (states the day), the Legend, "Nil", "all day", "Working draft".
 
 View-only Sched and the schedule's remaining lines: the next-week peek's "click a day to load it", "No notes yet.", the doubled "accepted" on each Personal Inputs row, the crew panel's "Placeholders · drag in" (named under D852 with round 1, picture `…/r1/desk-crew-dragin.png`).
 
+**D950 — round 2 answered (17 Oct 26):** R1, R3, R4 as recommended; R2 B ("Next week: click a day to load it").
+
+**BUILT 17 Oct 26 (the morning's build, `claude/whole-app-words-pass-1b-6cfe51`), with the night's Q1–Q3 (D949) and the
+till-date tick (D951, D953 — drawn as frames B of `raptor-port/docs/img/handpass/2026-10-17-till-switch/`):** R1–R4 as
+answered; "removed" → "rejected" in the Personal Inputs note, a rejected row's hover and its marker; the board's wave header
+says "(prev day)" where its in-time / rally is the evening before; the Ground Programme row's box holds the typed words,
+its date grey after it; every input carries the till-date tick. Checked in `raptor-port/docs/handpass/2026-10-17-tick-r2.md`;
+what each surface does: `raptor-port/docs/ui-contracts.md` (the words pass, the remark and its date, the tick).
+
 ## Round 1b — his notes on the preview (16 Oct 26)
 
-**D942:** "Disregard this lesson" — lesson 1 struck from the guide's §9; D938's removal of the editing hint stands, for those lines only. **D943:** a short line beside the Ground Programme's name saying how to take an input off (Undo on its Personal Inputs row) — drawn first. **D944:** on a phone the board's Personal Inputs and Unavailable take one line less — drawn first. And his question (not a ruling): why the board's wave header carries "In-time / Rally 16:20 · 4 ac" — it is the wave's earliest report time and its aircraft count (`ui/html.ts waveHeadBoard`); the time is also the Available crew band's edge ("1ST WAVE AM–16:20") and the lines below show it.
+**D942:** "Disregard this lesson" — lesson 1 struck from the guide's §9; D938's removal of the editing hint stands, for those lines only. **D943:** a short line beside the Ground Programme's name saying how to take an input off (Undo on its Personal Inputs row) — drawn first. **D944:** on a phone the board's Personal Inputs and Unavailable take one line less — drawn first. **D945** (asked while round 1b was drawn): the button on an accepted input's row reads "Reject", not "Undo" — board and week, phone and desktop; "Reject · Tue" where its row is on another day; hover text to match; what it does unchanged. Round 1b put to him as a page of pictures (claude.ai artifact `LyEcfYVzbqXnsgwscLRVvM`, four questions), drawn by `raptor-port/scripts/handpass/words-r1b.mjs`. **D946** (sent the same evening, with a picture of a new input's window): the Remarks box holds only what a person types; "till <date>" shows by default from the dates already picked, always after the remark — this brings forward the filed job of the same name (the app stops writing "till" into remarks; D728 step 2), its questions drawn and put to him first. **D947 — round 1b's answers:** (1) the board's wave header loses "In-time / Rally HH:MM · N ac"; (2) the Ground Programme's line, B: "To take an input off, press Reject on it in Personal Inputs below."; (3) on a phone an input's button sits on its puck's line, board and week; (4) no — Unavailable keeps its heading line. **D948 — the till date, answered** (page `E5EGxqoxCyCzhe3uzjYZjA`, drawn by `raptor-port/scripts/handpass/till-dates.mjs`): (1) Remarks holds only typed words, "till <date>" a grey tag after the box from the dates, in every input window; (2) B — a one-day input still says "till <that day>"; (3) every screen prints remark then date, as today. And his question (not a ruling): why the board's wave header carries "In-time / Rally 16:20 · 4 ac" — it is the wave's earliest report time and its aircraft count (`ui/html.ts waveHeadBoard`); the time is also the Available crew band's edge ("1ST WAVE AM–16:20") and the lines below show it.

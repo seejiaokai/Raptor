@@ -220,20 +220,23 @@ describe('"till <date>" is said once — by the corner (D728)', () => {
     expect(cardOf([rec({ remarks: 'till 17 Jul, then home' })], P, corner).remark).toBe('then home')
     expect(cardOf([rec({ remarks: 'till 17 Jul — Bangkok -' })], P, corner).remark).toBe('Bangkok -')
   })
-  it('a "till" for ANOTHER day is not the corner’s and stays — somebody typed it', () => {
-    expect(cardOf([rec({ remarks: 'Course till 30 Jul' })], P, corner).remark).toBe('Course till 30 Jul')
+  /* CHANGED BY D948 (16 Oct 26): the date is never part of the remark any more — a "till <day> <month>" saved in it, the
+     calendar's or typed, is read as the date (the reading told to him) and the card shows the typed words alone, whatever
+     its corner says */
+  it('a "till" for another day is read as the date too — the card shows the typed words (D948)', () => {
+    expect(cardOf([rec({ remarks: 'Course till 30 Jul' })], P, corner).remark).toBe('Course')
   })
-  it('a card whose corner says no "till" keeps its remark whole — a one-day input, or an input on its last day', () => {
-    expect(cardOf([rec({ remarks: 'till 17 Jul' })], P, 'All day').remark).toBe('till 17 Jul')
-    expect(cardOf([rec({ remarks: 'till 17 Jul' })], P, '').remark).toBe('till 17 Jul')
-    expect(cardOf([rec({ remarks: 'till 17 Jul' })], P).remark).toBe('till 17 Jul')
+  it('a card whose corner says no "till" shows the typed words alone too — a one-day input, or an input on its last day', () => {
+    expect(cardOf([rec({ remarks: 'till 17 Jul' })], P, 'All day').remark).toBe('')
+    expect(cardOf([rec({ remarks: 'till 17 Jul' })], P, '').remark).toBe('')
+    expect(cardOf([rec({ remarks: 'till 17 Jul' })], P).remark).toBe('')
   })
   it('an input that runs into another year: the remark’s "till 1 Jan" is the corner’s "till 1 Jan 2027"', () => {
     expect(cardOf([rec({ remarks: 'Overseas leave till 1 Jan' })], P, 'till 1 Jan 2027').remark).toBe('Overseas leave')
-    expect(cardOf([rec({ remarks: 'till 1 Jan 2027' })], P, 'till 1 Jan 2027').remark).toBe('')
+    expect(cardOf([rec({ remarks: 'till 1 Jan 2027' })], P, 'till 1 Jan 2027').remark, 'a year is never read as part of the date (the code read)').toBe('2027')
   })
-  it('a year somebody typed after it, which the corner does not say, is his words — left alone', () => {
-    expect(cardOf([rec({ remarks: 'till 17 Jul 2025 (last year’s)' })], P, corner).remark).toBe('till 17 Jul 2025 (last year’s)')
+  it('a year after the date is his: the calendar never wrote one (the code read); the date goes, the year stays', () => {
+    expect(cardOf([rec({ remarks: 'till 17 Jul 2025 (last year’s)' })], P, corner).remark).toBe('2025 (last year’s)')
   })
   it('never mid-word, whatever the capitals', () => {
     expect(cardOf([rec({ remarks: 'Until 17 Jul stay clear' })], P, corner).remark).toBe('Until 17 Jul stay clear')

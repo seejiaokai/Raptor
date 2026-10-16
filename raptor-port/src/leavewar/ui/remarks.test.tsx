@@ -55,7 +55,8 @@ describe('the published remarks editor', () => {
     fireEvent.click(screen.getByTestId(CELL))
     expect(screen.getByTestId('remarks-sheet')).toBeTruthy()
     const field = screen.getByTestId('remarks-field') as HTMLTextAreaElement
-    expect(field.value).toBe('Bali till 15 Feb')
+    /* the box holds the typed words only — the date is printed from the leave's dates (owner D948) */
+    expect(field.value).toBe('Bali')
     fireEvent.change(field, { target: { value: 'Phuket instead' } })
     fireEvent.click(screen.getByTestId('remarks-save'))
     expect(INPUTS.find((r: any) => r.iid === 'rmk-test').remarks).toBe('Phuket instead')

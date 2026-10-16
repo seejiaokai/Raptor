@@ -357,3 +357,19 @@ describe('Fable G1-G2', () => {
     expect(now && String(now.date), 'the leave where it is now').toMatch(/Feb 3\b/)
   })
 })
+
+/* THE TILL-DATE TICK ACROSS AN APPROVAL (owner D953 — the scenario designer's 8, 17 Oct 26): approving a day that would
+   bridge a leave whose date is unticked and one whose date is not joins the one before only — one record holds one tick,
+   so a bridge would drop a choice; an extension of the unticked one alone keeps its untick. */
+describe('the till-date tick across an approval (D953)', () => {
+  const leaves = () => INPUTS.filter((r: any) => String(r.lw || '') && JSON.stringify(r).includes(pid) && r.type === 'LL')
+  it('a day between an unticked leave and a ticked one joins the unticked one only; neither choice is lost', () => {
+    setBidState(pid, '2026-02-02', 'approved')
+    setCell(pid, '2026-02-04', 'LL'); setBidState(pid, '2026-02-04', 'approved')
+    const first = leaves().find((r: any) => r.date === 'Feb 2')!
+    expect(writeInputs(() => { first.till = false })).toBe(true)
+    setCell(pid, '2026-02-03', 'LL'); setBidState(pid, '2026-02-03', 'approved')
+    const now = leaves().map((r: any) => [r.date, r.endDate ?? '', r.till ?? null]).sort()
+    expect(now, JSON.stringify(now)).toEqual([['Feb 2', 'Feb 3', false], ['Feb 4', '', null]])
+  })
+})

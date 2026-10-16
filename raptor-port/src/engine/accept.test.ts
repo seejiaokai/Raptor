@@ -85,7 +85,7 @@ describe('accepting a personal input', () => {
        submitter's remarks travel to the row's own rmks cell. */
     expect(row.who).toBe('vinci')
     expect(row.prog).toBe('MEETING')
-    expect(row.rmks).toBe(inp.remarks)
+    expect(row.rmks, "the remark as printed: the typed words, then its date (D948)").toBe(`${inp.remarks}`)   // a one-day duty or commitment prints no date (owner D951, D953)
     expect(row.str).toBe('09:00')            // 540 minutes from midnight
     expect(row.end).toBe('17:00')
     expect(inp.acc).toBe('g')
@@ -459,7 +459,7 @@ describe('an Other input reads by its TITLE, and its remarks are remarks', () =>
     expect(acceptInput(0, inp, 'g')).toBe(true)
     const row = DAYS[0].ground[DAYS[0].ground.length - 1]
     expect(row.prog).toBe('RANGE CLEARANCE RUN')
-    expect(row.rmks).toBe('bring ear defenders')
+    expect(row.rmks).toBe('bring ear defenders')   // a one-day duty or commitment prints no date (owner D951, D953)
     expect(row.srcType).toBe('Other')
   })
 
@@ -470,7 +470,7 @@ describe('an Other input reads by its TITLE, and its remarks are remarks', () =>
     expect(acceptInput(0, inp, 'g')).toBe(true)
     const row = DAYS[0].ground[DAYS[0].ground.length - 1]
     expect(row.prog).toBe('OTHER')
-    expect(row.rmks).toBe('Range clearance run')
+    expect(row.rmks).toBe('Range clearance run')   // a one-day duty or commitment prints no date (owner D951, D953)
     expect(inpLabel({ type: 'Other', remarks: '' })).toBe('Other')
     expect(inpLabel({ type: 'Other' })).toBe('Other')
   })

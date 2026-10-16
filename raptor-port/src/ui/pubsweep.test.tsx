@@ -160,8 +160,8 @@ describe('1 · lifecycle: unpublished day → sign → publish the Original', ()
     expect(beak.className).toContain('locked')
     expect(e.querySelector('.dal')).toBeNull()                        // the old chip is gone
     expect(e.querySelector('.verchip')!.textContent).toBe('DRAFT')    // the new title tag
-    /* the view page calls the same day "Draft", as a plain read-only stamp */
-    expect(el(weekView(DI)).querySelector('.dbeak')!.textContent).toBe('Draft')
+    /* the view page says it once — its DRAFT title tag; the boxed "Draft" stamp went (owner D950 R1, 17 Oct 26) */
+    expect(el(weekView(DI)).querySelector('.dbeak')).toBeNull()
   })
 
   it('signing unlocks the button; publishing shows the green ORIG tag; the viewer picker names it', () => {

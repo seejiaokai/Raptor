@@ -19,9 +19,11 @@ beforeAll(() => {
 afterAll(() => { setSession(null); notify() })
 
 describe('the seed still shows the header note and the suggestion (positive control)', () => {
-  it('a normal flying day draws the in-time note and at least one blue suggestion', () => {
+  /* the In-time / Rally · N ac note left EVERY wave header in round 1b (owner D947, 16 Oct 26) — the control here is the
+     suggestion alone */
+  it('a normal flying day draws at least one blue suggestion (and, since D947, no In-time / Rally note)', () => {
     const h = boardHTML(0)
-    expect(h, 'the In-time / Rally · N ac note is on an ordinary wave header').toContain('class="asd">In-time / Rally')
+    expect(h, 'no wave header carries the In-time / Rally · N ac note').not.toContain('class="asd">In-time / Rally')
     expect(h, 'a blank-B flying line offers the blue suggested brief').toContain('class="bsug"')
   })
 })

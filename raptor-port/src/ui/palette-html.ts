@@ -200,7 +200,7 @@ function paletteHTMLBody(di:any,opts?:any){
 export function specialRowHTML(di:any){
   if(!SPECIALS.length)return '';
   const armKey=ARM?String(ARM.key):'';   // as armed — see paletteHTML
-  return `<div class="rall"><div class="rh2">Placeholders · drag in</div>`
+  return `<div class="rall"><div class="rh2">Placeholders</div>`
     +SPECIALS.map((id:any)=>{
       const why=armKey?slotBar(id,armKey):'';
       return `<span class="rpuck${why?' no haswhy':''}" data-drag="1" data-person="${id}"`

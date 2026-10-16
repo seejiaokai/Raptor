@@ -20,7 +20,7 @@ import { DayPop } from './Modals'
 import { setDayPop } from './pops'
 import { readFileSync } from 'fs'
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId, withRemarksTail, holds } from '../engine/inputs'
+import { INPUTS, inpId, withRemarksTail, holds, remarksShown } from '../engine/inputs'
 import { acceptInput, renameCallsign, setSlotVal } from '../engine/slots'
 import { loadVersionToWorkingCopy, inputsLeftSaid, draftDup, dayDrafts } from '../engine/drafts'
 import { SCHED, signOf, setSign, setDayApproved, dayDelta, dayDiscardCount, dayShownPendCount, dayCurVer, daySigned, dayPendingItems, publishALDay, unpublishDay } from '../engine/publish'
@@ -522,7 +522,10 @@ describe('Fable\'s code read: an input change reads pending only where the day\'
      detail of the day. Every door that re-dates an input in the app — the Inputs page's calendar, the Leave War's sync,
      the medical cascade — also rewrites the "till <date>" note in its remarks (inputs.ts withRemarksTail), and the face
      prints the remarks; that case is the next test. Here the note is left alone, as a member who typed over it would. */
-  it('F1: the dates alone — a Mon–Tue leave stretched to Wednesday with its words unchanged: Monday and Tuesday read nothing; Wednesday reads it filed', () => {
+  /* CHANGED BY D948 (16 Oct 26): every input prints "till <its last day>" from its dates, so a leave stretched with its
+     words unchanged MOVES the words Monday and Tuesday print — one change each, as D189 keeps for a stretched leave (the
+     reading told to him); its first day alone is still never a change (the start moved below) */
+  it('F1: the dates alone — a Mon–Tue leave stretched to Wednesday: Monday and Tuesday read ONE change, its printed date (D948, D189); Wednesday reads it filed', () => {
     const who = loner()
     expect(who, 'a man free all week').toBeTruthy()
     expect(commitNewInput({ ...leaveDraft(who, '2026-07-13', 'STRETCH ME'), end: '2026-07-14' })).toBe(true)
@@ -532,9 +535,11 @@ describe('Fable\'s code read: an input change reads pending only where the day\'
     const inp = INPUTS.find((r: any) => r.remarks === 'STRETCH ME')!
     expect(commitInputEdit(inp, { ...draftOf(inp), end: '2026-07-15' })).toBeTruthy()
     validate()
-    expect(dayDelta(MON), 'Monday — the same leave on its face').toEqual([])
-    expect(dayDelta(TUE), 'Tuesday — the same').toEqual([])
-    expect(daySigned(MON) && daySigned(TUE), 'their four stand').toBe(true)
+    for (const d of [MON, TUE]) {
+      expect(dayPendingItems(d).length, `day ${d} — one change`).toBe(1)
+      expect(listText(d), 'the words it prints').toMatch(/STRETCH ME till 14 Jul.*STRETCH ME till 15 Jul/)
+    }
+    expect(daySigned(MON) || daySigned(TUE), 'something waiting means sign again (D103)').toBe(false)
     expect(dayPendingItems(WED).length, 'Wednesday reads it').toBe(1)
     expect(listText(WED)).toMatch(/filed/)
     expect(issuedFace(WED).textContent, 'Wednesday\'s face keeps what it went out with').not.toContain('STRETCH ME')
@@ -546,7 +551,7 @@ describe('Fable\'s code read: an input change reads pending only where the day\'
     validate()
     for (const d of [MON, TUE, WED]) publishDay(d)
     const inp = INPUTS.find((r: any) => holds(r, who))!
-    expect(inp.remarks).toBe('Bali till 14 Jul')
+    expect([inp.remarks, remarksShown(inp)], 'the typed date is read as its date (D948)').toEqual(['Bali', 'Bali till 14 Jul'])
     const d0 = draftOf(inp)
     /* the Inputs page's editor: a pick on its calendar sets the end AND rewrites the note (InputsPage.tsx withTill) */
     expect(commitInputEdit(inp, { ...d0, end: '2026-07-15', remarks: withRemarksTail(d0.remarks, d0.start, '2026-07-15', 'till') })).toBeTruthy()
@@ -591,11 +596,11 @@ describe('Fable\'s code read: an input change reads pending only where the day\'
     validate()
     const downs = INPUTS.filter((r: any) => holds(r, who) && r.type === 'ATT C')
     expect(downs.length, 'the cascade trimmed the head and minted a tail').toBe(2)
-    const items = dayPendingItems(WED)
-    expect(items.length, 'one status change for one man on Wednesday').toBe(1)
-    const t = listText(WED)
-    expect(t, 'one edit — not "moved off" and "filed"').not.toMatch(/moved off|filed/)
-    expect(t).toMatch(/LONG DOWNCHIT/)
+    /* CHANGED BY D948: the tail ends where the downchit ended, so Wednesday prints the same words it went out with —
+       "LONG DOWNCHIT till 17 Jul" — and NOTHING is pending there (the change it read before was the machine-written
+       "till" alone); never "moved off" and "filed" */
+    expect(dayPendingItems(WED).length, 'Wednesday prints what it went out with').toBe(0)
+    expect(listText(WED), 'one edit — not "moved off" and "filed"').not.toMatch(/moved off|filed/)
   })
 })
 

@@ -559,6 +559,7 @@ appointment, duty, SANS availability.
 | `half` | choice `am\|pm` | no | half-day marker |
 | `typeCode` | ref InputType | yes | the catalogue code |
 | `remarks` | string | no | may be empty; absent on the seed SANS rows today |
+| `tillShown` | bool | no | the till-date tick's hand choice (owner D953, 17 Oct 26 — `till`): null where it follows its default (ticked, except a one-day duty or other commitment — D951, D952); set only where a person ticked or unticked it against that default. The server drops it when a change of dates or kind flips the default (the app's `tillSettle`) |
 | `title` | string (40) | no | the input's own name (owner D715, D716 — 9 Oct 26): null unless its filer typed one that differs from its kind's name; only for the "Duty & other commitments" kinds. What the schedule's row, the calendar and the lists print as the input's name; `typeCode` goes on deciding every rule. A change to it after a day is published is a pending change (D178). |
 | `modifiedAt` | datetime | yes | `mod` — drives the late-input mark. Today the Inputs page and the Leave War sync write the literal `'now'`, which the reader resolves to today's date; **the storage door resolves it to a real instant on the way in** — a stored `'now'` would read as "modified today" for ever |
 | `acceptance` | choice `ground\|unavailable\|removed` | no | `acc` = `g\|u\|r`; absent = never landed |

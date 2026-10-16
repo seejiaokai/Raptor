@@ -234,9 +234,13 @@ const noVerTag = (s: string) => {
    review" / "tap to collapse" — its ▼ / ▲ and the bar's own look say it opens. The reference keeps the cue, so lift it
    off both sides (a no-op on the port). */
 const noDwCue = (s: string) => s.replace(/ · <span class="dwcue">tap to (?:review|collapse)<\/span>/g, '')
+/* Divergence (owner D950 R1, 17 Oct 26 — the words pass, round 2): View-only Sched's unpublished day no longer carries the
+   boxed "Draft" stamp — its DRAFT title tag says it once. The reference keeps the stamp, so lift it off both sides (a
+   no-op on the port). */
+const noDraftStamp = (s: string) => s.replace(/<span class="dbeak ro " title="[^"]* is still draft">Draft<\/span>/g, '')
 describe('view-week markup parity with the reference', () => {
   it('every day of the read-only week is byte-identical (minus the input blocks)', () => {
-    const V = (s: string) => noDwCue(noReportingAnchor(noVerTag(noItTime(noAhRmk(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s)))))))))))))
+    const V = (s: string) => noDraftStamp(noDwCue(noReportingAnchor(noVerTag(noItTime(noAhRmk(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s))))))))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},false)`)
       expect(V(dayHTML(di, false)), 'day ' + di+' '+parityWhere(V(dayHTML(di,false)),V(ref))).toBe(V(ref))
@@ -802,7 +806,7 @@ describe('the scheduler-side controls', () => {
     expect(oblk).toContain('data-acc=')
     /* the housekeeping reminder (owner, Aug 26; reworded 26 Aug 26 with the
        removed-input dormancy rule) rides the expanded panel */
-    expect(oblk).toContain('A removed input flags nothing until accepted again')
+    expect(oblk).toContain('A rejected input flags nothing until accepted again')
     PIOPEN.delete(0)                                  // leave it as we found it
   })
 

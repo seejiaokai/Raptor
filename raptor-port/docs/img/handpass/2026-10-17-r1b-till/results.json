@@ -1,0 +1,229 @@
+{
+ "results": [
+  {
+   "id": "1-desk  board wave header",
+   "tag": "PASS",
+   "note": "2 wave header(s), none carries a time note or \"N ac\"; header 1 reads \"⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic ⇅ Auto sort + In-time / Rally + Line ✕ Wave\" (1088x41px), all five buttons inside it",
+   "pic": "s1-wave-header-desk.png"
+  },
+  {
+   "id": "3-desk  Ground Programme line (board, week, View-only)",
+   "tag": "PASS",
+   "note": "board \"To take an input off, press Reject on it in Personal Inputs below.\" (3 input rows); week same, directly under the heading; days with no input row carry no line (4 checked); View-only Monday programme has 3 input rows and no line",
+   "pic": "s3-board-gp-desk.png s3-week-gp-desk.png s3-viewonly-gp-desk.png"
+  },
+  {
+   "id": "4-desk  board Personal Inputs rows: one line",
+   "tag": "PASS",
+   "note": "3 one-person rows: Fly with: puck 481-555, btn 1002-1049 @ y 584-602 (puck y 585-600), remark 764-946, row 34px | Meeting: puck 481-555, btn 1002-1049 @ y 618-636 (puck y 619-634), remark 764-946, row 34px | Appointment: puck 481-555, btn 1002-1049 @ y 652-670 (puck y 653-668), remark 764-946, row 34px",
+   "pic": "s4-board-pi-desk.png"
+  },
+  {
+   "id": "4-desk  NOTE week Personal Inputs row heights vs the 16 Oct measure",
+   "tag": "NOTE",
+   "note": "rows now 65/65/76px; the 16 Oct measure (round 1b, before the till date) had 53/53/68px at 1440; Reject sits under the name in both"
+  },
+  {
+   "id": "4-desk  week Personal Inputs rows (desktop day card)",
+   "tag": "PASS",
+   "note": "3 rows: Fly with: name y 3439-3454, btn x 32-79 y 3474-3492, row y 3431-3496 (65px) | Meeting: name y 3504-3519, btn x 32-79 y 3539-3557, row y 3496-3561 (65px) | Appointment: name y 3569-3599, btn x 32-79 y 3616-3634, row y 3561-3638 (76px)",
+   "pic": "s4-week-pi-desk.png"
+  },
+  {
+   "id": "5b-desk reads: grey date follows each remark box (week + board)",
+   "tag": "PASS",
+   "note": "week: Fly with=[Keen for any wave]+till 13 Jul, Meeting=[Desk / staff work]+till 13 Jul, Appointment=[HSP blood panel]+till 13 Jul, OML=[Medical leave 13 Jul]+till 13 Jul, ATT C=[Medically down]+till 17 Jul; board: Fly with=[Keen for any wave]+till 13 Jul, Meeting=[Desk / staff work]+till 13 Jul, Appointment=[HSP blood panel]+till 13 Jul, OML=[Medical leave 13 Jul]+till 13 Jul, ATT C=[Medically down]+till 17 Jul; the grey date follows each box (colour 138,150,163)",
+   "pic": "s5b-week-unav-desk.png s5b-board-unav-desk.png"
+  },
+  {
+   "id": "5d-desk View-only Unavailable: \"<remark> till <date>\" as one text",
+   "tag": "PASS",
+   "note": "OML: \"Medical leave 13 Jul till 13 Jul\" | ATT C: \"Medically down till 17 Jul\"",
+   "pic": "s5d-viewonly-unav-desk.png"
+  },
+  {
+   "id": "5e-desk board Unavailable \"+ Add\": empty Remarks, grey date",
+   "tag": "PASS",
+   "note": "window (type LL) opens with Remarks \"\" and grey \"till 13 Jul\" after it",
+   "pic": "s5e-board-unav-add-desk.png"
+  },
+  {
+   "id": "5c-desk programme row from an input, board: Tab through unchanged",
+   "tag": "PASS",
+   "note": "box reads \"HSP blood panel till 13 Jul\"; click+Tab changed nothing (edit-log rows 0, history 0/1, pending \"\")",
+   "pic": "s5c-board-desk-focused.png"
+  },
+  {
+   "id": "5c-desk programme row from an input, week: Tab through unchanged",
+   "tag": "PASS",
+   "note": "box reads \"HSP blood panel till 13 Jul\"; click+Tab changed nothing (edit-log rows 0, history 0/1, pending \"\")",
+   "pic": "s5c-week-desk-focused.png"
+  },
+  {
+   "id": "5b-desk type + Tab in a Personal Inputs remark box (week)",
+   "tag": "PASS",
+   "note": "Gambit's box \"Keen for any wave\" -> \"Keen for any wave Zed\" (stored \"Keen for any wave Zed\"), grey \"till 13 Jul\" still after it",
+   "pic": "s5b-type-week-desk-typing.png s5b-type-week-desk-saved.png"
+  },
+  {
+   "id": "5b-desk type + Tab in a Personal Inputs remark box (board)",
+   "tag": "PASS",
+   "note": "Zenith's box \"Desk / staff work\" -> \"Desk / staff work Yo\" (stored \"Desk / staff work Yo\"), grey \"till 13 Jul\" still after it",
+   "pic": "s5b-type-board-desk-typing.png s5b-type-board-desk-saved.png"
+  },
+  {
+   "id": "2-desk  Reject + Undo (board)",
+   "tag": "PASS",
+   "note": "buttons read [\"Reject\"], hover \"Take its row off the ground programme\"; pressed: programme rows 3->2, row now offers \"Accept\"; Undo: back to \"Reject\", programme rows 3",
+   "pic": "s2-board-desk-before.png s2-board-desk-rejected.png s2-board-desk-undone.png"
+  },
+  {
+   "id": "2-desk  Reject + Undo (week)",
+   "tag": "PASS",
+   "note": "buttons read [\"Reject\"], hover \"Take its row off the ground programme\"; pressed: programme rows 3->2, row now offers \"Accept\"; Undo: back to \"Reject\", programme rows 3",
+   "pic": "s2-week-desk-before.png s2-week-desk-rejected.png s2-week-desk-undone.png"
+  },
+  {
+   "id": "5a-1 window on open (calendar on JULY 2026, day 14 Jul)",
+   "tag": "PASS",
+   "note": "type OL, person \"stiff\", Remarks \"\", grey \"till 14 Jul\" after the box",
+   "pic": "s5a-1-open.png"
+  },
+  {
+   "id": "5a-2 pick a later end date",
+   "tag": "PASS",
+   "note": "1 tap(s) on 17 Jul: grey \"till 14 Jul\" -> \"till 17 Jul\", heading \"Jul 14 → Jul 17\", Remarks box still \"\"",
+   "pic": "s5a-2-later-end.png"
+  },
+  {
+   "id": "5a-3 type \"Las Vegas\"",
+   "tag": "PASS",
+   "note": "box \"Las Vegas\", grey still \"till 17 Jul\"",
+   "pic": "s5a-3-typed.png"
+  },
+  {
+   "id": "5a-4 saved (Add)",
+   "tag": "PASS",
+   "note": "window closed; stored {\"remarks\":\"Las Vegas\",\"date\":\"Jul 14\",\"type\":\"OL\",\"end\":\"Jul 17\"}"
+  },
+  {
+   "id": "5a-5 the day's card",
+   "tag": "PASS",
+   "note": "remark \"Las Vegas\"; card reads \"Las Vegas\"; date part(s) [\"icard-hrs:till 17 Jul\"]",
+   "pic": "s5a-5-day-card.png"
+  },
+  {
+   "id": "5a-6 Inputs List Remarks column",
+   "tag": "PASS",
+   "note": "Remarks column reads \"Las Vegas till 17 Jul\"",
+   "pic": "s5a-6-list.png"
+  },
+  {
+   "id": "5a-desk Inputs page flow",
+   "tag": "PASS",
+   "note": "sub-steps 5a-1..5a-6 above"
+  },
+  {
+   "id": "6-0 Tuesday carries the leave before publishing",
+   "tag": "PASS",
+   "note": "Unavailable on Tuesday reads \"OL Saber IP LATE Las Vegastill 17 Jul\""
+  },
+  {
+   "id": "6-1 publish Tuesday through its own controls",
+   "tag": "PASS",
+   "note": "four sign-offs, Publish day; chip reads \"ORIG | ORIG\"",
+   "pic": "s6-2-published.png"
+  },
+  {
+   "id": "6-2 extend the leave by one day on the Inputs page",
+   "tag": "PASS",
+   "note": "window heading \"Jul 14 → Jul 17\" -> \"Jul 14 → Jul 18\", grey date \"till 17 Jul\" -> \"till 18 Jul\", remark \"Las Vegas\", saved",
+   "pic": "s6-3-extend.png"
+  },
+  {
+   "id": "6-desk  published day + stretch",
+   "tag": "PASS",
+   "note": "Tuesday head reads \"1 pending\"; pending list: \"Saber · OL Saber 16/10 06:50 “Las Vegas till 17 Jul” → “Las Vegas till 18 Jul”\"",
+   "pic": "s6-4-pending-chip.png s6-5-pending-list.png"
+  },
+  {
+   "id": "1-phone  board wave header",
+   "tag": "PASS",
+   "note": "2 wave header(s), none carries a time note or \"N ac\"; header 1 reads \"⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic ⇅ Auto sort + In-time / Rally + Line ✕ Wave\" (342x69px), all five buttons inside it",
+   "pic": "s1-wave-header-phone390.png"
+  },
+  {
+   "id": "3-phone  Ground Programme line (board, week, View-only)",
+   "tag": "PASS",
+   "note": "board \"To take an input off, press Reject on it in Personal Inputs below.\" (3 input rows); week same, directly under the heading; days with no input row carry no line (4 checked); View-only Monday programme has 3 input rows and no line",
+   "pic": "s3-board-gp-phone390.png s3-week-gp-phone390.png s3-viewonly-gp-phone390.png"
+  },
+  {
+   "id": "4-phone390  board Personal Inputs: Reject on the puck line",
+   "tag": "PASS",
+   "note": "3 one-person rows: Fly with: puck 28-102, btn 141-188 @ y 585-603 (puck y 586-601), remark 194-300, row 64px | Meeting: puck 28-102, btn 141-188 @ y 649-667 (puck y 650-665), remark 194-300, row 64px | Appointment: puck 28-102, btn 141-188 @ y 713-731 (puck y 714-729), remark 194-300, row 64px",
+   "pic": "s4-board-pi-phone390.png"
+  },
+  {
+   "id": "4-phone390  week Personal Inputs: Reject under the name",
+   "tag": "PASS",
+   "note": "3 rows: Fly with: name y 3370-3384, btn x 26-73 y 3387-3405, row y 3362-3409 (47px) | Meeting: name y 3417-3431, btn x 26-73 y 3434-3452, row y 3409-3456 (47px) | Appointment: name y 3464-3477, btn x 26-73 y 3489-3507, row y 3456-3511 (56px)",
+   "pic": "s4-week-pi-phone390.png"
+  },
+  {
+   "id": "5b-phone reads: grey date follows each remark box (week + board)",
+   "tag": "PASS",
+   "note": "week: Fly with=[Keen for any wave]+till 13 Jul, Meeting=[Desk / staff work]+till 13 Jul, Appointment=[HSP blood panel]+till 13 Jul, OML=[Medical leave 13 Jul]+till 13 Jul, ATT C=[Medically down]+till 17 Jul; board: Fly with=[Keen for any wave]+till 13 Jul, Meeting=[Desk / staff work]+till 13 Jul, Appointment=[HSP blood panel]+till 13 Jul, OML=[Medical leave 13 Jul]+till 13 Jul, ATT C=[Medically down]+till 17 Jul; the grey date follows each box (colour 138,150,163)",
+   "pic": "s5b-week-unav-phone390.png s5b-board-unav-phone390.png"
+  },
+  {
+   "id": "5d-phone View-only Unavailable: one text",
+   "tag": "PASS",
+   "note": "OML: \"Medical leave 13 Jul till 13 Jul\" | ATT C: \"Medically down till 17 Jul\"",
+   "pic": "s5d-viewonly-unav-phone390.png"
+  },
+  {
+   "id": "5e-phone board Unavailable \"+ Add\"",
+   "tag": "PASS",
+   "note": "window (type LL) opens with Remarks \"\" and grey \"till 13 Jul\" after it",
+   "pic": "s5e-board-unav-add-phone390.png"
+  },
+  {
+   "id": "5b-phone type + Tab in a Personal Inputs remark box (board)",
+   "tag": "PASS",
+   "note": "Zenith's box \"Desk / staff work\" -> \"Desk / staff work Yo\" (stored \"Desk / staff work Yo\"), grey \"till 13 Jul\" still after it",
+   "pic": "s5b-type-board-phone390-typing.png s5b-type-board-phone390-saved.png"
+  },
+  {
+   "id": "2-phone  Reject + Undo (board)",
+   "tag": "PASS",
+   "note": "buttons read [\"Reject\"], hover \"Take its row off the ground programme\"; pressed: programme rows 3->2, row now offers \"Accept\"; Undo: back to \"Reject\", programme rows 3",
+   "pic": "s2-board-phone390-before.png s2-board-phone390-rejected.png s2-board-phone390-undone.png"
+  },
+  {
+   "id": "2-phone  Reject + Undo (week)",
+   "tag": "PASS",
+   "note": "buttons read [\"Reject\"], hover \"Take its row off the ground programme\"; pressed: programme rows 3->2, row now offers \"Accept\"; Undo: back to \"Reject\", programme rows 3",
+   "pic": "s2-week-phone390-before.png s2-week-phone390-rejected.png s2-week-phone390-undone.png"
+  },
+  {
+   "id": "1-phone360  board wave header",
+   "tag": "PASS",
+   "note": "2 wave header(s), none carries a time note or \"N ac\"; header 1 reads \"⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic ⇅ Auto sort + In-time / Rally + Line ✕ Wave\" (312x69px), all five buttons inside it",
+   "pic": "s1-wave-header-phone360.png"
+  },
+  {
+   "id": "4-phone360  board Personal Inputs: Reject on the puck line",
+   "tag": "PASS",
+   "note": "3 one-person rows: Fly with: puck 28-102, btn 111-158 @ y 556-574 (puck y 557-572), remark 164-270, row 64px | Meeting: puck 28-102, btn 111-158 @ y 620-638 (puck y 621-636), remark 164-270, row 64px | Appointment: puck 28-102, btn 111-158 @ y 684-702 (puck y 685-700), remark 164-270, row 64px",
+   "pic": "s4-board-pi-phone360.png"
+  },
+  {
+   "id": "4-phone360  week Personal Inputs: Reject under the name",
+   "tag": "PASS",
+   "note": "3 rows: Fly with: name y 3514-3528, btn x 26-73 y 3531-3549, row y 3506-3553 (47px) | Meeting: name y 3561-3575, btn x 26-73 y 3578-3596, row y 3553-3600 (47px) | Appointment: name y 3608-3622, btn x 26-73 y 3631-3649, row y 3600-3653 (53px)",
+   "pic": "s4-week-pi-phone360.png"
+  }
+ ],
+ "errs": []
+}

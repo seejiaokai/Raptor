@@ -1,0 +1,115 @@
+<title>ALL AVAIL on Common Programme</title>
+<style>
+/* Layout: one reading column; each question a block of real-app pictures, phone or desktop, tap to enlarge. */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --ink:#16202a; --ink-2:#4a5866; --line:#d6dde4;
+  --accent:#0f8fb3; --rec:#1d8a46; --rec-bg:#e5f5ea; --real:#b4233f; --real-bg:#fbe8ec;
+  --f-display:"Barlow Semi Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e1318; --panel:#161d24; --ink:#e6edf3; --ink-2:#9aa8b5; --line:#2a3540;
+  --accent:#3cc3e6; --rec:#45c470; --rec-bg:#12301d; --real:#ff6b86; --real-bg:#3a1520; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1318; --panel:#161d24; --ink:#e6edf3; --ink-2:#9aa8b5; --line:#2a3540;
+  --accent:#3cc3e6; --rec:#45c470; --rec-bg:#12301d; --real:#ff6b86; --real-bg:#3a1520; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--f-body)}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:22px}
+h1{font:600 30px/1.1 var(--f-display);letter-spacing:.01em;margin:0;text-wrap:balance}
+h2{font:600 21px/1.2 var(--f-display);margin:0;text-wrap:balance}
+p{margin:0}
+.lead{color:var(--ink-2)}
+.his{border-left:3px solid var(--accent);padding:4px 0 4px 12px;color:var(--ink-2);font-style:italic}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:8px;z-index:2}
+.bar span{color:var(--ink-2);font-size:14px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{font:600 14px var(--f-body);padding:6px 14px;border:0;background:var(--panel);color:var(--ink);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.seg button:focus-visible,.shot:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.q{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 16px;display:flex;flex-direction:column;gap:14px}
+.q .num{font:700 12px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+.shot{display:block;padding:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#000;cursor:zoom-in}
+.shot img{display:block;width:100%;height:auto}
+figcaption{font-size:14px;color:var(--ink-2)}
+.tag{display:inline-block;font:700 11px/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;padding:3px 6px;border-radius:4px;margin-right:6px;vertical-align:1px}
+.tag.real{background:var(--real-bg);color:var(--real)}
+.tag.drawn{background:var(--rec-bg);color:var(--rec)}
+.rec{background:var(--rec-bg);border-radius:8px;padding:10px 12px}
+.rec b{color:var(--rec)}
+li .rec{display:block;margin-top:6px}
+ul{gap:12px !important}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.answer{background:var(--panel);border:2px solid var(--accent);border-radius:10px;padding:16px}
+.answer code{font:600 15px ui-monospace,Consolas,monospace;background:var(--bg);padding:2px 6px;border-radius:4px}
+.zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:12px;z-index:10;cursor:zoom-out}
+.zoom img{max-width:100%;max-height:100%;object-fit:contain}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:10px">
+    <h1>ALL AVAIL inputs on the Common Programme</h1>
+    <p class="his">"I'm intending to have any All Avail or All puck inputs to be showing on common programme by default. Is it possible? Applicable to Duty and other commitments only. Not applicable to OD it stays in unavailable." — you, 17 Oct</p>
+    <p class="lead"><b>Yes, it is possible.</b> It is a job of its own, about the size of the shared-row job, done after the till-date build. Below: where such an input lands today, where it would land, and four questions for you. Tap a picture to enlarge it.</p>
+  </header>
+
+  <div class="bar"><span>Show pictures at:</span>
+    <div class="seg" role="group" aria-label="Picture size">
+      <button id="bPhone" aria-pressed="true">iPhone</button><button id="bDesk" aria-pressed="false">Desktop</button>
+    </div>
+  </div>
+
+  <section class="q">
+    <div class="num">Where it lands</div>
+    <h2>A Meeting filed for ALL AVAIL, 13 Jul</h2>
+    <div class="shots">
+      <figure><button class="shot" data-n="1-today"><img src="phone-1-today.png" alt="Today: the ALL AVAIL Meeting is a row on the Ground Programme"></button>
+        <figcaption><span class="tag real">real</span>Today: it lands on the Ground Programme, like every commitment.</figcaption></figure>
+      <figure><button class="shot" data-n="2-proposed"><img src="phone-2-proposed.png" alt="Proposed: the same row on the Common Programme, in time order"></button>
+        <figcaption><span class="tag drawn">drawn</span>Your idea: the same row on the Common Programme, in time order.</figcaption></figure>
+    </div>
+    <p class="lead">Overseas duty needs no change: ALL and ALL AVAIL are never offered for it, so it always stays under Unavailable.</p>
+  </section>
+
+  <section class="q">
+    <div class="num">Four questions</div>
+    <h2>What should happen around it?</h2>
+    <ul>
+      <li><b>Q1. Moving it.</b> Can a scheduler move it to the Ground Programme and back? <span class="rec"><b>I recommend no.</b> It lands on the Common Programme, and Reject still takes it off, as for any input. Moving rows between the two programmes would be a new kind of drag, so it's worth adding only if you find you need it.</span></li>
+      <li><b>Q2. When ALL AVAIL comes off.</b> If someone changes the input to named people only, does it move to the Ground Programme (and back again if ALL AVAIL is put back)? <span class="rec"><b>I recommend yes.</b> One simple rule: with ALL or ALL AVAIL it is on the Common Programme; without them it is on the Ground Programme.</span></li>
+      <li><b>Q3. Which kinds.</b> Every kind that ALL and ALL AVAIL are offered for: Training, Meeting, Appointment, Duty, Event, Personal and Other? <span class="rec"><b>I recommend yes, all seven.</b></span></li>
+      <li><b>Q4. Everything else unchanged?</b> The ALL AVAIL count, who stands behind it, its OIL answer, its clashes, and its LATE mark all work exactly as they do now. Only the place changes. <span class="rec"><b>I recommend yes.</b></span></li>
+    </ul>
+    <p class="lead">Moving on a day that is already published would read "1 pending" there once. That only affects the demo data, which is cleared before the database.</p>
+  </section>
+
+  <section class="answer">
+    <h2 style="margin-bottom:8px">How to answer</h2>
+    <p>For example: <code>Q1–Q4 as recommended</code>. There's no rush. I'm building the till-date work first either way.</p>
+  </section>
+</div>
+
+<script>
+(function(){
+  var size='phone';
+  function paint(){
+    document.querySelectorAll('.shot').forEach(function(b){ b.querySelector('img').src = size + '-' + b.dataset.n + '.png' });
+    document.getElementById('bPhone').setAttribute('aria-pressed', String(size==='phone'));
+    document.getElementById('bDesk').setAttribute('aria-pressed', String(size==='desk'));
+  }
+  try { var s = localStorage.getItem('till-switch-size'); if (s === 'desk' || s === 'phone') size = s } catch (e) {}
+  document.getElementById('bPhone').onclick=function(){ size='phone'; try{localStorage.setItem('till-switch-size',size)}catch(e){} paint() };
+  document.getElementById('bDesk').onclick=function(){ size='desk'; try{localStorage.setItem('till-switch-size',size)}catch(e){} paint() };
+  document.addEventListener('click', function(ev){
+    var b = ev.target.closest && ev.target.closest('.shot'); if (!b) return;
+    var z = document.createElement('div'); z.className='zoom'; z.tabIndex=0;
+    var i = document.createElement('img'); i.src = b.querySelector('img').src; i.alt = b.querySelector('img').alt; z.appendChild(i);
+    function close(){ z.remove(); b.focus() }
+    z.onclick = close; z.onkeydown = function(e){ if (e.key==='Escape') close() };
+    document.body.appendChild(z); z.focus();
+  });
+  paint();
+})();
+</script>

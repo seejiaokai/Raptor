@@ -92,12 +92,12 @@ const FREETEXT = '.ah-row>.nm, .pl-row>.nm, .pl-row .rmk, .ah-note, .rmkcell, .p
    above like everything else. */
 const PROSE = '.ah-row>.nm, .pl-row>.nm, .pl-row .rmk, .ah-note, .rmkcell, .areacell'
 
-test.describe('Rally previous-day Board header fits constrained content widths', () => {
+test.describe('Rally previous-day Board header keeps its controls inside it at constrained widths', () => {
   for (const [name, viewport] of [
     ['desktop', { width: 1440, height: 900 }], ['phone', PHONE],
     ['landscape', { width: 844, height: 390 }], ['tablet', { width: 1024, height: 600 }],
   ] as const) {
-    test(`date cue and every control remain readable and reachable on ${name}`, async ({ page }) => {
+    test(`every control remains reachable, nothing overflows, on ${name}`, async ({ page }) => {
       await page.setViewportSize(viewport)
       await login(page); await go(page, 'editsched')
       await page.locator('#eWeek [data-sbday="1"]:visible').click()
@@ -111,13 +111,17 @@ test.describe('Rally previous-day Board header fits constrained content widths',
       await page.locator('#schedBoard [data-itadd="1|0"]:visible').click()
       const line = page.locator('#schedBoard [data-itline="1|0|0"]:visible').first()
       await line.fill('22:00 RALLY'); await line.press('Enter')
+      /* THE HEADER CARRIES NO REPORT CLOCK SINCE ROUND 1b (owner D947, 16 Oct 26): "In-time / Rally 22:00 (prev day) · 4 ac"
+         left every wave's header, so there is no date cue here to fit any more — the line itself reads 22:00 under the
+         header. What this test still holds: with an evening-before rally on the wave, the header does not overflow and
+         every control in it stays inside it, pressable. */
+      await expect(page.locator('#schedBoard [data-itline="1|0|0"]:visible').first()).toContainText('22:00')
       const header = page.locator('#schedBoard .sb-go-h:visible').first()
-      await expect(header.locator('.asd')).toContainText('22:00 (prev day)')
+      await expect(header.locator('.asd')).toHaveCount(0)
       await header.scrollIntoViewIfNeeded()
       const m = await header.evaluate(e => {
-        const summary = e.querySelector('.asd')!, r = summary.getBoundingClientRect(), h = e.getBoundingClientRect()
-        const style = getComputedStyle(summary), lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.2
-        return { text: summary.textContent, width: r.width, height: r.height, lineHeight,
+        const h = e.getBoundingClientRect()
+        return {
           overflow: e.scrollWidth - e.clientWidth,
           buttons: [...e.querySelectorAll('button')].map(b => {
             const q = b.getBoundingClientRect(), hit = document.elementFromPoint(q.x + q.width / 2, q.y + q.height / 2)
@@ -126,9 +130,6 @@ test.describe('Rally previous-day Board header fits constrained content widths',
               hit: hit === b || b.contains(hit), width: q.width, height: q.height }
           }) }
       })
-      expect(m.text).toContain('22:00 (prev day)')
-      expect(m.width, 'the date cue has readable width').toBeGreaterThanOrEqual(120)
-      expect(m.height, 'the complete date cue fits within two lines').toBeLessThanOrEqual(m.lineHeight * 2.2)
       expect(m.overflow, 'no wave-header horizontal overflow').toBeLessThanOrEqual(1)
       expect(m.buttons.every(b => b.inside && b.hit && b.width >= 27 && b.height >= 14), JSON.stringify(m.buttons)).toBe(true)
     })

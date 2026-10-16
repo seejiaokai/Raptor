@@ -21,7 +21,7 @@ import { rulesLoad } from '../engine/rules'
 import { flyplanLoad } from './flyplan'
 import { insightsLoad } from '../engine/insights-config'
 import { registerMissionRoles } from './mission-roles'
-import { mintInpIds, INPUTS, DATES, baseYear, dateIx, inputCoversDate, inpId, shapeProblem } from '../engine/inputs'
+import { mintInpIds, INPUTS, DATES, baseYear, dateIx, inputCoversDate, inpId, shapeProblem, tillSettle } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, migrateLegacyIds } from '../engine/rowids'
@@ -192,6 +192,10 @@ function runInputWrite(fn: () => void, suppressHist: boolean): boolean {
      group: the one-rule build, step 2 (g).) */
   try {
     fn(); if (gate) gate.apply(gateSnap)
+    /* a till-date tick the change just overtook — a one-day commitment stretched, a kind moved out of its group — is
+       replaced by the new default (owner D953 reading 2; engine/inputs.ts tillSettle). Here, after the absence rules'
+       own cuts, so every door that writes an input is held by it; only a record whose default flipped carries one. */
+    for (const r of INPUTS) tillSettle(r)
   }
   catch (e) { if (snap) { histRestore(snap); view.armDrop() } HOOKS.histPush = push; HOOKS.renderInputs(); HOOKS.reflow(); throw e }
   finally { if (suppressHist) HOOKS.histPush = push }

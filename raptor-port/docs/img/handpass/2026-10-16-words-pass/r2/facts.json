@@ -1,0 +1,312 @@
+{
+ "desk Q1 head text before": [
+  "MondayJul 13 · TodayDRAFT 4 X 4 iDraft"
+ ],
+ "desk Q1 found": [
+  "1 ×1: Draft"
+ ],
+ "desk Q1 day heads with both DRAFT and Draft": "7 of 7",
+ "desk Q1 height before": {
+  "#vWeek .day[data-day=\"0\"] .day-head": [
+   44
+  ]
+ },
+ "pictures": [
+  "desk-q1-draft-before.png",
+  "desk-q1-draft-after.png",
+  "desk-q2-peek-before.png",
+  "desk-q2-peek-after-a.png",
+  "desk-q2-peek-after-b.png",
+  "desk-q3-accepted-asbuilt.png",
+  "desk-q3-accepted-before.png",
+  "desk-q3-accepted-after.png",
+  "desk-q3-removed-before.png",
+  "desk-q3-removed-after.png",
+  "desk-q4-dragin-before.png",
+  "desk-q4-dragin-after.png",
+  "desk-left-nonotes.png",
+  "desk-left-groundday.png",
+  "phone-q1-draft-before.png",
+  "phone-q1-draft-after.png",
+  "phone-q3-accepted-asbuilt.png",
+  "phone-q3-accepted-before.png",
+  "phone-q3-accepted-after.png",
+  "phone-q3-removed-before.png",
+  "phone-q3-removed-after.png",
+  "phone-q4-dragin-before.png",
+  "phone-q4-dragin-after.png",
+  "phone-left-nonotes.png",
+  "phone-left-groundday.png"
+ ],
+ "desk Q1 after": [
+  "removed"
+ ],
+ "desk Q1 head text after": [
+  "MondayJul 13 · TodayDRAFT 4 X 4 i"
+ ],
+ "desk Q1 height after": {
+  "#vWeek .day[data-day=\"0\"] .day-head": [
+   43
+  ]
+ },
+ "desk Q2 the line on Edit Schedule too": [
+  "Next week — click a day to load it"
+ ],
+ "desk Q2 peek days drawn": 7,
+ "desk Q2 found": [
+  "2 ×1: Next week — click a day to load it"
+ ],
+ "desk Q2 height before": {
+  "#vWeek .day.peek[data-peek-day=\"0\"] .day-head": [
+   61
+  ]
+ },
+ "desk Q2 after A": [
+  "Next week",
+  "Next week"
+ ],
+ "desk Q2 height after A": {
+  "#vWeek .day.peek[data-peek-day=\"0\"] .day-head": [
+   61
+  ]
+ },
+ "desk Q2 after B": [
+  "Next week: click a day to load it",
+  "Next week: click a day to load it"
+ ],
+ "desk Q2 height after B": {
+  "#vWeek .day.peek[data-peek-day=\"0\"] .day-head": [
+   61
+  ]
+ },
+ "desk Q3 rows text (stylesheet markers)": [
+  "Fly with\" · accepted\" | Keen for any wave | till 13 Jul\" · accepted\"",
+  "Meeting\" · accepted\" | Desk / staff work | till 13 Jul\" · accepted\"",
+  "Appointment\" · accepted\" | HSP blood panel | till 13 Jul\" · accepted\""
+ ],
+ "desk Q3 made real": [
+  "name: · accepted",
+  "rmk: · accepted",
+  "name: · accepted",
+  "rmk: · accepted",
+  "name: · accepted",
+  "rmk: · accepted"
+ ],
+ "desk Q3 heights: stylesheet markers / real spans": [
+  {
+   "#wpw-pinp": [
+    263
+   ],
+   "#wpw-pinp .pl-row.accd": [
+    65,
+    65,
+    68
+   ]
+  },
+  {
+   "#wpw-pinp": [
+    263
+   ],
+   "#wpw-pinp .pl-row.accd": [
+    65,
+    65,
+    68
+   ]
+  }
+ ],
+ "desk Q3 found": [
+  "3 ×3: · accepted"
+ ],
+ "desk Q3 after": "3 removed",
+ "desk Q3 rows text after": [
+  "Fly with · acceptedCGambitCKeen for any wavetill 13 JulReject",
+  "Meeting · accepted09:0017:00ZenithCDesk / staff worktill 13 JulReject",
+  "Appointment · accepted10:0011:00BoltCLATEHSP blood paneltill 13 JulReject"
+ ],
+ "desk Q3 heights after": {
+  "#wpw-pinp": [
+   238
+  ],
+  "#wpw-pinp .pl-row.accd": [
+   53,
+   53,
+   68
+  ]
+ },
+ "desk Q3 reject pressed on": "Fly with C Gambit C Keen for any wavetill 13 Jul REJECT",
+ "desk Q3 removed row (stylesheet markers)": [
+  "Fly with\" · removed\" | Keen for any wave\" · removed\" | till 13 Jul"
+ ],
+ "desk Q3 removed row heights: stylesheet / real / after": [
+  {
+   "#wpw-pinp .pl-row.inp-dorm": [
+    65
+   ]
+  },
+  {
+   "#wpw-pinp .pl-row.inp-dorm": [
+    65
+   ]
+  },
+  {
+   "#wpw-pinp .pl-row.inp-dorm": [
+    53
+   ]
+  }
+ ],
+ "desk Q3 removed row after": [
+  "Fly with · removedGambitCKeen for any wavetill 13 JulAccept"
+ ],
+ "desk Q4 drawer": "open",
+ "desk Q4 drawer after opening": "open",
+ "desk Q4 crew headings": [
+  "Placeholders · drag in",
+  "SANS Avail",
+  "Personnel · 3 free"
+ ],
+ "desk Q4 found": [
+  "4 ×1: Placeholders · drag in"
+ ],
+ "desk Q4 height before": {
+  "#wp-ph": [
+   56
+  ]
+ },
+ "desk Q4 after": [
+  "Placeholders"
+ ],
+ "desk Q4 height after": {
+  "#wp-ph": [
+   56
+  ]
+ },
+ "desk left: empty note boxes on the week": 28,
+ "phone Q1 head text before": [
+  "MondayJul 13 · TodayDRAFT 4 X 4 iDraft"
+ ],
+ "phone Q1 found": [
+  "1 ×1: Draft"
+ ],
+ "phone Q1 day heads with both DRAFT and Draft": "7 of 7",
+ "phone Q1 height before": {
+  "#vWeek .day[data-day=\"0\"] .day-head": [
+   84
+  ]
+ },
+ "phone Q1 after": [
+  "removed"
+ ],
+ "phone Q1 head text after": [
+  "MondayJul 13 · TodayDRAFT 4 X 4 i"
+ ],
+ "phone Q1 height after": {
+  "#vWeek .day[data-day=\"0\"] .day-head": [
+   78
+  ]
+ },
+ "phone Q2 the line on Edit Schedule too": [],
+ "phone Q2 peek days drawn": 0,
+ "phone Q3 rows text (stylesheet markers)": [
+  "Fly with\" · accepted\" | Keen for any wave | till 13 Jul\" · accepted\"",
+  "Meeting\" · accepted\" | Desk / staff work | till 13 Jul\" · accepted\"",
+  "Appointment\" · accepted\" | HSP blood panel | till 13 Jul\" · accepted\""
+ ],
+ "phone Q3 made real": [
+  "name: · accepted",
+  "rmk: · accepted",
+  "name: · accepted",
+  "rmk: · accepted",
+  "name: · accepted",
+  "rmk: · accepted"
+ ],
+ "phone Q3 heights: stylesheet markers / real spans": [
+  {
+   "#wpw-pinp": [
+    225
+   ],
+   "#wpw-pinp .pl-row.accd": [
+    47,
+    47,
+    56
+   ]
+  },
+  {
+   "#wpw-pinp": [
+    225
+   ],
+   "#wpw-pinp .pl-row.accd": [
+    47,
+    47,
+    56
+   ]
+  }
+ ],
+ "phone Q3 found": [
+  " ×3: · accepted"
+ ],
+ "phone Q3 after": "3 removed",
+ "phone Q3 rows text after": [
+  "Fly with · acceptedCGambitCKeen for any wavetill 13 JulReject",
+  "Meeting · accepted09:0017:00ZenithCDesk / staff worktill 13 JulReject",
+  "Appointment · accepted10:0011:00BoltCLATEHSP blood paneltill 13 JulReject"
+ ],
+ "phone Q3 heights after": {
+  "#wpw-pinp": [
+   216
+  ],
+  "#wpw-pinp .pl-row.accd": [
+   47,
+   47,
+   47
+  ]
+ },
+ "phone Q3 reject pressed on": "Fly with C Gambit C Keen for any wavetill 13 Jul REJECT",
+ "phone Q3 removed row (stylesheet markers)": [
+  "Fly with\" · removed\" | Keen for any wave\" · removed\" | till 13 Jul"
+ ],
+ "phone Q3 removed row heights: stylesheet / real / after": [
+  {
+   "#wpw-pinp .pl-row.inp-dorm": [
+    66
+   ]
+  },
+  {
+   "#wpw-pinp .pl-row.inp-dorm": [
+    66
+   ]
+  },
+  {
+   "#wpw-pinp .pl-row.inp-dorm": [
+    59
+   ]
+  }
+ ],
+ "phone Q3 removed row after": [
+  "Fly with · removedGambitCKeen for any wavetill 13 JulAccept"
+ ],
+ "phone Q4 drawer": "closed",
+ "phone Q4 drawer after opening": "open",
+ "phone Q4 crew headings": [
+  "Placeholders · drag in",
+  "SANS Avail",
+  "Personnel · 3 free"
+ ],
+ "phone Q4 found": [
+  "4 ×1: Placeholders · drag in"
+ ],
+ "phone Q4 height before": {
+  "#wp-ph": [
+   56
+  ]
+ },
+ "phone Q4 after": [
+  "Placeholders"
+ ],
+ "phone Q4 height after": {
+  "#wp-ph": [
+   56
+  ]
+ },
+ "phone left: empty note boxes on the week": 28,
+ "errors": []
+}

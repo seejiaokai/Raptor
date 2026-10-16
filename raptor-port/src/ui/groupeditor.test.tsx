@@ -30,7 +30,7 @@ import { initStore, notify, setSession, undo, writeInputs } from '../state/store
 import { setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
 import { setMe } from '../state/auth'
 import { me } from '../state/perms'
-import { INPUTS, entryOf, idsOf } from '../engine/inputs'
+import { INPUTS, entryOf, idsOf , remarksShown } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS, storeBackend } from '../engine/hooks'
 import { ELOG } from '../engine/editlog'
@@ -658,12 +658,13 @@ describe('the date door, after the two reads (9 Oct 26)', () => {
       await openOn(g)
       if (order.startsWith('a man')) await click(puckBtn(c))
       await click(day('2026-10-20')); await click(day('2026-10-21'))
-      expect(($('#inpEditRmk') as HTMLInputElement).value, 'the picker never rewrites the remark').toBe('brief till 14 Oct')
+      /* the box opens with the typed words (the saved date printed, not shown in it — D948); the picker never touches it */
+      expect(($('#inpEditRmk') as HTMLInputElement).value, 'the picker never rewrites the remark').toBe('brief')
       if (!order.startsWith('a man')) await click(puckBtn(c))
       await click($('#inpEditSave'))
-      expect(live(g.iid).remarks).toBe('brief till 21 Oct')
+      expect([live(g.iid).remarks, remarksShown(live(g.iid))], 'the words kept; the date printed from the new dates').toEqual(['brief', 'brief till 21 Oct'])
       expect([live(g.iid).date, live(g.iid).endDate]).toEqual(['Oct 20', 'Oct 21'])
-      expect(INPUTS.filter((r: any) => /^brief till/.test(String(r.remarks || ''))), 'one input, not two').toHaveLength(1)
+      expect(INPUTS.filter((r: any) => /^brief$/.test(String(r.remarks || ''))), 'one input, not two').toHaveLength(1)
       expect(inIt(g.iid), 'all three in it').toEqual([a, b, c])
       await act(async () => { undo(); notify() })
       expect([live(g.iid).date, live(g.iid).endDate, live(g.iid).remarks], 'one Undo').toEqual(['Oct 13', 'Oct 14', 'brief till 14 Oct'])
@@ -882,7 +883,7 @@ describe('the dates of a saved one-person input are changed in its window (D718 
     await click(day('2026-10-20')); await click(day('2026-10-22'))
     await click($('#inpEditSave'))
     expect([live(r.iid).date, live(r.iid).endDate]).toEqual(['Oct 20', 'Oct 22'])
-    expect(live(r.iid).remarks, 'the remark’s "till" word follows the new end').toBe('Home till 22 Oct')
+    expect([live(r.iid).remarks, remarksShown(live(r.iid))], 'its words kept; its printed date follows the new end (D948)').toEqual(['Home', 'Home till 22 Oct'])
   })
   it('the remarks alone changed: the dates are left exactly as they were', async () => {
     const r = await single({ endDate: 'Oct 14' })

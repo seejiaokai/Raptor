@@ -14,7 +14,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
-import { INPUTS, DATES, isPersonal, isUnavail, isSansAvail } from '../engine/inputs'
+import { INPUTS, DATES, isPersonal, isUnavail, isSansAvail , remarksShown } from '../engine/inputs'
 import { idsOf, inpId, onlyNamed } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
@@ -121,7 +121,9 @@ describe('commitNewInput', () => {
   it('a draft carrying an end date lands a span (the Unavailable range add)', () => {
     const draft = { person: 'bane', type: 'OL', allday: true, half: '', start: '2026-07-15', end: '2026-07-17', sTime: '06:00', eTime: '18:00', remarks: 'span add till 17 Jul', sans: null }
     expect(commitNewInput(draft)).toBe(true)
-    const row = INPUTS.find((i: any) => i.remarks === 'span add till 17 Jul')!
+    /* the typed date is read as its date: the words alone are kept, the date printed from the dates (D948) */
+    const row = INPUTS.find((i: any) => i.remarks === 'span add')!
+    expect(remarksShown(row)).toBe('span add till 17 Jul')
     expect(row.date).toBe('Jul 15')
     expect(row.endDate).toBe('Jul 17')
     removeInput(row)
@@ -160,7 +162,7 @@ describe('commitNewInput', () => {
 
 /* ---- (c) the dialog's context-bound shapes -------------------------------- */
 describe('the dialog opened from each add', () => {
-  it('Unavailable: leave/medical/OD types only, a range calendar, remarks pre-carry the till date', async () => {
+  it('Unavailable: leave/medical/OD types only, a range calendar, the till date after the remarks box (D948)', async () => {
     await act(async () => { openScheduler(0); notify() })
     await click($('#schedBoard .unav .sb-addinp'))
     expect($('#inpEditTitle').textContent).toContain('New input')
@@ -172,7 +174,8 @@ describe('the dialog opened from each add', () => {
     expect($('#inpEdCal'), 'the two-click range calendar is in the dialog').toBeTruthy()
     /* an absence still opens all-day — leave/medical keep the ON default */
     expect(($('#inpEditSpan [data-span="all"]') as HTMLElement).getAttribute('aria-pressed'), 'an Unavailable add opens all-day').toBe('true')
-    expect(($('#inpEditRmk') as HTMLInputElement).value, 'a one-day pick reads till <that day>, like the Inputs page').toBe('till 13 Jul')
+    /* the box empty, the date after it — a one-day pick reads till <that day>, like the Inputs page (D948) */
+    expect([($('#inpEditRmk') as HTMLInputElement).value, $('[data-testid="inped-till"]')!.textContent]).toEqual(['', 'till 13 Jul'])
     await act(async () => { setInpEdit(null); notify() })
     await click($('#sbDone'))
   })
@@ -205,7 +208,7 @@ describe('the dialog opened from each add', () => {
 
 /* ---- (d) the whole gestures ----------------------------------------------- */
 describe('adding through the board', () => {
-  it('Unavailable: pick a range on the calendar, Add — a span lands with its till tail, the panel repaints', async () => {
+  it('Unavailable: pick a range on the calendar, Add — a span lands, printed with its till date, the panel repaints', async () => {
     await act(async () => { openScheduler(0); notify() })
     await click($('#schedBoard .unav .sb-addinp'))
     await setSelect($('#inpEditPerson'), 'bane')
@@ -214,13 +217,13 @@ describe('adding through the board', () => {
        seeded start's month, Jul 2026) */
     await click($('#inpEdCal [data-iso="2026-07-15"]'))
     await click($('#inpEdCal [data-iso="2026-07-17"]'))
-    expect(($('#inpEditRmk') as HTMLInputElement).value, 'the pick rewrote the tail').toBe('till 17 Jul')
+    expect([($('#inpEditRmk') as HTMLInputElement).value, $('[data-testid="inped-till"]')!.textContent], 'the pick moved the date after the box').toEqual(['', 'till 17 Jul'])
     await click($('#inpEditSave'))
     expect(INPEDIT, 'the dialog closed on a good save').toBe(null)
     const row = INPUTS.find((i: any) => onlyNamed(i) === 'bane' && i.type === 'OL' && i.date === 'Jul 15')!
     expect(row, 'the record exists').toBeTruthy()
     expect(row.endDate).toBe('Jul 17')
-    expect(row.remarks).toBe('till 17 Jul')
+    expect([row.remarks, remarksShown(row)], 'nothing written into the remark; printed with its date').toEqual(['', 'till 17 Jul'])
     /* the board is open on Monday; the span does not cover it, so assert on
        the model + the Inputs-page-visible record rather than the panel */
     await click($('#sbDone'))

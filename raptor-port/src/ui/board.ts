@@ -4,7 +4,7 @@
 import { DAYS } from '../engine/data'
 import { mkNote, noteText } from '../engine/note'
 import { briefLeadShown } from '../engine/faceattrs'
-import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId, inputReadPass } from '../engine/inputs'
+import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId, inputReadPass, remarksTyped } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { REPORTING_LABEL } from '../engine/reporting'
@@ -21,7 +21,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay, iuParts } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { waveHeadBoard, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown, sbPrevDay, SB_PREVDAY, boxText } from './html'
 import { onInputRow, rowMark, UNMARKED } from './reqdoor'
 import { setInpField, howMany } from './inputedit'
 import { reqRowText } from './reqrow'
@@ -169,12 +169,15 @@ function boardHTMLBody(di: number, pv?: boolean) {
          (26 Aug 26 bug pass; an unescaped `<` swallowed the option outright) */
       + `<select class="sb-wtitle" aria-label="Wave" data-wsel="${di}.${gi}"${mvRO ? ' disabled' : ''}>${opts.map(o => `<option ${o === cur ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select>`
       + `${w.night ? '<span class="night">· night</span>' : ''}`
+      /* "(prev day)" where the wave's in-time / rally is the evening before (owner D949 Q1 — html.ts sbPrevDay) */
+      + (sbPrevDay(w) ? SB_PREVDAY : '')
       /* Traffic edits the wave's airspace bookings, the same field the week's
          Traffic button opens (html.ts). Standalone lines carry none. The
          data-air click is handled globally (interactions.ts setAirKey → AirPop),
          which already reaches the board, so no board-side wiring is needed. */
       + `${sa || mvRO ? '' : `<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}`
-      + (sc ? '' : `<span class="asd">${waveHeadBoard(w)}</span>`)
+      /* no "In-time / Rally 09:40 · 4 ac" note here any more (owner D947, 16 Oct 26 — the words pass, round 1b): the
+         report times are in the yellow lines right under the header, and on a phone the note took a line in every wave */
       + (mvRO ? '' : `<span class="gctl">${sbSortBtn(`w.${di}.${gi}`, mvRO)}${sa ? '' : `<button class="mbtn add" data-itadd="${di}|${gi}" title="Add an ${REPORTING_LABEL} line to this wave">+ ${REPORTING_LABEL}</button>`}<button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
       + `<button class="mbtn del" data-gdel="${di}.${gi}" title="Remove this whole wave">✕ Wave</button></span>`) + `</div>`
     /* The IN TIME + WX/NOTAMS lines edit exactly as the week's do (html.ts):
@@ -1223,7 +1226,7 @@ export function boardChange(e: Event) {
     const at = iuParts('iu:' + tail), id = at ? at.iid : tail
     const inp = inpById(id)
     if (!inp) return notify()                    // deleted or undone underneath it
-    const back = () => { inf.value = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field) }
+    const back = () => { inf.value = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field) }
     if (RO) return back()
     if (setInpField(inp, field as any, inf.value, at ? at.person : null)) notify()
     else back()
@@ -1231,7 +1234,7 @@ export function boardChange(e: Event) {
   }
   const f = (e.target as HTMLElement).closest('[data-bfld]') as HTMLInputElement | null; if (!f) return
   const p = f.dataset.bfld!
-  if (RO) { f.value = txtGet(p); return }
+  if (RO) { f.value = boxText(p); return }
   /* NOTHING SORTS ON ITS OWN ANY MORE (owner, 10 Aug 26). Typing a role into
      a blank cell used to reposition the whole block — the "+ Row, then type
      SDO" path — which is precisely the jump the owner asked to be rid of:
@@ -1250,7 +1253,7 @@ export function boardChange(e: Event) {
      is never left on screen looking saved, and a save is shown as the request holds it (10:15 for a typed 1015). */
   const rq = reqRowText(p, f.value)
   if (rq !== 'none') {
-    f.value = txtGet(p)
+    f.value = boxText(p)   // a remark box holds the typed words, its date grey after it (owner D949 Q3 — html.ts reqRmkParts)
     if (rq === 'saved') notify()
     return
   }
@@ -1862,11 +1865,11 @@ export function boardTab(n: number) {
          real-browser path from committing twice and a merely-focused,
          untouched field from writing at all. */
       let want = iv
-      if (ae.dataset.bfld != null) want = txtGet(ae.dataset.bfld)
+      if (ae.dataset.bfld != null) want = boxText(ae.dataset.bfld)
       else {
         const [tail, field] = ae.dataset.ifld.split('.')
         const inp = inpById((iuParts('iu:' + tail) || { iid: tail }).iid)
-        if (inp) want = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field)
+        if (inp) want = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)   // the box's typed words (D948)
       }
       /* a TIME box SHOWS fmtHM(model) — a legacy compact '0900' reads '09:00' —
          so compare the field to what the model would DISPLAY, not to its raw

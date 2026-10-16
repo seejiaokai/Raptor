@@ -18,9 +18,13 @@ Leave War's event sheet) and D646 ("How this works" made shorter).
 "3 inputs · 3 on programme ⌄"); a day's issues bar and the board's say the count and the caret, no "tap to review"; SANS
 Avail says nothing after its name; a fold shows its caret only, no "show", "hide" or "by wave · close"; the editing hint
 of Personal Inputs and Unavailable is gone from both pages, NOT moved into the Legend (D938; its point is not a
-general lesson — D942); the removed-input note reads "A removed input flags nothing until accepted again.
-Delete it here if it should go entirely."; the empty Amendments box reads "No amendments published yet." The rounds and
-their pictures: `superpowers/specs/2026-10-16-words-pass.md`.
+general lesson — D942); the rejected-input note reads "A rejected input flags nothing until accepted again.
+Delete it here if it should go entirely." ("removed" → "rejected", the button's own word — D949 Q2, 17 Oct 26); the empty
+Amendments box reads "No amendments published yet." **Round 2 (D950, 17 Oct 26):** View-only Sched's unpublished day
+carries no boxed "Draft" (its DRAFT tag says it once — the view-week compare lifts the reference's stamp); the peek reads
+"Next week: click a day to load it"; an input row says "· accepted" / "· rejected" once, after its name
+(`04-pucks-sections.css`); the crew panel's placeholders heading reads "Placeholders". The rounds and their pictures:
+`superpowers/specs/2026-10-16-words-pass.md`.
 
 ## Rendering
 
@@ -583,8 +587,9 @@ the held block when the caret leaves; a change needing the whole day replaced wa
 but the caret's own (`SchedBoard.tsx`). So the day's warning list and count (D509), "N pending", "Not yet signed" and
 the sign-off strip are current while he types on. **Held by design until the caret leaves its section:** the puck rings
 and marks inside that section. Inside the held block the wave header's In-time / Rally clock is corrected in place —
-text nodes only, no new markup (`html.ts refreshWaveReports`; `waveHeadTail` / `waveHeadBoard` are the one body for the
-builder and the refresh). `dayswap.ts holdingPlace` keeps the box he is typing in where it was on screen.
+text nodes only, no new markup (`html.ts refreshWaveReports`; `waveHeadTail` is the one body for the builder and the
+refresh). **The board's wave header carries no clock since 16 Oct 26** (owner D947 — "In-time / Rally 09:40 · 4 ac"
+removed from every wave; the report times are in the lines under it) — only a small grey "(prev day)" beside the title where the wave's in-time / rally falls on the evening before (D949 Q1, 17 Oct 26 — `html.ts sbPrevDay`, put in or taken out by the same refresh, an element beside the title, never near the caret). `dayswap.ts holdingPlace` keeps the box he is typing in where it was on screen.
 **A save that opens a window stops the route:** `pops.ts windowOverSchedule()` — true from the moment a gesture asks for
 any window over the schedule — is asked straight after the route's blur, and the route declines while one is up; the
 four question sheets (OIL, upchit, "covers other days", "no medical document") take the keyboard when they open and
@@ -988,8 +993,11 @@ be read: "Can't tell whether … already has a row on another week — load that
 such a request says where it is instead ("On Sun 19 Jul"), a load or plan switch leaves such a row out and names the
 day; and a request whose row stands on a week that is not loaded cannot be deleted (or edited) from here — it says where to go ("Load the week of Sun 19 Jul to delete this accepted input"), and deleted from that week its row goes with it, so nothing is ever left with no request behind it. A request taken off ('r') whose row still stands on
 a loaded day is adopted back rather than duplicated ("… is on the ground programme again — its row was already there").
-The Undo on an accepted request names its day when the row is on another loaded day ("Undo · Tue"; undone: "Accept
-undone — its row came off Tuesday's programme"). Pinned by `state/reqorphan.test.ts`; the engine rule: `engine-rules.md` (a request's row and its
+The button that takes an accepted request off — **"Reject" since 16 Oct 26** (owner D945; it read "Undo") — names its
+day when the row is on another loaded day ("Reject · Tue"; pressed: "… taken off Tuesday's programme"). On a phone an
+accepted input's Reject rides its puck's line (the board: one puck, plain "Reject" only; the week: under its name) —
+D944, D947, `scheduler/13-board-rows-responsive.css`, `09-week-responsive.css`. Under the Ground Programme's heading one
+line says where an input is taken off, only where an input stands on it (D943, D947 — `html.ts GP_TAKEOFF_NOTE`). Pinned by `state/reqorphan.test.ts`; the engine rule: `engine-rules.md` (a request's row and its
 filing).
 
 **Who and when (D104).** The newest edit-log row for the change's own cells: the signed-in person's live callsign
@@ -2121,16 +2129,16 @@ surface, so it collapses to a summary by default: `PIOPEN`/`togglePInputs`
 (`state/view.ts`), the header the toggle (`data-pitog`, routed in
 `interactions.ts` on `canEditSched()` so it works on the edit week AND the
 board). The summary counts the rows and how many are on the programme. When
-expanded it also carries a housekeeping reminder — "A removed input flags
-nothing until accepted again — delete it here if it should go entirely"
-(owner, Aug 26; reworded 26 Aug 26 with the dormancy rule; `.pl-inpnote` on the
+expanded it also carries a housekeeping reminder — "A rejected input flags
+nothing until accepted again. Delete it here if it should go entirely."
+(owner, Aug 26; reworded 26 Aug 26 with the dormancy rule, D940 and D949 — "rejected", never "removed"; `.pl-inpnote` on the
 week, `.sb-pinote` on the board) — a scheduler deletes one by pressing its type
 to open the editor and Delete. **A dormant (removed, acc `'r'`) row reads
 visibly parked** (26 Aug 26 bug pass — it flags nothing, yet printed identical
 to a fresh counting row beside it): `dormRowCls`/`dormRowTitle` (`html.ts`, one
 body for the week's `.pl-row` and the board's `inprow`/`sbi-row`) fade it to
-`.5` — fainter than an accepted row's `.62` — add "· removed" after the type on
-the week, and title it "Removed from the day — flags nothing until accepted
+`.5` — fainter than an accepted row's `.62` — add "· rejected" after the name on
+the week (D949, D950 R3 — once a row), and title it "Rejected from the day — flags nothing until accepted
 again". Pinned in `inputedit.test.tsx`.
 Unavailable is deliberately left OPEN — it is a live plant/drop target and the
 day's must-read.
@@ -2509,10 +2517,9 @@ moved to the Ground Programme (owner, 19 Aug 26).
   and the toast says so. Single day, the open day.
 - **Unavailable → "+ Add"** (`data-inpadd="di.u"`). Types: leave, medical and
   OD only (`isUnavail && !isSansAvail`). The dialog carries a **date RANGE** —
-  the same two-click `RangeCal` the Inputs page uses — and owns the remarks'
-  till-date token the same way (`withRemarksTail`, single-day reads
-  "till <that day>"; the typist's own words around the token survive
-  re-picks). The seed is a COMPLETED one-day range on the open day
+  the same two-click `RangeCal` the Inputs page uses; its "till <date>" stands
+  in grey after the Remarks box from the picked dates (D948 — never written into
+  the remark; a single day reads "till <that day>"). The seed is a COMPLETED one-day range on the open day
   (`endDate = date`) so the first calendar click begins a fresh range rather
   than silently completing a span from the open day; the same-day end
   collapses off in `normalizeInputDraft`. A leave span crosses to Leave War
@@ -10432,11 +10439,56 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
     are buttons of the same look and size (A4). A "Changed while this window was open" note goes when the record
     comes back to the value his change was typed over, and repaints when "theirs" moves again (A10). The Quals save
     note reads "Quals saved" (A9). A5–A8 are the lines above.
+- **THE REMARK HOLDS ONLY WHAT A PERSON TYPES; "TILL <DATE>" COMES FROM THE DATES (owner D948, 16 Oct 26 — D728's step 2, [TILL-FROM-DATES]).** An input's window shows "till <date>" in grey after the Remarks box from the moment it opens, from the input's dates, one-day inputs included ("till <that day>"); it is never typed or written into the remark. Every screen prints the remark, then "till <date>" from the dates — the same look as before.
+  **AS BUILT (16–17 Oct 26, `claude/whole-app-words-pass-1b-6cfe51`).** Three answers in `engine/inputs.ts`:
+  `remarksTyped(remark, rec)` (the typed words — a date saved in a remark before the build is read as the date: "till
+  <day> <real month>" anywhere, "on <day> <month>" only where it is one of the input's own days; SANS availability and an
+  upchit keep their words whole), `tillOf` / `tillOfISO` ("till <its last day>"; none for SANS availability or an upchit)
+  and `remarksShown` (the two together). **Written:** every writer stores the typed words only — the window's save and a
+  new input's, the in-place box (`setInpField`), the medical trims and splits, a person's delete, the Leave War's approve,
+  extend and cut. **Printed** (`remarksShown`): the week's and the board's read-only input rows, the desktop Inputs list
+  (its search and sort too), the pending list, the Leave War's day list. **A box** shows the typed words with
+  `.rk-till` / `.inped-till` after it: the input's window, the week's and the board's Personal Inputs and Unavailable
+  rows. **The card, the Medical card and the document viewer** show the typed words (their corner or line says the date).
+  **The Ground Programme row** made from an input carries the PRINTED remark (`engine/overlay.ts requestRowFields`): it is
+  the schedule's copy, it freezes when published and reads "1 pending" when the date moves; its box shows that text, and
+  typing there writes the typed part back to the input (`ui/reqrow.ts` compares the printed words, so a Tab through it is
+  no change). **A published day** compares the printed remark (`inpDetailKey`): a stretched or cut input reads pending
+  on each published day whose printed date moved (D189); a moved first day alone does not. Pinned:
+  `engine/tilldate.test.ts`, `ui/words-r1b.test.tsx`, `ui/inputs.test.tsx` (the window).
+  **CHANGED 17 Oct 26 (owner D949 Q3): the Ground Programme row's box holds the typed words too**, its date grey after it as
+  every other input box — on the week (`plRmk`) and the board (the `rmkt` pair) — where the row is its request's live copy
+  (`ui/html.ts reqRmkParts`: the engine's `requestOfBox`, and the row printing what the request prints); a kept row or
+  any other row shows what it reads. ONE answer, `boxText`, fills every place a box is put back — after a save or a
+  refusal, on Escape, on a day step (`ui/textedit.ts`, `ui/board.ts`) — and `ui/reqrow.ts` compares with it, so the date
+  never slips back inside the box and a Tab through it still writes nothing. The row's own remark stays the printed
+  text (it freezes when published). Pinned: `ui/tilltick.test.tsx`.
+- **THE TILL-DATE TICK (owner D951, D952, D953 — 17 Oct 26; the drawing of record `docs/img/handpass/2026-10-17-till-switch/`,
+  frames B).** In the input's window a tick stands before the grey date after the Remarks box — the window's own "all
+  day" tick, the date its label (`#inpEditTill`, `.inped-tl`; the row a `div`, its heading a `label` for the box).
+  Ticked by default, except a one-day duty or other commitment (the window's group of that name — not leave, medical or
+  SANS availability); unticked, the date is struck through and fainter there, and NO screen prints it: `engine/inputs.ts
+  tillOf` — the one place every screen asks — answers '' (so `remarksShown`, the week's and the board's boxes, the
+  Ground Programme row, the List, the Leave War's day list and the published compare all follow). Stored as `till` on the
+  input only where a hand choice differs from the default (`tillShown`, `tillDefault`); a date or kind change that flips
+  the default replaces it — weighed at the SAVE, never tap by tap (a range is picked in two taps and holds one day
+  between them, so a hand untick must survive a re-pick; dates that end as they began keep it), by every door's one
+  write body (`state/store.ts runInputWrite` → `tillSettle`) and the person-delete trim — so cutting a stretched input
+  back never brings an old tick back. A tick changed on a published day reads "1 pending" there (the printed words
+  changed, D189; an empty side reads "(no remarks)" in the pending list); the change history writes a "till date" line —
+  never a second line beside a date change that flipped it, but one where a save also turned it against the new default;
+  the member's bell says "Remark changed" when someone else turns his tick. The Leave War's approval never bridges an
+  unticked leave and a ticked one (`leavewar/sync.ts`: the day joins the one before only); an extension keeps its tick.
+  SANS availability and an upchit never keep a tick (`tillSettle`). The card's corner keeps its dates (D728) — the tick is
+  about the printed remark. Whoever may change the input may tick it (the window's read-only body is inert, D364). SANS
+  availability and an upchit carry none. Pinned: `ui/tilltick.test.tsx`, `ui/inputs.test.tsx` (the window),
+  `leavewar/changelines-lw.test.ts` (the approval).
 - **THE CARD'S REMARK LEAVES OUT THE AUTOMATIC "TILL <DATE>" (owner D728, 10 Oct 26 — "1 now, 2 later").** The card's
   corner already says when a several-day input ends, so the card does not print the same words again from its
   remark; what a person typed stays, and a remark that was only the automatic words shows none. The record, the
   schedule's row, the desktop table and the input's window are untouched. Step 2 - the app no longer writing the date
-  into remarks at all - is `OUTSTANDING.md` `[TILL-FROM-DATES]`, not built.
+  into remarks at all - is built (D948, the paragraph above): the card now shows the typed words alone, whatever its
+  corner says (`remarksTyped`; `remarkOnce` below is kept for its tests only).
   **AS BUILT (10 Oct 26).** `ui/inputcard-model.ts remarkOnce(remark, corner)`, asked by `cardOf(rows, people, corner)`
   — both cards hand in what their corner prints (`cardWhen`). Only a "till" for the corner's OWN day goes (with the
   corner's year where it says one: "till 1 Jan" beside "till 1 Jan 2027"); a "till" for another day, a year the corner

@@ -2,7 +2,7 @@
 // H1, H2; design §25, §26; owner answers A–D). Driven through the REAL Raptor
 // inputs door (writeInputs) and the real global undo, over both wired stores.
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS, holds } from '../engine/inputs'
+import { INPUTS, holds, remarksShown } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { initStore as raptorInitStore, writeInputs } from '../state/store'
@@ -263,8 +263,9 @@ describe('a cut leave says its own last day (AB3)', () => {
   it('a medical in the middle leaves each piece "till" its OWN last day, the typist’s words kept', () => {
     expect(file('ammo', 'LL', 'Feb 9', { endDate: 'Feb 13', remarks: 'Bali till 13 Feb' })).toBe(true)
     expect(file('ammo', 'ATT C', 'Feb 11')).toBe(true)
-    const pieces = rowsOf('ammo', 'LL').map((r: any) => `${r.date}${r.endDate ? '-' + r.endDate : ''}: ${r.remarks}`).sort()
-    expect(pieces).toEqual(['Feb 12-Feb 13: Bali till 13 Feb', 'Feb 9-Feb 10: Bali till 10 Feb'])
+    /* since D948 (16 Oct 26) each piece keeps the typed words alone and PRINTS its own last day from its dates */
+    const pieces = rowsOf('ammo', 'LL').map((r: any) => `${r.date}${r.endDate ? '-' + r.endDate : ''}: ${r.remarks} | ${remarksShown(r)}`).sort()
+    expect(pieces).toEqual(['Feb 12-Feb 13: Bali | Bali till 13 Feb', 'Feb 9-Feb 10: Bali | Bali till 10 Feb'])
   })
   it('a remark with no date in it is left exactly as typed', () => {
     expect(file('ammo', 'LL', 'Feb 9', { endDate: 'Feb 13', remarks: 'Bali' })).toBe(true)
@@ -273,9 +274,12 @@ describe('a cut leave says its own last day (AB3)', () => {
   })
   it('the war’s own cut body rewrites it too — un-approve, delete and move all go through it', () => {
     const row = { iid: 'x1', person: 'ammo', type: 'LL', date: 'Feb 9', endDate: 'Feb 13', yr: 2026, allday: true, remarks: 'till 13 Feb Bali' }
-    expect(sliceInput(row, '2026-02-09', '2026-02-10', true).remarks).toBe('till 10 Feb Bali')
-    expect(sliceInput(row, '2026-02-12', '2026-02-12', false).remarks).toBe('till 12 Feb Bali')
-    expect(sliceInput({ ...row, remarks: 'on 9 Feb' }, '2026-02-16', '2026-02-16', false).remarks).toBe('on 16 Feb')
+    /* a remark saved with its date in it (before D948) loses the date, its words kept — and each piece prints its own */
+    const a = sliceInput(row, '2026-02-09', '2026-02-10', true), b = sliceInput(row, '2026-02-12', '2026-02-12', false)
+    expect([a.remarks, remarksShown(a)]).toEqual(['Bali', 'Bali till 10 Feb'])
+    expect([b.remarks, remarksShown(b)]).toEqual(['Bali', 'Bali till 12 Feb'])
+    const c = sliceInput({ ...row, remarks: 'on 9 Feb' }, '2026-02-16', '2026-02-16', false)
+    expect([c.remarks, remarksShown(c)], 'an "on" is kept as typed, never read as the date (the code read)').toEqual(['on 9 Feb', 'on 9 Feb till 16 Feb'])
   })
 })
 
@@ -296,9 +300,10 @@ describe('a carried remark is stored at the length a reload keeps', () => {
     setBidStates(cell, 'pending')                              // taken back: a request carrying that remark
     const req = () => recsAt('ammo', '2026-02-18').find((r: any) => r.kind === 'request') as any
     expect(req()?.carried?.remarks, 'carried whole — 200 letters').toBe('B'.repeat(200))
-    setBidStates(cell, 'approved')                             // back to a leave: the remark gains its date
+    setBidStates(cell, 'approved')                             // back to a leave: its date is printed, never written in (D948)
     const leave = rowsOf('ammo', 'LL')[0] as any
-    expect(String(leave.remarks).length, 'the date takes it past 200').toBeGreaterThan(MAX_CARRIED_REMARK)
+    expect(String(leave.remarks), 'the typed words alone').toBe('B'.repeat(200))
+    expect(remarksShown(leave).endsWith('till 18 Feb'), 'its date printed from its dates').toBe(true)
     setBidStates(cell, 'pending')
     expect(String(req()?.carried?.remarks).length, 'what is stored is what a reload reads').toBeLessThanOrEqual(MAX_CARRIED_REMARK)
   })

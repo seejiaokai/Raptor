@@ -724,6 +724,10 @@ Met again 15 Oct 26 (`[LW-REARRANGE-EDGE-SCROLL]`), worse: CODE under `raptor-po
 
 **Principle:** Where a safer way costs nothing extra, a rule phrased as a condition to judge each time ("unless it contains X") fails under load; phrase it as an unconditional default ("always do Y").
 
+Met again 17 Oct 26 (the till-date tick build): a node edit script written by a bash here-document carried a regex
+inside a JS template literal — `\\d` and `\\.` arrived in the source file as bare `d` and `.`, twice in one job (once in a
+test's `<\/span>`), each found only by reading the line back; the Edit tool put each right. Even writing the script itself
+through a here-document is the trap: the code edit goes through the Edit tool, or the script through the Write tool.
 Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit script inserting a test wrote each `\\b` of a regex as a BACKSPACE byte and each escaped apostrophe as a bare one — the file first failed to parse, then every `\b` assertion matched nothing; two more inline fixes (`sed` replacements) mangled it again before a script written with the file tool put it right. The guard is the one already proposed and approved to build — `[SHELL-SCRIPT-GUARD]` (D811): a script is written to a file, always.
 
 **Met again 15 Oct 26 (the night's /overnight run, `claude/drag-edge-scroll-elsewhere-51bfc4`):** three more shell here-document / stdin hangs in one night — `cat > file` with no input waited on stdin; a stray `python - <<'PY'` with `< /dev/null` dropped into Python's interactive prompt and looped on a Windows console error until stopped; each cost a two-to-five-minute stall. What held: every edit script WRITTEN WITH THE WRITE TOOL to the scratch folder and run as `python <file> < /dev/null`. The guard this entry proposes (scripts always a file, never a here-document) is the fix.
@@ -996,3 +1000,48 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** In §0 step 2 (and the rule's short form): the lesson line quotes or closely paraphrases his words, adds no reason he did not give (a reason of the agent's goes in the ruling's readings, marked as the agent's), and is no wider than what he corrected; the reader is handed his words and the line, nothing else.
 
 **Principle:** When a person's correction becomes a rule, the risky step is generalising — every added reason or widened scope is the writer's, not theirs; check the rule against their exact words, not against the writer's understanding.
+
+### Observation 620: An overnight run's worktree may have no packages installed
+
+**Status:** OPEN
+**Date:** 2026-10-16
+**Session context:** /overnight, night of 16–17 Oct 26 — a fresh worktree switched to the night's branch; the first build failed ("tsc is not recognized") because the worktree had never had `npm ci`.
+**Skill:** overnight
+**Type:** internal
+**Phase/Area:** Part 1 step 9 (start the night)
+
+**Issue:** The night's first build stopped on a missing package folder. A fresh worktree is created per chat, and `raptor-port/node_modules` is not shared between worktrees, so every new night chat meets this — found only when a build is first attempted, mid-job.
+
+**Suggested improvement:** Step 9 gains one line: in the night's checkout, if `raptor-port/node_modules` is missing, run `npm ci` (a few minutes) before the first job — alongside keep-awake and the guard.
+
+**Principle:** An unattended run should prove its tools work before its first job, not discover a missing setup step inside the work.
+
+### Observation 621: A records commit pushed seconds after opening the pull request cancels its first run
+
+**Status:** OPEN
+**Date:** 2026-10-17
+**Session context:** /overnight, night of 16–17 Oct 26 — opened PR 522, then committed and pushed the night's block straight away; the push cancelled the PR's first full run (D151).
+**Skill:** overnight
+**Type:** internal
+**Phase/Area:** Part 2, "Pull requests" / "At every commit"
+
+**Issue:** The guide says to write the block at every commit and, separately, never to push while a PR's checks run. Right after opening the PR the two collide: the block is due, the run has just started, and the push restarts it (20 minutes lost).
+
+**Suggested improvement:** In "Pull requests": write and commit the block BEFORE opening the PR (the block names the PR as "to be opened"), then open it; after that, commit records locally and push only when step 1's command shows no run of the last pushed commit queued or in progress.
+
+**Principle:** When two standing rules meet at one moment, order the steps so the cheaper one goes first.
+
+### Observation 622: An unattended run's checkout keeps its branch, so the morning chat cannot switch to it
+
+**Status:** OPEN
+**Date:** 2026-10-17
+**Session context:** the morning chat after the night of 16–17 Oct 26, told "switch to branch claude/whole-app-words-pass-1b-6cfe51 and pull"
+**Skill:** overnight (also session-handoff)
+**Type:** internal
+**Phase/Area:** overnight — the closing step; session-handoff — the step that frees the branch
+
+**Issue:** The night's run ended with its branch still checked out in its own worktree. The morning chat's `git switch` was refused ("already used by worktree"), and detaching the old checkout from the new chat was refused by the permission guard as interfering with another workload. The chat had to take the branch's tip into its own checkout and push back to the branch by name instead — workable, but a detour, and it nearly touched shared git settings on the way (`push.default` written to the shared config).
+
+**Suggested improvement:** In overnight's closing step and in session-handoff's "free the branch" step: once everything is pushed, the run itself runs `git checkout --detach` in its own checkout as its last command, and the HANDOFF block says it did. The opening line can then say "switch to <branch>" and it works.
+
+**Principle:** A handoff is not finished while the outgoing session still holds a resource the incoming one must take; release it from the side that owns it, because the other side may not be allowed to.

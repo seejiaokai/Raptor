@@ -238,7 +238,7 @@ describe('the row after the member\'s own edit of his request: everyone in the i
     landed(['stiff', 'bane'])
     ;(INPUTS[0] as any).remarks = 'bring the checklist'
     view()
-    expect(row().rmks, 'the edit reached the row').toBe('bring the checklist')
+    expect(row().rmks, 'the edit reached the row').toBe('bring the checklist')   // a one-day duty or commitment prints no date (owner D951, D953)
     expect(row().who, 'the first to join is still in the box').toBe('stiff')
     expect(row().more).toEqual(['bane'])
     expect(earners()).toEqual(['bane', 'stiff'])
@@ -278,7 +278,7 @@ describe('the row after the member\'s own edit of his request: everyone in the i
     view()
     expect(row().who).toBe('bane')
     expect(row().more, 'in the input, so on the row').toEqual(['stiff'])
-    expect(row().rmks).toBe('bring the checklist')
+    expect(row().rmks).toBe('bring the checklist')   // a one-day duty or commitment prints no date (owner D951, D953)
   })
 
   it('…and one who is NOT in it comes off at the re-make, with a name the box should not hold (the plan\'s R6)', () => {

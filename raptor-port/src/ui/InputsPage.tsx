@@ -11,7 +11,7 @@
    Type → ui/TypeLegend.tsx; an admin's posted-out people for a NEW input; the just-saved row lit). */
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { bringRowOnScreen, rowOnScreen } from './onscreen'
-import { INPUTS, inputLines, inpLabel, inpKindTag, isLateInput, lateNote, isSansAvail, sansLetters, baseYear, dateOrd, nowStamp, idsOf, facesOf } from '../engine/inputs'
+import { INPUTS, inputLines, inpLabel, inpKindTag, isLateInput, lateNote, isSansAvail, sansLetters, baseYear, dateOrd, nowStamp, idsOf, facesOf, remarksShown } from '../engine/inputs'
 import { OilConfirm } from './OilConfirm'
 import { PEOPLE } from '../engine/people'
 import { hhmm } from '../engine/time'
@@ -134,7 +134,7 @@ const SORTKEY: any = {
   start: (r: any) => unfmt(r.date) + pad4(r.allday ? 0 : (r.s ?? 0)),
   end: (r: any) => unfmt(r.endDate || r.date) + pad4(r.allday ? 1439 : (r.e ?? 0)),
   type: (r: any) => String(r.type || '').toLowerCase(),
-  remarks: (r: any) => String(r.remarks || '').toLowerCase(),
+  remarks: (r: any) => remarksShown(r).toLowerCase(),        // as the column prints it (D948)
   mod: (r: any) => (r.mod === 'now' || r.mod === nowStamp() ? '9999-99-99' : String(r.mod || '')),
 }
 
@@ -836,8 +836,8 @@ export function InputsPage() {
                   {/* a shared input is LATE on its line where any of its people is — a man added later can be late alone,
                       and the note says who */}
                   <td data-label="Remarks">{lates.length > 0 && <span className="latetag"
-                    title={team ? lates.map((f: any) => `${csOf(f.person)}: ${lateNote(f)}`).join(' · ') : lateNote(lates[0])}>LATE</span>}{r.remarks || ''}
-                    {said.by && <span className={'in-placed' + (r.remarks || lates.length ? '' : ' alone')} data-testid="in-placed">By {said.by}</span>}</td>
+                    title={team ? lates.map((f: any) => `${csOf(f.person)}: ${lateNote(f)}`).join(' · ') : lateNote(lates[0])}>LATE</span>}{remarksShown(r)}
+                    {said.by && <span className={'in-placed' + (remarksShown(r) || lates.length ? '' : ' alone')} data-testid="in-placed">By {said.by}</span>}</td>
                   <td className="mono" data-label="Modified" style={{ color: 'var(--ink-3)' }}>{fmtDMY(r.mod)}</td>
                   <td className="inact">
                     {/* the paperwork behind a medical row — EVERY account may

@@ -19,7 +19,7 @@
 import { PEOPLE, whoId } from './people'
 import { whoArr } from './slots'
 import { dayIso } from './verid'
-import { INPUTS, inpId, inpLabel, isPersonal, inputCoversDate, dateOrd, idsOf, leadOf, onlyNamed } from './inputs'
+import { INPUTS, inpId, inpLabel, isPersonal, inputCoversDate, dateOrd, idsOf, leadOf, onlyNamed, remarksShown } from './inputs'
 import { hhmm } from './time'
 import { inputProtected } from './quarantine'
 import { rowElsewhere } from './weekstash'
@@ -182,7 +182,11 @@ export function requestRowFields(inp: any) {
     prog: inpLabel(inp).toUpperCase(),
     str: inp.allday ? '' : hhmm(inp.s), end: inp.allday ? '' : hhmm(inp.e),
     who: leadOf(inp),
-    rmks: inp.remarks || '', srcType: inp.type,
+    /* the remark as every screen prints it — the typed words, then "till <its last day>" from its dates (owner D948): the
+       row is the schedule's copy, so its words are what the day prints, freeze with it when it is published, and read
+       "1 pending" when the input is stretched or cut (D189). Its box still sends what is typed to the input alone
+       (ui/reqrow.ts → setInpField, which takes the date back out). */
+    rmks: remarksShown(inp), srcType: inp.type,
   }
   const rest = idsOf(inp).slice(1)
   if (rest.length) f.more = rest

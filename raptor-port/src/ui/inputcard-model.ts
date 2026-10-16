@@ -21,7 +21,7 @@
    record's people (never `person`, never how many records), its filer is its `by`, and a person's own late date rides
    his entry — read through engine/inputs.ts facesOf, one frozen view a person, for words only. A record stored before
    that build (one `person`) reads as the one-person input it is. */
-import { facesOf, idsOf, inpKindTag, inpLabel, placeholderOf } from '../engine/inputs'
+import { facesOf, idsOf, inpKindTag, inpLabel, placeholderOf, remarksTyped } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { namesOf, toneOf } from './inputscal-model'
 import { filerName, filerOf } from './placedline'
@@ -110,7 +110,9 @@ export function cardOf(rows: readonly any[], people: Record<string, any> = PEOPL
     names: list.flatMap(x => namesOf(x, people)).join(', '),
     kind: String(r.type || ''),
     title: inpKindTag(r) ? inpLabel(r) : '',
-    remark: String(r.remarks || '').trim() ? remarkOnce(String(r.remarks), corner) : '',
+    /* the typed words only: the date is the corner's (D728), and since D948 it is never in the remark either — a remark
+       saved with one before the build is read without it (engine/inputs.ts remarksTyped) */
+    remark: remarksTyped(r.remarks, r),
     by: said ? filerName(filer, people) : '',
     tone: toneOf(r.type),
     cx: cxOf(r),

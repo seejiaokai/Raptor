@@ -1,0 +1,32 @@
+{
+ "phone filed": {
+  "type": "Meeting",
+  "acc": "g",
+  "who": "[{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1792126825558}]"
+ },
+ "phone geometry": {
+  "heads": [
+   "Common Programme",
+   "Ground Programme"
+  ],
+  "commonRows": 26,
+  "rowIn": "ground",
+  "rowText": "MEETING 13:00 14:00 ALL AVAIL 34 LATE Squadron brief till 13 Jul"
+ },
+ "phone moved": "moved, before STANDARDISATION MEETING",
+ "desk filed": {
+  "type": "Meeting",
+  "acc": "g",
+  "who": "[{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1792126830124}]"
+ },
+ "desk geometry": {
+  "heads": [
+   "Common Programme",
+   "Ground Programme"
+  ],
+  "commonRows": 26,
+  "rowIn": "ground",
+  "rowText": "MEETING 13:00 14:00 ALL AVAIL 34 LATE Squadron brief till 13 Jul"
+ },
+ "desk moved": "moved, before STANDARDISATION MEETING"
+}

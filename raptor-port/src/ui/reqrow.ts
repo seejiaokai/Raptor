@@ -31,6 +31,7 @@ import { titleOf } from '../engine/inputs'
 import { requestOfBox } from '../engine/overlay'
 import { parseHM, hhmm, hmOK } from '../engine/time'
 import { setInpField, setInpTitle } from './inputedit'
+import { reqBoxText } from './html'
 
 export type ReqRowAnswer = 'none' | 'saved' | 'refused'
 
@@ -48,7 +49,9 @@ export function reqRowText(path: any, text: any): ReqRowAnswer {
   const inp = requestOfBox(d, row)
   if (!inp) return 'none'
   const field = m[3] as 'prog' | 'str' | 'end' | 'rmks'
-  const v = fold(text), shown = fold(row[field])
+  /* a remark's box holds the typed words, its printed date grey after it (owner D949 Q3 — html.ts reqRmkParts): what the
+     box SHOWS is what a box left as it reads is compared with */
+  const v = fold(text), shown = fold(field === 'rmks' ? (reqBoxText(path) ?? row[field]) : row[field])
   if (field === 'str' || field === 'end') {
     if (clock(v) === clock(shown)) return 'refused'
     return setInpField(inp, field, v) ? 'saved' : 'refused'

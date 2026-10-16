@@ -198,7 +198,12 @@ export function inpDetailKey(inp:any):string{
   if(!inp)return '';
   const all=!!inp.allday;
   return stableJson({person:whoKey(inp),type:inp.type||'',
-    allday:all,half:inp.half||'',s:all?null:(inp.s??null),e:all?null:(inp.e??null),remarks:inp.remarks||'',
+    /* THE REMARK AS IT IS PRINTED — the typed words and "till <its last day>" (owner D948, 16 Oct 26: the date is printed
+       from the dates, never written into the remark). So the one date that IS drawn on every day an input covers counts,
+       as it did while it was written into the remark: a leave stretched or cut reads "1 pending" on each published day it
+       still covers (owner D189, kept by D948 (3)); its other dates stay out, as above. A remark saved with the date in it
+       and the same remark without it print the same, so a day published before the build reads nothing pending. */
+    allday:all,half:inp.half||'',s:all?null:(inp.s??null),e:all?null:(inp.e??null),remarks:remarksShown(inp),
     /* its own title is one of the things a reader sees ([INPUT-OWN-TITLE], D715): a title changed after the day was
        published is a pending change like a changed remark (D178). Named only where there is one, so an untitled
        input's key is byte-for-byte what it was. */
@@ -1191,6 +1196,98 @@ export function withRemarksTail(remark:any, startISO:any, endISO:any, single:'on
    AB3, 26 Sep 26): a leave the war or a medical CUTS keeps the typist's words but must not keep a "till" its dates no
    longer reach, and a piece keeps the token's own word ("on 9 Feb" stays an "on"). */
 export function remarksTailWord(remark:any):'on'|'till'|null{const m=DATE_TOKEN.exec(String(remark==null?'':remark));return m?(/^on/i.test(m[0])?'on':'till'):null;}
+/* ==== THE "TILL <DATE>" IS PRINTED FROM THE INPUT'S OWN DATES, NEVER WRITTEN INTO ITS REMARK (owner D948, 16 Oct 26 —
+   answering D946, building D728 step 2, [TILL-FROM-DATES]). An input's remark holds only what a person typed; every screen
+   that prints it prints the typed words, then "till <its last day>" — a one-day input too (his answer B: "till <that
+   day>", as his rule of 18 Aug 26) — and a box a person types in shows the typed words alone, the date in grey after it.
+   So the date can never be out of step with the dates, and nobody types round it.
+   Nothing writes the token any more (withRemarksTail, remarksDateTail and remarksTailWord above are no longer called by
+   the app; their tests still pin what they did). A remark SAVED before the build may still carry the calendar's
+   "till <day> <month>" ("Medically down till 17 Jul", "till 13 Jul Bangkok"): `remarksTyped` reads it as the date and
+   leaves it out, so it is printed once, from the dates. NOT for SANS availability, which never carried the date (it is
+   filed on the SANS calendar, D620) and is printed as typed; nor an upchit, which draws nothing. */
+/* A DATE TOKEN IS NARROW (the night's scenario designer, A, and the fresh code read, 17 Oct 26): "till", a day, and a
+   month as the calendar wrote it ("17 Jul") or spelt out ("17 July") — never a year, a time or any other word after it
+   ("till 14 Aug 0800 start" keeps its 0800; "till 3 Marines" and "till 6 ACs" are his words). "On <day> <month>" is
+   ALWAYS his ("Wedding on 12 Aug", "Flight on 10 Aug"): nothing writes it since D948, and reading it as a date by the
+   input's own days cut a person's words when the days moved (the code read's finding 1). The Leave War's one-day
+   "on 15 Jul" saved before the build is stored demo data and prints "… on 15 Jul till 15 Jul" until it is wiped (D56). */
+const MONTHS_RE='(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)';
+const TILL_TOKS=new RegExp(String.raw`[\s,·—–-]*\btill\s+\d{1,2}\s+${MONTHS_RE}\b`,'gi');
+const LEAD_TOK=new RegExp(String.raw`^\s*till\s+\d{1,2}\s+${MONTHS_RE}\b\s*(?:[,·—–\-:;.]+\s+)?`,'i');
+/* the words a person typed: the date token taken out, the gap tidied. `rec` — the input or the window's draft — says
+   whose remark it is: SANS availability's and an upchit's are their typed words whatever they say (B — they never carried
+   the date). */
+export function remarksTyped(remark:any,rec?:any):string{
+  const s=String(remark==null?'':remark);
+  if(rec&&(isSansAvail(rec.type)||isUpchit(rec.type)))return s.trim();
+  /* a date that OPENS the remark goes with the separator that joined it to the words after it, where one stands by itself
+     ("till 17 Jul — Bangkok", "till 17 Jul, then home"); a sign attached to the next word is that word's own ("till 17 Jul
+     -5°C kit" keeps its minus) — the card's rules of D728, kept. Anywhere else a date goes with the separators BEFORE it
+     ("kit, boots, till 17 Jul"), and a separator the words opened with is his ("— see the notice — till 17 Jul").
+     ONLY WHERE A DATE WAS CUT is anything tidied (the fix's own read, 17 Oct 26: a tidy run on every remark changed words
+     with no date in them — "-ve ART" lost its minus on every save). A remark with no date is returned as typed. Where one
+     was cut, its place is marked first and only that place is tidied (the code read's finding 3): no space before a
+     closing mark ("Bangkok, back Mon"), brackets that held only the date go ("Leave"), a date just inside a bracket takes
+     its joining separator ("Bangkok (back Mon)"), a dash after it is kept as typed ("Bangkok—back Mon"), and a separator
+     left alone at the front by a date that opened the remark goes (",Bangkok", "till 14 Aug: Bangkok", "till 17 Jul."). */
+  const lead=LEAD_TOK.exec(s);
+  let cut=!!lead;
+  let t=lead?s.slice(lead[0].length).replace(/^[,·—–\-:;.]+(?=\S|$)(?!\d)/,''):s;
+  t=t.replace(TILL_TOKS,()=>{cut=true;return '\u0000';});
+  if(!cut)return s.trim();
+  return t.replace(/\(\s*\u0000\s*\)|\[\s*\u0000\s*\]/g,'').replace(/([(\[])\s*\u0000\s*[,·—–-]*\s*/g,'$1')
+    .replace(/\s*\u0000\s*(?=[,.;:!?)\]])/g,'').replace(/\u0000(\s*)([—–-])/g,'$1$2').replace(/\u0000/g,' ')
+    .replace(/\s{2,}/g,' ').trim();}
+/* 'Jul 17' (an input's own date words) → '17 Jul', the form the app prints a day in */
+const dayWords=(md:any):string=>{const m=/^([A-Za-z]{3})[a-z]*\s+(\d{1,2})\b/.exec(String(md||'').trim()); return m?`${+m[2]} ${m[1]}`:'';};
+/* ==== THE TILL-DATE TICK (owner D952, D953 — 17 Oct 26). Every input carries a tick for its "till <date>": ticked by default
+   for every kind, except a one-day duty or other commitment — the input window's group of that name (D951: a date that
+   only repeats the day it stands on says nothing); a hand-made tick or untick holds while the dates and the kind keep
+   that default, and is replaced the moment a change flips it (one day ↔ more than one, a kind moved into or out of the
+   group). Unticked, no screen prints the date: `tillOf` below is the one place every screen asks.
+   STORED: `till` on the input — present only where a hand choice DIFFERS from the default it was made against, so its
+   default is always `!till`. A choice that equals the input's default now is one the dates or the kind have overtaken:
+   it reads the same as none, and `tillSettle` drops it — run in the one body every input write passes (state/store.ts
+   runInputWrite) and by the one door that trims an input outside it (state/person-delete.ts), so a choice replaced by
+   one change is never brought back by the next. */
+/* one day — the record's date labels here, the window's ISO days in tillDefaultISO below: the two must agree */
+const oneDayRec=(rec:any)=>!rec.endDate||rec.endDate===rec.date;
+export function tillDefault(rec:any):boolean{return !(rec&&typeGroup(rec.type)==='other'&&oneDayRec(rec));}
+/* …the same for a window's draft, whose dates are two ISO days still being picked */
+export function tillDefaultISO(type:any,startISO:any,endISO:any):boolean{return !(typeGroup(type)==='other'&&(!isISO(endISO)||endISO===startISO));}
+export function tillShown(rec:any):boolean{return rec&&typeof rec.till==='boolean'?rec.till:tillDefault(rec);}
+/* WAS THE TICK TURNED by a change from `b` to `a` — what the change history's line and the member's bell ask (D263, D953).
+   A flip the dates or kind made alone is theirs to say (the dates, the type); a save that also turned it against the new
+   default is the tick's. Never for a kind that carries no date (SANS availability, an upchit): a retype into or out of one
+   turned nothing anyone reads (the fresh code read, 17 Oct 26). ONE body for both readers. */
+const datedKind=(x:any)=>!!x&&!isSansAvail(x.type)&&!isUpchit(x.type);
+export function tillTurned(b:any,a:any):boolean{
+  if(!datedKind(b)||!datedKind(a))return false;
+  return tillShown(b)!==tillShown(a)&&(tillDefault(b)===tillDefault(a)||tillShown(a)!==tillDefault(a));}
+export function tillSettle(rec:any):boolean{
+  if(!rec||!('till' in rec))return false;
+  /* …and never on a kind that carries no date (SANS availability, an upchit): a choice made before a retype into one would
+     stay hidden there and come back on a retype out (the scenario designer's 9, 17 Oct 26) */
+  if(typeof rec.till==='boolean'&&rec.till!==tillDefault(rec)&&!isSansAvail(rec.type)&&!isUpchit(rec.type))return false;
+  delete rec.till;return true;}
+/* "till <its last day>", from its dates — '' for an input that prints none (unticked — D953), or has no date yet */
+export function tillOf(inp:any):string{
+  if(!inp||isSansAvail(inp.type)||isUpchit(inp.type)||!tillShown(inp))return '';
+  const w=dayWords(inp.endDate||inp.date);
+  return w?`till ${w}`:'';}
+/* …the same from two ISO dates, for a window whose dates are still being picked ('' with no start). The window shows it
+   whether or not it is ticked — struck through when it is not (D953) — so it asks no tick here. */
+export function tillOfISO(type:any,startISO:any,endISO:any):string{
+  if(isSansAvail(type)||isUpchit(type)||!isISO(startISO))return '';
+  return `till ${isoLabel(isISO(endISO)?endISO:startISO)}`;}
+/* WHAT EVERY SCREEN PRINTS FOR AN INPUT'S REMARK: the typed words, then the date — "Las Vegas till 17 Jul", or the date
+   alone where nothing was typed. SANS availability and an upchit: as typed. */
+export function remarksShown(inp:any):string{
+  if(!inp)return '';
+  if(isSansAvail(inp.type)||isUpchit(inp.type))return String(inp.remarks||'').trim();
+  const t=remarksTyped(inp.remarks,inp), d=tillOf(inp);
+  return t&&d?`${t} ${d}`:(t||d);}
 /* what the mark says when you hover it — plain enough for the squadron */
 export function lateNote(inp:any){
   if(!isLateInput(inp))return '';

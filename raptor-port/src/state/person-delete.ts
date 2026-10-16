@@ -50,7 +50,7 @@ import { CURWEEK } from '../engine/waves'
 import { dayIso } from '../engine/verid'
 import { slotVal, whoArr } from '../engine/slots'
 import { logEdit } from '../engine/editlog'
-import { INPUTS, dateOrd, withRemarksTail, nowStamp, holds as inInput, idsOf } from '../engine/inputs'
+import { INPUTS, dateOrd, remarksTyped, tillSettle, nowStamp, holds as inInput, idsOf } from '../engine/inputs'
 import { ownInputOf, takePerson } from '../engine/inputown'
 import { ordShift, ordLabel } from '../engine/medical'
 import { stashKeys, stashGet, stashWeekState, isPreservedWeek } from '../engine/weekstash'
@@ -250,7 +250,8 @@ export function applyDelete(id: string, cutoff: string): void {
     const end = ordShift(cut, -1) as number
     if (end <= a) delete r.endDate
     else r.endDate = ordLabel(end, r.yr)
-    r.remarks = withRemarksTail(r.remarks, ordIso(a), ordIso(end), 'till')
+    r.remarks = remarksTyped(r.remarks, r)       // its new last day is printed from its dates (owner D948)
+    tillSettle(r)                                // …and a till-date tick the cut overtook goes (owner D953 reading 2)
     r.mod = nowStamp()
     /* who ended it, and when (D629): the admin whose delete this is — or, for a posting that runs by itself on its
        date, the moment alone and no name (state/inputstamp.ts) */

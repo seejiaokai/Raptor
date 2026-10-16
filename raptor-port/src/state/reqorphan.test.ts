@@ -191,15 +191,15 @@ describe('a "taken off" request whose own row stands again (a plan switched in) 
 
 /* [REQ-DOOR-WORDS] 2 (28 Sep 26 — Fable's F5 on D175's branch): a request covering two days is drawn on both, but its one
    row stands on ONE; the other day's card offered a plain "Undo" that removed that row with nothing saying where. */
-describe('the Undo on a request\'s card names the day its row is on', () => {
-  it('Monday\'s card of a Mon–Tue request landed on Tuesday reads "Undo · Tue", and its press says Tuesday', async () => {
+describe('the Reject on a request\'s card names the day its row is on (it read Undo until D945)', () => {
+  it('Monday\'s card of a Mon–Tue request landed on Tuesday reads "Reject · Tue", and its press says Tuesday', async () => {
     const inp: any = { person: 'divot', type: 'Meeting', date: 'Jul 13', endDate: 'Jul 14', s: 540, e: 600, remarks: '', mod: 'now', yr: 2026, _t: 1 }
     INPUTS.push(inp)
     expect(acceptInput(1, inp, 'g')).toBe(true)                       // its row on Tuesday
     const mon = accCtl(0, inp), tue = accCtl(1, inp)
-    expect(mon, 'Monday: the day its row is on').toContain('Undo · Tue')
-    expect(mon).toContain("takes its row off Tuesday's ground programme")
-    expect(tue, 'Tuesday (its own day): the plain Undo, as before').toContain('>Undo<')
+    expect(mon, 'Monday: the day its row is on').toContain('Reject · Tue')
+    expect(mon).toContain("Take its row off Tuesday's ground programme")
+    expect(tue, 'Tuesday (its own day): the plain Reject').toContain('>Reject<')
     const { HOOKS } = await import('../engine/hooks')
     const { routeClick } = await import('../ui/interactions')
     const said: string[] = [], keep = HOOKS.toast

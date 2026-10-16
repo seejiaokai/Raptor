@@ -245,7 +245,7 @@ describe('a person put on the row through the door is in the input — he and th
     const d = draftOf(live(inp)); d.remarks = 'probe — retouched'
     expect(commitInputEdit(live(inp), d)).toBe(true)
     const fresh = rowsFor(inp)[0].row
-    expect(fresh.rmks, 'the edit itself landed').toBe('probe — retouched')
+    expect(fresh.rmks, 'the edit itself landed').toBe('probe — retouched')   // a one-day duty or commitment prints no date (owner D951, D953)
     expect(idsOf(live(inp)), 'the person the door put in is still in the input').toEqual(['stiff', 'bane'])
     expect([fresh.who, fresh.more], 'and on its row, under the first to join').toEqual(['stiff', ['bane']])
     expect([live(inp).flag, fresh.flag], 'the red box is still the input’s, and on its re-made row').toEqual([true, true])
@@ -262,7 +262,7 @@ describe('a person put on the row through the door is in the input — he and th
     /* while it is his alone, his own edit goes through — as it always did */
     let d = draftOf(inp); d.remarks = 'mine — first'
     expect(commitInputEdit(inp, d), 'his own request: his to change').toBe(true)
-    expect(rowsFor(inp)[0].row.rmks).toBe('mine — first')
+    expect(rowsFor(inp)[0].row.rmks).toBe('mine — first')   // a one-day duty or commitment prints no date (owner D951, D953)
     scheduler()
     expect(rowPut(`${keyOfRow(inp)}.+`, 'boosh'), 'the scheduler puts Havoc on its row').toBe('done')
     expect(rowMark(keyOfRow(inp), 'flag', true), 'and red-boxes it — the input’s own mark (D760)').toBe('done')

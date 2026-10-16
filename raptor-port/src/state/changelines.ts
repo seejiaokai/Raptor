@@ -35,7 +35,7 @@ import type { RoleIdentity } from '../engine/mission-role'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
-import { dateOrd, INPUTS, inpLabel, inpKindTag, titleOf, isSansAvail, sansLetters, idsOf, leadOf, namedOf, placeholderOf } from '../engine/inputs'
+import { dateOrd, INPUTS, inpLabel, inpKindTag, titleOf, isSansAvail, sansLetters, idsOf, leadOf, namedOf, placeholderOf, remarksTyped, tillShown, tillTurned } from '../engine/inputs'
 import { parseVerId, dayIso } from '../engine/verid'
 import { qualCols } from '../engine/qualcols'
 import { actorIsAdmin } from './perms'
@@ -151,7 +151,13 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
      Duty) said "Event → Duty" and nothing of the title. Two untitled kinds still write the kind's line alone: their
      names moved because the kind did, and no title changed. */
   if (!same(titleOf(b.type, b.title), titleOf(a.type, a.title))) logAction(null, `${who} · ${spanWords(sa)} · title`, base({ from: inpLabel(b), to: inpLabel(a) }))
-  if (!same(b.remarks || '', a.remarks || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · remarks`, base({ from: String(b.remarks || '—'), to: String(a.remarks || '—') }))
+  /* the typed words (D948): a remark saved with its date in it before the build, re-saved without, is no change of remarks */
+  if (!same(remarksTyped(b.remarks, b), remarksTyped(a.remarks, a))) logAction(null, `${who} · ${what} ${spanWords(sa)} · remarks`, base({ from: remarksTyped(b.remarks, b) || '—', to: remarksTyped(a.remarks, a) || '—' }))
+  /* its till-date tick (owner D953; D263 — every change to an input is a line): ticked or unticked by hand. A date or kind
+     change that flips the default says so in its own line (dates, type), so the tick's line is written where the default
+     held, or where the save turned it against the new default as well (stretched AND unticked in one save — the
+     scenario designer's 3) — never a second line for what the dates alone did. */
+  if (tillTurned(b, a)) logAction(null, `${who} · ${what} ${spanWords(sa)} · till date`, base({ from: tillShown(b) ? 'shown' : 'hidden', to: tillShown(a) ? 'shown' : 'hidden' }))
   if (!same(b.acc || '', accNow(a) || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · filed`, base({ from: filWords(b.acc), to: filWords(accNow(a)) }))
   if (!same(b.oil, a.oil)) logAction(null, `${who} · ${what} ${spanWords(sa)} · OIL`, base({ from: oilWords(b.oil), to: oilWords(a.oil) }))
   /* THE SCHEDULER'S MARKS, THE INPUT'S OWN since step 4 of the one-rule build (owner D760: "a CX the scheduler puts on a

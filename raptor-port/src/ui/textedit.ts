@@ -5,7 +5,7 @@
    model rather than by a rebuild. */
 import { DAYS } from '../engine/data'
 import { txtGet, txtSet, TIME_TXT } from '../engine/slots'
-import { inpById, inpTimeText } from '../engine/inputs'
+import { inpById, inpTimeText, remarksTyped } from '../engine/inputs'
 import { iuParts } from '../engine/keys'
 import { setInpField } from './inputedit'
 import { reqRowText } from './reqrow'
@@ -20,7 +20,7 @@ import * as view from '../state/view'
 import { notify } from '../state/store'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { canEditSched } from '../state/auth'
-import { fmtTxt, intimeLineHTML, areaText, atimeText } from './html'
+import { fmtTxt, intimeLineHTML, areaText, atimeText, boxText } from './html'
 import { routeScheduleTab } from './schedule-tab'
 
 let SCRATCH: any = null
@@ -106,7 +106,7 @@ export function routeFocusOut(e: FocusEvent) {
     const rq = reqRowText(p, tx.textContent)
     if (rq !== 'none') {
       if (rq === 'saved') txtCommit()
-      const v = txtGet(p); heal(tx, TIME_TXT.test(p) ? fmtTxt(v) : String(v == null ? '' : v))
+      const v = boxText(p); heal(tx, TIME_TXT.test(p) ? fmtTxt(v) : String(v == null ? '' : v))
       return
     }
     if (txtSet(p, tx.textContent)) { commitText(p, () => markEdit()); txtCommit() }
@@ -129,11 +129,11 @@ export function routeFocusOut(e: FocusEvent) {
     /* LEFT AS IT WAS, NOTHING IS SAVED ([HIST-PHONE-HIDE] walk, 28 Sep 26): a tap in and out of an empty "all day" cell —
        which a phone's History invites, a tap on a dotted input row to read its story — wrote times onto the record (0
        and 23:59, still all day) and a history line "times: all day → all day", a change nobody made */
-    const shown = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field)
+    const shown = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)
     if (String(ip.textContent || '').trim() === String(shown).trim()) return
     const ok = setInpField(inp, field as any, ip.textContent, who)
     if (ok) txtCommit()
-    else heal(ip, field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field))
+    else heal(ip, field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field))
     return
   }
   /* ONE in-time line commits itself (owner's iPhone, 21 Aug 26). The block
@@ -277,13 +277,13 @@ function refreshTextDestination(el: HTMLElement) {
   let value: any
   const key = d.txt || d.bfld
   if (key) {
-    value = txtGet(key)
+    value = boxText(key)
     if (TIME_TXT.test(key)) value = fmtTxt(value)
   } else if (d.inp || d.ifld) {
     const [id, field] = (d.inp || d.ifld)!.split('.')
     const inp = inpById(id)
     if (!inp) return
-    value = field === 'rmks' ? inp.remarks || '' : inpTimeText(inp, field)
+    value = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)
   } else if (d.itline) {
     const [di, gi, ix] = d.itline.split('|').map(Number)
     value = DAYS[di]?.waves?.[gi]?.intimes?.[ix]
@@ -331,7 +331,7 @@ export function routeKeyDown(e: KeyboardEvent) {
     else if (e.key === 'Escape') {
       const [tail, field] = ic.dataset.inp!.split('.')
       const inp = inpById((iuParts('iu:' + tail) || { iid: tail }).iid); e.preventDefault()
-      if (inp) ic.textContent = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field)
+      if (inp) ic.textContent = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)
       ic.blur()
     }
     return
@@ -354,7 +354,7 @@ export function routeKeyDown(e: KeyboardEvent) {
     else if (e.key === 'Escape') {
       e.preventDefault()
       const k = (bx as any).dataset.bfld
-      if (k) { const v = txtGet(k); (bx as any).value = String(v == null ? '' : v) }
+      if (k) { const v = boxText(k); (bx as any).value = String(v == null ? '' : v) }
       bx.blur()
     }
     return
@@ -418,7 +418,7 @@ export function routeKeyDown(e: KeyboardEvent) {
      the sim-notes block too — txtSet collapses the break anyway. */
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); tx.blur() }
   else if (e.key === 'Escape') {
-    const v = txtGet(tx.dataset.txt); e.preventDefault()
+    const v = boxText(tx.dataset.txt); e.preventDefault()
     tx.textContent = TIME_TXT.test(tx.dataset.txt!) ? fmtTxt(v) : String(v == null ? '' : v); tx.blur()
   }
 }
