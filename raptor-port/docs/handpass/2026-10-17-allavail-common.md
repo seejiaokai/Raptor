@@ -4,10 +4,10 @@ Branch `claude/allavail-common` (cut from pull request 522's tip). Rulings D954,
 line), built unattended in the build chat by his word (D956). Order: `docs/bug-check-order.md`.
 
 ## Questions waiting for him
-**Q1 — the words that still say "Ground" for such a row** (the scenario designer's 5): the changes window's title of the
-row ("Ground · MEETING"), the phone's banner while a place waits for a puck ("Ground · …"), the board's note after ✕
-("Ground item removed — back under Personal Inputs"), and Personal Inputs' "→ Ground" button for an Other filed for ALL
-AVAIL. **Recommended: yes — each names the Common Programme where the row is drawn there.** Waits on it: those four words
+**Q1 — the words that still say "Ground" for such a row** (the scenario designer's 5; narrowed by the walk, J8): the
+phone's banner while a place waits for a puck ("Planning Ground · MEETING" — j8-5), the board's note after ✕ ("Ground item
+removed — back under Personal Inputs" — j8-2), and Personal Inputs' "→ Ground" button for an Other filed for ALL AVAIL,
+which lands it on the Common Programme (j8-3, j8-4). The changes window does not say it (j8-1). **Recommended: yes — each names the Common Programme where the row is drawn there.** Waits on it: those four words
 only (pictures with the walk). Everything else is built.
 
 ## 1. The eight answers and the tier
@@ -39,17 +39,30 @@ drawer — **YES**: the Ground Programme's row builders moved into one function 
 in the `.ah-row` grid at phone width (the week's two row shapes differ), the board row without a grip among rows with one,
 drags of the Common Programme's own rows around it, OIL Earn on the board, ALL AVAIL dropped on / taken off a row moving it
 live. 3. **The ledger:** layout walks of shared rows have found phone faults. 4. **Chosen:** one Sonnet walker, one scripted
-pass, desktop 1440 + phone 390, pictures. 5. **After:** its row in `docs/walk-ledger.md`.
+pass, desktop 1440 + phone 390, pictures. 5. **After:** its row in `docs/walk-ledger.md` (written).
 
 ## 4. The walk
-(to come)
+One Sonnet 5.5 walker (D787), script `scripts/handpass/allavail-common-walk.mjs` (assertions), the built app at gate run 2
+(served on 4186), desktop 1440 by mouse, phone 390 by touch (real touch for the drag). **58 PASS, 0 FAIL; console errors,
+page errors, 4xx: none.** Pictures `docs/img/handpass/2026-10-17-allavail-common/build/` (~60). The host opened
+j3-1-board-prog-phone390 (both ALL AVAIL meetings on the Common Programme between 11:30 and 13:30, no grip of their own, the
+Reject line, the typed words in the box). Walked: filing for ALL AVAIL in the window (J1); the week and View-only Sched,
+the row's place by time, the line, the tint, the phone shape (J2); the board, no grip, a drag of the programme's own rows
+past it — one landing line, never on it (J3); ALL AVAIL out → the Ground Programme, back → the Common Programme, Undo each
+way (J4); a retimed start saved, a remark saved, Reject and Accept (J5); OIL Earn on a Saturday (J6); a published day — no
+pending from the move, the issued face (J7); the peek (J9). **Notes:** a retimed row takes its new time place at the next
+drawing of the screen, not at once — the Ground Programme's own rows behave the same (J5-6), as built; the changes window
+never says "Ground" for it (J8-1 — Q1 narrowed to three words).
 
 ## 5. Cases carried by a test
 `ui/allavail-common.test.tsx`: the rule; the order; the week (edit and View-only); taken off and put back; the ⓘ count; a
 published day nothing pending; the board (edit, no grip, the line; read-only, no line); the peek.
 
 ## 6. Gates
-(to come)
+| Run | unit | build | tfin | e2e | smoke | rulecheck | docsize |
+|---|---|---|---|---|---|---|---|
+| 1 (`8664052d4`) | **FAIL 46** — four test files that find the ALL AVAIL row in the Ground Programme's section (the scenario designer's 1; re-expressed) | PASS | PASS | PASS | PASS | PASS | PASS |
+| 2 (`4f828217d`, with the designer's fixes) | **PASS 11573 / 11573 (651 files)** | PASS | PASS (728 / 0) | PASS (827 passed) | PASS | PASS | PASS |
 
 ## 7. The model reads
 **The scenario designer (a fresh Opus reader, asked what is MISSING), and what became of each:** (1) four test files found

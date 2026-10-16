@@ -1,0 +1,398 @@
+{
+ "results": [
+  {
+   "id": "J1-1 desk Meeting, Several people, ALL AVAIL, 13:00-14:00 \"Sqn brief\", Add",
+   "tag": "PASS",
+   "note": "calendar on JULY 2026; placeholder pucks [{\"id\":\"allavail\",\"label\":\"ALL AVAIL\",\"dis\":false,\"on\":\"false\"},{\"id\":\"all\",\"label\":\"ALL\",\"dis\":false,\"on\":\"false\"}]; window closed; stored [{\"type\":\"Meeting\",\"date\":\"Jul 13\",\"remarks\":\"Sqn brief\",\"more\":[{\"p\":\"stiff\",\"by\":\"stiff\",\"at\":1792141844607},{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1792141844607}],\"s\":780,\"e\":840,\"allday\":false}]",
+   "pic": "j1-1-file-A-desk.png"
+  },
+  {
+   "id": "J1-2 desk second input: ALL AVAIL + two named people, 13:00-14:00 \"Sqn brief B\", Add",
+   "tag": "PASS",
+   "note": "calendar on JULY 2026; placeholder pucks [{\"id\":\"allavail\",\"label\":\"ALL AVAIL\",\"dis\":false,\"on\":\"false\"},{\"id\":\"all\",\"label\":\"ALL\",\"dis\":false,\"on\":\"false\"}]; named [\"dj\",\"shaft\"]; window closed; stored [{\"type\":\"Meeting\",\"date\":\"Jul 13\",\"remarks\":\"Sqn brief B\",\"more\":[{\"p\":\"stiff\",\"by\":\"stiff\",\"at\":1792141853089},{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1792141853089},{\"p\":\"dj\",\"by\":\"stiff\",\"at\":1792141853089},{\"p\":\"shaft\",\"by\":\"stiff\",\"at\":1792141853089}],\"s\":780,\"e\":840,\"allday\":false}]",
+   "pic": "j1-2-file-B-desk.png"
+  },
+  {
+   "id": "J2-1 desk week: the Meeting's row is in the Common Programme, not the Ground Programme",
+   "tag": "PASS",
+   "note": "Common Programme rows (12): 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30; row class \"ah-row gshared gr-frominput\"; rows in the Ground Programme section carrying the remark: 0; Ground Programme rows: 0:IN HQ ENGAGEMENT@08:45 | 1:IN MEETING@09:00 | 2:IN STAFF MTG @ HQ@09:30 | 3:IN APPOINTMENT@10:00 | 4:IN MEDICAL APPT@10:30 | 5:IN DENTAL APPT@12:00 | 6:IN OPS/LOGS @ EXT SQN@14:00 | 7:IN TRAINING CMD VISIT@16:30 | 8:IN FLY WITH@–",
+   "pic": "j2-1-week-prog-desk.png"
+  },
+  {
+   "id": "J2-2 desk week: placed by its start time among the programme's rows",
+   "tag": "PASS",
+   "note": "0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | ours at index 4, start 13:00",
+   "pic": "j2-1-week-prog-desk.png"
+  },
+  {
+   "id": "J2-3 desk week: the Reject line stands under \"Common Programme\"",
+   "tag": "PASS",
+   "note": "heading \"⠿Common Programme\"; notes [\"To take an input off, press Reject on it in Personal Inputs below.\"]; first thing after the heading is the note: true",
+   "pic": "j2-1-week-prog-desk.png"
+  },
+  {
+   "id": "J2-4 desk week: the row wears the light cyan \"came from an input\" tint",
+   "tag": "PASS",
+   "note": "row class \"ah-row gshared gr-frominput\"; background rgba(59, 198, 232, 0.05), left edge rgb(241, 244, 247) 0px, shadow rgba(59, 198, 232, 0.42) 2px 0px 0px 0px inset; plain own row: rgba(0, 0, 0, 0) / rgb(241, 244, 247) 0px; a Ground Programme input row for comparison: rgba(59, 198, 232, 0.05) / rgb(241, 244, 247) 0px",
+   "pic": "j2-1-week-prog-desk.png"
+  },
+  {
+   "id": "J2-6 desk View-only Sched Monday: the row on the Common Programme, NO Reject line",
+   "tag": "PASS",
+   "note": "Common Programme: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30; not in Ground Programme: true; Reject line anywhere on Monday: false; notes under the heading []",
+   "pic": "j2-6-view-prog-desk.png"
+  },
+  {
+   "id": "J3-1 desk board: the row is in the Common Programme panel (not the Ground Programme panel), by time",
+   "tag": "PASS",
+   "note": "Common Programme: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00; ours index 4 start 13:00; in the Ground Programme panel: false; ",
+   "pic": "j3-1-board-prog-desk.png"
+  },
+  {
+   "id": "J3-2 desk board: no grip of its own; the programme's own rows keep theirs; the Reject line under the panel's heading",
+   "tag": "PASS",
+   "note": "input row: grip visible false (class sb-grip ro), draggable false; own rows 12: SODB grip true move true, MET + NOTAM BRIEF grip true move true, FLIGHT SAFETY STAND-DOWN grip true move true, WPNS & TACTICS SYNC grip true move true, STANDARDISATION MEETING grip true move true, OCU PROGRESS REVIEW grip true move true, INTEL UPDATE grip true move true, OPS SHARING + NAV SYS BRIEF grip true move true, DINNER WITH CMD grip true move true, CMD ENGAGEMENT @ CREW ROOM (ALL) grip true move true, Own A grip true move true, Own B grip true move true; notes [\"To take an input off, press Reject on it in Personal Inputs below.\"], first after heading true",
+   "pic": "j3-1-board-prog-desk.png"
+  },
+  {
+   "id": "J3-3 desk board: dragging Own A past the input's row shows ONE landing line (on the row it would land by), none on the input's row",
+   "tag": "PASS",
+   "note": "while over the input's row: {\"n\":0,\"on\":[],\"inputDrop\":false}; while over Own B: {\"n\":1,\"on\":[\"Own B\"],\"inputDrop\":false} (gesture: mouse)",
+   "pic": "j3-3-drag-desk.png"
+  },
+  {
+   "id": "J3-4 desk board: after the drop Own A lands by Own B, and the input's row stays where its time puts it",
+   "tag": "PASS",
+   "note": "own order before SODB,MET + NOTAM BRIEF,FLIGHT SAFETY STAND-DOWN,WPNS & TACTICS SYNC,STANDARDISATION MEETING,OCU PROGRESS REVIEW,INTEL UPDATE,OPS SHARING + NAV SYS BRIEF,DINNER WITH CMD,CMD ENGAGEMENT @ CREW ROOM (ALL),Own A,Own B -> after SODB,MET + NOTAM BRIEF,FLIGHT SAFETY STAND-DOWN,WPNS & TACTICS SYNC,STANDARDISATION MEETING,OCU PROGRESS REVIEW,INTEL UPDATE,OPS SHARING + NAV SYS BRIEF,DINNER WITH CMD,CMD ENGAGEMENT @ CREW ROOM (ALL),Own B,Own A; Common Programme now: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own B@15:00 | 13:Own A@12:00; input row placed by the rule",
+   "pic": "j3-4-dropped-desk.png"
+  },
+  {
+   "id": "J3-5 desk board: Undo puts Own A back",
+   "tag": "PASS",
+   "note": "own order now SODB,MET + NOTAM BRIEF,FLIGHT SAFETY STAND-DOWN,WPNS & TACTICS SYNC,STANDARDISATION MEETING,OCU PROGRESS REVIEW,INTEL UPDATE,OPS SHARING + NAV SYS BRIEF,DINNER WITH CMD,CMD ENGAGEMENT @ CREW ROOM (ALL),Own A,Own B (expected SODB,MET + NOTAM BRIEF,FLIGHT SAFETY STAND-DOWN,WPNS & TACTICS SYNC,STANDARDISATION MEETING,OCU PROGRESS REVIEW,INTEL UPDATE,OPS SHARING + NAV SYS BRIEF,DINNER WITH CMD,CMD ENGAGEMENT @ CREW ROOM (ALL),Own A,Own B); 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00"
+  },
+  {
+   "id": "J4-1 desk board: \"Sqn brief B\" (ALL AVAIL + two named) starts on the Common Programme",
+   "tag": "PASS",
+   "note": "row is on COMMON; Common: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00; Ground: 0:IN HQ ENGAGEMENT@08:45 | 1:IN MEETING@09:00 | 2:IN STAFF MTG @ HQ@09:30 | 3:IN APPOINTMENT@10:00 | 4:IN MEDICAL APPT@10:30 | 5:IN DENTAL APPT@12:00 | 6:IN OPS/LOGS @ EXT SQN@14:00 | 7:IN TRAINING CMD VISIT@16:30 | 8:IN FLY WITH@–",
+   "pic": "j4-1-before-desk.png"
+  },
+  {
+   "id": "J4-2 desk board: ALL AVAIL taken out in the input's window (named people stay) — the row moves to the Ground Programme",
+   "tag": "PASS",
+   "note": "ALL AVAIL true -> false; the row is on GROUND; Common: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:STANDARDISATION MEETING@13:30 | 6:OCU PROGRESS REVIEW@14:45 | 7:INTEL UPDATE@16:00 | 8:OPS SHARING + NAV SYS BRIEF@17:55 | 9:DINNER WITH CMD@18:30 | 10:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 11:Own A@12:00 | 12:Own B@15:00; Ground: 0:IN HQ ENGAGEMENT@08:45 | 1:IN MEETING@09:00 | 2:IN STAFF MTG @ HQ@09:30 | 3:IN APPOINTMENT@10:00 | 4:IN MEDICAL APPT@10:30 | 5:IN DENTAL APPT@12:00 | 6:IN MEETING@13:00 | 7:IN OPS/LOGS @ EXT SQN@14:00 | 8:IN TRAINING CMD VISIT@16:30 | 9:IN FLY WITH@–",
+   "pic": "j4-2-allavail-out-desk.png"
+  },
+  {
+   "id": "J4-3 desk board: the top bar's Undo puts ALL AVAIL back — the row is on the Common Programme again",
+   "tag": "PASS",
+   "note": "Undo pressed; row is on COMMON; Common: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00",
+   "pic": "j4-3-undo-desk.png"
+  },
+  {
+   "id": "J4-4 desk board: out again (Ground), then ALL AVAIL put back in the window — the row moves back to the Common Programme",
+   "tag": "PASS",
+   "note": "after the second take-out the row is on GROUND; after putting ALL AVAIL back (false -> true) it is on COMMON; Common: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00",
+   "pic": "j4-4-allavail-back-desk.png"
+  },
+  {
+   "id": "J4-5 desk board: Undo of the put-back returns it to the Ground Programme; the next Undo returns it to the Common Programme",
+   "tag": "PASS",
+   "note": "after one Undo: GROUND; after the next: COMMON",
+   "pic": "j4-5-undo-chain-desk.png"
+  },
+  {
+   "id": "J5-1 desk week: type 15:30 in its start box, Tab — saved, and the row moves to its new time place",
+   "tag": "PASS",
+   "note": "start now \"15:30\"; 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:STANDARDISATION MEETING@13:30 | 6:OCU PROGRESS REVIEW@14:45 | 7:IN MEETING@15:30 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00; placed by the rule; stored record [{\"type\":\"Meeting\",\"date\":\"Jul 13\",\"remarks\":\"Sqn brief\",\"more\":[{\"p\":\"stiff\",\"by\":\"stiff\",\"at\":1792141844607},{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1792141844607}],\"s\":930,\"e\":840,\"allday\":false}] | 2 s later: index 4 placed-by-rule false; after leaving and reopening the screen: index 7 placed-by-rule true (0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:STANDARDISATION MEETING@13:30 | 6:OCU PROGRESS REVIEW@14:45 | 7:IN MEETING@15:30 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00) | the row did NOT move at once but takes its time place when the screen is next drawn (the ordinary Ground Programme row behaves the same: J5-6)",
+   "pic": "j5-1-time-week-desk.png"
+  },
+  {
+   "id": "J5-2 desk week: type \" x\" at the end of its remark, Tab — saved",
+   "tag": "PASS",
+   "note": "remark box reads \"Sqn brief x\"; stored remarks [\"Sqn brief x\"]",
+   "pic": "j5-2-remark-week-desk.png"
+  },
+  {
+   "id": "J5-3 desk week: put back to 13:00 and \"Sqn brief\"",
+   "tag": "PASS",
+   "note": "start \"13:00\", remark \"Sqn brief\""
+  },
+  {
+   "id": "J5-1 desk board: type 15:30 in its start box, Tab — saved, and the row moves to its new time place",
+   "tag": "PASS",
+   "note": "start now \"15:30\"; 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:STANDARDISATION MEETING@13:30 | 6:OCU PROGRESS REVIEW@14:45 | 7:IN MEETING@15:30 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00; placed by the rule; stored record [{\"type\":\"Meeting\",\"date\":\"Jul 13\",\"remarks\":\"Sqn brief\",\"more\":[{\"p\":\"stiff\",\"by\":\"stiff\",\"at\":1792141844607},{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1792141844607}],\"s\":930,\"e\":840,\"allday\":false}] | 2 s later: index 4 placed-by-rule false; after leaving and reopening the screen: index 7 placed-by-rule true (0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:STANDARDISATION MEETING@13:30 | 6:OCU PROGRESS REVIEW@14:45 | 7:IN MEETING@15:30 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00) | the row did NOT move at once but takes its time place when the screen is next drawn (the ordinary Ground Programme row behaves the same: J5-6)",
+   "pic": "j5-1-time-board-desk.png"
+  },
+  {
+   "id": "J5-2 desk board: type \" x\" at the end of its remark, Tab — saved",
+   "tag": "PASS",
+   "note": "remark box reads \"Sqn brief x\"; stored remarks [\"Sqn brief x\"]",
+   "pic": "j5-2-remark-board-desk.png"
+  },
+  {
+   "id": "J5-3 desk board: put back to 13:00 and \"Sqn brief\"",
+   "tag": "PASS",
+   "note": "start \"13:00\", remark \"Sqn brief\""
+  },
+  {
+   "id": "J5-6 desk week BASELINE: an ordinary Ground Programme input row (\"MEDICAL APPT\") retimed to 17:45 — does it move at once?",
+   "tag": "NOTE",
+   "note": "before: 0:IN HQ ENGAGEMENT@08:45 | 1:IN MEETING@09:00 | 2:IN STAFF MTG @ HQ@09:30 | 3:IN APPOINTMENT@10:00 | 4:IN MEDICAL APPT@10:30 | 5:IN DENTAL APPT@12:00 | 6:IN OPS/LOGS @ EXT SQN@14:00 | 7:IN TRAINING CMD VISIT@16:30 | 8:IN FLY WITH@– || at once: 0:IN HQ ENGAGEMENT@08:45 | 1:IN MEETING@09:00 | 2:IN STAFF MTG @ HQ@09:30 | 3:IN APPOINTMENT@10:00 | 4:IN MEDICAL APPT@17:45 | 5:IN DENTAL APPT@12:00 | 6:IN OPS/LOGS @ EXT SQN@14:00 | 7:IN TRAINING CMD VISIT@16:30 | 8:IN FLY WITH@– || after leaving the screen and coming back: 0:IN HQ ENGAGEMENT@08:45 | 1:IN MEETING@09:00 | 2:IN STAFF MTG @ HQ@09:30 | 3:IN APPOINTMENT@10:00 | 4:IN DENTAL APPT@12:00 | 5:IN OPS/LOGS @ EXT SQN@14:00 | 6:IN TRAINING CMD VISIT@16:30 | 7:IN MEDICAL APPT@17:45 | 8:IN FLY WITH@–"
+  },
+  {
+   "id": "J5-6 desk board BASELINE: an ordinary Ground Programme input row (\"MEDICAL APPT\") retimed to 17:45 — does it move at once?",
+   "tag": "NOTE",
+   "note": "before: 0:IN HQ ENGAGEMENT@08:45 | 1:IN MEETING@09:00 | 2:IN STAFF MTG @ HQ@09:30 | 3:IN APPOINTMENT@10:00 | 4:IN MEDICAL APPT@10:30 | 5:IN DENTAL APPT@12:00 | 6:IN OPS/LOGS @ EXT SQN@14:00 | 7:IN TRAINING CMD VISIT@16:30 | 8:IN FLY WITH@– || at once: 0:IN HQ ENGAGEMENT@08:45 | 1:IN MEETING@09:00 | 2:IN STAFF MTG @ HQ@09:30 | 3:IN APPOINTMENT@10:00 | 4:IN MEDICAL APPT@17:45 | 5:IN DENTAL APPT@12:00 | 6:IN OPS/LOGS @ EXT SQN@14:00 | 7:IN TRAINING CMD VISIT@16:30 | 8:IN FLY WITH@– || after leaving the screen and coming back: 0:IN HQ ENGAGEMENT@08:45 | 1:IN MEETING@09:00 | 2:IN STAFF MTG @ HQ@09:30 | 3:IN APPOINTMENT@10:00 | 4:IN DENTAL APPT@12:00 | 5:IN OPS/LOGS @ EXT SQN@14:00 | 6:IN TRAINING CMD VISIT@16:30 | 7:IN MEDICAL APPT@17:45 | 8:IN FLY WITH@–"
+  },
+  {
+   "id": "J5-4 desk week: Reject on its Personal Inputs line — the row leaves the Common Programme",
+   "tag": "PASS",
+   "note": "button before \"REJECT\", after \"ACCEPT\"; in the Common Programme: false; in the Ground Programme: false; Common: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:STANDARDISATION MEETING@13:30 | 6:OCU PROGRESS REVIEW@14:45 | 7:INTEL UPDATE@16:00 | 8:OPS SHARING + NAV SYS BRIEF@17:55 | 9:DINNER WITH CMD@18:30 | 10:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 11:Own A@12:00 | 12:Own B@15:00",
+   "pic": "j5-4-rejected-desk.png"
+  },
+  {
+   "id": "J5-5 desk week: Accept — the row is back on the Common Programme",
+   "tag": "PASS",
+   "note": "Common: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00; ground has it: false",
+   "pic": "j5-5-accepted-desk.png"
+  },
+  {
+   "id": "J6 desk OIL Earn (Saturday): the row on the Common Programme shows its OIL switches",
+   "tag": "PASS",
+   "note": "row on the Common Programme; OIL elements 6 ([\"oilitem\",\"oilpk\",\"oilp\",\"oilitem\",\"oilday\",\"oilglow\",\"oilamt\",\"OIL\"]); filed: [{\"type\":\"Meeting\",\"date\":\"Jul 18\",\"remarks\":\"Sat brief\",\"more\":[{\"p\":\"stiff\",\"by\":\"stiff\",\"at\":1792141952317},{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1792141952317}],\"s\":600,\"e\":660,\"allday\":false}]",
+   "pic": "j6-1-oil-earn.png"
+  },
+  {
+   "id": "J8-1 desk the changes window: the line for this row",
+   "tag": "NOTE",
+   "note": "words with \"Ground\" in the window: []; lines about the row: [\"Sqn brief x\",\"Sqn brief\",\"Sqn brief\",\"Sqn brief x\",\"Sqn brief x\",\"Sqn brief\"] (the word marked in the picture)",
+   "pic": "j8-1-changes-window.png"
+  },
+  {
+   "id": "J8-1b desk Monday head: the day's change count",
+   "tag": "NOTE",
+   "note": "Monday's head count button reads \"29 changes\"",
+   "pic": "j8-1b-day-count.png"
+  },
+  {
+   "id": "J8-2 desk the board's note after pressing ✕ on the input's row",
+   "tag": "NOTE",
+   "note": "note reads \"Ground item removed — back under Personal Inputs — MEETING, 13:00–14:00, Saber and ALL AVAIL\"",
+   "pic": "j8-2-board-x-note.png j8-2b-board-x-whole.png"
+  },
+  {
+   "id": "J8-2c desk Undo of the ✕ puts the row back on the Common Programme",
+   "tag": "PASS",
+   "note": "Common: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00"
+  },
+  {
+   "id": "J8-3 desk Personal Inputs' button on an Other filed for ALL AVAIL",
+   "tag": "NOTE",
+   "note": "buttons first seen [\"x:Reject\"]; after a Reject where needed [\"g:→ Ground\",\"u:→ Unavail\"]; \"→ Ground\" button PRESENT (marked)",
+   "pic": "j8-3-other-buttons.png"
+  },
+  {
+   "id": "J8-4 desk \"→ Ground\" pressed on the Other: where the row is drawn",
+   "tag": "NOTE",
+   "note": "row on the COMMON Programme; Common: 0:SODB@05:45 | 1:MASS BRIEF@06:00 | 2:IN OTHER@10:00",
+   "pic": "j8-4-other-landed.png"
+  },
+  {
+   "id": "J9 desk next-week peek (View-only Sched): the ALL AVAIL input's row is on the peek's Common Programme",
+   "tag": "PASS",
+   "note": "peek text \"Next week: click a day to load it\"; row inside Common Programme true, inside Ground Programme false; ancestors [\"rmk\",\"ah-row gr-frominput\",\"allhands sec sec-prog\",\"day-body\",\"day peek\"]; row text \"Peek brief\"",
+   "pic": "j9-1-peek.png"
+  },
+  {
+   "id": "J7-1 desk publish Monday through its own controls: ORIG, nothing pending, the row still on the Common Programme",
+   "tag": "PASS",
+   "note": "head before \"Monday Jul 13 · Today Templates Live working copy ▾ DRAFT 4 X 4 31 changes i Publish day\" (pending \"31 changes\"); after chip \"ORIG | ORIG\", pending \"36 changes\", head \"Monday Jul 13 · Today Templates Live working copy ▾ ORIG 4 X 4 36 changes i Unpublish\"; Common: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00",
+   "pic": "j7-1-published-desk.png"
+  },
+  {
+   "id": "J7-2 desk View-only Sched (issued face): the row on the Common Programme, no Reject line",
+   "tag": "PASS",
+   "note": "Common: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00; ground has it: false",
+   "pic": "j7-2-issued-face-desk.png"
+  },
+  {
+   "id": "J7-3 desk a remark typed on the published day: the day's pending count and the \"To go out\" list's title for the row",
+   "tag": "NOTE",
+   "note": "head count reads \"1 pending\"; titles with the word \"Ground\": []; list text \"⠿\\nChange  · Monday 13/7\\nPubli hed · 1 change waiting to go out a  AL1\\n✕\\nNew to you 0\\nAll change  37\\nTo go out · AL1 1\\nWeek\\nMon\\nTue\\nWed\\nThu\\nFri\\nSat\\nSun\\nWaiting to go out a \\nAL1\\n· 1 change\\nMeeting · 2 people\\nSaber\\n16/10 17:13\\nALL AVAIL, Saber\\n“Sqn brief” → “Sqn brief y”\\nTap a change to go to it.\\nTap a change to go to it.\"",
+   "pic": "j7-3-pending-list-desk.png"
+  },
+  {
+   "id": "J1-1 phone390 Meeting, Several people, ALL AVAIL, 13:00-14:00 \"Sqn brief\", Add",
+   "tag": "PASS",
+   "note": "calendar on JUL 2026; placeholder pucks [{\"id\":\"allavail\",\"label\":\"ALL AVAIL\",\"dis\":false,\"on\":\"false\"},{\"id\":\"all\",\"label\":\"ALL\",\"dis\":false,\"on\":\"false\"}]; window closed; stored [{\"type\":\"Meeting\",\"date\":\"Jul 13\",\"remarks\":\"Sqn brief\",\"more\":[{\"p\":\"stiff\",\"by\":\"stiff\",\"at\":1792142003218},{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1792142003218}],\"s\":780,\"e\":840,\"allday\":false}]",
+   "pic": "j1-1-file-A-phone390.png"
+  },
+  {
+   "id": "J1-2 phone390 second input: ALL AVAIL + two named people, 13:00-14:00 \"Sqn brief B\", Add",
+   "tag": "PASS",
+   "note": "calendar on JUL 2026; placeholder pucks [{\"id\":\"allavail\",\"label\":\"ALL AVAIL\",\"dis\":false,\"on\":\"false\"},{\"id\":\"all\",\"label\":\"ALL\",\"dis\":false,\"on\":\"false\"}]; named [\"dj\",\"shaft\"]; window closed; stored [{\"type\":\"Meeting\",\"date\":\"Jul 13\",\"remarks\":\"Sqn brief B\",\"more\":[{\"p\":\"stiff\",\"by\":\"stiff\",\"at\":1792142011632},{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1792142011632},{\"p\":\"dj\",\"by\":\"stiff\",\"at\":1792142011632},{\"p\":\"shaft\",\"by\":\"stiff\",\"at\":1792142011632}],\"s\":780,\"e\":840,\"allday\":false}]",
+   "pic": "j1-2-file-B-phone390.png"
+  },
+  {
+   "id": "J2-1 phone390 week: the Meeting's row is in the Common Programme, not the Ground Programme",
+   "tag": "PASS",
+   "note": "Common Programme rows (12): 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30; row class \"ah-row gshared gr-frominput\"; rows in the Ground Programme section carrying the remark: 0; Ground Programme rows: 0:IN HQ ENGAGEMENT@08:45 | 1:IN MEETING@09:00 | 2:IN STAFF MTG @ HQ@09:30 | 3:IN APPOINTMENT@10:00 | 4:IN MEDICAL APPT@10:30 | 5:IN DENTAL APPT@12:00 | 6:IN OPS/LOGS @ EXT SQN@14:00 | 7:IN TRAINING CMD VISIT@16:30 | 8:IN FLY WITH@–",
+   "pic": "j2-1-week-prog-phone390.png"
+  },
+  {
+   "id": "J2-2 phone390 week: placed by its start time among the programme's rows",
+   "tag": "PASS",
+   "note": "0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | ours at index 4, start 13:00",
+   "pic": "j2-1-week-prog-phone390.png"
+  },
+  {
+   "id": "J2-3 phone390 week: the Reject line stands under \"Common Programme\"",
+   "tag": "PASS",
+   "note": "heading \"⠿Common Programme\"; notes [\"To take an input off, press Reject on it in Personal Inputs below.\"]; first thing after the heading is the note: true",
+   "pic": "j2-1-week-prog-phone390.png"
+  },
+  {
+   "id": "J2-4 phone390 week: the row wears the light cyan \"came from an input\" tint",
+   "tag": "PASS",
+   "note": "row class \"ah-row gshared gr-frominput\"; background rgba(59, 198, 232, 0.05), left edge rgb(241, 244, 247) 0px, shadow rgba(59, 198, 232, 0.42) 2px 0px 0px 0px inset; plain own row: rgba(0, 0, 0, 0) / rgb(241, 244, 247) 0px; a Ground Programme input row for comparison: rgba(59, 198, 232, 0.05) / rgb(241, 244, 247) 0px",
+   "pic": "j2-1-week-prog-phone390.png"
+  },
+  {
+   "id": "J2-5 phone390 week phone 390: nothing overlapping, the two times together in one column at the row's top, remark box inside the row",
+   "tag": "PASS",
+   "note": "row {\"l\":20,\"r\":354,\"t\":430.8,\"b\":504.8,\"w\":334,\"h\":74}; times [{\"l\":163,\"r\":197,\"t\":435.8,\"b\":451.8,\"w\":34,\"h\":16},{\"l\":163,\"r\":197,\"t\":454.8,\"b\":466.8,\"w\":34,\"h\":12}]; remark box {\"l\":283,\"r\":348,\"t\":435.8,\"b\":459.8,\"w\":65,\"h\":24.1}; grey date null; overlaps []; page scrolls sideways false; row scrolls sideways false; cells nm {\"l\":26,\"r\":158,\"t\":435.8,\"b\":452.5,\"w\":132,\"h\":16.8} ; t t-s txed {\"l\":163,\"r\":197,\"t\":435.8,\"b\":451.8,\"w\":34,\"h\":16} ; t t-e txed {\"l\":163,\"r\":197,\"t\":454.8,\"b\":466.8,\"w\":34,\"h\":12} ; ppl  {\"l\":202,\"r\":278,\"t\":435.8,\"b\":500.8,\"w\":76,\"h\":65} ; rmk has-late {\"l\":283,\"r\":348,\"t\":435.8,\"b\":459.8,\"w\":65,\"h\":24.1}",
+   "pic": "j2-5-week-row-phone.png"
+  },
+  {
+   "id": "J2-6 phone390 View-only Sched Monday: the row on the Common Programme, NO Reject line",
+   "tag": "PASS",
+   "note": "Common Programme: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30; not in Ground Programme: true; Reject line anywhere on Monday: false; notes under the heading []",
+   "pic": "j2-6-view-prog-phone390.png"
+  },
+  {
+   "id": "J3-1 phone390 board: the row is in the Common Programme panel (not the Ground Programme panel), by time",
+   "tag": "PASS",
+   "note": "Common Programme: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00; ours index 4 start 13:00; in the Ground Programme panel: false; ",
+   "pic": "j3-1-board-prog-phone390.png"
+  },
+  {
+   "id": "J3-2 phone390 board: no grip of its own; the programme's own rows keep theirs; the Reject line under the panel's heading",
+   "tag": "PASS",
+   "note": "input row: grip visible false (class sb-grip ro), draggable false; own rows 12: SODB grip true move true, MET + NOTAM BRIEF grip true move true, FLIGHT SAFETY STAND-DOWN grip true move true, WPNS & TACTICS SYNC grip true move true, STANDARDISATION MEETING grip true move true, OCU PROGRESS REVIEW grip true move true, INTEL UPDATE grip true move true, OPS SHARING + NAV SYS BRIEF grip true move true, DINNER WITH CMD grip true move true, CMD ENGAGEMENT @ CREW ROOM (ALL) grip true move true, Own A grip true move true, Own B grip true move true; notes [\"To take an input off, press Reject on it in Personal Inputs below.\"], first after heading true",
+   "pic": "j3-1-board-prog-phone390.png"
+  },
+  {
+   "id": "J3-3 phone390 board: dragging Own A past the input's row shows ONE landing line (on the row it would land by), none on the input's row",
+   "tag": "PASS",
+   "note": "while over the input's row: {\"n\":0,\"on\":[],\"inputDrop\":false}; while over Own B: {\"n\":1,\"on\":[\"Own B\"],\"inputDrop\":false} (gesture: touch via CDP)",
+   "pic": "j3-3-drag-phone390.png"
+  },
+  {
+   "id": "J3-4 phone390 board: after the drop Own A lands by Own B, and the input's row stays where its time puts it",
+   "tag": "PASS",
+   "note": "own order before SODB,MET + NOTAM BRIEF,FLIGHT SAFETY STAND-DOWN,WPNS & TACTICS SYNC,STANDARDISATION MEETING,OCU PROGRESS REVIEW,INTEL UPDATE,OPS SHARING + NAV SYS BRIEF,DINNER WITH CMD,CMD ENGAGEMENT @ CREW ROOM (ALL),Own A,Own B -> after SODB,MET + NOTAM BRIEF,FLIGHT SAFETY STAND-DOWN,WPNS & TACTICS SYNC,STANDARDISATION MEETING,OCU PROGRESS REVIEW,INTEL UPDATE,OPS SHARING + NAV SYS BRIEF,DINNER WITH CMD,CMD ENGAGEMENT @ CREW ROOM (ALL),Own B,Own A; Common Programme now: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own B@15:00 | 13:Own A@12:00; input row placed by the rule",
+   "pic": "j3-4-dropped-phone390.png"
+  },
+  {
+   "id": "J3-5 phone390 board: Undo puts Own A back",
+   "tag": "PASS",
+   "note": "own order now SODB,MET + NOTAM BRIEF,FLIGHT SAFETY STAND-DOWN,WPNS & TACTICS SYNC,STANDARDISATION MEETING,OCU PROGRESS REVIEW,INTEL UPDATE,OPS SHARING + NAV SYS BRIEF,DINNER WITH CMD,CMD ENGAGEMENT @ CREW ROOM (ALL),Own A,Own B (expected SODB,MET + NOTAM BRIEF,FLIGHT SAFETY STAND-DOWN,WPNS & TACTICS SYNC,STANDARDISATION MEETING,OCU PROGRESS REVIEW,INTEL UPDATE,OPS SHARING + NAV SYS BRIEF,DINNER WITH CMD,CMD ENGAGEMENT @ CREW ROOM (ALL),Own A,Own B); 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00"
+  },
+  {
+   "id": "J4-1 phone390 board: \"Sqn brief B\" (ALL AVAIL + two named) starts on the Common Programme",
+   "tag": "PASS",
+   "note": "row is on COMMON; Common: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00; Ground: 0:IN HQ ENGAGEMENT@08:45 | 1:IN MEETING@09:00 | 2:IN STAFF MTG @ HQ@09:30 | 3:IN APPOINTMENT@10:00 | 4:IN MEDICAL APPT@10:30 | 5:IN DENTAL APPT@12:00 | 6:IN OPS/LOGS @ EXT SQN@14:00 | 7:IN TRAINING CMD VISIT@16:30 | 8:IN FLY WITH@–",
+   "pic": "j4-1-before-phone390.png"
+  },
+  {
+   "id": "J4-2 phone390 board: ALL AVAIL taken out in the input's window (named people stay) — the row moves to the Ground Programme",
+   "tag": "PASS",
+   "note": "ALL AVAIL true -> false; the row is on GROUND; Common: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:STANDARDISATION MEETING@13:30 | 6:OCU PROGRESS REVIEW@14:45 | 7:INTEL UPDATE@16:00 | 8:OPS SHARING + NAV SYS BRIEF@17:55 | 9:DINNER WITH CMD@18:30 | 10:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 11:Own A@12:00 | 12:Own B@15:00; Ground: 0:IN HQ ENGAGEMENT@08:45 | 1:IN MEETING@09:00 | 2:IN STAFF MTG @ HQ@09:30 | 3:IN APPOINTMENT@10:00 | 4:IN MEDICAL APPT@10:30 | 5:IN DENTAL APPT@12:00 | 6:IN MEETING@13:00 | 7:IN OPS/LOGS @ EXT SQN@14:00 | 8:IN TRAINING CMD VISIT@16:30 | 9:IN FLY WITH@–",
+   "pic": "j4-2-allavail-out-phone390.png"
+  },
+  {
+   "id": "J4-3 phone390 board: the top bar's Undo puts ALL AVAIL back — the row is on the Common Programme again",
+   "tag": "PASS",
+   "note": "Undo pressed; row is on COMMON; Common: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00",
+   "pic": "j4-3-undo-phone390.png"
+  },
+  {
+   "id": "J4-4 phone390 board: out again (Ground), then ALL AVAIL put back in the window — the row moves back to the Common Programme",
+   "tag": "PASS",
+   "note": "after the second take-out the row is on GROUND; after putting ALL AVAIL back (false -> true) it is on COMMON; Common: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00",
+   "pic": "j4-4-allavail-back-phone390.png"
+  },
+  {
+   "id": "J4-5 phone390 board: Undo of the put-back returns it to the Ground Programme; the next Undo returns it to the Common Programme",
+   "tag": "PASS",
+   "note": "after one Undo: GROUND; after the next: COMMON",
+   "pic": "j4-5-undo-chain-phone390.png"
+  },
+  {
+   "id": "J5-1 phone390 week: type 15:30 in its start box, Tab — saved, and the row moves to its new time place",
+   "tag": "PASS",
+   "note": "start now \"15:30\"; 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:STANDARDISATION MEETING@13:30 | 6:OCU PROGRESS REVIEW@14:45 | 7:IN MEETING@15:30 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00; placed by the rule; stored record [{\"type\":\"Meeting\",\"date\":\"Jul 13\",\"remarks\":\"Sqn brief\",\"more\":[{\"p\":\"stiff\",\"by\":\"stiff\",\"at\":1792142003218},{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1792142003218}],\"s\":930,\"e\":840,\"allday\":false}] | 2 s later: index 4 placed-by-rule false; after leaving and reopening the screen: index 7 placed-by-rule true (0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:STANDARDISATION MEETING@13:30 | 6:OCU PROGRESS REVIEW@14:45 | 7:IN MEETING@15:30 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00) | the row did NOT move at once but takes its time place when the screen is next drawn (the ordinary Ground Programme row behaves the same: J5-6)",
+   "pic": "j5-1-time-week-phone390.png"
+  },
+  {
+   "id": "J5-2 phone390 week: type \" x\" at the end of its remark, Tab — saved",
+   "tag": "PASS",
+   "note": "remark box reads \"Sqn brief x\"; stored remarks [\"Sqn brief x\"]",
+   "pic": "j5-2-remark-week-phone390.png"
+  },
+  {
+   "id": "J5-3 phone390 week: put back to 13:00 and \"Sqn brief\"",
+   "tag": "PASS",
+   "note": "start \"13:00\", remark \"Sqn brief\""
+  },
+  {
+   "id": "J5-1 phone390 board: type 15:30 in its start box, Tab — saved, and the row moves to its new time place",
+   "tag": "PASS",
+   "note": "start now \"15:30\"; 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:STANDARDISATION MEETING@13:30 | 6:OCU PROGRESS REVIEW@14:45 | 7:IN MEETING@15:30 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00; placed by the rule; stored record [{\"type\":\"Meeting\",\"date\":\"Jul 13\",\"remarks\":\"Sqn brief\",\"more\":[{\"p\":\"stiff\",\"by\":\"stiff\",\"at\":1792142003218},{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1792142003218}],\"s\":930,\"e\":840,\"allday\":false}] | 2 s later: index 4 placed-by-rule false; after leaving and reopening the screen: index 7 placed-by-rule true (0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:STANDARDISATION MEETING@13:30 | 6:OCU PROGRESS REVIEW@14:45 | 7:IN MEETING@15:30 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00) | the row did NOT move at once but takes its time place when the screen is next drawn (the ordinary Ground Programme row behaves the same: J5-6)",
+   "pic": "j5-1-time-board-phone390.png"
+  },
+  {
+   "id": "J5-2 phone390 board: type \" x\" at the end of its remark, Tab — saved",
+   "tag": "PASS",
+   "note": "remark box reads \"Sqn brief x\"; stored remarks [\"Sqn brief x\"]",
+   "pic": "j5-2-remark-board-phone390.png"
+  },
+  {
+   "id": "J5-3 phone390 board: put back to 13:00 and \"Sqn brief\"",
+   "tag": "PASS",
+   "note": "start \"13:00\", remark \"Sqn brief\""
+  },
+  {
+   "id": "J5-4 phone390 week: Reject on its Personal Inputs line — the row leaves the Common Programme",
+   "tag": "PASS",
+   "note": "button before \"REJECT\", after \"ACCEPT\"; in the Common Programme: false; in the Ground Programme: false; Common: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:STANDARDISATION MEETING@13:30 | 6:OCU PROGRESS REVIEW@14:45 | 7:INTEL UPDATE@16:00 | 8:OPS SHARING + NAV SYS BRIEF@17:55 | 9:DINNER WITH CMD@18:30 | 10:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 11:Own A@12:00 | 12:Own B@15:00",
+   "pic": "j5-4-rejected-phone390.png"
+  },
+  {
+   "id": "J5-5 phone390 week: Accept — the row is back on the Common Programme",
+   "tag": "PASS",
+   "note": "Common: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00; ground has it: false",
+   "pic": "j5-5-accepted-phone390.png"
+  },
+  {
+   "id": "J8-5 phone the banner shown while a place waits for a puck",
+   "tag": "NOTE",
+   "note": "banner text with the word marked: [\"\",\"Planning Ground · MEETING\"]",
+   "pic": "j8-5-banner-phone-whole.png j8-5-banner-phone.png"
+  },
+  {
+   "id": "J7-1 phone390 publish Monday through its own controls: ORIG, nothing pending, the row still on the Common Programme",
+   "tag": "PASS",
+   "note": "head before \"Monday Jul 13 · Today Templates Live working copy ▾ DRAFT 4 X 4 25 changes i Publish day\" (pending \"25 changes\"); after chip \"ORIG | ORIG\", pending \"30 changes\", head \"Monday Jul 13 · Today Templates Live working copy ▾ ORIG 4 X 4 30 changes i Unpublish\"; Common: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00",
+   "pic": "j7-1-published-phone390.png"
+  },
+  {
+   "id": "J7-2 phone390 View-only Sched (issued face): the row on the Common Programme, no Reject line",
+   "tag": "PASS",
+   "note": "Common: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30 | 12:Own A@12:00 | 13:Own B@15:00; ground has it: false",
+   "pic": "j7-2-issued-face-phone390.png"
+  }
+ ],
+ "errs": []
+}
