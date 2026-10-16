@@ -4754,3 +4754,10 @@ fresh chat on `main` after the calendar job.
 **To ask him first:** where the date stands on the schedule's row (after the remark, or in the row's own time cell); whether a one-day input still says "till <that day>" (his 18 Aug 26 rule) once it is printed, not typed; what an export prints. **Seen by the leftovers' walk (14 Oct 26), for that question:** on the List's "+ Input", a kind chosen and ONE date picked writes "till 16 Jul" into the Remarks of a one-day, one-hour Appointment — a commitment, not an absence (`raptor-port/docs/img/handpass/2026-10-14-leftovers/A4-list-added-phone.png`); whether that is his 18 Aug rule at work or the form carrying a leave's words over to another kind is to be read before this job starts — not checked.
 **Place:** the agent's — after `[INPUTS-VET]` is merged, before the Tracker batch unless he says otherwise.
 
+
+*Moved here 2026-10-17 by backlog-archive.mjs ([CAPS-SWEEP]). Forward facts: `raptor-port/docs/doc-budget.md`.*
+
+### [CAPS-SWEEP] The other notes and records written in capitals for emphasis, turned into ordinary letters (his direction, D972, 17 Oct 26)
+
+**Status: OPEN — after [CONTEXT-START-SIZE]; a cheaper model does the work, a fresh reader checks it. SCOPE (D973, his "Yes agreeed"): only `OUTSTANDING.md`, `raptor-port/docs/ui-contracts.md` and `raptor-port/docs/engine-rules.md` — about 4,500 tokens in all; the archives (only searched) are left.** The same method as the rulings (D970): a script that keeps every word and changes only the letter case, learning each word's ordinary form from the repo's own prose, every changed line checked equal in lower case. Never the app's own text, button labels, code, his quoted words, bracketed backlog tags or the marks the tools read. Ranked by what each file saves and how often it is read (the survey of 17 Oct 26 is in the start-size job's `HANDOFF.md` block). Sonnet 5.5 runs it (D588); a fresh Opus reader samples it for a lost name or short form. **Place:** after [CONTEXT-START-SIZE], before [PUSH-LOCK-GUARD].
+

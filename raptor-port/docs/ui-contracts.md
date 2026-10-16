@@ -6,7 +6,7 @@ several are measured and suite-enforced, not preferences.
 
 ## Words on screen
 
-**THE APP'S SCREENS ARE NOT WORDY (owner D726, 10 Oct 26 — "I don't like too wordy interface").** A label, a hint or a
+**The app's screens are not wordy (owner D726, 10 Oct 26 — "I don't like too wordy interface").** A label, a hint or a
 line of small print earns its place or goes: fewer words on screen, the same information. It holds for every screen and
 is weighed on every design choice. A word a man needs in order not to make a mistake is shortened or moved behind the
 screen's own "How this works" fold - never simply dropped. Nothing already built is reworded on the strength of this
@@ -141,7 +141,7 @@ carries no boxed "Draft" (its DRAFT tag says it once — the view-week compare l
   is a draft again, and publishing reissues the Original.", with the OIL credits sentence when there is one. **Two notes of a
   publish that name the SAME day say it once** (`toast.ts` `ToastPart`): "Monday 13 Jul published and approved. The Common
   Programme has no usable times, so nobody on it earns OIL." — every other pair is joined by the dot as before. Pinned by `ui/toastbatch.test.ts`; walked `scripts/handpass/sf/sf-d1-toast.mjs`.
-- **The phone day-head is TWO FIXED ROWS on every day** (owner, 25 Aug 26 —
+- **The phone day-head is two fixed rows on every day** (owner, 25 Aug 26 —
   "Because of the word today, the layout is not the same … keep it
   similar"): row one is the title + date (+"· Today") with the turn-pattern
   badge at the right edge; row two is Templates/Drafts left and the
@@ -309,7 +309,7 @@ Four things make it work, and each is load-bearing:
 - **It is captured on leaving EITHER week page**, not only on a straight
   view↔edit hop, so a detour through Inputs still lands you back on your day.
   A page with no week never overwrites a pending carry.
-- **Closing the SCHEDULER BOARD writes the carry too** (owner, 10 Aug 26).
+- **Closing the Scheduler Board writes the carry too** (owner, 10 Aug 26).
   `closeBoardState` sets `CARRYDAY` from `SBDAY` before clearing it, so
   tabbing to Thursday on the board and closing it leaves the week on Thursday
   rather than wherever it was parked. It is the same one mechanism, not a
@@ -437,7 +437,7 @@ Owner, Aug 5. Three things, all view-only — none of them touches the model:
 ## The Inputs page speaks one day-first date voice (owner, 21 Aug 26)
 
 "Standardise the way the inputs are shown … change the modified date to show
-day month year." The page reads dates DAY-FIRST everywhere now, and every row
+day month year." The page reads dates day-first everywhere now, and every row
 card is the same compact shape.
 
 - **Two display helpers, in `ui/inputedit.tsx`.** `fmtDay(iso)` → a day-first
@@ -497,7 +497,7 @@ card is the same compact shape.
 
 ## The board's text boxes wrap and grow (owner, 20 Aug 26)
 
-Every FREE-TEXT field on the board is a `<textarea rows="1">`, minted by the
+Every free-text field on the board is a `<textarea rows="1">`, minted by the
 one builder `board-html.ts:boxHTML`. An `<input>` cannot wrap its value at any
 width — the overflow scrolls out of sight inside the box — so the element had
 to change, not just the CSS. `field-sizing:content` does the growing (the
@@ -542,12 +542,12 @@ dropped and the row collapsed onto `c6r`, so on a phone its remarks box aligns
 with the flying line exactly like the duty/sim/ground rows. There is no longer a
 `.cprog` shape — every board list is `c6r`. Pinned by e2e.
 
-**AN INPUT FILED FOR ALL / ALL AVAIL IS DRAWN ON THE COMMON PROGRAMME (owner D954, D955, D957 — 17 Oct 26,
+**An input filed for ALL / ALL AVAIL is drawn on the Common Programme (owner D954, D955, D957 — 17 Oct 26,
 `[ALLAVAIL-COMMON]`).** One rule, read off the row alone (`ui/html.ts onCommon`): a row that came from an input and holds
 ALL or ALL AVAIL among its people is drawn in the Common Programme, among the programme's own rows by start time
 (`commonOrder`: before the first of them that starts later — equal starts the programme's item first; a row of its own
 with no time keeps its place; the input's row with no start last); without them it is drawn on the Ground Programme, and
-back again. ONLY THE DRAWING MOVES: the row stays the Ground Programme record it always was — its keys (`g:` / `gr:`), its
+back again. Only the drawing moves: the row stays the Ground Programme record it always was — its keys (`g:` / `gr:`), its
 landing on read, Reject, OIL, the clashes, the published compare — so a published day reads nothing pending and every
 reader of `d.ground` is untouched. Drawn by the Ground Programme's own row builder in each place (the week's `grRowHTML`,
 in the `.ah-row` shape — the same five cells in the same order; the board's `sbGrRowHTML`, with no grip and no drag address
@@ -556,7 +556,7 @@ the Common Programme carries the same line (`GP_TAKEOFF_NOTE`) where such an inp
 week, never View-only Sched (D957). The ⓘ panel counts it as squadron-wide. Its box: typed words, the date grey after it,
 as on the Ground Programme (D949 Q3). Pinned: `ui/allavail-common.test.tsx`.
 
-That span is applied BY POSITION (`:nth-child(2)`), not by class: every c6r row
+That span is applied by position (`:nth-child(2)`), not by class: every c6r row
 reserves a leading grip track, so child 2 is always the name cell — but a
 duty row puts a `.ain` role box there while a personal-input row puts its type
 LABEL there. Selecting `.ain` misses the input rows and leaves their Start box
@@ -581,7 +581,7 @@ At either end, focus an eligible ordinary same-day control in that direction,
 otherwise blur; never loop, activate, change day or enter a hidden drawer. Subsequent
 non-text Tab is normal browser navigation. Enter/Escape and D529 remain unchanged.
 **The end of a day with no button below its last box (owner, D597, 6 Oct 26 — narrows D553):** forward Tab from the
-day's last open text box, where that day has no ordinary control after it, KEEPS THE CARET IN THAT BOX — never a blur
+day's last open text box, where that day has no ordinary control after it, keeps the caret in that box — never a blur
 onto nothing, never the next day's first button. Edit Schedule's week and the phone's Scheduler Board (no button follows
 its last box); the desktop board still goes on to the first ✕ of its warning list. Shift+Tab is unchanged. **Built 6 Oct 26**
 (`ui/schedule-tab.ts`): the box is saved by its blur, as on every Tab, and the caret is put back at the end of its text —
@@ -670,7 +670,7 @@ a real edit still commits, and an emptied cell still stores the blank.
 
 ## In-time lines: added and removed per wave (owner, 21 Aug 26)
 
-**RULED 5 Oct 26 (D593) — NOT YET BUILT.** On the Scheduler Board a wave's In-time / Rally lines are to be draggable into a new
+**RULED 5 Oct 26 (D593) — not yet built.** On the Scheduler Board a wave's In-time / Rally lines are to be draggable into a new
 order, and Auto sort is to put them in order too. The detail (D594, the same day): the board ONLY — Edit Schedule's week gets no
 drag for these lines and shows them in the order the board left them; Auto sort orders them by time, earliest first (a
 previous-evening clock first, a line with no clock last), from the wave's own Auto sort and from Sort all; a new order on a
@@ -679,7 +679,7 @@ The build: `OUTSTANDING.md` `[INTIME-LINES-DRAG]`.
 
 "Allow me to input lines at the top of each wave where I can reflect the in
 time likewise to be able to edit or delete it." Before this, the in-time
-block could only be TYPED IN: deleting the last line dropped the whole box
+block could only be typed in: deleting the last line dropped the whole box
 out of the DOM with no control to bring it back (undo was the only way
 home), and there was no way to add a line at all — Enter commits, so a new
 span could never be minted from inside the contenteditable.
@@ -815,7 +815,7 @@ keeps only the "ALn" badge the week already shows once it is issued. A mark for 
 faded, crossed-out name, or an empty marked box) was drawn in a mock-up and declined —
 it is not a defect, and is not to be re-filed as one.
 
-**A CHANGED PUCK GETS A TAG, NEVER A RING — SUPERSEDES the puck half of the paragraph above** (owner, D92 + D93,
+**A changed puck gets a tag, never a ring — SUPERSEDES the puck half of the paragraph above** (owner, D92 + D93,
 24 Sep 26; built 25 Sep 26). "Pucks … get outlines", "painted DOTTED" and "the view-only page keeps the neutral dashed
 hint" no longer hold for a PUCK: a published change is its SOLID ALn tag in the seat's corner and nothing on the puck's
 edge; a change waiting to go out is a HOLLOW, dotted ALn tag (`.seat[data-aln]::after`), no line round the puck — on
@@ -824,8 +824,8 @@ outline the re-test had put there is gone). A puck's edge carries only its warni
 the dashed late show, the dotted crew-rest cause. Times, areas, remarks and every other string keep the marks above,
 unchanged. The approved mock-up: `docs/mock/amend-seat-marks.html` (its `C_CSS`).
 
-**THE OG TAG — a day NOT yet published, for the person looking** (owner, D172, 25 Sep 26 — "OG makes sense, maintain the
-header"; built with `[DRAFT-PENDING]`, 28 Sep 26). A puck whose PLACE holds a change NEW TO the person looking (someone
+**The OG tag — a day NOT yet published, for the person looking** (owner, D172, 25 Sep 26 — "OG makes sense, maintain the
+header"; built with `[DRAFT-PENDING]`, 28 Sep 26). A puck whose PLACE holds a change new to the person looking (someone
 else made it, he has not marked it seen — D170) wears a hollow, dotted "OG" in the plain white outline, in the corner a
 waiting ALn tag uses (`.seat[data-og]::after`, its seat positioned — `.seat[data-og]{position:relative}`: without it the
 tag is drawn off its puck, which the first look found). Only pucks; a man taken off leaves no puck and no tag (the day's
@@ -863,7 +863,7 @@ history).
   a programme row, a ground row, a note, an input, a man's Quals, a man on the Leave War, the day itself ("The day" — what
   belongs to no single item: a publish, a sign-off, a cancelled line's reason, a line removed, an OIL on/off switch; D346 (1))
   — identified by
-  its ROW-ANCHORED key and its day, never its words (`changesmodel.ts itemOf`): two lines both called "VL BFM" are two
+  its row-anchored key and its day, never its words (`changesmodel.ts itemOf`): two lines both called "VL BFM" are two
   items, a row renamed between two changes is one, the same event on two days is two; titled by its live name ("Programme
   · SODB"). The item whose latest change is newest is on top. Changed once, it is ONE line (the item bold, the change
   under it); more, a header ("Programme · SODB · 3", its latest time) and a line per change, newest first, who · when on
@@ -876,7 +876,7 @@ history).
   (D119). Empty states: "Nothing new to you on Tuesday." · "No changes on Tuesday yet." ·
   "Nothing is waiting to go out." The foot: "✓ Mark all as seen" on New to you (greyed when nothing is new); a member's
   All changes reads "Read only — every change and who made it, for everyone to see."
-- **A tap on a line** → `interactions.ts jumpToChange`, on the page you are on (D107), and the window STAYS OPEN (D167);
+- **A tap on a line** → `interactions.ts jumpToChange`, on the page you are on (D107), and the window stays open (D167);
   on a phone the panel shrinks to the slim bar until tapped.
 - **History on a phone** (`[HIST-PHONE-HIDE]`, D339, D344, D345): the header carries **"Hide ▾"** beside ✕ (the phone's
   panel form, ≤620px — never on a desktop, whose window moves and resizes); where History draws its dots (Edit Schedule,
@@ -896,7 +896,7 @@ history).
   DP-08; the board's half, Fable P5). **On View-only Sched a published day shows its issued face**, which draws nothing to
   land on: a tap on a line about that day turns the day to its Working draft first and says so ("Showing the working
   draft — the change is on it", Fable P3); that page never tells anyone to open the board.
-- **A MOVE IS ONE LINE** (Fable F2): two neighbouring history rows by the same person, within a second and a half, one
+- **A move is one line** (Fable F2): two neighbouring history rows by the same person, within a second and a half, one
   taking a man off a place and the other putting the same man on another, read "moved from A to B" and count one. A
   swap is two lines (D109). A move put back is two lines — the history is the working record (D263 (3)).
 - **New to you** (D170): a line someone ELSE made, not yet marked seen by the person looking; his own lines never; a
@@ -993,7 +993,7 @@ the same helper. A request filed after publication and then deleted still reads 
 To go out list reads "OIL on this day · Logic values changed since it was published", and under it one sub-line per
 value that differs ("Logic · Nominal report before T/O  3h → 2h30" — the box's own name on the Logic page, less its
 bracketed note) and one per man whose OIL record would change ("Ranger · OIL as published, under today's values  full day · 07:00–13:15 →
-half day · 07:30–13:15"; "nothing" where he would earn none) — the man's line names what it compares, his PUBLISHED OIL
+half day · 07:30–13:15"; "nothing" where he would earn none) — the man's line names what it compares, his published OIL
 against the same day under today's values, because another change waiting beside it (his row switched off, an in-time
 typed) has its own line and the two must not be read as one. It is counted as ONE change on every surface (the week's and the
 board's chip, the ⓘ panel, the Amendments panel), never folded into an edited request's line, and has no place on the
@@ -1028,7 +1028,7 @@ not draw says so on screen, and differently from a change whose row has since go
 has since taken lands on that place, whoever stands there now, and says nothing more — the line tapped already names
 who moved (D733, 10 Oct 26).
 
-**A CHANGE WHOSE SEAT IS EMPTY NOW LANDS ON ITS ROW (`[HIST-JUMP-EMPTY-SEAT]` — the owner's find, 10 Oct 26: Edit
+**A change whose seat is empty now lands on its row (`[HIST-JUMP-EMPTY-SEAT]` — the owner's find, 10 Oct 26: Edit
 Schedule said "shown on the scheduler board", the board said "shown on the week").** A row that lists its people — a
 Common Programme row, a duty desk and its extra people, a sim's passengers, a ground row — draws a seat only while
 someone is in it, so the place a "moved in / moved out / taken off" line names is drawn on NEITHER page once he has
@@ -1051,7 +1051,7 @@ left. As built (`interactions.ts jumpToChange`, `histbubble.ts findSeatRow` / `i
   of a box the other page alone draws (`onlyOn`: the programme's second line is the week's; a standby line's B box is
   the board's). Anything else not drawn here says only "That detail is not shown on this page"; a row deleted since
   keeps "That detail is no longer on this day".
-- **THE ROLL-CALL OF ANY CHANGE TO "TAP A CHANGE TO GO TO IT"** (the checking guide's §11 — his find costs the method
+- **The roll-call of any change to "TAP A CHANGE TO GO TO IT"** (the checking guide's §11 — his find costs the method
   a line): every kind of seat a line can name — flying, duty desk and its extras, sim seat, passengers and extras,
   an AMT brief row, ground row and its extras, Common Programme — with **the place the change names EMPTY now**,
   refilled by another man, and its row deleted; on Edit Schedule, the Scheduler Board and View-only Sched; on a
@@ -1072,7 +1072,7 @@ warning. The mock-up: `docs/mock/orig-tag.html` (variant A1, `mk-orig-tag-refine
 
 **The "Signed ALn" line (D95, D102).** `html.ts signedLineHTML`: under the day head on View-only Sched and the edit
 week, and heading the board's sign strip — "SIGNED", the version's tag and its four signers (roles on a desktop,
-names only on a phone). The version is the one ON SCREEN, passed per surface: the issued face and a preview draw
+names only on a phone). The version is the one on screen, passed per surface: the issued face and a preview draw
 inside the snapshot swap; a live working copy names the published version it sits on; the board's preview strip
 names DPREV's. The names come from the version's frozen record (`publish.ts verSigners` — the Original keeps its four
 since 25 Sep 26), never the live sign-off boxes. Everyone who reads the page sees it (D95).
@@ -1130,7 +1130,7 @@ buttons, and Publish AL is hidden under a preview (A3). RETIRED by this redesign
 `verSelHTML`/`dverSelectHTML`/`verSelBoardHTML`, the `<select data-dver>` on edit
 surfaces, the green `.livebtn` "Live copy" pill, the `.ddraft` "Publishes …"
 chip, and the week-status banner text (`Shell.tsx` `banner()` keeps only the AL
-roll — *stale: the AL roll went too, 15 Sep 26 follow-up 2; the banner holds only the RULES MODIFIED
+roll — *stale: the AL roll went too, 15 Sep 26 follow-up 2; the banner holds only the rules modified
 stamp (marked 24 Sep 26, register AM22)*). Plans are lettered A/B/C (`drafts.ts` `nextName`, C1 — lowest unused
 letter); deleting down to ONE clears the day's plans back to "Live working copy"
 (B1). **The VIEW page keeps its own pickers unchanged** (`viewDraftSelHTML`
@@ -1276,8 +1276,8 @@ handlers cover them with no extra wiring.
 a packed `.ppl` cell has no empty area, so the drop resolved to a `.seat` instead
 of the cell's `.+` fill). The zone is `html.ts`'s one `ADDZ` body, reused by
 every board `.ppl[data-fill]` cell (`board-html.ts`) — the same drop target the
-week always had. On the DENSE board it is `.schedboard`-scoped to a PERMANENT,
-STEADY-HEIGHT trailing zone (`flex:1 1 var(--puck-w)`): it grows into the row's
+week always had. On the DENSE board it is `.schedboard`-scoped to a permanent,
+steady-height trailing zone (`flex:1 1 var(--puck-w)`): it grows into the row's
 leftover width and wraps to its own `var(--puck-h)` line only once the pucks pack
 the row, so the pucks never reach the cell's right edge (there is always a bare
 patch to drop onto) and a full row shows a fresh empty line below. Its height
@@ -1290,8 +1290,8 @@ faint while a drag/arm is live and bright on the hovered cell. The seat grid
 (`.fcprcp`, sims + flying pairs) has its zone `display:none` — a full-width strip
 would cost EVERY seat cell a permanent row, where the grid can carry its own door
 for nothing on the rows that need one.
-**D50 (owner, 22 Sep 26 — "Keep one spare seat showing"): A SIM ROW ALWAYS SHOWS
-ONE SPARE SEAT, EVEN WHEN IT IS FULL.** The old reason given here — "auto-adds
+**D50 (owner, 22 Sep 26 — "Keep one spare seat showing"): a sim row always shows
+one SPARE seat, even when it is full.** The old reason given here — "auto-adds
 rows and never packs edge-to-edge" — was true of an ODD number of people and
 false of an even one, and the walk found what that cost: a full sim row had no
 empty seat and no strip, so the drag a scheduler would naturally make landed on a
@@ -1310,7 +1310,7 @@ Duty rows render in MODEL order, not `dutySort` — an editor whose rows jump
 as a role is typed would be hostile. **Nothing re-orders a duty block on its
 own** (owner, 10 Aug 26): typing a role into a blank cell used to reposition
 the whole block, and that is gone. Auto sort / Sort all are the only movers,
-and they order by START TIME, not role rank. `dwadd` opens a picker (which
+and they order by start time, not role rank. `dwadd` opens a picker (which
 wave is this block for) rather than pushing a bare block, and the ROLE cell
 offers `DUTY_PICK` on click via `data-rolepick`. Ground rows render through
 `groundOrder` (see the blocks section below). `.pinp` rows themselves are
@@ -1322,7 +1322,7 @@ markup AND guarded at runtime (DPREV check) like the rest of the board.
 
 **A deleted sim pax leaves a droppable hole (owner, 8 Aug 26).** The engine
 always held the index (`slots.ts`'s pax branch never splices), but `sbSeat`
-rendered an empty id as nothing, so deleting one WSO from the AMT BOX
+rendered an empty id as nothing, so deleting one WSO from the AMT box
 visually collapsed the block and left nowhere to drop the replacement. The
 board now renders a held pax hole as `.sb-slot.empty.pax[data-slot]` —
 puck-sized so the pair rows stay level, armable and droppable through the
@@ -1448,12 +1448,12 @@ edit week now:
   and 166px of a 780px screen: the title, the seven Mon–Sun chips, then six
   buttons that `flex-wrap` folded onto two lines. It measures 70px now, and
   each move below is one of the owner's own asks:
-  - **The chips became DOTS, and the strip is a SCRUB BAR** (the dots
+  - **The chips became DOTS, and the strip is a scrub bar** (the dots
     themselves 11 Aug 26; the drag the same day, owner: "the dots should
     allow me to drag to select the pages, like a drag bar"). Same seven
     `.sbday` elements and the same delegated `[data-sbtab]` handler, emptied
     with `font-size:0` — no node added or removed, so the board's DOM ceiling
-    is untouched. A TAP still jumps straight to that day; a PRESS AND SLIDE
+    is untouched. A tap still jumps straight to that day; a press and slide
     runs through the week live under the finger (`wireDayDots`, `board.ts`).
     Three things that machine gets right and are easy to get wrong:
     **every day owns the same 16px footprint** and only the mark inside it
@@ -1478,7 +1478,7 @@ edit week now:
     `dayTabsHTML`, `wireDayDots` and every jsdom test survive untouched while
     the phone paints none of it. The desktop chips stay, and the scrub still
     works there. What the row carries instead is under §The day is stepped by
-    TWO ARROWS below.
+    two arrows below.
   - **`+ Line` left the bar for good.** It was the only control here that
     duplicated one inside the section it acts on — every wave header
     carries its own — and the top-bar copy had to guess which wave it
@@ -1497,7 +1497,7 @@ edit week now:
     stays as `window.addWave` for the probe bridge.
   - **BUILT 28 Sep 26 — D349 (3)** (`[UNDO-TOPBAR]`): the board's bar carries the top bar's group — Undo · Redo ·
     History · Sync · the bell — then ONE exit, ✓ Done (`#sbDone`; ✕ Close is gone — it did what Done does; Escape and a
-    tap on the scrim still close the board). The pair, the Sync chip and the bell are the TOP BAR'S OWN components
+    tap on the scrim still close the board). The pair, the Sync chip and the bell are the top bar's own components
     (`ui/topbits.tsx` — one Sync state, one bell tap, which closes the board as it navigates through `setPage`), under
     their own ids (`#sbUndo`/`#sbRedo`, `#sbSync`, `#sbBell`). On a desktop Sort all sits BEFORE Undo, inside the
     desktop-only `.sb-dayctl` wrapper with Templates and OIL Earn; on a phone Sort all and the Phone / Desktop layout
@@ -1518,7 +1518,7 @@ edit week now:
     and a min-width beats a width whichever rule wins the cascade.
   - **`today` is a dot, not a word** — it cost 46px of a 125px title and
     ellipsised the DATE, the one thing the owner asked the bar to keep.
-  - **The DAY NAME is cut to three letters, by splitting the word rather than
+  - **The day name is cut to three letters, by splitting the word rather than
     shortening it** (owner, 12 Aug 26 — "Seems like the Wednesday blocked off
     the date. Maybe use short form days"). The dot above bought the date back
     on Monday and lost it again on the long names: `.sb-title` is
@@ -1541,7 +1541,7 @@ edit week now:
 
 ### Every remarks box rides the pucks' row
 
-- **EVERY REMARKS BOX RIDES THE PUCKS' ROW, AT ALL TIMES** (owner, 16 Aug 26 —
+- **Every remarks box rides the pucks' row, at all times** (owner, 16 Aug 26 —
   "beside the pucks on the right, same row, aligned with the B"). This SUPERSEDES
   the 12 Aug "empty box is not drawn, the row's own + asks for it back" contract:
   the `.empty` hide, its `data-rmkadd` "+" reveal, and the `RMKOPEN` view state
@@ -1583,7 +1583,7 @@ edit week now:
 
 ### Stepping the day by two arrows, and no swipe
 
-- **The day is stepped by TWO ARROWS on the bar, and there is no swipe**
+- **The day is stepped by two arrows on the bar, and there is no swipe**
   (owner, 12 Aug 26 — "remove the swipe for the mobile scheduler board too. Just
   put arrows at the edges of the bar at the top to navigate left and right
   between days"). `#sbPrevDay` / `#sbNextDay` call `boardDayStep(±1)`, which is
@@ -1592,7 +1592,7 @@ edit week now:
   that has nowhere to go — the same shape as this bar's undo/redo pair, and
   something the swipe could never do: a gesture has no way to show it is
   refusing, so it needed a toast to explain itself.
-  **They flank the DAY STRIP, not the bar's first line, and that is the one
+  **They flank the day strip, not the bar's first line, and that is the one
   liberty taken with the ask.** Line one is the title plus eight 30px buttons
   with 6px of slack at 390px, so a pair of arrows there could only come out of
   the day name — which is down to ~107px and is the thing the bar exists to keep
@@ -1613,7 +1613,7 @@ edit week now:
   same `HlChips` the week pages render, INSIDE `.sb-top` deliberately so the
   bar's ResizeObserver republishes `--sb-topH` when it opens. Desktop: always
   open, no gate — nothing pins the desktop bar's height to a session flag; since
-  26 Aug 26 it no longer takes a FULL-WIDTH line of its own but rides the action
+  26 Aug 26 it no longer takes a full-width line of its own but rides the action
   row at the LEFT (`.sb-hl{order:5}`, the actions `order:6` keeping
   `margin-left:auto` at the right — owner, "share the same row as the undo
   buttons, on the left … more usable space"). Phone: `display:none` until `#sbHl`
@@ -1646,7 +1646,7 @@ edit week now:
   icon beside its label. Scoped to `.sb-actions .abtn:not(.sb-widebtn)` + the
   calendar, NOT `.sb-top .abtn`, so the desktop `display:none` on the ‹ › day
   arrows and the wide button survives. (2) The CAT/Type/Quals strip shares the
-  action row (see the strip note above). (3) The SIGN-OFF scrolls AWAY with the
+  action row (see the strip note above). (3) The sign-off scrolls AWAY with the
   board: `.schedboard:not(.sb-wide) .sb-boardwrap` is the scroller (`overflow-y:
   auto`) and `#sbBoard` is `flex:none;overflow:visible`, so `#sbSign` heads the
   column and scrolls off the top the way the phone's already does; wide mode
@@ -1684,7 +1684,7 @@ edit week now:
   the day it was typed on instead of nowhere; the stores popup and a pinned
   History bubble are taken down rather than left describing the old day
   (the Sort-all confirm deliberately survives — it names its day).
-- **THE SWIPE IS GONE — do not rebuild it** (12 Aug 26). It was an owner ask on
+- **The swipe is gone — do not rebuild it** (12 Aug 26). It was an owner ask on
   11 Aug and it went through three shapes in a day and a half: a jump when a
   distance threshold was crossed; then a carousel where the live board tracked
   the finger behind a preview pane, settling on distance or velocity; then that
@@ -1702,7 +1702,7 @@ edit week now:
   written down where it applies: the hit-testing trap is in `../HANDOFF.md`
   §The gates, and the day-only notification lane it shares with the arrows is
   the next bullet.
-- **A DAY-ONLY NAVIGATION DOES NO SCHEDULE WORK** (`boardTab`, unchanged since
+- **A day-only navigation does no schedule work** (`boardTab`, unchanged since
   the carousel and now the arrows' one call). It changes view state and uses a
   board-only notification lane; it does not run the full-week rules engine and it
   does not wake EditWeek or EditRoster behind the board, whose existing DOM stays
@@ -1791,7 +1791,7 @@ edit week now:
   scroll height, breaking the plant-from-the-drawer path outright; and
   reading the bar once in a render effect landed 5px short, because the
   effect runs before the bar's final reflow. Both were caught by the
-  geometry gate, not by eye. A SUCCESSFUL fill parks the drawer so the puck is seen landing:
+  geometry gate, not by eye. A successful fill parks the drawer so the puck is seen landing:
   the tap path in `placeArmed`'s success branch, the drag path by clearing
   `drag.ts`'s `ROS_REOPEN` latch inside `applyDrop`'s `done()` — refusals
   and aborted drags leave the drawer out. Spec:
@@ -1902,7 +1902,7 @@ routes `data-air`):
   placeholder on every c6r / input row, empty or not. **The flying line's
   own always-visible remarks box (`.nts` in `board.ts`) carries the same faded
   `Remarks` placeholder** (owner,
-  16 Aug 26) — so an empty one reads the same way. A STANDALONE line shows a
+  16 Aug 26) — so an empty one reads the same way. A standalone line shows a
   solid MAIN/SPARE badge above its remarks box instead — `html.ts:saRoleHTML`,
   a flip BUTTON in edit mode, the same chip read-only elsewhere (owner, 24 Aug
   26; supersedes the 10 Aug ghost-text placeholder, which vanished the moment
@@ -1910,7 +1910,7 @@ routes `data-air`):
   `CLAUDE.md` carries the full story). Its remarks box now carries the same
   plain faded `Remarks` as every other line.
   **The edit week's flying line matches** (`html.ts`'s `ted` call,
-  same day): its remarks box shows the faded `Remarks` too — but EDIT MODE ONLY,
+  same day): its remarks box shows the faded `Remarks` too — but edit mode only,
   since a read-only view page has nothing to type into it, and it is registered
   as a deliberate divergence in `html.test.ts` (`noRmkPh`) so the reference
   byte-parity guard still holds.
@@ -2069,7 +2069,7 @@ are titled — both week surfaces, both board panels, and the Inputs page h1.)
 `groundOrder` (`engine/order.ts`, moved out of `ui/html.ts` 8 Aug 26 so
 `engine/reorder.ts` can freeze a rendered order without the engine importing
 from `ui/`), used by the week AND the board panel. The sort
-is RENDER-TIME ONLY: `ri` is the slot key (`g:di.ri` / `gr:di.ri`) and pending
+is render-time only: `ri` is the slot key (`g:di.ri` / `gr:di.ri`) and pending
 marks, AL colouring and published amendments all address through it, so the
 model array is never reordered — each rendered row keeps its model index for
 every key it emits, which is why a delete or drag on a visually re-ordered row
@@ -2172,7 +2172,7 @@ input of one person too. The pictures still stand; what changed underneath, bull
   `g:di.ri.xN`); `inputRowSeveral(row)` says which rows the week (`ui/html.ts`), the board (`ui/board-html.ts`) and
   the peek (`ui/peek.ts`) draw through it. `groundGroups` / `drawnPeople` are removed, and there is no lead and no
   member row that "draws nothing".
-- **In OIL Earn the row has ONE OIL address — the input's own, `i:<iid>`** — and every puck is its own switch under
+- **In OIL Earn the row has one OIL address — the input's own, `i:<iid>`** — and every puck is its own switch under
   it (`sbGroupPeople`; D762), where each puck was switched under its own request.
 - **Personal Inputs and the Unavailable list draw from faces** (`engine/inputs.ts facesOf` / `facesDrawn` — one
   frozen per-person view of the record for DRAWING; a placeholder has a face). `state/inputgroup.ts entryLines` is
@@ -2293,7 +2293,7 @@ row's pucks and its CX / ⓘ / red box / ✕ buttons start at that edge, so the 
 **"Delete" in an input's own window deletes at once and asks nothing (owner D792, 13 Oct 26 — "No need to show are you
 sure").** As built, on the Inputs pages and from the schedule alike; Undo brings the input back. No confirm step is added.
 
-**SINCE 11 Oct 26 THE GROUND PROGRAMME'S OWN BOXES DO IT TOO (owner D739, D740).** The name, the two times and the remark
+**SINCE 11 Oct 26 the Ground Programme's own boxes do it too (owner D739, D740).** The name, the two times and the remark
 of a request's row on the Ground Programme — the week's `data-txt="gr:di.ri.{prog|str|end|rmks}"`, the board's
 `data-bfld` — are the REQUEST's boxes: typing there changes the request (and so its Personal Inputs line and the Inputs
 calendar), through `ui/reqrow.ts reqRowText`, asked before the text funnel. After the door has answered, the box is
@@ -2348,7 +2348,7 @@ ONCE at its first read, and whoever or whatever a scheduler had put on the ROW a
 only, D56. The un-accept / re-accept this paragraph describes went on 1 Oct 26 with `[DB-READINESS]` phase 6 (c); a
 request filed under Unavailable (`acc: 'u'`) keeps that filing through an edit, `ui/inputedit.tsx commitInputEdit`.)*
 
-**The times and the remarks are ORDINARY CELLS** (owner, 10 Aug 26 — "edit the
+**The times and the remarks are ordinary cells** (owner, 10 Aug 26 — "edit the
 input directly like changing the start and end time... no need to open a new
 window... in the same modality as ground programme"). On the week they are
 `contenteditable` cells beside the ground rows' own; on a live board the two
@@ -2398,7 +2398,7 @@ leave cutting his share of a leave — is a NEW record with a NEW `iid` (`engine
 after the original, which keeps its own. The Inputs page's `add()` went with the List's own form on 10 Oct 26 (D729):
 a new input is made, given its id and unshifted by `ui/inputedit.tsx commitNewInput`.)*
 
-**What is left behind the TYPE LABEL** — still a `<button>` via `inpEditLabel`
+**What is left behind the type label** — still a `<button>` via `inpEditLabel`
 — is the type and delete: the two that cannot be a text cell in these rows.
 That it is the label and not a button beside it is a layout decision as much as
 a UX one: all three shapes that put a separate button in the row cost the row
@@ -2433,7 +2433,7 @@ where there is nothing left to hold the typing for.
 *(As of the one-rule build, 12 Oct 26 — D755, D756, D762, D763, D770, D771: the object it holds is the input's ONE
 record, and who is in it is read from that record (`engine/inputs.ts idsOf`), never worked out from sibling records.
 Opened on an input of several — from its row, or its line under Personal Inputs — it is the INPUT's dialog (D748): the
-people picker, one Save through `commitInput`, "Delete" asked for everyone, and ONE OIL line for the input's one
+people picker, one Save through `commitInput`, "Delete" asked for everyone, and one OIL line for the input's one
 answer. Who may change it is `state/perms.ts mayEditInput(record)`; for anyone else the form is `inert` and the foot
 says who can. A person who is in it but may not change it for everyone — he did not file it, or he is the only named
 person beside ALL AVAIL / ALL — has one thing of his own there, "Take me out"; he adds nobody and gives no OIL answer
@@ -2566,7 +2566,7 @@ returns `''` when `ed` is false, so a populated note stays off the issued
 programme; writing needs `canEditSched()`. The Duties and Ground sections render
 on `|| ed` so an empty section still offers its box rather than stranding text.
 
-A scheduler can now MAKE ONE PUBLIC (owner, Aug 26 — "Scheduler notes can toggle
+A scheduler can now make one public (owner, Aug 26 — "Scheduler notes can toggle
 to show in view only schedule … it will show as Public notes in edit schedule
 and scheduler board but in view only schedule it shows Notes"). A per-note flag,
 `view.NOTEPUB`, keyed by the note's own funnel key (`pn:0` …) so ONE flag governs
@@ -2596,8 +2596,8 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   native drag whose dragstart handler reflows the page before the drag
   image is captured, which killed every desktop mouse drag. The touch
   machine keeps its synchronous `dndOn` — no native capture there.
-- NOTHING ON THE PAGE IS `draggable`, AND THE MOUSE NEVER STARTS A NATIVE
-  DRAG — pucks carry `data-drag="1"` (edit mode only, exactly where
+- Nothing on the page is `draggable`, and the mouse never starts a native
+  drag — pucks carry `data-drag="1"` (edit mode only, exactly where
   `draggable="true"` used to be: `html.ts` slotCell/lSeat/the available
   puck, `board-html.ts` sbSeat/sbSlot/the programme seat, `palette-html.ts`)
   and every drag, mouse or finger, rides the pointer machine in `drag.ts`
@@ -2622,7 +2622,7 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   none`, z-index 520, the `.tdghost` recipe — pinned where the press landed
   inside the puck (`TD.ox/oy`, clamped to the puck) rather than centred, and
   the ghost itself carries the grabbing cursor (no OS drag cursor exists —
-  there is no OS drag): `.dragimg` is HIT-TESTABLE with `cursor:grabbing`,
+  there is no OS drag): `.dragimg` is hit-testable with `cursor:grabbing`,
   and `tdOver`'s hit-test takes the first element under the pointer that is
   not the ghost (`elementsFromPoint` — kept on purpose, 6 Sep 26: the ~25ms a
   mouse move costs in hit-testing on the week is the browser's own hover
@@ -2638,7 +2638,7 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   every pointer move; the transform paints nothing. What it does NOT remove,
   measured with every variable held (2D/3D transform, translate3d, contain,
   backface, no decorations, not hit-testable — all equal): the page still
-  RE-LAYERISES on every move, ~50ms at 4×, because the edit page carries ~230
+  re-layerises on every move, ~50ms at 4×, because the edit page carries ~230
   compositor layers (the filtered / faded roster pucks and everything that
   overlaps them) and a moving layer re-opens those overlap decisions. Fewer
   layers is the only lever left there; the ghost itself is done. Never return
@@ -2694,7 +2694,7 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   "a mouse drag of a puck runs on the pointer machine"): no element carries
   `draggable`, zero native drag events fire, the ghost sits at
   cursor-minus-grab-offset, the drop lands, no ghost survives it.
-- TWO BELTS reinforce it, both inert on a normal browser (nothing is
+- Two belts reinforce it, both inert on a normal browser (nothing is
   draggable so neither ever fires there): (1) `onDragStart`'s FIRST line is
   `if (e.isTrusted) { e.preventDefault(); return }` — a document-level
   backstop refusing EVERY real, browser-started drag whatever began it (a
@@ -2709,7 +2709,7 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   event, so it holds where `setDragImage` and a `dragstart` `preventDefault`
   are ignored. Keep `html{user-select:none}` (it closes the text-selection
   drag) — do not narrow it.
-- OPTIONAL DRAG READOUT (`ui/dragdbg.ts`) for diagnosing a drag on a
+- Optional drag readout (`ui/dragdbg.ts`) for diagnosing a drag on a
   devtools-less secured browser: OFF by default, attaches NOTHING unless
   `?dragdbg=1`/`#dragdbg` is in the URL or the top-left corner is tapped five
   times (a real, `isTrusted` gesture — synthetic taps never arm it, so the
@@ -2727,7 +2727,7 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
 
 ### What a drop says, and where a dropped puck lands
 
-- **A DROP SAYS WHAT IT JUST BROKE, IN THE VALIDATOR'S OWN WORDS — the drop
+- **A drop says what it just broke, in the validator's own words — the drop
   delta** (owner, 5 Sep 26: "it also needs to show flagging realtime";
   `state/dropflag.ts`). `applyDrop` keeps `WARN` as it stood before the write,
   `done()` runs the ONE `validate()` inside `afterSchedMutate`, and the
@@ -2752,7 +2752,7 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   dropped on a front seat is told so in red, the puck is marked),
   `ui/dropvalidate.test.tsx` (exactly one `validate()` per drop and per swap),
   `state/store.test.ts` (the plant's voice).
-- **THE HOVER REASON — the cell under a dragged puck says why, BEFORE the drop**
+- **The hover reason — the cell under a dragged puck says why, BEFORE the drop**
   (owner, 5 Sep 26, step 3 of the same plan; `drag.ts hoverWhy`). When the drag
   target CHANGES (mouse `dragover` and the pointer machine alike — never per
   move, the ledger's drag budget), the target is asked `slotBar(id, key)` and a
@@ -2789,8 +2789,8 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   column several times over (its sort comparator, the free count, the column
   reason, the row). Pins: `engine/runtrace.test.ts` (§runIfPlaced,
   §restIfPlaced, §slotBar, §review findings).
-- A PALETTE drop anywhere on a list row resolves to that row.
-- A SEAT puck only lands on a seat (swap) or a crew cell (move). Dropped
+- A palette drop anywhere on a list row resolves to that row.
+- A seat puck only lands on a seat (swap) or a crew cell (move). Dropped
   anywhere else — row title/timings/remarks, jet-row dead space, blank
   space, roster, chrome — it comes off the seat. (Post-port enhancement;
   the reference only unassigned on the roster panel.)
@@ -2799,13 +2799,13 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
 
 ### Arm-and-plant
 
-- Arm-and-plant (rewritten 13 Aug 26, owner): an empty OR PLACEHOLDER-FILLED
+- Arm-and-plant (rewritten 13 Aug 26, owner): an empty or placeholder-filled
   slot arms — a placeholder means "someone still needed here", so its puck
   goes straight to finding them, while a real person's puck still selects.
   A palette tap ALWAYS plants: a darkened name plants too, its reason toasted
   after, mirroring drag ("everything plants, warning after") — the one
   refusal left is the seat's own occupant ("Already in that seat").
-  **AND, SINCE D271 (owner, 27 Sep 26 — "Q1 refused"), A THIRD HARD REFUSAL: ONE MAN, ONCE PER ROW.** A man
+  **AND, SINCE D271 (owner, 27 Sep 26 — "Q1 refused"), a third hard refusal: one man, once per row.** A man
   put on a row he already stands on — a crowd, a desk's or a ground row's extras, a sim's seats — by a drop
   (from the crew list, onto a place or the "+ add" cell; a puck moved in from another row; either end of a
   swap) or an armed palette tap writes nothing: the row keeps its one copy, nothing reads pending, and the
@@ -2817,8 +2817,8 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   stays a warning — a flying line is not one of these rows (D276, "Leave it no change"); a placeholder may stand on a
   row twice (D278, "Leave"); a struck name looks the same whether a tap will be refused or only warned — the printed
   reason says which (D279, "Leave").
-  **AND, SINCE D33/D47 (22 Sep 26), A SECOND AND HARDER ONE: ALL / ALL AVAIL
-  ARE REFUSED ON FLYING-LINE COCKPIT SEATS.** `sentinelSeatOK(key,id)`
+  **AND, SINCE D33/D47 (22 Sep 26), a second and harder one: ALL / ALL AVAIL
+  are refused on flying-line cockpit seats.** `sentinelSeatOK(key,id)`
   (`engine/slots.ts`) is the one body; `SENTINEL_JET_BAR` is the one sentence,
   carried by the drag ghost, the drop message and the palette's own placeholder
   row, which draws both pucks struck out with the reason PRINTED while a
@@ -2890,7 +2890,7 @@ beside every badge.
   itself a flex CONTAINER whose basis governs its own puck's height. Each
   row prints its OWN reason (`hideWhy` left off, unlike the seat columns'
   shared `colWhy`).
-- **Record-less SANS are struck BY DEFAULT (owner bug report, 14 Aug 26).**
+- **Record-less SANS are struck by default (owner bug report, 14 Aug 26).**
   With nothing armed, `rosterPuck` itself asks `sansAvailOn`: a SANS with no
   record for the day gets the plain `.rpuck.no` strike an unarmed off person
   gets — reason in the title only, no printed `.rwhy` (that stays an
@@ -2991,7 +2991,7 @@ than its ~13px handle; if the address lived on the grip a drop could only land w
 pointer was back over the handle, which is not a drag. The grip carries
 `touch-action:none`, so a thumb-drag reorders instead of scrolling the page.
 
-**The phone grid gains a 20px LEADING MARKER TRACK, and the header shifts with it.**
+**The phone grid gains a 20px leading marker track, and the header shifts with it.**
 `.sb-lcols/.sb-line` (flying line), `.sb-acols/.sb-arow.c6r` (duty / sim / ground /
 Common Programme) and `.sb-nrow` (notes) each prepend a marker column on the phone; the
 header's leading placeholder (`.sb-lcols/.sb-acols > :nth-child(1)`) is un-hidden so the
@@ -3011,7 +3011,7 @@ are name `2/4`, rmkin `3/-1`, and the flying line's rcell `4/-1`. A future colum
 to either template must shift these together or a phone / `.sb-wide` layout silently
 picks up the wrong cell.
 
-**The two-puck rows shift FLUSH-LEFT — the puck container reclaims the marker lane on its
+**The two-puck rows shift flush-left — the puck container reclaims the marker lane on its
 own line** (owner, 31 Aug 26 follow-up — "the pucks can shift it back to the left so that
 it holds 2 pucks not blocked"; "all the pucks were further towards the left … make sure
 the rest are placed back to the same area"). A flying line's FCP+RCP seatpair and every
@@ -3146,7 +3146,7 @@ Four places had drifted apart and now have to agree — change one, change all:
 
 - **the ring** — `.puck.warn` / `.warn.hard` / `.warn.note`, driven by
   `sevOf`. This was always right.
-- **the red BOX** — `ui/html.ts`'s `boxred` list, driven by the PRINTED FLAG.
+- **the red BOX** — `ui/html.ts`'s `boxred` list, driven by the printed flag.
   It carried `NB`/`SB` (advisories), so an eaten brief wore a red box over an
   amber ring: the puck said warning, the checks list beside it said advisory.
   It omitted `RUN`, the one hard rule drawing no box. Now `C`, `CR`, `Q`, `RUN`.
@@ -3307,7 +3307,7 @@ no-select, or drop the `.wv-sech` header.
 31 Aug 26 — "split them apart").** Each is its own `.sb-sec[data-secmove]` card with
 its own dotted handle, independently draggable — the board flagged Common Programme as
 "missing" its handle because the old combined 'prog' unit carried a single handle that
-sat up on the Overall Notes panel. On the EDIT WEEK the day notes still print as lines
+sat up on the Overall Notes panel. On the edit week the day notes still print as lines
 inside the Common Programme block (they never had a card of their own there), so the
 week keeps them in the 'prog' slice and its 'notes' slice is empty and skipped — which
 is what keeps the view week and reference byte-identical (the empty slice adds nothing).
@@ -3318,7 +3318,7 @@ and Unavailable are ordinary section keys now
 (`SECTIONS=['notes','prog','waves','duty','sims','ground','inputs','avail','sans','unav']`),
 each wrapped in its own `.sb-sec[data-secmove]` card with the same dotted grip — so on
 the Scheduler Board any card can be dragged to any position (Available crew up next to
-the flying waves, say), not only among the crew group. **They drag on the EDIT SCHEDULER
+the flying waves, say), not only among the crew group. **They drag on the edit scheduler
 too since 31 Aug 26** (owner — "drag markers on edit scheduler … follow the same
 formatting as the rest of the sections"): in EDIT mode `ui/html.ts dayHTML` emits all
 ten sections — the crew four included — through the SAME `secOrder` loop as the board,
@@ -3574,7 +3574,7 @@ so it reads as one app-wide behaviour rather than a pile of per-button
 rules, and `transform:scale()` on purpose: it never reflows, so no measured
 layout contract in this file moves when a button is pressed.
 
-**ONE MARK, ONE LOOK — AND ON THE EDGE OF THE THING ADDED (owner D860, D861 — 15 Oct 26; the design guide to carry it, and the other glowing places drawn for his look — D866).** Every just-added mark is the
+**One mark, one look — and on the edge of the thing added (owner D860, D861 — 15 Oct 26; the design guide to carry it, and the other glowing places drawn for his look — D866).** Every just-added mark is the
 board's `.sb-fresh` ring: inset, 2px, `#1E86FF`, NO outer glow — the opened day's card, the month's bar and the
 Inputs List's row lost the glow they wore (D860; pinned by `src/ui/markring-css.test.ts`). A note added on the
 Scheduler Board is ringed on its own box (`highlights.ts paintFreshAdds` boxes a `.sb-nrow`'s `[data-bfld]` field, not
@@ -3676,7 +3676,7 @@ saying which row had done it. All four emit `on` by the same test now —
 the next day's warning. The panel closes itself on the click (its own
 contract), so its mark shows on reopen.
 
-**Each lit man wears the colour of HIS OWN item (his find on his phone, 11 Oct 26; D751 — a long work day is grey wherever the app shows it, lit or at rest, never amber).** A day's list, opened by its
+**Each lit man wears the colour of his own item (his find on his phone, 11 Oct 26; D751 — a long work day is grey wherever the app shows it, lit or at rest, never amber).** A day's list, opened by its
 bar, lights every man its shown lines name — each in the colour of the WORST shown line that names him: red (bare
 `wfoc`), amber (`advf`, an advisory) or grey (`notef`, a note — a long work day), the colour that line carries in the
 list and his puck's own ring carries at rest. A tapped line lights its crew in that line's colour, by the same step
@@ -3732,7 +3732,7 @@ slot-key").
 
 **A warning about a BOX, not a person, anchors on `data-warnkey` (22 Sep 26).**
 `data-slot`/`data-fill` address people cells and seats, so a warning whose key
-names a TYPED BOX resolved nothing at all: D49's nought-minute sortie names the
+names a typed box resolved nothing at all: D49's nought-minute sortie names the
 landing time, so the tap fell through to the puck heuristic, found no `who` to
 look for, and moved nothing — which reads exactly like a click that did not
 register. A renderer that draws a box a warning names puts the warning's own key
@@ -4018,7 +4018,7 @@ a focus that was never set:
   day's issues, they are its consequences, and counting tomorrow's breach
   here would have two days reporting the same warning.
 
-**The row focuses TOMORROW's warning but the view STAYS HERE (owner, from the
+**The row focuses TOMORROW's warning but the view stays here (owner, from the
 deployed site, 7 Aug 26).** The chip stopped navigating on 7 Aug (§Jumping),
 so the row is the only affordance left, and it now does two things at once.
 It still carries the NEXT day's `(di, ix)` — `traceIx` resolves it — so the
@@ -4183,7 +4183,7 @@ draft is an alternative to the whole day, so neither belongs squeezed into
 an already-crowded control bar.
 
 **On the board**, a labelled `.sb-panel` — "Templates & drafts", two
-buttons — sits at the VERY TOP of the board's own content, ahead of every
+buttons — sits at the very top of the board's own content, ahead of every
 section, not on the top bar's first line (`.claude/rules/decisions/scheduler.md` §Settled → Week navigation, once `CLAUDE.md` §Stable decisions:
 that line is frozen — nothing joins it without something else leaving). A
 control that can replace the WHOLE day belongs at the top of the day's own
@@ -4381,7 +4381,7 @@ branch ever calls `markEdit`:
   was deleted and retyped (fixed 8 Aug 26, `engine/stores.ts`'s `addStore`
   comment has the full account, `stores.test.ts`'s
   "re-adding a deleted standard store" block pins it).
-- **A single ✕ removes — no arm-step.** EDIT QUALS arms its six engine-read
+- **A single ✕ removes — no arm-step.** Edit quals arms its six engine-read
   flags before letting them go, because removing one changes what a rule
   sees. Nothing in `validate.ts` reads a store (the module comment in
   `engine/stores.ts` says so directly), so there is no rule to protect and
@@ -4452,7 +4452,7 @@ duplicate or empty is refused with a toast and the field snaps back), `▲▼` t
 reorder, `✕` to remove, an add box, and a two-tap "Reset to standard".
 
 Three things stay decided:
-- **A reason is FREE TEXT, not a key.** `cxCommit` copies the chosen (or typed)
+- **A reason is free text, not a key.** `cxCommit` copies the chosen (or typed)
   string straight onto the row as `cxr`. So editing or deleting a template never
   disturbs a line already cancelled with it, and the list is addressed by
   POSITION, not a stable id (unlike stores, whose key a jet carries). Managing the
@@ -4537,8 +4537,8 @@ Three things stay decided:
   under a question's sheet (460). "Not swapped — OIL not answered" / "Not added — …" / "Not moved — …", then **Answer
   OIL** (the door is asked afresh: the question returns, or "That row has changed — not swapped") and **OK** (closes
   it). It has NO timer; a week, a page or a sign-in that changes under it takes it away. On a phone the words take two
-  lines and the two buttons sit side by side under them. ***[SINCE 14 OCT 26 THE BAR IS A BAND UNDER THE TOP BAR, ONE LINE
-  ALWAYS — owner D831, D840, D841; `[LOOK-13OCT-SMALL-FIXES]`: `.oilband` (`ui/OilWaitSheet.tsx`, `17-save-status.css`), the
+  lines and the two buttons sit side by side under them. ***[SINCE 14 Oct 26 the bar is a band under the top bar, one line
+  always — owner D831, D840, D841; `[LOOK-13OCT-SMALL-FIXES]`: `.oilband` (`ui/OilWaitSheet.tsx`, `17-save-status.css`), the
   failed-save warning's own band — the last line of the top bar (fixed, its top measured; the bar one line taller,
   `.topbar.oil-waiting`) or, in the flow, of a full-screen surface's own bar (the Scheduler Board, the Medical view opened
   full — `OilBand`, and then the top bar's copy is not drawn). Where a save has failed too, "Not saved" is the line above it.
@@ -4580,16 +4580,16 @@ Three things stay decided:
   view on it is not listed, not unread and does not light his bell — the list it opens would refuse him — and it is
   back, read or unread as he left it, when he switches back (`state/notices.ts noticeLive`, the one body the list, the
   unread count, "Mark all read" and the bell's tap all ask). "Mark all read" reads only the lines that are shown.
-  **ONE LINE A HOLIDAY, WHATEVER IS DONE TO ITS DATES** (the two code reads, C3–C6 — 13 Oct 26). A notice keeps the
+  **One line a holiday, whatever is done to its dates** (the two code reads, C3–C6 — 13 Oct 26). A notice keeps the
   dates as they were when it was made, and that is only where to look: the line's dates, its name, its count, the day
-  it covers and the list it opens are read from the war AS IT STANDS (`state/notices.ts noticeSpan`, fed by
+  it covers and the list it opens are read from the war as it stands (`state/notices.ts noticeSpan`, fed by
   `leavewar/sync.ts holidaySpan`) — a holiday shortened names the days still a holiday, renamed its new name, taken
   away it has no line. The notice itself is made for the WHOLE holiday as the war's list has it (`tellHoliday`
   widens a run to the holiday that holds it), so a holiday lengthened by a day, or entered Friday to Monday, is one
   notice and one list; and a newer notice whose live days hold all of an older one's takes its place. A live holiday
   line is never one of the lines the bell cuts at thirty — the bell's tap leaves a scheduler's own question on that
   day to it.
-- **ONE MORE DOOR — an input put BACK on the programme (owner D793, 13 Oct 26 — "Yes it should wait on it"; built
+- **One more door — an input put BACK on the programme (owner D793, 13 Oct 26 — "Yes it should wait on it"; built
   13 Oct 26 with the Inputs batch, `ui/interactions.ts` — the `[data-acc]` handler).** A scheduler's "Accept" (and
   "→ Ground") on a taken-off input that needs an OIL answer and has none puts the question FIRST and puts nothing back:
   the sheet's first line "Putting Ranger's Range brief back on the programme" ("2 people's …" for a shared input, headed
@@ -4601,12 +4601,12 @@ Three things stay decided:
   the answer throws the whole step away (the answer is never kept alone). "Answer OIL" on an input that has since been
   put back, deleted or moved off that card's day says "That input has changed — not put back". **Nothing asks:** the
   take-off; the app's Undo of a take-off (an Undo never asks); a working day; an input already answered (a No is an
-  answer). **"→ Unavail" WAITS TOO (`[UNAVAIL-FILE-OIL-ASK]`; owner D804, 13 Oct 26 — "For others just ask the OIL question"; it replaced D803 of the same morning):** an Other filed under Unavailable where it needs an answer is not filed until it is answered — the same sheet, headed "Filing <who>'s <input> under Unavailable", its buttons "Don’t file" / "File"; left unanswered the bar reads "Not filed — OIL not answered"; answered, the answer and the filing are one step and one Undo; changed meanwhile, "That input has changed — not filed". A note still on screen from the step before is taken down when ANY OIL question is put (on
+  answer). **"→ Unavail" waits too (`[UNAVAIL-FILE-OIL-ASK]`; owner D804, 13 Oct 26 — "For others just ask the OIL question"; it replaced D803 of the same morning):** an Other filed under Unavailable where it needs an answer is not filed until it is answered — the same sheet, headed "Filing <who>'s <input> under Unavailable", its buttons "Don’t file" / "File"; left unanswered the bar reads "Not filed — OIL not answered"; answered, the answer and the filing are one step and one Undo; changed meanwhile, "That input has changed — not filed". A note still on screen from the step before is taken down when any OIL question is put (on
   a phone on its side it lay over the question's two buttons). Pins: `ui/oilwait.test.tsx` (ON9), `e2e/oilwait.spec.ts`.
 
 ## The passing notes' wording — to be shortened (owner D806, 13 Oct 26)
 
-**BUILT 14 Oct 26 (`[NOTES-SHORTER]`, with the clash note and the look's small fixes — the check: `docs/handpass/2026-10-14-three-builds.md`):** every wording of record below is in the app (their relatives that were not on his page are not — D808), pinned to the letter by `src/ui/noteswords.test.ts` and by each note's own test; the locked-week sentence has ONE source for its seven places (`engine/publish.ts LOCKED_WEEK_NOTE`, `lockedDayNote`); and on a phone the note is held 12px from each side of the screen, its words centred as the picture put to him drew them, a desktop's as it was (`ui/toast.ts placeToast`, `ui/toastplace.test.tsx`). **THE OIL QUESTION (the look's L1–L5, K7, K10 — D830, its words D837, D839):** the title "OIL: Tally, Range brief"; the reason and the question one ordinary sentence ("This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve HO, half a day of OIL?"); its answers flat under it in a row of their own (`.oilconf-answers` — they had worn the week strip's `.seg`), a picked one in the outline look (`.on-pick`, in the day's one list too — a picked Yes and a picked No alike, which replaces D783's grey No) — and where a picked answer also has the keyboard it wears ONE ring, the keyboard's ring drawn on its own edge, never a second ring round it (owner D842, 14 Oct 26 — "Double blue ring"); **no small print under the answers and no "Choose an option above" in its foot, in any of its forms (owner D846, 14 Oct 26 — "things u can delete and they are self explanatory": the sentence about where the credit lands and how hours count is gone, and a waiting button is simply dimmed)**; **the upchit question and the medical-clash question lost theirs the same day, on his word (D848 — "Delete all three"): no "Choose Keep or Remove for each entry above", no "Choose for each clash above", and no small print under the medical clash's answers — its one fact he wanted kept, that a day holds one status, is in that sheet's heading**; **BUILT 14 Oct 26, the leftovers batch (the check: `docs/handpass/2026-10-14-leftovers.md`; the pictures of record `docs/mock/2026-10-14-leftovers/`, `docs/mock/2026-10-14-feedback/`):** **the answers of those two sheets sit flat (owner D849 — "3 yes")** — a wrapper of the sheets' own, `.upconf-ans`, in place of the week strip's `.seg`, whose darker patch, padding and line underneath they wore; on the medical clash the two answers take a line of their own under the clash's sentence, ending at the right, as drawn (`ui/UpchitConfirm.tsx`, `ui/MedClashConfirm.tsx`, `scheduler/14-input-editors.css`; pins `ui/upconfirm.test.tsx`, `ui/medclash.test.tsx`, `e2e/feedback-marks.spec.ts`). **In a cancelled input's own window the red CX tag and its reason FOLLOW THE TITLE, not the ✕ (D849 — "2 yes"; D771's own words):** the window shell takes a `mark` drawn straight after its title (`ui/FloatWindow.tsx`; `.win-bar.has-mark`, `.win-mark` in `scheduler/22-float-windows.css`) — the title keeps the room its words need, a long reason is cut short first, the ✕ keeps the corner, and the bar is dragged by the mark as by the title (a mark, never a tool); the schedule's own dialog already drew it after its title (pins `ui/inputcx.test.tsx`, `e2e/feedback-marks.spec.ts`). **THE JUST-ADDED MARK IS THE FEEDBACK (D851 — "1 yes", with D850; D854 — "Yes to all"):** an input the Inputs page has just been shown — one added, one changed, one brought back by Undo — wears the app's one just-added mark for its six seconds (`.innew`: the board's blue box, held, fading only at its end) wherever the page draws it: the List's row or card (as before), **the opened day's card and the month's bar while no day is open (new)** — never the bar behind an open day; the List's own light (`ui/InputsPage.tsx` `flash`) is the one source, handed to the calendar as `lit`; the opened day's card is brought into the window's own view. Whatever wears the mark says which input it is for (`data-fresh`). **"Input added" / "Input updated" (and "Input added for 3 people") are then left UNSAID where that input can be SEEN wearing it** — decided on the screen, by D672's "in view" asked at the thing's head, middle and foot (`ui/seen.ts noteUnlessSeen`, `inView`); a screen reader is told the same words in a polite region (`#srSay`); the keyboard stays on the button that opened the window. **The note is still said, in the words it always had:** where the Inputs page is not the page in front (a save made from the schedule — at once; "Input added to the Ground Programme" is untouched); where the save had a word of its own (the two stay one note — `ui/toast.ts toastHeld`); where nothing wears the mark, or what wears it is not laid out (the SANS calendar's day, the Medical tab) or is still covered once the page has come to rest; where nothing is laid out at all; and every refusal. **For a reader who asked for less motion the mark shows STEADY and goes without its fade** (it had been switched off whole) — on every cell of a desktop row, the first with its coloured edge under the box. "OIL answer saved" is as it was. Pins: `ui/seen.test.ts`, `ui/inputsvet.test.tsx` (its last two blocks), `e2e/feedback-marks.spec.ts`. **"Schedule updated" after the Scheduler Board's ✓ Done is gone, with nothing in its place (D854; `ui/SchedBoard.tsx`, pin `ui/board.test.tsx`). And a puck put on an input's row or taken off it says nothing — the puck is the sign (D854; `ui/reqdoor.ts afterPut`, `leave`):** the add's note is still raised where it says what the puck does not ("… — not counted for OIL", the input's answer being No), a move still says where he went, a swap its own words, and every refusal and the amber "already on …" note as before (pins `ui/reqdoor.test.tsx`, `ui/phmember.test.tsx`, `ui/oilwait.test.tsx`)**; "Yes: credit HO"; at an input's own save Back / Add or Back / Save; the first answer has the keyboard as it opens. The several-days form keeps its words (D808). **EVERY SMALL WINDOW OF THAT FAMILY (`.airpop-head`):** the ✕ in the head's corner; in a question sheet it is the LAST Tab stop (`ui/sheetfocus.ts`); the app's ring on the answers, the ✕ and the bar's buttons. *What follows is the record of how it was ruled.* His iPhone pictures: the note after publishing a day and the one after unpublishing it each ran five lines over **AND A SHORTER WORDING KEEPS EVERY KEY WORD (owner D825, 13 Oct 26 — "some of them I feel like the key words are gone. Too summarised"):** what happened, why, what it costs and where to put it right all stay; only filler is cut; a wording that cannot lose a word without losing a fact is left as it is. **RULED 13 Oct 26 on the design page's third version (`docs/mock/design-look-13oct.html`):** the redone wordings are approved as drafted there and are built (D829); on a phone a passing note takes the screen's full width less a small margin — today it is centred in a way that leaves it half the screen (D828); and the bar that stays after an unanswered OIL question takes the band under the top bar where the "Not saved" warning sits, a picture first (D831 — it narrows D783 as to the bar's place only).
+**BUILT 14 Oct 26 (`[NOTES-SHORTER]`, with the clash note and the look's small fixes — the check: `docs/handpass/2026-10-14-three-builds.md`):** every wording of record below is in the app (their relatives that were not on his page are not — D808), pinned to the letter by `src/ui/noteswords.test.ts` and by each note's own test; the locked-week sentence has ONE source for its seven places (`engine/publish.ts LOCKED_WEEK_NOTE`, `lockedDayNote`); and on a phone the note is held 12px from each side of the screen, its words centred as the picture put to him drew them, a desktop's as it was (`ui/toast.ts placeToast`, `ui/toastplace.test.tsx`). **The OIL question (the look's L1–L5, K7, K10 — D830, its words D837, D839):** the title "OIL: Tally, Range brief"; the reason and the question one ordinary sentence ("This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve HO, half a day of OIL?"); its answers flat under it in a row of their own (`.oilconf-answers` — they had worn the week strip's `.seg`), a picked one in the outline look (`.on-pick`, in the day's one list too — a picked Yes and a picked No alike, which replaces D783's grey No) — and where a picked answer also has the keyboard it wears ONE ring, the keyboard's ring drawn on its own edge, never a second ring round it (owner D842, 14 Oct 26 — "Double blue ring"); **no small print under the answers and no "Choose an option above" in its foot, in any of its forms (owner D846, 14 Oct 26 — "things u can delete and they are self explanatory": the sentence about where the credit lands and how hours count is gone, and a waiting button is simply dimmed)**; **the upchit question and the medical-clash question lost theirs the same day, on his word (D848 — "Delete all three"): no "Choose Keep or Remove for each entry above", no "Choose for each clash above", and no small print under the medical clash's answers — its one fact he wanted kept, that a day holds one status, is in that sheet's heading**; **BUILT 14 Oct 26, the leftovers batch (the check: `docs/handpass/2026-10-14-leftovers.md`; the pictures of record `docs/mock/2026-10-14-leftovers/`, `docs/mock/2026-10-14-feedback/`):** **the answers of those two sheets sit flat (owner D849 — "3 yes")** — a wrapper of the sheets' own, `.upconf-ans`, in place of the week strip's `.seg`, whose darker patch, padding and line underneath they wore; on the medical clash the two answers take a line of their own under the clash's sentence, ending at the right, as drawn (`ui/UpchitConfirm.tsx`, `ui/MedClashConfirm.tsx`, `scheduler/14-input-editors.css`; pins `ui/upconfirm.test.tsx`, `ui/medclash.test.tsx`, `e2e/feedback-marks.spec.ts`). **In a cancelled input's own window the red CX tag and its reason follow the title, not the ✕ (D849 — "2 yes"; D771's own words):** the window shell takes a `mark` drawn straight after its title (`ui/FloatWindow.tsx`; `.win-bar.has-mark`, `.win-mark` in `scheduler/22-float-windows.css`) — the title keeps the room its words need, a long reason is cut short first, the ✕ keeps the corner, and the bar is dragged by the mark as by the title (a mark, never a tool); the schedule's own dialog already drew it after its title (pins `ui/inputcx.test.tsx`, `e2e/feedback-marks.spec.ts`). **The just-added mark is the feedback (D851 — "1 yes", with D850; D854 — "Yes to all"):** an input the Inputs page has just been shown — one added, one changed, one brought back by Undo — wears the app's one just-added mark for its six seconds (`.innew`: the board's blue box, held, fading only at its end) wherever the page draws it: the List's row or card (as before), **the opened day's card and the month's bar while no day is open (new)** — never the bar behind an open day; the List's own light (`ui/InputsPage.tsx` `flash`) is the one source, handed to the calendar as `lit`; the opened day's card is brought into the window's own view. Whatever wears the mark says which input it is for (`data-fresh`). **"Input added" / "Input updated" (and "Input added for 3 people") are then left UNSAID where that input can be SEEN wearing it** — decided on the screen, by D672's "in view" asked at the thing's head, middle and foot (`ui/seen.ts noteUnlessSeen`, `inView`); a screen reader is told the same words in a polite region (`#srSay`); the keyboard stays on the button that opened the window. **The note is still said, in the words it always had:** where the Inputs page is not the page in front (a save made from the schedule — at once; "Input added to the Ground Programme" is untouched); where the save had a word of its own (the two stay one note — `ui/toast.ts toastHeld`); where nothing wears the mark, or what wears it is not laid out (the SANS calendar's day, the Medical tab) or is still covered once the page has come to rest; where nothing is laid out at all; and every refusal. **For a reader who asked for less motion the mark shows STEADY and goes without its fade** (it had been switched off whole) — on every cell of a desktop row, the first with its coloured edge under the box. "OIL answer saved" is as it was. Pins: `ui/seen.test.ts`, `ui/inputsvet.test.tsx` (its last two blocks), `e2e/feedback-marks.spec.ts`. **"Schedule updated" after the Scheduler Board's ✓ Done is gone, with nothing in its place (D854; `ui/SchedBoard.tsx`, pin `ui/board.test.tsx`). And a puck put on an input's row or taken off it says nothing — the puck is the sign (D854; `ui/reqdoor.ts afterPut`, `leave`):** the add's note is still raised where it says what the puck does not ("… — not counted for OIL", the input's answer being No), a move still says where he went, a swap its own words, and every refusal and the amber "already on …" note as before (pins `ui/reqdoor.test.tsx`, `ui/phmember.test.tsx`, `ui/oilwait.test.tsx`)**; "Yes: credit HO"; at an input's own save Back / Add or Back / Save; the first answer has the keyboard as it opens. The several-days form keeps its words (D808). **Every small window of that family (`.airpop-head`):** the ✕ in the head's corner; in a question sheet it is the LAST Tab stop (`ui/sheetfocus.ts`); the app's ring on the answers, the ✕ and the bar's buttons. *What follows is the record of how it was ruled.* His iPhone pictures: the note after publishing a day and the one after unpublishing it each ran five lines over **and a shorter wording keeps every key word (owner D825, 13 Oct 26 — "some of them I feel like the key words are gone. Too summarised"):** what happened, why, what it costs and where to put it right all stay; only filler is cut; a wording that cannot lose a word without losing a fact is left as it is. **RULED 13 Oct 26 on the design page's third version (`docs/mock/design-look-13oct.html`):** the redone wordings are approved as drafted there and are built (D829); on a phone a passing note takes the screen's full width less a small margin — today it is centred in a way that leaves it half the screen (D828); and the bar that stays after an unanswered OIL question takes the band under the top bar where the "Not saved" warning sits, a picture first (D831 — it narrows D783 as to the bar's place only).
 the schedule ("Monday published — APPROVED · Monday 13 Jul: the common programme has no usable times, so nobody on it earns
 OIL"; "Monday unpublished — it is a draft again; publishing reissues the Original · its OIL credits leave the Leave War until it
 is published again"). The rule for a passing note from here on: what happened, then the ONE thing he must know, the day named
@@ -4614,13 +4614,13 @@ once — and no warning dropped to save words. The shorter wordings are put to h
 `OUTSTANDING.md` `[NOTES-SHORTER]`. Where they are written today: `engine/publish.ts`, `state/sched-commit.ts`.
 **The method has ONE home — `design-practices.md` §1a (shortening) and §1b (how the app speaks, D833); this note records
 only what was ruled for the passing notes, and D829's wordings are rechecked against that guide before they are built (D833).**
-**THE WORDINGS OF RECORD (owner, 14 Oct 26 — "All approved as recommended"; they replace D829's and the design page's §2):**
+**The wordings of record (owner, 14 Oct 26 — "All approved as recommended"; they replace D829's and the design page's §2):**
 `docs/superpowers/briefs/2026-10-13-wording-recheck.md`, as put to him on `docs/mock/writing-guide-13oct.html`. **D837** — the
 notes reworked by the guide (N1–N4, N7, N10, N11, N14, N16, N19, N24, N26; N8 is not built, the app can no longer show it;
 N33 stays removed), with the clash note's words and the OIL question's; the two bars he ruled with a dash stay as they are.
 **D838** — the notes left whole on 13 Oct have their dashes changed in the same build, every word kept. **D839** — the ten
 wordings a fresh reader tripped on are all taken, each replacing its note's wording in the other two lists. Built 14 Oct 26 (above). Their relatives that were not on the page wait for the whole-app words pass (D808).
-**THE BAR THAT STAYS IS ALWAYS ONE LINE (owner D840, 14 Oct 26 — "I prefer the one line", of the page that drew it in its new place, `docs/mock/oil-band-14oct.html`):** "Not swapped — OIL not answered · Answer OIL · OK" is built in the band under the top bar as drawn (D831), its words and both buttons on one line at every phone width — where the letters are too wide its letters go a step smaller, no word is cut and the buttons never drop under the words; "Not saved" sits above it when both show. **And the line under a bar is the bar's own amber (owner D841, 14 Oct 26 — "The bottom line is cyan that's weird"):** while either bar is up the top bar's bottom edge is amber, not Edit Schedule's cyan, and goes back when the bars go; the two bars are one height.
+**The bar that stays is always one line (owner D840, 14 Oct 26 — "I prefer the one line", of the page that drew it in its new place, `docs/mock/oil-band-14oct.html`):** "Not swapped — OIL not answered · Answer OIL · OK" is built in the band under the top bar as drawn (D831), its words and both buttons on one line at every phone width — where the letters are too wide its letters go a step smaller, no word is cut and the buttons never drop under the words; "Not saved" sits above it when both show. **And the line under a bar is the bar's own amber (owner D841, 14 Oct 26 — "The bottom line is cyan that's weird"):** while either bar is up the top bar's bottom edge is amber, not Edit Schedule's cyan, and goes back when the bars go; the two bars are one height.
 They are put to him on ONE page with the phone's clash note (D805) and a look, by the design guide, over the designs built on the
 night of 13 Oct 26 and the ones coming — keyboard use included (owner D807): `OUTSTANDING.md` `[DESIGN-LOOK-13OCT]`.
 The same going-over of EVERY page's notes, hints, labels and small print — less clutter; a note the screen already says may be
@@ -4686,7 +4686,7 @@ Pins: `ui/inputcx.test.tsx`, `ui/inputmarks-scenarios.test.tsx`.*
   control there cancels an input or brings it back (D760 reading 2: the scheduler does, on its row). No reason typed:
   the tag alone.
 - **The CSV export does not mark it (D772, 12 Oct 26 — "Leave the CSV as it is"):** its lines are written like any
-  other input's. **OVERTAKEN THE SAME DAY BY D773** (*"I don't need an export to excel function for inputs. U can
+  other input's. **Overtaken the same day by D773** (*"I don't need an export to excel function for inputs. U can
   remove it."*): the Inputs List's "Export to Excel" button and the file it writes are REMOVED — only the Inputs
   page's; the Quals page's export and the schedule's own export and print stay. Built inside the one-rule job's check
   (`../../OUTSTANDING.md` `[ALL-AVAIL-AS-MEMBER]`); until that build lands the button is still there and writes one
@@ -4728,7 +4728,7 @@ except where noted:
   per-view registry is session-only, wiped on login/logout; the bug-report
   glow derives from the reports themselves, which SURVIVE a login switch,
   and the OIL glow is derived live from `INPUTS` + the war's calendar.
-- **THE UNDO / REDO PAIR, ON EVERY PAGE WHERE A CHANGE IS MADE** (D347 — *"all undo and redo buttons should be at the
+- **The Undo / Redo pair, on every page where a change is made** (D347 — *"all undo and redo buttons should be at the
   top bar … standardised … like how the edit schedule is"*; D348; D349). ONE component, `ui/topbits.tsx` `UndoPair`,
   in Edit Schedule's place and look (`.tb-hist`, `.abtn.hbtn` with the `.bi`/`.bl` split), handed an ENGINE — never two:
   - **the one Undo** (`globalUndoEngine`, `#undoBtn`/`#redoBtn`) on Edit Schedule, the Leave War, Inputs and Quals for
@@ -4832,7 +4832,7 @@ header keeps its true count" — and the D469 / D471 / D472 / D475 note that sto
 - **Resize the checks panel.** On desktop a grip (`.sb-wsplit`) sits on the
   border between the checks panel and the roster below it; dragging it sets an
   explicit height on `.sb-warn` (`wireWarnSplit`, a CSS var + `.sb-warn-sized`
-  class written straight to the persistent `.sb-side`). It is a NO-OP until
+  class written straight to the persistent `.sb-side`). It is a no-op until
   actually dragged — the default is unchanged (content-sized up to 38%), so the
   board's geometry is identical until the grip is used — and it is absent on a
   phone, whose board is one scroller with no split to move. Session-only.
@@ -4921,7 +4921,7 @@ cleared to instruct that AAR from the back seat; the rule it feeds is in
   but not optional: the page would render a stale `I` as an ordinary tick
   while the engine went on honouring it.
 - **Not persisted**, like every other tick on this page — see the closing
-  paragraph of §EDIT QUALS.
+  paragraph of §Edit quals.
 
 **EVERY roster edit on this page re-runs `validate()`** (owner, 10 Aug 26 —
 reported as "I change the back seat to qualified to instruct, the warning is
@@ -4997,7 +4997,7 @@ until this fix, which is exactly how it came to miss the encoding; all three
 exports (schedule, inputs, LoX) now share one function. Pinned by
 `ui/export.test.ts`, which asserts the bytes rather than the glyph.
 
-## EDIT QUALS — reshaping the LoX (owner, 5 Aug 26)
+## Edit quals — reshaping the LoX (owner, 5 Aug 26)
 
 A second mode **inside** edit mode, admin only: `#qEditQuals` renders only
 when the session is admin AND editing is on, and every delegated handler
@@ -5047,7 +5047,7 @@ thing this app writes to storage.
 
 ## History on the board (owner, 11 Aug 26)
 
-**28 Sep 26, later (`[HIST-PHONE-HIDE]` — D339, D344, D345): THE GOLD DOTS.** While History is on, every detail with a
+**28 Sep 26, later (`[HIST-PHONE-HIDE]` — D339, D344, D345): the gold dots.** While History is on, every detail with a
 history wears a small gold dot (`data-histdot`, `histbubble.ts refreshHistDots`, after each repaint of the edit week and
 the board, beside the highlights) — on exactly the cells the bubble answers (`storyOf`, one answer for both): a seat, and
 a text detail holding words, just OUTSIDE its bottom-right corner (`::before` — inside, it covered the last character; the
@@ -5062,7 +5062,7 @@ the dot is an attribute and a paint, no node, set only while History is on.
 
 **28 Sep 26 (`[DRAFT-PENDING]` — D116, D168):** History mode IS the one changes window open — the board's `#sbHist`
 opens and closes the window on the board's day, the bubbles with it; the admin's top-bar icon and a day's chip open it
-too. The bubbles now work on the EDIT WEEK as well (`EditWeek.tsx` wires `wireHistBubble` on `#eWeek`; one History mode,
+too. The bubbles now work on the edit week as well (`EditWeek.tsx` wires `wireHistBubble` on `#eWeek`; one History mode,
 D116). The checks panel's "☰ Edit history · N changes" line and the Edit history modal are gone — the window is the
 list (§The one changes window). The log is durable and week-safe now (`engine-rules.md` §The edit log).
 
@@ -5360,7 +5360,7 @@ Three ways they leaked, all now closed, and all three are the checklist for
 
 1. **The pin's background was not opaque.** The bar painted a translucent
    gradient over an 18px backdrop blur, and the mark's own background was a
-   gradient that FADED TO TRANSPARENT on its right — a soft edge by design that
+   gradient that faded to transparent on its right — a soft edge by design that
    reads as a bleed the moment a control passes under it. The bar now paints
    `--topbar-a` → `--topbar-b`, the old translucent pair composited over
    `--bg`, so it looks the same where it always sat and stops showing what
@@ -5466,7 +5466,7 @@ owner's ask). Each late input now carries its OWN control on the board.
 
 ## Week Insights: work hours (owner, 20 Aug 26)
 
-**FINAL LOOK APPROVED (owner D532, 3 Oct 26):** final inspected phone/desktop pictures approve temporary Choose/Change
+**Final look approved (owner D532, 3 Oct 26):** final inspected phone/desktop pictures approve temporary Choose/Change
 mission role below AREA, Working copy / Published · version wording, latest-published read-only Remarks access,
 split/total-only chart with initial twelve plus Show all, desktop Board Insights beside the bell and phone entry in ⋯.
 The revised plan is implemented on `codex/insights-mission-mix`, awaiting independent code approval and Claude's
@@ -5499,11 +5499,11 @@ Insights data/permissions. This request applies to Insights, not every popup. D5
 numbered pictures precede visual source changes. Both reference photos stay private.
 Filed as [INSIGHTS-CLOSE-STAYS-VISIBLE] in the current workflow UI batch.
 
-**STANDBY ELIGIBILITY (owner D516, 3 Oct 26):** SC, AVALON and BB standby duties do not count as flying load. SC main
+**Standby eligibility (owner D516, 3 Oct 26):** SC, AVALON and BB standby duties do not count as flying load. SC main
 counts towards work hours. The blue default for other mission names never turns these duties into sorties; retain the
 separate sortie-eligibility and work-hours calculations. This settles neither other duties' hours nor earned leave.
 
-**FORMATION ROLE AND CONDITIONAL QUESTION (owner D517–D519, 3 Oct 26 — built on the branch):** the whole
+**Formation role and conditional question (owner D517–D519, 3 Oct 26 — built on the branch):** the whole
 formation is on one side. With blue/red tracking enabled (D521), Mission names DS, RED and RED AIR count red automatically, with no Blue/Red question. Other
 missions remain blue unless DS or RED in aircraft Remarks or in a non-exact Mission name cues the question (D531); the answer,
 not free-text interpretation, decides the whole formation's role. No extra red indicator is drawn on schedule lines:
@@ -5514,7 +5514,7 @@ Keep Remarks visible; either answer removes its temporary space. Wait for the ta
 preserving next focus. D525–D527 below settle retention, saved unanswered edits and correction; the approved revised
 plan and D532 pictures are the basis of the branch implementation.
 
-**QUESTION LIFECYCLE (owner D525–D527, 3 Oct 26 — built on the branch):** remember the chosen formation role until
+**Question lifecycle (owner D525–D527, 3 Oct 26 — built on the branch):** remember the chosen formation role until
 Mission or relevant DS/RED support wording changes; crew/time changes do not ask again (D525). Save completed Remarks
 normally even if the question is left unanswered; derive whether the saved answer still applies after the relevant edit, leaving the
 role unresolved and the affected person's ordinary total bar intact (D526). Later choosing a role is a separate saved
@@ -5522,7 +5522,7 @@ action and Undo step. Apply this to every forward writer; unresolved saved roles
 answer-before-creation requirement or new publication block. Working wording edits on an issued day still wait for AL;
 role answers alone count at once without changing signs/pending/amendments (D530).
 **The questions and the button are two things (the Codex stack check, 6 Oct 26 — W9; D598):** `mission-role-offer.ts`
-holds every open question — at most ONE PER FORMATION, each drawn under its own formation — and, separately, the one
+holds every open question — at most one per formation, each drawn under its own formation — and, separately, the one
 temporary Choose / Change button under the Remarks he is in. So with a formation's question open (it stays through
 other edits, D535) every other formation's Remarks still shows its button; a formation whose question is open gets no
 button beside it; and a second formation's question — from a cue typed there, or its button pressed — opens BESIDE the
@@ -5544,7 +5544,7 @@ Offer Change mission role temporarily while editing relevant Remarks (D527), reu
 permission; no permanent line marker. Named red Missions remain automatic, without overrides/questions. Recheck live
 formation identity/context/permission when answering; never apply an old popup's answer to a changed formation.
 
-**HIS ANSWERS TO THE OPUS 5.5 PLAN REVIEW (owner D529–D531, 3 Oct 26 — built on the branch; they change parts of the
+**His answers to the Opus 5.5 plan review (owner D529–D531, 3 Oct 26 — built on the branch; they change parts of the
 three paragraphs around this one, and win where they differ).**
 **When the question is asked (D529):** automatically only straight after the scheduler's own edit — to Remarks OR to the
 Mission — leaves a formation needing an answer. Passing through an unchanged Remarks box never asks, and Later is not
@@ -5578,7 +5578,7 @@ and not yet out means the published and the working copy can need different answ
 **A Mission box containing DS or RED that is not exactly DS / RED / RED AIR (D531)** — `DS-2`, `RED AIR 2`, `ACM/DS` —
 asks the question; it is never counted blue or red by guessing. The three exact names stay automatic red.
 
-**REVISED PLAN BINDING (3 Oct 26 — technical read PASS, final picture agreement D532):** the NEW Astra plan
+**Revised plan binding (3 Oct 26 — technical read PASS, final picture agreement D532):** the NEW Astra plan
 `docs/superpowers/plans/2026-10-03-insights-mission-mix-build-plan-revised.md` keeps per-context role annotations outside
 day/issued/signature content, with their own guarded actor-history/Undo command. Unmatched old contexts remain saved;
 same-context saved-plan/version loading does not replay an old answer over a later correction. Published and working
@@ -5594,7 +5594,7 @@ working access says Working copy when needed. No published programme edit or per
 received D532 picture agreement before implementation. Complete plan findings/dispositions and Astra's independent
 D529–D531 meaning PASS are in `docs/superpowers/plans/2026-10-03-insights-revised-plan-review.md`; runtime proof is in the FULL sheet.
 
-**OPTIONAL SQUADRON TRACKING (owner D521, 3 Oct 26 — built on the branch):** the Logic page provides a
+**Optional squadron tracking (owner D521, 3 Oct 26 — built on the branch):** the Logic page provides a
 squadron-wide on/off setting for blue/red sortie tracking. D512's split and D518's questions apply when tracking is on;
 **D524 approves the shown Logic Insights control, labelled Track blue/red sorties and shown Off.**
 this does not turn off ordinary Insights, sortie totals or work hours. **D522: start Off at first squadron setup; enable
@@ -5608,7 +5608,7 @@ are now approved by D532; D525–D527 above settle the save/repeat/correction li
 The older `[INSIGHTS-WORKING-COPY]` question is superseded by D478 below and the merged `[INSIGHTS-WHICH-COPY]` build;
 it is not an outstanding product choice.
 
-**SORTIE MISSION MIX (owner D512, 3 Oct 26 — built on the branch).** Each person's existing weekly sortie
+**Sortie mission mix (owner D512, 3 Oct 26 — built on the branch).** Each person's existing weekly sortie
 bar splits into blue and red segments WHEN tracking is enabled and ALL their eligible roles are resolved (D521/D523):
 missions named "Red", "DS" and (D518) "Red Air" count red; other missions count blue
 except a role chosen through D518's conditional question above. A person
@@ -5617,17 +5617,17 @@ ordinary total bar until resolved. This adds the mission mix to the sortie count
 change work-hours bars, sortie eligibility or the latest-issued-day rule below. The approved design and history
 live in `superpowers/specs/2026-10-03-insights-mission-mix.md`; built with `[INSIGHTS-BOARD-DOOR]` in the Insights batch.
 
-**LIST LENGTH (owner D513, 3 Oct 26 — built on the branch):** show the first twelve flying people initially, with
+**List length (owner D513, 3 Oct 26 — built on the branch):** show the first twelve flying people initially, with
 Show all for the rest; retain total-descending/callsign ordering. Work-hours list stays complete as below.
 
-**DIRECTION OF SUPPORT (owner D514, 3 Oct 26):** DS for another formation means our flight is red air for them; DS wording
+**Direction of support (owner D514, 3 Oct 26):** DS for another formation means our flight is red air for them; DS wording
 can instead describe support arriving from another formation. A bare DS mention in free-text Remarks therefore does not
 settle our flight's blue/red category. D518 later approves recognizing DS/RED as a cue to ASK, never as the answer,
 for an otherwise non-red mission; it does not approve inferring the role from support wording.
 
-**WHICH SCHEDULE INSIGHTS COUNTS (owner, D477 and D478, 1 Oct 26 — BUILT 1 Oct 26, `[INSIGHTS-WHICH-COPY]`; rule id IN1).** *"It
+**Which schedule Insights counts (owner, D477 and D478, 1 Oct 26 — BUILT 1 Oct 26, `[INSIGHTS-WHICH-COPY]`; rule id IN1).** *"It
 should show the latest copy, so if working copy is the only copy then it will use that, unless its published then use
-Original, if theres an AL1 then use AL1 etc."* (D478). Day by day, Insights counts that day's LATEST PUBLISHED version — the
+Original, if theres an AL1 then use AL1 etc."* (D478). Day by day, Insights counts that day's latest published version — the
 Original, or the latest amendment — and the working copy only for a day not yet published. Changes waiting on a published
 day are not counted until they go out; a hidden warning is not counted (D472), by the hides that version went out with
 (D477: 4 issues with 1 hidden read 3). One rule on EVERY page — Edit Schedule and the Scheduler Board included, and the
@@ -5683,8 +5683,8 @@ nothing and is there all day).
 ## The Inputs month calendar (owner, 22 Aug 26)
 
 
-**SUPERSEDED IN PART, 8 Oct 26 (step 5 of the Inputs / SANS job) — read "The Inputs calendar — its tabs, its month of
-bars, its day, its gear, the editor as a window" first.** What this section says of the PLANNING LAYER still stands:
+**Superseded in part, 8 Oct 26 (step 5 of the Inputs / SANS job) — read "The Inputs calendar — its tabs, its month of
+bars, its day, its gear, the editor as a window" first.** What this section says of the planning layer still stands:
 the day's title, the notes and pucks rows, their drags, the puck picker. What no longer holds: it is not a full-screen
 view toggled from the filter bar (it is the Inputs tab's own screen; `#icClose` is gone); an input is a BAR across its
 days, not a chip in a cell (no `MAX_CHIPS`); a held press and "Select dates" gave way to the SANS month's pointer
@@ -5764,7 +5764,7 @@ side; the title stays visible one size down.
   modal). *Hold a chip (180ms) and drag* → move it to another day.
   `ui/caldrag.ts` is the calendar's OWN pointer machine — `drag.ts` stays
   scoped to board pucks (stable decision) — copying its feel (180/8/26,
-  wobble-restart, the click-eater). The drop applies a DAY-DELTA from the
+  wobble-restart, the click-eater). The drop applies a day-delta from the
   grabbed cell, so a span grabbed by its middle SLIDES whole rather than
   re-anchoring; `commitInputEdit` does the write (accepted-row relink and
   Leave-War retraction included). A member may move their OWN input only. Since
@@ -5779,7 +5779,7 @@ side; the title stays visible one size down.
   parity; the dialog hides Person for members so the seed sticks).
 - *Swipe the grid sideways* (past `SWIPE_MIN`, 50px, and more horizontal than
   vertical) → page the month, **left → next / right → previous**, the same
-  `step()` the `‹ ›` arrows call (owner, 22 Aug 26). A DISCRETE step decided
+  `step()` the `‹ ›` arrows call (owner, 22 Aug 26). A discrete step decided
   on release from the total travel, not a finger-tracking carousel — the grid
   is a fixed layout, not a native scroller, so the board/Leave-War
   fling-vs-`scrollLeft` hazards do not apply. Shares the empty-cell machine: a
@@ -5863,7 +5863,7 @@ outright, 22 Aug 26. See `.claude/rules/decisions/scheduler.md` §Settled → In
 
 ## The Admin page (owner, 23 Aug 26)
 
-The seventh tab, and it is ALWAYS LAST in both navs — the tools tab after
+The seventh tab, and it is always last in both navs — the tools tab after
 the work tabs (`ui/AdminPage.tsx`; the topnav entry in `Shell.tsx`, the
 drawer item in `Drawer.tsx`, both admin-hidden like the Edit tab). The nav
 hides it from a member, but **the PAGE is the gate, not the nav** (the
@@ -5919,7 +5919,7 @@ The three category panels:
   (inclusive of both ends; the two pickers `…Date`/`…Date2` sit on one
   `adm-2col` row, and a reversed pair is swapped, not refused). Native
   date fields (`color-scheme: dark` on `html` keeps the pickers dark) and
-  a TWO-TAP button each: the first tap dry-counts and arms it red with
+  a two-tap button each: the first tap dry-counts and arms it red with
   "Tap again to clear N records/entries" (a zero count toasts instead of
   arming — no no-op confirms; changing the mode or any date disarms), the
   second tap acts. Both funnels live in `ui/inputedit.tsx`, share one
@@ -5930,7 +5930,7 @@ The three category panels:
     spelling) sweeps inputs / calendar pucks / day titles wholly inside
     the period in ONE `writeInputsBatch` (one undo step) and drops
     stashed weeks whose whole Mon–Sun span sits inside (`stashDrop`, gen
-    BUMPED never reset — `peek.ts` caches on it). Deletion FAILS CLOSED:
+    BUMPED never reset — `peek.ts` caches on it). Deletion fails closed:
     an unparseable date is kept, a span touching or crossing the period's
     edge is kept whole, and each doomed input goes through the same
     `dropInputRow` body a single delete uses (Leave-War retract +
@@ -5965,10 +5965,10 @@ centred column, two cards:
   and a non-blank description — a blank Send TOASTS instead of silently
   doing nothing (the 12 Aug 26 audit rule). `who` is stamped from
   `HOOKS.whoami()`, the edit log's identity seam, so reports start naming
-  real people the day accounts do. A MEMBER also sees their own filed
+  real people the day accounts do. A member also sees their own filed
   reports under the form (`#bugMine`) as the receipt — never anyone
   else's.
-- **`#bugAdmin` Bug reports** (admins only) — every report NEWEST FIRST
+- **`#bugAdmin` Bug reports** (admins only) — every report newest first
   (`reportRows()` sorts a copy by `t` desc), each row carrying its
   category chip (`.bugcat`, hue derived from the category's index — no
   hand-kept colour map), the filed date (`elogWhen`, the edit log's own
@@ -6040,11 +6040,11 @@ priority chain as `WEEKJUMP`/`CARRYDAY`/`DPREV`) and land the now-live day
 at the exact x it was clicked, so the day "becomes real" in place rather
 than the week jumping and resettling.
 
-**What it shows.** Next week AS THE APP REMEMBERS IT, not necessarily the
+**What it shows.** Next week as the app remembers it, not necessarily the
 pure seed — `peekWeekHTML` reads the per-week session stash
 (`stashDays`, `engine/weekstash.ts`) first and falls back to `weekBundle`'s
 pure seed only for a week nobody has edited, the same source the cross-week
-flag reads use (`engine-rules.md` §validation). It is the PLANNED PROGRAMME
+flag reads use (`engine-rules.md` §validation). It is the planned programme
 only: no inputs band, no warnings, no publish/AL state, no amendment marks
 — a scheduler previewing next week sees what is on it, not whether it has
 been signed off or who last touched it. Cached per (desktop-ness ×
@@ -6053,7 +6053,7 @@ changes, never on an ordinary repaint of the loaded week.
 
 ## The Medical view, the upload control and the document viewer (owner, 27 Aug 26)
 
-**The Medical button** sits on the Personal Inputs TITLE ROW beside the
+**The Medical button** sits on the Personal Inputs title row beside the
 Calendar-view button (`#inMedBtn`, `MedIcon` + "Medical"), carrying TWO
 count badges in the sections' own colours (owner, 27 Aug 26 — "show the
 amber count as well"): red (`.medcount`) = down now, amber
@@ -6090,7 +6090,7 @@ Medical"** (`#medNew`, owner D963 — in place of D962's title pointing to the I
 the stretching gap, 36 tall like "as of" (a finger's 44 on a phone); it opens the SAME window as the Inputs tab's "+
 Input" (`newInputSeed`: the signed-in person, no date yet) set to ATT C, the most common medical kind (D968; the first of the list where a squadron has no ATT C); the
 window, and who may file for whom in it (D655), are unchanged, and a save leaves the Medical tab in front, the new card
-on it. Pins: `ui/medicalview.test.tsx`, `e2e/medical.spec.ts`. Every section has a real empty state. Cards SIZE TO CONTENT and
+on it. Pins: `ui/medicalview.test.tsx`, `e2e/medical.spec.ts`. Every section has a real empty state. Cards size to content and
 pack from the left — **a wrapping flex row, not a grid** (`.medcards`;
 owner, 27 Aug 26: a stretch-to-fill column wasted the right half of every
 box, then 28 Aug 26: "the box around the puck doesn't look compact
@@ -6105,7 +6105,7 @@ wraps rather than running away), `flex:0 1 auto` + `min-width:0` keeps a
 single over-wide card inside the section, and the default
 `align-items:stretch` levels each row's card heights so the rows still read
 as rows. Pinned in `e2e/medical.spec.ts`, which measures the slack past a
-card's last word — LINE BY LINE off the text run (`Range.getClientRects`),
+card's last word — line by line off the text run (`Range.getClientRects`),
 because a span inside a column flex is stretched to the card's full width
 and its own box proves nothing. And a card's remark line draws only when it
 says MORE than the derived date line (`MedicalView.tsx:remarkNote` strips
@@ -6117,7 +6117,7 @@ closes it on an outside tap — it overlays the sections rather than pushing
 them down; owner, 27 Aug 26) writing `MEDASOF` (`state/view.ts`, null =
 the notional today, reset by the Today chip and on session change).
 
-**A LABELLED ICON BUTTON DECLARES ITS OWN GAP — the space in the JSX is
+**A labelled icon button declares its own gap — the space in the JSX is
 not the space on screen** (owner, 28 Aug 26 — "there's no spacing between
 the calendar and the word 'as'"). `.ic-head .abtn` is `inline-flex`, and a
 flex container drops the whitespace either side of an anonymous text item,
@@ -6133,14 +6133,14 @@ jsdom reports every rect as 0×0 and cannot see either fault.
 `currentColor` — is the app-wide convention for an icon-plus-label button,
 but it is restated per surface rather than declared once: `.docbtn`,
 `#inMedBtn`, `.sb-actions .abtn`/`.sb-calbtn`, `.filters .abtn .btnglyph`,
-and now `.ic-head .abtn`. A NEW labelled icon button in a header that has
+and now `.ic-head .abtn`. A new labelled icon button in a header that has
 never had one inherits neither, and the fault is invisible to every gate
 but the browser. Either add the two properties with the button, or fold
 the five into one selector list the next time this area is touched.
 
 ### The document viewer — overlapping documents and several files per entry
 
-**A card tap opens the DOCUMENT VIEWER** (`ui/DocViewer.tsx`,
+**A card tap opens the document viewer** (`ui/DocViewer.tsx`,
 `#docViewPop`, airpop chassis, `DOCVIEW` in `ui/pops.ts` holding the input
 OBJECT + an `up` flag): image inline, PDF in a frame, "No document on file
 for this entry" otherwise; object URLs are minted on open and revoked on
@@ -6155,10 +6155,10 @@ and typing an Upchit on the Inputs form — are one write path.
 (owner, 1 Sep 26 — "see the documents together if they overlap in terms of the
 dates"). A person's medical status evolves — an ATT C that changes or extends
 to ATT B / HL / OML, each entry with its own document — and the card shows
-whoever's status holds ON THE AS-OF DATE, so the earlier document was only
+whoever's status holds on the as-of date, so the earlier document was only
 reachable by scrubbing the date back. Now `engine/medical.ts:medEpisode(row)`
-gathers, at READ TIME, the person's medical rows whose date ranges OVERLAP OR
-TOUCH one evolving episode (touching counts, because the clash sheet usually
+gathers, at read time, the person's medical rows whose date ranges overlap or
+touch one evolving episode (touching counts, because the clash sheet usually
 leaves the winner and loser ADJACENT, not overlapping; the closing upchit is
 folded in), and `MedicalView.tsx` counts the documented ones per card. When a
 card's episode has more than one document its title says so ("Tap to view N documents"; the small **"N documents"**
@@ -6465,7 +6465,7 @@ whether a callsign is taken (a person not yet let in may not read the roster). *
 asked, one line `#accAsked`: "You asked for access as **Viper** (JKB · Pilot · CAT C).", "an admin will answer it"; with
 the guest switch ON, "View the schedule" `#accGuest` takes him straight into the guest view, D221);
 **Switched off** (`#accessOff`). Each has Sign out (`#accOut`, through `ui/logout.ts`). With the admin's guest switch ON a
-person waiting instead gets the GUEST VIEW (`ui/GuestApp.tsx`, `#guestApp`): a slim bar (the mark, "Waiting for access —
+person waiting instead gets the guest view (`ui/GuestApp.tsx`, `#guestApp`): a slim bar (the mark, "Waiting for access —
 view only" `#guestNote`, Sign out `#guestOut`), the week window, and the week from the view page's builder — what a
 member reads on View-only Sched, read only (D215): a published day's ISSUED face (no working-draft picker) and a day not
 yet published as it stands; a medical input in full (D211, D213); no ⓘ, warning list, pending list or Traffic button. Nothing else of the app is mounted — no windows, no tabs, no
@@ -6494,7 +6494,7 @@ first bullet.)*
 - **A member's reach is their OWN row; an admin's is every row** (owner,
   27 Aug 26 — "if I am viewing as a member and I view as ranger on the leave
   war, I shouldn't be able to input on other people's row except mine"). The
-  "own" row is the SIGNED-IN person (`viewer`, mirrored by the sync — since `[ACCOUNTS]`, D166 (4); it was
+  "own" row is the signed-in person (`viewer`, mirrored by the sync — since `[ACCOUNTS]`, D166 (4); it was
   Raptor's "View as"). For a member the drag's row list is that one row, so the
   rectangle only ever covers their own row — a date RANGE along it still selects
   freely — and a single tap opens the editing sheet only on their own row
@@ -6516,7 +6516,7 @@ first bullet.)*
   range, I'm stuck with just adding 1 input", on rows other than his own: a
   phone user rarely pauses a clean beat before dragging, and a drag begun a
   touch early crossed the slop before the still-hold and was thrown away as a
-  scroll). A QUICK flick still crosses the slop long before 140ms, so the
+  scroll). A quick flick still crosses the slop long before 140ms, so the
   grid's sacred sideways scroll wins it — cede. The highlight (`.selcell`) is
   written straight onto the cells, never through React state; the instant the
   drag arms, the wrap wears `.selecting` (a brighter wash + thicker ring in
@@ -6566,7 +6566,7 @@ first bullet.)*
   holds one** (`movableCells(sel.cells).length`, owner 27 Aug 26 — a loose box
   of empty cells is Fill-only, so Move never opens on nothing to move).
   **Delete takes EVERYTHING in the block, the admin's OIL awards included, and
-  its confirm NAMES EACH AWARD before anything goes** (owner, D260, 27 Sep 26 —
+  its confirm names each award before anything goes** (owner, D260, 27 Sep 26 —
   "B"): "Delete 4 days for 10 people, including 3 OIL awards (Drifter 3 Jan 1 day,
   Hunter 1 Jan 1 day, Hunter 4 Jan 1 day)? Tap Delete again." — the day is added
   only when one man has two. What is named is `store.ts awardsIn` (the same gates
@@ -6586,7 +6586,7 @@ first bullet.)*
   Pins `awardclear.test.tsx`, `inputgate.test.ts`, `rangeclear.test.tsx`.
   Post-out shows only
   for a single-person selection. Partial writes report in the `sel-note` voice
-  and keep the sheet up. **A fill that would take anyone below zero ASKS ONCE
+  and keep the sheet up. **A fill that would take anyone below zero asks once
   first** (his ruling D418, 29 Sep 26 — "Drag asks too"; it used to be left
   out on purpose, for fear of a question per man, and a three-day drag from 0
   wrote -3 unsaid): the first tap of a leave writes nothing and names, in ONE
@@ -6627,13 +6627,13 @@ first bullet.)*
     chip exists only where hover does (`(hover: none)` suppresses it — a
     phone's compatibility mousemove used to strand it at the tap point).
   - **Desktop:** a faded ghost follows the mouse and the landing highlights live
-    under it; a CLICK lands the block (the hover WAS the preview). **A RIGHT-CLICK
+    under it; a CLICK lands the block (the hover WAS the preview). **A right-click
     cancels** the move (owner, 27 Aug 26 — the mouse equivalent of Escape;
     `wireMove` swallows the context menu and drops the block).
   - **Phone:** no hover, and no undo — so it is TWO steps (owner, 27 Aug 26 —
     *show a preview, then Confirm*): a TAP stages the landing (highlighted) and
     the banner shows **Confirm / Cancel**; Confirm commits, a fresh tap
-    re-stages, Cancel exits. A SWIPE scrolls and never stages (only a clean tap
+    re-stages, Cancel exits. A swipe scrolls and never stages (only a clean tap
     fires). `movePreview` holds the staged day; the banner counts `movers`, not
     the raw rectangle — RECORDS, not days (D265): a morning and an afternoon bid
     on one day are "2 entries" — and says what stays behind (" · 1 OIL award
@@ -6643,14 +6643,14 @@ first bullet.)*
     / out-of-window landing refuses the whole move and says why in the banner.
     Its OWN day says "It is already on that day — pick another day." and stages
     no Confirm (it read "Nothing to move." — Fable's D262 scenarios, S6).
-  - **ONE CHIP, ONE MOVE** (owner, D262, 27 Sep 26 — "click on a single chip …
+  - **One chip, one move** (owner, D262, 27 Sep 26 — "click on a single chip …
     the move button should be enabled … The calendar can be removed"): the
-    one-day bid sheet's **Move** is never greyed and has no date box — it PICKS
-    THE RECORDS UP into this same move mode (`Matrix.tsx` sets `moveSel` to the
+    one-day bid sheet's **Move** is never greyed and has no date box — it picks
+    the records up into this same move mode (`Matrix.tsx` sets `moveSel` to the
     day, or to every day of a picked range — D335; `BidPicker` `onMove`), so a
     single chip and a block move by one machine and one set of landing rules.
     The old `DecisionSheet` (unmounted since 21 Sep 26) went with its date box.
-  - **A MOVE CARRIES THE RECORDS IT PICKED, NOT THE DAY'S TOP ONE** (owner, D265 /
+  - **A move carries the records it picked, not the day's top one** (owner, D265 /
     D266 / D333, 27 Sep 26 — `[LW-MOVE-STANDARD]`; `store.ts` `movableRecords`,
     `moveRecords`, `moveRecordsProblem`, `stayingIn`): every record on the chosen
     days this role may move — a bid beside an OIL award, beside leave filed on the
@@ -6674,7 +6674,7 @@ first bullet.)*
     / `moveProblem` / `movableCells` read the same records. A bid moved once
     bidding has closed says "moved from …" on its own list line (a day whose top
     record is an award shows no dotted mark for it — Fable's S4).
-  - **ONE FORMAT AND LOOK FOR THE TWO SHEETS** (owner, D264; his answers to the
+  - **One format and look for the two sheets** (owner, D264; his answers to the
     mock-up `docs/mock/lw-move-standard.html`, D331–D335, 27 Sep 26): the one-day
     sheet (`BidPicker`) and the drag-selection sheet (`SelectSheet`) show the same
     rows in the same order — **Decide** (Ack · Approve · Refuse — the admin's, a
@@ -6705,7 +6705,7 @@ first bullet.)*
     buttons: resting there used to run the grid off toward January, Fable's final
     read F1), only once the mouse has been out of every band since the move began
     (judged by geometry alone — the sheet closes under a still mouse, S2, F4), and
-    it stops at the grid's end; a PRESS-AND-DRAG carries it too, on the
+    it stops at the grid's end; a press-and-drag carries it too, on the
     drag-select's own gesture machine (a mouse arms at 4px, a finger by holding
     180ms — a quick swipe still scrolls the grid), whose bands scroll both ways,
     and the RELEASE picks the day under the pointer NOW (desktop lands, phone
@@ -6714,7 +6714,7 @@ first bullet.)*
     no press** (a phone's sheet shade lets a tap through to the grid — F2); **one
     move at a time** — while one is on the event rows open nothing and each move's
     entry ends the other kind (Astra's final read, 1); the phone's two-step follows
-    the screen's width AT THE TAP (Astra 4); **the month buttons keep
+    the screen's width at the tap (Astra 4); **the month buttons keep
     it on** (they are the grid's own); **a click on an EMPTY spot outside the grid
     ends it** — never a control, the banner, a sheet, or a popup's shade (the
     Legend's, the under-manned list's: `[data-testid$="scrim"]`); Escape and a
@@ -6762,7 +6762,7 @@ Every Leave War decision opens in a `Sheet` over a full-page `.sheetscrim`
 (`ui/Sheet.tsx`). Over two owner asks (28 Aug 26) the sheet went from a modal
 that froze everything behind it to a panel you can read the grid around:
 
-- **TWO WINDOWS DO NOT BLOCK THE GRID AT ALL (owner, D641, D642 — 7 Oct 26; built 8 Oct 26).** `Sheet` has a
+- **Two windows do not block the grid at all (owner, D641, D642 — 7 Oct 26; built 8 Oct 26).** `Sheet` has a
   `modal={false}` form: NO scrim is mounted (so neither the mouse's interceptor nor the touch screen's tap shield
   below is armed — both hang off the scrim's own node), a press outside does not close it, and Tab is not held in it;
   Escape, its ✕ and its finishing button close it, and its title strip still drags it. It is used by the Required
@@ -6770,13 +6770,13 @@ that froze everything behind it to a panel you can read the grid around:
   plain click on a CELL of the grid behind (`cell-`, `event-`, `req-`, `avail-`) opens that cell's own thing and
   closes the panel — one hook, `ui/gridclick.ts`, on the document's BUBBLE phase, so the click a finished drag leaves
   behind (swallowed at capture by `select.ts`) never closes the panel that drag just opened or re-aimed. A press on
-  the month buttons, a heading or the toolbar leaves it up. A NEW drag while the people's-days panel is up replaces
+  the month buttons, a heading or the toolbar leaves it up. A new drag while the people's-days panel is up replaces
   what it acts on, and `Matrix` keys the sheet by its selection so it starts afresh (an armed Delete, a below-zero
   ask, never carry over to another block). Move is unchanged — it closes the sheet and hands the block to the grid's
   move mode, where an empty tap outside still cancels the MOVE (D262). **Every OTHER Leave War window keeps the
   blocking form described below** (`OUTSTANDING.md` `[LW-WINDOWS-NONBLOCKING]`); `ui/nonmodal.test.tsx` pins both
   forms, and `e2e/leavewar.spec.ts` "the people's-days panel stays up with no veil…" the real drag behind an open panel.
-- **ESCAPE CLOSES IT** (bug sweep, 28 Aug 26). Not one Leave War sheet answered
+- **Escape closes it** (bug sweep, 28 Aug 26). Not one Leave War sheet answered
   Escape — its ✕ and a scrim tap were the only ways out — while the input editor
   peels its layers on Escape and the Medical as-of picker closes on it, so the
   tab read as broken on a keyboard and left anyone there shut inside a
@@ -6791,7 +6791,7 @@ that froze everything behind it to a panel you can read the grid around:
   eight-sheet table the scrim uses — a per-sheet test would pass while a ninth
   sheet shipped without it — and in `chrome.test.tsx` for the Legend.
 
-- **LEFT-RIGHT** ("I want to be able to still scroll left and right … on the
+- **Left-right** ("I want to be able to still scroll left and right … on the
   grids … while the page is still up"). The grid has to keep swallowing TAPS
   behind a sheet — a tap dismisses, and a bare grid tap behind an open sheet
   would otherwise open a second cell sheet or start a drag-select under the
@@ -6842,14 +6842,14 @@ that froze everything behind it to a panel you can read the grid around:
   COAST itself cannot be measured here (headless Chromium flings no native
   scroller from synthetic touches) and is not ours to measure any more: it is
   the grid's own, identical to the bare grid by construction.
-- **UP-DOWN** ("enable me to still scroll up and down when this window is
+- **Up-down** ("enable me to still scroll up and down when this window is
   opened"). This REVERSES the 17 Aug "one-scroll" body lock. The page used to
   be frozen (`body.lw-sheet-lock { overflow:hidden }`) so a swipe could never
   jump the grid under a reader; the owner now wants exactly that jump — to read
   the grid behind the panel. The lock is GONE. The scrim carries
   `touch-action: pan-y`, so on a fine-pointer device the browser pans the page
   vertically from a finger on it; on a touch screen the scrim is out of the
-  way altogether (LEFT-RIGHT) and the finger pans the page through the grid,
+  way altogether (left-right) and the finger pans the page through the grid,
   as with no sheet up; a vertical wheel is left un-prevented, so it scrolls
   the page too. On the mouse path,
   pointer capture is taken LAZILY (only once a drag commits to the horizontal
@@ -6857,7 +6857,7 @@ that froze everything behind it to a panel you can read the grid around:
   `position: fixed`, so only the grid behind it moves; the sheet's own inner
   list keeps `overscroll-behavior: contain` so scrolling to the end of the list
   still does not chain into the page — that was never the complaint.
-- **DESKTOP SCROLLBARS** ("on the desktop if i decide to use the horizontal bar
+- **Desktop scrollbars** ("on the desktop if i decide to use the horizontal bar
   or vertical bar to scroll, this is allowed as well"). The page's native
   vertical bar works the moment the body lock is gone. The grid's pinned
   horizontal proxy (`.mx-hbar`, `Matrix.tsx`) was z-index 50, UNDER the scrim
@@ -6905,7 +6905,7 @@ The Inputs / SANS redesign, plan §3.12 (`docs/superpowers/plans/2026-10-07-inpu
 its day from about 20 px to 33 px and made the Event row two lines tall.
 
 - **An event is three things:** its full name (`events[line]` / a band's `text`), its kind (its own tag, else its word's
-  preset — "no tag" is NOT "no kind": an untagged "PH" is a public holiday by its name), and a SHORT FORM of one to three
+  preset — "no tag" is NOT "no kind": an untagged "PH" is a public holiday by its name), and a short form of one to three
   letters or digits. ONE rule for a short form, `engine/eventshort.ts normShort` (capitals first, then the count); ONE
   answer to "what does the grid print", `engine/eventdefs.ts shortOf` — the event's own, else its preset's, else one
   derived from its name (initials of the words, else the first three), else a dot. An event saved before this prints
@@ -6939,14 +6939,14 @@ its day from about 20 px to 33 px and made the Event row two lines tall.
 
 ## The four rows at the foot of the Manning block — Required P / W, Available P / W (owner, D617, D637, D640, D665; built 8 Oct 26)
 
-**A COUNTER MAY STAND AMONG THE FOUR — D674 (8 Oct 26: "Can rearrange allow newly created counter rows be allowed to
+**A counter may stand among the four — D674 (8 Oct 26: "Can rearrange allow newly created counter rows be allowed to
 moved to anywhere in between the fixed blue dot rows? Even to below the 4 as well."), BUILT the same day
 (`[LW-COUNTERS-AMONG-FIXED]`, archived).** It narrows D665's "the LAST rows of the Manning block" below: in Rearrange a
 counter row is dropped above the four, between any two of them, or below all four.
 - **One order for the whole block** — `state/store.ts manningBlockOrder()`: the squadron's counters and the four fixed
   rows, each fixed row as a TOKEN (`engine/fixedrows.ts FIXED_ROWS`: `@req-p`, `@req-w`, `@avail-p`, `@avail-w` — "@"
   is a letter no counter's id can hold, and a token is NOT the Available rows' rule id, which the calendars keep
-  finding them by). What a saved list means is ONE pure rule, `blockOrder`: the four keep THEIR OWN order whatever the
+  finding them by). What a saved list means is ONE pure rule, `blockOrder`: the four keep their own order whatever the
   list says (only counters move — reading 1); a list that names none of them — every order saved before D674 — reads
   as "its counters, then the four" (reading 4; nothing stored is converted, D56); a counter made since the order was
   saved appears just above Required P, where a new counter has always appeared; an id that is no counter any more is
@@ -6992,11 +6992,11 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   squadron too) — a squadron makes the ones it wants with ⚙ → "+ Counter" — so these four are ALL it shows until a
   counter is made, and `CountRows` draws its `tbody` for them even with no count row. It replaced the same evening's
   first answer, D666 (five rows to start). What follows from it, each told to him:
-  - **In Rearrange a count row's eye is a DELETE CROSS** (`manning-delete-<id>`, in the balance box where the eye
-    sat; 26×16px). **IT IS RED — D676 (8 Oct 26: "Yeah cross should be red")**: the counter window's own red (D673) — a
+  - **In Rearrange a count row's eye is a delete cross** (`manning-delete-<id>`, in the balance box where the eye
+    sat; 26×16px). **It is red — D676 (8 Oct 26: "Yeah cross should be red")**: the counter window's own red (D673) — a
     red outline and a pale red cross, brighter under a mouse, never a solid red block; until that afternoon it wore
     the dashed grey edge every Leave War "Delete" wears (D332, which stands on the bid sheets). It deletes the counter
-    outright and ASKS NOTHING — **left so on his word, D677 ("Yeah leave them"): the cross asks nothing, and "Delete
+    outright and asks nothing — **left so on his word, D677 ("Yeah leave them"): the cross asks nothing, and "Delete
     counter" in the counter's own window still asks "Really delete?"; do not make the two alike** — because the app's
     Undo brings it back whole — what it counts, its amber and red, its place (the
     war's command stream carries the counters; `ui/nocounters.test.tsx`, and in a real browser `e2e/leavewar.spec.ts`
@@ -7033,7 +7033,7 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   for everyone (a press outside, Escape, a scroll or a second tap closes it).
 - **Names:** Available P / W are the two count rows' own names — his to change (D640). **Required P / W are FIXED — D668
   (8 Oct 26: "1 as recommended")**: no control renames them, and the saved name step 1 had made room for (`flynames`, its
-  command, permission row, reader, writer and Undo's words) was TAKEN OUT on 8 Oct 26 — the rows read `REQ_NAME`
+  command, permission row, reader, writer and Undo's words) was taken out on 8 Oct 26 — the rows read `REQ_NAME`
   (`ui/FlyEdit.tsx`), never a store; a record that build left behind is read by nothing (`ui/flyrows.test.tsx`,
   `state/flyplan.test.ts`). While a name is still the one it started with, a
   phone (≤430px) shows its short form (Req P, Req W, Avail P, Avail W).
@@ -7056,7 +7056,7 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
     focus, and a bar above the phone's own keyboard is unreliable. The box over the cell is a plain element showing
     what the pad typed; the pad (`.flypad`) is docked at the foot — row and day, ‹ › (previous / next flying day), Done,
     then the keys. The first key replaces the figure that was there. The page behind stays live: a tap on another
-    Required cell saves and moves the pad there. With the pad up the page scrolls ALL FOUR rows above it (a Required
+    Required cell saves and moves the pad there. With the pad up the page scrolls all four rows above it (a Required
     figure is typed against the Available one two rows down). Which form a press gets follows the POINTER that made it
     (`FlyRows` keeps the last press's kind): a touch-screen laptop gets the pad for a finger, the input for its mouse.
   - **The strip** names the row and the day and carries "This day | From <date> on". "From … on" writes a RUNNING figure
@@ -7088,7 +7088,7 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
     answer for each day — and the cells `FlyRows` keeps LIT while the panel is up (`.pick`) are that same answer, so
     what is lit is what Apply writes. **"These days"** writes the dates themselves (`fly.day.set`, ONE command): a
     no-fly day is always left out and said so; a weekend not set to fly, a public holiday or an Off day is FILLED
-    where the pick holds only such days, and LEFT OUT where it mixes them with ordinary days — the panel says "2
+    where the pick holds only such days, and left out where it mixes them with ordinary days — the panel says "2
     weekend or holiday days left out" with one press, Include, to take them in. **"From <date> on"** is a RUNNING
     figure (`fly.run.set`, ONE command): it starts on the first flying weekday of the pick (its button says that
     date), and the figures typed for the picked flying weekdays go with it in the same command (`setFlyRun`'s `clear`)
@@ -7097,7 +7097,7 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
     days it is acting on, or — with "From … on" picked — the run that starts on that date for the picked seats; it is
     offered only where there is something to take away. Apply waits for a number; Enter is Apply.
   - **It does not block the page (D641)** — `Sheet`'s `modal={false}`: no veil, a press outside does not close it,
-    Tab is not held in it. A NEW drag over the rows is followed by the same panel (the number typed stays); a drag
+    Tab is not held in it. A new drag over the rows is followed by the same panel (the number typed stays); a drag
     over people's days closes it for that panel, and the other way round — the two are never up together; a plain
     click on a cell of the grid opens that cell's own thing and closes it (`ui/gridclick.ts`); ✕, Escape and Apply
     close it. Folding the Manning block away takes it with the rows.
@@ -7115,7 +7115,7 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   deleted." Its live sample ("On this war's first day that counts N") is summed the row's OWN way
   (`engine/availrows.ts availHave` — never a SANS man), so the form cannot promise a number the grid does not show.
   The row is read with `availRuleOf` (the squadron's own where its list holds one, else the built-in) — it is not IN
-  the list until first changed, so a search of the list would open an empty "New counter". A NEW counter can never
+  the list until first changed, so a search of the list would open an empty "New counter". A new counter can never
   take one of the two ids (`mintId` holds them as taken — a counter named "availp" was otherwise saved over the row).
   A member's name is plain text. The Required rows' names open nothing (D668). The store's own refusals — delete, a
   teams count, thresholds held at 0 — are `dayfacts.test.ts`. Gate: `e2e/leavewar.spec.ts` "an Available row's name
@@ -7143,8 +7143,8 @@ view. Unless it's outside the screen view then it's ok to snap into view."
   only when the row is not wholly on screen, clear of the top bar and the table's stuck heading (`ui/onscreen.ts
   rowOnScreen`).
 - **The Inputs list (D672).** The changed input is lifted to the top of the list only when its row is not on screen (a
-  row the Undo has just brought back is lifted, so it is found). A SAVE shows the saved input by the same rule (it is
-  the same reveal). **And when the page does move, the row lands IN VIEW — just under the top bar** (`ui/onscreen.ts
+  row the Undo has just brought back is lifted, so it is found). A save shows the saved input by the same rule (it is
+  the same reveal). **And when the page does move, the row lands in view — just under the top bar** (`ui/onscreen.ts
   bringRowOnScreen` / `scrollToShow`, 8 Oct 26): the page moves by the least that brings the row wholly between the
   bar's foot and the window's foot, with 8px of air. Until then it was the browser's own "nearest edge" scroll, which
   judges by the WINDOW's edges — a row that had been above the screen landed at the window's very top, hidden behind
@@ -7178,7 +7178,7 @@ grid's figures bar count a press in the floating calendar (`.dcal-layer`) as ins
 
 The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shell (`ui/FloatWindow.tsx`).
 
-- **ON SCREEN IT IS CALLED "CALENDAR" (owner, D675, 8 Oct 26 — "Change it to Calendar instead of days").** The window's
+- **On screen it is called "CALENDAR" (owner, D675, 8 Oct 26 — "Change it to Calendar instead of days").** The window's
   title reads "Calendar"; its line in the Leave War's ⚙ is the heading "Calendar" and the button "Calendar…". "Days" is
   its name in the code and in these records only — wherever this section says Days, the screen says Calendar.
 
@@ -7190,7 +7190,7 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
   (150px on a desktop, the leftover width on a phone), so › does not move under a finger as names change length. The
   blanks before the 1st and after the last date are drawn as empty places.
 - **A date** shows its number — dimmed on a Saturday or Sunday, in the accent disc on today — and EITHER the tag the
-  Leave War gives it (the holiday's SHORT FORM — "PH", "OFF", or the squadron's own, "ND" — on a green wash for a
+  Leave War gives it (the holiday's short form — "PH", "OFF", or the squadron's own, "ND" — on a green wash for a
   public holiday, grey for an Off day; its title gives the full name; no class control under a holiday) OR its class
   control. *(Until the calendar job's bug check, 8 Oct 26, this month printed the fixed words "PH" / "OFF" while the
   SANS month, the Inputs month and the Leave War's Event row printed the short form — one day, two words. All four read
@@ -7210,7 +7210,7 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
   six-week month fits a short phone and never sits as a short box.
 - **Class names are prefixed** (`is-we`, `is-ph`, `is-off`, `is-today`, `c-day`, `c-night`, `c-nf`, `c-none`, `lit`,
   `t-ph`, `t-off`): the scheduler's stylesheet is one global sheet and the week owns `.day`.
-- **TO BE BUILT (D923, 15 Oct 26 — `[OIL-CONFIRM-DAYGRID]`): the OIL question's "Only some days…" grid becomes the one calendar's look (`ui/DateCal.tsx`), where a tap turns each separate non-working day of the input on or off** — a way of its own for that one place; every other calendar picks one date or one run. A picture first (D853, D921).
+- **To be built (D923, 15 Oct 26 — `[OIL-CONFIRM-DAYGRID]`): the OIL question's "Only some days…" grid becomes the one calendar's look (`ui/DateCal.tsx`), where a tap turns each separate non-working day of the input on or off** — a way of its own for that one place; every other calendar picks one date or one run. A picture first (D853, D921).
 - **A sideways finger turns the page (D786, D795 — built 13 Oct 26, `[ONE-DATE-CALENDAR]` step one; `ui/sideswipe.ts`,
   wired in `ui/DaysWindow.tsx`).** On the month it goes to the next month (left) or the last (right); on the Holidays list,
   the year. It is the Inputs calendar's own distance (`ui/calpick.ts` `SWIPE_MIN`, 50px, and more sideways than
@@ -7228,8 +7228,8 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
   cannot be picked. Nothing of the phone's own date box is left in the window — that is the fit: an iPhone gave that box a
   width of its own (his pictures of 8 and 13 Oct 26). A box cannot be emptied (D796 — no Reset): "No end" is how a rule
   has no end. Pins: `ui/everyweekday.test.tsx`; `e2e/datecal.spec.ts` (320, 360, 390 and 440 wide).
-- **THE PICKED DATE IS THE PLAIN BRIGHT DISC, NO RING (owner D824, 13 Oct 26 — "I like the others which doesn't have that blue ring"):** a ring round a date is the KEYBOARD'S place only (`:focus-visible`), never drawn after a tap or a click, and no design adds one to the picked date at rest.
-- **THE APP'S ONE DATE CALENDAR (D796, D797 — `ui/DateCal.tsx`, `ui/DateBox.tsx`, `ui/scheduler/26-date-calendar.css`;
+- **The picked date is the plain bright disc, no ring (owner D824, 13 Oct 26 — "I like the others which doesn't have that blue ring"):** a ring round a date is the KEYBOARD'S place only (`:focus-visible`), never drawn after a tap or a click, and no design adds one to the picked date at rest.
+- **The app's one date calendar (D796, D797 — `ui/DateCal.tsx`, `ui/DateBox.tsx`, `ui/scheduler/26-date-calendar.css`;
   the design of record `docs/superpowers/specs/2026-10-13-one-date-calendar.md`).** On the iPhone calendar's pattern in
   the Raptor look: the month and year as a title that opens two SCROLLED lists (months beside years — the months go round,
   the years have no end, the chosen pair in a band across the middle), the Today icon right of the year (the page with
@@ -7251,7 +7251,7 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
   (`ui/sideswipe.ts`), wherever the calendar is drawn; a swipe that begins on a date picks nothing; the lists scroll and
   are not swiped.
   - **Over the form — a date that is one box among others** (`DateBox`): the box is a button reading its date in words; a
-    tap opens the calendar as a LAYER ON THE PAGE ITSELF (`document.body`, layer 600 — above the windows shell, the modal,
+    tap opens the calendar as a layer on the page itself (`document.body`, layer 600 — above the windows shell, the modal,
     the Leave War's sheets and the passing note), a veil with the card on it — in the middle of the screen on a phone, a
     small panel under its box on a desktop (above it where there is no room beneath, and always on the screen). A tap on a
     date picks and it goes; a tap on the veil closes it and changes nothing (on the click, not the press); Escape closes
@@ -7336,7 +7336,7 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
   and nothing is saved. An edit, Cancel or ✕ ends the wait.
 - **The Leave War's New-period sheet, asked for from Days** (`leavewar/ui/warask.ts`, `sync.ts openNewPeriod`): the
   Leave War comes to the front and its own sheet opens with the dates picked — the calendar on that month, the span in
-  words, a name still to type — DRAWN OVER Days and the form (layers 480 / 481 against the windows' 410 / 411), whole on
+  words, a name still to type — drawn over Days and the form (layers 480 / 481 against the windows' 410 / 411), whole on
   the screen. Closed without creating, the next "+ New" opens as it always has. A member gets no sheet.
 - Gates: `e2e/leavewar.spec.ts` "Days opens from the Leave War's settings: the month sets a date's class, and the grid
   behind it follows at once", "a weekday's heading on Days sets every such day from a date onward, and the war's rows
@@ -7493,7 +7493,7 @@ Four asks from the same sitting, all on the Leave War grid:
   (`lw-viewing`, `ui/Chrome.tsx`) and the picker header leads with **VIEWING AS
   &lt;callsign&gt;**. Both are ABSENT when nobody in the roster is being viewed —
   there is no "you" to name, mirroring the picker's existing dash rule.
-  **ON A PHONE THE TOP OF THE LEAVE WAR IS TWO LINES — D678 (8 Oct 26: "A looks good"), BUILT the same day
+  **On a phone the top of the Leave War is two lines — D678 (8 Oct 26: "A looks good"), BUILT the same day
   (`[LW-PHONE-HEADER-SPACE]`).** Line 1: the period picker, "+" and this chip (words kept). Line 2: the stage, the
   bidding dates, under-manned, Legend. So the chip is BACK on the Period line, which fits once the word "Period" goes;
   it narrows D365 below.
@@ -7519,7 +7519,7 @@ Four asks from the same sitting, all on the Leave War grid:
     fifteen to spare for his iPhone's own font, which cannot be measured here (the app loads none). Under 380px they
     are half a point smaller and a pixel closer (331px of 340 at 360).
   - **Measured:** the grid's card starts 182px down at 360, 390 and 430 wide (282, 279 and 243 before).
-  **A DESKTOP AND A TABLET STAY AS THEY ARE — D679 ("keep the same for desktop"): two lines, every label and button as
+  **A desktop and a tablet stay as they are — D679 ("keep the same for desktop"): two lines, every label and button as
   before; the one-line desktop drawing is not built.** Every phone rule is inside `chrome.css`'s phone block and every
   phone branch behind `usePhone()`; measured at 431, 768 and 1440 wide before and after the build, every control's box,
   words, padding and type size came out byte for byte the same (`scripts/handpass/lw-phone-head-measure.mjs`).
@@ -7536,7 +7536,7 @@ Four asks from the same sitting, all on the Leave War grid:
   long callsign ends in "…". Measured: at 390 it cannot share the line even with its name cut. The line of its own, words kept, is his call on the look (D365, 29 Sep 26). Tablet and desktop keep
   the one line. Pinned by `e2e/leavewar.spec.ts` ("the VIEWING AS chip stays inside the screen"); walked
   `scripts/handpass/sf/sf-g2-viewing.mjs`.
-  The LIT ROW itself was turned up on 6 Sep 26 (owner, from his iPhone — "make
+  The lit row itself was turned up on 6 Sep 26 (owner, from his iPhone — "make
   the glow of the view as user row a bit more obvious in the grids"): the frozen
   pair takes a lighter panel (`#173C4A`), the accent lines bracketing the row go
   from .28 to .55, and the full-width seat bar in the name cell gained a glow past
@@ -7579,7 +7579,7 @@ Four asks from the same sitting, all on the Leave War grid:
   (`.who > *`, `.bal > *`, a heading's `.grphd-in` plus its fill cell), and that
   is still exactly what happens. SECOND, "make the glow of the selected row more
   obvious" — a dim row read as merely faded rather than picked up, so it was
-  given a ring; but that ring was assembled PER CELL (a box on `.who`, a box on
+  given a ring; but that ring was assembled per cell (a box on `.who`, a box on
   `.bal`, lines across the day cells) because a table row spanning two sticky
   cells and a year of scrolling ones cannot take one outline. The owner's iPhone
   showed it for what it was: **"every single drag and drop for rearranging things
@@ -7597,7 +7597,7 @@ Four asks from the same sitting, all on the Leave War grid:
   (`--lift-box` on `:root`, `.lift`, `.lift-frame`, `.lift-land` + its veil, the
   `liftIn`/`liftLand` keyframes) with the DOM choreography in `src/ui/lift.ts`;
   the design is `docs/superpowers/specs/2026-09-06-drag-lift-design.md`.
-  - **INSET ONLY — no outer halo on anything, ghosts included.** The Leave War
+  - **Inset only — no outer halo on anything, ghosts included.** The Leave War
     grid sits inside `.card{overflow:hidden}` and the board rows inside
     `.sb-panel{overflow:hidden}`, and an `overflow:hidden` ancestor DISCARDS a
     descendant's outer box-shadow — which is precisely why the old halo showed
@@ -7667,7 +7667,7 @@ Four asks from the same sitting, all on the Leave War grid:
     two used to fight over the same `box-shadow` property on exactly the days an
     admin reorders the block FOR. The board's `.rowdrag`/`.secdrag` are state
     classes now too: they recolour the grip and nothing else.
-  - **Every LANDING BAR is untouched** (`.rowdrop`, `.secdrop`, `.qdrop`,
+  - **Every landing bar is untouched** (`.rowdrop`, `.secdrop`, `.qdrop`,
     `.ic-over`, `.pk-swap-target`, `[data-fill].dragover`, Leave War's
     `tr.dragover`) — they say where it WILL go, the flash says where it WENT, and
     the two are deliberately different vocabularies. Leave War's still runs the
@@ -7732,7 +7732,7 @@ is scoped `:not(.lift-frame)`.
   `markLand(selector)` BEFORE the rebuild and the existing post-render pass calls
   `paintLand()` — `refreshHighlights` right after `paintFreshAdds()` for the
   board and both weeks, InputsCal's own dep-list-free layout effect for the
-  calendar and its popover. **It is ONE FLASH PER NODE, not one-shot** (corrected
+  calendar and its popover. **It is one flash per node, not one-shot** (corrected
   6 Sep 26, measured in Chromium against the built board — the design's original
   "one-shot" wording is superseded). `refreshHighlights` runs once per re-rendered
   SURFACE, and on the scheduler board two of them run in the same commit:
@@ -7761,8 +7761,8 @@ is scoped `:not(.lift-frame)`.
   Leave War row are found by their stable key and re-MEASURED (keyed rows move,
   they do not remount). The one address that travels is an `ac` move where the
   whole formation goes: `to` then names a jet inside the target formation.
-- **KNOWN GAPS, recorded rather than fixed.** (1) The Ground Programme is drawn in
-  START-TIME order, so its FIRST manual move on an unsorted day freezes that order
+- **Known gaps, recorded rather than fixed.** (1) The Ground Programme is drawn in
+  start-time order, so its FIRST manual move on an unsorted day freezes that order
   into the model and re-indexes every row — on that one move the landed row is not
   `to`, and the flash can land one row out. It is decorative, first-drag-of-a-day
   only and self-corrects from the second drag on; closing it needs the movers to
@@ -7784,7 +7784,7 @@ is scoped `:not(.lift-frame)`.
 to minimise row height space").** The `.card-hd` above the counter grid carries,
 left to right: Manning (the `▾/▸` collapse toggle for the counter rows, EITHER
 role), then for an admin the ⚙ Settings and the ⠿ Rearrange toggle, then the OIL
-tracker — placed RIGHT AFTER the last control, not sprung to the far edge (owner,
+tracker — placed right after the last control, not sprung to the far edge (owner,
 same day — "the oil tracker can be right of rearrange … in normal user it's just
 right of manning"): the old `.card-spring` was removed, so the row packs left and
 a member reads Manning · OIL. The "JAN – DEC 26 · 365 days · 50 people" `.t` line
@@ -7802,8 +7802,8 @@ jsdom cannot see the single line; pinned by e2e
 phone AND desktop) and unit (`settingssheet.test.tsx` — the header's controls by
 role and DOM order, and the date line gone).
 
-**A TAP LEAVES NOTHING BEHIND ON ANY `.rtbtn`; A MOUSE AND A KEYBOARD KEEP WHAT
-THEY HAD (owner, 6 Sep 26 — "a second click when it's turned off shouldn't
+**A tap leaves nothing behind on any `.rtbtn`; a mouse and a keyboard keep what
+they had (owner, 6 Sep 26 — "a second click when it's turned off shouldn't
 glow").** After the second tap turned Rearrange OFF, the ⇅ still read as on. Two
 independent causes, both fixed:
 
@@ -7819,7 +7819,7 @@ independent causes, both fixed:
   (`.rtbtn:hover`, `.rtbtn.gear:hover`, and `.rtbtn.zoom:disabled:hover`, which
   exists only to cancel the first) now sits inside `@media (hover: hover)`:
   false on a touch screen, true for a mouse, so the desktop hover is unchanged.
-  They are wrapped IN PLACE, not gathered: `.rtbtn:hover` shares specificity
+  They are wrapped in place, not gathered: `.rtbtn:hover` shares specificity
   (0,2,0) with `.rtbtn.pri` and `.rtbtn.arm` below it and loses to them on
   source order, which is what stops a hover stealing a primary or armed
   button's border. Moved down, it would win.
@@ -7875,7 +7875,7 @@ appears, the phone's word is hidden).
 between the counters and the groups, admin-only like the whole sheet (`roster-reset-order`). It **asks once**
 ("Really reset?"; closing the sheet takes the question back *— until 8 Oct 26 "Reset counters" stood beside it with
 the same question, and arming either took the other's back; Reset counters is gone, D669, so this is the only one*) and is **greyed, with a line
-saying so, while the roster already follows the default** (`roster-order-hint`) — judged by the roster AS DRAWN
+saying so, while the roster already follows the default** (`roster-order-hint`) — judged by the roster as drawn
 (`rosterFollowsDefault`), so a man dragged away and back reads as the default, never a press that moves nothing; a hand-arranged roster's line says
 what the default is (each group as listed, pilots above WSOs, then CAT and callsign) and that Undo brings the
 arrangement back. The store's `resetRosterOrder` CLEARS the saved order (not `autoSortRoster`'s freeze of today's
@@ -7948,7 +7948,7 @@ projects).
 
 ### In Rearrange: the wider name column, the manning-row grip, the Archive bar
 
-*(8 Oct 26 — D669: the EYE on a manning row is now a DELETE CROSS, and the ARCHIVE bar is gone with it. What holds
+*(8 Oct 26 — D669: the EYE on a manning row is now a delete cross, and the ARCHIVE bar is gone with it. What holds
 now is in §The four rows at the foot of the Manning block, "The block's own rows". The two paragraphs below on the eye
 and the Archive bar are kept as the record of what was built on 5 Sep 26; read "the eye" as "the cross" for where the
 control sits — alone, centred, in the balance box — and the Archive paragraph as history.)*
@@ -8086,8 +8086,8 @@ of person).
   (`setQualCatalog`) — a group pinned to a Quals column the squadron later deletes
   would otherwise draw an empty heading nobody could remove.
 - **Manning counts do NOT follow the grouping** (owner's explicit answer, and
-  verified: `countsFor` never calls `groupOf`). Grouping is display only. NAMED
-  DRIFT-SEAM: the group editor and the manning count rows are two independent
+  verified: `countsFor` never calls `groupOf`). Grouping is display only. Named
+  drift-seam: the group editor and the manning count rows are two independent
   admin configurations over overlapping vocabulary — changing one does not move
   the other, by design.
 - CAT sub-headings are emitted for the two built-in OPS groups only; a person drawn
@@ -8155,13 +8155,13 @@ history; THIS block is the recipe to copy. Six pieces, in order:
    state, flipped by an IntersectionObserver / scroll measure). It pins just
    below the app top bar's lower edge. The real header stays in the grid; the
    mirror is a throwaway overlay that appears on freeze and unmounts on
-   scroll-back up. **It is PLACED BEFORE ITS FIRST PAINT** (owner's video,
+   scroll-back up. **It is placed before its first paint** (owner's video,
    23 Sep 26 — it flashed the start of the year, then jumped sideways): the
    seeding is a layout effect, and in the `.lw-sda` path it also holds the
    translated table with an inline translate until the animation's `ready`,
    because a freshly created scroll-driven animation is not applied on its
    creation frame; `lwx-follow` states its `from`, so the hold never blends
-   into it. **It RE-MEASURES whenever a column can have widened under it** —
+   into it. **It re-measures whenever a column can have widened under it** —
    any store change, the row window, folds, the manning rows, a figure typed in the four Required / Available rows
    (and, until D669, the Archive) (`widthGen`; value-checked, so free when nothing moved). Pinned by "the
    frozen bar is in step with the grid the moment it appears" and "a column
@@ -8179,7 +8179,7 @@ history; THIS block is the recipe to copy. Six pieces, in order:
      mirror's day columns are TRANSLATED from 0 to the grid's max scrollLeft
      across the grid's whole range (`animation: lwx-follow linear both;
      animation-timeline: --lwx`), so `grid.scrollLeft ↦ translateX(−scrollLeft)`
-     runs ON THE COMPOSITOR — glued, nothing to catch up. `--lwx-max` (the max
+     runs on the compositor — glued, nothing to catch up. `--lwx-max` (the max
      scroll distance) is set from JS on LAYOUT changes only, never per frame.
    - **Fallback path.** A rAF pump copies `grid.scrollLeft` onto the mirror's
      own scrollLeft each frame (main thread, a frame behind a fling). GPU it
@@ -8197,7 +8197,7 @@ history; THIS block is the recipe to copy. Six pieces, in order:
    `pointer-events:none` + aria-hidden so the accessible/clickable set stays
    single.
 
-5. **The `@keyframes` must live at the FILE'S TOP LEVEL.** This file wraps
+5. **The `@keyframes` must live at the file's top level.** This file wraps
    everything in a `#page-leavewar { … }` native-nesting block; a `@keyframes`
    at-rule is invalid inside CSS nesting and the minifier (lightningcss) rejects
    the whole build. Keyframe names are global, so a top-level `@keyframes
@@ -8248,7 +8248,7 @@ feel he rejected on 10 Aug 26). The fix-by-fix history follows.
   is COMPOSITOR-driven, not JS** (owner, 28 Aug 26 — a screenshot showing the
   date bar trailing the grid mid-fling: "the top bar not catching up … glue it,
   keep the feel"). This supersedes the "true zero latency is not reached" caveat
-  above FOR THOSE BROWSERS: the JS mirror only *follows* the grid (main thread,
+  above for those browsers: the JS mirror only *follows* the grid (main thread,
   a frame behind the compositor fling — which is the trailing he saw at rest in
   a caught frame, ~2 columns, snapping back on stop). Instead `.mx-wrap` names
   its horizontal scroll as a `scroll-timeline` (`--lwx`), `.mx-outer` hoists that
@@ -8272,7 +8272,7 @@ feel he rejected on 10 Aug 26). The fix-by-fix history follows.
   set. Gated by `.lw-sda` (JS `sdaActive` feature-detects `scroll-timeline` +
   `timeline-scope`); when absent — older browsers, and jsdom — the JS mirror
   above is used UNCHANGED, so nothing regresses where the feature is missing.
-  `@keyframes lwx-follow` lives at the file's TOP LEVEL (a keyframes at-rule is
+  `@keyframes lwx-follow` lives at the file's top level (a keyframes at-rule is
   invalid inside this file's `#page-leavewar { … }` nesting wrapper; the minifier
   rejects it — keyframe names are global, so the binding still resolves).
 - **The day-column headers are `position: static`, NOT sticky** (owner, 28 Aug
@@ -8353,7 +8353,7 @@ member editing their own leave) or an admin (anyone). It takes precedence in
 derives from — a leave FILED on Inputs or APPROVED on the war (since
 [ARCH-STACK] step 4 both are the one Input, the war-approved one carrying `lw`), found by
 `sync.ts:leaveInputAt` — which since the 27 Aug overnight pass is handed the
-CELL'S OWN code, so under a leave clash (two inputs covering one day) it opens
+cell's own code, so under a leave clash (two inputs covering one day) it opens
 the record that actually derives the tapped cell: same leave type, exact
 portion preferred, the lw-tagged (war-minted) row outranking a plain one, and
 a non-leave code (an FO/HO credit) matching nothing. The save runs through
@@ -8377,7 +8377,7 @@ scrim table; e2e drives the admin round trip in a real browser.
 
 ## A member edits only their own personal inputs (owner, 27 Aug 26)
 
-On the Inputs page a member lands on THEIR OWN inputs — the person filter
+On the Inputs page a member lands on their own inputs — the person filter
 defaults to `ME` for a member, `all` (Everyone) for a scheduler — with
 Everyone one pick away in the same filter. On every other person's row the
 edit ✎ and delete ✕ are simply not rendered (`canEditSched() || r.person ===
@@ -8392,23 +8392,23 @@ and is in `docs/engine-rules.md` §Auth / roles. Pinned in
 *(As of the one-rule build, 12 Oct 26 — D755, D756, D762, D763, D770; D760 for the marks: an input is ONE record with
 the list of its people, so "their own" is asked of that list and never of a record's one `person`. Read the paragraph
 above with these — it is left as written:*
-- *WHAT A MEMBER SEES FIRST is unchanged, but an input of several passes his filter when ANY of its people is he
+- *What a member sees first is unchanged, but an input of several passes his filter when ANY of its people is he
   (`ui/inputscal-model.ts inputPassesPerson`), so he lands on the inputs he is IN as well as the ones that are his.*
-- *WHOSE AN INPUT IS — `state/perms.ts mayEditInput(record)` / `mayDeleteInput(record)`, both `mayChangeInput`: an
+- *Whose an input is — `state/perms.ts mayEditInput(record)` / `mayDeleteInput(record)`, both `mayChangeInput`: an
   admin; the input's ONLY person, with nobody and no ALL AVAIL / ALL beside him (`engine/inputs.ts onlyNamed`),
   whoever filed it; or its FILER (`filedForOther`) — the members' switch on, a kind a member may file for others, and
   everyone else in it put in by him (`allPutBy`). Once a scheduler has put someone in beside others, changing it for
   everyone is the scheduler's (D755 (3)). An input for several people, or for ALL AVAIL, is nobody's own.*
-- *SOMEONE WHO IS IN IT BUT MAY NOT CHANGE IT — he did not file it, or he is the only named person beside ALL AVAIL /
+- *Someone who is in it but may not change it — he did not file it, or he is the only named person beside ALL AVAIL /
   ALL (D770) — reads it and has ONE thing of his own: "Take me out" (`ui/inputedit.tsx`, `inped-takeout` — a
   `commitInput` with himself left off the list, which that writer lets through for him alone). He adds nobody
   (D763) and gives no OIL answer of his own: the input has ONE answer, given by whoever may change it (D762).*
-- *THE SCHEDULER'S MARKS on an input — cancelled with its reason, the red box, information only — are never a
+- *The scheduler's marks on an input — cancelled with its reason, the red box, information only — are never a
   member's to set or clear, on his own input too (D760).*
-- *THE ✎ AND THE ✕ ARE NOT ON THE ROW AT ALL since 10 Oct 26 (D718, D723): the row opens the input's window. What
+- *THE ✎ and the ✕ are not on the row at all since 10 Oct 26 (D718, D723): the row opens the input's window. What
   the List's row still asks `mayEditInput` for is its OIL chips, drawn only for an input of ONE person
   (`ui/InputsPage.tsx`); an input of several carries none.*
-- *THE WRITE-PATH BACKSTOP is three bodies now: `commitInput` — the one writer, which asks `mayEditInput` and
+- *The write-path backstop is three bodies now: `commitInput` — the one writer, which asks `mayEditInput` and
   `mayFileInputFor` before anything is written — with `commitInputEdit` and `removeInput` beside it; and behind every
   door the commit gate, `perms.ts ownershipViolation` → `inputBreach`, which reads what a member's command really
   changed: his own part (`ownPart` — his one-person input, or his own entry alone going out of a list), or an input he
@@ -8416,7 +8416,7 @@ above with these — it is left as written:*
   is paired word for word with `docs/data-model.md` §11's `Input` row (`perms.ts INPUT_FILER_NOTE`; `perms.test.ts`
   fails when the two differ — D200). The pinning file is `src/ui/audit-guards-inputs.test.tsx`.)*
 
-**Another man's input opens READ ONLY, and looks it (W1-F3, 26 Sep 26; the look `[ABSENCE-SMALL-SEEN]` 4, 28 Sep 26).**
+**Another man's input opens read only, and looks it (W1-F3, 26 Sep 26; the look `[ABSENCE-SMALL-SEEN]` 4, 28 Sep 26).**
 From the calendar's chip or the day popover a member opening someone else's input gets the edit window with its body
 `inert`, no Delete and no Save, and "Only Tally or an admin can change this." at the foot (`ui/inputedit.tsx`,
 `perms.ts mayEditInput` - it takes the record since 8 Oct 26). Its locked fields used to be drawn exactly as live ones — the dropdown box and arrow, the
@@ -8429,7 +8429,7 @@ input window draws its locked fields as values"); walked `scripts/handpass/sf/sf
 reader may not change — `!mayEditInput(record)` — and that now includes an input of several he is IN but did not file,
 and one where he is the only named person beside ALL AVAIL / ALL. The form is `inert` as before, with no Delete and
 no Save; what differs is the foot and what stands outside the form:*
-- *THE SENTENCE. For an input of ONE person it is still "Only Tally or an admin can change this." For an input of
+- *The sentence. For an input of ONE person it is still "Only Tally or an admin can change this." For an input of
   several, or one that holds ALL AVAIL / ALL, it is the one body every door says, `ui/inputedit.tsx sharedRefusal`:
   "Only Saber — who filed it — or an admin can change this for everyone."; once a scheduler has changed who is in it
   (`perms.ts filedWhole` is false), "A scheduler has changed who is in this — ask an admin to change it for
@@ -8438,10 +8438,10 @@ no Save; what differs is the foot and what stands outside the form:*
 - *"TAKE ME OUT" (`inped-takeout`) stands in the foot, outside the inert form, for a reader who is in the input — it
   asks first ("Take yourself out of this input? It stays for the other 2 people.") and then says "You are out of
   this input". Beside Close and the paperclip it is the only live control in his window.*
-- *THE OIL LINE states the input's ONE answer and has no button for a reader: "Change…" and "Answer…" are drawn only
+- *The OIL line states the input's ONE answer and has no button for a reader: "Change…" and "Answer…" are drawn only
   for whoever may change the input (not drawn at all for a reader since 10 Oct 26, `[CAL-CHECK-SEEN]` — it is not
   "dimmed rather than removed"). There is no "Your OIL" line and no answer of a man's own (D762).*
-- *A CANCELLED INPUT'S WINDOW wears the small red CX tag and its reason beside its title (`inped-cx`, D771), for
+- *A cancelled input's window wears the small red CX tag and its reason beside its title (`inped-cx`, D771), for
   every reader — a mark, never a control. A document is opened from the paperclip in the foot (`inped-docview`),
   outside the form, so a reader can still open it.)*
 
@@ -8620,7 +8620,7 @@ with its left edge on the Jan 1 column, and clears when bidding closes).
 
 ## The Leave War grid draws a window of months (3 Sep 26)
 
-The year grid draws WHOLE MONTHS at their REAL widths, never the whole year
+The year grid draws whole months at their REAL widths, never the whole year
 at once (`src/leavewar/ui/colwindow.ts`; the measuring in `Matrix.tsx`).
 The contract, in the order a reader meets it:
 
@@ -8655,7 +8655,7 @@ The contract, in the order a reader meets it:
   the header — the 20 Aug column virtualisation that misaligned on iOS gave
   some rows colSpan spacers over full header columns; no row here differs.
   This container has no WebKit, so the owner's iPhone is the gate for that.
-- **Months are drawn IN PLACE while the scroll is still moving** — growth
+- **Months are drawn in place while the scroll is still moving** — growth
   only (`colwindow.ts stepAllowedInMotion`): to the RIGHT of the view always
   (nothing on screen moves), to the LEFT only over a month whose width was
   measured under the rows on screen now (`widthExact` — the swap is then
@@ -8682,10 +8682,10 @@ The contract, in the order a reader meets it:
   measuring is proved in the browser gate on both projects.
 - **One draw-toward-a-target engine, per mode** (owner, 4–5 Sep 26 — "fill in the
   background", then "load the next months as I approach the edge", then, once
-  measurement showed the browser spends ~1.4s RE-STYLING the full-year grid on
+  measurement showed the browser spends ~1.4s re-styling the full-year grid on
   every reveal, "shrink when I leave, rebuild on return", then "do the
-  placeholders + moving"). A single loop widens or trims the drawn window ONE
-  MONTH PER BEAT toward a target that depends on the mode (`colwindow.ts
+  placeholders + moving"). A single loop widens or trims the drawn window one
+  month per beat toward a target that depends on the mode (`colwindow.ts
   stepToward`): a short timeout while the scroll is moving (an idle callback is
   starved by an active scroll), an idle callback at rest so a beat never competes
   with a paint. It is woken by every scroll event (the view moved), by scroll
@@ -8714,7 +8714,7 @@ The contract, in the order a reader meets it:
   the whole year / never prune" contract; the reveal cost is the reason. The
   on-screen signal is `leavewar/state/screen.ts` — a plain listener set, NOT the
   store, so flipping it never re-renders the grid.
-- **The desktop PRE-WARMS after login** (owner, 5 Sep 26 — "load it while I type
+- **The desktop pre-warms after login** (owner, 5 Sep 26 — "load it while I type
   my password so there's no wait"). Once the user pauses after login, `Shell.tsx`
   mounts the tab HIDDEN (desktop only): that pulls its separate download and draws
   its first few months off the critical path, so the first click opens an
@@ -8722,7 +8722,7 @@ The contract, in the order a reader meets it:
   lands under the login keystrokes and never slows login-to-week; the phone is left
   alone (its first open is already quick). Pinned in the e2e as "the Leave War
   screen is a separate chunk, pre-warmed after login".
-- **The desktop bottom scrollbar is a YEAR-WIDE SCRUBBER** (owner, 4 Sep 26 —
+- **The desktop bottom scrollbar is a year-wide scrubber** (owner, 4 Sep 26 —
   "the scroll bar at the bottom keeps adjusting … make it linear … halfway I'm
   already at the edge"). Because the grid only drew ~2 months, the proxy bar
   (`.mx-hbar`) whose spacer matched the drawn content spanned only those: its
@@ -8813,7 +8813,7 @@ value.
 `aria-expanded`; it is the archive bar's scale, deliberately a hem rather than a
 heading. Both roles, session-only, decided ONCE at mount: a desktop opens OPEN, a
 phone (`matchMedia('(max-width: 700px)')`) and jsdom (no `matchMedia`) open
-CLOSED. The type is small; the TARGET is the WHOLE CELL — the button is taken out
+CLOSED. The type is small; the TARGET is the whole cell — the button is taken out
 of flow and pinned `inset: 0` inside the (already sticky) `th`, which is also
 what keeps it costing the bracket row no height. In flow it was its own 15px line
 in a 22px cell, so a third of the only way in and out of the drawer did nothing
@@ -8826,7 +8826,7 @@ when pressed.
 overlay's mirror image, and built on its three rules: drawn once, outside the
 sideways scroller, and every real row keeps identical cells. Four measured
 numbers place it (`Matrix.tsx`, one `useLayoutEffect` + a `ResizeObserver`): the
-real header row's top, the names column's RIGHT EDGE (so the drawer's first
+real header row's top, the names column's right edge (so the drawer's first
 column lands exactly on the closed counter column and no box moves when it
 opens), the header row's height, and its own width and column widths. Its body
 rows copy the real rows' MEASURED heights through `syncOverlayHeights`, keyed
@@ -8868,7 +8868,7 @@ the closed pair's width, ~250px left of where the reader was looking on a
 desktop, until an unrelated resize or zoom happened to refresh the cache. **The
 dep is the measured width `drawerAt.width`, not a list of the things that move
 it**: `figuresOpen` alone catches the drawer appearing but not the drawer
-CHANGING WIDTH while it is out — hide a figure, open the drawer, press Undo, and
+changing width while it is out — hide a figure, open the drawer, press Undo, and
 the cached edge is a column short of where the reader is looking. `drawerAt` is
 value-guarded, so that dep fires on a real edge move and on nothing else. Pinned
 both ways: "the month strip reads from the drawer's edge, not the closed
@@ -8928,7 +8928,7 @@ picker tap would otherwise light sixty rows at once), and never on the first
 render: there is nothing changed about a number just appearing.
 
 **Four parts are WebKit-unproven** (Chromium is clean on all four; the
-owner's iPhone is the gate). The overlay's copied ROW HEIGHTS — a Safari that
+owner's iPhone is the gate). The overlay's copied row heights — a Safari that
 lays the two tables out a fraction apart shows as figures drifting off their
 names further down the roster. The stuck bar's frozen COPY being exactly the
 drawer's right edge — the same visual-vs-zoomed-pixel trap that put the hatched
@@ -8967,7 +8967,7 @@ on screen, not the stored `shownId`: where the stored one names a figure since
 hidden the column has already fallen back to the first visible one, and the
 picker marked the dimmed row as pressed instead.
 
-**A WRITE ON THE GRID KEEPS YOU ON THE GRID (owner, 6 Sep 26 — "it should never
+**A write on the grid keeps you on the grid (owner, 6 Sep 26 — "it should never
 bring me to the oil tracker page").** This REVERSES the 2 Sep 26 rule that an
 admin's manual OIL-family write (OIL taken, or an FO/HO credit typed by hand)
 closed the sheet and opened the OIL tracker on that person with the day's box
@@ -9062,8 +9062,8 @@ second at the depth such a drag ends at — **so the bar's count is the check
 before Save**, and the count is the number to read, not the rows the finger
 remembers crossing.
 There is no
-sideways auto-scroll — `.mx-outer` does not scroll. **A HOLD SELECTS AND A QUICK
-TAP STILL OPENS THE BREAKDOWN** — that is
+sideways auto-scroll — `.mx-outer` does not scroll. **A hold selects and a quick
+tap still opens the breakdown** — that is
 the whole difference a reader feels on a box that used to do only one thing, and
 it is pinned both ways in the e2e ("a drag on a total, or by a member, lights
 nothing" makes an admin's plain click open `figure-breakdown`, close it, and
@@ -9083,7 +9083,7 @@ TOT` and `−MED TOT` refuse and every balance including OIL accepts.
 while another one owns the grid — Rearrange, move mode, event move. A member's
 boxes behave exactly as they always did.
 
-**TWO ATTRIBUTES, ONE LOOK, AND THEY MUST NEVER BE ONE.** React renders
+**Two attributes, one look, and they must never be one.** React renders
 `data-figsel` for the COMMITTED selection; the gesture paints `data-figdrag`
 while a drag is live and wipes only its own marks on release. Neither is a
 CLASS, because `FigureCell` rebuilds its `className` from `wide`/`flash` on every
@@ -9113,7 +9113,7 @@ It used to live in `finish()`, so an iOS system gesture that cut a hold with
 `pointercancel` let the trailing click open a sheet over the selection just made.
 `swallowNextClick()` is called from both `finish` (when it was armed, even if the
 selection came back null) and `onCancel`. This is a fix to the shared core, so
-the DAY GRID gains it too. Pinned in `select.test.ts`.
+the day grid gains it too. Pinned in `select.test.ts`.
 
 **The phone band lets a press through to the drawer while the figures are open.**
 With the grid scrolled sideways the band's own (hidden) counter column sits over
@@ -9156,7 +9156,7 @@ var(--accent)` ring, `0 0 0 4px rgba(59,198,232,.16)` plus a deep drop shadow,
 radius 14, and a 160 ms `lw-dockin` slide on entry that is off under
 `prefers-reduced-motion`. The first cut of the bar "visually blended in with the
 background" (owner, 6 Sep 26), which is what the ring answers (its pale band went 15 Oct 26, D887). **The
-MOVE BANNER now stops at 880px on a wide screen** — it used to run `left: 12px;
+move banner now stops at 880px on a wide screen** — it used to run `left: 12px;
 right: 12px` — because a foot-of-screen panel spanning 1400px reads as chrome
 rather than as something that just appeared. Below 904px, which is every phone,
 its geometry is unchanged.
@@ -9176,7 +9176,7 @@ deliberately not a sheet; without them they came up as bare grey browser buttons
 `parseAmount(raw, sign)`: `2` and `+2` both ADD, `-2` (or a typed `−2`)
 subtracts, and a typed sign always beats the chip. With no sign typed the `+ / −`
 chip decides — a phone's decimal keypad has no minus key, so the chip is the
-phone's only way to a correction. It is `aria-pressed` and TINTS RED while
+phone's only way to a correction. It is `aria-pressed` and tints red while
 subtracting, because a pick the eye cannot see is a form that lies (this file's
 own 19 Aug 26 rule). Anything that is not a plain number is refused with "Type
 the days — 2 adds, -2 subtracts"; zero, blanks and quarter-days are refused by
@@ -9214,7 +9214,7 @@ silencing (`CreditForm.tsx`, pinned in `balancebar.test.tsx`).
 
 ### The record
 
-**ONE WRITER FOR EVERY POOL.** `state/store.ts grantTo(personIds, counter,
+**One writer for every pool.** `state/store.ts grantTo(personIds, counter,
 amount, date, reason, givenBy)` is the single credit path, shaped exactly as
 `grantOil` was — dedupe the ids, drop anyone not on the roster, one entry per
 person through `ledgerSeq()`, then ONE `withCurrent` + one `persist()` + one
@@ -9228,12 +9228,12 @@ finite and non-zero, and **a multiple of 0.5 on EVERY pool, the tracker
 included** — "Days come in halves — 1, 1.5, 2 …" — because a half day (HO) is the
 smallest thing the grid ever charges, so a credit of 0.3 could never be drawn
 against. That is new, owner-approved, and it tightens the OIL tracker too. The
-date must be `YYYY-MM-DD` (the bar supplies today). **A REASON IS REQUIRED FOR
-OIL ONLY** — `reasonRequired(counter) = counter === 'oil'`, the one predicate the
+date must be `YYYY-MM-DD` (the bar supplies today). **A reason is required for
+OIL only** — `reasonRequired(counter) = counter === 'oil'`, the one predicate the
 writer, the edit path, the boot reader and the form all read, so a blank reason
 is a valid plain-pool credit and an invalid OIL one. `givenBy` is optional
 everywhere. `approvedBy` is stamped from `approverName()` — the viewer's
-CALLSIGN, never their id. A NEGATIVE amount is a correction, not a second
+CALLSIGN, never their id. A negative amount is a correction, not a second
 mechanism.
 
 **Nothing changes about how a balance is READ.** `balanceOf` already summed the
@@ -9245,7 +9245,7 @@ its label-and-number line, where `.csub` already puts a caption (`grantsFor`,
 `CounterSheet.tsx`, `data-testid="breakdown-grants"`). Outside the row it became
 a flex sibling and squeezed in beside the number it explains.
 
-**ONE KIND OF AWARD; EARNED AND AWARDED SHOWN APART (owner, D400, D401, D402, 29 Sep 26) — BUILT by
+**One kind of award; earned and awarded shown apart (owner, D400, D401, D402, 29 Sep 26) — BUILT by
 `[OIL-AWARD-IS-A-GRANT]`** (plan `docs/superpowers/plans/2026-09-29-oil-award-one-kind-plan.md`).
 - **The record.** Every OIL an admin gives by hand — from the bid sheet's +OIL panel on the grid, from the OIL tracker, or
   from the figures bar on the OIL figure — is ONE kind of record: a positive `counter: 'oil'` ledger entry
@@ -9307,7 +9307,7 @@ swipe, and everything a member sees.
 
 ## Logic search and controls
 
-**RE-LAID — LIVE 16 Oct 26, pull request 519 (owner D809, 13 Oct 26; the item is in `OUTSTANDING-ARCHIVE.md`):** everything that can be edited gathered at the top of the page, everything
+**Re-laid — LIVE 16 Oct 26, pull request 519 (owner D809, 13 Oct 26; the item is in `OUTSTANDING-ARCHIVE.md`):** everything that can be edited gathered at the top of the page, everything
 that only explains a rule below it, each part arranged into its types; a picture first — `[LOGIC-PAGE-LAYOUT]`, built as the paragraph below says.
 The search and the controls kept in sight (below) must go on working over both parts.
 **BUILT 15–16 Oct 26 (D928–D933, branch `claude/one-row-guide-medical`):** ONE row (the page's name, search, Filter — a menu of
@@ -9410,7 +9410,7 @@ screen:
   run — has nothing left to do. `App.jsx`'s mount effect therefore calls
   `renderBoard()` when the engine is already `ready` (found by the 7 Sep 26
   bug sweep: no chart after logging back in). Pinned in `tracker.test.tsx`.
-- **Its own look, inside the section — in RAPTOR'S COLOURS (owner, D157, 24 Sep 26: "7 c").**
+- **Its own look, inside the section — in Raptor's colours (owner, D157, 24 Sep 26: "7 c").**
   The Tracker keeps its own type and controls (`tracker.css`, wrapped under
   `#page-tracker`), but every colour is Raptor's: backgrounds, text and the event
   colours (flight blue, acad green, test red, sim AMBER — no longer yellow — and
@@ -9556,7 +9556,7 @@ screen:
   unchanged. With nobody in the bridge (a standalone Tracker) the dialog is
   byte-identical to the old prompt. A linked student's roster chip carries
   `.linked` (a small accent dot before the name) and the title "On the
-  squadron roster as <callsign>". A COURSE name containing a colon is refused
+  squadron roster as <callsign>". A course name containing a colon is refused
   with one message; since 13 Sep 26 a student, syllabus or chart name may carry
   one (a label, not a key — [TRK-CSID] §8). Pins: `tracker.test.tsx` (the live
   dialog render, order, narrowing, the linked chip, the refusal), the smoke
@@ -9714,9 +9714,9 @@ holiday comes from Leave War through `HOOKS.oilEarningDay`.
 
 ### The green edge (§2.10 — the owner chose it over a chip: "c looks good")
 
-**(D470, 1 Oct 26: a man the scheduler puts in the row's NAME BOX in place of the member is the second kind too — he wears the
+**(D470, 1 Oct 26: a man the scheduler puts in the row's name box in place of the member is the second kind too — he wears the
 edge as scheduled work, and the member who filed still earns on his own answer.)**
-**A LANDED REQUEST ROW CARRIES TWO KINDS OF MAN (owner, D18, 22 Sep 26).** The man who FILED the
+**A landed request row carries two kinds of man (owner, D18, 22 Sep 26).** The man who FILED the
 request wears the edge off his own answer. Anyone the SCHEDULER puts on that row beside him wears
 it as ordinary scheduled work, and each of them can be taken off on his own. So a request row can
 show one man glowing and another dark, and that is correct rather than a fault.
@@ -9728,7 +9728,7 @@ finding 13). A claim row is not switchable as a whole for a different reason, an
 
 **SUPERSEDED 12 Oct 26 by the one-rule build (`[ALL-AVAIL-AS-MEMBER]` step 2 (d), step 3 — owner D755 (1), D762, which
 change D18 and D470 on a row that came from an input):** such a row no longer carries "two kinds of man". Everyone on
-it is IN the input and follows its ONE OIL answer — whoever filed it, whoever the scheduler put there, and the men
+it is IN the input and follows its one OIL answer — whoever filed it, whoever the scheduler put there, and the men
 behind an ALL AVAIL on it; the scheduler still switches any ONE person, by his puck (`<person>|i:<iid>`). So one man
 glowing and another dark on that row now means the scheduler switched one of them, never "his own answer". The row's
 name says: "This request has one answer for everyone on it — tap a puck on this row, or the count, to switch one
@@ -9736,11 +9736,11 @@ person, not the row itself" ("or the count" only where the input holds ALL AVAIL
 own rows are unchanged.
 
 
-- **A bar down the LEFT edge of the puck.** Full height = a full day. The BOTTOM HALF,
+- **A bar down the LEFT edge of the puck.** Full height = a full day. The bottom half,
   a shade paler = half a day. Height is the structural signal that survives
   colour-blindness; the tint is the one that survives being read alone with nothing
   to compare against.
-- **It is the MAN'S DAY — but it is SHOWN ONLY on the events that COUNTED towards it**
+- **It is the man's day — but it is shown only on the events that COUNTED towards it**
   (owner, 21 Sep 26 — O-1, D1, revising §2.10 / OIL21). There is no such thing as a
   per-event OIL figure and one must never be invented: the measure runs first-start to
   last-end across the whole day including the gaps, so a man on four rows that all
@@ -9777,9 +9777,9 @@ own rows are unchanged.
 - **It retires the "NO OIL" marking entirely.** Green means earns; no green means earns
   nothing; no sentence is needed. It needs teaching once — the bar carries a hover
   title naming the figure in words.
-- **A SENTINEL puck (ALL / ALL AVAIL) wears the bar only when the people behind it
+- **A sentinel puck (ALL / ALL AVAIL) wears the bar only when the people behind it
   agree** (§7.6, as the owner refined it: *"if everyone in the all avail or all puck is
-  granted OIL, it should be green"*). Four states, and the COUNT CHIP beside the puck
+  granted OIL, it should be green"*). Four states, and the count chip beside the puck
   is what tells the last two apart:
 
   | behind the puck | the puck | the count chip |
@@ -9801,7 +9801,7 @@ own rows are unchanged.
 
 ### The mode (§2.1)
 
-- **ONE BAR, headed `THIS DAY`, carrying Templates and OIL Earn** (owner, 21 Sep 26 —
+- **One bar, headed `THIS DAY`, carrying Templates and OIL Earn** (owner, 21 Sep 26 —
   "Perhaps combine them into a single bar? … It can still remain on the phone at that
   position? just merged", then "a looks better" of the two comps drawn for him). It
   replaced two full-width panels, each with a heading and a sub-line, which cost a row
@@ -9809,7 +9809,7 @@ own rows are unchanged.
   The buttons take a TINT of the app's accent — his ask, "since settings usually have
   some blue to it. Make the buttons slightly stand out" — never the solid fill, which
   is Done and Publish day and must keep meaning "this finishes the job".
-  **ON A DESKTOP the way IN rides the board's own action row instead** (he circled the
+  **On a desktop the way IN rides the board's own action row instead** (he circled the
   empty stretch beside Undo / Redo / History), so the bar appears there only once the
   mode is on, where it is the blanket and the instruction rather than a second button.
   CSS picks per width; the builder never asks, so a resize answers instantly. The
@@ -9818,13 +9818,13 @@ own rows are unchanged.
   **A fit lesson, from the comp that was drawn before this was built:** at 390px
   "✓ Done with OIL" ran off the right edge; it is "✓ Done". Re-draw the comp before
   lengthening any label on this bar.
-- **Pressed, it lights and the board goes READ-ONLY for schedule editing.** In the mode
+- **Pressed, it lights and the board goes read-only for schedule editing.** In the mode
   a tap on a puck means "take this man off this event" and a tap on an item's name means
   "stop the whole item earning"; leaving the ordinary write controls live beside that
   would give one gesture two meanings on the same pixel. One mode at a time, and the lit
   button says which. It costs one term — `oilm` folded into the board's existing
   `stoRO`/`mvRO` gate, which every write control already reads.
-- **Every puck that earns RINGS GREEN (it glowed until D877), and wears its figure where the qualification letter
+- **Every puck that earns rings green (it glowed until D877), and wears its figure where the qualification letter
   sits** — a full and a half day wear the same ring now; the figure tells them apart. The figure is live on
   every tap, and it is not optional: the measure is first-start-to-last-end, so
   unticking one puck often changes nothing (another event still spans the day) and
@@ -9895,7 +9895,7 @@ why instead of doing nothing.
 correctly and that is worth keeping — it is the natural way to take back a
 mis-tap. What it must not do is keep going: with the mode open it walked back
 whatever the last change was and took a ground-programme row off the day. So
-opening the mode MARKS THE SPOT. Inside, Undo walks back OIL decisions freely
+opening the mode marks the spot. Inside, Undo walks back OIL decisions freely
 down to that spot; the press that would reach past it leaves the mode instead
 and says so, and the press after that behaves normally, outside. Leaving the
 mode and re-entering moves the mark with it.
@@ -9916,7 +9916,7 @@ comes from the issued document and not from today's calendar — while the scree
 contradicted the money and offered no way to look. It now says *"This day stopped
 being a holiday after it was published — publish it again to withdraw the OIL."*
 
-A WEEKDAY rule in practice: a Saturday cannot stop being a weekend, so the case
+A weekday rule in practice: a Saturday cannot stop being a weekend, so the case
 this covers is a public holiday the war takes back off.
 
 ## [ALL-AVAIL-WINDOW] — the counter's window, the app's THIRD transient surface (owner, D38–D41, 23 Sep 26)
@@ -9936,7 +9936,7 @@ when it is the front window — it used to close itself from BEHIND a settings w
 `ui/floatwindow.test.tsx` "when the front one closes…", `ui/editorwindow.test.tsx` "Escape belongs to the window in
 FRONT".)*
 
-**THE OUTSIDE-CLICK RULE DOES NOT APPLY TO THIS SURFACE.** Read that before
+**The outside-click rule does not apply to this surface.** Read that before
 changing anything here. The app has two transient surfaces and this is a third
 kind:
 
@@ -9972,8 +9972,8 @@ with, as his puck draws him (`engine/faceattrs.ts seatShown`, [LEAVE-LATE-PUBLIS
 width, because a full row per man is what gives his flag and his figure room;
 that is the whole reason it replaced the bubble of names.
 
-**ONE WINDOW, TWO JOBS.** Who is AVAILABLE behind an ALL AVAIL / ALL placeholder,
-and — only while OIL Earn is on — who is CREDITED OIL, where individual men are
+**One window, two jobs.** Who is AVAILABLE behind an ALL AVAIL / ALL placeholder,
+and — only while OIL Earn is on — who is credited OIL, where individual men are
 switched off. With the mode off there are **no tabs at all**, just the one list:
 availability is a scheduling fact, earning is a mode (D27). Inside the mode the
 window opens on the earning half, because that is the job the counter was tapped
@@ -9987,11 +9987,11 @@ not taste, but the app's existing vocabulary for "drag me". A flagged man's
 reason wraps onto its own line under him at that width and moves beside him when
 the window is dragged wider; **it is never dropped, only moved.**
 
-**A PUCK IS NEVER STRETCHED to fill a column.** `--puck-w`/`--puck-h` are pinned
+**A puck is never stretched to fill a column.** `--puck-w`/`--puck-h` are pinned
 `!important` and watched by the browser geometry gate; a puck stretched here
 would be a different size from every other puck on screen.
 
-**THE FLAGS ARE THE POINT, and this is where it can go wrong.** A man whose ops
+**The flags are the point, and this is where it can go wrong.** A man whose ops
 brief sits inside his standard debrief must APPEAR, FLAGGED, so the scheduler
 sees the overlap and judges it. **Do not "fix" this list by filtering flagged men
 out of it** — that is the change D36 refuses, and the availability window stays
@@ -10102,7 +10102,7 @@ window on the reason above. Built in `engine/oil.ts` (`openEndRows`, display onl
 `OIL_OPEN_END`), `ui/html.ts` (the chip), `ui/AvailWindow.tsx`; pinned by `engine/oilopenrow.test.ts` (per row kind: the
 crowd AND no credit) and `ui/availopenrow.test.tsx`.
 
-**A man the roster no longer holds is COUNTED AND SAID OUT LOUD**, under the
+**A man the roster no longer holds is counted and said out loud**, under the
 columns, never dropped. An issued day's membership is a frozen list of ids
 (D44), so a man posted out since publication is still in it. Dropping him would
 make the window show fewer men than the chip above it counted — the
@@ -10153,7 +10153,7 @@ title uses, from one shared body (`oilFromWords`). They were two readers once.
   and the mirror aligned; WebKit's sticky-offset recompute on a var change is
   the unproven part — `ui-contracts.md` §In Rearrange the frozen name column
   widens), and the **FIGURES DRAWER's four WebKit-sensitive parts** (6 Sep 26 —
-  the overlay's copied ROW HEIGHTS, the stuck bar's frozen COPY matching the
+  the overlay's copied row heights, the stuck bar's frozen COPY matching the
   drawer's width, the FLASH painting at all, and the corner switch filling its
   sticky cell out of flow; each with what would show and how tight the margin is
   in `ui-contracts.md` §The figures drawer). Chromium is clean on all four.
@@ -10207,8 +10207,8 @@ is `state/flyplan.ts sansCommittedOn`. It hears BOTH stores — the scheduler's 
   (`ui/placedline.ts`, D629). The working and the buttons are pinned; the list scrolls. **On a desktop the page leaves
   the window room beside it** while it is where it opens (`:has(.sansday:not([data-placed]))`), and takes the width
   back once he drags it away. **On a phone it has two rest heights** (the shell's `rests`): about two-thirds as it
-  opens, pulled up by its bar to nearly the whole screen and back; a tap on the bar goes to the other height — ON THE
-  CLICK, never on the release (the panel moves under the finger). It opens low every time.
+  opens, pulled up by its bar to nearly the whole screen and back; a tap on the bar goes to the other height — on the
+  click, never on the release (the panel moves under the finger). It opens low every time.
 - **Highlight** (D619): a small menu of the SANS aircrew on the roster, A to Z, each as his puck, "No highlight"
   first. His days wear a cyan ring drawn INSIDE the date; the F, O, A rows he offered are underlined; his lines are
   marked in the opened day. Nothing is hidden and no figure changes. `state/view.ts SANSHL`, session-only.
@@ -10239,7 +10239,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
 
 - **Three tabs — Inputs · SANS · Medical** (D620, D626: "less tall"), a tab list over the same two facts of view state
   (`INPMODE`, `INPVIEW`); one is selected (`aria-selected`), the arrows move along them. Under the Inputs tab ONE switch,
-  Calendar | List, and the filters (the Inputs tab's alone). **Medical is a tab IN THE PAGE**: it has no close cross
+  Calendar | List, and the filters (the Inputs tab's alone). **Medical is a tab in the page**: it has no close cross
   and no failed-save band of its own, and a tab press never lands "where Medical was opened from". **No form of the
   Inputs tab offers SANS availability** (D620): the List's add form and edit in place, "+ Input", and an input already *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
   filed cannot be turned into one; a SANS commitment's own editor keeps the full list.
@@ -10249,8 +10249,8 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
 - **The top row:** the tabs and the tools (the month's arrows, Today, the switch, the filters, the gear) share one line
   on a desktop; on a phone the tabs are the first line and the tools the second — narrower there, and drawn as tall as a
   tab, 36px, on his word (D698, 9 Oct 26; until then "never shorter", D487 — the D698 bullet below).
-  Under them one slim line: "How this works" (five lines, the last the late cut-off AS SET — D646, D628) and the legend.
-- **An input is ONE BAR across the days it covers** (D626), cut at a week's end and carried on. A week is three layers
+  Under them one slim line: "How this works" (five lines, the last the late cut-off as set — D646, D628) and the legend.
+- **An input is one bar across the days it covers** (D626), cut at a week's end and carried on. A week is three layers
   — the dates (`.ib-day`, `data-icday`), their heads (the number, the PH / OFF / NF tag — never a sun or a moon, D627 —
   the day's title, the planning notes and pucks) and the lines (`.ib-bar`; "+N more") — because a bar lies across dates
   and sits inside none. Red is an absence, amber a duty or commitment (the List's own colours). A group filing is ONE
@@ -10264,7 +10264,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
 - **The date under a point** is asked of everything stacked there (`ui/caldays.ts dayAtPoint`), never of the bar — one
   body for both pointer machines. A press that begins on a date is `ui/calpick.ts` (a tap opens the day; a mouse drag,
   or a finger held and then dragged, picks several days for "+ Input"; a slide turns the month). A press that begins on
-  a bar or a planning note is `ui/caldrag.ts`: a tap opens it; a drag moves it BY THE DAYS between where it was grabbed
+  a bar or a planning note is `ui/caldrag.ts`: a tap opens it; a drag moves it by the days between where it was grabbed
   and where it is dropped — from its middle day or from its continuation alike — its length kept, one Undo step, the
   moved bar flashing; dropped back is nothing and no step; a bar its reader may not move does not lift, and a drag of
   it is not a tap.
@@ -10276,7 +10276,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   two weeks before", "at least 14 days before" — the bold the fold's other lines use. `ui/sanscal-model.ts cutParts` cuts
   the sentence in three; `cutSentence` is those three joined, so what is read and what is marked cannot drift.
 - **The people picker of a day is OWNED by the note it was opened for, and ends with its day (the day-window check, 9 Oct 26 —
-  Sol's read).** One opener (`openPick`, `ui/InputsCal.tsx`): while it is up a second "+" does nothing. A NEW note's words
+  Sol's read).** One opener (`openPick`, `ui/InputsCal.tsx`): while it is up a second "+" does nothing. A new note's words
   are taken when its "+ people" is pressed and shown in the picker; Escape, the cross and Cancel are one ending (the words
   alone become the note; nobody is added); OK makes the note, words and people together. Closing or changing the day
   settles the picker first, as Cancel does — nothing is written to a day that is no longer open. The keyboard stays in
@@ -10295,7 +10295,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   the last of them (`.inputsday .ic-note`, 25-inputs-calendar.css). The six dots and the box's left edge stand 8px left
   and the box is padded alike both sides, so the fourth puck is as far from the right border as the first from the left
   (D694). A note of people and no words draws no line of words: its people three across, then the pencil — which adds
-  words — and the cross. A NEW note's box has "+ people" beside it: the picker's OK makes the note, words and people
+  words — and the cross. A new note's box has "+ people" beside it: the picker's OK makes the note, words and people
   together, in one step; closed with nobody ticked it leaves the words alone, or nothing. A man is taken off as before
   (D689): dragged off the note (anywhere outside its box), onto another to swap, or a right-click; his place is held
   as a gap (24 Aug 26); the last man off a note with no words takes the note with him. The buttons are drawn small on
@@ -10313,7 +10313,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   after that line. A card with a short remark is 51px on a phone where it was 79. Pinned by `ui/placedline.test.ts`,
   `ui/inputsday.test.tsx`, `ui/sansday.test.tsx`, `e2e/inputs-calendar.spec.ts` (D701).
   **Since 10 Oct 26 this bullet is the SANS day's alone: the Inputs day's input is the card of the next bullet (D723).**
-- **THE INPUT CARD — one card for the Inputs calendar's opened day and for the Inputs list on a phone (owner D718–D724,
+- **The input card — one card for the Inputs calendar's opened day and for the Inputs list on a phone (owner D718–D724,
   10 Oct 26; `[INPUT-LIST-AS-DAY-CARD]`; the pictures of record `docs/mock/img/input-card-final/day-final.png`,
   `list-final.png`; the plan `docs/superpowers/plans/2026-10-10-input-card-plan.md`).** ONE body draws it
   (`ui/InputCard.tsx`, its facts from the pure `ui/inputcard-model.ts`), so the two screens cannot differ. **Top line:**
@@ -10330,7 +10330,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   no small print is ONE line. A tap anywhere on the card opens the input's window to change or delete it (D718); the
   card's button is its names and kind. **The SANS day's card is NOT this card** (D723 reading 3; D647, D649 — pucks
   with the CAT; the bullet above).
-- **THE INPUTS LIST AND CALENDAR AFTER THE DESIGN VET (owner D729, 10 Oct 26 — "Yes to all"; the build: `OUTSTANDING.md`
+- **The Inputs list and calendar after the design vet (owner D729, 10 Oct 26 — "Yes to all"; the build: `OUTSTANDING.md`
   `[INPUTS-VET]`; BUILT 10 Oct 26 — the plan `docs/superpowers/plans/2026-10-10-inputs-vet-plan.md`, the check
   `docs/handpass/2026-10-10-inputs-vet-check.md`).** (V1) The list has NO form of its own: one "+ Input" button beside its dates button opens the
   window the calendar opens. (V2) On the desktop table the small print under a remark is "By Saber", only where
@@ -10339,7 +10339,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   input's bar reads its count first ("4 · Meeting"); a timed input's bar is lighter than an all-day one, with a solid
   edge. (V5) The gear's settings, "How this works", the empty list and the phone's filters say the same in fewer
   words; the table's last column is "Changed"; the colour key reads "duty". The drawings: `docs/mock/inputs-vet.html`.
-  **AS BUILT.** *V1:* `#inNew` ("+ Input", the row's one filled button, first in `.inputs-listtools`) calls
+  **As built.** *V1:* `#inNew` ("+ Input", the row's one filled button, first in `.inputs-listtools`) calls
   `ui/inputedit.tsx newInputSeed()` — the ONE seed of a new input on this page, the calendar's too — with NO date: the
   window says "pick a start date" and its Save refuses "Pick a start date on the calendar first" before any question
   (OIL, a document) is asked. Three things only the form did were moved first (the door inventory, the plan's §2): the
@@ -10360,22 +10360,22 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   Pins: `ui/inputsvet.test.tsx`, `inputs.test.tsx`, `windowdoors.test.tsx`, `groupeditor.test.tsx`,
   `inputscal-model.test.ts`, `inputsmonth.test.tsx`, `inputssettings.test.tsx`; in a real browser
   `e2e/inputs-calendar.spec.ts` (the three tests named D729).
-  **ADDED BY ITS CHECK (10 Oct 26 — `docs/handpass/2026-10-10-inputs-vet-check.md` §5.3, §6):** every save of the
+  **Added by its check (10 Oct 26 — `docs/handpass/2026-10-10-inputs-vet-check.md` §5.3, §6):** every save of the
   window is ONE passing note (`doSave` / `doMedSave` inside `HOOKS.toastBatch`) — what the save itself said ("…replaces
   the LL bid…") and "Input added" together, never the second over the first; the "?" card gives way to any question
   opened over the window and takes Escape only as the front window's, and is not drawn in a read-only form; the row
-  the List is shown is found, lit and scrolled to BY ITS ENTRY (a shared input stands under its first record A to Z —
+  the List is shown is found, lit and scrolled to by its entry (a shared input stands under its first record A to Z —
   `listRow`, `shown`), and an opened day lists a just-saved shared input hidden by a filter as the whole entry
   (`entryRowsOf`); `remarkOnce` tidies only the JOIN where the words stood — a sign or a dash that belongs to the
   typed words is never touched. *(Since the one-rule build, 12 Oct 26 — D756: `entryRowsOf` is removed; the entry is
   the one record.)*
-- **THE LIST'S DATES CALENDAR ON A PHONE OPENS UNDER ITS ROW OF BUTTONS (his find, 10 Oct 26 — fixed).** At 700 points
+- **The list's dates calendar on a phone opens under its row of buttons (his find, 10 Oct 26 — fixed).** At 700 points
   wide and under, the pop-up spans the row of buttons ("+ Input", the dates button, Export), so that ROW is the box it is
   placed against (`scheduler/06-inputs.css`). Placed against nothing it opened one screen's height down the page — the
   button lit and nothing appeared, once the List's add form no longer stood above the row (D729). Pin:
   `e2e/inputs-calendar.spec.ts` "the dates button opens its calendar on screen" — the page not scrolled, the whole
   calendar inside the screen, pressed by a finger at a point. The record: `docs/handpass/2026-10-10-list-dates-picker.md`.
-- **THE INPUTS LIST ON A PHONE — ONE ROW OF CONTROLS (owner D907, D910, 15 Oct 26 — "All as recommended"; built in the
+- **The Inputs list on a phone — one row of controls (owner D907, D910, 15 Oct 26 — "All as recommended"; built in the
   calendar job, `docs/handpass/2026-10-15-calendar-step-two.md`).** On a phone the List's "+ Input" and dates button stand
   in the row of the calendar / list switch, the filter and the gear — where the Calendar's month arrows, month and Today
   stand (D705) — at that row's button height (36, D698); the switch, filter and gear keep their place and size (D687,
@@ -10391,20 +10391,20 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   dragged run on the Inputs calendar, a saved input) show as ONE line that opens the calendar on a tap; the List's
   "+ Input" opens with the calendar showing. The drawing: `scripts/handpass/mock-input-order.mjs` (B). **And SANS availability
   (D915):** "+ Commitment" opened from a day or a run on the SANS calendar folds its dates the same way.
-- **THE SMALL CHOICES OF THE INPUTS PAGES, AS BUILT (owner D731, 10 Oct 26 — "Yes to all"; `[SEEN-BATCH-2]`; the check
+- **The small choices of the Inputs pages, as built (owner D731, 10 Oct 26 — "Yes to all"; `[SEEN-BATCH-2]`; the check
   `docs/handpass/2026-10-10-batch2-check.md`).** Each is a line of its own below. Tests: `ui/batch2.test.tsx`,
   `ui/toastplace.test.tsx`, `state/reqorphan.test.ts`, `ui/quals.test.tsx`, and in a real browser
   `e2e/inputs-batch2.spec.ts`.
-  - **ON A PHONE, WHILE A WINDOW IS UP, THE PASSING NOTE IS AT THE TOP OF THE SCREEN (D731 (1)).** A window of the shell
+  - **On a phone, while a window is up, the passing note is at the top of the screen (D731 (1)).** A window of the shell
     (`ui/FloatWindow.tsx`) stands on the foot of a phone's screen with its buttons at its own foot — where the note was
     drawn. `ui/toast.ts placeToast` asks "a phone, and a window up?" when a note is said and again when a window opens
     (a note already showing moves clear); never when one closes. A desktop, and a phone with no window up: the foot, as
     before. "A window" is the shell's — the Leave War's sheets and the schedule's dialogs keep the note at the foot.
-  - **A DAY WHOSE INPUTS A FILTER HIDES SAYS SO (D731 (2)).** A day opened on the Inputs calendar with nothing listed
+  - **A day whose inputs a filter hides says so (D731 (2)).** A day opened on the Inputs calendar with nothing listed
     WHILE it has inputs when no filter is asked reads "No inputs match on this day." with "Clear filters" beside it —
     the page's own clearing (`InputsPage.tsx clearFilters`). A day with no inputs at all reads "No inputs on this day.
     Tap + Input to add one.", filter or no filter.
-  - **THE LIST'S DATES CALENDAR (D731 (3), (12); `[SEEN-BATCH-2]` A6).** It stays open after its end date is tapped; a
+  - **The list's dates calendar (D731 (3), (12); `[SEEN-BATCH-2]` A6).** It stays open after its end date is tapped; a
     press outside closes it — `pointerdown` beside `mousedown`, so a finger's press counts on an iPhone — as do its
     quick buttons and its own button; Escape closes it, taken on the way in (the window, capture) so that with an
     input's window up as well one Escape closes the calendar and the next the window. It takes Escape only while
@@ -10412,36 +10412,36 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
     question opened by the keyboard from a row's chip — any `.airpop` not `hidden`): that pop-up has the key first. On a phone (≤700px) its days are
     a finger's size and it fills its pop-up — D725's sizes for the calendar in an input's window; on a short phone
     (≤600px tall) the room is found in the padding round it, never in the days. A desktop keeps its small calendar.
-  - **A SHARED INPUT'S OIL LINE COUNTS ITS PEOPLE WHERE THEIR ANSWERS DIFFER (D731 (4)).** In its window on the Inputs
+  - **A shared input's OIL line counts its people where their answers differ (D731 (4)).** In its window on the Inputs
     page the line speaks for the ENTRY (`inputedit.tsx oilSummaryOf`): alike — exactly the old words; differing —
     "credited for 2 of 3 — Ranger: no" (each man with no credit named "no", one credited for only some days "1 of 2
     days"; a man who has not answered is named by the "Not answered yet" line under it, not here). It is drawn while
     ANY man of the entry has an answer, and then "Change…" is the one button (no second "Answer…"). A reader's line
     carries no button (A7). In the schedule's and the board's dialog the line is the one man's, as before.
-    *(SUPERSEDED 12 Oct 26 by the one-rule build — owner D762, which changes D731 (4): an input has ONE OIL answer
+    *(SUPERSEDED 12 Oct 26 by the one-rule build — owner D762, which changes D731 (4): an input has one OIL answer
     for everyone in it, so its people can no longer carry different answers and there is nothing to count.
     `oilSummaryOf` and "credited for 2 of 3 — Ranger: no" are gone; the line states the input's one answer, with
     "Change…" for whoever may change the input, in the Inputs page's window and the schedule's dialog alike.)*
-  - **A GROUP'S OIL QUESTION IS HEADED FOR THE GROUP (A8).** "OIL — Ace +1, Duty": the entry's first name and how many
+  - **A group's OIL question is headed for the group (A8).** "OIL — Ace +1, Duty": the entry's first name and how many
     more, the words of the window's own title — decided in ONE place, where the sheet is drawn, for every door (the
     save, "Change…", "Answer…", the bell, the question that follows a bar's drag). A man's OWN answer inside an input
     he did not file is headed with his name alone. *(Since the one-rule build, 12 Oct 26 — D762: there is no "man's
     own answer" inside an input of several, so that last heading is never drawn; the heading's words are the
     window's title (`ui/inputedit.tsx inputWho`) — the first NAMED person A to Z and "+N", never "ALL AVAIL +1".)*
-  - **AN OIL DAY IN ANOTHER YEAR SAYS ITS YEAR (A5).** `inputedit.tsx oilDayLabel` — "9 Jan 2027" — is the one label of
+  - **An OIL day in another year says its year (A5).** `inputedit.tsx oilDayLabel` — "9 Jan 2027" — is the one label of
     the question's heading, the window's two "not answered yet" lines and the desktop row's "OIL?" chip.
-  - **TAKING A REQUEST OFF NAMES IT (D731 (5)).** "Ranger's Sports day taken off the programme"; where its row stood on
+  - **Taking a request off names it (D731 (5)).** "Ranger's Sports day taken off the programme"; where its row stood on
     another day, "…taken off Tuesday's programme"; where it was filed under Unavailable, "…taken out of Unavailable"
     (`interactions.ts`, the week and the board alike). "Accept undone" is said nowhere.
-  - **AN OIL ANSWER FOR A DAY THE INPUT NO LONGER COVERS STAYS ON THE RECORD (D731 (7)).** Left as it is: nothing shows
+  - **An OIL answer for a day the input no longer covers stays on the record (D731 (7)).** Left as it is: nothing shows
     it, nothing is credited for it, and it stands again if the input moves back. Pinned (`batch2.test.tsx`).
-  - **TO THE FILER, WITH THE MEMBERS' SWITCH OFF: "Filing for other people is switched off — an admin can change
+  - **To the filer, with the members' switch off: "Filing for other people is switched off — an admin can change
     this." (D731 (8)).** One sentence (`inputedit.tsx FILING_OFF`) wherever he was told "Only <himself> — who filed it
     — or an admin can …": the window's foot (a shared input, and one he filed for ALL AVAIL / ALL), Delete for
     everyone, a save, the Delete key on the opened day's line, a bar's drag — every door but the foot through one body,
     `sharedRefusal`. The reason is asked of `state/perms.ts filerSwitchedOff`, which decides no right: "Take me out"
     is offered exactly where the rules already offer it.
-  - **ESCAPE WHILE A NOTE IS TYPED LEAVES THE NOTE BOX ONLY (D731 (9)).** In an opened day the note box (a new note's,
+  - **Escape while a note is typed leaves the note box only (D731 (9)).** In an opened day the note box (a new note's,
     and an existing note's being edited) takes Escape first: the box is put away, nothing is written — a new note is
     not made, an edited one keeps its words — and the day stays; the next Escape closes the day. Enter and leaving the
     box still save. A new note's "+ people" button beside its words is part of the same thing being made and takes
@@ -10450,27 +10450,27 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
     Escape causes is its own, and saves nothing (`titleGone`, as the note box's `noteGone`) — and the day stays; the
     next Escape closes the day. Enter and leaving the box still save, and are a phone's only routes. A member has no
     title box, only the words. Pins: `batch2.test.tsx` (D732), `e2e/inputs-batch2.spec.ts` (D732).
-  - **A DELETE QUESTION DOES WHAT IT ASKED — BOTH WAYS.** In an opened day a shared input's question keeps the words
+  - **A delete question does what it asked — both ways.** In an opened day a shared input's question keeps the words
     it was asked in while it stands, and its button does THAT (`askedAll`, `InputsCal.tsx doDelete`). Asked "Delete
     this input for all 2 people?": if the right to delete for everyone goes meanwhile (the members' switch turned
     off), Delete is refused with the switch-off sentence — it never turns into taking the asker out (Astra's
     scenario 9). Asked "Take yourself out of this input?": only he goes, even if he may by then delete for everyone —
     a right gained while the question stood never widens it (Astra's read, finding 1).
-  - **THE SCHEDULE'S ONE-PERSON DIALOG SPEAKS FOR ITS OWN MAN.** On a shared input's row opened from Edit Schedule or
+  - **The schedule's one-person dialog speaks for its own man.** On a shared input's row opened from Edit Schedule or
     the board, the OIL line AND the "Not answered yet" line are that man's alone — one scope, `oilRows`; on the
     Inputs page both speak for the entry (Astra's read, finding 2).
-  - **THE DOCUMENT VIEWER KEEPS ITS BUTTONS IN SIGHT (D731 (10)).** Its foot — "Upchit", "Edit input", "Close" — is
+  - **The document viewer keeps its buttons in sight (D731 (10)).** Its foot — "Upchit", "Edit input", "Close" — is
     pinned to the foot of the scrolling box (`16-medical.css`), the page moving above it.
-  - **SEVERAL DAYS PICKED ON THE MONTH OPEN THE WINDOW AT ONCE (D731 (11)).** Kept as built; no bar to confirm first.
-  - **THE TEN FAULTS OF LIST A.** The "Unsaved changes" question is asked from the FRONT (the window comes forward
+  - **Several days picked on the month open the window at once (D731 (11)).** Kept as built; no bar to confirm first.
+  - **The ten faults of list A.** The "Unsaved changes" question is asked from the FRONT (the window comes forward
     when it asks — A1). Enter in a new input's Remarks or Title is used up by the save (`preventDefault` on the key
     down — it had gone on to press the "+ Input" the keyboard returned to — A2). In a window its reader may not
     change, the people picker says nothing about what may be picked (A3). The desktop row's paperclip and OIL chips
     are buttons of the same look and size (A4). A "Changed while this window was open" note goes when the record
     comes back to the value his change was typed over, and repaints when "theirs" moves again (A10). The Quals save
     note reads "Quals saved" (A9). A5–A8 are the lines above.
-- **THE REMARK HOLDS ONLY WHAT A PERSON TYPES; "TILL <DATE>" COMES FROM THE DATES (owner D948, 16 Oct 26 — D728's step 2, [TILL-FROM-DATES]).** An input's window shows "till <date>" in grey after the Remarks box from the moment it opens, from the input's dates, one-day inputs included ("till <that day>"); it is never typed or written into the remark. Every screen prints the remark, then "till <date>" from the dates — the same look as before.
-  **AS BUILT (16–17 Oct 26, `claude/whole-app-words-pass-1b-6cfe51`).** Three answers in `engine/inputs.ts`:
+- **The remark holds only what a person types; "TILL <DATE>" comes from the dates (owner D948, 16 Oct 26 — D728's step 2, [TILL-FROM-DATES]).** An input's window shows "till <date>" in grey after the Remarks box from the moment it opens, from the input's dates, one-day inputs included ("till <that day>"); it is never typed or written into the remark. Every screen prints the remark, then "till <date>" from the dates — the same look as before.
+  **As built (16–17 Oct 26, `claude/whole-app-words-pass-1b-6cfe51`).** Three answers in `engine/inputs.ts`:
   `remarksTyped(remark, rec)` (the typed words — a date saved in a remark before the build is read as the date: "till
   <day> <real month>" anywhere, "on <day> <month>" only where it is one of the input's own days; SANS availability and an
   upchit keep their words whole), `tillOf` / `tillOfISO` ("till <its last day>"; none for SANS availability or an upchit)
@@ -10493,7 +10493,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   refusal, on Escape, on a day step (`ui/textedit.ts`, `ui/board.ts`) — and `ui/reqrow.ts` compares with it, so the date
   never slips back inside the box and a Tab through it still writes nothing. The row's own remark stays the printed
   text (it freezes when published). Pinned: `ui/tilltick.test.tsx`.
-- **THE TILL-DATE TICK (owner D951, D952, D953 — 17 Oct 26; the drawing of record `docs/img/handpass/2026-10-17-till-switch/`,
+- **The till-date tick (owner D951, D952, D953 — 17 Oct 26; the drawing of record `docs/img/handpass/2026-10-17-till-switch/`,
   frames B).** In the input's window a tick stands before the grey date after the Remarks box — the window's own "all
   day" tick, the date its label (`#inpEditTill`, `.inped-tl`; the row a `div`, its heading a `label` for the box).
   Ticked by default, except a one-day duty or other commitment (the window's group of that name — not leave, medical or
@@ -10513,23 +10513,23 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   about the printed remark. Whoever may change the input may tick it (the window's read-only body is inert, D364). SANS
   availability and an upchit carry none. Pinned: `ui/tilltick.test.tsx`, `ui/inputs.test.tsx` (the window),
   `leavewar/changelines-lw.test.ts` (the approval).
-- **THE CARD'S REMARK LEAVES OUT THE AUTOMATIC "TILL <DATE>" (owner D728, 10 Oct 26 — "1 now, 2 later").** The card's
+- **The card's remark leaves out the automatic "TILL <DATE>" (owner D728, 10 Oct 26 — "1 now, 2 later").** The card's
   corner already says when a several-day input ends, so the card does not print the same words again from its
   remark; what a person typed stays, and a remark that was only the automatic words shows none. The record, the
   schedule's row, the desktop table and the input's window are untouched. Step 2 - the app no longer writing the date
   into remarks at all - is built (D948, the paragraph above): the card now shows the typed words alone, whatever its
   corner says (`remarksTyped`; `remarkOnce` below is kept for its tests only).
-  **AS BUILT (10 Oct 26).** `ui/inputcard-model.ts remarkOnce(remark, corner)`, asked by `cardOf(rows, people, corner)`
+  **As built (10 Oct 26).** `ui/inputcard-model.ts remarkOnce(remark, corner)`, asked by `cardOf(rows, people, corner)`
   — both cards hand in what their corner prints (`cardWhen`). Only a "till" for the corner's OWN day goes (with the
   corner's year where it says one: "till 1 Jan" beside "till 1 Jan 2027"); a "till" for another day, a year the corner
   does not say, and a card whose corner says no "till" (a one-day input; an input shown under its last day) keep the
   remark whole. Pins: `ui/inputcard-model.test.ts`, `ui/inputsvet.test.tsx`.
-- **ON THE DESKTOP LIST A SHARED INPUT NAMES EVERYONE, AND THE KIND KEEPS ITS PILL (owner D727, 10 Oct 26 — "A"; BUILT
+- **On the desktop list a shared input names everyone, and the kind keeps its pill (owner D727, 10 Oct 26 — "A"; BUILT
   10 Oct 26 with `[INPUTS-VET]`).** The table's Name cell reads every name of a shared input, A to Z, wrapping in
   its column — 250px wide, the drawing's own (until then it read the first name and a count, "Drifter +3", the rest in a tooltip); the kind stays in its
   pill (`.intag`) on the table - the cards keep their small grey capitals (D723), so the kind has two looks by his
   choice, which narrows D718's "one look everywhere" for this screen. The drawing: `docs/mock/card-questions.html`.
-- **THE INPUTS LIST HAS NO EDIT IN PLACE (owner D718, D723 — 10 Oct 26).** On a phone (`max-width:820px`, followed
+- **The Inputs list has no edit in place (owner D718, D723 — 10 Oct 26).** On a phone (`max-width:820px`, followed
   live — `ui/usephone.ts`) the list is the input card under a slim heading a day ("SAT 18 JUL · 6 inputs"), in date
   order; an input of several days stands under its first day. On a desktop it is the table, its columns and sorting as
   they were, without the pencil and the cross: the Name is a button and a click on the row opens the input's window;
@@ -10553,7 +10553,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   just-saved input the filters hide brings its whole day to the head of the list, itself first under it. Pins:
   `ui/windowdoors.test.tsx`, `ui/windowreads.test.tsx`, `ui/groupeditor.test.tsx`, `ui/inputslist.test.tsx`,
   `e2e/inputs-calendar.spec.ts` ("keeps Delete, Cancel and Save in sight").
-  **ON A PHONE THE DAYS OF THE WINDOW'S CALENDAR ARE A FINGER'S SIZE (owner D725, 10 Oct 26 — "ok bigger").** Under
+  **On a phone the days of the window's calendar are a finger's size (owner D725, 10 Oct 26 — "ok bigger").** Under
   821px a day of `#inpEdCal` is 33 tall and as wide as the window gives it — measured 42 on a 390-wide phone, 32 on a
   320, 47 from 430 up (the calendar stops at 360 wide) — where it was 26 by 20; the month's arrows are 28. The list's
   pencil calendar had a finger's size on a phone before it went (D718); a new input's and a shared input's window
@@ -10636,7 +10636,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   Its title and "+ Input" are pinned; the planning sections and then one line an entry scroll under them — who, the
   kind, when ("All day", the hours, or the day it runs till), a remark, the LATE tag (pressed, it says the cut-off
   missed — D646) and who placed it (D629). Everyone is listed; never "+ more".
-- **A saved or brought-back input is shown WHERE IT IS** (D672 and its reading 9): the month turns to it if needed;
+- **A saved or brought-back input is shown where it is** (D672 and its reading 9): the month turns to it if needed;
   its bar flashes — brought on screen first if scrolled away — and nothing opens. Only an input with no bar on the
   month (behind "+N more", let through by no filter), or a save made from an open day, opens the day.
 - **The gear** (the cog glyph, admins — D635) opens the Inputs calendar's settings window (`win-inputsset`):
@@ -10652,7 +10652,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   takes the live value silently; a field changed both ways is listed, theirs and his, and Save waits for his choice
   (asked again after any blocking question); a record that has gone closes the window and says so; a record put back
   as a new object by a refusal or an Undo is followed without losing what he typed; another input asked for over
-  unsaved changes is asked about in the window. *(Two corrections from the job's bug check, 8 Oct 26: WHO IT IS FOR is
+  unsaved changes is asked about in the window. *(Two corrections from the job's bug check, 8 Oct 26: who it is for is
   unsaved work too — a person picked or un-picked, compared as a set against the people it opened with, asks the same
   question (it used to be thrown away without a word); and while it asks, the window follows only the record it is
   SHOWING — it used to take the other input for its own record changed behind it, say "Changed while this window was
@@ -10678,7 +10678,7 @@ in `ui/inputedit.tsx`. A screen that draws inputs reads the record; one that dra
   bullets say `commitGroup`; it runs every refusal first (who may, what one record may hold — `inputs.ts
   shapeProblem`) and calls `commitInputEdit` / `commitNewInput` for what the input SAYS. A filing for ONE person is
   written with `people` too. "Delete this input for all N people?" (`inped-delall`) is the one delete.
-- **ONE OIL answer for everyone in it (D762):** the window's OIL line states the input's one answer, with "Change…"
+- **One OIL answer for everyone in it (D762):** the window's OIL line states the input's one answer, with "Change…"
   for whoever may change the input. "Your OIL", a man's own answer and its Change… / Answer… buttons are gone; "a man
   may change his own again afterwards" (D660 reading 3, D682 reading 2), "a man who may only add somebody answers
   for the man he adds" and "credited for 2 of 3 — Ranger: no" (D731 (4)) no longer hold — the people of one input
@@ -10766,8 +10766,8 @@ in `ui/inputedit.tsx`. A screen that draws inputs reads the record; one that dra
   switch (`pp-several`, `role="switch"`) shows the schedule's own pucks (`html.ts puck()`, never a look-alike) as buttons
   (`data-pp`, `aria-pressed`) in groups — Pilots, WSOs, SANS, and Personnel only where the roster holds ground crew — each
   A to Z, with "All" on Pilots, WSOs and Personnel (a second press clears that group, never the last man) and a count line.
-  Four across at phone width, each a 36px target; 86px columns where there is room. **A DRAG ACROSS THE PUCKS PICKS
-  EVERY ONE IT PASSES (owner D685, 9 Oct 26 — from his iPhone):** the drag does what its FIRST puck does — begun on a
+  Four across at phone width, each a 36px target; 86px columns where there is room. **A drag across the pucks picks
+  every one it passes (owner D685, 9 Oct 26 — from his iPhone):** the drag does what its FIRST puck does — begun on a
   man not picked it picks, begun on a picked man it lets go, never the last one — and runs across the headings (the
   pointer handlers are on `.pp-body`; the puck under the point is asked of the page). On a phone it starts SIDEWAYS:
   the pucks say `touch-action:pan-y`, so a finger moved up or down is still the list being scrolled, and one moved
@@ -10804,7 +10804,7 @@ in `ui/inputedit.tsx`. A screen that draws inputs reads the record; one that dra
   the window is not read only), never for a man in it who did not file it, never for anyone else, never in the
   board's or the week's dialog (there a moved span would take the row off the day it was opened from), and not for
   an ordinary one-man input, which keeps its row in the List and its bar. **A saved input's dates are a finished
-  range, so the first tap is always the NEW START and the next the new end** (a one-day input is handed to the
+  range, so the first tap is always the new start and the next the new end** (a one-day input is handed to the
   calendar as a range of one day until that first tap — `midPick`); one tap and Save is a one-day input. The title
   keeps the saved dates; the line under the calendar (`.rc-read`) says what Save will write. Save is the entry's
   ONE command (`commitGroup`, one Undo): the OIL question is asked of every man kept where the new days need it
@@ -10834,7 +10834,7 @@ in `ui/inputedit.tsx`. A screen that draws inputs reads the record; one that dra
   people" — each line naming its man; a later change to one man alone is its own line under it. A line each is still
   written (each carries its record's `grp`); "Group by: Who" and the day's count are as they were.
   *(Since the one-rule build, 12 Oct 26 — D756: an input of several is ONE record, so its filing, a change to what it
-  says and its delete are ONE line, written by `state/changelines.ts` under its first person; ONE LINE A PERSON put in
+  says and its delete are ONE line, written by `state/changelines.ts` under its first person; one line a person put in
   or taken out is written beside it, filed under that person (his callsign, the input and its dates, then "· added" or "· taken out").
   `grp` is not written any more; a stored line that carries it — made before the build — still groups in the window,
   read only. A scheduler's mark is the input's own line too: "… · CX: not cancelled → cancelled — WX", "· red box",
@@ -10887,10 +10887,10 @@ a deleted pin. Planning-only Undo/Redo returns to Member Calendar, where notes a
 
 ## The failed-save warning has a band of its own (owner, 5 Oct 26 — D586, D587; `[SAVE-NOTE-COVERS]`)
 
-**THE LINE UNDER IT IS AMBER (owner D841, 14 Oct 26):** while the warning is up — or the bar that waits on an OIL answer, which has the same band (D831, D840) — the top bar's own bottom edge is the band's amber, never Edit Schedule's cyan; it returns to the page's own when the bands go.
+**The line under it is amber (owner D841, 14 Oct 26):** while the warning is up — or the bar that waits on an OIL answer, which has the same band (D831, D840) — the top bar's own bottom edge is the band's amber, never Edit Schedule's cyan; it returns to the page's own when the bands go.
 
 **The rule (D587):** when a save has failed, the warning — "⚠ Not saved — keep this page open" and **Retry** — fills a
-line of its own along the BOTTOM OF THE TOP BAR, edge to edge. The top bar is one line (36px, `--save-band`) taller
+line of its own along the bottom of the top bar, edge to edge. The top bar is one line (36px, `--save-band`) taller
 while it shows, so the page moves down and **nothing is under the warning, on any page, at any size**. It goes when the
 save lands. The passing "Saving…" note is unchanged: it floats under the bar's right end, takes no press, and never
 moves the bar (`[LW-FIGSEL-FLAKE]`, 28 Sep 26).
@@ -10912,7 +10912,7 @@ board's ⋯ menu hangs from its button's right edge when the left-hung menu woul
   flow): the scheduler board (inside `.sb-top`, last, so `--sb-topH` follows it), the Inputs calendar and the Medical
   view (between the head and the body), and the Leave War's full-screen OIL tracker — its grid and its settings (under
   the sheet's head). There the bar's own warning cannot be seen. **Since the calendar-first Inputs (D574/D580 — joined
-  with this rule on 7 Oct 26) the Inputs calendar is PART OF THE INPUTS PAGE, not a surface over the top bar: there it
+  with this rule on 7 Oct 26) the Inputs calendar is part of the Inputs page, not a surface over the top bar: there it
   carries NO band, and the bar's own warning is the one seen** (`InputsCal.tsx`: the band only when not `embedded`; a
   band in the embedded calendar hid the bar's copy and left an empty line in the bar — `e2e/save-note.spec.ts` pins
   both). **Since the three tabs (D620, D626 — 8 Oct 26) the Medical view is a TAB of the Inputs page too: it sits in the
@@ -10937,8 +10937,8 @@ board's ⋯ menu hangs from its button's right edge when the left-hung menu woul
   taller bar would otherwise reach them, and the right-hand arrow would lie on Retry. **So does the spot the two movable
   windows open at** (the changes window and the ALL AVAIL window, 96px down the right edge — they stay open while a
   person works, and under a two-line bar would open on Retry); they are drawn beside the shell, so `#shell` carries
-  `.save-failed` too. DESKTOP ONLY (621px and wider) — on a phone both are bottom panels and the rule must not reach
-  them — and shorter by the band, so the foot stays on a short screen. ONLY A WINDOW STILL AT ITS DEFAULT SPOT: one a
+  `.save-failed` too. Desktop only (621px and wider) — on a phone both are bottom panels and the rule must not reach
+  them — and shorter by the band, so the foot stays on a short screen. Only a window still at its default spot: one a
   person has moved or resized carries `data-placed` (`ui/floatwin.ts`) and keeps its own box — capped by the stylesheet,
   its shrunken height would be recorded as the size he chose. Where he puts it is his, over the warning included. **A new thing pinned at a fixed height near
   the top must do the same**, or be measured from the bar.
