@@ -59,7 +59,8 @@ async function closeBoard(C) {
     if (await b.count()) { await (C.phone ? b.tap() : b.click()); await C.page.waitForTimeout(400) }
   }
 }
-async function dropWindow(C) { for (let i = 0; i < 3; i++) { const x = C.page.locator('#inpEditClose:visible').first(); if (await x.count()) { await x.click(); await C.page.waitForTimeout(300) } else break } }
+async function dropWindow(C) { for (let i = 0; i < 6; i++) { const fx = C.page.locator('[data-testid="win-inputedit-x"]:visible, [data-testid="win-inputsday-x"]:visible').last(); if (await fx.count()) { await (C.phone ? fx.tap() : fx.click()); await C.page.waitForTimeout(300); continue } break }
+  for (let i = 0; i < 3; i++) { const x = C.page.locator('#inpEditClose:visible').first(); if (await x.count()) { await x.click(); await C.page.waitForTimeout(300) } else break } }
 async function goPage(C, name) { await dropWindow(C); await closeBoard(C); await C.page.evaluate(n => window.go(n), name); await C.page.waitForTimeout(800); await hideToast(C.page) }
 async function openWeek(C) { await goPage(C, 'editsched') }
 async function openBoard(C, di = 0) {
