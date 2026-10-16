@@ -1,0 +1,64 @@
+{
+ "results": [
+  {
+   "id": "J1-1 desk Meeting, Several people, ALL AVAIL, 13:00-14:00 \"Sqn brief\", Add",
+   "tag": "PASS",
+   "note": "calendar on JULY 2026; placeholder pucks [{\"id\":\"allavail\",\"label\":\"ALL AVAIL\",\"dis\":false,\"on\":\"false\"},{\"id\":\"all\",\"label\":\"ALL\",\"dis\":false,\"on\":\"false\"}]; window closed; stored [{\"type\":\"Meeting\",\"date\":\"Jul 13\",\"remarks\":\"Sqn brief\",\"more\":[{\"p\":\"stiff\",\"by\":\"stiff\",\"at\":1792144156885},{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1792144156885}],\"s\":780,\"e\":840,\"allday\":false}]",
+   "pic": "j1-1-file-A-desk.png"
+  },
+  {
+   "id": "J1-2 desk second input: ALL AVAIL + two named people, 13:00-14:00 \"Sqn brief B\", Add",
+   "tag": "PASS",
+   "note": "calendar on JULY 2026; placeholder pucks [{\"id\":\"allavail\",\"label\":\"ALL AVAIL\",\"dis\":false,\"on\":\"false\"},{\"id\":\"all\",\"label\":\"ALL\",\"dis\":false,\"on\":\"false\"}]; named [\"dj\",\"shaft\"]; window closed; stored [{\"type\":\"Meeting\",\"date\":\"Jul 13\",\"remarks\":\"Sqn brief B\",\"more\":[{\"p\":\"stiff\",\"by\":\"stiff\",\"at\":1792144165397},{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1792144165397},{\"p\":\"dj\",\"by\":\"stiff\",\"at\":1792144165397},{\"p\":\"shaft\",\"by\":\"stiff\",\"at\":1792144165397}],\"s\":780,\"e\":840,\"allday\":false}]",
+   "pic": "j1-2-file-B-desk.png"
+  },
+  {
+   "id": "J8-1 desk the changes window: the line for this row",
+   "tag": "NOTE",
+   "note": "words with \"Ground\" in the window: []; lines about the row: [\"Input · Ace, Anvil, Saber, ALL AVAIL · Meeting\",\"Meeting added · 13 Jul (on the programme)\",\"Input · Saber, ALL AVAIL · Meeting\",\"Meeting added · 13 Jul (on the programme)\"] (the word marked in the picture)",
+   "pic": "j8-1-changes-window.png"
+  },
+  {
+   "id": "J8-1b desk Monday head: the day's change count",
+   "tag": "NOTE",
+   "note": "Monday's head count button reads \"2 changes\"",
+   "pic": "j8-1b-day-count.png"
+  },
+  {
+   "id": "J8-2 desk the board's note after pressing ✕ on the input's row",
+   "tag": "NOTE",
+   "note": "note reads \"Common item removed — back under Personal Inputs — MEETING, 13:00–14:00, Saber and ALL AVAIL\"",
+   "pic": "j8-2-board-x-note.png j8-2b-board-x-whole.png"
+  },
+  {
+   "id": "J8-2c desk Undo of the ✕ puts the row back on the Common Programme",
+   "tag": "PASS",
+   "note": "Common: 0:SODB@07:45 | 1:MET + NOTAM BRIEF@08:15 | 2:FLIGHT SAFETY STAND-DOWN@08:30 | 3:WPNS & TACTICS SYNC@11:30 | 4:IN MEETING@13:00 | 5:IN MEETING@13:00 | 6:STANDARDISATION MEETING@13:30 | 7:OCU PROGRESS REVIEW@14:45 | 8:INTEL UPDATE@16:00 | 9:OPS SHARING + NAV SYS BRIEF@17:55 | 10:DINNER WITH CMD@18:30 | 11:CMD ENGAGEMENT @ CREW ROOM (ALL)@21:30"
+  },
+  {
+   "id": "J8-3 desk Personal Inputs' button on an Other filed for ALL AVAIL",
+   "tag": "NOTE",
+   "note": "buttons first seen [\"x:Reject\"]; after a Reject where needed [\"g:→ Common\",\"u:→ Unavail\"]; \"→ Ground\" button not shown",
+   "pic": "j8-3-other-buttons.png"
+  },
+  {
+   "id": "J1-1 phone390 Meeting, Several people, ALL AVAIL, 13:00-14:00 \"Sqn brief\", Add",
+   "tag": "PASS",
+   "note": "calendar on JUL 2026; placeholder pucks [{\"id\":\"allavail\",\"label\":\"ALL AVAIL\",\"dis\":false,\"on\":\"false\"},{\"id\":\"all\",\"label\":\"ALL\",\"dis\":false,\"on\":\"false\"}]; window closed; stored [{\"type\":\"Meeting\",\"date\":\"Jul 13\",\"remarks\":\"Sqn brief\",\"more\":[{\"p\":\"stiff\",\"by\":\"stiff\",\"at\":1792144195112},{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1792144195112}],\"s\":780,\"e\":840,\"allday\":false}]",
+   "pic": "j1-1-file-A-phone390.png"
+  },
+  {
+   "id": "J1-2 phone390 second input: ALL AVAIL + two named people, 13:00-14:00 \"Sqn brief B\", Add",
+   "tag": "PASS",
+   "note": "calendar on JUL 2026; placeholder pucks [{\"id\":\"allavail\",\"label\":\"ALL AVAIL\",\"dis\":false,\"on\":\"false\"},{\"id\":\"all\",\"label\":\"ALL\",\"dis\":false,\"on\":\"false\"}]; named [\"dj\",\"shaft\"]; window closed; stored [{\"type\":\"Meeting\",\"date\":\"Jul 13\",\"remarks\":\"Sqn brief B\",\"more\":[{\"p\":\"stiff\",\"by\":\"stiff\",\"at\":1792144203578},{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1792144203578},{\"p\":\"dj\",\"by\":\"stiff\",\"at\":1792144203578},{\"p\":\"shaft\",\"by\":\"stiff\",\"at\":1792144203578}],\"s\":780,\"e\":840,\"allday\":false}]",
+   "pic": "j1-2-file-B-phone390.png"
+  },
+  {
+   "id": "J8-5 phone the banner shown while a place waits for a puck",
+   "tag": "NOTE",
+   "note": "banner text with the word marked: [\"\",\"Planning Common · MEETING\"]",
+   "pic": "j8-5-banner-phone-whole.png j8-5-banner-phone.png"
+  }
+ ],
+ "errs": []
+}

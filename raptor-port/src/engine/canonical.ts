@@ -13,6 +13,7 @@
 import { dayKeys } from './restore'
 import { ridKey, posKey, rowsOf } from './rowids'
 import { groundOrder } from './order'
+import { onCommon } from './grouprows'
 
 /* Part of the issued document. (`notes` and the four section-note fields are
    the positional note family — dayKeys addresses them by index; a stable note
@@ -244,7 +245,8 @@ export function canonicalDiff(prevD: any, newD: any, di: any): DeltaEntry[] {
   movIf('wave', newD.waves, prevD.waves)
   movIf('programme', newD.allhands, prevD.allhands)
   movIf('dutyblock', newD.dutywaves, prevD.dutywaves)
-  movIf('ground', groundOrder(newD.ground, newD.gman).map((x: any) => x.row), groundOrder(prevD.ground, prevD.gman).map((x: any) => x.row))
+  /* …as DRAWN there: an input's row on the Common Programme is not in its order (owner D955 — grouprows.ts onCommon) */
+  movIf('ground', groundOrder(newD.ground, newD.gman).filter((x: any) => !onCommon(x.row)).map((x: any) => x.row), groundOrder(prevD.ground, prevD.gman).filter((x: any) => !onCommon(x.row)).map((x: any) => x.row))
   ;[...new Set([...Object.keys(newD.sims || {}), ...Object.keys(prevD.sims || {})])].forEach((kind: any) => movIf('sim', (newD.sims || {})[kind], (prevD.sims || {})[kind]))
   const byRid = (arr: any) => { const m = new Map(); (arr || []).forEach((x: any) => { if (x && x.rid) m.set(x.rid, x) }); return m }
   const wWas = byRid(prevD.waves)

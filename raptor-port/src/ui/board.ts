@@ -5,6 +5,7 @@ import { DAYS } from '../engine/data'
 import { mkNote, noteText } from '../engine/note'
 import { briefLeadShown } from '../engine/faceattrs'
 import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId, inputReadPass, remarksTyped } from '../engine/inputs'
+import { onCommon } from '../engine/grouprows'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { REPORTING_LABEL } from '../engine/reporting'
@@ -1110,7 +1111,8 @@ export function boardMbtn(e: MouseEvent) {
          — as it was while a shared input was several rows taken off as one; since the one-rule build the one row said
          "Nomad +2", the first to join and "the rest" (found by the re-expressed tests, step 6) */
       const ids = [row.who, ...((row && row.more) || [])].map((v: any) => whoId(v)).filter(Boolean)
-      return toast('Ground item removed — back under Personal Inputs' + desc(row.prog, timeSpan(row.str, row.end), ids.length > 1 ? howMany(ids) : whoText(row)))
+      /* the place it stood: an ALL / ALL AVAIL input's row is on the Common Programme (owner D955, D958) */
+      return toast(`${onCommon(row) ? 'Common' : 'Ground'} item removed — back under Personal Inputs` + desc(row.prog, timeSpan(row.str, row.end), ids.length > 1 ? howMany(ids) : whoText(row)))
     }
     const issued = deletionWasIssued(di, 'ground', ri, row && row.src)
     const said = 'Ground item removed' + desc(row && row.prog, row && timeSpan(row.str, row.end), row && whoText(row))

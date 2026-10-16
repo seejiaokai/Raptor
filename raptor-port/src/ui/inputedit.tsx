@@ -2155,6 +2155,10 @@ function fieldSay(k: string, d: any): string {
   return n ? `${n} document${n > 1 ? 's' : ''}` : 'none'
 }
 
+/* WHICH PROGRAMME an input lands on, said in words — the Common Programme where its people hold ALL or ALL AVAIL (owner D955;
+   ui/html.ts onCommon reads the same off the row), the Ground Programme otherwise */
+const progOf = (ids: readonly any[]): string => ids.some((id: any) => PEOPLE[id] && PEOPLE[id].special) ? 'Common Programme' : 'Ground Programme'
+
 export function InputEditor() {
   useVersion()
   const r = INPEDIT
@@ -2497,7 +2501,8 @@ export function InputEditor() {
       })
       if (ok) {
         const shown = show(savedRow, r._calendar || CURPAGE === 'inputs')
-        if (ctx === 'g') HOOKS.toast('Input added to the Ground Programme', 'ok'); else saidSaved(savedRow, shown, 'Input added')
+        /* the place it is drawn: an input for ALL / ALL AVAIL stands on the Common Programme (owner D955) */
+        if (ctx === 'g') HOOKS.toast(`Input added to the ${progOf([...ppl, draft && draft.person])}`, 'ok'); else saidSaved(savedRow, shown, 'Input added')
         close()
       }
       return
@@ -3011,7 +3016,7 @@ export function InputEditor() {
               : ctx === 'u'
               ? 'Pick the dates on the calendar. A leave syncs to the Inputs page and Leave War.'
               : ctx === 'g'
-                ? `Added on ${when}, straight onto the Ground Programme. For a multi-day span, use the Inputs page.`
+                ? `Added on ${when}, straight onto the ${progOf([...ppl, draft && draft.person])}. For a multi-day span, use the Inputs page.`
                 : `Added on ${when}. For a multi-day span, use the Inputs page.`
             /* a SANS commitment is on no list of the Inputs tab (D620), so "the Inputs page" is no place to change its
                dates — and this editor changes none: it is deleted and added again (the calendar job's bug check, 8 Oct 26) */

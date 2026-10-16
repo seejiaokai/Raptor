@@ -30,3 +30,12 @@ export function rowPeopleDrawn(d: any, di: any, ri: number): DrawnPuck[] {
  *  one person, a row nobody filed and a dead `kept` row are drawn as they always were. */
 export const inputRowSeveral = (row: any): boolean =>
   !!row && !!row.src && !row.kept && [row.who, ...(row.more || [])].filter((v: any) => !!whoId(v)).length > 1
+/* AN INPUT FILED FOR ALL / ALL AVAIL IS DRAWN ON THE COMMON PROGRAMME (owner D955 — ui/html.ts onCommon, re-exported from
+   here): a row that came from an input and holds ALL or ALL AVAIL among its people. Here, in the engine, because the
+   published compare asks it too — the Ground Programme's shown order leaves such a row out (engine/drafts.ts,
+   engine/canonical.ts: a retime of it is no "order changed · ground items" on a list it is not drawn in — the fresh code
+   read of job 2, 17 Oct 26). */
+export function onCommon(x:any):boolean{
+  if(!x||!x.src)return false;
+  return [x.who,...(x.more||[])].some((v:any)=>{const id=whoId(v); return !!(id&&PEOPLE[id]&&PEOPLE[id].special);});
+}

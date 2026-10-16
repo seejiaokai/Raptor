@@ -16,7 +16,7 @@ import { canEditSched } from '../state/auth'
 import { isMember } from '../state/perms'
 import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilItemOfKey, oilRowPeople, oilClaimWin, inputItemKey } from './oilmode'
 import { rowItemKey, groundItemKey } from '../engine/oil'
-import { rowKindTag, inpKindTagHTML, inpCxHTML, inpCxCls, oilSeatDeco, reqRmkParts } from './html'
+import { rowKindTag, inpKindTagHTML, inpCxHTML, inpCxCls, oilSeatDeco, reqRmkParts, onCommon, commonOrder } from './html'
 import { ORD, puck, puckMarks, rowCls, accCtl, GP_TAKEOFF_NOTE, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn, exemptLineOwn } from './html'
 
 /* ONE CLOCK ON THE BOARD — hh:mm (owner, 30 Aug 26, reversing the 29 Aug
@@ -192,9 +192,14 @@ export function sbNotesPanel(d:any,di:any,pv?:any,ro?:any){
 /* ---- board panel 2: overall programme (squadron-wide, affects everyone) --- */
 export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
   const rows=d.allhands||[];
+  /* its own rows, and the rows of inputs filed for ALL / ALL AVAIL drawn among them by start time (owner D955 — html.ts
+     commonOrder; each such row the Ground Programme's own, drawn by sbGrRowHTML) */
+  const cmn=commonOrder(rows,d.ground||[]);
   let s=`<div class="sb-panel prog"><div class="sb-ph">Common Programme `
     +(ro?'':`<span class="gctl">${sbSortBtn(`p.${di}`,ro)}<button class="mbtn add" data-padd="${di}" title="Add a squadron-wide item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
-  if(!rows.length)s+=`<div class="sb-empty">Nothing squadron-wide yet — “+ Item” adds a mass brief, PT, safety stand-down and the like.</div>`;
+  /* the Ground Programme's Reject line, where such an input stands here (owner D957) */
+  if(!ro&&cmn.some((e:any)=>e.k==='g'&&requestOfBox(d,e.x)))s+=`<div class="sb-pinote">${GP_TAKEOFF_NOTE}</div>`;
+  if(!cmn.length)s+=`<div class="sb-empty">Nothing squadron-wide yet — “+ Item” adds a mass brief, PT, safety stand-down and the like.</div>`;
   else{
     /* SAME c6r shape as the ground / duty / sim rows — Item | Start | End |
        People | Rmks | ctl — so the Common Programme reads and lays out exactly
@@ -207,7 +212,8 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
        The `.sub` model field and its `ap:*.sub` funnel key stay (keys.test.ts /
        publish.test.ts pin the keyspace) — it simply has no board editor now. */
     s+=`<div class="sb-acols c6r"><span></span><span>Item</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span><span></span></div>`;
-    rows.forEach((x:any,ri:any)=>{
+    cmn.forEach(({k,x,ri}:any)=>{
+      if(k==='g'){s+=sbGrRowHTML(d,di,x,ri,ro,true);return;}
       oilRow(rowItemKey(x.rid));
       const arr=oilModeOn(di)?oilRowPeople(di,whoArr(x),rowItemKey(x.rid),oilWin(x)):whoArr(x);
       /* same hole guard as the week view — an empty .itxt shifts every later puck.
@@ -580,28 +586,9 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
   });
   return s+sbNote(d,di,'sn','simnotes','e.g. OFT 2 u/s Thu PM — 4-ship EP profile pushed to next week. Divot still owes an AMT EP.',ro)+`</div></div>`;
 }
-export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
-  const rows=d.ground||[];
-  /* + Inputs (owner, 19 Aug 26 — moved here from the Personal Inputs panel and
-     renamed): a scheduler adds an activity input (Meeting, CSE…) FROM the
-     ground programme, and it lands ON the ground programme — the dialog offers
-     only ground-eligible types and commitNewInput accepts the new row straight
-     onto this section (see interactions.ts / ui/inputedit.tsx). "+ Item" beside
-     it stays the bare-row add for things that are not anybody's input. */
-  let s=`<div class="sb-panel grnd"><div class="sb-ph">Ground Programme `
-    +(ro?'':`<span class="gctl"><button class="sb-addinp" data-inpadd="${di}.g" title="Add a personal input (meeting, course…) — it goes straight onto the Ground Programme">+ Inputs</button>${sbSortBtn(`g.${di}`,ro)}<button class="mbtn add" data-gradd="${di}" title="Add a ground item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
-  /* the one line saying where an input on this list is taken off (D943, D947 — html.ts GP_TAKEOFF_NOTE, the week's twin) */
-  /* (a row whose Reject stands under Personal Inputs: its input there and the row its own — a kept or orphaned row is not) */
-  if(!ro&&rows.some((x:any)=>requestOfBox(d,x)))s+=`<div class="sb-pinote">${GP_TAKEOFF_NOTE}</div>`;
-  if(!rows.length)s+=`<div class="sb-empty">No ground items yet — “+ Item” adds one.</div>`;
-  else{
-    s+=C6;
-    /* same render-time ordering as the week — keys keep their model index */
-    /* A SHARED INPUT IS ONE ROW HERE TOO (owner D661, D743 — pictures 3 and 4; html.ts's ground loop is the week's twin,
-       engine/grouprows.ts the one answer both read): the lead draws the one name box, the one pair of time boxes, the
-       one remark box, the one set of row buttons and the one grip; the other members draw nothing. Every puck keeps
-       its own row's key. */
-    groundOrder(rows,d.gman).forEach(({row:x,ri}:any)=>{
+/* ONE ROW OF THE GROUND PROGRAMME on the board, wherever it is drawn — its own panel, or the Common Programme's (owner D955,
+   html.ts onCommon / commonOrder). Its keys are its own (`g:` / `gr:`) in either place. */
+function sbGrRowHTML(d:any,di:any,x:any,ri:any,ro:any,onCmn:boolean):string{
       /* (since the one-rule build an input is one row: the row of an input that holds several draws its people by
          the ONE answer — engine/grouprows.ts rowPeopleDrawn, A to Z then the placeholder) */
       const many=inputRowSeveral(x);
@@ -616,7 +603,8 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
            lands a row with no times at all ([OIL-SEATS-CAN-EARN] step 6). */
         ? oilRowPeople(di,[x.who,...(x.more||[])],groundItemKey(x),x.src?oilClaimWin(di,x.src):oilWin(x)).map((pid:any)=>sbSeat(di,base,pid,ro)).join('')
         : ((id&&PEOPLE[id])?sbSeat(di,base,id,ro):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+sbMore(di,base,x,ro);
-      s+=`<div class="sb-arow c6r${rowCls(x)}${lateRowCls(x)}"${lateRowTitle(x)}${rowMove(`mv:g.${di}.${ri}`,ro)}>`+sbGrip(ro)
+      /* drawn on the Common Programme (owner D955): no grip and no drag address there — its place is its time (D955 (1)) */
+      return `<div class="sb-arow c6r${rowCls(x)}${lateRowCls(x)}"${lateRowTitle(x)}${onCmn?'':rowMove(`mv:g.${di}.${ri}`,ro)}>`+sbGrip(ro||onCmn)
         /* a row that came from a TITLED input says its kind under its name box (D717, html.ts rowKindTag). The row's grid
            places its cells by their order, so the label rides INSIDE the name's own cell — a wrapper drawn only for
            such a row; every other row keeps the bare box it always had. In OIL Earn too, where the name cell is the
@@ -630,7 +618,31 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
         +((rq=>rq&&!ro?(rq.till?`<span class="rmkt">${sbRmk(`${t}.rmks`,rq.typed,ro)}<span class="rk-till">${esc(rq.till)}</span></span>`:sbRmk(`${t}.rmks`,rq.typed,ro))
           :sbRmk(`${t}.rmks`,x.rmks,ro))(reqRmkParts(d,x)))
         +sbRowCtl(ro,x,`${di}.${ri}`,'gr','this item',sbNudge(`mv:g.${di}.${ri}`,ro),true)+`</div>`;
-    });
+}
+export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
+  const rows=d.ground||[];
+  /* the rows it draws — an input filed for ALL / ALL AVAIL is drawn on the Common Programme (owner D955, html.ts onCommon) */
+  const drawnG=groundOrder(rows,d.gman).filter(({row}:any)=>!onCommon(row));
+  /* + Inputs (owner, 19 Aug 26 — moved here from the Personal Inputs panel and
+     renamed): a scheduler adds an activity input (Meeting, CSE…) FROM the
+     ground programme, and it lands ON the ground programme — the dialog offers
+     only ground-eligible types and commitNewInput accepts the new row straight
+     onto this section (see interactions.ts / ui/inputedit.tsx). "+ Item" beside
+     it stays the bare-row add for things that are not anybody's input. */
+  let s=`<div class="sb-panel grnd"><div class="sb-ph">Ground Programme `
+    +(ro?'':`<span class="gctl"><button class="sb-addinp" data-inpadd="${di}.g" title="Add a personal input (meeting, course…) — it goes straight onto the Ground Programme">+ Inputs</button>${sbSortBtn(`g.${di}`,ro)}<button class="mbtn add" data-gradd="${di}" title="Add a ground item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
+  /* the one line saying where an input on this list is taken off (D943, D947 — html.ts GP_TAKEOFF_NOTE, the week's twin) */
+  /* (a row whose Reject stands under Personal Inputs: its input there and the row its own — a kept or orphaned row is not) */
+  if(!ro&&drawnG.some(({row:x}:any)=>requestOfBox(d,x)))s+=`<div class="sb-pinote">${GP_TAKEOFF_NOTE}</div>`;
+  if(!drawnG.length)s+=`<div class="sb-empty">No ground items yet — “+ Item” adds one.</div>`;
+  else{
+    s+=C6;
+    /* same render-time ordering as the week — keys keep their model index */
+    /* A SHARED INPUT IS ONE ROW HERE TOO (owner D661, D743 — pictures 3 and 4; html.ts's ground loop is the week's twin,
+       engine/grouprows.ts the one answer both read): the lead draws the one name box, the one pair of time boxes, the
+       one remark box, the one set of row buttons and the one grip; the other members draw nothing. Every puck keeps
+       its own row's key. */
+    drawnG.forEach(({row:x,ri}:any)=>{s+=sbGrRowHTML(d,di,x,ri,ro,false);});
   }
   return s+sbNote(d,di,'gn','grndnotes','e.g. Two medicals already at 1030 — keep the next one clear of the wave brief.',ro)+`</div></div>`;
 }

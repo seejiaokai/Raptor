@@ -1,10 +1,10 @@
 import { requestOfBox } from '../engine/overlay'
-import { rowPeopleDrawn, inputRowSeveral } from '../engine/grouprows'
+import { rowPeopleDrawn, inputRowSeveral, onCommon } from '../engine/grouprows'
 import { DAYS } from '../engine/data'
 import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
 import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
-import { INPUTS, inputsOn, remarksShown, remarksTyped, tillOf, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
+import { INPUTS, idsOf, inputsOn, remarksShown, remarksTyped, tillOf, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { reportingIssuesForWave,stated,REPORTING_LABEL } from '../engine/reporting'
@@ -1747,13 +1747,19 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
        Available) below stay pinned — neither is a schedule section. */
     const secM0=h.length;
     // ---- all-hands header: EP/ORDERS notes + squadron-wide items ----
-    const hasNotes=!!(d.notes&&d.notes.length), hasAH=!!(d.allhands&&d.allhands.length);
+    /* its own rows, and the rows of inputs filed for ALL / ALL AVAIL drawn among them by start time (owner D955 — commonOrder) */
+    const cmn=commonOrder(d.allhands||[],d.ground||[]);
+    const hasNotes=!!(d.notes&&d.notes.length), hasAH=cmn.length>0;
     if(hasNotes||hasAH||ed){
-      h+=`<div class="allhands sec sec-prog"><div class="ah-h">Common Programme</div>`;
+      /* …with the Ground Programme's Reject line where such an input stands here (owner D957) */
+      h+=`<div class="allhands sec sec-prog"><div class="ah-h">Common Programme</div>`+(ed&&cmn.some((e:any)=>e.k==='g'&&requestOfBox(d,e.x))?`<div class="pl-inpnote">${GP_TAKEOFF_NOTE}</div>`:'');
       (d.notes||[]).forEach((n:any,ni:any)=>h+=ted(`dn:${di}.${ni}`,noteText(n),ed,'ah-note','div'));
       if(hasAH){
         h+=`<div class="ah-cols"><span>Name</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span></div>`;
-        d.allhands.forEach((x:any,ri:any)=>{
+        cmn.forEach(({k,x,ri}:any)=>{
+          /* an input's row: the Ground Programme's own row, every key its own (`g:` / `gr:`), in this list's row shape —
+             the same five cells in the same order, so only its class changes */
+          if(k==='g'){h+=grRowHTML(d,di,x,ri,ed).replace('class="pl-row','class="ah-row');return;}
           const arr=whoArr(x);
           /* A BLANKED ENTRY IS A HOLE, NOT FREE TEXT. setSlotVal's 'a:' branch holds
              the index instead of splicing, so a published AL key keeps pointing at
@@ -1998,8 +2004,13 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
        nothing to distinguish it from and the qualifier would be noise.
        `|| ed` for the same reason as Duties: the notes box must survive an
        empty section. */
-    if((d.ground&&d.ground.length)||ed){
-      const grd=d.ground||[];
+    /* the rows it draws — an input filed for ALL / ALL AVAIL is drawn on the Common Programme instead (owner D955) */
+    const grdDrawn=groundOrder(d.ground||[],d.gman).filter(({row}:any)=>!onCommon(row));
+    /* …and where it draws none, its note may still be public (a note made public stands on View-only Sched — the job 2
+       scenario designer's 2): the section stands for it */
+    const grdNote=grdDrawn.length||ed?'':blkNoteHTML(di,d,ed,'gn','grndnotes');
+    if(grdDrawn.length||ed||grdNote){
+      const grd=grdDrawn.map(({row}:any)=>row);
       /* Header is just "Ground Programme" on both surfaces now (owner, 22 Aug
          26 — "change all the ground programme scheduler to GROUND PROGRAMME");
          the old edit-mode "· scheduler" qualifier is gone. Parity still holds —
@@ -2015,17 +2026,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
       /* …SINCE THE ONE-RULE BUILD (step 2 (b)) an input is ONE record and its row ONE ground row: the row of an input
          that holds several is drawn by the ONE answer to "whose pucks, in what order" (engine/grouprows.ts
          rowPeopleDrawn — A to Z, then the placeholder), each puck on its own place's key. */
-      groundOrder(grd,d.gman).forEach(({row:x,ri}:any)=>{const id=whoId(x.who), key=`g:${di}.${ri}`;
-        if(inputRowSeveral(x)){
-          const ppl=rowPeopleDrawn(d,di,ri);
-          /* `gshared` — the one row's own class: on a phone its two times stay together at its top, where a tall row's
-             would spread down it (scheduler/09-week-responsive.css — the approved picture 2) */
-          h+=plRow(x.prog,x.str,x.end,lCell(ppl.map((p:any)=>lSeat(di,p.id,p.key,ed)).join(''),key+'.+',ed,ppl.length<=1?'one':''),`gr:${di}.${ri}`,'prog',ed,x).replace('class="pl-row','class="pl-row gshared');
-          return;
-        }
-        const inner=((id&&PEOPLE[id])?lSeat(di,id,key,ed):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+moreSeats(di,key,ed);
-        const n=rowCrew('g',[di,ri]).filter(Boolean).length;
-        h+=plRow(x.prog,x.str,x.end,lCell(inner,key+'.+',ed,n<=1?'one':''),`gr:${di}.${ri}`,'prog',ed,x);});
+      grdDrawn.forEach(({row:x,ri}:any)=>{h+=grRowHTML(d,di,x,ri,ed);});
       h+=blkNoteHTML(di,d,ed,'gn','grndnotes');
       h+=`</div>`;
     }
@@ -2247,6 +2248,46 @@ export function inpEditLabel(inp:any,ed:any,txt:any,cls:any){
    said so. One line under the heading, in the removed-input note's own small style, ONLY on a day where an input stands
    on the Ground Programme and only where it can be done (Edit Schedule's week, the Scheduler Board) — one wording for both. */
 export const GP_TAKEOFF_NOTE='To take an input off, press Reject on it in Personal Inputs below.';
+/* ==== AN INPUT FILED FOR ALL / ALL AVAIL STANDS ON THE COMMON PROGRAMME (owner D954, D955, D957 — 17 Oct 26) ====
+   One rule: a row that came from an input (`src`) and holds ALL or ALL AVAIL among its people is DRAWN on the day's
+   Common Programme, among its own rows by start time; without them it is drawn on the Ground Programme, as every input's
+   row is. Its record is unchanged — it is the Ground Programme row it always was (its keys `g:` / `gr:`, its landing on
+   read, Reject, OIL, the clashes, the published compare: engine/overlay.ts and every reader of `d.ground` untouched); only
+   the place it is drawn moves (D955 (4): "only its place changes"). So a day issued before this reads nothing pending,
+   and the row follows ALL AVAIL by itself — put on, it moves up; taken off, it moves back (D955 (2)). No reorder grip
+   there (D955 (1): no move between the programmes — its place is its time). Read off the row alone, so the issued face,
+   the board's look at a version and the next-week peek, which hold no input, draw it the same way. */
+export { onCommon } from '../engine/grouprows'   // the rule itself lives in the engine: the published compare asks it too
+/* the Common Programme's list: its own rows in their own order, each such input's row placed before the first of them
+   that starts later; an input's row with no start goes last. Equal starts: the programme's own item first. */
+export function commonOrder(ah:any[],grd:any[]):Array<{k:'a'|'g',x:any,ri:number}>{
+  const mins=(v:any)=>{const m=parseHM(String(v??'').trim()); return m==null?null:m;};
+  const reqs=(grd||[]).map((x:any,ri:number)=>({k:'g' as const,x,ri})).filter((e:any)=>onCommon(e.x))
+    .sort((a:any,b:any)=>{const ma=mins(a.x.str), mb=mins(b.x.str); return ma==null?(mb==null?a.ri-b.ri:1):mb==null?-1:ma-mb||a.ri-b.ri;});
+  const out:Array<{k:'a'|'g',x:any,ri:number}>=[];
+  let q=0;
+  (ah||[]).forEach((x:any,ri:number)=>{
+    const s=mins(x&&x.str);
+    if(s!=null)while(q<reqs.length&&mins(reqs[q]!.x.str)!=null&&(mins(reqs[q]!.x.str) as number)<s)out.push(reqs[q++]!);
+    out.push({k:'a',x,ri});
+  });
+  while(q<reqs.length)out.push(reqs[q++]!);
+  return out;
+}
+/* ONE ROW OF THE GROUND PROGRAMME on the week, wherever it is drawn — its own section, or the Common Programme (above) */
+function grRowHTML(d:any,di:any,x:any,ri:any,ed:any):string{
+  const id=whoId(x.who), key=`g:${di}.${ri}`;
+  /* A SHARED INPUT IS ONE ROW (owner D661, D743; since the one-rule build one record, its people drawn by the ONE answer —
+     engine/grouprows.ts rowPeopleDrawn, A to Z, then the placeholder), each puck on its own place's key. `gshared` — the
+     one row's own class: on a phone its two times stay together at its top (scheduler/09-week-responsive.css) */
+  if(inputRowSeveral(x)){
+    const ppl=rowPeopleDrawn(d,di,ri);
+    return plRow(x.prog,x.str,x.end,lCell(ppl.map((p:any)=>lSeat(di,p.id,p.key,ed)).join(''),key+'.+',ed,ppl.length<=1?'one':''),`gr:${di}.${ri}`,'prog',ed,x).replace('class="pl-row','class="pl-row gshared');
+  }
+  const inner=((id&&PEOPLE[id])?lSeat(di,id,key,ed):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+moreSeats(di,key,ed);
+  const n=rowCrew('g',[di,ri]).filter(Boolean).length;
+  return plRow(x.prog,x.str,x.end,lCell(inner,key+'.+',ed,n<=1?'one':''),`gr:${di}.${ri}`,'prog',ed,x);
+}
 /* The accept control on a personal-input row. "Other" is the one type whose
    destination is genuinely ambiguous — it can be something the squadron has to
    run (ground programme) or something that simply closes the man (unavailable) —
@@ -2283,8 +2324,11 @@ export function accCtl(di:any,inp:any){
   return `<span class="accs">`
     /* an input filed for ALL AVAIL / ALL is never filed under Unavailable — that names a real person's day
        ([INPUT-ALL-AVAIL]; the door behind this is slots.ts acceptInput) */
+    /* …and its row stands on the Common Programme, so the button names it there (owner D955, D958 — "Short word Common") */
     +(/^Other$/i.test(String(inp.type))&&!isSpecial(inp.person)
-      ? b('g','→ Ground','Accept into the ground programme')+b('u','→ Unavail','File under Unavailable')
+      ? (idsOf(inp).some((id:any)=>PEOPLE[id]&&PEOPLE[id].special)
+        ? b('g','→ Common','Accept onto the Common Programme')
+        : b('g','→ Ground','Accept into the ground programme'))+b('u','→ Unavail','File under Unavailable')
       : b('g','Accept','Accept into the ground programme'))
     +`</span>`;
 }
@@ -2362,8 +2406,9 @@ export function dayInfoHTML(di:any){
   (d.waves||[]).forEach((w:any)=>(w.formations||[]).forEach((f:any)=>{forms++;(f.aircraft||[]).forEach((a:any)=>{ac++; if(a.cx||f.cx)cxn++;});}));
   const sims=['amt','oft'].reduce((n:any,k:any)=>n+((((d.sims||{})[k])||[]).filter((r:any)=>!r.cx).length),0);
   const duties=(d.dutywaves||[]).reduce((n:any,g:any)=>n+(g.rows||[]).filter((r:any)=>!r.cx).length,0);
-  const grd=(d.ground||[]).filter((g:any)=>!g.cx).length;
-  const prog=(d.allhands||[]).filter((x:any)=>!x.cx).length;
+  /* an input filed for ALL / ALL AVAIL counts where it is drawn — the Common Programme (owner D955, onCommon) */
+  const grd=(d.ground||[]).filter((g:any)=>!g.cx&&!onCommon(g)).length;
+  const prog=(d.allhands||[]).filter((x:any)=>!x.cx).length+(d.ground||[]).filter((g:any)=>!g.cx&&onCommon(g)).length;
   const eng=dayEngaged(d).size, off=dayOff(d).size;
   const A=availByWave(d), freeAll=A.anyWave.length;
   const row=(k:any,v:any)=>`<div class="dip-r"><span class="k">${k}</span><span class="v">${v}</span></div>`;

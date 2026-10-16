@@ -39,7 +39,7 @@ import { weekBundle } from '../engine/weeks-data'
 import { stashDays, stashGenOf } from '../engine/weekstash'
 import { shiftWeek } from './weeknav'
 import { esc } from '../state/view'
-import { fmtT, storesView, rowCls, cxTag, flagTag, fyiTag, plCols, areaText, atimeText, lCell, saRoleText, rowKindTag } from './html'
+import { fmtT, storesView, rowCls, cxTag, flagTag, fyiTag, plCols, areaText, atimeText, lCell, saRoleText, rowKindTag, onCommon, commonOrder } from './html'
 import { fltNoLen, fltNoLenMsg, FLT_NO_LEN_SAYS } from '../engine/validate'
 import { hideKey } from '../engine/warnhide'
 import { dayHidesIn } from '../engine/weekctx'
@@ -155,13 +155,16 @@ function peekWave(w: any): string {
   return h
 }
 function peekCommon(d: any): string {
-  const hasNotes = !!(d.notes && d.notes.length), hasAH = !!(d.allhands && d.allhands.length)
+  /* its own rows, and the rows of inputs filed for ALL / ALL AVAIL among them by start time (owner D955 — html.ts commonOrder) */
+  const cmn = commonOrder(d.allhands || [], d.ground || [])
+  const hasNotes = !!(d.notes && d.notes.length), hasAH = cmn.length > 0
   if (!hasNotes && !hasAH) return ''
   let h = `<div class="allhands sec sec-prog"><div class="ah-h">Common Programme</div>`
   ;(d.notes || []).forEach((n: any) => { h += `<div class="ah-note">${esc(noteText(n))}</div>` })
   if (hasAH) {
     h += `<div class="ah-cols"><span>Name</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span></div>`
-    d.allhands.forEach((x: any) => {
+    cmn.forEach(({ k, x, ri }: any) => {
+      if (k === 'g') { h += peekGrRow(d, x, ri).replace('class="pl-row', 'class="ah-row'); return }
       const ids = whoArr(x).map((nm: any) => whoId(nm))
       const ppl = peekCrewCell(ids, '')
       const fy = fyiTag(x)
@@ -215,15 +218,11 @@ function peekSims(d: any): string {
   h += `</div>`
   return h
 }
-function peekGround(d: any): string {
-  if (!d.ground || !d.ground.length) return ''
-  let h = `<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground Programme</div>` + plCols()
-  /* a shared input is one row here too (D661 — engine/grouprows.ts, read off the rows alone: the peek looks no input up) */
-  groundOrder(d.ground, d.gman).forEach(({ row: x, ri }: any) => {
+/* ONE GROUND PROGRAMME ROW of the peek, wherever it is drawn — its own section or the Common Programme (D955) */
+function peekGrRow(d: any, x: any, ri: number): string {
     /* the row of an input that holds several: its people A to Z, then the placeholder (engine/grouprows.ts) */
     if (inputRowSeveral(x)) {
-      h += peekRow(x.prog, x.str, x.end, peekCrewCell(rowPeopleDrawn(d, 0, ri).map(p => p.id), ''), x.rmks, x)
-      return
+      return peekRow(x.prog, x.str, x.end, peekCrewCell(rowPeopleDrawn(d, 0, ri).map(p => p.id), ''), x.rmks, x)
     }
     /* whoId can come back undefined for a value it does not resolve (free text) —
        fall back to the raw text itself (peekCrewCell's own itxt path) rather than
@@ -231,8 +230,15 @@ function peekGround(d: any): string {
        `x.who ? itxt(x.who) : ''` fallback. */
     const id = whoId(x.who)
     const ppl = peekCrewCell([id != null ? id : x.who, ...(x.more || [])], '')
-    h += peekRow(x.prog, x.str, x.end, ppl, x.rmks, x)
-  })
+    return peekRow(x.prog, x.str, x.end, ppl, x.rmks, x)
+}
+function peekGround(d: any): string {
+  /* the rows it draws — an input filed for ALL / ALL AVAIL is drawn on the Common Programme (owner D955) */
+  const drawn = groundOrder(d.ground || [], d.gman).filter(({ row }: any) => !onCommon(row))
+  if (!drawn.length) return ''
+  let h = `<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground Programme</div>` + plCols()
+  /* a shared input is one row here too (D661 — engine/grouprows.ts, read off the rows alone: the peek looks no input up) */
+  drawn.forEach(({ row: x, ri }: any) => { h += peekGrRow(d, x, ri) })
   h += `</div>`
   return h
 }

@@ -1,5 +1,6 @@
 import { DAYS } from '../engine/data'
 import { INPUTS, inpId, dateOrd, isSansAvail, leadOf } from '../engine/inputs'
+import { onCommon } from '../engine/grouprows'
 import { PEOPLE } from '../engine/people'
 import { keyDay, iuParts } from '../engine/keys'
 import { ridKey } from '../engine/rowids'
@@ -1342,7 +1343,8 @@ export function slotTitle(key:any){
   const d=DAYS[+a[0]]||{};
   try{
     if(p==='d')return `Duty · <span class="mono" style="color:var(--ink-3)">${esc(d.dutywaves[+a[1]].rows[+a[2]].role)}</span>`;
-    if(p==='g')return `Ground · <span class="mono" style="color:var(--ink-3)">${esc(d.ground[+a[1]].prog)}</span>`;
+    /* an ALL / ALL AVAIL input's row is on the Common Programme (owner D955, D958) */
+    if(p==='g')return `${onCommon(d.ground[+a[1]])?'Common':'Ground'} · <span class="mono" style="color:var(--ink-3)">${esc(d.ground[+a[1]].prog)}</span>`;
     if(p==='a')return `Programme · <span class="mono" style="color:var(--ink-3)">${esc(d.allhands[+a[1]].prog)}</span>`;
     if(p==='s')return `Sim · <span class="mono" style="color:var(--ink-3)">${esc(String(a[1]).toUpperCase())} ${esc(d.sims[a[1]][+a[2]].label||'')}</span>`;
   }catch(_){}

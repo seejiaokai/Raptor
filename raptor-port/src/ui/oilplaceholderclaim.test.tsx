@@ -104,7 +104,7 @@ afterEach(async () => { await act(async () => { setMe(DEFAULT_ME); setOilDay(nul
 
 const open = async (di: number) => { await act(async () => { openScheduler(di); notify() }) }
 const oilBtn = () => $('#sbBoard [data-oilmode]')
-const groundRowEl = () => $$('#sbBoard .sb-panel.grnd .sb-arow.c6r')[0]
+const groundRowEl = () => $$('#sbBoard .sb-panel.prog .sb-arow.c6r, #sbBoard .sb-panel.grnd .sb-arow.c6r').filter((r: any) => r.querySelector('[data-bfld^="gr:"]'))[0] /* an ALL / ALL AVAIL input is drawn on the Common Programme since D955 (17 Oct 26): its row is found in either programme */
 const inWin = () => ([...$('.availwin').querySelectorAll('.seat.oilpk')] as HTMLElement[])
 const seatOf = (id: string) => inWin().find(s => s.dataset.oilp === id)!
 /* who earns FROM THIS REQUEST — the seed Saturday carries flying and duty work of its own, so a man may earn elsewhere */
@@ -251,7 +251,7 @@ describe('the row itself — the placeholder is never a switch', () => {
       expect(seat().title, 'never his own refusal — he gave no answer of his own (D762)').not.toMatch(/answered No for|has not answered the OIL question/)
       expect(seat().dataset.oilitem, 'kept under the input\'s own address, as the crowd\'s are').toBe(ITEM)
       /* no sentence on the row, in the window or in the add's note is missing a word it was built from */
-      for (const el of [...$$('#sbBoard .sb-panel.grnd [title]'), ...$$('.availwin [title]')]) expect(el.title, 'a title').not.toMatch(/undefined|NaN|\[object/)
+      for (const el of [...$$('#sbBoard .sb-panel.grnd [title], #sbBoard .sb-panel.prog [title]'), ...$$('.availwin [title]')]) expect(el.title, 'a title').not.toMatch(/undefined|NaN|\[object/)
       expect(($('.availwin').textContent || '') + said).not.toMatch(/undefined|NaN|\[object/)
       expect(paid(), 'the credit agrees with what is drawn').toEqual(on ? ['divot', 'plasma', 'stiff'] : [])
       /* a tap is the scheduler's decision about HIM, the other way from the default; the crowd is untouched */
@@ -679,7 +679,7 @@ describe('a man who is NAMED in the input and is also free that day is credited 
     await putOnRow(ADD, 'stiff')
     expect(rowSeats().map(s => s.dataset.oilp), 'he is on the row as himself').toEqual(['stiff'])
     expect(inWin().map(s => s.dataset.oilp), 'and no longer one of the people behind the puck').toEqual(['plasma'])
-    expect($$('#sbBoard .sb-panel.grnd [data-oilp="stiff"]'), 'one switch for him on the Ground Programme').toHaveLength(1)
+    expect($$('#sbBoard .sb-panel.grnd [data-oilp="stiff"], #sbBoard .sb-panel.prog .sb-arow:has([data-bfld^="gr:"]) [data-oilp="stiff"]'), 'one switch for him on the Ground Programme').toHaveLength(1)
     expect(oilEvidence(SAT).sent[ITEM], 'the crowd written down never holds a named man').toEqual(['plasma'])
     const work = oilEarnedWork(DAYS[SAT], oilEvidence(SAT))
     expect((work.stiff || []).filter((w: any) => String(w.item) === ITEM), 'one span, not two').toHaveLength(1)
