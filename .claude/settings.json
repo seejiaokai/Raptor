@@ -1,5 +1,5 @@
 {
-  "description": "Impeccable design detector (PostToolUse on UI edits + Stop deep pass), task-observer SessionStart activation, and the UserPromptSubmit decision-recorder that stops an owner ruling being absorbed into the work without being written down, and the Stop backlog guard that fails a turn which destroyed a filed backlog record ([DOCS-GUARD]), and the PreToolUse background-command guard that refuses a backgrounded npm/npx command which never moves into raptor-port ([BG-CWD-GUARD], D162). And the compaction set-up ([COMPACT-WHEN-MOD], D868, D870, D871): autoCompactWindow lowers the app's own compaction to about 85% of a 1M chat; a PostToolUse reminder from 75% of the app's own room — the autoCompactWindow, which the app compacts at 96% of (compact-watch, D878), a PreCompact guard that holds an automatic compaction from 90% of that room to under 900,000 tokens until the agent marks ready (compact-guard), a SessionStart \"compact\" hook that hands back the chat's HANDOFF.md block (compact-resume), and the status line showing the fullness (statusline). Every one fails open.",
+  "description": "Impeccable design detector (PostToolUse on UI edits + Stop deep pass), task-observer SessionStart activation, and the UserPromptSubmit decision-recorder that stops an owner ruling being absorbed into the work without being written down, and the Stop backlog guard that fails a turn which destroyed a filed backlog record ([DOCS-GUARD]), and the PreToolUse background-command guard that refuses a backgrounded npm/npx command which never moves into raptor-port ([BG-CWD-GUARD], D162), and the PreToolUse push-and-lock guard that refuses a push landing on main or made while that branch's checks run, and a full check run without the PC lock ([PUSH-LOCK-GUARD], D976). And the compaction set-up ([COMPACT-WHEN-MOD], D868, D870, D871): autoCompactWindow lowers the app's own compaction to about 85% of a 1M chat; a PostToolUse reminder from 75% of the app's own room — the autoCompactWindow, which the app compacts at 96% of (compact-watch, D878), a PreCompact guard that holds an automatic compaction from 90% of that room to under 900,000 tokens until the agent marks ready (compact-guard), a SessionStart \"compact\" hook that hands back the chat's HANDOFF.md block (compact-resume), and the status line showing the fullness (statusline). Every one fails open.",
   "autoCompactWindow": 880000,
   "hooks": {
     "PreToolUse": [
@@ -12,6 +12,13 @@
             "async": false,
             "command": "if [ -f \"$CLAUDE_PROJECT_DIR/.claude/hooks/bg-cwd-guard.mjs\" ] && command -v node >/dev/null 2>&1; then node \"$CLAUDE_PROJECT_DIR/.claude/hooks/bg-cwd-guard.mjs\"; else exit 0; fi",
             "timeout": 5
+          },
+          {
+            "type": "command",
+            "shell": "bash",
+            "async": false,
+            "command": "if [ -f \"$CLAUDE_PROJECT_DIR/.claude/hooks/push-guard.mjs\" ] && command -v node >/dev/null 2>&1; then node \"$CLAUDE_PROJECT_DIR/.claude/hooks/push-guard.mjs\"; else exit 0; fi",
+            "timeout": 30
           }
         ]
       }

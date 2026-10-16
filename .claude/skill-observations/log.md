@@ -1034,7 +1034,7 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 
 ### Observation 622: An unattended run's checkout keeps its branch, so the morning chat cannot switch to it
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-17) — D975: session-handoff's "Release the branch as your LAST step" and the switching opening line; overnight's Part 3 releases the branch last
 **Date:** 2026-10-17
 **Session context:** the morning chat after the night of 16–17 Oct 26, told "switch to branch claude/whole-app-words-pass-1b-6cfe51 and pull"
 **Skill:** overnight (also session-handoff)
@@ -1046,6 +1046,8 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** In overnight's closing step and in session-handoff's "free the branch" step: once everything is pushed, the run itself runs `git checkout --detach` in its own checkout as its last command, and the HANDOFF block says it did. The opening line can then say "switch to <branch>" and it works.
 
 **Principle:** A handoff is not finished while the outgoing session still holds a resource the incoming one must take; release it from the side that owns it, because the other side may not be allowed to.
+
+Met again 2026-10-17: the [CONTEXT-START-SIZE] handoff (session-handoff, a day chat) left `claude/sharp-goldberg-6d0656` checked out; the next chat's switch was refused, and this time `git -C <old checkout> checkout --detach` from the new chat was allowed (the old checkout was clean and level with its remote). Guard to propose: the session-handoff skill's last step runs the detach itself and the block's "Branch:" line says "released"; or the opening line it writes carries a fallback ("if the switch is refused, detach the old checkout when it is clean and pushed").
 
 ### Observation 623: Tidying the handoff before a merge restarts the green pull request's checks
 
@@ -1091,3 +1093,18 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** In `walk-scripts.md` §4, one line: a geometry assertion states the ruling's relation (a third of the row, inside its card, one line) and measures both sides on the page; a fixed pixel figure only for a size the app itself fixes (the 74px puck, the 36px row).
 
 **Principle:** Assert the relation the rule names, not the number one machine produced for it.
+
+### Observation 626: A guard that reads commands needs a shell's reading from its first draft, not after review
+
+**Status:** OPEN
+**Date:** 2026-10-17
+**Session context:** building the push-and-lock guard ([PUSH-LOCK-GUARD], D976) — a PreToolUse hook that refuses some commands
+**Skill:** New skill candidate: writing a command-refusing hook (or a section of the plugin-authoring / hook guidance)
+**Type:** open-source
+**Phase/Area:** design of any hook that judges a shell command line
+
+**Issue:** The first draft split the command on `;`, `|`, `&&` and new lines before looking at quotes. Three fresh reads then found 8, 10 and 8 problems, nearly all of the same family: commit messages, heredocs, here-strings, comments, `$( … )`, PowerShell's own quoting, and tool names that appear as arguments (`grep vitest`) rather than as the command. Each was a false refusal of everyday work or a way round the guard.
+
+**Suggested improvement:** Before writing such a hook, list the shell features it must read (quotes, escapes per shell, heredoc and here-string bodies, comments, substitutions, `bash -c`/`eval`, redirects, launcher words like `timeout`/`env`), judge only the word in command position, and write the everyday-command corpus (commit with a heredoc message, PR body, grep for the tool's name) as tests first.
+
+**Principle:** A rule that inspects free-form input is only as good as its reading of that input; build the reader to the input's real grammar before the rule, and test the common harmless cases first, because a false refusal on every-day work costs more than the gap it closes.

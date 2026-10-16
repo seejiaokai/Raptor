@@ -30,6 +30,19 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   gate and ALWAYS releases; `take` / `release` / `status` for a run done by hand (a fanned-out walk, one gate alone). The
   e2e run takes its port from `E2E_PORT` (each parallel chat its own). The lock is a folder outside every checkout,
   so every worktree on the PC shares it; the rule is `.claude/rules/shipping.md` §The checks.
+- **The push-and-lock guard enforces both by itself** (his "As recommended for all", D976, 17 Oct 26 — `[PUSH-LOCK-GUARD]`):
+  a hook on every Bash and PowerShell command (`.claude/hooks/push-guard.mjs`, tests `node --test
+  .claude/hooks/push-guard.test.mjs`). It refuses a `git push` that would land on `main` — named, or a bare push that
+  git's `upstream` push setting sends to a tracked `main` (the D974 slip) — and a push while a run of the branch's last
+  pushed commit is queued or running (D151); when GitHub cannot be asked it lets the push through with a note. It refuses
+  a full check run (the whole unit suite, a browser run of more than one file, the Tracker smoke) unless this chat holds
+  the lock (the lock's owner line names its branch), and anything else that builds while another chat holds it. The way
+  through is `gatelock.mjs exec "<branch> — <what>" -- <command>`: it waits for the lock, takes it, runs the command,
+  ALWAYS releases it and passes the command's exit code on; an interrupt releases it too, and a run killed outright
+  (a tool timeout, a stop) leaves a `holder-pid:` line the next `take` sees is gone and breaks at once, not after two
+  hours. A full run outlasts the tool's 2-minute default — run it in the background or with a 10-minute timeout. The
+  guard reads a command as a shell does (quotes, `$( … )`, heredoc bodies), so a commit message or a pull request's
+  text that only NAMES a check or a push is not refused. Anything the guard cannot read is let through.
 - **Four traps met running the checks by hand (30 Sep – 1 Oct 26, `[DB-READINESS]` phases 0–6; carried here from their
   handoff blocks when those were removed):** `gatelock.mjs run`'s gate list has NO perf — run `PORT_URL=<the build's
   address> npm run perf` under `gatelock.mjs take`; `tsc -p tsconfig.json` checks nothing here (the root config lists no

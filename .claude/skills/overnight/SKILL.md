@@ -138,7 +138,10 @@ block says so. Never a pull request based on another branch — it runs none of 
 
 - **Read every pull request's checks first** (step 1's command), so the report never says green on a guess.
 - **The block in `HANDOFF.md`** is rewritten by the session-handoff guide, and pushed. The guard goes back on:
-  `node "$(git rev-parse --show-toplevel)/.claude/hooks/compact-ready.mjs" --back` (D872).
+  `node "$(git rev-parse --show-toplevel)/.claude/hooks/compact-ready.mjs" --back` (D872). Then, as the run's last
+  command, the branch is released in this checkout (`git switch --detach`), so the morning chat's switch to it works
+  (D975). If he then gives this chat more work (his answers, a fix), it switches back first (`git switch
+  claude/<name>`); if a new chat already holds the branch, the work goes to that chat.
 - **One notification**, one line: done, or blocked, and where to look.
 - **The report**, short, plain words, in this order:
   1. what is ready for his look — per job: what it does in the app, the preview link, the pictures (several pictures go
@@ -148,8 +151,8 @@ block says so. Never a pull request based on another branch — it runs none of 
   4. the allowance used (the weekly figure at the start and now), how full this chat is, and whether it compacted;
   5. the lines `Walk:` (per job, from its evidence sheet) and `Rulings:`;
   6. **"What you do now"**, numbered: his look on his iPhone at what needs it, his answers, "merge live" when he is
-     happy, and whether the next job wants a fresh chat (with its ready-to-paste opening line, the branch to pick and
-     whether to tick "worktree" — D368).
+     happy, and whether the next job wants a fresh chat (with its ready-to-paste opening line, which itself switches the
+     new chat to the branch — he picks nothing, D975).
 
 ## Before sending the Part 1 message — check
 

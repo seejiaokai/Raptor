@@ -59,8 +59,9 @@ pushed and waiting for him — the normal end state, not unfinished business.
 - **`## Next, in order`** changes only when the order itself changed (his word,
   or an item finished); it is the project's, not this chat's.
 - Print the same block in chat, and give him the **ready-to-paste opening line**
-  for the fresh chat: which branch to pick in the new-chat picker, and "Read
-  `HANDOFF.md` — the `claude/<branch>` block under `## Now` — then …".
+  for the fresh chat: the line itself puts the new chat on its branch (the
+  next bullet), then "Read `HANDOFF.md` — the `claude/<branch>` block under
+  `## Now` — then …".
   For a NEW job in a fresh worktree on `main` the line says "run
   `git fetch origin` and check this branch is level with `origin/main`" —
   never "git pull", which pulls nothing on a branch with no upstream; "git
@@ -70,15 +71,34 @@ pushed and waiting for him — the normal end state, not unfinished business.
   ("go"; "I'm away — run it"): a first message that is only pasted text may
   be held for his confirmation, which stalls a start he meant to leave
   unattended.
-- **Say in so many words whether he ticks "worktree"** in the new-chat picker
-  (owner, D368; and 13 Oct 26, D811 — picking the branch is usually automatic
-  there, the worktree box is not: "u need to tell me if I need to tick or
-  not"). A NEW job: tick it, based on `main`. A fresh chat that continues THIS
-  chat's branch: tick it too, and pick `claude/<name>` — git allows a branch in
-  one folder at a time, so first check everything is pushed and release the
-  branch here (`git switch --detach`). Never "no new worktree — reuse this
-  folder": the app offers the main folder or a NEW worktree, nothing else. A
-  branch that has just merged: never picked at all.
+- **He picks nothing; he only pastes (owner, D975, 17 Oct 26 — "the new
+  Claude code interface doesn't allow us to select the branch or worktree. So
+  I'm just pasting the prompt u hand me"; this wording approved, D976).** The new-chat screen has no branch
+  or worktree picker: each new chat starts in a fresh worktree on a fresh
+  branch of its own. So the opening line does the switching. A NEW job: "run
+  `git fetch origin` and check this branch is level with `origin/main`" (the
+  bullet above). A fresh chat that continues THIS chat's branch: "Switch this
+  chat to the branch `claude/<name>`: `git fetch origin`, `git switch
+  claude/<name>`, `git branch -u origin/claude/<name>`, `git pull --ff-only`.
+  If the switch is refused because another checkout holds the branch, release
+  it there only if that checkout — the folder git names in the refusal — has
+  no uncommitted changes (`git -C <that folder> status --porcelain` prints
+  nothing) and is on the same commit as `origin/claude/<name>` (`git -C <that
+  folder> rev-parse HEAD` equals `git rev-parse origin/claude/<name>`); then
+  `git -C <that folder> switch --detach` and switch again. Otherwise stop and
+  tell him which folder holds it and why it was left alone." The `-u` line
+  matters: git's `push.default` here is `upstream`, so a branch left tracking
+  `origin/main` pushes to main (D974). A branch that has just merged: never
+  named.
+- **Release the branch as your LAST step (D975).** Git allows a branch in one
+  folder at a time. Write "released" on the block's "Branch:" line before the
+  final commit; once that commit is pushed, run `git switch --detach` in this
+  checkout as the very last command — nothing is edited or committed after it.
+  If the push has to wait (a check run in progress, D151), the line says "not
+  released — push waiting" and the release waits for the push. If he gives
+  this chat more work afterwards, switch back first (`git switch
+  claude/<name>`); if git refuses because a new chat now holds the branch,
+  that work belongs to the new chat — tell him so.
 
 **Either way, it has to be COMMITTED AND PUSHED to the designated branch —
 and NEVER merged by you.** SUPERSEDED 2 Sep 26 (`.claude/rules/shipping.md`,
@@ -271,9 +291,8 @@ stable structure is the point.
 - **Where it started:** <1-2 sentences: what the owner asked for, constraints that emerged>
 - **Shipped:** <change> — PR #<n>, open/merged when written; checks green/red/not run
 - **Unfinished:** <item> — <state, what is left> (or "none"); open residue → `[ITEM-ID]` in OUTSTANDING.md
-- **Branch:** `claude/<name>`; its PR <#n or none>. If it has MERGED, the next chat resets before new work:
-  `git fetch origin main && git checkout -B <branch> origin/main` — otherwise it stacks commits onto
-  already-merged history.
+- **Branch:** `claude/<name>`; its PR <#n or none>; released here (`git switch --detach`) — or why not. If it has MERGED, the next chat starts as a new job — its own
+  fresh branch, level with `origin/main` — and never switches to this one.
 - **Gates:** `npm test` · `npm run build` · `node reference/tfin.js` · `npm run test:e2e` —
   <green / red / not run, with counts>; `npm run probes:adapted` · `npm run perf` — <green / red / not run>
   (not in CI, so a UI or validation change shipped without them is Unfinished, not a footnote).
@@ -333,9 +352,9 @@ a handoff that could not be:
    OUT, open work lives in `OUTSTANDING.md`, stories go in commit messages,
    `HANDOFF-ARCHIVE.md` stays frozen. A handoff that grows `HANDOFF.md` has
    redone the thing the 4 Sep and 24 Sep 26 cuts undid.
-9. **Every handoff ends with his opening line for the fresh chat** — the branch
-   to pick in the new-chat picker and "Read `HANDOFF.md`, the `claude/<name>`
-   block under `## Now`" — ready to paste (his standing instruction). Ready to
+9. **Every handoff ends with his opening line for the fresh chat** — the
+   switch to the branch (Step 1, D975) and "Read `HANDOFF.md`, the
+   `claude/<name>` block under `## Now`" — ready to paste (his standing instruction). Ready to
    paste means it goes out UNCHANGED: never put a choice inside it as a
    `<a / b>` slot — he will send it unfilled, beside an instruction that
    cannot wait. Ask each open choice as its own numbered question first, or

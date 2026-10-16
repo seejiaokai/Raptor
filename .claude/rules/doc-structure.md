@@ -62,10 +62,10 @@ He works until the context is full, then hands off to a fresh chat; he seldom co
 on his "merge live"; he sometimes runs two worktrees in parallel and merges both (D140).
 - **The handoff** is the step that matters: the session-handoff skill rewrites this chat's `## Now` block, files
   what is open, removes merged blocks, and gives him a ready-to-paste opening line that names `HANDOFF.md` and the
-  branch. **Beside it, always, in plain words (D368, 29 Sep 26): whether the new chat needs a WORKTREE and what to base it
-  on, and which branch to PICK in the new-chat picker and which to avoid** — a new job: a worktree on `main`; an unmerged
-  branch continuing: that `claude/<name>` branch; a just-merged branch: never. Compaction, if it happens, is the same:
-  persist first.
+  branch. **He picks nothing — he only pastes (D975, 17 Oct 26, replacing D368): the new-chat screen has no branch or
+  worktree picker, so the outgoing chat releases its branch as its last step and the opening line switches the new chat
+  to it, with what to do if the switch is refused** — a new job: level with `main`; an unmerged branch continuing: that
+  `claude/<name>` branch; a just-merged branch: never. Compaction, if it happens, is the same: persist first.
 - **Unattended runs (D596, 5 Oct 26):** when he leaves a job to run while he is asleep or away, a question never stops
   the run. Search the rulings and the backlog first (D53) — a question a ruling already answers is never parked; technical
   choices are the agent's to make and explain. A choice that is truly his is parked in ONE list he can read in a minute —
