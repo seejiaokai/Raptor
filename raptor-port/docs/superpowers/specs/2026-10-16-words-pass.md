@@ -39,6 +39,8 @@ or without his word on each lesson, and who reads it — is put to him before an
 
 **Built 16 Oct 26** on the same branch: as drawn, with one step past the drawing — the board's open Personal Inputs keeps a ⌃ as the week's heading does (the drawing showed none; without it nothing says the heading folds). Check: `../../handpass/2026-10-16-words-pass-r1.md`.
 
+**D953 — the till-date switch, answered** (D952 drawn on the real app, page `FNzmkcBLpDZ9EYfqgV1Pqg`, by `raptor-port/scripts/handpass/till-switch.mjs`): "1B 2-5 yes" — a tick box before the grey date after the Remarks box, like the window's "all day" tick; unticked, the date is struck through there and no screen prints it; it is ticked by default except on a one-day duty or other commitment, and a date change that changes that default resets it; on a published day a change reads pending; whoever may change the input may tick it.
+
 ## Round 2 — next
 
 **Drawn 17 Oct 26 (the night run, job 3 — nothing in the app changed):** `raptor-port/scripts/handpass/words-r2.mjs`,
