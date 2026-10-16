@@ -42,48 +42,48 @@ work, already loaded: **D54** (an issued weekend carrying a placeholder raises t
 
 | # | Date | The rule |
 |---|---|---|
-| D923 | 15 Oct 26 | THE OIL QUESTION'S "ONLY SOME DAYS…" CALENDAR BECOMES THE APP'S ONE DATE CALENDAR IN ITS LOOK, AND THERE A TAP TURNS EACH SEPARATE DAY ON OR OFF — ONLY THE INPUT'S NON-WORKING DAYS CAN BE TAPPED, AS TODAY; WHICH DAYS EARN OIL IS DECIDED AS BEFORE. |
-| D865 | 15 Oct 26 | THE OIL JOB'S FOUR OPEN POINTS ARE SETTLED AS RECOMMENDED: THE ⓘ MARK'S WORDS STAY AS BUILT; THE LIST A LOAD OPENS SHOWS THE DAY'S WHOLE OPEN LIST; "SWITCH TO THIS PLAN" THAT BRINGS BACK AN UNANSWERED INPUT GETS THE LOAD'S SHORT NOTE AND LIST, AS A SMALL FOLLOW-UP; AND WITH THE BAR UP, "ANSWER OIL" UN-CANCELS AT ONCE WHERE NOTHING IS LEFT TO ASK. |
-| D863 | 15 Oct 26 | THE NOTE AFTER "LOAD ONTO WORKING COPY" IS SHORT PLAIN SENTENCES: WHAT THE DAY IS BACK TO, WHAT VIEWERS STILL SEE, WHAT ELSE CAME BACK OR STAYED OUT, AND HOW MANY INPUTS NEED AN OIL ANSWER — AND IT NO LONGER REPEATS THE EDITS THROWN AWAY, WHICH THE CONFIRMING BUTTON HAS JUST SAID. |
-| D862 | 15 Oct 26 | WHEN A PUBLISHED VERSION LOADED BACK PUTS BACK AN INPUT OF SEVERAL DAYS WHOSE MISSING OIL ANSWER IS FOR ANOTHER OF ITS DAYS, IT IS COUNTED IN THE NOTE AND THE OIL LIST OPENS FOR THE DAY THAT NEEDS THE ANSWER — NOT THE DAY LOADED, WHICH HAS NOTHING TO ANSWER. |
-| D818 | 13 Oct 26 | AFTER A PUBLISHED VERSION IS LOADED BACK ONTO THE WORKING COPY, THE APP SAYS HOW MANY OF THE INPUTS IT PUT BACK STILL NEED AN OIL ANSWER AND OPENS THAT DAY'S ONE LIST OF THEM — THE LOAD ITSELF IS NOT HELD. — changed by D862 |
-| D816 | 13 Oct 26 | TAKING THE CANCEL OFF AN INPUT THAT HAS NO OIL ANSWER FOR A NON-WORKING DAY PUTS THE OIL QUESTION FIRST, AS "ACCEPT" DOES — NOTHING IS UN-CANCELLED UNTIL IT IS ANSWERED; WHERE IT IS ALREADY ANSWERED, OR NOTHING IS TO BE ASKED, IT IS UN-CANCELLED AT ONCE AND THE ANSWER COUNTS AGAIN. |
-| D814 | 13 Oct 26 | A CANCELLED INPUT IS NEVER ASKED THE OIL QUESTION — NOT AT A SAVE, A PUT-BACK OR A FILING, AND IT WEARS NO "OIL?" TAG AND STANDS IN NEITHER THE ONE LIST NOR THE BELL — BECAUSE IT CAN EARN NOTHING; AN INFORMATION-ONLY INPUT THE SAME. |
-| D804 | 13 Oct 26 | LEAVE AND MEDICAL INPUTS NEVER EARN OIL AND ARE NEVER ASKED; EVERY OTHER KIND THAT CAN EARN IS ASKED THE OIL QUESTION AND ITS ANSWER DECIDES — WHEREVER IT IS FILED, UNDER UNAVAILABLE INCLUDED; SO "→ UNAVAIL" PUTS THE OIL QUESTION FIRST, AS "ACCEPT" DOES (D793). |
-| D793 | 13 Oct 26 | AN INPUT PUT BACK ON THE PROGRAMME AFTER ITS DAY BECAME A HOLIDAY WAITS ON ITS OIL QUESTION AS A SWAP DOES: THE QUESTION COMES FIRST, AND IT IS PUT BACK ONLY ON AN ANSWER. |
-| D783 | 12 Oct 26 | A SWAP OR AN ADD THAT RAISES AN OIL QUESTION IS NOT MADE UNTIL THE QUESTION IS ANSWERED — NOTHING MOVES; NOT ANSWERED, BOTH PUCKS FLASH AND A BAR STAYS UNTIL TAPPED ("NOT SWAPPED — OIL NOT ANSWERED", ANSWER OIL, OK); THE ONE LIST OPENS BY ITSELF WHEN A HOLIDAY IS SAVED, AND THE SCHEDULERS' BELL CARRIES ONE LINE A HOLIDAY, COUNTING WHAT IS LEFT. — changed by D831 |
-| D782 | 12 Oct 26 | THE ADMIN ANSWERS A DAY'S OPEN OIL QUESTIONS FROM ONE LIST — EVERY INPUT OF THAT DAY THAT NEEDS AN ANSWER, EACH WITH ITS YES AND NO, AND A "YES TO ALL" AND A "NO TO ALL". |
-| D781 | 12 Oct 26 | A DAY MADE A HOLIDAY AFTERWARDS: THE ADMIN DECLARING IT IS TOLD AT ONCE, AND WHAT HE ANSWERS THERE NOTIFIES NOBODY — ONLY WHAT IS LEFT UNANSWERED GOES TO THE SCHEDULERS AND TO WHOEVER ANSWERS FOR EACH INPUT; AND A SWAP'S OR AN ADD'S OIL QUESTION CANNOT BE LEFT OPEN — NOT ANSWERED, THE SWAP IS NOT MADE AND THE APP SAYS SO. — changed by D783 |
-| D780 | 12 Oct 26 | WHEN A DAY IS MADE A HOLIDAY AFTER INPUTS ALREADY STAND ON IT, THE SCHEDULERS ARE TOLD THAT THOSE INPUTS NOW NEED AN OIL ANSWER — IT IS NEVER SILENT. — changed by D781 |
-| D606 | 7 Oct 26 | AN SC SHIFT'S TYPED B (ITS IN-TIME), WHERE FILLED, COUNTS AS WORK: THE SHIFT'S OIL IS WORKED OUT FROM THAT IN-TIME TO THE SHIFT'S END, AND ITS WORK HOURS COUNT FROM IT TOO; A BLANK B LEAVES THE SHIFT ITS WRITTEN START TO END. |
-| D592 | 5 Oct 26 | D591'S DETAILS: OIL USES THE EARLIEST IN-TIME / RALLY THAT APPLIES TO THE FORMATION, THE NOMINAL TIME WHERE NONE IS TYPED; AN EVENING-BEFORE REPORT LENGTHENS THE LINE'S OWN DAY ONLY; A PUBLISHED DAY KEEPS ITS OIL UNTIL PUBLISHED AGAIN — A LATER TIME OR LOGIC CHANGE READS AS PENDING; THE DAY COUNTS FIRST EVENT TO LAST END, BREAKS INCLUDED. |
-| D591 | 5 Oct 26 | A FLYING LINE'S EARNED LEAVE (OIL) IS WORKED OUT FROM ITS EARLIEST APPLICABLE ENTERED IN-TIME / RALLY — THE NOMINAL REPORT TIME ONLY WHERE NONE IS ENTERED (DETAILS: D592). |
-| D470 | 1 Oct 26 | A MAN THE SCHEDULER PUTS IN THE NAME BOX OF ANOTHER MAN'S REQUEST ROW EARNS OIL FROM IT, AS A MAN ADDED UNDER THE ROW DOES (D18); THE MEMBER WHO FILED IT STILL EARNS ON HIS OWN ANSWER, AND EITHER CAN BE TAPPED OFF IN OIL EARN. — changed by D755 |
-| D402 | 29 Sep 26 | EVERY OIL AWARD GIVEN BY HAND SHOWS ON THE LEAVE WAR GRID ON ITS DATE, WHEREVER IT WAS GIVEN — TYPED ON THE GRID OR CREDITED FROM THE OIL TRACKER — AS AN FO OR HO BOX; A TAP SAYS WHO GAVE IT AND WHY. |
-| D401 | 29 Sep 26 | THE OIL AWARD FIX CONVERTS NO STORED AWARD: WHAT IS SAVED TODAY IS DEMO DATA, WIPED BEFORE THE DATABASE (D54, D56), SO ONLY THE DEMO SEED IS REWRITTEN IN THE NEW ONE KIND OF AWARD — AND A RECORD IN THE OLD SHAPE MUST STILL NOT BREAK A LOAD. |
-| D400 | 29 Sep 26 | OIL'S "EARNED" COUNTS ONLY WHAT THE APP CREDITED ITSELF — THE PUBLISHED SCHEDULE OR AN ACCEPTED DUTY INPUT — AND EVERY OIL AN ADMIN GIVES BY HAND, TYPED ON THE WAR GRID OR CREDITED FROM THE TRACKER, IS SHOWN APART AS "AWARDED". |
-| D261 | 27 Sep 26 | A MEMBER OPENS HIS OWN OIL AWARD, READ ONLY, AT EVERY STAGE |
-| D260 | 27 Sep 26 | A DRAGGED BLOCK'S DELETE REMOVES EVERYTHING IN IT, OIL AWARDS INCLUDED — AND ITS CONFIRM NAMES EACH AWARD FIRST |
+| D923 | 15 Oct 26 | The OIL question's "Only some days…" calendar becomes the app's one date calendar in its look, and there a tap turns each separate day on or off — only the input's non-working days can be tapped, as today; which days earn OIL is decided as before. |
+| D865 | 15 Oct 26 | The OIL job's four open points are settled as recommended: the ⓘ mark's words stay as built; the list a load opens shows the day's whole open list; "Switch to this plan" that brings back an unanswered input gets the load's short note and list, as a small follow-up; and with the bar up, "Answer OIL" un-cancels at once where nothing is left to ask. |
+| D863 | 15 Oct 26 | The note after "Load onto working copy" is short plain sentences: what the day is back to, what viewers still see, what else came back or stayed out, and how many inputs need an OIL answer — and it no longer repeats the edits thrown away, which the confirming button has just said. |
+| D862 | 15 Oct 26 | When a published version loaded back puts back an input of several days whose missing OIL answer is for another of its days, it is counted in the note and the OIL list opens for the day that needs the answer — not the day loaded, which has nothing to answer. |
+| D818 | 13 Oct 26 | After a published version is loaded back onto the working copy, the app says how many of the Inputs it put back still need an OIL answer and opens that day's one list of them — the load itself is not held. — changed by D862 |
+| D816 | 13 Oct 26 | Taking the cancel off an input that has no OIL answer for a non-working day puts the OIL question first, as "Accept" does — nothing is un-cancelled until it is answered; where it is already answered, or nothing is to be asked, it is un-cancelled at once and the answer counts again. |
+| D814 | 13 Oct 26 | A cancelled input is never asked the OIL question — not at a save, a put-back or a filing, and it wears no "OIL?" Tag and stands in neither the one list nor the bell — because it can earn nothing; an information-only input the same. |
+| D804 | 13 Oct 26 | Leave and medical inputs never earn OIL and are never asked; every other kind that can earn is asked the OIL question and its answer decides — wherever it is filed, under Unavailable included; so "→ Unavail" puts the OIL question first, as "Accept" does (D793). |
+| D793 | 13 Oct 26 | An input put back on the programme after its day became a holiday waits on its OIL question as a swap does: the question comes first, and it is put back only on an answer. |
+| D783 | 12 Oct 26 | A swap or an add that raises an OIL question is not made until the question is answered — nothing moves; not answered, both pucks flash and a bar stays until tapped ("Not swapped — OIL not answered", Answer OIL, OK); the one list opens by itself when a holiday is saved, and the schedulers' bell carries one line a holiday, counting what is left. — changed by D831 |
+| D782 | 12 Oct 26 | The admin answers a day's open OIL questions from one list — every input of that day that needs an answer, each with its Yes and no, and A "Yes to all" and A "No to all". |
+| D781 | 12 Oct 26 | A day made a holiday afterwards: the admin declaring it is told at once, and what he answers there notifies nobody — only what is left unanswered goes to the schedulers and to whoever answers for each input; and a swap's or an add's OIL question cannot be left open — not answered, the swap is not made and the app says so. — changed by D783 |
+| D780 | 12 Oct 26 | When a day is made a holiday after inputs already stand on it, the schedulers are Told that those inputs now need an OIL answer — it is never silent. — changed by D781 |
+| D606 | 7 Oct 26 | An SC shift's typed B (its in-time), where filled, counts as work: the shift's OIL is worked out from that in-time to the shift's end, and its work Hours count from it too; a blank B leaves the shift its written start to end. |
+| D592 | 5 Oct 26 | D591's details: OIL uses the earliest in-time / Rally that applies to the formation, the nominal time where none is typed; an evening-before report lengthens the line's own day only; a published day keeps its OIL until published again — a later time or Logic change reads as pending; the day counts first event to last end, breaks included. |
+| D591 | 5 Oct 26 | A flying line's earned leave (OIL) is worked out from its earliest applicable entered in-time / rally — the nominal report time only where none is entered (details: D592). |
+| D470 | 1 Oct 26 | A man the scheduler puts in the name box of another man's request row earns OIL from it, as a man added under the row does (D18); the member who filed it still earns on his own answer, and either can be tapped off in OIL Earn. — changed by D755 |
+| D402 | 29 Sep 26 | Every OIL award given by hand shows on the Leave War grid on its date, wherever it was given — typed on the grid or credited from the OIL tracker — as an FO or HO box; a tap says who gave it and why. |
+| D401 | 29 Sep 26 | The OIL award fix converts no stored award: what is saved today is demo data, wiped before the database (D54, D56), so only the demo seed is rewritten in the new one kind of award — and a record in the old shape must still not break a load. |
+| D400 | 29 Sep 26 | OIL's "earned" counts only what the app credited itself — the published schedule or an accepted duty input — and every OIL an admin gives by hand, typed on the War grid or credited from the Tracker, is shown apart as "awarded". |
+| D261 | 27 Sep 26 | A member opens his own OIL award, read only, at every stage |
+| D260 | 27 Sep 26 | A dragged block's Delete removes everything in it, OIL awards included — and its confirm names each award first |
 | D163 | 24 Sep 26 | Leave both — demo data only, wiped before the database (D54, D56): [DEMO-AWARD-DATES-ASK] and [POSTOUT-LOST] are closed. |
-| D142 | 24 Sep 26 | A DAY’S OIL COMES FROM ITS LATEST PUBLISHED VERSION — THE LATEST AMENDMENT, OR THE EOD IF THAT IS THE LATEST — HOWEVER LONG AGO THE DAY WAS. NO LOCK, NO CLOCK. |
-| D82 | 23 Sep 26 | AN OIL AWARD AND A WORKED DAY ADD UP. |
-| D81 | 23 Sep 26 | A WORKED WEEKEND THAT EARNS NOBODY ANY OIL SAYS SO |
-| D80 | 23 Sep 26 | AN OIL AWARD DOES NOT FLAG A LEAVE DAY |
-| D79 | 23 Sep 26 | OIL MAY BE CREDITED BY HAND ON ANY DAY. |
+| D142 | 24 Sep 26 | A day’s OIL comes from its latest published version — the latest amendment, or the EOD if that is the latest — however long ago the day was. No lock, no clock. |
+| D82 | 23 Sep 26 | An OIL award and a worked day add up. |
+| D81 | 23 Sep 26 | A worked weekend that earns nobody any OIL says so |
+| D80 | 23 Sep 26 | An OIL award does not flag a leave day |
+| D79 | 23 Sep 26 | OIL may be credited by hand on any day. |
 | D52 | 22 Sep 26 | Three OIL behaviours are correct as built and not in conflict: a ground crewman NAMED on a weekend duty earns; a placeholder on it earns for the men it stands for unless switched off; ALL / ALL AVAIL do not include ground crew — nothing to build. |
-| D49 | 22 Sep 26 | A FLYING LINE WHOSE WRITTEN TAKE-OFF AND LANDING ARE THE SAME STILL EARNS. |
-| D48 | 22 Sep 26 | AN ISSUED DAY KEEPS THE MONEY IT WENT OUT WITH WHEN A RULE CHANGES UNDER IT. |
-| D46 | 22 Sep 26 | THE PLACEHOLDER IS ALLOWED ON AN ACCEPTED REQUEST ROW AND CREDITS BY DEFAULT. NO EXCEPTION TO D43 ANYWHERE. — changed by D755 |
-| D43 | 22 Sep 26 | THE PLACEHOLDER PUCKS BEHAVE EXACTLY LIKE NAMED PEOPLE: ON BY DEFAULT, EVERYWHERE THEY CAN LAND. — changed by D755 |
-| D42 | 22 Sep 26 | AN OVERNIGHT LINE EARNS ON THE DAY IT SITS ON, AND THE HOURS SPILLING PAST MIDNIGHT EARN THE NEXT DAY NOTHING. |
+| D49 | 22 Sep 26 | A flying line whose written take-off and landing are the same still earns. |
+| D48 | 22 Sep 26 | An issued day keeps the money it went out with when a rule changes under it. |
+| D46 | 22 Sep 26 | The placeholder is allowed on an accepted request row and credits by default. No exception to D43 anywhere. — changed by D755 |
+| D43 | 22 Sep 26 | The placeholder pucks behave exactly like named people: on by default, everywhere they can land. — changed by D755 |
+| D42 | 22 Sep 26 | An overnight line earns on the day it sits on, and the hours spilling past midnight Earn the next day nothing. |
 | D35 | 22 Sep 26 | Re-confirms D24 and makes its template half explicit: the four exempt kinds offer the OIL switch (off by default), and so does a duty block minted from an AVALON template — the same seat, one answer. |
 | D32 | 22 Sep 26 | One list, not two: wherever a placeholder puck is allowed to land, it also offers the OIL switch — landing and earning are one decision; on by default there, like named people (D43). — changed by D43 |
-| D31 | 22 Sep 26 | A SEAT WITH NOTHING TO MEASURE OFFERS NO OIL SWITCH — IT SAYS WHY INSTEAD. |
+| D31 | 22 Sep 26 | A seat with nothing to measure offers no OIL switch — it says why instead. |
 | D28 | 22 Sep 26 | One principle instead of an allow-list: every seat can earn, its default decides whether it does, and the admin can always override; the placeholder pucks default on wherever they land (D43); a seat with nothing to measure offers no switch and says why (D31). — changed by D43, D31 |
 | D26 | 22 Sep 26 | Leave the OIL mode's phone tap targets as they are — he settles OIL on his phone easily; do not re-open it or re-file it as a defect; nothing to build. |
-| D25 | 22 Sep 26 | OIL IS EARNED LEAVE, NOT PAY — say it that way. |
+| D25 | 22 Sep 26 | OIL is earned leave, not pay — say it that way. |
 | D24 | 22 Sep 26 | The exempt kinds — SC SPARE, AVALON flying lines and duty desks, BB flying lines — become creditable: they offer the OIL switch in the mode, defaulting off, so an activated one can be credited (on a published day through an ordinary amendment). Supersedes D15 and D20 in part. |
-| D21 | 22 Sep 26 | AN "OFF DAY" DOES NOT EARN OIL. Settled; do not reopen. |
+| D21 | 22 Sep 26 | An "Off day" does not earn OIL. Settled; do not reopen. |
 | D20 | 22 Sep 26 | AVALON flying lines, AVALON duty desks and BB flying lines — and a duty block made from an AVALON template — earn no OIL by default; they offer the switch, so an activated one can be credited (D24). — changed by D24 |
 | D19 | 22 Sep 26 | A weekend or holiday that no Leave War period covers must NAME the reason and offer the way out, not just refuse. |
 | D18 | 21 Sep 26 | All five hand-pass findings accepted as real, and finding 2 settled his way: a second man the scheduler puts on a member's landed request row EARNS from it, the same as the man who filed it. — changed by D755 |

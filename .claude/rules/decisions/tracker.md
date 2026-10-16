@@ -45,17 +45,17 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
-| D924 | 15 Oct 26 | THE TRACKER'S ⇅ REORDER ROWS ARE BUILT AS DRAWN: THEIR GRIP IS THE APP'S SIX DOTS ⠿, NOT ☰; A MOUSE DRAG WEARS THE FINGER'S LOOK — THE CARRIED ROW RINGED, ONE LANDING LINE IN THE GAP — INSTEAD OF A BOX ROUND THE ROW IT WOULD REPLACE; AND "DRAG A ROW, OR USE ▲/▼." IS DELETED FROM ALL THREE WINDOWS, EACH ONE'S SECOND SENTENCE KEPT. |
-| D922 | 15 Oct 26 | THE TRACKER'S ⇅ REORDER WINDOWS (COURSES, SYLLABI, CREW) LET A FINGER DRAG A ROW ON A PHONE, AS A MOUSE DOES ON A DESKTOP, WITH THE APP'S OWN DRAG LOOK: ONE LANDING LINE A GAP, THE LIST SCROLLING AT ITS EDGE (THE DESIGN GUIDE §5A, D895). |
-| D899 | 15 Oct 26 | THE TRACKER CHART'S DRAGS — A BALL, A LINE'S END, A BEND HANDLE — CARRIED TO THE CHART'S EDGE PAN THE CHART THAT WAY, AT THE FEEL OF THE APP'S OTHER EDGE SCROLLS, AND WHAT D896'S CHECK FINDS SHORT OF THE GUIDE'S TWO DRAG RULES (D895) IS FIXED ON THE NIGHT OF 15 OCT 26, NOT ONLY PUT TO HIM. |
-| D801 | 13 Oct 26 | THE TRACKER'S THREE DATE BOXES — A DATE ON A COURSE, "DONE ON" AND "FAILED ON" IN THE MARKING POP-UP — ARE THE APP'S OWN DATE BOX OPENING THE APP'S ONE CALENDAR: A TAP PICKS AND THE CALENDAR GOES — NO TICK; THE POP-UP STAYS OPEN AND THE BOX READS THE DATE IN WORDS. |
-| D566 | 4 Oct 26 | THE OWNER ACCEPTS THE SHOWN TAPERED-WING PICTURE AND AUTHORIZES USING THAT SHAPE FOR THE FLIGHT SYMBOL. |
-| D564 | 4 Oct 26 | THE OWNER REJECTS THE BLOCKY WIDE-WING FLIGHT SYMBOL AS UGLY AND ASKS TO SEE BETTER DESIGN OPTIONS. — changed by D565 |
-| D560 | 4 Oct 26 | THE OWNER REQUESTS CLEARER LABELS INSIDE TRACKER BLUE FLIGHT BALLS AND PROPOSES A WING WITH MORE TEXT AREA AND STRONGER CONTRAST. — changed by D564, D563 |
-| D474 | 1 Oct 26 | A SYLLABUS (A CHART) IS ONE SHARED THING: AN EDIT TO IT REACHES EVERY COURSE AND EVERY STUDENT ON IT — NEVER A COPY PER COURSE — AND MARKS BELONG TO THE INDIVIDUAL STUDENT, NOT TO THE CHART. |
-| D464 | 30 Sep 26 | HIS TRACKER CHARTS, SYLLABI AND THE DETAILS TYPED ON EACH BALL ARE HIS OWN WORK AND ARE KEPT: NO CHANGE MAY WIPE THEM WITHOUT PUTTING THEM BACK, AND ANY CHANGE THAT WOULD MUST BE TOLD TO HIM FIRST, SO HE CAN EXPORT A COPY. |
-| D462 | 30 Sep 26 | THE TRACKER JOINS `[DB-READINESS]` GROUP A: EVERY TRACKER RECORD THAT HOLDS SEVERAL PEOPLE'S OR SEVERAL CHARTS' WORK IS SAVED ONE PIECE PER THING, LIKE THE REST OF THE APP, BEFORE THE IT TEAM SETTLES ITS TABLES. |
-| D463 | 30 Sep 26 | AN EMPTY REAL DATABASE STARTS THE TRACKER WITH NO COURSE: THE FIRST PERSON TO OPEN IT ADDS ONE; THE DEMO COURSE "26ABSG" AND ITS DEMO STUDENTS NEVER REACH A SHARED STORE. |
+| D924 | 15 Oct 26 | The Tracker's ⇅ Reorder rows are built as drawn: their grip is the app's six dots ⠿, not ☰; a mouse drag wears the finger's look — the carried row ringed, one landing line in the gap — instead of a box round the row it would replace; and "Drag a row, or use ▲/▼." Is deleted from all three windows, each one's second sentence kept. |
+| D922 | 15 Oct 26 | The Tracker's ⇅ Reorder windows (courses, syllabi, crew) let a finger drag a row on a phone, as a mouse does on a desktop, with the app's own drag look: one landing line a gap, the list scrolling at its edge (the design guide §5A, D895). |
+| D899 | 15 Oct 26 | The Tracker chart's drags — a ball, a line's end, a bend handle — carried to the chart's edge pan the chart that way, at the feel of the app's other edge scrolls, and what D896's check finds short of the guide's two drag rules (D895) is fixed on the night of 15 Oct 26, not only put to him. |
+| D801 | 13 Oct 26 | The Tracker's three date boxes — a date on a course, "Done on" and "Failed on" in the marking pop-up — are the app's own date box opening the app's one calendar: a tap picks and the calendar goes — no tick; the pop-up stays open and the box reads the date in words. |
+| D566 | 4 Oct 26 | The owner accepts the shown tapered-wing picture and authorizes using that shape for the flight symbol. |
+| D564 | 4 Oct 26 | The owner rejects the blocky wide-wing flight symbol as ugly and asks to see better design options. — changed by D565 |
+| D560 | 4 Oct 26 | The owner requests clearer labels inside tracker blue flight balls and proposes a wing with more text area and stronger contrast. — changed by D564, D563 |
+| D474 | 1 Oct 26 | A syllabus (a chart) is one shared thing: an edit to it reaches every course and every student on it — never a copy per course — and marks belong to the individual student, not to the chart. |
+| D464 | 30 Sep 26 | His Tracker charts, syllabi and the details typed on each ball are his own work and are kept: no change may wipe them without putting them back, and any change that would must be told to him first, so he can export a copy. |
+| D462 | 30 Sep 26 | The Tracker joins `[DB-READINESS]` group A: every Tracker record that holds several people's or several charts' work is saved one piece per thing, like the rest of the app, before the IT team settles its tables. |
+| D463 | 30 Sep 26 | An empty real database starts the Tracker with no course: the first person to open it adds one; the demo course "26ABSG" and its demo students never reach a shared store. |
 | D377 | 29 Sep 26 | His look at the Tracker leftovers is done ("Looks good"): the chart a person last had open on a course is part of their own place (D376 reading 5), and a half-typed day in Done on or Failed on is refused, never recorded as today — an empty box still means today. |
 | D376 | 28 Sep 26 | Each signed-in person reopens the Tracker on their own last course, chart on it and student, on that browser; a rename keeps it, every way of picking a student updates it, the admin's member view is the same person. Someone new starts on the first course and its last-graded student, else the first. Standalone: one place per browser. |
 | D375 | 28 Sep 26 | Keep: a students import adds a course the app does not have at the bottom of the Course list, and the courses already here keep their places (⇅ Reorder moves it) — ruled, not a defect. |
@@ -66,20 +66,20 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 | D370 | 28 Sep 26 | The Failures card leaves out failures on an event marked N.A., as the ball does — no chip, not in the total or the full list — and they come back, days and all, if the event is graded again. |
 | D191 | 25 Sep 26 | In the Tracker's add box, when the search matches nobody on the roster and the callsign box is empty, OK (or Enter) adds what was typed in the search as a new, unlinked crew member — and the "Nobody on the roster matches" line says so first. |
 | D158 | 24 Sep 26 | Not a real-device problem: [TRK-TAP-AFTER-DRAG] is closed as a quirk of the test browser's touch emulation — reopen only if he sees it on a real phone. |
-| D157 | 24 Sep 26 | THE TRACKER TAKES RAPTOR'S COLOURS FULLY — backgrounds, text AND the event colours |
-| D134 | 24 Sep 26 | THE PINCH TAKE-BACK STAYS AS BUILT. |
-| D132 | 23 Sep 26 | AN IMPORT NEVER DELETES ANYONE'S MARKS. |
-| D131 | 23 Sep 26 | A BACKUP DOES NOT CARRY DELETED COURSES — LEAVE IT. |
-| D130 | 23 Sep 26 | DELETING A BALL ALSO DELETES THE DETAILS TYPED ON IT. |
-| D129 | 23 Sep 26 | LOGGING OUT WITH UNSAVED TRACKER CHART EDITS ASKS FIRST: SAVE THEM / DISCARD THEM / STAY. |
-| D128 | 23 Sep 26 | A DELETED COURSE CAN BE RESTORED. |
-| D127 | 23 Sep 26 | THE EXPORT FILE REMEMBERS A DELETED BUILT-IN CHART. |
-| D126 | 23 Sep 26 | EVENT DETAILS BELONG TO THE CHART THEY WERE TYPED ON. |
-| D124 | 23 Sep 26 | DELETING A BALL WIPES ITS MARKS. |
-| D123 | 23 Sep 26 | LAST FLOWN IS THE LATEST DAY ACTUALLY FLOWN, WHATEVER THE ORDER THEY WERE ENTERED. |
-| D122 | 23 Sep 26 | AN IMPORT MAY RESET STUDENT MARKS; IT MUST NEVER WIPE AN EVENT'S TYPED DETAILS. |
-| D121 | 23 Sep 26 | IN THE TRACKER A MEMBER CAN DO EVERYTHING AN ADMIN CAN — THE FILE MENU TOO. |
-| D120 | 23 Sep 26 | THE TRACKER'S CHARTS REACH THE DATABASE BY EXPORT → WIPE → IMPORT, SO A BUG THAT ROUTE ALREADY REMOVES IS NOT A FINDING. |
+| D157 | 24 Sep 26 | The Tracker takes Raptor's colours fully — backgrounds, text AND the event colours |
+| D134 | 24 Sep 26 | The pinch take-back stays as built. |
+| D132 | 23 Sep 26 | An import never deletes anyone's marks. |
+| D131 | 23 Sep 26 | A backup does not carry deleted courses — leave it. |
+| D130 | 23 Sep 26 | Deleting a ball also deletes the details typed on it. |
+| D129 | 23 Sep 26 | Logging out with unsaved tracker chart edits asks first: Save them / Discard them / stay. |
+| D128 | 23 Sep 26 | A deleted course can be restored. |
+| D127 | 23 Sep 26 | The Export file remembers a deleted built-in chart. |
+| D126 | 23 Sep 26 | Event details belong to the chart they were typed on. |
+| D124 | 23 Sep 26 | Deleting a ball wipes its marks. |
+| D123 | 23 Sep 26 | Last Flown is the latest day actually Flown, whatever the order they were entered. |
+| D122 | 23 Sep 26 | An import may reset student marks; it must never wipe an event's typed details. |
+| D121 | 23 Sep 26 | In the Tracker a member can do everything an admin can — the File menu too. |
+| D120 | 23 Sep 26 | The Tracker's charts reach the database by export → wipe → import, so a bug that route already removes is not a finding. |
 | D64 | 23 Sep 26 | The Tracker's event-box hint reads the bare type ("e.g. Lecture, OFT/AMT, 2 x F-15"); its syllabus data and the smoke-test lines asserting it stay out of every sweep (D62) — narrows D62 and D63. |
 
 ## Architecture — moved from `raptor-port/CLAUDE.md` §Architecture rules (24 Sep 26)

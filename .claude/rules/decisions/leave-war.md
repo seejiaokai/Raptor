@@ -56,40 +56,40 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
-| D892 | 15 Oct 26 | IN THE LEAVE WAR'S REARRANGE, A ROW DRAGGED TOWARD THE TOP OR BOTTOM EDGE OF THE SCREEN SCROLLS THE GRID THAT WAY, SO IT CAN BE CARRIED TO A ROW OUT OF VIEW — A MAN'S ROW, A GROUP HEADING AND A COUNTER ALIKE, ON A PHONE AND A DESKTOP — AS THE SCHEDULER'S DRAGS AND THE WAR'S OWN MOVE ALREADY DO. |
-| D891 | 15 Oct 26 | THE LEAVE WAR'S ⚙ SETTINGS GROUPS AND "WHO WINS" LISTS AND A DAY'S NOTES ON THE INPUTS CALENDAR SHOW ONE LANDING LINE A GAP TOO, AS THE GRID DOES (D890): OVER A ROW'S LOWER HALF THE LINE IS DRAWN ON THE TOP OF THE ROW BELOW; ONLY UNDER THE LAST ROW OF A LIST IS IT DRAWN ON A ROW'S FOOT. |
-| D890 | 15 Oct 26 | IN THE LEAVE WAR'S REARRANGE THE GAP BETWEEN TWO ROWS SHOWS ONE LANDING LINE, IN ONE PLACE: OVER THE LOWER HALF OF A ROW OR THE UPPER HALF OF THE ROW BELOW IT, THE SAME LINE IS DRAWN ON THE TOP EDGE OF THE ROW BELOW; ONLY UNDER THE LAST ROW OF A LIST, OR ABOVE A HEADING THE ROW CANNOT LAND ON, IS IT DRAWN ON A ROW'S BOTTOM EDGE. — changed by D891 |
-| D883 | 15 Oct 26 | WHILE A ROW IS DRAGGED IN THE LEAVE WAR'S REARRANGE, ITS BLUE LANDING LINE RUNS UNBROKEN ACROSS THE WHOLE ROW: THE NAME, THE COUNTERS (THE FIGURES COLUMNS) AND THE DAYS. |
-| D882 | 15 Oct 26 | THE LAST FOUR PLACES LOSE THEIR GLOW TOO: THE LIGHT UNDER TODAY'S DAY CARD, A SANS PUCK'S STRIPE'S LIGHT, THE LIGHT ON THE LEAVE WAR'S LANDING LINE; AND THE REARRANGE BUTTON AND THE SHOW SANS SWITCH SHOW "ON" BY THE FILTER CHIP'S PALE BLUE FILL, BLUE WORDS AND BLUE EDGE, WITH NO HALO OR GLOW. |
-| D881 | 15 Oct 26 | FOUR MORE PLACES LOSE THEIR GLOW, EACH KEEPING ITS LINE AS IT IS: THE GREEN "HE CAN TAKE THIS SEAT" RING ON EDIT SCHEDULE; THE LEAVE WAR'S GREEN OPEN-BIDDING BOX; THE RING ON HIS OWN NAME ON THE LEAVE WAR; THE TRACKER'S GOLD "CAN FLY NEXT" AND TURQUOISE "SEARCH FOUND" RINGS. |
-| D827 | 13 Oct 26 | THE NEATER DRAWING OF THE LEAVE WAR'S CLASH NOTE ON A PHONE ("A+") IS APPROVED AS DRAWN AND IS BUILT: IT IS THE DESIGN OF RECORD — THE SLIM LINE THAT OPENS, ITS LIST IN ALIGNED COLUMNS, EVERY ROW TWO LINES, THE WORDS AS DRAWN. — changed by D837, D833 |
-| D823 | 13 Oct 26 | ON A PHONE THE LEAVE WAR'S CLASH NOTE IS THE SLIM FULL-WIDTH LINE UNDER THE TWO ROWS THAT OPENS ITS LIST IN PLACE (OPTION A OF THE DESIGN PAGE) — WITH THE LIST'S PARTS LINED UP IN COLUMNS AND EVERY ROW THE SAME SHAPE; THE NEATER DRAWING IS PUT TO HIM BEFORE IT IS BUILT. |
-| D805 | 13 Oct 26 | ON A PHONE THE LEAVE WAR'S "CLASHES WITH THE SCHEDULE" NOTE IS REDESIGNED — ITS LAYOUT AND WHERE IT SITS: NEVER A NARROW BOX SQUEEZED AT THE RIGHT OF THE TOP ROW; A PICTURE IS PUT TO HIM BEFORE ANYTHING IS BUILT. |
-| D679 | 8 Oct 26 | ON A DESKTOP THE TOP OF THE LEAVE WAR STAYS AS IT IS — TWO LINES, EVERY LABEL AND BUTTON AS TODAY; ONLY THE PHONE TAKES THE TWO-LINE LAYOUT OF D678. |
-| D678 | 8 Oct 26 | ON A PHONE THE TOP OF THE LEAVE WAR IS TWO LINES, AS DRAWN IN IDEA A: THE PERIOD, "+" AND "VIEWING AS" ON THE FIRST; THE STAGE (ITS TWO MOVES BEHIND THE STAGE BUTTON), THE BIDDING DATES, UNDER-MANNED AND LEGEND ON THE SECOND. |
-| D677 | 8 Oct 26 | THE TWO WAYS OF DELETING A COUNTER STAY AS THEY ARE: THE CROSS IN REARRANGE DELETES AT ONCE AND ASKS NOTHING (UNDO BRINGS THE COUNTER BACK), AND "DELETE COUNTER" IN THE COUNTER'S OWN WINDOW STILL ASKS "REALLY DELETE?". |
-| D676 | 8 Oct 26 | IN REARRANGE A COUNTER ROW'S DELETE CROSS IS RED — AS "DELETE COUNTER" IS IN THE COUNTER'S OWN WINDOW. |
-| D674 | 8 Oct 26 | IN REARRANGE A COUNTER ROW CAN BE DROPPED ANYWHERE AMONG THE FOUR FIXED ROWS (REQUIRED P AND W, AVAILABLE P AND W) — ABOVE THEM, BETWEEN ANY TWO OF THEM, OR BELOW ALL FOUR. |
-| D673 | 8 Oct 26 | ON A COUNTER'S OWN WINDOW, "DELETE COUNTER" IS RED AND "SAVE COUNTER" IS THE APP'S FILLED SAVE BUTTON — THE THREE BUTTONS NO LONGER LOOK ALIKE. — changed by D676 |
-| D670 | 8 Oct 26 | ON THE LEAVE WAR, UNDO AND REDO LEAVE THE GRID WHERE IT IS WHEN THE DAY THEY CHANGE IS ALREADY ON SCREEN; THE GRID JUMPS TO THAT DAY ONLY WHEN IT IS OUT OF VIEW. — changed by D672 |
-| D669 | 8 Oct 26 | THE LEAVE WAR'S MANNING BLOCK COMES WITH NO COUNT ROWS OF ITS OWN — A SQUADRON MAKES THE ONES IT WANTS; AND IN REARRANGE A COUNT ROW'S EYE (HIDE) IS REPLACED BY A CROSS THAT DELETES IT. |
-| D461 | 30 Sep 26 | THE LEAVE WAR HAS NO "EDIT PERSON": A MAN'S SEAT, BAND AND SXO ARE CHANGED ONLY ON QUALS, AND THE WAR SHOWS WHAT QUALS SAYS. |
-| D460 | 30 Sep 26 | THE SXO TICK HE KEEPS ON QUALS IS THE ONE SOURCE THE APP READS (HIS SETTING, NOT A CLAIM ABOUT THE OFFICIAL QUALIFICATION): THE LEAVE WAR CANNOT MAKE ANYONE SXO — IT SHOWS WHAT QUALS SAYS, READ ONLY, AND COUNTS HIM AS SXO ONLY IF QUALS DOES; NOTHING ON THE WAR (ITS PERSON SHEET, A MOVE INTO A CATEGORY) TICKS SXO. — changed by D461 |
-| D418 | 29 Sep 26 | THE LEAVE WAR STAYS AS BUILT ON THREE COUNTS — AN APPROVED LEAVE REACHES INPUTS AT APPROVE; THE ADMIN DECIDES BIDS IN EVERY STAGE BUT DRAFT; A PUBLISHED WAR'S APPROVED LEAVE OFFERS ONLY ITS REMARKS — AND A DRAG ACROSS DAYS THAT GOES BELOW ZERO MUST ASK FIRST, AS A ONE-DAY BID DOES. |
-| D352 | 28 Sep 26 | THE ONE UNDO TAKES BACK A LEAVE WAR STAGE MOVE, AS TODAY — AND SAYS SO. |
-| D365 | 29 Sep 26 | ON A PHONE THE LEAVE WAR'S "VIEWING AS" CHIP TAKES A LINE OF ITS OWN UNDER THE PICKER, WORDS KEPT — AS BUILT; A TABLET AND A DESKTOP KEEP THE ONE LINE. — changed by D678 |
-| D335 | 27 Sep 26 | THE ONE-DAY SHEET KEEPS "HOW MANY" (Just this day / Pick a range), AT ITS TOP. |
-| D334 | 27 Sep 26 | THE MOVE BUTTON IS THE GREY CHIP WITH A TEAL ARROW BEFORE THE WORD ("⇄ Move") — ON EVERY SHEET THAT OFFERS IT. |
-| D333 | 27 Sep 26 | A MEMBER GETS MOVE ON HIS OWN BID WHILE BIDDING IS OPEN — ON THE ONE-DAY SHEET AND THE DAY'S LIST, AS THE DRAG ALREADY LETS HIM. |
-| D332 | 27 Sep 26 | "DELETE" IS THE ONE WORD FOR TAKING A RECORD AWAY, ON EVERY LEAVE WAR SHEET — THE ONE-DAY SHEET'S "CLEAR" AND THE DAY'S LIST'S "CLEAR" BECOME "DELETE" — IN A DASHED GREY EDGE, NOT RED — changed by D676, D673 |
-| D331 | 27 Sep 26 | BOTH SHEETS FOLLOW ORDER A: DECIDE (Ack · Approve · Refuse) → SELECTED (Move · Delete) → HOW MUCH → WHICH LEAVE |
+| D892 | 15 Oct 26 | In the Leave War's Rearrange, a row dragged toward the top or bottom edge of the screen scrolls the grid that way, so it can be carried to a row out of view — a man's row, a group heading and a counter alike, on a phone and a desktop — as the Scheduler's drags and the war's own move already do. |
+| D891 | 15 Oct 26 | The Leave War's ⚙ Settings Groups and "Who wins" lists and a day's notes on the Inputs calendar show one landing line a gap too, as the grid does (D890): over a row's lower half the line is drawn on the top of the row below; only under the last row of a list is it drawn on a row's foot. |
+| D890 | 15 Oct 26 | In the Leave War's Rearrange the gap between two rows shows one landing line, in one place: over the lower half of a row or the upper half of the row below it, the same line is drawn on the top edge of the row below; only under the last row of a list, or above a heading the row cannot land on, is it drawn on a row's bottom edge. — changed by D891 |
+| D883 | 15 Oct 26 | While a row is dragged in the Leave War's Rearrange, its blue landing line runs unbroken across the whole row: the name, the counters (the figures columns) and the days. |
+| D882 | 15 Oct 26 | The last four places lose their glow too: the light under today's day card, a SANS puck's stripe's light, the light on the Leave War's landing line; and the Rearrange button and the Show SANS switch show "on" by the filter chip's pale blue fill, blue words and Blue edge, with no halo or glow. |
+| D881 | 15 Oct 26 | Four more places lose their glow, each keeping its line as it is: the green "he can take this seat" ring on Edit Schedule; the Leave War's green open-bidding box; the ring on his own name on the Leave War; the Tracker's gold "can fly next" and turquoise "search found" rings. |
+| D827 | 13 Oct 26 | The neater drawing of the Leave War's clash note on a phone ("A+") is approved as drawn and is built: it is the design of record — the slim line that opens, its list in aligned columns, every row two lines, the words as drawn. — changed by D837, D833 |
+| D823 | 13 Oct 26 | On a phone the Leave War's clash note is the slim full-width line under the two rows that opens its list in place (option a of the design page) — with the list's parts lined up in columns and every row the same shape; the neater drawing is put to him before it is built. |
+| D805 | 13 Oct 26 | On a phone the Leave War's "clashes with the schedule" note is redesigned — its layout and where it sits: never a narrow box squeezed at the right of the top row; a picture is put to him before anything is built. |
+| D679 | 8 Oct 26 | On a desktop the top of the Leave War stays as it is — two lines, every label and button as today; only the phone takes the two-line layout of D678. |
+| D678 | 8 Oct 26 | On a phone the top of the Leave War is two lines, as drawn in idea A: the period, "+" and "viewing as" on the first; the stage (its two moves behind the stage button), the bidding dates, under-manned and legend on the second. |
+| D677 | 8 Oct 26 | The two ways of deleting a counter stay as they are: the cross in Rearrange deletes at once and asks nothing (Undo brings the counter back), and "Delete counter" in the counter's own window still asks "Really delete?". |
+| D676 | 8 Oct 26 | In Rearrange a counter row's delete cross is red — as "Delete counter" is in the counter's own window. |
+| D674 | 8 Oct 26 | In Rearrange a counter row can be dropped anywhere among the four fixed rows (Required P and W, Available P and W) — above them, between any two of them, or below all four. |
+| D673 | 8 Oct 26 | On a counter's own window, "Delete counter" is red and "Save counter" is the app's filled Save button — the three buttons no longer look alike. — changed by D676 |
+| D670 | 8 Oct 26 | On the Leave War, Undo and Redo leave the grid where it is when the day they change is already on screen; the grid jumps to that day only when it is out of view. — changed by D672 |
+| D669 | 8 Oct 26 | The Leave War's Manning block comes with no count rows of its own — a squadron makes the ones it wants; and in Rearrange a count row's eye (hide) is replaced by a cross that deletes it. |
+| D461 | 30 Sep 26 | The Leave War has no "Edit person": a man's seat, band and SXO are changed only on Quals, and the War shows what Quals says. |
+| D460 | 30 Sep 26 | The SXO tick he keeps on Quals is the one source the app reads (his setting, not a claim about the official qualification): the Leave War cannot make anyone SXO — it shows what Quals says, read only, and counts him as SXO only if Quals does; nothing on the War (its person sheet, a move into a category) ticks SXO. — changed by D461 |
+| D418 | 29 Sep 26 | The Leave War stays as built on three counts — an approved leave reaches inputs at Approve; the admin decides bids in every stage but draft; a published war's approved leave offers only its remarks — and a drag across days that goes below zero must ask first, as a one-day bid does. |
+| D352 | 28 Sep 26 | The one Undo takes back a Leave War stage move, as today — and says so. |
+| D365 | 29 Sep 26 | On a phone the Leave War's "Viewing as" chip takes a line of its own under the picker, words kept — as built; a tablet and a desktop keep the one line. — changed by D678 |
+| D335 | 27 Sep 26 | The one-day sheet keeps "how many" (Just this day / Pick a range), at its top. |
+| D334 | 27 Sep 26 | The Move button is the grey chip with a teal arrow before the word ("⇄ Move") — on every sheet that offers it. |
+| D333 | 27 Sep 26 | A member gets move on his own bid while bidding is open — on the one-day sheet and the day's list, as the drag already lets him. |
+| D332 | 27 Sep 26 | "Delete" is the one word for taking a record away, on every Leave War sheet — the one-day sheet's "Clear" and the day's list's "Clear" become "Delete" — in a dashed grey edge, not red — changed by D676, D673 |
+| D331 | 27 Sep 26 | Both sheets follow order A: decide (Ack · Approve · Refuse) → SELECTED (Move · Delete) → how much → Which leave |
 | D330 | 27 Sep 26 | The Move button has one look of its own on every sheet that offers it, set apart from the sheet's other buttons: the grey chip with a teal arrow before the word ("⇄ Move") (D334). — changed by D334 |
 | D267 | 27 Sep 26 | PR #444 merges first; D264–D266 ([LW-MOVE-STANDARD]) are built afterwards on a new branch from main — mock-up first, its own FULL check, his look and "merge live". |
 | D266 | 27 Sep 26 | A day's list (a day holding several records) moves a record the same way as a single chip — its own Move per record, no date box, picking that record up into the grid's move mode; a member may move his own bid while bidding is open (D333). — changed by D333 |
-| D265 | 27 Sep 26 | A RECORD THAT CAN MOVE ALWAYS OFFERS MOVE, WHATEVER SHARES ITS DAY. |
-| D264 | 27 Sep 26 | THE ONE-DAY SHEET AND THE DRAG-SELECTION SHEET SHARE ONE FORMAT AND ONE LOOK |
+| D265 | 27 Sep 26 | A record that can move always offers Move, whatever shares its day. |
+| D264 | 27 Sep 26 | The one-day sheet and the drag-selection sheet share one format and one look |
 | D262 | 27 Sep 26 | One chip, one move: the one-day sheet's Move is always pressable and picks the chip up into the grid's move mode — no date box; while moving, the grid scrolls at its edges, the months keep it on, an empty tap outside cancels; a day's list moves a record the same way (D266). — changed by D266 |
-| D160 | 24 Sep 26 | BUILD A "RESET ORDER" LINE IN THE LEAVE WAR ⚙ SETTINGS |
+| D160 | 24 Sep 26 | Build A "Reset order" line in the Leave War ⚙ settings |
 | D159 | 24 Sep 26 | Leave it: the desktop Leave War grid opens at normal size (zoom 1); only the phone opens one step out. |
 
 ## Settled before this list — moved from `raptor-port/CLAUDE.md` §Stable decisions (24 Sep 26)

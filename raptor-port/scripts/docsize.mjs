@@ -818,6 +818,15 @@ function ceilingMovedWithCode(paths) {
   return bad
 }
 
+/* What a file really costs a chat, in tokens — calibrated on measured loads, not on its letters ([CONTEXT-START-SIZE],
+   D969, 17 Oct 26). The same 40 rulings took 8,400 tokens in capitals and 4,600 in ordinary letters, and the measured loads
+   of the area files fit about 2.74 characters a token for ordinary text and 1.17 capital LETTERS a token (the old
+   bytes / 3.7 under-read the scheduler's rulings by half). An estimate for the table, never a gate. */
+export const estTokens = text => { const caps = (text.match(/[A-Z]/g) || []).length; return Math.round((text.length - caps) / 2.74 + caps / 1.17) }
+/* A short line written mostly in capitals (D970: written in ordinary letters, capitals only where a name or a short form
+   has them) — more than half the letters of its rule text capitals, with at least 20 letters to judge by. */
+export const capsHeavy = line => { const t = RL.parseShort(line).text || ''; const l = (t.match(/[A-Za-z]/g) || []).length, u = (t.match(/[A-Z]/g) || []).length; return l >= 20 && u / l > 0.5 }
+
 function ceilings(codeChange) {
   const fails = [], deferred = []
   let tier0 = 0
@@ -836,20 +845,27 @@ function ceilings(codeChange) {
   }
   console.log(`\n  tier 0, always loaded: ${tier0} lines (no target — D141)`)
   /* the area rulings files, in UTF-8 bytes of the whole file (D390) — the same tripwire rules as the lines above */
-  console.log(`\n  ${pad('rulings file (loaded)', 44)} ${pad('tier', 5)} ${pad('bytes', 8)} ${pad('~tokens', 8)} tripwire`)
-  let rTier0 = 0
+  console.log(`\n  ${pad('rulings file (loaded)', 44)} ${pad('tier', 5)} ${pad('bytes', 8)} ${pad('~tokens', 8)} ${pad('changed', 8)} tripwire`)
+  let rTier0 = 0, rTok0 = 0
   for (const [f, tier, ceiling] of RULING_BYTES) {
     if (!existsSync(join(REPO, f))) { console.log(`  ${pad(f, 44)} MISSING`); continue }
-    const n = Buffer.byteLength(readNow(f), 'utf8')
-    if (tier === 0) rTier0 += n
+    const text = readNow(f), n = Buffer.byteLength(text, 'utf8'), tok = estTokens(text)
+    if (tier === 0) { rTier0 += n; rTok0 += tok }
+    /* the short lines a later ruling changed — read each against it at the next tidy: one it restates in full leaves (D971) */
+    const shorts = splitLines(text).filter(l => ROW_ID.test(l) && RL.kindOf(l) === 'short')
+    const changed = shorts.filter(l => / — changed by D\d/.test(l)).length
+    /* D970: a NEW short line written mostly in capitals fails; lines already on the base are not this check's to judge */
+    const baseIds = new Set(rulingRowsIn(f, readBase(f)).map(r => r.d))
+    for (const l of shorts) if (!baseIds.has(RL.idOf(l)) && capsHeavy(l)) fails.push(`${f}: ${RL.idOf(l)}'s short line is written mostly in capitals — write the rule, and the bold sentence of its full row, in ordinary letters, capitals only where a name or a short form such as OIL has them (D970)`)
     let note = ''
     if (n > ceiling) {
       if (codeChange) { deferred.push(n - ceiling); note = `   OVER by ${n - ceiling} bytes — code change: deferred (D29)` }
       else { fails.push(`${f} is ${n - ceiling} bytes over its tripwire of ${ceiling} — a rulings file is NEVER trimmed (D136): split the area (a new area file, paths, map row and full-text file: backlog-archive.mjs --rulings --move-rows), archive what is replaced or spent, or raise the tripwire with its reason (D390)`); note = `   *** OVER by ${n - ceiling} bytes ***` }
     }
-    console.log(`  ${pad(f, 44)} ${pad(tier, 5)} ${pad(n, 8)} ${pad('~' + Math.round(n / 3.7), 8)} ${ceiling}${note}`)
+    console.log(`  ${pad(f, 44)} ${pad(tier, 5)} ${pad(n, 8)} ${pad('~' + tok, 8)} ${pad(changed, 8)} ${ceiling}${note}`)
   }
-  console.log(`\n  always-loaded rulings: ${rTier0} bytes (~${Math.round(rTier0 / 3.7)} tokens); the full text, searched: ${fullFilesNow().reduce((a, f) => a + Buffer.byteLength(readNow(f), 'utf8'), 0)} bytes`)
+  console.log(`  ("changed": short lines a later ruling changed — candidates for the next tidy, D971)`)
+  console.log(`\n  always-loaded rulings: ${rTier0} bytes (~${rTok0} tokens); the full text, searched: ${fullFilesNow().reduce((a, f) => a + Buffer.byteLength(readNow(f), 'utf8'), 0)} bytes`)
   return { fails, deferred }
 }
 

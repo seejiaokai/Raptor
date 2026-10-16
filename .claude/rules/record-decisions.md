@@ -123,7 +123,7 @@ already says so).
 **Owner:** *"If you archive an old ruling would it be lost and not read even tho it's applicable? … anything I change
 you will have the context of the ruling."* An archived ruling a chat does not know about is one it will not look for.
 So the list is **never shrunk by moving a live ruling out**: at a size budget the BUDGET rises. Only a ruling
-**replaced by a later one**, or a **one-off permission once spent**, leaves — to `DECISIONS-ARCHIVE.md`, marked,
+**replaced by a later one** — or **restated in full by one, a fresh reader checking each pair (D971, 17 Oct 26)** — or a **one-off permission once spent**, leaves — to `DECISIONS-ARCHIVE.md`, marked,
 never deleted, still searched before asking him anything.
 
 **And the same day (D137):** *"general rules should be read each session or rules that are applicable should be
@@ -142,7 +142,8 @@ accounts — D390; since 2 Oct 26, the IT flow guide; since 13 Oct 26, the Input
   tripwire (`RULING_BYTES` in `docsize.mjs`); the converter makes its full-text file.
 
 **And as ONE LINE each (D390, 28 Sep 26 — his "Approve" to the slim-down).** An area file holds one short line per
-ruling — its number, its date, the rule as it stands, and a " — changed by D…" tail naming the later rulings that
+ruling — its number, its date, the rule as it stands (in ordinary letters, capitals only where a name or a short form has
+them — D970, 17 Oct 26), and a " — changed by D…" tail naming the later rulings that
 changed it; **the full row lives whole in `.claude/decisions-full/<same name>`, never loaded by itself. Open a ruling's
 full row before acting on its detail or putting a question to him about it** (`grep -h '^| D149 |'
 .claude/decisions-full/*.md`, or Read that line). A mark on an older ruling (DECISIONS.md step 2) goes in its FULL row,
