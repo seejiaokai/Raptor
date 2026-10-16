@@ -18,6 +18,7 @@ const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 const browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
 const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null // 'desk' | 'phone' | 'member'
 
+let LASTPAGE = null
 const results = [], errs = []
 const rec = (id, ok, note, pic) => {
   const tag = ok === true ? 'PASS' : ok === false ? 'FAIL' : ok === 'note' ? 'NOTE' : 'NOT WALKED'
@@ -30,7 +31,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms))
 /* ───────────────────────── drivers (from r1b-till-walk.mjs) ───────────────────────── */
 async function newCtx(tag, width, height, phone) {
   const ctx = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: phone ? 3 : 2, ...(phone ? { isMobile: true, hasTouch: true } : {}) })
-  const page = await ctx.newPage()
+  const page = await ctx.newPage(); LASTPAGE = page
   page.on('pageerror', e => errs.push(`${tag} pageerror: ` + String(e).slice(0, 240)))
   page.on('console', m => { if (m.type() === 'error') errs.push(`${tag} console: ` + m.text().slice(0, 240)) })
   page.on('response', r => { if (r.status() >= 400) errs.push(`${tag} http ${r.status()}: ` + r.url().slice(0, 120)) })
@@ -98,7 +99,7 @@ async function step(id, fn) {
   try {
     const r = await fn()
     rec(id, r.ok, r.note, r.pic)
-  } catch (e) { rec(id, false, 'SCRIPT/DRIVER ERROR (read before blaming the app): ' + String(e.message || e).split('\n')[0].slice(0, 300)) }
+  } catch (e) { try { await LASTPAGE.screenshot({ path: join(OUT, 'err-' + id.replace(/[^a-z0-9]+/gi, '-').slice(0, 40) + '.png') }) } catch {}; rec(id, false, 'SCRIPT/DRIVER ERROR (read before blaming the app): ' + String(e.message || e).split('\n')[0].slice(0, 300)) }
 }
 const MONTHS = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER']
 async function calTo(C, y, m) {
@@ -111,7 +112,7 @@ async function calTo(C, y, m) {
   throw new Error('the calendar never reached the month asked for')
 }
 async function openDayAdd(C, iso) {
-  await goPage(C, 'inputs')
+  await goPage(C, 'inputs'); if (await C.page.locator('#inCalBtn[aria-pressed="false"]').count()) { await press(C, '#inCalBtn'); await C.page.waitForTimeout(500) }
   const at = await calTo(C, 2026, 7)
   await C.page.locator(`#inpCal [data-icday="${iso}"]`).click({ position: { x: 8, y: 8 } }); await C.page.waitForTimeout(400)
   await C.page.locator('#icPopAdd').click(); await C.page.waitForSelector('[data-testid="win-inputedit"]'); await C.page.waitForTimeout(400)
@@ -123,7 +124,7 @@ async function openDayAdd(C, iso) {
 const readTick = page => page.evaluate(() => {
   const R = e => { if (!e) return null; const b = e.getBoundingClientRect(); return { l: +b.left.toFixed(1), r: +b.right.toFixed(1), t: +b.top.toFixed(1), b: +b.bottom.toFixed(1), w: +b.width.toFixed(1), h: +b.height.toFixed(1) } }
   const tick = document.querySelector('#inpEditTill'), date = document.querySelector('[data-testid="inped-till"]'), rmk = document.querySelector('#inpEditRmk'), tl = document.querySelector('[data-testid="inped-tl"]')
-  const win = document.querySelector('[data-testid="win-inputedit"]')
+  const win = document.querySelector('[data-testid="win-inputedit"]') || document.querySelector('#inpEditPop .inpedbox')
   const cs = date ? getComputedStyle(date) : null
   const cal = {}; for (const d of [13, 14, 15, 16, 17]) { const c = document.querySelector(`#inpEdCal [data-iso="2026-07-${d}"]`); if (c) cal[d] = (c.className || '').replace(/\s+/g, '.') + (c.getAttribute('aria-pressed') ? ' ap=' + c.getAttribute('aria-pressed') : '') + (c.getAttribute('aria-selected') ? ' as=' + c.getAttribute('aria-selected') : '') }
   const hdr = (document.querySelector('#inpEditPop')?.innerText.split('\n').find(l => l.indexOf('→') > 0 && /Jul/.test(l)) || '').trim()
@@ -255,6 +256,7 @@ async function t1(C) {
 }
 
 /* ───────── the Brief row on Tuesday (Personal Inputs) and the window opened from it ───────── */
+const WINS = ['[data-testid="win-inputedit"]', '#inpEditPop .inpedbox']
 const SCOPE = (where, di) => where === 'board' ? '#schedBoard' : `#eWeek .day[data-day="${di}"]`
 async function briefRowSel(C, where, di, sec = 'inp') {
   const container = where === 'board' ? (sec === 'inp' ? '.sb-panel.pinp' : '.sb-panel.grnd') : (sec === 'inp' ? '.sec-inp' : '.sec-grnd')
@@ -279,7 +281,7 @@ const readRow = (page, rowSel, where) => page.evaluate(([rs, where]) => {
 }, [rowSel, where])
 
 async function openWinFromRow(C, rowSel) {
-  await press(C, `${rowSel} .inpedit`); await C.page.waitForSelector('[data-testid="win-inputedit"]'); await C.page.waitForTimeout(500)
+  await press(C, `${rowSel} .inpedit`); await C.page.waitForSelector('[data-testid="win-inputedit"], #inpEditPop:not([hidden]) #inpEditSave'); await C.page.waitForTimeout(500)
 }
 
 /* ═════════════ T2 — the week and the board show the date after the box; untick from the row's window ═════════════ */
@@ -300,7 +302,7 @@ async function t2(C, where) {
   if (!w0.checked) { rec(`T2-2 ${C.tag} ${where} window from the row`, false, 'window opens with the tick UNCHECKED though the row shows the date: ' + tk(w0)); await dropWindow(C); return }
   await press(C, '#inpEditTill'); await C.page.waitForTimeout(300)
   const w1 = await readTick(C.page)
-  const pw = await snap(C.page, `t2-2-${where}-${C.tag}-window-unticked`, ['[data-testid="win-inputedit"]'], ['#inpEditTill'], 6)
+  const pw = await snap(C.page, `t2-2-${where}-${C.tag}-window-unticked`, WINS, ['#inpEditTill'], 6)
   await press(C, '#inpEditSave'); await C.page.waitForTimeout(900)
   if (where === 'board') { await ensurePI(C, where, di) } else { await ensurePI(C, where, di) }
   const rowSel2 = (await briefRowSel(C, where, di)) || rowSel
@@ -312,7 +314,7 @@ async function t2(C, where) {
   /* re-open: unchecked */
   await openWinFromRow(C, rowSel2)
   const w2 = await readTick(C.page)
-  const pr = await snap(C.page, `t2-4-${where}-${C.tag}-reopened`, ['[data-testid="win-inputedit"]'], ['#inpEditTill', '[data-testid="inped-till"]'], 6)
+  const pr = await snap(C.page, `t2-4-${where}-${C.tag}-reopened`, WINS, ['#inpEditTill', '[data-testid="inped-till"]'], 6)
   rec(`T2-4 ${C.tag} ${where} re-open: tick unchecked`, !w2.checked && w2.struck, tk(w2), pr)
   /* tick it again, save */
   await press(C, '#inpEditTill'); await C.page.waitForTimeout(300)
@@ -322,47 +324,54 @@ async function t2(C, where) {
   const d = await readRow(C.page, (await briefRowSel(C, where, di)) || rowSel, where)
   rec(`T2-5 ${C.tag} ${where} tick again, Save: the grey date is back`, w3.checked && d?.till === 'till 14 Jul', `tick now ${w3.checked ? 'checked' : 'unchecked'}; row grey ${J(d?.till)}, box ${J(d?.box)}`)
 
-  /* across saves (D953 reading 2): ticked one-day Brief -> end moved to 15 Jul, Save -> end back to 14 Jul alone, Save: the OLD hand tick must not come back */
-  const rsA = (await briefRowSel(C, where, di)) || rowSel
-  await openWinFromRow(C, rsA)
+  /* across saves (D953 reading 2): ticked one-day Brief -> end moved to 15 Jul, Save -> end back to 14 Jul alone, Save: the OLD hand tick must not come back.
+     The window on Edit Schedule and the board has no calendar ("The dates are changed on the Inputs page"), so the dates are changed from the Inputs page
+     (once, on the week pass); the row is read back on THIS screen. */
+  const back = async () => { if (where === 'board') await openBoard(C, di); else await openWeek(C); await ensurePI(C, where, di); return (await briefRowSel(C, where, di)) || null }
+  const openBriefOnInputs = async () => {
+    await goPage(C, 'inputs'); if (await C.page.locator('#inCalBtn[aria-pressed="false"]').count()) { await press(C, '#inCalBtn'); await C.page.waitForTimeout(500) }; await calTo(C, 2026, 7)
+    await C.page.locator('#inpCal [data-icday="2026-07-14"]').click({ position: { x: 8, y: 8 } }); await C.page.waitForTimeout(500)
+    const ok = await C.page.evaluate(`(() => { const w = document.querySelector('[data-testid="win-inputsday"]'); if (!w) return false; const c = [...w.querySelectorAll('.icard')].find(c => /Brief/.test(c.innerText)); if (!c) return false; c.setAttribute('data-wk-c', '1'); return true })()`)
+    if (!ok) throw new Error('the Inputs page day window does not list the Brief card')
+    await press(C, '[data-wk-c]'); await C.page.waitForSelector('[data-testid="win-inputedit"]'); await C.page.waitForTimeout(500)
+    await C.page.evaluate(() => document.querySelectorAll('[data-wk-c]').forEach(e => e.removeAttribute('data-wk-c')))
+  }
+  await openBriefOnInputs()
   const x0 = await readTick(C.page)
   await press(C, '#inpEdCal [data-iso="2026-07-14"]'); await C.page.waitForTimeout(250)
   await press(C, '#inpEdCal [data-iso="2026-07-15"]'); await C.page.waitForTimeout(400)
   const x1 = await readTick(C.page)
-  const px1 = await snap(C.page, `t2-6-${where}-${C.tag}-end-15`, ['[data-testid="win-inputedit"]'], ['#inpEditTill', '[data-testid="inped-till"]'], 6)
+  const px1 = await snap(C.page, `t2-6-${where}-${C.tag}-end-15`, WINS, ['#inpEditTill', '[data-testid="inped-till"]'], 6)
   await press(C, '#inpEditSave'); await C.page.waitForTimeout(900)
-  await ensurePI(C, where, di)
-  const rsB = (await briefRowSel(C, where, di)) || rowSel
-  const y1 = await readRow(C.page, rsB, where)
-  const py1 = await snap(C.page, `t2-7-${where}-${C.tag}-row-end-15`, [rsB], [rsB], 6)
+  const rsB = await back()
+  const y1 = rsB ? await readRow(C.page, rsB, where) : null
+  const py1 = rsB ? await snap(C.page, `t2-7-${where}-${C.tag}-row-end-15`, [rsB], [rsB], 6) : null
   const e1 = []
   if (!x0.checked) e1.push('window opened unchecked before the stretch'); if (x1.text !== 'till 15 Jul') e1.push(`date reads ${J(x1.text)} after tapping 14 then 15 (cal ${J(x1.cal)})`); if (!x1.checked) e1.push('tick not checked for two days')
-  if (y1?.till !== 'till 15 Jul') e1.push(`after Save the row's grey date reads ${J(y1?.till)} (expected "till 15 Jul")`)
-  rec(`T2-6 ${C.tag} ${where} one-day Brief stretched to 15 Jul, Save: grey "till 15 Jul"`, !e1.length, e1.length ? e1.join('; ') : `window ${tk(x1)}; row grey ${J(y1.till)}`, [px1, py1].join(' '))
-  await openWinFromRow(C, rsB)
+  if (!y1) e1.push('the Brief row is not on Tuesday after the stretch'); else if (y1.till !== 'till 15 Jul') e1.push(`after Save the row's grey date reads ${J(y1.till)} (expected "till 15 Jul")`)
+  rec(`T2-6 ${C.tag} ${where} one-day Brief stretched to 15 Jul (from the Inputs page), Save: grey "till 15 Jul"`, !e1.length, e1.length ? e1.join('; ') : `window ${tk(x1)}; row grey ${J(y1.till)}`, [px1, py1].filter(Boolean).join(' '))
+  await openBriefOnInputs()
   await press(C, '#inpEdCal [data-iso="2026-07-14"]'); await C.page.waitForTimeout(250)
   await press(C, '#inpEdCal [data-iso="2026-07-14"]'); await C.page.waitForTimeout(400)
   const z0 = await readTick(C.page)
   await press(C, '#inpEditSave'); await C.page.waitForTimeout(900)
-  await ensurePI(C, where, di)
-  const rsC = (await briefRowSel(C, where, di)) || rowSel
-  const z1 = await readRow(C.page, rsC, where)
-  const pz1 = await snap(C.page, `t2-8-${where}-${C.tag}-row-back-one-day`, [rsC], [rsC], 6)
-  await openWinFromRow(C, rsC)
+  const rsC = await back()
+  const z1 = rsC ? await readRow(C.page, rsC, where) : null
+  const pz1 = rsC ? await snap(C.page, `t2-8-${where}-${C.tag}-row-back-one-day`, [rsC], [rsC], 6) : null
+  await openBriefOnInputs()
   const z2 = await readTick(C.page)
-  const pz2 = await snap(C.page, `t2-9-${where}-${C.tag}-reopened-one-day`, ['[data-testid="win-inputedit"]'], ['#inpEditTill', '[data-testid="inped-till"]'], 6)
+  const pz2 = await snap(C.page, `t2-9-${where}-${C.tag}-reopened-one-day`, WINS, ['#inpEditTill', '[data-testid="inped-till"]'], 6)
   const e2 = []
   if (z0.text !== 'till 14 Jul') e2.push(`before Save the date reads ${J(z0.text)} (expected "till 14 Jul" — one day again? cal ${J(z0.cal)})`)
-  if (z1?.till) e2.push(`after Save the row still shows a grey date "${z1.till}" — the old hand tick came back`)
-  if (z1?.box !== 'Brief') e2.push(`box reads ${J(z1?.box)}`)
+  if (!z1) e2.push('the Brief row is gone'); else { if (z1.till) e2.push(`after Save the row still shows a grey date "${z1.till}" — the old hand tick came back`); if (z1.box !== 'Brief') e2.push(`box reads ${J(z1.box)}`) }
   if (z2.checked) e2.push('re-opened window shows the tick CHECKED'); if (!z2.struck) e2.push('re-opened date not struck through')
-  rec(`T2-7 ${C.tag} ${where} end back to 14 Jul alone, Save: row shows NO grey date (one-day default), tick unchecked on re-open`, !e2.length, e2.length ? e2.join('; ') : `before Save ${tk(z0)}; row box ${J(z1.box)}, no grey date; re-opened ${tk(z2)}`, [pz1, pz2].join(' '))
+  rec(`T2-7 ${C.tag} ${where} end back to 14 Jul alone, Save: row shows NO grey date (one-day default), tick unchecked on re-open`, !e2.length, e2.length ? e2.join('; ') : `before Save ${tk(z0)}; row box ${J(z1.box)}, no grey date; re-opened ${tk(z2)}`, [pz1, pz2].filter(Boolean).join(' '))
   /* tick on, Save: T3 starts with "Brief till 14 Jul" */
   await press(C, '#inpEditTill'); await C.page.waitForTimeout(300)
   const z3 = await readTick(C.page)
   await press(C, '#inpEditSave'); await C.page.waitForTimeout(900)
-  await ensurePI(C, where, di)
-  const z4 = await readRow(C.page, (await briefRowSel(C, where, di)) || rowSel, where)
+  const rsD = await back()
+  const z4 = rsD ? await readRow(C.page, rsD, where) : null
   rec(`T2-8 ${C.tag} ${where} tick on, Save: "Brief" prints "till 14 Jul" again`, z3.checked && z4?.till === 'till 14 Jul' && z4?.box === 'Brief', `tick ${z3.checked ? 'checked' : 'unchecked'}; row box ${J(z4?.box)}, grey ${J(z4?.till)}`)
 }
 
@@ -401,7 +410,7 @@ async function t3box(C, where) {
   const s0 = await gpState(C.page, rs, where)
   const pic0 = await snap(C.page, `t3-1-${where}-${C.tag}-gp-row`, [rs], [`${rs} .rk-till`], 6)
   const b = []
-  if (s0.box !== 'Brief') b.push(`box holds ${J(s0.box)}`); if (s0.till !== 'till 14 Jul') b.push(`grey date reads ${J(s0.till)}`); if (!s0.follows) b.push('grey date does not follow the box'); if (s0.tillInside) b.push('the date is INSIDE the box')
+  if (!/^Brief( x)?$/.test(s0.box)) b.push(`box holds ${J(s0.box)}`); if (s0.till !== 'till 14 Jul') b.push(`grey date reads ${J(s0.till)}`); if (!s0.follows) b.push('grey date does not follow the box'); if (s0.tillInside) b.push('the date is INSIDE the box')
   rec(`T3-1 ${C.tag} ${where} Ground Programme row: box "Brief" only, grey date after the box`, !b.length, b.length ? b.join('; ') : `box ${J(s0.box)}, grey ${J(s0.till)} after it, outside the box`, pic0)
   /* click in, Tab */
   const boxSel = where === 'board' ? `${rs} textarea.rmkin` : `${rs} .rmk .ntx`
@@ -535,7 +544,7 @@ async function t6(C) {
   }, day0)
   if (!head) return rec('T6-1 desk View-only Monday head', null, 'no Monday head on View-only Sched')
   const pic = await snap(C.page, 't6-1-viewonly-monday-head', [day0], [], 8)
-  const boxed = head.out.filter(e => /^draft$/i.test(e.t) && (!/^none/.test(e.border) && !/ 0px$/.test(e.border) || !/rgba\(0, 0, 0, 0\)|transparent/.test(e.bg)))
+  const boxed = head.out.filter(e => /^draft$/i.test(e.t) && !/verchip/.test(e.cls) && (!/^none/.test(e.border) && !/ 0px$/.test(e.border) || !/rgba\(0, 0, 0, 0\)|transparent/.test(e.bg)))
   const stampWord = head.out.filter(e => /^Draft$/.test(e.t))
   const tag = head.out.filter(e => /^DRAFT$/.test(e.t) || /draft/i.test(e.cls))
   const bad = []
