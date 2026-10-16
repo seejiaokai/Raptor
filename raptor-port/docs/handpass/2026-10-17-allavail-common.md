@@ -75,4 +75,14 @@ to the Ground Programme" for an ALL AVAIL input — **fixed** (it names the prog
 Ground Programme — true as it is (the hand order is cleared), left. Its own slip, said by it: it ran the whole unit suite
 while the first gate run held the lock (no data written) — that run's unit failures were the 46 above, reproduced alone.
 
-**The fresh, blind Opus read of the finished code:** (to come)
+**The fresh, blind Opus read of the finished code (this sheet in its hands):** the three moved row builders compared line by
+line with their old loop bodies — nothing changed but the Common Programme's gate and `return`. One finding: (1) LOW — a
+retime of such a row on a published day added "Order changed · ground items" to what waits, though nothing moved on the
+Ground Programme (the published compare counted the Ground Programme's order with the rows drawn elsewhere). Proved by
+the reader's own throwaway test. **Fixed**: the rule moved into the engine (`engine/grouprows.ts onCommon`, re-exported by
+`ui/html.ts`), and both order comparisons (`engine/drafts.ts`, `engine/canonical.ts`) leave such rows out. A test in
+`ui/allavail-common.test.tsx` holds the result (no "order changed"); it did NOT fail before the fix in this chat's setup —
+the reader's probe was the red. Every test file of the published compare run (39 files, 1144 / 1144), tfin 728 / 0.
+Absences checked and found fine: every roll-call row (§2). Tidiness, filed: the phone rule that lets a date wrap has no
+`.ah-row` twin (the walk passed); `progOf` restates the rule (to point at the engine's next time it is touched); a public
+Ground Programme note with no rows now shows on View-only, where Duties' does not. The read was the last round.

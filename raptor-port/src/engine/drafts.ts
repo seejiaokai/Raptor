@@ -7,6 +7,7 @@ import { dayKeys } from './restore'
 import { reconcileDayFiling } from './slots'
 import { keyDay } from './keys'
 import { groundOrder } from './order'
+import { onCommon } from './grouprows'
 import { HOOKS } from './hooks'
 import { ridKey, posKey, rowsOf, ensureRowIds } from './rowids'
 import { isoDayWords } from './weekstash'
@@ -550,7 +551,8 @@ export function rebaseDayPending(di: any) {
      the SORTED order into gman and can leave the raw array unchanged, so compare
      the effective DISPLAY order, not the raw array, or a manual ground move is
      missed (Astra RID-REV-03). */
-  movIf('ground', groundOrder(nowD.ground, nowD.gman).map((x: any) => x.row), groundOrder(wasD.ground, wasD.gman).map((x: any) => x.row))
+  /* …as DRAWN there: an input's row on the Common Programme is not in its order (owner D955 — grouprows.ts onCommon) */
+  movIf('ground', groundOrder(nowD.ground, nowD.gman).filter((x: any) => !onCommon(x.row)).map((x: any) => x.row), groundOrder(wasD.ground, wasD.gman).filter((x: any) => !onCommon(x.row)).map((x: any) => x.row))
   ;[...new Set([...Object.keys(nowD.sims || {}), ...Object.keys(wasD.sims || {})])].forEach((kind: any) => movIf('sim', (nowD.sims || {})[kind], (wasD.sims || {})[kind]))
   /* nested sections, matched by the parent's rid so an add/delete of a whole
      parent never reads as a move of its children */

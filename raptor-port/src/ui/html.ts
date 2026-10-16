@@ -1,5 +1,5 @@
 import { requestOfBox } from '../engine/overlay'
-import { rowPeopleDrawn, inputRowSeveral } from '../engine/grouprows'
+import { rowPeopleDrawn, inputRowSeveral, onCommon } from '../engine/grouprows'
 import { DAYS } from '../engine/data'
 import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
@@ -2257,10 +2257,7 @@ export const GP_TAKEOFF_NOTE='To take an input off, press Reject on it in Person
    and the row follows ALL AVAIL by itself — put on, it moves up; taken off, it moves back (D955 (2)). No reorder grip
    there (D955 (1): no move between the programmes — its place is its time). Read off the row alone, so the issued face,
    the board's look at a version and the next-week peek, which hold no input, draw it the same way. */
-export function onCommon(x:any):boolean{
-  if(!x||!x.src)return false;
-  return [x.who,...(x.more||[])].some((v:any)=>{const id=whoId(v); return !!(id&&PEOPLE[id]&&PEOPLE[id].special);});
-}
+export { onCommon } from '../engine/grouprows'   // the rule itself lives in the engine: the published compare asks it too
 /* the Common Programme's list: its own rows in their own order, each such input's row placed before the first of them
    that starts later; an input's row with no start goes last. Equal starts: the programme's own item first. */
 export function commonOrder(ah:any[],grd:any[]):Array<{k:'a'|'g',x:any,ri:number}>{

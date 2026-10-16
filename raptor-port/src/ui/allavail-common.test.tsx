@@ -20,6 +20,7 @@ import { setPage, NOTEPUB } from '../state/view'
 import { dayHTML, dayInfoHTML, onCommon, commonOrder, GP_TAKEOFF_NOTE } from './html'
 import { sbGroundPanel, sbProgPanel } from './board-html'
 import { peekDayHTML } from './peek'
+import { pendListHTML } from './pendlist'
 
 const MON = 0
 const el = (html: string) => { const d = document.createElement('div'); d.innerHTML = html; return d }
@@ -159,5 +160,18 @@ describe('the scenario designer\'s finds', () => {
     const { ri } = allAvailMeeting()
     const row = el(dayHTML(MON, true, true)).querySelector(`.sec-prog [data-txt="gr:${MON}.${ri}.prog"]`)!.closest('.ah-row')!
     expect(row.classList.contains('gr-frominput')).toBe(true)
+  })
+})
+
+/* THE FRESH CODE READ'S FINDING (job 2, 17 Oct 26) */
+describe('the fresh code read: a retime of such a row on a published day', () => {
+  it('waits as its own time change — no "order changed" on the Ground Programme, where it is not drawn', () => {
+    const { inp } = allAvailMeeting()
+    publishDay(MON)
+    expect(dayShownPendCount(MON)).toBe(0)
+    expect(writeInputs(() => { inp.s = 1380; inp.e = 1410 })).toBe(true); validate()
+    expect(dayShownPendCount(MON), 'its time change waits').toBe(1)
+    const txt = el(pendListHTML(MON)).textContent || ''
+    expect(txt, txt.slice(0, 400)).not.toMatch(/order changed/i)
   })
 })
