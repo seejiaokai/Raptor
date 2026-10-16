@@ -48,6 +48,8 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
+**FOUND 17 Oct 26 — [MED-NEWYEAR]:** a medical input across New Year never shows on the Medical tab (older than pull request 524; its own small fix, after 524).
+
 **LIVE 15 Oct 26 (pull requests 517 and 518, his "merge live"; their items are in `OUTSTANDING-ARCHIVE.md`):** a new input opens on OL, the title's pencil, When and Remarks above the calendar (D917, D919, D920); the Tracker's ⇅ Reorder rows drag by finger and by mouse, one look (D922, D924). **Next, ruled the same night (D926–D928):** the Medical tab and Quals' one row, then the Logic page as drawn — `claude/one-row-guide-medical`; then [OIL-CONFIRM-DAYGRID] (D923), its own job.
 
 **LIVE 16 Oct 26 (pull request 519, his "merge live"; their items are in `OUTSTANDING-ARCHIVE.md`):** the Medical tab's one row (D927), the Logic page rewritten (D928–D933, D936), Quals' one row and its paragraph deleted (D935), "Save" on a phone and Quals opening at its top (D937); a Tracker test pinned against midnight. Its owed reads are in [NO-ASTRA-LIST].
@@ -2168,6 +2170,18 @@ with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
 ### [MEDICAL-CARDS-3] The Medical tab's cards: three a row on a phone, two rows a card (his direction, D961, 17 Oct 26)
 
 **Status: OPEN — to be drawn for him on the real app, then built.** His words, on pull request 524's preview: three cards in a row on a phone, not two; Upchit Complete's card loses "upchitted" (its kind says Upchit); "2 documents" becomes document icons on the date's row, so the card is two rows. The puck keeps its size (D487). What the cards say now: `raptor-port/docs/ui-contracts.md` (the Medical view, D960, D961). And (D963, replacing D962's title): a "+ Medical" button on the tab opening the same input window with a medical kind set; and (D964) that button's look drawn in a few variations for him to pick. Drawing: `raptor-port/docs/img/handpass/2026-10-17-medical-cards/`.
+
+### [MED-NEWYEAR] A medical input that runs across New Year never shows on the Medical tab (found 17 Oct 26, not fixed)
+
+**Status: OPEN — found by the Medical cards job's fix read (`claude/sharp-goldberg-6d0656`), older than that job; its own fix.**
+A downchit filed for 28 Dec – 3 Jan is never in Medically Down or Pending Upchit on any "as of" date: the Medical tab reads
+an entry's end in its START's year (`raptor-port/src/engine/medical.ts` `medEndOrd` — `dateOrd(endDate, yr)`), so the end
+falls before the start and the entry covers no day. The card's own words already handle it (`MedicalView.tsx` `spanOf`
+moves an earlier end into the next year), and so do the Inputs pages; only this calculation does not. **Not a demo-data
+case (D56):** a new filing across New Year is hurt the same way. **The fix:** `medEndOrd` (and every reader of it —
+`medDownAsOf`, `pendingUpchits`, `medEpisode`) takes an end label earlier than its start as the next year, as `spanOf` does;
+an engine change, so the rules-engine doctrine and a test across the year, then a walk of the Medical tab "as of" 30 Dec
+and 2 Jan. **Place:** after pull request 524; small; no question for him.
 
 ### [UI-SLEEK-PASS] The interface made more minimal, intuitive and sleek — fewer words, button placement, motion, colour meaning, icons, flow; the Raptor look kept, never at a cost of speed (his direction, D765, 12 Oct 26 — AFTER the one-rule build; his to place)
 **BUILT 17 Oct 26 — D949, D950, D951 + D953 on `claude/whole-app-words-pass-1b-6cfe51` (pull request 522), FULL-checked (`raptor-port/docs/handpass/2026-10-17-tick-r2.md`): LIVE 17 Oct 26 (pull request 522 merged on his "merge live").** **D953 (17 Oct 26) — D952 drawn and answered ("1B 2-5 yes"): a tick box before the grey date, like the window's "all day" tick; readings 2–5 as drawn. To build with D949–D951.** **D952 (17 Oct 26) — draw first, then build with D949–D951:** a switch on every input for its "till <date>" (the grey date in its window), on by default except a one-day duty or other commitment; the default follows the dates; the person can still turn it.

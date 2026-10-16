@@ -15,7 +15,7 @@ const OUT = process.env.HP_SHOTS || join(HERE, '../../docs/img/handpass/2026-10-
 rmSync(OUT, { recursive: true, force: true }); mkdirSync(OUT, { recursive: true })
 const URL = process.env.LOOK_URL || 'http://localhost:4173/'
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
-console.log('medical-walk v2 —', new Date().toISOString(), '→', OUT)
+console.log('medical-walk v3 —', new Date().toISOString(), '→', OUT)
 const browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
 const results = [], errs = []
 let shotN = 0
@@ -45,14 +45,14 @@ const card = (page, iid) => page.evaluate(iid => {
   const r = c.getBoundingClientRect(), sec = c.closest('.medsec').className.replace('medsec ', '')
   const row2 = c.querySelector('.medcard-row2')
   /* the words a person sees: the parts with a width (walk-scripts.md §4) */
-  const seen = row2 ? [...row2.children].filter(e => e.getBoundingClientRect().width > 1).flatMap(e => e.classList.contains('medcard-docs') ? [...e.querySelectorAll('svg')].map(() => '[doc]') : [e.textContent]) : []
+  const seen = row2 ? [...row2.children].filter(e => e.getBoundingClientRect().width > 1).flatMap(e => e.classList.contains('medcard-docs') ? ['[doc]' + ((e.querySelector('.medcard-docs-n') || {}).textContent || '')] : [e.textContent]) : []
   const rm = c.querySelector('.medcard-r')
   return { sec, w: Math.round(r.width), h: Math.round(r.height), row2: seen, remark: rm ? rm.textContent : null, remarkW: rm ? Math.round(rm.getBoundingClientRect().width) : 0, title: c.title }
 }, iid)
 const rowsOf = (page, sec) => page.evaluate(sec => {
   const cs = [...document.querySelectorAll(`.medsec.${sec} .medcard`)]
   const tops = cs.map(c => Math.round(c.getBoundingClientRect().top))
-  return { n: cs.length, perRow: [...new Set(tops)].map(t => tops.filter(x => x === t).length), widths: cs.map(c => Math.round(c.getBoundingClientRect().width)), words: cs.map(c => [...c.querySelectorAll('.medcard-row2 > *')].flatMap(e => e.classList.contains('medcard-docs') ? [...e.querySelectorAll('svg')].map(() => '[doc]') : [e.textContent]).join(' ')) }
+  return { n: cs.length, perRow: [...new Set(tops)].map(t => tops.filter(x => x === t).length), widths: cs.map(c => Math.round(c.getBoundingClientRect().width)), words: cs.map(c => [...c.querySelectorAll('.medcard-row2 > *')].flatMap(e => e.classList.contains('medcard-docs') ? ['[doc]' + ((e.querySelector('.medcard-docs-n') || {}).textContent || '')] : [e.textContent]).join(' ')) }
 }, sec)
 const headGeo = page => page.evaluate(() => {
   const head = document.querySelector('#medView .ic-head'), hr = head.getBoundingClientRect(), pad = parseFloat(getComputedStyle(head).paddingRight)
@@ -60,12 +60,14 @@ const headGeo = page => page.evaluate(() => {
   return { cal: g('medCalBtn'), today: g('medToday'), btn: g('medNew'), rightGap: Math.round(hr.right - pad - document.getElementById('medNew').getBoundingClientRect().right), overflow: head.scrollWidth - head.clientWidth, docOverflow: document.documentElement.scrollWidth - innerWidth }
 })
 /* the window's calendar, turned by reading its own title until it says the wanted month (walk-scripts.md §4) */
-const toMonth = async (page, want) => {
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+const toMonth = async (page, iso) => {
+  const goal = +iso.slice(0, 4) * 12 + (+iso.slice(5, 7) - 1), want = MONTHS[+iso.slice(5, 7) - 1] + ' ' + iso.slice(0, 4)
   for (let i = 0; i < 24; i++) {
-    const t = (await page.locator('#inpEdCal .dcal-title').first().textContent() || '').trim()
-    if (t.includes(want)) { console.log('  calendar on:', t); return true }
-    const [mon, yr] = t.split(/\s+/), order = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    const at = +yr * 12 + order.findIndex(m => mon && m.startsWith(mon.slice(0, 3))), goal = 2026 * 12 + 6
+    const t = (await page.locator('#inpEdCal .dcal-title').first().textContent() || '').replace(/[^A-Za-z0-9 ]/g, '').trim()
+    const [mon, yr] = t.split(/\s+/)
+    const at = +yr * 12 + MONTHS.findIndex(m => mon && m.startsWith(mon.slice(0, 3)))
+    if (at === goal) { console.log('  calendar on:', t, '(wanted', want + ')'); return true }
     await page.locator(`#inpEdCal button[aria-label="${at > goal ? 'Previous' : 'Next'} month"]`).click(); await sleep(150)
   }
   return false
@@ -96,8 +98,9 @@ async function fileThroughButton(page, tag, { person, remark, from = '2026-07-12
     if (!opt) { notWalked(`${tag}.person`, `no "${person}" in the person box`); return null }
     await page.locator('#inpEditPerson').selectOption(opt)
   }
-  if (!(await toMonth(page, 'Jul'))) { notWalked(`${tag}.dates`, 'the window calendar never reached July 2026'); return null }
+  if (!(await toMonth(page, from))) { notWalked(`${tag}.dates`, 'the window calendar never reached ' + from); return null }
   await page.locator(`#inpEdCal [data-iso="${from}"]`).click(); await sleep(120)
+  if (!(await toMonth(page, to))) { notWalked(`${tag}.dates`, 'the window calendar never reached ' + to); return null }
   await page.locator(`#inpEdCal [data-iso="${to}"]`).click(); await sleep(120)
   if (remark) await page.locator('#inpEditRmk').fill(remark)
   await win.locator('.docfield input[type=file]').first().setInputFiles([{ name: `${tag}-cert.pdf`, mimeType: 'application/pdf', buffer: pdf(tag) }])
@@ -167,7 +170,8 @@ const watch = (page, tag) => {
   /* Pending Upchit and Upchit Complete, as drawn: "OML 6–9 Jul", and "20 Jun" with one page per document */
   const pend = await rowsOf(page, 'med-pend'), done = await rowsOf(page, 'med-done')
   ok('A.pending', pend.words.some(w => /^[A-Z][A-Z ]* \d+–\d+ [A-Z][a-z]{2}$/.test(w)) && !(await page.locator('.medsec.med-pend').textContent()).includes('was down'), `Pending Upchit reads ${JSON.stringify(pend.words)}`)
-  ok('A.done', done.words.some(w => /\[doc\] \[doc\]$/.test(w)) && !/upchitted/.test(await page.locator('.medsec.med-done').textContent()), `Upchit Complete reads ${JSON.stringify(done.words)}`)
+  /* D967: two documents read as one drawing and the number */
+  ok('A.done', done.words.some(w => /^\d+ [A-Z][a-z]{2} \[doc\]2$/.test(w)) && !/upchitted/.test(await page.locator('.medsec.med-done').textContent()), `Upchit Complete reads ${JSON.stringify(done.words)}`)
   await page.locator('.medsec.med-pend').scrollIntoViewIfNeeded()
   await shot(page, 'A-phone390-pending-and-complete', ['.medsec.med-pend', '.medsec.med-done'])
   /* the upchit card still opens its documents, paging both */
@@ -197,10 +201,12 @@ const watch = (page, tag) => {
   })
   if (!free) notWalked('B.file', 'no man free of medical inputs to file for')
   else {
-    const iid = await fileThroughButton(page, 'B', { person: free })
+    /* D967: a period across a month end, filed through the button — its period goes under its kind, three still a row */
+    const iid = await fileThroughButton(page, 'B', { person: free, from: '2026-06-29', to: '2026-07-14' })
     if (iid) {
       const c = await card(page, iid)
-      ok('B.card', !!c && c.sec === 'med-down' && c.row2.join(' ') === 'HL 12–15 Jul', `${free}'s card: ${JSON.stringify(c)}`)
+      const under = await page.evaluate(iid => { const c = document.querySelector(`.medcard[data-medcard="${iid}"]`); const k = c.querySelector('.medcard-type').getBoundingClientRect(), t = c.querySelector('.medcard-t').getBoundingClientRect(), b = c.getBoundingClientRect(); return { under: t.top >= k.bottom - 1, inside: t.right <= b.right - 1 } }, iid)
+      ok('B.card', !!c && c.sec === 'med-down' && c.row2.join(' ') === 'HL 29 Jun – 14 Jul' && under.under && under.inside, `${free}'s card: ${JSON.stringify(c)}; the period under its kind and inside the card: ${JSON.stringify(under)}`)
       const r = await rowsOf(page, 'med-down')
       ok('B.three', r.n === 3 && r.perRow.length === 1, `Medically Down at 375: ${r.n} cards, per row ${JSON.stringify(r.perRow)}, widths ${JSON.stringify(r.widths)}`)
       await page.evaluate(() => scrollTo(0, 0))
@@ -230,12 +236,19 @@ const watch = (page, tag) => {
   await page.keyboard.press('Escape'); await sleep(300)
   const back = await page.evaluate(() => document.activeElement && document.activeElement.id)
   ok('C.escape', await page.locator('[data-testid="win-inputedit"]').count() === 0 && back === 'medNew', `Escape closed the window (${await page.locator('[data-testid="win-inputedit"]').count() ? 'NOT' : 'yes'}); the keyboard is back on: ${back}`)
+  /* the code read's finding 4: a filing from the Medical tab leaves the Inputs calendar on its month */
+  await page.locator('#inMemberMode').click(); await page.waitForSelector('#inpCal .ic-mon')
+  const monthBefore = (await page.locator('#inpCal .ic-mon').first().textContent() || '').trim()
+  await openTab(page, 'click')
   const iid = await fileThroughButton(page, 'C', { press: 'click', from: '2026-07-13', to: '2026-07-13' })
   if (iid) {
     const c = await card(page, iid)
     ok('C.card', !!c && c.row2.join(' ') === 'HL 13 Jul', `a one-day card: ${JSON.stringify(c)}`)
     await page.evaluate(() => scrollTo(0, 0))
     await shot(page, 'C-desk-admin-filed', ['#medView .ic-head', '.medsec'])
+    await page.locator('#inMemberMode').click(); await page.waitForSelector('#inpCal .ic-mon')
+    const monthAfter = (await page.locator('#inpCal .ic-mon').first().textContent() || '').trim()
+    ok('C.month', monthAfter === monthBefore && !/Jul/.test(monthBefore), `the Inputs calendar was on "${monthBefore}" before the filing and is on "${monthAfter}" after it`)
   }
   await ctx.close()
 }

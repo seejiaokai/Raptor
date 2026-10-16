@@ -222,6 +222,14 @@ test.describe('the medical view renders and fits', () => {
     const ny = at390.find(c => /29 Jan 2027 – 3 Feb 2027/.test(c.text))
     expect(ny, `the card with its year is drawn: ${JSON.stringify(at390)}`).toBeTruthy()
     expect(ny!.over, 'nothing of it past its edge').toBeLessThanOrEqual(0)
+    /* …and it breaks at its dash only: two halves, each a whole date on one line ("29 Jan 2027 –" / "3 Feb 2027") */
+    const halves = await page.evaluate(() => {
+      const c = [...document.querySelectorAll('.medcard')].find(x => /29 Jan 2027/.test(x.textContent || ''))!
+      /* the lines a half sits on: the distinct tops of its boxes (a box per text piece, not per line, so a count of boxes
+         proves nothing) */
+      return [...c.querySelectorAll('.medcard-tp')].map(e => ({ text: e.textContent, lines: new Set([...e.getClientRects()].filter(r => r.width > 0).map(r => Math.round(r.top))).size }))
+    })
+    expect(halves, 'the period in two whole halves').toEqual([{ text: '29 Jan 2027 –', lines: 1 }, { text: '3 Feb 2027', lines: 1 }])
     await page.setViewportSize({ width: 320, height: 700 })
     await page.waitForTimeout(200)
     for (const c of await spill()) expect(c.over, `at 320, "${c.text}" stays inside its card`).toBeLessThanOrEqual(0)
