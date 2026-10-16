@@ -272,6 +272,9 @@
      ever an accepted row under Personal Inputs (html.ts inGrp), whose control is the one Reject button. */
   .plist .pl-row.accd>.nm{grid-row:1}
   .plist .pl-row.accd>.accs{grid-column:1;grid-row:2;align-self:end;justify-self:start;margin-left:0}
+  /* the printed date flows word by word in the phone's narrow remarks column — kept in one piece it pushed a typed word
+     to break mid-word ("blood pan-el") — the round-2 drawing's re-walk, 17 Oct 26 */
+  .plist .pl-row .rmk .rk-till{white-space:normal}
 }
 /* ---- small phones (360px Android, iPhone SE/mini) ----
    Same FIVE-column layout as every other width — CS/MSN | B/TO | LD | FCP/RCP | RMKS —

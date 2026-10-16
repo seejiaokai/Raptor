@@ -748,6 +748,12 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
    and it says so after the type the same way accepted rows do. */
 .pl-row.inp-dorm,.sb-arow.inprow.inp-dorm,.sbi-row.inp-dorm{opacity:.5}
 .pl-row.inp-dorm .ntx::after{content:' · removed';font-size:8px;letter-spacing:.06em;color:var(--ink-3)}
+/* …and the same move for a rejected row (the round-2 drawing found it, 17 Oct 26 — "Keen for any wave · re-moved till 13 Jul"):
+   the marker follows the printed date. On a phone the date and its marker may break onto the next line rather than run
+   past the cell's edge ("· accep" cut off): the date keeps together, the marker after it may wrap */
+.pl-row.inp-dorm .rmk .ntx:has(+.rk-till)::after{content:none}
+.pl-row.inp-dorm .rmk .rk-till::after{content:' · removed';font-size:8px;letter-spacing:.06em;color:var(--ink-3);font-weight:400}
+.pl-row .rmk .rk-till::after{white-space:normal}   /* the date stays one piece; the marker may take the next line */
 .accs{display:inline-flex;gap:4px;align-items:center;margin-left:6px}
 .accb{font:inherit;font-size:9px;letter-spacing:.05em;text-transform:uppercase;
   padding:2px 7px;border-radius:6px;cursor:pointer;white-space:nowrap;

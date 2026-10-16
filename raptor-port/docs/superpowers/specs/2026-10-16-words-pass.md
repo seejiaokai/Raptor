@@ -41,6 +41,14 @@ or without his word on each lesson, and who reads it — is put to him before an
 
 ## Round 2 — next
 
+**Drawn 17 Oct 26 (the night run, job 3 — nothing in the app changed):** `raptor-port/scripts/handpass/words-r2.mjs`,
+pictures `raptor-port/docs/img/handpass/2026-10-16-words-pass/r2/`. Four questions put to him (the night's page): (1)
+View-only Sched's unpublished day says "Draft" twice — delete the boxed "Draft", keep the DRAFT tag; (2) the peek's "Next
+week — click a day to load it" — A "Next week" (recommended) or B "Next week: click a day to load it"; (3) Personal Inputs'
+"· accepted" (and a rejected row's "· removed") twice a row — keep the one after the type; (4) the crew panel's
+"Placeholders · drag in" → "Placeholders". Left out, with reasons: "No notes yet." (an empty box's own line), "No flying —
+ground day." (states the day), the Legend, "Nil", "all day", "Working draft".
+
 View-only Sched and the schedule's remaining lines: the next-week peek's "click a day to load it", "No notes yet.", the doubled "accepted" on each Personal Inputs row, the crew panel's "Placeholders · drag in" (named under D852 with round 1, picture `…/r1/desk-crew-dragin.png`).
 
 ## Round 1b — his notes on the preview (16 Oct 26)
