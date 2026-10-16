@@ -151,7 +151,7 @@ describe('phase 6 (c) — a filing, an edit, a delete and a hand-over write the 
     expect(weekWrites(), 'the edit writes no day row').toEqual([])
     expect(rowOf(iid, WED)!.row.rmks, 'at once').toBe('p6c changed')   // a one-day duty or commitment prints no date (owner D951, D953)
     await reload(be)
-    expect(rowOf(iid, WED)!.row.rmks, 'after a reload').toBe('p6c changed till 15 Jul')
+    expect(rowOf(iid, WED)!.row.rmks, 'after a reload').toBe('p6c changed')   // a one-day duty or commitment prints no date (owner D951, D953)
   })
 
   /* REWRITTEN TO HIS RULING, 11 Oct 26 (D739, D740 — "a time or a remark the scheduler types on a request's row changes
@@ -419,7 +419,7 @@ describe('phase 6 (c) v3 — the holder base: what a request does to its day is 
     expect(rowOf(iid, WED)!.row.rmks, 'the row follows the request again').toBe('after the undo')   // a one-day duty or commitment prints no date (owner D951, D953)
     expect(rowsOf(iid)).toBe(1)
     await reload(be)
-    expect(rowOf(iid, WED)!.row.rmks).toBe('after the undo till 15 Jul')
+    expect(rowOf(iid, WED)!.row.rmks).toBe('after the undo')   // a one-day duty or commitment prints no date (owner D951, D953)
     expect(rowsOf(iid)).toBe(1)
   })
 
@@ -694,7 +694,7 @@ describe('phase 6 (c) — the FULL check\'s walk: a request\'s new row on a publ
     expect(rowOf(iid, WED)!.row.rmks).toBe('SCHEDULER WORDS')   // a one-day duty or commitment prints no date (owner D951, D953)
     expect(dayKeysOf(SCHED.pending, WED), 'the add alone').toEqual([`gr:${WED}.${rid}.prog`])
     edit(iid, { remarks: 'member words' })
-    expect(rowOf(iid, WED)!.row.rmks).toBe('member words till 15 Jul')
+    expect(rowOf(iid, WED)!.row.rmks).toBe('member words')   // a one-day duty or commitment prints no date (owner D951, D953)
     expect(dayKeysOf(SCHED.pending, WED), 'still the add alone').toEqual([`gr:${WED}.${rid}.prog`])
   })
 })
