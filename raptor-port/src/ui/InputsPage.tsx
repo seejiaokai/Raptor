@@ -128,11 +128,16 @@ export function initialRange(now = new Date()) {
 const pad4 = (m: any) => String(m).padStart(4, '0')
 /* a date as the engine numbers it (yyyymmdd) → 'yyyy-mm-dd' */
 const isoOfOrd = (o: number) => `${Math.floor(o / 10000)}-${pad(Math.floor(o / 100) % 100)}-${pad(o % 100)}`
+/* EVERY DATE HERE IS READ WITH THE ROW'S OWN YEAR (`r.yr` — [INPUTS-LIST-NEXT-YEAR], 17 Oct 26): the Leave War saves a
+   leave approved on a next year's period as a bare label and its anchor year ('Jul 20', 2027 — leavewar/absences.ts
+   inputRowFor). Read in the loaded week's year, the list printed it without its year, sorted it among this year's dates
+   and counted it inside this year's two weeks, as if the man were away now. The sort, the window and the printed dates
+   below all pass `r.yr`, as the schedule, the Leave War and the Medical tab already did. */
 const SORTKEY: any = {
   /* its first callsign — of its people A to Z, the first name its row shows (ui/inputscal-model.ts namesOf) */
   name: (r: any) => (namesOf(r)[0] || '').toLowerCase(),
-  start: (r: any) => unfmt(r.date) + pad4(r.allday ? 0 : (r.s ?? 0)),
-  end: (r: any) => unfmt(r.endDate || r.date) + pad4(r.allday ? 1439 : (r.e ?? 0)),
+  start: (r: any) => unfmt(r.date, r.yr) + pad4(r.allday ? 0 : (r.s ?? 0)),
+  end: (r: any) => unfmt(r.endDate || r.date, r.yr) + pad4(r.allday ? 1439 : (r.e ?? 0)),
   type: (r: any) => String(r.type || '').toLowerCase(),
   remarks: (r: any) => remarksShown(r).toLowerCase(),        // as the column prints it (D948)
   mod: (r: any) => (r.mod === 'now' || r.mod === nowStamp() ? '9999-99-99' : String(r.mod || '')),
@@ -165,9 +170,9 @@ export function rangeWords(from: string, to: string): string {
    live today, and a list that hid it would be lying about who is available. */
 const inWindow = (r: any, from: string, to: string) => {
   if (!from && !to) return true
-  const s = unfmt(r.date)
+  const s = unfmt(r.date, r.yr)
   if (!s) return true                       // unreadable label — never hide data
-  const e = unfmt(r.endDate || r.date) || s
+  const e = unfmt(r.endDate || r.date, r.yr) || s
   if (from && e < from) return false
   if (to && s > to) return false
   return true
@@ -747,8 +752,8 @@ export function InputsPage() {
                  then empty and the card hides it. A span (all-day range or a
                  timed input crossing midnight) keeps Start and End as two cells
                  joined by the '→', and the desktop table's two columns with it. */
-              const day0 = fmtDay(unfmt(r.date))
-              const day1 = fmtDay(unfmt(r.endDate || r.date))
+              const day0 = fmtDay(unfmt(r.date, r.yr))
+              const day1 = fmtDay(unfmt(r.endDate || r.date, r.yr))
               /* the time run rides its own .tnw span so the phone card's
                  narrow date column wraps '13 Jul' / '12:01–23:59' at the
                  SPACE — never after the en-dash mid-range (owner, 22 Aug 26

@@ -210,9 +210,9 @@ test('round 2, finding 2: a PowerShell here-string message is text, not commands
 
 test('round 2, finding 3: the suggested command keeps its quotes', () => {
   const v = verdict(call('npx playwright test -g "drag the puck"'), world());
-  assert.match(v.refuse, /-- npx playwright test -g "drag the puck"/);
+  assert.match(v.refuse, /-- npx playwright test -g 'drag the puck'/);   // single quotes since [PUSH-GUARD-LEFTOVERS] (2)
   const t = verdict(ps('Set-Location raptor-port; if ($?) { npx vitest run -t "crew rest" }'), world());
-  assert.match(t.refuse, /-- npx vitest run -t "crew rest"/); assert.doesNotMatch(t.refuse, /-- if/);
+  assert.match(t.refuse, /-- npx vitest run -t 'crew rest'/); assert.doesNotMatch(t.refuse, /-- if/);
 });
 
 test('round 2, finding 4: commands inside $( … ) and backticks are read too', () => {
@@ -288,4 +288,91 @@ test('round 3, finding 8: a lock whose holder died while its checks still run is
   assert.equal(holderGone({ owner: `a — b\nholder-pid: ${dead}\nchild-pid: ${dead}` }), true, 'both gone');
   assert.equal(holderGone({ owner: `a — b\nholder-pid: ${dead}` }), true);
   assert.equal(holderGone({ owner: 'a — b' }), false, 'a lock taken by hand is judged by its age only');
+});
+
+// ---- [PUSH-GUARD-LEFTOVERS], 17 Oct 26 --------------------------------------------------------------------------------
+const pscall = (command) => ({ tool_name: 'PowerShell', cwd: '/repo', tool_input: { command } });
+
+test('leftover 1: a quoted word that begins with > or < is a word, not a redirect', () => {
+  // the suggested command keeps it, and a quoted ">" never ends a push's words
+  const v = verdict(call('npx vitest run -t ">8h rest"'), world());
+  assert.ok(refused(v)); assert.match(v.refuse, /-- npx vitest run -t '>8h rest'/);
+  assert.ok(refused(verdict(call('git push origin ">x" main'), world())), 'the target after a quoted ">x" is still read');
+  // an unquoted redirect still ends the words
+  assert.equal(lockNeed(['npx', 'vitest', 'run', '>', 'out.log']), 'held');
+  assert.equal(lockNeed(['npx', 'vitest', 'run', '>x.test.ts'], [false, false, false, true]), null, 'a quoted file name');
+});
+
+test("leftover 2: PowerShell's doubled quote is one quote, and the suggestion never lets $ expand", () => {
+  const v = verdict(pscall("npx vitest run -t 'it''s $x'"), world());
+  assert.ok(refused(v)); assert.match(v.refuse, /-- npx vitest run -t 'it''s \$x'/);
+  const b = verdict(call("npx vitest run -t 'cost $5'"), world());
+  assert.match(b.refuse, /-- npx vitest run -t 'cost \$5'/, 'bash: single quotes too');
+  assert.ok(refused(verdict(pscall('git push origin "a""b" main'), world())), 'a doubled "" inside "…" does not hide the target');
+});
+
+test('leftover 3: pushes to main through a variable, xargs, or after a $\'…\' quote', () => {
+  for (const c of ['B=main; git push origin $B', 'B=main && git push origin "${B}"', 'export B=main; git push origin HEAD:$B',
+    'echo main | xargs git push origin', "echo $'it\\'s'; git push origin main"]) assert.ok(refused(verdict(call(c), world())), c);
+  assert.ok(refused(verdict(pscall("$B = 'main'; git push origin $B"), world())), 'PowerShell variable');
+  assert.ok(refused(verdict(pscall("$B='main'; git push origin $B"), world())), 'PowerShell variable, no spaces');
+  for (const c of ['B=claude/job; git push origin $B', 'echo claude/job | xargs git push origin', "echo $'a\\'b' && git status"])
+    assert.ok(!refused(verdict(call(c), world())), c);
+});
+
+test('leftover 4: breaking a lock looks before it moves it — a lock no longer the one judged is never touched', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'gl-')); const lock = join(dir, 'lock');
+  const { breakLock } = await import('../../raptor-port/scripts/gatelock.mjs');
+  mkdirSync(lock); writeFileSync(join(lock, 'owner.txt'), 'claude/fresh — unit\nholder-pid: 1');
+  const { readdirSync, statSync } = require_('node:fs');
+  // a folder moved aside and back leaves the same names, but a newer time on the folder that holds them
+  const before = statSync(dir).mtimeMs; await new Promise((r) => setTimeout(r, 50));
+  assert.equal(breakLock(lock, { owner: 'claude/dead — unit\nholder-pid: 2' }), false);
+  assert.deepEqual(readdirSync(dir), ['lock']);
+  assert.equal(statSync(dir).mtimeMs, before, 'nothing was set aside, not even for an instant');
+  rmSync(dir, { recursive: true, force: true });
+});
+
+// ---- the fix's own read, 17 Oct 26 ------------------------------------------------------------------------------------
+test('fix read 1: a redirect whose file name alone is quoted is still a redirect — the run still needs the lock', () => {
+  for (const c of ['npm test 2>"err.log"', 'npx vitest run >"out.log"', 'npx playwright test >"out.log"'])
+    assert.ok(refused(verdict(call(c), world())), c);
+  assert.ok(refused(verdict(pscall('npx vitest run *>"out.log"'), world())), 'PowerShell *>"…"');
+  assert.equal(verdict(call('npx vitest run ">8h.test.ts"'), world()), null, 'a quoted word that starts with > is a file');
+});
+
+test('fix read 2: xargs reads only its own pipeline, through variables and xargs.exe too', () => {
+  assert.ok(!refused(verdict(call('echo feat | xargs git push origin && gh pr create --body "main: uses xargs"'), world())), 'another step names main');
+  for (const c of ['B=main; echo $B | xargs git push origin', 'echo main | xargs.exe git push origin', 'printf main | sort | xargs git push origin'])
+    assert.ok(refused(verdict(call(c), world())), c);
+});
+
+test('fix read 3: PowerShell variable names ignore case', () => {
+  assert.ok(refused(verdict(pscall("$b='main'; git push origin $B"), world())));
+});
+
+test('fix read 4: a lock whose owner.txt is not written yet is never set aside', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'gl-')); const lock = join(dir, 'lock');
+  const { breakLock } = await import('../../raptor-port/scripts/gatelock.mjs');
+  mkdirSync(lock);                                                     // made, its name not written yet
+  const { statSync } = require_('node:fs');
+  const before = statSync(dir).mtimeMs; await new Promise((r) => setTimeout(r, 50));
+  assert.equal(breakLock(lock, { owner: 'claude/dead — unit\nholder-pid: 2' }), false);
+  assert.equal(existsSync(lock), true);
+  assert.equal(statSync(dir).mtimeMs, before, 'not set aside, even for an instant');
+  assert.equal(breakLock(join(dir, 'gone'), { owner: 'x' }), false, 'no lock at all');
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test('fix read 5: a bash backslash-dollar inside "…" comes back without its backslash', () => {
+  const cmd = 'npx vitest run --grep "it\'s \\$HOME"';
+  assert.ok(cmd.includes('\\$'), 'the command holds a real backslash');
+  const v = verdict(call(cmd), world());
+  assert.ok(refused(v)); assert.match(v.refuse, /-- npx vitest run --grep 'it'\\''s \$HOME'/);
+});
+
+test('fix read round 2: a pipe split across a line break, and bash |&, still carry the target', () => {
+  for (const c of ['echo main |' + String.fromCharCode(10) + '  xargs git push origin', 'echo main |& xargs git push origin'])
+    assert.ok(refused(verdict(call(c), world())), JSON.stringify(c));
+  assert.ok(!refused(verdict(call('echo feat |& xargs git push origin'), world())), 'a pipe naming no main');
 });

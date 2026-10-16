@@ -60,6 +60,17 @@ export function release(lock = LOCK) { rmSync(lock, { recursive: true, force: tr
  * folder is atomic — only one rename succeeds — and the renamed folder's owner.txt is compared with the one judged: if
  * it is not the same lock, it is put back. */
 export function breakLock(lock, judged) {
+  /* LOOK BEFORE MOVING ([PUSH-GUARD-LEFTOVERS] (4), 17 Oct 26): a lock that is no longer the one judged is left where it
+     is. Moved first and put back after, a third waiter could take the empty name in that instant and the put-back would
+     fail, leaving the real holder's lock set aside and two runs at once. The check below the move stays for the gap
+     between these two reads. */
+  /* a lock whose owner.txt is not written yet is named as status() names it — a chat that has just made the folder is
+     never moved aside before it can write its name (the fix's read, 17 Oct 26) */
+  if (judged) {
+    if (!existsSync(lock)) return false
+    let now = '(no owner.txt)'; try { now = readFileSync(join(lock, 'owner.txt'), 'utf8').trim() } catch {}
+    if (now !== judged.owner) return false
+  }
   const aside = `${lock}.broken-${process.pid}-${Date.now()}`
   try { renameSync(lock, aside) } catch { return false }                 // someone else broke (or released) it first
   let owner = ''
