@@ -1061,3 +1061,33 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** In session-handoff's "remove a merged block" step and shipping.md's merge sequence: never push notes to a pull request that is green and waiting only for "merge live". Merge it as it is; carry the block's removal (and its backlog filing) on the NEXT commit that goes out anyway — the stacked pull request's level-with-main commit, or the next job's branch. Say in that commit which merged block it removes.
 
 **Principle:** A record update that would restart a finished check rides on the next change that has to be checked anyway; never spend a check run to tidy notes.
+
+### Observation 624: The shell's $TEMP is one folder for every chat on the PC — a fixed file name there reads another chat's file
+
+**Status:** OPEN
+**Date:** 2026-10-16
+**Session context:** the Medical cards job (`claude/sharp-goldberg-6d0656`), a background check run writing its results to `$TEMP/after.txt`.
+**Skill:** New skill candidate: none — the project's checking guide (`raptor-port/docs/walk-scripts.md` §5, "A script writes only under its own checkout") and the gate scripts
+**Type:** open-source
+**Phase/Area:** where a run writes its logs
+
+**Issue:** A check run wrote `$TEMP/after.txt`; before it finished, reading that name printed a list of backlog ids — another chat's file of the same name. In Git Bash `$TEMP` is the user's one temporary folder, shared by every worktree and chat; only the harness's per-session scratchpad is private. A FAIL or a count read from such a file can be another job's.
+
+**Suggested improvement:** In `walk-scripts.md` §5 (and the gate scripts' own `--logs` default), one line: logs and scratch files go to the session's scratchpad or a folder under the checkout, never a fixed name in `$TEMP`; a name in `$TEMP` carries the session's id.
+
+**Principle:** A shared folder is a shared namespace; a fixed file name in it is a race with every other writer.
+
+### Observation 625: A fixed pixel limit in a browser test is a limit on one machine's letters
+
+**Status:** OPEN
+**Date:** 2026-10-16
+**Session context:** the Medical cards job — "a card is at most 104 wide" passed on his PC and failed on GitHub's Linux machine (107), reported by the old merge chat.
+**Skill:** New skill candidate: none — the project's checking guide (`raptor-port/docs/walk-scripts.md` §4, steps and what they assert)
+**Type:** open-source
+**Phase/Area:** writing geometry assertions
+
+**Issue:** The test pinned a pixel figure measured from the drawing on one machine. Text width differs between machines (fonts, hinting), so the figure was a property of the PC, not of the ruling ("three a row"). The reader had flagged the test as font-bound; it still went out and failed only in CI, costing a red run.
+
+**Suggested improvement:** In `walk-scripts.md` §4, one line: a geometry assertion states the ruling's relation (a third of the row, inside its card, one line) and measures both sides on the page; a fixed pixel figure only for a size the app itself fixes (the 74px puck, the 36px row).
+
+**Principle:** Assert the relation the rule names, not the number one machine produced for it.
