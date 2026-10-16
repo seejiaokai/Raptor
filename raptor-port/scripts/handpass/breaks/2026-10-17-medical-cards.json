@@ -30,16 +30,6 @@
     ]
   },
   {
-    "n": 4,
-    "name": "no page drawn per document (D961 reading 2)",
-    "file": "src/ui/MedicalView.tsx",
-    "find": "Array.from({ length: docs || 0 }, (_, i) => <DocMark key={i} />)",
-    "put": "null",
-    "tests": [
-      "src/ui/medicalview.test.tsx"
-    ]
-  },
-  {
     "n": 6,
     "name": "\"+ Medical\" opens the window on the Inputs tab's own kind (OL), not a medical one (D963)",
     "file": "src/ui/MedicalView.tsx",
@@ -65,6 +55,46 @@
     "file": "src/ui/MedicalView.tsx",
     "find": "className=\"abtn primary\" id=\"medNew\"",
     "put": "className=\"abtn\" id=\"medNew\"",
+    "tests": [
+      "src/ui/medicalview.test.tsx"
+    ]
+  },
+  {
+    "n": 9,
+    "name": "two or more documents show nothing (D966, D967)",
+    "file": "src/ui/MedicalView.tsx",
+    "find": "{n > 1 ? <span className=\"medcard-docs\"",
+    "put": "{false ? <span className=\"medcard-docs\"",
+    "tests": [
+      "src/ui/medicalview.test.tsx"
+    ]
+  },
+  {
+    "n": 10,
+    "name": "one document shows the mark too (D967: one shows none)",
+    "file": "src/ui/MedicalView.tsx",
+    "find": "{n > 1 ? <span className=\"medcard-docs\"",
+    "put": "{n >= 1 ? <span className=\"medcard-docs\"",
+    "tests": [
+      "src/ui/medicalview.test.tsx"
+    ]
+  },
+  {
+    "n": 11,
+    "name": "the number beside the drawing is lost",
+    "file": "src/ui/MedicalView.tsx",
+    "find": "<span className=\"medcard-docs-n\" aria-hidden=\"true\">{n}</span>",
+    "put": "",
+    "tests": [
+      "src/ui/medicalview.test.tsx"
+    ]
+  },
+  {
+    "n": 12,
+    "name": "a screen reader no longer hears the count",
+    "file": "src/ui/MedicalView.tsx",
+    "find": "role=\"img\" aria-label={`${n} documents`}",
+    "put": "",
     "tests": [
       "src/ui/medicalview.test.tsx"
     ]

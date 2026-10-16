@@ -152,6 +152,44 @@ test.describe('the medical view renders and fits', () => {
     for (const h of lines) expect(h, 'row 2 is one line').toBeLessThanOrEqual(16)
   })
 
+  /* A LONG PERIOD GOES UNDER ITS KIND (owner D967 — "Both as recommended", after the code read): "ATT C 29 Jun – 14 Jul"
+     is wider than a third of a phone's row; on a phone a card is at most a third, its period on the line under its kind,
+     so three still stand in a row — and a card of two documents keeps its "▯ 2" inside its own box. */
+  for (const width of [390, 375]) test(`D967 a long period goes under its kind and three still stand in a row at ${width}`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 844 })
+    await login(page)
+    const iid = await page.evaluate(() => {
+      const w = window as any
+      const ids = [...new Set(w.INPUTS.flatMap((r: any) => [r.docId, ...(Array.isArray(r.docIds) ? r.docIds : [])]).filter(Boolean))]
+      const taken = new Set(w.INPUTS.filter((r: any) => /^(ATT [BC]|OML|HL|Upchit)$/i.test(String(r.type))).map((r: any) => String(r.person)))
+      const pid = Object.keys(w.PEOPLE).find(k => w.PEOPLE[k].cs && !taken.has(k) && !w.PEOPLE[k].archived && !w.PEOPLE[k].special)
+      w.fileInput({ person: pid, type: 'ATT C', date: 'Jun 29', endDate: 'Jul 14', yr: 2026, allday: true, docId: ids[0], docIds: ids.slice(0, 2) })
+      if (w.notify) w.notify()
+      return String(w.INPUTS[0].iid || w.INPUTS[0].id || '')
+    })
+    await go(page, 'inputs')
+    await page.click('#inMedBtn')
+    const g = await page.evaluate(() => {
+      const cs = [...document.querySelectorAll('.medsec.med-down .medcard')] as HTMLElement[]
+      const long = cs.find(c => /29 Jun/.test(c.textContent || ''))
+      if (!long) return null
+      const kind = long.querySelector('.medcard-type')!.getBoundingClientRect(), when = long.querySelector('.medcard-t')!.getBoundingClientRect()
+      const box = long.getBoundingClientRect(), docs = long.querySelector('.medcard-docs')
+      return {
+        n: cs.length, rows: new Set(cs.map(c => Math.round(c.getBoundingClientRect().top))).size,
+        under: when.top >= kind.bottom - 1, docsN: docs ? docs.textContent : null,
+        inside: [...long.querySelectorAll('.medcard-row2 > *')].every(e => e.getBoundingClientRect().right <= box.right - 1),
+        widths: cs.map(c => Math.round(c.getBoundingClientRect().width)), row: (long.parentElement as HTMLElement).clientWidth,
+      }
+    })
+    expect(g, `the long card is drawn (${iid})`).not.toBeNull()
+    expect(g!.n, 'three men down').toBe(3)
+    expect(g!.rows, `all three in one row: widths ${g!.widths} in ${g!.row}`).toBe(1)
+    expect(g!.under, 'the long period is on the line under its kind').toBe(true)
+    expect(g!.docsN, 'two documents: the drawing and "2"').toBe('2')
+    expect(g!.inside, 'nothing of row 2 runs past the card').toBe(true)
+  })
+
   /* "+ MEDICAL" (owner D963, D965 — 17 Oct 26): a filled button at the right end of the "as of" row, the row's 36 tall, a
      finger's 44 on a phone; it opens the Inputs tab's own window set to a medical kind — by mouse and by keyboard (Tab to
      it, Enter opens, Escape closes and the keyboard is back on the button) — for an admin and for a member. */

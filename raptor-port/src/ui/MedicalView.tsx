@@ -87,9 +87,10 @@ function remarkNote(remark: any): string {
    TWO ROWS, THREE CARDS A ROW ON A PHONE (owner D961, D965 — 17 Oct 26, "Anyway we can compact 3 names on a row?",
    built as drawn): the puck alone on row 1; row 2 the kind, in its section's colour, then the period ("ATT C 13–17 Jul"),
    so a card is as wide as its puck (~95) and three stand in a row at 375 and 390. Upchit Complete's card drops the kind
-   and "upchitted" (its section says Upchit, D961) and says its documents as one page drawing each, in the section's green,
-   after the date (`docIcons`) — the "N documents" pill went with it. */
-function Card({ e, line, up, docs, docIcons, kind = true, onOpen }: { e: any, line: string, up?: boolean, docs?: number, docIcons?: boolean, kind?: boolean, onOpen: (row: any, up?: boolean) => void }) {
+   and "upchitted" (its section says Upchit, D961). ITS DOCUMENTS, IN EVERY SECTION (owner D966, D967 — "Both as
+   recommended"): from two on file, one page drawing and the number ("▯ 2") after the period; one shows none — a downchit
+   always carries one, so it would say nothing. The "N documents" pill went. */
+function Card({ e, line, up, docs, kind = true, onOpen }: { e: any, line: string, up?: boolean, docs?: number, kind?: boolean, onOpen: (row: any, up?: boolean) => void }) {
   const r = e.row
   /* (whose it is: a medical entry and an upchit are ONE person's — engine/inputs.ts shapeProblem, D655 reading 4 — so
      the puck is the first of the record's people, leadOf: a record stored before the one-rule build answers with its
@@ -108,12 +109,10 @@ function Card({ e, line, up, docs, docIcons, kind = true, onOpen }: { e: any, li
       <span className="medcard-row2">
         {kind ? <span className="medcard-type">{inpType(r.type)}</span> : null}
         <span className="medcard-t">{line}</span>
-        {/* one drawing a document actually on file (D961 reading 2: "a card of one document shows one icon"; none on
-            file, none drawn) — the card's title still says how many for a reader who cannot see them */}
-        {/* ONE NAME FOR THE GROUP, read aloud as "2 documents" (the code read, finding 3): each drawing is hidden from a screen
-            reader, and the card's title is only a hint there */}
-        {docIcons && docs ? <span className="medcard-docs" role="img" aria-label={`${docs} document${docs === 1 ? '' : 's'}`}>
-          {Array.from({ length: docs }, (_, i) => <DocMark key={i} />)}</span> : null}
+        {/* ONE NAME FOR THE GROUP, read aloud as "2 documents" (the code read, finding 3): the drawing and the number are
+            hidden from a screen reader, and the card's title is only a hint there */}
+        {n > 1 ? <span className="medcard-docs" role="img" aria-label={`${n} documents`}>
+          <DocMark /><span className="medcard-docs-n" aria-hidden="true">{n}</span></span> : null}
       </span>
       {/* the typed words (its line above says the dates — D948, engine/inputs.ts remarksTyped) */}
       {remarkNote(remarksTyped(r.remarks, r)) ? <span className="medcard-r" title={remarksTyped(r.remarks, r)}>{remarksTyped(r.remarks, r)}</span> : null}
@@ -269,7 +268,7 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
             <span className="medsec-sub">the past 30 days, newest first</span></div>
           {done.length
             ? <div className="medcards">{done.map((e: any, i: number) =>
-              <Card key={(e.row.iid || '') + i} e={e} onOpen={open} docs={episodeDocN(e.row)} docIcons kind={false}
+              <Card key={(e.row.iid || '') + i} e={e} onOpen={open} docs={episodeDocN(e.row)} kind={false}
                 line={lblDay(e.row.date, e.row.yr)} />)}</div>
             : <div className="med-empty">No upchits in the past 30 days.</div>}
         </section>

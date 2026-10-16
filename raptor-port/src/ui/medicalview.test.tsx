@@ -191,25 +191,37 @@ describe('the Medical view', () => {
     expect($(`.medcard[data-medcard="${two.iid}"]`).querySelector('.medcard-t')!.textContent).toBe('30 Aug – 2 Sep')
     await act(async () => { setMedAsOf(null); notify() })
   })
-  /* D961 reading 2, D965: Upchit Complete says its documents as the app's page drawing, one a document actually on file —
-     a card with none on file draws none; the card's title still says how many */
-  it('D961 D965 an upchit draws one page a document, and none where none is on file', async () => {
+  /* D966, D967 ("Both as recommended"): a card's documents, in EVERY section — from two on file, one page drawing and the
+     number; one on file, or none, shows nothing (a downchit always carries one); the card's title still says how many */
+  it('D966 D967 two or more documents show one drawing and the number, in every section; one shows none', async () => {
     await act(async () => { setMedAsOf(null); notify() })
     const f1 = docAdd(new Blob(['u1'], { type: 'image/png' }) as any).id
     const f2 = docAdd(new Blob(['u2'], { type: 'image/png' }) as any).id
-    const pid = Object.keys(PEOPLE).find(k => PEOPLE[k].cs && !PEOPLE[k].archived && !PEOPLE[k].special && !INPUTS.some((r: any) => leadOf(r) === k))!
-    const up = await plant({ person: pid, type: 'Upchit', date: 'Jul 9', docId: f1, docIds: [f1, f2] })
-    const card = $(`.medsec.med-done .medcard[data-medcard="${up.iid}"]`)
-    expect(card, 'the upchit lists under Upchit Complete').toBeTruthy()
-    expect(card.querySelectorAll('.medcard-row2 .medcard-doc').length, 'two documents, two drawings').toBe(2)
-    expect(card.title).toBe('Tap to view 2 documents')
-    /* a screen reader hears the count: the drawings are hidden, their group is named (the code read, finding 3) */
-    expect(card.querySelector('.medcard-docs')!.getAttribute('aria-label')).toBe('2 documents')
-    expect(card.querySelector('.medcard-docs')!.getAttribute('role')).toBe('img')
+    const f3 = docAdd(new Blob(['u3'], { type: 'image/png' }) as any).id
+    const free = () => Object.keys(PEOPLE).find(k => PEOPLE[k].cs && !PEOPLE[k].archived && !PEOPLE[k].special && !INPUTS.some((r: any) => leadOf(r) === k))!
+    const docsOf = (card: HTMLElement) => {
+      const g = card.querySelector('.medcard-row2 .medcard-docs')
+      return g ? { drawings: g.querySelectorAll('.medcard-doc').length, n: g.querySelector('.medcard-docs-n')!.textContent, said: g.getAttribute('aria-label'), role: g.getAttribute('role') } : null
+    }
+    /* Upchit Complete: five documents read "5" — one drawing, never five */
+    const up = await plant({ person: free(), type: 'Upchit', date: 'Jul 9', docId: f1, docIds: [f1, f2, f3, f1, f2] })
+    const upCard = $(`.medsec.med-done .medcard[data-medcard="${up.iid}"]`)
+    expect(upCard, 'the upchit lists under Upchit Complete').toBeTruthy()
+    expect(docsOf(upCard)).toEqual({ drawings: 1, n: '5', said: '5 documents', role: 'img' })
+    expect(upCard.title).toBe('Tap to view 5 documents')
+    /* Medically Down: one man, two documents */
+    const down = await plant({ person: free(), type: 'ATT C', date: 'Jul 11', endDate: 'Jul 15', docId: f1, docIds: [f1, f2] })
+    expect(docsOf($(`.medsec.med-down .medcard[data-medcard="${down.iid}"]`)), 'a downchit of two documents').toEqual({ drawings: 1, n: '2', said: '2 documents', role: 'img' })
+    /* Pending Upchit: two documents */
+    const pend = await plant({ person: free(), type: 'OML', date: 'Jul 2', endDate: 'Jul 4', docId: f2, docIds: [f2, f3] })
+    expect(docsOf($(`.medsec.med-pend .medcard[data-medcard="${pend.iid}"]`)), 'a pending card of two documents').toEqual({ drawings: 1, n: '2', said: '2 documents', role: 'img' })
+    /* one document: nothing drawn, in any section */
+    const one = await plant({ person: free(), type: 'ATT C', date: 'Jul 12', endDate: 'Jul 14', docId: f3, docIds: [f3] })
+    const oneCard = $(`.medsec.med-down .medcard[data-medcard="${one.iid}"]`)
+    expect(oneCard, 'the one-document card lists').toBeTruthy()
+    expect(docsOf(oneCard), 'one document shows none').toBeNull()
     const yeti = cardsIn('med-done').find(c => c.textContent!.includes('8 Jul'))!
-    expect(yeti.querySelectorAll('.medcard-doc').length, 'no document on file, none drawn').toBe(0)
-    /* the downchit and pending cards never draw them — their documents open from the card as before */
-    expect($$('.medsec.med-down .medcard-doc, .medsec.med-pend .medcard-doc')).toEqual([])
+    expect(docsOf(yeti), 'no document on file, none shown').toBeNull()
   })
   /* D963, D965: "+ Medical" is the tab's own door to the SAME window as the Inputs tab's "+ Input" — the same seed (the
      signed-in person, no date picked yet) with the first medical kind of the app's own list set; an admin's and a
