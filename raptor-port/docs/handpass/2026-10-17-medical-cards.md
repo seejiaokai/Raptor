@@ -158,6 +158,8 @@ desktop timing test "the grid draws a window of months…" (`[LW-WINDOW-PRUNE-FL
 Leave War) — run alone under the lock, 1 of 1 (D84). After the fixes and D967 (D902 — a follow-up on an open pull request
 runs the tests it touches; GitHub's run is its full check): **after every fix and D967, under the lock** — unit 11581 / 11581 (651 files) · e2e of the Medical tab and every Inputs screen (medical, inputs-calendar, inputs-batch2, feedback-marks, datecal, grouprow) 125 / 125 · docsize OK (records; sizes over, deferred — D29).
 
+**GitHub's run after the push (two rounds):** the `geometry (raptor 2/2)` group failed twice on `e2e/medical.spec.ts`, everything else green. First, a fixed "≤ 104px" (Linux drew a card 107) — the test now asks for a third of the row. Second, at 375 "ATT C 13–17 Jul" fell to three lines in Linux's letters: the app ships no monospace face, and Linux's and an iPhone's are about 0.60 of the size wide where Windows' is about 0.55 — so it would have on his phone at 375 too. Fixed: a phone card's sides are 6px, not 9 (`16-medical.css`); the test now also measures the row in Courier New (the same width as theirs), proved red with the old 9px sides on this PC — the run's failure reproduced.
+
 ## What the walk found
 
 Nothing in the app: 31 of 31 PASS, then 32 of 32 on the re-walk. One guard that decided nothing was found by the break
