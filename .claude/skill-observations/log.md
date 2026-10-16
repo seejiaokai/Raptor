@@ -1026,3 +1026,18 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** In "Pull requests": write and commit the block BEFORE opening the PR (the block names the PR as "to be opened"), then open it; after that, commit records locally and push only when step 1's command shows no run of the last pushed commit queued or in progress.
 
 **Principle:** When two standing rules meet at one moment, order the steps so the cheaper one goes first.
+
+### Observation 622: An unattended run's checkout keeps its branch, so the morning chat cannot switch to it
+
+**Status:** OPEN
+**Date:** 2026-10-17
+**Session context:** the morning chat after the night of 16–17 Oct 26, told "switch to branch claude/whole-app-words-pass-1b-6cfe51 and pull"
+**Skill:** overnight (also session-handoff)
+**Type:** internal
+**Phase/Area:** overnight — the closing step; session-handoff — the step that frees the branch
+
+**Issue:** The night's run ended with its branch still checked out in its own worktree. The morning chat's `git switch` was refused ("already used by worktree"), and detaching the old checkout from the new chat was refused by the permission guard as interfering with another workload. The chat had to take the branch's tip into its own checkout and push back to the branch by name instead — workable, but a detour, and it nearly touched shared git settings on the way (`push.default` written to the shared config).
+
+**Suggested improvement:** In overnight's closing step and in session-handoff's "free the branch" step: once everything is pushed, the run itself runs `git checkout --detach` in its own checkout as its last command, and the HANDOFF block says it did. The opening line can then say "switch to <branch>" and it works.
+
+**Principle:** A handoff is not finished while the outgoing session still holds a resource the incoming one must take; release it from the side that owns it, because the other side may not be allowed to.
