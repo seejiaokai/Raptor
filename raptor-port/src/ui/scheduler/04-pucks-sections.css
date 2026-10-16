@@ -733,27 +733,19 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
    dealt with, and it faded into the background. They are fields now (owner,
    10 Aug 26), and .45 on a box you are meant to type into is a box you cannot
    read. .62 still reads as "handled" next to its neighbours, and the row also
-   says so twice over — `· accepted` after the type, and UNDO where ACCEPT was. */
+   says so — `· accepted` after the type, and REJECT where ACCEPT was. ONCE A ROW, after the name (owner D950 R3, 17 Oct
+   26 — the words pass, round 2): the second marker, after the remark and its printed date, said it twice and went. */
 .pl-row.accd{opacity:.62}
 .sb-arow.inprow.accd{opacity:.62}
-.pl-row.accd .ntx::after{content:' · accepted';font-size:8px;letter-spacing:.06em;color:var(--ink-3)}
-/* …where the remark is followed by its printed "till <date>" (owner D948), the marker follows the date, so the row reads
-   "Keen for any wave till 13 Jul · accepted" — never the date stranded after the marker */
-.pl-row.accd .rmk .ntx:has(+.rk-till)::after{content:none}
-.pl-row.accd .rmk .rk-till::after{content:' · accepted';font-size:8px;letter-spacing:.06em;color:var(--ink-3);font-weight:400}
+.pl-row.accd .nm .ntx::after{content:' · accepted';font-size:8px;letter-spacing:.06em;color:var(--ink-3)}
 .sbi-row.accd{opacity:.62}
-/* a REMOVED (dormant) input reads visibly parked — it flags NOTHING until
+/* a REJECTED (dormant) input reads visibly parked — it flags NOTHING until
    accepted again (26 Aug 26 bug pass: a dormant row printed identical to a
    fresh counting one beside it). Fainter than .accd (silent, not handled),
-   and it says so after the type the same way accepted rows do. */
+   and it says so after the type the same way accepted rows do — "rejected", the
+   button's own word (owner D949, 17 Oct 26; D945), never "removed". */
 .pl-row.inp-dorm,.sb-arow.inprow.inp-dorm,.sbi-row.inp-dorm{opacity:.5}
-.pl-row.inp-dorm .ntx::after{content:' · removed';font-size:8px;letter-spacing:.06em;color:var(--ink-3)}
-/* …and the same move for a rejected row (the round-2 drawing found it, 17 Oct 26 — "Keen for any wave · re-moved till 13 Jul"):
-   the marker follows the printed date. On a phone the date and its marker may break onto the next line rather than run
-   past the cell's edge ("· accep" cut off): the date keeps together, the marker after it may wrap */
-.pl-row.inp-dorm .rmk .ntx:has(+.rk-till)::after{content:none}
-.pl-row.inp-dorm .rmk .rk-till::after{content:' · removed';font-size:8px;letter-spacing:.06em;color:var(--ink-3);font-weight:400}
-.pl-row .rmk .rk-till::after{white-space:normal}   /* the date stays one piece; the marker may take the next line */
+.pl-row.inp-dorm .nm .ntx::after{content:' · rejected';font-size:8px;letter-spacing:.06em;color:var(--ink-3)}
 .accs{display:inline-flex;gap:4px;align-items:center;margin-left:6px}
 .accb{font:inherit;font-size:9px;letter-spacing:.05em;text-transform:uppercase;
   padding:2px 7px;border-radius:6px;cursor:pointer;white-space:nowrap;

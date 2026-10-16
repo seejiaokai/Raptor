@@ -776,6 +776,9 @@ export function plRmk(base:any,ed:any,o:any,rmkTxt:any,late?:any){
      wraps beside them; an info item usually has no remark, so the ⓘ sits alone. */
   const lt=fyiTag(o)+(late||''), lc=lt?' has-late':'';
   if(base&&rmkTxt===undefined){
+    /* a request's row, editable: the typed words in the box, its date grey after it (D949 Q3 — reqRmkParts above) */
+    const rq=live&&/^gr:\d+\.\d+$/.test(String(base))?reqRmkParts(DAYS[+String(base).slice(3).split('.')[0]!],o):null;
+    if(rq)return `<span class="rmk${lc}">${lt}${ted(base+'.rmks',rq.typed,ed,'ntx')}${rq.till?`<span class="rk-till">${esc(rq.till)}</span>`:''}</span>`;
     const v=(o&&o.rmks)||'';
     if(!v&&!live)return `<span class="rmk rk-e${lc}">${lt}</span>`;
     return `<span class="rmk${lc}">${lt}${ted(base+'.rmks',v,ed,'ntx')}</span>`;
@@ -1214,6 +1217,11 @@ export function waveHeadTail(w:any):string{
   const r=sa?null:waveInTime(w);
   return night+(r!=null&&r<0?` · ${REPORTING_LABEL} ${stated(r,true)}`:'');
 }
+/* …AND THE BOARD'S: a small "(prev day)" in the wave's header where its in-time / rally falls on the evening before (owner
+   D949 Q1, 17 Oct 26): the one cue of the removed header note (D947) nothing else on the board gives — the yellow lines
+   under it print the clock alone. Drawn by the board's builder (board.ts) and kept true by the refresh below. */
+export const SB_PREVDAY='<span class="sb-prevday">(prev day)</span>';
+export function sbPrevDay(w:any):boolean{if(!w||isStandalone(w))return false; const r=waveInTime(w); return r!=null&&r<0;}
 export function refreshWaveReports(root:ParentNode|null|undefined):void{
   if(!root)return;
   /* …and the red explanation under a wave's lines (the Rally reader's second pass, 6 Oct 26; D509 "explained while
@@ -1230,8 +1238,15 @@ export function refreshWaveReports(root:ParentNode|null|undefined):void{
   root.querySelectorAll<HTMLElement>('[data-move^="mv:w."]').forEach(go=>{
     const [di,gi]=String(go.dataset.move).slice(5).split('.').map(Number), w=DAYS[di!]&&DAYS[di!].waves&&DAYS[di!].waves[gi!];
     if(!w)return;
-    /* the board's wave header carries no clock to refresh since round 1b (owner D947) — see board.ts */
-    if(go.classList.contains('sb-go'))return;
+    /* the board's wave header carries no clock since round 1b (owner D947) — only its "(prev day)" (D949), put in or taken
+       out here; an element beside the title, never near the caret */
+    if(go.classList.contains('sb-go')){
+      const h=go.querySelector(':scope > .sb-go-h'); if(!h)return;
+      const el=h.querySelector(':scope > .sb-prevday'), want=sbPrevDay(w);
+      if(want&&!el){ const at=h.querySelector(':scope > .night')||h.querySelector(':scope > .sb-wtitle'); if(at)at.insertAdjacentHTML('afterend',SB_PREVDAY); }
+      else if(!want&&el)el.remove();
+      return;
+    }
     const head=go.querySelector(':scope > .go-tab > .asd'); if(!head)return;
     const want=waveHeadTail(w), texts=[...head.childNodes].filter(n=>n.nodeType===3);
     if(texts.map(n=>n.nodeValue).join('')===want)return;
@@ -1427,6 +1442,24 @@ export function srcInput(o:any){
      request edited after its deadline must not grow a LATE badge on the issued row) */
   return inputOnAny(k);}
 export function lateTagOf(o:any){return lateTag(srcInput(o));}
+/* THE REMARK BOX OF A REQUEST'S ROW ON THE GROUND PROGRAMME HOLDS THE TYPED WORDS, ITS "TILL <DATE>" GREY AFTER IT (owner
+   D949 Q3, 17 Oct 26 — as every other input box, D948): the row's remark is the printed text, "Las Vegas till 17 Jul";
+   the box shows "Las Vegas" and the date stands after it. Only where the row is its request's live copy (the engine's
+   one answer, overlay.ts requestOfBox, and the row printing what the request prints) — a kept row, a row whose request
+   has gone, any other row: its box holds what it reads, as before. ONE answer for every place that fills such a box —
+   the week's and the board's builders, and each place that puts a box's value back after a save, a refusal or an
+   Escape (ui/textedit.ts, ui/board.ts, ui/reqrow.ts) — so the date can never slip back inside it. */
+export function reqRmkParts(d:any,row:any):{typed:string,till:string}|null{
+  const inp=row&&row.src?requestOfBox(d,row):null; if(!inp)return null;
+  if(String(row.rmks||'').trim()!==remarksShown(inp))return null;
+  return {typed:remarksTyped(inp.remarks,inp),till:tillOf(inp)};}
+const REQ_RMK=/^gr:(\d+)\.(\d+)\.rmks$/;
+export function reqBoxText(p:any):string|null{
+  const m=REQ_RMK.exec(String(p)); if(!m)return null;
+  const d:any=DAYS[+m[1]!], pr=reqRmkParts(d,d&&(d.ground||[])[+m[2]!]);
+  return pr?pr.typed:null;}
+/* what a typed box of the schedule holds: the model's text (engine/slots.ts txtGet), or a request row's typed words */
+export function boxText(p:any):any{const r=reqBoxText(p); return r!=null?r:txtGet(p);}
 /* The board's duty/sim/ground rows are a SEVEN-item grid whose header reserves
    exactly seven tracks, and every cell is a bare <input> with nowhere to nest
    a chip — an eighth grid item would walk every field one track left of its
@@ -1443,7 +1476,7 @@ export function lateRowCls(o:any){return lateOne(srcInput(o))?' lateinp':'';}
    body for both surfaces (the week's pl-row, the board's inprow/sbi-row),
    faded by CSS; the title says why. */
 export function dormRowCls(inp:any){return inp&&inp.acc==='r'?' inp-dorm':'';}
-export function dormRowTitle(inp:any){return inp&&inp.acc==='r'?' title="Removed from the day — flags nothing until accepted again"':'';}
+export function dormRowTitle(inp:any){return inp&&inp.acc==='r'?' title="Rejected from the day — flags nothing until accepted again"':'';}
 export function lateRowTitle(o:any){const l=lateOne(srcInput(o)); return l?` title="${esc(lateNote(l))}"`:'';}
 /* =====================================================================
    ONE DAY'S MARKUP
@@ -1558,7 +1591,8 @@ export function dayStatHTML(di:any,ed:any){
       ? `<button class="dbeak ${!sgOK?'locked':''}" data-beak="${di}"${!sgOK?' disabled':''} title="${sgOK?'Publish '+d.dow+' — approve this day only':'Sign off '+signMissing(di).join(', ')+' before publishing '+d.dow}">Publish day</button>`
       : ok
       ? ''   /* published: stamp retired — the green title tag names the issued version (verTagHTML) */
-      : `<span class="dbeak ro " title="${d.dow+' is still draft'}">Draft</span>`;   /* unpublished view — byte-parity with the reference seed week (keep the exact class/space) */
+      : '';   /* unpublished view: no stamp — its title tag already reads DRAFT (owner D950 R1, 17 Oct 26 — the words pass, round 2:
+                  the day said "Draft" twice). The reference keeps its stamp; the view-week compare lifts it (html.test.ts noDraftStamp) */
     /* per-day AL publish — lives beside the day's own publish stamp, only on a
        PUBLISHED day that has real changes vs its issued version (dayHasChanges,
        i.e. nd>0 — the canonical delta, NOT the raw pending marks). Locked
@@ -2057,7 +2091,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
       let s=`<div class="sub plist one sec ${cls||''}"><div class="sub-h${foldable?' pl-fold':''}"${foldable?` data-pitog="${di}"`:''}>${title}${foldable?`<span class="pl-hint">⌃</span>`:''}</div>`;
       /* Housekeeping reminder (owner, Aug 26; reworded 26 Aug 26 with the
          dormancy rule — one wording with the board's sb-pinote sibling). */
-      if(acc&&ed&&rows.length)s+=`<div class="pl-inpnote">A removed input flags nothing until accepted again. Delete it here if it should go entirely.</div>`;
+      if(acc&&ed&&rows.length)s+=`<div class="pl-inpnote">A rejected input flags nothing until accepted again. Delete it here if it should go entirely.</div>`;
       /* Unavailable is the block the squadron reads every single day, so it
          prints even when nobody is on it — "Nil" is the answer, not a missing
          section. */

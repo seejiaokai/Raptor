@@ -16,7 +16,7 @@ import { canEditSched } from '../state/auth'
 import { isMember } from '../state/perms'
 import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilItemOfKey, oilRowPeople, oilClaimWin, inputItemKey } from './oilmode'
 import { rowItemKey, groundItemKey } from '../engine/oil'
-import { rowKindTag, inpKindTagHTML, inpCxHTML, inpCxCls, oilSeatDeco } from './html'
+import { rowKindTag, inpKindTagHTML, inpCxHTML, inpCxCls, oilSeatDeco, reqRmkParts } from './html'
 import { ORD, puck, puckMarks, rowCls, accCtl, GP_TAKEOFF_NOTE, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn, exemptLineOwn } from './html'
 
 /* ONE CLOCK ON THE BOARD — hh:mm (owner, 30 Aug 26, reversing the 29 Aug
@@ -625,7 +625,10 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
         +(rowKindTag(x)?`<div class="sb-nmk">${sbName(di,'ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro)}${rowKindTag(x)}</div>`
           :sbName(di,'ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro))+sbTxt('atm',`${t}.str`,x.str,'',ro)+sbTxt('atm',`${t}.end`,x.end,'',ro)
         +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}${ro?'':ADDZ}</div>`
-        +sbRmk(`${t}.rmks`,x.rmks,ro)
+        /* a request's row: the box holds the typed words, the date grey after it (owner D949 Q3 — html.ts reqRmkParts),
+           the pair ONE grid child as on Personal Inputs (the `rmkt` wrapper below) */
+        +((rq=>rq&&!ro?(rq.till?`<span class="rmkt">${sbRmk(`${t}.rmks`,rq.typed,ro)}<span class="rk-till">${esc(rq.till)}</span></span>`:sbRmk(`${t}.rmks`,rq.typed,ro))
+          :sbRmk(`${t}.rmks`,x.rmks,ro))(reqRmkParts(d,x)))
         +sbRowCtl(ro,x,`${di}.${ri}`,'gr','this item',sbNudge(`mv:g.${di}.${ri}`,ro),true)+`</div>`;
     });
   }
@@ -810,7 +813,7 @@ export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
        dormancy rule): a removed input no longer flags anything, so the note
        now says that, and keeps the delete pointer for clearing the list —
        tap its type to open the editor and Delete. Editable panel only. */
-    if(!acRo)s+=`<div class="sb-pinote">A removed input flags nothing until accepted again. Delete it here if it should go entirely.</div>`;
+    if(!acRo)s+=`<div class="sb-pinote">A rejected input flags nothing until accepted again. Delete it here if it should go entirely.</div>`;
     if(!acRo)s+=C6;
   }
   lines.forEach((line:any[])=>{ s+=sbInpRow(di,line[0],true,acRo,acRo,undefined,line); });

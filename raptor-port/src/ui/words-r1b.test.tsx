@@ -144,7 +144,12 @@ describe('the till date on the schedule\'s input rows (D948)', () => {
   it('the week\'s Personal Inputs box holds the typed words, the date after it in grey; the board\'s the same', () => {
     const inp = landed()
     inp.remarks = 'Desk work till 13 Jul'                     // saved with its date in it, before the build
+    /* a one-day meeting prints no date by default (owner D951, D953): unticked, the box stands alone */
     PIOPEN.add(MON)
+    const w0 = el(dayHTML(MON, true, true)).querySelector(`.sec-inp [data-inp^="${inpId(inp)}"][data-inp$=".rmks"]`)!
+    expect(w0.textContent).toBe('Desk work')
+    expect(w0.nextElementSibling, 'no date for a one-day commitment').toBeNull()
+    inp.till = true                                           // …ticked by hand: the date stands after the box
     const w = el(dayHTML(MON, true, true)).querySelector(`.sec-inp [data-inp^="${inpId(inp)}"][data-inp$=".rmks"]`)!
     expect(w.textContent, 'the box: the typed words').toBe('Desk work')
     expect(w.nextElementSibling?.className).toBe('rk-till')

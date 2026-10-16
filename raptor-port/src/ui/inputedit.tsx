@@ -17,7 +17,7 @@ import { frontWin } from './floatwin'
 import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, tillOfISO, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, tillOfISO, tillDefaultISO, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -466,6 +466,9 @@ export const draftOf = (r: any) => ({
   /* the words a person typed — a date saved in the remark before D948 is printed from the dates instead, never shown in
      the box (engine/inputs.ts remarksTyped) */
   remarks: remarksTyped(r.remarks, r),
+  /* the till-date tick's hand choice (owner D953): true / false where someone ticked or unticked it against its default,
+     undefined where it follows the default (engine/inputs.ts tillShown) */
+  till: typeof r.till === 'boolean' ? r.till : undefined,
   /* the input's own title ([INPUT-OWN-TITLE], D715): NULL while it is named by its kind — the box then SHOWS the kind's
      name and follows a change of kind — and a string once somebody has typed in it ('' when he emptied it: the box
      stays empty for him to type in, rather than snapping back to the kind's name under his cursor). Nothing is stored
@@ -986,6 +989,9 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
     s, e, date, yr: baseYear(), remarks: remarksTyped(draft.remarks, draft), mod: nowStamp(),
     /* its own title, only where one was typed and its kind takes one (D715, D716 — titleOf is the one normaliser) */
     ...(titleOf(draft.type, draft.title) ? { title: titleOf(draft.type, draft.title) } : {}),
+    /* the till-date tick, where it was turned against its default (D953) — one that matches the saved dates' default is
+       dropped by the write itself (state/store.ts runInputWrite → tillSettle) */
+    ...(typeof draft.till === 'boolean' ? { till: draft.till } : {}),
     ...(endDate ? { endDate } : {}),
     ...(half ? { half } : {}),
     ...(Object.keys(flags).length ? { sans: flags } : {}),
@@ -1206,6 +1212,10 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        hand-made call; every door of the app seeds one through draftOf, where NULL says "none") leaves the record's
        own where its kind still takes one: silence is not an instruction to wipe a name. */
     { const tt = titleOf(draft.type, draft.title === undefined ? r.title : draft.title); if (tt) r.title = tt; else delete r.title }
+    /* …AND SO DOES THE TILL-DATE TICK (owner D953), on the same terms: a draft that states one (every door of the app
+       seeds `till` through draftOf, undefined meaning "as its dates say") writes it; a hand-made call with no `till` key
+       leaves the record's own. A choice the new dates overtook is dropped by the write itself (runInputWrite). */
+    if ('till' in draft) { if (typeof draft.till === 'boolean') r.till = draft.till; else delete r.till }
     /* …and who changed it, and when — `by` and `at` are never touched by a change (D629 — state/inputstamp.ts) */
     stampChanged(r)
     /* the edit re-derived its labels against the CURRENT loaded year (fmt),
@@ -1895,6 +1905,7 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
     || unfmt(rec.date, rec.yr) !== draft.start || (rec.endDate ? unfmt(rec.endDate, rec.yr) : '') !== wantEnd
     || (rec.half || '') !== (first.half || '') || remarksTyped(rec.remarks, rec) !== remarksTyped(draft.remarks, draft)
     || String(rec.title || '') !== titleOf(draft.type, draft.title === undefined ? rec.title : draft.title)
+    || ('till' in draft && (typeof rec.till === 'boolean' ? rec.till : undefined) !== (typeof draft.till === 'boolean' ? draft.till : undefined))
     || (isSansAvail(draft.type) && sansKey(rec.sans) !== sansKey(draft.sans)))
   const answers = !!opts && !!opts.oil && (!rec || JSON.stringify(rec.oil || {}) !== JSON.stringify(opts.oil))
 
@@ -2123,7 +2134,8 @@ const WIN_FIELDS: { k: string; label: string; keys: string[] }[] = [
   { k: 'title', label: 'title', keys: ['title'] },
   { k: 'start', label: 'start date', keys: ['start'] }, { k: 'end', label: 'end date', keys: ['end'] },
   { k: 'hours', label: 'hours', keys: ['allday', 'half', 'sTime', 'eTime'] },
-  { k: 'remarks', label: 'remarks', keys: ['remarks'] }, { k: 'sans', label: 'Fly / OFT / AMT', keys: ['sans'] },
+  { k: 'remarks', label: 'remarks', keys: ['remarks'] }, { k: 'till', label: 'till date', keys: ['till'] },
+  { k: 'sans', label: 'Fly / OFT / AMT', keys: ['sans'] },
   { k: 'docs', label: 'documents', keys: ['docIds'] },
 ]
 const fieldSame = (f: { keys: string[] }, a: any, b: any) => f.keys.every(k => JSON.stringify(a?.[k] ?? null) === JSON.stringify(b?.[k] ?? null))
@@ -2136,6 +2148,7 @@ function fieldSay(k: string, d: any): string {
   if (k === 'start' || k === 'end') return d[k] ? fmtDay(d[k]) : 'none'
   if (k === 'hours') return d.allday ? 'all day' : d.half ? String(d.half).toUpperCase() : `${d.sTime}–${d.eTime}`
   if (k === 'remarks') return d.remarks ? `“${d.remarks}”` : 'none'
+  if (k === 'till') return typeof d.till === 'boolean' ? (d.till ? 'shown' : 'hidden') : 'as its dates say'
   if (k === 'title') return `“${titleOf(d.type, d.title) || String(d.type || '')}”`
   if (k === 'sans') return d.sans ? (['f', 'o', 'a'].filter(x => d.sans[x]).map(x => x.toUpperCase()).join(' ') || 'none ticked') : 'none'
   const n = (d.docIds || []).length
@@ -2369,6 +2382,14 @@ export function InputEditor() {
        (found by this batch's own control test, 10 Oct 26). Once: the next pass finds the record as `base` and stops. */
     else if (hit.size) redraw(n => n + 1)
   })
+  /* A DATE OR A KIND THAT FLIPS THE TILL-DATE TICK'S DEFAULT REPLACES A HAND CHOICE (owner D953 reading 2): a one-day
+     meeting ticked by hand, then stretched to two days, takes the new default — and keeps it when it is cut back to one
+     day, rather than the old tick coming back. The draft's choice is dropped the moment it equals the default (it was
+     made against the other one); the save's own write does the same for every other door (engine/inputs.ts tillSettle). */
+  const draftTillDef = draft ? tillDefaultISO(draft.type, draft.start, draft.end) : true
+  useEffect(() => {
+    if (draft && typeof draft.till === 'boolean' && draft.till === draftTillDef) setDraft({ ...draft, till: undefined })
+  }, [draft, draftTillDef])
   /* asked before every write, and again after any blocking question (an upchit, OIL or clash sheet) — the record may
      have been changed behind the window while the question stood */
   const undecided = () => {
@@ -2881,15 +2902,29 @@ export function InputEditor() {
               the "till <date>" stands after the box in grey, from the dates in the window the moment it opens — a day
               already picked on the Inputs calendar included — and follows every pick. It is changed by changing the
               dates; nothing writes it into the box. Not for SANS availability or an upchit (engine/inputs.ts tillOfISO). */}
-          <label className="inped-f">
-            <span className="inped-k">Remarks</span>
+          {/* …AND A TICK BEFORE THE DATE TURNS IT ON OR OFF (owner D953, 17 Oct 26 — "1B", the drawing of record
+              docs/img/handpass/2026-10-17-till-switch, frames B): the window's own "all day" tick, the date its label;
+              unticked, the date is struck through here and no screen prints it. Ticked by default, except a one-day duty
+              or other commitment (D951, D952); a hand choice is kept only where it differs from that default, and a
+              date or kind that flips the default replaces it (the effect above). The row is a div, not a label: a tick
+              cannot sit inside the box's own label, so the heading names the box by `htmlFor`. */}
+          <div className="inped-f">
+            <label className="inped-k" htmlFor="inpEditRmk">Remarks</label>
             <span className="inped-rmk">
               <input id="inpEditRmk" aria-label="Remarks" maxLength={200} value={draft.remarks} autoComplete="off"
                 onChange={e => setDraft({ ...draft, remarks: e.target.value })}
                 onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); save(false) } }} />
-              {(t => t && <span className="inped-till" data-testid="inped-till">{t}</span>)(tillOfISO(draft.type, draft.start, draft.end))}
+              {(t => {
+                if (!t) return null
+                const on = typeof draft.till === 'boolean' ? draft.till : draftTillDef
+                return <label className="inped-ad inped-tl" data-testid="inped-tl">
+                  <input type="checkbox" id="inpEditTill" checked={on}
+                    onChange={e => setDraft({ ...draft, till: e.target.checked === draftTillDef ? undefined : e.target.checked })} />
+                  <span className={'inped-till' + (on ? '' : ' off')} data-testid="inped-till">{t}</span>
+                </label>
+              })(tillOfISO(draft.type, draft.start, draft.end))}
             </span>
-          </label>
+          </div>
           {/* THE DATES STAND BELOW WHAT IS STILL TO BE FILLED IN (owner D920, 15 Oct 26 — his first idea, D913 drawing A:
               "move the time and remarks above the calendar since I can already select the dates through the initial
               inputs calendar"): SANS availability's F / O / A, When, a Document and Remarks come first, the calendar —

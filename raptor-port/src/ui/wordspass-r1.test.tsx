@@ -44,7 +44,7 @@ describe("the board's panel words (D940)", () => {
     PIOPEN.add(0)
     const html = sbInputsGroupPanel(DAYS[0], 0)
     expect(html).toContain('Personal Inputs <span class="sub">⌃</span>')
-    expect(html).toContain('A removed input flags nothing until accepted again. Delete it here if it should go entirely.')
+    expect(html).toContain('A rejected input flags nothing until accepted again. Delete it here if it should go entirely.')
     expect(html).not.toContain('accepted again — delete')
   })
   it('the issues bar says its count and its caret, no "tap to review" — the week and the board alike', () => {

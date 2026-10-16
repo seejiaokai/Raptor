@@ -35,7 +35,7 @@ import type { RoleIdentity } from '../engine/mission-role'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
-import { dateOrd, INPUTS, inpLabel, inpKindTag, titleOf, isSansAvail, sansLetters, idsOf, leadOf, namedOf, placeholderOf, remarksTyped } from '../engine/inputs'
+import { dateOrd, INPUTS, inpLabel, inpKindTag, titleOf, isSansAvail, sansLetters, idsOf, leadOf, namedOf, placeholderOf, remarksTyped, tillDefault, tillShown } from '../engine/inputs'
 import { parseVerId, dayIso } from '../engine/verid'
 import { qualCols } from '../engine/qualcols'
 import { actorIsAdmin } from './perms'
@@ -153,6 +153,10 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
   if (!same(titleOf(b.type, b.title), titleOf(a.type, a.title))) logAction(null, `${who} · ${spanWords(sa)} · title`, base({ from: inpLabel(b), to: inpLabel(a) }))
   /* the typed words (D948): a remark saved with its date in it before the build, re-saved without, is no change of remarks */
   if (!same(remarksTyped(b.remarks, b), remarksTyped(a.remarks, a))) logAction(null, `${who} · ${what} ${spanWords(sa)} · remarks`, base({ from: remarksTyped(b.remarks, b) || '—', to: remarksTyped(a.remarks, a) || '—' }))
+  /* its till-date tick (owner D953; D263 — every change to an input is a line): ticked or unticked by hand. A date or kind
+     change that flips the default says so in its own line (dates, type), so the tick's line is written only where the
+     default held — never a second line for one change. */
+  if (tillDefault(b) === tillDefault(a) && tillShown(b) !== tillShown(a)) logAction(null, `${who} · ${what} ${spanWords(sa)} · till date`, base({ from: tillShown(b) ? 'shown' : 'hidden', to: tillShown(a) ? 'shown' : 'hidden' }))
   if (!same(b.acc || '', accNow(a) || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · filed`, base({ from: filWords(b.acc), to: filWords(accNow(a)) }))
   if (!same(b.oil, a.oil)) logAction(null, `${who} · ${what} ${spanWords(sa)} · OIL`, base({ from: oilWords(b.oil), to: oilWords(a.oil) }))
   /* THE SCHEDULER'S MARKS, THE INPUT'S OWN since step 4 of the one-rule build (owner D760: "a CX the scheduler puts on a

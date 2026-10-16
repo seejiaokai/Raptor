@@ -21,7 +21,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay, iuParts } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown, sbPrevDay, SB_PREVDAY, boxText } from './html'
 import { onInputRow, rowMark, UNMARKED } from './reqdoor'
 import { setInpField, howMany } from './inputedit'
 import { reqRowText } from './reqrow'
@@ -169,6 +169,8 @@ function boardHTMLBody(di: number, pv?: boolean) {
          (26 Aug 26 bug pass; an unescaped `<` swallowed the option outright) */
       + `<select class="sb-wtitle" aria-label="Wave" data-wsel="${di}.${gi}"${mvRO ? ' disabled' : ''}>${opts.map(o => `<option ${o === cur ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select>`
       + `${w.night ? '<span class="night">· night</span>' : ''}`
+      /* "(prev day)" where the wave's in-time / rally is the evening before (owner D949 Q1 — html.ts sbPrevDay) */
+      + (sbPrevDay(w) ? SB_PREVDAY : '')
       /* Traffic edits the wave's airspace bookings, the same field the week's
          Traffic button opens (html.ts). Standalone lines carry none. The
          data-air click is handled globally (interactions.ts setAirKey → AirPop),
@@ -1232,7 +1234,7 @@ export function boardChange(e: Event) {
   }
   const f = (e.target as HTMLElement).closest('[data-bfld]') as HTMLInputElement | null; if (!f) return
   const p = f.dataset.bfld!
-  if (RO) { f.value = txtGet(p); return }
+  if (RO) { f.value = boxText(p); return }
   /* NOTHING SORTS ON ITS OWN ANY MORE (owner, 10 Aug 26). Typing a role into
      a blank cell used to reposition the whole block — the "+ Row, then type
      SDO" path — which is precisely the jump the owner asked to be rid of:
@@ -1251,7 +1253,7 @@ export function boardChange(e: Event) {
      is never left on screen looking saved, and a save is shown as the request holds it (10:15 for a typed 1015). */
   const rq = reqRowText(p, f.value)
   if (rq !== 'none') {
-    f.value = txtGet(p)
+    f.value = boxText(p)   // a remark box holds the typed words, its date grey after it (owner D949 Q3 — html.ts reqRmkParts)
     if (rq === 'saved') notify()
     return
   }
@@ -1863,7 +1865,7 @@ export function boardTab(n: number) {
          real-browser path from committing twice and a merely-focused,
          untouched field from writing at all. */
       let want = iv
-      if (ae.dataset.bfld != null) want = txtGet(ae.dataset.bfld)
+      if (ae.dataset.bfld != null) want = boxText(ae.dataset.bfld)
       else {
         const [tail, field] = ae.dataset.ifld.split('.')
         const inp = inpById((iuParts('iu:' + tail) || { iid: tail }).iid)

@@ -1241,12 +1241,32 @@ export function remarksTyped(remark:any,rec?:any):string{
     .replace(/\s{2,}/g,' ').trim();}
 /* 'Jul 17' (an input's own date words) → '17 Jul', the form the app prints a day in */
 const dayWords=(md:any):string=>{const m=/^([A-Za-z]{3})[a-z]*\s+(\d{1,2})\b/.exec(String(md||'').trim()); return m?`${+m[2]} ${m[1]}`:'';};
-/* "till <its last day>", from its dates — '' for an input that prints none, or has no date yet */
+/* ==== THE TILL-DATE TICK (owner D952, D953 — 17 Oct 26). Every input carries a tick for its "till <date>": ticked by default
+   for every kind, except a one-day duty or other commitment — the input window's group of that name (D951: a date that
+   only repeats the day it stands on says nothing); a hand-made tick or untick holds while the dates and the kind keep
+   that default, and is replaced the moment a change flips it (one day ↔ more than one, a kind moved into or out of the
+   group). Unticked, no screen prints the date: `tillOf` below is the one place every screen asks.
+   STORED: `till` on the input — present only where a hand choice DIFFERS from the default it was made against, so its
+   default is always `!till`. A choice that equals the input's default now is one the dates or the kind have overtaken:
+   it reads the same as none, and `tillSettle` drops it — run in the one body every input write passes (state/store.ts
+   runInputWrite) and by the one door that trims an input outside it (state/person-delete.ts), so a choice replaced by
+   one change is never brought back by the next. */
+const oneDayRec=(rec:any)=>!rec.endDate||rec.endDate===rec.date;
+export function tillDefault(rec:any):boolean{return !(rec&&typeGroup(rec.type)==='other'&&oneDayRec(rec));}
+/* …the same for a window's draft, whose dates are two ISO days still being picked */
+export function tillDefaultISO(type:any,startISO:any,endISO:any):boolean{return !(typeGroup(type)==='other'&&(!isISO(endISO)||endISO===startISO));}
+export function tillShown(rec:any):boolean{return rec&&typeof rec.till==='boolean'?rec.till:tillDefault(rec);}
+export function tillSettle(rec:any):boolean{
+  if(!rec||!('till' in rec))return false;
+  if(typeof rec.till==='boolean'&&rec.till!==tillDefault(rec))return false;
+  delete rec.till;return true;}
+/* "till <its last day>", from its dates — '' for an input that prints none (unticked — D953), or has no date yet */
 export function tillOf(inp:any):string{
-  if(!inp||isSansAvail(inp.type)||isUpchit(inp.type))return '';
+  if(!inp||isSansAvail(inp.type)||isUpchit(inp.type)||!tillShown(inp))return '';
   const w=dayWords(inp.endDate||inp.date);
   return w?`till ${w}`:'';}
-/* …the same from two ISO dates, for a window whose dates are still being picked ('' with no start) */
+/* …the same from two ISO dates, for a window whose dates are still being picked ('' with no start). The window shows it
+   whether or not it is ticked — struck through when it is not (D953) — so it asks no tick here. */
 export function tillOfISO(type:any,startISO:any,endISO:any):string{
   if(isSansAvail(type)||isUpchit(type)||!isISO(startISO))return '';
   return `till ${isoLabel(isISO(endISO)?endISO:startISO)}`;}

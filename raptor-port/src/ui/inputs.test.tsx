@@ -1419,3 +1419,46 @@ describe('Edit history hears an add made on this page', () => {
     await delRow(0)
   })
 })
+
+/* THE TILL-DATE TICK IN THE INPUT'S WINDOW (owner D953, 17 Oct 26 — "1B", frames B of the drawing): a tick before the grey
+   date after the Remarks box, like the window's "all day" tick. Ticked by default, except a one-day duty or other
+   commitment (D951, D952); unticked, the date is struck through and fainter; a date change that flips the default replaces
+   a hand choice — and cutting back does not bring it back. Saved with the input; reopened as saved. */
+describe('the till-date tick in the input\'s window (D953)', () => {
+  const tick = () => D('#inpEditTill') as HTMLInputElement
+  const tillEl = () => D('[data-testid="inped-till"]')
+  beforeAll(openNew)
+  afterAll(cancelNew)
+
+  it('a leave opens ticked; a one-day meeting unticked, its date struck through; the tick sits before the date', async () => {
+    await click(calDay('2026-07-13'))
+    expect(tick().checked, 'a new input opens on OL, a leave: ticked').toBe(true)
+    expect(tillEl().classList.contains('off')).toBe(false)
+    expect(tick().closest('[data-testid="inped-tl"]')!.contains(tillEl()), 'the date is the tick\'s label').toBe(true)
+    await setType('Meeting')
+    expect(tick().checked, 'a one-day meeting: unticked by default').toBe(false)
+    expect(tillEl().classList.contains('off')).toBe(true)
+    expect(tillEl().textContent, 'still shown, struck through').toBe('till 13 Jul')
+  })
+
+  it('ticked by hand, then stretched to two days: the default; cut back to one day: the default again, not the old tick', async () => {
+    await click(tick())
+    expect(tick().checked).toBe(true)
+    await click(calDay('2026-07-14'))                 // the start stands on the 13th: this ends the range
+    expect(D('#inpEditPop .rc-read')!.textContent).toBe('Jul 13 → Jul 14')
+    expect(tick().checked, 'two days: ticked by default').toBe(true)
+    await click(calDay('2026-07-13')); await click(calDay('2026-07-13'))
+    expect(tick().checked, 'one day again: unticked — the hand tick was replaced').toBe(false)
+  })
+
+  it('Add saves a hand tick; the input prints its date; reopened, the tick is as saved', async () => {
+    await click(tick())
+    const n = INPUTS.length
+    await addNow()
+    expect(INPUTS.length).toBe(n + 1)
+    expect(INPUTS[0].till, 'a one-day meeting ticked by hand').toBe(true)
+    expect(remarksShown(INPUTS[0])).toBe('till 13 Jul')
+    await act(async () => { undo() })
+    expect(INPUTS.length).toBe(n)
+  })
+})
