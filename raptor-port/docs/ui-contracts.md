@@ -6084,7 +6084,9 @@ words pass, round 3 (D959). **Next, his direction of 17 Oct 26 (D961), drawn for
 it is built:** three cards a row on a phone; Upchit Complete's card without the word
 "upchitted"; "2 documents" as document icons on the date's row — two rows a card. A "+ Medical" button beside "as of",
 opening the same input window with a medical kind set (D963 — it took the place of D962's
-title); the button's look drawn in a few variations for him first (D964). Every section has a real empty state. Cards SIZE TO CONTENT and
+title); the button's look drawn in a few variations for him first (D964). **Answered (D965), to build:** each card its puck,
+then the kind and the period on one row; Pending Upchit "OML 6–9 Jul"; Upchit Complete the date and a document icon
+a document; "+ Medical" filled cyan at the row's right end. Every section has a real empty state. Cards SIZE TO CONTENT and
 pack from the left — **a wrapping flex row, not a grid** (`.medcards`;
 owner, 27 Aug 26: a stretch-to-fill column wasted the right half of every
 box, then 28 Aug 26: "the box around the puck doesn't look compact
