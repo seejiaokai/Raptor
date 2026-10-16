@@ -23,8 +23,8 @@
     "n": 3,
     "name": "Upchit Complete names its kind again (D961)",
     "file": "src/ui/MedicalView.tsx",
-    "find": "docs={episodeDocN(e.row)} docIcons kind={false}",
-    "put": "docs={episodeDocN(e.row)} docIcons",
+    "find": "docs={episodeDocN(e.row)} kind={false}",
+    "put": "docs={episodeDocN(e.row)}",
     "tests": [
       "src/ui/medicalview.test.tsx"
     ]
