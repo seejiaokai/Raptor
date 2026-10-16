@@ -59,13 +59,14 @@ every edit leaves the file no longer than it found it. Pruning under the pressur
 is what destroyed two filed items on 22 Sep 26, so it is withdrawn. Now: **a change that touches
 `raptor-port/src` never trims a document**; if a file is over budget the gate reports it as deferred.
 Trimming is its own docs-only pass. In that pass: finished backlog items MOVE to
-`OUTSTANDING-ARCHIVE.md` (never deleted); a ruling REPLACED by a later one moves WHOLE to
+`OUTSTANDING-ARCHIVE.md` (never deleted); a ruling REPLACED by a later one, or restated in full by one (D971), moves WHOLE to
 `DECISIONS-ARCHIVE.md`, marked (D136 — it is never cut to a pointer: that reversed the old "one-line
 pointer" rule here); a "how it was found" story goes to the commit message, where history belongs.
 
 Stale is worse than absent — the next session trusts it.
 
-**What a new chat costs, measured, and the three rulings of 17 Oct 26 (D969–D971; `[CONTEXT-START-SIZE]`, the page `docs/superpowers/specs/2026-10-17-context-start-size.html`).** An empty chat measured 14% of the app's 880,000-token room and a build chat about 31% before any work, most of the difference the rulings files its first app file pulls in. Capitals cost about 1.8 times ordinary letters, so **the rulings' one-line rules, and the bold sentences they come from, are written in ordinary letters — the same words, capitals only where a name or a short form has them (D970)**; **a ruling a later ruling restates in full leaves the loaded list for the archive, as a replaced one does, one fresh reader checking each (D971 — it widens D136)**; used-up one-off permissions leave as the standing rule already said; and the gate's token figures are calibrated on the measured loads, not on letters (D969, §4).
+**What a new chat costs, measured, and the three rulings of 17 Oct 26 (D969–D973; `[CONTEXT-START-SIZE]`, the page `docs/superpowers/specs/2026-10-17-context-start-size.html`).** An empty chat measured 14% of the app's 880,000-token room and a build chat about 31% before any work, most of the difference the rulings files its first app file pulls in. Capitals cost about 1.8 times ordinary letters, so **the rulings' one-line rules, and the bold sentences they come from, are written in ordinary letters — the same words, capitals only where a name or a short form has them (D970)**; **a ruling a later ruling restates in full leaves the loaded list for the archive, as a replaced one does, one fresh reader checking each (D971 — it widens D136)**; used-up one-off permissions leave as the standing rule already said; and the gate's token figures are calibrated on the measured loads, not on letters (D969, §4). **The other places written in capitals for emphasis follow, as
+a job of their own, by a cheaper model, checked by a fresh reader (D972 — `[CAPS-SWEEP]`; only the backlog, the screen rules and the engine rules, the archives left — D973).**
 
 ## 4. The gate
 

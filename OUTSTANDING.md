@@ -48,8 +48,7 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
-**NEXT (his question, 17 Oct 26) — [CONTEXT-START-SIZE]:** why a new chat starts 30–40% full, whether it grows, and options to cut it — MEASURED and put to him 17 Oct 26; his "As recommended" (D969–D971): A, B, C, G in hand on `claude/sharp-goldberg-6d0656`.
-**Later, its own small job — [PUSH-LOCK-GUARD]:** an automatic guard for the push and the PC lock (D969 (6)).
+**NEXT (his question, 17 Oct 26) — [CONTEXT-START-SIZE]:** why a new chat starts 30–40% full, whether it grows, and options to cut it — MEASURED and put to him 17 Oct 26; his "As recommended" (D969–D971): A, B, C, G in hand on `claude/sharp-goldberg-6d0656`. **Then [CAPS-SWEEP] (D972):** the other notes written in capitals, by a cheaper model. **Later, its own small job — [PUSH-LOCK-GUARD]:** an automatic guard for the push and the PC lock (D969 (6)).
 
 **FOUND 17 Oct 26 — [MED-NEWYEAR]:** a medical input across New Year never shows on the Medical tab (older than pull request 524; its own small fix, after 524).
 
@@ -2186,6 +2185,10 @@ stay readable by other models). **Place:** next, after pull request 524.
 ### [PUSH-LOCK-GUARD] An automatic guard that refuses a push while the checks run or a push to main, and takes the PC lock by itself (D969, 17 Oct 26)
 
 **Status: OPEN — filed, not designed; its own small job, after [CONTEXT-START-SIZE].** Option H of the start-size page: a hook (a "mod", in his word) before `git push` that refuses while a run of the branch's last pushed commit is queued or in progress (D151, [RUN-CHECK-BOTH-RUNS]) and refuses any push to `main` (D60); and one that takes and releases the PC lock around the full checks (D228). Worth it for reliability, not for room (under half a point). Changing `.claude/hooks/` and the settings needs his word for that change and its read (D70, as D878 was). **Place:** after [CONTEXT-START-SIZE].
+
+### [CAPS-SWEEP] The other notes and records written in capitals for emphasis, turned into ordinary letters (his direction, D972, 17 Oct 26)
+
+**Status: OPEN — after [CONTEXT-START-SIZE]; a cheaper model does the work, a fresh reader checks it. SCOPE (D973, his "Yes agreeed"): only `OUTSTANDING.md`, `raptor-port/docs/ui-contracts.md` and `raptor-port/docs/engine-rules.md` — about 4,500 tokens in all; the archives (only searched) are left.** The same method as the rulings (D970): a script that keeps every word and changes only the letter case, learning each word's ordinary form from the repo's own prose, every changed line checked equal in lower case. Never the app's own text, button labels, code, his quoted words, bracketed backlog tags or the marks the tools read. Ranked by what each file saves and how often it is read (the survey of 17 Oct 26 is in the start-size job's `HANDOFF.md` block). Sonnet 5.5 runs it (D588); a fresh Opus reader samples it for a lost name or short form. **Place:** after [CONTEXT-START-SIZE], before [PUSH-LOCK-GUARD].
 
 ### [MED-NEWYEAR] A medical input that runs across New Year never shows on the Medical tab (found 17 Oct 26, not fixed)
 

@@ -68,28 +68,25 @@ scrolls it sideways: `inputs.md` (D893).
 
 | # | Date | The rule |
 |---|---|---|
-| D937 | 16 Oct 26 | On a phone, Quals' "Save changes" reads "Save" so the filter keeps room to type on the smallest phones while editing; and Quals opens at its top — its row of buttons in sight — wherever it is opened from, as the Inputs page does. |
+| D937 | 16 Oct 26 | On a phone, Quals' "Save changes" reads "Save" so the filter keeps room to type on the smallest phones while editing; and quals opens at its top — its row of buttons in sight — wherever it is opened from, as the Inputs page does. |
 | D935 | 16 Oct 26 | Quals' row of buttons is built as drawn: one row at 36 — the date box that does nothing removed, "Export to Excel" reading "Export" on a phone — and the paragraph under it ("similar to a LoX…", with its links) is deleted whole. |
-| D930 | 15 Oct 26 | The paragraph under Quals' row of buttons is gone over: only a key point a person needs stays, and every word is first asked whether it is needed at all; what is proposed is put to him with its picture before it is built (D846, D853). — changed by D935 |
 | D329 | 28 Sep 26 | An archived man's row says how he came to be archived and when |
 | D328 | 28 Sep 26 | An earlier stint's dates are read-only on the Leave War, as built |
-| D327 | 28 Sep 26 | An archived man stays in the all avail crowd on every day before his archive — the crowd on a day already published stays as it went out, and nothing reads pending for it. |
+| D327 | 28 Sep 26 | An archived man stays in the ALL AVAIL crowd on every day before his archive — the crowd on a day already published stays as it went out, and nothing reads pending for it. |
 | D326 | 28 Sep 26 | A man whose posting out has run and left him on the roster shows "posted out <date>" on his admin → Users row |
 | D325 | 28 Sep 26 | A hidden SANS man, once archived, shows on the Leave War with his months here, whatever Show SANS says — as a deleted man does (D299). |
-| D323 | 27 Sep 26 | Archive on Admin → Users is "posted out from today" on the Leave War — his past kept. |
+| D323 | 27 Sep 26 | Archive on admin → Users is "posted out from today" on the Leave War — his past kept. |
 | D322 | 27 Sep 26 | The one-door mock-up is the design of record for [ONE-DOOR]: Admin → Users lists every person A–Z with a Sign-in and a Roster dot, a row opens his actions, the archived fold at the foot; Restore asks the post-in date; a welcome-back note on his first sign-in; Quals loses its ✕ and archived list. |
 | D321 | 27 Sep 26 | The post-out look card's answers stand as built: a SANS posting moves his whole Leave War row into the SANS group; a day he is named on reads pending once he is archived (the ALL AVAIL crowd before his archive keeps him, D327); a posting out is no Undo step; leave or OIL may still be added on a deleted man's past days. — changed by D327 |
 | D320 | 27 Sep 26 | The Leave War keeps every stint a man has in the squadron, not one in-and-out window. |
-| D310 | 27 Sep 26 | One door, as proposed: admin → Users shows every person's sign-in and roster state and carries every action; Quals loses its archive. |
+| D310 | 27 Sep 26 | One door, as proposed: admin → Users shows every person's sign-in and roster state and carries every action; quals loses its archive. |
 | D309 | 27 Sep 26 | His direction: one door — admin → Users shows each person's whole state (sign-in and roster, a green or red dot each) and carries every action on it. |
 | D308 | 27 Sep 26 | When someone is posted in, the app asks the admin for his post-in date, so the Leave War is right; his access can start a few days before it. |
-| D307 | 27 Sep 26 | Enable on any suspended man shows the "he's back — check his Quals and CAT" note, not only one back from an overseas posting |
+| D307 | 27 Sep 26 | Enable on any suspended man shows the "he's back — check his quals and CAT" note, not only one back from an overseas posting |
 | D306 | 27 Sep 26 | A posting that would leave no admin able to sign in waits, whole, until another admin can |
-| D305 | 27 Sep 26 | A man back from overseas can update his own quals: Restore puts him back on the roster with his sign-in on, and his first sign-in after it shows "Welcome back — check your quals and CAT" with a button to his own Quals row. — changed by D322, D310 |
 | D304 | 27 Sep 26 | A delete counts from the real calendar date, as built. |
 | D303 | 27 Sep 26 | A posting with no chip chosen stays: "off the manpower, nothing else". |
-| D301 | 27 Sep 26 | [POST-OUT-OUTCOMES] started before PR #443 merged, on a new branch cut from claude/accounts-new-person, with its own FULL check; its "merge live" comes only after #443's. |
-| D300 | 27 Sep 26 | The post-out sheet says each thing once: the date in its box, one line for What happens on it ("On 14 Oct: archived on Quals, account suspended."), and a button that reads just "Post out". |
+| D300 | 27 Sep 26 | The post-out sheet says each thing once: the date in its box, one line for what happens on it ("On 14 Oct: archived on Quals, account suspended."), and a button that reads just "Post out". |
 | D299 | 27 Sep 26 | A delete takes him out of today and the future while the past keeps its record of him — his pucks on days flown, his past leave and OIL, his inputs and signatures, the history; the post-out mock-up, trimmed to say each thing once (D300), is the design of record for [POST-OUT-OUTCOMES]. — changed by D300 |
 | D298 | 27 Sep 26 | The post-out chip reads "Delete", not "Fully delete". |
 | D297 | 27 Sep 26 | A man deleted for leaving flying for good keeps his puck on every day he already flew — published or not — and is taken off every day still to come |
@@ -97,15 +94,14 @@ scrolls it sideways: `inputs.md` (D893).
 | D295 | 27 Sep 26 | An archived man can be renamed directly — on Admin → Users' archived list since the one door (D310); when Restore meets a callsign a man on the roster holds, it offers the rename on the spot. — changed by D310 |
 | D294 | 27 Sep 26 | The post-out choices are four short chips — "Overseas Sqn", "Delete" (first "Fully delete", D298), "SANS", "Transfer to Sqn" — with one short line saying what the chosen one does on the date; the "he's back" line lines up with the page's left edge. — changed by D298 |
 | D293 | 27 Sep 26 | No "Sign up" button on the sign-in page. |
-| D292 | 27 Sep 26 | An admin can switch himself to the member view and back, by Tapping his name badge. |
-| D291 | 27 Sep 26 | [POST-OUT-OUTCOMES] is built next, before [DRAFT-PENDING], on its own branch with its own FULL check — started before PR #443 merged, on a branch cut from it (D301). — changed by D301 |
+| D292 | 27 Sep 26 | An admin can switch himself to the member view and back, by tapping his name badge. |
 | D290 | 27 Sep 26 | A man deleted for leaving flying for good (D287) is kept underneath as a hidden "deleted" mark — never erased. |
 | D289 | 27 Sep 26 | A community is the squadrons flying one aircraft type (F-15, F-16), and a guest from another community is always marked as one. |
 | D288 | 27 Sep 26 | Callsigns are unique within a community, not across the app. |
 | D287 | 26 Sep 26 | A man who leaves flying for good is deleted — his account and his person, from every list and every day still to come — while every day he already flew keeps his puck (D297) and the past keeps his record (D299); he is kept underneath as a hidden mark (D290); the delete asks twice. — changed by D299, D297, D290 |
 | D286 | 26 Sep 26 | An archived man's callsign may be given to a new person. If the archived man is later restored while his callsign is in use, one of the two must be renamed first. |
 | D285 | 26 Sep 26 | The account buttons read "Suspend" / "Enable" and "Delete account". |
-| D284 | 26 Sep 26 | A man back from overseas returns as he was — his Quals kept — and the app prompts the admin to update them. |
+| D284 | 26 Sep 26 | A man back from overseas returns as he was — his quals kept — and the app prompts the admin to update them. |
 | D283 | 26 Sep 26 | A man posted out as SANS: on the posting-out date he becomes SANS. With "Show SANS" off, the Leave War still shows him, marked posted out, and does not track his leave; with "Show SANS" on, he moves into the SANS group that day and his leave is tracked there. |
 | D282 | 26 Sep 26 | Neighbouring squadrons plan each other's people as a matter of course — not only while a man is being posted. |
 | D281 | 26 Sep 26 | A posting to another squadron will be a transfer — future, with the multi-squadron database; neighbouring squadrons may plan each other's people as a matter of course (D282), while his leave, quals and account stay his own squadron's. — changed by D282 |
@@ -113,23 +109,21 @@ scrolls it sideways: `inputs.md` (D893).
 | D229 | 26 Sep 26 | A posting out has four outcomes; the admin picks one and the app does it on the posting-out date: overseas to another squadron → archived, account suspended (D280); leaving flying for good → deleted, person and account (D287); another workplace but still flies → SANS (D283); transferred to another squadron → future (D281). — changed by D287, D283 |
 | D227 | 26 Sep 26 | Each admin's bell is his own (D216's "he" read per admin). |
 | D226 | 26 Sep 26 | The callsign/name stays at 14 letters, and the box says so — it never quietly cuts a name. |
-| D225 | 26 Sep 26 | INITIALS ARE ASKED BUT NEVER REQUIRED — on the sign-up and on Admin → Users' New person alike. |
+| D225 | 26 Sep 26 | Initials are asked but never required — on the sign-up and on Admin → Users' New person alike. |
 | D224 | 26 Sep 26 | The new-person mock-up is the design of record for [ACCOUNTS-NEW-PERSON]; the work is planned by Opus 5.5, the plan red-teamed by Fable and Astra, then built, walked and FULL-checked, then his look and "merge live". |
 | D223 | 26 Sep 26 | The sign-in keeps its password box until the database step |
 | D222 | 26 Sep 26 | On the sign-up card only, the first field reads "Displayed callsign/name" |
 | D221 | 26 Sep 26 | With guest access on, the waiting screen offers a button into the guest view |
 | D220 | 26 Sep 26 | The seat choice reads "Pilot" and "WSO" |
 | D219 | 26 Sep 26 | The field that names a person reads "Callsign/Name" — one field, the label on his puck — wherever it is asked or headed; on the sign-up card it reads "Displayed callsign/name" (D222). — changed by D222 |
-| D217 | 26 Sep 26 | One door for a new person: Admin → Users (the sign-in may be blank for someone who will not use the app); Quals keeps quals, CAT, flight and initials — archive and restore moved to Admin → Users too (D310). — changed by D310 |
 | D216 | 26 Sep 26 | A new access request notifies the admins |
-| D215 | 26 Sep 26 | A guest sees what a member sees on View-only Sched, read only |
+| D215 | 26 Sep 26 | A guest sees what a member sees on view-only sched, read only |
 | D214 | 26 Sep 26 | Admin → Users can create a brand-new person with his account, in one step |
-| D213 | 26 Sep 26 | A GUEST SEES A MEDICAL INPUT AS MEMBERS DO — its type and remarks on the published schedule. |
+| D213 | 26 Sep 26 | A guest sees a medical input as members do — its type and remarks on the published schedule. |
 | D211 | 26 Sep 26 | Every member sees a medical input's type, remarks and documents, as today — setting aside the database brief's "person and admins only"; a guest sees them too (D213). — changed by D213 |
-| D210 | 26 Sep 26 | [ACCOUNTS] gets its own full check before the changes window ([DRAFT-PENDING]) is built on it; the window gets its own later — amending D173 in part. |
 | D204 | 26 Sep 26 | A new user joins either way: the admin adds him first (defence mail, callsign, member or admin), or he signs in and asks ("Request access") and an admin approves and links him to a puck; while waiting he sees a waiting screen, and an admin switch — off by default — can let him view read-only as a guest. |
 | D200 | 26 Sep 26 | [ACCOUNTS] carries the permissions work: D149 built (a member edits his own Quals row only); the data model's permissions table (§11) matches every ruling; one place in the app answers "may this person do this?", tested against that table. |
-| D218 | 26 Sep 26 | On Quals only an admin changes a callsign. |
+| D218 | 26 Sep 26 | On quals only an admin changes a callsign. |
 | D166 | 25 Sep 26 | Accounts are built in the app now, shaped as the real thing: the Admin tab manages accounts, each tied to one callsign; signing in makes you that callsign ("View as" goes); the Leave War follows the signed-in callsign; records name the callsign; an admin may switch himself to the member view and back (D292). — changed by D292 |
-| D165 | 25 Sep 26 | His plan for accounts at the database step: Everyone signs in with their own defence mail account; an admin (him) creates each person in the app — callsign, name, admin or member — and ties it to that person's defence mail address; "View as" goes away, because every account already IS a callsign. |
+| D165 | 25 Sep 26 | His plan for accounts at the database step: everyone signs in with their own defence mail account; an admin (him) creates each person in the app — callsign, name, admin or member — and ties it to that person's defence mail address; "View as" goes away, because every account already IS a callsign. |
 | D149 | 24 Sep 26 | On Quals a member edits his own row only — every column of it — never another person's; the callsign is an admin's to change (D218). — changed by D218 |

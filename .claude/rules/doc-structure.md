@@ -47,7 +47,7 @@ The full policy and the tiers: `raptor-port/docs/doc-budget.md`. This file is it
 ## When it leaves — moved whole, never deleted, never reworded
 - A **finished backlog item** → `OUTSTANDING-ARCHIVE.md`, by `node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>`
   after its lasting facts have a pointer in a live doc (D29).
-- A **replaced ruling or a spent one-off permission** → `DECISIONS-ARCHIVE.md`, by `… backlog-archive.mjs --rulings` (D136) —
+- A **replaced ruling, one a later ruling restates in full (D971, a fresh reader checking each), or a spent one-off permission** → `DECISIONS-ARCHIVE.md`, by `… backlog-archive.mjs --rulings` (D136) —
   its mark written in its full row in `.claude/decisions-full/`; the command drops its short line (D390).
 - A `## Now` **block whose work has merged** → removed at the next handoff, once its open residue is filed.
 - A **passage a newer ruling supersedes**, in a file every chat reads → moved whole to `raptor-port/docs/archive/` IN

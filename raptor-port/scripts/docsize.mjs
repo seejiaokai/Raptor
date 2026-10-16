@@ -823,12 +823,12 @@ function ceilingMovedWithCode(paths) {
    of the area files fit about 2.74 characters a token for ordinary text and 1.17 capital LETTERS a token (the old
    bytes / 3.7 under-read the scheduler's rulings by half). An estimate for the table, never a gate. */
 export const estTokens = text => { const caps = (text.match(/[A-Z]/g) || []).length; return Math.round((text.length - caps) / 2.74 + caps / 1.17) }
-/* A short line written mostly in capitals (D970: written in ordinary letters, capitals only where a name or a short form
-   has them) — more than half the letters of its rule text capitals, with at least 20 letters to judge by. */
-export const capsHeavy = line => { const t = RL.parseShort(line).text || ''; const l = (t.match(/[A-Za-z]/g) || []).length, u = (t.match(/[A-Z]/g) || []).length; return l >= 20 && u / l > 0.5 }
+/* A short line written in capitals (D970: written in ordinary letters, capitals only where a name or a short form has
+   them) — two letters in five of its rule text capitals, at least 20 letters to judge by, or three capital words to open it. */
+export const capsHeavy = line => { const t = RL.parseShort(line).text || ''; const l = (t.match(/[A-Za-z]/g) || []).length, u = (t.match(/[A-Z]/g) || []).length; return (l >= 20 && u / l >= 0.4) || /^(?:[A-Z][A-Z'’-]*\s+){3}/.test(t) }
 
 function ceilings(codeChange) {
-  const fails = [], deferred = []
+  const fails = [], deferred = [], caps = [], changedIds = []
   let tier0 = 0
   const pad = (s, n) => String(s).padEnd(n)
   console.log(`  ${pad('file', 38)} ${pad('tier', 5)} ${pad('lines', 7)} ceiling`)
@@ -853,20 +853,22 @@ function ceilings(codeChange) {
     if (tier === 0) { rTier0 += n; rTok0 += tok }
     /* the short lines a later ruling changed — read each against it at the next tidy: one it restates in full leaves (D971) */
     const shorts = splitLines(text).filter(l => ROW_ID.test(l) && RL.kindOf(l) === 'short')
-    const changed = shorts.filter(l => / — changed by D\d/.test(l)).length
+    const changedL = shorts.filter(l => / — changed by D\d/.test(l)), changed = changedL.length
+    if (changed) changedIds.push(`${f.split('/').pop()}: ${changedL.map(RL.idOf).join(' ')}`)
     /* D970: a NEW short line written mostly in capitals fails; lines already on the base are not this check's to judge */
     const baseIds = new Set(rulingRowsIn(f, readBase(f)).map(r => r.d))
-    for (const l of shorts) if (!baseIds.has(RL.idOf(l)) && capsHeavy(l)) fails.push(`${f}: ${RL.idOf(l)}'s short line is written mostly in capitals — write the rule, and the bold sentence of its full row, in ordinary letters, capitals only where a name or a short form such as OIL has them (D970)`)
+    for (const l of shorts) if (!baseIds.has(RL.idOf(l)) && capsHeavy(l)) caps.push(`${f}: ${RL.idOf(l)}'s short line is written mostly in capitals — write the rule, and the bold sentence of its full row, in ordinary letters, capitals only where a name or a short form such as OIL has them (D970)`)
     let note = ''
     if (n > ceiling) {
       if (codeChange) { deferred.push(n - ceiling); note = `   OVER by ${n - ceiling} bytes — code change: deferred (D29)` }
-      else { fails.push(`${f} is ${n - ceiling} bytes over its tripwire of ${ceiling} — a rulings file is NEVER trimmed (D136): split the area (a new area file, paths, map row and full-text file: backlog-archive.mjs --rulings --move-rows), archive what is replaced or spent, or raise the tripwire with its reason (D390)`); note = `   *** OVER by ${n - ceiling} bytes ***` }
+      else { fails.push(`${f} is ${n - ceiling} bytes over its tripwire of ${ceiling} — a rulings file is NEVER trimmed (D136): split the area (a new area file, paths, map row and full-text file: backlog-archive.mjs --rulings --move-rows), archive what is replaced, restated in full (D971) or spent, or raise the tripwire with its reason (D390)`); note = `   *** OVER by ${n - ceiling} bytes ***` }
     }
     console.log(`  ${pad(f, 44)} ${pad(tier, 5)} ${pad(n, 8)} ${pad('~' + tok, 8)} ${pad(changed, 8)} ${ceiling}${note}`)
   }
-  console.log(`  ("changed": short lines a later ruling changed — candidates for the next tidy, D971)`)
+  console.log(`  ("changed": short lines a later ruling changed — read each against it at the next tidy; one it restates in full leaves, D971)`)
+  for (const c of changedIds) console.log(`    ${c}`)
   console.log(`\n  always-loaded rulings: ${rTier0} bytes (~${rTok0} tokens); the full text, searched: ${fullFilesNow().reduce((a, f) => a + Buffer.byteLength(readNow(f), 'utf8'), 0)} bytes`)
-  return { fails, deferred }
+  return { fails, deferred, caps }
 }
 
 /* ---------- --moves: did every line that left a document arrive somewhere? (D138, 24 Sep 26) ----------
@@ -953,6 +955,7 @@ let docsizeLine = null
 if (!INVENTORY_ONLY) {
   const c = ceilings(codeChange)
   for (const f of c.fails) failures.push(`ceiling: ${f}`)
+  for (const f of c.caps) failures.push(`rulings: ${f}`)
   for (const where of ceilingMovedWithCode(paths)) failures.push(`ceiling: a ceiling in ${SELF} changed in ${where}, which also touches raptor-port/src — move it in a docs-only commit`)
   docsizeLine = c.fails.length ? `docsize: OVER by ${c.fails.length} file(s) — FAIL` : c.deferred.length ? `docsize: OVER by ${c.deferred.reduce((a, b) => a + b, 0)}, deferred (D29)` : 'docsize: OK'
 }

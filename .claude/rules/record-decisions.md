@@ -49,7 +49,7 @@ misses shared.
 1. **The checkpoint sweep.** Before any handoff, any commit that closes a piece of work, and any
    report that calls something done: re-read what he actually said this session, list every ruling,
    and check each one is in its area's rulings file **and** in its real home — and that every ruling
-   it REPLACED, and every one-off permission it SPENT, is marked and archived (`DECISIONS.md` step 2).
+   it REPLACED or RESTATES IN FULL (D971), and every one-off permission it SPENT, is marked and archived (`DECISIONS.md` step 2).
    This is what catches what the moment missed.
 2. **The report line.** Every closing report carries, beside Status / Changes / Checks / Walk:
 
