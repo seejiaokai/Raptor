@@ -112,6 +112,16 @@ for (const size of [{ tag: 'phone', viewport: { width: 390, height: 1400 }, dsf:
   await shot(page, `${T}-before`, await boxOf(page, ['#medView .ic-head', '.medsec']))
   await page.evaluate(AFTER, [TITLE, DOC])
   facts[T + ' after'] = await measure(page)
+  /* THE SECOND DOOR (his question of 17 Oct 26, "2 doors to file medical inputs or 1?"): a "+ Medical" button in the
+     row of the "as of" button, in the look of the Inputs tab's own "+ Input", in place of the title */
+  if (process.env.DOOR) {
+    facts[T + ' door'] = await page.evaluate(() => {
+      const t = document.querySelector('.wp-title'); const b = document.createElement('button')
+      b.type = 'button'; b.className = 'abtn primary wp-door'; b.textContent = '+ Medical'; b.style.marginLeft = 'auto'; const cb = getComputedStyle(document.getElementById('medCalBtn')); b.style.height = cb.height; b.style.minHeight = cb.height; b.style.paddingBlock = '0'
+      t.replaceWith(b); const r = b.getBoundingClientRect(); return Math.round(r.width) + 'x' + Math.round(r.height)
+    })
+  }
+  if (process.env.DOOR) { await mark(page, [{ n: 'new door', sel: '.wp-door' }]); await shot(page, `${T}-door`, await boxOf(page, ['#medView .ic-head', '.medsec.med-down'])); await ctx.close(); continue }
   await mark(page, [{ n: '', sel: '.medsec.med-down .medcard' }, { n: '1', sel: '.medsec.med-down .medcard:last-child' }, { n: '2', sel: '.medsec.med-pend .wp-row2' }, { n: '3', sel: '.medsec.med-done .wp-row2' }, { n: '4', sel: '.wp-title' }])
   await shot(page, `${T}-after`, await boxOf(page, ['#medView .ic-head', '.medsec']))
   await ctx.close()
