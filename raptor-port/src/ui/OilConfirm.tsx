@@ -28,7 +28,7 @@
    Today icon and its sideways finger, the input's non-working days the only
    dates that take a tap and every other date faint. What a tap does and which
    days earn are as they were — the picked days are this sheet's `sel`. */
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import { clickedSurround } from './outside'
 import { useSheetFocus } from './sheetfocus'
 import { oilDayLabel } from './inputedit'
@@ -53,7 +53,9 @@ const dowLabel = (v: string) => `${DOW[new Date(Date.UTC(+v.slice(0, 4), +v.slic
    THE WORDS ARE THE WRITING GUIDE'S (owner D837, D839 — 14 Oct 26; the wordings of record
    docs/superpowers/briefs/2026-10-13-wording-recheck.md): the title "OIL: Tally, Range brief", the reason and the question
    as one ordinary sentence (it was a heading in capitals — the look's L3), "Yes: credit HO", "…can raise the credit".
-   THE SEVERAL-DAYS FORM KEEPS ITS WORDS: it was not on the page he approved, and goes to the whole-app words pass (D808).
+   THE SEVERAL-DAYS FORM KEEPS ITS WORDS: it was not on the page he approved, and goes to the whole-app words pass (D808) —
+   but for its count line's empty state, "tap the highlighted days" → "tap a day": since D923 the days that take a tap are
+   no longer tinted (17 Oct 26; put to him with its picture).
 
    THE ANSWERS SIT FLAT UNDER THE QUESTION (L1): they were wrapped in `.seg`, which is also the week strip's rule
    (02-shell.css) — so they wore its patch and its line, inside the boxed row of the upchit sheet: a box in a box. They
@@ -106,6 +108,21 @@ export function OilConfirm({ who, typeLabel, plan, prev, onSave, onCancel, lead,
   /* the sheet takes the keyboard when it opens (W12 — ui/sheetfocus.ts), on its first answer (K7) */
   const boxRef = useRef<HTMLDivElement>(null)
   useSheetFocus(boxRef, true, box => box.querySelector<HTMLElement>('.oilconf-answers .upconf-seg'))
+  /* "ONLY SOME DAYS…" BRINGS ITS CALENDAR INTO VIEW (the code read of 17 Oct 26, F1). The card is at most 80% of the
+     screen's height with its foot pinned (14-input-editors.css); on a phone held on its side the one calendar opened
+     below that foot, only its title in sight, its dates to be scrolled to. Where the calendar runs under the foot, the
+     card scrolls by what it runs under — but never so far that the calendar's top leaves the card. Where it already
+     fits (a phone held upright, a desktop) nothing moves. At once, not smoothly: it is the answer's own result. */
+  const calRef = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    const cal = calRef.current, box = boxRef.current
+    if (mode !== 'some' || !cal || !box) return
+    const foot = box.querySelector('.airpop-foot')
+    const c = cal.getBoundingClientRect(), b = box.getBoundingClientRect()
+    const bottom = foot ? foot.getBoundingClientRect().top : b.bottom
+    const under = c.bottom - bottom
+    if (under > 0) box.scrollTop += Math.min(under, c.top - b.top)
+  }, [mode])
   return (
     <div className="airpop upconf-pop oilconf-pop" data-testid="oilconf"
       onClick={e => { if (clickedSurround(e, 'upconf-pop')) onCancel() }}>
@@ -123,7 +140,7 @@ export function OilConfirm({ who, typeLabel, plan, prev, onSave, onCancel, lead,
               {seg('none', 'No OIL', 'oil-none')}
             </div>
             {mode === 'some' && <>
-              <div className="dcal-inline oilconf-cal">
+              <div className="dcal-inline oilconf-cal" ref={calRef}>
                 <DateCal mode="many" tid="oilcal" only={plan.map(p => p.iso)} picked={[...sel]} at={plan[0].iso} onToggle={toggle} />
               </div>
               {/* "the highlighted days" became "a day": the days that take a tap are no longer tinted — they are the dates

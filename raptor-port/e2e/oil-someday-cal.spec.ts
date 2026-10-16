@@ -76,6 +76,17 @@ for (const size of SIZES) {
       await expect(page.locator(`[data-testid="oilcal-day-${FRI}"]`)).toBeDisabled()
       await expect(page.locator(`[data-testid="oilcal-day-${SAT}"]`)).toBeEnabled()
       await expect(page.locator(`[data-testid="oilcal-day-${SUN}"]`)).toBeEnabled()
+      /* the dates IN SIGHT as the answer opens them — nothing scrolled by the test: Saturday below the card's top and above
+         its pinned foot (the code read's F1 — on a phone on its side the calendar opened below the foot, only its title in
+         sight; the card now scrolls it up) */
+      const inView = await page.evaluate(() => {
+        const d = document.querySelector('[data-testid="oilcal-day-2026-07-18"]')!.getBoundingClientRect()
+        const card = document.querySelector('[data-testid="oilconf"] .airpop-box')!.getBoundingClientRect()
+        const foot = document.querySelector('[data-testid="oilconf"] .airpop-foot')!.getBoundingClientRect()
+        const mid = (d.top + d.bottom) / 2
+        return { mid: Math.round(mid), cardTop: Math.round(card.top), footTop: Math.round(foot.top), ok: mid > card.top && mid < foot.top }
+      })
+      expect(inView.ok, `Saturday in sight as "Only some days…" opens: ${JSON.stringify(inView)}`).toBe(true)
       /* a press AT THE POINT of Saturday's date: brought into the card's view the way a finger scrolls a card, then the
          element at that point is the date itself — nothing drawn over it */
       const sat = page.locator(`[data-testid="oilcal-day-${SAT}"]`)
