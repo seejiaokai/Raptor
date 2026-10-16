@@ -542,6 +542,20 @@ dropped and the row collapsed onto `c6r`, so on a phone its remarks box aligns
 with the flying line exactly like the duty/sim/ground rows. There is no longer a
 `.cprog` shape — every board list is `c6r`. Pinned by e2e.
 
+**AN INPUT FILED FOR ALL / ALL AVAIL IS DRAWN ON THE COMMON PROGRAMME (owner D954, D955, D957 — 17 Oct 26,
+`[ALLAVAIL-COMMON]`).** One rule, read off the row alone (`ui/html.ts onCommon`): a row that came from an input and holds
+ALL or ALL AVAIL among its people is drawn in the Common Programme, among the programme's own rows by start time
+(`commonOrder`: before the first of them that starts later — equal starts the programme's item first; a row of its own
+with no time keeps its place; the input's row with no start last); without them it is drawn on the Ground Programme, and
+back again. ONLY THE DRAWING MOVES: the row stays the Ground Programme record it always was — its keys (`g:` / `gr:`), its
+landing on read, Reject, OIL, the clashes, the published compare — so a published day reads nothing pending and every
+reader of `d.ground` is untouched. Drawn by the Ground Programme's own row builder in each place (the week's `grRowHTML`,
+in the `.ah-row` shape — the same five cells in the same order; the board's `sbGrRowHTML`, with no grip and no drag address
+there, D955 (1); the peek's `peekGrRow`); the Ground Programme skips it, and its Reject line counts only the rows it draws;
+the Common Programme carries the same line (`GP_TAKEOFF_NOTE`) where such an input stands — the board and Edit Schedule's
+week, never View-only Sched (D957). The ⓘ panel counts it as squadron-wide. Its box: typed words, the date grey after it,
+as on the Ground Programme (D949 Q3). Pinned: `ui/allavail-common.test.tsx`.
+
 That span is applied BY POSITION (`:nth-child(2)`), not by class: every c6r row
 reserves a leading grip track, so child 2 is always the name cell — but a
 duty row puts a `.ain` role box there while a personal-input row puts its type
