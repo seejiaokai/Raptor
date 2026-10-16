@@ -4,7 +4,7 @@ Branch `claude/allavail-common` (cut from pull request 522's tip). Rulings D954,
 line), built unattended in the build chat by his word (D956). Order: `docs/bug-check-order.md`.
 
 ## Questions waiting for him
-**Q1 — the words that still say "Ground" for such a row** (the scenario designer's 5; narrowed by the walk, J8): the
+**ANSWERED 17 Oct 26 (D958): "Yes. Short word Common is fine" — built.** Re-walked on a fresh build (`…/2026-10-17-allavail-common/rewalk-d958/`, 5 PASS, 0 FAIL, no errors): the ✕ note reads "Common item removed — back under Personal Inputs — …", the button "→ Common", the phone banner "Planning Common · MEETING"; tests in `ui/allavail-common.test.tsx`, `ui/reqdoor.test.tsx` restated (58 / 58). **Q1 — the words that still say "Ground" for such a row** (the scenario designer's 5; narrowed by the walk, J8): the
 phone's banner while a place waits for a puck ("Planning Ground · MEETING" — j8-5), the board's note after ✕ ("Ground item
 removed — back under Personal Inputs" — j8-2), and Personal Inputs' "→ Ground" button for an Other filed for ALL AVAIL,
 which lands it on the Common Programme (j8-3, j8-4). The changes window does not say it (j8-1). **Recommended: yes — each names the Common Programme where the row is drawn there.** Waits on it: those four words

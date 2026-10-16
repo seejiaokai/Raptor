@@ -16,8 +16,8 @@ import { acceptInput } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { initStore, writeInputs } from '../state/store'
 import { setSession } from '../state/auth'
-import { setPage, NOTEPUB } from '../state/view'
-import { dayHTML, dayInfoHTML, onCommon, commonOrder, GP_TAKEOFF_NOTE } from './html'
+import { setPage, NOTEPUB, slotTitle } from '../state/view'
+import { dayHTML, dayInfoHTML, onCommon, commonOrder, GP_TAKEOFF_NOTE, accCtl } from './html'
 import { sbGroundPanel, sbProgPanel } from './board-html'
 import { peekDayHTML } from './peek'
 import { pendListHTML } from './pendlist'
@@ -173,5 +173,22 @@ describe('the fresh code read: a retime of such a row on a published day', () =>
     expect(dayShownPendCount(MON), 'its time change waits').toBe(1)
     const txt = el(pendListHTML(MON)).textContent || ''
     expect(txt, txt.slice(0, 400)).not.toMatch(/order changed/i)
+  })
+})
+
+/* HIS ANSWER TO Q1 (D958, 17 Oct 26): "Yes. Short word Common is fine" */
+describe('the three words that named such a row "Ground" say "Common" (D958)', () => {
+  it('the phone banner for a place on its row; a row on the Ground Programme keeps "Ground"', () => {
+    const { inp, ri } = allAvailMeeting()
+    expect(slotTitle(`g:${MON}.${ri}.0`)).toMatch(/^Common · /)
+    expect(writeInputs(() => { inp.people = [{ p: 'bane' }] })).toBe(true); validate()
+    expect(slotTitle(`g:${MON}.${ri}.0`)).toMatch(/^Ground · /)
+  })
+  it('Personal Inputs\' button for an Other filed for ALL AVAIL reads "→ Common"; for named people "→ Ground"', () => {
+    const o: any = { people: [{ p: 'allavail' }], type: 'Other', date: 'Jul 13', allday: false, s: 600, e: 660, remarks: 'x', mod: 'now', yr: 2026 }
+    INPUTS.unshift(o); inpId(o)
+    expect(el(accCtl(MON, o)).textContent).toContain('→ Common')
+    o.people = [{ p: 'bane' }]
+    expect(el(accCtl(MON, o)).textContent).toContain('→ Ground')
   })
 })

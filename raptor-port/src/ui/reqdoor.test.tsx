@@ -997,7 +997,7 @@ describe('after the dead code went out — one row, one hand (D755, D756; D661 a
       setBoardDay(WED); press({ grdel: `${WED}.${riOf()}` })
       expect(riOf()).toBe(-1)
       expect(people()).toEqual(['pike', 'allavail', 'bane'])
-      expect(SAID).toEqual([`Ground item removed — back under Personal Inputs — ${UP}, 14:00–15:00, 2 people and ALL AVAIL`])
+      expect(SAID).toEqual([`Common item removed — back under Personal Inputs — ${UP}, 14:00–15:00, 2 people and ALL AVAIL`])   // its row stood on the Common Programme (D955, D958)
     })
     it('THE CONTROL — on an input of ONE person the note names him', async () => {
       await boot(new MemoryBackend())

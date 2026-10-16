@@ -4,7 +4,7 @@ import { DAYS } from '../engine/data'
 import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
 import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
-import { INPUTS, inputsOn, remarksShown, remarksTyped, tillOf, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
+import { INPUTS, idsOf, inputsOn, remarksShown, remarksTyped, tillOf, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { reportingIssuesForWave,stated,REPORTING_LABEL } from '../engine/reporting'
@@ -2324,8 +2324,11 @@ export function accCtl(di:any,inp:any){
   return `<span class="accs">`
     /* an input filed for ALL AVAIL / ALL is never filed under Unavailable — that names a real person's day
        ([INPUT-ALL-AVAIL]; the door behind this is slots.ts acceptInput) */
+    /* …and its row stands on the Common Programme, so the button names it there (owner D955, D958 — "Short word Common") */
     +(/^Other$/i.test(String(inp.type))&&!isSpecial(inp.person)
-      ? b('g','→ Ground','Accept into the ground programme')+b('u','→ Unavail','File under Unavailable')
+      ? (idsOf(inp).some((id:any)=>PEOPLE[id]&&PEOPLE[id].special)
+        ? b('g','→ Common','Accept onto the Common Programme')
+        : b('g','→ Ground','Accept into the ground programme'))+b('u','→ Unavail','File under Unavailable')
       : b('g','Accept','Accept into the ground programme'))
     +`</span>`;
 }
