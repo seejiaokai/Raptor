@@ -15,18 +15,25 @@
    start-to-finish envelope (owner, 29 Aug 26).
 
    A single-day plan is a plain Yes / No. A multi-day plan offers All days /
-   Only some days… / No OIL — "some" opens a month grid (the RangeCal
-   arithmetic, copied the way WeekCal copied it) where only the applicable
-   days are tappable; tap to select, tap again to deselect (owner's exact
-   ask), then Save. */
-import { useEffect, useMemo, useState, useRef } from 'react'
+   Only some days… / No OIL — "some" opens a calendar where only the
+   applicable days are tappable; tap to select, tap again to deselect (owner's
+   exact ask), then Save.
+
+   THAT CALENDAR IS THE APP'S ONE DATE CALENDAR (owner D923, 15 Oct 26 — shown
+   it beside the app's one calendar: "use the new calendar format but allow to
+   tap separate days for this function"; [OIL-CONFIRM-DAYGRID]). It drew a
+   small month of its own, a near-copy of the calendar every other date pick
+   left in calendar step two. Now it is ui/DateCal.tsx in its several-days mode,
+   drawn inside the sheet as a form draws it (D797): its head, its lists, its
+   Today icon and its sideways finger, the input's non-working days the only
+   dates that take a tap and every other date faint. What a tap does and which
+   days earn are as they were — the picked days are this sheet's `sel`. */
+import { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import { clickedSurround } from './outside'
 import { useSheetFocus } from './sheetfocus'
 import { oilDayLabel } from './inputedit'
+import { DateCal } from './DateCal'
 
-const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-const iso = (y: number, m: number, d: number) =>
-  `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
 /* the day the question is about, with its year where that is not the year in hand — the one label every place that
    names an OIL day uses (ui/inputedit.tsx oilDayLabel; `[CARD-CHECK-SEEN]` 8: "9 Jan" for a day of 2027) */
 const dLabel = (v: string) => oilDayLabel(v)
@@ -34,49 +41,6 @@ const dLabel = (v: string) => oilDayLabel(v)
    from the date's own numbers in UTC, so the day never shifts with the zone the browser is in. */
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const dowLabel = (v: string) => `${DOW[new Date(Date.UTC(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10))).getUTCDay()]} ${dLabel(v)}`
-
-/* the multi-select month grid — only `days` are live, everything else inert */
-function OilDayCal({ days, sel, onToggle }: {
-  days: string[], sel: Set<string>, onToggle: (d: string) => void
-}) {
-  const first = days[0]
-  const [view, setView] = useState({ y: +first.slice(0, 4), m: +first.slice(5, 7) - 1 })
-  const ask = useMemo(() => new Set(days), [days])
-  const f = new Date(Date.UTC(view.y, view.m, 1))
-  const lead = (f.getUTCDay() + 6) % 7                       // Monday-first
-  const nDays = new Date(Date.UTC(view.y, view.m + 1, 0)).getUTCDate()
-  const cells: (number | null)[] = []
-  for (let i = 0; i < lead; i++) cells.push(null)
-  for (let d = 1; d <= nDays; d++) cells.push(d)
-  while (cells.length % 7) cells.push(null)
-  const step = (n: number) => {
-    const m = view.m + n
-    setView({ y: view.y + Math.floor(m / 12), m: ((m % 12) + 12) % 12 })
-  }
-  return (
-    <div className="rangecal oilcal" data-testid="oilcal">
-      <div className="rc-h">
-        <button type="button" className="rc-nav" aria-label="Previous month" onClick={() => step(-1)}>‹</button>
-        <span className="rc-mon">{MON[view.m]} {view.y}</span>
-        <button type="button" className="rc-nav" aria-label="Next month" onClick={() => step(1)}>›</button>
-      </div>
-      <div className="rc-dow">{['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map(d => <span key={d}>{d}</span>)}</div>
-      <div className="rc-grid">
-        {cells.map((d, i) => {
-          if (d == null) return <span key={i} className="rc-x" />
-          const v = iso(view.y, view.m, d)
-          if (!ask.has(v)) return <span key={i} className="rc-d oc-off">{d}</span>
-          return (
-            <button type="button" key={i} data-oilday={v}
-              className={'rc-d oc-ask' + (sel.has(v) ? ' sel' : '')}
-              aria-label={`${d} ${MON[view.m]} ${view.y}${sel.has(v) ? ' — selected' : ''}`}
-              onClick={() => onToggle(v)}>{d}</button>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
 
 /* `lead`, `noLabel`, `yesLabel` — THE QUESTION PUT BEFORE A CHANGE ([OIL-ASK-NOTIFY], owner D783 — the pictures of
    record docs/mock/2026-10-12-oil-notify/*-swap-3-question-waits.png): a swap, an add or a move that raises the
@@ -89,7 +53,9 @@ function OilDayCal({ days, sel, onToggle }: {
    THE WORDS ARE THE WRITING GUIDE'S (owner D837, D839 — 14 Oct 26; the wordings of record
    docs/superpowers/briefs/2026-10-13-wording-recheck.md): the title "OIL: Tally, Range brief", the reason and the question
    as one ordinary sentence (it was a heading in capitals — the look's L3), "Yes: credit HO", "…can raise the credit".
-   THE SEVERAL-DAYS FORM KEEPS ITS WORDS: it was not on the page he approved, and goes to the whole-app words pass (D808).
+   THE SEVERAL-DAYS FORM KEEPS ITS WORDS: it was not on the page he approved, and goes to the whole-app words pass (D808) —
+   but for its count line's empty state, "tap the highlighted days" → "tap a day": since D923 the days that take a tap are
+   no longer tinted (17 Oct 26; put to him with its picture).
 
    THE ANSWERS SIT FLAT UNDER THE QUESTION (L1): they were wrapped in `.seg`, which is also the week strip's rule
    (02-shell.css) — so they wore its patch and its line, inside the boxed row of the upchit sheet: a box in a box. They
@@ -142,6 +108,21 @@ export function OilConfirm({ who, typeLabel, plan, prev, onSave, onCancel, lead,
   /* the sheet takes the keyboard when it opens (W12 — ui/sheetfocus.ts), on its first answer (K7) */
   const boxRef = useRef<HTMLDivElement>(null)
   useSheetFocus(boxRef, true, box => box.querySelector<HTMLElement>('.oilconf-answers .upconf-seg'))
+  /* "ONLY SOME DAYS…" BRINGS ITS CALENDAR INTO VIEW (the code read of 17 Oct 26, F1). The card is at most 80% of the
+     screen's height with its foot pinned (14-input-editors.css); on a phone held on its side the one calendar opened
+     below that foot, only its title in sight, its dates to be scrolled to. Where the calendar runs under the foot, the
+     card scrolls by what it runs under — but never so far that the calendar's top leaves the card. Where it already
+     fits (a phone held upright, a desktop) nothing moves. At once, not smoothly: it is the answer's own result. */
+  const calRef = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    const cal = calRef.current, box = boxRef.current
+    if (mode !== 'some' || !cal || !box) return
+    const foot = box.querySelector('.airpop-foot')
+    const c = cal.getBoundingClientRect(), b = box.getBoundingClientRect()
+    const bottom = foot ? foot.getBoundingClientRect().top : b.bottom
+    const under = c.bottom - bottom
+    if (under > 0) box.scrollTop += Math.min(under, c.top - b.top)
+  }, [mode])
   return (
     <div className="airpop upconf-pop oilconf-pop" data-testid="oilconf"
       onClick={e => { if (clickedSurround(e, 'upconf-pop')) onCancel() }}>
@@ -159,9 +140,13 @@ export function OilConfirm({ who, typeLabel, plan, prev, onSave, onCancel, lead,
               {seg('none', 'No OIL', 'oil-none')}
             </div>
             {mode === 'some' && <>
-              <OilDayCal days={plan.map(p => p.iso)} sel={sel} onToggle={toggle} />
+              <div className="dcal-inline oilconf-cal" ref={calRef}>
+                <DateCal mode="many" tid="oilcal" only={plan.map(p => p.iso)} picked={[...sel]} at={plan[0].iso} onToggle={toggle} />
+              </div>
+              {/* "the highlighted days" became "a day": the days that take a tap are no longer tinted — they are the dates
+                  in full ink, every other date faint (the one calendar's look for a date that may not be picked) */}
               <div className="oilconf-count" data-testid="oil-count">
-                {sel.size ? `${sel.size} of ${plan.length} days selected — tap a day to change it` : 'No days selected — tap the highlighted days to credit them'}
+                {sel.size ? `${sel.size} of ${plan.length} days selected — tap a day to change it` : 'No days selected — tap a day to credit it'}
               </div>
             </>}
           </> : <>

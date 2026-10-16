@@ -42,6 +42,7 @@ work, already loaded: **D54** (an issued weekend carrying a placeholder raises t
 
 | # | Date | The rule |
 |---|---|---|
+| D978 | 17 Oct 26 | On a phone up to 400 wide the OIL question's "Only some days…" calendar is drawn with no box of its own, and its count line reads "No days selected — tap a day to credit it"; both as built, and [OIL-CONFIRM-DAYGRID] goes live on this "merge live". |
 | D923 | 15 Oct 26 | The OIL question's "Only some days…" calendar becomes the app's one date calendar in its look, and there a tap turns each separate day on or off — only the input's non-working days can be tapped, as today; which days earn OIL is decided as before. |
 | D865 | 15 Oct 26 | The OIL job's four open points are settled as recommended: the ⓘ mark's words stay as built; the list a load opens shows the day's whole open list; "Switch to this plan" that brings back an unanswered input gets the load's short note and list, as a small follow-up; and with the bar up, "Answer OIL" un-cancels at once where nothing is left to ask. |
 | D863 | 15 Oct 26 | The note after "Load onto working copy" is short plain sentences: what the day is back to, what viewers still see, what else came back or stayed out, and how many inputs need an OIL answer — and it no longer repeats the edits thrown away, which the confirming button has just said. |

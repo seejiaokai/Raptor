@@ -39,10 +39,14 @@ for (const m of list) {
   put(m.file, before.replace(m.find, () => m.put))
   let r
   try {
-    r = spawnSync('npx', ['vitest', 'run', ...m.tests, '--reporter=dot'], { shell: true, encoding: 'utf8', timeout: 240000 })
+    /* ROOM FOR A LONG FAILURE (17 Oct 26, [OIL-CONFIRM-DAYGRID]): a test that renders the whole app prints the page with
+       its failure — 3.2 MB for one broken line — and past the default 1 MB the run was killed and read as "did not
+       finish" (exit null), a break caught at once looking like no proof at all. */
+    r = spawnSync('npx', ['vitest', 'run', ...m.tests, '--reporter=dot'], { shell: true, encoding: 'utf8', timeout: 240000, maxBuffer: 256 * 1024 * 1024 })
   } finally {
     put(m.file, before)
   }
+  if (r.error) console.log(`      (the run itself failed: ${r.error.code || r.error.message})`)
   const text = (r.stdout || '') + (r.stderr || '')
   const failed = (text.match(/Tests\s+(\d+) failed/) || [])[1]
   const passed = (text.match(/Tests\s+(?:\d+ failed \| )?(\d+) passed/) || [])[1]

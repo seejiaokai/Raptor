@@ -497,6 +497,8 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 **Principle:** A test's result is a fact about the artefact it ran against, not about the working tree; where a runner can reuse a running server, 'I changed the source and ran the test' proves nothing until the build is known to be the changed one.
 
+**Met again 2026-10-17** ([OIL-CONFIRM-DAYGRID]): a CSS fix was checked by a browser test while the walk's preview still served the build from before the fix — it failed with the OLD numbers, and only reading them as the old numbers showed the run never saw the fix. Proposed guard, inside the action: `gatelock.mjs exec` (or the push-and-lock guard) refuses, or rebuilds first, a Playwright run when a server already answers on its port and any file under `raptor-port/src` is newer than `raptor-port/dist/index.html`.
+
 ### Observation 587: An assertion that 'nothing moved' read the screen before the movement had finished - and the unit test beside it asked for the cause of the fault
 
 **Status:** OPEN
@@ -1123,3 +1125,18 @@ Met again 2026-10-17: the [CONTEXT-START-SIZE] handoff (session-handoff, a day c
 **Suggested improvement:** One line where the order speaks of a fault found in passing: before it is filed as a fault of the app (and before D56's "real for new data" is claimed), reproduce it through the control a person uses — or say in the item that it was seen only in planted data. In `walk-scripts.md` §3: a fixture planted straight into the data can make shapes the app never writes; a failure that depends on its shape is checked against the real door before it is reported.
 
 **Principle:** A failure seen only with hand-made data is evidence about the data until the real input path reproduces it.
+
+### Observation 628: A proof runner read "killed for too much output" as "the break was not caught"
+
+**Status:** ACTIONED (2026-10-17) — `raptor-port/scripts/handpass/breaks.mjs` takes up to 256 MB of output and names a run that itself failed
+**Date:** 2026-10-17
+**Session context:** [OIL-CONFIRM-DAYGRID]'s break tests — eight of eleven breaks came back "did not finish (exit null)"
+**Skill:** none — the project's break-test runner (`docs/walk-scripts.md` §9)
+**Type:** open-source
+**Phase/Area:** verification — proving a test can fail
+
+**Issue:** The runner ran each broken build's tests through a child process with the default 1 MB output limit. A test file that renders the whole app prints the page with its failure (3.2 MB), so the child was killed and the runner reported "ERROR — the run did not finish": every break whose test went red looked like a break with no proof. Run by hand, each was caught in 12 seconds.
+
+**Suggested improvement:** done — a large output limit and the child's own error printed. For any runner that judges a child's result: treat "the child was killed" as its own verdict with its cause, never folded into pass or fail.
+
+**Principle:** A harness that cannot tell "the check failed" from "the harness failed" reports its own limits as findings about the code; name the harness's failure separately.

@@ -163,6 +163,102 @@ describe('a run of dates', () => {
   })
 })
 
+/* SEVERAL SEPARATE DAYS — the OIL question's "Only some days…" (owner D923, 15 Oct 26: "use the new calendar format but
+   allow to tap separate days for this function"). Only the days it is given take a tap; each tap turns one on or off. */
+describe('several separate days (D923)', () => {
+  /* the weekends of a Fri 17 Jul – Sun 2 Aug input: what the OIL question asks about */
+  const ONLY = ['2026-07-18', '2026-07-19', '2026-07-25', '2026-07-26', '2026-08-01', '2026-08-02']
+  function Many({ on0 = [] as string[], only = ONLY, today = '2026-07-21' }) {
+    const [on, setOn] = useState(on0)
+    return <DateCal mode="many" only={only} picked={on} at={only[0]} today={today}
+      onToggle={iso => setOn(o => o.includes(iso) ? o.filter(d => d !== iso) : [...o, iso])}
+      foot={<span data-testid="said">{[...on].sort().join(',')}</span>} />
+  }
+  it('only the days it is given take a tap: every other date is faint and a tap there does nothing', () => {
+    render(<Many />)
+    expect(calMonth()).toBe('2026-07')
+    expect(t('dcal').classList.contains('is-many')).toBe(true)
+    for (const d of ['2026-07-18', '2026-07-19', '2026-07-25', '2026-07-26']) {
+      expect((day(d) as HTMLButtonElement).disabled).toBe(false); expect(has(d, 'is-out')).toBe(false)
+    }
+    for (const d of ['2026-07-17', '2026-07-20', '2026-07-11', '2026-07-21']) {
+      expect((day(d) as HTMLButtonElement).disabled).toBe(true); expect(has(d, 'is-out')).toBe(true)
+    }
+    fireEvent.click(day('2026-07-17'))
+    expect(t('said').textContent).toBe('')
+  })
+  it('a tap turns a day on, a second tap turns it off; several stay on at once, and nothing between them is joined', () => {
+    render(<Many />)
+    fireEvent.click(day('2026-07-18')); fireEvent.click(day('2026-07-26')); fireEvent.click(day('2026-07-19'))
+    expect(t('said').textContent).toBe('2026-07-18,2026-07-19,2026-07-26')
+    for (const d of ['2026-07-18', '2026-07-19', '2026-07-26']) { expect(has(d, 'is-sel')).toBe(true); expect(day(d).getAttribute('aria-pressed')).toBe('true') }
+    expect(has('2026-07-25', 'is-sel')).toBe(false); expect(day('2026-07-25').getAttribute('aria-pressed')).toBe('false')
+    expect(t('dcal-grid').querySelector('.is-in'), 'no run band between picked days').toBeNull()
+    fireEvent.click(day('2026-07-19'))
+    expect(t('said').textContent).toBe('2026-07-18,2026-07-26')
+    expect(has('2026-07-19', 'is-sel')).toBe(false)
+  })
+  it('the days already on are lit as it opens (an answer asked again), and stay on across a turn of the month', () => {
+    render(<Many on0={['2026-07-25', '2026-08-01']} />)
+    expect(has('2026-07-25', 'is-sel')).toBe(true); expect(has('2026-07-18', 'is-sel')).toBe(false)
+    fireEvent.click(t('dcal-next'))
+    expect(has('2026-08-01', 'is-sel')).toBe(true); expect(has('2026-08-02', 'is-sel')).toBe(false)
+    fireEvent.click(day('2026-08-02'))
+    fireEvent.click(t('dcal-prev'))
+    expect(has('2026-07-25', 'is-sel')).toBe(true)
+    expect(t('said').textContent).toBe('2026-07-25,2026-08-01,2026-08-02')
+  })
+  it('the tab stop is the first day on in the month, else the first that takes a tap', () => {
+    const stops = () => [...t('dcal-grid').querySelectorAll('button')].filter(b => b.tabIndex === 0).map(b => b.getAttribute('data-testid'))
+    const a = render(<Many on0={['2026-07-26']} />)
+    expect(stops()).toEqual(['dcal-day-2026-07-26']); a.unmount()
+    render(<Many />)
+    expect(stops()).toEqual(['dcal-day-2026-07-18'])
+  })
+  it('the keys step over the faint dates to the next day that takes a tap, the way they were going — across a month too', () => {
+    render(<Many />)
+    day('2026-07-18').focus()
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowRight' }); expect(document.activeElement).toBe(day('2026-07-19'))
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowRight' }); expect(document.activeElement).toBe(day('2026-07-25'))
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowLeft' }); expect(document.activeElement).toBe(day('2026-07-19'))
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowDown' }); expect(document.activeElement).toBe(day('2026-07-26'))
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowDown' }); expect(calMonth()).toBe('2026-08')
+    expect(document.activeElement).toBe(day('2026-08-02'))
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowUp' }); expect(calMonth()).toBe('2026-07')
+    expect(document.activeElement).toBe(day('2026-07-26'))
+  })
+  /* Home and End are the WEEK's two ends (K1): here, the first and the last day of THIS week that take a tap — never out of
+     the week "the way it was going" (the scenario designer's F1, 17 Oct 26: Home from Sun 26 went to Sun 19) */
+  it('Home and End go to the first and the last day of the week that take a tap, and stay inside the week', () => {
+    render(<Many />)
+    day('2026-07-26').focus()
+    fireEvent.keyDown(document.activeElement!, { key: 'Home' }); expect(document.activeElement).toBe(day('2026-07-25'))
+    fireEvent.keyDown(document.activeElement!, { key: 'Home' }); expect(document.activeElement).toBe(day('2026-07-25'))
+    fireEvent.keyDown(document.activeElement!, { key: 'End' }); expect(document.activeElement).toBe(day('2026-07-26'))
+    fireEvent.keyDown(document.activeElement!, { key: 'End' }); expect(document.activeElement).toBe(day('2026-07-26'))
+  })
+  it('in a week where only the Sunday takes a tap, Home and End both stay on it', () => {
+    render(<Many only={['2026-07-19', '2026-07-26']} />)
+    day('2026-07-19').focus()
+    fireEvent.keyDown(document.activeElement!, { key: 'Home' }); expect(document.activeElement).toBe(day('2026-07-19'))
+    fireEvent.keyDown(document.activeElement!, { key: 'End' }); expect(document.activeElement).toBe(day('2026-07-19'))
+  })
+  it('with nothing further that way, a key leaves the keyboard where it is', () => {
+    render(<Many />)
+    day('2026-07-18').focus()
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowLeft' }); expect(document.activeElement).toBe(day('2026-07-18'))
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowUp' }); expect(document.activeElement).toBe(day('2026-07-18'))
+    fireEvent.keyDown(document.activeElement!, { key: 'PageUp' }); expect(document.activeElement).toBe(day('2026-07-18'))
+    expect(calMonth()).toBe('2026-07')
+  })
+  it('a date it is given that is also today keeps today’s look, and still takes a tap', () => {
+    render(<Many today="2026-07-19" />)
+    expect(has('2026-07-19', 'is-today')).toBe(true); expect((day('2026-07-19') as HTMLButtonElement).disabled).toBe(false)
+    fireEvent.click(day('2026-07-19'))
+    expect(t('said').textContent).toBe('2026-07-19')
+  })
+})
+
 describe('the month-and-year lists', () => {
   it('a tap on the title swaps the dates for the two lists and hides the arrows; a tap again brings the dates back', () => {
     render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)

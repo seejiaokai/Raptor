@@ -13,6 +13,10 @@
    TWO MODES: one date (`value` / `onPick`), or a run of dates (`from` / `to` / `onRun`) — two taps make a run, a tap on
    a new day starts a finished run over, and a second tap BEFORE the first starts over there (the Leave War's range
    calendar has both rules — leavewar/ui/RangePicker.tsx — and step two of this job folds that calendar into this one).
+   A THIRD MODE FOR ONE PLACE ONLY — SEVERAL SEPARATE DAYS (`picked` / `onToggle` / `only`): the OIL question's "Only some
+   days…" (owner D923, 15 Oct 26 — "use the new calendar format but allow to tap separate days for this function"). Only
+   the days in `only` may be tapped (the input's non-working days); a tap turns one on or off; the rest are faint, as a
+   date before `min` is. Every other calendar still picks one date or one run.
    WHERE IT SITS is not its business: ui/DateBox.tsx floats it over a form; a form whose dates are what it is for draws
    it as its own body (D797).
 
@@ -132,8 +136,14 @@ function Wheel({ value, label, onChange, onEnter, name, tid }: {
 }
 
 export function DateCal(p: {
-  /** one date (the default), or a run of dates */
-  mode?: 'one' | 'run'
+  /** one date (the default), a run of dates, or several separate days (the OIL question's "Only some days…" — D923) */
+  mode?: 'one' | 'run' | 'many'
+  /** several days: the days turned on */
+  picked?: string[]
+  /** several days: a tap turned this day on or off */
+  onToggle?: (iso: string) => void
+  /** the only dates that may be tapped — every other date is faint (several days: the input's non-working days) */
+  only?: string[]
   /** one date: the date picked, "" for none */
   value?: string
   /** one date: a tap on a date */
@@ -168,6 +178,11 @@ export function DateCal(p: {
 }) {
   const tid = p.tid || 'dcal'
   const run = p.mode === 'run'
+  const many = p.mode === 'many'
+  const picked = new Set(p.picked || [])
+  /* the dates that may be tapped, in order — the keyboard steps over the rest to the next of these (below) */
+  const onlyList = p.only ? [...p.only].sort() : null
+  const only = onlyList ? new Set(onlyList) : null
   const today = p.today || isoToday()
   const from = run ? p.from || '' : p.value || ''
   const to = run ? p.to || p.from || '' : p.value || ''
@@ -185,7 +200,7 @@ export function DateCal(p: {
   const root = useRef<HTMLDivElement>(null)
 
   const dates = monthDates(ym.y, ym.m)
-  const may = (iso: string) => (!p.min || iso >= p.min) && (!p.max || iso <= p.max)
+  const may = (iso: string) => (!p.min || iso >= p.min) && (!p.max || iso <= p.max) && (!only || only.has(iso))
   const step = (by: number) => setYm(({ y, m }) => { const n = y * 12 + (m - 1) + by; return { y: Math.floor(n / 12), m: (n % 12) + 1 } })
   /* THE TITLE OPENS THE LISTS — AND A KEY TAKES THE KEYBOARD INTO THE MONTH LIST (the design look of 13 Oct 26 — K3;
      owner D830). Enter on the title opened them and left the keyboard on the title: a further Tab was needed before an
@@ -200,6 +215,8 @@ export function DateCal(p: {
   const tap = (iso: string) => {
     if (!may(iso)) return
     setKb(iso)
+    /* several days: each tap turns that one day on or off, and nothing else (D923) */
+    if (many) { p.onToggle?.(iso); return }
     if (!run) { p.onPick?.(iso); return }
     /* a finished run starts over; one day stretches forward; a tap before it starts over there */
     if (!from || from !== to || p.finished || iso < from) p.onRun?.(iso, iso)
@@ -208,7 +225,8 @@ export function DateCal(p: {
 
   /* ONE TAB STOP for the whole month — the date the keyboard was last on, else the picked one, else today, else the
      first that may be picked */
-  const stop = [kb, from, today].find(d => !!d && d.slice(0, 7) === dates[0].slice(0, 7) && may(d)) || dates.find(may) || ''
+  const firstPick = many ? [...picked].filter(d => d.slice(0, 7) === dates[0].slice(0, 7)).sort()[0] : from
+  const stop = [kb, firstPick, today].find(d => !!d && d.slice(0, 7) === dates[0].slice(0, 7) && may(d)) || dates.find(may) || ''
   useLayoutEffect(() => {
     const iso = want.current
     if (!iso) return
@@ -248,6 +266,23 @@ export function DateCal(p: {
       to2 = md[Math.min(+cur.slice(8, 10), md.length) - 1]
     } else return
     e.preventDefault()
+    /* WHERE ONLY SOME DATES MAY BE TAPPED (`only` — the OIL question's several days), a key that lands on another date goes
+       on, the way it was going, to the next one that may be: from a Saturday, → is the Sunday, and the Sunday's → the next
+       weekend's Saturday — never stuck on a date it may not stand on. With nothing further that way it stays. */
+    /* …except Home and End, which are the WEEK's two ends (K1): there they go to the first, or the last, day of this week
+       that takes a tap, between the week's end and the date the keys are on — and stay where they are when there is none.
+       Searched "the way it was going", Home from a Sunday whose Monday is faint walked back out of the week (the scenario
+       designer's F1, 17 Oct 26). */
+    if (onlyList && (e.key === 'Home' || e.key === 'End')) {
+      const home = e.key === 'Home'
+      const edge = to2
+      to2 = (home ? onlyList.find(d => d >= edge && d <= cur && may(d)) : [...onlyList].reverse().find(d => d <= edge && d >= cur && may(d))) || ''
+      if (!to2) return
+    }
+    if (onlyList && !may(to2)) {
+      to2 = (to2 > cur ? onlyList.find(d => d >= to2 && may(d)) : [...onlyList].reverse().find(d => d <= to2 && may(d))) || ''
+      if (!to2) return
+    }
     if (!may(to2)) return
     want.current = to2
     setKb(to2)
@@ -277,7 +312,7 @@ export function DateCal(p: {
     const iso = dates[i - lead]
     if (!iso) { cells.push(<span key={'b' + i} className="dcal-d is-blank" aria-hidden="true" />); continue }
     const wd = i % 7
-    const sel = !!from && (iso === from || iso === to)
+    const sel = many ? picked.has(iso) : !!from && (iso === from || iso === to)
     const band = !!from && to > from && iso >= from && iso <= to
     const cls = ['dcal-d']
     if (wd >= 5) cls.push('is-we')
@@ -295,7 +330,7 @@ export function DateCal(p: {
   }
 
   return (
-    <div className={'dcal' + (p.markWd != null ? ' is-marked' : '')} ref={root} data-testid={tid} data-month={dates[0].slice(0, 7)} data-today={today} data-min={p.min || undefined} data-max={p.max || undefined}>
+    <div className={'dcal' + (p.markWd != null ? ' is-marked' : '') + (many ? ' is-many' : '')} ref={root} data-testid={tid} data-month={dates[0].slice(0, 7)} data-today={today} data-min={p.min || undefined} data-max={p.max || undefined}>
       <div className="dcal-hd">
         <button type="button" className={'dcal-title' + (lists ? ' is-open' : '')} data-testid={`${tid}-title`} aria-expanded={lists}
           aria-label={`${MONTHS[ym.m - 1]} ${ym.y} — ${lists ? 'show the dates' : 'choose the month and year'}`} onClick={openLists}>
