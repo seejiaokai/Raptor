@@ -160,6 +160,8 @@ runs the tests it touches; GitHub's run is its full check): **after every fix an
 
 **GitHub's run after the push (two rounds):** the `geometry (raptor 2/2)` group failed twice on `e2e/medical.spec.ts`, everything else green. First, a fixed "≤ 104px" (Linux drew a card 107) — the test now asks for a third of the row. Second, at 375 "ATT C 13–17 Jul" fell to three lines in Linux's letters: the app ships no monospace face, and Linux's and an iPhone's are about 0.60 of the size wide where Windows' is about 0.55 — so it would have on his phone at 375 too. Fixed: a phone card's sides are 6px, not 9 (`16-medical.css`); the test now also measures the row in Courier New (the same width as theirs), proved red with the old 9px sides on this PC — the run's failure reproduced.
 
+**D968 (his word after the build — "default medical to ATT C"):** "+ Medical" opens on ATT C, not the list's first kind (HL). Tests changed to it (`medicalview.test.tsx`, `e2e/medical.spec.ts` 14 / 14) and the walk run once more on the built app (v4, `docs/img/handpass/2026-10-17-medical-walk/rewalk2/`): 32 of 32 PASS, every window opened on ATT C, no errors.
+
 ## What the walk found
 
 Nothing in the app: 31 of 31 PASS, then 32 of 32 on the re-walk. One guard that decided nothing was found by the break

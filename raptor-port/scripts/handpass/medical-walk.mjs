@@ -15,7 +15,7 @@ const OUT = process.env.HP_SHOTS || join(HERE, '../../docs/img/handpass/2026-10-
 rmSync(OUT, { recursive: true, force: true }); mkdirSync(OUT, { recursive: true })
 const URL = process.env.LOOK_URL || 'http://localhost:4173/'
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
-console.log('medical-walk v3 —', new Date().toISOString(), '→', OUT)
+console.log('medical-walk v4 —', new Date().toISOString(), '→', OUT)
 const browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
 const results = [], errs = []
 let shotN = 0
@@ -91,7 +91,7 @@ async function fileThroughButton(page, tag, { person, remark, from = '2026-07-12
   if (!onScreen) return null
   const kind = await page.locator('#inpEditType').inputValue().catch(() => '(no kind box)')
   const who = await page.evaluate(() => { const s = document.getElementById('inpEditPerson'); const f = document.getElementById('inpEditPersonFixed'); return s ? 'select:' + s.selectedOptions[0].textContent : f ? 'fixed:' + f.textContent : '(none)' })
-  ok(`${tag}.kind`, kind === 'HL', `the kind box reads "${kind}" (the first medical kind of the list); the person: ${who}`)
+  ok(`${tag}.kind`, kind === 'ATT C', `the kind box reads "${kind}" (ATT C, the most common — D968); the person: ${who}`)
   await shot(page, `${tag}-window-opened`, ['[data-testid="win-inputedit"]'])
   if (person) {
     const opt = await page.evaluate(cs => { const s = document.getElementById('inpEditPerson'); const o = s && [...s.options].find(o => o.textContent.trim() === cs); return o ? o.value : null }, person)
@@ -152,7 +152,7 @@ const watch = (page, tag) => {
   const iid = await fileThroughButton(page, 'A', { remark: 'knee injury, physio twice a week until the review board' })
   if (iid) {
     const c = await card(page, iid)
-    ok('A.card', !!c && c.sec === 'med-down' && c.row2.join(' ') === 'HL 12–15 Jul', `his card: ${JSON.stringify(c)}`)
+    ok('A.card', !!c && c.sec === 'med-down' && c.row2.join(' ') === 'ATT C 12–15 Jul', `his card: ${JSON.stringify(c)}`)
     ok('A.remark', !!c && c.remark && c.w <= 104 && c.remarkW <= c.w, `the typed remark shows (${c && c.remark}) and wraps inside the card: card ${c && c.w} wide, remark ${c && c.remarkW}`)
     const r1 = await rowsOf(page, 'med-down')
     ok('A.three', r1.n === 3 && r1.perRow.length === 1, `Medically Down: ${r1.n} cards, per row ${JSON.stringify(r1.perRow)}, widths ${JSON.stringify(r1.widths)}, words ${JSON.stringify(r1.words)}`)
@@ -165,7 +165,7 @@ const watch = (page, tag) => {
     await shot(page, 'A-phone390-after-undo', ['#medView .ic-head', '.medsec.med-down'])
     await page.locator('#redoBtn').tap(); await sleep(400)
     const afterRedo = await card(page, iid)
-    ok('A.redo', !!afterRedo && afterRedo.row2.join(' ') === 'HL 12–15 Jul', `after Redo: ${JSON.stringify(afterRedo)}`)
+    ok('A.redo', !!afterRedo && afterRedo.row2.join(' ') === 'ATT C 12–15 Jul', `after Redo: ${JSON.stringify(afterRedo)}`)
   }
   /* Pending Upchit and Upchit Complete, as drawn: "OML 6–9 Jul", and "20 Jun" with one page per document */
   const pend = await rowsOf(page, 'med-pend'), done = await rowsOf(page, 'med-done')
@@ -206,7 +206,7 @@ const watch = (page, tag) => {
     if (iid) {
       const c = await card(page, iid)
       const under = await page.evaluate(iid => { const c = document.querySelector(`.medcard[data-medcard="${iid}"]`); const k = c.querySelector('.medcard-type').getBoundingClientRect(), t = c.querySelector('.medcard-t').getBoundingClientRect(), b = c.getBoundingClientRect(); return { under: t.top >= k.bottom - 1, inside: t.right <= b.right - 1 } }, iid)
-      ok('B.card', !!c && c.sec === 'med-down' && c.row2.join(' ') === 'HL 29 Jun – 14 Jul' && under.under && under.inside, `${free}'s card: ${JSON.stringify(c)}; the period under its kind and inside the card: ${JSON.stringify(under)}`)
+      ok('B.card', !!c && c.sec === 'med-down' && c.row2.join(' ') === 'ATT C 29 Jun – 14 Jul' && under.under && under.inside, `${free}'s card: ${JSON.stringify(c)}; the period under its kind and inside the card: ${JSON.stringify(under)}`)
       const r = await rowsOf(page, 'med-down')
       ok('B.three', r.n === 3 && r.perRow.length === 1, `Medically Down at 375: ${r.n} cards, per row ${JSON.stringify(r.perRow)}, widths ${JSON.stringify(r.widths)}`)
       await page.evaluate(() => scrollTo(0, 0))
@@ -231,7 +231,7 @@ const watch = (page, tag) => {
   await page.keyboard.press('Enter')
   await page.locator('[data-testid="win-inputedit"]').waitFor({ state: 'visible', timeout: 3000 }).catch(() => {})
   const kind = await page.locator('#inpEditType').inputValue().catch(() => null)
-  ok('C.enter', kind === 'HL', `Enter opened the window, its kind "${kind}"`)
+  ok('C.enter', kind === 'ATT C', `Enter opened the window, its kind "${kind}"`)
   await shot(page, 'C-desk-window-by-keyboard')
   await page.keyboard.press('Escape'); await sleep(300)
   const back = await page.evaluate(() => document.activeElement && document.activeElement.id)
@@ -243,7 +243,7 @@ const watch = (page, tag) => {
   const iid = await fileThroughButton(page, 'C', { press: 'click', from: '2026-07-13', to: '2026-07-13' })
   if (iid) {
     const c = await card(page, iid)
-    ok('C.card', !!c && c.row2.join(' ') === 'HL 13 Jul', `a one-day card: ${JSON.stringify(c)}`)
+    ok('C.card', !!c && c.row2.join(' ') === 'ATT C 13 Jul', `a one-day card: ${JSON.stringify(c)}`)
     await page.evaluate(() => scrollTo(0, 0))
     await shot(page, 'C-desk-admin-filed', ['#medView .ic-head', '.medsec'])
     await page.locator('#inMemberMode').click(); await page.waitForSelector('#inpCal .ic-mon')
@@ -260,7 +260,7 @@ const watch = (page, tag) => {
   await page.locator('#medNew').click(); await page.locator('[data-testid="win-inputedit"]').waitFor({ state: 'visible', timeout: 3000 }).catch(() => {})
   const kind = await page.locator('#inpEditType').inputValue().catch(() => null)
   const fixed = await page.locator('#inpEditPersonFixed').textContent().catch(() => null)
-  ok('D.member', kind === 'HL' && fixed === 'Ranger', `a member's window: kind "${kind}", person fixed "${fixed}"`)
+  ok('D.member', kind === 'ATT C' && fixed === 'Ranger', `a member's window: kind "${kind}", person fixed "${fixed}"`)
   await shot(page, 'D-desk-member-window')
   await ctx.close()
 }

@@ -6088,7 +6088,7 @@ placed the entry or when** (D960 — the input's window says it). Only Upchit Co
 past 30 days, newest first"): Medically Down's and Pending Upchit's went with the words pass, round 3 (D959). **"+
 Medical"** (`#medNew`, owner D963 — in place of D962's title pointing to the Inputs tab — D964, D965; 17 Oct 26) is the row's one filled cyan button, at its right end after
 the stretching gap, 36 tall like "as of" (a finger's 44 on a phone); it opens the SAME window as the Inputs tab's "+
-Input" (`newInputSeed`: the signed-in person, no date yet) with the first medical kind of the app's own list set (HL); the
+Input" (`newInputSeed`: the signed-in person, no date yet) set to ATT C, the most common medical kind (D968; the first of the list where a squadron has no ATT C); the
 window, and who may file for whom in it (D655), are unchanged, and a save leaves the Medical tab in front, the new card
 on it. Pins: `ui/medicalview.test.tsx`, `e2e/medical.spec.ts`. Every section has a real empty state. Cards SIZE TO CONTENT and
 pack from the left — **a wrapping flex row, not a grid** (`.medcards`;

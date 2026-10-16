@@ -223,12 +223,13 @@ describe('the Medical view', () => {
     const yeti = cardsIn('med-done').find(c => c.textContent!.includes('8 Jul'))!
     expect(docsOf(yeti), 'no document on file, none shown').toBeNull()
   })
-  /* D963, D965: "+ Medical" is the tab's own door to the SAME window as the Inputs tab's "+ Input" — the same seed (the
-     signed-in person, no date picked yet) with the first medical kind of the app's own list set; an admin's and a
-     member's alike (who may file for whom is the window's, D655, unchanged) */
-  it('D963 D965 "+ Medical" opens the input window on a medical kind, for an admin and for a member', async () => {
+  /* D963, D965, D968: "+ Medical" is the tab's own door to the SAME window as the Inputs tab's "+ Input" — the same seed
+     (the signed-in person, no date picked yet) set to ATT C, the most common medical kind (D968 — not the list's first,
+     HL); an admin's and a member's alike (who may file for whom is the window's, D655, unchanged) */
+  it('D963 D965 D968 "+ Medical" opens the input window on ATT C, for an admin and for a member', async () => {
     const firstMed = INPUT_TYPES.find((t: any) => inpMeta(t)?.grp === 'med')
-    expect(firstMed, 'the first medical kind of the list').toBe('HL')
+    expect(firstMed, 'the list\'s first medical kind is HL — the button does not open on it').toBe('HL')
+    expect(INPUT_TYPES, 'the list carries ATT C').toContain('ATT C')
     const head = $('#medView .ic-head'), btn = $('#medNew')
     expect(btn.textContent).toBe('+ Medical')
     expect(btn.classList.contains('primary'), "filled, the row's one main button").toBe(true)
@@ -240,10 +241,10 @@ describe('the Medical view', () => {
         if (sess) await act(async () => { setSession(sess as any); setMe(member); notify() })
         await click($('#medNew'))
         expect(INPEDIT && INPEDIT._new, 'a new input').toBe(true)
-        expect(INPEDIT.type).toBe('HL')
+        expect(INPEDIT.type).toBe('ATT C')
         expect(INPEDIT.person, 'filed for the signed-in person').toBe(who)
         expect(INPEDIT.date, 'no date picked yet, as "+ Input"').toBeUndefined()
-        expect(($('[data-testid="win-inputedit"] #inpEditType') as HTMLSelectElement).value, 'the window shows the kind').toBe('HL')
+        expect(($('[data-testid="win-inputedit"] #inpEditType') as HTMLSelectElement).value, 'the window shows the kind').toBe('ATT C')
         await act(async () => { setInpEdit(null); notify() })
       }
     } finally {

@@ -174,7 +174,9 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
   }
   const pick = (iso: string) => { setMedAsOf(iso === todayIso ? null : iso); setCalOpen(false); notify() }
   const openNew = () => {
-    const seed = newInputSeed(), t = INPUT_TYPES.find((k: any) => inpMeta(k)?.grp === 'med')
+    /* ATT C, THE MOST COMMON MEDICAL KIND (owner D968, 17 Oct 26 — "default medical to ATT C since it's the most common");
+       a squadron whose list had none opens on its first medical kind */
+    const seed = newInputSeed(), t = INPUT_TYPES.includes('ATT C') ? 'ATT C' : INPUT_TYPES.find((k: any) => inpMeta(k)?.grp === 'med')
     setInpEdit(t ? { ...seed, type: t, allday: defaultAllday(t) } : seed); notify()
   }
 
@@ -205,8 +207,8 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
         <span style={{ flex: 1 }}></span>
         {/* THE TAB'S OWN DOOR FOR A MEDICAL INPUT (owner D963, D965 — 17 Oct 26: two doors, one window; look B, a filled
             "+ Medical" at the row's right end, as tall as the row's "as of"). It opens the SAME window as the Inputs tab's
-            "+ Input" — the same seed (ui/inputedit.tsx newInputSeed: the signed-in person, no date yet) with the first
-            medical kind of the app's own list already set; the window itself, and who may file for whom in it (D655),
+            "+ Input" — the same seed (ui/inputedit.tsx newInputSeed: the signed-in person, no date yet) with ATT C, the most
+            common medical kind, already set (D968); the window itself, and who may file for whom in it (D655),
             are unchanged. */}
         <button type="button" className="abtn primary" id="medNew" onClick={openNew}>+ Medical</button>
         {/* no cross where Medical is a TAB of the Inputs page (D626): a tab is left by choosing another */}
