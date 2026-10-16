@@ -20,22 +20,22 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/sharp-goldberg-6d0656 -->
-### `claude/sharp-goldberg-6d0656` — [CONTEXT-START-SIZE]'s follow-ons DONE: the capitals sweep, D975 (he picks no branch), the push-and-lock guard (D976) — written 17 Oct 26, verify before use
-- **Where it started:** the start-size job's next chat: measure its own start, weigh D, then `[CAPS-SWEEP]`, then `[PUSH-LOCK-GUARD]`. A, B, C, G of that job are on `main` by D974.
-- **Measured:** an empty chat 13% (114,521 of 880,000); a build chat 22% (197,417) once its first app file is open — the scheduler's rulings ~35,000 tokens of it. D (split them): not done, his D976.
-- **Done:** `[CAPS-SWEEP]` (D972, D973) — 551 lines in ordinary letters, ~4,800 tokens, case only; archived. **D975** (replaces D368): the outgoing chat releases its branch last, the opening line switches to it; the session-handoff and overnight guides changed, wording approved (D976). **`[PUSH-LOCK-GUARD]`** (D976) — `.claude/hooks/push-guard.mjs` + `gatelock.mjs exec`, switched on in `.claude/settings.json`; three fresh Opus reads (8, 10, 8 findings), every must-fix fixed with a test (30); archived; leftovers `[PUSH-GUARD-LEFTOVERS]`. How it works: `raptor-port/docs/gates-and-deploy.md`.
-- **Branch:** `claude/sharp-goldberg-6d0656`, tracking `origin/claude/sharp-goldberg-6d0656`; no pull request yet. Not released: this chat may continue. Everything waits for his "merge live".
-- **Gates:** `npm run docsize` OK; `node --test .claude/hooks/push-guard.test.mjs` 30/30, `bg-cwd-guard.test.mjs` 14/14. No app code changed (tier NONE for the app); `gatelock.mjs` changed, so the branch's push starts the full check run — read it before any further push. The app loads hooks when a chat starts: the guard was NOT live in the chat that built it; the next chat on this branch is its first live use — watch for a wrong refusal.
-- **Open questions for him:** none.
+<!-- now:claude/medical-newyear-display-298bb6 -->
+### `claude/medical-newyear-display-298bb6` — [MED-NEWYEAR] closed (not a fault), and D977: every Medical card one even width — written 17 Oct 26, verify before use
+- **Where it started:** his opening message: level with `main` (it was; fast-forwarded past pull request 525), measure the chat (14%), do `[MED-NEWYEAR]`, remove the merged `claude/sharp-goldberg-6d0656` block (done — its leftovers are filed as `[PUSH-GUARD-LEFTOVERS]`).
+- **[MED-NEWYEAR]:** not a fault of the app — filed through the window, 28 Dec – 3 Jan saves its end as "Jan 3 2027" and the Medical tab shows it right (down 30 Dec and 2 Jan, owing an upchit 5 Jan); the item rested on a row planted without its year (D56). Pinned by a browser test; walk `raptor-port/scripts/handpass/med-newyear.mjs` 12/12; archived; observation 627.
+- **D977 (his, after the walk's pictures — "Fix", then "make them Evenly width … Wrap text as required"):** every Medical card one width — a third of the row on a phone, 120 on a desktop — built in `raptor-port/src/ui/scheduler/16-medical.css`; the browser test of the old "hug the words" rule now pins it; LOOK tier, before and after pictures `raptor-port/docs/img/handpass/2026-10-17-med-even-width{,-before}/` (after 18/18, before 8 FAIL); design-guide Lesson 5, checked by a fresh reader. Sheet: `raptor-port/docs/handpass/2026-10-17-med-newyear.md`.
+- **Branch:** `claude/medical-newyear-display-298bb6`, cut from `main` at pull request 525. Waits for his look at the pictures and his "merge live".
+- **Gates:** the whole set on his PC after D977, 17 Oct 26 — unit 11,581/11,581 (651 files), build, the original 728/0, browser 839 passed, Tracker smoke 446/0, rulecheck, docsize: all green; `e2e/medical.spec.ts` 33 with the cards' tests.
+- **Open questions for him:** none — the pictures are his look at D977 (he skipped the picture before the build).
 - **Running when written:** none.
-- **Pick up here:** read this push's check run; open the pull request when he wants it merged; in the next chat, note any wrong refusal by the guard (file it under `[PUSH-GUARD-LEFTOVERS]`).
-- **Opening line:** "Switch this chat to the branch claude/sharp-goldberg-6d0656: git fetch origin, git switch claude/sharp-goldberg-6d0656, git branch -u origin/claude/sharp-goldberg-6d0656, git pull --ff-only. If the switch is refused because another checkout holds the branch, release it there only if that checkout is clean and on origin's commit, then switch again; otherwise stop and tell me. Then measure how full this chat is, read HANDOFF.md — the claude/sharp-goldberg-6d0656 block under ## Now — and carry on from Pick up here."
+- **Pick up here:** read the pull request's check run; then his look and his next pick from the backlog.
+- **Opening line:** "Switch this chat to the branch claude/medical-newyear-display-298bb6: git fetch origin, git switch claude/medical-newyear-display-298bb6, git branch -u origin/claude/medical-newyear-display-298bb6, git pull --ff-only. If the switch is refused because another checkout holds the branch, release it there only if that checkout is clean and on origin's commit, then switch again; otherwise stop and tell me. Then measure how full this chat is, read HANDOFF.md — the claude/medical-newyear-display-298bb6 block under ## Now — and carry on from Pick up here."
 <!-- /now -->
 
 ## Next, in order
 
-**RIGHT NOW (17 Oct 26):** pull request 524 is LIVE (the Medical tab's cards and "+ Medical", D959–D968) → `[CONTEXT-START-SIZE]` — why a new chat starts 30–40% full, and options (his question), on `claude/sharp-goldberg-6d0656` → `[MED-NEWYEAR]`, a small fix of its own.
+**RIGHT NOW (17 Oct 26, later):** pull requests 524 and 525 are LIVE (the Medical tab's cards and "+ Medical"; the start-size follow-ons and the push-and-lock guard) → `[MED-NEWYEAR]` CLOSED as not a fault of the app, and D977 (every Medical card one even width) BUILT, on `claude/medical-newyear-display-298bb6` — waiting for his look and "merge live" → his next pick from the backlog.
 
 **RIGHT NOW (17 Oct 26):** pull requests 522 and 523 are LIVE (the till-date tick and round 2's words; ALL / ALL AVAIL inputs on the Common Programme) → round 3 of the whole-app words pass (D808), on `claude/sharp-goldberg-6d0656`.
 

@@ -1108,3 +1108,18 @@ Met again 2026-10-17: the [CONTEXT-START-SIZE] handoff (session-handoff, a day c
 **Suggested improvement:** Before writing such a hook, list the shell features it must read (quotes, escapes per shell, heredoc and here-string bodies, comments, substitutions, `bash -c`/`eval`, redirects, launcher words like `timeout`/`env`), judge only the word in command position, and write the everyday-command corpus (commit with a heredoc message, PR body, grep for the tool's name) as tests first.
 
 **Principle:** A rule that inspects free-form input is only as good as its reading of that input; build the reader to the input's real grammar before the rule, and test the common harmless cases first, because a false refusal on every-day work costs more than the gap it closes.
+
+### Observation 627: A fault found in passing is re-proved through the app's own door before it is filed
+
+**Status:** OPEN
+**Date:** 2026-10-17
+**Session context:** [MED-NEWYEAR] — a backlog item said a medical input across New Year never shows on the Medical tab
+**Skill:** New skill candidate: none — the project's checking guide (`raptor-port/docs/bug-check-order.md`, the "found while…" findings; `raptor-port/docs/walk-scripts.md` §3 Fixtures)
+**Type:** open-source
+**Phase/Area:** filing a fault met while proving something else
+
+**Issue:** A test for another fix planted a row straight into the data, without the end date's year, and the calculation it fed failed. The fault was filed as real for new data, with a planned engine change. The next chat probed the app's own save path first: every door writes the year, the screen was right, and the item closed as "not a fault" after a walk — but the backlog item, its priority line and a planned engine change had all been built on the planted row.
+
+**Suggested improvement:** One line where the order speaks of a fault found in passing: before it is filed as a fault of the app (and before D56's "real for new data" is claimed), reproduce it through the control a person uses — or say in the item that it was seen only in planted data. In `walk-scripts.md` §3: a fixture planted straight into the data can make shapes the app never writes; a failure that depends on its shape is checked against the real door before it is reported.
+
+**Principle:** A failure seen only with hand-made data is evidence about the data until the real input path reproduces it.

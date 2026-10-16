@@ -1,0 +1,12 @@
+PASS phone: one ATT C filed through "+ Medical" — saw [{"iid":"imvb8pfk1putmwf","type":"ATT C","date":"Dec 28","endDate":"Jan 3 2027","yr":2026}]
+PASS phone: as of 2026-12-30 (the button reads "as of 30 Dec") the card is under med-down only — saw {"med-down":"SaberIPATT C28 Dec – 3 Jan 2027"}
+PASS phone: as of 2026-12-30 the card's period runs across New Year — saw "SaberIPATT C28 Dec – 3 Jan 2027"
+PASS phone: as of 2027-01-02 (the button reads "as of 2 Jan 2027") the card is under med-down only — saw {"med-down":"SaberIPATT C28 Dec – 3 Jan 2027"}
+PASS phone: as of 2027-01-02 the card's period runs across New Year — saw "SaberIPATT C28 Dec – 3 Jan 2027"
+PASS phone: as of 2027-01-05 (the button reads "as of 5 Jan 2027") the card is under med-pend only — saw {"med-pend":"SaberIPATT C28 Dec – 3 Jan 2027"}
+PASS desktop: one ATT C filed through "+ Medical" — saw [{"iid":"imvb8pia7znyv6j","type":"ATT C","date":"Dec 28","endDate":"Jan 3 2027","yr":2026}]
+PASS desktop: as of 2026-12-30 (the button reads "as of 30 Dec") the card is under med-down only — saw {"med-down":"SaberIPATT C28 Dec – 3 Jan 2027"}
+PASS desktop: as of 2026-12-30 the card's period runs across New Year — saw "SaberIPATT C28 Dec – 3 Jan 2027"
+PASS desktop: as of 2027-01-02 (the button reads "as of 2 Jan 2027") the card is under med-down only — saw {"med-down":"SaberIPATT C28 Dec – 3 Jan 2027"}
+PASS desktop: as of 2027-01-02 the card's period runs across New Year — saw "SaberIPATT C28 Dec – 3 Jan 2027"
+PASS desktop: as of 2027-01-05 (the button reads "as of 5 Jan 2027") the card is under med-pend only — saw {"med-pend":"SaberIPATT C28 Dec – 3 Jan 2027"}
