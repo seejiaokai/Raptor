@@ -1,0 +1,588 @@
+{
+ "results": [
+  {
+   "id": "T5-1 desk later in-time line: \"(prev day)\" beside the title",
+   "tag": "PASS",
+   "note": "header reads \"⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON (prev day) Traffic ⇅ Auto sort + In-time / Rally + Line ✕ Wave\"; \"(prev day)\" colour rgb(138, 150, 163), starts x 199 after the title ends x 189; line reads \"22:30H IN TIME\"",
+   "pic": "t5-1-prevday-on-desk.png"
+  },
+  {
+   "id": "T5-2 desk \"06:00H IN TIME\": \"(prev day)\" goes",
+   "tag": "PASS",
+   "note": "header reads \"⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic ⇅ Auto sort + In-time / Rally + Line ✕ Wave\"; line \"06:00H IN TIME\"; prevday undefined",
+   "pic": "t5-2-prevday-off-desk.png"
+  },
+  {
+   "id": "T5-3 desk Undo until the top bar's Undo is disabled",
+   "tag": "NOTE",
+   "note": "pressed Undo 2 time(s); in-time lines on the wave now 0"
+  },
+  {
+   "id": "T5  desk board wave header \"(prev day)\"",
+   "tag": "NOTE",
+   "note": "sub-steps T5-* above"
+  },
+  {
+   "id": "T1-1 desk window opens on OL (calendar on JULY 2026, 14 Jul)",
+   "tag": "PASS",
+   "note": "type OL, tick CHECKED, date \"till 14 Jul\" plain (line \"none\", class \"inped-till\"), range \"\"; tick after the box on the same line (tick x 1336.6-1349.6, box x 1010-1324.6)",
+   "pic": "t1-1-open-OL-desk.png"
+  },
+  {
+   "id": "T1-2 desk geometry: tick, date and Remarks box inside the window",
+   "tag": "FAIL",
+   "note": "tick box is 13x13px (<18)"
+  },
+  {
+   "id": "T1-2b desk OL leave 20->22 Jul, untick, re-pick 21->24 Jul: the tick stays unchecked through both taps",
+   "tag": "PASS",
+   "note": "tap 20: checked, date \"till 20 Jul\" | tap 22: checked, date \"till 22 Jul\" | untick: UNCHECKED, date \"till 22 Jul\" | tap 21 (fresh start): UNCHECKED, date \"till 21 Jul\" | tap 24: UNCHECKED, date \"till 24 Jul\"",
+   "pic": "t1-2b-OL-20-22-desk.png t1-2c-OL-21-24-unticked-desk.png"
+  },
+  {
+   "id": "T1-3 desk type Meeting, one day: unchecked, date struck",
+   "tag": "PASS",
+   "note": "type Meeting, tick unchecked, date \"till 14 Jul\" STRUCK (line \"line-through\", class \"inped-till off\"), range \"\"",
+   "pic": "t1-3-meeting-desk.png"
+  },
+  {
+   "id": "T1-4 desk tap the tick: checked, not struck",
+   "tag": "PASS",
+   "note": "type Meeting, tick CHECKED, date \"till 14 Jul\" plain (line \"none\", class \"inped-till\"), range \"\"",
+   "pic": "t1-4-ticked-desk.png"
+  },
+  {
+   "id": "T1-5 desk tap 16 Jul (the 14th is the start): still checked",
+   "tag": "PASS",
+   "note": "type Meeting, tick CHECKED, date \"till 16 Jul\" plain (line \"none\", class \"inped-till\"), range \"\"; cal {\"13\":\"dcal-d.is-today ap=false\",\"14\":\"dcal-d ap=false\",\"15\":\"dcal-d ap=false\",\"16\":\"dcal-d.is-sel ap=true\",\"17\":\"dcal-d ap=false\"}",
+   "pic": "t1-5-two-days-desk.png"
+  },
+  {
+   "id": "T1-6 desk stretch to 16 Jul, cut back to 14 Jul alone: the hand tick STAYS checked",
+   "tag": "PASS",
+   "note": "after the first tap: tick checked, date \"till 14 Jul\"; after the second: type Meeting, tick CHECKED, date \"till 14 Jul\" plain (line \"none\", class \"inped-till\"), range \"\"; cal {\"13\":\"dcal-d.is-today ap=false\",\"14\":\"dcal-d.is-sel ap=true\",\"15\":\"dcal-d ap=false\",\"16\":\"dcal-d ap=false\",\"17\":\"dcal-d ap=false\"}",
+   "pic": "t1-6-one-day-again-desk.png"
+  },
+  {
+   "id": "T1-7 desk tick on, remark \"Brief\", Add",
+   "tag": "PASS",
+   "note": "before Add: type Meeting, tick CHECKED, date \"till 14 Jul\" plain (line \"none\", class \"inped-till\"), range \"\"; window closed; stored {\"type\":\"Meeting\",\"date\":\"Jul 14\",\"till\":true}",
+   "pic": "t1-7-brief-ticked-desk.png"
+  },
+  {
+   "id": "T1-8 desk Inputs List Remarks column",
+   "tag": "PASS",
+   "note": "Remarks column reads \"Brief till 14 Jul\"; cells [\"Saber\",\"14 Jul 06:00–18:00\",\"\",\"Meeting\",\"Brief till 14 Jul\",\"now\",\"\"]",
+   "pic": "t1-8-list-desk.png"
+  },
+  {
+   "id": "T1  desk the tick in the window",
+   "tag": "NOTE",
+   "note": "sub-steps T1-* above"
+  },
+  {
+   "id": "T2-1 desk week row: box \"Brief\", grey \"till 14 Jul\" after it",
+   "tag": "PASS",
+   "note": "box \"Brief\", grey \"till 14 Jul\" (colour 138,150,163), button \"Reject\", row class \"pl-row accd\", kids [\"latetag:LATE\",\"ntx txed inpt:Brief\",\"rk-till:till 14 Jul\"]",
+   "pic": "t2-1-week-desk-row.png"
+  },
+  {
+   "id": "T2-3 desk week untick in the window, Save: row shows \"Brief\" with no grey date",
+   "tag": "PASS",
+   "note": "window untick false; row box \"Brief\", no .rk-till (kids [\"latetag:LATE\",\"ntx txed inpt:Brief\"])",
+   "pic": "t2-2-week-desk-window-unticked.png t2-3-week-desk-row-unticked.png"
+  },
+  {
+   "id": "T2-4 desk week re-open: tick unchecked",
+   "tag": "PASS",
+   "note": "type Meeting, tick unchecked, date \"till 14 Jul\" STRUCK (line \"line-through\", class \"inped-till off\"), range \"\"",
+   "pic": "t2-4-week-desk-reopened.png"
+  },
+  {
+   "id": "T2-5 desk week tick again, Save: the grey date is back",
+   "tag": "PASS",
+   "note": "tick now checked; row grey \"till 14 Jul\", box \"Brief\""
+  },
+  {
+   "id": "T2-6 desk week one-day Brief stretched to 15 Jul (from the Inputs page), Save: grey \"till 15 Jul\"",
+   "tag": "PASS",
+   "note": "window type Meeting, tick CHECKED, date \"till 15 Jul\" plain (line \"none\", class \"inped-till\"), range \"Jul 14 → Jul 15\"; row grey \"till 15 Jul\"",
+   "pic": "t2-6-week-desk-end-15.png t2-7-week-desk-row-end-15.png"
+  },
+  {
+   "id": "T2-7 desk week end back to 14 Jul alone, Save: row shows NO grey date (one-day default), tick unchecked on re-open",
+   "tag": "PASS",
+   "note": "before Save type Meeting, tick unchecked, date \"till 14 Jul\" STRUCK (line \"line-through\", class \"inped-till off\"), range \"\"; row box \"Brief\", no grey date; re-opened type Meeting, tick unchecked, date \"till 14 Jul\" STRUCK (line \"line-through\", class \"inped-till off\"), range \"\"",
+   "pic": "t2-8-week-desk-row-back-one-day.png t2-9-week-desk-reopened-one-day.png"
+  },
+  {
+   "id": "T2-8 desk week tick on, Save: \"Brief\" prints \"till 14 Jul\" again",
+   "tag": "PASS",
+   "note": "tick checked; row box \"Brief\", grey \"till 14 Jul\""
+  },
+  {
+   "id": "T2  desk week",
+   "tag": "NOTE",
+   "note": "sub-steps T2-* above"
+  },
+  {
+   "id": "T2-1 desk board row: box \"Brief\", grey \"till 14 Jul\" after it",
+   "tag": "PASS",
+   "note": "box \"Brief\", grey \"till 14 Jul\" (colour 138,150,163), button \"Reject\", row class \"sb-arow c6r inprow accd accup\", kids [\"ain rmkin:Brief\",\"rk-till:till 14 Jul\"]",
+   "pic": "t2-1-board-desk-row.png"
+  },
+  {
+   "id": "T2-3 desk board untick in the window, Save: row shows \"Brief\" with no grey date",
+   "tag": "PASS",
+   "note": "window untick false; row box \"Brief\", no .rk-till (kids [])",
+   "pic": "t2-2-board-desk-window-unticked.png t2-3-board-desk-row-unticked.png"
+  },
+  {
+   "id": "T2-4 desk board re-open: tick unchecked",
+   "tag": "PASS",
+   "note": "type Meeting, tick unchecked, date \"till 14 Jul\" STRUCK (line \"line-through\", class \"inped-till off\"), range \"\"",
+   "pic": "t2-4-board-desk-reopened.png"
+  },
+  {
+   "id": "T2-5 desk board tick again, Save: the grey date is back",
+   "tag": "PASS",
+   "note": "tick now checked; row grey \"till 14 Jul\", box \"Brief\""
+  },
+  {
+   "id": "T2-6 desk board one-day Brief stretched to 15 Jul (from the Inputs page), Save: grey \"till 15 Jul\"",
+   "tag": "PASS",
+   "note": "window type Meeting, tick CHECKED, date \"till 15 Jul\" plain (line \"none\", class \"inped-till\"), range \"Jul 14 → Jul 15\"; row grey \"till 15 Jul\"",
+   "pic": "t2-6-board-desk-end-15.png t2-7-board-desk-row-end-15.png"
+  },
+  {
+   "id": "T2-7 desk board end back to 14 Jul alone, Save: row shows NO grey date (one-day default), tick unchecked on re-open",
+   "tag": "PASS",
+   "note": "before Save type Meeting, tick unchecked, date \"till 14 Jul\" STRUCK (line \"line-through\", class \"inped-till off\"), range \"\"; row box \"Brief\", no grey date; re-opened type Meeting, tick unchecked, date \"till 14 Jul\" STRUCK (line \"line-through\", class \"inped-till off\"), range \"\"",
+   "pic": "t2-8-board-desk-row-back-one-day.png t2-9-board-desk-reopened-one-day.png"
+  },
+  {
+   "id": "T2-8 desk board tick on, Save: \"Brief\" prints \"till 14 Jul\" again",
+   "tag": "PASS",
+   "note": "tick checked; row box \"Brief\", grey \"till 14 Jul\""
+  },
+  {
+   "id": "T2  desk board",
+   "tag": "NOTE",
+   "note": "sub-steps T2-* above"
+  },
+  {
+   "id": "T3-0 desk Brief row accepted (button before \"Reject\")",
+   "tag": "PASS",
+   "note": "button now \"Reject\"; Tuesday Ground Programme rows from inputs: 2; the name's ::after reads \"\\\" · accepted\\\"\"; marker after the remark [\"none\",\"none\",\"none\"]"
+  },
+  {
+   "id": "T3  desk accept",
+   "tag": "NOTE",
+   "note": "see T3-0"
+  },
+  {
+   "id": "T3-1 desk week Ground Programme row: box \"Brief\" only, grey date after the box",
+   "tag": "PASS",
+   "note": "box \"Brief\", grey \"till 14 Jul\" after it, outside the box",
+   "pic": "t3-1-week-desk-gp-row.png"
+  },
+  {
+   "id": "T3-2 desk week click in the box and Tab: nothing changes",
+   "tag": "PASS",
+   "note": "box \"Brief\", grey \"till 14 Jul\" after it; edit-log rows 15, history 13/14, pending \"4 changes|11 changes|4 changes|11 changes\" — all unchanged",
+   "pic": "t3-2-week-desk-after-tab.png"
+  },
+  {
+   "id": "T3-3 desk week type \"x\" at the end, Tab: box reads Brief…x, date after it",
+   "tag": "PASS",
+   "note": "box \"Brief x\", grey \"till 14 Jul\" outside the box",
+   "pic": "t3-3-week-desk-typed.png"
+  },
+  {
+   "id": "T3-5 desk week type \"zz\" then Escape: back to the saved text, no date inside",
+   "tag": "PASS",
+   "note": "typing read \"Brief xzz\"; after Escape \"Brief x\", grey \"till 14 Jul\" outside",
+   "pic": "t3-4-week-desk-escape.png"
+  },
+  {
+   "id": "T3  desk GP box (week)",
+   "tag": "NOTE",
+   "note": "sub-steps T3-* above"
+  },
+  {
+   "id": "T3-1 desk board Ground Programme row: box \"Brief\" only, grey date after the box",
+   "tag": "PASS",
+   "note": "box \"Brief x\", grey \"till 14 Jul\" after it, outside the box",
+   "pic": "t3-1-board-desk-gp-row.png"
+  },
+  {
+   "id": "T3-2 desk board click in the box and Tab: nothing changes",
+   "tag": "PASS",
+   "note": "box \"Brief x\", grey \"till 14 Jul\" after it; edit-log rows 16, history 14/15, pending \"4 changes|12 changes|4 changes|12 changes\" — all unchanged",
+   "pic": "t3-2-board-desk-after-tab.png"
+  },
+  {
+   "id": "T3-3 desk board type \"y\" at the end, Tab: box reads Brief…y, date after it",
+   "tag": "PASS",
+   "note": "box \"Brief x y\", grey \"till 14 Jul\" outside the box",
+   "pic": "t3-3-board-desk-typed.png"
+  },
+  {
+   "id": "T3-5 desk board type \"zz\" then Escape: back to the saved text, no date inside",
+   "tag": "PASS",
+   "note": "typing read \"Brief x yzz\"; after Escape \"Brief x y\", grey \"till 14 Jul\" outside",
+   "pic": "t3-4-board-desk-escape.png"
+  },
+  {
+   "id": "T3  desk GP box (board)",
+   "tag": "NOTE",
+   "note": "sub-steps T3-* above"
+  },
+  {
+   "id": "T4-1 desk an ACCEPTED row reads \"· accepted\" after its name and nothing after its remark",
+   "tag": "PASS",
+   "note": "Brief row: name \"Meeting\" ::after \"\\\" · accepted\\\"\", after the remark [\"none\",\"none\",\"none\"]; another accepted row: {\"name\":\"Meeting\",\"after\":\"\\\" · accepted\\\"\",\"rmkAfter\":[\"none\"]}",
+   "pic": "t4-1-accepted-desk.png"
+  },
+  {
+   "id": "T4-2 desk week: rejected row",
+   "tag": "PASS",
+   "note": "name \"Meeting\" ::after \"\\\" · rejected\\\"\"; nothing after the remark; hover \"Rejected from the day — flags nothing until accepted again\"; note \"A rejected input flags nothing until accepted again. Delete it here if it should go entirely.\"; button \"Accept\"",
+   "pic": "t4-2-rejected-week-desk.png"
+  },
+  {
+   "id": "T4-3 desk board: the panel's note and the row's hover",
+   "tag": "PASS",
+   "note": "board note [\"A rejected input flags nothing until accepted again. Delete it here if it should go entirely.\"]; row class \"sb-arow c6r inprow inp-dorm\", hover \"Rejected from the day — flags nothing until accepted again\"",
+   "pic": "t4-3-rejected-board-desk.png"
+  },
+  {
+   "id": "T4-4 desk Accept again: back to \"· accepted\"",
+   "tag": "PASS",
+   "note": "button \"Reject\", name ::after \"\\\" · accepted\\\"\", grey \"till 14 Jul\""
+  },
+  {
+   "id": "T4  desk rejected",
+   "tag": "NOTE",
+   "note": "sub-steps T4-* above"
+  },
+  {
+   "id": "T6-1 desk View-only Sched, Monday: no boxed \"Draft\" stamp; the DRAFT tag stays",
+   "tag": "PASS",
+   "note": "head reads \"Monday Jul 13 · Today DRAFT 4 X 4 4 changes i\"; leaf parts [[\"Monday\",\"none 0px\"],[\"Jul 13 · Today\",\"none 0px\"],[\"DRAFT\",\"dashed 1px\"],[\"4 X 4\",\"solid 1px\"],[\"4 changes\",\"solid 1px\"],[\"i\",\"solid 1px\"]]",
+   "pic": "t6-1-viewonly-monday-head.png"
+  },
+  {
+   "id": "T6-2 desk View-only Sched: the next-week peek reads \"Next week: click a day to load it\"",
+   "tag": "PASS",
+   "note": "peek reads \"Next week: click a day to load it\"",
+   "pic": "t6-2-peek-viewonly.png"
+  },
+  {
+   "id": "T6-3 desk Edit Schedule: the crew panel heading reads \"Placeholders\" (no \"· drag in\")",
+   "tag": "PASS",
+   "note": "headings found [\"Placeholders\",\"Placeholders (hidden)\"]; any \"drag in\" text on the page: []",
+   "pic": "t6-3-placeholders.png"
+  },
+  {
+   "id": "T6  desk round 2 words",
+   "tag": "NOTE",
+   "note": "sub-steps T6-* above"
+  },
+  {
+   "id": "T7-1 desk publish Tuesday through its own controls",
+   "tag": "PASS",
+   "note": "chip reads \"ORIG | ORIG\"; pending chip \"20 changes\"",
+   "pic": "t7-1-published.png"
+  },
+  {
+   "id": "T7-2 desk published Tuesday, untick the Brief tick: \"1 pending\" and the remark goes \"Brief till 14 Jul\" -> \"Brief\"",
+   "tag": "PASS",
+   "note": "head \"1 pending\"; list \"Saber · Meeting Saber 16/10 15:33 “Brief x y till 14 Jul” → “Brief x y”\"",
+   "pic": "t7-2-pending-chip.png t7-3-pending-list.png"
+  },
+  {
+   "id": "T7  desk published day",
+   "tag": "NOTE",
+   "note": "sub-steps T7-* above"
+  },
+  {
+   "id": "T5-1 phone390 later in-time line: \"(prev day)\" beside the title",
+   "tag": "PASS",
+   "note": "header reads \"⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON (prev day) Traffic ⇅ Auto sort + In-time / Rally + Line ✕ Wave\"; \"(prev day)\" colour rgb(138, 150, 163), starts x 199 after the title ends x 189; line reads \"22:30H IN TIME\"",
+   "pic": "t5-1-prevday-on-phone390.png"
+  },
+  {
+   "id": "T5-2 phone390 \"06:00H IN TIME\": \"(prev day)\" goes",
+   "tag": "PASS",
+   "note": "header reads \"⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic ⇅ Auto sort + In-time / Rally + Line ✕ Wave\"; line \"06:00H IN TIME\"; prevday undefined",
+   "pic": "t5-2-prevday-off-phone390.png"
+  },
+  {
+   "id": "T5-3 phone390 Undo until the top bar's Undo is disabled",
+   "tag": "NOTE",
+   "note": "pressed Undo 2 time(s); in-time lines on the wave now 0"
+  },
+  {
+   "id": "T5  phone390 board wave header \"(prev day)\"",
+   "tag": "NOTE",
+   "note": "sub-steps T5-* above"
+  },
+  {
+   "id": "T1-1 phone390 window opens on OL (calendar on JUL 2026, 14 Jul)",
+   "tag": "PASS",
+   "note": "type OL, tick CHECKED, date \"till 14 Jul\" plain (line \"none\", class \"inped-till\"), range \"\"; tick after the box on the same line (tick x 282.6-295.6, box x 28-270.6)",
+   "pic": "t1-1-open-OL-phone390.png"
+  },
+  {
+   "id": "T1-2 phone390 geometry: tick, date and Remarks box inside the window (phone 390)",
+   "tag": "FAIL",
+   "note": "tick box is 13x13px (<18)"
+  },
+  {
+   "id": "T1-2b phone390 OL leave 20->22 Jul, untick, re-pick 21->24 Jul: the tick stays unchecked through both taps",
+   "tag": "PASS",
+   "note": "tap 20: checked, date \"till 20 Jul\" | tap 22: checked, date \"till 22 Jul\" | untick: UNCHECKED, date \"till 22 Jul\" | tap 21 (fresh start): UNCHECKED, date \"till 21 Jul\" | tap 24: UNCHECKED, date \"till 24 Jul\"",
+   "pic": "t1-2b-OL-20-22-phone390.png t1-2c-OL-21-24-unticked-phone390.png"
+  },
+  {
+   "id": "T1-3 phone390 type Meeting, one day: unchecked, date struck",
+   "tag": "PASS",
+   "note": "type Meeting, tick unchecked, date \"till 14 Jul\" STRUCK (line \"line-through\", class \"inped-till off\"), range \"\"",
+   "pic": "t1-3-meeting-phone390.png"
+  },
+  {
+   "id": "T1-4 phone390 tap the tick: checked, not struck",
+   "tag": "PASS",
+   "note": "type Meeting, tick CHECKED, date \"till 14 Jul\" plain (line \"none\", class \"inped-till\"), range \"\"",
+   "pic": "t1-4-ticked-phone390.png"
+  },
+  {
+   "id": "T1-5 phone390 tap 16 Jul (the 14th is the start): still checked",
+   "tag": "PASS",
+   "note": "type Meeting, tick CHECKED, date \"till 16 Jul\" plain (line \"none\", class \"inped-till\"), range \"\"; cal {\"13\":\"dcal-d.is-today ap=false\",\"14\":\"dcal-d ap=false\",\"15\":\"dcal-d ap=false\",\"16\":\"dcal-d.is-sel ap=true\",\"17\":\"dcal-d ap=false\"}",
+   "pic": "t1-5-two-days-phone390.png"
+  },
+  {
+   "id": "T1-6 phone390 stretch to 16 Jul, cut back to 14 Jul alone: the hand tick STAYS checked",
+   "tag": "PASS",
+   "note": "after the first tap: tick checked, date \"till 14 Jul\"; after the second: type Meeting, tick CHECKED, date \"till 14 Jul\" plain (line \"none\", class \"inped-till\"), range \"\"; cal {\"13\":\"dcal-d.is-today ap=false\",\"14\":\"dcal-d.is-sel ap=true\",\"15\":\"dcal-d ap=false\",\"16\":\"dcal-d ap=false\",\"17\":\"dcal-d ap=false\"}",
+   "pic": "t1-6-one-day-again-phone390.png"
+  },
+  {
+   "id": "T1-7 phone390 tick on, remark \"Brief\", Add",
+   "tag": "PASS",
+   "note": "before Add: type Meeting, tick CHECKED, date \"till 14 Jul\" plain (line \"none\", class \"inped-till\"), range \"\"; window closed; stored {\"type\":\"Meeting\",\"date\":\"Jul 14\",\"till\":true}",
+   "pic": "t1-7-brief-ticked-phone390.png"
+  },
+  {
+   "id": "T1  phone390 the tick in the window",
+   "tag": "NOTE",
+   "note": "sub-steps T1-* above"
+  },
+  {
+   "id": "T2-1 phone390 week row: box \"Brief\", grey \"till 14 Jul\" after it",
+   "tag": "FAIL",
+   "note": "the grey date breaks over 2 lines (66x22) — it wraps mid-word",
+   "pic": "t2-1-week-phone390-row.png"
+  },
+  {
+   "id": "T2-3 phone390 week untick in the window, Save: row shows \"Brief\" with no grey date",
+   "tag": "PASS",
+   "note": "window untick false; row box \"Brief\", no .rk-till (kids [\"latetag:LATE\",\"ntx txed inpt:Brief\"])",
+   "pic": "t2-2-week-phone390-window-unticked.png t2-3-week-phone390-row-unticked.png"
+  },
+  {
+   "id": "T2-4 phone390 week re-open: tick unchecked",
+   "tag": "PASS",
+   "note": "type Meeting, tick unchecked, date \"till 14 Jul\" STRUCK (line \"line-through\", class \"inped-till off\"), range \"\"",
+   "pic": "t2-4-week-phone390-reopened.png"
+  },
+  {
+   "id": "T2-5 phone390 week tick again, Save: the grey date is back",
+   "tag": "PASS",
+   "note": "tick now checked; row grey \"till 14 Jul\", box \"Brief\""
+  },
+  {
+   "id": "T2-6 phone390 week one-day Brief stretched to 15 Jul (from the Inputs page), Save: grey \"till 15 Jul\"",
+   "tag": "PASS",
+   "note": "window type Meeting, tick CHECKED, date \"till 15 Jul\" plain (line \"none\", class \"inped-till\"), range \"Jul 14 → Jul 15\"; row grey \"till 15 Jul\"",
+   "pic": "t2-6-week-phone390-end-15.png t2-7-week-phone390-row-end-15.png"
+  },
+  {
+   "id": "T2-7 phone390 week end back to 14 Jul alone, Save: row shows NO grey date (one-day default), tick unchecked on re-open",
+   "tag": "PASS",
+   "note": "before Save type Meeting, tick unchecked, date \"till 14 Jul\" STRUCK (line \"line-through\", class \"inped-till off\"), range \"\"; row box \"Brief\", no grey date; re-opened type Meeting, tick unchecked, date \"till 14 Jul\" STRUCK (line \"line-through\", class \"inped-till off\"), range \"\"",
+   "pic": "t2-8-week-phone390-row-back-one-day.png t2-9-week-phone390-reopened-one-day.png"
+  },
+  {
+   "id": "T2-8 phone390 week tick on, Save: \"Brief\" prints \"till 14 Jul\" again",
+   "tag": "PASS",
+   "note": "tick checked; row box \"Brief\", grey \"till 14 Jul\""
+  },
+  {
+   "id": "T2  phone390 week",
+   "tag": "NOTE",
+   "note": "sub-steps T2-* above"
+  },
+  {
+   "id": "T2-1 phone390 board row: box \"Brief\", grey \"till 14 Jul\" after it",
+   "tag": "PASS",
+   "note": "box \"Brief\", grey \"till 14 Jul\" (colour 138,150,163), button \"Reject\", row class \"sb-arow c6r inprow accd accup\", kids [\"ain rmkin:Brief\",\"rk-till:till 14 Jul\"]",
+   "pic": "t2-1-board-phone390-row.png"
+  },
+  {
+   "id": "T2-3 phone390 board untick in the window, Save: row shows \"Brief\" with no grey date",
+   "tag": "PASS",
+   "note": "window untick false; row box \"Brief\", no .rk-till (kids [])",
+   "pic": "t2-2-board-phone390-window-unticked.png t2-3-board-phone390-row-unticked.png"
+  },
+  {
+   "id": "T2-4 phone390 board re-open: tick unchecked",
+   "tag": "PASS",
+   "note": "type Meeting, tick unchecked, date \"till 14 Jul\" STRUCK (line \"line-through\", class \"inped-till off\"), range \"\"",
+   "pic": "t2-4-board-phone390-reopened.png"
+  },
+  {
+   "id": "T2-5 phone390 board tick again, Save: the grey date is back",
+   "tag": "PASS",
+   "note": "tick now checked; row grey \"till 14 Jul\", box \"Brief\""
+  },
+  {
+   "id": "T2-6 phone390 board one-day Brief stretched to 15 Jul (from the Inputs page), Save: grey \"till 15 Jul\"",
+   "tag": "PASS",
+   "note": "window type Meeting, tick CHECKED, date \"till 15 Jul\" plain (line \"none\", class \"inped-till\"), range \"Jul 14 → Jul 15\"; row grey \"till 15 Jul\"",
+   "pic": "t2-6-board-phone390-end-15.png t2-7-board-phone390-row-end-15.png"
+  },
+  {
+   "id": "T2-7 phone390 board end back to 14 Jul alone, Save: row shows NO grey date (one-day default), tick unchecked on re-open",
+   "tag": "PASS",
+   "note": "before Save type Meeting, tick unchecked, date \"till 14 Jul\" STRUCK (line \"line-through\", class \"inped-till off\"), range \"\"; row box \"Brief\", no grey date; re-opened type Meeting, tick unchecked, date \"till 14 Jul\" STRUCK (line \"line-through\", class \"inped-till off\"), range \"\"",
+   "pic": "t2-8-board-phone390-row-back-one-day.png t2-9-board-phone390-reopened-one-day.png"
+  },
+  {
+   "id": "T2-8 phone390 board tick on, Save: \"Brief\" prints \"till 14 Jul\" again",
+   "tag": "PASS",
+   "note": "tick checked; row box \"Brief\", grey \"till 14 Jul\""
+  },
+  {
+   "id": "T2  phone390 board",
+   "tag": "NOTE",
+   "note": "sub-steps T2-* above"
+  },
+  {
+   "id": "T3-0 phone390 Brief row accepted (button before \"Reject\")",
+   "tag": "PASS",
+   "note": "button now \"Reject\"; Tuesday Ground Programme rows from inputs: 2; the name's ::after reads \"\\\" · accepted\\\"\"; marker after the remark [\"none\",\"none\",\"none\"]"
+  },
+  {
+   "id": "T3  phone390 accept",
+   "tag": "NOTE",
+   "note": "see T3-0"
+  },
+  {
+   "id": "T3-1 phone390 week Ground Programme row: box \"Brief\" only, grey date after the box",
+   "tag": "PASS",
+   "note": "box \"Brief\", grey \"till 14 Jul\" after it, outside the box",
+   "pic": "t3-1-week-phone390-gp-row.png"
+  },
+  {
+   "id": "T3-2 phone390 week click in the box and Tab: nothing changes",
+   "tag": "PASS",
+   "note": "box \"Brief\", grey \"till 14 Jul\" after it; edit-log rows 15, history 13/14, pending \"4 changes|11 changes|4 changes|11 changes\" — all unchanged",
+   "pic": "t3-2-week-phone390-after-tab.png"
+  },
+  {
+   "id": "T3-3 phone390 week type \"x\" at the end, Tab: box reads Brief…x, date after it",
+   "tag": "PASS",
+   "note": "box \"Brief x\", grey \"till 14 Jul\" outside the box",
+   "pic": "t3-3-week-phone390-typed.png"
+  },
+  {
+   "id": "T3-5 phone390 week type \"zz\" then Escape: back to the saved text, no date inside",
+   "tag": "PASS",
+   "note": "typing read \"Brief xzz\"; after Escape \"Brief x\", grey \"till 14 Jul\" outside",
+   "pic": "t3-4-week-phone390-escape.png"
+  },
+  {
+   "id": "T3  phone390 GP box (week)",
+   "tag": "NOTE",
+   "note": "sub-steps T3-* above"
+  },
+  {
+   "id": "T3-1 phone390 board Ground Programme row: box \"Brief\" only, grey date after the box",
+   "tag": "PASS",
+   "note": "box \"Brief x\", grey \"till 14 Jul\" after it, outside the box",
+   "pic": "t3-1-board-phone390-gp-row.png"
+  },
+  {
+   "id": "T3-2 phone390 board click in the box and Tab: nothing changes",
+   "tag": "PASS",
+   "note": "box \"Brief x\", grey \"till 14 Jul\" after it; edit-log rows 16, history 14/15, pending \"4 changes|12 changes|4 changes|12 changes\" — all unchanged",
+   "pic": "t3-2-board-phone390-after-tab.png"
+  },
+  {
+   "id": "T3-3 phone390 board type \"y\" at the end, Tab: box reads Brief…y, date after it",
+   "tag": "PASS",
+   "note": "box \"Brief x y\", grey \"till 14 Jul\" outside the box",
+   "pic": "t3-3-board-phone390-typed.png"
+  },
+  {
+   "id": "T3-5 phone390 board type \"zz\" then Escape: back to the saved text, no date inside",
+   "tag": "PASS",
+   "note": "typing read \"Brief x yzz\"; after Escape \"Brief x y\", grey \"till 14 Jul\" outside",
+   "pic": "t3-4-board-phone390-escape.png"
+  },
+  {
+   "id": "T3  phone390 GP box (board)",
+   "tag": "NOTE",
+   "note": "sub-steps T3-* above"
+  },
+  {
+   "id": "T4-1 phone390 an ACCEPTED row reads \"· accepted\" after its name and nothing after its remark",
+   "tag": "PASS",
+   "note": "Brief row: name \"Meeting\" ::after \"\\\" · accepted\\\"\", after the remark [\"none\",\"none\",\"none\"]; another accepted row: {\"name\":\"Meeting\",\"after\":\"\\\" · accepted\\\"\",\"rmkAfter\":[\"none\"]}",
+   "pic": "t4-1-accepted-phone390.png"
+  },
+  {
+   "id": "T4-2 phone390 week: rejected row",
+   "tag": "PASS",
+   "note": "name \"Meeting\" ::after \"\\\" · rejected\\\"\"; nothing after the remark; hover \"Rejected from the day — flags nothing until accepted again\"; note \"A rejected input flags nothing until accepted again. Delete it here if it should go entirely.\"; button \"Accept\"",
+   "pic": "t4-2-rejected-week-phone390.png"
+  },
+  {
+   "id": "T4-3 phone390 board: the panel's note and the row's hover",
+   "tag": "PASS",
+   "note": "board note [\"A rejected input flags nothing until accepted again. Delete it here if it should go entirely.\"]; row class \"sb-arow c6r inprow inp-dorm\", hover \"Rejected from the day — flags nothing until accepted again\"",
+   "pic": "t4-3-rejected-board-phone390.png"
+  },
+  {
+   "id": "T4-4 phone390 Accept again: back to \"· accepted\"",
+   "tag": "PASS",
+   "note": "button \"Reject\", name ::after \"\\\" · accepted\\\"\", grey \"till 14 Jul\""
+  },
+  {
+   "id": "T4  phone390 rejected",
+   "tag": "NOTE",
+   "note": "sub-steps T4-* above"
+  },
+  {
+   "id": "T8-1 member (Ranger) new input on 15 Jul: the tick toggles",
+   "tag": "PASS",
+   "note": "type OL: true -> false -> true; date \"till 15 Jul\" plain; tick inert false",
+   "pic": "t8-1-member-new.png"
+  },
+  {
+   "id": "T8-2 member opens someone else's input: tick inside an [inert] body, a tap does not change it",
+   "tag": "PASS",
+   "note": "card \"till 17 Jul GritATT C Medically down\"; tick inert true; checked true -> true; date \"till 17 Jul\" plain",
+   "pic": "t8-2-member-others-card.png"
+  },
+  {
+   "id": "T8  member phone",
+   "tag": "NOTE",
+   "note": "sub-steps T8-* above"
+  }
+ ],
+ "errs": []
+}

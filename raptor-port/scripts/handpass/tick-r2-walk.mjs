@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url'
 console.log('tick-r2-walk v1')
 const T0 = Date.now()
 const HERE = dirname(fileURLToPath(import.meta.url))
-const OUT = join(HERE, '../../docs/img/handpass/2026-10-17-tick-r2')
+const OUT = process.argv[2] || join(HERE, '../../docs/img/handpass/2026-10-17-tick-r2')   // a re-walk: its own folder
 rmSync(OUT, { recursive: true, force: true }); mkdirSync(OUT, { recursive: true })
 const URL = process.env.LOOK_URL || 'http://localhost:4180/'
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
@@ -50,7 +50,7 @@ async function signIn(C, who = 'ad', pw = 'a') {
 const hideToast = page => page.evaluate(() => { const t = document.getElementById('toastEl'); if (t) t.style.display = 'none' })
 const press = async (C, sel, nth = 0) => {
   const l = C.page.locator(sel).nth(nth)
-  await l.scrollIntoViewIfNeeded()
+  await l.scrollIntoViewIfNeeded(); await l.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'nearest' })); await C.page.waitForTimeout(120)
   if (C.phone) await l.tap(); else await l.click()
 }
 async function closeBoard(C) {
@@ -100,7 +100,7 @@ async function step(id, fn) {
   try {
     const r = await fn()
     rec(id, r.ok, r.note, r.pic)
-  } catch (e) { try { await LASTPAGE.screenshot({ path: join(OUT, 'err-' + id.replace(/[^a-z0-9]+/gi, '-').slice(0, 40) + '.png') }) } catch {}; rec(id, false, 'SCRIPT/DRIVER ERROR (read before blaming the app): ' + String(e.message || e).split('\n')[0].slice(0, 300)) }
+  } catch (e) { try { await LASTPAGE.screenshot({ path: join(OUT, 'err-' + id.replace(/[^a-z0-9]+/gi, '-').slice(0, 40) + '.png') }) } catch {}; rec(id, false, 'SCRIPT/DRIVER ERROR (read before blaming the app): ' + String(e.message || e).replace(/\s*\n\s*/g, ' / ').slice(0, 1100)) }
 }
 const MONTHS = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER']
 async function calTo(C, y, m) {
@@ -274,7 +274,7 @@ const readRow = (page, rowSel, where) => page.evaluate(([rs, where]) => {
   const nm = r.querySelector('.nm .ntx'); const rmkWrap = r.querySelector('.rmk, .rmkt')
   const g = till ? getComputedStyle(till).color.match(/\d+/g).map(Number) : null
   return {
-    box: box?.value ?? box?.textContent, till: till?.textContent, boxHasTill: /\btill\b/i.test(box?.value ?? box?.textContent ?? ''), tillInsideBox: !!(box && till && box.contains(till)),
+    tillLines: till ? till.getClientRects().length : 0, tillRect: till ? Math.round(till.getBoundingClientRect().width) + 'x' + Math.round(till.getBoundingClientRect().height) : null, box: box?.value ?? box?.textContent, till: till?.textContent, boxHasTill: /\btill\b/i.test(box?.value ?? box?.textContent ?? ''), tillInsideBox: !!(box && till && box.contains(till)),
     follows: !!(till && box && till.previousElementSibling === box), grey: g ? g.slice(0, 3).join(',') : null, neutral: g ? Math.max(...g.slice(0, 3)) - Math.min(...g.slice(0, 3)) <= 40 : null,
     acc: r.querySelector('.accb')?.textContent.trim(), accAttr: r.querySelector('.accb')?.dataset.acc, title: r.getAttribute('title'), cls: r.className,
     nameAfter: after(nm), nameText: nm?.textContent, rmkAfter: [after(rmkWrap), after(box), after(till)], kids: rmkWrap ? [...rmkWrap.children].map(c => c.className + ':' + (c.value ?? c.textContent)) : [],
@@ -295,7 +295,7 @@ async function t2(C, where) {
   const a = await readRow(C.page, rowSel, where)
   const pa = await snap(C.page, `t2-1-${where}-${C.tag}-row`, [rowSel], [`${rowSel} .rk-till`], 6)
   const b = []
-  if (a.box !== 'Brief') b.push(`box holds ${J(a.box)}`); if (a.till !== 'till 14 Jul') b.push(`grey date reads ${J(a.till)}`); if (!a.follows) b.push('grey date does not follow the box'); if (a.tillInsideBox) b.push('the date is inside the box')
+  if (a.box !== 'Brief') b.push(`box holds ${J(a.box)}`); if (a.till !== 'till 14 Jul') b.push(`grey date reads ${J(a.till)}`); if (!a.follows) b.push('grey date does not follow the box'); if (a.tillInsideBox) b.push('the date is inside the box'); if (a.tillLines > 1) b.push(`the grey date breaks over ${a.tillLines} lines (${a.tillRect}) — it wraps mid-word`)
   rec(`T2-1 ${C.tag} ${where} row: box "Brief", grey "till 14 Jul" after it`, !b.length, b.length ? b.join('; ') : `box ${J(a.box)}, grey ${J(a.till)} (colour ${a.grey}), button "${a.acc}", row class "${a.cls}", kids ${J(a.kids)}`, pa)
   /* open the window from the row, untick, save */
   await openWinFromRow(C, rowSel)
@@ -334,7 +334,14 @@ async function t2(C, where) {
     await C.page.locator('#inpCal [data-icday="2026-07-14"]').click({ position: { x: 8, y: 8 } }); await C.page.waitForTimeout(500)
     const ok = await C.page.evaluate(`(() => { const w = document.querySelector('[data-testid="win-inputsday"]'); if (!w) return false; const c = [...w.querySelectorAll('.icard')].find(c => /Brief/.test(c.innerText)); if (!c) return false; c.setAttribute('data-wk-c', '1'); return true })()`)
     if (!ok) throw new Error('the Inputs page day window does not list the Brief card')
-    await press(C, '[data-wk-c]'); await C.page.waitForSelector('[data-testid="win-inputedit"]'); await C.page.waitForTimeout(500)
+    await press(C, '[data-wk-c]'); await C.page.waitForTimeout(700)
+    for (const [lab, pos] of [['the name', { x: 24, y: 18 }], ['the right end', { x: 200, y: 30 }]]) {
+      if (await C.page.locator('[data-testid="win-inputedit"]').count()) break
+      console.log('   (tap on the Brief card opened nothing — tapping ' + lab + ')')
+      const lc = C.page.locator('[data-wk-c]').first(); await (C.phone ? lc.tap({ position: pos }) : lc.click({ position: pos })); await C.page.waitForTimeout(700)
+    }
+    if (!(await C.page.locator('[data-testid="win-inputedit"]').count())) { console.log('   (still nothing — page click on the card)'); await C.page.evaluate(() => document.querySelector('[data-wk-c]').click()); await C.page.waitForTimeout(700) }
+    await C.page.waitForSelector('[data-testid="win-inputedit"]'); await C.page.waitForTimeout(500)
     await C.page.evaluate(() => document.querySelectorAll('[data-wk-c]').forEach(e => e.removeAttribute('data-wk-c')))
   }
   await openBriefOnInputs()
@@ -403,6 +410,16 @@ async function t3accept(C) {
   const gp = await C.page.evaluate(g => document.querySelectorAll(g + ' .gr-frominput').length, GP('week', di))
   rec(`T3-0 ${C.tag} Brief row accepted (button before "${before.acc}")`, /^Reject/.test(after.acc || '') && gp > 0, `button now "${after.acc}"; Tuesday Ground Programme rows from inputs: ${gp}; the name's ::after reads ${J(after.nameAfter)}; marker after the remark ${J(after.rmkAfter)}`)
 }
+/* press a Ground Programme remark box at its RIGHT end: on a phone the LATE chip can sit over the box's middle (the first tap, in the middle, was "intercepted" by the chip) — measured and noted once */
+const LATE_OVER = new Set()
+async function pressBox(C, boxSel) {
+  const l = C.page.locator(boxSel).first(); await l.scrollIntoViewIfNeeded(); await l.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'nearest' })); await C.page.waitForTimeout(150)
+  const m = await C.page.evaluate(bs => { const b = document.querySelector(bs); const r = b.getBoundingClientRect(); const lt = b.closest('.rmk, .rmkt, [data-inprow], .gr-frominput')?.querySelector('.latetag'); const t = lt ? lt.getBoundingClientRect() : null; const cx = r.left + r.width / 2, cy = r.top + r.height / 2; const hit = document.elementFromPoint(cx, cy); return { box: [Math.round(r.left), Math.round(r.right), Math.round(r.top), Math.round(r.bottom)], late: t ? [Math.round(t.left), Math.round(t.right), Math.round(t.top), Math.round(t.bottom)] : null, centreHit: hit ? (hit.className || hit.tagName) : null, boxHit: hit === b || b.contains(hit) } }, boxSel)
+  if (!m.boxHit && m.late) LATE_OVER.add(C.tag + ' ' + J(m))
+  const pt = await C.page.evaluate(bs => { const b = document.querySelector(bs); const r = b.getBoundingClientRect(); const pts = [[r.right - 6, r.top + r.height / 2], [r.right - 6, r.bottom - 4], [r.left + r.width * .75, r.top + r.height / 2], [r.left + r.width / 2, r.top + r.height / 2]]; for (const [x, y] of pts) { const h = document.elementFromPoint(x, y); if (h && (h === b || b.contains(h))) return { x, y } } return null }, boxSel)
+  if (!pt) throw new Error('no point on the box is free to press: ' + J(m))
+  if (C.phone) await C.page.touchscreen.tap(pt.x, pt.y); else await C.page.mouse.click(pt.x, pt.y)
+}
 async function t3box(C, where) {
   const di = 1
   if (where === 'board') await openBoard(C, di); else await openWeek(C)
@@ -415,7 +432,7 @@ async function t3box(C, where) {
   rec(`T3-1 ${C.tag} ${where} Ground Programme row: box "Brief" only, grey date after the box`, !b.length, b.length ? b.join('; ') : `box ${J(s0.box)}, grey ${J(s0.till)} after it, outside the box`, pic0)
   /* click in, Tab */
   const boxSel = where === 'board' ? `${rs} textarea.rmkin` : `${rs} .rmk .ntx`
-  await press(C, boxSel); await C.page.waitForTimeout(250)
+  await pressBox(C, boxSel); await C.page.waitForTimeout(250)
   const sf = await gpState(C.page, rs, where)
   await C.page.keyboard.press('Tab'); await C.page.waitForTimeout(800)
   const rs2 = await gpRowSel(C, where, di) || rs
@@ -428,7 +445,7 @@ async function t3box(C, where) {
   rec(`T3-2 ${C.tag} ${where} click in the box and Tab: nothing changes`, !bt.length, bt.length ? bt.join('; ') : `box ${J(s1.box)}, grey ${J(s1.till)} after it; edit-log rows ${s0.rows}, history ${s0.hist}, pending ${J(s0.pend) || 'none'} — all unchanged`, pic1)
   /* type a word at the end, Tab */
   const word = where === 'board' ? ' y' : ' x'
-  await press(C, boxSel); await C.page.keyboard.press('Control+End'); await C.page.keyboard.type(word, { delay: 30 })
+  await pressBox(C, boxSel); await C.page.keyboard.press('Control+End'); await C.page.keyboard.type(word, { delay: 30 })
   await C.page.keyboard.press('Tab'); await C.page.waitForTimeout(900)
   const rs3 = await gpRowSel(C, where, di)
   const s2 = rs3 ? await gpState(C.page, rs3, where) : null
@@ -443,7 +460,7 @@ async function t3box(C, where) {
   /* Escape */
   if (s2) {
     const before = s2.box
-    await press(C, boxSel); await C.page.keyboard.press('Control+End'); await C.page.keyboard.type('zz', { delay: 30 })
+    await pressBox(C, boxSel); await C.page.keyboard.press('Control+End'); await C.page.keyboard.type('zz', { delay: 30 })
     const typing = await gpState(C.page, rs3, where)
     await C.page.keyboard.press('Escape'); await C.page.waitForTimeout(700)
     const rs4 = await gpRowSel(C, where, di) || rs3
@@ -643,6 +660,7 @@ async function t8(C) {
   await goPage(C, 'inputs'); await calTo(C, 2026, 7)
   const iso = '2026-07-14'
   await C.page.locator(`#inpCal [data-icday="${iso}"]`).click({ position: { x: 8, y: 8 } }); await C.page.waitForTimeout(500)
+  { const cf = C.page.locator('[data-testid="win-inputsday"] button', { hasText: 'Clear filters' }).first(); if (await cf.count()) { console.log('   (the member day window opened with a filter on: "No inputs match on this day" — pressing Clear filters)'); await cf.tap(); await C.page.waitForTimeout(600) } }
   const cards = await C.page.evaluate(() => [...document.querySelectorAll('[data-testid="win-inputsday"] .icard')].map((c, i) => ({ i, text: c.innerText.replace(/\s+/g, ' ').trim().slice(0, 90), cls: c.className })))
   console.log('   member day-window cards on 14 Jul:', J(cards))
   let opened = null
@@ -690,5 +708,6 @@ if (!ONLY || ONLY.includes('member')) { const M = await newCtx('member390', 390,
 writeFileSync(join(OUT, 'results.json'), JSON.stringify({ results, errs }, null, 1))
 const c = t => results.filter(r => r.tag === t).length
 console.log(`\nSUMMARY  PASS ${c('PASS')}  FAIL ${c('FAIL')}  NOT WALKED ${c('NOT WALKED')}  (${Math.round((Date.now() - T0) / 1000)}s)`)
+for (const o of LATE_OVER) console.log('LATE chip over the middle of a Ground Programme box:', o)
 console.log('console/page errors:', errs.length); for (const e of [...new Set(errs)].slice(0, 40)) console.log('  ' + e)
 await browser.close()
