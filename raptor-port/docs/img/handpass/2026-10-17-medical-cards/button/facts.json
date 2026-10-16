@@ -1,0 +1,51 @@
+{
+ "phone A": {
+  "size": "84x36",
+  "right": 152,
+  "headH": 53,
+  "calH": 36
+ },
+ "phone B": {
+  "size": "84x36",
+  "right": 10,
+  "headH": 53,
+  "calH": 36
+ },
+ "phone C": {
+  "size": "84x36",
+  "right": 10,
+  "headH": 53,
+  "calH": 36
+ },
+ "phone D": {
+  "size": "95x36",
+  "right": 10,
+  "headH": 53,
+  "calH": 36
+ },
+ "desk A": {
+  "size": "84x36",
+  "right": 1184,
+  "headH": 57,
+  "calH": 36
+ },
+ "desk B": {
+  "size": "84x36",
+  "right": 16,
+  "headH": 57,
+  "calH": 36
+ },
+ "desk C": {
+  "size": "84x36",
+  "right": 16,
+  "headH": 57,
+  "calH": 36
+ },
+ "desk D": {
+  "size": "95x36",
+  "right": 16,
+  "headH": 57,
+  "calH": 36
+ },
+ "errors": []
+}

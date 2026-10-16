@@ -1,0 +1,191 @@
+{
+ "phone planted": "Ranger",
+ "phone before": {
+  "perRow": {
+   "down": [
+    2,
+    1
+   ],
+   "pend": [
+    1
+   ],
+   "done": [
+    1
+   ]
+  },
+  "cards": [
+   "111x45",
+   "128x45",
+   "117x45",
+   "117x45",
+   "133x65"
+  ],
+  "lines": [
+   "Ranger IP HL 12–15 Jul",
+   "Grit C ATT C 13–17 Jul",
+   "Vector C OML 13 Jul",
+   "Quill IW OML was down 6–9 Jul",
+   "Zenith C Upchit upchitted 20 Jun 2 documents"
+  ],
+  "title": null,
+  "head": 53
+ },
+ "phone after": {
+  "perRow": {
+   "down": [
+    3
+   ],
+   "pend": [
+    1
+   ],
+   "done": [
+    1
+   ]
+  },
+  "cards": [
+   "94x46",
+   "100x46",
+   "94x46",
+   "94x46",
+   "94x45"
+  ],
+  "lines": [
+   "Ranger IP HL 12–15 Jul",
+   "Grit C ATT C 13–17 Jul",
+   "Vector C OML 13 Jul",
+   "Quill IW OML 6–9 Jul",
+   "Zenith C 20 Jun"
+  ],
+  "title": {
+   "w": 218,
+   "h": 17
+  },
+  "head": 53
+ },
+ "phone375 planted": "Ranger",
+ "phone375 before": {
+  "perRow": {
+   "down": [
+    2,
+    1
+   ],
+   "pend": [
+    1
+   ],
+   "done": [
+    1
+   ]
+  },
+  "cards": [
+   "111x45",
+   "128x45",
+   "117x45",
+   "117x45",
+   "133x65"
+  ],
+  "lines": [
+   "Ranger IP HL 12–15 Jul",
+   "Grit C ATT C 13–17 Jul",
+   "Vector C OML 13 Jul",
+   "Quill IW OML was down 6–9 Jul",
+   "Zenith C Upchit upchitted 20 Jun 2 documents"
+  ],
+  "title": null,
+  "head": 53
+ },
+ "phone375 after": {
+  "perRow": {
+   "down": [
+    3
+   ],
+   "pend": [
+    1
+   ],
+   "done": [
+    1
+   ]
+  },
+  "cards": [
+   "94x46",
+   "100x46",
+   "94x46",
+   "94x46",
+   "94x45"
+  ],
+  "lines": [
+   "Ranger IP HL 12–15 Jul",
+   "Grit C ATT C 13–17 Jul",
+   "Vector C OML 13 Jul",
+   "Quill IW OML 6–9 Jul",
+   "Zenith C 20 Jun"
+  ],
+  "title": {
+   "w": 208,
+   "h": 34
+  },
+  "head": 53
+ },
+ "desk planted": "Ranger",
+ "desk before": {
+  "perRow": {
+   "down": [
+    3
+   ],
+   "pend": [
+    1
+   ],
+   "done": [
+    1
+   ]
+  },
+  "cards": [
+   "111x45",
+   "128x45",
+   "117x45",
+   "117x45",
+   "133x65"
+  ],
+  "lines": [
+   "Ranger IP HL 12–15 Jul",
+   "Grit C ATT C 13–17 Jul",
+   "Vector C OML 13 Jul",
+   "Quill IW OML was down 6–9 Jul",
+   "Zenith C Upchit upchitted 20 Jun 2 documents"
+  ],
+  "title": null,
+  "head": 57
+ },
+ "desk after": {
+  "perRow": {
+   "down": [
+    3
+   ],
+   "pend": [
+    1
+   ],
+   "done": [
+    1
+   ]
+  },
+  "cards": [
+   "94x46",
+   "100x46",
+   "94x46",
+   "94x46",
+   "94x45"
+  ],
+  "lines": [
+   "Ranger IP HL 12–15 Jul",
+   "Grit C ATT C 13–17 Jul",
+   "Vector C OML 13 Jul",
+   "Quill IW OML 6–9 Jul",
+   "Zenith C 20 Jun"
+  ],
+  "title": {
+   "w": 218,
+   "h": 17
+  },
+  "head": 57
+ },
+ "errors": []
+}

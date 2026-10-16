@@ -186,7 +186,9 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
         /* only when the undo LANDED on Inputs (snapView has changed page by now): an input undone from Edit Schedule
            stays there, and a reveal left waiting would open that day by itself at the next visit to Inputs, however
            much later (Opus's own read of the build, step 0, 7 Oct 26) */
-        if(row&&change&&CURPAGE==='inputs')requestInpReveal({...row,iid:change.id})
+        /* …and NOT from the Medical tab (the fix read of [MEDICAL-CARDS-3], 17 Oct 26): neither calendar is in view there, so
+           an Undo or Redo of a filing made on it turned the month unseen and left the reveal waiting for the next visit */
+        if(row&&change&&CURPAGE==='inputs'&&INPVIEW!=='med')requestInpReveal({...row,iid:change.id})
       }
     }
   } else if (m === 'people') {

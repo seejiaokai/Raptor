@@ -1,0 +1,225 @@
+{
+ "desk medical section heads": [
+  "Medically Down2cannot fly as of 13 Jul",
+  "Pending Upchit1the down period has ended — the upchit document is still owed",
+  "Upchit Complete1the past 30 days, newest first"
+ ],
+ "desk as-of button": [
+  "as of 13 Jul"
+ ],
+ "desk Q1/Q2 heights before": {
+  ".medsec.med-down .medsec-h": [
+   37
+  ],
+  ".medsec.med-pend .medsec-h": [
+   37
+  ],
+  ".medsec.med-down": [
+   129
+  ],
+  ".medsec.med-pend": [
+   129
+  ]
+ },
+ "desk Q1 found": [
+  "1 ×1: cannot fly as of 13 Jul",
+  "2 ×1: the down period has ended — the upchit document is still owed"
+ ],
+ "pictures": [
+  "desk-q12-medical-before.png",
+  "desk-q12-medical-after.png",
+  "desk-left-upchit-complete.png",
+  "desk-q34-help-before.png",
+  "desk-q34-help-after-a.png",
+  "desk-q3-help-after-b.png",
+  "phone-q12-medical-before.png",
+  "phone-q12-medical-after.png",
+  "phone-left-upchit-complete.png",
+  "phone-q34-help-before.png",
+  "phone-q34-help-after-a.png",
+  "phone-q3-help-after-b.png"
+ ],
+ "desk Q1 after": [
+  "removed"
+ ],
+ "desk Q2 after": [
+  "removed"
+ ],
+ "desk Q1/Q2 heights after": {
+  ".medsec.med-down .medsec-h": [
+   37
+  ],
+  ".medsec.med-pend .medsec-h": [
+   37
+  ],
+  ".medsec.med-down": [
+   129
+  ],
+  ".medsec.med-pend": [
+   129
+  ]
+ },
+ "desk left: upchit complete": [
+  "Upchit Complete1the past 30 days, newest first"
+ ],
+ "desk Q3 before": [
+  "Spotted something wrong, or something that could work better? Send it here — the schedulers see every report."
+ ],
+ "desk Q4 before": [
+  "No reports yet — anything the squadron files lands here."
+ ],
+ "desk Q3/Q4 heights before": {
+  "#bugFile": [
+   281
+  ],
+  "#bugAdmin": [
+   86
+  ],
+  "#bugFile .help-lead": [
+   17
+  ],
+  "#bugAdmin .help-lead": [
+   17
+  ]
+ },
+ "desk Q3 found": [
+  "3 ×1: Spotted something wrong, or something that could work better? Send it here — the schedulers see every report.",
+  "4 ×1: No reports yet — anything the squadron files lands here."
+ ],
+ "desk Q3 after A": [
+  "Spotted something wrong, or something that could work better? The schedulers see every report."
+ ],
+ "desk Q4 after": [
+  "No reports yet."
+ ],
+ "desk Q3/Q4 heights after A": {
+  "#bugFile": [
+   281
+  ],
+  "#bugAdmin": [
+   86
+  ],
+  "#bugFile .help-lead": [
+   17
+  ],
+  "#bugAdmin .help-lead": [
+   17
+  ]
+ },
+ "desk Q3 after B": [
+  "The schedulers see every report."
+ ],
+ "desk Q3/Q4 heights after B": {
+  "#bugFile": [
+   281
+  ],
+  "#bugFile .help-lead": [
+   17
+  ]
+ },
+ "phone medical section heads": [
+  "Medically Down2cannot fly as of 13 Jul",
+  "Pending Upchit1the down period has ended — the upchit document is still owed",
+  "Upchit Complete1the past 30 days, newest first"
+ ],
+ "phone as-of button": [
+  "as of 13 Jul"
+ ],
+ "phone Q1/Q2 heights before": {
+  ".medsec.med-down .medsec-h": [
+   51
+  ],
+  ".medsec.med-pend .medsec-h": [
+   51
+  ],
+  ".medsec.med-down": [
+   143
+  ],
+  ".medsec.med-pend": [
+   143
+  ]
+ },
+ "phone Q1 found": [
+  "1 ×1: cannot fly as of 13 Jul",
+  "2 ×1: the down period has ended — the upchit document is still owed"
+ ],
+ "phone Q1 after": [
+  "removed"
+ ],
+ "phone Q2 after": [
+  "removed"
+ ],
+ "phone Q1/Q2 heights after": {
+  ".medsec.med-down .medsec-h": [
+   37
+  ],
+  ".medsec.med-pend .medsec-h": [
+   37
+  ],
+  ".medsec.med-down": [
+   129
+  ],
+  ".medsec.med-pend": [
+   129
+  ]
+ },
+ "phone left: upchit complete": [
+  "Upchit Complete1the past 30 days, newest first"
+ ],
+ "phone Q3 before": [
+  "Spotted something wrong, or something that could work better? Send it here — the schedulers see every report."
+ ],
+ "phone Q4 before": [
+  "No reports yet — anything the squadron files lands here."
+ ],
+ "phone Q3/Q4 heights before": {
+  "#bugFile": [
+   315
+  ],
+  "#bugAdmin": [
+   103
+  ],
+  "#bugFile .help-lead": [
+   51
+  ],
+  "#bugAdmin .help-lead": [
+   34
+  ]
+ },
+ "phone Q3 found": [
+  "3 ×1: Spotted something wrong, or something that could work better? Send it here — the schedulers see every report.",
+  "4 ×1: No reports yet — anything the squadron files lands here."
+ ],
+ "phone Q3 after A": [
+  "Spotted something wrong, or something that could work better? The schedulers see every report."
+ ],
+ "phone Q4 after": [
+  "No reports yet."
+ ],
+ "phone Q3/Q4 heights after A": {
+  "#bugFile": [
+   298
+  ],
+  "#bugAdmin": [
+   86
+  ],
+  "#bugFile .help-lead": [
+   34
+  ],
+  "#bugAdmin .help-lead": [
+   17
+  ]
+ },
+ "phone Q3 after B": [
+  "The schedulers see every report."
+ ],
+ "phone Q3/Q4 heights after B": {
+  "#bugFile": [
+   281
+  ],
+  "#bugFile .help-lead": [
+   17
+  ]
+ },
+ "errors": []
+}

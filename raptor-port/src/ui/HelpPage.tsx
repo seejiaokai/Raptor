@@ -81,7 +81,8 @@ export function HelpPage() {
       <h2>Help</h2>
       <section className="help-card" id="bugFile">
         <h3>Report a problem</h3>
-        <p className="adm-note help-lead">Spotted something wrong, or something that could work better? Send it here — the schedulers see every report.</p>
+        {/* "Send it here" went — the Send report button below says it (owner D959, the words pass, 17 Oct 26) */}
+        <p className="adm-note help-lead">Spotted something wrong, or something that could work better? The schedulers see every report.</p>
         <div className="mfield"><label>Category</label>
           <select id="bugCat" ref={catRef} aria-label="What the report is about">
             {BUG_CATS.map(c => <option key={c} value={c}>{c}</option>)}
@@ -97,9 +98,10 @@ export function HelpPage() {
       </section>
       {admin && <section className="help-card" id="bugAdmin">
         <h3>Bug reports</h3>
+        {/* empty, it says only that: the heading says what lands here (D959) */}
         <p className="adm-note help-lead">{rows.length
           ? `${rows.length} report${rows.length === 1 ? '' : 's'}, newest first.`
-          : 'No reports yet — anything the squadron files lands here.'}</p>
+          : 'No reports yet.'}</p>
         <div className="buglist" id="bugList">
           {rows.map(r => <Row key={r.id} r={r} fresh={fresh.has(r.id)} who />)}
         </div>

@@ -1,0 +1,87 @@
+{
+ "desk medical": {
+  "downSub": [],
+  "pendSub": [],
+  "doneSub": [
+   "the past 30 days, newest first"
+  ],
+  "down": [
+   "13–17 Jul",
+   "13 Jul"
+  ],
+  "pend": [
+   "was down 6–9 Jul"
+  ],
+  "done": [
+   "upchitted 20 Jun"
+  ],
+  "cards": [
+   "GritCATT C13–17 Jul",
+   "VectorCOML13 Jul",
+   "QuillIWOMLwas down 6–9 Jul",
+   "ZenithCUpchitupchitted 20 Jun2 documents"
+  ],
+  "heights": [
+   100,
+   100,
+   120
+  ]
+ },
+ "desk help": {
+  "lead": "Spotted something wrong, or something that could work better? The schedulers see every report.",
+  "empty": "No reports yet."
+ },
+ "phone medical": {
+  "downSub": [],
+  "pendSub": [],
+  "doneSub": [
+   "the past 30 days, newest first"
+  ],
+  "down": [
+   "13–17 Jul",
+   "13 Jul"
+  ],
+  "pend": [
+   "was down 6–9 Jul"
+  ],
+  "done": [
+   "upchitted 20 Jun"
+  ],
+  "cards": [
+   "GritCATT C13–17 Jul",
+   "VectorCOML13 Jul",
+   "QuillIWOMLwas down 6–9 Jul",
+   "ZenithCUpchitupchitted 20 Jun2 documents"
+  ],
+  "heights": [
+   100,
+   100,
+   134
+  ]
+ },
+ "phone help": {
+  "lead": "Spotted something wrong, or something that could work better? The schedulers see every report.",
+  "empty": "No reports yet."
+ },
+ "results": [
+  "PASS desk Medically Down has no grey line",
+  "PASS desk Pending Upchit has no grey line",
+  "PASS desk Upchit Complete keeps its line",
+  "PASS desk no card says who placed it or a time",
+  "PASS desk Medically Down cards say a period",
+  "PASS desk Pending Upchit cards say \"was down <period>\"",
+  "PASS desk Upchit Complete cards unchanged (\"upchitted <day>\")",
+  "PASS desk Report a problem's line",
+  "PASS desk the empty Bug reports card",
+  "PASS phone Medically Down has no grey line",
+  "PASS phone Pending Upchit has no grey line",
+  "PASS phone Upchit Complete keeps its line",
+  "PASS phone no card says who placed it or a time",
+  "PASS phone Medically Down cards say a period",
+  "PASS phone Pending Upchit cards say \"was down <period>\"",
+  "PASS phone Upchit Complete cards unchanged (\"upchitted <day>\")",
+  "PASS phone Report a problem's line",
+  "PASS phone the empty Bug reports card"
+ ],
+ "errors": []
+}

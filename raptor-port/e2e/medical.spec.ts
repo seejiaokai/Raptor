@@ -59,9 +59,11 @@ test.describe('the medical view renders and fits', () => {
             for (const b of rg.getClientRects()) if (b.width) right = Math.max(right, b.right)
             return right
           }
-          const top = c.querySelector('.medcard-top')
+          /* (row 2 since D965: the kind, the period and any document drawings — its LAST child ends the ink) */
+          const top = c.querySelector('.medcard-top'), row2 = c.querySelector('.medcard-row2')
           const inkRight = Math.max(
             top ? top.lastElementChild!.getBoundingClientRect().right : -1e9,
+            row2 && row2.lastElementChild ? row2.lastElementChild.getBoundingClientRect().right : -1e9,
             runRight(c.querySelector('.medcard-t')), runRight(c.querySelector('.medcard-r')))
           const slack = box.right - inkRight
           /* 9px padding + 1px border = 10; anything past ~16 is a box that
@@ -111,8 +113,242 @@ test.describe('the medical view renders and fits', () => {
     await page.click('[data-medday="2026-07-08"]')
     /* on 8 Jul nasty was still down (6–9 Jul), so he reads in Medically
        Down, not Pending */
-    await expect(page.locator('.medsec.med-down')).toContainText('till 9 Jul')
+    await expect(page.locator('.medsec.med-down')).toContainText('6–9 Jul')   // the period (owner D960)
     await page.click('#medToday')
-    await expect(page.locator('.medsec.med-pend')).toContainText('was down till 9 Jul')
+    /* the kind and the period, "was down" gone (owner D965) */
+    await expect(page.locator('.medsec.med-pend')).toContainText('6–9 Jul')
+    await expect(page.locator('.medsec.med-pend')).not.toContainText('was down')
+  })
+
+  /* THREE A ROW ON A PHONE (owner D961, D965 — 17 Oct 26, built as drawn): a card is its puck, then the kind and the
+     period on one row, so it is about as wide as its puck and three stand in a row at his iPhone's 390 and at 375. A
+     third man is filed down in this browser only (the drawing's own way — scripts/handpass/medical-cards.mjs), so the
+     row is the app's own three cards. */
+  for (const width of [390, 375]) test(`D965 three medical cards stand in one row at ${width}`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 844 })
+    await login(page)
+    const who = await page.evaluate(() => {
+      const w = window as any
+      const taken = new Set(w.INPUTS.filter((r: any) => /^(ATT [BC]|OML|HL|Upchit)$/i.test(String(r.type))).map((r: any) => String(r.person)))
+      const pid = Object.keys(w.PEOPLE).find(k => w.PEOPLE[k].cs && !taken.has(k) && !w.PEOPLE[k].archived && !w.PEOPLE[k].special)
+      w.fileInput({ person: pid, type: 'HL', date: 'Jul 12', endDate: 'Jul 15', yr: 2026, allday: true }); if (w.notify) w.notify()
+      return w.PEOPLE[pid!].cs
+    })
+    await go(page, 'inputs')
+    await page.click('#inMedBtn')
+    await expect(page.locator('.medsec.med-down')).toContainText(who)
+    const rows = await page.evaluate(() => {
+      const tops = [...document.querySelectorAll('.medsec.med-down .medcard')].map(c => Math.round(c.getBoundingClientRect().top))
+      return { n: tops.length, rows: new Set(tops).size, widths: [...document.querySelectorAll('.medcard')].map(c => Math.round(c.getBoundingClientRect().width)) }
+    })
+    expect(rows.n, 'three men down').toBe(3)
+    expect(rows.rows, 'all three in one row').toBe(1)
+    /* at most a third of the row (D967) — never a fixed pixel figure: the letters' width differs by machine (GitHub's Linux
+       drew "ATT C 13–17 Jul" 107 wide where his PC drew it 100), and three a row is the rule, not the pixels */
+    const row = await page.evaluate(() => (document.querySelector('.medsec.med-down .medcards') as HTMLElement).clientWidth - 16)
+    for (const w of rows.widths) expect(w, `a card at most a third of the row (${row})`).toBeLessThanOrEqual(Math.ceil((row - 12) / 3) + 1)
+    /* each card two rows: the puck, then the kind and the period on one line */
+    const lines = await page.evaluate(() => [...document.querySelectorAll('.medcard')].map(c => {
+      const r2 = c.querySelector('.medcard-row2')!.getBoundingClientRect()
+      return Math.round(r2.height)
+    }))
+    for (const h of lines) expect(h, 'row 2 is one line').toBeLessThanOrEqual(16)
+    /* …AND IN THE WIDER LETTERS OF AN IPHONE OR A LINUX MACHINE (pull request 524's check run: GitHub's Linux drew this
+       row three lines tall at 375 — the app ships no monospace face, so each device draws its own): Courier New, about
+       0.60 of the size wide as theirs are, stands in for them on any machine */
+    await page.addStyleTag({ content: ".medcard-type,.medcard-t{font-family:'Courier New',Courier,monospace !important}" })
+    await page.waitForTimeout(100)
+    const wide = await page.evaluate(() => {
+      const cs = [...document.querySelectorAll('.medsec.med-down .medcard')]
+      return { rows: new Set(cs.map(c => Math.round(c.getBoundingClientRect().top))).size, heights: cs.map(c => Math.round(c.querySelector('.medcard-row2')!.getBoundingClientRect().height)), text: cs.map(c => c.querySelector('.medcard-row2')!.textContent) }
+    })
+    expect(wide.rows, `wider letters: three still in one row (${JSON.stringify(wide.text)})`).toBe(1)
+    for (const h of wide.heights) expect(h, `wider letters: row 2 still one line (${JSON.stringify(wide)})`).toBeLessThanOrEqual(16)
+  })
+
+  /* A LONG PERIOD GOES UNDER ITS KIND (owner D967 — "Both as recommended", after the code read): "ATT C 29 Jun – 14 Jul"
+     is wider than a third of a phone's row; on a phone a card is at most a third, its period on the line under its kind,
+     so three still stand in a row — and a card of two documents keeps its "▯ 2" inside its own box. */
+  for (const width of [390, 375]) test(`D967 a long period goes under its kind and three still stand in a row at ${width}`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 844 })
+    await login(page)
+    const iid = await page.evaluate(() => {
+      const w = window as any
+      const ids = [...new Set(w.INPUTS.flatMap((r: any) => [r.docId, ...(Array.isArray(r.docIds) ? r.docIds : [])]).filter(Boolean))]
+      const taken = new Set(w.INPUTS.filter((r: any) => /^(ATT [BC]|OML|HL|Upchit)$/i.test(String(r.type))).map((r: any) => String(r.person)))
+      const pid = Object.keys(w.PEOPLE).find(k => w.PEOPLE[k].cs && !taken.has(k) && !w.PEOPLE[k].archived && !w.PEOPLE[k].special)
+      w.fileInput({ person: pid, type: 'ATT C', date: 'Jun 29', endDate: 'Jul 14', yr: 2026, allday: true, docId: ids[0], docIds: ids.slice(0, 2) })
+      if (w.notify) w.notify()
+      return String(w.INPUTS[0].iid || w.INPUTS[0].id || '')
+    })
+    await go(page, 'inputs')
+    await page.click('#inMedBtn')
+    const g = await page.evaluate(() => {
+      const cs = [...document.querySelectorAll('.medsec.med-down .medcard')] as HTMLElement[]
+      const long = cs.find(c => /29 Jun/.test(c.textContent || ''))
+      if (!long) return null
+      const kind = long.querySelector('.medcard-type')!.getBoundingClientRect(), when = long.querySelector('.medcard-t')!.getBoundingClientRect()
+      const box = long.getBoundingClientRect(), docs = long.querySelector('.medcard-docs')
+      return {
+        n: cs.length, rows: new Set(cs.map(c => Math.round(c.getBoundingClientRect().top))).size,
+        under: when.top >= kind.bottom - 1, docsN: docs ? docs.textContent : null,
+        inside: [...long.querySelectorAll('.medcard-row2 > *')].every(e => e.getBoundingClientRect().right <= box.right - 1),
+        widths: cs.map(c => Math.round(c.getBoundingClientRect().width)), row: (long.parentElement as HTMLElement).clientWidth,
+      }
+    })
+    expect(g, `the long card is drawn (${iid})`).not.toBeNull()
+    expect(g!.n, 'three men down').toBe(3)
+    expect(g!.rows, `all three in one row: widths ${g!.widths} in ${g!.row}`).toBe(1)
+    expect(g!.under, 'the long period is on the line under its kind').toBe(true)
+    expect(g!.docsN, 'two documents: the drawing and "2"').toBe('2')
+    expect(g!.inside, 'nothing of row 2 runs past the card').toBe(true)
+  })
+
+  /* THE FIX READ OF 17 OCT 26 — two widths the D967 cap must also hold: a period printed with its year ("29 Jan – 3 Feb
+     2027" — a year other than the app's own) breaks at its dash and stays inside its card at 390; and on the narrowest phone (320) a card never
+     gets narrower than its puck — two stand in a row there instead of a puck running into the next card. */
+  test('D967 a period printed with its year stays inside its card at 390, and at 320 no puck leaves its card', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await login(page)
+    await page.evaluate(() => {
+      const w = window as any
+      const taken = new Set(w.INPUTS.filter((r: any) => /^(ATT [BC]|OML|HL|Upchit)$/i.test(String(r.type))).map((r: any) => String(r.person)))
+      const free = Object.keys(w.PEOPLE).filter(k => w.PEOPLE[k].cs && !taken.has(k) && !w.PEOPLE[k].archived && !w.PEOPLE[k].special)
+      w.fileInput({ person: free[0], type: 'ATT C', date: 'Jan 29', endDate: 'Feb 3', yr: 2027, allday: true })
+      if (w.notify) w.notify()
+    })
+    await go(page, 'inputs')
+    await page.click('#inMedBtn')
+    /* the as-of date to 30 Jan 2027, through the tab's own picker */
+    await page.click('#medCalBtn')
+    for (let i = 0; i < 12 && !(await page.locator('[data-medday="2027-01-30"]').count()); i++) await page.click('#medCalNext')
+    await page.click('[data-medday="2027-01-30"]')
+    await expect(page.locator('#medCalBtn')).toContainText('30 Jan')
+    const spill = () => page.evaluate(() => [...document.querySelectorAll('.medcard')].map(c => {
+      const b = c.getBoundingClientRect(), pk = c.querySelector('.puck')!.getBoundingClientRect()
+      const parts = [...c.querySelectorAll('.medcard-row2 > *, .medcard-tp')].map(e => e.getBoundingClientRect().right)
+      return { text: (c.textContent || '').replace(/\s+/g, ' ').trim(), over: Math.round(Math.max(pk.right, ...parts) - (b.right - 1)) }
+    }))
+    const at390 = await spill()
+    const ny = at390.find(c => /29 Jan 2027 – 3 Feb 2027/.test(c.text))
+    expect(ny, `the card with its year is drawn: ${JSON.stringify(at390)}`).toBeTruthy()
+    expect(ny!.over, 'nothing of it past its edge').toBeLessThanOrEqual(0)
+    /* …and it breaks at its dash only: two halves, each a whole date on one line ("29 Jan 2027 –" / "3 Feb 2027") */
+    const halves = await page.evaluate(() => {
+      const c = [...document.querySelectorAll('.medcard')].find(x => /29 Jan 2027/.test(x.textContent || ''))!
+      /* the lines a half sits on: the distinct tops of its boxes (a box per text piece, not per line, so a count of boxes
+         proves nothing) */
+      return [...c.querySelectorAll('.medcard-tp')].map(e => ({ text: e.textContent, lines: new Set([...e.getClientRects()].filter(r => r.width > 0).map(r => Math.round(r.top))).size }))
+    })
+    expect(halves, 'the period in two whole halves').toEqual([{ text: '29 Jan 2027 –', lines: 1 }, { text: '3 Feb 2027', lines: 1 }])
+    await page.setViewportSize({ width: 320, height: 700 })
+    await page.waitForTimeout(200)
+    for (const c of await spill()) expect(c.over, `at 320, "${c.text}" stays inside its card`).toBeLessThanOrEqual(0)
+  })
+
+  /* UNDO AND REDO ON THE MEDICAL TAB LEAVE THE CALENDARS' MONTH ALONE (the fix read of 17 Oct 26 — the same fault as the
+     save's, through the Undo landing): a filing made through "+ Medical", undone and redone there, and the Inputs
+     calendar he left on its month is still on that month. */
+  test('D965 Undo and Redo on the Medical tab leave the Inputs calendar on its month', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    await go(page, 'inputs')
+    const month = page.locator('#inpCal .ic-mon').first()
+    const before = (await month.textContent())!.trim()
+    expect(before, 'the calendar is not already on July').not.toMatch(/Jul/)
+    await page.click('#inMedBtn')
+    await page.click('#medNew')
+    const win = page.locator('[data-testid="win-inputedit"]')
+    await expect(win).toBeVisible()
+    for (let i = 0; i < 24 && !(await page.locator('#inpEdCal [data-iso="2026-07-12"]').count()); i++) {
+      const t = (await page.locator('#inpEdCal .dcal-title').first().textContent()) || ''
+      await page.locator(`#inpEdCal button[aria-label="${/2027|Aug|Sep|Oct|Nov|Dec/.test(t) ? 'Previous' : 'Next'} month"]`).click()
+    }
+    await page.locator('#inpEdCal [data-iso="2026-07-12"]').click()
+    await page.locator('#inpEdCal [data-iso="2026-07-15"]').click()
+    await win.locator('.docfield input[type=file]').first().setInputFiles([{ name: 'cert.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.1 %%EOF') }])
+    await page.locator('#inpEditSave').click()
+    await expect(win).toHaveCount(0)
+    await page.click('#undoBtn'); await page.waitForTimeout(300)
+    await page.click('#redoBtn'); await page.waitForTimeout(300)
+    await expect(page.locator('#medView'), 'still on the Medical tab').toBeVisible()
+    await page.click('#inMemberMode')
+    await expect(month).toBeVisible()
+    expect((await month.textContent())!.trim(), 'the calendar kept its month through Undo and Redo').toBe(before)
+  })
+
+  /* "+ MEDICAL" (owner D963, D965 — 17 Oct 26): a filled button at the right end of the "as of" row, the row's 36 tall, a
+     finger's 44 on a phone; it opens the Inputs tab's own window set to a medical kind — by mouse and by keyboard (Tab to
+     it, Enter opens, Escape closes and the keyboard is back on the button) — for an admin and for a member. */
+  for (const [name, viewport, who] of [['phone admin', PHONE, 'a'], ['phone member', PHONE, 'user'], ['desktop admin', DESK, 'a'], ['desktop member', DESK, 'user']] as const)
+    test(`D965 "+ Medical" opens the input window on a medical kind — ${name}`, async ({ page }) => {
+      await page.setViewportSize(viewport)
+      await login(page, who)
+      await go(page, 'inputs')
+      await page.click('#inMedBtn')
+      const btn = page.locator('#medNew')
+      await expect(btn).toHaveText('+ Medical')
+      const geo = await page.evaluate(() => {
+        const b = document.querySelector('#medNew')!.getBoundingClientRect(), c = document.querySelector('#medCalBtn')!.getBoundingClientRect()
+        const head = document.querySelector('#medView .ic-head') as HTMLElement, hr = head.getBoundingClientRect()
+        const pad = parseFloat(getComputedStyle(head).paddingRight)
+        return { h: Math.round(b.height), mid: Math.abs((b.top + b.height / 2) - (c.top + c.height / 2)), rightGap: Math.round(hr.right - pad - b.right), inRow: b.right <= hr.right + 0.5 }
+      })
+      expect(geo.h, 'the row height').toBe(36)
+      expect(geo.mid, 'one row with "as of"').toBeLessThanOrEqual(1)
+      expect(geo.rightGap, 'at the right end of the row').toBeLessThanOrEqual(1)
+      expect(geo.inRow, 'inside the row').toBe(true)
+      /* by mouse */
+      await btn.click()
+      const win = page.locator('[data-testid="win-inputedit"]')
+      await expect(win).toBeVisible()
+      await expect(win.locator('#inpEditType')).toHaveValue('ATT C')
+      await page.keyboard.press('Escape')
+      await expect(win).toHaveCount(0)
+      await expect(page.locator('#medView'), 'still on the Medical tab').toBeVisible()
+      /* by keyboard: from "as of", Tab reaches it; Enter opens; Escape closes and gives the keyboard back to it */
+      await page.locator('#medCalBtn').focus()
+      await page.keyboard.press('Tab')
+      expect(await page.evaluate(() => document.activeElement && document.activeElement.id)).toBe('medNew')
+      await page.keyboard.press('Enter')
+      await expect(win).toBeVisible()
+      await expect(win.locator('#inpEditType')).toHaveValue('ATT C')
+      await page.keyboard.press('Escape')
+      await expect(win).toHaveCount(0)
+      await expect.poll(() => page.evaluate(() => document.activeElement && document.activeElement.id)).toBe('medNew')
+    })
+
+  /* A FILING FROM THE MEDICAL TAB LEAVES THE CALENDARS' MONTH ALONE (the code read of 17 Oct 26, finding 4): saved through
+     "+ Medical", an input used to turn the Inputs calendar to its own month — unseen, since the calendar is not on the
+     Medical tab. Filed for July through the real window, the calendar he left on its month is on that month when he
+     goes back; the new card is on the Medical tab. */
+  test('D965 a filing through "+ Medical" leaves the Inputs calendar on its month', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    await go(page, 'inputs')
+    const month = page.locator('#inpCal .ic-mon').first()
+    await expect(month).toBeVisible()
+    const before = (await month.textContent())!.trim()
+    expect(before, 'the calendar is not already on July').not.toMatch(/Jul/)
+    await page.click('#inMedBtn')
+    const had = await page.evaluate(() => (window as any).INPUTS.map((r: any) => String(r.iid)))
+    await page.click('#medNew')
+    const win = page.locator('[data-testid="win-inputedit"]')
+    await expect(win).toBeVisible()
+    for (let i = 0; i < 24 && !(await page.locator('#inpEdCal [data-iso="2026-07-12"]').count()); i++) {
+      const t = (await page.locator('#inpEdCal .dcal-title').first().textContent()) || ''
+      await page.locator(`#inpEdCal button[aria-label="${/2027|Aug|Sep|Oct|Nov|Dec/.test(t) ? 'Previous' : 'Next'} month"]`).click()
+    }
+    await page.locator('#inpEdCal [data-iso="2026-07-12"]').click()
+    await page.locator('#inpEdCal [data-iso="2026-07-15"]').click()
+    await win.locator('.docfield input[type=file]').first().setInputFiles([{ name: 'cert.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.1 %%EOF') }])
+    await page.locator('#inpEditSave').click()
+    await expect(win).toHaveCount(0)
+    const made = await page.evaluate(had => (window as any).INPUTS.map((r: any) => String(r.iid)).filter((i: string) => !had.includes(i)), had)
+    expect(made.length, 'one input filed').toBe(1)
+    await expect(page.locator(`.medcard[data-medcard="${made[0]}"]`), 'its card on the Medical tab').toBeVisible()
+    await page.click('#inMemberMode')
+    await expect(month).toBeVisible()
+    expect((await month.textContent())!.trim(), 'the calendar kept its month').toBe(before)
   })
 })

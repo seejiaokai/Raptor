@@ -20,15 +20,17 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/allavail-common -->
-### JOB 2 — [ALLAVAIL-COMMON] — `claude/allavail-common` (pull request 523) — BUILT, FULL-checked; HIS "MERGE LIVE" GIVEN IN ADVANCE ("Can u auto merge live 523 after") — written 17 Oct 26
-Pull request 522 (the till-date tick, D949–D953, round 2's words) is LIVE — merged 17 Oct 26 on his "merge live"; its block is removed (nothing open left of it). This branch was brought level with `main` after it (a merge, no clash), so 523 now holds only job 2. **His "merge live" for 523 is given: merge once GitHub's run of this pull request is green, then confirm `main`'s run and Vercel's Production deployment.** If you find this block after that merge, remove it — nothing of job 2 is left open.
-- **Built:** an input holding ALL / ALL AVAIL is DRAWN on the Common Programme (week, board, next-week peek, issued face, View-only Sched); ONLY THE DRAWING MOVES — the record stays the ground row. The Reject line under the Common Programme where such a row stands (D957); "Common" in the ✕ note, "→ Common" and the phone banner (D958). Tests `raptor-port/src/ui/allavail-common.test.tsx`.
-- **CHECKED (FULL):** sheet `raptor-port/docs/handpass/2026-10-17-allavail-common.md` — gates green on his PC, the scenario designer, the walk (58 PASS, pictures `raptor-port/docs/img/handpass/2026-10-17-allavail-common/build/`), the fresh blind Opus read (1 LOW, fixed). D958's three words: the touched tests (58 / 58) and a re-walk; GitHub's run is its full check (D902).
-- **Rulings:** D954–D958.
+<!-- now:claude/sharp-goldberg-6d0656 -->
+### THE MEDICAL TAB'S CARDS AND "+ MEDICAL" — BUILT, WALK-CHECKED, WAITING FOR HIS "MERGE LIVE 524" — `claude/sharp-goldberg-6d0656` (pull request 524, OPEN, not merged) — written 17 Oct 26
+- **On the branch, all of it checked:** the words pass round 3 (D959) and the Medical card's period (D960) — sheet `raptor-port/docs/handpass/2026-10-17-words-r3.md`; then **D965 built as drawn (with D961, D963, D964), and D966 + D967** (his answers after the code read): a card is its puck, then the kind and the period ("ATT C 13–17 Jul"), three a row on a phone (a card at most a third of the row, never narrower than its puck; a long period under its kind); Pending Upchit "OML 6–9 Jul"; Upchit Complete the date; from two documents, in every section, one page drawing and the number ("▯ 2"); "+ Medical" a filled button at the right end of the "as of" row, opening the Inputs tab's own window on HL; a save, Undo or Redo on the Medical tab no longer turns the calendars' month. Contract: `raptor-port/docs/ui-contracts.md` (the Medical view).
+- **Its check, WALK tier:** sheet `raptor-port/docs/handpass/2026-10-17-medical-cards.md` — walk 31/31 and re-walk 32/32 (`scripts/handpass/medical-walk.mjs`), two fresh blind Opus reads (the code: five finds; the fixes: three finds) all fixed, break tests all caught, the gates (counts in the sheet). Fable not used (D903).
+- **Next:** his look at the preview and his "merge live 524" → merge, `main`'s run green, Vercel's production READY, one notification. Then **his question of 17 Oct 26:** why a new chat starts 30–40% full, whether that grows with the app, and options to cut it (and his idea of "mods" — automatic checks in place of written procedure, explained to him 17 Oct 26) — measured and put to him as options with savings and risks, nothing trimmed before he rules. A first figure (this chat at 59%): loaded instructions ~8%, tool descriptions ~7% — the rest was the chat's own work. Filed for later: `[MED-NEWYEAR]`.
+- **Rulings this chat:** D966, D967 (`.claude/rules/decisions/inputs.md`).
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (17 Oct 26):** pull requests 522 and 523 are LIVE (the till-date tick and round 2's words; ALL / ALL AVAIL inputs on the Common Programme) → round 3 of the whole-app words pass (D808), on `claude/sharp-goldberg-6d0656`.
 
 **RIGHT NOW (16 Oct 26):** pull request 519 is LIVE (his "merge live") — the Medical tab's one row (D927), the Logic page rewritten for its reader (D928–D933, D936) and Quals' one row with its paragraph deleted (D935, D937: "Save" on a phone, Quals opens at its top); its checks `raptor-port/docs/handpass/2026-10-15-logic-medical.md` and `…/2026-10-16-quals-one-row.md`. Left of it: the reads owed in `OUTSTANDING.md` `[NO-ASTRA-LIST]`, the size overs in `[RULINGS-SPENT-PASS]`. → the whole-app words pass (D808), its own job.
 

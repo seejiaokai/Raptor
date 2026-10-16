@@ -1,0 +1,165 @@
+{
+ "results": [
+  {
+   "id": "A.row",
+   "res": "PASS",
+   "note": "\"+ Medical\" 36 tall, mid 134 beside \"as of\" 134, 0px from the row's right end, row overflow 0, page overflow 0"
+  },
+  {
+   "id": "A.cancel",
+   "res": "PASS",
+   "note": "Cancel: the window closed; inputs 49 → 49"
+  },
+  {
+   "id": "A.open",
+   "res": "PASS",
+   "note": "the window opened on screen: {\"inside\":true,\"hit\":true,\"scrolled\":0}"
+  },
+  {
+   "id": "A.kind",
+   "res": "PASS",
+   "note": "the kind box reads \"ATT C\" (ATT C, the most common — D968); the person: fixed:Ranger"
+  },
+  {
+   "id": "A.saved",
+   "res": "PASS",
+   "note": "the window closed; new inputs: 1"
+  },
+  {
+   "id": "A.tab",
+   "res": "PASS",
+   "note": "after the save the Medical tab is still in front"
+  },
+  {
+   "id": "A.card",
+   "res": "PASS",
+   "note": "his card: {\"sec\":\"med-down\",\"w\":94,\"h\":87,\"row2\":[\"ATT C\",\"12–15 Jul\"],\"remark\":\"knee injury, physio twice a week until the review board\",\"remarkW\":80,\"title\":\"Tap to view the document\"}"
+  },
+  {
+   "id": "A.remark",
+   "res": "PASS",
+   "note": "the typed remark shows (knee injury, physio twice a week until the review board) and wraps inside the card: card 94 wide, remark 80"
+  },
+  {
+   "id": "A.three",
+   "res": "PASS",
+   "note": "Medically Down: 3 cards, per row [3], widths [94,94,88], words [\"ATT C 12–15 Jul\",\"ATT C 13–17 Jul\",\"OML 13 Jul\"]"
+  },
+  {
+   "id": "A.undo",
+   "res": "PASS",
+   "note": "after Undo the card is gone and the input gone"
+  },
+  {
+   "id": "A.redo",
+   "res": "PASS",
+   "note": "after Redo: {\"sec\":\"med-down\",\"w\":94,\"h\":87,\"row2\":[\"ATT C\",\"12–15 Jul\"],\"remark\":\"knee injury, physio twice a week until the review board\",\"remarkW\":80,\"title\":\"Tap to view the document\"}"
+  },
+  {
+   "id": "A.pending",
+   "res": "PASS",
+   "note": "Pending Upchit reads [\"OML 6–9 Jul\"]"
+  },
+  {
+   "id": "A.done",
+   "res": "PASS",
+   "note": "Upchit Complete reads [\"20 Jun [doc]2\"]"
+  },
+  {
+   "id": "A.viewer",
+   "res": "PASS",
+   "note": "the upchit card opened the viewer: \"2 of 2\""
+  },
+  {
+   "id": "B.row-with-today",
+   "res": "PASS",
+   "note": "as of {\"l\":19,\"r\":126,\"h\":36,\"mid\":134,\"oneLine\":true}, Today {\"l\":130,\"r\":190,\"h\":36,\"mid\":134,\"oneLine\":true}, + Medical {\"l\":276,\"r\":356,\"h\":36,\"mid\":134,\"oneLine\":true}; row overflow 0, page 0"
+  },
+  {
+   "id": "B.open",
+   "res": "PASS",
+   "note": "the window opened on screen: {\"inside\":true,\"hit\":true,\"scrolled\":0}"
+  },
+  {
+   "id": "B.kind",
+   "res": "PASS",
+   "note": "the kind box reads \"ATT C\" (ATT C, the most common — D968); the person: select:Saber"
+  },
+  {
+   "id": "B.saved",
+   "res": "PASS",
+   "note": "the window closed; new inputs: 1"
+  },
+  {
+   "id": "B.tab",
+   "res": "PASS",
+   "note": "after the save the Medical tab is still in front"
+  },
+  {
+   "id": "B.card",
+   "res": "PASS",
+   "note": "Ranger's card: {\"sec\":\"med-down\",\"w\":102,\"h\":59,\"row2\":[\"ATT C\",\"29 Jun – 14 Jul\"],\"remark\":null,\"remarkW\":0,\"title\":\"Tap to view the document\"}; the period under its kind and inside the card: {\"under\":true,\"inside\":true}"
+  },
+  {
+   "id": "B.three",
+   "res": "PASS",
+   "note": "Medically Down at 375: 3 cards, per row [3], widths [102,94,88]"
+  },
+  {
+   "id": "C.row",
+   "res": "PASS",
+   "note": "\"+ Medical\" 36 tall at the row's right end (gap 0), mid 150 vs \"as of\" 150"
+  },
+  {
+   "id": "C.tab",
+   "res": "PASS",
+   "note": "Tab from \"as of\" lands on: medNew; its ring: {\"outline\":\"solid 2px\",\"shadow\":false}"
+  },
+  {
+   "id": "C.enter",
+   "res": "PASS",
+   "note": "Enter opened the window, its kind \"ATT C\""
+  },
+  {
+   "id": "C.escape",
+   "res": "PASS",
+   "note": "Escape closed the window (yes); the keyboard is back on: medNew"
+  },
+  {
+   "id": "C.open",
+   "res": "PASS",
+   "note": "the window opened on screen: {\"inside\":true,\"hit\":true,\"scrolled\":0}"
+  },
+  {
+   "id": "C.kind",
+   "res": "PASS",
+   "note": "the kind box reads \"ATT C\" (ATT C, the most common — D968); the person: select:Saber"
+  },
+  {
+   "id": "C.saved",
+   "res": "PASS",
+   "note": "the window closed; new inputs: 1"
+  },
+  {
+   "id": "C.tab",
+   "res": "PASS",
+   "note": "after the save the Medical tab is still in front"
+  },
+  {
+   "id": "C.card",
+   "res": "PASS",
+   "note": "a one-day card: {\"sec\":\"med-down\",\"w\":94,\"h\":46,\"row2\":[\"ATT C\",\"13 Jul\"],\"remark\":null,\"remarkW\":0,\"title\":\"Tap to view the document\"}"
+  },
+  {
+   "id": "C.month",
+   "res": "PASS",
+   "note": "the Inputs calendar was on \"October 2026\" before the filing and is on \"October 2026\" after it"
+  },
+  {
+   "id": "D.member",
+   "res": "PASS",
+   "note": "a member's window: kind \"ATT C\", person fixed \"Ranger\""
+  }
+ ],
+ "errors": []
+}

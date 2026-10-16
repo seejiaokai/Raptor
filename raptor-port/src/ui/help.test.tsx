@@ -99,6 +99,8 @@ describe('the Help tab', () => {
     await asMember()
     await act(async () => { setPage('help'); notify() })
     expect($('#bugAdmin'), 'no admin list for a member').toBeFalsy()
+    /* D959 (the words pass, round 3): the form's line keeps who reads it and that ideas are welcome; "Send it here" went */
+    expect($('#bugFile .help-lead').textContent).toBe('Spotted something wrong, or something that could work better? The schedulers see every report.')
     await click($('#bugSend'))
     expect(REPORTS.length).toBe(0)
     ;($('#bugCat') as HTMLSelectElement).value = 'Leave War'
@@ -118,6 +120,11 @@ describe('the Help tab', () => {
       notify()   // filing always rides a notify in the app (HelpPage.send)
     })
     expect(bugAlert(), 'unseen reports light the admin bell').toBe(true)
+    /* D959: the card with nothing in it says only that */
+    const filed = REPORTS.splice(0)
+    await act(async () => { setPage('help'); notify() })
+    expect($('#bugAdmin .help-lead').textContent).toBe('No reports yet.')
+    await act(async () => { REPORTS.push(...filed); setPage('viewsched'); notify() })
     expect($('#notifyBell').classList.contains('on')).toBe(true)
     await act(async () => { setPage('help'); notify() })
     const rows = $$('#bugList .bugrow')

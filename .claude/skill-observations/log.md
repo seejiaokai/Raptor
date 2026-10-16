@@ -955,6 +955,7 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** In the checking order's §7.2, one line: before a browser run, confirm the server on the port is this checkout's build (its command line, or a fact only the new build has), or run on a free port.
 
 **Principle:** A test that reuses a running server proves only that server; check whose build it is before trusting a red or a green.
+**Met again 2026-10-16:** the Medical cards job (`claude/sharp-goldberg-6d0656`) — this chat's OWN walk preview was still on 4173 when it ran a browser break test, so the deliberately broken styles were never built: the tests passed in 2.6s on the unbroken build. Caught only by the time. Third meeting (590, 616, this). **Proposed guard (in place of a judgement each time):** the browser-test config refuses to reuse a server unless it serves the checkout's own build — or a break-test step always stops the port first (`gatelock.mjs` could do it before any browser run).
 
 ### Observation 617: Marks drawn as boxes over a page drift from their text on a phone; a mark drawn on the element cannot
 
@@ -1045,3 +1046,48 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** In overnight's closing step and in session-handoff's "free the branch" step: once everything is pushed, the run itself runs `git checkout --detach` in its own checkout as its last command, and the HANDOFF block says it did. The opening line can then say "switch to <branch>" and it works.
 
 **Principle:** A handoff is not finished while the outgoing session still holds a resource the incoming one must take; release it from the side that owns it, because the other side may not be allowed to.
+
+### Observation 623: Tidying the handoff before a merge restarts the green pull request's checks
+
+**Status:** OPEN
+**Date:** 2026-10-17
+**Session context:** a side session sent to merge two stacked pull requests on his "merge live" (522, then 523 cut from 522's tip); the brief said "before each merge, rewrite or remove the HANDOFF blocks".
+**Skill:** session-handoff (and shipping.md's merge steps)
+**Type:** internal
+**Phase/Area:** session-handoff — removing a merged block; shipping — the "merge live" sequence
+
+**Issue:** Removing the first pull request's block before it merges means a push to that pull request, which restarts its whole check run (D151; a pull request carrying code re-runs every gate even for a notes-only push), so a green, ready merge waits about 15 more minutes for nothing. Done literally, the brief costs a full check run per merge.
+
+**Suggested improvement:** In session-handoff's "remove a merged block" step and shipping.md's merge sequence: never push notes to a pull request that is green and waiting only for "merge live". Merge it as it is; carry the block's removal (and its backlog filing) on the NEXT commit that goes out anyway — the stacked pull request's level-with-main commit, or the next job's branch. Say in that commit which merged block it removes.
+
+**Principle:** A record update that would restart a finished check rides on the next change that has to be checked anyway; never spend a check run to tidy notes.
+
+### Observation 624: The shell's $TEMP is one folder for every chat on the PC — a fixed file name there reads another chat's file
+
+**Status:** OPEN
+**Date:** 2026-10-16
+**Session context:** the Medical cards job (`claude/sharp-goldberg-6d0656`), a background check run writing its results to `$TEMP/after.txt`.
+**Skill:** New skill candidate: none — the project's checking guide (`raptor-port/docs/walk-scripts.md` §5, "A script writes only under its own checkout") and the gate scripts
+**Type:** open-source
+**Phase/Area:** where a run writes its logs
+
+**Issue:** A check run wrote `$TEMP/after.txt`; before it finished, reading that name printed a list of backlog ids — another chat's file of the same name. In Git Bash `$TEMP` is the user's one temporary folder, shared by every worktree and chat; only the harness's per-session scratchpad is private. A FAIL or a count read from such a file can be another job's.
+
+**Suggested improvement:** In `walk-scripts.md` §5 (and the gate scripts' own `--logs` default), one line: logs and scratch files go to the session's scratchpad or a folder under the checkout, never a fixed name in `$TEMP`; a name in `$TEMP` carries the session's id.
+
+**Principle:** A shared folder is a shared namespace; a fixed file name in it is a race with every other writer.
+
+### Observation 625: A fixed pixel limit in a browser test is a limit on one machine's letters
+
+**Status:** OPEN
+**Date:** 2026-10-16
+**Session context:** the Medical cards job — "a card is at most 104 wide" passed on his PC and failed on GitHub's Linux machine (107), reported by the old merge chat.
+**Skill:** New skill candidate: none — the project's checking guide (`raptor-port/docs/walk-scripts.md` §4, steps and what they assert)
+**Type:** open-source
+**Phase/Area:** writing geometry assertions
+
+**Issue:** The test pinned a pixel figure measured from the drawing on one machine. Text width differs between machines (fonts, hinting), so the figure was a property of the PC, not of the ruling ("three a row"). The reader had flagged the test as font-bound; it still went out and failed only in CI, costing a red run.
+
+**Suggested improvement:** In `walk-scripts.md` §4, one line: a geometry assertion states the ruling's relation (a third of the row, inside its card, one line) and measures both sides on the page; a fixed pixel figure only for a size the app itself fixes (the 74px puck, the 36px row).
+
+**Principle:** Assert the relation the rule names, not the number one machine produced for it.

@@ -1,0 +1,102 @@
+[
+  {
+    "n": 1,
+    "name": "row 2 loses its kind (D965: \"ATT C 13-17 Jul\")",
+    "file": "src/ui/MedicalView.tsx",
+    "find": "{kind ? <span className=\"medcard-type\">{inpType(r.type)}</span> : null}",
+    "put": "{null}",
+    "tests": [
+      "src/ui/medicalview.test.tsx"
+    ]
+  },
+  {
+    "n": 2,
+    "name": "Pending Upchit says \"was down\" again (D965)",
+    "file": "src/ui/MedicalView.tsx",
+    "find": "<Card key={(e.row.iid || '') + i} e={e} up onOpen={open} docs={episodeDocN(e.row)}\n                line={spanOf(e.row)} />",
+    "put": "<Card key={(e.row.iid || '') + i} e={e} up onOpen={open} docs={episodeDocN(e.row)}\n                line={`was down ${spanOf(e.row)}`} />",
+    "tests": [
+      "src/ui/medicalview.test.tsx"
+    ]
+  },
+  {
+    "n": 3,
+    "name": "Upchit Complete names its kind again (D961)",
+    "file": "src/ui/MedicalView.tsx",
+    "find": "docs={episodeDocN(e.row)} kind={false}",
+    "put": "docs={episodeDocN(e.row)}",
+    "tests": [
+      "src/ui/medicalview.test.tsx"
+    ]
+  },
+  {
+    "n": 6,
+    "name": "\"+ Medical\" opens the window on the Inputs tab's own kind (OL), not a medical one (D963)",
+    "file": "src/ui/MedicalView.tsx",
+    "find": "setInpEdit(t ? { ...seed, type: t, allday: defaultAllday(t) } : seed)",
+    "put": "setInpEdit(seed)",
+    "tests": [
+      "src/ui/medicalview.test.tsx"
+    ]
+  },
+  {
+    "n": 7,
+    "name": "\"+ Medical\" files for nobody signed in (the seed's person dropped)",
+    "file": "src/ui/MedicalView.tsx",
+    "find": "{ ...seed, type: t, allday: defaultAllday(t) }",
+    "put": "{ ...seed, person: undefined, type: t, allday: defaultAllday(t) }",
+    "tests": [
+      "src/ui/medicalview.test.tsx"
+    ]
+  },
+  {
+    "n": 8,
+    "name": "\"+ Medical\" is not the row's filled button",
+    "file": "src/ui/MedicalView.tsx",
+    "find": "className=\"abtn primary\" id=\"medNew\"",
+    "put": "className=\"abtn\" id=\"medNew\"",
+    "tests": [
+      "src/ui/medicalview.test.tsx"
+    ]
+  },
+  {
+    "n": 9,
+    "name": "two or more documents show nothing (D966, D967)",
+    "file": "src/ui/MedicalView.tsx",
+    "find": "{n > 1 ? <span className=\"medcard-docs\"",
+    "put": "{false ? <span className=\"medcard-docs\"",
+    "tests": [
+      "src/ui/medicalview.test.tsx"
+    ]
+  },
+  {
+    "n": 10,
+    "name": "one document shows the mark too (D967: one shows none)",
+    "file": "src/ui/MedicalView.tsx",
+    "find": "{n > 1 ? <span className=\"medcard-docs\"",
+    "put": "{n >= 1 ? <span className=\"medcard-docs\"",
+    "tests": [
+      "src/ui/medicalview.test.tsx"
+    ]
+  },
+  {
+    "n": 11,
+    "name": "the number beside the drawing is lost",
+    "file": "src/ui/MedicalView.tsx",
+    "find": "<span className=\"medcard-docs-n\" aria-hidden=\"true\">{n}</span>",
+    "put": "",
+    "tests": [
+      "src/ui/medicalview.test.tsx"
+    ]
+  },
+  {
+    "n": 12,
+    "name": "a screen reader no longer hears the count",
+    "file": "src/ui/MedicalView.tsx",
+    "find": "role=\"img\" aria-label={`${n} documents`}",
+    "put": "",
+    "tests": [
+      "src/ui/medicalview.test.tsx"
+    ]
+  }
+]
