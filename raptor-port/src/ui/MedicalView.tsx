@@ -110,7 +110,7 @@ function Card({ e, line, up, docs, docIcons, kind = true, onOpen }: { e: any, li
         <span className="medcard-t">{line}</span>
         {/* one drawing a document actually on file (D961 reading 2: "a card of one document shows one icon"; none on
             file, none drawn) — the card's title still says how many for a reader who cannot see them */}
-        {docIcons && docs ? Array.from({ length: docs }, (_, i) => <DocMark key={i} />) : null}
+        {docIcons ? Array.from({ length: docs || 0 }, (_, i) => <DocMark key={i} />) : null}
       </span>
       {/* the typed words (its line above says the dates — D948, engine/inputs.ts remarksTyped) */}
       {remarkNote(remarksTyped(r.remarks, r)) ? <span className="medcard-r" title={remarksTyped(r.remarks, r)}>{remarksTyped(r.remarks, r)}</span> : null}
