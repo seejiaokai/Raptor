@@ -5,7 +5,7 @@ shown pictures 2a / 2b of `docs/img/handpass/2026-10-15-two-leftovers/`: "Pic 2 
 allow to tap separate days for this function"). The backlog item: `[OIL-CONFIRM-DAYGRID]`. Order: `docs/bug-check-order.md`.
 
 ## Questions waiting for him
-None that blocks. For his look (told in the closing report, each with its picture):
+**ANSWERED 17 Oct 26 (D978): "As recommended merge live"** — both kept as built. For his look, as put to him (told in the closing report, each with its picture):
 - **On a phone the calendar sits straight on the question's card, with no box of its own** — the walk's fix S13 (below
   400 wide the calendar's head did not fit inside its box). On a desktop it keeps its box, as in the input's own window.
 - **The count line's words:** "No days selected — tap a day to credit it" (was "…tap the highlighted days to credit

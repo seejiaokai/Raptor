@@ -24,17 +24,17 @@ the later merge keeps both (D78).
 ### `claude/oil-confirm-daygrid-d05aeb` — [OIL-CONFIRM-DAYGRID]: the OIL question's "Only some days…" as the app's one calendar (D923) — written 17 Oct 26, verify before use
 - **Where it started:** a fresh chat on `main` after pull request 527 (the two small fixes — LIVE, so its block left here; its one leftover, [TILL-NEXT-YEAR], is filed).
 - **Done:** the question's several-days form is `raptor-port/src/ui/DateCal.tsx` in a new mode (`mode="many"`, `only`, `picked`, `onToggle`), drawn by `raptor-port/src/ui/OilConfirm.tsx`; the old small month and its styles are gone; under 400 wide the calendar has no box of its own (its head did not fit); Home / End stay in the week. FULL check: `raptor-port/docs/handpass/2026-10-17-oil-confirm-daygrid.md`.
-- **Branch:** `claude/oil-confirm-daygrid-d05aeb`, cut from `main` at pull request 527. Waits for his look and "merge live".
+- **Branch:** `claude/oil-confirm-daygrid-d05aeb`, cut from `main` at pull request 527 — pull request 528; his "merge live" GIVEN 17 Oct 26 (D978, both look points as recommended).
 - **Gates:** the whole set on his PC, 17 Oct 26, on the final code — build clean · tfin 728 / 0 · unit 11592 / 11592 (651 files) · e2e 844 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK. Breaks 11 / 11; re-walk 112 PASS.
-- **Open questions for him:** none that blocks; for his look — the phone's calendar with no box, and the count line's new words.
+- **Open questions for him:** none — D978 answered both.
 - **Reads:** a fresh Opus scenario designer, a fresh blind Opus code read (D790), a fresh read of the fix commits — every finding fixed or filed ([CAL-ESC-LISTS]); without Astra and Sol 6.1 (on [NO-ASTRA-LIST]).
 - **Running when written:** none.
-- **Pick up here:** his look (the pictures `raptor-port/docs/img/handpass/2026-10-17-oil-confirm-daygrid/look/`) and his answer on the count line's words; then his "merge live". After it, his order (D495): the Tracker batch in a fresh chat.
+- **Pick up here:** if pull request 528 is merged and live, remove this block; next, his order (D495): the Tracker batch in a fresh chat (its card is proposed). [CAL-ESC-LISTS] is his to place.
 <!-- /now -->
 
 ## Next, in order
 
-**RIGHT NOW (17 Oct 26, night):** pull request 527 is LIVE (the two small fixes) → [OIL-CONFIRM-DAYGRID] (D923) BUILT and FULL-checked on `claude/oil-confirm-daygrid-d05aeb`, waiting for his look and "merge live".
+**RIGHT NOW (17 Oct 26, night):** pull request 527 is LIVE (the two small fixes) → [OIL-CONFIRM-DAYGRID] (D923) BUILT, FULL-checked and given "merge live" (D978 — pull request 528) → the Tracker batch (D495), a fresh chat.
 
 **RIGHT NOW (17 Oct 26, evening):** pull request 526 is LIVE (the Medical cards one width, D977; [MED-NEWYEAR] closed) → the two small fixes on `claude/small-fixes-1017`, waiting for his "merge live" → [OIL-CONFIRM-DAYGRID] (D923), a fresh chat.
 

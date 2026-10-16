@@ -52,7 +52,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **CLOSED 17 Oct 26 — [MED-NEWYEAR]:** not a fault of the app — a medical input filed across New Year through the window saves its end with its year and shows on the Medical tab; the item rested on a row planted without its year (D56). Pinned by a browser test; archived.
 
-**BUILT 17 Oct 26 on `claude/oil-confirm-daygrid-d05aeb` — [OIL-CONFIRM-DAYGRID] (D923):** the OIL question's "Only some days…" is the app's one calendar; FULL-checked; waits for his look (the phone's calendar with no box of its own, the count line's words) and "merge live". Found on the way: [CAL-ESC-LISTS] — Escape with a calendar's month list open closes the whole form; his to place.
+**BUILT 17 Oct 26 on `claude/oil-confirm-daygrid-d05aeb` — [OIL-CONFIRM-DAYGRID] (D923):** the OIL question's "Only some days…" is the app's one calendar; FULL-checked; his look answered and "merge live" given (D978) — pull request 528; the item leaves for the archive at the next documents pass (the archive is over its size marker). Found on the way: [CAL-ESC-LISTS] — Escape with a calendar's month list open closes the whole form; his to place.
 
 **DONE 17 Oct 26 on `claude/small-fixes-1017` — his "U can do the small things quick here first":** [PUSH-GUARD-LEFTOVERS] (the guard reads variables, xargs, PowerShell's quotes; two fresh reads) and [INPUTS-LIST-NEXT-YEAR] (the Inputs list reads each input in its own year); both archived. Found on the way: [TILL-NEXT-YEAR] — small, with the next Inputs batch.
 
@@ -2302,8 +2302,9 @@ stay readable by other models). **Place:** next, after pull request 524.
 **BUILT 17 Oct 26:** the question's "Only some days…" is `DateCal` in a several-days mode (`mode="many"`, `only`, `picked`,
 `onToggle`); the old small month and its styles are gone; on a phone (under 400 wide) the calendar is drawn without its own
 box so its head fits; Home and End stay inside the week. The check: `raptor-port/docs/handpass/2026-10-17-oil-confirm-daygrid.md`
-(FULL — a scenario designer and a fresh, blind Opus code read; the walk at eight sizes). **For his look:** the phone's calendar
-with no box of its own, and the count line's new words ("No days selected — tap a day to credit it").
+(FULL — a scenario designer and a fresh, blind Opus code read; the walk at eight sizes). **His look, ANSWERED 17 Oct 26 (D978 —
+"As recommended merge live"):** the phone's calendar with no box of its own and the count line's new words both stay; LIVE
+on that "merge live" (pull request 528).
 **RULED 15 Oct 26 — D923: build it** — the one calendar's look, a tap turning each separate non-working day on or off. A picture on the real app first, then its own job after [INPUT-NEW-DEFAULTS] (the agent's placing); FULL check (it touches what earns OIL).
 **Pictured for him 15 Oct 26 (D921):** pictures 2a and 2b, `raptor-port/docs/img/handpass/2026-10-15-two-leftovers/` (`scripts/handpass/pics-two-leftovers.mjs`).
 **Seen:** step two moved every date pick in its list onto the one calendar (`src/ui/DateCal.tsx`); the OIL question's
