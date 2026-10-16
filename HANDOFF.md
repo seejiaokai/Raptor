@@ -35,6 +35,7 @@ After a compaction: re-read this block, the overnight guide and the files of the
 - **Job 3 done:** round 2 of the words pass DRAWN, nothing changed (`raptor-port/scripts/handpass/words-r2.mjs`, pictures
   `raptor-port/docs/img/handpass/2026-10-16-words-pass/r2/`; the spec's §Round 2).
 - **His page:** https://claude.ai/artifact/ARobVhEgQE5id9G5Mai7v1 — what was built, and the questions below with pictures.
+- **ANSWERED 17 Oct (D949): Q1–Q3 as recommended — to build. Q4: he asked for a recommendation (one-day duty / other commitments without a date?).**
 - **Questions waiting for him (8):** Q1 the board's wave header: show "(prev day)" when a rally is the evening before?
   (rec. yes). Q2 "A removed input…" and a rejected row's hover "Removed from the day…" → "rejected"? (rec. yes). Q3 the
   Ground Programme row's remark box shows "remark till <date>" inside the box — make the date grey after the box as
