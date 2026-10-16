@@ -1093,3 +1093,18 @@ Met again 2026-10-17: the [CONTEXT-START-SIZE] handoff (session-handoff, a day c
 **Suggested improvement:** In `walk-scripts.md` §4, one line: a geometry assertion states the ruling's relation (a third of the row, inside its card, one line) and measures both sides on the page; a fixed pixel figure only for a size the app itself fixes (the 74px puck, the 36px row).
 
 **Principle:** Assert the relation the rule names, not the number one machine produced for it.
+
+### Observation 626: A guard that reads commands needs a shell's reading from its first draft, not after review
+
+**Status:** OPEN
+**Date:** 2026-10-17
+**Session context:** building the push-and-lock guard ([PUSH-LOCK-GUARD], D976) — a PreToolUse hook that refuses some commands
+**Skill:** New skill candidate: writing a command-refusing hook (or a section of the plugin-authoring / hook guidance)
+**Type:** open-source
+**Phase/Area:** design of any hook that judges a shell command line
+
+**Issue:** The first draft split the command on `;`, `|`, `&&` and new lines before looking at quotes. Three fresh reads then found 8, 10 and 8 problems, nearly all of the same family: commit messages, heredocs, here-strings, comments, `$( … )`, PowerShell's own quoting, and tool names that appear as arguments (`grep vitest`) rather than as the command. Each was a false refusal of everyday work or a way round the guard.
+
+**Suggested improvement:** Before writing such a hook, list the shell features it must read (quotes, escapes per shell, heredoc and here-string bodies, comments, substitutions, `bash -c`/`eval`, redirects, launcher words like `timeout`/`env`), judge only the word in command position, and write the everyday-command corpus (commit with a heredoc message, PR body, grep for the tool's name) as tests first.
+
+**Principle:** A rule that inspects free-form input is only as good as its reading of that input; build the reader to the input's real grammar before the rule, and test the common harmless cases first, because a false refusal on every-day work costs more than the gap it closes.
