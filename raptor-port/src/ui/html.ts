@@ -2006,7 +2006,10 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
        empty section. */
     /* the rows it draws — an input filed for ALL / ALL AVAIL is drawn on the Common Programme instead (owner D955) */
     const grdDrawn=groundOrder(d.ground||[],d.gman).filter(({row}:any)=>!onCommon(row));
-    if(grdDrawn.length||ed){
+    /* …and where it draws none, its note may still be public (a note made public stands on View-only Sched — the job 2
+       scenario designer's 2): the section stands for it */
+    const grdNote=grdDrawn.length||ed?'':blkNoteHTML(di,d,ed,'gn','grndnotes');
+    if(grdDrawn.length||ed||grdNote){
       const grd=grdDrawn.map(({row}:any)=>row);
       /* Header is just "Ground Programme" on both surfaces now (owner, 22 Aug
          26 — "change all the ground programme scheduler to GROUND PROGRAMME");

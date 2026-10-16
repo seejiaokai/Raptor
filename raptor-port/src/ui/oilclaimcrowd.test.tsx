@@ -103,7 +103,7 @@ afterEach(async () => { await act(async () => { setOilDay(null); setOilAsk(null)
 
 const open = async (di: number) => { await act(async () => { openScheduler(di); notify() }) }
 const oilBtn = () => $('#sbBoard [data-oilmode]')
-const groundRowEl = () => $$('#sbBoard .sb-panel.grnd .sb-arow.c6r')[0]
+const groundRowEl = () => $$('#sbBoard .sb-panel.prog .sb-arow.c6r, #sbBoard .sb-panel.grnd .sb-arow.c6r').filter((r: any) => r.querySelector('[data-bfld^="gr:"]'))[0] /* an ALL / ALL AVAIL input is drawn on the Common Programme since D955 (17 Oct 26): its row is found in either programme */
 /* the one input of the test, and the address its people's switches are kept under */
 const rec = () => { expect(INPUTS, 'ONE input').toHaveLength(1); return INPUTS[0] as any }
 const item = () => inputItemKey(String(inpId(rec())))
@@ -273,7 +273,7 @@ describe('the crowd on a request row is drawn, and every man in it is tappable',
     await act(async () => { HOOKS.oilSentinel = () => ['bane', 'stiff', 'plasma']; afterSchedMutate(); notify() })
     expect((chip().textContent || '').trim(), 'counted behind the puck: the two who are not named in it').toBe('2')
     expect(inWin().map(s => s.dataset.oilp).sort()).toEqual(['plasma', 'stiff'])
-    expect($$('#sbBoard .sb-panel.grnd [data-oilp="bane"]'), 'one switch for him — on the row').toHaveLength(1)
+    expect($$('#sbBoard .sb-panel.grnd [data-oilp="bane"], #sbBoard .sb-panel.prog .sb-arow:has([data-bfld^="gr:"]) [data-oilp="bane"]'), 'one switch for him — on the row').toHaveLength(1)
     const work = oilEarnedWork(DAYS[SAT], oilEvidence(SAT))
     expect((work.bane || []).filter((w: any) => String(w.item) === item()), 'and one credit').toHaveLength(1)
   })

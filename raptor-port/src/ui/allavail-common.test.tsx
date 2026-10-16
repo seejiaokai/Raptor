@@ -16,7 +16,7 @@ import { acceptInput } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { initStore, writeInputs } from '../state/store'
 import { setSession } from '../state/auth'
-import { setPage } from '../state/view'
+import { setPage, NOTEPUB } from '../state/view'
 import { dayHTML, dayInfoHTML, onCommon, commonOrder, GP_TAKEOFF_NOTE } from './html'
 import { sbGroundPanel, sbProgPanel } from './board-html'
 import { peekDayHTML } from './peek'
@@ -138,5 +138,26 @@ describe('the next-week peek', () => {
     const day = el(peekDayHTML(d, 0, false))
     expect(text(day.querySelector('.sec-prog'))).toContain('Peek brief')
     expect(text(day.querySelector('.sec-grnd'))).not.toContain('Peek brief')
+  })
+})
+
+/* THE SCENARIO DESIGNER'S FINDS (job 2, 17 Oct 26) */
+describe('the scenario designer\'s finds', () => {
+  it('2: a day whose only Ground Programme row went to the Common Programme still shows the Ground Programme\'s public note on View-only Sched', () => {
+    allAvailMeeting()
+    DAYS[MON].ground = DAYS[MON].ground.filter((g: any) => onCommon(g))     // its only row: the ALL AVAIL input's
+    DAYS[MON].grndnotes = 'Range closed after 1500'
+    NOTEPUB.add(`gn:${MON}`)
+    try {
+      setPage('viewsched')
+      const day = el(dayHTML(MON, false))
+      expect(text(day.querySelector('.sec-grnd'))).toContain('Range closed after 1500')
+      expect(day.querySelector('.sec-grnd .pl-cols'), 'no rows to head').toBeNull()
+    } finally { NOTEPUB.clear() }
+  })
+  it('3: the week draws its row with the "came from an input" class there too', () => {
+    const { ri } = allAvailMeeting()
+    const row = el(dayHTML(MON, true, true)).querySelector(`.sec-prog [data-txt="gr:${MON}.${ri}.prog"]`)!.closest('.ah-row')!
+    expect(row.classList.contains('gr-frominput')).toBe(true)
   })
 })

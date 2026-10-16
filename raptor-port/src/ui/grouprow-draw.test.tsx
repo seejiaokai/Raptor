@@ -130,9 +130,10 @@ const riOf = (di = WED, title = TITLE) => ground(di).findIndex((g: any) => g && 
 const rowKey = (di = WED, title = TITLE) => `g:${di}.${riOf(di, title)}`
 /* the place a person stands on, on the input's row: its name box, or his place under it */
 const keyOf = (p: string, di = WED, title = TITLE) => { const r = ground(di)[riOf(di, title)], k = rowKey(di, title); if (r.who === p) return k; const n = (r.more || []).indexOf(p); expect(n, `${p} is on the row`).toBeGreaterThanOrEqual(0); return `${k}.x${n}` }
-const weekRows = (ed: boolean, di = WED, name = UP) => [...doc(dayHTML(di, ed)).querySelectorAll('.sec-grnd .pl-row')].filter(r => (r.textContent || '').includes(name)) as HTMLElement[]
-const boardRows = (di = WED, name = UP) => [...doc(boardHTML(di)).querySelectorAll('.sb-panel.grnd .sb-arow')].filter(r => r.outerHTML.includes(name)) as HTMLElement[]
-const peekRows = (d: any, di = WED) => [...doc(peekDayHTML(d, di, false)).querySelectorAll('.pl-row')].filter(r => (r.textContent || '').includes(UP)) as HTMLElement[]
+const weekRows = (ed: boolean, di = WED, name = UP) => [...doc(dayHTML(di, ed)).querySelectorAll('.sec-grnd .pl-row, .sec-prog .ah-row')].filter(r => (r.textContent || '').includes(name)) as HTMLElement[]
+const boardRows = (di = WED, name = UP) => [...doc(boardHTML(di)).querySelectorAll('.sb-panel.grnd .sb-arow, .sb-panel.prog .sb-arow')].filter(r => r.outerHTML.includes(name)) as HTMLElement[]
+/* (an input's row with ALL / ALL AVAIL is on the Common Programme since D955 — found in either programme) */
+const peekRows = (d: any, di = WED) => [...doc(peekDayHTML(d, di, false)).querySelectorAll('.pl-row, .sec-prog .ah-row')].filter(r => (r.textContent || '').includes(UP)) as HTMLElement[]
 /* the input's line under Personal Inputs, on the week and on the board */
 const piWeek = (di = WED) => [...doc(dayHTML(di, true)).querySelectorAll('.pl-row[data-inprow]')].filter(r => (r.textContent || '').includes(TITLE)) as HTMLElement[]
 const piBoard = (di = WED) => [...doc(boardHTML(di)).querySelectorAll('.sb-panel.pinp .inprow')].filter(r => r.outerHTML.includes(TITLE)) as HTMLElement[]
@@ -385,7 +386,7 @@ describe('Edit Schedule’s week', () => {
     validate()
     const solo = INPUTS.find((x: any) => x.remarks === 'solo check') as any
     const ri = ground().findIndex((g: any) => g && g.src === String(inpId(solo)))
-    const row = [...doc(dayHTML(WED, true)).querySelectorAll('.sec-grnd .pl-row')].find(r => /solo check/.test(r.textContent || ''))!
+    const row = [...doc(dayHTML(WED, true)).querySelectorAll('.sec-grnd .pl-row, .sec-prog .ah-row')].find(r => /solo check/.test(r.textContent || ''))!
     expect(slots(row)).toEqual([`g:${WED}.${ri}`])
     expect(row.querySelector('.ppl')!.classList.contains('one')).toBe(true)
     expect(weekRows(true), 'and the four are still one row').toHaveLength(1)
