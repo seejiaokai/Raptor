@@ -2167,10 +2167,6 @@ with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
 
 **What is his here — nothing is built until he says:** whether any of it becomes a job. The five things ours appears to lack, as the report names them: suggested filling of seats; a fatigue score beside the crew-rest rule; member-to-member swaps; phone alerts with "I have seen it"; the training syllabus telling the scheduler who needs what next. Two of its lessons touch work already in hand: telling only the people whose day changed (the bell's notices, `[ALL-AVAIL-AS-MEMBER]` step 7) and fewer, plainer screens (`[UI-SLEEK-PASS]`).
 
-### [MEDICAL-CARDS-3] The Medical tab's cards: three a row on a phone, two rows a card (his direction, D961, 17 Oct 26)
-
-**Status: OPEN — to be drawn for him on the real app, then built.** His words, on pull request 524's preview: three cards in a row on a phone, not two; Upchit Complete's card loses "upchitted" (its kind says Upchit); "2 documents" becomes document icons on the date's row, so the card is two rows. The puck keeps its size (D487). What the cards say now: `raptor-port/docs/ui-contracts.md` (the Medical view, D960, D961). And (D963, replacing D962's title): a "+ Medical" button on the tab opening the same input window with a medical kind set; and (D964) that button's look drawn in a few variations for him to pick. Drawing: `raptor-port/docs/img/handpass/2026-10-17-medical-cards/`.
-
 ### [MED-NEWYEAR] A medical input that runs across New Year never shows on the Medical tab (found 17 Oct 26, not fixed)
 
 **Status: OPEN — found by the Medical cards job's fix read (`claude/sharp-goldberg-6d0656`), older than that job; its own fix.**

@@ -125,6 +125,21 @@ pending person never reaches the tab; an as-of date in the past hides a new card
 test's fixed "≤ 104" failed there (run 38903508563, reported by the old merge chat): the test now asks for "at most a
 third of the row" (D967), the rule itself, not a pixel figure (the reader had flagged the same test as font-bound).
 
+## The fix read (one more fresh Opus reader, handed only the fix commits — the order's §5, "a fix is new code")
+
+Last round (the cap on rounds is about three; this was the first). Three findings, each fixed with a browser test proved
+red without its fix (`e2e/medical.spec.ts`):
+
+| # | Finding | Disposition |
+|---|---|---|
+| R1 | Undo / Redo on the Medical tab still turned the Inputs calendar's month and left the reveal waiting (`state/undo-wire.ts`) | FIXED — the same guard as the save's; "Undo and Redo on the Medical tab leave the Inputs calendar on its month" |
+| R2 | At 320 (a width the app tests) the third-of-a-row cap made a card narrower than its 74px puck, which ran into the next card | FIXED — a phone card is never narrower than its puck (D487); below about 351 two stand in a row; "…at 320 no puck leaves its card" |
+| R3 | A period printed with its year ran past the capped card | FIXED — it breaks only at its dash, each date whole; "D967 a period printed with its year…" (the first version of this check proved nothing — it counted text pieces, not lines; rewritten and proved red) |
+
+**Found while proving R3 — filed, not this change:** a medical input across New Year (28 Dec – 3 Jan) never shows on the
+Medical tab at all — the calculation reads its end in its start's year. Older than this job; real for new data (not D56);
+filed as `[MED-NEWYEAR]` in `OUTSTANDING.md`, its own fix after 524. Its test here uses a period in another year instead.
+
 ## The re-walk (what the fixes touched)
 
 `HP_SHOTS=…/docs/img/handpass/2026-10-17-medical-walk/rewalk node scripts/handpass/medical-walk.mjs` — v3, the same four
@@ -132,6 +147,7 @@ scenarios plus: an admin at 375 files "29 Jun – 14 Jul" through "+ Medical" (t
 three a row), Upchit Complete reads "20 Jun ▯ 2", and on the desktop the Inputs calendar is on October before and after a
 July filing. **32 of 32 PASS, 15 pictures, no errors.** Pictures opened: `rewalk/05` (Pending and Complete), `rewalk/09`
 (375, the long period under its kind). The break list after D967: 10 of 10 caught (two entries rewritten for the new form).
+**The fix read's three fixes came after the re-walk** and are carried by the browser tests named above: the Undo one presses the real "+ Medical", Save, Undo and Redo and reads the calendar's own month; the other two lay out the real tab at 390 and 320 (their records filed through the page's test door, as the drawing's were) — no surface, door or role the walk had not already operated; a 320 picture is not taken (the required sizes are 390 and the desktop).
 
 ## Gate counts
 
@@ -140,7 +156,7 @@ The whole set under the PC lock, on the build before the code read's fixes (`cla
 446 / 0 · rulecheck OK · docsize — one home missing (D962, restored the same hour). The one e2e failure: the Leave War
 desktop timing test "the grid draws a window of months…" (`[LW-WINDOW-PRUNE-FLAKE-2]`; this job touches nothing of the
 Leave War) — run alone under the lock, 1 of 1 (D84). After the fixes and D967 (D902 — a follow-up on an open pull request
-runs the tests it touches; GitHub's run is its full check): see the closing lines below.
+runs the tests it touches; GitHub's run is its full check): **after every fix and D967, under the lock** — unit 11581 / 11581 (651 files) · e2e of the Medical tab and every Inputs screen (medical, inputs-calendar, inputs-batch2, feedback-marks, datecal, grouprow) 125 / 125 · docsize OK (records; sizes over, deferred — D29).
 
 ## What the walk found
 

@@ -4738,3 +4738,10 @@ fresh chat on `main` after the calendar job.
 **D956 (17 Oct 26, his word from the plane): built in the till-date chat straight after that build, unattended, compacting by itself — on its own branch cut from `claude/whole-app-words-pass-1b-6cfe51`'s tip, its own FULL check, nothing merged.**
 **For its roll-call (the tick build's scenario designer, 17 Oct 26):** an input's row on the Common Programme (`ap:` keys) must hold its typed words in the remark box with the "till <date>" grey after it, as the Ground Programme's now does (D949 Q3) — `raptor-port/src/ui/html.ts reqRmkParts` / `reqBoxText` / `boxText` answer only `gr:` rows today; widen them, and every place a box is put back, in that build.
 
+
+*Moved here 2026-10-16 by backlog-archive.mjs ([MEDICAL-CARDS-3]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [MEDICAL-CARDS-3] The Medical tab's cards: three a row on a phone, two rows a card (his direction, D961, 17 Oct 26)
+
+**Status: OPEN — to be drawn for him on the real app, then built.** His words, on pull request 524's preview: three cards in a row on a phone, not two; Upchit Complete's card loses "upchitted" (its kind says Upchit); "2 documents" becomes document icons on the date's row, so the card is two rows. The puck keeps its size (D487). What the cards say now: `raptor-port/docs/ui-contracts.md` (the Medical view, D960, D961). And (D963, replacing D962's title): a "+ Medical" button on the tab opening the same input window with a medical kind set; and (D964) that button's look drawn in a few variations for him to pick. Drawing: `raptor-port/docs/img/handpass/2026-10-17-medical-cards/`.
+
