@@ -1176,8 +1176,8 @@ Save, each change one Undo step. `src/ui/CutFields.tsx` - the cut-off's fields a
 and the SANS calendar's (`SansSettings.tsx`). The Logic page's rows for the two cut-offs and the switch carry a button
 that opens the same window — the value itself since D928 (`logic-html.ts` `kind:'door'`, `LogicPage.tsx` `[data-lgopen]`); nothing of a cut-off is typed on
 the Logic page. `inputssettings.test.tsx`, `logicdoors.test.tsx`.
-WHO PLACED IT is shown, by the one line of `placedline.ts`, on the List, at the editor's foot, on a Medical card and in
-the document viewer too (D629; `placedshown.test.tsx`); `state/demoseed.ts seedDemoStamps` gives every demo input a
+WHO PLACED IT is shown, by the one line of `placedline.ts`, on the List, at the editor's foot and in the document
+viewer too — not on a Medical card since D960 (D629; `placedshown.test.tsx`); `state/demoseed.ts seedDemoStamps` gives every demo input a
 filer and a moment - the person himself, or the admin for him, never another member (`state/demostamps.test.ts`).
 THE INPUT EDITOR IS A WINDOW ON THE INPUTS PAGE (D641; plan 3.7) - `inputedit.tsx InputEditor` stands in the shell
 (`win-inputedit`) when it is opened there and stays the blocking dialog elsewhere; behind a window the record can

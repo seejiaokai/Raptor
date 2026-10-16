@@ -111,8 +111,8 @@ test.describe('the medical view renders and fits', () => {
     await page.click('[data-medday="2026-07-08"]')
     /* on 8 Jul nasty was still down (6–9 Jul), so he reads in Medically
        Down, not Pending */
-    await expect(page.locator('.medsec.med-down')).toContainText('till 9 Jul')
+    await expect(page.locator('.medsec.med-down')).toContainText('6–9 Jul')   // the period (owner D960)
     await page.click('#medToday')
-    await expect(page.locator('.medsec.med-pend')).toContainText('was down till 9 Jul')
+    await expect(page.locator('.medsec.med-pend')).toContainText('was down 6–9 Jul')
   })
 })

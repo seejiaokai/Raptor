@@ -391,10 +391,7 @@ body.in-cal{padding-bottom:0}
 .in-placed.alone{margin-left:0}
 .inped-placed,.docview-placed{font-size:11px;line-height:1.35;color:var(--ink-3);overflow-wrap:anywhere}
 .docview-placed{margin:2px 0 6px}
-/* on a Medical card the line NEVER WIDENS THE CARD: a card hugs its puck and its dates (owner, 28 Aug 26 — "the box
-   around the puck doesn't look compact enough"; e2e/medical.spec.ts measures it), so the small print asks for no width
-   of its own and wraps inside whatever the card already is */
-.medcard-placed{width:0;min-width:100%;font-size:9.5px;line-height:1.35;color:var(--ink-3);white-space:normal;overflow-wrap:anywhere;text-align:left}
+/* (a Medical card carries no placed line since owner D960, 17 Oct 26 — the input's window says who placed it and when) */
 
 /* ============================================================================================================
    THE INPUT EDITOR AS A WINDOW (ui/inputedit.tsx — on the Inputs page only; owner D641). The form inside is the

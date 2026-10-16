@@ -91,8 +91,11 @@ describe('at the foot of the editor', () => {
   })
 })
 
+/* NARROWED BY owner D960 (17 Oct 26 — "No need for the time/ date or who it's filed from"): a Medical card carries NO
+   placed line, whoever filed it; its date line says the period instead (ui/medicalview.test.tsx), and the input's window
+   still says who placed it and when. */
 describe('on a Medical card', () => {
-  it('the card of a man who is down shows the stamp of that input', async () => {
+  it('D960 the card of a man who is down carries no placed line, even for a stamped input', async () => {
     const down: any = INPUTS.find((r: any) => r.type === 'ATT C' && r.date === 'Jul 13')
     expect(down, 'the seeded ATT C of 13 Jul').toBeTruthy()
     Object.assign(down, stamps(crew()[0]))
@@ -100,7 +103,9 @@ describe('on a Medical card', () => {
     await mount(<MedicalView />)
     const card = $(`.medcard[data-medcard="${down.iid}"]`)
     expect(card, 'his card').toBeTruthy()
-    expect(card!.querySelector('[data-testid="medcard-placed"]')!.textContent).toBe(placedLine(down))
+    expect(placedLine(down), 'the input does carry a stamp').not.toBe('')
+    expect(card!.querySelector('[data-testid="medcard-placed"]')).toBeNull()
+    expect(card!.textContent).not.toContain(placedLine(down))
   })
   it('a card whose input never recorded a filer shows no such line', async () => {
     const down: any = INPUTS.find((r: any) => r.type === 'ATT C' && r.date === 'Jul 13')

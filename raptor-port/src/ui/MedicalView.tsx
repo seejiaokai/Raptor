@@ -20,7 +20,6 @@
    your own puck or an admin, and on a Pending card the Upchit path itself.
    This view deliberately ignores the table's filter bar: it is the
    squadron's medical state, not a filtered list (docs/ui-contracts.md). */
-import { placedLine } from './placedline'
 import { useEffect, useState } from 'react'
 import { PEOPLE, byCrew } from '../engine/people'
 import { inpType, leadOf, remarksTyped } from '../engine/inputs'
@@ -33,6 +32,7 @@ import { useVersion } from './useStore'
 import { puck } from './html'
 import { fmtDay, unfmt } from './inputedit'
 import { monthCells } from './InputsCal'
+import { rangeWords } from './InputsPage'
 import { TODAY, keyToIso } from './weeknav'
 import { CalIcon } from './icons'
 import { SaveBand } from './SaveStatus'
@@ -44,6 +44,16 @@ const isoOrd = (iso: string) => +iso.slice(0, 4) * 10000 + +iso.slice(5, 7) * 10
 /* a record label ('Jul 12', row-anchored) → the day-first voice this page
    speaks ('12 Jul') — through the row's own yr so cross-year stays honest */
 const lblDay = (lbl: any, yr: any) => fmtDay(unfmt(lbl, yr)) || String(lbl || '')
+/* THE PERIOD AN ENTRY COVERS, as the Inputs pages say a range (owner D960, 17 Oct 26 — "the status they filed that
+   starts from 15-17jul"): "15–17 Jul", across months "28 Jun – 2 Jul", one day "17 Jul". An end label earlier in the
+   year than its start runs into the next year (a December entry ending in January — the row's yr anchors the start). */
+const spanOf = (r: any) => {
+  const a = unfmt(r.date, r.yr)
+  let b = unfmt(r.endDate || r.date, r.yr)
+  if (!a || !b) return lblDay(r.endDate || r.date, r.yr)
+  if (b < a) b = `${+b.slice(0, 4) + 1}${b.slice(4)}`
+  return a === b ? fmtDay(a) : rangeWords(a, b)
+}
 
 /* the card already prints a derived 'till <date>' status line; a remark that
    only restates that date (the app's own auto '… till 13 Jul' tail, or a demo
@@ -95,8 +105,8 @@ function Card({ e, line, up, docs, onOpen }: { e: any, line: string, up?: boolea
       {n > 1 ? <span className="medcard-docn">{n} documents</span> : null}
       {/* the typed words (its line above says the dates — D948, engine/inputs.ts remarksTyped) */}
       {remarkNote(remarksTyped(r.remarks, r)) ? <span className="medcard-r" title={remarksTyped(r.remarks, r)}>{remarksTyped(r.remarks, r)}</span> : null}
-      {/* who placed this entry and when (owner D629 — "wherever an entry is listed or opened"; ui/placedline.ts) */}
-      {placedLine(r) ? <span className="medcard-placed" data-testid="medcard-placed">{placedLine(r)}</span> : null}
+      {/* nothing under it: who placed the entry and when is the input's window's to say, not the card's (owner D960, 17 Oct
+          26 — "No need for the time/ date or who it's filed from"; it narrows D629 for this card) */}
     </button>
   )
 }
@@ -203,21 +213,21 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
       {onClose && <OilBand />}
       <div className="med-body">
         <section className="medsec med-down">
-          <div className="medsec-h">Medically Down<span className="medsec-n">{down.length}</span>
-            <span className="medsec-sub">cannot fly as of {fmtDay(asOf)}</span></div>
+          {/* no grey line: the heading says it, the "as of" button above says the date (owner D959, the words pass) */}
+          <div className="medsec-h">Medically Down<span className="medsec-n">{down.length}</span></div>
           {down.length
             ? <div className="medcards">{down.map((e: any, i: number) =>
               <Card key={(e.row.iid || '') + i} e={e} onOpen={open} docs={episodeDocN(e.row)}
-                line={`till ${lblDay(e.row.endDate || e.row.date, e.row.yr)}`} />)}</div>
+                line={spanOf(e.row)} />)}</div>
             : <div className="med-empty">Nobody is medically down on this date.</div>}
         </section>
         <section className="medsec med-pend">
-          <div className="medsec-h">Pending Upchit<span className="medsec-n">{pend.length}</span>
-            <span className="medsec-sub">the down period has ended — the upchit document is still owed</span></div>
+          {/* no grey line: "pending upchit" is the squadron's own word for it, and each card says when he was down (D959) */}
+          <div className="medsec-h">Pending Upchit<span className="medsec-n">{pend.length}</span></div>
           {pend.length
             ? <div className="medcards">{pend.map((e: any, i: number) =>
               <Card key={(e.row.iid || '') + i} e={e} up onOpen={open} docs={episodeDocN(e.row)}
-                line={`was down till ${lblDay(e.row.endDate || e.row.date, e.row.yr)}`} />)}</div>
+                line={`was down ${spanOf(e.row)}`} />)}</div>
             : <div className="med-empty">Nobody is owing an upchit.</div>}
         </section>
         <section className="medsec med-done">

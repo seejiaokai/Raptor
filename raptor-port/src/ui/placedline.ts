@@ -5,7 +5,8 @@
    The record carries the four facts (state/inputstamp.ts writes them at every door that makes or changes an input):
    `by` / `at` — who filed it and when; `modBy` / `modAt` — its last change. This turns them into the line, ONE body for
    every place an entry is listed or opened (the SANS calendar's opened day first; the Inputs calendar's opened day, the
-   List, the editor's foot, a Medical card and the document viewer take the same line with step 5) — never the month's
+   List, the editor's foot and the document viewer take the same line with step 5; a Medical card did until owner D960,
+   17 Oct 26, and carries none now — it says the period instead) — never the month's
    own cells, which have no room (D629's reading 1).
 
      Placed by Saber · 7 Oct 26, 14:32
@@ -65,8 +66,8 @@ export function placedLine(r: any, people: Record<string, any> = PEOPLE): string
  *  14:42"; D699: it shares the remark's row, so its width is what decides whether a card is two rows or three). Made
  *  FROM the full line — never written a second time — so every form of it shortens alike: "Placed by" goes, and so
  *  does the year of any moment in `year`, the year of the day that is open (a moment in another year keeps its own).
- *  The full line stays the small print's `title`, for a pointer and a screen reader; the List, the editor's foot, a
- *  Medical card and the document viewer keep the full line (D629). */
+ *  The full line stays the small print's `title`, for a pointer and a screen reader; the List, the editor's foot and the
+ *  document viewer keep the full line (D629); a Medical card carries none (D960). */
 export function placedShort(line: string, year: number): string {
   if (!line) return ''
   return line.replace(/^Placed by /, '').replace(new RegExp(`(\\d{1,2} [A-Z][a-z]{2}) ${two(year % 100)}(?=, \\d\\d:\\d\\d)`, 'g'), '$1')

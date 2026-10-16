@@ -81,8 +81,9 @@ describe('the Medical view', () => {
   })
   it('the three sections sort our men correctly as of today', () => {
     expect(cardsIn('med-down').map(c => c.textContent).join(' ')).toContain('ATT C')
-    expect($('.medsec.med-down').textContent).toContain('till 14 Jul')
-    expect($('.medsec.med-pend').textContent).toContain('was down till 5 Jul')
+    /* each card says the period it covers (owner D960 — "15-17 Jul") */
+    expect($('.medsec.med-down').textContent).toContain('10–14 Jul')
+    expect($('.medsec.med-pend').textContent).toContain('was down 1–5 Jul')
     expect($('.medsec.med-done').textContent).toContain('upchitted 8 Jul')
   })
   it('a card opens the document viewer for that row', async () => {
@@ -131,16 +132,44 @@ describe('the Medical view', () => {
   it('picking an as-of date replays history, and Today returns', async () => {
     /* on 3 Jul shrek was DOWN (1–5 Jul) and yeti still on his ATT B; bane not yet */
     await act(async () => { setMedAsOf('2026-07-03'); notify() })
-    expect($('.medsec.med-down').textContent).toContain('till 5 Jul')
+    expect($('.medsec.med-down').textContent).toContain('1–5 Jul')
     expect($('.medsec.med-pend').textContent).toContain('Nobody is owing an upchit')
     await click($('#medToday'))
-    expect($('.medsec.med-pend').textContent).toContain('was down till 5 Jul')
+    expect($('.medsec.med-pend').textContent).toContain('was down 1–5 Jul')
   })
   it('the month grid picks a date', async () => {
     await click($('#medCalBtn'))
     await click(document.querySelector('[data-medday="2026-07-03"]'))
     expect($('#medCalBtn').textContent).toContain('3 Jul')
     await click($('#medToday'))
+  })
+  /* D959 (the words pass, round 3): Medically Down and Pending Upchit carry no grey line — the heading and the as-of
+     button say it; Upchit Complete keeps "the past 30 days, newest first", the only place that says older ones are not
+     listed. D960: no card carries the placed line — the input's window says who placed it and when. */
+  it('D959 D960 two sections lose their grey line, and no card says who placed it', async () => {
+    await act(async () => { setMedAsOf(null); notify() })
+    expect($('.medsec.med-down .medsec-sub'), 'Medically Down: no grey line').toBeNull()
+    expect($('.medsec.med-pend .medsec-sub'), 'Pending Upchit: no grey line').toBeNull()
+    expect($('.medsec.med-down .medsec-h').textContent).not.toMatch(/cannot fly/)
+    expect($('.medsec.med-pend .medsec-h').textContent).not.toMatch(/still owed/)
+    expect($('.medsec.med-done .medsec-sub').textContent).toBe('the past 30 days, newest first')
+    expect($$('.medcard').length).toBeGreaterThan(0)
+    for (const c of $$('.medcard')) expect(c.textContent, 'no placed line on a card').not.toMatch(/Placed by|\d\d:\d\d/)
+    expect($$('[data-testid="medcard-placed"]')).toEqual([])
+  })
+  /* D960's period: one day says its day once; a period across two months names both; one running into the next year
+     ends in that year (the row's yr anchors its start) */
+  it('D960 a one-day entry says its day once, and a period across months names both', async () => {
+    const one = await plant({ person: 'bane', type: 'OML', date: 'Aug 20' })
+    const two = await plant({ person: 'shrek', type: 'ATT C', date: 'Aug 30', endDate: 'Sep 2' })
+    await act(async () => { setMedAsOf('2026-08-20'); notify() })
+    const oneCard = $(`.medcard[data-medcard="${one.iid}"]`)
+    expect(oneCard.querySelector('.medcard-t')!.textContent).toBe('20 Aug')
+    await act(async () => { setMedAsOf('2026-08-31'); notify() })
+    expect($(`.medcard[data-medcard="${two.iid}"]`).querySelector('.medcard-t')!.textContent).toBe('30 Aug – 2 Sep')
+    await act(async () => { setMedAsOf('2026-09-04'); notify() })
+    expect($(`.medcard[data-medcard="${two.iid}"]`).querySelector('.medcard-t')!.textContent).toBe('was down 30 Aug – 2 Sep')
+    await act(async () => { setMedAsOf(null); notify() })
   })
   /* Medical is a TAB of the Inputs page since the three tabs (D620, D626): it has no close cross of its own, and is
      left by choosing another tab */

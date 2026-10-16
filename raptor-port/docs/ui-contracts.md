@@ -6071,10 +6071,16 @@ calendar's full-screen chassis (`.inpcal`) and deliberately IGNORES the
 table's filter bar — it is the squadron's medical state, not a filtered
 list. Three sections, each a `.medcard` grid on the `.sanscard` contract
 (puck inside the row-direction `.medcard-top`; texts are SIBLINGS — the
-74×74 column-flex trap): **Medically Down** (`--hard` red, "till <date>"),
-**Pending Upchit** (`--adv` amber, "was down till <end>"), **Upchit
+74×74 column-flex trap): **Medically Down** (`--hard` red, the period it
+covers — "15–17 Jul", one day "17 Jul", across months "28 Jun – 2 Jul"),
+**Pending Upchit** (`--adv` amber, "was down 5–9 Jul"), **Upchit
 Complete** (`--ok` green, "upchitted <date>", trailing 30 days newest
-first). Every section has a real empty state. Cards SIZE TO CONTENT and
+first) — the period since owner D960 (17 Oct 26; it was "till <date>"), said
+as the Inputs pages say a range (`ui/InputsPage.tsx rangeWords`). **Nothing
+under that line says who placed the entry or when** (D960 — the input's window
+says it). Only Upchit Complete's heading carries a grey line ("the past 30
+days, newest first"): Medically Down's and Pending Upchit's went with the
+words pass, round 3 (D959). Every section has a real empty state. Cards SIZE TO CONTENT and
 pack from the left — **a wrapping flex row, not a grid** (`.medcards`;
 owner, 27 Aug 26: a stretch-to-fill column wasted the right half of every
 box, then 28 Aug 26: "the box around the puck doesn't look compact
@@ -10293,7 +10299,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   either way, and where there is no remark. The small print is the SHORT form, made FROM the full line
   (`ui/placedline.ts placedShort`): no "Placed by", no year for a moment in the open day's own year — "Grit · 12 Jul,
   14:42", "Saber for 4 people · …", "… · changed by Ranger · 8 Oct, 09:10" — with the full line as its title. The List,
-  the editor's foot, a Medical card and the document viewer keep the full line (D629). A shared input's pucks come
+  the editor's foot and the document viewer keep the full line (D629); a Medical card carries none since D960. A shared input's pucks come
   after that line. A card with a short remark is 51px on a phone where it was 79. Pinned by `ui/placedline.test.ts`,
   `ui/inputsday.test.tsx`, `ui/sansday.test.tsx`, `e2e/inputs-calendar.spec.ts` (D701).
   **Since 10 Oct 26 this bullet is the SANS day's alone: the Inputs day's input is the card of the next bullet (D723).**
@@ -10629,8 +10635,8 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   cut-off saves neither; each change one Undo step. **The Logic page lists both cut-offs and the switch, and each
   row's button opens that same window — nothing of a cut-off is typed on the Logic page.**
 - **Who placed it** (D629) is on every place an entry is listed or opened: both opened days, the List (under the
-  remark), the editor's foot, a Medical card (asking for no width of its own) and the document viewer (following the
-  page of an episode). The demo data carries made-up stamps — never a member as the filer of another man's input.
+  remark), the editor's foot and the document viewer (following the page of an episode) — not a Medical card since
+  D960 (17 Oct 26: the card says the period; who placed it and when are the input's window's). The demo data carries made-up stamps — never a member as the filer of another man's input.
 - **The input editor is a window on the Inputs page** (`win-inputedit`, D641) and the blocking dialog elsewhere. Behind
   a window the record can change, so **it never saves a field its user did not change**: a field he has not touched
   takes the live value silently; a field changed both ways is listed, theirs and his, and Save waits for his choice
