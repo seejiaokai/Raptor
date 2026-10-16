@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D974 | 17 Oct 26 | The start-size job's commits that reached main by mistake stay on main, as his "merge live" for that job; nothing is taken off, and the rule that main needs his "merge live" stands for everything else. |
 | D973 | 17 Oct 26 | The capitals sweep (D972) covers only the backlog, the screen rules and the engine rules — the files a chat reads in part; the archives, which are only searched, are left as they are. |
 | D972 | 17 Oct 26 | After the start-size job, the other places written in capitals for emphasis are found and turned into ordinary letters the same way as the rulings (D970), word for word, with the work done by a cheaper model and checked by a fresh reader. — changed by D973 |
 | D971 | 17 Oct 26 | A ruling that a later ruling restates in full leaves the loaded list for the archive, as a replaced one does, still searched before he is asked anything; one fresh reader checks each before it moves, and a ruling the later one only narrows stays. |
