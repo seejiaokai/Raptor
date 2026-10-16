@@ -315,7 +315,7 @@ describe('loadWeek', () => {
     expect(acceptedDay(X), 'no landing on the loaded week now').toBeLessThan(0)
     expect(commitInputEdit(X, { ...draftOf(X), remarks: 'edited from week 2' }), 'the edit goes ahead').toBe(true)
     loadWeek('13/07/2026')
-    expect(DAYS[0].ground.find((g: any) => g && g.src === X.iid)?.rmks, 'its week shows the edit').toBe('edited from week 2 till 13 Jul')
+    expect(DAYS[0].ground.find((g: any) => g && g.src === X.iid)?.rmks, 'its week shows the edit').toBe('edited from week 2')   // a one-day duty or commitment prints no date (owner D951, D953)
     loadWeek('20/07/2026')
     expect(removeInput(X), 'the delete goes ahead').toBe(true)
     loadWeek('13/07/2026')

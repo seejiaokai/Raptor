@@ -1258,7 +1258,9 @@ export function tillDefaultISO(type:any,startISO:any,endISO:any):boolean{return 
 export function tillShown(rec:any):boolean{return rec&&typeof rec.till==='boolean'?rec.till:tillDefault(rec);}
 export function tillSettle(rec:any):boolean{
   if(!rec||!('till' in rec))return false;
-  if(typeof rec.till==='boolean'&&rec.till!==tillDefault(rec))return false;
+  /* …and never on a kind that carries no date (SANS availability, an upchit): a choice made before a retype into one would
+     stay hidden there and come back on a retype out (the scenario designer's 9, 17 Oct 26) */
+  if(typeof rec.till==='boolean'&&rec.till!==tillDefault(rec)&&!isSansAvail(rec.type)&&!isUpchit(rec.type))return false;
   delete rec.till;return true;}
 /* "till <its last day>", from its dates — '' for an input that prints none (unticked — D953), or has no date yet */
 export function tillOf(inp:any):string{

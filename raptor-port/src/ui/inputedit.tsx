@@ -2382,14 +2382,13 @@ export function InputEditor() {
        (found by this batch's own control test, 10 Oct 26). Once: the next pass finds the record as `base` and stops. */
     else if (hit.size) redraw(n => n + 1)
   })
-  /* A DATE OR A KIND THAT FLIPS THE TILL-DATE TICK'S DEFAULT REPLACES A HAND CHOICE (owner D953 reading 2): a one-day
-     meeting ticked by hand, then stretched to two days, takes the new default — and keeps it when it is cut back to one
-     day, rather than the old tick coming back. The draft's choice is dropped the moment it equals the default (it was
-     made against the other one); the save's own write does the same for every other door (engine/inputs.ts tillSettle). */
+  /* THE TILL-DATE TICK'S DEFAULT FOR THE DATES IN THE WINDOW (owner D951–D953). A hand choice is weighed against it at the
+     SAVE, not while the dates are being picked: a range is picked in two taps, and between them the window holds a start
+     alone — one day — so a hand untick on a several-day leave would be dropped by the first tap of a re-pick (the
+     scenario designer's 1, 17 Oct 26). What is saved is what reading 2 asks: the dates as saved against the default the
+     choice was made over — kept where they keep it, replaced where they flip it (engine/inputs.ts tillSettle, run by the
+     save's own write). */
   const draftTillDef = draft ? tillDefaultISO(draft.type, draft.start, draft.end) : true
-  useEffect(() => {
-    if (draft && typeof draft.till === 'boolean' && draft.till === draftTillDef) setDraft({ ...draft, till: undefined })
-  }, [draft, draftTillDef])
   /* asked before every write, and again after any blocking question (an upchit, OIL or clash sheet) — the record may
      have been changed behind the window while the question stood */
   const undecided = () => {

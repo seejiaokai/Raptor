@@ -212,7 +212,10 @@ function inputWords(di: number, it: PendItem): Words {
   /* no dates: whether it covers this day is filed / moved off; its far end is another day's business (Fable F1) */
   pair(winWords(was), winWords(now))
   /* as printed — the typed words and "till <its last day>" (D948): a leave stretched over a published day reads its new date here (D189) */
-  if (remarksShown(was) !== remarksShown(now)) { from.push(`“${clip(remarksShown(was))}”`); to.push(`“${clip(remarksShown(now))}”`) }
+  /* …an empty side says so, never a pair of empty quotes: a leave with no typed words whose date is unticked prints
+     nothing (owner D953 — the scenario designer's 2, 17 Oct 26) */
+  const said = (s: string) => s ? `“${clip(s)}”` : '(no remarks)'
+  if (remarksShown(was) !== remarksShown(now)) { from.push(said(remarksShown(was))); to.push(said(remarksShown(now))) }
   /* THE SCHEDULER'S MARKS ARE THE INPUT'S (owner D760) — so a CX, a red box or "information only" put on its row on a
      published day is THIS line's to say, with the reason, in the words a row of the scheduler's own is said in
      (valueWords, above: "· CX (WX)", "· flagged", "· info only"). Since step 4 of the one-rule build moved the marks

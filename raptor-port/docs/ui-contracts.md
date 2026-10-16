@@ -10471,12 +10471,18 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   tillOf` — the one place every screen asks — answers '' (so `remarksShown`, the week's and the board's boxes, the
   Ground Programme row, the List, the Leave War's day list and the published compare all follow). Stored as `till` on the
   input only where a hand choice differs from the default (`tillShown`, `tillDefault`); a date or kind change that flips
-  the default replaces it — in the window as the dates are picked (an effect on the draft), and for every door in the
-  one input write body (`state/store.ts runInputWrite` → `tillSettle`) and the person-delete trim — so cutting a
-  stretched input back never brings an old tick back. A tick changed on a published day reads "1 pending" there (the
-  printed words changed, D189); the change history writes a "till date" line, never a second line beside a date change
-  that flipped it. Whoever may change the input may tick it (the window's read-only body is inert, D364). SANS
-  availability and an upchit carry none. Pinned: `ui/tilltick.test.tsx`, `ui/inputs.test.tsx` (the window).
+  the default replaces it — weighed at the SAVE, never tap by tap (a range is picked in two taps and holds one day
+  between them, so a hand untick must survive a re-pick; dates that end as they began keep it), by every door's one
+  write body (`state/store.ts runInputWrite` → `tillSettle`) and the person-delete trim — so cutting a stretched input
+  back never brings an old tick back. A tick changed on a published day reads "1 pending" there (the printed words
+  changed, D189; an empty side reads "(no remarks)" in the pending list); the change history writes a "till date" line —
+  never a second line beside a date change that flipped it, but one where a save also turned it against the new default;
+  the member's bell says "Remark changed" when someone else turns his tick. The Leave War's approval never bridges an
+  unticked leave and a ticked one (`leavewar/sync.ts`: the day joins the one before only); an extension keeps its tick.
+  SANS availability and an upchit never keep a tick (`tillSettle`). The card's corner keeps its dates (D728) — the tick is
+  about the printed remark. Whoever may change the input may tick it (the window's read-only body is inert, D364). SANS
+  availability and an upchit carry none. Pinned: `ui/tilltick.test.tsx`, `ui/inputs.test.tsx` (the window),
+  `leavewar/changelines-lw.test.ts` (the approval).
 - **THE CARD'S REMARK LEAVES OUT THE AUTOMATIC "TILL <DATE>" (owner D728, 10 Oct 26 — "1 now, 2 later").** The card's
   corner already says when a several-day input ends, so the card does not print the same words again from its
   remark; what a person typed stays, and a remark that was only the automatic words shows none. The record, the

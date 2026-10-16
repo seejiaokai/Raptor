@@ -122,7 +122,7 @@ describe('phase 6 (c) — a filing, an edit, a delete and a hand-over write the 
     await reload(be)
     const back = rowOf(iid, WED)
     expect(back, 'after a reload: the same row, worked out from the request').toBeTruthy()
-    expect(back!.row.rmks).toBe('p6c till 15 Jul')
+    expect(back!.row.rmks).toBe('p6c')   // a one-day duty or commitment prints no date (owner D951, D953)
   })
 
   it('a filing on a PUBLISHED day: one pending and a mark on its row — before AND after a reload (16 Sep 26)', async () => {
@@ -149,7 +149,7 @@ describe('phase 6 (c) — a filing, an edit, a delete and a hand-over write the 
     clear()
     edit(iid, { remarks: 'p6c changed' })
     expect(weekWrites(), 'the edit writes no day row').toEqual([])
-    expect(rowOf(iid, WED)!.row.rmks, 'at once').toBe('p6c changed till 15 Jul')
+    expect(rowOf(iid, WED)!.row.rmks, 'at once').toBe('p6c changed')   // a one-day duty or commitment prints no date (owner D951, D953)
     await reload(be)
     expect(rowOf(iid, WED)!.row.rmks, 'after a reload').toBe('p6c changed till 15 Jul')
   })
@@ -169,7 +169,7 @@ describe('phase 6 (c) — a filing, an edit, a delete and a hand-over write the 
     edit(iid, { remarks: 'p6c again' })
     const now = rowOf(iid, WED)!.row
     expect(now.str, 'the time the scheduler typed').toBe('07:00')
-    expect(now.rmks).toBe('p6c again till 15 Jul')
+    expect(now.rmks).toBe('p6c again')   // a one-day duty or commitment prints no date (owner D951, D953)
     expect(now.rid, 'the same row').toBe(rid)
     await reload(be)
     expect(rowOf(iid, WED)!.row.str).toBe('07:00')
@@ -237,7 +237,7 @@ describe('phase 6 (c) — a filing, an edit, a delete and a hand-over write the 
     const r = rowOf(iid, 2)
     expect(r, 'still one row on week 2').toBeTruthy()
     expect(rowsOf(iid)).toBe(1)
-    expect(r!.row.rmks).toBe('from week 1 till 22 Jul')
+    expect(r!.row.rmks).toBe('from week 1')   // a one-day duty or commitment prints no date (owner D951, D953)
     expect(r!.row.who, 'the new man drawn').toBe('stiff')
     await reload(be)
     loadWeek(W2)
@@ -277,7 +277,7 @@ describe('phase 6 (c) — a filing, an edit, a delete and a hand-over write the 
     clear()
     expect(globalUndo().ok).toBe(true)
     expect(weekWrites(), 'no day row').toEqual([])
-    expect(rowOf(iid, WED)!.row.rmks).toBe('p6c till 15 Jul')
+    expect(rowOf(iid, WED)!.row.rmks).toBe('p6c')   // a one-day duty or commitment prints no date (owner D951, D953)
   })
 })
 
@@ -397,7 +397,7 @@ describe('phase 6 (c) v3 — the holder base: what a request does to its day is 
     expect(pendKeys(WED, 'gr').length).toBe(marked)
     await reload(be)
     expect(dayShownPendCount(WED)).toBe(1)
-    expect(rowOf(iid, WED)!.row.rmks).toBe('B till 15 Jul')
+    expect(rowOf(iid, WED)!.row.rmks).toBe('B')   // a one-day duty or commitment prints no date (owner D951, D953)
   })
 
   it('Astra 3 — kept\'s exit: deleted, the old version loaded (the row kept, D363), the delete undone, then the request edited — the row follows the edit', async () => {
@@ -416,7 +416,7 @@ describe('phase 6 (c) v3 — the holder base: what a request does to its day is 
     const u = globalUndo(); expect(u.ok, 'Ranger takes back his delete: ' + JSON.stringify(u)).toBe(true)
     expect(reqOf(iid)).toBeTruthy()
     edit(iid, { remarks: 'after the undo' })
-    expect(rowOf(iid, WED)!.row.rmks, 'the row follows the request again').toBe('after the undo till 15 Jul')
+    expect(rowOf(iid, WED)!.row.rmks, 'the row follows the request again').toBe('after the undo')   // a one-day duty or commitment prints no date (owner D951, D953)
     expect(rowsOf(iid)).toBe(1)
     await reload(be)
     expect(rowOf(iid, WED)!.row.rmks).toBe('after the undo till 15 Jul')
@@ -469,7 +469,7 @@ describe('phase 6 (c) v3 — the holder base: what a request does to its day is 
     publish(WED)
     const before = ELOG.rows.filter((r: any) => String(r.key || '').startsWith('gr:') || String(r.key || '').startsWith('g:')).length
     edit(iid, { remarks: 'no cell lines' })
-    expect(rowOf(iid, WED)!.row.rmks).toBe('no cell lines till 15 Jul')
+    expect(rowOf(iid, WED)!.row.rmks).toBe('no cell lines')   // a one-day duty or commitment prints no date (owner D951, D953)
     const after = ELOG.rows.filter((r: any) => String(r.key || '').startsWith('gr:') || String(r.key || '').startsWith('g:')).length
     expect(after, 'no line for the row\'s cells').toBe(before)
   })
@@ -624,7 +624,7 @@ describe('phase 6 (c) v3, round 3 — a dead kept row is never the request\'s ro
     expect(dead.rid, 'two rows, two ids').not.toBe(live.rid)
     clear()
     edit(iid, { remarks: 'his own words' })                         // refused if it carried a day record (§11)
-    expect(rowOf(iid, THU)!.row.rmks).toBe('his own words till 16 Jul')
+    expect(rowOf(iid, THU)!.row.rmks).toBe('his own words')   // a one-day duty or commitment prints no date (owner D951, D953)
     expect(weekWrites(), 'no day record').toEqual([])
     await reload(be)
     expect(rowOf(iid, WED)!.row.rid).not.toBe(rowOf(iid, THU)!.row.rid)
@@ -691,7 +691,7 @@ describe('phase 6 (c) — the FULL check\'s walk: a request\'s new row on a publ
     writeText(`gr:${WED}.${ri}.rmks`, 'SCHEDULER WORDS')           // typed on the row: the request's remark now
     const rid = at.row.rid
     expect(reqOf(iid).remarks).toBe('SCHEDULER WORDS')
-    expect(rowOf(iid, WED)!.row.rmks).toBe('SCHEDULER WORDS till 15 Jul')
+    expect(rowOf(iid, WED)!.row.rmks).toBe('SCHEDULER WORDS')   // a one-day duty or commitment prints no date (owner D951, D953)
     expect(dayKeysOf(SCHED.pending, WED), 'the add alone').toEqual([`gr:${WED}.${rid}.prog`])
     edit(iid, { remarks: 'member words' })
     expect(rowOf(iid, WED)!.row.rmks).toBe('member words till 15 Jul')

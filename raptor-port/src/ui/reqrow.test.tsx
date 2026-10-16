@@ -157,7 +157,7 @@ describe('a time, a remark or a name typed on a request’s row changes the requ
       const iid = file()
       type(`gr:${WED}.${riOf(iid)}.rmks`, 'bring the range card')
       expect(reqOf(iid).remarks).toBe('bring the range card')
-      expect(rowOf(iid).rmks).toBe('bring the range card till 15 Jul')
+      expect(rowOf(iid).rmks).toBe('bring the range card')   // a one-day duty or commitment prints no date (owner D951, D953)
     })
 
     it(`${where}: a name typed on the row becomes the input’s own title, in the letters typed (reading R1)`, async () => {
@@ -310,7 +310,7 @@ describe('the door and the belt — one rule for every writer (the plan §4.4)',
       expect(txtSet(`gr:${WED}.${ri}.${f}`, v), f).toBe(false)
     }
     const row = rowOf(iid)
-    expect([row.prog, row.str, row.end, row.rmks], 'the remark as printed — typed words and its date (D948)').toEqual(['TRAINING', '11:00', '12:00', 'as filed till 15 Jul'])
+    expect([row.prog, row.str, row.end, row.rmks], 'the remark as printed — typed words and its date (D948)').toEqual(['TRAINING', '11:00', '12:00', 'as filed'])   // a one-day duty or commitment prints no date (owner D951, D953)
     expect(JSON.stringify(SCHED.pending)).toBe(marks)
     expect(reqOf(iid).s, 'and the request is as filed').toBe(660)
   })

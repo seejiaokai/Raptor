@@ -62,7 +62,7 @@ describe('what a request writes on its row — a whole copy of the input (D755, 
   it('AN INPUT OF ONE PERSON: its name, its two times, its person, its remark and its kind — and no `more`', () => {
     const f: any = requestRowFields(base)
     /* its remark as printed — the typed words and "till <its last day>" from its dates (owner D948, 16 Oct 26) */
-    expect(f).toEqual({ prog: 'TRAINING', str: '11:00', end: '12:00', who: 'bane', rmks: 'range till 15 Jul', srcType: 'Training' })
+    expect(f).toEqual({ prog: 'TRAINING', str: '11:00', end: '12:00', who: 'bane', rmks: 'range', srcType: 'Training' })   // a one-day duty or commitment prints no date (owner D951, D953)
     expect('more' in f, 'nobody to put under the name box: the key is not written').toBe(false)
     /* the same input stored with its list reads the same — an old-shaped record is a one-person input (D756) */
     expect(requestRowFields(withPeople(['bane']))).toEqual(f)

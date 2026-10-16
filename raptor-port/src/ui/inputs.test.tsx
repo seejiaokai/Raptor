@@ -1441,14 +1441,33 @@ describe('the till-date tick in the input\'s window (D953)', () => {
     expect(tillEl().textContent, 'still shown, struck through').toBe('till 13 Jul')
   })
 
-  it('ticked by hand, then stretched to two days: the default; cut back to one day: the default again, not the old tick', async () => {
+  /* A HAND CHOICE IS WEIGHED AT THE SAVE, not tap by tap (the scenario designer's 1, 17 Oct 26): a range is picked in two
+     taps, and between them the window holds one day — a hand untick on a several-day leave must survive a re-pick. Dates
+     that end as they began keep the hand choice (D953 reading 2); the save's own write replaces one the saved dates
+     flipped (pinned through the saves in tilltick.test.tsx). */
+  it('ticked by hand on one day; stretched and cut back in one sitting, the dates as they began: still ticked', async () => {
     await click(tick())
     expect(tick().checked).toBe(true)
     await click(calDay('2026-07-14'))                 // the start stands on the 13th: this ends the range
     expect(D('#inpEditPop .rc-read')!.textContent).toBe('Jul 13 → Jul 14')
-    expect(tick().checked, 'two days: ticked by default').toBe(true)
+    expect(tick().checked, 'two days: ticked').toBe(true)
     await click(calDay('2026-07-13')); await click(calDay('2026-07-13'))
-    expect(tick().checked, 'one day again: unticked — the hand tick was replaced').toBe(false)
+    expect(tick().checked, 'one day again, as it began: his tick').toBe(true)
+  })
+
+  it('a several-day leave unticked by hand keeps its untick through a re-pick of its dates', async () => {
+    await setType('OL')
+    await click(calDay('2026-07-20')); await click(calDay('2026-07-22'))
+    expect(tick().checked, 'a leave: ticked by default').toBe(true)
+    await click(tick())
+    expect(tick().checked).toBe(false)
+    await click(calDay('2026-07-21'))                 // a fresh start: one day, between the two taps
+    expect(tick().checked, 'mid-pick: still his untick').toBe(false)
+    await click(calDay('2026-07-24'))
+    expect(tick().checked, 'the new range: still unticked').toBe(false)
+    await click(tick())                               // back on, for the next test
+    await setType('Meeting')
+    await click(calDay('2026-07-13')); await click(calDay('2026-07-13'))
   })
 
   it('Add saves a hand tick; the input prints its date; reopened, the tick is as saved', async () => {

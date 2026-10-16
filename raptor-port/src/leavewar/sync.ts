@@ -19,7 +19,7 @@
 
 import { useSyncExternalStore } from 'react'
 import { toPeople, pieceOf } from '../engine/inputown'
-import { INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, remarksTyped, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent } from '../engine/inputs'
+import { INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, remarksTyped, tillShown, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
@@ -417,7 +417,11 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
       const same = (x: any) => x !== r && idsOf(x).length === 1 && String(leadOf(x)) === String(leadOf(r)) && x.lw === r.lw && x.type === r.type &&
         !!x.allday === !!r.allday && (x.half ?? '') === (r.half ?? '') && body(x) === body(r)
       const before = INPUTS.find((x: any) => same(x) && addDays(inputDates(x).slice(-1)[0] ?? '', 1) === start)
-      const after = INPUTS.find((x: any) => same(x) && inputDates(x)[0] === addDays(end, 1))
+      /* …and a day that would BRIDGE a leave whose till date is unticked and one whose is not joins the one before only:
+         one record holds one tick, so a bridge would drop one of the two choices (owner D953 — the scenario designer's 8,
+         17 Oct 26). An extension of either alone keeps its choice — the dates still run more than a day. */
+      const after0 = INPUTS.find((x: any) => same(x) && inputDates(x)[0] === addDays(end, 1))
+      const after = after0 && before && tillShown(after0) !== tillShown(before) ? undefined : after0
       if (!before && !after) { INPUTS.push(r); continue }
       const from = before ? inputDates(before)[0]! : start
       const to = after ? inputDates(after).slice(-1)[0]! : end

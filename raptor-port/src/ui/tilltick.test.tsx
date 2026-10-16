@@ -17,7 +17,10 @@ import { SCHED, signOf, setDayApproved, dayShownPendCount } from '../engine/publ
 import { acceptInput } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { ELOG } from '../engine/editlog'
-import { initStore, writeInputs } from '../state/store'
+import { initStore, writeInputs, undo, resetSession } from '../state/store'
+import { signIn, sessionFor } from '../state/accounts'
+import { NOTICES } from '../state/notices'
+import { pendListHTML } from './pendlist'
 import { setSession } from '../state/auth'
 import { setPage, PIOPEN } from '../state/view'
 import { dayHTML, reqRmkParts, boxText, refreshWaveReports } from './html'
@@ -206,5 +209,50 @@ describe('the board\'s wave header says "(prev day)" where the wave reports the 
     w.intimes = ['22:30H IN TIME']
     refreshWaveReports(host)
     expect(head().querySelector('.sb-prevday')?.textContent, 'and put it back').toBe('(prev day)')
+  })
+})
+
+/* THE SCENARIO DESIGNER'S FINDS (17 Oct 26), each pinned where it was fixed */
+describe('the scenario designer\'s finds', () => {
+  it('2: a published leave with no typed words, unticked: the pending list says "(no remarks)", never empty quotes', () => {
+    expect(commitNewInput(leave('2026-07-13', '2026-07-14', ''))).toBe(true)
+    const r = INPUTS[0]                                       // the one just filed
+    expect([r.type, r.remarks, r.date]).toEqual(['OL', '', 'Jul 13'])
+    validate(); publishDay(MON)
+    expect(commitInputEdit(r, { ...draftOf(r), till: false })).toBeTruthy(); validate()
+    const txt = el(pendListHTML(MON)).textContent || ''
+    expect(txt).toContain('“till 14 Jul”')
+    expect(txt).toContain('(no remarks)')
+    expect(txt).not.toContain('“”')
+  })
+  it('3: a one-day meeting ticked by hand, stretched AND unticked in one save: the dates line and the till-date line', () => {
+    expect(commitNewInput({ ...meeting('2026-07-15', '', 'STR'), till: true } as any)).toBe(true)
+    const m = added('STR'), n = ELOG.next
+    expect(commitInputEdit(m, { ...draftOf(m), end: '2026-07-16', till: false })).toBeTruthy()
+    expect(m.till).toBe(false)
+    const l = ELOG.rows.filter((e: any) => e.seq >= n).map((e: any) => `${e.lbl} ${e.from}→${e.to}`)
+    expect(l.some(x => / · dates /.test(x)), l.join(' | ')).toBe(true)
+    expect(l.some(x => /· till date shown→hidden$/.test(x)), l.join(' | ')).toBe(true)
+  })
+  it('5: a scheduler unticking a member\'s input tells him: "Remark changed"', () => {
+    resetSession(sessionFor(signIn('ad', 'a') as any))       // a scheduler with a name: a notice says who
+    expect(commitNewInput(leave('2026-07-13', '2026-07-15', 'BELL'))).toBe(true)
+    const r = added('BELL'), n = NOTICES.length
+    expect(commitInputEdit(r, { ...draftOf(r), till: false })).toBeTruthy()
+    const mine = NOTICES.slice(n).filter(x => x.to === 'bane')
+    expect(mine.some(x => x.what.some((p: any) => p.k === 'rmk')), JSON.stringify(mine)).toBe(true)
+  })
+  it('9: a kind that carries no date keeps no hidden tick (SANS availability, an upchit)', () => {
+    const s: any = { type: 'SANS Availability', date: 'Jul 13', endDate: 'Jul 15', till: false }
+    expect(tillSettle(s)).toBe(true); expect('till' in s).toBe(false)
+  })
+  it('undo: a stretch that replaced a hand tick, undone, brings the tick back with its dates', () => {
+    expect(commitNewInput({ ...meeting('2026-07-13', '', 'UNDO'), till: true } as any)).toBe(true)
+    const r = added('UNDO')
+    expect(commitInputEdit(r, { ...draftOf(r), end: '2026-07-14' })).toBeTruthy()
+    expect('till' in r).toBe(false)
+    undo()
+    const back = added('UNDO')
+    expect([back.endDate ?? '', back.till]).toEqual(['', true])
   })
 })
