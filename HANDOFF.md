@@ -21,15 +21,15 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/sharp-goldberg-6d0656 -->
-### `claude/sharp-goldberg-6d0656` — [CONTEXT-START-SIZE]'s follow-ons: the capitals sweep done; D975 (he picks no branch); the push guard to design — written 17 Oct 26, verify before use
+### `claude/sharp-goldberg-6d0656` — [CONTEXT-START-SIZE]'s follow-ons DONE: the capitals sweep, D975 (he picks no branch), the push-and-lock guard (D976) — written 17 Oct 26, verify before use
 - **Where it started:** the start-size job's next chat: measure its own start, weigh D, then `[CAPS-SWEEP]`, then `[PUSH-LOCK-GUARD]`. A, B, C, G of that job are on `main` by D974.
-- **Measured:** an empty chat 13% (114,521 of 880,000); a build chat 22% (197,417) once its first app file is open — the scheduler's rulings ~35,000 tokens of it. **D (split the scheduler's rulings) — recommended NO** to him: the file is 91,777 bytes, under D611's mark (~100,000). His answer is open.
-- **Done:** `[CAPS-SWEEP]` (D972, D973) — 551 lines of the backlog, `ui-contracts.md`, `engine-rules.md` in ordinary letters, ~4,800 tokens, case only (checked twice); Sonnet ran an adapted copy of the rulings script, a fresh Opus reader's five findings fixed; archived; outcome in `raptor-port/docs/doc-budget.md`. **D975** recorded (replaces D368, archived): the outgoing chat releases its branch last, the opening line switches to it — the session-handoff and overnight guides changed, read by one fresh Opus reader, its four findings fixed in its own wording; **his approval of that wording is open** (D70). Observation 622 actioned.
-- **Branch:** `claude/sharp-goldberg-6d0656`, tracking `origin/claude/sharp-goldberg-6d0656` (checked); no pull request yet — D974, D975 and the sweep sit on the branch for the next "merge live". Not released: this chat continues.
-- **Gates:** `npm run docsize` OK. Documents only — no app code, no walk (tier NONE). The engine-rules test that counts a phrase was not run (no `node_modules` here); its phrase count was checked by hand (2).
-- **Open questions for him:** D (split or not); the D975 wording; `[PUSH-LOCK-GUARD]`'s design (hooks need his word, D70).
+- **Measured:** an empty chat 13% (114,521 of 880,000); a build chat 22% (197,417) once its first app file is open — the scheduler's rulings ~35,000 tokens of it. D (split them): not done, his D976.
+- **Done:** `[CAPS-SWEEP]` (D972, D973) — 551 lines in ordinary letters, ~4,800 tokens, case only; archived. **D975** (replaces D368): the outgoing chat releases its branch last, the opening line switches to it; the session-handoff and overnight guides changed, wording approved (D976). **`[PUSH-LOCK-GUARD]`** (D976) — `.claude/hooks/push-guard.mjs` + `gatelock.mjs exec`, switched on in `.claude/settings.json`; three fresh Opus reads (8, 10, 8 findings), every must-fix fixed with a test (30); archived; leftovers `[PUSH-GUARD-LEFTOVERS]`. How it works: `raptor-port/docs/gates-and-deploy.md`.
+- **Branch:** `claude/sharp-goldberg-6d0656`, tracking `origin/claude/sharp-goldberg-6d0656`; no pull request yet. Not released: this chat may continue. Everything waits for his "merge live".
+- **Gates:** `npm run docsize` OK; `node --test .claude/hooks/push-guard.test.mjs` 30/30, `bg-cwd-guard.test.mjs` 14/14. No app code changed (tier NONE for the app); `gatelock.mjs` changed, so the branch's push starts the full check run — read it before any further push. The app loads hooks when a chat starts: the guard was NOT live in the chat that built it; the next chat on this branch is its first live use — watch for a wrong refusal.
+- **Open questions for him:** none.
 - **Running when written:** none.
-- **Pick up here:** his three answers; then build `[PUSH-LOCK-GUARD]` if he says so.
+- **Pick up here:** read this push's check run; open the pull request when he wants it merged; in the next chat, note any wrong refusal by the guard (file it under `[PUSH-GUARD-LEFTOVERS]`).
 - **Opening line:** "Switch this chat to the branch claude/sharp-goldberg-6d0656: git fetch origin, git switch claude/sharp-goldberg-6d0656, git branch -u origin/claude/sharp-goldberg-6d0656, git pull --ff-only. If the switch is refused because another checkout holds the branch, release it there only if that checkout is clean and on origin's commit, then switch again; otherwise stop and tell me. Then measure how full this chat is, read HANDOFF.md — the claude/sharp-goldberg-6d0656 block under ## Now — and carry on from Pick up here."
 <!-- /now -->
 
