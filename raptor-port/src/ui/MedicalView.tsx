@@ -22,15 +22,15 @@
    squadron's medical state, not a filtered list (docs/ui-contracts.md). */
 import { useEffect, useState } from 'react'
 import { PEOPLE, byCrew } from '../engine/people'
-import { inpType, leadOf, remarksTyped } from '../engine/inputs'
+import { INPUT_TYPES, inpMeta, inpType, leadOf, remarksTyped, defaultAllday } from '../engine/inputs'
 import { medDownAsOf, pendingUpchits, upchitsWithin, medEpisode } from '../engine/medical'
 import { docHas, rowDocIds } from '../state/docs'
 import { MEDASOF, setMedAsOf } from '../state/view'
 import { notify } from '../state/store'
-import { setDocView } from './pops'
+import { setDocView, setInpEdit } from './pops'
 import { useVersion } from './useStore'
 import { puck } from './html'
-import { fmtDay, unfmt } from './inputedit'
+import { fmtDay, unfmt, newInputSeed } from './inputedit'
 import { monthCells } from './InputsCal'
 import { rangeWords } from './InputsPage'
 import { TODAY, keyToIso } from './weeknav'
@@ -83,8 +83,13 @@ function remarkNote(remark: any): string {
 /* one section's card: puck + what the section says about him + his remarks.
    The puck sits inside the row-direction top line and the texts are its
    SIBLINGS — the sanscard flex contract (scheduler.css), where nesting them
-   in the puck's own box is the documented trap. */
-function Card({ e, line, up, docs, onOpen }: { e: any, line: string, up?: boolean, docs?: number, onOpen: (row: any, up?: boolean) => void }) {
+   in the puck's own box is the documented trap.
+   TWO ROWS, THREE CARDS A ROW ON A PHONE (owner D961, D965 — 17 Oct 26, "Anyway we can compact 3 names on a row?",
+   built as drawn): the puck alone on row 1; row 2 the kind, in its section's colour, then the period ("ATT C 13–17 Jul"),
+   so a card is as wide as its puck (~95) and three stand in a row at 375 and 390. Upchit Complete's card drops the kind
+   and "upchitted" (its section says Upchit, D961) and says its documents as one page drawing each, in the section's green,
+   after the date (`docIcons`) — the "N documents" pill went with it. */
+function Card({ e, line, up, docs, docIcons, kind = true, onOpen }: { e: any, line: string, up?: boolean, docs?: number, docIcons?: boolean, kind?: boolean, onOpen: (row: any, up?: boolean) => void }) {
   const r = e.row
   /* (whose it is: a medical entry and an upchit are ONE person's — engine/inputs.ts shapeProblem, D655 reading 4 — so
      the puck is the first of the record's people, leadOf: a record stored before the one-rule build answers with its
@@ -99,15 +104,30 @@ function Card({ e, line, up, docs, onOpen }: { e: any, line: string, up?: boolea
       onClick={() => onOpen(r, up)}>
       <span className="medcard-top">
         <span className="seat" dangerouslySetInnerHTML={{ __html: puck(leadOf(r), 0, true, '') }} />
-        <span className="medcard-type">{inpType(r.type)}</span>
       </span>
-      <span className="medcard-t">{line}</span>
-      {n > 1 ? <span className="medcard-docn">{n} documents</span> : null}
+      <span className="medcard-row2">
+        {kind ? <span className="medcard-type">{inpType(r.type)}</span> : null}
+        <span className="medcard-t">{line}</span>
+        {/* one drawing a document actually on file (D961 reading 2: "a card of one document shows one icon"; none on
+            file, none drawn) — the card's title still says how many for a reader who cannot see them */}
+        {docIcons && docs ? Array.from({ length: docs }, (_, i) => <DocMark key={i} />) : null}
+      </span>
       {/* the typed words (its line above says the dates — D948, engine/inputs.ts remarksTyped) */}
       {remarkNote(remarksTyped(r.remarks, r)) ? <span className="medcard-r" title={remarksTyped(r.remarks, r)}>{remarksTyped(r.remarks, r)}</span> : null}
       {/* nothing under it: who placed the entry and when is the input's window's to say, not the card's (owner D960, 17 Oct
           26 — "No need for the time/ date or who it's filed from"; it narrows D629 for this card) */}
     </button>
+  )
+}
+/* a document, drawn as the app's own page (ui/icons.tsx PdfIcon's sheet and folded corner, without its lines and arrow —
+   at 11px those blur into a smudge); it takes the section's colour from the card (16-medical.css) */
+function DocMark() {
+  return (
+    <svg className="medcard-doc" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <path d="M14 2v6h6" />
+    </svg>
   )
 }
 
@@ -147,6 +167,10 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
     notify()
   }
   const pick = (iso: string) => { setMedAsOf(iso === todayIso ? null : iso); setCalOpen(false); notify() }
+  const openNew = () => {
+    const seed = newInputSeed(), t = INPUT_TYPES.find((k: any) => inpMeta(k)?.grp === 'med')
+    setInpEdit(t ? { ...seed, type: t, allday: defaultAllday(t) } : seed); notify()
+  }
 
   /* Escape closes the as-of picker, in the capture-phase manner the sibling
      popups (DocViewer, the input dialog) already use — the keyboard must not
@@ -173,6 +197,12 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
         </button>
         {MEDASOF && <button type="button" className="abtn" id="medToday" onClick={() => pick(todayIso)}>Today</button>}
         <span style={{ flex: 1 }}></span>
+        {/* THE TAB'S OWN DOOR FOR A MEDICAL INPUT (owner D963, D965 — 17 Oct 26: two doors, one window; look B, a filled
+            "+ Medical" at the row's right end, as tall as the row's "as of"). It opens the SAME window as the Inputs tab's
+            "+ Input" — the same seed (ui/inputedit.tsx newInputSeed: the signed-in person, no date yet) with the first
+            medical kind of the app's own list already set; the window itself, and who may file for whom in it (D655),
+            are unchanged. */}
+        <button type="button" className="abtn primary" id="medNew" onClick={openNew}>+ Medical</button>
         {/* no cross where Medical is a TAB of the Inputs page (D626): a tab is left by choosing another */}
         {onClose && <button type="button" className="abtn" id="medClose" aria-label="Back to list"
           title="Back to list" onClick={onClose}>✕</button>}
@@ -222,12 +252,13 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
             : <div className="med-empty">Nobody is medically down on this date.</div>}
         </section>
         <section className="medsec med-pend">
-          {/* no grey line: "pending upchit" is the squadron's own word for it, and each card says when he was down (D959) */}
+          {/* no grey line: "pending upchit" is the squadron's own word for it, and each card says when he was down (D959) —
+              as the kind and the period, "OML 6–9 Jul": the section already says it is over, so "was down" went (D965) */}
           <div className="medsec-h">Pending Upchit<span className="medsec-n">{pend.length}</span></div>
           {pend.length
             ? <div className="medcards">{pend.map((e: any, i: number) =>
               <Card key={(e.row.iid || '') + i} e={e} up onOpen={open} docs={episodeDocN(e.row)}
-                line={`was down ${spanOf(e.row)}`} />)}</div>
+                line={spanOf(e.row)} />)}</div>
             : <div className="med-empty">Nobody is owing an upchit.</div>}
         </section>
         <section className="medsec med-done">
@@ -235,8 +266,8 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
             <span className="medsec-sub">the past 30 days, newest first</span></div>
           {done.length
             ? <div className="medcards">{done.map((e: any, i: number) =>
-              <Card key={(e.row.iid || '') + i} e={e} onOpen={open} docs={episodeDocN(e.row)}
-                line={`upchitted ${lblDay(e.row.date, e.row.yr)}`} />)}</div>
+              <Card key={(e.row.iid || '') + i} e={e} onOpen={open} docs={episodeDocN(e.row)} docIcons kind={false}
+                line={lblDay(e.row.date, e.row.yr)} />)}</div>
             : <div className="med-empty">No upchits in the past 30 days.</div>}
         </section>
       </div>

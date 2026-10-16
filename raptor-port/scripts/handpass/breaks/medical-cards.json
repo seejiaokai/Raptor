@@ -1,0 +1,18 @@
+[
+  { "n": 1, "name": "row 2 loses its kind (D965: \"ATT C 13-17 Jul\")", "file": "src/ui/MedicalView.tsx",
+    "find": "{kind ? <span className=\"medcard-type\">{inpType(r.type)}</span> : null}", "put": "{null}", "tests": ["src/ui/medicalview.test.tsx"] },
+  { "n": 2, "name": "Pending Upchit says \"was down\" again (D965)", "file": "src/ui/MedicalView.tsx",
+    "find": "<Card key={(e.row.iid || '') + i} e={e} up onOpen={open} docs={episodeDocN(e.row)}\n                line={spanOf(e.row)} />", "put": "<Card key={(e.row.iid || '') + i} e={e} up onOpen={open} docs={episodeDocN(e.row)}\n                line={`was down ${spanOf(e.row)}`} />", "tests": ["src/ui/medicalview.test.tsx"] },
+  { "n": 3, "name": "Upchit Complete names its kind again (D961)", "file": "src/ui/MedicalView.tsx",
+    "find": "docs={episodeDocN(e.row)} docIcons kind={false}", "put": "docs={episodeDocN(e.row)} docIcons", "tests": ["src/ui/medicalview.test.tsx"] },
+  { "n": 4, "name": "no page drawn per document (D961 reading 2)", "file": "src/ui/MedicalView.tsx",
+    "find": "Array.from({ length: docs }, (_, i) => <DocMark key={i} />)", "put": "null", "tests": ["src/ui/medicalview.test.tsx"] },
+  { "n": 5, "name": "a page drawn per document even with none on file", "file": "src/ui/MedicalView.tsx",
+    "find": "{docIcons && docs ? Array", "put": "{docIcons ? Array", "tests": ["src/ui/medicalview.test.tsx"] },
+  { "n": 6, "name": "\"+ Medical\" opens the window on the Inputs tab's own kind (OL), not a medical one (D963)", "file": "src/ui/MedicalView.tsx",
+    "find": "setInpEdit(t ? { ...seed, type: t, allday: defaultAllday(t) } : seed)", "put": "setInpEdit(seed)", "tests": ["src/ui/medicalview.test.tsx"] },
+  { "n": 7, "name": "\"+ Medical\" files for nobody signed in (the seed's person dropped)", "file": "src/ui/MedicalView.tsx",
+    "find": "{ ...seed, type: t, allday: defaultAllday(t) }", "put": "{ ...seed, person: undefined, type: t, allday: defaultAllday(t) }", "tests": ["src/ui/medicalview.test.tsx"] },
+  { "n": 8, "name": "\"+ Medical\" is not the row's filled button", "file": "src/ui/MedicalView.tsx",
+    "find": "className=\"abtn primary\" id=\"medNew\"", "put": "className=\"abtn\" id=\"medNew\"", "tests": ["src/ui/medicalview.test.tsx"] }
+]

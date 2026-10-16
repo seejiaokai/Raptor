@@ -59,9 +59,11 @@ test.describe('the medical view renders and fits', () => {
             for (const b of rg.getClientRects()) if (b.width) right = Math.max(right, b.right)
             return right
           }
-          const top = c.querySelector('.medcard-top')
+          /* (row 2 since D965: the kind, the period and any document drawings — its LAST child ends the ink) */
+          const top = c.querySelector('.medcard-top'), row2 = c.querySelector('.medcard-row2')
           const inkRight = Math.max(
             top ? top.lastElementChild!.getBoundingClientRect().right : -1e9,
+            row2 && row2.lastElementChild ? row2.lastElementChild.getBoundingClientRect().right : -1e9,
             runRight(c.querySelector('.medcard-t')), runRight(c.querySelector('.medcard-r')))
           const slack = box.right - inkRight
           /* 9px padding + 1px border = 10; anything past ~16 is a box that
@@ -113,6 +115,81 @@ test.describe('the medical view renders and fits', () => {
        Down, not Pending */
     await expect(page.locator('.medsec.med-down')).toContainText('6–9 Jul')   // the period (owner D960)
     await page.click('#medToday')
-    await expect(page.locator('.medsec.med-pend')).toContainText('was down 6–9 Jul')
+    /* the kind and the period, "was down" gone (owner D965) */
+    await expect(page.locator('.medsec.med-pend')).toContainText('6–9 Jul')
+    await expect(page.locator('.medsec.med-pend')).not.toContainText('was down')
   })
+
+  /* THREE A ROW ON A PHONE (owner D961, D965 — 17 Oct 26, built as drawn): a card is its puck, then the kind and the
+     period on one row, so it is about as wide as its puck and three stand in a row at his iPhone's 390 and at 375. A
+     third man is filed down in this browser only (the drawing's own way — scripts/handpass/medical-cards.mjs), so the
+     row is the app's own three cards. */
+  for (const width of [390, 375]) test(`D965 three medical cards stand in one row at ${width}`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 844 })
+    await login(page)
+    const who = await page.evaluate(() => {
+      const w = window as any
+      const taken = new Set(w.INPUTS.filter((r: any) => /^(ATT [BC]|OML|HL|Upchit)$/i.test(String(r.type))).map((r: any) => String(r.person)))
+      const pid = Object.keys(w.PEOPLE).find(k => w.PEOPLE[k].cs && !taken.has(k) && !w.PEOPLE[k].archived && !w.PEOPLE[k].special)
+      w.fileInput({ person: pid, type: 'HL', date: 'Jul 12', endDate: 'Jul 15', yr: 2026, allday: true }); if (w.notify) w.notify()
+      return w.PEOPLE[pid!].cs
+    })
+    await go(page, 'inputs')
+    await page.click('#inMedBtn')
+    await expect(page.locator('.medsec.med-down')).toContainText(who)
+    const rows = await page.evaluate(() => {
+      const tops = [...document.querySelectorAll('.medsec.med-down .medcard')].map(c => Math.round(c.getBoundingClientRect().top))
+      return { n: tops.length, rows: new Set(tops).size, widths: [...document.querySelectorAll('.medcard')].map(c => Math.round(c.getBoundingClientRect().width)) }
+    })
+    expect(rows.n, 'three men down').toBe(3)
+    expect(rows.rows, 'all three in one row').toBe(1)
+    for (const w of rows.widths) expect(w, 'a card about its puck wide').toBeLessThanOrEqual(104)
+    /* each card two rows: the puck, then the kind and the period on one line */
+    const lines = await page.evaluate(() => [...document.querySelectorAll('.medcard')].map(c => {
+      const r2 = c.querySelector('.medcard-row2')!.getBoundingClientRect()
+      return Math.round(r2.height)
+    }))
+    for (const h of lines) expect(h, 'row 2 is one line').toBeLessThanOrEqual(16)
+  })
+
+  /* "+ MEDICAL" (owner D963, D965 — 17 Oct 26): a filled button at the right end of the "as of" row, the row's 36 tall, a
+     finger's 44 on a phone; it opens the Inputs tab's own window set to a medical kind — by mouse and by keyboard (Tab to
+     it, Enter opens, Escape closes and the keyboard is back on the button) — for an admin and for a member. */
+  for (const [name, viewport, who] of [['phone admin', PHONE, 'a'], ['phone member', PHONE, 'user'], ['desktop admin', DESK, 'a'], ['desktop member', DESK, 'user']] as const)
+    test(`D965 "+ Medical" opens the input window on a medical kind — ${name}`, async ({ page }) => {
+      await page.setViewportSize(viewport)
+      await login(page, who)
+      await go(page, 'inputs')
+      await page.click('#inMedBtn')
+      const btn = page.locator('#medNew')
+      await expect(btn).toHaveText('+ Medical')
+      const geo = await page.evaluate(() => {
+        const b = document.querySelector('#medNew')!.getBoundingClientRect(), c = document.querySelector('#medCalBtn')!.getBoundingClientRect()
+        const head = document.querySelector('#medView .ic-head') as HTMLElement, hr = head.getBoundingClientRect()
+        const pad = parseFloat(getComputedStyle(head).paddingRight)
+        return { h: Math.round(b.height), mid: Math.abs((b.top + b.height / 2) - (c.top + c.height / 2)), rightGap: Math.round(hr.right - pad - b.right), inRow: b.right <= hr.right + 0.5 }
+      })
+      expect(geo.h, 'the row height').toBe(36)
+      expect(geo.mid, 'one row with "as of"').toBeLessThanOrEqual(1)
+      expect(geo.rightGap, 'at the right end of the row').toBeLessThanOrEqual(1)
+      expect(geo.inRow, 'inside the row').toBe(true)
+      /* by mouse */
+      await btn.click()
+      const win = page.locator('[data-testid="win-inputedit"]')
+      await expect(win).toBeVisible()
+      await expect(win.locator('#inpEditType')).toHaveValue('HL')
+      await page.keyboard.press('Escape')
+      await expect(win).toHaveCount(0)
+      await expect(page.locator('#medView'), 'still on the Medical tab').toBeVisible()
+      /* by keyboard: from "as of", Tab reaches it; Enter opens; Escape closes and gives the keyboard back to it */
+      await page.locator('#medCalBtn').focus()
+      await page.keyboard.press('Tab')
+      expect(await page.evaluate(() => document.activeElement && document.activeElement.id)).toBe('medNew')
+      await page.keyboard.press('Enter')
+      await expect(win).toBeVisible()
+      await expect(win.locator('#inpEditType')).toHaveValue('HL')
+      await page.keyboard.press('Escape')
+      await expect(win).toHaveCount(0)
+      await expect.poll(() => page.evaluate(() => document.activeElement && document.activeElement.id)).toBe('medNew')
+    })
 })

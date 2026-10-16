@@ -8,9 +8,12 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, writeInputsBatch } from '../state/store'
-import { INPUTS, inpId } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, inpId, inpMeta, leadOf } from '../engine/inputs'
+import { PEOPLE } from '../engine/people'
 import { docAdd } from '../state/docs'
-import { DOCVIEW, setDocView } from './pops'
+import { DOCVIEW, setDocView, INPEDIT, setInpEdit } from './pops'
+import { me } from '../state/perms'
+import { setMe } from '../state/auth'
 import { setMedAsOf } from '../state/view'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -77,14 +80,31 @@ describe('the Medical view', () => {
     const head = $('#medView .ic-head')
     expect(head.querySelector('.med-title'), 'the heading is gone').toBeNull()
     expect(head.firstElementChild?.id, 'the as-of button stands first in the row').toBe('medCalBtn')
-    expect((head.textContent || '').replace($('#medCalBtn').textContent || '', ''), 'no word "Medical" left in the row').not.toMatch(/Medical/)
+    /* the one "Medical" the row carries is its own door, "+ Medical" (D963, D965 — which took the place of a title) */
+    expect((head.textContent || '').replace($('#medCalBtn').textContent || '', '').replace($('#medNew').textContent || '', ''), 'no other word "Medical" in the row').not.toMatch(/Medical/)
   })
   it('the three sections sort our men correctly as of today', () => {
     expect(cardsIn('med-down').map(c => c.textContent).join(' ')).toContain('ATT C')
     /* each card says the period it covers (owner D960 — "15-17 Jul") */
     expect($('.medsec.med-down').textContent).toContain('10–14 Jul')
-    expect($('.medsec.med-pend').textContent).toContain('was down 1–5 Jul')
-    expect($('.medsec.med-done').textContent).toContain('upchitted 8 Jul')
+    expect($('.medsec.med-pend').textContent).toContain('OML1–5 Jul')
+    expect($('.medsec.med-done').textContent).toContain('8 Jul')
+  })
+  /* D965 (built as drawn — D961): a card is two rows — the puck alone, then the kind and the period ("ATT C 10–14 Jul");
+     Pending Upchit reads the kind and period, "was down" gone; Upchit Complete says no kind and no "upchitted", only its
+     date (three a row is a browser's to measure — e2e/medical.spec.ts) */
+  it('D965 a card is the puck, then the kind and the period on one row', () => {
+    const down = cardsIn('med-down').find(c => c.textContent!.includes('10–14 Jul'))!
+    expect(down.querySelector('.medcard-top')!.textContent, 'row 1 is the puck alone').not.toMatch(/ATT C|Jul/)
+    const row2 = down.querySelector('.medcard-row2')!
+    expect([...row2.children].map(e => e.textContent)).toEqual(['ATT C', '10–14 Jul'])
+    const pend = cardsIn('med-pend').find(c => c.textContent!.includes('1–5 Jul'))!
+    expect([...pend.querySelector('.medcard-row2')!.children].map(e => e.textContent)).toEqual(['OML', '1–5 Jul'])
+    expect($('.medsec.med-pend').textContent).not.toMatch(/was down/)
+    const done = cardsIn('med-done').find(c => c.textContent!.includes('8 Jul'))!
+    expect(done.querySelector('.medcard-type'), 'Upchit Complete names no kind').toBeNull()
+    expect(done.querySelector('.medcard-t')!.textContent).toBe('8 Jul')
+    expect($('.medsec.med-done').textContent).not.toMatch(/upchitted|Upchit\s*\d/)
   })
   it('a card opens the document viewer for that row', async () => {
     await act(async () => { setDocView(null); notify() })
@@ -106,9 +126,9 @@ describe('the Medical view', () => {
     const d2 = docAdd(new Blob(['2'], { type: 'image/png' }) as any).id
     await plant({ person: 'ogre', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 12', docId: d1 })
     await plant({ person: 'ogre', type: 'ATT B', date: 'Jul 13', endDate: 'Jul 16', docId: d2 })
-    const card = cardsIn('med-down').find(c => c.querySelector('.medcard-docn'))
-    expect(card, 'the episode card carries a document count').toBeTruthy()
-    expect(card!.querySelector('.medcard-docn')!.textContent).toContain('2 documents')
+    const card = cardsIn('med-down').find(c => c.title === 'Tap to view 2 documents')
+    expect(card, 'the episode card says its two documents').toBeTruthy()
+    expect(card!.querySelector('.medcard-docn'), 'the "2 documents" pill is gone (D961, D965)').toBeNull()
     await act(async () => { setDocView(null); notify() })
     await click(card!)
     expect(DOCVIEW.rows && DOCVIEW.rows.length, 'opening hands the viewer the whole episode').toBe(2)
@@ -123,7 +143,7 @@ describe('the Medical view', () => {
     await plant({ person: 'dj', type: 'ATT C', date: 'Jul 11', endDate: 'Jul 15', docId: f1, docIds: [f1, f2] })
     const card = cardsIn('med-down').find(c => c.textContent!.includes('Ace'))
     expect(card, 'the two-file entry lists as down today').toBeTruthy()
-    expect(card!.querySelector('.medcard-docn')!.textContent).toContain('2 documents')
+    expect(card!.title).toBe('Tap to view 2 documents')
     await act(async () => { setDocView(null); notify() })
     await click(card!)
     expect(DOCVIEW.row && DOCVIEW.row.docIds && DOCVIEW.row.docIds.length, 'the tapped row carries both files for the viewer to page').toBe(2)
@@ -135,7 +155,7 @@ describe('the Medical view', () => {
     expect($('.medsec.med-down').textContent).toContain('1–5 Jul')
     expect($('.medsec.med-pend').textContent).toContain('Nobody is owing an upchit')
     await click($('#medToday'))
-    expect($('.medsec.med-pend').textContent).toContain('was down 1–5 Jul')
+    expect($('.medsec.med-pend').textContent).toContain('OML1–5 Jul')
   })
   it('the month grid picks a date', async () => {
     await click($('#medCalBtn'))
@@ -168,8 +188,53 @@ describe('the Medical view', () => {
     await act(async () => { setMedAsOf('2026-08-31'); notify() })
     expect($(`.medcard[data-medcard="${two.iid}"]`).querySelector('.medcard-t')!.textContent).toBe('30 Aug – 2 Sep')
     await act(async () => { setMedAsOf('2026-09-04'); notify() })
-    expect($(`.medcard[data-medcard="${two.iid}"]`).querySelector('.medcard-t')!.textContent).toBe('was down 30 Aug – 2 Sep')
+    expect($(`.medcard[data-medcard="${two.iid}"]`).querySelector('.medcard-t')!.textContent).toBe('30 Aug – 2 Sep')
     await act(async () => { setMedAsOf(null); notify() })
+  })
+  /* D961 reading 2, D965: Upchit Complete says its documents as the app's page drawing, one a document actually on file —
+     a card with none on file draws none; the card's title still says how many */
+  it('D961 D965 an upchit draws one page a document, and none where none is on file', async () => {
+    await act(async () => { setMedAsOf(null); notify() })
+    const f1 = docAdd(new Blob(['u1'], { type: 'image/png' }) as any).id
+    const f2 = docAdd(new Blob(['u2'], { type: 'image/png' }) as any).id
+    const pid = Object.keys(PEOPLE).find(k => PEOPLE[k].cs && !PEOPLE[k].archived && !PEOPLE[k].special && !INPUTS.some((r: any) => leadOf(r) === k))!
+    const up = await plant({ person: pid, type: 'Upchit', date: 'Jul 9', docId: f1, docIds: [f1, f2] })
+    const card = $(`.medsec.med-done .medcard[data-medcard="${up.iid}"]`)
+    expect(card, 'the upchit lists under Upchit Complete').toBeTruthy()
+    expect(card.querySelectorAll('.medcard-row2 .medcard-doc').length, 'two documents, two drawings').toBe(2)
+    expect(card.title).toBe('Tap to view 2 documents')
+    const yeti = cardsIn('med-done').find(c => c.textContent!.includes('8 Jul'))!
+    expect(yeti.querySelectorAll('.medcard-doc').length, 'no document on file, none drawn').toBe(0)
+    /* the downchit and pending cards never draw them — their documents open from the card as before */
+    expect($$('.medsec.med-down .medcard-doc, .medsec.med-pend .medcard-doc')).toEqual([])
+  })
+  /* D963, D965: "+ Medical" is the tab's own door to the SAME window as the Inputs tab's "+ Input" — the same seed (the
+     signed-in person, no date picked yet) with the first medical kind of the app's own list set; an admin's and a
+     member's alike (who may file for whom is the window's, D655, unchanged) */
+  it('D963 D965 "+ Medical" opens the input window on a medical kind, for an admin and for a member', async () => {
+    const firstMed = INPUT_TYPES.find((t: any) => inpMeta(t)?.grp === 'med')
+    expect(firstMed, 'the first medical kind of the list').toBe('HL')
+    const head = $('#medView .ic-head'), btn = $('#medNew')
+    expect(btn.textContent).toBe('+ Medical')
+    expect(btn.classList.contains('primary'), "filled, the row's one main button").toBe(true)
+    expect(head.lastElementChild, "at the row's right end").toBe(btn)
+    const adminMe = me()
+    const member = Object.keys(PEOPLE).find(k => PEOPLE[k].cs && !PEOPLE[k].archived && !PEOPLE[k].special && k !== adminMe)!
+    try {
+      for (const [who, sess] of [[adminMe, null], [member, { user: member, role: 'main' }]] as const) {
+        if (sess) await act(async () => { setSession(sess as any); setMe(member); notify() })
+        await click($('#medNew'))
+        expect(INPEDIT && INPEDIT._new, 'a new input').toBe(true)
+        expect(INPEDIT.type).toBe('HL')
+        expect(INPEDIT.person, 'filed for the signed-in person').toBe(who)
+        expect(INPEDIT.date, 'no date picked yet, as "+ Input"').toBeUndefined()
+        expect(($('[data-testid="win-inputedit"] #inpEditType') as HTMLSelectElement).value, 'the window shows the kind').toBe('HL')
+        await act(async () => { setInpEdit(null); notify() })
+      }
+    } finally {
+      await act(async () => { setSession({ user: 'a', role: 'admin' }); setMe(adminMe as any); setInpEdit(null); notify() })
+    }
+    expect($('#medView'), 'still on the Medical tab').toBeTruthy()
   })
   /* Medical is a TAB of the Inputs page since the three tabs (D620, D626): it has no close cross of its own, and is
      left by choosing another tab */
