@@ -2905,7 +2905,7 @@ export function InputEditor() {
               docs/img/handpass/2026-10-17-till-switch, frames B): the window's own "all day" tick, the date its label;
               unticked, the date is struck through here and no screen prints it. Ticked by default, except a one-day duty
               or other commitment (D951, D952); a hand choice is kept only where it differs from that default, and a
-              date or kind that flips the default replaces it (the effect above). The row is a div, not a label: a tick
+              date or kind that flips the default replaces it, weighed at the save (above). The row is a div, not a label: a tick
               cannot sit inside the box's own label, so the heading names the box by `htmlFor`. */}
           <div className="inped-f">
             <label className="inped-k" htmlFor="inpEditRmk">Remarks</label>

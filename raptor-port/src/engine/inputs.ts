@@ -1251,11 +1251,20 @@ const dayWords=(md:any):string=>{const m=/^([A-Za-z]{3})[a-z]*\s+(\d{1,2})\b/.ex
    it reads the same as none, and `tillSettle` drops it — run in the one body every input write passes (state/store.ts
    runInputWrite) and by the one door that trims an input outside it (state/person-delete.ts), so a choice replaced by
    one change is never brought back by the next. */
+/* one day — the record's date labels here, the window's ISO days in tillDefaultISO below: the two must agree */
 const oneDayRec=(rec:any)=>!rec.endDate||rec.endDate===rec.date;
 export function tillDefault(rec:any):boolean{return !(rec&&typeGroup(rec.type)==='other'&&oneDayRec(rec));}
 /* …the same for a window's draft, whose dates are two ISO days still being picked */
 export function tillDefaultISO(type:any,startISO:any,endISO:any):boolean{return !(typeGroup(type)==='other'&&(!isISO(endISO)||endISO===startISO));}
 export function tillShown(rec:any):boolean{return rec&&typeof rec.till==='boolean'?rec.till:tillDefault(rec);}
+/* WAS THE TICK TURNED by a change from `b` to `a` — what the change history's line and the member's bell ask (D263, D953).
+   A flip the dates or kind made alone is theirs to say (the dates, the type); a save that also turned it against the new
+   default is the tick's. Never for a kind that carries no date (SANS availability, an upchit): a retype into or out of one
+   turned nothing anyone reads (the fresh code read, 17 Oct 26). ONE body for both readers. */
+const datedKind=(x:any)=>!!x&&!isSansAvail(x.type)&&!isUpchit(x.type);
+export function tillTurned(b:any,a:any):boolean{
+  if(!datedKind(b)||!datedKind(a))return false;
+  return tillShown(b)!==tillShown(a)&&(tillDefault(b)===tillDefault(a)||tillShown(a)!==tillDefault(a));}
 export function tillSettle(rec:any):boolean{
   if(!rec||!('till' in rec))return false;
   /* …and never on a kind that carries no date (SANS availability, an upchit): a choice made before a retype into one would

@@ -12,7 +12,7 @@
      pinned in inputs.test.tsx; the words of round 2 (D950) and "rejected" (D949 Q2) in words-r2.test.tsx. */
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId, tillDefault, tillShown, tillOf, remarksShown, tillSettle } from '../engine/inputs'
+import { INPUTS, inpId, tillDefault, tillShown, tillOf, remarksShown, tillSettle, tillTurned } from '../engine/inputs'
 import { SCHED, signOf, setDayApproved, dayShownPendCount } from '../engine/publish'
 import { acceptInput } from '../engine/slots'
 import { validate } from '../engine/validate'
@@ -254,5 +254,15 @@ describe('the scenario designer\'s finds', () => {
     undo()
     const back = added('UNDO')
     expect([back.endDate ?? '', back.till]).toEqual(['', true])
+  })
+})
+
+/* THE FRESH CODE READ'S FINDING (17 Oct 26): a retype into a kind that carries no date turned no tick anyone reads */
+describe('the fresh code read: a retype into SANS availability or an upchit is no tick change', () => {
+  it('tillTurned answers no for either side a kind without a date; yes for a plain untick', () => {
+    const ol = { type: 'OL', date: 'Jul 13', endDate: 'Jul 15', till: false }
+    expect(tillTurned(ol, { type: 'SANS Availability', date: 'Jul 13', endDate: 'Jul 15' })).toBe(false)
+    expect(tillTurned({ type: 'SANS Availability', date: 'Jul 13', endDate: 'Jul 15' }, ol)).toBe(false)
+    expect(tillTurned({ type: 'OL', date: 'Jul 13', endDate: 'Jul 15' }, ol)).toBe(true)
   })
 })

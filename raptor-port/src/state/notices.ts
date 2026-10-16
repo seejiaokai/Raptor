@@ -31,7 +31,7 @@
    (state/noticeseen.ts): were reading to write to the notice, the maker's Undo of his change would be refused —
    "Ranger changed this after your action" — by the read of the very person it told. */
 import { PEOPLE } from '../engine/people'
-import { dateOrd, inpLabel, namedOf, placeholderOf, remarksTyped, tillShown, tillDefault } from '../engine/inputs'
+import { dateOrd, inpLabel, namedOf, placeholderOf, remarksTyped, tillTurned } from '../engine/inputs'
 import { hhmm } from '../engine/time'
 import { mayEditSched } from './perms'
 
@@ -113,7 +113,7 @@ function common(b: any, a: any, him: string): NoticePart[] {
   if (inpLabel(b) !== inpLabel(a)) out.push({ k: 'title', was: String(inpLabel(b)) })
   /* …and its till-date tick turned by someone else: what the schedule prints for his remark changed (owner D953 — the
      scenario designer's 5); a flip the dates alone made is the "when" line's */
-  const tick = tillShown(b) !== tillShown(a) && (tillDefault(b) === tillDefault(a) || tillShown(a) !== tillDefault(a))
+  const tick = tillTurned(b, a)
   if (typed(b) !== typed(a) || tick) out.push({ k: 'rmk' })
   return out
 }
