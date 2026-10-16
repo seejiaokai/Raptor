@@ -21,79 +21,33 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/whole-app-words-pass-1b-6cfe51 -->
-### THE NIGHT OF 16–17 OCT 26 — `claude/whole-app-words-pass-1b-6cfe51`: round 1b (D945, D947) + the till date (D948), ONE branch, ONE FULL check — written 16 Oct 26 ~23:30 — verify before use
-After a compaction: re-read this block, the overnight guide (`.claude/skills/overnight/SKILL.md`) and the files of the step in hand before the next change; note the compaction here with its time.
-- **His selection (8 hours, "As recommended for all except 2B for till date"):** (1) build round 1b; (2) build the till date;
-  (3) draw round 2 of the words pass only if time is left. Jobs 1 and 2 ride ONE branch (this one, cut from `main` after
-  pull request 521) and get ONE bug check at the riskiest tier (D485) — FULL, because the till date changes what a published
-  day prints and what an amendment counts (D189). Reads: one fresh, blind Opus read of the finished code (D790, D903 — no
-  Fable); on [NO-ASTRA-LIST]. Pull request opened when the check closes; never merged (his "merge live").
-- **Job 1 — round 1b (D945, D947), as answered:** (a) the Scheduler Board's wave header loses "In-time / Rally HH:MM · N ac"
-  (`ui/html.ts waveHeadBoard` + `refreshWaveReports` — the `.sb-go-h > .asd`), every wave, phone and desktop; the button
-  stays; (b) under the Ground Programme's heading, only on a day where an input stands on it, board and week, in the
-  removed-input note's style: "To take an input off, press Reject on it in Personal Inputs below."; (c) on a phone an
-  accepted input's button sits on its puck's line (grid column 2, row 2, end-aligned; puck and remark pinned to row 2),
-  board AND week; too many pucks → it drops under them as today; desktop unchanged; (d) NOT built: Unavailable's heading
-  line stays (his "4 don't do it"); (e) D945: the button reads "Reject" (was "Undo"), "Reject · Tue" for another day's row,
-  hover text to match, board and week. Drawn: `raptor-port/scripts/handpass/words-r1b.mjs` (its `AFTER` functions).
-  (f) D941 lesson owed: §9 of `raptor-port/docs/design-practices.md` — "a button is named for what it does, never with
-  another control's name or a word that reads as Delete" — one fresh reader checks it.
-- **Job 2 — the till date (D948, answering D946; [TILL-FROM-DATES]):** the remark holds only typed words; "till <date>" is
-  never written into it; every input window shows it in grey after the Remarks box from opening, from the dates, one-day
-  inputs included (2B — "till <that day>"); every screen prints remark then "till <date>" from the dates, same look; the
-  card keeps its corner (D728); stretched/cut on a published day still reads pending (D189). Map of today's code (a
-  helper's read, 16 Oct): writers — `engine/inputs.ts withRemarksTail/remarksDateTail` (~1150–1190), the window's calendar
-  `ui/inputedit.tsx` ~2908, its saves ~1200, ~1369, ~2524, medical trim/split ~372/397/436, the board's Unavailable add
-  `ui/interactions.ts` ~962, person delete `state/person-delete.ts` ~253, the Leave War link `leavewar/sync.ts` ~396–509;
-  readers — week rows `ui/html.ts` ~2203, board `ui/board-html.ts` ~124/754, SANS cards `ui/html.ts` ~941, the List
-  `ui/InputsPage.tsx` ~839, the card `ui/inputcard-model.ts` (remarkOnce), notices `state/notices.ts` ~88, validate
-  reasons, change lines / pending list / undo text, overlay `engine/overlay.ts` ~185. A stored remark that still carries a
-  typed token is printed once (the token read as the date). Drawn: `raptor-port/scripts/handpass/till-dates.mjs`,
-  page https://claude.ai/artifact/E5EGxqoxCyCzhe3uzjYZjA.
-- **Pages put to him:** round 1b https://claude.ai/artifact/LyEcfYVzbqXnsgwscLRVvM; the till date (above).
-- **Questions waiting for him:** (Q1) the board's wave header said "(prev day)" when a wave's In-time / Rally falls the
-  evening before; with the note gone (D947 — every wave) nothing on the BOARD says so (Edit Schedule's week still does,
-  after the wave's name). Keep a small "(prev day)" on the board's header in that one case? Recommended: yes. Waits: only
-  that cue — built as ruled. (Q2) D945 reading (4): Personal Inputs' note "A removed input flags nothing until accepted
-  again…" — "removed" → "rejected"? and the rejected row's hover text "Removed from the day — flags nothing until accepted
-  again" the same? Recommended: yes, both. Waits: only those words.
-  (Q3) The Ground Programme row of an input prints "remark till <date>" (as rows did that carried the date), and on the
-  week and board its remark BOX shows that whole text — the date inside the box, not grey after it as on Personal
-  Inputs / Unavailable and in the window. Make it grey after the box there too? Recommended: yes, as a small follow-up
-  (it touches the Ground Programme's own text box, used by every row). Waits: only that look. (Q4) A one-day activity
-  on the Ground Programme now reads e.g. "Flight safety brief till 23 Jul" on 23 Jul (his answer B, every input) —
-  confirm, or leave the date off Ground Programme rows of one-day inputs? Recommended: as built (his B).
-- **Progress:** night chat started 16 Oct ~23:45 (keep-awake on, guard `--away`). **Job 1 BUILT** (commit "round 1b
-  built"): (a) wave header note gone (`board.ts`, `html.ts refreshWaveReports`; the e2e header test re-aimed to
-  "controls inside, no overflow"); (b) `html.ts GP_TAKEOFF_NOTE`, board `sbGroundPanel` + week `.sec-grnd`; (c) phone:
-  board `accup` (one puck, plain Reject only — "Reject · Tue" ~80px does not fit beside a puck under ~400px, keeps its
-  line) in `13-board-rows-responsive.css`; week: the button under the name (`09-week-responsive.css`, `.accd`) — the
-  agent's reading of "the same move" for the week's 4-column row; (e) "Reject" + hover text (`html.ts accCtl`); (f)
-  lesson 2 in `design-practices.md` §9 (fresh reader still owed). Tests `src/ui/words-r1b.test.tsx` (10), reqorphan
-  re-pinned. Measured `scripts/handpass/words-r1b-measure.mjs` (no overlap 360–430). **Next: job 2 (till date), then ONE
-  FULL check for both** (roll-call, sized walk, gates under the lock, one fresh blind Opus read).
-  **Job 2 BUILT** (commit "till date built"): `engine/inputs.ts remarksTyped/tillOf/tillOfISO/remarksShown` (narrow
-  token: "till <day> <real month>" anywhere, "on <day> <month>" only an input's own day; SANS/upchit as typed),
-  `inpDetailKey` compares the printed remark (D189 kept for every input), `overlay.ts requestRowFields` rmks = printed
-  (the Ground Programme row keeps the date INSIDE its box — Q3 below); writers strip (window save + new input,
-  setInpField, medical trims, person delete, Leave War sync); readers print (rows, List + its search/sort, pendlist,
-  DayList) or show typed (card, Medical, DocViewer, history, bell); boxes typed + grey `.rk-till` / `.inped-till`.
-  Scenario designer's report saved (`raptor-port/docs/superpowers/briefs/2026-10-16-r1b-till-scenarios.md`); its A–D
-  fixed, E (warning reasons / crew-picker reason print the typed words, no date) decided as intended. ~50 old pins
-  re-pinned to D948; new `engine/tilldate.test.ts` (11). **Next: the FULL check** — evidence sheet
-  `raptor-port/docs/handpass/2026-10-17-r1b-till.md`, the full gates under the lock, the walk with pictures, the
-  fresh blind Opus code read, then the pull request.
-  **THE FULL CHECK IS DONE (17 Oct):** sheet `raptor-port/docs/handpass/2026-10-17-r1b-till.md` — walk 37 PASS (Sonnet,
-  scripted, phone + desktop), gates run 2 all green (unit, build, tfin 728/0, e2e 827, smoke, rulecheck, docsize), the
-  fresh blind Opus read (3 findings, fixed) and the fix's own read (the tidy ran on every remark — fixed, only where a date
-  was cut; an empty box's tap — walked, fine). Lesson 2 checked by a fresh reader and corrected. **Next:** open the pull
-  request (stop watching it), read its checks; job 3 (draw round 2) only if time and the chat allow; the morning report.
-  **Pull request 522 OPEN** (Auto-fix on, set by the app; GitHub's checks running at 17 Oct). **Job 3 in progress (85%
-  full):** a helper drawing round 2 (`raptor-port/scripts/handpass/words-r2.mjs`, pictures
-  `raptor-port/docs/img/handpass/2026-10-16-words-pass/r2/`, up to four questions) — nothing in the app changes. **Then:**
-  one Artifact page for the morning (the built changes, Q1–Q4, round 2's questions — pictures), the morning report, the
-  guard back on (`compact-ready.mjs --back`), one notification.
-- **Rulings this chat:** D945–D948.
+### THE NIGHT OF 16–17 OCT 26 — `claude/whole-app-words-pass-1b-6cfe51` — DONE, pull request 522 open, waiting for his look and answers — written 17 Oct 26 morning
+After a compaction: re-read this block, the overnight guide and the files of the step in hand before the next change.
+- **Built and checked (one FULL check, D485):** round 1b (D945, D947 — Reject; the wave header's In-time note gone; the
+  Ground Programme line; Reject on the puck's line on a phone) and the till date (D948, `[TILL-FROM-DATES]` — the remark
+  holds typed words, every screen prints "till <date>" from the dates, boxes show the date in grey after them, the
+  published compare reads the printed remark). Sheet `raptor-port/docs/handpass/2026-10-17-r1b-till.md` (walk 37 PASS;
+  gates all green on his PC at `d8a55e627`; a scenario designer, a fresh blind Opus read and a read of its fix — 13 faults
+  found (gates 1, designer 4, code read 3, fix read 2, the tests 2, the walk 1), all fixed with tests; round 2's drawing found 2 more in this build — fixed, re-walked). Design guide §9 lesson 2
+  (D941), checked by a fresh reader and corrected.
+- **Pull request 522** (https://github.com/seejiaokai/Raptor/pull/522), Auto-fix on (the app's). Preview:
+  https://raptor-git-claude-whole-app-words-pass-1b-6cfe51-kai-e2f5.vercel.app . Not merged — his "merge live".
+- **Job 3 done:** round 2 of the words pass DRAWN, nothing changed (`raptor-port/scripts/handpass/words-r2.mjs`, pictures
+  `raptor-port/docs/img/handpass/2026-10-16-words-pass/r2/`; the spec's §Round 2).
+- **His page:** https://claude.ai/artifact/ARobVhEgQE5id9G5Mai7v1 — what was built, and the questions below with pictures.
+- **Questions waiting for him (8):** Q1 the board's wave header: show "(prev day)" when a rally is the evening before?
+  (rec. yes). Q2 "A removed input…" and a rejected row's hover "Removed from the day…" → "rejected"? (rec. yes). Q3 the
+  Ground Programme row's remark box shows "remark till <date>" inside the box — make the date grey after the box as
+  elsewhere? (rec. yes, small follow-up). Q4 one-day items on the Ground Programme read "till <that day>" (his B) — keep?
+  (rec. keep). Round 2: R1 delete View-only Sched's boxed "Draft" (keep the DRAFT tag) (rec. yes); R2 the peek's "Next
+  week — click a day to load it" → A "Next week" (rec.) or B "Next week: click a day to load it"; R3 keep "· accepted" /
+  "· removed" after the name only (rec. yes); R4 "Placeholders · drag in" → "Placeholders" (rec. yes). Also for him: the
+  line's "below" points into Personal Inputs, which is folded by default on the board.
+- **Known limits, filed in the sheet:** a year typed after a date stays ("till 1 Jan 2027" → "2027"); the Leave War's old
+  "on 15 Jul" in stored demo data prints "on 15 Jul till 15 Jul" until wiped (D56).
+- **Next:** his look on his iPhone; his answers to Q1–Q4 and R1–R4 (then: record them, build Q1–Q3 and round 2 on this
+  branch or a new one, a small check each); "merge live" when happy. A fresh chat for that.
+- **Rulings this chat:** none (the night ran on D945–D948).
 <!-- /now -->
 
 ## Next, in order
