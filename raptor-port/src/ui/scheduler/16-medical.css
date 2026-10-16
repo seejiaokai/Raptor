@@ -93,9 +93,16 @@
    stays as a max-width (a long remark wraps instead of running away), the
    shrink+min-width:0 pair keeps a single over-wide card inside the section,
    and the default align-items:stretch keeps every card in a row the same
-   height so the rows still read as rows. */
+   height so the rows still read as rows.
+   ONE EVEN WIDTH SINCE D977 (owner, 17 Oct 26 — "make them Evenly width so that it's nice even on the desktop. Wrap
+   text as required"): cards that each hugged their words left every row ragged and a section's columns out of line with
+   the next. Every card is now ONE width — 120 on a desktop (below), exactly a third of the row on a phone (the media
+   rule) — still packed from the left, the row not stretched to fill. 120, not the old 200 cap, so the 28 Aug complaint
+   of dead air inside each box does not come back: measured on the built app (17 Oct 26) the demo's cards hold 84–90 of
+   words beside a 74 puck, and a one-month period ("ATT C 13–17 Jul") 90; a period across two months goes on the line
+   under its kind (row 2 wraps between its parts) and a typed remark wraps inside, as on a phone (D967). */
 .medcards{display:flex;flex-wrap:wrap;gap:6px;padding:8px}
-.medcard{display:flex;flex-direction:column;gap:3px;flex:0 1 auto;min-width:0;max-width:200px;padding:7px 9px;
+.medcard{display:flex;flex-direction:column;gap:3px;flex:0 0 120px;width:120px;min-width:0;padding:7px 9px;
   border:1px solid var(--edge);border-left:1px solid var(--sec);border-radius:8px;background:var(--panel-2);
   text-align:left;font:inherit;color:inherit;appearance:none;cursor:pointer}
 .medcard:hover{border-color:var(--accent)}
@@ -152,9 +159,10 @@
 .med-cal-d.today{border-color:var(--edge-2)}
 .med-cal-d.on{background:var(--accent);color:var(--accent-ink);font-weight:700}
 @media (max-width:820px){
-  /* AT MOST A THIRD OF THE ROW (owner D967): two 6px gaps between three cards — so a long period wraps inside its card
-     (row 2 above) and three still stand in a row; a short card stays its own width */
-  .medcard{max-width:calc((100% - 12px) / 3);min-width:calc(var(--puck-w) + 14px);padding-left:6px;padding-right:6px}
+  /* EXACTLY A THIRD OF THE ROW (owner D967, D977 — "at most a third" until 17 Oct 26): two 6px gaps between three cards,
+     every card the same third in every section, so the columns line up from one section to the next; a long period
+     wraps inside its card (row 2 above) and three still stand in a row */
+  .medcard{flex-basis:calc((100% - 12px) / 3);width:calc((100% - 12px) / 3);min-width:calc(var(--puck-w) + 14px);padding-left:6px;padding-right:6px}
   /* SIDES OF 6, NOT 9, ON A PHONE: the card's words are a monospace face the app does not ship, so each device draws its
      own — Windows' is about 0.55 of the size wide, an iPhone's and GitHub's Linux machine's about 0.60 — and at 375 wide
      "ATT C 13–17 Jul" needed 87 where a 9px-sided third of the row gave 82, so it fell to three lines there (pull request

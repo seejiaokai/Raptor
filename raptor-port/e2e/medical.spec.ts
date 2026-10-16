@@ -38,37 +38,35 @@ test.describe('the medical view renders and fits', () => {
         const r = pk.getBoundingClientRect()
         if (Math.round(r.width) !== 74 || Math.round(r.height) !== 15) return `puck ${r.width}x${r.height}`
 
-        /* EVERY CARD HUGS ITS OWN CONTENT (owner, 28 Aug 26 — "the box around
-           the puck doesn't look compact enough"). The cards used to sit in a
-           fixed 200px grid track, so a short chit was drawn in a box with
-           65–83px of dead air to the right of its last word. A card is now a
-           wrapping flex item, so its box should exceed its painted content by
-           the padding and borders and nothing more. Measured off the text run
-           with a Range: a span inside a column flex is stretched to the card's
-           full width, so its own box proves nothing. The Range is read LINE BY
-           LINE (getClientRects), not as one box — a wrapped remark on a card
-           at the 200px cap has a widest line that reaches the edge, so it
-           needs no exemption, and an exemption is what would have let this
-           very regression through. */
+        /* EVERY CARD ONE EVEN WIDTH (owner D977, 17 Oct 26 — "make them Evenly width so that it's nice even on the
+           desktop. Wrap text as required"; it replaced the 28 Aug 26 rule that each card hugged its own words, which
+           left the rows ragged and a section's columns out of line with the next). On a phone exactly a third of the
+           row, on a desktop 120: every card the same width, the first card of every section starting and ending at the
+           same place, and no word running past its card's right edge. Measured off the text runs with a Range, line by
+           line (getClientRects): a span inside a column flex is stretched to the card's width, so its own box proves
+           nothing. */
+        const widths = new Set<number>(), firsts = new Set<string>()
+        const third = window.innerWidth <= 820
+        for (const sec of document.querySelectorAll('.medsec')) {
+          const cs = [...sec.querySelectorAll('.medcard')]
+          if (cs.length) { const b = cs[0].getBoundingClientRect(); firsts.add(Math.round(b.left) + ':' + Math.round(b.width)) }
+          for (const c of cs) widths.add(Math.round(c.getBoundingClientRect().width))
+        }
+        if (widths.size !== 1) return `cards of ${widths.size} widths: ${[...widths]}`
+        if (firsts.size !== 1) return `the sections' columns do not line up: ${[...firsts]}`
+        const w = [...widths][0]
+        if (!third && w !== 120) return `a desktop card is ${w} wide, not 120`
+        if (third) {
+          const row = (document.querySelector('.medcards') as HTMLElement), cs = getComputedStyle(row)
+          const inner = row.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)
+          if (Math.abs(w - (inner - 12) / 3) > 1) return `a phone card is ${w} wide, not a third of ${inner}`
+        }
         for (const c of document.querySelectorAll('.medcard')) {
-          const box = c.getBoundingClientRect()
-          const runRight = (el: Element | null) => {
-            if (!el) return -1e9
-            const rg = document.createRange(); rg.selectNodeContents(el)
-            let right = -1e9
-            for (const b of rg.getClientRects()) if (b.width) right = Math.max(right, b.right)
-            return right
+          const box = c.getBoundingClientRect(), rg = document.createRange()
+          for (const el of c.querySelectorAll('.medcard-top>*, .medcard-row2>*, .medcard-r')) {
+            rg.selectNodeContents(el)
+            for (const r of rg.getClientRects()) if (r.width && r.right > box.right - 1) return `"${el.textContent}" runs past its card`
           }
-          /* (row 2 since D965: the kind, the period and any document drawings — its LAST child ends the ink) */
-          const top = c.querySelector('.medcard-top'), row2 = c.querySelector('.medcard-row2')
-          const inkRight = Math.max(
-            top ? top.lastElementChild!.getBoundingClientRect().right : -1e9,
-            row2 && row2.lastElementChild ? row2.lastElementChild.getBoundingClientRect().right : -1e9,
-            runRight(c.querySelector('.medcard-t')), runRight(c.querySelector('.medcard-r')))
-          const slack = box.right - inkRight
-          /* 9px padding + 1px border = 10; anything past ~16 is a box that
-             stopped following its content */
-          if (slack > 16) return `a card wastes ${Math.round(slack)}px past its last word`
         }
         return ''
       })
@@ -350,5 +348,43 @@ test.describe('the medical view renders and fits', () => {
     await page.click('#inMemberMode')
     await expect(month).toBeVisible()
     expect((await month.textContent())!.trim(), 'the calendar kept its month').toBe(before)
+  })
+
+  /* A MEDICAL INPUT ACROSS NEW YEAR ([MED-NEWYEAR], 17 Oct 26). The item said a downchit for 28 Dec – 3 Jan never shows
+     on this tab; its evidence was a row planted without its year, so "Jan 3" was read in 2026 and the entry ended before
+     it began. Filed the way a person files it — "+ Medical", the window's own calendar, Save — the end is saved WITH its
+     year ("Jan 3 2027"), and the tab reads it right. This pins that path: down on 30 Dec and on 2 Jan, owing an upchit
+     on 5 Jan. (Walk with pictures: scripts/handpass/med-newyear.mjs.) */
+  test('[MED-NEWYEAR] a downchit filed for 28 Dec – 3 Jan is down across New Year, then owes an upchit', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'inputs')
+    await page.click('#inMedBtn')
+    const had = await page.evaluate(() => (window as any).INPUTS.map((r: any) => String(r.iid)))
+    await page.click('#medNew')
+    const win = page.locator('[data-testid="win-inputedit"]')
+    await expect(win).toBeVisible()
+    for (let i = 0; i < 24 && !(await page.locator('#inpEdCal [data-iso="2026-12-28"]').count()); i++) {
+      const t = (await page.locator('#inpEdCal .dcal-title').first().textContent()) || ''
+      await page.locator(`#inpEdCal button[aria-label="${/2027/.test(t) ? 'Previous' : 'Next'} month"]`).click()
+    }
+    await page.locator('#inpEdCal [data-iso="2026-12-28"]').click()
+    await page.locator('#inpEdCal button[aria-label="Next month"]').click()
+    await page.locator('#inpEdCal [data-iso="2027-01-03"]').click()
+    await win.locator('.docfield input[type=file]').first().setInputFiles([{ name: 'cert.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.1 %%EOF') }])
+    await page.locator('#inpEditSave').click()
+    await expect(win).toHaveCount(0)
+    const made = await page.evaluate(had => (window as any).INPUTS.filter((r: any) => !had.includes(String(r.iid))).map((r: any) => ({ iid: String(r.iid), endDate: r.endDate })), had)
+    expect(made.length, 'one input filed').toBe(1)
+    expect(made[0].endDate, 'its end is saved with its year').toBe('Jan 3 2027')
+    const card = (sec: string) => page.locator(`.medsec.${sec} .medcard[data-medcard="${made[0].iid}"]`)
+    for (const [iso, sec, other] of [['2026-12-30', 'med-down', 'med-pend'], ['2027-01-02', 'med-down', 'med-pend'], ['2027-01-05', 'med-pend', 'med-down']]) {
+      await page.click('#medCalBtn')
+      for (let i = 0; i < 12 && !(await page.locator(`[data-medday="${iso}"]`).count()); i++) await page.click('#medCalNext')
+      await page.click(`[data-medday="${iso}"]`)
+      await expect(card(sec), `as of ${iso} under ${sec}`).toBeVisible()
+      await expect(card(other), `as of ${iso} not under ${other}`).toHaveCount(0)
+      await expect(card(sec)).toContainText(/28 Dec\D+3 Jan 2027/)
+    }
   })
 })

@@ -48,9 +48,9 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
-**NEXT (his question, 17 Oct 26) — [CONTEXT-START-SIZE]:** why a new chat starts 30–40% full, whether it grows, and options to cut it — MEASURED and put to him 17 Oct 26; his "As recommended" (D969–D971): A, B, C, G done; the capitals sweep (D972) and the push-and-lock guard (D976) done 17 Oct 26 on `claude/sharp-goldberg-6d0656` — waiting for his "merge live"; D, the scheduler split, not done (D976).
+**NEXT (his question, 17 Oct 26) — [CONTEXT-START-SIZE]:** why a new chat starts 30–40% full, whether it grows, and options to cut it — MEASURED and put to him 17 Oct 26; his "As recommended" (D969–D971): A, B, C, G done; the capitals sweep (D972) and the push-and-lock guard (D976) done 17 Oct 26 on `claude/sharp-goldberg-6d0656` — LIVE 17 Oct 26 (pull request 525); D, the scheduler split, not done (D976).
 
-**FOUND 17 Oct 26 — [MED-NEWYEAR]:** a medical input across New Year never shows on the Medical tab (older than pull request 524; its own small fix, after 524).
+**CLOSED 17 Oct 26 — [MED-NEWYEAR]:** not a fault of the app — a medical input filed across New Year through the window saves its end with its year and shows on the Medical tab; the item rested on a row planted without its year (D56). Pinned by a browser test; archived.
 
 **LIVE 15 Oct 26 (pull requests 517 and 518, his "merge live"; their items are in `OUTSTANDING-ARCHIVE.md`):** a new input opens on OL, the title's pencil, When and Remarks above the calendar (D917, D919, D920); the Tracker's ⇅ Reorder rows drag by finger and by mouse, one look (D922, D924). **Next, ruled the same night (D926–D928):** the Medical tab and Quals' one row, then the Logic page as drawn — `claude/one-row-guide-medical`; then [OIL-CONFIRM-DAYGRID] (D923), its own job.
 
@@ -2185,18 +2185,6 @@ stay readable by other models). **Place:** next, after pull request 524.
 ### [PUSH-GUARD-LEFTOVERS] The push-and-lock guard's low-likelihood gaps, left by its third fresh read (17 Oct 26)
 
 **Status: OPEN — small; no question for him.** The guard ([PUSH-LOCK-GUARD], D976, `.claude/hooks/push-guard.mjs`) went on after three fresh reads; the third read's must-fix and quick items were fixed, these were left: (1) a quoted argument that begins with `>` or `<` (`-t ">8h rest"`) is taken for a redirect, so the refusal's suggested command drops it — mark words that held a quote and test the redirect only on the others; (2) PowerShell's doubled quote inside single quotes (`'it''s'`) is read as two quotes, and the suggested command re-quotes with double quotes, so `$x` would expand — read `''` as one literal quote and write the suggestion with single quotes; (3) pushes to main still unread: `B=main; git push origin $B`, `echo main | xargs git push origin`, and bash's `$'…'` quote (its `\'` is escaped) swallowing the rest of a line; (4) in `gatelock.mjs` breakLock, a third waiter making the folder in the instant it is renamed aside leaves the original unrestorable. Each with a test in `push-guard.test.mjs`. **Place:** whenever the guard is next touched.
-
-### [MED-NEWYEAR] A medical input that runs across New Year never shows on the Medical tab (found 17 Oct 26, not fixed)
-
-**Status: OPEN — found by the Medical cards job's fix read (`claude/sharp-goldberg-6d0656`), older than that job; its own fix.**
-A downchit filed for 28 Dec – 3 Jan is never in Medically Down or Pending Upchit on any "as of" date: the Medical tab reads
-an entry's end in its START's year (`raptor-port/src/engine/medical.ts` `medEndOrd` — `dateOrd(endDate, yr)`), so the end
-falls before the start and the entry covers no day. The card's own words already handle it (`MedicalView.tsx` `spanOf`
-moves an earlier end into the next year), and so do the Inputs pages; only this calculation does not. **Not a demo-data
-case (D56):** a new filing across New Year is hurt the same way. **The fix:** `medEndOrd` (and every reader of it —
-`medDownAsOf`, `pendingUpchits`, `medEpisode`) takes an end label earlier than its start as the next year, as `spanOf` does;
-an engine change, so the rules-engine doctrine and a test across the year, then a walk of the Medical tab "as of" 30 Dec
-and 2 Jan. **Place:** after pull request 524; small; no question for him.
 
 ### [UI-SLEEK-PASS] The interface made more minimal, intuitive and sleek — fewer words, button placement, motion, colour meaning, icons, flow; the Raptor look kept, never at a cost of speed (his direction, D765, 12 Oct 26 — AFTER the one-rule build; his to place)
 **BUILT 17 Oct 26 — D949, D950, D951 + D953 on `claude/whole-app-words-pass-1b-6cfe51` (pull request 522), FULL-checked (`raptor-port/docs/handpass/2026-10-17-tick-r2.md`): LIVE 17 Oct 26 (pull request 522 merged on his "merge live").** **D953 (17 Oct 26) — D952 drawn and answered ("1B 2-5 yes"): a tick box before the grey date, like the window's "all day" tick; readings 2–5 as drawn. To build with D949–D951.** **D952 (17 Oct 26) — draw first, then build with D949–D951:** a switch on every input for its "till <date>" (the grey date in its window), on by default except a one-day duty or other commitment; the default follows the dates; the person can still turn it.

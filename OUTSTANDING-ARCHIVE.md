@@ -4770,3 +4770,19 @@ fresh chat on `main` after the calendar job.
 
 **Status: OPEN — filed, not designed; its own small job, after [CONTEXT-START-SIZE].** Option H of the start-size page: a hook (a "mod", in his word) before `git push` that refuses while a run of the branch's last pushed commit is queued or in progress (D151, [RUN-CHECK-BOTH-RUNS]) and refuses any push to `main` (D60); and one that takes and releases the PC lock around the full checks (D228). Worth it for reliability, not for room (under half a point). Changing `.claude/hooks/` and the settings needs his word for that change and its read (D70, as D878 was). **Place:** after [CONTEXT-START-SIZE].
 
+
+*Moved here 2026-10-17 by backlog-archive.mjs ([MED-NEWYEAR]). Forward facts: `raptor-port/docs/handpass/2026-10-17-med-newyear.md`, `raptor-port/e2e/medical.spec.ts`.*
+
+### [MED-NEWYEAR] A medical input that runs across New Year never shows on the Medical tab (found 17 Oct 26, not fixed)
+
+**CLOSED 17 Oct 26 — not a fault of the app (`claude/medical-newyear-display-298bb6`).** Filed through the window ("+ Medical"), a downchit for 28 Dec – 3 Jan saves its end as "Jan 3 2027" and the Medical tab shows it under Medically Down on 30 Dec and 2 Jan and under Pending Upchit on 5 Jan — walked at phone and desktop with pictures (`raptor-port/docs/handpass/2026-10-17-med-newyear.md`) and pinned by a browser test (`raptor-port/e2e/medical.spec.ts`, "[MED-NEWYEAR] …"). The fault below happens only to a row stored WITHOUT the end's year, which every door of the app now writes with it (since 12 Aug 26); the row that showed it was planted by a test straight into the data. By D56 not a finding; no app code changed. The calculation was deliberately not made to turn a yearless end into the next year: the schedule's own reading of an input does not, and turning only one would put a man down on the Medical tab while the schedule shows him free.
+**Status: OPEN — found by the Medical cards job's fix read (`claude/sharp-goldberg-6d0656`), older than that job; its own fix.**
+A downchit filed for 28 Dec – 3 Jan is never in Medically Down or Pending Upchit on any "as of" date: the Medical tab reads
+an entry's end in its START's year (`raptor-port/src/engine/medical.ts` `medEndOrd` — `dateOrd(endDate, yr)`), so the end
+falls before the start and the entry covers no day. The card's own words already handle it (`MedicalView.tsx` `spanOf`
+moves an earlier end into the next year), and so do the Inputs pages; only this calculation does not. **Not a demo-data
+case (D56):** a new filing across New Year is hurt the same way. **The fix:** `medEndOrd` (and every reader of it —
+`medDownAsOf`, `pendingUpchits`, `medEpisode`) takes an end label earlier than its start as the next year, as `spanOf` does;
+an engine change, so the rules-engine doctrine and a test across the year, then a walk of the Medical tab "as of" 30 Dec
+and 2 Jan. **Place:** after pull request 524; small; no question for him.
+

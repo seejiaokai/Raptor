@@ -6079,10 +6079,12 @@ green, trailing 30 days newest first: no kind and no "upchitted" — the date). 
 D967 — his answers after the code read):** a card with two or more on file shows one page drawing and the number,
 "▯ 2" (`.medcard-docs`, the section's colour; a screen reader hears "2 documents"); a card with one shows none — a
 downchit always carries one, so it would say nothing. The "N documents" pill went; the card's title still says "Tap to
-view N documents". **On a phone a card is at most a third of the row** (D967), and row 2 wraps between its parts: a
-period too long for that ("ATT C 29 Jun – 14 Jul") goes on the line under its kind, so three still stand in a row; on a
-desktop the cards have room and stay two rows. A card is about its puck's width (~95); a typed remark wraps
-inside that width and never widens the card (`.medcard-r` takes no width of its own). The period is said as the Inputs
+view N documents". **Every card is one even width (D977, 17 Oct 26 — it replaced the 28 Aug 26 cards that each hugged their words):**
+exactly a third of the row on a phone (D967 said "at most"), 120 on a desktop, in all three sections, so the cards stand in
+columns that line up from one section to the next; the row is packed from the left and not stretched to fill. Row 2
+wraps between its parts: a period too long for the card ("ATT C 29 Jun – 14 Jul") goes on the line under its kind; a
+typed remark wraps inside the card and never widens it (`.medcard-r` takes no width of its own). On the narrowest phones
+(below about 332 wide) a third is narrower than a puck, so the puck's width wins and two stand in a row (D487). The period is said as the Inputs
 pages say a range (`ui/InputsPage.tsx rangeWords`), since D960 (it was "till <date>"). **Nothing on a card says who
 placed the entry or when** (D960 — the input's window says it). Only Upchit Complete's heading carries a grey line ("the
 past 30 days, newest first"): Medically Down's and Pending Upchit's went with the words pass, round 3 (D959). **"+
