@@ -649,6 +649,8 @@ state nobody drew.
 he may strike or change any. Newest first. Where a lesson meets a general rule above, the lesson wins, and that rule
 points here.*
 
+**Lesson 3 (17 Oct 26, D951 — "seems weird for 1 day duty and other commitments to have a till date").** A date that only repeats the day it stands on says nothing: a one-day duty or other commitment carries no "till <date>"; one that runs more than a day keeps it. *Named under D852, not changed:* one-day leave and medical inputs print "till <that day>" too (the night's Q4, still his).
+
 **Lesson 2 (16 Oct 26, D945 — an input row's "Undo" became "Reject").** A button is named for what it does — never with
 another control's name (the row's "Undo" was also the top bar's) and never with a word that reads as Delete (he asked
 whether "Remove" would). *Named under
