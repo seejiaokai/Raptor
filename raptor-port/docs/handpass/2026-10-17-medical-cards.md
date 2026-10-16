@@ -107,17 +107,49 @@ has no rectangle. It is the browser's brief flash of a tap, as on any tapped but
 - His iPhone's own letters (Apple's font, wider than Windows'): the three-a-row margin at 375 is 37px (three cards of
   94–100 in 343); a real-device look is on his look card below.
 
+## The code read (one fresh, blind Opus reader — D790; Fable not used, D903)
+
+Given the change, the rulings and this sheet's roll-call; asked for absences. Five findings, each with its disposition:
+
+| # | Finding | Disposition |
+|---|---|---|
+| F1 | A period across a month end ("ATT C 28 Jun – 2 Jul") is wider than a third of a phone's row: that row falls to two | Put to him with pictures (`docs/img/handpass/2026-10-17-medical-cards-r2/`, the page https://claude.ai/artifact/VZHvNS7f4n2kwxnQo7YbU6); **D967**: on a phone a card is at most a third of the row and row 2 wraps between its parts — FIXED, `e2e/medical.spec.ts` "D967 a long period…" (red without the cap, at 390 and 375) |
+| F2 | A medically-down or pending card with two documents no longer said so on a phone (the pill went from every section; D965 gave drawings to Upchit Complete only) | Put to him; **D966** ("those with documents should show the document icon too"), **D967** (from two documents one drawing and the number, every section; one shows none) — FIXED, `medicalview.test.tsx` "D966 D967 …" |
+| F3 | A screen reader did not hear the document count | FIXED — the group is `role="img"` named "N documents"; same test |
+| F4 | A save from the Medical tab turned the Inputs and SANS calendars to the input's month, unseen | FIXED — `inputedit.tsx` `onMedTab` guards the reveal; `e2e/medical.spec.ts` "…leaves the Inputs calendar on its month" (red without the guard) |
+| F5 | Many documents spilled past an Upchit Complete card | FIXED by D967's form — five documents read "▯ 5" (unit test) |
+
+Observations the reader made and the host checked: the onClose (overlay) variant of the view is mounted nowhere; a guest or
+pending person never reaches the tab; an as-of date in the past hides a new card but the "Input added" note still shows.
+**Its own find, after the code read:** GitHub's Linux machine drew a card 107 wide where the PC drew 100, so the browser
+test's fixed "≤ 104" failed there (run 38903508563, reported by the old merge chat): the test now asks for "at most a
+third of the row" (D967), the rule itself, not a pixel figure (the reader had flagged the same test as font-bound).
+
+## The re-walk (what the fixes touched)
+
+`HP_SHOTS=…/docs/img/handpass/2026-10-17-medical-walk/rewalk node scripts/handpass/medical-walk.mjs` — v3, the same four
+scenarios plus: an admin at 375 files "29 Jun – 14 Jul" through "+ Medical" (the period under its kind, inside the card,
+three a row), Upchit Complete reads "20 Jun ▯ 2", and on the desktop the Inputs calendar is on October before and after a
+July filing. **32 of 32 PASS, 15 pictures, no errors.** Pictures opened: `rewalk/05` (Pending and Complete), `rewalk/09`
+(375, the long period under its kind). The break list after D967: 10 of 10 caught (two entries rewritten for the new form).
+
 ## Gate counts
 
-(filled from the run)
+The whole set under the PC lock, on the build before the code read's fixes (`claude/sharp-goldberg-6d0656` at
+`299ce550a`+): build clean · tfin 728 / 0 · unit 11581 / 11581 (651 files) · e2e 832 passed, 1 failed, 59 skipped · smoke
+446 / 0 · rulecheck OK · docsize — one home missing (D962, restored the same hour). The one e2e failure: the Leave War
+desktop timing test "the grid draws a window of months…" (`[LW-WINDOW-PRUNE-FLAKE-2]`; this job touches nothing of the
+Leave War) — run alone under the lock, 1 of 1 (D84). After the fixes and D967 (D902 — a follow-up on an open pull request
+runs the tests it touches; GitHub's run is its full check): see the closing lines below.
 
 ## What the walk found
 
-Nothing in the app: 31 of 31 PASS. One guard that decided nothing was found by the break tests and removed.
+Nothing in the app: 31 of 31 PASS, then 32 of 32 on the re-walk. One guard that decided nothing was found by the break
+tests and removed; the code read's five findings are above.
 
 ## His look
 
 1. On his iPhone, the Medical tab: three cards in a row in Medically Down (needs three men down — the demo has two; filing one through "+ Medical" makes three).
 2. "+ Medical" at the right of "as of": tap it — the input window opens on HL.
 
-`Walk: docs/handpass/2026-10-17-medical-cards.md · 15 pictures · 4 surfaces · 6 orders · MISSING: none`
+`Walk: docs/handpass/2026-10-17-medical-cards.md · 30 pictures (15 + 15 re-walk) · 4 surfaces · 8 orders · MISSING: none`

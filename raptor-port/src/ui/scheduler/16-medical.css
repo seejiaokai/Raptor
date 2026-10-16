@@ -108,6 +108,8 @@
    documents" pill it replaced is gone. */
 .medcard-row2{display:flex;flex-wrap:wrap;align-items:center;gap:2px 5px;min-width:0}
 .medcard-row2>*{white-space:nowrap}
+.medcard-row2>.medcard-t{white-space:normal}
+.medcard-tp{white-space:nowrap}
 .medcard-type{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--sec);white-space:nowrap}
 .medcard-t{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--ink-3)}
 .medcard-docs{display:inline-flex;align-items:center;gap:2px;flex:none}
@@ -152,7 +154,9 @@
 @media (max-width:820px){
   /* AT MOST A THIRD OF THE ROW (owner D967): two 6px gaps between three cards — so a long period wraps inside its card
      (row 2 above) and three still stand in a row; a short card stays its own width */
-  .medcard{max-width:calc((100% - 12px) / 3)}
+  .medcard{max-width:calc((100% - 12px) / 3);min-width:calc(var(--puck-w) + 20px)}
+  /* …but never narrower than its puck (74, plus the card's 9px sides and 1px borders — D487, pucks never shrink): on the
+     narrowest phones (below about 351 wide) the floor wins, and two cards stand in a row instead of overlapping */
   .medsec-sub{flex-basis:100%;text-align:left;margin-left:0}
   .med-body{padding:10px}
   .medsec-h{flex-wrap:wrap;row-gap:2px}

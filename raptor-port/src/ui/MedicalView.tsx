@@ -108,7 +108,11 @@ function Card({ e, line, up, docs, kind = true, onOpen }: { e: any, line: string
       </span>
       <span className="medcard-row2">
         {kind ? <span className="medcard-type">{inpType(r.type)}</span> : null}
-        <span className="medcard-t">{line}</span>
+        {/* a period across two months may break at its dash and nowhere else, so on a phone's third of a row "28 Dec –
+            3 Jan 2027" goes onto two lines inside the card instead of running past it (the fix read, 17 Oct 26) */}
+        <span className="medcard-t">{line.includes(' – ')
+          ? <><span className="medcard-tp">{line.split(' – ')[0]} –</span> <span className="medcard-tp">{line.split(' – ').slice(1).join(' – ')}</span></>
+          : line}</span>
         {/* ONE NAME FOR THE GROUP, read aloud as "2 documents" (the code read, finding 3): the drawing and the number are
             hidden from a screen reader, and the card's title is only a hint there */}
         {n > 1 ? <span className="medcard-docs" role="img" aria-label={`${n} documents`}>
@@ -154,7 +158,7 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
   const done = upchitsWithin(ord, 30)          // newest first, its own order
 
   /* this person's overlapping-episode documents that are actually on file.
-     ROWS feed the pager; the card's count of documents — its title, and Upchit Complete's page drawings (D965) — counts FILES (an
+     ROWS feed the pager; the card's count of documents — its title, and the drawing and number from two (D966, D967) — counts FILES (an
      entry holds several since 1 Sep 26) — both read the same per-row lists,
      so what the card promises and the viewer pages cannot disagree */
   const episodeDocs = (row: any) => medEpisode(row).filter((x: any) => rowDocIds(x).some(docHas))
