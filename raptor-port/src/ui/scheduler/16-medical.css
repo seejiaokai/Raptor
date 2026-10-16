@@ -107,6 +107,7 @@
 .medcard-row2{display:flex;align-items:center;gap:5px;white-space:nowrap;min-width:0}
 .medcard-type{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--sec);white-space:nowrap}
 .medcard-t{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--ink-3)}
+.medcard-docs{display:inline-flex;align-items:center;gap:5px;flex:none}
 .medcard-doc{width:11px;height:11px;flex:none;color:var(--sec)}
 /* A TYPED REMARK NEVER WIDENS THE CARD (D960 reading 4 keeps it; D965's three a row needs the card to stay its puck's
    width): it takes no width of its own and wraps inside the width the puck and row 2 already set. */

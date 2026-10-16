@@ -6071,22 +6071,22 @@ calendar's full-screen chassis (`.inpcal`) and deliberately IGNORES the
 table's filter bar — it is the squadron's medical state, not a filtered
 list. Three sections, each a `.medcard` grid on the `.sanscard` contract
 (puck inside the row-direction `.medcard-top`; texts are SIBLINGS — the
-74×74 column-flex trap): **Medically Down** (`--hard` red, the period it
-covers — "15–17 Jul", one day "17 Jul", across months "28 Jun – 2 Jul"),
-**Pending Upchit** (`--adv` amber, "was down 5–9 Jul"), **Upchit
-Complete** (`--ok` green, "upchitted <date>", trailing 30 days newest
-first) — the period since owner D960 (17 Oct 26; it was "till <date>"), said
-as the Inputs pages say a range (`ui/InputsPage.tsx rangeWords`). **Nothing
-under that line says who placed the entry or when** (D960 — the input's window
-says it). Only Upchit Complete's heading carries a grey line ("the past 30
-days, newest first"): Medically Down's and Pending Upchit's went with the
-words pass, round 3 (D959). **Next, his direction of 17 Oct 26 (D961), drawn for him before
-it is built:** three cards a row on a phone; Upchit Complete's card without the word
-"upchitted"; "2 documents" as document icons on the date's row — two rows a card. A "+ Medical" button beside "as of",
-opening the same input window with a medical kind set (D963 — it took the place of D962's
-title); the button's look drawn in a few variations for him first (D964). **Answered (D965), to build:** each card its puck,
-then the kind and the period on one row; Pending Upchit "OML 6–9 Jul"; Upchit Complete the date and a document icon
-a document; "+ Medical" filled cyan at the row's right end. Every section has a real empty state. Cards SIZE TO CONTENT and
+74×74 column-flex trap). **A card is two rows (owner D961, D965 — 17 Oct 26, built as drawn):** its puck alone on
+row 1; on row 2 (`.medcard-row2`, one line, never wrapped) the kind in its section's colour, then the period —
+**Medically Down** (`--hard` red: "ATT C 13–17 Jul", one day "OML 13 Jul", across months "28 Jun – 2 Jul"),
+**Pending Upchit** (`--adv` amber: "OML 6–9 Jul" — "was down" went, D965 narrowing D960), **Upchit Complete** (`--ok`
+green, trailing 30 days newest first: no kind and no "upchitted" — the date, then ONE page drawing a document on file,
+`.medcard-doc`, the section's green; the "N documents" pill went, the card's title still says "Tap to view N
+documents"). So a card is about its puck's width (~95) and THREE stand in a row at 390 and 375; a typed remark wraps
+inside that width and never widens the card (`.medcard-r` takes no width of its own). The period is said as the Inputs
+pages say a range (`ui/InputsPage.tsx rangeWords`), since D960 (it was "till <date>"). **Nothing on a card says who
+placed the entry or when** (D960 — the input's window says it). Only Upchit Complete's heading carries a grey line ("the
+past 30 days, newest first"): Medically Down's and Pending Upchit's went with the words pass, round 3 (D959). **"+
+Medical"** (`#medNew`, owner D963 — in place of D962's title pointing to the Inputs tab — D964, D965; 17 Oct 26) is the row's one filled cyan button, at its right end after
+the stretching gap, 36 tall like "as of" (a finger's 44 on a phone); it opens the SAME window as the Inputs tab's "+
+Input" (`newInputSeed`: the signed-in person, no date yet) with the first medical kind of the app's own list set (HL); the
+window, and who may file for whom in it (D655), are unchanged, and a save leaves the Medical tab in front, the new card
+on it. Pins: `ui/medicalview.test.tsx`, `e2e/medical.spec.ts`. Every section has a real empty state. Cards SIZE TO CONTENT and
 pack from the left — **a wrapping flex row, not a grid** (`.medcards`;
 owner, 27 Aug 26: a stretch-to-fill column wasted the right half of every
 box, then 28 Aug 26: "the box around the puck doesn't look compact
@@ -6157,8 +6157,8 @@ gathers, at READ TIME, the person's medical rows whose date ranges OVERLAP OR
 TOUCH one evolving episode (touching counts, because the clash sheet usually
 leaves the winner and loser ADJACENT, not overlapping; the closing upchit is
 folded in), and `MedicalView.tsx` counts the documented ones per card. When a
-card's episode has more than one document it wears a small **"N documents"**
-pill (`.medcard-docn`, the section's own colour) and, on tap, hands the viewer
+card's episode has more than one document its title says so ("Tap to view N documents"; the small **"N documents"**
+pill it wore until 17 Oct 26 went with D965 — an Upchit Complete card now draws one page a document instead) and, on tap, hands the viewer
 the WHOLE episode instead of the one row. `DOCVIEW` grows an optional
 `{ rows, idx }` beside its `{ row, up }` — purely additive, so every single-row
 caller (a puck tap, a Pending card) is unchanged — and `DocViewer` draws a
@@ -6188,8 +6188,8 @@ now also refuses saving an entry that HAD files with none — "Keep at least
 one document" — while pre-feature bare rows stay freely editable. The
 VIEWER expands whatever it is handed — episode rows or a single-row puck
 tap — into one page per FILE (`DocViewer`'s `els`; the caller's `idx` still
-counts ROWS, seated at that row's first page), the "N documents" pill
-counts FILES (`episodeDocN`), and a multi-file entry shows the current
+counts ROWS, seated at that row's first page), the card's count of documents (its title; Upchit Complete's page
+drawings, D965) counts FILES (`episodeDocN`), and a multi-file entry shows the current
 file's name beside the sub line (`.docview-fname`) so two scans of one
 certificate are tellable apart. Pinned in `docs.test.ts` (the shape pair),
 `medwrite.test.ts` (first-on-docId, fold-back to single, last-file

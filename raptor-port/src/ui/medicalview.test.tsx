@@ -203,6 +203,9 @@ describe('the Medical view', () => {
     expect(card, 'the upchit lists under Upchit Complete').toBeTruthy()
     expect(card.querySelectorAll('.medcard-row2 .medcard-doc').length, 'two documents, two drawings').toBe(2)
     expect(card.title).toBe('Tap to view 2 documents')
+    /* a screen reader hears the count: the drawings are hidden, their group is named (the code read, finding 3) */
+    expect(card.querySelector('.medcard-docs')!.getAttribute('aria-label')).toBe('2 documents')
+    expect(card.querySelector('.medcard-docs')!.getAttribute('role')).toBe('img')
     const yeti = cardsIn('med-done').find(c => c.textContent!.includes('8 Jul'))!
     expect(yeti.querySelectorAll('.medcard-doc').length, 'no document on file, none drawn').toBe(0)
     /* the downchit and pending cards never draw them — their documents open from the card as before */

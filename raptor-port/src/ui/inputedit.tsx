@@ -52,7 +52,7 @@ import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
 import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff, filedWhole, byAfterLeaving } from '../state/perms'
 import { INPEDIT, setInpEdit, OILASK, OILOWN, setOilAsk, setMedMove, setDocView } from './pops'
-import { CURPAGE, revealInput, OILWAIT, type OilWaitKind } from '../state/view'
+import { CURPAGE, INPVIEW, revealInput, OILWAIT, type OilWaitKind } from '../state/view'
 import { toastHeld } from './toast'
 import { noteUnlessSeen } from './seen'
 import { holdForOil } from './oilwait'
@@ -2468,7 +2468,12 @@ export function InputEditor() {
          there wears no such mark), and "Input added to the Ground Programme", which is never this note's;
        · where the save had a word of its own — a warning that goes with it stays ONE note with these words (above);
        · where, shown, it still cannot be seen (a window over it; a view that does not draw it). */
-  const show = (row: any, want: boolean) => want && !!row && revealInput(row) && CURPAGE === 'inputs'
+  /* NOT FROM THE MEDICAL TAB (the code read of [MEDICAL-CARDS-3], 17 Oct 26 — finding 4): asked to show a saved input,
+     the page turns the Inputs and SANS calendars to its month; from the Medical tab ("+ Medical", D963) neither calendar
+     is in view, so a filing for July turned his November away unseen. There the new card is the feedback and the note
+     is said (nothing there wears the just-added mark). */
+  const onMedTab = () => CURPAGE === 'inputs' && INPVIEW === 'med'
+  const show = (row: any, want: boolean) => want && !!row && !onMedTab() && revealInput(row) && CURPAGE === 'inputs'
   const saidSaved = (row: any, shown: boolean, words: string) => {
     if (!shown || toastHeld()) HOOKS.toast(words, 'ok')
     else noteUnlessSeen(String(inpId(row)), words, 'ok')
@@ -2517,7 +2522,7 @@ export function InputEditor() {
     if (oilDec && !removals.length && WIN_FIELDS.every(f => fieldSame(f, draft, draftOf(r)))) {
       if (!mayEditInput(r) || protectedInput(r)) { stay(); return }
       const s = saveBatchX(() => { r.oil = { ...oilDec }; stampChanged(r); return true })
-      if (s.ok) { if (CURPAGE === 'inputs') revealInput(r); HOOKS.toast('OIL answer saved', 'ok'); close() }
+      if (s.ok) { if (CURPAGE === 'inputs' && !onMedTab()) revealInput(r); HOOKS.toast('OIL answer saved', 'ok'); close() }
       else if (s.refused) stay()
       else if (INPUTS.indexOf(r) < 0) close()
       return

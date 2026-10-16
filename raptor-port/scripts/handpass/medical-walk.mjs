@@ -15,7 +15,7 @@ const OUT = process.env.HP_SHOTS || join(HERE, '../../docs/img/handpass/2026-10-
 rmSync(OUT, { recursive: true, force: true }); mkdirSync(OUT, { recursive: true })
 const URL = process.env.LOOK_URL || 'http://localhost:4173/'
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
-console.log('medical-walk v1 —', new Date().toISOString(), '→', OUT)
+console.log('medical-walk v2 —', new Date().toISOString(), '→', OUT)
 const browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
 const results = [], errs = []
 let shotN = 0
@@ -45,14 +45,14 @@ const card = (page, iid) => page.evaluate(iid => {
   const r = c.getBoundingClientRect(), sec = c.closest('.medsec').className.replace('medsec ', '')
   const row2 = c.querySelector('.medcard-row2')
   /* the words a person sees: the parts with a width (walk-scripts.md §4) */
-  const seen = row2 ? [...row2.children].filter(e => e.getBoundingClientRect().width > 1).map(e => e.tagName === 'svg' ? '[doc]' : e.textContent) : []
+  const seen = row2 ? [...row2.children].filter(e => e.getBoundingClientRect().width > 1).flatMap(e => e.classList.contains('medcard-docs') ? [...e.querySelectorAll('svg')].map(() => '[doc]') : [e.textContent]) : []
   const rm = c.querySelector('.medcard-r')
   return { sec, w: Math.round(r.width), h: Math.round(r.height), row2: seen, remark: rm ? rm.textContent : null, remarkW: rm ? Math.round(rm.getBoundingClientRect().width) : 0, title: c.title }
 }, iid)
 const rowsOf = (page, sec) => page.evaluate(sec => {
   const cs = [...document.querySelectorAll(`.medsec.${sec} .medcard`)]
   const tops = cs.map(c => Math.round(c.getBoundingClientRect().top))
-  return { n: cs.length, perRow: [...new Set(tops)].map(t => tops.filter(x => x === t).length), widths: cs.map(c => Math.round(c.getBoundingClientRect().width)), words: cs.map(c => [...c.querySelectorAll('.medcard-row2 > *')].map(e => e.tagName === 'svg' ? '[doc]' : e.textContent).join(' ')) }
+  return { n: cs.length, perRow: [...new Set(tops)].map(t => tops.filter(x => x === t).length), widths: cs.map(c => Math.round(c.getBoundingClientRect().width)), words: cs.map(c => [...c.querySelectorAll('.medcard-row2 > *')].flatMap(e => e.classList.contains('medcard-docs') ? [...e.querySelectorAll('svg')].map(() => '[doc]') : [e.textContent]).join(' ')) }
 }, sec)
 const headGeo = page => page.evaluate(() => {
   const head = document.querySelector('#medView .ic-head'), hr = head.getBoundingClientRect(), pad = parseFloat(getComputedStyle(head).paddingRight)

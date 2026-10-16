@@ -110,7 +110,10 @@ function Card({ e, line, up, docs, docIcons, kind = true, onOpen }: { e: any, li
         <span className="medcard-t">{line}</span>
         {/* one drawing a document actually on file (D961 reading 2: "a card of one document shows one icon"; none on
             file, none drawn) — the card's title still says how many for a reader who cannot see them */}
-        {docIcons ? Array.from({ length: docs || 0 }, (_, i) => <DocMark key={i} />) : null}
+        {/* ONE NAME FOR THE GROUP, read aloud as "2 documents" (the code read, finding 3): each drawing is hidden from a screen
+            reader, and the card's title is only a hint there */}
+        {docIcons && docs ? <span className="medcard-docs" role="img" aria-label={`${docs} document${docs === 1 ? '' : 's'}`}>
+          {Array.from({ length: docs }, (_, i) => <DocMark key={i} />)}</span> : null}
       </span>
       {/* the typed words (its line above says the dates — D948, engine/inputs.ts remarksTyped) */}
       {remarkNote(remarksTyped(r.remarks, r)) ? <span className="medcard-r" title={remarksTyped(r.remarks, r)}>{remarksTyped(r.remarks, r)}</span> : null}
@@ -152,7 +155,7 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
   const done = upchitsWithin(ord, 30)          // newest first, its own order
 
   /* this person's overlapping-episode documents that are actually on file.
-     ROWS feed the pager; the card's "N documents" badge counts FILES (an
+     ROWS feed the pager; the card's count of documents — its title, and Upchit Complete's page drawings (D965) — counts FILES (an
      entry holds several since 1 Sep 26) — both read the same per-row lists,
      so what the card promises and the viewer pages cannot disagree */
   const episodeDocs = (row: any) => medEpisode(row).filter((x: any) => rowDocIds(x).some(docHas))

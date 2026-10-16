@@ -192,4 +192,38 @@ test.describe('the medical view renders and fits', () => {
       await expect(win).toHaveCount(0)
       await expect.poll(() => page.evaluate(() => document.activeElement && document.activeElement.id)).toBe('medNew')
     })
+
+  /* A FILING FROM THE MEDICAL TAB LEAVES THE CALENDARS' MONTH ALONE (the code read of 17 Oct 26, finding 4): saved through
+     "+ Medical", an input used to turn the Inputs calendar to its own month — unseen, since the calendar is not on the
+     Medical tab. Filed for July through the real window, the calendar he left on its month is on that month when he
+     goes back; the new card is on the Medical tab. */
+  test('D965 a filing through "+ Medical" leaves the Inputs calendar on its month', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    await go(page, 'inputs')
+    const month = page.locator('#inpCal .ic-mon').first()
+    await expect(month).toBeVisible()
+    const before = (await month.textContent())!.trim()
+    expect(before, 'the calendar is not already on July').not.toMatch(/Jul/)
+    await page.click('#inMedBtn')
+    const had = await page.evaluate(() => (window as any).INPUTS.map((r: any) => String(r.iid)))
+    await page.click('#medNew')
+    const win = page.locator('[data-testid="win-inputedit"]')
+    await expect(win).toBeVisible()
+    for (let i = 0; i < 24 && !(await page.locator('#inpEdCal [data-iso="2026-07-12"]').count()); i++) {
+      const t = (await page.locator('#inpEdCal .dcal-title').first().textContent()) || ''
+      await page.locator(`#inpEdCal button[aria-label="${/2027|Aug|Sep|Oct|Nov|Dec/.test(t) ? 'Previous' : 'Next'} month"]`).click()
+    }
+    await page.locator('#inpEdCal [data-iso="2026-07-12"]').click()
+    await page.locator('#inpEdCal [data-iso="2026-07-15"]').click()
+    await win.locator('.docfield input[type=file]').first().setInputFiles([{ name: 'cert.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.1 %%EOF') }])
+    await page.locator('#inpEditSave').click()
+    await expect(win).toHaveCount(0)
+    const made = await page.evaluate(had => (window as any).INPUTS.map((r: any) => String(r.iid)).filter((i: string) => !had.includes(i)), had)
+    expect(made.length, 'one input filed').toBe(1)
+    await expect(page.locator(`.medcard[data-medcard="${made[0]}"]`), 'its card on the Medical tab').toBeVisible()
+    await page.click('#inMemberMode')
+    await expect(month).toBeVisible()
+    expect((await month.textContent())!.trim(), 'the calendar kept its month').toBe(before)
+  })
 })

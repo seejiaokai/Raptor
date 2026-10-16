@@ -955,6 +955,7 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** In the checking order's §7.2, one line: before a browser run, confirm the server on the port is this checkout's build (its command line, or a fact only the new build has), or run on a free port.
 
 **Principle:** A test that reuses a running server proves only that server; check whose build it is before trusting a red or a green.
+**Met again 2026-10-16:** the Medical cards job (`claude/sharp-goldberg-6d0656`) — this chat's OWN walk preview was still on 4173 when it ran a browser break test, so the deliberately broken styles were never built: the tests passed in 2.6s on the unbroken build. Caught only by the time. Third meeting (590, 616, this). **Proposed guard (in place of a judgement each time):** the browser-test config refuses to reuse a server unless it serves the checkout's own build — or a break-test step always stops the port first (`gatelock.mjs` could do it before any browser run).
 
 ### Observation 617: Marks drawn as boxes over a page drift from their text on a phone; a mark drawn on the element cannot
 
