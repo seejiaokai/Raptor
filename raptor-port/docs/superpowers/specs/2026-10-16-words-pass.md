@@ -62,6 +62,22 @@ says "(prev day)" where its in-time / rally is the evening before; the Ground Pr
 its date grey after it; every input carries the till-date tick. Checked in `raptor-port/docs/handpass/2026-10-17-tick-r2.md`;
 what each surface does: `raptor-port/docs/ui-contracts.md` (the words pass, the remark and its date, the tick).
 
+## Round 3 — the Medical tab and the Help page (17 Oct 26)
+
+**Drawn 17 Oct 26 (nothing in the app changed):** `raptor-port/scripts/handpass/words-r3.mjs`, pictures
+`raptor-port/docs/img/handpass/2026-10-16-words-pass/r3/` (`facts.json` holds every height measured). Put to him as a page
+of pictures (claude.ai artifact `9j1rKXRZTG2J7QLJHCVV7H`), four questions: (1) Medical, "Medically Down"'s grey line
+"cannot fly as of <date>" — delete (the heading and the "as of" button say it; on a phone a row goes); (2) Medical,
+"Pending Upchit"'s "the down period has ended — the upchit document is still owed" — delete (the squadron's word and each
+card's "was down till <date>" say it; on a phone a row goes); (3) Help, "Report a problem"'s line — A "Spotted something
+wrong, or something that could work better? The schedulers see every report." (recommended: "Send it here" goes, the dash
+a full stop; cold-read 17 Oct 26 — both facts kept; the readings "see" / "could work better" left open are today's
+wording's too) or B "The schedulers see every report." (loses that ideas are welcome); (4) Help, the empty "Bug reports"
+card — "No reports yet." (the line with reports, "N reports, newest first.", unchanged). Considered and left: "Upchit
+Complete · the past 30 days, newest first" (the only place that says older upchits are not listed); the Admin page's lines
+(what a press does, why a member is refused). The survey's other pages: the Tracker's text is next; the board, the SANS
+tab, the Leave War and an input's window were not reached by the survey and need a reach of their own.
+
 ## Round 1b — his notes on the preview (16 Oct 26)
 
 **D942:** "Disregard this lesson" — lesson 1 struck from the guide's §9; D938's removal of the editing hint stands, for those lines only. **D943:** a short line beside the Ground Programme's name saying how to take an input off (Undo on its Personal Inputs row) — drawn first. **D944:** on a phone the board's Personal Inputs and Unavailable take one line less — drawn first. **D945** (asked while round 1b was drawn): the button on an accepted input's row reads "Reject", not "Undo" — board and week, phone and desktop; "Reject · Tue" where its row is on another day; hover text to match; what it does unchanged. Round 1b put to him as a page of pictures (claude.ai artifact `LyEcfYVzbqXnsgwscLRVvM`, four questions), drawn by `raptor-port/scripts/handpass/words-r1b.mjs`. **D946** (sent the same evening, with a picture of a new input's window): the Remarks box holds only what a person types; "till <date>" shows by default from the dates already picked, always after the remark — this brings forward the filed job of the same name (the app stops writing "till" into remarks; D728 step 2), its questions drawn and put to him first. **D947 — round 1b's answers:** (1) the board's wave header loses "In-time / Rally HH:MM · N ac"; (2) the Ground Programme's line, B: "To take an input off, press Reject on it in Personal Inputs below."; (3) on a phone an input's button sits on its puck's line, board and week; (4) no — Unavailable keeps its heading line. **D948 — the till date, answered** (page `E5EGxqoxCyCzhe3uzjYZjA`, drawn by `raptor-port/scripts/handpass/till-dates.mjs`): (1) Remarks holds only typed words, "till <date>" a grey tag after the box from the dates, in every input window; (2) B — a one-day input still says "till <that day>"; (3) every screen prints remark then date, as today. And his question (not a ruling): why the board's wave header carries "In-time / Rally 16:20 · 4 ac" — it is the wave's earliest report time and its aircraft count (`ui/html.ts waveHeadBoard`); the time is also the Available crew band's edge ("1ST WAVE AM–16:20") and the lines below show it.
