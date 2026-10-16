@@ -154,9 +154,13 @@
 @media (max-width:820px){
   /* AT MOST A THIRD OF THE ROW (owner D967): two 6px gaps between three cards — so a long period wraps inside its card
      (row 2 above) and three still stand in a row; a short card stays its own width */
-  .medcard{max-width:calc((100% - 12px) / 3);min-width:calc(var(--puck-w) + 20px)}
-  /* …but never narrower than its puck (74, plus the card's 9px sides and 1px borders — D487, pucks never shrink): on the
-     narrowest phones (below about 351 wide) the floor wins, and two cards stand in a row instead of overlapping */
+  .medcard{max-width:calc((100% - 12px) / 3);min-width:calc(var(--puck-w) + 14px);padding-left:6px;padding-right:6px}
+  /* SIDES OF 6, NOT 9, ON A PHONE: the card's words are a monospace face the app does not ship, so each device draws its
+     own — Windows' is about 0.55 of the size wide, an iPhone's and GitHub's Linux machine's about 0.60 — and at 375 wide
+     "ATT C 13–17 Jul" needed 87 where a 9px-sided third of the row gave 82, so it fell to three lines there (pull request
+     524's check run). Three pixels a side back keep the card two rows, as drawn (D961, D965). */
+  /* …but never narrower than its puck (74, plus the card's 6px sides and 1px borders — D487, pucks never shrink): on the
+     narrowest phones (below about 332 wide) the floor wins, and two cards stand in a row instead of overlapping */
   .medsec-sub{flex-basis:100%;text-align:left;margin-left:0}
   .med-body{padding:10px}
   .medsec-h{flex-wrap:wrap;row-gap:2px}

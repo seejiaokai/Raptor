@@ -153,6 +153,17 @@ test.describe('the medical view renders and fits', () => {
       return Math.round(r2.height)
     }))
     for (const h of lines) expect(h, 'row 2 is one line').toBeLessThanOrEqual(16)
+    /* …AND IN THE WIDER LETTERS OF AN IPHONE OR A LINUX MACHINE (pull request 524's check run: GitHub's Linux drew this
+       row three lines tall at 375 — the app ships no monospace face, so each device draws its own): Courier New, about
+       0.60 of the size wide as theirs are, stands in for them on any machine */
+    await page.addStyleTag({ content: ".medcard-type,.medcard-t{font-family:'Courier New',Courier,monospace !important}" })
+    await page.waitForTimeout(100)
+    const wide = await page.evaluate(() => {
+      const cs = [...document.querySelectorAll('.medsec.med-down .medcard')]
+      return { rows: new Set(cs.map(c => Math.round(c.getBoundingClientRect().top))).size, heights: cs.map(c => Math.round(c.querySelector('.medcard-row2')!.getBoundingClientRect().height)), text: cs.map(c => c.querySelector('.medcard-row2')!.textContent) }
+    })
+    expect(wide.rows, `wider letters: three still in one row (${JSON.stringify(wide.text)})`).toBe(1)
+    for (const h of wide.heights) expect(h, `wider letters: row 2 still one line (${JSON.stringify(wide)})`).toBeLessThanOrEqual(16)
   })
 
   /* A LONG PERIOD GOES UNDER ITS KIND (owner D967 — "Both as recommended", after the code read): "ATT C 29 Jun – 14 Jul"
