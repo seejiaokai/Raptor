@@ -1,0 +1,141 @@
+<title>Till-Date Switch</title>
+<style>
+/* Layout: one reading column; each question a block of real-app pictures, phone or desktop, tap to enlarge. */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --ink:#16202a; --ink-2:#4a5866; --line:#d6dde4;
+  --accent:#0f8fb3; --rec:#1d8a46; --rec-bg:#e5f5ea; --real:#b4233f; --real-bg:#fbe8ec;
+  --f-display:"Barlow Semi Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e1318; --panel:#161d24; --ink:#e6edf3; --ink-2:#9aa8b5; --line:#2a3540;
+  --accent:#3cc3e6; --rec:#45c470; --rec-bg:#12301d; --real:#ff6b86; --real-bg:#3a1520; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1318; --panel:#161d24; --ink:#e6edf3; --ink-2:#9aa8b5; --line:#2a3540;
+  --accent:#3cc3e6; --rec:#45c470; --rec-bg:#12301d; --real:#ff6b86; --real-bg:#3a1520; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--f-body)}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:22px}
+h1{font:600 30px/1.1 var(--f-display);letter-spacing:.01em;margin:0;text-wrap:balance}
+h2{font:600 21px/1.2 var(--f-display);margin:0;text-wrap:balance}
+p{margin:0}
+.lead{color:var(--ink-2)}
+.his{border-left:3px solid var(--accent);padding:4px 0 4px 12px;color:var(--ink-2);font-style:italic}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:8px;z-index:2}
+.bar span{color:var(--ink-2);font-size:14px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{font:600 14px var(--f-body);padding:6px 14px;border:0;background:var(--panel);color:var(--ink);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.seg button:focus-visible,.shot:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.q{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 16px;display:flex;flex-direction:column;gap:14px}
+.q .num{font:700 12px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+.shot{display:block;padding:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#000;cursor:zoom-in}
+.shot img{display:block;width:100%;height:auto}
+figcaption{font-size:14px;color:var(--ink-2)}
+.tag{display:inline-block;font:700 11px/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;padding:3px 6px;border-radius:4px;margin-right:6px;vertical-align:1px}
+.tag.real{background:var(--real-bg);color:var(--real)}
+.tag.drawn{background:var(--rec-bg);color:var(--rec)}
+.rec{background:var(--rec-bg);border-radius:8px;padding:10px 12px}
+.rec b{color:var(--rec)}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.answer{background:var(--panel);border:2px solid var(--accent);border-radius:10px;padding:16px}
+.answer code{font:600 15px ui-monospace,Consolas,monospace;background:var(--bg);padding:2px 6px;border-radius:4px}
+.zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:12px;z-index:10;cursor:zoom-out}
+.zoom img{max-width:100%;max-height:100%;object-fit:contain}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:10px">
+    <h1>The till-date switch</h1>
+    <p class="his">"I want to have a toggle. But till date will be on for everything by default except 1 day event for duty and commitments… the user can still change the toggle" — you, 17 Oct</p>
+    <p class="lead">Nothing in the app has changed yet. Pictures marked <span class="tag real">real</span> are the app as it is today. Pictures marked <span class="tag drawn">drawn</span> are the proposal, drawn onto the real app. Tap any picture to enlarge it.</p>
+  </header>
+
+  <div class="bar"><span>Show pictures at:</span>
+    <div class="seg" role="group" aria-label="Picture size">
+      <button id="bPhone" aria-pressed="true">iPhone</button><button id="bDesk" aria-pressed="false">Desktop</button>
+    </div>
+  </div>
+
+  <section class="q">
+    <div class="num">Question 1 — what the switch looks like</div>
+    <h2>A tick box before the date, or the date itself?</h2>
+    <div class="shots">
+      <figure><button class="shot" data-n="1-today"><img src="phone-1-today.png" alt="Today: the new-input window, a one-day Meeting, Remarks Brief, then till 20 Oct in grey"></button>
+        <figcaption><span class="tag real">real</span>Today: a one-day Meeting always shows "till 20 Oct".</figcaption></figure>
+      <figure><button class="shot" data-n="2-B-oneday-off"><img src="phone-2-B-oneday-off.png" alt="Option B: an unticked box before a struck-through till 20 Oct"></button>
+        <figcaption><span class="tag drawn">B</span>A tick box, the same as "all day" above it. Unticked, the date is struck through.</figcaption></figure>
+      <figure><button class="shot" data-n="5-A-oneday-off"><img src="phone-5-A-oneday-off.png" alt="Option A: the grey date alone, struck through"></button>
+        <figcaption><span class="tag drawn">A</span>The grey date itself: tap it to strike it through.</figcaption></figure>
+    </div>
+    <p class="rec"><b>I recommend B.</b> A tick box looks like something you can tick, and it matches the "all day" tick in the same window. With A, nothing shows that the date can be tapped, so people would never find it. On a keyboard, Tab reaches the tick box and Space ticks it.</p>
+  </section>
+
+  <section class="q">
+    <div class="num">Reading 2 — the default follows the dates</div>
+    <h2>The tick sets itself when the dates change</h2>
+    <div class="shots">
+      <figure><button class="shot" data-n="2-B-oneday-off"><img src="phone-2-B-oneday-off.png" alt="A one-day Meeting: unticked"></button>
+        <figcaption><span class="tag drawn">drawn</span>A one-day Meeting: unticked.</figcaption></figure>
+      <figure><button class="shot" data-n="3-B-twoday-on"><img src="phone-3-B-twoday-on.png" alt="The same Meeting over two days: ticked, till 21 Oct"></button>
+        <figcaption><span class="tag drawn">drawn</span>Stretched to two days: it ticks itself.</figcaption></figure>
+      <figure><button class="shot" data-n="4-B-leave-on"><img src="phone-4-B-leave-on.png" alt="A one-day LL leave: ticked, till 20 Oct"></button>
+        <figcaption><span class="tag drawn">drawn</span>A one-day leave: ticked, as for every kind except duty and other commitments.</figcaption></figure>
+    </div>
+    <ul>
+      <li>If you ticked or unticked it yourself, and then the dates change so that the default changes (one day becomes two, or two become one), the tick takes the new default.</li>
+      <li>If the dates change but the default stays the same (three days become four), your own choice stays.</li>
+    </ul>
+  </section>
+
+  <section class="q">
+    <div class="num">Reading 3 — unticked means no date anywhere</div>
+    <h2>No screen prints the date</h2>
+    <div class="shots">
+      <figure><button class="shot" data-n="6-printed-today"><img src="phone-6-printed-today.png" alt="The schedule's Ground Programme today: Desk / staff work till 13 Jul"></button>
+        <figcaption><span class="tag real">real</span>The schedule today: "Desk / staff work till 13 Jul" on a one-day Meeting.</figcaption></figure>
+      <figure><button class="shot" data-n="7-printed-off"><img src="phone-7-printed-off.png" alt="The same row reading Desk / staff work, with no date"></button>
+        <figcaption><span class="tag drawn">drawn</span>Unticked: "Desk / staff work" only. The same on every screen that prints the remark.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="q">
+    <div class="num">Readings 4 and 5</div>
+    <h2>A published day, and who may change it</h2>
+    <ul>
+      <li><b>4.</b> Ticking or unticking it on a day that is already published reads "1 pending" on that day, because the printed words change. That is the same pending count the app already shows when a remark changes; nothing new on screen.</li>
+      <li><b>5.</b> Whoever may change the input may tick or untick it: a member on his own inputs, a scheduler on any.</li>
+    </ul>
+    <p class="lead">One more thing it means: one-day duties and other commitments already saved will stop printing their date once this is built. A published day that carries one will read "1 pending" once. That is only the demo data, which is cleared before the database.</p>
+  </section>
+
+  <section class="answer">
+    <h2 style="margin-bottom:8px">How to answer</h2>
+    <p>For example: <code>Q1 B, readings 2–5 yes</code>. Say "no" to any reading you want changed, and how.</p>
+  </section>
+</div>
+
+<script>
+(function(){
+  var size='phone';
+  function paint(){
+    document.querySelectorAll('.shot').forEach(function(b){ b.querySelector('img').src = size + '-' + b.dataset.n + '.png' });
+    document.getElementById('bPhone').setAttribute('aria-pressed', String(size==='phone'));
+    document.getElementById('bDesk').setAttribute('aria-pressed', String(size==='desk'));
+  }
+  try { var s = localStorage.getItem('till-switch-size'); if (s === 'desk' || s === 'phone') size = s } catch (e) {}
+  document.getElementById('bPhone').onclick=function(){ size='phone'; try{localStorage.setItem('till-switch-size',size)}catch(e){} paint() };
+  document.getElementById('bDesk').onclick=function(){ size='desk'; try{localStorage.setItem('till-switch-size',size)}catch(e){} paint() };
+  document.addEventListener('click', function(ev){
+    var b = ev.target.closest && ev.target.closest('.shot'); if (!b) return;
+    var z = document.createElement('div'); z.className='zoom'; z.tabIndex=0;
+    var i = document.createElement('img'); i.src = b.querySelector('img').src; i.alt = b.querySelector('img').alt; z.appendChild(i);
+    function close(){ z.remove(); b.focus() }
+    z.onclick = close; z.onkeydown = function(e){ if (e.key==='Escape') close() };
+    document.body.appendChild(z); z.focus();
+  });
+  paint();
+})();
+</script>

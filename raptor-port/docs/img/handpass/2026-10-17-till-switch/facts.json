@@ -1,0 +1,22 @@
+{
+ "phone opened": true,
+ "phone types": "LL, OL, OIL, CCL, PL, FCL, EL, CL, HL, OML, ATT C, ATT B, Upchit, Training, CSE, Meeting, Fly with, Personal, Appointment, Duty, Event, OD, Other",
+ "phone 1 real till": "till 20 Oct",
+ "phone 2": "B off till 20 Oct",
+ "phone 3": "B on till 21 Oct",
+ "phone 4 real till (leave)": "till 20 Oct",
+ "phone 4": "B on till 20 Oct",
+ "phone 5": "A off till 20 Oct",
+ "phone 6 printed": "Desk / staff work till 13 Jul",
+ "phone 7 drawn": "Desk / staff work",
+ "desk opened": true,
+ "desk types": "LL, OL, OIL, CCL, PL, FCL, EL, CL, HL, OML, ATT C, ATT B, Upchit, Training, CSE, Meeting, Fly with, Personal, Appointment, Duty, Event, OD, Other",
+ "desk 1 real till": "till 20 Oct",
+ "desk 2": "B off till 20 Oct",
+ "desk 3": "B on till 21 Oct",
+ "desk 4 real till (leave)": "till 20 Oct",
+ "desk 4": "B on till 20 Oct",
+ "desk 5": "A off till 20 Oct",
+ "desk 6 printed": "Desk / staff work till 13 Jul",
+ "desk 7 drawn": "Desk / staff work"
+}
