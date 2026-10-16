@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D975 | 17 Oct 26 | No handoff asks him to pick a branch or tick a worktree, since the new-chat screen has neither: the outgoing chat releases its branch as its last step once everything is pushed, and the opening line he pastes makes the new chat switch to that branch itself, with what to do if the switch is still refused. |
 | D974 | 17 Oct 26 | The start-size job's commits that reached main by mistake stay on main, as his "merge live" for that job; nothing is taken off, and the rule that main needs his "merge live" stands for everything else. |
 | D973 | 17 Oct 26 | The capitals sweep (D972) covers only the backlog, the screen rules and the engine rules — the files a chat reads in part; the archives, which are only searched, are left as they are. |
 | D972 | 17 Oct 26 | After the start-size job, the other places written in capitals for emphasis are found and turned into ordinary letters the same way as the rulings (D970), word for word, with the work done by a cheaper model and checked by a fresh reader. — changed by D973 |
@@ -97,7 +98,6 @@ never pay or money).
 | D466 | 30 Sep 26 | Work that needs the IT team's confirmation is held until it comes, and he is told; work that does not goes ahead. Phase 6 (c) does not (only the hand-over of the day and request tables does), so D465 stands. |
 | D465 | 30 Sep 26 | [DB-READINESS] phase 6's build permission is spent (built and merged). The final hand-over of the day and request tables waits for the IT side's written answer; if IT's reports cannot reproduce the worked-out picture, a reportable piece is added then — nothing built is undone. — changed by D609, D467 |
 | D453 | 29 Sep 26 | The order to the database: the day-lock design fixed with the red team's findings; then group A — what decides the tables' shape (built, phases 0–7); then group B — what is tuned against the real database — after the app is connected, which is at the end, once the features are built (D473); the lock's screens last. — changed by D473 |
-| D368 | 29 Sep 26 | Every handoff tells him, in plain words, whether the new chat needs a worktree (and what to base it on) and which branch to pick in the new-chat picker — and which to avoid — beside the ready-to-paste opening line. |
 | D353 | 28 Sep 26 | Scenarios and side questions one reviewer (Astra first, Sol 6.1 if Astra is unavailable); important plans and risky code two — Astra and Sol 6.1 for what Opus wrote (D590), Fable on call only. — changed by D590, D496 |
 | D351 | 28 Sep 26 | Admin → Data → "Clear edit history…" stays as it is until the database step, where the organisation's retention rule decides how long the change history is kept. |
 | D350 | 28 Sep 26 | In this build the one undo does not take back adding a person (with or without his sign-in), archive, Restore / Restore as, delete, or a posting (post out / post in and their sheet's undos). |
