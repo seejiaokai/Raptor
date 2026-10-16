@@ -20,15 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/allavail-common -->
-### JOB 2 — [ALLAVAIL-COMMON] — `claude/allavail-common` (pull request 523) — BUILT, FULL-checked; HIS "MERGE LIVE" GIVEN IN ADVANCE ("Can u auto merge live 523 after") — written 17 Oct 26
-Pull request 522 (the till-date tick, D949–D953, round 2's words) is LIVE — merged 17 Oct 26 on his "merge live"; its block is removed (nothing open left of it). This branch was brought level with `main` after it (a merge, no clash), so 523 now holds only job 2. **His "merge live" for 523 is given: merge once GitHub's run of this pull request is green, then confirm `main`'s run and Vercel's Production deployment.** If you find this block after that merge, remove it — nothing of job 2 is left open.
-- **Built:** an input holding ALL / ALL AVAIL is DRAWN on the Common Programme (week, board, next-week peek, issued face, View-only Sched); ONLY THE DRAWING MOVES — the record stays the ground row. The Reject line under the Common Programme where such a row stands (D957); "Common" in the ✕ note, "→ Common" and the phone banner (D958). Tests `raptor-port/src/ui/allavail-common.test.tsx`.
-- **CHECKED (FULL):** sheet `raptor-port/docs/handpass/2026-10-17-allavail-common.md` — gates green on his PC, the scenario designer, the walk (58 PASS, pictures `raptor-port/docs/img/handpass/2026-10-17-allavail-common/build/`), the fresh blind Opus read (1 LOW, fixed). D958's three words: the touched tests (58 / 58) and a re-walk; GitHub's run is its full check (D902).
-- **Rulings:** D954–D958.
+<!-- now:claude/sharp-goldberg-6d0656 -->
+### THE WORDS PASS, ROUND 3 — `claude/sharp-goldberg-6d0656` (cut from `main` after pull requests 522 and 523) — IN HAND — written 17 Oct 26
+Pull requests 522 (the till-date tick, round 2's words — D949–D953) and 523 (an ALL / ALL AVAIL input drawn on the Common Programme — D954–D958) are LIVE, merged 17 Oct 26 on his "merge live" (523's given in advance); both blocks are removed and `[ALLAVAIL-COMMON]` is archived. He said to carry on in this chat. Next: round 3 of the whole-app words pass (D808; rounds in `raptor-port/docs/superpowers/specs/2026-10-16-words-pass.md`) — drawn as marked pictures, at most four questions, nothing in the app changed until he answers.
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (17 Oct 26):** pull requests 522 and 523 are LIVE (the till-date tick and round 2's words; ALL / ALL AVAIL inputs on the Common Programme) → round 3 of the whole-app words pass (D808), on `claude/sharp-goldberg-6d0656`.
 
 **RIGHT NOW (16 Oct 26):** pull request 519 is LIVE (his "merge live") — the Medical tab's one row (D927), the Logic page rewritten for its reader (D928–D933, D936) and Quals' one row with its paragraph deleted (D935, D937: "Save" on a phone, Quals opens at its top); its checks `raptor-port/docs/handpass/2026-10-15-logic-medical.md` and `…/2026-10-16-quals-one-row.md`. Left of it: the reads owed in `OUTSTANDING.md` `[NO-ASTRA-LIST]`, the size overs in `[RULINGS-SPENT-PASS]`. → the whole-app words pass (D808), its own job.
 
