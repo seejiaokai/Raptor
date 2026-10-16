@@ -269,6 +269,16 @@ export function DateCal(p: {
     /* WHERE ONLY SOME DATES MAY BE TAPPED (`only` — the OIL question's several days), a key that lands on another date goes
        on, the way it was going, to the next one that may be: from a Saturday, → is the Sunday, and the Sunday's → the next
        weekend's Saturday — never stuck on a date it may not stand on. With nothing further that way it stays. */
+    /* …except Home and End, which are the WEEK's two ends (K1): there they go to the first, or the last, day of this week
+       that takes a tap, between the week's end and the date the keys are on — and stay where they are when there is none.
+       Searched "the way it was going", Home from a Sunday whose Monday is faint walked back out of the week (the scenario
+       designer's F1, 17 Oct 26). */
+    if (onlyList && (e.key === 'Home' || e.key === 'End')) {
+      const home = e.key === 'Home'
+      const edge = to2
+      to2 = (home ? onlyList.find(d => d >= edge && d <= cur && may(d)) : [...onlyList].reverse().find(d => d <= edge && d >= cur && may(d))) || ''
+      if (!to2) return
+    }
     if (onlyList && !may(to2)) {
       to2 = (to2 > cur ? onlyList.find(d => d >= to2 && may(d)) : [...onlyList].reverse().find(d => d <= to2 && may(d))) || ''
       if (!to2) return

@@ -15,6 +15,10 @@ const SIZES = [
   { name: 'desktop', use: { viewport: { width: 1440, height: 900 } }, tap: false },
   { name: 'phone', use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }, tap: true },
   { name: 'phone on its side', use: { viewport: { width: 844, height: 390 }, isMobile: true, hasTouch: true }, tap: true },
+  /* NARROW PHONES (the check's walk, S13 — 17 Oct 26): at 360 the calendar's head ran 38px past it and the › arrow was cut
+     by the card's edge; 320 the same, with the calendar's own narrow head */
+  { name: 'phone 360 wide', use: { viewport: { width: 360, height: 740 }, isMobile: true, hasTouch: true }, tap: true },
+  { name: 'phone 320 wide', use: { viewport: { width: 320, height: 640 }, isMobile: true, hasTouch: true }, tap: true },
 ] as const
 const noErrors = (p: Page) => { const errs: string[] = []; p.on('pageerror', e => errs.push(String(e))); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()) }); return errs }
 const box = (p: Page, sel: string) => p.locator(sel).first().evaluate(e => { const r = e.getBoundingClientRect(); return { l: r.left, t: r.top, r: r.right, b: r.bottom, w: r.width, h: r.height } })
@@ -62,6 +66,12 @@ for (const size of SIZES) {
       expect(c.l, 'the calendar is out of its card on the left').toBeGreaterThanOrEqual(k.l - 0.5)
       expect(c.r, 'the calendar is out of its card on the right').toBeLessThanOrEqual(k.r + 0.5)
       expect(k.l >= -0.5 && k.r <= vw + 0.5, 'the card is inside the screen').toBe(true)
+      /* the calendar's head — the title, Today and the two arrows — inside the calendar, on one line */
+      const t = await box(page, `${cal} [data-testid="oilcal-title"]`), nx = await box(page, `${cal} [data-testid="oilcal-next"]`)
+      expect(t.l, 'the title starts inside the calendar').toBeGreaterThanOrEqual(c.l - 0.5)
+      expect(nx.r, 'the › arrow ends inside the calendar').toBeLessThanOrEqual(c.r + 0.5)
+      expect(Math.abs((nx.t + nx.b) / 2 - (t.t + t.b) / 2), 'the head is one line').toBeLessThan(8)
+      expect(await page.evaluate(() => document.documentElement.scrollWidth), 'nothing scrolls the page sideways').toBeLessThanOrEqual(vw)
       /* only the two weekend days take a press */
       await expect(page.locator(`[data-testid="oilcal-day-${FRI}"]`)).toBeDisabled()
       await expect(page.locator(`[data-testid="oilcal-day-${SAT}"]`)).toBeEnabled()

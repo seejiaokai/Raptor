@@ -226,7 +226,22 @@ describe('several separate days (D923)', () => {
     expect(document.activeElement).toBe(day('2026-08-02'))
     fireEvent.keyDown(document.activeElement!, { key: 'ArrowUp' }); expect(calMonth()).toBe('2026-07')
     expect(document.activeElement).toBe(day('2026-07-26'))
+  })
+  /* Home and End are the WEEK's two ends (K1): here, the first and the last day of THIS week that take a tap — never out of
+     the week "the way it was going" (the scenario designer's F1, 17 Oct 26: Home from Sun 26 went to Sun 19) */
+  it('Home and End go to the first and the last day of the week that take a tap, and stay inside the week', () => {
+    render(<Many />)
+    day('2026-07-26').focus()
+    fireEvent.keyDown(document.activeElement!, { key: 'Home' }); expect(document.activeElement).toBe(day('2026-07-25'))
+    fireEvent.keyDown(document.activeElement!, { key: 'Home' }); expect(document.activeElement).toBe(day('2026-07-25'))
+    fireEvent.keyDown(document.activeElement!, { key: 'End' }); expect(document.activeElement).toBe(day('2026-07-26'))
+    fireEvent.keyDown(document.activeElement!, { key: 'End' }); expect(document.activeElement).toBe(day('2026-07-26'))
+  })
+  it('in a week where only the Sunday takes a tap, Home and End both stay on it', () => {
+    render(<Many only={['2026-07-19', '2026-07-26']} />)
+    day('2026-07-19').focus()
     fireEvent.keyDown(document.activeElement!, { key: 'Home' }); expect(document.activeElement).toBe(day('2026-07-19'))
+    fireEvent.keyDown(document.activeElement!, { key: 'End' }); expect(document.activeElement).toBe(day('2026-07-19'))
   })
   it('with nothing further that way, a key leaves the keyboard where it is', () => {
     render(<Many />)

@@ -224,6 +224,17 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .oilconf-count{font-size:11.5px;color:var(--ink-2);margin:8px 0 2px}
 /* the OIL question's "Only some days…" — the app's one calendar, drawn inside the sheet (D923; its look 26-date-calendar.css) */
 .oilconf-cal{margin:10px auto 0}
+/* A PHONE: THE CALENDAR DROPS ITS OWN BOX AND TAKES NEARLY THE CARD'S WIDTH (the check's walk, S13 — 17 Oct 26; the
+   scenario designer's F3). The calendar's head — the title's fixed room, Today, the two arrows — needs 304px. Inside the
+   question's card (the screen less 44) the calendar had the card's padding AND its own box's on each side: 266 at 360
+   wide, 296 at his iPhone's 390, so the › arrow ran into the box's edge at 390 and past the card's, cut, at 360. Below
+   400 wide the calendar is drawn straight on the card, with no box of its own (a box inside a card is clutter anyway —
+   the design guide §3), reaching 11px into the card's padding: 306 at 360, 336 at 390, and 266 at 320 for the
+   calendar's own narrow head (264, under 360 — 26-date-calendar.css). No button changes size (D487); the words above
+   keep the card's margin. The selector is two classes so it outranks `.dcal-inline`, which the later sheet draws. */
+@media (max-width:400px){
+  .oilconf-pop .oilconf-cal{margin:10px -11px 0;width:calc(100% + 22px);max-width:none;border:0;background:none;padding:2px 0 6px}
+}
 /* the OIL revise chip on an inputs-table row (owner, 29 Aug 26): a recorded
    weekend/PH OIL decision is changed here, in place — the chip only draws
    where such a decision exists (oilAnswered). Cyan, the FO/HO family's own
