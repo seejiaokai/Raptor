@@ -649,7 +649,7 @@ state nobody drew.
 he may strike or change any. Newest first. Where a lesson meets a general rule above, the lesson wins, and that rule
 points here.*
 
-**Lesson 3 (17 Oct 26, D951 — "seems weird for 1 day duty and other commitments to have a till date").** A date that only repeats the day it stands on says nothing: a one-day duty or other commitment carries no "till <date>" by default; one that runs more than a day keeps it. *Answered by D952 (17 Oct 26):* one-day leave and medical inputs keep "till <that day>" by default, and every input gets a switch for it (the night's Q4, his answer).
+**Lesson 3 (17 Oct 26, D951 — "seems weird for 1 day duty and other commitments to have a till date").** On a one-day duty or other commitment a "till <date>" only repeats the day it stands on, so it carries none by default; one that runs more than a day keeps it. *Answered by D952 (17 Oct 26 — "I want to have a toggle"):* one-day leave and medical inputs keep "till <that day>" by default; every input gets a switch for it, whose default follows the dates by itself, and the person can still turn it either way. *(Checked by a fresh reader, 17 Oct 26: the first wording read as a rule for every kind, and was narrowed to his.)*
 
 **Lesson 2 (16 Oct 26, D945 — an input row's "Undo" became "Reject").** A button is named for what it does — never with
 another control's name (the row's "Undo" was also the top bar's) and never with a word that reads as Delete (he asked
