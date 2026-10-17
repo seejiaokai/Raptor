@@ -29,9 +29,10 @@ const ev = (id: string) => ({ id, type: 'acad', prereqs: [] })
 describe('the module stands alone', () => {
   it('imports nothing but the syllabus-id helpers — no store, no storage, no browser API', () => {
     const src = readFileSync(join(__dirname, 'app', 'fileTransfer.js'), 'utf8')
-    const froms = [...src.matchAll(/^\s*import[^'"]*['"]([^'"]+)['"]/gm)].map(m => m[1])
-    expect(froms, 'its only import').toEqual(['./sylIds.js'])
     const code = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '')
+    /* every module it reaches — import … from, export … from, a bare import, a dynamic import() (the blind read, 17 Oct 26) */
+    const froms = [...code.matchAll(/\b(?:import|from)\s*\(?\s*['"]([^'"]+)['"]/g)].map(m => m[1])
+    expect(froms, 'its only import').toEqual(['./sylIds.js'])
     for (const w of ['window', 'document', 'localStorage', 'indexedDB', 'storage', 'core.js']) expect(code, 'no ' + w).not.toMatch(new RegExp('\\b' + w.replace('.', '\\.') + '\\b'))
   })
 })
@@ -92,6 +93,42 @@ describe('what an import decides, with the catalogue handed in', () => {
     const s = { courses: ['C1'], byCourse: { C1: { plan: {}, bySyllabus: { sca: {}, scb: {} } } } }
     expect(() => F.remapStudentsSyl(s, () => 'scone')).toThrow(F.STUDENT_GUARD_MSG)
   })
+
+  /* the scenario designer's pins (17 Oct 26) — branches the move could not change, pinned for the module's future */
+  it('the file it is given is never changed — a deep-frozen file goes through, and the result shares nothing with it', () => {
+    const freeze = (o: any): any => { if (o && typeof o === 'object') { Object.values(o).forEach(freeze); Object.freeze(o) } return o }
+    const parsed = freeze(v3([{ id: 'scfile', name: 'NIGHT' }], { scfile: [ev('N-01')] },
+      { sylcat: [{ id: 'scfile', name: 'NIGHT' }], courses: ['C1'], byCourse: { C1: { plan: { sylId: 'scfile' }, lulls: {}, pace: {}, bySyllabus: { scfile: { roster: [{ id: 's1', name: 'A' }], marks: {}, dates: {} } } } } }))
+    const out = F.normalizeImport(parsed, [{ id: 'scstore', name: 'NIGHT' }])
+    expect(out.charts.order).toEqual(['scstore'])
+    out.charts.syllabi.scstore.push(ev('N-02'))
+    out.students.byCourse.C1.bySyllabus.scstore.roster.push({ id: 's2', name: 'B' })
+    expect(parsed.charts.syllabi.scfile).toHaveLength(1)
+    expect(parsed.students.byCourse.C1.bySyllabus.scfile.roster).toHaveLength(1)
+  })
+
+  it("a chart's layout and typed details follow its id with its events", () => {
+    const parsed: any = v3([{ id: 'scfile', name: 'NIGHT' }], { scfile: [ev('N-01')] })
+    parsed.charts.layouts = { scfile: { 'N-01': { x: 1, y: 2 } } }
+    parsed.charts.eventInfoBySyl = { scfile: { 'N-01': { name: 'Night one' } } }
+    const out = F.normalizeImport(parsed, [{ id: 'scstore', name: 'NIGHT' }])
+    expect(Object.keys(out.charts.layouts)).toEqual(['scstore'])
+    expect(out.charts.eventInfoBySyl).toEqual({ scstore: { 'N-01': { name: 'Night one' } } })
+  })
+
+  it('a file whose two catalogues name one chart differently is refused', () => {
+    const parsed = v3([{ id: 'sca', name: 'A' }], { sca: [ev('A-01')] },
+      { sylcat: [{ id: 'sca', name: 'NOT A' }], courses: ['C1'], byCourse: { C1: { plan: { sylId: 'sca' }, lulls: {}, pace: {}, bySyllabus: {} } } })
+    expect(() => F.normalizeImport(parsed, [])).toThrow()
+  })
+
+  it('a file with no version: its chart is upgraded by name, its students left as they are for the guardrail', () => {
+    const students = { courses: ['OLD'], byCourse: { OLD: { plan: { sylName: 'FIRST' }, lulls: {}, pace: {}, bySyllabus: { FIRST: { roster: ['P'], marks: {}, dates: {} } } } } }
+    const out = F.normalizeImport({ charts: { order: ['FIRST'], syllabi: { FIRST: [ev('F-01')] }, layouts: {}, eventInfo: {} }, students, links: null }, [])
+    expect(out.charts.order[0]).not.toBe('FIRST')
+    expect(out.students).toEqual(students)
+    expect(out.studentsRefused).toBe(false)
+  })
 })
 
 describe('end to end, through the File menu', () => {
@@ -139,6 +176,12 @@ describe('end to end, through the File menu', () => {
   it("core's normalizeImport is the module's, given the live catalogue", async () => {
     const file = await exportAll()
     expect(C.normalizeImport(file)).toEqual(F.normalizeImport(file, C.SYLS))
+    /* and with a file the catalogue CHANGES — a chart named like one here, under another browser's id: only the live
+       catalogue maps it onto this store's id (an empty or stale one would keep the file's) — the blind read, 17 Oct 26 */
+    const p: Promise<any> = C.addSyl(); await answer('BOUNDARY X'); await p; await C.whenLoaded()
+    const other = { version: 3, charts: { sylcat: [{ id: 'scfreshx', name: 'BOUNDARY X' }], syllabi: { scfreshx: [ev('X-01')] }, order: ['scfreshx'], layouts: {}, eventInfo: {} }, students: null, links: null }
+    expect(C.normalizeImport(other).charts.order).toEqual([C.sylIdOf('BOUNDARY X')])
+    expect(C.normalizeImport(other)).toEqual(F.normalizeImport(other, C.SYLS))
   })
 
   it('a whole backup brought back into the same store changes no record and no id', async () => {
