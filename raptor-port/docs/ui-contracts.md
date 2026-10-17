@@ -9735,11 +9735,10 @@ His "As recommended" to the four questions of `docs/mock/2026-10-17-tracker-r1/i
   slowing to a stop after it lifts. A touch while it glides only stops it, opening nothing (D986). At an end it bounces a
   little and springs back, as does a finger pulled past an end (D987). A finger or a pen glides; a mouse drag stops where it is
   let go and never bounces (D988). Two fingers stop it; the app's own move (a pick, a search, the keyboard) stops it and
-  wins; it stays on for a phone set to less motion; Edit chart layout is untouched (D989). Built in `dragScroll`
-  (`src/tracker/app/core.js`), the motion in `src/tracker/app/glide.js`; the Info half takes no browser scrolling
-  (`touch-action:none`, so both halves feel the same on every phone), and a box inside it that scrolls itself (the Failures
-  card's list) keeps the finger. Walked: `docs/handpass/2026-10-17-trk-glide.md`.
-- **Smoother movement (D992, 18 Oct 26 — replaces D990's small step first; `[TRK-CHART-FPS]` — ruled, being built).**
+  wins; it stays on for a phone set to less motion; Edit chart layout is untouched (D989). *Built 17 Oct 26 as the app's own
+  glide (`dragScroll` with `glide.js`; walked `docs/handpass/2026-10-17-trk-glide.md`); since D992 (below) a finger is the
+  phone's own scroll, which keeps every one of these, and `glide.js` is gone.*
+- **Smoother movement (D992, 18 Oct 26 — replaces D990's small step first; `[TRK-CHART-FPS]` — built 18 Oct 26).**
   He found the chart choppy when it moves. Measured: on his iPhone (Chrome, so Apple's WebKit) a page's own motion is held near
   60 frames while the phone's own scrolling runs at 120 — the glide above, being the app's own, was held at 60; and a pinch laid
   the whole chart out again at every step of the fingers (about 12 frames a second with the computer slowed 4×). So: on a
@@ -9747,7 +9746,11 @@ His "As recommended" to the four questions of `docs/mock/2026-10-17-tracker-r1/i
   touch-to-stop (D985–D987 stand, met by the phone's); a mouse drag is the app's as before (D988); the app's own move stops
   a glide first and wins (D989); and a pinch stretches the chart as a picture while the fingers move, laid out sharp once at
   the lift, the spot under the fingers kept under them — a little soft while zooming in, until the lift. After a pinch the
-  finger left down does nothing until it lifts (D134). Speed is part of how good the app feels (D991).
+  finger left down does nothing until it lifts (D134). Speed is part of how good the app feels (D991). Built: the boxes'
+  `touch-action:pan-x pan-y` (`src/tracker/tracker.css`), `dragScroll` the mouse's drag only and `stopGlide` (a box that
+  scrolled in the last moment stops being a scroll box for an instant, which drops the phone's glide), `enablePinchZoom`
+  (two fingers' touches held from the browser; the transform about the spot under the fingers, its pixel measured
+  against the wrap's zoom) — all in `src/tracker/app/core.js`. Walked: `docs/handpass/2026-10-18-trk-chart-fps.md`.
 
 ## OIL on the schedule: the "OIL Earn" mode and the green edge (owner, 21 Sep 26)
 

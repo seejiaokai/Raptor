@@ -565,7 +565,7 @@ shows no landing flash, §4), a new flag's flash, the board sliding up; a look d
 
 - **Smooth — as smooth as the phone's own (his D991, 18 Oct 26: "The key for UI to feel good is also speed. Which is FPS in this case. Smooth scroll"):** anything a finger moves — a scroll, its glide, a pinch — runs at the screen's full frame rate, as the phone's own scrolling does (120 frames on his iPhone); a design that holds it lower is not chosen to save work, and the frame rate is measured, never assumed.
 - **Quiet and quick:** about 150–240 thousandths of a second, easing out, no bounce. **One exception, his (D987):** the Tracker's finger glide
-  bounces at an end, like the iPhone's lists; and the glide, like the edge scroll, stays on for a reader who asked for less
+  bounces at an end, like the iPhone's lists (since D992 the phone's own scrolling, which bounces by itself); and the glide, like the edge scroll, stays on for a reader who asked for less
   motion — it is the scroll itself (D989).
 - **Only movement and fading** — never an effect that lays the page out again. **Nothing new on the week or the board's
   dense grid.** Never on something done many times a minute (typing, tapping a puck).
