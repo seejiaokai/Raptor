@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D994 | 18 Oct 26 | The questions the backlog keeps for him are not put to him until he says so; meanwhile the agent goes on with work that needs no answer or look from him. |
 | D991 | 18 Oct 26 | Speed is part of how good the app feels — for motion, its frame rate: a scroll, and what a finger moves with it, should run as smoothly as the phone and browser allow, and a new design is judged by that as well as by how it looks. |
 | D976 | 17 Oct 26 | As recommended: the handoff guides' D975 wording is approved as read; the scheduler's rulings are not split, D611's mark standing; and the push-and-lock guard is built as proposed, read by one fresh reader before it is switched on — his permission to change the project's hooks and settings for it. |
 | D975 | 17 Oct 26 | No handoff asks him to pick a branch or tick a worktree, since the new-chat screen has neither: the outgoing chat releases its branch as its last step once everything is pushed, and the opening line he pastes makes the new chat switch to that branch itself, with what to do if the switch is still refused. |

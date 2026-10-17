@@ -20,31 +20,10 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/trk-chart-fps -->
-### `claude/trk-chart-fps` — THE TRACKER'S CHART SCROLLED BY THE PHONE ITSELF, THE PINCH AS A PICTURE (D992) — written 18 Oct 26, verify before use
-- **His looks GIVEN and "merge live" GIVEN 18 Oct 26 ("Looks great well done merge live") — pull request 532 merged on it (the chart and Quals' pinned row together).** Left for the next chat: archive [TRK-CHART-FPS] (its residue is filed: [TRK-PINCH-OLD-EDGES], [QUALS-PINNED-COLS-REFLOW]) and remove this block. On a phone the chart and the Info half are
-  scrolled by the phone itself (`touch-action` in `raptor-port/src/tracker/tracker.css`; `dragScroll` is now the mouse's
-  drag only, `glide.js` deleted); a pinch is one transform while the fingers move and one layout at the lift
-  (`enablePinchZoom`, `raptor-port/src/tracker/app/core.js`). Why (measured): his iPhone 17 Pro in Chrome holds a page's own
-  motion near 60 frames while its own scrolling runs at 120; the pinch laid the whole chart out at every step (12 frames a
-  second at ¼ speed, now 30; 24 → 59 at ½).
-- **Checked (WALK tier + three fresh Opus reads):** walk 21/21 and three re-walks; 8 break tests (6 by the walk, 1 by
-  `src/tracker/trk-chart-fps.test.tsx`, 1 not visible in a test browser); the full gate set on `e50b22115` (unit 11,649 ·
-  e2e 844 · Tracker suite 453 · tfin 728/0 · rulecheck · docsize), then the Tracker's tests and suite after each fix round.
-  Seven faults fixed red first, one declined, one limit said plainly (a touch-screen laptop: a finger's glide can carry on
-  over the app's own move). Evidence and his look card: `raptor-port/docs/handpass/2026-10-18-trk-chart-fps.md`.
-- **Also on this branch — D993 (18 Oct 26, his ask):** Quals' pinned header row is moved sideways by the browser (the
-  Leave War's scroll-driven follow), its callsign heading a still copy over the left; a column changing width while pinned
-  re-measures it. Walked 9/9 twice (`scripts/handpass/quals-pinned-walk.mjs`), `e2e/geometry.spec.ts` 5 tests (two new, each
-  red first), Quals unit 72/72; one fresh read (3 fixed), a narrow read of the fixes. His look at Quals on his iPhone is owed.
-  Evidence: the sheet's D993 section.
-- **Next:** the pull request's checks on GitHub (its full run); his look on his iPhone (the sheet's last section); his
-  "merge live". If the pinch or the glide-stop misbehaves on his phone, the sheet names the fallback for each.
-- **Owed reads:** any ChatGPT read he wants (`[NO-ASTRA-LIST]`).
-- **Rulings:** D991 (speed is part of how good the app feels — How we work), D992 (this job — Tracker), D993 (Quals' pinned row — People & accounts); D990 replaced and archived.
-<!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (18 Oct 26):** pull request 532 is LIVE (the Tracker chart scrolled by the phone itself and the pinch as a picture, D992; Quals' pinned header row moved by the browser, D993) → **his word: the small things next (D994)** — the questions the backlog keeps for him wait until he says so; meanwhile the small fixes that need no answer or look from him, batched by area with one check each, the scheduling pages on a phone first (`[PHONE-WIDE-BOARD-BLANK]`, `[SCHED-INPUT-WINDOW-PHONE]` and the small finds beside them). When he says so: the questions in rounds of four with pictures (the list as given to him on 18 Oct 26 — Leave War manning by commitments, members seeing others' OIL entries, Insights' empty line, an upchit moved later, the next-week preview, the delete list's notes, the Leave War label, two Escapes, crew-rest rings, the Leave War top bar, the load note, the Tracker import's words, three iPhone looks; then the tooling ones). Then caps and ops limits (`[CAPS-OPS-LIMITS]`, D495's order).
 
 **RIGHT NOW (17 Oct 26, the night):** pull request 528 is LIVE ([OIL-CONFIRM-DAYGRID], D978) → the Tracker batch (D495), on `claude/tracker-feature-batch-6ea3a7`: `[TRK-FILE-TRANSFER-SPLIT]` first, then his questions on the batch (the progress graph waits, D774).
 
