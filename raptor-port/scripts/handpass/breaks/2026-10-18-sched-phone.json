@@ -1,0 +1,10 @@
+[
+  { "n": 1, "name": "a made hand-over by an armed tap does not park the drawer", "file": "src/ui/interactions.ts",
+    "find": "      if (made) park()\n", "put": "", "tests": ["src/ui/unavailedit.test.tsx"] },
+  { "n": 2, "name": "a hand-over made after its OIL answer does not park the drawer", "file": "src/ui/interactions.ts",
+    "find": "view.disarmSlot(); park() })", "put": "view.disarmSlot() })", "tests": ["src/ui/unavailedit.test.tsx"] },
+  { "n": 3, "name": "the Inputs page's windows lose the finger guard (the shared body is no longer called)", "file": "src/ui/FloatWindow.tsx",
+    "find": "    return holdPageScroll(n)\n", "put": "    return\n", "tests": ["src/ui/floatwindow.test.tsx"] },
+  { "n": 4, "name": "the shared guard lets a swipe through when nothing inside can move", "file": "src/ui/floatwin.ts",
+    "find": "      if (a === n) break\n    }\n    e.preventDefault()", "put": "      if (a === n) break\n    }", "tests": ["src/ui/floatwindow.test.tsx"] }
+]

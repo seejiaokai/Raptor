@@ -31,6 +31,36 @@ export function raiseWin(id: string): boolean { if (FRONT === id) return false; 
 
 export const phoneLayout = () => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(max-width:620px)').matches
 
+/* A FINGER ON A WINDOW NEVER SCROLLS THE PAGE BEHIND IT (owner D686, 9 Oct 26; confirmed on his iPhone, D703). Where what
+   is in the window FITS, or has reached its top or its foot, an iPhone hands the swipe on to the page behind; the
+   stylesheet's `overscroll-behavior:contain` holds it only where there is something to scroll. So the window decides
+   itself: a swipe up or down that began on `n` is left alone while something INSIDE it can still move that way, and is
+   otherwise taken by nobody. A native listener, not React's: only a non-passive one may stop a touch move. Sideways
+   swipes are not its business. One body for every window that holds a finger (FloatWindow.tsx; the schedule's own input
+   window, inputedit.tsx — [SCHED-INPUT-WINDOW-PHONE], 18 Oct 26). Returns the clean-up. */
+export function holdPageScroll(n: HTMLElement): () => void {
+  let x0 = 0, y0 = 0
+  const start = (e: TouchEvent) => { const t = e.touches && e.touches[0]; if (t) { x0 = t.clientX; y0 = t.clientY } }
+  const move = (e: TouchEvent) => {
+    const t = e.touches && e.touches[0]
+    if (!t || e.touches.length !== 1 || !e.cancelable) return
+    const dy = t.clientY - y0, dx = t.clientX - x0
+    if (Math.abs(dy) <= Math.abs(dx)) return
+    for (let a = e.target as HTMLElement | null; a; a = a.parentElement) {
+      const oy = getComputedStyle(a).overflowY
+      if ((oy === 'auto' || oy === 'scroll') && a.scrollHeight > a.clientHeight + 1) {
+        /* finger down: what is above comes into view — it can, unless it is at its top; finger up: unless at its foot */
+        if (dy > 0 ? a.scrollTop > 0 : a.scrollTop + a.clientHeight < a.scrollHeight - 1) return
+      }
+      if (a === n) break
+    }
+    e.preventDefault()
+  }
+  n.addEventListener('touchstart', start, { passive: true })
+  n.addEventListener('touchmove', move, { passive: false })
+  return () => { n.removeEventListener('touchstart', start); n.removeEventListener('touchmove', move) }
+}
+
 /* THE BOARD'S PREVIEW BAR — the one thing a floating window must never open over ([AVAILWIN-PREVIEW-BAR], 28 Sep 26;
    the amendment re-test's W2-F7). On a preview the board's side column opens with the bar that is the way home —
    "← Back to live copy", "Load onto working copy" (armed: "Discard N edits & load — confirm", "Keep editing") — and both

@@ -20,31 +20,33 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/trk-chart-fps -->
-### `claude/trk-chart-fps` — THE TRACKER'S CHART SCROLLED BY THE PHONE ITSELF, THE PINCH AS A PICTURE (D992) — written 18 Oct 26, verify before use
-- **His looks GIVEN and "merge live" GIVEN 18 Oct 26 ("Looks great well done merge live") — pull request 532 merged on it (the chart and Quals' pinned row together).** Left for the next chat: archive [TRK-CHART-FPS] (its residue is filed: [TRK-PINCH-OLD-EDGES], [QUALS-PINNED-COLS-REFLOW]) and remove this block. On a phone the chart and the Info half are
-  scrolled by the phone itself (`touch-action` in `raptor-port/src/tracker/tracker.css`; `dragScroll` is now the mouse's
-  drag only, `glide.js` deleted); a pinch is one transform while the fingers move and one layout at the lift
-  (`enablePinchZoom`, `raptor-port/src/tracker/app/core.js`). Why (measured): his iPhone 17 Pro in Chrome holds a page's own
-  motion near 60 frames while its own scrolling runs at 120; the pinch laid the whole chart out at every step (12 frames a
-  second at ¼ speed, now 30; 24 → 59 at ½).
-- **Checked (WALK tier + three fresh Opus reads):** walk 21/21 and three re-walks; 8 break tests (6 by the walk, 1 by
-  `src/tracker/trk-chart-fps.test.tsx`, 1 not visible in a test browser); the full gate set on `e50b22115` (unit 11,649 ·
-  e2e 844 · Tracker suite 453 · tfin 728/0 · rulecheck · docsize), then the Tracker's tests and suite after each fix round.
-  Seven faults fixed red first, one declined, one limit said plainly (a touch-screen laptop: a finger's glide can carry on
-  over the app's own move). Evidence and his look card: `raptor-port/docs/handpass/2026-10-18-trk-chart-fps.md`.
-- **Also on this branch — D993 (18 Oct 26, his ask):** Quals' pinned header row is moved sideways by the browser (the
-  Leave War's scroll-driven follow), its callsign heading a still copy over the left; a column changing width while pinned
-  re-measures it. Walked 9/9 twice (`scripts/handpass/quals-pinned-walk.mjs`), `e2e/geometry.spec.ts` 5 tests (two new, each
-  red first), Quals unit 72/72; one fresh read (3 fixed), a narrow read of the fixes. His look at Quals on his iPhone is owed.
-  Evidence: the sheet's D993 section.
-- **Next:** the pull request's checks on GitHub (its full run); his look on his iPhone (the sheet's last section); his
-  "merge live". If the pinch or the glide-stop misbehaves on his phone, the sheet names the fallback for each.
-- **Owed reads:** any ChatGPT read he wants (`[NO-ASTRA-LIST]`).
-- **Rulings:** D991 (speed is part of how good the app feels — How we work), D992 (this job — Tracker), D993 (Quals' pinned row — People & accounts); D990 replaced and archived.
+<!-- now:claude/scheduling-phone-fixes-6d4adf -->
+### `claude/scheduling-phone-fixes-6d4adf` — D994'S FIRST BATCH: THE SCHEDULING PAGES ON A PHONE — written 18 Oct 26, verify before use
+- **Built and checked (WALK), waiting for his look on his iPhone and his "merge live".** (1) The schedule's own input window
+  (a Personal Inputs line, an Unavailable row, the board's "+ Inputs" / "+ Add") on a phone is as tall as what is in it
+  up to the visible screen less 24px (D706), in the MIDDLE of the screen — his D995 after his first look at the preview
+  (first built at the foot); wider than 620 unchanged.
+  (2) A finger on it never scrolls what is behind (D686) — the shell's guard moved whole to `floatwin.ts holdPageScroll`,
+  one body for both. (3) The Inputs list scrolls in its own box at every width: its 875px table widened a sideways phone's
+  page to 907, so "+ Input" opened half off it. (4) `[OIL-NOTIFY-SEEN]` (5): an Unavailable hand-over by an armed tap parks
+  the crew drawer on a phone. `[PHONE-WIDE-BOARD-BLANK]` CLOSED and archived (fixed and live since 6 Oct 26).
+- **Checks:** red first (1 unit test, 7 browser tests in `raptor-port/e2e/sched-phone.spec.ts` — 6 red on the old build,
+  the board's swipe test a guard); walk `scripts/handpass/spf-walk.mjs` 45 PASS · 0 FAIL · 2 with no door, 24 pictures;
+  4 break tests caught; the full gate set green (below). No code read (WALK). Evidence and his look card:
+  `raptor-port/docs/handpass/2026-10-18-sched-phone.md`.
+- **Left out on purpose (each needs his answer or his phone):** `[WEEK-ADD-TAP-PHONE]`, `[OIL-NOTIFY-SEEN]` (6),
+  `[VH-SHEETS-IPHONE]`, `[SHELL-SIDEWAYS-BAR]`, `[BUBBLE-SMALL-SEEN]`.
+- **Next:** the pull request's checks on GitHub; his look and "merge live"; then D994's next area's small fixes. His
+  questions still wait until he says so.
+- **Rulings:** D995 (the schedule's input window in the middle of a phone's screen — scheduler; narrows D537); design
+  lesson 6 written for it (§9).
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (18 Oct 26, later):** D994's first batch — the scheduling pages on a phone — BUILT and checked on `claude/scheduling-phone-fixes-6d4adf` (its block in `## Now`) → his look on his iPhone and "merge live" → the next area's small fixes (D994); his questions still wait until he says so.
+
+**RIGHT NOW (18 Oct 26):** pull request 532 is LIVE (the Tracker chart scrolled by the phone itself and the pinch as a picture, D992; Quals' pinned header row moved by the browser, D993) → **his word: the small things next (D994)** — the questions the backlog keeps for him wait until he says so; meanwhile the small fixes that need no answer or look from him, batched by area with one check each, the scheduling pages on a phone first (`[PHONE-WIDE-BOARD-BLANK]`, `[SCHED-INPUT-WINDOW-PHONE]` and the small finds beside them). When he says so: the questions in rounds of four with pictures (the list as given to him on 18 Oct 26 — Leave War manning by commitments, members seeing others' OIL entries, Insights' empty line, an upchit moved later, the next-week preview, the delete list's notes, the Leave War label, two Escapes, crew-rest rings, the Leave War top bar, the load note, the Tracker import's words, three iPhone looks; then the tooling ones). Then caps and ops limits (`[CAPS-OPS-LIMITS]`, D495's order).
 
 **RIGHT NOW (17 Oct 26, the night):** pull request 528 is LIVE ([OIL-CONFIRM-DAYGRID], D978) → the Tracker batch (D495), on `claude/tracker-feature-batch-6ea3a7`: `[TRK-FILE-TRANSFER-SPLIT]` first, then his questions on the batch (the progress graph waits, D774).
 
@@ -107,6 +109,8 @@ his ruling — DONE 7 Oct 26 on `claude/docs-tidy-7-oct` (D609: options 1 to 6; 
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
 ## Gate baseline
+
+**The latest counts watched — 18 Oct 26, `claude/scheduling-phone-fixes-6d4adf` at `bf989c303` (`main` with D994's first batch — NOT `main`'s code), the whole gate set under the PC lock in one run: build clean · tfin 728 / 0 · unit 11654 / 11654 · e2e 853 passed, 0 failed, 59 skipped · smoke 453 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN.**
 
 **The latest counts watched — 17 Oct 26, `claude/tracker-batch-d495-affb5f` at `cde63cd6a` (`main` with the Tracker batch — NOT `main`'s code), the whole gate set under the PC lock in one run: build clean · tfin 728 / 0 · unit 11640 / 11640 (654 files) · e2e 844 passed, 0 failed, 59 skipped · smoke 446 / 0 · rulecheck OK · docsize OK.**
 

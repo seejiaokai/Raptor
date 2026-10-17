@@ -49,7 +49,7 @@
    so the bar is dragged by it as by the title. The title then takes only the room its words need and the mark what is
    left, so a long reason is cut short before the title is (22-float-windows.css `.has-mark`). */
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
-import { frontWin, phoneLayout, raiseWin, useFloatWin, type FloatBox } from './floatwin'
+import { frontWin, holdPageScroll, phoneLayout, raiseWin, useFloatWin, type FloatBox } from './floatwin'
 import { useVersion } from './useStore'
 import { notify } from '../state/store'
 import { placeToast } from './toast'
@@ -211,30 +211,12 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
      is something to scroll (it does hold in the build PC's browser, which is why no test here saw it). So the window
      decides itself: a swipe up or down that began on it is left alone while something INSIDE it can still move that
      way, and is otherwise taken by nobody. A native listener, not React's: only a non-passive one may stop a touch
-     move. Sideways swipes are not its business, nor is a finger on the page behind. */
+     move. Sideways swipes are not its business, nor is a finger on the page behind. (The body is floatwin.ts
+     holdPageScroll, shared since 18 Oct 26 with the schedule's own input window — [SCHED-INPUT-WINDOW-PHONE].) */
   useEffect(() => {
     const n = el.current
     if (!n) return
-    let x0 = 0, y0 = 0
-    const start = (e: TouchEvent) => { const t = e.touches && e.touches[0]; if (t) { x0 = t.clientX; y0 = t.clientY } }
-    const move = (e: TouchEvent) => {
-      const t = e.touches && e.touches[0]
-      if (!t || e.touches.length !== 1 || !e.cancelable) return
-      const dy = t.clientY - y0, dx = t.clientX - x0
-      if (Math.abs(dy) <= Math.abs(dx)) return
-      for (let a = e.target as HTMLElement | null; a; a = a.parentElement) {
-        const oy = getComputedStyle(a).overflowY
-        if ((oy === 'auto' || oy === 'scroll') && a.scrollHeight > a.clientHeight + 1) {
-          /* finger down: what is above comes into view — it can, unless it is at its top; finger up: unless at its foot */
-          if (dy > 0 ? a.scrollTop > 0 : a.scrollTop + a.clientHeight < a.scrollHeight - 1) return
-        }
-        if (a === n) break
-      }
-      e.preventDefault()
-    }
-    n.addEventListener('touchstart', start, { passive: true })
-    n.addEventListener('touchmove', move, { passive: false })
-    return () => { n.removeEventListener('touchstart', start); n.removeEventListener('touchmove', move) }
+    return holdPageScroll(n)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- the window's own element, for its life
   }, [])
 

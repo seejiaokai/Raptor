@@ -1056,8 +1056,13 @@ export function routeClick(e: MouseEvent) {
          and he holds the row (ui/oilwait.ts). Left unanswered it stays armed, as an input's row does. */
       const waited = view.OILWAIT
       const made = reassignInput(iid, rp.dataset.person)
+      /* …and on a phone a MADE hand-over parks the crew drawer, as every other planting tap does (placeArmed — owner,
+         8 Aug 26: the point of planting is seeing the puck land). Left up, it covered the top bar, and a finger on Undo
+         met the drawer ([OIL-NOTIFY-SEEN] (5), the walk of 13 Oct 26). A refusal leaves it up, as a refused plant does. */
+      const park = () => { if (HOOKS.isPhone()) document.body.classList.remove('ros-open') }
+      if (made) park()
       if (made || !view.OILWAIT || view.OILWAIT === waited) view.disarmSlot()
-      else oilWaitThen(() => null, () => { if (view.armedKey() === armKey) view.disarmSlot() })
+      else oilWaitThen(() => null, () => { if (view.armedKey() === armKey) view.disarmSlot(); park() })
       notify(); return
     }
     view.placeArmed(rp.dataset.person)

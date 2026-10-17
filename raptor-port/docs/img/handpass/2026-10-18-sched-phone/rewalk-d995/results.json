@@ -1,0 +1,241 @@
+{
+ "rows": [
+  {
+   "id": "P1 week line: window shape",
+   "ok": true,
+   "note": "box 12,151 → 378,693 (366×542); holds 540; want height 542, 151 above and 151 below, sides 12/378"
+  },
+  {
+   "id": "P1b",
+   "ok": null,
+   "note": "no \"Several people\" switch in the schedule’s window — the tall case is walked at S2 (the board’s Unavailable + Add on a short phone)"
+  },
+  {
+   "id": "P1f ✕ closes it, and the week stands where it stood",
+   "ok": true,
+   "note": "page 3109:- → 3109:-"
+  },
+  {
+   "id": "P2 week Unavailable row (OML): window shape",
+   "ok": true,
+   "note": "box 12,177 → 378,667 (366×491); holds 489; want height 491, 177 above and 177 below, sides 12/378"
+  },
+  {
+   "id": "P3 board line (Fly with): window shape",
+   "ok": true,
+   "note": "box 12,184 → 378,660 (366×477); holds 475; want height 477, 184 above and 184 below, sides 12/378"
+  },
+  {
+   "id": "P3b a finger on it: the board behind does not move",
+   "ok": true,
+   "note": "board 0:5482 → 0:5482"
+  },
+  {
+   "id": "P4 board Ground Programme + Inputs: the new input's window",
+   "ok": true,
+   "note": "box 12,167 → 378,677 (366×510); holds 508; want height 510, 167 above and 167 below, sides 12/378"
+  },
+  {
+   "id": "P4b Cancel closes it",
+   "ok": true,
+   "note": "window gone"
+  },
+  {
+   "id": "P5 board Unavailable + Add: the new input's window",
+   "ok": true,
+   "note": "box 12,14 → 378,830 (366×816); holds 814; want height 816, 14 above and 14 below, sides 12/378"
+  },
+  {
+   "id": "P5b Cancel closes it",
+   "ok": true,
+   "note": "window gone"
+  },
+  {
+   "id": "P6 board SANS + Add: the new input's window",
+   "ok": true,
+   "note": "box 12,194 → 378,650 (366×457); holds 455; want height 457, 194 above and 194 below, sides 12/378"
+  },
+  {
+   "id": "P6b Cancel closes it",
+   "ok": true,
+   "note": "window gone"
+  },
+  {
+   "id": "Q1 the OIL question stands over the window, on the screen, a finger meets it",
+   "ok": true,
+   "note": "{\"l\":22,\"t\":323,\"r\":368,\"b\":522,\"w\":346,\"h\":199,\"sh\":197,\"st\":0,\"hit\":true}"
+  },
+  {
+   "id": "Q2 answered: the window and the question are gone",
+   "ok": true,
+   "note": "window 0"
+  },
+  {
+   "id": "S1 short phone, week line: window shape",
+   "ok": true,
+   "note": "box 12,13 → 378,555 (366×542); holds 540; want height 542, 13 above and 13 below, sides 12/378"
+  },
+  {
+   "id": "S2 short phone, board Unavailable + Add (taller than the screen): window shape",
+   "ok": true,
+   "note": "box 12,12 → 378,556 (366×544); holds 814; want height 544, 12 above and 12 below, sides 12/378"
+  },
+  {
+   "id": "S2 runs up to the strip at the top and holds more than it shows",
+   "ok": true,
+   "note": "top 12, holds 814 in 544"
+  },
+  {
+   "id": "S3 a finger up on it: the window scrolls",
+   "ok": true,
+   "note": "window scroll 0 → 235"
+  },
+  {
+   "id": "S3 … the board behind does not",
+   "ok": true,
+   "note": "board 0:6059 → 0:6059"
+  },
+  {
+   "id": "S4 at its foot, more swipes: the board behind still does not move",
+   "ok": true,
+   "note": "board 0:6059 → 0:6059"
+  },
+  {
+   "id": "S4 at its foot, Add is on screen and a finger meets it",
+   "ok": true,
+   "note": "{\"l\":313,\"t\":517,\"r\":362,\"b\":545,\"w\":49,\"h\":28,\"sh\":26,\"st\":0,\"hit\":true}"
+  },
+  {
+   "id": "S5 back past its top: at its top, the board behind still where it was",
+   "ok": true,
+   "note": "window 0, board 0:6059 → 0:6059"
+  },
+  {
+   "id": "D1 week: arming the Unavailable row opens the crew drawer",
+   "ok": true,
+   "note": "ros-open true"
+  },
+  {
+   "id": "D2 week: a refused hand-over (ALL AVAIL) leaves the drawer up",
+   "ok": true,
+   "note": "ros-open true; note \"Unavailable is a real person’s day — ALL AVAIL cannot take it\""
+  },
+  {
+   "id": "D2b week: armed again",
+   "ok": true,
+   "note": "ARM iu:imvcvfcrxoaezhm"
+  },
+  {
+   "id": "D3 week: the hand-over is made",
+   "ok": true,
+   "note": "divot → dj (tapped dj)"
+  },
+  {
+   "id": "D3 week: and the drawer is put away",
+   "ok": true,
+   "note": "ros-open false"
+  },
+  {
+   "id": "D4 week: a finger on the top bar's Undo meets Undo (the page’s)",
+   "ok": true,
+   "note": "{\"l\":201,\"t\":9,\"r\":231,\"b\":39,\"w\":30,\"h\":30,\"sh\":28,\"st\":0,\"hit\":true}"
+  },
+  {
+   "id": "D5 week: Undo gives the row back",
+   "ok": true,
+   "note": "dj → divot"
+  },
+  {
+   "id": "D1 board: arming the Unavailable row opens the crew drawer",
+   "ok": true,
+   "note": "ros-open true"
+  },
+  {
+   "id": "D2 board: a refused hand-over (ALL AVAIL) leaves the drawer up",
+   "ok": true,
+   "note": "ros-open true; note \"Unavailable is a real person’s day — ALL AVAIL cannot take it\""
+  },
+  {
+   "id": "D2b board: armed again",
+   "ok": true,
+   "note": "ARM iu:imvcvfhc8pturxv"
+  },
+  {
+   "id": "D3 board: the hand-over is made",
+   "ok": true,
+   "note": "divot → dj (tapped dj)"
+  },
+  {
+   "id": "D3 board: and the drawer is put away",
+   "ok": true,
+   "note": "ros-open false"
+  },
+  {
+   "id": "D4 board: a finger on the top bar's Undo meets Undo (the board’s own)",
+   "ok": true,
+   "note": "{\"l\":187,\"t\":6,\"r\":217,\"b\":36,\"w\":30,\"h\":30,\"sh\":28,\"st\":0,\"hit\":true}"
+  },
+  {
+   "id": "D5 board: Undo gives the row back",
+   "ok": true,
+   "note": "dj → divot"
+  },
+  {
+   "id": "M1",
+   "ok": null,
+   "note": "View-only Sched draws no input-window door for a member (the window opens from Edit Schedule, the board and the Inputs page)"
+  },
+  {
+   "id": "F1 an Inputs day window: a finger on it never scrolls the page behind",
+   "ok": true,
+   "note": "page 0:- → 0:-"
+  },
+  {
+   "id": "F2 the Inputs page's \"+ Input\" window: the form scrolls, the page behind does not",
+   "ok": true,
+   "note": "form 215, page 0:- → 0:-"
+  },
+  {
+   "id": "L1 the Inputs list keeps the page 844 wide; the table scrolls in its own box",
+   "ok": true,
+   "note": "{\"doc\":844,\"wrap\":915,\"wrapW\":820}"
+  },
+  {
+   "id": "L2 a finger moves the table sideways to its last column",
+   "ok": true,
+   "note": "scrollLeft 95"
+  },
+  {
+   "id": "L3 \"+ Input\" opens on the screen; Add, Cancel and ✕ are on it and a finger meets each",
+   "ok": true,
+   "note": "window 398→828; Add 763→812 true; Cancel true; ✕ true"
+  },
+  {
+   "id": "L4 Edit Schedule at 844 × 390: the input window is the desktop dialog, centred, inside the screen",
+   "ok": true,
+   "note": "{\"l\":207,\"t\":39,\"r\":637,\"b\":351,\"w\":430,\"h\":312,\"sh\":540,\"st\":0,\"hit\":true}"
+  },
+  {
+   "id": "T1 700×1000: the schedule's input window is the centred dialog as before (80% cap 800)",
+   "ok": true,
+   "note": "{\"l\":135,\"t\":229,\"r\":565,\"b\":771,\"w\":430,\"h\":542,\"sh\":540,\"st\":0,\"hit\":true}"
+  },
+  {
+   "id": "T2 the Inputs list: no sideways scroll of the page",
+   "ok": true,
+   "note": "{\"doc\":700,\"inner\":700,\"wrap\":684,\"wrapW\":684,\"wrapH\":0}"
+  },
+  {
+   "id": "K1 1440×900: the schedule's input window is the centred dialog as before (80% cap 720)",
+   "ok": true,
+   "note": "{\"l\":505,\"t\":179,\"r\":935,\"b\":721,\"w\":430,\"h\":542,\"sh\":540,\"st\":0,\"hit\":true}"
+  },
+  {
+   "id": "K2 the Inputs list: no sideways scroll of the page, none in the table, and no scroll bar drawn",
+   "ok": true,
+   "note": "{\"doc\":1440,\"inner\":1440,\"wrap\":1416,\"wrapW\":1416,\"wrapH\":0}"
+  }
+ ],
+ "errs": [],
+ "pics": 24
+}

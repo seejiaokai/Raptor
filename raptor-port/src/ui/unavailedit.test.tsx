@@ -329,6 +329,42 @@ describe('the puck itself — armed tap, and drag, on both surfaces', () => {
     await act(async () => { writeInputsBatch(() => { const ix = INPUTS.findIndex((i: any) => i.iid === iid); if (ix >= 0) INPUTS.splice(ix, 1) }); notify() })
   })
 
+  /* [OIL-NOTIFY-SEEN] (5) — the walk of 13 Oct 26, B6 / RX1-7: on a phone a hand-over by an armed tap on the Unavailable row
+     left the crew drawer open, where every other planting tap parks it (state/view.ts placeArmed — owner, 8 Aug 26: the
+     point of planting is seeing the puck land); and while open it covered the top bar, so a finger on Undo met the
+     drawer. Made at once → parked; made after its OIL answer → parked then; refused → left up, as a refused plant is. */
+  it('on a phone a hand-over parks the crew drawer — at once, or when its OIL answer makes it', async () => {
+    const orig = HOOKS.isPhone; HOOKS.isPhone = () => true
+    try {
+      const row = divot(), iid = row.iid
+      const seat = () => $(`#eWeek .day[data-day="0"] [data-inpseat="${iid}"]`)
+      await click(seat())
+      expect(document.body.classList.contains('ros-open'), 'arming opened the drawer').toBe(true)
+      const next = $$('#eRoster .rpuck[data-person]').find(p => p.dataset.person !== 'divot' && !isSpecial(p.dataset.person))!
+      await click(next)
+      expect(row.person, 'handed over').toBe(next.dataset.person)
+      expect(document.body.classList.contains('ros-open'), 'a made hand-over parks the drawer').toBe(false)
+      await act(async () => { reassignInput(iid, 'divot'); notify() })
+
+      await act(async () => { expect(commitInput(null, draftOf({ person: 'bane', type: 'OD', date: 'Jul 18', yr: 2026, allday: true, remarks: '' }), ['bane'], { oil: { '2026-07-18': 1 } })).toBe(true); notify() })
+      const od = INPUTS.find((i: any) => i.type === 'OD' && i.date === 'Jul 18' && idsOf(i).map(String).join() === 'bane')!
+      const odSeat = () => $(`#eWeek .day[data-day="5"] [data-inpseat="${od.iid}"]`)
+      await click(odSeat())
+      expect(document.body.classList.contains('ros-open'), 'armed again: the drawer is up').toBe(true)
+      const other = $$('#eRoster .rpuck[data-person]').find(p => p.dataset.person !== 'bane' && !isSpecial(p.dataset.person))!
+      await click(other)
+      expect(view.OILWAIT, 'a weekend: the question first').toBeTruthy()
+      expect(document.body.classList.contains('ros-open'), 'waiting on its answer, the drawer stays up').toBe(true)
+      await act(async () => { expect(answerOilWait({ '2026-07-18': 1 })).toBe(true) })
+      expect(document.body.classList.contains('ros-open'), 'answered and made: the drawer is parked').toBe(false)
+      await act(async () => { writeInputsBatch(() => { const ix = INPUTS.findIndex((i: any) => i.iid === od.iid); if (ix >= 0) INPUTS.splice(ix, 1) }); notify() })
+    } finally {
+      HOOKS.isPhone = orig
+      document.body.classList.remove('ros-open')
+      await act(async () => { view.disarmSlot(); notify() })
+    }
+  })
+
   it('a puck dragged from the roster onto the board\'s Unavailable seat reassigns it, without a ground-seat write anywhere', async () => {
     const inp: any = { person: 'bane', date: MON, allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'drag target', mod: '' }
     await act(async () => { writeInputsBatch(() => { inpId(inp); INPUTS.unshift(inp) }); notify() })
