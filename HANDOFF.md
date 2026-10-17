@@ -33,10 +33,15 @@ the later merge keeps both (D78).
   e2e 844 · Tracker suite 453 · tfin 728/0 · rulecheck · docsize), then the Tracker's tests and suite after each fix round.
   Seven faults fixed red first, one declined, one limit said plainly (a touch-screen laptop: a finger's glide can carry on
   over the app's own move). Evidence and his look card: `raptor-port/docs/handpass/2026-10-18-trk-chart-fps.md`.
+- **Also on this branch — D993 (18 Oct 26, his ask):** Quals' pinned header row is moved sideways by the browser (the
+  Leave War's scroll-driven follow), its callsign heading a still copy over the left; a column changing width while pinned
+  re-measures it. Walked 9/9 twice (`scripts/handpass/quals-pinned-walk.mjs`), `e2e/geometry.spec.ts` 5 tests (two new, each
+  red first), Quals unit 72/72; one fresh read (3 fixed), a narrow read of the fixes. His look at Quals on his iPhone is owed.
+  Evidence: the sheet's D993 section.
 - **Next:** the pull request's checks on GitHub (its full run); his look on his iPhone (the sheet's last section); his
   "merge live". If the pinch or the glide-stop misbehaves on his phone, the sheet names the fallback for each.
 - **Owed reads:** any ChatGPT read he wants (`[NO-ASTRA-LIST]`).
-- **Rulings:** D991 (speed is part of how good the app feels — How we work), D992 (this job — Tracker); D990 replaced and archived.
+- **Rulings:** D991 (speed is part of how good the app feels — How we work), D992 (this job — Tracker), D993 (Quals' pinned row — People & accounts); D990 replaced and archived.
 <!-- /now -->
 
 ## Next, in order
