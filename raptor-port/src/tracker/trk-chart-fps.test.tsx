@@ -67,6 +67,15 @@ describe('D992 — two fingers are the pinch\'s, one finger is the phone\'s', ()
     lift(4)
     down = down.filter(d => d.identifier !== -1)
   })
+  it('a finger landing anywhere frees its id: a reused id off the chart is not the chart\'s (the fix read\'s 2)', () => {
+    land(10); land(11)                        /* held — and their lifts are lost */
+    down = []
+    /* a thumb lands off the chart with the reused id 10; then one finger on the chart */
+    const thumb = { identifier: 10, target: outside }; down.push(thumb); send('touchstart', [thumb], outside)
+    expect(land(12), 'one chart finger beside the thumb').toBe(false)
+    expect(move(), 'the chart scrolls').toBe(false)
+    lift(12); down = []
+  })
   it('a lift lost to a redraw is forgotten at the next landing', () => {
     land(5); land(6)                          /* held — and their lifts never reach the board */
     down = []
@@ -98,7 +107,7 @@ describe('D992 — two fingers are the pinch\'s, one finger is the phone\'s', ()
 })
 
 describe('D989, kept by D992 — the app\'s own move stops the phone\'s glide (the code read\'s F1)', () => {
-  it('right after a finger\'s scroll the box stops being a scroll box for two frames, its place kept', async () => {
+  it('right after a finger\'s scroll the box stops being a scroll box for two frames (whether the iPhone\'s glide then stops is his look card)', async () => {
     const frames: Array<() => void> = []
     const raf = globalThis.requestAnimationFrame
     globalThis.requestAnimationFrame = ((cb: FrameRequestCallback) => { frames.push(() => cb(0)); return frames.length }) as typeof requestAnimationFrame
@@ -123,6 +132,30 @@ describe('D989, kept by D992 — the app\'s own move stops the phone\'s glide (t
       C.stopGlide(board)
       expect(board.style.overflow, 'no scroll since that finger: nothing to stop').toBe('')
     } finally { globalThis.requestAnimationFrame = raf }
+  })
+  it('a wheel after the finger clears its mark: the box is left alone', async () => {
+    board.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerType: 'touch', pointerId: 5, isPrimary: true }))
+    board.dispatchEvent(new Event('wheel'))
+    board.dispatchEvent(new Event('scroll'))
+    C.stopGlide(board)
+    expect(board.style.overflow).toBe('')
+  })
+  it('a box with scrollbars that take room (a touch-screen laptop) drops the glide within the one task, never two frames', () => {
+    const frames: Array<() => void> = []
+    const raf = globalThis.requestAnimationFrame
+    globalThis.requestAnimationFrame = ((cb: FrameRequestCallback) => { frames.push(() => cb(0)); return frames.length }) as typeof requestAnimationFrame
+    try {
+      Object.defineProperty(board, 'offsetWidth', { value: 400, configurable: true })
+      Object.defineProperty(board, 'clientWidth', { value: 385, configurable: true })
+      board.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerType: 'touch', pointerId: 6, isPrimary: true }))
+      board.dispatchEvent(new Event('scroll'))
+      C.stopGlide(board)
+      expect(board.style.overflow, 'scrollable again at once').toBe('')
+    } finally {
+      delete (board as any).offsetWidth; delete (board as any).clientWidth
+      for (let i = 0; i < 10 && frames.length; i++) frames.splice(0).forEach(f => f())
+      globalThis.requestAnimationFrame = raf
+    }
   })
   it('a box no finger has scrolled is left alone (a mouse, a wheel)', async () => {
     const b2 = document.createElement('div'); document.body.appendChild(b2)

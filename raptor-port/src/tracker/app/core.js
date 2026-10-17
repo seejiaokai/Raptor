@@ -3721,6 +3721,9 @@ function enablePinchZoom(el) {
     if (!onBoard(e)) release();
   };
   el.addEventListener('touchend', free); el.addEventListener('touchcancel', free);
+  /* a finger landing anywhere means the touch that last had its id has ended — a phone that reuses ids (Android) would
+     otherwise count a thumb off the chart as one of the chart's, after a lift lost to a redraw (the fix read's 2) */
+  window.addEventListener('touchstart', e => { for (const t of Array.from(e.changedTouches || [])) if (!el.contains(t.target)) mine.delete(t.identifier); }, { capture: true, passive: true });
   el.addEventListener('pointerdown', e => {
     if (e.pointerType === 'mouse') return;
     /* A PRIMARY touch is the device saying no other finger is down: anything still
@@ -3986,12 +3989,21 @@ export function dragScroll(el, skip) {
      run outside the page (the phone's scroller, Chrome's compositor), which hears of the change only at the next frame —
      so the box stays unscrollable for two frames, the caller's own scroll still landing meanwhile (the code read's F1: a
      toggle within one task never reached them). Only right after a finger's scroll — a box at rest, or one a mouse or a
-     wheel moved, is left alone (no scrollbar flashes on a desktop). */
+     wheel moved, is left alone (no scrollbar flashes on a desktop). A mouse, a wheel or a key taking over from the finger
+     clears its mark (the fix read's 1a). A box whose scrollbars take room (a touch-screen laptop) drops the glide within
+     the one task instead: two frames without its scrollbars would show, and a caller measuring then would be a
+     scrollbar's width off (the fix read's 1b) — the overlay scrollbars of a phone or an iPad take none. */
   let lastScroll = -1e9, touchAt = -1e9, stopping = false;
   el.addEventListener('scroll', () => { lastScroll = performance.now(); }, { passive: true });
-  el.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') touchAt = performance.now(); }, { passive: true });
+  el.addEventListener('pointerdown', e => { touchAt = e.pointerType !== 'mouse' ? performance.now() : -1e9; }, { passive: true });
+  el.addEventListener('wheel', () => { touchAt = -1e9; }, { passive: true });
+  el.addEventListener('keydown', () => { touchAt = -1e9; });
   el.__glideStop = () => {
     if (st || stopping || touchAt < 0 || lastScroll < touchAt || performance.now() - lastScroll > 150) return;
+    const x0 = el.scrollLeft, y0 = el.scrollTop;
+    if (el.offsetWidth - el.clientWidth - 2 * el.clientLeft > 0 || el.offsetHeight - el.clientHeight - 2 * el.clientTop > 0) {
+      el.style.overflow = 'hidden'; void el.offsetHeight; el.style.overflow = ''; el.scrollLeft = x0; el.scrollTop = y0; return;
+    }
     stopping = true; el.style.overflow = 'hidden';
     const back = () => { const x = el.scrollLeft, y = el.scrollTop; el.style.overflow = ''; el.scrollLeft = x; el.scrollTop = y; stopping = false; };
     if (typeof requestAnimationFrame === 'undefined') back(); else requestAnimationFrame(() => requestAnimationFrame(back));
