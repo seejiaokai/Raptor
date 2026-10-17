@@ -644,8 +644,11 @@ export function QualsPage() {
     /* A COLUMN THAT CHANGES WIDTH WHILE THE ROW IS PINNED re-measures it (the D993 code read's F1): an undo of a rename or
        a remark, a change arriving from elsewhere, a scrollbar coming and going — none of them re-pins, and the browser's
        follow (D993) runs on the table's sideways range measured at the pin, so every heading would drift from its
-       column by the change. The table's own box and its scroll box are watched; a change re-pins with fresh widths,
-       which sets the travel again (the layout effect below). */
+       column by the change. The table's own box and its scroll box are watched; a change of either re-pins with fresh
+       widths, which sets the travel again (the layout effect below). A column that changes width INSIDE a table of the
+       same width (the browser sharing the same total out again — a desktop wider than the table) is not caught here:
+       the travel is still right, the pinned widths a few pixels off until the next pin — older than this, filed as
+       [QUALS-PINNED-COLS-REFLOW]. */
     const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(() => pin(true)) : null
     if (ro) { if (tblRef.current) ro.observe(tblRef.current); if (wrapRef.current) ro.observe(wrapRef.current) }
     onScroll()

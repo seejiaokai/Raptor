@@ -208,3 +208,14 @@ hand under the lock, 18 Oct 26); the Quals unit tests 72 / 72.
 
 **For his look:** with the page scrolled down, swipe Quals sideways — the pinned row keeps up with the table, as the
 Leave War's does.
+
+**D993's reads.** The fresh read (3 findings, all fixed, the first red first: a column that widens the table while the row
+is pinned drifted every heading 270px; nothing could scroll the row's box once it was clipped, not hidden; the still copy
+one pixel past its column so the line beside it is whole). The narrow read of those fixes: sound, with one older gap
+filed — a column reflowing inside a table of the same width ([QUALS-PINNED-COLS-REFLOW]) — and the new test made to wait on
+what it needs (D87). Re-walk 9/9; `e2e/geometry.spec.ts` 5/5.
+
+**Only his iPhone can settle (Quals):** (1) with the page scrolled down, a sideways fling — the row keeps up, as the Leave
+War's does; (2) a rotate, then a full swipe to the right — every heading still over its column (if not, the phone's
+browser keeps the animation's first travel, and the fix is to restart it at each re-pin); (3) no seam or doubled line at
+the edge of the still callsign heading.

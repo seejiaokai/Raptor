@@ -4503,8 +4503,7 @@ test.describe('the frozen callsign column', () => {
       return (w.scrollWidth - w.clientWidth) - before
     })
     expect(grew, 'the table really grew sideways').toBeGreaterThan(50)
-    await page.waitForTimeout(400)
-    const worst = await page.evaluate(() => {
+    const measure = () => page.evaluate(() => {
       const bar = document.querySelector('[data-testid="qsticky-head"]')!, br = bar.getBoundingClientRect()
       let w = 0, n = 0
       for (const th of bar.querySelectorAll('.qfixed-scroll th[data-sort]')) {
@@ -4515,8 +4514,8 @@ test.describe('the frozen callsign column', () => {
       }
       return { w, n }
     })
-    expect(worst.n, 'headings in view were measured').toBeGreaterThan(0)
-    expect(worst.w, 'every pinned heading still stands over its column').toBeLessThan(2)
+    /* waited on what it needs (D87): the re-measure lands a frame after the widening */
+    await expect.poll(async () => { const m = await measure(); return m.n > 0 && m.w < 2 }, { message: 'every pinned heading stands over its column again' }).toBe(true)
   })
 })
 
