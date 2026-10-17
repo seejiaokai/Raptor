@@ -31,6 +31,14 @@ flight would make him read current when he is not (Ranger: last currency 10 days
 → 10 − 30 → current); recommended: the bar uses only the medical days since his last currency flight, the number and
 its pop-up the whole course.
 
+## His correction, 18 Oct 26 — D1004
+*"The currency bar has got nothing to do with medical down days as calculation. It's based on how many days has elapsed
+since the currency flight or non syllabus flight"* — the landing-currency bar counts only the days since his last currency
+or non-syllabus flight. The build REMOVES today's subtraction (`SidePanel.jsx`: `effCurr = dCurr − downDays`, the
+"(−N down = Xd)" after "Days since currency", and "(minus down days)" in the note under the bars). The currency question
+above is therefore closed; the down days feed no bar. Still open: a student not on the roster (typed box kept?), and
+whether a non-syllabus flight graded on the chart moves "Last currency" by itself today (check in the build).
+
 ## Questions to put to him first (as first drafted) (rounds of four, each with a picture and a recommendation — D853)
 1. Which days count: every medical day ever filed, or only those since the student's course start (or since his last
    currency, which is what the landing-currency sum needs)? — to be recommended after reading how the currency sum uses it.
