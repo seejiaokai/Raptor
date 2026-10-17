@@ -41,7 +41,7 @@ answered. "Next agent" lines name the item, the rulings and the files.
 5. **The next-week preview** `[PEEK-ISSUED]` — on View-only Sched the preview shows next week's working copy, so an unissued
    swap (Tally for Ranger) shows to members. **Recommended: on View-only Sched the preview shows the published version of a
    published day; Edit Schedule keeps the working copy** (D178, D179, D478). Files: `ui/peek.ts`, `ui/ViewWeek.tsx`.
-7. **The Leave War label** `[LW-LABEL-NO-DOOR]` — a per-man label is stored, filled from his flight, seen and set nowhere.
+7. **ANSWERED 18 Oct 26 — D1001, "leave it I intend to have an option to sort according to flight": kept; the sort filed as [LW-SORT-BY-FLIGHT].** **The Leave War label** `[LW-LABEL-NO-DOOR]` — a per-man label is stored, filled from his flight, seen and set nowhere.
    **Recommended: drop it before the database tables are settled** (D461: one place changes a man's details). Files:
    `leavewar/state/store.ts`, `raptorRoster.ts`, `rows.ts`, `docs/data-model.md`.
 8. **Escape in a board time box** `[BOARD-TIME-ESCAPE]` — the board's take-off, landing, brief and duty-start boxes keep a

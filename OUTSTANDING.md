@@ -50,6 +50,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **FILED 18 Oct 26 — [TRK-PINCH-OLD-EDGES]:** two older edges of the Tracker chart's pinch, met by [TRK-CHART-FPS]'s reads — low, with the next Tracker batch.
 
+**FILED 18 Oct 26 — [LW-SORT-BY-FLIGHT]:** his intent, an option to sort the Leave War by flight (D1001) — not designed; his to raise. **His answers of 18 Oct 26 to the backlog's questions:** D998 (1 parked), D999 (4), D1000 (11), D1001 (7) — the rest in `raptor-port/docs/superpowers/briefs/2026-10-18-sixteen-questions.md`.
+
 **LIVE 18 Oct 26 (pull request 533, his "merge live") — D994's first batch, the scheduling pages on a phone:** *(D996 follows — the Inputs page's input window, and perhaps every short phone window, in the middle; his scope answer first, `HANDOFF.md`.)* [SCHED-INPUT-WINDOW-PHONE] (the schedule's own input window as tall as it needs, in the middle of a phone's screen — his D995; a finger on it never scrolls the page behind; the Inputs list no longer widens a phone on its side) and [OIL-NOTIFY-SEEN] (5) (the crew drawer put away after an Unavailable hand-over); [PHONE-WIDE-BOARD-BLANK] closed — fixed and live since 6 Oct 26, confirmed on today's build. Its check: `raptor-port/docs/handpass/2026-10-18-sched-phone.md` (WALK). **Next in D994's order:** the next area's small fixes.
 
 **LIVE 18 Oct 26 (pull request 532, his "merge live") — [TRK-CHART-FPS] (D992) with D993:** the Tracker's chart and Info half scrolled by the phone itself, the pinch as a picture; Quals' pinned header row moved by the browser; archived with [TRK-SCROLL-GLIDE]. **NEXT, his word (D994):** the small fixes that need no answer from him, by area, the scheduling pages on a phone first; his questions wait until he says so (`HANDOFF.md` §Next).
@@ -959,7 +961,14 @@ hand-damaged day row makes the week read-only (correct), with a notice written f
 what happened and what to do in the app's words ("This week's saved copy could not be read — it is shown read-only. Ask
 an admin.").
 
+### [LW-SORT-BY-FLIGHT] An option to sort the Leave War by flight — his intent, an idea not yet designed (18 Oct 26, D1001)
+**His words:** *"I intend to have an option to sort according to flight"* (asked about the hidden personnel label — kept for it).
+**Not designed, not started.** When he raises it: which men carry a flight (today the label is filled for ground crew, from
+their flight in Raptor), where the option sits on the Leave War, and how it meets the categories and "Who wins" — put to him
+with pictures (D853) before anything is built. **Place:** his to raise.
+
 ### [LW-LABEL-NO-DOOR] The Leave War's personnel label has no control on screen (filed 30 Sep 26)
+**ANSWERED 18 Oct 26 — D1001: the label is KEPT, for an option to sort the Leave War by flight ([LW-SORT-BY-FLIGHT], below). Nothing to build here; archive this item at the next tidy.**
 **Place:** low — a question for him before building. Seen by the group-A FULL walk (W4 observation 4): the war stores a
 man's personnel label (`leavewar/profile:<pid>` `label`, `setPersLabel`) and reads it, but no screen calls the setter,
 in `main` or this build — a stored field no one can set. **Do:** ask him whether the label is wanted; if yes, give it

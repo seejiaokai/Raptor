@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1001 | 18 Oct 26 | The Leave War keeps each man's flight label as it is — it is not dropped — because he intends an option to sort the Leave War by flight; until that option is designed nothing about the label changes on screen. |
 | D1000 | 18 Oct 26 | On screens up to about 700 wide the Leave War's top takes the phone's shorter two-line layout (D678), not the tallest one; the top only, the grid unchanged; drawn for him at 440 and 600 wide before it is built. |
 | D998 | 18 Oct 26 | For now the Leave War's manning stays as built: only leave, a medical downchit (not ATT B), a course, an overseas duty and a leave bid not refused lower it; a duty or other commitment does not. |
 | D892 | 15 Oct 26 | In the Leave War's Rearrange, a row dragged toward the top or bottom edge of the screen scrolls the grid that way, so it can be carried to a row out of view — a man's row, a group heading and a counter alike, on a phone and a desktop — as the scheduler's drags and the war's own move already do. |
