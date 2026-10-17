@@ -1,0 +1,494 @@
+[
+  {
+    "id": "G1",
+    "name": "phone chart: a flick carries on after the lift, then stops",
+    "pass": true,
+    "detail": {
+      "start": 1500,
+      "atLift": 1740,
+      "at120ms": 1888,
+      "rest": 2378,
+      "restLater": 2378
+    }
+  },
+  {
+    "id": "G2",
+    "name": "phone chart: a drag held still before the lift stops where it is",
+    "pass": true,
+    "detail": {
+      "start": 2378,
+      "atLift": 2528,
+      "after": 2528,
+      "followedFinger": 150
+    }
+  },
+  {
+    "id": "G3",
+    "name": "phone chart: while the finger is down the chart follows it exactly",
+    "pass": true,
+    "detail": {
+      "start": 2528,
+      "held": 2628
+    }
+  },
+  {
+    "id": "G4",
+    "name": "phone chart: a touch on an event mid-glide stops the glide and opens nothing",
+    "pass": true,
+    "detail": {
+      "ok": true,
+      "attempt": 1,
+      "aimed": "ST-05",
+      "pressedOn": "ST-05",
+      "gliding": [
+        3200,
+        3278
+      ],
+      "justAfter": 3278,
+      "later": 3278,
+      "popOpened": false,
+      "tries": [
+        {
+          "attempt": 1,
+          "aimed": "ST-05",
+          "pressedOn": "ST-05",
+          "gliding": [
+            3200,
+            3278
+          ],
+          "justAfter": 3278,
+          "later": 3278,
+          "popOpened": false
+        }
+      ]
+    }
+  },
+  {
+    "id": "G4m",
+    "name": "phone chart: a press on an event mid-glide (mouse) stops it and opens nothing",
+    "pass": true,
+    "detail": {
+      "ok": true,
+      "attempt": 1,
+      "aimed": "ST-05",
+      "pressedOn": "ST-05",
+      "gliding": [
+        3200,
+        3257
+      ],
+      "justAfter": 3257,
+      "later": 3257,
+      "popOpened": false,
+      "tries": [
+        {
+          "attempt": 1,
+          "aimed": "ST-05",
+          "pressedOn": "ST-05",
+          "gliding": [
+            3200,
+            3257
+          ],
+          "justAfter": 3257,
+          "later": 3257,
+          "popOpened": false
+        }
+      ]
+    }
+  },
+  {
+    "id": "G5",
+    "name": "phone chart: the next tap on an event opens its marking pop-up",
+    "pass": true,
+    "detail": {
+      "ball": "ST-05",
+      "popOpened": true,
+      "clickSent": 1,
+      "tries": 1
+    }
+  },
+  {
+    "id": "G6",
+    "name": "phone chart: catching a glide and dragging on moves from where it stopped",
+    "pass": true,
+    "detail": {
+      "caught": 1219,
+      "after40pxDown": 1179
+    }
+  },
+  {
+    "id": "G7",
+    "name": "phone chart: a glide reaching the top runs a little past it and springs back",
+    "pass": true,
+    "detail": {
+      "peakStretchPx": 20,
+      "restScroll": 0,
+      "transformLeft": ""
+    }
+  },
+  {
+    "id": "G8",
+    "name": "phone chart: pulled past the top it gives less than the finger, then springs back",
+    "pass": true,
+    "detail": {
+      "fingerPx": 160,
+      "stretchPx": 69,
+      "restScroll": 0,
+      "transformLeft": ""
+    }
+  },
+  {
+    "id": "G9",
+    "name": "phone chart: a glide reaching the bottom bounces and settles on the end",
+    "pass": true,
+    "detail": {
+      "peakStretchPx": -29,
+      "rest": 4321,
+      "max": 4321,
+      "transformLeft": ""
+    }
+  },
+  {
+    "id": "G10",
+    "name": "phone chart: pressing zoom + mid-glide stops the glide, the zoom lands",
+    "pass": true,
+    "detail": {
+      "glidingBefore": [
+        1483,
+        1529
+      ],
+      "justAfter": 1908,
+      "later": 1908,
+      "zoom": "50%"
+    }
+  },
+  {
+    "id": "R2",
+    "name": "phone chart: a student picked mid-bounce lands and stays (the spring does not undo the landing)",
+    "pass": true,
+    "detail": {
+      "stretchedWhenPicked": true,
+      "rightAfter": 327,
+      "later": 327,
+      "tf": ""
+    }
+  },
+  {
+    "id": "G11",
+    "name": "phone chart: a student picked mid-glide lands the chart, and it stays",
+    "pass": true,
+    "detail": {
+      "landed": 327,
+      "later": 327
+    }
+  },
+  {
+    "id": "G12",
+    "name": "phone chart: two fingers stop a glide, the pinch zooms, nothing stays stretched",
+    "pass": true,
+    "detail": {
+      "zoomBefore": "40%",
+      "zoomAfter": "80%",
+      "justAfter": 3652,
+      "later": 3652,
+      "tf": ""
+    }
+  },
+  {
+    "id": "G12b",
+    "name": "phone chart: a pinch begun while the chart is held stretched drops the stretch at once",
+    "pass": true,
+    "detail": {
+      "heldStretch": "translate(0px, 50.7334px)",
+      "duringPinch": "",
+      "after": "",
+      "zoom": [
+        "40%",
+        "88%"
+      ]
+    }
+  },
+  {
+    "id": "G16",
+    "name": "chart: End pressed mid-glide goes to the right end and the glide stops there",
+    "pass": true,
+    "detail": {
+      "beforeEnd": [
+        0,
+        2240
+      ],
+      "rightAfter": [
+        1440,
+        2240
+      ],
+      "later": [
+        1440,
+        2240
+      ],
+      "maxX": 1440
+    }
+  },
+  {
+    "id": "G16b",
+    "name": "chart: End pressed mid-bounce goes to the right end and stays",
+    "pass": true,
+    "detail": {
+      "stretchedWhenPressed": true,
+      "rightAfter": [
+        1440,
+        0
+      ],
+      "later": [
+        1440,
+        0
+      ],
+      "tf": ""
+    }
+  },
+  {
+    "id": "G13",
+    "name": "phone chart: a tap on an event (nothing gliding) opens its pop-up",
+    "pass": true,
+    "detail": {
+      "ball": "ST-01"
+    }
+  },
+  {
+    "id": "G14",
+    "name": "phone chart: a drag then lift opens nothing",
+    "pass": true,
+    "detail": {}
+  },
+  {
+    "id": "G15",
+    "name": "phone: a tab switch mid-glide leaves the chart still, nothing stretched",
+    "pass": true,
+    "detail": {
+      "reachedInfo": true,
+      "a": 421,
+      "b": 421,
+      "tf": ""
+    }
+  },
+  {
+    "id": "F1",
+    "name": "phone Info: a finger on the Failures list scrolls that list, not Info",
+    "pass": true,
+    "detail": {
+      "listRange": 103,
+      "listBefore": 0,
+      "listAfter": 31.25,
+      "infoBefore": 81,
+      "infoAfter": 81
+    }
+  },
+  {
+    "id": "I1",
+    "name": "phone Info: a flick carries on after the lift",
+    "pass": true,
+    "detail": {
+      "range": 294,
+      "atLift": 60,
+      "at150": 109,
+      "rest": 243,
+      "tf": ""
+    }
+  },
+  {
+    "id": "I2",
+    "name": "phone Info: at the end it settles on the end with nothing stretched",
+    "pass": true,
+    "detail": {
+      "rest": 243,
+      "max": 294,
+      "tf": ""
+    }
+  },
+  {
+    "id": "I3",
+    "name": "phone Info: a touch on a button mid-glide stops the glide; the button gets no press",
+    "pass": true,
+    "detail": {
+      "button": "Pick a date▾",
+      "tookFocus": false,
+      "glidingBefore": [
+        59,
+        69
+      ],
+      "justAfter": 74,
+      "later": 74,
+      "buttonPresses": 0
+    }
+  },
+  {
+    "id": "I4",
+    "name": "phone Info: the next tap on it presses it as normal",
+    "pass": true,
+    "detail": {
+      "button": "Pick a date▾",
+      "buttonPresses": 1
+    }
+  },
+  {
+    "id": "I3m",
+    "name": "phone Info: a press on a button mid-glide (mouse) is taken; the button gets none",
+    "pass": true,
+    "detail": {
+      "button": "Pick a date▾",
+      "glidingBefore": [
+        60,
+        65
+      ],
+      "pressesBefore": 1,
+      "pressesAfter": 1
+    }
+  },
+  {
+    "id": "R1",
+    "name": "phone Info: the lull calendar stays put while a finger drags its backdrop",
+    "pass": true,
+    "detail": {
+      "before": {
+        "x": -43,
+        "y": 121
+      },
+      "during": {
+        "x": -43,
+        "y": 121
+      },
+      "after": {
+        "x": -43,
+        "y": 121
+      }
+    }
+  },
+  {
+    "id": "R3",
+    "name": "phone Info: after a long press stopped the glide, one tap on that chip takes you to its event",
+    "pass": true,
+    "detail": {
+      "chip": "CFT-01",
+      "wentToChart": true
+    }
+  },
+  {
+    "id": "R5",
+    "name": "phone Info: a 7px drag that starts on a chip opens nothing",
+    "pass": true,
+    "detail": {
+      "chip": "CFT-01",
+      "stillOnInfo": true
+    }
+  },
+  {
+    "id": "E1",
+    "name": "phone: no console error, page error or failed request",
+    "pass": true,
+    "detail": []
+  },
+  {
+    "id": "S1",
+    "name": "phone on its side: the chart glides and stops",
+    "pass": true,
+    "detail": {
+      "atLift": 920,
+      "at150": 1019,
+      "rest": 1297
+    }
+  },
+  {
+    "id": "E2",
+    "name": "short screen: no errors",
+    "pass": true,
+    "detail": []
+  },
+  {
+    "id": "P1",
+    "name": "iPad: the Info half glides beside the chart",
+    "pass": true,
+    "detail": {
+      "range": 1339,
+      "atLift": 80,
+      "at150": 159,
+      "rest": 383
+    }
+  },
+  {
+    "id": "P2",
+    "name": "iPad: the chart glides",
+    "pass": true,
+    "detail": {
+      "atLift": 800,
+      "at150": 930,
+      "rest": 1301
+    }
+  },
+  {
+    "id": "E3",
+    "name": "iPad: no errors",
+    "pass": true,
+    "detail": []
+  },
+  {
+    "id": "D1",
+    "name": "desktop: a fast mouse drag stops where it is let go — no glide",
+    "pass": true,
+    "detail": {
+      "start": 600,
+      "atLift": 850,
+      "later": 850
+    }
+  },
+  {
+    "id": "D2",
+    "name": "desktop: a mouse dragged past the top does not stretch",
+    "pass": true,
+    "detail": {
+      "held": 0,
+      "tf": ""
+    }
+  },
+  {
+    "id": "D3",
+    "name": "desktop: a mouse drag on the Info half stops where let go",
+    "pass": true,
+    "detail": {
+      "atLift": 160,
+      "later": 160
+    }
+  },
+  {
+    "id": "R4",
+    "name": "desktop: a mouse drag on the Failures list moves the Info half, as before",
+    "pass": true,
+    "detail": {
+      "listRange": 833,
+      "infoBefore": 1074,
+      "infoAfter": 1014,
+      "infoMax": 1074
+    }
+  },
+  {
+    "id": "D4",
+    "name": "desktop: a click on an event opens its pop-up",
+    "pass": true,
+    "detail": {
+      "ball": "ST-01"
+    }
+  },
+  {
+    "id": "D5",
+    "name": "desktop Edit chart layout: the canvas pans and stops at the release",
+    "pass": true,
+    "detail": {
+      "before": "translate(-1.0,316.0) scale(1.000)",
+      "atRelease": "translate(-1.0,166.0) scale(1.000)",
+      "later": "translate(-1.0,166.0) scale(1.000)"
+    }
+  },
+  {
+    "id": "E4",
+    "name": "desktop: no errors",
+    "pass": true,
+    "detail": []
+  }
+]

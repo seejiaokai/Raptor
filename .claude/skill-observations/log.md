@@ -734,6 +734,8 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 
 **Met again 15 Oct 26 (the night's /overnight run, `claude/drag-edge-scroll-elsewhere-51bfc4`):** three more shell here-document / stdin hangs in one night — `cat > file` with no input waited on stdin; a stray `python - <<'PY'` with `< /dev/null` dropped into Python's interactive prompt and looped on a Windows console error until stopped; each cost a two-to-five-minute stall. What held: every edit script WRITTEN WITH THE WRITE TOOL to the scratch folder and run as `python <file> < /dev/null`. The guard this entry proposes (scripts always a file, never a here-document) is the fix.
 
+**Met again 17 Oct 26 ([TRK-SCROLL-GLIDE], round 1):** a `cat >> file <<EOF` holding the question page (prose full of apostrophes) failed the same way; redone through the file tool. The guard stays unbuilt: an unconditional default (pages and scripts always go through the file tool) would have cost nothing here.
+
 ### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
 
 **Status:** OPEN
@@ -1215,3 +1217,18 @@ Met again 2026-10-17: the [CONTEXT-START-SIZE] handoff (session-handoff, a day c
 **Suggested improvement:** Re-run the WHOLE break list after the last code change, not only the breaks for lines that changed. A break that is no longer caught means either the line is now redundant (remove it, or say why it stays) or it guards a path no test reaches (write a test that only it passes, and break it again).
 
 **Principle:** Defence in depth hides from mutation tests: each guard needs a test that fails with that guard alone removed, and a later overlapping fix breaks that pairing without any visible failure.
+
+### Observation 634: A walk driven through a runner went to the shared driver's default port — another chat's build — and every break result was void
+
+**Status:** OPEN
+**Date:** 17 Oct 26
+**Session context:** [TRK-SCROLL-GLIDE] — the Tracker's finger glide; break tests run by a new runner that rebuilds and re-runs the job's walk script
+**Skill:** New skill candidate: none — the project's walk-script guide (`raptor-port/docs/walk-scripts.md` §1, "a server found already running is used only once it is proved to serve this build")
+**Type:** internal
+**Phase/Area:** walk scripts and break runners
+
+**Issue:** The job's walk printed its own default address (4181, the preview this chat started) but the shared Tracker driver it imports (`trk-lib.mjs`) defaults to 4180 — the port another chat's preview held. Run by hand the address was always given, so every run passed; run by the break runner it was not, and nine "breaks" (and a comment-only baseline) all came back red on the glide checks — the walk had driven a build with no glide at all. Three probes (frame rate, pointer type, the launcher) were spent before the cause was found. A walk-scripts rule already said to prove the served build first; nothing enforced it.
+
+**Suggested improvement:** Every walk script proves, before its first step, that the address it drives serves THIS checkout's bundle (the hashed index name in the served page equals the local `dist`'s) and refuses to run without an address — as `scripts/handpass/trk-glide-walk.mjs` now does; better, put that check inside the shared drivers' `open()` (`trk-lib.mjs`, `lib.mjs`) so no walk can skip it. A runner passes its address on and fails without one.
+
+**Principle:** A tool that silently falls back to a default target will one day hit someone else's; prove the target at the start of every run, in the shared code, not in a rule a script may forget.

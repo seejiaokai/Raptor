@@ -20,15 +20,25 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/tracker-batch-d495-affb5f -->
-### `claude/tracker-batch-d495-affb5f` — THE TRACKER BATCH (D495): D980, D981, D982 and the riding faults — written 17 Oct 26, verify before use
-- **His word (17 Oct 26):** start from `main`; build D980 (the chart by keyboard), D981 (a deleted man's Tracker courses), D982 (the Currency & flex bars' words) and the faults riding with them (`raptor-port/docs/superpowers/plans/2026-10-17-tracker-batch-triage.md`); ONE FULL check for the batch; each visible change shown to him before and after; not the progress graph (D774).
-- **Built:** D980, D981, D982, `[TRK-WIREBOARD-REPEAT]`, `[TRK-BALL-OFF-CHART-LEFT]`, `[TRK-REMOUNT-LANDING]`, `[TRK-KEY-NAME-CLIP]`, `[TRK-SAVE-FAIL-SAYS-SAVED]`, `[TRK-UNDO-WRITES-DEFAULTS]`. Left out on purpose: `[TRK-IMPORT-ONE-GROUP]`, `[TRK-FIRST-ORDER-PLACE]` (D983 — the database step), `[TRK-DATEBOX-SAFARI-ZOOM]` (no Safari here — his look card).
-- **The check — DONE, tier FULL** (`raptor-port/docs/handpass/2026-10-17-tracker-batch.md`, its Walk line written): scenario designer, walk, fresh blind code read (1 MED, 3 LOW, fixed), re-walk K 26 / P 12 / L 9 all pass, breaks 36 / 36, the whole gate set green at `cde63cd6a` (§Gate baseline). The Tracker suite's phone check "✓ Done editing chart keeps the middle" (51px off) was the CHECK's fault, not the app's: the batch's drop fix moved a line the suite draws in the room above the chart, so its run ended with the middle above the chart's start, which the ordinary chart cannot show; the check now holds each side and asks for the chart's edge there (passes on both builds; breaks both ways). Breaks 34 and 36 were covered twice over by later fixes, so each got a test only it passes.
-- **His answer — D984 ("As recommended B"), built the same evening:** the landing centres wherever that shows no empty space and never shows the slack above (or, on a chart wider than its box, left of) the chart's start (`scrollToEvent`); the Tracker suite's two landing checks and the walk's L3 / L4 say so; L re-walked 9 / 9; the suite on `main`'s build fails exactly the new first-event check (the check tells them apart); the phone's "two lost lifts" step now pans to a ball first (the new landing left that step on an empty stretch — the check's fault). Tracker unit 472 / 472, Tracker suite 446 / 0 on the final code. The left-side part is the agent's reading, told to him in the report.
-- **For him:** the before / after page https://claude.ai/artifact/RTF67FRK8uQUmyF4BSzwtv (version 2 — the band question marked decided, B's pictures from the final build) and his look card (iPhone tap draws no ring; long names whole; iPad calendar under its box). Pull request https://github.com/seejiaokai/Raptor/pull/530 (Auto-fix switched off, his standing word).
-- **Pick up here:** read the pull request's GitHub run (D902: the follow-up ran only the tests it touches on the PC; GitHub's run is its full check); fix a red one. Then his look and his "merge live" — nothing merges without it.
-- **Rulings:** D984 (17 Oct 26, Tracker — the landing; homes: `ui-contracts.md`, `tracker/known-gaps.md`, `core.js`, the suite; its short line read against its full row by a fresh reader — agrees). D983 the session before.
+<!-- now:claude/trk-scroll-glide -->
+### `claude/trk-scroll-glide` — THE TRACKER'S GLIDE ON A PHONE (D985–D989) — BUILT, WALKED, READ; the Tracker suite and the pull request next — written 17 Oct 26, verify before use
+- **Built:** a finger flick on the Tracker's chart and Info half carries on and slows at the iPhone's rate, bounces at an
+  end (his 2B — D987), a touch while it glides only stops it (D986), a mouse is as it was (D988), the app's own moves and two
+  fingers stop it (D989). The motion: `raptor-port/src/tracker/app/glide.js` (+ `glide.test.ts`, 17); the wiring:
+  `dragScroll` in `raptor-port/src/tracker/app/core.js` (with `stopGlide`, called by the zoom, a landing, the keyboard ring,
+  a redraw, Home / End); `SidePanel.jsx` (the panel's zoom stops it; a chip's long-press mark reset); `.side` takes
+  `touch-action:none` in `tracker.css`. Rulings D986–D989 recorded (his "As recommended but 2B"); D985's homes updated.
+- **Checked:** WALK tier + two fresh, blind Opus reads (the code, 7 findings; the fix commit, 4) — all fixed. The walk
+  `raptor-port/scripts/handpass/trk-glide-walk.mjs` 42 / 42 twice; breaks 11 of 15 caught (the 4 not, with readings, in
+  the sheet); gates: unit 11657, build, tfin 728/0, e2e 844, rulecheck, docsize green. Evidence:
+  `raptor-port/docs/handpass/2026-10-17-trk-glide.md`. Round-1 page: `raptor-port/docs/mock/2026-10-17-trk-glide-r1/`
+  (https://claude.ai/artifact/DaEXWjGkxuctqtYutzbVbx).
+- **Pick up here:** the pull request is open (Tracker suite 453 / 0, every gate green on his PC); waiting for his look on his
+  iPhone (the sheet's last section) and his "merge live". After it is live: archive `[TRK-SCROLL-GLIDE]` and remove this block.
+- **Walk scripts' trap, now guarded:** the shared driver's default port is ANOTHER chat's; the glide walk and the new break
+  runner (`raptor-port/scripts/handpass/breaks-walk.mjs`) refuse an address that does not serve this checkout's build —
+  always pass `HP_URL` (this chat's preview was http://localhost:4181). Skill observation 634.
+- **Rulings:** D986–D989 (17 Oct 26).
 <!-- /now -->
 
 ## Next, in order
