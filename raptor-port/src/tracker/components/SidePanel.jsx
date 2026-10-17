@@ -128,7 +128,7 @@ function EventChip({ id, className, style, title }) {
       onPointerLeave={e => { if (e.pointerType === 'mouse') core.hideEventBubble(); cancel(); }}
       onPointerDown={e => {
         /* a long press's "taken" mark belongs to that press only: its click can be taken before it gets here (a touch
-           that stopped the Info half's glide, D986), and the mark would then eat this chip's next real tap */
+           that only stopped the Info half's glide sends none — the phone's own, D986, D992), and the mark would then eat this chip's next real tap */
         pressed.current = false;
         if (e.pointerType === 'mouse') return;
         cancel(); at.current = { x: e.clientX, y: e.clientY };
@@ -203,7 +203,7 @@ function FailLog() {
 export default function SidePanel({ zoom }) {
   const ref = useRef(null);
   useEffect(() => { if (ref.current) core.dragScroll(ref.current); }, []);
-  /* the panel's own − / + moves it: its glide stops, nothing left stretched (D989) */
+  /* the panel's own − / + moves it: the phone's glide stops first (D989, D992) */
   useEffect(() => { core.stopGlide(ref.current); }, [zoom]);
   const s = core.active;
 
