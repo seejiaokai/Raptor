@@ -1155,3 +1155,33 @@ Met again 2026-10-17: the [CONTEXT-START-SIZE] handoff (session-handoff, a day c
 **Suggested improvement:** In the overnight guide, Part 1 step 9 / Part 2: "A message of his that arrives while the run is going is answered by ENDING the turn — the answer, then 'reply go before you sleep so the night keeps going' — never by text inside a running turn; on his go, carry on." Pair it with the existing memory note, widened from "something to copy" to "any question".
 
 **Principle:** When the person is watching and asks something mid-run, the answer belongs at a turn boundary, where the interface reliably shows it; a reply buried among tool calls reads to them as silence, and silence makes them ask again.
+
+### Observation 630: A picture run drove another chat's stale server on a port it assumed was free
+
+**Status:** OPEN
+**Date:** 2026-10-17
+**Session context:** the Tracker batch (D495) — the before pictures of each visible change
+**Skill:** New skill candidate: walk-script preamble (the bug-check order §7.2, `docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** standing up the build a walk or a picture run drives
+
+**Issue:** The before-pictures were served with `vite preview --strictPort` in the background; the server failed at once ("port in use") but the picture script, started in the same command, ran anyway and took a full set of pictures from whatever answered on that port: another chat's preview of a day-old build. Only the background job's failure notice, read afterwards, gave it away.
+
+**Suggested improvement:** In `docs/walk-scripts.md` (and the helper drivers), a walk or picture script checks, before its first picture, that the page it loaded is the build it means to drive — the served `index.html`'s asset name against the `dist` it was built from — and stops if not; and a background server's start is confirmed before anything drives it.
+
+**Principle:** Before trusting evidence from a running service, prove it is the instance you started — a free-looking port is not proof of identity.
+
+### Observation 631: A keyboard walk over a graph needs a test that every node is reachable
+
+**Status:** OPEN
+**Date:** 2026-10-17
+**Session context:** the Tracker batch — D980, the chart by keyboard
+**Skill:** New skill candidate: keyboard-navigation design check (the design guide §2)
+**Type:** open-source
+**Phase/Area:** designing arrow-key navigation over a chart, tree or graph
+
+**Issue:** The arrows were built to the ruled mapping (along the lines, above / below) and every step test passed; the independent scenario designer asked "can every event be reached?" — and on the real charts 13 could not (branches and multi-parent events). A first exhaustive check then reported false gaps because its state left out part of the navigation's memory.
+
+**Suggested improvement:** Wherever a keyboard walks a structure (the design guide §2's table), the check includes one exhaustive test over the REAL data: every state of the navigation (position plus whatever it remembers) explored from the start, every item reached. Keep the navigation's memory small enough that this search is finite.
+
+**Principle:** For a navigation rule, test reachability over the whole real structure, with the full state the rule keeps — per-step tests prove the steps, not the coverage.
