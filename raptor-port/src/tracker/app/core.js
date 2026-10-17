@@ -3759,7 +3759,8 @@ function enableHScroll(el) {
     else if (e.key === 'End') { el.scrollLeft = el.scrollWidth; e.preventDefault(); }
   });
   el.addEventListener('focus', () => { let fv = true; try { fv = el.matches(':focus-visible'); } catch (_) {} kbdShown = fv; if (fv) { kbdLand(); paintKbdRing(); kbdKeepInView(); } });
-  el.addEventListener('blur', () => { kbdShown = false; paintKbdRing(); });
+  /* the keyboard leaving for the pop-up it opened keeps the ring on, so the event being marked stays marked */
+  el.addEventListener('blur', () => { if (pop && popByKey) return; kbdShown = false; paintKbdRing(); });
 }
 /* THE CHART BY KEYBOARD, ON A DESKTOP (owner D980, 17 Oct 26 — "As recommended", round 1, question 2). ONE Tab reaches
    the chart (the board is the one Tab stop — never one for each of its events); then the arrows follow its lines —
@@ -4389,10 +4390,14 @@ export function openPop(id, evt) {
 /* popByKey: the pop-up was opened from the keyboard, so it takes the keyboard (Pop.jsx) */
 export let popByKey = false;
 export function closePop() {
-  /* the keyboard was inside the pop-up: it goes back to the chart, on the same event, never to nothing (D980) */
-  const inside = typeof document !== 'undefined' && document.activeElement && document.activeElement.closest && !!document.activeElement.closest('#pop');
+  /* the KEYBOARD was inside the pop-up: it goes back to the chart, on the same event, never to nothing (D980). A mouse
+     press on a grade also puts the focus on that button (Chrome does), but that is no keyboard: the chart is not given
+     the focus and no ring is drawn — the walk's picture of a mouse grade wore the ring (17 Oct 26) */
+  const a = typeof document !== 'undefined' ? document.activeElement : null;
+  const inside = !!(a && a.closest && a.closest('#pop'));
+  let keys = popByKey; if (inside && !keys) { try { keys = a.matches(':focus-visible'); } catch (_) {} }
   pop = null; popMsg = null; popByKey = false; notify();
-  if (inside) kbdBack();
+  if (inside && keys) kbdBack();
 }
 /* A tap on a ball, outside arrange mode (owner, 9 Sep 26 — "click exactly at
    the portion of the pokeball that person exist in"): the ring is the crew

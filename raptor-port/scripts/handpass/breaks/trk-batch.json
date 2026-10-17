@@ -22,5 +22,6 @@
   {"n":21,"name":"D980 ← does not go back to the event it needs","file":"src/tracker/app/core.js","find":"  if (key === 'ArrowLeft') return nearestByRow(","put":"  if (key === 'ArrowLeft') return null && nearestByRow(","tests":["src/tracker/trk-batch-ui.test.tsx"]},
   {"n":22,"name":"D980 Enter on the chart opens nothing","file":"src/tracker/app/core.js","find":"  if (showDetails) showDetailBubble(kbdId, g); else ballTap(kbdId, at);","put":"","tests":["src/tracker/trk-batch-ui.test.tsx"]},
   {"n":23,"name":"D980 the arrows act in Edit chart layout too","file":"src/tracker/app/core.js","find":"  el.addEventListener('keydown', e => {\n    if (arrangeMode) return;","put":"  el.addEventListener('keydown', e => {","tests":["src/tracker/trk-batch-ui.test.tsx"]},
-  {"n":24,"name":"D980 the ring is drawn even in Edit chart layout","file":"src/tracker/app/core.js","find":"  if (!kbdShown || arrangeMode || !kbdId) return;","put":"  if (!kbdShown || !kbdId) return;","tests":["src/tracker/trk-batch-ui.test.tsx"]}
+  {"n":24,"name":"D980 the ring is drawn even in Edit chart layout","file":"src/tracker/app/core.js","find":"  if (!kbdShown || arrangeMode || !kbdId) return;","put":"  if (!kbdShown || !kbdId) return;","tests":["src/tracker/trk-batch-ui.test.tsx"]},
+  {"n":25,"name":"D980 a mouse grade gives the chart the keyboard and draws the ring","file":"src/tracker/app/core.js","find":"  if (inside && keys) kbdBack();","put":"  if (inside) kbdBack();","tests":["src/tracker/trk-batch-ui.test.tsx"]}
 ]

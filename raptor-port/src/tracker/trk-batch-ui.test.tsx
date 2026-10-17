@@ -80,6 +80,7 @@ describe('D980 — the chart by keyboard', () => {
     expect(C.pop && C.pop.id, 'the pop-up opens on that event').toBe(id)
     const g = C.gradeOf(C.active, id) || 0
     expect((document.activeElement as HTMLElement).dataset.g, 'the keyboard is on its grade as it is').toBe(g === 0 ? '0' : g)
+    expect(ball(id)!.querySelector('.kbdring'), 'the event being marked keeps its ring while the pop-up is up').toBeTruthy()
     /* Tab stays inside the pop-up */
     const pop = document.getElementById('pop')!
     const all = [...pop.querySelectorAll('button')], last = all[all.length - 1]!; last.focus()
@@ -105,6 +106,20 @@ describe('D980 — the chart by keyboard', () => {
     expect(C.pop).toBeNull()
     expect(C.gradeOf(C.active, id)).toBe('dco')
     expect(document.activeElement).toBe(board)
+    host.remove()
+  })
+
+  it('a grade pressed with the MOUSE (its button holding the focus, as Chrome leaves it) gives the chart no focus and draws no ring', async () => {
+    const { host } = await render(<Live draw={() => <Pop />} />)
+    ;(document.activeElement as HTMLElement)?.blur?.()
+    const id = C.SYL[3].id
+    await act(async () => { C.openPop(id, { clientX: 5, clientY: 5 }); await tick() })
+    const btn = document.querySelector('#pop .opts button[data-g="marg"]') as HTMLButtonElement
+    btn.focus()
+    await act(async () => { btn.click(); await tick() })
+    expect(C.gradeOf(C.active, id)).toBe('marg')
+    expect(document.activeElement, 'the chart is not given the focus').not.toBe(board)
+    expect(document.querySelectorAll('#flowSvg .kbdring'), 'no keyboard ring').toHaveLength(0)
     host.remove()
   })
 

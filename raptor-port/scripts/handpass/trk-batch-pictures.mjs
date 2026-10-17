@@ -171,26 +171,32 @@ for (const phone of [false, true]) {
     await w.ctx.close()
   })
 
-  /* D — coming back to the Tracker: a mark far down the chart, then Log out and back in */
+  /* D — coming back to the Tracker: a mark DEEP in the chart, then Log out and back in; then a student with nothing marked,
+     picked from the Crew list with the chart in view */
   if (want('d')) await step('d ' + (phone ? 'phone' : 'desk'), async () => {
     const w = await world(phone), p = w.page
-    await w.grade('ACG-02', 'DCO')
-    await w.shot('d1-marked');
+    /* the event nearest 2,400px down the chart: well out of the first screen */
+    const deep = await p.evaluate(() => {
+      let best = null, bd = 1e9
+      for (const g of document.querySelectorAll('#flowSvg .ball')) { const m = /translate\(([-\d.]+),([-\d.]+)\)/.exec(g.getAttribute('transform')); const d = Math.abs(+m[2] - 2400); if (d < bd) { bd = d; best = g.dataset.id } }
+      return best
+    })
+    await w.grade(deep, 'DCO')
     const before = await landing(p)
-    await signOut(p, phone); await signIn(p); await toTracker(p, phone); await sleep(600)
+    await signOut(p, phone); await signIn(p); await toTracker(p, phone); await sleep(800)
     const after = await landing(p)
-    notes.push(`d ${phone ? 'phone' : 'desk'}: marked ACG-02 → ${JSON.stringify(before)}; after Log out / Log in → ${JSON.stringify(after)}`)
-    await w.note('[TRK-REMOUNT-LANDING]: back on the Tracker after Log out and Log in — the last mark was ACG-02')
+    const seen = await p.evaluate(id => { const bd = document.getElementById('board').getBoundingClientRect(), g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === id).getBoundingClientRect(); return g.top >= bd.top && g.bottom <= bd.bottom }, deep)
+    notes.push(`d ${phone ? 'phone' : 'desk'}: marked ${deep} → ${JSON.stringify(before)}; after Log out / Log in → ${JSON.stringify(after)}; ${deep} in view: ${seen}`)
+    await p.evaluate(id => { const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === id); if (g) g.id = '__deep' }, deep)
+    if (seen) await w.mark('#__deep', 1, 6)
+    await w.note(`[TRK-REMOUNT-LANDING]: back on the Tracker after Log out and Log in — the last mark was ${deep}${seen ? ' (1)' : ', not in view'}`)
     await w.shot('d2-back-after-login'); await w.clearMarks()
-    /* a student with nothing marked: the landing is the chart's first event */
-    if (phone) {
-      await w.view('info'); await p.selectOption('#activeSel', { label: 'STUDENT B' }); await sleep(800)
-      await w.view('flow'); await sleep(500)
-      const fresh = await landing(p)
-      notes.push(`d phone: picking STUDENT B (nothing marked) → ${JSON.stringify(fresh)}`)
-      await w.note('[TRK-REMOUNT-LANDING]: a student with nothing marked lands on the first event — the space above it')
-      await w.shot('d3-first-event'); await w.clearMarks()
-    }
+    /* a student with nothing marked, picked from the Crew list while the chart shows: the landing is the first event */
+    await p.selectOption('#activeSel', { label: 'STUDENT B' }); await sleep(900)
+    const fresh = await landing(p)
+    notes.push(`d ${phone ? 'phone' : 'desk'}: picking STUDENT B (nothing marked) → ${JSON.stringify(fresh)}`)
+    await w.note('[TRK-REMOUNT-LANDING]: a student with nothing marked lands on the first event — the space above it')
+    await w.shot('d3-first-event'); await w.clearMarks()
     await w.ctx.close()
   })
 

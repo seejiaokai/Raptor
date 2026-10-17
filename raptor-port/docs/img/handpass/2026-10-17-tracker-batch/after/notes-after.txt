@@ -1,0 +1,13 @@
+c: HEX deleted through Post out: true
+d desk: marked ACG-02 → {"scrollTop":257,"scrollLeft":0,"emptyAboveFirstBall":153}; after Log out / Log in → {"scrollTop":368,"scrollLeft":0,"emptyAboveFirstBall":42}
+e: the Tracker's corner "(nothing)" · Raptor's band "⚠Not saved — keep this page openRetry"
+f: ST-01 after the drop, in Edit chart layout: translate(0.0,0.0)
+g: after Tab, the keyboard is on: board
+g: after Enter — the marking pop-up open: true; the keyboard inside it: false
+g: after Escape the keyboard is on: board
+h: one wheel step zooms ×1.162 before any move, ×1.162 after two balls moved (the same step should give the same zoom)
+d phone: marked ACG-02 → {"scrollTop":110,"scrollLeft":0,"emptyAboveFirstBall":241}; after Log out / Log in → {"scrollTop":329,"scrollLeft":0,"emptyAboveFirstBall":24}
+d phone: picking STUDENT B (nothing marked) → {"scrollTop":329,"scrollLeft":0,"emptyAboveFirstBall":24}
+
+errors:
+none

@@ -28,13 +28,14 @@ export default function Pop() {
      has now (Not done when it has none), so a second Enter changes nothing; the pop-up's own Escape (core.handleEscapeKey)
      and every grade and Close hand the keyboard back to the same event on the chart (core.closePop). Opened by a mouse or
      a finger it takes nothing, as before. */
-  const opened = p && p.id, byKey = core.popByKey;
+  /* after it is placed (posn): until then it is drawn hidden to be measured, and a hidden button takes no focus */
+  const opened = p && p.id, byKey = core.popByKey, placed = !!posn;
   useEffect(() => {
-    if (!opened || !byKey || !ref.current) return;
+    if (!opened || !byKey || !placed || !ref.current) return;
     const g = core.gradeOf(core.active, opened) || 0;
     const b = ref.current.querySelector(`.opts button[data-g="${g === 0 ? '0' : g}"]`) || ref.current.querySelector('.opts button');
     if (b) b.focus({ preventScroll: true });
-  }, [opened, byKey]);
+  }, [opened, byKey, placed]);
   /* Tab and Shift+Tab go round inside it (the design guide §2 — a window keeps the keyboard), and ← → ↑ ↓ step along
      the row of grades */
   const onKeyDown = e => {
