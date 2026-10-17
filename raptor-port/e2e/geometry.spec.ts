@@ -4435,10 +4435,15 @@ test.describe('the frozen callsign column', () => {
       const w = window as any
       w.__qAt = null
       const mo = new MutationObserver(() => {
-        const m = document.querySelector('[data-testid="qsticky-head"] .qfixed-scroll') as HTMLElement | null
-        if (!m) return
+        /* what is SEEN, not how it is moved: since D993 (18 Oct 26) the row is moved by the browser where it can (a
+           scroll-driven transform — its own scrollLeft stays 0), else by its scrollLeft. Either way a pinned heading
+           must stand over its own column on the first frame. */
+        const bar = document.querySelector('[data-testid="qsticky-head"]') as HTMLElement | null
+        if (!bar) return
         mo.disconnect()
-        w.__qAt = { mirror: m.scrollLeft, grid: (document.querySelector('.qwrap') as HTMLElement).scrollLeft }
+        const th = bar.querySelector('.qfixed-scroll th[data-sort="sxo"]') as HTMLElement
+        const real = document.querySelector('#qtbl thead th[data-sort="sxo"]') as HTMLElement
+        w.__qAt = { mirror: th.getBoundingClientRect().left, grid: real.getBoundingClientRect().left }
       })
       mo.observe(document.body, { childList: true, subtree: true })
     })
@@ -4447,6 +4452,35 @@ test.describe('the frozen callsign column', () => {
     const at = await page.evaluate(() => (window as any).__qAt)
     expect(at, 'the bar was seen as it appeared').not.toBeNull()
     expect(Math.abs(at.mirror - at.grid), 'the frozen header starts where the table is, not at its first column').toBeLessThan(2)
+  })
+
+  /* THE PINNED ROW IS MOVED BY THE BROWSER (owner D993, 18 Oct 26 — "Could u try to just fix the quals pinned header with
+     the 120 frames fix"): where scroll-driven animations exist — Chromium, and his iPhone, where the Leave War's row
+     already moves this way — the row's table is translated by the table's own scroll timeline and its scroller never
+     scrolls, so no code of the page's runs per frame; its callsign heading is a still copy over the left. */
+  test('phone: where the browser can, the Quals pinned row is moved by the browser, not by the page (D993)', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'quals')
+    await page.waitForSelector('#qtbl td.qname')
+    const can = await page.evaluate(() => CSS.supports('scroll-timeline: --x x') && CSS.supports('timeline-scope: --x'))
+    test.skip(!can, 'this browser has no scroll-driven animations: the scroll listener carries the row, as before')
+    await page.evaluate(() => window.scrollTo(0, 700))
+    await expect(page.locator('[data-testid="qsticky-head"] .qfixed-anim')).toHaveCount(1)
+    await page.evaluate(() => { (document.querySelector('.qwrap') as HTMLElement).scrollLeft = 300 })
+    await page.waitForTimeout(200)
+    const m = await page.evaluate(() => {
+      const bar = document.querySelector('[data-testid="qsticky-head"]')!
+      const anim = bar.querySelector('.qfixed-anim') as HTMLElement
+      return {
+        tx: new DOMMatrixReadOnly(getComputedStyle(anim).transform).m41,
+        ownScroll: (bar.querySelector('.qfixed-scroll') as HTMLElement).scrollLeft,
+        frozen: !!bar.querySelector('.qfixed-frozen th[data-sort="cs"]'),
+      }
+    })
+    expect(Math.abs(m.tx + 300), 'the row is translated with the table').toBeLessThan(2)
+    expect(m.ownScroll, 'its own scroller is not written').toBe(0)
+    expect(m.frozen, 'the callsign heading is a still copy over the left').toBe(true)
   })
 })
 

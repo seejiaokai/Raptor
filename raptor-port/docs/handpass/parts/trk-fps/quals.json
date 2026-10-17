@@ -1,0 +1,121 @@
+[
+  {
+    "id": "Q1",
+    "name": "phone: the pinned row is over the table from its first frame (the table scrolled 400 sideways)",
+    "pass": true,
+    "detail": {
+      "key": "sxo",
+      "gap": 0
+    }
+  },
+  {
+    "id": "Q2",
+    "name": "phone: at every sideways place each pinned heading stands over its column, the callsign heading over its own",
+    "pass": true,
+    "detail": [
+      {
+        "at": 0,
+        "worst": 0,
+        "n": 4,
+        "browserFollow": true,
+        "csLeftGap": 0,
+        "frozenWidthGap": 0
+      },
+      {
+        "at": 150,
+        "worst": 0,
+        "n": 5,
+        "browserFollow": true,
+        "csLeftGap": 0.5,
+        "frozenWidthGap": 0
+      },
+      {
+        "at": 400,
+        "worst": 0,
+        "n": 4,
+        "browserFollow": true,
+        "csLeftGap": 0.5,
+        "frozenWidthGap": 0
+      },
+      {
+        "at": 769,
+        "worst": 0,
+        "n": 2,
+        "browserFollow": true,
+        "csLeftGap": 0.5,
+        "frozenWidthGap": 0
+      }
+    ]
+  },
+  {
+    "id": "Q3",
+    "name": "phone: after a finger swipes the table sideways the row is still over it",
+    "pass": true,
+    "detail": {
+      "scrolled": 225,
+      "worst": 0,
+      "n": 4,
+      "browserFollow": true,
+      "csLeftGap": 0.5,
+      "frozenWidthGap": 0
+    }
+  },
+  {
+    "id": "Q4",
+    "name": "phone: a tap on the pinned callsign heading sorts the table",
+    "pass": true,
+    "detail": {
+      "before": "Ace,Anvil,Blade",
+      "after": "Zenith,Wildcard,Warden"
+    }
+  },
+  {
+    "id": "Q5",
+    "name": "a phone turned on its side: the row re-measured and over the table",
+    "pass": true,
+    "detail": {
+      "worst": 0,
+      "n": 9,
+      "browserFollow": true,
+      "csLeftGap": 0.5,
+      "frozenWidthGap": 0
+    }
+  },
+  {
+    "id": "Q6",
+    "name": "phone, editing: the row is over the table",
+    "pass": true,
+    "detail": {
+      "worst": 0,
+      "n": 4,
+      "browserFollow": true,
+      "csLeftGap": 0.5,
+      "frozenWidthGap": 0
+    }
+  },
+  {
+    "id": "E1",
+    "name": "phone: no errors",
+    "pass": true,
+    "detail": []
+  },
+  {
+    "id": "D1",
+    "name": "desktop 1100: the row is over the table",
+    "pass": true,
+    "detail": {
+      "range": 59,
+      "worst": 0,
+      "n": 13,
+      "browserFollow": true,
+      "csLeftGap": 0.5,
+      "frozenWidthGap": 0
+    }
+  },
+  {
+    "id": "E2",
+    "name": "desktop: no errors",
+    "pass": true,
+    "detail": []
+  }
+]

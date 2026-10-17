@@ -3225,6 +3225,13 @@ bar still sorts. Browser-only — jsdom has no layout, so the mirror never mount
 there (`quals.test.tsx` pins its absence); the freeze is verified on the live
 view at desktop and phone widths.
 
+**The mirror follows by the browser (D993, 18 Oct 26 — his "Could u try to just fix the quals pinned header with the 120
+frames fix"; being built on `claude/trk-chart-fps`).** On his iPhone the Leave War's pinned date row keeps up with its
+grid and Quals' does not: the Leave War's is moved sideways by the browser itself, linked to the grid's scroll
+(`.lw-sda`, a scroll-driven animation, where the browser has one), while Quals' was moved by a scroll listener writing
+its `scrollLeft` — the page's own code, held near 60 frames on an iPhone. Quals' mirror takes the Leave War's way; the
+Leave War's row is left as it is.
+
 ## Dragging sections and waves (owner, 29 Aug 26; in-place drag 30 Aug 26)
 
 A scheduler drags the big section panels — **Overall Notes · Common Programme ·

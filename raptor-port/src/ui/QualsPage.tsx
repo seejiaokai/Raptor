@@ -343,6 +343,18 @@ export function QualsPage() {
   const qLiftRef = useRef<HTMLDivElement | null>(null)
   const qLandRef = useRef<string | null>(null)
   const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
+  /* THE PINNED HEADER FOLLOWS BY THE BROWSER (owner D993, 18 Oct 26 — "Could u try to just fix the quals pinned header
+     with the 120 frames fix"): where the browser can drive an animation from a scroll (CSS scroll-driven animations),
+     the pinned row's table is moved sideways by the table's own scroll timeline, off the page's code — the Leave War's
+     way (src/leavewar/ui/Matrix.tsx `sdaActive`), which he saw keep up with its grid on his iPhone while this row, moved
+     by a scroll listener writing scrollLeft, held near 60 frames and trailed. Detected once; where it is missing (older
+     browsers, jsdom) the scroll listener below is used, unchanged. */
+  const [sdaActive] = useState(() => {
+    try {
+      return typeof CSS !== 'undefined' && typeof CSS.supports === 'function' &&
+        CSS.supports('scroll-timeline: --x x') && CSS.supports('timeline-scope: --x')
+    } catch { return false }
+  })
   const admin = isAdmin()
 
   /* WHO MAY EDIT WHAT HERE (owner, 5 Aug 26). `Enable editing` is open to a
@@ -555,6 +567,7 @@ export function QualsPage() {
        fight an iOS fling. One-way grid → mirror, and only when it is mounted. */
     const onXScroll = () => {
       wrap.classList.toggle('xscroll', wrap.scrollLeft > 0)
+      if (sdaActive) return   /* the browser moves the pinned row (D993) — nothing to write */
       const m = mirrorRef.current
       if (m && m.scrollLeft !== wrap.scrollLeft) m.scrollLeft = wrap.scrollLeft
     }
@@ -650,7 +663,23 @@ export function QualsPage() {
      (23 Sep 26), which is the same mechanism. Pinned by "the frozen header is in
      step with the table on the first frame it shows" (e2e/geometry.spec.ts). */
   useLayoutEffect(() => {
-    if (stuck && mirrorRef.current && wrapRef.current) mirrorRef.current.scrollLeft = wrapRef.current.scrollLeft
+    const m = mirrorRef.current, w = wrapRef.current
+    if (!stuck || !m || !w) return
+    if (sdaActive) {
+      /* the browser's follow (D993): the row's table runs from 0 to minus the table's whole sideways travel across the
+         scroll's range, so the travel is told it here, measured whenever the row is pinned or re-measured (a rotate) */
+      m.style.setProperty('--qx-max', String(Math.max(0, w.scrollWidth - w.clientWidth)))
+      /* ...and the row is held where the table is until the browser has STARTED the animation: one created this frame
+         is not applied on it, so a table scrolled sideways would flash its first columns (the Leave War's lesson,
+         measured there). The hold is the animation's own value at this scroll; once it runs it outranks the inline
+         style, and the hold is dropped. */
+      const anim = m.querySelector<HTMLElement>('.qfixed-anim')
+      const run = anim?.getAnimations?.()[0]
+      if (anim && run) {
+        anim.style.transform = `translateX(${-w.scrollLeft}px)`
+        run.ready.then(() => { anim.style.transform = '' }, () => { anim.style.transform = '' })
+      }
+    } else m.scrollLeft = w.scrollLeft
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stuck])
 
@@ -775,7 +804,7 @@ export function QualsPage() {
           <button className="abtn" data-back-later={id} onClick={() => { clearBack(id); notify() }}>Later</button>
         </div>
       ))}
-      <div className="qwrap" ref={wrapRef}>
+      <div className={'qwrap' + (sdaActive ? ' q-sda' : '')} ref={wrapRef}>
         <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')} id="qtbl" ref={tblRef}
           dangerouslySetInnerHTML={{ __html: qualsTable(cols, qSeatView, qSort, qEditing, qSearch, canEditQuals(), armDel) }} />
         {/* THE LIFT FRAME (owner, 6 Sep 26): one box round a picked-up column,
@@ -801,8 +830,8 @@ export function QualsPage() {
             const th = (e.target as HTMLElement).closest?.('th[data-sort]') as HTMLElement | null
             if (th) { const key = th.dataset.sort!; setSort(s => ({ key, dir: s.key === key ? -s.dir : 1 })) }
           }}>
-          <div className="qfixed-scroll" ref={mirrorRef}>
-            <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')}
+          <div className={'qfixed-scroll' + (sdaActive ? ' qfixed-track' : '')} ref={mirrorRef}>
+            <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '') + (sdaActive ? ' qfixed-anim' : '')}
               style={{ tableLayout: 'fixed', width: stuck.cols.reduce((a, b) => a + b, 0), minWidth: 0 }}
               aria-hidden="true"
               dangerouslySetInnerHTML={{ __html:
@@ -814,6 +843,19 @@ export function QualsPage() {
                    it scrolls away with its rows and the mirror is header-only. */
                 + qualsHead(cols, qSeatView, qSort, canEditQuals(), armDel) }} />
           </div>
+          {/* THE CALLSIGN HEADING, PINNED OVER THE LEFT (the browser's follow only, D993). A table moved by a transform
+              cannot keep its heading's sticky-left, so a copy of the row, clipped to the callsign column's width, stands
+              still over the left while the moving row passes under it — the Leave War's frozen copy (`.mxfixed-frozen`).
+              A press on it sorts, as on the moving row (the bar's own click handler). */}
+          {sdaActive && (
+            <div className="qfixed-frozen" aria-hidden="true" style={{ width: stuck.cols[0] }}>
+              <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')}
+                style={{ tableLayout: 'fixed', width: stuck.cols.reduce((a, b) => a + b, 0), minWidth: 0 }}
+                dangerouslySetInnerHTML={{ __html:
+                  `<colgroup>${stuck.cols.map(w => `<col style="width:${w}px">`).join('')}</colgroup>`
+                  + qualsHead(cols, qSeatView, qSort, canEditQuals(), armDel) }} />
+            </div>
+          )}
         </div>
       )}
       {/* The Archived section, its Restore, "Restore as" and the archived man's rename moved to Admin → Users
