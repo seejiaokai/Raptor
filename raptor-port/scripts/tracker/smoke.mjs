@@ -4231,22 +4231,31 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   ok('glide: a finger flick carries the chart on after the lift, then stops (D985)', on.y > lift.y + 20 && rest1.y > on.y && rest1.y === rest2.y, JSON.stringify({ lift: lift.y, on: on.y, rest1: rest1.y, rest2: rest2.y }));
   const a2 = await top(); await flick(-150, 150); const l2 = await top(); await pp.waitForTimeout(600); const r2 = await top();
   ok('glide: a drag held still before the lift does not glide', Math.abs(r2.y - l2.y) <= 1 && l2.y > a2.y + 100, JSON.stringify({ start: a2.y, lift: l2.y, later: r2.y }));
-  /* a press on an event mid-glide stops it and opens nothing (D986) — at 100%, so an event is a target the moving chart
-     cannot slide out from under the pointer between aiming and pressing */
-  for (let i = 0; i < 8 && (await pp.textContent('#fzPct')) !== '100%'; i++) { await pp.evaluate(() => document.getElementById('fzIn').click()); await pp.waitForTimeout(120); }
-  await pp.evaluate(() => { document.getElementById('board').scrollTop = 3000; }); await pp.waitForTimeout(200);
-  await flick(-260); await pp.waitForTimeout(60);
-  const g = await pp.evaluate(() => { const bd = document.getElementById('board').getBoundingClientRect(); for (const g of document.querySelectorAll('#flowSvg .ball')) { const r = g.getBoundingClientRect(); if (r.top > bd.top + 150 && r.bottom < bd.bottom - 150 && r.left > bd.left + 10 && r.right < Math.min(bd.right, innerWidth) - 10) return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; } return null; });
-  const p0 = await top(); await pp.waitForTimeout(25); const p1 = await top();
-  /* what the press landed on, read as it lands (the chart is still moving under it) */
-  await pp.evaluate(() => { window.__pressOn = null; window.addEventListener('pointerdown', e => { const g = e.target.closest && e.target.closest('.ball'); window.__pressOn = g ? g.dataset.id : '(not an event)'; }, { capture: true, once: true }); });
-  await pp.mouse.click(g.x, g.y); await pp.waitForTimeout(100); const s1 = await top(); await pp.waitForTimeout(400); const s2 = await top();
-  const popped = await pp.evaluate(() => !!document.getElementById('pop')), pressedOn = await pp.evaluate(() => window.__pressOn);
-  ok('glide: a press on an event mid-glide stops it and opens nothing (D986)', p1.y > p0.y && pressedOn && pressedOn !== '(not an event)' && s1.y === s2.y && !popped, JSON.stringify({ gliding: [p0.y, p1.y], pressedOn, after: [s1.y, s2.y], popped }));
-  if (popped) { await pp.keyboard.press('Escape'); await pp.waitForTimeout(300); }
-  const g2 = await pp.evaluate(id => { const b = document.querySelector(`#flowSvg .ball[data-id="${id}"]`); if (!b) return null; const r = b.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; }, pressedOn);
-  await pp.mouse.click(g2.x, g2.y); await pp.waitForTimeout(500);
-  ok('glide: the next press on it opens it as normal', await pp.evaluate(() => !!document.getElementById('pop')));
+  /* a press on an event mid-glide stops it and opens nothing (D986). At 200%, aimed well inside the chart; what the press
+     landed on and the chart's place at that instant are read as it lands. The chart still moves between aiming and
+     pressing, so a press is tried up to four times until one lands on an event while the chart was moving. */
+  for (let i = 0; i < 12 && (await pp.textContent('#fzPct')) !== '200%'; i++) { await pp.evaluate(() => document.getElementById('fzIn').click()); await pp.waitForTimeout(120); }
+  let trial = null;
+  for (let k = 0; k < 4 && !trial; k++) {
+    await pp.keyboard.press('Escape'); await pp.waitForTimeout(150);
+    await pp.evaluate(() => { const b = document.getElementById('board'); b.scrollTop = Math.min(b.scrollHeight - b.clientHeight - 1500, 3000); }); await pp.waitForTimeout(200);
+    await flick(-200); const p0 = await top(); await pp.waitForTimeout(50);
+    const g = await pp.evaluate(() => { const bd = document.getElementById('board').getBoundingClientRect(), bot = Math.min(bd.bottom, innerHeight);
+      for (const g of document.querySelectorAll('#flowSvg .ball')) { const r = g.getBoundingClientRect();
+        if (r.width && r.top > bd.top + 140 && r.bottom < bot - 140 && r.left > bd.left + 10 && r.right < Math.min(bd.right, innerWidth) - 10) return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; }
+      return null; });
+    if (!g) continue;
+    await pp.evaluate(() => { window.__pressOn = null; window.addEventListener('pointerdown', e => { const b = e.target.closest && e.target.closest('.ball'); window.__pressOn = { on: b ? b.dataset.id : null, y: Math.round(document.getElementById('board').scrollTop) }; }, { capture: true, once: true }); });
+    await pp.mouse.click(g.x, g.y); await pp.waitForTimeout(100); const s1 = await top(); await pp.waitForTimeout(400); const s2 = await top();
+    const at = await pp.evaluate(() => window.__pressOn), popped = await pp.evaluate(() => !!document.getElementById('pop'));
+    if (at && at.on && at.y > p0.y) trial = { on: at.on, lift: p0.y, pressedAt: at.y, after: [s1.y, s2.y], popped };
+    else if (popped) { await pp.keyboard.press('Escape'); await pp.waitForTimeout(300); }
+  }
+  ok('glide: a press on an event mid-glide stops it and opens nothing (D986)', !!trial && trial.after[0] === trial.after[1] && trial.after[1] - trial.lift < 400 && !trial.popped, JSON.stringify(trial));
+  if (trial && trial.popped) { await pp.keyboard.press('Escape'); await pp.waitForTimeout(300); }
+  const g2 = trial && await pp.evaluate(id => { const b = document.querySelector(`#flowSvg .ball[data-id="${id}"]`); if (!b) return null; const r = b.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; }, trial.on);
+  if (g2) await pp.mouse.click(g2.x, g2.y); await pp.waitForTimeout(500);
+  ok('glide: the next press on it opens it as normal', !!g2 && await pp.evaluate(() => !!document.getElementById('pop')));
   await pp.keyboard.press('Escape'); await pp.waitForTimeout(300);
   await pp.evaluate(() => document.getElementById('fzReset').click()); await pp.waitForTimeout(400);
   /* a glide that meets the top runs past it and springs back to rest on it (D987) */

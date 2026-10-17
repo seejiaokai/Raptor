@@ -33,11 +33,8 @@ the later merge keeps both (D78).
   the sheet); gates: unit 11657, build, tfin 728/0, e2e 844, rulecheck, docsize green. Evidence:
   `raptor-port/docs/handpass/2026-10-17-trk-glide.md`. Round-1 page: `raptor-port/docs/mock/2026-10-17-trk-glide-r1/`
   (https://claude.ai/artifact/DaEXWjGkxuctqtYutzbVbx).
-- **Pick up here:** (1) run the Tracker suite through the lock (`node raptor-port/scripts/gatelock.mjs exec "<branch> —
-  Tracker smoke" -- npm run smoke:tracker` from `raptor-port/`) — its new glide block had a name declared twice (fixed in the
-  last commit), so it has NOT yet run green with it; (2) fill the sheet's Gates section and the `Walk:` line; (3) open the
-  pull request, unsubscribe from it, send him the preview link with the pictures and his iPhone look card (the sheet's last
-  section). No merge without his "merge live".
+- **Pick up here:** the pull request is open (Tracker suite 453 / 0, every gate green on his PC); waiting for his look on his
+  iPhone (the sheet's last section) and his "merge live". After it is live: archive `[TRK-SCROLL-GLIDE]` and remove this block.
 - **Walk scripts' trap, now guarded:** the shared driver's default port is ANOTHER chat's; the glide walk and the new break
   runner (`raptor-port/scripts/handpass/breaks-walk.mjs`) refuse an address that does not serve this checkout's build —
   always pass `HP_URL` (this chat's preview was http://localhost:4181). Skill observation 634.
