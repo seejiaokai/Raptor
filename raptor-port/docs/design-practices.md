@@ -563,6 +563,7 @@ pictures to him — a look does not report each instance, and nothing is recolou
 new thing and its fade (with no glow, §4), the picked-up look and landing flash of a drag (a month's bar wearing the ring
 shows no landing flash, §4), a new flag's flash, the board sliding up; a look does not report them.
 
+- **Smooth — as smooth as the phone's own (his D991, 18 Oct 26: "The key for UI to feel good is also speed. Which is FPS in this case. Smooth scroll"):** anything a finger moves — a scroll, its glide, a pinch — runs at the screen's full frame rate, as the phone's own scrolling does (120 frames on his iPhone); a design that holds it lower is not chosen to save work, and the frame rate is measured, never assumed.
 - **Quiet and quick:** about 150–240 thousandths of a second, easing out, no bounce. **One exception, his (D987):** the Tracker's finger glide
   bounces at an end, like the iPhone's lists; and the glide, like the edge scroll, stays on for a reader who asked for less
   motion — it is the scroll itself (D989).
