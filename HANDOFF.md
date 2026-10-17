@@ -29,7 +29,9 @@ the later merge keeps both (D78).
 - **Branch:** `claude/tracker-feature-batch-6ea3a7`, cut from `main` at pull request 528; its pull request opens when job 1's check closes.
 - **Questions waiting for him:** round 1 of the Tracker batch, on the page above — (1) `[TRK-ATTEMPTS]`: is what the pop-up keeps already the attempt history? recommended A, yes, close it; (2) `[TRK-KBD-CHART]`: the chart by keyboard — recommended A, Tab in and the arrows follow the lines; (3) `[POST-OUT-TRACKER]`: a deleted man leaves every course where he still has events to do — recommended A; (4) `[TRK-FLEXBAR-INK]`: dark words on green, amber and red bars — recommended A. Nothing of the batch's build waits on them but the four items themselves; the faults that ride without a question can be built next. Also his: "merge live" for pull request 529 (nothing on screen changes).
 - **Pick up here:** take his four answers (record any new ruling first — the three steps in `DECISIONS.md`), then build the batch on a new branch from `main` once 529 merges (or from this branch while it waits): the answered items plus the riding faults (the triage's list), one FULL check for the lot (D485), each visible fix shown before and after. Release this branch from the checkout first if a new chat takes it (D975).
-- **Running when written:** none.
+- **Pull request:** 529 (`main` ← this branch) — GitHub's full checks green on `288d3616c`; the last push (the round-1 page and records — documents only, but the pull request carries code, so every check re-runs) read at the night's end. Auto-fix was switched on for it by the app, not by the agent.
+- **The night's figures:** weekly allowance 62% → 63%; this chat 55% full at the end, no compaction. His messages at the start ("what is this job about…") were answered only once the turn ended — skill observation 629.
+- **Running when written:** none (GitHub's run of the last push, if still going).
 <!-- /now -->
 
 ## Next, in order
