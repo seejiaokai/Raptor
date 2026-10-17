@@ -130,7 +130,7 @@ export default function Pop() {
         </div>
       ) : null}
       <div id="popInfo" style={{ marginTop: 8, borderTop: '1px dashed var(--line)', paddingTop: 8, fontSize: 12 }} dangerouslySetInnerHTML={{ __html: core.infoHtml(p.id) }} />
-      <button className="sm" id="popEditInfo" style={{ marginTop: 6, width: '100%' }} onClick={() => { const id = p.id; core.closePop(); core.openInfo(id); }}>✎ Edit details</button>
+      <button className="sm" id="popEditInfo" style={{ marginTop: 6, width: '100%' }} onClick={() => { const id = p.id; core.closePop(true); core.openInfo(id); }}>✎ Edit details</button>
     </div>
   );
 }

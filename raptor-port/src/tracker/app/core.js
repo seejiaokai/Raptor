@@ -3801,18 +3801,34 @@ function kbdKeepInView() {
   if (r.top < b.top + m) bd.scrollTop -= (b.top + m) - r.top; else if (r.bottom > b.bottom - m) bd.scrollTop += r.bottom - (b.bottom - m);
   if (r.left < b.left + m) bd.scrollLeft -= (b.left + m) - r.left; else if (r.right > b.right - m) bd.scrollLeft += r.right - (b.right - m);
 }
-/* the event an arrow goes to from `id`, or null (the choice above) */
-export function kbdNext(id, key) {
-  const ev = byid[id]; if (!ev) return null;
+/* the event an arrow goes to from `id`, or null (the choice above). BRANCHES (the batch's scenario design, 17 Oct 26 —
+   on the 2024 chart nine events, on the 2026 chart four, could not be reached at all): where an event has several next
+   events (ACG-02's four) → takes the first, nearest row then leftmost; where it needs several (TR-1(P) needs four — the
+   2026 chart's EPT column is joined to the rest no other way) ← takes the first. An arrow and its opposite go and come
+   back: → then ← returns, ← then → returns. And the first arrow pressed AGAIN right after coming back takes the NEXT one,
+   round to the first: from ACG-02, → ← → takes its second branch; from TR-1(P), ← → ← takes the second thing it needs —
+   so every branch and every need can be walked, as a tree is. `state.came` is the last arrow move ({ from, key, back } —
+   back: that move came back to where the move before it started), null after anything else moved the keyboard. Every
+   event of the four built-in charts is reachable this way from the first (the batch's test walks every state). */
+let kbdCame = null;
+function kbdOrder(id, list) {
   const at = nodePos(id), rowOfY = y => Math.round(y / 92);
-  const nearestByRow = list => {
-    let best = null, bs = null;
-    for (const c of list) { const q = nodePos(c.id); const sc = [Math.abs(rowOfY(q.y) - rowOfY(at.y)), q.x]; if (!bs || sc[0] < bs[0] || (sc[0] === bs[0] && sc[1] < bs[1])) { best = c.id; bs = sc; } }
-    return best;
+  return list.map(c => ({ id: c.id, q: nodePos(c.id) }))
+    .sort((a, b) => (Math.abs(rowOfY(a.q.y) - rowOfY(at.y)) - Math.abs(rowOfY(b.q.y) - rowOfY(at.y))) || (a.q.x - b.q.x)).map(c => c.id);
+}
+export function kbdNext(id, key, came) {
+  const ev = byid[id]; if (!ev) return null;
+  if (came === undefined) came = kbdCame;
+  const along = (list, opp) => {
+    if (!list.length) return null;
+    if (!(came && came.key === opp && list.includes(came.from))) return list[0];
+    /* came back here from where this arrow had just gone: the next one; else back where the keyboard came from */
+    return came.back ? list[(list.indexOf(came.from) + 1) % list.length] : came.from;
   };
-  if (key === 'ArrowRight') return nearestByRow(SYL.filter(e => (e.prereqs || []).includes(id)));
-  if (key === 'ArrowLeft') return nearestByRow((ev.prereqs || []).map(p => byid[p]).filter(Boolean));
+  if (key === 'ArrowRight') return along(kbdOrder(id, SYL.filter(e => (e.prereqs || []).includes(id))), 'ArrowLeft');
+  if (key === 'ArrowLeft') return along(kbdOrder(id, (ev.prereqs || []).map(p => byid[p]).filter(Boolean)), 'ArrowRight');
   if (key === 'ArrowUp' || key === 'ArrowDown') {
+    const at = nodePos(id), rowOfY = y => Math.round(y / 92);
     const up = key === 'ArrowUp'; let best = null, bs = null;
     for (const e of SYL) {
       if (e.id === id) continue; const q = nodePos(e.id), dy = q.y - at.y;
@@ -3824,15 +3840,26 @@ export function kbdNext(id, key) {
   }
   return null;
 }
+/* one arrow pressed from `id` with `came`: [where the keyboard goes, the move it remembers] — a test walks every state */
+export function kbdStep(id, key, came) {
+  const n = kbdNext(id, key, came);
+  if (!n) return [id, came];
+  /* back: this move came back to the event the move before started from, by the opposite arrow (a go and come back) */
+  const opp = { ArrowRight: 'ArrowLeft', ArrowLeft: 'ArrowRight' }[key];
+  return [n, { from: id, key, back: !!(came && came.from === n && came.key === opp) }];
+}
 /* the chart's keys; true when the key was the chart's */
 function chartKey(e) {
   const k = e.key;
   const arrow = k === 'ArrowRight' || k === 'ArrowLeft' || k === 'ArrowUp' || k === 'ArrowDown';
   if (!arrow && k !== 'Enter' && k !== ' ') return false;
   if (e.altKey || e.ctrlKey || e.metaKey || resuming) return false;
+  /* a window over the chart has the keyboard's business, not the chart behind it (the scenario design: ✎ Edit details
+     opened from the pop-up left the arrows walking the ring behind the details window) */
+  if (windowUp()) return false;
   e.preventDefault();
   kbdLand(); kbdShown = true;
-  if (arrow) { const n = kbdNext(kbdId, k); if (n) kbdId = n; paintKbdRing(); kbdKeepInView(); return true; }
+  if (arrow) { const [n, c] = kbdStep(kbdId, k, kbdCame); if (n !== kbdId) { kbdId = n; kbdCame = c; } paintKbdRing(); kbdKeepInView(); return true; }
   const g = kbdBall(kbdId); if (!g) return true;
   paintKbdRing(); kbdKeepInView();
   const r = g.getBoundingClientRect(), at = { clientX: r.left + r.width / 2, clientY: r.bottom - 6, target: null, byKey: true };
@@ -3841,6 +3868,8 @@ function chartKey(e) {
   if (showDetails) showDetailBubble(kbdId, g); else ballTap(kbdId, at);
   return true;
 }
+/* any Tracker window, question or list that sits over the chart */
+function windowUp() { return !!(dlg || infoId != null || editId != null || showAllOpen || ordMode || copyOpen || sylModalOpen || failLog || lullPick || lullCopy); }
 /* the keyboard goes back to the chart, on the same event, when the pop-up it was in closes (Escape, a grade, Close) */
 function kbdBack() {
   const bd = document.getElementById('board'); if (!bd) return;
@@ -4337,10 +4366,20 @@ export async function applyLullCopy() {
    reckoned from the letters (KEY_EM — a bold capital is about two thirds of the type's height), the same in every
    browser and in a test. */
 const KEY_X0 = -95, KEY_X1 = 245, KEY_EM = 0.68, KEY_MIN = 12, KEY_PAD = 3;
-export function keyFont(name, anchor, x, size) {
+/* In a browser the name is MEASURED in the key's own type (a canvas, cached), at 100px: a row of W or M is far wider
+   than the letter-count reckoning (the batch's scenario design, 17 Oct 26). Where nothing can measure (a test's jsdom)
+   the reckoning stands. */
+let keyCtx;
+function keyEmWidth(name, weight) {
+  if (keyCtx === undefined) { try { keyCtx = (typeof document !== 'undefined' && document.createElement('canvas').getContext('2d')) || null; } catch (_) { keyCtx = null; } }
+  if (!keyCtx) return String(name).length * KEY_EM;
+  keyCtx.font = `${weight} 100px "Segoe UI",Roboto,Arial,sans-serif`;
+  return keyCtx.measureText(String(name)).width / 100;
+}
+export function keyFont(name, anchor, x, size, weight = 700) {
   const n = String(name || '').length; if (!n) return { size, squeeze: 0 };
   const room = (anchor === 'end' ? x - KEY_X0 : anchor === 'start' ? KEY_X1 - x : 2 * Math.min(x - KEY_X0, KEY_X1 - x)) - KEY_PAD;
-  const fit = room / (n * KEY_EM);
+  const fit = room / keyEmWidth(name, weight);
   if (fit >= size) return { size, squeeze: 0 };
   if (fit >= KEY_MIN) return { size: Math.floor(fit * 10) / 10, squeeze: 0 };
   return { size: KEY_MIN, squeeze: Math.max(1, Math.floor(room)) };
@@ -4354,7 +4393,7 @@ export function renderKeyBall() {
     const mid = (a0 + a1) / 2 * Math.PI / 180; const lr = rO + 10;
     const x = cx + lr * Math.cos(mid), y = cy + lr * Math.sin(mid);
     const anchor = Math.cos(mid) > 0.3 ? 'start' : Math.cos(mid) < -0.3 ? 'end' : 'middle';
-    const nm = r ? r.name : '', fs = keyFont(nm, anchor, x, on ? 21 : 19);
+    const nm = r ? r.name : '', fs = keyFont(nm, anchor, x, on ? 21 : 19, on ? 800 : 700);
     labels += `<text x="${x.toFixed(0)}" y="${(y + 7).toFixed(0)}" text-anchor="${anchor}" font-size="${fs.size}"${fs.squeeze ? ` textLength="${fs.squeeze}" lengthAdjust="spacingAndGlyphs"` : ''} font-weight="${on ? 800 : 700}" fill="${on ? PAL.accent : PAL.ink}">${escapeId(nm)}</text>`;
   }
   /* Wide and short: the names run out to either side, so the box wants the shape
@@ -4380,6 +4419,7 @@ export function isoOf(d) { return d.getFullYear() + '-' + String(d.getMonth() + 
 export function isoToday() { try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Singapore', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); } catch (e) { return isoOf(new Date()); } }
 export function openPop(id, evt) {
   /* the keyboard carries on from the event a pop-up was opened on, however it was opened (D980) */
+  if (kbdId !== id) kbdCame = null;
   kbdId = id; popByKey = !!(evt && evt.byKey);
   pop = { id, x: evt.clientX, y: evt.clientY };
   popDoneDate = doneDate(active, id) || isoToday();
@@ -4389,15 +4429,20 @@ export function openPop(id, evt) {
 }
 /* popByKey: the pop-up was opened from the keyboard, so it takes the keyboard (Pop.jsx) */
 export let popByKey = false;
-export function closePop() {
+export function closePop(toWindow) {
   /* the KEYBOARD was inside the pop-up: it goes back to the chart, on the same event, never to nothing (D980). A mouse
      press on a grade also puts the focus on that button (Chrome does), but that is no keyboard: the chart is not given
-     the focus and no ring is drawn — the walk's picture of a mouse grade wore the ring (17 Oct 26) */
+     the focus and no ring is drawn — the walk's picture of a mouse grade wore the ring (17 Oct 26). `toWindow`: the
+     pop-up hands over to a window of its own (✎ Edit details) — the keyboard goes there, and back to the chart when it
+     closes (closeInfo). */
   const a = typeof document !== 'undefined' ? document.activeElement : null;
   const inside = !!(a && a.closest && a.closest('#pop'));
   let keys = popByKey; if (inside && !keys) { try { keys = a.matches(':focus-visible'); } catch (_) {} }
   pop = null; popMsg = null; popByKey = false; notify();
-  if (inside && keys) kbdBack();
+  if (toWindow) { infoByKey = inside && keys; return; }
+  if (inside && keys) { kbdBack(); return; }
+  /* closed some other way — a press outside it, another tab: the keyboard is not on the chart, so its ring goes */
+  if (kbdShown && !(typeof document !== 'undefined' && document.activeElement && document.activeElement.id === 'board')) { kbdShown = false; paintKbdRing(); }
 }
 /* A tap on a ball, outside arrange mode (owner, 9 Sep 26 — "click exactly at
    the portion of the pokeball that person exist in"): the ring is the crew
@@ -4449,6 +4494,10 @@ export function scrollToEvent(id) {
      chart was drawn (first mount, a hidden tab) — size it now, so the middle
      is reachable, then measure. */
   padBoard();
+  /* the keyboard's place follows the view: after a crew pick, a search or a landing the next arrow starts from the event
+     brought in, never yanking the view back to an old one (the scenario design, 17 Oct 26 — D980) */
+  if (kbdId !== id) kbdCame = null;
+  kbdId = id; paintKbdRing();
   const r = g.getBoundingClientRect(), b = bd.getBoundingClientRect();
   /* ...centred as far as the chart allows, but never with the empty slack above or left of the chart's start in view
      ([TRK-REMOUNT-LANDING], 17 Oct 26): the slack exists so an event anywhere can come to the middle (padBoard), yet an
@@ -4543,6 +4592,12 @@ export async function popGrade(v) {
      on marks[null][id]. Clicking an event on an empty course should do nothing,
      not break the page. */
   if (!s) { closePop(); return; }
+  /* THE GRADE IT ALREADY HAS, ON THE DAY IT ALREADY CARRIES, CHANGES NOTHING (the batch's scenario design, 17 Oct 26 —
+     D980): the keyboard opens the pop-up on the event's own grade, so a second Enter presses it — and that wrote a mark
+     record, an undo step and a "last mark" for a change of nothing. Now it only closes, as Close does. A different day
+     in Done on is still a change (a re-date). */
+  { const m0 = marks[s] && marks[s][popId], g0 = (m0 && m0.g) || 0, gv = v === '0' ? 0 : v;
+    if (gv === g0 && (!DONE.has(gv) || (isWholeDay(popDoneDate) ? popDoneDate : isoToday()) === (m0 && m0.d))) { closePop(); return; } }
   /* a grade that says "done" on a day that has not come is refused, the pop-up left
      up to be answered (D374) */
   if (DONE.has(v)) { const p = popDayProblem(popDoneDate, popDonePartial); if (p) { popMsg = { where: 'done', text: p }; notify(); return; } }
@@ -4796,8 +4851,10 @@ export function toggleDetails() {
 }
 /* ---------- event info editor ---------- */
 export let infoId = null;
+/* opened from a pop-up the keyboard was in (closePop's `toWindow`): closing it gives the keyboard back to the chart (D980) */
+let infoByKey = false;
 export function openInfo(id) { infoId = id; notify(); }
-export function closeInfo() { infoId = null; notify(); }
+export function closeInfo() { infoId = null; notify(); if (infoByKey) { infoByKey = false; kbdBack(); } }
 /* the id-explicit forms — used by the inline editor in the Show All list */
 export async function saveInfoFor(id, vals) {
   if (!id) return;
@@ -4983,6 +5040,10 @@ export function leaveRunningCourses() {
 }
 async function leaveRunningCoursesNow(gone) {
   let left = 0;
+  const wasActive = active;
+  /* the charts' definitions as stored — the boot runs this before any course is loaded (customDefs is the loaded course's) */
+  const defs = sParse(await sGet(kSyls(null)), {}, 'object');
+  const sylSource = n => (has(defs, n) && sylEntry(n)) ? defs[n] : (baseOf(n) ? SYLLABI[baseOf(n)] : null);
   for (const ce of COURSES.slice()) {
     if (!isCourseEntry(ce)) continue; const c = ce.id;
     if (!(await sGet(kIdMig(c)))) continue;
@@ -5020,7 +5081,11 @@ async function leaveRunningCoursesNow(gone) {
     if (c === course && leaving.has(prefGet(pickKey('lastCrew:' + c)))) prefSet(pickKey('lastCrew:' + c), '');
     left += leaving.size;
   }
-  if (left) { refreshActive(); renderBoard(); renderSide(); notify(); }
+  if (left && course) {
+    refreshActive(); renderBoard(); renderSide(); notify();
+    /* he was the one on screen: the chart lands on whoever is picked now, as a pick does */
+    if (active !== wasActive) landChart();
+  }
   return left;
 }
 onGonePeople(() => { leaveRunningCourses(); });
@@ -6826,6 +6891,10 @@ export async function init() {
      entries — a course that was deleted, renamed, or only ever existed in
      someone else's browser simply fails the membership test and falls back to
      the top of the list. lastCourse is a course id. */
+  /* a man deleted while the Tracker was closed has left the courses still running for him BEFORE the first course opens,
+     so he is never drawn, picked or landed on, not even for a moment (D981; the scenario design, 17 Oct 26). A boot
+     write, like the upgrades above; the deletes that come while it is open go through the commands (onGonePeople). */
+  if (getGonePeople().length) await leaveRunningCoursesNow(new Set(getGonePeople()));
   const __who = whoamiId();
   const __want = prefGet(pickKey('lastCourse'));
   await loadCourse((__want && COURSES.some(c => isCourseEntry(c) && c.id === __want)) ? __want : (COURSES[0] && COURSES[0].id), true);
@@ -6841,9 +6910,6 @@ export async function init() {
   trkRegisterCommands();
   TRK_COMMANDS = true;
   notify();   /* the boot gate (App) subscribes to getVersion — flip it off BootLoading */
-  /* a man deleted while the Tracker was closed leaves the courses still running for him now (D981) — on the load
-     chain, after the course above, through the commands just turned on */
-  leaveRunningCourses();
   refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
   /* After the first paint, so the balls exist to measure. No last mark → the
      chart's first event, the same landing a crew pick makes. */

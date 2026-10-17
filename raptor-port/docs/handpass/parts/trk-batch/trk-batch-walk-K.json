@@ -1,0 +1,94 @@
+{
+  "rows": [
+    {
+      "step": "K1 Tab reaches the chart; the ring is on its landing event, the plain blue ring, one only, no glow",
+      "pass": true,
+      "said": "Tabs from the search box: 3 · ring {\"id\":\"ST-01\",\"n\":1,\"stroke\":\"#1E86FF\",\"sw\":\"2\",\"filter\":\"none\"}"
+    },
+    {
+      "step": "K2 the next Tab leaves the chart — no Tab stop on its events",
+      "pass": true,
+      "said": "{\"inChart\":false,\"id\":\"fzOut\"}"
+    },
+    {
+      "step": "K2b Shift+Tab comes back to the chart, the ring on the same event",
+      "pass": true,
+      "said": "{\"id\":\"ST-01\",\"n\":1,\"stroke\":\"#1E86FF\",\"sw\":\"2\",\"filter\":\"none\"}"
+    },
+    {
+      "step": "K3 → goes on along a line, ← comes back to the event it needs",
+      "pass": true,
+      "said": "ST-01 → ACG-01 ← ST-01"
+    },
+    {
+      "step": "K4 ↓ fourteen times walks down the chart and the chart follows: the ringed event is in view",
+      "pass": true,
+      "said": "on IAT-01 · {\"inView\":true,\"top\":628.0400390625}"
+    },
+    {
+      "step": "K5 ↑ as many times climbs back to the top rows",
+      "pass": true,
+      "said": "on ST-01"
+    },
+    {
+      "step": "K6 Enter opens the marking pop-up on that event, the keyboard on its grade as it is",
+      "pass": true,
+      "said": "pop on ACG-01 · STUDENT A · focus grade:0 · its grade 0"
+    },
+    {
+      "step": "K6b the ring stays on the event while the pop-up is up",
+      "pass": true,
+      "said": "{\"id\":\"ACG-01\",\"n\":1,\"stroke\":\"#1E86FF\",\"sw\":\"2\",\"filter\":\"none\"}"
+    },
+    {
+      "step": "K7 → inside the pop-up steps to the next grade",
+      "pass": true,
+      "said": "grade:dco"
+    },
+    {
+      "step": "K8 Tab goes round inside the pop-up (16 presses)",
+      "pass": true,
+      "said": "true"
+    },
+    {
+      "step": "K9 Enter on DCO marks it and the keyboard is back on the chart, on the same event",
+      "pass": true,
+      "said": "grade dco · focus board · ring {\"id\":\"ACG-01\",\"n\":1,\"stroke\":\"#1E86FF\",\"sw\":\"2\",\"filter\":\"none\"}"
+    },
+    {
+      "step": "K10 Ctrl+Z takes the mark back; the chart is drawn again and the ring is still on the event",
+      "pass": true,
+      "said": "grade 0 · ring {\"id\":\"ACG-01\",\"n\":1,\"stroke\":\"#1E86FF\",\"sw\":\"2\",\"filter\":\"none\"}"
+    },
+    {
+      "step": "K11 Escape closes the pop-up, the keyboard back on the chart, the same event",
+      "pass": true,
+      "said": "board · {\"id\":\"ACG-01\",\"n\":1,\"stroke\":\"#1E86FF\",\"sw\":\"2\",\"filter\":\"none\"}"
+    },
+    {
+      "step": "K12 a grade pressed with the mouse: marked, no keyboard ring, the chart not given the focus",
+      "pass": true,
+      "said": "grade marg · ring null · focus BODY"
+    },
+    {
+      "step": "K13 in Details mode Enter shows the event's brief, and no marking pop-up",
+      "pass": false,
+      "said": "bubble false"
+    },
+    {
+      "step": "K14 in Edit chart layout no ring is drawn and the arrows move nothing",
+      "pass": true,
+      "said": "null"
+    },
+    {
+      "step": "K15 after a crew change the keyboard is back on the same event",
+      "pass": true,
+      "said": "{\"id\":\"ACG-02\",\"n\":1,\"stroke\":\"#1E86FF\",\"sw\":\"2\",\"filter\":\"none\"}"
+    },
+    {
+      "step": "K console/page errors",
+      "note": ""
+    }
+  ],
+  "errors": []
+}

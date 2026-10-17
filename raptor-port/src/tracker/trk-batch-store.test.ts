@@ -11,6 +11,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import * as core from './app/core.js'
 import { useStorageImpl, useSaveHealth } from './storage.js'
 import { setPeople, setGonePeople } from './people.js'
+import { deletedForTracker } from './peoplewire'
 import { Whiteboard } from '../storage/whiteboard'
 import { trackerTarget } from '../storage/adapters'
 import { wireRows } from '../state/persist'
@@ -153,5 +154,36 @@ describe('[TRK-SAVE-FAIL-SAYS-SAVED] — no "saved" while the saver has failed',
     expect(C.saveWords().text, 'nothing says saved while Raptor says Not saved').toBe('')
     status = 'saved'; subs.forEach(f => f()); await settle()
     expect(C.saveWords().text, 'back once Retry has landed').toMatch(/saved/)
+  })
+})
+
+describe('D981 — only a DELETED man leaves; the bridge names no one else', () => {
+  it('archived, posted out, SANS, a guest: none is on the deleted list; the deleted man is', () => {
+    expect(deletedForTracker({ a: { archived: true }, b: { deleted: true, archived: true }, c: { san: true }, d: {}, e: { special: true } })).toEqual(['b'])
+  })
+})
+
+describe('D980 — the grade an event already has, pressed again, saves nothing', () => {
+  it('Not done on an unmarked event: no saved group, no undo step', async () => {
+    const id = C.SYL[5].id
+    expect(C.gradeOf(C.active, id)).toBe(0)
+    let n = 0; const off = wb.subscribe(() => { n++ })
+    const canUndo0 = C.undoWhat()
+    C.openPop(id, { clientX: 1, clientY: 1 }); await C.popGrade('0'); await settle()
+    off()
+    expect(n, 'nothing saved').toBe(0)
+    expect(C.undoWhat(), 'no new undo step').toBe(canUndo0)
+    expect(C.pop, 'it closes, as Close does').toBeNull()
+  })
+  it('DCO on an event already DCO on the same day: nothing saved; on another day: a re-date is saved', async () => {
+    const id = C.SYL[6].id
+    C.openPop(id, { clientX: 1, clientY: 1 }); await C.popGrade('dco'); await settle()
+    let n = 0; const off = wb.subscribe(() => { n++ })
+    C.openPop(id, { clientX: 1, clientY: 1 }); await C.popGrade('dco'); await settle()
+    expect(n, 'the same day again: nothing saved').toBe(0)
+    C.openPop(id, { clientX: 1, clientY: 1 }); C.popDoneChanged('2026-01-05', false); await C.popGrade('dco'); await settle()
+    off()
+    expect(n, 'another day: saved').toBeGreaterThan(0)
+    expect(C.marks[C.active][id].d).toBe('2026-01-05')
   })
 })

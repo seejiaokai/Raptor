@@ -123,7 +123,9 @@ describe('D980 — the chart by keyboard', () => {
     host.remove()
   })
 
-  it('in Edit chart layout the arrows are not the chart\'s', async () => {
+  it('in Edit chart layout the arrows are not the chart\'s, and no ring is drawn', async () => {
+    board.focus(); await key(board, 'ArrowDown')
+    expect(document.querySelectorAll('#flowSvg .kbdring'), 'the ring, before').toHaveLength(1)
     C.toggleArrange(); await tick()
     const was = C.kbdId
     await key(board, 'ArrowDown')
@@ -208,5 +210,79 @@ describe('[TRK-KEY-NAME-CLIP] — every name of the key inside the card', () => 
     const m = /font-size="([\d.]+)"[^>]*>HIS STUDENT</.exec(html)
     expect(m, 'the name is drawn').toBeTruthy()
     expect(+m![1]).toBeLessThan(19)
+  })
+})
+
+describe('D980 — the scenario designer\'s cases (17 Oct 26)', () => {
+  it('a window over the chart has the keys: with the details window up the arrows walk nothing and Enter opens nothing', async () => {
+    board.focus(); await key(board, 'ArrowDown')
+    const was = C.kbdId
+    C.openInfo(was)
+    await key(board, 'ArrowDown'); await key(board, 'Enter')
+    expect(C.kbdId).toBe(was)
+    expect(C.pop).toBeNull()
+    C.closeInfo()
+  })
+  it('✎ Edit details pressed from a keyboard pop-up: the keyboard leaves the chart for the window, and comes back to the same event when it closes', async () => {
+    const { host } = await render(<Live draw={() => <Pop />} />)
+    board.focus(); await key(board, 'Enter'); await act(async () => { await tick() })
+    const id = C.pop.id
+    const btn = document.getElementById('popEditInfo') as HTMLButtonElement
+    btn.focus(); await act(async () => { btn.click(); await tick() })
+    expect(C.infoId).toBe(id)
+    expect(document.activeElement, 'not handed to the chart behind the window').not.toBe(board)
+    await act(async () => { C.closeInfo(); await tick() })
+    expect(document.activeElement, 'back on the chart').toBe(board)
+    expect(C.kbdId).toBe(id)
+    host.remove()
+  })
+  it('a keyboard pop-up closed by a press elsewhere takes the ring with it', async () => {
+    const { host } = await render(<Live draw={() => <Pop />} />)
+    board.focus(); await key(board, 'Enter'); await act(async () => { await tick() })
+    ;(document.activeElement as HTMLElement).blur(); document.body.focus()
+    await act(async () => { C.closePop(); await tick() })
+    expect(document.querySelectorAll('#flowSvg .kbdring')).toHaveLength(0)
+    host.remove()
+  })
+  it('the keyboard follows a search: the next arrow starts from the event found', async () => {
+    C.runSearch('ST-02'); await new Promise(r => setTimeout(r, 60))
+    expect(C.kbdId).toBe('ST-02')
+    C.clearSearch()
+  })
+  it('branches: → takes the first, ← comes back, → again takes the next branch — every branch once, round to the first', () => {
+    const p = C.SYL.find((e: any) => C.SYL.filter((x: any) => (x.prereqs || []).includes(e.id)).length >= 3).id
+    const kids = C.SYL.filter((x: any) => (x.prereqs || []).includes(p)).map((x: any) => x.id)
+    let at = p, came: any = null; const seen: string[] = []
+    for (let i = 0; i <= kids.length; i++) {
+      ;[at, came] = C.kbdStep(at, 'ArrowRight', came); seen.push(at)
+      const [b, c2] = C.kbdStep(at, 'ArrowLeft', came); expect(b, '← comes back').toBe(p); at = b; came = c2
+    }
+    expect(seen.slice(0, kids.length).sort(), 'every branch, once each').toEqual(kids.slice().sort())
+    expect(seen[kids.length], 'then round to the first').toBe(seen[0])
+  })
+  it('an event that needs several: ← takes the first, → comes back down, ← again takes the next it needs', () => {
+    const x = C.SYL.find((e: any) => (e.prereqs || []).filter((p: string) => C.byid[p]).length >= 2)
+    const ups = x.prereqs.filter((p: string) => C.byid[p])
+    let at = x.id, came: any = null; const seen = new Set<string>()
+    for (let i = 0; i < ups.length; i++) {
+      ;[at, came] = C.kbdStep(at, 'ArrowLeft', came); seen.add(at)
+      ;[at, came] = C.kbdStep(at, 'ArrowRight', came); expect(at, '→ comes back down').toBe(x.id)
+    }
+    expect([...seen].sort()).toEqual(ups.slice().sort())
+  })
+  it('every event of every built-in chart can be reached from its first one by the four arrows (every state walked)', async () => {
+    for (const id of ['sb2024', 'sb2026', 'sbtx2026', 'sbagaa2026']) {
+      if (!C.sylEntry(id)) continue
+      await C.switchSyllabus(id); await C.whenLoaded(); await tick()
+      const keyOf = (at: string, c: any) => at + '|' + (c ? c.from + '|' + c.key + '|' + c.back : '')
+      const seen = new Set([C.firstEventId()]), states = new Set<string>(), todo: any[] = [[C.firstEventId(), null]]
+      while (todo.length) {
+        const [at, came] = todo.pop(); const k = keyOf(at, came); if (states.has(k)) continue; states.add(k)
+        for (const key of ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown']) { const [n, c] = C.kbdStep(at, key, came); seen.add(n); todo.push([n, c]) }
+      }
+      const missed = C.SYL.map((e: any) => e.id).filter((x: string) => !seen.has(x))
+      expect(missed, 'unreachable on ' + id + ' ' + JSON.stringify(missed)).toEqual([])
+    }
+    await C.switchSyllabus('sb2026'); await C.whenLoaded()
   })
 })
