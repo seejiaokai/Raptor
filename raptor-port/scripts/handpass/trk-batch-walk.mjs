@@ -185,7 +185,9 @@ if (want('K')) {
   const evc = (await ringOn(page)).id
   await page.selectOption('#activeSel', { index: 1 }); await sleep(600)
   await page.locator('#board').focus(); await sleep(150)
-  L.ok('K15 after a crew change the keyboard is back on the same event', ((await ringOn(page)) || {}).id === evc, JSON.stringify(await ringOn(page)))
+  /* the keyboard follows where the chart lands for the student picked (the scenario designer's 6): the next arrow starts there, never yanking the view back */
+  const k15 = await ringOn(page)
+  L.ok('K15 after a crew change the keyboard is on the event the chart landed on, in view', !!k15 && (await ballBox(page, k15.id)).inView, `was on ${evc}, now ${JSON.stringify(k15)}`)
   L.note('K console/page errors', errors.join(' | '))
   allErrors.push(...errors.map(e => 'K: ' + e))
   await browser.close()
@@ -256,7 +258,12 @@ if (want('P')) {
     L.ok('P3.1 phone: HEX on the course', await rosterHas(page, 'rocky'), '')
     await page.locator('.c-students').first().evaluate(e => e.scrollIntoView({ block: 'center' })); await sleep(200)
     await shot(page, 'P3-1-phone-on-course')
+    /* the delete itself on the Leave War at a desktop's width (its phone grid draws its cells otherwise — not this change);
+       the Tracker looked at on the phone */
+    await view(page, 'flow', true)   /* the Tracker comes back on its chart half, where the walk's driver looks for the balls */
+    await page.setViewportSize(DESK); await sleep(300)
     const gone = await postOutDelete(page, 'rocky')
+    await page.setViewportSize(PHONE); await sleep(400)
     await toTracker(page); await view(page, 'info', true); await sleep(900)
     const chips = await page.locator('.c-students .chip').allInnerTexts()
     L.ok('P3.2 phone: after the delete the Students card no longer lists him', gone && !(await rosterHas(page, 'rocky')) && !chips.some(t => /HEX/.test(t)), chips.join(' | '))
@@ -294,7 +301,9 @@ if (want('L')) for (const size of [DESK, PHONE]) {
   /* the member signs in on the same browser (D376 — his own place): the landing as a pick makes it */
   await logout(page); await login(page, 'u'); await toTracker(page); await sleep(900)
   const l5 = await landing(page)
-  L.ok(`L5 ${tag(size)}: the member signs in — the Tracker opens on his own place, no empty band above the chart`, l5.emptyAboveFirstBall >= 0 && l5.emptyAboveFirstBall < 400, JSON.stringify(l5))
+  /* someone new opens on the first course and its last-graded student (D376) — STUDENT A, whose last mark is the deep one */
+  const l5in = await ballBox(page, deep)
+  L.ok(`L5 ${tag(size)}: the member signs in — the Tracker opens on the last-graded student's last mark (${deep}), no empty band above the chart`, l5in.inView && l5.emptyAboveFirstBall < 60, `${JSON.stringify(l5)} · ${deep} ${JSON.stringify(l5in)}`)
   await shot(page, `L5-${tag(size)}-member`)
   L.note(`L ${tag(size)} console/page errors`, errors.join(' | ')); allErrors.push(...errors.map(e => `L ${tag(size)}: ` + e))
   await browser.close()
