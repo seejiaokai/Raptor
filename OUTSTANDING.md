@@ -437,11 +437,6 @@ person move between squadrons with data intact.
   picked from a guest list, never by typing a bare callsign). **D289:** a community = the squadrons of one aircraft
   type; a guest always marked — on a puck an orange corner (D296, option A of `docs/mock/post-out.html` §8).
 
-### [TRK-ATTEMPTS] Keep a student's attempt history — OPEN (small, feature)
-Remember a student's *earlier* tries at an event, not just the latest grade. More a
-new feature than a cleanup. (Verified open: no attempt-history in `tracker/`.)
-- **Model:** build on Opus, default; small, clear spec.
-
 ### [TRK-DISK] Tracker migration/rename "safety check" reads memory, not disk — Decision A — OPEN
 On upgrade or a course/syllabus rename, the app copies records, checks the copy in
 **working memory**, then deletes the originals — so a failed disk write (storage
@@ -1276,6 +1271,7 @@ grep the app for other "prototype" / "full build" / "Dataverse" words on screen.
 `[QUALS-MEMBER-SCOPE]` or any time.
 
 ### [TRK-FLEXBAR-INK] The Tracker's Currency & Flex bars print white words on green and amber — hard to read (filed 26 Sep 26)
+**ANSWERED 17 Oct 26 — D982 ("As recommended", round 1):** dark words on the green, amber and red bars, white on grey; to build with the Tracker batch.
 Found by the `[TRK-PALETTE-ASK]` walk (evidence `raptor-port/docs/handpass/2026-09-26-trk-palette.md` §7 F4). The bars
 under Currency & Flex ("Current — no flex required", "1 Optional Flex", "Landing Current — No IP Required") are a
 coloured fill with WHITE words (`tracker.css .flexbar{color:#fff}`; the fill comes from `app/core.js`'s flex and
@@ -1479,6 +1475,7 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
 
 ### [POST-OUT-TRACKER] A deleted man and the Tracker's courses "still running" (D299 — approved, NOT built; filed 27 Sep 26)
+**ANSWERED 17 Oct 26 — D981 ("As recommended", round 1):** he leaves every course on which he still has an event neither done nor N.A.; he stays, his record kept, where all of his are; to build with the Tracker batch.
 D299 lists "his place on any course still running — goes". The Tracker has no notion of a course "still running", and the
 build cannot decide what it means without him, so a deleted man is left on his Tracker courses, unlinked (his name as
 text). **Put to him on the `[POST-OUT-OUTCOMES]` look card (question 5):** what makes a course still running — or leave
@@ -1735,6 +1732,7 @@ Met by the walkers of `[INPUT-OWN-TITLE]`'s check (`raptor-port/docs/handpass/20
 **Place:** (1) and (2) with the next change to a working guide (`[WALK-FINGER-NOT-LOCATOR]` is one); (4) when that page is next published; the rest, none.
 
 ### [RULINGS-SPENT-PASS] The rulings files have grown past their size markers: archive what is spent or replaced, and put the scheduler file's size back to him (D611) — filed 10 Oct 26
+**17 Oct 26:** `.claude/rules/decisions/tracker.md` crossed its tripwire (21034 of 20500 bytes) with D979–D982 — deferred by D29 (its branch carries code); candidates at the tidy: D560 and D564 (changed by D563–D566, the wing built and live — a fresh reader checks whether D566 restates them in full, D971).
 **Status: OPEN — a documents-only job of its own; nothing is trimmed (D136).** On 10 Oct 26 the scheduler's rulings file held 95,514 bytes (marker 69,000), How we work 23,032 (22,000) and the Leave War's 34,273 (32,000): the calendar job and the Inputs pages' work added about 120 rulings (D617–D733) in four days. The three markers were raised that day so the document check passes (`raptor-port/scripts/docsize.mjs`, each with its reason). **Still to do:** (a) read those files' rows — and the Inputs pages' file, `.claude/rules/decisions/inputs.md`, which took 101 of the scheduler's on 13 Oct 26 (D802) — for rulings that are SPENT (a one-off permission used: "built after the merge", "built in the next chat", a mock-up asked for and since chosen) or REPLACED by a later ruling, mark each in its full row and run `node raptor-port/scripts/backlog-archive.mjs --rulings` (`DECISIONS.md` step 2) — a meaning read by Astra of whatever short lines are rewritten (D138); (b) ANSWERED 13 Oct 26 by D802: the Inputs pages' rulings have a file of their own; nothing further to put to him.
 **Seen again 16 Oct 26 (pull request 519 merged with the overs deferred, D29):** How we work 40,313 bytes (marker 39,500), the Scheduler's 94,224 (92,000), the Inputs pages' 35,026 (32,000); and `plain-language.md` and `shipping.md` over their tripwires. All five markers RAISED the same day with their reasons (`raptor-port/scripts/docsize.mjs`), so documents-only changes pass again; the spent-row pass that brings them down is still this job.
 **Place:** the agent's — a documents-only chat; (b) is his.
@@ -2357,6 +2355,7 @@ short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not c
 **Found by `[DESIGN-LOOK-13OCT]`, not fixed — the question the design guide left open ("whether a keyboard can arm a puck is for the keyboard sweep to say", `raptor-port/docs/design-practices.md` §2): it cannot.** Every puck is drawn as a Tab stop (`raptor-port/src/ui/html.ts`) and wears the app's ring, but no key is heard on one: Enter, Space and Delete do nothing on the Scheduler Board or on Edit Schedule's week (`raptor-port/docs/mock/2026-10-13-design-look/keyboard.json`). So a scheduler at a desktop cannot move a man without the mouse, and Tab crosses hundreds of stops with nothing to do on any. **The shape to design (questions for him first — D541):** Enter or Space picks a puck up as a tap does on a phone (the app's own "armed" state), the seats that can take him are then the Tab stops, Enter puts him down, Escape lets go, Delete takes him off with Undo; the crew list reachable the same way. **Risk to weigh:** the dense week is swapped as text for speed (`raptor-port/docs/performance.md` Part 1) — the keys must ride the one listener the board already has, never one per puck. Tier WALK at least; a puck's drop is the schedule's main write.
 
 ### [TRK-KBD-CHART] The Tracker's chart and its marking pop-up cannot be used by keyboard (filed 13 Oct 26, the design look's K5, K6) — OPEN, a job of its own, his to place; older than the date boxes
+**ANSWERED 17 Oct 26 — D980 ("As recommended", round 1):** one Tab into the chart, the arrows follow its lines, Enter opens marking with the keyboard inside, Escape back to the event; to build with the Tracker batch.
 **Found by `[DESIGN-LOOK-13OCT]`, not fixed — older than 13 Oct.** None of the chart's 210 events is a Tab stop, so an event cannot be opened or marked without a mouse or a finger; the marking pop-up, opened by a click, does not take the keyboard (Tab goes to the page behind it) and Escape closes it leaving the keyboard on nothing. The pop-up's two date boxes and the side panel's boxes and their ✕ DO work by keyboard (built 13 Oct). **To design:** how the keyboard walks a chart (by its arrows along the flow, not 210 Tab stops), Enter opening the pop-up with the keyboard inside it, Escape returning to the event. With the Tracker's next batch (D490).
 
 ### [SCHED-INPUT-WINDOW-PHONE] On a phone the input's window opened from the schedule is short, lets the page scroll behind it, and on a phone on its side "+ Input" runs off the right edge (the one-rule job's walk, share D — D4, D7, 12 Oct 26)

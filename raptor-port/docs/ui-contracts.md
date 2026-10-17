@@ -9697,6 +9697,21 @@ screen:
     event is a spacer inside the chart box, so a phone on its side keeps the
     zoom control on screen.
 
+### Round 1 of the Tracker batch — his answers (17 Oct 26, D979–D982)
+
+His "As recommended" to the four questions of `docs/mock/2026-10-17-tracker-r1/index.html` (each with its pictures there).
+- **D979 — the attempt history is what the pop-up keeps.** Each failure with its own day (ST-02, ST-02X…), the day the
+  event was done and who marked it, and the Failures card's list; no second list of earlier grades. A grade changed later is
+  a correction. Nothing to build.
+- **D980 — the chart by keyboard (desktop), to build.** One Tab into the chart; → the next event along a line, ← back to the
+  event it needs first, ↑ ↓ the event above or below; Enter opens the marking pop-up with the keyboard inside it; Escape back
+  to the same event; the event the keyboard is on wears the plain blue ring (D876). Not a Tab stop per event.
+- **D981 — a deleted man's Tracker courses, to build.** Deleted through Post out, he leaves every course on which he still
+  has an event neither done (DCO, DPCO, Marginal) nor N.A., and stays, his record kept, where all of his are — what D299's
+  "a course still running" means; tested at the delete, by his own marks.
+- **D982 — the Currency & flex bars' words, to build.** Dark words (Raptor's background colour) on the green, amber and red
+  bars; white stays on grey; the bar's colour and its ink come from one place.
+
 ## OIL on the schedule: the "OIL Earn" mode and the green edge (owner, 21 Sep 26)
 
 `[OIL-AUTO-REMOVE]`. Design: `docs/superpowers/specs/2026-09-21-oil-auto-remove-decisions.md`.

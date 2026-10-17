@@ -62,7 +62,7 @@ ruling and how to add or retire one: `DECISIONS.md`.
 readings he was told, where it lives — is in `.claude/decisions-full/people-accounts.md`, never loaded by itself:
 **open it before acting on a ruling's detail or asking him about it** — `grep -h '^| D323 |' .claude/decisions-full/*.md`
 (the shell; the Grep tool hides a long row). A "— changed by" tail names the later rulings that changed it. Newest first.
-**Also read** — the Leave War's posting sheets and stints: `leave-war.md` (§Architecture); what a published day keeps
+**Also read** — in `tracker.md`: **D981** (a man deleted through Post out leaves every Tracker course on which he still has events to do, and stays, his record kept, where all of his are — what D299's "a course still running" means). the Leave War's posting sheets and stints: `leave-war.md` (§Architecture); what a published day keeps
 when a man is deleted or archived: `scheduler.md` (D44, D45); a Quals column heading dragged to the table's edge
 scrolls it sideways: `inputs.md` (D893).
 
@@ -87,7 +87,7 @@ scrolls it sideways: `inputs.md` (D893).
 | D304 | 27 Sep 26 | A delete counts from the real calendar date, as built. |
 | D303 | 27 Sep 26 | A posting with no chip chosen stays: "off the manpower, nothing else". |
 | D300 | 27 Sep 26 | The post-out sheet says each thing once: the date in its box, one line for what happens on it ("On 14 Oct: archived on Quals, account suspended."), and a button that reads just "Post out". |
-| D299 | 27 Sep 26 | A delete takes him out of today and the future while the past keeps its record of him — his pucks on days flown, his past leave and OIL, his inputs and signatures, the history; the post-out mock-up, trimmed to say each thing once (D300), is the design of record for [POST-OUT-OUTCOMES]. — changed by D300 |
+| D299 | 27 Sep 26 | A delete takes him out of today and the future while the past keeps its record of him — his pucks on days flown, his past leave and OIL, his inputs and signatures, the history; the post-out mock-up, trimmed to say each thing once (D300), is the design of record for [POST-OUT-OUTCOMES]. — changed by D981, D300 |
 | D298 | 27 Sep 26 | The post-out chip reads "Delete", not "Fully delete". |
 | D297 | 27 Sep 26 | A man deleted for leaving flying for good keeps his puck on every day he already flew — published or not — and is taken off every day still to come |
 | D296 | 27 Sep 26 | A guest from another community is marked by an orange corner on his puck (option A). |

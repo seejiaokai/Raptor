@@ -4838,3 +4838,11 @@ This is separate from [TRK-KEY-NAME-CLIP] and [TRK-FLEXBAR-INK], and does not st
 
 **D565 tapered redraw:** `raptor-port/docs/superpowers/specs/2026-10-04-flight-leading-edge-taper.md`; independent Sol challenge/picture read in `raptor-port/docs/handpass/2026-10-04-flight-leading-edge-taper-picture-read.md`. Both-size specific picture shown and accepted D566; chosen replacement implemented; refreshed gates and separate fresh final R1PASS. No further shape-choice question pending.
 
+
+*Moved here 2026-10-17 by backlog-archive.mjs ([TRK-ATTEMPTS]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [TRK-ATTEMPTS] Keep a student's attempt history — OPEN (small, feature)
+Remember a student's *earlier* tries at an event, not just the latest grade. More a
+new feature than a cleanup. (Verified open: no attempt-history in `tracker/`.)
+- **Model:** build on Opus, default; small, clear spec.
+
