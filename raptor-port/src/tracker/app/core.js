@@ -14,6 +14,7 @@ import { SEED_STATE, SEED_STAMP } from '../data/seedState.js';
 import { storage, flushNow, loadLatest } from '../storage.js';
 import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
+import { normalizeImport as normalizeFile, STUDENT_GUARD_MSG, sameDef, remapStudentsSyl } from './fileTransfer.js';
 import { findEvents } from './eventOrder.js';
 import { onTrackerSessionEnd, onBeforeTrackerLogout } from '../role.js';
 /* Raptor's one edge feel (D899) — a standalone export carries this file with it: docs/tracker/known-gaps.md */
@@ -28,7 +29,7 @@ import { mintCourseId, isCourseEntry, isCourseId, isReservedCourseName, upgradeC
 import {
   BUILTIN_SYL, mintSylId, isSylId, isBuiltinSylId, isCustomSylId, isSylEntry,
   builtinSylById, builtinIdByName, builtinIdByAlias, builtinBaseOf,
-  classifyDefinedName, upgradeSyllabi, buildUnionSylcat, reconcileSylIds,
+  classifyDefinedName, buildUnionSylcat, reconcileSylIds,
 } from './sylIds.js';
 /* [ARCH-STACK] Step 2 phase 5 — the shared command layer (see the sSet router
    below). A Tracker durable write now joins the SAME change stream + auth gate
@@ -5980,13 +5981,6 @@ function upsertSylEntry(id, label, fileEntry, isAddNew) {
      never overwrites a local one. */
   if (fileUserNamed && label) { e.name = ensureUniqueLabel(id, label); e.userNamed = true; }
 }
-/* Two event lists are the same chart definition when they match field for
-   field — ignoring `_b`, computeFlow's scratch value, which it writes onto the
-   event objects it lays out and so can ride into an export. */
-function sameDef(a, b) {
-  const strip = l => JSON.stringify((l || []).map(e => { const c = { ...e }; delete c._b; return c; }));
-  return strip(a) === strip(b);
-}
 export async function applyCharts(charts, opts) {
   const o = opts || {};
   const list = (o.ids && o.ids.length) ? o.ids : (charts.order || Object.keys(charts.syllabi || {}));
@@ -6071,7 +6065,6 @@ export async function applyCharts(charts, opts) {
    the whole legacy-marks-import cascade (there is no name→built-in guessing in
    the file path). Runs AFTER applyCharts (so a chart restored in the same import
    already exists / cleared its tomb). */
-const STUDENT_GUARD_MSG = 'These student marks were saved by an older version and can’t be brought in safely. Import the charts, then re-enter marks — or export a fresh backup from the current app and import that.';
 function reconcileStudentsSyllabi(students, version) {
   const s = students || {};
   const refs = new Set(); let nameKeyed = false;
@@ -6367,84 +6360,10 @@ export async function saveCopyClick() {
    can never restore someone's marks by accident; a wipe-then-import finds
    nothing to ask about on the chart side and one question on the people side.
    applyStudents merges (never overwrites the course list). */
-/* ONE normalize + ONE reconcile across the WHOLE file (§14 CSID2-05, §15
-   CSID2-R2-03 — review CSID-REV-03/04/05). readFile is pure and never mints.
-   normalizeImport decides id/name by the envelope VERSION, never by a key's
-   spelling (a v1/v2 key is a name even if it is spelled like an id); upgrades a
-   v1/v2 charts block to ids ONCE; builds the UNION of the charts and students
-   catalogues and validates their cross-agreement; reconciles that union to the
-   store with a SINGLE map (built-ins by deterministic id; customs by name, store
-   id wins; a clash refuses); and applies that one map to BOTH the charts and the
-   v3 students block (bySyllabus keys, plan.sylId, sylcat). A pre-v3 students
-   block has no sylcat and is left name-keyed for the §19 guardrail in
-   applyStudents to refuse. Returns the reconciled charts + students + version. */
-export function normalizeImport(parsed) {
-  const version = parsed.version;
-  let charts = parsed.charts ? JSON.parse(JSON.stringify(parsed.charts)) : null;
-  let students = parsed.students ? JSON.parse(JSON.stringify(parsed.students)) : null;
-  if (charts && (version == null || version < 3)) charts = upgradeSyllabi(charts).charts;   /* v1/v2 → id + derived sylcat */
-  const chartsCat = (charts && Array.isArray(charts.sylcat)) ? charts.sylcat : null;
-  const studentsCat = (students && version >= 3 && Array.isArray(students.sylcat)) ? students.sylcat : null;
-  let re = id => id;
-  let unionIds = null;   /* §15 CSID2-R2-03: the id set every reference is completeness-checked against */
-  if (chartsCat || studentsCat) {
-    const union = buildUnionSylcat(chartsCat, studentsCat);   /* throws on cross-catalogue disagreement / bad id */
-    unionIds = new Set(union.map(e => e.id));
-    const { remapped, conflicts } = reconcileSylIds(union, SYLS);
-    if (conflicts.length) { const x = conflicts[0]; throw new Error('That file could not be brought in: the syllabus “' + x.name + '” is a different chart than one already here. Rename one, then import again — nothing has been changed.'); }
-    re = id => has(remapped, id) ? remapped[id] : id;
-  }
-  if (charts) {
-    const rk = obj => { const o = {}; for (const k of Object.keys(obj || {})) o[re(k)] = obj[k]; return o; };
-    const out = { ...charts };
-    if (charts.syllabi) out.syllabi = rk(charts.syllabi);
-    if (charts.layouts) out.layouts = rk(charts.layouts);
-    if (charts.eventInfoBySyl) out.eventInfoBySyl = rk(charts.eventInfoBySyl);   /* D126: details ride with their chart's id */
-    if (Array.isArray(charts.order)) out.order = charts.order.map(re);
-    if (Array.isArray(charts.sylcat)) out.sylcat = charts.sylcat.map(e => ({ ...e, id: re(e.id) }));
-    charts = out;
-  }
-  /* the v3 students block, reconciled through the SAME map. REFERENCE
-     COMPLETENESS + COLLISION are checked on the ORIGINAL refs BEFORE remapping
-     (review CSID-REVIEW-02): a bySyllabus/plan id absent from the file's own
-     sylcat, or two refs that reconcile onto one destination, would silently
-     collapse or mis-file a student block — so the STUDENT import is refused
-     (studentsRefused; charts still import), rather than throwing away the whole
-     file. A pre-v3 block stays raw and is refused by the version guardrail. */
-  let studentsRefused = false;
-  if (students && studentsCat) {
-    /* completeness is checked against the UNION of both catalogues, not
-       students.sylcat alone (review CSID-IR-03, §15 CSID2-R2-03): a v3 file may
-       carry the full identity in charts.sylcat with students.sylcat=[] yet a
-       student block still references it — that is a resolvable reference, not a
-       refusal. unionIds is the id set buildUnionSylcat validated above. */
-    const catIds = unionIds || new Set(studentsCat.filter(isSylEntry).map(e => e.id));
-    const refs = new Set();
-    for (const c of Object.keys(students.byCourse || {})) { const cv = students.byCourse[c] || {}; for (const k of Object.keys(cv.bySyllabus || {})) refs.add(k); if (cv.plan && cv.plan.sylId) refs.add(cv.plan.sylId); }
-    let bad = false; const dests = new Set();
-    for (const r of refs) { if (!isSylId(r) || !catIds.has(r)) { bad = true; break; } const t = re(r); if (dests.has(t)) { bad = true; break; } dests.add(t); }
-    if (bad) { students = null; studentsRefused = true; }
-    else students = remapStudentsSyl(students, re);
-  }
-  return { charts, students, version, studentsRefused };
-}
-/* remap a students block's syllabus ids by a mapping FUNCTION (the one import map,
-   or an add-as-new fileId→newId step whose students must follow, §CSID2-05). */
-function remapStudentsSyl(students, re) {
-  const byCourse = {};
-  for (const c of Object.keys(students.byCourse || {})) {
-    const cv = students.byCourse[c] || {}, nb = {};
-    /* two source ids must never collide onto one dest — that would silently drop
-       a student block before the guardrail sees it (review CSID-REVIEW-02). */
-    for (const k of Object.keys(cv.bySyllabus || {})) { const nk = re(k); if (has(nb, nk)) throw new Error(STUDENT_GUARD_MSG); nb[nk] = cv.bySyllabus[k]; }
-    const ncv = { ...cv, bySyllabus: nb };
-    if (ncv.plan && ncv.plan.sylId) ncv.plan = { ...ncv.plan, sylId: re(ncv.plan.sylId) };
-    byCourse[c] = ncv;
-  }
-  const out = { ...students, byCourse };
-  if (Array.isArray(students.sylcat)) out.sylcat = students.sylcat.map(e => ({ ...e, id: re(e.id) }));
-  return out;
-}
+/* ONE normalize + ONE reconcile across the WHOLE file — the step itself is
+   app/fileTransfer.js's ([TRK-FILE-TRANSFER-SPLIT], 17 Oct 26): it touches
+   nothing of the store, so the store's chart catalogue is handed in here. */
+export function normalizeImport(parsed) { return normalizeFile(parsed, SYLS); }
 export async function importClick() {
   /* Playwright cannot drive the OS file picker and the bundled module
      namespace cannot be patched (its exports are getters), so the smoke suite

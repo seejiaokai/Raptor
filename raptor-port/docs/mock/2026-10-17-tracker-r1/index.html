@@ -1,0 +1,155 @@
+<title>Tracker Batch, Round 1</title>
+<style>
+/* Layout: one reading column; each question is a block — the question, the choices with the recommended one marked, then its pictures in a row that wraps (tap to see one full size). Raptor's own navy and cyan. */
+:root {
+  --bg: #f3f6f9; --surface: #ffffff; --line: #d6dde5; --fg: #121820; --muted: #566273;
+  --accent: #0b8fb3; --rec: #1f7a45; --rec-bg: #e5f4ea; --annot: #c96a00;
+  --display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0b0f15; --surface: #131a23; --line: #263241; --fg: #e9eef3; --muted: #93a1b2;
+  --accent: #3bc6e8; --rec: #57c97a; --rec-bg: #14271b; --annot: #ff9a33; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0b0f15; --surface: #131a23; --line: #263241; --fg: #e9eef3; --muted: #93a1b2;
+  --accent: #3bc6e8; --rec: #57c97a; --rec-bg: #14271b; --annot: #ff9a33; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 16px/1.5 var(--body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-inline: 16px; padding-block: 24px 64px; }
+h1, h2 { font-family: var(--display); font-weight: 700; text-wrap: balance; letter-spacing: .01em; margin: 0; }
+h1 { font-size: 2.2rem; line-height: 1.1; }
+h2 { font-size: 1.55rem; line-height: 1.15; }
+.lede { color: var(--muted); max-width: 65ch; margin: .5rem 0 0; }
+.how { margin-top: 1rem; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); max-width: 65ch; }
+.how b { color: var(--accent); }
+.q { margin-top: 2.2rem; display: grid; gap: .8rem; }
+.tag { font: 600 .78rem/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.q p { margin: 0; max-width: 65ch; }
+.choices { display: grid; gap: .5rem; max-width: 70ch; }
+.choice { display: grid; grid-template-columns: 2.2rem 1fr; gap: .6rem; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.choice .k { font: 700 1.2rem/1.2 var(--display); color: var(--muted); }
+.choice.rec { border-color: var(--rec); background: var(--rec-bg); }
+.choice.rec .k { color: var(--rec); }
+.choice .why { color: var(--muted); font-size: .94rem; margin-top: .25rem; }
+.badge { display: inline-block; font: 600 .72rem/1 var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--rec); border: 1px solid var(--rec); border-radius: 999px; padding: 3px 7px; margin-left: .4rem; vertical-align: 2px; }
+.pics { display: flex; flex-wrap: wrap; gap: 10px; }
+figure { margin: 0; display: grid; gap: 4px; min-width: 0; }
+figure.wide { flex: 1 1 420px; max-width: 100%; }
+figure.tall { flex: 0 1 190px; }
+figure img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; cursor: zoom-in; display: block; }
+figcaption { font-size: .84rem; color: var(--muted); }
+figcaption .drawn { color: var(--annot); font-weight: 600; }
+.legend { font-size: .88rem; color: var(--muted); max-width: 65ch; }
+.legend span { color: var(--annot); font-weight: 600; }
+.more { margin-top: 2.6rem; border-top: 1px solid var(--line); padding-top: 1.2rem; display: grid; gap: .6rem; }
+.more ul { margin: 0; padding-left: 1.2rem; max-width: 70ch; }
+.more li { margin: .25rem 0; }
+.reply { margin-top: 1.6rem; padding: 14px; border-radius: 10px; background: var(--surface); border: 2px solid var(--accent); max-width: 65ch; }
+.reply code { font: 600 1rem/1.4 ui-monospace, Consolas, monospace; }
+#zoom { position: fixed; inset: 0; background: rgba(0,0,0,.92); display: grid; place-items: center; padding: 12px; z-index: 10; cursor: zoom-out; overflow: auto; }
+#zoom img { max-width: 100%; max-height: 100%; width: auto; height: auto; }
+button:focus-visible, img:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@700&display=swap">
+
+<div class="wrap">
+  <h1>The Tracker batch, round 1</h1>
+  <p class="lede">Four decisions before the Tracker's fixes are built. Each has my recommended answer in green. The progress graph is not here; it waits for your word.</p>
+  <div class="how"><b>How to answer:</b> reply with the letters, for example <code>1A 2A 3A 4A</code>, or just <code>as recommended</code>. Tap any picture to see it full size. <span style="color:var(--annot);font-weight:600">Orange numbered boxes</span> only point; they are not part of the app. A picture marked <span style="color:var(--annot);font-weight:600">drawn in</span> shows a proposal, not the app as built.</div>
+
+  <section class="q" id="q1">
+    <div class="tag">Question 1 · Marking a student</div>
+    <h2>Is what the marking pop-up keeps already the "attempt history" you asked for?</h2>
+    <p>Your old note asked the Tracker to remember a student's earlier tries at an event, not only the latest grade. Since then, the pop-up keeps every failure with its own day (ST-02 on 3 Oct, ST-02X on 10 Oct), the day the event was finally done, and who marked it. The Failures card lists them too.</p>
+    <div class="choices">
+      <div class="choice rec"><div class="k">A</div><div><b>Yes, that is the history. Close the note.</b><span class="badge">Recommended</span><div class="why">A student's tries are his failures and then his pass, and each already has its day. A grade changed later (DPCO to DCO) is a correction, not another try. A second list would repeat the same facts in a pop-up that members mostly use on phones.</div></div></div>
+      <div class="choice"><div class="k">B</div><div><b>Also list every earlier grade with its day.</b><div class="why">For example "DPCO 3 Oct → DCO 10 Oct" under the buttons. More to read in the pop-up; small to build.</div></div></div>
+    </div>
+    <div class="pics">
+      <figure class="wide"><img src="img/q1-today-desk.png" alt="The marking pop-up on ST-02 with two dated failures and Done on" tabindex="0"><figcaption>Desktop, as built: 1 each failure with its day · 2 the day it was done</figcaption></figure>
+      <figure class="tall"><img src="img/q1-today-phone.png" alt="The same pop-up on an iPhone-sized screen" tabindex="0"><figcaption>Phone, as built</figcaption></figure>
+      <figure class="wide"><img src="img/q1-failures-card-desk.png" alt="The Failures card listing ST-02 and ST-02X" tabindex="0"><figcaption>The Failures card, as built (bottom right): ST-02, ST-02X</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="q" id="q2">
+    <div class="tag">Question 2 · The chart by keyboard (desktop)</div>
+    <h2>How should the keyboard move around the chart?</h2>
+    <p>Today none of the chart's 210 events can be reached by keyboard. You need a mouse or a finger to open one and mark it. Schedulers mostly work at a desk, so this is about the desktop.</p>
+    <div class="choices">
+      <div class="choice rec"><div class="k">A</div><div><b>Tab once into the chart, then the arrow keys follow its lines.</b><span class="badge">Recommended</span><div class="why">→ goes to the next event along the line, ← back to the event it needs first, ↑ ↓ to the event above or below. Enter opens the marking pop-up with the keyboard inside it, and Esc returns to the same event. It follows how the chart is read, and the event the keyboard is on wears the app's plain blue ring.</div></div></div>
+      <div class="choice"><div class="k">B</div><div><b>Tab through every event, one press each.</b><div class="why">About 210 presses to cross a chart.</div></div></div>
+      <div class="choice"><div class="k">C</div><div><b>Leave the chart to mouse and finger.</b></div></div>
+    </div>
+    <div class="pics">
+      <figure class="wide"><img src="img/q2-proposed-desk.png" alt="The chart with one event ringed as where the keyboard is" tabindex="0"><figcaption><span class="drawn">Drawn in</span>: 1 the keyboard is on ACG-02; → would go to ACG-03…06 along its lines, ← back to ACG-01</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="q" id="q3">
+    <div class="tag">Question 3 · A man posted out and deleted</div>
+    <h2>Which Tracker courses does a deleted man leave?</h2>
+    <p>Your rule of 27 Sep (D299): when a man is deleted through Post out, his place on any course <i>still running</i> goes, and his record from courses he finished stays. The Tracker has no notion of "still running", so today his name simply stays on every course as plain text.</p>
+    <p><b>Example:</b> RECON is on course 26ABSG with 150 events still to do, and on an older course where every event is done. He is posted out and deleted.</p>
+    <div class="choices">
+      <div class="choice rec"><div class="k">A</div><div><b>He leaves every course where he still has events to do; his record stays on courses he finished.</b><span class="badge">Recommended</span><div class="why">In the example he leaves 26ABSG and stays on the older course. It is your own split from D299, read from his marks rather than from a date someone has to keep up to date.</div></div></div>
+      <div class="choice"><div class="k">B</div><div><b>He stays on every course, as today.</b><div class="why">Your D299 would be narrowed to say so.</div></div></div>
+      <div class="choice"><div class="k">C</div><div><b>He leaves a course once his own End date B has passed.</b><div class="why">It depends on End date B being filled in for every student.</div></div></div>
+    </div>
+    <div class="pics">
+      <figure class="wide"><img src="img/q3-today-desk.png" alt="The Students card with a squadron member, RECON, on the course" tabindex="0"><figcaption>As built: 1 a squadron member on the course (the dot means he is linked to the squadron roster)</figcaption></figure>
+      <figure class="tall"><img src="img/q3-today-phone.png" alt="The same on a phone" tabindex="0"><figcaption>Phone, as built</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="q" id="q4">
+    <div class="tag">Question 4 · Currency &amp; flex</div>
+    <h2>Dark words on the green, amber and red bars?</h2>
+    <p>The bars under Currency &amp; flex print white words on their colour. On green and amber that reads at about 2 to 1, where 4.5 to 1 is the usual floor for easy reading. On red it is 3.4 to 1.</p>
+    <div class="choices">
+      <div class="choice rec"><div class="k">A</div><div><b>Dark words on green, amber and red; white stays on the grey bar.</b><span class="badge">Recommended</span><div class="why">The same recipe Raptor's own amber chips use. The colours and the words stay as they are.</div></div></div>
+      <div class="choice"><div class="k">B</div><div><b>Keep the white words.</b></div></div>
+    </div>
+    <div class="pics">
+      <figure class="wide"><img src="img/q4-today-a-desk.png" alt="Green and amber bars with white words" tabindex="0"><figcaption>As built: green "Landing Current" and amber "1 Optional Flex", white words</figcaption></figure>
+      <figure class="wide"><img src="img/q4-proposed-a-desk.png" alt="The same bars with dark words" tabindex="0"><figcaption><span class="drawn">Drawn in</span>: the same bars with dark words</figcaption></figure>
+      <figure class="tall"><img src="img/q4-today-b-phone.png" alt="Two red bars with white words on a phone" tabindex="0"><figcaption>Phone, as built: two red bars</figcaption></figure>
+      <figure class="tall"><img src="img/q4-proposed-b-phone.png" alt="The same red bars with dark words on a phone" tabindex="0"><figcaption><span class="drawn">Drawn in</span>: dark words on red</figcaption></figure>
+      <figure class="tall"><img src="img/q4-today-a-phone.png" alt="Green and amber bars on a phone" tabindex="0"><figcaption>Phone, as built: green and amber</figcaption></figure>
+      <figure class="tall"><img src="img/q4-proposed-a-phone.png" alt="Green and amber bars with dark words on a phone" tabindex="0"><figcaption><span class="drawn">Drawn in</span>: dark words</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="more">
+    <div class="tag">Also in the batch, no question needed</div>
+    <p class="legend">These are faults with an obvious fix. Each one you can see gets a before-and-after picture on the batch's closing look, before you say "merge live".</p>
+    <ul>
+      <li>After you move a ball in Edit chart layout, one mouse-wheel step zooms twice, then three times, and so on.</li>
+      <li>A ball dragged left of or above the chart's start is cut off, and ⤢ Fit cannot bring it back.</li>
+      <li>Coming back to the Tracker, the chart lands at its top corner instead of on the student's last mark.</li>
+      <li>A longer student name on the left of the Students card's ring is cut at the card's edge.</li>
+      <li>Inside Raptor, when a save fails, the Tracker's corner still says "saved".</li>
+      <li>Three fixes nobody sees: an Import saved as one piece, an undo that stores nothing extra, and tests for the chart editor's refusals.</li>
+    </ul>
+    <div class="tag" style="margin-top:.6rem">Next round</div>
+    <ul>
+      <li>When a file's students point at a chart the file doesn't carry, Import says they were "saved by an older version". That's the wrong reason, and the wording is yours to decide (picture below).</li>
+      <li>Your iPhone look at the pinch-zoom fix on the chart.</li>
+    </ul>
+    <div class="pics"><figure class="wide"><img src="img/refusal-wrong-reason-desk.png" alt="Import refusing a current file's students with the older-version message" tabindex="0"><figcaption>As built: the wrong reason, shown for a file of today's version</figcaption></figure></div>
+  </section>
+
+  <div class="reply"><b>Reply with:</b> <code>1A 2A 3A 4A</code> (or your letters), or <code>as recommended</code>.</div>
+</div>
+<div id="zoom" hidden></div>
+<script>
+(function () {
+  var z = document.getElementById('zoom'), zi = document.createElement('img'); z.appendChild(zi);
+  function open(img) { zi.src = img.src; zi.alt = img.alt; z.hidden = false; }
+  document.querySelectorAll('figure img').forEach(function (img) {
+    img.addEventListener('click', function () { open(img); });
+    img.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(img); } });
+  });
+  z.addEventListener('click', function () { z.hidden = true; });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') z.hidden = true; });
+})();
+</script>

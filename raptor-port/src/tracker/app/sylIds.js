@@ -18,7 +18,7 @@
 
    This module is the ONE pure converter (no storage, no core.js), shared by the
    once-per-browser migration (core.js migrateSylIds) and by file import
-   (core.js normalizeImport), so the two paths cannot drift. It mirrors
+   (fileTransfer.js normalizeImport), so the two paths cannot drift. It mirrors
    app/courseIds.js. */
 
 /* THE CODE TABLE. Each built-in carries a fixed id that NEVER changes — not on
