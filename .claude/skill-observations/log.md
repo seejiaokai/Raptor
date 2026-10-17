@@ -1247,3 +1247,18 @@ Met again 2026-10-17: the [CONTEXT-START-SIZE] handoff (session-handoff, a day c
 **Suggested improvement:** In systematic-debugging's root-cause phase, for any smoothness/jank report add: ask the device and the browser; check the platform's frame cap for page-driven motion vs native scrolling; when the user can run it, propose a one-minute on-device toggle that isolates the cap; measure each gesture separately (before/after, at several CPU slowdowns) so two causes are not merged into one.
 
 **Principle:** Before tuning the drawing, find out what frame rate the platform lets that kind of motion reach at all — a fix aimed below the cap is wasted, and each gesture can have its own cause.
+
+### Observation 636: A box placed from the screen's edge "off the screen" on a phone — look for the content that widened the page first
+
+**Status:** OPEN
+**Date:** 2026-10-18
+**Session context:** Raptor, D994's first small-fixes batch — a window that opened half off a phone turned on its side (844 × 390)
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** Phase 1 (root cause) — layout faults on phones
+
+**Issue:** A window positioned `right:16px` opened at x 461–891 on an 844-wide phone. The window's own code (its clamp to `innerWidth`) looked right, and was: in a phone browser the LAYOUT viewport widens to whatever the page's content needs, so `innerWidth` read 907 and every right-anchored or clamped element followed it. The cause was a table elsewhere on the page (fixed columns summing to 875px) whose own sideways-scroll rule applied only below 820px. A desktop-mode browser of the same size reproduced none of it until the same view (the list, not the calendar) was open.
+
+**Suggested improvement:** In systematic-debugging's root-cause phase, for "X is off the screen / cut at the edge on a phone": first read `document.documentElement.scrollWidth` against the screen width in the exact view and state, with a phone-emulating context (isMobile); if it is wider, walk down from the page root to the child whose extent passes the edge before touching X's positioning.
+
+**Principle:** When an edge-anchored element is misplaced on a phone, measure whether the page itself has grown wider than the screen — the element may be correctly following a wrong viewport, and the fault lives in whatever overflowed.

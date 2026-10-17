@@ -10298,7 +10298,11 @@ is `state/flyplan.ts sansCommittedOn`. It hears BOTH stores — the scheduler's 
   otherwise stopped (a native, non-passive `touchmove` listener on the window). Sideways swipes are not its
   business; a finger on the page behind still scrolls the page. Not reproducible in the build PC's browser engine —
   the rule is pinned by `ui/floatwindow.test.tsx`, and that the window's own content still scrolls by
-  `e2e/inputs-calendar.spec.ts` (D686).
+  `e2e/inputs-calendar.spec.ts` (D686). *(18 Oct 26, `[SCHED-INPUT-WINDOW-PHONE]`: the guard's body is now
+  `ui/floatwin.ts holdPageScroll`, and the schedule's own input window — the blocking dialog a Personal Inputs line, an
+  Unavailable row or the board's "+ Inputs" / "+ Add" opens on Edit Schedule and the Scheduler Board — holds a finger
+  the same way, on the whole dialog, its dimmed edge included (`ui/inputedit.tsx`); there the week behind it used to
+  scroll. Pinned by `e2e/sched-phone.spec.ts`.)*
 - **The windows shell** now caps a window he has placed at the room under its top (its body scrolls), so a window
   dragged low keeps its foot — and its Save — on the screen.
 Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, `ui/calpick.test.ts`,
@@ -10658,7 +10662,12 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   the holiday form, the editor and the Calendar window had limits of their own. The SANS day opens at its tall rest
   height (`tallFirst`, as the Inputs day, D683); its bar brings it down to two-thirds and back (D648's two heights
   stay). The ALL AVAIL window (D77) and the changes window (D167) are other kinds and keep their heights. Pinned by
-  `e2e/inputs-sans-calendar.spec.ts` (D706, D707) and `ui/sansday.test.tsx`.
+  `e2e/inputs-sans-calendar.spec.ts` (D706, D707) and `ui/sansday.test.tsx`. *(18 Oct 26, `[SCHED-INPUT-WINDOW-PHONE]`:
+  the schedule's own input window — the blocking dialog opened from Edit Schedule and the Scheduler Board — follows the
+  same rule on a phone (620px and under): as tall as what is in it, up to the visible screen less 24px, standing at the
+  foot 12px from the edges, the shape of the same input's window on the Inputs page; it had kept its family's 80vh cap
+  (675 of 844 for an input that holds 1390). Wider than 620 it is the centred dialog as before. `14-input-editors.css`;
+  pinned by `e2e/sched-phone.spec.ts`.)*
 - **The SANS calendar's "How this works" no longer says "One commitment a day each." (owner D704, 9 Oct 26 — "Remove one
   commitment a day each").** Its fifth line is the late cut-off alone, as set, the cut-off in bold (D628, D691) — the same
   shape as the Inputs calendar's fifth line. Only the sentence went: the rule stands and is said where a second commitment

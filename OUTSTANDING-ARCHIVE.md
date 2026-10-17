@@ -4971,3 +4971,40 @@ Checked first in the running app at phone size: a flick on the chart and on Info
 **His words (17 Oct 26):** "The chart is less fps I noticed"; then "We can do • A small, safe step". **Ruled:** D990 (`.claude/rules/decisions/tracker.md`). **His answer, 17 Oct 26:** "Not sure I think b" — he leans to B: the chart was always choppier (than Info, than other apps), not made worse by the glide — so look first at the chart's own drawing as it moves. **Built 18 Oct 26 (D992):** on a phone the chart and the Info half are the phone's own scroll; the pinch is one transform while the fingers move and one layout at the lift — the pinch from about 12 to 30 frames a second with the computer slowed 4× (59 at ½ speed, from 24); walked 21 of 21, three fresh code reads (seven faults fixed red first, one declined, one limit said plainly: a touch-screen laptop). Evidence `raptor-port/docs/handpass/2026-10-18-trk-chart-fps.md`; its look card is the last section. **Answered 17 Oct 26 (the job's first round):** "The chart scrolling" — the finger scroll (the drag and its glide), not the pinch; "iPhone 17 pro" — a 120-frame screen. **Found the same day:** Safari on a 120-frame iPhone draws a page's own animation at about 60 frames a second by default (its "Prefer Page Rendering Updates near 60fps" setting, on unless switched off), while the iPhone's own scrolling runs at 120 — and the chart's scroll is the app's own (the glide), so it is held at 60 whatever the drawing costs. Put to him: a one-minute test on his phone with that setting off, to tell the 60-frame limit from slow drawing before the small step is built. **He uses Chrome on the iPhone (17 Oct 26):** Chrome there is WebKit underneath and holds a page's own motion near 60 frames with no setting to lift it — so the small step cannot pass 60 for him; only the iPhone's own scrolling (the big step) reaches 120. Put to him: the test in Safari to confirm, or straight to the big step, costed first. **His test (17 Oct 26):** "Ok it's smoother now on safari" — the 60-frame limit is the cause; the big step, costed, put to him. **And (18 Oct 26):** "The scroll is smoother than the pinch. The pinch feels like slower FPS" — the pinch is a second fault: it lays the whole chart out again at every step of the fingers; measured, then put to him with the big step. D991 (18 Oct 26): speed is part of how good the app feels. **Measured 18 Oct 26** (390 × 844, a finger through Chromium's touch input, the CPU slowed 4×, the built app): the finger scroll holds 60 frames (no frame over 33 thousandths of a second); the pinch drops to about 12 (82 of 175 frames over 33, the worst 217) — each step of the fingers lays the whole chart out again (the CSS zoom, about 80 thousandths a step against 33 for a scroll step), while scaling the chart as a picture costs what a scroll step does (33). So: the scroll is held by the 60-frame limit only; the pinch by its own drawing. Put to him: the big step for the scroll (both halves) and the pinch scaled as a picture while the fingers move, laid out sharp at the lift.
 **The job:** measure the chart's frame time on a phone-sized, slowed-down browser (each motion, before and after); then the small step — the chart's moving content held ready by the browser so a move does not redraw it, and the glide's per-frame work (it reads the scroll range each frame; a stretch reads each child's style) kept as light as it can be; never a change to what the chart shows. The big step (the iPhone scrolling the chart itself, the pinch rebuilt round it) only if he still finds it choppy, put to him with its cost. **Check:** WALK tier at least (the glide's walk `raptor-port/scripts/handpass/trk-glide-walk.mjs` re-run; `raptor-port/docs/performance.md` Part 1's checklist); his look on his iPhone.
 
+
+*Moved here 2026-10-18 by backlog-archive.mjs ([PHONE-WIDE-BOARD-BLANK]). Forward facts: `raptor-port/docs/handpass/2026-10-18-sched-phone.md`.*
+
+### [PHONE-WIDE-BOARD-BLANK] On a phone, the board's Desktop layout shows nothing below the sign-off (found 29 Sep 26)
+Found by the change-recording re-test's picture check (`raptor-port/docs/handpass/2026-09-28-change-recording.md` §4), and
+the same on `main` (measured on the live bundle): at 390×844, the board → ⋯ (on `main` the bar's own switch) → Desktop
+layout lays the board out 1180px wide, but every section of the day (`.sb-sec`) is drawn 0px wide at x≈830, so below the
+sign-off the screen is empty; the bar's buttons sit off to the right (pan sideways, as its bubble says). A scheduler who
+picks it on a phone sees a blank day. **To do:** find why the sections collapse in the wide layout under 820px (the
+phone's own grid rules probably still apply), then walk it at 390 and 844×390 with both layouts. WALK tier. **Place:**
+medium; any time, none blocking.
+4 Oct diagnostic on the unchanged workflow bundle confirms the first cause: phone
+`display:contents` on the board wrapper survives Desktop layout's horizontal parent.
+All ten sections are0px at390/820,832px at821/844 landscape; Phone layout restores346px.
+At that diagnostic, candidate only: restore the wide wrapper's flex column, then
+verify widths, actual panning and return/Done. No repair built or picture approved
+in that investigation. Evidence:
+`raptor-port/docs/handpass/2026-10-04-workflow-ui-investigation.md` §Phone Desktop layout.
+**D548, 4 Oct:** owner selected this repair only: "Just fix the desktop layout on
+a phone. The rest don't fix it it's fine". Retain the existing Desktop layout,
+sideways navigation, Phone return and Done. Candidate pictures and independent
+plan challenge preceded the source edit. Repair built: only wide wrapper's
+`display:flex`; original regression red then green; WALK26 inspected final originals,
+10 section headers/8 real-row hits plus Available/SANS grid proof, native toolbar
+touch pan, independent crew/schedule scrolling and Phone return/Done. Normal phone
+and desktop geometry unchanged. Five repair gates/relevant checks and fresh Astra
+read are in `raptor-port/docs/handpass/2026-10-04-phone-desktop-board-repair.md`.
+Physical Safari/full-area touch and absent guest/issued fixture remain qualified.
+**D549, 4 Oct:** owner accepts the delivered repair preview: "looks good, whats the next task".
+Owner-look step passed, without device-specific Safari verification or broader UI approval.
+Not main/live; item remains open for Claude's Monday read and authorized merge.
+**CLOSED 18 Oct 26 (D994's first batch):** the read it waited for was done in the Codex stack's check of 5 Oct 26
+(`raptor-port/docs/handpass/2026-10-05-codex-stack-check.md`, D548's row — PASS; W13 and W18 fixed in that layout), and
+the repair went live with the stack on 6 Oct 26. Measured on the build of 18 Oct 26: all ten sections 816px wide at 390 ×
+844, the day drawn below the sign-off (`raptor-port/docs/handpass/2026-10-18-sched-phone.md`); pinned by
+`raptor-port/e2e/geometry.spec.ts` (D548's test). His iPhone look by finger stays on that check's look card.
+
