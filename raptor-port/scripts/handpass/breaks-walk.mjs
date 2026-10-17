@@ -41,11 +41,12 @@ try {
       else {
         const r = run(`node ${list.walk}`, { GLIDE_SHOTS: shots, HP_OUT: shots })
         const text = (r.stdout || '') + (r.stderr || '')
+        writeFileSync(join(shots, `walk-break-${m.n}.log`), text)   /* a stopped walk is read, never guessed at */
         const red = [...text.matchAll(/^FAIL {2}(\S+)/gm)].map(x => x[1])
         const crashed = !/\d+ passed, \d+ failed/.test(text)
         const caught = m.expect.filter(id => red.includes(id))
         result = caught.length ? `CAUGHT by ${caught.join(', ')}${red.length > caught.length ? ` (also red: ${red.filter(x => !caught.includes(x)).join(', ')})` : ''}`
-          : crashed ? `WALK STOPPED (red so far: ${red.join(', ') || 'none'}) — read the run` : `NOT CAUGHT — red: ${red.join(', ') || 'none'}`
+          : crashed ? `WALK STOPPED (red so far: ${red.join(', ') || 'none'}) — read ${join(shots, `walk-break-${m.n}.log`)}` : `NOT CAUGHT — red: ${red.join(', ') || 'none'}`
       }
     } finally {
       writeFileSync(m.file, before)

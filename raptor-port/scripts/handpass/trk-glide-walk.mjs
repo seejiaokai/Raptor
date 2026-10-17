@@ -23,7 +23,7 @@ if (!process.env.HP_URL) { console.error('HP_URL not set — give the address of
   if (!served || served !== 'assets/' + local) { console.error(`the preview at ${process.env.HP_URL} serves ${served}, this checkout built assets/${local} — not this build`); process.exit(2) }
 }
 const { open, shot, save, PHONE, DESK } = await import('./trk-lib.mjs')
-console.log('trk-glide-walk v18 —', process.env.HP_URL)
+console.log('trk-glide-walk v20 —', process.env.HP_URL)
 
 const rows = []
 const note = (id, name, pass, detail) => { rows.push({ id, name, pass, detail }); console.log(`${pass === null ? 'NOT WALKED' : pass ? 'PASS' : 'FAIL'}  ${id} ${name}  ${JSON.stringify(detail)}`) }
@@ -53,16 +53,22 @@ const emptyAt = (page, fx = 0.15, fy = 0.5) => page.evaluate(([fx, fy]) => {
   }
   return null
 }, [fx, fy])
+/* put away any window a stray press opened (Escape twice), then spend one finger tap on empty chart — the test browser's
+   flick quirk (walk-scripts.md §4) */
+async function settle(page, cdp) {
+  await page.keyboard.press('Escape'); await wait(150); await page.keyboard.press('Escape'); await wait(150)
+  const z = await emptyAt(page); if (z) { await tap(cdp, z.x, z.y); await wait(300) }
+}
 /* the ball nearest the middle of the board, fully in view */
-const ballMid = page => page.evaluate(() => {
+const ballMid = (page, inset = 20) => page.evaluate(inset => {
   const bd = document.getElementById('board').getBoundingClientRect(), bot = Math.min(bd.bottom, innerHeight)
   let best = null
   for (const g of document.querySelectorAll('#flowSvg .ball')) {
-    const r = g.getBoundingClientRect(); if (!r.width || r.top < bd.top + 20 || r.bottom > bot - 20 || r.left < bd.left + 10 || r.right > Math.min(bd.right, innerWidth) - 10) continue
+    const r = g.getBoundingClientRect(); if (!r.width || r.top < bd.top + inset || r.bottom > bot - inset || r.left < bd.left + 10 || r.right > Math.min(bd.right, innerWidth) - 10) continue
     const d = Math.abs(r.top + r.height / 2 - (bd.top + bot) / 2); if (!best || d < best.d) best = { id: g.dataset.id, x: r.left + r.width / 2, y: r.top + r.height / 2, d }
   }
   return best
-})
+}, inset)
 
 /* ================= PHONE ================= */
 {
@@ -109,7 +115,7 @@ const ballMid = page => page.evaluate(() => {
       /* the place at the lift: a flick this fast would glide on ~1000px by itself, so a press that lands past this place
          and leaves the chart well short of that throw is what stopped it (two reads a frame apart can read the same) */
       await finger(cdp, { x: e0.x, y: e0.y, dy: -200, steps: 5 }); const p0 = await pos(page, '#board'); await wait(50)
-      const bb = await ballMid(page)
+      const bb = await ballMid(page, 140)
       await page.evaluate(() => { window.__pressOn = null; window.addEventListener('pointerdown', e => { const g = e.target.closest && e.target.closest('.ball'); window.__pressOn = { on: g ? g.dataset.id : null, y: Math.round(document.getElementById('board').scrollTop) } }, { capture: true, once: true }) })
       if (how === 'finger') await tap(cdp, bb.x, bb.y); else await page.mouse.click(bb.x, bb.y)
       await wait(80); const s1 = await pos(page, '#board'); await wait(500); const s2 = await pos(page, '#board')
@@ -118,7 +124,7 @@ const ballMid = page => page.evaluate(() => {
       tries.push(last)
       if (k === 0 || (at && at.on)) await shot(page, `g4-phone-${how}-press-stops-glide-nothing-opens`)
       if (opened) { await page.keyboard.press('Escape'); await wait(300) }
-      if (how === 'finger') { const z = await emptyAt(page); await tap(cdp, z.x, z.y); await wait(300) }   /* the test browser's flick quirk, as G5 */
+      await settle(page, cdp)   /* a stray window put away; the test browser's flick quirk, as G5 */
       /* a valid trial: it landed on an event AND the chart was still moving when it did */
       if (at && at.on && at.y > p0.y) return { ok: Math.abs(s2.y - s1.y) <= 1 && s2.y - p0.y < 400 && !opened, ...last, tries }
     }
@@ -131,7 +137,7 @@ const ballMid = page => page.evaluate(() => {
   /* G5 — the second tap works as normal. First one throwaway finger tap on empty chart: after a scripted flick the TEST
      browser sends no click for the next finger tap at all (counted at the window, before the app — walk-scripts.md §4;
      shown 17 Oct 26 by a probe), and a mouse press does not clear that. Not a phone's behaviour. */
-  { const z = await emptyAt(page); await tap(cdp, z.x, z.y); await wait(300) }
+  await settle(page, cdp)
   const b5 = await ballMid(page)
   await tap(cdp, b5.x, b5.y); await wait(500)
   const opened5 = await popOpen(page)
@@ -230,6 +236,36 @@ const ballMid = page => page.evaluate(() => {
   note('G12', 'phone chart: two fingers stop a glide, the pinch zooms, nothing stays stretched', Math.abs(p2.y - p1.y) <= 1 && z12 !== z0 && p2.tf === '', { zoomBefore: z0, zoomAfter: z12, justAfter: p1.y, later: p2.y, tf: p2.tf })
   await page.evaluate(() => document.getElementById('fzReset').click()); await wait(400)
 
+  /* G12b — a second finger landing while the first holds the chart stretched past its top: the pinch takes over and the
+     stretch goes at once (the first finger's own touch stops a glide, so this is the one place the pinch's stop shows) */
+  {
+    await page.evaluate(() => { document.getElementById('board').scrollTop = 0 }); await wait(200)
+    const z0b = await page.textContent('#fzPct')
+    const c2 = await box(page, '#board'), x1 = c2.x + c2.w * 0.3, y1 = c2.y + 120
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x1, y: y1, id: 1 }] })
+    for (let i = 1; i <= 6; i++) { await wait(16); await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x1, y: y1 + 20 * i, id: 1 }] }) }
+    const held = await pos(page, '#board')
+    const y2 = y1 + 120
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x1, y: y2, id: 1 }, { x: x1 + 80, y: y2, id: 2 }] })
+    for (let i = 1; i <= 8; i++) { await wait(16); await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x1 - 6 * i, y: y2, id: 1 }, { x: x1 + 80 + 6 * i, y: y2, id: 2 }] }) }
+    const during = await pos(page, '#board')
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await wait(600)
+    const after = await pos(page, '#board'), z1b = await page.textContent('#fzPct')
+    note('G12b', 'phone chart: a pinch begun while the chart is held stretched drops the stretch at once', /translate/.test(held.tf) && during.tf === '' && after.tf === '' && z1b !== z0b, { heldStretch: held.tf, duringPinch: during.tf, after: after.tf, zoom: [z0b, z1b] })
+    await page.evaluate(() => document.getElementById('fzReset').click()); await wait(400)
+  }
+  /* G16 — End pressed mid-glide (a keyboard on an iPad): the chart goes to its right end and the glide stops (D989) */
+  {
+    for (let i = 0; i < 12 && (await page.textContent('#fzPct')) !== '200%'; i++) { await page.evaluate(() => document.getElementById('fzIn').click()); await wait(120) }
+    await page.evaluate(() => { const b = document.getElementById('board'); b.scrollTop = 2000; b.scrollLeft = 0; b.focus({ preventScroll: true }) }); await wait(200)
+    const e16 = await emptyAt(page, 0.1, 0.6)
+    await finger(cdp, { x: e16.x, y: e16.y, dy: -200, steps: 5 }); await wait(40)
+    const a16 = await pos(page, '#board')
+    await page.keyboard.press('End'); await wait(80)
+    const b16 = await pos(page, '#board'); await wait(600); const c16 = await pos(page, '#board')
+    note('G16', 'chart: End pressed mid-glide goes to the right end and the glide stops there', b16.x > 0 && c16.x === b16.x && c16.y === b16.y && c16.tf === '', { beforeEnd: [a16.x, a16.y], rightAfter: [b16.x, b16.y], later: [c16.x, c16.y], maxX: c16.maxX })
+    await page.evaluate(() => document.getElementById('fzReset').click()); await wait(400)
+  }
   /* G13 — a tap on an event with no glide running opens it, as always */
   await wait(400)
   const b13 = await ballMid(page)

@@ -84,7 +84,7 @@
   },
   {
    "n": 8,
-   "name": "D989 two fingers do not stop a glide (both layers)",
+   "name": "D989 a pinch begun while a stretch is held does not drop it (both layers)",
    "file": "src/tracker/app/core.js",
    "find": "    if (!gx || arrangeMode || pinching || !el.isConnected",
    "put": "    if (!gx || arrangeMode || !el.isConnected",
@@ -95,7 +95,7 @@
     }
    ],
    "expect": [
-    "G12"
+    "G12b"
    ]
   },
   {
@@ -159,10 +159,26 @@
    "n": 14,
    "name": "D989 a finger's drag lets its late click through",
    "file": "src/tracker/app/core.js",
-   "find": "    if (moved && finger) guardClick(true);",
+   "find": "    if (moved && finger && far) guardClick(true);",
    "put": "    if (false) guardClick(true);",
    "expect": [
     "R5"
+   ]
+  },
+  {
+   "n": 15,
+   "name": "D989 Home and End do not stop the glide first",
+   "file": "src/tracker/app/core.js",
+   "find": "    else if (e.key === 'End') { stopGlide(el); el.scrollLeft",
+   "put": "    else if (e.key === 'End') { el.scrollLeft",
+   "also": [
+    {
+     "find": "  el.__glideStop = () => { if (!st && (raf || shifted.length)) cancel(); };",
+     "put": "  el.__glideStop = () => { if (!st && (raf || shifted.length)) cancel(); };"
+    }
+   ],
+   "expect": [
+    "G16"
    ]
   }
  ]

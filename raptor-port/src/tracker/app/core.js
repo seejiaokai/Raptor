@@ -3775,8 +3775,8 @@ function enableHScroll(el) {
     if (tag === 'input' || tag === 'select' || tag === 'textarea' || (t && t.isContentEditable)) return;
     /* the arrows walk the chart's events now (D980 — chartKey); Home and End still take the chart to its two sides */
     if (chartKey(e)) return;
-    if (e.key === 'Home') { el.scrollLeft = 0; e.preventDefault(); }
-    else if (e.key === 'End') { el.scrollLeft = el.scrollWidth; e.preventDefault(); }
+    if (e.key === 'Home') { stopGlide(el); el.scrollLeft = 0; e.preventDefault(); }
+    else if (e.key === 'End') { stopGlide(el); el.scrollLeft = el.scrollWidth; e.preventDefault(); }
   });
   /* a mouse press that gives the chart the focus takes the ring away at once (the fresh code read's finding 3) */
   /* never in Edit chart layout: there the board's scroll is the editing canvas's place (the Tracker suite's "Done editing
@@ -3977,7 +3977,9 @@ export function dragScroll(el, skip) {
   /* A TOUCH WHILE IT GLIDES ONLY STOPS IT (D986): the click its lift would make is taken, so no event's pop-up and no
      button under the finger opens — as on the iPhone; the next tap works as normal. */
   function guardClick(lifted) {
-    const kill = ev => { ev.stopPropagation(); ev.preventDefault(); };
+    /* only a pointer's click: Enter or Space on a focused button inside the box clicks with no pointer (detail 0) and
+       is never taken (the fix read's finding 4) */
+    const kill = ev => { if (ev.detail === 0) return; ev.stopPropagation(); ev.preventDefault(); };
     /* A finger's click comes a moment AFTER its lift (the phone sends it once the touch has ended), so the guard is
        kept a short while past the lift — and dropped at once by the next press, which is the person's next tap. The
        wait is counted from the lift (the window's, or the box's own leave, which a touch sends after it), however long
@@ -4006,6 +4008,8 @@ export function dragScroll(el, skip) {
   el.addEventListener('pointerdown', e => {
     if (arrangeMode) return;   /* arrange mode pans the SVG viewport itself */
     if (e.button !== 0 && e.pointerType === 'mouse') return;
+    /* a second finger while the first drags is the pinch's, not a drag of its own (the fix read's finding 2) */
+    if (st && !e.isPrimary) return;
     const caught = !!raf;
     /* ...and nothing under it takes the keyboard either (no focus ring left on a date box the finger only stopped on):
        a cancelled press sends no mousedown, which is what would focus it */
@@ -4017,7 +4021,7 @@ export function dragScroll(el, skip) {
     if (off) { if (caught) launch(0, 0); return; }   /* no drag starts here: a caught stretch springs back */
     /* a press that caught nothing starts from where the box is now, with nothing stretched — a lift that never reached
        the box (a redraw took its target) can have left an older place behind (the code read's finding 6) */
-    if (!caught || !gx) { unshift(); const r = range(); gx = { p: el.scrollLeft, v: 0, max: r.x }; gy = { p: el.scrollTop, v: 0, max: r.y }; }
+    if ((!caught && e.isPrimary) || !gx) { unshift(); const r = range(); gx = { p: el.scrollLeft, v: 0, max: r.x }; gy = { p: el.scrollTop, v: 0, max: r.y }; }
     st = { x: e.clientX, y: e.clientY, px: gx.p, py: gy.p, moved: false, id: e.pointerId, finger: e.pointerType !== 'mouse',
       /* in the scroll's direction: a finger moving up moves the view down the chart */
       samples: [{ t: e.timeStamp, x: -e.clientX, y: -e.clientY }] };
@@ -4032,6 +4036,9 @@ export function dragScroll(el, skip) {
       if (Math.abs(dx) < 3 && Math.abs(dy) < 3) return; st.moved = true;
       el.classList.add('dragging'); try { el.setPointerCapture(st.id); } catch (_) {}
     }
+    /* past the phone's own tap allowance (as the chips' long press allows 8px) it is a drag, whose click is taken; a
+       wobble under it is still a tap, whose click must go through (the fix read's finding 1) */
+    if (Math.hypot(dx, dy) > 10) st.far = true;
     let px = st.px - dx, py = st.py - dy;
     if (!st.finger) { px = Math.min(gx.max, Math.max(0, px)); py = Math.min(gy.max, Math.max(0, py)); }   /* a mouse never stretches (D988) */
     if (gx.max <= 0) px = 0;
@@ -4040,8 +4047,8 @@ export function dragScroll(el, skip) {
     e.preventDefault();
   });
   const stop = e => {
-    if (!st) return; const { moved, finger, samples } = st; st = null; el.classList.remove('dragging');
-    if (moved && finger) guardClick(true);   /* a finger's click comes after its lift — the code read's finding 5 */
+    if (!st || (e && e.pointerId !== st.id)) return; const { moved, finger, samples, far } = st; st = null; el.classList.remove('dragging');
+    if (moved && finger && far) guardClick(true);   /* a finger's click comes after its lift — the code read's finding 5 */
     else if (moved) { /* swallow the click that follows a drag (a mouse's comes with its release) */
       const kill = ev => { ev.stopPropagation(); ev.preventDefault(); };
       el.addEventListener('click', kill, { capture: true, once: true });
