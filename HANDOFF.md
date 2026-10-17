@@ -21,12 +21,27 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/trk-scroll-glide -->
-### `claude/trk-scroll-glide` — THE TRACKER'S GLIDE ON A PHONE (D985) — written 17 Oct 26, verify before use
-- **Where it starts:** the Tracker batch (D495) is LIVE — pull request 530 merged on his "merge live" (17 Oct 26), Vercel's live build ready; its block is removed and its nine items are in `OUTSTANDING-ARCHIVE.md`. Still owed from it: his look on his iPhone and iPad (the look card on https://claude.ai/artifact/RTF67FRK8uQUmyF4BSzwtv — a tap draws no ring; long names whole; the iPad calendar under its box, `[TRK-DATEBOX-SAFARI-ZOOM]`).
-- **This branch:** cut from `main` at the merge; it carries only the records so far — D985 recorded (its short line read against its full row by a fresh reader: agrees), its home in `raptor-port/docs/ui-contracts.md` §The Tracker tab, and the backlog item `[TRK-SCROLL-GLIDE]` (the priority list's NEXT).
-- **The job (D985, his words in its full row):** on a phone, a finger scroll of the Tracker's chart and of its Info half glides like the phone's own scrolling — speeds up with the finger, slows to a stop after the lift — instead of stopping dead. Today both are the Tracker's own finger-drag (`dragScroll`, `raptor-port/src/tracker/app/core.js`; the side panel wires it in `components/SidePanel.jsx`).
-- **Pick up here:** his questions first — one short round, at most four, each with a recommendation and a picture (D853): the feel (recommended: the phone's own), what stops a glide, a mouse on a desktop or only a finger. Then build on this branch, FULL bug check (a new gesture on the Tracker's most-used surface); Opus, high thinking. Watch the pinch and its take-back (D134), the landing (D984), a tap after a drag still swallowed. One pull request, his look on his iPhone, his "merge live".
-- **Rulings:** D984, D985 (17 Oct 26).
+### `claude/trk-scroll-glide` — THE TRACKER'S GLIDE ON A PHONE (D985–D989) — BUILT, WALKED, READ; the Tracker suite and the pull request next — written 17 Oct 26, verify before use
+- **Built:** a finger flick on the Tracker's chart and Info half carries on and slows at the iPhone's rate, bounces at an
+  end (his 2B — D987), a touch while it glides only stops it (D986), a mouse is as it was (D988), the app's own moves and two
+  fingers stop it (D989). The motion: `raptor-port/src/tracker/app/glide.js` (+ `glide.test.ts`, 17); the wiring:
+  `dragScroll` in `raptor-port/src/tracker/app/core.js` (with `stopGlide`, called by the zoom, a landing, the keyboard ring,
+  a redraw, Home / End); `SidePanel.jsx` (the panel's zoom stops it; a chip's long-press mark reset); `.side` takes
+  `touch-action:none` in `tracker.css`. Rulings D986–D989 recorded (his "As recommended but 2B"); D985's homes updated.
+- **Checked:** WALK tier + two fresh, blind Opus reads (the code, 7 findings; the fix commit, 4) — all fixed. The walk
+  `raptor-port/scripts/handpass/trk-glide-walk.mjs` 42 / 42 twice; breaks 11 of 15 caught (the 4 not, with readings, in
+  the sheet); gates: unit 11657, build, tfin 728/0, e2e 844, rulecheck, docsize green. Evidence:
+  `raptor-port/docs/handpass/2026-10-17-trk-glide.md`. Round-1 page: `raptor-port/docs/mock/2026-10-17-trk-glide-r1/`
+  (https://claude.ai/artifact/DaEXWjGkxuctqtYutzbVbx).
+- **Pick up here:** (1) run the Tracker suite through the lock (`node raptor-port/scripts/gatelock.mjs exec "<branch> —
+  Tracker smoke" -- npm run smoke:tracker` from `raptor-port/`) — its new glide block had a name declared twice (fixed in the
+  last commit), so it has NOT yet run green with it; (2) fill the sheet's Gates section and the `Walk:` line; (3) open the
+  pull request, unsubscribe from it, send him the preview link with the pictures and his iPhone look card (the sheet's last
+  section). No merge without his "merge live".
+- **Walk scripts' trap, now guarded:** the shared driver's default port is ANOTHER chat's; the glide walk and the new break
+  runner (`raptor-port/scripts/handpass/breaks-walk.mjs`) refuse an address that does not serve this checkout's build —
+  always pass `HP_URL` (this chat's preview was http://localhost:4181). Skill observation 634.
+- **Rulings:** D986–D989 (17 Oct 26).
 <!-- /now -->
 
 ## Next, in order
