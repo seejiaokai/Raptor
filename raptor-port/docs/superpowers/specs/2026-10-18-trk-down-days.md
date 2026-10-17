@@ -50,6 +50,9 @@ whether a non-syllabus flight graded on the chart moves "Last currency" by itsel
 - **D1007 — [TRK-LEGEND]:** a legend — what each ball means, what currency a flight needs and when an IP is required, when a
   flex happens; its flex part goes with the switch. Open: where it sits, its words — a picture first.
 
+**D1014 (the same day):** the flex settings open from a settings icon in the Tracker's top bar; only an admin changes them
+(narrows D121). Open: what a member sees there; which figures.
+
 ## Questions to put to him first (as first drafted) (rounds of four, each with a picture and a recommendation — D853)
 1. Which days count: every medical day ever filed, or only those since the student's course start (or since his last
    currency, which is what the landing-currency sum needs)? — to be recommended after reading how the currency sum uses it.

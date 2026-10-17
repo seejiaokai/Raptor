@@ -45,6 +45,7 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D1014 | 18 Oct 26 | The Tracker's flex settings — its figures and its on / off switch (D1006) — open from a settings icon in the Tracker's top bar, and only an admin can change them. |
 | D1007 | 18 Oct 26 | The Tracker gets a legend: what each ball on the chart means (a flight and the other kinds), what currency a flight needs and when an IP is required, and when a flex happens; with the flex switch off (D1006) the legend's flex part goes too. |
 | D1006 | 18 Oct 26 | The flex can be set: its figures can be edited, and one switch for the whole Tracker turns flex off — then everything about flex disappears from the app (its bar, its windows and words, and its part of the legend). |
 | D1005 | 18 Oct 26 | Every Tracker student is a man on the roster, so his down days always come from the Inputs: the typed "No. of Down Days" box goes for every student. "Last flown currency" is typed by the member for a non-syllabus flight and moves only the IP requirement (landing currency); a syllabus flight moves both the IP requirement and the flex. |
@@ -96,7 +97,7 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 | D124 | 23 Sep 26 | Deleting a ball wipes its marks. |
 | D123 | 23 Sep 26 | Last Flown is the latest day actually flown, whatever the order they were entered. |
 | D122 | 23 Sep 26 | An import may reset student marks; it must never wipe an event's typed details. |
-| D121 | 23 Sep 26 | In the Tracker a member can do everything an admin can — the File menu too. |
+| D121 | 23 Sep 26 | In the Tracker a member can do everything an admin can — the File menu too — except change the flex settings, an admin's alone (D1014). — changed by D1014 |
 | D120 | 23 Sep 26 | The Tracker's charts reach the database by export → wipe → import, so a bug that route already removes is not a finding. |
 | D64 | 23 Sep 26 | The Tracker's event-box hint reads the bare type ("e.g. Lecture, OFT/AMT, 2 x F-15"); its syllabus data and the smoke-test lines asserting it stay out of every sweep (D62) — narrows D62 and D63. |
 
@@ -213,7 +214,7 @@ model for the database step: `docs/data-model.md`. **Everyone
 does everything — marking, charts, students, courses, syllabi AND the File menu
 (Import / Export): admin and member have the same access** (owner, D121,
 23 Sep 26, superseding the 7 Sep "file portion is the admin's"); the Tracker
-reads no role, so never add an admin gate to it. CSS is scoped under
+reads no role, so never add an admin gate to it *(NARROWED 18 Oct 26 by D1014: the flex settings, opened from a settings icon in its top bar, are an admin's alone — the Tracker's one admin gate, to build with [TRK-FLEX-SETTING])*. CSS is scoped under
 `#page-tracker` with five Raptor collisions reset at the top of the wrapper.
 *[Since 13 Oct 26 (D801) two Tracker components — `components/DateBox.jsx`, `components/Pop.jsx` — draw Raptor's own date box (`ui/DateBox.tsx`, `ui/DateCal.tsx`, `ui/scheduler/26-date-calendar.css`): a standalone export carries those with it — `docs/tracker/known-gaps.md`, last sections.]*
 Gaps and the carried-over traps: `docs/tracker/known-gaps.md`; the working loop
