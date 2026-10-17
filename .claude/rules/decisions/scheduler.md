@@ -54,6 +54,11 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1013 | 18 Oct 26 | Every copy of a man's puck on a day wears the same crew-rest ring as his seat (dotted, dashed or solid) — his SANS card, Unavailable and Personal Inputs rows and the crew list included — and an open issues list lights its crew without hiding those rings; drawn for him before it is built. |
+| D1012 | 18 Oct 26 | In a calendar inside a form — the OIL question's "Only some days…" and an input's own window — Escape with the month or year list open closes only that list; a second Escape closes the form. |
+| D1011 | 18 Oct 26 | On the Scheduler Board, Escape in a take-off, landing, brief or duty-start box puts the old time back and saves nothing, as every other box does. |
+| D1010 | 18 Oct 26 | On View-only Sched the next-week preview shows a published day's published version; Edit Schedule's preview keeps the working copy. |
+| D1009 | 18 Oct 26 | Insights keeps counting a flying line with nobody on it as a sortie and its formation as a formation — the same count as the day's own heading; nothing changes. |
 | D997 | 18 Oct 26 | On a phone every window that pops up for a task stands in the middle of the screen, as tall as what is in it up to the visible screen less 24px; the day panels pulled up and down by their bar (the Inputs and SANS calendars' day) and the ALL AVAIL and changes windows stay at the foot. |
 | D995 | 18 Oct 26 | On a phone the schedule's own input window, opened from Edit Schedule or the Scheduler Board, stands in the middle of the screen, not at its foot; it is still as tall as what is in it, up to the visible screen less 24px. |
 | D958 | 17 Oct 26 | Where an ALL AVAIL / ALL input's row sits on the Common Programme (D955), the three places that named it "ground" say "Common" — the board's note after ✕, Personal Inputs' button and the phone's banner while a place waits for a puck; a row on the Ground Programme keeps "ground". |

@@ -47,7 +47,13 @@ the later merge keeps both (D78).
   given to him in the chat. **Answered 18 Oct 26:** 1 (D998, parked), 4 (D999, to build), 7 (D1001, kept; sort by flight
   filed), 11 (D1000, pictures then build), 12 (his look — closed and archived). **New direction, not designed:** D1002 —
   the Tracker's down days from the Inputs, filed as [TRK-DOWN-DAYS-AUTO] with its design note. **Still open:** 2, 3, 5, 8,
-  9, 10, 13 (answers), 6 (build, D710), 15 (his iPhone look), 14 and 16 (close — already looked). Four need no answer (three already answered — close them; one
+  9, 10, 13 (answers), 6 (build, D710), 15 (his iPhone look), 14 and 16 (close — already looked).
+  **Later the same day — "as recommended" for the rest of 1–12:** D1008 (2), D1009 (3, keep), D1010 (5), D1011 (8), D1012
+  (9), D1013 (10, picture first); 6 confirmed (D710 — build). **Left:** 13 (the import's words), 15 (iPhone look), close 14
+  and 16. **The Tracker's next job, not designed — his answers in the note:** D1002–D1007 (down days from the Inputs from the
+  course start, no typed box; the currency bar without down days; the flex editable with an off switch; a legend) —
+  `raptor-port/docs/superpowers/specs/2026-10-18-trk-down-days.md`. **Builds now ruled and waiting:** D999, D1000 (pictures
+  first), D1008, D1010, D1011, D1012, D1013 (picture first), D710 — batched by area (D994). Four need no answer (three already answered — close them; one
   ruled, D710 — build it). Record each answer as he gives it; pictures with each when it is put in its round (D921).
 - **Rulings:** D994's batch: D995 (scheduler; narrows D537), D996 (inputs; narrows D537); design lesson 6.
 <!-- /now -->
