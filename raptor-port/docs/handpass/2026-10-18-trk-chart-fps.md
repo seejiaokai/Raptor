@@ -6,7 +6,7 @@ bundle), its pictures `docs/img/handpass/2026-10-18-trk-chart-fps/walk/`, its re
 
 ## Questions waiting for him
 
-None. His look on his iPhone carries the lines only a real device can prove (the last section).
+None. **His look on his iPhone, 18 Oct 26: "Yes this feels good"** — given on the preview; his "merge live" is what is left. His look on his iPhone carries the lines only a real device can prove (the last section).
 
 ## Why — what was measured before anything was built
 
