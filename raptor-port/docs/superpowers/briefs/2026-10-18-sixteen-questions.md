@@ -21,7 +21,7 @@ answered. "Next agent" lines name the item, the rulings and the files.
 
 ## Still his to answer — with the recommendation
 
-1. **Leave War manning and commitments** `[LW-COMMIT-MANNING]` — his words of 21 Sep 26 (register N17, no D-number): "The
+1. **ANSWERED 18 Oct 26 — D998, "No leave it for 1 for now": the manning stays as built.** **Leave War manning and commitments** `[LW-COMMIT-MANNING]` — his words of 21 Sep 26 (register N17, no D-number): "The
    manning should only reduce if they are like planned by things like leave, duty & commitments." Today only leave, medical,
    a course and overseas duty reach the war. Example: a Saturday needs six, six are free, Ranger has an accepted all-day
    Training — the war reads six. **Recommended: an all-day or half-day commitment lowers the manning for the half or day it

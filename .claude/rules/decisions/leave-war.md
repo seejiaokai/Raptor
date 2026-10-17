@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D998 | 18 Oct 26 | For now the Leave War's manning stays as built: only leave, a medical downchit (not ATT B), a course, an overseas duty and a leave bid not refused lower it; a duty or other commitment does not. |
 | D892 | 15 Oct 26 | In the Leave War's Rearrange, a row dragged toward the top or bottom edge of the screen scrolls the grid that way, so it can be carried to a row out of view — a man's row, a group heading and a counter alike, on a phone and a desktop — as the scheduler's drags and the war's own move already do. |
 | D891 | 15 Oct 26 | The Leave War's ⚙ Settings Groups and "Who wins" lists and a day's notes on the Inputs calendar show one landing line a gap too, as the grid does (D890): over a row's lower half the line is drawn on the top of the row below; only under the last row of a list is it drawn on a row's foot. |
 | D890 | 15 Oct 26 | In the Leave War's Rearrange the gap between two rows shows one landing line, in one place: over the lower half of a row or the upper half of the row below it, the same line is drawn on the top edge of the row below; only under the last row of a list, or above a heading the row cannot land on, is it drawn on a row's bottom edge. — changed by D891 |

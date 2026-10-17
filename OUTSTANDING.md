@@ -510,6 +510,7 @@ which records why the static pass missed them, and from the scenario lists Fable
 the OIL pass — the same scenario-design-then-execute shape is what this needs.
 
 ### [LW-COMMIT-MANNING] Duty & commitments must reduce the Leave War manning — the OTHER half of N17 (owner, 21 Sep 26)
+**PARKED 18 Oct 26 — D998 ("No leave it for 1 for now"): the manning stays as built; not built, and not put to him again before he raises it or the Leave War's next batch.**
 **Owner's words, and he then said to file it: "The manning should only reduce if they are like
 planned by things like leave, duty & commitments."**
 
