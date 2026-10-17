@@ -10670,7 +10670,9 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   the Inputs page's window stays at the foot). Wider than 620 it is the centred dialog as before.
   `14-input-editors.css`; pinned by `e2e/sched-phone.spec.ts`.)* *(D996, 18 Oct 26 — "Yes standardise to middle": the same
   input's window on the Inputs page, "+ Input" and a tap on an input, stands in the middle on a phone too — to build,
-  a picture first; whether the phone's other windows follow is his to say.)*
+  a picture first; whether the phone's other windows follow is his to say.)* *(D997, the same day — "All in the middle": every
+  window that pops up for a task stands in the middle on a phone; the calendars' day panels and the ALL AVAIL and changes
+  windows stay at the foot. To build on `claude/window-middle-d996`.)*
 - **The SANS calendar's "How this works" no longer says "One commitment a day each." (owner D704, 9 Oct 26 — "Remove one
   commitment a day each").** Its fifth line is the late cut-off alone, as set, the cut-off in bold (D628, D691) — the same
   shape as the Inputs calendar's fifth line. Only the sentence went: the rule stands and is said where a second commitment
