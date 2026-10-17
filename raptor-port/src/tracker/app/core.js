@@ -3693,14 +3693,33 @@ function enablePinchZoom(el) {
      it (touch-action, tracker.css; dragScroll); a second finger's touch is cancelled here, so the browser neither scrolls
      on two fingers nor takes them from the pinch above. The touch stays held until every finger is up, so the finger left
      down after a pinch does nothing until it lifts (D134). A second finger added once the phone is already scrolling
-     cannot be held (the phone no longer asks): the phone carries on scrolling, and a pinch starts on the next two. */
-  let held = false;
+     cannot be held (the phone no longer asks): the phone carries on scrolling, and a pinch starts on the next two.
+     ONLY THE CHART'S OWN FINGERS COUNT (the code read's F2): a touch event's `touches` is every finger on the screen, so a
+     thumb resting on the Info half or the header froze the chart. The board's fingers are known by their ids, taken as
+     they land on it; one no longer on the screen (a lift lost to a redraw) is forgotten at the next landing.
+     A finger whose target a redraw takes away sends its moves there and never here, so the hold is hung on each held
+     finger's own target too (the code read's F3). */
+  let held = false, heldOn = [];
+  const mine = new Set();
+  const onBoard = e => Array.from(e.touches).filter(t => mine.has(t.identifier)).length;
+  const cancelIfHeld = e => { if (held && e.cancelable) e.preventDefault(); };
+  const release = () => { held = false; for (const t of heldOn) t.removeEventListener('touchmove', cancelIfHeld); heldOn = []; };
   el.addEventListener('touchstart', e => {
-    if (e.touches.length < 2) { held = false; return; }   /* one finger: a lift lost to a redraw is forgotten here */
+    const down = new Set(Array.from(e.touches).map(t => t.identifier));
+    for (const id of [...mine]) if (!down.has(id)) mine.delete(id);
+    for (const t of Array.from(e.changedTouches || [])) mine.add(t.identifier);
+    if (onBoard(e) < 2) { release(); return; }
     held = true; if (e.cancelable) e.preventDefault();
+    for (const t of Array.from(e.touches)) {
+      const tg = t.target;
+      if (mine.has(t.identifier) && tg && tg !== el && tg.addEventListener && !heldOn.includes(tg)) { tg.addEventListener('touchmove', cancelIfHeld, { passive: false }); heldOn.push(tg); }
+    }
   }, { passive: false });
-  el.addEventListener('touchmove', e => { if (held && e.cancelable) e.preventDefault(); }, { passive: false });
-  const free = e => { if (!e.touches.length) held = false; };
+  el.addEventListener('touchmove', cancelIfHeld, { passive: false });
+  const free = e => {
+    for (const t of Array.from(e.changedTouches || [])) mine.delete(t.identifier);
+    if (!onBoard(e)) release();
+  };
   el.addEventListener('touchend', free); el.addEventListener('touchcancel', free);
   el.addEventListener('pointerdown', e => {
     if (e.pointerType === 'mouse') return;
@@ -3963,15 +3982,19 @@ export function dragScroll(el, skip) {
   el.style.cursor = 'grab';
   /* THE APP'S OWN MOVE WINS (D989): each place that moves this box itself (the zoom, a landing, the keyboard's ring, a
      redraw that keeps the view) stops a phone glide BEFORE it measures and writes. Safari carries a glide on over a scroll
-     written mid-glide, and the move would be lost under it; a box that stops being a scroll box for a moment drops its
-     glide. Only right after the box scrolled — a box at rest is left alone. */
-  let lastScroll = -1e9;
+     written mid-glide, and the move would be lost under it; a box that is not a scroll box drops its glide. The glide is
+     run outside the page (the phone's scroller, Chrome's compositor), which hears of the change only at the next frame —
+     so the box stays unscrollable for two frames, the caller's own scroll still landing meanwhile (the code read's F1: a
+     toggle within one task never reached them). Only right after a finger's scroll — a box at rest, or one a mouse or a
+     wheel moved, is left alone (no scrollbar flashes on a desktop). */
+  let lastScroll = -1e9, touchAt = -1e9, stopping = false;
   el.addEventListener('scroll', () => { lastScroll = performance.now(); }, { passive: true });
+  el.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') touchAt = performance.now(); }, { passive: true });
   el.__glideStop = () => {
-    if (st || performance.now() - lastScroll > 150) return;
-    const x = el.scrollLeft, y = el.scrollTop;
-    el.style.overflow = 'hidden'; void el.offsetHeight; el.style.overflow = '';
-    el.scrollLeft = x; el.scrollTop = y;
+    if (st || stopping || touchAt < 0 || lastScroll < touchAt || performance.now() - lastScroll > 150) return;
+    stopping = true; el.style.overflow = 'hidden';
+    const back = () => { const x = el.scrollLeft, y = el.scrollTop; el.style.overflow = ''; el.scrollLeft = x; el.scrollTop = y; stopping = false; };
+    if (typeof requestAnimationFrame === 'undefined') back(); else requestAnimationFrame(() => requestAnimationFrame(back));
   };
   /* Not this box's drag: a press inside a window open over it (fixed — the lull calendar and its backdrop are the Info
      half's own children, fixed and centred by their own transform). */
