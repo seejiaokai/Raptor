@@ -9730,13 +9730,15 @@ His "As recommended" to the four questions of `docs/mock/2026-10-17-tracker-r1/i
   mark, else the first event. Every landing centres its event wherever that shows no empty space, and never scrolls into the
   empty slack above (or, on a chart wider than its box, left of) the chart's start: an event near the top sits as high as
   the chart goes instead (D984, 17 Oct 26 — his "As recommended B"; it narrows his 9 Sep "centralise" ask).
-- **The glide (D985, 17 Oct 26; round 1 answered D986–D989 — ruled, NOT BUILT yet, `[TRK-SCROLL-GLIDE]`).** On a phone a
+- **The glide (D985, 17 Oct 26; round 1 answered D986–D989 — built 17 Oct 26, `[TRK-SCROLL-GLIDE]`).** On a phone a
   finger scroll of the chart and of the Info half is to glide like the phone's own scrolling — speeding up with the finger,
   slowing to a stop after it lifts. A touch while it glides only stops it, opening nothing (D986). At an end it bounces a
   little and springs back, as does a finger pulled past an end (D987). A finger or a pen glides; a mouse drag stops where it is
   let go and never bounces (D988). Two fingers stop it; the app's own move (a pick, a search, the keyboard) stops it and
-  wins; it stays on for a phone set to less motion; Edit chart layout is untouched (D989). Until it is built both follow the
-  finger exactly and stop dead at the lift (`dragScroll`).
+  wins; it stays on for a phone set to less motion; Edit chart layout is untouched (D989). Built in `dragScroll`
+  (`src/tracker/app/core.js`), the motion in `src/tracker/app/glide.js`; the Info half takes no browser scrolling
+  (`touch-action:none`, so both halves feel the same on every phone), and a box inside it that scrolls itself (the Failures
+  card's list) keeps the finger. Walked: `docs/handpass/2026-10-17-trk-glide.md`.
 
 ## OIL on the schedule: the "OIL Earn" mode and the green edge (owner, 21 Sep 26)
 

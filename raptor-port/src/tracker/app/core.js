@@ -3206,6 +3206,7 @@ export function renderBoard() {
    capture it and put it straight back, exactly as the crew picker does. */
 function redrawKeepView() {
   const board = document.getElementById('board');
+  stopGlide(board);
   const sx = board ? board.scrollLeft : 0, sy = board ? board.scrollTop : 0;
   renderBoard(); renderSide();
   if (board) { board.scrollLeft = sx; board.scrollTop = sy; }
@@ -3298,6 +3299,7 @@ function placeChartPoint(board, c, sx, sy) {
 export function setFlowZoom(z) {
   zoomIsMine = true;
   const board = document.getElementById('board');
+  stopGlide(board);
   if (board && !arrangeMode && flowZoom > 0) {
     const sx = board.clientLeft + board.clientWidth / 2, sy = board.clientTop + board.clientHeight / 2;
     const c = chartPointAt(board, sx, sy);
@@ -3824,7 +3826,8 @@ function paintKbdRing() {
 }
 /* the least scroll that brings the ringed event inside the chart's box, a little clear of its edges */
 function kbdKeepInView() {
-  const bd = document.getElementById('board'), g = kbdBall(kbdId); if (!bd || !g || arrangeMode) return;
+  const bd = document.getElementById('board'); stopGlide(bd);
+  const g = kbdBall(kbdId); if (!bd || !g || arrangeMode) return;
   const r = g.getBoundingClientRect(), b = bd.getBoundingClientRect(), m = 28;
   if (r.top < b.top + m) bd.scrollTop -= (b.top + m) - r.top; else if (r.bottom > b.bottom - m) bd.scrollTop += r.bottom - (b.bottom - m);
   if (r.left < b.left + m) bd.scrollLeft -= (b.left + m) - r.left; else if (r.right > b.right - m) bd.scrollLeft += r.right - (b.right - m);
@@ -3905,6 +3908,8 @@ function kbdBack() {
   try { bd.focus({ preventScroll: true }); } catch (_) { bd.focus(); }
   kbdShown = true; paintKbdRing();
 }
+/* Stop a box's glide before the app moves it itself (D989): dragScroll hangs the stop on the box. */
+export function stopGlide(el) { if (el && el.__glideStop) el.__glideStop(); }
 /* Grab-and-drag scrolling for any overflow container — the chart's board and the Info half (SidePanel.jsx).
    A FINGER (or a pen) GLIDES (owner D985, 17 Oct 26; round 1 D986–D989): the view follows the finger exactly; at the
    lift the finger's speed carries on and slows to a stop at the iPhone's own rate; past an end the view stretches and
@@ -3928,7 +3933,9 @@ export function dragScroll(el, skip) {
     el.scrollLeft = sx; el.scrollTop = sy;
     const ox = rubber(gx.p - sx, el.clientWidth), oy = rubber(gy.p - sy, el.clientHeight);
     if (ox || oy) {
-      const kids = Array.from(el.children);
+      /* only what scrolls with the box: a window open over it (the lull calendar and its backdrop are the Info half's own
+         children, fixed and centred by their own transform) never moves — the code read's finding 1 */
+      const kids = Array.from(el.children).filter(c => getComputedStyle(c).position !== 'fixed');
       for (const c of shifted) if (!kids.includes(c)) c.style.transform = '';
       shifted = kids;
       for (const c of kids) c.style.transform = `translate(${-ox}px,${-oy}px)`;
@@ -3938,6 +3945,12 @@ export function dragScroll(el, skip) {
   function halt() { if (raf) cancelAnimationFrame(raf); raf = 0; }
   /* drop it all where it is — no stretch left drawn, nothing moving */
   function cancel() { halt(); unshift(); gx = gy = null; wrote = null; }
+  /* THE APP'S OWN MOVE WINS (D989), stretched or not: each place that moves this box itself (the zoom, a landing, the
+     keyboard's ring, a redraw that keeps the view) stops the glide BEFORE it measures — a stretch still drawn would put
+     every ball off by its size, and the spring's next frame would write the old end back over the move (the code read's
+     finding 2). A finger still down keeps its drag. */
+  el.__glideStop = () => { if (!st && (raf || shifted.length)) cancel(); };
+  el.addEventListener('wheel', () => { if (!st && (raf || shifted.length)) cancel(); }, { passive: true });
   function frame(t) {
     raf = 0;
     if (!gx || arrangeMode || pinching || !el.isConnected || !el.offsetParent) { cancel(); return; }
@@ -3963,25 +3976,30 @@ export function dragScroll(el, skip) {
   }
   /* A TOUCH WHILE IT GLIDES ONLY STOPS IT (D986): the click its lift would make is taken, so no event's pop-up and no
      button under the finger opens — as on the iPhone; the next tap works as normal. */
-  function swallowNextClick() {
+  function guardClick(lifted) {
     const kill = ev => { ev.stopPropagation(); ev.preventDefault(); };
     /* A finger's click comes a moment AFTER its lift (the phone sends it once the touch has ended), so the guard is
-       kept a short while past the lift — and dropped at once by the next press, which is the person's next tap. */
+       kept a short while past the lift — and dropped at once by the next press, which is the person's next tap. The
+       wait is counted from the lift (the window's, or the box's own leave, which a touch sends after it), however long
+       the finger rested (the code read's finding 7); a lift heard nowhere still ends it in 30s. */
     let wait = 0;
-    const off = () => { el.removeEventListener('click', kill, true); window.removeEventListener('pointerup', later, true); window.removeEventListener('pointercancel', later, true); window.removeEventListener('pointerdown', off, true); clearTimeout(wait); clearTimeout(cap); };
+    const off = () => { el.removeEventListener('click', kill, true); window.removeEventListener('pointerup', later, true); window.removeEventListener('pointercancel', later, true); el.removeEventListener('pointerleave', later); window.removeEventListener('pointerdown', off, true); clearTimeout(wait); clearTimeout(cap); };
     const later = () => { clearTimeout(wait); wait = setTimeout(off, 600); };
     el.addEventListener('click', kill, { capture: true, once: true });
-    window.addEventListener('pointerup', later, true); window.addEventListener('pointercancel', later, true);
     /* this press's own window phase is over (this runs on the box), so only a later press reaches it */
     window.addEventListener('pointerdown', off, true);
-    const cap = setTimeout(off, 3000);   /* a lift the window never heard (a redraw took its target) */
+    if (lifted) later();
+    else { window.addEventListener('pointerup', later, true); window.addEventListener('pointercancel', later, true); el.addEventListener('pointerleave', later); }
+    const cap = setTimeout(off, 30000);
   }
-  /* a box of its own inside this one that can scroll (the Failures card's chips) keeps the finger for itself, as
-     the browser scrolls it */
-  function innerScroller(t) {
+  /* Not this box's drag: a press inside a window open over it (fixed — the lull calendar, its backdrop: the code read's
+     finding 1), or, for a finger, inside a box of its own that can scroll (the Failures card's chips), which the browser
+     scrolls itself. A mouse never scrolled that list, so a mouse drag there still moves the box, as before (finding 4). */
+  function notOurs(t, mouse) {
     for (let n = t && t.nodeType === 1 ? t : t && t.parentElement; n && n !== el; n = n.parentElement) {
       const cs = getComputedStyle(n);
-      if ((/(auto|scroll)/.test(cs.overflowY) && n.scrollHeight > n.clientHeight + 1) || (/(auto|scroll)/.test(cs.overflowX) && n.scrollWidth > n.clientWidth + 1)) return true;
+      if (cs.position === 'fixed') return true;
+      if (!mouse && ((/(auto|scroll)/.test(cs.overflowY) && n.scrollHeight > n.clientHeight + 1) || (/(auto|scroll)/.test(cs.overflowX) && n.scrollWidth > n.clientWidth + 1))) return true;
     }
     return false;
   }
@@ -3991,13 +4009,15 @@ export function dragScroll(el, skip) {
     const caught = !!raf;
     /* ...and nothing under it takes the keyboard either (no focus ring left on a date box the finger only stopped on):
        a cancelled press sends no mousedown, which is what would focus it */
-    if (caught) { halt(); swallowNextClick(); e.preventDefault(); }
+    if (caught) { halt(); guardClick(false); e.preventDefault(); }
     const t = e.target, tag = (t && t.tagName || '').toLowerCase();
     const off = tag === 'input' || tag === 'select' || tag === 'textarea' || tag === 'button' || tag === 'option' || (t && t.isContentEditable)
       || (t && t.closest && (t.closest('button') || t.closest('input') || t.closest('select') || t.closest('a') || t.closest('[data-rm]') || t.closest('[data-lull]')))
-      || (skip && skip(e)) || innerScroller(t);
+      || (skip && skip(e)) || notOurs(t, e.pointerType === 'mouse');
     if (off) { if (caught) launch(0, 0); return; }   /* no drag starts here: a caught stretch springs back */
-    if (!gx) { const r = range(); gx = { p: el.scrollLeft, v: 0, max: r.x }; gy = { p: el.scrollTop, v: 0, max: r.y }; }
+    /* a press that caught nothing starts from where the box is now, with nothing stretched — a lift that never reached
+       the box (a redraw took its target) can have left an older place behind (the code read's finding 6) */
+    if (!caught || !gx) { unshift(); const r = range(); gx = { p: el.scrollLeft, v: 0, max: r.x }; gy = { p: el.scrollTop, v: 0, max: r.y }; }
     st = { x: e.clientX, y: e.clientY, px: gx.p, py: gy.p, moved: false, id: e.pointerId, finger: e.pointerType !== 'mouse',
       /* in the scroll's direction: a finger moving up moves the view down the chart */
       samples: [{ t: e.timeStamp, x: -e.clientX, y: -e.clientY }] };
@@ -4021,7 +4041,8 @@ export function dragScroll(el, skip) {
   });
   const stop = e => {
     if (!st) return; const { moved, finger, samples } = st; st = null; el.classList.remove('dragging');
-    if (moved) { /* swallow the click that follows a drag */
+    if (moved && finger) guardClick(true);   /* a finger's click comes after its lift — the code read's finding 5 */
+    else if (moved) { /* swallow the click that follows a drag (a mouse's comes with its release) */
       const kill = ev => { ev.stopPropagation(); ev.preventDefault(); };
       el.addEventListener('click', kill, { capture: true, once: true });
       setTimeout(() => el.removeEventListener('click', kill, true), 0);
@@ -4606,6 +4627,7 @@ function noteLastEdit(s, id) {
    real scroll range, so an event near an edge simply comes as close as it can. */
 export function scrollToEvent(id) {
   const bd = document.getElementById('board'); if (!bd || !id) return false;
+  stopGlide(bd);
   const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === id);
   if (!g) return false;
   /* The slack is sized from the board, which may have had no height when the

@@ -13,8 +13,17 @@ process.env.HP_OUT ||= resolve(HERE, '../../docs/handpass/parts/trk-glide')
 /* one run, one folder: its pictures emptied first (the files, not the folder — a shell may be standing in it) */
 mkdirSync(process.env.HP_SHOTS, { recursive: true })
 for (const f of readdirSync(process.env.HP_SHOTS)) if (f.endsWith('.png')) rmSync(resolve(process.env.HP_SHOTS, f))
+/* THE BUILD IT DRIVES IS PROVED FIRST (walk-scripts.md §1). The shared driver's default address is another chat's port:
+   on 17 Oct 26 a break run that passed no address drove a different checkout's build — one with no glide — and every
+   result was void. The address must be given, and the bundle it serves must be this checkout's own `dist`. */
+if (!process.env.HP_URL) { console.error('HP_URL not set — give the address of the preview serving the dist of THIS checkout'); process.exit(2) }
+{
+  const served = ((await (await fetch(process.env.HP_URL + '/')).text()).match(/assets\/index-[^"']+\.js/) || [])[0]
+  const local = readdirSync(resolve(HERE, '../../dist/assets')).find(f => /^index-.*\.js$/.test(f))
+  if (!served || served !== 'assets/' + local) { console.error(`the preview at ${process.env.HP_URL} serves ${served}, this checkout built assets/${local} — not this build`); process.exit(2) }
+}
 const { open, shot, save, PHONE, DESK } = await import('./trk-lib.mjs')
-console.log('trk-glide-walk v16 —', process.env.HP_URL || 'http://localhost:4181')
+console.log('trk-glide-walk v18 —', process.env.HP_URL)
 
 const rows = []
 const note = (id, name, pass, detail) => { rows.push({ id, name, pass, detail }); console.log(`${pass === null ? 'NOT WALKED' : pass ? 'PASS' : 'FAIL'}  ${id} ${name}  ${JSON.stringify(detail)}`) }
@@ -185,6 +194,18 @@ const ballMid = page => page.evaluate(() => {
   note('G10', 'phone chart: pressing zoom + mid-glide stops the glide, the zoom lands', z0b.y > z0a.y && Math.abs(z2.y - z1.y) <= 1 && z2.tf === '', { glidingBefore: [z0a.y, z0b.y], justAfter: z1.y, later: z2.y, zoom: await page.textContent('#fzPct') })
   await page.evaluate(() => document.getElementById('fzReset').click()); await wait(400)
 
+  /* R2 — the app's own move while the chart still bounces at its top: the spring does not write the old end back over
+     it (the code read's finding 2) */
+  await page.evaluate(() => { document.getElementById('board').scrollTop = 200 }); await wait(150)
+  e = await emptyAt(page, 0.15, 0.4)
+  await finger(cdp, { x: e.x, y: e.y, dy: 220, steps: 5 })
+  let sawStretch = false
+  for (let i = 0; i < 15 && !sawStretch; i++) { await wait(10); sawStretch = /translate/.test((await pos(page, '#board')).tf) }
+  /* a student picked mid-bounce: his landing is away from the top, so a spring writing the old end back would show */
+  await page.selectOption('#activeSel', { index: 1 })
+  await wait(60); const r2a = await pos(page, '#board'); await wait(900); const r2b = await pos(page, '#board')
+  note('R2', 'phone chart: a student picked mid-bounce lands and stays (the spring does not undo the landing)', sawStretch && r2a.y > 50 && r2b.y === r2a.y && r2b.tf === '', { stretchedWhenPicked: sawStretch, rightAfter: r2a.y, later: r2b.y, tf: r2b.tf })
+  await page.selectOption('#activeSel', { index: 0 }); await wait(600)
   /* G11 — the app's own move wins: picking a student mid-glide lands on his event, as D984 says */
   e = await emptyAt(page)
   await page.evaluate(() => { document.getElementById('board').scrollTop = 2500 }); await wait(150)
@@ -314,6 +335,51 @@ const ballMid = page => page.evaluate(() => {
     note('I3m', 'phone Info: a press on a button mid-glide (mouse) is taken; the button gets none', after === before, { button: btn3.text, glidingBefore: [ia.y, ib.y], pressesBefore: before, pressesAfter: after })
     await closeAll()
   } else note('I3m', 'phone Info: a mouse press mid-glide', null, { glidingBefore: [ia.y, ib.y] })
+  /* R1 — a window open over Info (the lull calendar) never moves while Info stretches under a finger on its backdrop
+     (the code read's finding 1) */
+  await page.evaluate(() => { const s = document.getElementById('side'); s.scrollTop = s.scrollHeight }); await wait(200)
+  await page.evaluate(() => document.getElementById('setLullBtn').click()); await wait(500)
+  const lc = () => page.evaluate(() => { const c = document.querySelector('.lullcal'); if (!c) return null; const r = c.getBoundingClientRect(); return { x: Math.round(r.left), y: Math.round(r.top) } })
+  const lc0 = await lc()
+  if (lc0) {
+    const bk = await page.evaluate(() => { const c = document.querySelector('.lullcal').getBoundingClientRect(); return { x: 12, y: Math.min(innerHeight - 20, c.bottom + 30) } })
+    await finger(cdp, { x: bk.x, y: bk.y, dy: -60, steps: 6, lift: false }); await wait(40)
+    const lc1 = await lc(); await shot(page, 'r1-phone-info-lull-window-held-still')
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await wait(700)
+    const lc2 = await lc()
+    note('R1', 'phone Info: the lull calendar stays put while a finger drags its backdrop', !!lc1 && lc1.x === lc0.x && lc1.y === lc0.y && (!lc2 || (lc2.x === lc0.x && lc2.y === lc0.y)), { before: lc0, during: lc1, after: lc2 })
+    await page.keyboard.press('Escape'); await wait(300)
+    if (await page.evaluate(() => !!document.querySelector('.lullcal'))) { await page.evaluate(() => document.querySelector('.lullback')?.click()); await wait(300) }
+  } else note('R1', 'phone Info: the lull calendar stays put', null, 'the lull calendar did not open')
+
+  /* R3 — a long press that stops Info's glide leaves that chip's next tap working (the code read's finding 3) */
+  const chipAt = () => page.evaluate(() => { const sd = document.getElementById('side').getBoundingClientRect(); for (const c of document.querySelectorAll('#side .evchip')) { const r = c.getBoundingClientRect(); const x = r.left + r.width / 2, y = r.top + r.height / 2; if (y > sd.top + 30 && y < sd.bottom - 90 && x > 0 && x < innerWidth) { const h = document.elementFromPoint(x, y); if (h && (h === c || c.contains(h))) return { x, y, id: c.dataset.ev } } } return null })
+  await page.evaluate(() => { document.getElementById('side').scrollTop = 0 }); await wait(200)
+  await finger(cdp, { x: ex, y: ey, dy: -50, steps: 4 }); await wait(20)
+  const ch = await chipAt()
+  if (ch) {
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: ch.x, y: ch.y, id: 4 }] }); await wait(650)
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await wait(400)
+    { const z = { x: ex, y: ey }; await tap(cdp, z.x, z.y); await wait(400) }   /* the test browser's flick quirk, as G5; also puts the bubble away */
+    const ch2 = await chipAt()
+    await tap(cdp, ch2.x, ch2.y); await wait(700)
+    const jumped = await page.evaluate(() => document.querySelector('#page-tracker .tr-root').classList.contains('tab-flow'))
+    await shot(page, 'r3-phone-info-chip-after-long-press-stop')
+    note('R3', 'phone Info: after a long press stopped the glide, one tap on that chip takes you to its event', jumped, { chip: ch.id, wentToChart: jumped })
+    if (jumped) { await page.evaluate(() => document.querySelector('#viewtabs button[data-view=info]').click()); await wait(400) }
+  } else note('R3', 'phone Info: chip after a long-press stop', null, 'no chip the finger could land on')
+
+  /* R5 — a finger that moves a few pixels on a chip and lifts opens nothing: its late click is taken (finding 5) */
+  { await tap(cdp, ex, ey); await wait(400) }   /* no glide running, and the test browser's quirk cleared */
+  await page.evaluate(() => { document.getElementById('side').scrollTop = 60 }); await wait(200)
+  const c5 = await chipAt()
+  if (c5) {
+    await finger(cdp, { x: c5.x, y: c5.y, dy: -7, steps: 3, rest: 80 }); await wait(600)
+    const onInfo5 = await page.evaluate(() => document.querySelector('#page-tracker .tr-root').classList.contains('tab-info'))
+    note('R5', 'phone Info: a 7px drag that starts on a chip opens nothing', onInfo5, { chip: c5.id, stillOnInfo: onInfo5 })
+    if (!onInfo5) { await page.evaluate(() => document.querySelector('#viewtabs button[data-view=info]').click()); await wait(400) }
+  } else note('R5', 'phone Info: a short drag on a chip', null, 'no chip in view')
+
   for (let i = 0; i < 4; i++) { await page.locator('#sideZoomCtl button', { hasText: '−' }).click(); await wait(80) }
   await page.evaluate(() => document.querySelector('#viewtabs button[data-view=flow]').click()); await wait(300)
 
@@ -389,6 +455,23 @@ const ballMid = page => page.evaluate(() => {
     await page.mouse.up(); const ls = await pos(page, '#side'); await wait(500); const rs = await pos(page, '#side')
     note('D3', 'desktop: a mouse drag on the Info half stops where let go', ls.y === rs.y && ls.y > 0, { atLift: ls.y, later: rs.y })
   } else note('D3', 'desktop Info half mouse drag', null, { range: s0.maxY })
+  /* R4 — a mouse drag that starts on the Failures card's list still moves the Info half, as before (finding 4) */
+  {
+    const b4 = await ballMid(page)
+    await page.mouse.click(b4.x, b4.y); await wait(500)
+    if (await popOpen(page)) {
+      for (let i = 0; i < 40; i++) { await page.click('#popFailPlus'); await wait(25) }
+      await page.keyboard.press('Escape'); await wait(400)
+      const fl = await page.evaluate(() => { const c = document.getElementById('failChips'), sd = document.getElementById('side'); sd.scrollTop += c.getBoundingClientRect().top - sd.getBoundingClientRect().top - 120; const r = c.getBoundingClientRect(); return { range: c.scrollHeight - c.clientHeight, x: r.left + 4, y: r.top + r.height / 2 } })
+      const s0 = await pos(page, '#side')
+      await page.mouse.move(fl.x, fl.y); await page.mouse.down()
+      /* downward: the Info half sits 120px above the list's top, so it has room to come back up */
+      for (let i = 1; i <= 4; i++) { await page.mouse.move(fl.x, fl.y + 15 * i); await wait(16) }
+      await page.mouse.up(); await wait(300)
+      const s1 = await pos(page, '#side')
+      note('R4', 'desktop: a mouse drag on the Failures list moves the Info half, as before', fl.range > 10 && s0.y - s1.y >= 40, { listRange: fl.range, infoBefore: s0.y, infoAfter: s1.y, infoMax: s0.maxY })
+    } else note('R4', 'desktop Failures list mouse drag', null, 'the pop-up did not open')
+  }
   /* D4 — a click on an event still opens it after the change */
   const b = await ballMid(page)
   await page.mouse.click(b.x, b.y); await wait(500)

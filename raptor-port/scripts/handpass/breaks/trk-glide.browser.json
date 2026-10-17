@@ -1,0 +1,169 @@
+{
+ "about": "[TRK-SCROLL-GLIDE] browser breaks — each is built and the job's walk (scripts/handpass/trk-glide-walk.mjs) run against it; `expect` names the walk checks that must go red. Run by scripts/handpass/breaks-walk.mjs.",
+ "walk": "scripts/handpass/trk-glide-walk.mjs",
+ "breaks": [
+  {
+   "n": 1,
+   "name": "D986 a press mid-glide is not taken (the event under it opens)",
+   "file": "src/tracker/app/core.js",
+   "find": "    if (caught) { halt(); guardClick(false); e.preventDefault(); }",
+   "put": "    if (caught) { halt(); }",
+   "expect": [
+    "G4",
+    "G4m",
+    "I3",
+    "I3m"
+   ]
+  },
+  {
+   "n": 2,
+   "name": "D985 no glide after the lift",
+   "file": "src/tracker/app/core.js",
+   "find": "const v = moved && e && e.type === 'pointerup' ? liftVelocity(samples, e.timeStamp) : { vx: 0, vy: 0 };",
+   "put": "const v = { vx: 0, vy: 0 };",
+   "expect": [
+    "G1",
+    "I1",
+    "S1",
+    "P1",
+    "P2"
+   ]
+  },
+  {
+   "n": 3,
+   "name": "D988 a mouse drag glides",
+   "file": "src/tracker/app/core.js",
+   "find": "    if (!finger) { cancel(); return; }\n",
+   "put": "",
+   "expect": [
+    "D1"
+   ]
+  },
+  {
+   "n": 4,
+   "name": "D989 the app's own scroll does not stop a glide",
+   "file": "src/tracker/app/core.js",
+   "find": "    if (wrote && !wrote.stretched && (Math.abs(el.scrollLeft - wrote.x) > 1.5 || Math.abs(el.scrollTop - wrote.y) > 1.5)) { cancel(); return; }\n",
+   "put": "",
+   "expect": [
+    "G10",
+    "G11"
+   ]
+  },
+  {
+   "n": 5,
+   "name": "D987 a finger pulled past an end does not stretch",
+   "file": "src/tracker/app/core.js",
+   "find": "    if (!st.finger) { px = Math.min(gx.max, Math.max(0, px));",
+   "put": "    if (true) { px = Math.min(gx.max, Math.max(0, px));",
+   "expect": [
+    "G8"
+   ]
+  },
+  {
+   "n": 6,
+   "name": "D986 a touch mid-glide does not stop it",
+   "file": "src/tracker/app/core.js",
+   "find": "    const caught = !!raf;",
+   "put": "    const caught = false;",
+   "expect": [
+    "G4",
+    "G4m",
+    "G6"
+   ]
+  },
+  {
+   "n": 7,
+   "name": "a list inside Info that scrolls by itself loses the finger to Info",
+   "file": "src/tracker/app/core.js",
+   "find": "      if (!mouse && ((/(auto|scroll)/",
+   "put": "      if (false && ((/(auto|scroll)/",
+   "expect": [
+    "F1"
+   ]
+  },
+  {
+   "n": 8,
+   "name": "D989 two fingers do not stop a glide (both layers)",
+   "file": "src/tracker/app/core.js",
+   "find": "    if (!gx || arrangeMode || pinching || !el.isConnected",
+   "put": "    if (!gx || arrangeMode || !el.isConnected",
+   "also": [
+    {
+     "find": "    if (arrangeMode || pinching) { if (st || gx) {",
+     "put": "    if (arrangeMode) { if (st || gx) {"
+    }
+   ],
+   "expect": [
+    "G12"
+   ]
+  },
+  {
+   "n": 9,
+   "name": "D987 a glide meeting an end does not bounce",
+   "file": "src/tracker/app/glide.js",
+   "find": "      return stepSpring(a, dt - tHit, edge, np < 0 ? -1 : 1)",
+   "put": "      a.v = 0; return false",
+   "expect": [
+    "G7",
+    "G9"
+   ]
+  },
+  {
+   "n": 10,
+   "name": "a window open over Info moves with its stretch (both layers: a press on it drags Info, and the stretch moves fixed children)",
+   "file": "src/tracker/app/core.js",
+   "find": "      if (cs.position === 'fixed') return true;\n",
+   "put": "",
+   "also": [
+    {
+     "find": ".filter(c => getComputedStyle(c).position !== 'fixed')",
+     "put": ""
+    }
+   ],
+   "expect": [
+    "R1"
+   ]
+  },
+  {
+   "n": 11,
+   "name": "D989 the app's own move does not stop a glide first (the spring writes the old end back)",
+   "file": "src/tracker/app/core.js",
+   "find": "  el.__glideStop = () => { if (!st && (raf || shifted.length)) cancel(); };",
+   "put": "  el.__glideStop = () => {};",
+   "expect": [
+    "R2"
+   ]
+  },
+  {
+   "n": 12,
+   "name": "D986 a long press's taken mark outlives its press",
+   "file": "src/tracker/components/SidePanel.jsx",
+   "find": "        pressed.current = false;\n        if (e.pointerType === 'mouse') return;",
+   "put": "        if (e.pointerType === 'mouse') return;",
+   "expect": [
+    "R3"
+   ]
+  },
+  {
+   "n": 13,
+   "name": "D988 a mouse drag on the Failures list no longer moves Info",
+   "file": "src/tracker/app/core.js",
+   "find": "      if (!mouse && ((/(auto|scroll)/",
+   "put": "      if (((/(auto|scroll)/",
+   "expect": [
+    "R4"
+   ]
+  },
+  {
+   "n": 14,
+   "name": "D989 a finger's drag lets its late click through",
+   "file": "src/tracker/app/core.js",
+   "find": "    if (moved && finger) guardClick(true);",
+   "put": "    if (false) guardClick(true);",
+   "expect": [
+    "R5"
+   ]
+  }
+ ]
+}
