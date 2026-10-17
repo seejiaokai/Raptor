@@ -23,8 +23,9 @@ the later merge keeps both (D78).
 <!-- now:claude/scheduling-phone-fixes-6d4adf -->
 ### `claude/scheduling-phone-fixes-6d4adf` — D994'S FIRST BATCH: THE SCHEDULING PAGES ON A PHONE — written 18 Oct 26, verify before use
 - **Built and checked (WALK), waiting for his look on his iPhone and his "merge live".** (1) The schedule's own input window
-  (a Personal Inputs line, an Unavailable row, the board's "+ Inputs" / "+ Add") on a phone stands at the foot, as tall as
-  what is in it up to the visible screen less 24px — the Inputs page window's shape (D706, D537); wider than 620 unchanged.
+  (a Personal Inputs line, an Unavailable row, the board's "+ Inputs" / "+ Add") on a phone is as tall as what is in it
+  up to the visible screen less 24px (D706), in the MIDDLE of the screen — his D995 after his first look at the preview
+  (first built at the foot); wider than 620 unchanged.
   (2) A finger on it never scrolls what is behind (D686) — the shell's guard moved whole to `floatwin.ts holdPageScroll`,
   one body for both. (3) The Inputs list scrolls in its own box at every width: its 875px table widened a sideways phone's
   page to 907, so "+ Input" opened half off it. (4) `[OIL-NOTIFY-SEEN]` (5): an Unavailable hand-over by an armed tap parks
@@ -37,7 +38,8 @@ the later merge keeps both (D78).
   `[VH-SHEETS-IPHONE]`, `[SHELL-SIDEWAYS-BAR]`, `[BUBBLE-SMALL-SEEN]`.
 - **Next:** the pull request's checks on GitHub; his look and "merge live"; then D994's next area's small fixes. His
   questions still wait until he says so.
-- **Rulings:** none this session.
+- **Rulings:** D995 (the schedule's input window in the middle of a phone's screen — scheduler; narrows D537); design
+  lesson 6 written for it (§9).
 <!-- /now -->
 
 ## Next, in order

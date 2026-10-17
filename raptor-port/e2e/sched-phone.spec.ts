@@ -2,8 +2,8 @@
    check: docs/handpass/2026-10-18-sched-phone.md). [SCHED-INPUT-WINDOW-PHONE], the one-rule walk's D4 and D7 (12 Oct 26):
 
    (1) the window a Personal Inputs line opens on Edit Schedule and the Scheduler Board kept its family's 80vh cap — on a
-       phone it is as tall as what is in it, up to the visible screen less 24px, standing at the foot, as the same
-       input's window on the Inputs page is (owner D706, D537);
+       phone it is as tall as what is in it, up to the visible screen less 24px (owner D706), standing in the middle of
+       the screen (owner D995 — the batch had put it at the foot, as D537 has the phone's other windows);
    (2) a finger on that window never scrolls the schedule behind it (owner D686);
    (3) a phone on its side (844 × 390): the Inputs list no longer widens the page, so "+ Input" opens on the screen
        with its Add and Cancel in reach.
@@ -44,15 +44,15 @@ const winBox = (page: Page) => page.evaluate(() => {
 
 for (const [where, onBoard] of [['Edit Schedule', false], ['the Scheduler Board', true]] as const) {
   for (const height of [844, 568]) {
-    test(`a phone ${height} tall, ${where}: an input's window is as tall as what is in it, up to the screen less 24px, at the foot (D706, D537)`, async ({ browser, baseURL }) => {
+    test(`a phone ${height} tall, ${where}: an input's window is as tall as what is in it, up to the screen less 24px, in the middle of the screen (D706, D995)`, async ({ browser, baseURL }) => {
       const { context, page } = await phone(browser, baseURL, 390, height)
       try {
         await openFromSchedule(page, onBoard)
         const w = await winBox(page)
         const want = Math.min(w.content + 2, height - 24)   // the box's own 1px border, each side
         expect(Math.abs(w.h - want), `the window's height ${w.h} against what is in it (${w.content}) and the screen (${height})`).toBeLessThanOrEqual(2)
-        expect(w.bottom, 'it stands at the foot of the screen, 12px clear').toBe(height - 12)
-        expect(w.top, 'its top stays on the screen').toBeGreaterThanOrEqual(12)
+        expect(Math.abs(w.top - (height - w.bottom)), `it stands in the middle of the screen: ${w.top}px above it, ${height - w.bottom}px below`).toBeLessThanOrEqual(1)
+        expect(w.top, 'its top stays on the screen, 12px clear at least').toBeGreaterThanOrEqual(12)
         expect(w.left, 'and inside its sides').toBeGreaterThanOrEqual(0)
         expect(w.right).toBeLessThanOrEqual(390)
         await page.screenshot({ path: test.info().outputPath('window.png') })

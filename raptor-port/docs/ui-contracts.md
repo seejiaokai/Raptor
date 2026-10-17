@@ -10664,10 +10664,11 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   stay). The ALL AVAIL window (D77) and the changes window (D167) are other kinds and keep their heights. Pinned by
   `e2e/inputs-sans-calendar.spec.ts` (D706, D707) and `ui/sansday.test.tsx`. *(18 Oct 26, `[SCHED-INPUT-WINDOW-PHONE]`:
   the schedule's own input window — the blocking dialog opened from Edit Schedule and the Scheduler Board — follows the
-  same rule on a phone (620px and under): as tall as what is in it, up to the visible screen less 24px, standing at the
-  foot 12px from the edges, the shape of the same input's window on the Inputs page; it had kept its family's 80vh cap
-  (675 of 844 for an input that holds 1390). Wider than 620 it is the centred dialog as before. `14-input-editors.css`;
-  pinned by `e2e/sched-phone.spec.ts`.)*
+  same rule on a phone (620px and under): as tall as what is in it, up to the visible screen less 24px, 12px from the
+  edges; it had kept its family's 80vh cap (675 of 844 for an input that holds 1390). It stands IN THE MIDDLE of the
+  screen (owner D995, the same day — the batch had first stood it at the foot, as D537 has the phone's other windows;
+  the Inputs page's window stays at the foot). Wider than 620 it is the centred dialog as before.
+  `14-input-editors.css`; pinned by `e2e/sched-phone.spec.ts`.)*
 - **The SANS calendar's "How this works" no longer says "One commitment a day each." (owner D704, 9 Oct 26 — "Remove one
   commitment a day each").** Its fifth line is the late cut-off alone, as set, the cut-off in bold (D628, D691) — the same
   shape as the Inputs calendar's fifth line. Only the sentence went: the rule stands and is said where a second commitment

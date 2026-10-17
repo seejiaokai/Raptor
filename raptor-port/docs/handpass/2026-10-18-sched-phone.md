@@ -10,7 +10,7 @@ until he says so.
 | Item | What a person met | What was wrong | The fix |
 |---|---|---|---|
 | `[PHONE-WIDE-BOARD-BLANK]` | (29 Sep 26) the board's ⋯ → Desktop layout on a phone showed nothing below the sign-off | already FIXED 4 Oct 26 (D548, `063806c7d`), read and walked in the Codex stack's check of 5 Oct 26 (`2026-10-05-codex-stack-check.md`, D548's row: PASS), live since 6 Oct 26; the item was left open for that read | none — measured on today's build: all ten sections 816 wide at 390 × 844 (`img/handpass/2026-10-18-sched-phone/before/w01-*`, `w02-*`); pinned by `e2e/geometry.spec.ts` (D548's test). CLOSED |
-| `[SCHED-INPUT-WINDOW-PHONE]` (1) | the window an input's line opens on Edit Schedule and the Scheduler Board, on a phone: a centred box capped at 80% of the screen, while the same input's window on the Inputs page runs as tall as it needs (D706) and stands at the foot (D537) | the schedule's window is the older blocking dialog (`.airpop`), which kept its family's `80vh` cap and had no phone rule | `14-input-editors.css`: at 620 wide and under, `.airpop#inpEditPop` stands at the foot, 12px from the edges, as tall as what is in it up to the visible screen less 24px (`dvh`) — the Inputs page window's own shape; wider, unchanged |
+| `[SCHED-INPUT-WINDOW-PHONE]` (1) | the window an input's line opens on Edit Schedule and the Scheduler Board, on a phone: a centred box capped at 80% of the screen, while the same input's window on the Inputs page runs as tall as it needs (D706) and stands at the foot (D537) | the schedule's window is the older blocking dialog (`.airpop`), which kept its family's `80vh` cap and had no phone rule | `14-input-editors.css`: at 620 wide and under, `.airpop#inpEditPop` stands 12px from the edges, as tall as what is in it up to the visible screen less 24px (`dvh`); first built at the foot (the Inputs page window's place), then — his D995, the same day — in the middle of the screen; wider, unchanged |
 | `[SCHED-INPUT-WINDOW-PHONE]` (2) | a finger moving on that window scrolled the week behind it (D686) | the Inputs windows' touch guard lived inside `FloatWindow.tsx`; the dialog had none | the guard's body moved whole to `floatwin.ts holdPageScroll`, called by `FloatWindow.tsx` (unchanged behaviour) and by the dialog on its whole overlay (`inputedit.tsx`) |
 | `[SCHED-INPUT-WINDOW-PHONE]` (3) | a phone on its side (844 × 390): Inputs → List → "+ Input" opened half off the screen, Add and ✕ out of reach | the list's fixed columns need 875px of table; the rule letting it scroll in its own box applied only up to 820px, so between 821 and about 940 the table widened the PAGE to 907 and the window, placed from the right edge, followed it | `06-inputs.css`: `.inwrap{overflow-x:auto}` at every width (a table that fits draws no bar) |
 | `[OIL-NOTIFY-SEEN]` (5) | on a phone, after an Unavailable row was handed to another man by an armed tap, the crew drawer stayed open and covered the top bar — a finger on Undo met the drawer | the Unavailable row's door (`interactions.ts`) never parked the drawer, where every other planting tap does (`state/view.ts placeArmed` — owner, 8 Aug 26) | a MADE hand-over parks it, at once or when its OIL answer makes it; a refusal leaves it up, as a refused plant does |
@@ -98,10 +98,23 @@ The whole set under the PC lock in one run (`gatelock.mjs run`, E2E_PORT 4239), 
 the commits after it are documents only): build clean · tfin 728 / 0 · unit 11654 / 11654 · e2e 853 passed, 0 failed, 59 skipped · smoke 453 / 0 · rulecheck OK · docsize OK. The e2e count rose by 9 (this batch's 7 browser tests, and
 `main`'s since the last baseline); the unit count by the drawer's test and `main`'s since.
 
+## His correction, D995 — the window in the middle (18 Oct 26)
+
+His words, on the preview: *"Can we make those windows that u put at the bottom of the screen to be at the middle of the
+screen instead?"* — recorded as D995 (scheduler), narrowing D537 for this window; lesson 6 in the design guide's §9.
+The change: `align-items:center` in place of `flex-end` on the phone rule (`14-input-editors.css`); nothing else moved.
+**Red first:** the four shape tests of `e2e/sched-phone.spec.ts`, rewritten to ask for the middle, failed on the build
+before it ("14px above it, 12px below"; "290px above it, 12px below") and pass after (7 / 7). **Re-walk:** the same script,
+v4 (its shape check asks for the middle), `SPF_OUT=…/rewalk-d995`: 45 PASS · 0 FAIL · 2 with no door, no browser error;
+pictures in `img/handpass/2026-10-18-sched-phone/rewalk-d995/`, opened by the host: P1 (151 above, 151 below), P6. The
+first walk's pictures stay in `walk/` as they were. Tests run before the push (D902 — a follow-up on a pull request whose
+whole set passed): the browser file above; GitHub's run of the pull request is the full check.
+
 ## His look card
 
-1. On your iPhone, Edit Schedule → tap an input's line under Personal Inputs: the window should sit at the bottom of the
-   screen, as tall as it needs, and a long one (the board's Unavailable "+ Add") should run up to a thin strip at the top.
+1. On your iPhone, Edit Schedule → tap an input's line under Personal Inputs: the window should sit in the middle of the
+   screen, as tall as it needs (D995), and a long one (the board's Unavailable "+ Add") should fill the screen to a thin
+   strip at the top and the foot.
 2. Swipe on that window: only the window moves, never the schedule behind it.
 3. Turn the phone on its side, Inputs → List → "+ Input": the whole window is on the screen, Add and ✕ reachable.
 4. Hand an Unavailable row to someone by tapping its puck, then a name: the crew drawer goes away and Undo is reachable.

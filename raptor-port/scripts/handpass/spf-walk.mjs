@@ -17,7 +17,7 @@ const browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: C
 const sleep = ms => new Promise(r => setTimeout(r, ms))
 const errs = [], rows = []
 let pics = 0
-console.log('spf-walk v3 →', OUT)
+console.log('spf-walk v4 →', OUT)
 
 function check(id, ok, note) { rows.push({ id, ok: !!ok, note }); console.log(`${ok ? 'PASS' : 'FAIL'} ${id} — ${note}`) }
 function notWalked(id, why) { rows.push({ id, ok: null, note: why }); console.log(`NOT WALKED ${id} — ${why}`) }
@@ -61,12 +61,13 @@ async function swipe(page, x, y, dy) {
   await c.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await c.detach().catch(() => {})
   await sleep(700)
 }
-/* the phone's window rule (D706, D537): as tall as what is in it up to the screen less 24, at the foot, 12 from the sides */
+/* the phone's window rule: as tall as what is in it up to the screen less 24 (D706), in the middle of the screen (D995 —
+   v1 to v3 of this script asked for the foot, D537's place, as the batch first built it), 12 from the sides */
 function phoneShape(id, w, vw, vh) {
   if (!w) return check(id, false, 'no window drawn')
   const want = Math.min(w.sh + 2, vh - 24)
-  check(id, Math.abs(w.h - want) <= 2 && w.b === vh - 12 && w.t >= 12 && w.l === 12 && w.r === vw - 12,
-    `box ${w.l},${w.t} → ${w.r},${w.b} (${w.w}×${w.h}); holds ${w.sh}; want height ${want}, foot ${vh - 12}, sides 12/${vw - 12}`)
+  check(id, Math.abs(w.h - want) <= 2 && Math.abs(w.t - (vh - w.b)) <= 1 && w.t >= 12 && w.l === 12 && w.r === vw - 12,
+    `box ${w.l},${w.t} → ${w.r},${w.b} (${w.w}×${w.h}); holds ${w.sh}; want height ${want}, ${w.t} above and ${vh - w.b} below, sides 12/${vw - 12}`)
 }
 async function openSchedLine(page, press, onBoard, di = 0, sec = '') {
   await goPage(page, 'editsched')
