@@ -34,7 +34,7 @@ answered. "Next agent" lines name the item, the rulings and the files.
 3. **Insights' empty line** `[INSIGHTS-EMPTY-LINE-COUNT]` — an uncrewed flying line counts as a sortie, as the day header's
    count does. **Recommended: keep it** — one count everywhere (D754); Insights reads published days (D478), where an empty
    line is rare. Files: `engine/insights.ts`.
-4. **An upchit moved later** `[UPCHIT-MOVE-NO-REGROW]` — Ranger ATT C Mon–Fri, upchit Wed cuts it to Tue; the upchit moved to
+4. **ANSWERED 18 Oct 26 — D999, "Ok" to A: the downchit grows back, shown on the save sheet; to build.** **An upchit moved later** `[UPCHIT-MOVE-NO-REGROW]` — Ranger ATT C Mon–Fri, upchit Wed cuts it to Tue; the upchit moved to
    Thu leaves Wed reading fit. **Recommended: the downchit grows back to the day before the new date (never past its
    original end), shown on the save sheet as the trim already is; the calendar drag the same.** Files: `engine/medical.ts`,
    `ui/UpchitConfirm.tsx`, `ui/inputedit.tsx`, `ui/caldrag.ts`; D178 (a regrown published day reads pending).

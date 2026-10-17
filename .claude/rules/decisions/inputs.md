@@ -92,6 +92,7 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 
 | # | Date | The rule |
 |---|---|---|
+| D999 | 18 Oct 26 | When an upchit is moved to a later date, the downchit it had cut grows back to the day before the new date, never past its own first end, and the upchit's save sheet says so before anything changes; a drag of the upchit on the Inputs calendar does the same. |
 | D996 | 18 Oct 26 | On a phone the input's own window on the Inputs page — "+ Input", and a tap on an input — stands in the middle of the screen too, as the schedule's does (D995): the same window opens in the same place from every page. |
 | D977 | 17 Oct 26 | Every card on the Medical tab is one even width, in all three sections, so the cards stand in columns that line up from one section to the next: on a phone exactly a third of the row, on a desktop one fixed width; words longer than the card wrap inside it. |
 | D968 | 17 Oct 26 | The Medical tab's "+ Medical" opens the input window set to ATT C, the most common medical kind — not the first of the list (HL); the Inputs tab's "+ Input" stays on OL. |

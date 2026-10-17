@@ -2350,6 +2350,7 @@ shift's start; the crew list's line is unaffected. **Place:** low — with `[OIL
 crew-rest sentences.
 
 ### [UPCHIT-MOVE-NO-REGROW] An Upchit moved to a LATER date does not give back the medical days it cut (walker B, the D605 walk, 6 Oct 26 — OLD; low; a question for him)
+**ANSWERED 18 Oct 26 — D999: TO BUILD.** The downchit grows back to the day before the upchit's new date, never past its first end, said on the upchit's save sheet before saving; a calendar drag the same; a published day given back reads pending (D178). Reproduce walker B's case first (the host did not), test first.
 A downchit (ATT C) Monday to Friday; an Upchit effective Wednesday — the downchit is cut to end Tuesday, as it should
 be. Then the Upchit's date is changed to Thursday in the Inputs page's row editor: the downchit still ends Tuesday (the
 editor's sheet says "no current entry needs shortening"), so Wednesday reads fit although the man was cleared only from
