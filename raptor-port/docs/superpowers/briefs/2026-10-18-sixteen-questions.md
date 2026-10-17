@@ -59,14 +59,41 @@ answered. "Next agent" lines name the item, the rulings and the files.
 11. **ANSWERED 18 Oct 26 — D1000, "Shorter version": the two-line top up to about 700 wide; pictures first.** **The Leave War top on in-between screens** `[LW-HEAD-BIG-PHONE]` — 431–700 wide (the biggest iPhones) gets the tallest
    top; the grid starts 354px down. **Recommended: the phone's two lines up to about 700 wide, the top only — drawn at 440 and
    600 first** (D678, D679). Files: `leavewar/ui/phone.ts`.
-13. **The Tracker import's refusal words** `[TRK-IMPORT-REFUSAL-WORDS]` — today, for a current file that does not match: "These
+13. **ANSWERED 18 Oct 26 — D1015, "13 B": wording B.** **The Tracker import's refusal words** `[TRK-IMPORT-REFUSAL-WORDS]` — today, for a current file that does not match: "These
    student marks were saved by an older version and can't be brought in safely. Import the charts, then re-enter marks — or
    export a fresh backup from the current app and import that." (wrong reason). **Recommended wording (A): "These student
    marks are for a chart that isn't in this file or in your Tracker, so they weren't brought in. Bring in that chart first,
    then import this file again."** (the fix line to be tested); B (shorter): "Student marks not brought in: they belong to a
    chart this file doesn't carry. Export a fresh backup that includes its charts, and import that." The older-file words stay
    for real older files. Files: `tracker/app/fileTransfer.js` (STUDENT_GUARD_MSG), `tracker/app/core.js`.
-15. **The Tracker's date box in Safari** `[TRK-DATEBOX-SAFARI-ZOOM]` — between 621 and 1050 wide the side panel is drawn at
+15. **LOOKED 18 Oct 26 — "15 yes it does": on his iPhone in Safari, sideways, the calendar opens under its box; closed, nothing to fix.** **The Tracker's date box in Safari** `[TRK-DATEBOX-SAFARI-ZOOM]` — between 621 and 1050 wide the side panel is drawn at
    80%; Safari may place the calendar away from its box. His iPhone turned sideways is in that range. **His look:** Tracker
    in Safari → a student → phone sideways → tap "Upchit Date": the calendar should open just under the box. Fix if not:
    `ui/DateBox.tsx` divides the box's position by the zoom.
+
+## Where every answer stands (18 Oct 26, end of the chat) — so he never repeats one
+
+| # | His reply (his words) | Recorded as | What happens |
+|---|---|---|---|
+| 1 | "No leave it for 1 for now" | D998 | parked — the Leave War's manning as built |
+| 2 | "as recommended" | D1008 | build — everyone sees everyone's OIL entries; the access table widened |
+| 3 | "as recommended" | D1009 | nothing — Insights keeps counting an empty line |
+| 4 | "Ok" (after the step-by-step) | D999 | build — a moved upchit gives the downchit its days back, on the save sheet |
+| 5 | "as recommended" | D1010 | build — View-only's preview shows the published day |
+| 6 | "as recommended" | D710 (confirmed) | build — the delete list names his notes |
+| 7 | "leave it I intend to have an option to sort according to flight" | D1001 | kept; [LW-SORT-BY-FLIGHT] his idea |
+| 8 | "as recommended" | D1011 | build — Escape restores the board's time boxes |
+| 9 | "as recommended" | D1012 | build — Escape closes only a calendar's list |
+| 10 | "as recommended" | D1013 | picture first, then build — one crew-rest ring on every copy |
+| 11 | "Shorter version" | D1000 | pictures at 440 and 600 first, then build |
+| 12 | "12 looks fine" | (D863) | closed and archived |
+| 13 | "13 B" | D1015 | build — wording B |
+| 14 | — (looked 15 Oct, D889) | D889 | close |
+| 15 | "15 yes it does" | his look | closed |
+| 16 | "Yes this feels good" (18 Oct, D992) | D992 | close |
+
+**His Tracker direction of the same evening (not one of the sixteen):** D1002–D1007 and D1014 — the down days from the
+Inputs from the course start, half days as half, no typed box for anyone; the currency bar without down days; the two
+flight dates as built; the flex editable, an off switch that hides every flex detail, its settings behind an icon in the
+Tracker's top bar, admin only; a legend (balls, a flight's currency and the IP requirement, when a flex happens). The
+design note: `raptor-port/docs/superpowers/specs/2026-10-18-trk-down-days.md` — its open points are put to him with pictures.

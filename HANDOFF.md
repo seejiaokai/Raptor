@@ -53,7 +53,18 @@ the later merge keeps both (D78).
   and 16. **The Tracker's next job, not designed — his answers in the note:** D1002–D1007 (down days from the Inputs from the
   course start, no typed box; the currency bar without down days; the flex editable with an off switch; a legend) —
   `raptor-port/docs/superpowers/specs/2026-10-18-trk-down-days.md`. **Builds now ruled and waiting:** D999, D1000 (pictures
-  first), D1008, D1010, D1011, D1012, D1013 (picture first), D710 — batched by area (D994). Four need no answer (three already answered — close them; one
+  first), D1008, D1010, D1011, D1012, D1013 (picture first), D710 — batched by area (D994).
+  **Last, 18 Oct 26:** 13 → D1015 (wording B); 15 → his look, closed; 14, 15, 16 archived; D1014 (flex settings: an icon
+  in the Tracker's top bar, admin only — narrows D121). Every reply of his, with its context, is in the table at the foot
+  of the sixteen-questions brief — never ask him one again.
+- **HIS /OVERNIGHT RUN NEXT (12 hours, he sleeps):** he starts it in the next chat and picks the jobs there. The agent's
+  suggested list, in order: (1) this branch — the gates, push, pull request, the link and pictures for his morning;
+  (2) the scheduler's small builds, one WALK batch: D1010 (View-only's preview), D1011 (Escape on the board's time boxes),
+  D1012 (Escape in a calendar's list), D710 (the delete list's notes); (3) D999 (a moved upchit regrows the downchit —
+  FULL: saved data); (4) D1008 (the OIL access table and its test — FULL: permissions); (5) D1015 (the Tracker import's
+  words); (6) pictures for his morning: D1000 (the Leave War top at 440 and 600), D1013 (one crew-rest ring on every copy),
+  the Tracker's flex settings, legend and down days (D1002–D1007, D1014 — their open points). Not unattended: any build
+  that waits on a picture he has not seen. Nothing merges; each batch its own branch and pull request (D822: or one combined). Four need no answer (three already answered — close them; one
   ruled, D710 — build it). Record each answer as he gives it; pictures with each when it is put in its round (D921).
 - **Rulings:** D994's batch: D995 (scheduler; narrows D537), D996 (inputs; narrows D537); design lesson 6.
 <!-- /now -->
