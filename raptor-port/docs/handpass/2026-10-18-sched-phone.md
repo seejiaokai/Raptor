@@ -110,6 +110,12 @@ pictures in `img/handpass/2026-10-18-sched-phone/rewalk-d995/`, opened by the ho
 first walk's pictures stay in `walk/` as they were. Tests run before the push (D902 — a follow-up on a pull request whose
 whole set passed): the browser file above; GitHub's run of the pull request is the full check.
 
+## His look at D995, and D996 (18 Oct 26)
+
+*"1. Good 2. Yes standardise to middle"* — his look at the preview with the window in the middle: good. D996 (inputs): the
+same input's window on the Inputs page stands in the middle on a phone too; a picture first, and whether the phone's other
+windows follow is put to him.
+
 ## His look card
 
 1. On your iPhone, Edit Schedule → tap an input's line under Personal Inputs: the window should sit in the middle of the

@@ -20,31 +20,28 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/scheduling-phone-fixes-6d4adf -->
-### `claude/scheduling-phone-fixes-6d4adf` — D994'S FIRST BATCH: THE SCHEDULING PAGES ON A PHONE — written 18 Oct 26, verify before use
-- **Built and checked (WALK), waiting for his look on his iPhone and his "merge live".** (1) The schedule's own input window
-  (a Personal Inputs line, an Unavailable row, the board's "+ Inputs" / "+ Add") on a phone is as tall as what is in it
-  up to the visible screen less 24px (D706), in the MIDDLE of the screen — his D995 after his first look at the preview
-  (first built at the foot); wider than 620 unchanged.
-  (2) A finger on it never scrolls what is behind (D686) — the shell's guard moved whole to `floatwin.ts holdPageScroll`,
-  one body for both. (3) The Inputs list scrolls in its own box at every width: its 875px table widened a sideways phone's
-  page to 907, so "+ Input" opened half off it. (4) `[OIL-NOTIFY-SEEN]` (5): an Unavailable hand-over by an armed tap parks
-  the crew drawer on a phone. `[PHONE-WIDE-BOARD-BLANK]` CLOSED and archived (fixed and live since 6 Oct 26).
-- **Checks:** red first (1 unit test, 7 browser tests in `raptor-port/e2e/sched-phone.spec.ts` — 6 red on the old build,
-  the board's swipe test a guard); walk `scripts/handpass/spf-walk.mjs` 45 PASS · 0 FAIL · 2 with no door, 24 pictures;
-  4 break tests caught; the full gate set green (below). No code read (WALK). Evidence and his look card:
+<!-- now:claude/window-middle-d996 -->
+### `claude/window-middle-d996` — PHONE WINDOWS IN THE MIDDLE (D996), after D994'S FIRST BATCH WENT LIVE — written 18 Oct 26, verify before use
+- **D994's first batch is LIVE** (pull request 533, his "merge live" 18 Oct 26; Vercel's live app ready for `275868ba9`):
+  the schedule's input window on a phone as tall as it needs, in the middle (D995); a finger on it never scrolls the page
+  behind; the Inputs list no longer widens a sideways phone; the drawer after an Unavailable hand-over. Its check:
   `raptor-port/docs/handpass/2026-10-18-sched-phone.md`.
-- **Left out on purpose (each needs his answer or his phone):** `[WEEK-ADD-TAP-PHONE]`, `[OIL-NOTIFY-SEEN]` (6),
-  `[VH-SHEETS-IPHONE]`, `[SHELL-SIDEWAYS-BAR]`, `[BUBBLE-SMALL-SEEN]`.
-- **Next:** the pull request's checks on GitHub; his look and "merge live"; then D994's next area's small fixes. His
-  questions still wait until he says so.
-- **Rulings:** D995 (the schedule's input window in the middle of a phone's screen — scheduler; narrows D537); design
-  lesson 6 written for it (§9).
+- **D996 (his "Yes standardise to middle"): the same input's window on the Inputs page stands in the middle on a phone
+  too** — recorded, NOT built yet. Pictures drawn on the real app (`raptor-port/scripts/handpass/mock-win-middle.mjs`,
+  `raptor-port/docs/img/handpass/2026-10-18-win-middle/`): most windows already fill a phone's screen (the "+ Input", the
+  Calendar window, a day, Insights), so only SHORT ones visibly move (the Inputs settings). **Put to him:** does
+  "standardise" mean every short window on a phone goes to the middle too, or only the input window? Recommended: every
+  window that pops up for a task (the settings windows, Calendar, the holiday form, Every weekday, the OIL list, the
+  bottom-sheet pop-ups such as Insights); the day panels that are pulled up and down by their bar (D648, D683, D707) and
+  the ALL AVAIL and changes windows (D77, D167) stay at the foot.
+- **Next:** his answer → record it → build on this branch (the phone rules in `22-float-windows.css`,
+  `25-inputs-calendar.css`, `08-windows-tools.css`), red first, a WALK with pictures, the gates, a pull request.
+- **Rulings:** D994's batch: D995 (scheduler; narrows D537), D996 (inputs; narrows D537); design lesson 6.
 <!-- /now -->
 
 ## Next, in order
 
-**RIGHT NOW (18 Oct 26, later):** D994's first batch — the scheduling pages on a phone — BUILT and checked on `claude/scheduling-phone-fixes-6d4adf` (its block in `## Now`) → his look on his iPhone and "merge live" → the next area's small fixes (D994); his questions still wait until he says so.
+**RIGHT NOW (18 Oct 26, later):** D994's first batch — the scheduling pages on a phone — LIVE (pull request 533; D995 the window in the middle) → D996 (phone windows to the middle — his scope answer first; `claude/window-middle-d996`'s block) → the next area's small fixes (D994); his questions still wait until he says so.
 
 **RIGHT NOW (18 Oct 26):** pull request 532 is LIVE (the Tracker chart scrolled by the phone itself and the pinch as a picture, D992; Quals' pinned header row moved by the browser, D993) → **his word: the small things next (D994)** — the questions the backlog keeps for him wait until he says so; meanwhile the small fixes that need no answer or look from him, batched by area with one check each, the scheduling pages on a phone first (`[PHONE-WIDE-BOARD-BLANK]`, `[SCHED-INPUT-WINDOW-PHONE]` and the small finds beside them). When he says so: the questions in rounds of four with pictures (the list as given to him on 18 Oct 26 — Leave War manning by commitments, members seeing others' OIL entries, Insights' empty line, an upchit moved later, the next-week preview, the delete list's notes, the Leave War label, two Escapes, crew-rest rings, the Leave War top bar, the load note, the Tracker import's words, three iPhone looks; then the tooling ones). Then caps and ops limits (`[CAPS-OPS-LIMITS]`, D495's order).
 
