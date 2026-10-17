@@ -54,6 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1017 | 18 Oct 26 | Every copy of a man's puck on a day — the Ground and Personal Inputs rows, the SANS card, the Unavailable row and the crew list — wears his seat's crew-rest ring and chip; a puck lit by an open issues list keeps its dotted or dashed ring, standing out because the rest dims, as today. |
 | D1013 | 18 Oct 26 | Every copy of a man's puck on a day wears the same crew-rest ring as his seat (dotted, dashed or solid) — his SANS card, Unavailable and Personal Inputs rows and the crew list included — and an open issues list lights its crew without hiding those rings; drawn for him before it is built. |
 | D1012 | 18 Oct 26 | In a calendar inside a form — the OIL question's "Only some days…" and an input's own window — Escape with the month or year list open closes only that list; a second Escape closes the form. |
 | D1011 | 18 Oct 26 | On the Scheduler Board, Escape in a take-off, landing, brief or duty-start box puts the old time back and saves nothing, as every other box does. |

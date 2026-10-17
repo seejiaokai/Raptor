@@ -45,6 +45,7 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D1018 | 18 Oct 26 | The Tracker's down days, flex settings and legend are built as drawn: course start set in "+ Add" and the Info panel; the down-days window only shows; "—" before a course start; a running input counts to today; only the six "From" flex days are typed; a member sees the settings read-only; "Legend" sits beside Show All. |
 | D1015 | 18 Oct 26 | When the Tracker's import refuses student marks because their chart is in neither the file nor the Tracker, it says: "Student marks not brought in: they belong to a chart this file doesn't carry. Export a fresh backup that includes its charts, and import that." |
 | D1014 | 18 Oct 26 | The Tracker's flex settings — its figures and its on / off switch (D1006) — open from a settings icon in the Tracker's top bar, and only an admin can change them. |
 | D1007 | 18 Oct 26 | The Tracker gets a legend: what each ball on the chart means (a flight and the other kinds), what currency a flight needs and when an IP is required, and when a flex happens; with the flex switch off (D1006) the legend's flex part goes too. |

@@ -66,3 +66,11 @@ whether a non-syllabus flight graded on the chart moves "Last currency" by itsel
 `tracker/components/SidePanel.jsx`, `tracker/app/core.js` (the down days' reader; the upchit field retired), a new reader of
 the medical inputs through the seam, the Tracker's file format (`tracker/app/fileTransfer.js` — down days and upchit in an
 export), its browser suite (`scripts/tracker/smoke.mjs`).
+
+## His approval of the pictures, 18 Oct 26 — D1018
+The pictures (`raptor-port/docs/img/handpass/2026-10-18-trk-down-days/`, `…/2026-10-18-trk-flex-legend/`; the reports in
+`raptor-port/docs/superpowers/briefs/2026-10-18-night-pictures.md` §2 and §3) approved "as recommended": the course start is
+set in "+ Add" (today by default) and changed in the Info panel; the down-days window only shows; "—" and a one-line prompt
+before a course start; a running input counts to today; only the six "From" flex days are typed; a member sees the flex
+settings read-only; "Legend" sits beside Show All, taking in the desktop's colour strip; with flex off "Days since
+syllabus" goes too. The questions above are answered by D1003–D1007, D1014 and D1018.
