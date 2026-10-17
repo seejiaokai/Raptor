@@ -415,6 +415,8 @@ svg.perf .edgehit{pointer-events:none}
 .pop,.modal{position:fixed;z-index:60;background:var(--panel2);border:1px solid var(--line);border-radius:11px;box-shadow:0 12px 40px rgba(0,0,0,.6)}
 .pop{display:none;padding:9px;width:210px}.pop .t{font-size:11px;color:var(--muted);margin-bottom:7px;text-align:center}
 .pop .opts{display:grid;grid-template-columns:1fr 1fr;gap:5px}.pop button{padding:6px;font-size:12px;display:flex;align-items:center;gap:6px}
+/* the keyboard's place inside the marking pop-up — the app's focus outline (D980; the design guide §2: focus is always visible) */
+.pop button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .dot{width:11px;height:11px;border-radius:50%;border:1px solid #0006;flex:0 0 auto}
 .pop .fails{display:flex;gap:6px;margin-top:7px;justify-content:center;align-items:center}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:55;display:none}

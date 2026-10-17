@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import * as core from '../app/core.js';
 import { DateBox as AppDateBox } from '../../ui/DateBox';
 
@@ -24,6 +24,36 @@ export default function Pop() {
     x = Math.max(8, x);
     setPosn({ x, y, maxH });
   }, [p]);
+  /* OPENED FROM THE KEYBOARD, IT TAKES THE KEYBOARD (owner D980, 17 Oct 26): the keyboard lands on the grade the event
+     has now (Not done when it has none), so a second Enter changes nothing; the pop-up's own Escape (core.handleEscapeKey)
+     and every grade and Close hand the keyboard back to the same event on the chart (core.closePop). Opened by a mouse or
+     a finger it takes nothing, as before. */
+  const opened = p && p.id, byKey = core.popByKey;
+  useEffect(() => {
+    if (!opened || !byKey || !ref.current) return;
+    const g = core.gradeOf(core.active, opened) || 0;
+    const b = ref.current.querySelector(`.opts button[data-g="${g === 0 ? '0' : g}"]`) || ref.current.querySelector('.opts button');
+    if (b) b.focus({ preventScroll: true });
+  }, [opened, byKey]);
+  /* Tab and Shift+Tab go round inside it (the design guide §2 — a window keeps the keyboard), and ← → ↑ ↓ step along
+     the row of grades */
+  const onKeyDown = e => {
+    const box = ref.current; if (!box) return;
+    if (e.key === 'Tab') {
+      const f = [...box.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')].filter(n => !n.disabled && n.tabIndex >= 0 && !n.closest('[hidden]'));
+      if (!f.length) return;
+      const i = f.indexOf(document.activeElement);
+      if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); }
+      else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
+      return;
+    }
+    if (/^Arrow(Left|Right|Up|Down)$/.test(e.key) && document.activeElement && document.activeElement.closest('.opts')) {
+      const row = [...box.querySelectorAll('.opts button')], i = row.indexOf(document.activeElement); if (i < 0) return;
+      e.preventDefault();
+      const d = (e.key === 'ArrowLeft' || e.key === 'ArrowUp') ? -1 : 1;
+      row[(i + d + row.length) % row.length].focus();
+    }
+  };
 
   if (!p) return null;
   const s = core.active;
@@ -35,14 +65,14 @@ export default function Pop() {
     : { display: 'block', left: p.x + 'px', top: (p.y + 12) + 'px', visibility: 'hidden' };
 
   return (
-    <div className="pop" id="pop" ref={ref} style={style}>
+    <div className="pop" id="pop" ref={ref} style={style} role="dialog" aria-label={p.id + ' · ' + core.nameOf(s)} onKeyDown={onKeyDown}>
       <div className="t" id="popTitle">{p.id}  ·  {core.nameOf(s)}</div>
       <div className="opts">
-        <button onClick={() => core.popGrade('0')}><span className="dot" style={{ background: '#fff' }}></span>Not done</button>
-        <button onClick={() => core.popGrade('dco')}><span className="dot" style={{ background: '#000' }}></span>DCO</button>
-        <button onClick={() => core.popGrade('dpco')}><span className="dot" style={{ background: 'var(--dpco)' }}></span>DPCO</button>
-        <button onClick={() => core.popGrade('marg')}><span className="dot" style={{ background: 'var(--marg)' }}></span>Marginal</button>
-        <button onClick={() => core.popGrade('na')}><span className="dot" style={{ background: 'var(--na)' }}></span>N.A.</button>
+        <button data-g="0" onClick={() => core.popGrade('0')}><span className="dot" style={{ background: '#fff' }}></span>Not done</button>
+        <button data-g="dco" onClick={() => core.popGrade('dco')}><span className="dot" style={{ background: '#000' }}></span>DCO</button>
+        <button data-g="dpco" onClick={() => core.popGrade('dpco')}><span className="dot" style={{ background: 'var(--dpco)' }}></span>DPCO</button>
+        <button data-g="marg" onClick={() => core.popGrade('marg')}><span className="dot" style={{ background: 'var(--marg)' }}></span>Marginal</button>
+        <button data-g="na" onClick={() => core.popGrade('na')}><span className="dot" style={{ background: 'var(--na)' }}></span>N.A.</button>
         <button onClick={() => core.popGrade('cancel')}>Close</button>
       </div>
       {/* Done on: the day the grade carries. Today by default, so pressing DCO

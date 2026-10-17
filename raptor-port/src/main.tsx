@@ -9,6 +9,7 @@ import { installProbeBridge, isLocalHost } from './probe-bridge'
 import { chooseBackend, guardUnload } from './storage/boot'
 import { StoreAheadError } from './storage/schema'
 import { setSaveStatusSource } from './ui/SaveStatus'
+import { useSaveHealth as trackerSaveHealth } from './tracker/storage.js'
 import { bootApp, BootConfigError } from './boot'
 import { bootPolicyFrom } from './bootpolicy'
 import { installDotRing } from './ui/dotring'
@@ -25,6 +26,9 @@ async function boot(): Promise<void> {
   /* the indicator and the unload guard hang off the postman */
   setSaveStatusSource(postman)
   guardUnload(postman)
+  /* the Tracker's "saved" corner follows the same saver ([TRK-SAVE-FAIL-SAYS-SAVED]) — through its storage doorway, the
+     door boot.ts already plugged the whiteboard into */
+  trackerSaveHealth(postman)
 
   /* THE PROBE BRIDGE IS INSTALLED ON THIS PC ONLY ([ACCOUNTS], 26 Sep 26 — Astra R1-1,
      Fable R1-3): it puts the app's data and writers (PEOPLE, INPUTS, setSlotVal, the

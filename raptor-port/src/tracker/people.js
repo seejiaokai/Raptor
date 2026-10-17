@@ -45,6 +45,22 @@ export function setPeople(next) {
 }
 export function getPeople() { return list }
 export function onPeople(f) { subs.add(f); return () => subs.delete(f) }
+/* WHO HAS BEEN DELETED (owner D981, 17 Oct 26 — what D299's "his place on any course still running — goes" means for
+   the Tracker). A man deleted through Post out is kept underneath as a hidden "deleted" mark (D290), so Raptor knows
+   his id; the list above leaves him out like anyone archived, which cannot tell the two apart. So his id crosses here
+   too, on the same bridge and with the same guard: the Tracker takes him off every course still running for him
+   (core.js leaveRunningCourses). Empty in the standalone Tracker. */
+let gone = []
+let goneSig = ''
+const goneSubs = new Set()
+export function setGonePeople(ids) {
+  const l = Array.isArray(ids) ? ids.map(String).sort() : []
+  const s = l.join(','); if (s === goneSig) return
+  gone = l; goneSig = s
+  goneSubs.forEach(f => { try { f(gone) } catch (_) {} })
+}
+export function getGonePeople() { return gone }
+export function onGonePeople(f) { goneSubs.add(f); return () => goneSubs.delete(f) }
 export function setWhoami(fn) { who = typeof fn === 'function' ? fn : () => '' }
 export function whoami() { try { const v = who(); return v == null ? '' : String(v) } catch (_) { return '' } }
 export function setWhoamiId(fn) { whoId = typeof fn === 'function' ? fn : () => '' }

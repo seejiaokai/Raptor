@@ -348,8 +348,9 @@ export default function SidePanel({ zoom }) {
           <div className="kv"><span>Days since currency</span><b>{dCurr == null ? '—' : dCurr + 'd'}{downDays ? <> <span className="mini">(−{downDays} down = {effCurr}d)</span></> : null}</b></div>
         </div>
         <div className="flexPair">
-          <div className="flexbar" style={{ background: cur.color }}>{cur.txt}</div>
-          <div className="flexbar" style={{ background: fx.color }}>{fx.txt}</div>
+          {/* the bar's ink rides with its colour (core.flexFor / landingCurrency — D982) */}
+          <div className="flexbar" style={{ background: cur.color, color: cur.ink }}>{cur.txt}</div>
+          <div className="flexbar" style={{ background: fx.color, color: fx.ink }}>{fx.txt}</div>
         </div>
         <div className="mini" style={{ marginTop: 5 }}>Landing currency = days since last currency (minus down days). Flex requirement uses days since last <b>syllabus</b> flight, so updating currency won’t change it.</div>
       </div>

@@ -11,7 +11,7 @@ import { DEFAULT_LAYOUTS } from '../data/layouts.js';
 import { EVENT_INFO, EVENT_INFO_BY_SYL } from '../data/eventInfo.js';
 import { shippedDetails, diffDetails, scrubBlock, mergeBlock, realFlatEdits, blockFromFlat, isDetailsTable } from './eventDetails.js';
 import { SEED_STATE, SEED_STAMP } from '../data/seedState.js';
-import { storage, flushNow, loadLatest } from '../storage.js';
+import { storage, flushNow, loadLatest, saveHealth, onSaveHealth } from '../storage.js';
 import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { normalizeImport as normalizeFile, STUDENT_GUARD_MSG, sameDef, remapStudentsSyl } from './fileTransfer.js';
@@ -19,7 +19,7 @@ import { findEvents } from './eventOrder.js';
 import { onTrackerSessionEnd, onBeforeTrackerLogout } from '../role.js';
 /* Raptor's one edge feel (D899) — a standalone export carries this file with it: docs/tracker/known-gaps.md */
 import { edgePan } from '../../ui/edgescroll';
-import { getPeople, onPeople, whoami, whoamiId } from '../people.js';
+import { getPeople, onPeople, whoami, whoamiId, getGonePeople, onGonePeople } from '../people.js';
 import { setTrackerUndo, pingTrackerUndo } from '../undo-bridge.js';
 /* the Tracker one piece per thing ([DB-READINESS] group A, phase 5b — D462): the student lists, the course list and the
    chart records are STORED one row per thing, through the door below (sGet / sSet / memGet / delKey) */
@@ -869,8 +869,7 @@ export function resumeForPerson() {
     resuming = false;
     refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
     notify();
-    const land = () => { if (!showLastEdit(active)) scrollToEvent(firstEventId()); };
-    if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(land); else land();
+    landChart();
   });
   return true;
 }
@@ -2974,9 +2973,17 @@ export let tool = 'move'; let connectSrc = null, undoStack = [], pan = null;
    that takes them all back together and leaves the picker where it is. */
 function trimUndo() { if (undoStack.length > 60) undoStack.shift(); }
 function pushUndo() { undoStack.push({ syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }); trimUndo(); redoStack = []; notify(); }
+/* A snapshot also notes which of the four records were STORED when it was taken ([TRK-UNDO-WRITES-DEFAULTS], 17 Oct 26):
+   a student's pace, lull periods and dates are filled with their defaults in memory the moment his chart opens, stored
+   or not, so the first ↶ of a mark wrote a pace, an empty lull list and a dates record nobody had made, and left his
+   marks as {} — nothing changed on screen, but Export and the database gained records nobody made. `st` says, for each,
+   whether the store held it; a step that puts back one the store never had removes it again instead of writing its
+   default. The record a delete of the course already took has nothing to put back (memGet's mirror is the store's). */
+function storedNow(k) { return k in mem && mem[k] != null && mem[k] !== ''; }
 function markSnap(s, what) {
+  const st = { m: storedNow(kMarks(course, s)), d: storedNow(kDates(course, s)), p: storedNow(kPace(course, s)), l: storedNow(kLulls(course, s)) };
   return { who: s, m: JSON.stringify(marks[s] || {}), d: dates[s] ? JSON.stringify(dates[s]) : null,
-    p: pace[s] ? JSON.stringify(pace[s]) : null, l: lulls[s] ? JSON.stringify(lulls[s]) : null, what: what || null, t: Date.now() };
+    p: pace[s] ? JSON.stringify(pace[s]) : null, l: lulls[s] ? JSON.stringify(lulls[s]) : null, st, what: what || null, t: Date.now() };
 }
 /* one step over several students ("Copy to…"): each one's snapshot, one name */
 function pushGroupUndo(ss, what) {
@@ -3008,11 +3015,15 @@ function restoreSnap(u) {
   if (u.d == null) delete dates[s]; else dates[s] = JSON.parse(u.d);
   if ('p' in u) { if (u.p == null) delete pace[s]; else pace[s] = JSON.parse(u.p); }
   if ('l' in u) { if (u.l == null) delete lulls[s]; else lulls[s] = JSON.parse(u.l); }
-  saveMarks(s); if (dates[s]) saveDates(s);
+  /* what the snapshot says the store did NOT hold is taken out of the store again, never written as its default; memory
+     keeps the defaults the chart shows (a snapshot from before this carries no `st`: everything is written, as before) */
+  const st = u.st || null, gone = k => { if (storedNow(k)) delKey(k); };
+  if (st && !st.m) gone(kMarks(course, s)); else saveMarks(s);
+  if (dates[s]) { if (st && !st.d) gone(kDates(course, s)); else saveDates(s); }
   /* a pace that was never set before the change is REMOVED again, not stored as {} — an empty
      pace read back as a blank pace box after a reload (Fable's final read F4) */
-  if ('p' in u) { if (pace[s]) savePace(s); else delKey(kPace(course, s)); }
-  if ('l' in u) saveLulls(s);
+  if ('p' in u) { if (pace[s] && !(st && !st.p)) savePace(s); else gone(kPace(course, s)); }
+  if ('l' in u) { if (st && !st.l) gone(kLulls(course, s)); else saveLulls(s); }
 }
 function applyMarkHistData(u) {
   const s = u.who;
@@ -3179,6 +3190,7 @@ export function renderBoard() {
   /* Fresh markup scrolls to 0,0 — which, with the slack above, is empty
      space. Park at the chart's own corner; a landing that follows moves on. */
   if (boardPad.x || boardPad.y) { board.scrollLeft = boardPad.x; board.scrollTop = boardPad.y; }
+  paintKbdRing();   /* the keyboard's ring rides the fresh markup (D980) */
   notify();   /* header event count etc. */
 }
 /* Redraw the board WITHOUT moving the view. Rebuilding the SVG (which a mark
@@ -3345,7 +3357,7 @@ function wireBoard() {
         pushUndo(); const mine = undoStack[undoStack.length - 1];
         /* the square rides the finger too (found by the walk, 15 Oct 26 — D899): it was drawn again only on the release,
            so while the canvas panned under a held finger it slid off with the chart and looked dropped */
-        const bend = ev2 => { const pt = svgPt(ev2); edgeMeta[key] = { ...(edgeMeta[key] || {}), mid: { x: Math.round(pt.x), y: Math.round(pt.y) } }; lh.setAttribute('x', (pt.x - 6).toFixed(1)); lh.setAttribute('y', (pt.y - 6).toFixed(1)); schedDragPaint(); };
+        const bend = ev2 => { const pt = svgPtOnChart(ev2); edgeMeta[key] = { ...(edgeMeta[key] || {}), mid: { x: Math.round(pt.x), y: Math.round(pt.y) } }; lh.setAttribute('x', (pt.x - 6).toFixed(1)); lh.setAttribute('y', (pt.y - 6).toFixed(1)); schedDragPaint(); };
         const fe = followEdge(e, bend);
         const mv = ev2 => { if (ev2.pointerId !== pid) return; fe.point(ev2); bend(ev2); };
         const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
@@ -3370,12 +3382,12 @@ function wireBoard() {
       h.addEventListener('pointerdown', e => {
         if (pinching) return;
         e.stopPropagation(); const end = h.dataset.end, pid = e.pointerId;
-        const carry = ev2 => { const pt = svgPt(ev2); h.setAttribute('cx', pt.x.toFixed(1)); h.setAttribute('cy', pt.y.toFixed(1)); highlightPort(pt); };
+        const carry = ev2 => { const pt = svgPtOnChart(ev2); h.setAttribute('cx', pt.x.toFixed(1)); h.setAttribute('cy', pt.y.toFixed(1)); highlightPort(pt); };
         const fe = followEdge(e, carry);
         /* each of the four handle drags hears its own pointer only (round two's R2): a second finger's cancel or lift is not its */
         const mv = ev2 => { if (ev2.pointerId !== pid) return; fe.point(ev2); carry(ev2); };
         const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
-        const up = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); applyEndSnap(end, svgPt(ev2)); };
+        const up = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); applyEndSnap(end, svgPtOnChart(ev2)); };
         /* a cancelled touch snaps nothing (its place can read 0,0): the end goes back where it was (F3) */
         const cancel = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); renderBoard(); };
         window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
@@ -3386,7 +3398,7 @@ function wireBoard() {
         if (tool !== 'editlines') return;
         e.preventDefault(); e.stopPropagation();
         selLine = h.dataset.lid;
-        if (insertBend(selLine, svgPt(e))) flashHint('Bend added — drag the blue square to shape it.');
+        if (insertBend(selLine, svgPtOnChart(e))) flashHint('Bend added — drag the blue square to shape it.');
       });
       h.addEventListener('pointerdown', e => {
         if (pinching) return;
@@ -3407,7 +3419,7 @@ function wireBoard() {
         const nextV = i < P0.length - 1 && Math.abs(P0[i].x - P0[i + 1].x) < 0.5;
         let moved = false;
         const shape = ev2 => {
-          const pt = svgPt(ev2); moved = true; const p = L.pts;
+          const pt = svgPtOnChart(ev2); moved = true; const p = L.pts;
           if (i > 0) { if (prevV) p[i - 1].x = pt.x; else p[i - 1].y = pt.y; }
           if (i < p.length - 1) { if (nextV) p[i + 1].x = pt.x; else p[i + 1].y = pt.y; }
           p[i].x = pt.x; p[i].y = pt.y; refreshLine(id);
@@ -3438,7 +3450,7 @@ function wireBoard() {
         const was = L[key], pts0 = Array.isArray(L.pts) ? L.pts.map(p => ({ x: p.x, y: p.y })) : L.pts, pid = e.pointerId;
         L[key] = null;
         const carry = ev2 => {
-          const pt = svgPt(ev2);
+          const pt = svgPtOnChart(ev2);
           L.pts = endDragRebuild(base, first, o, pt); refreshLine(id);
           h.setAttribute('cx', pt.x.toFixed(1)); h.setAttribute('cy', pt.y.toFixed(1));
           highlightPort(pt);
@@ -3452,7 +3464,7 @@ function wireBoard() {
           if (ev2.pointerId !== pid) return;
           if (fingerStop === stop) fingerStop = null; stop();
           pushUndo();
-          const pt = svgPt(ev2), sn = snapAnchor(pt, id);
+          const pt = svgPtOnChart(ev2), sn = snapAnchor(pt, id);
           const dst = sn ? { x: sn.x, y: sn.y } : pt;
           L.pts = endDragRebuild(base, first, o, dst);
           L[key] = sn ? sn.an : null;
@@ -3473,7 +3485,7 @@ function wireBoard() {
       if (tool === 'line') {
         if (e.target.closest('.lend') || e.target.closest('.lvert')) return;
         e.preventDefault(); e.stopPropagation();
-        const pt = svgPt(e);
+        const pt = svgPtOnChart(e);
         if (!drawing) {
           const hit = e.target.closest('.linehit');
           if (hit) { selLine = hit.dataset.lid; renderBoard(); return; }
@@ -3501,7 +3513,7 @@ function wireBoard() {
     svg.addEventListener('pointermove', e => {
       if (pinching) { pan = null; return; }   /* pinching fingers neither pan nor steer a half-drawn line */
       if (tool === 'line' && drawing) {
-        const cp = svgPt(e); const c0 = drawing.pts[0];
+        const cp = svgPtOnChart(e); const c0 = drawing.pts[0];
         if (Math.abs(cp.x - c0.x) < 12) cp.x = c0.x; else if (Math.abs(cp.y - c0.y) < 12) cp.y = c0.y;
         drawing.cur = cp; refreshPreview(); highlightPort(cp); return;
       }
@@ -3735,17 +3747,105 @@ function enableHScroll(el) {
     if (el.scrollLeft !== before) e.preventDefault();
   }, { passive: false });
   el.tabIndex = el.tabIndex >= 0 ? el.tabIndex : 0;
+  /* the box itself draws no outline: the keyboard's place is the ring round its event (paintKbdRing — D980) */
   el.style.outline = 'none';
   el.addEventListener('keydown', e => {
     if (arrangeMode) return;
     const t = e.target, tag = (t && t.tagName || '').toLowerCase();
     if (tag === 'input' || tag === 'select' || tag === 'textarea' || (t && t.isContentEditable)) return;
-    const step = e.shiftKey ? 400 : 90;
-    if (e.key === 'ArrowRight') { el.scrollLeft += step; e.preventDefault(); }
-    else if (e.key === 'ArrowLeft') { el.scrollLeft -= step; e.preventDefault(); }
-    else if (e.key === 'Home') { el.scrollLeft = 0; e.preventDefault(); }
+    /* the arrows walk the chart's events now (D980 — chartKey); Home and End still take the chart to its two sides */
+    if (chartKey(e)) return;
+    if (e.key === 'Home') { el.scrollLeft = 0; e.preventDefault(); }
     else if (e.key === 'End') { el.scrollLeft = el.scrollWidth; e.preventDefault(); }
   });
+  el.addEventListener('focus', () => { let fv = true; try { fv = el.matches(':focus-visible'); } catch (_) {} kbdShown = fv; if (fv) { kbdLand(); paintKbdRing(); kbdKeepInView(); } });
+  el.addEventListener('blur', () => { kbdShown = false; paintKbdRing(); });
+}
+/* THE CHART BY KEYBOARD, ON A DESKTOP (owner D980, 17 Oct 26 — "As recommended", round 1, question 2). ONE Tab reaches
+   the chart (the board is the one Tab stop — never one for each of its events); then the arrows follow its lines —
+   → to the next event along a line (one that needs this one), ← back to the event it needs first, ↑ ↓ to the event
+   above or below — Enter (or Space) opens the marking pop-up with the keyboard inside it, and Escape returns to the
+   same event. The event the keyboard is on wears the app's plain blue ring (D876's — #1E86FF, two pixels, no glow,
+   D887), drawn round the ball outside the gold "can fly next" and turquoise "search found" rings so the three never
+   touch; it shows only while the keyboard is on the chart (a press of a mouse on the chart draws none until an arrow
+   is pressed). Where an arrow has two events to go to, the one nearest along the flow is taken: for → and ← the one
+   whose row is closest, then the leftmost; for ↑ and ↓ the nearest row, then the one most directly above or below.
+   Where an arrow has nowhere to go the ring stays. The keyboard starts on the student's last-marked event on this
+   chart, else its first — where the chart lands (landChart). Edit chart layout keeps its own keys: none of this
+   runs there. */
+export let kbdId = null;
+let kbdShown = false;
+const KBD_RING = '#1E86FF';
+function kbdBall(id) { return id ? [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === id) || null : null; }
+function kbdLand() {
+  if (kbdId && byid[kbdId]) return;
+  const rec = lastEdit[active];
+  kbdId = (rec && rec.event && rec.syl === curSyl() && byid[rec.event]) ? rec.event : firstEventId();
+}
+/* the ring, drawn inside the ball's own group so it moves with it; renderBoard redraws the chart, so it calls this too */
+function paintKbdRing() {
+  if (typeof document === 'undefined') return;
+  document.querySelectorAll('#flowSvg .kbdring').forEach(n => n.remove());
+  if (!kbdShown || arrangeMode || !kbdId) return;
+  const g = kbdBall(kbdId); if (!g) return;
+  const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  c.setAttribute('class', 'kbdring'); c.setAttribute('cx', '29'); c.setAttribute('cy', '29'); c.setAttribute('r', (58 * 0.47 + 12).toFixed(2));
+  c.setAttribute('fill', 'none'); c.setAttribute('stroke', KBD_RING); c.setAttribute('stroke-width', '2'); c.setAttribute('pointer-events', 'none');
+  g.appendChild(c);
+}
+/* the least scroll that brings the ringed event inside the chart's box, a little clear of its edges */
+function kbdKeepInView() {
+  const bd = document.getElementById('board'), g = kbdBall(kbdId); if (!bd || !g) return;
+  const r = g.getBoundingClientRect(), b = bd.getBoundingClientRect(), m = 28;
+  if (r.top < b.top + m) bd.scrollTop -= (b.top + m) - r.top; else if (r.bottom > b.bottom - m) bd.scrollTop += r.bottom - (b.bottom - m);
+  if (r.left < b.left + m) bd.scrollLeft -= (b.left + m) - r.left; else if (r.right > b.right - m) bd.scrollLeft += r.right - (b.right - m);
+}
+/* the event an arrow goes to from `id`, or null (the choice above) */
+export function kbdNext(id, key) {
+  const ev = byid[id]; if (!ev) return null;
+  const at = nodePos(id), rowOfY = y => Math.round(y / 92);
+  const nearestByRow = list => {
+    let best = null, bs = null;
+    for (const c of list) { const q = nodePos(c.id); const sc = [Math.abs(rowOfY(q.y) - rowOfY(at.y)), q.x]; if (!bs || sc[0] < bs[0] || (sc[0] === bs[0] && sc[1] < bs[1])) { best = c.id; bs = sc; } }
+    return best;
+  };
+  if (key === 'ArrowRight') return nearestByRow(SYL.filter(e => (e.prereqs || []).includes(id)));
+  if (key === 'ArrowLeft') return nearestByRow((ev.prereqs || []).map(p => byid[p]).filter(Boolean));
+  if (key === 'ArrowUp' || key === 'ArrowDown') {
+    const up = key === 'ArrowUp'; let best = null, bs = null;
+    for (const e of SYL) {
+      if (e.id === id) continue; const q = nodePos(e.id), dy = q.y - at.y;
+      if (up ? dy > -20 : dy < 20) continue;
+      const sc = [Math.abs(rowOfY(q.y) - rowOfY(at.y)), Math.abs(q.x - at.x)];
+      if (!bs || sc[0] < bs[0] || (sc[0] === bs[0] && sc[1] < bs[1])) { best = e.id; bs = sc; }
+    }
+    return best;
+  }
+  return null;
+}
+/* the chart's keys; true when the key was the chart's */
+function chartKey(e) {
+  const k = e.key;
+  const arrow = k === 'ArrowRight' || k === 'ArrowLeft' || k === 'ArrowUp' || k === 'ArrowDown';
+  if (!arrow && k !== 'Enter' && k !== ' ') return false;
+  if (e.altKey || e.ctrlKey || e.metaKey || resuming) return false;
+  e.preventDefault();
+  kbdLand(); kbdShown = true;
+  if (arrow) { const n = kbdNext(kbdId, k); if (n) kbdId = n; paintKbdRing(); kbdKeepInView(); return true; }
+  const g = kbdBall(kbdId); if (!g) return true;
+  paintKbdRing(); kbdKeepInView();
+  const r = g.getBoundingClientRect(), at = { clientX: r.left + r.width / 2, clientY: r.bottom - 6, target: null, byKey: true };
+  /* in Details mode a press on an event shows its brief, as a click does; otherwise it is the same press on the ball
+     (ballTap — it says so when nobody is on the chart to mark) */
+  if (showDetails) showDetailBubble(kbdId, g); else ballTap(kbdId, at);
+  return true;
+}
+/* the keyboard goes back to the chart, on the same event, when the pop-up it was in closes (Escape, a grade, Close) */
+function kbdBack() {
+  const bd = document.getElementById('board'); if (!bd) return;
+  kbdShown = true;
+  try { bd.focus({ preventScroll: true }); } catch (_) { bd.focus(); }
+  kbdShown = true; paintKbdRing();
 }
 /* Grab-and-drag scrolling for any overflow container. */
 export function dragScroll(el, skip) {
@@ -3812,6 +3912,15 @@ function svgPt(ev) {
   const svg = document.getElementById('flowSvg'); const r = svg.getBoundingClientRect();
   return { x: (ev.clientX - r.left - view.x) / view.k, y: (ev.clientY - r.top - view.y) / view.k };
 }
+/* NOTHING IS DROPPED BEFORE THE CHART'S START ([TRK-BALL-OFF-CHART-LEFT], 17 Oct 26 — the round-two read of D899). The chart
+   is drawn from its top-left corner rightward and down (bounds()), but Edit chart layout shows room to the left of and
+   above it after ⤢ Fit, and a thing dropped there got a negative place: out of Edit the chart cut it off, and ⤢ Fit could
+   not bring it back. The edge pan already stops at the chart's start (D899); a drop into that room needs no pan, so the
+   place itself stops there: a ball's centre at least its half-width from either edge (BALL_HALF — the 58px ball drawn
+   from its corner at the centre less 29), a line's point at the edge itself. */
+const BALL_HALF = 29;
+function onChart(pt) { return { x: Math.max(0, pt.x), y: Math.max(0, pt.y) }; }
+function svgPtOnChart(ev) { return onChart(svgPt(ev)); }
 function connectClick(id) {
   if (!connectSrc) { connectSrc = id; renderBoard(); return; }
   if (connectSrc === id) { connectSrc = null; renderBoard(); return; }
@@ -3887,7 +3996,9 @@ function startGroupDrag(ev) {
 }
 function onGroupDrag(ev) { if (groupDrag) groupDrag.fe.point(ev); moveGroup(ev); }
 function moveGroup(ev) {
-  if (!groupDrag) return; const p = svgPt(ev); const dx = p.x - groupDrag.px, dy = p.y - groupDrag.py;
+  if (!groupDrag) return; const p = svgPt(ev); let dx = p.x - groupDrag.px, dy = p.y - groupDrag.py;
+  /* the group stops as a whole where its first ball would pass the chart's start (onChart) — it keeps its shape */
+  for (const bid of selBalls) { const st = groupDrag.start[bid]; if (!st) continue; dx = Math.max(dx, BALL_HALF - st.x); dy = Math.max(dy, BALL_HALF - st.y); }
   if (!groupDrag.moved && !groupDrag.pushed) { undoStack.push(groupDrag.snap); trimUndo(); redoStack = []; groupDrag.pushed = true; notify(); }
   groupDrag.moved = true;
   selBalls.forEach(bid => {
@@ -3923,6 +4034,7 @@ function moveBall(ev) {
     if (gy === null && Math.abs(q.y - ny) < TH) { ny = q.y; gy = q.y; }
   });
   if (gx !== null) alignGuides.push({ v: true, p: gx }); if (gy !== null) alignGuides.push({ v: false, p: gy });
+  nx = Math.max(BALL_HALF, nx); ny = Math.max(BALL_HALF, ny);   /* never before the chart's start (onChart) */
   layout[drag.id] = { x: nx, y: ny }; drag.moved = true; drag.g.setAttribute('transform', `translate(${(nx - 29).toFixed(1)},${(ny - 29).toFixed(1)})`);
   schedDragPaint();
 }
@@ -3933,7 +4045,10 @@ function drawGuides() {
 function endDrag(ev) {
   if (!drag) return; const g = drag.g; if (fingerStop === drag.stop) fingerStop = null; drag.fe.stop();
   g.removeEventListener('pointermove', onDrag); g.removeEventListener('pointerup', endDrag); g.removeEventListener('pointercancel', endDrag);
-  const moved = drag.moved; drag = null; alignGuides = []; flushDragPaint(); const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = ''; perfOff(); if (moved) { saveLayout(); wireBoard(); }
+  /* drawn again, not wired again ([TRK-WIREBOARD-REPEAT], 17 Oct 26): wireBoard on the SAME chart added its wheel, click
+     and pan listeners a second time (named handlers are not doubled; the arrow functions are), so after n moves one
+     wheel step zoomed n+1 times and a Connect or Text click ran twice — as the group drag and the bend square do */
+  const moved = drag.moved; drag = null; alignGuides = []; flushDragPaint(); const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = ''; perfOff(); if (moved) { saveLayout(); renderBoard(); }
 }
 
 /* ---------- inline ball editor (text / colour / number) — state for <EditModal/> ---------- */
@@ -4044,20 +4159,27 @@ export function fmt(d) { if (!d) return '—'; return d.toLocaleDateString('en-G
 export function daysBetween(a, b) { return Math.floor((b - a) / DAY); }
 function overlapDays(s, e, a, b) { const lo = Math.max(s, a), hi = Math.min(e, b); return Math.max(0, (hi - lo) / DAY); }
 export function lullDaysIn(s, a, b) { return ((lulls && lulls[s]) || []).reduce((t, l) => { const s = parseD(l.start), e = parseD(l.end); if (!s || !e) return t; return t + overlapDays(s.getTime(), e.getTime() + DAY, a, b); }, 0); }
+/* THE BAR'S COLOUR AND ITS INK COME FROM ONE PLACE (owner D982, 17 Oct 26 — "As recommended"): dark words on the green,
+   amber and red bars, white kept on the grey one — the recipe Raptor's own amber chips use (Raptor's background colour
+   as the ink). White on the green and the amber read about 2.1 : 1 and on the red 3.4 : 1, against a floor of 4.5 : 1
+   ([TRK-FLEXBAR-INK]); the grey's 6.2 : 1 stays. The colours and the words are as they were. Returning the two together
+   is what makes it impossible to give a bar one without the other (SidePanel.jsx draws both). */
+const INK_ON = 'var(--bg)', INK_GREY = '#fff';
+const bar = (txt, color) => ({ txt, color, ink: color === 'var(--grey)' ? INK_GREY : INK_ON });
 export function flexFor(days) {
-  if (days == null) return { txt: 'No flight date set', color: 'var(--grey)' };
-  if (days < 7) return { txt: 'Current — no flex required', color: 'var(--marg)' };
-  if (days <= 13) return { txt: '1 Optional Flex', color: 'var(--orange)' };
-  if (days <= 20) return { txt: '1 Mando Flex (Convertible)', color: 'var(--red)' };
-  if (days <= 30) return { txt: '2 Mando Flex (1 Mando, 1 Convertible)', color: 'var(--red)' };
-  if (days <= 59) return { txt: '2 Mando Flex (2 Mando)', color: 'var(--red)' };
-  if (days <= 119) return { txt: 'Short Refresher Course', color: 'var(--grey)' };
-  return { txt: 'Re-course', color: 'var(--grey)' };
+  if (days == null) return bar('No flight date set', 'var(--grey)');
+  if (days < 7) return bar('Current — no flex required', 'var(--marg)');
+  if (days <= 13) return bar('1 Optional Flex', 'var(--orange)');
+  if (days <= 20) return bar('1 Mando Flex (Convertible)', 'var(--red)');
+  if (days <= 30) return bar('2 Mando Flex (1 Mando, 1 Convertible)', 'var(--red)');
+  if (days <= 59) return bar('2 Mando Flex (2 Mando)', 'var(--red)');
+  if (days <= 119) return bar('Short Refresher Course', 'var(--grey)');
+  return bar('Re-course', 'var(--grey)');
 }
 export function landingCurrency(days) {
-  if (days == null) return { txt: 'No currency date set', color: 'var(--grey)' };
-  if (days < 7) return { txt: 'Landing Current — No IP Required', color: 'var(--marg)' };
-  return { txt: 'Landing Not Current — IP Required', color: 'var(--red)' };
+  if (days == null) return bar('No currency date set', 'var(--grey)');
+  if (days < 7) return bar('Landing Current — No IP Required', 'var(--marg)');
+  return bar('Landing Not Current — IP Required', 'var(--red)');
 }
 export function sliceBg(cols) {
   if (!cols.length) return ''; if (cols.length === 1) return cols[0];
@@ -4206,6 +4328,22 @@ export async function applyLullCopy() {
 /* The names are the information; the ring is only a key. It used to be drawn the
    other way round — a big ring with 11px names — so shrinking the whole thing to
    fit a phone made the names unreadable. Small ring, large names. */
+/* EVERY NAME OF THE KEY STAYS INSIDE THE CARD ([TRK-KEY-NAME-CLIP], filed 30 Sep 26). The key is drawn in a fixed box
+   (the viewBox below: x from −95 to 245), and a name runs out from the ring to one side — on the left it ends at the
+   ring and grows leftward — so a longer name ("HIS STUDENT", a callsign of ten letters) ran past the box's edge and
+   lost its first letters. A name now gets the room it has on its side: its type shrinks to fit (never below KEY_MIN),
+   and one still too long at that size is narrowed to the room (the browser's own fit, textLength). The width is
+   reckoned from the letters (KEY_EM — a bold capital is about two thirds of the type's height), the same in every
+   browser and in a test. */
+const KEY_X0 = -95, KEY_X1 = 245, KEY_EM = 0.68, KEY_MIN = 12, KEY_PAD = 3;
+export function keyFont(name, anchor, x, size) {
+  const n = String(name || '').length; if (!n) return { size, squeeze: 0 };
+  const room = (anchor === 'end' ? x - KEY_X0 : anchor === 'start' ? KEY_X1 - x : 2 * Math.min(x - KEY_X0, KEY_X1 - x)) - KEY_PAD;
+  const fit = room / (n * KEY_EM);
+  if (fit >= size) return { size, squeeze: 0 };
+  if (fit >= KEY_MIN) return { size: Math.floor(fit * 10) / 10, squeeze: 0 };
+  return { size: KEY_MIN, squeeze: Math.max(1, Math.floor(room)) };
+}
 export function renderKeyBall() {
   const n = Math.max(1, roster.length); const cx = 75, cy = 75, rO = 38, rI = 25;
   let segs = '', labels = '';
@@ -4215,7 +4353,8 @@ export function renderKeyBall() {
     const mid = (a0 + a1) / 2 * Math.PI / 180; const lr = rO + 10;
     const x = cx + lr * Math.cos(mid), y = cy + lr * Math.sin(mid);
     const anchor = Math.cos(mid) > 0.3 ? 'start' : Math.cos(mid) < -0.3 ? 'end' : 'middle';
-    labels += `<text x="${x.toFixed(0)}" y="${(y + 7).toFixed(0)}" text-anchor="${anchor}" font-size="${on ? 21 : 19}" font-weight="${on ? 800 : 700}" fill="${on ? PAL.accent : PAL.ink}">${escapeId(r ? r.name : '')}</text>`;
+    const nm = r ? r.name : '', fs = keyFont(nm, anchor, x, on ? 21 : 19);
+    labels += `<text x="${x.toFixed(0)}" y="${(y + 7).toFixed(0)}" text-anchor="${anchor}" font-size="${fs.size}"${fs.squeeze ? ` textLength="${fs.squeeze}" lengthAdjust="spacingAndGlyphs"` : ''} font-weight="${on ? 800 : 700}" fill="${on ? PAL.accent : PAL.ink}">${escapeId(nm)}</text>`;
   }
   /* Wide and short: the names run out to either side, so the box wants the shape
      of a name, not of a circle. The centre names the COURSE: `course` has been
@@ -4239,13 +4378,22 @@ export let popFailDate = '';
 export function isoOf(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 export function isoToday() { try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Singapore', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); } catch (e) { return isoOf(new Date()); } }
 export function openPop(id, evt) {
+  /* the keyboard carries on from the event a pop-up was opened on, however it was opened (D980) */
+  kbdId = id; popByKey = !!(evt && evt.byKey);
   pop = { id, x: evt.clientX, y: evt.clientY };
   popDoneDate = doneDate(active, id) || isoToday();
   popFailDate = isoToday();
   popMsg = null; popDonePartial = false; popFailPartial = false;
   notify();
 }
-export function closePop() { pop = null; popMsg = null; notify(); }
+/* popByKey: the pop-up was opened from the keyboard, so it takes the keyboard (Pop.jsx) */
+export let popByKey = false;
+export function closePop() {
+  /* the keyboard was inside the pop-up: it goes back to the chart, on the same event, never to nothing (D980) */
+  const inside = typeof document !== 'undefined' && document.activeElement && document.activeElement.closest && !!document.activeElement.closest('#pop');
+  pop = null; popMsg = null; popByKey = false; notify();
+  if (inside) kbdBack();
+}
 /* A tap on a ball, outside arrange mode (owner, 9 Sep 26 — "click exactly at
    the portion of the pokeball that person exist in"): the ring is the crew
    picker, one wedge per student — tapping somebody else's wedge PICKS them
@@ -4297,9 +4445,25 @@ export function scrollToEvent(id) {
      is reachable, then measure. */
   padBoard();
   const r = g.getBoundingClientRect(), b = bd.getBoundingClientRect();
-  bd.scrollTop += (r.top + r.height / 2) - (b.top + b.height / 2);
-  bd.scrollLeft += (r.left + r.width / 2) - (b.left + b.width / 2);
+  /* ...centred as far as the chart allows, but never with the empty slack above or left of the chart's start in view
+     ([TRK-REMOUNT-LANDING], 17 Oct 26): the slack exists so an event anywhere can come to the middle (padBoard), yet an
+     event near the top was centred with that much empty space over it — about 240px on a phone above ST-01. Scrolled at
+     least the slack's own depth, the chart's first row sits at the top of the view instead, and nothing of the chart is
+     lost from sight to make room for nothing. */
+  bd.scrollTop = Math.max(boardPad.y, bd.scrollTop + (r.top + r.height / 2) - (b.top + b.height / 2));
+  bd.scrollLeft = Math.max(boardPad.x, bd.scrollLeft + (r.left + r.width / 2) - (b.left + b.width / 2));
   return true;
+}
+/* WHERE THE CHART LANDS — on the picked student's latest work, else the chart's first event (owner, 9 Sep 26: "when u pick a
+   crew it will land on their latest work"; "if nothing is clocked … the first item"). One body for every way the chart
+   comes up: the boot (init), a person's own place reloaded (resumeForPerson) and the Tracker coming back on screen with
+   its engine already running (App.jsx — [TRK-REMOUNT-LANDING]: a Log out and Log in as the same person drew the chart
+   again and left it at its top corner, the landing never asked). After the frame, so the balls exist and the zoom has
+   landed; a student picked again before it runs is not landed on as the old one. */
+export function landChart() {
+  const who = active;
+  const go = () => { if (active !== who) return; if (!showLastEdit(who)) scrollToEvent(firstEventId()); };
+  if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(go); else go();
 }
 /* ---------- find an event on the board ----------
    The ring is baked into the SVG string, so changing the hit means redrawing
@@ -4797,6 +4961,64 @@ async function removeStudentNow(v) {
     refreshActive(); renderBoard(); renderSide();
   });
 }
+/* A MAN DELETED THROUGH POST OUT LEAVES EVERY COURSE STILL RUNNING FOR HIM (owner D981, 17 Oct 26 — "As recommended",
+   round 1, question 3; what D299's "his place on any course still running — goes" means here). A course is still running
+   for him while he has an event on it to do — one neither done (DCO, DPCO, Marginal) nor N.A., on any chart of the
+   course he is on; there he leaves the student list of every chart of that course. Where all of his are done he STAYS,
+   his record kept (D299: "his Tracker record from courses he finished" stays). The test is his own marks, read when the
+   Tracker learns of the delete — on its boot, or the moment the delete happens while it is open — so no date has to be
+   kept up to date; nothing can be marked for him in between, since marking needs the Tracker.
+   "Leaves" is his place on the list, nothing more: his marks, dates, pace and lull periods stay stored, out of sight, as
+   an import keeps a dropped ball's marks (D132) — the past keeps its record of him (D299), and his row is never erased
+   (D290); unlike the Students card's Remove, which asks and deletes them. A delete is not undone (D350), so there is no
+   way back to plan for. A course whose names are still being moved to ids (rosterHeld) is not touched until they are. */
+export function leaveRunningCourses() {
+  if (!ready || bootError || !getGonePeople().length) return Promise.resolve(0);
+  return onChain(() => leaveRunningCoursesNow(new Set(getGonePeople())));
+}
+async function leaveRunningCoursesNow(gone) {
+  let left = 0;
+  for (const ce of COURSES.slice()) {
+    if (!isCourseEntry(ce)) continue; const c = ce.id;
+    if (!(await sGet(kIdMig(c)))) continue;
+    const here = n => c === course && n === curSylId();
+    /* every chart of the course whose list holds one of them — read first, then written in ONE gesture */
+    const charts = [];
+    for (const n of await storeSylIds(c)) {
+      const list = here(n) ? roster.slice() : sParse(await sGet(kRosterFor(c, n)), [], 'array').filter(isEntry);
+      if (list.some(e => e.pid && gone.has(e.pid))) charts.push({ n, list });
+    }
+    if (!charts.length) continue;
+    const leaving = new Set();
+    for (const { n, list } of charts) {
+      const evs = sylSource(n); if (!Array.isArray(evs)) continue;
+      for (const e of list) {
+        if (!e.pid || !gone.has(e.pid) || leaving.has(e.id)) continue;
+        const m = here(n) ? (marks[e.id] || {}) : sParse(await sGet(kMarksFor(c, n, e.id)), {}, 'object');
+        if (evs.some(ev => { const g = m[ev.id] && m[ev.id].g; return !DONE.has(g) && g !== 'na'; })) leaving.add(e.id);
+      }
+    }
+    if (!leaving.size) continue;
+    trkGesture(() => {
+      for (const { n, list } of charts) {
+        const keep = list.filter(e => !leaving.has(e.id)); if (keep.length === list.length) continue;
+        if (!here(n)) { sSet(kRosterFor(c, n), JSON.stringify(keep)); continue; }
+        /* the chart on screen: as the Students card's Remove leaves it, but nothing of his record is deleted */
+        roster = keep; for (const v of leaving) { delete marks[v]; delete dates[v]; }
+        undoStack = undoStack.filter(u => !leaving.has(u.who)); redoStack = redoStack.filter(u => !leaving.has(u.who));
+        for (const u of [...undoStack, ...redoStack]) if (u.group) u.group = u.group.filter(g => !leaving.has(g.who));
+        if (pop) closePop();
+        if (leaving.has(active)) active = roster[0] ? roster[0].id : null;
+        sSet(kRosterFor(c, n), JSON.stringify(roster));
+      }
+    });
+    if (c === course && leaving.has(prefGet(pickKey('lastCrew:' + c)))) prefSet(pickKey('lastCrew:' + c), '');
+    left += leaving.size;
+  }
+  if (left) { refreshActive(); renderBoard(); renderSide(); notify(); }
+  return left;
+}
+onGonePeople(() => { leaveRunningCourses(); });
 /* RENAME A STUDENT (10 Sep 26). A student IS an enrolment id and the name is
    only a label (stable ids), so a rename touches ONE thing — the entry's
    `name` — and nothing filed under the id moves. The pencil on each chip opens
@@ -5809,8 +6031,17 @@ export let saveStat = { text: '', cls: '' };
    shows, in red. */
 export function saveWords() {
   if (sylDirty && saveStat.cls !== 'err') return { text: '', title: '', cls: '' };
+  /* ...and no "saved" while what was written has NOT been saved ([TRK-SAVE-FAIL-SAYS-SAVED], 17 Oct 26): inside Raptor a
+     write lands in memory at once and the saver writes it after, so a refused save showed "● syllabus “2026” saved" beside
+     Raptor's "Not saved — keep this page open · Retry". While a save has failed the corner says nothing — the top bar's
+     warning is the one that speaks — and once Retry lands the last words come back, true again. An error stays. */
+  if (saveStat.cls === 'ok' && saveFailed) return { text: '', title: '', cls: '' };
   return { text: saveStat.text, title: saveStat.text, cls: saveStat.cls };
 }
+/* whether the saver behind the storage doorway has failed — redrawn only when that flips, so a save elsewhere in the app
+   (the saver reports every one) does not repaint the Tracker */
+let saveFailed = saveHealth() === 'failed';
+onSaveHealth(() => { const f = saveHealth() === 'failed'; if (f !== saveFailed) { saveFailed = f; notify(); } });
 function setSaveStatus(msg, cls) {
   saveStat = {
     text: (cls === 'saving' ? (msg ? '● ' + msg : '● saving…')
@@ -6605,12 +6836,13 @@ export async function init() {
   trkRegisterCommands();
   TRK_COMMANDS = true;
   notify();   /* the boot gate (App) subscribes to getVersion — flip it off BootLoading */
+  /* a man deleted while the Tracker was closed leaves the courses still running for him now (D981) — on the load
+     chain, after the course above, through the commands just turned on */
+  leaveRunningCourses();
   refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
   /* After the first paint, so the balls exist to measure. No last mark → the
      chart's first event, the same landing a crew pick makes. */
-  const land = () => { if (!showLastEdit(active)) scrollToEvent(firstEventId()); };
-  if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(land);
-  else land();
+  landChart();
   /* Unsaved flow edits must not vanish quietly when the tab closes — the one
      kind of work that waits for the Save button. */
   if (typeof window !== 'undefined')
