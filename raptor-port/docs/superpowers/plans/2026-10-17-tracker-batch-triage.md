@@ -11,7 +11,29 @@ host checked each claim the round's questions rest on (§1).
 
 ## 1. What the host checked, and the round put to him
 
-__HOST__
+**Checked by the host before the round was drawn (D53):** each of the four items read whole in `OUTSTANDING.md`; the full rows of
+D299 (a deleted man's place on any course "still running" goes; his record from courses he finished stays), D321 (the
+post-out look card's questions 6, 7, 8 and 10 answered — 5 never was), D371 (failures kept in the order of their days),
+D820 (schedulers at a desk first). The pop-up's dated failures and "Done on" were driven on the built app for the
+pictures (two failures, 3 and 10 Oct, then DCO). `[TRK-FLIGHT-LABEL-READABILITY]` checked live (`7f0b78bf4` on `main`,
+its D566 comment in `core.js`) and archived.
+
+**Round 1 as put to him (17 Oct 26, the night's run)** — the page `raptor-port/docs/mock/2026-10-17-tracker-r1/index.html`
+(published as an Artifact), its pictures drawn by `raptor-port/scripts/handpass/trk-r1-pictures.mjs` on the built app,
+the clock held at 17 Oct 26; the orange numbered boxes are annotations, and the two "drawn in" pictures (Q2's keyboard
+ring, Q4's dark words) are proposals:
+1. `[TRK-ATTEMPTS]` — is what the marking pop-up keeps (each failure with its day, the day it was done) the attempt
+   history, or a dated list of earlier grades too? Recommended **A**: it is; close the note.
+2. `[TRK-KBD-CHART]` — the chart by keyboard on a desktop: **A** (recommended) one Tab in, the arrows follow the lines,
+   Enter opens marking with the keyboard inside, Esc back; B Tab through every event; C leave it to mouse and finger.
+3. `[POST-OUT-TRACKER]` — which courses a deleted man leaves: **A** (recommended) every course where he still has events
+   to do, his record staying on courses he finished; B he stays everywhere (D299 narrowed); C once his End date B has passed.
+4. `[TRK-FLEXBAR-INK]` — dark words on the green, amber and red Currency & flex bars, white kept on grey: **A**
+   (recommended) yes; B keep white.
+
+**Riding without a question** (each one seen gets a before/after on the batch's closing look): the helper's list (§2).
+**Next round:** `[TRK-IMPORT-REFUSAL-WORDS]` (his wording), `[TRK-PINCH-ASK]` (his iPhone look).
+**His answers:** not yet given — waiting in `HANDOFF.md`'s block, "Questions waiting for him".
 
 ## 2. The helper's triage, as returned
 
