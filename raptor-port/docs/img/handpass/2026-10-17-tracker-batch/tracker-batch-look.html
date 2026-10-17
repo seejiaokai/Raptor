@@ -1,0 +1,198 @@
+<title>Tracker Batch Look</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: one reading column; the question first, then each change as a before / after pair, then his look card. */
+:root {
+  --bg: #f3f5f8; --surface: #ffffff; --fg: #18202b; --muted: #5b6676; --line: #d9dee6;
+  --accent: #0b6fd6; --accent-soft: #e3effc; --before: #8a5a00; --after: #1d7a46; --ask: #fff6e0; --ask-line: #e2b23c;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d1117; --surface: #161c25; --fg: #e6ebf2; --muted: #9aa6b6; --line: #2a3340;
+  --accent: #4ea3ff; --accent-soft: #14263b; --before: #e0a84a; --after: #5fd08f; --ask: #2a2310; --ask-line: #b8892a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0d1117; --surface: #161c25; --fg: #e6ebf2; --muted: #9aa6b6; --line: #2a3340;
+  --accent: #4ea3ff; --accent-soft: #14263b; --before: #e0a84a; --after: #5fd08f; --ask: #2a2310; --ask-line: #b8892a; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 15px/1.55 var(--sans); }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 28px 16px 64px; display: grid; gap: 28px; }
+h1 { font-size: 26px; line-height: 1.2; margin: 0; text-wrap: balance; }
+h2 { font-size: 19px; margin: 0; text-wrap: balance; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--muted); }
+.status { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 500 12px/1 var(--mono); padding: 6px 9px; border-radius: 6px; background: var(--accent-soft); color: var(--fg); border: 1px solid var(--line); }
+.chip b { color: var(--after); }
+section { display: grid; gap: 12px; }
+.ask { background: var(--ask); border: 1px solid var(--ask-line); border-radius: 10px; padding: 18px; display: grid; gap: 14px; }
+.ask h2::before { content: "Your answer needed · "; color: var(--before); font-weight: 600; }
+.rec { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pair.phones { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+figure { margin: 0; display: grid; gap: 6px; min-width: 0; }
+figure img { width: 100%; height: auto; border-radius: 6px; border: 1px solid var(--line); cursor: zoom-in; background: #000; }
+figcaption { font-size: 13px; color: var(--muted); }
+figcaption .tag { font: 600 11px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; margin-right: 6px; }
+.tag.b { color: var(--before); } .tag.a { color: var(--after); } .tag.o { color: var(--accent); }
+.change { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 12px; }
+.change h3 { font-size: 16px; margin: 0; }
+ol, ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 72ch; }
+.small { font-size: 13px; color: var(--muted); }
+#zoom { position: fixed; inset: 0; background: rgba(0,0,0,.88); display: flex; align-items: flex-start; justify-content: center; overflow: auto; padding: 16px; z-index: 10; cursor: zoom-out; }
+#zoom img { max-width: none; width: min(1440px, 200%); height: auto; }
+#zoom.phone img { width: min(780px, 100%); }
+button.close { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px)); right: 12px; font: 600 14px var(--sans); padding: 8px 12px; border-radius: 6px; border: 0; background: #fff; color: #111; }
+button:focus-visible, figure img:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (max-width: 640px) {
+  .pair { grid-template-columns: 1fr; }
+  .pair.phones { grid-template-columns: 1fr 1fr; }
+  h1 { font-size: 22px; }
+}
+</style>
+
+<div class="wrap">
+  <header style="display:grid;gap:10px">
+    <h1>The Tracker batch: before and after</h1>
+    <p class="lede">The keyboard on the chart, a deleted man's courses, the bars' words, and six smaller fixes. Each picture pair runs the same steps on the app as it is live (before) and on this batch (after). Tap any picture to see it full size.</p>
+    <div class="status" id="status">
+      <span class="chip">Tracker checks <b>446 / 446</b></span>
+      <span class="chip">Break tests <b>36 / 36</b> caught</span>
+      <span class="chip">Walk <b>47 / 47</b> after the last fixes</span>
+      <span class="chip" id="gates">Whole gate set <b>all passed</b></span>
+    </div>
+  </header>
+
+  <section class="ask" id="band">
+    <h2>Empty space above the first event</h2>
+    <p>Pick a student with nothing marked and the chart lands on its first event, ST-01. Today it lands with ST-01 in the <b>middle</b> of the chart box, as you asked on 9 Sep ("centralise the view if its possible"). That leaves empty space above the chart: about a third of a desktop screen, and on a phone the top half of the chart box.</p>
+    <p>I tried a version that stops the chart at its top instead, so ST-01 sits near the top with no empty space. It went against your 9 Sep words, so I took it out and am asking you.</p>
+    <div class="pair phones">
+      <figure><img src="after/d3-first-event-phone-after.png" alt="Phone, option A: ST-01 in the middle, empty space above" data-phone tabindex="0"><figcaption><span class="tag b">A · as now</span>Phone: centred</figcaption></figure>
+      <figure><img src="band-option/d3-first-event-phone-hold.png" alt="Phone, option B: ST-01 near the top, no empty space" data-phone tabindex="0"><figcaption><span class="tag a">B · no space</span>Phone: chart from its top</figcaption></figure>
+      <figure><img src="after/d3-first-event-desk-after.png" alt="Desktop, option A: ST-01 in the middle" tabindex="0"><figcaption><span class="tag b">A · as now</span>Desktop: centred</figcaption></figure>
+      <figure><img src="band-option/d3-first-event-desk-hold.png" alt="Desktop, option B: ST-01 near the top" tabindex="0"><figcaption><span class="tag a">B · no space</span>Desktop: chart from its top</figcaption></figure>
+    </div>
+    <ol>
+      <li><b>A, keep it centred (as now).</b> Every landing puts its event in the middle, the first event too.</li>
+      <li><b>B, no empty space above the chart.</b> Every event that can be centred still is. An event near the top of the chart sits as high as the chart goes instead, so nothing above it is empty.</li>
+    </ol>
+    <p class="rec"><b>My recommendation: B.</b> On a phone, half a screen of nothing reads as a chart that hasn't loaded, and the first event is where every new student starts. B still centres everything below the top rows. It costs one small change, already built once: two of the Tracker's own checks would say "centred, unless that shows empty space above the chart".</p>
+  </section>
+
+  <section>
+    <h2>What changed</h2>
+  </section>
+
+  <div class="change">
+    <h3>1. The chart by keyboard, on a desktop (your D980)</h3>
+    <p>One Tab reaches the chart. The arrows follow its lines: → goes to the next event, ← back to the one it needs first, ↑ ↓ to the event above or below. Enter opens the marking pop-up with the keyboard inside it, and Escape comes back to the same event. The event the keyboard is on wears the app's plain blue ring. A mouse press, or a tap on a phone, draws no ring.</p>
+    <div class="pair">
+      <figure><img src="before/g2-arrows-desk-before.png" alt="Before: arrows scroll the chart, no ring" tabindex="0"><figcaption><span class="tag b">Before</span>→ only scrolled the chart; nothing showed where you were</figcaption></figure>
+      <figure><img src="after/g2-arrows-desk-after.png" alt="After: blue ring on ACG-02" tabindex="0"><figcaption><span class="tag a">After</span>→ twice: the blue ring is on ACG-02, two events along the line</figcaption></figure>
+      <figure><img src="before/g3-enter-desk-before.png" alt="Before: Enter does nothing" tabindex="0"><figcaption><span class="tag b">Before</span>Enter did nothing</figcaption></figure>
+      <figure><img src="after/g3-enter-desk-after.png" alt="After: Enter opens the marking pop-up" tabindex="0"><figcaption><span class="tag a">After</span>Enter opens the marking pop-up, the keyboard on its grade</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="change">
+    <h3>2. A man deleted through Post out leaves his running courses (your D981)</h3>
+    <p>He leaves every Tracker course where he still has events to do. Where every event of his is done or N.A., he stays, his record kept. His marks are never erased.</p>
+    <div class="pair">
+      <figure><img src="before/c2-after-delete-desk-before.png" alt="Before: HEX still listed after his delete" tabindex="0"><figcaption><span class="tag b">Before</span>After HEX is deleted, he is still on the Students card</figcaption></figure>
+      <figure><img src="after/c2-after-delete-desk-after.png" alt="After: HEX gone from the Students card" tabindex="0"><figcaption><span class="tag a">After</span>He is gone from the card, the crew list and the key</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="change">
+    <h3>3. The Currency &amp; flex bars' words (your D982)</h3>
+    <p>Dark words on the green, amber and red bars; white words stay on the grey one. The colours and the words themselves are unchanged.</p>
+    <div class="pair">
+      <figure><img src="before/a-bars-a-desk-before.png" alt="Before: white words on the coloured bars" tabindex="0"><figcaption><span class="tag b">Before</span>White on green and amber: hard to read</figcaption></figure>
+      <figure><img src="after/a-bars-a-desk-after.png" alt="After: dark words on the coloured bars" tabindex="0"><figcaption><span class="tag a">After</span>Dark on green and amber</figcaption></figure>
+    </div>
+    <div class="pair phones">
+      <figure><img src="before/a-bars-b-phone-before.png" alt="Phone before" data-phone tabindex="0"><figcaption><span class="tag b">Before</span>Phone</figcaption></figure>
+      <figure><img src="after/a-bars-b-phone-after.png" alt="Phone after" data-phone tabindex="0"><figcaption><span class="tag a">After</span>Phone</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="change">
+    <h3>4. A longer name in the key round the course ball</h3>
+    <p>A name on the left of the key was cut off at the card's edge. Each name now gets the room its side of the card has.</p>
+    <div class="pair phones">
+      <figure><img src="before/b-key-phone-before.png" alt="Phone before: HIS STUDENT cut off" data-phone tabindex="0"><figcaption><span class="tag b">Before</span>"HIS STUDENT" cut off</figcaption></figure>
+      <figure><img src="after/b-key-phone-after.png" alt="Phone after: HIS STUDENT whole" data-phone tabindex="0"><figcaption><span class="tag a">After</span>Whole</figcaption></figure>
+      <figure><img src="before/b-key-desk-before.png" alt="Desktop before" tabindex="0"><figcaption><span class="tag b">Before</span>Desktop</figcaption></figure>
+      <figure><img src="after/b-key-desk-after.png" alt="Desktop after" tabindex="0"><figcaption><span class="tag a">After</span>Desktop</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="change">
+    <h3>5. Coming back to the Tracker lands on your last mark</h3>
+    <p>After a Log out and back in, the chart opened at its top corner, away from the mark you had just made. It now lands where picking the student lands: the last mark, else the first event.</p>
+    <div class="pair">
+      <figure><img src="before/d2-back-after-login-desk-before.png" alt="Before: chart at its top corner" tabindex="0"><figcaption><span class="tag b">Before</span>Back after Log in: the chart's top corner</figcaption></figure>
+      <figure><img src="after/d2-back-after-login-desk-after.png" alt="After: chart on the last mark" tabindex="0"><figcaption><span class="tag a">After</span>On the last mark</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="change">
+    <h3>6. No "saved" while a save has failed</h3>
+    <p>When a save failed, Raptor's band said "Not saved — keep this page open" while the Tracker's corner still said "saved". The corner now stays quiet until the save really lands.</p>
+    <div class="pair">
+      <figure><img src="before/e-save-failed-desk-before.png" alt="Before: saved and Not saved at once" tabindex="0"><figcaption><span class="tag b">Before</span>"saved" under "Not saved"</figcaption></figure>
+      <figure><img src="after/e-save-failed-desk-after.png" alt="After: only Not saved" tabindex="0"><figcaption><span class="tag a">After</span>Only "Not saved"</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="change">
+    <h3>7. A ball dropped above or left of the chart stays on it</h3>
+    <p>In Edit chart layout, a ball dropped in the empty room above or left of the chart was cut off once you left, and ⤢ Fit couldn't bring it back. A drop there now stops at the chart's edge.</p>
+    <div class="pair">
+      <figure><img src="before/f2-out-of-edit-desk-before.png" alt="Before: ST-01 missing" tabindex="0"><figcaption><span class="tag b">Before</span>Out of Edit chart layout: ST-01 is off the chart</figcaption></figure>
+      <figure><img src="after/f2-out-of-edit-desk-after.png" alt="After: ST-01 at the chart's corner" tabindex="0"><figcaption><span class="tag a">After</span>ST-01 sits at the chart's top-left corner</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="change">
+    <h3>8. Two fixes with nothing to see</h3>
+    <ul>
+      <li><b>One zoom per wheel step.</b> In Edit chart layout, every ball you moved made one mouse-wheel step zoom one more time. After two moves a step zoomed ×1.57 instead of ×1.16. Now it's ×1.16 every time, and a Connect or Text click acts once.</li>
+      <li><b>Undo stores nothing nobody made.</b> The first Undo of a mark saved a pace, an empty lull list and dates for that student that nobody had set. Export and the database would have carried them. Now Undo puts back only what was really there.</li>
+    </ul>
+  </div>
+
+  <section class="change">
+    <h2>Your look on your iPhone and iPad</h2>
+    <p class="small">These can only be checked on Apple's browser. There is none on the PC.</p>
+    <ol>
+      <li>iPhone, Tracker chart: <b>tap an event</b>. The marking pop-up opens, and <b>no blue ring</b> appears round the event. The ring is for a keyboard only.</li>
+      <li>iPhone, Info half: add a student with a <b>long name</b> (say "HIS STUDENT"). The key round the course ball shows the <b>whole name</b> on both sides.</li>
+      <li>iPad upright, Tracker Info half: tap <b>Last Flown (Syllabus)</b>. The calendar opens <b>right under its box</b>, not somewhere else on the screen.</li>
+    </ol>
+  </section>
+
+  <section class="change">
+    <h2>Left out on purpose</h2>
+    <ul>
+      <li>A Tracker Import saved as several groups instead of one, and a stale tab undoing the first save of the chart order: these wait for the database step (your D983).</li>
+      <li>The progress graph: not started, as you said (D774).</li>
+    </ul>
+  </section>
+</div>
+
+<div id="zoom" hidden><button class="close" type="button" id="zoomClose">Close</button></div>
+<script>
+(function () {
+  var z = document.getElementById('zoom'), zi = document.createElement('img'); z.appendChild(zi);
+  function open(img) { zi.src = img.src; zi.alt = img.alt; z.classList.toggle('phone', img.hasAttribute('data-phone')); z.hidden = false; document.getElementById('zoomClose').focus(); }
+  function close() { z.hidden = true; zi.removeAttribute('src'); }
+  document.querySelectorAll('figure img').forEach(function (img) {
+    img.addEventListener('click', function () { open(img); });
+    img.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(img); } });
+  });
+  z.addEventListener('click', close);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !z.hidden) close(); });
+})();
+</script>

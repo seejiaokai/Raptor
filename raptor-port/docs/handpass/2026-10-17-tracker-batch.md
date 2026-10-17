@@ -1,8 +1,9 @@
 # The Tracker batch (D495) — D980, D981, D982 and the faults riding with them — the bug check (FULL)
 
-**Where it stands:** _(written at the close)_
+**Where it stands:** built and checked — FULL tier, every gate green at `cde63cd6a` (§13), the walk 47 / 47 after the code
+read's fixes, the breaks 36 / 36. Waiting on him: the empty-band question (§14) and his look card; then his "merge live".
 
-`Walk:` _(written at the close)_
+`Walk: docs/handpass/2026-10-17-tracker-batch.md · 78 pictures (38 walk, 19 before, 19 after, 2 of the band's other option) · 17 surfaces · 6 orders · MISSING: none open — the 3 the walk found fixed and walked again; the Tracker suite's phone check fixed (§7); a real iPhone and iPad on his look card (§11)`
 
 Branch `claude/tracker-batch-d495-affb5f`, cut from `main` at pull request 529. His word (17 Oct 26): build the Tracker
 batch — D980, D981, D982 and the faults that ride with it (the triage, `docs/superpowers/plans/2026-10-17-tracker-batch-triage.md`),
@@ -185,4 +186,26 @@ Two fresh Opus helpers that did not write the code (D790; Fable not — D903; wi
 
 ## 13. The gates
 
+The whole gate set under the PC lock, one run, 17 Oct 26, at `cde63cd6a` (the code as it ships; only documents changed
+after): **build clean · tfin 728 / 0 · unit 11640 / 11640 (654 files) · e2e 844 passed, 0 failed, 59 skipped · smoke
+446 / 0 · rulecheck OK · docsize OK.** The run before it (at `39daa4913`) had smoke 443 / 3 and docsize 1 problem — each
+traced and fixed (§7, and the landing hold taken back).
+
 ## 14. Before and after — for him
+
+The page: https://claude.ai/artifact/RTF67FRK8uQUmyF4BSzwtv — each visible change as a pair (the same steps on `main`'s
+build and the batch's, `scripts/handpass/trk-batch-pictures.mjs`; the after pictures retaken on the final build), the
+two with nothing to see in words, the look card, and what was left out.
+
+**Questions waiting for him**
+1. *The empty space above the first event.* A student with nothing marked lands centred on ST-01 (his 9 Sep "centralise
+   the view if its possible"), which leaves empty chart above — on a phone the top half of the chart box. A: keep it
+   centred (as built, as now on `main`). B: centre every event that can be, but stop the chart at its top so nothing above
+   it is empty (built once and taken back — its pictures `…/band-option/`). **Recommended: B** — on a phone half a
+   screen of nothing reads as a chart that has not loaded. Waits on it: nothing of this branch; B would be a small
+   follow-up (the landing and two of the Tracker suite's centring checks).
+
+**His look card (a real iPhone and iPad — no Safari on this PC)**
+1. iPhone, the chart: a tap on an event opens marking and draws no blue ring.
+2. iPhone, the Info half: a long student name is whole on both sides of the key.
+3. iPad upright, the Info half: Last Flown (Syllabus)'s calendar opens right under its box (`[TRK-DATEBOX-SAFARI-ZOOM]`).

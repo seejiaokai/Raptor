@@ -1200,3 +1200,18 @@ Met again 2026-10-17: the [CONTEXT-START-SIZE] handoff (session-handoff, a day c
 **Suggested improvement:** In Phase 1, add: when a test passes on one version and fails on another, run the test's own steps on both with the same state printed after every step, and find the first step where they differ before suspecting any change. The first difference names the cause; it is often upstream of the failing assertion.
 
 **Principle:** Find where two runs first diverge before guessing at causes; a failure downstream of a deliberate change may be a test whose precondition the change made false, not a regression.
+
+### Observation 633: A later fix that covers the same case twice makes an earlier break test silent
+
+**Status:** OPEN
+**Date:** 2026-10-17
+**Session context:** The Tracker batch's break list (each fix taken out once, its test must go red) was run again after the code read's fixes: 34 of 36 caught. Two safety lines had each been backed up by a later fix (a blur handler, a reset in the close routine), so their tests passed with the line removed.
+**Skill:** New skill candidate: bug-check break tests (project guide `raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** break tests — when they are re-run
+
+**Issue:** The break list had been run and fully caught before the later fixes. Adding a second guard for the same situation silently made the first guard untestable through its old test. Only a full re-run of the list after the last change showed it.
+
+**Suggested improvement:** Re-run the WHOLE break list after the last code change, not only the breaks for lines that changed. A break that is no longer caught means either the line is now redundant (remove it, or say why it stays) or it guards a path no test reaches (write a test that only it passes, and break it again).
+
+**Principle:** Defence in depth hides from mutation tests: each guard needs a test that fails with that guard alone removed, and a later overlapping fix breaks that pairing without any visible failure.
