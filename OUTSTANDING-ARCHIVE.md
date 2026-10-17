@@ -4819,3 +4819,22 @@ the app's one reading of the two); a test first. **Its place:** with step 5 of t
 which rebuilds the Inputs screens and keeps the List behind one switch (D490: an area's small finds ride the batch that
 touches the area). Not a fault that harms a published record or OIL: the input itself is right.
 
+
+*Moved here 2026-10-17 by backlog-archive.mjs ([TRK-FLIGHT-LABEL-READABILITY]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [TRK-FLIGHT-LABEL-READABILITY] Make the words inside blue flight balls easier to read — D560, 4 Oct 26
+Owner's private Photo 1 shows the Tracker Flow chart's blue flight symbols with text hard to read inside the narrow
+wing. He asks for a shape redesign, suggests more wing surface for the label and contrast, invokes Impeccable, then
+says he has more tasks and to hold on. **Status:** first build checked; D564 rejects its blocky wide-wing design and asks for better numbered options. D565 tapered redraw accepted D566 "Yes, use this tapered wing"; chosen replacement built, current native walk29PASS/18opened/0errors; all normal gates and independent final R1PASS. Completed Logic/Insights fixes retained. Branch preview shipping follows completed fresh read.
+Rejected first wing/evidence retained privately. D566 chosen tapered wing implemented; retain historical alternatives privately. No whole-ball size, palette or font-scope extension approved.
+**Home:** `raptor-port/docs/ui-contracts.md` The Tracker tab (D560); short/full Tracker ruling.
+**Place:** current workflow UI pass, together with Logic/Insights under D563. Preserve authored charts/details (D464), Raptor palette (D157) and existing chart behaviour. Private photo stays
+outside the repo; no student names, marks or dates copied into records. Numbered phone/desktop pictures before build.
+This is separate from [TRK-KEY-NAME-CLIP] and [TRK-FLEXBAR-INK], and does not start the progress graph or file split.
+
+**Tracker wing design:** `raptor-port/docs/superpowers/specs/2026-10-04-interface-readability-scroll.md`; **build plan:** `raptor-port/docs/superpowers/plans/2026-10-04-interface-readability-scroll-build-plan.md` (Astra plan; independent Sol challenge PASS; runtime/final read in the combined handpass).
+
+**D564 replacement options:** `raptor-port/docs/superpowers/specs/2026-10-04-flight-centre-options.md`; private pictured host variants and independent corrected-font confirmation in `raptor-port/docs/handpass/2026-10-04-flight-centre-options-picture-read.md`. D565 now proposes a tapered leading-edge wing based on an annotated smooth-wing picture; original host recommendation3 is superseded. D566 subsequently accepts the exact final redraw; earlier options remain historical.
+
+**D565 tapered redraw:** `raptor-port/docs/superpowers/specs/2026-10-04-flight-leading-edge-taper.md`; independent Sol challenge/picture read in `raptor-port/docs/handpass/2026-10-04-flight-leading-edge-taper-picture-read.md`. Both-size specific picture shown and accepted D566; chosen replacement implemented; refreshed gates and separate fresh final R1PASS. No further shape-choice question pending.
+
