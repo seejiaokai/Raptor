@@ -181,3 +181,30 @@ Tracker suite 453 / 0 and the re-walk 21 / 21 (`parts/trk-fps/rewalk3/`). Round 
   box still longer, or end the glide by scrolling it once to where it is; nothing else depends on how it is done.
 - 8 (two fingers scroll instead of pinching): the hold in `enablePinchZoom` is the place; the browser's own pinch can be
   given back to it (`touch-action:pan-x pan-y pinch-zoom`) only by ruling, since it would zoom the whole page.
+
+## D993 — Quals' pinned header row, moved by the browser (18 Oct 26, the same branch)
+
+His look first: on his iPhone the Leave War's pinned date row keeps up with its grid; Quals' does not. His ask: "Could u
+try to just fix the quals pinned header with the 120 frames fix. I wanna see the difference". Built the Leave War's way
+(the browser moves the row, linked to the table's own scroll), the Leave War's row left as it is.
+
+**The eight questions:** a change to one surface's pinned row (no money, record, stored data, role or warning; no new
+gesture) — **LOOK** by the questions; walked as a WALK all the same (a row that must stay in step is a gesture's
+companion, and the first frame is a known trap), with a fresh Opus read.
+
+**Roll-call — where the pinned row is drawn:** Quals on a phone (Q1–Q4, Q6), a phone on its side (Q5), a desktop (D1),
+in every seat view by the same markup (`qualsHead`), and while editing (Q6). **Must not change:** the Leave War's row —
+untouched code; the save-warning band's placement of the row (`e2e/save-note.spec.ts`, its top only — unchanged).
+
+**The walk** (`scripts/handpass/quals-pinned-walk.mjs`, `parts/trk-fps/quals.json`, pictures `…/2026-10-18-trk-chart-fps/quals/`):
+9 of 9 — the row over the table from its first frame (Q1, 0px), at every sideways place and after a finger's swipe
+(worst 0px, the callsign heading within 0.5px, its copy the column's width to 0px), a tap on the still callsign
+heading sorts (Q4), after a rotate (Q5), while editing (Q6), on a desktop (D1), no errors.
+
+**Tests:** `e2e/geometry.spec.ts` — the first-frame test now reads what is seen (a pinned heading over its column) instead
+of the row's own scroll place, which the browser's way leaves at 0; a new test pins the wire (the row translated with the
+table, its own scroller not written, the still copy there) — **red on the code before D993, green after** (run by
+hand under the lock, 18 Oct 26); the Quals unit tests 72 / 72.
+
+**For his look:** with the page scrolled down, swipe Quals sideways — the pinned row keeps up with the table, as the
+Leave War's does.

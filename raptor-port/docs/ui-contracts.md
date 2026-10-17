@@ -3226,11 +3226,16 @@ there (`quals.test.tsx` pins its absence); the freeze is verified on the live
 view at desktop and phone widths.
 
 **The mirror follows by the browser (D993, 18 Oct 26 — his "Could u try to just fix the quals pinned header with the 120
-frames fix"; being built on `claude/trk-chart-fps`).** On his iPhone the Leave War's pinned date row keeps up with its
+frames fix"; built 18 Oct 26 on `claude/trk-chart-fps`).** On his iPhone the Leave War's pinned date row keeps up with its
 grid and Quals' does not: the Leave War's is moved sideways by the browser itself, linked to the grid's scroll
 (`.lw-sda`, a scroll-driven animation, where the browser has one), while Quals' was moved by a scroll listener writing
 its `scrollLeft` — the page's own code, held near 60 frames on an iPhone. Quals' mirror takes the Leave War's way; the
-Leave War's row is left as it is.
+Leave War's row is left as it is. Built: `QualsPage` `sdaActive` (the same test as the Leave War's); `.qwrap.q-sda` names
+the table's sideways scroll `--qx`, `#page-quals` hoists it, the row's table (`.qfixed-anim`) runs `qx-follow` from 0 to
+minus `--qx-max` (the table's sideways range, set when the row is pinned), held on its first frame by an inline
+transform until the animation runs; the row's scroller (`.qfixed-track`) no longer scrolls, and the callsign heading is a
+still copy over the left (`.qfixed-frozen`), a press on it sorting. Where the browser has no scroll-driven animations the
+scroll listener carries the row, as before. Walked: `scripts/handpass/quals-pinned-walk.mjs`; pinned: `e2e/geometry.spec.ts`.
 
 ## Dragging sections and waves (owner, 29 Aug 26; in-place drag 30 Aug 26)
 

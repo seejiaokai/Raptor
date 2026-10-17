@@ -641,12 +641,20 @@ export function QualsPage() {
     window.addEventListener('resize', remeasure)
     window.addEventListener('orientationchange', remeasure)
     window.visualViewport?.addEventListener('resize', remeasure)
+    /* A COLUMN THAT CHANGES WIDTH WHILE THE ROW IS PINNED re-measures it (the D993 code read's F1): an undo of a rename or
+       a remark, a change arriving from elsewhere, a scrollbar coming and going — none of them re-pins, and the browser's
+       follow (D993) runs on the table's sideways range measured at the pin, so every heading would drift from its
+       column by the change. The table's own box and its scroll box are watched; a change re-pins with fresh widths,
+       which sets the travel again (the layout effect below). */
+    const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(() => pin(true)) : null
+    if (ro) { if (tblRef.current) ro.observe(tblRef.current); if (wrapRef.current) ro.observe(wrapRef.current) }
     onScroll()
     return () => {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', remeasure)
       window.removeEventListener('orientationchange', remeasure)
       window.visualViewport?.removeEventListener('resize', remeasure)
+      ro?.disconnect()
       cancelAnimationFrame(raf); clearTimeout(t)
     }
     /* re-measure (drop the stuck bar so the next scroll re-pins with fresh
@@ -848,7 +856,10 @@ export function QualsPage() {
               still over the left while the moving row passes under it — the Leave War's frozen copy (`.mxfixed-frozen`).
               A press on it sorts, as on the moving row (the bar's own click handler). */}
           {sdaActive && (
-            <div className="qfixed-frozen" aria-hidden="true" style={{ width: stuck.cols[0] }}>
+            /* one pixel past the column: the line between it and the next heading is drawn across their boundary, and
+               cut at it the still copy kept only its left half (the code read's F3) — the pixel past is the next
+               heading's own edge, on the same background */
+            <div className="qfixed-frozen" aria-hidden="true" style={{ width: stuck.cols[0] + 1 }}>
               <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')}
                 style={{ tableLayout: 'fixed', width: stuck.cols.reduce((a, b) => a + b, 0), minWidth: 0 }}
                 dangerouslySetInnerHTML={{ __html:

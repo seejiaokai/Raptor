@@ -4482,6 +4482,42 @@ test.describe('the frozen callsign column', () => {
     expect(m.ownScroll, 'its own scroller is not written').toBe(0)
     expect(m.frozen, 'the callsign heading is a still copy over the left').toBe(true)
   })
+
+  /* A COLUMN WIDENED WHILE THE ROW IS PINNED (the D993 code read's F1): an undo of a remark, a change from elsewhere — the
+     table's sideways range changes without a re-pin, and the browser's follow ran on the range measured at the pin, so
+     every heading drifted. The table's size is watched and the row re-measured. The width is changed here straight in
+     the table (the claim is the follow, not the control that widened it). */
+  test('phone: a column widened while the Quals row is pinned leaves every pinned heading over its column', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'quals')
+    await page.waitForSelector('#qtbl td.qname')
+    await page.evaluate(() => window.scrollTo(0, 700))
+    await expect(page.locator('[data-testid="qsticky-head"]')).toBeVisible()
+    const grew = await page.evaluate(() => {
+      const w = document.querySelector('.qwrap') as HTMLElement, before = w.scrollWidth - w.clientWidth
+      /* a person's row (the first row is the group heading's) */
+      const td = (document.querySelector('#qtbl td.qname') as HTMLElement).parentElement!.lastElementChild as HTMLElement
+      td.textContent = 'a remark long enough to widen its column well past where it was before this test'
+      w.scrollLeft = 99999
+      return (w.scrollWidth - w.clientWidth) - before
+    })
+    expect(grew, 'the table really grew sideways').toBeGreaterThan(50)
+    await page.waitForTimeout(400)
+    const worst = await page.evaluate(() => {
+      const bar = document.querySelector('[data-testid="qsticky-head"]')!, br = bar.getBoundingClientRect()
+      let w = 0, n = 0
+      for (const th of bar.querySelectorAll('.qfixed-scroll th[data-sort]')) {
+        const k = th.getAttribute('data-sort'); if (k === 'cs') continue
+        const real = document.querySelector('#qtbl thead th[data-sort="' + k + '"]'); if (!real) continue
+        const a = th.getBoundingClientRect(); if (a.right < br.left + 120 || a.left > br.right) continue
+        w = Math.max(w, Math.abs(a.left - real.getBoundingClientRect().left)); n++
+      }
+      return { w, n }
+    })
+    expect(worst.n, 'headings in view were measured').toBeGreaterThan(0)
+    expect(worst.w, 'every pinned heading still stands over its column').toBeLessThan(2)
+  })
 })
 
 /* QUALS' ONE ROW (owner D935, 16 Oct 26 — built as drawn; the design guide §3, "A page's controls are one row", D926):
