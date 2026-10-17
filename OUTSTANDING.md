@@ -1667,6 +1667,7 @@ Met by the walkers of `[INPUT-OWN-TITLE]`'s check (`raptor-port/docs/handpass/20
 **Place:** the agent's — a documents-only chat; (b) is his.
 
 ### [LW-HEAD-BIG-PHONE] Between a phone and a tablet the top of the Leave War is at its tallest — his call (found 8 Oct 26)
+**ANSWERED 18 Oct 26 — D1000 ("Shorter version"): the phone's two-line top up to about 700 wide, the top only; a picture at 440 and 600 wide first, then the build.**
 
 **Found, not changed** — while measuring for `[LW-PHONE-HEADER-SPACE]` (D678, D679). The Leave War calls a screen "a
 phone" at 430px wide or less, and only there does the top become two lines. From 431px up to about 700px the page is the

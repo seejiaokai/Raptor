@@ -56,7 +56,7 @@ answered. "Next agent" lines name the item, the rulings and the files.
    issues list hides the dotted and dashed rings. **Recommended: every copy wears the seat's ring, and the open list lights
    without hiding it — drawn for him first** (D94, D876). Files: `ui/html.ts`, `ui/board-html.ts`, `ui/palette-html.ts`.
    Pictures: `img/handpass/2026-10-06-rest-blank-line/C/dk-06…dk-26`.
-11. **The Leave War top on in-between screens** `[LW-HEAD-BIG-PHONE]` — 431–700 wide (the biggest iPhones) gets the tallest
+11. **ANSWERED 18 Oct 26 — D1000, "Shorter version": the two-line top up to about 700 wide; pictures first.** **The Leave War top on in-between screens** `[LW-HEAD-BIG-PHONE]` — 431–700 wide (the biggest iPhones) gets the tallest
    top; the grid starts 354px down. **Recommended: the phone's two lines up to about 700 wide, the top only — drawn at 440 and
    600 first** (D678, D679). Files: `leavewar/ui/phone.ts`.
 13. **The Tracker import's refusal words** `[TRK-IMPORT-REFUSAL-WORDS]` — today, for a current file that does not match: "These
