@@ -3225,6 +3225,18 @@ bar still sorts. Browser-only — jsdom has no layout, so the mirror never mount
 there (`quals.test.tsx` pins its absence); the freeze is verified on the live
 view at desktop and phone widths.
 
+**The mirror follows by the browser (D993, 18 Oct 26 — his "Could u try to just fix the quals pinned header with the 120
+frames fix"; built 18 Oct 26 on `claude/trk-chart-fps`).** On his iPhone the Leave War's pinned date row keeps up with its
+grid and Quals' does not: the Leave War's is moved sideways by the browser itself, linked to the grid's scroll
+(`.lw-sda`, a scroll-driven animation, where the browser has one), while Quals' was moved by a scroll listener writing
+its `scrollLeft` — the page's own code, held near 60 frames on an iPhone. Quals' mirror takes the Leave War's way; the
+Leave War's row is left as it is. Built: `QualsPage` `sdaActive` (the same test as the Leave War's); `.qwrap.q-sda` names
+the table's sideways scroll `--qx`, `#page-quals` hoists it, the row's table (`.qfixed-anim`) runs `qx-follow` from 0 to
+minus `--qx-max` (the table's sideways range, set when the row is pinned), held on its first frame by an inline
+transform until the animation runs; the row's scroller (`.qfixed-track`) no longer scrolls, and the callsign heading is a
+still copy over the left (`.qfixed-frozen`), a press on it sorting. Where the browser has no scroll-driven animations the
+scroll listener carries the row, as before. Walked: `scripts/handpass/quals-pinned-walk.mjs`; pinned: `e2e/geometry.spec.ts`.
+
 ## Dragging sections and waves (owner, 29 Aug 26; in-place drag 30 Aug 26)
 
 A scheduler drags the big section panels — **Overall Notes · Common Programme ·
@@ -9735,10 +9747,24 @@ His "As recommended" to the four questions of `docs/mock/2026-10-17-tracker-r1/i
   slowing to a stop after it lifts. A touch while it glides only stops it, opening nothing (D986). At an end it bounces a
   little and springs back, as does a finger pulled past an end (D987). A finger or a pen glides; a mouse drag stops where it is
   let go and never bounces (D988). Two fingers stop it; the app's own move (a pick, a search, the keyboard) stops it and
-  wins; it stays on for a phone set to less motion; Edit chart layout is untouched (D989). Built in `dragScroll`
-  (`src/tracker/app/core.js`), the motion in `src/tracker/app/glide.js`; the Info half takes no browser scrolling
-  (`touch-action:none`, so both halves feel the same on every phone), and a box inside it that scrolls itself (the Failures
-  card's list) keeps the finger. Walked: `docs/handpass/2026-10-17-trk-glide.md`.
+  wins; it stays on for a phone set to less motion; Edit chart layout is untouched (D989). *Built 17 Oct 26 as the app's own
+  glide (`dragScroll` with `glide.js`; walked `docs/handpass/2026-10-17-trk-glide.md`); since D992 (below) a finger is the
+  phone's own scroll, which keeps every one of these, and `glide.js` is gone.*
+- **Smoother movement (D992, 18 Oct 26 — replaces D990's small step first; `[TRK-CHART-FPS]` — built 18 Oct 26).**
+  He found the chart choppy when it moves. Measured: on his iPhone (Chrome, so Apple's WebKit) a page's own motion is held near
+  60 frames while the phone's own scrolling runs at 120 — the glide above, being the app's own, was held at 60; and a pinch laid
+  the whole chart out again at every step of the fingers (about 12 frames a second with the computer slowed 4×). So: on a
+  phone the chart and the Info half are scrolled by the phone itself, at its own frame rate, with its own glide, bounce and
+  touch-to-stop (D985–D987 stand, met by the phone's); a mouse drag is the app's as before (D988); the app's own move stops
+  a glide first and wins (D989); and a pinch stretches the chart as a picture while the fingers move, laid out sharp once at
+  the lift, the spot under the fingers kept under them — a little soft while zooming in, until the lift. After a pinch the
+  finger left down does nothing until it lifts (D134). Speed is part of how good the app feels (D991). Built: the boxes'
+  `touch-action:pan-x pan-y` (`src/tracker/tracker.css`), `dragScroll` the mouse's drag only and `stopGlide` (a box that
+  scrolled under a finger in the last moment stops being a scroll box for two frames, which drops the phone's glide; a
+  box whose scrollbars take room, a touch-screen laptop, keeps them, and there a glide can carry on over the app's move),
+  `enablePinchZoom`
+  (only the chart's own fingers, by id, held from the browser; the transform about the spot under the fingers, its pixel measured
+  against the wrap's zoom) — all in `src/tracker/app/core.js`. Walked: `docs/handpass/2026-10-18-trk-chart-fps.md`.
 
 ## OIL on the schedule: the "OIL Earn" mode and the green edge (owner, 21 Sep 26)
 

@@ -45,6 +45,7 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D992 | 18 Oct 26 | On a phone the Tracker's chart and its Info half are scrolled by the phone itself, at its own frame rate, with its own glide, bounce and touch-to-stop; and a pinch stretches the chart as a picture while the fingers move, laid out sharp once at the lift — the spot under the fingers kept under them; Edit chart layout pans as it does. |
 | D989 | 17 Oct 26 | The glide's five calls stand: two fingers stop it, the pinch and its take-back unchanged; when the app moves the chart itself (a pick, a search, the keyboard) the glide stops and that move wins; it stays on when the phone asks for less motion; Edit chart layout is untouched; a lift after a drag or glide opens nothing. |
 | D988 | 17 Oct 26 | Only a finger (or a pen) glides — on a phone, an iPad or a touch-screen laptop; a mouse drag of the Tracker's chart or Info half still stops where it is let go, as now, and does not bounce. |
 | D987 | 17 Oct 26 | When a finger glide of the Tracker's chart or Info half reaches an end it bounces a little past it and springs back, like the iPhone's lists; this is the one bounce the design guide allows. |

@@ -20,25 +20,28 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/trk-scroll-glide -->
-### `claude/trk-scroll-glide` — THE TRACKER'S GLIDE ON A PHONE (D985–D989) — BUILT, WALKED, READ; the Tracker suite and the pull request next — written 17 Oct 26, verify before use
-- **Built:** a finger flick on the Tracker's chart and Info half carries on and slows at the iPhone's rate, bounces at an
-  end (his 2B — D987), a touch while it glides only stops it (D986), a mouse is as it was (D988), the app's own moves and two
-  fingers stop it (D989). The motion: `raptor-port/src/tracker/app/glide.js` (+ `glide.test.ts`, 17); the wiring:
-  `dragScroll` in `raptor-port/src/tracker/app/core.js` (with `stopGlide`, called by the zoom, a landing, the keyboard ring,
-  a redraw, Home / End); `SidePanel.jsx` (the panel's zoom stops it; a chip's long-press mark reset); `.side` takes
-  `touch-action:none` in `tracker.css`. Rulings D986–D989 recorded (his "As recommended but 2B"); D985's homes updated.
-- **Checked:** WALK tier + two fresh, blind Opus reads (the code, 7 findings; the fix commit, 4) — all fixed. The walk
-  `raptor-port/scripts/handpass/trk-glide-walk.mjs` 42 / 42 twice; breaks 11 of 15 caught (the 4 not, with readings, in
-  the sheet); gates: unit 11657, build, tfin 728/0, e2e 844, rulecheck, docsize green. Evidence:
-  `raptor-port/docs/handpass/2026-10-17-trk-glide.md`. Round-1 page: `raptor-port/docs/mock/2026-10-17-trk-glide-r1/`
-  (https://claude.ai/artifact/DaEXWjGkxuctqtYutzbVbx).
-- **Pick up here:** the pull request is open (Tracker suite 453 / 0, every gate green on his PC); waiting for his look on his
-  iPhone (the sheet's last section) and his "merge live". After it is live: archive `[TRK-SCROLL-GLIDE]` and remove this block.
-- **Walk scripts' trap, now guarded:** the shared driver's default port is ANOTHER chat's; the glide walk and the new break
-  runner (`raptor-port/scripts/handpass/breaks-walk.mjs`) refuse an address that does not serve this checkout's build —
-  always pass `HP_URL` (this chat's preview was http://localhost:4181). Skill observation 634.
-- **Rulings:** D986–D989 (17 Oct 26).
+<!-- now:claude/trk-chart-fps -->
+### `claude/trk-chart-fps` — THE TRACKER'S CHART SCROLLED BY THE PHONE ITSELF, THE PINCH AS A PICTURE (D992) — written 18 Oct 26, verify before use
+- **His looks GIVEN and "merge live" GIVEN 18 Oct 26 ("Looks great well done merge live") — pull request 532 merged on it (the chart and Quals' pinned row together).** Left for the next chat: archive [TRK-CHART-FPS] (its residue is filed: [TRK-PINCH-OLD-EDGES], [QUALS-PINNED-COLS-REFLOW]) and remove this block. On a phone the chart and the Info half are
+  scrolled by the phone itself (`touch-action` in `raptor-port/src/tracker/tracker.css`; `dragScroll` is now the mouse's
+  drag only, `glide.js` deleted); a pinch is one transform while the fingers move and one layout at the lift
+  (`enablePinchZoom`, `raptor-port/src/tracker/app/core.js`). Why (measured): his iPhone 17 Pro in Chrome holds a page's own
+  motion near 60 frames while its own scrolling runs at 120; the pinch laid the whole chart out at every step (12 frames a
+  second at ¼ speed, now 30; 24 → 59 at ½).
+- **Checked (WALK tier + three fresh Opus reads):** walk 21/21 and three re-walks; 8 break tests (6 by the walk, 1 by
+  `src/tracker/trk-chart-fps.test.tsx`, 1 not visible in a test browser); the full gate set on `e50b22115` (unit 11,649 ·
+  e2e 844 · Tracker suite 453 · tfin 728/0 · rulecheck · docsize), then the Tracker's tests and suite after each fix round.
+  Seven faults fixed red first, one declined, one limit said plainly (a touch-screen laptop: a finger's glide can carry on
+  over the app's own move). Evidence and his look card: `raptor-port/docs/handpass/2026-10-18-trk-chart-fps.md`.
+- **Also on this branch — D993 (18 Oct 26, his ask):** Quals' pinned header row is moved sideways by the browser (the
+  Leave War's scroll-driven follow), its callsign heading a still copy over the left; a column changing width while pinned
+  re-measures it. Walked 9/9 twice (`scripts/handpass/quals-pinned-walk.mjs`), `e2e/geometry.spec.ts` 5 tests (two new, each
+  red first), Quals unit 72/72; one fresh read (3 fixed), a narrow read of the fixes. His look at Quals on his iPhone is owed.
+  Evidence: the sheet's D993 section.
+- **Next:** the pull request's checks on GitHub (its full run); his look on his iPhone (the sheet's last section); his
+  "merge live". If the pinch or the glide-stop misbehaves on his phone, the sheet names the fallback for each.
+- **Owed reads:** any ChatGPT read he wants (`[NO-ASTRA-LIST]`).
+- **Rulings:** D991 (speed is part of how good the app feels — How we work), D992 (this job — Tracker), D993 (Quals' pinned row — People & accounts); D990 replaced and archived.
 <!-- /now -->
 
 ## Next, in order

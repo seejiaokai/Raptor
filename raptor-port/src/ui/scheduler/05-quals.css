@@ -81,6 +81,22 @@
   box-shadow:0 2px 10px rgba(0,0,0,.4);transform:translateZ(0)}
 .qfixed-scroll{overflow-x:auto;overflow-y:hidden;touch-action:none;scrollbar-width:none;will-change:scroll-position}
 .qfixed-scroll::-webkit-scrollbar{display:none}
+/* THE BROWSER'S FOLLOW (owner D993, 18 Oct 26 — the Leave War's `.lw-sda`, matrix.css): where scroll-driven animations
+   exist (QualsPage `sdaActive` adds the classes), the table's sideways scroll IS the pinned row's timeline: `.qwrap`
+   names it `--qx`, the page hoists the name to the fixed row (not a descendant of the table's scroller), and the row's
+   table is translated by it off the page's code, so the two move as one at the phone's own frame rate. The travel,
+   `--qx-max`, is the table's sideways range, set from QualsPage when the row is pinned. The row's scroller then does
+   not scroll (`.qfixed-track`), and its callsign heading is a still copy over the left (`.qfixed-frozen`). */
+#page-quals{timeline-scope:--qx}
+.qwrap.q-sda{scroll-timeline:--qx x}
+/* overflow:clip, not hidden: a hidden box can still be scrolled by the browser (find-in-page stepping to a heading word,
+   a scrollIntoView), and the browser's follow never writes the box's place back, so the row would then travel twice
+   until it unpinned (the D993 code read's F2); a clip box is not a scroll box, so nothing can. */
+.qfixed-scroll.qfixed-track{overflow:clip;touch-action:auto}
+.qfixed .qtbl.qfixed-anim{animation:qx-follow linear both;animation-timeline:--qx;will-change:transform;
+  -webkit-backface-visibility:hidden;backface-visibility:hidden}
+.qfixed-frozen{position:absolute;top:0;left:0;bottom:0;overflow:clip;z-index:2;background:var(--panel-2)}
+@keyframes qx-follow{from{transform:translateX(0px)}to{transform:translateX(calc(-1 * var(--qx-max, 0) * 1px))}}
 /* the mirror table drops the grid's own left margin/min-width — it is sized to
    the measured widths (table-layout:fixed) and positioned by the fixed wrapper */
 .qfixed .qtbl{margin:0;min-width:0}

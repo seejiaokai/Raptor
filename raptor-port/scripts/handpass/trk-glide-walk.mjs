@@ -1,4 +1,6 @@
-/* [TRK-SCROLL-GLIDE] the walk — the Tracker's finger glide (owner D985–D989, 17 Oct 26).
+/* RETIRED 18 Oct 26 by D992 ([TRK-CHART-FPS]): a finger is now the phone's own scroll and glide.js is gone, so most of this
+   walk's checks test code that no longer exists — kept as the record of the glide's walk; the walk of today is trk-fps-walk.mjs.
+   [TRK-SCROLL-GLIDE] the walk — the Tracker's finger glide (owner D985–D989, 17 Oct 26).
    Real fingers through Chromium's touch input (CDP Input.dispatchTouchEvent — the pointer events a phone sends) and a
    real mouse, on the production bundle. Each step prints PASS / FAIL with the values it judged; the pictures go to
    GLIDE_SHOTS (default docs/img/handpass/2026-10-17-trk-glide/walk), the results to docs/handpass/parts/trk-glide/.

@@ -19,7 +19,6 @@ import { findEvents } from './eventOrder.js';
 import { onTrackerSessionEnd, onBeforeTrackerLogout } from '../role.js';
 /* Raptor's one edge feel (D899) — a standalone export carries this file with it: docs/tracker/known-gaps.md */
 import { edgePan } from '../../ui/edgescroll';
-import { rubber, liftVelocity, stepAxis } from './glide.js';
 import { getPeople, onPeople, whoami, whoamiId, getGonePeople, onGonePeople } from '../people.js';
 import { setTrackerUndo, pingTrackerUndo } from '../undo-bridge.js';
 /* the Tracker one piece per thing ([DB-READINESS] group A, phase 5b — D462): the student lists, the course list and the
@@ -3668,13 +3667,63 @@ function takeBackFirstFinger() {
    The fingers are counted in the CAPTURE phase, so the pinch sees the second
    finger before that finger's own ball, line or canvas handler runs — those
    start nothing while `pinching` is on — and sees every finger even where a
-   handler stops the event (the Line tool and the line handles do). */
+   handler stops the event (the Line tool and the line handles do).
+   THE PINCH IS A PICTURE WHILE THE FINGERS MOVE (owner D992, 18 Oct 26 — "Yes"; [TRK-CHART-FPS] measured a pinch that set
+   the chart's zoom at every step laying the whole chart out again each time: about 12 frames a second with the computer
+   slowed 4×). Outside Edit chart layout the chart is stretched as it is drawn — one transform, which the browser moves
+   without laying anything out — about the spot that was under the fingers, carried with them; at the lift it is laid out
+   once at the zoom reached, that spot put back under where the fingers ended (placeChartPoint): where the old step-by-step
+   pinch left it. It reads a little soft while zooming in, until the lift. Edit chart layout's pinch moves its own view
+   (view.k), already a transform, and is as it was. */
 let pinching = false;
 function enablePinchZoom(el) {
   if (!el || el.__pinch) return; el.__pinch = true;
   const pts = new Map(); let start = null;
   const dist = a => Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y);
   const mid = a => ({ x: (a[0].x + a[1].x) / 2, y: (a[0].y + a[1].y) / 2 });
+  /* the pinch's end, outside Edit chart layout: the picture let go and the chart laid out at the zoom it reached */
+  function settlePicture(s) {
+    if (!s || !s.c) return;
+    if (s.w) { s.w.style.transform = ''; s.w.style.transformOrigin = ''; s.w.style.willChange = ''; }
+    if (arrangeMode || (s.zz === s.z && s.m === s.m0)) return;   /* fingers that never moved changed nothing */
+    flowZoom = s.zz; applyFlowZoom();
+    placeChartPoint(el, s.c, s.m.x - s.r.left, s.m.y - s.r.top);
+  }
+  /* TWO FINGERS ARE THE PINCH'S, NOT THE PHONE'S SCROLL (D992). The board leaves one finger to the browser, which scrolls
+     it (touch-action, tracker.css; dragScroll); a second finger's touch is cancelled here, so the browser neither scrolls
+     on two fingers nor takes them from the pinch above. The touch stays held until every finger is up, so the finger left
+     down after a pinch does nothing until it lifts (D134). A second finger added once the phone is already scrolling
+     cannot be held (the phone no longer asks): the phone carries on scrolling, and a pinch starts on the next two.
+     ONLY THE CHART'S OWN FINGERS COUNT (the code read's F2): a touch event's `touches` is every finger on the screen, so a
+     thumb resting on the Info half or the header froze the chart. The board's fingers are known by their ids, taken as
+     they land on it; one no longer on the screen (a lift lost to a redraw) is forgotten at the next landing.
+     A finger whose target a redraw takes away sends its moves there and never here, so the hold is hung on each held
+     finger's own target too (the code read's F3). */
+  let held = false, heldOn = [];
+  const mine = new Set();
+  const onBoard = e => Array.from(e.touches).filter(t => mine.has(t.identifier)).length;
+  const cancelIfHeld = e => { if (held && e.cancelable) e.preventDefault(); };
+  const release = () => { held = false; for (const t of heldOn) t.removeEventListener('touchmove', cancelIfHeld); heldOn = []; };
+  el.addEventListener('touchstart', e => {
+    const down = new Set(Array.from(e.touches).map(t => t.identifier));
+    for (const id of [...mine]) if (!down.has(id)) mine.delete(id);
+    for (const t of Array.from(e.changedTouches || [])) mine.add(t.identifier);
+    if (onBoard(e) < 2) { release(); return; }
+    held = true; if (e.cancelable) e.preventDefault();
+    for (const t of Array.from(e.touches)) {
+      const tg = t.target;
+      if (mine.has(t.identifier) && tg && tg !== el && tg.addEventListener && !heldOn.includes(tg)) { tg.addEventListener('touchmove', cancelIfHeld, { passive: false }); heldOn.push(tg); }
+    }
+  }, { passive: false });
+  el.addEventListener('touchmove', cancelIfHeld, { passive: false });
+  const free = e => {
+    for (const t of Array.from(e.changedTouches || [])) mine.delete(t.identifier);
+    if (!onBoard(e)) release();
+  };
+  el.addEventListener('touchend', free); el.addEventListener('touchcancel', free);
+  /* a finger landing anywhere means the touch that last had its id has ended — a phone that reuses ids (Android) would
+     otherwise count a thumb off the chart as one of the chart's, after a lift lost to a redraw (the fix read's 2) */
+  window.addEventListener('touchstart', e => { for (const t of Array.from(e.changedTouches || [])) if (!el.contains(t.target)) mine.delete(t.identifier); }, { capture: true, passive: true });
   el.addEventListener('pointerdown', e => {
     if (e.pointerType === 'mouse') return;
     /* A PRIMARY touch is the device saying no other finger is down: anything still
@@ -3682,7 +3731,7 @@ function enablePinchZoom(el) {
        a lift to the element the finger landed on even after a redraw has removed it,
        where the board never hears it). Without this, one lost lift made every later
        touch read as a pinch until a reload. What that finger did stands. */
-    if (e.isPrimary && pts.size) { pts.clear(); start = null; if (pinching) { pinching = false; perfOff(); } releaseFirstFinger(); }
+    if (e.isPrimary && pts.size) { const s = start; pts.clear(); start = null; if (pinching) { pinching = false; settlePicture(s); perfOff(); } releaseFirstFinger(); }
     pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
     /* ...and so the lift is listened for on that element too (a second hearing is
        harmless: `drop` ignores a finger it no longer counts) */
@@ -3705,6 +3754,18 @@ function enablePinchZoom(el) {
       } else {
         start.r = el.getBoundingClientRect();
         start.c = chartPointAt(el, m.x - start.r.left, m.y - start.r.top);
+        start.m0 = start.m = m; start.zz = start.z;
+        const w = el.querySelector('.flowwrap');
+        if (w) {
+          /* how far one of the transform's pixels moves on screen — the wrap's own zoom scales it, and engines have
+             differed on how: measured here, not assumed. The stretch is about the spot under the fingers. */
+          const r0 = w.getBoundingClientRect();
+          w.style.transform = 'translateX(100px)';
+          const u = (w.getBoundingClientRect().left - r0.left) / 100 || 1;
+          w.style.transform = ''; w.style.willChange = 'transform';
+          w.style.transformOrigin = `${(m.x - r0.left) / u}px ${(m.y - r0.top) / u}px`;
+          start.w = w; start.u = u;
+        }
       }
     }
   }, { capture: true, passive: false });
@@ -3720,18 +3781,19 @@ function enablePinchZoom(el) {
       placeCanvasPoint(start.p, m.x, m.y, start.o);
       schedView();
     } else {
-      flowZoom = Math.min(3, Math.max(0.1, +(start.z * f).toFixed(3))); applyFlowZoom();
-      placeChartPoint(el, start.c, m.x - start.r.left, m.y - start.r.top);
+      start.zz = Math.min(3, Math.max(0.1, +(start.z * f).toFixed(3))); start.m = m;
+      if (start.w && start.w.isConnected) start.w.style.transform = `translate(${(m.x - start.m0.x) / start.u}px,${(m.y - start.m0.y) / start.u}px) scale(${start.zz / start.z})`;
+      else { flowZoom = start.zz; applyFlowZoom(); placeChartPoint(el, start.c, m.x - start.r.left, m.y - start.r.top); }   /* redrawn mid-pinch: step by step, as before */
     }
   }, { capture: true, passive: false });
   const drop = e => {
     if (!pts.delete(e.pointerId)) return;   /* not a finger this board is counting */
     if (!pts.size) releaseFirstFinger();
     if (pts.size < 2) {
-      start = null;
+      const s = start; start = null;
       /* A pinch is the user taking the zoom over, the same as pressing + or −:
          without the flag a rotate afterwards snapped their zoom back to fit. */
-      if (pinching) { pinching = false; if (!arrangeMode) zoomIsMine = true; flushView(); perfOff(); notify(); }
+      if (pinching) { pinching = false; settlePicture(s); if (!arrangeMode) zoomIsMine = true; flushView(); perfOff(); notify(); }
     }
   };
   /* pointerleave stays a plain listener: it does not bubble, so in the capture
@@ -3908,156 +3970,82 @@ function kbdBack() {
   try { bd.focus({ preventScroll: true }); } catch (_) { bd.focus(); }
   kbdShown = true; paintKbdRing();
 }
-/* Stop a box's glide before the app moves it itself (D989): dragScroll hangs the stop on the box. */
+/* Stop the phone's own glide before the app moves the box itself (D989, kept by D992): dragScroll hangs the stop on the box. */
 export function stopGlide(el) { if (el && el.__glideStop) el.__glideStop(); }
 /* Grab-and-drag scrolling for any overflow container — the chart's board and the Info half (SidePanel.jsx).
-   A FINGER (or a pen) GLIDES (owner D985, 17 Oct 26; round 1 D986–D989): the view follows the finger exactly; at the
-   lift the finger's speed carries on and slows to a stop at the iPhone's own rate; past an end the view stretches and
-   springs back (D987) — the motion itself is glide.js. A MOUSE drag is as it always was: it stops where it is let go and
-   never stretches (D988). A touch while it glides only stops it: what is under the finger does not open (D986). Two
-   fingers, Edit chart layout, or the app moving the view itself (a landing, the keyboard, the wheel, the zoom) stop it,
-   and their move wins (D989). The glide stays on for a phone set to less motion — it is the scroll itself (D989). */
+   A FINGER (or a pen) IS THE PHONE'S OWN SCROLL (owner D992, 18 Oct 26 — "Yes", after [TRK-CHART-FPS] measured it): the
+   box's touch-action lets the browser pan it (tracker.css), so it moves at the phone's own frame rate — 120 on his
+   iPhone, where the app's own glide (D985–D989, built 17 Oct 26) was a page's own motion and held near 60 — with the
+   phone's own glide after the lift, bounce at an end and touch-to-stop (D985–D987, met by the phone's). Nothing here
+   runs for a finger. A MOUSE drag is the app's, as it always was: the view follows it and stops where it is let go, never
+   stretching (D988). Two fingers are the pinch's (enablePinchZoom). */
 export function dragScroll(el, skip) {
   if (!el || el.__dragScroll) return; el.__dragScroll = true;
   let st = null;
-  /* the view's place, one axis each ({p, v, max} — glide.js): p may run past 0 or max while stretched; null at rest */
-  let gx = null, gy = null;
-  let raf = 0, last = 0, wrote = null, shifted = [];
   el.style.cursor = 'grab';
-  const range = () => ({ x: Math.max(0, el.scrollWidth - el.clientWidth), y: Math.max(0, el.scrollHeight - el.clientHeight) });
-  const inside = a => a.p >= 0 && a.p <= a.max;
-  /* the stretch is drawn by moving the box's content, never by a scroll the browser would clamp */
-  function unshift() { for (const c of shifted) c.style.transform = ''; shifted = []; }
-  function paint() {
-    const sx = Math.min(gx.max, Math.max(0, gx.p)), sy = Math.min(gy.max, Math.max(0, gy.p));
-    el.scrollLeft = sx; el.scrollTop = sy;
-    const ox = rubber(gx.p - sx, el.clientWidth), oy = rubber(gy.p - sy, el.clientHeight);
-    if (ox || oy) {
-      /* only what scrolls with the box: a window open over it (the lull calendar and its backdrop are the Info half's own
-         children, fixed and centred by their own transform) never moves — the code read's finding 1 */
-      const kids = Array.from(el.children).filter(c => getComputedStyle(c).position !== 'fixed');
-      for (const c of shifted) if (!kids.includes(c)) c.style.transform = '';
-      shifted = kids;
-      for (const c of kids) c.style.transform = `translate(${-ox}px,${-oy}px)`;
-    } else unshift();
-    wrote = { x: el.scrollLeft, y: el.scrollTop, stretched: !!(ox || oy) };
-  }
-  function halt() { if (raf) cancelAnimationFrame(raf); raf = 0; }
-  /* drop it all where it is — no stretch left drawn, nothing moving */
-  function cancel() { halt(); unshift(); gx = gy = null; wrote = null; }
-  /* THE APP'S OWN MOVE WINS (D989), stretched or not: each place that moves this box itself (the zoom, a landing, the
-     keyboard's ring, a redraw that keeps the view) stops the glide BEFORE it measures — a stretch still drawn would put
-     every ball off by its size, and the spring's next frame would write the old end back over the move (the code read's
-     finding 2). A finger still down keeps its drag. */
-  el.__glideStop = () => { if (!st && (raf || shifted.length)) cancel(); };
-  el.addEventListener('wheel', () => { if (!st && (raf || shifted.length)) cancel(); }, { passive: true });
-  function frame(t) {
-    raf = 0;
-    if (!gx || arrangeMode || pinching || !el.isConnected || !el.offsetParent) { cancel(); return; }
-    /* someone else moved the box since the last frame — their move wins (D989). Only read while nothing is
-       stretched: a stretch is drawn by moving the content, which some engines count toward the scroll range. */
-    if (wrote && !wrote.stretched && (Math.abs(el.scrollLeft - wrote.x) > 1.5 || Math.abs(el.scrollTop - wrote.y) > 1.5)) { cancel(); return; }
-    if (!wrote || !wrote.stretched) { const r = range(); gx.max = r.x; gy.max = r.y; }
-    const dt = Math.min(48, t - last); last = t;
-    const a = stepAxis(gx, dt), b = stepAxis(gy, dt);
-    paint();
-    if (a || b) raf = requestAnimationFrame(frame); else cancel();
-  }
-  /* carry on from where the finger left it, at speed (vx, vy) px/ms — or, with none, only settle a stretch */
-  function launch(vx, vy) {
-    halt();
-    if (!gx) return;
-    /* an axis the box cannot scroll neither glides nor stretches */
-    gx.v = gx.max > 0 ? vx : 0; gy.v = gy.max > 0 ? vy : 0;
-    if (gx.max <= 0) gx.p = 0;
-    if (gy.max <= 0) gy.p = 0;
-    if (!gx.v && !gy.v && inside(gx) && inside(gy)) { cancel(); return; }   /* nothing to carry: the view is where the finger left it */
-    last = performance.now(); raf = requestAnimationFrame(frame);
-  }
-  /* A TOUCH WHILE IT GLIDES ONLY STOPS IT (D986): the click its lift would make is taken, so no event's pop-up and no
-     button under the finger opens — as on the iPhone; the next tap works as normal. */
-  function guardClick(lifted) {
-    /* only a pointer's click: Enter or Space on a focused button inside the box clicks with no pointer (detail 0) and
-       is never taken (the fix read's finding 4) */
-    const kill = ev => { if (ev.detail === 0) return; ev.stopPropagation(); ev.preventDefault(); };
-    /* A finger's click comes a moment AFTER its lift (the phone sends it once the touch has ended), so the guard is
-       kept a short while past the lift — and dropped at once by the next press, which is the person's next tap. The
-       wait is counted from the lift (the window's, or the box's own leave, which a touch sends after it), however long
-       the finger rested (the code read's finding 7); a lift heard nowhere still ends it in 30s. */
-    let wait = 0;
-    const off = () => { el.removeEventListener('click', kill, true); window.removeEventListener('pointerup', later, true); window.removeEventListener('pointercancel', later, true); el.removeEventListener('pointerleave', later); window.removeEventListener('pointerdown', off, true); clearTimeout(wait); clearTimeout(cap); };
-    const later = () => { clearTimeout(wait); wait = setTimeout(off, 600); };
-    el.addEventListener('click', kill, { capture: true, once: true });
-    /* this press's own window phase is over (this runs on the box), so only a later press reaches it */
-    window.addEventListener('pointerdown', off, true);
-    if (lifted) later();
-    else { window.addEventListener('pointerup', later, true); window.addEventListener('pointercancel', later, true); el.addEventListener('pointerleave', later); }
-    const cap = setTimeout(off, 30000);
-  }
-  /* Not this box's drag: a press inside a window open over it (fixed — the lull calendar, its backdrop: the code read's
-     finding 1), or, for a finger, inside a box of its own that can scroll (the Failures card's chips), which the browser
-     scrolls itself. A mouse never scrolled that list, so a mouse drag there still moves the box, as before (finding 4). */
-  function notOurs(t, mouse) {
-    for (let n = t && t.nodeType === 1 ? t : t && t.parentElement; n && n !== el; n = n.parentElement) {
-      const cs = getComputedStyle(n);
-      if (cs.position === 'fixed') return true;
-      if (!mouse && ((/(auto|scroll)/.test(cs.overflowY) && n.scrollHeight > n.clientHeight + 1) || (/(auto|scroll)/.test(cs.overflowX) && n.scrollWidth > n.clientWidth + 1))) return true;
+  /* THE APP'S OWN MOVE WINS (D989): each place that moves this box itself (the zoom, a landing, the keyboard's ring, a
+     redraw that keeps the view) stops a phone glide BEFORE it measures and writes. Safari carries a glide on over a scroll
+     written mid-glide, and the move would be lost under it; a box that is not a scroll box drops its glide. The glide is
+     run outside the page (the phone's scroller, Chrome's compositor), which hears of the change only at the next frame —
+     so the box stays unscrollable for two frames, the caller's own scroll still landing meanwhile (the code read's F1: a
+     toggle within one task never reached them). Only right after a finger's scroll — a box at rest, or one a mouse or a
+     wheel moved, is left alone (no scrollbar flashes on a desktop). A mouse or a wheel taking over from the finger clears
+     its mark, and a stop spends it: a key held down after a flick stops the glide once, not at every repeat (the third
+     read's F1 — a key's own clear ran before the key's move, so a key never stopped a glide).
+     A BOX WHOSE SCROLLBARS TAKE ROOM (a touch-screen laptop) keeps them: two frames without them would show, and a caller
+     measuring then would be a scrollbar's width off. Its toggle stays within the one task, which the glide outside the
+     page may never hear of — so on such a laptop a finger's glide can carry on over the app's own move (a rare device;
+     the overlay scrollbars of a phone or an iPad take no room). A few pixels' allowance, so a phone's rounding is never
+     read as a scrollbar (the third read's F3). */
+  let lastScroll = -1e9, touchAt = -1e9, stopping = false;
+  el.addEventListener('scroll', () => { lastScroll = performance.now(); }, { passive: true });
+  el.addEventListener('pointerdown', e => { touchAt = e.pointerType !== 'mouse' ? performance.now() : -1e9; }, { passive: true });
+  el.addEventListener('wheel', () => { touchAt = -1e9; }, { passive: true });
+  el.__glideStop = () => {
+    if (st || stopping || touchAt < 0 || lastScroll < touchAt || performance.now() - lastScroll > 150) return;
+    touchAt = -1e9;
+    const x0 = el.scrollLeft, y0 = el.scrollTop;
+    if (el.offsetWidth - el.clientWidth - 2 * el.clientLeft > 3 || el.offsetHeight - el.clientHeight - 2 * el.clientTop > 3) {
+      el.style.overflow = 'hidden'; void el.offsetHeight; el.style.overflow = ''; el.scrollLeft = x0; el.scrollTop = y0; return;
     }
+    stopping = true; el.style.overflow = 'hidden';
+    const back = () => { const x = el.scrollLeft, y = el.scrollTop; el.style.overflow = ''; el.scrollLeft = x; el.scrollTop = y; stopping = false; };
+    if (typeof requestAnimationFrame === 'undefined') back(); else requestAnimationFrame(() => requestAnimationFrame(back));
+  };
+  /* Not this box's drag: a press inside a window open over it (fixed — the lull calendar and its backdrop are the Info
+     half's own children, fixed and centred by their own transform). */
+  function inWindow(t) {
+    for (let n = t && t.nodeType === 1 ? t : t && t.parentElement; n && n !== el; n = n.parentElement)
+      if (getComputedStyle(n).position === 'fixed') return true;
     return false;
   }
   el.addEventListener('pointerdown', e => {
     if (arrangeMode) return;   /* arrange mode pans the SVG viewport itself */
-    if (e.button !== 0 && e.pointerType === 'mouse') return;
-    /* a second finger while the first drags is the pinch's, not a drag of its own (the fix read's finding 2) */
-    if (st && !e.isPrimary) return;
-    const caught = !!raf;
-    /* ...and nothing under it takes the keyboard either (no focus ring left on a date box the finger only stopped on):
-       a cancelled press sends no mousedown, which is what would focus it */
-    if (caught) { halt(); guardClick(false); e.preventDefault(); }
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;   /* a finger or a pen: the browser's own scroll */
     const t = e.target, tag = (t && t.tagName || '').toLowerCase();
-    const off = tag === 'input' || tag === 'select' || tag === 'textarea' || tag === 'button' || tag === 'option' || (t && t.isContentEditable)
-      || (t && t.closest && (t.closest('button') || t.closest('input') || t.closest('select') || t.closest('a') || t.closest('[data-rm]') || t.closest('[data-lull]')))
-      || (skip && skip(e)) || notOurs(t, e.pointerType === 'mouse');
-    if (off) { if (caught) launch(0, 0); return; }   /* no drag starts here: a caught stretch springs back */
-    /* a press that caught nothing starts from where the box is now, with nothing stretched — a lift that never reached
-       the box (a redraw took its target) can have left an older place behind (the code read's finding 6) */
-    if ((!caught && e.isPrimary) || !gx) { unshift(); const r = range(); gx = { p: el.scrollLeft, v: 0, max: r.x }; gy = { p: el.scrollTop, v: 0, max: r.y }; }
-    st = { x: e.clientX, y: e.clientY, px: gx.p, py: gy.p, moved: false, id: e.pointerId, finger: e.pointerType !== 'mouse',
-      /* in the scroll's direction: a finger moving up moves the view down the chart */
-      samples: [{ t: e.timeStamp, x: -e.clientX, y: -e.clientY }] };
+    if (tag === 'input' || tag === 'select' || tag === 'textarea' || tag === 'button' || tag === 'option' || (t && t.isContentEditable)) return;
+    if (t && t.closest && (t.closest('button') || t.closest('input') || t.closest('select') || t.closest('a') || t.closest('[data-rm]') || t.closest('[data-lull]'))) return;
+    if ((skip && skip(e)) || inWindow(t)) return;
+    st = { x: e.clientX, y: e.clientY, sx: el.scrollLeft, sy: el.scrollTop, moved: false, id: e.pointerId };
   });
   el.addEventListener('pointermove', e => {
-    if (arrangeMode || pinching) { if (st || gx) { st = null; el.classList.remove('dragging'); cancel(); } return; }
+    if (arrangeMode || pinching) { if (st) { st = null; el.classList.remove('dragging'); } return; }
     if (!st || e.pointerId !== st.id) return;
     const dx = e.clientX - st.x, dy = e.clientY - st.y;
-    st.samples.push({ t: e.timeStamp, x: -e.clientX, y: -e.clientY });
-    if (st.samples.length > 3 && e.timeStamp - st.samples[1].t > 100) st.samples.shift();
     if (!st.moved) {
       if (Math.abs(dx) < 3 && Math.abs(dy) < 3) return; st.moved = true;
       el.classList.add('dragging'); try { el.setPointerCapture(st.id); } catch (_) {}
     }
-    /* past the phone's own tap allowance (as the chips' long press allows 8px) it is a drag, whose click is taken; a
-       wobble under it is still a tap, whose click must go through (the fix read's finding 1) */
-    if (Math.hypot(dx, dy) > 10) st.far = true;
-    let px = st.px - dx, py = st.py - dy;
-    if (!st.finger) { px = Math.min(gx.max, Math.max(0, px)); py = Math.min(gy.max, Math.max(0, py)); }   /* a mouse never stretches (D988) */
-    if (gx.max <= 0) px = 0;
-    if (gy.max <= 0) py = 0;
-    gx.p = px; gy.p = py; paint();
+    el.scrollLeft = st.sx - dx; el.scrollTop = st.sy - dy;   /* the browser keeps it inside the box's range */
     e.preventDefault();
   });
   const stop = e => {
-    if (!st || (e && e.pointerId !== st.id)) return; const { moved, finger, samples, far } = st; st = null; el.classList.remove('dragging');
-    if (moved && finger && far) guardClick(true);   /* a finger's click comes after its lift — the code read's finding 5 */
-    else if (moved) { /* swallow the click that follows a drag (a mouse's comes with its release) */
+    if (!st || (e && e.pointerId !== st.id)) return; const { moved } = st; st = null; el.classList.remove('dragging');
+    if (moved) { /* swallow the click that follows a drag (a mouse's comes with its release) */
       const kill = ev => { ev.stopPropagation(); ev.preventDefault(); };
       el.addEventListener('click', kill, { capture: true, once: true });
       setTimeout(() => el.removeEventListener('click', kill, true), 0);
     }
-    if (!finger) { cancel(); return; }
-    /* the speed at the lift; a cancelled touch (the browser took it) carries none — it only settles */
-    const v = moved && e && e.type === 'pointerup' ? liftVelocity(samples, e.timeStamp) : { vx: 0, vy: 0 };
-    launch(v.vx, v.vy);
   };
   el.addEventListener('pointerup', stop); el.addEventListener('pointercancel', stop); el.addEventListener('pointerleave', stop);
 }

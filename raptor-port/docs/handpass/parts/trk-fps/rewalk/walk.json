@@ -1,0 +1,233 @@
+[
+  {
+    "id": "W1",
+    "name": "phone chart: a finger drag scrolls it by the phone's own scrolling, nothing of the app's left on it",
+    "pass": true,
+    "detail": {
+      "touchAction": "pan-x pan-y",
+      "from": 1500,
+      "to": 1745
+    }
+  },
+  {
+    "id": "W2",
+    "name": "phone pinch out: a stretched picture while the fingers move, laid out at the lift, the ball under the fingers both times",
+    "pass": true,
+    "detail": {
+      "ball": "INT(S)-3",
+      "fingersEnd": {
+        "x": 245.99999237060547,
+        "y": 485.09869384765625
+      },
+      "mid": {
+        "x": 246,
+        "y": 485,
+        "w": 83
+      },
+      "after": {
+        "x": 245,
+        "y": 485,
+        "w": 83
+      },
+      "offMid": 0,
+      "offEnd": 1,
+      "zoom": [
+        "40%",
+        "147%"
+      ],
+      "midWrap": {
+        "zoom": "0.4",
+        "tf": "translate(75px, -50px) scale(3.6675)"
+      }
+    }
+  },
+  {
+    "id": "W3",
+    "name": "phone pinch in: the ball stays under the fingers",
+    "pass": true,
+    "detail": {
+      "ball": "INT(S)-3",
+      "fingersEnd": {
+        "x": 225.48049926757812,
+        "y": 509.812744140625
+      },
+      "after": {
+        "x": 225,
+        "y": 510,
+        "w": 34
+      },
+      "off": 1,
+      "zoom": [
+        "147%",
+        "60%"
+      ]
+    }
+  },
+  {
+    "id": "W4",
+    "name": "phone: after a pinch the finger left down does nothing until it lifts (D134)",
+    "pass": true,
+    "detail": {
+      "before": {
+        "x": 286,
+        "y": 2617,
+        "maxY": 10124
+      },
+      "after": {
+        "x": 286,
+        "y": 2617,
+        "maxY": 16676
+      }
+    }
+  },
+  {
+    "id": "W5",
+    "name": "phone: the next finger drag after a pinch scrolls again",
+    "pass": true,
+    "detail": {
+      "from": 9870,
+      "to": 10055
+    }
+  },
+  {
+    "id": "W5b",
+    "name": "phone: a tap on an event opens its pop-up",
+    "pass": true,
+    "detail": {
+      "ball": "AAM-07"
+    }
+  },
+  {
+    "id": "W6",
+    "name": "phone: a drag that starts on an event scrolls the chart and opens nothing",
+    "pass": true,
+    "detail": {
+      "ball": "AAM-07",
+      "from": 1817,
+      "to": 2002
+    }
+  },
+  {
+    "id": "W7",
+    "name": "phone: the zoom's + pressed straight after a finger scroll keeps the middle of the view",
+    "pass": true,
+    "detail": {
+      "ball": "AAM-09",
+      "inView": true
+    }
+  },
+  {
+    "id": "W8",
+    "name": "phone Info: a finger drag scrolls it by the phone's own scrolling",
+    "pass": true,
+    "detail": {
+      "touchAction": "pan-x pan-y",
+      "from": 0,
+      "to": 141,
+      "room": 255,
+      "zoom": 1.6,
+      "screenTravel": 226
+    }
+  },
+  {
+    "id": "W9",
+    "name": "phone Info: a tap on an event chip lands that event on the chart",
+    "pass": true,
+    "detail": {
+      "chip": "TR-1(P)",
+      "flow": true,
+      "inView": true
+    }
+  },
+  {
+    "id": "W10",
+    "name": "phone Edit chart layout: a finger pans its canvas and a pinch zooms its view, as before",
+    "pass": true,
+    "detail": {
+      "v0": "translate(-1.0,-796.0) scale(0.400)",
+      "v1": "translate(39.0,-876.0) scale(0.400)",
+      "v2": "translate(44.7,-2693.3) scale(1.067)"
+    }
+  },
+  {
+    "id": "E1",
+    "name": "phone: no errors",
+    "pass": true,
+    "detail": []
+  },
+  {
+    "id": "S1",
+    "name": "a phone on its side: a finger drag scrolls the chart",
+    "pass": true,
+    "detail": {
+      "from": 67,
+      "to": 172
+    }
+  },
+  {
+    "id": "E2",
+    "name": "short screen: no errors",
+    "pass": true,
+    "detail": []
+  },
+  {
+    "id": "P1",
+    "name": "iPad on its side: a finger drag scrolls the chart",
+    "pass": true,
+    "detail": {
+      "from": 305,
+      "to": 550
+    }
+  },
+  {
+    "id": "P2",
+    "name": "iPad on its side: a finger drag scrolls the Info half beside it",
+    "pass": true,
+    "detail": {
+      "from": 0,
+      "to": 225,
+      "room": 1108,
+      "zoom": 1
+    }
+  },
+  {
+    "id": "E3",
+    "name": "iPad: no errors",
+    "pass": true,
+    "detail": []
+  },
+  {
+    "id": "D1",
+    "name": "desktop: a fast mouse drag on the chart stops where it is let go (D988)",
+    "pass": true,
+    "detail": {
+      "lift": 850,
+      "later": 850
+    }
+  },
+  {
+    "id": "D2",
+    "name": "desktop: a mouse drag on the Info half moves it and stops at the release",
+    "pass": true,
+    "detail": {
+      "before": 0,
+      "atRelease": 150,
+      "later": 150,
+      "room": 982
+    }
+  },
+  {
+    "id": "D3",
+    "name": "desktop: a click on an event opens its pop-up",
+    "pass": true,
+    "detail": {
+      "ball": "AVI-01"
+    }
+  },
+  {
+    "id": "E4",
+    "name": "desktop: no errors",
+    "pass": true,
+    "detail": []
+  }
+]
