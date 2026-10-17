@@ -1,0 +1,77 @@
+[
+  {
+    "n": 1,
+    "name": "the chart's box keeps the finger from the browser (touch-action none)",
+    "result": "CAUGHT by W1, W5, W6, S1, P1",
+    "expected": [
+      "W1"
+    ],
+    "asExpected": true
+  },
+  {
+    "n": 2,
+    "name": "the Info half keeps the finger from the browser",
+    "result": "CAUGHT by W8, P2",
+    "expected": [
+      "W8",
+      "P2"
+    ],
+    "asExpected": true
+  },
+  {
+    "n": 3,
+    "name": "the pinch sets the zoom at every step again (no picture)",
+    "result": "CAUGHT by W2, W4",
+    "expected": [
+      "W2"
+    ],
+    "asExpected": true
+  },
+  {
+    "n": 4,
+    "name": "the lift lays nothing out (the zoom reached is dropped)",
+    "result": "CAUGHT by W2, W3",
+    "expected": [
+      "W2",
+      "W3"
+    ],
+    "asExpected": true
+  },
+  {
+    "n": 5,
+    "name": "two fingers are not held from the browser",
+    "result": "NOT CAUGHT",
+    "expected": [
+      "W2",
+      "W3",
+      "W4"
+    ],
+    "asExpected": false
+  },
+  {
+    "n": 6,
+    "name": "a mouse drag is not the app's any more",
+    "result": "CAUGHT by D1, D2",
+    "expected": [
+      "D1",
+      "D2"
+    ],
+    "asExpected": true
+  },
+  {
+    "n": 7,
+    "name": "the pinch's anchor is not carried with the fingers",
+    "result": "CAUGHT by W2",
+    "expected": [
+      "W2"
+    ],
+    "asExpected": true
+  },
+  {
+    "n": 8,
+    "name": "the app's own move does not stop the phone's glide (no overflow toggle)",
+    "result": "NOT CAUGHT",
+    "expected": [],
+    "asExpected": true
+  }
+]
