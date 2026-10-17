@@ -9739,6 +9739,9 @@ His "As recommended" to the four questions of `docs/mock/2026-10-17-tracker-r1/i
   (`src/tracker/app/core.js`), the motion in `src/tracker/app/glide.js`; the Info half takes no browser scrolling
   (`touch-action:none`, so both halves feel the same on every phone), and a box inside it that scrolls itself (the Failures
   card's list) keeps the finger. Walked: `docs/handpass/2026-10-17-trk-glide.md`.
+- **Smoother movement (D990, 17 Oct 26 — ruled, NOT BUILT yet, `[TRK-CHART-FPS]`).** He finds the chart choppy when it
+  moves. The small, safe step first: the browser told ahead that the chart will move, so it slides it without redrawing
+  it each frame, measured before and after; handing the scrolling to the iPhone itself only if it is still choppy.
 
 ## OIL on the schedule: the "OIL Earn" mode and the green edge (owner, 21 Sep 26)
 

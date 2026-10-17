@@ -20,25 +20,18 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/trk-scroll-glide -->
-### `claude/trk-scroll-glide` — THE TRACKER'S GLIDE ON A PHONE (D985–D989) — BUILT, WALKED, READ; the Tracker suite and the pull request next — written 17 Oct 26, verify before use
-- **Built:** a finger flick on the Tracker's chart and Info half carries on and slows at the iPhone's rate, bounces at an
-  end (his 2B — D987), a touch while it glides only stops it (D986), a mouse is as it was (D988), the app's own moves and two
-  fingers stop it (D989). The motion: `raptor-port/src/tracker/app/glide.js` (+ `glide.test.ts`, 17); the wiring:
-  `dragScroll` in `raptor-port/src/tracker/app/core.js` (with `stopGlide`, called by the zoom, a landing, the keyboard ring,
-  a redraw, Home / End); `SidePanel.jsx` (the panel's zoom stops it; a chip's long-press mark reset); `.side` takes
-  `touch-action:none` in `tracker.css`. Rulings D986–D989 recorded (his "As recommended but 2B"); D985's homes updated.
-- **Checked:** WALK tier + two fresh, blind Opus reads (the code, 7 findings; the fix commit, 4) — all fixed. The walk
-  `raptor-port/scripts/handpass/trk-glide-walk.mjs` 42 / 42 twice; breaks 11 of 15 caught (the 4 not, with readings, in
-  the sheet); gates: unit 11657, build, tfin 728/0, e2e 844, rulecheck, docsize green. Evidence:
-  `raptor-port/docs/handpass/2026-10-17-trk-glide.md`. Round-1 page: `raptor-port/docs/mock/2026-10-17-trk-glide-r1/`
-  (https://claude.ai/artifact/DaEXWjGkxuctqtYutzbVbx).
-- **Pick up here:** the pull request is open (Tracker suite 453 / 0, every gate green on his PC); waiting for his look on his
-  iPhone (the sheet's last section) and his "merge live". After it is live: archive `[TRK-SCROLL-GLIDE]` and remove this block.
-- **Walk scripts' trap, now guarded:** the shared driver's default port is ANOTHER chat's; the glide walk and the new break
-  runner (`raptor-port/scripts/handpass/breaks-walk.mjs`) refuse an address that does not serve this checkout's build —
-  always pass `HP_URL` (this chat's preview was http://localhost:4181). Skill observation 634.
-- **Rulings:** D986–D989 (17 Oct 26).
+<!-- now:claude/trk-chart-fps -->
+### `claude/trk-chart-fps` — THE TRACKER'S CHART SMOOTHER WHEN IT MOVES (D990) — written 17 Oct 26, verify before use
+- **Where it starts:** the glide (D985–D989, `[TRK-SCROLL-GLIDE]`) is LIVE — pull request 531 merged on his "merge live",
+  17 Oct 26. Still owed from it: his look on his iPhone (the look card is the last section of
+  `raptor-port/docs/handpass/2026-10-17-trk-glide.md`); `[TRK-SCROLL-GLIDE]` leaves for the archive once its residue is filed.
+- **This branch:** cut level with `main` at the merge; it carries only the records — D990 and its home in
+  `raptor-port/docs/ui-contracts.md` §The Tracker tab, and the backlog item `[TRK-CHART-FPS]` (the priority list's NEXT).
+- **The job (D990):** he finds the chart choppy (a low frame rate) when it moves; the small, safe step first, measured before
+  and after; the big step (the iPhone scrolling the chart itself) only if it stays choppy. **Ask first** (one short round,
+  D853): which motion, and whether it got worse with the glide. Then build, WALK tier at least, re-run the glide's walk
+  (always pass `HP_URL`: the walk proves the build it drives), his look on his iPhone, his "merge live".
+- **Rulings:** D990 (17 Oct 26).
 <!-- /now -->
 
 ## Next, in order
