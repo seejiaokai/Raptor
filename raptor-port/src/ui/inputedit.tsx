@@ -13,7 +13,7 @@
    is a list; the dialog is a single row, opened from a day. */
 import { cxOf, cxWhy, cxSays } from './inputcard-model'
 import { FloatWin, bringForward } from './FloatWindow'
-import { frontWin } from './floatwin'
+import { frontWin, holdPageScroll } from './floatwin'
 import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
@@ -2208,6 +2208,12 @@ export function InputEditor() {
      a field he has not touched takes the live value silently, and a field changed BOTH ways is put to him (`clash`).
      `shown` is the record the window holds, for the one-editor-at-a-time question (`swap`). */
   const win = open && CURPAGE === 'inputs'
+  /* THE BLOCKING DIALOG HOLDS A FINGER TOO ([SCHED-INPUT-WINDOW-PHONE], 18 Oct 26 — owner D686: a finger on a window never
+     scrolls the page behind it). Opened from the board or the week, a swipe on it used to scroll the schedule behind; the
+     same guard as the window on the Inputs page (floatwin.ts holdPageScroll), on the whole dialog, its dimmed edge
+     included — that edge is no page to scroll: a press on it closes the dialog. */
+  const pop = useRef<HTMLDivElement>(null)
+  useEffect(() => { const n = pop.current; if (!n) return; return holdPageScroll(n) }, [win])
   const base = useRef<any>(null)
   const shown = useRef<any>(null)
   const [clash, setClash] = useState<string[]>([])
@@ -3167,7 +3173,7 @@ export function InputEditor() {
     {sheets}
   </>)
   return (
-    <div className="airpop" id="inpEditPop" hidden={!open}
+    <div className="airpop" id="inpEditPop" hidden={!open} ref={pop}
       onClick={e => { if (clickedOutside(e, 'inpEditPop')) close() }}>
       <div className="airpop-box inpedbox" ref={box}>
         <div className="airpop-head">
