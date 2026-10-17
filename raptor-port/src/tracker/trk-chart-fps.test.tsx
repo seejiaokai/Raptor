@@ -133,6 +133,29 @@ describe('D989, kept by D992 — the app\'s own move stops the phone\'s glide (t
       expect(board.style.overflow, 'no scroll since that finger: nothing to stop').toBe('')
     } finally { globalThis.requestAnimationFrame = raf }
   })
+  it('a key\'s own move after a flick stops the glide, and a key held down stops it once, not at every repeat (the third read\'s F1)', () => {
+    const frames: Array<() => void> = []
+    const raf = globalThis.requestAnimationFrame
+    globalThis.requestAnimationFrame = ((cb: FrameRequestCallback) => { frames.push(() => cb(0)); return frames.length }) as typeof requestAnimationFrame
+    const stopOnKey = () => C.stopGlide(board)
+    try {
+      for (let i = 0; i < 10 && frames.length; i++) frames.splice(0).forEach(f => f())
+      board.addEventListener('keydown', stopOnKey)    /* as the chart's keys, Home / End and the undo do */
+      board.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerType: 'touch', pointerId: 7, isPrimary: true }))
+      board.dispatchEvent(new Event('scroll'))
+      board.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+      expect(board.style.overflow, 'the key\'s move stopped the glide').toBe('hidden')
+      frames.splice(0).forEach(f => f()); frames.splice(0).forEach(f => f())
+      expect(board.style.overflow).toBe('')
+      board.dispatchEvent(new Event('scroll'))          /* the key's own move */
+      board.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+      expect(board.style.overflow, 'the repeat: the mark was spent, nothing to stop').toBe('')
+    } finally {
+      board.removeEventListener('keydown', stopOnKey)
+      for (let i = 0; i < 10 && frames.length; i++) frames.splice(0).forEach(f => f())
+      globalThis.requestAnimationFrame = raf
+    }
+  })
   it('a wheel after the finger clears its mark: the box is left alone', async () => {
     board.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerType: 'touch', pointerId: 5, isPrimary: true }))
     board.dispatchEvent(new Event('wheel'))
@@ -140,7 +163,7 @@ describe('D989, kept by D992 — the app\'s own move stops the phone\'s glide (t
     C.stopGlide(board)
     expect(board.style.overflow).toBe('')
   })
-  it('a box with scrollbars that take room (a touch-screen laptop) drops the glide within the one task, never two frames', () => {
+  it('a box with scrollbars that take room (a touch-screen laptop) keeps them: never two frames without them', () => {
     const frames: Array<() => void> = []
     const raf = globalThis.requestAnimationFrame
     globalThis.requestAnimationFrame = ((cb: FrameRequestCallback) => { frames.push(() => cb(0)); return frames.length }) as typeof requestAnimationFrame
