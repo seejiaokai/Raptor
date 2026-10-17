@@ -39,6 +39,17 @@ or non-syllabus flight. The build REMOVES today's subtraction (`SidePanel.jsx`: 
 above is therefore closed; the down days feed no bar. Still open: a student not on the roster (typed box kept?), and
 whether a non-syllabus flight graded on the chart moves "Last currency" by itself today (check in the build).
 
+## His answers and two new features, 18 Oct 26 — D1005, D1006, D1007
+- **D1005:** every Tracker student is a man on the roster — the typed down-days box goes for EVERY student. "Last flown
+  currency" (typed by the member for a non-syllabus flight) moves only the IP requirement; a syllabus flight moves the IP
+  requirement and the flex — as built (`core.js`: a syllabus date sets `lastSyll` and `lastCurr`; a currency date `lastCurr`).
+- **D1006 — [TRK-FLEX-SETTING]:** the flex figures editable, and one Tracker-wide switch that turns flex off and takes every
+  flex detail off the app (the bar, its windows and words, its legend part). Today's fixed limits (`core.js flexFor`):
+  <7 current · 7–13 one optional · 14–20 one mandatory (convertible) · 21–30 two (one mandatory) · 31–59 two mandatory ·
+  60–119 short refresher · 120+ re-course. Open: which figures are "the flex number", who may change them, where the switch sits.
+- **D1007 — [TRK-LEGEND]:** a legend — what each ball means, what currency a flight needs and when an IP is required, when a
+  flex happens; its flex part goes with the switch. Open: where it sits, its words — a picture first.
+
 ## Questions to put to him first (as first drafted) (rounds of four, each with a picture and a recommendation — D853)
 1. Which days count: every medical day ever filed, or only those since the student's course start (or since his last
    currency, which is what the landing-currency sum needs)? — to be recommended after reading how the currency sum uses it.

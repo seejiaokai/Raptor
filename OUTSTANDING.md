@@ -50,7 +50,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **FILED 18 Oct 26 — [TRK-PINCH-OLD-EDGES]:** two older edges of the Tracker chart's pinch, met by [TRK-CHART-FPS]'s reads — low, with the next Tracker batch.
 
-**FILED 18 Oct 26 — [TRK-DOWN-DAYS-AUTO]:** his direction (D1002) — the Tracker's down days worked out from the Inputs, ATT B included, a tap shows each input; the Upchit Date box goes — not designed, his questions first. **FILED 18 Oct 26 — [LW-SORT-BY-FLIGHT]:** his intent, an option to sort the Leave War by flight (D1001) — not designed; his to raise. **His answers of 18 Oct 26 to the backlog's questions:** D998 (1 parked), D999 (4), D1000 (11), D1001 (7) — the rest in `raptor-port/docs/superpowers/briefs/2026-10-18-sixteen-questions.md`.
+**FILED 18 Oct 26 — [TRK-FLEX-SETTING], [TRK-LEGEND]:** his directions (D1006, D1007) — the flex editable with a switch that turns it off everywhere; a legend for the Tracker — one Tracker job with the down days (D1002–D1005). **FILED 18 Oct 26 — [TRK-DOWN-DAYS-AUTO]:** his direction (D1002) — the Tracker's down days worked out from the Inputs, ATT B included, a tap shows each input; the Upchit Date box goes — not designed, his questions first. **FILED 18 Oct 26 — [LW-SORT-BY-FLIGHT]:** his intent, an option to sort the Leave War by flight (D1001) — not designed; his to raise. **His answers of 18 Oct 26 to the backlog's questions:** D998 (1 parked), D999 (4), D1000 (11), D1001 (7) — the rest in `raptor-port/docs/superpowers/briefs/2026-10-18-sixteen-questions.md`.
 
 **LIVE 18 Oct 26 (pull request 533, his "merge live") — D994's first batch, the scheduling pages on a phone:** *(D996 follows — the Inputs page's input window, and perhaps every short phone window, in the middle; his scope answer first, `HANDOFF.md`.)* [SCHED-INPUT-WINDOW-PHONE] (the schedule's own input window as tall as it needs, in the middle of a phone's screen — his D995; a finger on it never scrolls the page behind; the Inputs list no longer widens a phone on its side) and [OIL-NOTIFY-SEEN] (5) (the crew drawer put away after an Unavailable hand-over); [PHONE-WIDE-BOARD-BLANK] closed — fixed and live since 6 Oct 26, confirmed on today's build. Its check: `raptor-port/docs/handpass/2026-10-18-sched-phone.md` (WALK). **Next in D994's order:** the next area's small fixes.
 
@@ -965,6 +965,14 @@ an admin.").
 **Not designed — his questions first.** The design note with his words, today's behaviour and the questions to put to him:
 `raptor-port/docs/superpowers/specs/2026-10-18-trk-down-days.md`. **Place:** his direction of 18 Oct 26; the next Tracker
 job, after D994's small fixes unless he says otherwise.
+
+### [TRK-FLEX-SETTING] The Tracker's flex figures editable, and one switch that turns flex off everywhere (his direction, 18 Oct 26 — D1006)
+**Not designed — his questions first** (which figures, who may change them, where the switch sits; a picture). The note:
+`raptor-port/docs/superpowers/specs/2026-10-18-trk-down-days.md`. **Place:** with [TRK-DOWN-DAYS-AUTO], the next Tracker job.
+
+### [TRK-LEGEND] A legend on the Tracker — the balls, a flight's currency and the IP requirement, when a flex happens (his direction, 18 Oct 26 — D1007)
+**Not designed — a picture first.** Its flex part goes when the flex switch (D1006) is off. The note: as above. **Place:** with
+[TRK-DOWN-DAYS-AUTO], the next Tracker job.
 
 ### [LW-SORT-BY-FLIGHT] An option to sort the Leave War by flight — his intent, an idea not yet designed (18 Oct 26, D1001)
 **His words:** *"I intend to have an option to sort according to flight"* (asked about the hidden personnel label — kept for it).
