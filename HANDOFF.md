@@ -22,7 +22,7 @@ the later merge keeps both (D78).
 ## Now
 <!-- now:claude/trk-chart-fps -->
 ### `claude/trk-chart-fps` — THE TRACKER'S CHART SCROLLED BY THE PHONE ITSELF, THE PINCH AS A PICTURE (D992) — written 18 Oct 26, verify before use
-- **Built and checked; his look GIVEN 18 Oct 26 ("Yes this feels good") — waiting for his "merge live".** On a phone the chart and the Info half are
+- **His looks GIVEN and "merge live" GIVEN 18 Oct 26 ("Looks great well done merge live") — pull request 532 merged on it (the chart and Quals' pinned row together).** Left for the next chat: archive [TRK-CHART-FPS] (its residue is filed: [TRK-PINCH-OLD-EDGES], [QUALS-PINNED-COLS-REFLOW]) and remove this block. On a phone the chart and the Info half are
   scrolled by the phone itself (`touch-action` in `raptor-port/src/tracker/tracker.css`; `dragScroll` is now the mouse's
   drag only, `glide.js` deleted); a pinch is one transform while the fingers move and one layout at the lift
   (`enablePinchZoom`, `raptor-port/src/tracker/app/core.js`). Why (measured): his iPhone 17 Pro in Chrome holds a page's own

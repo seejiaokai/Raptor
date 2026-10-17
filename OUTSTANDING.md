@@ -50,7 +50,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **FILED 18 Oct 26 — [TRK-PINCH-OLD-EDGES]:** two older edges of the Tracker chart's pinch, met by [TRK-CHART-FPS]'s reads — low, with the next Tracker batch.
 
-**BUILT 18 Oct 26 — [TRK-CHART-FPS] (D992, replacing D990):** the Tracker's chart and Info half scrolled by the phone itself, the pinch stretched as a picture — WALK-checked on `claude/trk-chart-fps`; his look given 18 Oct 26 ("Yes this feels good") — waiting for his "merge live". ([TRK-SCROLL-GLIDE] went live 17 Oct 26, pull request 531.)
+**BUILT 18 Oct 26 — [TRK-CHART-FPS] (D992, replacing D990):** the Tracker's chart and Info half scrolled by the phone itself, the pinch stretched as a picture — WALK-checked on `claude/trk-chart-fps`; his looks given and "merge live" given 18 Oct 26 ("Looks great well done merge live"), with D993 (Quals' pinned header row moved by the browser) — pull request 532; leaves for the archive once live. ([TRK-SCROLL-GLIDE] went live 17 Oct 26, pull request 531.)
 
 **NEXT (his question, 17 Oct 26) — [CONTEXT-START-SIZE]:** why a new chat starts 30–40% full, whether it grows, and options to cut it — MEASURED and put to him 17 Oct 26; his "As recommended" (D969–D971): A, B, C, G done; the capitals sweep (D972) and the push-and-lock guard (D976) done 17 Oct 26 on `claude/sharp-goldberg-6d0656` — LIVE 17 Oct 26 (pull request 525); D, the scheduler split, not done (D976).
 
