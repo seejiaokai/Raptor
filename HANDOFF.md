@@ -44,7 +44,10 @@ the later merge keeps both (D78).
   one fresh read of design lesson 6's widening (D941).
 - **Also in hand: his 16 questions** (he asked for them on 18 Oct 26 — D994's wait ended): researched against the rulings,
   written with examples and recommendations in `raptor-port/docs/superpowers/briefs/2026-10-18-sixteen-questions.md`, and
-  given to him in the chat; **his answers are not in yet.** Four need no answer (three already answered — close them; one
+  given to him in the chat. **Answered 18 Oct 26:** 1 (D998, parked), 4 (D999, to build), 7 (D1001, kept; sort by flight
+  filed), 11 (D1000, pictures then build), 12 (his look — closed and archived). **New direction, not designed:** D1002 —
+  the Tracker's down days from the Inputs, filed as [TRK-DOWN-DAYS-AUTO] with its design note. **Still open:** 2, 3, 5, 8,
+  9, 10, 13 (answers), 6 (build, D710), 15 (his iPhone look), 14 and 16 (close — already looked). Four need no answer (three already answered — close them; one
   ruled, D710 — build it). Record each answer as he gives it; pictures with each when it is put in its round (D921).
 - **Rulings:** D994's batch: D995 (scheduler; narrows D537), D996 (inputs; narrows D537); design lesson 6.
 <!-- /now -->

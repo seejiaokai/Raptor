@@ -50,7 +50,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **FILED 18 Oct 26 — [TRK-PINCH-OLD-EDGES]:** two older edges of the Tracker chart's pinch, met by [TRK-CHART-FPS]'s reads — low, with the next Tracker batch.
 
-**FILED 18 Oct 26 — [LW-SORT-BY-FLIGHT]:** his intent, an option to sort the Leave War by flight (D1001) — not designed; his to raise. **His answers of 18 Oct 26 to the backlog's questions:** D998 (1 parked), D999 (4), D1000 (11), D1001 (7) — the rest in `raptor-port/docs/superpowers/briefs/2026-10-18-sixteen-questions.md`.
+**FILED 18 Oct 26 — [TRK-DOWN-DAYS-AUTO]:** his direction (D1002) — the Tracker's down days worked out from the Inputs, ATT B included, a tap shows each input; the Upchit Date box goes — not designed, his questions first. **FILED 18 Oct 26 — [LW-SORT-BY-FLIGHT]:** his intent, an option to sort the Leave War by flight (D1001) — not designed; his to raise. **His answers of 18 Oct 26 to the backlog's questions:** D998 (1 parked), D999 (4), D1000 (11), D1001 (7) — the rest in `raptor-port/docs/superpowers/briefs/2026-10-18-sixteen-questions.md`.
 
 **LIVE 18 Oct 26 (pull request 533, his "merge live") — D994's first batch, the scheduling pages on a phone:** *(D996 follows — the Inputs page's input window, and perhaps every short phone window, in the middle; his scope answer first, `HANDOFF.md`.)* [SCHED-INPUT-WINDOW-PHONE] (the schedule's own input window as tall as it needs, in the middle of a phone's screen — his D995; a finger on it never scrolls the page behind; the Inputs list no longer widens a phone on its side) and [OIL-NOTIFY-SEEN] (5) (the crew drawer put away after an Unavailable hand-over); [PHONE-WIDE-BOARD-BLANK] closed — fixed and live since 6 Oct 26, confirmed on today's build. Its check: `raptor-port/docs/handpass/2026-10-18-sched-phone.md` (WALK). **Next in D994's order:** the next area's small fixes.
 
@@ -221,7 +221,7 @@ phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Cod
 **Owner's current workflow UI requests — collection complete, build authorized D563 (4 Oct 26):** [TRK-FLIGHT-LABEL-READABILITY] — clearer words inside blue flight balls, wider wing label area proposed; [LOGIC-STICKY-SEARCH-COMPACT] — keep search visible while scrolling and pack existing controls into fewer rows; [INSIGHTS-CLOSE-STAYS-VISIBLE] — keep the close cross at the top while scrolling Insights. Built on codex/workflow-ui after numbered candidates and independent plan challenge; combined first-build checks passed; D564 rejects the first flight shape, D565 steers to a tapered leading edge via his annotation. Specific tapered redraw with native sizes accepted D566; finish checks and fresh inspection of implemented chosen replacement, affected checks/fresh final read/current preview next. Logic/Insights retained. This does not start the Tracker progress-graph batch or change D495's order.
 
 **Waiting on him — no order exists:**
-[LOAD-MSG-SHORT] (a question for him, low — the long line after "Load onto working copy"),
+[LOAD-MSG-SHORT] (CLOSED 18 Oct 26 — answered by D863, built; his look "12 looks fine"; archived),
 [OIL-EARNED-VS-GRANTED] (ANSWERED D400 and built with the award fix — merged, PR #469, 29 Sep 26; archived 2 Oct 26),
 [LEDGER-READ-ASK] (a question for him, from the OIL award build), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
@@ -961,6 +961,11 @@ hand-damaged day row makes the week read-only (correct), with a notice written f
 what happened and what to do in the app's words ("This week's saved copy could not be read — it is shown read-only. Ask
 an admin.").
 
+### [TRK-DOWN-DAYS-AUTO] The Tracker's down days worked out from the Inputs, a tap shows the breakdown; the Upchit Date box goes (his direction, 18 Oct 26 — D1002)
+**Not designed — his questions first.** The design note with his words, today's behaviour and the questions to put to him:
+`raptor-port/docs/superpowers/specs/2026-10-18-trk-down-days.md`. **Place:** his direction of 18 Oct 26; the next Tracker
+job, after D994's small fixes unless he says otherwise.
+
 ### [LW-SORT-BY-FLIGHT] An option to sort the Leave War by flight — his intent, an idea not yet designed (18 Oct 26, D1001)
 **His words:** *"I intend to have an option to sort according to flight"* (asked about the hidden personnel label — kept for it).
 **Not designed, not started.** When he raises it: which men carry a flight (today the label is filled for ground crew, from
@@ -1553,17 +1558,6 @@ then the Storage, Tracker, rulings, command-layer and architecture rows (~0.4–
 `backlog-archive.mjs --move` puts a blank line before a block it lands, so a table row moved alone would not sit inside a
 table there — either the mover learns to land a row under a table header, or each row's detail is moved as a paragraph.
 **Place:** low; not a target (D141) — worth it only when the small-fixes branch has merged; put to him first.
-
-### [LOAD-MSG-SHORT] The line shown after "Load onto working copy" is long — a shorter two-line version? — a question for him (filed 1 Oct 26)
-**His question, 30 Sep 26** (on the group-A branch's look): what the long message after "Load onto working copy" was. It is
-the one sentence that load writes to the screen AND to the change history (`raptor-port/src/ui/interactions.ts`, the
-`data-restore` branch): "<day>: <version> loaded onto the working copy — viewers still see <version> until you publish ·
-N unpublished edits replaced · N requests also cover another day — left as filed · N requests came back onto the programme
-with their row — <days> read that too …" — each clause a real fact the load could not otherwise say (D98, D175, D363), so
-none can simply be dropped. **Offered to him, unanswered:** a shorter two-line version on screen (the first line what was
-loaded and what viewers still see; the second "N things to know ▾" opening the rest), the full sentence kept in the change
-history. **Place:** low — his call; its own small job (WALK tier: a message on a shared surface), never inside another change.
-Carried here from the merged `claude/db-readiness-table-shaping-4094f6` handoff block when it was removed (1 Oct 26).
 
 ### [VH-SHEETS-IPHONE] Other pop-ups sized by the screen height without the browser's bars — found 3 Oct 26, not changed
 His find on the Insights preview (D536): on his iPhone the Insights window's title bar and ✕ sat under the address bar, because

@@ -8,7 +8,7 @@ answered. "Next agent" lines name the item, the rulings and the files.
 
 ## Already answered — to close, not to ask
 
-- **12. The load note** — `[LOAD-MSG-SHORT]`: answered and built by D863 (15 Oct 26, live in pull request 506): "Thursday is
+- **12. The load note** — `[LOAD-MSG-SHORT]` (his look 18 Oct 26: "12 looks fine" — close it): answered and built by D863 (15 Oct 26, live in pull request 506): "Thursday is
   back to the Original. Viewers still see the Original. Det prep is on Friday again too. 1 input needs an OIL answer."
   Archive it (`backlog-archive.mjs LOAD-MSG-SHORT --homes raptor-port/src/ui/interactions.ts`) and drop its priority line.
 - **14. The Calendar window's swipe** — `[CAL-PHONE-SWIPE-FIT]`: his look given, D889 (15 Oct 26 — "I'm happy with the built

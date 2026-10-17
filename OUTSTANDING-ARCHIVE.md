@@ -5008,3 +5008,17 @@ the repair went live with the stack on 6 Oct 26. Measured on the build of 18 Oct
 844, the day drawn below the sign-off (`raptor-port/docs/handpass/2026-10-18-sched-phone.md`); pinned by
 `raptor-port/e2e/geometry.spec.ts` (D548's test). His iPhone look by finger stays on that check's look card.
 
+
+*Moved here 2026-10-18 by backlog-archive.mjs ([LOAD-MSG-SHORT]). Forward facts: `raptor-port/docs/superpowers/briefs/2026-10-18-sixteen-questions.md`.*
+
+### [LOAD-MSG-SHORT] The line shown after "Load onto working copy" is long — a shorter two-line version? — a question for him (filed 1 Oct 26)
+**His question, 30 Sep 26** (on the group-A branch's look): what the long message after "Load onto working copy" was. It is
+the one sentence that load writes to the screen AND to the change history (`raptor-port/src/ui/interactions.ts`, the
+`data-restore` branch): "<day>: <version> loaded onto the working copy — viewers still see <version> until you publish ·
+N unpublished edits replaced · N requests also cover another day — left as filed · N requests came back onto the programme
+with their row — <days> read that too …" — each clause a real fact the load could not otherwise say (D98, D175, D363), so
+none can simply be dropped. **Offered to him, unanswered:** a shorter two-line version on screen (the first line what was
+loaded and what viewers still see; the second "N things to know ▾" opening the rest), the full sentence kept in the change
+history. **Place:** low — his call; its own small job (WALK tier: a message on a shared surface), never inside another change.
+Carried here from the merged `claude/db-readiness-table-shaping-4094f6` handoff block when it was removed (1 Oct 26).
+
