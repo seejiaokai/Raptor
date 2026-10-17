@@ -121,3 +121,23 @@ test('a phone on its side (844 × 390): the Inputs list stays the screen\'s widt
     await expect(win).toHaveCount(0)
   } finally { await context.close() }
 })
+
+/* D997 (18 Oct 26 — "All in the middle"): on a phone every window that pops up for a task stands in the middle of the
+   screen — a short one visibly so (the Inputs calendar's settings, here), a tall one filling it as before; the day
+   panels pulled up and down by their bar, and the ALL AVAIL and changes windows, stay at the foot. */
+test('a phone: a short pop-up window (the Inputs calendar’s settings) stands in the middle of the screen (D997)', async ({ browser, baseURL }) => {
+  const { context, page } = await phone(browser, baseURL, 390, 844)
+  try {
+    await go(page, 'inputs')
+    await page.locator('#inGear').tap()
+    const win = page.locator('.floatwin:not([hidden])').first()
+    await expect(win).toBeVisible()
+    await page.waitForTimeout(400)
+    const b = (await win.boundingBox())!
+    const above = Math.round(b.y), below = Math.round(844 - (b.y + b.height))
+    expect(b.height, 'a short window: shorter than the screen').toBeLessThan(844 - 24 - 40)
+    expect(Math.abs(above - below), `in the middle: ${above}px above it, ${below}px below`).toBeLessThanOrEqual(1)
+    expect(Math.round(b.x), 'and 12px from the sides').toBe(12)
+    await page.screenshot({ path: test.info().outputPath('settings.png') })
+  } finally { await context.close() }
+})

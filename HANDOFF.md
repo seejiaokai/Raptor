@@ -34,8 +34,14 @@ the later merge keeps both (D78).
   window that pops up for a task (the settings windows, Calendar, the holiday form, Every weekday, the OIL list, the
   bottom-sheet pop-ups such as Insights); the day panels that are pulled up and down by their bar (D648, D683, D707) and
   the ALL AVAIL and changes windows (D77, D167) stay at the foot.
-- **Next:** his answer → record it → build on this branch (the phone rules in `22-float-windows.css`,
-  `25-inputs-calendar.css`, `08-windows-tools.css`), red first, a WALK with pictures, the gates, a pull request.
+- **ANSWERED — D997 ("1. All in the middle") and BUILT** on this branch: every pop-up window on a phone in the middle; the
+  calendars' day panels and the ALL AVAIL and changes windows at the foot. Red first, 166 window browser tests, walk 7/7
+  (`scripts/handpass/win-middle-walk.mjs`); the evidence sheet's D997 section. Owed: one fresh read of design lesson 6's
+  widening (D941).
+- **Also in hand: his 16 questions** (he asked for them on 18 Oct 26, D994's wait ended) — each researched against the
+  rulings and put to him with a worked example and a recommendation; three were found already answered (the load note
+  D863, the Calendar window's swipe D889, the Tracker pinch — his "Yes this feels good") and one ruled (the delete list's
+  notes, D710).
 - **Rulings:** D994's batch: D995 (scheduler; narrows D537), D996 (inputs; narrows D537); design lesson 6.
 <!-- /now -->
 

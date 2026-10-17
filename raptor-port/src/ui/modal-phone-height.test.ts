@@ -18,8 +18,10 @@ const limits = (from: number) => {
 
 describe('a pop-up window never grows taller than the visible screen (D536)', () => {
   it('the phone bottom sheet is limited by the visible screen, not by the screen without the browser bars', () => {
-    const phone = css.indexOf('.modal{align-items:flex-end;padding:0}')
-    expect(phone, 'the phone bottom-sheet block').toBeGreaterThan(-1)
+    /* D997 (18 Oct 26 — "All in the middle"): on a phone the window stands in the middle of the screen, 12px from its
+       sides, no longer a sheet pinned to the foot */
+    const phone = css.indexOf('.modal{align-items:center;padding:0 12px}')
+    expect(phone, 'the phone block: the window in the middle').toBeGreaterThan(-1)
     const v = limits(phone)
     /* D537 (the same day): the limit is the visible screen less a thin 24px strip — it was 90%, a tenth of the screen of gap */
     expect(v[v.length - 1], 'the limit that wins is the dynamic height, less the thin strip').toBe('calc(100dvh - 24px - env(safe-area-inset-top))')

@@ -116,6 +116,22 @@ whole set passed): the browser file above; GitHub's run of the pull request is t
 same input's window on the Inputs page stands in the middle on a phone too; a picture first, and whether the phone's other
 windows follow is put to him.
 
+## D997 — every pop-up window in the middle on a phone (18 Oct 26, branch `claude/window-middle-d996`)
+
+His words: *"1. All in the middle"* — the first option offered (every window that pops up for a task in the middle; the
+calendars' day panels and the ALL AVAIL and changes windows at the foot). **Tier: WALK** (a shared layout rule, two
+families of window). **Built:** the phone rule of the pop-up family (`.modal`, ≤820: centred, 12px from the sides, every
+corner rounded; its height limit unchanged) and of the floating windows (`.floatwin`, ≤620: pinned to both edges with
+automatic margins and its own height; the day panels `.rests` excluded). **Found by the walk and fixed:** the Calendar
+window, built to fill the screen under the top bar, shrank to its contents — its own rule now keeps its fill.
+**Red first:** `ui/modal-phone-height.test.ts` (the phone block's anchor) and the new browser test (the Inputs settings
+"295px above it, 12px below") failed before, pass after. **Tests:** the window browser files (sched-phone, inputs-calendar,
+inputs-sans-calendar, insights, datecal, availwin, changeswin) 166 / 166 on the final build; three unit files 48 / 48.
+**Walk:** `scripts/handpass/win-middle-walk.mjs` v2, phone 390 × 844 by touch: 7 PASS · 0 FAIL · 1 not walked (the ALL AVAIL
+window — no count on Saturday's board; `e2e/availwin.spec.ts`'s phone test, passed, carries it at the foot), no browser
+error; pictures `img/handpass/2026-10-18-win-middle/walk/`. v1's sides check was too strict (the shell's windows stand 12
+and 20px in, as before) — the script's, not the app's.
+
 ## His look card
 
 1. On your iPhone, Edit Schedule → tap an input's line under Personal Inputs: the window should sit in the middle of the
