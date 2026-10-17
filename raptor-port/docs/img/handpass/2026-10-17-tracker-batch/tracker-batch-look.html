@@ -26,7 +26,7 @@ p { margin: 0; max-width: 68ch; }
 .chip b { color: var(--after); }
 section { display: grid; gap: 12px; }
 .ask { background: var(--ask); border: 1px solid var(--ask-line); border-radius: 10px; padding: 18px; display: grid; gap: 14px; }
-.ask h2::before { content: "Your answer needed · "; color: var(--before); font-weight: 600; }
+.ask h2::before { content: "Decided · "; color: var(--after); font-weight: 600; }
 .rec { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; }
 .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .pair.phones { grid-template-columns: repeat(4, minmax(0, 1fr)); }
@@ -65,13 +65,14 @@ button:focus-visible, figure img:focus-visible { outline: 2px solid var(--accent
 
   <section class="ask" id="band">
     <h2>Empty space above the first event</h2>
+    <p><b>You chose B on 17 Oct, and it is built on this pull request.</b> The chart still centres every event it can, but never shows empty space above its top. The "A" pictures below show how it was.</p>
     <p>Pick a student with nothing marked and the chart lands on its first event, ST-01. Today it lands with ST-01 in the <b>middle</b> of the chart box, as you asked on 9 Sep ("centralise the view if its possible"). That leaves empty space above the chart: about a third of a desktop screen, and on a phone the top half of the chart box.</p>
     <p>I tried a version that stops the chart at its top instead, so ST-01 sits near the top with no empty space. It went against your 9 Sep words, so I took it out and am asking you.</p>
     <div class="pair phones">
-      <figure><img src="after/d3-first-event-phone-after.png" alt="Phone, option A: ST-01 in the middle, empty space above" data-phone tabindex="0"><figcaption><span class="tag b">A · as now</span>Phone: centred</figcaption></figure>
-      <figure><img src="band-option/d3-first-event-phone-hold.png" alt="Phone, option B: ST-01 near the top, no empty space" data-phone tabindex="0"><figcaption><span class="tag a">B · no space</span>Phone: chart from its top</figcaption></figure>
-      <figure><img src="after/d3-first-event-desk-after.png" alt="Desktop, option A: ST-01 in the middle" tabindex="0"><figcaption><span class="tag b">A · as now</span>Desktop: centred</figcaption></figure>
-      <figure><img src="band-option/d3-first-event-desk-hold.png" alt="Desktop, option B: ST-01 near the top" tabindex="0"><figcaption><span class="tag a">B · no space</span>Desktop: chart from its top</figcaption></figure>
+      <figure><img src="band-option/d3-first-event-phone-centred.png" alt="Phone, option A: ST-01 in the middle, empty space above" data-phone tabindex="0"><figcaption><span class="tag b">A · before</span>Phone: centred</figcaption></figure>
+      <figure><img src="after/d3-first-event-phone-after.png" alt="Phone, option B: ST-01 near the top, no empty space" data-phone tabindex="0"><figcaption><span class="tag a">B · built</span>Phone: chart from its top</figcaption></figure>
+      <figure><img src="band-option/d3-first-event-desk-centred.png" alt="Desktop, option A: ST-01 in the middle" tabindex="0"><figcaption><span class="tag b">A · before</span>Desktop: centred</figcaption></figure>
+      <figure><img src="after/d3-first-event-desk-after.png" alt="Desktop, option B: ST-01 near the top" tabindex="0"><figcaption><span class="tag a">B · built</span>Desktop: chart from its top</figcaption></figure>
     </div>
     <ol>
       <li><b>A, keep it centred (as now).</b> Every landing puts its event in the middle, the first event too.</li>

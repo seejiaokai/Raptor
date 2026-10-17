@@ -197,7 +197,14 @@ The page: https://claude.ai/artifact/RTF67FRK8uQUmyF4BSzwtv — each visible cha
 build and the batch's, `scripts/handpass/trk-batch-pictures.mjs`; the after pictures retaken on the final build), the
 two with nothing to see in words, the look card, and what was left out.
 
-**Questions waiting for him**
+**Answered by him — D984, 17 Oct 26: "As recommended B".** Built the same day (`scrollToEvent`: centred wherever that
+shows no empty space, never with the slack above or left of the chart's start in view), with the Tracker suite's two
+landing checks and the walk's L3 / L4 saying so; L walked again 9 / 9 (`…/parts/trk-batch/d984/`). The Tracker suite on `main`'s build with the new checks fails exactly the
+first-event check ("NOT held at the chart's top", 445 / 1): the check tells the two landings apart. On the batch's build
+it first gave 445 / 1 on a different check — the phone's "two lost lifts" — every time: the phone page now starts from
+another place (T-01 in the middle, not ST-01), so the pinches before that step left the view on an empty stretch of chart
+with no ball near the middle to drag. The check's fault again, not the app's: the step now pans the canvas by a finger on
+its empty space until a ball is there, then runs as before (both builds pass the phone block). The question as it was put:
 1. *The empty space above the first event.* A student with nothing marked lands centred on ST-01 (his 9 Sep "centralise
    the view if its possible"), which leaves empty chart above — on a phone the top half of the chart box. A: keep it
    centred (as built, as now on `main`). B: centre every event that can be, but stop the chart at its top so nothing above

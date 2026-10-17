@@ -997,7 +997,7 @@ action's. **Do:** word the line inside the command (its latched effects see the 
 …; logAction(di, wordsFrom(result)) })`.
 
 ### [TRK-REMOUNT-LANDING] Coming back to the Tracker the chart lands at its top corner, or with empty chart above (filed 28 Sep 26)
-**BUILT 17 Oct 26 (TRK-REMOUNT-LANDING — the landing after a Log out and in; the empty band above the first event is put to him, his 9 Sep ask being to centre) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**BUILT 17 Oct 26 (TRK-REMOUNT-LANDING — the landing after a Log out and in; no empty space above the chart's start — D984, his "As recommended B", narrowing his 9 Sep ask to centre) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
 **Place:** low — with the next Tracker change. Seen by the Tracker leftovers' walk, both walkers (walker a obs. 3 —
 the same person out and in, the chart jumps from the centred first ball to the top corner, scroll 73 → 396, phone
 36 → 352, `…/walk/lo-2a-D07b…`, `…-D07c…`; walker c — at 390 a reopened Tracker, centred on the last-marked ball, shows

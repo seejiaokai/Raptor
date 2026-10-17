@@ -9727,7 +9727,9 @@ His "As recommended" to the four questions of `docs/mock/2026-10-17-tracker-r1/i
   of sight (D132, D290); a course where all of his are done or N.A. keeps him.
 - **D982.** As ruled.
 - **Landing.** Coming back to the Tracker (a Log out and in, a member's first visit) lands as a pick does, on the last
-  mark, else the first event; no landing scrolls into the empty slack above or left of the chart's start.
+  mark, else the first event. Every landing centres its event wherever that shows no empty space, and never scrolls into the
+  empty slack above (or, on a chart wider than its box, left of) the chart's start: an event near the top sits as high as
+  the chart goes instead (D984, 17 Oct 26 — his "As recommended B"; it narrows his 9 Sep "centralise" ask).
 
 ## OIL on the schedule: the "OIL Earn" mode and the green edge (owner, 21 Sep 26)
 

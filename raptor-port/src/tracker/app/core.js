@@ -4524,11 +4524,14 @@ export function scrollToEvent(id) {
   if (kbdId !== id) kbdCame = null;
   kbdId = id; paintKbdRing();
   const r = g.getBoundingClientRect(), b = bd.getBoundingClientRect();
-  /* (Centred, the slack included — his 9 Sep 26 ask, "centralise the view if its possible". The Tracker batch first held a
-     landing at the chart's start so no empty band showed above the first event; the Tracker suite's two centring checks
-     caught it overriding his ask, so it was taken back, and the band is put to him with pictures instead — 17 Oct 26.) */
-  bd.scrollTop += (r.top + r.height / 2) - (b.top + b.height / 2);
-  bd.scrollLeft += (r.left + r.width / 2) - (b.left + b.width / 2);
+  /* ...centred wherever that shows no empty space, but never with the empty slack above or left of the chart's start in
+     view (owner D984, 17 Oct 26 — "As recommended B", narrowing his 9 Sep "centralise the view if its possible"): the
+     slack exists so an event anywhere can come to the middle (padBoard), yet an event near the top was centred with that
+     much empty space over it — on a phone the top half of the chart box above ST-01. Scrolled at least the slack's own
+     depth, the chart's first row sits at the top of the view instead. (Sideways the slack exists only once the chart is
+     wider than its box; the same holds there.) */
+  bd.scrollTop = Math.max(boardPad.y, bd.scrollTop + (r.top + r.height / 2) - (b.top + b.height / 2));
+  bd.scrollLeft = Math.max(boardPad.x, bd.scrollLeft + (r.left + r.width / 2) - (b.left + b.width / 2));
   return true;
 }
 /* WHERE THE CHART LANDS — on the picked student's latest work, else the chart's first event (owner, 9 Sep 26: "when u pick a

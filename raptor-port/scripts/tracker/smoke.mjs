@@ -2397,11 +2397,18 @@ const ballView = id => pg.evaluate(i => {
   return { found: true, scrollTop: Math.round(bd.scrollTop),
     inView: r.top >= b.top - 2 && r.bottom <= b.bottom + 2,
     /* how far the ball's middle sits from the view's middle, vertically */
-    off: Math.round(Math.abs((r.top + r.height / 2) - (b.top + b.height / 2))) };
+    off: Math.round(Math.abs((r.top + r.height / 2) - (b.top + b.height / 2))),
+    /* HELD at the chart's top (D984): scrolled exactly the slack above the chart (half the box), so the chart's first
+       row is at the top of the view and no empty space shows above it — with the ball above the middle, where centring
+       it would have shown that space */
+    held: Math.abs(bd.scrollTop - Math.round(bd.clientHeight / 2)) <= 1 && (r.top + r.height / 2) < (b.top + b.height / 2) };
 }, id);
 /* "Centralise the view if its possible" (owner, 9 Sep 26): the chart carries
    half a view of slack above and below, so even the first and last events can
-   sit in the middle — a landing is centred, not merely in view. */
+   sit in the middle — a landing is centred, not merely in view. Narrowed by
+   D984 (17 Oct 26, "As recommended B"): never with empty space above the
+   chart's start in view — an event near the top is HELD at the chart's top
+   instead of centred. */
 const CENTRED = 4;
 if (two.length >= 2) {
   const otherS = two.find(r => r !== marker);
@@ -2430,8 +2437,8 @@ if (two.length >= 2) {
   await pickStudent(otherS); await pg.waitForTimeout(600);
   const onShallow = await ballView(shallow.id);
   ok("picking the other one lands on THEIR latest work, near the top, centred",
-    onShallow.found && onShallow.inView && onShallow.scrollTop < onDeep.scrollTop && onShallow.off <= CENTRED,
-    `${shallow.id}: scrolled ${onShallow.scrollTop}px, in view ${onShallow.found ? onShallow.inView : 'n/a'}, ${onShallow.off}px off centre`);
+    onShallow.found && onShallow.inView && onShallow.scrollTop < onDeep.scrollTop && (onShallow.off <= CENTRED || onShallow.held),
+    `${shallow.id}: scrolled ${onShallow.scrollTop}px, in view ${onShallow.found ? onShallow.inView : 'n/a'}, ${onShallow.off}px off centre${onShallow.held ? ", held at the chart's top (D984)" : ''}`);
 
   /* Someone with no marks yet lands on the chart's FIRST event (owner, 9 Sep
      26: "if nothing is clocked … it will show the view based on the first
@@ -2449,9 +2456,9 @@ if (two.length >= 2) {
   });
   await pickStudent('STUDENT FRESH'); await pg.waitForTimeout(600);
   const onFirst = await ballView(firstId);
-  ok("picking a crew member with no marks yet lands on the chart's first event, centred",
-    parked > 100 && onFirst.found && onFirst.inView && onFirst.scrollTop < parked && onFirst.off <= CENTRED,
-    `parked ${parked}px; ${firstId} in view ${onFirst.found ? onFirst.inView : 'n/a'} at ${onFirst.scrollTop}px, ${onFirst.off}px off centre`);
+  ok("picking a crew member with no marks yet lands on the chart's first event — at the chart's top, no empty space above it (D984)",
+    parked > 100 && onFirst.found && onFirst.inView && onFirst.scrollTop < parked && onFirst.held,
+    `parked ${parked}px; ${firstId} in view ${onFirst.found ? onFirst.inView : 'n/a'} at ${onFirst.scrollTop}px, ${onFirst.off}px off centre, ${onFirst.held ? "held at the chart's top" : "NOT held at the chart's top"}`);
 
   /* The ring on every ball is a second crew picker (owner, 9 Sep 26): a real
      mouse click on another student's wedge picks them, every ball edges that
@@ -4417,7 +4424,26 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
     ok('phone, Edit chart layout — pinch, lift one finger, carry on with the other: nothing moves', !!s && !d.length, s ? (d.length ? 'changed: ' + d.join(', ') : '') : 'no ball'); }
   /* two touches whose lifts never arrived (Safari can lose a lift when the chart is
      redrawn under the finger): the next real finger is a new first touch and drags
-     a ball (Fable, final read F1) */
+     a ball (Fable, final read F1). The pinches before this leave the view wherever
+     they leave it — since D984's landing (17 Oct 26) on an empty stretch of chart,
+     with no ball near the middle to drag — so first the canvas is panned, by a
+     finger on its empty space as a person would, until a ball is there. */
+  for (let i = 0; i < 12 && !(await ballNearMiddle()); i++) {
+    const t = await pp.evaluate(() => {
+      const bd = document.getElementById('board').getBoundingClientRect(), bot = Math.min(bd.bottom, innerHeight);
+      const mx = bd.left + bd.width / 2, my = (bd.top + bot) / 2; let best = null;
+      for (const g of document.querySelectorAll('#flowSvg .ball')) {
+        const r = g.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, d = Math.hypot(x - mx, y - my);
+        if (!best || d < best.d) best = { d, dx: mx - 40 - x, dy: my - y };
+      }
+      return best;
+    });
+    const p0 = await emptyAt(); if (!t || !p0) break;
+    const k = Math.min(1, 140 / Math.max(1, Math.hypot(t.dx, t.dy))), dx = t.dx * k, dy = t.dy * k;
+    await touch('touchStart', [{ x: p0.x, y: p0.y, id: 7 }]);
+    for (let j = 1; j <= 6; j++) { await touch('touchMove', [{ x: p0.x + dx * j / 6, y: p0.y + dy * j / 6, id: 7 }]); await pp.waitForTimeout(16); }
+    await touch('touchEnd', []); await pp.waitForTimeout(250);
+  }
   { const s = await ballNearMiddle();
     if (s) await pp.evaluate(s => {
       const g = document.elementFromPoint(s.x, s.y), svg = document.getElementById('flowSvg');

@@ -22,7 +22,7 @@ const focusIs = page => page.evaluate(() => { const a = document.activeElement; 
 const ballBox = (page, id) => page.evaluate(i => { const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === i); const bd = document.getElementById('board'); if (!g || !bd) return null; const r = g.getBoundingClientRect(), b = bd.getBoundingClientRect(); return { inView: r.top >= b.top - 1 && r.bottom <= b.bottom + 1 && r.left >= b.left - 1 && r.right <= b.right + 1, top: r.top - b.top } }, id)
 /* how far a ball's centre sits from the chart box's middle, up and down — a landing is centred (his "centralise the view
    if its possible", 9 Sep 26; the Tracker suite's CENTRED is 4px); id null = the topmost ball, the chart's first event */
-const centredOff = (page, id) => page.evaluate(i => { const bd = document.getElementById('board'), b = bd.getBoundingClientRect(); const balls = [...document.querySelectorAll('#flowSvg .ball')]; const g = i ? balls.find(x => x.dataset.id === i) : balls.map(x => [x, x.getBoundingClientRect().top]).sort((a, z) => a[1] - z[1])[0][0]; const r = g.getBoundingClientRect(); return { id: g.dataset.id, off: Math.round(Math.abs((r.top + r.height / 2) - (b.top + b.height / 2))) } }, id)
+const centredOff = (page, id) => page.evaluate(i => { const bd = document.getElementById('board'), b = bd.getBoundingClientRect(); const balls = [...document.querySelectorAll('#flowSvg .ball')]; const g = i ? balls.find(x => x.dataset.id === i) : balls.map(x => [x, x.getBoundingClientRect().top]).sort((a, z) => a[1] - z[1])[0][0]; const r = g.getBoundingClientRect(); return { id: g.dataset.id, off: Math.round(Math.abs((r.top + r.height / 2) - (b.top + b.height / 2))), held: Math.abs(bd.scrollTop - Math.round(bd.clientHeight / 2)) <= 1, emptyAbove: Math.round(Math.min(...balls.map(x => x.getBoundingClientRect().top)) - b.top) } }, id)
 const grade = (page, id) => page.evaluate(i => window.__undoForTests().grade(i), id)
 async function press(page, sel, touch) { const l = page.locator(sel).first(); if (touch) await l.tap(); else await l.click(); await sleep(300) }
 /* a ball's marking pop-up, by a press on its centre (the chart scrolled to it first by its own scroll) */
@@ -294,17 +294,17 @@ if (want('L')) for (const size of [DESK, PHONE]) {
   await toPage(page, 'editsched'); await toTracker(page); await sleep(500)
   L.ok(`L2 ${tag(size)}: another tab and back — the view is where it was (the mark still in view)`, (await ballBox(page, deep)).inView, '')
   await page.selectOption('#activeSel', { label: 'STUDENT B' }); await sleep(900)
-  /* the landing hold (no empty band above the first event) was taken back on 17 Oct 26 — it overrode his 9 Sep
-     "centralise" ask; the band is a question for him — so the first event lands centred */
+  /* D984 (17 Oct 26, "As recommended B"): an event near the top is held at the chart's top — no empty space above the
+     chart — instead of centred */
   const l3 = await centredOff(page, null)
-  L.ok(`L3 ${tag(size)}: a student with nothing marked lands on the first event, centred`, l3.off <= 4, JSON.stringify(l3))
+  L.ok(`L3 ${tag(size)}: a student with nothing marked lands on the first event, at the chart's top — no empty space above it`, l3.held && l3.emptyAbove >= 0 && l3.emptyAbove < 60, JSON.stringify(l3))
   await shot(page, `L3-${tag(size)}-first-event`)
   /* a search for the first event */
   if (!touch) {
     await page.locator('#board').evaluate(b => { b.scrollTop = b.scrollHeight }); await sleep(200)
     await page.fill('#hSearch', 'ST-01'); await page.keyboard.press('Enter'); await sleep(700)
     const l4 = await centredOff(page, 'ST-01'), l4in = await ballBox(page, 'ST-01')
-    L.ok('L4 desk: a search that finds ST-01 brings it in, centred', l4in && l4in.inView && l4.off <= 4, JSON.stringify(l4))
+    L.ok('L4 desk: a search that finds ST-01 brings it in, at the chart\'s top — no empty space above it', l4in && l4in.inView && l4.held && l4.emptyAbove >= 0 && l4.emptyAbove < 60, JSON.stringify(l4))
     await page.fill('#hSearch', ''); await page.keyboard.press('Escape')
   }
   /* the member signs in on the same browser (D376 — his own place): the landing as a pick makes it */

@@ -192,7 +192,9 @@ he reports it again, ask which button he pressed and what the status line said.
   CENTRED (owner: "centralise the view if its possible"): the chart wrapper
   carries half a view of slack above and below (`padBoard`, screen-constant
   across zooms; sideways only once the chart is wider than the board), so
-  even the first and last events can sit in the middle; `renderBoard` parks
+  even the first and last events can sit in the middle — **narrowed 17 Oct 26 by D984** ("As recommended B"):
+  never with that empty slack above (or, on a chart wider than its box, left of) the chart's start in view, so an
+  event near the top sits as high as the chart goes instead of in the middle; `renderBoard` parks
   a fresh draw at the chart's own corner so a chart switch looks unchanged,
   and `setFlowZoom`'s anchor maths subtracts the slack. Switching student
   still does not switch syllabus. **Placing a mark leaves the view exactly
