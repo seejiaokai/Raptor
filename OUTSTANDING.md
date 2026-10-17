@@ -48,6 +48,8 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
+**NEXT (his ask, 17 Oct 26) — [TRK-SCROLL-GLIDE] (D985):** on a phone the Tracker's chart and Info half glide when scrolled by finger, instead of stopping dead at the lift — in a fresh chat on `claude/trk-scroll-glide`, his questions first.
+
 **NEXT (his question, 17 Oct 26) — [CONTEXT-START-SIZE]:** why a new chat starts 30–40% full, whether it grows, and options to cut it — MEASURED and put to him 17 Oct 26; his "As recommended" (D969–D971): A, B, C, G done; the capitals sweep (D972) and the push-and-lock guard (D976) done 17 Oct 26 on `claude/sharp-goldberg-6d0656` — LIVE 17 Oct 26 (pull request 525); D, the scheduler split, not done (D976).
 
 **CLOSED 17 Oct 26 — [MED-NEWYEAR]:** not a fault of the app — a medical input filed across New Year through the window saves its end with its year and shows on the Medical tab; the item rested on a row planted without its year (D56). Pinned by a browser test; archived.
@@ -864,25 +866,6 @@ question covers them.)* **The question for him:** keep them whole, or keep each 
 move the raw measurement files and logs out of the repository (their fingerprints stay in the sheets). Nothing is
 deleted without his word.
 
-### [TRK-SAVE-FAIL-SAYS-SAVED] Inside Raptor the Tracker says "saved" when the save failed (filed 28 Sep 26)
-**BUILT 17 Oct 26 (TRK-SAVE-FAIL-SAYS-SAVED) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
-**Place:** low — with `[DB-READINESS]` (honest refusals and saves in small pieces are that batch's job). Found by the
-Tracker leftovers' walk (walker c, F3; pictures `…/walk/lo-2c-b07-1200.png`, `…-b07-390.png`): with storage refusing
-writes, ✓ Save changes turned the Tracker's corner green — "● syllabus “2026” saved …" — beside Raptor's "Not saved —
-Retry". Raptor's in-memory store accepts the write and only its background saver fails, so the Tracker never hears of
-it; its red error words can only fire for a failed Export. Nothing is lost if Retry is pressed (walked). **Do:** let the
-Tracker's save status follow the storage seam's real outcome (the whiteboard's pending / failed state), so a failed save
-never reads "saved" anywhere.
-
-### [TRK-KEY-NAME-CLIP] A longer student name on the left of the Students card's key is cut off at the card's edge (filed 30 Sep 26)
-**BUILT 17 Oct 26 (TRK-KEY-NAME-CLIP) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
-**Place:** low — with the next Tracker change. Seen by the `[DB-READINESS]` group A phase 5b walk
-(`raptor-port/docs/img/handpass/2026-09-30-dbr-phase5b/1-old-tracker-his-work.png` and `2-new-…`): with three students on
-a chart the key around the course ball puts the third name on the LEFT, and "HIS STUDENT" reads "IIS STUDENT" — its first
-letter under the card's edge. On `main` too (the first picture is main's build), so not the phase's doing; a real
-callsign of ten or more letters would lose its first letters the same way. **Do:** keep every name of the key inside the
-card (shrink the name, or wrap it under the ball, on the left as the right does), and check at the phone width too.
-
 ### [UNDO-PUBLISH-ERASES-ISSUANCE] An Undo of a publish deletes the issued version's stored row (filed 30 Sep 26)
 **Place:** with `[DB-READINESS]` group B — before the `Amendment` table has another reader (the database step), where
 "has the shared database registered this version?" (`raptor-port/docs/undo-contract.md` §4, AM32) is first answerable.
@@ -916,15 +899,6 @@ again in its own old order — the first tab's order is lost (only the order; no
 order save, every later one writes only the chart that moved (walked). On `main` a stale tab overwrites the whole order
 every time. **Do:** give the shipped charts their places when the Tracker first stores them (its first opening), so the
 first reorder writes only the chart moved.
-
-### [TRK-UNDO-WRITES-DEFAULTS] The first Tracker Undo of a mark stores a pace, lulls and dates nobody set (filed 30 Sep 26)
-**BUILT 17 Oct 26 (TRK-UNDO-WRITES-DEFAULTS) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
-**Place:** low — with the next Tracker change. Seen by the group-A FULL walk (W5 D2b, F2c; `scripts/handpass/dbrA-W5-probe3.mjs`):
-a fresh world, one mark, ↶ — the undo writes `…:pace:<student>` = `{epw:2}`, `…:lulls:<student>` = `[]`, the chart's dates
-record for him, and leaves his marks row as `{}` instead of removing it; later undos write only the mark. Nothing changes
-on screen (the stored values ARE the defaults), but Export and the database gain records nobody made. Probably on `main`
-too (the same undo snapshot, D372). **Do:** the undo's snapshot restores only what the step changed — a record the
-student never had is removed, not written as its default.
 
 ### [SECDEFAULT-OFFER-BEHIND-BOARD] The "Set as default order?" offer after a section drag on the board is drawn behind the board (filed 30 Sep 26)
 **Place:** low — with the next board change. Seen in passing by the group-A FULL walk (W1 G4,
@@ -995,15 +969,6 @@ plan switch (its "N differences pending"), a day template applied, a version loa
 what was replaced or left). Each is its own saved group with its own batch (named, never bare), a moment after its
 action's. **Do:** word the line inside the command (its latched effects see the result), e.g. `schedWrite(type, () => {
 …; logAction(di, wordsFrom(result)) })`.
-
-### [TRK-REMOUNT-LANDING] Coming back to the Tracker the chart lands at its top corner, or with empty chart above (filed 28 Sep 26)
-**BUILT 17 Oct 26 (TRK-REMOUNT-LANDING — the landing after a Log out and in; no empty space above the chart's start — D984, his "As recommended B", narrowing his 9 Sep ask to centre) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
-**Place:** low — with the next Tracker change. Seen by the Tracker leftovers' walk, both walkers (walker a obs. 3 —
-the same person out and in, the chart jumps from the centred first ball to the top corner, scroll 73 → 396, phone
-36 → 352, `…/walk/lo-2a-D07b…`, `…-D07c…`; walker c — at 390 a reopened Tracker, centred on the last-marked ball, shows
-~240px of empty chart above ST-01, `…/walk/lo-2c-e09…`). The existing remount drawing (App.jsx's ready effect redraws
-without landing), not the per-person pick (D376). **Do:** land a remounted chart the way a pick lands it (the last
-mark, else the first event), and check the phone's landing leaves no empty band above the first ball.
 
 ### [ADMIN-DISPLAY] An Admin "Display" area of per-section fold defaults — awaiting his go-ahead, do NOT build without it (moved from HANDOFF.md, 24 Sep 26)
 **Deferred by him (D161, 24 Sep 26): "next time we revisit this again"** — put it to him again when Admin or the
@@ -1276,18 +1241,6 @@ on `main`; out of that branch's scope. **Do:** reword the toast; keep the protot
 grep the app for other "prototype" / "full build" / "Dataverse" words on screen. LOOK tier. **Place:** low, with
 `[QUALS-MEMBER-SCOPE]` or any time.
 
-### [TRK-FLEXBAR-INK] The Tracker's Currency & Flex bars print white words on green and amber — hard to read (filed 26 Sep 26)
-**BUILT 17 Oct 26 (TRK-FLEXBAR-INK) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
-**ANSWERED 17 Oct 26 — D982 ("As recommended", round 1):** dark words on the green, amber and red bars, white on grey; to build with the Tracker batch.
-Found by the `[TRK-PALETTE-ASK]` walk (evidence `raptor-port/docs/handpass/2026-09-26-trk-palette.md` §7 F4). The bars
-under Currency & Flex ("Current — no flex required", "1 Optional Flex", "Landing Current — No IP Required") are a
-coloured fill with WHITE words (`tracker.css .flexbar{color:#fff}`; the fill comes from `app/core.js`'s flex and
-currency functions). White on the green reads ~2.1:1 and on the amber ~2.1:1, against a floor of 4.5:1; the red 3.4:1,
-the grey 6.2:1. **Not new:** before D157 the same bars read 1.9 / 2.2 / 3.7:1. **Recommended:** dark words (Raptor's
-`--bg`) on the green, amber and red bars, white only on the grey — the recipe Raptor's own amber chips use; the functions
-return an ink with the colour. A design choice, so his: it is question 4 on that branch's look card. LOOK tier.
-**Place:** after his answer; low, none blocking.
-
 ### [DOC-POINTERS-CODE] Code comments that point at documentation moved in the spring clean (filed 24 Sep 26)
 **Place:** ride the next change that touches `raptor-port/src` anyway — a pointer-only edit there starts the full
 check run on his PC (D89, D151), which a docs pass must not do. Every one of these still LANDS today, through a
@@ -1481,14 +1434,6 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
    Fable #1's mirror; the digest keys ground rows by position). A false re-sign, never a false publish.
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
 
-### [POST-OUT-TRACKER] A deleted man and the Tracker's courses "still running" (D299 — approved, NOT built; filed 27 Sep 26)
-**BUILT 17 Oct 26 (POST-OUT-TRACKER) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
-**ANSWERED 17 Oct 26 — D981 ("As recommended", round 1):** he leaves every course on which he still has an event neither done nor N.A.; he stays, his record kept, where all of his are; to build with the Tracker batch.
-D299 lists "his place on any course still running — goes". The Tracker has no notion of a course "still running", and the
-build cannot decide what it means without him, so a deleted man is left on his Tracker courses, unlinked (his name as
-text). **Put to him on the `[POST-OUT-OUTCOMES]` look card (question 5):** what makes a course still running — or leave
-his name on his courses for now (then D299 is narrowed in his words). **Place:** after `[POST-OUT-OUTCOMES]` merges, on
-his answer. Touches `raptor-port/src/tracker/` (its own store) — its own small check.
 ### [ARROW-GUTTER-STRIP] The day before the front one shows a 42px strip beside the ‹ arrow — MOOT (D275, the room taken out 27 Sep 26); one small leftover (filed 26 Sep 26)
 The five-flags walk (W4, `raptor-port/docs/img/handpass/2026-09-26-five-flags/w4/GUTTER-prevday-tail-view-1440x900.png`):
 the desktop week's 54px room ([VIEW-ARROW-OVER-LIST]) leaves the previous day's last 42px visible around the arrow (8px
@@ -2344,14 +2289,6 @@ was hidden (a check that failed must still read failed). Then take the setting o
 known: whether the desktop app honours it — the night is the test. Optional companion, only if a wait was seen too
 short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not changed for the trial (D70).
 
-### [TRK-WIREBOARD-REPEAT] Every ball moved in Edit chart layout re-wires the chart, so a wheel step zooms n+1 times after n moves (found the night of 15 Oct 26 by the fresh Opus read of `[DRAG-EDGE-SCROLL-ELSEWHERE]`; older) — OPEN
-**BUILT 17 Oct 26 (TRK-WIREBOARD-REPEAT) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
-**Seen in the code, not walked:** `endDrag` (`src/tracker/app/core.js`) ends with `wireBoard()`, which adds the canvas's `wheel`, click and pan listeners again each time (named handlers are not doubled; arrow functions are). The bend square had the same fault and was fixed that night (`renderBoard()` on its release, F1). **Fix:** `renderBoard()` there too, or `wireBoard` marking what it has wired. **To do:** a test of the wheel after two moves, red first. **Place (the agent's):** with the next Tracker batch.
-
-### [TRK-BALL-OFF-CHART-LEFT] A ball or line handle dropped left of or above the chart's start is cut off the chart outside Edit chart layout, and ⤢ Fit cannot bring it back (found the night of 15 Oct 26 by the round-two read; older) — OPEN
-**BUILT 17 Oct 26 (TRK-BALL-OFF-CHART-LEFT) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
-**Seen in the code:** the chart is drawn from 0 rightward and down only (`bounds()`); right after ⤢ Fit the view shows room left of and above it, and a thing dropped there gets a negative place. The night's edge pan was made to stop at the chart's start (F2), but a drop into that room needs no pan. **Fix:** clamp a dropped position to the chart's start (a ball's centre at least its radius) in the ball, group and line-handle moves. **To do:** a walk step, red first. **Place (the agent's):** with the next Tracker batch.
-
 ### [COMPACT-WHEN-MOD] A small sign in the Claude app that says how full the chat is and when it is a good moment to compact (his question, 14 Oct 26 — D857) — WIDENED 15 Oct 26 BY D868; BUILT 15 Oct 26 on his go (D870, D871), branch `claude/overnight-skill-c02843`, read by one fresh reader and fixed (design and read: `raptor-port/docs/superpowers/specs/2026-10-15-compact-when-ready.md`); APPROVED (D872 — the guard off whenever he is away); LIVE 15 Oct 26 (pull request 509); OPEN until the next new chat's four checks in the app (the design's §"Still untested")
 **His question:** *"is there a mod u can create or install to be able to tell I when to start compacting smartly"*. **The answer given him:** one can be made — a line in the app showing how full the chat is, marked at a good moment to compact (a clean, committed point with the state in the repo); the agent already reads that figure itself, so nothing waited on it that night. **Why it is put to him first and not installed:** it changes his Claude settings (a status line or a small mod of the app), which is standing configuration — his go each time (D162's precedent), and a tool that runs automatically here stays in a form other models can read (D623). **To put to him:** what it would show (the percentage; a colour at "good moment"; whether the state is committed), with a picture, and whether it should only show or also remind. Not app work: nothing under `raptor-port/src`. **Asked again 15 Oct 26** (whether the agent can see the figure, and that it matters for compacting at night): the agent reads the figure itself at any time, so the sign is for HIM; what the agent cannot do is START a compaction — the app does it by itself near 97% full. **To try with this job, safely, and rely on only if it works:** whether a message the app sends this chat at a set time (a scheduled prompt) can start a compaction earlier, on purpose — that would let the overnight command (D867) compact at a mark it chooses. **Widened by D868 (15 Oct 26): the agent chooses the moment itself, from about 80% full, without asking him, for day work and the overnight command — so a big job does not compact twice.** The build the agent proposes, from Claude Code's documentation (read 15 Oct 26 — the pages: env-vars, model-config, settings-reference, hooks, hooks-guide, context-window, statusline, scheduled-tasks on code.claude.com): (1) the app's own compaction point set near 80% (the `autoCompactWindow` setting, a token count — about 800000 on a 1M chat); (2) a guard run before every compaction (a PreCompact hook) that holds back an automatic one until the agent has marked a clean point with the state written (a small file the agent writes after its checkpoint) — the app's last-moment compaction near full stays the backstop; (3) after a compaction, the chat's `HANDOFF.md` block printed back in front of it (a SessionStart hook on "compact" — documented); (4) the fullness shown to him on screen (the status line, which receives it); (5) the scheduled-prompt route above, tried as an alternative. **Untested in the desktop app:** whether a held-back compaction is tried again later, whether the setting applies to this chat, whether the status line shows there — each tested on a throwaway chat before anything is relied on. Changes his Claude settings and adds automatic scripts: built on a branch on his go, read by one fresh reader, approved by him (D162's precedent, D70). **Answered (15 Oct 26, D868's row):** a handoff to a fresh chat stays his usual way; this is for a big job that would otherwise reach the app's compaction at 97%, and for the overnight command.
 
@@ -2363,11 +2300,6 @@ short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not c
 
 ### [KBD-PUCK] A puck cannot be picked up, put down, swapped or taken off by keyboard — and the week's 440 pucks are Tab stops that do nothing (filed 13 Oct 26, the design look's K11) — OPEN, a job of its own, his to place
 **Found by `[DESIGN-LOOK-13OCT]`, not fixed — the question the design guide left open ("whether a keyboard can arm a puck is for the keyboard sweep to say", `raptor-port/docs/design-practices.md` §2): it cannot.** Every puck is drawn as a Tab stop (`raptor-port/src/ui/html.ts`) and wears the app's ring, but no key is heard on one: Enter, Space and Delete do nothing on the Scheduler Board or on Edit Schedule's week (`raptor-port/docs/mock/2026-10-13-design-look/keyboard.json`). So a scheduler at a desktop cannot move a man without the mouse, and Tab crosses hundreds of stops with nothing to do on any. **The shape to design (questions for him first — D541):** Enter or Space picks a puck up as a tap does on a phone (the app's own "armed" state), the seats that can take him are then the Tab stops, Enter puts him down, Escape lets go, Delete takes him off with Undo; the crew list reachable the same way. **Risk to weigh:** the dense week is swapped as text for speed (`raptor-port/docs/performance.md` Part 1) — the keys must ride the one listener the board already has, never one per puck. Tier WALK at least; a puck's drop is the schedule's main write.
-
-### [TRK-KBD-CHART] The Tracker's chart and its marking pop-up cannot be used by keyboard (filed 13 Oct 26, the design look's K5, K6) — OPEN, a job of its own, his to place; older than the date boxes
-**BUILT 17 Oct 26 (TRK-KBD-CHART) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
-**ANSWERED 17 Oct 26 — D980 ("As recommended", round 1):** one Tab into the chart, the arrows follow its lines, Enter opens marking with the keyboard inside, Escape back to the event; to build with the Tracker batch.
-**Found by `[DESIGN-LOOK-13OCT]`, not fixed — older than 13 Oct.** None of the chart's 210 events is a Tab stop, so an event cannot be opened or marked without a mouse or a finger; the marking pop-up, opened by a click, does not take the keyboard (Tab goes to the page behind it) and Escape closes it leaving the keyboard on nothing. The pop-up's two date boxes and the side panel's boxes and their ✕ DO work by keyboard (built 13 Oct). **To design:** how the keyboard walks a chart (by its arrows along the flow, not 210 Tab stops), Enter opening the pop-up with the keyboard inside it, Escape returning to the event. With the Tracker's next batch (D490).
 
 ### [SCHED-INPUT-WINDOW-PHONE] On a phone the input's window opened from the schedule is short, lets the page scroll behind it, and on a phone on its side "+ Input" runs off the right edge (the one-rule job's walk, share D — D4, D7, 12 Oct 26)
 **Found, not fixed — for his iPhone look first; then with the look-and-feel pass (`[UI-SLEEK-PASS]`) or the next phone batch.** Three things, all in a test browser's phone (390 × 844 by touch, 390 × 568, 844 × 390): (1) the window a tap on an input's line under Personal Inputs opens on Edit Schedule and the Scheduler Board is 675 px tall of 844 — the same input's window from the Inputs page is 820 — while it holds 1390 px (everyone's pucks since D748); D706 ("as tall as what is in it, up to nearly the whole screen") was built for the Inputs pages' windows and the schedule's own dialog was left as it was. (2) A finger scrolling inside that window on Edit Schedule also scrolls the page behind it (D686 — built and confirmed on his iPhone, D703, for the Inputs pages' windows). (3) At 844 × 390 the app takes its desktop layout and the "+ Input" window sits at x 461–891 on an 844-wide screen: Add and ✕ cannot be reached. None is new in the one-rule job (the dialog and its placement are untouched by it). Pictures: `raptor-port/docs/img/handpass/2026-10-12-one-rule/D/` (`D4-02`, `D4-06`, `D7-844x390-c01`, `D7-390x568-08`).
@@ -2397,6 +2329,20 @@ short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not c
 
 **STARTED 13 Oct 26 on `claude/cal-phone-swipe-fit-2affa0` — nothing built; four questions and the picture are with him (D541).** What the reading found: (a) the Inputs calendar and the SANS calendar ALREADY swipe between months, with a short slide (`src/ui/calpick.ts` `SWIPE_MIN`, `src/ui/InputsCal.tsx`, `src/ui/SansCal.tsx`; `raptor-port/docs/ui-contracts.md` §Gestures on the month grid) — the Calendar window copies that recipe, so its feel is not a new choice; (b) the From box (`.every-date`, `src/ui/scheduler/23-days.css`) was ALREADY given "fit" rules on 8 Oct 26 after an earlier picture of his, and his picture of 13 Oct shows it still runs off his iPhone — the fault is the iPhone's own date box, which no Windows browser reproduces (in Chromium at 390 and 320 wide nothing passes the window's edge). **The pictures page:** `raptor-port/docs/mock/cal-swipe-fit.html` (published to him as an Artifact page), its pictures `raptor-port/docs/mock/2026-10-13-cal-swipe-fit/`, drawn by `raptor-port/scripts/handpass/calswipe-mock.mjs` on the real Calendar window at 390 and 320 wide. **The four questions, each with the agent's pick:** (1) the From box — A, the app's own date field ("Thu 5 Nov 2026", a tap opens the small month the holiday form already uses — D671 — under it; the same for Until's "A date") or B, the iPhone's own box forced to fit a second time: *A*; (2) with A, any date may be picked with the window's weekday standing out, or that weekday only: *any date*; (3) the swipe as the Inputs calendar's, anywhere on the month or the Holidays list, a swipe never pressing a date's button: *yes*; (4) the app's other date boxes that are still the phone's own (Admin, the post-in date on Users, the Leave War's bid sheet, a medical input's upchit date) — in this job or not: *not in this job; on his iPhone look list, any that run off filed as a job of their own*. **ANSWERED 13 Oct 26 — D795: (1) A, (2) any date, (3) yes — the pictures are the design of record. (4) not ruled — *"Show me how it looks like first before I decide"*:** drawn the same hour and added to the page as its part 3 (`raptor-port/scripts/handpass/calswipe-mock2.mjs`; pictures `o390-*` in the same folder) — a new person's Post in (Admin → Users; the same box on Restore and on giving access), Admin → Data's "Older than" dates, the Leave War's posting dates ("PO from" / "PI from"); a medical input's upchit date not reached by taps and not pictured. **Found while drawing, to weigh:** the Leave War's posting dates are the phone's own box on purpose (owner, 19 Aug 26 — a posting may be years back or ahead, and the box's own year wheel reaches it; `src/leavewar/ui/BidPicker.tsx`) — the small month moves a month a tap, so it needs a way to jump a year before it can stand there; Admin's "Older than" box is full width, the same shape as the From box that ran off. **Put to him again with the agent's pick:** the simple ones in this job (Post in, Admin's dates, the upchit date), the Leave War's posting dates left until the small month can jump a year. **Next:** his answer to (4) recorded as a ruling, then the build with a failing test first, WALK tier.
 
+
+### [TRK-SCROLL-GLIDE] On a phone, a finger scroll of the Tracker's chart and Info half stops dead when the finger lifts — it should glide (his ask, 17 Oct 26 — D985) — OPEN, next
+**His words (17 Oct 26):** "I want the scroll to have acceleration and deceleration when I scroll on my phone"; then "Yes as
+mentioned" to the reading that he meant the Tracker's chart and its Info half, built in a fresh chat after pull request 530 —
+which went live the same evening. **Ruled:** D985 (`.claude/rules/decisions/tracker.md`).
+**What is there today:** both places are scrolled by the Tracker's own finger-drag (`dragScroll` in
+`raptor-port/src/tracker/app/core.js`, wired to the chart's board and to the side panel in `components/SidePanel.jsx`): the view
+follows the finger exactly and stops at the lift. The rest of the app is scrolled by the phone itself and already glides.
+**Before building — his questions, in one short round with recommendations and pictures (D853):** how a flick should feel
+(the phone's own feel is the natural target); what stops a glide (a new touch, reaching the chart's edge, a pinch); whether a
+mouse drag on a desktop glides too or only a finger. **Watch:** the pinch and its take-back (D134), the edge pan of Edit chart
+layout (D899 — Edit chart layout pans the canvas, not this scroll), the landing (D984), a tap after a drag still swallowed;
+his phone is an iPhone (measure the feel there — his look). **Check:** FULL is likely (a new gesture on the most-used
+Tracker surface); Opus, high thinking.
 
 ### [TRK-DATEBOX-SAFARI-ZOOM] In Safari between 621 and 1050px wide, is the calendar placed under its box in the Tracker's side panel? (raised 13 Oct 26 by the read of `[TRK-DATE-BOXES]`) — OPEN, unproved, low
 **Not proved in the Tracker batch (17 Oct 26):** there is no Safari on this PC to run it in — on his look card, for his iPad or iPhone.

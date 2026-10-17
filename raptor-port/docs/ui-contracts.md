@@ -9703,13 +9703,13 @@ His "As recommended" to the four questions of `docs/mock/2026-10-17-tracker-r1/i
 - **D979 — the attempt history is what the pop-up keeps.** Each failure with its own day (ST-02, ST-02X…), the day the
   event was done and who marked it, and the Failures card's list; no second list of earlier grades. A grade changed later is
   a correction. Nothing to build.
-- **D980 — the chart by keyboard (desktop), to build.** One Tab into the chart; → the next event along a line, ← back to the
+- **D980 — the chart by keyboard (desktop), built and live 17 Oct 26 (pull request 530).** One Tab into the chart; → the next event along a line, ← back to the
   event it needs first, ↑ ↓ the event above or below; Enter opens the marking pop-up with the keyboard inside it; Escape back
   to the same event; the event the keyboard is on wears the plain blue ring (D876). Not a Tab stop per event.
-- **D981 — a deleted man's Tracker courses, to build.** Deleted through Post out, he leaves every course on which he still
+- **D981 — a deleted man's Tracker courses, built and live 17 Oct 26 (pull request 530).** Deleted through Post out, he leaves every course on which he still
   has an event neither done (DCO, DPCO, Marginal) nor N.A., and stays, his record kept, where all of his are — what D299's
   "a course still running" means; tested at the delete, by his own marks.
-- **D982 — the Currency & flex bars' words, to build.** Dark words (Raptor's background colour) on the green, amber and red
+- **D982 — the Currency & flex bars' words, built and live 17 Oct 26 (pull request 530).** Dark words (Raptor's background colour) on the green, amber and red
   bars; white stays on grey; the bar's colour and its ink come from one place.
 
 **As built (17 Oct 26, the Tracker batch — `docs/handpass/2026-10-17-tracker-batch.md`):**
@@ -9730,6 +9730,9 @@ His "As recommended" to the four questions of `docs/mock/2026-10-17-tracker-r1/i
   mark, else the first event. Every landing centres its event wherever that shows no empty space, and never scrolls into the
   empty slack above (or, on a chart wider than its box, left of) the chart's start: an event near the top sits as high as
   the chart goes instead (D984, 17 Oct 26 — his "As recommended B"; it narrows his 9 Sep "centralise" ask).
+- **The glide (D985, 17 Oct 26 — ruled, NOT BUILT yet, `[TRK-SCROLL-GLIDE]`).** On a phone a finger scroll of the chart and of
+  the Info half is to glide like the phone's own scrolling — speeding up with the finger, slowing to a stop after it lifts.
+  Until it is built both follow the finger exactly and stop dead at the lift (`dragScroll`).
 
 ## OIL on the schedule: the "OIL Earn" mode and the green edge (owner, 21 Sep 26)
 

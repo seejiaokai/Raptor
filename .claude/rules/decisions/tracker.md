@@ -45,6 +45,7 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D985 | 17 Oct 26 | On a phone, a finger scroll of the Tracker's chart and of its Info half glides like the phone's own scrolling: it picks up speed with the finger and, after the finger lifts, slows to a stop instead of stopping dead; built in its own chat after the Tracker batch. |
 | D984 | 17 Oct 26 | The Tracker's chart lands its event in the middle of the chart box wherever it can, but never with empty space above the chart's start in view: an event near the top sits as high as the chart goes instead. |
 | D983 | 17 Oct 26 | Two Tracker faults wait for the database step and stay filed in the backlog until then: a Tracker Import saved as many groups instead of one (`[TRK-IMPORT-ONE-GROUP]`) and a stale tab undoing the first save of the chart order (`[TRK-FIRST-ORDER-PLACE]`); neither is built with the Tracker batch. |
 | D982 | 17 Oct 26 | The Tracker's Currency & flex bars print dark words on their green, amber and red fills and keep white words on the grey one; the colours and the words on the bars stay as they are. |

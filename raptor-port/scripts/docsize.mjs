@@ -289,7 +289,9 @@ const RULING_BYTES = [
   ['.claude/rules/decisions/leave-war.md', 2, 39000],
   /* tracker 19000 -> 20500 (15 Oct 26, night): 19,067 bytes with D899 (the Tracker chart's drags pan at its edge, fixed
      that night - his answer on /overnight); none is trimmed (D136). Room for the next rulings, not a target. */
-  ['.claude/rules/decisions/tracker.md', 2, 20500],
+  /* tracker 20500 -> 23500 (17 Oct 26): 21,868 bytes with D979-D985 (the Tracker batch's answers, the landing, the glide);
+     none is trimmed (D136). Room for the next rulings, not a target; the next crossing is the time to split the area. */
+  ['.claude/rules/decisions/tracker.md', 2, 23500],
   /* 2 Oct 26 ([DOCS-SIZE-PASS]): a new area — the nine rulings on what the IT flow guide shows and when it is rebuilt
      (D403, D410-D417) moved here from How we work, which had crossed its tripwire carrying them into every chat; only
      a chat working on the guide needs them (D137, D141). Set about 1.5 kB above what it holds. */

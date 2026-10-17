@@ -4846,3 +4846,100 @@ Remember a student's *earlier* tries at an event, not just the latest grade. Mor
 new feature than a cleanup. (Verified open: no attempt-history in `tracker/`.)
 - **Model:** build on Opus, default; small, clear spec.
 
+
+*Moved here 2026-10-17 by backlog-archive.mjs ([TRK-SAVE-FAIL-SAYS-SAVED]). Forward facts: `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`.*
+
+### [TRK-SAVE-FAIL-SAYS-SAVED] Inside Raptor the Tracker says "saved" when the save failed (filed 28 Sep 26)
+**BUILT 17 Oct 26 (TRK-SAVE-FAIL-SAYS-SAVED) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**Place:** low — with `[DB-READINESS]` (honest refusals and saves in small pieces are that batch's job). Found by the
+Tracker leftovers' walk (walker c, F3; pictures `…/walk/lo-2c-b07-1200.png`, `…-b07-390.png`): with storage refusing
+writes, ✓ Save changes turned the Tracker's corner green — "● syllabus “2026” saved …" — beside Raptor's "Not saved —
+Retry". Raptor's in-memory store accepts the write and only its background saver fails, so the Tracker never hears of
+it; its red error words can only fire for a failed Export. Nothing is lost if Retry is pressed (walked). **Do:** let the
+Tracker's save status follow the storage seam's real outcome (the whiteboard's pending / failed state), so a failed save
+never reads "saved" anywhere.
+
+
+*Moved here 2026-10-17 by backlog-archive.mjs ([TRK-KEY-NAME-CLIP]). Forward facts: `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`.*
+
+### [TRK-KEY-NAME-CLIP] A longer student name on the left of the Students card's key is cut off at the card's edge (filed 30 Sep 26)
+**BUILT 17 Oct 26 (TRK-KEY-NAME-CLIP) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**Place:** low — with the next Tracker change. Seen by the `[DB-READINESS]` group A phase 5b walk
+(`raptor-port/docs/img/handpass/2026-09-30-dbr-phase5b/1-old-tracker-his-work.png` and `2-new-…`): with three students on
+a chart the key around the course ball puts the third name on the LEFT, and "HIS STUDENT" reads "IIS STUDENT" — its first
+letter under the card's edge. On `main` too (the first picture is main's build), so not the phase's doing; a real
+callsign of ten or more letters would lose its first letters the same way. **Do:** keep every name of the key inside the
+card (shrink the name, or wrap it under the ball, on the left as the right does), and check at the phone width too.
+
+
+*Moved here 2026-10-17 by backlog-archive.mjs ([TRK-UNDO-WRITES-DEFAULTS]). Forward facts: `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`.*
+
+### [TRK-UNDO-WRITES-DEFAULTS] The first Tracker Undo of a mark stores a pace, lulls and dates nobody set (filed 30 Sep 26)
+**BUILT 17 Oct 26 (TRK-UNDO-WRITES-DEFAULTS) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**Place:** low — with the next Tracker change. Seen by the group-A FULL walk (W5 D2b, F2c; `scripts/handpass/dbrA-W5-probe3.mjs`):
+a fresh world, one mark, ↶ — the undo writes `…:pace:<student>` = `{epw:2}`, `…:lulls:<student>` = `[]`, the chart's dates
+record for him, and leaves his marks row as `{}` instead of removing it; later undos write only the mark. Nothing changes
+on screen (the stored values ARE the defaults), but Export and the database gain records nobody made. Probably on `main`
+too (the same undo snapshot, D372). **Do:** the undo's snapshot restores only what the step changed — a record the
+student never had is removed, not written as its default.
+
+
+*Moved here 2026-10-17 by backlog-archive.mjs ([TRK-REMOUNT-LANDING]). Forward facts: `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`.*
+
+### [TRK-REMOUNT-LANDING] Coming back to the Tracker the chart lands at its top corner, or with empty chart above (filed 28 Sep 26)
+**BUILT 17 Oct 26 (TRK-REMOUNT-LANDING — the landing after a Log out and in; no empty space above the chart's start — D984, his "As recommended B", narrowing his 9 Sep ask to centre) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**Place:** low — with the next Tracker change. Seen by the Tracker leftovers' walk, both walkers (walker a obs. 3 —
+the same person out and in, the chart jumps from the centred first ball to the top corner, scroll 73 → 396, phone
+36 → 352, `…/walk/lo-2a-D07b…`, `…-D07c…`; walker c — at 390 a reopened Tracker, centred on the last-marked ball, shows
+~240px of empty chart above ST-01, `…/walk/lo-2c-e09…`). The existing remount drawing (App.jsx's ready effect redraws
+without landing), not the per-person pick (D376). **Do:** land a remounted chart the way a pick lands it (the last
+mark, else the first event), and check the phone's landing leaves no empty band above the first ball.
+
+
+*Moved here 2026-10-17 by backlog-archive.mjs ([TRK-WIREBOARD-REPEAT]). Forward facts: `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`.*
+
+### [TRK-WIREBOARD-REPEAT] Every ball moved in Edit chart layout re-wires the chart, so a wheel step zooms n+1 times after n moves (found the night of 15 Oct 26 by the fresh Opus read of `[DRAG-EDGE-SCROLL-ELSEWHERE]`; older) — OPEN
+**BUILT 17 Oct 26 (TRK-WIREBOARD-REPEAT) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**Seen in the code, not walked:** `endDrag` (`src/tracker/app/core.js`) ends with `wireBoard()`, which adds the canvas's `wheel`, click and pan listeners again each time (named handlers are not doubled; arrow functions are). The bend square had the same fault and was fixed that night (`renderBoard()` on its release, F1). **Fix:** `renderBoard()` there too, or `wireBoard` marking what it has wired. **To do:** a test of the wheel after two moves, red first. **Place (the agent's):** with the next Tracker batch.
+
+
+*Moved here 2026-10-17 by backlog-archive.mjs ([TRK-BALL-OFF-CHART-LEFT]). Forward facts: `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`.*
+
+### [TRK-BALL-OFF-CHART-LEFT] A ball or line handle dropped left of or above the chart's start is cut off the chart outside Edit chart layout, and ⤢ Fit cannot bring it back (found the night of 15 Oct 26 by the round-two read; older) — OPEN
+**BUILT 17 Oct 26 (TRK-BALL-OFF-CHART-LEFT) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**Seen in the code:** the chart is drawn from 0 rightward and down only (`bounds()`); right after ⤢ Fit the view shows room left of and above it, and a thing dropped there gets a negative place. The night's edge pan was made to stop at the chart's start (F2), but a drop into that room needs no pan. **Fix:** clamp a dropped position to the chart's start (a ball's centre at least its radius) in the ball, group and line-handle moves. **To do:** a walk step, red first. **Place (the agent's):** with the next Tracker batch.
+
+
+*Moved here 2026-10-17 by backlog-archive.mjs ([TRK-FLEXBAR-INK]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [TRK-FLEXBAR-INK] The Tracker's Currency & Flex bars print white words on green and amber — hard to read (filed 26 Sep 26)
+**BUILT 17 Oct 26 (TRK-FLEXBAR-INK) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**ANSWERED 17 Oct 26 — D982 ("As recommended", round 1):** dark words on the green, amber and red bars, white on grey; to build with the Tracker batch.
+Found by the `[TRK-PALETTE-ASK]` walk (evidence `raptor-port/docs/handpass/2026-09-26-trk-palette.md` §7 F4). The bars
+under Currency & Flex ("Current — no flex required", "1 Optional Flex", "Landing Current — No IP Required") are a
+coloured fill with WHITE words (`tracker.css .flexbar{color:#fff}`; the fill comes from `app/core.js`'s flex and
+currency functions). White on the green reads ~2.1:1 and on the amber ~2.1:1, against a floor of 4.5:1; the red 3.4:1,
+the grey 6.2:1. **Not new:** before D157 the same bars read 1.9 / 2.2 / 3.7:1. **Recommended:** dark words (Raptor's
+`--bg`) on the green, amber and red bars, white only on the grey — the recipe Raptor's own amber chips use; the functions
+return an ink with the colour. A design choice, so his: it is question 4 on that branch's look card. LOOK tier.
+**Place:** after his answer; low, none blocking.
+
+
+*Moved here 2026-10-17 by backlog-archive.mjs ([POST-OUT-TRACKER]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [POST-OUT-TRACKER] A deleted man and the Tracker's courses "still running" (D299 — approved, NOT built; filed 27 Sep 26)
+**BUILT 17 Oct 26 (POST-OUT-TRACKER) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**ANSWERED 17 Oct 26 — D981 ("As recommended", round 1):** he leaves every course on which he still has an event neither done nor N.A.; he stays, his record kept, where all of his are; to build with the Tracker batch.
+D299 lists "his place on any course still running — goes". The Tracker has no notion of a course "still running", and the
+build cannot decide what it means without him, so a deleted man is left on his Tracker courses, unlinked (his name as
+text). **Put to him on the `[POST-OUT-OUTCOMES]` look card (question 5):** what makes a course still running — or leave
+his name on his courses for now (then D299 is narrowed in his words). **Place:** after `[POST-OUT-OUTCOMES]` merges, on
+his answer. Touches `raptor-port/src/tracker/` (its own store) — its own small check.
+
+*Moved here 2026-10-17 by backlog-archive.mjs ([TRK-KBD-CHART]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [TRK-KBD-CHART] The Tracker's chart and its marking pop-up cannot be used by keyboard (filed 13 Oct 26, the design look's K5, K6) — OPEN, a job of its own, his to place; older than the date boxes
+**BUILT 17 Oct 26 (TRK-KBD-CHART) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**ANSWERED 17 Oct 26 — D980 ("As recommended", round 1):** one Tab into the chart, the arrows follow its lines, Enter opens marking with the keyboard inside, Escape back to the event; to build with the Tracker batch.
+**Found by `[DESIGN-LOOK-13OCT]`, not fixed — older than 13 Oct.** None of the chart's 210 events is a Tab stop, so an event cannot be opened or marked without a mouse or a finger; the marking pop-up, opened by a click, does not take the keyboard (Tab goes to the page behind it) and Escape closes it leaving the keyboard on nothing. The pop-up's two date boxes and the side panel's boxes and their ✕ DO work by keyboard (built 13 Oct). **To design:** how the keyboard walks a chart (by its arrows along the flow, not 210 Tab stops), Enter opening the pop-up with the keyboard inside it, Escape returning to the event. With the Tracker's next batch (D490).
+
