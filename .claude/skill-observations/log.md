@@ -734,6 +734,8 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 
 **Met again 15 Oct 26 (the night's /overnight run, `claude/drag-edge-scroll-elsewhere-51bfc4`):** three more shell here-document / stdin hangs in one night — `cat > file` with no input waited on stdin; a stray `python - <<'PY'` with `< /dev/null` dropped into Python's interactive prompt and looped on a Windows console error until stopped; each cost a two-to-five-minute stall. What held: every edit script WRITTEN WITH THE WRITE TOOL to the scratch folder and run as `python <file> < /dev/null`. The guard this entry proposes (scripts always a file, never a here-document) is the fix.
 
+**Met again 17 Oct 26 ([TRK-SCROLL-GLIDE], round 1):** a `cat >> file <<EOF` holding the question page (prose full of apostrophes) failed the same way; redone through the file tool. The guard stays unbuilt: an unconditional default (pages and scripts always go through the file tool) would have cost nothing here.
+
 ### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
 
 **Status:** OPEN

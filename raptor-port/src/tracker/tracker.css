@@ -300,7 +300,10 @@ button.datebox.trpopdate.is-notyet .datebox-txt{color:var(--muted)}
 .board::-webkit-scrollbar-thumb:hover{background:#5f6b7e}
 .board::-webkit-scrollbar-corner{background:#12151b}
 .board.dragging,.side.dragging{cursor:grabbing;user-select:none}
-.side{border-left:1px solid var(--line);background:var(--panel);overflow:auto;padding:12px}
+/* touch-action:none — the Info half's finger scroll is the Tracker's own glide on every phone (D985, D987), as the
+   chart's is: left to the browser, Safari would scroll it its own way and the two halves would feel different. A box
+   inside it that scrolls itself (the Failures card's chips) still does — dragScroll leaves it the finger. */
+.side{border-left:1px solid var(--line);background:var(--panel);overflow:auto;padding:12px;touch-action:none}
 #sideZoomCtl{flex:0 0 auto;justify-content:flex-end;border-left:0;border-right:0;border-bottom:0;border-radius:0;display:flex;gap:4px;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:4px 6px;box-shadow:0 4px 14px rgba(0,0,0,.45)}
 #sideZoomCtl button{padding:2px 8px;font-size:14px;line-height:1.2;min-width:26px}
 #sideZoomCtl #szReset{font-size:11px;min-width:0}

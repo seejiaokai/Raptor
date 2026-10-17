@@ -19,6 +19,7 @@ import { findEvents } from './eventOrder.js';
 import { onTrackerSessionEnd, onBeforeTrackerLogout } from '../role.js';
 /* Raptor's one edge feel (D899) — a standalone export carries this file with it: docs/tracker/known-gaps.md */
 import { edgePan } from '../../ui/edgescroll';
+import { rubber, liftVelocity, stepAxis } from './glide.js';
 import { getPeople, onPeople, whoami, whoamiId, getGonePeople, onGonePeople } from '../people.js';
 import { setTrackerUndo, pingTrackerUndo } from '../undo-bridge.js';
 /* the Tracker one piece per thing ([DB-READINESS] group A, phase 5b — D462): the student lists, the course list and the
@@ -3904,39 +3905,131 @@ function kbdBack() {
   try { bd.focus({ preventScroll: true }); } catch (_) { bd.focus(); }
   kbdShown = true; paintKbdRing();
 }
-/* Grab-and-drag scrolling for any overflow container. */
+/* Grab-and-drag scrolling for any overflow container — the chart's board and the Info half (SidePanel.jsx).
+   A FINGER (or a pen) GLIDES (owner D985, 17 Oct 26; round 1 D986–D989): the view follows the finger exactly; at the
+   lift the finger's speed carries on and slows to a stop at the iPhone's own rate; past an end the view stretches and
+   springs back (D987) — the motion itself is glide.js. A MOUSE drag is as it always was: it stops where it is let go and
+   never stretches (D988). A touch while it glides only stops it: what is under the finger does not open (D986). Two
+   fingers, Edit chart layout, or the app moving the view itself (a landing, the keyboard, the wheel, the zoom) stop it,
+   and their move wins (D989). The glide stays on for a phone set to less motion — it is the scroll itself (D989). */
 export function dragScroll(el, skip) {
   if (!el || el.__dragScroll) return; el.__dragScroll = true;
   let st = null;
+  /* the view's place, one axis each ({p, v, max} — glide.js): p may run past 0 or max while stretched; null at rest */
+  let gx = null, gy = null;
+  let raf = 0, last = 0, wrote = null, shifted = [];
   el.style.cursor = 'grab';
+  const range = () => ({ x: Math.max(0, el.scrollWidth - el.clientWidth), y: Math.max(0, el.scrollHeight - el.clientHeight) });
+  const inside = a => a.p >= 0 && a.p <= a.max;
+  /* the stretch is drawn by moving the box's content, never by a scroll the browser would clamp */
+  function unshift() { for (const c of shifted) c.style.transform = ''; shifted = []; }
+  function paint() {
+    const sx = Math.min(gx.max, Math.max(0, gx.p)), sy = Math.min(gy.max, Math.max(0, gy.p));
+    el.scrollLeft = sx; el.scrollTop = sy;
+    const ox = rubber(gx.p - sx, el.clientWidth), oy = rubber(gy.p - sy, el.clientHeight);
+    if (ox || oy) {
+      const kids = Array.from(el.children);
+      for (const c of shifted) if (!kids.includes(c)) c.style.transform = '';
+      shifted = kids;
+      for (const c of kids) c.style.transform = `translate(${-ox}px,${-oy}px)`;
+    } else unshift();
+    wrote = { x: el.scrollLeft, y: el.scrollTop, stretched: !!(ox || oy) };
+  }
+  function halt() { if (raf) cancelAnimationFrame(raf); raf = 0; }
+  /* drop it all where it is — no stretch left drawn, nothing moving */
+  function cancel() { halt(); unshift(); gx = gy = null; wrote = null; }
+  function frame(t) {
+    raf = 0;
+    if (!gx || arrangeMode || pinching || !el.isConnected || !el.offsetParent) { cancel(); return; }
+    /* someone else moved the box since the last frame — their move wins (D989). Only read while nothing is
+       stretched: a stretch is drawn by moving the content, which some engines count toward the scroll range. */
+    if (wrote && !wrote.stretched && (Math.abs(el.scrollLeft - wrote.x) > 1.5 || Math.abs(el.scrollTop - wrote.y) > 1.5)) { cancel(); return; }
+    if (!wrote || !wrote.stretched) { const r = range(); gx.max = r.x; gy.max = r.y; }
+    const dt = Math.min(48, t - last); last = t;
+    const a = stepAxis(gx, dt), b = stepAxis(gy, dt);
+    paint();
+    if (a || b) raf = requestAnimationFrame(frame); else cancel();
+  }
+  /* carry on from where the finger left it, at speed (vx, vy) px/ms — or, with none, only settle a stretch */
+  function launch(vx, vy) {
+    halt();
+    if (!gx) return;
+    /* an axis the box cannot scroll neither glides nor stretches */
+    gx.v = gx.max > 0 ? vx : 0; gy.v = gy.max > 0 ? vy : 0;
+    if (gx.max <= 0) gx.p = 0;
+    if (gy.max <= 0) gy.p = 0;
+    if (!gx.v && !gy.v && inside(gx) && inside(gy)) { cancel(); return; }   /* nothing to carry: the view is where the finger left it */
+    last = performance.now(); raf = requestAnimationFrame(frame);
+  }
+  /* A TOUCH WHILE IT GLIDES ONLY STOPS IT (D986): the click its lift would make is taken, so no event's pop-up and no
+     button under the finger opens — as on the iPhone; the next tap works as normal. */
+  function swallowNextClick() {
+    const kill = ev => { ev.stopPropagation(); ev.preventDefault(); };
+    /* A finger's click comes a moment AFTER its lift (the phone sends it once the touch has ended), so the guard is
+       kept a short while past the lift — and dropped at once by the next press, which is the person's next tap. */
+    let wait = 0;
+    const off = () => { el.removeEventListener('click', kill, true); window.removeEventListener('pointerup', later, true); window.removeEventListener('pointercancel', later, true); window.removeEventListener('pointerdown', off, true); clearTimeout(wait); clearTimeout(cap); };
+    const later = () => { clearTimeout(wait); wait = setTimeout(off, 600); };
+    el.addEventListener('click', kill, { capture: true, once: true });
+    window.addEventListener('pointerup', later, true); window.addEventListener('pointercancel', later, true);
+    /* this press's own window phase is over (this runs on the box), so only a later press reaches it */
+    window.addEventListener('pointerdown', off, true);
+    const cap = setTimeout(off, 3000);   /* a lift the window never heard (a redraw took its target) */
+  }
+  /* a box of its own inside this one that can scroll (the Failures card's chips) keeps the finger for itself, as
+     the browser scrolls it */
+  function innerScroller(t) {
+    for (let n = t && t.nodeType === 1 ? t : t && t.parentElement; n && n !== el; n = n.parentElement) {
+      const cs = getComputedStyle(n);
+      if ((/(auto|scroll)/.test(cs.overflowY) && n.scrollHeight > n.clientHeight + 1) || (/(auto|scroll)/.test(cs.overflowX) && n.scrollWidth > n.clientWidth + 1)) return true;
+    }
+    return false;
+  }
   el.addEventListener('pointerdown', e => {
     if (arrangeMode) return;   /* arrange mode pans the SVG viewport itself */
     if (e.button !== 0 && e.pointerType === 'mouse') return;
+    const caught = !!raf;
+    /* ...and nothing under it takes the keyboard either (no focus ring left on a date box the finger only stopped on):
+       a cancelled press sends no mousedown, which is what would focus it */
+    if (caught) { halt(); swallowNextClick(); e.preventDefault(); }
     const t = e.target, tag = (t && t.tagName || '').toLowerCase();
-    if (tag === 'input' || tag === 'select' || tag === 'textarea' || tag === 'button' || tag === 'option' || (t && t.isContentEditable)) return;
-    if (t && t.closest && (t.closest('button') || t.closest('input') || t.closest('select') || t.closest('a') || t.closest('[data-rm]') || t.closest('[data-lull]'))) return;
-    if (skip && skip(e)) return;
-    st = { x: e.clientX, y: e.clientY, l: el.scrollLeft, t: el.scrollTop, moved: false, id: e.pointerId };
+    const off = tag === 'input' || tag === 'select' || tag === 'textarea' || tag === 'button' || tag === 'option' || (t && t.isContentEditable)
+      || (t && t.closest && (t.closest('button') || t.closest('input') || t.closest('select') || t.closest('a') || t.closest('[data-rm]') || t.closest('[data-lull]')))
+      || (skip && skip(e)) || innerScroller(t);
+    if (off) { if (caught) launch(0, 0); return; }   /* no drag starts here: a caught stretch springs back */
+    if (!gx) { const r = range(); gx = { p: el.scrollLeft, v: 0, max: r.x }; gy = { p: el.scrollTop, v: 0, max: r.y }; }
+    st = { x: e.clientX, y: e.clientY, px: gx.p, py: gy.p, moved: false, id: e.pointerId, finger: e.pointerType !== 'mouse',
+      /* in the scroll's direction: a finger moving up moves the view down the chart */
+      samples: [{ t: e.timeStamp, x: -e.clientX, y: -e.clientY }] };
   });
   el.addEventListener('pointermove', e => {
-    if (arrangeMode) { st = null; el.classList.remove('dragging'); return; }
-    if (pinching) { st = null; el.classList.remove('dragging'); return; }
+    if (arrangeMode || pinching) { if (st || gx) { st = null; el.classList.remove('dragging'); cancel(); } return; }
     if (!st || e.pointerId !== st.id) return;
     const dx = e.clientX - st.x, dy = e.clientY - st.y;
+    st.samples.push({ t: e.timeStamp, x: -e.clientX, y: -e.clientY });
+    if (st.samples.length > 3 && e.timeStamp - st.samples[1].t > 100) st.samples.shift();
     if (!st.moved) {
       if (Math.abs(dx) < 3 && Math.abs(dy) < 3) return; st.moved = true;
       el.classList.add('dragging'); try { el.setPointerCapture(st.id); } catch (_) {}
     }
-    el.scrollLeft = st.l - dx; el.scrollTop = st.t - dy;
+    let px = st.px - dx, py = st.py - dy;
+    if (!st.finger) { px = Math.min(gx.max, Math.max(0, px)); py = Math.min(gy.max, Math.max(0, py)); }   /* a mouse never stretches (D988) */
+    if (gx.max <= 0) px = 0;
+    if (gy.max <= 0) py = 0;
+    gx.p = px; gy.p = py; paint();
     e.preventDefault();
   });
   const stop = e => {
-    if (!st) return; const moved = st.moved; st = null; el.classList.remove('dragging');
+    if (!st) return; const { moved, finger, samples } = st; st = null; el.classList.remove('dragging');
     if (moved) { /* swallow the click that follows a drag */
       const kill = ev => { ev.stopPropagation(); ev.preventDefault(); };
       el.addEventListener('click', kill, { capture: true, once: true });
       setTimeout(() => el.removeEventListener('click', kill, true), 0);
     }
+    if (!finger) { cancel(); return; }
+    /* the speed at the lift; a cancelled touch (the browser took it) carries none — it only settles */
+    const v = moved && e && e.type === 'pointerup' ? liftVelocity(samples, e.timeStamp) : { vx: 0, vy: 0 };
+    launch(v.vx, v.vy);
   };
   el.addEventListener('pointerup', stop); el.addEventListener('pointercancel', stop); el.addEventListener('pointerleave', stop);
 }

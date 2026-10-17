@@ -563,7 +563,9 @@ pictures to him — a look does not report each instance, and nothing is recolou
 new thing and its fade (with no glow, §4), the picked-up look and landing flash of a drag (a month's bar wearing the ring
 shows no landing flash, §4), a new flag's flash, the board sliding up; a look does not report them.
 
-- **Quiet and quick:** about 150–240 thousandths of a second, easing out, no bounce.
+- **Quiet and quick:** about 150–240 thousandths of a second, easing out, no bounce. **One exception, his (D987):** the Tracker's finger glide
+  bounces at an end, like the iPhone's lists; and the glide, like the edge scroll, stays on for a reader who asked for less
+  motion — it is the scroll itself (D989).
 - **Only movement and fading** — never an effect that lays the page out again. **Nothing new on the week or the board's
   dense grid.** Never on something done many times a minute (typing, tapping a puck).
 - **Never animate "everything"** — name the properties (the app has no `transition: all`: keep it so).

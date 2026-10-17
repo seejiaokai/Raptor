@@ -4199,6 +4199,86 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   await pp.close();
 }
 
+/* ---- the finger glide (owner D985–D989, 17 Oct 26 — "I want the scroll to have acceleration and deceleration when I
+   scroll on my phone") ----
+   A finger flick carries the chart on after the lift and slows to a stop; past an end it stretches and springs back; a
+   press while it glides only stops it (a MOUSE press here — after a scripted flick the test browser sends no click for
+   the next FINGER tap at all, docs/walk-scripts.md §4); the app's own scroll wins; a mouse drag never glides. Real
+   fingers through Chromium's touch input. The motion's numbers: src/tracker/app/glide.test.ts. */
+{
+  const pp = await b.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  await openTracker(pp); await pp.waitForSelector('#flowSvg .ball'); await pp.waitForTimeout(400);
+  const cdp = await pp.context().newCDPSession(pp);
+  const top = () => pp.evaluate(() => { const b = document.getElementById('board'); return { y: b.scrollTop, tf: b.firstElementChild.style.transform }; });
+  const empty = () => pp.evaluate(() => {
+    const b = document.getElementById('board').getBoundingClientRect(), bot = Math.min(b.bottom, innerHeight);
+    for (let dy = 0; dy < 200; dy += 10) for (const s of [1, -1]) {
+      const x = b.left + b.width * 0.15, y = b.top + (bot - b.top) * 0.5 + s * dy, t = document.elementFromPoint(x, y);
+      if (t && document.getElementById('board').contains(t) && !t.closest('.ball') && !t.closest('.edgehit')) return { x, y };
+    }
+    return null;
+  });
+  const flick = async (dy, rest = 0) => {
+    const e = await empty();
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: e.x, y: e.y, id: 1 }] });
+    for (let i = 1; i <= 5; i++) { await pp.waitForTimeout(16); await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: e.x, y: e.y + dy * i / 5, id: 1 }] }); }
+    if (rest) await pp.waitForTimeout(rest);
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  };
+  await pp.evaluate(() => { document.getElementById('board').scrollTop = 1500; }); await pp.waitForTimeout(150);
+  await flick(-240); const lift = await top(); await pp.waitForTimeout(150); const on = await top();
+  await pp.waitForTimeout(2600); const rest1 = await top(); await pp.waitForTimeout(300); const rest2 = await top();
+  ok('glide: a finger flick carries the chart on after the lift, then stops (D985)', on.y > lift.y + 20 && rest1.y > on.y && rest1.y === rest2.y, JSON.stringify({ lift: lift.y, on: on.y, rest1: rest1.y, rest2: rest2.y }));
+  const a2 = await top(); await flick(-150, 150); const l2 = await top(); await pp.waitForTimeout(600); const r2 = await top();
+  ok('glide: a drag held still before the lift does not glide', Math.abs(r2.y - l2.y) <= 1 && l2.y > a2.y + 100, JSON.stringify({ start: a2.y, lift: l2.y, later: r2.y }));
+  /* a press on an event mid-glide stops it and opens nothing (D986) — at 100%, so an event is a target the moving chart
+     cannot slide out from under the pointer between aiming and pressing */
+  for (let i = 0; i < 8 && (await pp.textContent('#fzPct')) !== '100%'; i++) { await pp.evaluate(() => document.getElementById('fzIn').click()); await pp.waitForTimeout(120); }
+  await pp.evaluate(() => { document.getElementById('board').scrollTop = 3000; }); await pp.waitForTimeout(200);
+  await flick(-260); await pp.waitForTimeout(60);
+  const g = await pp.evaluate(() => { const bd = document.getElementById('board').getBoundingClientRect(); for (const g of document.querySelectorAll('#flowSvg .ball')) { const r = g.getBoundingClientRect(); if (r.top > bd.top + 150 && r.bottom < bd.bottom - 150 && r.left > bd.left + 10 && r.right < Math.min(bd.right, innerWidth) - 10) return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; } return null; });
+  const p0 = await top(); await pp.waitForTimeout(25); const p1 = await top();
+  /* what the press landed on, read as it lands (the chart is still moving under it) */
+  await pp.evaluate(() => { window.__pressOn = null; window.addEventListener('pointerdown', e => { const g = e.target.closest && e.target.closest('.ball'); window.__pressOn = g ? g.dataset.id : '(not an event)'; }, { capture: true, once: true }); });
+  await pp.mouse.click(g.x, g.y); await pp.waitForTimeout(100); const s1 = await top(); await pp.waitForTimeout(400); const s2 = await top();
+  const popped = await pp.evaluate(() => !!document.getElementById('pop')), on = await pp.evaluate(() => window.__pressOn);
+  ok('glide: a press on an event mid-glide stops it and opens nothing (D986)', p1.y > p0.y && on && on !== '(not an event)' && s1.y === s2.y && !popped, JSON.stringify({ gliding: [p0.y, p1.y], pressedOn: on, after: [s1.y, s2.y], popped }));
+  if (popped) { await pp.keyboard.press('Escape'); await pp.waitForTimeout(300); }
+  const g2 = await pp.evaluate(id => { const b = document.querySelector(`#flowSvg .ball[data-id="${id}"]`); if (!b) return null; const r = b.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; }, on);
+  await pp.mouse.click(g2.x, g2.y); await pp.waitForTimeout(500);
+  ok('glide: the next press on it opens it as normal', await pp.evaluate(() => !!document.getElementById('pop')));
+  await pp.keyboard.press('Escape'); await pp.waitForTimeout(300);
+  await pp.evaluate(() => document.getElementById('fzReset').click()); await pp.waitForTimeout(400);
+  /* a glide that meets the top runs past it and springs back to rest on it (D987) */
+  await pp.evaluate(() => { document.getElementById('board').scrollTop = 200; }); await pp.waitForTimeout(150);
+  await flick(220); let peak = 0;
+  for (let i = 0; i < 30; i++) { await pp.waitForTimeout(20); const t = await top(); const m = /translate\([-\d.]+px, ?([-\d.]+)px\)/.exec(t.tf); if (m) peak = Math.max(peak, +m[1]); }
+  await pp.waitForTimeout(800); const r3 = await top();
+  ok('glide: at the top it runs a little past and springs back, nothing left stretched (D987)', peak > 5 && peak < 200 && r3.y === 0 && r3.tf === '', JSON.stringify({ peak, rest: r3.y, tf: r3.tf }));
+  /* the app's own scroll wins (D989): a zoom press mid-glide — by its handler, not a finger (as above) */
+  await pp.evaluate(() => { document.getElementById('board').scrollTop = 1200; }); await pp.waitForTimeout(150);
+  await flick(-240); await pp.waitForTimeout(40);
+  await pp.evaluate(() => document.getElementById('fzIn').click()); await pp.waitForTimeout(100); const z1 = await top(); await pp.waitForTimeout(500); const z2 = await top();
+  ok('glide: the zoom pressed mid-glide stops it (D989)', z1.y === z2.y && z2.tf === '', JSON.stringify({ z1: z1.y, z2: z2.y }));
+  await pp.close();
+
+  /* a mouse drag never glides, however fast (D988) */
+  const dp = await b.newPage({ viewport: { width: 1440, height: 900 } });
+  await openTracker(dp); await dp.waitForSelector('#flowSvg .ball'); await dp.waitForTimeout(400);
+  await dp.evaluate(() => { document.getElementById('board').scrollTop = 600; }); await dp.waitForTimeout(150);
+  const m = await dp.evaluate(() => {
+    const b = document.getElementById('board').getBoundingClientRect();
+    for (let y = b.top + b.height * 0.5; y < b.bottom - 20; y += 10) { const t = document.elementFromPoint(b.left + 40, y); if (t && !t.closest('.ball') && !t.closest('.edgehit')) return { x: b.left + 40, y }; }
+    return null;
+  });
+  await dp.mouse.move(m.x, m.y); await dp.mouse.down();
+  for (let i = 1; i <= 5; i++) { await dp.mouse.move(m.x, m.y - 50 * i); await dp.waitForTimeout(16); }
+  await dp.mouse.up();
+  const dl = await dp.evaluate(() => document.getElementById('board').scrollTop); await dp.waitForTimeout(500); const dr = await dp.evaluate(() => document.getElementById('board').scrollTop);
+  ok('glide: a fast mouse drag stops where it is let go (D988)', dl === dr && dl >= 840, JSON.stringify({ lift: dl, later: dr }));
+  await dp.close();
+}
+
 /* ---- a pinch zooms about the fingers (owner, 23 Sep 26: "does not follow
    where my fingers open or close, it's like off to the top left") ----
    The pinch kept "the chart point under the fingers" as if the chart began at
