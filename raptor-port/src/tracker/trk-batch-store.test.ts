@@ -62,6 +62,7 @@ describe('D981 — a man deleted through Post out leaves the courses still runni
     expect((await storedList(c, syl)).some((r: any) => r.id === b), 'the man not deleted stays').toBe(true)
     expect(stored(marksKey), 'his marks are kept, out of sight — never erased (D290, D299)').toBe(true)
     expect(C.active, 'the picker is not left on him').not.toBe(a)
+    expect(await C.storedRecordForTests(`v3:${c}:lastStudent`), 'the course\'s "last graded" no longer names him').toBeFalsy()
   })
 
   it('every event done (DCO / DPCO / Marginal) or N.A.: he STAYS, his record kept', async () => {
@@ -99,9 +100,22 @@ describe('D981 — a man deleted through Post out leaves the courses still runni
     expect((await storedList(second, sylHere)).some((r: any) => r.id === d), 'and the course not on screen').toBe(false)
   })
 
+  it('tested ONCE, at the delete: a man who stayed is not taken off later, when his chart gains an event to do', async () => {
+    const c = C.course, syl = C.curSylId()
+    const id = C.roster.find((r: any) => r.pid === 'pgoC').id
+    expect(C.roster.find((r: any) => r.id === id).goneKept, 'marked as tested where he stayed').toBe(true)
+    /* a grade of his put back to Not done (as a chart gaining an event would leave him one to do) */
+    const m = { ...C.marks[id], [C.SYL[4].id]: { g: 0, f: 0 } }
+    C.marks[id] = m; await C.storeRecordForTests(`v3:${c}:${syl}:m:${id}`, JSON.stringify(m)); await settle()
+    setGonePeople(['pgoA', 'pgoC', 'pgoD', 'pgoLATER'])   /* someone else deleted later */
+    await C.whenLoaded(); await settle()
+    expect(C.roster.some((r: any) => r.id === id), 'he is still on his finished course').toBe(true)
+    expect((await storedList(c, syl)).some((r: any) => r.id === id), 'and on its stored list').toBe(true)
+  })
+
   it('the bridge only acts on a change: the same list again writes nothing', async () => {
     let n = 0; const off = wb.subscribe(() => { n++ })
-    setGonePeople(['pgoD', 'pgoC', 'pgoA'])   /* the same ids, another order */
+    setGonePeople(['pgoLATER', 'pgoD', 'pgoC', 'pgoA'])   /* the same ids, another order */
     await C.whenLoaded(); await settle(); off()
     expect(n, 'nothing saved').toBe(0)
   })

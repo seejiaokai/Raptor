@@ -865,7 +865,7 @@ move the raw measurement files and logs out of the repository (their fingerprint
 deleted without his word.
 
 ### [TRK-SAVE-FAIL-SAYS-SAVED] Inside Raptor the Tracker says "saved" when the save failed (filed 28 Sep 26)
-**BUILT 17 Oct 26 with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**BUILT 17 Oct 26 (TRK-SAVE-FAIL-SAYS-SAVED) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
 **Place:** low — with `[DB-READINESS]` (honest refusals and saves in small pieces are that batch's job). Found by the
 Tracker leftovers' walk (walker c, F3; pictures `…/walk/lo-2c-b07-1200.png`, `…-b07-390.png`): with storage refusing
 writes, ✓ Save changes turned the Tracker's corner green — "● syllabus “2026” saved …" — beside Raptor's "Not saved —
@@ -875,7 +875,7 @@ Tracker's save status follow the storage seam's real outcome (the whiteboard's p
 never reads "saved" anywhere.
 
 ### [TRK-KEY-NAME-CLIP] A longer student name on the left of the Students card's key is cut off at the card's edge (filed 30 Sep 26)
-**BUILT 17 Oct 26 with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**BUILT 17 Oct 26 (TRK-KEY-NAME-CLIP) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
 **Place:** low — with the next Tracker change. Seen by the `[DB-READINESS]` group A phase 5b walk
 (`raptor-port/docs/img/handpass/2026-09-30-dbr-phase5b/1-old-tracker-his-work.png` and `2-new-…`): with three students on
 a chart the key around the course ball puts the third name on the LEFT, and "HIS STUDENT" reads "IIS STUDENT" — its first
@@ -899,7 +899,7 @@ issuance), and an undo of an Unpublish a reissue too — the Amendment rows then
 reads of group B cover it.
 
 ### [TRK-IMPORT-ONE-GROUP] A Tracker Import is saved as many groups, not one (filed 30 Sep 26)
-**Left out of the Tracker batch (17 Oct 26), on purpose:** its own place is the database step (group B); nobody meets it today, and it touches the import that the night before's check had just cleared.
+**Waits for the database step — his word, D983 (17 Oct 26):** left out of the Tracker batch; nobody meets it today, and it touches the import the night before's check had just cleared.
 **Place:** with `[DB-READINESS]` group B (one changeset per command on the wire). Seen by the group-A FULL walk (W5 C4, C5,
 F1): ⇪ Import of a charts file wrote 7 rows in 9 change-log batches; a students file with a new course 11 rows in 6 —
 every row named (since the walk's fix of its bookkeeping rows, W5 finding 1), but one confirmed action is many saved
@@ -908,7 +908,7 @@ Export → wipe → Import). **Do:** gather the import's reads first, then write
 delete-chart pattern, `core.js delSyl`) — one group, one batch.
 
 ### [TRK-FIRST-ORDER-PLACE] A stale tab can undo the first save of the chart order (filed 30 Sep 26)
-**Left out of the Tracker batch (17 Oct 26), on purpose:** its own place is group B's live refresh; nobody meets it today.
+**Waits for the database step — his word, D983 (17 Oct 26):** left out of the Tracker batch; nobody meets it today (group B's live refresh closes most of it).
 **Place:** low — with group B's live refresh (which closes most of the stale window). Seen by the group-A FULL walk (W5
 E5): on a store where no chart has a place yet (the shipped charts are stored at the Tracker's first opening without
 one), the FIRST ⇅ Reorder syllabi places every chart; a second tab opened before it, adding a syllabus, places them all
@@ -918,7 +918,7 @@ every time. **Do:** give the shipped charts their places when the Tracker first 
 first reorder writes only the chart moved.
 
 ### [TRK-UNDO-WRITES-DEFAULTS] The first Tracker Undo of a mark stores a pace, lulls and dates nobody set (filed 30 Sep 26)
-**BUILT 17 Oct 26 with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**BUILT 17 Oct 26 (TRK-UNDO-WRITES-DEFAULTS) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
 **Place:** low — with the next Tracker change. Seen by the group-A FULL walk (W5 D2b, F2c; `scripts/handpass/dbrA-W5-probe3.mjs`):
 a fresh world, one mark, ↶ — the undo writes `…:pace:<student>` = `{epw:2}`, `…:lulls:<student>` = `[]`, the chart's dates
 record for him, and leaves his marks row as `{}` instead of removing it; later undos write only the mark. Nothing changes
@@ -997,7 +997,7 @@ action's. **Do:** word the line inside the command (its latched effects see the 
 …; logAction(di, wordsFrom(result)) })`.
 
 ### [TRK-REMOUNT-LANDING] Coming back to the Tracker the chart lands at its top corner, or with empty chart above (filed 28 Sep 26)
-**BUILT 17 Oct 26 with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**BUILT 17 Oct 26 (TRK-REMOUNT-LANDING — the landing after a Log out and in; the empty band above the first event is put to him, his 9 Sep ask being to centre) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
 **Place:** low — with the next Tracker change. Seen by the Tracker leftovers' walk, both walkers (walker a obs. 3 —
 the same person out and in, the chart jumps from the centred first ball to the top corner, scroll 73 → 396, phone
 36 → 352, `…/walk/lo-2a-D07b…`, `…-D07c…`; walker c — at 390 a reopened Tracker, centred on the last-marked ball, shows
@@ -1277,7 +1277,7 @@ grep the app for other "prototype" / "full build" / "Dataverse" words on screen.
 `[QUALS-MEMBER-SCOPE]` or any time.
 
 ### [TRK-FLEXBAR-INK] The Tracker's Currency & Flex bars print white words on green and amber — hard to read (filed 26 Sep 26)
-**BUILT 17 Oct 26 with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**BUILT 17 Oct 26 (TRK-FLEXBAR-INK) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
 **ANSWERED 17 Oct 26 — D982 ("As recommended", round 1):** dark words on the green, amber and red bars, white on grey; to build with the Tracker batch.
 Found by the `[TRK-PALETTE-ASK]` walk (evidence `raptor-port/docs/handpass/2026-09-26-trk-palette.md` §7 F4). The bars
 under Currency & Flex ("Current — no flex required", "1 Optional Flex", "Landing Current — No IP Required") are a
@@ -1482,7 +1482,7 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
 
 ### [POST-OUT-TRACKER] A deleted man and the Tracker's courses "still running" (D299 — approved, NOT built; filed 27 Sep 26)
-**BUILT 17 Oct 26 with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**BUILT 17 Oct 26 (POST-OUT-TRACKER) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
 **ANSWERED 17 Oct 26 — D981 ("As recommended", round 1):** he leaves every course on which he still has an event neither done nor N.A.; he stays, his record kept, where all of his are; to build with the Tracker batch.
 D299 lists "his place on any course still running — goes". The Tracker has no notion of a course "still running", and the
 build cannot decide what it means without him, so a deleted man is left on his Tracker courses, unlinked (his name as
@@ -2345,11 +2345,11 @@ known: whether the desktop app honours it — the night is the test. Optional co
 short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not changed for the trial (D70).
 
 ### [TRK-WIREBOARD-REPEAT] Every ball moved in Edit chart layout re-wires the chart, so a wheel step zooms n+1 times after n moves (found the night of 15 Oct 26 by the fresh Opus read of `[DRAG-EDGE-SCROLL-ELSEWHERE]`; older) — OPEN
-**BUILT 17 Oct 26 with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**BUILT 17 Oct 26 (TRK-WIREBOARD-REPEAT) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
 **Seen in the code, not walked:** `endDrag` (`src/tracker/app/core.js`) ends with `wireBoard()`, which adds the canvas's `wheel`, click and pan listeners again each time (named handlers are not doubled; arrow functions are). The bend square had the same fault and was fixed that night (`renderBoard()` on its release, F1). **Fix:** `renderBoard()` there too, or `wireBoard` marking what it has wired. **To do:** a test of the wheel after two moves, red first. **Place (the agent's):** with the next Tracker batch.
 
 ### [TRK-BALL-OFF-CHART-LEFT] A ball or line handle dropped left of or above the chart's start is cut off the chart outside Edit chart layout, and ⤢ Fit cannot bring it back (found the night of 15 Oct 26 by the round-two read; older) — OPEN
-**BUILT 17 Oct 26 with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**BUILT 17 Oct 26 (TRK-BALL-OFF-CHART-LEFT) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
 **Seen in the code:** the chart is drawn from 0 rightward and down only (`bounds()`); right after ⤢ Fit the view shows room left of and above it, and a thing dropped there gets a negative place. The night's edge pan was made to stop at the chart's start (F2), but a drop into that room needs no pan. **Fix:** clamp a dropped position to the chart's start (a ball's centre at least its radius) in the ball, group and line-handle moves. **To do:** a walk step, red first. **Place (the agent's):** with the next Tracker batch.
 
 ### [COMPACT-WHEN-MOD] A small sign in the Claude app that says how full the chat is and when it is a good moment to compact (his question, 14 Oct 26 — D857) — WIDENED 15 Oct 26 BY D868; BUILT 15 Oct 26 on his go (D870, D871), branch `claude/overnight-skill-c02843`, read by one fresh reader and fixed (design and read: `raptor-port/docs/superpowers/specs/2026-10-15-compact-when-ready.md`); APPROVED (D872 — the guard off whenever he is away); LIVE 15 Oct 26 (pull request 509); OPEN until the next new chat's four checks in the app (the design's §"Still untested")
@@ -2365,7 +2365,7 @@ short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not c
 **Found by `[DESIGN-LOOK-13OCT]`, not fixed — the question the design guide left open ("whether a keyboard can arm a puck is for the keyboard sweep to say", `raptor-port/docs/design-practices.md` §2): it cannot.** Every puck is drawn as a Tab stop (`raptor-port/src/ui/html.ts`) and wears the app's ring, but no key is heard on one: Enter, Space and Delete do nothing on the Scheduler Board or on Edit Schedule's week (`raptor-port/docs/mock/2026-10-13-design-look/keyboard.json`). So a scheduler at a desktop cannot move a man without the mouse, and Tab crosses hundreds of stops with nothing to do on any. **The shape to design (questions for him first — D541):** Enter or Space picks a puck up as a tap does on a phone (the app's own "armed" state), the seats that can take him are then the Tab stops, Enter puts him down, Escape lets go, Delete takes him off with Undo; the crew list reachable the same way. **Risk to weigh:** the dense week is swapped as text for speed (`raptor-port/docs/performance.md` Part 1) — the keys must ride the one listener the board already has, never one per puck. Tier WALK at least; a puck's drop is the schedule's main write.
 
 ### [TRK-KBD-CHART] The Tracker's chart and its marking pop-up cannot be used by keyboard (filed 13 Oct 26, the design look's K5, K6) — OPEN, a job of its own, his to place; older than the date boxes
-**BUILT 17 Oct 26 with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
+**BUILT 17 Oct 26 (TRK-KBD-CHART) with the Tracker batch (D495) on `claude/tracker-batch-d495-affb5f`, FULL-checked — `raptor-port/docs/handpass/2026-10-17-tracker-batch.md`; archived once his "merge live" lands.**
 **ANSWERED 17 Oct 26 — D980 ("As recommended", round 1):** one Tab into the chart, the arrows follow its lines, Enter opens marking with the keyboard inside, Escape back to the event; to build with the Tracker batch.
 **Found by `[DESIGN-LOOK-13OCT]`, not fixed — older than 13 Oct.** None of the chart's 210 events is a Tab stop, so an event cannot be opened or marked without a mouse or a finger; the marking pop-up, opened by a click, does not take the keyboard (Tab goes to the page behind it) and Escape closes it leaving the keyboard on nothing. The pop-up's two date boxes and the side panel's boxes and their ✕ DO work by keyboard (built 13 Oct). **To design:** how the keyboard walks a chart (by its arrows along the flow, not 210 Tab stops), Enter opening the pop-up with the keyboard inside it, Escape returning to the event. With the Tracker's next batch (D490).
 

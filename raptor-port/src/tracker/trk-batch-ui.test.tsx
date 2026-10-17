@@ -16,6 +16,7 @@ import * as core from './app/core.js'
 import Pop from './components/Pop.jsx'
 import SidePanel from './components/SidePanel.jsx'
 import { initStore, resetSession } from '../state/store'
+import { endTrackerSession } from './role.js'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 const C: any = core
@@ -28,6 +29,7 @@ async function render(el: any) {
   return { host, root }
 }
 const key = (el: Element, k: string, extra: any = {}) => act(async () => { el.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true, ...extra })) })
+const ringOf = (id: string) => document.querySelector(`#flowSvg .kbdring[data-id="${id}"]`) as SVGGElement | null
 const ball = (id: string) => [...document.querySelectorAll('#flowSvg .ball')].find(x => (x as HTMLElement).dataset.id === id) as SVGGElement | undefined
 const at = (id: string) => { const t = ball(id)!.getAttribute('transform')!; const m = /translate\(([-\d.]+),([-\d.]+)\)/.exec(t)!; return { x: +m[1] + 29, y: +m[2] + 29 } }
 const scale = () => { const m = /scale\(([\d.]+)\)/.exec(document.getElementById('viewport')!.getAttribute('transform') || ''); return m ? +m[1] : NaN }
@@ -73,14 +75,19 @@ describe('D980 — the chart by keyboard', () => {
     await key(board, 'ArrowRight')
     const id = C.kbdId
     expect(id).toBeTruthy()
-    expect(ball(id)!.querySelector('.kbdring'), 'the ring round the event the keyboard is on').toBeTruthy()
-    expect(ball(id)!.querySelector('.kbdring')!.getAttribute('stroke'), "the app's plain blue ring (D876)").toBe('#1E86FF')
+    expect(ringOf(id), 'the ring round the event the keyboard is on').toBeTruthy()
+    expect(ringOf(id)!.querySelector('circle')!.getAttribute('stroke'), "the app's plain blue ring (D876)").toBe('#1E86FF')
     expect(document.querySelectorAll('#flowSvg .kbdring'), 'one ring only').toHaveLength(1)
+    expect(ball(id)!.querySelector('.kbdring'), 'never inside the ball: a ball measures its own size and centre').toBeNull()
+    ;(document.activeElement as HTMLElement).blur(); C.renderBoard()
+    expect(document.querySelectorAll('#flowSvg .kbdring'), 'the chart drawn while the keyboard is elsewhere: no ring').toHaveLength(0)
+    board.focus()
+    expect(ringOf(id), 'back on the chart: the ring again').toBeTruthy()
     await key(board, 'Enter'); await act(async () => { await tick() })
     expect(C.pop && C.pop.id, 'the pop-up opens on that event').toBe(id)
     const g = C.gradeOf(C.active, id) || 0
     expect((document.activeElement as HTMLElement).dataset.g, 'the keyboard is on its grade as it is').toBe(g === 0 ? '0' : g)
-    expect(ball(id)!.querySelector('.kbdring'), 'the event being marked keeps its ring while the pop-up is up').toBeTruthy()
+    expect(ringOf(id), 'the event being marked keeps its ring while the pop-up is up').toBeTruthy()
     /* Tab stays inside the pop-up */
     const pop = document.getElementById('pop')!
     const all = [...pop.querySelectorAll('button')], last = all[all.length - 1]!; last.focus()
@@ -92,7 +99,7 @@ describe('D980 — the chart by keyboard', () => {
     expect(C.pop, 'Escape closes it').toBeNull()
     expect(document.activeElement, 'the keyboard is back on the chart').toBe(board)
     expect(C.kbdId).toBe(id)
-    expect(ball(id)!.querySelector('.kbdring'), 'on the same event').toBeTruthy()
+    expect(ringOf(id), 'on the same event').toBeTruthy()
     host.remove()
   })
 
@@ -241,6 +248,15 @@ describe('D980 — the scenario designer\'s cases (17 Oct 26)', () => {
     board.focus(); await key(board, 'Enter'); await act(async () => { await tick() })
     ;(document.activeElement as HTMLElement).blur(); document.body.focus()
     await act(async () => { C.closePop(); await tick() })
+    expect(document.querySelectorAll('#flowSvg .kbdring')).toHaveLength(0)
+    host.remove()
+  })
+  it('a session that ends with a keyboard pop-up up leaves no keyboard state for the next person: no ring after the next draw', async () => {
+    const { host } = await render(<Live draw={() => <Pop />} />)
+    board.focus(); await key(board, 'Enter'); await act(async () => { await tick() })
+    await act(async () => { endTrackerSession(); await tick() })
+    ;(document.activeElement as HTMLElement)?.blur?.()
+    await act(async () => { C.renderBoard(); await tick() })
     expect(document.querySelectorAll('#flowSvg .kbdring')).toHaveLength(0)
     host.remove()
   })

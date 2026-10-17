@@ -109,6 +109,8 @@ function endSession() {
   failLog = null; lullPick = null; lullCopy = null;
   infoId = null; editId = null; ordMode = null; sylModalOpen = false; showAllOpen = false; copyOpen = false;
   showDetails = false; hideDetailBubble(); toolsOpen = false;
+  /* the keyboard's place on the chart is the person leaving's too (D980 — the fresh code read's finding 4) */
+  kbdShown = false; popByKey = false; infoByKey = false; kbdCame = null; paintKbdRing();
   /* the save words belong to the person leaving: the next one's place (D376) is not the
      course they named (the leftovers' walk, walker a F1 — "● switched to 26ABSG" over
      someone else's course) */
@@ -857,7 +859,7 @@ export function resumeForPerson() {
   if (resuming) return true;
   if (whoamiId() === pickOwner) return false;
   if (sylDirty) return false;
-  resuming = true; pop = null; hideDetailBubble();
+  resuming = true; pop = null; popByKey = false; hideDetailBubble();
   notify();
   onChain(async () => {
     const w = whoamiId();
@@ -1934,7 +1936,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
      under "undefined" — and nobody is on screen. */
   if (c == null) {
     course = null; roster = []; marks = {}; dates = {}; lulls = {}; lastEdit = {}; pace = {}; active = null;
-    undoStack = []; redoStack = []; pop = null; loading = false;
+    undoStack = []; redoStack = []; pop = null; popByKey = false; loading = false;
     return;
   }
   loading = true;
@@ -1949,7 +1951,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
      press on the dropdown closes it (the outside-click rule), but a KEYBOARD
      switch has no press — it left the pop-up up over the new chart, where its
      buttons would grade that chart's same-code ball ([HUMAN-RETEST] F13). */
-  pop = null; hideDetailBubble();
+  pop = null; popByKey = false; hideDetailBubble();
   /* History belongs to the chart it was recorded on. Switching COURSE never
      went through clearDirty, so an Undo pressed afterwards stamped the old
      course's chart onto the new one's syllabus and saved it immediately. */
@@ -3315,9 +3317,19 @@ export function resetFlowZoom() {
   const target = flowZoom; flowZoom = keep;
   setFlowZoom(target); zoomIsMine = false;
 }
+/* EACH PART OF THE CHART IS WIRED ONCE ([TRK-WIREBOARD-REPEAT], 17 Oct 26). A ball's release wires the chart again, for
+   the lines its drag redrew (flushDragPaint rebuilds the edge layer — new hit lines with no listeners); every other part
+   was wired a second time too (named handlers are not doubled; the arrow functions were), so after n moves one wheel step
+   zoomed n+1 times and a Connect or Text click ran twice. Now an element already wired is passed over. (The batch first
+   redrew the whole chart at the release instead; the Tracker suite's phone check "✓ Done editing chart keeps the middle"
+   caught that redraw moving the editing canvas, so it was taken back.) */
+const WIRED = new WeakSet();
+function wireOnce(el) { if (!el || WIRED.has(el)) return false; WIRED.add(el); return true; }
 function wireBoard() {
   const svg = document.getElementById('flowSvg');
+  const svgFresh = wireOnce(svg);
   document.querySelectorAll('#flowSvg .ball').forEach(g => {
+    if (!wireOnce(g)) return;
     if (arrangeMode) {
       g.style.touchAction = 'none';
       g.addEventListener('pointerdown', startDrag);
@@ -3331,6 +3343,7 @@ function wireBoard() {
   });
   if (arrangeMode) {
     document.querySelectorAll('#flowSvg .edgehit').forEach(p => {
+      if (!wireOnce(p)) return;
       p.addEventListener('click', async e => {
         e.stopPropagation();
         const pr = p.dataset.p, ch = p.dataset.c, k = ekey(pr, ch);
@@ -3347,7 +3360,7 @@ function wireBoard() {
     });
     /* drag the orange bend handle (Edit lines) */
     const lh = document.querySelector('#flowSvg .linehandle');
-    if (lh && selEdge) {
+    if (lh && selEdge && wireOnce(lh)) {
       lh.addEventListener('pointerdown', e => {
         if (pinching) return;   /* a second finger starts nothing: it is a pinch */
         e.stopPropagation();
@@ -3379,6 +3392,7 @@ function wireBoard() {
     }
     /* drag a line end onto a blue N/E/S/W point to snap / reconnect */
     document.querySelectorAll('#flowSvg .endhandle').forEach(h => {
+      if (!wireOnce(h)) return;
       h.addEventListener('pointerdown', e => {
         if (pinching) return;
         e.stopPropagation(); const end = h.dataset.end, pid = e.pointerId;
@@ -3394,6 +3408,7 @@ function wireBoard() {
       });
     });
     document.querySelectorAll('#flowSvg .linehit').forEach(h => {
+      if (!wireOnce(h)) return;
       h.addEventListener('dblclick', e => {
         if (tool !== 'editlines') return;
         e.preventDefault(); e.stopPropagation();
@@ -3410,6 +3425,7 @@ function wireBoard() {
       });
     });
     document.querySelectorAll('#flowSvg .lvert').forEach(h => {
+      if (!wireOnce(h)) return;
       h.addEventListener('pointerdown', e => {
         if (pinching) return;
         e.stopPropagation(); e.preventDefault();
@@ -3438,6 +3454,7 @@ function wireBoard() {
       });
     });
     document.querySelectorAll('#flowSvg .lend').forEach(h => {
+      if (!wireOnce(h)) return;
       h.addEventListener('pointerdown', e => {
         if (pinching) return;
         e.stopPropagation(); e.preventDefault();
@@ -3475,10 +3492,10 @@ function wireBoard() {
         window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     });
-  } else {
+  } else if (svgFresh) {
     svg.addEventListener('pointerdown', e => { if (!e.target.closest('.ball')) hideDetailBubble(); });
   }
-  if (arrangeMode) {
+  if (arrangeMode && svgFresh) {
     /* arrange: pan the viewport transform, wheel to zoom */
     svg.addEventListener('pointerdown', e => {
       if (pinching) return;   /* the second finger of a pinch: no pan, no box, no line end */
@@ -3758,7 +3775,10 @@ function enableHScroll(el) {
     if (e.key === 'Home') { el.scrollLeft = 0; e.preventDefault(); }
     else if (e.key === 'End') { el.scrollLeft = el.scrollWidth; e.preventDefault(); }
   });
-  el.addEventListener('focus', () => { let fv = true; try { fv = el.matches(':focus-visible'); } catch (_) {} kbdShown = fv; if (fv) { kbdLand(); paintKbdRing(); kbdKeepInView(); } });
+  /* a mouse press that gives the chart the focus takes the ring away at once (the fresh code read's finding 3) */
+  /* never in Edit chart layout: there the board's scroll is the editing canvas's place (the Tracker suite's "Done editing
+     keeps the middle" check caught a focus scrolling it, 17 Oct 26) */
+  el.addEventListener('focus', () => { if (arrangeMode) { kbdShown = false; return; } let fv = true; try { fv = el.matches(':focus-visible'); } catch (_) {} kbdShown = fv; if (fv) kbdLand(); paintKbdRing(); if (fv) kbdKeepInView(); });
   /* the keyboard leaving for the pop-up it opened keeps the ring on, so the event being marked stays marked */
   el.addEventListener('blur', () => { if (pop && popByKey) return; kbdShown = false; paintKbdRing(); });
 }
@@ -3783,20 +3803,27 @@ function kbdLand() {
   const rec = lastEdit[active];
   kbdId = (rec && rec.event && rec.syl === curSyl() && byid[rec.event]) ? rec.event : firstEventId();
 }
-/* the ring, drawn inside the ball's own group so it moves with it; renderBoard redraws the chart, so it calls this too */
+/* the ring, on the chart's overlay layer at the ball's own place — NEVER inside the ball's group: a ball measures its
+   own size and centre (the landing, a pinch's anchor, the Tracker suite's "keeps the middle" checks), and a ring inside
+   it made it measure 24px wider (the suite caught it, 17 Oct 26). Drawn only while the keyboard is really on the chart, or
+   in the pop-up it opened from there. renderBoard redraws the chart, so it calls this too. */
 function paintKbdRing() {
   if (typeof document === 'undefined') return;
   document.querySelectorAll('#flowSvg .kbdring').forEach(n => n.remove());
   if (!kbdShown || arrangeMode || !kbdId) return;
-  const g = kbdBall(kbdId); if (!g) return;
-  const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-  c.setAttribute('class', 'kbdring'); c.setAttribute('cx', '29'); c.setAttribute('cy', '29'); c.setAttribute('r', (58 * 0.47 + 12).toFixed(2));
-  c.setAttribute('fill', 'none'); c.setAttribute('stroke', KBD_RING); c.setAttribute('stroke-width', '2'); c.setAttribute('pointer-events', 'none');
-  g.appendChild(c);
+  const a = document.activeElement;
+  if (!((a && a.id === 'board') || (pop && popByKey))) return;
+  const g = kbdBall(kbdId), layer = document.getElementById('overlayLayer'); if (!g || !layer) return;
+  const NS = 'http://www.w3.org/2000/svg', wrap = document.createElementNS(NS, 'g'), c = document.createElementNS(NS, 'circle');
+  wrap.setAttribute('class', 'kbdring'); wrap.setAttribute('data-id', kbdId); wrap.setAttribute('transform', g.getAttribute('transform') || '');
+  wrap.setAttribute('pointer-events', 'none');
+  c.setAttribute('cx', '29'); c.setAttribute('cy', '29'); c.setAttribute('r', (58 * 0.47 + 12).toFixed(2));
+  c.setAttribute('fill', 'none'); c.setAttribute('stroke', KBD_RING); c.setAttribute('stroke-width', '2');
+  wrap.appendChild(c); layer.appendChild(wrap);
 }
 /* the least scroll that brings the ringed event inside the chart's box, a little clear of its edges */
 function kbdKeepInView() {
-  const bd = document.getElementById('board'), g = kbdBall(kbdId); if (!bd || !g) return;
+  const bd = document.getElementById('board'), g = kbdBall(kbdId); if (!bd || !g || arrangeMode) return;
   const r = g.getBoundingClientRect(), b = bd.getBoundingClientRect(), m = 28;
   if (r.top < b.top + m) bd.scrollTop -= (b.top + m) - r.top; else if (r.bottom > b.bottom - m) bd.scrollTop += r.bottom - (b.bottom - m);
   if (r.left < b.left + m) bd.scrollLeft -= (b.left + m) - r.left; else if (r.right > b.right - m) bd.scrollLeft += r.right - (b.right - m);
@@ -4075,10 +4102,8 @@ function drawGuides() {
 function endDrag(ev) {
   if (!drag) return; const g = drag.g; if (fingerStop === drag.stop) fingerStop = null; drag.fe.stop();
   g.removeEventListener('pointermove', onDrag); g.removeEventListener('pointerup', endDrag); g.removeEventListener('pointercancel', endDrag);
-  /* drawn again, not wired again ([TRK-WIREBOARD-REPEAT], 17 Oct 26): wireBoard on the SAME chart added its wheel, click
-     and pan listeners a second time (named handlers are not doubled; the arrow functions are), so after n moves one
-     wheel step zoomed n+1 times and a Connect or Text click ran twice — as the group drag and the bend square do */
-  const moved = drag.moved; drag = null; alignGuides = []; flushDragPaint(); const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = ''; perfOff(); if (moved) { saveLayout(); renderBoard(); }
+  /* wired again for the lines the drag redrew — and only those (wireOnce, [TRK-WIREBOARD-REPEAT]) */
+  const moved = drag.moved; drag = null; alignGuides = []; flushDragPaint(); const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = ''; perfOff(); if (moved) { saveLayout(); wireBoard(); }
 }
 
 /* ---------- inline ball editor (text / colour / number) — state for <EditModal/> ---------- */
@@ -4499,13 +4524,11 @@ export function scrollToEvent(id) {
   if (kbdId !== id) kbdCame = null;
   kbdId = id; paintKbdRing();
   const r = g.getBoundingClientRect(), b = bd.getBoundingClientRect();
-  /* ...centred as far as the chart allows, but never with the empty slack above or left of the chart's start in view
-     ([TRK-REMOUNT-LANDING], 17 Oct 26): the slack exists so an event anywhere can come to the middle (padBoard), yet an
-     event near the top was centred with that much empty space over it — about 240px on a phone above ST-01. Scrolled at
-     least the slack's own depth, the chart's first row sits at the top of the view instead, and nothing of the chart is
-     lost from sight to make room for nothing. */
-  bd.scrollTop = Math.max(boardPad.y, bd.scrollTop + (r.top + r.height / 2) - (b.top + b.height / 2));
-  bd.scrollLeft = Math.max(boardPad.x, bd.scrollLeft + (r.left + r.width / 2) - (b.left + b.width / 2));
+  /* (Centred, the slack included — his 9 Sep 26 ask, "centralise the view if its possible". The Tracker batch first held a
+     landing at the chart's start so no empty band showed above the first event; the Tracker suite's two centring checks
+     caught it overriding his ask, so it was taken back, and the band is put to him with pictures instead — 17 Oct 26.) */
+  bd.scrollTop += (r.top + r.height / 2) - (b.top + b.height / 2);
+  bd.scrollLeft += (r.left + r.width / 2) - (b.left + b.width / 2);
   return true;
 }
 /* WHERE THE CHART LANDS — on the picked student's latest work, else the chart's first event (owner, 9 Sep 26: "when u pick a
@@ -5033,7 +5056,12 @@ async function removeStudentNow(v) {
    "Leaves" is his place on the list, nothing more: his marks, dates, pace and lull periods stay stored, out of sight, as
    an import keeps a dropped ball's marks (D132) — the past keeps its record of him (D299), and his row is never erased
    (D290); unlike the Students card's Remove, which asks and deletes them. A delete is not undone (D350), so there is no
-   way back to plan for. A course whose names are still being moved to ids (rosterHeld) is not touched until they are. */
+   way back to plan for. A course whose names are still being moved to ids (rosterHeld) is not touched until they are.
+   ONCE, AT THE DELETE (the fresh code read of 17 Oct 26, its finding 1): a man who STAYS is marked so on his own entry in
+   that course's lists (`goneKept`), and is never tested there again — a chart edited later (D474), a newly shipped event
+   or a grade put back must not take a finished man off his finished course on some later start. A course restored or
+   imported without the mark gets its own first test. And the course's "last graded" pointer is cleared when it names the
+   man who left (its finding 2), as the Students card's Remove does. */
 export function leaveRunningCourses() {
   if (!ready || bootError || !getGonePeople().length) return Promise.resolve(0);
   return onChain(() => leaveRunningCoursesNow(new Set(getGonePeople())));
@@ -5052,22 +5080,25 @@ async function leaveRunningCoursesNow(gone) {
     const charts = [];
     for (const n of await storeSylIds(c)) {
       const list = here(n) ? roster.slice() : sParse(await sGet(kRosterFor(c, n)), [], 'array').filter(isEntry);
-      if (list.some(e => e.pid && gone.has(e.pid))) charts.push({ n, list });
+      if (list.some(e => e.pid && gone.has(e.pid) && !e.goneKept)) charts.push({ n, list });
     }
     if (!charts.length) continue;
     const leaving = new Set();
     for (const { n, list } of charts) {
       const evs = sylSource(n); if (!Array.isArray(evs)) continue;
       for (const e of list) {
-        if (!e.pid || !gone.has(e.pid) || leaving.has(e.id)) continue;
+        if (!e.pid || !gone.has(e.pid) || e.goneKept || leaving.has(e.id)) continue;
         const m = here(n) ? (marks[e.id] || {}) : sParse(await sGet(kMarksFor(c, n, e.id)), {}, 'object');
         if (evs.some(ev => { const g = m[ev.id] && m[ev.id].g; return !DONE.has(g) && g !== 'na'; })) leaving.add(e.id);
       }
     }
-    if (!leaving.size) continue;
+    const lastS = await sGet(kLastStudent(c));
     trkGesture(() => {
       for (const { n, list } of charts) {
-        const keep = list.filter(e => !leaving.has(e.id)); if (keep.length === list.length) continue;
+        /* who leaves goes; a deleted man who stays is marked tested on this list */
+        let marked = false;
+        const keep = list.filter(e => !leaving.has(e.id)).map(e => (e.pid && gone.has(e.pid) && !e.goneKept) ? (marked = true, { ...e, goneKept: true }) : e);
+        if (keep.length === list.length && !marked) continue;
         if (!here(n)) { sSet(kRosterFor(c, n), JSON.stringify(keep)); continue; }
         /* the chart on screen: as the Students card's Remove leaves it, but nothing of his record is deleted */
         roster = keep; for (const v of leaving) { delete marks[v]; delete dates[v]; }
@@ -5077,6 +5108,7 @@ async function leaveRunningCoursesNow(gone) {
         if (leaving.has(active)) active = roster[0] ? roster[0].id : null;
         sSet(kRosterFor(c, n), JSON.stringify(roster));
       }
+      if (lastS && leaving.has(lastS)) delKey(kLastStudent(c));
     });
     if (c === course && leaving.has(prefGet(pickKey('lastCrew:' + c)))) prefSet(pickKey('lastCrew:' + c), '');
     left += leaving.size;

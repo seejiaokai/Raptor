@@ -142,6 +142,26 @@ None in the console or page across the walk (the forced storage refusal of S log
 
 ## 12. The reads
 
+Two fresh Opus helpers that did not write the code (D790; Fable not — D903; without Astra and Sol 6.1 → `[NO-ASTRA-LIST]`).
+- **The scenario designer** (before the walk, asked for what is MISSING): 26 scenarios. Its finds, each fixed red-first
+  and walked: Enter twice saved a mark of nothing (K11b); ✎ Edit details left the chart listening (K11c, K11d); the date
+  box's two Escapes (K11e — held already); a click elsewhere left the ring (K11f); the keyboard did not follow a search
+  (K11g); a deleted man on screen at the start (P2.3, P2.4); wide names (N2); **13 events no arrow could reach** (the
+  branches rule — every state walked in a test, K11h). Set aside, each with its reason in §11.
+- **The blind code read** (after the walk, the sheet in hand): no HIGH; one MED, three LOW, each fixed with a test:
+  1. MED — a deleted man who STAYED on a finished course was tested again on every later start, so a chart edit (D474)
+     or a grade put back could take him off later: now tested ONCE, at the delete — he carries `goneKept` on his entry
+     there (`trk-batch-store.test.ts` "tested ONCE"); a course restored or imported gets its own first test.
+  2. LOW — the course's "last graded" pointer was left on the man who left: cleared, as Remove does (same file, P1's test).
+  3. LOW — a mouse press on the chart while a keyboard pop-up was up left the ring: the chart's focus repaints (walk K16).
+  4. LOW — a Log out with a keyboard pop-up up left the keyboard's state for the next person: the session's end clears
+     it (`trk-batch-ui.test.tsx`; walk K17).
+  Its roll-call absences, answered: a restorable (deleted) course is tested when restored — the mark is per entry; the
+  + Add and Show All jumps go through the same landing (`scrollToEvent`) — the keyboard follows them as it follows a
+  search; Details mode's brief stays on the event it was shown for while the arrows move on — Enter shows the next one; left as built (not checked how a mouse user's bubble behaves meanwhile);
+  the top bar's Undo on another page after a Post out — a Tracker command is never in the other pages' Undo (not this change).
+  The fixes are new code (§5 of the order): one narrow round — the re-walk below, and their breaks (§9).
+
 ## 13. The gates
 
 ## 14. Before and after — for him

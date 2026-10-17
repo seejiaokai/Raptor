@@ -17,7 +17,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms))
 const tag = s => (s === PHONE ? 'phone' : 'desk')
 
 /* the event a ball id is, ringed by the keyboard? */
-const ringOn = page => page.evaluate(() => { const r = document.querySelector('#flowSvg .kbdring'); return r ? { id: r.closest('.ball').dataset.id, n: document.querySelectorAll('#flowSvg .kbdring').length, stroke: r.getAttribute('stroke'), sw: r.getAttribute('stroke-width'), filter: getComputedStyle(r).filter } : null })
+const ringOn = page => page.evaluate(() => { const w = document.querySelector('#flowSvg .kbdring'), r = w && w.querySelector('circle'); return r ? { id: w.dataset.id, n: document.querySelectorAll('#flowSvg .kbdring').length, stroke: r.getAttribute('stroke'), sw: r.getAttribute('stroke-width'), filter: getComputedStyle(r).filter } : null })
 const focusIs = page => page.evaluate(() => { const a = document.activeElement; return a ? (a.id || (a.dataset && a.dataset.g ? 'grade:' + a.dataset.g : a.tagName)) : null })
 const ballBox = (page, id) => page.evaluate(i => { const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === i); const bd = document.getElementById('board'); if (!g || !bd) return null; const r = g.getBoundingClientRect(), b = bd.getBoundingClientRect(); return { inView: r.top >= b.top - 1 && r.bottom <= b.bottom + 1 && r.left >= b.left - 1 && r.right <= b.right + 1, top: r.top - b.top } }, id)
 const landing = page => page.evaluate(() => {
@@ -188,6 +188,15 @@ if (want('K')) {
   /* the keyboard follows where the chart lands for the student picked (the scenario designer's 6): the next arrow starts there, never yanking the view back */
   const k15 = await ringOn(page)
   L.ok('K15 after a crew change the keyboard is on the event the chart landed on, in view', !!k15 && (await ballBox(page, k15.id)).inView, `was on ${evc}, now ${JSON.stringify(k15)}`)
+  /* the fresh code read's 3 and 4: a mouse press on the chart while a keyboard pop-up is up; a Log out with one up */
+  await page.locator('#board').focus(); await page.keyboard.press('Enter'); await sleep(450)
+  const bb = await page.evaluate(() => { const r = document.getElementById('board').getBoundingClientRect(); return { x: r.left + 30, y: r.top + 30 } })
+  await page.mouse.click(bb.x, bb.y); await sleep(400)
+  L.ok('K16 a keyboard pop-up, then a mouse press on empty chart: the pop-up closes and no ring is left', (await page.locator('#pop').count()) === 0 && !(await ringOn(page)), JSON.stringify(await ringOn(page)))
+  await page.locator('#board').focus(); await page.keyboard.press('ArrowDown'); await page.keyboard.press('Enter'); await sleep(450)
+  await logout(page); await login(page); await toTracker(page); await sleep(700)
+  L.ok('K17 Log out with a keyboard pop-up up, and back in: no ring on the chart until the keyboard comes to it', !(await ringOn(page)), JSON.stringify(await ringOn(page)))
+  await shot(page, 'K17-after-relogin-no-ring')
   L.note('K console/page errors', errors.join(' | '))
   allErrors.push(...errors.map(e => 'K: ' + e))
   await browser.close()
