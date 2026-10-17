@@ -23,7 +23,7 @@ if (!process.env.HP_URL) { console.error('HP_URL not set — give the address of
   if (!served || served !== 'assets/' + local) { console.error(`the preview at ${process.env.HP_URL} serves ${served}, this checkout built assets/${local} — not this build`); process.exit(2) }
 }
 const { open, shot, save, PHONE, DESK } = await import('./trk-lib.mjs')
-console.log('trk-glide-walk v20 —', process.env.HP_URL)
+console.log('trk-glide-walk v22 —', process.env.HP_URL)
 
 const rows = []
 const note = (id, name, pass, detail) => { rows.push({ id, name, pass, detail }); console.log(`${pass === null ? 'NOT WALKED' : pass ? 'PASS' : 'FAIL'}  ${id} ${name}  ${JSON.stringify(detail)}`) }
@@ -58,6 +58,8 @@ const emptyAt = (page, fx = 0.15, fy = 0.5) => page.evaluate(([fx, fy]) => {
 async function settle(page, cdp) {
   await page.keyboard.press('Escape'); await wait(150); await page.keyboard.press('Escape'); await wait(150)
   const z = await emptyAt(page); if (z) { await tap(cdp, z.x, z.y); await wait(300) }
+  /* the chart can shift under the point (the keyboard ring brought back by Escape scrolls it): a pop-up the tap opened goes too */
+  if (await page.evaluate(() => !!document.getElementById('pop'))) { await page.keyboard.press('Escape'); await wait(250) }
 }
 /* the ball nearest the middle of the board, fully in view */
 const ballMid = (page, inset = 20) => page.evaluate(inset => {
@@ -138,11 +140,19 @@ const ballMid = (page, inset = 20) => page.evaluate(inset => {
      browser sends no click for the next finger tap at all (counted at the window, before the app — walk-scripts.md §4;
      shown 17 Oct 26 by a probe), and a mouse press does not clear that. Not a phone's behaviour. */
   await settle(page, cdp)
-  const b5 = await ballMid(page)
-  await tap(cdp, b5.x, b5.y); await wait(500)
-  const opened5 = await popOpen(page)
+  /* the click is counted at the window, before the app: a tap the TEST browser sent no click for (its flick quirk) is
+     tried again — only a tap whose click was sent and still opened nothing is the app's */
+  let b5, opened5 = false, sent5 = 0, tries5 = 0
+  if (await popOpen(page)) { await page.keyboard.press('Escape'); await wait(250) }   /* start with nothing open */
+  for (; tries5 < 3 && !opened5; tries5++) {
+    b5 = await ballMid(page, 60)
+    await page.evaluate(() => { window.__clicks = 0; window.addEventListener('click', () => window.__clicks++, { capture: true, once: true }) })
+    await tap(cdp, b5.x, b5.y); await wait(500)
+    opened5 = await popOpen(page); sent5 = await page.evaluate(() => window.__clicks)
+    if (sent5) break
+  }
   await shot(page, 'g5-phone-second-tap-opens')
-  note('G5', 'phone chart: the next tap on an event opens its marking pop-up', opened5, { ball: b5.id, popOpened: opened5 })
+  note('G5', 'phone chart: the next tap on an event opens its marking pop-up', opened5, { ball: b5.id, popOpened: opened5, clickSent: sent5, tries: tries5 + 1 })
   await page.keyboard.press('Escape'); await wait(300)
   if (await popOpen(page)) { await page.evaluate(() => document.querySelector('#pop button:last-child')?.click()); await wait(300) }
 
@@ -264,6 +274,20 @@ const ballMid = (page, inset = 20) => page.evaluate(inset => {
     await page.keyboard.press('End'); await wait(80)
     const b16 = await pos(page, '#board'); await wait(600); const c16 = await pos(page, '#board')
     note('G16', 'chart: End pressed mid-glide goes to the right end and the glide stops there', b16.x > 0 && c16.x === b16.x && c16.y === b16.y && c16.tf === '', { beforeEnd: [a16.x, a16.y], rightAfter: [b16.x, b16.y], later: [c16.x, c16.y], maxX: c16.maxX })
+    await page.evaluate(() => document.getElementById('fzReset').click()); await wait(400)
+  }
+  /* G16b — End pressed while the chart bounces at its top: the chart goes to its right end and stays (the spring does
+     not write the old place back — the fix read's finding 3) */
+  {
+    for (let i = 0; i < 12 && (await page.textContent('#fzPct')) !== '200%'; i++) { await page.evaluate(() => document.getElementById('fzIn').click()); await wait(120) }
+    await page.evaluate(() => { const b = document.getElementById('board'); b.scrollTop = 150; b.scrollLeft = 0; b.focus({ preventScroll: true }) }); await wait(200)
+    const e16 = await emptyAt(page, 0.1, 0.4)
+    await finger(cdp, { x: e16.x, y: e16.y, dy: 200, steps: 5 })
+    let st16 = false
+    for (let i = 0; i < 15 && !st16; i++) { await wait(10); st16 = /translate/.test((await pos(page, '#board')).tf) }
+    await page.keyboard.press('End'); await wait(60)
+    const b16 = await pos(page, '#board'); await wait(900); const c16 = await pos(page, '#board')
+    note('G16b', 'chart: End pressed mid-bounce goes to the right end and stays', st16 && b16.x > 0 && c16.x === b16.x && c16.tf === '', { stretchedWhenPressed: st16, rightAfter: [b16.x, b16.y], later: [c16.x, c16.y], tf: c16.tf })
     await page.evaluate(() => document.getElementById('fzReset').click()); await wait(400)
   }
   /* G13 — a tap on an event with no glide running opens it, as always */

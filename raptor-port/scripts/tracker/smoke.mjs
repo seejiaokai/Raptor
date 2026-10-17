@@ -4241,10 +4241,10 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   /* what the press landed on, read as it lands (the chart is still moving under it) */
   await pp.evaluate(() => { window.__pressOn = null; window.addEventListener('pointerdown', e => { const g = e.target.closest && e.target.closest('.ball'); window.__pressOn = g ? g.dataset.id : '(not an event)'; }, { capture: true, once: true }); });
   await pp.mouse.click(g.x, g.y); await pp.waitForTimeout(100); const s1 = await top(); await pp.waitForTimeout(400); const s2 = await top();
-  const popped = await pp.evaluate(() => !!document.getElementById('pop')), on = await pp.evaluate(() => window.__pressOn);
-  ok('glide: a press on an event mid-glide stops it and opens nothing (D986)', p1.y > p0.y && on && on !== '(not an event)' && s1.y === s2.y && !popped, JSON.stringify({ gliding: [p0.y, p1.y], pressedOn: on, after: [s1.y, s2.y], popped }));
+  const popped = await pp.evaluate(() => !!document.getElementById('pop')), pressedOn = await pp.evaluate(() => window.__pressOn);
+  ok('glide: a press on an event mid-glide stops it and opens nothing (D986)', p1.y > p0.y && pressedOn && pressedOn !== '(not an event)' && s1.y === s2.y && !popped, JSON.stringify({ gliding: [p0.y, p1.y], pressedOn, after: [s1.y, s2.y], popped }));
   if (popped) { await pp.keyboard.press('Escape'); await pp.waitForTimeout(300); }
-  const g2 = await pp.evaluate(id => { const b = document.querySelector(`#flowSvg .ball[data-id="${id}"]`); if (!b) return null; const r = b.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; }, on);
+  const g2 = await pp.evaluate(id => { const b = document.querySelector(`#flowSvg .ball[data-id="${id}"]`); if (!b) return null; const r = b.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; }, pressedOn);
   await pp.mouse.click(g2.x, g2.y); await pp.waitForTimeout(500);
   ok('glide: the next press on it opens it as normal', await pp.evaluate(() => !!document.getElementById('pop')));
   await pp.keyboard.press('Escape'); await pp.waitForTimeout(300);

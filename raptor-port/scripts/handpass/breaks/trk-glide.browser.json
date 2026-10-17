@@ -171,14 +171,8 @@
    "file": "src/tracker/app/core.js",
    "find": "    else if (e.key === 'End') { stopGlide(el); el.scrollLeft",
    "put": "    else if (e.key === 'End') { el.scrollLeft",
-   "also": [
-    {
-     "find": "  el.__glideStop = () => { if (!st && (raf || shifted.length)) cancel(); };",
-     "put": "  el.__glideStop = () => { if (!st && (raf || shifted.length)) cancel(); };"
-    }
-   ],
    "expect": [
-    "G16"
+    "G16b"
    ]
   }
  ]
