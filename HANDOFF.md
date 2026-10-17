@@ -38,10 +38,14 @@ the later merge keeps both (D78).
   calendars' day panels and the ALL AVAIL and changes windows at the foot. Red first, 166 window browser tests, walk 7/7
   (`scripts/handpass/win-middle-walk.mjs`); the evidence sheet's D997 section. Owed: one fresh read of design lesson 6's
   widening (D941).
-- **Also in hand: his 16 questions** (he asked for them on 18 Oct 26, D994's wait ended) — each researched against the
-  rulings and put to him with a worked example and a recommendation; three were found already answered (the load note
-  D863, the Calendar window's swipe D889, the Tracker pinch — his "Yes this feels good") and one ruled (the delete list's
-  notes, D710).
+- **NOT YET PUSHED — the next chat's first steps:** the full gate set under the lock (`gatelock.mjs run`, E2E_PORT a free
+  port), push this branch to its own name (`git push -u origin HEAD:refs/heads/claude/window-middle-d996` — never a bare
+  push: it may track main), open its pull request, the preview link and pictures (`…/2026-10-18-win-middle/walk/`) to him;
+  one fresh read of design lesson 6's widening (D941).
+- **Also in hand: his 16 questions** (he asked for them on 18 Oct 26 — D994's wait ended): researched against the rulings,
+  written with examples and recommendations in `raptor-port/docs/superpowers/briefs/2026-10-18-sixteen-questions.md`, and
+  given to him in the chat; **his answers are not in yet.** Four need no answer (three already answered — close them; one
+  ruled, D710 — build it). Record each answer as he gives it; pictures with each when it is put in its round (D921).
 - **Rulings:** D994's batch: D995 (scheduler; narrows D537), D996 (inputs; narrows D537); design lesson 6.
 <!-- /now -->
 
