@@ -1,0 +1,152 @@
+<title>Tracker Glide, Round 1</title>
+<style>
+/* Layout: one reading column; each question is a block — the question, the choices with the recommended one marked, then its pictures in a row that wraps (tap to see one full size). Raptor's own navy and cyan. */
+:root {
+  --bg: #f3f6f9; --surface: #ffffff; --line: #d6dde5; --fg: #121820; --muted: #566273;
+  --accent: #0b8fb3; --rec: #1f7a45; --rec-bg: #e5f4ea; --annot: #c96a00;
+  --display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0b0f15; --surface: #131a23; --line: #263241; --fg: #e9eef3; --muted: #93a1b2;
+  --accent: #3bc6e8; --rec: #57c97a; --rec-bg: #14271b; --annot: #ff9a33; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0b0f15; --surface: #131a23; --line: #263241; --fg: #e9eef3; --muted: #93a1b2;
+  --accent: #3bc6e8; --rec: #57c97a; --rec-bg: #14271b; --annot: #ff9a33; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 16px/1.5 var(--body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-inline: 16px; padding-block: 24px 64px; }
+h1, h2 { font-family: var(--display); font-weight: 700; text-wrap: balance; letter-spacing: .01em; margin: 0; }
+h1 { font-size: 2.2rem; line-height: 1.1; }
+h2 { font-size: 1.55rem; line-height: 1.15; }
+.lede { color: var(--muted); max-width: 65ch; margin: .5rem 0 0; }
+.how { margin-top: 1rem; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); max-width: 65ch; }
+.how b { color: var(--accent); }
+.q { margin-top: 2.2rem; display: grid; gap: .8rem; }
+.tag { font: 600 .78rem/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.q p { margin: 0; max-width: 65ch; }
+.choices { display: grid; gap: .5rem; max-width: 70ch; }
+.choice { display: grid; grid-template-columns: 2.2rem 1fr; gap: .6rem; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.choice .k { font: 700 1.2rem/1.2 var(--display); color: var(--muted); }
+.choice.rec { border-color: var(--rec); background: var(--rec-bg); }
+.choice.rec .k { color: var(--rec); }
+.choice .why { color: var(--muted); font-size: .94rem; margin-top: .25rem; }
+.badge { display: inline-block; font: 600 .72rem/1 var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--rec); border: 1px solid var(--rec); border-radius: 999px; padding: 3px 7px; margin-left: .4rem; vertical-align: 2px; }
+.pics { display: flex; flex-wrap: wrap; gap: 10px; }
+figure { margin: 0; display: grid; gap: 4px; min-width: 0; }
+figure.wide { flex: 1 1 420px; max-width: 100%; }
+figure.tall { flex: 0 1 190px; }
+figure img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; cursor: zoom-in; display: block; }
+figcaption { font-size: .84rem; color: var(--muted); }
+figcaption .drawn { color: var(--annot); font-weight: 600; }
+.legend { font-size: .88rem; color: var(--muted); max-width: 65ch; }
+.legend span { color: var(--annot); font-weight: 600; }
+.more { margin-top: 2.6rem; border-top: 1px solid var(--line); padding-top: 1.2rem; display: grid; gap: .6rem; }
+.more ul { margin: 0; padding-left: 1.2rem; max-width: 70ch; }
+.more li { margin: .25rem 0; }
+.reply { margin-top: 1.6rem; padding: 14px; border-radius: 10px; background: var(--surface); border: 2px solid var(--accent); max-width: 65ch; }
+.reply code { font: 600 1rem/1.4 ui-monospace, Consolas, monospace; }
+#zoom { position: fixed; inset: 0; background: rgba(0,0,0,.92); display: grid; place-items: center; padding: 12px; z-index: 10; cursor: zoom-out; overflow: auto; }
+#zoom img { max-width: 100%; max-height: 100%; width: auto; height: auto; }
+button:focus-visible, img:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.sketch { max-width: 560px; width: 100%; height: auto; display: block; }
+.sketch text { fill: var(--muted); font: 13px var(--body); }
+.sketch .today { stroke: var(--muted); }
+.sketch .glide { stroke: var(--accent); }
+.sketch .axis { stroke: var(--line); }
+.sketch .lift { stroke: var(--annot); }
+.pink { color: #e0245e; font-weight: 600; }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@700&display=swap">
+
+<div class="wrap">
+  <h1>The Tracker's glide, round 1</h1>
+  <p class="lede">You asked for the chart and the Info tab to glide like your iPhone's own scrolling. Today both stop dead the moment your finger lifts (checked in the app on a phone-sized screen). How it feels is already your ruling: like the iPhone's own, and you judge it on your phone at the end. Three choices are left, each with my recommendation in green.</p>
+  <div class="how"><b>How to answer:</b> reply <code>1A 2A 3A</code> (or your letters), or <code>as recommended</code>. Tap any picture to see it full size. The <span class="pink">pink boxes</span> only point; they are not part of the app.</div>
+
+  <section class="q" id="where">
+    <div class="tag">What will glide</div>
+    <h2>The chart, and the Info tab</h2>
+    <p>A flick with one finger carries the view on after you lift, slowing to a stop. A faster flick goes further; a slow drag that you stop before lifting doesn't glide.</p>
+    <svg class="sketch" viewBox="0 0 560 210" role="img" aria-label="How far the view moves over time: today it stops when the finger lifts; with the glide it carries on and slows to a stop">
+      <line class="axis" x1="50" y1="170" x2="540" y2="170" stroke-width="1.5"/>
+      <line class="axis" x1="50" y1="40" x2="50" y2="170" stroke-width="1.5"/>
+      <line class="lift" x1="150" y1="40" x2="150" y2="170" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text x="156" y="160">finger lifts</text>
+      <path class="today" d="M50 170 L150 110 L540 110" fill="none" stroke-width="3"/>
+      <path class="glide" d="M50 170 L150 110 C 230 72, 330 56, 540 54" fill="none" stroke-width="3"/>
+      <text x="390" y="130">today: stops dead</text>
+      <text x="390" y="46" style="fill:var(--accent)">glide: slows to a stop</text>
+      <text x="470" y="192">time →</text>
+      <text x="50" y="24">how far the view moved</text>
+    </svg>
+    <div class="pics">
+      <figure class="tall"><img src="img/q-chart.png" alt="The Tracker's flow chart on a phone, its scrolling area ringed" tabindex="0"><figcaption>The chart, on a phone</figcaption></figure>
+      <figure class="tall"><img src="img/q-info.png" alt="The Tracker's Info tab on a phone, its scrolling area ringed" tabindex="0"><figcaption>The Info tab (on an iPad or a desktop, the Info half beside the chart)</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="q" id="q1">
+    <div class="tag">Question 1 · A touch while it glides</div>
+    <h2>You touch the chart while it is still gliding. What happens?</h2>
+    <p>Say the chart is still moving and your finger comes down on ACG-08.</p>
+    <div class="choices">
+      <div class="choice rec"><div class="k">A</div><div><b>The glide stops. Nothing opens.</b><span class="badge">Recommended</span><div class="why">This is what your iPhone does: a tap on a list that is still moving stops it and doesn't open the row. You touched it to stop it, not to mark ACG-08, and an unwanted marking pop-up would have to be closed again. A second tap opens it as normal.</div></div></div>
+      <div class="choice"><div class="k">B</div><div><b>The glide stops, and the touch also opens ACG-08's marking pop-up.</b><div class="why">One tap fewer when you meant to open it; a pop-up you didn't want when you only meant to stop.</div></div></div>
+    </div>
+    <div class="pics">
+      <figure class="tall"><img src="img/q1-touch.png" alt="The chart on a phone with a finger mark on ACG-08" tabindex="0"><figcaption>The touch, on ACG-08</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="q" id="q2">
+    <div class="tag">Question 2 · At the end of the chart</div>
+    <h2>A glide reaches the chart's end. Does it bounce?</h2>
+    <p>The chart already has empty space above its first event and past its edges, so any event can be brought to the middle.</p>
+    <div class="choices">
+      <div class="choice rec"><div class="k">A</div><div><b>It slows and stops at the end. No bounce.</b><span class="badge">Recommended</span><div class="why">A bounce would only flash more empty space past the space already there. The app's design guide asks for quiet movement with no bounce, and a screen you work on many times a day reads better without it.</div></div></div>
+      <div class="choice"><div class="k">B</div><div><b>A small bounce at the end, like your iPhone's lists.</b><div class="why">Closer to the iPhone's own feel; more movement, and one more thing to get right on every screen size.</div></div></div>
+    </div>
+    <div class="pics">
+      <figure class="tall"><img src="img/q2-top.png" alt="The chart scrolled to its very top, with empty space above the first event" tabindex="0"><figcaption>The chart's top, as built: where a glide upward ends</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="q" id="q3">
+    <div class="tag">Question 3 · A mouse on a desktop</div>
+    <h2>Does a mouse drag glide too?</h2>
+    <p>On a desktop you can grab the chart or the Info half with the mouse and drag it. Today it stops where you let go.</p>
+    <div class="choices">
+      <div class="choice rec"><div class="k">A</div><div><b>Only a finger glides. A mouse drag stops where you let go, as now.</b><span class="badge">Recommended</span><div class="why">A finger means your iPhone, an iPad or a touch-screen laptop. With a mouse you drag the view to where you want it and expect it to stay there. A desktop trackpad's two-finger scroll and a mouse wheel already glide by themselves.</div></div></div>
+      <div class="choice"><div class="k">B</div><div><b>A mouse drag glides too.</b><div class="why">The same everywhere, but the view may drift past the place you dragged it to.</div></div></div>
+    </div>
+    <div class="pics">
+      <figure class="wide"><img src="img/q3-desk.png" alt="The Tracker on a desktop, the chart and the Info half ringed" tabindex="0"><figcaption>Desktop, as built: the two places a mouse drag scrolls</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="more">
+    <div class="tag">My calls (no answer needed; tell me if you want any different)</div>
+    <ul>
+      <li>Two fingers on the chart stop a glide at once. The pinch to zoom, and how it takes back a stray first-finger move, stay as they are.</li>
+      <li>When the app moves the chart itself (picking a student, a search, the keyboard), the glide stops and the app's move wins, landing as you ruled on 17 Oct.</li>
+      <li>The glide stays on when the iPhone is set to reduce motion. The iPhone's own scrolling glides then too: it is the scroll itself, not an effect.</li>
+      <li>Edit chart layout is not touched; it moves its canvas its own way.</li>
+      <li>A drag or a glide still never opens an event when the finger lifts, as today.</li>
+    </ul>
+  </section>
+
+  <div class="reply"><b>Reply with:</b> <code>1A 2A 3A</code> (or your letters), or <code>as recommended</code>.</div>
+</div>
+<div id="zoom" hidden></div>
+<script>
+(function () {
+  var z = document.getElementById('zoom'), zi = document.createElement('img'); z.appendChild(zi);
+  function open(img) { zi.src = img.src; zi.alt = img.alt; z.hidden = false; }
+  document.querySelectorAll('figure img').forEach(function (img) {
+    img.addEventListener('click', function () { open(img); });
+    img.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(img); } });
+  });
+  z.addEventListener('click', function () { z.hidden = true; });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') z.hidden = true; });
+})();
+</script>

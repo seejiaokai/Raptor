@@ -2343,6 +2343,9 @@ mouse drag on a desktop glides too or only a finger. **Watch:** the pinch and it
 layout (D899 — Edit chart layout pans the canvas, not this scroll), the landing (D984), a tap after a drag still swallowed;
 his phone is an iPhone (measure the feel there — his look). **Check:** FULL is likely (a new gesture on the most-used
 Tracker surface); Opus, high thinking.
+**Round 1 put to him (17 Oct 26):** three questions with pictures — a touch during a glide, a bounce at the end, a mouse drag
+on a desktop — `raptor-port/docs/mock/2026-10-17-trk-glide-r1/index.html` (https://claude.ai/artifact/DaEXWjGkxuctqtYutzbVbx).
+Checked first in the running app at phone size: a flick on the chart and on Info both stop dead at the lift.
 
 ### [TRK-DATEBOX-SAFARI-ZOOM] In Safari between 621 and 1050px wide, is the calendar placed under its box in the Tracker's side panel? (raised 13 Oct 26 by the read of `[TRK-DATE-BOXES]`) — OPEN, unproved, low
 **Not proved in the Tracker batch (17 Oct 26):** there is no Safari on this PC to run it in — on his look card, for his iPad or iPhone.
