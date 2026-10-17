@@ -1140,3 +1140,18 @@ Met again 2026-10-17: the [CONTEXT-START-SIZE] handoff (session-handoff, a day c
 **Suggested improvement:** done — a large output limit and the child's own error printed. For any runner that judges a child's result: treat "the child was killed" as its own verdict with its cause, never folded into pass or fail.
 
 **Principle:** A harness that cannot tell "the check failed" from "the harness failed" reports its own limits as findings about the code; name the harness's failure separately.
+
+### Observation 629: An answer written mid-turn did not reach him — he asked the same question four times
+
+**Status:** OPEN
+**Date:** 2026-10-17
+**Session context:** `/overnight` (the night of 17 Oct 26): the Tracker tidy-up was running inside one long turn when he sent "What are the jobs u are doing tonight", "Any questions now?", "What is this job about again?", "What's a trackers import tidy up", "What are u tidying", "Answer me clearly … asap I want to sleep", "Answer me", "Answer me now…".
+**Skill:** overnight (internal)
+**Type:** internal
+**Phase/Area:** Part 1, between his go and the first job — a message of his arriving while a turn runs
+
+**Issue:** Each of his messages arrived inside the running turn. The agent answered each one in text and carried on with tool calls in the same turn. He kept asking, so the answers were evidently not reaching him (or not as an answer) while the turn ran. Only ending the turn with the answer worked, and that cost the guide's own rule (an idle session lets the PC sleep). The fix that worked: end the turn with the plain answer plus "reply go before you sleep", and on his "go" carry on to the end without stopping. The memory note "Answer a mid-run question first" (28 Sep 26) already says "what he must copy goes as a file or ends the turn", but it did not trigger for a plain question.
+
+**Suggested improvement:** In the overnight guide, Part 1 step 9 / Part 2: "A message of his that arrives while the run is going is answered by ENDING the turn — the answer, then 'reply go before you sleep so the night keeps going' — never by text inside a running turn; on his go, carry on." Pair it with the existing memory note, widened from "something to copy" to "any question".
+
+**Principle:** When the person is watching and asks something mid-run, the answer belongs at a turn boundary, where the interface reliably shows it; a reply buried among tool calls reads to them as silence, and silence makes them ask again.
