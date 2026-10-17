@@ -1232,3 +1232,18 @@ Met again 2026-10-17: the [CONTEXT-START-SIZE] handoff (session-handoff, a day c
 **Suggested improvement:** Every walk script proves, before its first step, that the address it drives serves THIS checkout's bundle (the hashed index name in the served page equals the local `dist`'s) and refuses to run without an address — as `scripts/handpass/trk-glide-walk.mjs` now does; better, put that check inside the shared drivers' `open()` (`trk-lib.mjs`, `lib.mjs`) so no walk can skip it. A runner passes its address on and fails without one.
 
 **Principle:** A tool that silently falls back to a default target will one day hit someone else's; prove the target at the start of every run, in the shared code, not in a rule a script may forget.
+
+### Observation 635: A "make it smoother" ask is measured against the device's own frame cap before any fix is chosen
+
+**Status:** OPEN
+**Date:** 2026-10-18
+**Session context:** [TRK-CHART-FPS] — the owner found the Tracker chart choppy on his phone; a "small, safe step" (promote the moving layer) had been ruled before anything was measured
+**Skill:** systematic-debugging (and the bug-check order's sizing step)
+**Type:** open-source
+**Phase/Area:** root-cause investigation, before a fix is picked
+
+**Issue:** The ruled small step could never have helped: on a 120 Hz phone the browser holds a page's own JS-driven motion near 60 frames by default (Safari's flag; an in-app/third-party browser on iOS has no setting at all), while native scrolling runs at 120. The cause came out only after asking the device model and browser, and a one-minute on-device test (flag off) separated "the frame cap" from "slow drawing". The same measurement then showed a second, different cause (the pinch re-laid out the whole chart each step) that the cap could not explain.
+
+**Suggested improvement:** In systematic-debugging's root-cause phase, for any smoothness/jank report add: ask the device and the browser; check the platform's frame cap for page-driven motion vs native scrolling; when the user can run it, propose a one-minute on-device toggle that isolates the cap; measure each gesture separately (before/after, at several CPU slowdowns) so two causes are not merged into one.
+
+**Principle:** Before tuning the drawing, find out what frame rate the platform lets that kind of motion reach at all — a fix aimed below the cap is wasted, and each gesture can have its own cause.

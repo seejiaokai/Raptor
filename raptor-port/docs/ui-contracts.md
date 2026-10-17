@@ -9748,8 +9748,10 @@ His "As recommended" to the four questions of `docs/mock/2026-10-17-tracker-r1/i
   the lift, the spot under the fingers kept under them — a little soft while zooming in, until the lift. After a pinch the
   finger left down does nothing until it lifts (D134). Speed is part of how good the app feels (D991). Built: the boxes'
   `touch-action:pan-x pan-y` (`src/tracker/tracker.css`), `dragScroll` the mouse's drag only and `stopGlide` (a box that
-  scrolled in the last moment stops being a scroll box for an instant, which drops the phone's glide), `enablePinchZoom`
-  (two fingers' touches held from the browser; the transform about the spot under the fingers, its pixel measured
+  scrolled under a finger in the last moment stops being a scroll box for two frames, which drops the phone's glide; a
+  box whose scrollbars take room, a touch-screen laptop, keeps them, and there a glide can carry on over the app's move),
+  `enablePinchZoom`
+  (only the chart's own fingers, by id, held from the browser; the transform about the spot under the fingers, its pixel measured
   against the wrap's zoom) — all in `src/tracker/app/core.js`. Walked: `docs/handpass/2026-10-18-trk-chart-fps.md`.
 
 ## OIL on the schedule: the "OIL Earn" mode and the green edge (owner, 21 Sep 26)

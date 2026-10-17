@@ -124,6 +124,45 @@ the lift) · `w3-phone-pinch-in-after-lift` · `w5-phone-tap-opens-event` · `w8
 | 7 | the pinch's spot not carried with the fingers | W2 |
 | 8 | the app's own move does not stop the phone's glide | **not caught, as expected** — this test browser makes no glide; his look card (6) |
 
+## The code read (a fresh, blind Opus reader of the build as walked, given the brief `docs/superpowers/briefs/2026-10-18-trk-chart-fps-read.md` — D790)
+
+| # | Finding | Disposition |
+|---|---|---|
+| F1 | The app's own move probably did not stop the phone's glide: the box was made unscrollable and scrollable again inside one task, and the glide runs outside the page (the iPhone's scroller, Chrome's compositor), which hears of it only at the next frame | **FIXED, red first** — the box stays unscrollable for two frames, the caller's own scroll landing meanwhile, and only right after a finger's scroll (a mouse's or a wheel's is left alone, so no scrollbar flashes on a desktop). Pinned: `trk-chart-fps.test.tsx` (D989 block). Whether the iPhone's glide really stops: his look card (6) |
+| F2 | A finger resting anywhere else on the screen (a thumb on the Info half) froze the chart: a touch event's list counts every finger on the screen | **FIXED, red first** — only the chart's own fingers count, by their ids. Pinned (the "resting off the chart" case) |
+| F3 | A redraw mid-pinch could let the browser take the fingers: their moves go to the detached target, never reaching the chart's canceller | **FIXED, red first** — the hold is hung on each held finger's own target too. Pinned (the "detached target" case) |
+| F4 | The touch canceller is attached all the time, so a scroll's first move waits on the page | **DECLINED** — a canceller added in the middle of a touch may not be honoured as able to cancel (the browsers decide that when the touch begins), which would undo the hold; the wait is only felt while the page is busy, and the chart is at rest when a scroll begins |
+| — | Not new, met in passing: switching Edit chart layout mid-pinch (a third finger, through the menu) throws in the pinch's move; the lost-lift path settles the zoom but leaves the % label stale | older code, unchanged by this job — not widened (§7.0) |
+
+The three fixes were red on the build as walked and green after (`trk-chart-fps.test.tsx`: 3 failed / 6 passed on it, 9 / 9 after). **Re-walk** after the fixes: 21 of 21 (`parts/trk-fps/rewalk/walk.json`, pictures `…/rewalk/`).
+
+## The fix reads (a fresh, blind Opus reader each round, handed only the fix commit and the findings it answers — the order's "a fix is new code"; three rounds, the agent's cap)
+
+| Round | Finding | Disposition |
+|---|---|---|
+| 2 (of `e50b22115`) | 1. On a touch-screen laptop the two-frame hold shows (the scrollbars blink, a caller measures a scrollbar's width off), and a later wheel or mouse scroll still set it off | **FIXED, red first** — a mouse's press or a wheel clears the finger's mark; a box whose scrollbars take room keeps them (the toggle within one task) |
+| 2 | 2. On Android, a finger id reused after a lift lost to a redraw could count a thumb off the chart as the chart's, freezing it for one gesture (an iPhone gives each touch a fresh id) | **FIXED, red first** — a finger landing anywhere frees its id |
+| 2 | 3. The glide-stop test's name claimed "its place kept", which it did not prove | **FIXED** — renamed to what it proves; whether the iPhone's glide stops is on the look card |
+| 3 (of `ddeffbaae`) | F1. A key no longer stopped a glide: round 2's "a key clears the mark" ran before the key's own move | **FIXED, red first** — the key's clear is gone; a stop spends the mark instead, so a key held after a flick stops it once, not at every repeat |
+| 3 | F2. On a touch-screen laptop the toggle within one task probably stops no glide (the earlier F1's own reason) | **SAID PLAINLY, not built round** — a rare device, his is an iPhone; the code's comment says so: on such a laptop a finger's glide can carry on over the app's own move |
+| 3 | F3. A phone's own rounding could read as a scrollbar by a pixel and send it down the laptop's branch | **FIXED** — a few pixels' allowance (a classic scrollbar is at least about 8) |
+
+After round 3: the Tracker unit tests 485 of 485 (`trk-chart-fps.test.tsx` 13, each new one red on the code before it); the
+Tracker suite 453 / 0 and the re-walk 21 / 21 (`parts/trk-fps/rewalk3/`). Round 3 is the last fix read (the cap); what it could not settle is on the look card.
+
+## Gates
+
+| Gate | On `e50b22115` (the full set, the PC's lock, `gatelock.mjs run`) | After rounds 2–3 (the touched suites only) |
+|---|---|---|
+| unit (`npm test`) | PASS — 11,649 | the Tracker's 485 (all pass); the full set is GitHub's run of the pull request (D902) |
+| build | PASS | PASS |
+| the original's checks (`tfin`) | PASS — 728 / 0 | — (no engine change) |
+| browser tests (`test:e2e`) | PASS — 844 | GitHub's run |
+| the Tracker suite (`smoke:tracker`) | PASS — 453 / 0 | round 2: 453 / 0; round 3: 453 / 0 |
+| rulecheck · docsize | PASS · PASS | docsize at each commit |
+
+`Walk: docs/handpass/2026-10-18-trk-chart-fps.md · 12 pictures (and three re-walks' sets) · 9 surfaces · 21 checks · MISSING: 9 fixed (3 of the walk script's own, 0 of the app by the walk, 3 + 2 + 2 by the reads), 0 ruled, 0 filed; 1 declined, 1 limit said plainly`
+
 ## For his look on his iPhone — what only a real device can prove
 
 1. **The scroll is smooth**, like Settings or Photos — in Chrome, and in Safari with its setting back on.
@@ -131,5 +170,14 @@ the lift) · `w3-phone-pinch-in-after-lift` · `w5-phone-tap-opens-event` · `w8
 3. **A touch while it glides only stops it** — nothing opens; the next tap works.
 4. **A pinch is steady**, a little soft while zooming in, sharp the moment the fingers lift, and lands where the fingers ended.
 5. **After a pinch, the finger left down does nothing** until it lifts.
-6. **A search or a tap on an Info chip while the chart is still gliding** lands on its event (the app's own move wins).
-7. **The Info tab scrolls the same way**, and the Failures card's own list (when it has many) scrolls inside it.
+6. **A search, a tap on an Info chip, the zoom's + or an arrow key while the chart is still gliding** stops the glide and lands right (the app's own move wins) — and there is no flash when it does.
+7. **The Info tab scrolls the same way**, and the Failures card's own list (when it has many) scrolls inside it; dragging the dimmed backdrop of a window open over Info (the lull calendar) does not rubber-band the page behind it.
+8. **Two fingers that land a moment apart**, as real fingers do, still pinch — no two-finger scroll, no page zoom.
+
+**If a line fails on his phone — the fallback for each (the code reads' readings):**
+- 4 (the picture drifts from the fingers mid-pinch, then jumps at the lift): put the transform on a wrapper outside the
+  chart's zoomed box, so every unit is a plain screen pixel; the place at the lift is already right either way.
+- 6 (a move mid-glide is lost, or the chart flashes): the stop is one function (`__glideStop` in `dragScroll`) — hold the
+  box still longer, or end the glide by scrolling it once to where it is; nothing else depends on how it is done.
+- 8 (two fingers scroll instead of pinching): the hold in `enablePinchZoom` is the place; the browser's own pinch can be
+  given back to it (`touch-action:pan-x pan-y pinch-zoom`) only by ruling, since it would zoom the whole page.

@@ -21,17 +21,22 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/trk-chart-fps -->
-### `claude/trk-chart-fps` — THE TRACKER'S CHART SMOOTHER WHEN IT MOVES (D990) — written 17 Oct 26, verify before use
-- **Where it starts:** the glide (D985–D989, `[TRK-SCROLL-GLIDE]`) is LIVE — pull request 531 merged on his "merge live",
-  17 Oct 26. Still owed from it: his look on his iPhone (the look card is the last section of
-  `raptor-port/docs/handpass/2026-10-17-trk-glide.md`); `[TRK-SCROLL-GLIDE]` leaves for the archive once its residue is filed.
-- **This branch:** cut level with `main` at the merge; it carries only the records — D990 and its home in
-  `raptor-port/docs/ui-contracts.md` §The Tracker tab, and the backlog item `[TRK-CHART-FPS]` (the priority list's NEXT).
-- **The job (D990):** he finds the chart choppy (a low frame rate) when it moves; the small, safe step first, measured before
-  and after; the big step (the iPhone scrolling the chart itself) only if it stays choppy. He leans to "always choppier" (his "Not sure I think b"),
-  so the chart's own drawing is the first suspect, not the glide. **Ask first** (one short round, D853): which motion. Then build, WALK tier at least, re-run the glide's walk
-  (always pass `HP_URL`: the walk proves the build it drives), his look on his iPhone, his "merge live".
-- **Rulings:** D990 (17 Oct 26).
+### `claude/trk-chart-fps` — THE TRACKER'S CHART SCROLLED BY THE PHONE ITSELF, THE PINCH AS A PICTURE (D992) — written 18 Oct 26, verify before use
+- **Built and checked, waiting for his look on his iPhone and his "merge live".** On a phone the chart and the Info half are
+  scrolled by the phone itself (`touch-action` in `raptor-port/src/tracker/tracker.css`; `dragScroll` is now the mouse's
+  drag only, `glide.js` deleted); a pinch is one transform while the fingers move and one layout at the lift
+  (`enablePinchZoom`, `raptor-port/src/tracker/app/core.js`). Why (measured): his iPhone 17 Pro in Chrome holds a page's own
+  motion near 60 frames while its own scrolling runs at 120; the pinch laid the whole chart out at every step (12 frames a
+  second at ¼ speed, now 30; 24 → 59 at ½).
+- **Checked (WALK tier + three fresh Opus reads):** walk 21/21 and three re-walks; 8 break tests (6 by the walk, 1 by
+  `src/tracker/trk-chart-fps.test.tsx`, 1 not visible in a test browser); the full gate set on `e50b22115` (unit 11,649 ·
+  e2e 844 · Tracker suite 453 · tfin 728/0 · rulecheck · docsize), then the Tracker's tests and suite after each fix round.
+  Seven faults fixed red first, one declined, one limit said plainly (a touch-screen laptop: a finger's glide can carry on
+  over the app's own move). Evidence and his look card: `raptor-port/docs/handpass/2026-10-18-trk-chart-fps.md`.
+- **Next:** the pull request's checks on GitHub (its full run); his look on his iPhone (the sheet's last section); his
+  "merge live". If the pinch or the glide-stop misbehaves on his phone, the sheet names the fallback for each.
+- **Owed reads:** any ChatGPT read he wants (`[NO-ASTRA-LIST]`).
+- **Rulings:** D991 (speed is part of how good the app feels — How we work), D992 (this job — Tracker); D990 replaced and archived.
 <!-- /now -->
 
 ## Next, in order
