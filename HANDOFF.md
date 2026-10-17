@@ -28,8 +28,8 @@ the later merge keeps both (D78).
 - **This branch:** cut level with `main` at the merge; it carries only the records — D990 and its home in
   `raptor-port/docs/ui-contracts.md` §The Tracker tab, and the backlog item `[TRK-CHART-FPS]` (the priority list's NEXT).
 - **The job (D990):** he finds the chart choppy (a low frame rate) when it moves; the small, safe step first, measured before
-  and after; the big step (the iPhone scrolling the chart itself) only if it stays choppy. **Ask first** (one short round,
-  D853): which motion, and whether it got worse with the glide. Then build, WALK tier at least, re-run the glide's walk
+  and after; the big step (the iPhone scrolling the chart itself) only if it stays choppy. He leans to "always choppier" (his "Not sure I think b"),
+  so the chart's own drawing is the first suspect, not the glide. **Ask first** (one short round, D853): which motion. Then build, WALK tier at least, re-run the glide's walk
   (always pass `HP_URL`: the walk proves the build it drives), his look on his iPhone, his "merge live".
 - **Rulings:** D990 (17 Oct 26).
 <!-- /now -->
