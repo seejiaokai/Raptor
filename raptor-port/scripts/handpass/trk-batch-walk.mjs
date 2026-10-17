@@ -20,11 +20,9 @@ const tag = s => (s === PHONE ? 'phone' : 'desk')
 const ringOn = page => page.evaluate(() => { const w = document.querySelector('#flowSvg .kbdring'), r = w && w.querySelector('circle'); return r ? { id: w.dataset.id, n: document.querySelectorAll('#flowSvg .kbdring').length, stroke: r.getAttribute('stroke'), sw: r.getAttribute('stroke-width'), filter: getComputedStyle(r).filter } : null })
 const focusIs = page => page.evaluate(() => { const a = document.activeElement; return a ? (a.id || (a.dataset && a.dataset.g ? 'grade:' + a.dataset.g : a.tagName)) : null })
 const ballBox = (page, id) => page.evaluate(i => { const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === i); const bd = document.getElementById('board'); if (!g || !bd) return null; const r = g.getBoundingClientRect(), b = bd.getBoundingClientRect(); return { inView: r.top >= b.top - 1 && r.bottom <= b.bottom + 1 && r.left >= b.left - 1 && r.right <= b.right + 1, top: r.top - b.top } }, id)
-const landing = page => page.evaluate(() => {
-  const bd = document.getElementById('board'), b = bd.getBoundingClientRect()
-  const tops = [...document.querySelectorAll('#flowSvg .ball')].map(g => g.getBoundingClientRect().top)
-  return { scrollTop: Math.round(bd.scrollTop), emptyAboveFirstBall: Math.round(Math.min(...tops) - b.top) }
-})
+/* how far a ball's centre sits from the chart box's middle, up and down — a landing is centred (his "centralise the view
+   if its possible", 9 Sep 26; the Tracker suite's CENTRED is 4px); id null = the topmost ball, the chart's first event */
+const centredOff = (page, id) => page.evaluate(i => { const bd = document.getElementById('board'), b = bd.getBoundingClientRect(); const balls = [...document.querySelectorAll('#flowSvg .ball')]; const g = i ? balls.find(x => x.dataset.id === i) : balls.map(x => [x, x.getBoundingClientRect().top]).sort((a, z) => a[1] - z[1])[0][0]; const r = g.getBoundingClientRect(); return { id: g.dataset.id, off: Math.round(Math.abs((r.top + r.height / 2) - (b.top + b.height / 2))) } }, id)
 const grade = (page, id) => page.evaluate(i => window.__undoForTests().grade(i), id)
 async function press(page, sel, touch) { const l = page.locator(sel).first(); if (touch) await l.tap(); else await l.click(); await sleep(300) }
 /* a ball's marking pop-up, by a press on its centre (the chart scrolled to it first by its own scroll) */
@@ -296,23 +294,25 @@ if (want('L')) for (const size of [DESK, PHONE]) {
   await toPage(page, 'editsched'); await toTracker(page); await sleep(500)
   L.ok(`L2 ${tag(size)}: another tab and back — the view is where it was (the mark still in view)`, (await ballBox(page, deep)).inView, '')
   await page.selectOption('#activeSel', { label: 'STUDENT B' }); await sleep(900)
-  const l3 = await landing(page)
-  L.ok(`L3 ${tag(size)}: a student with nothing marked lands on the first event with no empty band above the chart`, l3.emptyAboveFirstBall >= 0 && l3.emptyAboveFirstBall < 60, JSON.stringify(l3))
+  /* the landing hold (no empty band above the first event) was taken back on 17 Oct 26 — it overrode his 9 Sep
+     "centralise" ask; the band is a question for him — so the first event lands centred */
+  const l3 = await centredOff(page, null)
+  L.ok(`L3 ${tag(size)}: a student with nothing marked lands on the first event, centred`, l3.off <= 4, JSON.stringify(l3))
   await shot(page, `L3-${tag(size)}-first-event`)
   /* a search for the first event */
   if (!touch) {
     await page.locator('#board').evaluate(b => { b.scrollTop = b.scrollHeight }); await sleep(200)
     await page.fill('#hSearch', 'ST-01'); await page.keyboard.press('Enter'); await sleep(700)
-    const l4 = await landing(page)
-    L.ok('L4 desk: a search that finds ST-01 brings it in, with no empty band above the chart', l4.emptyAboveFirstBall >= 0 && l4.emptyAboveFirstBall < 60, JSON.stringify(l4))
+    const l4 = await centredOff(page, 'ST-01'), l4in = await ballBox(page, 'ST-01')
+    L.ok('L4 desk: a search that finds ST-01 brings it in, centred', l4in && l4in.inView && l4.off <= 4, JSON.stringify(l4))
     await page.fill('#hSearch', ''); await page.keyboard.press('Escape')
   }
   /* the member signs in on the same browser (D376 — his own place): the landing as a pick makes it */
   await logout(page); await login(page, 'u'); await toTracker(page); await sleep(900)
-  const l5 = await landing(page)
-  /* someone new opens on the first course and its last-graded student (D376) — STUDENT A, whose last mark is the deep one */
+    /* someone new opens on the first course and its last-graded student (D376) — STUDENT A, whose last mark is the deep one */
   const l5in = await ballBox(page, deep)
-  L.ok(`L5 ${tag(size)}: the member signs in — the Tracker opens on the last-graded student's last mark (${deep}), no empty band above the chart`, l5in.inView && l5.emptyAboveFirstBall < 60, `${JSON.stringify(l5)} · ${deep} ${JSON.stringify(l5in)}`)
+  const l5 = await centredOff(page, deep)
+  L.ok(`L5 ${tag(size)}: the member signs in — the Tracker opens on the last-graded student's last mark (${deep}), centred`, l5in.inView && l5.off <= 4, `${JSON.stringify(l5)} · ${deep} ${JSON.stringify(l5in)}`)
   await shot(page, `L5-${tag(size)}-member`)
   L.note(`L ${tag(size)} console/page errors`, errors.join(' | ')); allErrors.push(...errors.map(e => `L ${tag(size)}: ` + e))
   await browser.close()

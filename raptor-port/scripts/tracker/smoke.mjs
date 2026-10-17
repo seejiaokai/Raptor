@@ -4438,10 +4438,22 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   /* leaving: the chart stays put, and a pinch afterwards zooms the chart it shows */
   await tool('Move');
   const k2 = await fromMid(keepId);
+  /* the chart point in the middle of the editing canvas: Edit chart layout shows room above and to the left of the
+     chart, and the steps above can leave the middle there. The ordinary chart cannot scroll before its own start, so
+     on that side it stops at its edge (scroll 0) — the nearest it can come — and only the other side is held. Since
+     [TRK-BALL-OFF-CHART-LEFT] (17 Oct 26) the line steps above draw on the chart's top edge instead of 150 above it, so
+     this run now ends with the middle 21 above the chart's start; before, it ended on the chart by luck. */
+  const cMid = await pp.evaluate(() => {
+    const bd = document.getElementById('board'), r = bd.getBoundingClientRect();
+    const m = document.getElementById('viewport').getScreenCTM().inverse();
+    return new DOMPoint(r.left + bd.clientLeft + bd.clientWidth / 2, r.top + bd.clientTop + bd.clientHeight / 2).matrixTransform(m);
+  });
   await doneEditing();
-  const k3 = await fromMid(keepId);
-  ok('phone: "✓ Done editing chart" keeps the middle of the chart in the middle', held(k2, k3) <= 2,
-    `${keepId} ${held(k2, k3)}px from where holding the middle puts it`);
+  const k3 = await fromMid(keepId), sc = await pp.evaluate(() => { const bd = document.getElementById('board'); return { x: bd.scrollLeft, y: bd.scrollTop }; });
+  const heldOn = ax => { const off = Math.round(Math.abs(k3[ax] - k2[ax] * k3.w / k2.w)); return off <= 2 || (cMid[ax] < 0 && sc[ax] === 0) ? 0 : off; };
+  ok('phone: "✓ Done editing chart" keeps the middle of the chart in the middle (at the chart\'s edge where the middle was before its start)',
+    !heldOn('x') && !heldOn('y'),
+    `${keepId} ${held(k2, k3)}px from where holding the middle puts it; the middle was at ${Math.round(cMid.x)},${Math.round(cMid.y)}, the chart scrolled ${sc.x},${sc.y}`);
   const s = (await ballNearMiddle()) || await pp.evaluate(() => { const r = document.getElementById('board').getBoundingClientRect(); return { x: r.left + r.width / 3, y: r.top + 150 }; });
   await pinchFrom(s.x, s.y);
   const vp = await pp.evaluate(() => document.getElementById('viewport').getAttribute('transform'));

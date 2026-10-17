@@ -260,6 +260,37 @@ describe('D980 — the scenario designer\'s cases (17 Oct 26)', () => {
     expect(document.querySelectorAll('#flowSvg .kbdring')).toHaveLength(0)
     host.remove()
   })
+  /* the next person's own details window, opened and closed by the mouse, must not hand the keyboard to the chart: the
+     person leaving had ✎ Edit details up from a keyboard pop-up, and that "give the keyboard back when it closes" was
+     theirs (the break list's 34 — the blur alone made the test above pass without the session's reset) */
+  it("a session that ends with ✎ Edit details up from a keyboard pop-up: the next person's details window, closed, gives the chart no keyboard and no ring", async () => {
+    const { host } = await render(<Live draw={() => <Pop />} />)
+    board.focus(); await key(board, 'Enter'); await act(async () => { await tick() })
+    const id = C.pop.id
+    const btn = document.getElementById('popEditInfo') as HTMLButtonElement
+    btn.focus(); await act(async () => { btn.click(); await tick() })
+    expect(C.infoId).toBe(id)
+    await act(async () => { endTrackerSession(); await tick() })
+    document.body.focus()
+    await act(async () => { C.openInfo(id); await tick() })
+    await act(async () => { C.closeInfo(); await tick() })
+    expect(document.activeElement, 'the chart is not given the focus').not.toBe(board)
+    await act(async () => { C.renderBoard(); await tick() })
+    expect(document.querySelectorAll('#flowSvg .kbdring')).toHaveLength(0)
+    host.remove()
+  })
+  /* a keyboard pop-up taken away by a course load (a switch made from the keyboard has no press to close it — loadCourse
+     drops it), the keyboard was in the pop-up, not on the chart: the chart drawn again wears no ring (the break list's 36) */
+  it('a keyboard pop-up dropped by a course load: the chart drawn again wears no ring', async () => {
+    const { host } = await render(<Live draw={() => <Pop />} />)
+    board.focus(); await key(board, 'Enter'); await act(async () => { await tick() })
+    expect(document.activeElement && (document.activeElement as HTMLElement).closest('#pop'), 'the keyboard is in the pop-up').toBeTruthy()
+    await act(async () => { await C.loadCourse(C.course); await tick() })
+    expect(C.pop).toBeNull()
+    await act(async () => { C.renderBoard(); await tick() })
+    expect(document.querySelectorAll('#flowSvg .kbdring')).toHaveLength(0)
+    host.remove()
+  })
   it('the keyboard follows a search: the next arrow starts from the event found', async () => {
     C.runSearch('ST-02'); await new Promise(r => setTimeout(r, 60))
     expect(C.kbdId).toBe('ST-02')

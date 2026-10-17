@@ -1185,3 +1185,18 @@ Met again 2026-10-17: the [CONTEXT-START-SIZE] handoff (session-handoff, a day c
 **Suggested improvement:** Wherever a keyboard walks a structure (the design guide §2's table), the check includes one exhaustive test over the REAL data: every state of the navigation (position plus whatever it remembers) explored from the start, every item reached. Keep the navigation's memory small enough that this search is finite.
 
 **Principle:** For a navigation rule, test reachability over the whole real structure, with the full state the rule keeps — per-step tests prove the steps, not the coverage.
+
+### Observation 632: A check that passes on main and fails on a branch — replay both builds side by side, logging state at every step
+
+**Status:** OPEN
+**Date:** 2026-10-17
+**Session context:** The Tracker batch's one open fault: a phone check in the Tracker suite failed by 51px on the branch and passed on main. The chat before had tried removing suspected changes one at a time (three experiment builds) without finding it.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** Phase 1 (root cause investigation) — gathering evidence
+
+**Issue:** Guessing which change caused the difference, and building without it, spent three builds and found nothing. Replaying the check's own steps against BOTH builds, printing the same state after every step, showed in one run where the two runs first parted (an earlier step, not the one under suspicion), and why: a deliberate fix changed where an earlier step drew, so later steps started from different places and the check's promise became impossible on that path — a check that had passed on main by luck.
+
+**Suggested improvement:** In Phase 1, add: when a test passes on one version and fails on another, run the test's own steps on both with the same state printed after every step, and find the first step where they differ before suspecting any change. The first difference names the cause; it is often upstream of the failing assertion.
+
+**Principle:** Find where two runs first diverge before guessing at causes; a failure downstream of a deliberate change may be a test whose precondition the change made false, not a regression.

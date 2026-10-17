@@ -1,0 +1,264 @@
+{
+  "rows": [
+    {
+      "step": "K1 Tab reaches the chart; the ring is on its landing event, the plain blue ring, one only, no glow",
+      "pass": true,
+      "said": "Tabs from the search box: 3 · ring {\"id\":\"ST-01\",\"n\":1,\"stroke\":\"#1E86FF\",\"sw\":\"2\",\"filter\":\"none\"}"
+    },
+    {
+      "step": "K2 the next Tab leaves the chart — no Tab stop on its events",
+      "pass": true,
+      "said": "{\"inChart\":false,\"id\":\"fzOut\"}"
+    },
+    {
+      "step": "K2b Shift+Tab comes back to the chart, the ring on the same event",
+      "pass": true,
+      "said": "{\"id\":\"ST-01\",\"n\":1,\"stroke\":\"#1E86FF\",\"sw\":\"2\",\"filter\":\"none\"}"
+    },
+    {
+      "step": "K3 → goes on along a line, ← comes back to the event it needs",
+      "pass": true,
+      "said": "ST-01 → ACG-01 ← ST-01"
+    },
+    {
+      "step": "K4 ↓ fourteen times walks down the chart and the chart follows: the ringed event is in view",
+      "pass": true,
+      "said": "on IAT-01 · {\"inView\":true,\"top\":650.0400390625}"
+    },
+    {
+      "step": "K5 ↑ as many times climbs back to the top rows",
+      "pass": true,
+      "said": "on ST-01"
+    },
+    {
+      "step": "K6 Enter opens the marking pop-up on that event, the keyboard on its grade as it is",
+      "pass": true,
+      "said": "pop on ACG-01 · STUDENT A · focus grade:0 · its grade 0"
+    },
+    {
+      "step": "K6b the ring stays on the event while the pop-up is up",
+      "pass": true,
+      "said": "{\"id\":\"ACG-01\",\"n\":1,\"stroke\":\"#1E86FF\",\"sw\":\"2\",\"filter\":\"none\"}"
+    },
+    {
+      "step": "K7 → inside the pop-up steps to the next grade",
+      "pass": true,
+      "said": "grade:dco"
+    },
+    {
+      "step": "K8 Tab goes round inside the pop-up (16 presses)",
+      "pass": true,
+      "said": "true"
+    },
+    {
+      "step": "K9 Enter on DCO marks it and the keyboard is back on the chart, on the same event",
+      "pass": true,
+      "said": "grade dco · focus board · ring {\"id\":\"ACG-01\",\"n\":1,\"stroke\":\"#1E86FF\",\"sw\":\"2\",\"filter\":\"none\"}"
+    },
+    {
+      "step": "K10 Ctrl+Z takes the mark back; the chart is drawn again and the ring is still on the event",
+      "pass": true,
+      "said": "grade 0 · ring {\"id\":\"ACG-01\",\"n\":1,\"stroke\":\"#1E86FF\",\"sw\":\"2\",\"filter\":\"none\"}"
+    },
+    {
+      "step": "K11 Escape closes the pop-up, the keyboard back on the chart, the same event",
+      "pass": true,
+      "said": "board · {\"id\":\"ACG-01\",\"n\":1,\"stroke\":\"#1E86FF\",\"sw\":\"2\",\"filter\":\"none\"}"
+    },
+    {
+      "step": "K11b Enter, Enter on an event: the second press of its own grade changes nothing — no undo step, the pop-up closes",
+      "pass": true,
+      "said": "undo steps 0 → 0 · grade 0 → 0"
+    },
+    {
+      "step": "K11c ✎ Edit details pressed from the keyboard: the details window is up and the arrows and Enter do nothing to the chart behind it",
+      "pass": true,
+      "said": "window up true · ring ST-02 → ST-02"
+    },
+    {
+      "step": "K11d Escape closes the details window and the keyboard is back on the chart, the same event",
+      "pass": true,
+      "said": "board · {\"id\":\"ST-02\",\"n\":1,\"stroke\":\"#1E86FF\",\"sw\":\"2\",\"filter\":\"none\"}"
+    },
+    {
+      "step": "K11e Done on opened from the keyboard: the first Escape closes only its calendar, the second the pop-up — the keyboard back on the chart",
+      "pass": true,
+      "said": "calendar 1 · after one Escape {\"cal\":0,\"pop\":1} · then board"
+    },
+    {
+      "step": "K11f a keyboard pop-up closed by a click on the side panel takes the ring with it",
+      "pass": true,
+      "said": "null"
+    },
+    {
+      "step": "K11g after a search for ACG-02 the keyboard is on ACG-02",
+      "pass": true,
+      "said": "{\"id\":\"ACG-02\",\"n\":1,\"stroke\":\"#1E86FF\",\"sw\":\"2\",\"filter\":\"none\"}"
+    },
+    {
+      "step": "K11h branches: from ACG-02, → ← → ← → walks its first, second and third branch",
+      "pass": true,
+      "said": "ACG-03 ACG-02 ACG-04 ACG-02 ACG-05"
+    },
+    {
+      "step": "K12 a grade pressed with the mouse: marked, no keyboard ring, the chart not given the focus",
+      "pass": true,
+      "said": "grade marg · ring null · focus BODY"
+    },
+    {
+      "step": "K13 in Details mode Enter shows the event's brief, and no marking pop-up",
+      "pass": true,
+      "said": "bubble true"
+    },
+    {
+      "step": "K14 in Edit chart layout no ring is drawn and the arrows move nothing",
+      "pass": true,
+      "said": "null"
+    },
+    {
+      "step": "K15 after a crew change the keyboard is on the event the chart landed on, in view",
+      "pass": true,
+      "said": "was on ACG-02, now {\"id\":\"ST-01\",\"n\":1,\"stroke\":\"#1E86FF\",\"sw\":\"2\",\"filter\":\"none\"}"
+    },
+    {
+      "step": "K16 a keyboard pop-up, then a mouse press on empty chart: the pop-up closes and no ring is left",
+      "pass": true,
+      "said": "null"
+    },
+    {
+      "step": "K17 Log out with a keyboard pop-up up, and back in: no ring on the chart until the keyboard comes to it",
+      "pass": true,
+      "said": "null"
+    },
+    {
+      "step": "K console/page errors",
+      "note": ""
+    },
+    {
+      "step": "P1.1 HEX, a squadron member, on two courses (stored)",
+      "pass": true,
+      "said": "cmvc7jb763qr78d cmvc7jd87edxdde"
+    },
+    {
+      "step": "P1.2 HEX deleted through the Leave War's Post out",
+      "pass": true,
+      "said": "true"
+    },
+    {
+      "step": "P1.3 he has left both courses — the one on screen and the other — on screen and stored",
+      "pass": true,
+      "said": "course 1 stored false · course 2 stored false · on screen false"
+    },
+    {
+      "step": "P1.4 the Students card no longer lists him",
+      "pass": true,
+      "said": "1\nSTUDENT A\n✎\n× | 2\nSTUDENT B\n✎\n×"
+    },
+    {
+      "step": "P1.5 his marks record is kept, as it was (nothing of his record erased)",
+      "pass": true,
+      "said": "before {} · after {}"
+    },
+    {
+      "step": "P1.6 after a reload he is still off both courses",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "P1 console/page errors",
+      "note": ""
+    },
+    {
+      "step": "P2.1 OUTLAW on the course (stored), picked, and the last one marked",
+      "pass": true,
+      "said": "OUTLAW"
+    },
+    {
+      "step": "P2.2 OUTLAW deleted through Post out, the Tracker not opened since the reload",
+      "pass": true,
+      "said": "true"
+    },
+    {
+      "step": "P2.3 opening the Tracker afterwards: he has left the course, on screen and stored; another student is picked",
+      "pass": true,
+      "said": "picked STUDENT A"
+    },
+    {
+      "step": "P2.4 not even for a moment: no sample of the Crew list since the chart came up names him",
+      "pass": true,
+      "said": "71 samples"
+    },
+    {
+      "step": "P2 console/page errors",
+      "note": ""
+    },
+    {
+      "step": "P3.1 phone: HEX on the course",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "P3.2 phone: after the delete the Students card no longer lists him",
+      "pass": true,
+      "said": "1\nSTUDENT A\n✎\n× | 2\nSTUDENT B\n✎\n×"
+    },
+    {
+      "step": "P3 console/page errors",
+      "note": ""
+    },
+    {
+      "step": "L1 desk: Log out and back in, the Tracker opens on the last mark (RDR-04) — in view",
+      "pass": true,
+      "said": "{\"inView\":true,\"top\":338.739990234375}"
+    },
+    {
+      "step": "L2 desk: another tab and back — the view is where it was (the mark still in view)",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "L3 desk: a student with nothing marked lands on the first event, centred",
+      "pass": true,
+      "said": "{\"id\":\"ST-01\",\"off\":0}"
+    },
+    {
+      "step": "L4 desk: a search that finds ST-01 brings it in, centred",
+      "pass": true,
+      "said": "{\"id\":\"ST-01\",\"off\":0}"
+    },
+    {
+      "step": "L5 desk: the member signs in — the Tracker opens on the last-graded student's last mark (RDR-04), centred",
+      "pass": true,
+      "said": "{\"id\":\"RDR-04\",\"off\":0} · RDR-04 {\"inView\":true,\"top\":338.739990234375}"
+    },
+    {
+      "step": "L desk console/page errors",
+      "note": ""
+    },
+    {
+      "step": "L1 phone: Log out and back in, the Tracker opens on the last mark (RDR-04) — in view",
+      "pass": true,
+      "said": "{\"inView\":true,\"top\":317.49530029296875}"
+    },
+    {
+      "step": "L2 phone: another tab and back — the view is where it was (the mark still in view)",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "L3 phone: a student with nothing marked lands on the first event, centred",
+      "pass": true,
+      "said": "{\"id\":\"ST-01\",\"off\":0}"
+    },
+    {
+      "step": "L5 phone: the member signs in — the Tracker opens on the last-graded student's last mark (RDR-04), centred",
+      "pass": true,
+      "said": "{\"id\":\"RDR-04\",\"off\":0} · RDR-04 {\"inView\":true,\"top\":317.49530029296875}"
+    },
+    {
+      "step": "L phone console/page errors",
+      "note": ""
+    }
+  ],
+  "errors": []
+}

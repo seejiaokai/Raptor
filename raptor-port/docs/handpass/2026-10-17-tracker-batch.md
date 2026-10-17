@@ -41,14 +41,14 @@ no role (D121); a delete is the admin's, unchanged. 8 the warning list — NO.
 
 | Change | Where | The one-line why |
 |---|---|---|
-| D980 the chart by keyboard | `src/tracker/app/core.js` (`chartKey`, `kbdNext`, `kbdStep`, `paintKbdRing`, `kbdKeepInView`, `kbdBack`, `windowUp`; `openPop` / `closePop` / `openInfo` / `closeInfo`; the board's key, focus and blur listeners in `enableHScroll`); `components/Pop.jsx` (the keyboard on the event's own grade once placed, Tab loops, arrows along the grades, `role="dialog"`); `tracker.css` (the focus outline in the pop-up) | the board was already ONE Tab stop; its arrows scrolled — now they walk the events, the ring is drawn in the ball's own group |
+| D980 the chart by keyboard | `src/tracker/app/core.js` (`chartKey`, `kbdNext`, `kbdStep`, `paintKbdRing`, `kbdKeepInView`, `kbdBack`, `windowUp`; `openPop` / `closePop` / `openInfo` / `closeInfo`; the board's key, focus and blur listeners in `enableHScroll`); `components/Pop.jsx` (the keyboard on the event's own grade once placed, Tab loops, arrows along the grades, `role="dialog"`); `tracker.css` (the focus outline in the pop-up) | the board was already ONE Tab stop; its arrows scrolled — now they walk the events; the ring is drawn on the chart's overlay layer at the ball's place (inside the ball's group it made the ball measure 24px wider — the Tracker suite caught it) |
 | D980 branches | `kbdNext` / `kbdStep` | the scenario designer's 7: 9 events on the 2024 chart and 4 on the 2026 chart could not be reached; → ← → takes the next branch, ← → ← the next thing an event needs |
 | D980 a grade pressed again | `popGrade` | the keyboard starts on the event's own grade, so a second Enter saved a mark of nothing — the same grade on the same day now only closes |
 | D981 | `people.js` (`setGonePeople`), `peoplewire.ts` (`deletedForTracker`), `core.js` (`leaveRunningCourses`, called at boot before the first course loads and whenever the deleted list changes) | the people bridge did not tell the Tracker who was deleted (archived and deleted look alike in its list) |
 | D982 | `core.js` (`flexFor`, `landingCurrency` return the ink with the colour), `SidePanel.jsx` | one place gives a bar both, so no bar can have one without the other |
-| `[TRK-WIREBOARD-REPEAT]` | `endDrag` | `renderBoard()` (a fresh chart) in place of `wireBoard()` on the same one |
+| `[TRK-WIREBOARD-REPEAT]` | `wireBoard` (`wireOnce`) | each part of the chart is wired once; the release still wires the lines its drag redrew (a whole redraw at the release was tried first and taken back — it moved the editing canvas) |
 | `[TRK-BALL-OFF-CHART-LEFT]` | `moveBall`, `moveGroup`, and every line-point handler (`svgPtOnChart`) | a drop before the chart's start is held at it |
-| `[TRK-REMOUNT-LANDING]` | `App.jsx` (the remount lands), `core.js` (`landChart` — one body for the boot, a person's own place and a remount; `scrollToEvent` never shows the slack above or left of the chart) | the remount drew the chart without asking where to land |
+| `[TRK-REMOUNT-LANDING]` | `App.jsx` (the remount lands), `core.js` (`landChart` — one body for the boot, a person's own place and a remount; `scrollToEvent` centres, as before — a hold at the chart's start was tried and taken back, his 9 Sep "centralise" ask; the empty band above the first event is put to him, §14) | the remount drew the chart without asking where to land |
 | `[TRK-KEY-NAME-CLIP]` | `keyFont`, `renderKeyBall` | a name is given the room its side of the card has, measured in the key's own type where a browser can measure |
 | `[TRK-SAVE-FAIL-SAYS-SAVED]` | `storage.js` (`useSaveHealth`), `main.tsx` (hands the saver over), `core.js` (`saveWords`) | the Tracker's write lands in memory at once; it never heard the saver fail |
 | `[TRK-UNDO-WRITES-DEFAULTS]` | `markSnap` (`st` — what was stored), `restoreSnap` | the snapshot held the defaults the chart shows, and an undo wrote them |
@@ -108,6 +108,22 @@ first frame, none names him); undo, then a reload (U).
 **What the walk found, each fixed and walked again:** the keyboard ring after a MOUSE grade (Chrome leaves the focus on
 the pressed button — now only the keyboard's focus counts); Enter's pop-up not taking the keyboard (it is drawn hidden
 while it measures its place — now it takes it once placed); the ring dropping while the pop-up is up (kept now).
+**The re-walk after the code read's fixes** (17 Oct 26, the next chat, on the build at the fix below — results
+`docs/handpass/parts/trk-batch/trk-batch-walk-KPL-rewalk.json`): **K 26 / 26 · P 12 / 12 · L 9 / 9 — 47 / 47, no errors**
+— K16 (a mouse press takes the ring away) and K17 (no ring after a Log out and in) new; the ring found on its new layer;
+L3 – L5 now ask for the landing CENTRED (the hold taken back), the first event 0px off the middle at both sizes.
+**The Tracker suite's one open fault, found and fixed (the next chat):** "✓ Done editing chart keeps the middle" was 51px
+off on the batch and passed on `main`. The suite's own phone steps were replayed on both builds, the chart's place printed
+after every step: the two runs part at the Delete step, where a line is drawn on "empty canvas" that lies in the room
+ABOVE the chart — on `main` it is drawn 150 above the chart's start (the fault `[TRK-BALL-OFF-CHART-LEFT]` fixes), on the
+batch on its top edge; every pinch after starts elsewhere, and the batch's run ends with the editing view's middle 21 above
+the chart's start, at 3.7× zoom. The ordinary chart cannot scroll before its start, so it stops at its top edge — the
+nearest it can come — and the ball lands 51px short of where holding a point no chart can show would put it. `main`
+passed by luck: its run ended with the middle on the chart. **Not a fault of the app; the check promised the impossible
+there.** The check now holds each side of the middle exactly, and on a side where the middle was before the chart's start
+asks for the chart at that edge (`scripts/tracker/smoke.mjs`). Proved both ways: it passes on the batch's build and on
+`main`'s; broken by hand after the leave — the chart nudged 60px sideways, or 40px down from its edge — it fails (78px,
+91px).
 
 ## 8. Carried by a test, not walked
 
@@ -122,8 +138,13 @@ while it measures its place — now it takes it once placed); the ring dropping 
 
 ## 9. The break tests
 
-`scripts/handpass/breaks/trk-batch.json` — **31 of 31 caught** (`node scripts/handpass/breaks.mjs …`): each fix taken out
-once, its test red. What a break cannot reach (a real browser only): focus-visible, the pop-up's placing, the landing's
+`scripts/handpass/breaks/trk-batch.json` — **36 of 36 caught** (`node scripts/handpass/breaks.mjs …`, the whole list run again
+after the code read's fixes, 17 Oct 26): each fix taken out once, its test red. That run first caught 34 of 36: break 34
+(the session's end clearing the keyboard's state) and break 36 (the ring drawn only while the keyboard is on the chart)
+were each covered twice over by a later fix (a blur, `closePop`'s own clearing), so the tests written for them passed with
+the line gone. Each line still guards its own way in, so each got a test that only it passes — the next person's details
+window after a session ended with ✎ Edit details up from the keyboard; a keyboard pop-up dropped by a course load — and
+both were broken again: caught, each by its own test. What a break cannot reach (a real browser only): focus-visible, the pop-up's placing, the landing's
 scroll, measured text — each carried by the walk (K12, K6, L1–L5, N1–N2), red on the build before the batch where it
 showed (the before pictures).
 
