@@ -9712,6 +9712,25 @@ His "As recommended" to the four questions of `docs/mock/2026-10-17-tracker-r1/i
 - **D982 — the Currency & flex bars' words, to build.** Dark words (Raptor's background colour) on the green, amber and red
   bars; white stays on grey; the bar's colour and its ink come from one place.
 
+**As built (17 Oct 26, the Tracker batch — `docs/handpass/2026-10-17-tracker-batch.md`):**
+- **D980.** The chart box (`#board`) is the one Tab stop. The ring is `#1E86FF`, two pixels, round the ball outside its gold
+  and turquoise rings, drawn only while the keyboard is on the chart (a mouse or a finger draws none). Where an arrow has
+  several to go to: the nearest row, then the leftmost (→ ←), the nearest row then the most directly above or below (↑ ↓).
+  An arrow and its opposite go and come back; the first arrow again right after coming back takes the NEXT one, round to
+  the first (→ ← → walks an event's branches, ← → ← the things it needs) — every event of the four built-in charts is
+  reachable. Enter or Space opens the marking pop-up on the event's own grade (pressed again, it changes nothing and
+  closes); Tab and Shift+Tab go round inside it; ← → ↑ ↓ step along the grades; Escape, a grade or Close give the keyboard
+  back to the chart, the same event; ✎ Edit details takes it to its window and back. Details mode: Enter shows the brief.
+  Edit chart layout keeps its own keys. The keyboard's place follows a crew pick, a search and a landing.
+- **D981.** At the Tracker's start (before the first course opens) and whenever a delete happens while it is open; his
+  place on every chart's list of a course still running for him goes — his marks, dates, pace and lulls stay stored, out
+  of sight (D132, D290); a course where all of his are done or N.A. keeps him.
+- **D982.** As ruled.
+- **Landing.** Coming back to the Tracker (a Log out and in, a member's first visit) lands as a pick does, on the last
+  mark, else the first event. Every landing centres its event wherever that shows no empty space, and never scrolls into the
+  empty slack above (or, on a chart wider than its box, left of) the chart's start: an event near the top sits as high as
+  the chart goes instead (D984, 17 Oct 26 — his "As recommended B"; it narrows his 9 Sep "centralise" ask).
+
 ## OIL on the schedule: the "OIL Earn" mode and the green edge (owner, 21 Sep 26)
 
 `[OIL-AUTO-REMOVE]`. Design: `docs/superpowers/specs/2026-09-21-oil-auto-remove-decisions.md`.

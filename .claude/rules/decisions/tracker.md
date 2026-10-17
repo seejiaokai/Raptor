@@ -45,6 +45,8 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D984 | 17 Oct 26 | The Tracker's chart lands its event in the middle of the chart box wherever it can, but never with empty space above the chart's start in view: an event near the top sits as high as the chart goes instead. |
+| D983 | 17 Oct 26 | Two Tracker faults wait for the database step and stay filed in the backlog until then: a Tracker Import saved as many groups instead of one (`[TRK-IMPORT-ONE-GROUP]`) and a stale tab undoing the first save of the chart order (`[TRK-FIRST-ORDER-PLACE]`); neither is built with the Tracker batch. |
 | D982 | 17 Oct 26 | The Tracker's Currency & flex bars print dark words on their green, amber and red fills and keep white words on the grey one; the colours and the words on the bars stay as they are. |
 | D981 | 17 Oct 26 | A man deleted through Post out leaves every Tracker course on which he still has events to do — an event neither done (DCO, DPCO, Marginal) nor N.A. — and stays, his record kept, on every course where all of his are; this is what D299's "a course still running" means. |
 | D980 | 17 Oct 26 | On a desktop the keyboard reaches the Tracker's chart with one Tab; then the arrow keys follow its lines — → to the next event along a line, ← back to the event it needs first, ↑ ↓ to the event above or below — Enter opens the marking pop-up with the keyboard inside it, and Escape returns to the same event. |

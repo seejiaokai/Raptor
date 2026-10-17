@@ -55,6 +55,26 @@ export const storage = {
   },
 }
 
+/* WHETHER WHAT WAS WRITTEN HAS REALLY BEEN SAVED ([TRK-SAVE-FAIL-SAYS-SAVED], 17 Oct 26). Every write above lands in
+   Raptor's in-memory whiteboard at once, so it always "succeeds" here; the copy that survives a reload is written after,
+   by Raptor's background saver, and when that fails Raptor's top bar says "Not saved — keep this page open". The
+   Tracker never heard of it, and its corner said "● saved" beside that warning. So the page that plugs the storage in
+   also hands over the saver's state (main.tsx — the saver itself, or anything with the same two members):
+   'saved' | 'saving' | 'unsaved' | 'failed', and a way to hear when it changes. With none (the standalone Tracker, a
+   test that never boots main) every write is saved when it lands, as before. Part of this doorway, not a seam of its
+   own: it is the same storage, read for its outcome. */
+let health = null   // { status, onStatus(fn) } — Raptor's postman
+const healthSubs = new Set()
+export function useSaveHealth(h) {
+  health = h && typeof h === 'object' ? h : null
+  if (health && typeof health.onStatus === 'function') health.onStatus(() => { for (const f of [...healthSubs]) { try { f() } catch (_) {} } })
+  for (const f of [...healthSubs]) { try { f() } catch (_) {} }
+}
+export function saveHealth() {
+  try { const s = health && health.status; return s === 'failed' || s === 'saving' || s === 'unsaved' ? s : 'saved' } catch (_) { return 'saved' }
+}
+export function onSaveHealth(f) { healthSubs.add(f); return () => healthSubs.delete(f) }
+
 /* The two sync verbs the app still calls around a syllabus write. Every write
    above lands synchronously, so there is nothing to flush and nothing newer to
    pull — kept as no-ops so the call sites in core.js stay byte-identical for

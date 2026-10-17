@@ -75,7 +75,9 @@ export default function App({ active = true }) {
      ready renders the board div), and it also covers the LOGOUT→LOGIN remount
      where the engine's state is intact and ready is already true on mount (the
      7 Sep 26 "no chart after re-login" case). */
-  useEffect(() => { if (core.ready && !core.bootError && !core.resumeForPerson()) { core.renderBoard(); core.notify(); } }, [core.ready]);
+  /* ...and LANDS it, as a pick does ([TRK-REMOUNT-LANDING], 17 Oct 26): the same person signing out and in again came
+     back to the chart's top corner, because this redraw never asked where to land (core.landChart) */
+  useEffect(() => { if (core.ready && !core.bootError && !core.resumeForPerson()) { core.renderBoard(); core.notify(); core.landChart(); } }, [core.ready]);
   /* ...and when the FIRST course arrives on a Tracker that had none ([DB-READINESS] group A, phase 5 — D463): the board's
      box mounts only with it, empty, so it is drawn once it is there */
   const hasCourse = core.COURSES.length > 0;

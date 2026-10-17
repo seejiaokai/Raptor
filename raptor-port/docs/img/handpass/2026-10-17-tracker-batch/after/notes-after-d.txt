@@ -1,0 +1,7 @@
+d desk: marked RDR-04 → {"scrollTop":2465,"scrollLeft":0,"emptyAboveFirstBall":-2055}; after Log out / Log in → {"scrollTop":2465,"scrollLeft":0,"emptyAboveFirstBall":-2055}; RDR-04 in view: true
+d desk: picking STUDENT B (nothing marked) → {"scrollTop":368,"scrollLeft":0,"emptyAboveFirstBall":42}
+d phone: marked RDR-04 → {"scrollTop":993,"scrollLeft":0,"emptyAboveFirstBall":-642}; after Log out / Log in → {"scrollTop":993,"scrollLeft":0,"emptyAboveFirstBall":-640}; RDR-04 in view: true
+d phone: picking STUDENT B (nothing marked) → {"scrollTop":329,"scrollLeft":0,"emptyAboveFirstBall":24}
+
+errors:
+none

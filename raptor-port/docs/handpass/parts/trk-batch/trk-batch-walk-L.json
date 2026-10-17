@@ -1,0 +1,58 @@
+{
+  "rows": [
+    {
+      "step": "L1 desk: Log out and back in, the Tracker opens on the last mark (RDR-04) — in view",
+      "pass": true,
+      "said": "{\"inView\":true,\"top\":338.739990234375}"
+    },
+    {
+      "step": "L2 desk: another tab and back — the view is where it was (the mark still in view)",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "L3 desk: a student with nothing marked lands on the first event with no empty band above the chart",
+      "pass": true,
+      "said": "{\"scrollTop\":368,\"emptyAboveFirstBall\":42}"
+    },
+    {
+      "step": "L4 desk: a search that finds ST-01 brings it in, with no empty band above the chart",
+      "pass": true,
+      "said": "{\"scrollTop\":368,\"emptyAboveFirstBall\":37}"
+    },
+    {
+      "step": "L5 desk: the member signs in — the Tracker opens on the last-graded student's last mark (RDR-04), no empty band above the chart",
+      "pass": true,
+      "said": "{\"scrollTop\":2465,\"emptyAboveFirstBall\":-2055} · RDR-04 {\"inView\":true,\"top\":338.739990234375}"
+    },
+    {
+      "step": "L desk console/page errors",
+      "note": ""
+    },
+    {
+      "step": "L1 phone: Log out and back in, the Tracker opens on the last mark (RDR-04) — in view",
+      "pass": true,
+      "said": "{\"inView\":true,\"top\":317.49530029296875}"
+    },
+    {
+      "step": "L2 phone: another tab and back — the view is where it was (the mark still in view)",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "L3 phone: a student with nothing marked lands on the first event with no empty band above the chart",
+      "pass": true,
+      "said": "{\"scrollTop\":329,\"emptyAboveFirstBall\":24}"
+    },
+    {
+      "step": "L5 phone: the member signs in — the Tracker opens on the last-graded student's last mark (RDR-04), no empty band above the chart",
+      "pass": true,
+      "said": "{\"scrollTop\":993,\"emptyAboveFirstBall\":-640} · RDR-04 {\"inView\":true,\"top\":317.49530029296875}"
+    },
+    {
+      "step": "L phone console/page errors",
+      "note": ""
+    }
+  ],
+  "errors": []
+}

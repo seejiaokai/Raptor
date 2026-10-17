@@ -8,7 +8,7 @@
 import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { subscribe } from '../state/store'
-import { setPeople, setWhoami, setWhoamiId } from './people.js'
+import { setPeople, setWhoami, setWhoamiId, setGonePeople } from './people.js'
 
 export type TrackerPerson = { id: string; cs: string; seat: string; q: string; sxo: boolean }
 
@@ -31,6 +31,11 @@ export function projectForTracker(people: any): TrackerPerson[] {
     || (seatRank(a.seat) - seatRank(b.seat))
     || a.cs.localeCompare(b.cs))
   return out
+}
+
+/* The men deleted through Post out (D290's hidden mark — state/person-delete.ts), for the Tracker's D981 */
+export function deletedForTracker(people: any): string[] {
+  return Object.keys(people || {}).filter(id => !!(people[id] && people[id].deleted))
 }
 
 let wired = false
@@ -61,7 +66,7 @@ export function wireTrackerPeople(): void {
   wired = true
   setWhoami(whoamiForTracker)
   setWhoamiId(whoamiIdForTracker)
-  const push = () => setPeople(projectForTracker(PEOPLE))
+  const push = () => { setPeople(projectForTracker(PEOPLE)); setGonePeople(deletedForTracker(PEOPLE)) }
   subscribe(push)
   push()
 }
