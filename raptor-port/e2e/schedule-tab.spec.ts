@@ -156,6 +156,21 @@ for (const [name, viewport] of [['desktop',{width:1440,height:900}],['phone',{wi
       }
       expect(await page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].to)).toBe('12:56')
     })
+    /* …and the Scheduler Board's own boxes, which save on their change rather than on leaving */
+    test('one click after a changed box takes the caret on the Scheduler Board', async ({ page }) => {
+      await login(page); await go(page, 'editsched'); await openBoard(page)
+      const box = (key: string) => page.locator(`#sbBoard [data-bfld="${key}"]:visible`).first()
+      const to = box('ff:0.0.0.to')
+      for (const [time, key] of [['1255', 'ff:0.0.0.msn'], ['1256', 'ff:0.1.0.msn']] as const) {
+        await to.click(); await to.fill(time)
+        await box(key).click()
+        await page.keyboard.type('Z')
+        await focused(box(key))
+        await expect(box(key), `${key} took the typing`).toHaveValue(/Z$/)
+        await page.keyboard.press('Escape')
+      }
+      expect(await page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].to)).toBe('12:56')
+    })
     test('native Board change saves once, refreshes repeated fields and settles after text exit', async ({ page }) => {
       await login(page); await go(page, 'editsched'); await openBoard(page)
       const cs = field(page, '#sbBoard', 'ff:0.0.0.cs'), seq = await page.evaluate(() => (window as any).commandStreamLen())

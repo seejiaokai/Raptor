@@ -78,15 +78,26 @@ const commitText = (key: string, mark: () => void) => schedWrite(SCHED_TYPES.tex
    The redraw saw no caret, replaced the block holding the box clicked, and the focus landed on a box no longer there: no
    caret until a second click. focusout names where the focus is going; while it is on its way that box is treated as the
    caret (editingText, textCaret), so its block is left standing as a typed-in block is. Cleared when the focus arrives
-   (routeFocusIn) or the press ends without it. */
+   (routeFocusIn) or the press ends without it.
+   The Scheduler Board's boxes save on their CHANGE, which the browser fires after the old box has let go and BEFORE
+   focusout names the box the focus is going to (seen on the built app, 19 Oct 26) — so the box a press lands on is
+   noted at the press itself, too. */
 let ARRIVING: HTMLElement | null = null
 const TEXTBOX = '[data-txt],[data-bfld],[data-inp],[data-ifld],[data-role-remarks],[data-role-ui]'
 const arriving = () => (ARRIVING && ARRIVING.isConnected ? ARRIVING : (ARRIVING = null))
-if (typeof document !== 'undefined') document.addEventListener('pointerup', () => { if (ARRIVING && document.activeElement !== ARRIVING) setTimeout(() => { if (document.activeElement !== ARRIVING) ARRIVING = null }, 0) }, true)
+const textBoxOf = (t: any): HTMLElement | null => {
+  if (!t || !t.closest) return null
+  const el = t.closest(TEXTBOX) as HTMLElement | null
+  return el || (t.isContentEditable ? t : null)
+}
+if (typeof document !== 'undefined') {
+  document.addEventListener('pointerdown', e => { const b = textBoxOf(e.target); if (b && document.activeElement !== b) ARRIVING = b }, true)
+  document.addEventListener('pointerup', () => { if (ARRIVING && document.activeElement !== ARRIVING) setTimeout(() => { if (document.activeElement !== ARRIVING) ARRIVING = null }, 0) }, true)
+}
 
 export function routeFocusOut(e: FocusEvent) {
   const rt = e.relatedTarget as HTMLElement | null
-  ARRIVING = rt && rt.closest && (rt.closest(TEXTBOX) || rt.isContentEditable) ? rt : null
+  ARRIVING = textBoxOf(rt) ? rt : (ARRIVING && rt == null ? ARRIVING : null)
   /* editMode() (store.ts) drives whether html.ts renders contenteditable="true"
      at all, but a field already focused when a session changes underneath it
      (logout while mid-edit) still fires this handler on blur. Every text
