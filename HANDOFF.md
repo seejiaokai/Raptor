@@ -52,8 +52,19 @@ the later merge keeps both (D78).
   changed box — reproduced, FIXED `285f3ac3b` (let go 600 ms after a touch); S4-17 the Leave War "back to January" — the
   walker's own script (`scrollIntoViewIfNeeded` on the off-screen real name cell, its `s4-17.mjs` line 13), not the app;
   S4-05 a button's first press after a changed box does nothing — OLDER than the batch, filed `[EDIT-BUTTON-AFTER-CHANGE]`;
-  S4-13 (a resize during a glide) RECORDED, no fault seen. Walkers A, B, C still out when this was written.
-- **Next, in order:** read walkers A, B and C's reports, open the pictures behind every FAIL and published-day PASS,
+  S4-13 (a resize during a glide) RECORDED, no fault seen.
+- **Walker A (In-time, 40 PASS / 8 FAIL):** S1-01b/c (a line lost on a drag while typing) and S1-03 (the 72px band on a
+  phone on its side) — both the faults already FIXED after the frozen build (re-walk owed); S1-01a (the board kept the
+  old order until the line was left) — the same cause, fixed by the same blur; S1-07 (the sort with unnamed lines) — NOT
+  a fault: with the earliest take-off 07:00 the unnamed 07:30 / 08:00 are the evening before too (D503), as the app's own
+  warning says; the scenario's expected line was wrong.
+- **Walker B (crew list etc., 56 PASS / 2 FAIL / 12 RECORDED):** S2-10b/f (the run-of-days focus stays) — the fault
+  already FIXED `f6f4ab9f8` after the frozen build (re-walk owed); S2-12 flying seats get no crew-rest strike — older,
+  as built (the strike is the SC seats'; the list says it); a day with no issue of its own draws no "Breaks <day>" line in
+  its own list (older; the man's puck still reveals it — `crewrest-ui.test.ts`). The walker's sheet was filed by the host.
+- **His find (19 Oct 26, from walker A's picture):** the board's In-time / Rally lines stood mid-panel — the drag's rows
+  kept `align-items:center`. FIXED `1329e0396` (a browser test at 1440 and 390; before/after pictures sent to him).
+- **Next, in order:** read walker C's report, open the pictures behind every FAIL and published-day PASS,
   reproduce each finding, fix (red first); then the gates under the lock; a new frozen build and the re-walk of what the
   fixes touched (the designer's S1-01/S1-02/S1-03/S1-08/S2-10/S3-03/S3-17 and the board second click); the fresh blind
   Opus code read (`docs/superpowers/briefs/2026-10-19-sched-fixes-read.md` — start it once the fixes are in); break
