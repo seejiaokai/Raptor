@@ -1,0 +1,46 @@
+{
+ "rows": [
+  {
+   "id": "M1 Inputs calendar settings (short)",
+   "ok": true,
+   "note": "154 above, 154 below, sides 12/370, 537 tall"
+  },
+  {
+   "id": "K0 the Calendar window: fills the screen under the top bar, as built (top 54, foot 838)",
+   "ok": true,
+   "note": "{\"t\":54,\"b\":838,\"l\":6,\"r\":384,\"h\":784}"
+  },
+  {
+   "id": "M3 the Inputs page's \"+ Input\" (D996)",
+   "ok": true,
+   "note": "27 above, 26 below, sides 12/370, 791 tall"
+  },
+  {
+   "id": "K1 a day opened on the Inputs calendar: stays the panel it was (opens tall, its foot on the screen's foot)",
+   "ok": true,
+   "note": "{\"t\":8,\"b\":832,\"l\":12,\"r\":370,\"h\":824}"
+  },
+  {
+   "id": "M4 SANS calendar settings",
+   "ok": true,
+   "note": "112 above, 112 below, sides 12/370, 621 tall"
+  },
+  {
+   "id": "M5 Insights (a pop-up window, tall)",
+   "ok": true,
+   "note": "12 above, 12 below, sides 12/378, 820 tall"
+  },
+  {
+   "id": "K2",
+   "ok": null,
+   "note": "no ALL AVAIL count on Saturday's board"
+  },
+  {
+   "id": "K3 the changes window: stays at the foot",
+   "ok": true,
+   "note": "top 309, foot 832 of 844 (523 tall)"
+  }
+ ],
+ "errs": [],
+ "pics": 7
+}

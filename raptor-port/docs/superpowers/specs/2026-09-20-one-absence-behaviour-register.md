@@ -411,6 +411,7 @@ included. Under N13 neither half is true of an award: nothing flags it and there
 resolve. That note now fires only for a credit the schedule earned.
 
 ### N17 — the manning counts BODIES; only a planned absence takes one away (21 Sep 26)
+*(18 Oct 26, D998 — "No leave it for 1 for now": a duty or other commitment does NOT lower the manning, for now; the half filed as [LW-COMMIT-MANNING] is parked.)*
 > "you dont need to take him off the manning. The planner only needs to know if this current day
 > can be fulfilled with the amount of manpower they have as a whole. Doesnt make sense that after
 > the admin plans a day and leave war manning starts to become red, which is weird."

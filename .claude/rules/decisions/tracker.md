@@ -45,6 +45,15 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D1018 | 18 Oct 26 | The Tracker's down days, flex settings and legend are built as drawn: course start set in "+ Add" and the Info panel; the down-days window only shows; "—" before a course start; a running input counts to today; only the six "From" flex days are typed; a member sees the settings read-only; "Legend" sits beside Show All. |
+| D1015 | 18 Oct 26 | When the Tracker's import refuses student marks because their chart is in neither the file nor the Tracker, it says: "Student marks not brought in: they belong to a chart this file doesn't carry. Export a fresh backup that includes its charts, and import that." |
+| D1014 | 18 Oct 26 | The Tracker's flex settings — its figures and its on / off switch (D1006) — open from a settings icon in the Tracker's top bar, and only an admin can change them. |
+| D1007 | 18 Oct 26 | The Tracker gets a legend: what each ball on the chart means (a flight and the other kinds), what currency a flight needs and when an IP is required, and when a flex happens; with the flex switch off (D1006) the legend's flex part goes too. |
+| D1006 | 18 Oct 26 | The flex can be set: its figures can be edited, and one switch for the whole Tracker turns flex off — then everything about flex disappears from the app (its bar, its windows and words, and its part of the legend). |
+| D1005 | 18 Oct 26 | Every Tracker student is a man on the roster, so his down days always come from the Inputs: the typed "No. of Down Days" box goes for every student. "Last flown currency" is typed by the member for a non-syllabus flight and moves only the IP requirement (landing currency); a syllabus flight moves both the IP requirement and the flex. |
+| D1004 | 18 Oct 26 | The Tracker's landing-currency bar counts only the days elapsed since the student's last currency flight or non-syllabus flight; medical down days take no part in it. |
+| D1003 | 18 Oct 26 | The Tracker's automatic down days count a man's medical days since his course start — a course start date is entered for each student when he is added to the Tracker (a new field; none is kept today); a half-day medical counts as half a day; and for a student who is a man on the roster the typed "No. of Down Days" box goes entirely. — changed by D1005, D1004 |
+| D1002 | 18 Oct 26 | In the Tracker's Info panel the "Upchit Date" box goes, and "No. of Down Days" is no longer typed: it is worked out by itself from the Inputs — every medical day a man was down, ATT B included — and a tap on the number opens a window listing each medical input it counts, with its dates and how many days each gave. |
 | D992 | 18 Oct 26 | On a phone the Tracker's chart and its Info half are scrolled by the phone itself, at its own frame rate, with its own glide, bounce and touch-to-stop; and a pinch stretches the chart as a picture while the fingers move, laid out sharp once at the lift — the spot under the fingers kept under them; Edit chart layout pans as it does. |
 | D989 | 17 Oct 26 | The glide's five calls stand: two fingers stop it, the pinch and its take-back unchanged; when the app moves the chart itself (a pick, a search, the keyboard) the glide stops and that move wins; it stays on when the phone asks for less motion; Edit chart layout is untouched; a lift after a drag or glide opens nothing. |
 | D988 | 17 Oct 26 | Only a finger (or a pen) glides — on a phone, an iPad or a touch-screen laptop; a mouse drag of the Tracker's chart or Info half still stops where it is let go, as now, and does not bounce. |
@@ -90,7 +99,7 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 | D124 | 23 Sep 26 | Deleting a ball wipes its marks. |
 | D123 | 23 Sep 26 | Last Flown is the latest day actually flown, whatever the order they were entered. |
 | D122 | 23 Sep 26 | An import may reset student marks; it must never wipe an event's typed details. |
-| D121 | 23 Sep 26 | In the Tracker a member can do everything an admin can — the File menu too. |
+| D121 | 23 Sep 26 | In the Tracker a member can do everything an admin can — the File menu too — except change the flex settings, an admin's alone (D1014). — changed by D1014 |
 | D120 | 23 Sep 26 | The Tracker's charts reach the database by export → wipe → import, so a bug that route already removes is not a finding. |
 | D64 | 23 Sep 26 | The Tracker's event-box hint reads the bare type ("e.g. Lecture, OFT/AMT, 2 x F-15"); its syllabus data and the smoke-test lines asserting it stay out of every sweep (D62) — narrows D62 and D63. |
 
@@ -207,7 +216,7 @@ model for the database step: `docs/data-model.md`. **Everyone
 does everything — marking, charts, students, courses, syllabi AND the File menu
 (Import / Export): admin and member have the same access** (owner, D121,
 23 Sep 26, superseding the 7 Sep "file portion is the admin's"); the Tracker
-reads no role, so never add an admin gate to it. CSS is scoped under
+reads no role, so never add an admin gate to it *(NARROWED 18 Oct 26 by D1014: the flex settings, opened from a settings icon in its top bar, are an admin's alone — the Tracker's one admin gate, to build with [TRK-FLEX-SETTING])*. CSS is scoped under
 `#page-tracker` with five Raptor collisions reset at the top of the wrapper.
 *[Since 13 Oct 26 (D801) two Tracker components — `components/DateBox.jsx`, `components/Pop.jsx` — draw Raptor's own date box (`ui/DateBox.tsx`, `ui/DateCal.tsx`, `ui/scheduler/26-date-calendar.css`): a standalone export carries those with it — `docs/tracker/known-gaps.md`, last sections.]*
 Gaps and the carried-over traps: `docs/tracker/known-gaps.md`; the working loop

@@ -161,7 +161,8 @@
    reach: every press here is one Undo step, and a mis-tap on a stepping button is taken back there. The bar still drags
    the window down to see the page behind. */
 @media (max-width:620px){
-  .floatwin.dayswin{left:6px;right:6px;top:54px;bottom:6px;max-width:calc(100vw - 12px);max-height:none;width:auto}
+  /* it FILLS the screen under the top bar, so the shell's centring (D997) does not apply: its own height, no auto margins */
+  .floatwin.dayswin{left:6px;right:6px;top:54px;bottom:6px;margin:0;height:auto;max-width:calc(100vw - 12px);max-height:none;width:auto}
   .dayswin .win-body{padding:8px 6px 10px}
   .dayswin .days-head .abtn{min-width:44px;min-height:44px}
   .dayswin .days-month{flex:1 1 auto}

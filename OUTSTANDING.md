@@ -50,7 +50,9 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **FILED 18 Oct 26 — [TRK-PINCH-OLD-EDGES]:** two older edges of the Tracker chart's pinch, met by [TRK-CHART-FPS]'s reads — low, with the next Tracker batch.
 
-**BUILT 18 Oct 26, waiting for his look and "merge live" — D994's first batch, the scheduling pages on a phone (branch `claude/scheduling-phone-fixes-6d4adf`):** [SCHED-INPUT-WINDOW-PHONE] (the schedule's own input window as tall as it needs, in the middle of a phone's screen — his D995; a finger on it never scrolls the page behind; the Inputs list no longer widens a phone on its side) and [OIL-NOTIFY-SEEN] (5) (the crew drawer put away after an Unavailable hand-over); [PHONE-WIDE-BOARD-BLANK] closed — fixed and live since 6 Oct 26, confirmed on today's build. Its check: `raptor-port/docs/handpass/2026-10-18-sched-phone.md` (WALK). **Next in D994's order:** the next area's small fixes.
+**FILED 18 Oct 26 — [TRK-FLEX-SETTING], [TRK-LEGEND]:** his directions (D1006, D1007) — the flex editable with a switch that turns it off everywhere; a legend for the Tracker — one Tracker job with the down days (D1002–D1005). **FILED 18 Oct 26 — [TRK-DOWN-DAYS-AUTO]:** his direction (D1002) — the Tracker's down days worked out from the Inputs, ATT B included, a tap shows each input; the Upchit Date box goes — not designed, his questions first. **FILED 18 Oct 26 — [LW-SORT-BY-FLIGHT]:** his intent, an option to sort the Leave War by flight (D1001) — not designed; his to raise. **His answers of 18 Oct 26 to the backlog's questions:** D998 (1 parked), D999 (4), D1000 (11), D1001 (7) — the rest in `raptor-port/docs/superpowers/briefs/2026-10-18-sixteen-questions.md`.
+
+**LIVE 18 Oct 26 (pull request 533, his "merge live") — D994's first batch, the scheduling pages on a phone:** *(D996 follows — the Inputs page's input window, and perhaps every short phone window, in the middle; his scope answer first, `HANDOFF.md`.)* [SCHED-INPUT-WINDOW-PHONE] (the schedule's own input window as tall as it needs, in the middle of a phone's screen — his D995; a finger on it never scrolls the page behind; the Inputs list no longer widens a phone on its side) and [OIL-NOTIFY-SEEN] (5) (the crew drawer put away after an Unavailable hand-over); [PHONE-WIDE-BOARD-BLANK] closed — fixed and live since 6 Oct 26, confirmed on today's build. Its check: `raptor-port/docs/handpass/2026-10-18-sched-phone.md` (WALK). **Next in D994's order:** the next area's small fixes.
 
 **LIVE 18 Oct 26 (pull request 532, his "merge live") — [TRK-CHART-FPS] (D992) with D993:** the Tracker's chart and Info half scrolled by the phone itself, the pinch as a picture; Quals' pinned header row moved by the browser; archived with [TRK-SCROLL-GLIDE]. **NEXT, his word (D994):** the small fixes that need no answer from him, by area, the scheduling pages on a phone first; his questions wait until he says so (`HANDOFF.md` §Next).
 
@@ -219,7 +221,7 @@ phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Cod
 **Owner's current workflow UI requests — collection complete, build authorized D563 (4 Oct 26):** [TRK-FLIGHT-LABEL-READABILITY] — clearer words inside blue flight balls, wider wing label area proposed; [LOGIC-STICKY-SEARCH-COMPACT] — keep search visible while scrolling and pack existing controls into fewer rows; [INSIGHTS-CLOSE-STAYS-VISIBLE] — keep the close cross at the top while scrolling Insights. Built on codex/workflow-ui after numbered candidates and independent plan challenge; combined first-build checks passed; D564 rejects the first flight shape, D565 steers to a tapered leading edge via his annotation. Specific tapered redraw with native sizes accepted D566; finish checks and fresh inspection of implemented chosen replacement, affected checks/fresh final read/current preview next. Logic/Insights retained. This does not start the Tracker progress-graph batch or change D495's order.
 
 **Waiting on him — no order exists:**
-[LOAD-MSG-SHORT] (a question for him, low — the long line after "Load onto working copy"),
+[LOAD-MSG-SHORT] (CLOSED 18 Oct 26 — answered by D863, built; his look "12 looks fine"; archived),
 [OIL-EARNED-VS-GRANTED] (ANSWERED D400 and built with the award fix — merged, PR #469, 29 Sep 26; archived 2 Oct 26),
 [LEDGER-READ-ASK] (a question for him, from the OIL award build), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
@@ -510,6 +512,7 @@ which records why the static pass missed them, and from the scenario lists Fable
 the OIL pass — the same scenario-design-then-execute shape is what this needs.
 
 ### [LW-COMMIT-MANNING] Duty & commitments must reduce the Leave War manning — the OTHER half of N17 (owner, 21 Sep 26)
+**PARKED 18 Oct 26 — D998 ("No leave it for 1 for now"): the manning stays as built; not built, and not put to him again before he raises it or the Leave War's next batch.**
 **Owner's words, and he then said to file it: "The manning should only reduce if they are like
 planned by things like leave, duty & commitments."**
 
@@ -774,13 +777,6 @@ THREE halves now (owner, 15–17 Sep 26):
     (his "show a picture before product code" rule); nothing merges without "merge live".
 - Separate gated PR after [CRP-FLAG]. Context: [CRP-FLAG]'s review log + the sample image.
 
-### [TRK-PINCH-ASK] His iPhone look at the pinch fix (24 Sep 26)
-**Place:** his next Tracker session — nothing is broken; `[TRK-PINCH-DRAGS-BALL]` merged on D133 without his look.
-The two feel questions are ANSWERED — **D134: keep both as built** (a deliberate drag joined by a second finger goes
-back; the finger left down after a pinch does nothing). Left: his look card, on his iPhone on the live app:
-`raptor-port/docs/handpass/2026-09-23-tracker-pinch-ball.md` §12 — Safari is the one browser no walk here drives, and
-one line of the fix (the board holding both fingers) is proven only there.
-
 ### [LW-DOZE-GUARDS] Do the Leave War's measurement guards ever run while its page dozes? (filed 28 Sep 26)
 **Place:** low — check before building anything. Found by Fable's read of the Tracker leftovers plan (F12): the
 `.page.doze` comment in `raptor-port/src/ui/scheduler.css` said a dozing page's insides "read 0×0 … which is what every
@@ -958,7 +954,27 @@ hand-damaged day row makes the week read-only (correct), with a notice written f
 what happened and what to do in the app's words ("This week's saved copy could not be read — it is shown read-only. Ask
 an admin.").
 
+### [TRK-DOWN-DAYS-AUTO] The Tracker's down days worked out from the Inputs, a tap shows the breakdown; the Upchit Date box goes (his direction, 18 Oct 26 — D1002)
+**Not designed — his questions first.** The design note with his words, today's behaviour and the questions to put to him:
+`raptor-port/docs/superpowers/specs/2026-10-18-trk-down-days.md`. **Place:** his direction of 18 Oct 26; the next Tracker
+job, after D994's small fixes unless he says otherwise.
+
+### [TRK-FLEX-SETTING] The Tracker's flex figures editable, and one switch that turns flex off everywhere (his direction, 18 Oct 26 — D1006)
+**Not designed — his questions first** (which figures, who may change them, where the switch sits; a picture). The note:
+`raptor-port/docs/superpowers/specs/2026-10-18-trk-down-days.md`. **Place:** with [TRK-DOWN-DAYS-AUTO], the next Tracker job.
+
+### [TRK-LEGEND] A legend on the Tracker — the balls, a flight's currency and the IP requirement, when a flex happens (his direction, 18 Oct 26 — D1007)
+**Not designed — a picture first.** Its flex part goes when the flex switch (D1006) is off. The note: as above. **Place:** with
+[TRK-DOWN-DAYS-AUTO], the next Tracker job.
+
+### [LW-SORT-BY-FLIGHT] An option to sort the Leave War by flight — his intent, an idea not yet designed (18 Oct 26, D1001)
+**His words:** *"I intend to have an option to sort according to flight"* (asked about the hidden personnel label — kept for it).
+**Not designed, not started.** When he raises it: which men carry a flight (today the label is filled for ground crew, from
+their flight in Raptor), where the option sits on the Leave War, and how it meets the categories and "Who wins" — put to him
+with pictures (D853) before anything is built. **Place:** his to raise.
+
 ### [LW-LABEL-NO-DOOR] The Leave War's personnel label has no control on screen (filed 30 Sep 26)
+**ANSWERED 18 Oct 26 — D1001: the label is KEPT, for an option to sort the Leave War by flight ([LW-SORT-BY-FLIGHT], below). Nothing to build here; archive this item at the next tidy.**
 **Place:** low — a question for him before building. Seen by the group-A FULL walk (W4 observation 4): the war stores a
 man's personnel label (`leavewar/profile:<pid>` `label`, `setPersLabel`) and reads it, but no screen calls the setter,
 in `main` or this build — a stored field no one can set. **Do:** ask him whether the label is wanted; if yes, give it
@@ -1215,6 +1231,7 @@ not a fixed time. **Place:** test-only, low, any time. **Seen again 9 Oct 26** (
 **Met again the night of 15 Oct 26** (`claude/drag-edge-scroll-elsewhere-51bfc4`, the full run at `7e9e98724`): the same branch (January undrawn, December still drawn after the jump) — and ALONE it failed 1 of 3 (2 passed), the first time it has failed outside a full run. That job touches nothing of the Leave War (`src/leavewar` unchanged; `select.ts` reads only edge numbers that did not change). **The agent's placing:** steady it as a job of its own — it is no longer only load (D87: wait on what the step needs).
 
 ### [PEEK-ISSUED] The desktop next-week preview on View-only Sched shows next week's working copy, even for a published day — a question for him (filed 26 Sep 26)
+**ANSWERED 18 Oct 26 — D1010 ("as recommended"): View-only Sched's preview shows the published version of a published day.**
 Noted by the sweep behind `[LEAVE-LATE-PUBLISHED]` (Astra, its plan read; carried in `[LATE-PUB-FACE-LIVE]`, archived
 26 Sep 26): the peek of next week at the right of the desktop week (`raptor-port/src/ui/peek.ts`) draws next week's live
 working copy, so on View-only Sched a published next-week day shows edits not yet issued. Astra recommends the issued
@@ -1486,6 +1503,7 @@ the model without blocking the edit, and how to keep it quiet (once per file per
 [RULINGS-SLIM] merges, if a chat is seen acting on a short line alone; put to him first.
 
 ### [LEDGER-READ-ASK] May a member see other men's OIL tracker entries and leave grants? — a question for him (filed 29 Sep 26)
+**ANSWERED 18 Oct 26 — D1008 ("as recommended"): everyone sees everyone's; widen the access table (§11) and its test.**
 Found by both red teams of the `[OIL-AWARD-IS-A-GRANT]` plan (Fable F5, Astra F10): the app has ALWAYS shown every member
 every man's OIL tracker (grants and corrections — `OilTracker.tsx` lists every person for both roles) and every man's
 figure breakdown with its itemised grants on every pool (owner, 17 Aug 26: "everyone should be able to click on that
@@ -1543,17 +1561,6 @@ then the Storage, Tracker, rulings, command-layer and architecture rows (~0.4–
 `backlog-archive.mjs --move` puts a blank line before a block it lands, so a table row moved alone would not sit inside a
 table there — either the mover learns to land a row under a table header, or each row's detail is moved as a paragraph.
 **Place:** low; not a target (D141) — worth it only when the small-fixes branch has merged; put to him first.
-
-### [LOAD-MSG-SHORT] The line shown after "Load onto working copy" is long — a shorter two-line version? — a question for him (filed 1 Oct 26)
-**His question, 30 Sep 26** (on the group-A branch's look): what the long message after "Load onto working copy" was. It is
-the one sentence that load writes to the screen AND to the change history (`raptor-port/src/ui/interactions.ts`, the
-`data-restore` branch): "<day>: <version> loaded onto the working copy — viewers still see <version> until you publish ·
-N unpublished edits replaced · N requests also cover another day — left as filed · N requests came back onto the programme
-with their row — <days> read that too …" — each clause a real fact the load could not otherwise say (D98, D175, D363), so
-none can simply be dropped. **Offered to him, unanswered:** a shorter two-line version on screen (the first line what was
-loaded and what viewers still see; the second "N things to know ▾" opening the rest), the full sentence kept in the change
-history. **Place:** low — his call; its own small job (WALK tier: a message on a shared surface), never inside another change.
-Carried here from the merged `claude/db-readiness-table-shaping-4094f6` handoff block when it was removed (1 Oct 26).
 
 ### [VH-SHEETS-IPHONE] Other pop-ups sized by the screen height without the browser's bars — found 3 Oct 26, not changed
 His find on the Insights preview (D536): on his iPhone the Insights window's title bar and ✕ sat under the address bar, because
@@ -1619,6 +1626,7 @@ waive owed reads or authorize a live merge.
 **Found, not fixed — reported by one walker, not yet seen by the host: reproduce first.** Walker H (X-10), `raptor-port/docs/handpass/parts/cal-H.md`, scripts `raptor-port/scripts/handpass/cal-H-*.mjs`, pictures `raptor-port/docs/img/handpass/2026-10-08-inputs-sans-calendar-check/H/x10-*.png`. (a) Saber files a meeting for three; a second admin changes its remark; Saber's Undo is refused with "A later change touches the same thing — undo that first" — D148 has the refusal say WHO; the same line for a holiday renamed and a Required cell retyped by the other. (b) Saber adds a holiday on 12 Aug, the other admin adds one on 19 Aug, Saber's Undo of his own is refused — a different date is not "the same thing" (a different Required day and a different group input DO undo cleanly). Likely place: how the Leave War's holiday commands name what they touch for the Undo's "changed since" test. **As filed:** medium-low — an Undo that refuses too readily loses nothing. The sheet: `raptor-port/docs/handpass/2026-10-08-inputs-sans-calendar-check.md` §7.
 
 ### [DELETE-LIST-CAL-NOTES] The list a delete shows of what it took away has no line for the notes a man was on (found 9 Oct 26 — Astra, the day-window check)
+**ANSWERED 18 Oct 26 — D710 ("as recommended"): confirmed 18 Oct 26 — build it.**
 **Found, not fixed — a question for him.** Deleting a person takes him off every planning note from the delete’s date on (a gap where he stood; a note left with neither words nor people is dropped — `raptor-port/src/state/person-delete.ts`), but the readable lines of the change history (`raptor-port/src/state/changelines.ts`) have none for a `plan` record, so the delete’s list (D337 — "lists everything the delete took away, one line each, as built") says nothing of them. It never did for the old rows of pucks either: D337 confirmed the list as built, so this is put to him, not assumed. **To put to him:** should the list carry a line a note ("taken off the note ‘Brief the new guys’ on 14 Oct")? Recommended yes, as its own small job — and with it, readable lines for ordinary note changes in the changes window (they have none today either). Evidence: the day-window check’s sheet `raptor-port/docs/handpass/2026-10-09-day-window-compact-check.md` §0 and §5. **As filed:** small.
 **He said yes (D710, 9 Oct 26 — "yes as recommended"): build it, as a small later job** — one line a note in the delete’s list, and readable lines for ordinary note changes in the changes window with it.
 
@@ -1666,6 +1674,7 @@ Met by the walkers of `[INPUT-OWN-TITLE]`'s check (`raptor-port/docs/handpass/20
 **Place:** the agent's — a documents-only chat; (b) is his.
 
 ### [LW-HEAD-BIG-PHONE] Between a phone and a tablet the top of the Leave War is at its tallest — his call (found 8 Oct 26)
+**ANSWERED 18 Oct 26 — D1000 ("Shorter version"): the phone's two-line top up to about 700 wide, the top only; a picture at 440 and 600 wide first, then the build.**
 
 **Found, not changed** — while measuring for `[LW-PHONE-HEADER-SPACE]` (D678, D679). The Leave War calls a screen "a
 phone" at 430px wide or less, and only there does the top become two lines. From 431px up to about 700px the page is the
@@ -1857,6 +1866,7 @@ search/controls visible below the actual header; narrow modified actions wrap. N
 **Logic controls design:** `raptor-port/docs/superpowers/specs/2026-10-04-interface-readability-scroll.md`; **build plan:** `raptor-port/docs/superpowers/plans/2026-10-04-interface-readability-scroll-build-plan.md` (Astra plan; independent Sol challenge PASS; runtime/final read in the combined handpass).
 
 ### [TRK-IMPORT-REFUSAL-WORDS] A current file's students refused with "saved by an older version" — the wrong reason (found 17 Oct 26 by `[TRK-FILE-TRANSFER-SPLIT]`'s walk; older) — OPEN, his to word
+**ANSWERED 18 Oct 26 — D1015 ("13 B"): wording B — "Student marks not brought in: they belong to a chart this file doesn't carry. Export a fresh backup that includes its charts, and import that." To build.**
 File → Import refuses the students of a file of today's version whose students point at a chart the file does not carry with "These student marks were saved by an older version and can’t be brought in safely. Import the charts, then re-enter marks — or export a fresh backup from the current app and import that." — but the file is not older; it does not match. The same words serve the real older-version case, and two collision cases (`normalizeImport`'s refusal and `remapStudentsSyl`'s throw, both in `raptor-port/src/tracker/app/fileTransfer.js`; `reconcileStudentsSyllabi` in `core.js`). Pictures: `raptor-port/docs/img/handpass/2026-10-17-trk-file-transfer/desk/24-s5-q2.png` (the wrong reason), `…/11-s2-q2.png` (the right one). **The fix the agent would recommend:** a second sentence for a file that does not match — what is wrong and what to do — his to word (`raptor-port/docs/design-practices.md` §1b). **Place:** the Tracker batch, put to him with its questions. Unchanged by the move (identical before and after).
 
 ### [TRK-FILE-TRANSFER-SPLIT] The Tracker's file save and load move out of its main file — APPROVED D493 (2 Oct 26), to build with the Tracker batch
@@ -1953,6 +1963,7 @@ touched the Inputs page or its stylesheet part. **Place (the agent's line):** lo
 test that the chip and the date do not overlap at 390 and 320.
 
 ### [BOARD-TIME-ESCAPE] On the Scheduler Board, Escape in a TIME box does not put the old time back (found 5 Oct 26, the Codex stack check)
+**ANSWERED 18 Oct 26 — D1011 ("as recommended"): Escape puts the old time back on the board's time boxes.**
 The board's take-off, landing, Brief and duty-start boxes keep what was typed after Escape, the caret stays in the box, and leaving the
 box then saves it; the week's time boxes and the board's text boxes restore the saved value. The same on `main` (`de470db5`) and on the
 stack — the host ran walker D's probe (`raptor-port/scripts/handpass/stk-D-1b.mjs`) on both builds, box for box. D544 kept "the existing
@@ -2001,6 +2012,7 @@ no times) — never print a clock that is not there; a red test first. **Place:*
 with `[BLANK-TIMES-ABSENCE]` (the same family: a rule reading times that are not there).
 
 ### [CREW-REST-MARK-COPIES] The dotted "breaks tomorrow" ring and the dashed late-show ring are drawn on the cockpit and row pucks only — the same man's other pucks show a solid red ring; and an open day list paints over both (found 6 Oct 26, the crew-rest fix's check — OLD; low; a question for him)
+**ANSWERED 18 Oct 26 — D1013 ("as recommended"): every copy wears the seat's ring, the open list leaves it readable — a picture first.**
 Seen by all three walkers, none of it this fix's doing (nothing that draws a puck was touched). (1) On the day that CAUSES a
 breach (Monday, when Tuesday's rest is broken) the man's cockpit puck and ground-row puck wear the dotted red ring — but his
 SANS card, his Unavailable row and his Personal Inputs row wear a SOLID red ring with the R chip, which reads as a breach ON
@@ -2154,6 +2166,8 @@ stay readable by other models). **Place:** next, after pull request 524.
 | `[TRK-FILE-TRANSFER-SPLIT]` — what is left of it: the Tracker file import's normalising and comparing moved beside its file format (the night of 17 Oct 26, on `claude/tracker-feature-batch-6ea3a7`) | a fresh Opus scenario designer; one fresh, blind Opus reader of the finished code (D790, D903) — only a move; two test-only findings, fixed (`raptor-port/docs/handpass/parts/trk-file-transfer/reads.md`) | Astra's scenario design and the two ChatGPT code reads (saved data) |
 | `[TRK-SCROLL-GLIDE]` — the Tracker's finger glide on the chart and Info half (D985–D989), built 17 Oct 26 on `claude/trk-scroll-glide` | one fresh, blind Opus reader of the finished code (D790, D903) and its D138 read of the lines D986–D989; walked and gated (WALK tier — `raptor-port/docs/handpass/2026-10-17-trk-glide.md`) | any ChatGPT read he wants of it |
 | `[TRK-CHART-FPS]` — the Tracker's chart and Info half scrolled by the phone itself, the pinch as a picture (D992), built 18 Oct 26 on `claude/trk-chart-fps` | three fresh, blind Opus readers (the build, then each of two fix rounds — D790, D903) and the D138 read of the lines D991, D992; walked and gated (WALK tier — `raptor-port/docs/handpass/2026-10-18-trk-chart-fps.md`) | any ChatGPT read he wants of it |
+| `[SCHED-INPUT-WINDOW-PHONE]` D996, D997 — every pop-up window in the middle of a phone's screen, built 18 Oct 26 on `claude/window-middle-d996` | walked 7/7 and gated (the night of 18 Oct 26); one fresh Opus read of design lesson 6's widening | Astra's read of the change, and the D138 read of D1016–D1018 |
+| The night of 18 Oct 26 — D1008 + D1015, D1000 + D1016, D1013 + D1017, the scheduler's small batch (D1010, D1011, D1012, D710); D999 and the Tracker's D1002–D1007, D1014, D1018 if reached — each on its own branch (the `claude/window-middle-d996` block names them) | one fresh, blind Opus reader of each job's finished code (D790, D903); walked and gated | Astra's, and Sol 6.1's for the two FULL jobs (who may see; the published record) |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.
@@ -2233,6 +2247,7 @@ picture whether it takes the one calendar (a pick of several separate days, whic
 nothing built before his word. The step-two check: `raptor-port/docs/handpass/2026-10-15-calendar-step-two.md`.
 
 ### [CAL-ESC-LISTS] Escape with a calendar's month-and-year lists open closes the whole form, not the lists — found 17 Oct 26 by [OIL-CONFIRM-DAYGRID]'s code read (F3); older than that job; his to place — OPEN
+**ANSWERED 18 Oct 26 — D1012 ("as recommended"): Escape closes only the month / year list.**
 **Seen:** in a calendar drawn inside a form — the OIL question's "Only some days…", an input's own window — the title opens
 the month-and-year lists; Escape there closes the whole question or window (in the question before a swap, the swap is
 not made and the bar stays), where the design guide's §2 says "Escape closes what opened last". The one calendar's header
@@ -2279,7 +2294,7 @@ short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not c
 **Found by `[DESIGN-LOOK-13OCT]`, not fixed — the question the design guide left open ("whether a keyboard can arm a puck is for the keyboard sweep to say", `raptor-port/docs/design-practices.md` §2): it cannot.** Every puck is drawn as a Tab stop (`raptor-port/src/ui/html.ts`) and wears the app's ring, but no key is heard on one: Enter, Space and Delete do nothing on the Scheduler Board or on Edit Schedule's week (`raptor-port/docs/mock/2026-10-13-design-look/keyboard.json`). So a scheduler at a desktop cannot move a man without the mouse, and Tab crosses hundreds of stops with nothing to do on any. **The shape to design (questions for him first — D541):** Enter or Space picks a puck up as a tap does on a phone (the app's own "armed" state), the seats that can take him are then the Tab stops, Enter puts him down, Escape lets go, Delete takes him off with Undo; the crew list reachable the same way. **Risk to weigh:** the dense week is swapped as text for speed (`raptor-port/docs/performance.md` Part 1) — the keys must ride the one listener the board already has, never one per puck. Tier WALK at least; a puck's drop is the schedule's main write.
 
 ### [SCHED-INPUT-WINDOW-PHONE] On a phone the input's window opened from the schedule is short, lets the page scroll behind it, and on a phone on its side "+ Input" runs off the right edge (the one-rule job's walk, share D — D4, D7, 12 Oct 26)
-**BUILT 18 Oct 26 (D994's first batch, branch `claude/scheduling-phone-fixes-6d4adf`) — waiting for his look on his iPhone and "merge live".** (1) At 620 wide and under the schedule's own input window is as tall as what is in it up to the visible screen less 24px (D706), in the middle of the screen (his D995, 18 Oct 26 — first built at the foot); (2) a finger on it never scrolls what is behind (D686 — one shared guard, `floatwin.ts holdPageScroll`); (3) the cause of the sideways phone's fault was the Inputs LIST: its 875px table widened the page to 907 between 821 and about 940 wide, so the list now scrolls in its own box at every width. Red first, walked, 4 break tests caught: `raptor-port/docs/handpass/2026-10-18-sched-phone.md`. Only his iPhone proves the top strip under Safari's bars.
+**LIVE 18 Oct 26 (pull request 533, his "merge live"). D996 and D997 BUILT 18 Oct 26 on `claude/window-middle-d996`** — every pop-up window on a phone in the middle (the calendars' day panels and the ALL AVAIL and changes windows at the foot); waiting for his look and "merge live". (1) At 620 wide and under the schedule's own input window is as tall as what is in it up to the visible screen less 24px (D706), in the middle of the screen (his D995, 18 Oct 26 — first built at the foot); (2) a finger on it never scrolls what is behind (D686 — one shared guard, `floatwin.ts holdPageScroll`); (3) the cause of the sideways phone's fault was the Inputs LIST: its 875px table widened the page to 907 between 821 and about 940 wide, so the list now scrolls in its own box at every width. Red first, walked, 4 break tests caught: `raptor-port/docs/handpass/2026-10-18-sched-phone.md`. Only his iPhone proves the top strip under Safari's bars.
 **Found, not fixed — for his iPhone look first; then with the look-and-feel pass (`[UI-SLEEK-PASS]`) or the next phone batch.** Three things, all in a test browser's phone (390 × 844 by touch, 390 × 568, 844 × 390): (1) the window a tap on an input's line under Personal Inputs opens on Edit Schedule and the Scheduler Board is 675 px tall of 844 — the same input's window from the Inputs page is 820 — while it holds 1390 px (everyone's pucks since D748); D706 ("as tall as what is in it, up to nearly the whole screen") was built for the Inputs pages' windows and the schedule's own dialog was left as it was. (2) A finger scrolling inside that window on Edit Schedule also scrolls the page behind it (D686 — built and confirmed on his iPhone, D703, for the Inputs pages' windows). (3) At 844 × 390 the app takes its desktop layout and the "+ Input" window sits at x 461–891 on an 844-wide screen: Add and ✕ cannot be reached. None is new in the one-rule job (the dialog and its placement are untouched by it). Pictures: `raptor-port/docs/img/handpass/2026-10-12-one-rule/D/` (`D4-02`, `D4-06`, `D7-844x390-c01`, `D7-390x568-08`).
 
 ### [DISCARD-FILING-NOOP] "Discard 1 edit & load" for an input filed after the day went out promises a discard and changes nothing (the one-rule job's walk, share F — F1, F8, 12 Oct 26)
@@ -2293,31 +2308,11 @@ short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not c
 
 **Found, not fixed — older behaviour, low.** (1) After a swap on an input’s row, the Undo note reads "Undid: a personal input" (and the Undo button "Undo — a personal input") — true, but it does not say it was a swap (walker A; the same words follow an OIL answer given in an input’s own window — walker D). (2) A puck dragged off a row to nowhere gives no note of its own (walker A, A13). (3) On Edit Schedule’s week the crew list’s ALL AVAIL chip scrolls out of the mouse’s reach when a lower day is in view (walker A, A5). (5) **BUILT 18 Oct 26 with D994's first batch (`raptor-port/docs/handpass/2026-10-18-sched-phone.md`): a made hand-over parks the drawer, at once or when its OIL answer makes it; a refusal leaves it up.** On a phone, after a hand-over by an armed tap on the Unavailable row the crew drawer stays open, where the row’s "+ add" puts it away (walker B, B6 — the ring’s half of this was new and is fixed: Fable’s read, the sheet’s C10) — and while it is open the drawer covers the top bar, so a finger on Undo lands on the drawer (the re-walk’s RX1-7, reproduced by the host: with the drawer put away one Undo works — the sheet’s §13.2). (6) On a phone on its side the Scheduler Board leaves a pane about 190 px tall, and a drag held near its top or foot scrolls the board under the finger: the puck is let go over nothing and comes off its row, with no note (Undo brings it back) — met by walker B, the re-walk’s RX2-10 and the job’s own browser test; older drag behaviour, for his iPhone look. (4) "Delete" in an input’s own window deletes at once, with no "are you sure" — Undo brings it back (walker D, D9). **ANSWERED 13 Oct 26 — D792 (*"No need to show are you sure"*): (4) is NOT a fault — a delete asks nothing, as built; do not build a confirm.** **Place:** the agent’s — with the next Inputs / schedule batch (D490). The walk’s record: `raptor-port/docs/handpass/2026-10-13-oil-ask-notify.md` §11.3.
 
-### [CAL-PHONE-SWIPE-FIT] The Calendar window on a phone: swipe between months and years; the From date box that runs off the screen (his find, 13 Oct 26 — D786) — BUILT 13 Oct 26 as step one of `[ONE-DATE-CALENDAR]`, waiting for his look on his iPhone and "MERGE LIVE"
-
-**BUILT 13 Oct 26** on `claude/one-date-calendar-step-one-55ba13` with step one of `[ONE-DATE-CALENDAR]` (now in `OUTSTANDING-ARCHIVE.md` — its check, its pictures, what is left for him): the swipe on the month and the Holidays list, and the From and Until boxes as the app's own. Only his iPhone proves the fit and the feel.
-
-**His words, with two pictures from his iPhone:** *"allow me to swipe as well on the phone to go between months. Likewise for the holidays page to swipe between years. … the from date box is too wide and it doesn’t fit the phone screen width. Can u fix this to fit the phone size which might be variable."* He called the design guide (`/impeccable`) and said to do it after the `[OIL-ASK-NOTIFY]` task is done.
-
-**What to build (D786 — its full row has the readings to tell him):** (1) Inputs ⚙ → Calendar… → Month, on a phone: a sideways swipe on the month goes to the next / the last month — the arrows and "Today" stay (`src/ui/DaysWindow.tsx`). (2) The Holidays list: a sideways swipe goes to the next / the last year (`src/ui/HolidaysPanel.tsx`). (3) The "Every <weekday>" window (`src/ui/EveryWeekday.tsx`): its From date box is wider than the window on his iPhone and is cut at the right edge — it must fit at any phone width (measure 320, 360, 390, 440 and a window narrower than the screen; measure every other box of that window and of the Holidays form the same way). His second picture also shows a sideways scroll bar along the bottom of that window — the same overflow.
-
-**Tier:** WALK (a new gesture; a layout fix) — a phone by real touch, the swipe in both directions, a swipe that starts on a date’s button, a desktop unchanged; his look on his own iPhone (Apple’s font is wider than the PC’s — a fit measured on Windows may not hold for him). Use the design guide (`.claude/skills/impeccable`).
-
-**Place:** his word — after `[OIL-ASK-NOTIFY]`’s check is done. *(Done, and merged 13 Oct 26 — pull request #492: this is the next job, run beside the skills review — D794.)*
-
-**STARTED 13 Oct 26 on `claude/cal-phone-swipe-fit-2affa0` — nothing built; four questions and the picture are with him (D541).** What the reading found: (a) the Inputs calendar and the SANS calendar ALREADY swipe between months, with a short slide (`src/ui/calpick.ts` `SWIPE_MIN`, `src/ui/InputsCal.tsx`, `src/ui/SansCal.tsx`; `raptor-port/docs/ui-contracts.md` §Gestures on the month grid) — the Calendar window copies that recipe, so its feel is not a new choice; (b) the From box (`.every-date`, `src/ui/scheduler/23-days.css`) was ALREADY given "fit" rules on 8 Oct 26 after an earlier picture of his, and his picture of 13 Oct shows it still runs off his iPhone — the fault is the iPhone's own date box, which no Windows browser reproduces (in Chromium at 390 and 320 wide nothing passes the window's edge). **The pictures page:** `raptor-port/docs/mock/cal-swipe-fit.html` (published to him as an Artifact page), its pictures `raptor-port/docs/mock/2026-10-13-cal-swipe-fit/`, drawn by `raptor-port/scripts/handpass/calswipe-mock.mjs` on the real Calendar window at 390 and 320 wide. **The four questions, each with the agent's pick:** (1) the From box — A, the app's own date field ("Thu 5 Nov 2026", a tap opens the small month the holiday form already uses — D671 — under it; the same for Until's "A date") or B, the iPhone's own box forced to fit a second time: *A*; (2) with A, any date may be picked with the window's weekday standing out, or that weekday only: *any date*; (3) the swipe as the Inputs calendar's, anywhere on the month or the Holidays list, a swipe never pressing a date's button: *yes*; (4) the app's other date boxes that are still the phone's own (Admin, the post-in date on Users, the Leave War's bid sheet, a medical input's upchit date) — in this job or not: *not in this job; on his iPhone look list, any that run off filed as a job of their own*. **ANSWERED 13 Oct 26 — D795: (1) A, (2) any date, (3) yes — the pictures are the design of record. (4) not ruled — *"Show me how it looks like first before I decide"*:** drawn the same hour and added to the page as its part 3 (`raptor-port/scripts/handpass/calswipe-mock2.mjs`; pictures `o390-*` in the same folder) — a new person's Post in (Admin → Users; the same box on Restore and on giving access), Admin → Data's "Older than" dates, the Leave War's posting dates ("PO from" / "PI from"); a medical input's upchit date not reached by taps and not pictured. **Found while drawing, to weigh:** the Leave War's posting dates are the phone's own box on purpose (owner, 19 Aug 26 — a posting may be years back or ahead, and the box's own year wheel reaches it; `src/leavewar/ui/BidPicker.tsx`) — the small month moves a month a tap, so it needs a way to jump a year before it can stand there; Admin's "Older than" box is full width, the same shape as the From box that ran off. **Put to him again with the agent's pick:** the simple ones in this job (Post in, Admin's dates, the upchit date), the Leave War's posting dates left until the small month can jump a year. **Next:** his answer to (4) recorded as a ruling, then the build with a failing test first, WALK tier.
-
-
 ### [QUALS-PINNED-COLS-REFLOW] Quals' pinned header row keeps its measured column widths when a column reflows inside a table of the same width (met by the D993 read, 18 Oct 26) — OPEN, low
 **Older than D993, not changed by it.** On a desktop wider than the table (or a phone while the table sits at its least width), an undo of a remark or a rename, or a change arriving from elsewhere, can change one column's width while the table keeps its total width: nothing re-pins the row, so each pinned heading stands a few pixels off its column until the page is next scrolled back up and down. The sideways follow itself stays right (the table's range is unchanged); a change of the table's own width is caught (D993's read, F1). **To do:** watch the real header's cells as well (`QualsPage` `pin`), with a guard that skips a re-render when nothing moved; a test that reflows one column on a desktop. **Place (the agent's):** with the next Quals job.
 
 ### [TRK-PINCH-OLD-EDGES] Two older edges of the Tracker chart's pinch, met by the code reads of [TRK-CHART-FPS] (18 Oct 26) — OPEN, low
 **Found by reading, not by him; older than D992, not changed by it.** (1) Edit chart layout switched on while a pinch runs (only with a third finger, through the menu) throws in the pinch's move: its start was taken for the other mode (`enablePinchZoom`, `raptor-port/src/tracker/app/core.js`). (2) A pinch ended by a lift lost to a redraw settles its zoom but leaves the zoom's % label stale and does not mark the zoom as his, so the next redraw fits the chart to the phone's width again. **To do:** a failing test for each, then end the pinch in the mode it began in, and run the ordinary end (`zoomIsMine`, `notify`) on the lost-lift path. **Place (the agent's):** with the next Tracker batch.
-
-### [TRK-DATEBOX-SAFARI-ZOOM] In Safari between 621 and 1050px wide, is the calendar placed under its box in the Tracker's side panel? (raised 13 Oct 26 by the read of `[TRK-DATE-BOXES]`) — OPEN, unproved, low
-**Not proved in the Tracker batch (17 Oct 26):** there is no Safari on this PC to run it in — on his look card, for his iPad or iPhone.
-
-**Raised by reading, NOT reproduced — no Safari to run it in.** Between 621 and 1050px wide (an iPad upright, a narrow desktop Safari window) the Tracker's side panel is drawn zoomed (`raptor-port/src/tracker/tracker.css`, the panel's `zoom`; its own − / + too), and the app's date box places its calendar from where the box measures itself (`raptor-port/src/ui/DateBox.tsx`). Chromium reports a zoomed box's place rightly; Safari may not, and the calendar would then open away from its box. A phone is not affected (its calendar is centred by the stylesheet), nor a desktop wider than 1050px at the panel's 100%. **To do:** open Upchit in the Tracker on an iPad or in desktop Safari at about 800px wide and see where the calendar sits; if it is off, place the card from the box's place divided by the zoom in force. The read: `raptor-port/docs/handpass/parts/trk-datebox/read-opus.md` (the state table).
 
 ### [LW-PHONE-AWAY-ROW-MISSING] On a phone, a man archived and restored with a later post-in has no row on the Leave War (seen 13 Oct 26 by `[ONE-DATE-CALENDAR]`'s walk) — OPEN, to reproduce first
 
@@ -2349,6 +2344,7 @@ shift's start; the crew list's line is unaffected. **Place:** low — with `[OIL
 crew-rest sentences.
 
 ### [UPCHIT-MOVE-NO-REGROW] An Upchit moved to a LATER date does not give back the medical days it cut (walker B, the D605 walk, 6 Oct 26 — OLD; low; a question for him)
+**ANSWERED 18 Oct 26 — D999: TO BUILD.** The downchit grows back to the day before the upchit's new date, never past its first end, said on the upchit's save sheet before saving; a calendar drag the same; a published day given back reads pending (D178). Reproduce walker B's case first (the host did not), test first.
 A downchit (ATT C) Monday to Friday; an Upchit effective Wednesday — the downchit is cut to end Tuesday, as it should
 be. Then the Upchit's date is changed to Thursday in the Inputs page's row editor: the downchit still ends Tuesday (the
 editor's sheet says "no current entry needs shortening"), so Wednesday reads fit although the man was cleared only from
@@ -2400,6 +2396,7 @@ a resized one, an operated ALL AVAIL window and the preview-bar combinations. Th
 change to the failed-save warning or its test.
 
 ### [INSIGHTS-EMPTY-LINE-COUNT] A flying line with nobody on it counts as a sortie and a formation in Insights (the Codex stack check's W17, 5 Oct 26 — a question for him)
+**ANSWERED 18 Oct 26 — D1009 ("as recommended"): keep it — nothing to build; archive at the next tidy.**
 "+ Line" on a flying wave, no crew: Insights' SORTIES tile goes up by one and FORMATIONS by one; the per-person bars are right. The
 same on `main` (`de470db5`) — `raptor-port/src/engine/insights.ts` counts every line and jet that is not cancelled, crewed or not, as
 the day's own "4 X 4 X 0" count does (`waves.ts dayCount`, the precedent its comment names). Not ruled. **Place (the agent's line):**

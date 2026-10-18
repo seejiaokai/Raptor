@@ -793,6 +793,7 @@ App change: none to the OIL derivation — `OilLedger`, `OilCredit` and
 stored.
 
 ### LeavePersonProfile
+*(18 Oct 26, D1001: its personnel `label` — a ground-crew man's flight — is KEPT, for a later option to sort the Leave War by flight; it is not retired.)*
 
 Owner: **Leave War**. What the Leave War knows about a person beyond their
 identity — the columns the first draft of this document put on `Person`,
