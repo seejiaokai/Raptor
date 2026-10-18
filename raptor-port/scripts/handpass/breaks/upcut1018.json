@@ -1,0 +1,98 @@
+[
+ {
+  "n": 1,
+  "name": "D1023: the gate says no cut to a listener",
+  "file": "src/leavewar/inputgate.ts",
+  "find": "  gateCuts([...cut, ...replaced.map(b => `This replaces ${b} on the Leave War`)])",
+  "put": "",
+  "tests": ["src/ui/upchitcuts.test.tsx"]
+ },
+ {
+  "n": 2,
+  "name": "D1023: the bids replaced are not said (only the leave cut)",
+  "file": "src/leavewar/inputgate.ts",
+  "find": "  gateCuts([...cut, ...replaced.map(b => `This replaces ${b} on the Leave War`)])",
+  "put": "  gateCuts([...cut])",
+  "tests": ["src/ui/upchitcuts.test.tsx"]
+ },
+ {
+  "n": 3,
+  "name": "D1023: a refused try still lists what it heard",
+  "file": "src/ui/inputedit.tsx",
+  "find": "  return ok ? lines : []",
+  "put": "  return lines",
+  "tests": ["src/ui/upchitcuts.test.tsx"]
+ },
+ {
+  "n": 4,
+  "name": "D1023: the open window is not found again after the try (its record goes stale)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "    if (again && again !== INPEDIT) setInpEdit(again, true)",
+  "put": "",
+  "tests": ["src/ui/upchitcuts.test.tsx"]
+ },
+ {
+  "n": 5,
+  "name": "D1023: the window, found again, starts over (what was typed thrown away)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "      if (shown.current && r && shown.current.iid != null && String(shown.current.iid) === String(r.iid)) { shown.current = r; return }",
+  "put": "",
+  "tests": ["src/ui/upchitcuts.test.tsx"]
+ },
+ {
+  "n": 6,
+  "name": "D1023: the delete's ask lists no cut",
+  "file": "src/ui/inputedit.tsx",
+  "find": "  const cuts = giveBackCuts(() => { const x = find(); return !!x && removeInput(x) })",
+  "put": "  const cuts: string[] = []",
+  "tests": ["src/ui/upchitcuts.test.tsx"]
+ },
+ {
+  "n": 7,
+  "name": "D1023: the move's ask lists no cut (drag, the window's Save)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "    const cuts = giveBackCuts(() => { const x = find(); return !!x && commitEditUpchit(x, { ...draft }, []) })",
+  "put": "    const cuts: string[] = []",
+  "tests": ["src/ui/upchitcuts.test.tsx"]
+ },
+ {
+  "n": 8,
+  "name": "D1023: the move's ask keeps the plan's rows from before the try (stale objects)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "    return { kind: 'up', who, dateLabel, effects: upchitEffects(draft.person, isoOrd(draft.start), again ?? r), cuts }",
+  "put": "    return { kind: 'up', who, dateLabel, effects, cuts }",
+  "tests": ["src/ui/upchitcuts.test.tsx"]
+ },
+ {
+  "n": 9,
+  "name": "D1023: the delete's plan read from before the try (stale objects)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "  const plan = upchitDeletePlan(find() ?? r)",
+  "put": "  const plan = upchitDeletePlan(r)",
+  "tests": ["src/ui/upchitcuts.test.tsx"]
+ },
+ {
+  "n": 10,
+  "name": "D1023: the sheet draws no cut line",
+  "file": "src/ui/UpchitConfirm.tsx",
+  "find": "              {cuts.map((c, i) => <li key={'cut' + i} className=\"upconf-cut\" data-testid={`upconf-cut-${i}`}>{c}</li>)}",
+  "put": "",
+  "tests": ["src/ui/upchitcuts.test.tsx"]
+ },
+ {
+  "n": 11,
+  "name": "D1023: the move sheet (drag) is not handed the cuts",
+  "file": "src/ui/MedMoveConfirm.tsx",
+  "find": "effects={m.ask.effects} cuts={m.ask.cuts}\n",
+  "put": "effects={m.ask.effects}\n",
+  "tests": ["src/ui/upchitcuts.test.tsx"]
+ },
+ {
+  "n": 12,
+  "name": "D1023: the window's own sheet is not handed the cuts",
+  "file": "src/ui/inputedit.tsx",
+  "find": "effects={upConf.effects} cuts={upConf.cuts}",
+  "put": "effects={upConf.effects}",
+  "tests": ["src/ui/upchitcuts.test.tsx"]
+ }
+]

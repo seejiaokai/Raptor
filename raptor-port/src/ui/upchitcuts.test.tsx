@@ -29,7 +29,8 @@ import { wireLeaveWarSync } from '../leavewar/sync'
 import { _resetFloatWins } from './FloatWindow'
 import { INPEDIT, MEDMOVE, setInpEdit, setMedMove } from './pops'
 import { docAdd } from '../state/docs'
-import { setInputGate } from '../state/inputgate-hook'
+import { gateCuts, setInputGate } from '../state/inputgate-hook'
+import { CmdRefused } from '../command'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement, root: Root
@@ -249,9 +250,52 @@ describe('the window’s own Save of the upchit on a later date (D999)', () => {
   })
 })
 
+describe('the window opened from the schedule (not the Inputs page, where it follows its record by itself)', () => {
+  it('Delete asks, Cancel, Delete again deletes — the window found its upchit again after the try, typing kept', async () => {
+    const { up } = await downUpLeave()
+    await act(async () => { setPage('editsched'); setInpEdit(up()); notify() })
+    const rm = $('#inpEditRmk') as HTMLInputElement
+    expect(rm, 'the remarks box').toBeTruthy()
+    await act(async () => {
+      const set = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(rm), 'value')!.set!
+      set.call(rm, 'from the board'); rm.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+    await click($('#inpEditDel'))
+    expect(cutLines()).toEqual([LL_CUT()])
+    await click(tid('upconf')!.querySelector('.abtn.ghost'))
+    expect(INPEDIT, 'the window holds the upchit as it now stands').toBe(up())
+    expect(($('#inpEditRmk') as HTMLInputElement).value).toBe('from the board')
+    await click($('#inpEditDel'))
+    await click(tid('upconf-save'))
+    expect(up(), 'deleted').toBeUndefined()
+    expect(rows('LL')).toHaveLength(0)
+  })
+})
+
+describe('a later medical put to Keep / Remove on the same sheet', () => {
+  it('"Remove" removes it — the sheet’s rows are the records as they stand after the try', async () => {
+    const { up } = await downUpLeave()
+    await act(async () => {
+      writeInputs(() => { INPUTS.push({ iid: 'hl1', person: WHO, people: [{ p: WHO }], type: 'HL', date: 'Oct 20', endDate: 'Oct 21', yr: 2026, allday: true, remarks: '', mod: '2026-09-01', docId: doc() }) })
+      notify()
+    })
+    commitChipMove({ kind: 'input', iid: up().iid }, '2026-10-07', '2026-10-10')
+    await act(async () => { notify() })
+    expect(cutLines()).toEqual([LL_CUT()])
+    await click(tid('upconf-left-0')!.querySelectorAll('button')[1])          // Remove
+    await click(tid('upconf-save'))
+    expect(up().date).toBe('Oct 10')
+    expect(INPUTS.some((r: any) => r.iid === 'hl1'), 'the later HL removed as chosen').toBe(false)
+  })
+})
+
 describe('the try is the save', () => {
   it('a write that would be refused cuts nothing, so lists nothing', () => {
     expect(giveBackCuts(() => false)).toEqual([])
+  })
+  it('a cut the rules said, in a save then refused, is not listed', () => {
+    setInputGate({ snapshot: () => null, apply: () => { gateCuts(['a cut that never happens']); throw new CmdRefused('no') }, vetRestore: () => {} })
+    expect(giveBackCuts(() => { writeInputs(() => { INPUTS[0].remarks = 'x' }); return true })).toEqual([])
   })
   it('the delete’s ask names the cut the delete then makes, line for line', async () => {
     const { up } = await downUpLeave()
