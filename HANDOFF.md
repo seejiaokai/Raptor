@@ -68,9 +68,10 @@ the later merge keeps both (D78).
   `raptor-port/docs/handpass/2026-10-18-night-jobs.md`. Jobs 1–6 DONE and walked. Job 7: (a) D1004 DONE (32ad203b8);
   (b) the Legend DONE (2d70cba46); (c) the flex settings DONE (bac862795 — an Opus helper built (b) and (c), the host
   read and committed them; their tests were written after the code, so a fresh read and the walk carry them). Pushed
-  at `9d86f6efb`. (d) the down days DONE (77c1aee9e, 10:47 — Tracker 535/535). NOW: job 7's Sonnet walk and its fresh
-  blind Opus read (both started 10:50) — save each report into the sheet's job 7 section, fix what they find; then 
-(d) the down days — its survey `raptor-port/docs/superpowers/briefs/2026-10-18-trk-down-days-survey.md` (course start
+  at `9d86f6efb`. (d) the down days DONE (77c1aee9e). Job 7's fresh read DONE, its 3 findings fixed (034013187). NOW: job 7's Sonnet walk
+  RUNNING (`night1018-job7-walk.mjs`, `img/handpass/2026-10-18-night-job7/`) — on its report: save it into the sheet's job 7
+  section with the `Walk:` line, fix or file any FAIL; then the full gate set under the lock, push, the morning report. 
+  (d) the down days — its survey `raptor-port/docs/superpowers/briefs/2026-10-18-trk-down-days-survey.md` (course start
   in `pace`, not `dates`; a third people-bridge channel for each man's downchits; the Failures window to clone;
   removing `#upchit` touches `leftovers.test.tsx`'s F/K tests and `e2e/datecal.spec.ts`); then ONE Sonnet walk of the
   Tracker (legend, flex settings as admin and member, flex off, down days), ONE fresh blind Opus read of job 7's code,
