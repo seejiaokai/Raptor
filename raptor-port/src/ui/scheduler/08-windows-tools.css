@@ -336,8 +336,11 @@
 /* D1013, D1017 (option A, his approval of the pictures, 18 Oct 26): the light is an outline, as the dotted "breaks
    tomorrow" ring and the dashed late-show ring are, so it hid them; a lit puck that wears one keeps it — it still stands
    out, because everything the list does not name is dimmed */
-.puck.wfoc.boxdot{outline:var(--dot-w,1.5px) dotted var(--hard)!important;outline-offset:2px!important}
-.puck.wfoc.boxdash{outline:2px dashed var(--hard)!important;outline-offset:0!important}
+/* …but not an ECHO (`.wfoc.echo` — the same man on the OTHER day of the focused warning, already drawn dashed and quieter
+   on purpose, geometry.spec.ts "the cross-day row"): that older mark stays as built; whether it should give way to the
+   dotted ring is put to him (the night of 18 Oct 26) */
+.puck.wfoc.boxdot:not(.echo){outline:var(--dot-w,1.5px) dotted var(--hard)!important;outline-offset:2px!important}
+.puck.wfoc.boxdash:not(.echo){outline:2px dashed var(--hard)!important;outline-offset:0!important}
 /* B14 · the SAME aircrew on the other days of the week — dashed and quieter, so
    a cause sitting on the day before (crew rest, a late land, a double turn) is
    traceable without competing with the puck that actually raised the warning

@@ -114,8 +114,8 @@ describe('D1013, D1017 — a sanctioned late show rings dashed on every copy', (
 describe('D1017 option A — an open issues list keeps the dotted and dashed rings', () => {
   const css = readFileSync(join(__dirname, 'scheduler', '08-windows-tools.css'), 'utf8')
   it('a lit puck that wears a dotted ring keeps it dotted; a dashed one keeps it dashed', () => {
-    expect(css).toMatch(/\.puck\.wfoc\.boxdot\{[^}]*outline:[^;}]*dotted/)
-    expect(css).toMatch(/\.puck\.wfoc\.boxdash\{[^}]*outline:[^;}]*dashed/)
+    expect(css).toMatch(/\.puck\.wfoc\.boxdot:not\(\.echo\)\{[^}]*outline:[^;}]*dotted/)
+    expect(css).toMatch(/\.puck\.wfoc\.boxdash:not\(\.echo\)\{[^}]*outline:[^;}]*dashed/)
   })
 })
 
