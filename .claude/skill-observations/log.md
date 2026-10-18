@@ -1325,3 +1325,18 @@ prove each by acting through it after the rollback, not by reading what it shows
 **Suggested improvement:** For a backlog tidy: (1) helpers return verdict + evidence per item, the host re-checks every DONE before moving it; (2) a coverage script for ids is necessary but not sufficient — a fresh reader reads the OLD list for open statements (orders, his steps, "waits on") that live in no item; (3) move the old list whole first, so the reader has it.
 
 **Principle:** A rewrite of a summary loses facts that lived only in the summary's prose; check coverage of the ids by script and coverage of the open statements by a reader of the original.
+
+### Observation 640: A test that picks its case from what is on screen must work the state out afresh first
+
+**Status:** OPEN
+**Date:** 18 Oct 26
+**Session context:** D994's Schedule and amendments fixes — the Tab route's missing tests ([TAB-LAST-BOX-TEST-GAPS])
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** writing the failing test — choosing the fixture
+
+**Issue:** A new jsdom test chose "a day with no warning" by reading the drawn week. The warning list on screen was left over from earlier tests in the file (each test restored the data but did not re-run the checks), so the day chosen changed with the run order: the test passed alone and failed in the full file, and several runs went on chasing what looked like a fault in the code. Once the checks were re-run before choosing, the failure was steady — and it was a real fault, on a different path from the one the test was written for (the Tab went on to a control, not back into the box). Beside it, an older test's precondition ("Friday starts with no warning block") used selectors that match nothing, so it could never fail.
+
+**Suggested improvement:** In the TDD skill's "write the failing test" step: when a test selects its case from rendered or derived state, recompute that state at the top of the test (here, validate + notify) and assert the precondition with a selector proven to match in a positive case; and when a new test fails only in the full file, suspect leftover state before suspecting the code.
+
+**Principle:** A precondition read from state another test can leave behind makes a test depend on run order; recompute before choosing, and prove a "nothing here" selector can find something.

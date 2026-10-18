@@ -12,10 +12,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { DAYS } from './data'
 import { INPUTS } from './inputs'
 import { setCurWeek } from './waves'
-import { validate, officialWarn, officialRaw } from './validate'
+import { validate, officialWarn, officialRaw, workingWarn, restIfPlaced, runIfPlaced } from './validate'
 import { SCHED, signOf, setDayApproved, dayCurVer, dayDelta } from './publish'
-import { dayIssuedHTML, dayHTML } from '../ui/html'
-import { DWOPEN, WFOCUS, focusWarn, setPage } from '../state/view'
+import { dayIssuedHTML, dayHTML, viewDayHTML } from '../ui/html'
+import { DWOPEN, WFOCUS, focusWarn, setPage, VWORK } from '../state/view'
 import { stashPut, stashClear } from './weekstash'
 import { inpShow } from './events'
 import { windowDiverges } from './weekctx'
@@ -583,5 +583,88 @@ describe('Phase 6 — in-list "goes away / new once signed" markings on the work
     DWOPEN.add(0); setPage('editsched')
     const h = dayHTML(0, true, true)
     expect(h, 'the warning the edit introduces is marked').toContain('new once signed')
+  })
+})
+
+/* [CRP-FLAG] — the three of the plan's §11 / §14 cases the build left without a test (the D994 small fixes, 18 Oct 26).
+   No fault was found in any of them; each is pinned so a later change cannot open one. */
+describe('[CRP-FLAG] the crew list, an undo past a publish and a trace into a working-draft day', () => {
+  afterEach(() => { setPage('editsched'); VWORK.clear(); DWOPEN.clear(); VCONF.maxRun = MAXRUN })
+  const MAXRUN = VCONF.maxRun
+
+  /* §11.6 [F-1]: the OFFICIAL pass writes no global — the crew list's "would break his crew rest / his run" asks the
+     desk copy (WORKING), whichever way the issued day differs from it */
+  it('the crew list asks the WORKING copy for crew rest after a diverging OFFICIAL pass (issued 06:00, desk copy 14:00)', () => {
+    const WK = wkFor(90)
+    MOCKS[shiftWeekKey(WK, -1)] = weekOf(weekDateLabels(shiftWeekKey(WK, -1)), { 6: dutyRow('waldo', '1900', '2300') })
+    setCurWeek(WK)
+    flyMonday('waldo', '06:00', '07:25')
+    validate()
+    sign(0); setDayApproved(0, true)                       // the issued Monday
+    const f = (DAYS[0] as any).waves[0].formations[0]
+    f.to = '14:00'; f.ld = '15:25'; f.aircraft[0].w = '' // the desk copy: re-timed, and his seat empty again
+    const w = validate()
+    expect(officialRaw(), 'the OFFICIAL pass really ran (or this test proves nothing)').not.toBe(w)
+    expect(!!restIfPlaced('waldo', '0.0.0.0.w'), 'the desk copy is late: he would not').toBe(false)
+  })
+  it('the crew list asks the WORKING copy for crew rest after a diverging OFFICIAL pass (issued 14:00, desk copy 06:00)', () => {
+    const WK = wkFor(91)
+    MOCKS[shiftWeekKey(WK, -1)] = weekOf(weekDateLabels(shiftWeekKey(WK, -1)), { 6: dutyRow('waldo', '1900', '2300') })
+    setCurWeek(WK)
+    flyMonday('waldo', '14:00', '15:25')
+    validate()
+    sign(0); setDayApproved(0, true)                       // the issued Monday
+    const f = (DAYS[0] as any).waves[0].formations[0]
+    f.to = '06:00'; f.ld = '07:25'; f.aircraft[0].w = '' // the desk copy: re-timed, and his seat empty again
+    const w = validate()
+    expect(officialRaw(), 'the OFFICIAL pass really ran (or this test proves nothing)').not.toBe(w)
+    expect(!!restIfPlaced('waldo', '0.0.0.0.w'), 'the desk copy is early: he would break crew rest').toBe(true)
+  })
+  it('the crew list asks the WORKING copy for his run of days after a diverging OFFICIAL pass', () => {
+    const WK = wkFor(92)
+    setCurWeek(WK)
+    VCONF.maxRun = 2
+    flyMonday('waldo', '12:00', '13:25')
+    for (const di of [0, 1, 2, 3, 4, 5, 6]) if (di !== 0) (DAYS[di] as any).waves.forEach((w: any) => w.formations.forEach((f: any) => f.aircraft.forEach((a: any) => { if (a.p === 'waldo') a.p = ''; if (a.w === 'waldo') a.w = '' })))
+    ;(DAYS[2] as any).dutywaves = [...((DAYS[2] as any).dutywaves || []), { label: 'Duty', rows: [{ role: 'SDO', id: 'waldo', str: '08:00', end: '10:00' }] }]
+    validate()
+    sign(0); setDayApproved(0, true)                          // issued: he is on Monday
+    ;(DAYS[0] as any).waves[0].formations[0].aircraft[0].w = ''   // the desk copy: Monday off
+    validate()
+    expect(officialRaw(), 'the OFFICIAL pass really ran (or this test proves nothing)').not.toBe(validate())
+    /* Tuesday then Wednesday is two in a row — at the limit, not over it; the issued Monday would make it three */
+    expect(runIfPlaced('waldo', 1), 'judged on the desk copy: Monday off').toBeNull()
+    ;(DAYS[0] as any).waves[0].formations[0].aircraft[0].w = 'waldo'; validate()
+    expect(runIfPlaced('waldo', 1), 'and with Monday back on the desk copy, three in a row').toBeTruthy()
+  })
+
+  /* §14.4 [Codex V2-004, Fable LOW9]: a "Breaks Tuesday" line on Monday's published face points at Tuesday's OFFICIAL
+     warning; with Tuesday shown as its working draft that warning is not there. The tap is a defined no-op or lands on
+     a warning Tuesday really shows — never a throw, never a focus on nothing */
+  it("a tap on Monday's \"Breaks Tuesday\" line, with Tuesday shown as its working draft, never throws", () => {
+    const WK = wkFor(93)
+    setCurWeek(WK)
+    ;(DAYS[0] as any).dutywaves = [...((DAYS[0] as any).dutywaves || []), { label: 'Duty', rows: [{ role: 'SDO', id: 'waldo', str: '19:00', end: '23:00' }] }]
+    const t = (DAYS[1] as any).waves[0]; t.intimes = []
+    const f = t.formations[0]; f.to = '06:00'; f.ld = '07:25'; f.br = ''; f.aircraft[0].w = 'waldo'
+    validate()
+    sign(0); setDayApproved(0, true); sign(1); setDayApproved(1, true)   // both published, Tuesday's breach with them
+    f.to = '14:00'; f.ld = '15:25'                           // Tuesday's desk copy: fixed, not yet published
+    validate()
+    const ix = ((officialWarn().byDay[1] || {}).warns || []).findIndex((x: any) => x.code === 'CREW_REST' && (x.who || []).includes('waldo'))
+    expect(ix, "Tuesday's OFFICIAL list carries the breach (or this test proves nothing)").toBeGreaterThanOrEqual(0)
+    setPage('viewsched'); VWORK.add(1); DWOPEN.add(0)
+    const monday = viewDayHTML(0)
+    const row = /<div class="witem hard wtr[^"]*"([^>]*)><span class="wbar"><\/span><span><span class="wcode">Breaks Tuesday/.exec(monday)
+    expect(row, 'Monday’s published face draws the "Breaks Tuesday" line').toBeTruthy()
+    /* its breach is not in the list Tuesday shows, so the line carries no jump: a tap on it does nothing (§14.4) */
+    expect(row![1], 'the line does not point into the working draft').not.toMatch(/data-wdi/)
+    expect(row![1]).toMatch(/As published/)
+    /* and a jump drawn before Tuesday was opened as its draft — the OFFICIAL index, now stale — lands on nothing or on a
+       warning Tuesday really shows */
+    expect(() => focusWarn(1, ix)).not.toThrow()
+    const shown = ((workingWarn().byDay[1] || {}).warns || []) as any[]
+    if (WFOCUS) expect((WFOCUS as any).ids, 'a focus lands only on a warning Tuesday shows').toEqual((shown[ix].who || []).slice())
+    expect(() => viewDayHTML(1)).not.toThrow()
   })
 })
