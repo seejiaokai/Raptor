@@ -63,13 +63,14 @@ the later merge keeps both (D78).
   (`docs/img/handpass/2026-10-18-lw-top-700/6-440-proposed-short-words.png`). (2) The overnight retry trial
   (`[OVERNIGHT-RETRY-TRIAL]`, D885) was not run: its setting is read when a chat starts, so it must be set before he opens
   the next /overnight chat.
-- **Where the night stands (about 10:35 his PC's time — the chat at 84%, before a compaction):** ONE branch, ONE pull
-  request (534, its body rewritten for the night; pushed at `4925c9f58`, GitHub's run going — never push while it runs).
-  Every job's check: `raptor-port/docs/handpass/2026-10-18-night-jobs.md`. Jobs 1–5 DONE. The full gate set for 2–6 GREEN
-  (`139005eb1`; one Leave War wait re-run, D84). Job 6 (D999) BUILT, its read's 4 findings fixed (328adc853); RUNNING at
-  this writing: its Sonnet walk (`night1018-job6-walk.mjs`, pictures `img/handpass/2026-10-18-night-job6/`) and a fresh
-  read OF its fixes — save both reports into the sheet's job 6 section, fix what they find (a fix of logic gets the
-  touched tests run, D902 — the whole set has passed), write job 6's `Walk:` line, commit, push when GitHub's run is idle.
+- **Where the night stands (about 11:00 his PC's time — the chat at 85%):** ONE branch, ONE pull request (534, its body
+  rewritten; pushed at `4925c9f58` — later commits NOT pushed yet; push only when `gh run list` shows nothing queued or in
+  progress). Every job's check: `raptor-port/docs/handpass/2026-10-18-night-jobs.md`. Jobs 1–5 DONE. Full gates for 2–6
+  GREEN at `139005eb1`. Job 6 (D999): built, two fix-read rounds done and fixed (last: 36dab7289); its Sonnet walk
+  RUNNING (`night1018-job6-walk.mjs`, `img/handpass/2026-10-18-night-job6/`) — save its report into the sheet's job 6
+  section with the `Walk:` line, fix or file any FAIL. Job 7 step (a) D1004 DONE (32ad203b8). Step (b), the legend, is
+  being built by an Opus helper — its changes UNCOMMITTED in `src/tracker/` (App.jsx, core.js, Header.jsx, Legend.jsx,
+  tracker.css, a new `trk-legend.test.tsx`): read its diff, run its tests, commit it as the host's own.
   **THEN JOB 7 — the Tracker (D1002–D1007, D1014, D1018; design note `raptor-port/docs/superpowers/specs/2026-10-18-trk-down-days.md`,
   pictures and reports `raptor-port/docs/superpowers/briefs/2026-10-18-night-pictures.md` §2, §3), in this order, each its
   own commit, red first: (a) D1004 — the currency bar loses the down-days subtraction (`tracker/components/SidePanel.jsx`
