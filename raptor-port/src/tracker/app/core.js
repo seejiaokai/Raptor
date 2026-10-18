@@ -16,7 +16,7 @@ import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { normalizeImport as normalizeFile, STUDENT_GUARD_MSG, STUDENT_CHART_MSG, sameDef, remapStudentsSyl } from './fileTransfer.js';
 import { findEvents } from './eventOrder.js';
-import { onTrackerSessionEnd, onBeforeTrackerLogout } from '../role.js';
+import { onTrackerSessionEnd, onBeforeTrackerLogout, trackerIsAdmin } from '../role.js';
 /* Raptor's one edge feel (D899) — a standalone export carries this file with it: docs/tracker/known-gaps.md */
 import { edgePan } from '../../ui/edgescroll';
 import { getPeople, onPeople, whoami, whoamiId, getGonePeople, onGonePeople } from '../people.js';
@@ -36,7 +36,7 @@ import {
    every module funnels through. */
 import {
   commit as cmdCommit, isCommitting as cmdIsCommitting, definePermission as cmdDefinePermission,
-  anyone as cmdAnyone, registerRecord as cmdRegisterRecord, deferEffect as cmdDeferEffect,
+  anyone as cmdAnyone, adminOnly as cmdAdminOnly, registerRecord as cmdRegisterRecord, deferEffect as cmdDeferEffect,
   registerGuardedStore as cmdRegisterGuardedStore, onCommit as cmdOnCommit, deriveActor as cmdDeriveActor,
 } from '../../command';
 /* the Tracker's own Undo / Redo is a RESTORE — the internal door the global undo uses too ([DB-READINESS] group A,
@@ -107,7 +107,7 @@ function endSession() {
   dlgCancelAll();                     /* a half-answered question, and any waiting: cancelled */
   pop = null; popDoneDate = ''; popFailDate = ''; popMsg = null;
   failLog = null; lullPick = null; lullCopy = null;
-  infoId = null; editId = null; ordMode = null; sylModalOpen = false; showAllOpen = false; copyOpen = false;
+  infoId = null; editId = null; ordMode = null; sylModalOpen = false; showAllOpen = false; copyOpen = false; flexWinOpen = false;
   showDetails = false; hideDetailBubble(); toolsOpen = false;
   /* the keyboard's place on the chart is the person leaving's too (D980 — the fresh code read's finding 4) */
   kbdShown = false; popByKey = false; infoByKey = false; kbdCame = null; paintKbdRing();
@@ -424,6 +424,9 @@ function trkCollectionOf(k) {
   if (s.startsWith(TRKROWS.ROW.course)) return 'trk.courses';
   if (s.startsWith(TRKROWS.ROW.chart)) return 'trk.syls';
   if (s.startsWith(TRKROWS.ROW.info)) return 'trk.eventinfo';
+  /* the flex settings (D1006, D1014): one row for the whole Tracker, a Setting — the admin's, so a collection of its
+     own, which the command gate (state/perms.ts) holds to an admin */
+  if (s === 'v3:master:flex') return 'trk.flex';
   const p = s.split(':');
   const last = p[p.length - 1], last2 = p[p.length - 2];
   if (last2 === 'enr' && p.length === 5) return 'trk.roster';   /* v3:<course>:<chart>:enr:<student> */
@@ -525,6 +528,10 @@ function trkRegisterCommands() {
     cmdDefinePermission(c, cmdAnyone);   // permissive at Step 2 (the real file/role gates are unchanged)
     cmdRegisterRecord({ key: 'tracker:' + c, cls: 'record', collection: c, module: 'tracker' });
   }
+  /* the flex settings (D1014): an admin's alone — the one Tracker record that is. Raptor's resolver (state/perms.ts
+     COMMAND_OPS 'trk.flex', a Setting) decides once the app has booted; this check is the headless fallback */
+  cmdDefinePermission('trk.flex', cmdAdminOnly);
+  cmdRegisterRecord({ key: 'tracker:trk.flex', cls: 'record', collection: 'trk.flex', module: 'tracker' });
   cmdDefinePermission('trk.gesture', cmdAnyone);   // [CMDL-FINISH] §4 — a multi-collection gesture's envelope
   cmdDefinePermission('trk.meta', cmdAnyone);      // a course conversion's own records, written after the first mount (metaWrite)
   /* [DB-READINESS] group A, phase 4.1 — the Tracker's own Undo / Redo, each ONE restore command (P4.1-TRACKER-RESTORE) */
@@ -610,6 +617,7 @@ function trkReloadGlobalsFromMem() {
   SYL_TOMB = (tomb && typeof tomb === 'object') ? tomb : {};
   eventInfo = sParse(memGet(kEventInfo()), {}, 'object') || {};
   if (!isDetailsTable(eventInfo)) eventInfo = {};
+  flexFromMem();   /* the flex settings (D1006) — a change from another person, or a refused one rolled back */
 }
 /* [CMDL-FINISH] §3 (F8/GU-007, M1/R4-003/R4-004) — the batch, delete-aware,
    per-collection record write for the undo seam, driven by the key-grammar→scope
@@ -632,7 +640,7 @@ function trkWriteRecords(entries) {
   // (a delete/restore of a syllabus changes them, and the pointer logic below reads
   // SYLS/SYL_ORDER via firstSylId/sylSource).
   /* a chart row (`trk.syls`) carries the chart's catalogue entry, place and hidden / deleted marks too (phase 5b) */
-  if (entries.some(e => e.collection === 'trk.catalogue' || e.collection === 'trk.eventinfo' || e.collection === 'trk.syls')) trkReloadGlobalsFromMem();
+  if (entries.some(e => e.collection === 'trk.catalogue' || e.collection === 'trk.eventinfo' || e.collection === 'trk.syls' || e.collection === 'trk.flex')) trkReloadGlobalsFromMem();
   // the globals that steer the pointers, always re-read from mem
   COURSES = sParse(memGet(kCourses), [], 'array');
   DELCOURSES = sParse(memGet(kDelCourses), [], 'array').filter(c => isCourseEntry(c) && !COURSES.some(x => isCourseEntry(x) && x.id === c.id));
@@ -4357,15 +4365,83 @@ export function lullDaysIn(s, a, b) { return ((lulls && lulls[s]) || []).reduce(
    is what makes it impossible to give a bar one without the other (SidePanel.jsx draws both). */
 const INK_ON = 'var(--bg)', INK_GREY = '#fff';
 const bar = (txt, color) => ({ txt, color, ink: color === 'var(--grey)' ? INK_GREY : INK_ON });
-export function flexFor(days) {
+/* THE FLEX SETTINGS (owner D1006, D1014, D1018 — 18 Oct 26, approved "as recommended" on the pictures
+   docs/img/handpass/2026-10-18-trk-flex-legend/03-, 04-, 06-, 08-). One record for the whole Tracker, { on, from }:
+   - `from` — the six "From" days, the first day of each band after "Current" (D1018: only these are typed; each band's
+     "To" is the next band's From less one, and each band's words and colour are fixed — FLEX_BANDS below). The defaults
+     are the limits flexFor always had: <7 current · 7–13 · 14–20 · 21–30 · 31–59 · 60–119 · 120+.
+   - `on` — the one switch (D1006): off, everything about flex leaves the app — the Info panel's flex bar, "Days since
+     syllabus" (it feeds only flex — D1018) and the flex sentence, and the Legend's flex part.
+   Only an admin changes it (D1014 — the Tracker's one admin gate, narrowing D121): setFlexSetting refuses anyone else,
+   and inside Raptor the command gate does too (state/perms.ts — the record is a Setting, the admin's). Kept as ONE row,
+   `v3:master:flex`, beside the chart records (D462 — one row per thing; this thing is one), read at boot and whenever
+   a change to it lands from elsewhere (trkReloadGlobalsFromMem); a record that is missing or damaged reads as the
+   defaults. Not an Undo step: like a course or a syllabus rename it has its own window, whose Cancel is its way back
+   (the undo section's "not in the history" list). */
+export const FLEX_DEFAULT_FROM = [7, 14, 21, 31, 60, 120];
+const FLEX_BANDS = [
+  ['Current — no flex required', 'var(--marg)'],
+  ['1 Optional Flex', 'var(--orange)'],
+  ['1 Mando Flex (Convertible)', 'var(--red)'],
+  ['2 Mando Flex (1 Mando, 1 Convertible)', 'var(--red)'],
+  ['2 Mando Flex (2 Mando)', 'var(--red)'],
+  ['Short Refresher Course', 'var(--grey)'],
+  ['Re-course', 'var(--grey)'],
+];
+const kFlex = () => 'v3:master:flex';
+let FLEX = { on: true, from: FLEX_DEFAULT_FROM.slice() };
+/* what is wrong with six From days, in the words the window shows, or null — the one body is the file format's
+   (fileFormat.js flexFromProblem), so a file and the window refuse the same figures */
+export function flexProblem(from) { return FMT.flexFromProblem(from); }
+/* a stored or filed record, made safe: anything that is not a valid setting reads as the defaults (a damaged row never
+   takes the Info panel down) */
+export function flexOf(v) {
+  const o = v && typeof v === 'object' && !Array.isArray(v) ? v : {};
+  return { on: o.on !== false, from: flexProblem(o.from) ? FLEX_DEFAULT_FROM.slice() : o.from.slice() };
+}
+function flexFromMem() { FLEX = flexOf(sParse(memGet(kFlex()), null, 'object')); }
+async function loadFlex() { FLEX = flexOf(sParse(await sGet(kFlex()), null, 'object')); }
+/* the setting as it stands, a copy */
+export function flexSetting() { return { on: FLEX.on, from: FLEX.from.slice() }; }
+/* the settings window, opened by the ⚙ in the bar (D1014) — for everyone: a member sees it read-only (D1018). Held
+   here, not in the window, so the end of a login session shuts it (endSession) and the next person never meets the
+   last one's window. */
+export let flexWinOpen = false;
+export function openFlexWin() { flexWinOpen = true; notify(); }
+export function closeFlexWin() { flexWinOpen = false; notify(); }
+/* may the signed-in person change it? (D1014 — an admin; role.js, which asks Raptor) */
+export function mayChangeFlex() { return trackerIsAdmin(); }
+/* Change the setting — an admin's alone (D1014). Validated before anything is written; nothing written when nothing
+   changed. Resolves { ok } or { ok: false, message } in the window's words. The write is one command (`trk.flex`),
+   which the command gate may still refuse — then the stored row is unchanged and so is the screen. */
+export async function setFlexSetting(next) {
+  if (!mayChangeFlex()) return { ok: false, message: 'Only an admin can change the flex settings.' };
+  const n = next && typeof next === 'object' ? next : {};
+  const want = { on: n.on !== false, from: Array.isArray(n.from) ? n.from.slice() : FLEX.from.slice() };
+  const bad = flexProblem(want.from);
+  if (bad) return { ok: false, message: bad };
+  if (want.on === FLEX.on && want.from.every((v, i) => v === FLEX.from[i])) return { ok: true };
+  const json = JSON.stringify(want);
+  await sSet(kFlex(), json);
+  if (memGet(kFlex()) !== json) { flexFromMem(); notify(); return { ok: false, message: 'The flex settings could not be saved. Try again.' }; }
+  FLEX = flexOf(want);
+  renderSide(); notify();
+  return { ok: true };
+}
+/* the band a number of days since the last syllabus flight falls in. `from` defaults to the setting; the window passes
+   its draft, so the bars it shows are the ones Save would give. */
+export function flexFor(days, from) {
   if (days == null) return bar('No flight date set', 'var(--grey)');
-  if (days < 7) return bar('Current — no flex required', 'var(--marg)');
-  if (days <= 13) return bar('1 Optional Flex', 'var(--orange)');
-  if (days <= 20) return bar('1 Mando Flex (Convertible)', 'var(--red)');
-  if (days <= 30) return bar('2 Mando Flex (1 Mando, 1 Convertible)', 'var(--red)');
-  if (days <= 59) return bar('2 Mando Flex (2 Mando)', 'var(--red)');
-  if (days <= 119) return bar('Short Refresher Course', 'var(--grey)');
-  return bar('Re-course', 'var(--grey)');
+  const f = from || FLEX.from;
+  let i = 0; while (i < f.length && days >= f[i]) i++;
+  return bar(FLEX_BANDS[i][0], FLEX_BANDS[i][1]);
+}
+/* every flex band with its day range, built straight from the From days (never walked day by day, so a band set far out
+   costs nothing): { from, to, txt, color, ink }, the last one's `to` null ("and over") — the Legend's flex rows and the
+   settings window's To column and bars */
+export function flexBands(from) {
+  const f = from || FLEX.from, starts = [0, ...f];
+  return starts.map((s, i) => ({ from: s, to: i < f.length ? f[i] - 1 : null, ...flexFor(s, f) }));
 }
 export function landingCurrency(days) {
   if (days == null) return bar('No currency date set', 'var(--grey)');
@@ -4374,9 +4450,9 @@ export function landingCurrency(days) {
 }
 /* THE LEGEND'S BANDS ARE READ OFF THE BARS' OWN RULES (D1007, D1018 — 18 Oct 26): one row per run of days that gets
    the same words, walked day by day through flexFor or landingCurrency, so the day ranges are written once — in those
-   two — and a band changed there (the flex settings to come, D1006) changes the Legend with it. Each band is
-   { from, to, txt, color, ink }; the last one's `to` is null ("and over"). `upTo` only has to pass the last band's
-   first day: today's last is 120 (Re-course). */
+   two — and a band changed there changes the Legend with it. Each band is { from, to, txt, color, ink }; the last
+   one's `to` is null ("and over"). `upTo` only has to pass the last band's first day — so the flex rows, whose days
+   an admin sets (D1006), are built by flexBands from the setting itself; this walks the currency bar's. */
 export function barBands(fn, upTo = 1000) {
   const out = [];
   for (let d = 0; d <= upTo; d++) {
@@ -4387,10 +4463,9 @@ export function barBands(fn, upTo = 1000) {
   if (out.length) out[out.length - 1].to = null;
   return out;
 }
-/* Whether the Tracker tracks flex at all (D1006 — one switch for the whole Tracker, to build with [TRK-FLEX-SETTING];
-   D1007: with it off the Legend's flex part goes). Always on until that switch is built; the Legend asks here, so
-   the switch has one place to answer. */
-export function flexOn() { return true; }
+/* Whether the Tracker tracks flex at all (D1006 — the one switch for the whole Tracker, the flex settings above;
+   D1007: with it off the Legend's flex part goes). Everything that draws flex asks here. */
+export function flexOn() { return FLEX.on; }
 export function sliceBg(cols) {
   if (!cols.length) return ''; if (cols.length === 1) return cols[0];
   const step = 100 / cols.length, st = [];
@@ -6351,6 +6426,7 @@ async function reloadFromStore() {
   await reconcileBuiltins();
   await loadSylOrder();
   await loadEventInfo();
+  await loadFlex();
   const c = COURSES.some(x => isCourseEntry(x) && x.id === course) ? course : (COURSES[0] && COURSES[0].id);
   await loadCourse(c);
   if (keepActive && roster.some(r => r.id === keepActive)) active = keepActive;
@@ -6390,6 +6466,10 @@ export async function collectCharts(ids, opts) {
   const eventInfoBySyl = {};
   for (const id of order) if (eventInfo[id] && Object.keys(eventInfo[id]).length) eventInfoBySyl[id] = JSON.parse(JSON.stringify(eventInfo[id]));
   const out = { order, syllabi, layouts, eventInfoBySyl, sylcat };
+  /* A backup of every chart carries the flex settings too (D1006), so export → wipe → import keeps them — the route the
+     Tracker takes to the database (D120). Never on a file of some charts: a chart handed over must not change another
+     Tracker's settings. */
+  if (opts && opts.deleted) out.flex = flexSetting();
   /* A backup of EVERY chart also names the built-ins he deleted, so after
      export → wipe → import they stay deleted — the wiped app ships them all
      (owner, 23 Sep 26 — D127; [HUMAN-RETEST] F8). Never on a file of some
@@ -6879,6 +6959,7 @@ export async function importClick() {
   const addAsNew = Object.create(null);   /* fileId → freshly minted id; students follow */
   const done = [], skipped = [], keptDeleted = [];
   const wanted = Object.create(null);     /* store id → the name the file gives it */
+  let flexIn = '';                        /* the flex settings the backup carries: '' / 'restored' / 'refused' (D1006) */
   if (hasCharts) {
     for (const id of charts.order) {
       if (ended()) return;   /* the session ended under a question: nothing more is asked (F6) */
@@ -6961,6 +7042,16 @@ export async function importClick() {
       SYL_ORDER = [...inFile, ...SYL_ORDER.filter(id => !inFile.includes(id))];
       await saveSylOrder(); refreshSyl();
     }
+    /* THE FLEX SETTINGS a whole backup carries (D1006) come home with it — but they are an admin's alone to change
+       (D1014): a member's import leaves this Tracker's as they are, and the closing report says so. A file whose
+       settings match this Tracker's changes nothing and says nothing. */
+    if (charts.flex) {
+      const f = flexOf(charts.flex), cur = flexSetting();
+      if (f.on !== cur.on || f.from.some((v, i) => v !== cur.from[i])) {
+        if (!mayChangeFlex()) flexIn = 'refused';
+        else if ((await setFlexSetting(f)).ok) flexIn = 'restored';
+      }
+    }
   }
   if (ended()) return;
   let people = false;
@@ -6993,10 +7084,11 @@ export async function importClick() {
     }
   }
   if (ended()) return;   /* the closing report is the ended session's, not the next person's */
-  const what = [done.length ? 'brought in ' + done.join(', ') : null, people ? 'students & marks restored' : null].filter(Boolean).join(' · ');
+  const what = [done.length ? 'brought in ' + done.join(', ') : null, people ? 'students & marks restored' : null, flexIn === 'restored' ? 'flex settings restored' : null].filter(Boolean).join(' · ');
   if (what) setSaveStatus(what, 'ok');
   const skip = (skipped.length ? '\n\nSkipped, left as they are here: ' + skipped.join(', ') + '.' : '')
-    + (keptDeleted.length ? '\n\nDeleted, as in the backup: ' + keptDeleted.join(', ') + ' (↺ Restore in ⇅ Reorder brings ' + (keptDeleted.length === 1 ? 'it' : 'them') + ' back).' : '');
+    + (keptDeleted.length ? '\n\nDeleted, as in the backup: ' + keptDeleted.join(', ') + ' (↺ Restore in ⇅ Reorder brings ' + (keptDeleted.length === 1 ? 'it' : 'them') + ' back).' : '')
+    + (flexIn === 'refused' ? '\n\nFlex settings not brought in: only an admin can change them.' : '');
   await uiAlert((what
     ? what.charAt(0).toUpperCase() + what.slice(1) + '.\n\n' + (people ? 'It is saved.' : 'Everyone’s marks are untouched. It is saved.')
     : 'Nothing was brought in.') + skip);
@@ -7091,6 +7183,7 @@ export async function init() {
   await loadCourse((__want && COURSES.some(c => isCourseEntry(c) && c.id === __want)) ? __want : (COURSES[0] && COURSES[0].id), true);
   pickOwner = __who;
   await loadEventInfo();
+  await loadFlex();   /* the flex settings (D1006) — the defaults when none is stored */
   ready = true;
   /* [ARCH-STACK] phase 5: enable command routing now that every boot migration
      and load has run its raw seed/migration writes. Post-boot user edits emit the

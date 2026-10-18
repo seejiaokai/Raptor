@@ -450,6 +450,9 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'trk.pace': op(T.tracker, 'U'), 'trk.lulls': op(T.tracker, 'U'), 'trk.eventinfo': op(T.tracker, 'U'),
   'trk.catalogue': op(T.tracker, 'U'), 'trk.courses': op(T.tracker, 'U'), 'trk.gesture': op(T.tracker, 'U'),
   'trk.meta': op(T.tracker, 'U'),
+  /* …except the flex settings (D1006, D1014 — 18 Oct 26, narrowing D121): one record for the whole Tracker, its figures
+     and its on / off switch — a Setting, the admin's alone, like every other */
+  'trk.flex': op(T.setting, 'U'),
   /* the Tracker's own Undo / Redo, each one restore command ([DB-READINESS] group A, phase 4.1 — P4.1-TRACKER-RESTORE) */
   'tracker.undo': op(T.tracker, 'U'), 'tracker.redo': op(T.tracker, 'U'),
   /* accounts (D166, D204): one intent per command, each writing every key it needs — and
@@ -754,6 +757,8 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
         return `an admin's record (${where})`
       case 'lw.war': case 'lw.ledger': case 'lw.opening': case 'lw.oilpolicy': case 'lw.postouts': case 'lw.label': case 'lw.config':
       case 'plan':
+      /* the Tracker's flex settings (D1014): the one Tracker record a member never writes, whichever command carries it */
+      case 'trk.flex':
       case 'insights.role':
         return `an admin's record (${where})`
       default: break                       // the Tracker (the schedule and the week stash are refused above)

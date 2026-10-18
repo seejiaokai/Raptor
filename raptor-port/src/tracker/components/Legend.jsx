@@ -9,8 +9,8 @@ import * as core from '../app/core.js';
    too. THE WORDS ARE HIS AS DRAWN (scripts/handpass/mock-trk-flex-legend.mjs drew them): any change to them is put to
    him first. Read-only for everyone (D121) — it explains the chart, it changes nothing.
    The balls are the chart's own drawing (core.js legendBall → ballParts, the body every chart ball is drawn by), and
-   the currency and flex rows are read off the bars' own rules (core.barBands over landingCurrency / flexFor), so the
-   legend cannot drift from what it explains. */
+   the currency and flex rows are read off the bars' own rules (core.barBands over landingCurrency; core.flexBands —
+   the flex settings' own bands, D1006, whose days an admin sets), so the legend cannot drift from what it explains. */
 
 /* The centre — one sample ball per kind of event, its code as on the 2026 chart's own balls (as drawn). Exported so
    trk-palette.test.ts can pin each word to its kind. */
@@ -60,7 +60,7 @@ function FlexPart() {
   return (
     <div data-testid="trk-legend-flex">
       <div className="tleg-sec">Flex — days since the last syllabus flight</div>
-      {core.barBands(core.flexFor).map(b => <Band key={b.from} b={b} />)}
+      {core.flexBands().map(b => <Band key={b.from} b={b} />)}
     </div>
   );
 }

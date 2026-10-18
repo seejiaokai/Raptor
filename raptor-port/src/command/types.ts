@@ -46,6 +46,8 @@ export type LogicalCollection =
   // tracker (the v3: keys)
   | 'trk.marks' | 'trk.dates' | 'trk.roster' | 'trk.layout' | 'trk.syls'
   | 'trk.plan' | 'trk.pace' | 'trk.lulls' | 'trk.eventinfo' | 'trk.catalogue' | 'trk.courses'
+  // the Tracker's flex settings — one row, a Setting: the admin's (D1006, D1014)
+  | 'trk.flex'
 
 export type Module = 'sched' | 'inputs' | 'plan' | 'people' | 'settings' | 'lw' | 'trk' | 'insights'
 

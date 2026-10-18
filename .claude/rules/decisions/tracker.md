@@ -216,7 +216,7 @@ model for the database step: `docs/data-model.md`. **Everyone
 does everything — marking, charts, students, courses, syllabi AND the File menu
 (Import / Export): admin and member have the same access** (owner, D121,
 23 Sep 26, superseding the 7 Sep "file portion is the admin's"); the Tracker
-reads no role, so never add an admin gate to it *(NARROWED 18 Oct 26 by D1014: the flex settings, opened from a settings icon in its top bar, are an admin's alone — the Tracker's one admin gate, to build with [TRK-FLEX-SETTING])*. CSS is scoped under
+reads no role, so never add an admin gate to it *(NARROWED 18 Oct 26 by D1014: the flex settings, opened from a settings icon in its top bar, are an admin's alone — the Tracker's one admin gate — BUILT the night of 18 Oct 26: `role.js trackerIsAdmin`, wired by `peoplewire.ts` to the sign-in, and the command gate (`state/perms.ts` `trk.flex`) refusing a member)*. CSS is scoped under
 `#page-tracker` with five Raptor collisions reset at the top of the wrapper.
 *[Since 13 Oct 26 (D801) two Tracker components — `components/DateBox.jsx`, `components/Pop.jsx` — draw Raptor's own date box (`ui/DateBox.tsx`, `ui/DateCal.tsx`, `ui/scheduler/26-date-calendar.css`): a standalone export carries those with it — `docs/tracker/known-gaps.md`, last sections.]*
 Gaps and the carried-over traps: `docs/tracker/known-gaps.md`; the working loop

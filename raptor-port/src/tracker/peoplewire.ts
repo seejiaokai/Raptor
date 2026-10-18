@@ -9,6 +9,8 @@ import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { subscribe } from '../state/store'
 import { setPeople, setWhoami, setWhoamiId, setGonePeople } from './people.js'
+import { setTrackerAdmin } from './role.js'
+import { roleOf } from '../state/perms'
 
 export type TrackerPerson = { id: string; cs: string; seat: string; q: string; sxo: boolean }
 
@@ -61,9 +63,18 @@ export function whoamiIdForTracker(): string {
   const v = HOOKS.whoamiId()
   return v ? String(v) : ''
 }
+/* May the signed-in person change the Tracker's flex settings? (owner D1014 — an admin's alone; the Tracker's one admin
+   gate.) Asked of Raptor's one permissions module each time. No session at all is the headless engine (a unit test, the
+   boot) — never a person — and it answers yes, as every Tracker question always has for it; the Tracker is not on
+   screen without a session. */
+export function trackerAdminForTracker(): boolean {
+  const w = roleOf()
+  return w === null || w === 'admin'
+}
 export function wireTrackerPeople(): void {
   if (wired) return
   wired = true
+  setTrackerAdmin(trackerAdminForTracker)
   setWhoami(whoamiForTracker)
   setWhoamiId(whoamiIdForTracker)
   const push = () => { setPeople(projectForTracker(PEOPLE)); setGonePeople(deletedForTracker(PEOPLE)) }

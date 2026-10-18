@@ -1010,11 +1010,12 @@ ok('Course follows Crew, and each edit pencil sits right after its dropdown',
    search shows as an inline box, hSearch + hSearchClear). */
 /* ↶ ↷ left this bar for Raptor's top bar ([UNDO-TOPBAR], owner D349 (2), 28 Sep 26) — the checks under "the undo
    checks" below pin them there */
-/* Legend beside Show All (owner D1018, 18 Oct 26) */
-ok('the bar reads Crew · Course ✎ · Syllabus ✎ · ⓘ · Show All · Legend · File · search · Hide',
+/* Legend beside Show All (owner D1018, 18 Oct 26); the flex settings' ⚙ after the search, before Hide (D1014, D1018 — as
+   drawn in 02-topbar-proposed) */
+ok('the bar reads Crew · Course ✎ · Syllabus ✎ · ⓘ · Show All · Legend · File · search · ⚙ · Hide',
   crewFirst.ids.join(',') === ['activeSel', 'courseSel', 'courseMenuBtn',
     'sylSel', 'sylMenuBtn', 'detailsBtn', 'showAllBtn', 'legendBtn',
-    'fileMenuBtn', 'hSearch', 'hSearchClear', 'barHideBtn'].join(','),
+    'fileMenuBtn', 'hSearch', 'hSearchClear', 'flexBtn', 'barHideBtn'].join(','),
   crewFirst.ids.join(' → '));
 
 /* WHERE THE GAP FALLS, which the id list can't see: the spacer is a <span>, so

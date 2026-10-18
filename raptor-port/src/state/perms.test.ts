@@ -387,4 +387,11 @@ describe('the command gate (cmdAuthorize) — every command the app registers', 
     expect(cmdAuthorize('trk.marks', actor('member', 'bane'))).toBe(true)
     expect(cmdAuthorize('trk.gesture', actor('member', 'bane'))).toBe(true)
   })
+  it('…except the flex settings: a Setting, the admin\'s alone (D1014), registered by the Tracker and refused to a member', () => {
+    const src = read('src/tracker/app/core.js')
+    expect(src.includes(`cmdDefinePermission('trk.flex'`), 'trk.flex registered').toBe(true)
+    expect(COMMAND_OPS['trk.flex']!.table).toBe(T.setting)
+    expect(cmdAuthorize('trk.flex', actor('admin', 'stiff'))).toBe(true)
+    expect(cmdAuthorize('trk.flex', actor('member', 'bane'))).toBe(false)
+  })
 })

@@ -3,6 +3,7 @@ import { trackerHosted } from '../undo-bridge.js';
 import * as core from '../app/core.js';
 import { isComposing } from './keys.js';
 import Legend from './Legend.jsx';
+import FlexSettings from './FlexSettings.jsx';
 
 /* The panel is always in the DOM and hidden with CSS, never conditionally
    rendered. Two reasons: the file name and the save tick-boxes have to stay
@@ -166,7 +167,8 @@ export default function Header() {
   /* ONE BAR FOR EVERYONE (owner, 23 Sep 26 — D121: "admin and member should
      have the same access authority"). The File menu (Import, Export) was the
      admin's from 7 Sep 26 and was hidden from a member here; it is drawn for
-     every login now, and core.js reads no role. */
+     every login now. The one thing an admin alone changes is the flex settings
+     (D1014) — their ⚙ is drawn for everyone too, read-only for a member. */
 
   return (
     <header>
@@ -270,6 +272,10 @@ export default function Header() {
         {/* Find event moved to the far right of the choose/act group (owner,
             9 Sep 26). On a phone it is a 🔍 that opens a full-width strip. */}
         <HeaderSearch />
+
+        {/* The flex settings' ⚙ (owner D1014, D1018, 18 Oct 26 — the picture 02-topbar-proposed): after Find event, before
+            the bar's own Hide; for everyone — an admin changes them, a member sees them read-only. */}
+        <FlexSettings />
 
         {/* Hide the whole bar to give the chart the column (owner phone ask,
             9 Sep 26). It sits at the END of the choose/act group, LEFT of the

@@ -234,6 +234,10 @@ export default function SidePanel({ zoom }) {
      "The currency bar has got nothing to do with medical down days as calculation"): the down days are taken off nothing */
   const fx = core.flexFor(dSyll);
   const cur = core.landingCurrency(dCurr);
+  /* THE FLEX SWITCH (owner D1006, D1018 — 18 Oct 26, the picture 06-info-flex-off): with flex off the card is
+     "Currency" alone — the flex bar, "Days since syllabus" (it feeds only flex) and the flex sentence go, and the
+     currency bar takes the whole width. Last Flown (Syllabus) stays: a syllabus flight still moves currency (D1005). */
+  const flexOn = core.flexOn();
 
   /* Pace and both end dates belong to the student being marked, not the course. */
   const rem = st.remaining;
@@ -336,7 +340,7 @@ export default function SidePanel({ zoom }) {
         </div>
       </div>
       <div className="card wide c-curr">
-        <h3>Currency &amp; flex</h3>
+        <h3>{flexOn ? <>Currency &amp; flex</> : 'Currency'}</h3>
         <div className="curGrid">
           {/* the date boxes are the app's own since 13 Oct 26 (D801 — DateBox.jsx): a day picked is saved at once.
               Keyed by student and field, so a Crew switch never carries a refusal's line across. The two Last Flown
@@ -349,15 +353,15 @@ export default function SidePanel({ zoom }) {
           <div className="field"><label>Upchit Date</label><DateBox key={s + ':upchit'} id="upchit" title="Upchit date" value={core.dates[s].upchit || ''} onCommit={v => core.setUpchit(s, v)} /></div>
         </div>
         <div className="curKv">
-          <div className="kv"><span>Days since syllabus</span><b>{dSyll == null ? '—' : dSyll + 'd'}</b></div>
+          {flexOn ? <div className="kv"><span>Days since syllabus</span><b>{dSyll == null ? '—' : dSyll + 'd'}</b></div> : null}
           <div className="kv"><span>Days since currency</span><b>{dCurr == null ? '—' : dCurr + 'd'}</b></div>
         </div>
-        <div className="flexPair">
+        <div className={'flexPair' + (flexOn ? '' : ' one')}>
           {/* the bar's ink rides with its colour (core.flexFor / landingCurrency — D982) */}
           <div className="flexbar" style={{ background: cur.color, color: cur.ink }}>{cur.txt}</div>
-          <div className="flexbar" style={{ background: fx.color, color: fx.ink }}>{fx.txt}</div>
+          {flexOn ? <div className="flexbar" data-testid="trk-flexbar" style={{ background: fx.color, color: fx.ink }}>{fx.txt}</div> : null}
         </div>
-        <div className="mini" style={{ marginTop: 5 }}>Landing currency = days since last currency. Flex requirement uses days since last <b>syllabus</b> flight, so updating currency won’t change it.</div>
+        <div className="mini" style={{ marginTop: 5 }}>Landing currency = days since last currency.{flexOn ? <> Flex requirement uses days since last <b>syllabus</b> flight, so updating currency won’t change it.</> : null}</div>
       </div>
       <div className="card wide c-pace">
         <h3>Pace &amp; expected end <span className="who">— {core.nameOf(s)}</span></h3>

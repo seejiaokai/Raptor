@@ -960,10 +960,12 @@ an admin.").
 job, after D994's small fixes unless he says otherwise.
 
 ### [TRK-FLEX-SETTING] The Tracker's flex figures editable, and one switch that turns flex off everywhere (his direction, 18 Oct 26 — D1006)
+**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D1006, D1014, D1018: the flex settings window from a cog in the top bar — an admin edits the six From days and the on/off switch, a member reads; flex off hides the flex bar, "Days since syllabus", the flex sentence and the legend's flex part; saved as one row, carried in a backup. Leaves for the archive once live.**
 **Not designed — his questions first** (which figures, who may change them, where the switch sits; a picture). The note:
 `raptor-port/docs/superpowers/specs/2026-10-18-trk-down-days.md`. **Place:** with [TRK-DOWN-DAYS-AUTO], the next Tracker job.
 
 ### [TRK-LEGEND] A legend on the Tracker — the balls, a flight's currency and the IP requirement, when a flex happens (his direction, 18 Oct 26 — D1007)
+**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D1007, D1018: the Legend button beside Show All and its pop-out (the chart's own balls, currency and IP, the flex bands), the desktop strip moved into it. Leaves for the archive once live.**
 **Not designed — a picture first.** Its flex part goes when the flex switch (D1006) is off. The note: as above. **Place:** with
 [TRK-DOWN-DAYS-AUTO], the next Tracker job.
 

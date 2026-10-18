@@ -642,7 +642,11 @@ overwrites; one write is one command. An old whole record that is still stored (
 standalone Tracker) is read as it stands, and converted to rows at its next write; one that cannot be split (bare names
 from before the ids) is kept whole. A browser's old records are converted once at boot by the fold's `tracker` converter
 (`src/tracker/fold.ts`, registered by `src/boot.ts` — the last of the eight: the store's format is 6). The layouts, marks,
-dates, pace, lulls, plans and flags keep their keys. **The chart a signed-in person has open is his own place** (D376),
+dates, pace, lulls, plans and flags keep their keys. **The flex settings (18 Oct 26 — D1006, D1014, D1018)** are one
+row for the whole Tracker, `v3:master:flex` = `{ on: boolean, from: number[6] }` — the switch and the six "From" days
+(defaults 7, 14, 21, 31, 60, 120: each a whole number ≥ 1, each above the one before); missing or damaged reads as the
+defaults; written only by an admin, as its own command `trk.flex` (a `Setting` in `data-model.md` §11); a backup of every
+chart carries it as `charts.flex`. **The chart a signed-in person has open is his own place** (D376),
 kept on his browser under `ocuLocal:who:<id>:lastSyl:<course>` — never written into the course's shared `v3:<course>:plan`,
 whose `sylId` names the course's own chart (the standalone Tracker, nobody signed in, keeps the one shared answer).
 Since the seam the Tracker's data flows through the
