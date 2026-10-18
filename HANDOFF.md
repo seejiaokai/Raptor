@@ -21,25 +21,18 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/rally-box-mockup-452b95 -->
-### `claude/rally-box-mockup-452b95` — the rally-box mock-up and its questions, written 19 Oct 26 — verify before use
-- **Where it started:** `claude/sched-fixes-handoff`'s block (merged, pull request 539; its residue filed) — replaced by this one.
-- **Done:** the mock-up drawn on the running app (a built copy, demo data) at his iPhone's width (402, three times its
-  density) and a desktop's, eleven pictures, today beside proposed; the page published as an Artifact
-  (https://claude.ai/artifact/VdbkfVak1mpjyD1Js3YRCJ — source `raptor-port/docs/mock/rally-box.html`, pictures
-  `raptor-port/docs/img/handpass/2026-10-19-rally-box/`, script `raptor-port/scripts/handpass/mock-rally-box.mjs`).
-  The picture he ruled D1026 from was his iPhone's Scheduler Board, so "edit schedule" is read as the board, "normal"
-  as the week; both drawn. Two rulings recorded while drawing: D1027 (a default rally, take-off less a Logic time,
-  3 hours to start, selected by the scheduler) and D1028 (a suggested time in its own box's area, never a line above
-  it — the brief's too; inside the empty box, faint, is the agent's proposal) — both read by one fresh reader, its three
-  wording fixes taken; design guide §9 Lesson 7 (D1028). The design note's new end lists what the build needs.
-- **Answered (19 Oct 26):** D1029 the desktop board in one line, the phone board stacked; D1030 the suggestion inside its
-  box, tap places it, typing replaces it; D1031 the existing 3-hour setting, renamed; D1032 the box counts as a typed rally.
-  Nothing built (by his word). A typed RALLY line stays a rally (D1034); no question open.
-- **Branch:** `claude/rally-box-mockup-452b95` — documents, pictures, one picture script; no app code; released here
-  (`git switch --detach`) once pushed. **Gates:** none — nothing under `raptor-port/src`; `npm run docsize` green.
-  **Running when written:** none (the preview stopped, the lock free, no helper).
-- **Pick up here:** the build, FULL tier — the design note's "His answers" and requirement list; he asked for /overnight.
-- **Opening line:** /overnight — Read `HANDOFF.md` (the `claude/rally-box-mockup-452b95` block), then run `git fetch origin` and `git switch claude/rally-box-mockup-452b95` (if refused because another checkout holds it, run `git switch --detach origin/claude/rally-box-mockup-452b95` and say so). Tonight's job: build [RALLY-PER-FORMATION] as ruled (D1026–D1034, the design note's "His answers"), with its FULL bug check. My weekly usage was at 83% at 19 Oct 26 ~06:00 and resets about 19:00; using it up before the reset is my aim (D1033), so keep starting work past 90% — commit and push as you go so the limit never strands anything.
+### `claude/rally-box-mockup-452b95` — THE NIGHT OF 19 OCT 26 (day run, 8 hours from ~07:30): the rally box build — verify before use
+- After a compaction: re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time.
+- **His selection ("go", 19 Oct 26), in order:** (1) [RALLY-PER-FORMATION] — the build as ruled (D1026–D1034, the design note
+  `raptor-port/docs/superpowers/specs/2026-10-02-rally-time-design.md` "His answers" and its six requirements; the mock-up
+  script's values are the look); (2) [EDIT-BUTTON-AFTER-CHANGE] — the first press of "+ In-time" / "+ Line" after a changed box,
+  riding in the same batch (same button, same rows — D485, D490). One FULL check for the lot (OIL, the published record).
+- **Branch:** this one, `claude/rally-box-mockup-452b95` (the mock-up's documents, then the build) — one pull request to `main`
+  when the check closes. **Reads:** one fresh, blind Opus read of the finished code (D790, D903 — no Fable); on [NO-ASTRA-LIST].
+  **Walkers:** Sonnet 5.5 (D787). **Rough time:** build 3 h, check 3–4 h (a guess). **Allowance:** weekly 83% at the start;
+  keep starting work past 90% (D1033).
+- **His answers:** none needed — every point ruled (D1026–D1034). Questions waiting for him: none yet.
+- **Step in hand:** the build — start.
 <!-- /now -->
 
 ## Next, in order
