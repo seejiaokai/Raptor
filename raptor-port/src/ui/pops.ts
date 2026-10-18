@@ -60,7 +60,11 @@ export { SECDEFOFFER, setSecDefOffer } from '../state/view'
    still live under the modal and renumbers INPUTS, and the key is built from
    the very fields the dialog exists to change. */
 export let INPEDIT: any = null
-export function setInpEdit(r: any) { INPEDIT = r }
+/* `refound`: the SAME record, found again by its id after a save tried and thrown away put the list back as new objects
+   (ui/inputedit.tsx giveBackCuts — D1023) — the window keeps what was typed rather than starting again. Any other call
+   clears it. */
+export let INPEDIT_REFOUND = false
+export function setInpEdit(r: any, refound = false) { INPEDIT = r; INPEDIT_REFOUND = refound }
 /* The OIL-ask hand-off (owner, 28 Aug 26 — the bell's "review your weekend/PH
    input" tap): the IID of the input whose OIL question should open as soon as
    the editor mounts on that row. The iid, never the row object — the tap may
@@ -166,6 +170,7 @@ export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DAYTPLEDIT', reset: () => setDayTplEdit(false) },
   { name: 'DRAFTSEDIT', reset: () => setDraftsEdit(null) },
   { name: 'INPEDIT', reset: () => setInpEdit(null) },
+  { name: 'INPEDIT_REFOUND', reset: () => setInpEdit(null) },   // set and cleared with the window's record — one setter for the pair
   { name: 'OILASK', reset: () => setOilAsk(null) },
   { name: 'OILOWN', reset: () => setOilAsk(null) },   // set and cleared with the hand-off above — one setter for the pair
   { name: 'MEDMOVE', reset: () => setMedMove(null) },

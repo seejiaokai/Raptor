@@ -14,6 +14,15 @@
         ],
         "createdAt": "2026-10-14T14:51:44.225Z",
         "reason": "agent: the match is the word <img> inside a CSS comment about native drag images; a stylesheet holds no img tag"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "raptor-port/src/ui/scheduler/14-input-editors.css"
+        ],
+        "createdAt": "2026-10-18T10:49:28.237Z",
+        "reason": "agent's call, not the owner's: the amber left edge is the app's own status mark for a warning row (owner D747, the Scheduler Board's late-input line); used on the upchit sheet's cut lines (D1023); goes to him with pictures at his look"
       }
     ]
   },

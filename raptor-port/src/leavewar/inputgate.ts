@@ -40,7 +40,7 @@ import { ownInputOf } from '../engine/inputown'
 import { PEOPLE } from '../engine/people'
 import { SESSION } from '../state/auth'
 import { isMe, me } from '../state/perms'
-import { setInputGate } from '../state/inputgate-hook'
+import { gateCuts, setInputGate } from '../state/inputgate-hook'
 import { buildAbsenceIndex, contribsOfInput, inputDates, warCodeOf, warVisible } from './absences'
 import { addDays, warHolding } from './engine'
 import { AM, FULL, PM, forbiddenPair, isLeaveCode, isSickCode, overlaps, winsOf, type Contrib, type Win } from './engine/dayview'
@@ -370,6 +370,9 @@ function apply(before: unknown): void {
   const overWork = vet(new Set(changed.flatMap(r => namedOf(r).map((e: any) => String(e.p)))), changedIds, true)
   const replaced = inDoor() ? [] : replaceBids(changed)
   const msgs = [...cut, ...overWork, ...(replaced.length ? [`This replaces ${replaced.join(', ')} on the Leave War`] : [])]
+  /* each leave cut and each bid replaced, one line each, in the warning's own words — for a sheet that asks before the
+     change (D1023: the upchit sheet); leave over recorded work is a flag, not a cut, so it is not among them */
+  gateCuts([...cut, ...replaced.map(b => `This replaces ${b} on the Leave War`)])
   /* AMBER, BECAUSE THESE ARE WARNINGS (owner, 21 Sep 26). They went out on the
      plain face, which is the one used for "Saved" — so the app said a medical
      had cut someone's leave, or that a man is recorded as working the day the

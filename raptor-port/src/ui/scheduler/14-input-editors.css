@@ -151,6 +151,8 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .upconf-list{list-style:none;margin:0 0 10px;padding:0;display:flex;flex-direction:column;gap:6px}
 .upconf-list li{font-size:12.5px;color:var(--ink);background:var(--panel-2);
   border:1px solid var(--edge);border-radius:8px;padding:7px 9px}
+/* a leave or bid the days given back will cut (D1023): the amber edge down the left the app gives a warning row (D747) */
+.upconf-list li.upconf-cut{border-left:3px solid var(--adv)}
 .upconf-none{font-size:12.5px;color:var(--ink-2);margin:0 0 10px}
 .upconf-fit{font-size:12.5px;font-weight:700;color:#A8E6BC;margin:0 0 12px}
 .upconf-left{display:flex;align-items:center;gap:8px;background:var(--panel-2);

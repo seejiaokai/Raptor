@@ -48,7 +48,7 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
-**FILED 18 Oct 26 — [UPCHIT-SHEET-LEAVE-CUT]:** a question for him — should the upchit sheet also name a leave its give-back will cut (it is said in the note afterwards)? Waits with his questions (D994).
+**RULED 18 Oct 26 — [UPCHIT-SHEET-LEAVE-CUT] (D1023):** the upchit sheet will also list each leave and bid a give-back cuts, before anything changes — BUILT the same day on `claude/upchit-sheet-leave-cut`, waiting for his look and "merge live".
 
 **FILED 18 Oct 26 — [GATELOCK-STALE-PORT]:** the full check set run through the PC lock tested ANOTHER chat's old build, because a preview left running on 4173 was reused — a guard so the lock's run picks a free port by itself. Tooling, low risk, its own small job.
 
@@ -242,6 +242,8 @@ or feel — his call).
 ## Items
 
 ### [UPCHIT-SHEET-LEAVE-CUT] Should the upchit sheet also name a leave or bid its give-back will cut? — a question for him (found 18 Oct 26 by the fresh read of `claude/three-small-jobs-1018`) — OPEN
+**ANSWERED 18 Oct 26 — D1023 ("Ok as recommended"): yes — the sheet lists each leave and bid the give-back will cut, one line each, before anything changes. TO BUILD, a small job of its own.**
+**BUILT 18 Oct 26 on `claude/upchit-sheet-leave-cut`** — every door that gives days back (the window's Save and Delete, the calendar's drag, the opened day's Delete key, the schedule's reassign) lists the cuts, worked out by trying the save and throwing it away (`ui/inputedit.tsx giveBackCuts`); contract `raptor-port/docs/ui-contracts.md` §The upchit, medical-clash and OIL sheets; its check `raptor-port/docs/handpass/2026-10-18-upchit-sheet-leave-cut.md`. Waiting for his look and "merge live"; then archived.
 **Seen:** an upchit moved later (D999) or deleted (D1022) grows the downchit back over days where leave may since have been
 filed (he was fit then); the Leave War's rules ("sick cuts leave") cut that leave in the same command. The sheet before it
 names only the downchit's new end; the cut is said afterwards, in the passing note beside "Input deleted" / "Moved to …"
@@ -2112,6 +2114,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 | `[SCHED-INPUT-WINDOW-PHONE]` D996, D997 — every pop-up window in the middle of a phone's screen, built 18 Oct 26 on `claude/window-middle-d996` | walked 7/7 and gated (the night of 18 Oct 26); one fresh Opus read of design lesson 6's widening | Astra's read of the change, and the D138 read of D1016–D1018 |
 | The night of 18 Oct 26 — D1008 + D1015, D1000 + D1016, D1013 + D1017, the scheduler's small batch (D1010, D1011, D1012, D710); D999 and the Tracker's D1002–D1007, D1014, D1018 if reached — each on its own branch (the `claude/window-middle-d996` block names them) | one fresh, blind Opus reader of each job's finished code (D790, D903); walked and gated | Astra's, and Sol 6.1's for the two FULL jobs (who may see; the published record) |
 | His three follow-ups of 18 Oct 26 — D1019, D1020, D1022 ([LW-CARD-SHORT-WORDS-700], [DATEBOX-ESC-LISTS], [UPCHIT-DELETE-REGROW]), built on `claude/three-small-jobs-1018` | one fresh, blind Opus reader of the finished code (D790, D903); walked 58/58 and gated (FULL — `raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`) | Astra's, and Sol 6.1's for D1022 (saved data, a published day) |
+| [UPCHIT-SHEET-LEAVE-CUT] (D1023) — the upchit sheet lists each leave and bid a give-back will cut, from the save tried and thrown away, built on `claude/upchit-sheet-leave-cut` | one fresh, blind Opus reader of the finished code (D790, D903 — one finding, fixed red first); walked 28/28 and gated (FULL — `raptor-port/docs/handpass/2026-10-18-upchit-sheet-leave-cut.md`) | Astra's, and Sol 6.1's (saved data, a published day — the thrown-away save) |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.
@@ -2414,23 +2417,3 @@ one (a measured layout — a picture first). **Place:** his look; then close, or
 
 **Delivered D566 combined branch preview,5Oct26:** https://raptor-q27mo3zqg-kai-e2f5.vercel.app (source7f0b78bf; completed VercelSUCCESS/Preview9ZKYvXmsMPbWpc3RkwppHcWKzqqN). All3interface fixes checked/fresh independent R1PASS; owner look/Claude reads/authorized merge remain outstanding. Shipping method/limits in current accepted-batch evidence; no live authority.
 
-### [LW-CARD-SHORT-WORDS-700] From 431 to 700 wide the Leave War grid card's buttons take the phone's short words — RULED D1019 (18 Oct 26); to build — OPEN
-**BUILT 18 Oct 26 on `claude/three-small-jobs-1018`** — the short words up to 700 (`leavewar/ui/chrome.css`); its check `raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`. Leaves for the archive once live.
-**What:** the grid card's "Reorder" and "OIL" buttons read "⇅" and "OIL" (the phone's short-words rule) up to 700 wide, so
-"−" and "+" stay on the first line; the grid's columns unchanged. Picture: `raptor-port/docs/img/handpass/2026-10-18-lw-top-700/6-440-proposed-short-words.png`
-(at 440: 22 rows of names, 5 more than before the night). **Where:** the card's rules in `raptor-port/src/leavewar/ui/chrome.css`
-kept at 430 (the night's job 3) move to 700 for the buttons only. **Place:** one small job with [DATEBOX-ESC-LISTS] and
-[UPCHIT-DELETE-REGROW], once pull request 534 is live. Check: WALK (layout at many widths).
-
-### [DATEBOX-ESC-LISTS] The calendar floating over a date box: Escape shuts its month and year list first — RULED D1020 (18 Oct 26); to build — OPEN
-**BUILT 18 Oct 26 on `claude/three-small-jobs-1018`** — Escape over a date box shuts the lists first (`ui/DateBox.tsx`), its test changed with it; the check `raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`. Leaves for the archive once live.
-**What:** as the calendars inside a form now do (D1012, built the night of 18 Oct 26): with the month or year list open,
-Escape closes only the list; a second Escape closes the calendar. The test that pins today's behaviour
-(`raptor-port/src/ui/datebox.test.tsx`) changes with it. **Place:** with [LW-CARD-SHORT-WORDS-700]. Check: LOOK plus its tests.
-
-### [UPCHIT-DELETE-REGROW] A deleted upchit gives the downchit it cut its days back — RULED D1022 (18 Oct 26); to build — OPEN
-**BUILT 18 Oct 26 on `claude/three-small-jobs-1018`** — `engine/medical.ts upchitDeletePlan` (one give-back body with D999), written in `removeInput`'s command; the window's Delete and the opened day's Delete key ask on the upchit sheet first; the check `raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`. Leaves for the archive once live.
-**What:** as a moved one does (D999, built the night of 18 Oct 26): the downchit grows back to the end it had before the
-cut, never past it and never into another medical of his in the gap; the save sheet says so first. Builds on the kept
-first end (`firstEnd`) and the give-back plan in `raptor-port/src/engine/medical.ts`. **Place:** with
-[LW-CARD-SHORT-WORDS-700]. Check: FULL (saved data); a fresh blind Opus read.

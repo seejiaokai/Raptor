@@ -17,16 +17,22 @@
    AND BEFORE AN UPCHIT IS DELETED (owner D1022, 18 Oct 26 — "the save sheet says so before anything changes"), where the
    delete gives a downchit its days back (`deleting`): the same sheet says what the delete will give back
    (engine/medical.ts upchitDeletePlan — the body the delete runs), with no fit line and nothing to choose, and its button
-   deletes. A delete that gives nothing back asks nothing (D792). */
+   deletes. A delete that gives nothing back asks nothing (D792).
+
+   AND WHAT THE DAYS GIVEN BACK WILL CUT (owner D1023, 18 Oct 26 — "Ok as recommended"): each leave and each bid of his
+   the Leave War's rules will cut there, one line each under the give-back, in the Leave War's own words (`cuts` — the
+   caller's save tried and thrown away, ui/inputedit.tsx giveBackCuts). Nothing about the cut itself changes. */
 import { useEffect, useState, useRef } from 'react'
 import { ordLabel } from '../engine/medical'
 import { clickedSurround } from './outside'
 import { useSheetFocus } from './sheetfocus'
 
-export function UpchitConfirm({ who, dateLabel, effects, onSave, onCancel, deleting }: {
+export function UpchitConfirm({ who, dateLabel, effects, cuts = [], onSave, onCancel, deleting }: {
   who: string
   dateLabel: string
   effects: { plan: any[]; leftovers: any[] }
+  /** each leave and bid the days given back will cut, in the Leave War's words (D1023) */
+  cuts?: string[]
   onSave: (removals: any[]) => void
   onCancel: () => void
   /** the question before the upchit is DELETED (D1022), not saved */
@@ -63,6 +69,7 @@ export function UpchitConfirm({ who, dateLabel, effects, onSave, onCancel, delet
                 /* D999: the days a later upchit gives back, said before anything changes */
                 ? <>{p.row.type} {span(p.row)} → now ends <b>{ordLabel(p.newEndOrd, p.row.yr)}</b>, its days given back</>
                 : <>{p.row.type} {span(p.row)} → <b>removed</b> — it would only cover fit days</>}</li>))}
+              {cuts.map((c, i) => <li key={'cut' + i} className="upconf-cut" data-testid={`upconf-cut-${i}`}>{c}</li>)}
             </ul>
             : <div className="upconf-none">Close the pending medical-down period — no current entry needs shortening.</div>}
           {!deleting && <div className="upconf-fit">Fit for full duty from {dateLabel}.</div>}
