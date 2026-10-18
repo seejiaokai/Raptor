@@ -54,6 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1026 | 19 Oct 26 | Each formation gets its own rally time in a box of its own: a flying row's second time column is headed R / B, the rally above the brief, and the third TO / LD, the take-off above the landing, on the week and Edit Schedule; the typed lines above the wave are for the in-time only, their button "+ In-time"; a mock-up comes before the build. |
 | D1021 | 18 Oct 26 | When tomorrow's crew-rest warning is focused, the day before keeps the dashed "same man, other day" mark over its dotted ring, as built; nothing changes. |
 | D1020 | 18 Oct 26 | The calendar that floats over a date box behaves as the calendars inside a form do (D1012): Escape with its month or year list open closes only that list; a second Escape closes the calendar. |
 | D1017 | 18 Oct 26 | Every copy of a man's puck on a day — the Ground and Personal Inputs rows, the SANS card, the Unavailable row and the crew list — wears his seat's crew-rest ring and chip; a puck lit by an open issues list keeps its dotted or dashed ring, standing out because the rest dims, as today. |
@@ -193,7 +194,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 | D514 | 3 Oct 26 | DS for another formation means our flight is red air for them. DS wording may also name another formation supporting us, so a DS mention in remarks alone does not settle our blue/red category. |
 | D513 | 3 Oct 26 | Insights initially shows the first twelve flying people, with a show all option for the rest. |
 | D512 | 3 Oct 26 | When tracking is on and all a person's sortie roles are resolved, split their weekly bar into blue/red; mixed shows both. DS/red/red air are red; other missions are blue except D518's conditional answer. Any unanswered role keeps their ordinary total bar (D523). — changed by D523, D521, D518 |
-| D511 | 3 Oct 26 | The words the "+ In-time / Rally" button fills in are a free-text setting in Logic, beside its time (D510); the default stays "in time + WX/NOTAMS". |
+| D511 | 3 Oct 26 | The words the "+ In-time / Rally" button fills in are a free-text setting in Logic, beside its time (D510); the default stays "in time + WX/NOTAMS". — changed by D1026 |
 | D510 | 3 Oct 26 | The "+ In-time / Rally" button fills in a time set in Logic: the wave's earliest take-off less the "Nominal report before T/O" setting — 3 hours by default; on a wave that already has a line it copies that line's clock (D600). — changed by D600 |
 | D509 | 3 Oct 26 | No timing-order problem blocks publishing: an in-time, rally or brief out of order shows as a red warning in the warning list and is explained while editing, and the day can still be published — like every other warning. A blank brief is checked as the suggested brief, and the message says "suggested brief". |
 | D507 | 2 Oct 26 | Rally and flight brief may have the same time. Do not require a new gap between them; keep existing brief-before-take-off and exception checks. |
@@ -203,9 +204,9 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 | D503 | 2 Oct 26 | Assume a reporting clock later than its applicable take-off clock is on the immediately preceding day, never more than one day back. Omit the routine reporting/day interpretation line and change day control. |
 | D502 | 2 Oct 26 | Explain an incorrect timing pair during draft editing. Keep the draft editable and saveable; block publication until the timing conflict is corrected. — changed by D509 |
 | D501 | 2 Oct 26 | Use one operative reporting clock per in-time / rally line, with activity wording and remarks. Preserve the existing recognised free-text format and formation callsigns. |
-| D500 | 2 Oct 26 | Preserve existing formation callsign recognition in the in-time / rally design: a named formation gets that line; without a formation name, the line supplies the wave-wide time. Keep the existing free-text format. |
+| D500 | 2 Oct 26 | Preserve existing formation callsign recognition in the in-time / rally design: a named formation gets that line; without a formation name, the line supplies the wave-wide time. Keep the existing free-text format for the typed lines, now for the in-time only; a formation's rally is its own box (D1026). — changed by D1026 |
 | D498 | 2 Oct 26 | Assess the simpler in-time / rally box: the earliest applicable entered time is the flying wave report start; a person's earlier qualifying event may start their day sooner. — changed by D591, D502, D501 |
-| D497 | 2 Oct 26 | Design rally time with three options: rally only, in-time with rally immediately after, or separate in-time and rally. The order is in-time, rally, brief, take-off, landing. Rally is the report start when in-time is absent. — changed by D502 |
+| D497 | 2 Oct 26 | Design rally time with three options: rally only, in-time with rally immediately after, or separate in-time and rally. The order is in-time, rally, brief, take-off, landing. Rally is the report start when in-time is absent. — changed by D1026, D502 |
 | D488 | 2 Oct 26 | The "Discard marks" button is removed from the amendments box: a day not yet published keeps its change marks until it is published, which clears them as now. |
 | D482 | 1 Oct 26 | A rule changed on the Logic page moves Insights' work hours at once, published days included — as built; it does not wait for an amendment. |
 | D481 | 1 Oct 26 | The Scheduler Board gets a way to open Insights. |

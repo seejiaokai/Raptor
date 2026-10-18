@@ -86,6 +86,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [EDIT-BUTTON-AFTER-CHANGE] — straight after a changed text box, the first press of a button on the week or the board ("+ In-time / Rally", "+ Line") does nothing.
 - [TAB-LAST-BOX-TEST-GAPS] — tests only: three gaps in the test of Tab in a day's last box.
 - [CRP-FLAG] — live warnings on the published schedule: two parts are live; the rest of its plan is checked against the code first.
+- [RALLY-PER-FORMATION] — a rally box for each formation, R above B and TO above LD; the button becomes "+ In-time" (D1026) — a mock-up and his questions first.
 - [INTIME-LINES-DRAG] — drag a wave's In-time / Rally lines into order on the Scheduler Board, Auto sort too (ruled, D593; not built).
 - [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
 - [PLAN-BANNER-DOOR] — the preview banner's "Switch to this plan" has no route a person can reach — retire it or give it one: his question.
@@ -1823,6 +1824,17 @@ six-dot grip is the app's own (the agent's call).
 **Tier (the agent's reading):** WALK at least — a new gesture on a shared drawer; FULL if the reorder is recorded on a published day.
 **Place (the agent's proposal, his to set):** one batch with `[OIL-WORK-START]` — both are about the In-time / Rally lines — on its own
 branch after the Codex stack goes live, with one check for the two (D485).
+
+### [RALLY-PER-FORMATION] A rally box for each formation: R above B, TO above LD; the button becomes "+ In-time" (D1026, 19 Oct 26)
+**His ruling (D1026):** most squadrons give each formation its own rally time; on the week and on Edit Schedule a flying row's second
+time column is headed R / B (the rally above the brief) and the third TO / LD (the take-off above the landing); the typed lines above
+the wave are for the in-time only, their button "+ In-time" — no rally. Full row: `.claude/decisions-full/scheduler.md` D1026; the
+design note `raptor-port/docs/superpowers/specs/2026-10-02-rally-time-design.md`.
+**Today:** a rally is only a typed line above the wave ("19:00H: NIGHT WAVE VL RALLY …"), read for its callsign and clock.
+**First:** a mock-up on the real app at phone and desktop width, and his questions (in the ruling's full row), each with a recommendation.
+**Tier (the agent's reading):** FULL — OIL counts from the earliest in-time or rally (D591), and a published day's record changes.
+**Place (his "Finish this first", D1026):** its own job, after the D994 Schedule and amendments batch's check is finished; it
+touches the same In-time / Rally lines as [INTIME-LINES-DRAG], built in that batch.
 
 ### [INP-OIL-CHIP-PHONE] On a phone the green OIL chip is painted over a request card's date and time (found 5 Oct 26, the Codex stack check)
 Inputs page at phone width (390): the card of a request that carries an OIL answer (walked: Torch, Training, 18 Jul 11:00–12:00) draws its
