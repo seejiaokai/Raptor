@@ -41,201 +41,199 @@ item).
 **Models:** Opus 5.5 plans and builds; Fable 5.1 and Astra review — never the model that wrote the thing (D67,
 `.claude/rules/decisions/how-we-work.md`). *(The 7 Sep "Opus 4.8, default" line that stood here is archived.)*
 
-## Priority — live items only (rewritten 24 Sep 26)
+## Priority — open items only, by area (rewritten 18 Oct 26, D1024)
 
-**Where this order comes from:** his own orders, each cited; where he has set none, the item's own "Place" line —
-said as such, never dressed up as his. One line per item, in plain words; the detail is the item below. The old
-list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
-whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
+**How to read it:** one line an open item, grouped by area, the detail in the item below. In each area the small fixes
+the agent can do with no answer from him come first; then what waits on him, or on an event. Finished work leaves for
+`OUTSTANDING-ARCHIVE.md` by script, and how a job went live stays in git and its evidence sheet — never here (D1024).
+Every item was checked against git and the code on 18 Oct 26. **Re-order this list whenever an item changes**
+(§Maintaining).
+*(The list as it stood from 24 Sep to 18 Oct 26 is in OUTSTANDING-ARCHIVE.md, moved whole on 18 Oct 26.)*
 
-**RULED 18 Oct 26 — [UPCHIT-SHEET-LEAVE-CUT] (D1023):** the upchit sheet will also list each leave and bid a give-back cuts, before anything changes — BUILT the same day on `claude/upchit-sheet-leave-cut`, waiting for his look and "merge live".
+**His order, as it stands:**
+- **Now (D994, 18 Oct 26):** the small fixes that need no answer or look from him, batched by area with one check each.
+  The scheduling pages on a phone are done (pull request 533); the next area is next. The questions the backlog keeps
+  for him wait until he says so.
+- **Then (D495):** caps and ops limits ([CAPS-OPS-LIMITS]), then one whole-app check. The Tracker's progress graph waits
+  for his word (D774).
+- **At the end (D473):** the database step — the "Database step" group below.
+- **When ChatGPT is back (not before 1 Nov 26 — D761):** the reads owed in [NO-ASTRA-LIST].
+- **Before any collaborator is added:** the checks runner comes off this repo ([REPO-PRIVATE]).
 
-**FILED 18 Oct 26 — [GATELOCK-STALE-PORT]:** the full check set run through the PC lock tested ANOTHER chat's old build, because a preview left running on 4173 was reused — a guard so the lock's run picks a free port by itself. Tooling, low risk, its own small job.
+**Schedule and amendments**
+- [SECDEFAULT-OFFER-BEHIND-BOARD] — the "Set as default order?" offer after a section drag is drawn behind the board.
+- [BLOCK-NO-HISTORY-LINE] — placing a duty block from + Block, or removing a medical document, writes no history line.
+- [BUBBLE-SMALL-SEEN] — the message bubble covers the section-order offer and the changes window; an empty gold pill.
+- [AMEND-SMALL-SEEN] — three small finds of the amendment re-test left: a jump on the Leave War phone's figures sheet, a weekend LL's "−1" ask, a phone drag-off that says nothing.
+- [ARROW-GUTTER-STRIP] — two small week edges left: a window resize does not re-land the week; "day a–b of 7" counts a barely seen day.
+- [SC-B-CHANGE-SAYS-BRIEF] — the changes window calls an SC shift's in-time "brief".
+- [SC-INTIME-REST-WORDS] — the crew-rest sentence calls an SC line's typed in-time its "start".
+- [SC-BLANK-SHIFT-QUAL] — an SC line whose shift times were cleared prints a broken time in its warning and asks for night currency.
+- [SC-SPARE-RING-BORROWS] — one man in an SC line's MAIN and SPARE seats: the spare puck wears the main seat's leave ring.
+- [BLANK-LINE-SANS-WORDS] — on a line with no times a SANS man's offer still reads as a clash; no callsign leaves holes in sentences.
+- [BLANK-STANDBY-STRIKE] — the crew list strikes a man on local leave for a standby seat whose shift times are blank.
+- [BLANK-SEAT-ACTIVITY-HINT] — the crew list says nothing before a man on a whole-day course is put on a seat with no times.
+- [TRACE-FOCUS-STAYS] — after a "Breaks <next day>" line is tapped and the list closed, the crew stays lit and the page dimmed.
+- [OIL-NOTIFY-SEEN] — four small things left: an Undo note's words after a swap, a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a sideways phone's drag.
+- [OFT-ADD-TWICE-SILENT] — a second "+" on an OFT row for a man already on it is refused with no message.
+- [ONE-ROW-DRAG-FLASH] — after a shared input's row is dragged by its grip, the landing flash is on the wrong row.
+- [DISCARD-FILING-NOOP] — "Discard 1 edit & load" for an input filed after the day went out promises a discard and changes nothing.
+- [LOOK-PENDING-COUNT] — the 👁 look at the Original shows "1 pending" where the working copy shows "2 pending" (reproduce first).
+- [PEND-INTIME-WORDS] — "To go out" words an edited reporting line as the same text before and after.
+- [BOARD-INTIME-JUMP] — on the Scheduler Board a reporting-line change in the changes window cannot be tapped.
+- [EDIT-SECOND-CLICK] — after a changed text box on Edit Schedule, the first click into another box does not take the caret.
+- [TAB-LAST-BOX-TEST-GAPS] — tests only: three gaps in the test of Tab in a day's last box.
+- [CRP-FLAG] — live warnings on the published schedule: two parts are live; the rest of its plan is checked against the code first.
+- [INTIME-LINES-DRAG] — drag a wave's In-time / Rally lines into order on the Scheduler Board, Auto sort too (ruled, D593; not built).
+- [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
+- [PLAN-BANNER-DOOR] — the preview banner's "Switch to this plan" has no route a person can reach — retire it or give it one: his question.
+- [PDF-PRINT-TWICE] — "Export as PDF" may print twice, first on a blank page — to confirm in real Chrome and on his iPhone.
+- [FLAG-EXPORT] — the PDF prints the published version but still the whole week, not the day — sample PDFs for his look.
+- [ROW-NO-TIME-MARK] — a "?" on a row with no timing or no end time (D361) — scoped with him first.
+- [KBD-PUCK] — a puck cannot be picked up, put down, swapped or taken off by keyboard — a job of its own, his questions first.
+- [REST-FIRST-CREW-HINT] — an empty formation gives no crew-rest hint for its first man — with caps and ops limits.
+- [EOD] — End-of-Day "record actuals": designed on paper, nothing built — his word.
 
-**FILED 18 Oct 26 — his answers after the night (D1019, D1020, D1022):** [LW-CARD-SHORT-WORDS-700] (the Leave War card's short button words up to 700), [DATEBOX-ESC-LISTS] (Escape shuts the floating calendar's lists first), [UPCHIT-DELETE-REGROW] (a deleted upchit gives the downchit its days back) — one small job together, once pull request 534 is live; D1021 keeps the dashed mark as built.
+**Inputs and calendars**
+- [TILL-NEXT-YEAR] — an input of another year prints "till <date>" without its year.
+- [OIL-ASK-HEAD-SEVERAL] — at two older doors the OIL question for an input of several people is headed with one man.
+- [CAL-UNDO-OTHERS] — Undo after another person's change does not say who, and a holiday on another date blocks it (reproduce first).
+- [TITLE-CHECK-SEEN] — three older small finds left: one line a man in "To go out", a re-accepted request read as a words change, a long OIL Earn name cut on a phone.
+- [ALLAVAIL-CHECK-SEEN] — the ALL AVAIL / Event check's older small finds, none fixed.
+- [CAL-CHECK-SEEN] — the calendar job's small finds still open: a phone on its side, two gesture finds, the windows' five, each man's LATE tag on a shared card.
+- [INP-TILL-STALE] — a "till" date left in remarks: tested on 5 Oct 26 and not reproduced; Claude's look at that, then close.
+- [INPUTS-LIVE-LEFT] — what the Inputs pages' work left: readings he has not answered, his iPhone looks, three unconfirmed observations.
+- [SANS-PREVIOUS-REPORT-OFFER] — a previous evening's availability is not combined with the day's — his rule first; with caps and ops limits.
 
-**FILED 18 Oct 26 — [TRK-PINCH-OLD-EDGES]:** two older edges of the Tracker chart's pinch, met by [TRK-CHART-FPS]'s reads — low, with the next Tracker batch.
+**OIL**
+- [LW-OIL-DATECHIP-HIDDEN] — the OIL tracker's correction date calendar opens hidden behind the rows above.
+- [OIL-ZERO-SPAN-SORTIE] — a line whose take-off equals its landing, with the debrief at zero, earns nothing, yet the day's note says it earns.
+- [UNPUB-WARN-AL-RESTORES] — the Unpublish warning says the day's OIL goes, when withdrawing an amendment puts the earlier version's OIL back.
+- [OIL-EARN-DAY-SWITCH-WORDS] — OIL Earn's "Nothing today earns" button reads like a status — new words are his, with a picture.
+- [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 
-**FILED 18 Oct 26 — [TRK-FLEX-SETTING], [TRK-LEGEND]:** his directions (D1006, D1007) — the flex editable with a switch that turns it off everywhere; a legend for the Tracker — one Tracker job with the down days (D1002–D1005). **FILED 18 Oct 26 — [TRK-DOWN-DAYS-AUTO]:** his direction (D1002) — the Tracker's down days worked out from the Inputs, ATT B included, a tap shows each input; the Upchit Date box goes — not designed, his questions first. **FILED 18 Oct 26 — [LW-SORT-BY-FLIGHT]:** his intent, an option to sort the Leave War by flight (D1001) — not designed; his to raise. **His answers of 18 Oct 26 to the backlog's questions:** D998 (1 parked), D999 (4), D1000 (11), D1001 (7) — the rest in `raptor-port/docs/superpowers/briefs/2026-10-18-sixteen-questions.md`.
+**Leave War**
+- [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
+- [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK], then [LW-WEEKDAY-WORK], then the database.
+- [LW-LOCKMARK] — the war still locks a day with an old marker; per-record checks replace it.
+- [LW-OFFER-ONLY-TAKEABLE] — two war sheets offer a choice the war then refuses — with [LW-LOCKMARK].
+- [LW-SEL-HALF-LABELS] — the drag-selection sheet shows half-day leave as "FCL*" where the one-day sheet shows "<FCL".
+- [LW-SETTINGS-SMALL] — two small ⚙ Settings edges: Reset order judges the whole roster; an armed "Really reset?" survives a page switch.
+- [LW-DOZE-GUARDS] — a check: do the war's measuring guards run while its page is asleep?
+- [LW-MONTH-MEMO-UNPINNED] — one cell changed redraws every month of every row, and no test pins the month's redraw guard.
+- [LW-ROWS-STALE-NOTES] — notes and comments still name the old grid file for code that moved (documents only).
+- [LW-PHONE-AWAY-ROW-MISSING] — on a phone a man archived and restored with a later post-in has no row (reproduce first).
+- [PO-MOVE-DATE-DELETE-ASK] — does moving the date of a posting whose outcome is Delete delete him without its second ask? (test first).
+- [LW-FROZEN-BAR-GAP] — for one frame no dates header shows while the page scrolls — shown to him first.
+- [LW-WINDOWS-NONBLOCKING] — the war's other windows still block the grid behind them — which stay up is his choice.
+- [LW-WEEKDAY-WORK] — the war cannot see ordinary weekday work — talk to him before building any of it.
+- [LW-COMMIT-MANNING] — duty and commitments lowering the war's manning: parked "for now" (D998), his to raise.
+- [LEAVE-YEAR] — yearly leave balances and carry-over — undecided ("we will do this next time").
+- [LW-SORT-BY-FLIGHT] — sort the war by flight — his idea, not designed (D1001).
 
-**LIVE 18 Oct 26 (pull request 533, his "merge live") — D994's first batch, the scheduling pages on a phone:** *(D996 follows — the Inputs page's input window, and perhaps every short phone window, in the middle; his scope answer first, `HANDOFF.md`.)* [SCHED-INPUT-WINDOW-PHONE] (the schedule's own input window as tall as it needs, in the middle of a phone's screen — his D995; a finger on it never scrolls the page behind; the Inputs list no longer widens a phone on its side) and [OIL-NOTIFY-SEEN] (5) (the crew drawer put away after an Unavailable hand-over); [PHONE-WIDE-BOARD-BLANK] closed — fixed and live since 6 Oct 26, confirmed on today's build. Its check: `raptor-port/docs/handpass/2026-10-18-sched-phone.md` (WALK). **Next in D994's order:** the next area's small fixes.
+**Tracker**
+- [TRK-PINCH-OLD-EDGES] — two older edges of the chart's pinch: a throw in Edit chart layout, a stale zoom label.
+- [TRK-REFUSALS-UNTESTED] — tests only: several of the chart editor's refusals have no test.
+- *(The Tracker's database-step items are in that group below.)*
 
-**LIVE 18 Oct 26 (pull request 532, his "merge live") — [TRK-CHART-FPS] (D992) with D993:** the Tracker's chart and Info half scrolled by the phone itself, the pinch as a picture; Quals' pinned header row moved by the browser; archived with [TRK-SCROLL-GLIDE]. **NEXT, his word (D994):** the small fixes that need no answer from him, by area, the scheduling pages on a phone first; his questions wait until he says so (`HANDOFF.md` §Next).
+**People, accounts and Quals**
+- [QUALS-PINNED-COLS-REFLOW] — Quals' pinned header row can sit a few pixels off its column after a column changes width.
+- [MEMBER-EDITPAGE-CHECK] — a check: a member sent to Edit Schedule by the developer bridge sees live-looking Amendments buttons.
+- [GUEST-SAVE-WARNING] — a check: does anything a guest does get saved through the app's saver? If not, close it with the reason.
+- [UNDO-POSTING-RECORD] — Undo for adding, archiving and restoring a person and for postings (D350) — his word.
+- [RECALL] — bringing an archived man back fresh into Quals — a future feature, his word.
 
-**NEXT (his question, 17 Oct 26) — [CONTEXT-START-SIZE]:** why a new chat starts 30–40% full, whether it grows, and options to cut it — MEASURED and put to him 17 Oct 26; his "As recommended" (D969–D971): A, B, C, G done; the capitals sweep (D972) and the push-and-lock guard (D976) done 17 Oct 26 on `claude/sharp-goldberg-6d0656` — LIVE 17 Oct 26 (pull request 525); D, the scheduler split, not done (D976).
+**Insights and Logic**
+- [LOGIC-REDRAW-DROPS-TYPING] — the Logic page redraws just after it opens and can drop a value being typed.
+- [STACK-LEFTOVERS] — four small loose ends from the Codex stack, Insights' among them — with the next change to Insights.
 
-**CLOSED 17 Oct 26 — [MED-NEWYEAR]:** not a fault of the app — a medical input filed across New Year through the window saves its end with its year and shows on the Medical tab; the item rested on a row planted without its year (D56). Pinned by a browser test; archived.
+**Look, words and the phone (the whole app)**
+- [FLOATWIN-TWO-LINE-BAR] — the two movable windows open over the bottom of a two-line top bar.
+- [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
+- [BATCH-14OCT-LEFTOVERS] — small faults left by the three builds: a raw id in a clash note, notes a screen reader is not told, stale comments, a test on the real clock.
+- [WINDOWS-KEEP-KEYS] — the larger windows let Tab walk into the page behind them.
+- [OG-TAG-OVER-COUNT] — the "OG" tag sits over the top edge of an ALL AVAIL count.
+- [INP-OIL-CHIP-PHONE] — the green OIL chip once covered a request card's date on a phone; the card has been rebuilt since — look, then close or fix.
+- [SHELL-SIDEWAYS-BAR] — the top bar takes 149 of 390 px on a sideways phone — his look.
+- [VH-SHEETS-IPHONE] — some phone pop-ups may be cut off by the browser's own bars — only after his iPhone look.
+- [COUNT-CHIP-PHONE-TAP] — a finger tap on an ALL AVAIL count: fixed in the test browser; his iPhone look owed.
+- [WEEK-ADD-TAP-PHONE] — on a phone, "+ add" on the week arms nothing when the row already holds someone — left out of the phone batch, his choice.
+- [APP-FONTS-NOT-LOADED] — the app names fonts it never loads, so each device draws its own — his call.
+- [ONE-RULE-SMALL-WORDS] — ten small sentences and marks that read oddly — for the words pass; two wordings his.
+- [UI-SLEEK-PASS] — the sleeker interface (D765): the first word rounds are live; the rest page by page, on his word.
+- [PERF-RESIDUALS] — measured speed wins held back; two change wording or feel — his call.
+- [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
-**LIVE (merged before 18 Oct 26 — the branch `claude/tracker-feature-batch-6ea3a7` is in `main`) — the Tracker batch's [TRK-FILE-TRANSFER-SPLIT] (D493, D775):** the import's store-free steps beside the file format — its item leaves for the archive at the next documents pass (its homes checked first). Round 1 of the batch's questions answered and built (D980–D984, pull request 530); left of the batch: [TRK-IMPORT-REFUSAL-WORDS] (his to word), [TRK-PINCH-ASK] (his look — his "Yes this feels good" of 18 Oct 26 on the new pinch may close it, to put to him), [TRK-PINCH-OLD-EDGES].
+**Checks and tooling**
+- [GATELOCK-STALE-PORT] — the lock's full run can test another chat's old build when a preview is left running — it picks a free port itself.
+- [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
+- [LW-WINDOW-PRUNE-FLAKE-2] — the Leave War month-window browser test fails about half the full runs — wait on the grid, not a fixed time.
+- [LW-SCRUBBER-FLAKY] — a Leave War browser test times out on a busy PC — a fixed wait to replace.
+- [LW-HARNESS-VIEWER-PIN] — in the Leave War browser tests a role switch quietly undoes the pinned viewer.
+- [SAVE-NOTE-TEST-GAPS] — two soft spots in the failed-save warning's browser test.
+- [DOCSIZE-MERGE-CEILING] — the document check wrongly flags a merge of `main` that carried a size-marker move.
+- [RULINGS-LF-PIN] — pin the rulings folders to LF line endings — with the next change that runs the full checks.
+- [DEPLOY-DOCS] — the deploy workflow's header still describes the old Pages site.
+- [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check; a few comments to look at.
+- [SHELL-SCRIPT-GUARD] — a guard that refuses a script typed into the command line — his go given (D811).
+- [MERGE-ONCE-RECORDS] — finished jobs merged as one pull request, and record files that merge without clashing (D822).
+- [MAIN-CHECKOUT-STALE] — step 2 left: a guide line to bring the main folder level after a merge that touches settings, hooks or skills.
+- [REPO-TIDY] — clear the old worktrees (47 today) after safety checks; moving the walk pictures out is his call.
+- [COMPACT-WHEN-MOD] — two of the compaction set-up's four checks still unseen — they need a chat that reaches 80%.
+- [OVERNIGHT-RETRY-TRIAL] — the next /overnight night tries the keep-retrying setting (D885).
+- [PROMPT-AUDIT] — he runs the guide check in a terminal and brings its list back (D886).
+- [CI-FAIL-PICTURES] — GitHub's browser-test jobs keep no pictures of a failure — his call.
+- [CHECK-TOOLS-HARDEN] — small hardening of the checking tools — his word.
+- [WALK-COST] — make a walk cost fewer tokens — a proposal; his word starts it.
+- [CODE-TIDY-AUDIT] — tests that no longer apply and the skipped browser tests — his to confirm; two leftovers for the database step.
+- [RULING-HOME-HOOK] — only if a chat is seen acting on a ruling's short line alone.
+- [REPO-PRIVATE] — the sharing half: adding developers is his call; the checks runner comes off first.
+- [NO-ASTRA-LIST] — the jobs that went ahead without a ChatGPT reader — put to him when it is back (D761).
+- [OPUS-SECOND-READ-GUIDE] — whether the second, blind Opus read still earns its place once Astra and Sol read again.
 
-**LIVE 17 Oct 26 (pull request 528) — [OIL-CONFIRM-DAYGRID] (D923):** the OIL question's "Only some days…" is the app's one calendar; FULL-checked; his look answered and "merge live" given (D978) — pull request 528; the item leaves for the archive at the next documents pass (the archive is over its size marker). Found on the way: [CAL-ESC-LISTS] — Escape with a calendar's month list open closes the whole form; his to place.
+**Documents and guides**
+- [PRIORITY-LIST-REWRITE] — this list's rewrite (18 Oct 26) — closed once one fresh reader has checked it against the old list.
+- [RULINGS-SPENT-PASS] — the Tracker rulings file is over its size marker — its spent rulings archived after a fresh reader's check.
+- [DOC-POINTERS-CODE] — code comments point at documents moved in the spring clean — with the next code change.
+- [WORD-LIST] — the app's word list was drafted, never checked or filed — checked, then read before his approval.
+- [SKILL-FUSION] — the planning guide's harder questioning and three proposals — each read before his approval.
+- [CAL-JOB-LEFT] — the calendar job's leftovers: a stale line in the Codex guide, owed reads, looks never recorded.
+- [IT-GUIDE-DATEBOX-SCRIPT] — the IT guide's picture script still types into date boxes that are buttons now — at its next re-shoot.
+- [ITFLOW-OIL-RESHOOT] — re-shoot the IT flow guide's Leave War and OIL pictures — on his word (D403).
+- [IMPECCABLE-UPDATE] — the design skill to v4.1.3 (D625): the calendar job it waited for is live; its reads and his word next.
+- [START-CONTEXT-AUDIT] — the guard that stops a new chat's load growing back is not built; two of his own settings.
+- [CONTEXT-START-SIZE] — left: the short skill-notes guide (F) and his own connectors setting (E).
+- [SKILL-FUSION-WRITING] — the writing guide applied to how the agent writes to him (D835) — drafted, read, put to him.
+- [GUIDE-MAP-ROWS] — the project guide's map has long rows that could move to its full text — his question.
+- [EVIDENCE-RECORD-SIZE] — the big machine-written records and pictures: kept or moved — his call.
+- [USER-GUIDE] — a guide for users and admins — wanted, not started, not urgent.
 
-**DONE 17 Oct 26 on `claude/small-fixes-1017` — his "U can do the small things quick here first":** [PUSH-GUARD-LEFTOVERS] (the guard reads variables, xargs, PowerShell's quotes; two fresh reads) and [INPUTS-LIST-NEXT-YEAR] (the Inputs list reads each input in its own year); both archived. Found on the way: [TILL-NEXT-YEAR] — small, with the next Inputs batch.
+**Database step — at the end (D473)**
+- [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
+- [DB-READINESS] — group A is live; group B and the lock's screens come after the app is connected.
+- [DB-SYNC-MODEL] — the sharing and day-lock design is done; five of its screen questions and the build wait.
+- [IT-QUESTIONS] — the IT side's written answers (licences, plug-ins, retention, the first admin).
+- [RESTRICTED-ENV-WORKFLOW] — a stand-in database and the working steps for the restricted environment.
+- [ARCH-STACK] — the root-cause stack's steps 5 and 6: the record storage door, then the old machinery retired.
+- [AMEND] — the amendment core's three missing parts, the saved content frozen with a publish among them.
+- [GLOBAL-UNDO] — six small multi-user leftovers of the one undo.
+- [UNDO-PUBLISH-ERASES-ISSUANCE] — an Undo of a publish deletes the issued version's row; it should withdraw it.
+- [ELOG-LINE-AFTER-COMMAND] — a few history lines are saved as their own group, after their action.
+- [NOTICE-RETENTION] — how long the bell's notices are kept, with the change history's rule.
+- [SHARED-OPENS-DEMO-WEEK] — a shared store opens on the demo's week, not this week (before the first real deployment).
+- [SETTINGS-LIST-ROWS] — a setting holding a list is one row, so two admins at once, the later wins — only if it bites.
+- [ACCOUNTS-SEED-FIRST-WRITE] — on a fresh demo browser one tab's first account change can undo another's (demo only).
+- [TRK-DISK] — the Tracker can delete an original before its copy is safely saved.
+- [TRK-IMPORT-ONE-GROUP] — a Tracker Import is saved as many groups, not one (D983).
+- [TRK-FIRST-ORDER-PLACE] — a stale tab can undo the first save of the chart order (D983).
+- [TRK-ASYNC-STALE] — once storage is slow, a Tracker job re-checks its person and target after every wait.
 
-**LIVE 15 Oct 26 (pull requests 517 and 518, his "merge live"; their items are in `OUTSTANDING-ARCHIVE.md`):** a new input opens on OL, the title's pencil, When and Remarks above the calendar (D917, D919, D920); the Tracker's ⇅ Reorder rows drag by finger and by mouse, one look (D922, D924). **Next, ruled the same night (D926–D928):** the Medical tab and Quals' one row, then the Logic page as drawn — `claude/one-row-guide-medical`; then [OIL-CONFIRM-DAYGRID] (D923), its own job.
-
-**LIVE 16 Oct 26 (pull request 519, his "merge live"; their items are in `OUTSTANDING-ARCHIVE.md`):** the Medical tab's one row (D927), the Logic page rewritten (D928–D933, D936), Quals' one row and its paragraph deleted (D935), "Save" on a phone and Quals opening at its top (D937); a Tracker test pinned against midnight. Its owed reads are in [NO-ASTRA-LIST].
-
-*(Done — LIVE 16 Oct 26, above.)* **His answers of 15 Oct 26 ("All as recommended" — D911, D912), two small jobs after the calendar job, each its own:** [GUIDE-ONE-ROW] — the design guide's rule that a page's own buttons share its one row of controls: drafted, read by one fresh reader, put to him (D911). [MEDICAL-ONE-ROW] — the Medical tab's heading goes and its date button joins a row under the tabs at 36, drawn for him first (D912).
-
-**His find, 10 Oct 26 (on his iPhone) — LIVE the same day (pull request #489; the item is in `OUTSTANDING-ARCHIVE.md`):** in the changes window, a tap on a change whose seat is empty now lands on its row (`[HIST-JUMP-EMPTY-SEAT]`). Still open — small older finds met on the way, his to place: [HIST-JUMP-SEEN].
-
-**MERGED on his "merge live" of 11 Oct 26 (pull request #490; its four items — `[GROUP-INPUT-ONE-ROW]`, `[REQ-ROW-OWN-BOXES]`, `[REQ-ROW-SELF-CLASH]`, `[CAL-TOGO-ONE-ITEM]` — are in `OUTSTANDING-ARCHIVE.md`):** the schedule's one row for a shared input (D661, D662, D734–D749; the rules: `raptor-port/docs/engine-rules.md` "On a shared input's row the pucks are the input's people", "A shared input is counted once"; `raptor-port/docs/ui-contracts.md` §A shared input is ONE row on the schedule), and with it his find of the wrong ring colours (D751). Its check: `raptor-port/docs/handpass/2026-10-11-group-input-one-row.md`. Found while planning, a question for him: [INPUT-CHANGED-TELL].
-
-**A question for him, found while building the phone's two lines (8 Oct 26):** [LW-HEAD-BIG-PHONE] — between 431 and about 700 wide (the largest iPhones are 440) the top of the Leave War is at its TALLEST; D679 keeps everything wider than a phone as it is. Should those screens get the phone's two lines?
-
-**Filed by the skill-notes review (13 Oct 26) — the agent's placing: after the Calendar job, a small job each:** [SHELL-SCRIPT-GUARD] — a guard that refuses a script typed straight into the command line (his go to build it: D811). [CHECK-TOOLS-HARDEN] — small hardening of the checking tools. [HWW-RULINGS-SIZE] — the general rulings file is at its size marker: the one-off permissions of merged jobs to be read and archived.
-
-**LIVE 15 OCT 26 (pull request 506, his "merge live"):** the small OIL job (D816, D818, with D862, D863, D865) — its check `raptor-port/docs/handpass/2026-10-14-oil-uncancel-load.md`; its items are archived; what remains of it is the three small jobs below.
-
-**LIVE 15 Oct 26 (pull request 514; its five items are in `OUTSTANDING-ARCHIVE.md`):** the Leave War's landing line through the figures, one line a gap, a drag held at the edge scrolls, the grips' reach, the guide's §5a. **LIVE 15 Oct 26 (pull request 515, his "merge live"; the item is in `OUTSTANDING-ARCHIVE.md`):** the Inputs month turns at its side under a run of days or a bar; the Tracker chart pans at its edge (D897–D899); his iPhone find (a run would not turn back) fixed with it — only his iPhone proves it (the sheet's §13). **LIVE 15 Oct 26 (pull request 516, his "merge live"; `[DRAG-EDGE-FOUR-MORE]` and `[ONE-DATE-CALENDAR]` are in `OUTSTANDING-ARCHIVE.md`):** calendar step two (D901), the four more edge drags (D900), the Inputs list's two buttons in the top row on a phone (D910). **Left from it, RULED (D922, D923 — each its own job after [INPUT-NEW-DEFAULTS], a picture first):** [TRK-REORDER-FINGER-DRAG] — a finger drag for the ⇅ Reorder rows (a picture first); [OIL-CONFIRM-DAYGRID] — the OIL question's own "only some days" grid is a near-copy of the old calendar. **Older, filed by its reads:** [TRK-WIREBOARD-REPEAT], [TRK-BALL-OFF-CHART-LEFT].
-
-**His answers of 15 Oct 26 (D877, D878 — "3 all no glow 4 fix"), two jobs — LIVE 15 Oct 26 (pull request 512):** [GLOW-OFF] — the board's other glows go, each keeping its ring; walked 36/36; his iPhone look (the people picker's chip answered and built, D879). [COMPACT-BANDS-WINDOW] — the compaction notes count against the app's own room; read by one fresh reader, its findings fixed; his approval, then the main folder brought level.
-
-**His answers of 15 Oct 26 ("Questions 1-6 as recommend" — D865, D866), three small jobs — 506 is live (15 Oct 26), so each may start:** [OIL-PLAN-SWITCH-UNASKED] — "Switch to this plan" that brings back an input with no OIL answer gets the load's short note and list. [GUIDE-ONE-MARK] — the design guide carries "one mark, one look": draft, one reader, his approval of the wording. [GLOW-PLACES-LOOK] — the other places that glow (the landing flash after a drag or an Undo, the keyboard ring) drawn for his look; nothing changes before he says.
-
-**His word of 14 Oct 26 (D859), both for 15 Oct 26, neither app work:** [OVERNIGHT-SKILL] — approved and installed as `/overnight` (D869, 15 Oct 26 — LIVE, pull request 508; the item is in `OUTSTANDING-ARCHIVE.md`). [COMPACT-WHEN-MOD] — LIVE (D870–D872, pull request 509); the next new chat on `main` runs its four checks in the app. [HANDOFF-RESET-TRACKS-MAIN] — the session-handoff guide's reset line leaves a branch tracking `main`, so pushes silently do nothing (observation 599): a one-line guide fix, his approval. [MAIN-CHECKOUT-STALE] — found running the four checks (14 Oct 26): every desktop chat takes its settings, hooks and skills from the main folder, 208 commits behind `main`, so none of the set-up was in force; bring that folder to `main`, then re-run the checks in a new chat. Re-run 15 Oct 26: the compaction point moved (about 845,000 of 1,000,000), but the notes come late — [COMPACT-BANDS-WINDOW]. Found by its read: [RUN-CHECK-BOTH-RUNS] — the "are the checks still running?" look read one run of two; FIXED with the compaction set-up (D870, D872; in `OUTSTANDING-ARCHIVE.md`).
-
-**A test to steady, any time (found 8 Oct 26):** [LW-REQ-PICK-MONTH-UNSTEADY] — one Leave War browser test (the Required panel, phone size) failed once in a full run at its month-button step and passes alone and in the next whole run.
-
-**Found by `[GROUP-INPUT-ONE-ROW]`'s walk (11 Oct 26) — his to place:** [WEEK-ADD-TAP-PHONE] (older; low), [ONE-ROW-DRAG-FLASH] (cosmetic; to settle with the job's code read).
-**MERGED on his "merge live" of 12 Oct 26 (pull request #491, D779; its four items — `[ALL-AVAIL-AS-MEMBER]`, `[PERSONAL-SEVERAL]`, `[OIL-ASK-LIST-SEVERAL]`, `[INPUT-CHANGED-TELL]` — are in `OUTSTANDING-ARCHIVE.md` since 13 Oct 26):** One rule for every input’s row — a row that came from an input IS the input, whoever stands on it is in it (a named person or ALL AVAIL / ALL), and an input is stored as one record with its people (D750, D753, D755–D773, D776–D778); its check `raptor-port/docs/handpass/2026-10-12-one-rule.md`, the rules `raptor-port/docs/engine-rules.md` and `raptor-port/docs/ui-contracts.md` (the dated notes of 12 Oct 26). The ChatGPT read it went live without is on the one list (`[NO-ASTRA-LIST]`).
-**Found by the one-rule job's check, not fixed (12 Oct 26 — the agent's placing: with the next Inputs / History batch):** [DISCARD-FILING-NOOP] — "Discard 1 edit & load" for an input filed after the day went out promises a discard and changes nothing; [SCHED-INPUT-WINDOW-PHONE] — on a phone the schedule's own input window is short and lets the page scroll behind it (his iPhone look first). *(BUILT 18 Oct 26 with D994's first batch — waiting for his look and "merge live".)*
-**Left from the one-rule job, none of it urgent (filed 13 Oct 26 — the agent’s placing: with the next Inputs / schedule batch):** [ONE-RULE-LEFTOVERS] — two housekeeping jobs that job’s last step did not reach: its 55 behaviour ids are not yet checked by the rule check; four out-of-date notes in the code. (The third — one unused field in the published-day list — was done on 13 Oct 26 with the Inputs batch.)
-
-**BUILT 13 Oct 26, waiting for his look and "MERGE LIVE" (D793 — branch `claude/inputs-schedule-batch`):** the small Inputs / schedule batch — an input put back on the programme waits on its OIL question; History's gold dot on a man put on an input's row; one unused field removed; a stray test-run timer. Its check: `raptor-port/docs/handpass/2026-10-13-inputs-batch.md`. **Its one question, answered 13 Oct 26 (D804 — leave and medical never earn OIL; every other kind is asked and its answer decides):** "→ Unavail" now puts the OIL question first, as "Accept" does — built on the same branch, [UNAVAIL-FILE-OIL-ASK]. **Also built there, D814:** a cancelled or information-only input is never asked the OIL question. **Filed by its reads, older, low:** [BELL-UNAVAIL-WORDS] (the member's bell says "Back on the programme" for a filing under Unavailable — two sentences his to approve); [OIL-LOAD-VERSION-UNASKED] (HIS: should a published version loaded back ask? recommended no, like an Undo). **Found by its reads, older, low:** [OIL-ASK-HEAD-SEVERAL] — at two older doors the OIL question for a shared input is headed with one man. **Seen by it, older, low:** the Leave War browser test's unsteady month-button step failed in a second test ([LW-REQ-PICK-MONTH-UNSTEADY]).
-
-**Seen by `[OIL-ASK-NOTIFY]`’s walk, older, not fixed (13 Oct 26 — the agent’s placing: with the next Inputs / schedule batch):** [OIL-NOTIFY-SEEN] — six small things met in passing: the Undo note after a swap says "a personal input"; a puck dragged off a row gives no note; the crew list’s ALL AVAIL chip scrolls out of reach on the week; an input’s own window deletes with no "are you sure"; on a phone the crew drawer stays open after a hand-over and covers Undo *(BUILT 18 Oct 26 with D994's first batch)*; on a phone on its side a drag near the board’s edge scrolls the board and the puck is let go over nothing.
-
-**The one date calendar — step one LIVE 13 Oct 26 (pull request 495), step two LIVE 15 Oct 26 (pull request 516); `[ONE-DATE-CALENDAR]` is in `OUTSTANDING-ARCHIVE.md`.** Still open beside it: [CAL-PHONE-SWIPE-FIT] (his iPhone look). **BUILT 13 Oct 26, waiting for his look and "MERGE LIVE" after step one's (D801 — branch `claude/tracker-date-boxes`, cut from step one's):** [TRK-DATE-BOXES] — the Tracker's date boxes are the app's own; raised by its read, unproved, low: [TRK-DATEBOX-SAFARI-ZOOM] (Safari on an iPad — where the calendar sits). **Found by its check, older, not fixed (the agent's placing):** [LW-PHONE-AWAY-ROW-MISSING] (a restored man's row missing on a phone — reproduce first), [PO-MOVE-DATE-DELETE-ASK] (a moved post-out date and a Delete's second ask — reproduce first), [IT-GUIDE-DATEBOX-SCRIPT] (a picture script to re-point).
-
-**NEXT, his word (13 Oct 26 — D786; side by side with the skills review — D794), a fresh chat on `main`:** [CAL-PHONE-SWIPE-FIT] — in the Calendar window on a phone, swipe between months and, on the Holidays list, between years; the "Every Thursday" window’s From date box runs off the right edge of his iPhone and must fit any phone width.
-
-**MERGED on his "merge live" of 13 Oct 26 (pull request #492, D791; its item `[OIL-ASK-NOTIFY]` is in `OUTSTANDING-ARCHIVE.md`):** the OIL question comes BEFORE a swap, an add or a move and the change is made only on an answer; a day made a holiday afterwards tells the admin at once and the schedulers what is left unanswered (D780–D785); its check `raptor-port/docs/handpass/2026-10-13-oil-ask-notify.md`, the screens `raptor-port/docs/ui-contracts.md` §The OIL question comes before the change. The ChatGPT read it went live without is on the one list (`[NO-ASTRA-LIST]`).
-**Small, from the one-rule job's last round (12 Oct 26 — the agent's placing: with the look-and-feel pass):** [ONE-RULE-SMALL-WORDS] — ten sentences, hints and marks that read oddly (a bell's "You were added" for a piece of a man's own leave; "taken off" for a man given his own part); **when the ChatGPT readers are back:** [OPUS-SECOND-READ-GUIDE] — the checking guide's line on a second, blind Opus read (decided under D595, waits for its two readers — D70).
-**For the database step (the agent's placing):** [NOTICE-RETENTION] — the bell's notices are kept for good in this build; how long one is kept is the organisation's rule, with the change history's (D351).
-**His question, answered — his to act on or leave (12 Oct 26):** [SIMILAR-APPS-LOOK] — what other apps like ours do, from a search of the public web: eleven products, eight lessons, what ours has that they lack and the reverse; nothing built from it.
-**LIVE 15 Oct 26 — the three builds and the leftovers batch, with the one-look blue ring (D860, D861), went out in pull request 506 on his "merge live" (505 closed unmerged, its work inside — D864).** Their items stay open below only for what is still filed under them (the leftovers' small faults); the rest of each is done.  — waiting for his look on his iPhone (the clash list, the full-width note, the bar) and his "MERGE LIVE"; and so are the leftovers he answered — [BATCH-14OCT-LEFTOVERS]'s three answers and three note deletions, built on the same branch on the night of 14 Oct 26 (D849, D851, D854), one "merge live" for the lot; its five small filed faults stay open; THEN, on a branch of its own, the small OIL job (D816, D818 — built that night on his yes, D857, read by Opus alone, D858); calendar step two is next after the merge.** *As first written:* **Before any of the three builds (his word, D833, 13 Oct 26, late): the writing guide is finished first ([SKILL-FUSION-WRITING]) and the approved WORDINGS are rechecked against it and put to him again — the designs themselves stand.** **DONE (14 Oct 26): he approved the guide (D836) and the rechecked wordings (D837–D839 — "All approved as recommended"); the three builds are next, to the wordings of `raptor-port/docs/superpowers/briefs/2026-10-13-wording-recheck.md`.** **He has answered the design page (13 Oct 26, late — D827–D831): three builds are approved, one batch, next in the order, before calendar step two** — [LW-CLASH-NOTE-PHONE] (the "A+" drawing, as drawn), [NOTES-SHORTER] (the page's wordings to the letter; a note the full width of a phone), [LOOK-13OCT-SMALL-FIXES] (L1–L17, K1–K4, K7–K10, K12; the bar that stays moves to the band under the top bar, a picture first). Where to start: `HANDOFF.md`, the `claude/design-page-oct-13-review-a35956` block. **Also filed, his to place:** [SKILL-FUSION-WRITING] (he asked whether a writing skill can be taken from outside). *As first written:* **The design page is made and with him (13 Oct 26) — four choices wait on him, nothing built:** [DESIGN-LOOK-13OCT] — one page: three ways to redo the Leave War's clash note on a phone ([LW-CLASH-NOTE-PHONE]; recommended: the slim line under the two rows), the shorter passing notes before and after ([NOTES-SHORTER]; and the note's box found to be half a phone's width), the look over the night's designs and the keyboard list. **Filed from it:** [LOOK-13OCT-SMALL-FIXES] — the small fixes, one batch, on his word (his choice 4); and two keyboard jobs, each its own, his to place: [KBD-PUCK] (a puck cannot be picked up by keys), [TRK-KBD-CHART] (the Tracker's chart and marking pop-up). Calendar step two follows his choices (D813).
-
-**His direction for AFTER the one-rule build (D765, 12 Oct 26) — his to place:** [UI-SLEEK-PASS] — the interface made more minimal, intuitive and sleek: fewer words, where buttons sit, how things move, what colours mean, icons, the flow; the Raptor look kept, never at a cost of speed. Questions and pictures first (D541).
-**Kept for when ChatGPT is back — not before 1 Nov 26 (his word, D761):** [NO-ASTRA-LIST] — the one list of every job that went ahead without Astra or Sol 6.1, to put to him then.
-**Found by the calendar job's bug check (8 Oct 26) — after its merge, his to place:** [CAL-UNDO-OTHERS] (reproduce first), [CAL-CHECK-SEEN] — small, none loses data or OIL. ([CAL-TOGO-ONE-ITEM] was built with the one row — archived 11 Oct 26.)
-**Found by the title's check (9 Oct 26) — older than that job, his to place:** [TITLE-CHECK-SEEN] — ten small finds; the phone's hidden "Unsaved changes" question is the one a person would trip on.
-**LIVE since 10 Oct 26 (pull request #488, on his "merge live"; its eight items are in `OUTSTANDING-ARCHIVE.md`):** the Inputs pages' work — the day window's two jobs, ALL / ALL AVAIL and the kind Event, an input's own title, the input card, the design vet's changes, the second batch of small finds and the day's title box (D684–D732). **What it left open — readings he has not answered, his looks on his iPhone, three unconfirmed observations:** [INPUTS-LIVE-LEFT]. **Its own job, after [GROUP-INPUT-ONE-ROW] (the agent's placing — before the Tracker batch unless he says otherwise):** [TILL-FROM-DATES] — the app stops writing "till <date>" into remarks (D728, step 2); questions to him first.
-
-**Filed 10 Oct 26 by the tidy-up after that merge — documents only, none a fault in the app:** [CAL-JOB-LEFT] — six lines the calendar job's handoff block still owed (a stale line in the Codex guide, two reads never run, an old mock-ups page, three looks nobody recorded); [RULINGS-SPENT-PASS] — the rulings files grew past their size markers: archive the spent rows in a documents-only chat, then the scheduler file's size goes back to him (D611).
-**Found by the ALL AVAIL / Event check (9 Oct 26) — older than that job, his to place:** [ALLAVAIL-CHECK-SEEN] — small, none loses data or OIL; rides with the next Inputs or amendment batch.
-
-**With step 5 of the calendar job, the Inputs calendar (found 8 Oct 26):** [INPUTS-LIST-NEXT-YEAR] — the Inputs list shows a next year's input among this year's dates, without its year, until it is edited (seen on the demo's 15 Feb 2027 OIL; the cause read in the code, to reproduce first).
-
-**After the Inputs / SANS calendar job (its place is his to set):** [LW-WINDOWS-NONBLOCKING] — the Leave War's other windows still block the grid behind them and close on a click outside; D641 and D642 changed that for the calendar job's windows and for one war panel only. Its own job, its own check.
-
-**From Claude's check of the Codex stack (5 Oct 26) — its place is his to set:** [OIL-WORK-START] — a flying line's earned leave is to
-count from its entered in-time / Rally (D591), and a published weekend must keep the earned leave it went out with when a Logic value
-changes (today it moves at once). **BUILT, FULL-checked and MERGED on his "merge live" — live since 7 Oct 26 (PR #484; D591, D592, D606); archived 7 Oct 26.** Low, beside it: [OIL-ZERO-SPAN-SORTIE] (words only); low-medium, older than it: [UNPUB-WARN-AL-RESTORES] (the Unpublish warning over-warns when an amendment is withdrawn); low, older than it, found by its browser test: [LOGIC-REDRAW-DROPS-TYPING] (the Logic page redraws its rules just after it opens, and a value being typed at that instant is dropped); low, words only, from its walks: [OIL-EARN-DAY-SWITCH-WORDS] (OIL Earn's "Nothing today earns" button reads like a status), [SC-B-CHANGE-SAYS-BRIEF] (the changes window calls an SC shift's in-time "brief"). **D606 (7 Oct 26 — an SC shift's typed in-time counts for OIL) was built and checked on the same branch.** **From his D607 (7 Oct 26 — a walk is sized per change by Opus, from a record of past walks), next, with [START-CONTEXT-AUDIT]:** *(both DONE 7 Oct 26 — D607, D608 — and archived:)* [WALK-LEDGER-HISTORY] (compile the past walks into the record and write its figures), [WALK-SIZING-GUIDE] (the checking guide's wording, read by Astra and Sol before he approves it). [INTIME-LINES-DRAG] (D593, his ask of
-5 Oct 26 — drag a wave's In-time / Rally lines into order on the Scheduler Board, Auto sort too; proposed in the same batch). Low, from the same
-check, each with the next change to its page: [INP-OIL-CHIP-PHONE] (the OIL chip over a phone request card's date), [BOARD-TIME-ESCAPE]
-(Escape does not restore a time box on the board — a question for him). [EDIT-SECOND-CLICK] (low — after a
-changed text box on Edit Schedule, the first click into another box lands on the page and a second is needed; the same on the live
-app; with the next change to the schedule's text boxes). **The same check's three parked questions were answered on 6 Oct 26 (D597–D599) and built on the stack branch** — the items
-are in `OUTSTANDING-ARCHIVE.md`; the sheet's §13 has the walk. Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights). ANSWERED 10 Oct 26 (D739, D740 — a time or remark typed on a request's row changes the request itself; built with [GROUP-INPUT-ONE-ROW]): [REQ-ROW-OWN-BOXES] (as filed: typing in a request's programme row changes the row, not the request — BUILT with the one row and archived, 11 Oct 26). **From the four readers' second pass (6 Oct 26) — older than the stack or low, not fixed in the check:** [REST-BLANK-LINE] (MEDIUM — a man put on a flying line with no take-off loses his crew-rest check; **BUILT and FULL-checked 6 Oct 26 on `claude/rest-blank-line` (D602) — MERGED, live since 6 Oct 26 (PR #482)**; [OIL-WORK-START] (since built and live, 7 Oct 26 — archived) was NOT built with it — his instruction for that chat named the crew-rest fault alone — and stays next, its own job), **found by that check and filed, none of them this fix's doing: [BLANK-TIMES-ABSENCE] (MEDIUM — a man on all-day leave or a downchit seated on a line with no times gets no line in the warning list until a time is typed; answered YES, flag him at once — D605; **BUILT and FULL-checked 6 Oct 26 on `claude/blank-times-absence-picker-2cebae` — MERGED, live since 6 Oct 26 (PR #483)**), [SC-PICKER-INTIME-REST] (low–medium — the crew list does not warn of crew rest before a man is put on an SC seat whose typed in-time is early; from Sol's read of the fix; **BUILT with it, the same branch**), [SC-BLANK-SHIFT-QUAL] (low), [CREW-REST-MARK-COPIES] (low, a question for him), [BLANK-LINE-SANS-WORDS] (low — its absence sentences done with D605), [TAB-LAST-BOX-TEST-GAPS] (low, tests only)**, **found by the D605 check and filed, none of them its doing: [BLANK-STANDBY-STRIKE] (low — the crew list strikes a man on local leave for a standby seat whose shift times are blank), [BLANK-SEAT-ACTIVITY-HINT] (low — the crew list says nothing before a man with a whole-day course is put on a seat with no times; the list flags him after), [SC-SPARE-RING-BORROWS] (low — one man in a MAIN and a SPARE seat of one SC line: the spare puck wears the MAIN's leave ring), [REQ-ROW-SELF-CLASH] (low — times typed on an all-day request's own row flag its own man), [SC-INTIME-REST-WORDS] (low — the crew-rest sentence calls an SC line's in-time its "start"), [UPCHIT-MOVE-NO-REGROW] (low, a question for him — an Upchit moved later does not give back the days it cut), [OFT-ADD-TWICE-SILENT] (low), [LOOK-PENDING-COUNT] (low)**, then [START-CONTEXT-AUDIT] (what a new chat loads at its start, measured and cut to what a job needs, never at the cost of quality — D602; its first step, the tidy-up after the Codex stack went live, is done and archived; **MEASURED and its options written 7 Oct 26; his ruling D609 the same day — options 1 to 4 DONE on `claude/docs-tidy-7-oct` (the merged handoff blocks out, 28 spent rulings and 19 finished items to their archives, his memory notes pruned), 5 and 6 after Astra's and Sol's reads, 7 found nothing to do; option 8 NOT done — the scheduler's rulings stay whole (D611); left open in it: the check that stops it growing back, low**; with it [WALK-LEDGER-HISTORY] (DONE 7 Oct 26) and [WALK-SIZING-GUIDE] (DONE 7 Oct 26 — read by Astra and Sol, approved by him, D608, and in the guide)), [R3-OWED-READS] (both reads done 6 Oct 26 with the crew-rest fix's scenario read — it leaves at the next documents-only pass), (the two small Blue/Red fixes that stood here were built in the check's third round, 6 Oct 26, and archived; `[ROLE-NOT-CHOSEN]` was answered "leave it" — D603), [PEND-INTIME-WORDS], [BOARD-INTIME-JUMP], [WINDOWS-KEEP-KEYS]. Low, tests only: [SAVE-NOTE-TEST-GAPS] (two soft spots in the failed-save warning's browser test, from Astra's read of its last round).
-
-**The database comes at the end (D473, 1 Oct 26 — replaces D354's "starts now", on the IT side's own advice):** the app's features
-are built first; group A of `[DB-READINESS]` is built and its last phase (7) waits on his look; group B, the lock's screens and
-`[DB-STEP]` wait for the end; the table list is kept up to date as each feature is added, and the table format is written on his
-side for the IT side to enter. The paragraph below is as written while the step was "starting now"; its ORDER stands.
-**The database step starts now (D354, 29 Sep 26):** — and how it shares and locks, [DB-SYNC-MODEL] (D355, D356 — the mock-up and §9 DONE 29 Sep 26 on `claude/day-lock-mockup-data-model-493d27`, the red team running; his six screen questions open); for the IT team, the flow guide [IT-FLOW-GUIDE] is DONE (42 slides, `raptor-port/docs/it-flow-guide/`, merged on his "merge live" 29 Sep 26; archived). The IT team is taking the app into Dataverse now; the order below
-stands, its timing ("about two months away", "about a month before") is overtaken — the readiness batch and the OIL
-award fix are due before the tables are settled. What to finish before the hand-over: his answer to be recorded here.
-**His order — to the database step (D203, 26 Sep 26; D173, D147 within it):**
-1. **Done — [DRAFT-PENDING]**, the one changes window (D210), MERGED 28 Sep 26 (PR #451); its two follow-ups
-   [HIST-PHONE-HIDE] and [CHG-BY-ITEM] (D339, D340, D345, D346) MERGED 28 Sep 26 (PR #455), and [LW-FIGSEL-FLAKE] (D342,
-   PR #454) — all archived. Before it: **[ONE-DOOR]** (D309, D310, carrying [POST-IN-DATE], D308) MERGED 28 Sep 26 (PR #450;
-   archived); `[POST-OUT-OUTCOMES]` (PR #446), `[ACCOUNTS-NEW-PERSON]` (PR #443), `[ACCOUNTS]` (PR #442) and
-   **[LW-MOVE-STANDARD]** (D264–D266, PR #447) MERGED 27 Sep 26. Left from them: `[POST-OUT-TRACKER]`, on his answer.
-2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
-3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
-   [S4-HUNT-REST] — **WALKED 26 Sep 26** on `claude/absence-record-d147-af6a50`; his answers to its questions (D260–D263)
-   recorded, and D260–D262 BUILT and FULL-checked there 27 Sep 26 (D263 goes with [DRAFT-PENDING]); from his look, D264–D266
-   (one look for the sheets, a Move on every record that can move) — [LW-MOVE-STANDARD], BUILT and MERGED 27 Sep 26
-   (PR #447; archived) — then change-recording (with [UNDO-ROSTER-SETTINGS], D148 and [UNDO-TOPBAR] — MERGED
-   29 Sep 26, PR #464; both archived),
-   then the Leave War links LAST (with the 7 Sep phone check). Then "after the hunt" (21 Sep 26): [LW-LOCKMARK] →
-   [LW-WEEKDAY-WORK] (talk to him before building any of it) — its first, the published day's unavailable list, was
-   closed by the same re-test (built by [LEAVE-LATE-PUBLISHED]; archived).
-4. **Split in two (D453, 29 Sep 26 — narrows D203's "ONE batch"):** **[DB-READINESS] group A** (what decides the tables'
-   shape) before it settles its tables, with the small OIL follow-ups below and [OIL-EARNED-VS-GRANTED] (D147);
-   **group B** (tuned against the real database) AFTER the app is connected. First, [DB-SYNC-MODEL]'s design fixed.
-   ([OIL-AWARD-IS-A-GRANT] is DONE, merged 29 Sep 26.) Group A: plan v4 final (30 Sep 26); **phases 0–5 and 5b built
-   30 Sep 26** on `claude/db-readiness-table-shaping-4094f6` (plan §9); **its FULL check done 30 Sep 26** (the walk and both
-   reviewers' code reads, every finding fixed — `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`); **phase 6 (a),
-   (b), (d) built and FULL-checked 30 Sep 26** (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`); **phase 6 (c) v3
-   (the holder base) planned, red-teamed (round 3, the last), BUILT and FULL-checked 1 Oct 26 on
-   `claude/db-readiness-p6c-holder-base`** (D467 — `raptor-port/docs/handpass/2026-10-01-dbr-phase6c-check.md`; the walk and
-   both final reads found twelve defects, all fixed red first, one of them money; his answer on a moved request's extras:
-   leave it, D468);
-   **phases 0–6 MERGED 1 Oct 26 on his "merge live" (PR #476); phase 7 — the small OIL follow-ups below — BUILT and FULL-checked
-   1 Oct 26 on `claude/db-readiness-p7-oil-followups`** (plan and build log
-   `raptor-port/docs/superpowers/plans/2026-10-01-db-readiness-phase7-plan.md`; evidence `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`) — **MERGED 1 Oct 26 on his
-   "merge live" (PR #477). Group A is closed.**
-5. **At the END, once the features are built (D473, 1 Oct 26) — [DB-STEP]:** the table format written on his side (with his AI)
-   for the IT side to enter, then the one adapter to those tables; the stack
-   ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
-   then the individual bugs (D144).
-6. **Before ANY collaborator is added** — an event, not a slot: take the checks runner off this repo (SEC-101, in
-   [REPO-PRIVATE]); and make the repo private again once the public period (D106) ends — his. IT's clone is such an event
-   ([RESTRICTED-ENV-WORKFLOW]'s go-ahead), and so is [REPO-TIDY]'s screenshot move (the clear of the old worktrees any time).
-
-**The small OIL follow-ups — ONE batch, with the OIL award fix, before the tables are settled (D147, D203, D354): BUILT 1 Oct 26 as
-`[DB-READINESS]` phase 7, all six archived** — [OIL-READ-LEFTOVERS] (its items 1, 2, 4), [STORE-READER-SWEEP], [OIL-REQ-NAMEBOX]
-(answered D470 — a man in the name box of another man's request earns), [OIL-WORDS], [OIL-PERSONAL-PLACEHOLDER], [CROWD-SIM-BRIEF];
-evidence `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`. MERGED 1 Oct 26 (PR #477). ([OIL-RELINK-XWEEK] closed 1 Oct 26 by `[DB-READINESS]` phase 6 (c).)
-
-**BUILT, FULL-checked and MERGED 1 Oct 26 (PR #478; archived):** [WARN-HIDE-KEPT] — a hidden warning stays hidden for everyone until unhidden, flags no puck, is not counted, and its line stays in the list struck out (D469, D471, D472, D475); the evidence: `raptor-port/docs/handpass/2026-10-01-warn-hide-check.md`. Out of the check, all answered the same evening: Insights counts each day's latest published version ([INSIGHTS-WHICH-COPY], D477, D478 — the next build), the drop's amber note stays (D479), and one Sonnet walker goes on trial on the next walk ([SONNET-WALKER-TRIAL], D476).
-
-**Placed by their own lines — not his rulings:** from the `[DB-READINESS]` phase 7 walk (1 Oct 26), none of them this batch's — low, each with the next change there: [COUNT-CHIP-PHONE-TAP] (fixed for Chromium in phase 7; his iPhone look left), [INP-TILL-STALE] (a remark keeps a "till" date its request no longer reaches — new data), [OIL-INERT-TAP-SILENT], [OG-TAG-OVER-COUNT], [MEMBER-EDITPAGE-CHECK] (a check, not a known fault); from the group-A FULL walk (30 Sep 26) — with group B:
-[UNDO-PUBLISH-ERASES-ISSUANCE], [TRK-IMPORT-ONE-GROUP], [TRK-FIRST-ORDER-PLACE] (low); low, with the next change there:
-[TRK-UNDO-WRITES-DEFAULTS], [SECDEFAULT-OFFER-BEHIND-BOARD], [BLOCK-NO-HISTORY-LINE], [ACCOUNTS-SEED-FIRST-WRITE] (demo
-only), [SETTINGS-LIST-ROWS] (a stage-2 split, only if it bites), [LW-OIL-DATECHIP-HIDDEN], [READONLY-WEEK-WORDS];
-before the first real deployment: [SHARED-OPENS-DEMO-WEEK]; a question for him: [LW-LABEL-NO-DOOR]; with group B:
-[ELOG-LINE-AFTER-COMMAND] (low); the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
-first), [LW-SCRUBBER-FLAKY] (test-only),
-[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [IMPECCABLE-UPDATE] (D625 — to v4.1.3, after the calendar job), [STACK-LEFTOVERS] (low — four small loose ends named in the Codex stack's archived items), [WALK-COST] (a proposal, his word starts it — measure where a walker's tokens go on the next fanned-out walk, then a library of ready walk steps), [SANS-CALENDAR-WIP] (DONE — the calendar job it became is live since 9 Oct 26, PR #487; archived 10 Oct 26; nothing of the Codex work is deleted, D610), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (BUILT 5 Oct 26 on `codex/save-note-controls` — MERGED with the Codex stack, live since 6 Oct 26, PR #481), [FLOATWIN-TWO-LINE-BAR] (low, with the next change to either movable window), [GUEST-SAVE-WARNING] (low — a check first, with the next change to the guest's pages), [EVIDENCE-RECORD-SIZE] (low, his call — at Claude's review of the Codex branches), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]), [LW-WINDOW-PRUNE-FLAKE-2] (test-only, low); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change), [TRK-KEY-NAME-CLIP] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
-look card — D157, merged PR #441).
-The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left (the small-fixes batch, PR #463, merged 29 Sep 26, filed): [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule), [DOCSIZE-MERGE-CEILING] (low, a false alarm of the document check on a merge), [PDF-PRINT-TWICE] (low, found by the IT flow guide research — to confirm in real Chrome), [LW-SEL-HALF-LABELS] (low, the drag sheet's half-day labels — D264), [ITFLOW-OIL-RESHOOT] (low, on his word — D403), [TRK-REFUSALS-UNTESTED] (low, test gaps the guide research found). Left from the amendment batch (D91–D111, merged): [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
-[RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him), [DOCS-SIZE-PASS] (DONE 2 Oct 26; archived), [INSIGHTS-WHICH-COPY] (D477, D478 — MERGED 1 Oct 26, PR #479; archived), [WORKSPAN-NEGATIVE] (DONE — live 6 Oct 26 with the Codex stack, archived; as filed: **NEXT — the next chat, D483**; the second Sonnet-walker trial rides on its walk), [SONNET-WALKER-TRIAL] (DONE — both trials ran and were decided under D595, archived; as filed: the first walked 1 Oct 26; **one more, on a build with known defects — D480**, with `[WORKSPAN-NEGATIVE]`'s walk), [INSIGHTS-BOARD-DOOR] (DONE — built, live 6 Oct 26, archived; as filed: RULED D481 — to build: a picture first; after `[WORKSPAN-NEGATIVE]`), [INSIGHTS-RULE-CHANGE] (ANSWERED D482 — closed; archived) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
-and [HANDOFF-SHAPE-GUARD] done on `claude/docs-tidy-subheads-audit-ec8f87` (28 Sep 26; archived),
-Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
-The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
-[ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
-[ALLAVAIL-OPEN-ROW] (investigate first), [VH-SHEETS-IPHONE] (low — other pop-ups sized by `vh`, his D536 find fixed for the windows), [MODAL-DRAG-CLOSE] (DONE — live 6 Oct 26, archived; his report — a window closes when text is drag-selected and let go outside it; FIXED on the Insights branch, D538, awaiting the reads).
-Insights — [INSIGHTS-MISSION-MIX] (DONE — live 6 Oct 26 with the Codex stack, archived; what it left open is [STACK-LEFTOVERS]; as filed: D512–D532 settled; built on the isolated branch, qualified FULL checks complete,
-fresh independent Astra R2 PASS; Opus interim code read (D533) found three small findings, fixed by Opus the same day (D534, D535);
-Claude's later read owed before main), with [INSIGHTS-BOARD-DOOR].
-The changes window — [HIST-PER-PAGE] (an idea, filed D349; a mock-up first, after the change-recording re-test). The
-phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Codex build), [PHONE-WIDE-BOARD-BLANK] (CLOSED 18 Oct 26 — fixed and live since 6 Oct 26; archived). The bubble — [BUBBLE-SMALL-SEEN] (low, from the same walk).
-
-**His word, D488; order narrowed by D495 (2 Oct 26):** [DISCARD-MARKS-REMOVE] — DONE, live 6 Oct 26, archived; as filed: BUILT on `codex/discard-marks-remove`; FULL checks and independent Astra inspection passed. Claude's Monday further reads and owner look remain owed before main.
-
-**From the article he sent — his word, D486 (2 Oct 26):** [CODE-TIDY-AUDIT] (Astra's read can run before the reset, D484; the report to him; before [DB-STEP]) and [SKILL-FUSION] (after the reset, a fresh chat on its own branch; three proposals in it wait on his yes or no). **D491 (3 Oct 26):** Astra's tidiness read and its draft of [WORD-LIST] run BEFORE the reset; three pieces of `mattpocock/skills` ride with [SKILL-FUSION]. **D493 (2 Oct 26):** the tidiness read is answered — three tidy-ups approved, each with its area's batch: [LW-ROWS-SPLIT] (the next Leave War batch), [CSS-SPLIT-BY-SCREEN] (DONE — live 6 Oct 26, archived; it was the first step of the workflow UI pass), [TRK-FILE-TRANSFER-SPLIT] (the Tracker batch); two not now (in [CODE-TIDY-AUDIT]).
-
-**DONE — LIVE since 9 Oct 26 (PR #487); [SANS-COMMITMENT-CALENDAR] and [SANS-CALENDAR-WIP] archived 10 Oct 26.** *As written:* **In hand (7 Oct 26): the Inputs calendar and the SANS availability calendar — called back (D614), Opus 5.5 builds from here (D615), on `claude/inputs-sans-calendar`; where it stands: [SANS-COMMITMENT-CALENDAR] and that branch's block in `HANDOFF.md`.** **Historical build authority — D580, put on hold by D585 (5 Oct 26), the hold ended by D614:** [SANS-COMMITMENT-CALENDAR] is authorized to build from delegated recommendations while the owner sleeps; includes Member Inputs calendar and secondary List. Initial D569 scope: monthly SANS demand/shortage calendar, shared day commitments and existing Custom timing form with no Remarks placeholder. Caps/ops new-chat handoff remains cancelled D568; no new chat created. Caps/ops, other Inputs work and Tracker remain outstanding. Earlier builds/every owed read unchanged; agent settles product choices with reasons and pictures before source work; independent review/required checks and Claude before main remain.
-**The feature batches — HIS ORDER, D495 (2 Oct 26); Astra plans/reviews, Sol 6.1 builds in Codex until the reset (D496), Claude reviews after it (D494):** *(7 Oct 26: the first four — Discard marks, the work-hours fix, Insights, the workflow UI pass — are built and live (PR #481) and archived; next in this order is Inputs: the Inputs calendar and the SANS availability calendar, called back on 7 Oct 26 and in hand (D614, D615) — [SANS-CALENDAR-WIP], [SANS-COMMITMENT-CALENDAR].)* *(10 Oct 26: Inputs is built and live too — the calendar job, PR #487, and the Inputs pages' work after it, PR #488; both items archived. Next: [GROUP-INPUT-ONE-ROW] (D662), then the Tracker.)* [DISCARD-MARKS-REMOVE] (the small first job) → [WORKSPAN-NEGATIVE] → Insights ([INSIGHTS-MISSION-MIX], with [INSIGHTS-BOARD-DOOR]) → the workflow UI pass ([CSS-SPLIT-BY-SCREEN] first) → Inputs → the Tracker (with [TRK-FILE-TRANSFER-SPLIT]) → caps and ops limits → one whole-app check — the list: [FEATURE-WISHLIST].
-**Timing follow-up:** [REST-FIRST-CREW-HINT] — existing empty-formation predictive-rest gap, filed with caps and ops limits; committed placement still validates. Current Rally evidence declares this limitation; no owner approval inferred.
-**Availability follow-up:** [SANS-PREVIOUS-REPORT-OFFER] — previous-date offers are not combined with target-date half-days for a previous-evening report; characterized in this round's actual picker/placement, with caps and ops limits. No new availability policy or owner waiver inferred.
-**Workflow UI follow-up:** [PALETTE-WRAPPED-HEADER] — inherited sticky-palette overlap under a wrapped desktop account bar; with the UI pass after [CSS-SPLIT-BY-SCREEN]. Current Rally and baseline reproduce it; not dismissed as a helper-only failure.
-**Owner's current workflow UI requests — collection complete, build authorized D563 (4 Oct 26):** [TRK-FLIGHT-LABEL-READABILITY] — clearer words inside blue flight balls, wider wing label area proposed; [LOGIC-STICKY-SEARCH-COMPACT] — keep search visible while scrolling and pack existing controls into fewer rows; [INSIGHTS-CLOSE-STAYS-VISIBLE] — keep the close cross at the top while scrolling Insights. Built on codex/workflow-ui after numbered candidates and independent plan challenge; combined first-build checks passed; D564 rejects the first flight shape, D565 steers to a tapered leading edge via his annotation. Specific tapered redraw with native sizes accepted D566; finish checks and fresh inspection of implemented chosen replacement, affected checks/fresh final read/current preview next. Logic/Insights retained. This does not start the Tracker progress-graph batch or change D495's order.
-
-**Waiting on him — no order exists:**
-[LOAD-MSG-SHORT] (CLOSED 18 Oct 26 — answered by D863, built; his look "12 looks fine"; archived),
-[OIL-EARNED-VS-GRANTED] (ANSWERED D400 and built with the award fix — merged, PR #469, 29 Sep 26; archived 2 Oct 26),
-[LEDGER-READ-ASK] (a question for him, from the OIL award build), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
-[REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
-ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, [ADMIN-DISPLAY] ("next time we revisit",
-D161), with [USER-GUIDE] (wanted, not urgent) and [PERF-RESIDUALS] (two of them change wording
-or feel — his call).
-
-**Future milestones:** [DB-STEP] (item 5 above, with [TRK-DISK] inside it, and [RESTRICTED-ENV-WORKFLOW] — the stand-in database and the pull-request workflow — before the first deploy he approves), [XFER], [RECALL], [TRK-ATTEMPTS] (low urgency).
+**Features he means to add — each on his word**
+- [CAPS-OPS-LIMITS] — caps and ops limits: next in his order (D495); its questions, plan and build.
+- [FEATURE-WISHLIST] — his list of features not yet designed (the Tracker's progress graph waits, D774).
+- [XFER] — moving a man between squadrons with all his data — a milestone, with the database.
+- [HIST-PER-PAGE] — a changes button on the Leave War and Quals — an idea; a mock-up first.
+- [SIMILAR-APPS-LOOK] — what other apps like ours do: answered; whether any of it becomes a job is his.
 
 ---
 
@@ -1600,6 +1598,7 @@ Met by the walkers of `[INPUT-OWN-TITLE]`'s check (`raptor-port/docs/handpass/20
 **Place:** (1) and (2) with the next change to a working guide (`[WALK-FINGER-NOT-LOCATOR]` is one); (4) when that page is next published; the rest, none.
 
 ### [RULINGS-SPENT-PASS] The rulings files have grown past their size markers: archive what is spent or replaced, and put the scheduler file's size back to him (D611) — filed 10 Oct 26
+**18 Oct 26 (the backlog tidy):** `.claude/rules/decisions/tracker.md` stood at 26,665 bytes on `main` (marker 23,500) with D1002–D1007, D1014, D1018 — the document check failed on `main` itself. The marker was RAISED to 27,500 with its reason (`raptor-port/scripts/docsize.mjs`), so documents-only changes pass; the 17 Oct note below said the next crossing is the time to split the Tracker area. **To do here:** first the candidates D560 and D564 (a fresh reader, D971), then split the area if it is still near its marker.
 **17 Oct 26:** `.claude/rules/decisions/tracker.md` crossed its tripwire (21034 of 20500 bytes) with D979–D982 — deferred by D29 (its branch carries code); candidates at the tidy: D560 and D564 (changed by D563–D566, the wing built and live — a fresh reader checks whether D566 restates them in full, D971).
 **Status: OPEN — a documents-only job of its own; nothing is trimmed (D136).** On 10 Oct 26 the scheduler's rulings file held 95,514 bytes (marker 69,000), How we work 23,032 (22,000) and the Leave War's 34,273 (32,000): the calendar job and the Inputs pages' work added about 120 rulings (D617–D733) in four days. The three markers were raised that day so the document check passes (`raptor-port/scripts/docsize.mjs`, each with its reason). **Still to do:** (a) read those files' rows — and the Inputs pages' file, `.claude/rules/decisions/inputs.md`, which took 101 of the scheduler's on 13 Oct 26 (D802) — for rulings that are SPENT (a one-off permission used: "built after the merge", "built in the next chat", a mock-up asked for and since chosen) or REPLACED by a later ruling, mark each in its full row and run `node raptor-port/scripts/backlog-archive.mjs --rulings` (`DECISIONS.md` step 2) — a meaning read by Astra of whatever short lines are rewritten (D138); (b) ANSWERED 13 Oct 26 by D802: the Inputs pages' rulings have a file of their own; nothing further to put to him.
 **Seen again 16 Oct 26 (pull request 519 merged with the overs deferred, D29):** How we work 40,313 bytes (marker 39,500), the Scheduler's 94,224 (92,000), the Inputs pages' 35,026 (32,000); and `plain-language.md` and `shipping.md` over their tripwires. All five markers RAISED the same day with their reasons (`raptor-port/scripts/docsize.mjs`), so documents-only changes pass again; the spent-row pass that brings them down is still this job.

@@ -291,7 +291,11 @@ const RULING_BYTES = [
      that night - his answer on /overnight); none is trimmed (D136). Room for the next rulings, not a target. */
   /* tracker 20500 -> 23500 (17 Oct 26): 21,868 bytes with D979-D985 (the Tracker batch's answers, the landing, the glide);
      none is trimmed (D136). Room for the next rulings, not a target; the next crossing is the time to split the area. */
-  ['.claude/rules/decisions/tracker.md', 2, 23500],
+  /* tracker 23500 -> 27500 (18 Oct 26, the backlog tidy): 26,665 bytes on `main` with D1002-D1007, D1014, D1018 (the
+     Tracker's down days, flex, legend - his directions of 18 Oct 26), already over on `main` when the tidy found it. A
+     documents-only tidy is not the place to split an area; the split, or archiving the spent and restated rulings first
+     (D560, D564 named as candidates, each checked by a fresh reader - D971), is filed in [RULINGS-SPENT-PASS]. */
+  ['.claude/rules/decisions/tracker.md', 2, 27500],
   /* 2 Oct 26 ([DOCS-SIZE-PASS]): a new area — the nine rulings on what the IT flow guide shows and when it is rebuilt
      (D403, D410-D417) moved here from How we work, which had crossed its tripwire carrying them into every chat; only
      a chat working on the guide needs them (D137, D141). Set about 1.5 kB above what it holds. */
