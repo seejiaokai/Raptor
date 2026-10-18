@@ -205,9 +205,12 @@
 .secdrop{box-shadow:inset 0 3px 0 0 var(--accent)}
 /* ---- the "Set default order?" snackbar (ui/SecDefaultSnackbar.tsx) — an
    ACTIONABLE bottom bar (the plain toast can't carry a button), shown after a
-   section drag to offer that order as the squadron's house default. Sits above the
-   toast's own layer. */
-.secdef-snack{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:80;
+   section drag to offer that order as the squadron's house default. The drag is
+   made on the Scheduler Board (z-index 400) as often as on the week, so it sits
+   above the board and its floating windows (410-412) and below a modal (470), the
+   bell's list (500) and the toast (540) — at 80 it was drawn behind the board and
+   seen only once the board closed ([SECDEFAULT-OFFER-BEHIND-BOARD], 30 Sep 26). */
+.secdef-snack{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:420;
   display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 24px);
   background:var(--panel-2);border:1px solid var(--edge);border-radius:12px;padding:10px 14px;box-shadow:0 8px 30px rgba(0,0,0,.4)}
 .secdef-msg{color:var(--ink);font-size:13px;font-weight:600}

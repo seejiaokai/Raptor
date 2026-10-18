@@ -17,7 +17,7 @@
      page", "suspending Outlaw's sign-in" (Fable 3e, S23).
 
    The bubble prepends "Undid: " / "Redid: "; this returns the bare label. */
-import { leadOf } from '../engine/inputs'
+import { leadOf, idsOf } from '../engine/inputs'
 import type { UndoEntry } from './types'
 import type { Change } from '../command'
 import { parseHideDetail } from '../engine/hidedetail'
@@ -304,6 +304,18 @@ function accountLabel(entry: UndoEntry): string | null {
   return 'an account'
 }
 
+function oneInputWords(entry: UndoEntry): string | null {
+  const ch = entry.forward.filter((c: Change) => c.collection === 'inputs' && c.id !== '__order')
+  if (ch.length !== 1) return null
+  const b: any = ch[0]!.before, a: any = ch[0]!.after
+  if (!a || !b) return null
+  const B = idsOf(b).map(String), A = idsOf(a).map(String)
+  const out = B.filter(p => !A.includes(p)), inn = A.filter(p => !B.includes(p))
+  if (out.length === 1 && inn.length === 1) return `swapping ${nameOf(out[0]!) || out[0]} for ${nameOf(inn[0]!) || inn[0]}`
+  const rest = (x: any) => { const { oil, mod, ...r } = x || {}; return JSON.stringify(r) }
+  if (JSON.stringify(b.oil ?? null) !== JSON.stringify(a.oil ?? null) && rest(b) === rest(a)) return 'an OIL answer'
+  return null
+}
 function inputsCount(entry: UndoEntry): number {
   return entry.forward.filter((c: Change) => c.collection === 'inputs' && c.id !== '__order').length
 }
@@ -367,6 +379,9 @@ export function describeEntry(entry: UndoEntry): string {
     const dm = plans.some(c => c.id.startsWith('dm:')), pp = plans.some(c => c.id.startsWith('pp:'))
     return dm && !pp ? 'a day title on the calendar' : pp && !dm ? 'a note on the calendar' : 'a change to the calendar'
   }
+  /* …and ONE input changed in a way a person names ([OIL-NOTIFY-SEEN] (1), the OIL-ask walk, 13 Oct 26): a swap on an
+     input's row, or its OIL answer, read "Undid: a personal input" — true, and no help. Read off the entry's own change. */
+  if (entry.type === 'inputs.batch' || entry.type === 'inputs.write') { const w = oneInputWords(entry); if (w) return w }
   /* one input filed through the Inputs page's batch door is one input (walker A2-F2) */
   if (entry.type === 'inputs.batch') { const n = inputsCount(entry); return n === 1 ? 'a personal input' : n > 1 ? `${n} inputs` : TYPE_PHRASE['inputs.batch'] }
   if ((entry.scope && entry.scope.module) === 'lw' || entry.type.startsWith('lw.')) return lwLabel(entry)

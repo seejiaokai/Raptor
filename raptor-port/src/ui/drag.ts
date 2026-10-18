@@ -666,12 +666,18 @@ function tdScrollerFor(el: any) {
   }
   return document.scrollingElement || document.documentElement
 }
+export const tdEdge = (top: number, bot: number) => Math.min(TD_EDGE, Math.max(0, bot - top) / 6)
 function tdAutoScroll(y: any) {
   const el = TD.scroller; if (!el) return
   const top = (el === document.scrollingElement || el === document.documentElement) ? 0 : el.getBoundingClientRect().top
   const bot = (el === document.scrollingElement || el === document.documentElement) ? window.innerHeight : el.getBoundingClientRect().bottom
-  if (y < top + TD_EDGE) el.scrollTop -= TD_SPEED
-  else if (y > bot - TD_EDGE) el.scrollTop += TD_SPEED
+  /* the band scales to a SHORT pane ([OIL-NOTIFY-SEEN] (6), the OIL-ask walk, 13 Oct 26): on a phone on its side the
+     board is about 190px tall, and two fixed 52px bands were more than half of it — a finger held anywhere near the top
+     or the foot scrolled the board under it, and the puck was let go over nothing. A sixth of the pane each, at most 52:
+     every pane taller than 312px keeps the 52 it always had. */
+  const edge = tdEdge(top, bot)
+  if (y < top + edge) el.scrollTop -= TD_SPEED
+  else if (y > bot - edge) el.scrollTop += TD_SPEED
 }
 /* the first element under the point that is not the ghost — one hit-test for
    the whole stack; the single-element fallback is for jsdom, which has no

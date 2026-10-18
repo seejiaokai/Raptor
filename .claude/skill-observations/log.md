@@ -734,6 +734,8 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 
 **Met again 15 Oct 26 (the night's /overnight run, `claude/drag-edge-scroll-elsewhere-51bfc4`):** three more shell here-document / stdin hangs in one night — `cat > file` with no input waited on stdin; a stray `python - <<'PY'` with `< /dev/null` dropped into Python's interactive prompt and looped on a Windows console error until stopped; each cost a two-to-five-minute stall. What held: every edit script WRITTEN WITH THE WRITE TOOL to the scratch folder and run as `python <file> < /dev/null`. The guard this entry proposes (scripts always a file, never a here-document) is the fix.
 
+**Met again 18 Oct 26 (`claude/schedule-amendments-fixes-fffce0`, D994's schedule fixes):** four more — two edit scripts passed to Python through a here-document lost a `\n` (written as a real line break, the file then failed to parse) and an escaped apostrophe; a `sed` fix of a test line lost its `\n` the same way; and one script was written with a relative path one folder too high, landing OUTSIDE the worktree. Each was put right by a script written with the file tool into the scratch folder. The guard proposed here ([SHELL-SCRIPT-GUARD], D811) would have stopped all four.
+
 **Met again 17 Oct 26 ([TRK-SCROLL-GLIDE], round 1):** a `cat >> file <<EOF` holding the question page (prose full of apostrophes) failed the same way; redone through the file tool. The guard stays unbuilt: an unconditional default (pages and scripts always go through the file tool) would have cost nothing here.
 
 ### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
@@ -855,6 +857,8 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** In the project's notes on running scripts, one line: write every multi-line script with the file-writing tool and run the file; never begin a shell command with `cat >`; and give every shell command that runs a script `< /dev/null`, so anything that reads input ends at once instead of waiting.
 
 **Principle:** A command that can wait for input will, in a tool with no keyboard — close its input by default, so a slip ends in an error rather than a silent stall.
+
+Met again 18 Oct 26 (`claude/schedule-amendments-fixes-fffce0`): twice a command began `cat > <file>` with no input (once `cat > /tmp/x.test.ts 2>/dev/null; mkdir …`) — each stalled two minutes and was moved to the background before it was stopped. The same proposal stands: never begin a command with `cat >`; close input with `< /dev/null`.
 
 ### Observation 610: Before/after pictures of the live app need no second checkout or server
 

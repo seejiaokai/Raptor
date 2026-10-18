@@ -300,6 +300,22 @@ describe('one lift, every drag — the board (6 Sep 26)', () => {
      accepted move sets one now) must not be inherited */
   beforeEach(() => markLand(''))
 
+  /* [ONE-ROW-DRAG-FLASH] (the one-row job's walk, W1 s11, 11 Oct 26; Fable's read F2): a day's FIRST hand move of a
+     ground row freezes the order on screen into the model, so the row lands at the frozen order's index — the flash went
+     to the drop's own address, a row out. It now goes to the row the engine says landed. */
+  it('a day’s first ground drag flashes the row that landed, not the address it was dropped on', () => {
+    const o = HOOKS.editMode; HOOKS.editMode = () => true
+    try {
+      DAYS[0].ground = [{ prog: 'B', str: '1000' }, { prog: 'A', str: '0800' }, { prog: 'C', str: '0900' }]
+      DAYS[0].gman = false
+      host.innerHTML = boardHTML(0)
+      /* drawn A, C, B — by start time; B (model 0) dropped on A (model 1) */
+      down(host.querySelector('[data-move="mv:g.0.0"] .sb-grip')!); over(host.querySelector('[data-move="mv:g.0.1"]')!); up()
+      expect(DAYS[0].ground.map((r: any) => r.prog), 'B is first now').toEqual(['B', 'A', 'C'])
+      expect(pendingLand()!.sel, 'the flash goes to the row B landed on').toMatch(/\[data-move="mv:g\.0\.0"\]$/)
+    } finally { HOOKS.editMode = o }
+  })
+
   it('the carried row wears lift beside rowdrag, and loses both on release', () => {
     host.innerHTML = rowsHTML(['mv:p.0.0', 'mv:p.0.1'])
     const [a] = [...host.querySelectorAll('.sb-grip')]

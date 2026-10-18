@@ -247,6 +247,27 @@ describe('the cross-day row on the warning list', () => {
       .toContain(`data-wpk="${keyOf(0, prev, prev.aircraft.length - 1, 'w')}"`)
   })
 
+  /* [TRACE-FOCUS-STAYS] (the night's job 4 walk, B3, 18 Oct 26): a tap on Monday's "Breaks Tuesday" line focuses
+     TUESDAY's warning, panned to Monday (interactions.ts: { ...WFOCUS, panDi, panKey }); closing Monday's list left that
+     focus up — the crew lit, the page dimmed — as only a focus on Monday's own warning was let go */
+  it('closing the list a trace line was tapped in lets its focus go', () => {
+    const ix = build('01:30', '2A: BFM-5')
+    toggleDayWarn(0)
+    focusWarn(1, ix)
+    setWarnFocus({ ...view.WFOCUS, panDi: 0, panKey: 'x' })
+    expect(view.WFOCUS, 'the trace line is focused').toBeTruthy()
+    toggleDayWarn(0)
+    expect(view.WFOCUS, 'the list closed: nothing stays lit').toBeNull()
+  })
+  it('…and closing ANOTHER day\'s list leaves it be', () => {
+    const ix = build('01:30', '2A: BFM-5')
+    toggleDayWarn(0); toggleDayWarn(3)
+    focusWarn(1, ix)
+    setWarnFocus({ ...view.WFOCUS, panDi: 0, panKey: 'x' })
+    toggleDayWarn(3)
+    expect(view.WFOCUS, 'a list it has nothing to do with').toBeTruthy()
+  })
+
   it('clicking the man\'s puck reveals it too', () => {
     /* the other half of the owner's sentence. Landing at 01:30 gives him a
        long-day note on day 0 as well, so his narrowed box opens there and the

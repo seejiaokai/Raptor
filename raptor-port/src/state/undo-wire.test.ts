@@ -504,6 +504,18 @@ describe('B8 — Undo says what came back', () => {
     writeInputsBatch(() => { INPUTS.push({ person: 'bane', type: 'LL', date: 'Jul 16', yr: 2026, rmk: '', iid: 'iwire2' } as any) })
     expect(undoState().undoLabel).toBe('a personal input')
   })
+  /* [OIL-NOTIFY-SEEN] (1) (the OIL-ask walk, 13 Oct 26): Undo after a swap on an input's row, or after an OIL answer,
+     read "a personal input" — it names what was done */
+  it('a swap on one input is "swapping <who> for <who>"; its OIL answer alone is "an OIL answer"', () => {
+    writeInputsBatch(() => { INPUTS.push({ person: 'bane', type: 'Meeting', date: 'Jul 16', yr: 2026, rmk: '', iid: 'iwire3' } as any) })
+    const r: any = INPUTS.find((x: any) => x.iid === 'iwire3')
+    writeInputsBatch(() => { r.person = 'stiff' })
+    expect(undoState().undoLabel).toBe('swapping Ranger for Saber')
+    writeInputs(() => { r.oil = { '2026-07-16': true } })
+    expect(undoState().undoLabel).toBe('an OIL answer')
+    writeInputsBatch(() => { r.rmk = 'room 2' })
+    expect(undoState().undoLabel, 'any other change of one input is as it was').toBe('a personal input')
+  })
   it('a Quals tick names the man and what changed; a rule names the Logic page', () => {
     expect(updatePersonField('rocky', { tick: 'nvg' })).toBe(null)
     expect(undoState().undoLabel).toBe('Hex’s quals')

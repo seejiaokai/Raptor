@@ -1,4 +1,4 @@
-import { applyMove } from '../engine/reorder'
+import { applyMove, popLandedKey } from '../engine/reorder'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify } from '../state/store'
@@ -50,15 +50,12 @@ import { liftOn, liftOff, markLand } from './lift'
    of `div.sb-line[data-move="mv:ac…"]` jet lines (board.ts's flying-line
    builder) — so what flashes is the FIRST jet line of the formation that
    travelled, the top of the block, and there is nothing to climb to.
-   KNOWN GAP, recorded not fixed (6 Sep 26): the GROUND programme is the one
-   list drawn in a SORTED order, and its FIRST manual move freezes that display
-   order into the model and re-indexes every row (moveGroundRow's !gman branch),
-   so on that one move the landed row can be `newOf[to]` rather than `to` and
-   the flash lands a row out. Only the first ground drag of a day whose items
-   are not already in start-time order, only decorative, and self-correcting
-   from the second drag on. Closing it needs the mover to report the index it
-   landed on — an engine-API question, not a string-maths one, so it is not
-   guessed at here. */
+   The GROUND programme is the one list drawn in a SORTED order, and its FIRST
+   manual move freezes that display order into the model and re-indexes every
+   row (moveGroundRow's !gman branch), so on that one move the landed row can be
+   `newOf[to]` rather than `to`: the drop reads the row the engine says landed
+   (engine/reorder.ts LANDED_KEY) and flashes that one ([ONE-ROW-DRAG-FLASH],
+   closing the gap recorded here on 6 Sep 26; pinned in rowdrag.test.tsx). */
 export function landSel(from: string, to: string): string {
   const a = from.slice(3).split('.'), b = to.slice(3).split('.')
   if (a[0] === 'ac' && a.length === 5 && a[3] !== b[3]) return `[data-move^="mv:ac.${b[1]}.${b[2]}.${b[3]}."]`
@@ -257,7 +254,12 @@ export function wireRowDrag(el: HTMLElement) {
       if (moveSectionTo(di, fromKey, toKey)) { markLand(`${where}[data-secmove="${di}.${fromKey}"]`); setSecDefOffer(di); notify() }
     } else {
       const to = dst?.move
-      if (src && to && applyMove(src, to)) { markLand(where + landSel(src, to)); view.afterSchedMutate(); notify() }
+      if (src && to && applyMove(src, to)) {
+        /* a ground row lands where the engine says it did — on a day's first hand move that is not the address it was
+           dropped on (the order on screen is frozen into the model first; engine/reorder.ts LANDED_KEY) */
+        const g = /^gr:(\d+)\.(\d+)\.prog$/.exec(String(popLandedKey() || ''))
+        markLand(where + (g ? `[data-move="mv:g.${g[1]}.${g[2]}"]` : landSel(src, to))); view.afterSchedMutate(); notify()
+      }
     }
   }
 

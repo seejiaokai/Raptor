@@ -40,6 +40,19 @@ describe('D731 (1) — on a phone, while a window is open, the passing note is s
     expect(face().style.bottom).toBe('auto')
     expect(face().textContent).toBe('Input updated')
   })
+  /* [BUBBLE-SMALL-SEEN] (3) (the change-recording re-walk, 29 Sep 26): the changes window is a panel at the foot on a
+     phone — a note at the foot sat over its first lines. Its placeholder is always mounted, hidden: that one is no window. */
+  it('a phone with the changes window up: the note is at the top; its hidden placeholder alone changes nothing', () => {
+    asPhone(true)
+    const cw = document.createElement('div'); cw.className = 'chgwin'; cw.hidden = true; document.body.append(cw)
+    try {
+      toast('Undid: a take-off time', 'ok')
+      expect(face().dataset.at, 'the hidden placeholder is no window').toBe('foot')
+      cw.hidden = false
+      toast('Undid: a take-off time', 'ok')
+      expect(face().dataset.at, 'the open changes window is').toBe('top')
+    } finally { cw.remove() }
+  })
   it('a phone with NO window up: at the foot, as before', () => {
     asPhone(true)
     toast('CSV downloaded', 'ok')

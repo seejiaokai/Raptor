@@ -44,6 +44,12 @@ const slide=(a:any,from:any,to:any)=>{a.splice(to,0,a.splice(from,1)[0]);};
    read-once shape SORTALL and CXT already use. */
 export let REORDERED_DI:any=null
 export function popReorderedDay(){const d=REORDERED_DI; REORDERED_DI=null; return d;}
+/* WHICH ROW A MOVE LANDED (Fable's read F2, 11 Oct 26 — [ONE-ROW-DRAG-FLASH]): the head key `done` marks is the row now
+   standing where the move put it. The drag aims its landing flash at the drop address, which is that row everywhere but
+   on a day's first hand move of a ground row: the order on screen is frozen into the model first, so the row lands at
+   the frozen order's index and the flash fell on whichever row now stood at the aimed one. Read once, like the above. */
+export let LANDED_KEY:any=null
+export function popLandedKey(){const k=LANDED_KEY; LANDED_KEY=null; return k;}
 /* Which mov: KIND a move belongs to, read from the head FIELD key each mover
    hands `done` — the same key it would otherwise mark pending. One prefix, one
    kind; an unknown prefix falls to a generic 'item' (moveKey clamps it anyway). */
@@ -59,6 +65,7 @@ const moveKindOf=(key:any)=>{const s=String(key),c=s.indexOf(':');return MOVE_KI
    a real permutation; the ground flag-only clear path passes none and stays a plain
    field mark. */
 const done=(key:any,di?:any)=>{
+  LANDED_KEY=key;
   /* the added-gate reads the now rid-anchored SCHED.added, so translate the
      positional head key first (finding 5). Runs AFTER the permute, so ridKey
      resolves the row now at this address — correct. */
@@ -273,6 +280,7 @@ export function moveGroundRow(di:any,from:any,to:any){
    the only reading consistent with "a jet may never leave its formation" — a
    drag ending outside the formation cannot mean "move this jet there". */
 export function applyMove(fromAddr:any,toAddr:any){
+  LANDED_KEY=null;
   const A=String(fromAddr||''), B=String(toAddr||'');
   if(A.indexOf('mv:')!==0||B.indexOf('mv:')!==0||A===B)return false;
   const a=A.slice(3).split('.'), b=B.slice(3).split('.');
