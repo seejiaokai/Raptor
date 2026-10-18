@@ -465,14 +465,19 @@ test('the top of the Leave War on a phone is two lines, nothing overlapping or o
         return [cs(':scope > .topbar').paddingLeft, cs(':scope > .filters').paddingLeft]
       })
       expect(edge, `${width}: the top's edge lines up with the grid card's 20px (D1016)`).toEqual(['20px', '20px'])
-      /* the top only (D1000): the grid card keeps its wider screens' words — "Rearrange", "OIL tracker" — and its padding */
+      /* the top only (D1000): the grid card keeps its padding — but its buttons take the phone's short words up to 700
+         (D1019, 18 Oct 26): "⇅" and "◷ OIL", so "−" and "+" stay on the head's one line */
       const card = await page.evaluate(() => {
         const pg = document.querySelector('#page-leavewar')!
         const tail = pg.querySelector('.card-hd .rtlbl') as HTMLElement | null
         const stage = pg.querySelector('.stage') as HTMLElement | null
-        return { tail: tail ? getComputedStyle(tail).display : 'absent', stagePad: stage ? getComputedStyle(stage).paddingLeft : 'absent' }
+        const hd = pg.querySelector('.card-hd') as HTMLElement | null
+        /* each button's middle — buttons a hair apart in height sit a pixel apart at the top on the same line */
+        const tops = hd ? [...hd.querySelectorAll<HTMLElement>('.rtbtn')].filter(b => b.offsetParent).map(b => { const r = b.getBoundingClientRect(); return Math.round(r.top + r.height / 2) }) : []
+        return { tail: tail ? getComputedStyle(tail).display : 'absent', stagePad: stage ? getComputedStyle(stage).paddingLeft : 'absent', tops }
       })
-      expect(card.tail, `${width}: the grid card's button words are the wider screens'`).not.toBe('none')
+      expect(card.tail, `${width}: the grid card's button words are the phone's short ones (D1019)`).toBe('none')
+      expect(Math.max(...card.tops) - Math.min(...card.tops), `${width}: the grid card's buttons are on one line (their middles ${JSON.stringify(card.tops)})`).toBeLessThanOrEqual(2)
       expect(card.stagePad, `${width}: the grid card's padding is the wider screens'`).not.toBe('10px')
     }
     /* the words, as he was shown them */

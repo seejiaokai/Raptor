@@ -18,7 +18,7 @@ import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, tillOfISO, tillDefaultISO, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
-import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel, firstEndIso, firstEndOrd } from '../engine/medical'
+import { upchitTrimPlan, upchitEffects, upchitDeletePlan, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel, firstEndIso, firstEndOrd } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
 import { OilConfirm } from './OilConfirm'
@@ -397,7 +397,7 @@ export function applyMedPlan(plan: any[]) {
       r.remarks = remarksTyped(r.remarks, r)
       r.mod = nowStamp()
       stampChanged(r)
-      elogReason(r.iid, 'given back by a moved upchit')
+      elogReason(r.iid, p.why || 'given back by a moved upchit')
       continue
     }
     if (p.action !== 'trim' || p.newEndOrd == null) continue
@@ -1790,7 +1790,22 @@ export function removeInput(r: any) {
   /* its history line is the change history's one writer's (state/changelines.ts — Astra DP-03, 28 Sep 26) */
   /* the save's own answer, never a bare "yes": a delete the commit gate refused is not a delete (saveBatch) */
   /* a man taking himself out of a shared input that goes on: what stood on his place goes with him, and his line says so */
-  return saveBatch(() => { dropInputRow(r) })
+  /* AN UPCHIT DELETED GIVES THE DOWNCHIT IT CUT ITS DAYS BACK (owner D1022, 18 Oct 26 — as a moved one does, D999), in the
+     same command: one Undo step puts back the upchit and the cut together. Every door that deletes one says so first
+     (upchitDeleteAsk, below); this is the write, whoever asked. A give-back onto a locked day is refused whole. */
+  const back = upchitDeletePlan(r).map((p: any) => ({ ...p, why: 'given back by a deleted upchit' }))
+  if (back.length && medPlanProtected(back)) { medicalLocked(); return false }
+  return saveBatch(() => { if (back.length) applyMedPlan(back); dropInputRow(r) })
+}
+/** THE QUESTION BEFORE AN UPCHIT IS DELETED (D1022 — "the save sheet says so before anything changes"): what its delete
+ *  would give back, for the upchit sheet to say — null where the delete changes nothing else (any other input, an upchit
+ *  whose downchit has nothing to get back), and the door then deletes at once as it always has (D792). */
+export function upchitDeleteAsk(r: any): { who: string; dateLabel: string; effects: { plan: any[]; leftovers: any[] } } | null {
+  const plan = upchitDeletePlan(r)
+  if (!plan.length) return null
+  const o = dateOrd(r.date, r.yr)
+  const p = leadOf(r)
+  return { who: PEOPLE[p] ? PEOPLE[p].cs : String(p ?? ''), dateLabel: o != null ? fmt(ordISO(o)) : String(r.date || ''), effects: { plan, leftovers: [] } }
 }
 
 /* DELETE A WHOLE SHARED INPUT — every record of the entry, as ONE command and one Undo step (owner D655: "shown and
@@ -2699,8 +2714,15 @@ export function InputEditor() {
   /* a shared input is deleted for everyone only after it is asked (the day's own question — the plan §3.13) */
   const del = () => {
     if (recPpl.length > 1) { setDelAll(true); return }
-    if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } else stay()
+    /* an upchit whose delete gives a downchit its days back says so first (D1022); any other delete goes at once (D792) */
+    const back = upchitDeleteAsk(r)
+    if (back) { setUpConf({ ...back, del: true }); return }
+    delNow()
   }
+  /* THE DELETE SPEAKS IN ONE BATCH WITH ITS RULES, as a save does (doSave): leave a give-back now covers is cut by the Leave
+     War's rules inside the same command, and their warning must not be wiped out by "Input deleted" (the fresh read of
+     18 Oct 26, finding 1 — D1022) */
+  const delNow = () => HOOKS.toastBatch(() => { if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } else stay() })
   const delEntry = () => {
     const n = howMany(recPpl)
     setDelAll(false)
@@ -3115,9 +3137,14 @@ export function InputEditor() {
       {/* the upchit save-time summary rides OVER this dialog (its z sits one
           layer up) — Save commits with the ticked removals, Cancel returns
           to the still-open form with nothing written */}
-      {upConf && <UpchitConfirm who={upConf.who} dateLabel={upConf.dateLabel} effects={upConf.effects}
+      {upConf && <UpchitConfirm who={upConf.who} dateLabel={upConf.dateLabel} effects={upConf.effects} deleting={!!upConf.del}
         onCancel={() => setUpConf(null)}
-        onSave={removals => { setUpConf(null); doSave(removals) }} />}
+        onSave={removals => {
+          setUpConf(null)
+          /* the question before a delete (D1022): its button deletes — the give-back rides inside removeInput's one command */
+          if (upConf.del) { delNow(); return }
+          doSave(removals)
+        }} />}
       {/* the medical clash sheet, same layer and same contract — Save
           resolves the choices, Cancel returns to the untouched form */}
       {medConf && <MedClashConfirm who={medConf.who} newType={medConf.newType} span={medConf.span}

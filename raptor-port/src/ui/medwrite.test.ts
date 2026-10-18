@@ -4,11 +4,12 @@
    boardaddinput/sync harness idiom. */
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS, dateOrd, holds , remarksShown } from '../engine/inputs'
-import { HIST, initStore, setSession, writeInputsBatch } from '../state/store'
+import { HIST, initStore, setSession, writeInputsBatch, undo } from '../state/store'
 import { HOOKS } from '../engine/hooks'
-import { commitNewInput, commitInputEdit, draftOf, medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, docGate } from './inputedit'
-import { upchitTrimPlan, upchitEffects } from '../engine/medical'
+import { commitNewInput, commitInputEdit, draftOf, medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, docGate, removeInput } from './inputedit'
+import { upchitTrimPlan, upchitEffects, upchitDeletePlan } from '../engine/medical'
 import { docAdd, rowDocIds } from '../state/docs'
+import { stashClear, stashPut } from '../engine/weekstash'
 
 /* a fresh stored document per draft — a medical input does not go in bare */
 const freshDoc = () => docAdd(new Blob(['x'], { type: 'image/png' }) as any).id
@@ -419,6 +420,95 @@ describe('D999 — the kept first end, after its code read', () => {
     const d = draftOf(u2); d.start = '2026-07-19'
     expect(commitInputEdit(u2, d), 'and the door refuses it').toBe(false)
     expect(c.endDate, 'nothing changed').toBe('Jul 14')
+  })
+})
+
+/* D1022 (18 Oct 26, "as recommended"): a DELETED upchit gave nothing back — the downchit it had cut stayed cut, and the days
+   after it read fit with no upchit to say so. As a moved one does (D999): the downchit grows back to the end it had before
+   the cut, never past it and never into another medical of his in the gap; one Undo step takes both back. */
+describe('D1022 — a deleted upchit gives the downchit its days back', () => {
+  const upOf = () => INPUTS.find((r: any) => r.type === 'Upchit' && holds(r, 'bane'))
+  it('ATT C Mon–Fri, an upchit on Wed cuts it to Tue; the upchit deleted, it ends Fri again', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 13', endDate: 'Jul 17' })
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-15', end: '' }))).toBe(true)
+    expect(c.endDate).toBe('Jul 14')
+    expect(removeInput(upOf())).toBe(true)
+    expect(upOf(), 'the upchit is gone').toBeUndefined()
+    expect(c.endDate, 'its days given back, to the end it was filed with').toBe('Jul 17')
+    expect(c.firstEnd, 'back at its first end: nothing left to remember').toBeUndefined()
+  })
+  it('the plan names the downchit before anything is written', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 13', endDate: 'Jul 17' })
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-15', end: '' }))).toBe(true)
+    const plan = upchitDeletePlan(upOf())
+    expect(plan.length).toBe(1)
+    expect(plan[0].row).toBe(c)
+    expect(plan[0].action).toBe('grow')
+    expect(plan[0].newEndOrd).toBe(20260717)
+    expect(c.endDate, 'nothing written by asking').toBe('Jul 14')
+  })
+  it('one Undo puts back the upchit and the cut together', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 13', endDate: 'Jul 17' })
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-15', end: '' }))).toBe(true)
+    expect(removeInput(upOf())).toBe(true)
+    undo()
+    const c2 = INPUTS.find((r: any) => r.iid === c.iid)
+    expect(upOf(), 'the upchit is back').toBeTruthy()
+    expect(c2.endDate, 'and the downchit is cut again').toBe('Jul 14')
+  })
+  it('stops short of another medical of his filed in the gap', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 13', endDate: 'Jul 17' })
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-15', end: '' }))).toBe(true)
+    plant({ person: 'bane', type: 'OML', date: 'Jul 16', endDate: 'Jul 16' })
+    expect(removeInput(upOf())).toBe(true)
+    expect(c.endDate, 'grown only up to the day before the OML').toBe('Jul 15')
+  })
+  it('stops the day before another upchit of his', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 13', endDate: 'Jul 20' })
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-17', end: '' }))).toBe(true)
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-15', end: '' }))).toBe(true)
+    const u15 = INPUTS.find((r: any) => r.type === 'Upchit' && r.date === 'Jul 15')
+    expect(removeInput(u15)).toBe(true)
+    expect(c.endDate, 'never through the upchit on Jul 17').toBe('Jul 16')
+  })
+  it('a downchit the upchit had deleted, or one no upchit ever cut, gets nothing', () => {
+    plant({ person: 'bane', type: 'ATT C', date: 'Jul 15', endDate: 'Jul 17' })
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-15', end: '' }))).toBe(true)
+    expect(INPUTS.some((r: any) => r.type === 'ATT C' && holds(r, 'bane')), 'the upchit on its first day removed it').toBe(false)
+    expect(upchitDeletePlan(upOf())).toEqual([])
+    const other = plant({ person: 'bane', type: 'HL', date: 'Jul 1', endDate: 'Jul 14' })
+    expect(removeInput(upOf())).toBe(true)
+    expect(other.endDate, 'never cut by an upchit: left as filed').toBe('Jul 14')
+  })
+  it('only HIS downchit: deleting another man’s upchit gives this man nothing', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 13', endDate: 'Jul 17' })
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-15', end: '' }))).toBe(true)
+    const other = plant({ person: 'ranger', type: 'Upchit', date: 'Jul 15' })
+    expect(upchitDeletePlan(other)).toEqual([])
+    expect(removeInput(other)).toBe(true)
+    expect(c.endDate).toBe('Jul 14')
+  })
+  it('a give-back that would reach a locked week is refused whole: the upchit stays, the downchit stays cut', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Feb 5', endDate: 'Feb 10' })
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-02-06', end: '' }))).toBe(true)
+    expect(c.endDate || c.date, 'cut to its first day').toBe('Feb 5')
+    /* the week of Mon 9 Feb is quarantined (read only) — the days the delete would give back, Feb 6–10, reach into it */
+    stashPut('09/02/2026', 'null')
+    try {
+      const up = upOf()
+      expect(removeInput(up), 'refused').toBe(false)
+      expect(upOf(), 'the upchit is still there').toBeTruthy()
+      expect(c.endDate || c.date, 'and the downchit still cut').toBe('Feb 5')
+      expect(TOASTS.join(' '), 'and it says why').toMatch(/./)
+    } finally { stashClear() }
+  })
+  it('a non-upchit deleted gives nothing back', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 13', endDate: 'Jul 17' })
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-15', end: '' }))).toBe(true)
+    const hl = plant({ person: 'bane', type: 'HL', date: 'Jul 20', endDate: 'Jul 21' })
+    expect(upchitDeletePlan(hl)).toEqual([])
+    expect(removeInput(hl)).toBe(true)
+    expect(c.endDate).toBe('Jul 14')
   })
 })
 

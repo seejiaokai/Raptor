@@ -17,7 +17,7 @@ import { notify } from '../state/store'
 import { MEDMOVE, setMedMove } from './pops'
 import { MedClashConfirm } from './MedClashConfirm'
 import { UpchitConfirm } from './UpchitConfirm'
-import { commitEditMedChoices, commitEditUpchit, fmtDay, ordISO } from './inputedit'
+import { commitEditMedChoices, commitEditUpchit, fmtDay, ordISO, removeInput } from './inputedit'
 import { dateOrd } from '../engine/inputs'
 import { useVersion } from './useStore'
 
@@ -28,7 +28,10 @@ export function MedMoveConfirm() {
   const done = () => { setMedMove(null); notify() }
   /* re-resolved at Save by its iid — an undo under the open sheet may have reminted the rows */
   const row = () => INPUTS.find((x: any) => x.iid === m.iid)
-  const finish = (write: (r: any) => boolean) => {
+  /* in one batch with the write's own words: a leave the move or the delete now covers is cut by the Leave War's rules
+     inside the command, and their warning stays beside "Input deleted" / "Moved to …" (the fresh read of 18 Oct 26) */
+  const finish = (write: (r: any) => boolean) => HOOKS.toastBatch(() => finishNow(write))
+  const finishNow = (write: (r: any) => boolean) => {
     const r = row()
     if (!r) { HOOKS.toast('That input is no longer there — nothing was changed', 'warn'); return done() }
     /* a refusal inside the commit has already said why; only the gesture's own success words are said here. A DRAG
@@ -41,6 +44,12 @@ export function MedMoveConfirm() {
       if (said) HOOKS.toast(said, 'ok')
     }
     done()
+  }
+  /* THE QUESTION BEFORE AN UPCHIT IS DELETED from the Inputs calendar's opened day (owner D1022): the upchit sheet saying
+     what the delete gives back; its button deletes, Cancel leaves both as they were */
+  if (m.ask.kind === 'updel') {
+    return <UpchitConfirm who={m.ask.who} dateLabel={m.ask.dateLabel} effects={m.ask.effects} deleting
+      onCancel={done} onSave={() => finish(r => removeInput(r))} />
   }
   if (m.ask.kind === 'up') {
     return <UpchitConfirm who={m.ask.who} dateLabel={m.ask.dateLabel} effects={m.ask.effects}

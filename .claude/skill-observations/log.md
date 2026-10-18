@@ -1262,3 +1262,24 @@ Met again 2026-10-17: the [CONTEXT-START-SIZE] handoff (session-handoff, a day c
 **Suggested improvement:** In systematic-debugging's root-cause phase, for "X is off the screen / cut at the edge on a phone": first read `document.documentElement.scrollWidth` against the screen width in the exact view and state, with a phone-emulating context (isMobile); if it is wider, walk down from the page root to the child whose extent passes the edge before touching X's positioning.
 
 **Principle:** When an edge-anchored element is misplaced on a phone, measure whether the page itself has grown wider than the screen — the element may be correctly following a wrong viewport, and the fault lives in whatever overflowed.
+
+### Observation 637: In a jsdom render of the input window, the modal stays drawn after a delete closes it
+
+**Status:** OPEN
+**Date:** 2026-10-18
+**Session context:** his three follow-ups (D1022 — a deleted upchit gives its days back); a new unit test pressed the window's Delete
+**Skill:** New skill candidate: none — the project's test-writing notes (raptor-port/docs/walk-scripts.md or a test guide)
+**Type:** internal
+**Phase/Area:** writing unit tests that render InputsPage + InputEditor
+
+**Issue:** After the window's Delete (today's ordinary one included), the pop-up's record was let go (INPEDIT null) but
+`#inpEditDel` was still in the jsdom page, so an assertion "the window has closed" on the button failed and looked like a
+fault of the change. An older test (groupeditor) asserts on a test id the airpop form never carries, so it passed by not
+looking.
+
+**Suggested improvement:** a line in the project's test notes: in jsdom, assert a window's close on its pop-up state
+(INPEDIT) and leave "it leaves the screen" to the walk; never assert absence on a test id without first asserting it was
+present.
+
+**Principle:** A negative assertion proves nothing until it has seen its subject present; and a test world that does not
+repaint like the app is asked about state, not pixels.

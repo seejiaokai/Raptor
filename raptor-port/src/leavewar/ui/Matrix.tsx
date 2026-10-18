@@ -3242,7 +3242,7 @@ export function Matrix() {
                   (Auto-sort + Done) is gone. Lights accent (`.on`) while live so
                   it is obvious the handles are on and that tapping again leaves.
                   On a phone it is the ⇅ icon alone (the word rides `.rtlbl`,
-                  hidden ≤430px — "just show an arrow up and down icon"); desktop
+                  hidden ≤700px since D1019 — "just show an arrow up and down icon"); desktop
                   keeps the word. Admin only. */}
               <button
                 className={`rtbtn${arranging ? ' on' : ''}`}

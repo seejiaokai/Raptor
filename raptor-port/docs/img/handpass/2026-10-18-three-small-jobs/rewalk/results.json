@@ -1,0 +1,353 @@
+{
+ "results": [
+  {
+   "step": "L admin 390 wide: the card's buttons read the short words",
+   "ok": true,
+   "note": "OIL \"◷ OIL\", Rearrange \"⇅\"",
+   "pic": "01-L-admin-390.png"
+  },
+  {
+   "step": "L admin 390 wide: the card's head is one line with − and + on it, nothing past the edge",
+   "ok": true,
+   "note": "button middles [158,158,158,158,158,158], head 48px, zoom shown true, past the edge 0, page sideways 0; 19 rows of names on screen; grid padding 10px",
+   "pic": ""
+  },
+  {
+   "step": "L admin 430 wide: the card's buttons read the short words",
+   "ok": true,
+   "note": "OIL \"◷ OIL\", Rearrange \"⇅\"",
+   "pic": "02-L-admin-430.png"
+  },
+  {
+   "step": "L admin 430 wide: the card's head is one line with − and + on it, nothing past the edge",
+   "ok": true,
+   "note": "button middles [158,158,158,158,158,158], head 48px, zoom shown true, past the edge 0, page sideways 0; 22 rows of names on screen; grid padding 10px",
+   "pic": ""
+  },
+  {
+   "step": "L admin 431 wide: the card's buttons read the short words",
+   "ok": true,
+   "note": "OIL \"◷ OIL\", Rearrange \"⇅\"",
+   "pic": "03-L-admin-431.png"
+  },
+  {
+   "step": "L admin 431 wide: the card's head is one line with − and + on it, nothing past the edge",
+   "ok": true,
+   "note": "button middles [164,164,164,164,164,164], head 48px, zoom shown true, past the edge 0, page sideways 0; 21 rows of names on screen; grid padding 20px",
+   "pic": ""
+  },
+  {
+   "step": "L admin 431 wide: the grid's padding is the wider screens' (unchanged)",
+   "ok": true,
+   "note": "padding-left 20px",
+   "pic": ""
+  },
+  {
+   "step": "L admin 440 wide: the card's buttons read the short words",
+   "ok": true,
+   "note": "OIL \"◷ OIL\", Rearrange \"⇅\"",
+   "pic": "04-L-admin-440.png"
+  },
+  {
+   "step": "L admin 440 wide: the card's head is one line with − and + on it, nothing past the edge",
+   "ok": true,
+   "note": "button middles [164,164,164,164,164,164], head 48px, zoom shown true, past the edge 0, page sideways 0; 22 rows of names on screen; grid padding 20px",
+   "pic": ""
+  },
+  {
+   "step": "L admin 440 wide: the grid's padding is the wider screens' (unchanged)",
+   "ok": true,
+   "note": "padding-left 20px",
+   "pic": ""
+  },
+  {
+   "step": "L admin 600 wide: the card's buttons read the short words",
+   "ok": true,
+   "note": "OIL \"◷ OIL\", Rearrange \"⇅\"",
+   "pic": "05-L-admin-600.png"
+  },
+  {
+   "step": "L admin 600 wide: the card's head is one line with − and + on it, nothing past the edge",
+   "ok": true,
+   "note": "button middles [164,164,164,164,164,164], head 48px, zoom shown true, past the edge 0, page sideways 0; 23 rows of names on screen; grid padding 20px",
+   "pic": ""
+  },
+  {
+   "step": "L admin 600 wide: the grid's padding is the wider screens' (unchanged)",
+   "ok": true,
+   "note": "padding-left 20px",
+   "pic": ""
+  },
+  {
+   "step": "L admin 700 wide: the card's buttons read the short words",
+   "ok": true,
+   "note": "OIL \"◷ OIL\", Rearrange \"⇅\"",
+   "pic": "06-L-admin-700.png"
+  },
+  {
+   "step": "L admin 700 wide: the card's head is one line with − and + on it, nothing past the edge",
+   "ok": true,
+   "note": "button middles [164,164,164,164,164,164], head 48px, zoom shown true, past the edge 0, page sideways 0; 20 rows of names on screen; grid padding 20px",
+   "pic": ""
+  },
+  {
+   "step": "L admin 700 wide: the grid's padding is the wider screens' (unchanged)",
+   "ok": true,
+   "note": "padding-left 20px",
+   "pic": ""
+  },
+  {
+   "step": "L admin 701 wide: the card's buttons read the full words",
+   "ok": true,
+   "note": "OIL \"◷ OIL tracker\", Rearrange \"⇅ Rearrange\"",
+   "pic": "07-L-admin-701.png"
+  },
+  {
+   "step": "L admin 701 wide: the card's head is one line with − and + on it, nothing past the edge",
+   "ok": true,
+   "note": "button middles [224,224,224,224,224,224], head 48px, zoom shown true, past the edge 0, page sideways 0; 12 rows of names on screen; grid padding 20px",
+   "pic": ""
+  },
+  {
+   "step": "L admin 1440 wide: the card's buttons read the full words",
+   "ok": true,
+   "note": "OIL \"◷ OIL tracker\", Rearrange \"⇅ Rearrange\"",
+   "pic": "08-L-admin-1440.png"
+  },
+  {
+   "step": "L admin 1440 wide: the card's head is one line with − and + on it, nothing past the edge",
+   "ok": true,
+   "note": "button middles [198,198,198,198,198,198], head 48px, zoom shown true, past the edge 0, page sideways 0; 13 rows of names on screen; grid padding 20px",
+   "pic": ""
+  },
+  {
+   "step": "L member 440 wide: the card's buttons read the short words",
+   "ok": true,
+   "note": "OIL \"◷ OIL\", Rearrange \"\"",
+   "pic": "09-L-member-440.png"
+  },
+  {
+   "step": "L member 440 wide: the card's head is one line with − and + on it, nothing past the edge",
+   "ok": true,
+   "note": "button middles [163,163,163,163], head 47px, zoom shown true, past the edge 0, page sideways 0; 22 rows of names on screen; grid padding 20px",
+   "pic": ""
+  },
+  {
+   "step": "L member 440 wide: the grid's padding is the wider screens' (unchanged)",
+   "ok": true,
+   "note": "padding-left 20px",
+   "pic": ""
+  },
+  {
+   "step": "L member 701 wide: the card's buttons read the full words",
+   "ok": true,
+   "note": "OIL \"◷ OIL tracker\", Rearrange \"\"",
+   "pic": "10-L-member-701.png"
+  },
+  {
+   "step": "L member 701 wide: the card's head is one line with − and + on it, nothing past the edge",
+   "ok": true,
+   "note": "button middles [223,223,223,223], head 47px, zoom shown true, past the edge 0, page sideways 0; 12 rows of names on screen; grid padding 20px",
+   "pic": ""
+  },
+  {
+   "step": "E0 the \"Every Thursday\" window is up",
+   "ok": true,
+   "note": "win-every shown",
+   "pic": ""
+  },
+  {
+   "step": "E1 the From box opens the calendar",
+   "ok": true,
+   "note": "dcal-card shown",
+   "pic": ""
+  },
+  {
+   "step": "E1 the title opens the month and year lists",
+   "ok": true,
+   "note": "lists shown true",
+   "pic": "11-E1-lists-open.png"
+  },
+  {
+   "step": "E2 the first Escape shuts only the lists; the calendar and the window stay; the keyboard on the title",
+   "ok": true,
+   "note": "{\"lists\":false,\"card\":true,\"win\":true,\"ae\":\"dcal-title\"}",
+   "pic": "12-E2-first-escape.png"
+  },
+  {
+   "step": "E3 the second Escape closes the calendar; the window stays; the keyboard back on the From box",
+   "ok": true,
+   "note": "{\"card\":false,\"win\":true,\"ae\":\"every-from\"}",
+   "pic": "13-E3-second-escape.png"
+  },
+  {
+   "step": "E4 the third Escape closes the \"Every\" window; the Calendar window behind stays",
+   "ok": true,
+   "note": "{\"win\":false,\"days\":true}",
+   "pic": "14-E4-third-escape.png"
+  },
+  {
+   "step": "E5 lists shut by the title first: one Escape then closes the calendar (nothing left to shut first)",
+   "ok": true,
+   "note": "lists shut by the title true",
+   "pic": ""
+  },
+  {
+   "step": "U0 the calendar is on October 2026, Warden has nothing that week",
+   "ok": true,
+   "note": "OCTOBER 2026",
+   "pic": ""
+  },
+  {
+   "step": "U0 set-up: ATT C Mon–Tue (cut by the upchit), Upchit Wed",
+   "ok": true,
+   "note": "ATT C 19,20, Upchit 21",
+   "pic": "15-U0-set-up.png"
+  },
+  {
+   "step": "U1a the upchit opens from its bar",
+   "ok": true,
+   "note": "the window is open",
+   "pic": ""
+  },
+  {
+   "step": "U1b Delete puts up the upchit sheet: \"Deleting this upchit will … ATT C Oct 19 – Oct 20 → now ends Oct 23, its days given back\", no fit line, a red \"Delete upchit\"",
+   "ok": true,
+   "note": "sheet: Upchit — Warden, Oct 21 ✕ DELETING THIS UPCHIT WILL ATT C Oct 19 – Oct 20 → now ends Oct 23, its days given back Cancel Delete upchit",
+   "pic": "16-U1-delete-sheet.png"
+  },
+  {
+   "step": "U1c its button is the red one",
+   "ok": true,
+   "note": "class abtn danger",
+   "pic": ""
+  },
+  {
+   "step": "U1d nothing has changed while it asks",
+   "ok": true,
+   "note": "ATT C 19,20, Upchit 21",
+   "pic": ""
+  },
+  {
+   "step": "U1e Cancel: the sheet gone, the window still open, both as they were",
+   "ok": true,
+   "note": "window open true; ATT C 19,20, Upchit 21",
+   "pic": "17-U1-after-cancel.png"
+  },
+  {
+   "step": "U2 \"Delete upchit\": the upchit gone, ATT C back to Mon–Fri, the window closed",
+   "ok": true,
+   "note": "window and sheet gone true; note \"\"; ATT C 19,20,21,22,23, Upchit none",
+   "pic": "18-U2-after-delete.png"
+  },
+  {
+   "step": "U3a Undo once: the upchit back on Wed and the ATT C cut to Mon–Tue again",
+   "ok": true,
+   "note": "ATT C 19,20, Upchit 21",
+   "pic": "19-U3-after-undo.png"
+  },
+  {
+   "step": "U3b Redo: deleted again, ATT C Mon–Fri",
+   "ok": true,
+   "note": "ATT C 19,20,21,22,23, Upchit none",
+   "pic": "20-U3-after-redo.png"
+  },
+  {
+   "step": "U4-0 set-up by Undo: upchit Wed, ATT C Mon–Tue",
+   "ok": true,
+   "note": "ATT C 19,20, Upchit 21",
+   "pic": ""
+  },
+  {
+   "step": "U4a Delete on the line puts up the same sheet, in place of the one-line question",
+   "ok": true,
+   "note": "line found 1; one-line question 0; sheet: Upchit — Warden, Oct 21 ✕ DELETING THIS UPCHIT WILL ATT C Oct 19 – Oct 20 → now ends Oct 23, its days given back Cancel Delete upchit",
+   "pic": "21-U4-day-delete-key-sheet.png"
+  },
+  {
+   "step": "U4b \"Delete upchit\": gone, ATT C Mon–Fri; the day stays open",
+   "ok": true,
+   "note": "day open true; ATT C 19,20,21,22,23, Upchit none",
+   "pic": "22-U4-after.png"
+  },
+  {
+   "step": "U5-0 set-up: Piston ATT C Mon–Tue, upchit Wed",
+   "ok": true,
+   "note": "ATT C 19,20, Upchit 21",
+   "pic": ""
+  },
+  {
+   "step": "U5a the hand edit stuck: ATT C Mon 19 only",
+   "ok": true,
+   "note": "ATT C 19, Upchit 21",
+   "pic": ""
+  },
+  {
+   "step": "U5b nothing to give back: Delete deletes at once, no sheet (D792)",
+   "ok": true,
+   "note": "sheet 0; ATT C 19, Upchit none",
+   "pic": "23-U5-delete-at-once.png"
+  },
+  {
+   "step": "U5c a downchit’s Delete key still asks its one-line question, not the upchit sheet",
+   "ok": true,
+   "note": "one-line question 1; upchit sheet 0",
+   "pic": "24-U5-downchit-question.png"
+  },
+  {
+   "step": "U6-0 set-up on the phone: Cinch ATT C Mon–Tue, upchit Wed",
+   "ok": true,
+   "note": "ATT C 19,20, Upchit 21",
+   "pic": ""
+  },
+  {
+   "step": "U6a on a phone the sheet is on the screen, its words whole, its button under the finger",
+   "ok": true,
+   "note": "box 22..368 x 318..526 of 390x844; clipped []; sideways 0; a finger on the button meets it true; sheet: Upchit — Cinch, Oct 21 ✕ DELETING THIS UPCHIT WILL ATT C Oct 19 – Oct 20 → now ends Oct 23, its days given back Cancel Delete upchit",
+   "pic": "25-U6-phone-delete-sheet.png"
+  },
+  {
+   "step": "U6b deleted by a tap: ATT C Mon–Fri",
+   "ok": true,
+   "note": "ATT C 19,20,21,22,23, Upchit none",
+   "pic": "26-U6-phone-after.png"
+  },
+  {
+   "step": "U7-0 after a reload Warden still reads ATT C Mon–Fri with no upchit",
+   "ok": true,
+   "note": "ATT C 19,20,21,22,23, Upchit none",
+   "pic": ""
+  },
+  {
+   "step": "U7-1 Saber has nothing on file 13–19 Jul",
+   "ok": true,
+   "note": "[]",
+   "pic": ""
+  },
+  {
+   "step": "U7a set-up on July: Saber ATT C 16 only, upchit 17 (the published Jul 18 no longer covered)",
+   "ok": true,
+   "note": "ATT C 16, Upchit 17; the published day has changes waiting: false",
+   "pic": ""
+  },
+  {
+   "step": "U7b the sheet says the ATT C now ends Jul 18",
+   "ok": true,
+   "note": "sheet: Upchit — Saber, Jul 17 ✕ DELETING THIS UPCHIT WILL ATT C Jul 16 → now ends Jul 18, its days given back Cancel Delete upchit",
+   "pic": "27-U7-published-sheet.png"
+  },
+  {
+   "step": "U7c deleted: ATT C 16–18, and the published Jul 18 goes from nothing waiting to \"1 pending · Not yet signed\" (D178, D103)",
+   "ok": true,
+   "note": "ATT C 16,17,18, Upchit none; its heading before: \"Saturday Jul 18 Templates Live working copy ▾ ORIG 0 X 0 X 0 7 changes i Unpublish\" — after: \"Saturday Jul 18 Templates Live working copy ▾ ORIG Not yet signed 0 X 0 X 0 1 pending i Publish AL1 Unpublish\"",
+   "pic": "28-U7-published-after.png"
+  },
+  {
+   "step": "U7d Edit Schedule: the published Jul 18's head reads a change waiting (RECORD its words)",
+   "ok": true,
+   "note": "head: Saturday Jul 18 Templates Live working copy ▾ ORIG Not yet signed 0 X 0 X 0 1 pending i Publish AL1 Unpublish",
+   "pic": "29-U7-editsched-published-day.png"
+  }
+ ],
+ "problems": []
+}
