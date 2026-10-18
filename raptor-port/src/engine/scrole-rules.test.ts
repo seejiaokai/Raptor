@@ -130,6 +130,6 @@ describe('the typed B (the SC in-time) follows the toggle', () => {
     const w = tueWarns('stuff').find((x: any) => x.code === 'CREW_REST')
     expect(w, 'flipped MAIN, the 05:00 in-time is his report time').toBeTruthy()
     expect(w.sev).toBe('hard')
-    expect(w.msg).toContain('SC AM starts 05:00')
+    expect(w.msg).toContain("SC AM's in-time is 05:00")
   })
 })

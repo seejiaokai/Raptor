@@ -614,15 +614,22 @@ export function exemptLineOwn(di:any,key:any,id:any,off?:any){
   const w=((DAYS[+m[1]]||{}).waves||[])[+m[2]], f=w&&(w.formations||[])[+m[3]], a=f&&(f.aircraft||[])[+m[4]];
   if(!w||!f||!a||!saExempt(w,f,a))return undefined;
   if(((PV||off)&&!OFW)||!id)return null;   /* official face shows these flags too (Codex CRPF-008) */
-  const fkey=`${m[1]}.${m[2]}.${m[3]}`, g=WARN.byDay[di];
+  const fkey=`${m[1]}.${m[2]}.${m[3]}`, akey=`${fkey}.${m[4]}`, g=WARN.byDay[di];
+  /* an ABSENCE is the exempt seat's own only when it is anchored on the formation (an SC SPARE's own warning) or on this
+     very jet — never on another seat of the formation: one man in an SC line's MAIN and SPARE, on local leave, has his
+     MAIN seat flagged (rightly), and the SPARE puck borrowed that ring and C off the shared key prefix, though local
+     leave may stand a spare ([SC-SPARE-RING-BORROWS], Astra's read of D605, F3). The currency and two-places matches
+     keep the whole formation, as before. */
+  const absence=(code:any)=>code==='DNIF_FLY'||code==='LEAVE_FLY';
+  const placeOf=(code:any,k:any)=>{const s=String(k||''); if(!s)return false;
+    return absence(code)?(s===fkey||s===akey||s.indexOf(akey+'.')===0):(s===fkey||s.indexOf(fkey+'.')===0);};
   const hit=shownWarns(g&&g.warns).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='SC_QUAL'||x.code==='DOUBLE_BOOK'||x.code==='QUAL')   /* never a hidden one (D469) */
     /* also `x.also`, so the SECOND place of a one-man-two-places pair
        rings when it sits in a DIFFERENT wave (an AVALON seat + a BB
        seat): the clash anchors on the first place, the other in `also`
        — same match the exempt DESK puck already makes (7 Sep 26). A
        same-formation pair already rings off the shared key prefix. */
-    &&(x.who||[]).includes(id)&&(x.key===fkey||String(x.key||'').indexOf(fkey+'.')===0
-      ||x.also===fkey||String(x.also||'').indexOf(fkey+'.')===0));
+    &&(x.who||[]).includes(id)&&(placeOf(x.code,x.key)||placeOf(x.code,x.also)));
   return hit?((hit.code==='SC_QUAL'||hit.code==='QUAL')?'Q':'C'):null;
 }
 /* one crew position inside a list cell (programme / duties / sims / ground).

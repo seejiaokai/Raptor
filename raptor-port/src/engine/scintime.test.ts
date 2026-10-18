@@ -19,6 +19,7 @@ import { DAYS } from './data'
 import { INPUTS } from './inputs'
 import { validate, WARN, workSpan, dayEvents } from './validate'
 import { makeStandalone } from './waves'
+import { PEOPLE } from './people'
 
 const TUE = 1
 
@@ -56,7 +57,7 @@ describe('an SC line reads its B box as the in-time', () => {
     const cr = scBreach()
     expect(cr, 'the earlier in-time deepens the breach').toBeTruthy()
     expect(cr.sev).toBe('hard')
-    expect(cr.msg).toContain('SC AM starts 05:00')
+    expect(cr.msg).toContain("SC AM's in-time is 05:00")   // [SC-INTIME-REST-WORDS]: the typed B is the in-time, not the shift's start
     expect(cr.msg).toContain('7h30 rest')
   })
 
@@ -154,5 +155,38 @@ describe('anything cutting the B→TO window advises', () => {
     ;(DAYS[TUE] as any).waves.pop()
     addSCFor('split', '05:00', true)
     expect(advs('split'), 'a spare reports nowhere').toEqual([])
+  })
+})
+
+/* [SC-BLANK-SHIFT-QUAL] (6 Oct 26): an SC line whose shift times were cleared has no day or night to tell — it asked
+   for NIGHT currency and printed "(NaN:NaN–NaN:NaN)". With no usable shift window nothing is said about the kind. */
+describe('an SC line with its shift times cleared', () => {
+  it('asks no day or night currency and prints no broken clock', () => {
+    const p: any = PEOPLE['stuff'], keep = JSON.stringify(p.quals)
+    try {
+      p.quals.scDay = true; p.quals.scNight = false
+      const w: any = makeStandalone('sc')
+      w.formations[0].to = ''; w.formations[0].ld = ''
+      w.formations[0].aircraft[0].p = 'stuff'
+      ;(DAYS[TUE] as any).waves.push(w)
+      validate()
+      const g: any = WARN.byDay.find((x: any) => x.di === TUE)
+      const ws: any[] = (g && g.warns) || []
+      expect(ws.filter(x => x.code === 'SC_QUAL' && (x.who || []).includes('stuff')), 'no currency asked').toEqual([])
+      expect(ws.map(x => x.msg).join(' '), 'no broken clock').not.toContain('NaN')
+    } finally { p.quals = JSON.parse(keep) }
+  })
+  it('a timed night shift still asks night currency of a day-only man (the control)', () => {
+    const p: any = PEOPLE['stuff'], keep = JSON.stringify(p.quals)
+    try {
+      p.quals.scDay = true; p.quals.scNight = false
+      const w: any = makeStandalone('sc')
+      w.formations[0].to = '19:00'; w.formations[0].ld = '23:00'
+      w.formations[0].aircraft[0].p = 'stuff'
+      ;(DAYS[TUE] as any).waves.push(w)
+      validate()
+      const g: any = WARN.byDay.find((x: any) => x.di === TUE)
+      expect(((g && g.warns) || []).some((x: any) => x.code === 'SC_QUAL' && (x.who || []).includes('stuff'))).toBe(true)
+    } finally { p.quals = JSON.parse(keep) }
   })
 })
