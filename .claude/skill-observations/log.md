@@ -1370,3 +1370,18 @@ prove each by acting through it after the rollback, not by reading what it shows
 **Suggested improvement:** In "The Method", before step 1: "When the decision being drawn was made from a picture (his screenshot, a marked picture), find and open that picture first — the ruling's words name the surface as he calls it, which may not be the app's own name for it. Say on the page which surface you read his words as, and why."
 
 **Principle:** The artifact a decision was made from outranks the words it was recorded in; a user's name for a screen is not the system's name for it.
+
+### Observation 643: The overnight guide stops at 90% weekly; his aim is to use the allowance up before the reset (D1033)
+
+**Status:** OPEN
+**Date:** 19 Oct 26
+**Session context:** the handoff into an /overnight build of [RALLY-PER-FORMATION], weekly allowance at 83%
+**Skill:** overnight
+**Type:** internal
+**Phase/Area:** the run's stop rules ("Stop starting new jobs … when the weekly figure passes 90%")
+
+**Issue:** Told that his weekly allowance was at 83% with the reset about 13 hours away, he answered "I don't mind using up the usage. Thats my objective before the reset" (D1033). The guide's stop at 90% would end the night early and leave allowance unused that resets anyway.
+
+**Suggested improvement:** In the stop rules: "when the weekly figure passes 90% AND the weekly reset is after the run's end; where the reset falls before the run would end, keep starting jobs (D1033) — commit, push and write the block after each step so the limit never strands work." Changed only with its reads (D70).
+
+**Principle:** Allowance that resets unused is not saved; a stop rule for a budget should know when the budget refills.

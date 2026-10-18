@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1033 | 19 Oct 26 | Using up his weekly allowance before it resets is his aim: work is not held back, cut down or stopped early to save allowance that would reset anyway; the agent still reads and reports the figure, and commits, pushes and writes the state into the repo before the limit can stop it. |
 | D1024 | 18 Oct 26 | The backlog's priority list shows only what is really open, one line an item, grouped by area; finished work leaves it for the archive, and the stories of how work went live stay in git, the evidence sheets and the archive. |
 | D994 | 18 Oct 26 | The questions the backlog keeps for him are not put to him until he says so; meanwhile the agent goes on with work that needs no answer or look from him. |
 | D991 | 18 Oct 26 | Speed is part of how good the app feels — for motion, its frame rate: a scroll, and what a finger moves with it, should run as smoothly as the phone and browser allow, and a new design is judged by that as well as by how it looks. |
