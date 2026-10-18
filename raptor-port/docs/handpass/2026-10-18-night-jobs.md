@@ -58,3 +58,32 @@ in S5 the file's other charts already existed and "Replace it" was chosen.
 whole set runs once the night's next job is built (D902 does not apply — the pull request's set has not passed yet).
 
 Walk: docs/handpass/2026-10-18-night-jobs.md (job 2) · 14 pictures · 2 surfaces (the OIL tracker and breakdown, Tracker File → Import) · 2 orders (member, admin) · MISSING: none
+
+## Job 3 — D1000, D1016: the Leave War's top takes the phone's two lines up to 700 wide
+
+**The eight questions:** none of 1, 2, 3, 7, 8; a new gesture or surface — no (the phone's own top, already built and
+checked, reaching wider screens); a shared drawer — no (one page's top). Layout of one surface at many widths — the walk
+ledger's type E. **Tier: WALK** (the bug-check order's "a wide visual change"), sized to the widths the change moves:
+390, 430, 440, 600, 700, 701, a resize across, an admin and a member; the stage menu both ways; the grid card proven
+unchanged. **Roll-call** — every place the top's phone switch draws: the Period line (Chrome.tsx `Topbar`), the Stage
+line and its menu (`Filters`), chrome.css's top block — has it; the grid card (its short words, its padding) and the
+Required panel (ReqPanel.tsx's own 430) — must not, because D1000 says "the grid unchanged" (proved by S6 and the
+browser test). **Red first:** the browser test at 440 failed on the old layout ("no label word is left on a phone"),
+passes on the new; the Leave War browser file 333 / 333 and the top's tests 15 / 15; unit 55 / 55.
+
+### The walk — Sonnet walker, `scripts/handpass/night1018-job3-walk.mjs`, the built app; report as returned
+All 28 assertions PASS; no console error, page error or 4xx. Pictures `img/handpass/2026-10-18-night-job3/` (27).
+| Step | Result | What was seen (picture) |
+|---|---|---|
+| S1 admin 440 | PASS | two lines, nothing overlapping or past the edge, no sideways scroll; first roster row at 469 (was 564); the top's edge 20px, the card's too; matches the approved picture (01) |
+| S2 admin 600 | PASS | the same; first row at 434; matches the picture but for the 20px edge D1016 asked for (02 — opened by the host) |
+| S3 | PASS | 700 two lines (03); 701 the desktop strip, every label, "+ New", both moves (04) |
+| S4 440 and 600 | PASS (8) | the stage menu holds both moves; "→ BIDDING CLOSED" moves the stage and closes the menu; back again; a tap outside closes it and changes nothing (05–14) |
+| S5 member 600 | PASS | two lines, no "+", the stage a plain label that opens nothing (15) |
+| S6 440 and 600 | PASS | the grid card still reads "⇅ Rearrange" and "◷ OIL tracker"; its padding 14px 20px 28px at 440, 600 and 701 (8px 10px 20px at 430); at 440 its − / + wrap inside the card, as before (16, 17) |
+| S7 390 | PASS | two lines, the 10px edge (18) |
+| S8 resize | PASS | 600 → 960 the desktop strip, nothing half-drawn; back at 600 the first row at 434 again (19–21) |
+| B1 | PASS | the menu open at 600, resized to 900: no menu, no scrim, the desktop strip (22, 23) |
+| B2 | PASS (4) | the longest real callsign fits whole at 440 and 390; a 30-letter callsign put into the page text (a simulation) ends "…", "Viewing as" whole, nothing past the edge (24–27) |
+
+Walk: docs/handpass/2026-10-18-night-jobs.md (job 3) · 27 pictures · 1 surface (the Leave War's top) at 9 widths · 2 orders (admin, member) · MISSING: none
