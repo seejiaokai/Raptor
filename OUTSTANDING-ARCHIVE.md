@@ -5221,3 +5221,32 @@ job, after D994's small fixes unless he says otherwise.
 **Not designed — a picture first.** Its flex part goes when the flex switch (D1006) is off. The note: as above. **Place:** with
 [TRK-DOWN-DAYS-AUTO], the next Tracker job.
 
+
+*Moved here 2026-10-18 by backlog-archive.mjs ([LW-CARD-SHORT-WORDS-700]). Forward facts: `raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`.*
+
+### [LW-CARD-SHORT-WORDS-700] From 431 to 700 wide the Leave War grid card's buttons take the phone's short words — RULED D1019 (18 Oct 26); to build — OPEN
+**BUILT 18 Oct 26 on `claude/three-small-jobs-1018`** — the short words up to 700 (`leavewar/ui/chrome.css`); its check `raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`. Leaves for the archive once live.
+**What:** the grid card's "Reorder" and "OIL" buttons read "⇅" and "OIL" (the phone's short-words rule) up to 700 wide, so
+"−" and "+" stay on the first line; the grid's columns unchanged. Picture: `raptor-port/docs/img/handpass/2026-10-18-lw-top-700/6-440-proposed-short-words.png`
+(at 440: 22 rows of names, 5 more than before the night). **Where:** the card's rules in `raptor-port/src/leavewar/ui/chrome.css`
+kept at 430 (the night's job 3) move to 700 for the buttons only. **Place:** one small job with [DATEBOX-ESC-LISTS] and
+[UPCHIT-DELETE-REGROW], once pull request 534 is live. Check: WALK (layout at many widths).
+
+
+*Moved here 2026-10-18 by backlog-archive.mjs ([DATEBOX-ESC-LISTS]). Forward facts: `raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`.*
+
+### [DATEBOX-ESC-LISTS] The calendar floating over a date box: Escape shuts its month and year list first — RULED D1020 (18 Oct 26); to build — OPEN
+**BUILT 18 Oct 26 on `claude/three-small-jobs-1018`** — Escape over a date box shuts the lists first (`ui/DateBox.tsx`), its test changed with it; the check `raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`. Leaves for the archive once live.
+**What:** as the calendars inside a form now do (D1012, built the night of 18 Oct 26): with the month or year list open,
+Escape closes only the list; a second Escape closes the calendar. The test that pins today's behaviour
+(`raptor-port/src/ui/datebox.test.tsx`) changes with it. **Place:** with [LW-CARD-SHORT-WORDS-700]. Check: LOOK plus its tests.
+
+
+*Moved here 2026-10-18 by backlog-archive.mjs ([UPCHIT-DELETE-REGROW]). Forward facts: `raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`.*
+
+### [UPCHIT-DELETE-REGROW] A deleted upchit gives the downchit it cut its days back — RULED D1022 (18 Oct 26); to build — OPEN
+**BUILT 18 Oct 26 on `claude/three-small-jobs-1018`** — `engine/medical.ts upchitDeletePlan` (one give-back body with D999), written in `removeInput`'s command; the window's Delete and the opened day's Delete key ask on the upchit sheet first; the check `raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`. Leaves for the archive once live.
+**What:** as a moved one does (D999, built the night of 18 Oct 26): the downchit grows back to the end it had before the
+cut, never past it and never into another medical of his in the gap; the save sheet says so first. Builds on the kept
+first end (`firstEnd`) and the give-back plan in `raptor-port/src/engine/medical.ts`. **Place:** with
+[LW-CARD-SHORT-WORDS-700]. Check: FULL (saved data); a fresh blind Opus read.
