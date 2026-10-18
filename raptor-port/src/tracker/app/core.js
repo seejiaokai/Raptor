@@ -5302,6 +5302,9 @@ export async function addStudent() {
            of this course already has his, course start and all, and keeps it; the rest of a new pace is the default
            loadStudent gives a student with none (the course plan's pace, else 2 a week) */
         if (!paceRead && isWholeDay(start.value)) { pace[r.id] = { epw: plan.epw ?? 2, target: plan.target ?? null, target2: plan.target2 ?? null, courseStart: start.value }; savePace(r.id); }
+        /* a pace already kept for him (another chart of the course, an older backup) with NO course start takes the day
+           picked here; one already set still wins (the fresh read of job 7, 1 — it was dropped without a word) */
+        else if (isWholeDay(start.value) && !(pace[r.id] && pace[r.id].courseStart)) { pace[r.id] = { ...paceOf(r.id), courseStart: start.value }; savePace(r.id); }
       } else if (link && !r.pid) { r.pid = link; saveRoster(); }
       active = r.id; refreshActive(); renderBoard(); renderSide();
     });
@@ -7126,6 +7129,7 @@ export async function importClick() {
       if (f.on !== cur.on || f.from.some((v, i) => v !== cur.from[i])) {
         if (!mayChangeFlex()) flexIn = 'refused';
         else if ((await setFlexSetting(f)).ok) flexIn = 'restored';
+        else flexIn = 'failed';      /* said in the closing note, not swallowed (the fresh read of job 7, 3) */
       }
     }
   }
@@ -7164,7 +7168,8 @@ export async function importClick() {
   if (what) setSaveStatus(what, 'ok');
   const skip = (skipped.length ? '\n\nSkipped, left as they are here: ' + skipped.join(', ') + '.' : '')
     + (keptDeleted.length ? '\n\nDeleted, as in the backup: ' + keptDeleted.join(', ') + ' (↺ Restore in ⇅ Reorder brings ' + (keptDeleted.length === 1 ? 'it' : 'them') + ' back).' : '')
-    + (flexIn === 'refused' ? '\n\nFlex settings not brought in: only an admin can change them.' : '');
+    + (flexIn === 'refused' ? '\n\nFlex settings not brought in: only an admin can change them.' : '')
+    + (flexIn === 'failed' ? '\n\nFlex settings not brought in: they could not be saved. Set them again in ⚙.' : '');
   await uiAlert((what
     ? what.charAt(0).toUpperCase() + what.slice(1) + '.\n\n' + (people ? 'It is saved.' : 'Everyone’s marks are untouched. It is saved.')
     : 'Nothing was brought in.') + skip);

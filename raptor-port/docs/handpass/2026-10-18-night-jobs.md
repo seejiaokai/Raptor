@@ -251,3 +251,31 @@ Walker's notes: on the phone the upchit's bar shows only the man's name, no "Upc
 "as of 13 Jul", the demo's today.
 
 Walk: docs/handpass/2026-10-18-night-jobs.md (job 6) · 21 pictures · 4 surfaces (the input window and its save sheet, the calendar drag, the phone, the Medical tab) · 3 orders (forward, Undo/Redo, by hand first) · MISSING: none
+
+## Job 7 — the Tracker: D1004 (no down days in the currency bar), D1007 (the legend), D1006/D1014 (the flex settings), D1002/D1003/D1005 (the down days from the Inputs), all with D1018
+
+**The eight questions:** saved data — YES (a flex setting row; a course start in `pace`; the export/import file); roles —
+YES (the Tracker's one admin gate, D1014); a new surface — yes (the legend, the flex window, the down-days window).
+**Tier: FULL.** Built in four commits (32ad203b8, 2d70cba46, bac862795, 77c1aee9e, with a type fix 0f1224a8b); steps (b),
+(c), (d) by Opus helpers to a written spec, each diff read, tested and committed by the host as its own. Red first: D1004's
+test and the down days' 20 tests failed first; the legend's and the flex settings' tests were written after the code (the
+walk and the read carry them). Tracker unit tests 535 / 535; typecheck and build clean.
+
+### The fresh, blind Opus read — report, as returned (condensed only where it repeated)
+No serious findings. 1. A course start picked in "+ Add" was silently dropped when the man already had a stored pace
+without one (another chart of the course, an older backup) — `addStudent` wrote it only when no pace was read. Fix: take
+the picked day where the kept pace has no course start. 2. Flex off still left a flex word on screen: the Legend button's
+tooltip "What the balls, bars and flex mean". Fix: without "flex" when flex is off. 3. Note: an admin's import whose flex
+settings fail to save said nothing. Checked and sound: the flex setting's save, read-back, boot, remote change and rolled-back
+write; a member refused at all three doors (the window and setter by the sign-in role — the admin's member view counts as a
+member; the command gate; the ownership check); a member's import refuses only the flex part; the standalone Tracker as
+D121; the bands at their edges; every flex surface behind `flexOn`; the backup file (written only with every chart; an older
+file unchanged; a damaged block refuses the file before anything is written); the down days clipped to the course start
+and today, halves as ½, the cut line only with a kept first end, an unlinked student "—"; the bridge channel's change
+guard; nothing reads the removed boxes; the chart's ball drawing byte-for-byte as before; no test re-pointing lost an
+assertion. Not findings: cancelled medical inputs counted (a cancel mark is set only on ground-programme rows, never a
+medical one); overlapping medical inputs counted twice only in stored demo data (filing trims or refuses an overlap, D56).
+**All three fixed** (the picked day kept; the tooltip without "flex" when off; "Flex settings not brought in: they could not
+be saved. Set them again in ⚙."). Tracker 535 / 535. Owed: a unit test pinning fix 1 (the walk carries it tonight). New
+words, for his look: "What the balls and bars mean", the failed-flex line, "No medical inputs since the course start.", the
+number's spoken "none counted yet".

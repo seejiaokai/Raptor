@@ -110,7 +110,7 @@ export default function Legend() {
   return (
     <>
       <button className={'sm' + (open ? ' primary' : '')} id="legendBtn" ref={btn} data-testid="trk-legend-open"
-        title="What the balls, bars and flex mean" aria-haspopup="dialog" aria-expanded={open} aria-controls="trkLegend"
+        title={core.flexOn() ? 'What the balls, bars and flex mean' : 'What the balls and bars mean'} aria-haspopup="dialog" aria-expanded={open} aria-controls="trkLegend"
         onClick={() => (open ? close() : setOpen(true))}>Legend</button>
       {open ? (
         <>
