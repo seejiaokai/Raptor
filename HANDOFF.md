@@ -93,10 +93,20 @@ the later merge keeps both (D78).
   names the request's own kind; a course filed as a course reads "already on CSE".
 - **Branch:** `claude/schedule-amendments-fixes-fffce0`; no pull request yet. The preview server `sched-fixes-walk`
   (`.claude/launch.json`, port 4240) serves the frozen walk build — stop it when the walk and re-walk are done.
-- **Running when written (19 Oct 26):** re-walkers E (share R1) and F (share R2) on 4240, and the fresh blind Opus code
-  read (report to `docs/superpowers/briefs/2026-10-19-sched-fixes-read-report.md`, or returned as text). If this chat
-  was compacted or replaced while they ran, their reports may be in `docs/handpass/parts/2026-10-19-sched-fixes-rewalk-*.md`
-  and that report file — read them there; a walker whose file is missing is walked again.
+- **Re-walk F: 31 PASS, 0 FAIL, 2 RECORDED** (sheet and pictures committed). Its surprise, TO JUDGE: after Undo of a B
+  edit on a PUBLISHED day the box still showed the typed time while the stored value was blank (board 1440 and phone,
+  and the week) — possibly the stuck caret mark (F1, now fixed): check it on the next build before anything else.
+  S3-16 RECORDED: a crew-list puck held near the top of the pane on a phone on its side never scrolls it (a seat's
+  puck does once the finger moves) — older than the batch; file it if the next build shows the same.
+- **The read's three findings are FIXED, each red first:** F1 `b2797b27f` (the mark never sticks —
+  `src/ui/textcaret.test.ts`), F2 `5a20cccfe` (the pressed line moves — `rowdrag.test.tsx`), F3 `f9cdafcdb` (only a
+  real resize re-lands — `pan.test.tsx`). Its smaller notes (a grip's save opening a window; the Tab route finding a
+  button by its words; the edge scroll's speed past the pane) are older or wording — put on the sheet, not built.
+- **Next, in order:** the gates under the lock; a new frozen build; a SHORT re-walk (the host or one walker) of F1–F3's
+  surfaces and the Undo-stale-box surprise; a narrow fresh read of the fix commits since `a906c7d37` (order §5 "a fix is
+  new code"); finish the evidence sheet (the `Walk:` line, the ledger row); docs (ui-contracts §In-time lines, §the
+  changes window; feature-impact; the behaviour register / rulecheck for D593 D594); archive each finished item by
+  script; [NO-ASTRA-LIST] line; the pull request, the preview link and pictures; his look.
 - **Re-walk E: 21 / 21 PASS** (sheet and pictures committed). **The fresh read is IN** —
   `docs/superpowers/briefs/2026-10-19-sched-fixes-read-report.md`: F1 HIGH (new) `ui/textedit.ts ARRIVING` can stick —
   no clear on `pointercancel` (a finger that lands on a box then scrolls), kept on a null `relatedTarget`, and a clear
@@ -106,7 +116,7 @@ the later merge keeps both (D78).
   stop if the pressed row has gone, read the address, then redraw and find the grip again. F3 (new) `ui/pan.ts` snaps the
   week on Shell's fake `saveBand` resize; fix: snap only when the window's width really changed. **These three are the
   step in hand** (each red first), then re-walk F's report, the evidence sheet, docs, archive, the pull request.
-- **Pick up here:** F1–F3 of the read, then re-walk F's report.
+- **Pick up here:** the gates, then the short re-walk ("Next, in order" above).
 - **Opening line:** Switch this chat to the branch `claude/schedule-amendments-fixes-fffce0`: `git fetch origin`, `git switch claude/schedule-amendments-fixes-fffce0`, `git branch -u origin/claude/schedule-amendments-fixes-fffce0`, `git pull --ff-only` (if the switch is refused because another checkout holds the branch, release it there only if that folder has no uncommitted changes and is on the same commit as `origin/claude/schedule-amendments-fixes-fffce0`, then `git -C <that folder> switch --detach` and switch again; otherwise stop and tell me). Read `HANDOFF.md` — the `claude/schedule-amendments-fixes-fffce0` block under `## Now` — then finish the FULL bug check it describes, with pictures; browser tests on an E2E_PORT checked free. Nothing merges without my "merge live".
 <!-- /now -->
 
