@@ -20,30 +20,32 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/sched-fixes-handoff -->
-### `claude/sched-fixes-handoff` — the handoff after D994's Schedule and amendments batch went LIVE, written 19 Oct 26 — verify before use
-- **Where it started:** the batch's chat (`claude/schedule-amendments-fixes-fffce0`) finished its FULL check and he said
-  "merge live"; this branch only replaces that chat's block, which still read "waiting for merge live".
-- **Shipped:** pull request 538 MERGED 19 Oct 26 (`6b0e0e332`) — the 21 items and the three faults the check fixed; main's
-  checks green, Vercel Production ready. Evidence: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.
-  This branch: documents only (this block, the order line) — its pull request open when written; check before acting.
-- **Unfinished:** none of the batch's own. Open residue, all filed: [BUBBLE-SMALL-SEEN] (4) the empty gold pill;
-  [OIL-NOTIFY-SEEN] (a puck dropped on nothing says nothing; the ALL AVAIL chip; a crew-list puck on a sideways phone never
-  scrolls the board); [EDIT-BUTTON-AFTER-CHANGE]; [LOOK-PENDING-COUNT] (parked, D994); [LW-WINDOW-PRUNE-FLAKE-2] seen again.
-  His look card's four iPhone lines (the sheet's "His look") were not reported back — he was asked to try them on the live app.
-- **Branch:** `claude/sched-fixes-handoff` (documents only); released here (`git switch --detach`). The batch's branch has
-  MERGED — never switch to it; the next job starts on its own fresh branch, level with `origin/main`.
-- **Gates:** the batch's whole set at `40c7af45e` — WHOLLY GREEN (§Gate baseline); this branch changes documents only.
-- **Open questions for him:** none of this chat's.
-- **Running when written:** none (no server, the lock free, no helper).
-- **Pick up here:** [RALLY-PER-FORMATION] (D1026) — a mock-up on the real app of R above B, TO above LD and "+ In-time",
-  and his questions, before any build (the proposal card he was given carries the brief).
-- **Opening line:** Run `git fetch origin` and check this branch is level with `origin/main`. Read `HANDOFF.md` (the `claude/sched-fixes-handoff` block under `## Now`), the full row of D1026 (`grep -h '^| D1026 |' .claude/decisions-full/*.md`) and `[RALLY-PER-FORMATION]` in `OUTSTANDING.md` — then make the mock-up of the rally box on the real app at my iPhone's and a desktop's width, marked, and put its questions to me with your recommendations. It is due now because I said to finish the Schedule and amendments batch first, and that batch is live; I get pictures and questions, and nothing in the app changes yet.
+<!-- now:claude/rally-box-mockup-452b95 -->
+### `claude/rally-box-mockup-452b95` — the rally-box mock-up and its questions, written 19 Oct 26 — verify before use
+- **Where it started:** `claude/sched-fixes-handoff`'s block (merged, pull request 539; its residue filed) — replaced by this one.
+- **Done:** the mock-up drawn on the running app (a built copy, demo data) at his iPhone's width (402, three times its
+  density) and a desktop's, eleven pictures, today beside proposed; the page published as an Artifact
+  (https://claude.ai/artifact/VdbkfVak1mpjyD1Js3YRCJ — source `raptor-port/docs/mock/rally-box.html`, pictures
+  `raptor-port/docs/img/handpass/2026-10-19-rally-box/`, script `raptor-port/scripts/handpass/mock-rally-box.mjs`).
+  The picture he ruled D1026 from was his iPhone's Scheduler Board, so "edit schedule" is read as the board, "normal"
+  as the week; both drawn. Two rulings recorded while drawing: D1027 (a default rally, take-off less a Logic time,
+  3 hours to start, selected by the scheduler) and D1028 (a suggested time in its own box's area, never a line above
+  it — the brief's too; inside the empty box, faint, is the agent's proposal) — both read by one fresh reader, its three
+  wording fixes taken; design guide §9 Lesson 7 (D1028). The design note's new end lists what the build needs.
+- **Unfinished / open questions for him:** nothing built (by his word); Q1–Q4 on the page, each recommended (the backlog
+  item lists them): the desktop board's layout; how a suggestion in its box is taken; one Logic setting or two; the R box
+  for OIL and the day's start.
+- **Branch:** `claude/rally-box-mockup-452b95` — documents, pictures, one picture script; no app code; released here
+  (`git switch --detach`) once pushed. **Gates:** none — nothing under `raptor-port/src`; `npm run docsize` green.
+  **Running when written:** none (the preview stopped, the lock free, no helper).
+- **Pick up here:** his answers → record them (scheduler rulings, D1029 on) → plan the build (FULL tier: OIL, the
+  published record) with the design note's requirement list; the pictures and script are the spec's look.
+- **Opening line:** Read `HANDOFF.md` (the `claude/rally-box-mockup-452b95` block), then run `git fetch origin` and `git switch claude/rally-box-mockup-452b95` (if refused because another checkout holds it, run `git switch --detach origin/claude/rally-box-mockup-452b95` and say so). Read [RALLY-PER-FORMATION] in `OUTSTANDING.md` and the full rows of D1026–D1028; my answers to the four rally-box questions are: …
 <!-- /now -->
 
 ## Next, in order
 
-**RIGHT NOW (19 Oct 26):** pull request 538 is LIVE (D994's Schedule and amendments batch, 21 items) → [RALLY-PER-FORMATION] (D1026): a mock-up on the real app and his questions first, no build yet.
+**RIGHT NOW (19 Oct 26):** pull request 538 is LIVE (D994's Schedule and amendments batch, 21 items) → [RALLY-PER-FORMATION] (D1026): the mock-up DRAWN and put to him (D1026–D1028, four questions), on `claude/rally-box-mockup-452b95` (its block) → his answers, then the build (FULL tier).
 
 **RIGHT NOW (18 Oct 26, night):** pull request 537 is LIVE (the backlog tidy, D1024) → the next area's small fixes (D994): Schedule and amendments, the first 24 lines of its group, on `claude/schedule-amendments-fixes-fffce0` (its block).
 

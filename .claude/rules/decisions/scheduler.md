@@ -54,6 +54,8 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1028 | 19 Oct 26 | A suggested time (the brief's, and a formation's default rally) is shown in its own box's row area, never on a line of its own above the box, so a row's boxes stay level and the row grows no taller; a tap puts it in. Inside the empty box, faint, is the agent's proposal, drawn for him before it is built. |
+| D1027 | 19 Oct 26 | A formation's rally box offers a default rally — its take-off less a time set on the Logic page, 3 hours to start — which the scheduler selects; that it is a suggestion, not filled in by itself, is the agent's reading. |
 | D1026 | 19 Oct 26 | Each formation gets its own rally time in a box of its own: a flying row's second time column is headed R / B, the rally above the brief, and the third TO / LD, the take-off above the landing, on the week and Edit Schedule; the typed lines above the wave are for the in-time only, their button "+ In-time"; a mock-up comes before the build. |
 | D1021 | 18 Oct 26 | When tomorrow's crew-rest warning is focused, the day before keeps the dashed "same man, other day" mark over its dotted ring, as built; nothing changes. |
 | D1020 | 18 Oct 26 | The calendar that floats over a date box behaves as the calendars inside a form do (D1012): Escape with its month or year list open closes only that list; a second Escape closes the calendar. |

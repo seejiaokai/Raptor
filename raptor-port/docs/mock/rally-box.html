@@ -1,0 +1,184 @@
+<title>Rally Box Mock-up</title>
+<!-- [RALLY-PER-FORMATION], D1026 — the mock-up put to him on 19 Oct 26. Published as an Artifact; its pictures are
+     docs/img/handpass/2026-10-19-rally-box/ (published beside the page as rb/NN.png, so the image paths below are the
+     published ones, not the repo's). The script that drew them: scripts/handpass/mock-rally-box.mjs. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one reading column; each surface is a numbered pair, today beside proposed (stacked on a phone); the
+   questions follow, each a card with the recommended answer first. Dark, like the app the pictures come from. */
+:root{
+  --bg:#0e1217; --panel:#151b22; --edge:#26303b; --ink:#e7edf3; --ink-2:#a3afbb; --ink-3:#73808d;
+  --accent:#3cc7e6; --today:#ff8a00; --prop:#1e9bff; --gold:#f2d699;
+  --f-head:'Barlow Condensed','Arial Narrow',system-ui,sans-serif;
+  --f-body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body)}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;gap:36px}
+h1,h2,h3{font-family:var(--f-head);letter-spacing:.02em;text-wrap:balance;margin:0}
+h1{font-size:34px;line-height:1.05;text-transform:uppercase}
+h2{font-size:22px;text-transform:uppercase;color:var(--ink)}
+h3{font-size:17px;text-transform:uppercase;color:var(--ink-2);letter-spacing:.05em}
+p{margin:0;max-width:68ch}
+.lead{display:grid;gap:12px}
+.lead p{color:var(--ink-2)}
+.case{display:flex;flex-wrap:wrap;gap:8px;font:500 13px/1.3 var(--f-mono)}
+.chip{border:1px solid var(--edge);border-radius:4px;padding:5px 8px;background:var(--panel);color:var(--ink-2)}
+.chip b{color:var(--ink);font-weight:700}
+.chip .g{color:var(--gold)}
+.key{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--ink-2)}
+.key span{display:inline-flex;align-items:center;gap:6px}
+.key i{width:14px;height:10px;border:2px solid;border-radius:2px;display:inline-block}
+section{display:grid;gap:14px}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+.pair.desk{grid-template-columns:minmax(0,1fr)}
+.pair.three{grid-template-columns:minmax(0,1fr)}
+figure{margin:0;display:grid;gap:6px;min-width:0}
+figure button{all:unset;cursor:zoom-in;display:block;border:1px solid var(--edge);border-radius:6px;overflow:hidden;background:#0b0f14}
+figure button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+figure img{display:block;width:100%;height:auto}
+figcaption{font-size:13px;color:var(--ink-2);display:flex;gap:8px;align-items:baseline}
+figcaption .n{font:700 12px var(--f-mono);color:var(--ink);background:var(--panel);border:1px solid var(--edge);border-radius:3px;padding:0 5px}
+figcaption .t{font:700 11px var(--f-head);letter-spacing:.08em;text-transform:uppercase}
+.t.today{color:var(--today)} .t.prop{color:var(--prop)}
+.note{font-size:13.5px;color:var(--ink-2)}
+.qs{display:grid;gap:14px}
+.q{background:var(--panel);border:1px solid var(--edge);border-radius:8px;padding:16px;display:grid;gap:10px}
+.q .qn{font:700 13px var(--f-mono);color:var(--accent)}
+.q .ask{font-weight:600;font-size:16px}
+.q .rec{border-left:3px solid var(--accent);padding-left:10px}
+.q .rec b{color:var(--accent)}
+.q .ex{font-size:14px;color:var(--ink-2)}
+.q .ex code,.mono{font:500 13px var(--f-mono);color:var(--ink)}
+.q .alt{font-size:14px;color:var(--ink-2)}
+.q .see{font-size:13px;color:var(--ink-3)}
+ul.also{margin:0;padding-left:20px;display:grid;gap:6px;max-width:72ch;color:var(--ink-2)}
+ul.also b{color:var(--ink);font-weight:600}
+.box{position:fixed;inset:0;background:rgba(5,8,11,.94);display:grid;place-items:start center;overflow:auto;padding:max(16px,env(safe-area-inset-top,0px)) 16px 16px;z-index:10}
+.box img{max-width:none;width:min(100%,var(--w,1200px));height:auto;border-radius:4px}
+.box .x{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:12px;font:700 14px var(--f-body);color:var(--ink);background:var(--panel);border:1px solid var(--edge);border-radius:6px;padding:6px 12px;cursor:pointer}
+@media (max-width:720px){
+  .pair{grid-template-columns:minmax(0,1fr)}
+  h1{font-size:28px}
+}
+@media (prefers-reduced-motion:no-preference){figure button{transition:border-color .15s} figure button:hover{border-color:var(--ink-3)}}
+</style>
+
+<main class="wrap">
+  <div class="lead">
+    <h1>A rally box for each formation</h1>
+    <p>These are pictures of the real app, on its demo week (Monday 13 Jul, WAVE 1). Each <span class="t today" style="font:700 12px var(--f-head);letter-spacing:.08em">TODAY</span> picture is the app as it is now. Each <span class="t prop" style="font:700 12px var(--f-head);letter-spacing:.08em">PROPOSED</span> picture is the same screen with its own boxes moved into the new places. Nothing in the app has changed. Tap any picture to see it full size.</p>
+    <div class="case" aria-label="The example">
+      <span class="chip"><b>VL</b> in-time 09:40 · rally <b>10:10</b> · brief <span class="g">10:20</span> · TO 12:40 · LD 14:05</span>
+      <span class="chip"><b>RU</b> in-time 10:40 · rally <b>none</b> · brief <span class="g">11:20</span> · TO 13:40 · LD 15:05</span>
+    </div>
+    <div class="key"><span><i style="border-color:var(--today)"></i>where it is today</span><span><i style="border-color:var(--prop)"></i>where it goes</span></div>
+  </div>
+
+  <section>
+    <h2>On your iPhone</h2>
+    <h3>View-only Sched</h3>
+    <div class="pair">
+      <figure><button type="button" data-w="380"><img src="rb/01.png" alt="View-only Sched today: B over TO, LD on its own" width="1140" height="1023"></button><figcaption><span class="n">1</span><span class="t today">Today</span>B over TO, LD on its own.</figcaption></figure>
+      <figure><button type="button" data-w="380"><img src="rb/02.png" alt="View-only Sched proposed: R over B, TO over LD" width="1140" height="1023"></button><figcaption><span class="n">2</span><span class="t prop">Proposed</span>R over B, TO over LD. RU has no rally, so its R place is blank and B stays on the second line.</figcaption></figure>
+    </div>
+    <p class="note">The columns keep their widths and the row is no taller.</p>
+
+    <h3>Edit Schedule</h3>
+    <div class="pair">
+      <figure><button type="button" data-w="380"><img src="rb/03.png" alt="Edit Schedule week today, with the + In-time / Rally button" width="1140" height="1173"></button><figcaption><span class="n">3</span><span class="t today">Today</span>"+ In-time / Rally", and B over TO.</figcaption></figure>
+      <figure><button type="button" data-w="380"><img src="rb/04.png" alt="Edit Schedule week proposed, with the + In-time button and R over B" width="1140" height="1173"></button><figcaption><span class="n">4</span><span class="t prop">Proposed</span>"+ In-time". Each suggested time sits faint inside its own empty box: VL's suggested brief 10:20, and RU's default rally 10:40 (3 hours before its 13:40 take-off) and suggested brief 11:20. No line of its own above the box.</figcaption></figure>
+    </div>
+
+    <h3>Scheduler Board</h3>
+    <div class="pair">
+      <figure><button type="button" data-w="382"><img src="rb/05.png" alt="Scheduler Board on a phone today: B, TO and LD in a line" width="1146" height="2079"></button><figcaption><span class="n">5</span><span class="t today">Today</span>B · TO · LD in a line.</figcaption></figure>
+      <figure><button type="button" data-w="382"><img src="rb/06.png" alt="Scheduler Board on a phone proposed: R over B and TO over LD on each jet's line" width="1146" height="2226"></button><figcaption><span class="n">6</span><span class="t prop">Proposed</span>R over B, TO over LD on each jet's line, the suggestions faint inside their boxes, so all four boxes stay level. The mission box takes the freed width, so the pucks and remarks underneath keep theirs.</figcaption></figure>
+    </div>
+    <p class="note">Each jet's line grows from 124 to 141 px: the second box adds a row, and the suggested brief's own line above B goes.</p>
+  </section>
+
+  <section>
+    <h2>On a desktop</h2>
+    <h3>Edit Schedule</h3>
+    <div class="pair">
+      <figure><button type="button" data-w="554"><img src="rb/07.png" alt="Edit Schedule week on a desktop today" width="1108" height="690"></button><figcaption><span class="n">7</span><span class="t today">Today</span>B and TO are drawn smaller than LD.</figcaption></figure>
+      <figure><button type="button" data-w="554"><img src="rb/08.png" alt="Edit Schedule week on a desktop proposed" width="1108" height="690"></button><figcaption><span class="n">8</span><span class="t prop">Proposed</span>R over B, TO over LD, all four times at LD's size so the two columns match.</figcaption></figure>
+    </div>
+
+    <h3>Scheduler Board</h3>
+    <div class="pair desk">
+      <figure><button type="button" data-w="1116"><img src="rb/09.png" alt="Scheduler Board on a desktop today" width="2232" height="814"></button><figcaption><span class="n">9</span><span class="t today">Today</span>B · TO · LD in a line, each jet's line 51 px tall.</figcaption></figure>
+      <figure><button type="button" data-w="1116"><img src="rb/10.png" alt="Scheduler Board on a desktop proposed: R over B and TO over LD" width="2232" height="1072"></button><figcaption><span class="n">10</span><span class="t prop">Proposed (option A)</span>R over B, TO over LD, as on the phone, suggestions inside the boxes. Each jet's line grows from 51 to 65 px.</figcaption></figure>
+      <figure><button type="button" data-w="1116"><img src="rb/11.png" alt="Scheduler Board on a desktop, option B: R, B, TO and LD in one line" width="2232" height="814"></button><figcaption><span class="n">11</span><span class="t prop">Option B, desktop only</span>R as a fourth box in the line: R · B · TO · LD. The lines stay 51 px, and the remarks box is 45 px narrower.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Four questions</h2>
+    <div class="qs">
+      <div class="q">
+        <span class="qn">Q1 · Scheduler Board</span>
+        <p class="ask">On the desktop board, should R and B, and TO and LD, stand one above the other as on the phone?</p>
+        <p class="ex">The picture you marked when you made this ruling was the Scheduler Board on your iPhone. So I have read your "edit schedule" as the board, and drawn your layout there on the phone and the desktop alike (pictures 6 and 10). On a phone it is the only layout that fits. On a desktop it makes each jet's line taller, 51 px to 65 px, so WAVE 1's four lines take about 56 px more.</p>
+        <p class="rec"><b>Recommended: yes, the same on both (picture 10).</b> R is in the same place on every screen, and the board reads the same as the week.</p>
+        <p class="alt">The other way: on a desktop only, R is a fourth box in the line, R · B · TO · LD (picture 11). The lines stay as short as today, but the desktop and the phone are laid out differently.</p>
+      </div>
+      <div class="q">
+        <span class="qn">Q2 · A suggested time inside its box</span>
+        <p class="ask">You asked whether a suggested time could sit in the box's own area. Is this how it should work?</p>
+        <p class="ex">Pictures 4, 6 and 10. The suggested time sits faint, in the blue of today's suggested brief, inside the empty box where the time will go. Nothing sits above the box any more, so the four boxes stay level.</p>
+        <p class="rec"><b>Recommended: one tap on the empty box puts the suggestion in, highlighted, so typing replaces it straight away. Escape takes it back out. Moving through with the Tab key fills nothing, so a suggestion is only taken when someone chooses it.</b> The same for the brief and the rally. View-only Sched still prints an empty brief's suggested time, as today.</p>
+      </div>
+      <div class="q">
+        <span class="qn">Q3 · The default rally's setting</span>
+        <p class="ask">Should the default rally use the Logic page's existing 3-hour setting, or have a setting of its own?</p>
+        <p class="ex">It is partly there already. The Logic page has "Nominal report before T/O", 3 hours. Today that is where a formation's day starts when no in-time or rally is typed, and the time "+ In-time / Rally" fills in. Example: RU takes off at 13:40, so its default rally is 10:40.</p>
+        <p class="rec"><b>Recommended: the same one setting, renamed to say it is the default rally.</b> The rally shown and the time the day starts from can then never disagree. "+ In-time" keeps filling in the same time, as you ruled before.</p>
+        <p class="alt">The other way: a second setting, "Default rally before T/O", beside the nominal report. The two could then be set differently.</p>
+      </div>
+      <div class="q">
+        <span class="qn">Q4 · OIL and the start of the day</span>
+        <p class="ask">Does the R box count for OIL and the day's start exactly like a typed rally does today?</p>
+        <p class="ex">Example: RU has no typed in-time, and the scheduler taps its R box to take <span class="mono">10:40</span>, or types <span class="mono">11:00</span>. RU's day then starts at that time for OIL, crew rest, the long-day warning and Insights' work hours. VL, with in-time <span class="mono">09:40</span> and R <span class="mono">10:10</span>, starts at <span class="mono">09:40</span>, the earlier of the two. While RU's box is left empty, its day starts at the default, 3 hours before take-off, which is what the app does today.</p>
+        <p class="rec"><b>Recommended: yes. The earliest in-time or rally that applies to the formation starts its day, and an empty box counts as its default.</b> So nothing about OIL moves until a time is typed or taken. On a published day, a changed R box waits for the next amendment, like any other time.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>What else changes with it</h2>
+    <p class="note">These are not questions. They are what the build would carry, found while drawing the pictures.</p>
+    <ul class="also">
+      <li><b>Every place the app says "In-time / Rally"</b> for the typed lines says "In-time": the button, the ✕ beside each line, the Logic page's two settings for the button, and the changes window's name for the lines. The warning about timings out of order still names the rally, because it also checks the R box.</li>
+      <li><b>The next-week peek</b> and a published version's own page draw the same R / B and TO / LD columns.</li>
+      <li><b>The Excel export</b> gains a Rally column, before Brief.</li>
+      <li><b>The Tab key</b> goes callsign, mission, rally, brief, take-off, landing.</li>
+      <li><b>Standby waves</b> (SC, AVALON, BB) get no R box, and wave templates carry none, as they carry no brief.</li>
+      <li><b>The desktop week's times</b> become one size in both columns (picture 8).</li>
+      <li><b>A typed line that still says RALLY</b> (out of habit, <span class="mono">19:00H: NIGHT WAVE VL RALLY</span>) counts as VL's in-time, like any other typed line, with no warning. The day's start already uses the earlier of the two, so OIL and crew rest come out the same. My call; tell me if you'd rather the app put a note under the lines.</li>
+    </ul>
+  </section>
+</main>
+
+<div class="box" id="box" hidden role="dialog" aria-modal="true" aria-label="Picture, full size">
+  <button class="x" id="boxClose" type="button">Close</button>
+  
+</div>
+
+<script>
+(() => {
+  const box = document.getElementById('box'), img = box.appendChild(document.createElement('img')), close = document.getElementById('boxClose')
+  let opener = null
+  document.querySelectorAll('figure button').forEach(b => b.addEventListener('click', () => {
+    const src = b.querySelector('img')
+    img.src = src.src; img.alt = src.alt; box.style.setProperty('--w', (b.dataset.w || 1200) + 'px')
+    opener = b; box.hidden = false; box.scrollTop = 0; close.focus()
+  }))
+  const shut = () => { box.hidden = true; img.removeAttribute('src'); if (opener) opener.focus() }
+  close.addEventListener('click', shut)
+  box.addEventListener('click', e => { if (e.target === box) shut() })
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !box.hidden) shut() })
+})()
+</script>

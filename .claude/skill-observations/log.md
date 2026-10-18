@@ -1355,3 +1355,18 @@ prove each by acting through it after the rollback, not by reading what it shows
 **Suggested improvement:** In the TDD skill: a test of undo, redo or history sets its fixture BEFORE the history takes its baseline (or through the app's own write path), and asserts the state just before the action under test, so a wrong baseline shows as a wrong precondition rather than as a failed fix.
 
 **Principle:** In a test of undo, a fixture written outside the recorded path becomes the baseline it undoes to; set it before the baseline is taken, and check the precondition before the action.
+
+### Observation 642: A ruling made from a picture names the surface in his words; open the picture before drawing
+
+**Status:** OPEN
+**Date:** 19 Oct 26
+**Session context:** the mock-up of [RALLY-PER-FORMATION] (D1026) on the real app
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** The Method, step 1 (before the first picture)
+
+**Issue:** The ruling said "on the week and Edit Schedule", and the chat that recorded it read "Edit Schedule" as the Edit Schedule week ("the five boxes in a line become …"), leaving "whether the Scheduler Board gets the same columns" as an open question. The week has no five boxes in a line; the board does. The picture he ruled from (his own iPhone screenshot, marked by that chat, still in its scratchpad) was the Scheduler Board. Only finding and opening that picture showed which surface his words meant; the mock-up would otherwise have drawn the wrong screen first and asked a question his picture already answered.
+
+**Suggested improvement:** In "The Method", before step 1: "When the decision being drawn was made from a picture (his screenshot, a marked picture), find and open that picture first — the ruling's words name the surface as he calls it, which may not be the app's own name for it. Say on the page which surface you read his words as, and why."
+
+**Principle:** The artifact a decision was made from outranks the words it was recorded in; a user's name for a screen is not the system's name for it.
