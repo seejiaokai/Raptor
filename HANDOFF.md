@@ -34,17 +34,17 @@ the later merge keeps both (D78).
   wording fixes taken; design guide §9 Lesson 7 (D1028). The design note's new end lists what the build needs.
 - **Answered (19 Oct 26):** D1029 the desktop board in one line, the phone board stacked; D1030 the suggestion inside its
   box, tap places it, typing replaces it; D1031 the existing 3-hour setting, renamed; D1032 the box counts as a typed rally.
-  Nothing built (by his word). Open: a typed line saying RALLY — a rally as before (recommended) or an in-time (D1032).
+  Nothing built (by his word). A typed RALLY line stays a rally (D1034); no question open.
 - **Branch:** `claude/rally-box-mockup-452b95` — documents, pictures, one picture script; no app code; released here
   (`git switch --detach`) once pushed. **Gates:** none — nothing under `raptor-port/src`; `npm run docsize` green.
   **Running when written:** none (the preview stopped, the lock free, no helper).
 - **Pick up here:** the build, FULL tier — the design note's "His answers" and requirement list; he asked for /overnight.
-- **Opening line:** /overnight — Read `HANDOFF.md` (the `claude/rally-box-mockup-452b95` block), then run `git fetch origin` and `git switch claude/rally-box-mockup-452b95` (if refused because another checkout holds it, run `git switch --detach origin/claude/rally-box-mockup-452b95` and say so). Tonight's job: build [RALLY-PER-FORMATION] as ruled (D1026–D1032, the design note's "His answers"), with its FULL bug check. My weekly usage was at 83% at 19 Oct 26 ~06:00 and resets about 19:00; using it up before the reset is my aim (D1033), so keep starting work past 90% — commit and push as you go so the limit never strands anything.
+- **Opening line:** /overnight — Read `HANDOFF.md` (the `claude/rally-box-mockup-452b95` block), then run `git fetch origin` and `git switch claude/rally-box-mockup-452b95` (if refused because another checkout holds it, run `git switch --detach origin/claude/rally-box-mockup-452b95` and say so). Tonight's job: build [RALLY-PER-FORMATION] as ruled (D1026–D1034, the design note's "His answers"), with its FULL bug check. My weekly usage was at 83% at 19 Oct 26 ~06:00 and resets about 19:00; using it up before the reset is my aim (D1033), so keep starting work past 90% — commit and push as you go so the limit never strands anything.
 <!-- /now -->
 
 ## Next, in order
 
-**RIGHT NOW (19 Oct 26):** pull request 538 is LIVE (D994's Schedule and amendments batch, 21 items) → [RALLY-PER-FORMATION] (D1026): the mock-up DRAWN and put to him (D1026–D1028, four questions), on `claude/rally-box-mockup-452b95` (its block) → his answers given (D1029–D1032) → the build (FULL tier), in a fresh chat on his /overnight.
+**RIGHT NOW (19 Oct 26):** pull request 538 is LIVE (D994's Schedule and amendments batch, 21 items) → [RALLY-PER-FORMATION] (D1026): the mock-up DRAWN and put to him (D1026–D1028, four questions), on `claude/rally-box-mockup-452b95` (its block) → his answers given (D1029–D1032, D1034) → the build (FULL tier), in a fresh chat on his /overnight.
 
 **RIGHT NOW (18 Oct 26, night):** pull request 537 is LIVE (the backlog tidy, D1024) → the next area's small fixes (D994): Schedule and amendments, the first 24 lines of its group, on `claude/schedule-amendments-fixes-fffce0` (its block).
 

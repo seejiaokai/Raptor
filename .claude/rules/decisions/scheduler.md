@@ -54,7 +54,8 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
-| D1032 | 19 Oct 26 | A formation's R box counts exactly as a typed rally did: the earliest applicable in-time or rally starts its report (with no in-time, the rally) for crew rest, OIL and the rest, where it is the man's first event; an empty box's default counts only where no in-time or rally is entered (D592). |
+| D1034 | 19 Oct 26 | A typed line that still says RALLY stays a rally, as the app reads it today, and never becomes a formation's in-time: a whole-wave in-time is every formation's in-time, except a formation whose own typed in-time line carries its callsign. |
+| D1032 | 19 Oct 26 | A formation's R box counts exactly as a typed rally did: the earliest applicable in-time or rally starts its report (with no in-time, the rally) for crew rest, OIL and the rest, where it is the man's first event; an empty box's default counts only where no in-time or rally is entered (D592). — changed by D1034 |
 | D1031 | 19 Oct 26 | The default rally uses the Logic page's existing "Nominal report before T/O" setting (3 hours to start), renamed to say it is the default rally; there is no second setting, and "+ In-time" keeps filling in the same time (D510). |
 | D1030 | 19 Oct 26 | A suggested time (the brief's, and the default rally) sits faint inside its own empty box; one tap puts it in, highlighted, so whatever is typed next replaces it at once — the scheduler never deletes it first. |
 | D1029 | 19 Oct 26 | On the desktop Scheduler Board each jet's line keeps its times in one line, R · B · TO · LD (the mock-up's picture 11); on a phone the board stacks R over B and TO over LD (picture 6); the week stays as D1026. |
