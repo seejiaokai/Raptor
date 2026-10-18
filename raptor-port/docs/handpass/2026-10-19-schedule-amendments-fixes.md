@@ -127,6 +127,7 @@ before its fix, on the branch, against the real code path):
 | 6 | designer S1-03 / S3-17 | A row's drag on a phone on its side kept two fixed 72px bands | the item's mend was partial (pucks only) | FIXED — `rowdrag.ts rowEdge`, a sixth of the pane |
 | 7 | designer S1-08 | Sort all wrote two history lines (the In-time sort logged its own) | NEW | FIXED `19b2bd267` |
 | 8 | designer S3-01 | Undo after a swap with ALL AVAIL would read its stored id | — | FALSE ALARM — it reads "ALL AVAIL" (the placeholder is in the roster); pinned |
+| HIS | the owner, from walker A's picture (19 Oct 26) | The board's In-time / Rally lines stood in the middle of the panel: the drag's rows kept the block's old grid rule `align-items:center` | NEW (the drag's rows) | FIXED `1329e0396` — the rows stretch; a browser test of each row's left and width at 1440 and 390. **The method's line (order §11):** every walker's picture showed it and no step asserted it — a new layout inside an existing block gets its rows' left edge and width measured at both sizes, against the block |
 | 9–11 | designer S3-08, S4-13, S3-05 (B), two low | the discard count for an input under Unavailable; a resize during an arrow's glide; a note raised while the offer is up | — | judged from the walk |
 
 ## His look
