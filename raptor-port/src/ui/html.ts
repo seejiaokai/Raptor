@@ -1040,7 +1040,7 @@ function dayTraceHTML(di:any,pf:any){
     if(kind==='RUN'){
       const r=t.run;
       const onR=r.di!=null&&WFOCUS&&WFOCUS.di===r.di&&WFOCUS.ix===ix;
-      const addrR=r.di!=null&&ix>=0?` data-wdi="${r.di}" data-wix="${ix}" title="Jump to the day the run breaks"`
+      const addrR=r.di!=null&&ix>=0?` data-wdi="${r.di}" data-wix="${ix}" data-wld="${di}" title="Jump to the day the run breaks"`
                             :r.di!=null?` title="As published — that day has changed since"`
                             :` title="Next week's Monday — load it to see the breach itself"`;
       return `<div class="witem hard wtr${onR?' on':''}"${addrR}>`
@@ -1065,7 +1065,7 @@ function dayTraceHTML(di:any,pf:any){
        warning on THIS week to focus — interactions.ts's `.witem[data-wdi]`
        branch simply never matches it, so a tap is inert rather than a
        misfire. The breach itself appears on Monday when next week loads. */
-    const addr=t.di!=null&&ix>=0?` data-wdi="${t.di}" data-wix="${ix}"${pan} title="Jump to the line on this day that caused it"`
+    const addr=t.di!=null&&ix>=0?` data-wdi="${t.di}" data-wix="${ix}" data-wld="${di}"${pan} title="Jump to the line on this day that caused it"`
       :t.di!=null?` title="As published — that day has changed since"`
                          :` title="Next week's ${esc(t.dow||'Monday')} — load it to see the breach itself"`;
     return `<div class="witem hard wtr${on?' on':''}"${addr}>`

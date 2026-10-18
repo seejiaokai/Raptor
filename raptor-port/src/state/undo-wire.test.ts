@@ -516,6 +516,13 @@ describe('B8 — Undo says what came back', () => {
     writeInputsBatch(() => { r.rmk = 'room 2' })
     expect(undoState().undoLabel, 'any other change of one input is as it was').toBe('a personal input')
   })
+  /* the scenario designer's suspicion (19 Oct 26, S3-01): a swap with a placeholder would read its stored id */
+  it('a swap with ALL AVAIL names it as the puck does, never by its stored id', () => {
+    writeInputsBatch(() => { INPUTS.push({ person: 'allavail', type: 'Meeting', date: 'Jul 16', yr: 2026, rmk: '', iid: 'iwire4' } as any) })
+    const r: any = INPUTS.find((x: any) => x.iid === 'iwire4')
+    writeInputsBatch(() => { r.person = 'bane' })
+    expect(undoState().undoLabel).toBe('swapping ALL AVAIL for Ranger')
+  })
   it('a Quals tick names the man and what changed; a rule names the Logic page', () => {
     expect(updatePersonField('rocky', { tick: 'nvg' })).toBe(null)
     expect(undoState().undoLabel).toBe('Hex’s quals')
