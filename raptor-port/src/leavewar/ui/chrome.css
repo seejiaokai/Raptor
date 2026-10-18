@@ -664,17 +664,22 @@
    removal: nothing on the strip is decoration, and hiding a control to save
    a row would only move the problem. */
 /* D1000, D1016 (18 Oct 26): the TOP's phone block reaches 700 wide (the biggest iPhones, a small tablet) — the same width
-   as ui/phone.ts, so the words and the layout still change together. The grid card's phone rules (its short button
-   words, its padding) are not the top's: they keep 430, in the block after this one (D1000 — "the grid unchanged"). */
+   as ui/phone.ts, so the words and the layout still change together. The grid card's padding is not the top's: it
+   keeps 430, in the block after this one (D1000 — "the grid unchanged"); its buttons' short words reach 700 (D1019). */
 @media (max-width: 430px) {
-  /* Drop the droppable tails so Manning · ⚙ · Rearrange · OIL hold one line
-     (owner, 5 Sep 26): "OIL tracker" reads "OIL" here. */
-  .card-hd .rtlbl {
-    display: none;
-  }
-
   .stage {
     padding: 8px 10px 20px;
+  }
+}
+
+/* Drop the droppable tails so Manning · ⚙ · Rearrange · OIL hold one line
+   (owner, 5 Sep 26): "OIL tracker" reads "OIL" here. UP TO 700 WIDE (owner D1019, 18 Oct 26 — "as recommended"):
+   from 431 the words "Rearrange" and "tracker" pushed "−" and "+" onto a second line of the card's head, a row of
+   names lost; the short words keep the head one line, as drawn at 440. The buttons' words only — the grid's columns
+   and the card's padding are unchanged. */
+@media (max-width: 700px) {
+  .card-hd .rtlbl {
+    display: none;
   }
 }
 

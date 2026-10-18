@@ -12,18 +12,25 @@
    the write path's trims run off — so what this sheet shows and what the
    save then does cannot disagree. Callers own the actual write (each keeps
    its own commit + removals inside ONE writeInputsBatch); this component
-   only collects the decision. */
+   only collects the decision.
+
+   AND BEFORE AN UPCHIT IS DELETED (owner D1022, 18 Oct 26 — "the save sheet says so before anything changes"), where the
+   delete gives a downchit its days back (`deleting`): the same sheet says what the delete will give back
+   (engine/medical.ts upchitDeletePlan — the body the delete runs), with no fit line and nothing to choose, and its button
+   deletes. A delete that gives nothing back asks nothing (D792). */
 import { useEffect, useState, useRef } from 'react'
 import { ordLabel } from '../engine/medical'
 import { clickedSurround } from './outside'
 import { useSheetFocus } from './sheetfocus'
 
-export function UpchitConfirm({ who, dateLabel, effects, onSave, onCancel }: {
+export function UpchitConfirm({ who, dateLabel, effects, onSave, onCancel, deleting }: {
   who: string
   dateLabel: string
   effects: { plan: any[]; leftovers: any[] }
   onSave: (removals: any[]) => void
   onCancel: () => void
+  /** the question before the upchit is DELETED (D1022), not saved */
+  deleting?: boolean
 }) {
   /* keyed by leftover index — the forced choice, unset until the filer picks */
   const [choice, setChoice] = useState<Record<number, 'keep' | 'remove'>>({})
@@ -47,7 +54,7 @@ export function UpchitConfirm({ who, dateLabel, effects, onSave, onCancel }: {
         <div className="airpop-head"><b>Upchit — {who}, {dateLabel}</b>
           <button className="x" aria-label="Close" onClick={onCancel}>✕</button></div>
         <div className="airpop-body upconf-body">
-          <div className="upconf-h">Saving this upchit will</div>
+          <div className="upconf-h">{deleting ? 'Deleting this upchit will' : 'Saving this upchit will'}</div>
           {effects.plan.length
             ? <ul className="upconf-list" data-testid="upconf-plan">{effects.plan.map((p: any, i: number) => (
               <li key={i}>{p.action === 'trim'
@@ -58,7 +65,7 @@ export function UpchitConfirm({ who, dateLabel, effects, onSave, onCancel }: {
                 : <>{p.row.type} {span(p.row)} → <b>removed</b> — it would only cover fit days</>}</li>))}
             </ul>
             : <div className="upconf-none">Close the pending medical-down period — no current entry needs shortening.</div>}
-          <div className="upconf-fit">Fit for full duty from {dateLabel}.</div>
+          {!deleting && <div className="upconf-fit">Fit for full duty from {dateLabel}.</div>}
           {effects.leftovers.length > 0 && <>
             <div className="upconf-h">Still on file after it — choose for each</div>
             {effects.leftovers.map((r: any, i: number) => (
@@ -81,8 +88,8 @@ export function UpchitConfirm({ who, dateLabel, effects, onSave, onCancel }: {
               until each has an answer) */}
           <span style={{ flex: 1 }}></span>
           <button className="abtn ghost" onClick={onCancel}>Cancel</button>
-          <button className="abtn primary" data-testid="upconf-save" disabled={!ready}
-            onClick={() => onSave(effects.leftovers.filter((_: any, i: number) => choice[i] === 'remove'))}>Save upchit</button>
+          <button className={'abtn ' + (deleting ? 'danger' : 'primary')} data-testid="upconf-save" disabled={!ready}
+            onClick={() => onSave(effects.leftovers.filter((_: any, i: number) => choice[i] === 'remove'))}>{deleting ? 'Delete upchit' : 'Save upchit'}</button>
         </div>
       </div>
     </div>

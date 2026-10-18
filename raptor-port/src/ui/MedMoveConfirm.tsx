@@ -17,7 +17,7 @@ import { notify } from '../state/store'
 import { MEDMOVE, setMedMove } from './pops'
 import { MedClashConfirm } from './MedClashConfirm'
 import { UpchitConfirm } from './UpchitConfirm'
-import { commitEditMedChoices, commitEditUpchit, fmtDay, ordISO } from './inputedit'
+import { commitEditMedChoices, commitEditUpchit, fmtDay, ordISO, removeInput } from './inputedit'
 import { dateOrd } from '../engine/inputs'
 import { useVersion } from './useStore'
 
@@ -41,6 +41,12 @@ export function MedMoveConfirm() {
       if (said) HOOKS.toast(said, 'ok')
     }
     done()
+  }
+  /* THE QUESTION BEFORE AN UPCHIT IS DELETED from the Inputs calendar's opened day (owner D1022): the upchit sheet saying
+     what the delete gives back; its button deletes, Cancel leaves both as they were */
+  if (m.ask.kind === 'updel') {
+    return <UpchitConfirm who={m.ask.who} dateLabel={m.ask.dateLabel} effects={m.ask.effects} deleting
+      onCancel={done} onSave={() => finish(r => removeInput(r))} />
   }
   if (m.ask.kind === 'up') {
     return <UpchitConfirm who={m.ask.who} dateLabel={m.ask.dateLabel} effects={m.ask.effects}

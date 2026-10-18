@@ -20,7 +20,8 @@
      · a tap on the veil closes it and changes nothing. It closes on the CLICK, not the press: a layer that went at the
        press would hand the click that follows to whatever of the form lies under the finger (ui/calpick.ts met this);
      · Escape closes it FIRST, and the window or sheet behind only on a second press — the key is taken on the way
-       DOWN, at the window, before any other listener hears it, and only while the layer is up;
+       DOWN, at the window, before any other listener hears it, and only while the layer is up; with its month and
+       year lists open the first Escape shuts only the lists (D1020);
      · the keyboard goes onto the picked date as it opens, stays inside it (Tab goes round — taken at the window too,
        ahead of a Leave War sheet's own Tab-keeper), and returns to the box;
      · nothing pressed or typed in it is heard by the form behind (React hands a portal's events to the form that drew
@@ -170,12 +171,16 @@ function Layer({ label, name, value, min, max, markWd, at, today, box, onPick, o
      that is still open. Tab: the veil has taken the page away, so Tab goes round inside the card — and a Leave War
      sheet keeps Tab inside ITSELF with a listener of its own ("focus left behind it is brought in"), which pulled the
      keyboard back behind the veil at every press (found by the break tests, 13 Oct 26: no test held this listener at
-     the window; writing one showed the fault). Only while the calendar is up. */
+     the window; writing one showed the fault). Only while the calendar is up.
+     ESCAPE SHUTS THE MONTH-AND-YEAR LISTS FIRST (owner D1020, 18 Oct 26 — "as recommended": as the calendars inside a
+     form do, D1012). While the lists are open this press is still the layer's — nothing behind hears it — but it does
+     not close the calendar: the calendar's own listener, at the window too and added after this one, shuts the lists
+     and puts the keyboard on the title. The next Escape closes the calendar, and only the one after that the form. */
   useEffect(() => {
     const onKey = (e: globalThis.KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault(); e.stopPropagation()
-        closeRef.current()
+        if (!card.current?.querySelector('.dcal-lists')) closeRef.current()
         return
       }
       if (e.key !== 'Tab') return

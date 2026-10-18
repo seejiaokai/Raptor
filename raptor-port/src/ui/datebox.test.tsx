@@ -223,11 +223,34 @@ describe('Escape', () => {
     fireEvent.keyDown(t('box'), { key: 'Escape' })
     expect(onClose).toHaveBeenCalledTimes(1)
   })
-  it('with the month-and-year lists open, Escape still closes the whole calendar', () => {
-    render(<Box />)
+  /* D1020 (18 Oct 26 — "as recommended"): the calendar over a date box does as the calendars inside a form do (D1012).
+     It used to close whole here; this test pinned that, and changes with the ruling. */
+  it('with the month-and-year lists open, Escape shuts only the lists; a second press closes the calendar', () => {
+    const onChange = vi.fn()
+    render(<Box onChange={onChange} />)
     fireEvent.click(t('box')); fireEvent.click(t('dcal-title'))
     fireEvent.keyDown(t('dcal-months'), { key: 'Escape' })
+    expect(layer()).toBeTruthy()
+    expect(q('dcal-lists')).toBeNull()
+    expect(document.activeElement).toBe(t('dcal-title'))
+    fireEvent.keyDown(document.activeElement!, { key: 'Escape' })
     expect(layer()).toBeNull()
+    expect(document.activeElement).toBe(t('box'))
+    expect(onChange).not.toHaveBeenCalled()
+  })
+  it('in a window, with the lists open: the lists, then the calendar, then the window — one a press', () => {
+    const onClose = vi.fn()
+    render(<FloatWin id="w" title="A form" testid="win-w" onClose={onClose}><Box /></FloatWin>)
+    fireEvent.click(t('box')); fireEvent.click(t('dcal-title'))
+    fireEvent.keyDown(t('dcal-years'), { key: 'Escape' })
+    expect(q('dcal-lists')).toBeNull()
+    expect(layer()).toBeTruthy()
+    expect(onClose).not.toHaveBeenCalled()
+    fireEvent.keyDown(document.activeElement!, { key: 'Escape' })
+    expect(layer()).toBeNull()
+    expect(onClose).not.toHaveBeenCalled()
+    fireEvent.keyDown(document.activeElement!, { key: 'Escape' })
+    expect(onClose).toHaveBeenCalledTimes(1)
   })
 })
 

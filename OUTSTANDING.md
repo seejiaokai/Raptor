@@ -956,22 +956,6 @@ hand-damaged day row makes the week read-only (correct), with a notice written f
 what happened and what to do in the app's words ("This week's saved copy could not be read — it is shown read-only. Ask
 an admin.").
 
-### [TRK-DOWN-DAYS-AUTO] The Tracker's down days worked out from the Inputs, a tap shows the breakdown; the Upchit Date box goes (his direction, 18 Oct 26 — D1002)
-**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D1002–D1005, D1018: the down days worked out from the man's medical inputs since his course start (set in "+ Add", changed in Info), ½ for a half day, a running one to today, a window listing each; the typed box and "Upchit Date" gone; the currency bar without down days (D1004). Open for his look: a CANCELLED medical input still counts (the Medical tab's own reading); two new phrasings ("No medical inputs since the course start.", the spoken "none counted yet"). Leaves for the archive once live.**
-**Not designed — his questions first.** The design note with his words, today's behaviour and the questions to put to him:
-`raptor-port/docs/superpowers/specs/2026-10-18-trk-down-days.md`. **Place:** his direction of 18 Oct 26; the next Tracker
-job, after D994's small fixes unless he says otherwise.
-
-### [TRK-FLEX-SETTING] The Tracker's flex figures editable, and one switch that turns flex off everywhere (his direction, 18 Oct 26 — D1006)
-**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D1006, D1014, D1018: the flex settings window from a cog in the top bar — an admin edits the six From days and the on/off switch, a member reads; flex off hides the flex bar, "Days since syllabus", the flex sentence and the legend's flex part; saved as one row, carried in a backup. Leaves for the archive once live.**
-**Not designed — his questions first** (which figures, who may change them, where the switch sits; a picture). The note:
-`raptor-port/docs/superpowers/specs/2026-10-18-trk-down-days.md`. **Place:** with [TRK-DOWN-DAYS-AUTO], the next Tracker job.
-
-### [TRK-LEGEND] A legend on the Tracker — the balls, a flight's currency and the IP requirement, when a flex happens (his direction, 18 Oct 26 — D1007)
-**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D1007, D1018: the Legend button beside Show All and its pop-out (the chart's own balls, currency and IP, the flex bands), the desktop strip moved into it. Leaves for the archive once live.**
-**Not designed — a picture first.** Its flex part goes when the flex switch (D1006) is off. The note: as above. **Place:** with
-[TRK-DOWN-DAYS-AUTO], the next Tracker job.
-
 ### [LW-SORT-BY-FLIGHT] An option to sort the Leave War by flight — his intent, an idea not yet designed (18 Oct 26, D1001)
 **His words:** *"I intend to have an option to sort according to flight"* (asked about the hidden personnel label — kept for it).
 **Not designed, not started.** When he raises it: which men carry a flight (today the label is filled for ground crew, from
@@ -1234,15 +1218,6 @@ waits a fixed 5 seconds for a prune that happens only when the PC is idle (`stat
 3 / 3 straight after; phase 4 does not touch the grid. **Do (D87):** wait on the idle signal or the window's settled state,
 not a fixed time. **Place:** test-only, low, any time. **Seen again 9 Oct 26** (`claude/inputs-sans-calendar`, the final gate run after the shared input's date door — a change to the input editor only): the same branch, the same 5-second wait; alone 3 / 3 and its whole group 186 / 0 straight after.
 **Met again the night of 15 Oct 26** (`claude/drag-edge-scroll-elsewhere-51bfc4`, the full run at `7e9e98724`): the same branch (January undrawn, December still drawn after the jump) — and ALONE it failed 1 of 3 (2 passed), the first time it has failed outside a full run. That job touches nothing of the Leave War (`src/leavewar` unchanged; `select.ts` reads only edge numbers that did not change). **The agent's placing:** steady it as a job of its own — it is no longer only load (D87: wait on what the step needs).
-
-### [PEEK-ISSUED] The desktop next-week preview on View-only Sched shows next week's working copy, even for a published day — a question for him (filed 26 Sep 26)
-**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D1010: View-only Sched's preview draws a published day as issued. Leaves for the archive once live.**
-**ANSWERED 18 Oct 26 — D1010 ("as recommended"): View-only Sched's preview shows the published version of a published day.**
-Noted by the sweep behind `[LEAVE-LATE-PUBLISHED]` (Astra, its plan read; carried in `[LATE-PUB-FACE-LIVE]`, archived
-26 Sep 26): the peek of next week at the right of the desktop week (`raptor-port/src/ui/peek.ts`) draws next week's live
-working copy, so on View-only Sched a published next-week day shows edits not yet issued. Astra recommends the issued
-content there too, as the published face does (D178, D179). **The question:** should the peek show the published version
-of a published day? **Place:** low; its own small WALK-tier build if yes.
 
 ### [TRK-ASYNC-STALE] Once storage is truly slow, a Tracker job must re-check its person and target after every wait (filed 28 Sep 26)
 **Place:** with `[DB-READINESS]` — it cannot happen before the shared database. Found by Astra's final read of the
@@ -1508,23 +1483,6 @@ the model without blocking the edit, and how to keep it quiet (once per file per
 `raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md` §2.8 and §5. **Place:** low — after
 [RULINGS-SLIM] merges, if a chat is seen acting on a short line alone; put to him first.
 
-### [LEDGER-READ-ASK] May a member see other men's OIL tracker entries and leave grants? — a question for him (filed 29 Sep 26)
-**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534): the access table (§11) and `state/perms.ts` say every member reads every man's ledger entries; its test `perms.test.ts` "D1008". Leaves for the archive once live.**
-**ANSWERED 18 Oct 26 — D1008 ("as recommended"): everyone sees everyone's; widen the access table (§11) and its test.**
-Found by both red teams of the `[OIL-AWARD-IS-A-GRANT]` plan (Fable F5, Astra F10): the app has ALWAYS shown every member
-every man's OIL tracker (grants and corrections — `OilTracker.tsx` lists every person for both roles) and every man's
-figure breakdown with its itemised grants on every pool (owner, 17 Aug 26: "everyone should be able to click on that
-person's name and see these logics"), while `raptor-port/docs/data-model.md` §11 — the table IT builds the database's
-access rules from — says a member reads only his OWN `LeaveLedger` / `LeaveOpening` rows. The award build settles only the
-award (every member reads every man's, D402 — its own row in §11); everything else in the ledger stays as §11 says, with a
-note naming this gap. **The question:** should a member see every man's ledger entries (as the app shows today) or only his
-own (as §11 says)? If "everyone", §11 and `state/perms.ts` widen; if "own only", the tracker and the breakdown hide other
-men's entries from a member. **Also on the grid (the award walk, 29 Sep 26):** a day wearing a "+n" mark opens its day's
-list for ANY member, as it always has — so a member can read another man's award reason, "Given by" and "Entered by" there
-when that man's day holds two records (two awards, or an award beside his leave); a day holding just his one award opens
-nothing (D261's "another man's award stays as today"). Same answer as the ledger's. **Place:** a question for him, before
-the tables settle (D354).
-
 ### [RESTRICTED-ENV-WORKFLOW] Working and bug-checking once the app lives in the restricted environment (filed 29 Sep 26)
 From IT's answers (`[IT-QUESTIONS]`, 29 Sep 26): the live app runs only inside the restricted environment, which this
 PC's AI cannot reach; changes go to IT as pull requests. **What is lost:** the agent can no longer drive the REAL app on
@@ -1632,12 +1590,6 @@ waive owed reads or authorize a live merge.
 ### [CAL-UNDO-OTHERS] Undo after another person's change: the refusal does not say who, and a holiday on another date blocks it (the calendar job's bug check, 8 Oct 26)
 **Found, not fixed — reported by one walker, not yet seen by the host: reproduce first.** Walker H (X-10), `raptor-port/docs/handpass/parts/cal-H.md`, scripts `raptor-port/scripts/handpass/cal-H-*.mjs`, pictures `raptor-port/docs/img/handpass/2026-10-08-inputs-sans-calendar-check/H/x10-*.png`. (a) Saber files a meeting for three; a second admin changes its remark; Saber's Undo is refused with "A later change touches the same thing — undo that first" — D148 has the refusal say WHO; the same line for a holiday renamed and a Required cell retyped by the other. (b) Saber adds a holiday on 12 Aug, the other admin adds one on 19 Aug, Saber's Undo of his own is refused — a different date is not "the same thing" (a different Required day and a different group input DO undo cleanly). Likely place: how the Leave War's holiday commands name what they touch for the Undo's "changed since" test. **As filed:** medium-low — an Undo that refuses too readily loses nothing. The sheet: `raptor-port/docs/handpass/2026-10-08-inputs-sans-calendar-check.md` §7.
 
-### [DELETE-LIST-CAL-NOTES] The list a delete shows of what it took away has no line for the notes a man was on (found 9 Oct 26 — Astra, the day-window check)
-**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D710: every change to a note has its line in the change history, so the delete names each note he was taken off. Leaves for the archive once live.**
-**ANSWERED 18 Oct 26 — D710 ("as recommended"): confirmed 18 Oct 26 — build it.**
-**Found, not fixed — a question for him.** Deleting a person takes him off every planning note from the delete’s date on (a gap where he stood; a note left with neither words nor people is dropped — `raptor-port/src/state/person-delete.ts`), but the readable lines of the change history (`raptor-port/src/state/changelines.ts`) have none for a `plan` record, so the delete’s list (D337 — "lists everything the delete took away, one line each, as built") says nothing of them. It never did for the old rows of pucks either: D337 confirmed the list as built, so this is put to him, not assumed. **To put to him:** should the list carry a line a note ("taken off the note ‘Brief the new guys’ on 14 Oct")? Recommended yes, as its own small job — and with it, readable lines for ordinary note changes in the changes window (they have none today either). Evidence: the day-window check’s sheet `raptor-port/docs/handpass/2026-10-09-day-window-compact-check.md` §0 and §5. **As filed:** small.
-**He said yes (D710, 9 Oct 26 — "yes as recommended"): build it, as a small later job** — one line a note in the delete’s list, and readable lines for ordinary note changes in the changes window with it.
-
 ### [TITLE-CHECK-SEEN] Older small finds met by the title's check (9 Oct 26) — none caused by the title; filed, not fixed
 **Fixed 10 Oct 26 by `[SEEN-BATCH-2]` (on `claude/day-window-compact` — live since 10 Oct 26, PR #488):** (2) the take-off message names the request (D731 (5)); (4) the "Unsaved changes" question comes to the front; (5) Enter in Remarks or Title no longer opens a second "New input". (10) was withdrawn — a member can leave himself out. **Still open here:** (1), (3), (8).
 **The title's list, placed by him (D730, 10 Oct 26):** the finds here that need no choice from him are fixed as a second batch after `[INPUTS-VET]`'s build, with its own tests and check; those that need his choice are listed for him.
@@ -1680,24 +1632,6 @@ Met by the walkers of `[INPUT-OWN-TITLE]`'s check (`raptor-port/docs/handpass/20
 **Status: OPEN — a documents-only job of its own; nothing is trimmed (D136).** On 10 Oct 26 the scheduler's rulings file held 95,514 bytes (marker 69,000), How we work 23,032 (22,000) and the Leave War's 34,273 (32,000): the calendar job and the Inputs pages' work added about 120 rulings (D617–D733) in four days. The three markers were raised that day so the document check passes (`raptor-port/scripts/docsize.mjs`, each with its reason). **Still to do:** (a) read those files' rows — and the Inputs pages' file, `.claude/rules/decisions/inputs.md`, which took 101 of the scheduler's on 13 Oct 26 (D802) — for rulings that are SPENT (a one-off permission used: "built after the merge", "built in the next chat", a mock-up asked for and since chosen) or REPLACED by a later ruling, mark each in its full row and run `node raptor-port/scripts/backlog-archive.mjs --rulings` (`DECISIONS.md` step 2) — a meaning read by Astra of whatever short lines are rewritten (D138); (b) ANSWERED 13 Oct 26 by D802: the Inputs pages' rulings have a file of their own; nothing further to put to him.
 **Seen again 16 Oct 26 (pull request 519 merged with the overs deferred, D29):** How we work 40,313 bytes (marker 39,500), the Scheduler's 94,224 (92,000), the Inputs pages' 35,026 (32,000); and `plain-language.md` and `shipping.md` over their tripwires. All five markers RAISED the same day with their reasons (`raptor-port/scripts/docsize.mjs`), so documents-only changes pass again; the spent-row pass that brings them down is still this job.
 **Place:** the agent's — a documents-only chat; (b) is his.
-
-### [LW-HEAD-BIG-PHONE] Between a phone and a tablet the top of the Leave War is at its tallest — his call (found 8 Oct 26)
-**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D1000, D1016: the two-line top up to 700 wide, the 20px edge from 431; the grid card unchanged. Leaves for the archive once live.**
-**ANSWERED 18 Oct 26 — D1000 ("Shorter version"): the phone's two-line top up to about 700 wide, the top only; a picture at 440 and 600 wide first, then the build.**
-
-**Found, not changed** — while measuring for `[LW-PHONE-HEADER-SPACE]` (D678, D679). The Leave War calls a screen "a
-phone" at 430px wide or less, and only there does the top become two lines. From 431px up to about 700px the page is the
-desktop's strip squeezed: "Viewing as" on a line of its own, the Stage line wrapped over three — the grid's first row
-354px down at 431 wide, against 182 on a phone and 222 on a desktop. **Who meets it:** the largest iPhones (the newest
-Pro Max models are 440 wide — the agent's knowledge of them, not measured on one), a small tablet in a split view. His own phone's
-picture showed the phone layout, so his is 430 or less.
-**Why it was left:** D679 — "keep the same for desktop"; its reading (1) fixed "a phone" as the width the top changes
-at today, and everything wider stays whole. Widening "a phone" is a new choice, and the grid below has
-phone rules of its own at other widths (it opens one step out at 700 and under), which this would not touch.
-**The question for him:** should a screen up to about 700 wide get the phone's two lines too? **Recommended:** yes, for
-the top area only (one width in two places — `leavewar/ui/phone.ts PHONE_QUERY` and `chrome.css`'s phone block — and the
-browser test's three sizes), leaving the grid's own widths alone; a picture first, drawn into the running build at 440
-and 600 wide (D634). **Place:** his to set — small, the Leave War's own; it does not wait for the calendar job.
 
 ### [SHELL-SCRIPT-GUARD] A guard that refuses a script typed into the shell — eighteen skill notes ask for it (filed 13 Oct 26 by the skill-notes review; his go to build it given the same day — D811)
 
@@ -1874,11 +1808,6 @@ search/controls visible below the actual header; narrow modified actions wrap. N
 
 **Logic controls design:** `raptor-port/docs/superpowers/specs/2026-10-04-interface-readability-scroll.md`; **build plan:** `raptor-port/docs/superpowers/plans/2026-10-04-interface-readability-scroll-build-plan.md` (Astra plan; independent Sol challenge PASS; runtime/final read in the combined handpass).
 
-### [TRK-IMPORT-REFUSAL-WORDS] A current file's students refused with "saved by an older version" — the wrong reason (found 17 Oct 26 by `[TRK-FILE-TRANSFER-SPLIT]`'s walk; older) — OPEN, his to word
-**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534): wording B for the not-found, deleted-chart and two-onto-one cases (`STUDENT_CHART_MSG`); the older-file words kept for older files. Leaves for the archive once live.**
-**ANSWERED 18 Oct 26 — D1015 ("13 B"): wording B — "Student marks not brought in: they belong to a chart this file doesn't carry. Export a fresh backup that includes its charts, and import that." To build.**
-File → Import refuses the students of a file of today's version whose students point at a chart the file does not carry with "These student marks were saved by an older version and can’t be brought in safely. Import the charts, then re-enter marks — or export a fresh backup from the current app and import that." — but the file is not older; it does not match. The same words serve the real older-version case, and two collision cases (`normalizeImport`'s refusal and `remapStudentsSyl`'s throw, both in `raptor-port/src/tracker/app/fileTransfer.js`; `reconcileStudentsSyllabi` in `core.js`). Pictures: `raptor-port/docs/img/handpass/2026-10-17-trk-file-transfer/desk/24-s5-q2.png` (the wrong reason), `…/11-s2-q2.png` (the right one). **The fix the agent would recommend:** a second sentence for a file that does not match — what is wrong and what to do — his to word (`raptor-port/docs/design-practices.md` §1b). **Place:** the Tracker batch, put to him with its questions. Unchanged by the move (identical before and after).
-
 ### [TRK-FILE-TRANSFER-SPLIT] The Tracker's file save and load move out of its main file — APPROVED D493 (2 Oct 26), to build with the Tracker batch
 **BUILT 17 Oct 26 — what was left of it (his word with `/overnight`), on `claude/tracker-feature-batch-6ea3a7`:** the import's store-free steps (`normalizeImport`, given the store's chart catalogue; `sameDef`; `remapStudentsSyl`; the older-version refusal's words) moved word for word to `raptor-port/src/tracker/app/fileTransfer.js` beside `fileFormat.js`, the boundary test `raptor-port/src/tracker/file-transfer-boundary.test.ts` written first. FULL-checked: proved a move by recording File → Import before and after (identical), the whole gate set green, two fresh Opus reads (test-only findings, fixed) — `raptor-port/docs/handpass/2026-10-17-trk-file-transfer.md`. Nothing on screen changes: waiting for his "merge live" only. The rest of export / import stays in `core.js` as the 13 Oct look below decided; the item leaves for the archive once this merges.
 **Looked at 13 Oct 26 (the night's run, on his word D799) — stopped at its own stop condition, nothing changed.** Measured on the main file as it stands (the section is lines 5785–6507 of `raptor-port/src/tracker/app/core.js`, 723 lines): it calls **43** of the main file's own functions (the questions it puts, the redraws, the saves, the id conversions, the course loader) and reads **about fifteen** of its own lists and records; it REWRITES three of them outright (the chart catalogue, the chart order, the hidden charts) and writes into the marks and the event details in place. A separate module cannot reassign another module's variables, so the split would need three new setters and some forty-five names handed across — that is the catch-all "core context" Astra's read said to stop at, not a small explicit interface. So it was NOT forced. **The agent's call (a technical one, told to him):** leave the file save and load where they are; nothing a person sees depends on the move. **What is left of this item:** the parts that touch nothing of the store — the file's normalising and comparing (`normalizeImport`, `sameDef`, `remapStudentsSyl`, about 80 lines) — can move beside `fileFormat.js` with the next Tracker feature batch, test first (`tracker/file-transfer-boundary.test.ts`, as Astra named it); the rest waits for the Tracker to write through the one command layer, which is what would give it a real boundary.
@@ -1972,15 +1901,6 @@ green "OIL" chip over the date and time — about 37 × 12 px of overlap. Walker
 touched the Inputs page or its stylesheet part. **Place (the agent's line):** low — with the next change to the Inputs page; a browser
 test that the chip and the date do not overlap at 390 and 320.
 
-### [BOARD-TIME-ESCAPE] On the Scheduler Board, Escape in a TIME box does not put the old time back (found 5 Oct 26, the Codex stack check)
-**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D1011: Escape restores a board time box and saves nothing. Leaves for the archive once live.**
-**ANSWERED 18 Oct 26 — D1011 ("as recommended"): Escape puts the old time back on the board's time boxes.**
-The board's take-off, landing, Brief and duty-start boxes keep what was typed after Escape, the caret stays in the box, and leaving the
-box then saves it; the week's time boxes and the board's text boxes restore the saved value. The same on `main` (`de470db5`) and on the
-stack — the host ran walker D's probe (`raptor-port/scripts/handpass/stk-D-1b.mjs`) on both builds, box for box. D544 kept "the existing
-Enter and Escape meanings", so the Tab route did not change it. Not ruled. **Place (the agent's line):** low — a question for him with
-the next change to the board's boxes: should Escape restore there as it does on the week?
-
 ### [START-CONTEXT-AUDIT] A new chat starts at about 30% of its context — measure what it loads, then cut it to what a job needs (owner, D602, 6 Oct 26)
 **DONE 7 Oct 26 under his ruling, on `claude/docs-tidy-7-oct` — options 1 to 6 (what each did and saved: the foot of the
 spec named below); 7 found nothing to do; the document check is green. Still open, why this item stays: step (4)'s check
@@ -2024,21 +1944,6 @@ with `[BLANK-TIMES-ABSENCE]` (the same family: a rule reading times that are not
 
 ### [TRACE-FOCUS-STAYS] After a "Breaks <next day>" line is tapped in a day's open issues list and the list is closed, the light stays on — the crew lit, the page dimmed (found 18 Oct 26 by the night's job 4 walk, B3 — OLDER than that job; low) — OPEN
 **Found, not fixed.** On the Scheduler Board, Monday's list open, a tap on its "Breaks Tuesday · <man>" line (the crew-rest trace, the day that causes tomorrow's breach), then the list closed: the man's five Monday pucks stay lit (`wfoc`) and the whole page stays dimmed (18 lit, 689 dimmed); the same on Tuesday's own crew-rest line clears as it should, and opening then closing a list with no tap restores everything. Picture: `raptor-port/docs/img/handpass/2026-10-18-night-job4/dk-10*.png`; the walk `raptor-port/scripts/handpass/night1018-job4-walk.mjs` B3. Not the job's doing — its commit touches no highlight or focus code (`ui/highlights.ts`, the focus in `state/view.ts`). **To look at:** what clears the focus a trace line sets when its list is closed (`toggleDayWarn` / `clearWarnFocus`). **Place:** low — with the next change to the issues list.
-
-### [CREW-REST-MARK-COPIES] The dotted "breaks tomorrow" ring and the dashed late-show ring are drawn on the cockpit and row pucks only — the same man's other pucks show a solid red ring; and an open day list paints over both (found 6 Oct 26, the crew-rest fix's check — OLD; low; a question for him)
-**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D1013, D1017: every copy wears the seat's crew-rest ring and chip; an open list keeps the dotted and dashed rings (option A). Leaves for the archive once live.**
-**ANSWERED 18 Oct 26 — D1013 ("as recommended"): every copy wears the seat's ring, the open list leaves it readable — a picture first.**
-Seen by all three walkers, none of it this fix's doing (nothing that draws a puck was touched). (1) On the day that CAUSES a
-breach (Monday, when Tuesday's rest is broken) the man's cockpit puck and ground-row puck wear the dotted red ring — but his
-SANS card, his Unavailable row and his Personal Inputs row wear a SOLID red ring with the R chip, which reads as a breach ON
-Monday; the crew list's copy shows neither. (2) A sanctioned late show (the dashed ring) is dashed on the cockpit and the row
-and SOLID on the SANS card, the Unavailable and Personal Inputs rows and the crew list (walker C, S01 — pictures
-`…/2026-10-06-rest-blank-line/C/dk-06…26-s01-*.png`; the builders pass no dash or trace to those copies: `ui/html.ts`,
-`ui/board-html.ts`, `ui/palette-html.ts` — Astra's roll-call). (3) While a day's issue list is OPEN, every puck it names is lit
-with a solid ring, which covers the dotted and the dashed ring until the list is shut (walkers A, B and C). **The question for
-him:** should every copy of a man's puck wear the same crew-rest ring as his seat does, and should an open list leave the
-dotted and dashed rings readable? **Place:** low — with the next change to how pucks are drawn (D94 put all three rings on the
-board; these copies were not in its roll-call).
 
 ### [BLANK-LINE-SANS-WORDS] On a line with no times a SANS man's offer is still worded as a clash, and a line with no callsign leaves holes in sentences (found 6 Oct 26, the crew-rest fix's check — OLD; low)
 (1) A SANS man offering Fly 14:00–16:00, seated on a blank line: the list says "… planned for   — available 14:00–16:00 only"
@@ -2261,18 +2166,6 @@ on that "merge live" (pull request 528).
 picture whether it takes the one calendar (a pick of several separate days, which the calendar does not do today);
 nothing built before his word. The step-two check: `raptor-port/docs/handpass/2026-10-15-calendar-step-two.md`.
 
-### [CAL-ESC-LISTS] Escape with a calendar's month-and-year lists open closes the whole form, not the lists — found 17 Oct 26 by [OIL-CONFIRM-DAYGRID]'s code read (F3); older than that job; his to place — OPEN
-**ANSWERED 18 Oct 26 — D1020: the floating calendar too; filed as [DATEBOX-ESC-LISTS].**
-**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D1012: in a calendar inside a form Escape shuts only the lists first (the floating calendar over a date box keeps closing whole, as its test pins — a question for him). Leaves for the archive once live.**
-**ANSWERED 18 Oct 26 — D1012 ("as recommended"): Escape closes only the month / year list.**
-**Seen:** in a calendar drawn inside a form — the OIL question's "Only some days…", an input's own window — the title opens
-the month-and-year lists; Escape there closes the whole question or window (in the question before a swap, the swap is
-not made and the bar stays), where the design guide's §2 says "Escape closes what opened last". The one calendar's header
-leaves Escape to its form (`raptor-port/src/ui/DateCal.tsx`), so it is every inline calendar's, not this job's. A calendar
-that floats (the date box) is not affected: its layer takes Escape. **The fix, if he wants it:** in `DateCal`'s list keys,
-Escape closes the lists and stops there; the two forms' Escape handlers leave a key that came from the lists alone; one
-unit test each (`oilconfirm.test.tsx`, `inputs.test.tsx`). Picture: `raptor-port/docs/img/handpass/2026-10-17-oil-confirm-daygrid/rewalk/18-S7-desk-lists.png`.
-
 ### [GUIDE-NO-GLOW] The design guide carries "a ring in this app never glows" — RULED D880 (15 Oct 26); the wording APPROVED and in the guide (D887); BUILT and WALK-checked 15 Oct 26 (`raptor-port/docs/handpass/2026-10-15-no-glow.md`) — OPEN until his "merge live"
 **His "3 yes" (D880)** to D852's question after `[GLOW-OFF]`. Version 2 of the wording, after one fresh reader
 (`raptor-port/docs/superpowers/briefs/2026-10-15-reads/guide-no-glow-opus.md` — all ten findings taken), and the NINE places
@@ -2309,10 +2202,6 @@ short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not c
 
 ### [KBD-PUCK] A puck cannot be picked up, put down, swapped or taken off by keyboard — and the week's 440 pucks are Tab stops that do nothing (filed 13 Oct 26, the design look's K11) — OPEN, a job of its own, his to place
 **Found by `[DESIGN-LOOK-13OCT]`, not fixed — the question the design guide left open ("whether a keyboard can arm a puck is for the keyboard sweep to say", `raptor-port/docs/design-practices.md` §2): it cannot.** Every puck is drawn as a Tab stop (`raptor-port/src/ui/html.ts`) and wears the app's ring, but no key is heard on one: Enter, Space and Delete do nothing on the Scheduler Board or on Edit Schedule's week (`raptor-port/docs/mock/2026-10-13-design-look/keyboard.json`). So a scheduler at a desktop cannot move a man without the mouse, and Tab crosses hundreds of stops with nothing to do on any. **The shape to design (questions for him first — D541):** Enter or Space picks a puck up as a tap does on a phone (the app's own "armed" state), the seats that can take him are then the Tab stops, Enter puts him down, Escape lets go, Delete takes him off with Undo; the crew list reachable the same way. **Risk to weigh:** the dense week is swapped as text for speed (`raptor-port/docs/performance.md` Part 1) — the keys must ride the one listener the board already has, never one per puck. Tier WALK at least; a puck's drop is the schedule's main write.
-
-### [SCHED-INPUT-WINDOW-PHONE] On a phone the input's window opened from the schedule is short, lets the page scroll behind it, and on a phone on its side "+ Input" runs off the right edge (the one-rule job's walk, share D — D4, D7, 12 Oct 26)
-**LIVE 18 Oct 26 (pull request 533, his "merge live"). D996 and D997 BUILT 18 Oct 26 on `claude/window-middle-d996`** — every pop-up window on a phone in the middle (the calendars' day panels and the ALL AVAIL and changes windows at the foot); waiting for his look and "merge live". (1) At 620 wide and under the schedule's own input window is as tall as what is in it up to the visible screen less 24px (D706), in the middle of the screen (his D995, 18 Oct 26 — first built at the foot); (2) a finger on it never scrolls what is behind (D686 — one shared guard, `floatwin.ts holdPageScroll`); (3) the cause of the sideways phone's fault was the Inputs LIST: its 875px table widened the page to 907 between 821 and about 940 wide, so the list now scrolls in its own box at every width. Red first, walked, 4 break tests caught: `raptor-port/docs/handpass/2026-10-18-sched-phone.md`. Only his iPhone proves the top strip under Safari's bars.
-**Found, not fixed — for his iPhone look first; then with the look-and-feel pass (`[UI-SLEEK-PASS]`) or the next phone batch.** Three things, all in a test browser's phone (390 × 844 by touch, 390 × 568, 844 × 390): (1) the window a tap on an input's line under Personal Inputs opens on Edit Schedule and the Scheduler Board is 675 px tall of 844 — the same input's window from the Inputs page is 820 — while it holds 1390 px (everyone's pucks since D748); D706 ("as tall as what is in it, up to nearly the whole screen") was built for the Inputs pages' windows and the schedule's own dialog was left as it was. (2) A finger scrolling inside that window on Edit Schedule also scrolls the page behind it (D686 — built and confirmed on his iPhone, D703, for the Inputs pages' windows). (3) At 844 × 390 the app takes its desktop layout and the "+ Input" window sits at x 461–891 on an 844-wide screen: Add and ✕ cannot be reached. None is new in the one-rule job (the dialog and its placement are untouched by it). Pictures: `raptor-port/docs/img/handpass/2026-10-12-one-rule/D/` (`D4-02`, `D4-06`, `D7-844x390-c01`, `D7-390x568-08`).
 
 ### [DISCARD-FILING-NOOP] "Discard 1 edit & load" for an input filed after the day went out promises a discard and changes nothing (the one-rule job's walk, share F — F1, F8, 12 Oct 26)
 **Found, not fixed — low; NOT yet compared with the live app.** On a published day, file a new input (it lands on the programme: "1 pending"). "Load onto working copy" offers "Discard 1 edit & load — confirm"; confirmed, the note says "1 unpublished edit replaced" — and the input is still on its row and the day still reads 1 pending (the load puts its filing back to "fresh", and a fresh input lands again). For a person added to an input, and for a CX, no discard is offered and the note says the change stays (right). **To check first:** whether the live app does the same (`raptor-port/src/engine/publish.ts dayDiscardCount` counts each filing the load "will put back"; this job did not change that half). **The build, if it is a fault there too:** a filing the load cannot keep off the programme is not counted as discarded.
@@ -2359,18 +2248,6 @@ An SC shift 13:00–19:00 with B (its in-time) 05:00, a man clear at 12:30 place
 branch. **Fix:** "… but SC AM's in-time is 05:00 …" when the report is the typed B and "starts" only when it is the
 shift's start; the crew list's line is unaffected. **Place:** low — with `[OIL-WORK-START]` or the next change to the
 crew-rest sentences.
-
-### [UPCHIT-MOVE-NO-REGROW] An Upchit moved to a LATER date does not give back the medical days it cut (walker B, the D605 walk, 6 Oct 26 — OLD; low; a question for him)
-**18 Oct 26 — D1022: a DELETED upchit gives the days back too; filed as [UPCHIT-DELETE-REGROW].**
-**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D999: an upchit moved later gives the downchit it had cut its days back, never past its first end (`firstEnd`, kept at the first cut) and never into another medical filed in the gap; the save sheet and the calendar drag's sheet say so. A downchit the cut had deleted has nothing to give back; an upchit DELETED gives nothing back (not in the ruling — a question for him). Leaves for the archive once live.**
-**ANSWERED 18 Oct 26 — D999: TO BUILD.** The downchit grows back to the day before the upchit's new date, never past its first end, said on the upchit's save sheet before saving; a calendar drag the same; a published day given back reads pending (D178). Reproduce walker B's case first (the host did not), test first.
-A downchit (ATT C) Monday to Friday; an Upchit effective Wednesday — the downchit is cut to end Tuesday, as it should
-be. Then the Upchit's date is changed to Thursday in the Inputs page's row editor: the downchit still ends Tuesday (the
-editor's sheet says "no current entry needs shortening"), so Wednesday reads fit although the man was cleared only from
-Thursday. Seen by walker B (S26; `raptor-port/docs/handpass/parts/bta-B.md`), NOT reproduced by the host; the Upchit's
-write path only ever shortens. **The question for him:** when an Upchit is moved later, should the downchit it cut grow
-back to the day before the new date — or is the Upchit deleted and filed again? **Place:** low — with the next change
-to the Medical view.
 
 ### [OFT-ADD-TWICE-SILENT] The second press of an OFT row's "+" for a man already on that row is refused with no message (walker A, the D605 walk, 6 Oct 26 — OLD; low)
 "One man, once per row" (D271) refuses the second place and says why — on a duty row, a ground row, a Common Programme
@@ -2514,6 +2391,7 @@ one (a measured layout — a picture first). **Place:** his look; then close, or
 **Delivered D566 combined branch preview,5Oct26:** https://raptor-q27mo3zqg-kai-e2f5.vercel.app (source7f0b78bf; completed VercelSUCCESS/Preview9ZKYvXmsMPbWpc3RkwppHcWKzqqN). All3interface fixes checked/fresh independent R1PASS; owner look/Claude reads/authorized merge remain outstanding. Shipping method/limits in current accepted-batch evidence; no live authority.
 
 ### [LW-CARD-SHORT-WORDS-700] From 431 to 700 wide the Leave War grid card's buttons take the phone's short words — RULED D1019 (18 Oct 26); to build — OPEN
+**BUILT 18 Oct 26 on `claude/three-small-jobs-1018`** — the short words up to 700 (`leavewar/ui/chrome.css`); its check `raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`. Leaves for the archive once live.
 **What:** the grid card's "Reorder" and "OIL" buttons read "⇅" and "OIL" (the phone's short-words rule) up to 700 wide, so
 "−" and "+" stay on the first line; the grid's columns unchanged. Picture: `raptor-port/docs/img/handpass/2026-10-18-lw-top-700/6-440-proposed-short-words.png`
 (at 440: 22 rows of names, 5 more than before the night). **Where:** the card's rules in `raptor-port/src/leavewar/ui/chrome.css`
@@ -2521,11 +2399,13 @@ kept at 430 (the night's job 3) move to 700 for the buttons only. **Place:** one
 [UPCHIT-DELETE-REGROW], once pull request 534 is live. Check: WALK (layout at many widths).
 
 ### [DATEBOX-ESC-LISTS] The calendar floating over a date box: Escape shuts its month and year list first — RULED D1020 (18 Oct 26); to build — OPEN
+**BUILT 18 Oct 26 on `claude/three-small-jobs-1018`** — Escape over a date box shuts the lists first (`ui/DateBox.tsx`), its test changed with it; the check `raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`. Leaves for the archive once live.
 **What:** as the calendars inside a form now do (D1012, built the night of 18 Oct 26): with the month or year list open,
 Escape closes only the list; a second Escape closes the calendar. The test that pins today's behaviour
 (`raptor-port/src/ui/datebox.test.tsx`) changes with it. **Place:** with [LW-CARD-SHORT-WORDS-700]. Check: LOOK plus its tests.
 
 ### [UPCHIT-DELETE-REGROW] A deleted upchit gives the downchit it cut its days back — RULED D1022 (18 Oct 26); to build — OPEN
+**BUILT 18 Oct 26 on `claude/three-small-jobs-1018`** — `engine/medical.ts upchitDeletePlan` (one give-back body with D999), written in `removeInput`'s command; the window's Delete and the opened day's Delete key ask on the upchit sheet first; the check `raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`. Leaves for the archive once live.
 **What:** as a moved one does (D999, built the night of 18 Oct 26): the downchit grows back to the end it had before the
 cut, never past it and never into another medical of his in the gap; the save sheet says so first. Builds on the kept
 first end (`firstEnd`) and the give-back plan in `raptor-port/src/engine/medical.ts`. **Place:** with

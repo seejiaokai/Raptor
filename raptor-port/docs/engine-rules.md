@@ -1904,6 +1904,11 @@ Personal Inputs, faded, so the scheduler can see what they have dealt with.
 *(18 Oct 26, D999 — BUILT the same night (`engine/medical.ts upchitTrimPlan` grows, `ui/inputedit.tsx applyMedPlan` keeps `firstEnd`), filed as [UPCHIT-MOVE-NO-REGROW]: an upchit moved to a LATER date gives the downchit it cut its
 days back, to the day before the new date and never past the downchit's first end, said on the upchit's save sheet before
 anything changes; a calendar drag of the upchit the same. Until built, the trim below only ever shortens.)*
+*(18 Oct 26, D1022 — filed as [UPCHIT-DELETE-REGROW]: an upchit DELETED gives the downchit it cut its days back too, as a
+moved one does — back to the end it was filed with, never into another medical of his in the gap (`engine/medical.ts
+upchitDeletePlan`, the same give-back body as D999's move); the upchit sheet says so before the delete, from the input's
+own window and from Delete on its line in an opened day (`ui/inputedit.tsx upchitDeleteAsk`), and one Undo step puts back
+the upchit and the cut together. A delete that gives nothing back asks nothing (D792).)*
 
 The medical group (HL, OML, ATT C, ATT B) has always been the downchit; what
 is new is the LIFECYCLE around it, and one new type.

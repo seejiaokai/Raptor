@@ -323,3 +323,14 @@ as recommended, and his "merge live" for pull request 534.
 - **D1021** — the dashed "same man, other day" mark stays over the dotted ring when tomorrow's warning is focused: kept as
   built, nothing to build.
 - **D1022** — a deleted upchit gives the downchit its days back too: yes, a small follow-up ([UPCHIT-DELETE-REGROW]).
+
+## The backlog items the night closed (archived 18 Oct 26, once pull request 534 was live)
+
+Moved whole to `OUTSTANDING-ARCHIVE.md` by `backlog-archive.mjs` on `claude/three-small-jobs-1018`; each one's lasting
+facts are in its rulings and in the reference docs this night changed (`ui-contracts.md`, `engine-rules.md`,
+`data-model.md` §11, `data-schema.md`, the Tracker spec `superpowers/specs/2026-10-18-trk-down-days.md`), the checks above:
+[SCHED-INPUT-WINDOW-PHONE] (job 1 — D996, D997), [LEDGER-READ-ASK] (D1008) and [TRK-IMPORT-REFUSAL-WORDS] (D1015) (job 2),
+[LW-HEAD-BIG-PHONE] (job 3 — D1000, D1016), [CREW-REST-MARK-COPIES] (job 4 — D1013, D1017), [PEEK-ISSUED] (D1010),
+[BOARD-TIME-ESCAPE] (D1011), [CAL-ESC-LISTS] (D1012) and [DELETE-LIST-CAL-NOTES] (D710) (job 5), [UPCHIT-MOVE-NO-REGROW]
+(job 6 — D999), [TRK-DOWN-DAYS-AUTO], [TRK-FLEX-SETTING] and [TRK-LEGEND] (job 7 — D1002–D1007, D1014, D1018). His three
+follow-ups (D1019, D1020, D1022) are built on `claude/three-small-jobs-1018`: `docs/handpass/2026-10-18-three-small-jobs.md`.

@@ -7270,7 +7270,9 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
     the Leave War's sheets and the passing note), a veil with the card on it — in the middle of the screen on a phone, a
     small panel under its box on a desktop (above it where there is no room beneath, and always on the screen). A tap on a
     date picks and it goes; a tap on the veil closes it and changes nothing (on the click, not the press); Escape closes
-    it FIRST and the window behind only on a second press; the keyboard goes onto it, stays in it, and returns to the box.
+    it FIRST and the window behind only on a second press — and with its month and year lists open the first Escape
+    shuts only the lists, the keyboard on the title, as the calendars inside a form do (D1020, 18 Oct 26; D1012); the
+    keyboard goes onto it, stays in it, and returns to the box.
     Nothing pressed or typed in it reaches the form behind. **A surface that eats presses "outside itself" at the
     document must let `.dcal-layer` through** — the Leave War's touch shield does (`leavewar/ui/Sheet.tsx`; pin
     `leavewar/ui/datebox-sheet.test.tsx`).
@@ -7805,7 +7807,7 @@ right of manning"): the old `.card-spring` was removed, so the row packs left an
 a member reads Manning · OIL. The "JAN – DEC 26 · 365 days · 50 people" `.t` line
 is GONE; the war's NAME still lives in the Period `<select>` in the page chrome
 (`Chrome.tsx`), so nothing is stranded. The controls hold ONE line down to the
-phone: "OIL tracker" drops its "tracker" tail (`.rtlbl`, `display:none` ≤430px)
+phone: "OIL tracker" drops its "tracker" tail (`.rtlbl`, `display:none` ≤700px since D1019, 18 Oct 26 — ≤430px before)
 to read "OIL" there, and `.card-hd` keeps `flex-wrap:wrap` only as a safety net.
 The ⇅ Rearrange toggle MOVED here from the grid's bracket-corner cell
 (`th.brakhd`, empty now) — the rearranging itself is hands-on-grid, and since
@@ -7878,7 +7880,7 @@ or a category heading to reorder", `⇅ Auto-sort`, `✓ Done`; 3 Sep–6 Sep 26
 deleted — it cost a row of height on a phone for a sentence. Rearrange is
 entered and left by the same header button (`roster-arrange`, `aria-pressed`),
 lit accent (`.rtbtn.on`) while on; on a phone it is the ⇅ icon alone (the word
-rides `.rtlbl`, hidden ≤430px — "just show an arrow up and down icon"), on
+rides `.rtlbl`, hidden ≤700px since D1019 — "just show an arrow up and down icon"), on
 desktop "⇅ Rearrange" / "⇅ Rearranging". There is no Auto-sort button anywhere
 now — the store's `autoSortRoster` remains for the tests;
 don't re-add the button or the strip without his ask. Pinned in

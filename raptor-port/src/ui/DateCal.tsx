@@ -216,8 +216,9 @@ export function DateCal(p: {
      opened last"). A form holding this calendar (the OIL question, an input's own window) hears Escape on the way DOWN
      at the document and closed itself with the lists still open — a waiting swap was then not made. While the lists are
      open the key is the calendar's: heard at the window on the way down, before any form, it shuts the lists and puts
-     the keyboard back on the title; the next Escape is the form's again. The floating calendar (ui/DateBox.tsx) leaves
-     no Escape to this: over a date box Escape still shuts the whole calendar, as built and pinned (datebox.test.tsx). */
+     the keyboard back on the title; the next Escape is the form's again. The floating calendar over a date box does the
+     same since D1020 (18 Oct 26): its layer (ui/DateBox.tsx) takes the key from everything behind it, leaves the lists'
+     Escape to this listener, and closes itself only on the next press (datebox.test.tsx). */
   useEffect(() => {
     if (!lists) return
     const onKey = (e: globalThis.KeyboardEvent) => {

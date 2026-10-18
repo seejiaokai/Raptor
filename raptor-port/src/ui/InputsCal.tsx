@@ -45,8 +45,8 @@ import { isMe, mayDeleteInput } from '../state/perms'
 import { addDays } from '../state/flyplan-model'
 import { HOOKS } from '../engine/hooks'
 import { inputsInMode } from './sans-calendar-model'
-import { fmt, fmtDay, inputTone, newInputSeed, removeInput, sharedRefusal, commitInput, draftOf, oilSignDay, oilSignNote } from './inputedit'
-import { INPEDIT, setInpEdit } from './pops'
+import { fmt, fmtDay, inputTone, newInputSeed, removeInput, upchitDeleteAsk, sharedRefusal, commitInput, draftOf, oilSignDay, oilSignNote } from './inputedit'
+import { INPEDIT, setInpEdit, setMedMove } from './pops'
 import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
 import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem, inputPassesPerson, inputMatchesSearch, namesOf, everyoneIn } from './inputscal-model'
@@ -911,6 +911,10 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
           : `Only ${PEOPLE[one] ? PEOPLE[one].cs : 'its owner'} or an admin can delete this input`, 'warn'); return
       }
       askedAll.current = false
+      /* AN UPCHIT WHOSE DELETE GIVES A DOWNCHIT ITS DAYS BACK (owner D1022) is asked on the upchit sheet instead — the one
+         question, saying what comes back; its Delete is the delete (ui/MedMoveConfirm.tsx) */
+      const back = upchitDeleteAsk(r)
+      if (back) { setMedMove({ iid: r.iid, ask: { kind: 'updel', ...back }, via: 'delete', said: 'Input deleted' }); notify(); return }
       setDelAsk(it.key)
     }
     const doDelete = (it: BarItem) => {

@@ -160,19 +160,38 @@ export function upchitTrimPlan(person:any,xOrd:any,except?:any){
   /* …only where the upchit is HIS (one handed to another man and moved gives that man nothing), and stopping before any
      other medical of his — a downchit or another upchit — in the gap (the fresh read of D999, 2) */
   const oldX=except&&isUpchit(except.type)&&holds(except,person)?medStartOrd(except):null;
-  if(oldX!=null&&xOrd>oldX){
-    const rows=medRows(person).filter((r:any)=>r!==except);
-    const stops=[...rows,...upRows(person).filter((u:any)=>u!==except)];
-    for(const r of rows){
-      if(r.firstEnd==null||medEndOrd(r)!==ordShift(oldX,-1))continue;
-      const b=medEndOrd(r)!, f=firstEndOrd(r);
-      if(f==null)continue;
-      let to=Math.min(f,ordShift(xOrd,-1)!);
-      for(const o of stops){if(o===r)continue;const s=medStartOrd(o);if(s!=null&&s>b&&s<=to)to=ordShift(s,-1)!;}
-      if(to>b)out.push({row:r,action:'grow',newEndOrd:to});
-    }
+  if(oldX!=null&&xOrd>oldX)out.push(...giveBack(person,except,ordShift(xOrd,-1)!));
+  return out;
+}
+/* THE ONE GIVE-BACK BODY (D999, D1022): the downchit an upchit `up` of `person` cut — ending the day before the upchit's
+   date, carrying its first end — grows to `upTo`, never past that first end, stopping the day before any other medical
+   of his (a downchit or another upchit) in the gap. A move later hands the day before its new date; a delete hands no
+   limit but the first end. */
+function giveBack(person:any,up:any,upTo:number){
+  const out:any=[];
+  const oldX=medStartOrd(up);
+  if(oldX==null)return out;
+  const rows=medRows(person).filter((r:any)=>r!==up);
+  const stops=[...rows,...upRows(person).filter((u:any)=>u!==up)];
+  for(const r of rows){
+    if(r.firstEnd==null||medEndOrd(r)!==ordShift(oldX,-1))continue;
+    const b=medEndOrd(r)!, f=firstEndOrd(r);
+    if(f==null)continue;
+    let to=Math.min(f,upTo);
+    for(const o of stops){if(o===r)continue;const s=medStartOrd(o);if(s!=null&&s>b&&s<=to)to=ordShift(s,-1)!;}
+    if(to>b)out.push({row:r,action:'grow',newEndOrd:to});
   }
   return out;
+}
+/* A DELETED UPCHIT GIVES THE DOWNCHIT ITS DAYS BACK (owner D1022, 18 Oct 26 — "as recommended": as a moved one does,
+   D999): the downchit it cut grows back to the end it was filed with, never into another medical of his in the gap.
+   Nothing for a row that is not an upchit, or names no one. The sheet before the delete renders this, and the delete
+   applies it — one body. */
+export function upchitDeletePlan(up:any){
+  if(!up||!isUpchit(up.type))return [] as any[];
+  const person=leadOf(up);
+  if(person==null||person==='')return [] as any[];
+  return giveBack(person,up,Infinity);
 }
 /* THE KEPT FIRST END (D999) — written WITH ITS YEAR, as an ISO date: a bare "Dec 30" would be read against the row's
    `yr`, which an edit made while another year is loaded rewrites (the fresh read of D999, 4) */
