@@ -63,20 +63,35 @@ the later merge keeps both (D78).
   (`docs/img/handpass/2026-10-18-lw-top-700/6-440-proposed-short-words.png`). (2) The overnight retry trial
   (`[OVERNIGHT-RETRY-TRIAL]`, D885) was not run: its setting is read when a chat starts, so it must be set before he opens
   the next /overnight chat.
-- **Where the night stands (about 10:00 his PC's time — the chat at 80%, written at a clean point):** ONE branch, ONE pull
-  request (534); every job's check in `raptor-port/docs/handpass/2026-10-18-night-jobs.md`. Jobs 1–5 DONE and walked
-  (job 5 23/23). Job 6 (D999) BUILT, its read's 4 findings FIXED (328adc853) — its walk NOT YET RUN. GitHub's run on
-  0e18304 FAILED one browser test (geometry.spec.ts "the cross-day row pans to the late line") — job 4's option A rule
-  covered the older dashed ECHO mark; narrowed to `:not(.echo)` (uncommitted at this writing → committed with this block).
-  NEXT, in order: (a) ONE full gate run under the lock (`E2E_PORT=4183 node raptor-port/scripts/gatelock.mjs run --from
-  <raptor-port> --logs <scratch>`) for jobs 2–6; (b) job 6's walk (a Sonnet walker: an upchit moved later on the window
-  and by a calendar drag, the sheet's "its days given back" line, the Undo, a published day reading pending); (c) push
-  after `gh run list` shows nothing queued or in progress, rewrite pull request 534's body; (d) the morning report by about
-  18:45. Weekly allowance 71% at 08:45. **Questions waiting for him:** (1) the Leave War card's short words up to 700
-  (pictures brief §1b; recommended yes); (2) the floating calendar over a date box still closes whole on Escape — make its
-  lists shut first too? (recommended yes); (3) the dashed "same man, other day" echo vs the dotted ring when tomorrow's
-  warning is focused — keep the echo (recommended); (4) an upchit DELETED: give the downchit its days back too?
-  (recommended yes, a small follow-up); (5) the overnight retry trial (set before the next /overnight).
+- **Where the night stands (about 10:35 his PC's time — the chat at 84%, before a compaction):** ONE branch, ONE pull
+  request (534, its body rewritten for the night; pushed at `4925c9f58`, GitHub's run going — never push while it runs).
+  Every job's check: `raptor-port/docs/handpass/2026-10-18-night-jobs.md`. Jobs 1–5 DONE. The full gate set for 2–6 GREEN
+  (`139005eb1`; one Leave War wait re-run, D84). Job 6 (D999) BUILT, its read's 4 findings fixed (328adc853); RUNNING at
+  this writing: its Sonnet walk (`night1018-job6-walk.mjs`, pictures `img/handpass/2026-10-18-night-job6/`) and a fresh
+  read OF its fixes — save both reports into the sheet's job 6 section, fix what they find (a fix of logic gets the
+  touched tests run, D902 — the whole set has passed), write job 6's `Walk:` line, commit, push when GitHub's run is idle.
+  **THEN JOB 7 — the Tracker (D1002–D1007, D1014, D1018; design note `raptor-port/docs/superpowers/specs/2026-10-18-trk-down-days.md`,
+  pictures and reports `raptor-port/docs/superpowers/briefs/2026-10-18-night-pictures.md` §2, §3), in this order, each its
+  own commit, red first: (a) D1004 — the currency bar loses the down-days subtraction (`tracker/components/SidePanel.jsx`
+  `effCurr`, "(−N down = Xd)", "(minus down days)"); (b) D1007/D1018 — "Legend" beside Show All opening a pop-out (the
+  Leave War's Legend look), the desktop colour strip (`tracker/components/Legend.jsx`) moved into it, its words as drawn
+  (`scripts/handpass/mock-trk-flex-legend.mjs` holds them); (c) D1006/D1014/D1018 — the flex settings: a Tracker-wide
+  record (on/off + the six "From" days, defaults 7, 14, 21, 31, 60, 120 — `tracker/app/core.js flexFor`), a cog in the
+  Tracker's top bar, an admin edits, a member reads (the Tracker's ONE admin gate — read the role through the existing
+  bridge, `tracker/role.js` / `peoplewire.ts`; `state/perms.ts` and `docs/data-model.md` §11 if a new row is needed),
+  flex off hides the flex bar, "Days since syllabus" and the flex sentence; saved + in the export/import file;
+  (d) D1002/D1003/D1005/D1018 — the down days from the Inputs: a per-student course start (set in "+ Add", today by
+  default, changeable in Info; saved + exported), the number worked out from the man's medical inputs since it (half a
+  day as ½; a running one to today), read through the people bridge (a rider, not a fourth seam), a window listing each
+  input (cloned from the Failures window), "—" and a one-line prompt before a course start; the typed box and "Upchit
+  Date" go. Tier FULL (saved data, a permission); walk + a fresh blind read; the Tracker smoke suite in the gates. If the
+  time runs short, the parts done are committed and reported; the rest stays filed. Stop starting at about 17:45; the
+  morning report by about 18:45. Weekly allowance 72% at 10:35.
+  **Questions waiting for him:** (1) the Leave War card's short words up to 700 (pictures brief §1b; recommended yes);
+  (2) the floating calendar over a date box still closes whole on Escape — its lists first too? (recommended yes);
+  (3) the dashed "same man, other day" echo vs the dotted ring when tomorrow's warning is focused — keep the echo
+  (recommended); (4) an upchit DELETED: give the downchit its days back too? (recommended yes, a small follow-up);
+  (5) the overnight retry trial (set before the next /overnight).
 - **Rulings this night:** D1016 (leave-war), D1017 (scheduler), D1018 (tracker).
 <!-- /now -->
 
