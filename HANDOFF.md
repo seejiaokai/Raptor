@@ -21,31 +21,29 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/upchit-sheet-leave-cut -->
-### `claude/upchit-sheet-leave-cut` — D1023 recorded; its build next — written 18 Oct 26, verify before use
-- **Done before this branch:** his three follow-ups (D1019, D1020, D1022) LIVE — pull request 535 merged on his "merge live"
-  (18 Oct 26), Vercel's production deployment ready. Its check: `raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`.
-  Its three items ([LW-CARD-SHORT-WORDS-700], [DATEBOX-ESC-LISTS], [UPCHIT-DELETE-REGROW]) are BUILT and live: archive them by
-  script (`backlog-archive.mjs <ID> --homes raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`) as this job's first step.
-- **This branch (cut from `main` after 535):** D1023 recorded ("Ok as recommended"): before an upchit moved later or deleted
-  gives a downchit its days back, the upchit sheet also lists each leave and bid of his those days will cut, one line each,
-  worded from the Leave War's own warning (`leavewar/inputgate.ts`). Filed as [UPCHIT-SHEET-LEAVE-CUT] — TO BUILD. Owed: one
-  fresh reader of D1023's short line against its full row (D138; it is the bold sentence word for word).
-- **Pick up here:** build [UPCHIT-SHEET-LEAVE-CUT] — `engine/medical.ts` (`giveBack`, `upchitDeletePlan`, `upchitTrimPlan`'s
-  grow), the Leave War's cut rule (`leavewar/inputgate.ts`, through `state/inputgate-hook.ts`), `ui/UpchitConfirm.tsx` (its
-  plan list), `ui/inputedit.tsx` (`upchitDeleteAsk`, `medAskFor`), `ui/MedMoveConfirm.tsx`. Ask the gate what it WOULD cut,
-  without writing (a dry run — `inputedit.tsx dryRun` exists), so the sheet and the save cannot disagree. FULL tier (saved
-  data); walk both doors and the drag; a fresh blind Opus read. Then the next area's small fixes (D994).
-- **Trap:** old previews from finished chats hold 4173, 4174, 4180, 4182 and 4191 on his PC — run the browser tests with
-  `E2E_PORT=<a port checked free>` (filed [GATELOCK-STALE-PORT]).
-- **Document check:** `docsize` reads OVER on this docs-only branch — `.claude/rules/decisions/tracker.md` is 3165 bytes over its
-  tripwire, carried from `main` (the night's Tracker rulings); legal once the build's code lands (D29); its own pass is
-  `[RULINGS-SPENT-PASS]`'s.
-- **Rulings this chat:** D1023 (inputs).
+### `claude/upchit-sheet-leave-cut` — D1023 BUILT and FULL-checked; his look and "merge live" next — written 18 Oct 26, verify before use
+- **Done:** the three live follow-ups archived by script; [UPCHIT-SHEET-LEAVE-CUT] (D1023) built — where an upchit moved later or
+  deleted gives a downchit days back, the upchit sheet lists each leave and bid of his those days will cut, one line each, in
+  the Leave War's own words, amber edge down the left; worked out by trying the door's own save and throwing it away
+  (`ui/inputedit.tsx giveBackCuts`, the gate saying each cut — `state/inputgate-hook.ts hearGateCuts`). Every door: the
+  window's Delete and Save of a later date, the opened day's Delete key, the calendar's drag. The try hands inputs back as new
+  copies: the open window follows its record and keeps its typing (`pops.ts INPEDIT_REFOUND`), and the Inputs list now holds
+  its just-saved rows by id (the fresh read's one finding, fixed red first).
+- **Checked (FULL):** walk 28/28 + re-walk 28/28, 18 pictures; 12/12 breaks; the whole gate set twice under the lock on 4232,
+  the second at `b94747927` WHOLLY GREEN; one fresh blind Opus read. Sheet: `raptor-port/docs/handpass/2026-10-18-upchit-sheet-leave-cut.md`.
+- **Owed:** Astra's and Sol 6.1's reads (`OUTSTANDING.md` `[NO-ASTRA-LIST]`); one fresh reader of D1023's short line against its
+  full row (D138 — the bold sentence word for word).
+- **Pick up here:** his look at the pictures and the preview, then his "merge live"; then archive [UPCHIT-SHEET-LEAVE-CUT] by
+  script. Next after it: the next area's small fixes (D994).
+- **Trap:** old previews hold 4173, 4174, 4180, 4182, 4191 (and this chat's own on 4231); run browser tests with `E2E_PORT=<a port checked free>`.
+- **Design-hook exception:** the amber edge (`side-tab`) ignored for `14-input-editors.css` in `.impeccable/config.json` —
+  the agent's call (D747's mark), his to strike at his look.
+- **Rulings this chat:** none (D1023 by the chat before).
 <!-- /now -->
 
 ## Next, in order
 
-**RIGHT NOW (18 Oct 26, evening):** pull requests 534 and 535 are LIVE (the night; his three follow-ups D1019, D1020, D1022) → **[UPCHIT-SHEET-LEAVE-CUT] (D1023), on `claude/upchit-sheet-leave-cut` — its block** → the next area's small fixes (D994); his other questions still wait until he says so.
+**RIGHT NOW (18 Oct 26, evening):** pull requests 534 and 535 are LIVE (the night; his three follow-ups D1019, D1020, D1022) → **[UPCHIT-SHEET-LEAVE-CUT] (D1023), on `claude/upchit-sheet-leave-cut` — BUILT and FULL-checked, waiting for his look and "merge live" (its block)** → the next area's small fixes (D994); his other questions still wait until he says so.
 
 **RIGHT NOW (18 Oct 26, later):** D994's first batch — the scheduling pages on a phone — LIVE (pull request 533; D995 the window in the middle) → D996 (phone windows to the middle — his scope answer first; `claude/window-middle-d996`'s block) → the next area's small fixes (D994); his questions still wait until he says so.
 
@@ -112,6 +110,8 @@ his ruling — DONE 7 Oct 26 on `claude/docs-tidy-7-oct` (D609: options 1 to 6; 
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
 ## Gate baseline
+
+**The latest counts watched — 18 Oct 26, `claude/upchit-sheet-leave-cut` at `b94747927` (`main` with D1023 — NOT `main`'s code), the whole gate set under the PC lock in one run, browser tests on 4232: build clean · tfin 728 / 0 · unit 11770 / 11770 (661 files) · e2e 854 passed, 0 failed, 59 skipped · smoke 453 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN.**
 
 **The latest counts watched — 18 Oct 26, `claude/scheduling-phone-fixes-6d4adf` at `bf989c303` (`main` with D994's first batch — NOT `main`'s code), the whole gate set under the PC lock in one run: build clean · tfin 728 / 0 · unit 11654 / 11654 · e2e 853 passed, 0 failed, 59 skipped · smoke 453 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN.**
 

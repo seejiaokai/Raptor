@@ -122,12 +122,58 @@ of the case it decides (a gate that cuts then refuses; the schedule's window; a 
 
 ## The gates
 
-*(the whole set under the PC lock on a port checked free — written when the run ends)*
+Both runs under the PC lock, the browser tests on 4232 (checked free first — [GATELOCK-STALE-PORT]).
+**First run, at `dfb58fcbc`:** build clean · tfin 728 / 0 · unit 11768 / 11769 (661 files) — the one failure mine: the new
+window flag missing from the list that clears every window flag (`ui/pops.test.ts`), fixed below · e2e 854 passed, 0 failed,
+59 skipped · smoke 453 / 0 · rulecheck OK · docsize OK.
+**Second run, at `b94747927` (the final code, with both fixes):** build clean · tfin 728 / 0 · **unit 11770 / 11770 (661
+files)** · e2e 854 passed, 0 failed, 59 skipped · smoke 453 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN.
+`Docs: OUTSTANDING 168 items (+0 −3, −3 all in ARCHIVE) · DECISIONS D1–D1023 (new: D1023) · homes OK`
+`docsize: OVER by 3165, deferred (D29)` (`.claude/rules/decisions/tracker.md`, carried from `main`; `[RULINGS-SPENT-PASS]`'s).
 
 ## The fresh, blind Opus read
 
-*(written when it returns)*
+One fresh Opus reader (D790, D903 — no Fable), blind, given the brief
+`docs/superpowers/briefs/2026-10-18-upchit-sheet-leave-cut-read.md` and this sheet, read the code at `dfb58fcbc`
+(the build and its tests); it ran `upchitcuts.test.tsx` (18 / 18) and one throwaway test of its own outside the checkout.
+Report, condensed:
+
+1. **LOW (reproduced) — opening the upchit sheet on a give-back drops the rows the Inputs list holds at its head.** The List
+   keeps an input just saved at its top "whatever the filters"; it held them as objects and drew one only while that object
+   was still in the list. The try hands every input back as a new copy, so asking the question — even cancelled — made a
+   just-saved row vanish from a filtered List, which reads as "it didn't save". An older weakness (a refused save or an Undo
+   did the same); the try made every give-back question trigger it. Fix: hold them by id (`ui/InputsPage.tsx`), as the
+   List's light already was.
+
+Observations, not findings: the Leave War's pending-OIL signature keeps the tried state until its next change (one extra
+repaint, nothing else — a leave never asks OIL, D804); the try stops before the command's last checks (ownership,
+placeholders) — searched for a door where those could refuse the real save while the try passed, none found.
+
+Checked and sound (its explicit negatives, the brief's seven questions): the try leaves nothing behind — inputs, a
+published day's marks and sign-offs, the Leave War's bid and notice (its write joins the try and rolls back), the absence
+index (rebuilt by the notify), the change history, Undo, saved rows, the flash, notes, the week stash, validation; every
+holder across the try — the window in both modes (the flag keeps the typing), its sheets (built after the try or covering
+the page), `MEDMOVE`, `OILWAIT`, `OILASK`, the opened day, the Medical tab, DocViewer — bar the List's held rows; every
+door that gives back lists the cuts (the window's Delete and Save, the drag, the Delete key) and the reassign never gives
+back; every cut kind is said once (whole day, half day, a leave of several — his part, his own bid "your", another's) and
+leave over recorded work is not; the try runs the same write as the Save (the removals differ only by leftovers outside
+the days given back); the sheet's state table; one try per gesture, none on a render path.
 
 ## Findings and dispositions
 
-*(written after the read)*
+| Finding | Disposition | Proof |
+|---|---|---|
+| Read 1 — the List's held rows dropped by the try | **confirmed** (older weakness made common by this change); **fixed** at `b94747927` to the reader's own steps: the held rows are ids, found again in the list as it stands | red first: `upchitcuts.test.tsx` "a row the Inputs list holds at its head survives the try" failed (0 drawn after the try), green after; the List's own files 172 / 172 |
+| The first gate run's one unit failure — the new window flag missing from the list that clears every window flag | **real, mine; fixed** at `b94747927` (`ui/pops.ts POPS_RESET` — `pops.test.ts` is the guard that caught it) | `pops.test.ts` green |
+| Walk: none in the app | — | 28 / 28 |
+
+**The fix round:** the List's fix is the reader's own step-by-step instruction, carried by its red-first test; the flag's is
+one registration line, carried by the guard that caught it — no further read round (§5: this is the last). **The re-walk**
+of what they touched: the same script on the fixed build `b94747927` (served on 4231, its bundle checked against the
+gate run's build), into `img/handpass/2026-10-18-upchit-sheet-leave-cut/rewalk/`: **28 / 28**, no error. The List's held
+row itself is carried by its red-first test and the List's browser tests in the second gate run (e2e 854 / 0).
+
+Walk: docs/handpass/2026-10-18-upchit-sheet-leave-cut.md · 18 pictures · 7 surfaces (the input window and its delete and save
+sheets, the opened day's Delete key, the Inputs calendar's drag, the Leave War grid and its bid sheet, the phone's sheet, the
+published Saturday's heading on Edit Schedule) · 7 orders (ask / Cancel / ask / Delete, Delete / Undo, drag / Save / Undo, the
+window's Save then Cancel, ask then a reload twice, publish then file then ask then Cancel, mouse and finger) · MISSING: none
