@@ -279,3 +279,30 @@ medical one); overlapping medical inputs counted twice only in stored demo data 
 be saved. Set them again in ⚙."). Tracker 535 / 535. Owed: a unit test pinning fix 1 (the walk carries it tonight). New
 words, for his look: "What the balls and bars mean", the failed-flex line, "No medical inputs since the course start.", the
 number's spoken "none counted yet".
+
+### Job 7's walk — Sonnet walker, `scripts/handpass/night1018-job7-walk.mjs`, the built app (0f1224a8b — before the read's three fixes); report as returned
+Final run 43 PASS, 0 FAIL; no console error, page error or 4xx (5 earlier FAILs were the script's own, fixed). Pictures
+`img/handpass/2026-10-18-night-job7/` (36). Course start 20 Sep, later 6 Oct; today 18 Oct 2026.
+| Step | Result | Seen |
+|---|---|---|
+| L1 desktop / phone | PASS | Legend beside Show All, one row; 14 balls, currency, flex; Escape back to the button; a tap outside closes; the phone's pop-out fits and scrolls |
+| F1 | PASS | ⚙ → "Flex settings"; 7 → 8, Save: the bar "1 Optional Flex" → "Current"; the Legend's bands 0–7, 8–13 |
+| F2 | PASS | 14 then 10 (or 14): "Each From day must be later than the one above it."; "abc": "Each From day is a whole number, 1 or more."; the window stays, Cancel keeps 8 |
+| F3 | PASS | off: no flex bar, no "Days since syllabus", heading "Currency", no Legend flex part; back on at 7: all return |
+| F4 | PASS | a member: figures read-only, no Save or Cancel; Escape back to ⚙ |
+| D1 | PASS | the Course start box above the list, today by default; 20 Sep picked, shown in Info |
+| D2 | PASS | "6½ days"; no typed box, no Upchit box; "Days since currency 3d", no "down" |
+| D3 | PASS | ATT C 28–30 Sep 3 days; OML 8 Oct (AM) ½ day; HL 16–25 Oct 3 days "still running · counted to today"; total 6½; the footer names 20 Sep 2026; Escape and a tap outside back to the number |
+| D4 | PASS | no course start (reached by importing one blanked): "—" and "Set the course start to count them."; the typed-name demo student (no man linked) "—" alone |
+| D5 | PASS | course start 6 Oct: 6½ → 3½ |
+| D6 | PASS | the phone's window 25–365 of 390, nothing clipped |
+| B1 | PASS | his HL deleted on the Inputs page: the number and window follow (½ day, one row) |
+| B2 | PASS | sign out and in: the course start kept |
+| B3 | PASS | an all-charts backup into a clean browser: the course start and the flex figure survive |
+Against the approved pictures: the real windows sit on a dimmed backdrop, no red ring (the mock-up's marking); the colour
+strip gone; otherwise layout and words match. Walker's notes: a default Export (this chart only) carries no flex settings —
+only the all-charts backup (as built: the setting is Tracker-wide); medical inputs set up through the app's local filing
+door; the Inputs page's "today" is the demo's 13 Jul (not this job). The read's fix 1 (a picked course start kept where his
+pace had none) was not walked — built after this run; carried by the gates.
+
+Walk: docs/handpass/2026-10-18-night-jobs.md (job 7) · 36 pictures · 4 surfaces (the Legend, the flex settings, the Info panel, the down-days window) · 3 orders (admin, member, a clean browser) · MISSING: none

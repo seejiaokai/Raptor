@@ -1,0 +1,270 @@
+{
+ "today": "2026-10-18",
+ "results": [
+  {
+   "id": "L1 desk — \"Legend\" beside Show All, bar one row",
+   "pass": true,
+   "seen": "{\"rows\":1,\"legend\":{\"x\":679,\"y\":72,\"w\":53},\"showAll\":{\"x\":600,\"y\":71,\"w\":71},\"hdrH\":51}",
+   "pic": "L1a-topbar-desktop.png"
+  },
+  {
+   "id": "L1 desk — press opens the pop-out: chart balls, currency, flex bands",
+   "pass": true,
+   "seen": "{\"balls\":14,\"tiles\":10,\"secs\":[\"THE CENTRE — THE KIND OF EVENT\",\"THE RING — ONE SLICE PER STUDENT\",\"CURRENCY — DAYS SINCE THE LAST FLIGHT\",\"FLEX — DAYS SINCE THE LAST SYLLABUS FLIGHT\"],\"flex\":true,\"expanded\":\"true\",\"rect\":{\"l\":679,\"t\":97,\"r\":991,\"b\":763},\"vh\":900}",
+   "pic": "L1b-legend-open-desktop.png"
+  },
+  {
+   "id": "L1 desk — flex bands read as built (defaults)",
+   "pass": true,
+   "seen": "FLEX — DAYS SINCE THE LAST SYLLABUS FLIGHT 0–6 Current — no flex required 7–13 1 Optional Flex 14–20 1 Mando Flex (Convertible) 21–30 2 Mando Flex (1 Mando, 1 Convertible) 31–59 2 Mando Flex (2 Mando) 60–119 Short Refres",
+   "pic": ""
+  },
+  {
+   "id": "L1 desk — Escape closes, keyboard back on the button",
+   "pass": true,
+   "seen": "closed=true; activeElement=legendBtn",
+   "pic": "L1c-after-escape-desktop.png"
+  },
+  {
+   "id": "L1 desk — a tap outside closes it",
+   "pass": true,
+   "seen": "closed=true; activeElement=legendBtn",
+   "pic": "L1d-after-tap-outside-desktop.png"
+  },
+  {
+   "id": "D1 desk — add box shows \"Course start\" date box above the list, today by default",
+   "pass": true,
+   "seen": "{\"label\":\"Course start\",\"text\":\"Sun 18 Oct 2026\",\"dateTop\":241,\"listTop\":340,\"filterTop\":304}",
+   "pic": "D1a-add-box-default-desktop.png"
+  },
+  {
+   "id": "D1 desk — a course start a few weeks back can be picked",
+   "pass": true,
+   "seen": "box reads: Sun 20 Sep 2026",
+   "pic": "D1b-add-box-picked-desktop.png"
+  },
+  {
+   "id": "D1 desk — he is added; Info panel \"Course start\" shows the picked day",
+   "pass": true,
+   "seen": "who=— ZENITH; course start box=Sun 20 Sep 2026; add box closed=true",
+   "pic": "D1c-info-after-add-desktop.png"
+  },
+  {
+   "id": "D2 desk — inputs filed for him on the Inputs page (HL shows in its list; ATT C and OML are before the list's fortnight)",
+   "pass": true,
+   "seen": "list rows: Zenith 16 Oct 25 Oct HL till 25 Oct 1 Jan 26 ",
+   "pic": "D2a-inputs-page-list-desktop.png"
+  },
+  {
+   "id": "D2 desk — \"No. of Down Days\" = 3 + ½ + running days (expect 6½ days)",
+   "pass": true,
+   "seen": "reads: 6½ days",
+   "pic": "D2b-info-down-days-desktop.png"
+  },
+  {
+   "id": "D2 desk — no typed box, no \"Upchit Date\" box",
+   "pass": true,
+   "seen": "labels=Last Flown (Syllabus) / Last Flown (Currency) / Course start / No. of Down Days; downDays element=BUTTON; typed inputs=0",
+   "pic": ""
+  },
+  {
+   "id": "D2 desk — \"Days since currency\" shows no \"down\" subtraction",
+   "pass": true,
+   "seen": "kv=Days since syllabus 7d | Days since currency 3d; note=Landing currency = days since last currency. Flex requirement uses days since last syllabus flight, ",
+   "pic": ""
+  },
+  {
+   "id": "D3 desk — window lists each input: kind, dates, days (½ day; still running · counted to today)",
+   "pass": true,
+   "seen": "[{\"chip\":\"ATT C\",\"when\":\"28–30 Sep\",\"note\":\"\",\"days\":\"3 days\"},{\"chip\":\"OML\",\"when\":\"8 Oct (AM)\",\"note\":\"\",\"days\":\"½ day\"},{\"chip\":\"HL\",\"when\":\"16–25 Oct\",\"note\":\"still running · counted to today\",\"days\":\"3 days\"}]",
+   "pic": "D3a-down-days-window-desktop.png"
+  },
+  {
+   "id": "D3 desk — total and footer naming the course start",
+   "pass": true,
+   "seen": "header=Down days — ZENITH; total=6½ days; footer=Since the course start, 20 Sep 2026. Medical inputs are changed on the Inputs page.; keyboard on open=downLogClose",
+   "pic": ""
+  },
+  {
+   "id": "D3 desk — Escape closes, keyboard back on the number",
+   "pass": true,
+   "seen": "closed=true; activeElement=downDays",
+   "pic": "D3b-after-escape-desktop.png"
+  },
+  {
+   "id": "D3 desk — a tap outside also closes it, keyboard back on the number",
+   "pass": true,
+   "seen": "activeElement=downDays",
+   "pic": ""
+  },
+  {
+   "id": "D5 desk — later course start: the total drops (ATT C falls out, expect 3½ days)",
+   "pass": true,
+   "seen": "before=6½ days; after=3½ days; course start box=Tue 6 Oct 2026",
+   "pic": "D5-later-course-start-desktop.png"
+  },
+  {
+   "id": "F1 desk — the ⚙ opens \"Flex settings\" (admin: Save, the 7 editable)",
+   "pass": true,
+   "seen": "{\"ttl\":\"Flex settings admins only\",\"from1\":\"7\",\"save\":true,\"fits\":true,\"exp\":\"true\"}",
+   "pic": "F1a-flex-settings-admin-desktop.png"
+  },
+  {
+   "id": "F1 desk — 7 → 8, Save: window closes; a student 7 days since his last syllabus flight now reads current",
+   "pass": true,
+   "seen": "before=\"1 Optional Flex\"; after=\"Current — no flex required\"; kv=Days since syllabus 7d | Days since currency 3d",
+   "pic": "F1b-info-flex-after-8-desktop.png"
+  },
+  {
+   "id": "F1 desk — the Legend's flex bands follow (0–7 current, 8–13 optional)",
+   "pass": true,
+   "seen": "FLEX — DAYS SINCE THE LAST SYLLABUS FLIGHT 0–7 Current — no flex required 8–13 1 Optional Flex 14–20 1 Mando Flex (Convertible) 21–30 2 Mando Flex (1 Mando, 1 Convertible) 31–59 2 Mando Flex (2 Mando) 60–119 Short Refresher Course 120 + Re-course",
+   "pic": "F1c-legend-flex-bands-after-8-desktop.png"
+  },
+  {
+   "id": "F2 desk — 14 then 10 is refused with a reason (window stays open)",
+   "pass": true,
+   "seen": "message=\"Each From day must be later than the one above it.\"; window still open=true",
+   "pic": "F2a-refused-14-then-10-desktop.png"
+  },
+  {
+   "id": "F2 desk — 14 then 14 and a non-number are refused with a reason too",
+   "pass": true,
+   "seen": "14,14: \"Each From day must be later than the one above it.\"; \"abc\": \"Each From day is a whole number, 1 or more.\"; still open=true",
+   "pic": ""
+  },
+  {
+   "id": "F2 desk — after the refusals and Cancel the saved figures stand (8)",
+   "pass": true,
+   "seen": "from-1 reopens as 8; flex bar \"Current — no flex required\"",
+   "pic": ""
+  },
+  {
+   "id": "F3 desk — \"Track flex\" off, Save: no flex bar, no \"Days since syllabus\", heading \"Currency\"",
+   "pass": true,
+   "seen": "{\"h3\":\"Currency\",\"flexbars\":0,\"kv\":[\"Days since currency 3d\"],\"note\":\"Landing currency = days since last currency.\"}",
+   "pic": "F3a-info-flex-off-desktop.png"
+  },
+  {
+   "id": "F3 desk — the Legend has no flex part",
+   "pass": true,
+   "seen": "{\"flexPart\":false,\"secs\":[\"THE CENTRE — THE KIND OF EVENT\",\"THE RING — ONE SLICE PER STUDENT\",\"CURRENCY — DAYS SINCE THE LAST FLIGHT\"]}",
+   "pic": "F3b-legend-flex-off-desktop.png"
+  },
+  {
+   "id": "F3 desk — back on and back to 7: flex bar and \"Days since syllabus\" return, reads the optional flex again",
+   "pass": true,
+   "seen": "{\"h3\":\"Currency & flex\",\"flexbar\":\"1 Optional Flex\",\"kv\":[\"Days since syllabus 7d\",\"Days since currency 3d\"]}",
+   "pic": "F3d-info-flex-back-on-7-desktop.png"
+  },
+  {
+   "id": "B1 desk — his HL deleted on the Inputs page",
+   "pass": true,
+   "seen": "Zenith rows left in list: 0",
+   "pic": "B1a-inputs-after-delete-desktop.png"
+  },
+  {
+   "id": "B1 desk — the Tracker's number and window follow (expect ½ day, one row)",
+   "pass": true,
+   "seen": "number=½ day; window total=½ day; rows=[{\"chip\":\"OML\",\"when\":\"8 Oct (AM)\",\"note\":\"\",\"days\":\"½ day\"}]",
+   "pic": "B1b-tracker-window-after-delete-desktop.png"
+  },
+  {
+   "id": "B2 desk — sign out and back in: the course start is kept",
+   "pass": true,
+   "seen": "after sign-in: student=— ZENITH; course start=Tue 6 Oct 2026; down days=½ day",
+   "pic": "B2-after-sign-out-and-in-desktop.png"
+  },
+  {
+   "id": "B3 desk — Export (charts + students) written: carries the course start and the flex figures",
+   "pass": true,
+   "seen": "file 464164 bytes; course start 2026-10-06 in file=true; flex from [9,…] in file=true",
+   "pic": ""
+  },
+  {
+   "id": "B3 desk — Import into a clean browser: the course start and the flex settings survive",
+   "pass": true,
+   "seen": "student=— ZENITH; course start=Tue 6 Oct 2026; flex From(1) opens as 9 (exported as 9); import said (6 boxes): “2024” already exists. Replace it, or add the incoming one under a new name?Skip this oneA || “2026” already exists. Replace it, or add the incoming one under a new name?Skip this oneA || “",
+   "pic": "B3-after-import-clean-browser-desktop.png"
+  },
+  {
+   "id": "D4 desk — a student with no course start: the number reads \"—\" with \"Set the course start to count them.\"",
+   "pass": true,
+   "seen": "student=— ZENITH; course start box=Pick a date; number=—; line=Set the course start to count them.",
+   "pic": "D4-no-course-start-desktop.png"
+  },
+  {
+   "id": "D4 desk (extra) — the demo \"STUDENT A\" (a typed name, not on the roster), no course start",
+   "pass": "INFO",
+   "seen": "number=—; line under it=(none)",
+   "pic": "D4b-typed-name-student-a-desktop.png"
+  },
+  {
+   "id": "F4 desk — member: ⚙ opens the window read-only (no Save, figures not editable)",
+   "pass": true,
+   "seen": "{\"ttl\":\"Flex settings only an admin can change these\",\"save\":false,\"cancel\":false,\"inputs\":0,\"from1Tag\":\"SPAN\",\"onDisabled\":\"true\",\"from1\":\"7\"}",
+   "pic": "F4-flex-settings-member-desktop.png"
+  },
+  {
+   "id": "F4 desk — Escape closes it, keyboard back on the ⚙",
+   "pass": true,
+   "seen": "closed=true; activeElement=flexBtn",
+   "pic": ""
+  },
+  {
+   "id": "L1 phone — \"Legend\" is on the Tracker's top bar",
+   "pass": true,
+   "seen": "{\"rows\":2,\"legend\":{\"x\":42,\"y\":89,\"w\":51},\"showAll\":\"hidden\",\"hdrH\":70}",
+   "pic": "L1e-topbar-phone.png"
+  },
+  {
+   "id": "L1 phone — a tap opens the pop-out within the screen: balls, currency, flex",
+   "pass": true,
+   "seen": "{\"balls\":14,\"flex\":true,\"secs\":[\"THE CENTRE — THE KIND OF EVENT\",\"THE RING — ONE SLICE PER STUDENT\",\"CURRENCY — DAYS SINCE THE LAST FLIGHT\",\"FLEX — DAYS SINCE THE LAST SYLLABUS FLIGHT\"],\"l\":42,\"r\":354,\"t\":114,\"b\":740,\"vw\":390,\"vh\":844,\"scrolls\":true}",
+   "pic": "L1f-legend-open-phone.png"
+  },
+  {
+   "id": "L1 phone — Escape closes, keyboard back on the button",
+   "pass": true,
+   "seen": "closed=true; activeElement=legendBtn",
+   "pic": ""
+  },
+  {
+   "id": "L1 phone — a tap outside closes it",
+   "pass": true,
+   "seen": "closed=true",
+   "pic": "L1g-after-tap-outside-phone.png"
+  },
+  {
+   "id": "F1 phone (extra) — the ⚙ window fits the screen",
+   "pass": true,
+   "seen": "{\"l\":6,\"t\":115,\"r\":384,\"b\":684,\"fits\":true,\"vw\":390,\"vh\":844}",
+   "pic": "F1d-flex-settings-admin-phone.png"
+  },
+  {
+   "id": "D1 phone — add box: Course start above the list, today by default; he is added with the picked course start",
+   "pass": true,
+   "seen": "box={\"label\":\"Course start\",\"text\":\"Sun 18 Oct 2026\",\"dateTop\":222,\"listTop\":321,\"filterTop\":285}; after add: — ZENITH; course start=Sun 20 Sep 2026",
+   "pic": "D1a-add-box-default-phone.png"
+  },
+  {
+   "id": "D6 phone — Info panel shows the total (expect 6½ days)",
+   "pass": true,
+   "seen": "reads: 6½ days",
+   "pic": "D6a-info-down-days-phone.png"
+  },
+  {
+   "id": "D6 phone — the window fits the screen, words whole",
+   "pass": true,
+   "seen": "window={\"l\":25,\"t\":319,\"r\":365,\"b\":525,\"fits\":true,\"vw\":390,\"vh\":844}; rows=3; total=6½ days; clipped/overflowing=[]",
+   "pic": "D6b-down-days-window-phone.png"
+  },
+  {
+   "id": "D6 phone — Escape closes, keyboard back on the number",
+   "pass": true,
+   "seen": "activeElement=downDays",
+   "pic": ""
+  }
+ ],
+ "problems": []
+}
