@@ -26,32 +26,39 @@ the later merge keeps both (D78).
   check sized by the riskiest change; each finished item archived by script. Nothing merges without his "merge live".
   Tier FULL (published record: the In-time / Rally reorder is a pending change; saved data: history lines; the warning
   list's sentences). Browser tests: E2E_PORT on a port checked free (4173 and 4180 are held by old previews; 4232+ free).
-- **Built and committed (3 commits, each item with a test red before its fix):** [INTIME-LINES-DRAG] + [PEND-INTIME-WORDS];
-  [SC-INTIME-REST-WORDS] [SC-BLANK-SHIFT-QUAL] [BLANK-LINE-SANS-WORDS] [BLANK-STANDBY-STRIKE] [BLANK-SEAT-ACTIVITY-HINT]
-  [SC-SPARE-RING-BORROWS] (unit suite under the lock 11798 / 11798 after these); [SC-B-CHANGE-SAYS-BRIEF]
-  [BOARD-INTIME-JUMP] [BLOCK-NO-HISTORY-LINE] [DISCARD-FILING-NOOP].
+- **Built and committed (6 code commits, each item with a test red before its fix, nothing pushed yet):**
+  [INTIME-LINES-DRAG] + [PEND-INTIME-WORDS]; [SC-INTIME-REST-WORDS] [SC-BLANK-SHIFT-QUAL] [BLANK-LINE-SANS-WORDS]
+  [BLANK-STANDBY-STRIKE] [BLANK-SEAT-ACTIVITY-HINT] [SC-SPARE-RING-BORROWS] (unit suite under the lock 11798 / 11798 after
+  these); [SC-B-CHANGE-SAYS-BRIEF] [BOARD-INTIME-JUMP] [BLOCK-NO-HISTORY-LINE] [DISCARD-FILING-NOOP];
+  [SECDEFAULT-OFFER-BEHIND-BOARD] [BUBBLE-SMALL-SEEN] (2)(3) [TRACE-FOCUS-STAYS] [ONE-ROW-DRAG-FLASH] [OIL-NOTIFY-SEEN] (1)(6);
+  [ARROW-GUTTER-STRIP]. The commit messages say what each changed.
 - **Settled without a build (to say so in each item, then archive):** [BUBBLE-SMALL-SEEN] (1) Unpublish already says what it
-  did (D837 N2/N3); [AMEND-SMALL-SEEN] (7) the weekend-LL "-1" ask already fixed (D418, `belowzero.ts`), (8) and
-  [OIL-NOTIFY-SEEN] (2) a drag-off says nothing by ruling (D854, D861); [OIL-NOTIFY-SEEN] (4) answered D792.
-- **Still to build, the helpers' readings (18 Oct 26):** [SECDEFAULT-OFFER-BEHIND-BOARD] `.secdef-snack` z-index 80 → 420
-  (08-windows-tools.css, stale comment) + e2e layering check; [BUBBLE-SMALL-SEEN] (2) `clearToast()` when the offer shows
-  (SecDefaultSnackbar effect), (3) `placeToast` counts `.chgwin:not([hidden])` as a window (toast.ts), (4) the empty pill:
-  re-walk at 390 to confirm gone; [TRACE-FOCUS-STAYS] view.ts toggleDayWarn close: clear WFOCUS when `panDi===di` too;
-  [ONE-ROW-DRAG-FLASH] Fable's F2: `LANDED_KEY` in reorder.ts `done`, rowdrag paints `mv:g.<di>.<t>`, drop the KNOWN GAP;
-  [OIL-NOTIFY-SEEN] (1) Undo of a swap names the swap (describe.ts inputs.batch), (3) crew list sticks below the top bar
-  (03-week.css `.eroster` top) — a layout change, picture first, (6) drag.ts TD_EDGE scaled to a short pane;
-  [OFT-ADD-TWICE-SILENT] reproduce first (likely a walk artefact: the click landed on his puck, not "+");
-  [ARROW-GUTTER-STRIP] pan.ts onResize re-lands the week (debounced, desktop, not mid-glide) and "day a–b of 7" counts a
-  day only when half seen; [EDIT-SECOND-CLICK] keep the clicked box's block standing (option A: record the focusout's
-  relatedTarget for editingText / swapDayAround) + e2e; [TAB-LAST-BOX-TEST-GAPS] three unit tests + one e2e;
-  [CRP-FLAG] built already — three tests owed (crew picker reads WORKING after a diverging OFFICIAL pass; undo past a
-  publish; a trace through a VWORK'd day), then archive; [AMEND-SMALL-SEEN] (6) the Leave War phone figures sheet jump —
-  a probe first.
+  did (D837 N2/N3); [AMEND-SMALL-SEEN] (7) the weekend-LL "-1" ask already fixed (D418, `belowzero.ts` — one test owed:
+  `balanceAfterFill` LL on a Saturday at zero), (8) and [OIL-NOTIFY-SEEN] (2) a drag-off says nothing by ruling (D854,
+  D861); [OIL-NOTIFY-SEEN] (4) answered D792.
+- **Still to build (the helpers' readings, 18 Oct 26):** [EDIT-SECOND-CLICK] keep the clicked box's block standing (option
+  A: routeFocusOut records `e.relatedTarget` when it is a week text box; `editingText()` (textedit.ts) answers true for it
+  and EditWeek's `swapDayAround(…, keep)` keeps it; cleared on the next focusin / pointerup) + an e2e in
+  `e2e/schedule-tab.spec.ts` (click a take-off, type, click ONCE into a mission box, type — the caret is there; on a
+  published day too); [TAB-LAST-BOX-TEST-GAPS] three unit tests in `schedule-tab.test.tsx` (the last warning going away at
+  the Tab; the fallback when the exact box is gone — `twinOrLast`'s `fields.at(-1)`; a day replaced during the box's own
+  blur — pin `sameScope` as is) + one e2e; [CRP-FLAG] built already — three tests owed (`restIfPlaced`/`runIfPlaced` read
+  WORKING after a diverging OFFICIAL pass; an undo past a publish updates OFFICIAL and the face; a trace through a VWORK'd
+  day never throws), then archive with D179/D185/D187 named as what set the rest aside; [OFT-ADD-TWICE-SILENT] reproduce
+  through the real "+ add" zone (`.addz`) first — likely the walk clicked his puck, not "+"; a unit test of
+  `armSlot('s:0.oft.r.+')` + `placeArmed` either way; [AMEND-SMALL-SEEN] (6) the Leave War phone figures sheet sends the
+  grid to 1 January — a Playwright probe at 390×844 first (wrap `.mx-wrap`'s scrollLeft setter, record who writes 0).
+- **Needs his look, not built (D541 / D853 — a layout change is a picture first):** [OIL-NOTIFY-SEEN] (3) the crew list on
+  Edit Schedule's week sticks 8px from the top, under the top bar, so ALL / ALL AVAIL go out of reach — sticking it below
+  the bar (`03-week.css .eroster`) moves it; [BUBBLE-SMALL-SEEN] (4) the empty gold pill — likely gone with the card list
+  (D723), a 390 look to confirm.
 - **His questions, parked (D994 — not put to him until he says so):** [LOOK-PENDING-COUNT] — the 👁 look's "1 pending" is
   the Discard count by design (A3); recommend no pending chip on a look (D338 (2) one count a day, AM24).
-- **Then:** the bug check (roll-call, sized walk with pictures, the gates under the lock, one fresh blind Opus read of the
-  code), the docs (ui-contracts §In-time lines, feature-impact, file-map, the behaviour register), archive each item by
-  script, push, the preview link with pictures.
+- **Then:** the bug check (FULL: roll-call — the board's In-time / Rally rows, the changes window, the crew list on every
+  kind of seat, the SC SPARE ring on week and board, the offer and the notes over the board; a sized walk with pictures;
+  the gates under the lock; one fresh blind Opus read of the code), the docs (ui-contracts §In-time lines and §the
+  changes window, feature-impact, file-map for the new test files, the behaviour register / rulecheck for D593 D594),
+  archive each finished item by script, push, the preview link with pictures, [NO-ASTRA-LIST] line for this job.
 - **Carried from the backlog-tidy block (pull request 537, live):** Astra's and Sol 6.1's reads of D1023 are on [NO-ASTRA-LIST];
   the amber edge's design-hook exception (`.impeccable/config.json`, `14-input-editors.css`) stays his to strike; making the repo
   private again is his step ([REPO-PRIVATE]).
