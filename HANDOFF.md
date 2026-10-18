@@ -63,15 +63,17 @@ the later merge keeps both (D78).
   (`docs/img/handpass/2026-10-18-lw-top-700/6-440-proposed-short-words.png`). (2) The overnight retry trial
   (`[OVERNIGHT-RETRY-TRIAL]`, D885) was not run: its setting is read when a chat starts, so it must be set before he opens
   the next /overnight chat.
-- **Where the night stands (about 11:40 his PC's time — the chat at 88%):** ONE branch, ONE pull request (534); pushed at
-  `23fa5ceb4` (GitHub's run of it going — never push while it runs; `4925c9f58` passed GitHub's whole set). Every job's check:
-  `raptor-port/docs/handpass/2026-10-18-night-jobs.md`. Jobs 1–6 DONE and walked (job 6: 34/34, two fix-read rounds).
-  Job 7: (a) D1004 DONE (32ad203b8); (b) the Legend DONE (2d70cba46, built by an Opus helper, read and committed by the
-  host — its walk still owed); (c) the flex settings BEING BUILT by an Opus helper — UNCOMMITTED changes in
-  `src/tracker/` (and maybe `src/state/perms.ts`, `docs/data-model.md` §11): when it reports, save its report, read its
-  diff, run `npx vitest run src/tracker src/state/perms.test.ts`, commit as the host's own; then (d) the down days.
-  After (c) or (d): one Sonnet walk of the Tracker's legend + flex + down days, one fresh blind Opus read of job 7's code,
-  then the full gate set (the Tracker smoke suite matters — the helpers changed its bar-order and hint checks).
+- **Where the night stands (10:25 his PC's clock — earlier times in this block were the agent's overestimates; the
+  chat at 90%):** ONE branch, ONE pull request (534); pushed at `23fa5ceb4`. Every job's check:
+  `raptor-port/docs/handpass/2026-10-18-night-jobs.md`. Jobs 1–6 DONE and walked. Job 7: (a) D1004 DONE (32ad203b8);
+  (b) the Legend DONE (2d70cba46); (c) the flex settings DONE (bac862795 — an Opus helper built (b) and (c), the host
+  read and committed them; their tests were written after the code, so a fresh read and the walk carry them). NEXT:
+  (d) the down days — its survey `raptor-port/docs/superpowers/briefs/2026-10-18-trk-down-days-survey.md` (course start
+  in `pace`, not `dates`; a third people-bridge channel for each man's downchits; the Failures window to clone;
+  removing `#upchit` touches `leftovers.test.tsx`'s F/K tests and `e2e/datecal.spec.ts`); then ONE Sonnet walk of the
+  Tracker (legend, flex settings as admin and member, flex off, down days), ONE fresh blind Opus read of job 7's code,
+  the full gate set under the lock (the Tracker smoke suite — the helpers changed its bar-order and hint checks), push,
+  the morning report by about 18:45.
   **THEN JOB 7 — the Tracker (D1002–D1007, D1014, D1018; design note `raptor-port/docs/superpowers/specs/2026-10-18-trk-down-days.md`,
   pictures and reports `raptor-port/docs/superpowers/briefs/2026-10-18-night-pictures.md` §2, §3), in this order, each its
   own commit, red first: (a) D1004 — the currency bar loses the down-days subtraction (`tracker/components/SidePanel.jsx`
