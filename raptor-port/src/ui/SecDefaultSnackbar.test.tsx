@@ -10,6 +10,7 @@ import { initStore, setSession, notify, moveSectionTo, loadWeek, setPage } from 
 import { DAYS } from '../engine/data'
 import { secOrder, secDefault, secDefaultReset, SECTIONS } from '../engine'
 import { setSecDefOffer, SECDEFOFFER } from './pops'
+import { toast } from './toast'
 
 let root: Root, host: HTMLElement
 
@@ -48,6 +49,15 @@ describe('SecDefaultSnackbar', () => {
     expect(bar.textContent).toContain('default')
   })
 
+  /* [BUBBLE-SMALL-SEEN] (2) (the change-recording walk, 29 Sep 26): a section dragged a few seconds after an Undo showed
+     the offer under the Undo's lingering note, hiding "Set as default" (and on a phone "Not now") — the offer clears it */
+  it('a note still up when the offer arrives is put away', () => {
+    mount()
+    toast('Undid: a take-off time', 'ok')
+    expect((document.getElementById('toastEl') as HTMLElement).style.opacity).not.toBe('0')
+    act(() => { setSecDefOffer(0); notify() })
+    expect((document.getElementById('toastEl') as HTMLElement).style.opacity).toBe('0')
+  })
   it('"Set as default" saves that day\'s order as the house default and clears the offer', () => {
     /* arrange day 0 to a non-canonical order first */
     moveSectionTo(0, 'ground', 'prog')

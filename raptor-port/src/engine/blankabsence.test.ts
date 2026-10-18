@@ -458,13 +458,12 @@ describe('a request already on the programme is not flagged against its own row'
    day — a leave, a medical downchit, an overseas duty: the types that strike a name — strikes it (avail.ts slotBar,
    "unknown is not never-clashes"; pinned in slotrules.test.ts). So the promise that holds is one-way and about those
    types: NO MAN THE LIST FLAGS FOR AN ABSENCE WAS OFFERED CLEAN. For every seat that is not a standby place the two
-   agree exactly on a whole-day absence. (A whole-day ACTIVITY — a course, a meeting — is another matter, pinned in the
-   last test of this block: the crew list only ever advised against one where the seat has hours, so on a seat with
-   none it says nothing before and the list flags after. Astra's read, F2; filed as [BLANK-SEAT-ACTIVITY-HINT].) On a standby place with no shift times the crew list is stricter than the
-   rule: it strikes a man on LOCAL leave, whom the warning list — with hours or without — lets stand by. That is the
-   crew list's own old reading of a blank shift (it tells standby places apart by their hours), left as it was here
-   and filed as [BLANK-STANDBY-STRIKE]; a part-day absence is the same shape by his ruling (struck before, silent
-   after — nothing to compare). */
+   agree exactly on a whole-day absence — a standby place with no shift times included since [BLANK-STANDBY-STRIKE]
+   (18 Oct 26): the crew list now tells a standby place by its kind, not its hours, so a man on LOCAL leave, whom the
+   warning list lets stand by, is no longer struck there. (A whole-day ACTIVITY — a course, a meeting — the last test of
+   this block: since [BLANK-SEAT-ACTIVITY-HINT] (18 Oct 26) the crew list advises against one on a seat with no hours
+   too, "already on Training", as it always did on a seat with hours.) A part-day absence is struck before and silent
+   after by his ruling — nothing to compare. */
 describe('the crew list and the warning list on a seat with no times', () => {
   const STANDBY = ['an SC SPARE seat', 'a BB MAIN seat', 'a BB SPARE seat']
   for (const [name, make] of Object.entries(SEATS)) {
@@ -478,23 +477,57 @@ describe('the crew list and the warning list on a seat with no times', () => {
         s.seat()
         const flagged = abs().length > 0
         if (flagged) expect(struck, `${name} · ${type} — flagged after, so struck before`).toBe(true)
+        expect(flagged, `${name} · ${type} — struck before (${struck}), flagged after`).toBe(struck)
         if (STANDBY.includes(name) && canSpare(type)) {
-          expect([struck, flagged], `${name} · ${type} — the filed gap: struck before, nothing after`).toEqual([true, false])
+          expect([struck, flagged], `${name} · ${type} — a standby place he may stand: neither before nor after`).toEqual([false, false])
           s.time(); validate()
           expect(abs(), `${name} · ${type} — and nothing once the hours are typed`).toEqual([])
-        } else expect(flagged, `${name} · ${type} — struck before (${struck}), flagged after`).toBe(struck)
+        }
       }
     })
   }
 
-  it('a whole-day ACTIVITY (a course) on a seat with no times: the crew list says nothing before — the list flags after (the filed gap)', () => {
+  it('a whole-day ACTIVITY (a course) on a seat with no times: the crew list advises before — the list flags after', () => {
     const s = flyLine(); const r = file('Training'); validate()
     expect(isAway(r), 'a course is a commitment, not an absence').toBe(false)
-    expect(slotBar(X, s.key), 'the crew list: no reason against him').toBe('')
+    expect(slotBar(X, s.key), 'the crew list advises, never strikes ([BLANK-SEAT-ACTIVITY-HINT])').toMatch(/^already on Training$/)
     s.seat()
     expect(codes(), 'the day\'s list, the moment he is seated').toEqual(['hard:INPUT_FLY'])
     /* with hours on the seat the crew list does advise ("already on Training") — the difference is the missing hours */
     s.row.aircraft[0].p = ''; s.time(); validate()
     expect(slotBar(X, s.key)).toMatch(/already on Training/)
+  })
+})
+
+/* [BLANK-SEAT-ACTIVITY-HINT]: the hint follows the validator on the kinds of seat — a Meeting on a blank SC MAIN is the
+   soft "already on" (the validator's amber SHIFT_SOFT); the standby places stay silent, as the validator is; a part-day
+   activity on a seat with no hours says nothing (nothing to compare); and a whole-day request's own ground row is
+   never advised against itself. */
+describe('the crew list on a seat with no times, for a whole-day activity', () => {
+  it('a Meeting on a blank SC MAIN: advised, as the list sounds amber once he is seated', () => {
+    const s = SEATS['an SC MAIN seat'](); file('Meeting'); validate()
+    expect(slotBar(X, s.key)).toMatch(/^already on Meeting$/)
+    s.seat()
+    expect(codes()).toEqual(['adv:SHIFT_SOFT'])
+  })
+  for (const name of ['an SC SPARE seat', 'a BB MAIN seat', 'a BB SPARE seat']) {
+    it(`${name}: a whole-day course says nothing, before or after`, () => {
+      const s = SEATS[name](); file('Training'); validate()
+      expect(slotBar(X, s.key)).toBe('')
+      s.seat()
+      expect(codes()).toEqual([])
+    })
+  }
+  it('a whole-day request’s own landed row, its hours cleared, is not advised against itself', () => {
+    const inp = file('Training', { allday: false, s: 0, e: 1439, remarks: 'CRM' })
+    expect(acceptInput(TUE, inp, 'g')).toBe(true)
+    const gi = day().ground.length - 1, row: any = day().ground[gi]
+    row.str = ''; row.end = ''; validate()
+    expect(slotBar(X, `g:${TUE}.${gi}`)).toBe('')
+    expect(slotBar(Y, `g:${TUE}.${gi}`), 'another man is not on that course').toBe('')
+  })
+  it('a part-day course on a seat with no hours says nothing', () => {
+    const s = flyLine(); file('Training', { allday: false, s: 540, e: 660 }); validate()
+    expect(slotBar(X, s.key)).toBe('')
   })
 })

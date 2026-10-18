@@ -134,6 +134,58 @@ for (const [name, viewport] of [['desktop',{width:1440,height:900}],['phone',{wi
       expect(await mark()).toBe(at)
       expect(await page.evaluate(() => (window as any).commandStreamLen()), 'nor did a second one').toBe(seq)
     })
+    /* [EDIT-SECOND-CLICK] (the Codex stack check, 5 Oct 26): a CHANGED box left by a click redrew the day while the focus
+       was on its way to the box clicked — that box was replaced, and the caret was nowhere until a second click. One
+       click takes the caret now, on a day not yet published and on a published one. */
+    for (const published of [false, true]) test(`one click after a changed box takes the caret${published ? ' (a published day)' : ''}`, async ({ page }) => {
+      await login(page); await go(page, 'editsched')
+      if (published) {
+        await page.evaluate(() => { const w = window as any, g = w.signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'; w.setDayApproved(0, true); w.afterSchedMutate() })
+        await page.waitForTimeout(300)
+      }
+      const surface = '#eWeek .day[data-day="0"]'
+      const to = field(page, surface, 'ff:0.0.0.to')
+      /* the mission beside it (the same wave's block) and one in the next wave (another block) */
+      for (const [time, key] of [['1255', 'ff:0.0.0.msn'], ['1256', 'ff:0.1.0.msn']] as const) {
+        await to.click(); await to.fill(time)
+        await field(page, surface, key).click()
+        await page.keyboard.type('Z')
+        await focused(field(page, surface, key))
+        expect(await field(page, surface, key).textContent(), `${key} took the typing`).toMatch(/Z$/)
+        await page.keyboard.press('Escape')
+      }
+      expect(await page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].to)).toBe('12:56')
+    })
+    /* …by a finger too, where the phone has one: its lift and the events that move the focus come as separate steps */
+    test('one finger tap after a changed box takes the caret on the Scheduler Board', async ({ page }) => {
+      test.skip(name !== 'phone', 'a finger on the phone')
+      await login(page); await go(page, 'editsched'); await openBoard(page)
+      const box = (key: string) => page.locator(`#sbBoard [data-bfld="${key}"]:visible`).first()
+      const tap = async (key: string) => { await box(key).evaluate(e => e.scrollIntoView({ block: 'center' })); const b = (await box(key).boundingBox())!; await page.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2) }
+      for (const [time, key] of [['1255', 'ff:0.0.0.msn'], ['1256', 'ff:0.1.0.msn']] as const) {
+        await tap('ff:0.0.0.to'); await box('ff:0.0.0.to').fill(time)
+        await tap(key)
+        await page.keyboard.type('Z')
+        await focused(box(key))
+        await expect(box(key), `${key} took the typing`).toHaveValue(/Z$/)
+        await page.keyboard.press('Escape')
+      }
+    })
+    /* …and the Scheduler Board's own boxes, which save on their change rather than on leaving */
+    test('one click after a changed box takes the caret on the Scheduler Board', async ({ page }) => {
+      await login(page); await go(page, 'editsched'); await openBoard(page)
+      const box = (key: string) => page.locator(`#sbBoard [data-bfld="${key}"]:visible`).first()
+      const to = box('ff:0.0.0.to')
+      for (const [time, key] of [['1255', 'ff:0.0.0.msn'], ['1256', 'ff:0.1.0.msn']] as const) {
+        await to.click(); await to.fill(time)
+        await box(key).click()
+        await page.keyboard.type('Z')
+        await focused(box(key))
+        await expect(box(key), `${key} took the typing`).toHaveValue(/Z$/)
+        await page.keyboard.press('Escape')
+      }
+      expect(await page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].to)).toBe('12:56')
+    })
     test('native Board change saves once, refreshes repeated fields and settles after text exit', async ({ page }) => {
       await login(page); await go(page, 'editsched'); await openBoard(page)
       const cs = field(page, '#sbBoard', 'ff:0.0.0.cs'), seq = await page.evaluate(() => (window as any).commandStreamLen())
@@ -199,4 +251,48 @@ for(const exit of ['Enter','ordinary blur','final Tab'])test(`week settles Area 
   await expect(to).toHaveText('12:55')
   expect(await page.evaluate(()=>(window as any).DAYS[0].waves[0].formations[0].atime??null)).toBe(null)
   expect(await page.evaluate(()=>(window as any).commandStreamLen())).toBe(before+1)
+})
+
+/* [TAB-LAST-BOX-TEST-GAPS] (Astra's owed read of D597): the caret SEEN in a real browser after his save at the day's
+   last box replaces the whole day on screen (its first warning arrives with that save). Wherever the Tab goes — back
+   into the box (D597) or on to the control after it (D553) — the keyboard is on that day, never on the page. */
+test('the last box\'s Tab, when the save replaces the whole day: the keyboard is still on that day', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await login(page); await go(page, 'editsched')
+  const di = await page.evaluate(() => [0, 1, 2, 3, 4, 5, 6].find(i => { const d = document.querySelector(`#eWeek .day[data-day="${i}"]`); return d && !d.querySelector('.dwbox') }))
+  expect(di, 'the demo week has a day with no warning').toBeDefined()
+  const day = page.locator(`#eWeek .day[data-day="${di}"]`)
+  const boxes = await day.locator(typing).elementHandles(); let last = null
+  for (const el of boxes) if (await el.isVisible() && await el.evaluate(e => !e.closest('[data-role-ui],[data-role-remarks],.pv-frozen,[role="dialog"]') && (e instanceof HTMLInputElement || e instanceof HTMLTextAreaElement ? !e.disabled && !e.readOnly : e.getAttribute('contenteditable') === 'true'))) last = el
+  expect(last).toBeTruthy()
+  const firstDay = await day.elementHandle()
+  await last!.evaluate((el, DI) => el.addEventListener('blur', () => {
+    const w = window as any, wave = JSON.parse(JSON.stringify(w.DAYS[0].waves[0], (k, v) => k === 'rid' ? undefined : v))
+    wave.formations[1].aircraft[0].p = wave.formations[0].aircraft[0].p; w.DAYS[DI].waves = [...w.DAYS[DI].waves, wave]; w.afterSchedMutate()
+  }, { once: true }), di)
+  await last!.focus(); await page.keyboard.press('Tab'); await page.waitForTimeout(300)
+  await expect(day.locator('.dwbox')).toHaveCount(1)
+  expect(await firstDay!.evaluate(e => e.isConnected), 'the day on screen really was replaced (or this test proves nothing)').toBe(false)
+  expect(await page.evaluate(DI => { const a = document.activeElement; return !!a && a !== document.body && !!a.closest(`#eWeek .day[data-day="${DI}"]`) }, di), 'the keyboard is on that day').toBe(true)
+})
+
+/* his find on the walk's pictures (19 Oct 26): the board's In-time / Rally lines stood in the middle of the panel — the
+   rows built for the drag (D593) inherited the block's old "centre", each shrinking to its words. Each row runs the
+   panel's width and its grip sits at the panel's left, at both sizes. */
+for (const size of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) test(`the board's In-time / Rally rows run the panel's width from its left (${size.width})`, async ({ page }) => {
+  await page.setViewportSize(size)
+  await login(page); await go(page, 'editsched')
+  await page.locator('#eWeek [data-sbday="0"]').first().click()
+  await expect(page.locator('#schedBoard')).toBeVisible()
+  const m = await page.evaluate(() => {
+    const it = [...document.querySelectorAll<HTMLElement>('#schedBoard .intimes.itdrag')].find(e => e.getClientRects().length)
+    if (!it) return null
+    const b = it.getBoundingClientRect(), pad = parseFloat(getComputedStyle(it).paddingLeft) + parseFloat(getComputedStyle(it).paddingRight)
+    return [...it.querySelectorAll<HTMLElement>('.itrow')].map(r => { const g = r.getBoundingClientRect(); return { left: g.left - b.left, spare: (b.width - pad) - g.width } })
+  })
+  expect(m && m.length, 'the board draws its In-time rows (or this test proves nothing)').toBeGreaterThan(0)
+  for (const r of m!) {
+    expect(r.spare, 'each row runs the panel\u2019s width').toBeLessThan(2)
+    expect(r.left, 'from the panel\u2019s left edge').toBeLessThan(16)
+  }
 })

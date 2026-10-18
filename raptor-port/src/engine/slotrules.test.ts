@@ -182,9 +182,11 @@ describe('slotStart / slotEnd, and half-day absences', () => {
     expect(r.slotStart == null && r.slotEnd == null).toBe(true)
     /* pike is a pilot; give him a MORNING absence on Jul 14 and a slot with no
        window of its own must still refuse him — unknown fails closed */
-    INPUTS.push({ person: 'pike', date: 'Jul 14', allday: false, s: 240, e: 720, half: 'am', type: 'LL', remarks: '', mod: '' })
+    /* an OVERSEAS leave, a type that bars a standby place: since [BLANK-STANDBY-STRIKE] (18 Oct 26) a BB seat is a
+       standby place whatever its hours, so a local leave — which may stand one — is no longer struck there */
+    INPUTS.push({ person: 'pike', date: 'Jul 14', allday: false, s: 240, e: 720, half: 'am', type: 'OL', remarks: '', mod: '' })
     validate()
-    expect(slotBar('pike', `1.${gi}.0.0.p`)).toContain('local leave')
+    expect(slotBar('pike', `1.${gi}.0.0.p`)).toContain('overseas leave')
   })
 
   it('a morning absence frees the evening and only the evening', () => {

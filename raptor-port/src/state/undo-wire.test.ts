@@ -28,6 +28,7 @@ import { waveTplLoad } from '../engine'
 import { addWaveTpl, delWaveTpl, setWaveHidden, waveTplSave, WAVETPL_CFG, WAVEHIDE } from '../engine/wavetpl'
 import { installGlobalUndo, _snapView } from './undo-wire'
 import { setDayRemark } from './plan'
+import { boardChange } from '../ui/board'
 import { HIST } from './history'
 
 
@@ -503,6 +504,44 @@ describe('B8 — Undo says what came back', () => {
   it('one input filed through the Inputs page’s batch door is "a personal input"', () => {
     writeInputsBatch(() => { INPUTS.push({ person: 'bane', type: 'LL', date: 'Jul 16', yr: 2026, rmk: '', iid: 'iwire2' } as any) })
     expect(undoState().undoLabel).toBe('a personal input')
+  })
+  /* [OIL-NOTIFY-SEEN] (1) (the OIL-ask walk, 13 Oct 26): Undo after a swap on an input's row, or after an OIL answer,
+     read "a personal input" — it names what was done */
+  it('a swap on one input is "swapping <who> for <who>"; its OIL answer alone is "an OIL answer"', () => {
+    writeInputsBatch(() => { INPUTS.push({ person: 'bane', type: 'Meeting', date: 'Jul 16', yr: 2026, rmk: '', iid: 'iwire3' } as any) })
+    const r: any = INPUTS.find((x: any) => x.iid === 'iwire3')
+    writeInputsBatch(() => { r.person = 'stiff' })
+    expect(undoState().undoLabel).toBe('swapping Ranger for Saber')
+    writeInputs(() => { r.oil = { '2026-07-16': true } })
+    expect(undoState().undoLabel).toBe('an OIL answer')
+    /* …and given in the input's own window, which stamps who answered and when (walker C, S3-02b) */
+    writeInputs(() => { r.oil = { '2026-07-16': false }; r.modBy = 'saber'; r.modAt = 12345 })
+    expect(undoState().undoLabel, 'the window\u2019s answer, with its stamp').toBe('an OIL answer')
+    writeInputsBatch(() => { r.rmk = 'room 2' })
+    expect(undoState().undoLabel, 'any other change of one input is as it was').toBe('a personal input')
+  })
+  /* the scenario designer's suspicion (19 Oct 26, S3-01): a swap with a placeholder would read its stored id */
+  it('a swap with ALL AVAIL names it as the puck does, never by its stored id', () => {
+    writeInputsBatch(() => { INPUTS.push({ person: 'allavail', type: 'Meeting', date: 'Jul 16', yr: 2026, rmk: '', iid: 'iwire4' } as any) })
+    const r: any = INPUTS.find((x: any) => x.iid === 'iwire4')
+    writeInputsBatch(() => { r.person = 'bane' })
+    expect(undoState().undoLabel).toBe('swapping ALL AVAIL for Ranger')
+  })
+  /* walker C, the batch's walk (19 Oct 26, S3-10): Undo after a time typed in a box on the Scheduler Board said "a change
+     to the schedule" — the board saved through the general epilogue, which names no box; the week names it
+     ([SC-B-CHANGE-SAYS-BRIEF]: a flying line's B "a brief time", an SC line's B "an in-time") */
+  it('a box typed on the Scheduler Board is named as the week names it', () => {
+    const was = HOOKS.editMode; HOOKS.editMode = () => true
+    try {
+      const box = (key: string, v: string) => { const el = document.createElement('input'); el.dataset.bfld = key; el.value = v; document.body.append(el); try { boardChange({ target: el } as any) } finally { el.remove() } }
+      box('ff:0.0.0.br', '06:10')
+      expect(undoState().undoLabel).toBe('a brief time')
+      box('ff:0.0.0.to', '09:05')
+      expect(undoState().undoLabel).toBe('a take-off time')
+      ;(DAYS[0] as any).waves[0].kind = 'sc'
+      box('ff:0.0.0.br', '05:10')
+      expect(undoState().undoLabel).toBe('an in-time')
+    } finally { HOOKS.editMode = was }
   })
   it('a Quals tick names the man and what changed; a rule names the Logic page', () => {
     expect(updatePersonField('rocky', { tick: 'nvg' })).toBe(null)

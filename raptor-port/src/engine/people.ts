@@ -362,8 +362,10 @@ export function aarInstrOK(id:any,need:any){
   const p=PEOPLE[id]; if(!p||!p.quals||!need)return false;
   return p.quals[need==='NAAR'?'naar':'daar']==='I';
 }
+/* [SC-BLANK-SHIFT-QUAL]: a cleared shift time reaches here as NaN, not null — no day or night to tell, so no kind (no
+   currency asked, no clock printed) */
 export function scShiftKind(s:any,e:any){
-  if(s==null||e==null)return null;
+  if(s==null||e==null||!isFinite(s)||!isFinite(e))return null;
   return (s>=VCONF.scDayFrom&&e<=VCONF.scDayTo)?'day':'night';
 }
 export function scQualOK(id:any,kind:any){

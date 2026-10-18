@@ -705,7 +705,11 @@ export function setSearch(v:any){ SEARCH=String(v==null?'':v).trim() }
 /* day strip → expand / collapse in place (reference 3992-3994, verbatim) */
 export function toggleDayWarn(di:any){
   di=+di;
-  if(DWOPEN.has(di)){DWOPEN.delete(di); if(WFOCUS&&WFOCUS.di===di)WFOCUS=null;}
+  /* the focus a "Breaks <next day>" line set is on the NEXT day's warning (WFOCUS.di) from THIS day's list (panDi) — closing
+     the list it was set from lets it go too, or the crew stayed lit and the page dimmed ([TRACE-FOCUS-STAYS], 18 Oct 26).
+     `listDi` is that list's day for every such line, the run-of-days one too, which has no pan (the batch's check,
+     19 Oct 26 — ui/interactions.ts) */
+  if(DWOPEN.has(di)){DWOPEN.delete(di); if(WFOCUS&&(WFOCUS.di===di||WFOCUS.panDi===di||WFOCUS.listDi===di))WFOCUS=null;}
   else {DWOPEN.add(di); WFOCUS=null; clearOtherHL();}
 }
 /* WHICH warning bundle a day is currently DISPLAYING (published-schedule flagging,

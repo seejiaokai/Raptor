@@ -20,29 +20,39 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/backlog-tidy-oct18 -->
-### `claude/backlog-tidy-oct18` — the backlog tidy, documents only; his look at the list and "merge live" next — written 18 Oct 26, verify before use
-- **Done:** 19 finished items archived by script, each checked against git and the code first ([UPCHIT-SHEET-LEAVE-CUT], live in
-  pull request 536, first; then the live builds, the answered and the moot — the commit messages name them; the last is the list rewrite's own item). The priority list
-  rewritten (D1024): one line an open item, grouped by area, his order at its head; the old list moved whole to
-  `OUTSTANDING-ARCHIVE.md`. 149 items stay open. The Tracker rulings file was already over its size marker on `main` (26,665 of
-  23,500 bytes — the document check failed there): the marker raised to 27,500 with its reason; the split is filed in
-  [RULINGS-SPENT-PASS]. The branch name `claude/backlog-tidy` belonged to an old merged branch of 27 Sep, so this one is
-  `claude/backlog-tidy-oct18`.
-- **Checked:** four helpers checked every item against git and the code; each "finished" verdict re-checked here before it moved;
-  a script confirmed the new list names every open item once; one fresh, blind Opus reader read the new list against the old,
-  the archived items and the short lines of D1023 and D1024 (D138): one open step lost (making the repo private again), six lines misstated, one unsteady test tracked nowhere — all fixed before the push; D1023 and D1024 read true. `npm run docsize` OK.
-- **Left open on purpose:** [GUEST-SAVE-WARNING] (a helper called it done, but an access request may still be saved — a check),
-  [INP-TILL-STALE] (Claude's look at the 5 Oct finding owed), [OPUS-SECOND-READ-GUIDE] (part waits for ChatGPT's readers).
-- **Found:** the repo is PUBLIC today (D106's short period) — making it private again and restarting his PC's check runner is his step, now at the head of the backlog's list and in [REPO-PRIVATE].
-- **Carried from the upchit block:** Astra's and Sol 6.1's reads of D1023 are on [NO-ASTRA-LIST]; the amber edge's design-hook
-  exception (`.impeccable/config.json`, `14-input-editors.css`) stays his to strike.
-- **Pick up here:** his look at the shortened list, then his "merge live". Next after it: the next area's small fixes (D994) —
-  the list's first group, Schedule and amendments, has 24 that need nothing from him.
-- **Rulings this chat:** D1024 (the priority list shows only what is open, grouped by area).
+<!-- now:claude/schedule-amendments-fixes-fffce0 -->
+### `claude/schedule-amendments-fixes-fffce0` — D994's Schedule and amendments small fixes (21 items) and their ONE FULL check — DONE, waiting for his look and "merge live"; written 19 Oct 26 — verify before use
+- **Where it started:** his ask (D994) — the first 24 lines of the priority list's "Schedule and amendments" group that
+  need nothing from him, one branch, one FULL check (D485), pictures, each finished item archived by script, browser
+  tests on a free port (4232). Nothing merges without his "merge live".
+- **Shipped (pushed; the pull request opened after this commit):** all 21 items built; the FULL check finished —
+  evidence sheet `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md` (roll-call with every proof, the
+  walk's size, every order, the cases a test carries, 572 pictures, the break tests, what was not walked, the gates, the
+  reads, every finding's disposition, his look card, the `Walk:` line). This chat: the gates after F1–F3; the narrow
+  read of the fix round, round 1 (N1 — F1's fix repainted the whole app at the start of nearly every finger scroll on a
+  phone: FIXED `0df257c26`; F2's two untested routes pinned) and round 2 (its F1 — Undo pressed with the caret still on
+  an In-time line, as a tap on Safari does, lost one line and doubled another: OLDER, FIXED `40c7af45e`, Undo and Redo
+  let a held caret go first); re-walk G by the host (15 rows, all PASS or RECORDED) found the box that kept a typed time
+  after Undo (OLDER, the same on `main`'s build): FIXED `9cbdc5e64`. The 21 items archived; [BUBBLE-SMALL-SEEN] (4)
+  and [OIL-NOTIFY-SEEN] (three parts, with the crew-list puck that never scrolls the board on a sideways phone — S3-16,
+  older) stay open. D593 / D594 in the rally register as ITD1–ITD3 and in `scripts/rulecheck.mjs`.
+- **His rally ruling (D1026, this chat):** each formation gets its own rally box (R above B, TO above LD on the week and
+  Edit Schedule); the typed lines are for the in-time only, their button "+ In-time"; a mock-up first; AFTER this batch
+  ("Finish this first") — filed [RALLY-PER-FORMATION]; D497, D500, D511 narrowed.
+- **Gates:** the whole set at `40c7af45e` — WHOLLY GREEN (§Gate baseline). Docs-only commits after it.
+- **Open questions for him:** [LOOK-PENDING-COUNT] (parked, D994). Words to show him with the pull request (no ruling
+  fixes them): "this line & this line clash" / "Tight turn this line→this line" for two unnamed lines.
+- **Running when written:** none (the walk's server stopped; the lock free).
+- **Pick up here:** his look (the sheet's look card — four of its five lines need his iPhone) and his "merge live";
+  once live, [RALLY-PER-FORMATION] — a mock-up on the real app and his questions first (D1026).
+- **Opening line:** Switch this chat to the branch `claude/schedule-amendments-fixes-fffce0`: `git fetch origin`, `git switch claude/schedule-amendments-fixes-fffce0`, `git branch -u origin/claude/schedule-amendments-fixes-fffce0`, `git pull --ff-only` (if the switch is refused because another checkout holds the branch, release it there only if that folder has no uncommitted changes and is on the same commit as `origin/claude/schedule-amendments-fixes-fffce0`, then `git -C <that folder> switch --detach` and switch again; otherwise stop and tell me). Read `HANDOFF.md` — the `claude/schedule-amendments-fixes-fffce0` block under `## Now` — then act on my look and "merge live" for its pull request. Nothing merges without my "merge live".
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (19 Oct 26):** D994's Schedule and amendments batch (21 items) is BUILT and FULL-checked on `claude/schedule-amendments-fixes-fffce0` — its pull request waits for his look and "merge live" (its block above) → then [RALLY-PER-FORMATION] (D1026): a mock-up on the real app and his questions first.
+
+**RIGHT NOW (18 Oct 26, night):** pull request 537 is LIVE (the backlog tidy, D1024) → the next area's small fixes (D994): Schedule and amendments, the first 24 lines of its group, on `claude/schedule-amendments-fixes-fffce0` (its block).
 
 **RIGHT NOW (18 Oct 26, late):** pull request 536 is LIVE ([UPCHIT-SHEET-LEAVE-CUT], D1023) → the backlog tidy (D1024), on `claude/backlog-tidy-oct18` — documents only, waiting for his look and "merge live" (its block) → the next area's small fixes (D994): the backlog's priority list now names them by area.
 
@@ -113,6 +123,10 @@ his ruling — DONE 7 Oct 26 on `claude/docs-tidy-7-oct` (D609: options 1 to 6; 
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
 ## Gate baseline
+
+**The latest counts watched — 19 Oct 26, `claude/schedule-amendments-fixes-fffce0` at `40c7af45e` (`main` with the D994 batch, every fix of its check in — NOT `main`'s code), the whole gate set under the PC lock in one run, browser tests on 4232: build clean · tfin 728 / 0 · unit 11855 / 11855 · e2e 865 passed, 0 failed, 61 skipped · smoke 453 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN.** (The run before it, at `9cbdc5e64`, met the Leave War phone test of `[LW-WINDOW-PRUNE-FLAKE-2]` once — 2 of 3 alone.)
+
+**The latest counts watched — 19 Oct 26, `claude/schedule-amendments-fixes-fffce0` at `676a92e43` (`main` with the D994 batch and the check's fixes up to then — NOT `main`'s code), the whole gate set under the PC lock in one run, browser tests on 4232: build clean · tfin 728 / 0 · unit 11841 / 11841 · e2e 865 passed, 0 failed, 61 skipped · smoke 453 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN.**
 
 **The latest counts watched — 18 Oct 26, `claude/upchit-sheet-leave-cut` at `b94747927` (`main` with D1023 — NOT `main`'s code), the whole gate set under the PC lock in one run, browser tests on 4232: build clean · tfin 728 / 0 · unit 11770 / 11770 (661 files) · e2e 854 passed, 0 failed, 59 skipped · smoke 453 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN.**
 

@@ -614,15 +614,22 @@ export function exemptLineOwn(di:any,key:any,id:any,off?:any){
   const w=((DAYS[+m[1]]||{}).waves||[])[+m[2]], f=w&&(w.formations||[])[+m[3]], a=f&&(f.aircraft||[])[+m[4]];
   if(!w||!f||!a||!saExempt(w,f,a))return undefined;
   if(((PV||off)&&!OFW)||!id)return null;   /* official face shows these flags too (Codex CRPF-008) */
-  const fkey=`${m[1]}.${m[2]}.${m[3]}`, g=WARN.byDay[di];
+  const fkey=`${m[1]}.${m[2]}.${m[3]}`, akey=`${fkey}.${m[4]}`, g=WARN.byDay[di];
+  /* an ABSENCE is the exempt seat's own only when it is anchored on the formation (an SC SPARE's own warning) or on this
+     very jet — never on another seat of the formation: one man in an SC line's MAIN and SPARE, on local leave, has his
+     MAIN seat flagged (rightly), and the SPARE puck borrowed that ring and C off the shared key prefix, though local
+     leave may stand a spare ([SC-SPARE-RING-BORROWS], Astra's read of D605, F3). The currency and two-places matches
+     keep the whole formation, as before. */
+  const absence=(code:any)=>code==='DNIF_FLY'||code==='LEAVE_FLY';
+  const placeOf=(code:any,k:any)=>{const s=String(k||''); if(!s)return false;
+    return absence(code)?(s===fkey||s===akey||s.indexOf(akey+'.')===0):(s===fkey||s.indexOf(fkey+'.')===0);};
   const hit=shownWarns(g&&g.warns).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='SC_QUAL'||x.code==='DOUBLE_BOOK'||x.code==='QUAL')   /* never a hidden one (D469) */
     /* also `x.also`, so the SECOND place of a one-man-two-places pair
        rings when it sits in a DIFFERENT wave (an AVALON seat + a BB
        seat): the clash anchors on the first place, the other in `also`
        — same match the exempt DESK puck already makes (7 Sep 26). A
        same-formation pair already rings off the shared key prefix. */
-    &&(x.who||[]).includes(id)&&(x.key===fkey||String(x.key||'').indexOf(fkey+'.')===0
-      ||x.also===fkey||String(x.also||'').indexOf(fkey+'.')===0));
+    &&(x.who||[]).includes(id)&&(placeOf(x.code,x.key)||placeOf(x.code,x.also)));
   return hit?((hit.code==='SC_QUAL'||hit.code==='QUAL')?'Q':'C'):null;
 }
 /* one crew position inside a list cell (programme / duties / sims / ground).
@@ -1033,7 +1040,7 @@ function dayTraceHTML(di:any,pf:any){
     if(kind==='RUN'){
       const r=t.run;
       const onR=r.di!=null&&WFOCUS&&WFOCUS.di===r.di&&WFOCUS.ix===ix;
-      const addrR=r.di!=null&&ix>=0?` data-wdi="${r.di}" data-wix="${ix}" title="Jump to the day the run breaks"`
+      const addrR=r.di!=null&&ix>=0?` data-wdi="${r.di}" data-wix="${ix}" data-wld="${di}" title="Jump to the day the run breaks"`
                             :r.di!=null?` title="As published — that day has changed since"`
                             :` title="Next week's Monday — load it to see the breach itself"`;
       return `<div class="witem hard wtr${onR?' on':''}"${addrR}>`
@@ -1058,7 +1065,7 @@ function dayTraceHTML(di:any,pf:any){
        warning on THIS week to focus — interactions.ts's `.witem[data-wdi]`
        branch simply never matches it, so a tap is inert rather than a
        misfire. The breach itself appears on Monday when next week loads. */
-    const addr=t.di!=null&&ix>=0?` data-wdi="${t.di}" data-wix="${ix}"${pan} title="Jump to the line on this day that caused it"`
+    const addr=t.di!=null&&ix>=0?` data-wdi="${t.di}" data-wix="${ix}" data-wld="${di}"${pan} title="Jump to the line on this day that caused it"`
       :t.di!=null?` title="As published — that day has changed since"`
                          :` title="Next week's ${esc(t.dow||'Monday')} — load it to see the breach itself"`;
     return `<div class="witem hard wtr${on?' on':''}"${addr}>`
@@ -1265,11 +1272,17 @@ export function intimeLineHTML(t:any){
    WebKit clone spans and duplicate lines). The wrapper div is NOT editable
    any more; textedit.ts commits one line at a time off data-itline, which is
    what makes a stray span WebKit mints invisible to the commit. */
-export function intimesInner(w:any,ek?:any){
-  return ((w&&w.intimes)||[]).map((t:any,i:number)=> ek
-    ? `<span class="itline" contenteditable="true" spellcheck="false" data-itline="${ek}|${i}">${intimeLineHTML(t)}</span>`
-      +`<button class="itx" data-itdel="${ek}|${i}" title="Remove this ${REPORTING_LABEL} line" aria-label="Remove this ${REPORTING_LABEL} line">✕</button>`
-    : `<span>${intimeLineHTML(t)}</span>`).join('')
+/* grip — the Scheduler Board alone (owner D593, D594: the lines drag into order there, never on Edit Schedule's week):
+   each line and its ✕ sit in a row of their own carrying the line's move address and the board's six-dot grip, so
+   ui/rowdrag.ts carries it as it carries any dense row. The line and its ✕ stay next-door siblings inside the row,
+   which is all textedit.ts and the ✕ handler ask of them. */
+export function intimesInner(w:any,ek?:any,grip?:boolean){
+  return ((w&&w.intimes)||[]).map((t:any,i:number)=>{
+    if(!ek)return `<span>${intimeLineHTML(t)}</span>`;
+    const pair=`<span class="itline" contenteditable="true" spellcheck="false" data-itline="${ek}|${i}">${intimeLineHTML(t)}</span>`
+      +`<button class="itx" data-itdel="${ek}|${i}" title="Remove this ${REPORTING_LABEL} line" aria-label="Remove this ${REPORTING_LABEL} line">✕</button>`;
+    return grip?`<div class="itrow" data-move="mv:it.${ek.replace('|','.')}.${i}"><span class="sb-grip" title="Drag to move this line">⠿</span>${pair}</div>`:pair;
+  }).join('')
     + (ek?`<span class="reporting-feedback" data-reporting-feedback data-warnkey="it:${ek.replace('|','.')}" role="status">${esc(reportingIssuesForWave(w).map(i=>i.msg).join(' '))}</span>`:'');}
 /* AREA and TIME are not the model fields they are edited through. Until a
    scheduler types over them they READ OFF THE AIRCRAFT: the distinct area codes on

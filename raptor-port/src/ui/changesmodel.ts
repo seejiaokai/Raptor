@@ -203,7 +203,9 @@ export function itemOf(r: ELogRow, day?: string | null): Item {
       const jet = f && parts[3] != null ? jetOf(f, pp![3]) : ''
       const title = f ? `Flying · ${`${f.cs || 'Line'} ${f.msn || ''}`.trim()}` : `Flying · ${head(r.lbl)}`
       const detail = pfx === '' ? (f ? `${jet}${SEAT[parts[4]!] || String(parts[4] || '').toUpperCase()}` : tail(r.lbl))
-        : pfx === 'ff' ? fieldWord(parts[3])
+        /* an SC line's B box is its crew's in-time (owner, 24 Aug 26; [SC-B-CHANGE-SAYS-BRIEF]) — a row gone since keeps the
+           word its frozen label was written with */
+        : pfx === 'ff' ? (parts[3] === 'br' && (f ? live(() => day.waves[+pp![1]!].kind) === 'sc' : tail(r.lbl) === 'in-time') ? 'In-time' : fieldWord(parts[3]))
         : pfx === 'fr' ? `${jet}remarks` : pfx === 'st' ? `${jet}stores`
         : pfx === 'aa' ? `${jet}area` : pfx === 'au' ? `${jet}area time`
         : AIR[pfx] ?? ''

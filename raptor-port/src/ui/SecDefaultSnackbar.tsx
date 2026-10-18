@@ -17,7 +17,7 @@ import { secOrder, setSecDefault, secDefaultSave } from '../engine'
 import { SECDEFOFFER, setSecDefOffer, secDefOfferSeq } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { notify } from '../state/store'
-import { toast } from './toast'
+import { toast, clearToast } from './toast'
 import { useVersion } from './useStore'
 
 export function SecDefaultSnackbar() {
@@ -30,6 +30,9 @@ export function SecDefaultSnackbar() {
   const seq = di == null ? -1 : secDefOfferSeq()
   useEffect(() => {
     if (di == null) return
+    /* a note still up from just before (an Undo's, a Redo's) sat over the offer's buttons — "Set as default", and on a
+       phone "Not now" ([BUBBLE-SMALL-SEEN] (2), the change-recording walk, 29 Sep 26): the offer is the newer word */
+    clearToast()
     const t = setTimeout(() => { setSecDefOffer(null); notify() }, 7000)
     return () => clearTimeout(t)
   }, [seq])

@@ -913,7 +913,12 @@ export function dayDiscardCount(di:any,toVer?:any):number{di=+di;
      day "is already at" its version) */
   const asIssued=(()=>{const left=rowsLeftOut(di,snap.d);const c=JSON.parse(JSON.stringify(snap.d));return left.length?leaveRowsOut(c,left.map((x:any)=>x.id)):c;})();
   const filOf=(p:any)=>({addr:`inp:${di}.${inpId(p.inp)}`,kind:'input',from:String(p.want||''),to:String(p.inp.acc||'')});
+  /* [DISCARD-FILING-NOOP] (the one-rule walk, F1/F8, 12 Oct 26): a request filed since the version, put back "fresh",
+     lands again in the working-out after the load (drafts.ts dayAsLoadLeaves — "a request filed since landed again"), so
+     the load discards nothing of it: counting it read "Discard 1 edit & load" for a load that changed nothing */
+  const relands=(id:any)=>['ground','allhands'].some((k:string)=>((after&&after[k])||[]).some((r:any)=>r&&r.src===id&&!r.kept));
   const lone=filingRestorePlan(di,snap.fil,asIssued).put.filter((p:any)=>{
+    if(String(p.want||'')===''&&relands(inpId(p.inp)))return false;
     const u=requestRowUnit(units,inpId(p.inp),String(p.want||''),String(p.inp.acc||''),after,DAYS[di]);
     if(u){u.inp=filOf(p);return false;}
     return true;});

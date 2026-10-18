@@ -670,12 +670,23 @@ a real edit still commits, and an emptied cell still stores the blank.
 
 ## In-time lines: added and removed per wave (owner, 21 Aug 26)
 
-**RULED 5 Oct 26 (D593) — not yet built.** On the Scheduler Board a wave's In-time / Rally lines are to be draggable into a new
-order, and Auto sort is to put them in order too. The detail (D594, the same day): the board ONLY — Edit Schedule's week gets no
-drag for these lines and shows them in the order the board left them; Auto sort orders them by time, earliest first (a
-previous-evening clock first, a line with no clock last), from the wave's own Auto sort and from Sort all; a new order on a
-published day is a pending change. Until it is built, the lines stay in the order they were added, as this section describes.
-The build: `OUTSTANDING.md` `[INTIME-LINES-DRAG]`.
+**The order: dragged on the Scheduler Board, sorted by time (D593, D594 — built 19 Oct 26, `[INTIME-LINES-DRAG]`).** On the
+board each line is a row (`.itrow`) with the app's six-dot grip; the grip is a row grip of `ui/rowdrag.ts` (`mv:it.di.gi.line`,
+its container the day and wave) and the drop is `engine/reorder.ts moveInTime` — an ordinary schedule write, so on a
+published day a new order is a change waiting and the sign-offs fall; dragged back, it nets to nothing. Edit Schedule's week
+draws no grip and shows the board's order; View-only Sched shows it read only. Auto sort (the wave's own ⇅) and Sort all order
+the lines by `engine/reporting.ts reportingSortKeys` — earliest first, an evening-before clock (D503) before the same day's, a
+line with no clock last — Sort all writing ONE history line for the whole sort. "To go out" names the lines that differ
+(`ui/pendlist.ts reportingLineWords`; a pure reorder reads "order changed"). Four details the check of the batch fixed, each
+pinned: the board's rows stretch to the block's full width at every size (his find — the old grid's `align-items:center` had
+centred them); a press on a grip, ⇅ or Sort all first leaves the text box the caret is in, so a line being typed is saved
+before the order changes (never lost or doubled); an emptied line removed by that leave moves the rows below it up, and the
+line PRESSED is the one that moves (a press on the emptied line's own grip starts no drag); a phone's drag scrolls the pane
+only in a band a sixth of its height (at most 52px — `rowdrag.ts rowEdge`). Pins: `rowdrag.test.tsx`, `engine/intimes-order.test.ts`,
+`e2e/schedule-tab.spec.ts` (the rows' left edge and width at 1440 and 390); the drag itself by mouse and finger is walked
+(`docs/handpass/2026-10-19-schedule-amendments-fixes.md`).
+**Changing (D1026, 19 Oct 26 — not built, `[RALLY-PER-FORMATION]`):** a formation's rally moves to a box of its own on the
+flying row (R above B, TO above LD); these typed lines become the in-time only and their button "+ In-time".
 
 "Allow me to input lines at the top of each wave where I can reflect the in
 time likewise to be able to edit or delete it." Before this, the in-time
@@ -834,6 +845,16 @@ Astra DP-11). Decided in the one function that marks a slot (`publish.ts alAttr`
 `HOOKS.newToMe` (`ui/changesmodel.ts` installs it; headless, false — byte-identical HTML). On the edit week, the board
 and View-only Sched's live draft of a day not yet published; never on a published day (its ALn tags say it), never for a
 guest, never in print or CSV. "Mark all as seen" takes it away. The day headings are unchanged (D172).
+
+**Words and lines the D994 batch put right (19 Oct 26):** an SC line's B box is named "in-time" — in the change
+history's label, so "To go out", in the window's detail and in Undo ("an in-time"); a flying, AVALON or BB line keeps
+"brief" (`engine/editlog.ts keyLabel`, `ui/changesmodel.ts`, `undo/describe.ts`; `[SC-B-CHANGE-SAYS-BRIEF]`). The board
+draws the In-time / Rally block, so its change is a button there that takes the board to it (`ui/histbubble.ts`
+`NO_BOARD_CELL` no longer lists `it`; `[BOARD-INTIME-JUMP]`). A duty block from + Block, a placed SC / AVALON / BB wave, and
+a document added to or taken off a filed request each write a line of the change history (`[BLOCK-NO-HISTORY-LINE]`).
+A reorder of the In-time / Rally lines reads "order changed", a changed line names the lines that differ
+(`ui/pendlist.ts reportingLineWords`; `[PEND-INTIME-WORDS]`); Sort all writes one line for the whole sort. On a phone a
+note already up when the window opens moves to the top, clear of the window (`[BUBBLE-SMALL-SEEN]` (3)).
 
 ## The one changes window (`[DRAFT-PENDING]`, 28 Sep 26 — D116–D119, D167–D172, D169 with D211, D263, D336 (b))
 
@@ -6239,6 +6260,8 @@ The lines come from the door's own save TRIED AND THROWN AWAY with the Leave War
 (`ui/inputedit.tsx giveBackCuts` → `state/inputgate-hook.ts hearGateCuts`, said by `leavewar/inputgate.ts`), so the sheet
 and the save cannot disagree; the cut itself and its amber note afterwards are unchanged. An open input window keeps what
 was typed through the try (`pops.ts INPEDIT_REFOUND`). Pins: `ui/upchitcuts.test.tsx`.
+**The amber edge stays (owner D1025, 18 Oct 26 — "Keep it"):** it is the app's warning-row mark (D747), and the design
+checker's skip list (`.impeccable/config.json`, side-tab, `14-input-editors.css`) keeps skipping it on this ruling.
 
 **The medical clash sheet** (`ui/MedClashConfirm.tsx`, owner, 27 Aug 26)
 is its sibling, same recipe and layer (`.upconf-*` classes). It opens when a
@@ -7198,6 +7221,14 @@ its Today icon the calendar's own and still picking today at once (`onToday`). N
 the whole year); today shown on the Leave War's calendars; one finger-sized date everywhere; an input's range waits for its end and a
 saved input's first tap starts new dates (`finished`). The OIL credit's date is the date box (`ui/DateBox.tsx`); the OIL tracker and the
 grid's figures bar count a press in the floating calendar (`.dcal-layer`) as inside their bar. Check: `docs/handpass/2026-10-15-calendar-step-two.md`.
+
+**Undo and Redo never run under a caret (the D994 batch's check, 19 Oct 26 — older than it).** A press of the one undo's
+Undo or Redo (`ui/topbits.tsx globalUndoEngine`) with the caret still in a text box first lets the caret go — what was typed
+there is saved as its own change — and runs once that save has run, so the paint after it is the ordinary one. A desktop
+click on the button already moved the focus; a tap on Safari does not, and an In-time line held under the caret kept its
+place from before the Undo and was written over the line Undo brought back. And a block held for the caret is remembered
+as owed (`ui/dayswap.ts OWED`; the board's panel record dropped), so a value Undo puts back to what the block last showed
+still reaches the screen. Pins: `ui/undo-caret.test.tsx`, `ui/schedule-tab.test.tsx`.
 
 ## Days — the month (owner, D631, D633, D638, D641, D642, D664; built 8 Oct 26)
 

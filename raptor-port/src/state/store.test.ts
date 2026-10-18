@@ -9,7 +9,8 @@ import { HOOKS } from '../engine/hooks'
 import { slotVal, txtGet } from '../engine/slots'
 import { shiftKeys } from '../engine/keys'
 import { moveDutyRow, applyMove, sortDutyBlock } from '../engine/reorder'
-import { validate, WARN } from '../engine/validate'
+import { validate, WARN, officialWarn, officialRaw } from '../engine/validate'
+import { dayIssuedHTML } from '../ui/html'
 import { initStore, subscribe, getVersion, writeSlot, writeFill, writeText, writeDelete, writeInputs, undo, redo, HIST, moveSection, moveSectionTo } from './store'
 import { secOrder } from '../engine/order'
 import { armSlot, disarmSlot, armedKey, placeArmed, selectPerson, SELID, ARM } from './view'
@@ -337,6 +338,44 @@ describe('AL flow through the store (tfin B49)', () => {
     publishALDay(0)
     expect(SCHED.changes[rk(key)]).toBe(1)
     expect(SCHED.pending[rk(key)]).toBeUndefined()
+  })
+})
+
+/* [CRP-FLAG] (the plan's §14 extra case): undoing past an AL's publish puts the day back to waiting — the issued face is
+   the version before it again, and its warnings with it; redo publishes it again and the two documents are one */
+describe('an undo past a publish updates the issued face and its warnings', () => {
+  it('a double booking published in AL1: undo takes it off the issued face and its warnings, redo puts it back', () => {
+    sign(0); setDayApproved(0, true)                         // the Original, clean
+    const A = '0.0.0.0.p', B = '0.0.0.1.p', man = slotVal(B)
+    expect(man, 'the second jet has a pilot (or this test proves nothing)').toBeTruthy()
+    /* the warnings that name him on Monday, as code and words — a new one is the double booking */
+    const sigs = (b: any) => new Set<string>((b.all || []).filter((x: any) => x.di === 0 && (x.who || []).includes(man)).map((x: any) => x.code + '|' + x.msg))
+    validate()
+    const base = sigs(WARN), busy = (b: any) => [...sigs(b)].some(k => !base.has(k))
+    const onFace = () => (dayIssuedHTML(0).match(new RegExp('data-person="' + man + '"', 'g')) || []).length
+    const n0 = onFace()
+    expect(busy(officialWarn()), 'the issued Original does not double-book him').toBe(false)
+    writeSlot(A, man)                                        // his second seat at the same time: a working change
+    validate()
+    expect(busy(WARN), 'the desk copy double-books him').toBe(true)
+    expect(busy(officialWarn()), 'the issued face does not, until it goes out').toBe(false)
+    sign(0); publishALDay(0)                                 // AL1 out
+    validate()
+    expect(officialRaw(), 'published: one document again').toBe(WARN)
+    expect(busy(officialWarn())).toBe(true)
+    expect(onFace(), 'the issued face draws him in both jets').toBeGreaterThan(n0)
+    undo()                                                   // back past AL1's publish
+    validate()
+    expect(dayApproved(0), 'the day is still published (the Original)').toBe(true)
+    expect(slotVal(A), 'the desk copy keeps the change, waiting again').toBe(man)
+    expect(officialRaw(), 'two documents again').not.toBe(WARN)
+    expect(busy(officialWarn()), 'the issued face is the Original again: no double booking').toBe(false)
+    expect(onFace(), 'and draws him once').toBe(n0)
+    expect(busy(WARN), 'the desk copy still has it').toBe(true)
+    redo()
+    validate()
+    expect(officialRaw(), 'redone: one document').toBe(WARN)
+    expect(busy(officialWarn())).toBe(true)
   })
 })
 

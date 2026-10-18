@@ -83,7 +83,9 @@ export function placeToast(){
   t.style.right=phone?'12px':'';
   t.style.transform=phone?'none':'translateX(-50%)';
   t.style.textAlign=phone?'center':'';
-  const up=phone&&!!document.querySelector('.floatwin');
+  /* the changes window is a window too, a panel at the foot on a phone — a note at the foot sat over its first lines
+     ([BUBBLE-SMALL-SEEN] (3), the change-recording re-walk, 29 Sep 26); its placeholder is always mounted, hidden */
+  const up=phone&&!!document.querySelector('.floatwin, .chgwin:not([hidden])');
   /* …AND NEVER ON THE BAR THAT STAYS ([OIL-ASK-NOTIFY] — the check's walk, 13 Oct 26: "Not swapped — OIL not answered ·
      Answer OIL · OK" stands at the foot until it is tapped (D783 (2)), exactly where a note is drawn, and the note is the
      layer above — so every note raised while it was up, and one still showing when it arrived, covered its words and half

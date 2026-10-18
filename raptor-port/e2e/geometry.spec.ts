@@ -2484,7 +2484,10 @@ test('a phone row DRAG reorders a row and the board still reads correctly', asyn
   /* the two addresses, read before the drop — the panel is rebuilt from a
      string, so these rows are new nodes afterwards (see the desktop test) */
   const carried = (await rows.first().getAttribute('data-move'))!
-  const to = (await rows.nth(2).getAttribute('data-move'))!
+  /* where it ENDS UP, not the address it is dropped on ([ONE-ROW-DRAG-FLASH], 18 Oct 26): the Ground Programme is drawn by
+     start time, and a day's first hand move freezes that order into the model — the carried row lands third on screen,
+     which after the freeze is model index 2, whatever the third row's address was before the drop */
+  const to = carried.replace(/\.\d+$/, '.2')
   await grips.first().scrollIntoViewIfNeeded()
   const a = await grips.first().boundingBox()
   const b = await rows.nth(2).boundingBox()
@@ -2499,6 +2502,7 @@ test('a phone row DRAG reorders a row and the board still reads correctly', asyn
   await expect(page.locator('#sbBoard .lift'), 'the picked-up box is gone on release').toHaveCount(0)
   await expect(page.locator('#sbBoard .lift-land'), 'the flash clears itself').toHaveCount(0, { timeout: 1500 })
   expect(await names(), 'the dragged ground row moved (gman set, re-rendered in model order)').not.toEqual(before)
+  expect((await names())[2], 'and the row that flashed is the one carried').toBe(before[0])
 })
 
 /* A SECTION (and a wave) has the SAME address on the board and on the edit week

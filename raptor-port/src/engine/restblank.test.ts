@@ -194,7 +194,7 @@ describe('TODAY — a line with no take-off is measured on the instruction it do
     add(TUE, sc); validate()
     const cr = breach()
     expect(cr, 'breach off the SC in-time').toBeTruthy()
-    expect(cr.msg).toContain('starts 05:00')
+    expect(cr.msg).toContain("in-time is 05:00")
     noNaN()
   })
 

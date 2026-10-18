@@ -397,3 +397,36 @@ describe('reference-parity guards', () => {
     expect(validate().all.filter((w: any) => w.code === 'SANS_AVAIL')).toEqual([])
   })
 })
+
+/* [BLANK-LINE-SANS-WORDS] (6 Oct 26): on a flying line with no times yet there is nothing to hold a SANS man's offered
+   window against — the list worded it as a clash ("planned for   — available 14:00–16:00 only") while the crew list,
+   which strikes him only against a window, said nothing. And a line with no callsign printed its blank name into the
+   sentences; it is "this line" there, as the absence sentences already say. */
+describe('a flying line with no times and no name yet', () => {
+  const blankLine = () => {
+    const f: any = { cs: '', msn: '', to: '', ld: '', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] }
+    DAYS[0].waves.push({ label: 'ZB', night: false, intimes: [], traffic: [], formations: [f] })
+    return { f, gi: DAYS[0].waves.length - 1 }
+  }
+  const sansOf = (id: string) => validate().all.filter((w: any) => w.code === 'SANS_AVAIL' && (w.who || []).includes(id))
+  it('a SANS man offering Fly 14:00–16:00 is not worded as a clash before the line has times', () => {
+    const { f } = blankLine()
+    f.aircraft[0].p = 'ipman'
+    fileSans('ipman', { f: true }, { s: 840, e: 960 })
+    expect(sansOf('ipman'), 'nothing to compare yet').toEqual([])
+    f.to = '17:00'; f.ld = '18:00'                       // times typed outside his window: now it is said
+    const hits = sansOf('ipman')
+    expect(hits.length).toBe(1)
+    expect(hits[0].msg).toContain('available 14:00–16:00 only')
+    expect(hits[0].msg, 'a blank name reads "this line"').toContain('planned for this line —')
+  })
+  it('the formation sentences say "this line", never a blank name', () => {
+    const { f } = blankLine()
+    const wso = Object.keys(PEOPLE).find(id => PEOPLE[id] && PEOPLE[id].seat === 'RCP' && !PEOPLE[id].pers && !PEOPLE[id].san)!
+    f.aircraft[0].p = wso
+    const msgs = validate().all.filter((w: any) => (w.who || []).includes(wso)).map((w: any) => w.msg)
+    expect(msgs.join(' | ')).toContain('cannot fly FCP (this line)')
+    expect(msgs.join(' | '), 'no empty brackets').not.toMatch(/\(\s*\)/)
+    expect(msgs.join(' | '), 'no doubled space where a name was').not.toMatch(/ {2,}/)
+  })
+})

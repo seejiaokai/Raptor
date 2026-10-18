@@ -321,8 +321,18 @@ function hsLabel() {
 function dayRangeText(w: any) {
   /* the live week only — the desktop peek preview's real trailing columns
      must never inflate "day N of 7" into "day N of 14" */
-  const days = w.querySelectorAll('.day:not(.peek)').length
+  const live = [...w.querySelectorAll('.day:not(.peek)')] as HTMLElement[]
+  const days = live.length
   if (!days) return ''
+  /* the days a reader can SEE — each at least half on screen ([ARROW-GUTTER-STRIP], the five-flags walk W4, 26 Sep 26):
+     counting the columns the box holds, rounded, named a third day at 1440 wide of which only 212px showed. Measured
+     where there is layout; a measuring-free world (jsdom) keeps the count below. */
+  const wr = w.getBoundingClientRect()
+  const seen = live.map((d, i) => { const r = d.getBoundingClientRect(); return r.width > 0 && Math.min(r.right, wr.right) - Math.max(r.left, wr.left) >= r.width / 2 ? i : -1 }).filter(i => i >= 0)
+  if (seen.length) {
+    const a = seen[0]! + 1, b = seen[seen.length - 1]! + 1
+    return a >= b ? `day ${a} of ${days}` : `day ${a}–${b} of ${days}`
+  }
   const step = dayStep(w) || 1
   const left = Math.max(0, Math.min(days - 1, Math.round(w.scrollLeft / step)))
   const fit = Math.max(1, Math.round(w.clientWidth / step))
@@ -594,7 +604,32 @@ function syncPeekOnResize() {
     if (el && el.children.length >= 7) mountPeek(el, 7, '\0')
   })
 }
-function onResize() { updateWeekNav(); syncPeekOnResize() }
+/* A RESIZE RE-LANDS THE DESKTOP WEEK ON A DAY ([ARROW-GUTTER-STRIP], the five-flags walk W4, 26 Sep 26). The desktop week
+   never snaps (scroll-snap none, on purpose — a free pan stays where it is put), and a resize moves the columns under a
+   scroll position kept as it was, so straight after one a day could sit partly under the ‹ until the next press. Once the
+   resizing has settled, the week is put on the nearest day, through hsSet (instant — the week scrolls smoothly), never
+   past the last day at the front, never during an arrow's glide; the arrows' corridor starts again from there. A phone
+   snaps by itself and is left alone. Exported for its test. */
+let relandT: any = 0
+export function relandWeekAfterResize() {
+  if (typeof window === 'undefined' || window.innerWidth <= 820 || Date.now() < glideEnd) return
+  ;['vWeek', 'eWeek'].forEach(id => {
+    const w = $(id); if (!w || !(w.clientWidth > 0)) return   // the week on show (a hidden page measures 0 wide)
+    const st = dayStep(w); if (!(st > 0)) return
+    hsSet(w, Math.min(Math.round(w.scrollLeft / st) * st, weekScrollMax(w)))
+  })
+  panWk = null
+}
+/* only a REAL resize re-lands the week (the fresh read of the batch, 19 Oct 26 — F3): Shell.tsx sends a resize of its own
+   (`saveBand`) when the failed-save band or the OIL bar comes or goes, and the window's width has not changed — a week
+   panned by hand must not jump to a day for it */
+let lastResizeW = typeof window === 'undefined' ? 0 : window.innerWidth
+export function resizeRelands(e: Event | null, width: number): boolean {
+  const real = !(e && (e as any).saveBand) && width !== lastResizeW
+  lastResizeW = width
+  return real
+}
+function onResize(e?: Event) { updateWeekNav(); syncPeekOnResize(); if (!resizeRelands(e || null, window.innerWidth)) return; clearTimeout(relandT); relandT = setTimeout(relandWeekAfterResize, 120) }
 
 export function initPan() {
   const trk = $('hsTrack')

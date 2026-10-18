@@ -10,7 +10,7 @@ import { initStore, wireStore, setSession, notify } from '../state/store'
 import { slotVal, setSlotVal, rowCrew, fillSlot } from '../engine/slots'
 import { HOOKS } from '../engine/hooks'
 import { afterSchedMutate, armedKey, AVSHUT } from '../state/view'
-import { dragFrom, applyDrop, setDrag, DRAG } from './drag'
+import { dragFrom, applyDrop, setDrag, DRAG, tdEdge } from './drag'
 import { openScheduler, closeScheduler } from './board'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
@@ -921,4 +921,17 @@ describe('the puck ghosts wear the lift, and the seat it lands on flashes', () =
 /* put the real toast back for any suite that runs after this file */
 describe('cleanup', () => {
   it('restores the toast hook', () => { HOOKS.toast = origToast; expect(true).toBe(true) })
+})
+
+/* [OIL-NOTIFY-SEEN] (6) (the OIL-ask walk, 13 Oct 26): on a phone on its side the board is about 190px tall, and the
+   finger's two fixed 52px edge bands were more than half of it — a puck held near the top or foot scrolled the board
+   under the finger. The band is a sixth of the pane, at most the 52 every taller pane keeps. */
+describe('the touch drag’s edge band', () => {
+  it('a short pane gets a narrow band; a tall one the 52px it always had', () => {
+    expect(tdEdge(0, 190)).toBeCloseTo(190 / 6)
+    expect(2 * tdEdge(0, 190), 'the two bands leave most of a 190px pane free').toBeLessThan(190 / 2)
+    expect(tdEdge(0, 312)).toBe(52)
+    expect(tdEdge(100, 900)).toBe(52)
+    expect(tdEdge(0, 0), 'no pane, no band').toBe(0)
+  })
 })

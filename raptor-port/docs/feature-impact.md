@@ -40,6 +40,12 @@ which joints are single-funnel (safe to build on) and which are drift-seams
 (where two copies of one rule can fall out of step — the bugs that keep
 recurring in this app).
 
+**The In-time / Rally lines' order (D593, D594 — built 19 Oct 26):** a drag on the Scheduler Board, the wave's ⇅ or Sort
+all rewrites one stored list (`it:di.gi`) through the one write path — on a published day one pending change, the
+sign-offs falling; nothing worked out moves (D506: the earliest applicable clock is used whatever the order). Surfaces:
+the board (drag), Edit Schedule's week and View-only Sched (the order shown, no grip), "To go out" ("order changed").
+D1026 will move the rally into a box on each formation (`[RALLY-PER-FORMATION]`, not built).
+
 **Reporting flow added2 Oct26 (D497–D507):** existing `w.intimes` strings →
 `engine/reporting.ts` first-valid clock + own-wave formation/activity scope →
 per-formation signed actual report → `events.ts` → workSpan/LONGDAY/Insights,

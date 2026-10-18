@@ -7,6 +7,7 @@ import { parseHM } from './time'
 import { store } from './hooks'
 import { isStandalone } from './waves'
 import { WAVE_KINDS } from './wavetpl'
+import { reportingSortKeys } from './reporting'
 /* ---------------------------------------------------------------------------
    REORDERING A BOARD LIST (owner, 8 Aug 26)
    Every list on the board is drawn in model order and a new row lands at the
@@ -43,6 +44,12 @@ const slide=(a:any,from:any,to:any)=>{a.splice(to,0,a.splice(from,1)[0]);};
    read-once shape SORTALL and CXT already use. */
 export let REORDERED_DI:any=null
 export function popReorderedDay(){const d=REORDERED_DI; REORDERED_DI=null; return d;}
+/* WHICH ROW A MOVE LANDED (Fable's read F2, 11 Oct 26 — [ONE-ROW-DRAG-FLASH]): the head key `done` marks is the row now
+   standing where the move put it. The drag aims its landing flash at the drop address, which is that row everywhere but
+   on a day's first hand move of a ground row: the order on screen is frozen into the model first, so the row lands at
+   the frozen order's index and the flash fell on whichever row now stood at the aimed one. Read once, like the above. */
+export let LANDED_KEY:any=null
+export function popLandedKey(){const k=LANDED_KEY; LANDED_KEY=null; return k;}
 /* Which mov: KIND a move belongs to, read from the head FIELD key each mover
    hands `done` — the same key it would otherwise mark pending. One prefix, one
    kind; an unknown prefix falls to a generic 'item' (moveKey clamps it anyway). */
@@ -58,6 +65,7 @@ const moveKindOf=(key:any)=>{const s=String(key),c=s.indexOf(':');return MOVE_KI
    a real permutation; the ground flag-only clear path passes none and stays a plain
    field mark. */
 const done=(key:any,di?:any)=>{
+  LANDED_KEY=key;
   /* the added-gate reads the now rid-anchored SCHED.added, so translate the
      positional head key first (finding 5). Runs AFTER the permute, so ridKey
      resolves the row now at this address — correct. */
@@ -219,6 +227,19 @@ export function moveNote(di:any,from:any,to:any){
   moveKeys(`dn:${di}.`,0,from,to,rows.length);
   return done(`dn:${di}.${to}`,di);
 }
+/* A WAVE'S IN-TIME / RALLY LINES, DRAGGED INTO ORDER ON THE SCHEDULER BOARD (owner, D593, D594 — 5 Oct 26). The lines
+   are one stored list behind ONE text key, `it:di.gi` — there is no per-line key space to remap — so a move is the
+   list's own field change: marked with the list before and after, as a typed line is. On a published day that is
+   the pending change D594 asks for (the issued snapshot keeps the old order, so dayDelta reads it), and dragging
+   back to the issued order nets to nothing. Not `done()`: a mov: record would count the same change twice. The order
+   moves nothing worked out — the earliest applicable clock is used whatever the order (D506). */
+export function moveInTime(di:any,gi:any,from:any,to:any){
+  const w=(DAYS[di]||{}).waves&&DAYS[di].waves[gi]; if(!w||!ok(w.intimes,from,to))return false;
+  const was=w.intimes.join(', ');
+  w.intimes=w.intimes.slice(); slide(w.intimes,from,to);
+  markEdit(`it:${di}.${gi}`,was,w.intimes.join(', '));
+  REORDERED_DI=di; return true;
+}
 /* Ground is the one list rendered in a SORTED order (by start time, on the week
    and the board alike), so a move expressed in model indices would be undone by
    the very next redraw — and the first move in particular would read as doing
@@ -259,6 +280,7 @@ export function moveGroundRow(di:any,from:any,to:any){
    the only reading consistent with "a jet may never leave its formation" — a
    drag ending outside the formation cannot mean "move this jet there". */
 export function applyMove(fromAddr:any,toAddr:any){
+  LANDED_KEY=null;
   const A=String(fromAddr||''), B=String(toAddr||'');
   if(A.indexOf('mv:')!==0||B.indexOf('mv:')!==0||A===B)return false;
   const a=A.slice(3).split('.'), b=B.slice(3).split('.');
@@ -283,6 +305,8 @@ export function applyMove(fromAddr:any,toAddr:any){
   if(kind==='g')return moveGroundRow(n(a[1]),n(a[2]),n(b[2]));
   if(kind==='p')return moveProgRow(n(a[1]),n(a[2]),n(b[2]));
   if(kind==='n')return moveNote(n(a[1]),n(a[2]),n(b[2]));
+  /* a wave's In-time / Rally line — `mv:it.di.gi.line`, its container the day and wave (D593) */
+  if(kind==='it')return moveInTime(n(a[1]),n(a[2]),n(a[3]),n(b[3]));
   return false;
 }
 /* ---------------------------------------------------------------------------
@@ -317,6 +341,19 @@ export function sortWave(di:any,gi:any){
   [`ff:${di}.${gi}.`,`fr:${di}.${gi}.`,`st:${di}.${gi}.`,`ar:${di}.${gi}.`,`at:${di}.${gi}.`,`${di}.${gi}.`]
     .forEach((h:any)=>permuteKeys(h,0,oldOf));
   return done(sortedKey(oldOf,n=>`ff:${di}.${gi}.${n}.cs`),di);
+}
+/* The In-time / Rally lines of one wave, by time (D594): the evening-before clock first, a line with no clock last,
+   ties in their own order — reporting.ts reportingSortKeys holds the reading. One list behind one key (moveInTime's
+   note), so the whole new order is one field change, and an already-sorted wave marks nothing. */
+export function sortInTimes(di:any,gi:any){
+  const w=(DAYS[di]||{}).waves&&DAYS[di].waves[gi]; if(!w||!Array.isArray(w.intimes)||w.intimes.length<2)return false;
+  const ks=reportingSortKeys(w), oldOf=keySort(w.intimes.length,(i:any)=>ks[i]);
+  if(isIdentity(oldOf))return false;
+  w.intimes=oldOf.map((o:any)=>w.intimes[o]);
+  /* marked with no line of its own, as every sorter is: the sort that called it says what it did (Sort all's one line;
+     the batch's check, 19 Oct 26) */
+  markEdit(`it:${di}.${gi}`);
+  REORDERED_DI=di; return true;
 }
 /* THE BLOCKS THEMSELVES, ORDERED BY THE EARLIEST TIME INSIDE THEM (owner,
    11 Aug 26). Until now Sort all tidied the rows INSIDE each wave and each
@@ -456,7 +493,7 @@ export function sortProg(di:any){
 export function sortDay(di:any){
   const d=DAYS[di]; if(!d)return false;
   let any=false;
-  (d.waves||[]).forEach((_:any,gi:any)=>{if(sortWave(di,gi))any=true;});
+  (d.waves||[]).forEach((_:any,gi:any)=>{if(sortWave(di,gi))any=true; if(sortInTimes(di,gi))any=true;});
   if(sortWaves(di))any=true;
   (d.dutywaves||[]).forEach((_:any,wi:any)=>{if(sortDutyBlock(di,wi))any=true;});
   if(sortDutyBlocks(di))any=true;

@@ -1595,6 +1595,9 @@ export function routeClick(e: MouseEvent) {
        render covers it; the guard above already excludes the toggle-off and
        stale-index cases, which must not carry a pan of their own. */
     if (landed && it.dataset.wpk) view.setWarnFocus({ ...view.WFOCUS, panDi: +it.dataset.wpd!, panKey: it.dataset.wpk })
+    /* …and every "Breaks <day>" line, the run-of-days one too, remembers the list it was tapped in, so closing that list
+       lets the focus go ([TRACE-FOCUS-STAYS] — the run line carries no pan; state/view.ts toggleDayWarn) */
+    if (landed && it.dataset.wld != null) view.setWarnFocus({ ...view.WFOCUS, listDi: +it.dataset.wld })
     notify()
     if (landed) setTimeout(scrollToWarnFocus, 0)
     e.stopPropagation(); return

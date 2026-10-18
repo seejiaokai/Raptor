@@ -39,6 +39,7 @@ import { dateOrd, INPUTS, inpLabel, inpKindTag, titleOf, isSansAvail, sansLetter
 import { parseVerId, dayIso } from '../engine/verid'
 import { qualCols } from '../engine/qualcols'
 import { actorIsAdmin } from './perms'
+import { rowDocIds } from './docs'
 
 /* ---- the reason a door hands in (inside its command) ---- */
 const REASONS = new Map<string, string>()
@@ -94,6 +95,7 @@ const oilWords = (o: any) => {
 }
 const same = (a: any, b: any) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null)
 /* what a SANS availability offers, as its row prints it: "F/O/A" — '' when it offers nothing (or is not one) */
+const docsWords = (n: number) => (n ? `${n} document${n === 1 ? '' : 's'}` : 'none')
 const offerWords = (inp: any) => (inp && isSansAvail(inp.type) ? sansLetters(inp) : '')
 
 function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
@@ -160,6 +162,10 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
   if (tillTurned(b, a)) logAction(null, `${who} · ${what} ${spanWords(sa)} · till date`, base({ from: tillShown(b) ? 'shown' : 'hidden', to: tillShown(a) ? 'shown' : 'hidden' }))
   if (!same(b.acc || '', accNow(a) || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · filed`, base({ from: filWords(b.acc), to: filWords(accNow(a)) }))
   if (!same(b.oil, a.oil)) logAction(null, `${who} · ${what} ${spanWords(sa)} · OIL`, base({ from: oilWords(b.oil), to: oilWords(a.oil) }))
+  /* its documents (a medical request's photos and PDFs — [BLOCK-NO-HISTORY-LINE], the group-A walk, 30 Sep 26): one added
+     to or removed from a request already filed wrote no line; the pair is read only through rowDocIds (state/docs.ts) */
+  { const db = rowDocIds(b), da = rowDocIds(a)
+    if (!same(db, da)) logAction(null, `${who} · ${what} ${spanWords(sa)} · documents`, base({ from: docsWords(db.length), to: docsWords(da.length) })) }
   /* THE SCHEDULER'S MARKS, THE INPUT'S OWN since step 4 of the one-rule build (owner D760: "a CX the scheduler puts on a
      row that came from an input cancels the input itself"; the red box and "information only" go with it). Until then
      the board logged a sentence against the DAY ("CX — WX — this item"); the change is the input's now, so its line is

@@ -73,7 +73,45 @@ export function routeReportingInput(e:Event){
 /* `key` — the box it wrote, carried as a fact for Undo's words (the change-recording plan B8) */
 const commitText = (key: string, mark: () => void) => schedWrite(SCHED_TYPES.text, () => { reconcileIssuedMarks(); mark() }, { key })
 
+/* THE BOX A CLICK IS TAKING THE CARET TO ([EDIT-SECOND-CLICK], the Codex stack check, 5 Oct 26). A changed box left by a
+   click commits here, and the day redraws before the focus has arrived anywhere — between the two the page itself has it.
+   The redraw saw no caret, replaced the block holding the box clicked, and the focus landed on a box no longer there: no
+   caret until a second click. focusout names where the focus is going; while it is on its way that box is treated as the
+   caret (editingText, textCaret), so its block is left standing as a typed-in block is. Cleared when the focus arrives
+   (routeFocusIn) or the press ends without it.
+   The Scheduler Board's boxes save on their CHANGE, which the browser fires after the old box has let go and BEFORE
+   focusout names the box the focus is going to (seen on the built app, 19 Oct 26) — so the box a press lands on is
+   noted at the press itself, too. */
+let ARRIVING: HTMLElement | null = null
+const TEXTBOX = '[data-txt],[data-bfld],[data-inp],[data-ifld],[data-role-remarks],[data-role-ui]'
+const arriving = () => (ARRIVING && ARRIVING.isConnected ? ARRIVING : (ARRIVING = null))
+const textBoxOf = (t: any): HTMLElement | null => {
+  if (!t || !t.closest) return null
+  const el = t.closest(TEXTBOX) as HTMLElement | null
+  return el || (t.isContentEditable ? t : null)
+}
+/* …and it never STICKS (the fresh read of the batch, 19 Oct 26 — F1): while the mark stands the week and the board hold
+   their redraw for it, so every way the focus fails to arrive lets it go AND repaints — a finger that lands on a box and
+   then scrolls (pointercancel, no pointerup), the time after a press's lift, a focus that leaves for nowhere while no
+   press is down.
+   It repaints only what was HELD (the narrow read of the fix round, 19 Oct 26 — N1): the letting-go is said by
+   CARET_GONE, which only the week's and the board's held paint listen to — each does nothing when no paint is owed. A
+   whole-app notify() here ran at the start of nearly every finger scroll on a phone (most begin on a text box) and rebuilt
+   all seven days for nothing (docs/performance.md — a gesture that only moves the view never notifies). */
+export const CARET_GONE = 'raptor-caret-gone'
+let PRESSING = false
+const letGo = () => { if (ARRIVING && document.activeElement !== ARRIVING) { ARRIVING = null; document.dispatchEvent(new Event(CARET_GONE)) } }
+if (typeof document !== 'undefined') {
+  document.addEventListener('pointerdown', e => { PRESSING = true; const b = textBoxOf(e.target); if (b && document.activeElement !== b) ARRIVING = b }, true)
+  document.addEventListener('pointercancel', () => { PRESSING = false; letGo() }, true)
+  /* a finger's lift and the mouse-style events that then move the focus come as separate steps (the walk's phone board,
+     19 Oct 26): let go of the box only well after a touch, at once after a mouse */
+  document.addEventListener('pointerup', (e: PointerEvent) => { PRESSING = false; if (ARRIVING && document.activeElement !== ARRIVING) setTimeout(letGo, e.pointerType === 'mouse' ? 0 : 600) }, true)
+}
+
 export function routeFocusOut(e: FocusEvent) {
+  const rt = e.relatedTarget as HTMLElement | null
+  ARRIVING = textBoxOf(rt) ? rt : (ARRIVING && rt == null && PRESSING ? ARRIVING : null)
   /* editMode() (store.ts) drives whether html.ts renders contenteditable="true"
      at all, but a field already focused when a session changes underneath it
      (logout while mid-edit) still fires this handler on blur. Every text
@@ -168,14 +206,22 @@ export function routeFocusOut(e: FocusEvent) {
       w.intimes = lines.filter((_: any, i: number) => i !== ix)
       commitText(`it:${di}.${gi}`, () => markEdit(`it:${di}.${gi}`, itWas, w.intimes.join(', ')))
       const btn = il.nextElementSibling
-      const block = il.parentElement
-      if (btn && (btn as HTMLElement).matches && (btn as HTMLElement).matches('[data-itdel]')) btn.remove()
-      il.remove()
+      const block = il.closest('.intimes')
+      /* on the Scheduler Board each line sits in a row of its own with its grip (D593, html.ts intimesInner) —
+         the row goes with it, and the rows left are re-addressed with their lines */
+      const row = il.parentElement?.classList.contains('itrow') ? il.parentElement : null
+      if (row) row.remove()
+      else {
+        if (btn && (btn as HTMLElement).matches && (btn as HTMLElement).matches('[data-itdel]')) btn.remove()
+        il.remove()
+      }
       // The surviving live lines can be edited before the deferred repaint.
       block?.querySelectorAll<HTMLElement>('[data-itline]').forEach((line, index) => {
         line.dataset.itline = `${di}|${gi}|${index}`
         const del = line.nextElementSibling as HTMLElement | null
         if (del?.matches('[data-itdel]')) del.dataset.itdel = `${di}|${gi}|${index}`
+        const r = line.parentElement
+        if (r?.classList.contains('itrow')) r.dataset.move = `mv:it.${di}.${gi}.${index}`
       })
       if(feedback)feedback.textContent=reportingIssuesForWave(w,+gi!).map(i=>i.msg).join(' ')
       txtCommit()
@@ -312,6 +358,7 @@ function refreshTextDestination(el: HTMLElement) {
    same reader the Tab route uses — only where it differs, never a write. */
 const ARRIVALS = '[data-txt],[data-bfld],[data-inp],[data-ifld],[data-itline],[data-bombs],[data-area],[data-atime]'
 export function routeFocusIn(e: FocusEvent) {
+  ARRIVING = null
   if (!canEditSched() || view.CURPAGE !== 'editsched') return
   const t = e.target as HTMLElement
   const el = t && t.closest ? t.closest(ARRIVALS) as HTMLElement | null : null
@@ -446,6 +493,11 @@ export function routeKeyDown(e: KeyboardEvent) {
 /* the EditWeek effect asks this before swapping day markup: never repaint
    under the caret (the reference's txtCommit guard, as a predicate) */
 export function editingText() {
+  return !!textCaret()
+}
+/* the text box with the caret — or, while a click is taking it from one box to another, the box it is going to */
+export function textCaret(): HTMLElement | null {
   const a = document.activeElement as any
-  return !!(a && a.closest && (a.closest('[data-txt],[data-bfld],[data-inp],[data-ifld],[data-role-remarks],[data-role-ui]') || a.isContentEditable))
+  if (a && a.closest && (a.closest(TEXTBOX) || a.isContentEditable)) return a
+  return a && a !== document.body && a !== document.documentElement ? null : arriving()
 }

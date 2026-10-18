@@ -26,6 +26,17 @@ describe('balanceAfterFill', () => {
     expect(goesBelow(r)).toBe(false)
   })
 
+  /* [AMEND-SMALL-SEEN] (7) (the amendment re-test, 24 Sep 26): an LL bid on a weekend asked "That takes Fable to -1
+     ANNUAL", though a weekend LL charges nothing. Answered by D418's one question; this pins it for LL itself. */
+  it('a Saturday of LL costs nothing — no ask; the Wednesday before it costs a day', () => {
+    const sat = balanceAfterFill('dusk', ['2026-02-14'], 'LL')!
+    expect(sat.counter).toBe('annual')
+    expect(sat.after).toBe(sat.before)
+    expect(goesBelow(sat)).toBe(false)
+    const wed = balanceAfterFill('dusk', ['2026-02-11'], 'LL')!
+    expect(wed.before - wed.after, 'a weekday does charge (or this test proves nothing)').toBe(1)
+  })
+
   it('a man already in the red whom the fill costs nothing is not asked about (F4)', () => {
     expect(setCell('dusk', '2026-02-11', 'FCL')).toBe(true)                // FCL -1
     const r = balanceAfterFill('dusk', ['2026-02-11'], 'FCL')!              // the same leave again: no change

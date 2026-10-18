@@ -20,7 +20,7 @@ import { logAction } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
 import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay, iuParts } from '../engine/keys'
-import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
+import { applyMove, sortWave, sortInTimes, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
 import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown, sbPrevDay, SB_PREVDAY, boxText } from './html'
 import { onInputRow, rowMark, UNMARKED } from './reqdoor'
@@ -29,7 +29,8 @@ import { reqRowText } from './reqrow'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { DAYTPL_PUBLISHED_MSG } from '../engine/daytpl'
 import { commit, isOk } from '../command'
-import { schedStore, SCHED_TYPES } from '../state/sched-commit'
+import { schedStore, SCHED_TYPES, schedWrite } from '../state/sched-commit'
+import { reconcileIssuedMarks } from '../engine/drafts'
 import { withFreshMissionRoles } from '../state/mission-roles'
 import { missionTracking } from '../engine/insights-config'
 import { resolveMissionRole } from '../engine/mission-role'
@@ -188,7 +189,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
        before; this makes the published lines themselves editable here too
        (owner, 14 Aug 26 — the board should edit everything the week can). */
     if (w.intimes && w.intimes.length)
-      fly += `<div class="intimes${mvRO ? '' : ' iedit'}" data-warnkey="it:${di}.${gi}"${alAttr(`it:${di}.${gi}`)} ${mvRO ? '' : `data-intimes="${di}|${gi}"`}>${intimesInner(w, mvRO ? null : `${di}|${gi}`)}</div>`
+      fly += `<div class="intimes${mvRO ? '' : ' iedit itdrag'}" data-warnkey="it:${di}.${gi}"${alAttr(`it:${di}.${gi}`)} ${mvRO ? '' : `data-intimes="${di}|${gi}"`}>${intimesInner(w, mvRO ? null : `${di}|${gi}`, !mvRO)}</div>`
     fly += `<div class="sb-lcols"><span></span><span>CS</span><span>MSN</span><span>B</span><span>TO</span><span>LD</span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
     if (!w.formations.length) fly += `<div class="sb-empty" style="padding:6px 11px">Empty wave — add a line, or remove the wave.</div>`
     w.formations.forEach((f: any, li: number) => {
@@ -718,6 +719,10 @@ export function sortAllCommit() {
   const di = SORTALL
   SORTALL = null
   if (!canEditSched() || !HOOKS.editMode() || view.DPREV.has(di)) { notify(); return }
+  /* the caret leaves its text box first, as at a section's sort (boardMbtn, data-sortsec): a line left after the sort
+     wrote its words by its old place */
+  const typing = document.activeElement as HTMLElement | null
+  if (typing && typing !== document.body && (typing.isContentEditable || typing.getAttribute('contenteditable') === 'true' || /^(INPUT|TEXTAREA)$/.test(typing.tagName))) typing.blur()
   const d = DAYS[di]
   HIST.lock = true
   let any = false
@@ -830,6 +835,12 @@ export function boardMbtn(e: MouseEvent) {
      reaches for the way-back control on a tidy section should hear that it
      IS tidy, not wonder whether the click landed. */
   if (ds.sortsec != null) {
+    /* the caret leaves its text box before the sort (the batch's check, 19 Oct 26 — the scenario designer's S1-02): a tap
+       that does not move the focus (an iPhone's) left it in an In-time line, the sort reordered the stored lines under it,
+       and leaving the line wrote its words by its old place — one line doubled, the other lost. Left now, it saves where
+       it stands. (ui/rowdrag.ts does the same at a grip's press.) */
+    const typing = document.activeElement as HTMLElement | null
+    if (typing && typing !== document.body && (typing.isContentEditable || typing.getAttribute('contenteditable') === 'true' || /^(INPUT|TEXTAREA)$/.test(typing.tagName))) typing.blur()
     const [kind, ...rest] = String(ds.sortsec).split('.')
     const n = rest.map(Number)
     /* Ground is the one section where "changed" can be true with the row
@@ -845,7 +856,8 @@ export function boardMbtn(e: MouseEvent) {
     const gSig = (r: any) => JSON.stringify([r && r.prog, r && r.str, r && r.end, r && r.src])
     const gWasMan = !!(gDay && gDay.gman), gRowsBefore: string[] = gDay ? (gDay.ground || []).map(gSig) : []
     let changed = false
-    if (kind === 'w') changed = sortWave(n[0], n[1])
+    /* a wave's ⇅ orders its In-time / Rally lines too (D594) — both run, never one short-circuiting the other */
+    if (kind === 'w') { const f = sortWave(n[0], n[1]); const l = sortInTimes(n[0], n[1]); changed = f || l }
     else if (kind === 'd') changed = sortDutyBlock(n[0], n[1])
     else if (kind === 's') changed = sortSims(n[0], rest[1])
     else if (kind === 'g') changed = sortGround(n[0])
@@ -1260,7 +1272,10 @@ export function boardChange(e: Event) {
     return
   }
   if (txtSet(p, f.value)) {
-    markEdit()
+    /* the write recorded as a text command NAMING its box, as the week's does (textedit.ts commitText), so Undo says what it
+       took back — "a brief time", an SC line's B "an in-time" — not "a change to the schedule" (walker C, the batch's
+       walk, 19 Oct 26 — [SC-B-CHANGE-SAYS-BRIEF]); the epilogue after it then finds nothing left to record */
+    schedWrite(SCHED_TYPES.text, () => { reconcileIssuedMarks(); markEdit() }, { key: p })
     afterSchedMutate()
     notify()
   }
@@ -1443,7 +1458,8 @@ export function addWave(di: number, kind: any) {
      included, is added from the "+ Block" template picker like any other.
      Adding a wave creates only the wave. */
   const fi = placeAddedWave(di, kind)
-  markStructuralAdd(`wl:${di}.${fi}`); afterSchedMutate(); notify()
+  /* a line of the change history, as + Wave writes for a flying wave ([BLOCK-NO-HISTORY-LINE], found beside it) */
+  markStructuralAdd(`wl:${di}.${fi}`); logAction(di, `${S.label} added`); afterSchedMutate(); notify()
   toast(S.label + ' added: standalone, ' + (S.all ? 'every seat checked for availability, SC currency, front seat and overlapping places only' : 'SPARE is checked for availability, SC currency, front seat and overlapping SC seats or the SC desk only'))
 }
 
@@ -1503,7 +1519,8 @@ export function blockMenu(anchor: HTMLElement, di: any) {
     if (!blk) { close(); return }
     d.dutywaves = d.dutywaves || []
     d.dutywaves.push(blk)
-    markStructuralAdd(`dl:${di}.${d.dutywaves.length - 1}`); afterSchedMutate(); notify()
+    /* a line of the change history, as + Wave and + Line write ([BLOCK-NO-HISTORY-LINE], the group-A walk, 30 Sep 26) */
+    markStructuralAdd(`dl:${di}.${d.dutywaves.length - 1}`); logAction(di, `Duty block added · ${blk.label || 'DUTY'}`); afterSchedMutate(); notify()
     close(); e.stopPropagation()
   })
 }

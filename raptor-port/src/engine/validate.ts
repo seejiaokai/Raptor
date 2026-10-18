@@ -192,10 +192,14 @@ export function dayEvents(di:any,id:any){const m=EVD[di]; return (m&&m[id])||[];
    debrief is land to land + the debrief pad. Both amber (owner, 4 Aug 26). */
 export const legBriefWin=(lg:any):[number,number]=>[lg.brief,lg.to]
 export const legDebriefWin=(lg:any):[number,number]=>[lg.ld,lg.ld+VCONF.debrief]
+/* [BLANK-LINE-SANS-WORDS] (6 Oct 26): a flying line with no callsign or mission printed its blank name into the
+   sentences ("cannot fly FCP ( )", "OCU in   with no IP"); it is "this line" there, as the absence sentences already say. */
+export const lineName=(label:any)=>String(label==null?'':label).trim()?label:'this line'
+const lineWord=(label:any)=>{const t=String(label==null?'':label).trim(); return t?t+' ':''}
 export const noBriefSays=(lg:any,what:string)=>{const [bs,bt]=legBriefWin(lg)
-  return `No time for the ${lg.label} flight brief — ${what} sits inside ${hm24(bs)}–${hm24(bt)} (brief ${hm24(bs)})`}
+  return `No time for the ${lineWord(lg.label)}flight brief — ${what} sits inside ${hm24(bs)}–${hm24(bt)} (brief ${hm24(bs)})`}
 export const debriefSays=(lg:any,what:string)=>{const [ls,de]=legDebriefWin(lg)
-  return `Not enough time to attend the ${lg.label} debrief — ${what} sits inside ${hm24(ls)}–${hm24(de)} (land + ${lgT(VCONF.debrief)})`}
+  return `Not enough time to attend the ${lineWord(lg.label)}debrief — ${what} sits inside ${hm24(ls)}–${hm24(de)} (land + ${lgT(VCONF.debrief)})`}
 
 /* THE SAME FOR A SIM ([CROWD-SIM-BRIEF], phase 7): the two sentences the pass below used to build inline, lifted so the
    ALL AVAIL window says them in the list's own words. `sw` is one of the day's sim windows (events.ts simwin). The
@@ -528,6 +532,11 @@ function validateCore(){
          `legs` below (nothing to measure — neither a breach of its own nor a mask over another's). With every
          time present this is the old line, value for value. Pin: restblank.test.ts. */
       const insOf=(e:any)=>{const c=(e.shift?[e.intime,e.to]:[e.intime,briefOf(e)]).filter((v:any)=>v!=null&&isFinite(v)); return c.length?Math.min.apply(null,c):NaN;};
+      /* [SC-INTIME-REST-WORDS] (6 Oct 26): when the report is the shift's typed B — its crew's in-time, earlier than the
+         shift's start — the crew-rest sentence names it so ("SC AM's in-time is 05:00"); "starts" stays for the start */
+      const shiftReport=(legs:any[],instructed:number)=>{const sl=legs.filter((e:any)=>e.shift)[0];
+        const viaB=sl.intime!=null&&isFinite(sl.intime)&&!(sl.to<=sl.intime)&&insOf(sl)===instructed;
+        return `${sl.label}${viaB?`'s in-time is`:' starts'} ${stated(instructed)}`;};
       Object.keys(byR).forEach((id:any)=>{
         if(probe&&id!==probe.id)return;
         /* Personnel (ground crew) hold no crew-rest rule — an incentive ride
@@ -631,7 +640,7 @@ function validateCore(){
           const crMsg=`Crew rest breach — ${tail}, but `
             +(evBound?(legs.length?`his day starts ${stated(first)} (${fe.label}) before the ${stated(instructed)} report — ${restWords}.`
                                   :`his day starts ${stated(first)} (${fe.label}), and he is on a line with no take-off yet — ${restWords}.`)
-             :onShift?`${legs.filter((e:any)=>e.shift).map((e:any)=>e.label)[0]} starts ${stated(instructed)} — ${restWords}.`
+             :onShift?`${shiftReport(legs,instructed)} — ${restWords}.`
              :`told to report ${stated(instructed)} — ${restWords}.`)
             +(dashed?` Late show — he still makes the ${hm24(bl.to-VCONF.step)} step.`
                     /* no take-off, no step to name ([REST-BLANK-LINE]) — the breach is said without the tail */
@@ -727,7 +736,7 @@ function validateCore(){
            which is not a turn at all. It was reported as one, carrying a
            negative minute count ("Tight turn VL→VL: -85 min"), and the hard
            clash below now speaks for that case instead (owner, 11 Aug 26). */
-        if(turn>=0&&turn<need){markChip(di,id,'TT','TURN');add('adv','TURN',[id],`Tight turn ${es[i].label}→${es[i+1].label}: ${turn} min land→next T/O (needs ${need} min — threshold ${VCONF.tightTurn}, dekit+step ${VCONF.dekit}+${VCONF.step})`,es[i].key);} }
+        if(turn>=0&&turn<need){markChip(di,id,'TT','TURN');add('adv','TURN',[id],`Tight turn ${lineName(es[i].label)}→${lineName(es[i+1].label)}: ${turn} min land→next T/O (needs ${need} min — threshold ${VCONF.tightTurn}, dekit+step ${VCONF.dekit}+${VCONF.step})`,es[i].key);} }
     });
     /* C — two commitments at the same time for one person.
        Sortie-vs-sortie is the tight-turn rule's business, not this one.
@@ -785,11 +794,15 @@ function validateCore(){
            happened instead; the two-different-lines wording is unchanged. */
         /* two DIFFERENT ground rows that happen to share a name (a request titled as another is — [INPUT-OWN-TITLE]) are
            not "two seats on" one thing: said as two items */
-        add('hard','DOUBLE_BOOK',[id],A.label===B.label
+        /* a flying line with no name yet is "this line" — and two such lines both read blank, so a blank label is the
+           same line only when the two seats share its line address ([BLANK-LINE-SANS-WORDS]) */
+        const nm=(x:any)=>x.kind==='fly'||x.kind==='shift'?lineName(x.label):x.label;
+        const lineOf=(x:any)=>String(kOf(x)||'').split('.').slice(0,3).join('.');
+        add('hard','DOUBLE_BOOK',[id],A.label===B.label&&(String(A.label==null?'':A.label).trim()||lineOf(A)===lineOf(B))
           ?(A.kind==='ground'&&B.kind==='ground'&&A.key!==B.key
             ?`${PEOPLE[id]?PEOPLE[id].cs:id} is on two items called ${A.label} at once`
-            :`${PEOPLE[id]?PEOPLE[id].cs:id} is in two seats on ${A.label} at once`)
-          :`${A.label} & ${B.label} clash`,kOf(A)||kOf(B));} });
+            :`${PEOPLE[id]?PEOPLE[id].cs:id} is in two seats on ${nm(A)} at once`)
+          :`${nm(A)} & ${nm(B)} clash`,kOf(A)||kOf(B));} });
     /* THE IN-TIME WINDOW (owner, 24 Aug 26 — "have a no brief advisory as well
        if anything cuts or ends between B and TO time for SC main"). An SC MAIN
        with a typed B earlier than the shift start is on duty from that B, so a
@@ -1166,9 +1179,9 @@ function validateCore(){
            pairing as the crew-solo advisory. Ring only, no chip — the
            ILLEGAL_CREW shape. */
         if(p&&w&&p.seat==='FCP'&&w.seat==='RCP'&&!isInstrPilot(p.q)&&!isInstr(w.q)){
-          if(isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'adv','CREW_SOLO');markRing(di,ac.w,'adv','CREW_SOLO');markChip(di,ac.p,'CP','CREW_SOLO');markChip(di,ac.w,'CP','CREW_SOLO');add('adv','CREW_SOLO',[ac.p,ac.w],`${p.cs} (OCU pilot) with ${w.cs} (OCU WSO) in ${f.label} — a crew solo, only allowed under the Basic Course Syllabus`,ac.key);}
-          else if(isOcu(p.q)||isOcu(w.q)){markRing(di,ac.p,'hard','ILLEGAL_CREW');markRing(di,ac.w,'hard','ILLEGAL_CREW');markChip(di,ac.p,'CPH','ILLEGAL_CREW');markChip(di,ac.w,'CPH','ILLEGAL_CREW');add('hard','ILLEGAL_CREW',[ac.p,ac.w],isOcu(p.q)?`OCU pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} — not an authorised combination (${f.label})`:`OCU WSO ${w.cs} with CAT ${p.q} pilot ${p.cs} — not an authorised combination (${f.label})`,ac.key);}
-          else if((p.q==='D'&&(w.q==='C'||w.q==='D'))||(p.q==='C'&&w.q==='D')){markRing(di,ac.p,'adv','CO_APPROVAL');markRing(di,ac.w,'adv','CO_APPROVAL');markChip(di,ac.p,'CP','CO_APPROVAL');markChip(di,ac.w,'CP','CO_APPROVAL');add('adv','CO_APPROVAL',[ac.p,ac.w],`CAT ${p.q} pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} in ${f.label} — CO approval required`,ac.key);}
+          if(isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'adv','CREW_SOLO');markRing(di,ac.w,'adv','CREW_SOLO');markChip(di,ac.p,'CP','CREW_SOLO');markChip(di,ac.w,'CP','CREW_SOLO');add('adv','CREW_SOLO',[ac.p,ac.w],`${p.cs} (OCU pilot) with ${w.cs} (OCU WSO) in ${lineName(f.label)} — a crew solo, only allowed under the Basic Course Syllabus`,ac.key);}
+          else if(isOcu(p.q)||isOcu(w.q)){markRing(di,ac.p,'hard','ILLEGAL_CREW');markRing(di,ac.w,'hard','ILLEGAL_CREW');markChip(di,ac.p,'CPH','ILLEGAL_CREW');markChip(di,ac.w,'CPH','ILLEGAL_CREW');add('hard','ILLEGAL_CREW',[ac.p,ac.w],isOcu(p.q)?`OCU pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} — not an authorised combination (${lineName(f.label)})`:`OCU WSO ${w.cs} with CAT ${p.q} pilot ${p.cs} — not an authorised combination (${lineName(f.label)})`,ac.key);}
+          else if((p.q==='D'&&(w.q==='C'||w.q==='D'))||(p.q==='C'&&w.q==='D')){markRing(di,ac.p,'adv','CO_APPROVAL');markRing(di,ac.w,'adv','CO_APPROVAL');markChip(di,ac.p,'CP','CO_APPROVAL');markChip(di,ac.w,'CP','CO_APPROVAL');add('adv','CO_APPROVAL',[ac.p,ac.w],`CAT ${p.q} pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} in ${lineName(f.label)} — CO approval required`,ac.key);}
         }
         /* Personnel (ground crew) in a FRONT seat is illegal — they hold no
            flying qualification and may ride a rear seat only. In the REAR seat
@@ -1176,17 +1189,17 @@ function validateCore(){
            a non-standard pairing that needs approval (owner, Aug 26). The seat
            and combination checks below key on FCP/RCP and never catch a 'GND'
            seat, so these two lines are the whole story for personnel. */
-        if(p&&p.pers){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`${p.cs} is ground crew — cannot fly a front seat (${f.label})`,ac.key+'.p');}
-        if(w&&w.pers){markChip(di,ac.w,'CP','PAX_CREW');markRing(di,ac.w,'adv','PAX_CREW');add('adv','PAX_CREW',[ac.w],`${w.cs} is riding the rear seat of ${f.label} as an incentive passenger — this crew pairing needs approval`,ac.key+'.w');}
+        if(p&&p.pers){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`${p.cs} is ground crew — cannot fly a front seat (${lineName(f.label)})`,ac.key+'.p');}
+        if(w&&w.pers){markChip(di,ac.w,'CP','PAX_CREW');markRing(di,ac.w,'adv','PAX_CREW');add('adv','PAX_CREW',[ac.w],`${w.cs} is riding the rear seat of ${lineName(f.label)} as an incentive passenger — this crew pairing needs approval`,ac.key+'.w');}
         // Q — seat qualification: a WSO can't fly FCP. The rear seat carries no
         // instructor rule: any pilot may ride the back (owner, 7 Sep 26 — "don't
         // flag out that they are in an illegal seat"; the AAR supervision rule
         // below, currency and the combination matrix are separate and still apply)
-        if(p&&p.seat==='RCP'){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`${p.cs} is a WSO — cannot fly FCP (${f.label})`,ac.key+'.p');}
+        if(p&&p.seat==='RCP'){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`${p.cs} is a WSO — cannot fly FCP (${lineName(f.label)})`,ac.key+'.p');}
         /* belt and braces: CAT IW is a WSO-only category, so an IW record whose
            seat says FCP is inconsistent data — the Quals-page dropdowns never
            offer IW to a pilot, but a hand-edit could. Flag it, don't hide it. */
-        if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`${p.cs} is CAT IW — a WSO category, cannot fly FCP (${f.label})`,ac.key+'.p');}
+        if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`${p.cs} is CAT IW — a WSO category, cannot fly FCP (${lineName(f.label)})`,ac.key+'.p');}
         /* AAR — the remarks call for it and the FRONT seat is not current.
            A man who is not current may still fly it as TRAINING, but only with
            someone cleared to teach that AAR sitting behind him (owner,
@@ -1215,11 +1228,11 @@ function validateCore(){
             markChip(di,ac.w,'Q','AAR_INSTR');markRing(di,ac.w,'hard','AAR_INSTR');
             markChip(di,ac.p,'Q','AAR_INSTR');markRing(di,ac.p,'hard','AAR_INSTR');
             add('hard','AAR_INSTR',[ac.w,ac.p],
-              `${w.cs} is not cleared to instruct ${ac.aar} — ${p.cs} is not ${ac.aar} current and ${f.label} remarks call for ${day} AAR`,ac.key+'.w');}
+              `${w.cs} is not cleared to instruct ${ac.aar} — ${p.cs} is not ${ac.aar} current and ${lineName(f.label)} remarks call for ${day} AAR`,ac.key+'.w');}
           else{
             markChip(di,ac.p,'Q','AAR_QUAL');markRing(di,ac.p,'hard','AAR_QUAL');
             add('hard','AAR_QUAL',[ac.p],
-              `${p.cs} is not ${ac.aar} current — ${f.label} remarks call for ${day} AAR`,ac.key+'.p');}} });
+              `${p.cs} is not ${ac.aar} current — ${lineName(f.label)} remarks call for ${day} AAR`,ac.key+'.p');}} });
       const ocus=f.fcps.filter((id:any)=>PEOPLE[id]&&isOcu(PEOPLE[id].q));
       const hasIP=f.fcps.some((id:any)=>PEOPLE[id]&&isInstr(PEOPLE[id].q));
       /* an IP in the BACK seat supervises just as well as one in the front —
@@ -1237,7 +1250,7 @@ function validateCore(){
       const crewAll=[...new Set(f.acs.reduce((a:any,x:any)=>a.concat([x.p,x.w]),[]).filter((id:any)=>id&&PEOPLE[id]&&!isSpecial(id)))];
       const ocuAll=crewAll.filter((id:any)=>PEOPLE[id]&&isOcu(PEOPLE[id].q));
       const anyIP=crewAll.some((id:any)=>PEOPLE[id]&&isInstr(PEOPLE[id].q));
-      if(ocuAll.length&&!anyIP){ocuAll.forEach((id:any)=>{markRing(di,id,'adv','OCU_NO_IP');markChip(di,id,'CP','OCU_NO_IP');});add('adv','OCU_NO_IP',ocuAll,`OCU in ${f.label} with no IP`,f.key);}
+      if(ocuAll.length&&!anyIP){ocuAll.forEach((id:any)=>{markRing(di,id,'adv','OCU_NO_IP');markChip(di,id,'CP','OCU_NO_IP');});add('adv','OCU_NO_IP',ocuAll,`OCU in ${lineName(f.label)} with no IP`,f.key);}
       /* NO_IR — an instrument rating test needs an IR examiner aboard (owner,
          Aug 5 '26). The mission lives in f.shift (collectEvents folds f.msn
          into it); a per-aircraft IRT lives in that aircraft's remarks. IRT in
@@ -1247,11 +1260,11 @@ function validateCore(){
       const isIR=(id:any)=>{const q=realP(id);return !!(q&&q.q==='IR');};
       if(/\bIRT\b/i.test(String(f.shift||''))&&crewAll.length&&!crewAll.some(isIR)){
         crewAll.forEach((id:any)=>{markRing(di,id,'hard','NO_IR');markChip(di,id,'CPH','NO_IR');});
-        add('hard','NO_IR',crewAll,`IRT in ${f.label} with no IR examiner`,f.key);}
+        add('hard','NO_IR',crewAll,`IRT in ${lineName(f.label)} with no IR examiner`,f.key);}
       f.acs.forEach((ac:any)=>{ if(!/\bIRT\b/i.test(String(ac.rmks||'')))return;
         const crew=[ac.p,ac.w].filter((id:any)=>id&&realP(id));
         if(crew.length&&!crew.some(isIR)){crew.forEach((id:any)=>{markRing(di,id,'hard','NO_IR');markChip(di,id,'CPH','NO_IR');});
-          add('hard','NO_IR',crew,`IRT remarks on ${f.label} with no IR examiner`,ac.key);}});
+          add('hard','NO_IR',crew,`IRT remarks on ${lineName(f.label)} with no IR examiner`,ac.key);}});
       /* SC currency — read off the shift as scheduled, both MAIN and SPARE.
          This is about the person's own qualification, not a clash with another
          commitment, so the spare exemption does not cover it. */
@@ -1263,7 +1276,7 @@ function validateCore(){
             const win=`${hm24(f.s)}–${hm24(f.e)}`;
             wrong.forEach((id:any)=>{markChip(di,id,'Q','SC_QUAL');markRing(di,id,'hard','SC_QUAL');});
             add('hard','SC_QUAL',wrong,
-              `${kind==='day'?'SC DAY':'SC NIGHT'} currency needed for ${f.label} (${win})`
+              `${kind==='day'?'SC DAY':'SC NIGHT'} currency needed for ${lineName(f.label)} (${win})`
               +` — ${wrong.map((id:any)=>PEOPLE[id].cs).join(', ')} ${wrong.length===1?'is':'are'} not current`,f.key);
           }
         }
@@ -1291,7 +1304,7 @@ function validateCore(){
                differently */
             add('hard',dn?'DNIF_FLY':'LEAVE_FLY',[id],
               `${inpLabel(inp)} but standing SC SPARE — ${dn?'medically down':'overseas'}`
-              +`, ${f.label}${why}`,f.key); }); });
+              +`, ${lineName(f.label)}${why}`,f.key); }); });
         /* TWO SC SEATS IN THE SAME HOURS (owner, 31 Aug 26 — "give a warning
            conflict if u are planned for MAIN and SPARE in the same time
            framing … the 1300 is not a conflict"; SPARE+SPARE ruled the same
@@ -1321,7 +1334,7 @@ function validateCore(){
               if(scPairSeen.has(pk))return; scPairSeen.add(pk);
               markChip(di,id,'C','DOUBLE_BOOK'); markRing(di,id,'hard','DOUBLE_BOOK');
               add('hard','DOUBLE_BOOK',[id],
-                `${PEOPLE[id].cs} is standing SC SPARE (${f.label} ${hm24(f.s)}–${hm24(f.e)})`
+                `${PEOPLE[id].cs} is standing SC SPARE (${lineName(f.label)} ${hm24(f.s)}–${hm24(f.e)})`
                 +` and also on ${hit.what} (${hm24(hit.s)}–${hm24(hit.e)})`,own); }); }); });
         /* THE SPARE FRONT SEAT IS PILOTS-ONLY (owner, 31 Aug 26 — "a wso
            can't be planned for FCP"; the pilot-in-rear-seat mirror was
@@ -1335,9 +1348,9 @@ function validateCore(){
            whole rule closes (ground crew hold no flying qualification at all,
            the stricter case of "not a pilot"). */
         (f.spareAcs||[]).forEach((sa:any)=>{ const sp=realP(sa.p); if(!sp)return;
-          if(sp.pers){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`${sp.cs} is ground crew — cannot fly a front seat (${f.label} SPARE)`,sa.key+'.p');}
-          else if(sp.seat==='RCP'){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`${sp.cs} is a WSO — cannot fly FCP (${f.label} SPARE)`,sa.key+'.p');}
-          else if(sp.q==='IW'&&sp.seat==='FCP'){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`${sp.cs} is CAT IW — a WSO category, cannot fly FCP (${f.label} SPARE)`,sa.key+'.p');}});
+          if(sp.pers){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`${sp.cs} is ground crew — cannot fly a front seat (${lineName(f.label)} SPARE)`,sa.key+'.p');}
+          else if(sp.seat==='RCP'){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`${sp.cs} is a WSO — cannot fly FCP (${lineName(f.label)} SPARE)`,sa.key+'.p');}
+          else if(sp.q==='IW'&&sp.seat==='FCP'){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`${sp.cs} is CAT IW — a WSO category, cannot fly FCP (${lineName(f.label)} SPARE)`,sa.key+'.p');}});
       }
     });
     /* SANS AVAILABILITY (owner, 14 Aug 26) — a SANS body planted into a
@@ -1383,10 +1396,13 @@ function validateCore(){
     sansChecks.forEach((c:any)=>{ const p=PEOPLE[c.id]; if(!p||!p.san)return;
       const g=sansGate(c.id,day.dt,c.domain,c.s,c.en);
       if(g.status!=='not-offered'&&g.status!=='window')return;
+      /* [BLANK-LINE-SANS-WORDS]: a seat with no times yet has nothing to hold his offered window against — no clash to
+         word, as the crew list (which strikes him only against a window) already says */
+      if(g.status==='window'&&noWin(c.s,c.en))return;
       markRing(di,c.id,'adv','SANS_AVAIL');markChip(di,c.id,'A','SANS_AVAIL');
       const reason=g.status==='not-offered'?`not offering ${SANS_LABEL[c.domain]} today`
         :`available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
-      add('adv','SANS_AVAIL',[c.id],`${p.cs} planned for ${c.label} — ${reason}`,c.key);
+      add('adv','SANS_AVAIL',[c.id],`${p.cs} planned for ${c.domain==='fly'?lineName(c.label):rowName({label:c.label,kind:'sim'})} — ${reason}`,c.key);
     });
     /* Q (sims) — the sim box guards its FRONT seat like the jet (ground crew,
        a WSO, an IW-in-FCP record — none may occupy it). The REAR seat has no

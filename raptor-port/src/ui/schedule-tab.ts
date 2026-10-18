@@ -101,7 +101,7 @@ export function routeScheduleTab(e: KeyboardEvent, refresh: (el: HTMLElement) =>
   const index = fields.indexOf(source)
   if (index < 0) return false
   const next = fields[index + (e.shiftKey ? -1 : 1)]
-  const destination = next || ordinaryTarget(scope, source, e.shiftKey)
+  let destination = next || ordinaryTarget(scope, source, e.shiftKey)
   e.preventDefault()
   // Native blur/change remain the only save paths. Re-check after those handlers.
   source.blur()
@@ -153,28 +153,50 @@ export function routeScheduleTab(e: KeyboardEvent, refresh: (el: HTMLElement) =>
     // A skipped repaint can leave derived or repeated boxes stale. Refresh only
     // the unfocused destination from its existing model reader, never a writer.
     refresh(next)
-  } else if (!rendered(destination)) return true
-  destination.focus()
+  } else {
+    /* OUT OF THE TEXT BOXES ONTO A BUTTON, THE SAVE'S REDRAW IS DONE FIRST ([TAB-LAST-BOX-TEST-GAPS], found by its test,
+       18 Oct 26). A button does not hold the redraw back as a text box does, so it came a moment AFTER the focus had
+       moved — and where the save changed the day's shape (its first warning, or its last one gone) the week replaced
+       the whole day, the button with it, and the focus was left on nothing. As at the last box above: the redraw now,
+       the same checks after it, and the button looked up again on the day as now drawn. */
+    flushSync(() => notify())
+    let live = scope
+    if (!scope.board && !scope.root.isConnected) {
+      const again = document.querySelector<HTMLElement>(`#eWeek > .day[data-day="${scope.di}"]`)
+      if (again && rendered(again)) live = { ...scope, root: again, boundary: again }
+    }
+    if (windowOverSchedule() || !sameScope(live)) return true
+    if (document.activeElement !== document.body && document.activeElement !== source) return true
+    if (!destination.isConnected) {
+      const marks = marksOf(destination), text = destination.textContent
+      const twin = [...live.boundary.querySelectorAll<HTMLElement>(CONTROL)].find(el => marksOf(el) === marks && el.textContent === text)
+      if (!twin) return true
+      destination = twin
+    }
+    if (!rendered(destination)) return true
+  }
+  const shown: HTMLElement = destination
+  shown.focus()
   // Native focus can leave the box beneath the week arrows or sticky bars.
   // Reveal only a covered destination; nearest inline keeps unrelated day pan.
-  const rect = destination.getBoundingClientRect()
+  const rect = shown.getBoundingClientRect()
   if (rect.width > 0 && rect.height > 0) {
     const covered = () => {
-      const r = destination.getBoundingClientRect()
+      const r = shown.getBoundingClientRect()
       // Desktop layout on a phone can draw a box wider than the viewport.
       // Its visible portion must be reachable; its offscreen centre cannot be.
       const left = Math.max(0, r.left), right = Math.min(window.innerWidth, r.right)
       const top = Math.max(0, r.top), bottom = Math.min(window.innerHeight, r.bottom)
       const hit = right > left && bottom > top
         ? document.elementFromPoint((left + right) / 2, (top + bottom) / 2) : null
-      return hit !== destination && !destination.contains(hit)
+      return hit !== shown && !shown.contains(hit)
     }
     if (covered()) {
-      destination.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' })
+      shown.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' })
       // The week's arrows themselves sit at viewport centre. Move the actual
       // vertical scroller a little further if centring still leaves an overlay.
       if (covered()) {
-        let scroller = destination.parentElement
+        let scroller = shown.parentElement
         while (scroller && !(scroller.scrollHeight > scroller.clientHeight
           && /auto|scroll/.test(getComputedStyle(scroller).overflowY))) scroller = scroller.parentElement
         const owner = scroller || document.scrollingElement

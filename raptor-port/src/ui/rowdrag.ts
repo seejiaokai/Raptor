@@ -1,6 +1,7 @@
-import { applyMove } from '../engine/reorder'
+import { applyMove, popLandedKey } from '../engine/reorder'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
+import { flushSync } from 'react-dom'
 import { notify } from '../state/store'
 import { moveSectionTo } from '../state/store'
 import { setSecDefOffer } from './pops'
@@ -50,21 +51,21 @@ import { liftOn, liftOff, markLand } from './lift'
    of `div.sb-line[data-move="mv:ac…"]` jet lines (board.ts's flying-line
    builder) — so what flashes is the FIRST jet line of the formation that
    travelled, the top of the block, and there is nothing to climb to.
-   KNOWN GAP, recorded not fixed (6 Sep 26): the GROUND programme is the one
-   list drawn in a SORTED order, and its FIRST manual move freezes that display
-   order into the model and re-indexes every row (moveGroundRow's !gman branch),
-   so on that one move the landed row can be `newOf[to]` rather than `to` and
-   the flash lands a row out. Only the first ground drag of a day whose items
-   are not already in start-time order, only decorative, and self-correcting
-   from the second drag on. Closing it needs the mover to report the index it
-   landed on — an engine-API question, not a string-maths one, so it is not
-   guessed at here. */
+   The GROUND programme is the one list drawn in a SORTED order, and its FIRST
+   manual move freezes that display order into the model and re-indexes every
+   row (moveGroundRow's !gman branch), so on that one move the landed row can be
+   `newOf[to]` rather than `to`: the drop reads the row the engine says landed
+   (engine/reorder.ts LANDED_KEY) and flashes that one ([ONE-ROW-DRAG-FLASH],
+   closing the gap recorded here on 6 Sep 26; pinned in rowdrag.test.tsx). */
 export function landSel(from: string, to: string): string {
   const a = from.slice(3).split('.'), b = to.slice(3).split('.')
   if (a[0] === 'ac' && a.length === 5 && a[3] !== b[3]) return `[data-move^="mv:ac.${b[1]}.${b[2]}.${b[3]}."]`
   return `[data-move="${to}"]`
 }
 
+/* the band at a scroller's top and foot where a held row scrolls it: a sixth of the pane each, at most 72px (every pane
+   taller than 432px keeps the 72 it always had) */
+export const rowEdge = (top: number, bot: number) => Math.min(72, Math.max(0, bot - top) / 6)
 export function wireRowDrag(el: HTMLElement) {
   let from = ''          // an mv: address (row or wave), '' when not an mv drag
   let fromSec = ''       // a data-secmove value ("di.key"), '' when not a section drag
@@ -100,7 +101,7 @@ export function wireRowDrag(el: HTMLElement) {
   let vel = 0                                   // px/frame, sign = direction, 0 = idle
   let raf = 0
   let scroller: HTMLElement | null = null
-  const EDGE = 72, MAXV = 22                    // margin that triggers, top speed
+  const MAXV = 22                              // top speed (the margin that triggers: rowEdge)
 
   const isWin = (s: HTMLElement) =>
     s === document.scrollingElement || s === document.documentElement
@@ -119,8 +120,12 @@ export function wireRowDrag(el: HTMLElement) {
     const r = win ? null : scroller.getBoundingClientRect()
     const top = win ? 0 : r!.top
     const bot = win ? window.innerHeight : r!.bottom
-    if (y < top + EDGE) return -Math.ceil(((top + EDGE - y) / EDGE) * MAXV)
-    if (y > bot - EDGE) return Math.ceil(((y - (bot - EDGE)) / EDGE) * MAXV)
+    /* a sixth of the pane each, at most 72 — the puck drag's rule (drag.ts tdEdge, [OIL-NOTIFY-SEEN] (6)): on a phone on its
+       side the board is about 190px tall and two 72px bands were most of it, so a row, a wave or an In-time line held
+       near its top or foot scrolled the board under it (the batch's check, 19 Oct 26 — the scenario designer's S1-03) */
+    const edge = rowEdge(top, bot)
+    if (y < top + edge) return -Math.ceil(((top + edge - y) / edge) * MAXV)
+    if (y > bot - edge) return Math.ceil(((y - (bot - edge)) / edge) * MAXV)
     return 0
   }
   const tick = () => {
@@ -179,8 +184,38 @@ export function wireRowDrag(el: HTMLElement) {
     const dayPrev = (di: any) => view.DPREV.has(+di)
     /* the GRIP only — a press on the element itself is a click on a field, and a
        row full of inputs has almost no blank space to spare */
-    const grip = (e.target as HTMLElement).closest?.('.sb-grip, .wvgrip, .secgrip') as HTMLElement | null
+    let grip = (e.target as HTMLElement).closest?.('.sb-grip, .wvgrip, .secgrip') as HTMLElement | null
     if (!grip) return
+    /* A PRESS ON A GRIP TAKES THE CARET OUT OF ITS TEXT BOX FIRST (the batch's check, 19 Oct 26 — the scenario designer's
+       S1-01). The press stops the browser moving the focus, so the caret stayed in the box it was in — an In-time line,
+       which "+ In-time / Rally" leaves it in — the board held that panel's old order on screen for it, and leaving the
+       line afterwards wrote its words by its OLD place, over the line the drag had put there: one line doubled, the other
+       lost. The box is left now, so it saves where it stands, and the redraw that follows is done before the drag picks
+       anything up; the grip is found again by its row's address should the redraw have replaced it. */
+    const typing = document.activeElement as HTMLElement | null
+    if (typing && typing !== document.body && (typing.isContentEditable || typing.getAttribute('contenteditable') === 'true' || /^(INPUT|TEXTAREA)$/.test(typing.tagName))) {
+      /* AN EMPTIED IN-TIME LINE IS DELETED BY THIS BLUR (the fresh read of the batch, 19 Oct 26 — F2): the rows below it
+         move up one, so the pressed row's address is moved with them before the blur — found again by the old one, the
+         redraw handed back the line BELOW the one pressed; and a press on the emptied line's own grip is no drag */
+      let at = (grip.closest('[data-move]') as HTMLElement | null)?.dataset.move
+      const gone = (typing.closest('[data-itline]') as HTMLElement | null)?.dataset.itline
+      if (at && /^mv:it\./.test(at) && gone && !(typing.textContent || '').trim()) {
+        const [gd, gg, gi] = gone.split('|').map(Number), m = at.split('.')
+        if (+m[1]! === gd && +m[2]! === gg) {
+          if (+m[3]! === gi) { typing.blur(); return }
+          if (+m[3]! > gi!) at = `mv:it.${gd}.${gg}.${+m[3]! - 1}`
+        }
+      }
+      typing.blur()
+      const atSec = (grip.closest('[data-secmove]') as HTMLElement | null)?.dataset.secmove
+      const gripCls = grip.classList.contains('secgrip') ? '.secgrip' : grip.classList.contains('wvgrip') ? '.wvgrip' : '.sb-grip'
+      flushSync(() => notify())
+      if (!grip.isConnected) {
+        const row = grip.classList.contains('secgrip') ? (atSec ? el.querySelector(`[data-secmove="${atSec}"]`) : null) : (at ? el.querySelector(`[data-move="${at}"]`) : null)
+        grip = row ? row.querySelector(gripCls) as HTMLElement | null : null
+        if (!grip) return
+      }
+    }
     if (grip.classList.contains('secgrip')) {
       const sec = grip.closest('[data-secmove]') as HTMLElement | null; if (!sec) return
       if (dayPrev(sec.dataset.secmove!.split('.')[0])) return
@@ -257,7 +292,12 @@ export function wireRowDrag(el: HTMLElement) {
       if (moveSectionTo(di, fromKey, toKey)) { markLand(`${where}[data-secmove="${di}.${fromKey}"]`); setSecDefOffer(di); notify() }
     } else {
       const to = dst?.move
-      if (src && to && applyMove(src, to)) { markLand(where + landSel(src, to)); view.afterSchedMutate(); notify() }
+      if (src && to && applyMove(src, to)) {
+        /* a ground row lands where the engine says it did — on a day's first hand move that is not the address it was
+           dropped on (the order on screen is frozen into the model first; engine/reorder.ts LANDED_KEY) */
+        const g = /^gr:(\d+)\.(\d+)\.prog$/.exec(String(popLandedKey() || ''))
+        markLand(where + (g ? `[data-move="mv:g.${g[1]}.${g[2]}"]` : landSel(src, to))); view.afterSchedMutate(); notify()
+      }
     }
   }
 

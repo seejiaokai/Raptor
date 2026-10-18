@@ -16,6 +16,7 @@ import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { setSlotVal, slotVal, txtSet } from '../engine/slots'
 import { DAYS } from '../engine/data'
+import { markEdit } from '../engine/publish'
 import { rowsOf } from '../engine/rowids'
 import { elogClear, elogAllFor, elogGroups, logAction, elogVal } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
@@ -184,7 +185,7 @@ describe('clicking a change jumps to it', () => {
     expect(hits[0].o.block, 'and to the middle, not just barely on screen').toBe('center')
   })
 
-  /* THE FAMILIES THE BOARD NEVER DRAWS (the area strip, the in-times, the traffic): listed — the change really
+  /* THE FAMILIES THE BOARD NEVER DRAWS (the area strip, the traffic — no longer the in-times, [BOARD-INTIME-JUMP]): listed — the change really
      happened — but not offered as a jump from the board */
   it('a detail the board cannot draw is listed, but is not a button', async () => {
     await goEditWeek()
@@ -198,6 +199,32 @@ describe('clicking a change jumps to it', () => {
     const arRow = $$('.chgwin .cw-l').find(r => /area/i.test(r.textContent || ''))   // its detail reads "Area" ([CHG-BY-ITEM])
     expect(arRow, 'it is still LISTED').toBeTruthy()
     expect(arRow!.tagName, 'but not offered as a jump from the board').not.toBe('BUTTON')
+  })
+
+  /* [BOARD-INTIME-JUMP] (reader AB's second pass, 6 Oct 26): the board draws the In-time / Rally block, editable — a change
+     to it is a button on the board, and the tap brings that block into view */
+  it('an In-time / Rally change is a button on the board, and lands on the board’s block', async () => {
+    const w: any = DAYS[0].waves[0], keep = (w.intimes || []).slice()
+    const seen: any[] = []
+    const proto = Element.prototype as any
+    const had = Object.prototype.hasOwnProperty.call(proto, 'scrollIntoView')
+    const real = proto.scrollIntoView
+    proto.scrollIntoView = function (o: any) { seen.push({ el: this, o }) }
+    try {
+      await act(async () => { const was = (w.intimes || []).join(', '); w.intimes = ['06:30H: IN TIME', ...keep]; markEdit('it:0.0', was, w.intimes.join(', ')); notify() })
+      expect($('#sbBoard .intimes[data-intimes="0|0"]'), 'the board draws the block').toBeTruthy()
+      await openList()
+      const row = lineFor('it:0.0')
+      expect(row, 'listed').toBeTruthy()
+      expect(row!.tagName, 'a button on the board').toBe('BUTTON')
+      await click(row!)
+      await settle()
+      expect(seen.some(x => (x.el as HTMLElement).dataset && (x.el as HTMLElement).dataset.intimes === '0|0'), 'it brought the board’s block into view').toBe(true)
+    } finally {
+      if (had) proto.scrollIntoView = real; else delete proto.scrollIntoView
+      w.intimes = keep
+      await act(async () => { notify() })
+    }
   })
 
   it('a structural line is not a button, because it has no cell to jump to', async () => {

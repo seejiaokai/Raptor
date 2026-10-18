@@ -367,7 +367,9 @@ describe('sortDay', () => {
 
   it('is a no-op — returns false and marks nothing — on a day that is already sorted', () => {
     const di = 0
-    DAYS[di].waves.forEach((w: any) => { w.formations = [] })
+    /* the In-time / Rally lines are sorted too since D594 — the seed's second wave has 16:45 above 16:20, so the
+       "already sorted" day carries lines already in time order */
+    DAYS[di].waves.forEach((w: any) => { w.formations = []; w.intimes = ['0600H: IN TIME', '0700H: RALLY'] })
     DAYS[di].dutywaves = [{ label: 'DUTY', rows: [{ role: 'SDO' }, { role: 'SXO' }] }]
     DAYS[di].sims = { amt: [{ label: 'A', str: '0800' }], oft: [] }
     DAYS[di].ground = [{ prog: 'A', str: '0800' }]

@@ -5,11 +5,14 @@
    right place is a geometry question and lives in e2e/geometry.spec.ts. */
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DAYS } from '../engine/data'
-import { landSel, wireRowDrag } from './rowdrag'
+import { landSel, wireRowDrag, rowEdge } from './rowdrag'
+import { routeFocusOut } from './textedit'
+import { subscribe } from '../state/store'
 import { markLand, paintLand, pendingLand } from './lift'
 import { setSession } from '../state/auth'
 import { setBoardDay, DPREV } from '../state/view'
 import { boardHTML } from './board'
+import { dayHTML } from './html'
 import { HOOKS } from '../engine/hooks'
 import { secOrder } from '../engine'
 import { SECDEFOFFER, setSecDefOffer } from './pops'
@@ -241,6 +244,103 @@ describe('wireRowDrag', () => {
       expect(DAYS[di].waves.map((w: any) => w.label)).toEqual([was[1], was[0], ...was.slice(2)])
     }))
 
+    /* D593, D594 (the register's ITD1): a wave's In-time / Rally lines drag into order on the Scheduler Board — never on Edit Schedule's week */
+    it('drags an In-time / Rally line onto another line of its wave on the board', () => withEdit(() => {
+      DAYS[0].waves[0].intimes = ['07:00H: IN TIME + WX/NOTAMS', '07:30H: RALLY']
+      host.innerHTML = boardHTML(0)
+      const rows = [...host.querySelectorAll('.intimes .itrow[data-move^="mv:it.0.0."]')] as HTMLElement[]
+      expect(rows.map(r => r.dataset.move)).toEqual(['mv:it.0.0.0', 'mv:it.0.0.1'])
+      expect(rows[0].querySelector('.sb-grip'), 'each line carries the board grip').toBeTruthy()
+      expect(rows[0].querySelector('[data-itline="0|0|0"]') && rows[0].querySelector('[data-itdel="0|0|0"]'), 'its line and its ✕ inside').toBeTruthy()
+      down(rows[1].querySelector('.sb-grip')!); over(rows[0]); up()
+      expect(DAYS[0].waves[0].intimes).toEqual(['07:30H: RALLY', '07:00H: IN TIME + WX/NOTAMS'])
+    }))
+    /* the batch's check (19 Oct 26 — the scenario designer's S1-01): the caret in a line ("+ In-time / Rally" leaves it
+       there), another line dragged above it. The drag left the caret where it was, the board held the old order on
+       screen for the caret, and leaving the line wrote its words over the line now at its OLD place — one line doubled,
+       the other lost. A press on a grip takes the caret out first, saving the line where it stands. */
+    it('a line dragged while the caret is in another line loses no line', () => withEdit(() => {
+      DAYS[0].waves[0].intimes = ['07:00H: IN TIME + WX/NOTAMS', '07:30H: RALLY']
+      host.innerHTML = boardHTML(0)
+      document.addEventListener('focusout', routeFocusOut)
+      try {
+        const line0 = host.querySelector('[data-itline="0|0|0"]') as HTMLElement
+        line0.focus()
+        expect(document.activeElement, 'the caret is in the first line (or this test proves nothing)').toBe(line0)
+        const rows = [...host.querySelectorAll('.intimes .itrow[data-move^="mv:it.0.0."]')] as HTMLElement[]
+        down(rows[1].querySelector('.sb-grip')!); over(rows[0]); up()
+        line0.blur()
+        expect(DAYS[0].waves[0].intimes, 'both lines, in the new order').toEqual(['07:30H: RALLY', '07:00H: IN TIME + WX/NOTAMS'])
+      } finally { document.removeEventListener('focusout', routeFocusOut) }
+    }))
+    /* the fresh read of the batch (19 Oct 26, F2): a line EMPTIED, then another line's grip pressed — the press's blur
+       deletes the emptied line and renumbers the rows, and the board's redraw replaces them; the grip was found again
+       by the address read BEFORE the blur, which by then named the line below. The store's redraw is played here by a
+       listener that rewrites the board, as the app's does. */
+    it('a line emptied, then another line dragged: the line pressed is the line that moves', () => withEdit(() => {
+      DAYS[0].waves[0].intimes = ['A 07:00H', 'B 07:30H', 'C 08:00H', 'D 08:30H']
+      host.innerHTML = boardHTML(0)
+      document.addEventListener('focusout', routeFocusOut)
+      const redraw = subscribe(() => { host.innerHTML = boardHTML(0) })
+      try {
+        const line0 = host.querySelector('[data-itline="0|0|0"]') as HTMLElement
+        line0.focus(); line0.textContent = ''
+        const gripC = host.querySelector('[data-move="mv:it.0.0.2"] .sb-grip') as HTMLElement
+        down(gripC)
+        over(host.querySelector('[data-move="mv:it.0.0.0"]')!); up()
+        expect(DAYS[0].waves[0].intimes, 'C moved above B; A gone; D where it was').toEqual(['C 08:00H', 'B 07:30H', 'D 08:30H'])
+      } finally { redraw(); document.removeEventListener('focusout', routeFocusOut) }
+    }))
+    /* the narrow read of the fix round (19 Oct 26, O2): the two other routes of F2 — the emptied line's OWN grip pressed
+       (the line goes, no drag), and the caret in the WEEK's copy of a line while the board's grip is pressed (on a phone
+       the board button never takes the focus, so the week's line still has it) */
+    it("a line emptied, then its own grip pressed: the line goes and nothing is dragged", () => withEdit(() => {
+      DAYS[0].waves[0].intimes = ['A 07:00H', 'B 07:30H', 'C 08:00H', 'D 08:30H']
+      host.innerHTML = boardHTML(0)
+      document.addEventListener('focusout', routeFocusOut)
+      const redraw = subscribe(() => { host.innerHTML = boardHTML(0) })
+      try {
+        const line0 = host.querySelector('[data-itline="0|0|0"]') as HTMLElement
+        line0.focus(); line0.textContent = ''
+        down(host.querySelector('[data-move="mv:it.0.0.0"] .sb-grip') as HTMLElement)
+        over(host.querySelector('[data-move="mv:it.0.0.2"]')!); up()
+        expect(DAYS[0].waves[0].intimes, 'A gone; the rest as they were').toEqual(['B 07:30H', 'C 08:00H', 'D 08:30H'])
+      } finally { redraw(); document.removeEventListener('focusout', routeFocusOut) }
+    }))
+    it("the week's copy of a line emptied, then the board's grip of a lower line: the line pressed moves", () => withEdit(() => {
+      DAYS[0].waves[0].intimes = ['A 07:00H', 'B 07:30H', 'C 08:00H', 'D 08:30H']
+      host.innerHTML = boardHTML(0)
+      const weekLine = document.createElement('span')
+      weekLine.dataset.itline = '0|0|0'; weekLine.setAttribute('contenteditable', 'true'); weekLine.textContent = 'A 07:00H'
+      document.body.append(weekLine)
+      document.addEventListener('focusout', routeFocusOut)
+      const redraw = subscribe(() => { host.innerHTML = boardHTML(0) })
+      try {
+        weekLine.focus(); weekLine.textContent = ''
+        down(host.querySelector('[data-move="mv:it.0.0.2"] .sb-grip') as HTMLElement)
+        over(host.querySelector('[data-move="mv:it.0.0.0"]')!); up()
+        expect(DAYS[0].waves[0].intimes, 'C moved above B; A gone; D where it was').toEqual(['C 08:00H', 'B 07:30H', 'D 08:30H'])
+      } finally { redraw(); weekLine.remove(); document.removeEventListener('focusout', routeFocusOut) }
+    }))
+    it('an In-time / Rally line is not dropped on a wave block or another wave’s line', () => withEdit(() => {
+      const di = DAYS.findIndex((d: any) => (d.waves || []).length > 1)
+      DAYS[di].waves[0].intimes = ['07:00H: IN TIME', '07:30H: RALLY']
+      DAYS[di].waves[1].intimes = ['10:00H: IN TIME']
+      host.innerHTML = boardHTML(di)
+      const grip = host.querySelector(`[data-move="mv:it.${di}.0.1"] .sb-grip`) as HTMLElement
+      down(grip); over(host.querySelector(`[data-move="mv:it.${di}.1.0"]`)!); up()
+      down(grip); over(host.querySelector(`.sb-go[data-move="mv:w.${di}.1"]`)!); up()
+      expect(DAYS[di].waves[0].intimes).toEqual(['07:00H: IN TIME', '07:30H: RALLY'])
+      expect(DAYS[di].waves[1].intimes).toEqual(['10:00H: IN TIME'])
+    }))
+    it('Edit Schedule’s week draws its In-time / Rally lines with no grip (D594)', () => withEdit(() => {
+      DAYS[0].waves[0].intimes = ['07:00H: IN TIME', '07:30H: RALLY']
+      const week = dayHTML(0, true)
+      expect(week).toContain('data-itline="0|0|1"')
+      expect(week).not.toContain('mv:it.')
+      expect(week).not.toContain('class="itrow"')
+    }))
+
     it('a member cannot drag a section', () => withEdit(() => {
       host.innerHTML = boardHTML(0)
       setSession({ user: 'user', role: 'main' } as any)
@@ -268,6 +368,22 @@ describe('one lift, every drag — the board (6 Sep 26)', () => {
   /* one module-level slot in lift.ts, so a mark left by an earlier test (every
      accepted move sets one now) must not be inherited */
   beforeEach(() => markLand(''))
+
+  /* [ONE-ROW-DRAG-FLASH] (the one-row job's walk, W1 s11, 11 Oct 26; Fable's read F2): a day's FIRST hand move of a
+     ground row freezes the order on screen into the model, so the row lands at the frozen order's index — the flash went
+     to the drop's own address, a row out. It now goes to the row the engine says landed. */
+  it('a day’s first ground drag flashes the row that landed, not the address it was dropped on', () => {
+    const o = HOOKS.editMode; HOOKS.editMode = () => true
+    try {
+      DAYS[0].ground = [{ prog: 'B', str: '1000' }, { prog: 'A', str: '0800' }, { prog: 'C', str: '0900' }]
+      DAYS[0].gman = false
+      host.innerHTML = boardHTML(0)
+      /* drawn A, C, B — by start time; B (model 0) dropped on A (model 1) */
+      down(host.querySelector('[data-move="mv:g.0.0"] .sb-grip')!); over(host.querySelector('[data-move="mv:g.0.1"]')!); up()
+      expect(DAYS[0].ground.map((r: any) => r.prog), 'B is first now').toEqual(['B', 'A', 'C'])
+      expect(pendingLand()!.sel, 'the flash goes to the row B landed on').toMatch(/\[data-move="mv:g\.0\.0"\]$/)
+    } finally { HOOKS.editMode = o }
+  })
 
   it('the carried row wears lift beside rowdrag, and loses both on release', () => {
     host.innerHTML = rowsHTML(['mv:p.0.0', 'mv:p.0.1'])
@@ -393,5 +509,17 @@ describe('one lift, every drag — the board (6 Sep 26)', () => {
     host.innerHTML = rowsHTML(['mv:p.0.0', 'mv:p.0.1'])   // a repaint under the finger detaches both
     up()
     expect(pendingLand(), 'the drop was refused, so nothing landed to flash').toBeNull()
+  })
+})
+
+/* the batch's check, 19 Oct 26 (the scenario designer's S1-03): a held row scrolls its pane within a band at the top and
+   the foot — a fixed 72px each, most of a ~190px board on a phone on its side. A sixth of the pane, at most 72, as the
+   puck drag's band (drag.ts tdEdge) */
+describe('the row drag edge band follows the pane', () => {
+  it('a tall pane keeps 72px; a phone on its side gets a sixth of it', () => {
+    expect(rowEdge(0, 900)).toBe(72)
+    expect(rowEdge(0, 432)).toBe(72)
+    expect(rowEdge(100, 290)).toBeCloseTo(190 / 6)
+    expect(rowEdge(0, 0)).toBe(0)
   })
 })

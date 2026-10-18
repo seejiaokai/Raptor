@@ -2368,3 +2368,59 @@ describe('day-template apply — arm scoping and slot disarm (P2-IMPL-10 / 11)',
   })
 
 })
+
+/* the batch's check (19 Oct 26 — the scenario designer's S1-02): a wave's ⇅ pressed while the caret is still in one of
+   its In-time / Rally lines. A tap that does not move the focus (an iPhone's, and this test's click) left the caret in
+   the line; the sort reordered the stored lines under it, and leaving the line wrote its words by its old place — one
+   line doubled, the other lost. The ⇅ takes the caret out of its box first, so the line saves where it stands. */
+describe('a wave\u2019s \u21c5 with the caret in one of its In-time lines', () => {
+  it('sorts the lines and loses none', async () => {
+    /* jsdom has no isContentEditable: give it the browser's reading, or the board never sees the line as typed in */
+    const was = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'isContentEditable')
+    Object.defineProperty(HTMLElement.prototype, 'isContentEditable', { configurable: true, get() {
+      let el: HTMLElement | null = this
+      while (el) { if (el.hasAttribute('contenteditable')) return el.getAttribute('contenteditable') !== 'false'; el = el.parentElement }
+      return false
+    } })
+    await act(async () => { openScheduler(0); notify() })
+    try {
+      ;(DAYS[0] as any).waves[0].intimes = ['07:30H: RALLY', '07:00H: IN TIME + WX/NOTAMS']
+      await act(async () => { notify() })
+      const line0 = document.querySelector('#sbBoard [data-itline="0|0|0"]') as HTMLElement
+      expect(line0, 'the board draws the first line (or this test proves nothing)').toBeTruthy()
+      await act(async () => { line0.focus() })
+      expect(document.activeElement).toBe(line0)
+      await click(document.querySelector('#sbBoard [data-sortsec="w.0.0"]'))
+      await act(async () => { line0.blur(); await new Promise(r => setTimeout(r, 20)) })
+      expect((DAYS[0] as any).waves[0].intimes, 'both lines, sorted').toEqual(['07:00H: IN TIME + WX/NOTAMS', '07:30H: RALLY'])
+    } finally {
+      await act(async () => { closeScheduler(); notify() })
+      if (was) Object.defineProperty(HTMLElement.prototype, 'isContentEditable', was); else delete (HTMLElement.prototype as any).isContentEditable
+    }
+  })
+})
+describe('Sort all with the caret in an In-time line', () => {
+  it('sorts the lines and loses none', async () => {
+    const was = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'isContentEditable')
+    Object.defineProperty(HTMLElement.prototype, 'isContentEditable', { configurable: true, get() {
+      let el: HTMLElement | null = this
+      while (el) { if (el.hasAttribute('contenteditable')) return el.getAttribute('contenteditable') !== 'false'; el = el.parentElement }
+      return false
+    } })
+    await act(async () => { openScheduler(0); notify() })
+    try {
+      ;(DAYS[0] as any).waves[0].intimes = ['07:30H: RALLY', '07:00H: IN TIME + WX/NOTAMS']
+      await act(async () => { notify() })
+      const line0 = document.querySelector('#sbBoard [data-itline="0|0|0"]') as HTMLElement
+      await act(async () => { line0.focus() })
+      expect(document.activeElement).toBe(line0)
+      await act(async () => { askSortAll(0); sortAllCommit() })
+      await act(async () => { line0.blur(); await new Promise(r => setTimeout(r, 20)) })
+      expect((DAYS[0] as any).waves[0].intimes, 'both lines, sorted').toEqual(['07:00H: IN TIME + WX/NOTAMS', '07:30H: RALLY'])
+    } finally {
+      await act(async () => { closeScheduler(); notify() })
+      if (was) Object.defineProperty(HTMLElement.prototype, 'isContentEditable', was); else delete (HTMLElement.prototype as any).isContentEditable
+    }
+  })
+})
+

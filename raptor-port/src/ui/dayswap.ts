@@ -128,6 +128,11 @@ export function swapDay(live: Element, html: string, prev: DayChunks | null): Da
    writes it then. A change that would need the whole day replaced (a shape mismatch — swapDay's fallback) writes
    nothing while the caret is in that day: `held` says something is still owed, either way. A day that does not hold
    the caret is swapped the ordinary way. */
+/* A HELD BLOCK IS REMEMBERED AS OWED, never as what it last showed (the re-walk of the D994 batch, 19 Oct 26 — the same
+   on `main`): the caret's block may already show something typed that its last-written markup does not, so once Undo
+   put the stored value back to that markup, the next paint found "no change" and left the typed time on screen for good.
+   OWED equals no real markup, so the paint after the caret has left always rewrites it. */
+const OWED = '\u0000owed'
 export function swapDayAround(live: Element, html: string, prev: DayChunks | null, keep: Element): { chunks: DayChunks | null; held: boolean } {
   const holds = (el: Element) => el === keep || el.contains(keep)
   if (!holds(live)) return { chunks: swapDay(live, html, prev), held: false }
@@ -158,7 +163,7 @@ export function swapDayAround(live: Element, html: string, prev: DayChunks | nul
     const p = prev.kids[i]!, l = lk[i]!, n = nk[i]!
     if (typeof k === 'string') {
       if (k === p) { shown.kids.push(k); return }
-      if (holds(l)) { held = true; shown.kids.push(p); return }
+      if (holds(l)) { held = true; shown.kids.push(OWED); return }
       l.replaceWith(n); shown.kids.push(k); return
     }
     const pb = p as BodyChunk
@@ -166,7 +171,7 @@ export function swapDayAround(live: Element, html: string, prev: DayChunks | nul
     const lb = kidsOf(l), nb = kidsOf(n)
     shown.kids.push({ attrs: k.attrs, kids: k.kids.map((s, j) => {
       if (s === pb.kids[j]) return s
-      if (holds(lb[j]!)) { held = true; return pb.kids[j]! }
+      if (holds(lb[j]!)) { held = true; return OWED }
       lb[j]!.replaceWith(nb[j]!); return s
     }) })
   })

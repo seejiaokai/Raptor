@@ -124,6 +124,43 @@ describe('the armed palette tap (state/view placeArmed)', () => {
   })
 })
 
+/* [OFT-ADD-TWICE-SILENT] (walker A, the D605 walk, 6 Oct 26 — not reproduced by the host then): an OFT row's "+" pressed
+   twice for the same man — the row unchanged, rightly, and nothing said. Through the armed tap and through the row's own
+   "+ add" pressed on the page, then his name in the crew list, each twice. */
+describe('an OFT row\'s "+" pressed twice for the same man', () => {
+  const oftRow = () => {
+    const d: any = DAYS[0]
+    d.sims.oft.push({ label: 'X', str: '1500', end: '1600', p: '', w: '' })
+    ensureRowIds(DAYS); validate()
+    return d.sims.oft.length - 1
+  }
+  it('the armed tap: the first plants him, the second is refused and says why', async () => {
+    const r = oftRow(), add = `s:0.oft.${r}.+`
+    let took = false
+    await act(async () => { view.armSlot(add); took = view.placeArmed('boosh') })
+    expect(took, 'the first press plants him').toBe(true)
+    const row = JSON.stringify((DAYS[0] as any).sims.oft[r]); toasts = []
+    await act(async () => { view.armSlot(add); took = view.placeArmed('boosh') })
+    expect(took).toBe(false)
+    expect(JSON.stringify((DAYS[0] as any).sims.oft[r]), 'the row is unchanged').toBe(row)
+    expect(toasts.at(-1)).toBe('Havoc — already on Sim X 15:00–16:00 · not added twice')
+  })
+  it('on the page: "+ add" then his name, twice — the second says why', async () => {
+    const r = oftRow(); await act(async () => { notify() })
+    const press = async () => {
+      await click(document.querySelector(`[data-fill="s:0.oft.${r}.+"] .addz`))
+      expect(view.armedKey(), 'the "+ add" arms').toBe(`s:0.oft.${r}.+`)
+      await click(document.querySelector('.rpuck[data-person="boosh"]'))
+    }
+    await press()
+    expect(JSON.stringify((DAYS[0] as any).sims.oft[r]), 'the first press plants him').toContain('boosh')
+    const row = JSON.stringify((DAYS[0] as any).sims.oft[r]); toasts = []
+    await press()
+    expect(JSON.stringify((DAYS[0] as any).sims.oft[r]), 'the row is unchanged').toBe(row)
+    expect(toasts.at(-1), 'and the app says why').toBe('Havoc — already on Sim X 15:00–16:00 · not added twice')
+  })
+})
+
 describe('the drag door (ui/drag applyDrop)', () => {
   it('from the crew list onto the crowd\'s "+ add" cell: refused, said why, nothing written', async () => {
     const row = JSON.stringify(crowd()); markHist()

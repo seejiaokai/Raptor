@@ -34,9 +34,10 @@ import { makeStandalone } from '../engine/waves'
 import { HOOKS } from '../engine/hooks'
 import { elogRows } from '../engine/editlog'
 import { dayHTML } from './html'
+import { boardHTML } from './board'
 import { VCONF } from '../engine/rules'
 import { reportingIssuesForWave,resolveReporting,REPORTING_LABEL } from '../engine/reporting'
-import { valueWords } from './pendlist'
+import { valueWords, reportingLineWords } from './pendlist'
 import { itemOf } from './changesmodel'
 import { textLabel } from '../undo/describe'
 
@@ -189,6 +190,42 @@ describe('adding and removing in-time lines', () => {
       w.intimes = keep.slice()
       await act(async () => { notify() })
     }
+  })
+
+  /* D593: on the Scheduler Board each line sits in a row of its own with the board's grip — clearing a line there takes
+     its whole row, and the rows left are re-addressed (line, ✕ and the row's move address) before the repaint */
+  it('on the board, clearing a line takes its row, and the rows left are re-addressed before the repaint', async () => {
+    const w = W0()
+    const keep = w.intimes.slice()
+    const box = document.createElement('div')
+    try {
+      w.intimes = ['07:00H: IN TIME', '07:30H: RALLY', '08:00H: STEP']
+      await act(async () => { notify() })
+      box.innerHTML = boardHTML(0); document.body.appendChild(box)
+      const line = box.querySelector('[data-itline="0|0|0"]') as HTMLElement
+      line.textContent = ''
+      await act(async () => { line.dispatchEvent(new Event('focusout', { bubbles: true })) })
+      expect(w.intimes).toEqual(['07:30H: RALLY', '08:00H: STEP'])
+      const rows = [...box.querySelectorAll('.intimes[data-intimes="0|0"] .itrow')] as HTMLElement[]
+      expect(rows.map(r => r.dataset.move)).toEqual(['mv:it.0.0.0', 'mv:it.0.0.1'])
+      expect(rows.map(r => (r.querySelector('[data-itline]') as HTMLElement).dataset.itline)).toEqual(['0|0|0', '0|0|1'])
+      expect(rows.map(r => (r.querySelector('[data-itdel]') as HTMLElement).dataset.itdel)).toEqual(['0|0|0', '0|0|1'])
+    } finally {
+      box.remove()
+      w.intimes = keep.slice()
+      await act(async () => { notify() })
+    }
+  })
+
+  /* [PEND-INTIME-WORDS]: "To go out" names the lines that differ, not their count */
+  it('the pending list names the In-time / Rally lines that changed, and an order change as such', () => {
+    const J = (x: string[]) => JSON.stringify(x)
+    expect(reportingLineWords('it:0.0', J(['08:00H: IN TIME', '08:30H: RALLY']), J(['07:00H: IN TIME', '08:30H: RALLY'])))
+      .toEqual({ from: '08:00H: IN TIME', to: '07:00H: IN TIME' })
+    expect(reportingLineWords('it:0.0', J(['A', 'B']), J(['B', 'A']))).toEqual({ from: '', to: 'order changed' })
+    expect(reportingLineWords('it:0.0', J(['A', 'B']), J(['A']))).toEqual({ from: 'B', to: 'removed' })
+    expect(reportingLineWords('it:0.0', J(['A']), J(['A', 'A']))).toEqual({ from: '', to: 'added: A' })
+    expect(reportingLineWords('tr:0.0', J(['A']), J(['B'])), 'only the In-time / Rally list').toBeNull()
   })
 
   it('a standalone wave gets no add button — a typed in-time there would move the wave windows', () => {

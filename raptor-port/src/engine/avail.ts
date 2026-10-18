@@ -243,6 +243,10 @@ export function slotRules(key:any){
        not free a sortie that starts WALKING before noon.
        A standalone line is a shift, not a sortie: 07:00–13:00 means exactly
        that, no step in front and no dekit behind, matching events.ts. */
+    /* [BLANK-STANDBY-STRIKE] (6 Oct 26): an AVALON or BB jet seat is a standby place whatever its hours — set before the
+       hours are read, or a BB minted with no shift times was judged as an ordinary seat and a local leave was struck from
+       a place the rule lets it stand (D605 keeps each kind's exemptions). The kind of currency still needs the hours. */
+    if(f&&wv&&isStandalone(wv)&&wv.noconf)out.avJet=true;
     if(f){ const st=parseHM(f.to); let en=parseHM(f.ld);
       if(st!=null){ if(en==null)en=st; if(en<st)en+=1440;
         const sh=wv&&isStandalone(wv);
@@ -482,7 +486,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
        ±1440 for the two tails. */
     const inpHits=(x:any,shift:number)=>{const w2=inpWin(x);
       return !!w2&&overlap(r.slotStart,r.slotEnd,w2[0]+shift,w2[1]+shift);};
-    const spareLike=!!(r.sc&&r.scSpare)||!!r.avJet||!!r.avDuty;
+    const spareLike=!!r.scSpare||!!r.avJet||!!r.avDuty;
     const flying=String(key).indexOf(':')<0;
     const kn=r.slotStart!=null&&r.slotEnd!=null;
     const off=inputLinesOn(DAYS[r.di].dt).filter((x:any)=>isAway(x)&&x.person===id)
@@ -583,6 +587,19 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
      read `selfKeys` so the hover describes the week AFTER the move (5 and 7 Sep
      26), and this scan was the one that still told a man he was "already on" the
      row he was leaving — a hover the drop then contradicted. */
+  /* [BLANK-SEAT-ACTIVITY-HINT] (Astra's read of D605, F2, 6 Oct 26): a seat with no hours yet has no hour to be busy
+     at, so the block below never asked — while the validator flags a WHOLE-DAY personal commitment the moment he is
+     seated there (D605, events.ts buildDay's `whole`, asked undeferred). The same soft "already on X", never a strike:
+     a whole-day activity of his, read the way the validator reads it — all day, or hours covering 00:00–23:59 — and
+     not on the row that came from that very input. Standby places stay silent, as the validator is. */
+  if(r.slotStart==null&&r.di>=0&&DAYS[r.di]&&!spareLike0(r)){
+    const flying=String(key).indexOf(':')<0, dt=DAYS[r.di].dt;
+    const own=/^[dsga]:/.test(String(key))?rowRef(String(key)[0],String(key).slice(2).split('.')):null;
+    const whole=(x:any)=>{if(awayAllDay(x))return true; const w2=inpWin(x); return !!w2&&w2[0]<=0&&w2[1]>=1439;};
+    const x=inputLinesOn(dt).find((x:any)=>!isAway(x)&&isPersonal(x.type)&&inpShow(x,dt,undefined,true)&&x.person===id
+      &&!(canWork(x.type)&&!flying)&&whole(x)&&!(own&&own.src&&own.src===x.iid));
+    if(x)return `already on ${inpLabel(x)}`;
+  }
   if(r.slotStart!=null&&r.slotEnd!=null&&r.di>=0&&!r.sc&&!spareLike0(r)){
     const hit=dayEvents(r.di,id).find((e:any)=>e.s!=null&&e.e!=null
       &&selfKeys.indexOf(selfKey(e.slot||e.key))<0&&overlap(r.slotStart,r.slotEnd,e.s,e.e));
@@ -649,4 +666,4 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
    26 Sep 26 — its programme trim used to take the ROW's own number off an event's key, so a man moved inside his own
    crowd was "already on" it). */
 const selfKey=seatRow;
-const spareLike0=(r:any)=>!!(r.sc&&r.scSpare)||!!r.avJet||!!r.avDuty;
+const spareLike0=(r:any)=>!!r.scSpare||!!r.avJet||!!r.avDuty;

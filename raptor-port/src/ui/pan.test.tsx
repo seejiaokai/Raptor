@@ -10,7 +10,7 @@ import { initStore, setSession, notify, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { ROSDAY, setRosDay } from '../state/view'
 import * as view from '../state/view'
-import { hsSet, initPan, panDays, panHold, rosDayFollow, weekScrollMax } from './pan'
+import { hsSet, initPan, panDays, panHold, rosDayFollow, weekScrollMax, relandWeekAfterResize, updateWeekNav } from './pan'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -97,6 +97,48 @@ describe('week panning (tfin)', () => {
     const el = stub(0, 1000, 400, true)
     expect(hsSet(el, 200)).toBe(true)
     expect(el.scrollLeft).toBe(200)
+  })
+
+  /* [ARROW-GUTTER-STRIP] (the five-flags walk W4, 26 Sep 26): straight after a window resize a day could sit partly under
+     the ‹ until the next press — a resize never re-landed the desktop week. Once the resizing settles it is put on the
+     nearest day. */
+  it('a resize re-lands the desktop week on the nearest day', () => {
+    const w = $('#vWeek')
+    const days = $$('#vWeek .day')
+    days.forEach((d, i) => Object.defineProperty(d, 'offsetLeft', { value: i * 564, configurable: true }))
+    Object.defineProperty(w, 'scrollWidth', { value: days.length * 564 + 1128, configurable: true })
+    Object.defineProperty(w, 'clientWidth', { value: 1128, configurable: true })
+    let landed = -1
+    ;(w as any).scrollTo = (o: any) => { landed = o.left; (w as any).scrollLeft = o.left }
+    dropCorridor(w)
+    w.scrollLeft = 700            // 136px into Tuesday — the nearest day is Tuesday
+    relandWeekAfterResize()
+    expect(landed).toBe(564)
+    w.scrollLeft = 1000           // past the middle of Tuesday — Wednesday
+    relandWeekAfterResize()
+    expect(landed).toBe(1128)
+  })
+  /* …and "day a–b of 7" counts a day only when at least half of it is seen (at 1440 a third day showing 212 of its 552px
+     was named) */
+  it('the read-out counts the days at least half on screen', () => {
+    const w = $('#vWeek')
+    const days = $$('#vWeek .day')
+    const at = (el: Element, left: number, width: number) => Object.defineProperty(el, 'getBoundingClientRect',
+      { value: () => ({ left, right: left + width, width, top: 0, bottom: 10, height: 10 }), configurable: true })
+    try {
+      days.forEach((d, i) => Object.defineProperty(d, 'offsetLeft', { value: i * 564, configurable: true }))
+      Object.defineProperty(w, 'scrollWidth', { value: days.length * 564 + 1340, configurable: true })
+      Object.defineProperty(w, 'clientWidth', { value: 1340, configurable: true })
+      Object.defineProperty(w, 'offsetParent', { value: document.body, configurable: true })   // jsdom has no layout: the week is on show
+      w.scrollLeft = 0
+      at(w, 0, 1340)
+      days.forEach((d, i) => at(d, 20 + i * 564, 552))
+      updateWeekNav()
+      expect($('#hsLbl').textContent, 'Monday and Tuesday whole; Wednesday only 212px').toBe('day 1–2 of 7')
+      at(w, 0, 1500)
+      updateWeekNav()
+      expect($('#hsLbl').textContent, 'Wednesday 372 of 552 — more than half').toBe('day 1–3 of 7')
+    } finally { days.forEach(d => delete (d as any).getBoundingClientRect); delete (w as any).getBoundingClientRect; delete (w as any).offsetParent }
   })
 
   it('one arrow click = exactly one day box, landing on the boundary', () => {
@@ -542,5 +584,18 @@ describe('the deferred jump to today on a phone is taken down with the week', ()
       Object.defineProperty(window, 'innerWidth', { value: oldWidth, configurable: true })
       vi.useRealTimers()
     }
+  })
+})
+
+/* the fresh read of the batch (19 Oct 26, F3): the app's own resize (the failed-save band, the OIL bar) carries
+   `saveBand` and leaves the width as it was — it must not re-land a week panned by hand */
+describe('only a real resize re-lands the week', () => {
+  it('a change of width does; the app\u2019s own band resize and an unchanged width do not', async () => {
+    const { resizeRelands } = await import('./pan')
+    resizeRelands(null, 1400)
+    expect(resizeRelands(null, 1300), 'the window narrowed').toBe(true)
+    expect(resizeRelands(Object.assign(new Event('resize'), { saveBand: true }), 1300), 'the band came').toBe(false)
+    expect(resizeRelands(null, 1300), 'the same width again').toBe(false)
+    expect(resizeRelands(Object.assign(new Event('resize'), { saveBand: true }), 1200), 'a band resize never re-lands').toBe(false)
   })
 })

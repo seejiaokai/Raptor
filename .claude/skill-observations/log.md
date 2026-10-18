@@ -734,6 +734,8 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 
 **Met again 15 Oct 26 (the night's /overnight run, `claude/drag-edge-scroll-elsewhere-51bfc4`):** three more shell here-document / stdin hangs in one night — `cat > file` with no input waited on stdin; a stray `python - <<'PY'` with `< /dev/null` dropped into Python's interactive prompt and looped on a Windows console error until stopped; each cost a two-to-five-minute stall. What held: every edit script WRITTEN WITH THE WRITE TOOL to the scratch folder and run as `python <file> < /dev/null`. The guard this entry proposes (scripts always a file, never a here-document) is the fix.
 
+**Met again 18 Oct 26 (`claude/schedule-amendments-fixes-fffce0`, D994's schedule fixes):** four more — two edit scripts passed to Python through a here-document lost a `\n` (written as a real line break, the file then failed to parse) and an escaped apostrophe; a `sed` fix of a test line lost its `\n` the same way; and one script was written with a relative path one folder too high, landing OUTSIDE the worktree. Each was put right by a script written with the file tool into the scratch folder. The guard proposed here ([SHELL-SCRIPT-GUARD], D811) would have stopped all four.
+
 **Met again 17 Oct 26 ([TRK-SCROLL-GLIDE], round 1):** a `cat >> file <<EOF` holding the question page (prose full of apostrophes) failed the same way; redone through the file tool. The guard stays unbuilt: an unconditional default (pages and scripts always go through the file tool) would have cost nothing here.
 
 ### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
@@ -855,6 +857,8 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Suggested improvement:** In the project's notes on running scripts, one line: write every multi-line script with the file-writing tool and run the file; never begin a shell command with `cat >`; and give every shell command that runs a script `< /dev/null`, so anything that reads input ends at once instead of waiting.
 
 **Principle:** A command that can wait for input will, in a tool with no keyboard — close its input by default, so a slip ends in an error rather than a silent stall.
+
+Met again 18 Oct 26 (`claude/schedule-amendments-fixes-fffce0`): twice a command began `cat > <file>` with no input (once `cat > /tmp/x.test.ts 2>/dev/null; mkdir …`) — each stalled two minutes and was moved to the background before it was stopped. The same proposal stands: never begin a command with `cat >`; close input with `< /dev/null`.
 
 ### Observation 610: Before/after pictures of the live app need no second checkout or server
 
@@ -1321,3 +1325,33 @@ prove each by acting through it after the rollback, not by reading what it shows
 **Suggested improvement:** For a backlog tidy: (1) helpers return verdict + evidence per item, the host re-checks every DONE before moving it; (2) a coverage script for ids is necessary but not sufficient — a fresh reader reads the OLD list for open statements (orders, his steps, "waits on") that live in no item; (3) move the old list whole first, so the reader has it.
 
 **Principle:** A rewrite of a summary loses facts that lived only in the summary's prose; check coverage of the ids by script and coverage of the open statements by a reader of the original.
+
+### Observation 640: A test that picks its case from what is on screen must work the state out afresh first
+
+**Status:** OPEN
+**Date:** 18 Oct 26
+**Session context:** D994's Schedule and amendments fixes — the Tab route's missing tests ([TAB-LAST-BOX-TEST-GAPS])
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** writing the failing test — choosing the fixture
+
+**Issue:** A new jsdom test chose "a day with no warning" by reading the drawn week. The warning list on screen was left over from earlier tests in the file (each test restored the data but did not re-run the checks), so the day chosen changed with the run order: the test passed alone and failed in the full file, and several runs went on chasing what looked like a fault in the code. Once the checks were re-run before choosing, the failure was steady — and it was a real fault, on a different path from the one the test was written for (the Tab went on to a control, not back into the box). Beside it, an older test's precondition ("Friday starts with no warning block") used selectors that match nothing, so it could never fail.
+
+**Suggested improvement:** In the TDD skill's "write the failing test" step: when a test selects its case from rendered or derived state, recompute that state at the top of the test (here, validate + notify) and assert the precondition with a selector proven to match in a positive case; and when a new test fails only in the full file, suspect leftover state before suspecting the code.
+
+**Principle:** A precondition read from state another test can leave behind makes a test depend on run order; recompute before choosing, and prove a "nothing here" selector can find something.
+
+### Observation 641: A test fixture written straight into the data before an undo test runs lands in the undo's baseline, not as a change
+
+**Status:** OPEN
+**Date:** 2026-10-19
+**Session context:** D994's Schedule and amendments batch — a red-first test of Undo pressed with the caret still in an In-time line (ui/undo-caret.test.tsx)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** "write the failing test" — fixtures for undo / history tests
+
+**Issue:** The test set three In-time lines straight into the data AFTER the store and the undo history had taken their baseline. The emptied line was then undone back to the seed's own lines, not the three the test set, so the test failed for a reason that had nothing to do with the fault — and a first reading took it for the fix not working. Moving the fixture line above the store's set-up made the test say what it meant; red without the fix, green with it.
+
+**Suggested improvement:** In the TDD skill: a test of undo, redo or history sets its fixture BEFORE the history takes its baseline (or through the app's own write path), and asserts the state just before the action under test, so a wrong baseline shows as a wrong precondition rather than as a failed fix.
+
+**Principle:** In a test of undo, a fixture written outside the recorded path becomes the baseline it undoes to; set it before the baseline is taken, and check the precondition before the action.

@@ -13,6 +13,9 @@ import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { toast, clearToast } from './toast'
 import { FloatWin, _resetFloatWins } from './FloatWindow'
+import { ChangesWindow } from './ChangesWindow'
+import { setChgWin } from '../state/view'
+import { initStore, setSession } from '../state/store'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 const realMM = (window as any).matchMedia
@@ -39,6 +42,32 @@ describe('D731 (1) — on a phone, while a window is open, the passing note is s
     expect(face().dataset.at).toBe('top')
     expect(face().style.bottom).toBe('auto')
     expect(face().textContent).toBe('Input updated')
+  })
+  /* [BUBBLE-SMALL-SEEN] (3) (the change-recording re-walk, 29 Sep 26): the changes window is a panel at the foot on a
+     phone — a note at the foot sat over its first lines. Its placeholder is always mounted, hidden: that one is no window. */
+  it('a phone with the changes window up: the note is at the top; its hidden placeholder alone changes nothing', () => {
+    asPhone(true)
+    const cw = document.createElement('div'); cw.className = 'chgwin'; cw.hidden = true; document.body.append(cw)
+    try {
+      toast('Undid: a take-off time', 'ok')
+      expect(face().dataset.at, 'the hidden placeholder is no window').toBe('foot')
+      cw.hidden = false
+      toast('Undid: a take-off time', 'ok')
+      expect(face().dataset.at, 'the open changes window is').toBe('top')
+    } finally { cw.remove() }
+  })
+  /* …and the backlog's own order: the note is ALREADY up (an Undo's) when the changes window opens — the window moves it
+     (the batch's check, 19 Oct 26 — the scenario designer's S3-03: the test above raised the note after the window) */
+  it('a phone: a note already up when the changes window opens goes to the top', async () => {
+    asPhone(true)
+    initStore(); setSession({ user: 'a', role: 'admin' })
+    toast('Undid: a take-off time', 'ok')
+    expect(face().dataset.at, 'no window yet: at the foot').toBe('foot')
+    try {
+      await act(async () => { setChgWin({ day: 'week', tab: 'all', group: 'item' }); root.render(<ChangesWindow />) })
+      expect(document.querySelector('.chgwin:not([hidden])'), 'the window is up (or this test proves nothing)').toBeTruthy()
+      expect(face().dataset.at, 'the note it found there moved to the top').toBe('top')
+    } finally { await act(async () => { setChgWin(null) }) }
   })
   it('a phone with NO window up: at the foot, as before', () => {
     asPhone(true)

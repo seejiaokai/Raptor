@@ -40,6 +40,7 @@ import { jumpToChange } from './interactions'
 import { histJumpable, weekJumpable } from './histbubble'
 import { SBDAY, CURPAGE, DPREV } from '../state/view'
 import { useEffect, useState } from 'react'
+import { placeToast } from './toast'
 
 const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 const dm = (iso: string) => { const [, m, d] = iso.split('-').map(Number); return `${d}/${m}` }
@@ -93,7 +94,7 @@ export function jumpOf(l: CLine, days: string[], pick: string | null): { keys: s
 
 /* a line with nowhere to go on THIS page is listed but is not a button (the old list's rule, kept — a tap that does
    nothing reads as a tap that did not register): no key and no input; a detail the board does not draw, while on the
-   board (the area strip, the in-times, the traffic, the wave's title); the traffic on the week */
+   board (the area strip, the traffic — the in-times are drawn there since [BOARD-INTIME-JUMP]); the traffic on the week */
 function canGo(l: CLine, j: { keys: string[] } | null): boolean {
   if (!j) return false
   if (l.iid) return true
@@ -148,6 +149,10 @@ export function ChangesWindow() {
   useVersion()
   const w = CHGWIN
   useLayoutWatch(!!w)
+  /* A NOTE ALREADY UP WHEN THE WINDOW OPENS MOVES OFF IT ([BUBBLE-SMALL-SEEN] (3) — an Undo's note still showing as the window
+     opens on a phone sat over its first lines; the batch's check, 19 Oct 26). The shell's windows do it as they open
+     (FloatWindow.tsx); a note raised while this one is up is placed by toast() itself. */
+  useEffect(() => { placeToast() }, [!!w])
   /* the phone's slim bar sits where the stylesheet puts it — at the bottom — whatever height the panel was dragged to:
      it is there so the change behind can be seen, so it hands the box back for the bar and takes it again when the
      panel comes back ([DRAFT-PENDING], Fable P8 — the bar floated mid-screen at the dragged panel's top) */
