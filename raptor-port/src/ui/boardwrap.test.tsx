@@ -143,6 +143,39 @@ describe('Enter still commits, because a textarea would insert a line break', ()
   /* the board never had Escape at all — a typed-but-unwanted value could only
      be undone by retyping it. The wrapping pass gave data-bfld the same two
      keys the week's own cells have always had. */
+  /* D1011 (18 Oct 26, "as recommended"): the board's TIME boxes — take-off, landing, brief, a duty's or a programme row's
+     start — are <input>s, which the branch above passed by (it asked for a textarea), so Escape left the typed time in the
+     box and the blur saved it. Escape puts the old time back and saves nothing, as every other box does. */
+  it('D1011: Escape in a board time box puts the old time back and saves nothing', async () => {
+    await act(async () => { openScheduler(0); notify() })
+    const box = [...document.querySelectorAll('#sbBoard input[data-bfld]')].find(b => /\.(to|ld|br|str|end)$/.test((b as HTMLElement).dataset.bfld!)) as HTMLInputElement
+    expect(box, 'the premise: the board draws a time box').toBeTruthy()
+    const k = box.dataset.bfld!, before = txtGet(k), shown = box.value
+    box.focus()
+    box.value = '2359'
+    await key(box, 'Escape')
+    expect(box.value, 'the box shows the old time again').toBe(shown)
+    /* the Escape blurs the box: the board's own focus-out check sends a change only when the box differs from the model's
+       time — so a restored box saves nothing */
+    await act(async () => { notify() })
+    expect(document.activeElement, 'the box was let go').not.toBe(box)
+    expect(txtGet(k), 'and nothing was saved').toBe(before)
+  })
+
+  /* the night's fresh read of job 5 (5): an input's own time box on the board (its start or end, `data-ifld`) kept a typed
+     time on Escape, and the blur saved it into the input */
+  it('D1011: Escape in an input\u2019s own time box on the board puts its time back', async () => {
+    await act(async () => { openScheduler(0); notify() })
+    const box = [...document.querySelectorAll('#sbBoard input[data-ifld]')].find(b => /\.(str|end)$/.test((b as HTMLElement).dataset.ifld!)) as HTMLInputElement
+    expect(box, 'the premise: the board draws an input\u2019s time box').toBeTruthy()
+    const shown = box.value
+    box.focus()
+    box.value = '2359'
+    await key(box, 'Escape')
+    expect(box.value, 'the box shows the input\u2019s time again').toBe(shown)
+    expect(document.activeElement, 'and the box was let go').not.toBe(box)
+  })
+
   it('Escape puts the model value back', async () => {
     DAYS[0].dutywaves[0].rows[0].rmks = 'the real remark'
     await act(async () => { openScheduler(0); notify() })

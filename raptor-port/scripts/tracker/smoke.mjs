@@ -1010,10 +1010,12 @@ ok('Course follows Crew, and each edit pencil sits right after its dropdown',
    search shows as an inline box, hSearch + hSearchClear). */
 /* ↶ ↷ left this bar for Raptor's top bar ([UNDO-TOPBAR], owner D349 (2), 28 Sep 26) — the checks under "the undo
    checks" below pin them there */
-ok('the bar reads Crew · Course ✎ · Syllabus ✎ · ⓘ · Show All · File · search · Hide',
+/* Legend beside Show All (owner D1018, 18 Oct 26); the flex settings' ⚙ after the search, before Hide (D1014, D1018 — as
+   drawn in 02-topbar-proposed) */
+ok('the bar reads Crew · Course ✎ · Syllabus ✎ · ⓘ · Show All · Legend · File · search · ⚙ · Hide',
   crewFirst.ids.join(',') === ['activeSel', 'courseSel', 'courseMenuBtn',
-    'sylSel', 'sylMenuBtn', 'detailsBtn', 'showAllBtn',
-    'fileMenuBtn', 'hSearch', 'hSearchClear', 'barHideBtn'].join(','),
+    'sylSel', 'sylMenuBtn', 'detailsBtn', 'showAllBtn', 'legendBtn',
+    'fileMenuBtn', 'hSearch', 'hSearchClear', 'flexBtn', 'barHideBtn'].join(','),
   crewFirst.ids.join(' → '));
 
 /* WHERE THE GAP FALLS, which the id list can't see: the spacer is a <span>, so
@@ -3095,9 +3097,10 @@ await arr(); await pg.waitForTimeout(400);
 const hintGeom = () => pg.evaluate(() => {
   /* Geometry, not elementFromPoint: the hint passes clicks through, so a hit
      test "sees" the legend even while the hint is painted over it. */
-  /* scoped to the tab: Raptor's own page keeps a hidden .legend element
-     earlier in the document, and the bare selector measured that 0×0 box */
-  const lr = document.querySelector('#page-tracker .legend').getBoundingClientRect();
+  /* The colour strip that sat under the hint moved into the bar's Legend pop-out (owner D1018, 18 Oct 26), so what
+     the hint's line must not cover on a desktop is now the chart's own column, the next thing below it. (Scoped to the
+     tab: Raptor's own page keeps a hidden .legend of its own, which the old selector had to step round.) */
+  const lr = document.querySelector('#page-tracker #layout').getBoundingClientRect();
   const hr = document.getElementById('arrhint').getBoundingClientRect();
   return {
     top: document.getElementById('flowSvg').getBoundingClientRect().top,
@@ -3121,7 +3124,7 @@ ok('the hint is visible, takes exactly one line of real space, and passes clicks
 /* Move's hint is the resting state and fits the line; the Line tool's hint is
    an essay that wraps and spills below on purpose, for as long as that tool is
    selected. Only the resting state is pinned. */
-ok('the colour legend is not covered by the edit-mode hint', moveState.legendClear,
+ok('the chart below is not covered by the edit-mode hint (the colour strip moved into Legend, D1018)', moveState.legendClear,
   `Move: ${moveState.legendClear}, Line: ${lineState.legendClear}`);
 await pg.click('#arrTools button:has-text("✋ Move")'); await pg.waitForTimeout(200);
 await arr(); await pg.waitForTimeout(400);

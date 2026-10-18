@@ -1,0 +1,114 @@
+{
+ "results": [
+  {
+   "step": "S1 Board Mon Scribe",
+   "ok": true,
+   "note": "seat boxdot chip 'R'; 5 copies; mismatched: none; not drawn: none || his seat[boxdot|dotted 1px|chip R] · Ground Programme[boxdot|dotted 1px|chip R] · Personal Inputs[boxdot|dotted 1px|chip R] · SANS card[boxdot|dotted 1px|chip R] · Unavailable[boxdot|dotted 1px|chip R] · crew list[boxdot|dotted 1px|chip R]",
+   "pic": "dk-01-mon-scribe-board.png"
+  },
+  {
+   "step": "S2 Week Mon Scribe",
+   "ok": true,
+   "note": "seat boxdot chip 'R'; 5 copies; mismatched: none; not drawn: none || his seat[boxdot|dotted 1px|chip R] · Ground Programme[boxdot|dotted 1px|chip R] · Personal Inputs[boxdot|dotted 1px|chip R] · SANS card[boxdot|dotted 1px|chip R] · Unavailable[boxdot|dotted 1px|chip R] · crew list[boxdot|dotted 1px|chip R]",
+   "pic": "dk-02-mon-scribe-week.png"
+  },
+  {
+   "step": "S3 Board Tue Otter",
+   "ok": true,
+   "note": "seat boxdash chip 'R'; 5 copies; mismatched: none; not drawn: none || his seat[boxdash|dashed 2px|chip R] · Ground Programme[boxdash|dashed 2px|chip R] · Personal Inputs[boxdash|dashed 2px|chip R] · SANS card[boxdash|dashed 2px|chip R] · Unavailable[boxdash|dashed 2px|chip R] · crew list[boxdash|dashed 2px|chip R]",
+   "pic": "dk-03-tue-otter-board.png"
+  },
+  {
+   "step": "S3 Week Tue Otter",
+   "ok": true,
+   "note": "seat boxdash chip 'R'; 5 copies; mismatched: none; not drawn: none || his seat[boxdash|dashed 2px|chip R] · Ground Programme[boxdash|dashed 2px|chip R] · Personal Inputs[boxdash|dashed 2px|chip R] · SANS card[boxdash|dashed 2px|chip R] · Unavailable[boxdash|dashed 2px|chip R] · crew list[boxdash|dashed 2px|chip R]",
+   "pic": "dk-04-tue-otter-week.png"
+  },
+  {
+   "step": "S4 mon-scribe list open + line \"Breaks TuesdayScribe — had to leave by 1\"",
+   "ok": true,
+   "note": "lit pucks of Scribe: 5 (his seat:dotted 1px; Ground Programme:dotted 1px; Personal Inputs:dotted 1px; SANS card:dotted 1px; Unavailable:dotted 1px); not lit copies: crew list; day counts {\"wfoc\":5,\"dim\":145,\"pucks\":150} (wfoc=lit, dim=dimmed)",
+   "pic": "dk-05-mon-scribe-week-list-open-tapped.png"
+  },
+  {
+   "step": "B3 mon-scribe close the list",
+   "ok": false,
+   "note": "after close: his seat[boxdot LIT|dotted 1px|chip R] · Ground Programme[boxdot LIT|dotted 1px|chip R] · Personal Inputs[boxdot LIT|dotted 1px|chip R] · SANS card[boxdot LIT|dotted 1px|chip R] · Unavailable[boxdot LIT|dotted 1px|chip R] · crew list[boxdot|dotted 1px|chip R] ; at rest was: his seat[boxdot|dotted 1px|chip R] · Ground Programme[boxdot|dotted 1px|chip R] · Personal Inputs[boxdot|dotted 1px|chip R] · SANS card[boxdot|dotted 1px|chip R] · Unavailable[boxdot|dotted 1px|chip R] · crew list[boxdot|dotted 1px|chip R]",
+   "pic": ""
+  },
+  {
+   "step": "S4 tue-otter list open + line \"Crew rest (<12h)Otter — Crew rest breach\"",
+   "ok": true,
+   "note": "lit pucks of Otter: 5 (his seat:dashed 2px; Ground Programme:dashed 2px; Personal Inputs:dashed 2px; SANS card:dashed 2px; Unavailable:dashed 2px); not lit copies: crew list; day counts {\"wfoc\":5,\"dim\":114,\"pucks\":119} (wfoc=lit, dim=dimmed)",
+   "pic": "dk-06-tue-otter-week-list-open-tapped.png"
+  },
+  {
+   "step": "B3 tue-otter close the list",
+   "ok": true,
+   "note": "after close: his seat[boxdash|dashed 2px|chip R] · Ground Programme[boxdash|dashed 2px|chip R] · Personal Inputs[boxdash|dashed 2px|chip R] · SANS card[boxdash|dashed 2px|chip R] · Unavailable[boxdash|dashed 2px|chip R] · crew list[boxdash|dashed 2px|chip R] ; at rest was: his seat[boxdash|dashed 2px|chip R] · Ground Programme[boxdash|dashed 2px|chip R] · Personal Inputs[boxdash|dashed 2px|chip R] · SANS card[boxdash|dashed 2px|chip R] · Unavailable[boxdash|dashed 2px|chip R] · crew list[boxdash|dashed 2px|chip R]",
+   "pic": ""
+  },
+  {
+   "step": "B3x Scribe Mon: open then close, no tap",
+   "ok": true,
+   "note": "rest his seat[boxdot|dotted 1px|chip R] · Ground Programme[boxdot|dotted 1px|chip R] · Personal Inputs[boxdot|dotted 1px|chip R] · SANS card[boxdot|dotted 1px|chip R] · Unavailable[boxdot|dotted 1px|chip R] · crew list[boxdot|dotted 1px|chip R] || open his seat[boxdot LIT|dotted 1px|chip R] · Ground Programme[boxdot LIT|dotted 1px|chip R] · Personal Inputs[boxdot LIT|dotted 1px|chip R] · SANS card[boxdot LIT|dotted 1px|chip R] · Unavailable[boxdot LIT|dotted 1px|chip R] · crew list[boxdot|dotted 1px|chip R] || closed his seat[boxdot|dotted 1px|chip R] · Ground Programme[boxdot|dotted 1px|chip R] · Personal Inputs[boxdot|dotted 1px|chip R] · SANS card[boxdot|dotted 1px|chip R] · Unavailable[boxdot|dotted 1px|chip R] · crew list[boxdot|dotted 1px|chip R]",
+   "pic": ""
+  },
+  {
+   "step": "B3x Scribe Mon: tap line, then close",
+   "ok": false,
+   "note": "after his seat[boxdot LIT|dotted 1px|chip R] · Ground Programme[boxdot LIT|dotted 1px|chip R] · Personal Inputs[boxdot LIT|dotted 1px|chip R] · SANS card[boxdot LIT|dotted 1px|chip R] · Unavailable[boxdot LIT|dotted 1px|chip R] · crew list[boxdot|dotted 1px|chip R] ; page counts {\"wfoc\":18,\"dim\":689,\"focus\":\"null\"}",
+   "pic": "dk-10-b3x-mon-after-tap-then-close.png"
+  },
+  {
+   "step": "B2 Board Tue Scribe (true breach on the day itself)",
+   "ok": true,
+   "note": "seat boxred chip 'R'; 5 copies; mismatched: none; not drawn: none || his seat[boxred|none 3px|chip R] · Ground Programme[boxred|none 3px|chip R] · Personal Inputs[boxred|none 3px|chip R] · SANS card[boxred|none 3px|chip R] · Unavailable[boxred|none 3px|chip R] · crew list[boxred|none 3px|chip R]",
+   "pic": "dk-07-b2-tue-scribe-board.png"
+  },
+  {
+   "step": "B2 Week Tue Scribe",
+   "ok": true,
+   "note": "seat boxred chip 'R'; 5 copies; mismatched: none; not drawn: none || his seat[boxred|none 3px|chip R] · Ground Programme[boxred|none 3px|chip R] · Personal Inputs[boxred|none 3px|chip R] · SANS card[boxred|none 3px|chip R] · Unavailable[boxred|none 3px|chip R] · crew list[boxred|none 3px|chip R]",
+   "pic": ""
+  },
+  {
+   "step": "B1a take-off 12:00, landing 14:00",
+   "ok": true,
+   "note": "before: his seat[boxdot|dotted 1px|chip R] · Ground Programme[boxdot|dotted 1px|chip R] · Personal Inputs[boxdot|dotted 1px|chip R] · SANS card[boxdot|dotted 1px|chip R] · Unavailable[boxdot|dotted 1px|chip R] · crew list[boxdot|dotted 1px|chip R] || after move: his seat[none|none 3px|chip -] · Ground Programme[none|none 3px|chip -] · Personal Inputs[none|none 3px|chip -] · SANS card[none|none 3px|chip -] · Unavailable[none|none 3px|chip -] · crew list[none|none 3px|chip -]",
+   "pic": "dk-08-b1-after-move.png"
+  },
+  {
+   "step": "B1b undo (1 presses)",
+   "ok": true,
+   "note": "after undo: his seat[boxdot|dotted 1px|chip R] · Ground Programme[boxdot|dotted 1px|chip R] · Personal Inputs[boxdot|dotted 1px|chip R] · SANS card[boxdot|dotted 1px|chip R] · Unavailable[boxdot|dotted 1px|chip R] · crew list[boxdot|dotted 1px|chip R]",
+   "pic": "dk-09-b1-after-undo.png"
+  },
+  {
+   "step": "S5 phone board Scribe Monday",
+   "ok": true,
+   "note": "seat boxdot chip 'R'; 5 copies; mismatched: none; not drawn: none || his seat[boxdot|dotted 1px|chip R] · Ground Programme[boxdot|dotted 1px|chip R] · Personal Inputs[boxdot|dotted 1px|chip R] · SANS card[boxdot|dotted 1px|chip R] · Unavailable[boxdot|dotted 1px|chip R] · crew list[boxdot|dotted 1px|chip R]",
+   "pic": "ph-01-mon-scribe-board.png"
+  },
+  {
+   "step": "S5 phone week Scribe Monday",
+   "ok": true,
+   "note": "seat boxdot chip 'R'; 5 copies; mismatched: none; not drawn: none || his seat[boxdot|dotted 1px|chip R] · Ground Programme[boxdot|dotted 1px|chip R] · Personal Inputs[boxdot|dotted 1px|chip R] · SANS card[boxdot|dotted 1px|chip R] · Unavailable[boxdot|dotted 1px|chip R] · crew list[boxdot|dotted 1px|chip R]",
+   "pic": "ph-02-mon-scribe-week.png"
+  },
+  {
+   "step": "S5 phone board Otter Tuesday",
+   "ok": true,
+   "note": "seat boxdash chip 'R'; 5 copies; mismatched: none; not drawn: none || his seat[boxdash|dashed 2px|chip R] · Ground Programme[boxdash|dashed 2px|chip R] · Personal Inputs[boxdash|dashed 2px|chip R] · SANS card[boxdash|dashed 2px|chip R] · Unavailable[boxdash|dashed 2px|chip R] · crew list[boxdash|dashed 2px|chip R]",
+   "pic": "ph-03-tue-otter-board.png"
+  },
+  {
+   "step": "S5 phone week Otter Tuesday",
+   "ok": true,
+   "note": "seat boxdash chip 'R'; 5 copies; mismatched: none; not drawn: none || his seat[boxdash|dashed 2px|chip R] · Ground Programme[boxdash|dashed 2px|chip R] · Personal Inputs[boxdash|dashed 2px|chip R] · SANS card[boxdash|dashed 2px|chip R] · Unavailable[boxdash|dashed 2px|chip R] · crew list[boxdash|dashed 2px|chip R]",
+   "pic": "ph-04-tue-otter-week.png"
+  }
+ ],
+ "errors": [],
+ "bad4xx": []
+}

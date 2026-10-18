@@ -319,13 +319,15 @@ test('the Tracker’s own date boxes are untouched: the app’s date-box look do
 /* THE SECOND HALF OF A DOUBLE TAP (the read of the Tracker's date boxes, 13 Oct 26 — F1). On a phone the calendar's card
    is put in the middle of the screen, so it can land under the finger that opened it: the second tap fell on a date, and
    in the Tracker a date picked is saved at once. The tap that opens the calendar now leaves the same small patch a pick
-   leaves, over the card, for a moment. Only a browser can show it — it is a matter of what lies under the finger. */
-test('a phone: a double tap on a date box opens the calendar and picks nothing (the Tracker’s Upchit, where a pick is the save)', async ({ browser, baseURL }) => {
+   leaves, over the card, for a moment. Only a browser can show it — it is a matter of what lies under the finger.
+   RE-POINTED 18 Oct 26: the Tracker's Upchit box this tapped is gone (owner D1002); the Course start box sits where it was
+   — the same app date box, empty on a demo student, where a pick is the save too (D1003, D1018). */
+test('a phone: a double tap on a date box opens the calendar and picks nothing (the Tracker’s Course start, where a pick is the save)', async ({ browser, baseURL }) => {
   const { context, page } = await world(browser, baseURL, PHONE, true)
   await go(page, 'tracker')
   await page.waitForSelector('#flowSvg .ball', { state: 'attached', timeout: 20000 })
   await page.locator('#page-tracker button[data-view="info"]').tap()
-  const box = page.locator('#upchit')
+  const box = page.locator('#page-tracker #courseStart')
   await expect(box).toHaveAttribute('data-value', '')
   await box.evaluate(e => e.scrollIntoView({ block: 'center' }))
   const at = await box.evaluate(e => { const r = e.getBoundingClientRect(); return { x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2) } })

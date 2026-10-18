@@ -89,9 +89,15 @@ describe('what an import decides, with the catalogue handed in', () => {
     expect(F.sameDef(null, [])).toBe(true)
   })
 
-  it('remapStudentsSyl refuses two blocks landing on one chart, with the older-version message', () => {
+  /* D1015 (18 Oct 26, his "13 B"): two blocks landing on one chart are not an older file — they belong to charts the file
+     does not carry as they are here, so the refusal says so, in his chosen words */
+  it('remapStudentsSyl refuses two blocks landing on one chart, with the not-carried message (D1015)', () => {
     const s = { courses: ['C1'], byCourse: { C1: { plan: {}, bySyllabus: { sca: {}, scb: {} } } } }
-    expect(() => F.remapStudentsSyl(s, () => 'scone')).toThrow(F.STUDENT_GUARD_MSG)
+    expect(() => F.remapStudentsSyl(s, () => 'scone')).toThrow(F.STUDENT_CHART_MSG)
+  })
+  it('D1015: the not-carried message is his wording B, word for word, and the older-file message is kept apart', () => {
+    expect(F.STUDENT_CHART_MSG).toBe('Student marks not brought in: they belong to a chart this file doesn’t carry. Export a fresh backup that includes its charts, and import that.')
+    expect(F.STUDENT_GUARD_MSG).toMatch(/older version/)
   })
 
   /* the scenario designer's pins (17 Oct 26) — branches the move could not change, pinned for the module's future */
@@ -190,6 +196,30 @@ describe('end to end, through the File menu', () => {
     expect(file.contains.students, 'the premise: the backup carries the students').toBe(true)
     await importBack(file)
     expect(await snapshot()).toEqual(before)
+  })
+
+  /* D1015 (18 Oct 26): the words he SEES on File → Import for a current file whose student marks belong to a chart the
+     file does not carry — the alert itself, not only the flag behind it (the fresh read of the night's job 2) */
+  it('D1015: a current file whose marks belong to a chart it does not carry is told so in his words, never "older version"', async () => {
+    const file = { format: 'ocu-tracker', version: 3, savedAt: '2026-10-18T00:00:00Z', contains: { charts: false, students: true, links: false },
+      charts: null, links: null,
+      students: { sylcat: [], courses: ['NOCARRY'], byCourse: { NOCARRY: { plan: { sylId: 'scnotcarried' }, lulls: {}, pace: {}, bySyllabus: { scnotcarried: { roster: [{ id: 'n1', name: 'NOVA' }], marks: {}, dates: {} } } } } } }
+    const before = await snapshot()
+    const seen = await importBack(file)
+    expect(seen, 'the refusal is shown in his words').toContain(F.STUDENT_CHART_MSG)
+    expect(seen.join(' | ')).not.toMatch(/older version/)
+    expect(await snapshot(), 'nothing was written').toEqual(before)
+  })
+
+  it('D1015: marks for a chart deleted here are refused in the not-carried words', async () => {
+    let p: Promise<any> = C.addSyl(); await answer('BOUNDARY GONE'); await p; await C.whenLoaded()
+    const gone = C.sylIdOf('BOUNDARY GONE')
+    if (C.curSylId() !== gone) { await C.switchSyllabus(gone); await C.whenLoaded() }
+    p = C.delSyl(); await answer(true); await p; await C.whenLoaded()
+    expect(C.sylIdOf('BOUNDARY GONE'), 'the premise: the chart is deleted here').toBeFalsy()
+    await expect(C.applyStudents({ courses: ['GONEC'], sylcat: [{ id: gone, name: 'BOUNDARY GONE' }], byCourse: { GONEC: { plan: { sylId: gone }, lulls: {}, pace: {}, bySyllabus: { [gone]: { roster: [{ id: 'g1', name: 'GHOST' }], marks: {}, dates: {} } } } } }, null, 3))
+      .rejects.toThrow(F.STUDENT_CHART_MSG)
+    expect(C.courseIdOf('GONEC'), 'nothing was written').toBeNull()
   })
 
   it('a refused file writes nothing, and says why', async () => {

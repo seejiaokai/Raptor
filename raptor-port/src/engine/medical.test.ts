@@ -103,11 +103,11 @@ describe('upchitsWithin — the trailing 30-day window, newest first', () => {
 describe('upchitTrimPlan — the upchit day itself is a FIT day (owner, 27 Aug 26)', () => {
   it('trims a spanning row to end the day BEFORE the upchit (the owner\'s example)', () => {
     const r = med('t1', 'ATT C', 'Jul 10', 'Jul 13')
-    expect(upchitTrimPlan('t1', 20260712)).toEqual([{ row: r, action: 'trim', newEndOrd: 20260711 }])
+    expect(upchitTrimPlan('t1', 20260712)).toEqual([{ row: r, action: 'trim', newEndOrd: 20260711, up: true }])
   })
   it('a row ending ON the upchit date still covers it — trimmed back a day too', () => {
     const r = med('t1', 'ATT C', 'Jul 10', 'Jul 12')
-    expect(upchitTrimPlan('t1', 20260712)).toEqual([{ row: r, action: 'trim', newEndOrd: 20260711 }])
+    expect(upchitTrimPlan('t1', 20260712)).toEqual([{ row: r, action: 'trim', newEndOrd: 20260711, up: true }])
   })
   it('leaves an already-ended row alone (pending clears without mutation)', () => {
     med('t1', 'ATT C', 'Jul 10', 'Jul 12')
@@ -125,7 +125,7 @@ describe('upchitTrimPlan — the upchit day itself is a FIT day (owner, 27 Aug 2
   })
   it('a single-day row on the upchit day is REMOVED (a status covering only fit days is void), a future one untouched', () => {
     const r = med('t1', 'HL', 'Jul 10')
-    expect(upchitTrimPlan('t1', 20260710)).toEqual([{ row: r, action: 'delete' }])
+    expect(upchitTrimPlan('t1', 20260710)).toEqual([{ row: r, action: 'delete', up: true }])
     expect(upchitTrimPlan('t1', 20260709)).toEqual([])
   })
   it('covers every COVERING row of the person in one pass — nobody else\'s, and no future row', () => {
@@ -149,7 +149,7 @@ describe('upchitEffects — the save-time summary: what the upchit does, and wha
     const later = med('t1', 'ATT C', 'Jul 16', 'Jul 20')   // the tail of a split, or a filed future entry
     med('t2', 'ATT C', 'Jul 16', 'Jul 20')                 // someone else's — neither list
     const fx = upchitEffects('t1', 20260714)
-    expect(fx.plan).toEqual([{ row: now, action: 'trim', newEndOrd: 20260713 }])
+    expect(fx.plan).toEqual([{ row: now, action: 'trim', newEndOrd: 20260713, up: true }])
     expect(fx.leftovers).toEqual([later])
   })
   it('an already-ended row is in NEITHER list — it is history, not a leftover', () => {

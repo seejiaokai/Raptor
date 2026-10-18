@@ -255,8 +255,8 @@ branch.**
 | `studentName` | string | yes | the typed callsign; today the key, from here a display attribute |
 | `sortIndex` | int | yes | roster order |
 | `lastSyllDate`, `lastCurrDate` | date | no | `dates[student].lastSyll` / `lastCurr` |
-| `downDays` | int | no | `dates[student].downDays` |
-| `upchitDate` | date | no | `dates[student].upchit` |
+| `downDays` | int | no | **GONE 18 Oct 26 (D1002, D1005) — not needed:** the down days are worked out from the man's medical `Input` rows (HL, OML, ATT C, ATT B) since his course start (`CoursePlan.courseStartDate`), never typed or stored. *As it was:* `dates[student].downDays` |
+| `upchitDate` | date | no | **GONE 18 Oct 26 (D1002) — not needed:** the Info panel's Upchit box went; an upchit is an `Input`. *As it was:* `dates[student].upchit` |
 | `lastEditedBy`, `lastEditedAt` | ref User / datetime | no | the `by`/`at` stamps already written on this branch |
 | `isDeleted` | bool | yes | soft delete — removing a student must not lose their attempts |
 
@@ -340,6 +340,7 @@ Owner: **Tracker**. Pace, lull periods and target dates for an enrolment.
 | `courseId` | ref Course | yes | |
 | `enrolmentId` | ref Enrolment | no | null = the course-wide plan (`plan`) |
 | `pace` | JSON | no | the per-student `pace` record |
+| `courseStartDate` | date | no | the student's course start (D1003, D1018 — 18 Oct 26; today `pace.courseStart`, an ISO date): the day his down days are counted from — set when he is added (today by default), changed in the Info panel; null on the course-wide row. The down days themselves are read from his medical `Input` rows from this day to today, a half day ½ — a view, not a column |
 | `lulls` | JSON | no | the per-student `lulls` record |
 | `targets` | JSON | no | target dates carried in `plan` |
 | `currentSyllabusId` | ref Syllabus | no | `plan.sylName` |
@@ -554,6 +555,7 @@ appointment, duty, SANS availability.
 | `people` → child table **`InputPerson`** | one row a person | yes (at least one) | **WHO IS IN IT — since the one-rule build (12 Oct 26, `[ALL-AVAIL-AS-MEMBER]`; owner D756, D759: "an input is stored as ONE record with the list of its people").** The app stores it as an array on the record (`Input.people`, `docs/data-schema.md`); as tables it is a child list of `Input`, like `RowPerson` — proposed columns: `inputId` (ref Input), `personId` (ref Person — a person, or one of the two placeholder `Person` rows, ALL AVAIL / ALL), `position` int (the order they joined), `putBy` / `putAt` (who put THIS person in, and when), `lateDate` (his own late date, only where later than the input's), `holding` int (`h` — the input's `handCount` when he was put in). **Server rules, whoever writes:** at least one row; no person twice; at most ONE placeholder row, and only where `typeCode` is one of Training, Meeting, Appointment, Duty, Event, Other *[SEVEN since 12 Oct 26 — D778: Personal is one of them; D712 stands for "Fly with"]*, the input covers ONE date and it is not filed under Unavailable (D753, D711, D712, D713); a medical kind, an upchit and a Personal input hold exactly one person (D755 (4)) *[WITHDRAWN 12 Oct 26 — D776: a Personal input may hold several people, as every other kind; only a medical kind and an upchit are one person's]* — the app holds these at the save boundary, `engine/inputs.ts shapeProblem`. One `oilCredit`, one `acceptance` and one set of marks for everyone in it (D762, D760) |
 | `personId` | ref Person | yes | **THE OLD SHAPE — SUPERSEDED 12 Oct 26 by `InputPerson`, above (D756): an `Input` has no single `personId` any more; a record saved before the build reads as a one-person input and nothing stored is converted (D56).** *As it was:* a person — or one of the two placeholder `Person` rows, ALL AVAIL / ALL, for an input filed for whoever is free (D700, D702, 9 Oct 26). No list of names is stored: who stands behind it is worked out for the day and frozen in the day's issued version, as for a placeholder on a schedule row. **A server rule, whoever writes:** such an input's `typeCode` is one of Training, Meeting, Appointment, Duty, Event, Other; it covers ONE date; it has no `groupId` (D711, D712, D713). Nobody behind it has a record or an OIL answer of his own — `oilAnswers` is the filer's, for everyone (D711 (1)) |
 | `startDate`, `endDate` | date | yes / no | ISO. Today `date` is a `'Jul 13'` display string with a separate `yr`; both are replaced by one ISO date |
+| `firstEndDate` | date | no | a downchit's end as filed, kept the first time an upchit cuts it (D999, 18 Oct 26 — today `firstEnd`, already an ISO date): how far a later move of the upchit may give its days back; null otherwise |
 | `allDay` | bool | yes | |
 | `startMinutes`, `endMinutes` | int | no | `s`/`e`, minutes from midnight; required together when not all-day; `end < start` legitimately crosses midnight |
 | `half` | choice `am\|pm` | no | half-day marker |
@@ -793,6 +795,7 @@ App change: none to the OIL derivation — `OilLedger`, `OilCredit` and
 stored.
 
 ### LeavePersonProfile
+*(18 Oct 26, D1001: its personnel `label` — a ground-crew man's flight — is KEPT, for a later option to sort the Leave War by flight; it is not retired.)*
 
 Owner: **Leave War**. What the Leave War knows about a person beyond their
 identity — the columns the first draft of this document put on `Person`,
@@ -1098,8 +1101,8 @@ The "migration notes" say how each shape maps, should a record ever need convert
 | `raptor:tracker/v3:<course>:<syl>:enr:<id>` (since 30 Sep 26 — one row per enrolment; it replaced `v3:<course>:<syl>:roster`) | `Enrolment` | One row each; `ord` → `sortIndex`, `pid` → `personId`, `name` → `studentName` |
 | `raptor:tracker/v3:links` (this branch) | `Enrolment.personId` | The links record **disappears** into the column. A student with no link imports with a null `personId` |
 | `…:marks` — `{ g, f, fd[], d, by?, at? }` | `Attempt` (+ the `ProgressionSummary` view) | One `applySummary` call per mark: the `d` date becomes one `pass` attempt carrying `g`; each `fd` entry a `fail` attempt; a `null` `fd` entry an attempt with no date and `dateUnknown`, reported. `by`/`at` stamp every row the mark yields |
-| `…:dates` — `lastSyll`, `lastCurr`, `downDays`, `upchit` | `Enrolment` | Straight column copy; the `by`/`at` stamps become `lastEditedBy`/`lastEditedAt` |
-| `…:plan`, `…:pace`, `…:lulls` | `CoursePlan` | Course-wide plan as the row with a null `enrolmentId`; per-student pace and lulls on the enrolment's row |
+| `…:dates` — `lastSyll`, `lastCurr`, `downDays`, `upchit` | `Enrolment` | Straight column copy; the `by`/`at` stamps become `lastEditedBy`/`lastEditedAt`. `downDays` and `upchit` are dropped (D1002 — nothing writes them since 18 Oct 26; demo data, D56) |
+| `…:plan`, `…:pace`, `…:lulls` | `CoursePlan` | Course-wide plan as the row with a null `enrolmentId`; per-student pace and lulls on the enrolment's row; `pace.courseStart` → `courseStartDate` (D1003) |
 | `raptor:tracker/v3:seedstamp` | — | Dropped. It marks a demo seed, which never reaches the shared store |
 | `ocuLocal:*` (last course, last crew member) | — | **Stays per browser.** A view preference, deliberately outside the shared prefix; it must not be migrated |
 
@@ -1472,7 +1475,7 @@ update, delete (delete is the soft delete throughout).
 | `Person` | C R U D | R, U **own** | R (callsigns) | — | `personId` = my person: every column of his own row — CAT, initials, flight, SXO, SCHEDULER, SANS — except the callsign (D218: an admin's to change), `archived`, `special` and `id` (D149); adding, archiving, restoring and deleting a person stay the admin's — a person is created only on Admin → Users, alone or with his `User` in one step (D217); a delete is the hidden mark (the tombstone, D290): gone from every list, his callsign free, the rows of the days he flew still pointing at him (D297), with his `User` in the same step (D287) |
 | `Qualification` | C R U D | R | — | — | the list of qualification columns (Quals → Edit quals) |
 | `QualMark` | C R U D | R, C U D **own** | — | — | `personId` = my person — a member ticks his own quals, every one (D149) |
-| `Setting`, `SchemaVersion` | C R U D | R (`Setting` only) | — | — | the guest switch is a `Setting` (D204); so are the members-file-for-others switch (`memberfile`, D654), the SANS calendar's three colours (`sanscalendar`, D618), the two late cut-offs (values of `rules`, D628, D639) and the flying plan — a date's class and required figures, a weekday's rule, a running figure (`fly.day.set`, `fly.rule.set`, `fly.rule.remove`, `fly.run.set`): all the admin's |
+| `Setting`, `SchemaVersion` | C R U D | R (`Setting` only) | — | — | the guest switch is a `Setting` (D204); so are the members-file-for-others switch (`memberfile`, D654), the SANS calendar's three colours (`sanscalendar`, D618), the two late cut-offs (values of `rules`, D628, D639) and the flying plan — a date's class and required figures, a weekday's rule, a running figure (`fly.day.set`, `fly.rule.set`, `fly.rule.remove`, `fly.run.set`) and the Tracker's flex settings — its six "From" days and its on / off switch, one record (`trk.flex`, kept in the Tracker's own store as `v3:master:flex` until the database step — D1006, D1014, D1018): all the admin's |
 | `MissionRoleAnswer` | C R U D | R | R | — | separate Insights annotation, one formation/date/week/exact versioned mission context; scheduler answers and corrections only (D518, D525, D530). Updates latest-published Insights immediately; no programme, issued snapshot, holder, pending item, sign-off or OIL write. Guest reads the resulting Insights figures. |
 | `User` | C R U D | R **own** | — | — | one account per person, tied to it (D166); created with a new `Person` in one step, or linked to one already on the roster (D214, D217); the sign-in name (the defence mail address) unique; **suspended** (`enabled` false — D280, D285) while he is away, and **deleted with his `Person` when he leaves flying for good** (D287 — at the database step the tombstone, D290); **no password is ever stored** — the organisation's sign-in checks it; at least one enabled admin always remains; an admin never changes or deletes his own account |
 | `AccessRequest` | R D | — | — | C **own** | a person signed in but on no list asks once, giving what the admin's New person form asks — callsign/name, initials, seat, CAT — as typed text (D204, D214); an admin approves — creating the `User`, linked to a person he picks (a typed callsign never claims one) or to a new `Person` made from the request with his corrections — or declines, each one step; a `User` added or renamed onto a waiting sign-in name deletes its request; which admins have had it on screen is no longer on the request — each admin's own `AccessRequestSeen` row (`[DB-READINESS]` group A, phase 4.4 — R3-04) |
@@ -1489,9 +1492,9 @@ update, delete (delete is the soft delete throughout).
 | `LeaveWar` | C R U D | R | — | — | the stage and the bid window are the admin's — and its day events: the Holidays list's three commands (`lw.holiday.add`, `lw.holiday.change`, `lw.holiday.remove`, 7 Oct 26) write a public holiday or an Off day into the period holding the date; and the Event sheet's Save and Delete are one command each (`lw.event.save`, `lw.event.remove`, 8 Oct 26) |
 | `LeaveBid` | C R U D (decide, move) | R, C U D **own** (while `stage = open`) | — | — | `personId` = my person — the `canEditRow` rule the store enforces; deciding, moving an approved leave and "OK, seen" on another's notice are the admin's |
 | `LeaveLedger` (an OIL award: counter oil, amount above 0) | C R U D | R | — | — | ONE kind of hand-given OIL, whether given on the grid or from the OIL tracker ([OIL-AWARD-IS-A-GRANT], D400, D402, 29 Sep 26); written by an admin only, any day (D79); an award and a worked day add up (D82); every member reads every man's — the grid draws every row (D402); keeps its typed "Given by", its date (fixed — D260) and who entered it and when (`enteredBy`, `enteredAt` — D200 (2)) |
-| `LeaveOpening`, `LeaveLedger`, `LeaveCounter` | C R U D | R **own** | — | — | `personId` = my person; a ledger grant keeps the approving admin's callsign; the app shows every member every man's OIL tracker and figure breakdown, gap: `[LEDGER-READ-ASK]` |
+| `LeaveOpening`, `LeaveLedger`, `LeaveCounter` | C R U D | R | — | — | every member reads every man's entries, figures and grants with their reasons — the OIL tracker and the figure breakdown show them (D1008, 18 Oct 26; it was his own only, the gap filed as [LEDGER-READ-ASK]); a ledger grant keeps the approving admin's callsign; written by an admin only |
 | `LeavePersonProfile` | C R U D | R | — | — | — |
-| `Course`, `Syllabus`, `TrainingEvent`, `EventPrerequisite`, `Layout`, `CoursePlan`, `Enrolment`, `Attempt` | C R U D | C R U D | — | — | **everyone edits** the Tracker — owner, 7 Sep 26; since D121, 23 Sep 26, Import / Export too: admin and member have the same access |
+| `Course`, `Syllabus`, `TrainingEvent`, `EventPrerequisite`, `Layout`, `CoursePlan`, `Enrolment`, `Attempt` | C R U D | C R U D | — | — | **everyone edits** the Tracker — owner, 7 Sep 26; since D121, 23 Sep 26, Import / Export too: admin and member have the same access — except the flex settings, a `Setting` (above), the admin's alone (D1014, 18 Oct 26) |
 
 **The day lock (29 Sep 26, D355, D450 — section 9):** the lock is columns of `ScheduleDay` (section 3), so it follows
 the ScheduleWeek family's row — an admin takes, releases and takes over a day (every scheduler is an admin; in
@@ -1510,11 +1513,10 @@ phase 4.1, 30 Sep 26); so has `AccessRequestSeen` (phase 4.4).
 Fable 2).** **User- or team-owned** (the owner is a person's `User`, or the free team): `ScheduleDay` (the lock), and
 every table with an own-row rule — `Person` (owned by his linked `User`; a person with no sign-in — D217 — by an
 admin team; round 3, Astra 3: a member edits his own row, which an organisation-owned table cannot allow), `Input`,
-`Attachment`, `InputAttachment`, `QualMark`, `LeaveBid`, `LeaveOpening`,
-`LeaveLedger`, `LeaveCounter`, `EditLogSeen`, `AccessRequest`, `AccessRequestSeen`, `User`. **Organisation-owned:** everything else —
+`Attachment`, `InputAttachment`, `QualMark`, `LeaveBid`, `EditLogSeen`, `AccessRequest`, `AccessRequestSeen`, `User`. **Organisation-owned:** everything else —
 `ScheduleWeek` (its `ownedBy` is a plain column, not the platform's owner), `Amendment`, `AmendmentRetraction`,
 `IssuedSignoff`, `TakeOverRequest`, `PlanningPuck`, `DayRemark`, `ChangeBatch`, `Qualification`, `Setting`, `SchemaVersion`,
-`EditLog`, `LeaveWar`, `LeavePersonProfile`, and the Tracker's tables.
+`EditLog`, `LeaveWar`, `LeavePersonProfile`, `LeaveOpening`, `LeaveLedger`, `LeaveCounter` (moved here 18 Oct 26 with D1008: every member reads every man's, only an admin writes — no own-row rule left), and the Tracker's tables.
 *(Note 12 Oct 26 — the one-rule build, owner D755 (3), D756, D763: an `Input` now carries SEVERAL people (`InputPerson`), and its own-row rule is no longer "the row's one person" — the §11 `Input` row says who may do what: its only person, its filer while everyone in it was put in by him, and anyone in it taking HIMSELF out. One owning `User` cannot express the last of these; the app holds it at its commit gate (`src/state/perms.ts inputBreach`, `ownPart`). How the store holds it — the owner being the filer with a server rule for "take myself out", or the rule on `InputPerson` — is for the table format written with the IT side (D473).)*
 
 **The server enforces, the browser mirrors.** Every rule above is a

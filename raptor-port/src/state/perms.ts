@@ -101,10 +101,12 @@ export const PERMS: Record<string, PermRow> = {
   [T.war]: row(cell('C R U D'), cell('R')),
   [T.bid]: row(cell('C R U D'), cell('R', 'C U D')),
   /* [OIL-AWARD-IS-A-GRANT] (29 Sep 26): every hand-given OIL award is ONE kind of record — a positive OIL ledger entry —
-     and keeps its OWN row: every member reads every man's (the grid draws every row, D402); the rest of the ledger stays
-     his own only, the gap between that and what the app shows filed as [LEDGER-READ-ASK] (both plan reads) */
+     and keeps its OWN row: every member reads every man's (the grid draws every row, D402). The rest of the ledger was
+     his own only, with the gap to what the app shows filed as [LEDGER-READ-ASK]; D1008 (18 Oct 26, "as recommended")
+     closed it the other way — every member reads every man's entries, figures and grants with their reasons, as the OIL
+     tracker and the figure breakdown have always shown; writing stays the admin's */
   [T.award]: row(cell('C R U D'), cell('R')),
-  [T.ledger]: row(cell('C R U D'), cell('', 'R'), NONE, NONE, ['LEDGER-READ-ASK']),
+  [T.ledger]: row(cell('C R U D'), cell('R')),
   [T.profile]: row(cell('C R U D'), cell('R')),
   [T.tracker]: row(cell('C R U D'), cell('C R U D')),
 }
@@ -448,6 +450,9 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'trk.pace': op(T.tracker, 'U'), 'trk.lulls': op(T.tracker, 'U'), 'trk.eventinfo': op(T.tracker, 'U'),
   'trk.catalogue': op(T.tracker, 'U'), 'trk.courses': op(T.tracker, 'U'), 'trk.gesture': op(T.tracker, 'U'),
   'trk.meta': op(T.tracker, 'U'),
+  /* …except the flex settings (D1006, D1014 — 18 Oct 26, narrowing D121): one record for the whole Tracker, its figures
+     and its on / off switch — a Setting, the admin's alone, like every other */
+  'trk.flex': op(T.setting, 'U'),
   /* the Tracker's own Undo / Redo, each one restore command ([DB-READINESS] group A, phase 4.1 — P4.1-TRACKER-RESTORE) */
   'tracker.undo': op(T.tracker, 'U'), 'tracker.redo': op(T.tracker, 'U'),
   /* accounts (D166, D204): one intent per command, each writing every key it needs — and
@@ -752,6 +757,8 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
         return `an admin's record (${where})`
       case 'lw.war': case 'lw.ledger': case 'lw.opening': case 'lw.oilpolicy': case 'lw.postouts': case 'lw.label': case 'lw.config':
       case 'plan':
+      /* the Tracker's flex settings (D1014): the one Tracker record a member never writes, whichever command carries it */
+      case 'trk.flex':
       case 'insights.role':
         return `an admin's record (${where})`
       default: break                       // the Tracker (the schedule and the week stash are refused above)

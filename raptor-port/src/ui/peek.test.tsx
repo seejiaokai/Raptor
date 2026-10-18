@@ -9,7 +9,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, loadWeek, writeSlot, afterSchedMutate } from '../state/store'
-import { markStructuralAdd } from '../engine/publish'
+import { markStructuralAdd, signOf, setDayApproved } from '../engine/publish'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { weekBundle } from '../engine/weeks-data'
@@ -149,6 +149,35 @@ describe('the preview reads the session stash, not just the pure seed', () => {
   })
 })
 
+/* D1010 (18 Oct 26, "as recommended"): View-only Sched's preview drew next week's WORKING copy, so a change made to a
+   published day and not yet issued (a swap, a row) showed to members there before it went out. On View-only Sched a
+   published day of next week shows its published version; Edit Schedule's preview keeps the working copy. */
+describe('D1010 — View-only Sched’s preview shows a published day as published', () => {
+  it('a row added to next Monday after it was published shows on Edit Schedule’s preview, not on View-only’s', async () => {
+    await act(async () => { loadWeek('20/07/2026') })
+    await act(async () => {
+      const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+      setDayApproved(0, true)
+      afterSchedMutate()
+    })
+    const rows = (DAYS[0] as any).dutywaves[0].rows
+    const ri = rows.length
+    await act(async () => {
+      rows.push({ role: 'ZZUNISSUED', id: '', str: '0900', end: '1000' })
+      markStructuralAdd(`dr:0.0.${ri}.role`)
+      afterSchedMutate()
+    })
+    await act(async () => { loadWeek('13/07/2026') })
+    await act(async () => { view.setPage('viewsched'); notify() })
+    expect($('#vWeek section.day.peek[data-peek-day="0"]')!.textContent, 'View-only: the published Monday').not.toContain('ZZUNISSUED')
+    await act(async () => { view.setPage('editsched'); notify() })
+    const edit = [...host.querySelectorAll('section.day.peek[data-peek-day="0"]')].map(n => n.textContent || '').join(' ')
+    expect(edit, 'Edit Schedule: the working copy').toContain('ZZUNISSUED')
+    await act(async () => { view.setPage('viewsched'); notify() })
+    expect($('#vWeek section.day.peek[data-peek-day="0"]')!.textContent, 'and back on View-only, still the published one').not.toContain('ZZUNISSUED')
+  })
+})
+
 /* ARCH-STACK 1C — sim `who` is FREE TEXT in the preview too (Codex PID-F02).
    The 1C peek fix must show the free-text who AND any overflow crew, and must
    never resolve a who that happens to equal a person id into a puck. */
@@ -198,5 +227,22 @@ describe('a nought-minute flying line is marked in the peek too (D49)', () => {
 
   it('a line NOBODY is on is not marked — the mark follows the warning exactly', () => {
     expect(marks(peekDayHTML(flyDay('10:00', '10:00', ''), 0, false)).length).toBe(0)
+  })
+})
+
+/* the night's fresh read of job 5 (3): the key drawn is stamped on the week, so a week holding the OTHER page's copy (a
+   resize remounts both previews under the page on screen) is re-drawn even when its own remembered key looks unchanged */
+describe('D1010 — the preview mounts by the key it drew', () => {
+  it('a week whose stamped key differs is re-drawn, whatever the caller remembers', async () => {
+    const { mountPeek, peekKey } = await import('./peek')
+    const root = document.createElement('div')
+    for (let i = 0; i < 7; i++) root.appendChild(document.createElement('section'))
+    const first = mountPeek(root, 7, '')
+    expect(root.dataset.peekKey).toBe(first)
+    root.dataset.peekKey = 'e|another page'
+    const marker = root.lastElementChild!
+    expect(mountPeek(root, 7, first)).toBe(peekKey())
+    expect(root.lastElementChild, 'the preview was drawn again').not.toBe(marker)
+    expect(root.dataset.peekKey).toBe(peekKey())
   })
 })

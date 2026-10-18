@@ -1,0 +1,173 @@
+{
+ "results": [
+  {
+   "step": "S1 two lines, nothing overlapping or past the screen, no sideways scroll",
+   "ok": true,
+   "note": "rows1 [70,70,70] rows2 [106,106,106,106] below true; first roster row 469; overlaps []; past edge []; page sideways 0; labels []; phone words true; top 20..420 of 440, card left 20; controls war-picker,war-new,lw-viewing,stage-now,bid-window,undermanned,legend-open",
+   "pic": "01-S1-admin-440.png"
+  },
+  {
+   "step": "S1 first roster row near 469 (was 564)",
+   "ok": true,
+   "note": "first roster row top 469px",
+   "pic": "01-S1-admin-440.png"
+  },
+  {
+   "step": "S1 edge: top lines up with the grid card from 431 up (20px)",
+   "ok": true,
+   "note": "top's left control 20px, grid card left 20px, top right 420 of 440; padding line1 20px line2 20px",
+   "pic": "01-S1-admin-440.png"
+  },
+  {
+   "step": "S2 two lines, nothing overlapping or past the screen, no sideways scroll",
+   "ok": true,
+   "note": "rows1 [70,70,70] rows2 [106,106,106,106] below true; first roster row 434; overlaps []; past edge []; page sideways 0; labels []; phone words true; top 20..580 of 600, card left 20",
+   "pic": "02-S2-admin-600.png"
+  },
+  {
+   "step": "S2 first roster row near 434",
+   "ok": true,
+   "note": "first roster row top 434px",
+   "pic": "02-S2-admin-600.png"
+  },
+  {
+   "step": "S2 edge: top lines up with the grid card (20px)",
+   "ok": true,
+   "note": "top's left control 20px, grid card left 20px",
+   "pic": "02-S2-admin-600.png"
+  },
+  {
+   "step": "S3 700 wide is two lines (the phone top)",
+   "ok": true,
+   "note": "rows1 [70,70,70] rows2 [106,106,106,106] below true; first roster row 434; overlaps []; past edge []; page sideways 0; labels []; phone words true; top 20..680 of 700, card left 20",
+   "pic": "03-S3-700.png"
+  },
+  {
+   "step": "S3 701 wide is the desktop strip (labels Period/Stage, \"+ New\", both stage moves in sight)",
+   "ok": true,
+   "note": "rows1 [76,76,76] rows2 [127,127,162,162,128,128] below true; first roster row 562; overlaps []; past edge []; page sideways 0; labels [Period,Stage,Bidding on,Under-manned]; phone words false; top 20..420 of 701, card left 20; + button reads \"+ New\"; stage moves: → BIDDING CLOSED / ← DRAFT; bidding label present: true; under-manned label: true",
+   "pic": "04-S3-701.png"
+  },
+  {
+   "step": "S4 440: tapping the stage button opens the menu with \"→ BIDDING CLOSED\" and \"← DRAFT\"",
+   "ok": true,
+   "note": "stage reads \"OPEN FOR BIDDING\"; menu {\"l\":22,\"r\":246,\"t\":123,\"b\":251,\"txt\":[\"→ BIDDING CLOSED\",\"← DRAFT\"]}",
+   "pic": "05-S4-440-menu-open.png"
+  },
+  {
+   "step": "S4 440: pressing \"→ BIDDING CLOSED\" changes the stage and closes the menu",
+   "ok": true,
+   "note": "stage now reads \"BIDDING CLOSED\" (was \"OPEN FOR BIDDING\"); menu open: false",
+   "pic": "06-S4-440-after-advance.png"
+  },
+  {
+   "step": "S4 440: moving it back returns the stage",
+   "ok": true,
+   "note": "menu from closed offered [\"→ PUBLISHED\",\"← OPEN FOR BIDDING\"]; after the move back the stage reads \"OPEN FOR BIDDING\" (was \"OPEN FOR BIDDING\")",
+   "pic": "08-S4-440-moved-back.png"
+  },
+  {
+   "step": "S4 440: a tap outside closes the menu and changes nothing",
+   "ok": true,
+   "note": "menu was open: true; after the outside tap menu open: false; stage reads \"OPEN FOR BIDDING\"",
+   "pic": "09-S4-440-after-outside-tap.png"
+  },
+  {
+   "step": "S4 600: tapping the stage button opens the menu with \"→ BIDDING CLOSED\" and \"← DRAFT\"",
+   "ok": true,
+   "note": "stage reads \"OPEN FOR BIDDING\"; menu {\"l\":22,\"r\":246,\"t\":123,\"b\":251,\"txt\":[\"→ BIDDING CLOSED\",\"← DRAFT\"]}",
+   "pic": "10-S4-600-menu-open.png"
+  },
+  {
+   "step": "S4 600: pressing \"→ BIDDING CLOSED\" changes the stage and closes the menu",
+   "ok": true,
+   "note": "stage now reads \"BIDDING CLOSED\" (was \"OPEN FOR BIDDING\"); menu open: false",
+   "pic": "11-S4-600-after-advance.png"
+  },
+  {
+   "step": "S4 600: moving it back returns the stage",
+   "ok": true,
+   "note": "menu from closed offered [\"→ PUBLISHED\",\"← OPEN FOR BIDDING\"]; after the move back the stage reads \"OPEN FOR BIDDING\" (was \"OPEN FOR BIDDING\")",
+   "pic": "13-S4-600-moved-back.png"
+  },
+  {
+   "step": "S4 600: a tap outside closes the menu and changes nothing",
+   "ok": true,
+   "note": "menu was open: true; after the outside tap menu open: false; stage reads \"OPEN FOR BIDDING\"",
+   "pic": "14-S4-600-after-outside-tap.png"
+  },
+  {
+   "step": "S5 member at 600: two lines, no \"+\", the stage is a plain label that opens nothing",
+   "ok": true,
+   "note": "rows1 [70,70] rows2 [106,106,106,106] below true; first roster row 433; overlaps []; past edge []; page sideways 0; labels []; phone words true; top 20..580 of 600, card left 20; \"+\" present: false; stage element is <SPAN>, reads \"OPEN FOR BIDDING\"; after a tap menu open: false",
+   "pic": "15-S5-member-600.png"
+  },
+  {
+   "step": "S6 440: grid card's own row still reads \"Rearrange\" and \"OIL tracker\"",
+   "ok": true,
+   "note": "card buttons (seen words): ▾ Manning | ⚙ | ⇅ Rearrange | ◷ OIL tracker | − | ＋; grid card padding 14px 20px 28px",
+   "pic": "16-S6-440-grid-card-top-row.png"
+  },
+  {
+   "step": "S6 600: grid card's own row still reads \"Rearrange\" and \"OIL tracker\"",
+   "ok": true,
+   "note": "card buttons (seen words): ▾ Manning | ⚙ | ⇅ Rearrange | ◷ OIL tracker | − | ＋; grid card padding 14px 20px 28px",
+   "pic": "17-S6-600-grid-card-top-row.png"
+  },
+  {
+   "step": "S6 grid card padding is the same at 440/600 as the phone rule would give at 430? (info)",
+   "ok": true,
+   "note": "padding at 430 8px 10px 20px, 440 14px 20px 28px, 600 14px 20px 28px, 701 14px 20px 28px (compare by eye: the card was not meant to change)",
+   "pic": ""
+  },
+  {
+   "step": "S7 390×844 admin: the top as before (two lines)",
+   "ok": true,
+   "note": "rows1 [70,70,70] rows2 [106,106,106,106] below true; first roster row 428; overlaps []; past edge []; page sideways 0; labels []; phone words true; top 10..380 of 390, card left 10",
+   "pic": "18-S7-admin-390.png"
+  },
+  {
+   "step": "S8 600→960 switches to the desktop strip live, nothing half-drawn",
+   "ok": true,
+   "note": "600: rows1 [70,70,70] rows2 [106,106,106,106] below true; first roster row 434; overlaps []; past edge []; page sideways 0; labels []; phone words true; top 20..580 of 600, card left 20 || 960: rows1 [130,130,130] rows2 [181,181,181,181,182,182] below true; first roster row 514; overlaps []; past edge []; page sideways 0; labels [Period,Stage,Bidding on,Under-manned]; phone words false; top 20..420 of 960, card left 20",
+   "pic": "20-S8-b-960x600.png"
+  },
+  {
+   "step": "S8 960→600 back to the two-line top, same as the start",
+   "ok": true,
+   "note": "back: rows1 [70,70,70] rows2 [106,106,106,106] below true; first roster row 434; overlaps []; past edge []; page sideways 0; labels []; phone words true; top 20..580 of 600, card left 20 (first row was 434)",
+   "pic": "21-S8-c-back-600x960.png"
+  },
+  {
+   "step": "B1 menu open at 600, resize to 900: the menu does not stay floating",
+   "ok": true,
+   "note": "menu was open: true; after the resize menus 0, scrims 0; phone words false; stage moves in sight: true",
+   "pic": "23-B1-b-resized-900.png"
+  },
+  {
+   "step": "B2 440: real callsign \"Sidewinder\" shown, \"Viewing as\" kept whole, nothing past the edge",
+   "ok": true,
+   "note": "rows1 [70,70] rows2 [106,106,106,106] below true; first roster row 433; overlaps []; past edge []; page sideways 0; labels []; phone words true; top 20..420 of 440, card left 20; seen words \" Viewing as Sidewinder\"; callsign cut: false, ellipsis style ellipsis",
+   "pic": "24-B2-440-real-Sidewinder.png"
+  },
+  {
+   "step": "B2 440 stress (callsign text swapped in the page for a 30-letter one): cut with \"…\", \"Viewing as\" intact, inside the screen",
+   "ok": true,
+   "note": "seen \" Viewing as Wolverine-Nightfall-Extra-Long\"; cut true, text-overflow ellipsis, right edge 410 of 440; overlaps [] past [] page sideways 0",
+   "pic": "25-B2-440-stress-long.png"
+  },
+  {
+   "step": "B2 390: real callsign \"Sidewinder\" shown, \"Viewing as\" kept whole, nothing past the edge",
+   "ok": true,
+   "note": "rows1 [70,70] rows2 [106,106,106,106] below true; first roster row 427; overlaps []; past edge []; page sideways 0; labels []; phone words true; top 10..380 of 390, card left 10; seen words \" Viewing as Sidewinder\"; callsign cut: false, ellipsis style ellipsis",
+   "pic": "26-B2-390-real-Sidewinder.png"
+  },
+  {
+   "step": "B2 390 stress (callsign text swapped in the page for a 30-letter one): cut with \"…\", \"Viewing as\" intact, inside the screen",
+   "ok": true,
+   "note": "seen \" Viewing as Wolverine-Nightfall-Extra-Long\"; cut true, text-overflow ellipsis, right edge 370 of 390; overlaps [] past [] page sideways 0",
+   "pic": "27-B2-390-stress-long.png"
+  }
+ ],
+ "problems": []
+}

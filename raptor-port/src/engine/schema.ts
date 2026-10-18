@@ -201,6 +201,9 @@ export type Input = {
   date: string
   /** Last day of a span, same format — seed; screen. */
   endDate?: string
+  /* D999 (18 Oct 26): a downchit's end as it was filed, kept the first time an upchit cuts it — what a later move of the
+     upchit may give back, and never more; gone once it is given back whole */
+  firstEnd?: string
   /** The row's own anchor year for bare labels — engine (boot) and screen (on create/edit). */
   yr?: number
   /** All day, or a window — seed; screen. */

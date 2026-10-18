@@ -735,3 +735,60 @@ describe('a control tapped repeatedly does not move', () => {
     calPage(2025, 12); expect(calMonth()).toBe('2025-12')
   })
 })
+
+/* D1012 (18 Oct 26, "as recommended"): in a calendar drawn inside a form (the OIL question's "Only some days…", an
+   input's own window) Escape with the month or year list open closed the whole FORM — the form hears Escape on the way
+   down at the document, before anything of the calendar — and a waiting swap was then not made. Escape closes only the
+   lists; a second Escape is the form's. */
+describe('D1012 — Escape with the lists open closes only the lists', () => {
+  it('the form behind hears nothing until the lists are shut; then the second Escape is its own', () => {
+    const formEsc = vi.fn()
+    const onForm = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.stopPropagation(); formEsc() } }
+    document.addEventListener('keydown', onForm, true)
+    try {
+      render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)
+      fireEvent.click(t('dcal-title'))
+      expect(t('dcal-lists')).toBeTruthy()
+      fireEvent.keyDown(document.activeElement || document.body, { key: 'Escape' })
+      expect(q('dcal-lists'), 'the lists are shut').toBeNull()
+      expect(t('dcal-grid'), 'the dates are back').toBeTruthy()
+      expect(formEsc, 'the form was left open').not.toHaveBeenCalled()
+      fireEvent.keyDown(document.activeElement || document.body, { key: 'Escape' })
+      expect(formEsc, 'the second Escape is the form’s').toHaveBeenCalledTimes(1)
+    } finally { document.removeEventListener('keydown', onForm, true) }
+  })
+})
+
+/* the night's fresh read of job 5 (4): with the lists open, an Escape typed in a box elsewhere on the page is that box's */
+describe('D1012 — the lists take only their own Escape', () => {
+  it('an Escape from a box outside the calendar leaves the lists open and reaches the box', () => {
+    render(<div><input data-testid="outside" /><DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} /></div>)
+    fireEvent.click(t('dcal-title'))
+    const box = t('outside') as HTMLInputElement
+    box.focus()
+    const heard = vi.fn()
+    box.addEventListener('keydown', (e: KeyboardEvent) => { if (e.key === 'Escape') heard() })
+    fireEvent.keyDown(box, { key: 'Escape' })
+    expect(heard).toHaveBeenCalledTimes(1)
+    expect(t('dcal-lists'), 'the lists stay open').toBeTruthy()
+  })
+})
+
+/* the fix read of the night: the keyboard on the FORM around the calendar (its card took it on a click) is still the
+   calendar's Escape while the lists are open */
+describe('D1012 — the keyboard on the form around the calendar', () => {
+  it('Escape with the focus on the box around the calendar shuts only the lists', () => {
+    const formEsc = vi.fn()
+    const onForm = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.stopPropagation(); formEsc() } }
+    document.addEventListener('keydown', onForm, true)
+    try {
+      render(<div data-testid="card" tabIndex={-1}><DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} /></div>)
+      fireEvent.click(t('dcal-title'))
+      ;(t('card') as HTMLElement).focus()
+      fireEvent.keyDown(t('card'), { key: 'Escape' })
+      expect(q('dcal-lists'), 'the lists are shut').toBeNull()
+      expect(formEsc, 'the form was left open').not.toHaveBeenCalled()
+    } finally { document.removeEventListener('keydown', onForm, true) }
+  })
+})
+

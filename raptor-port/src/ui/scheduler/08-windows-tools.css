@@ -59,10 +59,14 @@
    AND IT RUNS UP TO A THIN STRIP AT THE TOP (owner, D537, the same day — "pretty ugly that there's a lot of space to the
    top"): the limit was 90%, which left a tenth of the screen of dimmed page above a tall window. Now the visible screen
    less 24px — the rounded top and a sliver of the page still show, so it still reads as a sheet. A short window is
-   untouched: it is as tall as its content, at the bottom. */
+   untouched: it is as tall as its content, at the bottom.
+   IN THE MIDDLE OF THE SCREEN, NOT PINNED TO ITS FOOT (owner D997, 18 Oct 26 — "All in the middle", after D995 put the
+   schedule's input window there): every pop-up window on a phone stands in the middle, 12px from the sides, with all
+   four corners rounded; the height limit is D536/D537's, unchanged, so a tall one still fills the screen to a thin
+   strip at the top and the foot. */
 @media(max-width:820px){
-  .modal{align-items:flex-end;padding:0}
-  .modal-box{width:100%;max-width:100%;max-height:calc(100% - 24px);max-height:calc(100dvh - 24px - env(safe-area-inset-top));border-radius:16px 16px 0 0}
+  .modal{align-items:center;padding:0 12px}
+  .modal-box{width:100%;max-width:100%;max-height:calc(100% - 24px);max-height:calc(100dvh - 24px - env(safe-area-inset-top));border-radius:16px}
   .modal-foot{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
 }
 /* ---- the Duty-templates editor (owner, 13 Aug 26) — the DutyTplModal ---- */
@@ -329,6 +333,14 @@
 /* a NOTE's crew (a long work day) lights in the note's own grey — the bar of its line in the list, the ring the puck
    wears at rest (04-pucks-sections.css .puck.warn.note) — never the advisory amber (his find, 11 Oct 26) */
 .puck.wfoc.notef{outline-color:#8A96A3}
+/* D1013, D1017 (option A, his approval of the pictures, 18 Oct 26): the light is an outline, as the dotted "breaks
+   tomorrow" ring and the dashed late-show ring are, so it hid them; a lit puck that wears one keeps it — it still stands
+   out, because everything the list does not name is dimmed */
+/* …but not an ECHO (`.wfoc.echo` — the same man on the OTHER day of the focused warning, already drawn dashed and quieter
+   on purpose, geometry.spec.ts "the cross-day row"): that older mark stays as built; whether it should give way to the
+   dotted ring is put to him (the night of 18 Oct 26) */
+.puck.wfoc.boxdot:not(.echo){outline:var(--dot-w,1.5px) dotted var(--hard)!important;outline-offset:2px!important}
+.puck.wfoc.boxdash:not(.echo){outline:2px dashed var(--hard)!important;outline-offset:0!important}
 /* B14 · the SAME aircrew on the other days of the week — dashed and quieter, so
    a cause sitting on the day before (crew rest, a late land, a double turn) is
    traceable without competing with the puck that actually raised the warning

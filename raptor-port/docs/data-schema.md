@@ -152,6 +152,7 @@ truth for what each type means; the fields below are what a record carries.
 | `person` | string | **THE OLD SHAPE since the one-rule build (12 Oct 26 — D756): no command writes it any more.** A record has `people` or `person`; one saved before the build — and a seed literal left verbatim (`engine/inputs.ts`, `engine/week2.ts`) — keeps `person`, reads as a one-person input for ever (`peopleOf`) and is rewritten with `people` the first time who is in it changes — nothing stored is converted (D56). *As it was:* a PEOPLE id — a person's, or one of the two PLACEHOLDERS `allavail` / `all` for an input filed for "whoever is free" (D700, D702, 9 Oct 26): then no name is stored at all, the record is one of six kinds, one day, never in a group (`engine/inputs.ts placeholderProblem`; held at the save boundary), and `by` is whose OIL answer everyone behind it follows (D711) |
 | `date` | string | day, display form (`'Jul 13'`) |
 | `endDate` | string? | last day of a multi-day input |
+| `firstEnd` | string? (ISO `yyyy-mm-dd`) | a DOWNCHIT's last day as it was filed, kept the first time an upchit cuts it short (owner D999, 18 Oct 26) — with its year, unlike `date`; dropped when its dates are changed by hand or another medical cuts it: an upchit moved later gives the days back up to the day before its new date, never past this; removed once given back whole. Absent on every other input, and on a downchit no upchit has cut |
 | `yr` | number | the anchor year the bare date label belongs to — written on create/edit (`src/ui/inputedit.tsx:712`, `src/ui/InputsPage.tsx:391`, `src/leavewar/sync.ts:323`) and back-filled at boot on any row without one (`src/state/store.ts:602`); part of the content key `inpKey` |
 | `allday` | boolean | all day, or a window |
 | `s`, `e` | number? | window start / end in **minutes from midnight** (when not all-day) |
@@ -641,7 +642,11 @@ overwrites; one write is one command. An old whole record that is still stored (
 standalone Tracker) is read as it stands, and converted to rows at its next write; one that cannot be split (bare names
 from before the ids) is kept whole. A browser's old records are converted once at boot by the fold's `tracker` converter
 (`src/tracker/fold.ts`, registered by `src/boot.ts` — the last of the eight: the store's format is 6). The layouts, marks,
-dates, pace, lulls, plans and flags keep their keys. **The chart a signed-in person has open is his own place** (D376),
+dates, pace, lulls, plans and flags keep their keys. **The flex settings (18 Oct 26 — D1006, D1014, D1018)** are one
+row for the whole Tracker, `v3:master:flex` = `{ on: boolean, from: number[6] }` — the switch and the six "From" days
+(defaults 7, 14, 21, 31, 60, 120: each a whole number ≥ 1, each above the one before); missing or damaged reads as the
+defaults; written only by an admin, as its own command `trk.flex` (a `Setting` in `data-model.md` §11); a backup of every
+chart carries it as `charts.flex`. **The chart a signed-in person has open is his own place** (D376),
 kept on his browser under `ocuLocal:who:<id>:lastSyl:<course>` — never written into the course's shared `v3:<course>:plan`,
 whose `sylId` names the course's own chart (the standalone Tracker, nobody signed in, keeps the one shared answer).
 Since the seam the Tracker's data flows through the
@@ -711,8 +716,15 @@ A mark record is `{ g, f, fd, d, by?, at? }` — grade code, failure count,
 one ISO date per failure (oldest first, null when undated), the done date,
 and since 9 Sep 26 **who** made the last write (Raptor's `HOOKS.whoami()`
 display name, absent when unknown) and **when** (ISO instant). `dates[s]`
-(`lastSyll, lastCurr, downDays, upchit`) carries the same two stamps. Undo
-snapshots restore them verbatim.
+(`lastSyll, lastCurr`) carries the same two stamps. Undo
+snapshots restore them verbatim. **Since 18 Oct 26 (D1002, D1005) nothing writes `downDays` or `upchit`:** the typed
+"No. of Down Days" and the "Upchit Date" box went; a record that still holds them loads as it is and the two fields are
+left unread (D56 — no conversion).
+
+**A pace record** `v3:<course>:pace:<id>` = `{ epw, target, target2, courseStart? }` — per course and student, whatever
+the chart — the pace, End date A and B, and **since 18 Oct 26 (D1003, D1018) the course start** (an ISO day, or null):
+the day the student's down days are counted from, set in "+ Add" (today by default — written with a fresh pace only
+when he has none) and changed in the Info panel. It travels in a backup inside `pace` with no change to the file.
 
 ### The person link — `pid` on the entry (`v3:links` is legacy)
 
@@ -726,6 +738,15 @@ another person, is refused with a message). The 9 Sep 26 record
 `v3:links` = `{ [course]: { [studentName]: personId } }` is read once by
 the migration, folded into `pid`, and deleted; a file's `links` block is
 read the same way on Import and never written by Export.
+
+**The medical rider (18 Oct 26 — D1002, D1003, D1018): the down days are read, never stored.** The same bridge carries
+a third channel, each man's downchits (HL, OML, ATT C, ATT B) worked out on Raptor's side by `peoplewire.ts
+medForTracker` from `INPUTS` into `{ [personId]: { iid, type, startIso, endIso, half, firstEnd?, cutOn? }[] }` — plain
+ISO days, the row's own year resolved there; `firstEnd` / `cutOn` only where an upchit cut the input and it keeps the
+end it was filed with (D999). The Tracker counts a student's down days from it through his `pid` (`core.js
+downDaysOf`: from his course start to today, a half day ½, each input clipped to that span). Nothing of it is saved in
+the Tracker's store or written to a backup — the Inputs stay the one record of a medical day; the standalone Tracker
+gets nothing and shows "—".
 
 **A syllabus is a syllabus id since 1B-ii (`[TRK-CSID]`, 13 Sep 26).** The
 `<syl>` segment above is a syllabus id: built-ins carry a deterministic

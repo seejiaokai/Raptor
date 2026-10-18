@@ -208,14 +208,17 @@ describe('undo / redo on the bar, for everyone (core.js)', () => {
 
   /* RE-EXPRESSED 13 Oct 26 (owner D801 — a date is PICKED on the app's calendar, never typed; the read of the Tracker's
      date boxes, F4). This test typed "2026-01-0" then "2026-01-05" into Last Flown and proved the two keystrokes were one
-     step. The rule it pinned still stands where a box is typed (the down days here; the pace) — and a date box has no
-     keystrokes any more: each day picked is a step of its own, so one Undo goes back one pick. */
+     step. The rule it pinned still stands where a box is typed (the pace) — and a date box has no
+     keystrokes any more: each day picked is a step of its own, so one Undo goes back one pick.
+     RE-POINTED 18 Oct 26: the typed down-days box it drove is gone (owner D1002, D1005 — worked out from the Inputs); the
+     pace, the one box still typed, carries the two-keystrokes rule, and the course start (D1003) the "different box". */
   it('keystrokes into one TYPED box within two seconds are ONE step; a date is picked, and each day picked is a step of its own', async () => {
     ;(core.dates as any)[Z] = { lastSyll: null, lastCurr: null }
-    await core.setDownDays(Z, '3'); await core.setDownDays(Z, '31')
-    expect(core.undoWhat()).toBe('the down days for STUDENT Z')
+    const pace0 = (core as any).paceOf(Z).epw
+    await (core as any).setEpw(Z, '3'); await (core as any).setEpw(Z, '3.5')
+    expect(core.undoWhat()).toBe('the pace for STUDENT Z')
     await core.doUndo()
-    expect((core.dates as any)[Z].downDays, 'both keystrokes were one step').toBeUndefined()
+    expect((core as any).paceOf(Z).epw, 'both keystrokes were one step').toBe(pace0)
     expect(core.canUndo()).toBe(false)
     await core.setLastCurr(Z, '2026-01-04'); await core.setLastCurr(Z, '2026-01-05')
     expect(core.undoWhat()).toBe('Last Flown (Currency) for STUDENT Z')
@@ -225,10 +228,10 @@ describe('undo / redo on the bar, for everyone (core.js)', () => {
     expect((core.dates as any)[Z].lastCurr).toBeNull()
     expect(core.canUndo()).toBe(false)
     /* …but a different box is a different step */
-    await core.setDownDays(Z, '3'); await core.setUpchit(Z, '2026-02-01')
+    await (core as any).setEpw(Z, '3'); await (core as any).setCourseStart(Z, '2026-02-01')
     await core.doUndo()
-    expect((core.dates as any)[Z].upchit).toBeUndefined()
-    expect((core.dates as any)[Z].downDays).toBe('3')
+    expect((core as any).paceOf(Z).courseStart || null).toBeNull()
+    expect((core as any).paceOf(Z).epw).toBe('3')
   })
 
   it('Ctrl+Z undoes, Ctrl+Y / Ctrl+Shift+Z redo — never from inside a text box or under a question', async () => {
@@ -1202,7 +1205,7 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect((C.marks as any)[B]['ST-01']).toEqual(m1)
     await C.doRedo()
     expect((C.marks as any)[B]['ST-01']).toEqual(m2)
-    /* the two date writers on the mark, then the four on the dates record */
+    /* the two date writers on the mark, then the two on the dates record */
     await C.setDoneDate(B, 'ST-01', '2026-08-10')
     expect((C.marks as any)[B]['ST-01'].by).toBe('Second')
     await C.setFailDate(B, 'ST-01', 0, '2026-08-11')
@@ -1211,14 +1214,15 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     await C.setLastCurr(B, '2026-01-05')
     expect((C.dates as any)[B]).toMatchObject({ lastCurr: '2026-01-05', by: 'Second' })
     expect((C.dates as any)[B].at).toMatch(ISO)
-    /* nobody wired: `by` is omitted, never an empty name */
+    /* nobody wired: `by` is omitted, never an empty name (RE-POINTED 18 Oct 26: the typed down days and the Upchit box
+       that wrote this record went — D1002; Last Flown is the dates record's writer now) */
     setWhoami(null)
-    await C.setDownDays(B, '2')
-    expect((C.dates as any)[B].downDays).toBe('2')
+    await C.setLastCurr(B, '2026-01-07')
+    expect((C.dates as any)[B].lastCurr).toBe('2026-01-07')
     expect('by' in (C.dates as any)[B]).toBe(false)
     expect((C.dates as any)[B].at).toMatch(ISO)
-    await C.setUpchit(B, '2026-02-01'); await C.setLastSyll(B, '2026-01-06')
-    expect((C.dates as any)[B]).toMatchObject({ upchit: '2026-02-01', lastSyll: '2026-01-06', lastCurr: '2026-01-06' })
+    await C.setLastSyll(B, '2026-01-06')
+    expect((C.dates as any)[B]).toMatchObject({ lastSyll: '2026-01-06', lastCurr: '2026-01-06' })
     while (C.canUndo()) await C.doUndo()
   })
 
@@ -1430,6 +1434,22 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     const out = await C.collectStudents()
     expect(Array.isArray(out.sylcat), 'a v3 export carries an identity-only sylcat').toBe(true)
     expect(FMT.buildFile({ students: out, savedAt: 'x' }).contains.links, 'the separate links block is retired').toBe(false)
+  })
+
+  /* D1015 (18 Oct 26): a CURRENT file whose student marks point at a chart that is in neither the file nor this Tracker is
+     not an older file — the refusal says the chart is missing, in his wording B; the older-file words stay for older files
+     (the test above), and nothing is written either way */
+  it('D1015: a v3 student block for a chart neither the file nor the Tracker has is refused with the not-carried words', async () => {
+    await expect(C.applyStudents({ courses: ['NOCH'], sylcat: [], byCourse: { NOCH: { plan: { sylId: 'scmissing' }, lulls: {}, pace: {}, bySyllabus: { scmissing: { roster: [{ id: 'm1', name: 'MIKE' }], marks: {}, dates: {} } } } } }, null, 3))
+      .rejects.toThrow(/belong to a chart this file doesn.t carry/)
+    expect(C.courseIdOf('NOCH'), 'nothing was written').toBeNull()
+    const parsed = {
+      version: 3,
+      charts: { sylcat: [], syllabi: {}, order: [], layouts: {}, eventInfo: {} },
+      students: { sylcat: [], courses: ['NOCH2'], byCourse: { NOCH2: { plan: { sylId: 'scgone' }, lulls: {}, pace: {}, bySyllabus: { scgone: { roster: [{ id: 'm2', name: 'MAX' }], marks: {}, dates: {} } } } } },
+      links: null,
+    }
+    expect(C.normalizeImport(parsed).studentsRefused, 'the file turns the students away; the import then says D1015’s words (core.js)').toBe(true)
   })
 
   it('a v3 student reference described in the CHARTS catalogue (not students.sylcat) resolves — completeness is the UNION (review CSID-IR-03)', () => {

@@ -37,6 +37,7 @@ const RECORDS: Record<string, string> = {
   'engine/inputs.ts': 'the home of the list, of the two funnels by date (inputsOn — records; inputLinesOn — lines) and of the view; sansAvailOn finds one man\'s SANS offer by who is IN the record (namedOf) and hands back the record',
   'engine/events.ts': 'MIXED — a day\'s inputs as the rules read them (mapInp, the whole-day list, both midnight tails) read LINES; a ground row\'s own request, for its clash grade (shiftEvHard), reads the record',
   'engine/weekctx.ts': 'MIXED — who worked a neighbour day (workedSet) reads LINES; the live filing and the neighbours\' issued copies read records',
+  'tracker/peoplewire.ts': 'the Tracker medical rider (D1002): each man downchit RECORDS handed to the Tracker as plain dates; a medical kind holds one person',
   'engine/medical.ts': 'the medical lists and trim plans: it hands the records themselves to the one applier and tells them apart by identity — a medical kind holds one person',
   'engine/canonical.ts': 'a request\'s row in the published comparison',
   'engine/drafts.ts': 'loads: a version or a plan against the live requests',

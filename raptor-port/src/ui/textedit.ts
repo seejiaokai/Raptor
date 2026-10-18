@@ -349,6 +349,16 @@ export function routeKeyDown(e: KeyboardEvent) {
      has no funnel key, so it is left to blur and let boardChange's own revert
      branch put the model value back. */
   const bx = t && t.closest && t.closest('[data-bfld],[data-ifld]') as HTMLElement | null
+  /* AN INPUT'S OWN BOXES ON THE BOARD (`data-ifld` — its start, end and remarks) put the input back on Escape, as the
+     week's `[data-inp]` cells above do (D1011's fresh read, 5): the time box kept a typed time and its blur saved it.
+     Enter is left as it is — the input's own commit, and the remarks box's branch below. */
+  if (bx && e.key === 'Escape' && (bx as any).dataset.ifld) {
+    const [tail, field] = String((bx as any).dataset.ifld).split('.')
+    const inp = inpById((iuParts('iu:' + tail) || { iid: tail }).iid); e.preventDefault()
+    if (inp) (bx as any).value = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)
+    bx.blur()
+    return
+  }
   if (bx && (bx as any).tagName === 'TEXTAREA') {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); bx.blur() }
     else if (e.key === 'Escape') {
@@ -357,6 +367,16 @@ export function routeKeyDown(e: KeyboardEvent) {
       if (k) { const v = boxText(k); (bx as any).value = String(v == null ? '' : v) }
       bx.blur()
     }
+    return
+  }
+  /* D1011 (18 Oct 26, "as recommended"): the board's TIME boxes — take-off, landing, brief, a duty's or a programme row's
+     start and end — are still <input>s, which the branch above leaves to themselves, so Escape kept the typed time and the
+     blur saved it. Escape puts the old time back, folded as the box shows it (fmtTxt — 08:00), and leaves; the blur then
+     finds the box unchanged and saves nothing. Enter stays the input's own commit. */
+  if (bx && (bx as any).tagName === 'INPUT' && e.key === 'Escape' && (bx as any).dataset.bfld && TIME_TXT.test((bx as any).dataset.bfld)) {
+    e.preventDefault()
+    const v = boxText((bx as any).dataset.bfld); (bx as any).value = fmtTxt(v)
+    bx.blur()
     return
   }
   /* an IN-TIME line gets the same two keys (21 Aug 26, with the per-line

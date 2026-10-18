@@ -20,31 +20,86 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/scheduling-phone-fixes-6d4adf -->
-### `claude/scheduling-phone-fixes-6d4adf` — D994'S FIRST BATCH: THE SCHEDULING PAGES ON A PHONE — written 18 Oct 26, verify before use
-- **Built and checked (WALK), waiting for his look on his iPhone and his "merge live".** (1) The schedule's own input window
-  (a Personal Inputs line, an Unavailable row, the board's "+ Inputs" / "+ Add") on a phone is as tall as what is in it
-  up to the visible screen less 24px (D706), in the MIDDLE of the screen — his D995 after his first look at the preview
-  (first built at the foot); wider than 620 unchanged.
-  (2) A finger on it never scrolls what is behind (D686) — the shell's guard moved whole to `floatwin.ts holdPageScroll`,
-  one body for both. (3) The Inputs list scrolls in its own box at every width: its 875px table widened a sideways phone's
-  page to 907, so "+ Input" opened half off it. (4) `[OIL-NOTIFY-SEEN]` (5): an Unavailable hand-over by an armed tap parks
-  the crew drawer on a phone. `[PHONE-WIDE-BOARD-BLANK]` CLOSED and archived (fixed and live since 6 Oct 26).
-- **Checks:** red first (1 unit test, 7 browser tests in `raptor-port/e2e/sched-phone.spec.ts` — 6 red on the old build,
-  the board's swipe test a guard); walk `scripts/handpass/spf-walk.mjs` 45 PASS · 0 FAIL · 2 with no door, 24 pictures;
-  4 break tests caught; the full gate set green (below). No code read (WALK). Evidence and his look card:
-  `raptor-port/docs/handpass/2026-10-18-sched-phone.md`.
-- **Left out on purpose (each needs his answer or his phone):** `[WEEK-ADD-TAP-PHONE]`, `[OIL-NOTIFY-SEEN]` (6),
-  `[VH-SHEETS-IPHONE]`, `[SHELL-SIDEWAYS-BAR]`, `[BUBBLE-SMALL-SEEN]`.
-- **Next:** the pull request's checks on GitHub; his look and "merge live"; then D994's next area's small fixes. His
-  questions still wait until he says so.
-- **Rulings:** D995 (the schedule's input window in the middle of a phone's screen — scheduler; narrows D537); design
-  lesson 6 written for it (§9).
+<!-- now:claude/window-middle-d996 -->
+### `claude/window-middle-d996` — THE NIGHT OF 18 OCT 26 (his /overnight, 12 hours from 07:47 his PC's time, report by about 18:45) — written 18 Oct 26, verify before use
+- **After a compaction: re-read this block, the overnight guide (`.claude/skills/overnight/SKILL.md`) and the files of the
+  step in hand before the next change; note the compaction here with its time.** Compactions: one, after the morning report (18 Oct 26, about 12:00 his PC's time), on his "U can compact first".
+- **His words:** "Nvm I approve the mock ups as recommended. Do the recommended jobs and allow the chat to auto compact at
+  97% and continue working I'm sleeping" — given before the job list reached him, so the night's jobs are the agent's
+  recommended list below (the overnight command's "go"). Compaction: the guard is off (`compact-ready.mjs --away`); the app
+  compacts by itself near full and the night carries on (his settings untouched).
+- **Pictures drawn before he slept** (his "U can do the pictures now"): the Leave War top at 440 and 600, the crew-rest ring
+  on every copy, the Tracker's down days, its flex settings and legend — scripts `scripts/handpass/mock-lw-top-700.mjs`,
+  `mock-rest-ring-copies.mjs`, `mock-trk-down-days.mjs`, `mock-trk-flex-legend.mjs`; pictures under
+  `docs/img/handpass/2026-10-18-*`; every helper's report and his answer in
+  `raptor-port/docs/superpowers/briefs/2026-10-18-night-pictures.md`. Recorded D1016 (Leave War top), D1017 (crew-rest
+  ring, option A), D1018 (Tracker down days, flex, legend). The Leave War's short button words picture (section 1b) is NOT
+  approved — a question for the morning.
+- **The night's jobs, in order** (each its own branch cut from `main` unless named; each its own pull request when its
+  check closes; nothing merges):
+  1. **This branch** (DONE — gates green but one test re-expressed, pull request open) — D996/D997 (every pop-up window in the middle of a phone's screen), built and walked 7/7 on 18 Oct 26:
+     the full gate set under the lock, push (`git push -u origin HEAD:refs/heads/claude/window-middle-d996` — never a bare
+     push), its pull request, one fresh read of design lesson 6's widening (D941) and of the three new short lines
+     D1016–D1018 against their full rows (D138). ~45 min.
+  2. **D1008 + D1015** on `claude/oil-table-trk-words` — the access table (`docs/data-model.md` §11, `state/perms.ts`, its
+     test: every member sees every man's OIL entries) and the Tracker import's refusal words (wording B). FULL for the table
+     (who may see), its walk small; one fresh Opus read. ~1.5 h.
+  3. **D1000 + D1016** on `claude/lw-top-700` — the Leave War's two-line top up to 700 wide. WALK (layout at many widths).
+     ~1 h.
+  4. **D1013 + D1017** on `claude/rest-ring-copies` — the crew-rest ring and chip on every copy; the open list keeps the
+     ring (option A). WALK (a shared drawer — roll-call of every place a puck is drawn). ~2.5 h.
+  5. **The scheduler's small batch** on `claude/sched-small-batch` — D1010 (View-only's next-week preview shows a
+     published day's published version), D1011 (Escape restores the board's time boxes), D1012 (Escape closes only a
+     calendar's month/year list), D710 (the delete list names the notes he was taken off). FULL (D1010: what members see of
+     the published record). ~4.5 h.
+  6. If time and the allowance are left: **D999** (a moved upchit gives the downchit its days back — FULL, saved data),
+     then **the Tracker's down days, flex and legend** (D1002–D1007, D1014, D1018 — FULL, about 7 h alone; not tonight
+     unless everything above is done).
+  Reads: a fresh, blind Opus read of each job's finished code (D790, D903 — no Fable); every one on `[NO-ASTRA-LIST]`.
+  Walkers Sonnet 5.5 (D787). Gates under the PC lock (D228). Stop starting jobs at about 17:45 his PC's time, or at 90%
+  of the weekly allowance (69% at the start).
+- **Questions waiting for him:** (1) the Leave War grid card's short button words up to 700 wide ("⇅", "OIL" — "−" and "+"
+  stay on the first line, 5 more rows at 440 than today): build? Recommended yes; waits: nothing tonight
+  (`docs/img/handpass/2026-10-18-lw-top-700/6-440-proposed-short-words.png`). (2) The overnight retry trial
+  (`[OVERNIGHT-RETRY-TRIAL]`, D885) was not run: its setting is read when a chat starts, so it must be set before he opens
+  the next /overnight chat.
+- **THE NIGHT'S END STATE (11:25 his PC's clock):** EVERY job of the recommended list AND both "if time" jobs are BUILT,
+  WALKED, READ BY A FRESH BLIND OPUS READER (findings fixed) and GATED, on ONE branch and ONE pull request (534), pushed at
+  `c4bc04c5c` — GitHub's whole set GREEN on it (both runs). The picture page: https://claude.ai/artifact/2K1LMjMnoUraM2cHEfeRnw;
+  the preview: https://raptor-git-claude-window-middle-d996-kai-e2f5.vercel.app. Every check: `raptor-port/docs/handpass/2026-10-18-night-jobs.md` (jobs 2–7) and `…/2026-10-18-sched-phone.md`
+  (job 1). Jobs: (1) D996/D997 phone pop-up windows in the middle; (2) D1008 the OIL access table, D1015 the Tracker
+  import's words; (3) D1000/D1016 the Leave War's two-line top up to 700; (4) D1013/D1017 the crew-rest ring on every
+  copy; (5) D1010 View-only's preview shows a published day as issued, D1011 Escape on the board's time boxes, D1012
+  Escape in a calendar's lists, D710 note lines in the change history; (6) D999 a moved upchit gives the downchit its
+  days back; (7) the Tracker: D1004 currency without down days, D1007 the Legend, D1006/D1014 the flex settings,
+  D1002/D1003/D1005 the down days from the Inputs (all with D1018). Walks: 7/7, 14/14, 28/28, 16/18 (2 = an OLDER fault
+  filed [TRACE-FOCUS-STAYS]), 23/23, 34/34, 43/43. **The morning report was given 18 Oct 26 (11:45); NEXT for a new chat: his look on his iPhone, his answers to the four
+  questions, then his "merge live" of pull request 534** (was: the MORNING REPORT) (the overnight guide's Part 3):
+  read GitHub's run first (both runs of `c4bc04c5c`); one Artifact page of the pictures (the ruling pictures and the
+  walks' best shots, sharp, tap to zoom); the guard back on (`compact-ready.mjs --back`); this block rewritten by the
+  session-handoff guide; ONE notification; `git switch --detach` as the last command. The Vercel preview link: the
+  `vercel[bot]` comment on pull request 534. Weekly allowance 72% at 10:35. **New words for his look** (the writing guide's
+  cold read is owed on each): "What the balls and bars mean"; "Flex settings not brought in: they could not be saved. Set
+  them again in ⚙."; "Flex settings not brought in: only an admin can change them."; "No medical inputs since the course
+  start."; the spoken "none counted yet"; the flex window's refusals ("Each From day must be later than the one above
+  it.", "Each From day is a whole number, 1 or more."); "…now ends <date>, its days given back".
+  **Questions waiting for him:** (1) the Leave War card's short words up to 700 (pictures brief §1b; recommended yes);
+  (2) the floating calendar over a date box still closes whole on Escape — its lists first too? (recommended yes);
+  (3) the dashed "same man, other day" echo vs the dotted ring when tomorrow's warning is focused — keep the echo
+  (recommended); (4) an upchit DELETED: give the downchit its days back too? (recommended yes, a small follow-up);
+  (5) the overnight retry trial (set before the next /overnight).
+- **HIS LOOK AND ANSWERS (18 Oct 26, after the compaction):** "Looks good. As recommended. Merge live" — recorded D1019 (leave-war: the
+  grid card's short words up to 700, to build), D1020 (scheduler: the floating calendar's Escape shuts its lists first, to
+  build), D1021 (scheduler: the dashed echo kept, nothing to build), D1022 (inputs: a deleted upchit gives the days back, to
+  build) — the three builds filed as [LW-CARD-SHORT-WORDS-700], [DATEBOX-ESC-LISTS], [UPCHIT-DELETE-REGROW], one small job
+  together. **Merge live of pull request 534 in hand**; once live: archive the BUILT items of the night by script, and
+  remove this block at the next handoff.
+- **Rulings this night:** D1016 (leave-war), D1017 (scheduler), D1018 (tracker); after it D1019–D1022.
 <!-- /now -->
 
 ## Next, in order
 
-**RIGHT NOW (18 Oct 26, later):** D994's first batch — the scheduling pages on a phone — BUILT and checked on `claude/scheduling-phone-fixes-6d4adf` (its block in `## Now`) → his look on his iPhone and "merge live" → the next area's small fixes (D994); his questions still wait until he says so.
+**RIGHT NOW (18 Oct 26, later):** D994's first batch — the scheduling pages on a phone — LIVE (pull request 533; D995 the window in the middle) → D996 (phone windows to the middle — his scope answer first; `claude/window-middle-d996`'s block) → the next area's small fixes (D994); his questions still wait until he says so.
 
 **RIGHT NOW (18 Oct 26):** pull request 532 is LIVE (the Tracker chart scrolled by the phone itself and the pinch as a picture, D992; Quals' pinned header row moved by the browser, D993) → **his word: the small things next (D994)** — the questions the backlog keeps for him wait until he says so; meanwhile the small fixes that need no answer or look from him, batched by area with one check each, the scheduling pages on a phone first (`[PHONE-WIDE-BOARD-BLANK]`, `[SCHED-INPUT-WINDOW-PHONE]` and the small finds beside them). When he says so: the questions in rounds of four with pictures (the list as given to him on 18 Oct 26 — Leave War manning by commitments, members seeing others' OIL entries, Insights' empty line, an upchit moved later, the next-week preview, the delete list's notes, the Leave War label, two Escapes, crew-rest rings, the Leave War top bar, the load note, the Tracker import's words, three iPhone looks; then the tooling ones). Then caps and ops limits (`[CAPS-OPS-LIMITS]`, D495's order).
 

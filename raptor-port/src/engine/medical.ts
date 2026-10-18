@@ -150,8 +150,36 @@ export function upchitTrimPlan(person:any,xOrd:any,except?:any){
   for(const r of medRows(person)){if(r===except)continue;
     const a=medStartOrd(r),b=medEndOrd(r);
     if(a==null||b==null||b<xOrd||a>xOrd)continue;
-    out.push(trimTo(r,ordShift(xOrd,-1)));}
+    /* `up`: an UPCHIT's cut — the one kind of cut whose first end the row keeps (`firstEnd`, applyMedPlan), so a later
+       move of the upchit can give the days back (D999) */
+    out.push({...trimTo(r,ordShift(xOrd,-1)),up:true});}
+  /* AN UPCHIT MOVED LATER GIVES THE DOWNCHIT ITS DAYS BACK (owner D999, 18 Oct 26 — "Ok" to A): the downchit it had cut —
+     the one ending the day before its old date, carrying the end it was filed with (`firstEnd`) — grows to the day
+     before the new date, never past that first end, and never into another medical of his filed in the gap (it stops
+     the day before it). A row the cut deleted has nothing left to grow; a row no upchit ever cut carries no first end. */
+  /* …only where the upchit is HIS (one handed to another man and moved gives that man nothing), and stopping before any
+     other medical of his — a downchit or another upchit — in the gap (the fresh read of D999, 2) */
+  const oldX=except&&isUpchit(except.type)&&holds(except,person)?medStartOrd(except):null;
+  if(oldX!=null&&xOrd>oldX){
+    const rows=medRows(person).filter((r:any)=>r!==except);
+    const stops=[...rows,...upRows(person).filter((u:any)=>u!==except)];
+    for(const r of rows){
+      if(r.firstEnd==null||medEndOrd(r)!==ordShift(oldX,-1))continue;
+      const b=medEndOrd(r)!, f=firstEndOrd(r);
+      if(f==null)continue;
+      let to=Math.min(f,ordShift(xOrd,-1)!);
+      for(const o of stops){if(o===r)continue;const s=medStartOrd(o);if(s!=null&&s>b&&s<=to)to=ordShift(s,-1)!;}
+      if(to>b)out.push({row:r,action:'grow',newEndOrd:to});
+    }
+  }
   return out;
+}
+/* THE KEPT FIRST END (D999) — written WITH ITS YEAR, as an ISO date: a bare "Dec 30" would be read against the row's
+   `yr`, which an edit made while another year is loaded rewrites (the fresh read of D999, 4) */
+export const firstEndIso=(o:number)=>`${Math.floor(o/10000)}-${String(Math.floor(o/100)%100).padStart(2,'0')}-${String(o%100).padStart(2,'0')}`;
+export function firstEndOrd(r:any):number|null{
+  const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(r&&r.firstEnd||''));
+  return m?+(m[1]+m[2]+m[3]):null;
 }
 /* Everything a saved upchit on X would do — and deliberately NOT do — in
    one read. The save-time confirm sheet renders exactly this, so the

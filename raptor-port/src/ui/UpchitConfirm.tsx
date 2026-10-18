@@ -52,6 +52,9 @@ export function UpchitConfirm({ who, dateLabel, effects, onSave, onCancel }: {
             ? <ul className="upconf-list" data-testid="upconf-plan">{effects.plan.map((p: any, i: number) => (
               <li key={i}>{p.action === 'trim'
                 ? <>{p.row.type} {span(p.row)} → now ends <b>{ordLabel(p.newEndOrd, p.row.yr)}</b></>
+                : p.action === 'grow'
+                /* D999: the days a later upchit gives back, said before anything changes */
+                ? <>{p.row.type} {span(p.row)} → now ends <b>{ordLabel(p.newEndOrd, p.row.yr)}</b>, its days given back</>
                 : <>{p.row.type} {span(p.row)} → <b>removed</b> — it would only cover fit days</>}</li>))}
             </ul>
             : <div className="upconf-none">Close the pending medical-down period — no current entry needs shortening.</div>}

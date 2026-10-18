@@ -17,6 +17,7 @@ import Pop from './components/Pop.jsx'
 import SidePanel from './components/SidePanel.jsx'
 import { initStore, resetSession } from '../state/store'
 import { endTrackerSession } from './role.js'
+import { setMedInputs } from './people.js'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 const C: any = core
@@ -195,6 +196,37 @@ describe('D982 — the Currency & flex bars\' ink comes with their colour', () =
     const bars = [...host.querySelectorAll('.flexbar')] as HTMLElement[]
     expect(bars.length).toBe(2)
     for (const b of bars) expect(b.style.color, b.textContent || '').toBe(b.style.background.includes('--grey') ? 'rgb(255, 255, 255)' : 'var(--bg)')
+    host.remove()
+  })
+})
+
+/* D1004 (18 Oct 26, his correction): the landing-currency bar counts only the days since the last currency or non-syllabus
+   flight — medical down days take no part, and the panel no longer says "(−N down = Xd)" or "(minus down days)" */
+/* RE-POINTED 18 Oct 26: the down days are no longer typed (D1002, D1005) — they are worked out from his medical inputs —
+   so the same claim is pinned with the down days counted the way they are now: five medical days since his course start
+   show on the number and take nothing off the currency line or its bar */
+describe('D1004 — the currency bar without down days', () => {
+  it('down days counted for a student change nothing on the currency line or its bar', async () => {
+    const s = C.active
+    const entry = C.roster.find((r: any) => r.id === s)
+    const pid0 = entry.pid
+    const t = C.isoToday(), back = (n: number) => new Date(Date.UTC(+t.slice(0, 4), +t.slice(5, 7) - 1, +t.slice(8, 10)) - n * 864e5).toISOString().slice(0, 10)
+    const { host } = await render(<Live draw={() => <SidePanel zoom={1} />} />)
+    const before = host.querySelectorAll('.flexbar')[0]?.textContent
+    const since = host.querySelectorAll('.curKv .kv')
+    const sinceBefore = [...since].map(k => k.textContent)
+    await act(async () => {
+      entry.pid = 'pD1004'
+      setMedInputs({ pD1004: [{ iid: 'x', type: 'ATT C', startIso: back(8), endIso: back(4), half: '' }] })
+      await C.setCourseStart(s, back(30))
+    })
+    await tick()
+    expect(host.querySelector('#downDays .datebox-txt')!.textContent, 'the premise: five days are counted').toBe('5 days')
+    expect(host.textContent || '').not.toMatch(/down =/)
+    expect(host.textContent || '').not.toMatch(/minus down days/)
+    expect(host.querySelectorAll('.flexbar')[0]?.textContent, 'the bar reads as before').toBe(before)
+    expect([...host.querySelectorAll('.curKv .kv')].map(k => k.textContent), 'and the days since').toEqual(sinceBefore)
+    await act(async () => { setMedInputs({}); if (pid0) entry.pid = pid0; else delete entry.pid; await C.setCourseStart(s, '') })
     host.remove()
   })
 })

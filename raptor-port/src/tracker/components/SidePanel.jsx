@@ -200,6 +200,72 @@ function FailLog() {
   );
 }
 
+/* "No. of Down Days" (owner D1002, D1018 — as drawn, 2-proposed): worked out, never typed — a clone of the Last Flown
+   (Currency) box (the app's date box's own look), read-only, its ▾ a › because a tap opens the window that lists what it
+   counts. Before a course start it reads "—" with one line under it, in the box's own refusal line (4-no-course-start);
+   a student who is no man on the roster reads "—" alone, and there is then nothing to open. */
+function DownDays({ s }) {
+  const dd = core.downDaysOf(s);
+  const counted = dd.total != null;
+  const words = counted ? core.sayDays(dd.total) : '—';
+  return (
+    <span className="trdatebox">
+      <span className="trdatebox-row">
+        <button type="button" className="datebox" id="downDays" aria-haspopup="dialog" aria-expanded={core.downLog === s}
+          aria-disabled={counted ? undefined : 'true'}
+          aria-label={'No. of Down Days: ' + (counted ? words + ' — show each medical input' : 'none counted yet')}
+          onClick={() => core.openDownLog(s)}>
+          <span className="datebox-txt">{words}</span>
+          <span className="datebox-v" aria-hidden="true">›</span>
+        </button>
+      </span>
+      {dd.why === 'nostart' ? <span className="datewarn">Set the course start to count them.</span> : null}
+    </span>
+  );
+}
+
+/* THE DOWN-DAYS WINDOW (owner D1002, D1018 — as drawn, 3-window): the Failures list's window, cloned — its backdrop,
+   header, total pill and ✕ — one row per medical input the number counts: its kind, its dates, the days it gave, and a
+   line under it where it was cut by an upchit (only where the input keeps the end it was filed with, D999) or is still
+   running. It only shows; the Inputs page changes an input. The keyboard is put on its ✕ when it opens and goes back to
+   the number when it closes, however it closes (Escape — core.handleEscapeKey; a tap outside; ✕). */
+function DownLog() {
+  const s = core.downLog;
+  const dd = core.downDaysOf(s);
+  const closeRef = useRef(null);
+  useEffect(() => {
+    if (closeRef.current) closeRef.current.focus({ preventScroll: true });
+    return () => { const b = document.getElementById('downDays'); if (b) b.focus({ preventScroll: true }); };
+  }, []);
+  return (
+    <>
+      <div className="lullback" onClick={core.closeDownLog} />
+      <div className="lullcal on faillog downlog" id="downLog" role="dialog" aria-label={'Down days — ' + core.nameOf(s)}>
+        <div className="lullhd">
+          <b>Down days — {core.nameOf(s)}</b>
+          <span className="failtot" id="downLogTotal">{dd.total == null ? '—' : core.sayDays(dd.total)}</span>
+          <button className="sm" id="downLogClose" ref={closeRef} aria-label="Close" onClick={core.closeDownLog}>✕</button>
+        </div>
+        {dd.rows.length
+          ? dd.rows.map(r => (
+            <div className="frow" key={r.iid + ':' + r.startIso} data-iid={r.iid}>
+              <span className="chip">{r.type}</span>
+              <span className="dd-what">
+                <b className="dd-when">{core.sayDaySpan(r.startIso, r.endIso) + (r.half === 'am' ? ' (AM)' : r.half === 'pm' ? ' (PM)' : '')}</b>
+                {r.cut
+                  ? <span className="mini">cut by an upchit on {core.sayDay(r.cut.on)} · filed to <s>{core.sayDay(r.cut.filedTo)}</s></span>
+                  : r.running ? <span className="mini">still running · counted to today</span> : null}
+              </span>
+              <b className="dd-days">{core.sayDays(r.days)}</b>
+            </div>
+          ))
+          : <div className="mini" style={{ margin: '6px 0' }}>No medical inputs since the course start.</div>}
+        {dd.start ? <div className="mini" style={{ marginTop: 8 }}>Since the course start, {core.sayDay(dd.start, true)}. Medical inputs are changed on the Inputs page.</div> : null}
+      </div>
+    </>
+  );
+}
+
 export default function SidePanel({ zoom }) {
   const ref = useRef(null);
   useEffect(() => { if (ref.current) core.dragScroll(ref.current); }, []);
@@ -230,10 +296,14 @@ export default function SidePanel({ zoom }) {
   const st = core.stats(s); const availNow = core.availableNow(s); const today = core.parseD(core.isoToday());
   const lc = core.parseD(core.dates[s].lastCurr), ls = core.parseD(core.dates[s].lastSyll);
   const dCurr = lc ? core.daysBetween(lc, today) : null, dSyll = ls ? core.daysBetween(ls, today) : null;
-  const downDays = Math.max(0, parseInt(core.dates[s].downDays || 0) || 0);
-  const effCurr = (dCurr == null) ? null : Math.max(0, dCurr - downDays);
+  /* THE LANDING-CURRENCY BAR COUNTS ONLY THE DAYS SINCE HIS LAST CURRENCY OR NON-SYLLABUS FLIGHT (owner D1004, 18 Oct 26 —
+     "The currency bar has got nothing to do with medical down days as calculation"): the down days are taken off nothing */
   const fx = core.flexFor(dSyll);
-  const cur = core.landingCurrency(effCurr);
+  const cur = core.landingCurrency(dCurr);
+  /* THE FLEX SWITCH (owner D1006, D1018 — 18 Oct 26, the picture 06-info-flex-off): with flex off the card is
+     "Currency" alone — the flex bar, "Days since syllabus" (it feeds only flex) and the flex sentence go, and the
+     currency bar takes the whole width. Last Flown (Syllabus) stays: a syllabus flight still moves currency (D1005). */
+  const flexOn = core.flexOn();
 
   /* Pace and both end dates belong to the student being marked, not the course. */
   const rem = st.remaining;
@@ -336,28 +406,31 @@ export default function SidePanel({ zoom }) {
         </div>
       </div>
       <div className="card wide c-curr">
-        <h3>Currency &amp; flex</h3>
+        <h3>{flexOn ? <>Currency &amp; flex</> : 'Currency'}</h3>
         <div className="curGrid">
           {/* the date boxes are the app's own since 13 Oct 26 (D801 — DateBox.jsx): a day picked is saved at once.
               Keyed by student and field, so a Crew switch never carries a refusal's line across. The two Last Flown
               boxes offer "take this date off" only for a day put in by hand (D123) — and, since the design look of
               13 Oct 26 (L14, D830), no day after today on their calendars: they refuse one (D374), as the rows of the
-              full failures list above do. Upchit and the end dates are planned days and offer every day. */}
+              full failures list above do. The course start and the end dates are planned days and offer every day.
+              THE COURSE START AND THE DOWN DAYS (owner D1002, D1003, D1005, D1018 — 18 Oct 26, as drawn, 2-proposed): the
+              "Upchit Date" box and the typed "No. of Down Days" went; the course start sits where Upchit was — set once,
+              changed by picking another day, so nothing to take off — and the number is worked out from the Inputs. */}
           <div className="field"><label>Last Flown (Syllabus)</label><DateBox key={s + ':lastSyll'} id="lastSyll" title="Last Flown (Syllabus)" noFuture clearable={!!core.dates[s].handSyll} value={core.dates[s].lastSyll || ''} onCommit={v => core.setLastSyll(s, v)} /></div>
           <div className="field"><label>Last Flown (Currency)</label><DateBox key={s + ':lastCurr'} id="lastCurr" title="Last Flown (Currency)" noFuture clearable={!!core.dates[s].handCurr} value={core.dates[s].lastCurr || ''} onCommit={v => core.setLastCurr(s, v)} /></div>
-          <div className="field"><label>No. of Down Days</label><input type="number" min="0" id="downDays" value={core.dates[s].downDays || ''} style={{ width: 80 }} onChange={e => core.setDownDays(s, e.target.value)} /></div>
-          <div className="field"><label>Upchit Date</label><DateBox key={s + ':upchit'} id="upchit" title="Upchit date" value={core.dates[s].upchit || ''} onCommit={v => core.setUpchit(s, v)} /></div>
+          <div className="field"><label>Course start</label><DateBox key={s + ':courseStart'} id="courseStart" title="Course start" clearable={false} value={core.courseStartOf(s)} onCommit={v => core.setCourseStart(s, v)} /></div>
+          <div className="field"><label>No. of Down Days</label><DownDays s={s} /></div>
         </div>
         <div className="curKv">
-          <div className="kv"><span>Days since syllabus</span><b>{dSyll == null ? '—' : dSyll + 'd'}</b></div>
-          <div className="kv"><span>Days since currency</span><b>{dCurr == null ? '—' : dCurr + 'd'}{downDays ? <> <span className="mini">(−{downDays} down = {effCurr}d)</span></> : null}</b></div>
+          {flexOn ? <div className="kv"><span>Days since syllabus</span><b>{dSyll == null ? '—' : dSyll + 'd'}</b></div> : null}
+          <div className="kv"><span>Days since currency</span><b>{dCurr == null ? '—' : dCurr + 'd'}</b></div>
         </div>
-        <div className="flexPair">
+        <div className={'flexPair' + (flexOn ? '' : ' one')}>
           {/* the bar's ink rides with its colour (core.flexFor / landingCurrency — D982) */}
           <div className="flexbar" style={{ background: cur.color, color: cur.ink }}>{cur.txt}</div>
-          <div className="flexbar" style={{ background: fx.color, color: fx.ink }}>{fx.txt}</div>
+          {flexOn ? <div className="flexbar" data-testid="trk-flexbar" style={{ background: fx.color, color: fx.ink }}>{fx.txt}</div> : null}
         </div>
-        <div className="mini" style={{ marginTop: 5 }}>Landing currency = days since last currency (minus down days). Flex requirement uses days since last <b>syllabus</b> flight, so updating currency won’t change it.</div>
+        <div className="mini" style={{ marginTop: 5 }}>Landing currency = days since last currency.{flexOn ? <> Flex requirement uses days since last <b>syllabus</b> flight, so updating currency won’t change it.</> : null}</div>
       </div>
       <div className="card wide c-pace">
         <h3>Pace &amp; expected end <span className="who">— {core.nameOf(s)}</span></h3>
@@ -453,6 +526,7 @@ export default function SidePanel({ zoom }) {
       {core.lullPick ? <LullCalendar /> : null}
       {core.lullCopy ? <LullCopy /> : null}
       {core.failLog ? <FailLog /> : null}
+      {core.downLog ? <DownLog /> : null}
     </div>
   );
 }

@@ -95,6 +95,14 @@ describe('D200 (3): the permissions matrix IS data-model.md §11', () => {
 })
 
 describe('allows — the one rule under every question', () => {
+  /* D1008 (18 Oct 26, "as recommended"): every member may see every man's OIL tracker entries, figures and grants with
+     their reasons — as the app has always shown — so the ledger's Read is everyone's, its writing still the admin's alone */
+  it("D1008: a member reads every man's ledger entries and openings, and writes none of them", () => {
+    expect(allows('member', T.ledger, 'R', 'stiff', 'bane')).toBe(true)
+    expect(allows('member', T.ledger, 'R', 'bane', 'bane')).toBe(true)
+    for (const a of ['C', 'U', 'D'] as Act[]) expect(allows('member', T.ledger, a, 'bane', 'bane'), a).toBe(false)
+    expect(PERMS[T.ledger].gaps, 'the gap it carried is closed').toEqual([])
+  })
   it('a member edits his own Person row and not another (D149)', () => {
     expect(allows('member', T.person, 'U', 'bane', 'bane')).toBe(true)
     expect(allows('member', T.person, 'U', 'stiff', 'bane')).toBe(false)
@@ -378,5 +386,12 @@ describe('the command gate (cmdAuthorize) — every command the app registers', 
   it('the Tracker: every member (D121)', () => {
     expect(cmdAuthorize('trk.marks', actor('member', 'bane'))).toBe(true)
     expect(cmdAuthorize('trk.gesture', actor('member', 'bane'))).toBe(true)
+  })
+  it('…except the flex settings: a Setting, the admin\'s alone (D1014), registered by the Tracker and refused to a member', () => {
+    const src = read('src/tracker/app/core.js')
+    expect(src.includes(`cmdDefinePermission('trk.flex'`), 'trk.flex registered').toBe(true)
+    expect(COMMAND_OPS['trk.flex']!.table).toBe(T.setting)
+    expect(cmdAuthorize('trk.flex', actor('admin', 'stiff'))).toBe(true)
+    expect(cmdAuthorize('trk.flex', actor('member', 'bane'))).toBe(false)
   })
 })

@@ -939,7 +939,8 @@ export function sansCardsHTML(rows:any[],di:any,ro?:any){
   });
   return `<div class="sanscards">`+ordered.map((inp:any)=>{
     const pk=PEOPLE[inp.person]
-      ? puck(inp.person,sev(di,inp.person),true,chip(di,inp.person))
+      /* the seat's own four marks (D1013, D1017): a dotted or dashed ring here too, never a solid one of the card's own */
+      ? puck(inp.person,sev(di,inp.person),true,chip(di,inp.person),dsh(di,inp.person),traceHit(di,inp.person))
       : `<span class="itxt">${esc(inp.person)}</span>`;
     const letters=sansLetters(inp);
     const rmk=String(inp.remarks||'').trim();
@@ -2115,9 +2116,10 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
            way back but the top-bar Undo or deleting the man's input. The same Undo the landed rows
            carry; edit surfaces only (ed), so the view page and the parity week are untouched. */
         const unfile=!acc&&ed&&inp.acc==='u'&&isPersonal(inp.type)&&canEditSched();
-        /* one puck a man of the line — each by his OWN record, so its OIL bar is his own claim's */
+        /* one puck a man of the line — each by his OWN record, so its OIL bar is his own claim's — wearing his seat's four
+           marks, the dotted and dashed crew-rest rings included (D1013, D1017: one man, one ring, on every copy of him) */
         const pk=line.map((one:any)=>PEOPLE[one.person]
-          ? `<span class="seat"${seatable?` data-inpseat="${esc(iuTail(one))}"`:''}>${puck(one.person,sev(di,one.person),true,chip(di,one.person),false,null,oilSeatDeco(di,one.person,'',inputItemKey(inpId(one))).oil)}</span>`
+          ? `<span class="seat"${seatable?` data-inpseat="${esc(iuTail(one))}"`:''}>${puck(one.person,sev(di,one.person),true,chip(di,one.person),dsh(di,one.person),traceHit(di,one.person),oilSeatDeco(di,one.person,'',inputItemKey(inpId(one))).oil)}</span>`
           : `<span class="itxt">${esc(one.person)}</span>`).join('');
         /* the input's own free text now reads in the RMKS column, so the NAME column
            carries the type and every block lines up on the same five columns */

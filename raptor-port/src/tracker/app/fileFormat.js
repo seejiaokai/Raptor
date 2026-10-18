@@ -8,6 +8,9 @@
                 (D126, 23 Sep 26: each chart's OWN typed details, keyed by the
                 chart; a file written before it carries `eventInfo: object`,
                 one table for every chart, which import still reads)
+                + `flex: { on, from: number[6] }` on a backup of EVERY chart
+                (D1006, 18 Oct 26 — the Tracker's flex settings; a file written
+                before it has none and imports unchanged)
      students = { courses: string[],
                   byCourse: {course: {plan: object, lulls: object, pace: object,
                     bySyllabus: {syl: {
@@ -66,6 +69,17 @@ function checkSylcat(cat, where) {
     if (names.has(e.name)) throw new Error('That file lists the syllabus label “' + e.name + '” twice, so it has not been opened.');
     ids.add(e.id); names.add(e.name);
   }
+}
+
+/* THE FLEX SETTINGS' SIX "FROM" DAYS (owner D1006, D1018 — 18 Oct 26): what is wrong with them, in the words the
+   settings window shows, or null — six whole numbers, each at least 1 (a "Current" band of no days would never show),
+   each above the one before (so every band has at least one day). The one body: core.js's window and its setter ask
+   here too, so a file can never carry a setting the window would refuse. */
+export function flexFromProblem(from) {
+  if (!Array.isArray(from) || from.length !== 6) return 'Give all six From days.';
+  for (const v of from) if (typeof v !== 'number' || !Number.isInteger(v) || v < 1) return 'Each From day is a whole number, 1 or more.';
+  for (let i = 1; i < from.length; i++) if (from[i] <= from[i - 1]) return 'Each From day must be later than the one above it.';
+  return null;
 }
 
 /* `version` defaults to the current FILE_VERSION; a caller (a test building a
@@ -129,6 +143,10 @@ function checkCharts(c, version, otherCat) {
   if (c.deleted != null && (!Array.isArray(c.deleted) || c.deleted.some(id => !isBuiltinSylId(id) || !builtinSylById(id))))
     throw new Error('The list of deleted charts in that file is damaged, so it has not been opened.');
   checkSylcat(c.sylcat, 'charts');
+  /* D1006: the flex settings a whole backup carries — the switch and six valid From days, or the file is refused,
+     naming the part, before anything is written */
+  if (c.flex != null && (!isPlainObject(c.flex) || (c.flex.on != null && typeof c.flex.on !== 'boolean') || flexFromProblem(c.flex.from)))
+    throw new Error('The flex settings in that file are damaged, so it has not been opened.');
   /* A v3 file (version 3) is ID-native: its charts keys are syllabus ids, every
      one MUST be labelled by the sylcat (reference completeness, review
      CSID-REV-06), and a v1/v2 file is name-keyed whatever a name is spelled — so

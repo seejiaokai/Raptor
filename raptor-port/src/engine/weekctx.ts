@@ -72,6 +72,13 @@ function issuedDayIn(sc:any,di:number,v:any,working:any){
   if(snap&&snap.d)return {...snap.d,dt:working.dt};
   return {...working,waves:[],dutywaves:[],sims:{amt:[],oft:[]},ground:[],allhands:[]};
 }
+/* A STASHED WEEK AS ITS READERS ARE SHOWN IT (owner D1010, 18 Oct 26): every published day at its issued version, the
+   rest as worked — the same one-day resolver as the official world above, so View-only Sched's preview of next week and
+   the published flags can never disagree about which version a member sees. A week never stashed has no publication. */
+export function officialDaysOf(v:any,days:any[]):any[]{
+  const sc=stashSched(v);
+  return sc?days.map((d:any,di:number)=>issuedDayIn(sc,di,v,d)):days;
+}
 function bundle(v:any){
   /* stashDays, not stashHas-then-trust: a persisted blob that fails to parse
      comes back null and the read falls through to the pure seed — a corrupt

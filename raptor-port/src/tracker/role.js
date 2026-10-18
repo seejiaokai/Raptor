@@ -18,6 +18,18 @@
    left. The [HUMAN-RETEST] walk (23 Sep 26, F10) found a member undoing the
    admin's mark through a history that had survived the logout. The file name
    is kept so the seam's one import path does not move. */
+/* THE TRACKER'S ONE ADMIN GATE (owner D1014, 18 Oct 26 — narrows D121): the flex settings — their figures and their
+   on / off switch (D1006) — are an admin's alone to change; everything else in the Tracker stays everyone's. So the
+   Tracker reads ONE answer about the signed-in person again, "is he an admin?", and only for that. It crosses here,
+   with no imports, for the reason the rest of this file does: Raptor's side (peoplewire.ts) hands in a function that
+   asks Raptor's one permissions module (state/perms.ts) each time — the session can change under an open tab (logout,
+   the admin's member view). Nobody wired = the standalone Tracker, which has no accounts: its one user is everyone, as
+   D121 always had it, so the answer is yes. The command gate still refuses a member's write inside Raptor (perms.ts
+   COMMAND_OPS 'trk.flex' — a Setting, the admin's), so this is the screen's answer, never the only lock. */
+let adminFn = null
+export function setTrackerAdmin(fn) { adminFn = typeof fn === 'function' ? fn : null }
+export function trackerIsAdmin() { if (!adminFn) return true; try { return !!adminFn() } catch (_) { return false } }
+
 const sessionSubs = new Set()
 export function endTrackerSession() { sessionSubs.forEach(f => { try { f() } catch (_) {} }) }
 export function onTrackerSessionEnd(f) { sessionSubs.add(f); return () => sessionSubs.delete(f) }

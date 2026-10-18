@@ -9515,7 +9515,7 @@ screen:
   ball, the JSON editor, Reset layout — restoring one lights ✓ Save changes
   and writes the positions, as the edit did) and a **mark step** — one
   student's grade, failure count or a date box (Last Flown ×2, down days,
-  upchit), marks AND dates snapshotted together because a flight graded done
+  upchit *[the down days and Upchit boxes went 18 Oct 26 — D1002; the course start, D1003, is a mark step]*), marks AND dates snapshotted together because a flight graded done
   moves Last Flown forward. Since D372 (28 Sep 26) the pace, End date A / B and
   the lull periods (set, changed, removed) are mark steps too — the snapshot holds
   them beside the marks and dates — and “Copy to…” is ONE step over every
@@ -9636,15 +9636,15 @@ screen:
     the calendar and picks nothing:** the tap that opens it leaves the app box's small patch
     where it landed, over the card (on a phone the card lands under the finger). The calendar's
     "today" is the squadron's day (D374), not the device's; no day before 1900 is offered (the
-    store refuses one). Each box says what it is to a screen reader ("Upchit date: …"), its ✕
+    store refuses one). Each box says what it is to a screen reader ("Upchit date: …" *[since 18 Oct 26 "Course start: …" — D1002]*), its ✕
     says whose date it takes off, and the keyboard stays on the box after it. A refusal's line
     goes at the next press on its box. Delete or Backspace on a box that holds a date takes the date off, as its ✕
     does (the design look's K12, D830 — 14 Oct 26), and the key goes no further: it does nothing to a
     chart being arranged. Two days picked in one box are two undo steps (a pick is not typing —
-    the two-second fold stays for the pace and the down days, which are typed). No box can hold a half-typed day any more — a day is picked whole
+    the two-second fold stays for the pace and the down days, which are typed *[the down days are worked out since 18 Oct 26 — D1002; the pace alone folds]*). No box can hold a half-typed day any more — a day is picked whole
     (what [TRK-RETEST-NOTES] C5 guarded against). A day after today is refused in Done on, Failed on
     and both Last Flown boxes, with one line under the box saying why; Upchit
-    and the end dates take any day (D374, 28 Sep 26). **The grading pop-up never
+    and the end dates take any day (D374, 28 Sep 26) *[the course start in Upchit's place since 18 Oct 26 — D1003]*. **The grading pop-up never
     turns a refused day into today** (the leftovers' walk, walker b, 28 Sep 26):
     a day after today, or a day not finished (a year still being typed, a part
     cleared), STAYS in Done on / Failed on with its line — "That day hasn’t come
@@ -9723,6 +9723,17 @@ His "As recommended" to the four questions of `docs/mock/2026-10-17-tracker-r1/i
   "a course still running" means; tested at the delete, by his own marks.
 - **D982 — the Currency & flex bars' words, built and live 17 Oct 26 (pull request 530).** Dark words (Raptor's background colour) on the green, amber and red
   bars; white stays on grey; the bar's colour and its ink come from one place.
+- **D1002, D1003, D1005, D1018 — the down days, worked out from the Inputs (built 18 Oct 26, `[TRK-DOWN-DAYS-AUTO]`).** The Currency
+  & flex card's four boxes are Last Flown (Syllabus), Last Flown (Currency), **Course start** (the app's date box, where
+  Upchit Date was; no ✕ — changed by picking another day) and **No. of Down Days** (`#downDays`, read-only, the date box's
+  look with a ›). The number is every medical day of his (HL, OML, ATT C, ATT B) from his course start to today — a half
+  day ½, a running input to today, only inputs overlapping that span. Before a course start it reads "—" with "Set the
+  course start to count them." under it; a student linked to nobody reads "—" alone; neither opens anything. A tap opens
+  `#downLog`, the Failures list's window cloned: "Down days — <name>", the total, ✕; one row per input (kind, dates,
+  days; "cut by an upchit on <day> · filed to <first end, struck>" only where the input keeps D999's first end; "still
+  running · counted to today"); "Since the course start, <day>. Medical inputs are changed on the Inputs page." It only
+  shows. Escape, a tap outside or ✕ close it; the keyboard goes to its ✕ when it opens and back to the number when it
+  closes. "+ Add" carries a Course start date box above the list, today by default (`#dlgDate`). It feeds no bar (D1004).
 
 **As built (17 Oct 26, the Tracker batch — `docs/handpass/2026-10-17-tracker-batch.md`):**
 - **D980.** The chart box (`#board`) is the one Tab stop. The ring is `#1E86FF`, two pixels, round the ball outside its gold
@@ -10668,7 +10679,14 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   edges; it had kept its family's 80vh cap (675 of 844 for an input that holds 1390). It stands IN THE MIDDLE of the
   screen (owner D995, the same day — the batch had first stood it at the foot, as D537 has the phone's other windows;
   the Inputs page's window stays at the foot). Wider than 620 it is the centred dialog as before.
-  `14-input-editors.css`; pinned by `e2e/sched-phone.spec.ts`.)*
+  `14-input-editors.css`; pinned by `e2e/sched-phone.spec.ts`.)* *(D996, 18 Oct 26 — "Yes standardise to middle": the same
+  input's window on the Inputs page, "+ Input" and a tap on an input, stands in the middle on a phone too — to build,
+  a picture first; whether the phone's other windows follow is his to say.)* *(D997, the same day — "All in the middle": every
+  window that pops up for a task stands in the middle on a phone; the calendars' day panels and the ALL AVAIL and changes
+  windows stay at the foot. BUILT the same day: the phone rule of `.modal` (`08-windows-tools.css`, ≤820) and of
+  `.floatwin` (`22-float-windows.css`, ≤620 — pinned to both edges with automatic margins and its own height; not
+  `.rests`); the Calendar window keeps filling the screen under the top bar (`23-days.css`). Pinned by
+  `e2e/sched-phone.spec.ts` and `ui/modal-phone-height.test.ts`.)*
 - **The SANS calendar's "How this works" no longer says "One commitment a day each." (owner D704, 9 Oct 26 — "Remove one
   commitment a day each").** Its fifth line is the late cut-off alone, as set, the cut-off in bold (D628, D691) — the same
   shape as the Inputs calendar's fifth line. Only the sentence went: the rule stands and is said where a second commitment

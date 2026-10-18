@@ -15,6 +15,10 @@ const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 /* the refusal of a pre-v3 or colliding students block — shared with core.js's
    reconcileStudentsSyllabi, the guardrail that runs after the charts land */
 export const STUDENT_GUARD_MSG = 'These student marks were saved by an older version and can’t be brought in safely. Import the charts, then re-enter marks — or export a fresh backup from the current app and import that.';
+/* D1015 (18 Oct 26, his "13 B"): a file of TODAY's version whose student marks belong to a chart that is in neither the
+   file nor this Tracker — not found, deleted here, or two of the file's charts landing on one — is not an older file, so
+   it is told so in his words; STUDENT_GUARD_MSG stays for a file really saved by an older version. */
+export const STUDENT_CHART_MSG = 'Student marks not brought in: they belong to a chart this file doesn’t carry. Export a fresh backup that includes its charts, and import that.';
 
 /* Two event lists are the same chart definition when they match field for
    field — ignoring `_b`, computeFlow's scratch value, which it writes onto the
@@ -95,7 +99,7 @@ export function remapStudentsSyl(students, re) {
     const cv = students.byCourse[c] || {}, nb = {};
     /* two source ids must never collide onto one dest — that would silently drop
        a student block before the guardrail sees it (review CSID-REVIEW-02). */
-    for (const k of Object.keys(cv.bySyllabus || {})) { const nk = re(k); if (has(nb, nk)) throw new Error(STUDENT_GUARD_MSG); nb[nk] = cv.bySyllabus[k]; }
+    for (const k of Object.keys(cv.bySyllabus || {})) { const nk = re(k); if (has(nb, nk)) throw new Error(STUDENT_CHART_MSG); nb[nk] = cv.bySyllabus[k]; }
     const ncv = { ...cv, bySyllabus: nb };
     if (ncv.plan && ncv.plan.sylId) ncv.plan = { ...ncv.plan, sylId: re(ncv.plan.sylId) };
     byCourse[c] = ncv;

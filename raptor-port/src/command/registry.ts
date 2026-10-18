@@ -67,6 +67,7 @@ export const LOGICAL_TO_BLOB: Record<LogicalCollection, string> = {
   'trk.eventinfo': 'tracker/eventinfo',
   'trk.catalogue': 'tracker/catalogue',
   'trk.courses': 'tracker/courses',
+  'trk.flex': 'tracker/flex',
 }
 
 export type RegistryClass = 'record' | 'boot-migration' | 'view-preference'

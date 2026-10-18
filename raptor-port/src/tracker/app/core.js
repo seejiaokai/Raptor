@@ -14,12 +14,12 @@ import { SEED_STATE, SEED_STAMP } from '../data/seedState.js';
 import { storage, flushNow, loadLatest, saveHealth, onSaveHealth } from '../storage.js';
 import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
-import { normalizeImport as normalizeFile, STUDENT_GUARD_MSG, sameDef, remapStudentsSyl } from './fileTransfer.js';
+import { normalizeImport as normalizeFile, STUDENT_GUARD_MSG, STUDENT_CHART_MSG, sameDef, remapStudentsSyl } from './fileTransfer.js';
 import { findEvents } from './eventOrder.js';
-import { onTrackerSessionEnd, onBeforeTrackerLogout } from '../role.js';
+import { onTrackerSessionEnd, onBeforeTrackerLogout, trackerIsAdmin } from '../role.js';
 /* Raptor's one edge feel (D899) — a standalone export carries this file with it: docs/tracker/known-gaps.md */
 import { edgePan } from '../../ui/edgescroll';
-import { getPeople, onPeople, whoami, whoamiId, getGonePeople, onGonePeople } from '../people.js';
+import { getPeople, onPeople, whoami, whoamiId, getGonePeople, onGonePeople, getMedInputs, onMedInputs } from '../people.js';
 import { setTrackerUndo, pingTrackerUndo } from '../undo-bridge.js';
 /* the Tracker one piece per thing ([DB-READINESS] group A, phase 5b — D462): the student lists, the course list and the
    chart records are STORED one row per thing, through the door below (sGet / sSet / memGet / delKey) */
@@ -36,7 +36,7 @@ import {
    every module funnels through. */
 import {
   commit as cmdCommit, isCommitting as cmdIsCommitting, definePermission as cmdDefinePermission,
-  anyone as cmdAnyone, registerRecord as cmdRegisterRecord, deferEffect as cmdDeferEffect,
+  anyone as cmdAnyone, adminOnly as cmdAdminOnly, registerRecord as cmdRegisterRecord, deferEffect as cmdDeferEffect,
   registerGuardedStore as cmdRegisterGuardedStore, onCommit as cmdOnCommit, deriveActor as cmdDeriveActor,
 } from '../../command';
 /* the Tracker's own Undo / Redo is a RESTORE — the internal door the global undo uses too ([DB-READINESS] group A,
@@ -106,8 +106,8 @@ function endSession() {
   undoStack = []; redoStack = [];
   dlgCancelAll();                     /* a half-answered question, and any waiting: cancelled */
   pop = null; popDoneDate = ''; popFailDate = ''; popMsg = null;
-  failLog = null; lullPick = null; lullCopy = null;
-  infoId = null; editId = null; ordMode = null; sylModalOpen = false; showAllOpen = false; copyOpen = false;
+  failLog = null; downLog = null; lullPick = null; lullCopy = null;
+  infoId = null; editId = null; ordMode = null; sylModalOpen = false; showAllOpen = false; copyOpen = false; flexWinOpen = false;
   showDetails = false; hideDetailBubble(); toolsOpen = false;
   /* the keyboard's place on the chart is the person leaving's too (D980 — the fresh code read's finding 4) */
   kbdShown = false; popByKey = false; infoByKey = false; kbdCame = null; paintKbdRing();
@@ -424,6 +424,9 @@ function trkCollectionOf(k) {
   if (s.startsWith(TRKROWS.ROW.course)) return 'trk.courses';
   if (s.startsWith(TRKROWS.ROW.chart)) return 'trk.syls';
   if (s.startsWith(TRKROWS.ROW.info)) return 'trk.eventinfo';
+  /* the flex settings (D1006, D1014): one row for the whole Tracker, a Setting — the admin's, so a collection of its
+     own, which the command gate (state/perms.ts) holds to an admin */
+  if (s === 'v3:master:flex') return 'trk.flex';
   const p = s.split(':');
   const last = p[p.length - 1], last2 = p[p.length - 2];
   if (last2 === 'enr' && p.length === 5) return 'trk.roster';   /* v3:<course>:<chart>:enr:<student> */
@@ -525,6 +528,10 @@ function trkRegisterCommands() {
     cmdDefinePermission(c, cmdAnyone);   // permissive at Step 2 (the real file/role gates are unchanged)
     cmdRegisterRecord({ key: 'tracker:' + c, cls: 'record', collection: c, module: 'tracker' });
   }
+  /* the flex settings (D1014): an admin's alone — the one Tracker record that is. Raptor's resolver (state/perms.ts
+     COMMAND_OPS 'trk.flex', a Setting) decides once the app has booted; this check is the headless fallback */
+  cmdDefinePermission('trk.flex', cmdAdminOnly);
+  cmdRegisterRecord({ key: 'tracker:trk.flex', cls: 'record', collection: 'trk.flex', module: 'tracker' });
   cmdDefinePermission('trk.gesture', cmdAnyone);   // [CMDL-FINISH] §4 — a multi-collection gesture's envelope
   cmdDefinePermission('trk.meta', cmdAnyone);      // a course conversion's own records, written after the first mount (metaWrite)
   /* [DB-READINESS] group A, phase 4.1 — the Tracker's own Undo / Redo, each ONE restore command (P4.1-TRACKER-RESTORE) */
@@ -610,6 +617,7 @@ function trkReloadGlobalsFromMem() {
   SYL_TOMB = (tomb && typeof tomb === 'object') ? tomb : {};
   eventInfo = sParse(memGet(kEventInfo()), {}, 'object') || {};
   if (!isDetailsTable(eventInfo)) eventInfo = {};
+  flexFromMem();   /* the flex settings (D1006) — a change from another person, or a refused one rolled back */
 }
 /* [CMDL-FINISH] §3 (F8/GU-007, M1/R4-003/R4-004) — the batch, delete-aware,
    per-collection record write for the undo seam, driven by the key-grammar→scope
@@ -632,7 +640,7 @@ function trkWriteRecords(entries) {
   // (a delete/restore of a syllabus changes them, and the pointer logic below reads
   // SYLS/SYL_ORDER via firstSylId/sylSource).
   /* a chart row (`trk.syls`) carries the chart's catalogue entry, place and hidden / deleted marks too (phase 5b) */
-  if (entries.some(e => e.collection === 'trk.catalogue' || e.collection === 'trk.eventinfo' || e.collection === 'trk.syls')) trkReloadGlobalsFromMem();
+  if (entries.some(e => e.collection === 'trk.catalogue' || e.collection === 'trk.eventinfo' || e.collection === 'trk.syls' || e.collection === 'trk.flex')) trkReloadGlobalsFromMem();
   // the globals that steer the pointers, always re-read from mem
   COURSES = sParse(memGet(kCourses), [], 'array');
   DELCOURSES = sParse(memGet(kDelCourses), [], 'array').filter(c => isCourseEntry(c) && !COURSES.some(x => isCourseEntry(x) && x.id === c.id));
@@ -1197,6 +1205,9 @@ export function linkedPerson(id) { const pid = pidOf(id); if (!pid) return null;
    people (a callsign edit, an archive) repaints them; the bridge's own guard
    already swallows every notify that changed nobody. */
 onPeople(() => notify());
+/* a medical input filed, moved or cut on the Inputs page repaints the down days (D1002); the bridge's guard swallows
+   every notify that changed nobody's medical days */
+onMedInputs(() => notify());
 /* Seat as the squadron says it: the Tracker's list sub-text, beside the CAT. */
 const seatWord = s => s === 'FCP' ? 'Pilot' : s === 'RCP' ? 'WSO' : (s || '');
 
@@ -2138,13 +2149,17 @@ let _dlgRes = null;
 let _dlgQueue = [];   /* waiting questions, oldest first: { shape, res } */
 const _dlgCancelled = shape => (shape && shape.input ? null : false);
 function _dlgOpen(shape, res) { _dlgRes = res; dlg = shape; dlgSerial++; notify(); }
-function _dlgShow(msg, { input = false, def = '', cancel = true, cancelLabel = 'Cancel', ok = 'OK', alt = null, list = null, listFn = null, filter = false, placeholder = '', listTitle = '' } = {}) {
-  const shape = { msg, input, def, cancel, cancelLabel, ok, alt, list, listFn, filter, placeholder, listTitle };
+/* `date` (18 Oct 26 — D1018, the course start in "+ Add"): { label, value } — a date box drawn ABOVE the list (a tap on
+   a name answers at once, so the day has to be set before it). The asker keeps the object and reads `value` after the
+   answer; the box writes into it through setDlgDate. Without it the dialog is as it was. */
+function _dlgShow(msg, { input = false, def = '', cancel = true, cancelLabel = 'Cancel', ok = 'OK', alt = null, list = null, listFn = null, filter = false, placeholder = '', listTitle = '', date = null } = {}) {
+  const shape = { msg, input, def, cancel, cancelLabel, ok, alt, list, listFn, filter, placeholder, listTitle, date };
   return new Promise(res => {
     if (dlg || _dlgQueue.length) { _dlgQueue.push({ shape, res }); return; }
     _dlgOpen(shape, res);
   });
 }
+export function setDlgDate(v) { if (!dlg || !dlg.date || !isWholeDay(v)) return; dlg.date.value = v; notify(); }
 export function dlgClose(val) {
   dlg = null;
   const r = _dlgRes; _dlgRes = null;
@@ -2164,12 +2179,12 @@ export async function uiPrompt(msg, def) { const v = await _dlgShow(msg, { input
 export async function uiAlert(msg) { await _dlgShow(msg, { cancel: false }); }
 /* Pick from a list, or type: resolves { pick: key } for a click on an entry,
    the typed string for OK, null for Cancel. */
-export async function uiPick(msg, list, { input = false, placeholder = '', listTitle = '' } = {}) {
+export async function uiPick(msg, list, { input = false, placeholder = '', listTitle = '', date = null } = {}) {
   /* a list given as a function is read LIVE by the box (listFn) — the + Add roster,
      so a person added or taken off while it is open shows at once ([TRK-RETEST-NOTES]
      C11); `list` keeps the list it opened with, for anything that reads it */
   const fn = typeof list === 'function' ? list : null;
-  const v = await _dlgShow(msg, { input, list: (fn ? fn() : list) || [], listFn: fn, filter: true, placeholder, listTitle });
+  const v = await _dlgShow(msg, { input, list: (fn ? fn() : list) || [], listFn: fn, filter: true, placeholder, listTitle, date });
   if (v && typeof v === 'object' && 'pick' in v) return v;
   return v === null ? null : (v + '');
 }
@@ -2297,18 +2312,38 @@ function innerShape(type, cx, cy) {
   return `<rect x="${cx - 16}" y="${cy - 9}" width="32" height="18" rx="2.5" fill="${f}" ${st}/>`;
 }
 function ballGroup(ev, available) {
-  const p = nodePos(ev.id), size = 58, cx = size / 2, cy = size / 2, rO = size * 0.47, rI = size * 0.33, x = p.x, y = p.y;
-  const n = Math.max(1, roster.length); let segs = '';
+  const p = nodePos(ev.id), size = 58, cx = size / 2, x = p.x, y = p.y, cy = size / 2;
+  const n = Math.max(1, roster.length); const wedges = [];
   for (let i = 0; i < n; i++) {
     const s = roster[i] ? roster[i].id : null; const g = gradeOf(s, ev.id);
     const fill = (g && g !== 'na' && g !== 0) ? GRADE_FILL[g] : (g === 'na' ? GRADE_FILL.na : '#ffffff');
-    const [a0, a1] = wedge(i, n);
-    /* Each wedge is a tap target of its own (ballTap): data-wi says whose. */
-    segs += `<path class="wedge" data-wi="${i}" d="${sector(cx, cy, rO, rI, a0, a1)}" fill="${fill}" stroke="#111" stroke-width="0.8"/>`;
     /* No failure ticks on an event marked N.A. — it never had to be flown, so
        red marks against it read as a contradiction. The count is only hidden,
        not thrown away; it comes back if the grade does. */
-    const f = (g === 'na') ? 0 : failOf(s, ev.id);
+    wedges.push({ fill, fails: (g === 'na') ? 0 : failOf(s, ev.id) });
+  }
+  const ai = roster.findIndex(r => r.id === active);
+  let cap = '';
+  return `<g class="ball" data-id="${escapeId(ev.id)}" transform="translate(${(x - cx).toFixed(1)},${(y - cy).toFixed(1)})">
+  ${ballParts({ type: ev.type, label: ev.label || ev.id, font: ballFontFor(ev.id), num: ev.num, wedges, mine: ai, available,
+    found: searchHit === ev.id, connect: arrangeMode && connectSrc === ev.id, sel: arrangeMode && selBalls.has(ev.id) })}${cap}</g>`;
+}
+/* THE BALL'S DRAWING, ONE BODY FOR THE CHART AND ITS LEGEND (D1007, D1018 — 18 Oct 26: the Legend pop-out shows "the
+   chart's own" balls). Everything a ball looks like — its slices and their fills, the red failure ticks, the blue edge
+   of the student picked in Crew, the gold "can be flown next" ring, the turquoise "found" ring, the centre shape and its
+   code — is drawn here from plain values; ballGroup reads them off the store for a real event, and the Legend
+   (legendBall) passes sample ones. One body is what keeps the legend from drifting from the chart it explains. The
+   string it returns is byte-for-byte what ballGroup drew inline before the split. `wedges` is one { fill, fails } per
+   slice; `mine` the slice index with the blue edge, or -1. */
+function ballParts(o) {
+  const size = 58, cx = size / 2, cy = size / 2, rO = size * 0.47, rI = size * 0.33;
+  const n = Math.max(1, o.wedges.length); let segs = '';
+  for (let i = 0; i < n; i++) {
+    const w = o.wedges[i] || { fill: '#ffffff', fails: 0 }; const fill = w.fill;
+    const [a0, a1] = wedge(i, n);
+    /* Each wedge is a tap target of its own (ballTap): data-wi says whose. */
+    segs += `<path class="wedge" data-wi="${i}" d="${sector(cx, cy, rO, rI, a0, a1)}" fill="${fill}" stroke="#111" stroke-width="0.8"/>`;
+    const f = w.fails || 0;
     if (f > 0) {
       const shown = Math.min(f, 6); const span = Math.abs(a1 - a0); const gap = Math.min(9, span / (shown + 1)); const mid = (a0 + a1) / 2; const first = mid - (shown - 1) / 2 * gap;
       for (let t = 0; t < shown; t++) {
@@ -2324,25 +2359,32 @@ function ballGroup(ev, available) {
      — picked "cyan edge only" over a fill, so a DCO/DPCO colour is never
      hidden; the same cyan the key ball uses). Drawn after the wedges so it
      sits above its neighbours' black outlines; no hit of its own. */
-  const ai = roster.findIndex(r => r.id === active);
+  const ai = o.mine;
   if (ai >= 0) { const [a0, a1] = wedge(ai, n); segs += `<path class="mine" data-wi="${ai}" d="${sector(cx, cy, rO, rI, a0, a1)}" fill="none" stroke="${PAL.accent}" stroke-width="2.4" stroke-linejoin="round" pointer-events="none"/>`; }
-  const dark = DARKC.has(ev.type) ? 'lbl' : 'lbl lbll';
-  let hl = available ? `<circle cx="${cx}" cy="${cy}" r="${rO + 3}" fill="none" stroke="#ffd23f" stroke-width="2.6" class="avail"/>` : '';
+  const dark = DARKC.has(o.type) ? 'lbl' : 'lbl lbll';
+  let hl = o.available ? `<circle cx="${cx}" cy="${cy}" r="${rO + 3}" fill="none" stroke="#ffd23f" stroke-width="2.6" class="avail"/>` : '';
   /* The search ring sits at rO+8. Its inner edge is 34.06, clear of the yellow
      available ring's outer edge even when svg.perf fattens that to 31.96, so
      the two can never touch or be read as one mark. */
-  if (searchHit === ev.id) hl += `<circle cx="${cx}" cy="${cy}" r="${rO + 8}" fill="none" stroke="#00e5c8" stroke-width="2.4" class="found"/>`;
-  if (arrangeMode && connectSrc === ev.id) hl += `<circle cx="${cx}" cy="${cy}" r="${rO + 5}" fill="none" stroke="${PAL.accent}" stroke-width="3"/>`;
-  if (arrangeMode && selBalls.has(ev.id)) hl += `<circle cx="${cx}" cy="${cy}" r="${rO + 5}" fill="none" stroke="${PAL.accent}" stroke-width="1.6" stroke-dasharray="3 2"/>`;
-  const num = (ev.num != null && ev.num !== '') ? `<circle cx="${size - 5}" cy="5" r="8.5" class="numbg"/><text class="numbadge" x="${size - 5}" y="8" text-anchor="middle">${escapeId(ev.num)}</text>` : '';
-  const label = escapeId(ev.label || ev.id);
-  let cap = '';
+  if (o.found) hl += `<circle cx="${cx}" cy="${cy}" r="${rO + 8}" fill="none" stroke="#00e5c8" stroke-width="2.4" class="found"/>`;
+  if (o.connect) hl += `<circle cx="${cx}" cy="${cy}" r="${rO + 5}" fill="none" stroke="${PAL.accent}" stroke-width="3"/>`;
+  if (o.sel) hl += `<circle cx="${cx}" cy="${cy}" r="${rO + 5}" fill="none" stroke="${PAL.accent}" stroke-width="1.6" stroke-dasharray="3 2"/>`;
+  const num = (o.num != null && o.num !== '') ? `<circle cx="${size - 5}" cy="5" r="8.5" class="numbg"/><text class="numbadge" x="${size - 5}" y="8" text-anchor="middle">${escapeId(o.num)}</text>` : '';
+  const label = escapeId(o.label);
   /* one invisible disc so the whole ball hit-tests as a single shape — without it the
      gap between the wedge ring and the inner icon fires pointerleave/enter as you cross it */
   const hit = `<circle cx="${cx}" cy="${cy}" r="${(rO + 1).toFixed(2)}" fill="none" pointer-events="all"/>`;
-  return `<g class="ball" data-id="${escapeId(ev.id)}" transform="translate(${(x - cx).toFixed(1)},${(y - cy).toFixed(1)})">
-  ${hit}${hl}${segs}<g class="core">${innerShape(ev.type, cx, cy)}
-  <text class="${dark}" x="${cx}" y="${cy + 3}" text-anchor="middle" style="font-size:${ballFontFor(ev.id)}px">${label}</text></g>${num}${cap}</g>`;
+  return `${hit}${hl}${segs}<g class="core">${innerShape(o.type, cx, cy)}
+  <text class="${dark}" x="${cx}" y="${cy + 3}" text-anchor="middle" style="font-size:${o.font}px">${label}</text></g>${num}`;
+}
+/* One sample ball for the Legend pop-out (D1007, D1018), drawn by the chart's own body (ballParts) as a small picture
+   of its own: one whole-ring slice in `fill` (white = not done), with an optional failure tick, the blue Crew edge,
+   the gold "can be flown next" ring or the turquoise "found" ring. The class is `legball`, never `ball`: the chart's
+   handlers and the browser suite look for `.ball`, and a legend picture must never answer them. The view box leaves
+   room for the turquoise ring, the widest mark (rO + 8 + its line). */
+export function legendBall({ type = 'acad', label = '', fill = '#ffffff', fails = 0, mine = false, available = false, found = false, px = 38 } = {}) {
+  const inner = ballParts({ type, label, font: 8.5, num: null, wedges: [{ fill, fails }], mine: mine ? 0 : -1, available, found });
+  return `<svg viewBox="-8 -8 74 74" width="${px}" height="${px}" aria-hidden="true" focusable="false"><g class="legball">${inner}</g></svg>`;
 }
 
 /* Continuous top-to-bottom flow following the real prerequisite graph. Takes
@@ -3962,7 +4004,7 @@ function chartKey(e) {
   return true;
 }
 /* any Tracker window, question or list that sits over the chart */
-function windowUp() { return !!(dlg || infoId != null || editId != null || showAllOpen || ordMode || copyOpen || sylModalOpen || failLog || lullPick || lullCopy); }
+function windowUp() { return !!(dlg || infoId != null || editId != null || showAllOpen || ordMode || copyOpen || sylModalOpen || failLog || downLog || lullPick || lullCopy); }
 /* the keyboard goes back to the chart, on the same event, when the pop-up it was in closes (Escape, a grade, Close) */
 function kbdBack() {
   const bd = document.getElementById('board'); if (!bd) return;
@@ -4330,21 +4372,107 @@ export function lullDaysIn(s, a, b) { return ((lulls && lulls[s]) || []).reduce(
    is what makes it impossible to give a bar one without the other (SidePanel.jsx draws both). */
 const INK_ON = 'var(--bg)', INK_GREY = '#fff';
 const bar = (txt, color) => ({ txt, color, ink: color === 'var(--grey)' ? INK_GREY : INK_ON });
-export function flexFor(days) {
+/* THE FLEX SETTINGS (owner D1006, D1014, D1018 — 18 Oct 26, approved "as recommended" on the pictures
+   docs/img/handpass/2026-10-18-trk-flex-legend/03-, 04-, 06-, 08-). One record for the whole Tracker, { on, from }:
+   - `from` — the six "From" days, the first day of each band after "Current" (D1018: only these are typed; each band's
+     "To" is the next band's From less one, and each band's words and colour are fixed — FLEX_BANDS below). The defaults
+     are the limits flexFor always had: <7 current · 7–13 · 14–20 · 21–30 · 31–59 · 60–119 · 120+.
+   - `on` — the one switch (D1006): off, everything about flex leaves the app — the Info panel's flex bar, "Days since
+     syllabus" (it feeds only flex — D1018) and the flex sentence, and the Legend's flex part.
+   Only an admin changes it (D1014 — the Tracker's one admin gate, narrowing D121): setFlexSetting refuses anyone else,
+   and inside Raptor the command gate does too (state/perms.ts — the record is a Setting, the admin's). Kept as ONE row,
+   `v3:master:flex`, beside the chart records (D462 — one row per thing; this thing is one), read at boot and whenever
+   a change to it lands from elsewhere (trkReloadGlobalsFromMem); a record that is missing or damaged reads as the
+   defaults. Not an Undo step: like a course or a syllabus rename it has its own window, whose Cancel is its way back
+   (the undo section's "not in the history" list). */
+export const FLEX_DEFAULT_FROM = [7, 14, 21, 31, 60, 120];
+const FLEX_BANDS = [
+  ['Current — no flex required', 'var(--marg)'],
+  ['1 Optional Flex', 'var(--orange)'],
+  ['1 Mando Flex (Convertible)', 'var(--red)'],
+  ['2 Mando Flex (1 Mando, 1 Convertible)', 'var(--red)'],
+  ['2 Mando Flex (2 Mando)', 'var(--red)'],
+  ['Short Refresher Course', 'var(--grey)'],
+  ['Re-course', 'var(--grey)'],
+];
+const kFlex = () => 'v3:master:flex';
+let FLEX = { on: true, from: FLEX_DEFAULT_FROM.slice() };
+/* what is wrong with six From days, in the words the window shows, or null — the one body is the file format's
+   (fileFormat.js flexFromProblem), so a file and the window refuse the same figures */
+export function flexProblem(from) { return FMT.flexFromProblem(from); }
+/* a stored or filed record, made safe: anything that is not a valid setting reads as the defaults (a damaged row never
+   takes the Info panel down) */
+export function flexOf(v) {
+  const o = v && typeof v === 'object' && !Array.isArray(v) ? v : {};
+  return { on: o.on !== false, from: flexProblem(o.from) ? FLEX_DEFAULT_FROM.slice() : o.from.slice() };
+}
+function flexFromMem() { FLEX = flexOf(sParse(memGet(kFlex()), null, 'object')); }
+async function loadFlex() { FLEX = flexOf(sParse(await sGet(kFlex()), null, 'object')); }
+/* the setting as it stands, a copy */
+export function flexSetting() { return { on: FLEX.on, from: FLEX.from.slice() }; }
+/* the settings window, opened by the ⚙ in the bar (D1014) — for everyone: a member sees it read-only (D1018). Held
+   here, not in the window, so the end of a login session shuts it (endSession) and the next person never meets the
+   last one's window. */
+export let flexWinOpen = false;
+export function openFlexWin() { flexWinOpen = true; notify(); }
+export function closeFlexWin() { flexWinOpen = false; notify(); }
+/* may the signed-in person change it? (D1014 — an admin; role.js, which asks Raptor) */
+export function mayChangeFlex() { return trackerIsAdmin(); }
+/* Change the setting — an admin's alone (D1014). Validated before anything is written; nothing written when nothing
+   changed. Resolves { ok } or { ok: false, message } in the window's words. The write is one command (`trk.flex`),
+   which the command gate may still refuse — then the stored row is unchanged and so is the screen. */
+export async function setFlexSetting(next) {
+  if (!mayChangeFlex()) return { ok: false, message: 'Only an admin can change the flex settings.' };
+  const n = next && typeof next === 'object' ? next : {};
+  const want = { on: n.on !== false, from: Array.isArray(n.from) ? n.from.slice() : FLEX.from.slice() };
+  const bad = flexProblem(want.from);
+  if (bad) return { ok: false, message: bad };
+  if (want.on === FLEX.on && want.from.every((v, i) => v === FLEX.from[i])) return { ok: true };
+  const json = JSON.stringify(want);
+  await sSet(kFlex(), json);
+  if (memGet(kFlex()) !== json) { flexFromMem(); notify(); return { ok: false, message: 'The flex settings could not be saved. Try again.' }; }
+  FLEX = flexOf(want);
+  renderSide(); notify();
+  return { ok: true };
+}
+/* the band a number of days since the last syllabus flight falls in. `from` defaults to the setting; the window passes
+   its draft, so the bars it shows are the ones Save would give. */
+export function flexFor(days, from) {
   if (days == null) return bar('No flight date set', 'var(--grey)');
-  if (days < 7) return bar('Current — no flex required', 'var(--marg)');
-  if (days <= 13) return bar('1 Optional Flex', 'var(--orange)');
-  if (days <= 20) return bar('1 Mando Flex (Convertible)', 'var(--red)');
-  if (days <= 30) return bar('2 Mando Flex (1 Mando, 1 Convertible)', 'var(--red)');
-  if (days <= 59) return bar('2 Mando Flex (2 Mando)', 'var(--red)');
-  if (days <= 119) return bar('Short Refresher Course', 'var(--grey)');
-  return bar('Re-course', 'var(--grey)');
+  const f = from || FLEX.from;
+  let i = 0; while (i < f.length && days >= f[i]) i++;
+  return bar(FLEX_BANDS[i][0], FLEX_BANDS[i][1]);
+}
+/* every flex band with its day range, built straight from the From days (never walked day by day, so a band set far out
+   costs nothing): { from, to, txt, color, ink }, the last one's `to` null ("and over") — the Legend's flex rows and the
+   settings window's To column and bars */
+export function flexBands(from) {
+  const f = from || FLEX.from, starts = [0, ...f];
+  return starts.map((s, i) => ({ from: s, to: i < f.length ? f[i] - 1 : null, ...flexFor(s, f) }));
 }
 export function landingCurrency(days) {
   if (days == null) return bar('No currency date set', 'var(--grey)');
   if (days < 7) return bar('Landing Current — No IP Required', 'var(--marg)');
   return bar('Landing Not Current — IP Required', 'var(--red)');
 }
+/* THE LEGEND'S BANDS ARE READ OFF THE BARS' OWN RULES (D1007, D1018 — 18 Oct 26): one row per run of days that gets
+   the same words, walked day by day through flexFor or landingCurrency, so the day ranges are written once — in those
+   two — and a band changed there changes the Legend with it. Each band is { from, to, txt, color, ink }; the last
+   one's `to` is null ("and over"). `upTo` only has to pass the last band's first day — so the flex rows, whose days
+   an admin sets (D1006), are built by flexBands from the setting itself; this walks the currency bar's. */
+export function barBands(fn, upTo = 1000) {
+  const out = [];
+  for (let d = 0; d <= upTo; d++) {
+    const b = fn(d), last = out[out.length - 1];
+    if (last && last.txt === b.txt) last.to = d;
+    else out.push({ from: d, to: d, txt: b.txt, color: b.color, ink: b.ink });
+  }
+  if (out.length) out[out.length - 1].to = null;
+  return out;
+}
+/* Whether the Tracker tracks flex at all (D1006 — the one switch for the whole Tracker, the flex settings above;
+   D1007: with it off the Legend's flex part goes). Everything that draws flex asks here. */
+export function flexOn() { return FLEX.on; }
 export function sliceBg(cols) {
   if (!cols.length) return ''; if (cols.length === 1) return cols[0];
   const step = 100 / cols.length, st = [];
@@ -4356,8 +4484,10 @@ export function sliceBg(cols) {
    Every mark and date write stamps WHO (`by`, the editor's display name from
    Raptor through the bridge — omitted, never '', when nobody is wired) and
    WHEN (`at`, an ISO instant) on the record it changed: marks[s][id] for a
-   grade, a failure or either of their days; dates[s] for the panel's four
-   boxes and the Last Flown advance. Extra fields on the same records, so
+   grade, a failure or either of their days; dates[s] for the panel's two
+   Last Flown boxes and the Last Flown advance (the typed down days and the
+   Upchit box went on 18 Oct 26 — D1002; a record that still holds them loads
+   as it is, the two fields unread — D56). Extra fields on the same records, so
    the file check's shape tests already tolerate them and undo snapshots —
    whole-record JSON — restore the stamp of the time verbatim. No screen
    reads them yet; the database step does. */
@@ -4372,7 +4502,8 @@ function stamp(rec) {
    marks say so; an emptied box stands for nothing. */
 /* A DAY AFTER TODAY IS REFUSED where it says when something was flown, done or
    failed (owner, 28 Sep 26 — D374): Done on, Failed on and both Last Flown boxes. A
-   planned day — Upchit, the two end dates — takes any day. Today is the squadron's
+   planned day — the course start (D1003), the two end dates — takes any day (the
+   Upchit box that was one went on 18 Oct 26, D1002). Today is the squadron's
    calendar day (`isoToday`, Singapore), the one the pop-up fills in by default. The
    refusal changes nothing and answers with these words, which the box shows. */
 export const NOT_YET = 'That day hasn’t come yet — pick today or earlier.';
@@ -4388,7 +4519,8 @@ export function afterToday(v) { return typeof v === 'string' && v !== '' && v > 
 const flightFlown = s => latestFlown(marks[s], id => !!(byid[id] && byid[id].type === 'flight')) || '';
 /* A DATE IS PICKED NOW, NEVER TYPED (D801, 13 Oct 26): the seven date setters no longer ask pushMarkUndo to fold a
    second change to the same box inside two seconds into the first — that was for keystrokes; two picks are two steps
-   (the read — F4). The pace and the down days are still typed and still fold. */
+   (the read — F4). The pace is still typed and still folds (the typed down days that folded too went on 18 Oct 26 —
+   D1002, D1005: the number is worked out from the Inputs, `downDaysOf` below). */
 export async function setLastSyll(s, v) {
   if (afterToday(v)) return NOT_YET;
   if (((dates[s] && dates[s].lastSyll) || '') === (v || '')) return;
@@ -4407,8 +4539,58 @@ export async function setLastCurr(s, v) {
   if (v) d.handCurr = true; else delete d.handCurr;
   stamp(d); if (!v) settleLastFlown(s); await saveDates(s); renderSide();
 }
-export async function setDownDays(s, v) { if (((dates[s] && dates[s].downDays) || '') === (v || '')) return; pushMarkUndo(s, 'the down days', 'downDays'); dates[s].downDays = v; stamp(dates[s]); await saveDates(s); renderSide(); }
-export async function setUpchit(s, v) { if (((dates[s] && dates[s].upchit) || '') === (v || '')) return; pushMarkUndo(s, 'the upchit date'); dates[s].upchit = v; stamp(dates[s]); await saveDates(s); renderSide(); }
+/* THE COURSE START (owner D1003, D1018 — 18 Oct 26): the day his down days are counted from. Kept with his pace — per
+   course and student, whatever the chart, as the end dates are — so it travels in a backup as part of pace with no
+   change to the file. Set in "+ Add" (today by default) and changed in the Info panel's date box, where the Upchit box
+   was; a planned day, so any day is taken. One pick, one undo step (D372's pace-and-end-dates rule). */
+export function courseStartOf(s) { return paceOf(s).courseStart || ''; }
+export async function setCourseStart(s, v) { if (courseStartOf(s) === (v || '')) return; pushMarkUndo(s, 'the course start'); pace[s] = { ...paceOf(s), courseStart: v || null }; await savePace(s); renderSide(); }
+
+/* ---------- the down days, worked out from the Inputs (owner D1002, D1003, D1005, D1018 — 18 Oct 26) ----------
+   "No. of Down Days" is no longer typed: it is every medical day of his — HL, OML, ATT C, ATT B, the downchits — from
+   his course start to today, read off the people bridge's third channel (people.js getMedInputs — Raptor works the
+   dates out on its side, peoplewire.ts medForTracker; nothing here reads Raptor's store). Only inputs that overlap
+   [course start, today] count, each clipped to it; a half day (AM / PM) counts ½; an input still running counts to
+   today — the Tracker's own today (`isoToday`, the squadron's day), not Raptor's demo week; an input an upchit cut
+   counts as cut (it is stored cut), and keeps the end it was filed with only where D999 kept it (`firstEnd`). The
+   student is the man his roster entry is linked to (`pid`); a student with no link — none since D1005, but an older
+   record may carry one — and a student with no course start count nothing: `total` null, the panel's "—".
+   It feeds no bar: the currency bar counts only the days since his last currency flight (D1004). */
+const isoDay = iso => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || '')); return m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) / DAY : null; };
+export function downDaysOf(s) {
+  const start = courseStartOf(s), pid = pidOf(s);
+  if (!pid) return { start, total: null, rows: [], why: 'unlinked' };
+  if (isoDay(start) == null) return { start: '', total: null, rows: [], why: 'nostart' };
+  const today = isoToday(), s0 = isoDay(start), t = isoDay(today);
+  const rows = [];
+  for (const r of (getMedInputs()[pid] || [])) {
+    const a = isoDay(r.startIso), b = isoDay(r.endIso);
+    if (a == null || b == null) continue;
+    const from = Math.max(a, s0), to = Math.min(b, t);
+    if (to < from) continue;
+    const n = to - from + 1;
+    rows.push({ iid: r.iid, type: r.type, startIso: r.startIso, endIso: r.endIso, half: r.half || '',
+      days: r.half ? n / 2 : n, running: b > t,
+      cut: r.firstEnd && r.cutOn ? { on: r.cutOn, filedTo: r.firstEnd } : null });
+  }
+  rows.sort((x, y) => (x.startIso < y.startIso ? -1 : x.startIso > y.startIso ? 1 : 0));
+  return { start, total: rows.reduce((n, r) => n + r.days, 0), rows, why: '' };
+}
+/* a count in words, a half as ½: "½ day", "1 day", "0 days", "14½ days" (as drawn) */
+export function sayDays(n) {
+  const whole = Math.floor(n), half = n % 1 !== 0;
+  return (whole ? whole : (half ? '' : '0')) + (half ? '½' : '') + ' day' + (n === 1 || n === 0.5 ? '' : 's');
+}
+const MONTH3 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+/* a day as the Medical tab writes it: "7 Sep"; with its year, "1 Jun 2026" */
+export function sayDay(iso, withYear) { const d = +iso.slice(8, 10), m = MONTH3[+iso.slice(5, 7) - 1] || ''; return d + ' ' + m + (withYear ? ' ' + iso.slice(0, 4) : ''); }
+/* an input's dates: "7 Sep", "15–19 Jun", "28 Sep – 2 Oct"; the years said only when it crosses one */
+export function sayDaySpan(a, b) {
+  if (a === b) return sayDay(a);
+  if (a.slice(0, 7) === b.slice(0, 7)) return +a.slice(8, 10) + '–' + sayDay(b);
+  if (a.slice(0, 4) === b.slice(0, 4)) return sayDay(a) + ' – ' + sayDay(b);
+  return sayDay(a, true) + ' – ' + sayDay(b, true);
+}
 /* v is kept verbatim — an empty or half-typed box must stay as typed. epwOf()
    does the coercion for the arithmetic. */
 export async function setEpw(s, v) { if (String(paceOf(s).epw ?? '') === String(v ?? '')) return; pushMarkUndo(s, 'the pace', 'epw'); pace[s] = { ...paceOf(s), epw: v }; await savePace(s); renderSide(); }
@@ -4893,6 +5075,13 @@ export async function setFailDate(s, id, i, iso) {
 export let failLog = null;   /* the student, while the list is up */
 export function openFailLog(s) { if (!s) return; failLog = s; notify(); }
 export function closeFailLog() { failLog = null; notify(); }
+/* THE DOWN-DAYS WINDOW (owner D1002, D1018 — 18 Oct 26): a tap on "No. of Down Days" lists each medical input the number
+   counts — a clone of the Failures list's window, and it only shows (the Inputs page changes an input). Opened only when
+   there is a count to show; closed by Escape, a tap outside or ✕, and the keyboard goes back to the number (the design
+   guide's "the keyboard returns to the button that opened a thing" — SidePanel.jsx DownLog). */
+export let downLog = null;   /* the student, while the window is up */
+export function openDownLog(s) { if (!s || downDaysOf(s).total == null) return; downLog = s; notify(); }
+export function closeDownLog() { downLog = null; notify(); }
 /* LAST FLOWN IS THE LATEST DAY ACTUALLY FLOWN (owner, 23 Sep 26 — D123): worked
    out from the flights marked done, whatever order they were entered in. So an
    older sortie recorded after a newer one never drags it back (the 2 Sep rule,
@@ -5069,9 +5258,12 @@ export async function addStudent() {
   /* the list is read LIVE while the box is open: a person added or taken off the roster
      meanwhile shows at once ([TRK-RETEST-NOTES] C11 — it kept the list it opened with) */
   const people = () => getPeople().map(p => ({ key: p.id, label: p.cs, sub: seatWord(p.seat) + (p.q ? ' · ' + p.q : '') }));
-  const r = people().length
-    ? await uiPick('Add a crew member', people, { input: true, placeholder: 'Or type a callsign', listTitle: 'From the squadron roster' })
-    : await uiPrompt('Student callsign:');
+  /* THE COURSE START IS SET HERE (owner D1003, D1018 — 18 Oct 26): a date box above the list, today by default — above
+     it because a tap on a name adds him at once. The typed-name box (no roster: the standalone Tracker) carries it too. */
+  const start = { label: 'Course start', value: isoToday() };
+  let r;
+  if (people().length) r = await uiPick('Add a crew member', people, { input: true, placeholder: 'Or type a callsign', listTitle: 'From the squadron roster', date: start });
+  else { const t = await _dlgShow('Student callsign:', { input: true, date: start }); r = t === null ? null : (t + ''); }
   let v, link = null;
   if (r && typeof r === 'object') {
     const p = getPeople().find(x => x.id === r.pick); if (!p) return;
@@ -5106,6 +5298,13 @@ export async function addStudent() {
         if (paceRead) { try { pace[r.id] = JSON.parse(paceRead); } catch (_) {} }
         if (lullsRead) { try { lulls[r.id] = JSON.parse(lullsRead); } catch (_) {} }
         saveRoster(); saveMarks(r.id); saveDates(r.id);
+        /* his course start, from the box (D1003): only where he has no pace yet — an enrolment reused from another chart
+           of this course already has his, course start and all, and keeps it; the rest of a new pace is the default
+           loadStudent gives a student with none (the course plan's pace, else 2 a week) */
+        if (!paceRead && isWholeDay(start.value)) { pace[r.id] = { epw: plan.epw ?? 2, target: plan.target ?? null, target2: plan.target2 ?? null, courseStart: start.value }; savePace(r.id); }
+        /* a pace already kept for him (another chart of the course, an older backup) with NO course start takes the day
+           picked here; one already set still wins (the fresh read of job 7, 1 — it was dropped without a word) */
+        else if (isWholeDay(start.value) && !(pace[r.id] && pace[r.id].courseStart)) { pace[r.id] = { ...paceOf(r.id), courseStart: start.value }; savePace(r.id); }
       } else if (link && !r.pid) { r.pid = link; saveRoster(); }
       active = r.id; refreshActive(); renderBoard(); renderSide();
     });
@@ -6085,6 +6284,7 @@ export function handleEscapeKey(e) {
      and the raw event list were the last dialogs Escape did nothing for. */
   if (infoId != null) { e.preventDefault(); closeInfo(); return; }
   if (failLog) { e.preventDefault(); closeFailLog(); return; }
+  if (downLog) { e.preventDefault(); closeDownLog(); return; }
   if (pop) { e.preventDefault(); closePop(); return; }
   if (showAllOpen) { e.preventDefault(); closeShowAll(); return; }
   if (ordMode) { e.preventDefault(); closeOrd(); return; }
@@ -6305,6 +6505,7 @@ async function reloadFromStore() {
   await reconcileBuiltins();
   await loadSylOrder();
   await loadEventInfo();
+  await loadFlex();
   const c = COURSES.some(x => isCourseEntry(x) && x.id === course) ? course : (COURSES[0] && COURSES[0].id);
   await loadCourse(c);
   if (keepActive && roster.some(r => r.id === keepActive)) active = keepActive;
@@ -6344,6 +6545,10 @@ export async function collectCharts(ids, opts) {
   const eventInfoBySyl = {};
   for (const id of order) if (eventInfo[id] && Object.keys(eventInfo[id]).length) eventInfoBySyl[id] = JSON.parse(JSON.stringify(eventInfo[id]));
   const out = { order, syllabi, layouts, eventInfoBySyl, sylcat };
+  /* A backup of every chart carries the flex settings too (D1006), so export → wipe → import keeps them — the route the
+     Tracker takes to the database (D120). Never on a file of some charts: a chart handed over must not change another
+     Tracker's settings. */
+  if (opts && opts.deleted) out.flex = flexSetting();
   /* A backup of EVERY chart also names the built-ins he deleted, so after
      export → wipe → import they stay deleted — the wiped app ships them all
      (owner, 23 Sep 26 — D127; [HUMAN-RETEST] F8). Never on a file of some
@@ -6540,22 +6745,22 @@ function reconcileStudentsSyllabi(students, version) {
      reconcile target and silently drop a block. Existence at the destination and
      no-two-refs-onto-one-dest are still enforced below, so this stays fail-closed. */
   const catIds = new Set((s.sylcat || []).filter(isSylEntry).map(e => e.id));
-  for (const r of refs) if (!catIds.has(r) && !sylEntry(r)) throw new Error(STUDENT_GUARD_MSG);
+  for (const r of refs) if (!catIds.has(r) && !sylEntry(r)) throw new Error(STUDENT_CHART_MSG);   /* D1015: a chart neither the file nor the store has */
   /* reconcile the file's syllabus ids to the store's (one map), refuse a clash */
   const { remapped, conflicts } = reconcileSylIds(buildUnionSylcat(null, s.sylcat), SYLS);
   if (conflicts.length) { const x = conflicts[0]; throw new Error('The students could not be brought in: the syllabus “' + x.name + '” in the file is a different chart than the one already here. Nothing has been changed.'); }
   const re = id => has(remapped, id) ? remapped[id] : id;
   /* every referenced id must resolve to a syllabus that EXISTS and is NOT
      tombstoned at the destination (§CSID2-04 / §CSID2-R5-02) */
-  for (const r of refs) { const t = re(r); if (!sylEntry(t) || SYL_TOMB[t]) throw new Error(STUDENT_GUARD_MSG); }
+  for (const r of refs) { const t = re(r); if (!sylEntry(t) || SYL_TOMB[t]) throw new Error(STUDENT_CHART_MSG); }   /* D1015: missing or deleted here */
   /* two distinct referenced ids MUST NOT reconcile onto one destination — that
      would collapse two student blocks into one, silently losing marks (CSID-REVIEW-02). */
   const seenDest = new Map();
-  for (const r of refs) { const t = re(r); if (seenDest.has(t) && seenDest.get(t) !== r) throw new Error(STUDENT_GUARD_MSG); seenDest.set(t, r); }
+  for (const r of refs) { const t = re(r); if (seenDest.has(t) && seenDest.get(t) !== r) throw new Error(STUDENT_CHART_MSG); seenDest.set(t, r); }   /* D1015: two onto one */
   const byCourse = {};
   for (const c of Object.keys(s.byCourse || {})) {
     const cv = s.byCourse[c] || {}, nb = {};
-    for (const k of Object.keys(cv.bySyllabus || {})) { const nk = re(k); if (has(nb, nk)) throw new Error(STUDENT_GUARD_MSG); nb[nk] = cv.bySyllabus[k]; }
+    for (const k of Object.keys(cv.bySyllabus || {})) { const nk = re(k); if (has(nb, nk)) throw new Error(STUDENT_CHART_MSG); nb[nk] = cv.bySyllabus[k]; }
     const ncv = { ...cv, bySyllabus: nb };
     if (ncv.plan && ncv.plan.sylId) ncv.plan = { ...ncv.plan, sylId: re(ncv.plan.sylId) };
     byCourse[c] = ncv;
@@ -6833,6 +7038,7 @@ export async function importClick() {
   const addAsNew = Object.create(null);   /* fileId → freshly minted id; students follow */
   const done = [], skipped = [], keptDeleted = [];
   const wanted = Object.create(null);     /* store id → the name the file gives it */
+  let flexIn = '';                        /* the flex settings the backup carries: '' / 'restored' / 'refused' (D1006) */
   if (hasCharts) {
     for (const id of charts.order) {
       if (ended()) return;   /* the session ended under a question: nothing more is asked (F6) */
@@ -6915,6 +7121,17 @@ export async function importClick() {
       SYL_ORDER = [...inFile, ...SYL_ORDER.filter(id => !inFile.includes(id))];
       await saveSylOrder(); refreshSyl();
     }
+    /* THE FLEX SETTINGS a whole backup carries (D1006) come home with it — but they are an admin's alone to change
+       (D1014): a member's import leaves this Tracker's as they are, and the closing report says so. A file whose
+       settings match this Tracker's changes nothing and says nothing. */
+    if (charts.flex) {
+      const f = flexOf(charts.flex), cur = flexSetting();
+      if (f.on !== cur.on || f.from.some((v, i) => v !== cur.from[i])) {
+        if (!mayChangeFlex()) flexIn = 'refused';
+        else if ((await setFlexSetting(f)).ok) flexIn = 'restored';
+        else flexIn = 'failed';      /* said in the closing note, not swallowed (the fresh read of job 7, 3) */
+      }
+    }
   }
   if (ended()) return;
   let people = false;
@@ -6929,7 +7146,7 @@ export async function importClick() {
     if (people && norm.studentsRefused) {
       /* normalizeImport turned the students away (incomplete / colliding v3 refs),
          but the charts above still imported */
-      await uiAlert(STUDENT_GUARD_MSG); people = false;
+      await uiAlert(STUDENT_CHART_MSG); people = false;   /* D1015: a current file that does not match, never an older one */
     } else if (people) {
       /* norm.students is the v3 block reconciled through the ONE import map (or the
          raw pre-v3 block, which the version guardrail refuses in applyStudents). */
@@ -6947,10 +7164,12 @@ export async function importClick() {
     }
   }
   if (ended()) return;   /* the closing report is the ended session's, not the next person's */
-  const what = [done.length ? 'brought in ' + done.join(', ') : null, people ? 'students & marks restored' : null].filter(Boolean).join(' · ');
+  const what = [done.length ? 'brought in ' + done.join(', ') : null, people ? 'students & marks restored' : null, flexIn === 'restored' ? 'flex settings restored' : null].filter(Boolean).join(' · ');
   if (what) setSaveStatus(what, 'ok');
   const skip = (skipped.length ? '\n\nSkipped, left as they are here: ' + skipped.join(', ') + '.' : '')
-    + (keptDeleted.length ? '\n\nDeleted, as in the backup: ' + keptDeleted.join(', ') + ' (↺ Restore in ⇅ Reorder brings ' + (keptDeleted.length === 1 ? 'it' : 'them') + ' back).' : '');
+    + (keptDeleted.length ? '\n\nDeleted, as in the backup: ' + keptDeleted.join(', ') + ' (↺ Restore in ⇅ Reorder brings ' + (keptDeleted.length === 1 ? 'it' : 'them') + ' back).' : '')
+    + (flexIn === 'refused' ? '\n\nFlex settings not brought in: only an admin can change them.' : '')
+    + (flexIn === 'failed' ? '\n\nFlex settings not brought in: they could not be saved. Set them again in ⚙.' : '');
   await uiAlert((what
     ? what.charAt(0).toUpperCase() + what.slice(1) + '.\n\n' + (people ? 'It is saved.' : 'Everyone’s marks are untouched. It is saved.')
     : 'Nothing was brought in.') + skip);
@@ -7045,6 +7264,7 @@ export async function init() {
   await loadCourse((__want && COURSES.some(c => isCourseEntry(c) && c.id === __want)) ? __want : (COURSES[0] && COURSES[0].id), true);
   pickOwner = __who;
   await loadEventInfo();
+  await loadFlex();   /* the flex settings (D1006) — the defaults when none is stored */
   ready = true;
   /* [ARCH-STACK] phase 5: enable command routing now that every boot migration
      and load has run its raw seed/migration writes. Post-boot user edits emit the

@@ -251,7 +251,8 @@ test('D732 — Escape while the day’s title is typed puts the title back and l
   expect(await saved()).toBe('Sports day')
 })
 
-/* A1, on a phone: the day's window is nearly the whole screen, the input's window stands at its foot. A finger on a
+/* A1, on a phone: the day's window is nearly the whole screen, the input's window stands over it (in the middle since
+   D997, 18 Oct 26 — at its foot before). A finger on a
    card of the day that still shows above the input's window asks for the other input — and the question is SEEN.
    ON A TALL PHONE (932 — the largest iPhones): since calendar step two the input's window carries the finger-sized
    calendar (D901) and on an 844-tall phone reaches the top, covering the day — left so on his word (D909, 15 Oct 26;
@@ -284,7 +285,20 @@ test('A1 — a tall phone: another card tapped over unsaved changes — the ques
     let pt = await shows(other)
     if (!pt) {
       const bar = await shows('[data-testid="win-inputsday"] .win-bar .win-ttl')
-      expect(bar, 'the day’s bar still shows above the input’s window').toBeTruthy()
+      /* D997 (18 Oct 26): on a phone the input's window stands in the MIDDLE of the screen, as tall as what is in it up to
+         the screen less 24px — so where it is tall it covers the day's bar too, as D909 already allows on an 844 phone
+         (its ✕ shows the day again — the D909 test below). Then there is no finger's route to the other card while it is
+         open, and what is checked is where the window stands; where the day still shows, the route below is walked. The
+         question's place in front is also held on a desktop (inputs-calendar.spec.ts, "it asks before it shows the other
+         input"). */
+      if (!bar) {
+        const g = await page.evaluate(() => {
+          const r = document.querySelector('[data-testid="win-inputedit"]')!.getBoundingClientRect()
+          return { top: r.top, gap: innerHeight - r.bottom }
+        })
+        expect(Math.abs(g.top - g.gap), 'the input’s window stands in the middle of the phone’s screen (D997)').toBeLessThanOrEqual(2)
+        return
+      }
       await page.touchscreen.tap(bar!.x, bar!.y)
       await expect(page.locator('[data-testid="win-inputsday"]')).toHaveClass(/\bfront\b/)
       pt = await shows(other)

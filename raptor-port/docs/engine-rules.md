@@ -1901,6 +1901,10 @@ Personal Inputs, faded, so the scheduler can see what they have dealt with.
 
 ## The medical tracker — downchit, upchit and the trim rules (owner, 27 Aug 26)
 
+*(18 Oct 26, D999 — BUILT the same night (`engine/medical.ts upchitTrimPlan` grows, `ui/inputedit.tsx applyMedPlan` keeps `firstEnd`), filed as [UPCHIT-MOVE-NO-REGROW]: an upchit moved to a LATER date gives the downchit it cut its
+days back, to the day before the new date and never past the downchit's first end, said on the upchit's save sheet before
+anything changes; a calendar drag of the upchit the same. Until built, the trim below only ever shortens.)*
+
 The medical group (HL, OML, ATT C, ATT B) has always been the downchit; what
 is new is the LIFECYCLE around it, and one new type.
 

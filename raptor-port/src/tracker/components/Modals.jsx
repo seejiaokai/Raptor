@@ -1,6 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import * as core from '../app/core.js';
 import { isComposing } from './keys.js';
+import { DateBox } from './DateBox.jsx';
 import { edgeAutoScroll } from '../../ui/edgescroll';
 import { markLand, paintLand } from '../../ui/lift';
 
@@ -123,6 +124,14 @@ export function DlgModal() {
       <div className="overlay" id="dlgOverlay" style={{ zIndex: 100, display: 'block' }} onClick={cancel}></div>
       <div className="modal" id="dlgModal" ref={modalRef} role="dialog" aria-modal="true" onKeyDown={trapTab} style={{ zIndex: 101, width: 'min(420px, 92vw)', display: 'block' }}>
         <div id="dlgMsg" style={{ fontSize: 13.5, whiteSpace: 'pre-wrap', marginBottom: 12 }}>{d.msg}</div>
+        {/* THE COURSE START in "+ Add" (owner D1003, D1018 — as drawn, 5-add-box): the app's own date box, above the list
+            because a tap on a name adds him at once; today by default, and a day is always set (nothing to take off) */}
+        {d.date && (
+          <div className="field dlg-date">
+            <label>{d.date.label}</label>
+            <DateBox key={core.dlgSerial} id="dlgDate" title={d.date.label} clearable={false} value={d.date.value || ''} onCommit={v => core.setDlgDate(v)} />
+          </div>
+        )}
         {list && (
           <>
             {d.listTitle && <div className="mini dlg-listtitle">{d.listTitle}</div>}

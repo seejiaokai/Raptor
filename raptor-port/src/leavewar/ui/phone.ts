@@ -13,7 +13,11 @@
 // phone" — which is why every unit test written before this one still sees the desktop's strip.
 import { useSyncExternalStore } from 'react'
 
-export const PHONE_QUERY = '(max-width: 430px)'
+/* D1000, D1016 (18 Oct 26 — "Shorter version", then his approval of the pictures at 440 and 600): the TOP takes the phone's
+   two lines up to 700 wide — the biggest iPhones and a small tablet, where the desktop's strip squeezed was at its tallest.
+   Only the top: the grid card's own phone rules (its short button words, its padding) and the Required panel keep 430,
+   in matrix.css, chrome.css's own 430 block and ReqPanel.tsx. So "a phone" here means "the top's phone layout". */
+export const PHONE_QUERY = '(max-width: 700px)'
 
 const query = () => (typeof window !== 'undefined' && typeof window.matchMedia === 'function' ? window.matchMedia(PHONE_QUERY) : null)
 
