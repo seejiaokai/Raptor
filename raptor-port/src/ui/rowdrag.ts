@@ -1,6 +1,7 @@
 import { applyMove, popLandedKey } from '../engine/reorder'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
+import { flushSync } from 'react-dom'
 import { notify } from '../state/store'
 import { moveSectionTo } from '../state/store'
 import { setSecDefOffer } from './pops'
@@ -183,8 +184,27 @@ export function wireRowDrag(el: HTMLElement) {
     const dayPrev = (di: any) => view.DPREV.has(+di)
     /* the GRIP only — a press on the element itself is a click on a field, and a
        row full of inputs has almost no blank space to spare */
-    const grip = (e.target as HTMLElement).closest?.('.sb-grip, .wvgrip, .secgrip') as HTMLElement | null
+    let grip = (e.target as HTMLElement).closest?.('.sb-grip, .wvgrip, .secgrip') as HTMLElement | null
     if (!grip) return
+    /* A PRESS ON A GRIP TAKES THE CARET OUT OF ITS TEXT BOX FIRST (the batch's check, 19 Oct 26 — the scenario designer's
+       S1-01). The press stops the browser moving the focus, so the caret stayed in the box it was in — an In-time line,
+       which "+ In-time / Rally" leaves it in — the board held that panel's old order on screen for it, and leaving the
+       line afterwards wrote its words by its OLD place, over the line the drag had put there: one line doubled, the other
+       lost. The box is left now, so it saves where it stands, and the redraw that follows is done before the drag picks
+       anything up; the grip is found again by its row's address should the redraw have replaced it. */
+    const typing = document.activeElement as HTMLElement | null
+    if (typing && typing !== document.body && (typing.isContentEditable || typing.getAttribute('contenteditable') === 'true' || /^(INPUT|TEXTAREA)$/.test(typing.tagName))) {
+      const at = (grip.closest('[data-move]') as HTMLElement | null)?.dataset.move
+      const atSec = (grip.closest('[data-secmove]') as HTMLElement | null)?.dataset.secmove
+      const gripCls = grip.classList.contains('secgrip') ? '.secgrip' : grip.classList.contains('wvgrip') ? '.wvgrip' : '.sb-grip'
+      typing.blur()
+      flushSync(() => notify())
+      if (!grip.isConnected) {
+        const row = grip.classList.contains('secgrip') ? (atSec ? el.querySelector(`[data-secmove="${atSec}"]`) : null) : (at ? el.querySelector(`[data-move="${at}"]`) : null)
+        grip = row ? row.querySelector(gripCls) as HTMLElement | null : null
+        if (!grip) return
+      }
+    }
     if (grip.classList.contains('secgrip')) {
       const sec = grip.closest('[data-secmove]') as HTMLElement | null; if (!sec) return
       if (dayPrev(sec.dataset.secmove!.split('.')[0])) return

@@ -6,6 +6,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DAYS } from '../engine/data'
 import { landSel, wireRowDrag, rowEdge } from './rowdrag'
+import { routeFocusOut } from './textedit'
 import { markLand, paintLand, pendingLand } from './lift'
 import { setSession } from '../state/auth'
 import { setBoardDay, DPREV } from '../state/view'
@@ -252,6 +253,24 @@ describe('wireRowDrag', () => {
       expect(rows[0].querySelector('[data-itline="0|0|0"]') && rows[0].querySelector('[data-itdel="0|0|0"]'), 'its line and its ✕ inside').toBeTruthy()
       down(rows[1].querySelector('.sb-grip')!); over(rows[0]); up()
       expect(DAYS[0].waves[0].intimes).toEqual(['07:30H: RALLY', '07:00H: IN TIME + WX/NOTAMS'])
+    }))
+    /* the batch's check (19 Oct 26 — the scenario designer's S1-01): the caret in a line ("+ In-time / Rally" leaves it
+       there), another line dragged above it. The drag left the caret where it was, the board held the old order on
+       screen for the caret, and leaving the line wrote its words over the line now at its OLD place — one line doubled,
+       the other lost. A press on a grip takes the caret out first, saving the line where it stands. */
+    it('a line dragged while the caret is in another line loses no line', () => withEdit(() => {
+      DAYS[0].waves[0].intimes = ['07:00H: IN TIME + WX/NOTAMS', '07:30H: RALLY']
+      host.innerHTML = boardHTML(0)
+      document.addEventListener('focusout', routeFocusOut)
+      try {
+        const line0 = host.querySelector('[data-itline="0|0|0"]') as HTMLElement
+        line0.focus()
+        expect(document.activeElement, 'the caret is in the first line (or this test proves nothing)').toBe(line0)
+        const rows = [...host.querySelectorAll('.intimes .itrow[data-move^="mv:it.0.0."]')] as HTMLElement[]
+        down(rows[1].querySelector('.sb-grip')!); over(rows[0]); up()
+        line0.blur()
+        expect(DAYS[0].waves[0].intimes, 'both lines, in the new order').toEqual(['07:30H: RALLY', '07:00H: IN TIME + WX/NOTAMS'])
+      } finally { document.removeEventListener('focusout', routeFocusOut) }
     }))
     it('an In-time / Rally line is not dropped on a wave block or another wave’s line', () => withEdit(() => {
       const di = DAYS.findIndex((d: any) => (d.waves || []).length > 1)
