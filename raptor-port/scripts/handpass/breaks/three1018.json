@@ -1,32 +1,105 @@
 [
-  { "n": 1, "name": "D1020: the floating calendar's Escape closes the calendar even with the lists open",
-    "file": "src/ui/DateBox.tsx", "find": "if (!card.current?.querySelector('.dcal-lists')) closeRef.current()", "put": "closeRef.current()",
-    "tests": ["src/ui/datebox.test.tsx"] },
-  { "n": 2, "name": "D1022: the delete gives nothing back (the plan not applied)",
-    "file": "src/ui/inputedit.tsx", "find": "return saveBatch(() => { if (back.length) applyMedPlan(back); dropInputRow(r) })", "put": "return saveBatch(() => { dropInputRow(r) })",
-    "tests": ["src/ui/medwrite.test.ts", "src/ui/upchitdelete.test.tsx"] },
-  { "n": 3, "name": "D1022: the give-back runs past another medical in the gap (no stops)",
-    "file": "src/engine/medical.ts", "find": "for(const o of stops){if(o===r)continue;const s=medStartOrd(o);if(s!=null&&s>b&&s<=to)to=ordShift(s,-1)!;}", "put": "",
-    "tests": ["src/ui/medwrite.test.ts"] },
-  { "n": 4, "name": "D1022: the delete plan ignores the kept first end (grows without limit)",
-    "file": "src/engine/medical.ts", "find": "return giveBack(person,up,Infinity);", "put": "return giveBack(person,up,99991231);",
-    "tests": ["src/ui/medwrite.test.ts"] },
-  { "n": 5, "name": "D1022: the window's Delete does not ask first",
-    "file": "src/ui/inputedit.tsx", "find": "if (back) { setUpConf({ ...back, del: true }); return }", "put": "",
-    "tests": ["src/ui/upchitdelete.test.tsx"] },
-  { "n": 6, "name": "D1022: the opened day's Delete key does not use the upchit sheet",
-    "file": "src/ui/InputsCal.tsx", "find": "if (back) { setMedMove({ iid: r.iid, ask: { kind: 'updel', ...back }, via: 'delete', said: 'Input deleted' }); notify(); return }", "put": "",
-    "tests": ["src/ui/upchitdelete.test.tsx"] },
-  { "n": 7, "name": "D1022: the sheet's delete words are the save's (no 'Deleting this upchit will')",
-    "file": "src/ui/UpchitConfirm.tsx", "find": "{deleting ? 'Deleting this upchit will' : 'Saving this upchit will'}", "put": "Saving this upchit will",
-    "tests": ["src/ui/upchitdelete.test.tsx"] },
-  { "n": 8, "name": "D1022: the sheet keeps its fit line on a delete",
-    "file": "src/ui/UpchitConfirm.tsx", "find": "{!deleting && <div className=\"upconf-fit\">", "put": "{<div className=\"upconf-fit\">",
-    "tests": ["src/ui/upchitdelete.test.tsx"] },
-  { "n": 9, "name": "D1022: the day's sheet Save does not delete",
-    "file": "src/ui/MedMoveConfirm.tsx", "find": "onCancel={done} onSave={() => finish(r => removeInput(r))} />", "put": "onCancel={done} onSave={() => done()} />",
-    "tests": ["src/ui/upchitdelete.test.tsx"] },
-  { "n": 10, "name": "D1022: the give-back is not refused on a locked day",
-    "file": "src/ui/inputedit.tsx", "find": "if (back.length && medPlanProtected(back)) { medicalLocked(); return false }", "put": "",
-    "tests": ["src/ui/medwrite.test.ts", "src/ui/upchitdelete.test.tsx", "src/leavewar/quarantine-medical-ui-pile1.test.tsx"] }
+ {
+  "n": 1,
+  "name": "D1020: the floating calendar's Escape closes the calendar even with the lists open",
+  "file": "src/ui/DateBox.tsx",
+  "find": "if (!card.current?.querySelector('.dcal-lists')) closeRef.current()",
+  "put": "closeRef.current()",
+  "tests": [
+   "src/ui/datebox.test.tsx"
+  ]
+ },
+ {
+  "n": 2,
+  "name": "D1022: the delete gives nothing back (the plan not applied)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "return saveBatch(() => { if (back.length) applyMedPlan(back); dropInputRow(r) })",
+  "put": "return saveBatch(() => { dropInputRow(r) })",
+  "tests": [
+   "src/ui/medwrite.test.ts",
+   "src/ui/upchitdelete.test.tsx"
+  ]
+ },
+ {
+  "n": 3,
+  "name": "D1022: the give-back runs past another medical in the gap (no stops)",
+  "file": "src/engine/medical.ts",
+  "find": "for(const o of stops){if(o===r)continue;const s=medStartOrd(o);if(s!=null&&s>b&&s<=to)to=ordShift(s,-1)!;}",
+  "put": "",
+  "tests": [
+   "src/ui/medwrite.test.ts"
+  ]
+ },
+ {
+  "n": 4,
+  "name": "D1022: the give-back ignores the downchit's first end (grows without limit)",
+  "file": "src/engine/medical.ts",
+  "find": "let to=Math.min(f,upTo);",
+  "put": "let to=upTo;",
+  "tests": [
+   "src/ui/medwrite.test.ts"
+  ]
+ },
+ {
+  "n": 5,
+  "name": "D1022: the window's Delete does not ask first",
+  "file": "src/ui/inputedit.tsx",
+  "find": "if (back) { setUpConf({ ...back, del: true }); return }",
+  "put": "",
+  "tests": [
+   "src/ui/upchitdelete.test.tsx"
+  ]
+ },
+ {
+  "n": 6,
+  "name": "D1022: the opened day's Delete key does not use the upchit sheet",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "if (back) { setMedMove({ iid: r.iid, ask: { kind: 'updel', ...back }, via: 'delete', said: 'Input deleted' }); notify(); return }",
+  "put": "",
+  "tests": [
+   "src/ui/upchitdelete.test.tsx"
+  ]
+ },
+ {
+  "n": 7,
+  "name": "D1022: the sheet's delete words are the save's (no 'Deleting this upchit will')",
+  "file": "src/ui/UpchitConfirm.tsx",
+  "find": "{deleting ? 'Deleting this upchit will' : 'Saving this upchit will'}",
+  "put": "Saving this upchit will",
+  "tests": [
+   "src/ui/upchitdelete.test.tsx"
+  ]
+ },
+ {
+  "n": 8,
+  "name": "D1022: the sheet keeps its fit line on a delete",
+  "file": "src/ui/UpchitConfirm.tsx",
+  "find": "{!deleting && <div className=\"upconf-fit\">",
+  "put": "{<div className=\"upconf-fit\">",
+  "tests": [
+   "src/ui/upchitdelete.test.tsx"
+  ]
+ },
+ {
+  "n": 9,
+  "name": "D1022: the day's sheet Save does not delete",
+  "file": "src/ui/MedMoveConfirm.tsx",
+  "find": "onCancel={done} onSave={() => finish(r => removeInput(r))} />",
+  "put": "onCancel={done} onSave={() => done()} />",
+  "tests": [
+   "src/ui/upchitdelete.test.tsx"
+  ]
+ },
+ {
+  "n": 10,
+  "name": "D1022: the give-back is not refused on a locked day",
+  "file": "src/ui/inputedit.tsx",
+  "find": "if (back.length && medPlanProtected(back)) { medicalLocked(); return false }",
+  "put": "",
+  "tests": [
+   "src/ui/medwrite.test.ts",
+   "src/ui/upchitdelete.test.tsx",
+   "src/leavewar/quarantine-medical-ui-pile1.test.tsx"
+  ]
+ }
 ]

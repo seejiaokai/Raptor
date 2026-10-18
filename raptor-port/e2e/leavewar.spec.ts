@@ -472,11 +472,12 @@ test('the top of the Leave War on a phone is two lines, nothing overlapping or o
         const tail = pg.querySelector('.card-hd .rtlbl') as HTMLElement | null
         const stage = pg.querySelector('.stage') as HTMLElement | null
         const hd = pg.querySelector('.card-hd') as HTMLElement | null
-        const tops = hd ? [...hd.querySelectorAll<HTMLElement>('.rtbtn')].filter(b => b.offsetParent).map(b => Math.round(b.getBoundingClientRect().top)) : []
+        /* each button's middle — buttons a hair apart in height sit a pixel apart at the top on the same line */
+        const tops = hd ? [...hd.querySelectorAll<HTMLElement>('.rtbtn')].filter(b => b.offsetParent).map(b => { const r = b.getBoundingClientRect(); return Math.round(r.top + r.height / 2) }) : []
         return { tail: tail ? getComputedStyle(tail).display : 'absent', stagePad: stage ? getComputedStyle(stage).paddingLeft : 'absent', tops }
       })
       expect(card.tail, `${width}: the grid card's button words are the phone's short ones (D1019)`).toBe('none')
-      expect(new Set(card.tops).size, `${width}: the grid card's buttons are on one line (${JSON.stringify(card.tops)})`).toBe(1)
+      expect(Math.max(...card.tops) - Math.min(...card.tops), `${width}: the grid card's buttons are on one line (their middles ${JSON.stringify(card.tops)})`).toBeLessThanOrEqual(2)
       expect(card.stagePad, `${width}: the grid card's padding is the wider screens'`).not.toBe('10px')
     }
     /* the words, as he was shown them */

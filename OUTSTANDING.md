@@ -48,6 +48,8 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
+**FILED 18 Oct 26 — [GATELOCK-STALE-PORT]:** the full check set run through the PC lock tested ANOTHER chat's old build, because a preview left running on 4173 was reused — a guard so the lock's run picks a free port by itself. Tooling, low risk, its own small job.
+
 **FILED 18 Oct 26 — his answers after the night (D1019, D1020, D1022):** [LW-CARD-SHORT-WORDS-700] (the Leave War card's short button words up to 700), [DATEBOX-ESC-LISTS] (Escape shuts the floating calendar's lists first), [UPCHIT-DELETE-REGROW] (a deleted upchit gives the downchit its days back) — one small job together, once pull request 534 is live; D1021 keeps the dashed mark as built.
 
 **FILED 18 Oct 26 — [TRK-PINCH-OLD-EDGES]:** two older edges of the Tracker chart's pinch, met by [TRK-CHART-FPS]'s reads — low, with the next Tracker batch.
@@ -236,6 +238,16 @@ or feel — his call).
 ---
 
 ## Items
+
+### [GATELOCK-STALE-PORT] The lock's full check run tests another chat's old build when a preview is left on 4173 (found 18 Oct 26, `claude/three-small-jobs-1018`) — OPEN
+**Seen:** `gatelock.mjs run` runs `npx playwright test` with no port; `playwright.config.ts` reuses a server already on 4173
+outside CI (`reuseExistingServer: !process.env.CI`). Three old previews were still up (4173 from `trk-chart-fps-8028f8`,
+4174, 4180 from older night chats), so the browser tests ran against an old bundle: seven failed on this branch and the same
+seven on `main`'s copy — none of them about the change. The re-run on `E2E_PORT=4191` met a FOURTH old preview there (from `d949-d952-till-date-switch-f9a168`; others on 4174, 4180, 4182): 29 failed, an old build again. A port checked free first (4207) gave the real result. The walk scripts' default (`SPF_URL` 4174) meets the same trap. The trap
+is written in `raptor-port/docs/gates-and-deploy.md` ("if a preview is ALREADY running on 4173 …"); nothing enforces it.
+**Fix:** in `gatelock.mjs` `run` (and `exec` when the command is `test:e2e` / `playwright test`), set `E2E_PORT` to a port
+found free at that moment when none is set (refuse a set one that is already answering), and print it; one unit test of the choice. **Place:** a small tooling job of its
+own, read by one fresh reader (a script that runs the checks).
 
 ### [HIST-JUMP-SEEN] Older small finds met by the check of the tap on a change (10 Oct 26) — none caused by that job; filed, not fixed
 Met by `[HIST-JUMP-EMPTY-SEAT]`'s build and walk (`raptor-port/docs/handpass/2026-10-10-hist-jump-empty-seat.md` §8); each is older than that change and on `main`. His to place; low. **(1) On the Scheduler Board, the lines about the area strip and the In-time / Rally are listed but cannot be tapped** — the board draws those boxes since it gained them, but the list that says "the board cannot show this" was never updated (`raptor-port/src/ui/histbubble.ts` `NO_BOARD_CELL`; a test, `histlist.test.tsx` "a detail the board cannot draw…", pins the old answer). One line and its test. **(2) An extra man put under a desk and taken off again reads "Static moved place 2 → place 2"** in the changes window (`raptor-port/src/ui/changesmodel.ts` — the two lines are folded into one "move"); it should read as put on, then taken off. Words. **(3) With the board looking at an older version, a tap on a "warning hidden" line stays on the older version** (`raptor-port/src/ui/interactions.ts jumpToWarnLine` — the same gap the tap on a change had; its own door, its own test). **(4) On a phone the passing note lies over the changes bar's "Show" for its two seconds** — every note does; on `claude/day-window-compact` D731 (1) moves the note to the top while a WINDOW is up, and the bar is not a window. **(5) Two limits of the new landing, told to him (the sheet's §0):** on View-only Sched a row nobody is left on has nothing to ring, so the sentence alone is said; a read-only page would need each row to carry its own address to do better — and the printed week must stay byte for byte the reference's. **As filed:** each small.
