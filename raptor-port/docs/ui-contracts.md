@@ -6239,6 +6239,8 @@ The lines come from the door's own save TRIED AND THROWN AWAY with the Leave War
 (`ui/inputedit.tsx giveBackCuts` → `state/inputgate-hook.ts hearGateCuts`, said by `leavewar/inputgate.ts`), so the sheet
 and the save cannot disagree; the cut itself and its amber note afterwards are unchanged. An open input window keeps what
 was typed through the try (`pops.ts INPEDIT_REFOUND`). Pins: `ui/upchitcuts.test.tsx`.
+**The amber edge stays (owner D1025, 18 Oct 26 — "Keep it"):** it is the app's warning-row mark (D747), and the design
+checker's skip list (`.impeccable/config.json`, side-tab, `14-input-editors.css`) keeps skipping it on this ruling.
 
 **The medical clash sheet** (`ui/MedClashConfirm.tsx`, owner, 27 Aug 26)
 is its sibling, same recipe and layer (`.upconf-*` classes). It opens when a

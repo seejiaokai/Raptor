@@ -7,6 +7,7 @@ import { parseHM } from './time'
 import { store } from './hooks'
 import { isStandalone } from './waves'
 import { WAVE_KINDS } from './wavetpl'
+import { reportingSortKeys } from './reporting'
 /* ---------------------------------------------------------------------------
    REORDERING A BOARD LIST (owner, 8 Aug 26)
    Every list on the board is drawn in model order and a new row lands at the
@@ -219,6 +220,19 @@ export function moveNote(di:any,from:any,to:any){
   moveKeys(`dn:${di}.`,0,from,to,rows.length);
   return done(`dn:${di}.${to}`,di);
 }
+/* A WAVE'S IN-TIME / RALLY LINES, DRAGGED INTO ORDER ON THE SCHEDULER BOARD (owner, D593, D594 — 5 Oct 26). The lines
+   are one stored list behind ONE text key, `it:di.gi` — there is no per-line key space to remap — so a move is the
+   list's own field change: marked with the list before and after, as a typed line is. On a published day that is
+   the pending change D594 asks for (the issued snapshot keeps the old order, so dayDelta reads it), and dragging
+   back to the issued order nets to nothing. Not `done()`: a mov: record would count the same change twice. The order
+   moves nothing worked out — the earliest applicable clock is used whatever the order (D506). */
+export function moveInTime(di:any,gi:any,from:any,to:any){
+  const w=(DAYS[di]||{}).waves&&DAYS[di].waves[gi]; if(!w||!ok(w.intimes,from,to))return false;
+  const was=w.intimes.join(', ');
+  w.intimes=w.intimes.slice(); slide(w.intimes,from,to);
+  markEdit(`it:${di}.${gi}`,was,w.intimes.join(', '));
+  REORDERED_DI=di; return true;
+}
 /* Ground is the one list rendered in a SORTED order (by start time, on the week
    and the board alike), so a move expressed in model indices would be undone by
    the very next redraw — and the first move in particular would read as doing
@@ -283,6 +297,8 @@ export function applyMove(fromAddr:any,toAddr:any){
   if(kind==='g')return moveGroundRow(n(a[1]),n(a[2]),n(b[2]));
   if(kind==='p')return moveProgRow(n(a[1]),n(a[2]),n(b[2]));
   if(kind==='n')return moveNote(n(a[1]),n(a[2]),n(b[2]));
+  /* a wave's In-time / Rally line — `mv:it.di.gi.line`, its container the day and wave (D593) */
+  if(kind==='it')return moveInTime(n(a[1]),n(a[2]),n(a[3]),n(b[3]));
   return false;
 }
 /* ---------------------------------------------------------------------------
@@ -317,6 +333,18 @@ export function sortWave(di:any,gi:any){
   [`ff:${di}.${gi}.`,`fr:${di}.${gi}.`,`st:${di}.${gi}.`,`ar:${di}.${gi}.`,`at:${di}.${gi}.`,`${di}.${gi}.`]
     .forEach((h:any)=>permuteKeys(h,0,oldOf));
   return done(sortedKey(oldOf,n=>`ff:${di}.${gi}.${n}.cs`),di);
+}
+/* The In-time / Rally lines of one wave, by time (D594): the evening-before clock first, a line with no clock last,
+   ties in their own order — reporting.ts reportingSortKeys holds the reading. One list behind one key (moveInTime's
+   note), so the whole new order is one field change, and an already-sorted wave marks nothing. */
+export function sortInTimes(di:any,gi:any){
+  const w=(DAYS[di]||{}).waves&&DAYS[di].waves[gi]; if(!w||!Array.isArray(w.intimes)||w.intimes.length<2)return false;
+  const ks=reportingSortKeys(w), oldOf=keySort(w.intimes.length,(i:any)=>ks[i]);
+  if(isIdentity(oldOf))return false;
+  const was=w.intimes.join(', ');
+  w.intimes=oldOf.map((o:any)=>w.intimes[o]);
+  markEdit(`it:${di}.${gi}`,was,w.intimes.join(', '));
+  REORDERED_DI=di; return true;
 }
 /* THE BLOCKS THEMSELVES, ORDERED BY THE EARLIEST TIME INSIDE THEM (owner,
    11 Aug 26). Until now Sort all tidied the rows INSIDE each wave and each
@@ -456,7 +484,7 @@ export function sortProg(di:any){
 export function sortDay(di:any){
   const d=DAYS[di]; if(!d)return false;
   let any=false;
-  (d.waves||[]).forEach((_:any,gi:any)=>{if(sortWave(di,gi))any=true;});
+  (d.waves||[]).forEach((_:any,gi:any)=>{if(sortWave(di,gi))any=true; if(sortInTimes(di,gi))any=true;});
   if(sortWaves(di))any=true;
   (d.dutywaves||[]).forEach((_:any,wi:any)=>{if(sortDutyBlock(di,wi))any=true;});
   if(sortDutyBlocks(di))any=true;

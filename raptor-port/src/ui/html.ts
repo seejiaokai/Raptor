@@ -1265,11 +1265,17 @@ export function intimeLineHTML(t:any){
    WebKit clone spans and duplicate lines). The wrapper div is NOT editable
    any more; textedit.ts commits one line at a time off data-itline, which is
    what makes a stray span WebKit mints invisible to the commit. */
-export function intimesInner(w:any,ek?:any){
-  return ((w&&w.intimes)||[]).map((t:any,i:number)=> ek
-    ? `<span class="itline" contenteditable="true" spellcheck="false" data-itline="${ek}|${i}">${intimeLineHTML(t)}</span>`
-      +`<button class="itx" data-itdel="${ek}|${i}" title="Remove this ${REPORTING_LABEL} line" aria-label="Remove this ${REPORTING_LABEL} line">✕</button>`
-    : `<span>${intimeLineHTML(t)}</span>`).join('')
+/* grip — the Scheduler Board alone (owner D593, D594: the lines drag into order there, never on Edit Schedule's week):
+   each line and its ✕ sit in a row of their own carrying the line's move address and the board's six-dot grip, so
+   ui/rowdrag.ts carries it as it carries any dense row. The line and its ✕ stay next-door siblings inside the row,
+   which is all textedit.ts and the ✕ handler ask of them. */
+export function intimesInner(w:any,ek?:any,grip?:boolean){
+  return ((w&&w.intimes)||[]).map((t:any,i:number)=>{
+    if(!ek)return `<span>${intimeLineHTML(t)}</span>`;
+    const pair=`<span class="itline" contenteditable="true" spellcheck="false" data-itline="${ek}|${i}">${intimeLineHTML(t)}</span>`
+      +`<button class="itx" data-itdel="${ek}|${i}" title="Remove this ${REPORTING_LABEL} line" aria-label="Remove this ${REPORTING_LABEL} line">✕</button>`;
+    return grip?`<div class="itrow" data-move="mv:it.${ek.replace('|','.')}.${i}"><span class="sb-grip" title="Drag to move this line">⠿</span>${pair}</div>`:pair;
+  }).join('')
     + (ek?`<span class="reporting-feedback" data-reporting-feedback data-warnkey="it:${ek.replace('|','.')}" role="status">${esc(reportingIssuesForWave(w).map(i=>i.msg).join(' '))}</span>`:'');}
 /* AREA and TIME are not the model fields they are edited through. Until a
    scheduler types over them they READ OFF THE AIRCRAFT: the distinct area codes on

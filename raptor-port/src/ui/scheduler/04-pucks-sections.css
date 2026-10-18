@@ -373,6 +373,13 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
 .intimes.iedit{display:grid;grid-template-columns:1fr auto;gap:2px 6px;align-items:center}
 .intimes .itline{outline:none;border-radius:3px;padding:1px 2px;margin:-1px -2px}
 .intimes .itline:focus{background:rgba(229,201,74,.12)}
+/* the Scheduler Board's lines drag into order (owner D593, D594): each line and its ✕ sit in a row of their own behind
+   the board's six-dot grip, in the same 18px lane as the flying lines' grips below (13-board-rows-responsive.css) */
+.intimes.iedit.itdrag{display:flex;flex-direction:column;gap:2px}
+.intimes .itrow{display:grid;grid-template-columns:18px 1fr auto;gap:0 8px;align-items:center}
+.intimes .itrow>.sb-grip{display:flex;font-family:inherit;font-size:13px;line-height:1;color:var(--ink-3);height:100%}
+.intimes .itrow>.sb-grip:hover{color:var(--accent)}
+.intimes .itrow.rowdrag>.sb-grip{color:var(--accent)}
 .intimes .reporting-feedback{grid-column:1 / -1;font-family:inherit;color:var(--hard);overflow-wrap:anywhere}
 .intimes .reporting-feedback:empty{display:none}
 .itx{background:none;border:0;color:var(--ink-3);cursor:pointer;font-size:11px;line-height:1;padding:2px 6px;border-radius:4px;user-select:none}

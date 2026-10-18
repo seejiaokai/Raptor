@@ -20,7 +20,7 @@ import { logAction } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
 import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay, iuParts } from '../engine/keys'
-import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
+import { applyMove, sortWave, sortInTimes, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
 import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown, sbPrevDay, SB_PREVDAY, boxText } from './html'
 import { onInputRow, rowMark, UNMARKED } from './reqdoor'
@@ -188,7 +188,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
        before; this makes the published lines themselves editable here too
        (owner, 14 Aug 26 — the board should edit everything the week can). */
     if (w.intimes && w.intimes.length)
-      fly += `<div class="intimes${mvRO ? '' : ' iedit'}" data-warnkey="it:${di}.${gi}"${alAttr(`it:${di}.${gi}`)} ${mvRO ? '' : `data-intimes="${di}|${gi}"`}>${intimesInner(w, mvRO ? null : `${di}|${gi}`)}</div>`
+      fly += `<div class="intimes${mvRO ? '' : ' iedit itdrag'}" data-warnkey="it:${di}.${gi}"${alAttr(`it:${di}.${gi}`)} ${mvRO ? '' : `data-intimes="${di}|${gi}"`}>${intimesInner(w, mvRO ? null : `${di}|${gi}`, !mvRO)}</div>`
     fly += `<div class="sb-lcols"><span></span><span>CS</span><span>MSN</span><span>B</span><span>TO</span><span>LD</span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
     if (!w.formations.length) fly += `<div class="sb-empty" style="padding:6px 11px">Empty wave — add a line, or remove the wave.</div>`
     w.formations.forEach((f: any, li: number) => {
@@ -845,7 +845,8 @@ export function boardMbtn(e: MouseEvent) {
     const gSig = (r: any) => JSON.stringify([r && r.prog, r && r.str, r && r.end, r && r.src])
     const gWasMan = !!(gDay && gDay.gman), gRowsBefore: string[] = gDay ? (gDay.ground || []).map(gSig) : []
     let changed = false
-    if (kind === 'w') changed = sortWave(n[0], n[1])
+    /* a wave's ⇅ orders its In-time / Rally lines too (D594) — both run, never one short-circuiting the other */
+    if (kind === 'w') { const f = sortWave(n[0], n[1]); const l = sortInTimes(n[0], n[1]); changed = f || l }
     else if (kind === 'd') changed = sortDutyBlock(n[0], n[1])
     else if (kind === 's') changed = sortSims(n[0], rest[1])
     else if (kind === 'g') changed = sortGround(n[0])

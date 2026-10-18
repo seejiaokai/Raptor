@@ -90,6 +90,22 @@ export function resolveReporting(w:any,f:any,to:number,parsed=parseReportingLine
   return {inTime:incoming.time,rally:rally.time,report:stages.length?Math.min(...stages):null,
     sourceLines:[...new Set([...incoming.lines,...rally.lines])], unresolved};
 }
+/* D594 (5 Oct 26): Auto sort and Sort all order a wave's In-time / Rally lines by time — earliest first, an
+   evening-before clock before the same day's, a line with no clock last. The key is the line's clock read with the
+   SAME evening-before rule resolveReporting applies (D503), against the earliest take-off the line speaks for: its
+   named formations, else every formation not cancelled. A line whose formations have no take-off yet keeps its bare
+   clock. One body for the sort and the reader, so the two cannot drift. */
+export function reportingSortKeys(w:any):(number|null)[]{
+  const fs=(w&&w.formations||[]).filter((f:any)=>!f.cx);
+  return parseReportingLines(w||{}).map(p=>{
+    if(p.clock==null)return null;
+    const own=p.targets.length?fs.filter((f:any)=>p.targets.some(t=>t.toLowerCase()===String(f.cs??'').trim().toLowerCase())):fs;
+    const tos=own.map((f:any)=>parseHM(f.to)).filter((t:any)=>t!=null&&Number.isFinite(t)) as number[];
+    if(!tos.length)return p.clock;
+    const to=Math.min(...tos);
+    return p.clock>to&&(!w.standalone||to-VCONF.reportLead<0)?p.clock-1440:p.clock;
+  });
+}
 export function flightBrief(f:any,to:number){
   const typed=parseHM(f.br);
   return typed!=null?(to-VCONF.briefLead<0&&typed>to?typed-1440:typed):to-VCONF.briefLead;

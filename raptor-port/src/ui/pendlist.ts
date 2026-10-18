@@ -97,6 +97,24 @@ export function valueWords(addr: string, v: any): string {
   }
   return s
 }
+/* [PEND-INTIME-WORDS] (reader AB's second pass, 6 Oct 26): a wave's In-time / Rally lines are one list, and "To go out"
+   worded only its length, so a line whose clock changed read "2 In-time / Rally lines → 2 In-time / Rally lines". The
+   lines that differ are named instead — those only in the issued list before, those only in the new one after, as
+   multisets (two lines may be the same text); a line only removed reads "removed", one only added "added: <line>";
+   and a list whose lines only changed places reads "order changed" (a drag on the Scheduler Board, D594). Null for
+   anything else: valueWords words it as before. */
+export function reportingLineWords(addr: any, from: any, to: any): { from: string; to: string } | null {
+  if (!String(addr || '').startsWith('it:')) return null
+  const arr = (v: any): string[] | null => { try { const j = JSON.parse(String(v ?? '')); return Array.isArray(j) ? j.map(x => String(x ?? '')) : null } catch (_) { return null } }
+  const a = arr(from), b = arr(to)
+  if (!a || !b) return null
+  const only = (x: string[], y: string[]) => { const left = y.slice(); return x.filter(t => { const i = left.indexOf(t); if (i < 0) return true; left.splice(i, 1); return false }) }
+  const gone = only(a, b), came = only(b, a)
+  if (!gone.length && !came.length) return JSON.stringify(a) === JSON.stringify(b) ? null : { from: '', to: 'order changed' }
+  if (!came.length) return { from: gone.join(' / '), to: 'removed' }
+  if (!gone.length) return { from: '', to: 'added: ' + came.join(' / ') }
+  return { from: gone.join(' / '), to: came.join(' / ') }
+}
 const FIL: any = { '': 'not on the programme', g: 'on the programme', u: 'under Unavailable', r: 'taken off' }
 
 type Words = { where: string; from: string; to: string; who: string; when: string; jump: boolean; edited?: boolean }
@@ -377,8 +395,11 @@ export function pendItemWords(di: number, it: PendItem): Words {
     return it.order
       ? { where: placeName(it.place || ''), from: '', to: 'order changed', ...byLog(), jump }
       : { where: placeName(it.place || ''), from: names(it.off), to: names(it.on) || (it.off && it.off.length ? 'taken off' : ''), ...byLog(), jump }
-  if (it.kind === 'change')
+  if (it.kind === 'change') {
+    const lines = reportingLineWords(e.addr, e.from, e.to)
+    if (lines) return { where: keyLabel(it.addr || e.addr), ...lines, ...byLog(), jump }
     return { where: keyLabel(it.addr || e.addr), from: valueWords(e.addr, e.from), to: valueWords(e.addr, e.to), ...byLog(), jump }
+  }
   /* a request's row and its filing, one act (D114): name the request — whose, what — and where it now stands */
   if ((it.kind === 'add' || it.kind === 'delete') && it.inp) {
     /* the row this request stood on: in the issued day for a removal, the live day for an addition */

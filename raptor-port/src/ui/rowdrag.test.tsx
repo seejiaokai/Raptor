@@ -10,6 +10,7 @@ import { markLand, paintLand, pendingLand } from './lift'
 import { setSession } from '../state/auth'
 import { setBoardDay, DPREV } from '../state/view'
 import { boardHTML } from './board'
+import { dayHTML } from './html'
 import { HOOKS } from '../engine/hooks'
 import { secOrder } from '../engine'
 import { SECDEFOFFER, setSecDefOffer } from './pops'
@@ -239,6 +240,36 @@ describe('wireRowDrag', () => {
       expect(innerRow).toBeTruthy()
       down(grip); over(innerRow); up()
       expect(DAYS[di].waves.map((w: any) => w.label)).toEqual([was[1], was[0], ...was.slice(2)])
+    }))
+
+    /* D593, D594: a wave's In-time / Rally lines drag into order on the Scheduler Board — never on Edit Schedule's week */
+    it('drags an In-time / Rally line onto another line of its wave on the board', () => withEdit(() => {
+      DAYS[0].waves[0].intimes = ['07:00H: IN TIME + WX/NOTAMS', '07:30H: RALLY']
+      host.innerHTML = boardHTML(0)
+      const rows = [...host.querySelectorAll('.intimes .itrow[data-move^="mv:it.0.0."]')] as HTMLElement[]
+      expect(rows.map(r => r.dataset.move)).toEqual(['mv:it.0.0.0', 'mv:it.0.0.1'])
+      expect(rows[0].querySelector('.sb-grip'), 'each line carries the board grip').toBeTruthy()
+      expect(rows[0].querySelector('[data-itline="0|0|0"]') && rows[0].querySelector('[data-itdel="0|0|0"]'), 'its line and its ✕ inside').toBeTruthy()
+      down(rows[1].querySelector('.sb-grip')!); over(rows[0]); up()
+      expect(DAYS[0].waves[0].intimes).toEqual(['07:30H: RALLY', '07:00H: IN TIME + WX/NOTAMS'])
+    }))
+    it('an In-time / Rally line is not dropped on a wave block or another wave’s line', () => withEdit(() => {
+      const di = DAYS.findIndex((d: any) => (d.waves || []).length > 1)
+      DAYS[di].waves[0].intimes = ['07:00H: IN TIME', '07:30H: RALLY']
+      DAYS[di].waves[1].intimes = ['10:00H: IN TIME']
+      host.innerHTML = boardHTML(di)
+      const grip = host.querySelector(`[data-move="mv:it.${di}.0.1"] .sb-grip`) as HTMLElement
+      down(grip); over(host.querySelector(`[data-move="mv:it.${di}.1.0"]`)!); up()
+      down(grip); over(host.querySelector(`.sb-go[data-move="mv:w.${di}.1"]`)!); up()
+      expect(DAYS[di].waves[0].intimes).toEqual(['07:00H: IN TIME', '07:30H: RALLY'])
+      expect(DAYS[di].waves[1].intimes).toEqual(['10:00H: IN TIME'])
+    }))
+    it('Edit Schedule’s week draws its In-time / Rally lines with no grip (D594)', () => withEdit(() => {
+      DAYS[0].waves[0].intimes = ['07:00H: IN TIME', '07:30H: RALLY']
+      const week = dayHTML(0, true)
+      expect(week).toContain('data-itline="0|0|1"')
+      expect(week).not.toContain('mv:it.')
+      expect(week).not.toContain('class="itrow"')
     }))
 
     it('a member cannot drag a section', () => withEdit(() => {

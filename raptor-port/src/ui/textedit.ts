@@ -168,14 +168,22 @@ export function routeFocusOut(e: FocusEvent) {
       w.intimes = lines.filter((_: any, i: number) => i !== ix)
       commitText(`it:${di}.${gi}`, () => markEdit(`it:${di}.${gi}`, itWas, w.intimes.join(', ')))
       const btn = il.nextElementSibling
-      const block = il.parentElement
-      if (btn && (btn as HTMLElement).matches && (btn as HTMLElement).matches('[data-itdel]')) btn.remove()
-      il.remove()
+      const block = il.closest('.intimes')
+      /* on the Scheduler Board each line sits in a row of its own with its grip (D593, html.ts intimesInner) —
+         the row goes with it, and the rows left are re-addressed with their lines */
+      const row = il.parentElement?.classList.contains('itrow') ? il.parentElement : null
+      if (row) row.remove()
+      else {
+        if (btn && (btn as HTMLElement).matches && (btn as HTMLElement).matches('[data-itdel]')) btn.remove()
+        il.remove()
+      }
       // The surviving live lines can be edited before the deferred repaint.
       block?.querySelectorAll<HTMLElement>('[data-itline]').forEach((line, index) => {
         line.dataset.itline = `${di}|${gi}|${index}`
         const del = line.nextElementSibling as HTMLElement | null
         if (del?.matches('[data-itdel]')) del.dataset.itdel = `${di}|${gi}|${index}`
+        const r = line.parentElement
+        if (r?.classList.contains('itrow')) r.dataset.move = `mv:it.${di}.${gi}.${index}`
       })
       if(feedback)feedback.textContent=reportingIssuesForWave(w,+gi!).map(i=>i.msg).join(' ')
       txtCommit()
