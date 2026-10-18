@@ -5,7 +5,7 @@
    right place is a geometry question and lives in e2e/geometry.spec.ts. */
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DAYS } from '../engine/data'
-import { landSel, wireRowDrag } from './rowdrag'
+import { landSel, wireRowDrag, rowEdge } from './rowdrag'
 import { markLand, paintLand, pendingLand } from './lift'
 import { setSession } from '../state/auth'
 import { setBoardDay, DPREV } from '../state/view'
@@ -440,5 +440,17 @@ describe('one lift, every drag — the board (6 Sep 26)', () => {
     host.innerHTML = rowsHTML(['mv:p.0.0', 'mv:p.0.1'])   // a repaint under the finger detaches both
     up()
     expect(pendingLand(), 'the drop was refused, so nothing landed to flash').toBeNull()
+  })
+})
+
+/* the batch's check, 19 Oct 26 (the scenario designer's S1-03): a held row scrolls its pane within a band at the top and
+   the foot — a fixed 72px each, most of a ~190px board on a phone on its side. A sixth of the pane, at most 72, as the
+   puck drag's band (drag.ts tdEdge) */
+describe('the row drag edge band follows the pane', () => {
+  it('a tall pane keeps 72px; a phone on its side gets a sixth of it', () => {
+    expect(rowEdge(0, 900)).toBe(72)
+    expect(rowEdge(0, 432)).toBe(72)
+    expect(rowEdge(100, 290)).toBeCloseTo(190 / 6)
+    expect(rowEdge(0, 0)).toBe(0)
   })
 })

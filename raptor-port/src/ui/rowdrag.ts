@@ -62,6 +62,9 @@ export function landSel(from: string, to: string): string {
   return `[data-move="${to}"]`
 }
 
+/* the band at a scroller's top and foot where a held row scrolls it: a sixth of the pane each, at most 72px (every pane
+   taller than 432px keeps the 72 it always had) */
+export const rowEdge = (top: number, bot: number) => Math.min(72, Math.max(0, bot - top) / 6)
 export function wireRowDrag(el: HTMLElement) {
   let from = ''          // an mv: address (row or wave), '' when not an mv drag
   let fromSec = ''       // a data-secmove value ("di.key"), '' when not a section drag
@@ -97,7 +100,7 @@ export function wireRowDrag(el: HTMLElement) {
   let vel = 0                                   // px/frame, sign = direction, 0 = idle
   let raf = 0
   let scroller: HTMLElement | null = null
-  const EDGE = 72, MAXV = 22                    // margin that triggers, top speed
+  const MAXV = 22                              // top speed (the margin that triggers: rowEdge)
 
   const isWin = (s: HTMLElement) =>
     s === document.scrollingElement || s === document.documentElement
@@ -116,8 +119,12 @@ export function wireRowDrag(el: HTMLElement) {
     const r = win ? null : scroller.getBoundingClientRect()
     const top = win ? 0 : r!.top
     const bot = win ? window.innerHeight : r!.bottom
-    if (y < top + EDGE) return -Math.ceil(((top + EDGE - y) / EDGE) * MAXV)
-    if (y > bot - EDGE) return Math.ceil(((y - (bot - EDGE)) / EDGE) * MAXV)
+    /* a sixth of the pane each, at most 72 — the puck drag's rule (drag.ts tdEdge, [OIL-NOTIFY-SEEN] (6)): on a phone on its
+       side the board is about 190px tall and two 72px bands were most of it, so a row, a wave or an In-time line held
+       near its top or foot scrolled the board under it (the batch's check, 19 Oct 26 — the scenario designer's S1-03) */
+    const edge = rowEdge(top, bot)
+    if (y < top + edge) return -Math.ceil(((top + edge - y) / edge) * MAXV)
+    if (y > bot - edge) return Math.ceil(((y - (bot - edge)) / edge) * MAXV)
     return 0
   }
   const tick = () => {
