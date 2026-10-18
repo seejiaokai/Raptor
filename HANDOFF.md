@@ -72,9 +72,10 @@ the later merge keeps both (D78).
   finger moves) — NOT YET JUDGED: reproduce it on the new build in the re-walk, then fix or file; S3-17 (row grips at 40px
   scrolled) — the band already FIXED. RECORDED, older, as built: S3-01 a man dropped on an ALL AVAIL puck joins beside it;
   S3-11 an SC line re-read as "Brief" after its wave turns flying; S3-12 undone adds stay listed in the history.
-- **Next, in order:** the gates under the lock (E2E_PORT 4232); a NEW frozen build (copy `dist` to the scratchpad as
-  `walk-<commit>`, a new `.claude/launch.json` entry or the same `sched-fixes-walk` repointed, port 4240 — stop the old
-  server first); the RE-WALK of what the fixes touched: S1-01a/b/c, S1-02, S1-03, S1-08, S2-10b/f, S3-03 (week, board),
+- **Gates after the fixes (19 Oct 26, `676a92e43`, the whole set under the lock, E2E_PORT 4232): unit 11841 / 11841 ·
+  build clean · tfin 728 / 0 · e2e 865 passed, 0 failed, 61 skipped · smoke 453 / 0 · rulecheck OK · docsize OK — WHOLLY
+  GREEN.** The new frozen build `walk-676a92e43` (bundle `index-BHlvKWCJ.js`) is served on 4240 (`sched-fixes-walk`).
+- **Next, in order:** the RE-WALK of what the fixes touched: S1-01a/b/c, S1-02, S1-03, S1-08, S2-10b/f, S3-03 (week, board),
   S3-10, S3-02b, S3-16, S3-17, S4-04 (phone board), the board second click and his centred In-time lines — one or two
   Sonnet walkers with the same brief (`docs/superpowers/briefs/2026-10-19-sched-fixes-walkers.md`), pictures in
   `…/2026-10-19-sched-fixes/rewalk/`; then the fresh blind Opus code read
