@@ -452,10 +452,29 @@ test('the top of the Leave War on a phone is two lines, nothing overlapping or o
   /* 430 as well: the widest screen the Leave War calls a phone. The words (Chrome.tsx) and the layout (chrome.css)
      must change at the SAME width — a strip with the phone's words in the desktop's layout, or the other way round,
      would show here or at 431 in the desktop's test. */
-  for (const [width, height] of [...PHONES, [430, 932] as [number, number]]) {
+  /* D1000, D1016 (18 Oct 26): up to about 700 wide — the biggest iPhones at 440, a small tablet at 600 — the top takes
+     the same two lines, and from 431 its edge stays the grid card's 20px so the two line up */
+  for (const [width, height] of [...PHONES, [430, 932], [440, 956], [600, 960], [700, 900]] as [number, number][]) {
     await page.setViewportSize({ width, height })
     await page.waitForTimeout(200)
     const m = await expectTwoLines(page, LINE1, LINE2, `admin, ${width} wide`)
+    if (width > 430) {
+      const edge = await page.evaluate(() => {
+        const pg = document.querySelector('#page-leavewar')!
+        const cs = (sel: string) => getComputedStyle(pg.querySelector(sel)!)
+        return [cs(':scope > .topbar').paddingLeft, cs(':scope > .filters').paddingLeft]
+      })
+      expect(edge, `${width}: the top's edge lines up with the grid card's 20px (D1016)`).toEqual(['20px', '20px'])
+      /* the top only (D1000): the grid card keeps its wider screens' words — "Rearrange", "OIL tracker" — and its padding */
+      const card = await page.evaluate(() => {
+        const pg = document.querySelector('#page-leavewar')!
+        const tail = pg.querySelector('.card-hd .rtlbl') as HTMLElement | null
+        const stage = pg.querySelector('.stage') as HTMLElement | null
+        return { tail: tail ? getComputedStyle(tail).display : 'absent', stagePad: stage ? getComputedStyle(stage).paddingLeft : 'absent' }
+      })
+      expect(card.tail, `${width}: the grid card's button words are the wider screens'`).not.toBe('none')
+      expect(card.stagePad, `${width}: the grid card's padding is the wider screens'`).not.toBe('10px')
+    }
     /* the words, as he was shown them */
     expect(m.boxes['war-new']!.text).toBe('+')
     expect(m.boxes['stage-now']!.text).toBe('OPEN FOR BIDDING')
@@ -468,9 +487,11 @@ test('the top of the Leave War on a phone is two lines, nothing overlapping or o
     /* the two moves are NOT on the strip — they are behind the stage button */
     expect(m.boxes['stage-advance'], 'the forward move is in sight on a phone').toBeUndefined()
     expect(m.boxes['stage-back'], 'the back move is in sight on a phone').toBeUndefined()
-    /* Legend ends the line at the right; "Viewing as" ends the line above it there */
-    expect(m.boxes['legend-open']!.r).toBeGreaterThan(m.vw - 14)
-    expect(m.boxes['lw-viewing']!.r).toBeGreaterThan(m.vw - 14)
+    /* Legend ends the line at the right; "Viewing as" ends the line above it there — at the phone's 10px edge, or from
+       431 to 700 at the grid card's 20px (D1016) */
+    const edge = m.vw > 430 ? 24 : 14
+    expect(m.boxes['legend-open']!.r).toBeGreaterThan(m.vw - edge)
+    expect(m.boxes['lw-viewing']!.r).toBeGreaterThan(m.vw - edge)
     /* the stage button says it opens: the small arrow is painted (a drawn triangle), and is not part of its words */
     const arrow = await page.locator('[data-testid="stage-now"]').evaluate(el => {
       const c = getComputedStyle(el, '::after')
@@ -625,7 +646,8 @@ test('on a phone a long callsign in "Viewing as" ends in "…": the words stay w
 
 /* D679 — "keep the same for desktop" (asked which he meant: "Leave desktop as today"). A tablet and a desktop keep the
    top exactly as it was: the four label words, the whole "+ New", the stage as a label with its two moves IN SIGHT,
-   the dates with their year. And "a phone" ends at 430px — at 431 the page is already the wider one.
+   the dates with their year. And the top's "phone" ends at 700px since D1000 / D1016 (18 Oct 26 — it was 430) — at 701
+   the page is already the wider one.
    Read as PAINTED: the words on screen, and each control's own padding and type size — the numbers the phone block
    overrides. (They are the stylesheet's, so they hold on any machine; a box's width in pixels would not, the app
    loads no font of its own.) The measured boxes before and after the build were compared whole, once, by
@@ -634,7 +656,7 @@ test('on a tablet and a desktop the top of the Leave War is as it was: every lab
   test.skip(isPhone(), 'the wider sizes (D679); the phone has its own tests above (D678)')
   await lwRole(page, 'admin')
   await lwView(page, 'slipway')
-  for (const [width, height] of [[1440, 900], [768, 1024], [431, 900]] as const) {
+  for (const [width, height] of [[1440, 900], [768, 1024], [701, 900]] as const) {
     await page.setViewportSize({ width, height })
     await page.waitForTimeout(200)
     const m = await head(page)

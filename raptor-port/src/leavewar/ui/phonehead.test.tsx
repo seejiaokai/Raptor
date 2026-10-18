@@ -226,6 +226,11 @@ describe('on a phone — the Stage line (D678)', () => {
   })
 })
 
+/* D1000, D1016 (18 Oct 26): the top's phone layout reaches 700 wide — the biggest iPhones and a small tablet */
+it('D1000: the top’s phone width is 700, so the words and chrome.css’s top block change together', () => {
+  expect(PHONE_QUERY).toBe('(max-width: 700px)')
+})
+
 /* D679 — "keep the same for desktop". Two ways the desktop is reached: no matchMedia at all (jsdom, an old browser)
    and a matchMedia that says the phone width does not match (a tablet, a desktop). Both must draw today's strip. */
 describe.each([
