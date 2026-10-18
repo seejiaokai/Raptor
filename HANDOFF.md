@@ -67,8 +67,10 @@ the later merge keeps both (D78).
   chat at 90%):** ONE branch, ONE pull request (534); pushed at `23fa5ceb4`. Every job's check:
   `raptor-port/docs/handpass/2026-10-18-night-jobs.md`. Jobs 1–6 DONE and walked. Job 7: (a) D1004 DONE (32ad203b8);
   (b) the Legend DONE (2d70cba46); (c) the flex settings DONE (bac862795 — an Opus helper built (b) and (c), the host
-  read and committed them; their tests were written after the code, so a fresh read and the walk carry them). NEXT:
-  (d) the down days — its survey `raptor-port/docs/superpowers/briefs/2026-10-18-trk-down-days-survey.md` (course start
+  read and committed them; their tests were written after the code, so a fresh read and the walk carry them). Pushed
+  at `9d86f6efb`. NOW: (d) the down days BEING BUILT by an Opus helper (from 10:30) — its changes UNCOMMITTED in
+  `src/tracker/`, `src/ui/leftovers.test.tsx`, `e2e/datecal.spec.ts`, docs: on its report, save it, read its diff,
+  run `npx vitest run src/tracker src/ui/leftovers.test.tsx`, commit as the host's own. (d) the down days — its survey `raptor-port/docs/superpowers/briefs/2026-10-18-trk-down-days-survey.md` (course start
   in `pace`, not `dates`; a third people-bridge channel for each man's downchits; the Failures window to clone;
   removing `#upchit` touches `leftovers.test.tsx`'s F/K tests and `e2e/datecal.spec.ts`); then ONE Sonnet walk of the
   Tracker (legend, flex settings as admin and member, flex off, down days), ONE fresh blind Opus read of job 7's code,
