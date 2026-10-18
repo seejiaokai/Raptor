@@ -402,6 +402,27 @@ function ledgerLines(c: Change): void {
   for (const e of bl) if (!am.has(e.id)) logAction(null, award(e) ? `${head(e)}: OIL award taken away` : `${head(e)}: taken away`, at(e))
 }
 
+/* ---- a note on the planning calendar (D710, 9 Oct 26 — confirmed 18 Oct 26) ----
+   A note (state/plan.ts PLANPUCKS — its words and the people it carries, D684) had no line here at all, so the list a
+   delete leaves of what it took away (D337) could not name a note the man was taken off, and a note changed by hand left
+   no trace. One line a change, led by the note itself — its words, or "Note of people" where it has none — on its day. */
+const noteName = (n: any) => { const t = String((n && n.text) || '').replace(/\s+/g, ' ').trim(); return t ? `Note “${t.slice(0, 60)}”` : 'Note of people' }
+const csOf = (id: string) => (PEOPLE as any)[id]?.cs || id
+function noteLines(c: Change): void {
+  const b: any = c.before, a: any = c.after
+  const n = a || b
+  if (!n) return
+  const at = { date: String(n.date || ''), sect: 'day', sub: String(c.id), fld: 'note' }
+  const item = noteName(b || a)
+  if (!b) { logAction(null, `${noteName(a)} · added`, at); return }
+  if (!a) { logAction(null, `${item} · taken away`, at); return }
+  if (String(b.text || '') !== String(a.text || '')) logAction(null, `${item} · words`, { ...at, from: String(b.text || ''), to: String(a.text || '') })
+  if (b.date !== a.date) logAction(null, `${item} · moved`, { ...at, from: String(b.date || ''), to: String(a.date || '') })
+  const was = new Set<string>((b.ids || []).filter(Boolean)), now = new Set<string>((a.ids || []).filter(Boolean))
+  for (const id of was) if (!now.has(id)) logAction(null, `${item} · ${csOf(id)} taken off`, at)
+  for (const id of now) if (!was.has(id)) logAction(null, `${item} · ${csOf(id)} added`, at)
+}
+
 /* ---- Quals ---- */
 const PERSON_FIELDS: Record<string, string> = {
   cs: 'callsign', q: 'CAT', seat: 'seat', pers: 'ground crew', san: 'SANS', sxo: 'SXO', archived: 'archived', deleted: 'deleted',
@@ -525,6 +546,7 @@ export function changeLinesFor(env: CommitEnvelope): void {
       else if (c.collection === 'lw.ledger') ledgerLines(c)
       else if (c.collection === 'lw.postouts') postoutLines(c, env)
       else if (c.collection === 'people') personLines(c, env)
+      else if (c.collection === 'plan' && String(c.id).startsWith('pp:')) noteLines(c)
     }
     /* A WARNING HIDDEN, OR FLAGGED AGAIN ([WARN-HIDE-KEPT], owner D469, 1 Oct 26). A hide is kept with its day for
        everyone "until another person unhides it" — so who hid it, and when, has to be answerable from the change

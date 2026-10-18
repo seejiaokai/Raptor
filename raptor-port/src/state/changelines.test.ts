@@ -214,3 +214,38 @@ describe('an Undo or a Redo (Astra DP-04)', () => {
     expect(ELOG.rows).toHaveLength(0)
   })
 })
+
+/* D710 (9 Oct 26, confirmed 18 Oct 26 — "as recommended"): a note on the planning calendar had no line in the change
+   history at all — not when a delete took a man off it (D337's list then could not name it), not when its words or
+   people were changed by hand. Each change to a note is one line, led by the note (its words), on its day. */
+describe('D710 — a note on the planning calendar', () => {
+  const env = (before: any, after: any): any => ({ origin: 'user', scope: { module: 'sched' }, actor: { role: 'admin' },
+    changes: [{ collection: 'plan', id: 'pp:' + (before || after).id, before, after }] })
+  const note = { id: 'n710', date: '2026-07-17', text: 'Sports day', ids: ['bane', 'stiff'] }
+  it('a man taken off it: one line naming the note and him, on its day', async () => {
+    changeLinesFor(env(note, { ...note, ids: ['bane', ''] }))
+    await turnEnds()
+    const l = ELOG.rows.filter(r => r.sect === 'day')
+    expect(l.map(r => r.lbl)).toEqual(['Note “Sports day” · Saber taken off'])
+    expect(l[0]!.date).toBe('2026-07-17')
+  })
+  it('its words changed, a man added, the note added and taken away — each one line', async () => {
+    changeLinesFor(env(note, { ...note, text: 'Sports afternoon' }))
+    changeLinesFor(env(note, { ...note, ids: ['bane', 'stiff', 'pike'] }))
+    changeLinesFor(env(null, note))
+    changeLinesFor(env(note, null))
+    await turnEnds()
+    const l = ELOG.rows.filter(r => r.sect === 'day').map(r => r.lbl)
+    expect(l[0]).toBe('Note “Sports day” · words')
+    expect(l[1]).toMatch(/^Note “Sports day” · .+ added$/)
+    expect(l[2]).toBe('Note “Sports day” · added')
+    expect(l[3]).toBe('Note “Sports day” · taken away')
+    expect(ELOG.rows.find(r => r.lbl.endsWith('words'))).toMatchObject({ from: 'Sports day', to: 'Sports afternoon' })
+  })
+  it('a note of people and no words is named as such', async () => {
+    const bare = { id: 'n711', date: '2026-07-18', text: '', ids: ['bane'] }
+    changeLinesFor(env(bare, { ...bare, ids: [''] }))
+    await turnEnds()
+    expect(ELOG.rows.filter(r => r.sect === 'day').map(r => r.lbl)).toEqual(['Note of people · Ranger taken off'])
+  })
+})

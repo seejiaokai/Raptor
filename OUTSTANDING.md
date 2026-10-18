@@ -1231,6 +1231,7 @@ not a fixed time. **Place:** test-only, low, any time. **Seen again 9 Oct 26** (
 **Met again the night of 15 Oct 26** (`claude/drag-edge-scroll-elsewhere-51bfc4`, the full run at `7e9e98724`): the same branch (January undrawn, December still drawn after the jump) — and ALONE it failed 1 of 3 (2 passed), the first time it has failed outside a full run. That job touches nothing of the Leave War (`src/leavewar` unchanged; `select.ts` reads only edge numbers that did not change). **The agent's placing:** steady it as a job of its own — it is no longer only load (D87: wait on what the step needs).
 
 ### [PEEK-ISSUED] The desktop next-week preview on View-only Sched shows next week's working copy, even for a published day — a question for him (filed 26 Sep 26)
+**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D1010: View-only Sched's preview draws a published day as issued. Leaves for the archive once live.**
 **ANSWERED 18 Oct 26 — D1010 ("as recommended"): View-only Sched's preview shows the published version of a published day.**
 Noted by the sweep behind `[LEAVE-LATE-PUBLISHED]` (Astra, its plan read; carried in `[LATE-PUB-FACE-LIVE]`, archived
 26 Sep 26): the peek of next week at the right of the desktop week (`raptor-port/src/ui/peek.ts`) draws next week's live
@@ -1627,6 +1628,7 @@ waive owed reads or authorize a live merge.
 **Found, not fixed — reported by one walker, not yet seen by the host: reproduce first.** Walker H (X-10), `raptor-port/docs/handpass/parts/cal-H.md`, scripts `raptor-port/scripts/handpass/cal-H-*.mjs`, pictures `raptor-port/docs/img/handpass/2026-10-08-inputs-sans-calendar-check/H/x10-*.png`. (a) Saber files a meeting for three; a second admin changes its remark; Saber's Undo is refused with "A later change touches the same thing — undo that first" — D148 has the refusal say WHO; the same line for a holiday renamed and a Required cell retyped by the other. (b) Saber adds a holiday on 12 Aug, the other admin adds one on 19 Aug, Saber's Undo of his own is refused — a different date is not "the same thing" (a different Required day and a different group input DO undo cleanly). Likely place: how the Leave War's holiday commands name what they touch for the Undo's "changed since" test. **As filed:** medium-low — an Undo that refuses too readily loses nothing. The sheet: `raptor-port/docs/handpass/2026-10-08-inputs-sans-calendar-check.md` §7.
 
 ### [DELETE-LIST-CAL-NOTES] The list a delete shows of what it took away has no line for the notes a man was on (found 9 Oct 26 — Astra, the day-window check)
+**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D710: every change to a note has its line in the change history, so the delete names each note he was taken off. Leaves for the archive once live.**
 **ANSWERED 18 Oct 26 — D710 ("as recommended"): confirmed 18 Oct 26 — build it.**
 **Found, not fixed — a question for him.** Deleting a person takes him off every planning note from the delete’s date on (a gap where he stood; a note left with neither words nor people is dropped — `raptor-port/src/state/person-delete.ts`), but the readable lines of the change history (`raptor-port/src/state/changelines.ts`) have none for a `plan` record, so the delete’s list (D337 — "lists everything the delete took away, one line each, as built") says nothing of them. It never did for the old rows of pucks either: D337 confirmed the list as built, so this is put to him, not assumed. **To put to him:** should the list carry a line a note ("taken off the note ‘Brief the new guys’ on 14 Oct")? Recommended yes, as its own small job — and with it, readable lines for ordinary note changes in the changes window (they have none today either). Evidence: the day-window check’s sheet `raptor-port/docs/handpass/2026-10-09-day-window-compact-check.md` §0 and §5. **As filed:** small.
 **He said yes (D710, 9 Oct 26 — "yes as recommended"): build it, as a small later job** — one line a note in the delete’s list, and readable lines for ordinary note changes in the changes window with it.
@@ -1675,6 +1677,7 @@ Met by the walkers of `[INPUT-OWN-TITLE]`'s check (`raptor-port/docs/handpass/20
 **Place:** the agent's — a documents-only chat; (b) is his.
 
 ### [LW-HEAD-BIG-PHONE] Between a phone and a tablet the top of the Leave War is at its tallest — his call (found 8 Oct 26)
+**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D1000, D1016: the two-line top up to 700 wide, the 20px edge from 431; the grid card unchanged. Leaves for the archive once live.**
 **ANSWERED 18 Oct 26 — D1000 ("Shorter version"): the phone's two-line top up to about 700 wide, the top only; a picture at 440 and 600 wide first, then the build.**
 
 **Found, not changed** — while measuring for `[LW-PHONE-HEADER-SPACE]` (D678, D679). The Leave War calls a screen "a
@@ -1965,6 +1968,7 @@ touched the Inputs page or its stylesheet part. **Place (the agent's line):** lo
 test that the chip and the date do not overlap at 390 and 320.
 
 ### [BOARD-TIME-ESCAPE] On the Scheduler Board, Escape in a TIME box does not put the old time back (found 5 Oct 26, the Codex stack check)
+**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D1011: Escape restores a board time box and saves nothing. Leaves for the archive once live.**
 **ANSWERED 18 Oct 26 — D1011 ("as recommended"): Escape puts the old time back on the board's time boxes.**
 The board's take-off, landing, Brief and duty-start boxes keep what was typed after Escape, the caret stays in the box, and leaving the
 box then saves it; the week's time boxes and the board's text boxes restore the saved value. The same on `main` (`de470db5`) and on the
@@ -2014,6 +2018,7 @@ no times) — never print a clock that is not there; a red test first. **Place:*
 with `[BLANK-TIMES-ABSENCE]` (the same family: a rule reading times that are not there).
 
 ### [CREW-REST-MARK-COPIES] The dotted "breaks tomorrow" ring and the dashed late-show ring are drawn on the cockpit and row pucks only — the same man's other pucks show a solid red ring; and an open day list paints over both (found 6 Oct 26, the crew-rest fix's check — OLD; low; a question for him)
+**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D1013, D1017: every copy wears the seat's crew-rest ring and chip; an open list keeps the dotted and dashed rings (option A). Leaves for the archive once live.**
 **ANSWERED 18 Oct 26 — D1013 ("as recommended"): every copy wears the seat's ring, the open list leaves it readable — a picture first.**
 Seen by all three walkers, none of it this fix's doing (nothing that draws a puck was touched). (1) On the day that CAUSES a
 breach (Monday, when Tuesday's rest is broken) the man's cockpit puck and ground-row puck wear the dotted red ring — but his
@@ -2249,6 +2254,7 @@ picture whether it takes the one calendar (a pick of several separate days, whic
 nothing built before his word. The step-two check: `raptor-port/docs/handpass/2026-10-15-calendar-step-two.md`.
 
 ### [CAL-ESC-LISTS] Escape with a calendar's month-and-year lists open closes the whole form, not the lists — found 17 Oct 26 by [OIL-CONFIRM-DAYGRID]'s code read (F3); older than that job; his to place — OPEN
+**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D1012: in a calendar inside a form Escape shuts only the lists first (the floating calendar over a date box keeps closing whole, as its test pins — a question for him). Leaves for the archive once live.**
 **ANSWERED 18 Oct 26 — D1012 ("as recommended"): Escape closes only the month / year list.**
 **Seen:** in a calendar drawn inside a form — the OIL question's "Only some days…", an input's own window — the title opens
 the month-and-year lists; Escape there closes the whole question or window (in the question before a swap, the swap is

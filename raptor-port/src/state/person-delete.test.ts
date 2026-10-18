@@ -15,6 +15,7 @@ import { setSlotVal, slotVal, acceptInput } from '../engine/slots'
 import { SCHED, setSign, setDayApproved, dayDelta, daySnapOf, dayCurVer } from '../engine/publish'
 import { stashPut, stashGet, stashDrop, stashDays } from '../engine/weekstash'
 import { initStore, resetSession, notify, weekStashSnap, weekDirty, writeInputs, writeText } from './store'
+import { ELOG } from '../engine/editlog'
 import { Whiteboard } from '../storage/whiteboard'
 import { wirePersist } from './persist'
 import { schedWrite, SCHED_TYPES } from './sched-commit'
@@ -148,6 +149,15 @@ describe('PO6 — days he flew keep his puck; every day from the cutoff loses hi
     expect(row.kind, 'no kind is written any more').toBeUndefined()
     expect(deletePerson(HIM)).toBe(null)
     expect(PLANPUCKS.find((e: any) => e.id === row.id).ids).toEqual(['bane'])
+  })
+  /* D710: the list a delete leaves of what it took away names each note he was taken off, one line a note */
+  it('D710: the delete’s list names the note he was taken off', async () => {
+    expect(writeInputs(() => { addPlanPuck('2026-07-18', 'range day', ['bane', HIM]) })).toBe(true)
+    const before = ELOG.rows.length
+    expect(deletePerson(HIM)).toBe(null)
+    await Promise.resolve()
+    const said = ELOG.rows.slice(before).map(r => r.lbl)
+    expect(said.some(l => /^Note “range day” · .+ taken off$/.test(l)), `the lines: ${said.join(' | ')}`).toBe(true)
   })
   it('…and a note that held only him, and no words, is not kept empty', () => {
     expect(writeInputs(() => { addPlanPuck('2026-07-18', '', [HIM]); addPlanPuck('2026-07-19', 'words stay', [HIM]) })).toBe(true)
