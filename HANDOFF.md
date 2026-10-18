@@ -23,7 +23,7 @@ the later merge keeps both (D78).
 <!-- now:claude/window-middle-d996 -->
 ### `claude/window-middle-d996` — THE NIGHT OF 18 OCT 26 (his /overnight, 12 hours from 07:47 his PC's time, report by about 18:45) — written 18 Oct 26, verify before use
 - **After a compaction: re-read this block, the overnight guide (`.claude/skills/overnight/SKILL.md`) and the files of the
-  step in hand before the next change; note the compaction here with its time.** Compactions: none yet.
+  step in hand before the next change; note the compaction here with its time.** Compactions: one, after the morning report (18 Oct 26, about 12:00 his PC's time), on his "U can compact first".
 - **His words:** "Nvm I approve the mock ups as recommended. Do the recommended jobs and allow the chat to auto compact at
   97% and continue working I'm sleeping" — given before the job list reached him, so the night's jobs are the agent's
   recommended list below (the overnight command's "go"). Compaction: the guard is off (`compact-ready.mjs --away`); the app
@@ -88,7 +88,13 @@ the later merge keeps both (D78).
   (3) the dashed "same man, other day" echo vs the dotted ring when tomorrow's warning is focused — keep the echo
   (recommended); (4) an upchit DELETED: give the downchit its days back too? (recommended yes, a small follow-up);
   (5) the overnight retry trial (set before the next /overnight).
-- **Rulings this night:** D1016 (leave-war), D1017 (scheduler), D1018 (tracker).
+- **HIS LOOK AND ANSWERS (18 Oct 26, after the compaction):** "Looks good. As recommended. Merge live" — recorded D1019 (leave-war: the
+  grid card's short words up to 700, to build), D1020 (scheduler: the floating calendar's Escape shuts its lists first, to
+  build), D1021 (scheduler: the dashed echo kept, nothing to build), D1022 (inputs: a deleted upchit gives the days back, to
+  build) — the three builds filed as [LW-CARD-SHORT-WORDS-700], [DATEBOX-ESC-LISTS], [UPCHIT-DELETE-REGROW], one small job
+  together. **Merge live of pull request 534 in hand**; once live: archive the BUILT items of the night by script, and
+  remove this block at the next handoff.
+- **Rulings this night:** D1016 (leave-war), D1017 (scheduler), D1018 (tracker); after it D1019–D1022.
 <!-- /now -->
 
 ## Next, in order

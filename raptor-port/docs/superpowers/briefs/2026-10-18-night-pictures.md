@@ -87,6 +87,8 @@ padding still left out), so "−" and "+" stay on the first line. At 440 the fir
 unchanged. **Not covered by his approval** (D1000 says "the grid unchanged", and this changes the grid card) — put to him
 in the morning with this picture; not built tonight.
 
+**ANSWERED 18 Oct 26 — D1019 ("As recommended"): yes, the short words up to 700; to build as its own small job ([LW-CARD-SHORT-WORDS-700]).**
+
 ## 4. The crew-rest ring on every copy (D1013) — `mock-rest-ring-copies.mjs`, `docs/img/handpass/2026-10-18-rest-ring-copies/`
 
 Helper's report, as returned (condensed only where it repeated itself):

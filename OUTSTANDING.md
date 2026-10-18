@@ -48,6 +48,8 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
+**FILED 18 Oct 26 — his answers after the night (D1019, D1020, D1022):** [LW-CARD-SHORT-WORDS-700] (the Leave War card's short button words up to 700), [DATEBOX-ESC-LISTS] (Escape shuts the floating calendar's lists first), [UPCHIT-DELETE-REGROW] (a deleted upchit gives the downchit its days back) — one small job together, once pull request 534 is live; D1021 keeps the dashed mark as built.
+
 **FILED 18 Oct 26 — [TRK-PINCH-OLD-EDGES]:** two older edges of the Tracker chart's pinch, met by [TRK-CHART-FPS]'s reads — low, with the next Tracker batch.
 
 **FILED 18 Oct 26 — [TRK-FLEX-SETTING], [TRK-LEGEND]:** his directions (D1006, D1007) — the flex editable with a switch that turns it off everywhere; a legend for the Tracker — one Tracker job with the down days (D1002–D1005). **FILED 18 Oct 26 — [TRK-DOWN-DAYS-AUTO]:** his direction (D1002) — the Tracker's down days worked out from the Inputs, ATT B included, a tap shows each input; the Upchit Date box goes — not designed, his questions first. **FILED 18 Oct 26 — [LW-SORT-BY-FLIGHT]:** his intent, an option to sort the Leave War by flight (D1001) — not designed; his to raise. **His answers of 18 Oct 26 to the backlog's questions:** D998 (1 parked), D999 (4), D1000 (11), D1001 (7) — the rest in `raptor-port/docs/superpowers/briefs/2026-10-18-sixteen-questions.md`.
@@ -2260,6 +2262,7 @@ picture whether it takes the one calendar (a pick of several separate days, whic
 nothing built before his word. The step-two check: `raptor-port/docs/handpass/2026-10-15-calendar-step-two.md`.
 
 ### [CAL-ESC-LISTS] Escape with a calendar's month-and-year lists open closes the whole form, not the lists — found 17 Oct 26 by [OIL-CONFIRM-DAYGRID]'s code read (F3); older than that job; his to place — OPEN
+**ANSWERED 18 Oct 26 — D1020: the floating calendar too; filed as [DATEBOX-ESC-LISTS].**
 **BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D1012: in a calendar inside a form Escape shuts only the lists first (the floating calendar over a date box keeps closing whole, as its test pins — a question for him). Leaves for the archive once live.**
 **ANSWERED 18 Oct 26 — D1012 ("as recommended"): Escape closes only the month / year list.**
 **Seen:** in a calendar drawn inside a form — the OIL question's "Only some days…", an input's own window — the title opens
@@ -2358,6 +2361,7 @@ shift's start; the crew list's line is unaffected. **Place:** low — with `[OIL
 crew-rest sentences.
 
 ### [UPCHIT-MOVE-NO-REGROW] An Upchit moved to a LATER date does not give back the medical days it cut (walker B, the D605 walk, 6 Oct 26 — OLD; low; a question for him)
+**18 Oct 26 — D1022: a DELETED upchit gives the days back too; filed as [UPCHIT-DELETE-REGROW].**
 **BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D999: an upchit moved later gives the downchit it had cut its days back, never past its first end (`firstEnd`, kept at the first cut) and never into another medical filed in the gap; the save sheet and the calendar drag's sheet say so. A downchit the cut had deleted has nothing to give back; an upchit DELETED gives nothing back (not in the ruling — a question for him). Leaves for the archive once live.**
 **ANSWERED 18 Oct 26 — D999: TO BUILD.** The downchit grows back to the day before the upchit's new date, never past its first end, said on the upchit's save sheet before saving; a calendar drag the same; a published day given back reads pending (D178). Reproduce walker B's case first (the host did not), test first.
 A downchit (ATT C) Monday to Friday; an Upchit effective Wednesday — the downchit is cut to end Tuesday, as it should
@@ -2508,3 +2512,21 @@ one (a measured layout — a picture first). **Place:** his look; then close, or
 **Current D566 batch evidence:** `raptor-port/docs/handpass/2026-10-04-accepted-taper-interface-batch.md`; accepted taper addendum and independent challenge linked there. All three scoped items built/checked with fresh independent R1PASS; owner look/Claude reads/authorized merge remain outstanding.
 
 **Delivered D566 combined branch preview,5Oct26:** https://raptor-q27mo3zqg-kai-e2f5.vercel.app (source7f0b78bf; completed VercelSUCCESS/Preview9ZKYvXmsMPbWpc3RkwppHcWKzqqN). All3interface fixes checked/fresh independent R1PASS; owner look/Claude reads/authorized merge remain outstanding. Shipping method/limits in current accepted-batch evidence; no live authority.
+
+### [LW-CARD-SHORT-WORDS-700] From 431 to 700 wide the Leave War grid card's buttons take the phone's short words — RULED D1019 (18 Oct 26); to build — OPEN
+**What:** the grid card's "Reorder" and "OIL" buttons read "⇅" and "OIL" (the phone's short-words rule) up to 700 wide, so
+"−" and "+" stay on the first line; the grid's columns unchanged. Picture: `raptor-port/docs/img/handpass/2026-10-18-lw-top-700/6-440-proposed-short-words.png`
+(at 440: 22 rows of names, 5 more than before the night). **Where:** the card's rules in `raptor-port/src/leavewar/ui/chrome.css`
+kept at 430 (the night's job 3) move to 700 for the buttons only. **Place:** one small job with [DATEBOX-ESC-LISTS] and
+[UPCHIT-DELETE-REGROW], once pull request 534 is live. Check: WALK (layout at many widths).
+
+### [DATEBOX-ESC-LISTS] The calendar floating over a date box: Escape shuts its month and year list first — RULED D1020 (18 Oct 26); to build — OPEN
+**What:** as the calendars inside a form now do (D1012, built the night of 18 Oct 26): with the month or year list open,
+Escape closes only the list; a second Escape closes the calendar. The test that pins today's behaviour
+(`raptor-port/src/ui/datebox.test.tsx`) changes with it. **Place:** with [LW-CARD-SHORT-WORDS-700]. Check: LOOK plus its tests.
+
+### [UPCHIT-DELETE-REGROW] A deleted upchit gives the downchit it cut its days back — RULED D1022 (18 Oct 26); to build — OPEN
+**What:** as a moved one does (D999, built the night of 18 Oct 26): the downchit grows back to the end it had before the
+cut, never past it and never into another medical of his in the gap; the save sheet says so first. Builds on the kept
+first end (`firstEnd`) and the give-back plan in `raptor-port/src/engine/medical.ts`. **Place:** with
+[LW-CARD-SHORT-WORDS-700]. Check: FULL (saved data); a fresh blind Opus read.

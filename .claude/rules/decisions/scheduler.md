@@ -54,9 +54,11 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1021 | 18 Oct 26 | When tomorrow's crew-rest warning is focused, the day before keeps the dashed "same man, other day" mark over its dotted ring, as built; nothing changes. |
+| D1020 | 18 Oct 26 | The calendar that floats over a date box behaves as the calendars inside a form do (D1012): Escape with its month or year list open closes only that list; a second Escape closes the calendar. |
 | D1017 | 18 Oct 26 | Every copy of a man's puck on a day — the Ground and Personal Inputs rows, the SANS card, the Unavailable row and the crew list — wears his seat's crew-rest ring and chip; a puck lit by an open issues list keeps its dotted or dashed ring, standing out because the rest dims, as today. |
 | D1013 | 18 Oct 26 | Every copy of a man's puck on a day wears the same crew-rest ring as his seat (dotted, dashed or solid) — his SANS card, Unavailable and Personal Inputs rows and the crew list included — and an open issues list lights its crew without hiding those rings; drawn for him before it is built. |
-| D1012 | 18 Oct 26 | In a calendar inside a form — the OIL question's "Only some days…" and an input's own window — Escape with the month or year list open closes only that list; a second Escape closes the form. |
+| D1012 | 18 Oct 26 | In a calendar inside a form — the OIL question's "Only some days…" and an input's own window — Escape with the month or year list open closes only that list; a second Escape closes the form — and the calendar over a date box the same (D1020). — changed by D1020 |
 | D1011 | 18 Oct 26 | On the Scheduler Board, Escape in a take-off, landing, brief or duty-start box puts the old time back and saves nothing, as every other box does. |
 | D1010 | 18 Oct 26 | On View-only Sched the next-week preview shows a published day's published version; Edit Schedule's preview keeps the working copy. |
 | D1009 | 18 Oct 26 | Insights keeps counting a flying line with nobody on it as a sortie and its formation as a formation — the same count as the day's own heading; nothing changes. |

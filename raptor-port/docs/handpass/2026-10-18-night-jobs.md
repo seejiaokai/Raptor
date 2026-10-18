@@ -312,3 +312,14 @@ build clean · tfin 728 / 0 · e2e green · smoke green (the helpers' re-pointed
 rulecheck OK · docsize OK · unit 11732 / 11733 — the one: `engine/inputs-readers.test.ts` "no file is on none" — the
 Tracker's new medical rider reads the inputs and was on no list; named on the RECORDS list, the file 6 / 6 (D902: the
 whole set had passed; the touched test file run).
+
+## His look and his answers (18 Oct 26, after the morning report)
+
+His words: "Looks good. As recommended. Merge live" — his look at the night's work on his phone, the four questions answered
+as recommended, and his "merge live" for pull request 534.
+- **D1019** — the Leave War grid card's short button words up to 700 wide: yes, to build ([LW-CARD-SHORT-WORDS-700]).
+- **D1020** — the calendar floating over a date box closes its month and year list first on Escape: yes, to build
+  ([DATEBOX-ESC-LISTS]).
+- **D1021** — the dashed "same man, other day" mark stays over the dotted ring when tomorrow's warning is focused: kept as
+  built, nothing to build.
+- **D1022** — a deleted upchit gives the downchit its days back too: yes, a small follow-up ([UPCHIT-DELETE-REGROW]).
