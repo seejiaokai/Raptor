@@ -1909,6 +1909,9 @@ moved one does — back to the end it was filed with, never into another medical
 upchitDeletePlan`, the same give-back body as D999's move); the upchit sheet says so before the delete, from the input's
 own window and from Delete on its line in an opened day (`ui/inputedit.tsx upchitDeleteAsk`), and one Undo step puts back
 the upchit and the cut together. A delete that gives nothing back asks nothing (D792).)*
+*(18 Oct 26, D1023 — to build, filed as [UPCHIT-SHEET-LEAVE-CUT]: before a move or a delete gives days back, the upchit sheet
+also lists each leave and each bid of his that the days given back will cut, one line each, worded from the Leave War's own
+warning for that cut; until built, the cut is said only in the note afterwards, beside "Input deleted" / "Moved to …".)*
 
 The medical group (HL, OML, ATT C, ATT B) has always been the downchit; what
 is new is the LIFECYCLE around it, and one new type.

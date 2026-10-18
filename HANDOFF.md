@@ -20,29 +20,29 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/three-small-jobs-1018 -->
-### `claude/three-small-jobs-1018` — his three follow-ups of 18 Oct 26 (D1019, D1020, D1022) — written 18 Oct 26, verify before use
-- **The job:** cut from `main` after pull request 534 went live. (1) [LW-CARD-SHORT-WORDS-700] — the Leave War grid card's
-  buttons read "⇅" and "◷ OIL" up to 700 wide (`leavewar/ui/chrome.css`); (2) [DATEBOX-ESC-LISTS] — the calendar floating over
-  a date box shuts its month and year lists first on Escape (`ui/DateBox.tsx`); (3) [UPCHIT-DELETE-REGROW] — a deleted upchit
-  gives the downchit its days back, asked first on the upchit sheet (`engine/medical.ts upchitDeletePlan`, `ui/inputedit.tsx
-  removeInput` / `upchitDeleteAsk`, `ui/UpchitConfirm.tsx deleting`, the calendar's Delete key through `MedMoveConfirm`).
-- **Also done:** the night's merged block removed; its 13 finished items archived by script (the list is in
-  `raptor-port/docs/handpass/2026-10-18-night-jobs.md` §The backlog items the night closed).
-- **State:** BUILT and FULL-checked (`raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`): walk 58/58 and the
-  re-walk 58/58; 10/10 unit breaks and one browser break red; the gates green (unit 11748, tfin 728, smoke 453, e2e 852 + 1
-  of this job's own, fixed — the first two e2e runs measured OTHER chats' old previews on 4173 and 4191, filed
-  [GATELOCK-STALE-PORT]); one fresh, blind Opus read — one finding, fixed red-first (a delete's leave-cut warning no longer
-  wiped out by "Input deleted"); its question for him filed [UPCHIT-SHEET-LEAVE-CUT]. Pushed; pull request open; NEXT: his
-  look on his iPhone and his "merge live". Reads owed: on `[NO-ASTRA-LIST]`.
-- **Trap for the next chat:** old previews from finished chats hold 4173, 4174, 4180, 4182 and 4191 on his PC — run the
-  browser tests with `E2E_PORT=<a port checked free>` (`gatelock.mjs exec … -- npm run test:e2e`).
-- **Rulings this job:** none new (D1019, D1020, D1022 were recorded before it).
+<!-- now:claude/upchit-sheet-leave-cut -->
+### `claude/upchit-sheet-leave-cut` — D1023 recorded; its build next — written 18 Oct 26, verify before use
+- **Done before this branch:** his three follow-ups (D1019, D1020, D1022) LIVE — pull request 535 merged on his "merge live"
+  (18 Oct 26), Vercel's production deployment ready. Its check: `raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`.
+  Its three items ([LW-CARD-SHORT-WORDS-700], [DATEBOX-ESC-LISTS], [UPCHIT-DELETE-REGROW]) are BUILT and live: archive them by
+  script (`backlog-archive.mjs <ID> --homes raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`) as this job's first step.
+- **This branch (cut from `main` after 535):** D1023 recorded ("Ok as recommended"): before an upchit moved later or deleted
+  gives a downchit its days back, the upchit sheet also lists each leave and bid of his those days will cut, one line each,
+  worded from the Leave War's own warning (`leavewar/inputgate.ts`). Filed as [UPCHIT-SHEET-LEAVE-CUT] — TO BUILD. Owed: one
+  fresh reader of D1023's short line against its full row (D138; it is the bold sentence word for word).
+- **Pick up here:** build [UPCHIT-SHEET-LEAVE-CUT] — `engine/medical.ts` (`giveBack`, `upchitDeletePlan`, `upchitTrimPlan`'s
+  grow), the Leave War's cut rule (`leavewar/inputgate.ts`, through `state/inputgate-hook.ts`), `ui/UpchitConfirm.tsx` (its
+  plan list), `ui/inputedit.tsx` (`upchitDeleteAsk`, `medAskFor`), `ui/MedMoveConfirm.tsx`. Ask the gate what it WOULD cut,
+  without writing (a dry run — `inputedit.tsx dryRun` exists), so the sheet and the save cannot disagree. FULL tier (saved
+  data); walk both doors and the drag; a fresh blind Opus read. Then the next area's small fixes (D994).
+- **Trap:** old previews from finished chats hold 4173, 4174, 4180, 4182 and 4191 on his PC — run the browser tests with
+  `E2E_PORT=<a port checked free>` (filed [GATELOCK-STALE-PORT]).
+- **Rulings this chat:** D1023 (inputs).
 <!-- /now -->
 
 ## Next, in order
 
-**RIGHT NOW (18 Oct 26, evening):** pull request 534 is LIVE (the night of 18 Oct 26) → his three follow-ups (D1019, D1020, D1022) on `claude/three-small-jobs-1018` — its block → the next area's small fixes (D994); his questions still wait until he says so.
+**RIGHT NOW (18 Oct 26, evening):** pull requests 534 and 535 are LIVE (the night; his three follow-ups D1019, D1020, D1022) → **[UPCHIT-SHEET-LEAVE-CUT] (D1023), on `claude/upchit-sheet-leave-cut` — its block** → the next area's small fixes (D994); his other questions still wait until he says so.
 
 **RIGHT NOW (18 Oct 26, later):** D994's first batch — the scheduling pages on a phone — LIVE (pull request 533; D995 the window in the middle) → D996 (phone windows to the middle — his scope answer first; `claude/window-middle-d996`'s block) → the next area's small fixes (D994); his questions still wait until he says so.
 
