@@ -63,16 +63,22 @@ the later merge keeps both (D78).
   (`docs/img/handpass/2026-10-18-lw-top-700/6-440-proposed-short-words.png`). (2) The overnight retry trial
   (`[OVERNIGHT-RETRY-TRIAL]`, D885) was not run: its setting is read when a chat starts, so it must be set before he opens
   the next /overnight chat.
-- **Where the night stands (about 09:00 his PC's time):** ONE branch and ONE pull request for every job (534 — D822's "one
-  combined"; each job its own commits and its own check in `raptor-port/docs/handpass/2026-10-18-night-jobs.md`). Job 1 DONE
-  (pushed). Job 2 DONE (walk 14/14, read's 2 findings fixed). Job 3 DONE (walk 28/28). Job 4 DONE (walk 16/18 — the 2 fails are
-  an OLDER fault filed as [TRACE-FOCUS-STAYS]). Job 5 BUILT (D1011, D1012, D1010, D710), its read's 5 findings FIXED (commit
-  4415f9548), a fresh read OF THE FIXES running, its Sonnet walk running (`night1018-job5-walk.mjs`, pictures
-  `img/handpass/2026-10-18-night-job5/`). NEXT: save those two reports into the sheet's job 5 section, fix what they find,
-  write job 5's `Walk:` line; then ONE full gate run under the lock (jobs 2–5 — the local gates' last full run was job 1's);
-  then push (no run of the branch's last commit queued or in progress first) and update pull request 534's body; then job 6
-  (D999, FULL) if time and allowance (weekly 71% at 08:45); the morning report by about 18:45. The floating calendar over a
-  date box keeps closing whole on Escape (its test pins it; D1012 names only calendars inside a form) — a question for him.
+- **Where the night stands (about 09:20 his PC's time — the chat at 75%, written at a clean point before a compaction):**
+  ONE branch, ONE pull request (534 — D822's "one combined"); every job's check in
+  `raptor-port/docs/handpass/2026-10-18-night-jobs.md`. Jobs 1–4 DONE. Job 5 BUILT; its first read's 5 findings fixed
+  (4415f9548), the read OF the fixes found 1 more, fixed (the calendar's Escape with the keyboard on its form); its Sonnet
+  walk (`scripts/handpass/night1018-job5-walk.mjs`, pictures `img/handpass/2026-10-18-night-job5/`) was RUNNING at this
+  point — its report goes into the sheet's job 5 section, with its `Walk:` line; a FAIL there is fixed or filed. NEXT, in
+  order: (a) ONE full gate run under the lock (`E2E_PORT=4183 node raptor-port/scripts/gatelock.mjs run`) for jobs 2–5;
+  (b) push (`git push -u origin HEAD:refs/heads/claude/window-middle-d996`, after `gh run list` shows no run of the last
+  pushed commit queued or in progress) and rewrite pull request 534's body; (c) job 6, D999 — the survey is
+  `raptor-port/docs/superpowers/briefs/2026-10-18-d999-survey.md` (the cut keeps no first end today; moving later grows
+  nothing back): a `firstEnd` kept on the downchit the first time an upchit cuts it (schema.ts, data-schema.md,
+  data-model.md), a "grow back" action in `upchitTrimPlan`/`upchitEffects`, applied in `applyMedPlan`, a line on
+  `UpchitConfirm`, red first, FULL check; (d) the morning report by about 18:45. The preview server for walks runs on
+  port 4174 (`npx vite preview --port 4174 --strictPort` from raptor-port/, after a build). The weekly allowance was 71%
+  at 08:45. Questions for him so far: the Leave War card's short words (section 1b of the pictures brief); the floating
+  calendar over a date box still closing whole on Escape (D1012 names only calendars in a form); the overnight retry trial.
 - **Rulings this night:** D1016 (leave-war), D1017 (scheduler), D1018 (tracker).
 <!-- /now -->
 
