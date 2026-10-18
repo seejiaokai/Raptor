@@ -14,6 +14,7 @@ import { notify, setPage } from '../state/store'
 import { bellLit, clearBell } from '../state/view'
 import { HOOKS } from '../engine/hooks'
 import { globalUndo, globalRedo, undoState } from '../undo'
+import { editingText } from './textedit'
 import { oilUndoBoundary } from './oilmode'
 import { accessAlert, waitingCount } from '../state/accounts'
 import { bugAlert, unseenReports } from '../state/reports'
@@ -207,6 +208,17 @@ export interface UndoEngine {
    walks back OIL decisions freely, but the press that would reach past the point the mode was opened at closes the mode
    instead of changing the schedule underneath a screen that says it cannot be changed; the next press behaves normally.
    Every door asks it, since there is one pair (oilundo-button.test.tsx presses both bars through the DOM). */
+/* …AND IT NEVER RUNS UNDER A CARET (the narrow read of the D994 batch's fix round, round 2, 19 Oct 26 — older than the
+   batch). A tap on Undo on Safari does not move the focus, so Undo ran with the caret still in a box whose block is held
+   for it; an In-time line there kept the address it had before the Undo, and leaving it wrote it over the line Undo had
+   just brought back (one line lost, another doubled). The press first lets the caret go — what was typed in the box is
+   saved as its own change, as a desktop click on the button already does — and runs once that save and its backstop
+   have run (timers of 0 run in order), so the paint after it is the ordinary one and every line has its true place. */
+const offCaret = (body: () => void) => {
+  const a = typeof document === 'undefined' ? null : document.activeElement as HTMLElement | null
+  if (a && a !== document.body && editingText()) { a.blur(); setTimeout(body, 0); return }
+  body()
+}
 export function globalUndoEngine(): UndoEngine {
   const us = undoState()
   return {
@@ -214,13 +226,13 @@ export function globalUndoEngine(): UndoEngine {
     canRedo: us.canRedo,
     undoTitle: us.undoLabel ? `Undo — ${us.undoLabel}` : (us.undoWhy || 'Undo'),
     redoTitle: us.redoLabel ? `Redo — ${us.redoLabel}` : (us.redoWhy || 'Redo'),
-    undo: () => {
+    undo: () => offCaret(() => {
       /* (owner D838 + D839, 14 Oct 26: "without undoing" — a reader could not tell whether the undo had been done; this
          press closes the mode and undoes nothing) */
       if (oilUndoBoundary()) { HOOKS.toast('Left OIL Earn without undoing. The next undo would change the day itself.', 'ok'); notify(); return }
       const r = globalUndo(); if (!r.ok && r.reason) HOOKS.toast(r.reason, 'warn'); notify()
-    },
-    redo: () => { const r = globalRedo(); if (!r.ok && r.reason) HOOKS.toast(r.reason, 'warn'); notify() },
+    }),
+    redo: () => offCaret(() => { const r = globalRedo(); if (!r.ok && r.reason) HOOKS.toast(r.reason, 'warn'); notify() }),
   }
 }
 /* THE TRACKER'S OWN HISTORY (D349 (2): "the Tracker's own Undo and Redo move to the top bar too", still taking back the
