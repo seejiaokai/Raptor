@@ -758,3 +758,18 @@ describe('D1012 — Escape with the lists open closes only the lists', () => {
     } finally { document.removeEventListener('keydown', onForm, true) }
   })
 })
+
+/* the night's fresh read of job 5 (4): with the lists open, an Escape typed in a box elsewhere on the page is that box's */
+describe('D1012 — the lists take only their own Escape', () => {
+  it('an Escape from a box outside the calendar leaves the lists open and reaches the box', () => {
+    render(<div><input data-testid="outside" /><DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} /></div>)
+    fireEvent.click(t('dcal-title'))
+    const box = t('outside') as HTMLInputElement
+    box.focus()
+    const heard = vi.fn()
+    box.addEventListener('keydown', (e: KeyboardEvent) => { if (e.key === 'Escape') heard() })
+    fireEvent.keyDown(box, { key: 'Escape' })
+    expect(heard).toHaveBeenCalledTimes(1)
+    expect(t('dcal-lists'), 'the lists stay open').toBeTruthy()
+  })
+})

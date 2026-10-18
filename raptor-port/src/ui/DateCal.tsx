@@ -217,11 +217,15 @@ export function DateCal(p: {
      at the document and closed itself with the lists still open — a waiting swap was then not made. While the lists are
      open the key is the calendar's: heard at the window on the way down, before any form, it shuts the lists and puts
      the keyboard back on the title; the next Escape is the form's again. The floating calendar (ui/DateBox.tsx) leaves
-     an Escape to this while its card holds the lists. */
+     no Escape to this: over a date box Escape still shuts the whole calendar, as built and pinned (datebox.test.tsx). */
   useEffect(() => {
     if (!lists) return
     const onKey = (e: globalThis.KeyboardEvent) => {
       if (e.key !== 'Escape') return
+      /* only while the keyboard is in this calendar (or nowhere): an Escape typed in a box on the page behind is that
+         box's own (the fresh read of the night, 4) */
+      const ae = document.activeElement
+      if (ae && ae !== document.body && !(root.current && root.current.contains(ae))) return
       e.preventDefault(); e.stopPropagation()
       setLists(false)
       ;(root.current?.querySelector('.dcal-title') as HTMLElement | null)?.focus({ preventScroll: true })

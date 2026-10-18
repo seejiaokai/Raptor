@@ -412,7 +412,9 @@ function noteLines(c: Change): void {
   const b: any = c.before, a: any = c.after
   const n = a || b
   if (!n) return
-  const at = { date: String(n.date || ''), sect: 'day', sub: String(c.id), fld: 'note' }
+  /* filed under "The day" by its own words (the fresh read of the night, 1): a `sub` would make the changes window read
+     it as a man's Leave War item (changesmodel.ts itemOf) */
+  const at = { date: String(n.date || ''), sect: 'day' }
   const item = noteName(b || a)
   if (!b) { logAction(null, `${noteName(a)} · added`, at); return }
   if (!a) { logAction(null, `${item} · taken away`, at); return }
@@ -501,6 +503,9 @@ export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 
        read R2-04, Fable's N4 */
     else if (c.collection === 'lw.ledger') for (const e of [c.before, c.after]) { const d = e && (e as any).date; if (typeof d === 'string') days.add(d) }
     else if (c.collection === 'sched.issuance' || c.collection === 'sched.retraction') { const m = /:(\d{4}-\d{2}-\d{2})#/.exec(id); if (m) days.add(m[1]) }
+    /* a note on the planning calendar writes its own line since D710, so its Undo / Redo lands on its day too (old and
+       new, for a note moved) — the fresh read of the night, 2 */
+    else if (c.collection === 'plan' && id.startsWith('pp:')) for (const e of [c.before, c.after]) { const d = e && (e as any).date; if (typeof d === 'string') days.add(d) }
   }
   const sorted = [...days].filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort()
   const what = `${dir === 'undo' ? 'Undo' : 'Redo'}${entry.label ? ' — ' + entry.label : ''}`

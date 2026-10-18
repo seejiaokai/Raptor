@@ -87,3 +87,61 @@ All 28 assertions PASS; no console error, page error or 4xx. Pictures `img/handp
 | B2 | PASS (4) | the longest real callsign fits whole at 440 and 390; a 30-letter callsign put into the page text (a simulation) ends "…", "Viewing as" whole, nothing past the edge (24–27) |
 
 Walk: docs/handpass/2026-10-18-night-jobs.md (job 3) · 27 pictures · 1 surface (the Leave War's top) at 9 widths · 2 orders (admin, member) · MISSING: none
+
+## Job 4 — D1013, D1017: the crew-rest ring and chip on every copy of a man's puck
+
+**The eight questions:** a shared drawer — YES (a mark that must appear wherever a man is drawn); none of 1, 2, 3, 7; the
+warning list — no (what a warning says and how a rule is read are unchanged; only the copies' rings). **Tier: WALK.**
+**Roll-call** (the survey of the drawers, saved below): the seat (week `slotCell`/`lSeat`, board `sbSeat`/`sbSlot`, the
+Common Programme) — has it, as before; the Ground Programme row (through `lSeat` / `sbSeat`) — has it; the Personal
+Inputs and Unavailable rows (week `inGrp`, board `sbInpRow`) — MISSING before, now has it; the SANS card
+(`sansCardsHTML`, week and board) — MISSING before, now has it; the crew list (`rosterPuck`, board and week) — MISSING
+before, now has it; the Available crew panel and the ALL AVAIL window — had it already; OIL Earn's copies — must not
+(the mode shows OIL, not warnings, as before). The open list's light (`.puck.wfoc`) — option A's two rules.
+**Red first:** `src/ui/restring-copies.test.tsx` 5 of 6 failed on the old code, 6/6 after; the ring and CSS tests 115/115.
+
+### The walk — Sonnet walker, `scripts/handpass/night1018-job4-walk.mjs`, the built app; report as returned
+16 of 18 PASS, 2 FAIL (both B3 on Monday); no console error, page error or 4xx. Every copy read from the DOM.
+| Step | Result | Seen |
+|---|---|---|
+| S1 board Mon, Scribe | PASS | seat, Ground Programme, Personal Inputs, Unavailable, SANS card, crew list — all dotted, chip R, none solid (dk-01, dk2x-01) |
+| S2 week Mon | PASS | the same five and the week's crew list (dk-02) |
+| S3 board and week Tue, Otter | PASS | all dashed, chip R (dk-03, dk-04) |
+| S4 Mon, the list open and the "Breaks Tuesday" line | PASS | 5 lit pucks, all still dotted; 145 of 150 dimmed; the crew list's copy keeps its ring, not lit (dk-05, dk2x-03) |
+| S4 Tue, Otter | PASS | 5 lit, all still dashed (dk-06, dk2x-06) |
+| S5 phone | PASS | the same rings (ph-01 to ph-04) |
+| S6 against the approved option A | no difference | ph-01 / approved ph-02; dk2x-03 / approved dk2x-02 row A; dk2x-06 / approved dk2x-04 row A |
+| B1 the breach taken away, then Undo | PASS | every copy loses the ring and chip; one Undo brings all six back (dk-08, dk-09) |
+| B2 his own solid breach (Scribe, Tuesday) | PASS | the seat and every copy solid, none dotted (dk-07) |
+| B3 Tue, close the list | PASS | rings as at rest, nothing lit |
+| B3 Mon, close the list after tapping the "Breaks Tuesday" line | **FAIL** | the rings unchanged, but the light stays on: Scribe's five Monday pucks lit, the page dimmed (dk-10) |
+Walker's notes: opening a day's list already lights its crew and dims the rest, before any tap (opening then closing with no
+tap restores the rest exactly); after the Monday line was tapped and the list closed, the light stayed — Otter's Tuesday
+pucks read dimmed under it; the week's crew-list copies are never lit or dimmed by the list.
+**The host's reading of B3 Monday:** OLDER than this job, not caused by it — the job's commit touches the four copy
+builders, two style rules and a test, and nothing that decides what is lit or when a light goes (`ui/highlights.ts`,
+the focus in `state/view.ts`); the class `wfoc` it leaves on is set by the unchanged highlights code. Filed as
+[TRACE-FOCUS-STAYS], found not fixed.
+
+## Job 5 — D1011, D1012, D1010, D710: the scheduler's small batch
+
+**The eight questions:** the published record — YES (D1010: what members see of a published day); roles — no; saved data
+— no (D710 adds history lines only); a new gesture — no (Escape's meaning made the same as elsewhere). **Tier: FULL.**
+**Red first:** D1011 (`boardwrap.test.tsx`), D1012 (`datecal.test.tsx`), D1010 (`peek.test.tsx`), D710
+(`changelines.test.ts`) each failed on the old code. The floating calendar over a date box keeps closing whole on Escape
+— `datebox.test.tsx` pins it, and D1012 names only a calendar inside a form: a question for him.
+
+### The fresh, blind Opus read — report, as returned
+1. D710: the changes window files every note line under "Leave War · pp:…" — `noteLines` writes `sub: 'pp:<id>'` with
+   `sect: 'day'` and no key, and `changesmodel.ts itemOf` reads a keyless line with a `sub` (not quals) as a man's Leave
+   War item. Fix: drop `sub` and `fld`, so the line lands under "The day" with its own words.
+2. D710: Undo or Redo of a note change writes no line — `logReversed` collects no day for `plan`. Fix: collect the note's
+   date(s) there.
+3. D1010: a resize across 820px can put the wrong copy in the other page's preview — `pan.ts syncPeekOnResize` remounts
+   both weeks' previews under the page on screen, and the other page's remembered key then says nothing changed. Fix:
+   stamp the mounted key on the root and compare it in `mountPeek`.
+4. D1012: the calendar's Escape fires even when the keyboard is elsewhere (a cell on the page behind, its typed text then
+   saved by its blur). Fix: leave the key alone when the focus is outside the calendar.
+5. D1011 gap: the board's Personal-input time boxes (`data-ifld`) keep a typed time on Escape, and the input's remarks box
+   blurs without restoring. Fix: the week's `[data-inp]` restore for `data-ifld`.
+Minor: DateCal's comment says the floating calendar defers to the lists; it does not (as built) — correct the wording.

@@ -162,6 +162,20 @@ describe('Enter still commits, because a textarea would insert a line break', ()
     expect(txtGet(k), 'and nothing was saved').toBe(before)
   })
 
+  /* the night's fresh read of job 5 (5): an input's own time box on the board (its start or end, `data-ifld`) kept a typed
+     time on Escape, and the blur saved it into the input */
+  it('D1011: Escape in an input\u2019s own time box on the board puts its time back', async () => {
+    await act(async () => { openScheduler(0); notify() })
+    const box = [...document.querySelectorAll('#sbBoard input[data-ifld]')].find(b => /\.(str|end)$/.test((b as HTMLElement).dataset.ifld!)) as HTMLInputElement
+    expect(box, 'the premise: the board draws an input\u2019s time box').toBeTruthy()
+    const shown = box.value
+    box.focus()
+    box.value = '2359'
+    await key(box, 'Escape')
+    expect(box.value, 'the box shows the input\u2019s time again').toBe(shown)
+    expect(document.activeElement, 'and the box was let go').not.toBe(box)
+  })
+
   it('Escape puts the model value back', async () => {
     DAYS[0].dutywaves[0].rows[0].rmks = 'the real remark'
     await act(async () => { openScheduler(0); notify() })

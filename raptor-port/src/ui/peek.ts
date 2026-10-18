@@ -326,8 +326,12 @@ export function peekWeekHTML(): string {
 export function mountPeek(root: HTMLElement, liveCount: number, prevKey: string): string {
   const key = peekKey()
   const hasPeek = root.children.length > liveCount
-  if (key === prevKey && hasPeek === !!key) return prevKey
+  /* the key DRAWN is stamped on the week itself (the fresh read of the night, 3 — D1010): a resize across 820px remounts
+     both weeks' previews under the page on screen (pan.ts syncPeekOnResize), so the OTHER page's remembered key could say
+     "unchanged" over the wrong copy — View-only Sched then showing a change not yet issued */
+  if (key === prevKey && hasPeek === !!key && (root.dataset.peekKey || '') === key) return prevKey
   while (root.children.length > liveCount) root.lastElementChild!.remove()
   if (key) root.insertAdjacentHTML('beforeend', peekWeekHTML())
+  root.dataset.peekKey = key
   return key
 }

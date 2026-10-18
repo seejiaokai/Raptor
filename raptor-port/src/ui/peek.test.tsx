@@ -229,3 +229,20 @@ describe('a nought-minute flying line is marked in the peek too (D49)', () => {
     expect(marks(peekDayHTML(flyDay('10:00', '10:00', ''), 0, false)).length).toBe(0)
   })
 })
+
+/* the night's fresh read of job 5 (3): the key drawn is stamped on the week, so a week holding the OTHER page's copy (a
+   resize remounts both previews under the page on screen) is re-drawn even when its own remembered key looks unchanged */
+describe('D1010 — the preview mounts by the key it drew', () => {
+  it('a week whose stamped key differs is re-drawn, whatever the caller remembers', async () => {
+    const { mountPeek, peekKey } = await import('./peek')
+    const root = document.createElement('div')
+    for (let i = 0; i < 7; i++) root.appendChild(document.createElement('section'))
+    const first = mountPeek(root, 7, '')
+    expect(root.dataset.peekKey).toBe(first)
+    root.dataset.peekKey = 'e|another page'
+    const marker = root.lastElementChild!
+    expect(mountPeek(root, 7, first)).toBe(peekKey())
+    expect(root.lastElementChild, 'the preview was drawn again').not.toBe(marker)
+    expect(root.dataset.peekKey).toBe(peekKey())
+  })
+})

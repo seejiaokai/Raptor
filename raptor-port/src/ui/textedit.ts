@@ -349,6 +349,16 @@ export function routeKeyDown(e: KeyboardEvent) {
      has no funnel key, so it is left to blur and let boardChange's own revert
      branch put the model value back. */
   const bx = t && t.closest && t.closest('[data-bfld],[data-ifld]') as HTMLElement | null
+  /* AN INPUT'S OWN BOXES ON THE BOARD (`data-ifld` — its start, end and remarks) put the input back on Escape, as the
+     week's `[data-inp]` cells above do (D1011's fresh read, 5): the time box kept a typed time and its blur saved it.
+     Enter is left as it is — the input's own commit, and the remarks box's branch below. */
+  if (bx && e.key === 'Escape' && (bx as any).dataset.ifld) {
+    const [tail, field] = String((bx as any).dataset.ifld).split('.')
+    const inp = inpById((iuParts('iu:' + tail) || { iid: tail }).iid); e.preventDefault()
+    if (inp) (bx as any).value = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)
+    bx.blur()
+    return
+  }
   if (bx && (bx as any).tagName === 'TEXTAREA') {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); bx.blur() }
     else if (e.key === 'Escape') {

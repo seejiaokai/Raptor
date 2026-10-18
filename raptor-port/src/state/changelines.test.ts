@@ -15,6 +15,7 @@ import { inpId } from '../engine/inputs'
 import { initStore, resetSession, writeInputs, writeInputsBatch } from './store'
 import { signIn, sessionFor } from './accounts'
 import { elogReason, changeLinesFor, logReversed } from './changelines'
+import { itemOf } from '../ui/changesmodel'
 import { installGlobalUndo } from './undo-wire'
 import { globalUndo, globalRedo } from '../undo'
 
@@ -247,5 +248,25 @@ describe('D710 — a note on the planning calendar', () => {
     changeLinesFor(env(bare, { ...bare, ids: [''] }))
     await turnEnds()
     expect(ELOG.rows.filter(r => r.sect === 'day').map(r => r.lbl)).toEqual(['Note of people · Ranger taken off'])
+  })
+})
+
+/* the night's fresh read of job 5 (1, 2): a note's line is filed under "The day" by its words, never as a man's Leave War
+   item; and an Undo of a note change writes its Undo line on the note's day */
+describe('D710 — a note line in the changes window, and its Undo', () => {
+  const note = { id: 'n712', date: '2026-07-17', text: 'Sports day', ids: ['bane', 'stiff'] }
+  it('is not read as a man\u2019s Leave War item', async () => {
+    changeLinesFor({ origin: 'user', scope: { module: 'sched' }, actor: { role: 'admin' }, changes: [{ collection: 'plan', id: 'pp:n712', before: note, after: { ...note, ids: ['bane', ''] } }] } as any)
+    await turnEnds()
+    const row: any = ELOG.rows.find(r => r.sect === 'day')
+    expect(row.sub, 'no man\u2019s id rides it').toBeUndefined()
+    expect(String(itemOf(row).title)).not.toMatch(/Leave War/)
+  })
+  it('an Undo of a note change writes its line on the note\u2019s day', async () => {
+    logReversed({ label: 'note', forward: [{ collection: 'plan', id: 'pp:n712', before: note, after: { ...note, text: 'x' } } as any] }, 'undo')
+    await turnEnds()
+    const u: any = ELOG.rows.find(r => /^Undo/.test(r.lbl))
+    expect(u, 'an Undo line').toBeTruthy()
+    expect(u.date).toBe('2026-07-17')
   })
 })
