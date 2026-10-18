@@ -349,9 +349,10 @@ export function sortInTimes(di:any,gi:any){
   const w=(DAYS[di]||{}).waves&&DAYS[di].waves[gi]; if(!w||!Array.isArray(w.intimes)||w.intimes.length<2)return false;
   const ks=reportingSortKeys(w), oldOf=keySort(w.intimes.length,(i:any)=>ks[i]);
   if(isIdentity(oldOf))return false;
-  const was=w.intimes.join(', ');
   w.intimes=oldOf.map((o:any)=>w.intimes[o]);
-  markEdit(`it:${di}.${gi}`,was,w.intimes.join(', '));
+  /* marked with no line of its own, as every sorter is: the sort that called it says what it did (Sort all's one line;
+     the batch's check, 19 Oct 26) */
+  markEdit(`it:${di}.${gi}`);
   REORDERED_DI=di; return true;
 }
 /* THE BLOCKS THEMSELVES, ORDERED BY THE EARLIEST TIME INSIDE THEM (owner,

@@ -9,6 +9,7 @@ import { applyMove, moveInTime, sortInTimes, sortDay } from './reorder'
 import { reportingSortKeys, resolveReporting } from './reporting'
 import { parseHM } from './time'
 import { ridKey } from './rowids'
+import { elogClear, elogRows } from './editlog'
 const rk = (k: string) => ridKey(k, DAYS)
 
 const D0 = JSON.parse(JSON.stringify(DAYS[0]))
@@ -86,6 +87,16 @@ describe('Auto sort and Sort all order the lines by time (D594)', () => {
     const w = wave(['07:30H: RALLY', '07:00H: IN TIME'])
     expect(sortDay(0)).toBe(true)
     expect(w.intimes).toEqual(['07:00H: IN TIME', '07:30H: RALLY'])
+  })
+  /* the batch's check (19 Oct 26 — the scenario designer's S1-08): Sort all writes ONE history line for the day
+     ("Every section on … sorted", ui/board.ts sortAllCommit), its sorters marking without a line — the In-time sort
+     wrote one of its own beside it */
+  it('a sort writes no history line of its own — the sort that called it says what it did', () => {
+    wave(['07:30H: RALLY', '07:00H: IN TIME'])
+    elogClear()
+    expect(sortDay(0)).toBe(true)
+    expect(elogRows(0).length, 'no line from the sorters').toBe(0)
+    expect(SCHED.pending[rk('it:0.0')], 'the list is still marked (a published day reads it pending)').toBeTruthy()
   })
   it('a line naming a formation reads its clock against that formation’s own take-off', () => {
     const w = wave(['21:00H: IN TIME LATE', '05:00H: IN TIME EARLY'],
