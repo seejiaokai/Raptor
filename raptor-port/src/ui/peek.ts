@@ -42,7 +42,8 @@ import { esc } from '../state/view'
 import { fmtT, storesView, rowCls, cxTag, flagTag, fyiTag, plCols, areaText, atimeText, lCell, saRoleText, rowKindTag, onCommon, commonOrder } from './html'
 import { fltNoLen, fltNoLenMsg, FLT_NO_LEN_SAYS } from '../engine/validate'
 import { hideKey } from '../engine/warnhide'
-import { dayHidesIn } from '../engine/weekctx'
+import { dayHidesIn, officialDaysOf } from '../engine/weekctx'
+import { HOOKS } from '../engine/hooks'
 import { viewOfWeek, deletedSig, requestsSig } from '../engine/overlay'
 import { DAYS } from '../engine/data'
 /* the loaded week's request rows (their ids and days) — the peek's landing reads them */
@@ -269,8 +270,10 @@ export function peekDayHTML(d: any, i: number, first: boolean): string {
    perf-B: rebuild only when (desktop-ness × CURWEEK) changes, never on an
    ordinary repaint. `peekKey()` doubles as "should a peek even show" — '' on
    a phone, so callers can treat falsy as "no preview". */
-let cacheKey = ''
-let cacheHTML = ''
+/* one cache a page (D1010): View-only Sched's preview and Edit Schedule's draw different copies of a published day, and
+   Edit Schedule builds its preview ahead while View-only Sched is on screen (EditWeek.tsx, inside asIfEditOpen) — one
+   shared cache would throw the other page's away at every repaint */
+const CACHE: Record<string, { key: string, html: string }> = {}
 export function peekKey(): string {
   if (typeof window === 'undefined' || window.innerWidth <= 820) return ''
   /* the stash generation of NEXT week rides the key: an edited-and-left next
@@ -281,12 +284,15 @@ export function peekKey(): string {
   /* …and who is deleted from when: next week is read without a deleted man from his cutoff (phase 6 (d)); and the
      requests as they stand — a request filed, edited or deleted changes the row it has there (phase 6 (c)) — and the
      loaded week's own request rows, which a landing there reads ("its row stands on the week on screen") */
-  return CURWEEK + '|' + stashGenOf(shiftWeek(CURWEEK, 1)) + '|' + deletedSig() + '|' + requestsSig() + '|' + loadedSrcSig()
+  /* …and which page draws it (D1010): HOOKS.editMode(), not CURPAGE — Edit Schedule's build ahead runs under View-only
+     Sched with the edit mode stood in for it */
+  return (HOOKS.editMode() ? 'e|' : 'v|') + CURWEEK + '|' + stashGenOf(shiftWeek(CURWEEK, 1)) + '|' + deletedSig() + '|' + requestsSig() + '|' + loadedSrcSig()
 }
 export function peekWeekHTML(): string {
   const key = peekKey()
   if (!key) return ''
-  if (key === cacheKey) return cacheHTML
+  const mode = key[0], c = CACHE[mode]
+  if (c && c.key === key) return c.html
   /* the preview shows next week AS THE APP REMEMBERS IT — the session stash
      when the scheduler has edited that week (the same source the cross-week
      flag seeds read), the pure seed otherwise. A corrupt stash entry parses
@@ -295,10 +301,15 @@ export function peekWeekHTML(): string {
   /* a saved week is worked out by stashDays itself; a week never saved, here, the same way ([DB-READINESS] group A, phase
      6 (d) and (c) — engine/overlay.ts viewOfWeek: a deleted man taken off, a request's row landed) */
   const bundle = stashDays(nextWk) || (() => { const b = weekBundle(nextWk); viewOfWeek(String(nextWk), b.days, { loaded: false, issued: () => null }); return b })()
+  /* THE PUBLISHED VERSION FOR READERS (owner D1010, 18 Oct 26 — "as recommended"): on View-only Sched a published day of
+     next week is drawn as it was issued, so a change not yet sent out never shows to members here (D178, D179, D478);
+     Edit Schedule's preview keeps the working copy the scheduler is shaping */
+  const days = mode === 'v' ? officialDaysOf(nextWk, bundle.days) : bundle.days
+  let html = ''
   PEEK_WK = nextWk
-  try { cacheHTML = bundle.days.map((d: any, i: number) => peekDayHTML(d, i, i === 0)).join('') } finally { PEEK_WK = null }
-  cacheKey = key
-  return cacheHTML
+  try { html = days.map((d: any, i: number) => peekDayHTML(d, i, i === 0)).join('') } finally { PEEK_WK = null }
+  CACHE[mode] = { key, html }
+  return html
 }
 /* Sync the trailing peek nodes after the live-day diff has settled.
    `liveCount` is the number of real day sections at the FRONT of `root`

@@ -9,7 +9,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, loadWeek, writeSlot, afterSchedMutate } from '../state/store'
-import { markStructuralAdd } from '../engine/publish'
+import { markStructuralAdd, signOf, setDayApproved } from '../engine/publish'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { weekBundle } from '../engine/weeks-data'
@@ -146,6 +146,35 @@ describe('the preview reads the session stash, not just the pure seed', () => {
     await act(async () => { loadWeek('13/07/2026') })   // stashes the edited 20/07 on the way out
     const mon = $('#vWeek section.day.peek[data-peek-day="0"]')!
     expect(mon.textContent).toContain('ZZPEEKTEST')
+  })
+})
+
+/* D1010 (18 Oct 26, "as recommended"): View-only Sched's preview drew next week's WORKING copy, so a change made to a
+   published day and not yet issued (a swap, a row) showed to members there before it went out. On View-only Sched a
+   published day of next week shows its published version; Edit Schedule's preview keeps the working copy. */
+describe('D1010 — View-only Sched’s preview shows a published day as published', () => {
+  it('a row added to next Monday after it was published shows on Edit Schedule’s preview, not on View-only’s', async () => {
+    await act(async () => { loadWeek('20/07/2026') })
+    await act(async () => {
+      const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+      setDayApproved(0, true)
+      afterSchedMutate()
+    })
+    const rows = (DAYS[0] as any).dutywaves[0].rows
+    const ri = rows.length
+    await act(async () => {
+      rows.push({ role: 'ZZUNISSUED', id: '', str: '0900', end: '1000' })
+      markStructuralAdd(`dr:0.0.${ri}.role`)
+      afterSchedMutate()
+    })
+    await act(async () => { loadWeek('13/07/2026') })
+    await act(async () => { view.setPage('viewsched'); notify() })
+    expect($('#vWeek section.day.peek[data-peek-day="0"]')!.textContent, 'View-only: the published Monday').not.toContain('ZZUNISSUED')
+    await act(async () => { view.setPage('editsched'); notify() })
+    const edit = [...host.querySelectorAll('section.day.peek[data-peek-day="0"]')].map(n => n.textContent || '').join(' ')
+    expect(edit, 'Edit Schedule: the working copy').toContain('ZZUNISSUED')
+    await act(async () => { view.setPage('viewsched'); notify() })
+    expect($('#vWeek section.day.peek[data-peek-day="0"]')!.textContent, 'and back on View-only, still the published one').not.toContain('ZZUNISSUED')
   })
 })
 
