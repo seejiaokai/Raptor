@@ -5,9 +5,8 @@ import { PEOPLE, SPECIALS, scQualOK } from '../engine/people'
 import { inputLinesOn, inputReadPass, isAway, offWord, awayAllDay, canWork, sansBadge, sansAvailOn } from '../engine/inputs'
 import { hm24 } from '../engine/time'
 import { dayEngaged, dayOff, dayStandby, slotBar, slotRules } from '../engine/avail'
-import { sevOf, chipOf } from '../engine/validate'
 import { esc, ARM, ROSDAY } from '../state/view'
-import { puck } from './html'
+import { puck, puckMarks } from './html'
 
 export function paletteDay(){ return ARM&&ARM.di>=0?ARM.di:(DAYS[ROSDAY]?ROSDAY:0); }
 /* one puck, with the reason it cannot be used carried on the title */
@@ -61,7 +60,9 @@ export function rosterPuck(id:any,di:any,armKey:any,eng:any,off:any,sby:any,rule
   const showWhy=!!(armKey&&why&&!hideWhy);
   return `<span class="rpuck ${cls}${showWhy?' haswhy':''}" data-drag="1" data-person="${id}"`
     +(why?` data-why="${esc(why)}"`:'')+` title="${esc(note)}"`
-    +`>${puck(id,sevOf(di,id),true,chipOf(di,id))}${showWhy?`<span class="rwhy">${esc(why)}</span>`:''}</span>`;
+    /* the seat's four marks (D1013, D1017): the day that breaks tomorrow's crew rest rings dotted here too, a sanctioned
+       late show dashed, with the seat's own chip — the crew list is never drawn inside a published face, so the live read */
+    +`>${(m=>puck(id,m.sev,true,m.flag,m.dash,m.trace))(di>=0?puckMarks(di,id):{sev:null,flag:null,dash:false,trace:null})}${showWhy?`<span class="rwhy">${esc(why)}</span>`:''}</span>`;
 }
 /* Why this man's DAY is closed. Only ever asked about someone dayOff() has
    already named, so it must look at the same absences dayOff does — whole-day

@@ -709,7 +709,8 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any,mates?:any[]){
      on, and only when the row is actually live (not a read-only/preview
      board). */
   const seatable=!acc&&!RO&&!oilItem;
-  /* one puck a man of the line — each by his OWN record: in the mode his switch is his own claim's, outside it his bar */
+  /* one puck a man of the line — each by his OWN record: in the mode his switch is his own claim's, outside it his bar —
+     and the seat's four marks, its dotted or dashed crew-rest ring too (D1013, D1017) */
   const pk=line.map((one:any)=>PEOPLE[one.person]
     ? (oilItem
       ? oilSeatHTML(di,one.person,inputItemKey(inpId(one)),(oil:any)=>puck(one.person,null,true,null,false,null,oil))
@@ -717,7 +718,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any,mates?:any[]){
          other puck he is on — which is the ONLY place an OD earner is visible.
          It is addressed by the claim's OWN item since O-1, so the figure shows
          here only when this claim is one of the things that earned it. */
-      : `<span class="seat"${seatable?` data-inpseat="${esc(iuTail(one))}"`:''}>${puck(one.person,puckMarks(di,one.person).sev,true,puckMarks(di,one.person).flag,false,null,oilSeatDeco(di,one.person,'',inputItemKey(inpId(one))).oil)}</span>`)
+      : `<span class="seat"${seatable?` data-inpseat="${esc(iuTail(one))}"`:''}>${(m=>puck(one.person,m.sev,true,m.flag,m.dash,m.trace,oilSeatDeco(di,one.person,'',inputItemKey(inpId(one))).oil))(puckMarks(di,one.person))}</span>`)
     : `<span class="itxt">${esc(one.person)}</span>`).join('');
   /* THE ROW'S ADDRESS FOR THE CHANGES WINDOW'S JUMP — the week's twin (html.ts, Astra DP-08): an absence line tapped while
      the board is open lands on the board's own Unavailable row ([DRAFT-PENDING], Fable P5 — it said "shown on the week,
