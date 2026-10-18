@@ -63,13 +63,16 @@ the later merge keeps both (D78).
   (`docs/img/handpass/2026-10-18-lw-top-700/6-440-proposed-short-words.png`). (2) The overnight retry trial
   (`[OVERNIGHT-RETRY-TRIAL]`, D885) was not run: its setting is read when a chat starts, so it must be set before he opens
   the next /overnight chat.
-- **Where the night stands (08:45 his PC's time):** ONE branch and ONE pull request for every job (534 — D822's "one combined"; each
-  job its own commits and its own check in `raptor-port/docs/handpass/2026-10-18-night-jobs.md`). Job 1 done (gates green bar one
-  browser test re-expressed, pushed). Job 2 BUILT and CHECKED (walk 14/14, the fresh read's two findings fixed). Job 3 BUILT and
-  WALKED (28/28). Job 4 BUILT, its walk running (`night1018-job4-walk.mjs`). Job 5 BUILT (D1011, D1012, D1010, D710 — commits
-  218d57a66, f0f31e265, 10a31cbc5), its fresh blind read running; its walk next, then ONE full gate run for jobs 2–5, then push
-  (checks idle first) and the morning report. The floating calendar over a date box keeps closing whole on Escape (its test pins
-  it; D1012 names only calendars inside a form) — a question for him in the morning.
+- **Where the night stands (about 09:00 his PC's time):** ONE branch and ONE pull request for every job (534 — D822's "one
+  combined"; each job its own commits and its own check in `raptor-port/docs/handpass/2026-10-18-night-jobs.md`). Job 1 DONE
+  (pushed). Job 2 DONE (walk 14/14, read's 2 findings fixed). Job 3 DONE (walk 28/28). Job 4 DONE (walk 16/18 — the 2 fails are
+  an OLDER fault filed as [TRACE-FOCUS-STAYS]). Job 5 BUILT (D1011, D1012, D1010, D710), its read's 5 findings FIXED (commit
+  4415f9548), a fresh read OF THE FIXES running, its Sonnet walk running (`night1018-job5-walk.mjs`, pictures
+  `img/handpass/2026-10-18-night-job5/`). NEXT: save those two reports into the sheet's job 5 section, fix what they find,
+  write job 5's `Walk:` line; then ONE full gate run under the lock (jobs 2–5 — the local gates' last full run was job 1's);
+  then push (no run of the branch's last commit queued or in progress first) and update pull request 534's body; then job 6
+  (D999, FULL) if time and allowance (weekly 71% at 08:45); the morning report by about 18:45. The floating calendar over a
+  date box keeps closing whole on Escape (its test pins it; D1012 names only calendars inside a form) — a question for him.
 - **Rulings this night:** D1016 (leave-war), D1017 (scheduler), D1018 (tracker).
 <!-- /now -->
 
