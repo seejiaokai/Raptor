@@ -241,17 +241,6 @@ or feel — his call).
 
 ## Items
 
-### [UPCHIT-SHEET-LEAVE-CUT] Should the upchit sheet also name a leave or bid its give-back will cut? — a question for him (found 18 Oct 26 by the fresh read of `claude/three-small-jobs-1018`) — OPEN
-**ANSWERED 18 Oct 26 — D1023 ("Ok as recommended"): yes — the sheet lists each leave and bid the give-back will cut, one line each, before anything changes. TO BUILD, a small job of its own.**
-**BUILT 18 Oct 26 on `claude/upchit-sheet-leave-cut`** — every door that gives days back (the window's Save and Delete, the calendar's drag, the opened day's Delete key, the schedule's reassign) lists the cuts, worked out by trying the save and throwing it away (`ui/inputedit.tsx giveBackCuts`); contract `raptor-port/docs/ui-contracts.md` §The upchit, medical-clash and OIL sheets; its check `raptor-port/docs/handpass/2026-10-18-upchit-sheet-leave-cut.md`. Waiting for his look and "merge live"; then archived.
-**Seen:** an upchit moved later (D999) or deleted (D1022) grows the downchit back over days where leave may since have been
-filed (he was fit then); the Leave War's rules ("sick cuts leave") cut that leave in the same command. The sheet before it
-names only the downchit's new end; the cut is said afterwards, in the passing note beside "Input deleted" / "Moved to …"
-(fixed so it is no longer wiped out — the job's check, `raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`).
-**The question:** should the sheet also list, before anything changes, each leave or bid the give-back will cut? Recommended
-yes (one line each, "Ranger's LL on 8 Oct is cut — it goes back to the balance"), worked from the same rule the save runs.
-**Place:** with his questions, when he says (D994); a picture first.
-
 ### [GATELOCK-STALE-PORT] The lock's full check run tests another chat's old build when a preview is left on 4173 (found 18 Oct 26, `claude/three-small-jobs-1018`) — OPEN
 **Seen:** `gatelock.mjs run` runs `npx playwright test` with no port; `playwright.config.ts` reuses a server already on 4173
 outside CI (`reuseExistingServer: !process.env.CI`). Three old previews were still up (4173 from `trk-chart-fps-8028f8`,
