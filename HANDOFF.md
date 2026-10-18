@@ -64,7 +64,21 @@ the later merge keeps both (D78).
   its own list (older; the man's puck still reveals it — `crewrest-ui.test.ts`). The walker's sheet was filed by the host.
 - **His find (19 Oct 26, from walker A's picture):** the board's In-time / Rally lines stood mid-panel — the drag's rows
   kept `align-items:center`. FIXED `1329e0396` (a browser test at 1440 and 390; before/after pictures sent to him).
-- **Next, in order:** read walker C's report, open the pictures behind every FAIL and published-day PASS,
+- **Walker C (changes window etc., 31 PASS / 6 FAIL / 11 RECORDED / 1 NOT WALKED):** S3-03 week and board (a note
+  over the changes window) — already FIXED after the frozen build (re-walk owed); S3-10 board and phone (Undo said "a
+  change to the schedule" after a board box) — FIXED `[SC-B-CHANGE-SAYS-BRIEF]` commit (the board's write names its box);
+  S3-02b (Undo after an OIL answer given in the input's window said "a personal input") — FIXED `6bef23a8e`; S3-16 (a
+  crew-list puck HELD STILL 15px below the pane's top on a phone on its side does not scroll; a seat's puck does once the
+  finger moves) — NOT YET JUDGED: reproduce it on the new build in the re-walk, then fix or file; S3-17 (row grips at 40px
+  scrolled) — the band already FIXED. RECORDED, older, as built: S3-01 a man dropped on an ALL AVAIL puck joins beside it;
+  S3-11 an SC line re-read as "Brief" after its wave turns flying; S3-12 undone adds stay listed in the history.
+- **Next, in order:** the gates under the lock (E2E_PORT 4232); a NEW frozen build (copy `dist` to the scratchpad as
+  `walk-<commit>`, a new `.claude/launch.json` entry or the same `sched-fixes-walk` repointed, port 4240 — stop the old
+  server first); the RE-WALK of what the fixes touched: S1-01a/b/c, S1-02, S1-03, S1-08, S2-10b/f, S3-03 (week, board),
+  S3-10, S3-02b, S3-16, S3-17, S4-04 (phone board), the board second click and his centred In-time lines — one or two
+  Sonnet walkers with the same brief (`docs/superpowers/briefs/2026-10-19-sched-fixes-walkers.md`), pictures in
+  `…/2026-10-19-sched-fixes/rewalk/`; then the fresh blind Opus code read
+  (`docs/superpowers/briefs/2026-10-19-sched-fixes-read.md`); then, open the pictures behind every FAIL and published-day PASS,
   reproduce each finding, fix (red first); then the gates under the lock; a new frozen build and the re-walk of what the
   fixes touched (the designer's S1-01/S1-02/S1-03/S1-08/S2-10/S3-03/S3-17 and the board second click); the fresh blind
   Opus code read (`docs/superpowers/briefs/2026-10-19-sched-fixes-read.md` — start it once the fixes are in); break
