@@ -7,7 +7,7 @@ import { INPUTS, dateOrd, holds , remarksShown } from '../engine/inputs'
 import { HIST, initStore, setSession, writeInputsBatch } from '../state/store'
 import { HOOKS } from '../engine/hooks'
 import { commitNewInput, commitInputEdit, draftOf, medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, docGate } from './inputedit'
-import { upchitTrimPlan } from '../engine/medical'
+import { upchitTrimPlan, upchitEffects } from '../engine/medical'
 import { docAdd, rowDocIds } from '../state/docs'
 
 /* a fresh stored document per draft — a medical input does not go in bare */
@@ -338,3 +338,51 @@ describe('several files on one entry', () => {
     expect(r.remarks).toBe('ward 4')
   })
 })
+
+/* D999 (18 Oct 26, his "Ok" to A): an upchit moved to a LATER date gave nothing back — the downchit it had cut stayed cut
+   at the old date, and the days between read fit. The downchit grows back to the day before the new date, never past its
+   own first end (kept the first time an upchit cuts it), and the upchit's save sheet lists it before anything changes. */
+describe('D999 — an upchit moved later gives the downchit its days back', () => {
+  const upOf = () => INPUTS.find((r: any) => r.type === 'Upchit' && holds(r, 'bane'))
+  it('ATT C Mon–Fri, an upchit on Wed cuts it to Tue; moved to Thu it ends Wed again; moved past Fri it ends Fri — never past its first end', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 13', endDate: 'Jul 17' })
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-15', end: '' }))).toBe(true)
+    expect(c.endDate, 'the upchit cut it').toBe('Jul 14')
+    const up = upOf()
+    const d = draftOf(up); d.start = '2026-07-16'
+    expect(commitInputEdit(up, d)).toBe(true)
+    expect(c.endDate, 'a day given back').toBe('Jul 15')
+    const d2 = draftOf(up); d2.start = '2026-07-21'
+    expect(commitInputEdit(up, d2)).toBe(true)
+    expect(c.endDate, 'never past its own first end').toBe('Jul 17')
+  })
+  it('the save sheet\u2019s plan names the downchit given back, before anything is written', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 13', endDate: 'Jul 17' })
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-15', end: '' }))).toBe(true)
+    const up = upOf()
+    const eff = upchitEffects('bane', dateOrd('Jul 16', 2026), up)
+    const grow = eff.plan.find((p: any) => p.action === 'grow')
+    expect(grow && grow.row, 'the plan grows the downchit it had cut').toBe(c)
+    expect(c.endDate, 'nothing written by asking').toBe('Jul 14')
+  })
+  it('moved EARLIER it cuts further, as before; and a downchit no upchit ever cut grows nothing', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 13', endDate: 'Jul 17' })
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-16', end: '' }))).toBe(true)
+    const up = upOf()
+    const d = draftOf(up); d.start = '2026-07-14'
+    expect(commitInputEdit(up, d)).toBe(true)
+    expect(c.endDate || c.date, 'one day left: it ends Jul 13').toBe('Jul 13')
+    const other = plant({ person: 'bane', type: 'HL', date: 'Jul 27', endDate: 'Jul 28' })
+    expect(upchitTrimPlan('bane', dateOrd('Jul 30', 2026), null).some((p: any) => p.row === other)).toBe(false)
+  })
+  it('the days given back stop short of another medical filed in the gap', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 13', endDate: 'Jul 17' })
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-15', end: '' }))).toBe(true)
+    plant({ person: 'bane', type: 'OML', date: 'Jul 16', endDate: 'Jul 16' })
+    const up = upOf()
+    const d = draftOf(up); d.start = '2026-07-18'
+    expect(commitInputEdit(up, d)).toBe(true)
+    expect(c.endDate, 'grown only up to the day before the OML').toBe('Jul 15')
+  })
+})
+

@@ -388,7 +388,21 @@ export function applyMedPlan(plan: any[]) {
       dropInputRow(r)
       continue
     }
+    /* D999: an upchit moved later gives the downchit it had cut its days back — up to the day before the new date, never
+       past the end it was first filed with (upchitTrimPlan works out how far); back at that first end, the note of it goes */
+    if (p.action === 'grow' && p.newEndOrd != null) {
+      r.endDate = ordLabel(p.newEndOrd, r.yr)
+      if (r.firstEnd != null && dateOrd(r.firstEnd, r.yr) === p.newEndOrd) delete r.firstEnd
+      r.remarks = remarksTyped(r.remarks, r)
+      r.mod = nowStamp()
+      stampChanged(r)
+      elogReason(r.iid, 'given back by a moved upchit')
+      continue
+    }
     if (p.action !== 'trim' || p.newEndOrd == null) continue
+    /* D999: the end it was filed with, kept the FIRST time an upchit cuts it — what a later move of the upchit may give
+       back, and never more */
+    if (p.up && r.firstEnd == null) r.firstEnd = r.endDate || r.date
     /* [ARCH-STACK] step 4: the Leave War READS this row — trimming it trims the
        war with nothing to retract. */
     const a = dateOrd(r.date, r.yr)

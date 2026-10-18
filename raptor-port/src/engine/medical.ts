@@ -150,7 +150,25 @@ export function upchitTrimPlan(person:any,xOrd:any,except?:any){
   for(const r of medRows(person)){if(r===except)continue;
     const a=medStartOrd(r),b=medEndOrd(r);
     if(a==null||b==null||b<xOrd||a>xOrd)continue;
-    out.push(trimTo(r,ordShift(xOrd,-1)));}
+    /* `up`: an UPCHIT's cut — the one kind of cut whose first end the row keeps (`firstEnd`, applyMedPlan), so a later
+       move of the upchit can give the days back (D999) */
+    out.push({...trimTo(r,ordShift(xOrd,-1)),up:true});}
+  /* AN UPCHIT MOVED LATER GIVES THE DOWNCHIT ITS DAYS BACK (owner D999, 18 Oct 26 — "Ok" to A): the downchit it had cut —
+     the one ending the day before its old date, carrying the end it was filed with (`firstEnd`) — grows to the day
+     before the new date, never past that first end, and never into another medical of his filed in the gap (it stops
+     the day before it). A row the cut deleted has nothing left to grow; a row no upchit ever cut carries no first end. */
+  const oldX=except&&isUpchit(except.type)?medStartOrd(except):null;
+  if(oldX!=null&&xOrd>oldX){
+    const rows=medRows(person).filter((r:any)=>r!==except);
+    for(const r of rows){
+      if(r.firstEnd==null||medEndOrd(r)!==ordShift(oldX,-1))continue;
+      const b=medEndOrd(r)!, f=dateOrd(r.firstEnd,r.yr);
+      if(f==null)continue;
+      let to=Math.min(f,ordShift(xOrd,-1)!);
+      for(const o of rows){if(o===r)continue;const s=medStartOrd(o);if(s!=null&&s>b&&s<=to)to=ordShift(s,-1)!;}
+      if(to>b)out.push({row:r,action:'grow',newEndOrd:to});
+    }
+  }
   return out;
 }
 /* Everything a saved upchit on X would do — and deliberately NOT do — in
