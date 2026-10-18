@@ -97,6 +97,34 @@ describe('a held week redraw is drawn once a pressed box is let go', () => {
   })
 })
 
+/* The re-walk of the fix round (19 Oct 26, walk G — re-walk F's surprise; the same on `main`): a time typed, the caret
+   still in its block (Tab to the next box), then Undo — the stored value went back, and the box kept showing the typed
+   time for good. The held block was remembered as what it last showed BEFORE the typing, so once Undo put the value back
+   to that, the paint saw "nothing changed" and never rewrote the box. A held block is now remembered as owed. */
+describe('Undo with the caret still in the block puts the box back on screen too', () => {
+  it('the week: a B typed, Tab, Undo, the caret leaves — the box shows what is stored', async () => {
+    const br = week('ff:0.0.0.br'), was = br.textContent
+    await focus(br); br.textContent = '0830'; await tab(br); await tick()
+    expect(txtGet('ff:0.0.0.br')).toBe('08:30')
+    expect((document.activeElement as HTMLElement).dataset.txt, 'the caret went on in the same line').toBe('ff:0.0.0.to')
+    await act(async () => { undo() }); await tick()
+    expect(txtGet('ff:0.0.0.br'), 'the stored B is back').toBe('')
+    await act(async () => { (document.activeElement as HTMLElement).blur() }); await tick(); await tick()
+    expect(week('ff:0.0.0.br').textContent, 'and the box shows it').toBe(was)
+  })
+  it('the Scheduler Board: the same', async () => {
+    await board(); await tick()
+    const br = box('ff:0.0.0.br'), was = br.value
+    await focus(br)
+    await act(async () => { br.value = '08:30'; br.dispatchEvent(new Event('input', { bubbles: true })); box('ff:0.0.0.to').focus(); br.dispatchEvent(new Event('change', { bubbles: true })) }); await tick()
+    expect(txtGet('ff:0.0.0.br')).toBe('08:30')
+    await act(async () => { undo() }); await tick()
+    expect(txtGet('ff:0.0.0.br'), 'the stored B is back').toBe('')
+    await act(async () => { (document.activeElement as HTMLElement).blur() }); await tick(); await tick()
+    expect(box('ff:0.0.0.br').value, 'and the box shows it').toBe(was)
+  })
+})
+
 describe('D556 schedule Tab production wiring', () => {
   it('week uses B, empty Brief, each aircraft Remarks/stores, then Area/time and reverse', async () => {
     const keys = ['ff:0.0.0.cs','ff:0.0.0.msn','ff:0.0.0.br','ff:0.0.0.to','ff:0.0.0.ld','fr:0.0.0.0']

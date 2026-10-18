@@ -293,7 +293,9 @@ export function SchedBoard() {
     const di = SBDAY
     const put = (el: HTMLElement, key: string, html: string) => {
       if (panelPrev.current[key] === html) return
-      if (caret && el.contains(caret)) return   // the caret's own panel: owed, written when the caret leaves
+      /* the caret's own panel: owed, written when the caret leaves — and remembered as owed, not as what it last showed,
+         or an Undo that puts it back to that leaves the typed value on screen (the re-walk of the D994 batch, 19 Oct 26) */
+      if (caret && el.contains(caret)) { delete panelPrev.current[key]; return }
       el.innerHTML = html; panelPrev.current[key] = html
     }
     /* with a caret, the writes above it must not move the box he is typing in */
