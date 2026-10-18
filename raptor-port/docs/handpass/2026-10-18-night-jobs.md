@@ -306,3 +306,9 @@ door; the Inputs page's "today" is the demo's 13 Jul (not this job). The read's 
 pace had none) was not walked — built after this run; carried by the gates.
 
 Walk: docs/handpass/2026-10-18-night-jobs.md (job 7) · 36 pictures · 4 surfaces (the Legend, the flex settings, the Info panel, the down-days window) · 3 orders (admin, member, a clean browser) · MISSING: none
+
+## The full gate set for jobs 6–7 (the night of 18 Oct 26, under the PC lock, one run at `0f… + the read's fixes`)
+build clean · tfin 728 / 0 · e2e green · smoke green (the helpers' re-pointed bar-order and hint checks included) ·
+rulecheck OK · docsize OK · unit 11732 / 11733 — the one: `engine/inputs-readers.test.ts` "no file is on none" — the
+Tracker's new medical rider reads the inputs and was on no list; named on the RECORDS list, the file 6 / 6 (D902: the
+whole set had passed; the touched test file run).
