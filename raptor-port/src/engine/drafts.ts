@@ -159,9 +159,14 @@ function markKept(nd: any) {
    it may cover other days (AM1; the plan's layer 1, built after Fable's code read F5, 26 Sep 26): after the load the day
    still reads them pending, so the sentence says why. Read AFTER the load. '' when there are none. */
 export function inputsLeftSaid(di: any): string {
-  const n = dayPendingItems(+di).filter((x: any) => !!x.val && !x.inp).length
+  const items = dayPendingItems(+di)
+  const n = items.filter((x: any) => !!x.val && !x.inp).length
+  /* …and an input filed since the day went out, which landed on the programme: a load puts its filing back "fresh" and
+     it lands again, so it stays ([DISCARD-FILING-NOOP]) — "already at the Original" beside its "1 pending" says why */
+  const m = items.filter((x: any) => x.kind === 'add' && !!x.inp).length
   /* a sentence of its own (owner D863, 15 Oct 26 — the load's note is short plain sentences) */
-  return n ? ` ${n === 1 ? "1 change to a member's input stays" : n + " changes to members' inputs stay"} pending. A load never puts back a member's own input.` : ''
+  return (n ? ` ${n === 1 ? "1 change to a member's input stays" : n + " changes to members' inputs stay"} pending. A load never puts back a member's own input.` : '')
+    + (m ? ` ${m === 1 ? '1 input filed since publishing stays' : m + ' inputs filed since publishing stay'} on the programme, pending.` : '')
 }
 /* A ROW LEFT OUT, AS A SENTENCE — for the load's note (owner D863, 15 Oct 26 — "Shorten it") and the plan switch's
    (owner D865, 15 Oct 26 — "the same way"); it replaced the older " · Bane · Meeting left out — …" clauses, whose last

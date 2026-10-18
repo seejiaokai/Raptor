@@ -93,7 +93,7 @@ export function jumpOf(l: CLine, days: string[], pick: string | null): { keys: s
 
 /* a line with nowhere to go on THIS page is listed but is not a button (the old list's rule, kept — a tap that does
    nothing reads as a tap that did not register): no key and no input; a detail the board does not draw, while on the
-   board (the area strip, the in-times, the traffic, the wave's title); the traffic on the week */
+   board (the area strip, the traffic — the in-times are drawn there since [BOARD-INTIME-JUMP]); the traffic on the week */
 function canGo(l: CLine, j: { keys: string[] } | null): boolean {
   if (!j) return false
   if (l.iid) return true

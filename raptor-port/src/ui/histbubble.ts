@@ -168,8 +168,9 @@ export function findInputCell(root: ParentNode, key: string): HTMLElement | null
 
 /* CAN THE BOARD SHOW THIS DETAIL AT ALL? Four key families are edited
    somewhere the board does not draw: `ar:`/`at:` (the area and area-time
-   strip) and `it:` (the in-times) render on the WEEK only — measured, 0 of
-   each inside `.sb-boardwrap` against 16/16/8 in the document — and `tr:`
+   strip) render on the WEEK only — measured, 0 of each inside
+   `.sb-boardwrap` against 16/16 in the document (`it:`, the in-times, was a
+   third until the board drew them — [BOARD-INTIME-JUMP]) — and `tr:`
    (traffic) is typed into a modal and has no cell anywhere.
 
    This is not the same question as findHistCell returning null, and keeping
@@ -188,7 +189,9 @@ export function findInputCell(root: ParentNode, key: string): HTMLElement | null
    is none of the cell attributes findHistCell can answer for, so a wl: jump
    could only ever toast an untruth about a wave sitting in plain sight. */
 /* `wl` left this list with [HIST-PHONE-HIDE] (Astra 02): the wave title's box is a cell now (`data-wsel`) */
-const NO_BOARD_CELL = ['ar', 'at', 'it', 'tr']
+/* `it` left it with [BOARD-INTIME-JUMP] (reader AB's second pass, 6 Oct 26): the board draws the In-time / Rally block
+   now, editable (`data-intimes`, board.ts) — the line in the changes window was not a button for a cell in plain sight */
+const NO_BOARD_CELL = ['ar', 'at', 'tr']
 export function histJumpable(key: any) {
   const k = String(key || '')
   if (!k) return false

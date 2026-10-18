@@ -22,6 +22,8 @@ import type { UndoEntry } from './types'
 import type { Change } from '../command'
 import { parseHideDetail } from '../engine/hidedetail'
 import { REPORTING_LABEL } from '../engine/reporting'
+import { DAYS } from '../engine/data'
+import { posKey } from '../engine/rowids'
 
 /* a person's callsign by id, for the Leave War's records (its ids carry the person, not his name) — installed by the
    app (state/undo-wire.ts), read LIVE when the entry is recorded; null when none is installed (tests). `defaultOf` —
@@ -116,11 +118,17 @@ function genericLabel(entry: UndoEntry): string {
 const TIME_WORD: Record<string, string> = {
   to: 'a take-off time', ld: 'a landing time', br: 'a brief time', str: 'a start time', end: 'an end time',
 }
+const scLineKey = (key: string) => {
+  const pk = posKey(key, DAYS), a = String(pk == null ? key : pk).slice(3).split('.')
+  return ((DAYS as any)[+a[0]!]?.waves?.[+a[1]!]?.kind) === 'sc'
+}
 export function textLabel(key: string | undefined): string | null {
   if (!key) return null
   const c = key.indexOf(':')
   if (c < 0) return null
   const pre = key.slice(0, c), last = key.slice(c + 1).split('.').pop() || ''
+  /* an SC line's B box is its crew's in-time, not a brief (owner, 24 Aug 26; [SC-B-CHANGE-SAYS-BRIEF]) */
+  if (pre === 'ff' && last === 'br' && scLineKey(key)) return 'an in-time'
   if ((pre === 'ff' || pre === 'dr' || pre === 'sr' || pre === 'gr' || pre === 'ap') && TIME_WORD[last]) return TIME_WORD[last]
   switch (pre) {
     case 'dn': return 'a day note'

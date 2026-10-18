@@ -97,6 +97,21 @@ describe('an input', () => {
     expect(lines().map(l => [l.from, l.to])).toEqual([['all day', '09:00–11:00']])
   })
 
+  /* [BLOCK-NO-HISTORY-LINE] (the group-A walk, 30 Sep 26): a document taken off a medical request already filed wrote no
+     line — nor did one added; one line each, its count before and after */
+  it('a document added to or taken off a filed request: ONE line, its count before and after', () => {
+    const r = add({ person: 'bane', date: 'Aug 1', yr: 2026, allday: true, type: 'ATT C', remarks: '', docId: 'd1', docIds: ['d1', 'd2'] })
+    elogClear()
+    writeInputs(() => { r.docIds = undefined; r.docId = 'd1' })
+    expect(lines().map(l => [l.lbl.split(' · ').pop(), l.from, l.to])).toEqual([['documents', '2 documents', '1 document']])
+    elogClear()
+    writeInputs(() => { delete r.docId })
+    expect(lines().map(l => [l.from, l.to])).toEqual([['1 document', 'none']])
+    elogClear()
+    writeInputs(() => { r.docId = 'd3' })
+    expect(lines().map(l => [l.from, l.to])).toEqual([['none', '1 document']])
+  })
+
   it('deleted: ONE line, on the days it covered', () => {
     const r = add({ person: 'bane', date: 'Aug 1', yr: 2026, allday: true, type: 'LL', remarks: '' })
     elogClear()

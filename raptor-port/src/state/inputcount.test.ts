@@ -30,7 +30,10 @@ import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { storeBackend, HOOKS } from '../engine/hooks'
 import { stashClear } from '../engine/weekstash'
-import { SCHED, signOf, dayShownPendCount, dayPendingItems, dayDiscardCount, dayDelta, alCount, itemCounts } from '../engine/publish'
+import { SCHED, signOf, dayShownPendCount, dayPendingItems, dayDiscardCount, dayDelta, alCount, itemCounts, dayCurVer } from '../engine/publish'
+import { loadVersionToWorkingCopy, inputsLeftSaid } from '../engine/drafts'
+import { schedWrite, SCHED_TYPES } from './sched-commit'
+import { afterSchedMutate } from './view'
 import { ridKey, ensureRowIds } from '../engine/rowids'
 import { oilEvidence } from '../engine/oilev'
 import { inputItemKey } from '../engine/oil'
@@ -254,6 +257,20 @@ describe('"Discard N edits" counts what a load of the issued version would reall
     cx()
     expect(rec().cx, 'the input is cancelled').toBe(true)
     expect([waiting(), dayDiscardCount(WED)]).toEqual([1, 0])
+  })
+  /* [DISCARD-FILING-NOOP] (the one-rule walk, F1/F8, 12 Oct 26): an input filed after the day went out lands on the
+     programme — one change waiting. A load puts its filing back to "fresh", and a fresh input lands again, so the load
+     discards nothing: "Discard 1 edit & load" promised a discard and changed nothing. */
+  it('an input filed after the day went out: ONE waiting, NONE discarded — and a load leaves it as it was', async () => {
+    await boot(); publish(WED)
+    file(FOUR)
+    expect(riOf(), 'it landed on the programme').toBeGreaterThanOrEqual(0)
+    expect([waiting(), dayDiscardCount(WED)]).toEqual([1, 0])
+    /* the restore button, finding nothing to discard, says "already at the Original" — and why the day still reads 1 */
+    expect(inputsLeftSaid(WED)).toBe(' 1 input filed since publishing stays on the programme, pending.')
+    schedWrite(SCHED_TYPES.mutate, () => { loadVersionToWorkingCopy(WED, dayCurVer(WED)); afterSchedMutate() })
+    expect(riOf(), 'still on the programme after the load').toBeGreaterThanOrEqual(0)
+    expect(waiting(), 'still one change waiting').toBe(1)
   })
   it('a person added since: ONE waiting, NONE discarded — a load never changes who is in an input (D759 reading 3)', async () => {
     await boot(); file(FOUR); publish(WED)

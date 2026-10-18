@@ -1444,7 +1444,8 @@ export function addWave(di: number, kind: any) {
      included, is added from the "+ Block" template picker like any other.
      Adding a wave creates only the wave. */
   const fi = placeAddedWave(di, kind)
-  markStructuralAdd(`wl:${di}.${fi}`); afterSchedMutate(); notify()
+  /* a line of the change history, as + Wave writes for a flying wave ([BLOCK-NO-HISTORY-LINE], found beside it) */
+  markStructuralAdd(`wl:${di}.${fi}`); logAction(di, `${S.label} added`); afterSchedMutate(); notify()
   toast(S.label + ' added: standalone, ' + (S.all ? 'every seat checked for availability, SC currency, front seat and overlapping places only' : 'SPARE is checked for availability, SC currency, front seat and overlapping SC seats or the SC desk only'))
 }
 
@@ -1504,7 +1505,8 @@ export function blockMenu(anchor: HTMLElement, di: any) {
     if (!blk) { close(); return }
     d.dutywaves = d.dutywaves || []
     d.dutywaves.push(blk)
-    markStructuralAdd(`dl:${di}.${d.dutywaves.length - 1}`); afterSchedMutate(); notify()
+    /* a line of the change history, as + Wave and + Line write ([BLOCK-NO-HISTORY-LINE], the group-A walk, 30 Sep 26) */
+    markStructuralAdd(`dl:${di}.${d.dutywaves.length - 1}`); logAction(di, `Duty block added · ${blk.label || 'DUTY'}`); afterSchedMutate(); notify()
     close(); e.stopPropagation()
   })
 }
