@@ -514,6 +514,9 @@ describe('B8 — Undo says what came back', () => {
     expect(undoState().undoLabel).toBe('swapping Ranger for Saber')
     writeInputs(() => { r.oil = { '2026-07-16': true } })
     expect(undoState().undoLabel).toBe('an OIL answer')
+    /* …and given in the input's own window, which stamps who answered and when (walker C, S3-02b) */
+    writeInputs(() => { r.oil = { '2026-07-16': false }; r.modBy = 'saber'; r.modAt = 12345 })
+    expect(undoState().undoLabel, 'the window\u2019s answer, with its stamp').toBe('an OIL answer')
     writeInputsBatch(() => { r.rmk = 'room 2' })
     expect(undoState().undoLabel, 'any other change of one input is as it was').toBe('a personal input')
   })
