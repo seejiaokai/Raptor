@@ -21,57 +21,49 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/schedule-amendments-fixes-fffce0 -->
-### `claude/schedule-amendments-fixes-fffce0` — D994's Schedule and amendments small fixes (the group's first 24 lines), written 18 Oct 26 — verify before use
-- **Where it started:** his ask — the first 24 lines of the priority list's "Schedule and amendments" group, the ones that
-  need nothing from him, batched on one branch with one bug check sized by the riskiest change (FULL: the In-time / Rally
-  reorder is a pending change on a published day; history lines are saved data; the warning list's sentences), pictures
-  of anything on screen, each finished item archived by script, browser tests on a port checked free (4173 and 4180 are
-  held by old previews; 4232 was free). Nothing merges without his "merge live".
-- **Shipped (pushed, no pull request yet):** 16 items built, each with a test red before its fix — [INTIME-LINES-DRAG] +
-  [PEND-INTIME-WORDS]; [SC-INTIME-REST-WORDS] [SC-BLANK-SHIFT-QUAL] [BLANK-LINE-SANS-WORDS] [BLANK-STANDBY-STRIKE]
-  [BLANK-SEAT-ACTIVITY-HINT] [SC-SPARE-RING-BORROWS]; [SC-B-CHANGE-SAYS-BRIEF] [BOARD-INTIME-JUMP] [BLOCK-NO-HISTORY-LINE]
-  [DISCARD-FILING-NOOP]; [SECDEFAULT-OFFER-BEHIND-BOARD] [BUBBLE-SMALL-SEEN] (2)(3) [TRACE-FOCUS-STAYS] [ONE-ROW-DRAG-FLASH]
-  [OIL-NOTIFY-SEEN] (1)(6); [ARROW-GUTTER-STRIP]. The commit messages say what each changed. D1025 recorded (the upchit
-  sheet's amber edge stays; `.impeccable/config.json` cites it). The geometry test of a phone ground-row drag watched the
-  drop's address — the old [ONE-ROW-DRAG-FLASH] fault — and now watches where the row lands.
-- **Settled without a build (say so in each item, then archive):** [BUBBLE-SMALL-SEEN] (1) Unpublish already says what it did
-  (D837 N2/N3); [AMEND-SMALL-SEEN] (7) the weekend-LL "-1" ask fixed by D418 (`leavewar/belowzero.ts`; one test owed:
-  `balanceAfterFill` LL on a Saturday at zero), (8) and [OIL-NOTIFY-SEEN] (2) a drag-off says nothing by ruling (D854,
-  D861); [OIL-NOTIFY-SEEN] (4) answered D792.
-- **Unfinished — still to build (the helpers' readings, 18 Oct 26; the agent's readings, re-derive against the code):**
-  [EDIT-SECOND-CLICK] keep the clicked box's block standing (routeFocusOut records `e.relatedTarget` when it is a week text
-  box; `editingText()` in `raptor-port/src/ui/textedit.ts` answers true for it and EditWeek's `swapDayAround(…, keep)` keeps
-  it; cleared on the next focusin / pointerup) + an e2e in `raptor-port/e2e/schedule-tab.spec.ts` (click a take-off, type,
-  click ONCE into a mission box, type — the caret is there; a published day too); [TAB-LAST-BOX-TEST-GAPS] three unit tests
-  in `schedule-tab.test.tsx` (the last warning going away at the Tab; `twinOrLast`'s `fields.at(-1)` fallback; a day
-  replaced during the box's own blur — pin `sameScope` as is) + one e2e; [CRP-FLAG] built already — three tests owed
-  (`restIfPlaced`/`runIfPlaced` read WORKING after a diverging OFFICIAL pass; an undo past a publish updates OFFICIAL and the
-  face; a trace through a VWORK'd day never throws), then archive naming D179/D185/D187 as what set the rest aside;
-  [OFT-ADD-TWICE-SILENT] reproduce through the real "+ add" zone (`.addz`) first — likely the walk clicked his puck, not
-  "+" — and a unit test of `armSlot('s:0.oft.r.+')` + `placeArmed` either way; [AMEND-SMALL-SEEN] (6) the Leave War phone
-  figures sheet sends the grid to 1 January — a Playwright probe at 390×844 first (wrap `.mx-wrap`'s scrollLeft setter).
-- **Needs his look, not built (D541, D853 — a layout change is a picture first):** [OIL-NOTIFY-SEEN] (3) Edit Schedule's
-  crew list sticks 8px from the top, under the top bar, so ALL / ALL AVAIL go out of reach (`03-week.css .eroster`);
-  [BUBBLE-SMALL-SEEN] (4) the empty gold pill — likely gone with the card list (D723), a look at 390 to confirm.
-- **Then:** the bug check (FULL — read `raptor-port/docs/bug-check-order.md`; roll-call: the board's In-time / Rally rows,
-  the changes window, the crew list on every kind of seat, the SC SPARE ring on week and board, the offer and the notes
-  over the board, the history lines; a sized walk with pictures; the gates under the lock; one fresh blind Opus read of
-  the code), the docs (ui-contracts §In-time lines and §the changes window, feature-impact, the behaviour register /
-  rulecheck for D593 D594), archive each finished item by script, open the pull request, the preview link with pictures,
-  the [NO-ASTRA-LIST] line for this job. The D1025 short line is UNREAD by a second reader (the archiver's note): one read
-  of it against its full row rides with the code read.
-- **Branch:** `claude/schedule-amendments-fixes-fffce0`, pushed; no pull request; released here (`git switch --detach`).
-- **Gates (18 Oct 26, the whole set under the lock, E2E_PORT 4232, on the commit before the e2e test fix):** unit 11819 /
-  11819 (665 files) · build clean · tfin 728 / 0 · e2e 853 passed, 1 failed (the drag test above — fixed, passed alone
-  under the lock), 59 skipped · smoke 453 / 0 · rulecheck OK · docsize OK (OVER by 27 with the handoff, deferred — D29; the next documents-only change settles it). probes:adapted ·
-  perf — not run.
-- **Open questions for him (parked — D994, not put until he says so):** [LOOK-PENDING-COUNT] — the 👁 look's "1 pending" is
-  the Discard count by design (A3); recommended: no pending chip on a look (D338 (2) one count a day, AM24).
-- **Running when written:** none (the lock released; no helper, no served build).
-- **Carried from the backlog-tidy block (pull request 537, live):** Astra's and Sol 6.1's reads of D1023 are on
-  [NO-ASTRA-LIST]; making the repo private again is his step ([REPO-PRIVATE]).
-- **Pick up here:** the five builds under "Unfinished", then the bug check.
-- **Opening line:** Switch this chat to the branch `claude/schedule-amendments-fixes-fffce0`: `git fetch origin`, `git switch claude/schedule-amendments-fixes-fffce0`, `git branch -u origin/claude/schedule-amendments-fixes-fffce0`, `git pull --ff-only` (if the switch is refused because another checkout holds the branch, release it there only if that folder has no uncommitted changes and is on the same commit as `origin/claude/schedule-amendments-fixes-fffce0`, then `git -C <that folder> switch --detach` and switch again; otherwise stop and tell me). Read `HANDOFF.md` — the `claude/schedule-amendments-fixes-fffce0` block under `## Now` — then finish the five builds it lists as unfinished and run the one FULL bug check for the whole batch, with pictures; browser tests on an E2E_PORT checked free. Nothing merges without my "merge live".
+### `claude/schedule-amendments-fixes-fffce0` — D994's Schedule and amendments small fixes (the group's first 24 lines), written 19 Oct 26 (night) — verify before use
+- **Where it started:** his ask — the first 24 lines of the priority list's "Schedule and amendments" group that need
+  nothing from him, one branch, one FULL check (D485), pictures, each finished item archived by script, browser tests on
+  a free port (4232 for the gates; the walk's frozen build on 4240). Nothing merges without his "merge live".
+- **Built (pushed up to `7423a23ea`; later commits local until the next push):** all 21 items — the 16 of the earlier
+  chat (their commits say what each changed) and this chat's five: [EDIT-SECOND-CLICK] (the week, and the board, whose
+  boxes save on change — `textedit.ts textCaret`, the box under a press counts as the caret); [TAB-LAST-BOX-TEST-GAPS]
+  (tests, and a Tab onto a control where the save replaced the day keeps the focus — `schedule-tab.ts`);
+  [CRP-FLAG] (three tests, no fault); [OFT-ADD-TWICE-SILENT] (not reproduced — it refuses and says why; pinned);
+  [AMEND-SMALL-SEEN] (6) (the walk's own scripted click, not the app — pinned by a real tap) and (7) (pinned).
+- **The FULL check, in progress:** evidence sheet `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`
+  (eight answers, tier FULL, roll-call, the walk's size). The gates ran once under the lock before the walk: unit
+  11831 / 11831 · build · tfin 728 / 0 · e2e 859 passed, 3 failed (2 = the new board second-click test, which found the
+  board's fault, fixed; 1 = [LW-WINDOW-PRUNE-FLAKE-2], untouched) · smoke 453 / 0 · rulecheck OK · docsize OK.
+  A fresh Opus scenario designer wrote 69 scenarios and 11 suspected missing call sites
+  (`docs/superpowers/briefs/2026-10-19-sched-fixes-scenarios-report.md`). FOUR Sonnet walkers (A–D, one share each) walk
+  the frozen build `walk-5c48ee2ea` (scratchpad) on 4240 — their reports land in `docs/handpass/parts/2026-10-19-sched-fixes-*.md`,
+  pictures `docs/img/handpass/2026-10-19-sched-fixes/<letter>/`.
+- **The designer's suspicions, dispositioned so far (each fix red first, committed):** S1-01 / S1-02 a drag or a sort
+  (⇅, Sort all) with the caret in an In-time line lost a line — FIXED (`rowdrag.ts` blurs at a grip's press;
+  `board.ts` sorts blur first); S2-10 the run-of-days "Breaks <day>" focus stayed — FIXED (`data-wld` / `listDi`);
+  S3-03 a note already up when the changes window opens — FIXED (`ChangesWindow.tsx` places it); S1-03 / S3-17 a row
+  drag's edge band on a phone on its side — FIXED (`rowdrag.ts rowEdge`); S1-08 Sort all wrote two history lines —
+  FIXED (`reorder.ts sortInTimes` marks silently); S3-01 Undo's words for ALL AVAIL — false alarm, pinned. Still to
+  judge from the walk: S3-08 (the discard count for an input under Unavailable), S4-13 (a resize during an arrow's
+  glide), S3-05 (B) (a note raised while the "Set as default" offer is up — `toast.ts` says it was left as it was), the
+  two low ones (the In-time jump on a read-only board; "in-time"/"brief" after a wave's kind changes).
+- **Next, in order:** read the four walkers' reports, open the pictures behind every FAIL and published-day PASS,
+  reproduce each finding, fix (red first); then the gates under the lock; a new frozen build and the re-walk of what the
+  fixes touched (the designer's S1-01/S1-02/S1-03/S1-08/S2-10/S3-03/S3-17 and the board second click); the fresh blind
+  Opus code read (`docs/superpowers/briefs/2026-10-19-sched-fixes-read.md` — start it once the fixes are in); break
+  tests; finish the sheet (`Walk:` line, ledger row); docs (ui-contracts §In-time lines and §the changes window,
+  feature-impact, the behaviour register / rulecheck for D593 D594); archive each finished item by script; the
+  [NO-ASTRA-LIST] line; open the pull request, the preview link and pictures; his look.
+- **Words to RECORD for him (no ruling fixes them):** "this line & this line clash" / "Tight turn this line→this line"
+  for two unnamed lines (S2-04); the rest are in the designer's report §Words.
+- **Open questions for him (parked — D994):** [LOOK-PENDING-COUNT] (the 👁 look's "1 pending"; recommended: no pending
+  chip on a look). His question of 19 Oct 26 ("already on Training" for a course) was answered in the chat: the hint
+  names the request's own kind; a course filed as a course reads "already on CSE".
+- **Branch:** `claude/schedule-amendments-fixes-fffce0`; no pull request yet. The preview server `sched-fixes-walk`
+  (`.claude/launch.json`, port 4240) serves the frozen walk build — stop it when the walk and re-walk are done.
+- **Pick up here:** the walkers' reports (above, "Next").
+- **Opening line:** Switch this chat to the branch `claude/schedule-amendments-fixes-fffce0`: `git fetch origin`, `git switch claude/schedule-amendments-fixes-fffce0`, `git branch -u origin/claude/schedule-amendments-fixes-fffce0`, `git pull --ff-only` (if the switch is refused because another checkout holds the branch, release it there only if that folder has no uncommitted changes and is on the same commit as `origin/claude/schedule-amendments-fixes-fffce0`, then `git -C <that folder> switch --detach` and switch again; otherwise stop and tell me). Read `HANDOFF.md` — the `claude/schedule-amendments-fixes-fffce0` block under `## Now` — then finish the FULL bug check it describes, with pictures; browser tests on an E2E_PORT checked free. Nothing merges without my "merge live".
 <!-- /now -->
 
 ## Next, in order

@@ -78,7 +78,23 @@ is when the change is in view); D418 (a weekend LL asks nothing). No clash found
 
 ## The walk's size (`docs/walk-ledger.md` — D607)
 
-(Written before the walkers start.)
+1. **The type of change:** a batch of 21 small fixes across one area (the scheduler): a new gesture (the In-time /
+   Rally drag, D594), a published-day change waiting, new history lines, warning sentences, the crew list on every kind
+   of seat, layers over the board, the text boxes' caret — types C (published record), D (a shared drawer), E (a
+   gesture) and H (words) of the ledger.
+2. **What only a walk can find here:** a drag that lands on screen differently from the stored order (the phone's
+   touch, a held caret); a note or offer painted under or over the board or the changes window; a strike or hint the
+   crew list draws on one surface and not another; the caret after a real click; the week's landing after a real
+   window resize; a phone on its side.
+3. **What the ledger says:** the one-rule check (12 Oct 26) — 12 walkers, ~8 points of his weekly allowance, 5 faults;
+   the batch-2 check (10 Oct 26) — the host alone, 45 steps, 1 fault, the reads 5 more. Small-fix batches find most
+   by the reads and the scenario designer; the walk finds layering and touch.
+4. **The walk chosen:** four Sonnet 5.5 walkers (D588, D787), one share each of the scenario designer's 69 scenarios
+   (`docs/superpowers/briefs/2026-10-19-sched-fixes-scenarios-report.md`), each its own browser worlds on ONE frozen
+   build (`walk-5c48ee2ea`, served on 4240; bundle `index-Tt45wSsd.js`), desktop 1440×900 and a phone 390×844 by
+   touch, a phone on its side 844×390 for the board. The host opens the pictures behind every FAIL and every
+   published-day PASS, and reproduces every finding. His weekly allowance read 79% before the walk.
+5. **Its row in the ledger:** added after the walk.
 
 ## The orders walked
 
@@ -97,5 +113,20 @@ is when the change is in view); D418 (a weekend LL asks nothing). No clash found
 ## The code read
 
 ## What the check found, and each disposition
+
+**Before the walk — the gates and the scenario designer's eleven suspicions** (each reproduced by a test that was red
+before its fix, on the branch, against the real code path):
+
+| # | Found by | What | New on this branch? | Disposition |
+|---|---|---|---|---|
+| 1 | the gates (the new board test) | On the Scheduler Board, one click into a box after a changed one did not take the caret (the board saves on change, before focusout names the box) | the week's half was the item; the board's is the same item | FIXED `5c48ee2ea` — the box under a press counts as the caret |
+| 2 | designer S1-01 | A drag of an In-time line with the caret in another line lost a line (one doubled, one gone) | NEW (the drag is new) | FIXED `4d0c9e807` — a grip's press leaves the text box first |
+| 3 | designer S1-02 | The same through a wave's ⇅ and through Sort all, on a tap that does not move the focus | NEW | FIXED `7f2be46a3`, `34ba00338` |
+| 4 | designer S2-10 | Closing the list a run-of-days "Breaks <day>" line was tapped in left the crew lit | the item's mend was partial | FIXED `f6f4ab9f8` — every such line remembers its list |
+| 5 | designer S3-03 | A note already up when the changes window opens on a phone stayed over its first lines | the item's mend was partial | FIXED (the window places the note as it opens) |
+| 6 | designer S1-03 / S3-17 | A row's drag on a phone on its side kept two fixed 72px bands | the item's mend was partial (pucks only) | FIXED — `rowdrag.ts rowEdge`, a sixth of the pane |
+| 7 | designer S1-08 | Sort all wrote two history lines (the In-time sort logged its own) | NEW | FIXED `19b2bd267` |
+| 8 | designer S3-01 | Undo after a swap with ALL AVAIL would read its stored id | — | FALSE ALARM — it reads "ALL AVAIL" (the placeholder is in the roster); pinned |
+| 9–11 | designer S3-08, S4-13, S3-05 (B), two low | the discard count for an input under Unavailable; a resize during an arrow's glide; a note raised while the offer is up | — | judged from the walk |
 
 ## His look
