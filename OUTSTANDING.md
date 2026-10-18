@@ -48,7 +48,7 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
-**RULED 18 Oct 26 — [UPCHIT-SHEET-LEAVE-CUT] (D1023):** the upchit sheet will also list each leave and bid a give-back cuts, before anything changes — a small build of its own, next.
+**RULED 18 Oct 26 — [UPCHIT-SHEET-LEAVE-CUT] (D1023):** the upchit sheet will also list each leave and bid a give-back cuts, before anything changes — BUILT the same day on `claude/upchit-sheet-leave-cut`, waiting for his look and "merge live".
 
 **FILED 18 Oct 26 — [GATELOCK-STALE-PORT]:** the full check set run through the PC lock tested ANOTHER chat's old build, because a preview left running on 4173 was reused — a guard so the lock's run picks a free port by itself. Tooling, low risk, its own small job.
 
@@ -243,6 +243,7 @@ or feel — his call).
 
 ### [UPCHIT-SHEET-LEAVE-CUT] Should the upchit sheet also name a leave or bid its give-back will cut? — a question for him (found 18 Oct 26 by the fresh read of `claude/three-small-jobs-1018`) — OPEN
 **ANSWERED 18 Oct 26 — D1023 ("Ok as recommended"): yes — the sheet lists each leave and bid the give-back will cut, one line each, before anything changes. TO BUILD, a small job of its own.**
+**BUILT 18 Oct 26 on `claude/upchit-sheet-leave-cut`** — every door that gives days back (the window's Save and Delete, the calendar's drag, the opened day's Delete key, the schedule's reassign) lists the cuts, worked out by trying the save and throwing it away (`ui/inputedit.tsx giveBackCuts`); contract `raptor-port/docs/ui-contracts.md` §The upchit, medical-clash and OIL sheets; its check `raptor-port/docs/handpass/2026-10-18-upchit-sheet-leave-cut.md`. Waiting for his look and "merge live"; then archived.
 **Seen:** an upchit moved later (D999) or deleted (D1022) grows the downchit back over days where leave may since have been
 filed (he was fit then); the Leave War's rules ("sick cuts leave") cut that leave in the same command. The sheet before it
 names only the downchit's new end; the cut is said afterwards, in the passing note beside "Input deleted" / "Moved to …"

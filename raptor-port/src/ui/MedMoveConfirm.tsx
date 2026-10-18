@@ -48,11 +48,11 @@ export function MedMoveConfirm() {
   /* THE QUESTION BEFORE AN UPCHIT IS DELETED from the Inputs calendar's opened day (owner D1022): the upchit sheet saying
      what the delete gives back; its button deletes, Cancel leaves both as they were */
   if (m.ask.kind === 'updel') {
-    return <UpchitConfirm who={m.ask.who} dateLabel={m.ask.dateLabel} effects={m.ask.effects} deleting
+    return <UpchitConfirm who={m.ask.who} dateLabel={m.ask.dateLabel} effects={m.ask.effects} cuts={m.ask.cuts} deleting
       onCancel={done} onSave={() => finish(r => removeInput(r))} />
   }
   if (m.ask.kind === 'up') {
-    return <UpchitConfirm who={m.ask.who} dateLabel={m.ask.dateLabel} effects={m.ask.effects}
+    return <UpchitConfirm who={m.ask.who} dateLabel={m.ask.dateLabel} effects={m.ask.effects} cuts={m.ask.cuts}
       onCancel={done} onSave={removals => finish(r => commitEditUpchit(r, m.draft, removals))} />
   }
   return <MedClashConfirm who={m.ask.who} newType={m.ask.newType} span={m.ask.span}

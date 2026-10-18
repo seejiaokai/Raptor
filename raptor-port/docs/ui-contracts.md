@@ -6230,6 +6230,15 @@ are answered; Keep lights accent, Remove lights the warning red. Cancel (or
 Escape, or the scrim) closes just the sheet — the form under it keeps
 everything typed. Escape inside `InputEditor` peels one layer: the sheet
 first, the dialog second.
+**Since 18 Oct 26 (owner D1023 — `[UPCHIT-SHEET-LEAVE-CUT]`), where the sheet gives days back** — an upchit moved later
+(D999: the window's Save, the calendar's drag, the schedule's reassign) or deleted (D1022: the window's Delete, the opened
+day's Delete key) — **it also lists each leave and each bid of his those days will cut, one boxed line each under the
+give-back, with the amber edge down its left** (`.upconf-cut`), in the Leave War's own warning words ("Ammo's LL on 8 Oct
+is cut for the ATT C — that leave goes back to the balance"; "This replaces Ammo's LL bid on 9 Oct on the Leave War").
+The lines come from the door's own save TRIED AND THROWN AWAY with the Leave War's rules heard as they cut
+(`ui/inputedit.tsx giveBackCuts` → `state/inputgate-hook.ts hearGateCuts`, said by `leavewar/inputgate.ts`), so the sheet
+and the save cannot disagree; the cut itself and its amber note afterwards are unchanged. An open input window keeps what
+was typed through the try (`pops.ts INPEDIT_REFOUND`). Pins: `ui/upchitcuts.test.tsx`.
 
 **The medical clash sheet** (`ui/MedClashConfirm.tsx`, owner, 27 Aug 26)
 is its sibling, same recipe and layer (`.upconf-*` classes). It opens when a

@@ -38,6 +38,7 @@ import { logAction, elogSweep, todayIso } from '../engine/editlog'
 import { elogReason } from '../state/changelines'
 import { stampPlaced, stampChanged } from '../state/inputstamp'
 import { writeInputsBatch, tryInputsBatch, notify, protectedDates, inputProtected } from '../state/store'
+import { hearGateCuts } from '../state/inputgate-hook'
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
@@ -51,7 +52,7 @@ import { CURWEEK } from '../engine/waves'
 import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
 import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff, filedWhole, byAfterLeaving } from '../state/perms'
-import { INPEDIT, setInpEdit, OILASK, OILOWN, setOilAsk, setMedMove, setDocView } from './pops'
+import { INPEDIT, INPEDIT_REFOUND, setInpEdit, OILASK, OILOWN, setOilAsk, setMedMove, setDocView } from './pops'
 import { CURPAGE, INPVIEW, revealInput, OILWAIT, type OilWaitKind } from '../state/view'
 import { toastHeld } from './toast'
 import { noteUnlessSeen } from './seen'
@@ -1367,7 +1368,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
    an edit answer the same question the same way. */
 export type MedAsk =
   | { kind: 'clash'; who: string; newType: string; span: string; clashes: any[]; a: number; b: number }
-  | { kind: 'up'; who: string; dateLabel: string; effects: { plan: any[]; leftovers: any[] } }
+  | { kind: 'up'; who: string; dateLabel: string; effects: { plan: any[]; leftovers: any[] }; cuts: string[] }
 
 /** What saving `draft` over the existing row `r` must put to the filer first: null when nothing (not a medical, or a
  *  downchit that meets no different-type medical), 'refused' when the shared refusals toasted. */
@@ -1379,7 +1380,15 @@ export function medAskFor(r: any, draft: any): MedAsk | null | 'refused' {
   if (isUpchit(draft.type)) {
     /* an upchit is NEVER saved silently: the summary runs whatever it finds */
     const dateLabel = fmt(draft.start)
-    return { kind: 'up', who, dateLabel, effects: upchitEffects(draft.person, isoOrd(draft.start), r) }
+    const effects = upchitEffects(draft.person, isoOrd(draft.start), r)
+    if (!growsBack(effects.plan)) return { kind: 'up', who, dateLabel, effects, cuts: [] }
+    /* days given back (D999): what the Leave War's rules will cut there, said first (D1023) — the save the sheet's Save
+       runs (commitEditUpchit), tried; then the sheet's rows read again off the lists as they now stand */
+    const iid = String(r.iid)
+    const find = () => INPUTS.find((x: any) => String(x.iid) === iid)
+    const cuts = giveBackCuts(() => { const x = find(); return !!x && commitEditUpchit(x, { ...draft }, []) })
+    const again = find()
+    return { kind: 'up', who, dateLabel, effects: upchitEffects(draft.person, isoOrd(draft.start), again ?? r), cuts }
   }
   /* the days the SAVE will take — the draft's own whole dates (`isoOrd`), never its labels read in the record's old year */
   const a = isoOrd(draft.start)
@@ -1446,6 +1455,26 @@ export function dryRun(fn: () => boolean | void): boolean {
   HOOKS.toast = () => {}
   try { return tryInputsBatch(fn) } finally { HOOKS.toast = say }
 }
+/** WHAT A GIVE-BACK WILL CUT, SAID ON THE UPCHIT SHEET BEFORE ANYTHING CHANGES (owner D1023, 18 Oct 26 — "Ok as
+ *  recommended"). Days an upchit moved later or deleted gives back to a downchit can hold leave filed since, and a bid —
+ *  and the Leave War's rules cut them inside the same command ("sick cuts leave"; a clashing input replaces an undecided
+ *  bid). Rather than work the cut out a second way, the door's own write is TRIED AND THROWN AWAY (dryRun) with those
+ *  rules heard as they cut (state/inputgate-hook.ts hearGateCuts): one line each, in their warning's own words — so the
+ *  sheet and the save cannot disagree. A write that would be refused cuts nothing. The tried save puts the lists back
+ *  as NEW objects: an open window's record is found again by its id here — marked as the same record, so the window
+ *  keeps what was typed (InputEditor) — and every caller finds its own again. */
+export function giveBackCuts(write: () => boolean | void): string[] {
+  const held = INPEDIT && !INPEDIT._new && INPEDIT.iid != null ? String(INPEDIT.iid) : null
+  let ok = false
+  const lines = hearGateCuts(() => { ok = dryRun(write) })
+  if (held != null) {
+    const again = INPUTS.find((x: any) => String(x.iid) === held)
+    if (again && again !== INPEDIT) setInpEdit(again, true)
+  }
+  notify()                                           // every screen reads its records again after the thrown-away save
+  return ok ? lines : []
+}
+const growsBack = (plan: any[]) => plan.some((p: any) => p.action === 'grow')
 /** THE OIL QUESTION FIRST, FOR A DOOR OF THIS FILE THAT IS NOT AN INPUT'S ROW ([OIL-ASK-NOTIFY] — owner D780: "…holds at
  *  every door"; D783: a change that raises the OIL question "is NOT MADE until the question is answered"; the plan
  *  §3.1, readings R1). The Unavailable row's person (reassignInput, below) and the Inputs calendar's date drag
@@ -1800,12 +1829,17 @@ export function removeInput(r: any) {
 /** THE QUESTION BEFORE AN UPCHIT IS DELETED (D1022 — "the save sheet says so before anything changes"): what its delete
  *  would give back, for the upchit sheet to say — null where the delete changes nothing else (any other input, an upchit
  *  whose downchit has nothing to get back), and the door then deletes at once as it always has (D792). */
-export function upchitDeleteAsk(r: any): { who: string; dateLabel: string; effects: { plan: any[]; leftovers: any[] } } | null {
-  const plan = upchitDeletePlan(r)
-  if (!plan.length) return null
+export function upchitDeleteAsk(r: any): { who: string; dateLabel: string; effects: { plan: any[]; leftovers: any[] }; cuts: string[] } | null {
+  if (!upchitDeletePlan(r).length) return null
   const o = dateOrd(r.date, r.yr)
   const p = leadOf(r)
-  return { who: PEOPLE[p] ? PEOPLE[p].cs : String(p ?? ''), dateLabel: o != null ? fmt(ordISO(o)) : String(r.date || ''), effects: { plan, leftovers: [] } }
+  /* …and each leave and bid of his the days given back will cut (D1023): the delete itself (removeInput), tried; the
+     plan then worked out again off the lists as they now stand (the tried save put them back as new objects) */
+  const iid = String(r.iid)
+  const find = () => INPUTS.find((x: any) => String(x.iid) === iid)
+  const cuts = giveBackCuts(() => { const x = find(); return !!x && removeInput(x) })
+  const plan = upchitDeletePlan(find() ?? r)
+  return { who: PEOPLE[p] ? PEOPLE[p].cs : String(p ?? ''), dateLabel: o != null ? fmt(ordISO(o)) : String(r.date || ''), effects: { plan, leftovers: [] }, cuts }
 }
 
 /* DELETE A WHOLE SHARED INPUT — every record of the entry, as ONE command and one Undo step (owner D655: "shown and
@@ -2333,6 +2367,12 @@ export function InputEditor() {
   useLayoutEffect(() => {
     /* the same record, found again after a refused save (stay, below): what he typed is kept */
     if (keepDraft.current) { keepDraft.current = false; shown.current = r; return }
+    /* …and the same record found again after a save tried and thrown away (giveBackCuts — D1023): nothing about it
+       changed, so nothing typed is thrown away either. Only while it was already this window's record. */
+    if (INPEDIT_REFOUND) {
+      setInpEdit(r)                                    // consumed: a later re-find is judged afresh
+      if (shown.current && r && shown.current.iid != null && String(shown.current.iid) === String(r.iid)) { shown.current = r; return }
+    }
     /* ONE EDITOR AT A TIME (the plan §3.7): the page behind a window works, so another input can be asked for while
        this one holds changes nobody has saved. It is not replaced under him: the window keeps the first, and asks. */
     const prev = shown.current
@@ -2676,11 +2716,19 @@ export function InputEditor() {
       /* run the shared refusals FIRST — a missing document or a junk upchit
          should toast at once, not after the summary was already shown */
       if (!normalizeInputDraft(draft, isNew ? null : r)) return
-      setUpConf({
-        who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person || ''),
-        dateLabel: fmt(draft.start),
-        effects: upchitEffects(draft.person, isoOrd(draft.start), isNew ? null : r),
-      })
+      /* moved later, it gives days back (D999) — and each leave and bid of his those days will cut is said here too
+         (D1023): the same ask the calendar's drag puts (medAskFor), which tries the save the sheet's Save runs; a new
+         upchit gives nothing back */
+      const ask = isNew ? null : medAskFor(r, { ...draft })
+      if (ask === 'refused') return
+      setUpConf(ask && ask.kind === 'up'
+        ? { who: ask.who, dateLabel: ask.dateLabel, effects: ask.effects, cuts: ask.cuts }
+        : {
+          who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person || ''),
+          dateLabel: fmt(draft.start),
+          effects: upchitEffects(draft.person, isoOrd(draft.start), isNew ? null : r),
+          cuts: [],
+        })
       return
     }
     /* a DIFFERENT-type medical overlap is asked about, never resolved
@@ -3137,7 +3185,7 @@ export function InputEditor() {
       {/* the upchit save-time summary rides OVER this dialog (its z sits one
           layer up) — Save commits with the ticked removals, Cancel returns
           to the still-open form with nothing written */}
-      {upConf && <UpchitConfirm who={upConf.who} dateLabel={upConf.dateLabel} effects={upConf.effects} deleting={!!upConf.del}
+      {upConf && <UpchitConfirm who={upConf.who} dateLabel={upConf.dateLabel} effects={upConf.effects} cuts={upConf.cuts} deleting={!!upConf.del}
         onCancel={() => setUpConf(null)}
         onSave={removals => {
           setUpConf(null)
