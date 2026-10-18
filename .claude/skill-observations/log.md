@@ -1283,3 +1283,26 @@ present.
 
 **Principle:** A negative assertion proves nothing until it has seen its subject present; and a test world that does not
 repaint like the app is asked about state, not pixels.
+
+### Observation 638: A save tried and thrown away hands back every record as a new copy — every holder must find its own again
+
+**Status:** OPEN
+**Date:** 2026-10-18
+**Session context:** [UPCHIT-SHEET-LEAVE-CUT] (D1023) — the upchit sheet lists what a give-back will cut by trying the save and throwing it away
+**Skill:** New skill candidate: none — the project's undo/command notes (raptor-port/docs/undo-contract.md) or the bug-check order's roll-call rows
+**Type:** internal
+**Phase/Area:** building on the app's "try and throw away" save (tryInputsBatch / dryRun)
+
+**Issue:** The thrown-away save rolls the inputs back as NEW objects, and the old ones keep the tried changes. The open
+input window, a sheet's leftover rows (what "Remove" removes) and the delete's plan all held old objects. A probe test
+proved it before building. The break tests then showed that two of the three holders' fixes were invisible to the first
+tests: on the Inputs page the window already follows its record by itself, so only a test of the window opened from the
+schedule could see that holder; and a plan's rows only label, so only a test that pressed Remove on a later medical could
+see stale leftovers.
+
+**Suggested improvement:** a roll-call row in the bug-check order for any change that runs a try-and-throw-away save: list
+every holder of a record object across it (open windows in each mode, sheet state, pop-up flags), each with the test that
+acts on it AFTER the try.
+
+**Principle:** A rollback that restores values, not identities, turns every held reference stale; list the holders and
+prove each by acting through it after the rollback, not by reading what it shows.

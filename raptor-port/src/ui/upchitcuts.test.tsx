@@ -18,7 +18,7 @@ import { MedMoveConfirm } from './MedMoveConfirm'
 import { commitChipMove } from './caldrag'
 import { initStore, notify, setSession, writeInputs, undo } from '../state/store'
 import { setMe } from '../state/auth'
-import { setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
+import { revealInput, setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
 import { INPUTS, holds } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS, storeBackend } from '../engine/hooks'
@@ -286,6 +286,27 @@ describe('a later medical put to Keep / Remove on the same sheet', () => {
     await click(tid('upconf-save'))
     expect(up().date).toBe('Oct 10')
     expect(INPUTS.some((r: any) => r.iid === 'hl1'), 'the later HL removed as chosen').toBe(false)
+  })
+})
+
+/* THE FRESH READ OF 18 OCT 26, F1: the Inputs list holds an input just saved at its head "whatever the filters" — and held
+   it as an OBJECT, so the try's new copies dropped it: asking the upchit question, and cancelling, made a just-saved row
+   vanish as if it had never saved. Held by id now, as the List's light already was (14 Oct 26). */
+describe('a row the Inputs list holds at its head survives the try', () => {
+  it('saved, hidden by the search, held — and still held after a give-back is asked about', async () => {
+    const { up } = await downUpLeave()
+    await act(async () => { setInpView('table'); notify() })
+    const box = $('#inFSearch') as HTMLInputElement
+    await act(async () => {
+      const set = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(box), 'value')!.set!
+      set.call(box, 'zzz-no-such-input'); box.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+    const ll = rows('LL')[0]
+    await act(async () => { revealInput(ll); notify() })
+    const drawn = () => document.querySelectorAll(`#inBody [data-iid="${ll.iid}"], #inList [data-iid="${ll.iid}"]`).length
+    expect(drawn(), 'the saved row is held at the head, the search hiding everything else').toBe(1)
+    await act(async () => { upchitDeleteAsk(up()) })
+    expect(drawn(), 'still held after the try').toBe(1)
   })
 })
 

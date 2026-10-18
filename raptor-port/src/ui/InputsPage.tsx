@@ -241,16 +241,17 @@ export function InputsPage() {
   const [lookSun, setLookSun] = useState(LOOK_CFG.toSunday)
   const [calOpen, setCalOpen] = useState(false)
   const [sort, setSort] = useState({ key: 'start', dir: 1 })
-  /* Rows just added, newest first, and rows still flashing. The pinned rows hold the input
-     OBJECT rather than its index: adding, deleting or undoing renumbers INPUTS
-     underneath us. THE LIT ONES ARE HELD BY ID (the fresh read of the leftovers batch, 14 Oct 26 — F1): a refused
-     command puts every record back as a NEW object, and a light held by object went out on the List while the
-     calendar, which was handed ids, kept it. One rule for both now. */
+  /* Rows just added, newest first, and rows still flashing — each held by its input's ID, never its index (adding,
+     deleting or undoing renumbers INPUTS underneath us) and never its object. THE LIT ONES WERE HELD BY ID FIRST (the
+     fresh read of the leftovers batch, 14 Oct 26 — F1): a refused command puts every record back as a NEW object, and a
+     light held by object went out on the List while the calendar, which was handed ids, kept it. THE HELD ROWS FOLLOWED
+     (the fresh read of D1023, 18 Oct 26 — F1): the upchit sheet now tries a give-back's save and throws it away, and a
+     just-saved row held by object vanished from the head of a filtered List the moment the question was asked. */
   /* the OIL ask (owner, 28 Aug 26) — the oilGate payload plus the commit to run on Save: the desktop row's OIL chip.
      (The upchit's summary, the medical clash and the document question were the add form's and the pencil's; both are
      gone — D718, D729 — and an input opened or added from here asks them through its window's own sheets.) */
   const [oilConf, setOilConf] = useState<any>(null)
-  const [pinned, setPinned] = useState<any[]>([])
+  const [pinned, setPinned] = useState<string[]>([])
   const [flash, setFlash] = useState<string[]>([])
   const isLit = (r: any) => flash.indexOf(String(r.iid)) >= 0
   /* ONE TIMER AN INPUT, started again by every light (F1): the six seconds were one timer from the FIRST light, never
@@ -291,7 +292,7 @@ export function InputsPage() {
        into the id the List drew the entry under. An input is ONE record now (owner D756, 11 Oct 26), so the record the
        page is shown IS the row — looked up inside the List, where the month's bars carry ids of their own. */
     const shown=row
-    if(!rowOnScreen(document.querySelector(listRow(shown.iid))))setPinned(p=>[row,...p.filter(r=>r.iid!==row.iid)])
+    if(!rowOnScreen(document.querySelector(listRow(shown.iid))))setPinned(p=>[String(row.iid),...p.filter(id=>id!==String(row.iid))])
     setJustAddedIid({iid:shown.iid})
     /* …AND IT IS LIT (D729 — V1). The List's own add form lit the row it had just added — "so the add is visible even
        from a view that would filter it out" — and was the only thing that did: an input saved through its window was
@@ -457,13 +458,13 @@ export function InputsPage() {
   }
   /* the pinned rows go on top, ahead of everything the sort just decided, and
      they are removed from the body of the list so a pin never shows twice.
-     Deleted and undone rows fall out here — the pin points at an object, so a
-     row that has left INPUTS simply stops matching. */
+     Deleted and undone rows fall out here — a pin is an id, found again in
+     INPUTS as it stands; a row that has left INPUTS simply is not found. */
   {
     /* A PIN IS ITS INPUT'S ONE ROW, ONCE (Sol's read of the calendar job's bug check, 8 Oct 26 — one filing was drawn
        twice while a shared input was a record a man and a pin pointed at one of them). A pin points at a RECORD and
        the record is the row, so each is listed once. */
-    const pins = [...new Set(inputsInMode(pinned, INPMODE).filter((r: any) => INPUTS.indexOf(r) >= 0))]
+    const pins = [...new Set(inputsInMode(pinned.map(id => INPUTS.find((x: any) => String(x.iid) === id)).filter(Boolean), INPMODE))]
     if (pins.length) rows = pins.concat(rows.filter((r: any) => pins.indexOf(r) < 0))
     pinCount = pins.length
   }

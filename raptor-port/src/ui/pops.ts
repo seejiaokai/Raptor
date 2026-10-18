@@ -170,6 +170,7 @@ export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DAYTPLEDIT', reset: () => setDayTplEdit(false) },
   { name: 'DRAFTSEDIT', reset: () => setDraftsEdit(null) },
   { name: 'INPEDIT', reset: () => setInpEdit(null) },
+  { name: 'INPEDIT_REFOUND', reset: () => setInpEdit(null) },   // set and cleared with the window's record — one setter for the pair
   { name: 'OILASK', reset: () => setOilAsk(null) },
   { name: 'OILOWN', reset: () => setOilAsk(null) },   // set and cleared with the hand-off above — one setter for the pair
   { name: 'MEDMOVE', reset: () => setMedMove(null) },
