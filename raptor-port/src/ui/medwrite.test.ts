@@ -386,3 +386,35 @@ describe('D999 — an upchit moved later gives the downchit its days back', () =
   })
 })
 
+/* the fresh read of D999 (1, 2, 4): the kept first end carries its year; a hand change of the downchit's dates drops it;
+   a give-back stops before another upchit of his in the gap */
+describe('D999 — the kept first end, after its code read', () => {
+  const ups = () => INPUTS.filter((r: any) => r.type === 'Upchit' && holds(r, 'bane'))
+  it('is kept with its year, as a date', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 13', endDate: 'Jul 17' })
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-15', end: '' }))).toBe(true)
+    expect(c.firstEnd).toBe('2026-07-17')
+  })
+  it('a downchit\u2019s dates changed by hand forget it — a later move gives nothing back past what was typed', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 13', endDate: 'Jul 17' })
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-15', end: '' }))).toBe(true)
+    const dc = draftOf(c); dc.start = '2026-07-12'
+    expect(commitInputEdit(c, dc)).toBe(true)
+    expect(c.firstEnd, 'forgotten').toBeUndefined()
+    const up = ups()[0]; const d = draftOf(up); d.start = '2026-07-16'
+    expect(commitInputEdit(up, d)).toBe(true)
+    expect(c.endDate, 'nothing given back').toBe('Jul 14')
+  })
+  it('a give-back stops the day before another upchit of his', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 13', endDate: 'Jul 20' })
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-17', end: '' }))).toBe(true)
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-15', end: '' }))).toBe(true)
+    expect(c.endDate).toBe('Jul 14')
+    const u2 = ups().find((u: any) => u.date === 'Jul 15')!
+    const d = draftOf(u2); d.start = '2026-07-19'
+    const ok = commitInputEdit(u2, d)
+    if (ok) expect(c.endDate, 'never through the upchit on Jul 17').toBe('Jul 16')
+    else expect(c.endDate, 'refused: nothing changed').toBe('Jul 14')
+  })
+})
+

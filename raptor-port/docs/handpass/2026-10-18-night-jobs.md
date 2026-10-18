@@ -160,3 +160,56 @@ several-people tail as the board's save does, leaves the remarks box's Enter alo
 input's remarks box on the board used to save the typed words). Checked: the whole commit, six test files run.
 **Fixed** the same way, with its test (`datecal.test.tsx`, "the keyboard on the form around the calendar"). Round 1 was the
 last fix round: the change is one more condition on the same line, held by its test.
+
+### Job 5's walk — Sonnet walker, `scripts/handpass/night1018-job5-walk.mjs`, the built app; report as returned
+All 23 steps PASS; no console error, page error or 4xx. Pictures `img/handpass/2026-10-18-night-job5/` (about 44).
+| Step | Result | Seen |
+|---|---|---|
+| S1 admin, D1010 | PASS | next week's Monday published with its four sign-offs, its first programme start then changed 07:45 → 07:46 ("1 pending"); back on this week Edit Schedule's preview shows 07:46, View-only Sched's 07:45, as issued (S1-1, S1-2) |
+| S2 member | PASS | View-only Sched's preview Monday 07:45 |
+| S3 resize | PASS | at 800 wide no preview; back at 1440 Edit Schedule 07:46, View-only 07:45 |
+| S4 a day not published | PASS | Tuesday a draft, 05:45 → 05:46: both previews 05:46 |
+| S5 take-off box | PASS | 2359 typed, Escape: 12:40 back, nothing stored, Undo still off; the same after a click elsewhere and a reload |
+| S6 duty start | PASS | the same (07:00) |
+| S7 a Personal input's start box | PASS | the same (09:00) |
+| S8 Enter | PASS | 12:41 typed, Enter: kept after a reload; put back |
+| S9 an input's window | PASS | Escape shuts only the month/year list; a second Escape closes the window |
+| S10 the OIL question's "Only some days…" | PASS | reached by filing Training on Sat 18 – Sun 19 Jul; the same |
+| S11 a note and a delete | PASS | "WALK NOTE" with Widget and Ratchet on Mon 19 Oct; after Widget's delete the changes window shows `Note "WALK NOTE" · Widget taken off` |
+| S12 words and Undo | PASS | `Note "WALK NOTE" · words WALK NOTE → WALK NOTE 2`; after Undo "Undo — a note on the calendar" on that Monday |
+Walker's notes (no failure): a delete takes a man off notes from the delete's date on (the real date), so a note dated in the
+past keeps him, as built; Undo of a note change goes to the Inputs page where it was made; "1241" typed and committed with
+Enter shows "1241" until a reload shows "12:41" (not checked against the build before — filed with the next look at the
+board's time boxes); the served build predates the last calendar fix (the keyboard on its form), S9 and S10 passed on the
+earlier rule, which the fix only widens — the full gates run on the final code.
+
+Walk: docs/handpass/2026-10-18-night-jobs.md (job 5) · 44 pictures · 6 surfaces (View-only and Edit Schedule's preview, the board's time boxes, an input's window, the OIL question, the changes window) · 3 orders (admin, member, resize) · MISSING: none
+
+## Job 6 — D999: an upchit moved later gives the downchit its days back
+
+**The eight questions:** saved data — YES (a new kept field, `firstEnd`; a downchit's end rewritten); the published record
+— yes in passing (a day given back reads pending, D178); medical status read by the warnings — YES (who reads fit). **Tier:
+FULL.** The code survey before the build: `docs/superpowers/briefs/2026-10-18-d999-survey.md`. **Red first:** four tests in
+`ui/medwrite.test.ts` "D999" failed on the old code; the older plan-shape tests now expect the upchit's `up` mark.
+
+### The fresh, blind Opus read — report, as returned
+1. **A hand-changed end is ignored by a later give-back** — `commitInputEdit` rewrites `date`/`endDate` but leaves
+   `firstEnd`, which `applyMedPlan` sets only when null; a downchit corrected by hand then regrows past what was typed, or
+   stops short of a hand extension. Fix: drop `firstEnd` when the downchit's start or end is changed by hand, and at a cut
+   by another medical (`!p.up`); a tail or piece copied through `pieceOf` must not inherit it.
+2. **The give-back runs through another upchit** — the in-the-gap scan reads downchits only (`medRows`); an upchit of his
+   in the gap is grown through. And an upchit handed to another man and moved later could grow that man's downchit. Fix:
+   scan his upchits too (not the one moved); grow only where the upchit is his.
+3. **Growth can be written into a locked week** — `medPlanProtected` checks the row's present span, not the days a grow
+   adds. Fix: check the grown span as well.
+4. **The kept end can change its year** — kept as a bare "Dec 30", read against `r.yr`, which an edit sets to the loaded
+   year. Fix: keep it with its year.
+Checked and sound: one body for the sheet and the save (window, drag, table); Cancel writes nothing; one Undo restores both
+rows with `firstEnd`; grow and trim never on one row; a one-day and a deleted row handled; a retype gives nothing back; the
+Leave War sync, the history line and the pending mark as the trim's.
+**All four fixed** (the fix commit after 835152673): the kept end written with its year (ISO) and read by `firstEndOrd`;
+kept only by an upchit's cut — dropped by another medical's cut, by a hand change of the downchit's dates, never copied
+into a piece; the give-back stops before any medical of his in the gap, upchits included, and only his own upchit grows
+his downchit; `medPlanProtected` checks the days a grow adds. Tests: `medwrite.test.ts` "the kept first end, after its
+code read" (3); the locked-week case is held by the code read and the existing protected-week tests (a quarantined week
+cannot be staged in this unit file) — the full gates run next. Every medical test file 293 / 293.

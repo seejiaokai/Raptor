@@ -18,7 +18,7 @@ import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, tillOfISO, tillDefaultISO, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
-import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel } from '../engine/medical'
+import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel, firstEndIso, firstEndOrd } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
 import { OilConfirm } from './OilConfirm'
@@ -366,6 +366,7 @@ export function applyMedPlan(plan: any[]) {
       const t: any = { ...pieceOf(r), date: ordLabel(p.tail.startOrd, r.yr), mod: nowStamp() }
       delete t.iid          // its own address, minted below — never a copy
       delete t.lw           // a plain Raptor row; the war re-lands it inbound
+      delete t.firstEnd     // D999: a piece is not the row an upchit cut
       delete t.acc
       if (p.tail.endOrd > p.tail.startOrd) t.endDate = ordLabel(p.tail.endOrd, r.yr)
       else delete t.endDate
@@ -392,7 +393,7 @@ export function applyMedPlan(plan: any[]) {
        past the end it was first filed with (upchitTrimPlan works out how far); back at that first end, the note of it goes */
     if (p.action === 'grow' && p.newEndOrd != null) {
       r.endDate = ordLabel(p.newEndOrd, r.yr)
-      if (r.firstEnd != null && dateOrd(r.firstEnd, r.yr) === p.newEndOrd) delete r.firstEnd
+      if (firstEndOrd(r) === p.newEndOrd) delete r.firstEnd
       r.remarks = remarksTyped(r.remarks, r)
       r.mod = nowStamp()
       stampChanged(r)
@@ -402,7 +403,10 @@ export function applyMedPlan(plan: any[]) {
     if (p.action !== 'trim' || p.newEndOrd == null) continue
     /* D999: the end it was filed with, kept the FIRST time an upchit cuts it — what a later move of the upchit may give
        back, and never more */
-    if (p.up && r.firstEnd == null) r.firstEnd = r.endDate || r.date
+    if (p.up) { if (r.firstEnd == null) { const fe = medEndOrd(r); if (fe != null) r.firstEnd = firstEndIso(fe) } }
+    /* a cut by ANOTHER medical starts its own story: what was kept no longer says how far an upchit may give back
+       (the fresh read of D999, 1) */
+    else delete r.firstEnd
     /* [ARCH-STACK] step 4: the Leave War READS this row — trimming it trims the
        war with nothing to retract. */
     const a = dateOrd(r.date, r.yr)
@@ -920,6 +924,8 @@ const normDest = (n: { date: string, endDate: string | undefined }, yr: any) => 
    would mint) so nothing executes on a frozen record. */
 export const medPlanProtected = (plan: any[]) => (plan || []).some((p: any) =>
   (p.row && inputProtected(p.row)) ||
+  /* D999: a give-back reaches days the row does not cover yet — they are checked too (the fresh read of D999, 3) */
+  (p.action === 'grow' && p.row && p.newEndOrd != null && inputProtected({ date: p.row.date, endDate: ordLabel(p.newEndOrd, p.row.yr), yr: p.row.yr })) ||
   (p.tail && inputProtected({ date: ordLabel(p.tail.startOrd, p.row?.yr), endDate: p.tail.endOrd > p.tail.startOrd ? ordLabel(p.tail.endOrd, p.row?.yr) : undefined, yr: p.row?.yr })))
 
 const medicalLocked = () => HOOKS.toast(LOCKED_WEEK_NOTE, 'warn')
@@ -1217,6 +1223,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        every screen (engine/inputs.ts remarksShown), so a moved or stretched input's date follows by itself — the one save
        every door uses writes the typed words alone, a date token typed or saved before the build taken out. */
     const rem = remarksTyped(draft.remarks, { type: draft.type, date: r.date, endDate: r.endDate, start: draft.start, end: draft.end })   // its old days and its new
+    const wasDateD999 = r.date, wasEndD999 = r.endDate
     r.s = s; r.e = e; r.date = date; r.remarks = rem
     /* the date the late mark reads — left as it is by a scheduler's change made from a row on the schedule (D741, D742) */
     if (!sched) r.mod = nowStamp()
@@ -1267,6 +1274,9 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        stranded on a record with no control left to change it. `half` is derived
        once above the write (the Leave-War check needs it too). */
     if (half) r.half = half; else delete r.half
+    /* D999: a downchit's dates changed BY HAND are what the man says now — the end an upchit once cut it from no longer
+       bounds a give-back (the fresh read of D999, 1) */
+    if (r.firstEnd != null && (r.date !== wasDateD999 || (endDate || undefined) !== wasEndD999)) delete r.firstEnd
     if (endDate) r.endDate = endDate; else delete r.endDate
     /* The OIL answers (owner, 28 Aug 26) belong to the commitment as it was
        acknowledged: retyped out of the ask set, or moved to ANOTHER person,
