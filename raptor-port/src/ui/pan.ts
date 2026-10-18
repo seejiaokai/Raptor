@@ -620,7 +620,16 @@ export function relandWeekAfterResize() {
   })
   panWk = null
 }
-function onResize() { updateWeekNav(); syncPeekOnResize(); clearTimeout(relandT); relandT = setTimeout(relandWeekAfterResize, 120) }
+/* only a REAL resize re-lands the week (the fresh read of the batch, 19 Oct 26 — F3): Shell.tsx sends a resize of its own
+   (`saveBand`) when the failed-save band or the OIL bar comes or goes, and the window's width has not changed — a week
+   panned by hand must not jump to a day for it */
+let lastResizeW = typeof window === 'undefined' ? 0 : window.innerWidth
+export function resizeRelands(e: Event | null, width: number): boolean {
+  const real = !(e && (e as any).saveBand) && width !== lastResizeW
+  lastResizeW = width
+  return real
+}
+function onResize(e?: Event) { updateWeekNav(); syncPeekOnResize(); if (!resizeRelands(e || null, window.innerWidth)) return; clearTimeout(relandT); relandT = setTimeout(relandWeekAfterResize, 120) }
 
 export function initPan() {
   const trk = $('hsTrack')

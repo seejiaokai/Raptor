@@ -586,3 +586,16 @@ describe('the deferred jump to today on a phone is taken down with the week', ()
     }
   })
 })
+
+/* the fresh read of the batch (19 Oct 26, F3): the app's own resize (the failed-save band, the OIL bar) carries
+   `saveBand` and leaves the width as it was — it must not re-land a week panned by hand */
+describe('only a real resize re-lands the week', () => {
+  it('a change of width does; the app\u2019s own band resize and an unchanged width do not', async () => {
+    const { resizeRelands } = await import('./pan')
+    resizeRelands(null, 1400)
+    expect(resizeRelands(null, 1300), 'the window narrowed').toBe(true)
+    expect(resizeRelands(Object.assign(new Event('resize'), { saveBand: true }), 1300), 'the band came').toBe(false)
+    expect(resizeRelands(null, 1300), 'the same width again').toBe(false)
+    expect(resizeRelands(Object.assign(new Event('resize'), { saveBand: true }), 1200), 'a band resize never re-lands').toBe(false)
+  })
+})
