@@ -359,6 +359,16 @@ export function routeKeyDown(e: KeyboardEvent) {
     }
     return
   }
+  /* D1011 (18 Oct 26, "as recommended"): the board's TIME boxes — take-off, landing, brief, a duty's or a programme row's
+     start and end — are still <input>s, which the branch above leaves to themselves, so Escape kept the typed time and the
+     blur saved it. Escape puts the old time back, folded as the box shows it (fmtTxt — 08:00), and leaves; the blur then
+     finds the box unchanged and saves nothing. Enter stays the input's own commit. */
+  if (bx && (bx as any).tagName === 'INPUT' && e.key === 'Escape' && (bx as any).dataset.bfld && TIME_TXT.test((bx as any).dataset.bfld)) {
+    e.preventDefault()
+    const v = boxText((bx as any).dataset.bfld); (bx as any).value = fmtTxt(v)
+    bx.blur()
+    return
+  }
   /* an IN-TIME line gets the same two keys (21 Aug 26, with the per-line
      rework): Enter commits by blurring into the branch above, Escape puts the
      model's line back — including a line mid-mangle on a phone keyboard. */

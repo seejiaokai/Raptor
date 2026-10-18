@@ -33,7 +33,8 @@
    week's Monday and Sunday, Enter or Space picks (a button's own); a date that may not be picked (`min`, `max`) is
    never walked onto. On the title: Enter opens the lists with the keyboard in the month list. In a list: the arrows a
    row, Enter back to the dates of that month. Escape and Tab are not the calendar's — where it floats they are its
-   layer's (ui/DateBox.tsx), and a calendar drawn inside a form leaves them to the form.
+   layer's (ui/DateBox.tsx), and a calendar drawn inside a form leaves them to the form — save one: while the month and
+   year lists are open, Escape shuts them first (D1012, below).
 
    Its look: ui/scheduler/26-date-calendar.css. Its class names are prefixed (`dcal-`, `is-`): the scheduler's sheet is
    one global sheet, and its week already owns `.day` (23-days.css says how that was found). */
@@ -211,6 +212,23 @@ export function DateCal(p: {
   /* Enter in a list (K4): the dates of the month chosen, with the keyboard back on them */
   const closeLists = () => { wantIn.current = 'dates'; setLists(false) }
   const goToday = () => { if (p.onToday) { p.onToday(); return } setLists(false); setYm(ymOf(today)) }
+  /* ESCAPE SHUTS THE LISTS FIRST (owner D1012, 18 Oct 26 — "as recommended"; the design guide's "Escape closes what
+     opened last"). A form holding this calendar (the OIL question, an input's own window) hears Escape on the way DOWN
+     at the document and closed itself with the lists still open — a waiting swap was then not made. While the lists are
+     open the key is the calendar's: heard at the window on the way down, before any form, it shuts the lists and puts
+     the keyboard back on the title; the next Escape is the form's again. The floating calendar (ui/DateBox.tsx) leaves
+     an Escape to this while its card holds the lists. */
+  useEffect(() => {
+    if (!lists) return
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      e.preventDefault(); e.stopPropagation()
+      setLists(false)
+      ;(root.current?.querySelector('.dcal-title') as HTMLElement | null)?.focus({ preventScroll: true })
+    }
+    window.addEventListener('keydown', onKey, true)
+    return () => window.removeEventListener('keydown', onKey, true)
+  }, [lists])
 
   const tap = (iso: string) => {
     if (!may(iso)) return
