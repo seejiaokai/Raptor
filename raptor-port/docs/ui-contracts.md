@@ -2291,7 +2291,8 @@ row's pucks and its CX / ⓘ / red box / ✕ buttons start at that edge, so the 
 ## Editing an input from the schedule (owner, 10 Aug 26)
 
 **"Delete" in an input's own window deletes at once and asks nothing (owner D792, 13 Oct 26 — "No need to show are you
-sure").** As built, on the Inputs pages and from the schedule alike; Undo brings the input back. No confirm step is added.
+sure").** As built, on the Inputs pages and from the schedule alike; Undo brings the input back. No confirm step is added. *(Narrowed 18 Oct 26 by D1022: an upchit whose delete gives a downchit its days back puts up the upchit sheet first —
+"Deleting this upchit will …", a red "Delete upchit"; any other delete still goes at once.)*
 
 **SINCE 11 Oct 26 the Ground Programme's own boxes do it too (owner D739, D740).** The name, the two times and the remark
 of a request's row on the Ground Programme — the week's `data-txt="gr:di.ri.{prog|str|end|rmks}"`, the board's

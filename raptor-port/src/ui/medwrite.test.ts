@@ -9,6 +9,7 @@ import { HOOKS } from '../engine/hooks'
 import { commitNewInput, commitInputEdit, draftOf, medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, docGate, removeInput } from './inputedit'
 import { upchitTrimPlan, upchitEffects, upchitDeletePlan } from '../engine/medical'
 import { docAdd, rowDocIds } from '../state/docs'
+import { stashClear, stashPut } from '../engine/weekstash'
 
 /* a fresh stored document per draft — a medical input does not go in bare */
 const freshDoc = () => docAdd(new Blob(['x'], { type: 'image/png' }) as any).id
@@ -486,6 +487,20 @@ describe('D1022 — a deleted upchit gives the downchit its days back', () => {
     expect(upchitDeletePlan(other)).toEqual([])
     expect(removeInput(other)).toBe(true)
     expect(c.endDate).toBe('Jul 14')
+  })
+  it('a give-back that would reach a locked week is refused whole: the upchit stays, the downchit stays cut', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Feb 5', endDate: 'Feb 10' })
+    expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-02-06', end: '' }))).toBe(true)
+    expect(c.endDate || c.date, 'cut to its first day').toBe('Feb 5')
+    /* the week of Mon 9 Feb is quarantined (read only) — the days the delete would give back, Feb 6–10, reach into it */
+    stashPut('09/02/2026', 'null')
+    try {
+      const up = upOf()
+      expect(removeInput(up), 'refused').toBe(false)
+      expect(upOf(), 'the upchit is still there').toBeTruthy()
+      expect(c.endDate || c.date, 'and the downchit still cut').toBe('Feb 5')
+      expect(TOASTS.join(' '), 'and it says why').toMatch(/./)
+    } finally { stashClear() }
   })
   it('a non-upchit deleted gives nothing back', () => {
     const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 13', endDate: 'Jul 17' })
