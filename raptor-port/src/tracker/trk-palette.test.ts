@@ -16,6 +16,7 @@ import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import * as core from './app/core.js'
+import { KINDS, GRADES } from './components/Legend.jsx'
 
 const strip = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, '')
 const vars = (block: string) => Object.fromEntries(
@@ -125,8 +126,14 @@ describe("the chart's colours are the same tokens (core.js)", () => {
     /* Reading the token block alone could not see a key that paints Sim in the
        Test token (Astra #4): each swatch is read off its own file, label by label. */
     const src = (n: string) => readFileSync(join(__dirname, 'components', `${n}.jsx`), 'utf8')
-    const legend = Object.fromEntries([...src('Legend').matchAll(/background: 'var\(--([\w-]+)\)' \}\}><\/i>([^<]+)</g)].map(m => [m[2]!.trim(), m[1]!]))
-    expect(legend).toEqual({ Flight: 'flight', 'Acad/Spec': 'acad', Test: 'test', Sim: 'sim', 'CFT/IAT/EPT': 'device', DPCO: 'dpco', Marginal: 'marg', NA: 'na' })
+    /* The colour key is the bar's Legend pop-out since D1018 (18 Oct 26): its balls are drawn by the chart's own body
+       (core.legendBall), so each colour IS the chart's; what is pinned is that each word sits on the right kind and
+       grade, and that a kind's sample ball wears that kind's colour. */
+    expect(Object.fromEntries(KINDS.map((k: any) => [k.name, k.type])))
+      .toEqual({ Flight: 'flight', 'Acad / Spec': 'acad', Test: 'test', Sim: 'sim', 'CFT / IAT / EPT': 'device' })
+    expect(Object.fromEntries(GRADES.map((g: any) => [g.name, g.grade])))
+      .toEqual({ DCO: 'dco', DPCO: 'dpco', Marginal: 'marg', 'N.A.': 'na', 'Not done': null })
+    for (const k of KINDS as any[]) expect(core.legendBall({ type: k.type }), k.name).toContain(`fill="${core.TYPE_COLOR[k.type as keyof typeof core.TYPE_COLOR]}"`)
     const pop = Object.fromEntries([...src('Pop').matchAll(/popGrade\('(\w+)'\)\}><span className="dot" style=\{\{ background: 'var\(--([\w-]+)\)' \}\}/g)].map(m => [m[1]!, m[2]!]))
     expect(pop).toEqual({ dpco: 'dpco', marg: 'marg', na: 'na' })
     const adds = [...src('ArrangeTools').matchAll(/\{ a: '(\w+)', label: '[^']+', style: \{ borderLeft: '4px solid var\(--([\w-]+)\)' \} \}/g)].map(m => [m[1]!, m[2]!])
@@ -170,7 +177,8 @@ describe('every event code stays readable on its ball', () => {
   }
   const ratio = (a: string, b: string) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05) }
   it('the label ink is the page background token', () => {
-    expect(strip(trkCss)).toMatch(/\.ball text\.lbl\{[^}]*fill:var\(--bg\)/)
+    /* one rule for the chart's balls and the Legend's sample balls (.legball, D1018), so the two print the same ink */
+    expect(strip(trkCss)).toMatch(/\.ball text\.lbl,\.legball text\.lbl\{[^}]*fill:var\(--bg\)/)
   })
   for (const t of ['flight', 'acad', 'test', 'sim', 'device'] as const) {
     it(`${t}: the code on the ball reads at 4.5:1 or better`, () => {

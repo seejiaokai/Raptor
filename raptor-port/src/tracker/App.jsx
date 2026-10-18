@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import * as core from './app/core.js';
 import Header from './components/Header.jsx';
-import Legend from './components/Legend.jsx';
 import ArrangeTools from './components/ArrangeTools.jsx';
 import SidePanel from './components/SidePanel.jsx';
 import Pop from './components/Pop.jsx';
@@ -222,7 +221,7 @@ export default function App({ active = true }) {
             <button className="hintoff" id="detailsHintOff" onClick={core.toggleDetails}>Turn off</button>
           </div>
         : null}
-      <Legend />
+      {/* The colour strip that stood here on a desktop moved into the bar's Legend pop-out (owner D1018, 18 Oct 26). */}
       <ViewTabs tab={tab} setTab={setTab} />
       {/* Each zoom control is docked at the foot of its own column rather than
           floating over it. Floating, the panel control landed on the Plannable

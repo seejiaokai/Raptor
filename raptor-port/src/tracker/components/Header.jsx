@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { trackerHosted } from '../undo-bridge.js';
 import * as core from '../app/core.js';
 import { isComposing } from './keys.js';
+import Legend from './Legend.jsx';
 
 /* The panel is always in the DOM and hidden with CSS, never conditionally
    rendered. Two reasons: the file name and the save tick-boxes have to stay
@@ -249,6 +250,11 @@ export default function Header() {
             On a phone the button is hidden: the Show All tab under the bar is
             already there. */}
         <button className="sm" id="showAllBtn" title="Show name, crew & prerequisites for every event" onClick={core.openShowAll}>☰ Show All</button>
+
+        {/* Legend sits beside Show All (owner D1018, 18 Oct 26, the picture 02-topbar-proposed): the colour strip that
+            sat under the bar on a desktop moved into its pop-out (D1007), so a phone has a legend too — there, with
+            Show All hidden, it follows ⓘ. */}
+        <Legend />
 
         {/* Two one-way moves between the store and a file, nothing that binds
             a file (owner, 9 Sep 26): Import a file — a chart drawn up

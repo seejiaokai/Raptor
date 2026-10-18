@@ -2297,18 +2297,38 @@ function innerShape(type, cx, cy) {
   return `<rect x="${cx - 16}" y="${cy - 9}" width="32" height="18" rx="2.5" fill="${f}" ${st}/>`;
 }
 function ballGroup(ev, available) {
-  const p = nodePos(ev.id), size = 58, cx = size / 2, cy = size / 2, rO = size * 0.47, rI = size * 0.33, x = p.x, y = p.y;
-  const n = Math.max(1, roster.length); let segs = '';
+  const p = nodePos(ev.id), size = 58, cx = size / 2, x = p.x, y = p.y, cy = size / 2;
+  const n = Math.max(1, roster.length); const wedges = [];
   for (let i = 0; i < n; i++) {
     const s = roster[i] ? roster[i].id : null; const g = gradeOf(s, ev.id);
     const fill = (g && g !== 'na' && g !== 0) ? GRADE_FILL[g] : (g === 'na' ? GRADE_FILL.na : '#ffffff');
-    const [a0, a1] = wedge(i, n);
-    /* Each wedge is a tap target of its own (ballTap): data-wi says whose. */
-    segs += `<path class="wedge" data-wi="${i}" d="${sector(cx, cy, rO, rI, a0, a1)}" fill="${fill}" stroke="#111" stroke-width="0.8"/>`;
     /* No failure ticks on an event marked N.A. — it never had to be flown, so
        red marks against it read as a contradiction. The count is only hidden,
        not thrown away; it comes back if the grade does. */
-    const f = (g === 'na') ? 0 : failOf(s, ev.id);
+    wedges.push({ fill, fails: (g === 'na') ? 0 : failOf(s, ev.id) });
+  }
+  const ai = roster.findIndex(r => r.id === active);
+  let cap = '';
+  return `<g class="ball" data-id="${escapeId(ev.id)}" transform="translate(${(x - cx).toFixed(1)},${(y - cy).toFixed(1)})">
+  ${ballParts({ type: ev.type, label: ev.label || ev.id, font: ballFontFor(ev.id), num: ev.num, wedges, mine: ai, available,
+    found: searchHit === ev.id, connect: arrangeMode && connectSrc === ev.id, sel: arrangeMode && selBalls.has(ev.id) })}${cap}</g>`;
+}
+/* THE BALL'S DRAWING, ONE BODY FOR THE CHART AND ITS LEGEND (D1007, D1018 — 18 Oct 26: the Legend pop-out shows "the
+   chart's own" balls). Everything a ball looks like — its slices and their fills, the red failure ticks, the blue edge
+   of the student picked in Crew, the gold "can be flown next" ring, the turquoise "found" ring, the centre shape and its
+   code — is drawn here from plain values; ballGroup reads them off the store for a real event, and the Legend
+   (legendBall) passes sample ones. One body is what keeps the legend from drifting from the chart it explains. The
+   string it returns is byte-for-byte what ballGroup drew inline before the split. `wedges` is one { fill, fails } per
+   slice; `mine` the slice index with the blue edge, or -1. */
+function ballParts(o) {
+  const size = 58, cx = size / 2, cy = size / 2, rO = size * 0.47, rI = size * 0.33;
+  const n = Math.max(1, o.wedges.length); let segs = '';
+  for (let i = 0; i < n; i++) {
+    const w = o.wedges[i] || { fill: '#ffffff', fails: 0 }; const fill = w.fill;
+    const [a0, a1] = wedge(i, n);
+    /* Each wedge is a tap target of its own (ballTap): data-wi says whose. */
+    segs += `<path class="wedge" data-wi="${i}" d="${sector(cx, cy, rO, rI, a0, a1)}" fill="${fill}" stroke="#111" stroke-width="0.8"/>`;
+    const f = w.fails || 0;
     if (f > 0) {
       const shown = Math.min(f, 6); const span = Math.abs(a1 - a0); const gap = Math.min(9, span / (shown + 1)); const mid = (a0 + a1) / 2; const first = mid - (shown - 1) / 2 * gap;
       for (let t = 0; t < shown; t++) {
@@ -2324,25 +2344,32 @@ function ballGroup(ev, available) {
      — picked "cyan edge only" over a fill, so a DCO/DPCO colour is never
      hidden; the same cyan the key ball uses). Drawn after the wedges so it
      sits above its neighbours' black outlines; no hit of its own. */
-  const ai = roster.findIndex(r => r.id === active);
+  const ai = o.mine;
   if (ai >= 0) { const [a0, a1] = wedge(ai, n); segs += `<path class="mine" data-wi="${ai}" d="${sector(cx, cy, rO, rI, a0, a1)}" fill="none" stroke="${PAL.accent}" stroke-width="2.4" stroke-linejoin="round" pointer-events="none"/>`; }
-  const dark = DARKC.has(ev.type) ? 'lbl' : 'lbl lbll';
-  let hl = available ? `<circle cx="${cx}" cy="${cy}" r="${rO + 3}" fill="none" stroke="#ffd23f" stroke-width="2.6" class="avail"/>` : '';
+  const dark = DARKC.has(o.type) ? 'lbl' : 'lbl lbll';
+  let hl = o.available ? `<circle cx="${cx}" cy="${cy}" r="${rO + 3}" fill="none" stroke="#ffd23f" stroke-width="2.6" class="avail"/>` : '';
   /* The search ring sits at rO+8. Its inner edge is 34.06, clear of the yellow
      available ring's outer edge even when svg.perf fattens that to 31.96, so
      the two can never touch or be read as one mark. */
-  if (searchHit === ev.id) hl += `<circle cx="${cx}" cy="${cy}" r="${rO + 8}" fill="none" stroke="#00e5c8" stroke-width="2.4" class="found"/>`;
-  if (arrangeMode && connectSrc === ev.id) hl += `<circle cx="${cx}" cy="${cy}" r="${rO + 5}" fill="none" stroke="${PAL.accent}" stroke-width="3"/>`;
-  if (arrangeMode && selBalls.has(ev.id)) hl += `<circle cx="${cx}" cy="${cy}" r="${rO + 5}" fill="none" stroke="${PAL.accent}" stroke-width="1.6" stroke-dasharray="3 2"/>`;
-  const num = (ev.num != null && ev.num !== '') ? `<circle cx="${size - 5}" cy="5" r="8.5" class="numbg"/><text class="numbadge" x="${size - 5}" y="8" text-anchor="middle">${escapeId(ev.num)}</text>` : '';
-  const label = escapeId(ev.label || ev.id);
-  let cap = '';
+  if (o.found) hl += `<circle cx="${cx}" cy="${cy}" r="${rO + 8}" fill="none" stroke="#00e5c8" stroke-width="2.4" class="found"/>`;
+  if (o.connect) hl += `<circle cx="${cx}" cy="${cy}" r="${rO + 5}" fill="none" stroke="${PAL.accent}" stroke-width="3"/>`;
+  if (o.sel) hl += `<circle cx="${cx}" cy="${cy}" r="${rO + 5}" fill="none" stroke="${PAL.accent}" stroke-width="1.6" stroke-dasharray="3 2"/>`;
+  const num = (o.num != null && o.num !== '') ? `<circle cx="${size - 5}" cy="5" r="8.5" class="numbg"/><text class="numbadge" x="${size - 5}" y="8" text-anchor="middle">${escapeId(o.num)}</text>` : '';
+  const label = escapeId(o.label);
   /* one invisible disc so the whole ball hit-tests as a single shape — without it the
      gap between the wedge ring and the inner icon fires pointerleave/enter as you cross it */
   const hit = `<circle cx="${cx}" cy="${cy}" r="${(rO + 1).toFixed(2)}" fill="none" pointer-events="all"/>`;
-  return `<g class="ball" data-id="${escapeId(ev.id)}" transform="translate(${(x - cx).toFixed(1)},${(y - cy).toFixed(1)})">
-  ${hit}${hl}${segs}<g class="core">${innerShape(ev.type, cx, cy)}
-  <text class="${dark}" x="${cx}" y="${cy + 3}" text-anchor="middle" style="font-size:${ballFontFor(ev.id)}px">${label}</text></g>${num}${cap}</g>`;
+  return `${hit}${hl}${segs}<g class="core">${innerShape(o.type, cx, cy)}
+  <text class="${dark}" x="${cx}" y="${cy + 3}" text-anchor="middle" style="font-size:${o.font}px">${label}</text></g>${num}`;
+}
+/* One sample ball for the Legend pop-out (D1007, D1018), drawn by the chart's own body (ballParts) as a small picture
+   of its own: one whole-ring slice in `fill` (white = not done), with an optional failure tick, the blue Crew edge,
+   the gold "can be flown next" ring or the turquoise "found" ring. The class is `legball`, never `ball`: the chart's
+   handlers and the browser suite look for `.ball`, and a legend picture must never answer them. The view box leaves
+   room for the turquoise ring, the widest mark (rO + 8 + its line). */
+export function legendBall({ type = 'acad', label = '', fill = '#ffffff', fails = 0, mine = false, available = false, found = false, px = 38 } = {}) {
+  const inner = ballParts({ type, label, font: 8.5, num: null, wedges: [{ fill, fails }], mine: mine ? 0 : -1, available, found });
+  return `<svg viewBox="-8 -8 74 74" width="${px}" height="${px}" aria-hidden="true" focusable="false"><g class="legball">${inner}</g></svg>`;
 }
 
 /* Continuous top-to-bottom flow following the real prerequisite graph. Takes
@@ -4345,6 +4372,25 @@ export function landingCurrency(days) {
   if (days < 7) return bar('Landing Current — No IP Required', 'var(--marg)');
   return bar('Landing Not Current — IP Required', 'var(--red)');
 }
+/* THE LEGEND'S BANDS ARE READ OFF THE BARS' OWN RULES (D1007, D1018 — 18 Oct 26): one row per run of days that gets
+   the same words, walked day by day through flexFor or landingCurrency, so the day ranges are written once — in those
+   two — and a band changed there (the flex settings to come, D1006) changes the Legend with it. Each band is
+   { from, to, txt, color, ink }; the last one's `to` is null ("and over"). `upTo` only has to pass the last band's
+   first day: today's last is 120 (Re-course). */
+export function barBands(fn, upTo = 1000) {
+  const out = [];
+  for (let d = 0; d <= upTo; d++) {
+    const b = fn(d), last = out[out.length - 1];
+    if (last && last.txt === b.txt) last.to = d;
+    else out.push({ from: d, to: d, txt: b.txt, color: b.color, ink: b.ink });
+  }
+  if (out.length) out[out.length - 1].to = null;
+  return out;
+}
+/* Whether the Tracker tracks flex at all (D1006 — one switch for the whole Tracker, to build with [TRK-FLEX-SETTING];
+   D1007: with it off the Legend's flex part goes). Always on until that switch is built; the Legend asks here, so
+   the switch has one place to answer. */
+export function flexOn() { return true; }
 export function sliceBg(cols) {
   if (!cols.length) return ''; if (cols.length === 1) return cols[0];
   const step = 100 / cols.length, st = [];
