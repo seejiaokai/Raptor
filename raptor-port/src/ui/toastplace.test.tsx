@@ -13,6 +13,9 @@ import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { toast, clearToast } from './toast'
 import { FloatWin, _resetFloatWins } from './FloatWindow'
+import { ChangesWindow } from './ChangesWindow'
+import { setChgWin } from '../state/view'
+import { initStore, setSession } from '../state/store'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 const realMM = (window as any).matchMedia
@@ -52,6 +55,19 @@ describe('D731 (1) — on a phone, while a window is open, the passing note is s
       toast('Undid: a take-off time', 'ok')
       expect(face().dataset.at, 'the open changes window is').toBe('top')
     } finally { cw.remove() }
+  })
+  /* …and the backlog's own order: the note is ALREADY up (an Undo's) when the changes window opens — the window moves it
+     (the batch's check, 19 Oct 26 — the scenario designer's S3-03: the test above raised the note after the window) */
+  it('a phone: a note already up when the changes window opens goes to the top', async () => {
+    asPhone(true)
+    initStore(); setSession({ user: 'a', role: 'admin' })
+    toast('Undid: a take-off time', 'ok')
+    expect(face().dataset.at, 'no window yet: at the foot').toBe('foot')
+    try {
+      await act(async () => { setChgWin({ day: 'week', tab: 'all', group: 'item' }); root.render(<ChangesWindow />) })
+      expect(document.querySelector('.chgwin:not([hidden])'), 'the window is up (or this test proves nothing)').toBeTruthy()
+      expect(face().dataset.at, 'the note it found there moved to the top').toBe('top')
+    } finally { await act(async () => { setChgWin(null) }) }
   })
   it('a phone with NO window up: at the foot, as before', () => {
     asPhone(true)
