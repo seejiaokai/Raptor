@@ -19,7 +19,7 @@ rmSync(OUT, { recursive: true, force: true }); mkdirSync(OUT, { recursive: true 
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 const browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
 const sleep = ms => new Promise(r => setTimeout(r, ms))
-console.log('three1018-walk v1 ->', OUT, 'at', BASE)
+console.log('three1018-walk v4 ->', OUT, 'at', BASE)
 
 const results = [], problems = []
 let pic = 0
@@ -53,7 +53,8 @@ const cardRead = () => {
   const seen = e => !e ? '' : [...e.childNodes].map(n => n.nodeType === 3 ? n.textContent : (vis(n) ? n.textContent : '')).join('').replace(/\s+/g, ' ').trim()
   const hd = pg.querySelector('.card-hd')
   const btns = hd ? [...hd.querySelectorAll('button')].filter(vis) : []
-  const tops = [...new Set(btns.map(b => Math.round(b.getBoundingClientRect().top)))]
+  /* each button's middle: buttons a hair apart in height sit a pixel apart at the top on one line */
+  const tops = btns.map(b => { const q = b.getBoundingClientRect(); return Math.round(q.top + q.height / 2) })
   const r = vis(hd)
   const rows = [...pg.querySelectorAll('[data-testid^="row-"]')].filter(e => { const q = vis(e); return q && q.top >= 0 && q.bottom <= innerHeight })
   const past = btns.filter(b => b.getBoundingClientRect().right > innerWidth + 0.5).length
@@ -83,8 +84,8 @@ for (const role of ['admin', 'member']) {
       m.oil === wantOil && m.arrange === wantArr,
       `OIL "${m.oil}", Rearrange "${m.arrange}"`, p)
     check(`L ${role} ${w} wide: the card's head is one line with − and + on it, nothing past the edge`,
-      m.tops.length === 1 && m.zoom && m.past === 0 && m.sideways <= 0,
-      `button tops ${JSON.stringify(m.tops)}, head ${m.hdH}px, zoom shown ${m.zoom}, past the edge ${m.past}, page sideways ${m.sideways}; ${m.rowsOnScreen} rows of names on screen; grid padding ${m.stagePad}`)
+      Math.max(...m.tops) - Math.min(...m.tops) <= 2 && m.zoom && m.past === 0 && m.sideways <= 0,
+      `button middles ${JSON.stringify(m.tops)}, head ${m.hdH}px, zoom shown ${m.zoom}, past the edge ${m.past}, page sideways ${m.sideways}; ${m.rowsOnScreen} rows of names on screen; grid padding ${m.stagePad}`)
     if (w > 430 && w <= 700) check(`L ${role} ${w} wide: the grid's padding is the wider screens' (unchanged)`, m.stagePad !== '10px', `padding-left ${m.stagePad}`)
     await ctx.close()
   }
@@ -228,7 +229,7 @@ const MAN = 'Warden', MANK = 'nact'
   const t = await sheetText(page)
   const p = await shot(page, 'U1-delete-sheet')
   check('U1b Delete puts up the upchit sheet: "Deleting this upchit will … ATT C Oct 19 – Oct 20 → now ends Oct 23, its days given back", no fit line, a red "Delete upchit"',
-    !!t && /Upchit\s+.\s+Warden/.test(t) && /Deleting this upchit will/.test(t) && /ATT C\s*Oct 19\s*.\s*Oct 20\s*→\s*now ends\s*Oct 23, its days given back/.test(t) && !/Fit for full duty/.test(t) && /Delete upchit/.test(t),
+    !!t && /Upchit\s+.\s+Warden/.test(t) && /Deleting this upchit will/i.test(t) && /ATT C\s*Oct 19\s*.\s*Oct 20\s*→\s*now ends\s*Oct 23, its days given back/.test(t) && !/Fit for full duty/.test(t) && /Delete upchit/.test(t),
     'sheet: ' + t, p)
   const cls = await page.locator(T('upconf-save')).getAttribute('class')
   check('U1c its button is the red one', /danger/.test(cls || ''), 'class ' + cls)
@@ -272,7 +273,7 @@ const MAN = 'Warden', MANK = 'nact'
   const t = await sheetText(page, 3000)
   const inline = await page.locator(T('idy-ask')).count()
   const p = await shot(page, 'U4-day-delete-key-sheet')
-  check('U4a Delete on the line puts up the same sheet, in place of the one-line question', has > 0 && !!t && inline === 0 && /Deleting this upchit will/.test(t) && /now ends\s*Oct 23, its days given back/.test(t), `line found ${has}; one-line question ${inline}; sheet: ${t}`, p)
+  check('U4a Delete on the line puts up the same sheet, in place of the one-line question', has > 0 && !!t && inline === 0 && /Deleting this upchit will/i.test(t) && /now ends\s*Oct 23, its days given back/.test(t), `line found ${has}; one-line question ${inline}; sheet: ${t}`, p)
   if (t) { await press(W, sheetBtn(W, 'save')); await sleep(800) }
   const dayUp = await page.locator(T('win-inputsday')).isVisible().catch(() => false)
   const d = await bars(page, MAN)
@@ -338,6 +339,13 @@ const D = await world({ storageState: s2, tag: 'U desk2' })
   const pg = D.page
   const r = await bars(pg, MAN)
   check('U7-0 after a reload Warden still reads ATT C Mon–Fri with no upchit', span(r, 'ATT C') === nums(19, 23) && span(r, 'Upchit') === 'none', `ATT C ${span(r, 'ATT C')}, Upchit ${span(r, 'Upchit')}`)
+  /* the demo world has no published day: publish Sat 18 Jul (day 5) through the board's own sign-offs and Publish */
+  const L = await import('./lib.mjs')
+  await L.board(pg, 5)
+  const pr = await L.publish(pg, 5)
+  await L.closeBoard(pg)
+  console.log('U7 set-up, Saturday published through the board:', JSON.stringify(pr))
+  await pg.evaluate(() => window.go('inputs')); await sleep(800)
   const pub = await pg.evaluate(() => ({ days: window.approvedDays(), dates: window.DATES }))
   console.log('published days of the loaded week:', JSON.stringify(pub))
   const di = pub.days.find(i => i >= 2 && i <= 5)
@@ -345,22 +353,41 @@ const D = await world({ storageState: s2, tag: 'U desk2' })
   else {
     const dd = +pub.dates[di].replace(/\D/g, '')     // "Jul 18" -> 18
     const onJuly = await toMonth(D, 'July 2026')
-    const M = 'Grit', K = await pg.evaluate(() => Object.keys(window.PEOPLE).find(k => window.PEOPLE[k].cs === 'Grit'))
+    /* a man with NOTHING on file in that week (the first try took Grit, who has the demo's own ATT C 13–17 Jul: the second
+       ATT C was refused as an overlap and the step measured the demo's row — the walk-scripts' "a fixture step asserts it
+       landed") */
+    const pick = await pg.evaluate(() => {
+      const P = window.PEOPLE
+      const busy = new Set(window.INPUTS.filter(r => /^Jul 1[3-9]$/.test(String(r.date)) || /^Jul 1[3-9]$/.test(String(r.endDate || ''))).flatMap(r => [r.person, ...(r.people || []).map(x => x.p)]).map(String))
+      const k = Object.keys(P).find(k => !P[k].archived && !P[k].deleted && !P[k].special && !P[k].san && !P[k].pers && !busy.has(k) && !/^(Warden|Piston|Cinch)$/.test(P[k].cs))
+      return { k, cs: P[k].cs }
+    })
+    const M = pick.cs, K = pick.k
     const before = await bars(pg, M)
-    console.log('Grit on July before:', JSON.stringify(before.map(b => b.label + ' ' + b.days.join(','))))
+    console.log(M + ' on July before:', JSON.stringify(before.map(b => b.label + ' ' + b.days.join(','))))
+    check(`U7-1 ${M} has nothing on file 13–19 Jul`, before.length === 0, JSON.stringify(before.map(b => b.label)))
     /* ATT C from two days before the published day to it; the upchit the day after the ATT C starts cuts it short of it */
     const a = await downAndUp(D, K, M, 7, dd - 2, dd, dd - 1)
-    const pendBefore = await pg.evaluate(i => window.pendDays().includes(i), di)
-    check(`U7a set-up on July: Grit ATT C ${dd - 2} only, upchit ${dd - 1} (the published ${pub.dates[di]} no longer covered)`, onJuly && span(a, 'ATT C') === String(dd - 2) && span(a, 'Upchit') === String(dd - 1), `ATT C ${span(a, 'ATT C')}, Upchit ${span(a, 'Upchit')}; the published day has changes waiting: ${pendBefore}`)
+    /* what the published day's own heading on Edit Schedule says — the screen, not a store probe */
+    const headOf = async () => {
+      await pg.evaluate(() => window.go('editsched')); await sleep(900)
+      const h = await pg.evaluate(i => { const d = document.querySelector(`#eWeek .day[data-day="${i}"]`); if (!d) return '(no day)'; return (d.querySelector('.dhead, .day-head, header') || d).innerText.replace(/\s+/g, ' ').slice(0, 220) }, di)
+      await pg.evaluate(() => window.go('inputs')); await sleep(800); await toMonth(D, 'July 2026')
+      return h
+    }
+    const headBefore = await headOf()
+    const pendBefore = /\d+ pending/i.test(headBefore)
+    check(`U7a set-up on July: ${M} ATT C ${dd - 2} only, upchit ${dd - 1} (the published ${pub.dates[di]} no longer covered)`, onJuly && span(a, 'ATT C') === String(dd - 2) && span(a, 'Upchit') === String(dd - 1), `ATT C ${span(a, 'ATT C')}, Upchit ${span(a, 'Upchit')}; the published day has changes waiting: ${pendBefore}`)
     await openBar(D, M, 'Upchit'); await press(D, pg.locator('#inpEditDel'))
     const t = await sheetText(pg)
     const p = await shot(pg, 'U7-published-sheet')
     check(`U7b the sheet says the ATT C now ends ${pub.dates[di]}`, !!t && new RegExp(`now ends\\s*${pub.dates[di]}, its days given back`).test(t), 'sheet: ' + t, p)
     if (t) { await press(D, sheetBtn(D, 'save')); await sleep(800) }
     await closeWins(pg)
-    const pendAfter = await pg.evaluate(i => window.pendDays().includes(i), di)
+    const headAfter = await headOf()
+    const pendAfter = /1 pending/i.test(headAfter) && /Not yet signed/i.test(headAfter)
     const b = await bars(pg, M)
-    check(`U7c deleted: ATT C ${dd - 2}–${dd}, and the published ${pub.dates[di]} reads a change waiting (D178)`, span(b, 'ATT C') === nums(dd - 2, dd) && span(b, 'Upchit') === 'none' && pendAfter, `ATT C ${span(b, 'ATT C')}, Upchit ${span(b, 'Upchit')}; changes waiting before ${pendBefore}, after ${pendAfter}`, await shot(pg, 'U7-published-after'))
+    check(`U7c deleted: ATT C ${dd - 2}–${dd}, and the published ${pub.dates[di]} goes from nothing waiting to "1 pending · Not yet signed" (D178, D103)`, span(b, 'ATT C') === nums(dd - 2, dd) && span(b, 'Upchit') === 'none' && !pendBefore && pendAfter, `ATT C ${span(b, 'ATT C')}, Upchit ${span(b, 'Upchit')}; its heading before: "${headBefore}" — after: "${headAfter}"`, await shot(pg, 'U7-published-after'))
     await pg.evaluate(() => window.go('editsched')); await sleep(900)
     const head = await pg.evaluate(i => { const d = document.querySelector(`#eWeek .day[data-day="${i}"]`); if (!d) return '(no day)'; d.scrollIntoView({ block: 'start', inline: 'start' }); return (d.querySelector('.dhead, .day-head, header') || d).innerText.replace(/\s+/g, ' ').slice(0, 220) }, di)
     check(`U7d Edit Schedule: the published ${pub.dates[di]}'s head reads a change waiting (RECORD its words)`, /pending/i.test(head), 'head: ' + head, await shot(pg, 'U7-editsched-published-day'))
