@@ -266,7 +266,7 @@ describe('D462 / D120 — kept: one stored row, read at boot, carried by a whole
     expect(closing).toMatch(/flex settings restored/i)
     /* an older file, written before the setting, changes nothing */
     const older = FMT.buildFile({ savedAt: '2026-10-01T00:00:00Z', charts: { ...charts, flex: undefined } })
-    delete (older.charts as any).flex
+    delete ((older as any).charts as any).flex
     await act(async () => { closing = await importFile(older) })
     expect(C.flexSetting(), 'unchanged by an older file').toEqual(mine)
     expect(closing).not.toMatch(/flex/i)

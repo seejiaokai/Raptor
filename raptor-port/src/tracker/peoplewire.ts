@@ -66,7 +66,7 @@ export function medForTracker(inputs: any): Record<string, TrackerMed[]> {
     const row: TrackerMed = { iid: String(r.iid || ''), type: inpType(r.type), startIso: firstEndIso(a), endIso: firstEndIso(b),
       half: !r.allday && (r.half === 'am' || r.half === 'pm') ? r.half : '' }
     const f = firstEndOrd(r), next = ordShift(b, 1)
-    if (f != null && f > b && (ups[p] || []).includes(next)) { row.firstEnd = firstEndIso(f); row.cutOn = firstEndIso(next) }
+    if (f != null && next != null && f > b && (ups[p] || []).includes(next)) { row.firstEnd = firstEndIso(f); row.cutOn = firstEndIso(next) }
     ;(out[p] = out[p] || []).push(row)
   }
   for (const p in out) out[p].sort((x, y) => (x.startIso < y.startIso ? -1 : x.startIso > y.startIso ? 1 : 0))
