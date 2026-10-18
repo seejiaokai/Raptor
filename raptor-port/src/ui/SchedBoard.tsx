@@ -29,7 +29,7 @@ import { CXR_CFG, addCxReason, delCxReason, renameCxReason, moveCxReason, cxReas
 import { canEditSched } from '../state/auth'
 import { refreshHighlights } from './highlights'
 import { wireRowDrag } from './rowdrag'
-import { editingText } from './textedit'
+import { editingText, textCaret } from './textedit'
 import { useBoardVersion, useVersion, useUndoVersion } from './useStore'
 import { UndoPair, SyncChip, BellButton, globalUndoEngine } from './topbits'
 import { SaveBand } from './SaveStatus'
@@ -286,7 +286,7 @@ export function SchedBoard() {
     let caret: HTMLElement | null = null
     if (editingText()) {
       pendingPaint.current = { di: SBDAY, nav: navGen() }
-      caret = document.activeElement as HTMLElement | null
+      caret = textCaret()
       if (!caret || DPREV.has(SBDAY) || !boardRef.current || !boardRef.current.contains(caret)) return
     } else pendingPaint.current = null
     const di = SBDAY

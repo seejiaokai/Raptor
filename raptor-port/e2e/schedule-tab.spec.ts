@@ -134,6 +134,28 @@ for (const [name, viewport] of [['desktop',{width:1440,height:900}],['phone',{wi
       expect(await mark()).toBe(at)
       expect(await page.evaluate(() => (window as any).commandStreamLen()), 'nor did a second one').toBe(seq)
     })
+    /* [EDIT-SECOND-CLICK] (the Codex stack check, 5 Oct 26): a CHANGED box left by a click redrew the day while the focus
+       was on its way to the box clicked — that box was replaced, and the caret was nowhere until a second click. One
+       click takes the caret now, on a day not yet published and on a published one. */
+    for (const published of [false, true]) test(`one click after a changed box takes the caret${published ? ' (a published day)' : ''}`, async ({ page }) => {
+      await login(page); await go(page, 'editsched')
+      if (published) {
+        await page.evaluate(() => { const w = window as any, g = w.signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'; w.setDayApproved(0, true); w.afterSchedMutate() })
+        await page.waitForTimeout(300)
+      }
+      const surface = '#eWeek .day[data-day="0"]'
+      const to = field(page, surface, 'ff:0.0.0.to')
+      /* the mission beside it (the same wave's block) and one in the next wave (another block) */
+      for (const [time, key] of [['1255', 'ff:0.0.0.msn'], ['1256', 'ff:0.1.0.msn']] as const) {
+        await to.click(); await to.fill(time)
+        await field(page, surface, key).click()
+        await page.keyboard.type('Z')
+        await focused(field(page, surface, key))
+        expect(await field(page, surface, key).textContent(), `${key} took the typing`).toMatch(/Z$/)
+        await page.keyboard.press('Escape')
+      }
+      expect(await page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].to)).toBe('12:56')
+    })
     test('native Board change saves once, refreshes repeated fields and settles after text exit', async ({ page }) => {
       await login(page); await go(page, 'editsched'); await openBoard(page)
       const cs = field(page, '#sbBoard', 'ff:0.0.0.cs'), seq = await page.evaluate(() => (window as any).commandStreamLen())

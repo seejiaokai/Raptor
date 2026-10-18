@@ -73,7 +73,20 @@ export function routeReportingInput(e:Event){
 /* `key` — the box it wrote, carried as a fact for Undo's words (the change-recording plan B8) */
 const commitText = (key: string, mark: () => void) => schedWrite(SCHED_TYPES.text, () => { reconcileIssuedMarks(); mark() }, { key })
 
+/* THE BOX A CLICK IS TAKING THE CARET TO ([EDIT-SECOND-CLICK], the Codex stack check, 5 Oct 26). A changed box left by a
+   click commits here, and the day redraws before the focus has arrived anywhere — between the two the page itself has it.
+   The redraw saw no caret, replaced the block holding the box clicked, and the focus landed on a box no longer there: no
+   caret until a second click. focusout names where the focus is going; while it is on its way that box is treated as the
+   caret (editingText, textCaret), so its block is left standing as a typed-in block is. Cleared when the focus arrives
+   (routeFocusIn) or the press ends without it. */
+let ARRIVING: HTMLElement | null = null
+const TEXTBOX = '[data-txt],[data-bfld],[data-inp],[data-ifld],[data-role-remarks],[data-role-ui]'
+const arriving = () => (ARRIVING && ARRIVING.isConnected ? ARRIVING : (ARRIVING = null))
+if (typeof document !== 'undefined') document.addEventListener('pointerup', () => { if (ARRIVING && document.activeElement !== ARRIVING) setTimeout(() => { if (document.activeElement !== ARRIVING) ARRIVING = null }, 0) }, true)
+
 export function routeFocusOut(e: FocusEvent) {
+  const rt = e.relatedTarget as HTMLElement | null
+  ARRIVING = rt && rt.closest && (rt.closest(TEXTBOX) || rt.isContentEditable) ? rt : null
   /* editMode() (store.ts) drives whether html.ts renders contenteditable="true"
      at all, but a field already focused when a session changes underneath it
      (logout while mid-edit) still fires this handler on blur. Every text
@@ -320,6 +333,7 @@ function refreshTextDestination(el: HTMLElement) {
    same reader the Tab route uses — only where it differs, never a write. */
 const ARRIVALS = '[data-txt],[data-bfld],[data-inp],[data-ifld],[data-itline],[data-bombs],[data-area],[data-atime]'
 export function routeFocusIn(e: FocusEvent) {
+  ARRIVING = null
   if (!canEditSched() || view.CURPAGE !== 'editsched') return
   const t = e.target as HTMLElement
   const el = t && t.closest ? t.closest(ARRIVALS) as HTMLElement | null : null
@@ -454,6 +468,11 @@ export function routeKeyDown(e: KeyboardEvent) {
 /* the EditWeek effect asks this before swapping day markup: never repaint
    under the caret (the reference's txtCommit guard, as a predicate) */
 export function editingText() {
+  return !!textCaret()
+}
+/* the text box with the caret — or, while a click is taking it from one box to another, the box it is going to */
+export function textCaret(): HTMLElement | null {
   const a = document.activeElement as any
-  return !!(a && a.closest && (a.closest('[data-txt],[data-bfld],[data-inp],[data-ifld],[data-role-remarks],[data-role-ui]') || a.isContentEditable))
+  if (a && a.closest && (a.closest(TEXTBOX) || a.isContentEditable)) return a
+  return a && a !== document.body && a !== document.documentElement ? null : arriving()
 }

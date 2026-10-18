@@ -16,7 +16,7 @@ import { refreshHighlights } from './highlights'
 import { beginGlide } from './weekglide'
 import { weekScrollMax, panHold } from './pan'
 import { mountPeek } from './peek'
-import { editingText } from './textedit'
+import { editingText, textCaret } from './textedit'
 import { wireRowDrag } from './rowdrag'
 import { useVersion } from './useStore'
 import { canEditSched } from '../state/auth'
@@ -138,7 +138,7 @@ export function EditWeek() {
          header's clock is corrected in place (W16). Kept narrow on purpose: the caret must be in THIS week (a caret in
          the board over it leaves the hidden week to its one repaint afterwards, as before), nothing about the week's
          shape may have changed, and no landing is waiting — any of those is the ordinary paint's job. */
-      const caret = document.activeElement as HTMLElement | null
+      const caret = textCaret()
       const was = prev.current, edit = HOOKS.editMode()
       if (!caret || !was || was.ed !== edit || !root.contains(caret) || WEEKJUMP != null || PEEKLAND != null || CARRYDAY != null) return
       const now = editDayStrings(edit)
