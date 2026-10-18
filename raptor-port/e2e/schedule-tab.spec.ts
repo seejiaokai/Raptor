@@ -156,6 +156,21 @@ for (const [name, viewport] of [['desktop',{width:1440,height:900}],['phone',{wi
       }
       expect(await page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].to)).toBe('12:56')
     })
+    /* …by a finger too, where the phone has one: its lift and the events that move the focus come as separate steps */
+    test('one finger tap after a changed box takes the caret on the Scheduler Board', async ({ page }) => {
+      test.skip(name !== 'phone', 'a finger on the phone')
+      await login(page); await go(page, 'editsched'); await openBoard(page)
+      const box = (key: string) => page.locator(`#sbBoard [data-bfld="${key}"]:visible`).first()
+      const tap = async (key: string) => { await box(key).evaluate(e => e.scrollIntoView({ block: 'center' })); const b = (await box(key).boundingBox())!; await page.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2) }
+      for (const [time, key] of [['1255', 'ff:0.0.0.msn'], ['1256', 'ff:0.1.0.msn']] as const) {
+        await tap('ff:0.0.0.to'); await box('ff:0.0.0.to').fill(time)
+        await tap(key)
+        await page.keyboard.type('Z')
+        await focused(box(key))
+        await expect(box(key), `${key} took the typing`).toHaveValue(/Z$/)
+        await page.keyboard.press('Escape')
+      }
+    })
     /* …and the Scheduler Board's own boxes, which save on their change rather than on leaving */
     test('one click after a changed box takes the caret on the Scheduler Board', async ({ page }) => {
       await login(page); await go(page, 'editsched'); await openBoard(page)

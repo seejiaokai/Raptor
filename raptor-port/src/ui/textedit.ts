@@ -92,7 +92,9 @@ const textBoxOf = (t: any): HTMLElement | null => {
 }
 if (typeof document !== 'undefined') {
   document.addEventListener('pointerdown', e => { const b = textBoxOf(e.target); if (b && document.activeElement !== b) ARRIVING = b }, true)
-  document.addEventListener('pointerup', () => { if (ARRIVING && document.activeElement !== ARRIVING) setTimeout(() => { if (document.activeElement !== ARRIVING) ARRIVING = null }, 0) }, true)
+  /* a finger's lift and the mouse-style events that then move the focus come as separate steps (the walk's phone board,
+     19 Oct 26): let go of the box only well after a touch, at once after a mouse */
+  document.addEventListener('pointerup', (e: PointerEvent) => { if (ARRIVING && document.activeElement !== ARRIVING) setTimeout(() => { if (document.activeElement !== ARRIVING) ARRIVING = null }, e.pointerType === 'mouse' ? 0 : 600) }, true)
 }
 
 export function routeFocusOut(e: FocusEvent) {

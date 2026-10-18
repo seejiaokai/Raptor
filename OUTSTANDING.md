@@ -83,6 +83,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [PEND-INTIME-WORDS] — "To go out" words an edited reporting line as the same text before and after.
 - [BOARD-INTIME-JUMP] — on the Scheduler Board a reporting-line change in the changes window cannot be tapped.
 - [EDIT-SECOND-CLICK] — after a changed text box on Edit Schedule, the first click into another box does not take the caret.
+- [EDIT-BUTTON-AFTER-CHANGE] — straight after a changed text box, the first press of a button on the week or the board ("+ In-time / Rally", "+ Line") does nothing.
 - [TAB-LAST-BOX-TEST-GAPS] — tests only: three gaps in the test of Tab in a day's last box.
 - [CRP-FLAG] — live warnings on the published schedule: two parts are live; the rest of its plan is checked against the code first.
 - [INTIME-LINES-DRAG] — drag a wave's In-time / Rally lines into order on the Scheduler Board, Auto sort too (ruled, D593; not built).
@@ -2162,6 +2163,9 @@ with a retry due at the click; (2) "a window he has moved keeps its place and si
 a resized one, an operated ALL AVAIL window and the preview-bar combinations. The report:
 `raptor-port/docs/superpowers/briefs/2026-10-06-owed-small-reads-astra.md` Part 3. **Place (the agent's line):** low — with the next
 change to the failed-save warning or its test.
+
+### [EDIT-BUTTON-AFTER-CHANGE] Straight after a changed text box, the first press of a button on Edit Schedule's week or the Scheduler Board does nothing (found 19 Oct 26, the D994 batch's walk, walker D, S4-05 — OLDER than the batch; low)
+Change a take-off (the caret left in the box), then press ONE button: the week's "+ In-time / Rally" (In-time lines 2 → 2, three tries) or the board's "+ Line" (formations 2 → 2); the take-off saves and the area time catches up, but the button's own action does not happen; a second press works, and the same button with nothing changed first works at once. Pictures ; the walker's table . **Cause (the host's reading, by the same route as [EDIT-SECOND-CLICK]):** leaving the changed box saves it, and the day (or the board's panel) redraws between the press and its click — the button pressed is replaced, so the click lands on nothing. The batch's fix holds the redraw only for a TEXT BOX being pressed (); a button is not one, and holding a panel for any press would also hold 's deferred save (it asks ), so it wants its own small hold (a press of a button keeps its block until the click, then the redraw). **Place:** low — with the next change to the text boxes or the board's buttons; a browser test first ().
 
 ### [EDIT-SECOND-CLICK] After a changed text box on Edit Schedule, the first click into another box does not take the caret (found 5 Oct 26, the Codex stack check)
 On Edit Schedule's week: type a new value in a text box (a take-off, a mission), then click ONCE into another text box. The day
