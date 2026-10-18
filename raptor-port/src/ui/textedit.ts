@@ -93,9 +93,14 @@ const textBoxOf = (t: any): HTMLElement | null => {
 /* …and it never STICKS (the fresh read of the batch, 19 Oct 26 — F1): while the mark stands the week and the board hold
    their redraw for it, so every way the focus fails to arrive lets it go AND repaints — a finger that lands on a box and
    then scrolls (pointercancel, no pointerup), the time after a press's lift, a focus that leaves for nowhere while no
-   press is down. */
+   press is down.
+   It repaints only what was HELD (the narrow read of the fix round, 19 Oct 26 — N1): the letting-go is said by
+   CARET_GONE, which only the week's and the board's held paint listen to — each does nothing when no paint is owed. A
+   whole-app notify() here ran at the start of nearly every finger scroll on a phone (most begin on a text box) and rebuilt
+   all seven days for nothing (docs/performance.md — a gesture that only moves the view never notifies). */
+export const CARET_GONE = 'raptor-caret-gone'
 let PRESSING = false
-const letGo = () => { if (ARRIVING && document.activeElement !== ARRIVING) { ARRIVING = null; notify() } }
+const letGo = () => { if (ARRIVING && document.activeElement !== ARRIVING) { ARRIVING = null; document.dispatchEvent(new Event(CARET_GONE)) } }
 if (typeof document !== 'undefined') {
   document.addEventListener('pointerdown', e => { PRESSING = true; const b = textBoxOf(e.target); if (b && document.activeElement !== b) ARRIVING = b }, true)
   document.addEventListener('pointercancel', () => { PRESSING = false; letGo() }, true)

@@ -4,7 +4,7 @@
    arrived or a press ENDED — a finger that landed on a box and then scrolled ends in pointercancel, not pointerup, and a
    focus that went nowhere kept the mark; while it stood, the week and the board held their redraw back for it. */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { textCaret, editingText, routeFocusOut } from './textedit'
+import { textCaret, editingText, routeFocusOut, CARET_GONE } from './textedit'
 import { setSession } from '../state/auth'
 import * as store from '../state/store'
 
@@ -24,13 +24,20 @@ describe('the pressed box counts as the caret only while the press is on its way
     expect(textCaret()).toBe(box)
     expect(editingText()).toBe(true)
   })
-  it('a finger that lands on a box and then scrolls (pointercancel) lets it go at once, and the page repaints', () => {
+  /* …and it says so to the two surfaces that may hold a redraw for it, never by the whole app's notify (the narrow read
+     of the fix round, 19 Oct 26 — N1): most of a phone's scrolls start on a text box, and a notify there rebuilt all seven
+     days at the start of every fling for nothing (docs/performance.md — a gesture that only moves the view never notifies) */
+  it('a finger that lands on a box and then scrolls (pointercancel) lets it go at once, says so, and repaints nothing itself', () => {
     const n = vi.spyOn(store, 'notify')
+    let gone = 0; const said = () => { gone++ }
+    document.addEventListener(CARET_GONE, said)
     press(box, 'pointerdown')
     press(box, 'pointercancel')
+    document.removeEventListener(CARET_GONE, said)
     expect(textCaret(), 'no caret').toBeNull()
     expect(editingText()).toBe(false)
-    expect(n, 'the held redraw is let go').toHaveBeenCalled()
+    expect(gone, 'the surfaces holding a redraw are told').toBe(1)
+    expect(n, 'no whole-app repaint for a scroll').not.toHaveBeenCalled()
   })
   it('a focus that goes nowhere, with no press down, keeps no mark', () => {
     press(box, 'pointerdown'); press(box, 'pointerup', 'mouse')

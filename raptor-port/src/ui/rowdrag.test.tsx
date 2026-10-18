@@ -244,7 +244,7 @@ describe('wireRowDrag', () => {
       expect(DAYS[di].waves.map((w: any) => w.label)).toEqual([was[1], was[0], ...was.slice(2)])
     }))
 
-    /* D593, D594: a wave's In-time / Rally lines drag into order on the Scheduler Board — never on Edit Schedule's week */
+    /* D593, D594 (the register's ITD1): a wave's In-time / Rally lines drag into order on the Scheduler Board — never on Edit Schedule's week */
     it('drags an In-time / Rally line onto another line of its wave on the board', () => withEdit(() => {
       DAYS[0].waves[0].intimes = ['07:00H: IN TIME + WX/NOTAMS', '07:30H: RALLY']
       host.innerHTML = boardHTML(0)
@@ -290,6 +290,37 @@ describe('wireRowDrag', () => {
         over(host.querySelector('[data-move="mv:it.0.0.0"]')!); up()
         expect(DAYS[0].waves[0].intimes, 'C moved above B; A gone; D where it was').toEqual(['C 08:00H', 'B 07:30H', 'D 08:30H'])
       } finally { redraw(); document.removeEventListener('focusout', routeFocusOut) }
+    }))
+    /* the narrow read of the fix round (19 Oct 26, O2): the two other routes of F2 — the emptied line's OWN grip pressed
+       (the line goes, no drag), and the caret in the WEEK's copy of a line while the board's grip is pressed (on a phone
+       the board button never takes the focus, so the week's line still has it) */
+    it("a line emptied, then its own grip pressed: the line goes and nothing is dragged", () => withEdit(() => {
+      DAYS[0].waves[0].intimes = ['A 07:00H', 'B 07:30H', 'C 08:00H', 'D 08:30H']
+      host.innerHTML = boardHTML(0)
+      document.addEventListener('focusout', routeFocusOut)
+      const redraw = subscribe(() => { host.innerHTML = boardHTML(0) })
+      try {
+        const line0 = host.querySelector('[data-itline="0|0|0"]') as HTMLElement
+        line0.focus(); line0.textContent = ''
+        down(host.querySelector('[data-move="mv:it.0.0.0"] .sb-grip') as HTMLElement)
+        over(host.querySelector('[data-move="mv:it.0.0.2"]')!); up()
+        expect(DAYS[0].waves[0].intimes, 'A gone; the rest as they were').toEqual(['B 07:30H', 'C 08:00H', 'D 08:30H'])
+      } finally { redraw(); document.removeEventListener('focusout', routeFocusOut) }
+    }))
+    it("the week's copy of a line emptied, then the board's grip of a lower line: the line pressed moves", () => withEdit(() => {
+      DAYS[0].waves[0].intimes = ['A 07:00H', 'B 07:30H', 'C 08:00H', 'D 08:30H']
+      host.innerHTML = boardHTML(0)
+      const weekLine = document.createElement('span')
+      weekLine.dataset.itline = '0|0|0'; weekLine.setAttribute('contenteditable', 'true'); weekLine.textContent = 'A 07:00H'
+      document.body.append(weekLine)
+      document.addEventListener('focusout', routeFocusOut)
+      const redraw = subscribe(() => { host.innerHTML = boardHTML(0) })
+      try {
+        weekLine.focus(); weekLine.textContent = ''
+        down(host.querySelector('[data-move="mv:it.0.0.2"] .sb-grip') as HTMLElement)
+        over(host.querySelector('[data-move="mv:it.0.0.0"]')!); up()
+        expect(DAYS[0].waves[0].intimes, 'C moved above B; A gone; D where it was').toEqual(['C 08:00H', 'B 07:30H', 'D 08:30H'])
+      } finally { redraw(); weekLine.remove(); document.removeEventListener('focusout', routeFocusOut) }
     }))
     it('an In-time / Rally line is not dropped on a wave block or another wave’s line', () => withEdit(() => {
       const di = DAYS.findIndex((d: any) => (d.waves || []).length > 1)

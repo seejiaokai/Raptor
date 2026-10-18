@@ -66,6 +66,37 @@ afterEach(async () => {
   host.remove(); vi.restoreAllMocks()
 })
 
+/* The narrow read of the fix round (19 Oct 26, N1 — and F1's own suggested test): a finger that lands on a week box and
+   then scrolls holds the week's redraw only until the press is cancelled; the redraw it held is then drawn, without the
+   whole app's notify. */
+describe('a held week redraw is drawn once a pressed box is let go', () => {
+  it('a change while a finger is on a box waits, and shows the moment the press is cancelled', async () => {
+    const press = (el: Element, type: string) => el.dispatchEvent(Object.assign(new Event(type, { bubbles: true }), { pointerType: 'touch' }))
+    await act(async () => { (document.activeElement as HTMLElement)?.blur() })
+    const msn = week('ff:0.0.0.msn'), was = msn.textContent
+    press(msn, 'pointerdown')
+    expect(editingText(), 'the pressed box counts as the caret').toBe(true)
+    await act(async () => { DAYS[0].waves[0].formations[0].msn = 'HELD-THEN-SHOWN'; notify() }); await tick()
+    expect(week('ff:0.0.0.msn').textContent, 'held while the finger is down').toBe(was)
+    await act(async () => { press(msn, 'pointercancel') }); await tick()
+    expect(editingText()).toBe(false)
+    expect(week('ff:0.0.0.msn').textContent, 'drawn once the press is let go').toBe('HELD-THEN-SHOWN')
+  })
+  it('the same on the Scheduler Board: its panel waits, and is drawn the moment the press is cancelled', async () => {
+    const press = (el: Element, type: string) => el.dispatchEvent(Object.assign(new Event(type, { bubbles: true }), { pointerType: 'touch' }))
+    await board(); await tick()
+    await act(async () => { (document.activeElement as HTMLElement)?.blur() })
+    const msn = box('ff:0.0.0.msn'), was = msn.value
+    press(msn, 'pointerdown')
+    expect(editingText(), 'the pressed box counts as the caret').toBe(true)
+    await act(async () => { DAYS[0].waves[0].formations[0].msn = 'HELD-THEN-SHOWN'; notify() }); await tick()
+    expect(box('ff:0.0.0.msn').value, 'held while the finger is down').toBe(was)
+    await act(async () => { press(msn, 'pointercancel') }); await tick()
+    expect(editingText()).toBe(false)
+    expect(box('ff:0.0.0.msn').value, 'drawn once the press is let go').toBe('HELD-THEN-SHOWN')
+  })
+})
+
 describe('D556 schedule Tab production wiring', () => {
   it('week uses B, empty Brief, each aircraft Remarks/stores, then Area/time and reverse', async () => {
     const keys = ['ff:0.0.0.cs','ff:0.0.0.msn','ff:0.0.0.br','ff:0.0.0.to','ff:0.0.0.ld','fr:0.0.0.0']

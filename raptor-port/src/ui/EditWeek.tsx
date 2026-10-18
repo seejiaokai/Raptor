@@ -16,7 +16,7 @@ import { refreshHighlights } from './highlights'
 import { beginGlide } from './weekglide'
 import { weekScrollMax, panHold } from './pan'
 import { mountPeek } from './peek'
-import { editingText, textCaret } from './textedit'
+import { editingText, textCaret, CARET_GONE } from './textedit'
 import { wireRowDrag } from './rowdrag'
 import { useVersion } from './useStore'
 import { canEditSched } from '../state/auth'
@@ -115,8 +115,9 @@ export function EditWeek() {
         setSettledPaint(n => n + 1) // Resume UI only, through the existing diff paint.
       }, 0)
     }
-    document.addEventListener('focusout', resume)
-    return () => { clearTimeout(timer); document.removeEventListener('focusout', resume) }
+    /* …and when a pressed box is let go without the focus arriving (textedit.ts CARET_GONE — a finger that scrolled) */
+    document.addEventListener('focusout', resume); document.addEventListener(CARET_GONE, resume)
+    return () => { clearTimeout(timer); document.removeEventListener('focusout', resume); document.removeEventListener(CARET_GONE, resume) }
   }, [])
 
   useEffect(() => {

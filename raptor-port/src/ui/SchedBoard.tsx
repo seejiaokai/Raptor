@@ -29,7 +29,7 @@ import { CXR_CFG, addCxReason, delCxReason, renameCxReason, moveCxReason, cxReas
 import { canEditSched } from '../state/auth'
 import { refreshHighlights } from './highlights'
 import { wireRowDrag } from './rowdrag'
-import { editingText, textCaret } from './textedit'
+import { editingText, textCaret, CARET_GONE } from './textedit'
 import { useBoardVersion, useVersion, useUndoVersion } from './useStore'
 import { UndoPair, SyncChip, BellButton, globalUndoEngine } from './topbits'
 import { SaveBand } from './SaveStatus'
@@ -248,8 +248,9 @@ export function SchedBoard() {
         setSettledPaint(n => n + 1) // UI only: no mutation, history or validation.
       }, 0)
     }
-    document.addEventListener('focusout', resume)
-    return () => { clearTimeout(timer); document.removeEventListener('focusout', resume) }
+    /* …and when a pressed box is let go without the focus arriving (textedit.ts CARET_GONE — a finger that scrolled) */
+    document.addEventListener('focusout', resume); document.addEventListener(CARET_GONE, resume)
+    return () => { clearTimeout(timer); document.removeEventListener('focusout', resume); document.removeEventListener(CARET_GONE, resume) }
   }, [])
   useEffect(() => {
     /* Still keyed on a bare `SBDAY == null`, not `!open` (considered and
