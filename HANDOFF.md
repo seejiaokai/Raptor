@@ -93,7 +93,11 @@ the later merge keeps both (D78).
   names the request's own kind; a course filed as a course reads "already on CSE".
 - **Branch:** `claude/schedule-amendments-fixes-fffce0`; no pull request yet. The preview server `sched-fixes-walk`
   (`.claude/launch.json`, port 4240) serves the frozen walk build — stop it when the walk and re-walk are done.
-- **Pick up here:** the walkers' reports (above, "Next").
+- **Running when written (19 Oct 26):** re-walkers E (share R1) and F (share R2) on 4240, and the fresh blind Opus code
+  read (report to `docs/superpowers/briefs/2026-10-19-sched-fixes-read-report.md`, or returned as text). If this chat
+  was compacted or replaced while they ran, their reports may be in `docs/handpass/parts/2026-10-19-sched-fixes-rewalk-*.md`
+  and that report file — read them there; a walker whose file is missing is walked again.
+- **Pick up here:** the re-walk's and the reader's reports (above, "Next").
 - **Opening line:** Switch this chat to the branch `claude/schedule-amendments-fixes-fffce0`: `git fetch origin`, `git switch claude/schedule-amendments-fixes-fffce0`, `git branch -u origin/claude/schedule-amendments-fixes-fffce0`, `git pull --ff-only` (if the switch is refused because another checkout holds the branch, release it there only if that folder has no uncommitted changes and is on the same commit as `origin/claude/schedule-amendments-fixes-fffce0`, then `git -C <that folder> switch --detach` and switch again; otherwise stop and tell me). Read `HANDOFF.md` — the `claude/schedule-amendments-fixes-fffce0` block under `## Now` — then finish the FULL bug check it describes, with pictures; browser tests on an E2E_PORT checked free. Nothing merges without my "merge live".
 <!-- /now -->
 
