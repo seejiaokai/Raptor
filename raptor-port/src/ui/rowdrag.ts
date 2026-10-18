@@ -194,10 +194,21 @@ export function wireRowDrag(el: HTMLElement) {
        anything up; the grip is found again by its row's address should the redraw have replaced it. */
     const typing = document.activeElement as HTMLElement | null
     if (typing && typing !== document.body && (typing.isContentEditable || typing.getAttribute('contenteditable') === 'true' || /^(INPUT|TEXTAREA)$/.test(typing.tagName))) {
-      const at = (grip.closest('[data-move]') as HTMLElement | null)?.dataset.move
+      /* AN EMPTIED IN-TIME LINE IS DELETED BY THIS BLUR (the fresh read of the batch, 19 Oct 26 — F2): the rows below it
+         move up one, so the pressed row's address is moved with them before the blur — found again by the old one, the
+         redraw handed back the line BELOW the one pressed; and a press on the emptied line's own grip is no drag */
+      let at = (grip.closest('[data-move]') as HTMLElement | null)?.dataset.move
+      const gone = (typing.closest('[data-itline]') as HTMLElement | null)?.dataset.itline
+      if (at && /^mv:it\./.test(at) && gone && !(typing.textContent || '').trim()) {
+        const [gd, gg, gi] = gone.split('|').map(Number), m = at.split('.')
+        if (+m[1]! === gd && +m[2]! === gg) {
+          if (+m[3]! === gi) { typing.blur(); return }
+          if (+m[3]! > gi!) at = `mv:it.${gd}.${gg}.${+m[3]! - 1}`
+        }
+      }
+      typing.blur()
       const atSec = (grip.closest('[data-secmove]') as HTMLElement | null)?.dataset.secmove
       const gripCls = grip.classList.contains('secgrip') ? '.secgrip' : grip.classList.contains('wvgrip') ? '.wvgrip' : '.sb-grip'
-      typing.blur()
       flushSync(() => notify())
       if (!grip.isConnected) {
         const row = grip.classList.contains('secgrip') ? (atSec ? el.querySelector(`[data-secmove="${atSec}"]`) : null) : (at ? el.querySelector(`[data-move="${at}"]`) : null)

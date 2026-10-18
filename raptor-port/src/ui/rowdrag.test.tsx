@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DAYS } from '../engine/data'
 import { landSel, wireRowDrag, rowEdge } from './rowdrag'
 import { routeFocusOut } from './textedit'
+import { subscribe } from '../state/store'
 import { markLand, paintLand, pendingLand } from './lift'
 import { setSession } from '../state/auth'
 import { setBoardDay, DPREV } from '../state/view'
@@ -271,6 +272,24 @@ describe('wireRowDrag', () => {
         line0.blur()
         expect(DAYS[0].waves[0].intimes, 'both lines, in the new order').toEqual(['07:30H: RALLY', '07:00H: IN TIME + WX/NOTAMS'])
       } finally { document.removeEventListener('focusout', routeFocusOut) }
+    }))
+    /* the fresh read of the batch (19 Oct 26, F2): a line EMPTIED, then another line's grip pressed — the press's blur
+       deletes the emptied line and renumbers the rows, and the board's redraw replaces them; the grip was found again
+       by the address read BEFORE the blur, which by then named the line below. The store's redraw is played here by a
+       listener that rewrites the board, as the app's does. */
+    it('a line emptied, then another line dragged: the line pressed is the line that moves', () => withEdit(() => {
+      DAYS[0].waves[0].intimes = ['A 07:00H', 'B 07:30H', 'C 08:00H', 'D 08:30H']
+      host.innerHTML = boardHTML(0)
+      document.addEventListener('focusout', routeFocusOut)
+      const redraw = subscribe(() => { host.innerHTML = boardHTML(0) })
+      try {
+        const line0 = host.querySelector('[data-itline="0|0|0"]') as HTMLElement
+        line0.focus(); line0.textContent = ''
+        const gripC = host.querySelector('[data-move="mv:it.0.0.2"] .sb-grip') as HTMLElement
+        down(gripC)
+        over(host.querySelector('[data-move="mv:it.0.0.0"]')!); up()
+        expect(DAYS[0].waves[0].intimes, 'C moved above B; A gone; D where it was').toEqual(['C 08:00H', 'B 07:30H', 'D 08:30H'])
+      } finally { redraw(); document.removeEventListener('focusout', routeFocusOut) }
     }))
     it('an In-time / Rally line is not dropped on a wave block or another wave’s line', () => withEdit(() => {
       const di = DAYS.findIndex((d: any) => (d.waves || []).length > 1)
