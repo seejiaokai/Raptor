@@ -90,16 +90,23 @@ const textBoxOf = (t: any): HTMLElement | null => {
   const el = t.closest(TEXTBOX) as HTMLElement | null
   return el || (t.isContentEditable ? t : null)
 }
+/* …and it never STICKS (the fresh read of the batch, 19 Oct 26 — F1): while the mark stands the week and the board hold
+   their redraw for it, so every way the focus fails to arrive lets it go AND repaints — a finger that lands on a box and
+   then scrolls (pointercancel, no pointerup), the time after a press's lift, a focus that leaves for nowhere while no
+   press is down. */
+let PRESSING = false
+const letGo = () => { if (ARRIVING && document.activeElement !== ARRIVING) { ARRIVING = null; notify() } }
 if (typeof document !== 'undefined') {
-  document.addEventListener('pointerdown', e => { const b = textBoxOf(e.target); if (b && document.activeElement !== b) ARRIVING = b }, true)
+  document.addEventListener('pointerdown', e => { PRESSING = true; const b = textBoxOf(e.target); if (b && document.activeElement !== b) ARRIVING = b }, true)
+  document.addEventListener('pointercancel', () => { PRESSING = false; letGo() }, true)
   /* a finger's lift and the mouse-style events that then move the focus come as separate steps (the walk's phone board,
      19 Oct 26): let go of the box only well after a touch, at once after a mouse */
-  document.addEventListener('pointerup', (e: PointerEvent) => { if (ARRIVING && document.activeElement !== ARRIVING) setTimeout(() => { if (document.activeElement !== ARRIVING) ARRIVING = null }, e.pointerType === 'mouse' ? 0 : 600) }, true)
+  document.addEventListener('pointerup', (e: PointerEvent) => { PRESSING = false; if (ARRIVING && document.activeElement !== ARRIVING) setTimeout(letGo, e.pointerType === 'mouse' ? 0 : 600) }, true)
 }
 
 export function routeFocusOut(e: FocusEvent) {
   const rt = e.relatedTarget as HTMLElement | null
-  ARRIVING = textBoxOf(rt) ? rt : (ARRIVING && rt == null ? ARRIVING : null)
+  ARRIVING = textBoxOf(rt) ? rt : (ARRIVING && rt == null && PRESSING ? ARRIVING : null)
   /* editMode() (store.ts) drives whether html.ts renders contenteditable="true"
      at all, but a field already focused when a session changes underneath it
      (logout while mid-edit) still fires this handler on blur. Every text
