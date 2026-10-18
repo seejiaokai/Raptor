@@ -375,7 +375,9 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
 .intimes .itline:focus{background:rgba(229,201,74,.12)}
 /* the Scheduler Board's lines drag into order (owner D593, D594): each line and its ✕ sit in a row of their own behind
    the board's six-dot grip, in the same 18px lane as the flying lines' grips below (13-board-rows-responsive.css) */
-.intimes.iedit.itdrag{display:flex;flex-direction:column;gap:2px}
+/* `stretch`, not the grid rule's `center` above: in a column a centred row shrank to its words and stood mid-panel (his
+   find on the walk's pictures, 19 Oct 26) — each row runs the panel's width, the lines at the left as they always were */
+.intimes.iedit.itdrag{display:flex;flex-direction:column;gap:2px;align-items:stretch}
 .intimes .itrow{display:grid;grid-template-columns:18px 1fr auto;gap:0 8px;align-items:center}
 .intimes .itrow>.sb-grip{display:flex;font-family:inherit;font-size:13px;line-height:1;color:var(--ink-3);height:100%}
 .intimes .itrow>.sb-grip:hover{color:var(--accent)}

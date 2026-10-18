@@ -275,3 +275,24 @@ test('the last box\'s Tab, when the save replaces the whole day: the keyboard is
   expect(await firstDay!.evaluate(e => e.isConnected), 'the day on screen really was replaced (or this test proves nothing)').toBe(false)
   expect(await page.evaluate(DI => { const a = document.activeElement; return !!a && a !== document.body && !!a.closest(`#eWeek .day[data-day="${DI}"]`) }, di), 'the keyboard is on that day').toBe(true)
 })
+
+/* his find on the walk's pictures (19 Oct 26): the board's In-time / Rally lines stood in the middle of the panel — the
+   rows built for the drag (D593) inherited the block's old "centre", each shrinking to its words. Each row runs the
+   panel's width and its grip sits at the panel's left, at both sizes. */
+for (const size of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) test(`the board's In-time / Rally rows run the panel's width from its left (${size.width})`, async ({ page }) => {
+  await page.setViewportSize(size)
+  await login(page); await go(page, 'editsched')
+  await page.locator('#eWeek [data-sbday="0"]').first().click()
+  await expect(page.locator('#schedBoard')).toBeVisible()
+  const m = await page.evaluate(() => {
+    const it = [...document.querySelectorAll<HTMLElement>('#schedBoard .intimes.itdrag')].find(e => e.getClientRects().length)
+    if (!it) return null
+    const b = it.getBoundingClientRect(), pad = parseFloat(getComputedStyle(it).paddingLeft) + parseFloat(getComputedStyle(it).paddingRight)
+    return [...it.querySelectorAll<HTMLElement>('.itrow')].map(r => { const g = r.getBoundingClientRect(); return { left: g.left - b.left, spare: (b.width - pad) - g.width } })
+  })
+  expect(m && m.length, 'the board draws its In-time rows (or this test proves nothing)').toBeGreaterThan(0)
+  for (const r of m!) {
+    expect(r.spare, 'each row runs the panel\u2019s width').toBeLessThan(2)
+    expect(r.left, 'from the panel\u2019s left edge').toBeLessThan(16)
+  }
+})
