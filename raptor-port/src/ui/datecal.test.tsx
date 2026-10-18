@@ -773,3 +773,22 @@ describe('D1012 — the lists take only their own Escape', () => {
     expect(t('dcal-lists'), 'the lists stay open').toBeTruthy()
   })
 })
+
+/* the fix read of the night: the keyboard on the FORM around the calendar (its card took it on a click) is still the
+   calendar's Escape while the lists are open */
+describe('D1012 — the keyboard on the form around the calendar', () => {
+  it('Escape with the focus on the box around the calendar shuts only the lists', () => {
+    const formEsc = vi.fn()
+    const onForm = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.stopPropagation(); formEsc() } }
+    document.addEventListener('keydown', onForm, true)
+    try {
+      render(<div data-testid="card" tabIndex={-1}><DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} /></div>)
+      fireEvent.click(t('dcal-title'))
+      ;(t('card') as HTMLElement).focus()
+      fireEvent.keyDown(t('card'), { key: 'Escape' })
+      expect(q('dcal-lists'), 'the lists are shut').toBeNull()
+      expect(formEsc, 'the form was left open').not.toHaveBeenCalled()
+    } finally { document.removeEventListener('keydown', onForm, true) }
+  })
+})
+

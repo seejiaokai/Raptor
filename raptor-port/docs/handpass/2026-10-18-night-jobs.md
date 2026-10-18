@@ -145,3 +145,18 @@ the focus in `state/view.ts`); the class `wfoc` it leaves on is set by the uncha
 5. D1011 gap: the board's Personal-input time boxes (`data-ifld`) keep a typed time on Escape, and the input's remarks box
    blurs without restoring. Fix: the week's `[data-inp]` restore for `data-ifld`.
 Minor: DateCal's comment says the floating calendar defers to the lists; it does not (as built) — correct the wording.
+**All five fixed** (commit 4415f9548), each with a test that failed on the code before the fix (four run red, the fifth by
+construction — an input's own box was passed by before).
+
+### The fresh read OF THE FIXES (round 1, §5 "a fix is new code") — report, as returned
+Fixes 1, 2, 3 and 5 right and complete. **One finding, on fix 4:** with the month list open, a click on a blank part of the
+OIL question's card puts the keyboard on the card (`OilConfirm.tsx` `tabIndex={-1}`; a floating window the same), which
+holds the calendar but is neither inside it nor the page body — so the fix let the Escape through and the question
+cancelled with the list open (on Mac Safari a click on the title does not move the keyboard, so even the first Escape).
+Fix: also keep the key when the focused element contains the calendar. Not findings: fix 3's stamp survives a whole
+rebuild (the next paint draws again; after a resize the hidden page shows the other's copy only until its next paint —
+seen only by a scheduler, who can see the working copy anyway); fix 5 cannot reach the OIL Earn mode's shut boxes, reads a
+several-people tail as the board's save does, leaves the remarks box's Enter alone, and closes an older leak (Escape in an
+input's remarks box on the board used to save the typed words). Checked: the whole commit, six test files run.
+**Fixed** the same way, with its test (`datecal.test.tsx`, "the keyboard on the form around the calendar"). Round 1 was the
+last fix round: the change is one more condition on the same line, held by its test.

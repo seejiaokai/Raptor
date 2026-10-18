@@ -225,7 +225,8 @@ export function DateCal(p: {
       /* only while the keyboard is in this calendar (or nowhere): an Escape typed in a box on the page behind is that
          box's own (the fresh read of the night, 4) */
       const ae = document.activeElement
-      if (ae && ae !== document.body && !(root.current && root.current.contains(ae))) return
+      /* …or on the form holding it (a card or a window that took the keyboard on a click — the fix read's finding) */
+      if (ae && ae !== document.body && !(root.current && (root.current.contains(ae) || ae.contains(root.current)))) return
       e.preventDefault(); e.stopPropagation()
       setLists(false)
       ;(root.current?.querySelector('.dcal-title') as HTMLElement | null)?.focus({ preventScroll: true })
