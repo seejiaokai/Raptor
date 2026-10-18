@@ -213,3 +213,10 @@ into a piece; the give-back stops before any medical of his in the gap, upchits 
 his downchit; `medPlanProtected` checks the days a grow adds. Tests: `medwrite.test.ts` "the kept first end, after its
 code read" (3); the locked-week case is held by the code read and the existing protected-week tests (a quarantined week
 cannot be staged in this unit file) — the full gates run next. Every medical test file 293 / 293.
+
+## The full gate set for jobs 2–6 (the night of 18 Oct 26, `139005eb1`, under the PC lock, one run)
+build clean · unit 11686 / 11686 · tfin 728 / 0 · e2e 853 passed, 1 failed, 59 skipped — the failure the Leave War
+desktop's "window of months" test on a five-second wait (D84: one re-run of the failed test, not an investigation) —
+re-run: 1 / 1 passed · smoke 453 / 0 · rulecheck OK · docsize OK. Before it, GitHub's run of `0e18304` had caught one
+browser test (`geometry.spec.ts` "the cross-day row pans to the late line"): job 4's option A rule covered the older dashed
+"same man, other day" echo; narrowed to leave the echo as built (`139005eb1`), and this run is green on it.
