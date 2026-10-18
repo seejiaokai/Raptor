@@ -20,37 +20,30 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/schedule-amendments-fixes-fffce0 -->
-### `claude/schedule-amendments-fixes-fffce0` — D994's Schedule and amendments small fixes (21 items) and their ONE FULL check — DONE, waiting for his look and "merge live"; written 19 Oct 26 — verify before use
-- **Where it started:** his ask (D994) — the first 24 lines of the priority list's "Schedule and amendments" group that
-  need nothing from him, one branch, one FULL check (D485), pictures, each finished item archived by script, browser
-  tests on a free port (4232). Nothing merges without his "merge live".
-- **Shipped (pushed; the pull request opened after this commit):** all 21 items built; the FULL check finished —
-  evidence sheet `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md` (roll-call with every proof, the
-  walk's size, every order, the cases a test carries, 572 pictures, the break tests, what was not walked, the gates, the
-  reads, every finding's disposition, his look card, the `Walk:` line). This chat: the gates after F1–F3; the narrow
-  read of the fix round, round 1 (N1 — F1's fix repainted the whole app at the start of nearly every finger scroll on a
-  phone: FIXED `0df257c26`; F2's two untested routes pinned) and round 2 (its F1 — Undo pressed with the caret still on
-  an In-time line, as a tap on Safari does, lost one line and doubled another: OLDER, FIXED `40c7af45e`, Undo and Redo
-  let a held caret go first); re-walk G by the host (15 rows, all PASS or RECORDED) found the box that kept a typed time
-  after Undo (OLDER, the same on `main`'s build): FIXED `9cbdc5e64`. The 21 items archived; [BUBBLE-SMALL-SEEN] (4)
-  and [OIL-NOTIFY-SEEN] (three parts, with the crew-list puck that never scrolls the board on a sideways phone — S3-16,
-  older) stay open. D593 / D594 in the rally register as ITD1–ITD3 and in `scripts/rulecheck.mjs`.
-- **His rally ruling (D1026, this chat):** each formation gets its own rally box (R above B, TO above LD on the week and
-  Edit Schedule); the typed lines are for the in-time only, their button "+ In-time"; a mock-up first; AFTER this batch
-  ("Finish this first") — filed [RALLY-PER-FORMATION]; D497, D500, D511 narrowed.
-- **Gates:** the whole set at `40c7af45e` — WHOLLY GREEN (§Gate baseline). Docs-only commits after it.
-- **Open questions for him:** [LOOK-PENDING-COUNT] (parked, D994). Words to show him with the pull request (no ruling
-  fixes them): "this line & this line clash" / "Tight turn this line→this line" for two unnamed lines.
-- **Running when written:** none (the walk's server stopped; the lock free).
-- **Pick up here:** his look (the sheet's look card — four of its five lines need his iPhone) and his "merge live";
-  once live, [RALLY-PER-FORMATION] — a mock-up on the real app and his questions first (D1026).
-- **Opening line:** Switch this chat to the branch `claude/schedule-amendments-fixes-fffce0`: `git fetch origin`, `git switch claude/schedule-amendments-fixes-fffce0`, `git branch -u origin/claude/schedule-amendments-fixes-fffce0`, `git pull --ff-only` (if the switch is refused because another checkout holds the branch, release it there only if that folder has no uncommitted changes and is on the same commit as `origin/claude/schedule-amendments-fixes-fffce0`, then `git -C <that folder> switch --detach` and switch again; otherwise stop and tell me). Read `HANDOFF.md` — the `claude/schedule-amendments-fixes-fffce0` block under `## Now` — then act on my look and "merge live" for its pull request. Nothing merges without my "merge live".
+<!-- now:claude/sched-fixes-handoff -->
+### `claude/sched-fixes-handoff` — the handoff after D994's Schedule and amendments batch went LIVE, written 19 Oct 26 — verify before use
+- **Where it started:** the batch's chat (`claude/schedule-amendments-fixes-fffce0`) finished its FULL check and he said
+  "merge live"; this branch only replaces that chat's block, which still read "waiting for merge live".
+- **Shipped:** pull request 538 MERGED 19 Oct 26 (`6b0e0e332`) — the 21 items and the three faults the check fixed; main's
+  checks green, Vercel Production ready. Evidence: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.
+  This branch: documents only (this block, the order line) — its pull request open when written; check before acting.
+- **Unfinished:** none of the batch's own. Open residue, all filed: [BUBBLE-SMALL-SEEN] (4) the empty gold pill;
+  [OIL-NOTIFY-SEEN] (a puck dropped on nothing says nothing; the ALL AVAIL chip; a crew-list puck on a sideways phone never
+  scrolls the board); [EDIT-BUTTON-AFTER-CHANGE]; [LOOK-PENDING-COUNT] (parked, D994); [LW-WINDOW-PRUNE-FLAKE-2] seen again.
+  His look card's four iPhone lines (the sheet's "His look") were not reported back — he was asked to try them on the live app.
+- **Branch:** `claude/sched-fixes-handoff` (documents only); released here (`git switch --detach`). The batch's branch has
+  MERGED — never switch to it; the next job starts on its own fresh branch, level with `origin/main`.
+- **Gates:** the batch's whole set at `40c7af45e` — WHOLLY GREEN (§Gate baseline); this branch changes documents only.
+- **Open questions for him:** none of this chat's.
+- **Running when written:** none (no server, the lock free, no helper).
+- **Pick up here:** [RALLY-PER-FORMATION] (D1026) — a mock-up on the real app of R above B, TO above LD and "+ In-time",
+  and his questions, before any build (the proposal card he was given carries the brief).
+- **Opening line:** Run `git fetch origin` and check this branch is level with `origin/main`. Read `HANDOFF.md` (the `claude/sched-fixes-handoff` block under `## Now`), the full row of D1026 (`grep -h '^| D1026 |' .claude/decisions-full/*.md`) and `[RALLY-PER-FORMATION]` in `OUTSTANDING.md` — then make the mock-up of the rally box on the real app at my iPhone's and a desktop's width, marked, and put its questions to me with your recommendations. It is due now because I said to finish the Schedule and amendments batch first, and that batch is live; I get pictures and questions, and nothing in the app changes yet.
 <!-- /now -->
 
 ## Next, in order
 
-**RIGHT NOW (19 Oct 26):** D994's Schedule and amendments batch (21 items) is BUILT and FULL-checked on `claude/schedule-amendments-fixes-fffce0` — its pull request waits for his look and "merge live" (its block above) → then [RALLY-PER-FORMATION] (D1026): a mock-up on the real app and his questions first.
+**RIGHT NOW (19 Oct 26):** pull request 538 is LIVE (D994's Schedule and amendments batch, 21 items) → [RALLY-PER-FORMATION] (D1026): a mock-up on the real app and his questions first, no build yet.
 
 **RIGHT NOW (18 Oct 26, night):** pull request 537 is LIVE (the backlog tidy, D1024) → the next area's small fixes (D994): Schedule and amendments, the first 24 lines of its group, on `claude/schedule-amendments-fixes-fffce0` (its block).
 
