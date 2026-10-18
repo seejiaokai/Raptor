@@ -37,6 +37,9 @@ the later merge keeps both (D78).
   data); walk both doors and the drag; a fresh blind Opus read. Then the next area's small fixes (D994).
 - **Trap:** old previews from finished chats hold 4173, 4174, 4180, 4182 and 4191 on his PC — run the browser tests with
   `E2E_PORT=<a port checked free>` (filed [GATELOCK-STALE-PORT]).
+- **Document check:** `docsize` reads OVER on this docs-only branch — `.claude/rules/decisions/tracker.md` is 3165 bytes over its
+  tripwire, carried from `main` (the night's Tracker rulings); legal once the build's code lands (D29); its own pass is
+  `[RULINGS-SPENT-PASS]`'s.
 - **Rulings this chat:** D1023 (inputs).
 <!-- /now -->
 
