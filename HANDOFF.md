@@ -24,6 +24,34 @@ the later merge keeps both (D78).
 ### `claude/schedule-amendments-fixes-fffce0` — D994's Schedule and amendments small fixes — written 18 Oct 26, IN PROGRESS, verify before use
 - **The job:** the first 24 lines of the priority list's "Schedule and amendments" group, batched on this branch with one bug
   check sized by the riskiest change; each finished item archived by script. Nothing merges without his "merge live".
+  Tier FULL (published record: the In-time / Rally reorder is a pending change; saved data: history lines; the warning
+  list's sentences). Browser tests: E2E_PORT on a port checked free (4173 and 4180 are held by old previews; 4232+ free).
+- **Built and committed (3 commits, each item with a test red before its fix):** [INTIME-LINES-DRAG] + [PEND-INTIME-WORDS];
+  [SC-INTIME-REST-WORDS] [SC-BLANK-SHIFT-QUAL] [BLANK-LINE-SANS-WORDS] [BLANK-STANDBY-STRIKE] [BLANK-SEAT-ACTIVITY-HINT]
+  [SC-SPARE-RING-BORROWS] (unit suite under the lock 11798 / 11798 after these); [SC-B-CHANGE-SAYS-BRIEF]
+  [BOARD-INTIME-JUMP] [BLOCK-NO-HISTORY-LINE] [DISCARD-FILING-NOOP].
+- **Settled without a build (to say so in each item, then archive):** [BUBBLE-SMALL-SEEN] (1) Unpublish already says what it
+  did (D837 N2/N3); [AMEND-SMALL-SEEN] (7) the weekend-LL "-1" ask already fixed (D418, `belowzero.ts`), (8) and
+  [OIL-NOTIFY-SEEN] (2) a drag-off says nothing by ruling (D854, D861); [OIL-NOTIFY-SEEN] (4) answered D792.
+- **Still to build, the helpers' readings (18 Oct 26):** [SECDEFAULT-OFFER-BEHIND-BOARD] `.secdef-snack` z-index 80 → 420
+  (08-windows-tools.css, stale comment) + e2e layering check; [BUBBLE-SMALL-SEEN] (2) `clearToast()` when the offer shows
+  (SecDefaultSnackbar effect), (3) `placeToast` counts `.chgwin:not([hidden])` as a window (toast.ts), (4) the empty pill:
+  re-walk at 390 to confirm gone; [TRACE-FOCUS-STAYS] view.ts toggleDayWarn close: clear WFOCUS when `panDi===di` too;
+  [ONE-ROW-DRAG-FLASH] Fable's F2: `LANDED_KEY` in reorder.ts `done`, rowdrag paints `mv:g.<di>.<t>`, drop the KNOWN GAP;
+  [OIL-NOTIFY-SEEN] (1) Undo of a swap names the swap (describe.ts inputs.batch), (3) crew list sticks below the top bar
+  (03-week.css `.eroster` top) — a layout change, picture first, (6) drag.ts TD_EDGE scaled to a short pane;
+  [OFT-ADD-TWICE-SILENT] reproduce first (likely a walk artefact: the click landed on his puck, not "+");
+  [ARROW-GUTTER-STRIP] pan.ts onResize re-lands the week (debounced, desktop, not mid-glide) and "day a–b of 7" counts a
+  day only when half seen; [EDIT-SECOND-CLICK] keep the clicked box's block standing (option A: record the focusout's
+  relatedTarget for editingText / swapDayAround) + e2e; [TAB-LAST-BOX-TEST-GAPS] three unit tests + one e2e;
+  [CRP-FLAG] built already — three tests owed (crew picker reads WORKING after a diverging OFFICIAL pass; undo past a
+  publish; a trace through a VWORK'd day), then archive; [AMEND-SMALL-SEEN] (6) the Leave War phone figures sheet jump —
+  a probe first.
+- **His questions, parked (D994 — not put to him until he says so):** [LOOK-PENDING-COUNT] — the 👁 look's "1 pending" is
+  the Discard count by design (A3); recommend no pending chip on a look (D338 (2) one count a day, AM24).
+- **Then:** the bug check (roll-call, sized walk with pictures, the gates under the lock, one fresh blind Opus read of the
+  code), the docs (ui-contracts §In-time lines, feature-impact, file-map, the behaviour register), archive each item by
+  script, push, the preview link with pictures.
 - **Carried from the backlog-tidy block (pull request 537, live):** Astra's and Sol 6.1's reads of D1023 are on [NO-ASTRA-LIST];
   the amber edge's design-hook exception (`.impeccable/config.json`, `14-input-editors.css`) stays his to strike; making the repo
   private again is his step ([REPO-PRIVATE]).
