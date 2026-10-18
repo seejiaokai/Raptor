@@ -65,15 +65,16 @@ the later merge keeps both (D78).
   the next /overnight chat.
 - **THE NIGHT'S END STATE (11:25 his PC's clock):** EVERY job of the recommended list AND both "if time" jobs are BUILT,
   WALKED, READ BY A FRESH BLIND OPUS READER (findings fixed) and GATED, on ONE branch and ONE pull request (534), pushed at
-  `c4bc04c5c` — GitHub's run of it going at this writing (the run before failed only at its build: two type errors since
-  fixed). Every check: `raptor-port/docs/handpass/2026-10-18-night-jobs.md` (jobs 2–7) and `…/2026-10-18-sched-phone.md`
+  `c4bc04c5c` — GitHub's whole set GREEN on it (both runs). The picture page: https://claude.ai/artifact/2K1LMjMnoUraM2cHEfeRnw;
+  the preview: https://raptor-git-claude-window-middle-d996-kai-e2f5.vercel.app. Every check: `raptor-port/docs/handpass/2026-10-18-night-jobs.md` (jobs 2–7) and `…/2026-10-18-sched-phone.md`
   (job 1). Jobs: (1) D996/D997 phone pop-up windows in the middle; (2) D1008 the OIL access table, D1015 the Tracker
   import's words; (3) D1000/D1016 the Leave War's two-line top up to 700; (4) D1013/D1017 the crew-rest ring on every
   copy; (5) D1010 View-only's preview shows a published day as issued, D1011 Escape on the board's time boxes, D1012
   Escape in a calendar's lists, D710 note lines in the change history; (6) D999 a moved upchit gives the downchit its
   days back; (7) the Tracker: D1004 currency without down days, D1007 the Legend, D1006/D1014 the flex settings,
   D1002/D1003/D1005 the down days from the Inputs (all with D1018). Walks: 7/7, 14/14, 28/28, 16/18 (2 = an OLDER fault
-  filed [TRACE-FOCUS-STAYS]), 23/23, 34/34, 43/43. **What is left: the MORNING REPORT** (the overnight guide's Part 3):
+  filed [TRACE-FOCUS-STAYS]), 23/23, 34/34, 43/43. **The morning report was given 18 Oct 26 (11:45); NEXT for a new chat: his look on his iPhone, his answers to the four
+  questions, then his "merge live" of pull request 534** (was: the MORNING REPORT) (the overnight guide's Part 3):
   read GitHub's run first (both runs of `c4bc04c5c`); one Artifact page of the pictures (the ruling pictures and the
   walks' best shots, sharp, tap to zoom); the guard back on (`compact-ready.mjs --back`); this block rewritten by the
   session-handoff guide; ONE notification; `git switch --detach` as the last command. The Vercel preview link: the
