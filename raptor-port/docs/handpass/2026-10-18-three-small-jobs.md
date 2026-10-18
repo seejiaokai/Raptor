@@ -143,4 +143,42 @@ new assertion (the card's buttons "on one line" judged by their tops, a pixel ap
 
 ## The fresh, blind Opus read
 
+One fresh Opus reader (D790, D903 — no Fable), blind, given the brief
+`docs/superpowers/briefs/2026-10-18-three-small-jobs-read.md` and this sheet, read the code at `7b1e3fa7e`; it ran the three
+touched test files (53, 6, 48 — all green) and one throwaway test of its own outside the checkout. Report, condensed:
+
+1. **MEDIUM — a warning the delete raises is wiped out by "Input deleted".** Leave filed in the days a delete gives back
+   (Ace fit from Wed 7 Oct, LL on Thu 8, the upchit then deleted) is cut by the Leave War's rules inside the same command
+   ("sick cuts leave"), and they say so in amber — then the door's "Input deleted" takes the app's one passing note. New with
+   D1022 (a delete could never cut leave before); the same older gap on D999's drag ("Moved to …"). Fix: the delete doors and
+   the move sheet's `finish` speak in one note batch (`HOOKS.toastBatch`), as the window's save does.
+   *A question for him, not a finding:* should the delete's sheet also name a leave or bid the give-back will cut? D999's
+   move sheet does not.
+
+Checked and sound (its explicit negatives): every door that deletes an input reaches `removeInput`, so every door an upchit
+can reach gives back, and both ways a person starts one ask first; "Delete for everyone" and "take me out" cannot reach an
+upchit; a delete with nothing to give back goes at once (D792); a locked week refused whole (only older published data makes
+one — D56); a downchit handed to another man is never grown; Undo under an open sheet cannot happen (its surround covers the
+top bar; no Ctrl+Z; no live sync) and the day's sheet re-finds its record by id; the sheet's state table (Save, Cancel, ✕,
+Escape, a click outside); Escape's two listeners in either order; a held Escape steps one at a time, as before; the card
+head's rule wins by order at the same strength, the padding still at 430, the words used nowhere else; the give-back's
+arithmetic (first end, stops, the first end dropped once reached, a one-day downchit, the row's own year, a later-year first
+end, the locked-days check on the days given back, the history line's reason); who may delete runs before the give-back.
+
 ## Findings and dispositions
+
+| Finding | Disposition | Proof |
+|---|---|---|
+| Read 1 — the delete's warning wiped out | **confirmed-new** (D1022 made a delete able to cut leave); **fixed** at `24481965f`: the window's delete and its sheet (`inputedit.tsx delNow`), the move/delete sheet (`MedMoveConfirm.tsx finish`, covering D999's drag too) and the calendar's plain Delete speak in one note batch | red first: `upchitdelete.test.tsx` "a warning the delete raises is not wiped out" (2) failed reading "Input deleted" alone; green after; the touched files 202 / 202 |
+| Read 1's question (should the sheet name a cut leave?) | **his to decide** — filed as a question ([UPCHIT-SHEET-LEAVE-CUT]); the interim is safe: the cut is now SAID, in the note, beside "Input deleted" | — |
+| Walk: none in the app | — | 58 / 58 |
+
+**The fix round:** the fix wraps the existing writes in the note batch the save already uses — no logic of the write changes;
+carried by its red-first test, so no further read round (§5: this is the last). **The re-walk** of what it touched: the same
+script on the fixed build `24481965f` (frozen, served on 4208, its bundle checked), into `img/handpass/2026-10-18-three-small-jobs/rewalk/`:
+**58 / 58**, no error.
+
+Walk: docs/handpass/2026-10-18-three-small-jobs.md · 29 pictures · 9 surfaces (the Leave War card head admin and member, the
+floating calendar over "Every Thursday", the input window and its delete sheet, the opened day's Delete key, the Inputs
+calendar, the phone's sheet, the published Saturday's heading on Edit Schedule) · 7 orders (delete / Undo / Redo, Cancel
+then delete, a reload, publish then file then delete, the window door, the key door, mouse and finger) · MISSING: none
