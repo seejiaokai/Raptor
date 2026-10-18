@@ -97,7 +97,16 @@ the later merge keeps both (D78).
   read (report to `docs/superpowers/briefs/2026-10-19-sched-fixes-read-report.md`, or returned as text). If this chat
   was compacted or replaced while they ran, their reports may be in `docs/handpass/parts/2026-10-19-sched-fixes-rewalk-*.md`
   and that report file — read them there; a walker whose file is missing is walked again.
-- **Pick up here:** the re-walk's and the reader's reports (above, "Next").
+- **Re-walk E: 21 / 21 PASS** (sheet and pictures committed). **The fresh read is IN** —
+  `docs/superpowers/briefs/2026-10-19-sched-fixes-read-report.md`: F1 HIGH (new) `ui/textedit.ts ARRIVING` can stick —
+  no clear on `pointercancel` (a finger that lands on a box then scrolls), kept on a null `relatedTarget`, and a clear
+  never repaints → the week / board hold their redraw; fix: clear on pointercancel, keep on null relatedTarget only while
+  a press is down, every clear without the focus arriving calls `notify()`. F2 (new) `ui/rowdrag.ts` reads the row's
+  address BEFORE the blur — an emptied In-time line's removal renumbers the rows and the wrong line is dragged; fix: blur,
+  stop if the pressed row has gone, read the address, then redraw and find the grip again. F3 (new) `ui/pan.ts` snaps the
+  week on Shell's fake `saveBand` resize; fix: snap only when the window's width really changed. **These three are the
+  step in hand** (each red first), then re-walk F's report, the evidence sheet, docs, archive, the pull request.
+- **Pick up here:** F1–F3 of the read, then re-walk F's report.
 - **Opening line:** Switch this chat to the branch `claude/schedule-amendments-fixes-fffce0`: `git fetch origin`, `git switch claude/schedule-amendments-fixes-fffce0`, `git branch -u origin/claude/schedule-amendments-fixes-fffce0`, `git pull --ff-only` (if the switch is refused because another checkout holds the branch, release it there only if that folder has no uncommitted changes and is on the same commit as `origin/claude/schedule-amendments-fixes-fffce0`, then `git -C <that folder> switch --detach` and switch again; otherwise stop and tell me). Read `HANDOFF.md` — the `claude/schedule-amendments-fixes-fffce0` block under `## Now` — then finish the FULL bug check it describes, with pictures; browser tests on an E2E_PORT checked free. Nothing merges without my "merge live".
 <!-- /now -->
 
