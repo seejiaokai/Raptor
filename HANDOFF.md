@@ -48,7 +48,12 @@ the later merge keeps both (D78).
   judge from the walk: S3-08 (the discard count for an input under Unavailable), S4-13 (a resize during an arrow's
   glide), S3-05 (B) (a note raised while the "Set as default" offer is up — `toast.ts` says it was left as it was), the
   two low ones (the In-time jump on a read-only board; "in-time"/"brief" after a wave's kind changes).
-- **Next, in order:** read the four walkers' reports, open the pictures behind every FAIL and published-day PASS,
+- **Walker D's report is in (13 PASS, 3 FAIL, 1 RECORDED, 1 NOT WALKED):** S4-04 a finger's tap on the phone board after a
+  changed box — reproduced, FIXED `285f3ac3b` (let go 600 ms after a touch); S4-17 the Leave War "back to January" — the
+  walker's own script (`scrollIntoViewIfNeeded` on the off-screen real name cell, its `s4-17.mjs` line 13), not the app;
+  S4-05 a button's first press after a changed box does nothing — OLDER than the batch, filed `[EDIT-BUTTON-AFTER-CHANGE]`;
+  S4-13 (a resize during a glide) RECORDED, no fault seen. Walkers A, B, C still out when this was written.
+- **Next, in order:** read walkers A, B and C's reports, open the pictures behind every FAIL and published-day PASS,
   reproduce each finding, fix (red first); then the gates under the lock; a new frozen build and the re-walk of what the
   fixes touched (the designer's S1-01/S1-02/S1-03/S1-08/S2-10/S3-03/S3-17 and the board second click); the fresh blind
   Opus code read (`docs/superpowers/briefs/2026-10-19-sched-fixes-read.md` — start it once the fixes are in); break
