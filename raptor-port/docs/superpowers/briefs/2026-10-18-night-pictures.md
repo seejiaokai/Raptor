@@ -121,3 +121,14 @@ Helper's report, as returned (condensed only where it repeated itself):
 continue working I'm sleeping"* — given before the page of pictures reached him. Recorded as **D1016** (the Leave War top,
 section 1 — not 1b), **D1017** (the crew-rest ring on every copy, section 4, option A) and **D1018** (the Tracker's down
 days, flex settings and legend, sections 2 and 3).
+
+## The fresh read of design lesson 6's widening and of D1016–D1018 (18 Oct 26, night — one fresh Opus reader)
+
+Report, as returned: (A) lesson 6 — the older sentences of the lesson ("narrows D537 … for that window only", "other
+places … not changed: '+ Input' … Insights") still stood unmarked and said the opposite of the widening; fix: mark them as
+overtaken by D996–D997; also name the day panels as D997 does ("the day panels pulled up and down by their bar (the Inputs
+and SANS calendars' day)" — "the calendars' day panels" could take in the Calendar window, which moves to the middle), and
+say the Leave War's own sheets are not read into it (D997's reading 2). D1016: OK (it does not claim section 1b's short
+words). D1017: OK. D1018: the short line OK; its full row's reading (3) rewrote the legend's words where he approved them
+"as drawn" — fix: "the legend's words as drawn; any change to them is put to him first". **All three fixes made the same
+night** (`raptor-port/docs/design-practices.md` §9 lesson 6; D1018's full row).

@@ -37,7 +37,7 @@ the later merge keeps both (D78).
   approved — a question for the morning.
 - **The night's jobs, in order** (each its own branch cut from `main` unless named; each its own pull request when its
   check closes; nothing merges):
-  1. **This branch** — D996/D997 (every pop-up window in the middle of a phone's screen), built and walked 7/7 on 18 Oct 26:
+  1. **This branch** (DONE — gates green but one test re-expressed, pull request open) — D996/D997 (every pop-up window in the middle of a phone's screen), built and walked 7/7 on 18 Oct 26:
      the full gate set under the lock, push (`git push -u origin HEAD:refs/heads/claude/window-middle-d996` — never a bare
      push), its pull request, one fresh read of design lesson 6's widening (D941) and of the three new short lines
      D1016–D1018 against their full rows (D138). ~45 min.

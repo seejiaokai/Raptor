@@ -131,6 +131,13 @@ inputs-sans-calendar, insights, datecal, availwin, changeswin) 166 / 166 on the 
 window — no count on Saturday's board; `e2e/availwin.spec.ts`'s phone test, passed, carries it at the foot), no browser
 error; pictures `img/handpass/2026-10-18-win-middle/walk/`. v1's sides check was too strict (the shell's windows stand 12
 and 20px in, as before) — the script's, not the app's.
+**The full gate set, the night of 18 Oct 26 (under the PC lock):** build, unit, tfin, smoke, rulecheck, docsize green;
+the browser tests 853 passed, **1 failed**, 59 skipped — `e2e/inputs-batch2.spec.ts` A1 at 932 tall asked for the strip of
+the day's bar above the input's window, which D997's middle window now covers, as D909 already allows on an 844 phone. A
+premise the change itself consumed, not a fault: the test was re-expressed (where the day still shows, the route is walked
+as before; where the window covers it, it checks the window stands in the middle; the question's place in front stays held
+on a desktop, `e2e/inputs-calendar.spec.ts`), and the file passed 17 / 17. **Design lesson 6's fresh read** (D941): three
+fixes, made — `docs/superpowers/briefs/2026-10-18-night-pictures.md`, its last section.
 
 ## His look card
 
