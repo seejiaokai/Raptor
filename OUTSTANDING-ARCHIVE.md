@@ -5675,3 +5675,13 @@ D161), with [USER-GUIDE] (wanted, not urgent) and [PERF-RESIDUALS] (two of them 
 or feel — his call).
 
 **Future milestones:** [DB-STEP] (item 5 above, with [TRK-DISK] inside it, and [RESTRICTED-ENV-WORKFLOW] — the stand-in database and the pull-request workflow — before the first deploy he approves), [XFER], [RECALL], [TRK-ATTEMPTS] (low urgency).
+
+*Moved here 2026-10-18 by backlog-archive.mjs ([PRIORITY-LIST-REWRITE]). Forward facts: `raptor-port/docs/doc-budget.md`.*
+
+### [PRIORITY-LIST-REWRITE] The backlog's priority list still tells finished stories — a rewrite, read by a reviewer (filed 2 Oct 26)
+Left by `[DOCS-SIZE-PASS]`: the list at the head of this file (about 90 lines) carries the merge stories of work long
+archived (its items 1, 3 and 4, the small-OIL paragraph, the five-flags paragraph). Moving them needs the list REWORDED, and a
+reword is read against the original for meaning (D138) — one reviewer, Astra first (D353). The old text moves whole to
+`OUTSTANDING-ARCHIVE.md` by `backlog-archive.mjs --move`. **Place:** low — documents only, any time; it would take the file
+about 60 lines further under its tripwire.
+

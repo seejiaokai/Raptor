@@ -54,11 +54,12 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **Now (D994, 18 Oct 26):** the small fixes that need no answer or look from him, batched by area with one check each.
   The scheduling pages on a phone are done (pull request 533); the next area is next. The questions the backlog keeps
   for him wait until he says so.
-- **Then (D495):** caps and ops limits ([CAPS-OPS-LIMITS]), then one whole-app check. The Tracker's progress graph waits
-  for his word (D774).
+- **Then (D495, D585):** the Tracker's progress graph once he releases it (D774), then caps and ops limits
+  ([CAPS-OPS-LIMITS] — started only on his word, D568; its questions wait under D994), then one whole-app check.
 - **At the end (D473):** the database step — the "Database step" group below.
 - **When ChatGPT is back (not before 1 Nov 26 — D761):** the reads owed in [NO-ASTRA-LIST].
 - **Before any collaborator is added:** the checks runner comes off this repo ([REPO-PRIVATE]).
+- **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
 **Schedule and amendments**
 - [SECDEFAULT-OFFER-BEHIND-BOARD] — the "Set as default order?" offer after a section drag is drawn behind the board.
@@ -145,12 +146,12 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Insights and Logic**
 - [LOGIC-REDRAW-DROPS-TYPING] — the Logic page redraws just after it opens and can drop a value being typed.
-- [STACK-LEFTOVERS] — four small loose ends from the Codex stack, Insights' among them — with the next change to Insights.
+- [STACK-LEFTOVERS] — four small loose ends from the Codex stack: two Insights edges (with the next change to its role question), a shared wording helper and an old audit script's three checks (with their own jobs), a "back to last published" button (only if he raises it).
 
 **Look, words and the phone (the whole app)**
 - [FLOATWIN-TWO-LINE-BAR] — the two movable windows open over the bottom of a two-line top bar.
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
-- [BATCH-14OCT-LEFTOVERS] — small faults left by the three builds: a raw id in a clash note, notes a screen reader is not told, stale comments, a test on the real clock.
+- [BATCH-14OCT-LEFTOVERS] — older small faults found by the three builds' check (not caused by them): the Cancel-item sheet's chips wear the browser's ring, a raw id in a clash note, notes a screen reader is not told, stale comments, a test on the real clock.
 - [WINDOWS-KEEP-KEYS] — the larger windows let Tab walk into the page behind them.
 - [OG-TAG-OVER-COUNT] — the "OG" tag sits over the top edge of an ALL AVAIL count.
 - [INP-OIL-CHIP-PHONE] — the green OIL chip once covered a request card's date on a phone; the card has been rebuilt since — look, then close or fix.
@@ -185,15 +186,14 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [CI-FAIL-PICTURES] — GitHub's browser-test jobs keep no pictures of a failure — his call.
 - [CHECK-TOOLS-HARDEN] — small hardening of the checking tools — his word.
 - [WALK-COST] — make a walk cost fewer tokens — a proposal; his word starts it.
-- [CODE-TIDY-AUDIT] — tests that no longer apply and the skipped browser tests — his to confirm; two leftovers for the database step.
+- [CODE-TIDY-AUDIT] — tests that no longer apply and the skipped browser tests — his to confirm; one leftover for the database step, one put to him only if a later feature needs it.
 - [RULING-HOME-HOOK] — only if a chat is seen acting on a ruling's short line alone.
-- [REPO-PRIVATE] — the sharing half: adding developers is his call; the checks runner comes off first.
+- [REPO-PRIVATE] — the repo is public for a short period (D106; public on 18 Oct 26): making it private again, and restarting his PC's check runner, is his step; the sharing half (adding developers) is his call — the checks runner comes off first.
 - [NO-ASTRA-LIST] — the jobs that went ahead without a ChatGPT reader — put to him when it is back (D761).
-- [OPUS-SECOND-READ-GUIDE] — whether the second, blind Opus read still earns its place once Astra and Sol read again.
+- [OPUS-SECOND-READ-GUIDE] — the checking guide's line on when a second, blind Opus read is run: decided (D595), not written — it waits for Astra's and Sol's reads (D70) when ChatGPT is back, then his approval; and whether it still earns its place then.
 
 **Documents and guides**
-- [PRIORITY-LIST-REWRITE] — this list's rewrite (18 Oct 26) — closed once one fresh reader has checked it against the old list.
-- [RULINGS-SPENT-PASS] — the Tracker rulings file is over its size marker — its spent rulings archived after a fresh reader's check.
+- [RULINGS-SPENT-PASS] — the rulings files' size markers were raised past their sizes (the Tracker's to 27,500 on 18 Oct 26): their spent and restated rulings archived after a fresh reader's check, the Tracker's D560 and D564 first; then the Tracker area split if still near its marker.
 - [DOC-POINTERS-CODE] — code comments point at documents moved in the spring clean — with the next code change.
 - [WORD-LIST] — the app's word list was drafted, never checked or filed — checked, then read before his approval.
 - [SKILL-FUSION] — the planning guide's harder questioning and three proposals — each read before his approval.
@@ -203,7 +203,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [IMPECCABLE-UPDATE] — the design skill to v4.1.3 (D625): the calendar job it waited for is live; its reads and his word next.
 - [START-CONTEXT-AUDIT] — the guard that stops a new chat's load growing back is not built; two of his own settings.
 - [CONTEXT-START-SIZE] — left: the short skill-notes guide (F) and his own connectors setting (E).
-- [SKILL-FUSION-WRITING] — the writing guide applied to how the agent writes to him (D835) — drafted, read, put to him.
+- [SKILL-FUSION-WRITING] — the writing guide applied to how the agent writes to him (D835): to draft, have read and put to him — his to place.
 - [GUIDE-MAP-ROWS] — the project guide's map has long rows that could move to its full text — his question.
 - [EVIDENCE-RECORD-SIZE] — the big machine-written records and pictures: kept or moved — his call.
 - [USER-GUIDE] — a guide for users and admins — wanted, not started, not urgent.
@@ -581,6 +581,7 @@ deploy — files that start the gates, so their own small change.
 `raptor-port/CLAUDE.md` §Build & verify and §How to work here, and `HANDOFF.md` §Deploy, still describe GitHub Pages as the official live site, the "done means live" chain ending at Pages, and `seejiaokai.github.io/Raptor` as the page to check. All of it stopped being true on 23 Sep 26: Pages is gone, the publish job is off, Vercel is the only viewer. Marked SUPERSEDED in place at the two most misleading lines; the proper rewrite is its own docs pass (D29 — never trim inside another change). **Tier: NONE.** Do it with `[DOC-TRIM]`, which owns the same two files.
 
 ### [REPO-PRIVATE] Make the repo private and share it with developers — half done 23 Sep 26 (D59)
+**18 Oct 26 (the backlog tidy):** the repo is PUBLIC today (GitHub says so) — made public for a short period under D106, for GitHub's faster machines. Making it private again, and restarting his PC's check runner (D89), is still open and his step.
 
 **23 Sep 26, later: D88 ("I'll make it public for now") was REVERSED by D89 before he switched — it
 stays PRIVATE** and the checks move to his own PC (`[CI-TWO-CORES]`). Why it mattered: 146 old branches
@@ -1206,6 +1207,7 @@ waits a fixed 5 seconds for a prune that happens only when the PC is idle (`stat
 3 / 3 straight after; phase 4 does not touch the grid. **Do (D87):** wait on the idle signal or the window's settled state,
 not a fixed time. **Place:** test-only, low, any time. **Seen again 9 Oct 26** (`claude/inputs-sans-calendar`, the final gate run after the shared input's date door — a change to the input editor only): the same branch, the same 5-second wait; alone 3 / 3 and its whole group 186 / 0 straight after.
 **Met again the night of 15 Oct 26** (`claude/drag-edge-scroll-elsewhere-51bfc4`, the full run at `7e9e98724`): the same branch (January undrawn, December still drawn after the jump) — and ALONE it failed 1 of 3 (2 passed), the first time it has failed outside a full run. That job touches nothing of the Leave War (`src/leavewar` unchanged; `select.ts` reads only edge numbers that did not change). **The agent's placing:** steady it as a job of its own — it is no longer only load (D87: wait on what the step needs).
+**Carried 18 Oct 26 from the archived [LW-REQ-PICK-MONTH-UNSTEADY] (its 13 Oct 26 note):** the phone test "Undo and Redo leave the grid where it is…" failed once at its month-button landing step, under load; it still waits a fixed 350 ms before its last month-button check (`raptor-port/e2e/leavewar.spec.ts`, about lines 4315–4321). Steady it with this item — wait on the grid having settled (D87).
 
 ### [TRK-ASYNC-STALE] Once storage is truly slow, a Tracker job must re-check its person and target after every wait (filed 28 Sep 26)
 **Place:** with `[DB-READINESS]` — it cannot happen before the shared database. Found by Astra's final read of the
@@ -2176,13 +2178,6 @@ Independent bounded cause/disposition: `raptor-port/docs/superpowers/plans/2026-
 
 ### [SANS-PREVIOUS-REPORT-OFFER] Prior-date availability is not combined across a previous-evening reporting window (characterized 3 Oct 26)
 Actual I2 walk on the Rally review-fix snapshot: Tuesday01:00–11:00 flying reportsMonday22:00, dekitTuesday11:30. Kraken's MondayPM Fly offer gives the actual armed picker "no availability filed for today"; accepted placement has no persistent SANS_AVAIL warning under the existing none-offer rule. Adding TuesdayAM Fly gives picker00:00–12:00-only and the same placed advisory: the target-day window cannot cover report−120 through690. The two date-specific offers are not combined. This characterizes the prior-date gap named unproven in Claude's small review; it does not assert cross-date support, invent coverage policy, or treat live writes as stored-demo harm. Evidence: `raptor-port/docs/handpass/2026-10-02-rally-workspan.md`, downstream07 results/pictures in this round's portable proof. **Place:** caps and ops limits with availability under D490/D495; owner policy/design and a scoped independently challenged plan precede any repair. No source change or owner acceptance here; the final Rally inspector judges this explicit scope.
-
-### [PRIORITY-LIST-REWRITE] The backlog's priority list still tells finished stories — a rewrite, read by a reviewer (filed 2 Oct 26)
-Left by `[DOCS-SIZE-PASS]`: the list at the head of this file (about 90 lines) carries the merge stories of work long
-archived (its items 1, 3 and 4, the small-OIL paragraph, the five-flags paragraph). Moving them needs the list REWORDED, and a
-reword is read against the original for meaning (D138) — one reviewer, Astra first (D353). The old text moves whole to
-`OUTSTANDING-ARCHIVE.md` by `backlog-archive.mjs --move`. **Place:** low — documents only, any time; it would take the file
-about 60 lines further under its tripwire.
 
 ### [INP-TILL-STALE] The Inputs editor leaves "till <date>" in the remarks when a range is taken back to one day (walk find, 1 Oct 26)
 **Characterized 5 Oct, Inputs/SANS batch:** the exact18→18–19→single19 sequence
