@@ -63,37 +63,25 @@ the later merge keeps both (D78).
   (`docs/img/handpass/2026-10-18-lw-top-700/6-440-proposed-short-words.png`). (2) The overnight retry trial
   (`[OVERNIGHT-RETRY-TRIAL]`, D885) was not run: its setting is read when a chat starts, so it must be set before he opens
   the next /overnight chat.
-- **Where the night stands (10:25 his PC's clock — earlier times in this block were the agent's overestimates; the
-  chat at 90%):** ONE branch, ONE pull request (534); pushed at `23fa5ceb4`. Every job's check:
-  `raptor-port/docs/handpass/2026-10-18-night-jobs.md`. Jobs 1–6 DONE and walked. Job 7: (a) D1004 DONE (32ad203b8);
-  (b) the Legend DONE (2d70cba46); (c) the flex settings DONE (bac862795 — an Opus helper built (b) and (c), the host
-  read and committed them; their tests were written after the code, so a fresh read and the walk carry them). Pushed
-  at `9d86f6efb`. (d) the down days DONE (77c1aee9e). Job 7's fresh read DONE, 3 findings fixed (034013187); its walk 43/43 DONE. NOW: the full gate set under
-  the lock RUNNING (logs in the scratch folder `gates3`) — on green: the sheet's gates line for jobs 6–7, push (after `gh run
-  list` is idle), then the MORNING REPORT (the overnight guide's Part 3). 
-  (d) the down days — its survey `raptor-port/docs/superpowers/briefs/2026-10-18-trk-down-days-survey.md` (course start
-  in `pace`, not `dates`; a third people-bridge channel for each man's downchits; the Failures window to clone;
-  removing `#upchit` touches `leftovers.test.tsx`'s F/K tests and `e2e/datecal.spec.ts`); then ONE Sonnet walk of the
-  Tracker (legend, flex settings as admin and member, flex off, down days), ONE fresh blind Opus read of job 7's code,
-  the full gate set under the lock (the Tracker smoke suite — the helpers changed its bar-order and hint checks), push,
-  the morning report by about 18:45.
-  **THEN JOB 7 — the Tracker (D1002–D1007, D1014, D1018; design note `raptor-port/docs/superpowers/specs/2026-10-18-trk-down-days.md`,
-  pictures and reports `raptor-port/docs/superpowers/briefs/2026-10-18-night-pictures.md` §2, §3), in this order, each its
-  own commit, red first: (a) D1004 — the currency bar loses the down-days subtraction (`tracker/components/SidePanel.jsx`
-  `effCurr`, "(−N down = Xd)", "(minus down days)"); (b) D1007/D1018 — "Legend" beside Show All opening a pop-out (the
-  Leave War's Legend look), the desktop colour strip (`tracker/components/Legend.jsx`) moved into it, its words as drawn
-  (`scripts/handpass/mock-trk-flex-legend.mjs` holds them); (c) D1006/D1014/D1018 — the flex settings: a Tracker-wide
-  record (on/off + the six "From" days, defaults 7, 14, 21, 31, 60, 120 — `tracker/app/core.js flexFor`), a cog in the
-  Tracker's top bar, an admin edits, a member reads (the Tracker's ONE admin gate — read the role through the existing
-  bridge, `tracker/role.js` / `peoplewire.ts`; `state/perms.ts` and `docs/data-model.md` §11 if a new row is needed),
-  flex off hides the flex bar, "Days since syllabus" and the flex sentence; saved + in the export/import file;
-  (d) D1002/D1003/D1005/D1018 — the down days from the Inputs: a per-student course start (set in "+ Add", today by
-  default, changeable in Info; saved + exported), the number worked out from the man's medical inputs since it (half a
-  day as ½; a running one to today), read through the people bridge (a rider, not a fourth seam), a window listing each
-  input (cloned from the Failures window), "—" and a one-line prompt before a course start; the typed box and "Upchit
-  Date" go. Tier FULL (saved data, a permission); walk + a fresh blind read; the Tracker smoke suite in the gates. If the
-  time runs short, the parts done are committed and reported; the rest stays filed. Stop starting at about 17:45; the
-  morning report by about 18:45. Weekly allowance 72% at 10:35.
+- **THE NIGHT'S END STATE (11:25 his PC's clock):** EVERY job of the recommended list AND both "if time" jobs are BUILT,
+  WALKED, READ BY A FRESH BLIND OPUS READER (findings fixed) and GATED, on ONE branch and ONE pull request (534), pushed at
+  `c4bc04c5c` — GitHub's run of it going at this writing (the run before failed only at its build: two type errors since
+  fixed). Every check: `raptor-port/docs/handpass/2026-10-18-night-jobs.md` (jobs 2–7) and `…/2026-10-18-sched-phone.md`
+  (job 1). Jobs: (1) D996/D997 phone pop-up windows in the middle; (2) D1008 the OIL access table, D1015 the Tracker
+  import's words; (3) D1000/D1016 the Leave War's two-line top up to 700; (4) D1013/D1017 the crew-rest ring on every
+  copy; (5) D1010 View-only's preview shows a published day as issued, D1011 Escape on the board's time boxes, D1012
+  Escape in a calendar's lists, D710 note lines in the change history; (6) D999 a moved upchit gives the downchit its
+  days back; (7) the Tracker: D1004 currency without down days, D1007 the Legend, D1006/D1014 the flex settings,
+  D1002/D1003/D1005 the down days from the Inputs (all with D1018). Walks: 7/7, 14/14, 28/28, 16/18 (2 = an OLDER fault
+  filed [TRACE-FOCUS-STAYS]), 23/23, 34/34, 43/43. **What is left: the MORNING REPORT** (the overnight guide's Part 3):
+  read GitHub's run first (both runs of `c4bc04c5c`); one Artifact page of the pictures (the ruling pictures and the
+  walks' best shots, sharp, tap to zoom); the guard back on (`compact-ready.mjs --back`); this block rewritten by the
+  session-handoff guide; ONE notification; `git switch --detach` as the last command. The Vercel preview link: the
+  `vercel[bot]` comment on pull request 534. Weekly allowance 72% at 10:35. **New words for his look** (the writing guide's
+  cold read is owed on each): "What the balls and bars mean"; "Flex settings not brought in: they could not be saved. Set
+  them again in ⚙."; "Flex settings not brought in: only an admin can change them."; "No medical inputs since the course
+  start."; the spoken "none counted yet"; the flex window's refusals ("Each From day must be later than the one above
+  it.", "Each From day is a whole number, 1 or more."); "…now ends <date>, its days given back".
   **Questions waiting for him:** (1) the Leave War card's short words up to 700 (pictures brief §1b; recommended yes);
   (2) the floating calendar over a date box still closes whole on Escape — its lists first too? (recommended yes);
   (3) the dashed "same man, other day" echo vs the dotted ring when tomorrow's warning is focused — keep the echo
