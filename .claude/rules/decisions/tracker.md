@@ -147,7 +147,10 @@ the page; and **the people bridge `tracker/people.js`** (9 Sep 26, same
 no-import shape as `role.js`): `TrackerPage.tsx` wires `tracker/peoplewire.ts`
 once, which projects Raptor's `PEOPLE` into the bridge on every notify
 (signature-guarded, like Leave War's `reprojectRoster`) and hands it
-`HOOKS.whoami()`. That is how a person from the squadron roster is picked into
+`HOOKS.whoami()`. *[Since 18 Oct 26 (D1002, D1003, D1018) the same bridge carries each man's medical days — a
+rider on this seam, not a fourth: `peoplewire.ts medForTracker` works his downchits out on Raptor's side into plain ISO
+days (`people.js setMedInputs`, its own guard), and the Info panel counts his down days from them since his course start
+(`pace.courseStart`); the Tracker reads nothing of Raptor's store.]* That is how a person from the squadron roster is picked into
 a course (the Students card's `+ Add` lists the roster above the free-text box)
 and how every mark and date write is stamped `by`/`at`. **A student is an
 ENROLMENT ID (stable ids, 10 Sep 26)**: a roster entry is `{ id, name, pid? }`,

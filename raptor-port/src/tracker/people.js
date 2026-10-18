@@ -61,6 +61,26 @@ export function setGonePeople(ids) {
 }
 export function getGonePeople() { return gone }
 export function onGonePeople(f) { goneSubs.add(f); return () => goneSubs.delete(f) }
+/* EACH MAN'S MEDICAL DAYS (owner D1002, D1003, D1018 — 18 Oct 26: the Tracker's "No. of Down Days" is worked out from the
+   Inputs, every medical day he was down — HL, OML, ATT C, ATT B). A third channel on the same bridge, with the same
+   guard — a rider on the people seam, not a fourth crossing: Raptor works each downchit out on ITS side into plain ISO
+   days (peoplewire.ts medForTracker — the row's own year resolved there), keyed by person id, so the Tracker never
+   reads Raptor's store or its date labels. One row: { iid, type, startIso, endIso, half: 'am'|'pm'|'', firstEnd?,
+   cutOn? } — `firstEnd` and `cutOn` only where an upchit cut the input and it keeps the end it was filed with (D999).
+   Empty in the standalone Tracker, where every student reads "—". */
+let med = {}
+let medSig = ''
+const medSubs = new Set()
+const medRowSig = r => [r.iid, r.type, r.startIso, r.endIso, r.half || '', r.firstEnd || '', r.cutOn || ''].join('\u001f')
+const medSigOf = m => Object.keys(m).sort().map(k => k + '\u001d' + (Array.isArray(m[k]) ? m[k] : []).map(medRowSig).join('\u001e')).join('\u001c')
+export function setMedInputs(next) {
+  const m = next && typeof next === 'object' && !Array.isArray(next) ? next : {}
+  const s = medSigOf(m); if (s === medSig) return
+  med = m; medSig = s
+  medSubs.forEach(f => { try { f(med) } catch (_) {} })
+}
+export function getMedInputs() { return med }
+export function onMedInputs(f) { medSubs.add(f); return () => medSubs.delete(f) }
 export function setWhoami(fn) { who = typeof fn === 'function' ? fn : () => '' }
 export function whoami() { try { const v = who(); return v == null ? '' : String(v) } catch (_) { return '' } }
 export function setWhoamiId(fn) { whoId = typeof fn === 'function' ? fn : () => '' }

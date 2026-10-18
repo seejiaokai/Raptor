@@ -19,7 +19,7 @@ import { findEvents } from './eventOrder.js';
 import { onTrackerSessionEnd, onBeforeTrackerLogout, trackerIsAdmin } from '../role.js';
 /* Raptor's one edge feel (D899) — a standalone export carries this file with it: docs/tracker/known-gaps.md */
 import { edgePan } from '../../ui/edgescroll';
-import { getPeople, onPeople, whoami, whoamiId, getGonePeople, onGonePeople } from '../people.js';
+import { getPeople, onPeople, whoami, whoamiId, getGonePeople, onGonePeople, getMedInputs, onMedInputs } from '../people.js';
 import { setTrackerUndo, pingTrackerUndo } from '../undo-bridge.js';
 /* the Tracker one piece per thing ([DB-READINESS] group A, phase 5b — D462): the student lists, the course list and the
    chart records are STORED one row per thing, through the door below (sGet / sSet / memGet / delKey) */
@@ -106,7 +106,7 @@ function endSession() {
   undoStack = []; redoStack = [];
   dlgCancelAll();                     /* a half-answered question, and any waiting: cancelled */
   pop = null; popDoneDate = ''; popFailDate = ''; popMsg = null;
-  failLog = null; lullPick = null; lullCopy = null;
+  failLog = null; downLog = null; lullPick = null; lullCopy = null;
   infoId = null; editId = null; ordMode = null; sylModalOpen = false; showAllOpen = false; copyOpen = false; flexWinOpen = false;
   showDetails = false; hideDetailBubble(); toolsOpen = false;
   /* the keyboard's place on the chart is the person leaving's too (D980 — the fresh code read's finding 4) */
@@ -1205,6 +1205,9 @@ export function linkedPerson(id) { const pid = pidOf(id); if (!pid) return null;
    people (a callsign edit, an archive) repaints them; the bridge's own guard
    already swallows every notify that changed nobody. */
 onPeople(() => notify());
+/* a medical input filed, moved or cut on the Inputs page repaints the down days (D1002); the bridge's guard swallows
+   every notify that changed nobody's medical days */
+onMedInputs(() => notify());
 /* Seat as the squadron says it: the Tracker's list sub-text, beside the CAT. */
 const seatWord = s => s === 'FCP' ? 'Pilot' : s === 'RCP' ? 'WSO' : (s || '');
 
@@ -2146,13 +2149,17 @@ let _dlgRes = null;
 let _dlgQueue = [];   /* waiting questions, oldest first: { shape, res } */
 const _dlgCancelled = shape => (shape && shape.input ? null : false);
 function _dlgOpen(shape, res) { _dlgRes = res; dlg = shape; dlgSerial++; notify(); }
-function _dlgShow(msg, { input = false, def = '', cancel = true, cancelLabel = 'Cancel', ok = 'OK', alt = null, list = null, listFn = null, filter = false, placeholder = '', listTitle = '' } = {}) {
-  const shape = { msg, input, def, cancel, cancelLabel, ok, alt, list, listFn, filter, placeholder, listTitle };
+/* `date` (18 Oct 26 — D1018, the course start in "+ Add"): { label, value } — a date box drawn ABOVE the list (a tap on
+   a name answers at once, so the day has to be set before it). The asker keeps the object and reads `value` after the
+   answer; the box writes into it through setDlgDate. Without it the dialog is as it was. */
+function _dlgShow(msg, { input = false, def = '', cancel = true, cancelLabel = 'Cancel', ok = 'OK', alt = null, list = null, listFn = null, filter = false, placeholder = '', listTitle = '', date = null } = {}) {
+  const shape = { msg, input, def, cancel, cancelLabel, ok, alt, list, listFn, filter, placeholder, listTitle, date };
   return new Promise(res => {
     if (dlg || _dlgQueue.length) { _dlgQueue.push({ shape, res }); return; }
     _dlgOpen(shape, res);
   });
 }
+export function setDlgDate(v) { if (!dlg || !dlg.date || !isWholeDay(v)) return; dlg.date.value = v; notify(); }
 export function dlgClose(val) {
   dlg = null;
   const r = _dlgRes; _dlgRes = null;
@@ -2172,12 +2179,12 @@ export async function uiPrompt(msg, def) { const v = await _dlgShow(msg, { input
 export async function uiAlert(msg) { await _dlgShow(msg, { cancel: false }); }
 /* Pick from a list, or type: resolves { pick: key } for a click on an entry,
    the typed string for OK, null for Cancel. */
-export async function uiPick(msg, list, { input = false, placeholder = '', listTitle = '' } = {}) {
+export async function uiPick(msg, list, { input = false, placeholder = '', listTitle = '', date = null } = {}) {
   /* a list given as a function is read LIVE by the box (listFn) — the + Add roster,
      so a person added or taken off while it is open shows at once ([TRK-RETEST-NOTES]
      C11); `list` keeps the list it opened with, for anything that reads it */
   const fn = typeof list === 'function' ? list : null;
-  const v = await _dlgShow(msg, { input, list: (fn ? fn() : list) || [], listFn: fn, filter: true, placeholder, listTitle });
+  const v = await _dlgShow(msg, { input, list: (fn ? fn() : list) || [], listFn: fn, filter: true, placeholder, listTitle, date });
   if (v && typeof v === 'object' && 'pick' in v) return v;
   return v === null ? null : (v + '');
 }
@@ -3997,7 +4004,7 @@ function chartKey(e) {
   return true;
 }
 /* any Tracker window, question or list that sits over the chart */
-function windowUp() { return !!(dlg || infoId != null || editId != null || showAllOpen || ordMode || copyOpen || sylModalOpen || failLog || lullPick || lullCopy); }
+function windowUp() { return !!(dlg || infoId != null || editId != null || showAllOpen || ordMode || copyOpen || sylModalOpen || failLog || downLog || lullPick || lullCopy); }
 /* the keyboard goes back to the chart, on the same event, when the pop-up it was in closes (Escape, a grade, Close) */
 function kbdBack() {
   const bd = document.getElementById('board'); if (!bd) return;
@@ -4477,8 +4484,10 @@ export function sliceBg(cols) {
    Every mark and date write stamps WHO (`by`, the editor's display name from
    Raptor through the bridge — omitted, never '', when nobody is wired) and
    WHEN (`at`, an ISO instant) on the record it changed: marks[s][id] for a
-   grade, a failure or either of their days; dates[s] for the panel's four
-   boxes and the Last Flown advance. Extra fields on the same records, so
+   grade, a failure or either of their days; dates[s] for the panel's two
+   Last Flown boxes and the Last Flown advance (the typed down days and the
+   Upchit box went on 18 Oct 26 — D1002; a record that still holds them loads
+   as it is, the two fields unread — D56). Extra fields on the same records, so
    the file check's shape tests already tolerate them and undo snapshots —
    whole-record JSON — restore the stamp of the time verbatim. No screen
    reads them yet; the database step does. */
@@ -4493,7 +4502,8 @@ function stamp(rec) {
    marks say so; an emptied box stands for nothing. */
 /* A DAY AFTER TODAY IS REFUSED where it says when something was flown, done or
    failed (owner, 28 Sep 26 — D374): Done on, Failed on and both Last Flown boxes. A
-   planned day — Upchit, the two end dates — takes any day. Today is the squadron's
+   planned day — the course start (D1003), the two end dates — takes any day (the
+   Upchit box that was one went on 18 Oct 26, D1002). Today is the squadron's
    calendar day (`isoToday`, Singapore), the one the pop-up fills in by default. The
    refusal changes nothing and answers with these words, which the box shows. */
 export const NOT_YET = 'That day hasn’t come yet — pick today or earlier.';
@@ -4509,7 +4519,8 @@ export function afterToday(v) { return typeof v === 'string' && v !== '' && v > 
 const flightFlown = s => latestFlown(marks[s], id => !!(byid[id] && byid[id].type === 'flight')) || '';
 /* A DATE IS PICKED NOW, NEVER TYPED (D801, 13 Oct 26): the seven date setters no longer ask pushMarkUndo to fold a
    second change to the same box inside two seconds into the first — that was for keystrokes; two picks are two steps
-   (the read — F4). The pace and the down days are still typed and still fold. */
+   (the read — F4). The pace is still typed and still folds (the typed down days that folded too went on 18 Oct 26 —
+   D1002, D1005: the number is worked out from the Inputs, `downDaysOf` below). */
 export async function setLastSyll(s, v) {
   if (afterToday(v)) return NOT_YET;
   if (((dates[s] && dates[s].lastSyll) || '') === (v || '')) return;
@@ -4528,8 +4539,58 @@ export async function setLastCurr(s, v) {
   if (v) d.handCurr = true; else delete d.handCurr;
   stamp(d); if (!v) settleLastFlown(s); await saveDates(s); renderSide();
 }
-export async function setDownDays(s, v) { if (((dates[s] && dates[s].downDays) || '') === (v || '')) return; pushMarkUndo(s, 'the down days', 'downDays'); dates[s].downDays = v; stamp(dates[s]); await saveDates(s); renderSide(); }
-export async function setUpchit(s, v) { if (((dates[s] && dates[s].upchit) || '') === (v || '')) return; pushMarkUndo(s, 'the upchit date'); dates[s].upchit = v; stamp(dates[s]); await saveDates(s); renderSide(); }
+/* THE COURSE START (owner D1003, D1018 — 18 Oct 26): the day his down days are counted from. Kept with his pace — per
+   course and student, whatever the chart, as the end dates are — so it travels in a backup as part of pace with no
+   change to the file. Set in "+ Add" (today by default) and changed in the Info panel's date box, where the Upchit box
+   was; a planned day, so any day is taken. One pick, one undo step (D372's pace-and-end-dates rule). */
+export function courseStartOf(s) { return paceOf(s).courseStart || ''; }
+export async function setCourseStart(s, v) { if (courseStartOf(s) === (v || '')) return; pushMarkUndo(s, 'the course start'); pace[s] = { ...paceOf(s), courseStart: v || null }; await savePace(s); renderSide(); }
+
+/* ---------- the down days, worked out from the Inputs (owner D1002, D1003, D1005, D1018 — 18 Oct 26) ----------
+   "No. of Down Days" is no longer typed: it is every medical day of his — HL, OML, ATT C, ATT B, the downchits — from
+   his course start to today, read off the people bridge's third channel (people.js getMedInputs — Raptor works the
+   dates out on its side, peoplewire.ts medForTracker; nothing here reads Raptor's store). Only inputs that overlap
+   [course start, today] count, each clipped to it; a half day (AM / PM) counts ½; an input still running counts to
+   today — the Tracker's own today (`isoToday`, the squadron's day), not Raptor's demo week; an input an upchit cut
+   counts as cut (it is stored cut), and keeps the end it was filed with only where D999 kept it (`firstEnd`). The
+   student is the man his roster entry is linked to (`pid`); a student with no link — none since D1005, but an older
+   record may carry one — and a student with no course start count nothing: `total` null, the panel's "—".
+   It feeds no bar: the currency bar counts only the days since his last currency flight (D1004). */
+const isoDay = iso => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || '')); return m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) / DAY : null; };
+export function downDaysOf(s) {
+  const start = courseStartOf(s), pid = pidOf(s);
+  if (!pid) return { start, total: null, rows: [], why: 'unlinked' };
+  if (isoDay(start) == null) return { start: '', total: null, rows: [], why: 'nostart' };
+  const today = isoToday(), s0 = isoDay(start), t = isoDay(today);
+  const rows = [];
+  for (const r of (getMedInputs()[pid] || [])) {
+    const a = isoDay(r.startIso), b = isoDay(r.endIso);
+    if (a == null || b == null) continue;
+    const from = Math.max(a, s0), to = Math.min(b, t);
+    if (to < from) continue;
+    const n = to - from + 1;
+    rows.push({ iid: r.iid, type: r.type, startIso: r.startIso, endIso: r.endIso, half: r.half || '',
+      days: r.half ? n / 2 : n, running: b > t,
+      cut: r.firstEnd && r.cutOn ? { on: r.cutOn, filedTo: r.firstEnd } : null });
+  }
+  rows.sort((x, y) => (x.startIso < y.startIso ? -1 : x.startIso > y.startIso ? 1 : 0));
+  return { start, total: rows.reduce((n, r) => n + r.days, 0), rows, why: '' };
+}
+/* a count in words, a half as ½: "½ day", "1 day", "0 days", "14½ days" (as drawn) */
+export function sayDays(n) {
+  const whole = Math.floor(n), half = n % 1 !== 0;
+  return (whole ? whole : (half ? '' : '0')) + (half ? '½' : '') + ' day' + (n === 1 || n === 0.5 ? '' : 's');
+}
+const MONTH3 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+/* a day as the Medical tab writes it: "7 Sep"; with its year, "1 Jun 2026" */
+export function sayDay(iso, withYear) { const d = +iso.slice(8, 10), m = MONTH3[+iso.slice(5, 7) - 1] || ''; return d + ' ' + m + (withYear ? ' ' + iso.slice(0, 4) : ''); }
+/* an input's dates: "7 Sep", "15–19 Jun", "28 Sep – 2 Oct"; the years said only when it crosses one */
+export function sayDaySpan(a, b) {
+  if (a === b) return sayDay(a);
+  if (a.slice(0, 7) === b.slice(0, 7)) return +a.slice(8, 10) + '–' + sayDay(b);
+  if (a.slice(0, 4) === b.slice(0, 4)) return sayDay(a) + ' – ' + sayDay(b);
+  return sayDay(a, true) + ' – ' + sayDay(b, true);
+}
 /* v is kept verbatim — an empty or half-typed box must stay as typed. epwOf()
    does the coercion for the arithmetic. */
 export async function setEpw(s, v) { if (String(paceOf(s).epw ?? '') === String(v ?? '')) return; pushMarkUndo(s, 'the pace', 'epw'); pace[s] = { ...paceOf(s), epw: v }; await savePace(s); renderSide(); }
@@ -5014,6 +5075,13 @@ export async function setFailDate(s, id, i, iso) {
 export let failLog = null;   /* the student, while the list is up */
 export function openFailLog(s) { if (!s) return; failLog = s; notify(); }
 export function closeFailLog() { failLog = null; notify(); }
+/* THE DOWN-DAYS WINDOW (owner D1002, D1018 — 18 Oct 26): a tap on "No. of Down Days" lists each medical input the number
+   counts — a clone of the Failures list's window, and it only shows (the Inputs page changes an input). Opened only when
+   there is a count to show; closed by Escape, a tap outside or ✕, and the keyboard goes back to the number (the design
+   guide's "the keyboard returns to the button that opened a thing" — SidePanel.jsx DownLog). */
+export let downLog = null;   /* the student, while the window is up */
+export function openDownLog(s) { if (!s || downDaysOf(s).total == null) return; downLog = s; notify(); }
+export function closeDownLog() { downLog = null; notify(); }
 /* LAST FLOWN IS THE LATEST DAY ACTUALLY FLOWN (owner, 23 Sep 26 — D123): worked
    out from the flights marked done, whatever order they were entered in. So an
    older sortie recorded after a newer one never drags it back (the 2 Sep rule,
@@ -5190,9 +5258,12 @@ export async function addStudent() {
   /* the list is read LIVE while the box is open: a person added or taken off the roster
      meanwhile shows at once ([TRK-RETEST-NOTES] C11 — it kept the list it opened with) */
   const people = () => getPeople().map(p => ({ key: p.id, label: p.cs, sub: seatWord(p.seat) + (p.q ? ' · ' + p.q : '') }));
-  const r = people().length
-    ? await uiPick('Add a crew member', people, { input: true, placeholder: 'Or type a callsign', listTitle: 'From the squadron roster' })
-    : await uiPrompt('Student callsign:');
+  /* THE COURSE START IS SET HERE (owner D1003, D1018 — 18 Oct 26): a date box above the list, today by default — above
+     it because a tap on a name adds him at once. The typed-name box (no roster: the standalone Tracker) carries it too. */
+  const start = { label: 'Course start', value: isoToday() };
+  let r;
+  if (people().length) r = await uiPick('Add a crew member', people, { input: true, placeholder: 'Or type a callsign', listTitle: 'From the squadron roster', date: start });
+  else { const t = await _dlgShow('Student callsign:', { input: true, date: start }); r = t === null ? null : (t + ''); }
   let v, link = null;
   if (r && typeof r === 'object') {
     const p = getPeople().find(x => x.id === r.pick); if (!p) return;
@@ -5227,6 +5298,10 @@ export async function addStudent() {
         if (paceRead) { try { pace[r.id] = JSON.parse(paceRead); } catch (_) {} }
         if (lullsRead) { try { lulls[r.id] = JSON.parse(lullsRead); } catch (_) {} }
         saveRoster(); saveMarks(r.id); saveDates(r.id);
+        /* his course start, from the box (D1003): only where he has no pace yet — an enrolment reused from another chart
+           of this course already has his, course start and all, and keeps it; the rest of a new pace is the default
+           loadStudent gives a student with none (the course plan's pace, else 2 a week) */
+        if (!paceRead && isWholeDay(start.value)) { pace[r.id] = { epw: plan.epw ?? 2, target: plan.target ?? null, target2: plan.target2 ?? null, courseStart: start.value }; savePace(r.id); }
       } else if (link && !r.pid) { r.pid = link; saveRoster(); }
       active = r.id; refreshActive(); renderBoard(); renderSide();
     });
@@ -6206,6 +6281,7 @@ export function handleEscapeKey(e) {
      and the raw event list were the last dialogs Escape did nothing for. */
   if (infoId != null) { e.preventDefault(); closeInfo(); return; }
   if (failLog) { e.preventDefault(); closeFailLog(); return; }
+  if (downLog) { e.preventDefault(); closeDownLog(); return; }
   if (pop) { e.preventDefault(); closePop(); return; }
   if (showAllOpen) { e.preventDefault(); closeShowAll(); return; }
   if (ordMode) { e.preventDefault(); closeOrd(); return; }

@@ -268,24 +268,32 @@ describe('[TRK-RETEST-NOTES] C5 — a date box saves when you leave it, never a 
     } finally { await act(async () => { root.unmount() }); host.remove() }
   })
 
-  it('Last Flown, Upchit and the end dates save once per day typed — the undo history gets one step, and none for the same day', async () => {
+  /* RE-POINTED 18 Oct 26: the Upchit box this drove is gone (owner D1002); its subject — one step a day, none and no fresh stamp for the same day —
+     is pinned on Last Flown (Currency), the dates record's box that stays, and on the course start (D1003) beside the end dates */
+  it('Last Flown, the course start and the end dates save once per day typed — the undo history gets one step, and none for the same day', async () => {
     const s = await pickStudent()
     const before = depth()
-    const r1 = await C.setUpchit(s, '2026-09-10')
+    const day = dayAfter(C.isoToday(), -41)
+    const r1 = await C.setLastCurr(s, day)
     expect(r1 || '', 'accepted').toBe('')
     expect(depth()).toBe(before + 1)
     const stamped = C.dates[s].at
     await new Promise(r => setTimeout(r, 15))
-    await C.setUpchit(s, '2026-09-10')
+    await C.setLastCurr(s, day)
     expect(depth(), 'the same day again makes no step').toBe(before + 1)
     expect(C.dates[s].at, 'and writes nothing (no fresh stamp)').toBe(stamped)
+    await C.setCourseStart(s, '2026-09-10')
+    expect(depth()).toBe(before + 2)
+    await C.setCourseStart(s, '2026-09-10')
+    expect(depth(), 'the same course start again makes no step').toBe(before + 2)
     await C.setTarget(s, '2026-12-01'); await C.setTarget(s, '2026-12-01')
     expect(C.paceOf(s).target).toBe('2026-12-01')
   })
 })
 
 describe('[TRK-RETEST-NOTES] C8 + D374 — a day after today is refused in Done on, Failed on and both Last Flown boxes', () => {
-  it('both Last Flown boxes refuse tomorrow and say why; Upchit and the end dates take it', async () => {
+  /* RE-POINTED 18 Oct 26: the Upchit box this drove is gone (owner D1002); the planned day beside the end dates is the course start (D1003) */
+  it('both Last Flown boxes refuse tomorrow and say why; the course start and the end dates take it', async () => {
     const s = await pickStudent()
     const tomorrow = dayAfter(C.isoToday(), 1)
     const was = { ...C.dates[s] }
@@ -294,8 +302,8 @@ describe('[TRK-RETEST-NOTES] C8 + D374 — a day after today is refused in Done 
     expect(C.dates[s].lastSyll || null).toBe(was.lastSyll || null)
     expect(C.dates[s].lastCurr || null).toBe(was.lastCurr || null)
     expect(await C.setLastCurr(s, C.isoToday()) || '', 'today is fine').toBe('')
-    expect(await C.setUpchit(s, tomorrow) || '', 'Upchit is a planned day').toBe('')
-    expect(C.dates[s].upchit).toBe(tomorrow)
+    expect(await C.setCourseStart(s, tomorrow) || '', 'the course start is a planned day').toBe('')
+    expect(C.paceOf(s).courseStart).toBe(tomorrow)
     expect(await C.setTarget2(s, tomorrow) || '', 'an end date is a planned day').toBe('')
     expect(C.paceOf(s).target2).toBe(tomorrow)
   })
@@ -717,7 +725,8 @@ describe('[TRK-RETEST-NOTES] C14 — while ✓ Save changes shows, the words bes
       const stat = () => (host.querySelector('#saveStat')?.textContent || '').trim()
       expect(stat(), 'the button says it; no cut-off words beside it').toBe('')
       expect(host.querySelector('#saveChanges'), 'the button is there').toBeTruthy()
-      await C.setUpchit(s, dayAfter(C.isoToday(), -40)); await act(async () => { await tick(); await tick() })
+      /* (a background save — End date B's since the Upchit box went, D1002) */
+      await C.setTarget2(s, dayAfter(C.isoToday(), -40)); await act(async () => { await tick(); await tick() })
       expect(stat(), 'a background save does not claim the chart is saved').toBe('')
       await C.saveChangesClick(); await act(async () => { await tick() })
       expect(stat(), 'saved: the words are back').not.toBe('')
@@ -882,7 +891,9 @@ describe('[TRK-BAKE-STALE] baking an exported chart file into the shipped charts
 describe('[TRK-RETEST-NOTES] C5 — the roll-call: each side-panel date box saves only when LEFT', () => {
   /* RE-EXPRESSED 13 Oct 26 (D801): every one of the Tracker's date boxes is the app's own — looking saves nothing, a pick
      saves the day. One loop over every KIND of box the side panel draws, each by name. */
-  it('Last Flown ×2, Upchit, End date A, End date B and a failures-list row: each is the app’s own box — looking saves nothing; a pick saves the day', async () => {
+  /* RE-POINTED 18 Oct 26: the Upchit box this drove is gone (owner D1002); the roll-call names the course start in its place (D1018) — the one box
+     here with nothing to take off */
+  it('Last Flown ×2, Course start, End date A, End date B and a failures-list row: each is the app’s own box — looking saves nothing; a pick saves the day', async () => {
     const s = await pickStudent()
     const ev = await freshEvent(s, 4)
     await fail(s, ev, dayAfter(C.isoToday(), -30))
@@ -890,7 +901,7 @@ describe('[TRK-RETEST-NOTES] C5 — the roll-call: each side-panel date box save
     try {
       C.openFailLog(s); await act(async () => { await tick() })
       const boxes: [string, () => any][] = [
-        ['#lastSyll', () => C.dates[s].lastSyll], ['#lastCurr', () => C.dates[s].lastCurr], ['#upchit', () => C.dates[s].upchit],
+        ['#lastSyll', () => C.dates[s].lastSyll], ['#lastCurr', () => C.dates[s].lastCurr], ['#courseStart', () => C.paceOf(s).courseStart],
         ['#targetIn', () => C.paceOf(s).target], ['#targetIn2', () => C.paceOf(s).target2],
         ['#failLog .frow[data-ev="' + ev + '"] button.datebox', () => C.failDates(s, ev)[0]],
       ]
@@ -909,9 +920,11 @@ describe('[TRK-RETEST-NOTES] C5 — the roll-call: each side-panel date box save
            weekday so it is never cut short; every other box has the room and shows it */
         const words = el().querySelector('.datebox-txt')!.textContent || ''
         expect(/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun) /.test(words), sel + ': "' + words + '"').toBe(!/^#targetIn/.test(sel))
-        /* and a box that holds a date carries its "take this date off" in its own right end */
-        expect(el().parentElement!.classList.contains('has-x'), sel).toBe(true)
-        expect(el().parentElement!.querySelector('.trdate-x'), sel).toBeTruthy()
+        /* and a box that holds a date carries its "take this date off" in its own right end — but the course start, set
+           once and changed by picking another day (D1018, as drawn) */
+        const offers = sel !== '#courseStart'
+        expect(el().parentElement!.classList.contains('has-x'), sel).toBe(offers)
+        expect(!!el().parentElement!.querySelector('.trdate-x'), sel).toBe(offers)
       }
     } finally { C.closeFailLog(); await act(async () => { root.unmount() }); host.remove() }
   })
@@ -1167,13 +1180,14 @@ describe('[TRK-DATE-BOXES] the read of 13 Oct 26', () => {
 
   it('F2 — on a side-panel box the second press of a double press opens nothing', async () => {
     const s = await pickStudent()
-    await C.setUpchit(s, dayAfter(C.isoToday(), -3))
+    /* RE-POINTED 18 Oct 26: the Upchit box this drove is gone (owner D1002); End date B is the box here */
+    await C.setTarget2(s, dayAfter(C.isoToday(), -3))
     const { host, root } = await sideUp()
     try {
-      const row = () => (host.querySelector('#upchit') as HTMLElement).parentElement!
+      const row = () => (host.querySelector('#targetIn2') as HTMLElement).parentElement!
       fireEvent.click(row().querySelector('.trdate-x')!); await act(async () => { await tick() })
-      expect(C.dates[s].upchit || '').toBe('')
-      fireEvent.click(host.querySelector('#upchit')!); await act(async () => { await tick() })
+      expect(C.paceOf(s).target2 || '').toBe('')
+      fireEvent.click(host.querySelector('#targetIn2')!); await act(async () => { await tick() })
       expect(document.querySelector('[data-testid="dcal-card"]'), 'the second half of the double press is not a tap on the box').toBeNull()
     } finally { await act(async () => { root.unmount() }); host.remove() }
   })
@@ -1248,13 +1262,14 @@ describe('[TRK-DATE-BOXES] the read of 13 Oct 26', () => {
 
   it('F4 — two days picked in one box, one straight after the other, are TWO undo steps (a pick is never typing)', async () => {
     const s = await pickStudent()
-    await C.setUpchit(s, ''); await new Promise(r => setTimeout(r, 5))
+    /* RE-POINTED 18 Oct 26: the Upchit box this drove is gone (owner D1002); the course start is the box here */
+    await C.setCourseStart(s, ''); await new Promise(r => setTimeout(r, 5))
     const a = dayAfter(C.isoToday(), -8), b = dayAfter(C.isoToday(), -7)
     const before = depth()
-    await C.setUpchit(s, a); await C.setUpchit(s, b)
+    await C.setCourseStart(s, a); await C.setCourseStart(s, b)
     expect(depth(), 'one step a pick').toBe(before + 2)
     await C.doUndo()
-    expect(C.dates[s].upchit, 'one Undo goes back ONE pick').toBe(a)
+    expect(C.paceOf(s).courseStart, 'one Undo goes back ONE pick').toBe(a)
     const t0 = depth()
     await C.setTarget(s, a); await C.setTarget(s, b); await C.setTarget2(s, a); await C.setTarget2(s, b)
     await C.setLastCurr(s, a); await C.setLastCurr(s, b)
@@ -1264,20 +1279,21 @@ describe('[TRK-DATE-BOXES] the read of 13 Oct 26', () => {
   it('F6 — each box says what it is to a screen reader, its ✕ says whose date it takes off, and the keyboard stays on the box after it', async () => {
     const s = await pickStudent()
     const day = dayAfter(C.isoToday(), -2)
-    await C.setUpchit(s, day); await C.setTarget(s, day); await C.setTarget2(s, day); await C.setLastSyll(s, day)
+    /* RE-POINTED 18 Oct 26: the Upchit box this drove is gone (owner D1002); the course start is named in its place, and the ✕ is End date B's */
+    await C.setCourseStart(s, day); await C.setTarget(s, day); await C.setTarget2(s, day); await C.setLastSyll(s, day)
     const { host, root } = await sideUp()
     try {
       const name = (id: string) => (host.querySelector('#' + id) as HTMLElement).getAttribute('aria-label') || ''
       expect(name('lastSyll')).toMatch(/^Last Flown \(Syllabus\): /)
       expect(name('lastCurr')).toMatch(/^Last Flown \(Currency\): /)
-      expect(name('upchit')).toMatch(/^Upchit date: /)
+      expect(name('courseStart')).toMatch(/^Course start: /)
       expect(name('targetIn')).toMatch(/^End date A: /)
       expect(name('targetIn2')).toMatch(/^End date B: /)
-      const x = (host.querySelector('#upchit') as HTMLElement).parentElement!.querySelector('.trdate-x') as HTMLElement
-      expect(x.getAttribute('aria-label')).toBe('Take the date off — Upchit date')
+      const x = (host.querySelector('#targetIn2') as HTMLElement).parentElement!.querySelector('.trdate-x') as HTMLElement
+      expect(x.getAttribute('aria-label')).toBe('Take the date off — End date B')
       x.focus(); fireEvent.click(x); await act(async () => { await tick() })
-      expect(C.dates[s].upchit || '').toBe('')
-      expect(document.activeElement, 'the keyboard is on the box, not on nothing').toBe(host.querySelector('#upchit'))
+      expect(C.paceOf(s).target2 || '').toBe('')
+      expect(document.activeElement, 'the keyboard is on the box, not on nothing').toBe(host.querySelector('#targetIn2'))
     } finally { await act(async () => { root.unmount() }); host.remove() }
   })
 
@@ -1299,13 +1315,14 @@ describe('[TRK-DATE-BOXES] the read of 13 Oct 26', () => {
 
   it('F8 — Delete or Backspace with the keyboard on a date box deletes nothing of the chart being arranged', async () => {
     const s = await pickStudent()
-    await C.setUpchit(s, dayAfter(C.isoToday(), -2))
+    /* RE-POINTED 18 Oct 26: the Upchit box this drove is gone (owner D1002); End date B is the box here */
+    await C.setTarget2(s, dayAfter(C.isoToday(), -2))
     const { host, root } = await sideUp()
     if (C.sylDirty) await C.saveChangesClick()
     C.toggleArrange()
     try {
       C.selectAllClick()
-      const box = host.querySelector('#upchit') as HTMLElement
+      const box = host.querySelector('#targetIn2') as HTMLElement
       await C.handleDeleteKey({ key: 'Delete', target: box, preventDefault() {} })
       await C.handleDeleteKey({ key: 'Backspace', target: box.parentElement!.querySelector('.trdate-x'), preventDefault() {} })
       await tick()
@@ -1323,10 +1340,11 @@ describe('[TRK-DATE-BOXES] the read of 13 Oct 26', () => {
       expect(new Date().getDate(), 'the premise: the device’s own day is the 13th').toBe(13)
       expect(C.isoToday()).toBe('2026-10-14')
       const s = await pickStudent()
-      await C.setUpchit(s, '')
+      /* RE-POINTED 18 Oct 26: the Upchit box this drove is gone (owner D1002); End date B is the box here */
+      await C.setTarget2(s, '')
       const { host, root } = await sideUp()
       try {
-        fireEvent.click(host.querySelector('#upchit')!); await act(async () => { await tick() })
+        fireEvent.click(host.querySelector('#targetIn2')!); await act(async () => { await tick() })
         expect(screen.getByTestId('dcal').getAttribute('data-today'), 'the side panel’s box').toBe('2026-10-14')
         expect(screen.getByTestId('dcal-day-2026-10-14').classList.contains('is-today')).toBe(true)
         fireEvent.click(screen.getByTestId('dcal-scrim')); await act(async () => { await tick() })
@@ -1344,10 +1362,11 @@ describe('[TRK-DATE-BOXES] the read of 13 Oct 26', () => {
 
   it('F9 — a Tracker box offers no day before 1900 (the store refuses one), and an empty box still opens on today’s month', async () => {
     const s = await pickStudent()
-    await C.setUpchit(s, '')
+    /* RE-POINTED 18 Oct 26: the Upchit box this drove is gone (owner D1002); End date B is the box here */
+    await C.setTarget2(s, '')
     const { host, root } = await sideUp()
     try {
-      fireEvent.click(host.querySelector('#upchit')!); await act(async () => { await tick() })
+      fireEvent.click(host.querySelector('#targetIn2')!); await act(async () => { await tick() })
       expect(screen.getByTestId('dcal').getAttribute('data-month'), 'opens on the squadron’s today').toBe(C.isoToday().slice(0, 7))
       expect(screen.getByTestId('dcal').getAttribute('data-min')).toBe('1900-01-01')
       fireEvent.click(screen.getByTestId('dcal-scrim')); await act(async () => { await tick() })
@@ -1377,7 +1396,8 @@ describe('[LOOK-13OCT-SMALL-FIXES] the Tracker’s date boxes — L14, L15, K12'
     return { ...seen, stillUp }
   }
 
-  it('L14 — both Last Flown boxes offer no day after today: tomorrow is faint and takes no tap, and nothing is saved or refused; Upchit and the end dates still offer every day', async () => {
+  /* RE-POINTED 18 Oct 26: the Upchit box this drove is gone (owner D1002); the course start is the planned day in its place (D1003) */
+  it('L14 — both Last Flown boxes offer no day after today: tomorrow is faint and takes no tap, and nothing is saved or refused; the course start and the end dates still offer every day', async () => {
     const s = await pickStudent()
     const today = C.isoToday(), tomorrow = dayAfter(today, 1)
     const was = { ...C.dates[s] }, pace = { ...C.paceOf(s) }
@@ -1390,14 +1410,14 @@ describe('[LOOK-13OCT-SMALL-FIXES] the Tracker’s date boxes — L14, L15, K12'
         expect(C.dates[s][id] || '', id + ': nothing saved').toBe(was[id] || '')
         expect(box().closest('.trdatebox')!.querySelector('.datewarn'), id + ': there was nothing to refuse').toBeNull()
       }
-      /* a planned day — Upchit, the two end dates — is any day (D374): no last date, and tomorrow is picked */
-      const free: [string, () => any][] = [['upchit', () => C.dates[s].upchit], ['targetIn', () => C.paceOf(s).target], ['targetIn2', () => C.paceOf(s).target2]]
+      /* a planned day — the course start, the two end dates — is any day (D374): no last date, and tomorrow is picked */
+      const free: [string, () => any][] = [['courseStart', () => C.paceOf(s).courseStart], ['targetIn', () => C.paceOf(s).target], ['targetIn2', () => C.paceOf(s).target2]]
       for (const [id, read] of free) {
         expect(await tapTomorrow(host.querySelector('#' + id) as HTMLElement), id).toEqual({ max: null, todayLive: true, faint: false, takesNoTap: false, stillUp: false })
         expect(read(), id + ': tomorrow is saved').toBe(tomorrow)
       }
     } finally {
-      await C.setUpchit(s, was.upchit || ''); await C.setTarget(s, pace.target || ''); await C.setTarget2(s, pace.target2 || '')
+      await C.setCourseStart(s, pace.courseStart || ''); await C.setTarget(s, pace.target || ''); await C.setTarget2(s, pace.target2 || '')
       await act(async () => { root.unmount() }); host.remove()
     }
   })
@@ -1491,21 +1511,22 @@ describe('[LOOK-13OCT-SMALL-FIXES] the Tracker’s date boxes — L14, L15, K12'
   it('K12 — Delete or Backspace on a box that holds a date takes the date off, as its ✕ does: one undo step, the keyboard still on the box', async () => {
     const s = await pickStudent()
     const day = dayAfter(C.isoToday(), -2)
-    await C.setUpchit(s, day); await C.setTarget(s, day)
+    /* RE-POINTED 18 Oct 26: the Upchit box this drove is gone (owner D1002); End date B takes the Delete */
+    await C.setTarget2(s, day); await C.setTarget(s, day)
     const { host, root } = await sideUp()
     try {
       const box = (id: string) => host.querySelector('#' + id) as HTMLElement
       const x = (id: string) => box(id).parentElement!.querySelector('.trdate-x')
-      expect(x('upchit'), 'the premise: the box has its ✕').toBeTruthy()
+      expect(x('targetIn2'), 'the premise: the box has its ✕').toBeTruthy()
       const before = depth()
-      box('upchit').focus()
-      await key(box('upchit'), 'Delete'); await act(async () => { await tick() })
-      expect(C.dates[s].upchit || '', 'Delete took the date off').toBe('')
-      expect(boxValue(box('upchit'))).toBe(''); expect(x('upchit')).toBeNull()
+      box('targetIn2').focus()
+      await key(box('targetIn2'), 'Delete'); await act(async () => { await tick() })
+      expect(C.paceOf(s).target2 || '', 'Delete took the date off').toBe('')
+      expect(boxValue(box('targetIn2'))).toBe(''); expect(x('targetIn2')).toBeNull()
       expect(depth(), 'one step, as the ✕ makes').toBe(before + 1)
-      expect(document.activeElement, 'the keyboard is still on the box').toBe(box('upchit'))
+      expect(document.activeElement, 'the keyboard is still on the box').toBe(box('targetIn2'))
       /* on the box now empty the key has nothing to take off */
-      await key(box('upchit'), 'Delete'); await key(box('upchit'), 'Backspace'); await act(async () => { await tick() })
+      await key(box('targetIn2'), 'Delete'); await key(box('targetIn2'), 'Backspace'); await act(async () => { await tick() })
       expect(depth(), 'nothing more was changed').toBe(before + 1)
       /* Backspace does the same, on a narrow box too (End date A) */
       box('targetIn').focus()
@@ -1539,7 +1560,8 @@ describe('[LOOK-13OCT-SMALL-FIXES] the Tracker’s date boxes — L14, L15, K12'
 
   it('K12 — the key is the BOX’s: the Tracker’s own Delete key, which deletes what is selected on a chart being arranged, never hears it', async () => {
     const s = await pickStudent()
-    await C.setUpchit(s, dayAfter(C.isoToday(), -2))
+    /* RE-POINTED 18 Oct 26: the Upchit box this drove is gone (owner D1002); End date B is the box here */
+    await C.setTarget2(s, dayAfter(C.isoToday(), -2))
     const { host, root } = await sideUp()
     if (C.sylDirty) await C.saveChangesClick()
     /* as the Tracker's page wires it (App.jsx): every key that reaches the document is handed to the Delete handler */
@@ -1548,13 +1570,13 @@ describe('[LOOK-13OCT-SMALL-FIXES] the Tracker’s date boxes — L14, L15, K12'
     C.toggleArrange()
     try {
       C.selectAllClick()
-      const box = host.querySelector('#upchit') as HTMLElement
+      const box = host.querySelector('#targetIn2') as HTMLElement
       box.focus()
       /* on the box with a date (it is taken off), then on the box now empty (nothing to take off): neither is the chart's */
       await key(box, 'Delete'); await act(async () => { await tick() })
       await key(box, 'Backspace'); await key(box, 'Delete'); await act(async () => { await tick() })
       expect(del, 'the Tracker’s Delete handler ran for a key pressed on a date box').not.toHaveBeenCalled()
-      expect(C.dates[s].upchit || '', 'the box’s own date was taken off').toBe('')
+      expect(C.paceOf(s).target2 || '', 'the box’s own date was taken off').toBe('')
       expect(C.dlg, 'no "Delete …?" question').toBeNull()
       expect(C.sylDirty, 'nothing of the chart was deleted').toBe(false)
       /* the premise: the wire is live — any other key pressed on the box does reach it */

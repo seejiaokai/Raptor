@@ -255,8 +255,8 @@ branch.**
 | `studentName` | string | yes | the typed callsign; today the key, from here a display attribute |
 | `sortIndex` | int | yes | roster order |
 | `lastSyllDate`, `lastCurrDate` | date | no | `dates[student].lastSyll` / `lastCurr` |
-| `downDays` | int | no | `dates[student].downDays` |
-| `upchitDate` | date | no | `dates[student].upchit` |
+| `downDays` | int | no | **GONE 18 Oct 26 (D1002, D1005) — not needed:** the down days are worked out from the man's medical `Input` rows (HL, OML, ATT C, ATT B) since his course start (`CoursePlan.courseStartDate`), never typed or stored. *As it was:* `dates[student].downDays` |
+| `upchitDate` | date | no | **GONE 18 Oct 26 (D1002) — not needed:** the Info panel's Upchit box went; an upchit is an `Input`. *As it was:* `dates[student].upchit` |
 | `lastEditedBy`, `lastEditedAt` | ref User / datetime | no | the `by`/`at` stamps already written on this branch |
 | `isDeleted` | bool | yes | soft delete — removing a student must not lose their attempts |
 
@@ -340,6 +340,7 @@ Owner: **Tracker**. Pace, lull periods and target dates for an enrolment.
 | `courseId` | ref Course | yes | |
 | `enrolmentId` | ref Enrolment | no | null = the course-wide plan (`plan`) |
 | `pace` | JSON | no | the per-student `pace` record |
+| `courseStartDate` | date | no | the student's course start (D1003, D1018 — 18 Oct 26; today `pace.courseStart`, an ISO date): the day his down days are counted from — set when he is added (today by default), changed in the Info panel; null on the course-wide row. The down days themselves are read from his medical `Input` rows from this day to today, a half day ½ — a view, not a column |
 | `lulls` | JSON | no | the per-student `lulls` record |
 | `targets` | JSON | no | target dates carried in `plan` |
 | `currentSyllabusId` | ref Syllabus | no | `plan.sylName` |
@@ -1100,8 +1101,8 @@ The "migration notes" say how each shape maps, should a record ever need convert
 | `raptor:tracker/v3:<course>:<syl>:enr:<id>` (since 30 Sep 26 — one row per enrolment; it replaced `v3:<course>:<syl>:roster`) | `Enrolment` | One row each; `ord` → `sortIndex`, `pid` → `personId`, `name` → `studentName` |
 | `raptor:tracker/v3:links` (this branch) | `Enrolment.personId` | The links record **disappears** into the column. A student with no link imports with a null `personId` |
 | `…:marks` — `{ g, f, fd[], d, by?, at? }` | `Attempt` (+ the `ProgressionSummary` view) | One `applySummary` call per mark: the `d` date becomes one `pass` attempt carrying `g`; each `fd` entry a `fail` attempt; a `null` `fd` entry an attempt with no date and `dateUnknown`, reported. `by`/`at` stamp every row the mark yields |
-| `…:dates` — `lastSyll`, `lastCurr`, `downDays`, `upchit` | `Enrolment` | Straight column copy; the `by`/`at` stamps become `lastEditedBy`/`lastEditedAt` |
-| `…:plan`, `…:pace`, `…:lulls` | `CoursePlan` | Course-wide plan as the row with a null `enrolmentId`; per-student pace and lulls on the enrolment's row |
+| `…:dates` — `lastSyll`, `lastCurr`, `downDays`, `upchit` | `Enrolment` | Straight column copy; the `by`/`at` stamps become `lastEditedBy`/`lastEditedAt`. `downDays` and `upchit` are dropped (D1002 — nothing writes them since 18 Oct 26; demo data, D56) |
+| `…:plan`, `…:pace`, `…:lulls` | `CoursePlan` | Course-wide plan as the row with a null `enrolmentId`; per-student pace and lulls on the enrolment's row; `pace.courseStart` → `courseStartDate` (D1003) |
 | `raptor:tracker/v3:seedstamp` | — | Dropped. It marks a demo seed, which never reaches the shared store |
 | `ocuLocal:*` (last course, last crew member) | — | **Stays per browser.** A view preference, deliberately outside the shared prefix; it must not be migrated |
 

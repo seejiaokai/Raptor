@@ -716,8 +716,15 @@ A mark record is `{ g, f, fd, d, by?, at? }` — grade code, failure count,
 one ISO date per failure (oldest first, null when undated), the done date,
 and since 9 Sep 26 **who** made the last write (Raptor's `HOOKS.whoami()`
 display name, absent when unknown) and **when** (ISO instant). `dates[s]`
-(`lastSyll, lastCurr, downDays, upchit`) carries the same two stamps. Undo
-snapshots restore them verbatim.
+(`lastSyll, lastCurr`) carries the same two stamps. Undo
+snapshots restore them verbatim. **Since 18 Oct 26 (D1002, D1005) nothing writes `downDays` or `upchit`:** the typed
+"No. of Down Days" and the "Upchit Date" box went; a record that still holds them loads as it is and the two fields are
+left unread (D56 — no conversion).
+
+**A pace record** `v3:<course>:pace:<id>` = `{ epw, target, target2, courseStart? }` — per course and student, whatever
+the chart — the pace, End date A and B, and **since 18 Oct 26 (D1003, D1018) the course start** (an ISO day, or null):
+the day the student's down days are counted from, set in "+ Add" (today by default — written with a fresh pace only
+when he has none) and changed in the Info panel. It travels in a backup inside `pace` with no change to the file.
 
 ### The person link — `pid` on the entry (`v3:links` is legacy)
 
@@ -731,6 +738,15 @@ another person, is refused with a message). The 9 Sep 26 record
 `v3:links` = `{ [course]: { [studentName]: personId } }` is read once by
 the migration, folded into `pid`, and deleted; a file's `links` block is
 read the same way on Import and never written by Export.
+
+**The medical rider (18 Oct 26 — D1002, D1003, D1018): the down days are read, never stored.** The same bridge carries
+a third channel, each man's downchits (HL, OML, ATT C, ATT B) worked out on Raptor's side by `peoplewire.ts
+medForTracker` from `INPUTS` into `{ [personId]: { iid, type, startIso, endIso, half, firstEnd?, cutOn? }[] }` — plain
+ISO days, the row's own year resolved there; `firstEnd` / `cutOn` only where an upchit cut the input and it keeps the
+end it was filed with (D999). The Tracker counts a student's down days from it through his `pid` (`core.js
+downDaysOf`: from his course start to today, a half day ½, each input clipped to that span). Nothing of it is saved in
+the Tracker's store or written to a backup — the Inputs stay the one record of a medical day; the standalone Tracker
+gets nothing and shows "—".
 
 **A syllabus is a syllabus id since 1B-ii (`[TRK-CSID]`, 13 Sep 26).** The
 `<syl>` segment above is a syllabus id: built-ins carry a deterministic

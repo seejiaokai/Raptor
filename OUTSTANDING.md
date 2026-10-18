@@ -955,6 +955,7 @@ what happened and what to do in the app's words ("This week's saved copy could n
 an admin.").
 
 ### [TRK-DOWN-DAYS-AUTO] The Tracker's down days worked out from the Inputs, a tap shows the breakdown; the Upchit Date box goes (his direction, 18 Oct 26 — D1002)
+**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534) — D1002–D1005, D1018: the down days worked out from the man's medical inputs since his course start (set in "+ Add", changed in Info), ½ for a half day, a running one to today, a window listing each; the typed box and "Upchit Date" gone; the currency bar without down days (D1004). Open for his look: a CANCELLED medical input still counts (the Medical tab's own reading); two new phrasings ("No medical inputs since the course start.", the spoken "none counted yet"). Leaves for the archive once live.**
 **Not designed — his questions first.** The design note with his words, today's behaviour and the questions to put to him:
 `raptor-port/docs/superpowers/specs/2026-10-18-trk-down-days.md`. **Place:** his direction of 18 Oct 26; the next Tracker
 job, after D994's small fixes unless he says otherwise.

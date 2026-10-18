@@ -235,6 +235,14 @@ button:disabled:hover{border-color:var(--line)}
 .faillog .frow .trdatebox{width:100%;min-width:0}
 .faillog .frow .mini{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .faillog .lullhd .failtot{margin-left:0}
+/* The down-days window (D1002, D1018 — a clone of the list above, as drawn, 3-window): its one style change is the third
+   column, the days, sized to fit instead of the date box's 144px; the line under a row's dates (a cut, a running input)
+   wraps where the letters are wide (3b-window-wide-letters) — the days and the dates never cut short. */
+.downlog .frow{grid-template-columns:auto minmax(0,1fr) auto}
+.downlog .dd-what{min-width:0}
+.downlog .dd-when,.downlog .dd-days{font-size:12.5px}
+.downlog .dd-days{white-space:nowrap}
+.downlog .frow .mini{display:block;white-space:normal;overflow:visible}
 /* The pop-up's list of this student's failures on the event, each with its day. */
 .pop .fdates{margin-top:5px;display:flex;flex-wrap:wrap;gap:3px 8px;font-size:10.5px;color:var(--red-ink);line-height:1.4}
 /* A date box that saves when it is LEFT (DateBox.jsx, [TRK-RETEST-NOTES] C5) wraps its box
@@ -517,6 +525,8 @@ svg.perf .edgehit{pointer-events:none}
    buttons), then the free-text box the dialog always had. */
 #dlgFilter{width:100%;margin-bottom:8px}
 .dlg-listtitle{margin-bottom:6px}
+/* the course start above the roster (D1018, 5-add-box) */
+.dlg-date{margin:0 0 10px}
 #dlgList{max-height:30vh;overflow:auto;border:1px solid var(--line);border-radius:8px;margin-bottom:12px}
 #dlgList .dlg-item{display:flex;align-items:baseline;justify-content:space-between;gap:10px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:7px 10px;font-size:12.5px;color:var(--ink)}
 #dlgList .dlg-item:last-child{border-bottom:0}

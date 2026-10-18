@@ -7,8 +7,10 @@
    notify; the bridge's own signature guard makes an unrelated notify free. */
 import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
+import { INPUTS, isDownchit, isUpchit, inpType, leadOf } from '../engine/inputs'
+import { medStartOrd, medEndOrd, firstEndOrd, firstEndIso, ordShift } from '../engine/medical'
 import { subscribe } from '../state/store'
-import { setPeople, setWhoami, setWhoamiId, setGonePeople } from './people.js'
+import { setPeople, setWhoami, setWhoamiId, setGonePeople, setMedInputs } from './people.js'
 import { setTrackerAdmin } from './role.js'
 import { roleOf } from '../state/perms'
 
@@ -38,6 +40,37 @@ export function projectForTracker(people: any): TrackerPerson[] {
 /* The men deleted through Post out (D290's hidden mark — state/person-delete.ts), for the Tracker's D981 */
 export function deletedForTracker(people: any): string[] {
   return Object.keys(people || {}).filter(id => !!(people[id] && people[id].deleted))
+}
+
+/* EACH MAN'S MEDICAL DAYS, for the Tracker's down days (owner D1002, D1003, D1018 — 18 Oct 26). Every downchit (HL, OML,
+   ATT C, ATT B — `isDownchit`, the medical group) of each man, its dates worked out HERE through the row's own year
+   (medStartOrd / medEndOrd, the Medical tab's own readers) into plain ISO days, so the Tracker never sees a label or a
+   `yr`. An unreadable date leaves the row out, never guessed at (engine/medical.ts's fail-closed rule). A half day is a
+   window that is not all day with its AM / PM mark (the reading sansWindow and the Medical tab's titles share). Where
+   an upchit cut the input and it still keeps the end it was filed with (D999's `firstEnd`), that end crosses too, with
+   the day of the upchit that cut it — his upchit on the day after the input now ends (the cut's own rule,
+   upchitTrimPlan); with no such upchit to name, no cut is said. Pure: it reads only what it is handed. */
+export type TrackerMed = { iid: string; type: string; startIso: string; endIso: string; half: string; firstEnd?: string; cutOn?: string }
+export function medForTracker(inputs: any): Record<string, TrackerMed[]> {
+  const out: Record<string, TrackerMed[]> = {}
+  const ups: Record<string, number[]> = {}
+  for (const r of (inputs || [])) {
+    if (!r || !isUpchit(r.type)) continue
+    const p = leadOf(r), a = medStartOrd(r); if (p == null || a == null) continue
+    ;(ups[p] = ups[p] || []).push(a)
+  }
+  for (const r of (inputs || [])) {
+    if (!r || !isDownchit(r.type)) continue
+    const p = leadOf(r); if (p == null || p === '') continue
+    const a = medStartOrd(r), b = medEndOrd(r); if (a == null || b == null) continue
+    const row: TrackerMed = { iid: String(r.iid || ''), type: inpType(r.type), startIso: firstEndIso(a), endIso: firstEndIso(b),
+      half: !r.allday && (r.half === 'am' || r.half === 'pm') ? r.half : '' }
+    const f = firstEndOrd(r), next = ordShift(b, 1)
+    if (f != null && f > b && (ups[p] || []).includes(next)) { row.firstEnd = firstEndIso(f); row.cutOn = firstEndIso(next) }
+    ;(out[p] = out[p] || []).push(row)
+  }
+  for (const p in out) out[p].sort((x, y) => (x.startIso < y.startIso ? -1 : x.startIso > y.startIso ? 1 : 0))
+  return out
 }
 
 let wired = false
@@ -77,7 +110,9 @@ export function wireTrackerPeople(): void {
   setTrackerAdmin(trackerAdminForTracker)
   setWhoami(whoamiForTracker)
   setWhoamiId(whoamiIdForTracker)
-  const push = () => { setPeople(projectForTracker(PEOPLE)); setGonePeople(deletedForTracker(PEOPLE)) }
+  /* the medical days ride the same push: an input filed, moved or cut on the Inputs page reaches the Tracker's number
+     at the next notify, and the bridge's guard makes an unrelated notify free (D1002) */
+  const push = () => { setPeople(projectForTracker(PEOPLE)); setGonePeople(deletedForTracker(PEOPLE)); setMedInputs(medForTracker(INPUTS)) }
   subscribe(push)
   push()
 }
