@@ -1,0 +1,209 @@
+{
+ "results": [
+  {
+   "step": "S0 the calendar is on the current month view",
+   "ok": true,
+   "note": "OCTOBER 2026",
+   "pic": ""
+  },
+  {
+   "step": "S0 Warden has no inputs that week",
+   "ok": true,
+   "note": "[]",
+   "pic": ""
+  },
+  {
+   "step": "S1a ATT C filed Mon-Fri (19-23)",
+   "ok": true,
+   "note": "ATT C covers 19,20,21,22,23",
+   "pic": ""
+  },
+  {
+   "step": "S1b the sheet says the ATT C now ends Tue (20)",
+   "ok": true,
+   "note": "sheet: Upchit — Warden, Oct 21 ✕ SAVING THIS UPCHIT WILL ATT C Oct 19 – Oct 23 → now ends Oct 20 Fit for full duty from Oct 21. Cancel Save upchit",
+   "pic": "01-S1-upchit-sheet.png"
+  },
+  {
+   "step": "S1b before Save nothing has changed yet",
+   "ok": true,
+   "note": "ATT C 19,20,21,22,23, upchit none",
+   "pic": ""
+  },
+  {
+   "step": "S1c calendar: ATT C Mon-Tue, Upchit Wed",
+   "ok": true,
+   "note": "ATT C 19,20, Upchit 21",
+   "pic": "02-S1-calendar-after.png"
+  },
+  {
+   "step": "S2a the upchit opens from its bar",
+   "ok": true,
+   "note": "editor open",
+   "pic": ""
+  },
+  {
+   "step": "S2a editor date now Thu 22",
+   "ok": true,
+   "note": "selected 22",
+   "pic": ""
+  },
+  {
+   "step": "S2b the sheet says \"ATT C ... now ends Oct 21, its days given back\"",
+   "ok": true,
+   "note": "sheet: Upchit — Warden, Oct 22 ✕ SAVING THIS UPCHIT WILL ATT C Oct 19 – Oct 20 → now ends Oct 21, its days given back Fit for full duty from Oct 22. Cancel Save upchit",
+   "pic": "03-S2-sheet-given-back.png"
+  },
+  {
+   "step": "S2c Cancel on the sheet: sheet gone, ATT C still Mon-Tue, upchit still Wed",
+   "ok": true,
+   "note": "sheet gone true; ATT C 19,20, Upchit 21",
+   "pic": "04-S2-after-cancel.png"
+  },
+  {
+   "step": "S2d the sheet came again with the given-back line",
+   "ok": true,
+   "note": "sheet: Upchit — Warden, Oct 22 ✕ SAVING THIS UPCHIT WILL ATT C Oct 19 – Oct 20 → now ends Oct 21, its days given back Fit for full duty from Oct 22. Cancel Save upchit",
+   "pic": ""
+  },
+  {
+   "step": "S2e saved: ATT C Mon-Wed, Upchit Thu",
+   "ok": true,
+   "note": "ATT C 19,20,21, Upchit 22",
+   "pic": "05-S2-calendar-saved.png"
+  },
+  {
+   "step": "S3a the sheet says ATT C now ends Oct 23 (not further), given back",
+   "ok": true,
+   "note": "sheet: Upchit — Warden, Oct 26 ✕ SAVING THIS UPCHIT WILL ATT C Oct 19 – Oct 21 → now ends Oct 23, its days given back Fit for full duty from Oct 26. Cancel Save upchit",
+   "pic": "06-S3-sheet-next-monday.png"
+  },
+  {
+   "step": "S3b ATT C grew to Fri 23, no further; Upchit on Mon 26",
+   "ok": true,
+   "note": "ATT C 19,20,21,22,23, Upchit 26",
+   "pic": "07-S3-calendar.png"
+  },
+  {
+   "step": "S4 the top bar has Undo and Redo",
+   "ok": true,
+   "note": "undo 1, redo 1",
+   "pic": ""
+  },
+  {
+   "step": "S4a Undo once: upchit back on Thu 22 and ATT C Mon-Wed",
+   "ok": true,
+   "note": "ATT C 19,20,21, Upchit 22",
+   "pic": "08-S4-after-undo.png"
+  },
+  {
+   "step": "S4b Redo: back to Upchit Mon 26, ATT C Mon-Fri",
+   "ok": true,
+   "note": "ATT C 19,20,21,22,23, Upchit 26",
+   "pic": "09-S4-after-redo.png"
+  },
+  {
+   "step": "S5a the drag brings the same sheet with the given-back line (ATT C now ends Oct 22... or days given)",
+   "ok": true,
+   "note": "sheet: Upchit — Warden, Oct 23 ✕ SAVING THIS UPCHIT WILL ATT C Oct 19 – Oct 21 → now ends Oct 22, its days given back Fit for full duty from Oct 23. Cancel Save upchit",
+   "pic": "11-S5-drag-sheet.png"
+  },
+  {
+   "step": "S5b before Save the drag has changed nothing",
+   "ok": true,
+   "note": "ATT C 19,20,21, Upchit 22",
+   "pic": "10-S5-drag-in-flight.png"
+  },
+  {
+   "step": "S5c saved: Upchit on Fri 23, ATT C ends Thu 22 (Mon-Thu)",
+   "ok": true,
+   "note": "ATT C 19,20,21,22, Upchit 23",
+   "pic": "12-S5-calendar-after.png"
+  },
+  {
+   "step": "S6-0 phone world holds the man's data (ATT C Mon-Thu, Upchit Fri)",
+   "ok": true,
+   "note": "ATT C 19,20,21,22, Upchit 23",
+   "pic": ""
+  },
+  {
+   "step": "S6a the upchit opens by a tap",
+   "ok": true,
+   "note": "editor open",
+   "pic": "13-S6-editor.png"
+  },
+  {
+   "step": "S6b the sheet fits 390x844 with its words whole and the given-back line",
+   "ok": true,
+   "note": "box 22..368 x 304..540 of 390x844; clipped []; words outside 0; sideways 0; sheet: Upchit — Warden, Oct 24 ✕ SAVING THIS UPCHIT WILL ATT C Oct 19 – Oct 22 → now ends Oct 23, its days given back Fit for full duty from Oct 24. Cancel Save upchit",
+   "pic": "14-S6-phone-sheet.png"
+  },
+  {
+   "step": "S6c saved on the phone: Upchit Sat 24, ATT C Mon-Fri",
+   "ok": true,
+   "note": "ATT C 19,20,21,22,23, Upchit 24",
+   "pic": ""
+  },
+  {
+   "step": "S7 the Medical tab shows Warden's ATT C with the new dates (Oct 19 - Oct 23)",
+   "ok": true,
+   "note": "card text: Warden IP ATT C 19–23 Oct PENDING UPCHIT 4 Gambit C OML 23 Jul Medical leave — grounded Quill IW OML 6–9 Jul Grit C ATT C 13–17 Jul Vector C OML 13 Jul UPCHIT COMPLETE 0 the past 30 days, newest first No upchits in the past 30 days.",
+   "pic": "15-S7-medical-tab.png"
+  },
+  {
+   "step": "B1-0 set-up: Piston ATT C Mon-Tue, upchit Wed",
+   "ok": true,
+   "note": "ATT C 19,20, Upchit 21",
+   "pic": ""
+  },
+  {
+   "step": "B1a the ATT C opens by its bar",
+   "ok": true,
+   "note": "editor open",
+   "pic": ""
+  },
+  {
+   "step": "B1b the hand edit stuck: ATT C is Mon 19 only",
+   "ok": true,
+   "note": "selected 19; ATT C 19, Upchit 21",
+   "pic": "16-B1-after-hand-edit.png"
+  },
+  {
+   "step": "B1c moving the upchit later: no give-back line for the hand-shortened ATT C",
+   "ok": true,
+   "note": "sheet: Upchit — Piston, Oct 23 ✕ SAVING THIS UPCHIT WILL Close the pending medical-down period — no current entry needs shortening. Fit for full duty from Oct 23. Cancel Save upchit",
+   "pic": "17-B1-sheet.png"
+  },
+  {
+   "step": "B1d ATT C stays Mon 19 only; Upchit on Fri 23",
+   "ok": true,
+   "note": "ATT C 19, Upchit 23",
+   "pic": "18-B1-calendar-after.png"
+  },
+  {
+   "step": "B2-0 set-up: Cinch ATT C Mon-Tue, upchit Wed",
+   "ok": true,
+   "note": "ATT C 19,20, Upchit 21",
+   "pic": ""
+  },
+  {
+   "step": "B2a OML filed on Thu 22 in the gap",
+   "ok": true,
+   "note": "OML 22, ATT C 19,20, Upchit 21",
+   "pic": "19-B2-oml-filed.png"
+  },
+  {
+   "step": "B2b the sheet says ATT C now ends Oct 21 (the day before the OML), given back",
+   "ok": true,
+   "note": "sheet: Upchit — Cinch, Oct 23 ✕ SAVING THIS UPCHIT WILL ATT C Oct 19 – Oct 20 → now ends Oct 21, its days given back Fit for full duty from Oct 23. Cancel Save upchit",
+   "pic": "20-B2-sheet.png"
+  },
+  {
+   "step": "B2c ATT C Mon-Wed, OML Thu, Upchit Fri",
+   "ok": true,
+   "note": "ATT C 19,20,21, OML 22, Upchit 23",
+   "pic": "21-B2-calendar-after.png"
+  }
+ ],
+ "problems": []
+}

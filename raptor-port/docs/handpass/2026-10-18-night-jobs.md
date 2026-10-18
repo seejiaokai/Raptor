@@ -232,3 +232,22 @@ Right: fix 2 checks the upchit as it stood, against the new person; fix 3's shap
 Checked: both commits, the medical engine and every writer of a downchit's dates (the Leave War writes only leave rows).
 **Both fixed** (dates compared with each side's year; the test now pins the plan's stop and the refusal); 106 / 106. Round 2
 was the last fix round (§5): the change is one comparison, its two sides named in its comment.
+
+### Job 6's walk — Sonnet walker, `scripts/handpass/night1018-job6-walk.mjs`, the built app; report as returned
+All 34 checks PASS (the final of three runs); no console error, page error or 4xx/5xx; nothing set directly. Warden
+(S1–S7), Piston (B1), Cinch (B2), Mon 19 – Fri 23 Oct 2026. Pictures `img/handpass/2026-10-18-night-job6/` (21).
+| Step | Result | Seen |
+|---|---|---|
+| S1 | PASS | the sheet "ATT C Oct 19 – Oct 23 → now ends Oct 20"; nothing changed before Save; then ATT C Mon–Tue, the upchit Wed (01, 02) |
+| S2 | PASS | the upchit moved to Thu: "ATT C Oct 19 – Oct 20 → now ends Oct 21, its days given back" (03 — opened by the host); Cancel left both as they were; saved: ATT C Mon–Wed (05) |
+| S3 | PASS | moved to Mon 26: "now ends Oct 23", ATT C Mon–Fri and no further (06, 07) |
+| S4 | PASS | Undo once: the upchit Thu, ATT C Mon–Wed; Redo: Mon 26, Mon–Fri (08, 09) |
+| S5 | PASS | a mouse drag of the upchit's bar Thu → Fri: the same sheet, "now ends Oct 22, its days given back"; nothing before Save; then ATT C Mon–Thu (11) |
+| S6 | PASS | the phone: the sheet at x 22–368, y 304–540, no clipped words, the given-back line wrapped whole (14) |
+| S7 | PASS | the Medical tab's card "ATT C 19–23 Oct" (its "as of" moved to 21 Oct by its own control) (15) |
+| B1 | PASS | the ATT C shortened by hand to Mon only, then the upchit moved to Fri: no given-back line ("no current entry needs shortening"); ATT C stayed Mon (17) |
+| B2 | PASS | an OML on Thu, the upchit moved to Fri: "now ends Oct 21" — the day before the OML (20) |
+Walker's notes: on the phone the upchit's bar shows only the man's name, no "Upchit" (as built); the Medical tab opens
+"as of 13 Jul", the demo's today.
+
+Walk: docs/handpass/2026-10-18-night-jobs.md (job 6) · 21 pictures · 4 surfaces (the input window and its save sheet, the calendar drag, the phone, the Medical tab) · 3 orders (forward, Undo/Redo, by hand first) · MISSING: none
