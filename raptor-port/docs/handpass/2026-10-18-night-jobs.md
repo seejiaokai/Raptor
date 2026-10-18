@@ -220,3 +220,15 @@ desktop's "window of months" test on a five-second wait (D84: one re-run of the 
 re-run: 1 / 1 passed · smoke 453 / 0 · rulecheck OK · docsize OK. Before it, GitHub's run of `0e18304` had caught one
 browser test (`geometry.spec.ts` "the cross-day row pans to the late line"): job 4's option A rule covered the older dashed
 "same man, other day" echo; narrowed to leave the echo as built (`139005eb1`), and this run is green on it.
+
+### Job 6 — the fresh read OF THE FIXES (round 2), report as returned
+1. **The hand-change test compared date labels, not dates** — the form writes a label with its year whenever the loaded
+   week is in another year, so a remarks-only edit of a downchit opened from another year's week forgot the kept first end
+   (and a real one-year move with the same label kept it). Fix: compare as dates (`dateOrd` with each side's year).
+2. **The test "a give-back stops the day before another upchit of his" proved nothing** — the door refuses that move today
+   (the later upchit has already closed the episode), so it always took its `else`. Fix: test the stop on the plan itself
+   and assert the door's refusal.
+Right: fix 2 checks the upchit as it stood, against the new person; fix 3's shape; fix 4's ISO date (31 Dec → 1 Jan).
+Checked: both commits, the medical engine and every writer of a downchit's dates (the Leave War writes only leave rows).
+**Both fixed** (dates compared with each side's year; the test now pins the plan's stop and the refusal); 106 / 106. Round 2
+was the last fix round (§5): the change is one comparison, its two sides named in its comment.

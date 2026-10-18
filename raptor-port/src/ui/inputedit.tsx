@@ -1223,7 +1223,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        every screen (engine/inputs.ts remarksShown), so a moved or stretched input's date follows by itself — the one save
        every door uses writes the typed words alone, a date token typed or saved before the build taken out. */
     const rem = remarksTyped(draft.remarks, { type: draft.type, date: r.date, endDate: r.endDate, start: draft.start, end: draft.end })   // its old days and its new
-    const wasDateD999 = r.date, wasEndD999 = r.endDate
+    const wasDateD999 = r.date, wasEndD999 = r.endDate, wasYrD999 = r.yr
     r.s = s; r.e = e; r.date = date; r.remarks = rem
     /* the date the late mark reads — left as it is by a scheduler's change made from a row on the schedule (D741, D742) */
     if (!sched) r.mod = nowStamp()
@@ -1276,7 +1276,10 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     if (half) r.half = half; else delete r.half
     /* D999: a downchit's dates changed BY HAND are what the man says now — the end an upchit once cut it from no longer
        bounds a give-back (the fresh read of D999, 1) */
-    if (r.firstEnd != null && (r.date !== wasDateD999 || (endDate || undefined) !== wasEndD999)) delete r.firstEnd
+    /* compared as DATES, not labels: the form writes a label with its year whenever the loaded week is in another year,
+       so a remarks-only edit would read as a move (the fix read of D999) */
+    if (r.firstEnd != null && (dateOrd(date, baseYear()) !== dateOrd(wasDateD999, wasYrD999)
+      || dateOrd(endDate || date, baseYear()) !== dateOrd(wasEndD999 || wasDateD999, wasYrD999))) delete r.firstEnd
     if (endDate) r.endDate = endDate; else delete r.endDate
     /* The OIL answers (owner, 28 Aug 26) belong to the commitment as it was
        acknowledged: retyped out of the ask set, or moved to ANOTHER person,

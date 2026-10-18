@@ -411,10 +411,14 @@ describe('D999 — the kept first end, after its code read', () => {
     expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-15', end: '' }))).toBe(true)
     expect(c.endDate).toBe('Jul 14')
     const u2 = ups().find((u: any) => u.date === 'Jul 15')!
+    /* the door refuses this move today (the upchit on Jul 17 has already closed the episode); the plan itself still stops
+       before it, should any door let it through (the fix read of D999, 2) */
+    const g = upchitTrimPlan('bane', dateOrd('Jul 19', 2026), u2).find((p: any) => p.action === 'grow')
+    expect(g && g.row, 'the plan grows the downchit').toBe(c)
+    expect(g.newEndOrd, 'never through the upchit on Jul 17').toBe(20260716)
     const d = draftOf(u2); d.start = '2026-07-19'
-    const ok = commitInputEdit(u2, d)
-    if (ok) expect(c.endDate, 'never through the upchit on Jul 17').toBe('Jul 16')
-    else expect(c.endDate, 'refused: nothing changed').toBe('Jul 14')
+    expect(commitInputEdit(u2, d), 'and the door refuses it').toBe(false)
+    expect(c.endDate, 'nothing changed').toBe('Jul 14')
   })
 })
 
