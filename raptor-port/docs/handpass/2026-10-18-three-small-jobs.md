@@ -74,13 +74,72 @@ says so before anything changes").
 
 ## The walk
 
-*(filled in from the run)*
+The host alone, `scripts/handpass/three1018-walk.mjs` v4, on the built app frozen at `46a19182a` (served on 4208, its bundle
+name checked against the build's). **58 / 58 PASS**, no console error, page error or 4xx/5xx. Pictures
+`docs/img/handpass/2026-10-18-three-small-jobs/` (29), every one cited below opened by the host.
+
+| Step | Result | Seen |
+|---|---|---|
+| L admin 390, 430 | PASS | "⇅" and "◷ OIL"; the head one line with − and + (button middles within 1px); grid padding 10px (01, 02) |
+| L admin 431, 440, 600, 700 | PASS | the short words; one line; the grid's padding 20px — the wider screens', unchanged (03–06); at 440, 22 rows of names on screen |
+| L admin 701, 1440 | PASS | "⇅ Rearrange", "◷ OIL tracker" — and still one line with − and + (07, 08) |
+| L member 440, 701 | PASS | Manning · ◷ OIL · − · + at 440; "◷ OIL tracker" at 701; one line (09, 10) |
+| E0–E1 | PASS | "Every Thursday" → From → the calendar; the title opens the month and year lists (11) |
+| E2 | PASS | the first Escape shuts only the lists; the calendar and the window stay; the keyboard on the title (12) |
+| E3 | PASS | the second Escape closes the calendar; the keyboard back on the From box; the window stays (13) |
+| E4 | PASS | the third closes "Every Thursday"; the Calendar window behind stays (14) |
+| E5 | PASS | lists shut by the title first: one Escape then closes the calendar |
+| U0 | PASS | Warden: ATT C Mon 19 – Fri 23 Oct filed, the upchit Wed 21 cuts it to Mon–Tue (15) |
+| U1 | PASS | the window's Delete puts up the upchit sheet: "DELETING THIS UPCHIT WILL — ATT C Oct 19 – Oct 20 → now ends Oct 23, its days given back", no fit line, a red "Delete upchit"; nothing changed while it asks; Cancel leaves both and the window open (16, 17) |
+| U2 | PASS | "Delete upchit": the upchit gone, ATT C Mon–Fri, the window and the sheet gone (18) |
+| U3 | PASS | Undo once: the upchit back, the ATT C cut again; Redo: deleted again (19, 20) |
+| U4 | PASS | the Delete key on the upchit's line in the opened day: the same sheet, no one-line question; deleted, the day stays open (21, 22) |
+| U5 | PASS | Piston's ATT C shortened by hand (it forgets its first end): the upchit's Delete goes at once, no sheet (D792); a downchit's Delete key still asks its one-line question (23, 24) |
+| U6 | PASS | the phone 390 by touch: the sheet at x 22–368, y 318–526, its words whole, a finger on "Delete upchit" meets it; deleted by a tap (25, 26) |
+| U7 | PASS | after a reload Warden still reads ATT C Mon–Fri; Saturday 18 Jul published through the board's own sign-offs and Publish (ORIG); Saber (nothing on file that week) ATT C Thu 16 – Sat 18, the upchit Fri 17 cuts it to Thu: the published Saturday's heading reads nothing waiting ("… ORIG … 7 changes i Unpublish"); the delete's sheet says "ATT C Jul 16 → now ends Jul 18"; after it the heading reads "ORIG Not yet signed … 1 pending … Publish AL1" (27–29) — D178, D103 |
+
+**The script's own mistakes, met and fixed before the final run** (walk-scripts §7): v1 judged "one line" by the buttons'
+tops (a pixel apart between buttons a hair apart in height — 11 false FAILs) and read the sheet's heading in mixed case (it
+is drawn in capitals — 2); v2 took Grit for the published-day step, who has the demo's own ATT C 13–17 Jul, so the second
+ATT C was refused as an overlap and the step measured the demo's row (the give-back rightly stopped at that row's own first
+end, 17 Jul); v3 read the waiting change from a store probe that does not count input changes — the heading on screen does.
+None was a fault of the app.
+
+**Orders walked:** delete then Undo then Redo; Cancel then delete; a reload after; publish, then file, then delete
+(the after-publish order); the window door and the Delete-key door; a mouse and a finger.
 
 ## Errors seen
 
+None on any page of the walk.
+
 ## What was NOT walked, and why
 
+- The other date boxes' floating calendars (Admin → Data, a new person's Post in, the upchit's date, the Leave War's
+  posting dates, the Tracker's eight) — one component draws them all (`DateBox`); its test `datebox.test.tsx` pins the
+  order with and without a window behind; walked on "Every Thursday".
+- Escape on a phone — a phone has no Escape key.
+- The give-back's limits other than the first end (an OML or another upchit in the gap, another man's upchit) — the same
+  route on screen as U1/U2, carried by `medwrite.test.ts` "D1022" (the real writer, read back from the store).
+- A locked (quarantined) week — no control makes one; carried by `medwrite.test.ts` "a give-back that would reach a locked
+  week is refused whole" (the real `removeInput`).
+
+## Break tests
+
+`scripts/handpass/breaks/three1018.json` — **10 of 10 caught** (the floating calendar's Escape; the give-back not applied,
+past a medical in the gap, past the first end, onto a locked week; the window's ask; the Delete key's ask; the sheet's
+words and fit line; the day sheet's Save). Break 4 was first written as a line that decides nothing (a huge limit in place
+of none) and stayed green — re-aimed at the first-end limit, caught. And in the real browser: the card's rule put back to
+430, `e2e/leavewar.spec.ts` "the top of the Leave War on a phone…" went red at 440, then the rule restored.
+
 ## The gates
+
+The whole set under the PC lock, one run at `46f84f8c1`: build clean · tfin 728 / 0 · unit 11748 / 11748 (660 files) ·
+smoke 453 / 0 · rulecheck OK · docsize OK. **The browser tests of that run do not count:** a preview left running on 4173 by
+an older chat (`trk-chart-fps-8028f8`) was reused by the test runner, so they measured that chat's old build (7 failed —
+the same 7 on `main`'s copy); a re-run on 4191 met another old preview there (29 failed, an old build again). Filed as
+[GATELOCK-STALE-PORT]. **On a port checked free first (4207):** 852 passed, 1 failed, 59 skipped — the failure this job's own
+new assertion (the card's buttons "on one line" judged by their tops, a pixel apart); judged by their middles, that file
+1 / 1. Added after the run: one unit test (`medwrite.test.ts`, a locked week — the file 53 / 53).
 
 ## The fresh, blind Opus read
 
