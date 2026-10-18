@@ -20,28 +20,31 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/upchit-sheet-leave-cut -->
-### `claude/upchit-sheet-leave-cut` — D1023 BUILT and FULL-checked; his look and "merge live" next — written 18 Oct 26, verify before use
-- **Done:** the three live follow-ups archived by script; [UPCHIT-SHEET-LEAVE-CUT] (D1023) built — where an upchit moved later or
-  deleted gives a downchit days back, the upchit sheet lists each leave and bid of his those days will cut, one line each, in
-  the Leave War's own words, amber edge down the left; worked out by trying the door's own save and throwing it away
-  (`ui/inputedit.tsx giveBackCuts`, the gate saying each cut — `state/inputgate-hook.ts hearGateCuts`). Every door: the
-  window's Delete and Save of a later date, the opened day's Delete key, the calendar's drag. The try hands inputs back as new
-  copies: the open window follows its record and keeps its typing (`pops.ts INPEDIT_REFOUND`), and the Inputs list now holds
-  its just-saved rows by id (the fresh read's one finding, fixed red first).
-- **Checked (FULL):** walk 28/28 + re-walk 28/28, 18 pictures; 12/12 breaks; the whole gate set twice under the lock on 4232,
-  the second at `b94747927` WHOLLY GREEN; one fresh blind Opus read. Sheet: `raptor-port/docs/handpass/2026-10-18-upchit-sheet-leave-cut.md`.
-- **Owed:** Astra's and Sol 6.1's reads (`OUTSTANDING.md` `[NO-ASTRA-LIST]`); one fresh reader of D1023's short line against its
-  full row (D138 — the bold sentence word for word).
-- **Pick up here:** his look at the pictures and the preview, then his "merge live"; then archive [UPCHIT-SHEET-LEAVE-CUT] by
-  script. Next after it: the next area's small fixes (D994).
-- **Trap:** old previews hold 4173, 4174, 4180, 4182, 4191 (and this chat's own on 4231); run browser tests with `E2E_PORT=<a port checked free>`.
-- **Design-hook exception:** the amber edge (`side-tab`) ignored for `14-input-editors.css` in `.impeccable/config.json` —
-  the agent's call (D747's mark), his to strike at his look.
-- **Rulings this chat:** none (D1023 by the chat before).
+<!-- now:claude/backlog-tidy-oct18 -->
+### `claude/backlog-tidy-oct18` — the backlog tidy, documents only; his look at the list and "merge live" next — written 18 Oct 26, verify before use
+- **Done:** 19 finished items archived by script, each checked against git and the code first ([UPCHIT-SHEET-LEAVE-CUT], live in
+  pull request 536, first; then the live builds, the answered and the moot — the commit messages name them; the last is the list rewrite's own item). The priority list
+  rewritten (D1024): one line an open item, grouped by area, his order at its head; the old list moved whole to
+  `OUTSTANDING-ARCHIVE.md`. 149 items stay open. The Tracker rulings file was already over its size marker on `main` (26,665 of
+  23,500 bytes — the document check failed there): the marker raised to 27,500 with its reason; the split is filed in
+  [RULINGS-SPENT-PASS]. The branch name `claude/backlog-tidy` belonged to an old merged branch of 27 Sep, so this one is
+  `claude/backlog-tidy-oct18`.
+- **Checked:** four helpers checked every item against git and the code; each "finished" verdict re-checked here before it moved;
+  a script confirmed the new list names every open item once; one fresh, blind Opus reader read the new list against the old,
+  the archived items and the short lines of D1023 and D1024 (D138): one open step lost (making the repo private again), six lines misstated, one unsteady test tracked nowhere — all fixed before the push; D1023 and D1024 read true. `npm run docsize` OK.
+- **Left open on purpose:** [GUEST-SAVE-WARNING] (a helper called it done, but an access request may still be saved — a check),
+  [INP-TILL-STALE] (Claude's look at the 5 Oct finding owed), [OPUS-SECOND-READ-GUIDE] (part waits for ChatGPT's readers).
+- **Found:** the repo is PUBLIC today (D106's short period) — making it private again and restarting his PC's check runner is his step, now at the head of the backlog's list and in [REPO-PRIVATE].
+- **Carried from the upchit block:** Astra's and Sol 6.1's reads of D1023 are on [NO-ASTRA-LIST]; the amber edge's design-hook
+  exception (`.impeccable/config.json`, `14-input-editors.css`) stays his to strike.
+- **Pick up here:** his look at the shortened list, then his "merge live". Next after it: the next area's small fixes (D994) —
+  the list's first group, Schedule and amendments, has 24 that need nothing from him.
+- **Rulings this chat:** D1024 (the priority list shows only what is open, grouped by area).
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (18 Oct 26, late):** pull request 536 is LIVE ([UPCHIT-SHEET-LEAVE-CUT], D1023) → the backlog tidy (D1024), on `claude/backlog-tidy-oct18` — documents only, waiting for his look and "merge live" (its block) → the next area's small fixes (D994): the backlog's priority list now names them by area.
 
 **RIGHT NOW (18 Oct 26, evening):** pull requests 534 and 535 are LIVE (the night; his three follow-ups D1019, D1020, D1022) → **[UPCHIT-SHEET-LEAVE-CUT] (D1023), on `claude/upchit-sheet-leave-cut` — BUILT and FULL-checked, waiting for his look and "merge live" (its block)** → the next area's small fixes (D994); his other questions still wait until he says so.
 
