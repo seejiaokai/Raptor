@@ -28,7 +28,10 @@ export function MedMoveConfirm() {
   const done = () => { setMedMove(null); notify() }
   /* re-resolved at Save by its iid — an undo under the open sheet may have reminted the rows */
   const row = () => INPUTS.find((x: any) => x.iid === m.iid)
-  const finish = (write: (r: any) => boolean) => {
+  /* in one batch with the write's own words: a leave the move or the delete now covers is cut by the Leave War's rules
+     inside the command, and their warning stays beside "Input deleted" / "Moved to …" (the fresh read of 18 Oct 26) */
+  const finish = (write: (r: any) => boolean) => HOOKS.toastBatch(() => finishNow(write))
+  const finishNow = (write: (r: any) => boolean) => {
     const r = row()
     if (!r) { HOOKS.toast('That input is no longer there — nothing was changed', 'warn'); return done() }
     /* a refusal inside the commit has already said why; only the gesture's own success words are said here. A DRAG

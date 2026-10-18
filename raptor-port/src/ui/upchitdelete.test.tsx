@@ -21,6 +21,8 @@ import { memoryBackend } from '../leavewar/state/storage'
 import { _resetFloatWins } from './FloatWindow'
 import { INPEDIT, setInpEdit, setMedMove } from './pops'
 import { docAdd } from '../state/docs'
+import { toast as theToast, toastBatch as theBatch } from './toast'
+import { setInputGate } from '../state/inputgate-hook'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement, root: Root
@@ -140,5 +142,39 @@ describe('Delete on the upchit’s line in an opened day asks on the same sheet'
     await click(cancel)
     expect(tid('upconf')).toBeNull()
     expect(up()).toBeTruthy(); expect(down().endDate).toBe('Oct 6')
+  })
+})
+
+/* THE DELETE'S OWN WORD SURVIVES (the fresh read of 18 Oct 26, finding 1). Leave filed in the days a delete gives back is cut
+   by the Leave War's rules inside that same command ("sick cuts leave"), and those rules say so — but the door's "Input
+   deleted" took the app's one passing note straight after, so the warning was never seen. The delete now speaks in one
+   batch with its rules, as a save does: both words in the one note. The rules are stood in for by a gate that says a
+   sentence (the inputsvet.test.tsx idiom), with the app's real note and its real batch. */
+describe('a warning the delete raises is not wiped out by "Input deleted"', () => {
+  const withGate = async (fn: () => Promise<void>) => {
+    const realToast = HOOKS.toast, realBatch = HOOKS.toastBatch
+    HOOKS.toast = theToast as any; HOOKS.toastBatch = theBatch as any
+    setInputGate({ snapshot: () => null, apply: () => { HOOKS.toast('The leave is cut for the ATT C', 'warn') }, vetRestore: () => {} })
+    try { await fn() } finally { setInputGate(null); HOOKS.toast = realToast; HOOKS.toastBatch = realBatch; document.getElementById('toastEl')?.remove() }
+  }
+  it('the window’s "Delete upchit": both words in the one note', async () => {
+    const { up } = await downAndUp()
+    await act(async () => { setInpEdit(up()); notify() })
+    await click($('#inpEditDel'))
+    await withGate(async () => {
+      await click(tid('upconf-save'))
+      expect(up()).toBeUndefined()
+      expect(document.getElementById('toastEl')?.textContent).toBe('The leave is cut for the ATT C · Input deleted')
+    })
+  })
+  it('the opened day’s sheet: both words in the one note', async () => {
+    const { up } = await downAndUp()
+    await key(day('2026-10-07'), 'Enter')
+    await key(line(up()), 'Delete')
+    await withGate(async () => {
+      await click(tid('upconf-save'))
+      expect(up()).toBeUndefined()
+      expect(document.getElementById('toastEl')?.textContent).toBe('The leave is cut for the ATT C · Input deleted')
+    })
   })
 })

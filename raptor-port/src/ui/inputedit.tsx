@@ -2717,8 +2717,12 @@ export function InputEditor() {
     /* an upchit whose delete gives a downchit its days back says so first (D1022); any other delete goes at once (D792) */
     const back = upchitDeleteAsk(r)
     if (back) { setUpConf({ ...back, del: true }); return }
-    if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } else stay()
+    delNow()
   }
+  /* THE DELETE SPEAKS IN ONE BATCH WITH ITS RULES, as a save does (doSave): leave a give-back now covers is cut by the Leave
+     War's rules inside the same command, and their warning must not be wiped out by "Input deleted" (the fresh read of
+     18 Oct 26, finding 1 — D1022) */
+  const delNow = () => HOOKS.toastBatch(() => { if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } else stay() })
   const delEntry = () => {
     const n = howMany(recPpl)
     setDelAll(false)
@@ -3138,7 +3142,7 @@ export function InputEditor() {
         onSave={removals => {
           setUpConf(null)
           /* the question before a delete (D1022): its button deletes — the give-back rides inside removeInput's one command */
-          if (upConf.del) { if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } else stay(); return }
+          if (upConf.del) { delNow(); return }
           doSave(removals)
         }} />}
       {/* the medical clash sheet, same layer and same contract — Save

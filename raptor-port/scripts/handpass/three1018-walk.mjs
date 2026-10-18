@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const BASE = process.env.SPF_URL || 'http://localhost:4174'
-const OUT = resolve(here, '../../docs/img/handpass/2026-10-18-three-small-jobs')
+const OUT = process.env.HP_OUT ? resolve(process.env.HP_OUT) : resolve(here, '../../docs/img/handpass/2026-10-18-three-small-jobs')
 rmSync(OUT, { recursive: true, force: true }); mkdirSync(OUT, { recursive: true })
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 const browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})

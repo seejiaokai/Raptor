@@ -942,7 +942,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
         if (rest.length ? commitInput(live, draftOf(live), rest) : removeInput(live)) HOOKS.toast('You are out of this input', 'ok')
         return
       }
-      if (live && removeInput(live)) HOOKS.toast('Input deleted', 'ok')
+      /* in one batch with the rules' own words, as the window's delete (ui/inputedit.tsx delNow) */
+      HOOKS.toastBatch(() => { if (live && removeInput(live)) HOOKS.toast('Input deleted', 'ok') })
     }
     return (
       /* A WINDOW ON THE SHELL (owner D641: it is dragged about and the month behind it still works — so a tap on
