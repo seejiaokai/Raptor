@@ -830,6 +830,12 @@ export function boardMbtn(e: MouseEvent) {
      reaches for the way-back control on a tidy section should hear that it
      IS tidy, not wonder whether the click landed. */
   if (ds.sortsec != null) {
+    /* the caret leaves its text box before the sort (the batch's check, 19 Oct 26 — the scenario designer's S1-02): a tap
+       that does not move the focus (an iPhone's) left it in an In-time line, the sort reordered the stored lines under it,
+       and leaving the line wrote its words by its old place — one line doubled, the other lost. Left now, it saves where
+       it stands. (ui/rowdrag.ts does the same at a grip's press.) */
+    const typing = document.activeElement as HTMLElement | null
+    if (typing && typing !== document.body && (typing.isContentEditable || typing.getAttribute('contenteditable') === 'true' || /^(INPUT|TEXTAREA)$/.test(typing.tagName))) typing.blur()
     const [kind, ...rest] = String(ds.sortsec).split('.')
     const n = rest.map(Number)
     /* Ground is the one section where "changed" can be true with the row
