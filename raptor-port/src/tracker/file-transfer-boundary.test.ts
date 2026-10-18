@@ -198,6 +198,30 @@ describe('end to end, through the File menu', () => {
     expect(await snapshot()).toEqual(before)
   })
 
+  /* D1015 (18 Oct 26): the words he SEES on File → Import for a current file whose student marks belong to a chart the
+     file does not carry — the alert itself, not only the flag behind it (the fresh read of the night's job 2) */
+  it('D1015: a current file whose marks belong to a chart it does not carry is told so in his words, never "older version"', async () => {
+    const file = { format: 'ocu-tracker', version: 3, savedAt: '2026-10-18T00:00:00Z', contains: { charts: false, students: true, links: false },
+      charts: null, links: null,
+      students: { sylcat: [], courses: ['NOCARRY'], byCourse: { NOCARRY: { plan: { sylId: 'scnotcarried' }, lulls: {}, pace: {}, bySyllabus: { scnotcarried: { roster: [{ id: 'n1', name: 'NOVA' }], marks: {}, dates: {} } } } } } }
+    const before = await snapshot()
+    const seen = await importBack(file)
+    expect(seen, 'the refusal is shown in his words').toContain(F.STUDENT_CHART_MSG)
+    expect(seen.join(' | ')).not.toMatch(/older version/)
+    expect(await snapshot(), 'nothing was written').toEqual(before)
+  })
+
+  it('D1015: marks for a chart deleted here are refused in the not-carried words', async () => {
+    let p: Promise<any> = C.addSyl(); await answer('BOUNDARY GONE'); await p; await C.whenLoaded()
+    const gone = C.sylIdOf('BOUNDARY GONE')
+    if (C.curSylId() !== gone) { await C.switchSyllabus(gone); await C.whenLoaded() }
+    p = C.delSyl(); await answer(true); await p; await C.whenLoaded()
+    expect(C.sylIdOf('BOUNDARY GONE'), 'the premise: the chart is deleted here').toBeFalsy()
+    await expect(C.applyStudents({ courses: ['GONEC'], sylcat: [{ id: gone, name: 'BOUNDARY GONE' }], byCourse: { GONEC: { plan: { sylId: gone }, lulls: {}, pace: {}, bySyllabus: { [gone]: { roster: [{ id: 'g1', name: 'GHOST' }], marks: {}, dates: {} } } } } }, null, 3))
+      .rejects.toThrow(F.STUDENT_CHART_MSG)
+    expect(C.courseIdOf('GONEC'), 'nothing was written').toBeNull()
+  })
+
   it('a refused file writes nothing, and says why', async () => {
     let p: Promise<any> = C.addSyl(); await answer('BOUNDARY Y'); await p; await C.whenLoaded()
     const yId = C.sylIdOf('BOUNDARY Y')

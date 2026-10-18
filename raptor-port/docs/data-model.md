@@ -1511,11 +1511,10 @@ phase 4.1, 30 Sep 26); so has `AccessRequestSeen` (phase 4.4).
 Fable 2).** **User- or team-owned** (the owner is a person's `User`, or the free team): `ScheduleDay` (the lock), and
 every table with an own-row rule — `Person` (owned by his linked `User`; a person with no sign-in — D217 — by an
 admin team; round 3, Astra 3: a member edits his own row, which an organisation-owned table cannot allow), `Input`,
-`Attachment`, `InputAttachment`, `QualMark`, `LeaveBid`, `LeaveOpening`,
-`LeaveLedger`, `LeaveCounter`, `EditLogSeen`, `AccessRequest`, `AccessRequestSeen`, `User`. **Organisation-owned:** everything else —
+`Attachment`, `InputAttachment`, `QualMark`, `LeaveBid`, `EditLogSeen`, `AccessRequest`, `AccessRequestSeen`, `User`. **Organisation-owned:** everything else —
 `ScheduleWeek` (its `ownedBy` is a plain column, not the platform's owner), `Amendment`, `AmendmentRetraction`,
 `IssuedSignoff`, `TakeOverRequest`, `PlanningPuck`, `DayRemark`, `ChangeBatch`, `Qualification`, `Setting`, `SchemaVersion`,
-`EditLog`, `LeaveWar`, `LeavePersonProfile`, and the Tracker's tables.
+`EditLog`, `LeaveWar`, `LeavePersonProfile`, `LeaveOpening`, `LeaveLedger`, `LeaveCounter` (moved here 18 Oct 26 with D1008: every member reads every man's, only an admin writes — no own-row rule left), and the Tracker's tables.
 *(Note 12 Oct 26 — the one-rule build, owner D755 (3), D756, D763: an `Input` now carries SEVERAL people (`InputPerson`), and its own-row rule is no longer "the row's one person" — the §11 `Input` row says who may do what: its only person, its filer while everyone in it was put in by him, and anyone in it taking HIMSELF out. One owning `User` cannot express the last of these; the app holds it at its commit gate (`src/state/perms.ts inputBreach`, `ownPart`). How the store holds it — the owner being the filer with a server rule for "take myself out", or the rule on `InputPerson` — is for the table format written with the IT side (D473).)*
 
 **The server enforces, the browser mirrors.** Every rule above is a
