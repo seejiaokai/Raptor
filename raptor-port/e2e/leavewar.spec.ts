@@ -258,6 +258,29 @@ test('the frozen overlay callsign opens the sheet once the year has scrolled', a
   await expect(page.locator('[data-testid="person-figures"]')).toBeVisible()
 })
 
+// A MAN'S FIGURES OPEN WHERE THE GRID IS ([AMEND-SMALL-SEEN] (6), the amendment re-test, 24 Sep 26: "a man's figure
+// sheet sends the grid back to 1 January, and it stays there after the sheet closes"). Not the app: once the year has
+// scrolled, the name a finger sees is the overlay's copy, and the walk's scripted click went to the REAL name cell,
+// thousands of pixels to the left — the robot scrolled the grid back to reach it. A tap where the name shows keeps the
+// grid in place, open and closed (18 Oct 26).
+test('a tap on a man\'s name once the year has scrolled opens his figures and leaves the grid where it was', async ({ page }) => {
+  test.skip(!isPhone(), 'the overlay is a phone-only creature')
+  await page.locator('.mx-wrap').evaluate(el => el.scrollBy(2400, 0))
+  await page.waitForTimeout(800)
+  const at = () => page.locator('.mx-wrap').evaluate(el => Math.round(el.scrollLeft))
+  const before = await at()
+  expect(before, 'the year has scrolled (or this test proves nothing)').toBeGreaterThan(1000)
+  const name = (await page.locator('.mxband [data-band-id="slipway"] .whoedit').boundingBox())!
+  await page.touchscreen.tap(name.x + name.width / 2, name.y + name.height / 2)
+  await expect(page.locator('[data-testid="person-figures"]')).toBeVisible()
+  await page.waitForTimeout(400)
+  expect(await at(), 'his figures are open over the same days').toBe(before)
+  await page.keyboard.press('Escape')
+  await expect(page.locator('[data-testid="person-figures"]')).toBeHidden()
+  await page.waitForTimeout(400)
+  expect(await at(), 'and the grid is still there once they close').toBe(before)
+})
+
 // THE FROZEN HEADER FOLLOWS A ROTATION (owner, 30 Aug 26 — "flip my screen
 // horizontally … the top bar is cut off to what the vertical view was … to fix
 // it I need to scroll up then back down to reset the frozen bar"). The mirror
