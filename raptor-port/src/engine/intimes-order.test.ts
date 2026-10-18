@@ -1,7 +1,7 @@
 /* A wave's In-time / Rally lines dragged into order on the Scheduler Board, and ordered by Auto sort and Sort all
    (owner D593, D594, 5 Oct 26). The lines are one stored list behind one text key (`it:di.gi`), so a move is that
    key's own change: a published day reads it pending, and dragging back to the issued order nets to nothing. The
-   order moves nothing worked out (D506). */
+   order moves nothing worked out (D506). The register's ITD2 (a published day) and ITD3 (the sort) are pinned here. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { SCHED, signOf, setDayApproved, dayDelta, dayHasChanges } from './publish'

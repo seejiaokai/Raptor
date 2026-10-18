@@ -16,6 +16,12 @@ FULL evidence: `../../handpass/2026-10-02-rally-workspan.md`.
 | RT7 | Existing week/board add/delete, commit/Escape/no-op, warning anchor, history and authority remain; read-only has no editing doors | `ui/rally-feedback.test.tsx`; unchanged existing editor/history/permission suites; runtime width/role/copy/reload paths |
 | RT8 | Report/work hours, earlier rest commitment, normal busy and SANS windows keep separate definitions; ~~nominal OIL unaffected by reporting-only edits~~ *(REPLACED 6 Oct 26 by D591, built as `[OIL-WORK-START]`: OIL follows the entered in-time / Rally — `2026-10-06-oil-work-start-behaviour-register.md` OWS1–OWS5; the rest of RT8 stands)* | `engine/rally-consumers.test.ts` exact scheduled/input/busy/SANS arithmetic, and OIL following the report; runtime SANS/rest/OIL |
 
+| ITD1 | D593, D594: a wave's In-time / Rally lines drag into order on the Scheduler Board only; Edit Schedule's week draws no grip and shows the board's order | `ui/rowdrag.test.tsx` (the board's drag; none on the week); `e2e/schedule-tab.spec.ts` (the rows' width); the drag by mouse and finger walked, `../../handpass/2026-10-19-schedule-amendments-fixes.md` |
+| ITD2 | D594: a new order on a published day is one pending change and the sign-offs fall; dragged back to the issued order it nets to nothing | `engine/intimes-order.test.ts` (the published-day case) |
+| ITD3 | D594: Auto sort (the wave's ⇅) and Sort all order the lines by time — an evening-before clock first, a line with no clock last — Sort all with one history line | `engine/intimes-order.test.ts` (the sort cases); `engine/sort.test.ts` |
+
+ITD1–ITD3 were added 19 Oct 26 with the build of `[INTIME-LINES-DRAG]`. D1026 (19 Oct 26) will move the rally out of these lines into a box of its own on each formation — not built, `[RALLY-PER-FORMATION]`.
+
 The register adds RT1–RT8 to `scripts/rulecheck.mjs`, with no increase in its
 uncovered baseline. A named test is the coverage floor, not a replacement for
 the required actual-app operations or fresh independent final inspection.

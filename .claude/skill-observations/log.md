@@ -1340,3 +1340,18 @@ prove each by acting through it after the rollback, not by reading what it shows
 **Suggested improvement:** In the TDD skill's "write the failing test" step: when a test selects its case from rendered or derived state, recompute that state at the top of the test (here, validate + notify) and assert the precondition with a selector proven to match in a positive case; and when a new test fails only in the full file, suspect leftover state before suspecting the code.
 
 **Principle:** A precondition read from state another test can leave behind makes a test depend on run order; recompute before choosing, and prove a "nothing here" selector can find something.
+
+### Observation 641: A test fixture written straight into the data before an undo test runs lands in the undo's baseline, not as a change
+
+**Status:** OPEN
+**Date:** 2026-10-19
+**Session context:** D994's Schedule and amendments batch — a red-first test of Undo pressed with the caret still in an In-time line (ui/undo-caret.test.tsx)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** "write the failing test" — fixtures for undo / history tests
+
+**Issue:** The test set three In-time lines straight into the data AFTER the store and the undo history had taken their baseline. The emptied line was then undone back to the seed's own lines, not the three the test set, so the test failed for a reason that had nothing to do with the fault — and a first reading took it for the fix not working. Moving the fixture line above the store's set-up made the test say what it meant; red without the fix, green with it.
+
+**Suggested improvement:** In the TDD skill: a test of undo, redo or history sets its fixture BEFORE the history takes its baseline (or through the app's own write path), and asserts the state just before the action under test, so a wrong baseline shows as a wrong precondition rather than as a failed fix.
+
+**Principle:** In a test of undo, a fixture written outside the recorded path becomes the baseline it undoes to; set it before the baseline is taken, and check the precondition before the action.

@@ -21,51 +21,36 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/schedule-amendments-fixes-fffce0 -->
-### `claude/schedule-amendments-fixes-fffce0` — D994's Schedule and amendments small fixes (the group's first 24 lines) and their ONE FULL check, written 19 Oct 26 — verify before use
+### `claude/schedule-amendments-fixes-fffce0` — D994's Schedule and amendments small fixes (21 items) and their ONE FULL check — DONE, waiting for his look and "merge live"; written 19 Oct 26 — verify before use
 - **Where it started:** his ask (D994) — the first 24 lines of the priority list's "Schedule and amendments" group that
   need nothing from him, one branch, one FULL check (D485), pictures, each finished item archived by script, browser
   tests on a free port (4232). Nothing merges without his "merge live".
-- **Shipped (pushed, no pull request yet):** all 21 items built — their commits say what each changed. The FULL check's
-  evidence sheet `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md` (eight answers, tier FULL, roll-call,
-  the walk's size, the dispositions so far); the scenario designer's report and the fresh read's report in
-  `raptor-port/docs/superpowers/briefs/2026-10-19-sched-fixes-*`; four walkers' and two re-walkers' sheets in
-  `raptor-port/docs/handpass/parts/2026-10-19-sched-fixes-*.md`, pictures `raptor-port/docs/img/handpass/2026-10-19-sched-fixes/`.
-  The check found and FIXED 16 faults, each red first (the sheet's table and the commits): the Tab route onto a control;
-  the board's and a finger's second click; a line lost or doubled on an In-time drag, ⇅ or Sort all with the caret in a
-  line; the run-of-days "Breaks <day>" focus; a note over the changes window; a row drag's edge band on a phone on its
-  side; Sort all's second history line; his find — the board's In-time lines centred (pictures sent to him); Undo's
-  words for a board box and for an OIL answer in the input's window; the read's F1 (the caret mark could stick and hold
-  the redraw), F2 (an emptied line then a grip dragged the wrong line), F3 (the week re-landed on the app's own band resize).
-  Re-walk E 21 / 21 PASS, re-walk F 31 PASS / 0 FAIL (on `676a92e43`, before F1–F3).
-- **Unfinished:** (1) the gates under the lock after F1–F3 (last watched run `676a92e43`, before them); (2) a new frozen
-  build (copy `raptor-port/dist` to a scratch folder `walk-<commit>`, serve it with `npx --prefix raptor-port vite
-  preview raptor-port --port 4240 --strictPort --outDir <that folder>` through a `.claude/launch.json` entry, not
-  committed) and a SHORT re-walk — the host or one Sonnet walker (`raptor-port/docs/superpowers/briefs/2026-10-19-sched-fixes-walkers.md`
-  is the brief) — of F1 (a finger lands on a box and scrolls, then the board or week still redraws), F2 (four In-time
-  lines, empty the first, drag the third), F3 (the week panned by hand stays when the failed-save band comes), and
-  re-walk F's surprise: after Undo of a B typed on a PUBLISHED day the box still showed the typed time while the stored
-  value was blank (board and week) — possibly F1; if it stays, it is a finding; (3) S3-16 — a crew-list puck held still
-  near the top of the board pane on a phone on its side never scrolls it: reproduce on the new build, then file it as
-  older (likely) or fix; (4) a narrow fresh read of the fix commits since `a906c7d37` (order §5 "a fix is new code");
-  (5) finish the sheet (the `Walk:` line, the ledger row in `raptor-port/docs/walk-ledger.md`, the break tests' line,
-  what was NOT walked); (6) docs: `raptor-port/docs/ui-contracts.md` (§In-time lines — the board's drag and the rows;
-  §the changes window), `feature-impact.md`, the behaviour register / `npm run rulecheck` for D593 D594; (7) archive each
-  finished item by `node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>` — the 21, with [CRP-FLAG] naming
-  D179/D185/D187 as what set the rest aside, [OFT-ADD-TWICE-SILENT] "not reproduced", [AMEND-SMALL-SEEN] (6) "the walk's
-  script"; (8) the [NO-ASTRA-LIST] line for this job (the scenario design and the code read went to fresh Opus readers);
-  (9) the pull request, the Vercel preview link and pictures, his look. Filed this chat: `[EDIT-BUTTON-AFTER-CHANGE]`.
-- **Branch:** `claude/schedule-amendments-fixes-fffce0`, pushed; no pull request; released here (`git switch --detach`).
-- **Gates:** the whole set at `676a92e43` — WHOLLY GREEN (§Gate baseline); after it only F1–F3 and tests changed (their
-  unit files green; `tsc` clean). probes:adapted · perf — not run.
-- **Open questions for him:** [LOOK-PENDING-COUNT] (parked, D994 — recommended: no pending chip on a look). Words to
-  show him with the pull request (no ruling fixes them): "this line & this line clash" / "Tight turn this line→this line"
-  for two unnamed lines.
-- **Running when written:** none (every helper finished; the walk's server stopped; the lock free).
-- **Pick up here:** Unfinished (1) and (2) — the gates, then the short re-walk.
-- **Opening line:** Switch this chat to the branch `claude/schedule-amendments-fixes-fffce0`: `git fetch origin`, `git switch claude/schedule-amendments-fixes-fffce0`, `git branch -u origin/claude/schedule-amendments-fixes-fffce0`, `git pull --ff-only` (if the switch is refused because another checkout holds the branch, release it there only if that folder has no uncommitted changes and is on the same commit as `origin/claude/schedule-amendments-fixes-fffce0`, then `git -C <that folder> switch --detach` and switch again; otherwise stop and tell me). Read `HANDOFF.md` — the `claude/schedule-amendments-fixes-fffce0` block under `## Now` — then finish the FULL bug check it describes, with pictures; browser tests on an E2E_PORT checked free. Nothing merges without my "merge live".
+- **Shipped (pushed; the pull request opened after this commit):** all 21 items built; the FULL check finished —
+  evidence sheet `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md` (roll-call with every proof, the
+  walk's size, every order, the cases a test carries, 572 pictures, the break tests, what was not walked, the gates, the
+  reads, every finding's disposition, his look card, the `Walk:` line). This chat: the gates after F1–F3; the narrow
+  read of the fix round, round 1 (N1 — F1's fix repainted the whole app at the start of nearly every finger scroll on a
+  phone: FIXED `0df257c26`; F2's two untested routes pinned) and round 2 (its F1 — Undo pressed with the caret still on
+  an In-time line, as a tap on Safari does, lost one line and doubled another: OLDER, FIXED `40c7af45e`, Undo and Redo
+  let a held caret go first); re-walk G by the host (15 rows, all PASS or RECORDED) found the box that kept a typed time
+  after Undo (OLDER, the same on `main`'s build): FIXED `9cbdc5e64`. The 21 items archived; [BUBBLE-SMALL-SEEN] (4)
+  and [OIL-NOTIFY-SEEN] (three parts, with the crew-list puck that never scrolls the board on a sideways phone — S3-16,
+  older) stay open. D593 / D594 in the rally register as ITD1–ITD3 and in `scripts/rulecheck.mjs`.
+- **His rally ruling (D1026, this chat):** each formation gets its own rally box (R above B, TO above LD on the week and
+  Edit Schedule); the typed lines are for the in-time only, their button "+ In-time"; a mock-up first; AFTER this batch
+  ("Finish this first") — filed [RALLY-PER-FORMATION]; D497, D500, D511 narrowed.
+- **Gates:** the whole set at `40c7af45e` — WHOLLY GREEN (§Gate baseline). Docs-only commits after it.
+- **Open questions for him:** [LOOK-PENDING-COUNT] (parked, D994). Words to show him with the pull request (no ruling
+  fixes them): "this line & this line clash" / "Tight turn this line→this line" for two unnamed lines.
+- **Running when written:** none (the walk's server stopped; the lock free).
+- **Pick up here:** his look (the sheet's look card — four of its five lines need his iPhone) and his "merge live";
+  once live, [RALLY-PER-FORMATION] — a mock-up on the real app and his questions first (D1026).
+- **Opening line:** Switch this chat to the branch `claude/schedule-amendments-fixes-fffce0`: `git fetch origin`, `git switch claude/schedule-amendments-fixes-fffce0`, `git branch -u origin/claude/schedule-amendments-fixes-fffce0`, `git pull --ff-only` (if the switch is refused because another checkout holds the branch, release it there only if that folder has no uncommitted changes and is on the same commit as `origin/claude/schedule-amendments-fixes-fffce0`, then `git -C <that folder> switch --detach` and switch again; otherwise stop and tell me). Read `HANDOFF.md` — the `claude/schedule-amendments-fixes-fffce0` block under `## Now` — then act on my look and "merge live" for its pull request. Nothing merges without my "merge live".
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (19 Oct 26):** D994's Schedule and amendments batch (21 items) is BUILT and FULL-checked on `claude/schedule-amendments-fixes-fffce0` — its pull request waits for his look and "merge live" (its block above) → then [RALLY-PER-FORMATION] (D1026): a mock-up on the real app and his questions first.
 
 **RIGHT NOW (18 Oct 26, night):** pull request 537 is LIVE (the backlog tidy, D1024) → the next area's small fixes (D994): Schedule and amendments, the first 24 lines of its group, on `claude/schedule-amendments-fixes-fffce0` (its block).
 
@@ -138,6 +123,8 @@ his ruling — DONE 7 Oct 26 on `claude/docs-tidy-7-oct` (D609: options 1 to 6; 
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
 ## Gate baseline
+
+**The latest counts watched — 19 Oct 26, `claude/schedule-amendments-fixes-fffce0` at `40c7af45e` (`main` with the D994 batch, every fix of its check in — NOT `main`'s code), the whole gate set under the PC lock in one run, browser tests on 4232: build clean · tfin 728 / 0 · unit 11855 / 11855 · e2e 865 passed, 0 failed, 61 skipped · smoke 453 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN.** (The run before it, at `9cbdc5e64`, met the Leave War phone test of `[LW-WINDOW-PRUNE-FLAKE-2]` once — 2 of 3 alone.)
 
 **The latest counts watched — 19 Oct 26, `claude/schedule-amendments-fixes-fffce0` at `676a92e43` (`main` with the D994 batch and the check's fixes up to then — NOT `main`'s code), the whole gate set under the PC lock in one run, browser tests on 4232: build clean · tfin 728 / 0 · unit 11841 / 11841 · e2e 865 passed, 0 failed, 61 skipped · smoke 453 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN.**
 

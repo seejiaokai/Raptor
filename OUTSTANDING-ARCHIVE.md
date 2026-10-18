@@ -5685,3 +5685,280 @@ reword is read against the original for meaning (D138) — one reviewer, Astra f
 `OUTSTANDING-ARCHIVE.md` by `backlog-archive.mjs --move`. **Place:** low — documents only, any time; it would take the file
 about 60 lines further under its tripwire.
 
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([INTIME-LINES-DRAG]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [INTIME-LINES-DRAG] Drag a wave's In-time / Rally lines into order on the Scheduler Board; Auto sort orders them too (D593, 5 Oct 26)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): built as D593 and D594 rule — the board's drag, Auto sort and Sort all, a published day's pending change; what it does now: `raptor-port/docs/ui-contracts.md` §In-time lines; the register's ITD1–ITD3.
+**His ruling (D593):** *"I also want the option to be able to [drag] and rearrange in Time/rally. In the schedule board. And the auto sort
+button also helps in rearranging."* Full row: `.claude/decisions-full/scheduler.md` D593.
+**Today:** a line is added by "+ In-time / Rally", typed in, and removed with its ✕; the lines stay in the order they were added. Their
+order changes nothing the app works out — the earliest applicable clock is used whatever the order (D506).
+**Answered — nothing is left to ask before building (D594, 5 Oct 26):** the board ONLY — no drag for these lines on Edit Schedule's week,
+which shows them in the order the board left them; Auto sort's order is by time, earliest first, a previous-evening clock first, a line
+with no clock last, from the wave's own Auto sort and from Sort all; a new order on a published day reads as a pending change. The
+six-dot grip is the app's own (the agent's call).
+**Tier (the agent's reading):** WALK at least — a new gesture on a shared drawer; FULL if the reorder is recorded on a published day.
+**Place (the agent's proposal, his to set):** one batch with `[OIL-WORK-START]` — both are about the In-time / Rally lines — on its own
+branch after the Codex stack goes live, with one check for the two (D485).
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([PEND-INTIME-WORDS]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [PEND-INTIME-WORDS] "To go out" words an edited reporting line as "2 In-time / Rally lines → 2 In-time / Rally lines" (reader AB's second pass, 6 Oct 26 — OLD)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): "To go out" names the lines that differ; a pure reorder reads "order changed" (`ui/pendlist.ts reportingLineWords`).
+A line's clock changed on a published day, with the number of lines unchanged: the pending list shows the same words before and
+after (the changes window's "All changes" shows the real text). The same on `main` ("2 in-times → 2 in-times"). Fix: word the lines
+that differ — `…/stack-read2-AB.md` F3. **Place:** low — with the next change to the changes window.
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([SC-INTIME-REST-WORDS]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [SC-INTIME-REST-WORDS] The crew-rest sentence calls an SC line's typed in-time its "start" (seen 6 Oct 26, the D605 walk — OLD; low)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): the crew-rest sentence calls an SC line's typed B its in-time.
+An SC shift 13:00–19:00 with B (its in-time) 05:00, a man clear at 12:30 placed on a MAIN seat: "… crew rest clear at
+12:30, but SC AM starts 05:00 — only 4h30 rest." The shift starts 13:00; 05:00 is its in-time. The arithmetic is right
+(the in-time is the report); the word is not. `raptor-port/src/engine/validate.ts`, the crew-rest sentence's shift
+branch. **Fix:** "… but SC AM's in-time is 05:00 …" when the report is the typed B and "starts" only when it is the
+shift's start; the crew list's line is unaffected. **Place:** low — with `[OIL-WORK-START]` or the next change to the
+crew-rest sentences.
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([SC-BLANK-SHIFT-QUAL]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [SC-BLANK-SHIFT-QUAL] An SC line whose shift times were cleared prints "(NaN:NaN–NaN:NaN)" in its currency warning, and asks for NIGHT currency (found 6 Oct 26, the crew-rest fix's check — OLD; low)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): a blank-shift SC line prints no broken time and asks for no night currency.
+Tuesday "+ Wave" → SC; clear the first shift's start and end boxes; put a man who holds SC DAY currency only in its first MAIN
+seat: the list says "SC currency — wrong shift — SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Scribe is not current"
+(walkers A and C, and the host's unit run; picture `…/2026-10-06-rest-blank-line/C/dk-01-h03-plain-list.png`). With no shift
+times there is no day or night to tell (`validate.ts`, the SC currency check). Clearing an SC shift's times is a rare act — the
+wave is minted with them. **Fix:** with no usable shift window, say nothing about day or night currency (or say the shift has
+no times) — never print a clock that is not there; a red test first. **Place:** low — with the next change to the SC rules, or
+with `[BLANK-TIMES-ABSENCE]` (the same family: a rule reading times that are not there).
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([BLANK-LINE-SANS-WORDS]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [BLANK-LINE-SANS-WORDS] On a line with no times a SANS man's offer is still worded as a clash, and a line with no callsign leaves holes in sentences (found 6 Oct 26, the crew-rest fix's check — OLD; low)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): a SANS man's offer on a line with no times no longer reads as a clash; a line with no callsign leaves no hole in a sentence.
+(1) A SANS man offering Fly 14:00–16:00, seated on a blank line: the list says "… planned for   — available 14:00–16:00 only"
+although there is no time yet to compare with his offer; the crew list does not strike him (it has no window to test) — the two
+disagree (walker C, S28c). (2) A line with no callsign or mission prints its blank name into sentences: "cannot fly FCP ( )",
+"OCU in   with no IP", "planned for   —". **Place:** low — with `[BLANK-TIMES-ABSENCE]` (what each rule says when a seat has no
+times) or the next change to those sentences; "this line" where the name is blank.
+**Part done 6 Oct 26 with D605 (`claude/blank-times-absence-picker-2cebae`):** the three ABSENCE sentences ("On leave but
+planned to fly …", "… but tasked — …", "… clashes with …") say "this line" / "this row" where the seat has no name, with
+times and without. Still open: (1) the SANS offer worded as a clash on a line with no times, and the blank name in every
+OTHER sentence ("cannot fly FCP ( )", "OCU in   with no IP", the clash and brief sentences).
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([BLANK-STANDBY-STRIKE]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [BLANK-STANDBY-STRIKE] On a standby seat whose shift times are blank, the crew list strikes a man on LOCAL leave — whom the rule lets stand it (found 6 Oct 26, the D605 build — OLD; low)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): the crew list no longer strikes a man on local leave for a standby seat whose shift times are blank.
+"+ Wave" → BB (it comes up with no shift times), or an SC wave with its first shift's start and end cleared; a man on
+local leave (LL) all day; arm a BB seat, or the SC SPARE seat: his name is struck "local leave (LL)". Type the shift's
+times and the strike goes; seat him either way and the day's list says nothing — a local leave may stand a standby place
+(owner, 10–11 Aug 26; D605 keeps each kind's exemptions). **Cause:** the crew list tells a standby place by its HOURS —
+`raptor-port/src/engine/avail.ts` `slotRules` sets `avJet` only beside a start time, and `slotBar`'s `spareLike` reads
+`r.sc`, the shift's day / night kind, which is null without times — so a blank standby seat is judged like an ordinary
+one ("unknown fails closed", pinned in `slotrules.test.ts` with exactly this case). Stricter than the rule, never looser:
+no man the list flags is offered clean (pinned in `blankabsence.test.ts`, which names this gap). **Fix:** set the standby
+flags whatever the hours (`avJet` for any AVALON / BB line; `spareLike` on `scSpare` alone), keep failing closed for a
+type that DOES bar the seat, and change the `slotrules.test.ts` pin to an overseas leave; a red test first. **Place:**
+low — with the next change to the crew list.
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([BLANK-SEAT-ACTIVITY-HINT]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [BLANK-SEAT-ACTIVITY-HINT] Before a man with a whole-day course or meeting is put on a seat with no times, the crew list says nothing — the list flags him the moment he is seated (Astra's code read of D605, F2, 6 Oct 26 — a gap the build left on purpose; low)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): the crew list says a man is on a whole-day course before he is put on a seat with no times (D605).
+A whole-day Training for a man; "+ Line" (no times); arm its seat: his name is offered with no reason. Place him: "Training
+clashes with this line" (the drop's toast says it at once). With hours on the seat the crew list does advise first
+("already on Training") — its soft check for a personal commitment needs the seat's hours
+(`raptor-port/src/engine/avail.ts` `slotBar`, the "IS HE ALREADY BUSY AT THIS HOUR" block, guarded on `slotStart`). For a
+LEAVE, a downchit or an overseas duty there is no such gap: the crew list strikes those on a seat with no hours. D605 was
+built with the crew list unchanged (its full row, reading (7)); pinned as it stands in `blankabsence.test.ts`. **Fix:** in
+that block, a whole-day personal commitment advises against a seat with no hours too ("already on Training", never a
+strike); a red test first. **Place:** low — with `[BLANK-STANDBY-STRIKE]`, the next change to the crew list.
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([SC-SPARE-RING-BORROWS]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [SC-SPARE-RING-BORROWS] One man in a MAIN and a SPARE seat of one SC line: his SPARE puck wears the MAIN seat's leave ring (Astra's scenario read of D605, F3, 6 Oct 26 — OLD; low)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): the SC SPARE puck wears its own ring, never the MAIN seat's (week and board).
+An SC line, the same man in a MAIN seat and a SPARE seat of the same shift, a local leave all day: the MAIN seat is
+flagged ("On leave but tasked — SC AM"), rightly; the SPARE seat's puck wears the red ring and C too, though local leave
+may stand a spare. Reproduced by the host through the rule and the week's own drawer, with the shift's times blank and
+typed (typed, the pair is red anyway — "standing SC SPARE and also on SC AM MAIN"). **Cause:** the exempt seat's puck
+rings for any warning anchored anywhere in its formation (`raptor-port/src/ui/html.ts` `exemptLineOwn` — the key-prefix
+match), and a MAIN seat's absence warning is anchored on the MAIN seat of that formation. It needs one man in two seats
+of one shift — already a planning error. **Fix (Astra's steps):** for an SC SPARE's absence ring accept the
+formation-level spare warning and not a MAIN seat's key that merely shares the prefix; keep the currency and two-places
+matching; pin week and Board, blank and timed, with an overseas leave and ATT C as positive controls. **Place:** low —
+with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([SC-B-CHANGE-SAYS-BRIEF]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [SC-B-CHANGE-SAYS-BRIEF] The changes window calls an SC shift's in-time "brief" (found 7 Oct 26, the D606 walk — E02, E06, E15; OLD; LOW, words)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): an SC line's B is "in-time" in the history, "To go out", the changes window and Undo, on the week and the board.
+On an SC line the B box is the crew's in-time, not a brief (owner, 24 Aug 26), and since D606 (7 Oct 26) it moves OIL. A B typed
+or changed on a published day is listed under "To go out" as "SC · brief  06:00" (and "06:00 → 08:00") — the box's general name.
+**To build:** on an SC line, name the change "in-time" in the changes window, the pending list and the edit history; every other
+line keeps "brief". **Tier:** WALK (the changes window's words, a published day, both sizes). **Place (the agent's line):** low —
+with the next change to the changes window's wording, or with `[OIL-EARN-DAY-SWITCH-WORDS]`.
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([BOARD-INTIME-JUMP]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [BOARD-INTIME-JUMP] On the Scheduler Board a reporting-line change in the changes window is not a button (reader AB's second pass, 6 Oct 26 — OLD)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): a reporting-line change in the changes window is a button on the board too.
+The board draws the In-time / Rally block with its address, but the list of "details the board does not draw" still names it
+(`raptor-port/src/ui/histbubble.ts`), so its line cannot be tapped to go there. `…/stack-read2-AB.md` F4. **Place:** low.
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([BLOCK-NO-HISTORY-LINE]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [BLOCK-NO-HISTORY-LINE] Placing a duty block from + Block, or removing a medical document, writes no history line (filed 30 Sep 26)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): + Block, a placed SC / AVALON / BB wave and a document added or taken off each write a history line.
+**Place:** low — with the next change-history change. Seen in passing by the group-A FULL walk: a block placed (W1 G2c)
+is saved (its day row, one batch) but the changes window has no line for it, unlike + Wave or + Line; a document removed
+from a medical request (W2 13g) saves the request with no line. Probably old behaviour (not compared). **Do:** log the
+block's addition as + Wave logs a wave's, and a document's removal as its addition is logged.
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([DISCARD-FILING-NOOP]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [DISCARD-FILING-NOOP] "Discard 1 edit & load" for an input filed after the day went out promises a discard and changes nothing (the one-rule job's walk, share F — F1, F8, 12 Oct 26)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): "Discard N edits & load" counts only what it discards (`engine/drafts.ts dayDiscardCount`).
+**Found, not fixed — low; NOT yet compared with the live app.** On a published day, file a new input (it lands on the programme: "1 pending"). "Load onto working copy" offers "Discard 1 edit & load — confirm"; confirmed, the note says "1 unpublished edit replaced" — and the input is still on its row and the day still reads 1 pending (the load puts its filing back to "fresh", and a fresh input lands again). For a person added to an input, and for a CX, no discard is offered and the note says the change stays (right). **To check first:** whether the live app does the same (`raptor-port/src/engine/publish.ts dayDiscardCount` counts each filing the load "will put back"; this job did not change that half). **The build, if it is a fault there too:** a filing the load cannot keep off the programme is not counted as discarded.
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([SECDEFAULT-OFFER-BEHIND-BOARD]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [SECDEFAULT-OFFER-BEHIND-BOARD] The "Set as default order?" offer after a section drag on the board is drawn behind the board (filed 30 Sep 26)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): the "Set as default order?" offer is drawn over the board, below a window.
+**Place:** low — with the next board change. Seen in passing by the group-A FULL walk (W1 G4,
+`docs/img/handpass/2026-09-30-dbrA/W1/W1.G4-offer-hidden-behind-board.png`): the snackbar only shows once ✓ Done closes
+the board. Not a storage matter; likely on `main` too (not compared). **Do:** lift the snackbar above the full-screen
+board, with the bug-check order's §6 layering test (the element at its centre is the snackbar).
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([TRACE-FOCUS-STAYS]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [TRACE-FOCUS-STAYS] After a "Breaks <next day>" line is tapped in a day's open issues list and the list is closed, the light stays on — the crew lit, the page dimmed (found 18 Oct 26 by the night's job 4 walk, B3 — OLDER than that job; low) — OPEN
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): closing the list a "Breaks <day>" line was tapped in lets the focus go — every such line, a run of days' too.
+**Found, not fixed.** On the Scheduler Board, Monday's list open, a tap on its "Breaks Tuesday · <man>" line (the crew-rest trace, the day that causes tomorrow's breach), then the list closed: the man's five Monday pucks stay lit (`wfoc`) and the whole page stays dimmed (18 lit, 689 dimmed); the same on Tuesday's own crew-rest line clears as it should, and opening then closing a list with no tap restores everything. Picture: `raptor-port/docs/img/handpass/2026-10-18-night-job4/dk-10*.png`; the walk `raptor-port/scripts/handpass/night1018-job4-walk.mjs` B3. Not the job's doing — its commit touches no highlight or focus code (`ui/highlights.ts`, the focus in `state/view.ts`). **To look at:** what clears the focus a trace line sets when its list is closed (`toggleDayWarn` / `clearWarnFocus`). **Place:** low — with the next change to the issues list.
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([ONE-ROW-DRAG-FLASH]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [ONE-ROW-DRAG-FLASH] After the one row of a shared input is dragged by its grip, the landing flash is on the wrong row (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — to settle with that job's code read)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): the landing flash marks the row that landed, a day's first ground-row drag included.
+**Found, NOT fixed.** Walker W1, scenario 11 (`raptor-port/docs/handpass/parts/gi-w1.md`; picture `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w1/s11-board-move1-flash.png`): the row and all its pucks move correctly, but the flash that says where it landed was painted on the row now standing where it had been. Asked of Fable's read (D749) whether it is that job's block move (`raptor-port/src/engine/reorder.ts moveGroundRow`) or a first hand-move of any single ground row does the same on `main`. Cosmetic: nothing is saved wrongly. Fix it with the job if it is the job's; else it stays here. **Settled by Fable's read (F2, 11 Oct 26 — `raptor-port/docs/superpowers/briefs/2026-10-11-reads/group-input-code-fable.md`): OLDER** — `raptor-port/src/ui/rowdrag.ts` carries a "KNOWN GAP" note of 6 Sep 26: on a day's first hand move of a ground row the list's order is frozen first, so the row lands elsewhere than the address the flash is aimed at; any single row does it on `main`. The one-row job adds one case (a one row dragged DOWN: its first row lands above the aimed address, so no flash). The exact fix is in that report: the engine already names the row that landed; the drag should read it and paint that row.
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([ARROW-GUTTER-STRIP]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [ARROW-GUTTER-STRIP] The day before the front one shows a 42px strip beside the ‹ arrow — MOOT (D275, the room taken out 27 Sep 26); one small leftover (filed 26 Sep 26)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): a real window resize re-lands the desktop week on a day (the app's own band resize does not — the fresh read's F3); "day a–b of 7" counts only days really in view.
+The five-flags walk (W4, `raptor-port/docs/img/handpass/2026-09-26-five-flags/w4/GUTTER-prevday-tail-view-1440x900.png`):
+the desktop week's 54px room ([VIEW-ARROW-OVER-LIST]) leaves the previous day's last 42px visible around the arrow (8px
+on `main`). The look card's Q3: keep (it hints at a day to the left — recommended) or leave that strip empty — **mock-up shown
+27 Sep 26** (his ask): `raptor-port/docs/mock/five-flags.html` §Question 3, keep / empty / fade — **ANSWERED "Q3 keep" (D273), then MOOT by D275:
+the room comes out (`[ARROW-ROOM-OUT]`), so the strip goes back to 8px.** Still open, low — also from
+the same walk, small: straight after a window resize a day can sit partly under the ‹ until the next press (a resize
+never re-lands the week); "day a–b of 7" counts a third day that shows only ~212px at 1440. **Place:** his answer; low.
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([EDIT-SECOND-CLICK]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [EDIT-SECOND-CLICK] After a changed text box on Edit Schedule, the first click into another box does not take the caret (found 5 Oct 26, the Codex stack check)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): one click or tap after a changed box takes the caret, on the week and the board, a draft and a published day; the mark it uses never sticks (the fresh read's F1). The same first press on a BUTTON is filed as [EDIT-BUTTON-AFTER-CHANGE].
+On Edit Schedule's week: type a new value in a text box (a take-off, a mission), then click ONCE into another text box. The day
+redraws as the first box is left, the box that was clicked is replaced, and the caret is nowhere (the page itself has the focus); a
+second click takes it. With an UNCHANGED first box one click is enough. The same on `main` (`de470db5`) and on the stack — measured
+on both builds with real clicks: `raptor-port/scripts/handpass/stk-host-click-cmp.mjs`; walker K met it in L-10 and L-12
+(`raptor-port/docs/handpass/parts/stk-K.md`). Nothing is saved wrongly; it costs him a click each time, and the Tab route (D544) is the
+way round it. Not ruled; no fix proposed in the stack check. **Place (the agent's line, not his ruling):** low — with the next change
+to the schedule's text boxes; if fixed, restore the caret to the box at the click's position after the redraw.
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([TAB-LAST-BOX-TEST-GAPS]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [TAB-LAST-BOX-TEST-GAPS] The Tab that keeps the caret in a day's last box (D597): what its test does not cover (Astra's owed read, 6 Oct 26 — no defect found; low, tests only)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): the three gaps tested; one fault they found fixed — a Tab onto a control where the save replaced the day keeps the keyboard on that day.
+From `[R3-OWED-READS]` (1): the fix in `raptor-port/src/ui/schedule-tab.ts` is sound for the redraw it was written for. Not
+covered by `schedule-tab.test.tsx`: the reverse change (the day's LAST warning going away at that Tab, not only its first
+appearing); the caret seen in a real browser after the day is replaced (the short phone board, a window open over it); the
+fallback when the exact box no longer exists; a day replaced during the box's own blur (the earlier same-scope check exits
+first — a coverage boundary, not a shown failure). The read: `raptor-port/docs/superpowers/briefs/2026-10-06-rest-blank-line-scenarios-astra.md` §5(a).
+**Place:** low — with the next change to the Tab route.
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([CRP-FLAG]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [CRP-FLAG] Live flagging on the PUBLISHED schedule — DESIGNED + RED-TEAMED, ready to build (15 Sep 26)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): tests only — the three published-day cases the build left untested are pinned (`engine/official-flags.test.ts`), no fault found. The rest of its plan is set aside: what stays live on a published face, and what freezes, is ruled by D179, D185 and D187, and the app does as they say.
+**STATUS 24 Sep 26: partly built** — PR #406 (16 Sep 26) merged the plan's "Item 2 + 3(a)" (the two checked
+versions; the official-flags overlay). The note of what came next was lost with an old handoff line and the
+retired `docs/session-state.md`. **Before touching this, check the code against the plan's §11 test list**
+(`raptor-port/docs/superpowers/specs/2026-09-15-crewrest-flagging-plan-v2.md`). "Ready to build" above is history.
+Show live warnings (crew rest incl. cross-day/past-midnight, the 7-day work rule, timing
+clashes) on the published/signed schedule again — today publishing a day hides them. Model:
+two checked versions (signed + working); each screen flags the version it shows; check a day
+against each surrounding day's **published version if it has one, else its working copy**; the
+day being amended drives the scheduler's own preview. Content byte-frozen; "Not Yet Signed"
+marker (everyone). Clock-free; NOT coupled to EOD.
+- **Fully scoped + cross-provider red-teamed** (2 rounds + a confirmation, Codex + Fable). On
+  branch `claude/crewrest-published-flagging`. **Build spec:**
+  `raptor-port/docs/superpowers/specs/2026-09-15-crewrest-flagging-plan-v2.md` (§5 mechanism,
+  §11 tests, §14 tricky build spots); review log alongside it.
+- **HEAVY**, test-first, Opus; keep `tfin.js` 728/0; fresh Codex+Fable CODE inspection after
+  build; no merge without "merge live". Owner decisions are in `DECISIONS.md`.
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([OFT-ADD-TWICE-SILENT]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [OFT-ADD-TWICE-SILENT] The second press of an OFT row's "+" for a man already on that row is refused with no message (walker A, the D605 walk, 6 Oct 26 — OLD; low)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): not reproduced — a second "+" on an OFT row for a man already on it is refused and says why (D271); pinned (`ui/rowtwice-refusal.test.tsx`).
+"One man, once per row" (D271) refuses the second place and says why — on a duty row, a ground row, a Common Programme
+row and from an OFT row's front seat to its rear. Pressing the OFT row's "+" twice with the same man armed: the row is
+unchanged, rightly, and nothing is said. Seen by walker A (S24; `raptor-port/docs/handpass/parts/bta-A.md`), not
+reproduced by the host. **Fix:** that door shows the same sentence the others do; a browser test first. **Place:** low —
+with the next change to the sim rows.
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([AMEND-SMALL-SEEN]). Forward facts: `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`.*
+
+### [AMEND-SMALL-SEEN] Small things the amendment re-test saw in passing (24 Sep 26)
+**DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (D994's Schedule and amendments batch, one FULL check — evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): (6) was the walk's script, not the app — a man's figures on a phone leave the grid where it was (pinned, `e2e/leavewar.spec.ts`); (7) a weekend LL asks nothing (pinned, `leavewar/state/balanceafter.test.ts`); (8) the silent phone drag-off is the same as [OIL-NOTIFY-SEEN] (2) and is carried there.
+**BUILT 28 Sep 26 on `claude/small-fixes-batch-d223f6`** (the small-fixes batch; evidence `raptor-port/docs/handpass/2026-09-28-small-fixes.md`; plan `raptor-port/docs/superpowers/plans/2026-09-28-small-fixes-batch-plan.md`) — items 1 (a publish's messages joined; Unpublish says what it did), 3 (six-letter callsigns), 4 (the time's AL tag under the time; the arrow half answered by D275) and 9 (Sort keeps the sign-offs, on a published day too) built; item 5 (AL8's colour) answered: leave it (D362). **MERGED 29 Sep 26 (PR #463).** Items 2 and 6–8 stay with their own chats — this item closes with the last of them.
+None breaks an amendment rule; each is a line to fix or ask about, from the walkers' reports
+(`raptor-port/docs/handpass/parts/2026-09-24-amendment-w1.md` §5, `-w4.md` §6):
+1. **Saturday's "Published AL1 · 14 items" toast** is replaced in the same instant by the OIL warning; the person only
+   ever sees the warning. **Unpublish** says nothing at all (only the tag changes) — AM15b's principle would favour a word.
+2. **Undo of a take-off time change** says "Undid: a note on the schedule" (AM39b: say what it did) — for the
+   change-recording re-test, with [UNDO-ROSTER-SETTINGS]. **BUILT 28 Sep 26** on `claude/change-recording-retest`: a text
+   command carries which box it wrote, and Undo says "a take-off time", "a day note" (`undo/describe.ts`).
+3. **Five-letter callsigns** (VIPER, COBRA) drawn "…" in the edit week's callsign column; on the phone board they wrap
+   ("VIP/R").
+4. At 390px the solid **"AL1" tag** beside a time is clipped to "AL"; on the desktop week the **left scroll arrow** sits
+   over the first sign-off pill of the leftmost day. **The same arrow also covers the left day's Unavailable type**
+   ("ATT C") on the desktop week (the absence-record re-test's re-walk, W2, 26 Sep 26 — pictures
+   `raptor-port/docs/img/handpass/2026-09-26-absence/rewalk/w2/rw-w2-05-desktop-P4a-face`, `-P4b-working-copy`); one fix
+   with `[VIEW-ARROW-OVER-LIST]`.
+5. **AL7 and AL8** are the same orange; the register names no colour past AL7 (ask him if it matters). **ANSWERED 29 Sep 26 — D362: leave it.**
+6. **Leave War, phone:** a man's figure sheet sends the grid back to 1 January, and it stays there after the sheet
+   closes (desktop keeps its place). **Its sharper form (the absence-record re-test, W4, 26 Sep 26):** for a late joiner
+   or a posted-out man, the jump takes his ROW off the screen — in January he is not in the squadron, so the row the
+   admin was working on is simply gone (`raptor-port/docs/handpass/parts/2026-09-26-absence-w4.md`, the F3 note).
+7. **Leave War bid sheet:** placing an LL bid on a weekend asks "That takes Fable to -1 ANNUAL", though a weekend LL
+   charges nothing (his figure stays 0).
+8. **A phone drag-off** removes a puck silently; right-click says "Fable removed".
+9. **"Sort" on the ground programme** of a published day whose rows are kept out of time order moves them in the
+   array without changing what is shown — and blanks the four sign-offs though "no changes to publish" (the final read,
+   Fable #1's mirror; the digest keys ground rows by position). A false re-sign, never a false publish.
+**Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
+

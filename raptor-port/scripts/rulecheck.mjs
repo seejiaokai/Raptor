@@ -263,6 +263,10 @@ const RULES = {
   RT6: 'first publication, AL and reissue refuse atomically, independent of warning visibility',
   RT7: 'existing reporting editor doors, Escape/delete, history and read-only authority stay intact',
   RT8: 'nominal OIL and ordinary busy versus SANS windows retain their own definitions',
+  /* In-time / Rally lines dragged into order — D593, D594; 2026-10-02-rally-behaviour-register.md, ITD1–ITD3 */
+  ITD1: 'In-time / Rally lines drag into order on the Scheduler Board only, never on the week',
+  ITD2: 'a new order on a published day is a pending change; dragged back it nets to nothing',
+  ITD3: 'Auto sort and Sort all order the lines by time: evening-before first, no clock last',
   /* [OIL-WORK-START] — D591, D592; 2026-10-06-oil-work-start-behaviour-register.md (it replaces RT8's "nominal OIL" half) */
   OWS1: 'the OIL day of a flying line starts at its earliest applicable entered in-time / Rally',
   OWS2: 'nothing entered or readable: the nominal report time',
