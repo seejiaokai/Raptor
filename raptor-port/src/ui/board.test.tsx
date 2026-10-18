@@ -2399,3 +2399,27 @@ describe('a wave\u2019s \u21c5 with the caret in one of its In-time lines', () =
     }
   })
 })
+describe('Sort all with the caret in an In-time line', () => {
+  it('sorts the lines and loses none', async () => {
+    const was = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'isContentEditable')
+    Object.defineProperty(HTMLElement.prototype, 'isContentEditable', { configurable: true, get() {
+      let el: HTMLElement | null = this
+      while (el) { if (el.hasAttribute('contenteditable')) return el.getAttribute('contenteditable') !== 'false'; el = el.parentElement }
+      return false
+    } })
+    await act(async () => { openScheduler(0); notify() })
+    try {
+      ;(DAYS[0] as any).waves[0].intimes = ['07:30H: RALLY', '07:00H: IN TIME + WX/NOTAMS']
+      await act(async () => { notify() })
+      const line0 = document.querySelector('#sbBoard [data-itline="0|0|0"]') as HTMLElement
+      await act(async () => { line0.focus() })
+      expect(document.activeElement).toBe(line0)
+      await act(async () => { askSortAll(0); sortAllCommit() })
+      await act(async () => { line0.blur(); await new Promise(r => setTimeout(r, 20)) })
+      expect((DAYS[0] as any).waves[0].intimes, 'both lines, sorted').toEqual(['07:00H: IN TIME + WX/NOTAMS', '07:30H: RALLY'])
+    } finally {
+      await act(async () => { closeScheduler(); notify() })
+      if (was) Object.defineProperty(HTMLElement.prototype, 'isContentEditable', was); else delete (HTMLElement.prototype as any).isContentEditable
+    }
+  })
+})

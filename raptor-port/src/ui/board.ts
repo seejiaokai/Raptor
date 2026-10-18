@@ -718,6 +718,10 @@ export function sortAllCommit() {
   const di = SORTALL
   SORTALL = null
   if (!canEditSched() || !HOOKS.editMode() || view.DPREV.has(di)) { notify(); return }
+  /* the caret leaves its text box first, as at a section's sort (boardMbtn, data-sortsec): a line left after the sort
+     wrote its words by its old place */
+  const typing = document.activeElement as HTMLElement | null
+  if (typing && typing !== document.body && (typing.isContentEditable || typing.getAttribute('contenteditable') === 'true' || /^(INPUT|TEXTAREA)$/.test(typing.tagName))) typing.blur()
   const d = DAYS[di]
   HIST.lock = true
   let any = false
