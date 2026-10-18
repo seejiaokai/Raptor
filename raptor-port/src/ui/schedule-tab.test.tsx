@@ -278,6 +278,90 @@ describe('D556 schedule Tab production wiring', () => {
     expect(marks(document.activeElement as HTMLElement), 'it is in the last box\u2019s twin').toBe(was)
     expect((document.activeElement as HTMLElement).closest('#eWeek > .day')!.getAttribute('data-day')).toBe('4')
   })
+  /* [TAB-LAST-BOX-TEST-GAPS] (Astra's owed read of D597, 6 Oct 26 — no defect, three things its tests did not cover). */
+  const friday = () => host.querySelector<HTMLElement>('#eWeek > .day[data-day="4"]')!
+  const boxesOf = (day: HTMLElement) => [...day.querySelectorAll<HTMLElement>('[contenteditable="true"]')]
+    .filter(el => el.matches('[data-txt],[data-inp],[data-itline],[data-bombs],[data-area],[data-atime]'))
+  const marksOf = (el: HTMLElement) => el.tagName + JSON.stringify({ ...el.dataset })
+  const clash = () => { const wave = JSON.parse(JSON.stringify(DAYS[0].waves[0], (k, v) => k === 'rid' ? undefined : v)); wave.formations[1].aircraft[0].p = wave.formations[0].aircraft[0].p; return wave }
+  /* a day of the demo week with no warning; given one, his save at the Tab takes it back to how it was */
+  /* the warnings are worked out afresh first: what an earlier test left in the warning list must not choose the day */
+  async function quietDay(ok: (d: HTMLElement) => boolean = () => true) {
+    await act(async () => { validate(); notify() }); await tick()
+    const di = [0, 1, 2, 3, 4, 5, 6].find(i => { const d = host.querySelector<HTMLElement>(`#eWeek > .day[data-day="${i}"]`); return d && !d.querySelector('.dwbox') && DAYS[i] && ok(d) })
+    expect(di, 'the demo week has a day with no warning (or this test needs another way in)').toBeDefined()
+    return di!
+  }
+  async function warnedThenCleared(di: number, last: () => HTMLElement) {
+    const day = () => host.querySelector<HTMLElement>(`#eWeek > .day[data-day="${di}"]`)!
+    const quiet = (DAYS[di] as any).waves
+    await act(async () => { (DAYS[di] as any).waves = [...quiet, clash()]; validate(); notify() }); await tick()
+    expect(day().querySelector('.dwbox'), 'the day has its one warning block').toBeTruthy()
+    const box = last(), first = day()
+    box.addEventListener('blur', () => { (DAYS[di] as any).waves = quiet; validate(); notify() }, { once: true })
+    await focus(box); expect((await tab(box)).defaultPrevented).toBe(true); await tick()
+    expect(day().querySelector('.dwbox'), 'the warning block went').toBeNull()
+    expect(first.isConnected, 'the day on screen really was replaced (or this test proves nothing)').toBe(false)
+    return { box, day }
+  }
+  /* (1) the reverse of the test above: the day's LAST warning goes at that Tab — its block leaves, the day is replaced */
+  it("D597 when the save at the last box's Tab clears the day's only warning, the caret still goes back into the last box", async () => {
+    const di = await quietDay()
+    /* a request of his on that day, so its remarks are the day's last box with no button below (D597's case) */
+    await act(async () => { INPUTS.push({ iid: 'tab-last-box', person: 'bane', date: DAYS[di].dt, allday: true, type: 'LL', remarks: 'D597', mod: '2026-07-01' } as any); notify() }); await tick()
+    const lastBox = () => boxesOf(host.querySelector<HTMLElement>(`#eWeek > .day[data-day="${di}"]`)!).at(-1)!
+    expect(lastBox().dataset.inp, 'the request’s remarks are the last box').toBe('tab-last-box.rmks')
+    const was = marksOf(lastBox())
+    const { day } = await warnedThenCleared(di, lastBox)
+    expect(marksOf(document.activeElement as HTMLElement), 'the caret is in the last box’s twin').toBe(was)
+    expect((document.activeElement as HTMLElement).closest('#eWeek > .day')).toBe(day())
+  })
+  /* (1b) found by (1)'s first draft (18 Oct 26): where a control DOES follow the day's last box — a weekend's Ground
+     Programme note, with the crew after it — the Tab goes on to that control (D553). When the save there replaced the
+     whole day, the redraw came a moment after the focus had moved and took the control away: the focus was on nothing. */
+  it("Tab from the last box onto the control after it, when the save replaces the whole day: that control has the focus", async () => {
+    const di = await quietDay(d => /^gn:/.test(boxesOf(d).at(-1)?.dataset.txt || ''))
+    const dayEl = () => host.querySelector<HTMLElement>(`#eWeek > .day[data-day="${di}"]`)!
+    const lastBox = () => boxesOf(dayEl()).at(-1)!
+    /* the route's own reading of "a control": a button, a box or anything the keyboard is let into, not a text box */
+    const next = [...dayEl().querySelectorAll<HTMLElement>('button,input,textarea,select,a[href],[tabindex]')]
+      .find(b => !b.matches('[data-txt],[data-inp],[data-itline],[data-bombs],[data-area],[data-atime]') && b.tabIndex >= 0 && !(b as HTMLButtonElement).disabled && !!(lastBox().compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING))
+    expect(next, 'a control follows that day’s last box (or this test proves nothing)').toBeTruthy()
+    const want = marksOf(next!) + next!.textContent
+    const { day } = await warnedThenCleared(di, lastBox)
+    const a = document.activeElement as HTMLElement
+    expect(a, 'the focus is not left on the page').not.toBe(document.body)
+    expect(marksOf(a) + a.textContent, 'it is on the control after the box').toBe(want)
+    expect(a.closest('#eWeek > .day')).toBe(day())
+  })
+  /* (2) the box has no twin after the redraw (its row went with the save): the caret falls back to the day's last box */
+  it("D597 when the last box itself is gone after that Tab's redraw, the caret goes into the day's new last box", async () => {
+    const last = boxesOf(friday()).at(-1)!, was = marksOf(last)
+    /* the day's last box is a request's remarks: the blur takes the request away, and its row with it */
+    const iid = String(last.dataset.inp || '').split('.')[0]
+    expect(iid, "Friday's last box is a request's (or this test needs another way to lose it)").toBeTruthy()
+    last.addEventListener('blur', () => {
+      const at = INPUTS.findIndex((x: any) => x.iid === iid); expect(at).toBeGreaterThanOrEqual(0)
+      INPUTS.splice(at, 1); validate(); notify()
+    }, { once: true })
+    await focus(last); expect((await tab(last)).defaultPrevented).toBe(true); await tick()
+    expect(last.isConnected, 'the box went from the screen').toBe(false)
+    const now = boxesOf(friday())
+    expect(now.some(el => marksOf(el) === was), 'the box has no twin left (or this test proves nothing)').toBe(false)
+    expect(now.length).toBeGreaterThan(0)
+    expect(document.activeElement, 'the caret is in the day’s last box').toBe(now.at(-1))
+  })
+  /* (3) the day is replaced DURING the box's own blur — before the route looks again. The route's first check after the
+     blur (the same page, the same day still standing) then stops it: the caret is left where the blur left it and
+     nothing else happens. Pinned as it is — a boundary of what the route covers, not a fault a person has met. */
+  it("D597 a day replaced during the last box's own blur stops the route there: nothing is focused, nothing written", async () => {
+    const day = $('#eWeek > .day[data-day="0"]'), last = boxesOf(day).at(-1)!, h = HIST.stack.length
+    last.addEventListener('blur', () => { day.replaceWith(day.cloneNode(true)) }, { once: true })
+    await focus(last); expect((await tab(last)).defaultPrevented).toBe(true); await tick()
+    expect(day.isConnected).toBe(false)
+    expect(document.activeElement === document.body || !document.activeElement, 'the route placed no caret').toBe(true)
+    expect(HIST.stack.length).toBe(h)
+  })
   it.each(['page','Board day','admin session'])('source blur changing %s does not focus its stale destination',async transition=>{
     if(transition==='Board day')await board()
     const source=transition==='Board day'?box('ff:0.0.0.cs'):week('ff:0.0.0.cs')

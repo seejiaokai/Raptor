@@ -222,3 +222,26 @@ for(const exit of ['Enter','ordinary blur','final Tab'])test(`week settles Area 
   expect(await page.evaluate(()=>(window as any).DAYS[0].waves[0].formations[0].atime??null)).toBe(null)
   expect(await page.evaluate(()=>(window as any).commandStreamLen())).toBe(before+1)
 })
+
+/* [TAB-LAST-BOX-TEST-GAPS] (Astra's owed read of D597): the caret SEEN in a real browser after his save at the day's
+   last box replaces the whole day on screen (its first warning arrives with that save). Wherever the Tab goes — back
+   into the box (D597) or on to the control after it (D553) — the keyboard is on that day, never on the page. */
+test('the last box\'s Tab, when the save replaces the whole day: the keyboard is still on that day', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await login(page); await go(page, 'editsched')
+  const di = await page.evaluate(() => [0, 1, 2, 3, 4, 5, 6].find(i => { const d = document.querySelector(`#eWeek .day[data-day="${i}"]`); return d && !d.querySelector('.dwbox') }))
+  expect(di, 'the demo week has a day with no warning').toBeDefined()
+  const day = page.locator(`#eWeek .day[data-day="${di}"]`)
+  const boxes = await day.locator(typing).elementHandles(); let last = null
+  for (const el of boxes) if (await el.isVisible() && await el.evaluate(e => !e.closest('[data-role-ui],[data-role-remarks],.pv-frozen,[role="dialog"]') && (e instanceof HTMLInputElement || e instanceof HTMLTextAreaElement ? !e.disabled && !e.readOnly : e.getAttribute('contenteditable') === 'true'))) last = el
+  expect(last).toBeTruthy()
+  const firstDay = await day.elementHandle()
+  await last!.evaluate((el, DI) => el.addEventListener('blur', () => {
+    const w = window as any, wave = JSON.parse(JSON.stringify(w.DAYS[0].waves[0], (k, v) => k === 'rid' ? undefined : v))
+    wave.formations[1].aircraft[0].p = wave.formations[0].aircraft[0].p; w.DAYS[DI].waves = [...w.DAYS[DI].waves, wave]; w.afterSchedMutate()
+  }, { once: true }), di)
+  await last!.focus(); await page.keyboard.press('Tab'); await page.waitForTimeout(300)
+  await expect(day.locator('.dwbox')).toHaveCount(1)
+  expect(await firstDay!.evaluate(e => e.isConnected), 'the day on screen really was replaced (or this test proves nothing)').toBe(false)
+  expect(await page.evaluate(DI => { const a = document.activeElement; return !!a && a !== document.body && !!a.closest(`#eWeek .day[data-day="${DI}"]`) }, di), 'the keyboard is on that day').toBe(true)
+})
