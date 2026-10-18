@@ -95,6 +95,14 @@ describe('D200 (3): the permissions matrix IS data-model.md §11', () => {
 })
 
 describe('allows — the one rule under every question', () => {
+  /* D1008 (18 Oct 26, "as recommended"): every member may see every man's OIL tracker entries, figures and grants with
+     their reasons — as the app has always shown — so the ledger's Read is everyone's, its writing still the admin's alone */
+  it("D1008: a member reads every man's ledger entries and openings, and writes none of them", () => {
+    expect(allows('member', T.ledger, 'R', 'stiff', 'bane')).toBe(true)
+    expect(allows('member', T.ledger, 'R', 'bane', 'bane')).toBe(true)
+    for (const a of ['C', 'U', 'D'] as Act[]) expect(allows('member', T.ledger, a, 'bane', 'bane'), a).toBe(false)
+    expect(PERMS[T.ledger].gaps, 'the gap it carried is closed').toEqual([])
+  })
   it('a member edits his own Person row and not another (D149)', () => {
     expect(allows('member', T.person, 'U', 'bane', 'bane')).toBe(true)
     expect(allows('member', T.person, 'U', 'stiff', 'bane')).toBe(false)

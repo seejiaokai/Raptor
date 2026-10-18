@@ -1432,6 +1432,22 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect(FMT.buildFile({ students: out, savedAt: 'x' }).contains.links, 'the separate links block is retired').toBe(false)
   })
 
+  /* D1015 (18 Oct 26): a CURRENT file whose student marks point at a chart that is in neither the file nor this Tracker is
+     not an older file — the refusal says the chart is missing, in his wording B; the older-file words stay for older files
+     (the test above), and nothing is written either way */
+  it('D1015: a v3 student block for a chart neither the file nor the Tracker has is refused with the not-carried words', async () => {
+    await expect(C.applyStudents({ courses: ['NOCH'], sylcat: [], byCourse: { NOCH: { plan: { sylId: 'scmissing' }, lulls: {}, pace: {}, bySyllabus: { scmissing: { roster: [{ id: 'm1', name: 'MIKE' }], marks: {}, dates: {} } } } } }, null, 3))
+      .rejects.toThrow(/belong to a chart this file doesn.t carry/)
+    expect(C.courseIdOf('NOCH'), 'nothing was written').toBeNull()
+    const parsed = {
+      version: 3,
+      charts: { sylcat: [], syllabi: {}, order: [], layouts: {}, eventInfo: {} },
+      students: { sylcat: [], courses: ['NOCH2'], byCourse: { NOCH2: { plan: { sylId: 'scgone' }, lulls: {}, pace: {}, bySyllabus: { scgone: { roster: [{ id: 'm2', name: 'MAX' }], marks: {}, dates: {} } } } } },
+      links: null,
+    }
+    expect(C.normalizeImport(parsed).studentsRefused, 'the file turns the students away; the import then says D1015’s words (core.js)').toBe(true)
+  })
+
   it('a v3 student reference described in the CHARTS catalogue (not students.sylcat) resolves — completeness is the UNION (review CSID-IR-03)', () => {
     /* §15 completeness is against the union of both catalogues. A v3 file can carry
        the full identity in charts.sylcat with students.sylcat=[] and still reference

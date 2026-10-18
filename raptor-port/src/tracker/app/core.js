@@ -14,7 +14,7 @@ import { SEED_STATE, SEED_STAMP } from '../data/seedState.js';
 import { storage, flushNow, loadLatest, saveHealth, onSaveHealth } from '../storage.js';
 import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
-import { normalizeImport as normalizeFile, STUDENT_GUARD_MSG, sameDef, remapStudentsSyl } from './fileTransfer.js';
+import { normalizeImport as normalizeFile, STUDENT_GUARD_MSG, STUDENT_CHART_MSG, sameDef, remapStudentsSyl } from './fileTransfer.js';
 import { findEvents } from './eventOrder.js';
 import { onTrackerSessionEnd, onBeforeTrackerLogout } from '../role.js';
 /* Raptor's one edge feel (D899) — a standalone export carries this file with it: docs/tracker/known-gaps.md */
@@ -6540,22 +6540,22 @@ function reconcileStudentsSyllabi(students, version) {
      reconcile target and silently drop a block. Existence at the destination and
      no-two-refs-onto-one-dest are still enforced below, so this stays fail-closed. */
   const catIds = new Set((s.sylcat || []).filter(isSylEntry).map(e => e.id));
-  for (const r of refs) if (!catIds.has(r) && !sylEntry(r)) throw new Error(STUDENT_GUARD_MSG);
+  for (const r of refs) if (!catIds.has(r) && !sylEntry(r)) throw new Error(STUDENT_CHART_MSG);   /* D1015: a chart neither the file nor the store has */
   /* reconcile the file's syllabus ids to the store's (one map), refuse a clash */
   const { remapped, conflicts } = reconcileSylIds(buildUnionSylcat(null, s.sylcat), SYLS);
   if (conflicts.length) { const x = conflicts[0]; throw new Error('The students could not be brought in: the syllabus “' + x.name + '” in the file is a different chart than the one already here. Nothing has been changed.'); }
   const re = id => has(remapped, id) ? remapped[id] : id;
   /* every referenced id must resolve to a syllabus that EXISTS and is NOT
      tombstoned at the destination (§CSID2-04 / §CSID2-R5-02) */
-  for (const r of refs) { const t = re(r); if (!sylEntry(t) || SYL_TOMB[t]) throw new Error(STUDENT_GUARD_MSG); }
+  for (const r of refs) { const t = re(r); if (!sylEntry(t) || SYL_TOMB[t]) throw new Error(STUDENT_CHART_MSG); }   /* D1015: missing or deleted here */
   /* two distinct referenced ids MUST NOT reconcile onto one destination — that
      would collapse two student blocks into one, silently losing marks (CSID-REVIEW-02). */
   const seenDest = new Map();
-  for (const r of refs) { const t = re(r); if (seenDest.has(t) && seenDest.get(t) !== r) throw new Error(STUDENT_GUARD_MSG); seenDest.set(t, r); }
+  for (const r of refs) { const t = re(r); if (seenDest.has(t) && seenDest.get(t) !== r) throw new Error(STUDENT_CHART_MSG); seenDest.set(t, r); }   /* D1015: two onto one */
   const byCourse = {};
   for (const c of Object.keys(s.byCourse || {})) {
     const cv = s.byCourse[c] || {}, nb = {};
-    for (const k of Object.keys(cv.bySyllabus || {})) { const nk = re(k); if (has(nb, nk)) throw new Error(STUDENT_GUARD_MSG); nb[nk] = cv.bySyllabus[k]; }
+    for (const k of Object.keys(cv.bySyllabus || {})) { const nk = re(k); if (has(nb, nk)) throw new Error(STUDENT_CHART_MSG); nb[nk] = cv.bySyllabus[k]; }
     const ncv = { ...cv, bySyllabus: nb };
     if (ncv.plan && ncv.plan.sylId) ncv.plan = { ...ncv.plan, sylId: re(ncv.plan.sylId) };
     byCourse[c] = ncv;
@@ -6929,7 +6929,7 @@ export async function importClick() {
     if (people && norm.studentsRefused) {
       /* normalizeImport turned the students away (incomplete / colliding v3 refs),
          but the charts above still imported */
-      await uiAlert(STUDENT_GUARD_MSG); people = false;
+      await uiAlert(STUDENT_CHART_MSG); people = false;   /* D1015: a current file that does not match, never an older one */
     } else if (people) {
       /* norm.students is the v3 block reconciled through the ONE import map (or the
          raw pre-v3 block, which the version guardrail refuses in applyStudents). */

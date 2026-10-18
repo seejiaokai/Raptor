@@ -101,10 +101,12 @@ export const PERMS: Record<string, PermRow> = {
   [T.war]: row(cell('C R U D'), cell('R')),
   [T.bid]: row(cell('C R U D'), cell('R', 'C U D')),
   /* [OIL-AWARD-IS-A-GRANT] (29 Sep 26): every hand-given OIL award is ONE kind of record — a positive OIL ledger entry —
-     and keeps its OWN row: every member reads every man's (the grid draws every row, D402); the rest of the ledger stays
-     his own only, the gap between that and what the app shows filed as [LEDGER-READ-ASK] (both plan reads) */
+     and keeps its OWN row: every member reads every man's (the grid draws every row, D402). The rest of the ledger was
+     his own only, with the gap to what the app shows filed as [LEDGER-READ-ASK]; D1008 (18 Oct 26, "as recommended")
+     closed it the other way — every member reads every man's entries, figures and grants with their reasons, as the OIL
+     tracker and the figure breakdown have always shown; writing stays the admin's */
   [T.award]: row(cell('C R U D'), cell('R')),
-  [T.ledger]: row(cell('C R U D'), cell('', 'R'), NONE, NONE, ['LEDGER-READ-ASK']),
+  [T.ledger]: row(cell('C R U D'), cell('R')),
   [T.profile]: row(cell('C R U D'), cell('R')),
   [T.tracker]: row(cell('C R U D'), cell('C R U D')),
 }

@@ -1503,6 +1503,7 @@ the model without blocking the edit, and how to keep it quiet (once per file per
 [RULINGS-SLIM] merges, if a chat is seen acting on a short line alone; put to him first.
 
 ### [LEDGER-READ-ASK] May a member see other men's OIL tracker entries and leave grants? — a question for him (filed 29 Sep 26)
+**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534): the access table (§11) and `state/perms.ts` say every member reads every man's ledger entries; its test `perms.test.ts` "D1008". Leaves for the archive once live.**
 **ANSWERED 18 Oct 26 — D1008 ("as recommended"): everyone sees everyone's; widen the access table (§11) and its test.**
 Found by both red teams of the `[OIL-AWARD-IS-A-GRANT]` plan (Fable F5, Astra F10): the app has ALWAYS shown every member
 every man's OIL tracker (grants and corrections — `OilTracker.tsx` lists every person for both roles) and every man's
@@ -1866,6 +1867,7 @@ search/controls visible below the actual header; narrow modified actions wrap. N
 **Logic controls design:** `raptor-port/docs/superpowers/specs/2026-10-04-interface-readability-scroll.md`; **build plan:** `raptor-port/docs/superpowers/plans/2026-10-04-interface-readability-scroll-build-plan.md` (Astra plan; independent Sol challenge PASS; runtime/final read in the combined handpass).
 
 ### [TRK-IMPORT-REFUSAL-WORDS] A current file's students refused with "saved by an older version" — the wrong reason (found 17 Oct 26 by `[TRK-FILE-TRANSFER-SPLIT]`'s walk; older) — OPEN, his to word
+**BUILT 18 Oct 26, the night (branch `claude/window-middle-d996`, pull request 534): wording B for the not-found, deleted-chart and two-onto-one cases (`STUDENT_CHART_MSG`); the older-file words kept for older files. Leaves for the archive once live.**
 **ANSWERED 18 Oct 26 — D1015 ("13 B"): wording B — "Student marks not brought in: they belong to a chart this file doesn't carry. Export a fresh backup that includes its charts, and import that." To build.**
 File → Import refuses the students of a file of today's version whose students point at a chart the file does not carry with "These student marks were saved by an older version and can’t be brought in safely. Import the charts, then re-enter marks — or export a fresh backup from the current app and import that." — but the file is not older; it does not match. The same words serve the real older-version case, and two collision cases (`normalizeImport`'s refusal and `remapStudentsSyl`'s throw, both in `raptor-port/src/tracker/app/fileTransfer.js`; `reconcileStudentsSyllabi` in `core.js`). Pictures: `raptor-port/docs/img/handpass/2026-10-17-trk-file-transfer/desk/24-s5-q2.png` (the wrong reason), `…/11-s2-q2.png` (the right one). **The fix the agent would recommend:** a second sentence for a file that does not match — what is wrong and what to do — his to word (`raptor-port/docs/design-practices.md` §1b). **Place:** the Tracker batch, put to him with its questions. Unchanged by the move (identical before and after).
 

@@ -89,9 +89,15 @@ describe('what an import decides, with the catalogue handed in', () => {
     expect(F.sameDef(null, [])).toBe(true)
   })
 
-  it('remapStudentsSyl refuses two blocks landing on one chart, with the older-version message', () => {
+  /* D1015 (18 Oct 26, his "13 B"): two blocks landing on one chart are not an older file — they belong to charts the file
+     does not carry as they are here, so the refusal says so, in his chosen words */
+  it('remapStudentsSyl refuses two blocks landing on one chart, with the not-carried message (D1015)', () => {
     const s = { courses: ['C1'], byCourse: { C1: { plan: {}, bySyllabus: { sca: {}, scb: {} } } } }
-    expect(() => F.remapStudentsSyl(s, () => 'scone')).toThrow(F.STUDENT_GUARD_MSG)
+    expect(() => F.remapStudentsSyl(s, () => 'scone')).toThrow(F.STUDENT_CHART_MSG)
+  })
+  it('D1015: the not-carried message is his wording B, word for word, and the older-file message is kept apart', () => {
+    expect(F.STUDENT_CHART_MSG).toBe('Student marks not brought in: they belong to a chart this file doesn’t carry. Export a fresh backup that includes its charts, and import that.')
+    expect(F.STUDENT_GUARD_MSG).toMatch(/older version/)
   })
 
   /* the scenario designer's pins (17 Oct 26) — branches the move could not change, pinned for the module's future */
