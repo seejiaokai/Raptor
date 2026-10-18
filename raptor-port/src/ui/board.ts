@@ -29,7 +29,8 @@ import { reqRowText } from './reqrow'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { DAYTPL_PUBLISHED_MSG } from '../engine/daytpl'
 import { commit, isOk } from '../command'
-import { schedStore, SCHED_TYPES } from '../state/sched-commit'
+import { schedStore, SCHED_TYPES, schedWrite } from '../state/sched-commit'
+import { reconcileIssuedMarks } from '../engine/drafts'
 import { withFreshMissionRoles } from '../state/mission-roles'
 import { missionTracking } from '../engine/insights-config'
 import { resolveMissionRole } from '../engine/mission-role'
@@ -1271,7 +1272,10 @@ export function boardChange(e: Event) {
     return
   }
   if (txtSet(p, f.value)) {
-    markEdit()
+    /* the write recorded as a text command NAMING its box, as the week's does (textedit.ts commitText), so Undo says what it
+       took back — "a brief time", an SC line's B "an in-time" — not "a change to the schedule" (walker C, the batch's
+       walk, 19 Oct 26 — [SC-B-CHANGE-SAYS-BRIEF]); the epilogue after it then finds nothing left to record */
+    schedWrite(SCHED_TYPES.text, () => { reconcileIssuedMarks(); markEdit() }, { key: p })
     afterSchedMutate()
     notify()
   }

@@ -28,6 +28,7 @@ import { waveTplLoad } from '../engine'
 import { addWaveTpl, delWaveTpl, setWaveHidden, waveTplSave, WAVETPL_CFG, WAVEHIDE } from '../engine/wavetpl'
 import { installGlobalUndo, _snapView } from './undo-wire'
 import { setDayRemark } from './plan'
+import { boardChange } from '../ui/board'
 import { HIST } from './history'
 
 
@@ -522,6 +523,22 @@ describe('B8 — Undo says what came back', () => {
     const r: any = INPUTS.find((x: any) => x.iid === 'iwire4')
     writeInputsBatch(() => { r.person = 'bane' })
     expect(undoState().undoLabel).toBe('swapping ALL AVAIL for Ranger')
+  })
+  /* walker C, the batch's walk (19 Oct 26, S3-10): Undo after a time typed in a box on the Scheduler Board said "a change
+     to the schedule" — the board saved through the general epilogue, which names no box; the week names it
+     ([SC-B-CHANGE-SAYS-BRIEF]: a flying line's B "a brief time", an SC line's B "an in-time") */
+  it('a box typed on the Scheduler Board is named as the week names it', () => {
+    const was = HOOKS.editMode; HOOKS.editMode = () => true
+    try {
+      const box = (key: string, v: string) => { const el = document.createElement('input'); el.dataset.bfld = key; el.value = v; document.body.append(el); try { boardChange({ target: el } as any) } finally { el.remove() } }
+      box('ff:0.0.0.br', '06:10')
+      expect(undoState().undoLabel).toBe('a brief time')
+      box('ff:0.0.0.to', '09:05')
+      expect(undoState().undoLabel).toBe('a take-off time')
+      ;(DAYS[0] as any).waves[0].kind = 'sc'
+      box('ff:0.0.0.br', '05:10')
+      expect(undoState().undoLabel).toBe('an in-time')
+    } finally { HOOKS.editMode = was }
   })
   it('a Quals tick names the man and what changed; a rule names the Logic page', () => {
     expect(updatePersonField('rocky', { tick: 'nvg' })).toBe(null)
