@@ -21,47 +21,57 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/schedule-amendments-fixes-fffce0 -->
-### `claude/schedule-amendments-fixes-fffce0` — D994's Schedule and amendments small fixes — written 18 Oct 26, IN PROGRESS, verify before use
-- **The job:** the first 24 lines of the priority list's "Schedule and amendments" group, batched on this branch with one bug
-  check sized by the riskiest change; each finished item archived by script. Nothing merges without his "merge live".
-  Tier FULL (published record: the In-time / Rally reorder is a pending change; saved data: history lines; the warning
-  list's sentences). Browser tests: E2E_PORT on a port checked free (4173 and 4180 are held by old previews; 4232+ free).
-- **Built and committed (6 code commits, each item with a test red before its fix, nothing pushed yet):**
-  [INTIME-LINES-DRAG] + [PEND-INTIME-WORDS]; [SC-INTIME-REST-WORDS] [SC-BLANK-SHIFT-QUAL] [BLANK-LINE-SANS-WORDS]
-  [BLANK-STANDBY-STRIKE] [BLANK-SEAT-ACTIVITY-HINT] [SC-SPARE-RING-BORROWS] (unit suite under the lock 11798 / 11798 after
-  these); [SC-B-CHANGE-SAYS-BRIEF] [BOARD-INTIME-JUMP] [BLOCK-NO-HISTORY-LINE] [DISCARD-FILING-NOOP];
-  [SECDEFAULT-OFFER-BEHIND-BOARD] [BUBBLE-SMALL-SEEN] (2)(3) [TRACE-FOCUS-STAYS] [ONE-ROW-DRAG-FLASH] [OIL-NOTIFY-SEEN] (1)(6);
-  [ARROW-GUTTER-STRIP]. The commit messages say what each changed.
-- **Settled without a build (to say so in each item, then archive):** [BUBBLE-SMALL-SEEN] (1) Unpublish already says what it
-  did (D837 N2/N3); [AMEND-SMALL-SEEN] (7) the weekend-LL "-1" ask already fixed (D418, `belowzero.ts` — one test owed:
+### `claude/schedule-amendments-fixes-fffce0` — D994's Schedule and amendments small fixes (the group's first 24 lines), written 18 Oct 26 — verify before use
+- **Where it started:** his ask — the first 24 lines of the priority list's "Schedule and amendments" group, the ones that
+  need nothing from him, batched on one branch with one bug check sized by the riskiest change (FULL: the In-time / Rally
+  reorder is a pending change on a published day; history lines are saved data; the warning list's sentences), pictures
+  of anything on screen, each finished item archived by script, browser tests on a port checked free (4173 and 4180 are
+  held by old previews; 4232 was free). Nothing merges without his "merge live".
+- **Shipped (pushed, no pull request yet):** 16 items built, each with a test red before its fix — [INTIME-LINES-DRAG] +
+  [PEND-INTIME-WORDS]; [SC-INTIME-REST-WORDS] [SC-BLANK-SHIFT-QUAL] [BLANK-LINE-SANS-WORDS] [BLANK-STANDBY-STRIKE]
+  [BLANK-SEAT-ACTIVITY-HINT] [SC-SPARE-RING-BORROWS]; [SC-B-CHANGE-SAYS-BRIEF] [BOARD-INTIME-JUMP] [BLOCK-NO-HISTORY-LINE]
+  [DISCARD-FILING-NOOP]; [SECDEFAULT-OFFER-BEHIND-BOARD] [BUBBLE-SMALL-SEEN] (2)(3) [TRACE-FOCUS-STAYS] [ONE-ROW-DRAG-FLASH]
+  [OIL-NOTIFY-SEEN] (1)(6); [ARROW-GUTTER-STRIP]. The commit messages say what each changed. D1025 recorded (the upchit
+  sheet's amber edge stays; `.impeccable/config.json` cites it). The geometry test of a phone ground-row drag watched the
+  drop's address — the old [ONE-ROW-DRAG-FLASH] fault — and now watches where the row lands.
+- **Settled without a build (say so in each item, then archive):** [BUBBLE-SMALL-SEEN] (1) Unpublish already says what it did
+  (D837 N2/N3); [AMEND-SMALL-SEEN] (7) the weekend-LL "-1" ask fixed by D418 (`leavewar/belowzero.ts`; one test owed:
   `balanceAfterFill` LL on a Saturday at zero), (8) and [OIL-NOTIFY-SEEN] (2) a drag-off says nothing by ruling (D854,
   D861); [OIL-NOTIFY-SEEN] (4) answered D792.
-- **Still to build (the helpers' readings, 18 Oct 26):** [EDIT-SECOND-CLICK] keep the clicked box's block standing (option
-  A: routeFocusOut records `e.relatedTarget` when it is a week text box; `editingText()` (textedit.ts) answers true for it
-  and EditWeek's `swapDayAround(…, keep)` keeps it; cleared on the next focusin / pointerup) + an e2e in
-  `e2e/schedule-tab.spec.ts` (click a take-off, type, click ONCE into a mission box, type — the caret is there; on a
-  published day too); [TAB-LAST-BOX-TEST-GAPS] three unit tests in `schedule-tab.test.tsx` (the last warning going away at
-  the Tab; the fallback when the exact box is gone — `twinOrLast`'s `fields.at(-1)`; a day replaced during the box's own
-  blur — pin `sameScope` as is) + one e2e; [CRP-FLAG] built already — three tests owed (`restIfPlaced`/`runIfPlaced` read
-  WORKING after a diverging OFFICIAL pass; an undo past a publish updates OFFICIAL and the face; a trace through a VWORK'd
-  day never throws), then archive with D179/D185/D187 named as what set the rest aside; [OFT-ADD-TWICE-SILENT] reproduce
-  through the real "+ add" zone (`.addz`) first — likely the walk clicked his puck, not "+"; a unit test of
-  `armSlot('s:0.oft.r.+')` + `placeArmed` either way; [AMEND-SMALL-SEEN] (6) the Leave War phone figures sheet sends the
-  grid to 1 January — a Playwright probe at 390×844 first (wrap `.mx-wrap`'s scrollLeft setter, record who writes 0).
-- **Needs his look, not built (D541 / D853 — a layout change is a picture first):** [OIL-NOTIFY-SEEN] (3) the crew list on
-  Edit Schedule's week sticks 8px from the top, under the top bar, so ALL / ALL AVAIL go out of reach — sticking it below
-  the bar (`03-week.css .eroster`) moves it; [BUBBLE-SMALL-SEEN] (4) the empty gold pill — likely gone with the card list
-  (D723), a 390 look to confirm.
-- **His questions, parked (D994 — not put to him until he says so):** [LOOK-PENDING-COUNT] — the 👁 look's "1 pending" is
-  the Discard count by design (A3); recommend no pending chip on a look (D338 (2) one count a day, AM24).
-- **Then:** the bug check (FULL: roll-call — the board's In-time / Rally rows, the changes window, the crew list on every
-  kind of seat, the SC SPARE ring on week and board, the offer and the notes over the board; a sized walk with pictures;
-  the gates under the lock; one fresh blind Opus read of the code), the docs (ui-contracts §In-time lines and §the
-  changes window, feature-impact, file-map for the new test files, the behaviour register / rulecheck for D593 D594),
-  archive each finished item by script, push, the preview link with pictures, [NO-ASTRA-LIST] line for this job.
-- **Carried from the backlog-tidy block (pull request 537, live):** Astra's and Sol 6.1's reads of D1023 are on [NO-ASTRA-LIST];
-  the amber edge's design-hook exception (`.impeccable/config.json`, `14-input-editors.css`) stays his to strike; making the repo
-  private again is his step ([REPO-PRIVATE]).
+- **Unfinished — still to build (the helpers' readings, 18 Oct 26; the agent's readings, re-derive against the code):**
+  [EDIT-SECOND-CLICK] keep the clicked box's block standing (routeFocusOut records `e.relatedTarget` when it is a week text
+  box; `editingText()` in `raptor-port/src/ui/textedit.ts` answers true for it and EditWeek's `swapDayAround(…, keep)` keeps
+  it; cleared on the next focusin / pointerup) + an e2e in `raptor-port/e2e/schedule-tab.spec.ts` (click a take-off, type,
+  click ONCE into a mission box, type — the caret is there; a published day too); [TAB-LAST-BOX-TEST-GAPS] three unit tests
+  in `schedule-tab.test.tsx` (the last warning going away at the Tab; `twinOrLast`'s `fields.at(-1)` fallback; a day
+  replaced during the box's own blur — pin `sameScope` as is) + one e2e; [CRP-FLAG] built already — three tests owed
+  (`restIfPlaced`/`runIfPlaced` read WORKING after a diverging OFFICIAL pass; an undo past a publish updates OFFICIAL and the
+  face; a trace through a VWORK'd day never throws), then archive naming D179/D185/D187 as what set the rest aside;
+  [OFT-ADD-TWICE-SILENT] reproduce through the real "+ add" zone (`.addz`) first — likely the walk clicked his puck, not
+  "+" — and a unit test of `armSlot('s:0.oft.r.+')` + `placeArmed` either way; [AMEND-SMALL-SEEN] (6) the Leave War phone
+  figures sheet sends the grid to 1 January — a Playwright probe at 390×844 first (wrap `.mx-wrap`'s scrollLeft setter).
+- **Needs his look, not built (D541, D853 — a layout change is a picture first):** [OIL-NOTIFY-SEEN] (3) Edit Schedule's
+  crew list sticks 8px from the top, under the top bar, so ALL / ALL AVAIL go out of reach (`03-week.css .eroster`);
+  [BUBBLE-SMALL-SEEN] (4) the empty gold pill — likely gone with the card list (D723), a look at 390 to confirm.
+- **Then:** the bug check (FULL — read `raptor-port/docs/bug-check-order.md`; roll-call: the board's In-time / Rally rows,
+  the changes window, the crew list on every kind of seat, the SC SPARE ring on week and board, the offer and the notes
+  over the board, the history lines; a sized walk with pictures; the gates under the lock; one fresh blind Opus read of
+  the code), the docs (ui-contracts §In-time lines and §the changes window, feature-impact, the behaviour register /
+  rulecheck for D593 D594), archive each finished item by script, open the pull request, the preview link with pictures,
+  the [NO-ASTRA-LIST] line for this job. The D1025 short line is UNREAD by a second reader (the archiver's note): one read
+  of it against its full row rides with the code read.
+- **Branch:** `claude/schedule-amendments-fixes-fffce0`, pushed; no pull request; released here (`git switch --detach`).
+- **Gates (18 Oct 26, the whole set under the lock, E2E_PORT 4232, on the commit before the e2e test fix):** unit 11819 /
+  11819 (665 files) · build clean · tfin 728 / 0 · e2e 853 passed, 1 failed (the drag test above — fixed, passed alone
+  under the lock), 59 skipped · smoke 453 / 0 · rulecheck OK · docsize OK (OVER by 27 with the handoff, deferred — D29; the next documents-only change settles it). probes:adapted ·
+  perf — not run.
+- **Open questions for him (parked — D994, not put until he says so):** [LOOK-PENDING-COUNT] — the 👁 look's "1 pending" is
+  the Discard count by design (A3); recommended: no pending chip on a look (D338 (2) one count a day, AM24).
+- **Running when written:** none (the lock released; no helper, no served build).
+- **Carried from the backlog-tidy block (pull request 537, live):** Astra's and Sol 6.1's reads of D1023 are on
+  [NO-ASTRA-LIST]; making the repo private again is his step ([REPO-PRIVATE]).
+- **Pick up here:** the five builds under "Unfinished", then the bug check.
+- **Opening line:** Switch this chat to the branch `claude/schedule-amendments-fixes-fffce0`: `git fetch origin`, `git switch claude/schedule-amendments-fixes-fffce0`, `git branch -u origin/claude/schedule-amendments-fixes-fffce0`, `git pull --ff-only` (if the switch is refused because another checkout holds the branch, release it there only if that folder has no uncommitted changes and is on the same commit as `origin/claude/schedule-amendments-fixes-fffce0`, then `git -C <that folder> switch --detach` and switch again; otherwise stop and tell me). Read `HANDOFF.md` — the `claude/schedule-amendments-fixes-fffce0` block under `## Now` — then finish the five builds it lists as unfinished and run the one FULL bug check for the whole batch, with pictures; browser tests on an E2E_PORT checked free. Nothing merges without my "merge live".
 <!-- /now -->
 
 ## Next, in order
@@ -137,6 +147,8 @@ his ruling — DONE 7 Oct 26 on `claude/docs-tidy-7-oct` (D609: options 1 to 6; 
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
 ## Gate baseline
+
+**The latest counts watched — 18 Oct 26, `claude/schedule-amendments-fixes-fffce0` at `922c8a3a1` (`main` with 16 of the Schedule and amendments fixes — NOT `main`'s code), the whole gate set under the PC lock in one run, browser tests on 4232: build clean · tfin 728 / 0 · unit 11819 / 11819 (665 files) · e2e 853 passed, 1 failed, 59 skipped — the failure a phone ground-row drag test that watched the old landing address, corrected and passed alone under the lock · smoke 453 / 0 · rulecheck OK · docsize OK.**
 
 **The latest counts watched — 18 Oct 26, `claude/upchit-sheet-leave-cut` at `b94747927` (`main` with D1023 — NOT `main`'s code), the whole gate set under the PC lock in one run, browser tests on 4232: build clean · tfin 728 / 0 · unit 11770 / 11770 (661 files) · e2e 854 passed, 0 failed, 59 skipped · smoke 453 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN.**
 
