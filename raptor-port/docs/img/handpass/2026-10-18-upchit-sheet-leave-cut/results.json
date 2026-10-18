@@ -1,0 +1,173 @@
+{
+ "results": [
+  {
+   "step": "C0 the calendar is on October 2026, Warden has nothing that week",
+   "ok": true,
+   "note": "OCTOBER 2026",
+   "pic": ""
+  },
+  {
+   "step": "C0a set-up: ATT C Mon–Tue (cut by the upchit), Upchit Wed, LL Thu",
+   "ok": true,
+   "note": "ATT C 19,20, Upchit 21, LL 22",
+   "pic": "01-C0-set-up.png"
+  },
+  {
+   "step": "C0b a pending LL bid placed on Fri 23 Oct by the grid’s own sheet",
+   "ok": true,
+   "note": "cell reads \"LL\"",
+   "pic": "02-C0-bid-on-the-war.png"
+  },
+  {
+   "step": "C1a Delete puts up the upchit sheet with the give-back AND one line for each cut, in the Leave War’s words",
+   "ok": true,
+   "note": "sheet: Upchit — Warden, Oct 21 ✕ DELETING THIS UPCHIT WILL ATT C Oct 19 – Oct 20 → now ends Oct 23, its days given back Warden's LL on 22 Oct is cut for the ATT C — that leave goes back to the balance This replaces Warden's LL bid on 23 Oct on the Leave War Cancel Delete upchit | lines: [\"Warden's LL on 22 Oct is cut for the ATT C — that leave goes back to the balance\",\"This replaces Warden's LL bid on 23 Oct on the Leave War\"]",
+   "pic": "03-C1-delete-sheet-lists-the-cuts.png"
+  },
+  {
+   "step": "C1b each cut line wears the amber edge down its left",
+   "ok": true,
+   "note": "[[\"rgb(229, 168, 59)\",\"3px\"],[\"rgb(229, 168, 59)\",\"3px\"]]",
+   "pic": ""
+  },
+  {
+   "step": "C1c nothing has changed while it asks",
+   "ok": true,
+   "note": "ATT C 19,20, Upchit 21, LL 22",
+   "pic": ""
+  },
+  {
+   "step": "C1d Cancel: the sheet gone, the window still open, all three as they were",
+   "ok": true,
+   "note": "window true; ATT C 19,20, LL 22",
+   "pic": "04-C1-after-cancel.png"
+  },
+  {
+   "step": "C1e a remark typed before Delete is still in its box after the sheet is cancelled",
+   "ok": true,
+   "note": "remarks box: \"kept through the try\"",
+   "pic": "05-C1-typing-kept.png"
+  },
+  {
+   "step": "C1f the Leave War after asking: Thu 22 still LL, Fri 23 still the bid",
+   "ok": true,
+   "note": "22 \"LL\", 23 \"LL\"",
+   "pic": "06-C1-war-after-asking.png"
+  },
+  {
+   "step": "C2a deleted: the upchit gone, ATT C Mon–Fri, the LL gone; the note says the cut beside \"Input deleted\"",
+   "ok": true,
+   "note": "ATT C 19,20,21,22,23, LL none; note \"Warden's LL on 22 Oct is cut for the ATT C — that leave goes back to the balance · This replaces Warden's LL bid on 23 Oct on the Leave War · Input deleted\"",
+   "pic": "07-C2-after-delete.png"
+  },
+  {
+   "step": "C2b the Leave War: Thu 22 the ATT C (drawn \"C\"), Fri 23 the bid replaced by it",
+   "ok": true,
+   "note": "22 \"C\", 23 \"C !\"",
+   "pic": "08-C2-war-after-delete.png"
+  },
+  {
+   "step": "C2c one Undo puts back the upchit, the cut and the LL",
+   "ok": true,
+   "note": "ATT C 19,20, Upchit 21, LL 22",
+   "pic": "09-C2-after-undo.png"
+  },
+  {
+   "step": "C3a the Delete key on the line: the same sheet, the LL listed",
+   "ok": true,
+   "note": "sheet: Upchit — Warden, Oct 21 ✕ DELETING THIS UPCHIT WILL ATT C Oct 19 – Oct 20 → now ends Oct 23, its days given back Warden's LL on 22 Oct is cut for the ATT C — that leave goes back to the balance This replaces Warden's LL bid on 23 Oct on the Leave War Cancel Delete upchit",
+   "pic": "10-C3-day-delete-key-sheet.png"
+  },
+  {
+   "step": "C3b cancelled: nothing changed",
+   "ok": true,
+   "note": "Upchit 21, LL 22",
+   "pic": ""
+  },
+  {
+   "step": "C4a the drag to Sat 24: the sheet gives back to Fri 23 and lists the LL (and the bid)",
+   "ok": true,
+   "note": "sheet: Upchit — Warden, Oct 24 ✕ SAVING THIS UPCHIT WILL ATT C Oct 19 – Oct 20 → now ends Oct 23, its days given back Warden's LL on 22 Oct is cut for the ATT C — that leave goes back to the balance This replaces Warden's LL bid on 23 Oct on the Leave War Fit for full duty from Oct 24. Cancel Save upchit",
+   "pic": "11-C4-drag-sheet.png"
+  },
+  {
+   "step": "C4b nothing moved or cut by asking",
+   "ok": true,
+   "note": "Upchit 21, LL 22",
+   "pic": ""
+  },
+  {
+   "step": "C4c saved: the upchit on Sat 24, ATT C Mon–Fri, the LL gone",
+   "ok": true,
+   "note": "ATT C 19,20,21,22,23, Upchit 24, LL none",
+   "pic": "12-C4-after-drag.png"
+  },
+  {
+   "step": "C4d Undo: back to Wed 21, the LL back",
+   "ok": true,
+   "note": "Upchit 21, LL 22",
+   "pic": ""
+  },
+  {
+   "step": "C5a the window’s Save on Sat 24: the save sheet lists the LL under the give-back",
+   "ok": true,
+   "note": "sheet: Upchit — Warden, Oct 24 ✕ SAVING THIS UPCHIT WILL ATT C Oct 19 – Oct 20 → now ends Oct 23, its days given back Warden's LL on 22 Oct is cut for the ATT C — that leave goes back to the balance This replaces Warden's LL bid on 23 Oct on the Leave War Fit for full duty from Oct 24. Cancel Save upchit",
+   "pic": "13-C5-window-save-sheet.png"
+  },
+  {
+   "step": "C5b cancelled: nothing moved",
+   "ok": true,
+   "note": "Upchit 21, LL 22",
+   "pic": ""
+  },
+  {
+   "step": "C6 Piston, nothing in the days given back: the sheet as before, no cut line",
+   "ok": true,
+   "note": "sheet: Upchit — Piston, Oct 21 ✕ DELETING THIS UPCHIT WILL ATT C Oct 19 – Oct 20 → now ends Oct 23, its days given back Cancel Delete upchit",
+   "pic": "14-C6-no-cut.png"
+  },
+  {
+   "step": "C7-0 after a reload (the phone, the same browser’s store): Warden as left — ATT C Mon–Tue, Upchit Wed, LL Thu",
+   "ok": true,
+   "note": "ATT C 19,20, Upchit 21, LL none; every bar of his: [\"Warden · ATT C 2026-10-19,2026-10-20\",\"Warden 2026-10-21\",\"Warden 2026-10-22\"]",
+   "pic": "15-C7-phone-month.png"
+  },
+  {
+   "step": "C7a on a phone the sheet and its cut lines are on the screen, words whole, the button under the finger",
+   "ok": true,
+   "note": "box 22..368 x 264..580 of 390x844; first cut line [38,352,406,454]; clipped []; a finger on the button meets it true",
+   "pic": "16-C7-phone-sheet.png"
+  },
+  {
+   "step": "C8-0 after the phone asked and cancelled, and a reload: Warden still ATT C Mon–Tue, Upchit Wed, LL Thu",
+   "ok": true,
+   "note": "ATT C 19,20, Upchit 21, LL 22",
+   "pic": ""
+  },
+  {
+   "step": "C8a set-up on July: Saber ATT C 16, Upchit 17, LL 17… (the LL the upchit's day); the published Jul 18 reads nothing waiting",
+   "ok": true,
+   "note": "ATT C 16, Upchit 17, LL 17; head \"Saturday Jul 18 Templates Live working copy ▾ ORIG 0 X 0 X 0 7 changes i Unpublish\"",
+   "pic": ""
+  },
+  {
+   "step": "C8b the sheet gives back to Jul 18 and lists Saber's LL",
+   "ok": true,
+   "note": "sheet: Upchit — Saber, Jul 17 ✕ DELETING THIS UPCHIT WILL ATT C Jul 16 → now ends Jul 18, its days given back Saber's LL on 17 Jul is cut for the ATT C — that leave goes back to the balance Cancel Delete upchit",
+   "pic": "17-C8-published-sheet.png"
+  },
+  {
+   "step": "C8c cancelled: the published Jul 18 still reads nothing waiting — the try left no change on it",
+   "ok": true,
+   "note": "before \"Saturday Jul 18 Templates Live working copy ▾ ORIG 0 X 0 X 0 7 changes i Unpublish\" — after \"Saturday Jul 18 Templates Live working copy ▾ ORIG 0 X 0 X 0 7 changes i Unpublish\"",
+   "pic": ""
+  },
+  {
+   "step": "C8d and Saber's inputs as they were",
+   "ok": true,
+   "note": "ATT C 16, Upchit 17, LL 17",
+   "pic": ""
+  }
+ ],
+ "problems": []
+}
