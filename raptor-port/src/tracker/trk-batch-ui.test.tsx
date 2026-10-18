@@ -199,6 +199,23 @@ describe('D982 — the Currency & flex bars\' ink comes with their colour', () =
   })
 })
 
+/* D1004 (18 Oct 26, his correction): the landing-currency bar counts only the days since the last currency or non-syllabus
+   flight — medical down days take no part, and the panel no longer says "(−N down = Xd)" or "(minus down days)" */
+describe('D1004 — the currency bar without down days', () => {
+  it('down days typed for a student change nothing on the currency line or its bar', async () => {
+    const s = C.active
+    const { host } = await render(<Live draw={() => <SidePanel zoom={1} />} />)
+    const before = host.querySelectorAll('.flexbar')[0]?.textContent
+    await act(async () => { C.setDownDays(s, '5') })
+    await tick()
+    expect(host.textContent || '').not.toMatch(/down =/)
+    expect(host.textContent || '').not.toMatch(/minus down days/)
+    expect(host.querySelectorAll('.flexbar')[0]?.textContent, 'the bar reads as before').toBe(before)
+    await act(async () => { C.setDownDays(s, '') })
+    host.remove()
+  })
+})
+
 describe('[TRK-KEY-NAME-CLIP] — every name of the key inside the card', () => {
   it('a name on the left gets no more room than the left of the card has: its type shrinks, then narrows', () => {
     const left = C.keyFont('HIS STUDENT', 'end', 27, 19)

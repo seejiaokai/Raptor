@@ -230,10 +230,10 @@ export default function SidePanel({ zoom }) {
   const st = core.stats(s); const availNow = core.availableNow(s); const today = core.parseD(core.isoToday());
   const lc = core.parseD(core.dates[s].lastCurr), ls = core.parseD(core.dates[s].lastSyll);
   const dCurr = lc ? core.daysBetween(lc, today) : null, dSyll = ls ? core.daysBetween(ls, today) : null;
-  const downDays = Math.max(0, parseInt(core.dates[s].downDays || 0) || 0);
-  const effCurr = (dCurr == null) ? null : Math.max(0, dCurr - downDays);
+  /* THE LANDING-CURRENCY BAR COUNTS ONLY THE DAYS SINCE HIS LAST CURRENCY OR NON-SYLLABUS FLIGHT (owner D1004, 18 Oct 26 —
+     "The currency bar has got nothing to do with medical down days as calculation"): the down days are taken off nothing */
   const fx = core.flexFor(dSyll);
-  const cur = core.landingCurrency(effCurr);
+  const cur = core.landingCurrency(dCurr);
 
   /* Pace and both end dates belong to the student being marked, not the course. */
   const rem = st.remaining;
@@ -350,14 +350,14 @@ export default function SidePanel({ zoom }) {
         </div>
         <div className="curKv">
           <div className="kv"><span>Days since syllabus</span><b>{dSyll == null ? '—' : dSyll + 'd'}</b></div>
-          <div className="kv"><span>Days since currency</span><b>{dCurr == null ? '—' : dCurr + 'd'}{downDays ? <> <span className="mini">(−{downDays} down = {effCurr}d)</span></> : null}</b></div>
+          <div className="kv"><span>Days since currency</span><b>{dCurr == null ? '—' : dCurr + 'd'}</b></div>
         </div>
         <div className="flexPair">
           {/* the bar's ink rides with its colour (core.flexFor / landingCurrency — D982) */}
           <div className="flexbar" style={{ background: cur.color, color: cur.ink }}>{cur.txt}</div>
           <div className="flexbar" style={{ background: fx.color, color: fx.ink }}>{fx.txt}</div>
         </div>
-        <div className="mini" style={{ marginTop: 5 }}>Landing currency = days since last currency (minus down days). Flex requirement uses days since last <b>syllabus</b> flight, so updating currency won’t change it.</div>
+        <div className="mini" style={{ marginTop: 5 }}>Landing currency = days since last currency. Flex requirement uses days since last <b>syllabus</b> flight, so updating currency won’t change it.</div>
       </div>
       <div className="card wide c-pace">
         <h3>Pace &amp; expected end <span className="who">— {core.nameOf(s)}</span></h3>
