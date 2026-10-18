@@ -1306,3 +1306,18 @@ acts on it AFTER the try.
 
 **Principle:** A rollback that restores values, not identities, turns every held reference stale; list the holders and
 prove each by acting through it after the rollback, not by reading what it shows.
+
+### Observation 639: A backlog tidy's "finished" verdicts and its rewritten list each needed a second reader
+
+**Status:** OPEN
+**Date:** 18 Oct 26
+**Session context:** the backlog tidy (D1024) — 167 items checked by four Sonnet helpers against git and the code, the priority list rewritten by area
+**Skill:** New skill candidate: backlog-tidy (or a section of session-handoff)
+**Type:** internal
+**Phase/Area:** verifying "done" before archiving; rewriting a summary list
+
+**Issue:** The helpers' DONE verdicts were mostly right, but one rested on the wrong surface (a guest's page saves nothing, while the access request is saved elsewhere) and was kept open on the host's re-check. The rewritten list, checked by a script for coverage (every open item named once), still lost one open step of his (making the repo private again — it lived only in the old list's prose, not in any item) and misstated six lines; only a fresh reader comparing the old list's open statements with the new found them.
+
+**Suggested improvement:** For a backlog tidy: (1) helpers return verdict + evidence per item, the host re-checks every DONE before moving it; (2) a coverage script for ids is necessary but not sufficient — a fresh reader reads the OLD list for open statements (orders, his steps, "waits on") that live in no item; (3) move the old list whole first, so the reader has it.
+
+**Principle:** A rewrite of a summary loses facts that lived only in the summary's prose; check coverage of the ids by script and coverage of the open statements by a reader of the original.
