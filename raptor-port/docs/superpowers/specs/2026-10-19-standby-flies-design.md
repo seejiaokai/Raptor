@@ -31,12 +31,20 @@ was hardened by: `raptor-port/docs/superpowers/plans/2026-10-19-standby-flies-re
 
 ## The chip (D1060, D1063)
 
-- Beside each MAIN / SPARE badge on a standby row, on the Scheduler Board and the week, phone and desktop: a lit
-  "✓ FLIES" where the row flies, a dashed "FLIES" where it does not, as drawn (D1060).
-- Edit Schedule and the board: the dashed chip is a button that ticks the row by hand; the lit one on a hand-ticked row
-  takes it off; the lit one on a shift with B or R typed is not a button — its title says to CX the row instead.
-- View-only Sched, a member, the next-week peek: only the lit chip, read only; no dashed chip (D1063).
+- Beside each MAIN / SPARE badge on a standby row, phone and desktop, as drawn (D1060): a lit "✓ FLIES" where the row
+  flies — on all three screens, the Scheduler Board, Edit Schedule's week and View-only Sched (D1064).
+- A dashed "FLIES" where the row does not fly — on the Scheduler Board only (D1064): it is the button that ticks the row by
+  hand. The lit one on a hand-ticked row takes it off there; the lit one on a shift with B or R typed is not a button — its
+  title says to CX the row instead. On Edit Schedule's week the lit chip is shown, not pressed.
+- View-only Sched, a member, the next-week peek: only the lit chip, read only (D1063).
 - Duty desks never carry it.
+
+## The faint dash (D1065)
+
+On SC, AVALON and BB lines every empty R and B box shows a faint "–" in the app's grey ghost (the colour of the faint
+"Remarks" in an empty notes box): a placeholder, never a value — a tap does not fill it in, typing replaces it, and a typed
+time shows as today. The board's R and B boxes on a standby line; the week already draws one in an empty R. Flying lines
+keep their faint suggested times (D1039). Pictures: `raptor-port/docs/img/handpass/2026-10-19-standby-flies/ghost-dash/`.
 
 ## Published days
 
