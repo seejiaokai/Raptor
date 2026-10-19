@@ -164,7 +164,7 @@ export function lgChecks(): LgGroup<LgChk>[] {
       { id: 'kind-avalon', sev: 'note', name: 'AVALON', line: () => esc(kindNote('avalon')) },
       { id: 'kind-bb', sev: 'note', name: 'BB', line: () => esc(kindNote('bb')) },
       { id: 'shifthours', sev: 'note', name: 'A shift\'s hours', line: () => 'A standby shift takes exactly its written hours: no step, dekit, brief or debrief.' },
-      { id: 'scintime', sev: 'adv', code: 'SC_INTIME', line: () => 'A typed B on an SC MAIN is the crew\'s in-time, and something sits between it and the shift start. It also starts his crew rest, his long day and his OIL from that time. A SPARE\'s B does nothing.' },
+      { id: 'scintime', sev: 'adv', code: 'SC_INTIME', line: () => 'A typed B (the crew\'s in-time) or R (its rally) on an SC MAIN, whichever is earlier, and something sits between it and the shift start. It also starts his crew rest, his long day and his OIL from that time. A SPARE\'s B and R do nothing.' },   // R since D1041
       { id: 'scarm', sev: 'note', name: 'Arming an SC seat', line: () => 'The crew list judges each man against that shift\'s hours only.' },
     ] },
     { g: 'Leave, downchits and inputs', items: [
