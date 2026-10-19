@@ -123,7 +123,11 @@ are not exported today, so no Flies either); a public-holiday weekday (12d — t
 
 ## 12. The model reads
 - **The scenario designer** — a fresh Opus, blind to the build (`parts/standby-flies/scenarios.md`): 22 scenarios, 8 breaks.
-- **The fresh, blind Opus read** — (filled when it reports).
+- **The fresh, blind Opus read** of the finished code, with this sheet and the walkers' reports in hand
+  (`parts/standby-flies/read.md`): F1 medium, F2–F4 low — all fixed (§13).
+- **The narrow read of those fixes** — a second fresh Opus, given only the fix commit and the findings
+  (`parts/standby-flies/read-narrow.md`): F1, F2 right and complete; N1 (the new Insights test file did not load), N2, N3
+  low — all fixed (§13). The last round: the fixes after it are one test name, one label choice and one line label.
 - No Astra or Sol 6.1 read: ChatGPT is out (D761) — on `[NO-ASTRA-LIST]`. No Fable (D903).
 
 ## 13. Findings and dispositions
@@ -140,6 +144,13 @@ are not exported today, so no Flies either); a public-holiday weekday (12d — t
 | R-3 | walkers A, C | a tick does not travel with a day template; it does with a saved plan and a dragged row | RECORD — as designed (the tick is the row's, a template is a clean plan) |
 | R-4 | walker C | the member is told nothing when his leave lands on a flying AVALON SPARE | RECORD — the same for any seat; not this change's |
 | R-5 | walker B | the board's chips are 13 px tall to a finger | RECORD — the badge's own size; sizes stay without his word (D487) |
+| F1 | the fresh read | on a published day the tick's (and the MAIN / SPARE flip's) change mark sat on the row's st: address, which the reconcile drops — no mark on the row, the AL never coloured it | FIXED — marked on fr: (where the tick and the role live); published-day test; the flip's test moved |
+| F2 | the fresh read | the crew list offered a man for a flying AVALON / BB row while on another place of that shift | FIXED — `avFly` asks the AVALON places walk; test |
+| F3 | the fresh read | with mission roles on, a standby sortie was in the count but in no blue / red part — the bar drawn short | FIXED — its own plain "standby" part; test |
+| F4 | the fresh read | a flying AVALON row's warnings said "AV NIGHT" | FIXED — the wave's full label (and N3: the formation's own warnings too); tests |
+| N1 | the narrow read | the new Insights test file did not parse (an apostrophe) — it ran no test | FIXED |
+| N2 | the narrow read | every fr: change on a standby row was headed "remarks and standby role" | FIXED — headed by what changed; test |
+| G-1 | the first gate run | three unit / two browser tests pinned the old empty placeholder and the old Logic line | UPDATED to D1065 and the corrected line |
 
 ## 14. His look — the card
 On his iPhone, at the preview: (1) Add an SC wave on a Saturday and seat its AM shift; type its R — every row shows "✓ FLIES"

@@ -1896,7 +1896,7 @@ export function routeClick(e: MouseEvent) {
   /* THE FLIES CHIP — a standby row ticked to fly by hand ([STANDBY-FLIES], owner D1061, D1064, 19 Oct 26). The board
      draws it as a button only where the tick is the row's own (a shift with its B or R typed flies whole and its chip is
      no button — D1046: such a row is taken out with CX). One tap ticks, another takes it off. Written as the MAIN/SPARE
-     flip above is — an engine-visible change, through afterSchedMutate, marked on the row's st: key so a published day
+     flip above is — an engine-visible change, through afterSchedMutate, marked on the row's fr: key so a published day
      reads pending and it rides the next amendment (restore.ts carries a.fly in the row's composite). No passing note:
      the chip itself, lit or dashed, is the feedback (D850). */
   const sf = t.closest('[data-safly]') as HTMLElement | null

@@ -201,3 +201,14 @@ describe('SF4 — the fresh read: a flying AVALON row in the crew list and the w
     expect(ws[0].msg).not.toMatch(/\bAV NIGHT/)
   })
 })
+
+describe('SF4 — the narrow read: a flying AVALON row\'s formation warnings name it in full (N3)', () => {
+  it('SC NIGHT currency for a flying AVALON row says "AVALON NIGHT", never "AV NIGHT"', () => {
+    const w: any = makeStandalone('avalon'); const gi = addTue(w)
+    w.formations[0].rl = '18:30'; w.formations[0].aircraft[0].p = 'ignite'
+    const ws = tueWarns('ignite', 'SC_QUAL', gi)
+    expect(ws.length).toBe(1)
+    expect(ws[0].msg).toMatch(/AVALON NIGHT/)
+    expect(ws[0].msg).not.toMatch(/\bAV NIGHT/)
+  })
+})

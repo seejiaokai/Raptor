@@ -406,7 +406,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
         });
         /* an SC formation carries its shift window so the SC DAY / SC NIGHT
            currency can be checked against it */
-        forms.push({label:`${f.cs} ${f.msn}`,cs:f.cs,fcps,acs,
+        forms.push({label:lineLbl,cs:f.cs,fcps,acs,
           sc:isStandalone(w), shift:f.msn||f.shift||'', s:toM, e:ldM,   // an AVALON / BB shift reaches here only for its rows that fly
           allCrew:[...new Set(allCrew)], spareCrew:[...new Set(spareCrew)],spareAcs,key:`${di}.${gi}.${li}`});
       });
