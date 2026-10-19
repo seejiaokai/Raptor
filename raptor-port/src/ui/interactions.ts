@@ -603,6 +603,36 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
   setTimeout(() => document.addEventListener('click', off), 0)
 }
 
+/* ONE TAP PLACES A SUGGESTED TIME IN ITS EMPTY BOX (owner D1030) — the board's <input> (its placeholder is the
+   suggestion) or the week's contenteditable (its data-ph). Placed and selected, so the next key typed replaces it.
+   true when it placed something; false for a box that already holds a time, or carries no suggestion. */
+export function placeSuggestion(el: HTMLElement): boolean {
+  if (el instanceof HTMLInputElement) {
+    const sug = el.placeholder
+    if (!sug || el.value || el.disabled || el.readOnly) return false
+    el.value = sug
+    el.select()
+    /* the board saves on `change`, which the browser raises only for what was typed: a box left still holding the
+       placed suggestion raises it here, so the tap alone accepts (D1030). A typed time raised its own; Escape put the
+       box back empty first (textedit.ts, D1011) — neither matches. */
+    const leave = () => {
+      el.removeEventListener('blur', leave)
+      if (el.isConnected && el.value === sug) el.dispatchEvent(new Event('change', { bubbles: true }))
+    }
+    el.addEventListener('blur', leave)
+    return true
+  }
+  const sug = el.dataset.ph
+  if (!sug || (el.textContent || '').trim() || el.getAttribute('contenteditable') !== 'true') return false
+  el.textContent = sug
+  try {
+    el.focus()
+    const r = document.createRange(); r.selectNodeContents(el)
+    const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r)
+  } catch (_) { /* a selection is a courtesy — jsdom and odd embedders may refuse */ }
+  return true
+}
+
 export function routeClick(e: MouseEvent) {
   const t = e.target as HTMLElement
   if (!t || !t.closest) return
@@ -879,7 +909,9 @@ export function routeClick(e: MouseEvent) {
     const was = (w.intimes || []).join(', ')
     const parsed = parseReportingLines(w)
     const flights = (w.formations || []).filter((f:any) => !f.cx && parseHM(f.to) != null)
-    const reports = flights.map((f:any) => resolveReporting(w,f,parseHM(f.to)!,parsed).report).filter((t:any) => t != null)
+    /* the typed lines alone decide the fill (D510, D600): a formation's own rally box is not an in-time, and
+       "+ In-time" keeps filling the same time it did before the box existed (D1031) */
+    const reports = flights.map((f:any) => resolveReporting(w,{ ...f, rl: '' },parseHM(f.to)!,parsed).report).filter((t:any) => t != null)
     const t0 = reports.length ? Math.min(...reports) : flights.length ? Math.min(...flights.map((f:any) => parseHM(f.to)!)) - VCONF.reportLead : null
     /* hh:mm since 30 Aug 26 — the minted line states its time in the app's one
        colon form, exactly as an edited line commits (intimeFold) */
@@ -983,24 +1015,14 @@ export function routeClick(e: MouseEvent) {
     return
   }
 
-  /* accepting the suggested B (owner spec, 6 Aug 26). A blank formation offers
-     the calculated take-off-minus-briefLead time as a ghost above the box —
-     see html.ts's .bto and board.ts's .sb-bcell, both emit .bsug — and a
-     click there is a deliberate "yes, that's the brief", written through the
-     funnel exactly like typing it would be, rather than landing as an
-     invisible default nobody chose. */
-  const bacc = t.closest('[data-bacc]') as HTMLElement | null
-  if (bacc) {
-    e.stopPropagation()
-    if (!canEditSched()) { HOOKS.toast('Only a scheduler can set the brief time', 'warn'); return }
-    const key = bacc.dataset.bacc!, val = bacc.dataset.bval || ''
-    /* txtSet is the mutation funnel (noteChange → pending); markEdit() below
-       carries NO key because txtSet already marked this one — the same
-       convention textedit.ts's routeFocusOut uses after a successful txtSet. */
-    if (txtSet(key, val)) { markEdit(); view.afterSchedMutate() }
-    notify()
-    return
-  }
+  /* A TAP ON AN EMPTY BOX THAT SUGGESTS A TIME PLACES IT (owner D1028, D1030, 19 Oct 26 — the suggested brief and the
+     default rally; before, a blue time above the box was clicked). Placed highlighted, so whatever is typed next
+     replaces it; it is saved the way a typed time is, when the box is left — the week's box by its own focusout
+     (textedit.ts routeFocusOut), the board's by the `change` placeSuggestion raises when the box is left still holding
+     it. Escape before then puts the box back empty and saves nothing (each box's own Escape). A Tab that passes
+     through raises no click, so it fills nothing: accepting stays a deliberate act. */
+  const sg = t.closest('.sugbox') as HTMLElement | null
+  if (sg && canEditSched() && HOOKS.editMode() && placeSuggestion(sg)) return
 
   /* the palette drawer tab and the arm-strip cancel */
   if (t.closest('.ros-tab')) { document.body.classList.toggle('ros-open'); e.stopPropagation(); return }

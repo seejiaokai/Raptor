@@ -18,6 +18,12 @@
    not by a test — jsdom loads no stylesheet, so nothing in `npm test` can see
    which of two equal rules wins. */
 [data-ph]:empty::before{content:attr(data-ph);color:var(--ink-3);opacity:.55;pointer-events:none}
+/* A SUGGESTED TIME INSIDE ITS OWN EMPTY BOX (owner D1028, D1030 — the suggested brief and the default rally; the
+   design guide §9 Lesson 7): the app's accent, faint, where the time will go; one tap places it (interactions.ts
+   placeSuggestion). The week's boxes are contenteditable (this rule, after the two above for the same source-order
+   reason), the board's are <input>s (their placeholder). */
+.txed.sugbox[data-ph]:empty::before{color:var(--accent);opacity:.6}
+input.tm.sugbox::placeholder{color:var(--accent);opacity:.6}
 .page.editing .go-tab .asd.txed,.page.editing .fcell .txed{min-width:14px;display:inline-block}
 /* FREE TEXT WRAPS, ALWAYS.
    Every one of these cells sits in a grid track next to the START and END times.

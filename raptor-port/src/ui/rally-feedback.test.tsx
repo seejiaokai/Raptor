@@ -71,7 +71,7 @@ describe('RT7 D502 live reporting feedback at the existing week/board doors',()=
   it('both real renderers rename in place; read-only has no active-feedback/editor controls',()=>{
     const week=dayHTML(0,true),board=boardHTML(0);
     for(const html of [week,board]){
-      expect(html).toContain('+ In-time / Rally');expect(html).toContain('data-reporting-feedback');
+      expect(html).toContain('+ In-time</button>');expect(html).toContain('data-reporting-feedback');   // "+ In-time" since D1026
       expect(html).toContain('data-warnkey="it:0.0"');
     }
     expect(intimesInner(w())).not.toContain('data-reporting-feedback');

@@ -28,7 +28,7 @@ const T = (k: string) => lgV(lgT(VCONF[k]))
    the guard in logic.test.tsx accounts for every setting as either shown here or named in this list. */
 export const LG_HIDDEN: Record<string, string> = { minTurn: 'nothing reads it', dur: 'nothing reads it' }
 
-/* one setting row. kind: 'num' (one box, the default), 'text' (the + In-time / Rally words), 'window' (two clock
+/* one setting row. kind: 'num' (one box, the default), 'text' (the + In-time words), 'window' (two clock
    boxes, the SC day window), 'kinds' (the six SC MAIN clash switches), 'door' (set in a calendar's own settings window
    — D639; an admin's value opens it), 'mix' (the Insights switch). `keys` names every engine setting the row shows. */
 export type LgSet = { name: string, keys: string[], kind?: 'num' | 'text' | 'window' | 'kinds' | 'door' | 'mix', door?: 'inputs' | 'sans', value?: () => string, line: () => string }
@@ -40,7 +40,7 @@ export function lgSettings(): LgGroup<LgSet>[] {
       { name: 'Crew rest', keys: ['crewRest'], line: () => 'The rest a flyer needs before his day starts. The crew-rest warning and the tight crew-rest advisory move with it.' },
       { name: 'Days in a row', keys: ['maxRun'], line: () => 'A day on the programme beyond this many in a row raises the red break-day warning.' },
       { name: 'Long work day', keys: ['longDay'], line: () => 'A longer day, first commitment to last, shows the grey long-day note.' },
-      { name: 'Report before take-off', keys: ['reportLead'], line: () => 'With no in-time or rally typed, a flyer\'s day starts here: his long day, OIL and Insights hours count from it. It also sets when the tight crew-rest advisory shows. "+ In-time / Rally" fills in take-off less this time.' },
+      { name: 'Default rally before take-off', keys: ['reportLead'], line: () => 'An empty R box suggests take-off less this time, and "+ In-time" fills in the same time. With no in-time or rally entered, a flyer\'s day starts here: his long day, OIL and Insights hours count from it. It also sets when the tight crew-rest advisory shows.' },
     ] },
     { g: 'Flying lines', items: [
       { name: 'Brief before take-off', keys: ['briefLead'], line: () => 'Sets the suggested B on a line with no brief typed, and a blank B is checked against it. With no in-time typed, crew rest counts to this B. A published day keeps its B until it is published again.' },
@@ -48,7 +48,7 @@ export function lgSettings(): LgGroup<LgSet>[] {
       { name: 'Dekit after landing', keys: ['dekit'], line: () => 'A man counts as busy until dekit. It and step set the shortest tight turn.' },
       { name: 'Debrief after landing', keys: ['debrief'], line: () => 'Ends a flyer\'s day: tomorrow\'s crew rest, the long day, OIL and Insights hours count to here, and so does the flight debrief advisory.' },
       { name: 'Tight turn', keys: ['tightTurn'], line: () => 'A shorter gap from landing to the next take-off is a tight turn. It is never less than dekit plus step.' },
-      { name: 'In-time / Rally words', keys: ['reportText'], kind: 'text', line: () => 'What "+ In-time / Rally" writes after the time.' },
+      { name: 'In-time words', keys: ['reportText'], kind: 'text', line: () => 'What "+ In-time" writes after the time.' },
     ] },
     { g: 'Sims', items: [
       { name: 'EP sim brief', keys: ['epBrief'], line: () => 'The brief before an EP sim, unless its remarks name one.' },
@@ -106,7 +106,7 @@ export function lgChecks(): LgGroup<LgChk>[] {
           'A flying line with no times yet is not measured, but a typed brief, in-time or landing on it still counts.',
           'An SC SPARE carries no crew rest either way, and a shift\'s start is its report.',
         ] },
-      { id: 'crewtight', sev: 'adv', code: 'CREW_TIGHT', line: () => `His rest would be short if he reported the usual ${T('reportLead')} before take-off (Report before take-off), but his typed in-time is later, so it clears.` },
+      { id: 'crewtight', sev: 'adv', code: 'CREW_TIGHT', line: () => `His rest would be short if he reported the usual ${T('reportLead')} before take-off (Default rally before take-off), but his typed in-time is later, so it clears.` },
       { id: 'daysrun', sev: 'hard', code: 'DAYS_RUN', line: () => `On the programme more than ${lgV(VCONF.maxRun)} days in a row.`,
         how: () => [
           'Any tasking counts: a flight, a duty, a sim, a ground or programme row.',
@@ -128,12 +128,12 @@ export function lgChecks(): LgGroup<LgChk>[] {
           'The order is in-time, rally, brief, take-off, landing. Equal times are fine.',
           `The B on the line is what is checked. A blank B is checked as the suggested brief, take-off less ${T('briefLead')}.`,
           'Out of order is red, but it never stops a day being published.',
-          'On an In-time / Rally line the first clock is used (09:00H or 0900). Write IN TIME, RALLY or both.',
+          'A formation\'s rally is its R box. On an In-time line the first clock is used (09:00H or 0900); a line that says RALLY still counts as a rally.',
           'A formation\'s name makes the line that formation\'s; otherwise it is the whole wave\'s.',
           'A clock later than take-off means the day before.',
           'RALLY AFTER IN TIME, with no clock, means rally at that formation\'s in-time.',
         ] },
-      { id: 'reportunres', sev: 'adv', code: 'REPORT_UNRESOLVED', line: () => 'The app cannot read an In-time / Rally line, or RALLY AFTER IN TIME has no in-time.' },
+      { id: 'reportunres', sev: 'adv', code: 'REPORT_UNRESOLVED', line: () => 'The app cannot read an In-time line, or RALLY AFTER IN TIME has no in-time.' },
       { id: 'nobrief', sev: 'adv', code: 'NO_BRIEF', line: () => 'Something sits between the brief and take-off. A blank B counts as the suggested one (Brief before take-off).' },
       { id: 'debrief', sev: 'adv', code: 'DEBRIEF', line: () => `Something sits inside landing plus ${T('debrief')} (Debrief after landing).` },
       { id: 'turn', sev: 'adv', code: 'TURN', line: () => `Less than ${turn} from landing to the next take-off (Tight turn, or Dekit plus Step if longer).` },
@@ -183,7 +183,7 @@ export function lgChecks(): LgGroup<LgChk>[] {
         how: () => [
           'Weekend or holiday work earns OIL once the day is published.',
           `A man's day runs from his first report to his last end, gaps included: ${lgV(ruleFmt('oilFullMin', VCONF.oilFullMin))} or more is a full day (FO), less is a half (HO).`,
-          'A flight runs from its in-time (or Report before take-off, where none is typed) to landing plus the debrief.',
+          'A flight runs from its in-time (or Default rally before take-off, where neither an in-time nor a rally is entered) to landing plus the debrief.',
           'A row with no times, or no end time, earns nothing. An Off day earns nothing.',
           'SC SPARE, AVALON and BB earn only if switched on in OIL Earn.',
           'A Duty & commitments input earns once its OIL question is answered yes.',

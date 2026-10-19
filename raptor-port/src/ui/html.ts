@@ -7,7 +7,7 @@ import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
 import { INPUTS, idsOf, inputsOn, remarksShown, remarksTyped, tillOf, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
-import { reportingIssuesForWave,stated,REPORTING_LABEL } from '../engine/reporting'
+import { reportingIssuesForWave,stated,REPORTING_LABEL,REPORT_WORD } from '../engine/reporting'
 import { waveInTime } from '../engine/events'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
 import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, acceptedDay } from '../engine/slots'
@@ -1223,7 +1223,7 @@ export function waveHeadTail(w:any):string{
   const sa=isStandalone(w);
   const night=!sa&&w.night&&!/night/i.test(w.label)?' · NIGHT':'';
   const r=sa?null:waveInTime(w);
-  return night+(r!=null&&r<0?` · ${REPORTING_LABEL} ${stated(r,true)}`:'');
+  return night+(r!=null&&r<0?` · ${REPORT_WORD} ${stated(r,true)}`:'');
 }
 /* …AND THE BOARD'S: a small "(prev day)" in the wave's header where its in-time / rally falls on the evening before (owner
    D949 Q1, 17 Oct 26): the one cue of the removed header note (D947) nothing else on the board gives — the yellow lines
@@ -1310,6 +1310,10 @@ export let SCRATCH:any=null;
    contenteditable has no placeholder of its own). Emitted on the view branch
    too, not only the editable one — the week is what the squadron READS, and
    the one thing it carries today is MAIN/SPARE on a standalone line. */
+/* THE FLYING TABLE'S TWO TIME HEADINGS (owner D1026, 19 Oct 26): the rally above the brief, the take-off above the
+   landing. One constant for every builder that draws the heading row — the week below and the next-week peek (peek.ts),
+   which draws its own copy of it. */
+export const WEEK_TIME_HEAD=['R<br>B','TO<br>LD'] as const;
 export function ted(path:any,val:any,ed:any,cls:any,tag?:any,ph?:any){
   tag=tag||'span';
   const t=TIME_TXT.test(String(path))?fmtT(val):esc(val==null?'':val);
@@ -1823,7 +1827,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
         h+=`<div class="intimes${ed?' iedit':''}" data-warnkey="it:${di}.${gi}"${alAttr(`it:${di}.${gi}`)} ${ed?`data-intimes="${di}|${gi}"`:''}>${intimesInner(w,ed?`${di}|${gi}`:null)}</div>`;
       h+=sa
         ? `<div class="cols formcols"><span>${esc(w.label||'')}<br>SHIFT</span><span class="c-c">START</span><span class="c-c">END</span><span>FCP / RCP</span><span>RMKS</span></div>`
-        : `<div class="cols formcols"><span>CS<br>MSN</span><span class="c-c">B<br>TO</span><span class="c-c">LD</span><span>FCP / RCP</span><span>RMKS</span></div>`;
+        : `<div class="cols formcols"><span>CS<br>MSN</span><span class="c-c">${WEEK_TIME_HEAD[0]}</span><span class="c-c">${WEEK_TIME_HEAD[1]}</span><span>FCP / RCP</span><span>RMKS</span></div>`;
       w.formations.forEach((f:any,li:any)=>{
         /* the brief lead is a rule the squadron edits on the Logic page, and
            validate() already reads it live (VCONF.briefLead). Hard-coding 140
@@ -1847,9 +1851,15 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
         const editableBr=ed&&canEditSched();
         const brTyped=parseHM(f.br)!=null;
         const brShown=editableBr?f.br:(brTyped?f.br:brief);
-        const brSug=(editableBr&&!brTyped)
-          ? `<span class="bsug" data-bacc="${fp}.br" data-bval="${brief}" title="Click to accept the suggested brief time">${brief}</span>`
-          : '';
+        /* THE SUGGESTION SITS INSIDE ITS OWN EMPTY BOX (owner D1028, D1030, 19 Oct 26): faint, where the time will go —
+           never on a line above the box, so the row's boxes stay level and the row grows no taller. One tap places it,
+           highlighted, so whatever is typed next replaces it (interactions.ts placeSuggestion); Tab passing through
+           fills nothing; Escape takes a just-placed one back out (textedit.ts — the box's own restore). The brief's
+           suggestion is the take-off less the brief lead, as before; the R box's is the default rally, the take-off less
+           the Logic page's report setting (D1027, D1031 — the same time "+ In-time" fills and an empty box reports at,
+           D592). View-only Sched still prints an empty brief's suggested time (D509) and leaves an empty R blank. */
+        const rlTyped=parseHM(f.rl)!=null, rlDefault=minus(f.to,VCONF.reportLead);
+        const brCls=editableBr&&!brTyped&&brief?'sugbox':'', rlCls='rl'+(editableBr&&!rlTyped&&rlDefault?' sugbox':'');
         /* Grid placement is handed to CSS through custom properties rather than
            hardcoded inline grid-row values, so a breakpoint can remap rows without
            the renderer knowing about it.
@@ -1889,8 +1899,10 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
           <div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa?'var(--san)':`var(--${mColor(f.msn)})`}"></span>${ted(fp+'.cs',f.cs,ed,'ntx')}</b>${ted(fp+'.msn',f.msn,ed,'','i')}</div>
           ${sa
             ? `<div class="fcell bto${badCls}"${badAtt} style="${spans}">${ted(fp+'.to',f.to,ed,'ntx','span')}</div>`
-            : `<div class="fcell bto${badCls}"${badAtt} style="${spans}">${brSug}${ted(fp+'.br',brShown,ed,'','b')}${ted(fp+'.to',f.to,ed,'','span')}</div>`}
-          <div class="fcell ld${badCls}"${badAtt} style="${spans}">${ted(fp+'.ld',f.ld,ed,'ntx')}</div>`;
+            : `<div class="fcell bto${badCls}"${badAtt} style="${spans}">${ted(fp+'.rl',f.rl,ed,rlCls,'span',rlCls.includes('sugbox')?rlDefault:'')}${ted(fp+'.br',brShown,ed,brCls,'b',brCls?brief:'')}</div>`}
+          ${sa
+            ? `<div class="fcell ld${badCls}"${badAtt} style="${spans}">${ted(fp+'.ld',f.ld,ed,'ntx')}</div>`
+            : `<div class="fcell ld${badCls}"${badAtt} style="${spans}">${ted(fp+'.to',f.to,ed,'tox','span')}${ted(fp+'.ld',f.ld,ed,'ntx')}</div>`}`;
         f.aircraft.forEach((a:any,ai:any)=>{
           const key=`${di}.${gi}.${li}.${ai}`, o=a.opts||{};
           /* edit mode shows the on-chips (click one to remove it) plus C, which

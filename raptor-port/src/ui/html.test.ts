@@ -127,6 +127,15 @@ const noStores = (s: string) => s.replace(
    it so a future canEditSched()-aware call here would not silently pass) from
    both sides, leaving the div wrapper and the TO span — still byte-compared —
    untouched. The new structure is pinned positively in brieftime-ui.test.tsx. */
+/* Divergence (owner D1026, 19 Oct 26): a flying line's time columns are R over B and TO over LD — the formation's own
+   rally above its brief, the take-off moved above the landing. The reference has no rally and draws B over TO with LD
+   alone, so the port's two cells are put back into the reference's shape on both sides before the compare (a no-op on the
+   reference): the headings, the R box dropped, the TO span (its class "tox", the reference's "") moved back under B.
+   Every other byte of the cells stays compared; the new shape is pinned positively in rallybox.test.tsx. */
+const noRallyCols = (s: string) => s
+  .replace(/<span class="c-c">R<br>B<\/span><span class="c-c">TO<br>LD<\/span>/g, '<span class="c-c">B<br>TO</span><span class="c-c">LD</span>')
+  .replace(/(<div class="fcell bto[^"]*"[^>]*>)<span class="rl[^"]*"[^>]*>[^<]*<\/span>(<b[^>]*>[^<]*<\/b>)<\/div>(\s*<div class="fcell ld[^"]*"[^>]*>)<span class="tox"([^>]*>[^<]*<\/span>)/g,
+    '$1$2<span class=""$4</div>$3')
 const noBrief = (s: string) => s.replace(
   /(<div class="fcell bto"[^>]*>)(?:<span class="bsug"[^>]*>[^<]*<\/span>)?<b[^>]*>[^<]*<\/b>/g, '$1')
 
@@ -193,7 +202,7 @@ const noAhRmk = (s: string) => s
    compare (the reference-only rules here are no-ops on the port and vice
    versa). Pinned positively in intimesadd.test.tsx. */
 const noItCtl = (s: string) => s
-  .replace(/<button class="airbtn" data-itadd="[^"]*"[^>]*>\+ (?:In time|In-time \/ Rally)<\/button>/g, '')
+  .replace(/<button class="airbtn" data-itadd="[^"]*"[^>]*>\+ (?:In time|In-time \/ Rally|In-time)<\/button>/g, '')   // "+ In-time" since D1026
   .replace(/<button class="itx" data-itdel="[^"]*"[^>]*>✕<\/button>/g, '')
   .replace(/<span class="itline" contenteditable="true" spellcheck="false" data-itline="[^"]*">/g, '<span>')
   .replace(/ (?:contenteditable="true" spellcheck="false" )?data-intimes="[^"]*"/g, '')
@@ -240,7 +249,7 @@ const noDwCue = (s: string) => s.replace(/ · <span class="dwcue">tap to (?:revi
 const noDraftStamp = (s: string) => s.replace(/<span class="dbeak ro " title="[^"]* is still draft">Draft<\/span>/g, '')
 describe('view-week markup parity with the reference', () => {
   it('every day of the read-only week is byte-identical (minus the input blocks)', () => {
-    const V = (s: string) => noDraftStamp(noDwCue(noReportingAnchor(noVerTag(noItTime(noAhRmk(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s))))))))))))))
+    const V = (s: string) => noDraftStamp(noDwCue(noReportingAnchor(noVerTag(noItTime(noAhRmk(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(noRallyCols(s)))))))))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},false)`)
       expect(V(dayHTML(di, false)), 'day ' + di+' '+parityWhere(V(dayHTML(di,false)),V(ref))).toBe(V(ref))
@@ -377,10 +386,10 @@ describe('view-week markup parity with the reference', () => {
        as normDrag/normDow. Collapse the reference's double space; a no-op on the
        port. */
     const normBeakWs = (s: string) => s.replace(/class="dbeak {2,}/g, 'class="dbeak ')
-    const E = (s: string) => noDwCue(noVerTag(normBeakWs(normDrag(normDow(noItTime(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noDhTpl(noSign(noDsec(s)))))))))))))))))))
+    const E = (s: string) => noDwCue(noVerTag(normBeakWs(normDrag(normDow(noItTime(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noDhTpl(noSign(noDsec(noRallyCols(s))))))))))))))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
-      expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))
+      expect(E(dayHTML(di, true)), 'day ' + di + ' ' + parityWhere(E(dayHTML(di, true)), E(ref))).toBe(E(ref))
     })
   })
 

@@ -42,7 +42,7 @@ describe('CSV export encoding', () => {
     const out = csvText(schedRows())
     expect(out.charCodeAt(0)).toBe(0xfeff)
     /* the BOM leads the first line, so strip it before comparing the header */
-    expect(out.slice(1).split('\r\n')[0]).toBe('"Day","Date","Wave","CS","Mission","Brief","TO","Land","FCP","FCP lvl","RCP","RCP lvl","Area","Area time","Rmks","Stores"')
+    expect(out.slice(1).split('\r\n')[0]).toBe('"Day","Date","Wave","CS","Mission","Rally","Brief","TO","Land","FCP","FCP lvl","RCP","RCP lvl","Area","Area time","Rmks","Stores"')
   })
 })
 

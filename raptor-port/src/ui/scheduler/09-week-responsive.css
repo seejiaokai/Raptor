@@ -187,7 +187,7 @@
   .form .bto b,.form .bto span,.form .ld{font-size:9px}
   /* tighter leading + 3px top padding so the BRIEF/T-O pair and the CS/MSN pair both
      land inside the first puck row */
-  .form .bto{line-height:1.15}
+  .form .bto,.form .ld{line-height:1.15}
   .form .csmsn b{font-size:9.5px}
   .form .csmsn i{line-height:1.05}
   .fcell{padding:3px 2px 4px}
@@ -355,6 +355,9 @@
   .fcell.csmsn i{font-size:9.5px}
   .fcell.bto b,.fcell.bto span{font-size:11px}
   .fcell.ld{font-size:11px}
+  /* the four times take one size, LD's (D1026's build, the design note's point 4): the base rule
+     `.form .bto span:not(.bsug)` out-ranked the line above, so R/B drew at 9px beside an 11px TO/LD */
+  .form .fcell.bto b,.form .fcell.bto span{font-size:11px}
   .acrow{padding:3px 4px;gap:3px}
   /* NO puck font override here on purpose. The puck is 74 x 15 with 9px type at every
      width, desktop included — that is the reference tool's own measured puck, and the

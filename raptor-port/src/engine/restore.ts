@@ -75,6 +75,7 @@ export function dayKeys(d:any,di:any){
       m.set(`ff:${di}.${gi}.${li}.msn`,S(f.msn));
       m.set(`ff:${di}.${gi}.${li}.to`,T(f.to)); m.set(`ff:${di}.${gi}.${li}.ld`,T(f.ld));
       m.set(`ff:${di}.${gi}.${li}.br`,T(f.br));   // the indicated brief time — rolls back with its line
+      m.set(`ff:${di}.${gi}.${li}.rl`,T(f.rl));   // the formation's own rally (D1026) — the same
       /* the FORMATION-level override f.area/f.atime rides the fingerprint beside
          the per-aircraft values: ui/textedit.ts writes the override (what the
          cell shows, areaText/atimeText) and html.ts renders it, so a diff that

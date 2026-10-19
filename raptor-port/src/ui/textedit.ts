@@ -109,6 +109,36 @@ if (typeof document !== 'undefined') {
   document.addEventListener('pointerup', (e: PointerEvent) => { PRESSING = false; if (ARRIVING && document.activeElement !== ARRIVING) setTimeout(letGo, e.pointerType === 'mouse' ? 0 : 600) }, true)
 }
 
+/* A BUTTON PRESSED STRAIGHT AFTER A CHANGED BOX STILL DOES ITS JOB ([EDIT-BUTTON-AFTER-CHANGE], found 19 Oct 26 — the week's
+   "+ In-time", the board's "+ Line"). The press takes the focus from the box, the box saves, and the redraw REPLACES the
+   button under the press; the browser then sends the click to nothing (the element it pressed is gone), so the first
+   press did nothing and a second worked. Not held the way a text box's arrival is (a held block also holds the save's
+   repaint): the press is noted when it lands on a button while a text box has the caret; once the browser has had its
+   chance to click — at once after a mouse, a little later after a finger, whose focus moves only after the lift — a
+   press whose button was replaced and whose click reached no copy of it gives the click to the replacement under the
+   lift: the same button, drawn again. A press the browser clicked, or a button never replaced, is left alone. */
+let PRESSED: { el: HTMLElement, html: string, done: boolean } | null = null
+const buttonOf = (t: any): HTMLElement | null => (t && t.closest ? t.closest('button') as HTMLElement | null : null)
+if (typeof document !== 'undefined') {
+  document.addEventListener('pointerdown', e => {
+    const b = buttonOf(e.target)
+    PRESSED = b && textBoxOf(document.activeElement) ? { el: b, html: b.outerHTML, done: false } : null
+  }, true)
+  document.addEventListener('pointercancel', () => { PRESSED = null }, true)
+  document.addEventListener('click', e => { const b = buttonOf(e.target); if (PRESSED && b && (b === PRESSED.el || b.outerHTML === PRESSED.html)) PRESSED.done = true }, true)
+  document.addEventListener('pointerup', (e: PointerEvent) => {
+    const p = PRESSED; if (!p) return
+    const x = e.clientX, y = e.clientY
+    setTimeout(() => {
+      if (PRESSED !== p) return
+      PRESSED = null
+      if (p.done || p.el.isConnected) return
+      const now = buttonOf(document.elementFromPoint(x, y))
+      if (now && now.outerHTML === p.html) now.click()
+    }, e.pointerType === 'mouse' ? 0 : 400)
+  }, true)
+}
+
 export function routeFocusOut(e: FocusEvent) {
   const rt = e.relatedTarget as HTMLElement | null
   ARRIVING = textBoxOf(rt) ? rt : (ARRIVING && rt == null && PRESSING ? ARRIVING : null)

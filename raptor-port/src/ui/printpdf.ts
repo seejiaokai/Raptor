@@ -16,7 +16,7 @@ import { esc } from '../state/view'
 import { DAYS } from '../engine/data'
 import { schedRows, publishedDays, dayIssuedLabel } from './export'
 
-const HEAD = ['Day', 'Date', 'Wave', 'CS', 'Mission', 'Brief', 'TO', 'Land', 'FCP', 'FCP lvl', 'RCP', 'RCP lvl', 'Area', 'Area time', 'Rmks', 'Stores']
+const HEAD = ['Day', 'Date', 'Wave', 'CS', 'Mission', 'Rally', 'Brief', 'TO', 'Land', 'FCP', 'FCP lvl', 'RCP', 'RCP lvl', 'Area', 'Area time', 'Rmks', 'Stores']
 /* column index by header name, so the report reads by meaning not position */
 const IX: Record<string, number> = {}; HEAD.forEach((h, i) => (IX[h] = i))
 
@@ -39,13 +39,14 @@ export function schedPrintHTML(rows: any[][], weekLabel: string, dayLabel?: (day
     if (!g || g.day !== day) { g = { day, date, lines: [] }; byDay.push(g) }
     g.lines.push(r)
   })
-  const th = ['Wave', 'CS / Mission', 'Brief', 'T/O', 'Land', 'FCP', 'RCP', 'Area', 'Time', 'Remarks', 'Stores']
+  const th = ['Wave', 'CS / Mission', 'Rally', 'Brief', 'T/O', 'Land', 'FCP', 'RCP', 'Area', 'Time', 'Remarks', 'Stores']
     .map(h => `<th>${esc(h)}</th>`).join('')
   const blocks = byDay.map(g => {
     const stamp = dayLabel ? dayLabel(g.day) : ''
     const trs = g.lines.map(r => `<tr>`
       + `<td class="wv">${esc(r[IX['Wave']])}</td>`
       + `<td class="csm"><b>${esc(r[IX['CS']])}</b>${r[IX['Mission']] ? `<span class="msn">${esc(r[IX['Mission']])}</span>` : ''}</td>`
+      + `<td class="t">${esc(r[IX['Rally']])}</td>`
       + `<td class="t">${esc(r[IX['Brief']])}</td>`
       + `<td class="t">${esc(r[IX['TO']])}</td>`
       + `<td class="t">${esc(r[IX['Land']])}</td>`

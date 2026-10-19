@@ -127,7 +127,7 @@ describe('Undo with the caret still in the block puts the box back on screen too
 
 describe('D556 schedule Tab production wiring', () => {
   it('week uses B, empty Brief, each aircraft Remarks/stores, then Area/time and reverse', async () => {
-    const keys = ['ff:0.0.0.cs','ff:0.0.0.msn','ff:0.0.0.br','ff:0.0.0.to','ff:0.0.0.ld','fr:0.0.0.0']
+    const keys = ['ff:0.0.0.cs','ff:0.0.0.msn','ff:0.0.0.rl','ff:0.0.0.br','ff:0.0.0.to','ff:0.0.0.ld','fr:0.0.0.0']   // the R box before B (D1026, D554's route)
     const route = [...keys.map(week), $('[data-bombs="0.0.0.0"]'), week('fr:0.0.0.1'), $('[data-bombs="0.0.0.1"]'), $('[data-area="0.0.0"]'), $('[data-atime="0.0.0"]')]
     const before = JSON.stringify({ d: DAYS, s: SCHED }), h = HIST.stack.length
     await focus(route[0]!)
@@ -144,7 +144,7 @@ describe('D556 schedule Tab production wiring', () => {
     const route: HTMLElement[] = []
     for (const row of [...host.querySelectorAll('#sbBoard .sb-line')].slice(0, 2))
       route.push(...row.querySelectorAll<HTMLElement>('[data-bfld],[data-bombs]'))
-    expect(route.length).toBe(14)
+    expect(route.length).toBe(16)   // eight a line since D1026 (the R box)
     await focus(route[0]!)
     for (let i = 1; i < route.length; i++) { await tab(route[i-1]!); expect(document.activeElement).toBe(route[i]) }
     await tab(route.at(-1)!, { shiftKey: true }); expect(document.activeElement).toBe(route.at(-2))
@@ -174,7 +174,8 @@ describe('D556 schedule Tab production wiring', () => {
     cs.after(trap, readonly, role, closed); const click = vi.fn(); mission.addEventListener('click', click)
     brief.style.display = 'none'
     await focus(cs); await tab(cs); expect(document.activeElement).toBe(mission); expect(click).not.toHaveBeenCalled()
-    await tab(mission); expect(document.activeElement).toBe(week('ff:0.0.0.to'))
+    await tab(mission); expect(document.activeElement).toBe(week('ff:0.0.0.rl'))   // the R box (D1026)
+    await tab(week('ff:0.0.0.rl')); expect(document.activeElement).toBe(week('ff:0.0.0.to'))
   })
   it('ignores modified Tab and composing events, preserving ordinary non-text navigation', async () => {
     const cs = week('ff:0.0.0.cs'); await focus(cs)

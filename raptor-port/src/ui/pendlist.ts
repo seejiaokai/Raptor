@@ -98,7 +98,7 @@ export function valueWords(addr: string, v: any): string {
   return s
 }
 /* [PEND-INTIME-WORDS] (reader AB's second pass, 6 Oct 26): a wave's In-time / Rally lines are one list, and "To go out"
-   worded only its length, so a line whose clock changed read "2 In-time / Rally lines → 2 In-time / Rally lines". The
+   worded only its length, so a line whose clock changed read "2 In-time lines → 2 In-time lines". The
    lines that differ are named instead — those only in the issued list before, those only in the new one after, as
    multisets (two lines may be the same text); a line only removed reads "removed", one only added "added: <line>";
    and a list whose lines only changed places reads "order changed" (a drag on the Scheduler Board, D594). Null for

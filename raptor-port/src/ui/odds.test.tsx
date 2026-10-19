@@ -178,9 +178,9 @@ describe('fast sync + export', () => {
     expect(rows.length).toBe(nAc + 1)                            // + the header
     expect(rows[0]![0]).toBe('Day')
     const r = rows[1]!
-    expect(r[6]).toMatch(/^\d\d:\d\d$/)                          // TO
-    expect(r[5]).toMatch(/^\d\d:\d\d$/)                          // Brief = TO - 140
-    const [bh, bm] = String(r[5]).split(':').map(Number), [th, tm] = String(r[6]).split(':').map(Number)
+    expect(r[7]).toMatch(/^\d\d:\d\d$/)                          // TO (Rally is column 5 since D1026)
+    expect(r[6]).toMatch(/^\d\d:\d\d$/)                          // Brief = TO - 140
+    const [bh, bm] = String(r[6]).split(':').map(Number), [th, tm] = String(r[7]).split(':').map(Number)
     expect((th! * 60 + tm!) - (bh! * 60 + bm!)).toBe(140)
     expect($('#exportSched')).toBeTruthy()
     expect($('#exportPdf')).toBeTruthy()

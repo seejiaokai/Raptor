@@ -188,7 +188,7 @@ export function wireRowDrag(el: HTMLElement) {
     if (!grip) return
     /* A PRESS ON A GRIP TAKES THE CARET OUT OF ITS TEXT BOX FIRST (the batch's check, 19 Oct 26 — the scenario designer's
        S1-01). The press stops the browser moving the focus, so the caret stayed in the box it was in — an In-time line,
-       which "+ In-time / Rally" leaves it in — the board held that panel's old order on screen for it, and leaving the
+       which "+ In-time" leaves it in — the board held that panel's old order on screen for it, and leaving the
        line afterwards wrote its words by its OLD place, over the line the drag had put there: one line doubled, the other
        lost. The box is left now, so it saves where it stands, and the redraw that follows is done before the drag picks
        anything up; the grip is found again by its row's address should the redraw have replaced it. */

@@ -302,8 +302,10 @@ describe('adding and removing in-time lines', () => {
   /* W6 (the Codex stack check, 5 Oct 26; D498, D504): the box was renamed "In-time / Rally" on the box, the button,
      the warning and Undo — and stayed "in-times" in the changes window, the pending list, the gold-dot bubble and the
      ✕ toast. One shared name (engine/reporting.ts REPORTING_LABEL); this draws every place that prints it. */
-  it('W6 every place that names the box says "In-time / Rally" — none says "in-times"', async () => {
-    expect(REPORTING_LABEL).toBe('In-time / Rally')
+  /* "In-time" since D1026 (19 Oct 26): a rally is each formation's own R box now, so the typed lines are named for the
+     in-time alone — on every place below, by the same one name */
+  it('W6 every place that names the box says "In-time" — none says "in-times" or "In-time / Rally"', async () => {
+    expect(REPORTING_LABEL).toBe('In-time')
     await act(async () => { notify() })
     const ed = dayHTML(0, true)
     expect(ed, 'the + button and its hint').toContain(`title="Add an ${REPORTING_LABEL} line to this wave">+ ${REPORTING_LABEL}</button>`)
@@ -321,7 +323,13 @@ describe('adding and removing in-time lines', () => {
       readFileSync(f, 'utf8').split('\n').forEach((line, i) => {
         const code = line.replace(/\/\*.*?\*\//g, '')
         if (/^\s*(\/\/|\/\*|\*)/.test(code)) return
-        for (const m of code.matchAll(/(['"`])((?:(?!\1).)*)\1/g)) if (/\bin-times\b|\bin-time line\b/i.test(m[2]!)) hits.push(`${f}:${i + 1} ${m[2]}`)
+        for (const m of code.matchAll(/(['"`])((?:(?!\1).)*)\1/g)) {
+          /* "an In-time line" is the name itself since D1026; the old lower-case "in-time line" and "in-times" stay out */
+          if (/\b[Ii]n-times\b|\bin-time line\b/.test(m[2]!)) hits.push(`${f}:${i + 1} ${m[2]}`)
+          /* the old name of the lines — kept only where the app names WHEN a formation reports, which a rally may decide:
+             the wave header's evening-before note (REPORT_WORD) and the timings-out-of-order warning's title */
+          if (/In-time \/ Rally/.test(m[2]!) && !/REPORT_WORD\s*=|REPORT_ORDER\s*:/.test(code)) hits.push(`${f}:${i + 1} ${m[2]}`)
+        }
       })
     }
     expect(hits).toEqual([])

@@ -60,6 +60,6 @@ describe('the printed brief time follows the Brief-lead rule', () => {
     expect(want, 'sanity: 90 min gives a different clock than 140').not.toBe(minus(f.to, 140))
     expect(dayHTML(0, false)).toContain(want)
     const row = schedRows().find((r: any) => r[3] === f.cs)
-    expect(row && row[5], 'the CSV Brief field').toBe(want)
+    expect(row && row[6], 'the CSV Brief field (Rally before it since D1026)').toBe(want)
   })
 })

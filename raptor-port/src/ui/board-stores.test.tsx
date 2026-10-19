@@ -60,8 +60,12 @@ describe('the board carries the week\'s stores interface', () => {
        seats now share a .sb-seatpair wrapper (display:contents on desktop, so
        the grid still counts the two seats as its FCP/RCP items; a 2-col grid
        on a phone so they sit side by side — owner, 14 Aug 26), which is why
-       the line has NINE DOM children but the grid still sees ten items. */
-    expect(line.children.length, 'nine DOM children — the two seats share .sb-seatpair').toBe(9)
+       the line has NINE DOM children but the grid still sees ten items.
+       Since D1026 (19 Oct 26) the four times are two wrappers too — R+B (.sb-rb) and TO+LD (.sb-tl), display:contents on
+       a desktop (the grid sees eleven items: the R track is new), one stacked cell each on a phone — so EIGHT children. */
+    expect(line.children.length, 'eight DOM children — the seats share .sb-seatpair, the times .sb-rb / .sb-tl').toBe(8)
+    expect([...line.querySelectorAll(':scope > .sb-rb > input')].map(e => (e as HTMLElement).dataset.bfld!.split('.').pop()), 'R over B').toEqual(['rl', 'br'])
+    expect([...line.querySelectorAll(':scope > .sb-tl > input')].map(e => (e as HTMLElement).dataset.bfld!.split('.').pop()), 'TO over LD').toEqual(['to', 'ld'])
     const pair = line.querySelector('.sb-seatpair') as HTMLElement
     expect(pair, 'the seat pair wrapper is present').toBeTruthy()
     expect(pair.children.length, 'holding exactly the two seats').toBe(2)
@@ -132,7 +136,11 @@ describe('the board carries the week\'s stores interface', () => {
     const lines = $$('#schedBoard .sb-line')
     const saLine = lines[lines.length - 1]
     expect(saLine, 'the SC line was added').toBeTruthy()
-    expect(saLine.children.length, 'nine DOM children — sa hides CONTENT, not the cell (seats share .sb-seatpair)').toBe(9)
+    expect(saLine.children.length, 'eight DOM children — sa hides CONTENT, not the cell (seats share .sb-seatpair, times .sb-rb / .sb-tl)').toBe(8)
+    /* a standby line carries no rally (D1026's build): an empty place keeps the R track, and B is still its in-time box */
+    const rb = saLine.querySelector(':scope > .sb-rb') as HTMLElement
+    expect(rb.querySelector('[data-bfld$=".rl"]'), 'no R box on a standby line').toBeNull()
+    expect(rb.children.length, 'the empty R place and the B box').toBe(2)
     const cell = saLine.querySelector('.sb-rcell') as HTMLElement
     expect(cell, 'the remarks cell itself is still there').toBeTruthy()
     expect(cell.querySelector('.nts'), 'remarks stay editable on a standalone line').toBeTruthy()

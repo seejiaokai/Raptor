@@ -34,7 +34,7 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'
   OIL_NO_TIMES:'No OIL earned — a row has no usable times',
   FLT_NO_LEN:'Flight times — take-off and landing are the same',
   REPORT_ORDER:'In-time / Rally — timings out of order',
-  REPORT_UNRESOLVED:'In-time / Rally — check the reporting instruction',
+  REPORT_UNRESOLVED:'In-time — check the reporting instruction',
   OIL_OLD_BLOCK:'Published before these seats counted — republish to credit them',
   /* the four OIL advisories printed their CODE as the heading ("OIL_UNPUBLISHED — …") —
      [HUMAN-RETEST] amendment re-test, walk W4-F5, 24 Sep 26; pinned in ui/amendretest.test.tsx */

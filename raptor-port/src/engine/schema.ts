@@ -377,6 +377,9 @@ export type Formation = {
   ld: string
   /** Typed SC in-time 'HH:MM' — screen (board SC B-box editor). */
   br?: string
+  /** The formation's own rally 'HH:MM' (D1026), may be absent or '' — screen (the R box, week and board); a flying
+   *  line's only — a standalone wave carries none. */
+  rl?: string
   /** A typed-over AREA strip for the whole formation (the derived per-seat areas otherwise) — screen (ui/textedit.ts). */
   area?: string
   /** A typed-over area-TIME strip for the whole formation ('0800-0900' form) — screen (ui/textedit.ts). */

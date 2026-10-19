@@ -5,7 +5,7 @@ const typing = '[data-txt],[data-inp],[data-bfld],[data-ifld],[data-itline],[dat
 const field = (page: Page, surface: string, key: string, n = 0) => page.locator(`${surface} [${surface === '#sbBoard' ? 'data-bfld' : 'data-txt'}="${key}"]`).nth(n)
 async function focused(el: Locator) { await expect(el).toBeFocused(); expect(await el.evaluate(e => e.isConnected)).toBe(true) }
 async function flight(page: Page, surface: string) {
-  const routes: Locator[] = [], details = ['cs','msn','br','to','ld']
+  const routes: Locator[] = [], details = ['cs','msn','rl','br','to','ld']   // D554's route, the R box before B (D1026)
   if (surface === '#sbBoard') for (let ai = 0; ai < 2; ai++) {
     routes.push(...details.map(k => field(page, surface, `ff:0.0.0.${k}`, ai)))
     routes.push(field(page, surface, `fr:0.0.0.${ai}`), page.locator(`${surface} [data-bombs="0.0.0.${ai}"]`))
@@ -186,13 +186,42 @@ for (const [name, viewport] of [['desktop',{width:1440,height:900}],['phone',{wi
       }
       expect(await page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].to)).toBe('12:56')
     })
+    /* [EDIT-BUTTON-AFTER-CHANGE] (found 19 Oct 26, the D994 batch's walk, S4-05): straight after a changed box, the first
+       press of a button — the week's "+ In-time", the board's "+ Line" — did nothing: leaving the box saved it and the
+       redraw replaced the button under the press, so no click reached it. One press does its job now, by a mouse and
+       by a finger. */
+    test('one press of a button after a changed box does its job', async ({ page }) => {
+      await login(page); await go(page, 'editsched')
+      const press = async (loc: Locator) => {
+        await loc.evaluate(e => e.scrollIntoView({ block: 'center' }))
+        if (name === 'phone') { const b = (await loc.boundingBox())!; await page.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2) }
+        else await loc.click()
+      }
+      const lines = () => page.evaluate(() => (window as any).DAYS[0].waves[0].intimes.length)
+      const week = '#eWeek .day[data-day="0"]'
+      const to = field(page, week, 'ff:0.0.0.to')
+      const n0 = await lines()
+      await press(to); await to.fill('1255')
+      await press(page.locator(`${week} [data-itadd="0|0"]`))
+      await expect.poll(lines, 'one press of "+ In-time" added its line').toBe(n0 + 1)
+      expect(await page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].to)).toBe('12:55')
+      await page.keyboard.press('Escape')
+      await openBoard(page)
+      const forms = () => page.evaluate(() => (window as any).DAYS[0].waves[0].formations.length)
+      const box = page.locator('#sbBoard [data-bfld="ff:0.0.0.to"]:visible').first()
+      const f0 = await forms()
+      await press(box); await box.fill('1257')
+      await press(page.locator('#sbBoard [data-gline="0.0"]').first())
+      await expect.poll(forms, 'one press of "+ Line" added its line').toBe(f0 + 1)
+      expect(await page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].to)).toBe('12:57')
+    })
     test('native Board change saves once, refreshes repeated fields and settles after text exit', async ({ page }) => {
       await login(page); await go(page, 'editsched'); await openBoard(page)
       const cs = field(page, '#sbBoard', 'ff:0.0.0.cs'), seq = await page.evaluate(() => (window as any).commandStreamLen())
       await cs.fill('TAB CS'); await page.keyboard.press('Tab')
       expect(await page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].cs)).toBe('TAB CS')
       expect(await page.evaluate(() => (window as any).commandStreamLen())).toBe(seq + 1)
-      for (let i = 0; i < 6; i++) await page.keyboard.press('Tab')
+      for (let i = 0; i < 7; i++) await page.keyboard.press('Tab')   // one more box on the line since D1026: the R box
       await focused(field(page, '#sbBoard', 'ff:0.0.0.cs', 1)); await expect(field(page, '#sbBoard', 'ff:0.0.0.cs', 1)).toHaveValue('TAB CS')
       const input = page.locator('#sbBoard [data-ifld$=".rmks"]').first()
       await input.fill('TAB INPUT REMARK'); await page.keyboard.press('Tab')

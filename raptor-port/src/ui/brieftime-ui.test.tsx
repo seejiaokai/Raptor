@@ -76,25 +76,34 @@ afterAll(async () => {
 })
 
 describe('B on the edit week', () => {
-  it('a blank line renders a ghost carrying the calculated time; clicking it accepts', async () => {
+  /* D1028, D1030 (19 Oct 26): the suggestion sits faint INSIDE the empty box — never a line above it — and one tap places
+     it, saved when the box is left */
+  it('the B box of a blank line carries the calculated time faint inside it; one tap places it, leaving saves it', async () => {
     const f: any = firstForm()!, idx = idxOf(f), was = f.br, key = `ff:${idx}.br`
     await act(async () => { f.br = ''; notify() })
-    const ghost = $(`#eWeek .bsug[data-bacc="${key}"]`)
-    expect(ghost, 'a suggestion ghost renders for the blank line').toBeTruthy()
+    expect($('#eWeek .bsug'), 'no suggestion on a line of its own above the box').toBeFalsy()
+    const box = $(`#eWeek [data-txt="${key}"]`)
     const want = minus(f.to, VCONF.briefLead)
-    expect(ghost.dataset.bval).toBe(want)
-    expect(ghost.textContent).toBe(want)
-    await click(ghost)
+    expect(box.classList.contains('sugbox'), 'the empty box wears the suggestion').toBe(true)
+    expect(box.dataset.ph).toBe(want)
+    expect(box.textContent, 'nothing is written until he taps').toBe('')
+    expect(f.br).toBe('')
+    await act(async () => { box.focus() })
+    await click(box)
+    expect(box.textContent, 'the tap placed it').toBe(want)
+    await act(async () => { box.blur() }); await settle()
     expect(f.br).toBe(want)
     expect(SCHED.pending[rk(key)]).toBe(1)
-    expect($(`#eWeek .bsug[data-bacc="${key}"]`), 'the ghost is gone once B is set').toBeFalsy()
+    expect($(`#eWeek [data-txt="${key}"]`).classList.contains('sugbox'), 'no suggestion once B is set').toBe(false)
     await act(async () => { f.br = was; delete SCHED.pending[rk(key)]; notify() })
   })
 
   it('a typed B needs no suggestion at all', async () => {
     const f: any = firstForm()!, idx = idxOf(f), was = f.br
     await act(async () => { f.br = '06:05'; notify() })
-    expect($(`#eWeek .bsug[data-bacc="ff:${idx}.br"]`), 'no ghost once B is typed').toBeFalsy()
+    const box = $(`#eWeek [data-txt="ff:${idx}.br"]`)
+    expect(box, 'the B box is drawn').toBeTruthy()
+    expect(box.classList.contains('sugbox') || box.hasAttribute('data-ph'), 'no suggestion once B is typed').toBe(false)
     await act(async () => { f.br = was; notify() })
   })
 
@@ -139,13 +148,15 @@ describe('a member session cannot indicate a brief', () => {
     await act(async () => { f.br = ''; notify() })
     await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
     expect($(`#eWeek [data-txt="${key}"]`), 'no editable box for a member').toBeFalsy()
-    expect($(`#eWeek .bsug[data-bacc="${key}"]`), 'no suggestion ghost for a member').toBeFalsy()
+    expect($(`#eWeek .sugbox`), 'no suggestion for a member').toBeFalsy()
+    /* a stale suggesting box (the D1030 box, left from an admin session) — a tap places nothing for a member */
     const stale = document.createElement('span')
-    stale.className = 'bsug'
+    stale.className = 'sugbox txed'
     const want = minus(f.to, VCONF.briefLead)
-    stale.dataset.bacc = key; stale.dataset.bval = want
+    stale.setAttribute('contenteditable', 'true'); stale.dataset.txt = key; stale.dataset.ph = want
     document.body.appendChild(stale)
     await click(stale)
+    expect(stale.textContent, 'nothing placed').toBe('')
     expect(f.br, 'the model is untouched').toBe('')
     expect(SCHED.pending[key]).toBeUndefined()
     stale.remove()
@@ -172,14 +183,20 @@ describe('B on the scheduler board', () => {
     delete SCHED.pending[rk(key)]
   })
 
-  it('a blank B on the board offers the same accept ghost as the week', async () => {
+  it('a blank B on the board carries the same suggestion inside its box; one tap places it, leaving saves it', async () => {
     const f: any = firstForm()!, idx = idxOf(f), was = f.br, key = `ff:${idx}.br`
     await act(async () => { f.br = ''; notify() })
-    const ghost = document.querySelector(`#sbBoard .bsug[data-bacc="${key}"]`) as HTMLElement
-    expect(ghost, 'the board renders the suggestion ghost').toBeTruthy()
+    expect(document.querySelector('#sbBoard .bsug'), 'no suggestion on a line of its own above the box').toBeNull()
+    const inp = document.querySelector(`#sbBoard input[data-bfld="${key}"]`) as HTMLInputElement
     const want = minus(f.to, VCONF.briefLead)
-    expect(ghost.dataset.bval).toBe(want)
-    await click(ghost)
+    expect(inp.classList.contains('sugbox')).toBe(true)
+    expect(inp.placeholder).toBe(want)
+    expect(inp.value).toBe('')
+    await act(async () => { inp.focus() })
+    await click(inp)
+    expect(inp.value, 'the tap placed it').toBe(want)
+    expect(f.br, 'not saved until the box is left').toBe('')
+    await act(async () => { inp.blur() }); await settle()
     expect(f.br).toBe(want)
     expect(SCHED.pending[rk(key)]).toBe(1)
     await act(async () => { f.br = was; delete SCHED.pending[rk(key)]; notify() })
@@ -191,9 +208,9 @@ describe('the CSV export honours a typed B', () => {
     const f: any = firstForm()!, was = f.br
     const find = (rows: any[][]) => rows.find(r => r[3] === f.cs && r[4] === f.msn)
     f.br = '05:55'
-    expect(find(schedRows())![5]).toBe('05:55')
+    expect(find(schedRows())![6]).toBe('05:55')   // Rally (column 5) before Brief since D1026
     f.br = ''
-    expect(find(schedRows())![5]).toBe(minus(f.to, VCONF.briefLead))
+    expect(find(schedRows())![6]).toBe(minus(f.to, VCONF.briefLead))
     f.br = was
   })
 })
@@ -228,5 +245,87 @@ describe('the edit week flying-line remarks placeholder', () => {
     await settle()
     const withRemarks = $$('#eWeek .rmkcell .ntx[data-ph="Remarks"]')
     expect(withRemarks.length, 'the week flying line offers the Remarks placeholder').toBeGreaterThan(0)
+  })
+})
+
+/* [RALLY-PER-FORMATION] — each formation's own R box (owner D1026, D1027, D1029–D1031, 19 Oct 26): R above B in the
+   second column, TO above LD in the third; the empty R box suggests the default rally (take-off less the Logic page's
+   report time) faint inside it, one tap places it; the board carries the same box; "+ In-time" fills what it always did. */
+describe('the R box (D1026)', () => {
+  const reset = async (f: any, keep: any) => { await act(async () => { Object.assign(f, keep); notify() }) }
+  it('the week: R over B, TO over LD; an empty R suggests take-off less the report time; a typed one shows', async () => {
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!); await settle()
+    const f: any = firstForm()!, idx = idxOf(f), keep = { rl: f.rl, br: f.br }
+    await act(async () => { f.rl = ''; notify() })
+    const day = $('#eWeek .day[data-day="0"]')
+    expect(day.innerHTML, 'the headings').toContain('<span class="c-c">R<br>B</span><span class="c-c">TO<br>LD</span>')
+    const r = $(`#eWeek [data-txt="ff:${idx}.rl"]`), form = r.closest('.form') as HTMLElement
+    expect([...form.querySelector('.fcell.bto')!.children].map(e => (e as HTMLElement).dataset.txt), 'R above B').toEqual([`ff:${idx}.rl`, `ff:${idx}.br`])
+    expect([...form.querySelector('.fcell.ld')!.children].map(e => (e as HTMLElement).dataset.txt), 'TO above LD').toEqual([`ff:${idx}.to`, `ff:${idx}.ld`])
+    expect(r.classList.contains('sugbox')).toBe(true)
+    expect(r.dataset.ph, 'the default rally: take-off less the report time').toBe(minus(f.to, VCONF.reportLead))
+    expect(r.textContent).toBe('')
+    await act(async () => { f.rl = '07:05'; notify() })
+    const typed = $(`#eWeek [data-txt="ff:${idx}.rl"]`)
+    expect(typed.textContent).toBe('07:05')
+    expect(typed.classList.contains('sugbox'), 'no suggestion once a rally is typed').toBe(false)
+    await reset(f, keep)
+  })
+  it('one tap on the empty R box places the default rally; leaving the box saves it as a pending change would', async () => {
+    const f: any = firstForm()!, idx = idxOf(f), keep = { rl: f.rl }, key = `ff:${idx}.rl`
+    await act(async () => { f.rl = ''; notify() })
+    const r = $(`#eWeek [data-txt="${key}"]`), want = minus(f.to, VCONF.reportLead)
+    await act(async () => { r.focus() })
+    await click(r)
+    expect(r.textContent).toBe(want)
+    await act(async () => { r.blur() }); await settle()
+    expect(f.rl).toBe(want)
+    expect(SCHED.pending[rk(key)]).toBe(1)
+    delete SCHED.pending[rk(key)]
+    await reset(f, keep)
+  })
+  it('a Tab passing through the empty R box fills nothing', async () => {
+    const f: any = firstForm()!, idx = idxOf(f), keep = { rl: f.rl }
+    await act(async () => { f.rl = ''; notify() })
+    const msn = $(`#eWeek [data-txt="ff:${idx}.msn"]`)
+    await act(async () => { msn.focus() })
+    await act(async () => { msn.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true })) })
+    expect(document.activeElement, 'the Tab reached the R box').toBe($(`#eWeek [data-txt="ff:${idx}.rl"]`))
+    expect((document.activeElement as HTMLElement).textContent, 'and placed nothing').toBe('')
+    await act(async () => { (document.activeElement as HTMLElement).blur() }); await settle()
+    expect(f.rl).toBe('')
+    await reset(f, keep)
+  })
+  it('the board: an R box before B in the first time cell, its placeholder the default rally', async () => {
+    if (!document.querySelector('#sbBoard input[data-bfld]')) await click($('#eWeek .day[data-day="0"] .dt.sb-open'))
+    const f: any = firstForm()!, idx = idxOf(f), keep = { rl: f.rl }
+    await act(async () => { f.rl = ''; notify() })
+    const cell = document.querySelector(`#sbBoard .sb-rb input[data-bfld="ff:${idx}.rl"]`)!.parentElement as HTMLElement
+    expect([...cell.querySelectorAll('input')].map(e => e.dataset.bfld), 'R over B').toEqual([`ff:${idx}.rl`, `ff:${idx}.br`])
+    const r = cell.querySelector('input') as HTMLInputElement
+    expect(r.placeholder).toBe(minus(f.to, VCONF.reportLead))
+    expect(r.classList.contains('sugbox')).toBe(true)
+    await act(async () => { r.value = '0640'; r.dispatchEvent(new Event('change', { bubbles: true })) })
+    expect(f.rl, 'a typed rally writes through the funnel, folded').toBe('06:40')
+    delete SCHED.pending[rk(`ff:${idx}.rl`)]
+    await reset(f, keep)
+  })
+  it('"+ In-time" fills take-off less the report time, whatever a formation’s R box says (D1031)', async () => {
+    const gi = DAYS[0].waves.findIndex((x: any) => !isStandalone(x) && (x.formations || []).length)
+    const w: any = DAYS[0].waves[gi], keep = { intimes: w.intimes.slice(), rl: w.formations[0].rl }
+    await act(async () => { w.intimes = []; w.formations[0].rl = '05:00'; notify() })
+    await click($(`#eWeek [data-itadd="0|${gi}"]`))
+    const tos = w.formations.filter((x: any) => !x.cx && x.to).map((x: any) => { const [h, m] = String(x.to).split(':').map(Number); return h! * 60 + m! })
+    expect(w.intimes).toHaveLength(1)
+    expect(w.intimes[0].slice(0, 5)).toBe(minus(String(Math.min(...tos)).length ? `${String(Math.floor(Math.min(...tos) / 60)).padStart(2, '0')}:${String(Math.min(...tos) % 60).padStart(2, '0')}` : '', VCONF.reportLead))
+    await act(async () => { w.intimes = keep.intimes; w.formations[0].rl = keep.rl; notify() })
+  })
+  it('the CSV carries a Rally column before Brief: the typed rally, never the default', () => {
+    const f: any = firstForm()!, keep = f.rl
+    const find = (rows: any[][]) => rows.find(r => r[3] === f.cs && r[4] === f.msn)
+    expect(schedRows()[0]!.slice(4, 8)).toEqual(['Mission', 'Rally', 'Brief', 'TO'])
+    f.rl = '0705'; expect(find(schedRows())![5]).toBe('07:05')
+    f.rl = ''; expect(find(schedRows())![5]).toBe('')
+    f.rl = keep
   })
 })
