@@ -34,7 +34,7 @@ your own brief below). The design: `raptor-port/docs/superpowers/specs/2026-10-1
 - A problem that lives ONLY in demo data already stored, when the app is right for new data, is NOT a finding.
 
 ## The served build — do not build, do not start or stop servers
-- `http://localhost:4322/` — bundle `__BUNDLE__` (prove it first: the served index page names that file). Never use
+- `http://localhost:4322/` — bundle `index-BTbomYbk.js` (prove it first: the served index page names that file). Never use
   any other port. Never run `npm run build`, `vite`, or a Playwright test runner config — write plain Node scripts using
   `import { chromium } from '@playwright/test'` with the repo's browser fallback
   (`existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {}`, CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium').
