@@ -274,7 +274,9 @@ const RULING_BYTES = [
   /* scheduler 99000 -> 103000 (19 Oct 26, his three changes to the rally box): 99,401 bytes with D1035-D1037 - live; none
      is trimmed (D136). The split was put back to him and he kept one file (D976, 17 Oct 26 - D611's mark standing). Room,
      not a target. */
-  ['.claude/rules/decisions/scheduler.md', 2, 103000],
+  /* scheduler 103000 -> 107000 (19 Oct 26, [STANDBY-FLIES]): 103,062 bytes with D1060-D1067 - live; none is trimmed
+     (D136); the file stays one (D976). Room, not a target. */
+  ['.claude/rules/decisions/scheduler.md', 2, 107000],
   /* inputs 32000 -> 37000 (16 Oct 26, the documents tidy after pull request 519): 35,026 bytes with the calendar's step
      two, the input window's and the Medical tab's rulings of 14-15 Oct (D900-D920, D927) - live; none is trimmed (D136). [RULINGS-SPENT-PASS]
      reads it for spent rows. Room, not a target. */
