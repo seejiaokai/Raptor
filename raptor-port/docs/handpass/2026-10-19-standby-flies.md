@@ -119,7 +119,10 @@ are not exported today, so no Flies either); a public-holiday weekday (12d — t
 `engine/oil*.test.ts`); two tabs live (the app does not sync open tabs; last save wins — older behaviour).
 
 ## 11. Gates
-(filled when the run ends)
+The full set under the lock (`gatelock.mjs run`, E2E_PORT 4321) on commit ca85df32d (the final code — every walk, read and
+narrow-read fix in): unit 11,950 / 673 files, build, tfin 728/0, e2e 879 passed (61 skipped), the Tracker smoke 453/0, rulecheck,
+docsize — all PASS. The first run (on 7fcdbd6f9, before the reads) failed only on five tests pinning the old empty placeholder
+and the old Logic line (G-1).
 
 ## 12. The model reads
 - **The scenario designer** — a fresh Opus, blind to the build (`parts/standby-flies/scenarios.md`): 22 scenarios, 8 breaks.
@@ -159,3 +162,4 @@ shift, with nothing typed, tap a spare's dashed FLIES on the Scheduler Board —
 The empty R and B boxes of a standby line show a faint dash. Not walked anywhere but here: Safari on his iPhone itself.
 
 ## Walk line
+`Walk: docs/handpass/2026-10-19-standby-flies.md · ~230 pictures · 3 walkers (A desktop, B phone 402 by finger, C rules and the chain) + the host's re-walk · 22 scenarios, 8 breaks · 7 walk faults fixed (the phone badge squeeze, stale words ×3, the changes window's words ×2, keyboard focus), 3 recorded as older behaviour · 4 read findings + 3 narrow-read findings fixed · gates green`
