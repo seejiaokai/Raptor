@@ -115,7 +115,7 @@ const ALLHANDS: Spec = { ...FLAGS, prog: 'string', str: 'string', end: 'string',
 const GROUND: Spec = { ...(ALLHANDS as object), rmks: 'string?', src: 'string?', srcType: 'string?', srcv: 'string?', kept: 'boolean?' }
 const SAKIND: Spec = { $lit: ['sc', 'avalon', 'bb'] }
 const SEAT: Spec = { ...FLAGS, p: 'string', w: 'string', area: 'string', rmks: 'string', opts: { $map: { $or: ['boolean', 'string'] } }, spare: 'boolean?', role: { $opt: { $lit: ['MAIN', 'SPARE'] } }, rid: 'string?' }
-const FORMATION: Spec = { cs: 'string', msn: 'string', shift: 'string?', to: 'string', ld: 'string', br: 'string?', area: 'string?', atime: 'string?', aircraft: [SEAT], cx: 'boolean?', cxr: 'string?', rid: 'string?' }
+const FORMATION: Spec = { cs: 'string', msn: 'string', shift: 'string?', to: 'string', ld: 'string', br: 'string?', rl: 'string?', area: 'string?', atime: 'string?', aircraft: [SEAT], cx: 'boolean?', cxr: 'string?', rid: 'string?' }
 const WAVE: Spec = { label: 'string', night: 'boolean', intimes: ['string'], traffic: ['string'], formations: [FORMATION], standalone: 'boolean?', kind: { $opt: SAKIND }, noconf: 'boolean?', rid: 'string?' }
 const SIM: Spec = { ...FLAGS, label: 'string', str: 'string', end: 'string', rmks: 'string?', p: 'string?', w: 'string?', pax: { $opt: ['string'] }, who: 'string?', more: { $opt: ['string'] }, rid: 'string?' }
 const DUTYROW: Spec = { ...FLAGS, role: 'string', id: 'string', str: 'string', end: 'string', more: { $opt: ['string'] }, rid: 'string?' }
@@ -339,6 +339,13 @@ describe('after edits — fields the seeds never carry', () => {
     const f = clone(DAYS0[0]).waves[0].formations[0]
     f.area = 'NORTH'; f.atime = '0800-0900'
     conform(f, FORMATION, 'formation+area')
+  })
+  /* the formation's own rally (D1026) — typed into the R box through the one write path, never in the seed (the reference
+     compares the seed byte for byte), so this case is the record that carries it */
+  it('a formation with its own rally typed in the R box (D1026)', () => {
+    const f = clone(DAYS0[0]).waves[0].formations[0]
+    f.rl = '10:10'
+    conform(f, FORMATION, 'formation+rally')
   })
   it('a leave synced from the Leave War carries the war id as its lw tag (leavewar/sync.ts)', () => {
     const row: any = { person: 'bane', type: 'LL', date: 'Jul 13', yr: 2026, allday: true, remarks: '', mod: 'now', lw: 'y2026' }

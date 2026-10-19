@@ -567,6 +567,21 @@
         "--strictPort"
       ],
       "port": 4187
+    },
+    {
+      "name": "raptor-rally",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--port",
+        "4298",
+        "--strictPort"
+      ],
+      "port": 4298
     }
   ]
 }

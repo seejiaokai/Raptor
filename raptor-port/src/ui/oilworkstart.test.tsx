@@ -117,7 +117,7 @@ describe('OWS7 — a Logic change that would move a published day\'s OIL is one 
     const t = listText(SAT)
     expect(t, 'it is about OIL and the Logic page').toMatch(/OIL/)
     expect(t).toMatch(/Logic/)
-    expect(t, 'the value that changed, old and new').toContain('Default rally before T/O')   // renamed by D1031
+    expect(t, 'the value that changed, old and new').toContain('Default rally before T/O')   // renamed by D1031 (RB6)
     expect(t).toContain('3h'); expect(t).toContain('2h30')
     expect(t, 'the man whose OIL would move, and how').toContain(moves(FLYER, 'full day · 07:00–13:15', 'half day · 07:30–13:15'))
     expect(t, 'never the long label of the Logic box').not.toContain('button fills in')

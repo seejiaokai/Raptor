@@ -267,6 +267,14 @@ const RULES = {
   ITD1: 'In-time / Rally lines drag into order on the Scheduler Board only, never on the week',
   ITD2: 'a new order on a published day is a pending change; dragged back it nets to nothing',
   ITD3: 'Auto sort and Sort all order the lines by time: evening-before first, no clock last',
+  /* [RALLY-PER-FORMATION] — each formation's own R box, D1026–D1034; 2026-10-02-rally-behaviour-register.md, RB1–RB7 */
+  RB1: 'a formation’s R box counts as a typed rally: the earliest applicable in-time or rally starts its report',
+  RB2: 'a whole-wave in-time stays everyone’s; a typed line saying RALLY is read as before',
+  RB3: 'an empty R box counts as nothing entered: the nominal report',
+  RB4: 'the week draws R over B and TO over LD; the board one line on a desktop, stacked where pucks take their own row',
+  RB5: 'a suggested time sits faint inside its empty box; one tap places it, Tab fills nothing',
+  RB6: 'the default rally is take-off less the one Logic setting, the same time + In-time fills',
+  RB7: 'on a published day a changed R box waits for the next amendment',
   /* [OIL-WORK-START] — D591, D592; 2026-10-06-oil-work-start-behaviour-register.md (it replaces RT8's "nominal OIL" half) */
   OWS1: 'the OIL day of a flying line starts at its earliest applicable entered in-time / Rally',
   OWS2: 'nothing entered or readable: the nominal report time',

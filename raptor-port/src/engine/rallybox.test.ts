@@ -33,7 +33,7 @@ afterEach(() => {
   Object.keys(SCHED).forEach(k => delete SCHED[k]); Object.assign(SCHED, JSON.parse(saved.book)); Object.assign(VCONF, saved.v)
 })
 
-describe('the R box in the one reporting reader (D1032, D1034)', () => {
+describe('RB1 RB2 RB3 — the R box in the one reporting reader (D1032, D1034)', () => {
   it('a box alone is the report; an empty box is nothing entered (the nominal report, D592)', () => {
     expect(rep(flight([], f('12:00', '13:00', '10:00', '08:30')))).toMatchObject({ inTime: null, rally: 510, report: 510 })
     expect(rep(flight([], f()))).toMatchObject({ inTime: null, rally: null, report: null })
@@ -58,7 +58,7 @@ describe('the R box in the one reporting reader (D1032, D1034)', () => {
   })
 })
 
-describe('the R box reaches every reader of the report', () => {
+describe('RB1 — the R box reaches every reader of the report', () => {
   it('crew rest counts to the box: a flight ending 02:00 the night before and a 12:00 box is 10h; an empty box, 13h', () => {
     DAYS[0].waves = [flight([], { ...f('22:00', '00:00', '20:00'), aircraft: [{ p: 'bane', w: '', rmks: '', opts: {} }] })]
     DAYS[1].waves = [flight([], f('15:00', '16:00', '12:40', '12:00'))]

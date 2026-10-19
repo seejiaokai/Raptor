@@ -24,7 +24,7 @@ beforeEach(() => {
 })
 afterEach(() => { vi.restoreAllMocks(); DAYS.splice(0, DAYS.length, ...JSON.parse(saved)); Object.keys(SCHED).forEach(k => delete SCHED[k]); Object.assign(SCHED, JSON.parse(savedBook)) })
 
-describe('the R box on a published day waits for the next amendment (D1032, D45)', () => {
+describe('RB7 — the R box on a published day waits for the next amendment (D1032, D45)', () => {
   it('a typed rally is one pending change; the issued copy keeps none; the amendment carries 07:30', () => {
     sign(); commitSetDayApproved(0, true)
     expect(dayShownPendCount(0)).toBe(0)

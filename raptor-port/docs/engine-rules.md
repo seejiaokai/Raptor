@@ -214,6 +214,20 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   words typed WITH a clock are that rally's own time — never a second in-time (W3, 5 Oct 26).
   A wave's header time (`waveInTime`) reads a formation with no take-off yet as the day's
   checks do — the typed clock on its own day (W5, 5 Oct 26).
+- **Each formation's own rally box (owner D1026, D1032, D1034, 19 Oct 26 — `[RALLY-PER-FORMATION]`).** `f.rl` is the
+  formation's rally, typed in its R box (the week's R over B, the board's R before B). `resolveReporting` reads it as one
+  more FORMATION-SPECIFIC rally: it replaces the whole-wave typed RALLY lines (D505) and stands beside a typed rally line
+  naming the formation, the earlier counting (D506), with the same evening-before rule (D503). It is never an in-time: a
+  whole-wave in-time 06:00 with a rally 07:00 still reports at 06:00 (D1034); the typed lines are read exactly as before.
+  So every reader of the report — crew rest, the long day and work hours, OIL (D591), the wave's header and window, the
+  order check (a box after the brief is the red "rally … is later than brief", never blocking — D507, D509) — counts it as
+  it counted a typed rally (D1032). An empty box is nothing entered: the nominal report, the take-off less `reportLead`
+  (D592) — the time the empty box SUGGESTS as its default rally (D1027, D1031) and the time "+ In-time" fills (D510,
+  which reads the typed lines alone, never the box). A standalone wave carries no rally (a stray `rl` there is never read).
+  `rl` is a time key (`slots.ts TIME_TXT`): a time or nothing, folded to hh:mm; a rally later than the take-off is the
+  evening before, so it is never refused, and a take-off moved earlier leaves it alone. It rides `restore.ts dayKeys`
+  as `ff:di.gi.li.rl`, so on a published day a changed rally is one pending change and waits for the next amendment (D45).
+  Pinned: `engine/rallybox.test.ts`, `state/rallybox-publish.test.ts` (register RB1–RB7).
   Other clockless notes stay inert. Formation matching is bounded against only
   this wave's actual formation names anywhere in the whole line, including
   remarks; unmatched words and personal names do not create another target.

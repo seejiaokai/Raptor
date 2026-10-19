@@ -251,7 +251,7 @@ describe('the edit week flying-line remarks placeholder', () => {
 /* [RALLY-PER-FORMATION] — each formation's own R box (owner D1026, D1027, D1029–D1031, 19 Oct 26): R above B in the
    second column, TO above LD in the third; the empty R box suggests the default rally (take-off less the Logic page's
    report time) faint inside it, one tap places it; the board carries the same box; "+ In-time" fills what it always did. */
-describe('the R box (D1026)', () => {
+describe('RB4 RB5 RB6 — the R box (D1026)', () => {
   const reset = async (f: any, keep: any) => { await act(async () => { Object.assign(f, keep); notify() }) }
   it('the week: R over B, TO over LD; an empty R suggests take-off less the report time; a typed one shows', async () => {
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!); await settle()
