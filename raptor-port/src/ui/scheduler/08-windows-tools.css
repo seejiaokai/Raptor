@@ -11,6 +11,10 @@
 [data-kbcap]{max-height:var(--kbcap) !important}
 /* the room at the foot of the Scheduler Board's list while the keys are up (kbscroll.ts panelRoom) */
 [data-kbroom]{padding-bottom:var(--kbroom) !important}
+/* the Scheduler Board's height held while a box in it is typed in (kbscroll.ts holdFull): a floor, never a cap, so a layout
+   a browser shortens for the keys never cuts the board short under a page the phone has already scrolled on for them (his
+   black band, 19 Oct 26 17:10) */
+[data-kbfull]{min-height:var(--kbfull) !important}
 .modal-head{padding:14px 16px;border-bottom:1px solid var(--edge);display:flex;align-items:center}
 .modal-head b{font-size:16px;font-weight:700}
 .modal-head .x{margin-left:auto;background:none;border:none;color:var(--ink-2);cursor:pointer;font-size:18px;line-height:1}

@@ -188,6 +188,38 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
     await expect.poll(() => page.locator('[data-kbroom]').count(), 'the room goes with the keys').toBe(0)
   })
 
+  /* KS8 — Fable's read of his pictures of 19 Oct 26 17:10 (the board ending a third of the way down the screen, the page's
+     dark foot below it to the keys). The board is as tall as its layout; anything that cuts it short while the phone has
+     already scrolled the page on for the keys leaves that band. From the tap until the typing ends the board holds the
+     height its layout had (--kbfull): here the layout itself is cut to the visible screen with the keys up, as a browser
+     that shortens its layout for the keys would. Chromium cannot pan the held document as an iPhone does: the page lift that
+     comes first in the board is pinned in src/ui/kbscroll.test.ts. */
+  test('KS8 the board keeps its height while a box in it is typed in: a layout cut to the visible screen leaves no band under it; let go when the typing ends', async ({ page }) => {
+    await login(page); await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(0)); await expect(page.locator('#schedBoard')).toBeVisible()
+    await page.waitForTimeout(400)   // the board's opening slide done
+    const box = page.locator('#schedBoard input.tm:visible').nth(6)
+    await lowOnScreen(box)
+    const h = () => page.evaluate(() => Math.round(document.getElementById('schedBoard')!.getBoundingClientRect().height))
+    expect(await h()).toBe(H)
+    await tap(page, box); await expect(box).toBeFocused()
+    await expect.poll(() => page.locator('#schedBoard[data-kbfull]').count(), 'held from the tap').toBe(1)
+    await keysUp(page)
+    await expect.poll(() => bottomOf(box)).toBeLessThanOrEqual(H - KB - GAP + 1)
+    /* the layout shortened to the visible screen, the keys still up and the box still being typed in */
+    await page.setViewportSize({ width: 402, height: H - KB })
+    await page.waitForTimeout(300)
+    expect(await page.evaluate(() => innerHeight), 'the fixture: the layout is the visible screen now').toBe(H - KB)
+    await expect(box).toBeFocused()
+    expect(await h(), 'the board still a full screen tall').toBe(H)
+    expect(await page.evaluate(() => document.scrollingElement!.scrollHeight), 'the page as tall as the board: nothing the phone scrolled on shows dark').toBeGreaterThanOrEqual(H)
+    expect(await bottomOf(box), 'the box still above the keys').toBeLessThanOrEqual(H - KB - GAP + 1)
+    /* the typing ends: the board follows its layout again */
+    await page.evaluate(() => (document.activeElement as HTMLElement).blur())
+    await expect.poll(() => page.locator('#schedBoard[data-kbfull]').count(), 'let go').toBe(0)
+    expect(await h()).toBe(H - KB)
+  })
+
   test('KS4 a box already above the keys is left where it is', async ({ page }) => {
     await login(page); await go(page, 'logic'); await page.click('#lgEdit')
     const box = page.locator('input.lgin:visible').first()

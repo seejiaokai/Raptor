@@ -303,4 +303,83 @@ describe('installKbScroll', () => {
     vv.height = H; b.focus(); vv.dispatchEvent(new Event('resize')); frames()
     expect(p.scrollTop).toBe(0)
   })
+
+  /* Fable, 19 Oct 26: the board's height held from the tap; the lift measured once the phone's own pan has come to rest */
+  const board = () => {
+    document.body.innerHTML = '<div id="bd" data-kblayer><div id="p"><input id="b"><input id="c"></div></div>'
+    const bd = document.getElementById('bd')!, p = document.getElementById('p')!
+    const b = document.getElementById('b') as HTMLInputElement, c = document.getElementById('c') as HTMLInputElement
+    place(bd, 0, H); panel(p, 0, H, 1000); place(b, 700, 30); place(c, 100, 30)
+    return { bd, p, b, c }
+  }
+  it('the board keeps the height its layout had when a box in it took the focus — from one box to the next — until the keys go down (--kbfull)', () => {
+    const { bd, b, c } = board()
+    b.focus(); frames()
+    expect(bd.dataset.kbfull, 'held from the tap, before any keys').toBe('')
+    expect(bd.style.getPropertyValue('--kbfull')).toBe(`${H}px`)
+    keysUp(); frames()
+    c.focus(); frames()
+    expect(bd.dataset.kbfull, 'kept from one box of the board to the next').toBe('')
+    vv.height = H; vv.dispatchEvent(new Event('resize'))
+    expect(bd.dataset.kbfull, 'the keys down: let go').toBeUndefined()
+    expect(bd.style.getPropertyValue('--kbfull')).toBe('')
+  })
+  it('… and let go when the typing ends with the keys still up', () => {
+    const { bd, b } = board()
+    b.focus(); keysUp(); frames()
+    expect(bd.dataset.kbfull).toBe('')
+    b.blur(); frames()
+    expect(bd.dataset.kbfull).toBeUndefined()
+  })
+  it("a window raised for the keys comes back down by what the phone's own pan then brought it; a pan long after the focus is left alone", () => {
+    document.body.innerHTML = '<div id="bd" style="position:fixed"><div id="w"><input id="b"></div></div>'
+    const bd = document.getElementById('bd')!, w = document.getElementById('w')!, b = document.getElementById('b') as HTMLInputElement
+    place(bd, 0, H); place(w, 300, 300); place(b, 560, 30)
+    b.focus(); keysUp(); frames()
+    const raised = 590 - (H - KB - GAP)
+    expect(w.style.translate).toBe(`0 -${raised}px`)
+    /* the phone pans the visible screen 100 down the layout (the box is 100 higher on the screen than the layout says) */
+    vv.offsetTop = 100; vv.dispatchEvent(new Event('scroll')); frames()
+    expect(w.style.translate, 'down again by the pan: the box stays GAP above the keys, moved once in all').toBe(`0 -${raised - 100}px`)
+    expect(b.getBoundingClientRect().bottom - vv.offsetTop).toBe(H - KB - GAP)
+    vi.advanceTimersByTime(3000)
+    vv.offsetTop = 0; vv.dispatchEvent(new Event('scroll')); frames()
+    expect(w.style.translate, 'a pan long after the focus: nothing').toBe(`0 -${raised - 100}px`)
+  })
+})
+
+/* Fable, 19 Oct 26 — his eighth report ("sometimes I press on a new text box the page jumps a little and I couldn't click
+   that text box I wanted"): in the board the page is scrolled first — the scroll the phone itself makes for the keys, by
+   its own scrolling view — and the board's list only where the page can go no further */
+describe('the Scheduler Board: the page first, then its list', () => {
+  const board = () => {
+    document.body.innerHTML = '<div id="bd" data-kblayer><div id="p"><input id="b"></div></div>'
+    const bd = document.getElementById('bd')!, p = document.getElementById('p')!, b = document.getElementById('b') as HTMLInputElement
+    place(bd, 0, H); panel(p, 0, H, 1000); place(b, 700, 30)   // the box 700–730, the keys from 460
+    return { bd, p, b }
+  }
+  const pageRoom = (room: number) => Object.defineProperty(document.documentElement, 'scrollTop', { configurable: true, get: () => pageST, set: v => { pageST = Math.max(0, Math.min(room, v)) } })
+  afterEach(() => dropLifts())
+  it('a page that can scroll far enough (an iPhone: on by the keys\' own height) takes the whole lift; the list is left alone', () => {
+    const { p, b } = board()
+    keepAboveKeyboard(b, vvUp)
+    expect(pageST).toBe(730 - (H - KB - GAP))
+    expect(p.scrollTop).toBe(0)
+    expect(b.getBoundingClientRect().bottom).toBe(H - KB - GAP)
+  })
+  it('a page that cannot move (a desktop, Chromium — the held document scrolls nowhere): the list, as before', () => {
+    pageRoom(0)
+    const { p, b } = board()
+    keepAboveKeyboard(b, vvUp)
+    expect(pageST).toBe(0)
+    expect(p.scrollTop).toBe(730 - (H - KB - GAP))
+    expect(b.getBoundingClientRect().bottom).toBe(H - KB - GAP)
+  })
+  it('a page that can give only part of it: the rest from the list', () => {
+    pageRoom(100)
+    const { p, b } = board()
+    keepAboveKeyboard(b, vvUp)
+    expect([pageST, p.scrollTop]).toEqual([100, 730 - (H - KB - GAP) - 100])
+    expect(b.getBoundingClientRect().bottom).toBe(H - KB - GAP)
+  })
 })

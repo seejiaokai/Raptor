@@ -161,7 +161,11 @@ export function SchedBoard() {
      while it is open the board is ordinary page content — position:absolute at the top of the document, a screen tall
      (10-board-history.css), the document held to that one screen while it is open (html.sb-board-up, the effect above):
      an iPhone moves page content with its own scroll in the same frame, and has no fixed layer to place. data-kblayer
-     keeps it a whole screen of its own to the keyboard lift (kbscroll.ts isLayer), raised and held as when it was fixed. */
+     keeps it a whole screen of its own to the keyboard lift (kbscroll.ts): never raised — a box in it rides the page's
+     own scroll first, the one the iPhone makes for its keys, then the board's list — and held at the height its layout
+     had from the tap until the typing ends (holdFull, --kbfull), so a layout a browser shortens for the keys never cuts
+     the board short under a page already scrolled on: his black band of 19 Oct 26 17:10 (Fable's read; those pictures were
+     of the 16:49 build, which held the board's body to the visible height by script). */
 
   /* wires HOOKS.closeBoardDialogs — state/view.ts's closeBoardState() calls
      it, but the board's own dialog state (CXT, SORTALL) lives here, in the

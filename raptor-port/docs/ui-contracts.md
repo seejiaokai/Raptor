@@ -815,8 +815,8 @@ press on its box; a box its screen opens with the focus already in it (the Leave
 **On a phone, the box being typed in shows above the keyboard (owner D1048, 19 Oct 26; nothing jumps as the keys open or close, D1081).** `ui/kbscroll.ts`, installed once
 from `main.tsx`: when a box to type in has the focus and the keyboard has shrunk the visible screen (`visualViewport`, more
 than 120px shorter than the layout, not pinch-zoomed), the box's own scrolling panels are scrolled, nearest first, so its
-bottom sits 8px above the keys — then the page, unless the box is in a fixed layer (a window, a sheet, the board), where the
-page behind never moves (D686). A box still under the keys in a fixed layer raises its window (the CSS `translate`
+bottom sits 8px above the keys — then the page, unless the box is in a fixed layer (a window, a sheet; the board is page
+content of its own, below), where the page behind never moves (D686). A box still under the keys in a fixed layer raises its window (the CSS `translate`
 property — on a full-screen backdrop, the window on it), never past the visible top; a window taller than the room is held
 to the visible screen's height while the keys are up (an inline `max-height`, never over one the window set itself) and its
 own body scrolls the box into sight. Everything is put back when the typing ends or the keys go down. Only resizes within
@@ -827,10 +827,21 @@ runs first; this measures two frames later. **The Scheduler Board is page conten
 (`html.sb-board-up` — an iPhone scrolls a document that can scroll to show a box, and leaves it scrolled: the board rose at
 every tap, his picture of 19 Oct 26 16:13), its place given back on the close; clipped (`overflow:clip`, so the crew drawer off its edge never widens the page), the page behind unpainted; nothing places
 it by script after that. `data-kblayer` keeps it a layer of its own to the lift above, but it is never raised or held as
-a window is: a box its list cannot scroll up far enough gets room at the foot of that list while the keys are up
-(`--kbroom`, `[data-kbroom]` in `08-windows-tools.css` — his report of 19 Oct 26 16:49: the raised body slid over the
-board's bar at every tap and, the iPhone panning too, ended above the keys). Nothing is lifted on the press itself — on
-his iPhone a focus given at the end of the touch never took (his recording of 19 Oct 26 16:59); the tap is the browser's. The keys count
+a window is. **In the board the page comes first** (Fable's read of his recordings, 19 Oct 26): an iPhone shows a box by
+scrolling the page on by the keys' own height, smoothly with the keys, carrying the board (its bar slides off the top) and
+leaving the box at the keys' edge; the lift takes its 8px from that same scroll — the browser's own scrolling view, so a tap
+that follows is never judged against a stale picture — and only where the page can go no further (a desktop; Chromium,
+whose held document scrolls nowhere; a box at the very end of the list) scrolls the board's list, with room at the foot of
+that list while the keys are up (`--kbroom`, `[data-kbroom]` in `08-windows-tools.css` — his report of 19 Oct 26 16:49: the
+raised body slid over the board's bar at every tap and, the iPhone panning too, ended above the keys). **From the tap until
+the typing ends or the keys go down the board holds the height its layout had** (`--kbfull`, `[data-kbfull]` — a floor,
+never a cap): a layout a browser shortens for the keys, or anything that cuts the board short under a page the phone has
+already scrolled on, leaves the board ending a third of the way down the screen with the page's dark foot below it (his
+pictures of 19 Oct 26 17:10 — of the 16:49 build, deployed 17:12, which held the board's body to the visible height).
+**The lift measures only once the visible screen has come to rest**: each `scroll` step of the viewport's own pan sets
+the measuring back two frames, so the lift never adds to a pan the phone is still making. Nothing is lifted on the press
+itself — on his iPhone a focus given at the end of the touch never took (his recording of 19 Oct 26 16:59); the tap is the
+browser's. The keys count
 as up against the tallest visible screen seen at this width with nothing typed in (never one read taller than the layout). Pinned: `ui/kbscroll.test.ts`,
 `ui/amendbatch-app.test.tsx` (the board as page content), `e2e/kbscroll.spec.ts` KS1–KS7 (a stand-in visual viewport —
 Chromium cannot raise an iPhone keyboard).

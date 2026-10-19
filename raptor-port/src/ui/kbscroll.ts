@@ -9,10 +9,13 @@
    sheet's own scrolling body — so a box low in such a panel stayed under the keys.
 
    WHAT THIS DOES. When a box to type in takes the focus, and once the keyboard has shrunk the visual viewport (its
-   `resize`, which also arrives while the keys slide up), the box's own scrolling panels are scrolled, nearest first,
+   `resize`) and the phone's own pan to the box has come to rest (its `scroll` steps — the lift never adds to a pan still
+   running), the box's own scrolling panels are scrolled, nearest first,
    just far enough that its bottom sits GAP above the keyboard (or above the panel's own foot, if that is higher) —
-   then the page itself, unless the box sits in a fixed layer (a window, a sheet, the board), where scrolling the page
-   would only move what is behind it (D686) — there, a box still under the keys raises its window instead (raise, below). Never more than that: a box already in sight is left where it is, and a
+   then the page itself, unless the box sits in a fixed layer (a window, a sheet), where scrolling the page
+   would only move what is behind it (D686) — there, a box still under the keys raises its window instead (raise, below).
+   The Scheduler Board is page content of its own (SchedBoard.tsx, D1081): there the page comes FIRST — the scroll the
+   phone itself makes for the keys — then the board's list (keepAboveKeyboard). Never more than that: a box already in sight is left where it is, and a
    box taller than the room left keeps its TOP in sight. Instant, not smooth: the keys are still sliding up, and a
    smooth scroll measured mid-slide overshoots (D991 — no motion to wait on).
 
@@ -137,6 +140,7 @@ function roomBelow(px: number) {
 export function dropLifts(keep?: Element | null) {
   for (const l of [...LIFTED]) if (!keep || !l.contains(keep)) putBack(l)
   for (const p of [...ROOMED]) if (!keep || !p.contains(keep)) unroom(p)
+  for (const l of [...FULL]) if (!keep || !l.contains(keep)) unholdFull(l)
   if (!keep && SPACER) { SPACER.remove(); SPACER = null }
 }
 /* a held window: held to the room again (the room may have changed), its top at the top */
@@ -199,44 +203,85 @@ function panelRoom(el: HTMLElement, layer: Element, visTop: number, visBot: numb
 
 /* A LAYER over the page: anything position:fixed, and the Scheduler Board, which stands as page content while it is open
    (data-kblayer — SchedBoard.tsx, owner D1081: an iPhone draws a fixed full-screen layer out of place for a frame as the
-   keys close) but is still a whole screen of its own, raised and held as it was while it was fixed. */
+   keys close) but is still a whole screen of its own: never raised or held as a window is (panelRoom), and kept at the
+   height it had when a box in it was tapped (holdFull). */
 const isLayer = (a: Element) => a.hasAttribute('data-kblayer') || getComputedStyle(a).position === 'fixed'
+const layerOf = (el: HTMLElement): HTMLElement | null => {
+  for (let a = el.parentElement; a && a !== document.body && a !== document.documentElement; a = a.parentElement) if (isLayer(a)) return a
+  return null
+}
+
+/* THE BOARD'S BOX RIDES THE PAGE'S OWN SCROLL FIRST (Fable's read of his recordings, 19 Oct 26). An iPhone shows a box
+   being typed in by scrolling the PAGE — the keys let the page scroll on by their own height even when the document is
+   held to one screen (html.sb-board-up), and that is exactly what the phone does by itself, smoothly with the keys, before
+   any script runs. The board is page content, so that scroll carries the board, its bar sliding off the top, and the box
+   lands at the keys' edge. What the lift still owes is the GAP above the keys: it asks the page for it first — the same
+   scroll the phone itself just made, driven by the browser's own scrolling view, so a tap that follows is never judged
+   against a stale picture of where things stand — and only where the page can go no further (a desktop or Chromium,
+   whose held document does not scroll at all; a box at the very end of the list) scrolls the board's own list, with room
+   at its foot (panelRoom). Before this the list was scrolled by script after every tap on the board; a tap that landed
+   right after one sometimes chose nothing ("I have to tap again" — his eighth report, 17:10) — a stale hit test after a
+   script scroll of a touch-scrolled list is the likeliest cause Fable could name without the phone; his readout decides. */
 
 /** Scrolls `el`'s scrolling panels (nearest first), then the page unless `el` is inside a fixed layer — where, if the box
     is still under the keys, the window is raised instead (raise) — so the box sits GAP above the visible screen's foot.
-    Returns how far it moved things in all (0: it was already in sight). */
+    In the Scheduler Board the page comes first (above), then its list. Returns how far it moved things in all (0: it was
+    already in sight). */
 export function keepAboveKeyboard(el: HTMLElement, vv: VV): number {
   const visTop = vv.offsetTop, visBot = vv.offsetTop + vv.height
-  let moved = 0, fixed: HTMLElement | null = null
+  let moved = 0
+  const layer = layerOf(el)
   const panels = () => {
     for (let a = el.parentElement; a && a !== document.body && a !== document.documentElement; a = a.parentElement) {
-      if (!fixed && isLayer(a)) fixed = a
       if (!scrolls(a)) continue
       const ar = a.getBoundingClientRect()
       moved += lift(a, el, Math.min(ar.bottom, visBot) - GAP, Math.max(ar.top, visTop) + GAP)
     }
   }
+  const page = document.scrollingElement || document.documentElement
+  const pageLift = () => (page ? lift(page, el, visBot - GAP, visTop + GAP) : 0)
+  if (layer && layer.hasAttribute('data-kblayer')) {
+    /* the board: the page as far as it goes, then its list, then room at the list's foot — never raised */
+    moved += pageLift()
+    panels()
+    return moved + panelRoom(el, layer, visTop, visBot)
+  }
   panels()
-  /* the board is never raised: room at the foot of its own list instead (below) */
-  if (fixed && (fixed as HTMLElement).hasAttribute('data-kblayer')) return moved + panelRoom(el, fixed, visTop, visBot)
-  if (fixed) {
-    const r = raise(fixed, el, visTop, visBot)
+  if (layer) {
+    const r = raise(layer, el, visTop, visBot)
     /* a window raised, or held to the room, may now scroll its own body: the panels once more */
     if (r) { moved += r; panels() }
     return moved
   }
-  const page = document.scrollingElement || document.documentElement
   if (page) {
-    moved += lift(page, el, visBot - GAP, visTop + GAP)
+    moved += pageLift()
     /* the page at its foot and the box still under the keys: room below it, then the page once more — only as much as
        the box can still rise with its top in sight (the narrow read round 2's L1: a box taller than the room had a block
        added at every refit, the page nowhere near its foot) */
     const r2 = el.getBoundingClientRect()
     const want = Math.min(r2.bottom - (visBot - GAP), r2.top - (visTop + GAP))
-    if (want > 0.5) { roomBelow(want); moved += lift(page, el, visBot - GAP, visTop + GAP) }
+    if (want > 0.5) { roomBelow(want); moved += pageLift() }
   }
   return moved
 }
+
+/* THE BOARD KEEPS ITS HEIGHT WHILE A BOX IN IT IS TYPED IN (Fable, 19 Oct 26 — his black band: the board ending a third
+   of the way down the screen, the page's dark background below it to the keys). The board is as tall as the layout
+   (position:absolute, inset:0). An iPhone's Safari never shortens the layout for the keys — only the visible screen — but
+   Chrome on an iPhone can (his "works, then stops" after another app, noteFullHeight above), and the picture of 17:10 was of
+   a build that held the board's body to the visible height by script: either way a board cut short while the phone has
+   already scrolled the page on for the keys ends above them, the page's dark foot below. So from the moment a box in the
+   board takes the focus until the typing ends or the keys go down, the board's height is held at what the layout was
+   then (the custom property --kbfull, read by one rule, [data-kbfull] in 08-windows-tools.css — a floor, never a cap:
+   the board still grows with its layout). The page's scroll range follows the board's height, so the phone's own scroll
+   stays within board. Nothing is held between taps that end the typing: a board that then meets a shorter layout (a turn
+   to landscape) follows it again. */
+const FULL = new Set<HTMLElement>()
+function holdFull(l: HTMLElement) {
+  if (FULL.has(l)) return
+  l.dataset.kbfull = ''; l.style.setProperty('--kbfull', Math.round(window.innerHeight) + 'px'); FULL.add(l)
+}
+function unholdFull(l: HTMLElement) { delete l.dataset.kbfull; l.style.removeProperty('--kbfull'); FULL.delete(l) }
 
 /* NO LIFT ON THE PRESS (his recording, 19 Oct 26 16:59 — "everytime I click on SC it doesn't select the CS text box but
    the screen snaps down"): a finger's tap on a low box used to scroll its panels up at the end of the touch, before the
@@ -273,6 +318,9 @@ export function installKbScroll(): () => void {
     dropLifts(e.target as Element)
     if (!isTypingBox(e.target)) { box = null; return }
     box = e.target as HTMLElement; at = Date.now()
+    /* a box in the board: the board's height held from now, before the keys can shorten the layout (holdFull) */
+    const layer = layerOf(box)
+    if (layer && layer.hasAttribute('data-kblayer')) holdFull(layer)
     soon()
   }
   /* the typing ended (the focus went to nothing, as a tap on blank page does): a raised window goes back */
@@ -288,11 +336,17 @@ export function installKbScroll(): () => void {
     if (vv.scale > 1.01) return
     if (box && Date.now() - at < FOCUS_WINDOW) soon()
   }
+  /* THE LIFT WAITS FOR THE PHONE'S OWN PAN TO END (Fable, 19 Oct 26). An iPhone scrolls the page to show the box over the
+     frames the keys take to rise, and tells of each step by the visual viewport's `scroll`. A lift measured while that pan
+     is still running adds its own move to one the phone has not finished — the screen then rises by more than the keys
+     did (his recordings). Each step of the pan sets the measuring back two frames, so the box is measured once the screen
+     has come to rest, against where the phone left it: most often nothing is left to do, or the GAP alone. */
+  const scroll = () => { if (box && Date.now() - at < FOCUS_WINDOW && keyboardUp(window.visualViewport)) soon() }
   const follow = () => {
     const vv = window.visualViewport
     if (vv === vvNow) return
-    vvNow?.removeEventListener('resize', resize)
-    vvNow = vv; vvNow?.addEventListener('resize', resize)
+    vvNow?.removeEventListener('resize', resize); vvNow?.removeEventListener('scroll', scroll)
+    vvNow = vv; vvNow?.addEventListener('resize', resize); vvNow?.addEventListener('scroll', scroll)
   }
   follow(); noteFullHeight()
   const focusAlso = (e: FocusEvent) => { follow(); focusin(e) }
@@ -302,7 +356,7 @@ export function installKbScroll(): () => void {
     document.removeEventListener('focusin', focusAlso, true)
     document.removeEventListener('focusout', focusout, true)
     dropLifts()
-    vvNow?.removeEventListener('resize', resize)
+    vvNow?.removeEventListener('resize', resize); vvNow?.removeEventListener('scroll', scroll)
     if (raf) cancelAnimationFrame(raf)
   }
 }
