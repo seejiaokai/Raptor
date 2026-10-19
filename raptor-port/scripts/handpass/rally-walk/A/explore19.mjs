@@ -1,0 +1,10 @@
+import { launch, ctxOpen, SIZES, sleep, go, shot, buildSat, bPublish, bType, rlBox, rec, errors, openBoard, status, model } from './lib.mjs'
+console.log('explore19 v1')
+const b = await launch()
+const { ctx, p } = await ctxOpen(b, SIZES.desk, 'x')
+await buildSat(p); await bPublish(p, 5)
+await p.locator('#schedBoard [data-planmenu="5"]').first().click(); await sleep(500)
+await p.locator('text=/\\+ Alt Plan/').first().click(); await sleep(900)
+console.log(JSON.stringify(await p.evaluate(() => ({ btn: [...document.querySelectorAll('#schedBoard [data-planmenu]')].map(e => e.innerText.replace(/\s+/g, ' ')), dialogs: [...document.querySelectorAll('[role=dialog], .modal, .airpop')].filter(e => e.offsetParent).map(e => e.innerText.replace(/\s+/g, ' ').slice(0, 300)) }))))
+await shot(p, 'explore-altplan')
+await b.close()

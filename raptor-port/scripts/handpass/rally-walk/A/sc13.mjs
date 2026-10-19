@@ -1,0 +1,45 @@
+import { launch, ctxOpen, SIZES, sleep, go, shot, buildSat, bPublish, bType, rlBox, rec, errors, openBoard, closeBoard, status, model, bf } from './lib.mjs'
+console.log('sc13 v1')
+const b = await launch()
+/* (a) a plan with a different R on a published day */
+{
+  const { ctx, p } = await ctxOpen(b, SIZES.desk, '13a')
+  await buildSat(p); await bPublish(p, 5)
+  const st0 = await status(p)
+  await p.locator('#schedBoard [data-planmenu="5"]').first().click(); await sleep(500)
+  await p.locator('text=/\\+ Alt Plan/').first().click(); await sleep(900)
+  await bType(p, rlBox(5, 0, 0), '08:30')
+  const mB = await model(p, 5, 0, 0)
+  // go back to the live copy (plan menu), then bring Plan B out again
+  await p.locator('#schedBoard [data-planmenu="5"]').first().click(); await sleep(500)
+  const items = await p.evaluate(() => [...document.querySelectorAll('button, div')].filter(e => e.offsetParent && /Live working copy|Plan B/.test(e.innerText || '') && (e.innerText || '').length < 120 && e.children.length < 6).map(e => e.tagName + '|' + e.innerText.replace(/\s+/g, ' ').trim()).slice(0, 10))
+  console.log('menu items', JSON.stringify(items))
+  const pic0 = await shot(p, 'A13a-planmenu')
+  await p.locator('text=/^Live working copy/').nth(1).click().catch(() => {}); await sleep(900)
+  const live = await model(p, 5, 0, 0)
+  const stLive = await status(p)
+  rec('13', 'desk', 'Published Saturday: add Alt Plan (Plan B), type R 08:30 in it, switch back to Live working copy', 'Live copy keeps R empty; no pending', { st0, planB: mB.rl, live: live.rl, stLive }, !live.rl ? 'RECORD' : 'RECORD', pic0)
+  await p.locator('#schedBoard [data-planmenu="5"]').first().click(); await sleep(500)
+  await p.locator('text=/^Plan B/').first().click().catch(() => {}); await sleep(900)
+  const m2 = await model(p, 5, 0, 0); const st2 = await status(p)
+  const alp = await p.evaluate(() => { const e = document.querySelector('#schedBoard [data-bfld="ff:5.0.0.rl"]'); return e ? { alp: e.dataset.alp || null, title: e.title } : null })
+  rec('13', 'desk', 'bring Plan B out on the published day', 'a pending amendment: R 08:30, the R box marked, button offers AL1', { rl: m2.rl, st2, alp }, m2.rl === '08:30' && /Publish AL/.test(st2.beak) && alp && alp.alp ? 'PASS' : 'FAIL', await shot(p, 'A13a-planB-out'))
+  await ctx.close()
+}
+/* (c) line with R removed then Undo; (d) line moved to another wave */
+{
+  const { ctx, p } = await ctxOpen(b, SIZES.desk, '13c')
+  await buildSat(p)
+  await bType(p, rlBox(5, 0, 0), '08:30')
+  await p.locator('#schedBoard [data-gline="5.0"]:visible').first().click(); await sleep(500)
+  await bType(p, bf(5, 0, 1, 'cs'), 'RU'); await bType(p, bf(5, 0, 1, 'to'), '12:00'); await bType(p, bf(5, 0, 1, 'ld'), '13:00')
+  const n0 = await p.evaluate(() => window.DAYS[5].waves[0].formations.map(f => f.cs + ':' + f.rl))
+  await p.locator('#schedBoard [data-ldel="5.0.0.0"]:visible, #schedBoard [data-ldel="5.0.0"]:visible').first().click().catch(e => console.log('ldel', String(e).slice(0, 80))); await sleep(700)
+  await p.getByRole('button', { name: /^(Delete|Remove|Yes|Confirm)/ }).first().click({ timeout: 1500 }).catch(() => {}); await sleep(500)
+  const n1 = await p.evaluate(() => window.DAYS[5].waves[0].formations.map(f => f.cs + ':' + f.rl))
+  await p.locator('#sbUndo').click(); await sleep(700)
+  const n2 = await p.evaluate(() => window.DAYS[5].waves[0].formations.map(f => f.cs + ':' + f.rl))
+  rec('13', 'desk', 'type R 08:30 on VL, delete the VL line (X), then Undo', 'VL back with R 08:30', { before: n0, afterDelete: n1, afterUndo: n2 }, n2.some(x => x === 'VL:08:30') && n1.length < n0.length ? 'PASS' : 'FAIL', await shot(p, 'A13c-undo-delete'))
+  await ctx.close()
+}
+console.log('errors', JSON.stringify(errors)); await b.close()

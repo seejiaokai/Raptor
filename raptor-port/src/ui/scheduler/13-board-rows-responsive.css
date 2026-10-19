@@ -39,6 +39,15 @@
    wrapper is one cell with its two boxes stacked (the max-width:820 block below). A standby line has no rally: its
    empty .sb-rlnone keeps the R place. */
 .sb-line>.sb-rb,.sb-line>.sb-tl,.sb-lcols>.sb-hrb,.sb-lcols>.sb-htl{display:contents}
+/* …AND ON A NARROWER DESKTOP THE R TRACK MUST NOT EAT THE REMARKS (walker A, 19 Oct 26). From 821 to 1439 wide the fixed
+   tracks give back what the R track took: CS 64 → 56, MSN 74 → 64, the four times 52 → 48 (a time is 33px of 11px mono
+   plus its 12px padding), the gaps 8 → 6. Measured against the same board laid out without the R box
+   (`scripts/handpass/rally-narrow.mjs`): the remarks within 2px of before at 1100, 1200, 1300 and 1439, the line the same
+   height. From 1440 the base template, the remarks 22px narrower and still on one line. (At 821–1000 the remarks were
+   16px wide BEFORE the R box too — older, filed [BOARD-NARROW-DESKTOP-REMARKS].) */
+@media (min-width:821px) and (max-width:1439px){
+  .schedboard:not(.sb-wide) .sb-lcols,.schedboard:not(.sb-wide) .sb-line{grid-template-columns:18px 56px 64px 48px 48px 48px 48px 1fr 1fr 1.2fr 92px;gap:6px}
+}
 /* the remarks cell wraps the input, the stores chips and C so the line keeps
    exactly the same grid-item count it had when remarks was a bare input —
    same move as .sb-bcell above, and the reason the nine-column template and

@@ -46,7 +46,7 @@ export async function tap(p, loc, opts = {}) {
 export const shot = async (p, name) => { await p.screenshot({ path: `${OUT}/${name}.png` }); return `docs/img/handpass/2026-10-19-rally-build/B/${name}.png` }
 export const elShot = async (p, sel, name) => { const el = p.locator(sel).first(); await el.evaluate(e => e.scrollIntoView({ block: 'center' })); await sleep(250); await el.screenshot({ path: `${OUT}/${name}.png` }); return `docs/img/handpass/2026-10-19-rally-build/B/${name}.png` }
 export const model = (p, di, gi, li) => p.evaluate(([d, g, l]) => { const f = window.DAYS[d].waves[g].formations[l]; return { cs: f.cs, to: f.to, ld: f.ld, br: f.br, rl: f.rl } }, [di, gi, li])
-export const PIC = 'docs/img/handpass/2026-10-19-rally-build/B/'
+export const PIC = process.env.HP_SHOTS || 'docs/img/handpass/2026-10-19-rally-build/B/'   // the re-walk writes to its own folder (walk-scripts.md §6)
 export const bfld = (p, f) => p.locator(`#sbBoard [data-bfld="${f}"]`).first()
 export const wk = (p, di, f) => p.locator(`#eWeek .day[data-day="${di}"] [data-txt="${f}"]`)
 export const inState = el => el.evaluate(e => ({ value: e.value, ss: e.selectionStart, se: e.selectionEnd, active: document.activeElement === e, ph: e.placeholder }))

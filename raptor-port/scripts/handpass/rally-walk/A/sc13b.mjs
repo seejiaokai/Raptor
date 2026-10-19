@@ -1,0 +1,28 @@
+import { launch, ctxOpen, SIZES, sleep, go, shot, buildSat, bType, rlBox, rec, errors, bf, openBoard } from './lib.mjs'
+console.log('sc13b v2')
+const b = await launch()
+const { ctx, p } = await ctxOpen(b, SIZES.desk, '13b')
+p.on('dialog', d => { console.log('dialog', d.type(), d.message().slice(0, 80)); d.accept('RallyTpl') })
+await buildSat(p)
+await bType(p, rlBox(5, 0, 0), '08:30')
+await p.locator('#sbTpl').click(); await sleep(500)
+await p.locator('text=/Save this day as a template/').first().click(); await sleep(900)
+await shot(p, 'A13b-after-save-click')
+const inputs = await p.evaluate(() => [...document.querySelectorAll('input, textarea')].filter(e => e.offsetParent && !e.dataset.bfld && !e.dataset.itline).map(e => e.tagName + '|' + e.className + '|' + e.placeholder + '|' + e.value).slice(0, 6))
+console.log(JSON.stringify(inputs))
+await p.locator('#daytplModal .tpl-name').fill('RallyTpl'); console.log('modal buttons', JSON.stringify(await p.evaluate(() => [...document.querySelectorAll('#daytplModal button')].map(x => x.innerText.trim())))); await p.locator('#daytplModal button').filter({ hasText: /^Done/ }).first().click(); await sleep(800)
+await shot(p, 'A13b-after-name')
+// apply on Friday (a ground day with no waves)
+await p.locator('#schedBoard [data-sbtab="4"]:visible').first().click(); await sleep(900)
+await p.locator('#sbTpl').click(); await sleep(500)
+const list = await p.evaluate(() => [...document.querySelectorAll('.dhtpl')].filter(e => e.offsetParent).map(e => e.innerText.replace(/\s+/g, ' ').slice(0, 300)))
+console.log('friday templates', JSON.stringify(list))
+await shot(p, 'A13b-friday-menu')
+const item = p.locator('text=/RallyTpl/').first()
+if (await item.count()) {
+  await item.click(); await sleep(900)
+  const ok = p.getByRole('button', { name: /^(Apply|Replace|Yes|Confirm|OK)/ }).first(); if (await ok.count() && await ok.isVisible()) { await ok.click(); await sleep(900) }
+}
+const fri = await p.evaluate(() => window.DAYS[4].waves.map(w => w.formations.map(f => f.cs + ':' + f.rl)))
+rec('13', 'desk', 'save Saturday (VL R 08:30) as a day template, apply it on Friday', 'RECORD whether R travels (not ruled)', { friday: fri }, 'RECORD', await shot(p, 'A13b-friday-applied'))
+console.log('errors', JSON.stringify(errors)); await b.close()

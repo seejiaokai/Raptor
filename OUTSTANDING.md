@@ -128,6 +128,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Insights and Logic**
 - [LOGIC-REDRAW-DROPS-TYPING] — the Logic page redraws just after it opens and can drop a value being typed.
 - [LOGIC-DONE-FIRST-PRESS] — on the Logic page, the first press of Done straight after a changed setting is lost (older; found 19 Oct 26).
+- [LOGIC-WORDS-WORKHOURS] — the Logic page says the long day and Insights hours of a line with nothing entered count from the default rally; they count from take-off less the step — his question, which is right (older; found 19 Oct 26).
+- [BOARD-NARROW-DESKTOP-REMARKS] — the desktop board from 821 to about 1000 wide leaves the remarks 16px and each jet's line 189px tall (older; found 19 Oct 26).
 - [STACK-LEFTOVERS] — four small loose ends from the Codex stack: two Insights edges (with the next change to its role question), a shared wording helper and an old audit script's three checks (with their own jobs), a "back to last published" button (only if he raises it).
 
 **Look, words and the phone (the whole app)**
@@ -1700,6 +1702,23 @@ edit mode; a second press ends it; with nothing changed, one press works. Pictur
 saving the setting moves the button out from under the press (a "rules changed" bar or the Reset button appearing) — reproduce and measure the
 button's position before and after the save first. **Place:** low, with the next change to the Logic page; a browser test that changes a
 setting and presses Done once, by mouse and by finger.
+
+### [LOGIC-WORDS-WORKHOURS] The Logic page says a line with nothing entered starts its long day and Insights hours at the default rally; the app starts them at take-off less the step (found 19 Oct 26, the rally box walk, walker A — OLDER than that job; a question for him)
+The Logic page's "Default rally before take-off" (renamed by D1031; the sentence itself dates from [LOGIC-PAGE-LAYOUT], D928) says "With no in-time or
+rally entered, a flyer's day starts here: his long day, OIL and Insights hours count from it". Walked: an empty R box, the setting 3h → 2h30 — the
+Insights hours did not move (1510 min both times); a typed R at the default time added 120 min, so with nothing entered the work span starts at the
+take-off less the step (1h). OIL does start at the default rally (D592 (2)); the long day and Insights read the one work span (`engine/validate.ts
+workSpan`, RT8 — "report/work hours … keep separate definitions"). Walker A's table `raptor-port/docs/handpass/parts/rally-box/walker-A.md` (scenario 9).
+**The question for him** (when he says so, D994): with nothing entered, should a flyer's long day and Insights hours start at the default rally
+(3 hours before take-off, as OIL does) or at the step (1 hour)? **Recommended:** the default rally — one start for a day with nothing entered,
+as the Logic page already says and OIL already does; it makes more long-day notes appear. Until he answers, the words are left as they are.
+
+### [BOARD-NARROW-DESKTOP-REMARKS] The desktop board from 821 to about 1000 wide leaves the remarks 16px and each jet's line 189px tall (found 19 Oct 26, the rally box walk, walker A — OLDER than that job; low)
+Walker A: at 821, 900 and 1000 wide (the desktop layout, pucks on the line) the remarks box is 16px and a line 189px tall; measured the same with the
+R box taken away (`raptor-port/scripts/handpass/rally-narrow.mjs`), so it is older than [RALLY-PER-FORMATION] (which keeps the remarks within 2px of
+before from 1100 to 1439 — `13-board-rows-responsive.css`). Picture `raptor-port/docs/img/handpass/2026-10-19-rally-build/A/A15-d821-board.png`.
+**Place:** with the next change to the board's layout — a picture to him first (a visual change, D541): stack the times there as a phone does, or
+let the remarks take a line of their own.
 
 ### [OIL-EARN-DAY-SWITCH-WORDS] OIL Earn's "Nothing today earns" button reads like a status — two walkers took it for one (found 6–7 Oct 26, the walks of `[OIL-WORK-START]`; OLD; LOW, words)
 On the Scheduler Board in OIL Earn mode the bar carries a button labelled "Nothing today earns". It is a SWITCH — pressed, it

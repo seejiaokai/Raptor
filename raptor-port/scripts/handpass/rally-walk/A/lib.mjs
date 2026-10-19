@@ -72,12 +72,12 @@ export const model = (p, di, gi, li) => p.evaluate(([d, g, l]) => { const f = wi
 
 /* ---- board helpers ---- */
 export async function openBoard(p, di) {
-  if (await p.locator('#schedBoard').count()) { await p.locator('#schedBoard #sbDone').first().click().catch(() => {}); await sleep(400) }
+  if (await p.locator('#sbDone').first().isVisible().catch(() => false)) { await p.locator('#sbDone').first().click().catch(() => {}); await sleep(400) }
   await go(p, 'editsched')
   await p.evaluate(d => window.openScheduler(d), di); await p.waitForSelector('#schedBoard', { timeout: 8000 }); await sleep(900)
 }
 export async function closeBoard(p) {
-  if (await p.locator('#schedBoard').count()) { await p.locator('#sbDone').first().click(); await sleep(500) }
+  if (await p.locator('#sbDone').first().isVisible().catch(() => false)) { await p.locator('#sbDone').first().click(); await sleep(500) }
 }
 export const bf = (di, gi, li, f) => `#schedBoard [data-bfld="ff:${di}.${gi}.${li}.${f}"]`
 export async function bType(p, sel, value) {
