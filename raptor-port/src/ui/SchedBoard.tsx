@@ -125,13 +125,15 @@ export function SchedBoard() {
     const el = document.scrollingElement || document.documentElement
     const y = el.scrollTop, x = el.scrollLeft
     document.body.classList.add('sb-lock', 'sb-board-up')
-    /* the board stands as page content (D1081, below) over exactly the screen the document is scrolled to — the
-       document itself is left where it is, so the week behind keeps its place */
-    const b = rootRef.current
-    if (b) { b.style.top = y + 'px'; b.style.bottom = -y + 'px'; b.style.left = x + 'px'; b.style.right = -x + 'px' }
+    /* the board stands as page content at the top of the document (D1081, below), and the document is held to one
+       screen at its top while it is open, its place put back on the close. Not left where it was, the board over it: an
+       iPhone scrolls a document that can scroll to show the box being typed in, and leaves it scrolled when the keys go
+       down — the board rose a little more at every tap, the page's empty foot below it (his picture, 19 Oct 26, 16:13) */
+    document.documentElement.classList.add('sb-board-up')
+    el.scrollTop = 0; el.scrollLeft = 0
     return () => {
       document.body.classList.remove('sb-lock', 'sb-board-up')
-      if (b) b.style.top = b.style.bottom = b.style.left = b.style.right = ''
+      document.documentElement.classList.remove('sb-board-up')
       el.scrollTop = y; el.scrollLeft = x
     }
   }, [open])
@@ -156,8 +158,8 @@ export function SchedBoard() {
      can, so the iPhone has nothing to pan.
      AND NOT A FIXED LAYER (his fifth report, 19 Oct 26, Chrome on his iPhone, frame by frame: with nothing placing it by
      script, the iPhone itself drew the fixed board a keyboard's height lower on the first frame of the keys closing). So
-     while it is open the board is ordinary page content — position:absolute over exactly the screen the document stands at,
-     a screen tall (10-board-history.css; its offsets set by the effect above), the document held where it is (sb-lock):
+     while it is open the board is ordinary page content — position:absolute at the top of the document, a screen tall
+     (10-board-history.css), the document held to that one screen while it is open (html.sb-board-up, the effect above):
      an iPhone moves page content with its own scroll in the same frame, and has no fixed layer to place. data-kblayer
      keeps it a whole screen of its own to the keyboard lift (kbscroll.ts isLayer), raised and held as when it was fixed. */
 

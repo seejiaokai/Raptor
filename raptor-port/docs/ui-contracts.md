@@ -823,8 +823,9 @@ own body scrolls the box into sight. Everything is put back when the typing ends
 1.5s of the focus act, so a box scrolled away on purpose stays where it was put. The Leave War sheets' keyboard anchoring
 runs first; this measures two frames later. **The Scheduler Board is page content, not a fixed layer, while it is open
 (D1081 — his iPhone drew the fixed board a keyboard's height lower on the first frame of the keys closing):**
-`position:absolute`, offset as it opens to exactly the screen the document stands at (the document held there, `sb-lock`),
-clipped (`overflow:clip`, so the crew drawer off its edge never widens the page), the page behind unpainted; nothing places
+`position:absolute` at the top of the document, which is held to that one screen at its top while the board is open
+(`html.sb-board-up` — an iPhone scrolls a document that can scroll to show a box, and leaves it scrolled: the board rose at
+every tap, his picture of 19 Oct 26 16:13), its place given back on the close; clipped (`overflow:clip`, so the crew drawer off its edge never widens the page), the page behind unpainted; nothing places
 it by script after that, and `data-kblayer` keeps it a whole screen of its own to the lift above, as a
 window is. A finger's tap on a low box in a layer lifts its panels on the touch itself, before the keys. The keys count
 as up against the tallest visible screen seen at this width with nothing typed in (never one read taller than the layout). Pinned: `ui/kbscroll.test.ts`,

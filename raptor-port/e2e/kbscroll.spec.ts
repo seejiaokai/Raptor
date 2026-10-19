@@ -148,6 +148,13 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
     const after = await rect()
     expect(Math.abs(after[0] - before[0]), 'the visible screen moved 120px: the board did not').toBeLessThanOrEqual(3)
     expect(after[1]).toBe(before[1])
+    /* his picture, 19 Oct 26, 16:13: an iPhone scrolls the document to show the box being typed in and leaves it there; with
+       the board over a document that could scroll it rose at every tap, the page's empty foot below. The document is held
+       to one screen: there is nothing to scroll */
+    await page.evaluate(() => { document.scrollingElement!.scrollTop = 400 })
+    await page.waitForTimeout(100)
+    expect(await page.evaluate(() => document.scrollingElement!.scrollTop), 'the document cannot be scrolled under the board').toBe(0)
+    expect(Math.abs((await rect())[0]), 'the board still fills the screen from its top').toBeLessThanOrEqual(3)
   })
 
   test('KS4 a box already above the keys is left where it is', async ({ page }) => {

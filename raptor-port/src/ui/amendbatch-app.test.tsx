@@ -153,9 +153,9 @@ describe('the changes window keeps him on the page he is on (D107, AM56)', () =>
 
 describe('a phone keyboard never shows the page behind the board (item 11, his bug report 25 Sep 26)', () => {
   /* D1081 (19 Oct 26) replaced the board's follow of the visible area: an iPhone drew the fixed board a keyboard's height
-     out of place for a frame as the keys closed. The board is page content while it is open, a screen tall over the screen
-     the document stands at — nothing places it by script after that — and the page behind is still not painted. */
-  it('the board stands as page content over the screen the document stands at, and the page behind is not painted', async () => {
+     out of place for a frame as the keys closed. The board is page content while it is open, a screen tall at the top of a
+     document held to that one screen — nothing places it by script — and the page behind is still not painted. */
+  it('the board stands as page content at the top of a document held to one screen, and the page behind is not painted', async () => {
     const vv: any = new EventTarget(); Object.assign(vv, { offsetTop: 0, offsetLeft: 0, height: 800, width: 390, scale: 1 })
     const had = Object.getOwnPropertyDescriptor(window, 'visualViewport')
     Object.defineProperty(window, 'visualViewport', { value: vv, configurable: true })
@@ -164,16 +164,16 @@ describe('a phone keyboard never shows the page behind the board (item 11, his b
       page.scrollTop = 300
       await act(async () => { openScheduler(MON); notify() })
       const b = $('#schedBoard')!
-      const y = page.scrollTop
-      expect(b.style.top, 'over the screen the document stands at').toBe(y + 'px'); expect(b.style.bottom).toBe(-y + 'px')
+      expect(document.documentElement.classList.contains('sb-board-up'), 'the document held to one screen').toBe(true)
+      expect(page.scrollTop, 'and at its top').toBe(0)
       expect(b.hasAttribute('data-kblayer'), 'a whole screen of its own to the keyboard lift').toBe(true)
       expect(document.body.classList.contains('sb-board-up'), 'the page behind is not painted').toBe(true)
       vv.offsetTop = 120; vv.height = 420                        // the keyboard comes up and the view pans
       await act(async () => { vv.dispatchEvent(new Event('resize')); vv.dispatchEvent(new Event('scroll')) })
-      expect(b.style.top, 'nothing placed by script as the keys move').toBe(y + 'px'); expect(b.style.height).toBe('')
+      expect(b.style.top, 'nothing placed by script').toBe(''); expect(b.style.height).toBe('')
       await act(async () => { closeScheduler(); notify() })
       expect(document.body.classList.contains('sb-board-up')).toBe(false)
-      expect(b.style.top).toBe('')
+      expect(document.documentElement.classList.contains('sb-board-up')).toBe(false)
     } finally {
       if (had) Object.defineProperty(window, 'visualViewport', had); else delete (window as any).visualViewport
     }

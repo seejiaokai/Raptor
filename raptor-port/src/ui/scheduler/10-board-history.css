@@ -1,6 +1,6 @@
 /* ============ SCHEDULER BOARD (deep single-day editor) ============ */
-/* page content, not a fixed layer, while it is open (owner D1081 — SchedBoard.tsx): absolute, offset by the document's
-   scroll as it opens (inline, from SchedBoard.tsx), so it covers exactly the screen fixed did while the document is held;
+/* page content, not a fixed layer, while it is open (owner D1081 — SchedBoard.tsx): absolute at the top of the document,
+   which html.sb-board-up holds to that one screen (nothing for an iPhone to scroll as the keys come and go);
    clipped (never a scroller), as a fixed layer was: whatever pokes past it, the crew drawer off its edge, never widens the page */
 .schedboard{position:absolute;inset:0;z-index:400;background:var(--bg);display:flex;flex-direction:column;overflow:clip}
 /* the board's entrance — part of the 25 Aug 26 motion set (see PAGE SHELL).
@@ -25,6 +25,8 @@ body.sb-lock{overflow:hidden}
    any strip a phone keyboard exposes shows the board's own background, never the week. visibility, not display:
    the week keeps its layout, so its scroll position and every measurement survive the board closing. */
 body.sb-board-up #page-editsched{visibility:hidden}
+html.sb-board-up,html.sb-board-up body{height:100%;overflow:hidden}
+html.sb-board-up body{padding-bottom:0}
 /* the burger drawer's own document lock (Drawer.tsx, 6 Sep 26) — its own class,
    not sb-lock: the drawer opens OVER the board (z440 over z400), and closing the
    drawer must not unlock a board that is still open under it */

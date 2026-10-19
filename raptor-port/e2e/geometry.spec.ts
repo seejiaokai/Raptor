@@ -3689,7 +3689,10 @@ test.describe('the board holds the page still underneath it', () => {
          there would pin a value that does nothing. */
       if (during.scrolls) expect(during.contain, 'the one scroller contains its own overscroll').not.toBe('auto')
       expect(during.locked, 'while the page itself is held').toBe('hidden')
-      expect(during.y, 'so the week behind has not moved a pixel').toBe(parked)
+      /* D1081 (19 Oct 26): while the board is open the document is held to one screen at its top, so an iPhone has nothing
+         to scroll as the keys come and go (the board rose at every tap, his picture); the week's place is kept and given
+         back on the close, below */
+      expect(during.y, 'so the week behind cannot be driven: the document is held at its top').toBe(0)
 
       /* and closing hands the page back exactly where it was */
       await page.click('#sbDone')   // the one exit since D349
