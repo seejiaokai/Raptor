@@ -980,6 +980,8 @@ Met again 18 Oct 26 (`claude/schedule-amendments-fixes-fffce0`): twice a command
 
 **Principle:** A mark that is a copy of a position goes stale the moment anything moves; a mark carried by the thing itself cannot.
 
+Met again 20 Oct 26 ([STANDBY-WEEK-B] mock-up, `mock-standby-week-b.mjs`): red boxes drawn `position:absolute` at measured coordinates on the DESKTOP week landed a column to the left of their headings — the week was still gliding to the day after the marks were placed; a wait for the day card to stop moving did not cure it, outlines on the elements did. The guard to propose at the next review: the mock-up guide's Method step 3 says marks are outlines on the element, unconditionally (not "unless").
+
 ### Observation 618: A line moved into a fold lost its subject; only the cold read caught it
 
 **Status:** OPEN
