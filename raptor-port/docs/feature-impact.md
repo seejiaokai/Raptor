@@ -763,6 +763,13 @@ ON these, don't route around them):
 split — these are where this app's recurring bugs come from; touch one side and
 check the other):
 
+#### Does this standby row fly? ([STANDBY-FLIES], D1042–D1046, D1061, D1062, 19 Oct 26)
+One body answers it — `engine/waves.ts saFlies` (a shift with its B or R typed, or the row's hand tick; never a cancelled
+one) — and every reader asks it: the checks (`saExempt`, `events.ts` — a flying AVALON / BB row leaves `sacrew`), the crew
+list (`avail.ts`), OIL (`oil.ts`), the day's badge (`dayCount`), Insights, the Flies chip (`html.ts saFliesHTML`, the
+peek). A new reader that tests `a.spare`, `w.noconf` or `w.kind==='sc'` on its own, without asking `saFlies`, splits the
+truth: a flying spare would be standing by on one screen and flying on another. "A jet" also needs `saSeated` (D1062).
+
 #### A seat with hours and the same seat without (D605, 6 Oct 26)
 
 - **Every kind of seat is collected twice in `events.ts buildDay`: with a window, as an event (or a `sacrew` entry); with

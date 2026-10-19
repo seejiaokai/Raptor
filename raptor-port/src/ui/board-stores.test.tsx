@@ -141,7 +141,7 @@ describe('the board carries the week\'s stores interface', () => {
     const rb = saLine.querySelector(':scope > .sb-rb') as HTMLElement
     const rl = rb.querySelector('[data-bfld$=".rl"]') as HTMLInputElement
     expect(rl, 'a standby line has its R box too (D1036, D1040)').toBeTruthy()
-    expect(rl.placeholder, 'with no default rally in it (D1039)').toBe('')
+    expect(rl.placeholder, 'no default rally in it (D1039) — only the faint dash (D1065)').toBe('—')
     expect(rb.children.length, 'the R box and the B box').toBe(2)
     const cell = saLine.querySelector('.sb-rcell') as HTMLElement
     expect(cell, 'the remarks cell itself is still there').toBeTruthy()

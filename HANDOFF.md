@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/sad-herschel-5682e3 -->
+### `claude/sad-herschel-5682e3` — [STANDBY-FLIES] BUILT and FULL-checked (19 Oct 26) — pull request 542 waiting for his look and "merge live" — verify before use
+- **Where it started:** cut from `claude/rally-box-changes`; main (pull request 541, 3d8665eb9) merged in. Beside `claude/keyboard-scroll` (no clash). Ruling numbers D1060–D1079 (D1060–D1066 used).
+- **Done:** a standby row that flies (B or R typed on its shift, or ticked by hand) is checked as an SC MAIN, counts as a jet and a sortie (not when nobody is seated), earns OIL by default; the Flies chip (lit on three screens, smaller and under the badge on the week — D1066; the dashed button on the board only); the faint dash; the no-times advisory. FULL check: the sheet `raptor-port/docs/handpass/2026-10-19-standby-flies.md` — designer, three Sonnet walkers, the host's re-walk, one fresh blind Opus read (F1–F4 fixed) and its narrow read (N1–N3 fixed); the gates all green on ca85df32d (unit 11,950, e2e 879, tfin 728/0, smoke 453/0). Preview: https://raptor-lemf64iet-kai-e2f5.vercel.app
+- **Questions waiting for him:** none; his look card is the sheet §14.
+- **Pick up here:** his look on his iPhone, then "merge live" (main has not moved since 3d8665eb9 — if it has by then, bring it in first); after the merge archive [STANDBY-FLIES] by script (homes: the sheet, `engine-rules.md` §A standby row that flies, `ui-contracts.md`, the design note). The pull request is not watched (his rule).
+<!-- /now -->
+
 <!-- now:claude/keyboard-scroll -->
 ### `claude/keyboard-scroll` — [KEYBOARD-SCROLL] (D1048) and D1080 (one tap then typing replaces, in four more places) — WALK-checked, gates green; pull request open, waiting for his look and "merge live"
 - **Where it started:** cut from `claude/rally-box-changes`; pull request 541 (the rally box changes and D1047) went LIVE on 19 Oct 26 and `main` is merged in; [RALLY-BOX-CHANGES] archived by script here.

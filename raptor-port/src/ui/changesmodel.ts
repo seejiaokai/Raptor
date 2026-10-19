@@ -206,7 +206,11 @@ export function itemOf(r: ELogRow, day?: string | null): Item {
         /* an SC line's B box is its crew's in-time (owner, 24 Aug 26; [SC-B-CHANGE-SAYS-BRIEF]) — a row gone since keeps the
            word its frozen label was written with */
         : pfx === 'ff' ? (parts[3] === 'br' && (f ? live(() => day.waves[+pp![1]!].kind) === 'sc' : tail(r.lbl) === 'in-time') ? 'In-time' : fieldWord(parts[3]))
-        : pfx === 'fr' ? `${jet}remarks` : pfx === 'st' ? `${jet}stores`
+        /* a standby row has no stores: its st: change is the MAIN / SPARE badge or the Flies tick ([STANDBY-FLIES]; walker C,
+           19 Oct 26 — "Standing by → Flies" was headed "stores") */
+        /* a standby row's badge flip and Flies tick are logged on its fr: address too (the fresh read's F1): headed by what
+           changed — MAIN / SPARE / Standing by / Flies is its role, anything else its remarks (the narrow read's N2) */
+        : pfx === 'fr' ? `${jet}${/^(MAIN|SPARE|Standing by|Flies)$/.test(String(r.from)) && /^(MAIN|SPARE|Standing by|Flies)$/.test(String(r.to)) ? 'standby role' : 'remarks'}` : pfx === 'st' ? `${jet}${live(() => day.waves[+pp![1]!].standalone) ? 'standby role' : 'stores'}`
         : pfx === 'aa' ? `${jet}area` : pfx === 'au' ? `${jet}area time`
         : AIR[pfx] ?? ''
       return { id: `${date}|F|${parts[1]}.${parts[2]}`, title, detail }

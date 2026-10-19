@@ -8,7 +8,7 @@ import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
 import { seedRunIn, datedRestSeed, dayHidesIn, nextMondayWorked, nextMondayHides, windowDiverges, windowFiling, windowInputs, filingDivergesAt } from './weekctx'
 import { setWorld, setFiling, clearFiling } from './world'
-import { CURWEEK, isStandalone, saExempt } from './waves'
+import { CURWEEK, isStandalone, saExempt, saAnyFlies } from './waves'
 import { DAYS } from './data'
 import { dayOilBlind, blindDesks } from './oil'
 import { oilWouldEarn, oilOldBlockCrowd, oilEvidenceOf } from './oilev'
@@ -33,6 +33,7 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'
   SANS_AVAIL:'SANS availability — planned outside the availability filed',
   OIL_NO_TIMES:'No OIL earned — a row has no usable times',
   FLT_NO_LEN:'Flight times — take-off and landing are the same',
+  SA_FLY_NO_TIME:'Standby line flies — no start or end',
   REPORT_ORDER:'In-time / Rally — timings out of order',
   REPORT_UNRESOLVED:'In-time — check the reporting instruction',
   OIL_OLD_BLOCK:'Published before these seats counted — republish to credit them',
@@ -1443,6 +1444,20 @@ function validateCore(){
       (wv.formations||[]).forEach((f:any,li:any)=>{
         if(!fltNoLen(f))return;
         add('adv','FLT_NO_LEN',[],fltNoLenMsg(f,wv),`ff:${di}.${gi}.${li}.ld`);
+      });
+    });
+    /* A STANDBY SHIFT THAT FLIES WITH NO START OR END ([STANDBY-FLIES], 19 Oct 26 — the agent's call, told to him with the
+       drawing, D1060). A BB shift is minted with blank times; once its B or R is typed, or a row is ticked by hand, it
+       flies — but its crew rest and its OIL are measured from its START to its END, so with either blank they measure
+       nothing and nothing says why. This says it, as an advisory naming the line (the times are the scheduler's to type,
+       no crew's fault), anchored on the START box. */
+    ((DAYS[di]||{}).waves||[]).forEach((wv:any,gi:any)=>{
+      if(!isStandalone(wv))return;
+      (wv.formations||[]).forEach((f:any,li:any)=>{
+        if(!saAnyFlies(wv,f)||(parseHM(f.to)!=null&&parseHM(f.ld)!=null))return;
+        const nm=[wv.label||'A standby line',String(f.msn||f.shift||'').trim()].filter(Boolean).join(' ');
+        const gone=parseHM(f.to)==null&&parseHM(f.ld)==null?'START or END':parseHM(f.to)==null?'START':'END';
+        add('adv','SA_FLY_NO_TIME',[],`${nm} flies but has no ${gone} — type ${gone==='START or END'?'them':'it'} so its crew rest and OIL can be worked out`,`ff:${di}.${gi}.${li}.to`);
       });
     });
     const earnsOil=day.dow==='Saturday'||day.dow==='Sunday'||HOOKS.oilEarningDay(di);

@@ -98,16 +98,29 @@ describe('an SC MAIN seat with a typed in-time: said before the drop, in the pla
   })
 })
 
-describe('THE NEGATIVE CONTROL — an SC SPARE carries no crew rest and borrows none', () => {
-  for (const [name, to, ld] of [['shift 13:00–19:00', '13:00', '19:00'], ['shift times blank', '', '']] as any[]) {
-    it(`B 05:00, ${name}: the spare seat says nothing about crew rest, before or after`, () => {
-      lateMonday(); const sc = scWave(0, to, ld, '05:00'); validate()
+/* CHANGED 19 Oct 26 ([STANDBY-FLIES], D1044, D1045): the control used to type B 05:00 — a B typed now flies the whole
+   shift, SPARE included, so the standing-by spare is the one on a shift with NOTHING typed, the MAIN beside it breaching */
+describe('THE NEGATIVE CONTROL — an SC SPARE standing by carries no crew rest and borrows none', () => {
+  for (const [name, to, ld] of [['shift 07:00–13:00', '07:00', '13:00'], ['shift times blank', '', '']] as any[]) {
+    it(`nothing typed, ${name}: the spare seat says nothing about crew rest, before or after`, () => {
+      lateMonday(); const sc = scWave(0, to, ld, ''); validate()
       expect(restIfPlaced(X, sc.spare), 'the question itself').toBeNull()
       expect(slotBar(X, sc.spare), 'the crew list').not.toMatch(/crew rest/)
       sc.seatSpare(); validate()
       expect(breach(TUE), 'and nothing after he is placed').toBeFalsy()
     })
   }
+  it('the same spare row on a shift with its B typed flies, and carries crew rest as the MAIN does (D1045)', () => {
+    lateMonday(); const sc = scWave(0, '13:00', '19:00', '05:00'); validate()
+    expect(restIfPlaced(X, sc.spare), 'the question itself').not.toBeNull()
+    sc.seatSpare(); validate()
+    expect(breach(TUE), 'a breach once he is placed').toBeTruthy()
+  })
+  it('a spare row ticked by hand on a shift with nothing typed flies, and carries crew rest (D1061)', () => {
+    lateMonday(); const sc = scWave(0, '07:00', '13:00', ''); sc.f.aircraft[2].fly = true; validate()
+    sc.seatSpare(); validate()
+    expect(breach(TUE), 'a breach once he is placed').toBeTruthy()
+  })
 })
 
 describe('the half left as it was', () => {

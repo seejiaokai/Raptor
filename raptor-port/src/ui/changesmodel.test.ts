@@ -6,7 +6,9 @@ import { PEOPLE } from '../engine/people'
 import { INPUTS } from '../engine/inputs'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { ELOG, elogClear, type ELogRow } from '../engine/editlog'
-import { setCurWeek } from '../engine/waves'
+import { setCurWeek, makeStandalone } from '../engine/waves'
+import { DAYS as DAYS_SF } from '../engine/data'
+import { ridKey as ridKeySF } from '../engine/rowids'
 import { linesFor, byWho, byItem, itemOf, entriesOf, whoEntry, dayCounts, weekNew } from './changesmodel'
 
 let n = 0
@@ -513,5 +515,18 @@ describe('an input for several people is one item, titled with its people (the o
   })
   it('gone, it keeps the name and the kind its line recorded', () => {
     expect(itemOf(line('gone1', 'bane', 'Ranger, Saber · Meeting deleted · 14 Jul'), T)).toMatchObject({ id: `${T}|I|gone1`, title: 'Input · Ranger · Meeting' })
+  })
+})
+
+/* [STANDBY-FLIES] the narrow read's N2: a standby row's fr: change is headed by what changed */
+describe('a standby row on the changes window', () => {
+  it('a badge flip or a Flies tick is its "standby role"; a remarks edit stays "remarks"', () => {
+    const w: any = makeStandalone('sc'); DAYS_SF[1].waves.push(w); const gi = DAYS_SF[1].waves.length - 1
+    try {
+      const key = ridKeySF(`fr:1.${gi}.0.2`, DAYS_SF)
+      expect(itemOf(row({ key, from: 'Standing by', to: 'Flies' })).detail).toMatch(/standby role$/)
+      expect(itemOf(row({ key, from: 'SPARE', to: 'MAIN' })).detail).toMatch(/standby role$/)
+      expect(itemOf(row({ key, from: '', to: 'late show' })).detail).toMatch(/remarks$/)
+    } finally { DAYS_SF[1].waves.pop() }
   })
 })

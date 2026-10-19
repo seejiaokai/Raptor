@@ -8,6 +8,8 @@
 .insights-legend{display:flex;gap:15px;font-size:11px}.insights-legend span{background:none;color:var(--ink-2);display:flex;gap:5px;align-items:center}
 .insights-legend span:before{content:'';width:8px;height:8px;border-radius:50%;background:#468ee6}.insights-legend .mix-red:before{background:#d76871}
 .insights-explain{color:var(--ink-3);font-size:11px;margin:7px 0}.mix-segments{display:flex;height:100%;border-radius:6px;overflow:hidden}.mix-segments>span{height:100%;flex:none}.mix-blue{background:#468ee6}.mix-red{background:#d76871}
+/* a standby row that flew ([STANDBY-FLIES]): no mission, so no side — the ordinary bar's plain colour, its own part */
+.mix-standby{background:var(--ink-3)}
 .mix-numbers{display:flex;gap:6px;align-items:center;justify-content:flex-end;min-width:24px}.mission-mix-row .mix-numbers{min-width:84px}.mix-count-blue,.mix-count-red{font-size:11px;min-width:16px;text-align:right}.mix-count-blue{color:#468ee6}.mix-count-red{color:#d76871}.insights-show-all{margin-top:8px}
 .mission-role-action,.mission-role-question{box-sizing:border-box;display:flex;align-items:center;gap:10px;margin:6px 9px 10px;padding:9px 11px;border:1px solid var(--edge);border-radius:9px;background:var(--panel-2);color:var(--ink);font-size:12px;max-width:calc(100% - 18px)}
 .mission-role-action{justify-content:space-between}.mission-role-action>span,.mission-role-question .context{color:var(--ink-3);font-size:10px}.mission-role-question .words{flex:1;min-width:0}.mission-role-question strong,.mission-role-question .context{display:block}.mission-role-question p{font-size:11px;color:var(--ink-2);margin:4px 0 0}.mission-role-question .choices{display:flex;gap:6px;flex-shrink:0}

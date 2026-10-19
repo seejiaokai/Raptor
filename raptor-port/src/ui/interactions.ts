@@ -38,7 +38,7 @@ import { withDaySnap, lateMates } from './html'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu, switchDraft, SBWOPEN } from './board'
 import { findInputCell, hideHistBub, pinHistBubAt, findHistCell, findSeatRow, isSeatKey, onlyOn } from './histbubble'
 import { pickRosDay } from './pan'
-import { isStandalone, CURWEEK } from '../engine/waves'
+import { isStandalone, saTyped, saFlies, CURWEEK } from '../engine/waves'
 import { WARN } from '../engine/validate'
 import { hm24,parseHM } from '../engine/time'
 import { parseReportingLines,resolveReporting,REPORTING_LABEL } from '../engine/reporting'
@@ -1918,11 +1918,35 @@ export function routeClick(e: MouseEvent) {
       const was = a.role || (a.spare ? 'SPARE' : 'MAIN')
       a.spare = !a.spare
       a.role = a.spare ? 'SPARE' : 'MAIN'
-      markEdit(`st:${di}.${gi}.${li}.${ai}`, was, a.role)
+      markEdit(`fr:${di}.${gi}.${li}.${ai}`, was, a.role)   // fr:, not st: — the role lives in the row's fr: composite (restore.ts); st: is reconciled away on a published day (the read's F1)
       view.afterSchedMutate(); notify()
+      /* a row that flies stays fully checked as either role ([STANDBY-FLIES], D1045) — the note must not say otherwise */
+      const fl = saFlies(DAYS[di!].waves[gi!], DAYS[di!].waves[gi!].formations[li!], a)
       HOOKS.toast(a.spare
-        ? 'Line is SPARE now: standing by, checked for availability and currency only'
+        ? (fl ? 'Line is SPARE now: it flies, so it is still fully cross-checked' : 'Line is SPARE now: standing by, checked for availability and currency only')
         : 'Line is MAIN now: fully cross-checked', 'ok')
+    }
+    e.stopPropagation(); return
+  }
+
+  /* THE FLIES CHIP — a standby row ticked to fly by hand ([STANDBY-FLIES], owner D1061, D1064, 19 Oct 26). The board
+     draws it as a button only where the tick is the row's own (a shift with its B or R typed flies whole and its chip is
+     no button — D1046: such a row is taken out with CX). One tap ticks, another takes it off. Written as the MAIN/SPARE
+     flip above is — an engine-visible change, through afterSchedMutate, marked on the row's fr: key so a published day
+     reads pending and it rides the next amendment (restore.ts carries a.fly in the row's composite). No passing note:
+     the chip itself, lit or dashed, is the feedback (D850). */
+  const sf = t.closest('[data-safly]') as HTMLElement | null
+  if (sf && HOOKS.editMode() && canEditSched()) {
+    const [di, gi, li, ai] = sf.dataset.safly!.split('.').map(Number)
+    const w = DAYS[di!]?.waves[gi!], f = w?.formations[li!], a = f?.aircraft[ai!]
+    if (a && w && isStandalone(w) && !saTyped(f)) {
+      const was = a.fly ? 'Flies' : 'Standing by'
+      if (a.fly) delete a.fly; else a.fly = true
+      markEdit(`fr:${di}.${gi}.${li}.${ai}`, was, a.fly ? 'Flies' : 'Standing by')   // the tick lives in the row's fr: composite (the read's F1)
+      view.afterSchedMutate(); notify()
+      /* the redraw replaces the chip: a keyboard press keeps the keyboard on it (walker A, 19 Oct 26 — a second Enter
+         needed a re-Tab); a mouse or finger press (detail > 0) leaves focus where the browser puts it */
+      if (e.detail === 0) { const k = sf.dataset.safly!; requestAnimationFrame(() => (document.querySelector(`[data-safly="${k}"]`) as HTMLElement | null)?.focus()) }
     }
     e.stopPropagation(); return
   }

@@ -1,6 +1,15 @@
 # The file map — where each source file lives and what it does
 
 On a phone, the box being typed in shows above the keyboard ([KEYBOARD-SCROLL], D1048, 19 Oct 26). **New:** `src/ui/kbscroll.ts` (the focus and the visual viewport followed; the box's own scrolling panels, then the page, scrolled so it sits just above the keys), `src/ui/kbscroll.test.ts`, `e2e/kbscroll.spec.ts` (KS1–KS4, in the `raptor` browser-test project), `scripts/handpass/look-fresh-places.mjs` (pictures at 402 of the four places suggested for D1047's "one tap then typing replaces"). And D1080 — one tap then typing replaces in four more places: **new** `src/ui/freshbox.test.tsx` (KF1–KF4); **changed** `src/ui/interactions.ts` (`FRESH_ELSEWHERE`, `isFreshElsewhere`, a React box's value written past React's own note). **Changed:** `src/main.tsx` (`installKbScroll()`), `playwright.config.ts`.
+`[STANDBY-FLIES]` — a standby line that flies counts as a real flight (D1042–D1046, D1060–D1065, 19 Oct 26). **New:**
+`src/engine/standbyflies.test.ts` (what flies, the count, Insights, the checks, OIL, the no-times advisory),
+`src/ui/standbyflies.test.tsx` (the Flies chip on the three screens and the peek, the hand tick),
+`scripts/handpass/look-standby-flies.mjs` and `scripts/handpass/look-standby-dash.mjs` (the drawings put to him).
+**Changed:** `src/engine/waves.ts` (`saTyped`, `saFlies`, `saAnyFlies`, `saSeated`; `saExempt`, `scSpare` and
+`dayCount` read them), `src/engine/events.ts`, `src/engine/avail.ts`, `src/engine/oil.ts`, `src/engine/insights.ts`,
+`src/engine/validate.ts` (`SA_FLY_NO_TIME`), `src/engine/restore.ts`, `src/engine/daytpl.ts`, `src/engine/schema.ts`
+(`fly`), `src/engine/wavetpl.ts` (the kind notes), `src/ui/html.ts` (`saFliesHTML`, `saBadgesHTML`), `src/ui/board.ts`,
+`src/ui/interactions.ts` (`data-safly`), `src/ui/peek.ts`, `src/ui/logic-html.ts`, `src/ui/scheduler/12-schedule-editing.css`.
 
 `[TRK-DOWN-DAYS-AUTO]` — the Tracker's down days worked out from the Inputs (D1002, D1003, D1005, D1018, 18 Oct 26).
 **New:** `src/tracker/trk-down-days.test.tsx` (the course start in "+ Add" and the Info panel, the count, the window, the

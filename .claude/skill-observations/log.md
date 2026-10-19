@@ -1418,6 +1418,21 @@ prove each by acting through it after the rollback, not by reading what it shows
 
 **Principle:** Reproduce on the finder's exact route; when a fix misses, instrument the events rather than re-reason the cause.
 
+### Observation 646: An emulated phone zooms the page when a script types into a small box, and the mock-up comes out shifted
+
+**Status:** OPEN
+**Date:** 19 Oct 26
+**Session context:** [STANDBY-FLIES] drawing the Flies tick on the real app (`raptor-port/scripts/handpass/look-standby-flies.mjs`) at his iPhone's width
+**Skill:** brainstorming (`mockups-on-the-real-app.md`, §Traps When Injecting Into a Live Page); walk-scripts.md
+**Type:** open-source
+**Phase/Area:** staging the "today" state before the picture
+
+**Issue:** The script typed a rally into a small time box on the phone-width board (Playwright context with `isMobile: true`). Every picture after that came out zoomed in and shifted sideways — the right half of the board, where the change sat, was cut off — while the script passed without error. Three framing "fixes" (scroll resets, a taller page, a full-page shot) changed nothing; a one-page probe at the same width without the typing showed the page normal, which pointed at the typing. The emulated phone zooms to a focused text box smaller than 16px, as a real phone does. Setting the value through the box's own change event (no focus zoom), and `isMobile: false` with the same width and density, gave a clean frame. Also met: a mark drawn `position:absolute` on the page sat under the board's fixed overlay (drawn `fixed`, top layer, it showed), and the board kept a hidden copy of the same rows in the week behind it, so a document-wide query drew the chips twice and the mark spanned both.
+
+**Suggested improvement:** Add to the mock-up traps: "On an emulated phone, never type into a box before a picture — set it through the app's own change event, or emulate width and density without `isMobile`; a picture zoomed to a box is the sign. Scope every injection query to the surface being pictured (the board hides a copy of the week behind it). Draw a mark `position:fixed` at the top layer when the surface is an overlay."
+
+**Principle:** Before a third framing fix, probe the same page without the last action taken — the cause is usually the step before the picture, not the picture.
+
 ### Observation 647: Two scripted taps at one spot within a moment are a double tap that selects a word
 
 **Status:** OPEN

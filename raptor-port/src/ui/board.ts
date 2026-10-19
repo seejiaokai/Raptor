@@ -22,7 +22,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay, iuParts } from '../engine/keys'
 import { applyMove, sortWave, sortInTimes, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { rlFaultAtt, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown, sbPrevDay, SB_PREVDAY, boxText } from './html'
+import { rlFaultAtt, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, saBadgesHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown, sbPrevDay, SB_PREVDAY, boxText } from './html'
 import { onInputRow, rowMark, UNMARKED } from './reqdoor'
 import { setInpField, howMany } from './inputedit'
 import { reqRowText } from './reqrow'
@@ -258,6 +258,11 @@ function boardHTMLBody(di: number, pv?: boolean) {
       const rlDefault = minus(f.to, VCONF.reportLead)
       const rlSug = !stoRO && !sa && parseHM(f.rl) == null && rlDefault ? fmtHM(rlDefault) : ''
       const sugAttr = (s: string) => s ? ` placeholder="${esc(s)}"` : ''
+      /* A FAINT DASH IN A STANDBY LINE'S EMPTY R AND B (owner D1065, 19 Oct 26 — his idea, "to indicate to new users that
+         the norm is" the shift's own times): the box's placeholder, never a value — a tap does not fill it in, typing
+         replaces it — in the grey of the week's own empty-box dash (12-schedule-editing.css .txed:empty), which the week
+         already draws there. On SC, AVALON and BB a typed B or R makes the shift fly ([STANDBY-FLIES], D1045). */
+      const dashCls = sa ? ' sadash' : '', dashAttr = sa ? ' placeholder="—"' : ''
       /* sbSlot's own `pv` param means "read-only" to that function, not
          literally "preview" — widened to stoRO below for the same reason
          as `dis` above: the FCP/RCP seats are the "arm/drop targets" the
@@ -316,11 +321,11 @@ function boardHTMLBody(di: number, pv?: boolean) {
         <div class="sb-bcell sb-rb">${
           /* every line has its rally box — a standby line too, above its B (owner D1036, D1040, 19 Oct 26), with no
              suggestion (rlSug, D1039) and no fault of its own (boxFaults is empty on a standby wave) */
-          `<input class="tm${rlSug ? ' sugbox' : ''}" data-bfld="${fp}.rl"${alAttr(`${fp}.rl`)}${dis}${sugAttr(rlSug)}${rlFaultAtt(boxFaults, li, fp)} aria-label="Rally" value="${esc(fmtHM(f.rl))}">`}<input class="tm${brSug ? ' sugbox' : ''}" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis}${sugAttr(brSug)} value="${esc(fmtHM(f.br))}"></div>
+          `<input class="tm${rlSug ? ' sugbox' : ''}${dashCls}" data-bfld="${fp}.rl"${alAttr(`${fp}.rl`)}${dis}${sugAttr(rlSug)}${dashAttr}${rlFaultAtt(boxFaults, li, fp)} aria-label="Rally" value="${esc(fmtHM(f.rl))}">`}<input class="tm${brSug ? ' sugbox' : ''}${dashCls}" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis}${sugAttr(brSug)}${dashAttr} value="${esc(fmtHM(f.br))}"></div>
         <div class="sb-bcell sb-tl"><input class="tm${badCls}"${badAtt} data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(fmtHM(f.to))}"><input class="tm${badCls}"${badAtt} data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(fmtHM(f.ld))}"></div>
         <div class="sb-seatpair">${sbSlot(di, key + '.p', 'p', a.p, stoRO)}${sbSlot(di, key + '.w', 'w', a.w, stoRO)}</div>
         <div class="sb-rcell"${alAttr(`st:${key}`)}>
-          ${sa ? saRoleHTML(key, a, !stoRO) : ''}
+          ${sa ? saBadgesHTML(key, a, !stoRO, true) : ''}
           ${boxHTML('nts', roleAccess ? `data-role-remarks="${esc(f.rid||'')}" data-role-day="${di}" readonly aria-label="Published Remarks — read only"${alAttr(`fr:${key}`)}` : `data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis}`, a.rmks || '', 'Remarks')}
           ${sa ? '' : (stoRO
             ? storesView(a.opts)
@@ -1826,7 +1831,7 @@ export function waveMenu(anchor: HTMLElement, di: any) {
   const html = dayBtns
     + `<h5${di == null ? '' : ' class="wm-hpen"'}>Add${di == null ? '' : pen}</h5><div class="wm-row">` + kindRow + `</div>`
     + tplRow
-    + (anyStandby ? `<div class="wm-note">SC \u00b7 AVALON \u00b7 BB sit outside the day's flying count \u2014 two waves of four plus an SC reads <b>4 X 4 / 2</b>.</div>` : '')
+    + (anyStandby ? `<div class="wm-note">SC \u00b7 AVALON \u00b7 BB sit outside the day's flying count until they fly \u2014 two waves of four plus an SC standing by reads <b>4 X 4 / 2</b>.</div>` : '')
     + hiddenLine
   let day = (di == null) ? 0 : di
   const box = popMenu(anchor, html, (e: any, close: () => void) => {

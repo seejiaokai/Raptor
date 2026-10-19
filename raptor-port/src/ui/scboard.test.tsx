@@ -51,8 +51,14 @@ describe('an SC wave drops the note and the suggestion but keeps the B box', () 
     expect(h, 'the SC B box is drawn').toContain('data-bfld="ff:0.0.0.br"')
     expect(h, 'the SC R box is drawn (D1040)').toContain('data-bfld="ff:0.0.0.rl"')
     expect(h).not.toContain('sugbox')
-    expect(h, 'the B box shows no suggested time').not.toMatch(/data-bfld="ff:0\.0\.\d+\.br"[^>]*placeholder=/)
-    expect(h, 'the R box shows no default rally (D1039)').not.toMatch(/data-bfld="ff:0\.0\.\d+\.rl"[^>]*placeholder=/)
+    /* the only ghost in either box is the faint dash (D1065, 19 Oct 26 — narrows D1039): never a time */
+    expect(h, 'the B box shows no suggested time').not.toMatch(/data-bfld="ff:0\.0\.\d+\.br"[^>]*placeholder="(?!—")/)
+    expect(h, 'the R box shows no default rally (D1039)').not.toMatch(/data-bfld="ff:0\.0\.\d+\.rl"[^>]*placeholder="(?!—")/)
+  })
+  it('SF8 — an empty R and B on a standby line show the faint dash, a placeholder in the grey ghost (D1065)', () => {
+    const h = boardHTML(0)
+    expect(h).toMatch(/class="tm sadash" data-bfld="ff:0\.0\.0\.rl"[^>]*placeholder="—"/)
+    expect(h).toMatch(/class="tm sadash" data-bfld="ff:0\.0\.0\.br"[^>]*placeholder="—"/)
   })
   it('the B box itself is still there to type an in-time into', () => {
     expect(boardHTML(0), 'the SC line keeps its editable B input').toContain('data-bfld="ff:0.0.0.br"')

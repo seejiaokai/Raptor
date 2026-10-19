@@ -1,0 +1,51 @@
+import { launch, ctxOpen, sleep, go, shot, openBoard, closeBoard, addStandby, seat, bf, bType, errors, chips, summ, rec, roLook, dayBadge } from './sf-A-lib.mjs'
+console.log('sf-A-s10 v1')
+const b = await launch()
+const DI = 1
+const { ctx, p } = await ctxOpen(b, 's10')
+const gi = await addStandby(p, DI, 'sc')
+await seat(p, DI, gi, [[0, 0], [0, 1], [0, 2], [0, 3]])
+const weekWave = (root) => p.locator(`${root} .go.sa-sc`, { has: p.locator(`[data-sarole="${DI}.${gi}.0.0"]`) }).first()
+const wshot = async (root, name) => { const l = weekWave(root); await l.scrollIntoViewIfNeeded(); await sleep(250); return shot(p, name, l) }
+const lit = async root => (await chips(p, DI, gi, 0, root)).map(c => c.chips.some(x => x.on) ? 1 : 0).join('')
+const wk = (root) => p.evaluate(([d, g, root]) => { const w = document.querySelector(`${root} [data-sarole="${d}.${g}.0.0"]`)?.closest('.go'); if (!w) return null; return { txt: [...w.querySelectorAll('[data-txt]')].map(e => e.getAttribute('data-txt') + '=' + (e.value ?? e.textContent)).slice(0, 14), head: (w.querySelector('.fh, .colhead, .heads')?.innerText || '').replace(/\s+/g, ' ') } }, [DI, gi, root])
+
+/* B on the board only */
+await openBoard(p, DI)
+await bType(p, bf(DI, gi, 0, 'br'), '0615')
+const model = await p.evaluate(([d, g]) => ({ br: window.DAYS[d].waves[g].formations[0].br || '', rl: window.DAYS[d].waves[g].formations[0].rl || '' }), [DI, gi])
+await closeBoard(p); await go(p, 'editsched')
+const wl = await lit('#eWeek'); const ww = await wk('#eWeek')
+const pic = await wshot('#eWeek', 'A-10-1-week-B-only')
+const swk = await chips(p, DI, gi, 0, '#eWeek')
+rec('10', 'SC AM: type B 06:15 on the board only, then look at Edit Schedule\'s week', 'RECORD: lit chips on all four rows with no B box on the week to explain them; what a scheduler can find out and take back from the week', `model ${JSON.stringify(model)}; lit=${wl}; chip tooltip "${swk[0].chips[0].title}"; chip tag ${swk[0].chips[0].tag}; week fields in the wave: ${JSON.stringify(ww)}`, 'RECORD', pic)
+const hasBbox = await p.locator(`#eWeek [data-txt="ff:${DI}.${gi}.0.br"]:visible`).count()
+const hasRbox = await p.locator(`#eWeek [data-txt="ff:${DI}.${gi}.0.rl"]:visible`).count()
+rec('10', 'does the week offer a B box or an R box for the SC row', 'RECORD', `B box on the week: ${hasBbox}; R box on the week: ${hasRbox}`, 'RECORD')
+/* View-only Sched */
+await go(p, 'viewsched')
+const vl = await p.locator('#page-viewsched .saflies.on:visible').count()
+const vk = await roLook(p, 'A-10-2-viewonly-B-only', '#page-viewsched')
+rec('10', 'View-only Sched (as admin) with B only typed', 'lit chips, no press possible, no B visible', `lit=${vl}; badges: ${vk.str}`, vl === 4 && (await p.locator('#page-viewsched button.saflies:visible').count()) === 0 ? 'PASS' : 'FAIL', vk.pic)
+await go(p, 'editsched')
+/* clear B on the board, then do the same with R, typed on the WEEK */
+await openBoard(p, DI)
+await bType(p, bf(DI, gi, 0, 'br'), '')
+await closeBoard(p); await go(p, 'editsched')
+const l0 = await lit('#eWeek')
+rec('10', 'clear B on the board', 'all four chips dashed/none on the week again', `lit=${l0}`, l0 === '0000' ? 'PASS' : 'FAIL', await wshot('#eWeek', 'A-10-3-week-B-cleared'))
+if (hasRbox) {
+  const r = p.locator(`#eWeek [data-txt="ff:${DI}.${gi}.0.rl"]:visible`).first()
+  await r.evaluate(e => e.scrollIntoView({ block: 'center' })); await sleep(150)
+  await r.click(); await p.keyboard.type('0630'); await p.keyboard.press('Enter'); await sleep(300)
+  await p.mouse.click(720, 5); await sleep(500)
+  const wl2 = await lit('#eWeek')
+  const pic2 = await wshot('#eWeek', 'A-10-4-week-R-typed-on-week')
+  await r.click(); await p.keyboard.press('Control+a'); await p.keyboard.press('Backspace'); await p.keyboard.press('Enter'); await sleep(300)
+  await p.mouse.click(720, 5); await sleep(500)
+  const wl3 = await lit('#eWeek')
+  rec('10', 'type R 06:30 in the week\'s own R box, then clear it there', 'chips lit while R is typed, gone when cleared (the week CAN take it back)', `after R: lit=${wl2}; after clear: lit=${wl3}`, wl2 === '1111' && wl3 === '0000' ? 'PASS' : 'FAIL', pic2)
+}
+await ctx.close()
+console.log('errors', JSON.stringify(errors))
+await b.close()

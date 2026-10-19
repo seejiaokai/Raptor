@@ -1,0 +1,56 @@
+import { launch, proveBundle, phone, addWaveAndSeat, openBoard, shot, wait, tapEl, typeBox, scrollTo, chips, weekTo, navTo } from './sf-B-lib.mjs'
+console.log('sf-B-s5 v3')
+await proveBundle()
+const browser = await launch()
+const rec = (id, ok, note) => console.log(ok === true ? 'PASS' : ok === false ? 'FAIL' : 'RECORD', id, '::', note)
+try {
+  const { ctx, page: p, errors } = await phone(browser, 'a')
+  const DI = 5, SEL = '#schedBoard'
+  const gi = await addWaveAndSeat(p, DI, 'sc', [[0, 0], [0, 1]])   // set-up (not under test): two MAIN seated on SC AM
+  const badge = (root = '#eWeek') => p.evaluate(root => [...document.querySelectorAll(root + ' .day')[5].querySelectorAll('.badge')].map(b => b.innerText.replace(/\s+/g, ' ')).join(' ; '), root)
+  const head = async name => { await p.evaluate(() => window.scrollTo(0, 0)); await p.evaluate(root => { const d = document.querySelectorAll(root + ' .day')[5]; d.scrollTop = 0 }, '#eWeek'); await shot(p, name, { clip: { x: 0, y: 0, width: 402, height: 260 } }) }
+  await p.evaluate(() => window.go('editsched')); await wait(p, 600)
+  await weekTo(p, ctx, 5)
+  const b0 = await badge()
+  // R by finger on the board
+  await p.evaluate(d => window.openScheduler(d), DI); await p.waitForSelector(SEL); await wait(p, 800)
+  await scrollTo(p, p.locator(`${SEL} [data-bfld="ff:5.${gi}.0.rl"]`).first(), 250)
+  const z = await typeBox(p, p.locator(`${SEL} [data-bfld="ff:5.${gi}.0.rl"]`), '0630')
+  await p.evaluate(() => document.querySelector('#sbDone').click()); await wait(p, 800)
+  await p.evaluate(() => window.go('editsched')); await wait(p, 700)
+  await weekTo(p, ctx, 5)
+  const b1 = await badge()
+  await head('B-5-1-week-heading-2jets')
+  rec('5-1', b1 !== b0 && /^2\b/.test(b1), `before R "${b0}" -> R 06:30 typed by finger (zoom scale ${z.scale}), two MAIN seated, both SPARE empty: "${b1}" (first figure = jets; Insights is not on the phone — hidden entry, left to the desktop walker)`)
+  const seat = (li, ai, seatk, id) => p.evaluate(([gi, li, ai, seatk, id]) => window.fillSlot(`5.${gi}.${li}.${ai}.${seatk}`, id), [gi, li, ai, seatk, id])
+  await seat(0, 2, 'p', 'prowler')   // only the FCP of one SPARE (set-up route: fillSlot)
+  await wait(p, 500)
+  const b2 = await badge(); await head('B-5-2-week-heading-3jets')
+  rec('5-2', /^3\b/.test(b2), `only the FCP of one SPARE seated: "${b2}"`)
+  await seat(0, 3, 'p', 'allavail'); await wait(p, 300); const phb = await badge(); await seat(0, 3, 'w', 'glass'); await wait(p, 500)
+  const b3 = await badge(); await head('B-5-3-week-heading-4jets')
+  rec('5-3', /^4\b/.test(b3), `the other SPARE seated with its RCP only: "${b3}" (an ALL AVAIL placeholder cannot be put in a jet seat — the crew palette says "cannot crew a jet; name the people flying it", fillSlot left the seat empty, badge stayed "${phb}")`)
+  // chips on the SC AM rows, week + RECORD lit on empty
+  const wkc = await chips(p, '#eWeek .day:nth-child(6)')
+  console.log('week chips', wkc.length, wkc.map(x => x.txt).join(','))
+  // View-only Sched and its badge at this state
+  await navTo(p, 'viewsched'); await weekTo(p, ctx, 5, '#vWeek', 112)
+  const vb = await badge('#vWeek')
+  await scrollTo(p, p.locator('#vWeek .day:nth-child(6) .go').first(), 90)
+  await shot(p, 'B-5-4-viewonly-4jets')
+  rec('5-4', vb === b3, `View-only Sched Saturday badge "${vb}" vs Edit Schedule "${b3}"`)
+  // clear every seat of the shift
+  await navTo(p, 'editsched'); await weekTo(p, ctx, 5)
+  for (const [li, ai] of [[0,0],[0,1],[0,2],[0,3]]) for (const k of ['p','w']) await seat(li, ai, k, '')
+  await wait(p, 600)
+  const b4 = await badge(); await head('B-5-5-week-heading-empty')
+  const wkc2 = await chips(p, '#eWeek .day:nth-child(6)')
+  rec('5-5', !/^[1-9]/.test(b4), `every seat of the shift cleared (R still typed): badge "${b4}"; chips on the empty rows: ${wkc2.length} (${wkc2.slice(0,4).map(x => x.txt).join(',')})`)
+  await scrollTo(p, p.locator('#eWeek .day:nth-child(6) .go').first(), 150)
+  await shot(p, 'B-5-6-week-empty-shift')
+  // an ordinary flying line with nobody seated, same day — still counted (D1009)
+  await p.evaluate(() => window.addWave(5, '')); await wait(p, 600)
+  const b5 = await badge(); await head('B-5-7-week-heading-plain-line')
+  rec('5-6', null, `an ordinary flying wave (one empty line) added: "${b5}" (was "${b4}"); a flying line with nobody on it should still count`)
+  console.log('errors', JSON.stringify(errors))
+} finally { await browser.close() }

@@ -1,0 +1,40 @@
+import { launch, ctxOpen, sleep, go, shot, openBoard, closeBoard, addStandby, seat, wave, bf, bType, errors, rec, waveShot, chips, summ, bPublish, pending, topShot, toTop, pressChip, reload, histTab, pickPlan, undo } from './sf-A-lib.mjs'
+console.log('sf-A-s14b v1')
+const b = await launch()
+const DI = 5
+const { ctx, p } = await ctxOpen(b, 's14b')
+const gi = await addStandby(p, DI, 'sc')
+await seat(p, DI, gi, [[0, 0], [0, 1], [0, 2], [0, 3]])
+await openBoard(p, DI)
+console.log('publish', JSON.stringify(await bPublish(p, DI)))
+const lit = async () => (await chips(p, DI, gi, 0)).map(c => c.chips.some(x => x.on) ? 'L' : (c.chips.length ? 'd' : '-')).join('')
+const pend = async () => ((await pending(p)).join('|').match(/(\d+) pending/) || [, '0'])[1]
+const planBtn = () => p.locator('#schedBoard .planselbtn').first().innerText().then(t => t.replace(/\s+/g, ' '))
+await pressChip(p, `${DI}.${gi}.0.2`)
+console.log('ticked: lit', await lit(), 'pend', await pend())
+await toTop(p)
+await p.locator('#schedBoard .planselbtn').first().click(); await sleep(500)
+await p.locator('button[data-plandup]').first().click(); await sleep(1200)
+console.log('after + Alt Plan: plan', await planBtn(), 'lit', await lit(), 'pend', await pend())
+await toTop(p)
+await p.locator('#schedBoard .planselbtn').first().click(); await sleep(500)
+await p.keyboard.press('Escape'); await sleep(300)
+await toTop(p)
+/* in Plan B (now live), take the tick off: the live day equals the issued day again */
+await pressChip(p, `${DI}.${gi}.0.2`)
+const st0 = { plan: await planBtn(), lit: await lit(), pend: await pend() }
+console.log('Plan B unticked', JSON.stringify(st0))
+/* bring Plan A (which still holds the tick) out as the live day */
+await toTop(p)
+await p.locator('#schedBoard .planselbtn').first().click(); await sleep(500)
+await p.locator('[data-plansel="dr1"]').first().click(); await sleep(1200)
+const confirmBtns = await p.evaluate(() => [...document.querySelectorAll('button')].filter(e => e.offsetParent && /switch|make|confirm|yes|apply|bring/i.test(e.innerText)).map(e => e.innerText.trim()))
+console.log('confirm?', JSON.stringify(confirmBtns))
+const words = ((await histTab(p, /go out/)) || '').replace(/^.*?Waiting to go out/, 'Waiting to go out').slice(0, 500)
+await shot(p, 'A-14b-2-changes-window'); await p.keyboard.press('Escape'); await sleep(300)
+const st1 = { plan: await planBtn(), lit: await lit(), pend: await pend(), pending: (await pending(p)).join('|') }
+const pic = await topShot(p, 'A-14b-1-plan-A-brought-out')
+rec('14b', 'Pub Sat: Plan A holds a hand tick, the live Plan B does not (equals issued); bring Plan A out as the live day', 'a pending amendment that includes the Flies change: the chip lit, "1 pending", "Publish AL1", the changes window names the change', `Plan B before: ${JSON.stringify(st0)}; after switching: ${JSON.stringify(st1)}; changes window: [${words}]`, st1.lit[2] === 'L' && st1.pend === '1' ? 'PASS' : 'FAIL', pic)
+await waveShot(p, DI, gi, 'A-14b-3-wave')
+console.log('errors', JSON.stringify(errors))
+await ctx.close(); await b.close()

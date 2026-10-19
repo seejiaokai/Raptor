@@ -1,0 +1,61 @@
+import { launch, proveBundle, phone, addWaveAndSeat, openBoard, shot, wait, tapEl, typeBox, scrollTo, publishDay, chips, pending, zoom } from './sf-B-lib.mjs'
+console.log('sf-B-s16 v1')
+await proveBundle()
+const browser = await launch()
+const rec = (id, ok, note) => console.log(ok === true ? 'PASS' : ok === false ? 'FAIL' : 'RECORD', id, '::', note)
+try {
+  const { ctx, page: p, errors } = await phone(browser, 'a')
+  const DI = 5, SEL = '#schedBoard'
+  const sc = await addWaveAndSeat(p, DI, 'sc', [[0, 0]])
+  const av = await addWaveAndSeat(p, DI, 'avalon', [[0, 0]])
+  const bb = await addWaveAndSeat(p, DI, 'bb', [[0, 0]])
+  await p.evaluate(() => window.addWave(5, '')); await wait(p, 400)   // an ordinary flying wave, for the contrast
+  const fl = await p.evaluate(() => window.DAYS[5].waves.length - 1)
+  console.log('gis sc/av/bb/fly', sc, av, bb, fl)
+  await openBoard(p, DI)
+  console.log('publish Sat', JSON.stringify(await publishDay(p, DI)))
+  const boxes = await p.evaluate(() => [...document.querySelectorAll('#schedBoard input[data-bfld]')].filter(e => e.offsetParent && /\.(rl|br)$/.test(e.getAttribute('data-bfld'))).map(e => { const r = e.getBoundingClientRect(); const ph = getComputedStyle(e, '::placeholder'); return { f: e.getAttribute('data-bfld'), cls: e.className, ph: e.placeholder, val: e.value, phColor: ph.color, color: getComputedStyle(e).color, w: Math.round(r.width * 10) / 10, h: Math.round(r.height * 10) / 10, wave: window.DAYS[5].waves[+e.getAttribute('data-bfld').split(':')[1].split('.')[1]].kind || 'fly' } }))
+  for (const b of boxes) console.log(JSON.stringify(b))
+  const standby = boxes.filter(b => b.wave !== 'fly'), flying = boxes.filter(b => b.wave === 'fly')
+  const dashOk = standby.length > 0 && standby.every(b => /^[–—-]$/.test(b.ph.trim()) && b.val === '')
+  rec('16-1', dashOk, `${standby.length} empty standby R/B boxes (SC, AVALON, BB); placeholders ${JSON.stringify([...new Set(standby.map(b => b.ph))])}; placeholder colours ${JSON.stringify([...new Set(standby.map(b => b.phColor))])}, box text colour ${JSON.stringify([...new Set(standby.map(b => b.color))])}`)
+  rec('16-2', flying.length > 0 && flying.every(b => !/^[–—-]$/.test(b.ph.trim())), `flying line boxes: ${JSON.stringify(flying.map(b => b.f + ' ph=' + JSON.stringify(b.ph) + ' val=' + JSON.stringify(b.val)))}`)
+  // placeholder of Remarks for colour comparison
+  const rm = await p.evaluate(() => { const e = [...document.querySelectorAll('#schedBoard input, #schedBoard textarea')].find(x => x.offsetParent && /Remarks/.test(x.placeholder || '')); return e ? getComputedStyle(e, '::placeholder').color : null })
+  console.log('Remarks placeholder colour', rm)
+  const f = (g, n) => `${SEL} [data-bfld="ff:5.${g}.0.${n}"]`
+  await scrollTo(p, p.locator(f(av, 'rl')).first(), 250); await shot(p, 'B-16-1-avalon-dash')
+  await scrollTo(p, p.locator(f(sc, 'rl')).first(), 250); await shot(p, 'B-16-2-sc-dash')
+  await scrollTo(p, p.locator(f(fl, 'rl')).first(), 250); await shot(p, 'B-16-3-flying-line-no-dash')
+  // tap leaves the box empty, no ring, nothing pending
+  const pend0 = await pending(p)
+  const sizeBefore = await p.evaluate(sel => { const r = document.querySelector(sel).getBoundingClientRect(); return [r.width, r.height] }, f(av, 'rl'))
+  await scrollTo(p, p.locator(f(av, 'rl')).first(), 250)
+  await tapEl(p, p.locator(f(av, 'rl')), { label: 'AVALON R' })
+  const af = await p.evaluate(sel => { const e = document.querySelector(sel); const cs = getComputedStyle(e); return { val: e.value, focus: document.activeElement === e, outline: cs.outlineStyle + ' ' + cs.outlineWidth, shadow: cs.boxShadow.slice(0, 60), border: cs.borderColor, scale: window.visualViewport.scale } }, f(av, 'rl'))
+  await shot(p, 'B-16-4-avalon-r-focused')
+  await p.evaluate(() => document.activeElement.blur()); await wait(p, 500)
+  const pend1 = await pending(p)
+  rec('16-3', af.val === '' && pend0 === pend1, `tap into the empty AVALON R: value ${JSON.stringify(af.val)}, focused ${af.focus}, ring ${JSON.stringify(af)}; pending before "${pend0}" after "${pend1}"`)
+  // typing 0630 -> 06:30 ordinary colour, dash gone; clearing brings it back
+  const z = await typeBox(p, p.locator(f(av, 'rl')), '0630')
+  const t1 = await p.evaluate(sel => { const e = document.querySelector(sel); return { val: e.value, color: getComputedStyle(e).color, ph: e.placeholder } }, f(av, 'rl'))
+  const sz = await p.evaluate(sel => { const r = document.querySelector(sel).getBoundingClientRect(); return [r.width, r.height] }, f(av, 'rl'))
+  await shot(p, 'B-16-5-avalon-r-typed')
+  rec('16-4', t1.val === '06:30' && !/rgba?\(.*0\.\d/.test(t1.color) && z.scale === 1, `typed 0630 by finger: value ${t1.val}, text colour ${t1.color} (the faint dash colour was ${standby[0].phColor}), box size ${JSON.stringify(sz)} vs ${JSON.stringify(sizeBefore)} before, zoom scale ${z.scale}`)
+  await typeBox(p, p.locator(f(av, 'rl')), '')
+  const t2 = await p.evaluate(sel => { const e = document.querySelector(sel); return { val: e.value, ph: e.placeholder } }, f(av, 'rl'))
+  rec('16-5', t2.val === '' && /^[–—-]$/.test(t2.ph.trim()), `cleared: value ${JSON.stringify(t2.val)} placeholder ${JSON.stringify(t2.ph)}`)
+  // a flying line with a take-off typed keeps its faint SUGGESTED times
+  await scrollTo(p, p.locator(f(fl, 'to')).first(), 250)
+  await typeBox(p, p.locator(f(fl, 'to')), '0900')
+  const sug = await p.evaluate(([a, b]) => [a, b].map(sel => { const e = document.querySelector(sel); return { f: sel.match(/ff:[^"]+/)[0], val: e.value, ph: e.placeholder, cls: e.className, color: getComputedStyle(e).color, phColor: getComputedStyle(e, '::placeholder').color } }), [f(fl, 'rl'), f(fl, 'br')])
+  await scrollTo(p, p.locator(f(fl, 'rl')).first(), 250); await shot(p, 'B-16-6-flying-line-suggested')
+  rec('16-6', sug.every(x => !/^[–—-]$/.test((x.ph || x.val).trim()) && (x.ph || x.val)), 'flying line, take-off 09:00 typed: ' + JSON.stringify(sug))
+  // the focus outline of a standby box vs a flying box
+  await tapEl(p, p.locator(f(fl, 'rl')), { label: 'flying R' })
+  const of = await p.evaluate(sel => { const cs = getComputedStyle(document.querySelector(sel)); return cs.outlineStyle + ' ' + cs.outlineWidth }, f(fl, 'rl'))
+  await p.evaluate(() => document.activeElement.blur())
+  rec('16-7', null, 'focus outline of an ordinary flying box: ' + of)
+  console.log('errors', JSON.stringify(errors))
+} finally { await browser.close() }

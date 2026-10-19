@@ -1,0 +1,18 @@
+import * as L from './sf-C-lib.mjs'
+const { launch, ctxOpen, openBoard, bPut, sleep, shot, go, OUT } = L
+const b = await launch()
+const ctx = await b.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 })
+const p = await ctx.newPage()
+await p.goto(L.BASE + '/'); await p.fill('#luser', 'ad'); await p.fill('#lpass', 'a'); await p.click('#loginForm button[type=submit]')
+await p.waitForSelector('#vWeek .day', { state: 'attached' }); await p.addStyleTag({ content: '*{scroll-behavior:auto !important} #toastEl{display:none !important}' }); await sleep(600)
+await go(p, 'editsched'); await p.evaluate(() => window.addWave(5, 'bb')); await sleep(500)
+await openBoard(p, 5)
+await bPut(p, 5, 0, 0, 2, 'p', ['bane'])
+await p.locator('#schedBoard [data-safly="5.0.0.2"]:visible').first().click(); await sleep(700)
+await p.locator('#sbSide').getByText(/BB SHIFT flies but has no START or END/).first().click(); await sleep(300)
+await p.screenshot({ path: OUT + '/C-M-2b-bb-tap-zoom-early.png', clip: { x: 0, y: 300, width: 1110, height: 300 } })
+await sleep(1500)
+await p.screenshot({ path: OUT + '/C-M-2c-bb-tap-zoom-late.png', clip: { x: 0, y: 300, width: 1110, height: 300 } })
+const r = await p.evaluate(() => { const t = document.querySelector('[data-bfld="ff:5.0.0.to"]'); const cs = t && getComputedStyle(t); const wave = t.closest('.sb-go'); return { toOutline: cs && cs.outline + '|' + cs.boxShadow, waveCls: wave && wave.className, active: document.activeElement.tagName } })
+console.log(JSON.stringify(r))
+await b.close()
