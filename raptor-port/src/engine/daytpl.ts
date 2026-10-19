@@ -119,7 +119,9 @@ function mintBlob(d: any): DayTplBlob {
       delete f.cx; delete f.cxr
       ;(f.aircraft || []).forEach((a: any) => {
         a.p = ''; a.w = ''
-        delete a.cx; delete a.cxr; delete a.flag
+        /* a hand Flies tick is one day's activation, like a CX — never planned for another day ([STANDBY-FLIES]);
+           a typed B or R rides along with the line's other times, as it always has */
+        delete a.cx; delete a.cxr; delete a.flag; delete a.fly
       })
     })
   })

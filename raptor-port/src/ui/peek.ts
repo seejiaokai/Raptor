@@ -30,7 +30,7 @@
 import { rowPeopleDrawn, inputRowSeveral } from '../engine/grouprows'
 import { PEOPLE, whoId, QCHIP, QCLASS } from '../engine/people'
 import { noteText } from '../engine/note'
-import { isStandalone, mColor, dayCount, CURWEEK } from '../engine/waves'
+import { isStandalone, saFlies, saAnyFlies, mColor, dayCount, CURWEEK } from '../engine/waves'
 import { groundOrder } from '../engine/order'
 import { whoArr } from '../engine/slots'
 import { minus, parseHM } from '../engine/time'
@@ -127,14 +127,15 @@ function peekFormation(w: any, f: any): string {
       ? `<div class="fcell ld${badCls}"${badAtt} style="${spans}">${esc(f.ld || '')}</div>`
       : `<div class="fcell ld${badCls}"${badAtt} style="${spans}"><span>${esc(f.to || '')}</span><span>${esc(f.ld || '')}</span></div>`)
   ;(f.aircraft || []).forEach((a: any, ai: number) => {
-    const acx = (f.cx ? '' : rowCls(a)) + ((sa && a.spare) ? ' spare' : '')
+    const acx = (f.cx ? '' : rowCls(a)) + ((sa && a.spare && !saFlies(w, f, a)) ? ' spare' : '')
     const stores = sa ? '' : storesView(a.opts || {})
     const rmkE = (!(a.rmks || '').trim() && !stores && !a.cx && !a.flag) ? ' rmk-e' : ''
     /* the preview keeps the role as compact fallback TEXT, not the live
        surfaces' .sarole badge — a peek column is inert and dimmed, and the
        one-line text keeps its DOM under the perf ceiling. Label body shared
        with saRoleHTML via saRoleText so the two spellings cannot drift. */
-    const rmkTxt = a.rmks || (sa ? saRoleText(a) : '')
+    /* a standby row that flies says so first, read only, as View-only Sched's lit chip does ([STANDBY-FLIES], D1063) */
+    const rmkTxt = (sa && saFlies(w, f, a) ? '✓ FLIES · ' : '') + (a.rmks || (sa ? saRoleText(a) : ''))
     h += `<div class="acrow${ai ? '' : ' r1'}${acx}" style="--gr:${ai + 1}">${peekPucks(a)}</div>`
       + `<div class="rmkcell${ai ? '' : ' r1'}${acx}${rmkE}" style="--gr:${ai + 1}">${cxTag(a)}${flagTag(a)}<span class="ntx">${esc(rmkTxt)}</span>${stores}</div>`
   })
@@ -150,7 +151,7 @@ function peekWave(w: any): string {
   const edge = sa ? 'var(--san)' : `var(--${mColor(f0 ? f0.msn : '')})`
   let h = `<div class="go ${w.night ? 'night' : ''} ${sa ? 'sa sa-' + (w.kind || 'x') : ''}" style="border-left-color:${sa ? 'var(--san)' : (w.night ? 'var(--hard)' : edge)}">`
     + `<div class="go-tab"><span class="asd">${esc(w.label || '')}${!sa && w.night && !/night/i.test(w.label || '') ? ' · NIGHT' : ''}`
-    + `${sa ? `<span class="satag">standalone${w.noconf ? ' · availability, currency and seat checks only' : ''}</span>` : ''}</span></div>`
+    + `${sa ? `<span class="satag">standalone${w.noconf ? ((w.formations || []).some((f: any) => saAnyFlies(w, f)) ? ' · flies' : ' · availability, currency and seat checks only') : ''}</span>` : ''}</span></div>`
   h += sa
     ? `<div class="cols formcols"><span>${esc(w.label || '')}<br>SHIFT</span><span class="c-c">${SA_TIME_HEAD}</span><span class="c-c">END</span><span>FCP / RCP</span><span>RMKS</span></div>`
     : `<div class="cols formcols"><span>CS<br>MSN</span><span class="c-c">${WEEK_TIME_HEAD[0]}</span><span class="c-c">${WEEK_TIME_HEAD[1]}</span><span>FCP / RCP</span><span>RMKS</span></div>`

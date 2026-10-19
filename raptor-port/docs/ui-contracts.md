@@ -777,7 +777,9 @@ where the pucks take their own row (a phone up to 820 wide, not the desktop layo
 apart, the mission spanning the freed track so the pucks and remarks keep their widths (picture 6). The headings follow
 the same wrappers; the phone hides the 6th to 9th heading children (FCP, RCP, Notes, the end place). A standby line (SC,
 AVALON, BB) has its R box too (D1036, D1040): before B on the board, above START on the week and the next-week peek
-(`html.ts SA_TIME_HEAD`, "R / START"), with no suggestion in it or in its B (D1039). **A suggested time sits faint inside its own empty box** (D1028,
+(`html.ts SA_TIME_HEAD`, "R / START"), with no suggestion in it or in its B (D1039) — only a faint dash on the board,
+the box's placeholder in the week's own empty-box grey (`.sadash`, D1065), never a value. On a standby line a typed B or
+R flies the whole shift ([STANDBY-FLIES], D1045). **A suggested time sits faint inside its own empty box** (D1028,
 D1030 — the suggested brief and the default rally, the take-off less the Logic page's "Default rally before take-off"):
 the week's box by its `data-ph`, the board's by its placeholder, both `.sugbox` in the accent; the old line above B
 (`.bsug`) is gone. One press places it (`interactions.ts placeSuggestion`) — since D1038 NOT highlighted: in a typed time's colour, the caret
@@ -1973,6 +1975,16 @@ routes `data-air`):
   a remark was typed and could never be changed — the Stable decision in
   `CLAUDE.md` carries the full story). Its remarks box now carries the same
   plain faded `Remarks` as every other line.
+  **The Flies chip beside the badge** ([STANDBY-FLIES], owner D1060, D1063, D1064, 19 Oct 26 — drawn and approved as
+  drawn, `docs/img/handpass/2026-10-19-standby-flies/mock/`): `html.ts saFliesHTML` / `saBadgesHTML` put a second chip
+  in the badge's row (`.sabadges`, so the row grows no taller). A lit "✓ FLIES" (the MAIN recipe at full strength) on a
+  row that flies, on all three screens — the Scheduler Board, Edit Schedule's week and View-only Sched; the next-week
+  peek writes "✓ FLIES ·" before the row's words (D1063). A dashed "FLIES" (the SPARE recipe) on a row that does not fly
+  — on the Scheduler Board ONLY, the button that ticks it by hand (D1064: "less clutter for something that rarely
+  happens"); the lit one on a hand-ticked row takes the tick off there. A row lit because its shift has a B or R typed is
+  no button: its title says to CX the row (D1046). The tap (`interactions.ts`, `data-safly`) writes `a.fly` through
+  `afterSchedMutate` and marks the row's `st:` key, as the MAIN/SPARE flip does; no passing note — the chip is the
+  feedback (D850). Pins: `ui/standbyflies.test.tsx`.
   **The edit week's flying line matches** (`html.ts`'s `ted` call,
   same day): its remarks box shows the faded `Remarks` too — but edit mode only,
   since a read-only view page has nothing to type into it, and it is registered

@@ -78,7 +78,7 @@ export function insightsHTML() {
   I.flyers.slice(0, INSIGHTS_ALL ? I.flyers.length : 12).forEach((f: any) => {
     const p = PEOPLE[f.id]
     const mix=f.roleMix, split=I.tracking && mix && !mix.unresolved
-    const bar=split?`<span class="mix-segments" style="width:${f.n/maxN*100}%"><span class="mix-blue" style="width:${mix.blue/f.n*100}%"></span><span class="mix-red" style="width:${mix.red/f.n*100}%"></span></span>`:`<span class="fill" style="width:${f.n/maxN*100}%"></span>`
+    const bar=split?`<span class="mix-segments" style="width:${f.n/maxN*100}%"><span class="mix-blue" style="width:${mix.blue/f.n*100}%"></span><span class="mix-red" style="width:${mix.red/f.n*100}%"></span>${mix.standby ? `<span class="mix-standby" title="Standby rows that flew" style="width:${mix.standby/f.n*100}%"></span>` : ''}</span>`:`<span class="fill" style="width:${f.n/maxN*100}%"></span>`
     h += `<div class="ibar${I.tracking?' mission-mix-row':''}"><span class="nm" title="${esc(p?.name || '')}">${esc(p?.cs || f.id)}</span><span class="track">${bar}</span><span class="mix-numbers">${split?`<span class="mix-count-blue">${mix.blue}</span><span class="mix-count-red">${mix.red}</span>`:''}<span class="v">${f.n}</span></span></div>`
   })
   if (I.flyers.length > 12) h += `<button type="button" class="abtn insights-show-all" data-insights-all>${INSIGHTS_ALL?'Show less ↑':`Show all ${I.flyers.length} ↓`}</button>`

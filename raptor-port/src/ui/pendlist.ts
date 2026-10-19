@@ -79,7 +79,9 @@ export function valueWords(addr: string, v: any): string {
     if (p === 'dr') return x[0] + cx(1, 3) + (on(2) ? ' · flagged' : '')
     if (p === 'gr') return x[0] + cx(1, 4) + (on(2) ? ' · flagged' : '') + (on(3) ? ' · info only' : '')
     if (p === 'sr') return x[0] + (x[1] ? ` · ${x[1]}` : '') + cx(2, 4) + (on(3) ? ' · flagged' : '')
-    if (p === 'fr') return (x[0] || '(no remarks)') + cx(1, 2) + (on(3) ? ' · flagged' : '') + (x[4] ? ` · ${x[4]}` : '') + (on(5) ? ' · SPARE' : '')
+    /* the row's role once (its label and its spare flag said it twice), and its hand Flies tick ([STANDBY-FLIES] — x[6]
+       is 'F' only when ticked: restore.ts dayKeys) */
+    if (p === 'fr') return (x[0] || '(no remarks)') + cx(1, 2) + (on(3) ? ' · flagged' : '') + (x[4] ? ` · ${x[4]}` : '') + (on(5) && x[4] !== 'SPARE' ? ' · SPARE' : '') + (x[6] === 'F' ? ' · ticked to fly' : '')
     if (p === 'ff' && fld === 'cs') return x[0] + cx(1, 3) + (x[2] ? ` · ${x[2]}` : '')
     if (p === 'wl') return x[0] + (on(1) ? ' · night' : '')
     if (p === 'dl') return x[0] + (x[1] ? ` · ${x[1]}` : '')

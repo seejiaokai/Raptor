@@ -126,6 +126,6 @@ OWED: Claude's independent plan read after Monday 5 Oct 26, 19:00. Owner product
 
 **His answers (19 Oct 26) — the design of record for the build:**
 - **D1038 — a taken suggestion:** the time turns ordinary white at once and the box wears the plain blue ring as a short flash, about a second (not the six seconds of a thing just added).
-- **D1039 — which lines hide the worked-out times:** only SC, AVALON and BB; their empty B and R stay empty. The flying lines keep their faint suggestions.
+- **D1039 — which lines hide the worked-out times:** only SC, AVALON and BB; their empty B and R stay empty (since D1065, 19 Oct 26, with a faint grey dash on the board — a placeholder, never a value). The flying lines keep their faint suggestions.
 - **D1040 — where the box sits:** above B, the same R-over-B column as a flying line, on the week and the board; take-off and landing unchanged.
-- **D1041 — what it counts for:** on SC MAIN it starts the crew's day as SC's in-time box does (crew rest, the long day, work hours, OIL — D606); the earlier of the two starts it when both are typed. On SC SPARE, AVALON and BB it is shown, printed and exported only. An empty box counts for nothing.
+- **D1041 — what it counts for (NARROWED 19 Oct 26 by D1044, D1045 — [STANDBY-FLIES]: a typed R or B on any standby line now flies its whole shift, SPARE rows, AVALON and BB included; `docs/superpowers/specs/2026-10-19-standby-flies-design.md`):** on SC MAIN it starts the crew's day as SC's in-time box does (crew rest, the long day, work hours, OIL — D606); the earlier of the two starts it when both are typed. On SC SPARE, AVALON and BB it is shown, printed and exported only. An empty box counts for nothing.

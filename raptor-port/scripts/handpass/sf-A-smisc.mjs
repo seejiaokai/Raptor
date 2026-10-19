@@ -1,0 +1,35 @@
+import { launch, ctxOpen, sleep, go, shot, openBoard, closeBoard, addStandby, seat, wave, bf, bType, errors, rec, waveShot, chips, toTop, pressChip } from './sf-A-lib.mjs'
+console.log('sf-A-smisc v1')
+const b = await launch()
+const DI = 5
+const { ctx, p } = await ctxOpen(b, 'smisc')
+const gi = await addStandby(p, DI, 'sc'); await seat(p, DI, gi, [[0, 0], [0, 1], [0, 2], [0, 3]])
+await openBoard(p, DI)
+const lit = async (li) => (await chips(p, DI, gi, li)).map(c => c.chips.length ? (c.chips.some(x => x.on) ? 'L' : 'd') : '-').join('')
+/* the + Wave picker's notes */
+await toTop(p)
+await p.locator(`#schedBoard [data-wvadd="${DI}"]:visible`).first().click(); await sleep(600)
+const note = await p.evaluate(() => { const e = [...document.querySelectorAll('div, span, p')].filter(e => e.offsetParent && /sit outside the day/.test(e.innerText || '') && e.children.length < 4); return e.map(x => x.innerText.replace(/\s+/g, ' ')).slice(0, 2) })
+await p.evaluate(di => { const e = document.querySelector(`#schedBoard [data-wvadd="${di}"]`); e.scrollIntoView({ block: 'center' }) }, DI); await sleep(300)
+const pic = await shot(p, 'A-misc-1-wave-picker-note')
+rec('misc', 'the + Wave picker\'s note on SC / AVALON / BB', 'RECORD: after D1044-D1046 a standby line with B or R typed DOES count in the day\'s flying count; the note should not say they sit outside it without that exception', JSON.stringify(note), /outside the day/.test(JSON.stringify(note)) ? 'FAIL' : 'PASS', pic)
+await p.keyboard.press('Escape'); await sleep(300)
+await p.locator('#schedBoard [data-wvadd]:visible').first().click().catch(() => {})
+/* + Line on a ticked SC wave */
+await pressChip(p, `${DI}.${gi}.0.2`)
+const before = { f: (await wave(p, DI, gi)).f.length, l0: await lit(0) }
+const gl = p.locator(`#schedBoard [data-gline="${DI}.${gi}"]:visible`).first()
+await gl.evaluate(e => e.scrollIntoView({ block: 'center' })); await sleep(200)
+await gl.click(); await sleep(800)
+const w2 = await wave(p, DI, gi)
+const afterL = []; for (let li = 0; li < w2.f.length; li++) afterL.push(await lit(li))
+const pe = await waveShot(p, DI, gi, 'A-misc-2-plus-line')
+rec('14e', '"+ Line" on the SC wave while the row 3 of AM is ticked', 'RECORD whether the tick travels to the new line (it should not)', `formations before ${before.f}, after ${w2.f.length}; lit per line: ${afterL.join(' / ')}`, 'RECORD', pe)
+/* the Logic page's standby text */
+await closeBoard(p); await go(p, 'logic')
+const logic = await p.evaluate(() => { const t = document.querySelector('#page-logic').innerText; const out = []; const re = /standby|stand by|SPARE|AVALON|\bBB\b/gi; let m; const seen = new Set(); while ((m = re.exec(t)) && out.length < 8) { const s = t.slice(Math.max(0, m.index - 90), m.index + 220).replace(/\s+/g, ' '); const k = s.slice(0, 60); if (!seen.has(k)) { seen.add(k); out.push(s) } } return out })
+await p.evaluate(() => { const t = [...document.querySelectorAll('#page-logic *')].find(e => e.children.length === 0 && /standby/i.test(e.textContent || '')); if (t) t.scrollIntoView({ block: 'center' }) }); await sleep(300)
+const pl = await shot(p, 'A-misc-3-logic-standby')
+rec('misc', 'the Logic page\'s text about standby lines (SC / AVALON / BB)', 'RECORD: it should say a standby line with B or R typed flies and is checked like a flight, and that the other rows are standing by', JSON.stringify(logic).slice(0, 1500), 'RECORD', pl)
+console.log('errors', JSON.stringify(errors))
+await ctx.close(); await b.close()

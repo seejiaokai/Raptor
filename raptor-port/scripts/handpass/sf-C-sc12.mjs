@@ -1,0 +1,82 @@
+import * as L from './sf-C-lib.mjs'
+const { launch, ctxOpen, openBoard, closeBoard, bPut, bType, bf, bPublish, sleep, shot, rec, go, errors, chipLine, warnLines, oilOpen, oilClose, oilLine, oilRead, pendText, trackerCredits, trackerClose, weekHead } = L
+const S = '12'
+const b = await launch()
+const oilTap = async (p, kind, who) => { // kind 'p' person / 'i' item ; who = person id or item label
+  const sel = kind === 'p' ? `#schedBoard .oilpk[data-oilp="${who}"]:visible` : `#schedBoard .oilitem:visible`
+  const el = p.locator(sel).first(); await el.evaluate(e => e.scrollIntoView({ block: 'center' })); await sleep(120)
+  await el.click(); await sleep(600)
+}
+const tail = (a, n) => a.filter(x => /(Saber|Ranger|Drifter|Ace)/.test(x))
+{
+  // (a) AVALON flying, switch Ace off, clear R, retype R
+  const { p } = await ctxOpen(b, {})
+  await go(p, 'editsched'); await p.evaluate(() => window.addWave(5, 'avalon')); await sleep(500)
+  await openBoard(p, 5)
+  for (const [ai, pid] of [[0, 'stiff'], [1, 'bane'], [2, 'slipway'], [3, 'dj']]) await bPut(p, 5, 0, 0, ai, 'p', [pid])
+  await bPublish(p, 5)
+  await bType(p, bf(5, 0, 0, 'rl'), '18:30')
+  await oilOpen(p); const a1 = await oilLine(p); await shot(p, '12-a1-R-default')
+  rec(S, '(a) AVALON R 18:30, Pub Sat, OIL Earn', 'every row ON by default', a1, /Saber:ON.*Ranger:ON.*Drifter:ON.*Ace:ON/.test(a1) ? 'PASS' : 'FAIL', 'C-12-a1-R-default.png')
+  await oilTap(p, 'p', 'dj')
+  const a2 = await oilLine(p), pend2 = await pendText(p); await shot(p, '12-a2-ace-off')
+  rec(S, '(a) switch Ace off', 'Ace off, the other three ON', { a2, pend2 }, /Ace:off/.test(a2) && /Saber:ON/.test(a2) ? 'PASS' : 'FAIL', 'C-12-a2-ace-off.png')
+  await oilClose(p)
+  await bType(p, bf(5, 0, 0, 'rl'), '')
+  await oilOpen(p); const a3 = await oilLine(p); await shot(p, '12-a3-R-cleared')
+  rec(S, '(a) clear R', 'all four off (standby default)', a3, /Saber:off.*Ranger:off.*Drifter:off.*Ace:off/.test(a3) ? 'PASS' : 'FAIL', 'C-12-a3-R-cleared.png')
+  await oilClose(p)
+  await bType(p, bf(5, 0, 0, 'rl'), '18:30')
+  await oilOpen(p); const a4 = await oilLine(p); await shot(p, '12-a4-R-retyped')
+  rec(S, '(a) retype R: is Ace back ON, or still off (his earlier choice)?', 'RECORD', a4, 'RECORD', 'C-12-a4-R-retyped.png')
+  await p.context().close()
+}
+{
+  // (b) AVALON standing by; Pub Sat; switch Drifter (SPARE) ON; publish AL; then type R; publish AL
+  const { p } = await ctxOpen(b, {})
+  await go(p, 'editsched'); await p.evaluate(() => window.addWave(5, 'avalon')); await sleep(500)
+  await openBoard(p, 5)
+  for (const [ai, pid] of [[0, 'stiff'], [1, 'bane'], [2, 'slipway'], [3, 'dj']]) await bPut(p, 5, 0, 0, ai, 'p', [pid])
+  await bPublish(p, 5)
+  await oilOpen(p); const b0 = await oilLine(p); await shot(p, '12-b0-standing')
+  rec(S, '(b) AVALON standing by, Pub Sat, OIL Earn', 'item off, four off (D24: offered, off by default)', b0, /AV:off/.test(b0) && /Drifter:off/.test(b0) ? 'PASS' : 'FAIL', 'C-12-b0-standing.png')
+  await oilTap(p, 'p', 'slipway')
+  const b1 = await oilLine(p), pb1 = await pendText(p); await shot(p, '12-b1-drifter-on')
+  rec(S, '(b) switch Drifter (SPARE) ON', 'Drifter ON, the rest off; pending 1', { b1, pb1 }, /Drifter:ON/.test(b1) && /Saber:off/.test(b1) ? 'PASS' : 'FAIL', 'C-12-b1-drifter-on.png')
+  await oilClose(p)
+  const pubAl = await bPublish(p, 5); await closeBoard(p)
+  const t1 = await trackerCredits(p, '18 Jul', '12-b2-tracker-standing')
+  rec(S, '(b) publish the amendment; Leave War tracker', 'Drifter credited the written window 19:00-23:59 only', { pubAl, t1: t1.filter(x => /Drifter|Saber|Ranger|Ace/.test(x)) }, t1.some(x => /^Drifter/.test(x) && /19:00/.test(x)) && !t1.some(x => /^(Saber|Ranger|Ace)/.test(x)) ? 'PASS' : 'FAIL', 'C-12-b2-tracker-standing.png')
+  await trackerClose(p)
+  await openBoard(p, 5)
+  await bType(p, bf(5, 0, 0, 'rl'), '18:30')
+  await oilOpen(p); const b3 = await oilLine(p); await shot(p, '12-b3-R-typed'); await oilClose(p)
+  rec(S, '(b) now type R 18:30', 'RECORD each row: Drifter stays ON; the others?', b3, 'RECORD', 'C-12-b3-R-typed.png')
+  const pubAl2 = await bPublish(p, 5); await closeBoard(p)
+  const t2 = await trackerCredits(p, '18 Jul', '12-b4-tracker-R')
+  rec(S, '(b) publish; tracker', "Drifter's window now starts at R 18:30", { pubAl2, t2: t2.filter(x => /Drifter|Saber|Ranger|Ace/.test(x)) }, t2.some(x => /^Drifter/.test(x) && /18:30/.test(x)) ? 'PASS' : 'FAIL', 'C-12-b4-tracker-R.png')
+  await trackerClose(p)
+  await p.context().close()
+}
+{
+  // (c) SC MAIN, R equals START: tracker figure identical before and after
+  const { p } = await ctxOpen(b, {})
+  await go(p, 'editsched'); await p.evaluate(() => window.addWave(5, 'sc')); await sleep(500)
+  await openBoard(p, 5)
+  for (const [ai, pid] of [[0, 'stiff'], [1, 'bane']]) await bPut(p, 5, 0, 0, ai, 'p', [pid])
+  await bPublish(p, 5); await closeBoard(p)
+  const t0 = await trackerCredits(p, '18 Jul', '12-c0-tracker-before'); await trackerClose(p)
+  await openBoard(p, 5)
+  await oilOpen(p); const c0 = await oilLine(p); await oilClose(p)
+  await bType(p, bf(5, 0, 0, 'rl'), '07:00')
+  await oilOpen(p); const c1 = await oilLine(p); await shot(p, '12-c1-R-eq-start'); await oilClose(p)
+  const hc = await weekHead(p, 5)
+  rec(S, '(c) SC AM MAIN Saber, Ranger; R 07:00 (= START)', 'OIL Earn rows unchanged by the R; badge changes', { c0, c1, hc }, c0 === c1 ? 'PASS' : 'FAIL', 'C-12-c1-R-eq-start.png')
+  await bPublish(p, 5); await closeBoard(p)
+  const t1 = await trackerCredits(p, '18 Jul', '12-c2-tracker-after'); await trackerClose(p)
+  rec(S, '(c) tracker before and after the R', 'identical', { t0, t1 }, JSON.stringify(t0) === JSON.stringify(t1) ? 'PASS' : 'FAIL', 'C-12-c2-tracker-after.png')
+  await p.context().close()
+}
+rec(S, '(d) public-holiday weekday', 'same as Saturday', 'not walked in this script', 'NOT WALKED')
+rec(S, 'browser error list', 'empty', errors, errors.length ? 'FAIL' : 'PASS')
+await b.close()

@@ -1,0 +1,21 @@
+import * as L from './sf-C-lib.mjs'
+const { launch, ctxOpen, openBoard, closeBoard, bPut, bType, bf, bPublish, sleep, shot, rec, go, errors, chipLine, changesText, changesClose } = L
+const S = 'A2'
+const b = await launch()
+const { p } = await ctxOpen(b, {})
+await go(p, 'editsched'); await p.evaluate(() => window.addWave(5, 'sc')); await sleep(500)
+await openBoard(p, 5)
+await bPut(p, 5, 0, 0, 0, 'p', ['stiff']); await bPut(p, 5, 0, 0, 2, 'p', ['dice'])
+await bPublish(p, 5)
+await p.locator('#schedBoard [data-safly="5.0.0.2"]:visible').first().click(); await sleep(800)
+await changesText(p, 5)
+await p.locator('.chgwin:visible').getByText(/All changes/).first().click(); await sleep(800)
+const all = await p.evaluate(() => { const w = [...document.querySelectorAll('.chgwin')].find(x => !x.hidden && x.offsetWidth); return w.innerText.replace(/\s+/g, ' ').slice(0, 900) })
+await shot(p, 'A2-1-all-changes')
+rec(S, 'changes window, "All changes" tab, after the tick on the published Saturday', 'the tick named in words', all, /FLIES|flies/i.test(all) ? 'PASS' : 'FAIL', 'C-A2-1-all-changes.png')
+await changesClose(p)
+await closeBoard(p); await go(p, 'editsched')
+await p.locator('#eWeek [data-planmenu="5"]:visible').first().click(); await sleep(500)
+const mh = await p.evaluate(() => { const m = document.querySelector('.wavemenu'); return m ? m.innerHTML.replace(/\s+/g, ' ').slice(0, 1500) : 'none' })
+console.log(mh)
+await b.close()

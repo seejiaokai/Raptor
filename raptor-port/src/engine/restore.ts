@@ -86,7 +86,7 @@ export function dayKeys(d:any,di:any){
       m.set(`at:${di}.${gi}.${li}`,J([f.atime==null?null:String(f.atime),(f.aircraft||[]).map((a:any)=>a.atime==null?null:String(a.atime))]));
       (f.aircraft||[]).forEach((a:any,ai:any)=>{
         m.set(`${di}.${gi}.${li}.${ai}.p`,P(a.p)); m.set(`${di}.${gi}.${li}.${ai}.w`,P(a.w));
-        m.set(`fr:${di}.${gi}.${li}.${ai}`,S(a.rmks)+'␟'+(a.cx?1:0)+'␟'+S(a.cxr)+'␟'+(a.flag?1:0)+'␟'+S(a.role)+'␟'+(a.spare?1:0));
+        m.set(`fr:${di}.${gi}.${li}.${ai}`,S(a.rmks)+'␟'+(a.cx?1:0)+'␟'+S(a.cxr)+'␟'+(a.flag?1:0)+'␟'+S(a.role)+'␟'+(a.spare?1:0)+(a.fly?'␟F':''));   // a standby row's hand Flies tick ([STANDBY-FLIES], D1061) — only when set, so every other row's key is as it was
         m.set(`st:${di}.${gi}.${li}.${ai}`,J(a.opts||{}));
       });
     });

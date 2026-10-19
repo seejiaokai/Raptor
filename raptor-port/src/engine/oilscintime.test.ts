@@ -84,11 +84,17 @@ describe('OWS12 — an SC shift with its B (in-time) filled earns OIL from that 
     expect(spans(sc('', '13:00', '06:00')).bane).toBeUndefined()
     expect(spans(sc('07:00', '', '06:00')).bane).toBeUndefined()
   })
-  /* "A SPARE reports nowhere, so his B does nothing" (the Logic page, 24 Aug 26): the B is the MAIN's in-time. A SPARE
-     still earns nothing by default (D24), and one an admin switches on earns the shift's WRITTEN hours. */
-  it('MAIN only — a SPARE on the same shift is off by default, and its window is the written one, not the B', () => {
+  /* "A SPARE reports nowhere, so his B does nothing" (the Logic page, 24 Aug 26) — CHANGED 19 Oct 26 ([STANDBY-FLIES],
+     D1044, D1045): a shift with its B typed flies whole, SPARE included, so the SPARE earns by default from the B too.
+     A SPARE on a shift with nothing typed still stands by: off by default (D24), on its written hours when switched on. */
+  it('a B typed flies the whole shift: the SPARE earns by default from the B, as the MAIN does (D1044, D1045)', () => {
     const work = dayOilWork(day([sc('07:00', '13:00', '06:00', true)]), { expandAll: () => [] })
     expect(work.bane.map(x => [x.s, x.e, x.dflt])).toEqual([[h(6), h(13), true]])
+    expect(work.stiff.map(x => [x.s, x.e, x.dflt])).toEqual([[h(6), h(13), true]])
+  })
+  it('nothing typed: the SPARE stands by — off by default, on the written window — the MAIN earns as before', () => {
+    const work = dayOilWork(day([sc('07:00', '13:00', undefined, true)]), { expandAll: () => [] })
+    expect(work.bane.map(x => [x.s, x.e, x.dflt])).toEqual([[h(7), h(13), true]])
     expect(work.stiff.map(x => [x.s, x.e, x.dflt])).toEqual([[h(7), h(13), false]])
   })
   /* a DAYTIME shift: the lead's one part in an SC shift's day is the evening-before reading, two tests above */
@@ -101,14 +107,17 @@ describe('OWS12 — an SC shift with its B (in-time) filled earns OIL from that 
     const w = sc('07:00', '13:00'); w.intimes = ['IN TIME 0500']
     expect(spans(w).bane).toEqual([[h(7), h(13)]])
   })
-  it('AVALON and BB: a time in the B box moves nothing — theirs was never an in-time (24 Aug 26)', () => {
+  /* CHANGED 19 Oct 26 ([STANDBY-FLIES], D1045): on AVALON and BB a typed B flies the shift — it earns by default, from
+     the B; with nothing typed the line stands by, off by default on its written window, as before (D24) */
+  it('AVALON and BB: a typed B flies the shift — earns by default from the B; nothing typed, off on the written window', () => {
     for (const kind of ['avalon', 'bb']) {
       const w: any = makeStandalone(kind)
       const f = w.formations[0]
       f.to = '07:00'; f.ld = '19:00'; f.br = '05:00'; f.aircraft[0].p = 'bane'
       w.formations.length = 1
-      const work = dayOilWork(day([w]), { expandAll: () => [] })
-      expect(work.bane.map(x => [x.s, x.e, x.dflt]), kind).toEqual([[h(7), h(19), false]])
+      expect(dayOilWork(day([w]), { expandAll: () => [] }).bane.map(x => [x.s, x.e, x.dflt]), kind).toEqual([[h(5), h(19), true]])
+      f.br = ''
+      expect(dayOilWork(day([w]), { expandAll: () => [] }).bane.map(x => [x.s, x.e, x.dflt]), kind).toEqual([[h(7), h(19), false]])
     }
   })
   it('his day still runs first start to last end: a B before his other event starts the day, one after it does not', () => {
@@ -126,11 +135,13 @@ describe('OWS12 — an SC shift with its B (in-time) filled earns OIL from that 
 /* The cases the two readers of this change ranked for the host (7 Oct 26 — both PASS; these close their test limits). */
 describe('OWS12 — the readers\' cases', () => {
   const rows = (w: any, who: string) => (dayOilWork(day([w]), { expandAll: () => [] })[who] || []).map((x: any) => [x.s, x.e, x.dflt])
-  it('a SPARE marked on the FORMATION, with no mark on its rows, keeps the written window too', () => {
-    const w = sc('07:00', '13:00', '06:00')
+  it('a SPARE marked on the FORMATION, with no mark on its rows: nothing typed, the written window, off by default; a B typed, it flies from the B (D1045)', () => {
+    const w = sc('07:00', '13:00')
     w.formations[0].spare = true
     w.formations[0].aircraft.forEach((a: any) => { a.spare = false })
     expect(rows(w, 'bane')).toEqual([[h(7), h(13), false]])
+    w.formations[0].br = '06:00'
+    expect(rows(w, 'bane')).toEqual([[h(6), h(13), true]])
   })
   it('the evening-before reading starts strictly INSIDE the lead: 03:00 under a 3h lead is not rolled back; under 3h01 it is', () => {
     const w = sc('03:00', '09:00', '23:00')
@@ -146,13 +157,21 @@ describe('OWS12 — the readers\' cases', () => {
     expect(kept.bane.map(x => [x.s, x.e])).toEqual([[h(1), h(7)]])
     expect(seatIntime(w, w.formations[0], h(1))).toBe(-60)
   })
-  it('the PM shift, both MAIN rows and a SPARE: each MAIN from the B, the SPARE from the written start', () => {
+  it('the PM shift, both MAIN rows and a SPARE, its B typed: all three fly from the B (D1044, D1045)', () => {
     const w: any = makeStandalone('sc')
     const f = w.formations[1]                                  // PM, 13:00–19:00
     f.br = '12:00'; f.aircraft[0].p = 'bane'; f.aircraft[1].p = 'split'; f.aircraft[2].p = 'stiff'
     expect(rows(w, 'bane')).toEqual([[h(12), h(19), true]])
     expect(rows(w, 'split')).toEqual([[h(12), h(19), true]])
-    expect(rows(w, 'stiff')).toEqual([[h(13), h(19), false]])
+    expect(rows(w, 'stiff')).toEqual([[h(12), h(19), true]])
+  })
+  it('nothing typed and one SPARE ticked by hand: that SPARE alone flies — on by default, from the written start (D1061)', () => {
+    const w: any = makeStandalone('sc')
+    const f = w.formations[1]
+    f.aircraft[0].p = 'bane'; f.aircraft[2].p = 'stiff'; f.aircraft[3].p = 'split'; f.aircraft[2].fly = true
+    expect(rows(w, 'bane')).toEqual([[h(13), h(19), true]])
+    expect(rows(w, 'stiff')).toEqual([[h(13), h(19), true]])
+    expect(rows(w, 'split')).toEqual([[h(13), h(19), false]])
   })
   it('a cancelled shift earns nothing; a cancelled row earns its man nothing and leaves the other MAIN his in-time', () => {
     const a = sc('07:00', '13:00', '06:00'); a.formations[0].cx = true

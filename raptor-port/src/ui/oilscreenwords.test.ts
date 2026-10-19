@@ -35,7 +35,7 @@ describe('no sentence a person reads calls OIL pay or money (D25)', () => {
     const all = texts([lgSettings(), lgChecks()]).map(plain).join(' ')
     expect(all).toContain('A published day keeps its OIL until it is published again')
     expect(all).toContain('A row with no times, or no end time, earns nothing')
-    expect(all).toContain('A flying line still earns its OIL; a standby shift earns none')
+    expect(all).toContain('A flying line still earns its OIL; a standby shift with no length earns none')
   })
 
   it('the mode\'s own messages', () => {

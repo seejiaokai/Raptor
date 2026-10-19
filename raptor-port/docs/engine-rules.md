@@ -225,7 +225,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   (D592) — the time the empty box SUGGESTS as its default rally (D1027, D1031) and the time "+ In-time" fills (D510,
   which reads the typed lines alone, never the box). A standalone wave's box is never read by this reader: on an SC MAIN line `reporting.ts scReport` reads it beside the
   in-time box, the earlier counting, for crew rest (the sentence says "rally"), the long day, work hours and OIL (D1041,
-  `engine/scrally.test.ts`, RB8); on an SC SPARE row, AVALON and BB it is shown, printed and exported only.
+  `engine/scrally.test.ts`, RB8). **Since [STANDBY-FLIES] (D1044, D1045, 19 Oct 26 — narrowing D1041's "shown only")** a
+  typed B or R on ANY standby line flies its whole shift, SPARE rows included, so it is read the same way on SC SPARE,
+  AVALON and BB rows: see §A standby row that flies.
   `rl` is a time key (`slots.ts TIME_TXT`): a time or nothing, folded to hh:mm; a rally later than the take-off is the
   evening before, so it is never refused, and a take-off moved earlier leaves it alone. It rides `restore.ts dayKeys`
   as `ff:di.gi.li.rl`, so on a published day a changed rally is one pending change and waits for the next amendment (D45).
@@ -863,7 +865,38 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   offers the third state to instructor pilots, so a stale `'I'` renders as an
   ordinary tick while still clearing a red warning.
 
+### A standby row that flies ([STANDBY-FLIES], owner D1042–D1046, D1060–D1065, 19 Oct 26)
+
+- **What flies** (`waves.ts saFlies`, the one body every reader asks): a shift (formation) of SC, AVALON or BB with its
+  B or R typed flies whole, every MAIN and SPARE row on it (D1044, D1045) — read from the typed times, never stored, so
+  clearing them takes it back; a row ticked by hand on the Scheduler Board (`a.fly`) flies alone, never its shift
+  (D1061). A cancelled shift or row never flies; a row of a typed shift that does not come in is cancelled with its own
+  CX — there is no untick (D1046).
+- **What a flying row gets:** it is checked as an SC MAIN is — `saExempt` is false for it, so it is an event of kind
+  `shift` (crew rest, the long day, clashes graded the shift way, the in-time window advisory, availability with no
+  standby carve-outs — local leave no longer passes on it), with SC currency asked by its formation (`forms.sc`, every
+  standby kind). Its day runs from the earliest of R, B and START (`reporting.ts scReport`, on every standby kind now)
+  to its END, with no step, dekit, brief or debrief added (D1045). An AVALON / BB row that flies leaves the standby
+  collection (`sacrew`) so it is never looked at twice; the rows beside it that only stand by stay there. The crew
+  list judges it the same way (`avail.ts`, `avJet` false for it).
+- **Counted:** the day's badge adds one "X n" term per standby wave with rows that fly, n its flying rows with somebody
+  seated; those rows leave the standby figure after the slash (`waves.ts dayCount`). Insights counts each such row as
+  a sortie and its shift as a formation; a standby sortie joins no blue / red count (it has no mission). A row with
+  nobody seated is no jet and no sortie (D1062).
+- **OIL:** a flying row earns by default (D1042) from the earliest of R, B and START to its END
+  (`oil.ts dayOilWork`); the shift's item defaults on when any row flies. A row that only stands by is unchanged (D24).
+- **SA_FLY_NO_TIME** (advisory, the agent's call told to him with the drawing): a standby shift that flies with no
+  START or END — BB is minted so — says so, anchored on its START box, because its crew rest and OIL measure nothing.
+- **Stored:** only the hand tick, `fly: true` on the aircraft row, written by the board's Flies chip through
+  `afterSchedMutate`; it rides `restore.ts dayKeys` in the row's `fr:` composite only when set, so a published day
+  reads it as pending (D45). A day template drops it, as it drops a CX (`daytpl.ts`).
+- Pins: `engine/standbyflies.test.ts`, `ui/standbyflies.test.tsx` (register SF1–SF10,
+  `docs/superpowers/specs/2026-10-19-standby-flies-behaviour-register.md`); the design note
+  `docs/superpowers/specs/2026-10-19-standby-flies-design.md`.
+
 ### Standalone spares and the two SC SPARE rules
+
+- **A SPARE row that flies is not a spare here** ([STANDBY-FLIES]): everything below is about a row that only stands by.
 
 - Leave and the rest of the absence vocabulary: see `INPUT_META` above.
   A standalone SPARE is barred by `!canSpare(type)` — overseas (OL, OD) and
@@ -2271,11 +2304,13 @@ were `FS`/`HS` until the 28 Aug 26 rename.
       (a B typed later than the start shortens nothing — the guard crew rest and the
       long-day note already put on it), read by the one body crew rest reads it with
       (`events.ts seatIntime`, the same evening-before roll, D42 for the day it
-      lengthens), for the shift's MAIN rows only — "a SPARE reports nowhere, so
-      his B does nothing" (24 Aug 26): a SPARE an admin has switched on (D24)
-      earns the shift's WRITTEN hours; a shift whose written start and end are the
-      same still measures nothing; AVALON and BB have no in-time (24 Aug 26). The work-hours bar and the long-work-day note have counted an SC
-      MAIN's B since 24 Aug 26 (`workSpan`). Pins: `engine/oilscintime.test.ts`;
+      lengthens). Since [STANDBY-FLIES] (D1044, D1045, 19 Oct 26) a typed B or R
+      flies the whole shift, so it starts EVERY row's span, SPARE included, on SC,
+      AVALON and BB alike, and each earns by default; a row that only stands by —
+      "a SPARE reports nowhere" (24 Aug 26) — earns, when an admin switches it on
+      (D24), the shift's WRITTEN hours; a shift whose written start and end are the
+      same still measures nothing. The work-hours bar and the long-work-day note have counted an SC
+      MAIN's B since 24 Aug 26 (`workSpan`). Pins: `engine/oilscintime.test.ts`, `engine/standbyflies.test.ts`;
     - the work-hours bar with no line entered starts at STEP; OIL with no line
       entered starts at the nominal report. The two differ there by ruling.
     `reporting.ts` is pure, so a frozen snapshot answers from its own lines.

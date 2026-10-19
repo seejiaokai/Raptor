@@ -94,15 +94,23 @@ describe('a typed early B extends the long-day span', () => {
     expect(ld.msg).toContain('04:30')
   })
 
-  it('MAIN only — the same B on a SPARE row moves nothing', () => {
+  /* "MAIN only — the same B on a SPARE row moves nothing" — CHANGED 19 Oct 26 ([STANDBY-FLIES], D1044, D1045): a B
+     typed flies the whole shift, SPARE included, so the SPARE now reports at the B too; one on a shift with nothing
+     typed still stands by and reports nowhere */
+  it('a B typed flies the SPARE too: it reports at the B; nothing typed, the SPARE reports nowhere', () => {
     const w: any = makeStandalone('sc')
     w.formations[0].br = '04:30'
     w.formations[0].aircraft[2].p = 'stuff'     // rows 2–3 are SPARE
     ;(DAYS[TUE] as any).waves.push(w)
     validate()
-    const evs: any = dayEvents(TUE, 'stuff')
-    expect(evs.some((e: any) => e.kind === 'shift'), 'a spare reports nowhere').toBe(false)
-    expect(workSpan(evs)!.s, 'his day starts at his 12:00 duty, not the B').toBe(720)
+    let evs: any = dayEvents(TUE, 'stuff')
+    expect(evs.some((e: any) => e.kind === 'shift'), 'a flying spare is on shift').toBe(true)
+    expect(workSpan(evs)!.s, 'his day starts at the B').toBe(270)
+    w.formations[0].br = ''
+    validate()
+    evs = dayEvents(TUE, 'stuff')
+    expect(evs.some((e: any) => e.kind === 'shift'), 'a spare standing by reports nowhere').toBe(false)
+    expect(workSpan(evs)!.s, 'his day starts at his 12:00 duty').toBe(720)
   })
 })
 
@@ -148,13 +156,15 @@ describe('anything cutting the B→TO window advises', () => {
     expect(all.some((x: any) => x.code === 'SC_INTIME'), 'and not double-reported as the advisory').toBe(false)
   })
 
-  it('no B, or a SPARE row, and the window does not exist', () => {
+  /* "…or a SPARE row" — CHANGED 19 Oct 26 ([STANDBY-FLIES], D1045): a B typed flies the shift, the SPARE included, so
+     its window exists and a cut into it advises as the MAIN's does */
+  it('no B, and the window does not exist; a B typed opens it for a SPARE row too', () => {
     INPUTS.push({ person: 'split', date: 'Jul 14', allday: false, s: 330, e: 390, type: 'Meeting', remarks: '', mod: '' })
     addSCFor('split')
     expect(advs('split'), 'a blank B opens no window').toEqual([])
     ;(DAYS[TUE] as any).waves.pop()
     addSCFor('split', '05:00', true)
-    expect(advs('split'), 'a spare reports nowhere').toEqual([])
+    expect(advs('split').length, 'a flying spare reports at the B').toBe(1)
   })
 })
 

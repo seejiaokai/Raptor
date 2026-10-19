@@ -5,7 +5,7 @@ import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
 import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
 import { INPUTS, idsOf, inputsOn, remarksShown, remarksTyped, tillOf, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
-import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
+import { isStandalone, scSpare, dayCount, mColor, saExempt, saFlies, saAnyFlies, saTyped, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { reportingIssuesForWave,stated,REPORTING_LABEL,REPORT_WORD } from '../engine/reporting'
 import { waveInTime } from '../engine/events'
@@ -1393,11 +1393,36 @@ export function saRoleHTML(key:any,a:any,ed:any){
      seat, carry the four standby checks only. The wave is read off the key
      (di.gi…), the same model saExempt reads. */
   const kp=String(key).split('.'), wv=(((DAYS[+kp[0]]||{}).waves||[])[+kp[1]]), whole=!!(wv&&wv.noconf);
+  /* a row that FLIES is checked in full whatever its role ([STANDBY-FLIES], D1045) — say so, not the standby checks */
+  const fl=!!(wv&&saFlies(wv,(wv.formations||[])[+kp[2]],a));
+  if(fl)return `<button class="sarole${sp?' sp':''}" data-sarole="${key}" title="${role} — this row flies, so it is fully cross-checked. Click to make this line ${sp?'MAIN':'SPARE'}.">${esc(role)}</button>`;
   const four=(who:any)=>`${who}checked for availability, SC currency, the front seat and another ${whole?'seat or the desk':'SC seat or the SC desk'} in the same hours only.`;
   const title=sp?`SPARE — standing by; ${four('')} Click to make this line MAIN.`
     :whole?`MAIN — ${four('')} Click to make this line SPARE.`
     :'MAIN — fully cross-checked. Click to make this line SPARE.';
   return `<button class="sarole${sp?' sp':''}" data-sarole="${key}" title="${title}">${esc(role)}</button>`;
+}
+/* THE FLIES CHIP ON A STANDBY ROW ([STANDBY-FLIES], owner D1060, D1063, D1064, 19 Oct 26 — drawn for him and approved as
+   drawn). Beside the MAIN / SPARE badge: a lit "✓ FLIES" on a row that flies — on all three screens, the Scheduler Board,
+   Edit Schedule's week and View-only Sched (D1064) — and, on the BOARD ONLY, a dashed "FLIES" on a row that does not:
+   the button that ticks it by hand (D1061). "Less clutter for something that rarely happens", so the week shows nothing
+   on a row that only stands by. On the board a hand-ticked row's lit chip takes the tick off again; a row lit because
+   its shift has a B or R typed is not a button — its title says to CX the row instead (D1046). A cancelled row shows
+   nothing. The look is the badge's own two recipes (solid = MAIN's, dashed = SPARE's), a second chip in the same row.
+   `board` — the Scheduler Board's call; `ed` — the caller may edit. Same key grammar as saRoleHTML. */
+export function saFliesHTML(key:any,a:any,ed:any,board?:boolean){
+  const kp=String(key).split('.'), wv=(((DAYS[+kp[0]]||{}).waves||[])[+kp[1]]), f=wv&&(wv.formations||[])[+kp[2]];
+  if(!wv||!f||!isStandalone(wv)||f.cx||a.cx)return '';
+  const on=saFlies(wv,f,a), typed=saTyped(f), btn=!!(board&&ed&&canEditSched());
+  if(!on)return btn?`<button class="sarole saflies sp" data-safly="${key}" aria-pressed="false" title="Tick if this row is activated to fly: its crew rest, OIL and warnings then count it as a flight.">FLIES</button>`:'';
+  if(btn&&!typed)return `<button class="sarole saflies on" data-safly="${key}" aria-pressed="true" title="Flies: ticked by hand. Tap to take the tick off.">✓ FLIES</button>`;
+  const why=typed?'Flies: this shift has its B or R typed. A row that does not come in is cancelled with CX.':'Flies: activated to fly.';
+  return `<span class="sarole saflies on ro" title="${why}">✓ FLIES</span>`;
+}
+/* the badge and the Flies chip as one small row (the badge alone kept its own line before [STANDBY-FLIES]) */
+export function saBadgesHTML(key:any,a:any,ed:any,board?:boolean){
+  const fl=saFliesHTML(key,a,ed,board), role=saRoleHTML(key,a,ed);
+  return fl?`<span class="sabadges">${role}${fl}</span>`:role;
 }
 /* LATE INPUT (owner, 9 Aug 26) — the mark that rides on an input last changed
    after its own week's deadline (engine/inputs.ts's isLateInput). It is drawn
@@ -1826,7 +1851,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
       const edge=sa?'var(--san)':`var(--${mColor(f0?f0.msn:'')})`;
       h+=`<div class="go ${w.night?'night':''} ${sa?'sa sa-'+(w.kind||'x'):''}"${ed?` data-move="mv:w.${di}.${gi}"`:''} style="border-left-color:${sa?'var(--san)':(w.night?'var(--hard)':edge)}">
         <div class="go-tab">${ed?'<span class="wvgrip" title="Drag to reorder this wave" aria-label="Reorder this wave">⠿</span>':''}<span class="asd">${ted(`wl:${di}.${gi}`,w.label,ed,'ntx')}${waveHeadTail(w)}`
-        +`${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?' · availability, currency and seat checks only':''}</span>`:''}</span>
+        +`${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?((w.formations||[]).some((f:any)=>saAnyFlies(w,f))?' · flies':' · availability, currency and seat checks only'):''}</span>`:''}</span>
         ${sa||isGuest()?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an ${REPORTING_LABEL} line to this wave">+ ${REPORTING_LABEL}</button>`}</div>`;
       /* "+ In time" renders whether or not the wave has lines — the always-there
          add control is the fix for the old trap where deleting the last line
@@ -1929,7 +1954,8 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
               +`<button class="stcfg" data-stcfg="${key}" title="Stores configuration">C</button>`
               +`<span class="bombs${stSavedOn(key)?' stsaved':''}" contenteditable="true" data-bombs="${key}">${esc(o.bombs||'')}</span></span>`
             : storesView(o);
-          const acx=(f.cx?'':rowCls(a))+((sa&&a.spare)?' spare':'');   // a cancelled formation already fades the whole block
+          /* a SPARE that flies is no longer faded as standing by ([STANDBY-FLIES]) */
+          const acx=(f.cx?'':rowCls(a))+((sa&&a.spare&&!saFlies(w,f,a))?' spare':'');   // a cancelled formation already fades the whole block
           /* marks "nothing at all to say about this jet". RMKS is a real column again so
              the empty cell just stays blank rather than being hidden, but the class is
              kept as the hook anything later needs to spot a silent aircraft. */
@@ -1967,7 +1993,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
           const sv=(id:any)=>chk?sev(di,id):(own(id)?'hard':null), cp=(id:any)=>chk?chip(di,id):own(id), dh=(id:any)=>chk?dsh(di,id):false,
                 tr=(id:any)=>chk?traceHit(di,id):null;
           h+=`<div class="acrow${ai?'':' r1'}${acx}" style="--gr:${ai+1}"><span class="pucks">${slotCell(a.p,sv(a.p),key+'.p','FCP',ed,cp(a.p),dh(a.p),tr(a.p),di)}${slotCell(a.w,sv(a.w),key+'.w','RCP',ed,cp(a.w),dh(a.w),tr(a.w),di)}</span></div>
-              <div class="rmkcell${ai?'':' r1'}${acx}${rmkE}" style="--gr:${ai+1}"${alAttr(`st:${key}`)}>${cxTag(a)}${flagTag(a)}${sa?saRoleHTML(key,a,ed):''}${ted(`fr:${key}`,a.rmks,ed,'ntx',null,ed?'Remarks':null)}${sa?'':stores}</div>`;
+              <div class="rmkcell${ai?'':' r1'}${acx}${rmkE}" style="--gr:${ai+1}"${alAttr(`st:${key}`)}>${cxTag(a)}${flagTag(a)}${sa?saBadgesHTML(key,a,ed):''}${ted(`fr:${key}`,a.rmks,ed,'ntx',null,ed?'Remarks':null)}${sa?'':stores}</div>`;
         });
         /* AREA strip: full-width row under this formation's aircraft. Rendered whenever
            there is something to show, or always in edit mode so it can be filled in. */

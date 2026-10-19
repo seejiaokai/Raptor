@@ -116,8 +116,8 @@ for (const [name, viewport] of [['desktop', { width: 1440, height: 900 }], ['pho
       const gi = await page.evaluate(() => { (window as any).addWave(0, 'avalon'); return (window as any).DAYS[0].waves.findIndex((w: any) => w.kind === 'avalon') })
       const box = (k: string) => page.locator(`#sbBoard [data-bfld="ff:0.${gi}.0.${k}"]:visible`).first()
       await expect(box('rl')).toBeVisible()
-      expect(await box('rl').evaluate((e: any) => [e.placeholder, e.classList.contains('sugbox')]), 'no default rally').toEqual(['', false])
-      expect(await box('br').evaluate((e: any) => [e.placeholder, e.classList.contains('sugbox')]), 'no worked-out brief').toEqual(['', false])
+      expect(await box('rl').evaluate((e: any) => [e.placeholder, e.classList.contains('sugbox')]), 'no default rally — only the faint dash (D1065)').toEqual(['—', false])
+      expect(await box('br').evaluate((e: any) => [e.placeholder, e.classList.contains('sugbox')]), 'no worked-out brief — only the faint dash (D1065)').toEqual(['—', false])
       const geo = await page.evaluate(g => {
         const R = (k: string) => document.querySelector(`#sbBoard [data-bfld="ff:0.${g}.0.${k}"]`)!.getBoundingClientRect()
         const [rl, br] = [R('rl'), R('br')]

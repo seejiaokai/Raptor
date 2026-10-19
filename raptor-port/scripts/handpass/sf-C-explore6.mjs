@@ -1,0 +1,20 @@
+import { launch, ctxOpen, openBoard, closeBoard, bPut, bType, bf, bPublish, sleep, shot, warns, errors, go } from './sf-C-lib.mjs'
+const b = await launch()
+const { p } = await ctxOpen(b, {})
+await go(p, 'editsched')
+await p.evaluate(() => { window.addWave(5, 'avalon') }); await sleep(500)
+await openBoard(p, 5)
+for (const [gi, li, ai, pid] of [[0,0,0,'stiff'],[0,0,1,'bane'],[0,0,2,'slipway'],[0,0,3,'dj']]) console.log(await bPut(p, 5, gi, li, ai, 'p', [pid]))
+console.log(await bPublish(p, 5))
+await bType(p, bf(5, 0, 0, 'rl'), '18:30')
+await p.locator('#sbOil').click(); await sleep(900)
+const o = await p.evaluate(() => {
+  const b = document.querySelector('#schedBoard')
+  const items = [...b.querySelectorAll('[data-oilitem]')].map(e => ({ tag: e.tagName, ds: { ...e.dataset }, txt: e.innerText.replace(/\s+/g, ' ').slice(0, 200), html: e.outerHTML.slice(0, 500) }))
+  const ps = [...b.querySelectorAll('[data-oilp]')].map(e => ({ ds: { ...e.dataset }, cls: e.className, txt: e.innerText.replace(/\s+/g, ' ').slice(0, 120) }))
+  return { items, ps: ps.slice(0, 12), side: (document.querySelector('#sbSide') || {}).innerText.slice(0, 600) }
+})
+console.log(JSON.stringify(o, null, 1))
+await shot(p, 'explore6-oil')
+console.log(errors)
+await b.close()

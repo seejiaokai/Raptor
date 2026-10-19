@@ -4,7 +4,7 @@ import { inputLinesOn, inputReadPass, inputCoversDate, isAway, awayAllDay, canSp
 import { PEOPLE, isSpecial, whoId, aarNeed, aarOK, scShiftKind, scQualOK } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
-import { isStandalone, scSpare, saExempt, saExemptKind } from './waves'
+import { isStandalone, scSpare, saExempt, saExemptKind, saFlies } from './waves'
 import { WARN, restClear, dayEvents, crossDayIfPlaced } from './validate'
 import { waveWindows, inpShow, shiftEvHard, seatIntime, scSeatHit, avSeatHit } from './events'
 import { whoArr, rowRef, rowPlaces, XKEY, sentinelSeatOK, SENTINEL_JET_BAR } from './slots'
@@ -246,11 +246,16 @@ export function slotRules(key:any){
     /* [BLANK-STANDBY-STRIKE] (6 Oct 26): an AVALON or BB jet seat is a standby place whatever its hours — set before the
        hours are read, or a BB minted with no shift times was judged as an ordinary seat and a local leave was struck from
        a place the rule lets it stand (D605 keeps each kind's exemptions). The kind of currency still needs the hours. */
-    if(f&&wv&&isStandalone(wv)&&wv.noconf)out.avJet=true;
+    /* …but an AVALON / BB row that FLIES is a jet like an SC MAIN, judged as the validator judges it ([STANDBY-FLIES],
+       events.ts — saExempt is false for it): no standby carve-outs, and its currency asked the SC way, below */
+    const flyRow=!!(wv&&f&&ac&&saFlies(wv,f,ac));
+    if(f&&wv&&isStandalone(wv)&&wv.noconf&&!flyRow)out.avJet=true;
+    /* a flying AVALON / BB row still asks the AVALON places walk (the read's F2): its other AVALON seat or desk is no event */
+    if(f&&wv&&isStandalone(wv)&&wv.noconf&&flyRow)out.avFly=true;
     if(f){ const st=parseHM(f.to); let en=parseHM(f.ld);
       if(st!=null){ if(en==null)en=st; if(en<st)en+=1440;
         const sh=wv&&isStandalone(wv);
-        if(sh&&wv.noconf){out.avJet=true;    // AVALON or BB, MAIN or SPARE — all jet seats (owner, 11 Aug 26; BB 7 Sep 26)
+        if(sh&&wv.noconf&&!flyRow){out.avJet=true;    // AVALON or BB, MAIN or SPARE — all jet seats (owner, 11 Aug 26; BB 7 Sep 26)
           /* every jet seat asks for SC currency by the shift's kind (7 Sep 26,
              SPARE included the same day) — the same scShiftKind the validator
              reads, so night is night here too; the desk never asks */
@@ -271,7 +276,7 @@ export function slotRules(key:any){
            the pair cannot drift. */
         const it=seatIntime(wv,f,st);
         out.sansStart=it!=null?Math.min(it,out.slotStart):out.slotStart; } }
-    if(wv&&f&&isStandalone(wv)&&wv.kind==='sc'){
+    if(wv&&f&&isStandalone(wv)&&(wv.kind==='sc'||flyRow)){
       const st=parseHM(f.to); let en=parseHM(f.ld);
       if(st!=null&&en!=null){ if(en<st)en+=1440; out.sc=scShiftKind(st,en); out.scEnd=en; }
       /* a SPARE is standing by, not tasked: he may fly, sit a sim or stand a
@@ -421,7 +426,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
      avSeatHit, the body the validator's DOUBLE_BOOK reads after a drop.
      Nothing on AVALON is an event (noconf), so the busy scan below is blind
      to it — and spare-like seats skip that scan anyway. */
-  if((r.avJet||r.avDuty)&&r.slotStart!=null&&r.slotEnd!=null&&r.di>=0){
+  if((r.avJet||r.avDuty||r.avFly)&&r.slotStart!=null&&r.slotEnd!=null&&r.di>=0){
     const hit=avSeatHit(r.di,id,r.slotStart,r.slotEnd,selfKeys,!!r.avDuty);   // a desk asks about seats only
     if(hit)return `already on ${hit.what} ${hm24(hit.s)}–${hm24(hit.e)}`;
   }
