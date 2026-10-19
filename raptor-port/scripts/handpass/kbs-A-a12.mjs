@@ -1,0 +1,10 @@
+import { open, go, version, shot, tapBox, scenario } from './kbs-A-lib.mjs'
+version('a12')
+const { browser, page, errors } = await open()
+await go(page, 'quals')
+await tapBox(page, page.locator('#qEdit')); await page.waitForTimeout(800)
+const cell = page.locator('#page-quals input.qinit:not(.qflt)').nth(20)
+console.log('cell val', await cell.inputValue())
+await scenario(page, 'A12', cell, { what: 'Quals (edit): initials cell low in the table' })
+console.log('errors', errors)
+await browser.close()

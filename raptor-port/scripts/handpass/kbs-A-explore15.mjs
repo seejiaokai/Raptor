@@ -1,0 +1,10 @@
+import { open, go, version, shot, tapBox } from './kbs-A-lib.mjs'
+version('explore15c')
+const { browser, page } = await open()
+await go(page, 'tracker'); await page.waitForTimeout(1500)
+const inputs = (tag) => page.evaluate((tag) => tag + ': ' + [...document.querySelectorAll('input, textarea, [contenteditable=true]')].filter(e => e.getBoundingClientRect().width > 0 && e.getBoundingClientRect().top > 100).map(e => `${e.tagName}#${e.id}.${String(e.className).slice(0, 20)} ${e.type} ph=${e.placeholder} ${Math.round(e.getBoundingClientRect().top)}-${Math.round(e.getBoundingClientRect().bottom)}`).join(' | '), tag)
+await page.touchscreen.tap(226, 195); await page.waitForTimeout(900)
+await page.touchscreen.tap(250, 578); await page.waitForTimeout(900)   // Edit details approx (css = 562*0.437.. ) 
+console.log(await inputs('after edit details'))
+await shot(page, 'explore15-editdetails')
+await browser.close()

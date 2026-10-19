@@ -1,0 +1,18 @@
+import { open, go, version, shot, tapBox, scenario } from './kbs-A-lib.mjs'
+version('a6')
+const { browser, page, errors } = await open()
+await go(page, 'inputs')
+for (let i = 0; i < 3; i++) { await page.locator('#page-inputs button.abtn', { hasText: '‹' }).first().tap(); await page.waitForTimeout(400) }
+await tapBox(page, page.locator('[data-icday="2026-07-13"]'))
+await page.waitForTimeout(900)
+await tapBox(page, page.getByRole('button', { name: '+ Input' }))
+await page.waitForTimeout(900)
+await scenario(page, 'A6a', page.locator('#inpEditRmk'), { what: 'new-input window remarks (default all-day layout)', skipLow: true, inWindow: true })
+await page.evaluate(() => document.activeElement.blur())
+await tapBox(page, page.getByRole('button', { name: 'CUSTOM', exact: false }).first())
+await page.waitForTimeout(600)
+await shot(page, 'A6-custom')
+console.log(await page.evaluate(() => [...document.querySelectorAll('input,textarea')].filter(e => /^inpEdit|^inp/.test(e.id) && e.getBoundingClientRect().width > 0).map(e => `${e.id} ${e.type} top=${Math.round(e.getBoundingClientRect().top)} bot=${Math.round(e.getBoundingClientRect().bottom)}`)))
+await scenario(page, 'A6b', page.locator('#inpEditRmk'), { what: 'new-input window remarks after CUSTOM (time boxes added above)', skipLow: true, inWindow: true })
+console.log('errors', errors)
+await browser.close()

@@ -20,25 +20,18 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/sad-herschel-5682e3 -->
-### `claude/sad-herschel-5682e3` — [STANDBY-FLIES] BUILT and FULL-checked (19 Oct 26) — pull request 542 waiting for his look and "merge live" — verify before use
-- **Where it started:** cut from `claude/rally-box-changes`; main (pull request 541, 3d8665eb9) merged in. Beside `claude/keyboard-scroll` (no clash). Ruling numbers D1060–D1079 (D1060–D1066 used).
-- **Done:** a standby row that flies (B or R typed on its shift, or ticked by hand) is checked as an SC MAIN, counts as a jet and a sortie (not when nobody is seated), earns OIL by default; the Flies chip (lit on three screens, smaller and under the badge on the week — D1066; the dashed button on the board only); the faint dash; the no-times advisory. FULL check: the sheet `raptor-port/docs/handpass/2026-10-19-standby-flies.md` — designer, three Sonnet walkers, the host's re-walk, one fresh blind Opus read (F1–F4 fixed) and its narrow read (N1–N3 fixed); the gates all green on ca85df32d (unit 11,950, e2e 879, tfin 728/0, smoke 453/0). Preview: https://raptor-lemf64iet-kai-e2f5.vercel.app
-- **Questions waiting for him:** none; his look card is the sheet §14.
-- **Pick up here:** his look on his iPhone, then "merge live" (main has not moved since 3d8665eb9 — if it has by then, bring it in first); after the merge archive [STANDBY-FLIES] by script (homes: the sheet, `engine-rules.md` §A standby row that flies, `ui-contracts.md`, the design note). The pull request is not watched (his rule).
-<!-- /now -->
-
-<!-- now:claude/rally-box-changes -->
-### `claude/rally-box-changes` — [RALLY-BOX-CHANGES] + D1047 (one tap into a time box then typing replaces it) — pull request 541, waiting for his iPhone look and "merge live" — verify before use
-- **Done:** D1038–D1041 (the taken suggestion's blue flash; SC / AVALON / BB R boxes with no worked-out times; the SC MAIN rally in crew rest and OIL) FULL-checked — the sheet `raptor-port/docs/handpass/2026-10-19-rally-changes.md`; two full gate runs green. After his look: D1047 — every time box on the board and the week: one tap then typing replaces, one tap then Backspace clears (and is saved), a second tap / arrow key / drag edits digits (`raptor-port/src/ui/interactions.ts` `firstReplace`, `firstChange`, `armFreshTime`, `oweChange`, the TIME_PRESS / TIME_DOWN / ARMED_PRESS listeners). A fresh read (F1–F4) and two narrow reads (N1; M1–M3) — all fixed; e2e rallybox + schedule-tab 41/41, unit 35/35.
-- **Reads done:** round 3 (the last) — two small fixes made (a press's pointer matched; a cancelled press arms nothing); its F1 (a long press the browser does not cancel stays armed) left for his iPhone walk. **Owed before "merge live":** the pull request's own checks green on the last push; his iPhone look.
-- **For his iPhone look:** a time tapped then typed replaces it; tapped then Backspace clears it and stays cleared after Done; a scroll started on the box then typing still replaces; a long press (loupe) then typing edits in place; the space-bar caret drag is NOT caught yet (settle on his iPhone first).
-- **Parallel chats (D302), each its own branch and pull request:** [Keyboard scroll and tap-replaces elsewhere](local_a77eea3a-4191-461b-8ff6-0822b82ea52b) — `claude/keyboard-scroll`, D1080–D1089, E2E 4331 — builds on this branch's interactions.ts; [Standby lines that fly](local_6f312ef0-b893-41af-9886-c0ee09d799db) — `claude/sad-herschel-5682e3`, D1060–D1079, E2E 4321 — waiting on his four answers to its Flies-tick picture. This branch keeps D1049–D1059. Tell both before changing interactions.ts again.
-- **Pick up here:** the round-3 narrow read; then his look and "merge live" (this chat's pull request 541); then archive [RALLY-BOX-CHANGES] by script (homes: the sheet, `ui-contracts.md`, `engine-rules.md`). The preview `raptor-rallychg` (4312) may still be up — stop it by its port.
-- **Opening line:** Read `HANDOFF.md` (the `claude/rally-box-changes` block), then run `git fetch origin` and `git switch claude/rally-box-changes` (if refused because another checkout holds it, run `git switch --detach origin/claude/rally-box-changes` and say so). Pull request 541: run the round-3 narrow read it owes, then wait for my iPhone look and "merge live".
+<!-- now:claude/keyboard-scroll -->
+### `claude/keyboard-scroll` — [KEYBOARD-SCROLL] (D1048, D1080, D1081) LIVE on his "merge live" (pull request 543, 20 Oct 26); with it [STANDBY-FLIES]'s records (pull request 542's notes)
+- **Done:** the box being typed in lifted above a phone's keyboard; one tap then typing replaces in four more places; the Scheduler Board as page content while it is open (no closing jump), its height held while typing, its list given room at its foot — his iPhone look passed (the sheet `raptor-port/docs/handpass/2026-10-19-keyboard-scroll.md` §15–16). The readout (D1082) taken out. [KEYBOARD-SCROLL] archived by script; the `claude/standby-flies-records` block it carried removed (its work went live with this).
+- **Residue, filed:** [STANDBY-WEEK-B] next (a New task card was offered him), [IPHONE-CARET-CHECKS], [BOARD-SIDEWAYS-KEYS], [BOARD-TAB-FOLD], [INNERHTML-REPAINT-SWEEP]. Lesson kept: send a preview link only once that commit's preview is Ready (his 17:10 recording was of the previous build).
+- **Pick up here:** nothing open; remove this block at the next handoff.
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (20 Oct 26):** pull request 543 is LIVE ([KEYBOARD-SCROLL] with D1080, D1081) → [STANDBY-WEEK-B] (his question: B on the week for SC, AVALON and BB), its own job from `main`, a picture first.
+
+**RIGHT NOW (19 Oct 26, evening):** pull request 541 is LIVE (the rally box changes D1038–D1041 and D1047, one tap into a time box replaces it) → [KEYBOARD-SCROLL] (D1048) with D1080, on `claude/keyboard-scroll` (its block); [STANDBY-FLIES] in its own chat.
 
 **RIGHT NOW (19 Oct 26, later):** pull request 540 is LIVE (the rally box, D1026–D1034) → his three changes to it (a clear mark when a suggested time is taken, SC / AVALON / BB get the rally, the worked-out suggestion hidden), on `claude/rally-box-changes` (its block).
 

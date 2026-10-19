@@ -1,0 +1,18 @@
+import { open, go, version, shot, tapBox, scenario, keysDown } from './kbs-A-lib.mjs'
+version('a5')
+const { browser, page, errors } = await open()
+await go(page, 'inputs')
+for (let i = 0; i < 3; i++) { await page.locator('#page-inputs button.abtn', { hasText: '‹' }).first().tap(); await page.waitForTimeout(400) }
+await tapBox(page, page.locator('[data-icday="2026-07-13"]'))
+await page.waitForTimeout(900)
+const title = page.locator('#icRmkEdit')
+console.log('title count', await title.count())
+await scenario(page, 'A5a', title, { what: 'inputs day title box (day panel)', skipLow: true, inWindow: true })
+await page.evaluate(() => document.activeElement.blur())
+await tapBox(page, page.getByRole('button', { name: '+ Note' }))
+await page.waitForTimeout(700)
+await shot(page, 'A5-note-added')
+console.log(await page.evaluate(() => { const a = document.activeElement; return [a.tagName, a.className, a.getAttribute('contenteditable'), Math.round(a.getBoundingClientRect().top), Math.round(a.getBoundingClientRect().bottom)] }))
+await scenario(page, 'A5b', page.locator(':focus'), { what: 'inputs day: a note box (new note, focused on add)', skipLow: true, inWindow: true })
+console.log('errors', errors)
+await browser.close()

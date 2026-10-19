@@ -1,0 +1,12 @@
+import { open, go, version, tapBox, bringLow, keysUp } from './kbs-A-lib.mjs'
+version('a11b')
+const { browser, page } = await open()
+await go(page, 'admin')
+await tapBox(page, page.locator('#page-admin button, #page-admin [role=button]', { hasText: /^Users/ }).first())
+await page.waitForTimeout(900)
+const b = page.locator('#accAddName'); await bringLow(b, 800)
+const p = () => page.evaluate(() => { const s = document.scrollingElement; const r = document.getElementById('accAddName').getBoundingClientRect(); return `st=${s.scrollTop} max=${s.scrollHeight - innerHeight} sh=${s.scrollHeight} box ${Math.round(r.top)}-${Math.round(r.bottom)}` })
+console.log('low', await p())
+await tapBox(page, b); await keysUp(page); await page.waitForTimeout(500)
+console.log('up', await p())
+await browser.close()

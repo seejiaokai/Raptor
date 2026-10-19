@@ -14,6 +14,7 @@
 
 import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react'
 import './bidpicker.css'
+import { followVisible } from '../../ui/vvfollow'
 
 /* THE PAGE STAYS FULLY SCROLLABLE UNDER A SHEET (owner, 28 Aug 26 — "enable
    me to still scroll up and down when this window is opened … on the desktop
@@ -311,13 +312,8 @@ function useKeyboardInset(panelRef: { current: HTMLDivElement | null }) {
       panel.style.bottom = 'auto'
       panel.style.maxHeight = `${Math.round(vv.offsetTop + vv.height - top - GAP)}px`
     }
-    place()
-    vv.addEventListener('resize', place)
-    vv.addEventListener('scroll', place)
-    return () => {
-      vv.removeEventListener('resize', place)
-      vv.removeEventListener('scroll', place)
-    }
+    /* frame by frame while the keys move, not a few frames behind them (D1081) */
+    return followVisible(place)
   }, [panelRef])
 }
 

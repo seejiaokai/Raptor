@@ -802,6 +802,50 @@ empties it, a selection typed over keeps what was typed — `interactions.ts fir
 second press on the focused box, or an arrow / Home / End key, puts the caret where he wants and the box is ordinary. A Tab
 into a box arms nothing. Pinned: `ui/brieftime-ui.test.tsx` RB11, `e2e/rallybox.spec.ts`.
 
+**The same in four more places (owner D1080, 19 Oct 26 — "1 Template times, 2 Leave War numbers, 3 SANS and cut-off, 4 Logic
+settings").** The duty and wave templates' time boxes (Admin → Duty templates, Wave templates), the Leave War's typed
+numbers (a counter's amber and red numbers, the OIL figure boxes), the SANS settings' and the late cut-off's number boxes,
+and the Logic page's settings (in ✎ Edit) take a fresh value from the first change after a press, as the time boxes do,
+through the same `interactions.ts armFreshTime`; a second press, an arrow key or a drag of the caret edits a digit. The
+Leave War's Required P and W cells already did (their pad's first digit replaces — `leavewar/ui/FlyEdit.tsx`). Not
+callsign, mission, remarks, nor an input's start and end (the phone's own time wheel). A press on a box's label counts as a
+press on its box; a box its screen opens with the focus already in it (the Leave War's balance "Set") is marked
+`data-freshfocus` and armed as it opens. Pinned: `ui/freshbox.test.tsx` KF1–KF5, `e2e/kbscroll.spec.ts` KS5.
+
+**On a phone, the box being typed in shows above the keyboard (owner D1048, 19 Oct 26; nothing jumps as the keys open or close, D1081).** `ui/kbscroll.ts`, installed once
+from `main.tsx`: when a box to type in has the focus and the keyboard has shrunk the visible screen (`visualViewport`, more
+than 120px shorter than the layout, not pinch-zoomed), the box's own scrolling panels are scrolled, nearest first, so its
+bottom sits 8px above the keys — then the page, unless the box is in a fixed layer (a window, a sheet; the board is page
+content of its own, below), where the page behind never moves (D686). A box still under the keys in a fixed layer raises its window (the CSS `translate`
+property — on a full-screen backdrop, the window on it), never past the visible top; a window taller than the room is held
+to the visible screen's height while the keys are up (an inline `max-height`, never over one the window set itself) and its
+own body scrolls the box into sight. Everything is put back when the typing ends or the keys go down. Only resizes within
+1.5s of the focus act, so a box scrolled away on purpose stays where it was put. The Leave War sheets' keyboard anchoring
+runs first; this measures two frames later. **The Scheduler Board is page content, not a fixed layer, while it is open
+(D1081 — his iPhone drew the fixed board a keyboard's height lower on the first frame of the keys closing):**
+`position:absolute` at the top of the document, which is held to that one screen at its top while the board is open
+(`html.sb-board-up` — an iPhone scrolls a document that can scroll to show a box, and leaves it scrolled: the board rose at
+every tap, his picture of 19 Oct 26 16:13), its place given back on the close; clipped (`overflow:clip`, so the crew drawer off its edge never widens the page), the page behind unpainted; nothing places
+it by script after that. `data-kblayer` keeps it a layer of its own to the lift above, but it is never raised or held as
+a window is. **In the board the page comes first** (Fable's read of his recordings, 19 Oct 26): an iPhone shows a box by
+scrolling the page on by the keys' own height, smoothly with the keys, carrying the board (its bar slides off the top) and
+leaving the box at the keys' edge; the lift takes its 8px from that same scroll — the browser's own scrolling view, so a tap
+that follows is never judged against a stale picture — and only where the page can go no further (a desktop; Chromium,
+whose held document scrolls nowhere; a box at the very end of the list) scrolls the board's list, with room at the foot of
+that list while the keys are up (`--kbroom`, `[data-kbroom]` in `08-windows-tools.css` — his report of 19 Oct 26 16:49: the
+raised body slid over the board's bar at every tap and, the iPhone panning too, ended above the keys). **From the tap until
+the typing ends or the keys go down the board holds the height its layout had** (`--kbfull`, `[data-kbfull]` — a floor,
+never a cap): a layout a browser shortens for the keys, or anything that cuts the board short under a page the phone has
+already scrolled on, leaves the board ending a third of the way down the screen with the page's dark foot below it (his
+pictures of 19 Oct 26 17:10 — of the 16:49 build, deployed 17:12, which held the board's body to the visible height).
+**The lift measures only once the visible screen has come to rest**: each `scroll` step of the viewport's own pan sets
+the measuring back two frames, so the lift never adds to a pan the phone is still making. Nothing is lifted on the press
+itself — on his iPhone a focus given at the end of the touch never took (his recording of 19 Oct 26 16:59); the tap is the
+browser's. The keys count
+as up against the tallest visible screen seen at this width with nothing typed in (never one read taller than the layout). Pinned: `ui/kbscroll.test.ts`,
+`ui/amendbatch-app.test.tsx` (the board as page content), `e2e/kbscroll.spec.ts` KS1–KS7 (a stand-in visual viewport —
+Chromium cannot raise an iPhone keyboard).
+
 **A button pressed straight after a changed box does its job (`[EDIT-BUTTON-AFTER-CHANGE]`, 19 Oct 26).** The press
 takes the focus from the box, the box saves and the redraw replaces the button under the press, so the browser's click
 reached nothing. `textedit.ts` notes a press that lands on a button while a text box has the caret; once the browser

@@ -3689,7 +3689,10 @@ test.describe('the board holds the page still underneath it', () => {
          there would pin a value that does nothing. */
       if (during.scrolls) expect(during.contain, 'the one scroller contains its own overscroll').not.toBe('auto')
       expect(during.locked, 'while the page itself is held').toBe('hidden')
-      expect(during.y, 'so the week behind has not moved a pixel').toBe(parked)
+      /* D1081 (19 Oct 26): while the board is open the document is held to one screen at its top, so an iPhone has nothing
+         to scroll as the keys come and go (the board rose at every tap, his picture); the week's place is kept and given
+         back on the close, below */
+      expect(during.y, 'so the week behind cannot be driven: the document is held at its top').toBe(0)
 
       /* and closing hands the page back exactly where it was */
       await page.click('#sbDone')   // the one exit since D349
@@ -4513,7 +4516,12 @@ test.describe('the frozen callsign column', () => {
       /* a person's row (the first row is the group heading's) */
       const td = (document.querySelector('#qtbl td.qname') as HTMLElement).parentElement!.lastElementChild as HTMLElement
       td.textContent = 'a remark long enough to widen its column well past where it was before this test'
-      w.scrollLeft = 99999
+      /* scrolled to where the last sortable heading stands — not to the very end: the widened column (the last, with no
+         heading to sort by) now fills a phone's width there, so no heading this test measures would be in view. Until
+         [KEYBOARD-SCROLL] (19 Oct 26) the page's next repaint set the table's markup again and threw this widening away,
+         which hid that; the table now keeps it, as it keeps a real change (QualsPage tableInner) */
+      const last = [...document.querySelectorAll('#qtbl thead th[data-sort]')].pop() as HTMLElement
+      w.scrollLeft = last.offsetLeft - w.clientWidth / 2
       return (w.scrollWidth - w.clientWidth) - before
     })
     expect(grew, 'the table really grew sideways').toBeGreaterThan(50)

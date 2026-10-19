@@ -1432,3 +1432,18 @@ prove each by acting through it after the rollback, not by reading what it shows
 **Suggested improvement:** Add to the mock-up traps: "On an emulated phone, never type into a box before a picture — set it through the app's own change event, or emulate width and density without `isMobile`; a picture zoomed to a box is the sign. Scope every injection query to the surface being pictured (the board hides a copy of the week behind it). Draw a mark `position:fixed` at the top layer when the surface is an overlay."
 
 **Principle:** Before a third framing fix, probe the same page without the last action taken — the cause is usually the step before the picture, not the picture.
+
+### Observation 647: Two scripted taps at one spot within a moment are a double tap that selects a word
+
+**Status:** OPEN
+**Date:** 19 Oct 26
+**Session context:** [KEYBOARD-SCROLL] / D1080 browser test — tap a template time box, type, leave, tap it again, type
+**Skill:** walk scripts guide (raptor-port/docs/walk-scripts.md §4) — not a skill file
+**Type:** open-source
+**Phase/Area:** writing a walk or browser-test step on a phone (touch emulation)
+
+**Issue:** A test tapped a box, typed four digits and left it, then tapped the same spot again and typed. The second tap landed a few milliseconds after the first (scripted typing is instant), so Chromium's touch emulation read the pair as a double tap and SELECTED the word under the finger ("00"); the typed digit replaced only that selection and the step failed as if the feature were broken. Only a probe printing the selection after the tap (3–5 selected) showed it. (Numbered past 646 to leave room for a parallel chat's entry — standby-flies.)
+
+**Suggested improvement:** Add to walk-scripts.md §4's traps: two taps at one point closer than about half a second are a double tap; wait ~600ms between taps on the same box unless the step is about a second tap, and print the box's selection after a tap when a typing step fails.
+
+**Principle:** A scripted gesture sequence runs faster than a person can; check that its timing does not turn two gestures into a different one before blaming the app.

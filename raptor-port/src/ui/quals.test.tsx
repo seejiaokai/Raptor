@@ -59,6 +59,17 @@ afterAll(async () => {
 })
 
 describe('the Quals page (tfin)', () => {
+  /* [KEYBOARD-SCROLL] walker A's A12 (19 Oct 26): React sets a dangerouslySetInnerHTML again whenever its object is new,
+     so every repaint of the page (the pinned heading as the page scrolls among them) threw the rows away — and the cell
+     being typed in with them. A repaint that changes nothing in the table keeps the very same rows. */
+  it('a repaint that changes nothing in the table keeps its rows (and a cell being typed in) where they are', async () => {
+    const row = $('#qtbl tbody tr:not(.grp)')
+    expect(row).toBeTruthy()
+    await act(async () => { root.render(<App />) })
+    expect($('#qtbl tbody tr:not(.grp)'), 'the same row element').toBe(row)
+    expect(row.isConnected).toBe(true)
+  })
+
   it('quals rows', () => {
     expect($$('#qtbl tbody tr').length).toBeGreaterThan(10)
   })

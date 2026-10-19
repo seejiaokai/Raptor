@@ -1,0 +1,30 @@
+import { open, go, version, bringLow, tapBox, keysUp, keysDown, state, shot } from './kbs-A-lib.mjs'
+version('a2b')
+const { browser, page } = await open({ width: 874, height: 402 })
+await go(page, 'editsched')
+await page.evaluate(() => window.openScheduler(0))
+await page.waitForSelector('#schedBoard'); await page.waitForTimeout(800)
+const dump = () => page.evaluate(() => {
+  const s = document.querySelector('.sb-boardwrap'); const b = document.querySelector('#schedBoard')
+  const br = b.getBoundingClientRect(); const sr = s.getBoundingClientRect()
+  return { board: [Math.round(br.top), Math.round(br.bottom)], wrap: [Math.round(sr.top), Math.round(sr.bottom)], st: s.scrollTop, max: s.scrollHeight - s.clientHeight, sbmain: (() => { const m = document.querySelector('.sb-main'); return m ? [m.scrollTop, m.scrollHeight - m.clientHeight] : null })() }
+})
+console.log('initial', JSON.stringify(await dump()))
+const all = page.locator('#schedBoard input.tm:visible')
+console.log('count', await all.count())
+for (const n of [3, 6, 12]) {
+  await keysDown(page)
+  const box = all.nth(n)
+  const low = await bringLow(box, 370)
+  const b0 = await state(page, box)
+  await tapBox(page, box)
+  await page.waitForTimeout(400)
+  console.log(`box#${n} value=${await box.inputValue()} low=${JSON.stringify(low)} before=${b0.rect.top}-${b0.rect.bottom} dump=${JSON.stringify(await dump())}`)
+  await keysUp(page, 200)
+  await page.waitForTimeout(500)
+  const a = await state(page, box)
+  console.log(`  after rect ${a.rect.top}-${a.rect.bottom} covered=${a.covered} by ${a.coverBy} dump=${JSON.stringify(await dump())}`)
+  await shot(page, `A2b-${n}`)
+  await page.evaluate(() => document.activeElement.blur())
+}
+await browser.close()

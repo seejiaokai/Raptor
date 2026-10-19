@@ -119,13 +119,21 @@ export function SchedBoard() {
      to the board would be a worse bug than the one being fixed. Restoring a
      value that never moved is a no-op, so this costs nothing where the browser
      already does the right thing. */
-  useEffect(() => {
+  /* a layout effect: the board takes its place before the frame that first shows it */
+  useLayoutEffect(() => {
     if (!open) return
     const el = document.scrollingElement || document.documentElement
     const y = el.scrollTop, x = el.scrollLeft
     document.body.classList.add('sb-lock', 'sb-board-up')
+    /* the board stands as page content at the top of the document (D1081, below), and the document is held to one
+       screen at its top while it is open, its place put back on the close. Not left where it was, the board over it: an
+       iPhone scrolls a document that can scroll to show the box being typed in, and leaves it scrolled when the keys go
+       down — the board rose a little more at every tap, the page's empty foot below it (his picture, 19 Oct 26, 16:13) */
+    document.documentElement.classList.add('sb-board-up')
+    el.scrollTop = 0; el.scrollLeft = 0
     return () => {
       document.body.classList.remove('sb-lock', 'sb-board-up')
+      document.documentElement.classList.remove('sb-board-up')
       el.scrollTop = y; el.scrollLeft = x
     }
   }, [open])
@@ -140,19 +148,24 @@ export function SchedBoard() {
      could only ever show the board's own background. A pinch zoom (scale > 1) is left alone: the board zooms with the
      page, as it always has. Chromium cannot raise an iPhone keyboard, so the real proof is his phone (the look card);
      the walk shrinks the visual viewport by script. */
-  useEffect(() => {
-    if (!open) return
-    const vv = (window as any).visualViewport, r = rootRef.current
-    if (!vv || !r) return
-    const clear = () => { r.style.top = ''; r.style.bottom = ''; r.style.height = '' }
-    const fit = () => {
-      if (vv.scale > 1.01) return clear()
-      r.style.top = Math.round(vv.offsetTop) + 'px'; r.style.bottom = 'auto'; r.style.height = Math.round(vv.height) + 'px'
-    }
-    fit()
-    vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit)
-    return () => { vv.removeEventListener('resize', fit); vv.removeEventListener('scroll', fit); clear() }
-  }, [open])
+  /* NO LONGER FOLLOWED (owner D1081, 19 Oct 26 — his two iPhone recordings: the board stood a keyboard's height out of
+     place for a frame or three as the keys closed, first when it followed on the visual viewport's events and still
+     when it followed frame by frame): an iPhone moves its screen back the moment the keys start down, before any script
+     runs, so anything placed by script is a frame behind it. The board is left at the layout's full size
+     (position:fixed, inset:0), so it moves with the iPhone's own scroll, never behind it; the visible slice always lies
+     inside it, and the page behind stays unpainted (the second half above, which alone answers his 25 Sep 26 gap). The
+     box being typed in is brought above the keys by its own list's scroll once they are up (kbscroll.ts — never on the
+     press: on his iPhone that ate the tap, his recording of 19 Oct 26 16:59).
+     AND NOT A FIXED LAYER (his fifth report, 19 Oct 26, Chrome on his iPhone, frame by frame: with nothing placing it by
+     script, the iPhone itself drew the fixed board a keyboard's height lower on the first frame of the keys closing). So
+     while it is open the board is ordinary page content — position:absolute at the top of the document, a screen tall
+     (10-board-history.css), the document held to that one screen while it is open (html.sb-board-up, the effect above):
+     an iPhone moves page content with its own scroll in the same frame, and has no fixed layer to place. data-kblayer
+     keeps it a whole screen of its own to the keyboard lift (kbscroll.ts): never raised — a box in it rides the page's
+     own scroll first, the one the iPhone makes for its keys, then the board's list — and held at the height its layout
+     had from the tap until the typing ends (holdFull, --kbfull), so a layout a browser shortens for the keys never cuts
+     the board short under a page already scrolled on: his black band of 19 Oct 26 17:10 (Fable's read; those pictures were
+     of the 16:49 build, which held the board's body to the visible height by script). */
 
   /* wires HOOKS.closeBoardDialogs — state/view.ts's closeBoardState() calls
      it, but the board's own dialog state (CXT, SORTALL) lives here, in the
@@ -363,7 +376,7 @@ export function SchedBoard() {
   const d = open ? DAYS[SBDAY] : null
 
   return (
-    <div className={'schedboard' + (SBWIDE ? ' sb-wide' : '')} id="schedBoard" ref={rootRef} hidden={!open}>
+    <div className={'schedboard' + (SBWIDE ? ' sb-wide' : '')} id="schedBoard" data-kblayer="" ref={rootRef} hidden={!open}>
       {/* ONE ROW ON A PHONE (owner, 11 Aug 26 — comp approved before build).
           The bar was four stacked rows and 166px of a 780px screen: title, the
           seven Mon–Sun chips, then six buttons wrapping onto two lines. It is
