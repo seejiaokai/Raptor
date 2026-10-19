@@ -3,7 +3,7 @@
    layout, so every box is given a stand-in place: an element's top is its place on the page less every scroll above
    it; the visual viewport is a stand-in object, as the walk's is. */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { keepAboveKeyboard, keyboardUp, isTypingBox, installKbScroll, dropLifts, GAP } from './kbscroll'
+import { keepAboveKeyboard, keyboardUp, isTypingBox, installKbScroll, dropLifts, noteFullHeight, GAP } from './kbscroll'
 
 const H = 800, KB = 340                                   // the layout's height; the keys' height
 const vvUp = { height: H - KB, offsetTop: 0, scale: 1 }   // the visible screen with the keys up
@@ -212,6 +212,16 @@ describe('keyboardUp', () => {
     expect(keyboardUp({ height: H - 60, offsetTop: 0, scale: 1 })).toBe(false)   // the address bar alone
     expect(keyboardUp({ height: H - KB, offsetTop: 0, scale: 2 })).toBe(false)   // a pinch zoom
     expect(keyboardUp(null)).toBe(false)                                          // jsdom, an old browser
+  })
+  it('a visible screen read taller than the layout is never taken for the full screen (KS3b: the keys read as up for good)', () => {
+    const had = Object.getOwnPropertyDescriptor(window, 'visualViewport')
+    Object.defineProperty(window, 'visualViewport', { configurable: true, value: { height: 2000, offsetTop: 0, scale: 1 } })
+    try {
+      noteFullHeight()
+      expect(keyboardUp({ height: H, offsetTop: 0, scale: 1 }), 'the keys down').toBe(false)
+    } finally {
+      if (had) Object.defineProperty(window, 'visualViewport', had); else delete (window as any).visualViewport
+    }
   })
 })
 

@@ -1,9 +1,12 @@
 /* ============ SCHEDULER BOARD (deep single-day editor) ============ */
-.schedboard{position:fixed;inset:0;z-index:400;background:var(--bg);display:flex;flex-direction:column}
+/* page content, not a fixed layer, while it is open (owner D1081 — SchedBoard.tsx): absolute, offset by the document's
+   scroll as it opens (inline, from SchedBoard.tsx), so it covers exactly the screen fixed did while the document is held;
+   clipped (never a scroller), as a fixed layer was: whatever pokes past it, the crew drawer off its edge, never widens the page */
+.schedboard{position:absolute;inset:0;z-index:400;background:var(--bg);display:flex;flex-direction:column;overflow:clip}
 /* the board's entrance — part of the 25 Aug 26 motion set (see PAGE SHELL).
    Keyed on :not([hidden]) so it replays only when the hidden attribute
    flips (the open), never on a class change like sb-wide; the board is
-   itself position:fixed, so animating ITS transform is safe — the fixed
+   itself the positioned layer (absolute since D1081), so animating ITS transform is safe — the fixed
    containing-block concern that keeps .page's fade opacity-only does not
    apply to the element being animated. Reduced motion: the blanket
    animation:none rule covers this too. */

@@ -119,13 +119,19 @@ export function SchedBoard() {
      to the board would be a worse bug than the one being fixed. Restoring a
      value that never moved is a no-op, so this costs nothing where the browser
      already does the right thing. */
-  useEffect(() => {
+  /* a layout effect: the board takes its place before the frame that first shows it */
+  useLayoutEffect(() => {
     if (!open) return
     const el = document.scrollingElement || document.documentElement
     const y = el.scrollTop, x = el.scrollLeft
     document.body.classList.add('sb-lock', 'sb-board-up')
+    /* the board stands as page content (D1081, below) over exactly the screen the document is scrolled to — the
+       document itself is left where it is, so the week behind keeps its place */
+    const b = rootRef.current
+    if (b) { b.style.top = y + 'px'; b.style.bottom = -y + 'px'; b.style.left = x + 'px'; b.style.right = -x + 'px' }
     return () => {
       document.body.classList.remove('sb-lock', 'sb-board-up')
+      if (b) b.style.top = b.style.bottom = b.style.left = b.style.right = ''
       el.scrollTop = y; el.scrollLeft = x
     }
   }, [open])
@@ -147,7 +153,13 @@ export function SchedBoard() {
      (position:fixed, inset:0), so it moves with the iPhone's own scroll, never behind it; the visible slice always lies
      inside it, and the page behind stays unpainted (the second half above, which alone answers his 25 Sep 26 gap). The
      box being typed in is brought above the keys by its own panel's scroll (kbscroll.ts), on the press itself where it
-     can, so the iPhone has nothing to pan. */
+     can, so the iPhone has nothing to pan.
+     AND NOT A FIXED LAYER (his fifth report, 19 Oct 26, Chrome on his iPhone, frame by frame: with nothing placing it by
+     script, the iPhone itself drew the fixed board a keyboard's height lower on the first frame of the keys closing). So
+     while it is open the board is ordinary page content — position:absolute over exactly the screen the document stands at,
+     a screen tall (10-board-history.css; its offsets set by the effect above), the document held where it is (sb-lock):
+     an iPhone moves page content with its own scroll in the same frame, and has no fixed layer to place. data-kblayer
+     keeps it a whole screen of its own to the keyboard lift (kbscroll.ts isLayer), raised and held as when it was fixed. */
 
   /* wires HOOKS.closeBoardDialogs — state/view.ts's closeBoardState() calls
      it, but the board's own dialog state (CXT, SORTALL) lives here, in the
@@ -358,7 +370,7 @@ export function SchedBoard() {
   const d = open ? DAYS[SBDAY] : null
 
   return (
-    <div className={'schedboard' + (SBWIDE ? ' sb-wide' : '')} id="schedBoard" ref={rootRef} hidden={!open}>
+    <div className={'schedboard' + (SBWIDE ? ' sb-wide' : '')} id="schedBoard" data-kblayer="" ref={rootRef} hidden={!open}>
       {/* ONE ROW ON A PHONE (owner, 11 Aug 26 — comp approved before build).
           The bar was four stacked rows and 166px of a 780px screen: title, the
           seven Mon–Sun chips, then six buttons wrapping onto two lines. It is

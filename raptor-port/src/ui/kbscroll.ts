@@ -53,7 +53,10 @@ type VV = { height: number, offsetTop: number, scale: number }
 let BASE = { w: 0, h: 0 }
 export function noteFullHeight() {
   const vv = typeof window !== 'undefined' ? window.visualViewport : null
-  if (!vv || vv.scale > 1.01 || isTypingBox(document.activeElement)) return
+  /* a visible screen taller than the layout it is measured against is a reading from before the page had its size (the
+     walk's stand-in keyboard, read before the page's width was set) — never a screen: kept, the keys would read as up for
+     good and nothing raised for them would ever be put back */
+  if (!vv || vv.scale > 1.01 || isTypingBox(document.activeElement) || vv.height > window.innerHeight + 1) return
   if (BASE.w !== window.innerWidth) BASE = { w: window.innerWidth, h: 0 }
   BASE.h = Math.max(BASE.h, vv.height)
 }
@@ -169,6 +172,11 @@ function raise(fixedEl: HTMLElement, el: HTMLElement, visTop: number, visBot: nu
   return Math.abs(shiftOf(layer) - s0)
 }
 
+/* A LAYER over the page: anything position:fixed, and the Scheduler Board, which stands as page content while it is open
+   (data-kblayer — SchedBoard.tsx, owner D1081: an iPhone draws a fixed full-screen layer out of place for a frame as the
+   keys close) but is still a whole screen of its own, raised and held as it was while it was fixed. */
+const isLayer = (a: Element) => a.hasAttribute('data-kblayer') || getComputedStyle(a).position === 'fixed'
+
 /** Scrolls `el`'s scrolling panels (nearest first), then the page unless `el` is inside a fixed layer — where, if the box
     is still under the keys, the window is raised instead (raise) — so the box sits GAP above the visible screen's foot.
     Returns how far it moved things in all (0: it was already in sight). */
@@ -177,7 +185,7 @@ export function keepAboveKeyboard(el: HTMLElement, vv: VV): number {
   let moved = 0, fixed: HTMLElement | null = null
   const panels = () => {
     for (let a = el.parentElement; a && a !== document.body && a !== document.documentElement; a = a.parentElement) {
-      if (!fixed && getComputedStyle(a).position === 'fixed') fixed = a
+      if (!fixed && isLayer(a)) fixed = a
       if (!scrolls(a)) continue
       const ar = a.getBoundingClientRect()
       moved += lift(a, el, Math.min(ar.bottom, visBot) - GAP, Math.max(ar.top, visTop) + GAP)
@@ -219,7 +227,7 @@ export function liftPanels(el: HTMLElement, vv: VV): number {
   return moved
 }
 const inFixedLayer = (el: Element) => {
-  for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) if (getComputedStyle(a).position === 'fixed') return true
+  for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) if (isLayer(a)) return true
   return false
 }
 
