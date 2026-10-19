@@ -161,6 +161,27 @@ for (const [name, viewport] of [['desktop', { width: 1440, height: 900 }], ['pho
       await page.evaluate(() => (window as any).openScheduler(0)); await expect(page.locator('#schedBoard')).toBeVisible()
       await expect(page.locator(`#sbBoard [data-bfld="ff:0.${gis[0]}.0.br"]:visible`).first(), 'the board shows the same B').toHaveValue('05:45')
     })
+    /* RB13 — the blind read's F1 (20 Oct 26): read only, an empty START must keep its line, or END rises onto the line the
+       heading now calls START (a BB line has no times by default — type END alone and View-only Sched read 07:00 as the
+       start). The same for a flying line's empty TO above its LD. */
+    test('read only: an empty START keeps its line, so END stays on END\'s line', async ({ page }) => {
+      await login(page); await go(page, 'editsched')
+      const g = await page.evaluate(() => { const W = window as any; W.addWave(0, 'bb'); return W.DAYS[0].waves.findIndex((w: any) => w.kind === 'bb') })
+      const end = page.locator(`#eWeek [data-txt="ff:0.${g}.0.ld"]`)
+      await press(page, end, phone); await expect(end).toBeFocused()
+      await page.keyboard.type('0700')
+      await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
+      await expect.poll(() => page.evaluate(i => (window as any).DAYS[0].waves[i].formations[0].ld, g)).toBe('07:00')
+      await go(page, 'viewsched')
+      const geo = await page.evaluate(() => {
+        const go = [...document.querySelectorAll('#vWeek .day[data-day="0"] .go.sa')].pop()!
+        const [st, en] = [...go.querySelector('.form .ld')!.children] as HTMLElement[]
+        const a = st!.getBoundingClientRect(), b = en!.getBoundingClientRect()
+        return { start: st!.textContent, end: en!.textContent, startHeight: Math.round(a.height), endBelowStart: b.top >= a.bottom - 1 }
+      })
+      expect(geo).toMatchObject({ start: '', end: '07:00', endBelowStart: true })
+      expect(geo.startHeight, 'the empty START holds a line').toBeGreaterThan(5)
+    })
     /* walker B's F1 and F3 (19 Oct 26): on the board, R pressed then B at once — leaving R saves it and the redraw that
        starts replaced B under the press, so B took the focus EMPTY; and R pressed then Enter saved nothing */
     test('the board: press R then B at once — both placed and saved; press R then Enter saves it', async ({ page }) => {

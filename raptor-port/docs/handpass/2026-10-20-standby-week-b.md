@@ -93,7 +93,8 @@ page — every width fits, letters a seventh wider too); the peek and the issued
 ## 8. Break tests (`scripts/handpass/breaks-standby-week-b.mjs`)
 B1 the week draws START, not B, under R — RED · B1b the week draws no START above END — RED · B2 the peek draws no B — RED ·
 B2b the peek keeps the old heading — RED · B3 the changes window still calls a standby B the board's alone — RED · B4 the
-phone heading at its old size (the browser test) — RED. **Every break caught.**
+phone heading at its old size (the browser test) — RED · B5 (after the code read) read only, an empty START holds no line —
+RED. **Every break caught (7 of 7).**
 
 ## 9. Found, and each disposition
 - **The phone heading did not fit** (found drawing the proposal, before the build): START needed 29px where 23 was left.
@@ -101,16 +102,46 @@ phone heading at its old size (the browser test) — RED. **Every break caught.*
 - **A time typed in a week box and left by Tab reads as typed until the next press elsewhere** (found by the new browser
   test) — OLDER: every week box does it, a flying line's B and take-off too (probe `standby-week-b-tabfold.mjs`), and the
   board does the same (`[BOARD-TAB-FOLD]`). Filed there, low. Not this change's.
+- **The code read's F1 (low) — read only, an empty START let END rise onto START's line.** A BB line comes with no times;
+  END typed alone (07:00) printed on the top line of the third cell on View-only Sched and the peek, the line the heading
+  now calls START. Fixed red-first: `e2e/rallybox.spec.ts` RB13 failed at both widths on the built app (the empty START 0px
+  tall), passes after one rule in `03-week.css` (`.form .ld > span:first-child:not(.txed):empty::before` — the R box's
+  own rule beside it); it also holds a flying line's empty TO on View-only Sched, which did the same. A one-line style
+  fix: no further read of its own (the order's §5, "more than a one-line guard"). Re-walked: D14.
+- **Older, met in passing:** under 375 wide "AVALON" in a standby wave's first heading shows as "AVALOI" (the 36px column,
+  untouched here — filed [SA-HEAD-CLIP-360]); Undo and the changes window call a standby START "a take-off time" (the
+  read's (c) — filed [STANDBY-UNDO-WORDS]).
 - **Script faults, not the app's** (6): the board stays in the page hidden once closed; the + Wave menu takes the first
   press outside it; the changes window opens on "New to you"; a change line's address carries the row's hidden id; a test
   port held by another chat's old preview made a first browser run test that chat's bundle (`E2E_PORT` moved to a free
   port); a heading read by `innerText` while the board covered the week.
 
 ## 10. Gates
-_(the counts from the run this check watched — filled in below)_
+The full set under the lock (`gatelock.mjs run`, this branch before the read's fix, watched): **unit 12003 passed (676
+files) · build PASS · the original's assertions 728 passed, 0 failed · browser 891 passed · the Tracker 453 passed, 0
+failed · rulecheck PASS · docsize PASS.** After the read's fix (one style rule): the rally box browser file 16/16, then the
+whole browser set again under the lock: **893 passed, 0 failed** (61 skipped, as on `main`; the two new are RB13 at both widths).
+Unit tests are untouched by a style rule; GitHub's run of the pull request is the full check of the last commit (D902).
+
+`Walk: docs/handpass/2026-10-20-standby-week-b.md · 20 pictures · 9 surfaces · 7 orders · MISSING: none (F1 fixed; 3 older filed)`
 
 ## 11. The code read
-_(a fresh, blind Opus reader, D790 — filled in below)_
+One fresh, blind Opus reader (D790, D903 — no ChatGPT reader while it is out, D761), handed the diff, the rulings' full
+rows and this sheet, asked for absences first (about 228k tokens). **One finding, low — F1 above, fixed.** Its missing
+scenarios, all walked in the re-walk: Escape on the new box (D11), nonsense typed in it (D12), the published B taken to
+AL1 and the issued face (D13), a press on a 360-wide phone (P5). Older, met in passing: the "a take-off time" words
+(filed), the Tab-fold (already filed). Sound by its reading: the week's save is the board's (the same write, marks,
+history, Undo, the engine's read — SC's in-time, the shift flying); snapshots; no suggestion leaks onto a standby line
+anywhere, the export and print included; one builder for View-only Sched, the issued look, saved plans and the guest view;
+the CSS (the B a gold `<b>`, `.sa-se` winning, the desktop sizes); Tab, focus, Escape; the changes window's sentences;
+warning anchors; the documents.
+
+## 11a. The re-walk (`WALK_DIR=walk2`, the same script with the read's four scenarios added)
+**27 PASS, 0 FAIL · 11 pictures, all opened · no console error, page error or failed request.** New steps: D11 Escape after
+typing 0900 into AVALON's B — 18:30 kept, saved and shown; D12 "ab" typed — refused, 18:30 kept, nothing new pending; D13
+AL1 published from the board — View-only Sched's BB B reads 20:00 wearing its AL1 tag, END 07:00 its AL1 tag, the line
+unclipped (picture `walk2/07`); D14 read only, BB's empty START holds its 14px line, END below it; P5 at 360 by touch —
+START / END whole at 7px, a finger takes SC's B, 05:45 saved (picture `walk2/08`).
 
 ## 12. His look
 - The built week at his iPhone's width: his "Ok carry on" to pictures 7–9 (D1084).

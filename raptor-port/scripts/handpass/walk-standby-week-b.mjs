@@ -13,7 +13,8 @@ import { chromium } from '@playwright/test'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const BASE = process.env.HP_URL || 'http://localhost:4183'
-const OUT = resolve(ROOT, 'docs/img/handpass/2026-10-20-standby-week-b/walk')
+/* WALK_DIR=walk2 for the re-walk after the code read's fix — the first walk's pictures are kept */
+const OUT = resolve(ROOT, 'docs/img/handpass/2026-10-20-standby-week-b', process.env.WALK_DIR || 'walk')
 mkdirSync(OUT, { recursive: true })
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 const browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
@@ -184,6 +185,56 @@ try {
     const want = ['rl', 'br', 'to', 'ld'].map(k => `ff:0.${av}.0.${k}`)
     check('D10', JSON.stringify(route) === JSON.stringify(want), `Tab from AVALON's R: ${route.map(k => (k || 'nothing').split('.').pop()).join(' → ')}`)
     await p.keyboard.press('Escape')
+    /* the blind read's missing scenarios (20 Oct 26) — D11 Escape on the new box puts the old time back and saves nothing;
+       D12 nonsense typed is refused, the box healed, nothing new pending; D13 the published day's B goes out as AL1:
+       View-only Sched then shows it, its line unclipped; D14 read only, an empty START keeps its line (the read's F1) */
+    const avBox = () => p.locator(`#eWeek [data-txt="ff:0.${av}.0.br"]`)
+    await press(p, avBox(), false); await p.keyboard.press('Control+A'); await p.keyboard.type('0900'); await p.keyboard.press('Escape'); await p.waitForTimeout(400)
+    await press(p, p.locator('#eWeek .day[data-day="0"] .day-head').first(), false); await p.waitForTimeout(400)
+    check('D11', (await br(p, av)) === '18:30' && (await avBox().textContent()) === '18:30', `Escape after typing 0900 into AVALON's B: saved ${await br(p, av)}, the box reads ${await avBox().textContent()}`)
+    /* BB's END alone typed (its START left empty, as a BB line comes) — the case D14 reads back */
+    const bbEnd = p.locator(`#eWeek [data-txt="ff:0.${bb}.0.ld"]`)
+    await press(p, bbEnd, false); await p.keyboard.type('0700')
+    await press(p, p.locator('#eWeek .day[data-day="0"] .day-head').first(), false); await p.waitForTimeout(500)
+    const pendBefore = await p.evaluate(() => Object.keys(window.SCHED.pending || {}).length)
+    await press(p, avBox(), false); await p.keyboard.press('Control+A'); await p.keyboard.type('ab')
+    await press(p, p.locator('#eWeek .day[data-day="0"] .day-head').first(), false); await p.waitForTimeout(600)
+    const pendAfter = await p.evaluate(() => Object.keys(window.SCHED.pending || {}).length)
+    check('D12', (await br(p, av)) === '18:30' && (await avBox().textContent()) === '18:30' && pendAfter === pendBefore, `"ab" typed into AVALON's B: saved ${await br(p, av)}, the box reads ${await avBox().textContent()}, pending ${pendBefore} → ${pendAfter}`)
+    await openBoard(p, false)
+    const sels2 = p.locator('#schedBoard .sb-sign select:visible, #schedBoard [data-sign] select:visible')
+    for (let i = 0; i < await sels2.count(); i++) { const o = await sels2.nth(i).locator('option').evaluateAll(os => os.map(x => x.value).filter(v => v && v !== '—')); if (o.length) await sels2.nth(i).selectOption(o[Math.min(i, o.length - 1)]); await p.waitForTimeout(120) }
+    const alp = p.locator('#schedBoard [data-alpub="0"]:visible').first()
+    let al = false
+    if (await alp.count() && !(await alp.isDisabled())) { await press(p, alp, false); await p.waitForTimeout(900); const ok = p.getByRole('button', { name: /^(Publish|Yes|Confirm)/ }).first(); if (await ok.count() && await ok.isVisible()) { await ok.click(); await p.waitForTimeout(900) } al = true }
+    await closeBoard(p, false); await go(p, 'viewsched')
+    const v13 = await p.evaluate(() => { const go = [...document.querySelectorAll('#vWeek .day[data-day="0"] .go.sa')][2]; const f = go.querySelector('.form'); const b = f.querySelector('.bto').children[1]; return { b: b.textContent, tag: (b.querySelector('[class*=al], .altag') || b.parentElement.querySelector('.altag, [data-altag]') || {}).textContent || b.getAttribute('data-aln') || '', unclipped: [...f.querySelectorAll('.fcell')].every(c => c.scrollHeight <= c.clientHeight + 1) } })
+    check('D13', al && v13.b.startsWith('20:00') && v13.unclipped, `AL1 published from the board; View-only Sched's BB B reads "${v13.b}" (its mark: "${v13.tag}"), the line unclipped`)
+    await p.locator('#vWeek .day[data-day="0"] .go.sa').nth(2).scrollIntoViewIfNeeded()
+    await pic(p, 'desktop-view-only-bb-after-al1', p.locator('#vWeek .day[data-day="0"] .go.sa').nth(2))
+    const v14 = await p.evaluate(() => { const go = [...document.querySelectorAll('#vWeek .day[data-day="0"] .go.sa')][2]; const [st, en] = [...go.querySelector('.form .ld').children]; const a = st.getBoundingClientRect(), b = en.getBoundingClientRect(); return { st: st.textContent, en: en.textContent, h: Math.round(a.height), below: b.top >= a.bottom - 1 } })
+    check('D14', v14.h > 5 && (v14.en === '' || v14.below), `read only, BB's empty START holds its line (${v14.h}px) and END ("${v14.en}") stays below it`)
+    await ctx.close()
+  }
+  /* ---------------- a small phone, 360 wide, by touch (the read's missing scenario) ---------------- */
+  {
+    const ctx = await browser.newContext({ viewport: { width: 360, height: 740 }, deviceScaleFactor: 3, hasTouch: true, isMobile: false, colorScheme: 'dark' })
+    const p = await ctx.newPage()
+    p.on('pageerror', e => errors.push('PAGEERROR ' + e.message))
+    await p.goto(BASE + '/?fresh=1'); await p.addStyleTag({ content: '*{scroll-behavior:auto !important}' })
+    await p.fill('#luser', 'ad'); await p.fill('#lpass', 'a'); await p.click('#loginForm button[type=submit]')
+    await p.waitForSelector('#vWeek .day', { state: 'attached', timeout: 20000 }); await p.waitForTimeout(500)
+    await openBoard(p, true)
+    const [sc] = await addWaves(p, true)
+    await closeBoard(p, true); await go(p, 'editsched')
+    const h = await heads(p, sc)
+    const b = p.locator(`#eWeek [data-txt="ff:0.${sc}.0.br"]`)
+    await press(p, b, true)
+    const f = await p.evaluate(() => document.activeElement?.getAttribute('data-txt') || '')
+    await p.keyboard.type('0545'); await press(p, p.locator('#eWeek .day[data-day="0"] .day-head').first(), true); await p.waitForTimeout(500)
+    check('P5', h.fit && h.h[1] === 'START END' && f === `ff:0.${sc}.0.br` && (await br(p, sc)) === '05:45', `360 wide by touch: the heading "${h.h[1]}" whole at ${h.size}; a finger took SC's B (${f.split('.').pop()}); saved ${await br(p, sc)}`)
+    await weekGo(p, sc).evaluate(e => e.scrollIntoView({ block: 'start' })); await p.evaluate(() => scrollBy(0, -90)); await p.waitForTimeout(200)
+    await pic(p, 'phone-360-edit-week-sc')
     await ctx.close()
   }
   /* ---------------- phone, by touch ---------------- */

@@ -26,6 +26,9 @@ const BREAKS = [
 if (process.env.BREAK_E2E) BREAKS.push(['B4 the phone heading at its old size', 'src/ui/scheduler/09-week-responsive.css',
   '  .cols.formcols .sa-se{font-size:7px;letter-spacing:0;padding:3px 1px}\n', '',
   `npx playwright test e2e/rallybox.spec.ts --project=raptor -g "a standby line reads"`])
+if (process.env.BREAK_E2E) BREAKS.push(["B5 read only, an empty START holds no line (the code read's F1)", 'src/ui/scheduler/03-week.css',
+  ".form .ld > span:first-child:not(.txed):empty::before{content:'\\a0'}\n", '',
+  `npx playwright test e2e/rallybox.spec.ts --project=raptor -g "empty START keeps its line"`])
 
 let silent = 0
 for (const [name, file, from, to, cmd] of BREAKS) {
