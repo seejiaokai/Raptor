@@ -67,7 +67,9 @@ describe('KF2 — what is left alone', () => {
 describe('KF3 — a second press, an arrow key, Backspace', () => {
   it('a second press on the waiting box gives back ordinary editing', () => {
     const i = mk('<input class="lgin" value="12h">'); press(i)
+    /* a second press is decided at its end (the D1047 narrow read's M3): a scroll started on the box keeps it armed */
     i.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }))
+    i.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }))
     expect(i.dataset.fresh || '').toBe('')
     type(i, '12h5'); expect(i.value).toBe('12h5')
   })
