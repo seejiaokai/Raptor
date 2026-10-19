@@ -711,7 +711,7 @@ function reselectPlaced(el: HTMLElement): boolean {
    focus arrives in a suggesting box at that address — the box pressed, or the one drawn in its place — the suggestion is
    placed there. A Tab brings the focus with no press: nothing is placed (D1030). */
 let SUG_PRESS: string | null = null
-const sugAddr = (el: Element | null) => { const h = el as HTMLElement | null; return h && h.dataset ? (h.dataset.bfld || h.dataset.txt || null) : null }
+const sugAddr = (el: Element | null) => { const h = el as HTMLElement | null; return h && h.dataset ? (h.dataset.bfld || h.dataset.txt || h.dataset.ifld || h.dataset.inp || null) : null }
 if (typeof document !== 'undefined') {
   /* …and only for a moment: a press whose focus never came (a drag, a scroll) must not let a later Tab place it (D1030) */
   let pressAt = 0
@@ -745,7 +745,8 @@ if (typeof document !== 'undefined') {
 const isTimeBox = (el: any): el is HTMLElement => {
   if (!el || !el.closest || !el.closest('#schedBoard, #eWeek')) return false
   if (el instanceof HTMLInputElement) return el.classList.contains('tm') || el.classList.contains('atm') ? !el.disabled && !el.readOnly : false
-  return !!el.getAttribute && el.getAttribute('contenteditable') === 'true' && TIME_TXT.test((el as HTMLElement).dataset.txt || '')
+  /* …and an input's own start and end on the week (data-inp, html.ts cell()) — the board's are atm boxes (the D1047 read's F3) */
+  return !!el.getAttribute && el.getAttribute('contenteditable') === 'true' && (TIME_TXT.test((el as HTMLElement).dataset.txt || '') || /.(str|end)$/.test((el as HTMLElement).dataset.inp || ''))
 }
 const boxValue = (el: HTMLElement) => el instanceof HTMLInputElement ? el.value : (el.textContent || '')
 function setBoxValue(el: HTMLElement, v: string) {
@@ -753,18 +754,50 @@ function setBoxValue(el: HTMLElement, v: string) {
   el.textContent = v
   try { const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r) } catch (_) { /* a courtesy */ }
 }
+/* THE BOARD SAVES ON `change`, WHICH THE BROWSER RAISES ONLY FOR WHAT IT SAW TYPED (the D1047 read's F1): a value rewritten by
+   script while the box has the focus resets the browser's own baseline, so leaving the box or Enter raised nothing — the box
+   showed the new time and the schedule kept the old one. So the rewrite owes the board its `change`, paid on Enter or on
+   leaving unless the browser raised its own, and never for a box back to what it showed (Escape puts the old time back
+   first) — as placeSuggestion owes its save. The week saves on leaving by reading the box, so it owes nothing. */
+function oweChange(el: HTMLInputElement, shown: string) {
+  let paid = false
+  const native = () => { paid = true }
+  const pay = () => { if (!paid && el.isConnected && el.value !== shown) { paid = true; el.dispatchEvent(new Event('change', { bubbles: true })) } }
+  const enter = (k: KeyboardEvent) => { if (k.key === 'Enter') setTimeout(pay, 0) }
+  const leave = () => { pay(); el.removeEventListener('change', native); el.removeEventListener('keydown', enter); el.removeEventListener('blur', leave) }
+  el.addEventListener('change', native); el.addEventListener('keydown', enter); el.addEventListener('blur', leave)
+}
+const selectWhole = (el: HTMLElement) => {
+  try {
+    if (el instanceof HTMLInputElement) el.select()
+    else { const r = document.createRange(); r.selectNodeContents(el); const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r) }
+  } catch (_) { /* a courtesy */ }
+}
 export function armFreshTime(el: HTMLElement) {
   if (el.dataset.fresh) return
   el.dataset.fresh = '1'
   let was: string | null = null
-  const before = () => { was = boxValue(el) }
+  const before = () => {
+    /* digits he chose with a drag are his to edit, not a fresh time (the D1047 read's F2) */
+    const chose = el instanceof HTMLInputElement ? el.selectionStart !== el.selectionEnd : !(window.getSelection()?.isCollapsed ?? true)
+    if (chose) { off(); return }
+    was = boxValue(el)
+  }
   const after = (e: Event) => {
     const w = was; off()
     if (!w) return
     const n = firstChange(w, boxValue(el), (e as InputEvent).inputType || '')
-    if (n != null) setBoxValue(el, n)
+    if (n == null) return
+    setBoxValue(el, n)
+    if (el instanceof HTMLInputElement) oweChange(el, w)
   }
-  const key = (e: KeyboardEvent) => { if (/^(Arrow|Home$|End$)/.test(e.key)) off() }
+  const key = (e: KeyboardEvent) => {
+    if (/^(Arrow|Home$|End$)/.test(e.key)) { off(); return }
+    /* Backspace or Delete clears the whole time wherever the caret landed — a caret before the first digit deleted
+       nothing (the D1047 read's F4): the time is selected and the key goes on, so the browser empties the box itself and
+       raises its own change */
+    if ((e.key === 'Backspace' || e.key === 'Delete') && !e.ctrlKey && !e.metaKey && !e.altKey) { selectWhole(el); off() }
+  }
   const off = () => {
     delete el.dataset.fresh; (el as any)._freshOff = null
     el.removeEventListener('beforeinput', before); el.removeEventListener('input', after)
