@@ -138,7 +138,7 @@ export function lgChecks(): LgGroup<LgChk>[] {
       { id: 'debrief', sev: 'adv', code: 'DEBRIEF', line: () => `Something sits inside landing plus ${T('debrief')} (Debrief after landing).` },
       { id: 'turn', sev: 'adv', code: 'TURN', line: () => `Less than ${turn} from landing to the next take-off (Tight turn, or Dekit plus Step if longer).` },
       { id: 'dtsum', sev: 'adv', code: 'DT_SUM', line: () => 'Two or more sorties in one day. One line names everyone; it is routine, not an error.' },
-      { id: 'fltnolen', sev: 'adv', code: 'FLT_NO_LEN', line: () => 'A line\'s take-off and landing are the same time. A flying line still earns its OIL; a standby shift earns none.' },
+      { id: 'fltnolen', sev: 'adv', code: 'FLT_NO_LEN', line: () => 'A line\'s take-off and landing are the same time. A flying line still earns its OIL; a standby shift with no length earns none, flying or not.' },
     ] },
     { g: 'Sims', items: [
       { id: 'simbrief', sev: 'adv', code: 'SIM_BRIEF', line: () => `Something sits inside an EP sim's ${T('epBrief')} brief (EP sim brief), or an AMT's BRIEF row.` },

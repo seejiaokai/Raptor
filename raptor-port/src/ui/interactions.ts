@@ -1908,6 +1908,9 @@ export function routeClick(e: MouseEvent) {
       if (a.fly) delete a.fly; else a.fly = true
       markEdit(`st:${di}.${gi}.${li}.${ai}`, was, a.fly ? 'Flies' : 'Standing by')
       view.afterSchedMutate(); notify()
+      /* the redraw replaces the chip: a keyboard press keeps the keyboard on it (walker A, 19 Oct 26 — a second Enter
+         needed a re-Tab); a mouse or finger press (detail > 0) leaves focus where the browser puts it */
+      if (e.detail === 0) { const k = sf.dataset.safly!; requestAnimationFrame(() => (document.querySelector(`[data-safly="${k}"]`) as HTMLElement | null)?.focus()) }
     }
     e.stopPropagation(); return
   }

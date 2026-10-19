@@ -18,6 +18,7 @@ import { SCHED } from '../engine/publish'
 import { dayHTML } from './html'
 import { boardHTML, openScheduler } from './board'
 import { peekDayHTML } from './peek'
+import { valueWords } from './pendlist'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -111,6 +112,15 @@ describe('SF1 SF3 SF7 — a shift with its R typed flies whole (D1044, D1045, D1
       F(0).aircraft[3].cx = true
       expect(count(boardHTML(0), LIT), 'a cancelled row shows nothing').toBe(3)
     } finally { F(0).rl = ''; delete F(0).aircraft[3].cx }
+  })
+})
+
+describe('SF10 — the changes window says a row was ticked to fly (walker A, 19 Oct 26)', () => {
+  it('the row\'s words name the tick, and the role only once', () => {
+    const U = '␟'
+    const before = ['', '0', '', '0', 'SPARE', '1'].join(U), after = before + U + 'F'
+    expect(valueWords(`fr:0.${WI}.1.2`, before)).toBe('(no remarks) · SPARE')
+    expect(valueWords(`fr:0.${WI}.1.2`, after)).toBe('(no remarks) · SPARE · ticked to fly')
   })
 })
 
