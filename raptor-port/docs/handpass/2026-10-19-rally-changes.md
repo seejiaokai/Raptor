@@ -116,3 +116,39 @@ WebKit / his iPhone itself (Chromium touch emulation only — his look card asks
 (the two tabs did not update each other in 12 s — forced redraws walked instead); the real print dialog (the print document was
 read); the light theme (none found); scenario 3's desktop part and arming a seat (carried by `engine/scrally.test.ts`); a
 member's read-only board (a member has no route to the board); break 6's SPARE variant (time).
+
+## 11. Gates
+The full set under the lock (`gatelock.mjs run`, E2E_PORT 4311) on commit 0c83b57f2 (the build, the walk's fix): unit 11,900 / 671 files, build, tfin 728/0, e2e 875 passed (61 skipped), the Tracker smoke 453/0, rulecheck, docsize — all PASS. After the read's fixes and the flash change (D902 — a follow-up runs what it touches): `e2e/rallybox.spec.ts` 8/8 on its own port; 7 unit files, 141 tests. The pull request's run is the full check of the final commit. Final pictures for his look: `docs/img/handpass/2026-10-19-rally-changes/final/` (`scripts/handpass/look-rally-flash.mjs`).
+
+## 12. The model reads
+- **The scenario designer** — a fresh Opus, blind to the build (`parts/rally-changes/scenarios.md`): 22 scenarios, 7 breaks.
+- **The fresh, blind Opus read** of the finished code, with this sheet and the three walkers' reports in hand
+  (`parts/rally-changes/read.md`, brief `docs/superpowers/briefs/2026-10-19-rally-changes-read.md`): F1 medium, F2 low, F3
+  low — all fixed (§13).
+- **The narrow read of the fixes** — a second fresh Opus, given only the fix commit and the findings
+  (`parts/rally-changes/read-narrow.md`): round 1, no findings. The last round.
+- No Astra or Sol 6.1 read: ChatGPT is out (D761) — on `[NO-ASTRA-LIST]`. No Fable (D903).
+
+## 13. Findings and dispositions
+| # | Found by | What | Disposition |
+|---|---|---|---|
+| W-1 | walkers B (7b) and A (5) | after a tap, Escape or a Backspace inside the second left the blue ring fading on the emptied box | FIXED — the ring ends at once on Escape or any change (`interactions.ts flashTaken`; RB9 test) |
+| W-2 | the host, on walker B's picture | the 2px blue ring sat inside the browser's white focus ring — a thin line, not an obvious mark (D1035's point) | FIXED — for its second the box's focus ring itself is blue (`12-schedule-editing.css .sugtook`) |
+| F1 | the fresh read | a select-all of the placed time, typed over with the same first digit ("1100" over 10:40), kept "100" → saved 01:00 | FIXED — `firstChange` reads the browser's kind of change (`inputType`); RB9 tests; the narrow read: right and complete |
+| F2 | the fresh read | a second take inside the second had its ring cut short by the first's timer | FIXED — the running flash is ended first; RB9 test |
+| F3 | the fresh read | six comments / test names described the build before this change | FIXED |
+| C-1 | walker C (break 4) | an overnight SC MAIN 19:00–07:00 with R 01:00 reads the rally as 01:00 that morning — a false 30 h day and crew-rest breach | RECORD, not this change's: the SC B box has read a clock earlier than START as the same day since 24 Aug 26, as a flying rally does (D503); a rally 18 h before its shift is not a case a scheduler types. Not filed. |
+| O-1 | the read | the crew picker judges an SC MAIN seat from START, never from B (so not from R) | older, not this change — noted |
+| O-2 | walker A, the read | `24:00` is accepted in every time box | older, not this change — as a flying R |
+| O-3 | walkers A, B | a time typed on the board shows as typed ("0700") until the next redraw | older — the TO box does it too |
+| O-4 | walker A (21) | the 821-wide board squeezes the remarks on every line | older — `[BOARD-NARROW-DESKTOP-REMARKS]` |
+
+## 14. His look — the card
+On his iPhone, at the preview: (1) the Scheduler Board — tap a faint R on a flying line: the time shows in white at once and
+the box's border flashes blue for about a second; type a new time — it replaces it. (2) Add an SC, AVALON and BB wave: each
+line has an R box above B (board) and above START (Edit Schedule, View-only Sched) — empty, no faint times. (3) Type an R on
+an SC MAIN line earlier than its START: the crew-rest and long-day warnings, OIL Earn and Insights count from it; on a SPARE
+row nothing moves. Not walked anywhere but here: Safari on his iPhone itself (the walk used Chrome's phone mode).
+
+## Walk line
+`Walk: docs/handpass/2026-10-19-rally-changes.md · 223 pictures · 3 walkers (A desktop, B phone 402 by finger, C rules and copies) · 22 scenarios, 7 breaks · 1 fault in the change fixed (the ring after Escape), 1 look fixed (the flash too thin), 3 read findings fixed, 1 overnight case recorded · gates green`

@@ -21,11 +21,13 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/rally-box-changes -->
-### `claude/rally-box-changes` — his three changes to the rally box (19 Oct 26) — questions put to him, nothing built yet — verify before use
-- **Where it started:** pull request 540 (the rally box, [RALLY-PER-FORMATION] with [EDIT-BUTTON-AFTER-CHANGE]) is LIVE — merged 19 Oct 26 and Vercel's Production READY; both items archived by script; the `claude/rally-box-mockup-452b95` block removed.
-- **His asks (19 Oct 26):** (1) make it obvious that a suggested brief or rally time has been accepted — today the faint suggestion and the accepted time are both blue; he suggests a flash; (2) SC, AVALON and BB get the rally time too; (3) do not show the worked-out brief and rally suggestion (rarely used; usually only TO and LD are typed) — a typed brief or rally is still used in the timing checks.
-- **Branch:** `claude/rally-box-changes`, cut from main at the merge of pull request 540. No pull request yet.
-- **Pick up here:** his answers to the questions put to him, recorded as rulings first; then the build and its bug check.
+### `claude/rally-box-changes` — [RALLY-BOX-CHANGES] BUILT and FULL-checked (19 Oct 26) — waiting for his look and "merge live" — verify before use
+- **Where it started:** pull request 540 (the rally box) LIVE on 19 Oct 26; [RALLY-PER-FORMATION] and [EDIT-BUTTON-AFTER-CHANGE] archived by script. His three changes asked and answered the same day (D1035–D1041).
+- **Done:** a taken suggestion shows in a typed time's colour at once, the box's focus ring blue for about a second, the first change still replacing it (by the browser's kind of change); SC, AVALON and BB lines have their own R box (board before / above B; the week, View-only Sched and the peek above START, "R / START"), no worked-out brief or rally; on SC MAIN the R starts the day as the in-time box does — crew rest ("rally is"), the long day, work hours, OIL — the earlier of R and B; the export and PDF carry it; the Logic page's SC line names R. FULL check: the sheet `raptor-port/docs/handpass/2026-10-19-rally-changes.md` — scenario designer, three Sonnet walkers (A desktop, B phone, C rules), one fresh blind Opus read (F1–F3 fixed) and one narrow read (none); full gate run green on the pre-read-fix commit (unit 11,900, e2e 875, tfin 728/0; the Tracker smoke see the sheet §11), the touched tests after.
+- **Next job filed, his rulings D1042–D1044:** [STANDBY-FLIES] — a standby line with B or R typed (or a "Flies" tick by hand, as a safeguard for an activated SPARE) counts as a real flight for every row, SPARE included, on its planned START and END: the flying count, Insights, OIL by default, every warning. A fresh Opus red team of that plan is at `raptor-port/docs/superpowers/plans/2026-10-19-standby-flies-redteam.md` (when it lands) — its suggestion to be put to him with a picture.
+- **Branch:** `claude/rally-box-changes`; pull request — see the closing report. The walk preview `raptor-rallychg` (4312) may still be up — stop it by its port.
+- **Questions waiting for him:** none for this job; his look card is the sheet §14.
+- **Pick up here:** his look at the Vercel preview on his iPhone, then "merge live"; then archive [RALLY-BOX-CHANGES] by script (homes: the sheet, `ui-contracts.md`, `engine-rules.md`); then [STANDBY-FLIES]: the red team's suggestion to him with a picture.
 <!-- /now -->
 
 ## Next, in order
