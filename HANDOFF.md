@@ -20,18 +20,17 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/rally-box-mockup-452b95 -->
-### `claude/rally-box-mockup-452b95` — [RALLY-PER-FORMATION] + [EDIT-BUTTON-AFTER-CHANGE] BUILT and FULL-checked (the night of 19 Oct 26) — pull request 540, waiting for his look and "merge live" — verify before use
-- **Where it started:** the mock-up block (D1026–D1034 answered) → his /overnight "go" (19 Oct 26): the build with its FULL check, the first-press fix riding along.
-- **Done:** each formation's own R box (week / Edit Schedule / the next-week peek R over B, TO over LD; the board one line on a desktop, stacked on a phone; the suggestion faint inside its box, one tap places it; the box counts as a typed rally — crew rest, OIL, long day, work hours; a published day's change waits for the amendment; "+ In-time"; "Default rally before take-off"; a Rally column in the export and PDF); a button pressed straight after a changed box works on the first press. FULL check closed — the sheet `raptor-port/docs/handpass/2026-10-19-rally-box.md` (Walk line there: 203 pictures, 26 surfaces, 7 orders; 5 fixed, 3 filed older); breaks 23/23; scenario designer, two Sonnet walkers, a fresh blind Opus read (1 finding, fixed) and two narrow reads of the fixes (round 3: none); gate run 2 all green before the last small fix (its touched tests 62 + 35 browser green; the pull request's run is its full check, D902).
-- **Filed, older (not this job's):** `[LOGIC-DONE-FIRST-PRESS]`, `[BOARD-NARROW-DESKTOP-REMARKS]`, `[LOGIC-WORDS-WORKHOURS]` (carries a question for him — when he says so, D994).
-- **Branch:** `claude/rally-box-mockup-452b95`; pull request https://github.com/seejiaokai/Raptor/pull/540 (Auto-fix on, set by the app). **Running when written:** the pull request's checks (this block's own push restarts them). The lock free; preview `raptor-rally` (4298) may still be up — stop it by its port.
-- **Questions waiting for him:** none for this job. His look card: the sheet §14 (his iPhone: tap then type replaces — simulated, not walked in Safari).
-- **Pick up here:** read pull request 540's checks; his look on his iPhone at the Vercel preview; on his "merge live", merge and see Vercel's Production READY; then archive [RALLY-PER-FORMATION] and [EDIT-BUTTON-AFTER-CHANGE] by script (homes: the sheet, `ui-contracts.md`, `engine-rules.md`).
-- **Opening line:** Read `HANDOFF.md` (the `claude/rally-box-mockup-452b95` block), then run `git fetch origin` and `git switch claude/rally-box-mockup-452b95` (if refused because another checkout holds it, run `git switch --detach origin/claude/rally-box-mockup-452b95` and say so). Pull request 540 (the rally box) is built and FULL-checked: read its checks, then wait for my look and "merge live".
+<!-- now:claude/rally-box-changes -->
+### `claude/rally-box-changes` — his three changes to the rally box (19 Oct 26) — questions put to him, nothing built yet — verify before use
+- **Where it started:** pull request 540 (the rally box, [RALLY-PER-FORMATION] with [EDIT-BUTTON-AFTER-CHANGE]) is LIVE — merged 19 Oct 26 and Vercel's Production READY; both items archived by script; the `claude/rally-box-mockup-452b95` block removed.
+- **His asks (19 Oct 26):** (1) make it obvious that a suggested brief or rally time has been accepted — today the faint suggestion and the accepted time are both blue; he suggests a flash; (2) SC, AVALON and BB get the rally time too; (3) do not show the worked-out brief and rally suggestion (rarely used; usually only TO and LD are typed) — a typed brief or rally is still used in the timing checks.
+- **Branch:** `claude/rally-box-changes`, cut from main at the merge of pull request 540. No pull request yet.
+- **Pick up here:** his answers to the questions put to him, recorded as rulings first; then the build and its bug check.
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (19 Oct 26, later):** pull request 540 is LIVE (the rally box, D1026–D1034) → his three changes to it (a clear mark when a suggested time is taken, SC / AVALON / BB get the rally, the worked-out suggestion hidden), on `claude/rally-box-changes` (its block).
 
 **RIGHT NOW (19 Oct 26):** pull request 538 is LIVE (D994's Schedule and amendments batch, 21 items) → [RALLY-PER-FORMATION] (D1026): the mock-up DRAWN and put to him (D1026–D1028, four questions), on `claude/rally-box-mockup-452b95` (its block) → his answers given (D1029–D1032, D1034) → the build (FULL tier), in a fresh chat on his /overnight.
 

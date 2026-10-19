@@ -5962,3 +5962,23 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
    Fable #1's mirror; the digest keys ground rows by position). A false re-sign, never a false publish.
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
 
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([RALLY-PER-FORMATION]). Forward facts: `raptor-port/docs/handpass/2026-10-19-rally-box.md`, `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/engine-rules.md`.*
+
+### [RALLY-PER-FORMATION] A rally box for each formation: R above B, TO above LD; the button becomes "+ In-time" (D1026, 19 Oct 26)
+**His ruling (D1026):** most squadrons give each formation its own rally time; on the week and on Edit Schedule a flying row's second
+time column is headed R / B (the rally above the brief) and the third TO / LD (the take-off above the landing); the typed lines above
+the wave are for the in-time only, their button "+ In-time" — no rally. Full row: `.claude/decisions-full/scheduler.md` D1026; the
+design note `raptor-port/docs/superpowers/specs/2026-10-02-rally-time-design.md`.
+**Today:** a rally is only a typed line above the wave ("19:00H: NIGHT WAVE VL RALLY …"), read for its callsign and clock.
+**First:** a mock-up on the real app at phone and desktop width, and his questions (in the ruling's full row), each with a recommendation. **Drawn and put to him 19 Oct 26** — the page `raptor-port/docs/mock/rally-box.html` (an Artifact), its pictures and script named in the design note's "The mock-up". While it was drawn he added D1027 (a default rally, take-off less a Logic time, 3 hours to start, selected by the scheduler) and D1028 (a suggested time in its own box's area, never on a line above it — the brief's too). **His answers, 19 Oct 26 (D1029–D1032):** the desktop board keeps R · B · TO · LD in one line, the phone board stacks (picture 11 and 6); a suggestion sits faint inside its box, a tap places it highlighted so typing replaces it; the default rally is the existing 3-hour setting, renamed; the R box counts as a typed rally did, an empty box's default only where no in-time or rally is entered. A typed line still saying RALLY stays a rally, as today (D1034) — the typed lines' reading is unchanged. **Next: the build — FULL tier** (OIL, the published record), from the design note's "His answers" and requirement list; the mock-up script's values are the look. The build's requirements the drawing found: the design note's list.
+**Tier (the agent's reading):** FULL — OIL counts from the earliest in-time or rally (D591), and a published day's record changes.
+**Place (his "Finish this first", D1026):** its own job, after the D994 Schedule and amendments batch's check is finished; it
+touches the same In-time / Rally lines as [INTIME-LINES-DRAG], built in that batch.
+
+
+*Moved here 2026-10-19 by backlog-archive.mjs ([EDIT-BUTTON-AFTER-CHANGE]). Forward facts: `raptor-port/docs/handpass/2026-10-19-rally-box.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [EDIT-BUTTON-AFTER-CHANGE] Straight after a changed text box, the first press of a button on Edit Schedule's week or the Scheduler Board does nothing (found 19 Oct 26, the D994 batch's walk, walker D, S4-05 — OLDER than the batch; low)
+Change a take-off (the caret left in the box), then press ONE button: the week's "+ In-time / Rally" (In-time lines 2 → 2, three tries) or the board's "+ Line" (formations 2 → 2); the take-off saves and the area time catches up, but the button's own action does not happen; a second press works, and the same button with nothing changed first works at once. Pictures `raptor-port/docs/img/handpass/2026-10-19-sched-fixes/D/S4-05-*.png`; the walker's table `raptor-port/docs/handpass/parts/2026-10-19-sched-fixes-D.md`. **Cause (the host's reading, by the same route as [EDIT-SECOND-CLICK]):** leaving the changed box saves it, and the day (or the board's panel) redraws between the press and its click — the button pressed is replaced, so the click lands on nothing. The batch's fix holds the redraw only for a TEXT BOX being pressed (`ui/textedit.ts textCaret`); a button is not one, and holding a panel for any press would also hold `txtCommit`'s deferred save (it asks `editingText()`), so it wants its own small hold (a pressed button keeps its block until the click, then the redraw). **Place:** low — with the next change to the text boxes or the board's buttons; a browser test first (`e2e/schedule-tab.spec.ts`).
+

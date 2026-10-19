@@ -685,7 +685,7 @@ line PRESSED is the one that moves (a press on the emptied line's own grip start
 only in a band a sixth of its height (at most 52px — `rowdrag.ts rowEdge`). Pins: `rowdrag.test.tsx`, `engine/intimes-order.test.ts`,
 `e2e/schedule-tab.spec.ts` (the rows' left edge and width at 1440 and 390); the drag itself by mouse and finger is walked
 (`docs/handpass/2026-10-19-schedule-amendments-fixes.md`).
-**Changing (D1026, 19 Oct 26 — not built, `[RALLY-PER-FORMATION]`):** a formation's rally moves to a box of its own on the
+**Changed (D1026, live 19 Oct 26, pull request 540 — `[RALLY-PER-FORMATION]`, archived):** a formation's rally moves to a box of its own on the
 flying row (R above B, TO above LD); these typed lines become the in-time only and their button "+ In-time".
 
 "Allow me to input lines at the top of each wave where I can reflect the in

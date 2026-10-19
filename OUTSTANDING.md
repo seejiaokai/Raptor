@@ -64,9 +64,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Schedule and amendments**
 - [BUBBLE-SMALL-SEEN] — an empty gold pill in an input's row on the phone's Inputs list (the rest done).
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
+- [RALLY-BOX-CHANGES] — his three changes to the live rally box (D1035–D1037): a taken suggestion plainly marked, SC / AVALON / BB get the rally, the worked-out suggestion hidden — questions put to him 19 Oct 26, on `claude/rally-box-changes`.
 - [LOOK-PENDING-COUNT] — the 👁 look at the Original shows "1 pending" where the working copy shows "2 pending" (reproduce first).
-- [EDIT-BUTTON-AFTER-CHANGE] — straight after a changed text box, the first press of a button on the week or the board ("+ In-time / Rally", "+ Line") does nothing. **BUILT and FULL-checked 19 Oct 26 with [RALLY-PER-FORMATION] — waiting for his look and "merge live".**
-- [RALLY-PER-FORMATION] — a rally box for each formation, R above B and TO above LD; the button becomes "+ In-time" (D1026). **BUILT and FULL-checked 19 Oct 26 on `claude/rally-box-mockup-452b95` (sheet `raptor-port/docs/handpass/2026-10-19-rally-box.md`) — waiting for his look and "merge live".**
 - [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
 - [PLAN-BANNER-DOOR] — the preview banner's "Switch to this plan" has no route a person can reach — retire it or give it one: his question.
 - [PDF-PRINT-TWICE] — "Export as PDF" may print twice, first on a blank page — to confirm in real Chrome and on his iPhone.
@@ -1746,17 +1745,6 @@ ORIGINAL withdrawn; an AL withdrawn to a higher, a lower and an equal credit; a 
 **Tier:** FULL (OIL, the published record). **Place (the agent's line):** low-medium — with the next change to Unpublish or
 to the OIL tracker.
 
-### [RALLY-PER-FORMATION] A rally box for each formation: R above B, TO above LD; the button becomes "+ In-time" (D1026, 19 Oct 26)
-**His ruling (D1026):** most squadrons give each formation its own rally time; on the week and on Edit Schedule a flying row's second
-time column is headed R / B (the rally above the brief) and the third TO / LD (the take-off above the landing); the typed lines above
-the wave are for the in-time only, their button "+ In-time" — no rally. Full row: `.claude/decisions-full/scheduler.md` D1026; the
-design note `raptor-port/docs/superpowers/specs/2026-10-02-rally-time-design.md`.
-**Today:** a rally is only a typed line above the wave ("19:00H: NIGHT WAVE VL RALLY …"), read for its callsign and clock.
-**First:** a mock-up on the real app at phone and desktop width, and his questions (in the ruling's full row), each with a recommendation. **Drawn and put to him 19 Oct 26** — the page `raptor-port/docs/mock/rally-box.html` (an Artifact), its pictures and script named in the design note's "The mock-up". While it was drawn he added D1027 (a default rally, take-off less a Logic time, 3 hours to start, selected by the scheduler) and D1028 (a suggested time in its own box's area, never on a line above it — the brief's too). **His answers, 19 Oct 26 (D1029–D1032):** the desktop board keeps R · B · TO · LD in one line, the phone board stacks (picture 11 and 6); a suggestion sits faint inside its box, a tap places it highlighted so typing replaces it; the default rally is the existing 3-hour setting, renamed; the R box counts as a typed rally did, an empty box's default only where no in-time or rally is entered. A typed line still saying RALLY stays a rally, as today (D1034) — the typed lines' reading is unchanged. **Next: the build — FULL tier** (OIL, the published record), from the design note's "His answers" and requirement list; the mock-up script's values are the look. The build's requirements the drawing found: the design note's list.
-**Tier (the agent's reading):** FULL — OIL counts from the earliest in-time or rally (D591), and a published day's record changes.
-**Place (his "Finish this first", D1026):** its own job, after the D994 Schedule and amendments batch's check is finished; it
-touches the same In-time / Rally lines as [INTIME-LINES-DRAG], built in that batch.
-
 ### [INP-OIL-CHIP-PHONE] On a phone the green OIL chip is painted over a request card's date and time (found 5 Oct 26, the Codex stack check)
 Inputs page at phone width (390): the card of a request that carries an OIL answer (walked: Torch, Training, 18 Jul 11:00–12:00) draws its
 green "OIL" chip over the date and time — about 37 × 12 px of overlap. Walker E's picture:
@@ -1978,6 +1966,9 @@ short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not c
 ### [NOTICE-RETENTION] The bell's notices are kept for good — a retention rule at the database step (the one-rule build's step 7, 12 Oct 26 — deferred)
 **DEFERRED — for the database step.** Each notice is one saved record (`notices/<id>`), made inside the change that owes it and never pruned: a person's list shows his newest thirty, the rest stay stored. In this build that is demo data, cleared before the database (D56); in the database it grows with every change to a shared input. **Why it is not pruned now:** a notice is part of its maker's Undo step — a prune inside someone else's command would advance its revision and refuse that Undo, the fault the plan's F9 names for reading (`raptor-port/docs/undo-contract.md` §4). **At the database step:** how long a notice is kept is the organisation's retention rule, with the change history's (D351) — a server-side sweep by age, outside any person's command; and each person's read record (`settings/noticeseen:<pid>`) drops the ids of swept notices with it. `raptor-port/docs/data-model.md` §Notice says the same.
 
+### [RALLY-BOX-CHANGES] His three changes to the rally box: a taken suggestion plainly marked, SC / AVALON / BB get the rally, the worked-out suggestion hidden (D1035–D1037, 19 Oct 26)
+After his look at the live rally box on his iPhone. **D1035:** a taken brief or rally looks plainly different from the suggestion at once (today both blue); he suggests a flash. **D1036:** SC, AVALON and BB lines get a rally time too. **D1037:** the worked-out brief and rally are no longer shown in their empty boxes; a typed one is used in the timing checks. Design and open questions: `raptor-port/docs/superpowers/specs/2026-10-02-rally-time-design.md` §His three changes. **Branch:** `claude/rally-box-changes`. **Tier when built:** FULL (OIL and crew rest read the rally; the published record). **Place:** next, once he has answered.
+
 ### [LOOK-PENDING-COUNT] The 👁 look at the Original shows "1 pending" in its head while the working copy shows "2 pending" (walker D, the D605 walk, 6 Oct 26 — OLD; low)
 A published Tuesday; a man seated on a new line and a leave filed for him afterwards: the working copy's head reads
 "2 pending" ("Vandal · LL filed", "WAVE 3 added"), and the 👁 look at the Original, opened at the same moment, reads
@@ -2003,9 +1994,6 @@ with a retry due at the click; (2) "a window he has moved keeps its place and si
 a resized one, an operated ALL AVAIL window and the preview-bar combinations. The report:
 `raptor-port/docs/superpowers/briefs/2026-10-06-owed-small-reads-astra.md` Part 3. **Place (the agent's line):** low — with the next
 change to the failed-save warning or its test.
-
-### [EDIT-BUTTON-AFTER-CHANGE] Straight after a changed text box, the first press of a button on Edit Schedule's week or the Scheduler Board does nothing (found 19 Oct 26, the D994 batch's walk, walker D, S4-05 — OLDER than the batch; low)
-Change a take-off (the caret left in the box), then press ONE button: the week's "+ In-time / Rally" (In-time lines 2 → 2, three tries) or the board's "+ Line" (formations 2 → 2); the take-off saves and the area time catches up, but the button's own action does not happen; a second press works, and the same button with nothing changed first works at once. Pictures `raptor-port/docs/img/handpass/2026-10-19-sched-fixes/D/S4-05-*.png`; the walker's table `raptor-port/docs/handpass/parts/2026-10-19-sched-fixes-D.md`. **Cause (the host's reading, by the same route as [EDIT-SECOND-CLICK]):** leaving the changed box saves it, and the day (or the board's panel) redraws between the press and its click — the button pressed is replaced, so the click lands on nothing. The batch's fix holds the redraw only for a TEXT BOX being pressed (`ui/textedit.ts textCaret`); a button is not one, and holding a panel for any press would also hold `txtCommit`'s deferred save (it asks `editingText()`), so it wants its own small hold (a pressed button keeps its block until the click, then the redraw). **Place:** low — with the next change to the text boxes or the board's buttons; a browser test first (`e2e/schedule-tab.spec.ts`).
 
 ### [REST-FIRST-CREW-HINT] Empty formation gives no predictive crew-rest hint for its first occupant (found 2 Oct 26)
 Rally runtime evidence: an empty Wednesday formation resolves reporting to Tuesday11:00, but Ranger gets no pre-placement rest hint. First assignment correctly raises9h crew rest against Monday's overnight endingTuesday02:00. A different remaining crew member supplies a sibling and Ranger's hypothetical placement then correctly gives clearance14:00. Removal restores the missing-first-hint condition. Baseline query contract and a dedicated test explicitly return null for an empty formation; this is existing behaviour, not a new Rally regression, and is not exempted as stored-demo-only harm. The broad guide claim that the query never disagrees has been qualified in `raptor-port/docs/engine-rules.md`.
