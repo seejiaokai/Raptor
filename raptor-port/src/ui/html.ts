@@ -1240,7 +1240,7 @@ export function refreshWaveReports(root:ParentNode|null|undefined):void{
     const [di,gi]=String(blk.dataset.intimes).split('|').map(Number), w=DAYS[di!]&&DAYS[di!].waves&&DAYS[di!].waves[gi!];
     const note=blk.querySelector('[data-reporting-feedback]');
     if(!w||!note)return;
-    const want=reportingIssuesForWave(w,gi).filter(i=>!i.box).map(i=>i.msg).join(' ');
+    const want=reportingIssuesForWave(w,gi).filter(i=>!(i.box&&!i.lines.length)).map(i=>i.msg).join(' ');
     if(note.textContent!==want)note.textContent=want;
   });
   root.querySelectorAll<HTMLElement>('[data-move^="mv:w."]').forEach(go=>{
@@ -1283,7 +1283,7 @@ export function intimesInner(w:any,ek?:any,grip?:boolean){
       +`<button class="itx" data-itdel="${ek}|${i}" title="Remove this ${REPORTING_LABEL} line" aria-label="Remove this ${REPORTING_LABEL} line">✕</button>`;
     return grip?`<div class="itrow" data-move="mv:it.${ek.replace('|','.')}.${i}"><span class="sb-grip" title="Drag to move this line">⠿</span>${pair}</div>`:pair;
   }).join('')
-    + (ek?`<span class="reporting-feedback" data-reporting-feedback data-warnkey="it:${ek.replace('|','.')}" role="status">${esc(reportingIssuesForWave(w).filter(i=>!i.box).map(i=>i.msg).join(' '))}</span>`:'');}
+    + (ek?`<span class="reporting-feedback" data-reporting-feedback data-warnkey="it:${ek.replace('|','.')}" role="status">${esc(reportingIssuesForWave(w).filter(i=>!(i.box&&!i.lines.length)).map(i=>i.msg).join(' '))}</span>`:'');}
 /* AREA and TIME are not the model fields they are edited through. Until a
    scheduler types over them they READ OFF THE AIRCRAFT: the distinct area codes on
    the formation, and the formation's own TO–LD. Both surfaces have to agree on that
@@ -1315,8 +1315,9 @@ export let SCRATCH:any=null;
    which draws its own copy of it. */
 /* the R box's own timing fault, as attributes (week and board alike — board.ts) */
 export function rlFaultAtt(faults:any[],li:number,fp:string){
-  const x=faults.find((i:any)=>i.li===li); if(!x)return '';
-  return `${PV?'':` data-warnkey="${fp}.rl"`} title="${esc(x.msg)}"`;
+  /* every fault the box takes part in, not the first (the narrow read's N2) */
+  const xs=faults.filter((i:any)=>i.li===li); if(!xs.length)return '';
+  return `${PV?'':` data-warnkey="${fp}.rl"`} title="${esc(xs.map((i:any)=>i.msg).join(' '))}"`;
 }
 export const WEEK_TIME_HEAD=['R<br>B','TO<br>LD'] as const;
 /* `extra` — attributes a caller adds as they are (already escaped): the R box's fault address and words (D1026) */

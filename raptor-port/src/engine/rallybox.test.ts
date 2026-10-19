@@ -135,3 +135,11 @@ describe('RB1 — a timing fault caused by the R box is pointed at the box', () 
     expect(typed[0]!.box).toBeUndefined()
   })
 })
+
+/* the narrow read's N1 / N2 (19 Oct 26): an in-time later than the box's rally is the typed line's to explain as well */
+describe('RB1 — an in-time later than the R box: both the line and the box carry it', () => {
+  it('in-time 10:30 typed, R 10:00: box:true AND the in-time line named', () => {
+    const issues = reportingIssuesForWave(flight(['10:30 IN TIME'], f('12:00', '13:00', '11:00', '10:00')))
+    expect(issues).toEqual([expect.objectContaining({ code: 'REPORT_ORDER', box: true, lines: [0], msg: 'VL: in-time 10:30 is later than rally 10:00.' })])
+  })
+})

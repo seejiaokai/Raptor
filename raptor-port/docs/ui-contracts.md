@@ -784,7 +784,10 @@ leaving the box saves it (the week by its focusout, the board by a `change` rais
 Escape takes a just-placed one out (each box's own Escape); a Tab passing through fills nothing. The Tab route is
 callsign, mission, rally, brief, take-off, landing (D554, in document order). The export and the printed PDF carry a
 Rally column before Brief: the typed rally, never the default. Pinned: `ui/brieftime-ui.test.tsx`,
-`ui/board-stores.test.tsx`, `ui/schedule-tab.test.tsx`, `e2e/rallybox.spec.ts` (register RB4–RB6).
+`ui/board-stores.test.tsx`, `ui/schedule-tab.test.tsx`, `e2e/rallybox.spec.ts` (register RB4–RB6). **A timing fault the R box
+takes part in is the box's** (the code read, 19 Oct 26): its warning is keyed to the R box (`ff:di.gi.li.rl` — a tap lands on it,
+live paper only), the box carries the fault's words (`html.ts rlFaultAtt`, week and board), and the typed lines' red note leaves
+it out — except an in-time later than the box's rally, which the in-time line explains too (the in-time is always typed).
 
 **A button pressed straight after a changed box does its job (`[EDIT-BUTTON-AFTER-CHANGE]`, 19 Oct 26).** The press
 takes the focus from the box, the box saves and the redraw replaces the button under the press, so the browser's click

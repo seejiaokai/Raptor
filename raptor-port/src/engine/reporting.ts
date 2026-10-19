@@ -106,7 +106,7 @@ export function resolveReporting(w:any,f:any,to:number,parsed=parseReportingLine
   const unresolved=parsed.filter(p=>!p.targets.length||p.targets.some(t=>t.toLowerCase()===cs))
     .filter(p=>p.malformed||(scope('rally').includes(p)&&p.immediate&&incoming.time==null&&(box==null||p.targets.length>0)));
   return {inTime:incoming.time,rally:rally.time,report:stages.length?Math.min(...stages):null,
-    sourceLines:[...new Set([...incoming.lines,...rally.lines])], unresolved, rallyBox:rally.box};
+    sourceLines:[...new Set([...incoming.lines,...rally.lines])], unresolved, rallyBox:rally.box, inTimeLines:incoming.lines};
 }
 /* D594 (5 Oct 26): Auto sort and Sort all order a wave's In-time / Rally lines by time — earliest first, an
    evening-before clock before the same day's, a line with no clock last. The key is the line's clock read with the
@@ -161,7 +161,9 @@ export function reportingIssuesForWave(w:any,gi=0):ReportingIssue[]{
          from the formation's R box blames the box — no typed line, so the warning's tap lands on the box and the typed lines
          do not explain a fault that is not theirs (D509: "explained while editing") */
       const box=r.rallyBox&&(before.name==='rally'||after.name==='rally');
-      issues.push({gi,li,lines:box?[]:r.sourceLines,code:'REPORT_ORDER',blocking:true,...(box?{box:true}:{}),
+      /* …but an in-time later than the box's rally is half the typed line's (the narrow read's N1): the in-time is always a
+         typed line (D1034) and often the culprit, so the lines that typed it still explain it — and the box carries it too */
+      issues.push({gi,li,lines:box?(before.name==='in-time'?r.inTimeLines:[]):r.sourceLines,code:'REPORT_ORDER',blocking:true,...(box?{box:true}:{}),
         msg:`${name}: ${before.name} ${stated(before.time)} is later than ${after.name} ${stated(after.time)}.`});
     }
     r.unresolved.forEach(p=>issues.push({gi,li,lines:[p.index],code:'REPORT_UNRESOLVED',blocking:false,

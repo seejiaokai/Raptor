@@ -65,8 +65,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [BUBBLE-SMALL-SEEN] — an empty gold pill in an input's row on the phone's Inputs list (the rest done).
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
 - [LOOK-PENDING-COUNT] — the 👁 look at the Original shows "1 pending" where the working copy shows "2 pending" (reproduce first).
-- [EDIT-BUTTON-AFTER-CHANGE] — straight after a changed text box, the first press of a button on the week or the board ("+ In-time / Rally", "+ Line") does nothing.
-- [RALLY-PER-FORMATION] — a rally box for each formation, R above B and TO above LD; the button becomes "+ In-time" (D1026) — a mock-up and his questions first.
+- [EDIT-BUTTON-AFTER-CHANGE] — straight after a changed text box, the first press of a button on the week or the board ("+ In-time / Rally", "+ Line") does nothing. **BUILT and FULL-checked 19 Oct 26 with [RALLY-PER-FORMATION] — waiting for his look and "merge live".**
+- [RALLY-PER-FORMATION] — a rally box for each formation, R above B and TO above LD; the button becomes "+ In-time" (D1026). **BUILT and FULL-checked 19 Oct 26 on `claude/rally-box-mockup-452b95` (sheet `raptor-port/docs/handpass/2026-10-19-rally-box.md`) — waiting for his look and "merge live".**
 - [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
 - [PLAN-BANNER-DOOR] — the preview banner's "Switch to this plan" has no route a person can reach — retire it or give it one: his question.
 - [PDF-PRINT-TWICE] — "Export as PDF" may print twice, first on a blank page — to confirm in real Chrome and on his iPhone.
