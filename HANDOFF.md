@@ -21,16 +21,16 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/standby-week-b -->
-### `claude/standby-week-b` — [STANDBY-WEEK-B] (D1083, D1084): the week's SC, AVALON and BB lines read R over B, then START over END — BUILT and FULL-checked, waiting for his look and "merge live"
+### `claude/standby-week-b` — [STANDBY-WEEK-B] (D1083, D1084): the week's SC, AVALON and BB lines read R over B, then START over END — LIVE on his "merge live" (pull request 544, 20 Oct 26)
 - **Done:** drew the real week for him (today beside proposed, at 402 and 1440); he chose "2" — START over END everywhere, smaller on a phone (D1083); the built week pictured for him, "Ok carry on" (D1084, 7px). Built: `html.ts` (`SA_TIME_HEAD` R / B and START / END; a standby line's R over its own B — `f.br`, the board's box — START over END), `peek.ts` the same, `histbubble.ts` (a standby B is no longer "shown on the scheduler board" only), `09-week-responsive.css` (`.sa-se` 7px up to 820). Then his word after the preview (D1085): the Scheduler Board heads those waves START / END too (`board.ts`); a flying wave keeps TO / LD.
 - **Checked:** tier FULL, sized small — the host's scripted walk 22/22 then a re-walk 27/27 (desktop by mouse, phones at 402 and 360 by touch, 20 pictures), the heading's fit at nine widths, break tests 7/7 red, RB10 / RB12 / RB13 new; the full gate set green (unit 12003, browser 891, the Tracker 453, the original's 728/0); a fresh blind Opus read — one low finding (read only, an empty START let END rise onto START's line), fixed red-first in `03-week.css`. The sheet: `raptor-port/docs/handpass/2026-10-20-standby-week-b.md`.
 - **Residue, filed:** the week's Tab-fold (a time left by Tab reads as typed until a press elsewhere — every week box, older) with [BOARD-TAB-FOLD]; [SA-HEAD-CLIP-360] ("AVALON" cut under 375 wide, older); [STANDBY-UNDO-WORDS] (Undo calls a standby START "a take-off time", older); the reads owed in [NO-ASTRA-LIST]. On his look card: START / END on his iPhone.
-- **Pick up here:** his look at the preview link and his "merge live"; nothing else open.
+- **Pick up here:** nothing open; remove this block at the next handoff.
 <!-- /now -->
 
 ## Next, in order
 
-**RIGHT NOW (20 Oct 26, later):** [STANDBY-WEEK-B] BUILT and FULL-checked on `claude/standby-week-b` (D1083, D1084 — his "2", then "Ok carry on"), waiting for his look and "merge live" (its block).
+**RIGHT NOW (20 Oct 26, later):** pull request 544 is LIVE ([STANDBY-WEEK-B] with D1083–D1085: the week's and the board's SC, AVALON and BB lines read R over B, then START over END) → his next pick from the backlog (D994: the small fixes that need no answer from him; his questions wait until he says so).
 
 **RIGHT NOW (20 Oct 26):** pull request 543 is LIVE ([KEYBOARD-SCROLL] with D1080, D1081) → [STANDBY-WEEK-B] (his question: B on the week for SC, AVALON and BB), its own job from `main`, a picture first.
 

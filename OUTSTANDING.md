@@ -67,7 +67,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
 - [INNERHTML-REPAINT-SWEEP] — eleven screens hand React their markup as a new object every repaint, which React sets again — a box being typed in there is thrown away by any repaint (Quals fixed in [KEYBOARD-SCROLL]); sweep the rest (low).
 - [IPHONE-CARET-CHECKS] — two checks only his iPhone can make, carried from the one-tap time boxes (D1047): dragging the caret with the space bar, and a long press (the loupe).
-- [STANDBY-WEEK-B] — on Edit Schedule's week (and View-only Sched) SC, AVALON and BB lines show no B: the rally box sits above START, not above B as D1040 says and as the board draws it (his question, 20 Oct 26).
 - [BOARD-TAB-FOLD] — a time typed on the Scheduler Board and left by Tab shows as typed ("1000") until another press, though 10:00 is saved (found by the D1080 walk; older, low).
 - [SA-HEAD-CLIP-360] — under 375 wide the week's standby heading cuts "AVALON" to "AVALOI" in its 36px first column (met by the [STANDBY-WEEK-B] walk; older, low).
 - [STANDBY-UNDO-WORDS] — Undo and the changes window call a standby line's START "a take-off time" and its END "a landing time" (found by the [STANDBY-WEEK-B] code read; older, low).
@@ -1885,7 +1884,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 | [RALLY-PER-FORMATION] with [EDIT-BUTTON-AFTER-CHANGE] — a rally box for each formation (D1026–D1034), built 19 Oct 26 on `claude/rally-box-mockup-452b95` | one fresh, blind Opus reader of the finished code (D790, D903); walked and gated (FULL) | Astra's and Sol 6.1's reads (OIL, the published record) |
 | [RALLY-BOX-CHANGES] — his three changes to the rally box (D1038–D1041): a taken suggestion's short flash, SC / AVALON / BB rally boxes, their worked-out times hidden, the SC MAIN rally in crew rest and OIL; built 19 Oct 26 on `claude/rally-box-changes` | one fresh, blind Opus reader of the finished code and one narrow Opus read of its fixes (D790, D903); walked and gated (FULL) | Astra's and Sol 6.1's reads (OIL, the published record) |
 | [KEYBOARD-SCROLL] with D1080 — the box being typed in lifted above a phone's keyboard; one tap then typing replaces in four more places; built 19 Oct 26 on `claude/keyboard-scroll` | one fresh, blind Opus reader of the finished code and two narrow Opus reads of its fixes (D790, D903); walked and gated (WALK) | Astra's read (a shared behaviour on every surface); the board's hardenings of 19 Oct 26 were built by Fable on his call and read by the host (Opus) only |
-| `[STANDBY-WEEK-B]` — the week's standby lines read R over B, then START over END (D1083, D1084), built and FULL-checked 20 Oct 26 on `claude/standby-week-b` | one fresh, blind Opus reader of the finished code (D790, D903); walked and gated (`raptor-port/docs/handpass/2026-10-20-standby-week-b.md`) | Astra's scenario design and code read (D353); Sol 6.1's second read (money and the published record: the week's new door to SC MAIN's in-time and to a standby shift flying) |
+| `[STANDBY-WEEK-B]` — the week's and the board's standby lines read R over B, then START over END (D1083–D1085); LIVE 20 Oct 26 (pull request 544) | one fresh, blind Opus reader of the finished code (D790, D903); walked and gated (`raptor-port/docs/handpass/2026-10-20-standby-week-b.md`) | Astra's scenario design and code read (D353); Sol 6.1's second read (money and the published record: the week's new door to SC MAIN's in-time and to a standby shift flying) |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.
@@ -1992,27 +1991,6 @@ caret where he wants it. Chromium cannot show two iPhone gestures: (1) dragging 
 not caught as a drag, so the box may still be armed and the next key replace the time; (2) a long press (the loupe) on the
 box. **To do:** at his next iPhone look at a time box, ask him to try both; fix whichever arms wrongly (`interactions.ts`
 armFreshTime). **Place:** low — with the next iPhone look at the board.
-
-### [STANDBY-WEEK-B] The week shows no B on SC, AVALON and BB lines (his question, 20 Oct 26 — "why does SC not have B on edit schedule? Brief. Can u check BB and Avalon as well")
-On Edit Schedule's week (and so View-only Sched and the next-week peek, which share the heading), a standby line's time
-headings read SHIFT · R over START · END: the rally box built for [RALLY-BOX-CHANGES] sits above START and the week draws no
-B at all (`raptor-port/src/ui/html.ts` `SA_TIME_HEAD`, the standby row's builder) — the 24 Aug 26 seam "the SC in-time shows
-on the board only … raise mirroring only if he asks", which he now has. The Scheduler Board already draws R over B and the
-shift's times in the TO / LD column on all three (pictures: `raptor-port/docs/img/handpass/2026-10-19-keyboard-scroll/walk/sa-week-marked.png`,
-the week, the headings ringed; `…/walk/sa-board-bb.png`, the board). D1040's own words: "above B, in the same R-over-B column
-as a flying line, so every wave looks the same" — the agent's reading at the time, "on the week and the board", was not built
-on the week. **To do:** put to him, with a picture of the real week at his iPhone's width and a desktop's, the week's standby
-heading as a flying line's — SHIFT · R over B · START over END (recommended: every wave the same, D1040) — then build it,
-the B box writing the line's own `br` as the board's does (SC's in-time, D1041; shown only on SPARE / AVALON / BB), with the
-faint dash in an empty R and B (D1065). Search D1040, D1041, D1065, D1026 first.
-**Drawn 20 Oct 26 and put to him** (on `claude/standby-week-b`): the real week, today beside proposed, at 402 and 1440 wide —
-`raptor-port/docs/img/handpass/2026-10-20-standby-week-b/` (1–6), drawn by `raptor-port/scripts/handpass/mock-standby-week-b.mjs`.
-Found in the drawing: on a phone the third column is too narrow for "START" — it runs under "FCP / RCP" (picture 2); a desktop
-fits (4). Put to him: the third heading TO over LD everywhere (recommended — a flying wave's, and the board's on these lines;
-pictures 5, 6), START over END with smaller letters on a phone, or START / END on a desktop and TO / LD on a phone. Waiting on
-his answer; nothing built. **His answer, 20 Oct 26:** "2" (D1083), then "Ok carry on" to the built phone heading (D1084).
-**BUILT and FULL-checked the same day** on `claude/standby-week-b` — the sheet `raptor-port/docs/handpass/2026-10-20-standby-week-b.md`; waiting for his look and "merge live".
-**Place:** after [KEYBOARD-SCROLL] goes live, as its own small job (own branch from `main`).
 
 ### [SA-HEAD-CLIP-360] Under 375 wide, a standby wave's first heading cuts "AVALON" (met 20 Oct 26 — the [STANDBY-WEEK-B] re-walk at 360; older, low)
 On Edit Schedule's week and View-only Sched below 375 wide the first column is 36px (`09-week-responsive.css`, the 374px

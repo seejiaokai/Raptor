@@ -145,6 +145,7 @@ START / END whole at 7px, a finger takes SC's B, 05:45 saved (picture `walk2/08`
 
 ## 12. His look
 - The built week at his iPhone's width: his "Ok carry on" to pictures 7–9 (D1084).
+- The preview (the week and, after D1085, the board): his **"merge live"**, 20 Oct 26 — pull request 544.
 - **To look at on his iPhone:** START / END in its column on SC, AVALON and BB (Apple's letters are wider than the test
   browser's; measured to fit with a seventh to spare).
 
