@@ -52,7 +52,7 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
   })
 
   test('KS2 a page that scrolls itself (Logic): its last setting box is brought above the keys', async ({ page }) => {
-    await login(page); await go(page, 'logic')
+    await login(page); await go(page, 'logic'); await page.click('#lgEdit')
     const box = page.locator('input.lgin:visible').last()
     const was = await lowOnScreen(box)
     expect(was).toBeGreaterThan(H - KB + 20)
@@ -64,7 +64,7 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
 
   test('KS3 a window (Admin → Duty templates): a time box low in it is brought above the keys, the page behind it left still', async ({ page }) => {
     await login(page); await go(page, 'admin' as any)
-    await page.click('#admDutyTpl')
+    await page.evaluate(() => document.getElementById('admDutyTpl')!.click())
     const box = page.locator('#tplModal input.tm:visible').last()
     await expect(box).toBeVisible()
     /* the window as he meets it: the keys come up over its lower half */
@@ -73,13 +73,17 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
     await tap(page, box)
     await expect(box).toBeFocused()
     await keysUp(page)
-    if (was > H - KB - GAP) await expect.poll(() => bottomOf(box)).toBeLessThanOrEqual(H - KB - GAP + 1)
-    else expect(await bottomOf(box), 'already above the keys: left where it was').toBe(was)
+    expect(was, 'the fixture: the last row of the window is where the keys come (its rows all fit: nothing in it scrolls)').toBeGreaterThan(H - KB - GAP)
+    await expect.poll(() => bottomOf(box)).toBeLessThanOrEqual(H - KB - GAP + 1)
+    /* the window was raised, not the backdrop; it goes back down when the typing ends */
+    expect(await page.locator('#tplModal .modal-box').evaluate(e => (e as HTMLElement).style.translate)).toMatch(/^0(px)? -\d+px$/)
+    await page.evaluate(() => (document.activeElement as HTMLElement).blur())
+    await expect.poll(() => page.locator('#tplModal .modal-box').evaluate(e => (e as HTMLElement).style.translate)).toBe('')
     expect(await page.evaluate(() => document.scrollingElement!.scrollTop), 'the page behind the window').toBe(behind)
   })
 
   test('KS4 a box already above the keys is left where it is', async ({ page }) => {
-    await login(page); await go(page, 'logic')
+    await login(page); await go(page, 'logic'); await page.click('#lgEdit')
     const box = page.locator('input.lgin:visible').first()
     await box.evaluate(e => e.scrollIntoView({ block: 'start' }))
     const was = await bottomOf(box)
@@ -88,4 +92,37 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
     await page.waitForTimeout(150)
     expect(await bottomOf(box)).toBe(was)
   })
+
+  /* KS5 — D1080: one tap then typing replaces, in four more places; a second tap still edits a digit (the arithmetic and the
+     markup: src/ui/freshbox.test.tsx) */
+  test('KS5 one tap then typing replaces: a Logic setting, a SANS colour number, a duty template time', async ({ page }) => {
+    await login(page); await go(page, 'logic'); await page.click('#lgEdit')
+    const rest = page.locator('input.lgin[data-lgset="crewRest"]')
+    await expect(rest).toHaveValue(/h$/)
+    await tap(page, rest); await page.keyboard.type('11h'); await expect(rest).toHaveValue('11h')
+    await page.keyboard.press('Enter'); await rest.blur()
+    await expect(rest, 'saved and shown as the page shows it').toHaveValue('11h')
+    /* a second tap: ordinary editing — the digit is added where the caret is, not replacing */
+    await tap(page, rest); await tap(page, rest); await page.keyboard.press('End'); await page.keyboard.type('5')
+    await expect(rest).toHaveValue('11h5')
+    await page.keyboard.press('ControlOrMeta+a'); await page.keyboard.type('11h'); await page.keyboard.press('Enter'); await rest.blur()
+    await page.evaluate(() => (document.querySelector('[data-lgopen="sans"]') as HTMLElement).click())
+    const yellow = page.locator('input.sset-num').first()
+    await expect(yellow).toBeVisible()
+    const y0 = await yellow.inputValue()
+    await tap(page, yellow); await page.keyboard.type('2')
+    await expect(yellow, `${y0} replaced`).toHaveValue('2')
+    await page.keyboard.press('Escape')
+    await go(page, 'admin' as any)
+    await page.evaluate(() => document.getElementById('admDutyTpl')!.click())
+    const start = page.locator('#tplModal input.tm').first()
+    /* the standard template's times are only shown faint (its placeholder): one typed first, as a scheduler would */
+    await tap(page, start); await page.keyboard.type('0700'); await start.blur()
+    await expect(start).toHaveValue('07:00')
+    /* not at once: two taps at one spot that close together are the browser's double tap, which selects a word */
+    await page.waitForTimeout(600)
+    await tap(page, start); await page.keyboard.type('0800'); await start.blur()
+    await expect(start, '07:00 replaced, not 07:000800').toHaveValue('08:00')
+  })
+
 })

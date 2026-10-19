@@ -66,22 +66,24 @@ try {
 
   /* 1 — the templates' time boxes */
   await go(p, 'admin'); await sleep(700)
-  await p.click('#admDutyTpl'); await sleep(600)
+  await p.evaluate(() => document.getElementById('admDutyTpl').click()); await sleep(600)
   console.log('duty boxes', await p.evaluate(() => __mk.all('#tplModal input.tm', 'start / end times')))
   await shot(p, '1a-duty-template-times')
-  await p.keyboard.press('Escape'); await sleep(300)
-  await p.evaluate(() => document.querySelectorAll('#tplModal .x, #tplModal [aria-label="Close"]').forEach(b => b.click())); await sleep(300)
+  await p.evaluate(() => document.getElementById('tplClose').click()); await sleep(300)
   await p.evaluate(() => __mk.clear())
-  await p.click('#admWaveTpl'); await sleep(600)
+  await p.evaluate(() => document.getElementById('admWaveTpl').click()); await sleep(600)
   /* a template with a flying line, so its T/O and LD boxes show */
-  const wv = await p.evaluate(() => __mk.all('input.tm', 'T/O and LD times'))
+  await p.evaluate(() => [...document.querySelectorAll('#waveTplModal button')].find(b => /New wave template/.test(b.textContent || '')).click()); await sleep(500)
+  await p.evaluate(() => document.querySelector('#waveTplModal input.tm')?.scrollIntoView({ block: 'center' })); await sleep(300)
+  const wv = await p.evaluate(() => __mk.all('#waveTplModal input.tm', 'T/O and LD times'))
   console.log('wave boxes', wv)
   await shot(p, '1b-wave-template-times')
-  await p.keyboard.press('Escape'); await sleep(300)
+  await p.evaluate(() => document.getElementById('waveTplClose').click()); await sleep(300)
   await p.evaluate(() => __mk.clear())
 
   /* 3 — the SANS settings and the late cut-off, opened from the Logic page's doors; 4 — the Logic page */
   await go(p, 'logic'); await sleep(800)
+  await p.evaluate(() => document.getElementById('lgEdit').click()); await sleep(500)
   await p.evaluate(() => document.querySelector('input.lgin')?.scrollIntoView({ block: 'center' })); await sleep(300)
   console.log('logic boxes', await p.evaluate(() => __mk.all('input.lgin', 'Logic settings')))
   await shot(p, '4-logic-settings')

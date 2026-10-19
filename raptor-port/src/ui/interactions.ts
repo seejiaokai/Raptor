@@ -748,9 +748,23 @@ const isTimeBox = (el: any): el is HTMLElement => {
   /* …and an input's own start and end on the week (data-inp, html.ts cell()) — the board's are atm boxes (the D1047 read's F3) */
   return !!el.getAttribute && el.getAttribute('contenteditable') === 'true' && (TIME_TXT.test((el as HTMLElement).dataset.txt || '') || /.(str|end)$/.test((el as HTMLElement).dataset.inp || ''))
 }
+/* THE SAME IN FOUR MORE PLACES (owner D1080, 19 Oct 26 — "1 Template times, 2 Leave War numbers, 3 SANS and cut-off,
+   4 Logic settings", each pictured to him at his iPhone's width): every box there holds one short value typed whole. The
+   duty and wave templates' time boxes (Admin → Duty templates, Wave templates); the Leave War's typed numbers — a
+   counter's amber, red and slot numbers (.mth-in) and every OIL figure (.oil-num); the SANS settings' and the late
+   cut-off's numbers (.sset-num); the Logic page's settings in ✎ Edit (.lgin — never its one words setting, .lgin-text,
+   whose words are edited, not retyped). The Leave War's Required cells are not here: their pad already starts afresh
+   (FlyEdit.tsx `fresh`). Who may change each is that screen's own business — a box shown to type in is armed. */
+const FRESH_ELSEWHERE = '#tplModal input.tm, #waveTplModal input.tm, input.mth-in, input.oil-num, input.sset-num, input.lgin:not(.lgin-text)'
+const isFreshElsewhere = (el: any): el is HTMLInputElement =>
+  typeof HTMLInputElement !== 'undefined' && el instanceof HTMLInputElement && !el.disabled && !el.readOnly && el.matches(FRESH_ELSEWHERE)
 const boxValue = (el: HTMLElement) => el instanceof HTMLInputElement ? el.value : (el.textContent || '')
+/* through the browser's own setter, not the box's: a React box (the templates, the Leave War, the settings) keeps a note of
+   the value it last saw on the box itself, and a value written past that note is one React's onChange then sees as typed —
+   written through the note, React would think nothing changed and keep the old value in its state */
+const setInputValue = typeof HTMLInputElement === 'undefined' ? undefined : Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set
 function setBoxValue(el: HTMLElement, v: string) {
-  if (el instanceof HTMLInputElement) { el.value = v; try { el.setSelectionRange(v.length, v.length) } catch (_) { /* a courtesy */ } return }
+  if (el instanceof HTMLInputElement) { if (setInputValue) setInputValue.call(el, v); else el.value = v; try { el.setSelectionRange(v.length, v.length) } catch (_) { /* a courtesy */ } return }
   el.textContent = v
   try { const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r) } catch (_) { /* a courtesy */ }
 }
@@ -807,19 +821,27 @@ export function armFreshTime(el: HTMLElement) {
   el.addEventListener('keydown', key); el.addEventListener('blur', off)
   ;(el as any)._freshOff = off
 }
-let TIME_PRESS: { addr: string | null, at: number } | null = null
+let TIME_PRESS: { addr: string | null, box: Element, at: number } | null = null
 if (typeof document !== 'undefined') {
   document.addEventListener('pointerdown', e => {
     const t = (e.target as any)?.closest?.('input, [contenteditable="true"]')
-    if (!isTimeBox(t)) { TIME_PRESS = null; return }
+    if (!isTimeBox(t) && !isFreshElsewhere(t)) { TIME_PRESS = null; return }
     /* a second press on a box already waiting: the caret goes where he pressed, and the box is ordinary */
     if (document.activeElement === t && t.dataset.fresh) { (t as any)._freshOff?.(); TIME_PRESS = null; return }
-    TIME_PRESS = { addr: sugAddr(t), at: Date.now() }
+    TIME_PRESS = { addr: sugAddr(t), box: t, at: Date.now() }
   }, true)
   document.addEventListener('keydown', () => { TIME_PRESS = null }, true)
   document.addEventListener('focusin', e => {
     const el = e.target as any, p = TIME_PRESS
-    if (!p || !isTimeBox(el) || Date.now() - p.at > 1500 || sugAddr(el) !== p.addr) return
+    if (!p || Date.now() - p.at > 1500) return
+    if (isFreshElsewhere(el)) {
+      /* these boxes carry no address: the press must have landed on this very box */
+      if (p.box !== el) return
+      TIME_PRESS = null
+      if (boxValue(el).trim()) armFreshTime(el)
+      return
+    }
+    if (!isTimeBox(el) || sugAddr(el) !== p.addr) return
     TIME_PRESS = null
     if (!canEditSched() || !HOOKS.editMode()) return
     /* at once, so the first key can never come before it (the browser test typed in the same moment); a box that holds

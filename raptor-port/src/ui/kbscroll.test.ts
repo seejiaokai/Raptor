@@ -3,7 +3,7 @@
    layout, so every box is given a stand-in place: an element's top is its place on the page less every scroll above
    it; the visual viewport is a stand-in object, as the walk's is. */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { keepAboveKeyboard, keyboardUp, isTypingBox, installKbScroll, GAP } from './kbscroll'
+import { keepAboveKeyboard, keyboardUp, isTypingBox, installKbScroll, dropLifts, GAP } from './kbscroll'
 
 const H = 800, KB = 340                                   // the layout's height; the keys' height
 const vvUp = { height: H - KB, offsetTop: 0, scale: 1 }   // the visible screen with the keys up
@@ -14,6 +14,7 @@ function place(el: HTMLElement, y: number, h: number) {
   el.getBoundingClientRect = () => {
     let top = y
     for (let a = el.parentElement; a; a = a.parentElement) top -= a.scrollTop   // the page's own, on <html>, included
+    for (let a: HTMLElement | null = el; a; a = a.parentElement) top -= +(a.dataset?.kblift || 0)   // a window raised for the keys
     return { top, bottom: top + h, left: 0, right: 100, width: 100, height: h, x: 0, y: top, toJSON() {} } as DOMRect
   }
 }
@@ -78,6 +79,48 @@ describe('keepAboveKeyboard', () => {
   })
 })
 
+describe('a window that cannot scroll is raised instead', () => {
+  const win = () => {
+    document.body.innerHTML = '<div id="bd" style="position:fixed"><div id="w"><input id="b"><input id="t"></div></div>'
+    const bd = document.getElementById('bd')!, w = document.getElementById('w')!
+    const b = document.getElementById('b') as HTMLInputElement, t = document.getElementById('t') as HTMLInputElement
+    place(bd, 0, H)                     // a backdrop as tall as the layout (a .modal)
+    place(w, 300, 300)                  // the window on it, in the middle: 300–600
+    place(b, 560, 30)                   // its last box, under the keys (they start at 460)
+    place(t, 320, 30)                   // a box near its top
+    return { bd, w, b, t }
+  }
+  afterEach(() => dropLifts())
+  it('the window on the backdrop goes up just enough; the backdrop and the page stay', () => {
+    const { bd, w, b } = win()
+    keepAboveKeyboard(b, vvUp)
+    expect(b.getBoundingClientRect().bottom).toBe(H - KB - GAP)
+    expect(w.style.translate).toBe(`0 -${590 - (H - KB - GAP)}px`)
+    expect(bd.dataset.kblift).toBeUndefined()
+    expect(pageST).toBe(0)
+  })
+  it('never so far that its top leaves the screen', () => {
+    const { w, b } = win()
+    place(b, 590, 400)                  // a box taller than the room: its top keeps in sight, so does the window's
+    keepAboveKeyboard(b, vvUp)
+    expect(w.getBoundingClientRect().top).toBeGreaterThanOrEqual(GAP)
+  })
+  it('a box higher in the same window lets it back down, never below where it stood', () => {
+    const { w, b, t } = win()
+    keepAboveKeyboard(b, vvUp)
+    keepAboveKeyboard(t, vvUp)
+    expect(w.dataset.kblift).toBeUndefined()
+    expect(t.getBoundingClientRect().top).toBe(320)
+  })
+  it('put back when the typing ends', () => {
+    const { w, b } = win()
+    keepAboveKeyboard(b, vvUp)
+    dropLifts()
+    expect(w.style.translate).toBe('')
+    expect(b.getBoundingClientRect().bottom).toBe(590)
+  })
+})
+
 describe('keyboardUp', () => {
   it('reads a keyboard from a visible screen much shorter than the layout, never while pinch-zoomed', () => {
     expect(keyboardUp(vvUp)).toBe(true)
@@ -137,6 +180,15 @@ describe('installKbScroll', () => {
     vi.advanceTimersByTime(3000)
     keysUp(); frames()
     expect(p.scrollTop).toBe(0)
+  })
+  it('a raised window goes back down when the keys do', () => {
+    document.body.innerHTML = '<div id="bd" style="position:fixed"><div id="w"><input id="b"></div></div>'
+    const bd = document.getElementById('bd')!, w = document.getElementById('w')!, b = document.getElementById('b') as HTMLInputElement
+    place(bd, 0, H); place(w, 300, 300); place(b, 560, 30)
+    b.focus(); keysUp(); frames()
+    expect(b.getBoundingClientRect().bottom).toBe(H - KB - GAP)
+    vv.height = H; vv.dispatchEvent(new Event('resize'))
+    expect(w.style.translate).toBe('')
   })
   it('a button focused does nothing; with no keyboard, nothing moves (a desktop)', () => {
     const { p, b } = fixture()

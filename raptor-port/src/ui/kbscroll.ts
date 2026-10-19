@@ -12,7 +12,7 @@
    `resize`, which also arrives while the keys slide up), the box's own scrolling panels are scrolled, nearest first,
    just far enough that its bottom sits GAP above the keyboard (or above the panel's own foot, if that is higher) —
    then the page itself, unless the box sits in a fixed layer (a window, a sheet, the board), where scrolling the page
-   would only move what is behind it (D686). Never more than that: a box already in sight is left where it is, and a
+   would only move what is behind it (D686) — there, a box still under the keys raises its window instead (raise, below). Never more than that: a box already in sight is left where it is, and a
    box taller than the room left keeps its TOP in sight. Instant, not smooth: the keys are still sliding up, and a
    smooth scroll measured mid-slide overshoots (D991 — no motion to wait on).
 
@@ -66,19 +66,57 @@ function lift(sc: Element, el: HTMLElement, bot: number, top: number): number {
   return sc.scrollTop - was
 }
 
-/** Scrolls `el`'s scrolling panels (nearest first), then the page unless `el` is inside a fixed layer, so the box sits
-    GAP above the visible screen's foot. Returns how far it moved things in all (0: it was already in sight). */
+/* A WINDOW THAT CANNOT SCROLL IS RAISED INSTEAD (the walk's KS3, 19 Oct 26: Admin → Duty templates on a phone — its rows
+   all fit, so nothing in it scrolls, and its last time box sat under the keys). A window stands in the middle of the
+   layout's height (D997), which the keyboard does not shorten, so its lower half can be under the keys with nothing to
+   scroll. What is raised is the window itself — inside a backdrop that fills the screen (a .modal), the box on it; else
+   the fixed layer — by the CSS `translate` property, which adds to any transform a window is dragged by, never so far
+   that its top leaves the visible screen; and it is put back where it was when the typing ends or the keys go down. */
+const LIFTED = new Set<HTMLElement>()
+const shiftOf = (l: HTMLElement) => +(l.dataset.kblift || 0)
+function setShift(l: HTMLElement, s: number) {
+  if (s > 0.5) { l.style.translate = `0 ${-Math.round(s)}px`; l.dataset.kblift = String(Math.round(s)); LIFTED.add(l) }
+  else { l.style.translate = ''; delete l.dataset.kblift; LIFTED.delete(l) }
+}
+/** Puts back every window raised for the keys, but the one that holds `keep`. */
+export function dropLifts(keep?: Element | null) {
+  for (const l of [...LIFTED]) if (!keep || !l.contains(keep)) setShift(l, 0)
+}
+function raise(fixedEl: HTMLElement, el: HTMLElement, visTop: number, visBot: number): number {
+  const fr = fixedEl.getBoundingClientRect()
+  /* a backdrop as tall as the layout: raise the window on it, the backdrop's child that holds the box */
+  let layer = fixedEl
+  if (fr.top <= 1 && fr.height >= window.innerHeight - 2) {
+    let c: Element | null = el
+    while (c && c.parentElement !== fixedEl) c = c.parentElement
+    if (!c) return 0
+    layer = c as HTMLElement
+  }
+  const s0 = shiftOf(layer), r = el.getBoundingClientRect(), lr = layer.getBoundingClientRect()
+  const need = r.bottom - (visBot - GAP)
+  /* up by what the box needs, never past the visible top; down again (towards where it stood) when it is higher than it
+     need be — a box further up the same window */
+  const d = need > 0 ? Math.min(need, lr.top - (visTop + GAP)) : Math.max(need, -s0)
+  if (Math.abs(d) < 0.5) return 0
+  setShift(layer, Math.max(0, s0 + d))
+  return Math.abs(shiftOf(layer) - s0)
+}
+
+/** Scrolls `el`'s scrolling panels (nearest first), then the page unless `el` is inside a fixed layer — where, if the box
+    is still under the keys, the window is raised instead (raise) — so the box sits GAP above the visible screen's foot.
+    Returns how far it moved things in all (0: it was already in sight). */
 export function keepAboveKeyboard(el: HTMLElement, vv: VV): number {
   const visTop = vv.offsetTop, visBot = vv.offsetTop + vv.height
-  let moved = 0, fixed = false
+  let moved = 0, fixed: HTMLElement | null = null
   for (let a = el.parentElement; a && a !== document.body && a !== document.documentElement; a = a.parentElement) {
-    if (getComputedStyle(a).position === 'fixed') fixed = true
+    if (!fixed && getComputedStyle(a).position === 'fixed') fixed = a
     if (!scrolls(a)) continue
     const ar = a.getBoundingClientRect()
     moved += lift(a, el, Math.min(ar.bottom, visBot) - GAP, Math.max(ar.top, visTop) + GAP)
   }
+  if (fixed) return moved + raise(fixed, el, visTop, visBot)
   const page = document.scrollingElement || document.documentElement
-  if (!fixed && page) moved += lift(page, el, visBot - GAP, visTop + GAP)
+  if (page) moved += lift(page, el, visBot - GAP, visTop + GAP)
   return moved
 }
 
@@ -99,13 +137,19 @@ export function installKbScroll(): () => void {
     raf = requestAnimationFrame(() => { raf = requestAnimationFrame(place) })
   }
   const focusin = (e: FocusEvent) => {
+    dropLifts(e.target as Element)
     if (!isTypingBox(e.target)) { box = null; return }
     box = e.target as HTMLElement; at = Date.now()
     soon()
   }
+  /* the typing ended (the focus went to nothing, as a tap on blank page does): a raised window goes back */
+  const focusout = (e: FocusEvent) => { if (!e.relatedTarget) requestAnimationFrame(() => { if (!isTypingBox(document.activeElement)) dropLifts() }) }
   /* read fresh each time: the walk stands a stand-in viewport in after the page has loaded */
   let vvNow: VisualViewport | null = null
-  const resize = () => { if (box && Date.now() - at < FOCUS_WINDOW) soon() }
+  const resize = () => {
+    if (!keyboardUp(window.visualViewport)) { dropLifts(); return }
+    if (box && Date.now() - at < FOCUS_WINDOW) soon()
+  }
   const follow = () => {
     const vv = window.visualViewport
     if (vv === vvNow) return
@@ -115,8 +159,11 @@ export function installKbScroll(): () => void {
   follow()
   const focusAlso = (e: FocusEvent) => { follow(); focusin(e) }
   document.addEventListener('focusin', focusAlso, true)
+  document.addEventListener('focusout', focusout, true)
   return () => {
     document.removeEventListener('focusin', focusAlso, true)
+    document.removeEventListener('focusout', focusout, true)
+    dropLifts()
     vvNow?.removeEventListener('resize', resize)
     if (raf) cancelAnimationFrame(raf)
   }
