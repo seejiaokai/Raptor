@@ -167,11 +167,17 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
     await login(page); await go(page, 'logic'); await page.click('#lgEdit')
     const rest = page.locator('input.lgin[data-lgset="crewRest"]')
     await expect(rest).toHaveValue(/h$/)
-    await tap(page, rest); await page.keyboard.type('11h'); await expect(rest).toHaveValue('11h')
+    /* in the middle of the screen, clear of the page's pinned search bar (on GitHub's machines the box sat under it, the
+       tap went to the search box and "11h" filtered the page) */
+    await rest.evaluate(e => e.scrollIntoView({ block: 'center' }))
+    await tap(page, rest); await expect(rest).toBeFocused()
+    await page.keyboard.type('11h'); await expect(rest).toHaveValue('11h')
     await page.keyboard.press('Enter'); await rest.blur()
     await expect(rest, 'saved and shown as the page shows it').toHaveValue('11h')
     /* a second tap: ordinary editing — the digit is added where the caret is, not replacing */
-    await tap(page, rest); await tap(page, rest); await page.keyboard.press('End'); await page.keyboard.type('5')
+    await page.waitForTimeout(600)
+    await tap(page, rest); await page.waitForTimeout(600); await tap(page, rest); await expect(rest).toBeFocused()
+    await page.keyboard.press('End'); await page.keyboard.type('5')
     await expect(rest).toHaveValue('11h5')
     await page.keyboard.press('ControlOrMeta+a'); await page.keyboard.type('11h'); await page.keyboard.press('Enter'); await rest.blur()
     await page.evaluate(() => (document.querySelector('[data-lgopen="sans"]') as HTMLElement).click())
