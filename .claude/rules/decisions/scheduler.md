@@ -54,6 +54,8 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1046 | 19 Oct 26 | A row on a standby line with B or R typed that does not come in is cancelled with its own CX, as any jet is — its crew rest, OIL and count go and the rest of the line still flies; there is no untick: the Flies tick only adds a line by hand, for one activated with no B or R typed. |
+| D1045 | 19 Oct 26 | On a standby line with B or R typed every row is a jet that flies — SPARE rows included — in the day's flying count and Insights as well as crew rest and OIL; the line's day ends at its END, with no debrief added; a rally is never typed on a standby line that will not fly, and one that does not fly is cancelled (CX), which takes it out. |
 | D1044 | 19 Oct 26 | The standby lines are a planned schedule: an SC, AVALON or BB line with its B or R typed counts as a flight for every row on it, its SPARE rows included, using the line's planned START and END — no separate take-off and landing is kept; for a SPARE, what counting as a flight changes is its crew rest and its OIL. |
 | D1043 | 19 Oct 26 | A standby row (SC, AVALON, BB) carries a "Flies" tick: typing its B or R ticks it by itself, as a row with a brief or rally typed is planned to fly; a standby row activated later is ticked by hand; the tick, however it was set, is what makes the row count as a flight (D1042). — changed by D1044 |
 | D1042 | 19 Oct 26 | An SC, AVALON or BB line that actually flies counts as a real flight — in the day's flying count and Insights' flying load, earning OIL by default, and with every warning an ordinary flying line gets; built as its own job after the rally box changes. — changed by D1043 |
