@@ -476,3 +476,31 @@ describe('RB10 — a standby line\'s rally box on every surface', async () => {
     ;(DAYS[0] as any).waves.pop()
   })
 })
+
+/* RB11 — one tap into a time box, then typing, replaces its time (owner D1047, 19 Oct 26): the first change after a press is
+   read on its own — typed digits replace, Backspace clears, a selection typed over keeps what was typed; an arrow key (or a
+   second press — e2e) gives back ordinary editing */
+describe('RB11 — the first change in a time box tapped into replaces its time', async () => {
+  const { armFreshTime } = await import('./interactions')
+  const type = (el: HTMLInputElement, v: string, kind: string) => {
+    el.dispatchEvent(new InputEvent('beforeinput', { bubbles: true, inputType: kind }))
+    el.value = v
+    el.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: kind }))
+  }
+  const box = (v: string) => { const i = document.createElement('input'); i.className = 'tm'; i.value = v; document.body.appendChild(i); i.focus(); armFreshTime(i); return i }
+  it('typed after the time, or in its middle: only what was typed', () => {
+    let i = box('16:00'); type(i, '16:001', 'insertText'); expect(i.value).toBe('1')
+    type(i, '16', 'insertText'); expect(i.value, 'once only: then ordinary').toBe('16'); i.remove()
+    i = box('16:00'); type(i, '16:4500', 'insertText'); expect(i.value).toBe('45'); i.remove()
+  })
+  it('Backspace clears the time; a selection typed over keeps what was typed', () => {
+    let i = box('16:00'); type(i, '16:0', 'deleteContentBackward'); expect(i.value).toBe(''); i.remove()
+    i = box('16:00'); type(i, '1', 'insertText'); expect(i.value).toBe('1'); i.remove()
+  })
+  it('an arrow key or leaving the box gives back ordinary editing', () => {
+    let i = box('16:00')
+    i.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }))
+    type(i, '16:030', 'insertText'); expect(i.value, 'a digit edited in place').toBe('16:030'); i.remove()
+    i = box('16:00'); i.blur(); type(i, '16:001', 'insertText'); expect(i.value).toBe('16:001'); i.remove()
+  })
+})

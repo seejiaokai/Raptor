@@ -150,5 +150,8 @@ line has an R box above B (board) and above START (Edit Schedule, View-only Sche
 an SC MAIN line earlier than its START: the crew-rest and long-day warnings, OIL Earn and Insights count from it; on a SPARE
 row nothing moves. Not walked anywhere but here: Safari on his iPhone itself (the walk used Chrome's phone mode).
 
+## 15. After his look (19 Oct 26) — D1047 added
+His iPhone picture: a B box with a time already in it, tapped and typed, kept the old time and added the new digits ("…01645"). His ruling D1047: one tap into any time box on the board or the week, then typing, replaces its time; Backspace clears it; a second press (or an arrow key) edits digits. Built (`interactions.ts armFreshTime`, read on `beforeinput` / `input` by the browser's kind of change); RB11 unit tests; `e2e/rallybox.spec.ts` 12/12 by mouse and by finger, board and week (the week's first run raced the arming — it now arms on the focus itself). The whole check set re-run after it (it changes every time box). Read: the narrow read owed — see §12.
+
 ## Walk line
 `Walk: docs/handpass/2026-10-19-rally-changes.md · 223 pictures · 3 walkers (A desktop, B phone 402 by finger, C rules and copies) · 22 scenarios, 7 breaks · 1 fault in the change fixed (the ring after Escape), 1 look fixed (the flash too thin), 3 read findings fixed, 1 overnight case recorded · gates green`
