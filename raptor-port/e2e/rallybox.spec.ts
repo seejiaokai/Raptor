@@ -7,8 +7,8 @@ import { login, go } from './app'
    own row (a phone), the remarks keeping their width; the suggestion is the app's accent, inside its box; one press
    places it, Escape takes it back out, Tab fills nothing. jsdom has no layout — the markup is pinned in
    ui/brieftime-ui.test.tsx. */
-const press = async (page: Page, loc: Locator, phone: boolean) => {
-  await loc.evaluate(e => e.scrollIntoView({ block: 'center' }))
+const press = async (page: Page, loc: Locator, phone: boolean, scroll = true) => {
+  if (scroll) await loc.evaluate(e => e.scrollIntoView({ block: 'center' }))
   const b = (await loc.boundingBox())!
   if (phone) await page.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2); else await page.mouse.click(b.x + b.width / 2, b.y + b.height / 2)
 }
@@ -42,17 +42,18 @@ for (const [name, viewport] of [['desktop', { width: 1440, height: 900 }], ['pho
     /* walker B's F1 and F3 (19 Oct 26): on the board, R pressed then B at once — leaving R saves it and the redraw that
        starts replaced B under the press, so B took the focus EMPTY; and R pressed then Enter saved nothing */
     test('the board: press R then B at once — both placed and saved; press R then Enter saves it', async ({ page }) => {
+      /* Tuesday's RU line, walker B's own case: there the board takes the focus itself for a moment while R saves */
       await login(page); await go(page, 'editsched')
-      await page.evaluate(() => (window as any).openScheduler(0)); await expect(page.locator('#schedBoard')).toBeVisible()
-      const box = (k: string) => page.locator(`#sbBoard [data-bfld="ff:0.0.1.${k}"]:visible`).first()
-      const f = () => page.evaluate(() => { const x = (window as any).DAYS[0].waves[0].formations[1]; return { rl: x.rl || '', br: x.br || '' } })
+      await page.evaluate(() => (window as any).openScheduler(1)); await expect(page.locator('#schedBoard')).toBeVisible()
+      const box = (k: string) => page.locator(`#sbBoard [data-bfld="ff:1.0.1.${k}"]:visible`).first()
+      const f = () => page.evaluate(() => { const x = (window as any).DAYS[1].waves[0].formations[1]; return { rl: x.rl || '', br: x.br || '' } })
       await press(page, box('rl'), phone)
-      await expect(box('rl')).toHaveValue('10:40')
-      await press(page, box('br'), phone)
-      await expect(box('br'), 'B placed by the one press').toHaveValue('11:20')
-      await expect.poll(f, 'R saved when it was left').toEqual({ rl: '10:40', br: '' })
+      await expect(box('rl')).toHaveValue('06:40')
+      await press(page, box('br'), phone, false)   // straight on, no scroll between — as walker B pressed it
+      await expect(box('br'), 'B placed by the one press').toHaveValue('07:20')
+      await expect.poll(f, 'R saved when it was left').toEqual({ rl: '06:40', br: '' })
       await page.keyboard.press('Enter')
-      await expect.poll(f, 'Enter saved the placed B').toEqual({ rl: '10:40', br: '11:20' })
+      await expect.poll(f, 'Enter saved the placed B').toEqual({ rl: '06:40', br: '07:20' })
     })
     test('the board: one line on a desktop, stacked on a phone; Tab through the empty R box fills nothing', async ({ page }) => {
       await login(page); await go(page, 'editsched')

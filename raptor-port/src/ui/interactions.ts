@@ -680,11 +680,22 @@ function reselectPlaced(el: HTMLElement): boolean {
 let SUG_PRESS: string | null = null
 const sugAddr = (el: Element | null) => { const h = el as HTMLElement | null; return h && h.dataset ? (h.dataset.bfld || h.dataset.txt || null) : null }
 if (typeof document !== 'undefined') {
-  document.addEventListener('pointerdown', e => { const sg = (e.target as any)?.closest?.('.sugbox'); SUG_PRESS = sg ? sugAddr(sg) : null }, true)
+  /* …and only for a moment: a press whose focus never came (a drag, a scroll) must not let a later Tab place it (D1030) */
+  let pressAt = 0
+  document.addEventListener('pointerdown', e => { const sg = (e.target as any)?.closest?.('.sugbox'); SUG_PRESS = sg ? sugAddr(sg) : null; pressAt = Date.now() }, true)
+  document.addEventListener('keydown', () => { SUG_PRESS = null }, true)
+  document.addEventListener('focusin', () => { if (SUG_PRESS && Date.now() - pressAt > 1500) SUG_PRESS = null }, true)
+  /* the note waits for ITS box: on the way there the board takes the focus itself for a moment (its own frame, while R
+     saves — probed on the built app, 19 Oct 26), and that passing focus must not use the note up */
   document.addEventListener('focusin', e => {
-    const el = e.target as HTMLElement, a = SUG_PRESS; SUG_PRESS = null
+    const el = e.target as HTMLElement, a = SUG_PRESS
     if (!a || !el || !el.classList || !el.classList.contains('sugbox') || sugAddr(el) !== a) return
-    if (canEditSched() && HOOKS.editMode()) placeSuggestion(el)
+    SUG_PRESS = null
+    /* AFTER the arrival's own refresh: a box the focus arrives in is set from the schedule (textedit.ts
+       refreshTextDestination — it catches the box up after a save), which emptied a suggestion placed here at once
+       (probed on the built app, 19 Oct 26: placed 07:20, then "" a moment later). A click that lands first places it
+       itself, and this then finds the box filled and does nothing. */
+    if (canEditSched() && HOOKS.editMode()) setTimeout(() => { if (document.activeElement === el) placeSuggestion(el) }, 0)
   }, true)
 }
 

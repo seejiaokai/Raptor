@@ -56,9 +56,9 @@
     "Rplaced": "06:40",
     "Rafter": "06:40",
     "Bplaced": {
-     "value": "",
+     "value": "07:20",
      "ss": 0,
-     "se": 0,
+     "se": 5,
      "active": true,
      "ph": "07:20"
     },
@@ -69,7 +69,7 @@
      "rl": "06:40"
     }
    },
-   "verdict": "FAIL",
+   "verdict": "PASS",
    "pic": "docs/img/handpass/2026-10-19-rally-build/B/B06b-RthenB.png"
   },
   {
@@ -80,9 +80,10 @@
     "cs": "RU",
     "to": "09:40",
     "ld": "11:05",
+    "br": "07:20",
     "rl": "06:40"
    },
-   "verdict": "FAIL",
+   "verdict": "PASS",
    "pic": "docs/img/handpass/2026-10-19-rally-build/B/B06b2-both-saved.png"
   },
   {
@@ -90,6 +91,7 @@
    "what": "tap R then Enter (keyboard Done)",
    "expected": "placed 05:40 saved, box left",
    "seen": {
+    "model": "05:40",
     "box": {
      "value": "05:40",
      "ss": 0,
@@ -98,7 +100,7 @@
      "ph": "05:40"
     }
    },
-   "verdict": "FAIL",
+   "verdict": "PASS",
    "pic": "docs/img/handpass/2026-10-19-rally-build/B/B06c-done.png"
   },
   {
