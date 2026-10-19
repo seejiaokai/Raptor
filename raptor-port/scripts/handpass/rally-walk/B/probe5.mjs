@@ -1,0 +1,12 @@
+console.log('B probe5 v1')
+import { launch, open, sleep, shot, elShot, tap } from './lib.mjs'
+const b = await launch()
+const { ctx, p } = await open(b)
+await p.evaluate(() => window.go('editsched')); await sleep(800)
+const bar = p.locator('#eWeek .day[data-day="1"] .daywarn')
+await tap(p, bar, { block: 'start' })
+console.log(await shot(p, 'probe5-tue-warn'))
+console.log(await p.evaluate(() => { const e = document.querySelector('#eWeek .day[data-day="1"]'); return e.querySelector('.daywarn').parentElement.outerHTML.slice(0, 200) + '\n' + [...e.querySelectorAll('.daywarn ~ *, .warnlist *')].slice(0,0) }))
+console.log(await p.evaluate(() => (window.WARN||[]).length))
+console.log(await p.evaluate(() => { const e = document.querySelector('#eWeek .day[data-day="1"]'); const n = e.querySelector('.daywarn').nextElementSibling; return n ? n.className + ' :: ' + n.innerText.slice(0, 900) : 'none' }))
+await b.close()

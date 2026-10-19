@@ -1,0 +1,47 @@
+import { launch, ctxOpen, SIZES, sleep, go, shot, buildSat, model, bPublish, status, oilRead, rec, rlBox, lwOil, errors } from './lib.mjs'
+console.log('sc01b v1')
+const b = await launch()
+const ids = ['stiff', 'freak']
+const lw = async p => { const r = await lwOil(p, ids); await p.evaluate(() => window.openScheduler(5)); await sleep(900); return r }
+{
+  const { ctx, p } = await ctxOpen(b, SIZES.desk, 'sc01b')
+  await buildSat(p)
+  await bPublish(p, 5)
+  const lw0 = await lw(p)
+  rec('1b', 'desk', 'publish with R empty; Leave War OIL read', 'half day', lw0, /^HO/.test(lw0.stiff) ? 'PASS' : 'FAIL')
+  const r = rlBox(5, 0, 0)
+  await p.locator(r + ':visible').first().click(); await sleep(200)
+  await p.keyboard.type('0830'); await p.locator(r).first().blur(); await sleep(500)
+  const lw1 = await lw(p)
+  const oilB = await oilRead(p)
+  const st1 = await status(p)
+  const pic = await shot(p, 'A01b-pending-R0830', p.locator('#schedBoard .sb-go').first())
+  const pic2 = await shot(p, 'A01b-pending-top')
+  rec('1b', 'desk', 'type R 08:30 on published day (not yet amended)', 'pending mark (AL1), gold dot on R, Leave War OIL still half', { lw1, boardOil: oilB, st1 }, /^HO/.test(lw1.stiff) ? 'PASS (Leave War half; board OIL mode reads ' + JSON.stringify(oilB) + ')' : 'FAIL', pic)
+  const pub2 = await bPublish(p, 5)
+  const lw2 = await lw(p)
+  const st2 = await status(p)
+  rec('1b', 'desk', 'publish the amendment; Leave War OIL read', 'full day', { pub2, st2, lw2 }, /^FO/.test(lw2.stiff) ? 'PASS' : 'FAIL')
+  // earlier version look
+  await p.locator('#schedBoard [data-planmenu="5"]').first().click(); await sleep(500)
+  const menu = await p.evaluate(() => [...document.querySelectorAll('.planmenu button, .planmenu [data-plan], [class*=planmenu] *')].filter(e => e.offsetParent && e.children.length < 2).map(e => (e.innerText || '').trim().slice(0, 50) + '|' + [...e.attributes].filter(a => a.name.startsWith('data-')).map(a => a.name + '=' + a.value).join(',')).filter(x => x.length > 2).slice(0, 20))
+  const pm = await shot(p, 'A01b-planmenu')
+  console.log('menu', JSON.stringify(menu))
+  await ctx.close()
+}
+{
+  const { ctx, p } = await ctxOpen(b, SIZES.desk, 'sc01c')
+  await buildSat(p); await bPublish(p, 5)
+  const r = rlBox(5, 0, 0)
+  await p.locator(r + ':visible').first().click(); await sleep(200)
+  await p.keyboard.type('0830'); await p.locator(r).first().blur(); await sleep(500)
+  const stA = await status(p)
+  await p.locator('#sbUndo').click(); await sleep(600)
+  const m = await model(p, 5, 0, 0); const stB = await status(p)
+  const lwc = await lw(p)
+  const pic = await shot(p, 'A01c-after-undo', p.locator('#schedBoard .sb-go').first())
+  rec('1c', 'desk', 'type R 08:30 on published day, then Undo', 'R empty, pending cleared (publish button back to no-change), Leave War OIL half', { stA, stB, model: m, lwc }, (!m.rl) && /^HO/.test(lwc.stiff) ? 'PASS' : 'FAIL', pic)
+  await ctx.close()
+}
+console.log('errors', JSON.stringify(errors))
+await b.close()

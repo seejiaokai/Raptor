@@ -1,0 +1,11 @@
+console.log('B probe4 v1')
+import { launch, open, sleep, shot, elShot, tap } from './lib.mjs'
+const b = await launch()
+const { ctx, p } = await open(b)
+await p.evaluate(() => window.go('editsched')); await sleep(800)
+console.log(await p.evaluate(() => [...document.querySelectorAll('#eWeek .day')].map(d => { const r = d.getBoundingClientRect(); return d.dataset.day + ' x' + Math.round(r.left) + ' w' + Math.round(r.width) })))
+console.log(await p.evaluate(() => { const e = document.querySelector('#eWeek .day[data-day="1"]'); const w = [...e.querySelectorAll('[class*=warn],[class*=issue]')].slice(0, 10).map(x => x.className + ' | ' + x.textContent.trim().slice(0, 100)); return w }))
+const hdr = p.locator('#eWeek .day[data-day="1"] .wbar, #eWeek .day[data-day="1"] [class*=issues]').first()
+console.log('hdr count', await p.locator('#eWeek .day[data-day="1"] [class*=issues]').count())
+console.log(await p.evaluate(() => { const e = document.querySelector('#eWeek .day[data-day="1"]'); return [...e.children].map(c => c.tagName + '.' + c.className + ' ' + c.textContent.trim().slice(0, 60)) }))
+await b.close()

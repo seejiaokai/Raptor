@@ -1,0 +1,71 @@
+console.log('B s06 v1 (phone board, finger)')
+import { launch, open, sleep, shot, tap, rec, PIC, bfld, inState, model, swipeUp, finish } from './lib.mjs'
+const b = await launch()
+const openBoard = async (p, di) => { await p.evaluate(() => window.go('editsched')); await sleep(700); await p.evaluate(d => window.openScheduler(d), di); await p.waitForSelector('#schedBoard', { timeout: 8000 }); await sleep(900) }
+const leave = async p => { await tap(p, p.locator('#sbDay'), { block: 'start' }) }
+let ctx, p
+/* 6a: tap R, placed + highlighted; type replaces; leave saves */
+;({ ctx, p } = await open(b)); await openBoard(p, 1)
+let R = bfld(p, 'ff:1.0.0.rl')
+const pre = await inState(R)
+await tap(p, R)
+const placed = await inState(R)
+rec('S6a', 'finger tap on empty R (Tue VL)', 'placed 05:40 (take-off 08:40 less 3h), highlighted whole', { before: pre, after: placed }, placed.value === '05:40' && placed.ss === 0 && placed.se === 5 ? 'PASS' : 'FAIL', await shot(p, 'B06a-placed'))
+await p.keyboard.type('0530'); await sleep(150)
+const typed = await inState(R)
+rec('S6a2', 'type 0530 after the tap', 'replaces (05:30 or 0530), never 05:400530', typed, /^(05:30|0530)$/.test(typed.value) ? 'PASS' : 'FAIL', await shot(p, 'B06a2-typed'))
+await leave(p); await sleep(400)
+const m = await model(p, 1, 0, 0)
+rec('S6a3', 'tap a neutral heading (leave)', 'saved rl 05:30', { rl: m.rl, box: (await inState(R)).value }, m.rl === '05:30' ? 'PASS' : 'FAIL', await shot(p, 'B06a3-saved'))
+await ctx.close()
+
+/* 6b: tap R then at once B */
+;({ ctx, p } = await open(b)); await openBoard(p, 1)
+R = bfld(p, 'ff:1.0.1.rl'); const B = bfld(p, 'ff:1.0.1.br')
+await tap(p, R)
+const rp = await inState(R)
+await tap(p, B, { block: 'nearest' })
+const rAfter = await inState(R), bp = await inState(B)
+const mid = await model(p, 1, 0, 1)
+rec('S6b', 'tap R then at once B (RU)', 'R placed 06:40 and saved; B placed 07:20 highlighted', { Rplaced: rp.value, Rafter: rAfter.value, Bplaced: bp, modelAfterBtap: mid }, rp.value === '06:40' && bp.value === '07:20' && bp.ss === 0 && bp.se === 5 && mid.rl === '06:40' ? 'PASS' : 'FAIL', await shot(p, 'B06b-RthenB'))
+await leave(p); await sleep(400)
+const m2 = await model(p, 1, 0, 1)
+rec('S6b2', 'then leave', 'both saved: rl 06:40, br 07:20', m2, m2.rl === '06:40' && m2.br === '07:20' ? 'PASS' : 'FAIL', await shot(p, 'B06b2-both-saved'))
+await ctx.close()
+
+/* 6c: tap R then the keyboard's Done (Enter) */
+;({ ctx, p } = await open(b)); await openBoard(p, 1)
+R = bfld(p, 'ff:1.0.0.rl')
+await tap(p, R); await p.keyboard.press('Enter'); await sleep(400)
+const m3 = await model(p, 1, 0, 0); const st3 = await inState(R)
+rec('S6c', 'tap R then Enter (keyboard Done)', 'placed 05:40 saved, box left', { model: m3.rl, box: st3 }, m3.rl === '05:40' ? 'PASS' : 'FAIL', await shot(p, 'B06c-done'))
+await ctx.close()
+
+/* 6d: tap R then scroll away with a finger swipe */
+;({ ctx, p } = await open(b)); await openBoard(p, 1)
+R = bfld(p, 'ff:1.0.0.rl')
+await tap(p, R)
+const bx = await R.boundingBox()
+await swipeUp(p, 200, Math.min(780, Math.round(bx.y + 300)), 250)
+const m4 = await model(p, 1, 0, 0); const st4 = await inState(R)
+rec('S6d', 'tap R then swipe the page up (scroll away)', 'RECORD: is 05:40 saved or left only in the box?', { model: m4.rl, box: st4 }, 'RECORD', await shot(p, 'B06d-scrolled'))
+await leave(p).catch(() => {}); await sleep(400)
+const m4b = await model(p, 1, 0, 0)
+rec('S6d2', 'then tap a heading', 'RECORD final value', m4b, 'RECORD')
+await ctx.close()
+
+/* 6e: tap, the phone ignores the highlight (selection collapsed to the end), then type */
+;({ ctx, p } = await open(b)); await openBoard(p, 1)
+R = bfld(p, 'ff:1.0.0.rl')
+await tap(p, R)
+await R.evaluate(e => e.setSelectionRange(e.value.length, e.value.length)); await sleep(100)
+const col = await inState(R)
+await p.keyboard.type('0555'); await sleep(150)
+const t5 = await inState(R)
+rec('S6e', 'tap, selection collapsed to the end (iOS ignoring the highlight, simulated), then type 0555', 'replaces the placed 05:40, never appends', { collapsed: col, afterTyping: t5 }, /^(05:55|0555)$/.test(t5.value) ? 'PASS' : 'FAIL', await shot(p, 'B06e-typed-after-collapse'))
+await leave(p); await sleep(400)
+const m5 = await model(p, 1, 0, 0)
+rec('S6e2', 'leave', 'saved 05:55', m5, m5.rl === '05:55' ? 'PASS' : 'FAIL')
+await ctx.close()
+await b.close()
+await finish('s06')

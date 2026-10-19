@@ -34,3 +34,14 @@ describe('schedPrintHTML', () => {
     expect(html).not.toContain('<b>x')
   })
 })
+
+/* RB6 — the printed PDF carries a Rally column before Brief: the typed rally, never the default (D1026's requirement 6) */
+describe('RB6 — the PDF prints the rally', () => {
+  it('a Rally heading before Brief, and the typed rally in its cell', () => {
+    const head = ['Day', 'Date', 'Wave', 'CS', 'Mission', 'Rally', 'Brief', 'TO', 'Land', 'FCP', 'FCP lvl', 'RCP', 'RCP lvl', 'Area', 'Area time', 'Rmks', 'Stores']
+    const row = ['Mon', '13/07/2026', 'WAVE 1', 'VL', 'BFM', '10:10', '10:20', '12:40', '14:05', 'Saber', 'IP', 'Echo', 'IW', '', '', '', '']
+    const html = schedPrintHTML([head, row], 'wk')
+    expect(html).toMatch(/<th>CS \/ Mission<\/th><th>Rally<\/th><th>Brief<\/th>/)
+    expect(html).toMatch(/<td class="t">10:10<\/td><td class="t">10:20<\/td><td class="t">12:40<\/td>/)
+  })
+})

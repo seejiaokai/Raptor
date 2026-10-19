@@ -1,0 +1,169 @@
+{
+ "results": [
+  {
+   "id": "S7a",
+   "what": "finger tap on empty week R (Thu VL)",
+   "expected": "placed 09:45 (TO 12:45 less 3h) highlighted whole",
+   "seen": {
+    "before": {
+     "text": "",
+     "sel": "",
+     "active": false,
+     "ph": "09:45",
+     "cls": "rl sugbox txed"
+    },
+    "after": {
+     "text": "09:45",
+     "sel": "09:45",
+     "active": true,
+     "ph": "09:45",
+     "cls": "rl sugbox txed"
+    }
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B07a-placed.png"
+  },
+  {
+   "id": "S7a2",
+   "what": "type 0930",
+   "expected": "replaces the placed time",
+   "seen": {
+    "text": "0930",
+    "sel": "",
+    "active": true,
+    "ph": "09:45",
+    "cls": "rl sugbox txed"
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "S7a3",
+   "what": "tap the day heading (leave)",
+   "expected": "saved 09:30; box shows 09:30",
+   "seen": {
+    "rl": "09:30",
+    "box": {
+     "text": "09:30",
+     "sel": "",
+     "active": false,
+     "cls": "rl txed"
+    }
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B07a3-saved.png"
+  },
+  {
+   "id": "S7e",
+   "what": "tap typed R, select all, Delete, leave",
+   "expected": "R cleared (model empty); the faint 09:45 returns inside the box",
+   "seen": {
+    "model": "",
+    "box": {
+     "text": "",
+     "sel": "",
+     "active": false,
+     "ph": "09:45",
+     "cls": "rl sugbox txed"
+    },
+    "before": {
+     "content": "\"09:45\"",
+     "color": "rgb(59, 198, 232)"
+    }
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B07e-cleared.png"
+  },
+  {
+   "id": "S7b",
+   "what": "tap R (placed), then Escape",
+   "expected": "box empty again, nothing saved, no Undo entry",
+   "seen": {
+    "box": {
+     "text": "",
+     "sel": "",
+     "active": false,
+     "ph": "09:45",
+     "cls": "rl sugbox txed"
+    },
+    "undo": {
+     "id": "undoBtn",
+     "disabled": true,
+     "cls": "abtn hbtn"
+    }
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B07b-escape.png"
+  },
+  {
+   "id": "S7d",
+   "what": "tap R then at once B (Thu VL)",
+   "expected": "R saved 09:45; B placed 10:25 highlighted",
+   "seen": {
+    "B": {
+     "text": "10:25",
+     "sel": "10:25",
+     "active": true,
+     "ph": "10:25",
+     "cls": "sugbox txed"
+    },
+    "model": {
+     "cs": "VL",
+     "to": "12:45",
+     "ld": "14:10",
+     "rl": "09:45"
+    }
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B07d-RthenB.png"
+  },
+  {
+   "id": "S7d2",
+   "what": "then leave",
+   "expected": "both saved",
+   "seen": {
+    "cs": "VL",
+    "to": "12:45",
+    "ld": "14:10",
+    "br": "10:25",
+    "rl": "09:45"
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "S7f",
+   "what": "tap, selection collapsed to the end (simulated iOS), type 0955",
+   "expected": "replaces the placed 09:45",
+   "seen": {
+    "text": "0955",
+    "sel": "",
+    "active": true,
+    "ph": "09:45",
+    "cls": "rl sugbox txed"
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B07f-collapsed-typed.png"
+  },
+  {
+   "id": "S7g",
+   "what": "View-only Sched Thu wave 1: VL has typed R 09:30, RU empty",
+   "expected": "VL R 09:30; RU R blank; B prints the suggested brief in both",
+   "seen": [
+    {
+     "r": "09:30",
+     "rH": 10,
+     "b": "10:25",
+     "to": "12:45"
+    },
+    {
+     "r": "",
+     "rH": 10,
+     "b": "10:25",
+     "to": "12:45"
+    }
+   ],
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B07g-viewonly.png"
+  }
+ ],
+ "errors": []
+}

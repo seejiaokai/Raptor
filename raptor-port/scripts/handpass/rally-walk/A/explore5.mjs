@@ -1,0 +1,10 @@
+import { launch, ctxOpen, SIZES, sleep, go, shot } from './lib.mjs'
+console.log('explore5 v1')
+const b = await launch()
+const { ctx, p } = await ctxOpen(b, SIZES.desk, 'x')
+await go(p, 'editsched')
+await p.evaluate(() => window.openScheduler(5)); await p.waitForSelector('#schedBoard'); await sleep(900)
+const r = await p.evaluate(() => [...document.querySelectorAll('#schedBoard button')].filter(e => e.offsetParent).map(e => (e.innerText || '').trim().slice(0, 30) + '|' + [...e.attributes].filter(a => a.name.startsWith('data-') || a.name === 'id').map(a => a.name + '=' + a.value).join(',').slice(0, 70)).slice(0, 60))
+console.log(r.join('\n'))
+await shot(p, 'explore-board-sat')
+await b.close()

@@ -1,0 +1,106 @@
+{
+ "results": [
+  {
+   "id": "S6x1",
+   "what": "tap B alone (RU), nothing before",
+   "expected": "placed 07:20 highlighted",
+   "seen": {
+    "value": "07:20",
+    "ss": 0,
+    "se": 5,
+    "active": true,
+    "ph": "07:20"
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B06x1-B-alone.png"
+  },
+  {
+   "id": "S6x2",
+   "what": "tap R, tap B (unplaced), tap B again",
+   "expected": "RECORD whether the 2nd tap places it",
+   "seen": {
+    "afterFirst": {
+     "value": "",
+     "ss": 0,
+     "se": 0,
+     "active": true,
+     "ph": "07:20"
+    },
+    "afterSecond": {
+     "value": "07:20",
+     "ss": 0,
+     "se": 5,
+     "active": true,
+     "ph": "07:20"
+    },
+    "rl": "06:40"
+   },
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B06x2-B-second-tap.png"
+  },
+  {
+   "id": "S6x3",
+   "what": "tap R, wait 1.2 s, tap B",
+   "expected": "B placed (timing check)",
+   "seen": {
+    "value": "",
+    "ss": 0,
+    "se": 0,
+    "active": true,
+    "ph": "07:20"
+   },
+   "verdict": "FAIL"
+  },
+  {
+   "id": "S6x4",
+   "what": "tap B then R",
+   "expected": "R placed 06:40",
+   "seen": {
+    "R": {
+     "value": "06:40",
+     "ss": 0,
+     "se": 5,
+     "active": true,
+     "ph": "06:40"
+    },
+    "br": "07:20"
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B06x4-BthenR.png"
+  },
+  {
+   "id": "S6x5",
+   "what": "baseline: tap TO (typed), type 0850, Enter",
+   "expected": "RECORD what Enter does on a plain board time box",
+   "seen": {
+    "box": {
+     "value": "08:40",
+     "ss": 5,
+     "se": 5,
+     "active": true,
+     "ph": ""
+    },
+    "to": "08:40"
+   },
+   "verdict": "RECORD"
+  },
+  {
+   "id": "S6x6",
+   "what": "tap R, type 0535, Enter",
+   "expected": "RECORD saved?",
+   "seen": {
+    "box": {
+     "value": "0535",
+     "ss": 4,
+     "se": 4,
+     "active": true,
+     "ph": "05:40"
+    },
+    "rl": "05:35"
+   },
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B06x6-typed-enter.png"
+  }
+ ],
+ "errors": []
+}

@@ -1,0 +1,169 @@
+{
+ "results": [
+  {
+   "id": "S6a",
+   "what": "finger tap on empty R (Tue VL)",
+   "expected": "placed 05:40 (take-off 08:40 less 3h), highlighted whole",
+   "seen": {
+    "before": {
+     "value": "",
+     "ss": 0,
+     "se": 0,
+     "active": false,
+     "ph": "05:40"
+    },
+    "after": {
+     "value": "05:40",
+     "ss": 0,
+     "se": 5,
+     "active": true,
+     "ph": "05:40"
+    }
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B06a-placed.png"
+  },
+  {
+   "id": "S6a2",
+   "what": "type 0530 after the tap",
+   "expected": "replaces (05:30 or 0530), never 05:400530",
+   "seen": {
+    "value": "0530",
+    "ss": 4,
+    "se": 4,
+    "active": true,
+    "ph": "05:40"
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B06a2-typed.png"
+  },
+  {
+   "id": "S6a3",
+   "what": "tap a neutral heading (leave)",
+   "expected": "saved rl 05:30",
+   "seen": {
+    "rl": "05:30",
+    "box": "05:30"
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B06a3-saved.png"
+  },
+  {
+   "id": "S6b",
+   "what": "tap R then at once B (RU)",
+   "expected": "R placed 06:40 and saved; B placed 07:20 highlighted",
+   "seen": {
+    "Rplaced": "06:40",
+    "Rafter": "06:40",
+    "Bplaced": {
+     "value": "",
+     "ss": 0,
+     "se": 0,
+     "active": true,
+     "ph": "07:20"
+    },
+    "modelAfterBtap": {
+     "cs": "RU",
+     "to": "09:40",
+     "ld": "11:05",
+     "rl": "06:40"
+    }
+   },
+   "verdict": "FAIL",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B06b-RthenB.png"
+  },
+  {
+   "id": "S6b2",
+   "what": "then leave",
+   "expected": "both saved: rl 06:40, br 07:20",
+   "seen": {
+    "cs": "RU",
+    "to": "09:40",
+    "ld": "11:05",
+    "rl": "06:40"
+   },
+   "verdict": "FAIL",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B06b2-both-saved.png"
+  },
+  {
+   "id": "S6c",
+   "what": "tap R then Enter (keyboard Done)",
+   "expected": "placed 05:40 saved, box left",
+   "seen": {
+    "box": {
+     "value": "05:40",
+     "ss": 0,
+     "se": 5,
+     "active": true,
+     "ph": "05:40"
+    }
+   },
+   "verdict": "FAIL",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B06c-done.png"
+  },
+  {
+   "id": "S6d",
+   "what": "tap R then swipe the page up (scroll away)",
+   "expected": "RECORD: is 05:40 saved or left only in the box?",
+   "seen": {
+    "box": {
+     "value": "05:40",
+     "ss": 0,
+     "se": 5,
+     "active": true,
+     "ph": "05:40"
+    }
+   },
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B06d-scrolled.png"
+  },
+  {
+   "id": "S6d2",
+   "what": "then tap a heading",
+   "expected": "RECORD final value",
+   "seen": {
+    "cs": "VL",
+    "to": "08:40",
+    "ld": "10:05",
+    "rl": "05:40"
+   },
+   "verdict": "RECORD"
+  },
+  {
+   "id": "S6e",
+   "what": "tap, selection collapsed to the end (iOS ignoring the highlight, simulated), then type 0555",
+   "expected": "replaces the placed 05:40, never appends",
+   "seen": {
+    "collapsed": {
+     "value": "05:40",
+     "ss": 5,
+     "se": 5,
+     "active": true,
+     "ph": "05:40"
+    },
+    "afterTyping": {
+     "value": "0555",
+     "ss": 4,
+     "se": 4,
+     "active": true,
+     "ph": "05:40"
+    }
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B06e-typed-after-collapse.png"
+  },
+  {
+   "id": "S6e2",
+   "what": "leave",
+   "expected": "saved 05:55",
+   "seen": {
+    "cs": "VL",
+    "to": "08:40",
+    "ld": "10:05",
+    "rl": "05:55"
+   },
+   "verdict": "PASS"
+  }
+ ],
+ "errors": []
+}

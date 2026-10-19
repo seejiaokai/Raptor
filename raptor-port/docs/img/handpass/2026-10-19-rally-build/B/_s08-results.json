@@ -1,0 +1,218 @@
+{
+ "results": [
+  {
+   "id": "W1",
+   "what": "week: change R, then \"+ In-time\"",
+   "expected": "one in-time line added on the first press, R saved 09:30",
+   "seen": {
+    "before": 2,
+    "after": 3,
+    "rlAfter": "09:30",
+    "boxBeforePress": "0930"
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08-W1.png"
+  },
+  {
+   "id": "W2",
+   "what": "week: change R, then an in-time line X",
+   "expected": "exactly one line removed, R saved 09:30",
+   "seen": {
+    "before": 2,
+    "after": 1,
+    "rlAfter": "09:30",
+    "boxBeforePress": "0930"
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08-W2.png"
+  },
+  {
+   "id": "W3",
+   "what": "week: change R, then Undo",
+   "expected": "Undo takes back the R just typed (R empty); one press",
+   "seen": {
+    "before": "",
+    "after": "",
+    "boxBeforePress": "0930"
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08-W3.png"
+  },
+  {
+   "id": "W4",
+   "what": "week: change R, then Templates button",
+   "expected": "the button acts on the first press (a menu/sheet opens), R saved",
+   "seen": {
+    "before": 2,
+    "after": 2,
+    "rlAfter": "09:30",
+    "boxBeforePress": "0930",
+    "note": []
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08-W4.png"
+  },
+  {
+   "id": "W5",
+   "what": "week: change R, then the change-history clock",
+   "expected": "history window opens on the first press, R saved",
+   "seen": {
+    "before": 2,
+    "after": 2,
+    "rlAfter": "09:30",
+    "boxBeforePress": "0930",
+    "note": [
+     "tb-hist"
+    ]
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08-W5.png"
+  },
+  {
+   "id": "W6",
+   "what": "week: tap TO (focus, no change), then \"+ In-time\"",
+   "expected": "exactly one line added",
+   "seen": {
+    "before": 2,
+    "after": 3
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08-W6.png"
+  },
+  {
+   "id": "B1",
+   "what": "board: change R, then \"+ Line\"",
+   "expected": "exactly one line added, R saved",
+   "seen": {
+    "before": 2,
+    "after": 3,
+    "rlAfter": "09:30",
+    "boxBeforePress": "0930"
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08-B1.png"
+  },
+  {
+   "id": "B2",
+   "what": "board: change R, then \"+ In-time\"",
+   "expected": "exactly one in-time added, R saved",
+   "seen": {
+    "before": 2,
+    "after": 3,
+    "rlAfter": "09:30",
+    "boxBeforePress": "0930"
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08-B2.png"
+  },
+  {
+   "id": "B3",
+   "what": "board: change R, then an in-time line X",
+   "expected": "exactly one removed, R saved",
+   "seen": {
+    "before": 2,
+    "after": 1,
+    "rlAfter": "09:30",
+    "boxBeforePress": "0930"
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08-B3.png"
+  },
+  {
+   "id": "B4",
+   "what": "board: change R, then \"+ Wave\"",
+   "expected": "exactly one wave added, R saved",
+   "seen": {
+    "before": 2,
+    "after": 2,
+    "rlAfter": "09:30",
+    "boxBeforePress": "0930"
+   },
+   "verdict": "FAIL",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08-B4.png"
+  },
+  {
+   "id": "B5",
+   "what": "board: change R, then the dots menu then Sort all",
+   "expected": "the dots menu opens on the first press, Sort all runs, R saved",
+   "seen": {
+    "before": 2,
+    "after": 2,
+    "rlAfter": "09:30",
+    "boxBeforePress": "0930",
+    "note": {
+     "sortAllVisibleAfterMore": false
+    }
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08-B5.png"
+  },
+  {
+   "id": "B6",
+   "what": "board: change R, then Undo",
+   "expected": "Undo takes back the R just typed, in one press",
+   "seen": {
+    "before": "",
+    "after": "",
+    "boxBeforePress": "0930"
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08-B6.png"
+  },
+  {
+   "id": "B7",
+   "what": "board: change R, then Next day",
+   "expected": "the day advances once (Thu to Fri), R saved on Thu",
+   "seen": {
+    "before": "Thu",
+    "after": "Fri",
+    "rlAfter": "09:30",
+    "boxBeforePress": "0930",
+    "note": {
+     "day": "Fri"
+    }
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08-B7.png"
+  },
+  {
+   "id": "B8",
+   "what": "board: change R, then Done",
+   "expected": "the board closes on the first press, R saved",
+   "seen": {
+    "before": true,
+    "after": false,
+    "rlAfter": "09:30",
+    "boxBeforePress": "0930",
+    "note": {
+     "boardOpen": false
+    }
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08-B8.png"
+  },
+  {
+   "id": "B9",
+   "what": "board: tap R (placed 09:45 only, nothing typed), then Done",
+   "expected": "closes; placed rally saved (leaving saves it)",
+   "seen": {
+    "boardOpen": false,
+    "rl": "09:45"
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08-B9.png"
+  },
+  {
+   "id": "B10",
+   "what": "board: tap R (placed only), Enter, then Done",
+   "expected": "RECORD whether the placed rally is saved",
+   "seen": {
+    "rl": "09:45",
+    "boardOpen": false
+   },
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08-B10.png"
+  }
+ ],
+ "errors": []
+}
