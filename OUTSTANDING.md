@@ -67,6 +67,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [KEYBOARD-SCROLL] — on a phone, a box tapped to type in that the keyboard would cover scrolls to sit just above it — every box in the app (D1048). Its own small job, next.
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
 - [INNERHTML-REPAINT-SWEEP] — eleven screens hand React their markup as a new object every repaint, which React sets again — a box being typed in there is thrown away by any repaint (Quals fixed in [KEYBOARD-SCROLL]); sweep the rest (low).
+- [STANDBY-WEEK-B] — on Edit Schedule's week (and View-only Sched) SC, AVALON and BB lines show no B: the rally box sits above START, not above B as D1040 says and as the board draws it (his question, 20 Oct 26).
 - [BOARD-TAB-FOLD] — a time typed on the Scheduler Board and left by Tab shows as typed ("1000") until another press, though 10:00 is saved (found by the D1080 walk; older, low).
 - [LOOK-PENDING-COUNT] — the 👁 look at the Original shows "1 pending" where the working copy shows "2 pending" (reproduce first).
 - [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
@@ -1984,6 +1985,20 @@ panel to its end). Older than D1048 (the layout of the board's top on a short sc
 `raptor-port/docs/handpass/2026-10-19-keyboard-scroll.md`. **To do:** on a short screen with the keys up, fold the board's
 top to its one bar (the day strip and section headings scroll with the panel). A picture to him first (D853). **Place:**
 low — with the next change to the board's top on a phone.
+
+### [STANDBY-WEEK-B] The week shows no B on SC, AVALON and BB lines (his question, 20 Oct 26 — "why does SC not have B on edit schedule? Brief. Can u check BB and Avalon as well")
+On Edit Schedule's week (and so View-only Sched and the next-week peek, which share the heading), a standby line's time
+headings read SHIFT · R over START · END: the rally box built for [RALLY-BOX-CHANGES] sits above START and the week draws no
+B at all (`raptor-port/src/ui/html.ts` `SA_TIME_HEAD`, the standby row's builder) — the 24 Aug 26 seam "the SC in-time shows
+on the board only … raise mirroring only if he asks", which he now has. The Scheduler Board already draws R over B and the
+shift's times in the TO / LD column on all three (pictures: `raptor-port/docs/img/handpass/2026-10-19-keyboard-scroll/walk/sa-week-marked.png`,
+the week, the headings ringed; `…/walk/sa-board-bb.png`, the board). D1040's own words: "above B, in the same R-over-B column
+as a flying line, so every wave looks the same" — the agent's reading at the time, "on the week and the board", was not built
+on the week. **To do:** put to him, with a picture of the real week at his iPhone's width and a desktop's, the week's standby
+heading as a flying line's — SHIFT · R over B · START over END (recommended: every wave the same, D1040) — then build it,
+the B box writing the line's own `br` as the board's does (SC's in-time, D1041; shown only on SPARE / AVALON / BB), with the
+faint dash in an empty R and B (D1065). Search D1040, D1041, D1065, D1026 first.
+**Place:** after [KEYBOARD-SCROLL] goes live, as its own small job (own branch from `main`).
 
 ### [BOARD-TAB-FOLD] A time typed on the Scheduler Board and left by Tab shows as typed until another press (found 19 Oct 26 — the D1080 walk, walker B's B11; low)
 On the Scheduler Board, type "1000" into a take-off, landing or R box and press Tab: the box still reads "1000" (a second
