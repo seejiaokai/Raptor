@@ -810,7 +810,7 @@ callsign, mission, remarks, nor an input's start and end (the phone's own time w
 press on its box; a box its screen opens with the focus already in it (the Leave War's balance "Set") is marked
 `data-freshfocus` and armed as it opens. Pinned: `ui/freshbox.test.tsx` KF1–KF5, `e2e/kbscroll.spec.ts` KS5.
 
-**On a phone, the box being typed in shows above the keyboard (owner D1048, 19 Oct 26).** `ui/kbscroll.ts`, installed once
+**On a phone, the box being typed in shows above the keyboard (owner D1048, 19 Oct 26; nothing jumps as the keys open or close, D1081).** `ui/kbscroll.ts`, installed once
 from `main.tsx`: when a box to type in has the focus and the keyboard has shrunk the visible screen (`visualViewport`, more
 than 120px shorter than the layout, not pinch-zoomed), the box's own scrolling panels are scrolled, nearest first, so its
 bottom sits 8px above the keys — then the page, unless the box is in a fixed layer (a window, a sheet, the board), where the

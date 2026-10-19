@@ -54,6 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1081 | 19 Oct 26 | When the keyboard opens or closes, nothing on screen jumps out of place, even for one frame: whatever follows the visible screen — the Scheduler Board, the Leave War's sheets and bars, the calendars' day panels, a window raised for the keys — moves with it smoothly; the same is checked everywhere the app follows the keyboard. |
 | D1080 | 19 Oct 26 | One tap then typing replaces the value, as in the schedule's time boxes (D1047), in four more places: the duty and wave templates' time boxes; the Leave War's typed numbers (a counter's amber and red numbers, the OIL figure boxes); the SANS settings' and the late cut-off's number boxes; and the Logic page's settings. |
 | D1048 | 19 Oct 26 | On a phone, a box tapped to type in that the keyboard would cover is scrolled to sit just above the keyboard when it opens — every box in the app; built as its own small job next, not in the rally box pull request. |
 | D1047 | 19 Oct 26 | In every time box on the Scheduler Board and the week, one tap then typing replaces the time there, and one tap then Backspace clears it; a second tap, dragging the caret or an arrow key puts the caret where he wants it, and digits are then edited as usual; the same with a mouse. — changed by D1080 |
