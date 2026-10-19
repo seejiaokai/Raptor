@@ -19,12 +19,12 @@ import { parseHM } from './time'
 export const SAWAVE:any={
   sc:    {label:'SC',    all:false, main:2, spare:2, shifts:[['AM','07:00','13:00'],['PM','13:00','19:00']],
           duties:['SXO','OPS O'], perShiftDuties:true,
-          note:'Two MAIN and two SPARE per shift. A SPARE is checked for availability, SC currency, a pilots-only front seat and not holding another SC seat in the same hours — nothing else.'},
+          note:'Two MAIN and two SPARE per shift. A SPARE is checked for availability, SC currency, a pilots-only front seat and not holding another SC seat in the same hours — nothing else, unless its shift flies (its B or R typed, or a row ticked Flies).'},
   avalon:{label:'AVALON',cs:'AV',all:true,  main:2, spare:2, shifts:[['NIGHT','19:00','07:00']],
           duties:['SXO','OPS O','RUNNER','LOG CELL'], autoDuty:true,
-          note:'Overnight, two MAIN and two SPARE. Every man on it is checked for availability — overseas or medically down; every seat for SC NIGHT currency; the front seat is pilots-only; and nobody holds a seat and another seat or the desk in the same hours — nothing else.'},
+          note:'Overnight, two MAIN and two SPARE. Every man on it is checked for availability — overseas or medically down; every seat for SC NIGHT currency; the front seat is pilots-only; and nobody holds a seat and another seat or the desk in the same hours — nothing else, unless its shift flies (its B or R typed, or a row ticked Flies).'},
   bb:    {label:'BB',    all:true,  main:2, spare:2, shifts:[['SHIFT','','']],
-          note:'Two MAIN and two SPARE, times are yours to set. The same checks as AVALON: availability — overseas or medically down; every seat for SC currency by the hours you type; the front seat is pilots-only; and nobody holds a seat and another seat or the desk in the same hours — nothing else.'}
+          note:'Two MAIN and two SPARE, times are yours to set. The same checks as AVALON: availability — overseas or medically down; every seat for SC currency by the hours you type; the front seat is pilots-only; and nobody holds a seat and another seat or the desk in the same hours — nothing else, unless its shift flies (its B or R typed, or a row ticked Flies).'}
 };
 export function isStandalone(w:any){return !!(w&&w.standalone);}
 /* is this standby KIND exempt whole — its seats and its desk outside the

@@ -27,7 +27,8 @@ was hardened by: `raptor-port/docs/superpowers/plans/2026-10-19-standby-flies-re
   debrief or other padding added (D1045);
 - no brief or debrief window (it has no take-off — the agent's call, told to him with the drawing);
 - a BB shift that flies with no START or END raises an amber line in the warning list, as its crew rest and OIL need
-  those times (the agent's call, told to him).
+  those times (the agent's call, told to him). Anchored on the START box; a tap rings its line, as the nought-minute line's warning does (walkers B and C,
+  19 Oct 26 — the same jump every line-anchored warning makes).
 
 ## The chip (D1060, D1063)
 

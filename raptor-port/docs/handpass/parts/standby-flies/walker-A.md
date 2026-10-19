@@ -190,3 +190,80 @@ Overrides I applied to the script logs, and why:
 | misc: the + Wave picker's note on SC / AVALON / BB | RECORD: after D1044-D1046 a standby line with B or R typed DOES count in the day's flying count; the note should not say they sit outside it without that exception | ["SC · AVALON · BB sit outside the day's flying count — two waves of four plus an SC reads 4 X 4 / 2."] | FAIL | A/A-misc-1-wave-picker-note.png |
 | misc: the Logic page's text about standby lines (SC / AVALON / BB) | RECORD: it should say a standby line with B or R typed flies and is checked like a flight, and that the other rows are standing by | ["IL until its end is typed. Any other row 1h The same for a ground, programme or duty row. Standby (SC, AVALON, BB) SC day window 07:00 to 19:00 A shift wholly inside it needs SC DAY; one reaching outside it needs SC NIGHT. SC MAIN clashes What an SC MAIN man's clash with each shows: a red warning or an amber ","end is typed. Any other row 1h The same for a ground, programme or duty row. Standby (SC, AVALON, BB) SC day window 07:00 to 19:00 A shift wholly inside it needs SC DAY; one reaching outside it needs SC NIGHT. SC MAIN clashes What an SC MAIN man's clash with each shows: a red warning or an amber advisory. a f","yped. Any other row 1h The same for a ground, programme or duty row. Sta ... | RECORD | A/A-misc-3-logic-standby.png |
 | misc: the Logic page line on OIL for a standby shift | must not say a standby shift earns none now that a flying one does by default | {"line":"A line's take-off and landing are the same time. A flying line still earns its OIL; a standby shift earns none.","laterOnTheSamePage":"A shift with its B or R typed flies, every row on it; a row ticked FLIES on the Scheduler Board flies on its own. A row that flies is checked as an SC MAIN is, counts as a jet and a sortie, and earns OIL by default. A row with nobody on it counts nothing; one "} | FAIL | A/A-misc-4-logic-earns-none.png |
+
+## Faults found
+
+**F1 — the changes window never says "Flies"; a tick reads as a remarks change whose old and new are identical.** (FAIL, scenario 1a.)
+Where: Scheduler Board → History → "To go out · AL1". Steps: publish a Saturday with an SC wave (SC AM, four rows seated), press the
+dashed FLIES chip on the third row. The window says "Waiting to go out as AL1 · 1 change — SC · #3 remarks — earlier (no remarks) ·
+SPARE · SPARE → (no remarks) · SPARE · SPARE". A scheduler reads "remarks" and two identical strings; nothing names the Flies tick.
+Hand-ticking all four rows (break test 6) lists four "SC · #n remarks" lines of the same kind; flipping the ticked row to MAIN
+(11a) reads "… SPARE · SPARE → (no remarks) · MAIN" (the role change shows, the tick still does not). The count itself is right (1 / 2 /
+4 — see 3d, 11a, B6). Pictures: `A/A-1a-2-changes-window.png`, `A/A-B6-after-clear-top.png`, `A/A-11a-1-flipped-main.png`.
+
+**F2 — after a keyboard press the Flies chip loses focus (focus drops to the page).** (FAIL, scenario 15; NOT new to this change:
+the older MAIN / SPARE badge does the same.) Steps: focus the SPARE badge, Tab → focus ring lands on the dashed chip (solid 2px cyan
+ring — PASS); Enter ticks it; the board repaints and the focused element is the page body, so a second Enter or Space does
+nothing until the user tabs back from the badge. Each key does tick and untick when re-focused (Enter, Enter, Space, Space gave
+lit, dashed, lit, dashed). Picture `A/A-15-1-tab-to-chip.png` (the ring). Screen-reader reading: the dashed chip is `button "FLIES"`,
+the lit one `button "✓ FLIES" [pressed]`; the lit chip on a typed shift is a plain span (not in the tab order) with its "CX the row"
+explanation in a hover title only, no aria-label — a keyboard or screen-reader user cannot read it.
+
+**F3 — the + Wave picker's note is out of date.** (FAIL, a "most likely missing" item.) Steps: on the Scheduler Board press "+ Wave".
+The note under the buttons says: "SC · AVALON · BB sit outside the day's flying count — two waves of four plus an SC reads 4 X 4 / 2."
+With D1044–D1046 a standby shift with B or R typed counts as a jet and adds its own "X n" term (seen: Monday with two flying waves
+and a flying SC reads "4 X 2 X 4 / 2"; a Saturday with SC, AVALON and BB flying reads "4 X 2 X 4 / 4"). Picture
+`A/A-misc-1-wave-picker-note.png`.
+
+**F4 — the Logic page contradicts itself about OIL for a standby shift.** (FAIL.) Logic → "Flight times — take-off and landing are the
+same": "A flying line still earns its OIL; a standby shift earns none." The Standby section of the same page now says a row that
+flies "earns OIL by default". Picture `A/A-misc-4-logic-earns-none.png` (the sentence outlined in orange; the Standby section is
+the card on its right).
+
+## Records worth his look (the RECORD rows above carry the numbers)
+
+- **OIL Earn board vs tracker on a published day (1a, 1d, 1e):** a hand tick, its untick and a loaded plan change the OIL Earn board
+  at once (Drifter "—" to "HO"); the Leave War tracker moves only at Publish AL. A CX does the same (4a, 4b). The brief reads "OIL Earn
+  and the tracker do not move yet" — the tracker half holds; whether the OIL Earn board should stay frozen to the issued day is his call.
+- **The tick is the row's, not the man's (11b):** with a ticked SPARE row emptied (both crew dragged back to the crew list) the chip
+  stays lit and pressable, the day's count drops him (1 / 2 to 0 / 2), and a man dragged in afterwards inherits the tick (count back
+  to 1 / 2). Dragging the man out to another row leaves the tick behind (11c). Flipping MAIN / SPARE keeps it lit and keeps one pending
+  entry (11a: "1", not 2 — one entry per row).
+- **Copies (14):** a day template does NOT carry the hand tick (R does carry); + Wave → SC starts dashed with the faint dash; the "+"
+  (add a row) and "+ Line" buttons do not copy the tick; a saved plan (Plan A) brought out as the live day brings the tick back as
+  one pending change; the tick and every chip survive leaving the week and a reload.
+- **B only (10):** with only B typed on the board the week shows four lit chips, an empty R box and no B box anywhere; the words that
+  explain the chips are in their hover text ("this shift has its B or R typed"). The week can take it back only through R (typing and
+  clearing R in the week's own R box lit and cleared the chips); B can be cleared only on the board.
+- **The faint dash (16):** the board's SC / AVALON / BB R and B boxes show the dash as their placeholder, the exact colour and
+  strength of the faint "Remarks" (rgb 138,150,163 at 0.55); a tap puts nothing in (focus ring only); typing 0630 gives "06:30" in
+  the ordinary colour; clearing brings the dash back; on a published day tapping both boxes left nothing pending. The week's empty
+  SC R box shows the same dash (drawn by the page, same colour); View-only Sched shows no dash (an empty cell). Flying lines
+  on the same day keep their suggested times (05:40, 06:20 in blue). **No light theme exists in this build** (no control; a light
+  colour-scheme browser still gets the dark page), so "dark and light" could not be compared.
+- **The board repaints only after the box is left (3, 15, B4):** typing 0630 into R shows "0630" and dashed chips until the box
+  loses focus; then "06:30" and lit chips. A pre-existing pattern (the board is not redrawn under a focused box).
+- **Mid-edit chip press (B4):** typed "06" in R, pressed the chip without leaving the box: the half-typed R was dropped (R empty
+  afterwards, no half value), the tick landed once, focus ended on the page body.
+- **Standby rows with nobody seated (9, 4d, 11b):** a dashed chip is drawn (and pressable on the board) on empty rows; the day's
+  count ignores them. Not walked further — scenario 5 is another walker's.
+- **Pending count after CX of a whole shift (4d):** four CXs read "5 pending", not 4 (an extra entry); Undo x4 returns to 0.
+- **The changes window open (1a, 11b):** gold amendment dots show on every seated puck of the whole SC wave while the window
+  is open, not only on the changed row (pictures `A/A-1a-2-changes-window.png`, `A/A-11b-1-emptied.png`); with the window closed
+  there is no dot anywhere, none on the chip or the row. The brief's "where the amendment mark sits" answer: the top strip
+  ("Not yet signed", "1 pending", "Publish AL1") and the changes window; nothing on the row itself.
+- **A member (9):** has no Scheduler Board (`openScheduler` opens nothing visible); the member's read-only view is View-only Sched,
+  which showed 5 lit chips on the test Saturday, no dashed chip, no button.
+- **Two tabs (20):** no live sync between tabs; each keeps its own copy and the last tab to save wins on reload — A's tick
+  survived and B's typed R vanished (round 2: B's untick won). Same as the control with two older edits. Not this change.
+
+## Not walked, and why
+
+- **Excel export and PDF (scenarios 9, 16):** saving a file out of the browser is a download; the brief did not give leave and I
+  did not ask. Whether MAIN / SPARE / Flies appear there, and that an empty standby box prints no dash, is unchecked.
+- **Crew rest and the long-day note for a flying SPARE (4a, 4b):** the scenario says his crew rest goes with the CX; I checked the
+  count and OIL, not a crew-rest line (it needs a second-day set-up — scenario 2 / 6 territory).
+- **A phone anywhere (9, 16):** desktop only by my share.
+- **Scenario 9's "earlier published version's look":** walked inside scenario 1c (Original and AL1), not as a separate step.
+- **Dark / light themes (16):** see the record above — there is no light theme to compare.
+- **Pressing a cancelled row's chip (4c):** no chip is drawn on a cancelled row, so there was nothing to press.

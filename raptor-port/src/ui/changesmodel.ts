@@ -206,7 +206,9 @@ export function itemOf(r: ELogRow, day?: string | null): Item {
         /* an SC line's B box is its crew's in-time (owner, 24 Aug 26; [SC-B-CHANGE-SAYS-BRIEF]) — a row gone since keeps the
            word its frozen label was written with */
         : pfx === 'ff' ? (parts[3] === 'br' && (f ? live(() => day.waves[+pp![1]!].kind) === 'sc' : tail(r.lbl) === 'in-time') ? 'In-time' : fieldWord(parts[3]))
-        : pfx === 'fr' ? `${jet}remarks` : pfx === 'st' ? `${jet}stores`
+        /* a standby row has no stores: its st: change is the MAIN / SPARE badge or the Flies tick ([STANDBY-FLIES]; walker C,
+           19 Oct 26 — "Standing by → Flies" was headed "stores") */
+        : pfx === 'fr' ? `${jet}remarks` : pfx === 'st' ? `${jet}${live(() => day.waves[+pp![1]!].standalone) ? 'standby role' : 'stores'}`
         : pfx === 'aa' ? `${jet}area` : pfx === 'au' ? `${jet}area time`
         : AIR[pfx] ?? ''
       return { id: `${date}|F|${parts[1]}.${parts[2]}`, title, detail }
