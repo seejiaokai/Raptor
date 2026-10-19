@@ -141,7 +141,12 @@ top (fixed: held to the visible screen, KS3b red first), F2 a label press did no
 redraw dropped the hold at the first key (HIGH; fixed: the hold is its own property, KS3c), 2 a held window let go on a
 higher box (fixed), 3 a window already at the top never held (fixed), 4 the Set box re-armed on every focus (fixed), 5 a
 second label press disarmed (fixed); and an older cause, a raised window dragged by its bar jumped (fixed: put back
-first). Round 2 of the narrow read: (filled at its close).
+first). Round 2 of the narrow read (221,958 tokens), of the fixes to the narrow read and to the walk (Quals, room below
+the page): no high or medium; three low, all fixed — L1 room was added below the page for a box taller than the room,
+growing at every refit (now only what the box can still rise); L2 a pinch zoom while typing put a window back and took the
+room away (now told apart from the keys going down); L3 a tap on a window's bar that was not a drag left the window put
+back (now refit). Round 2 is the last (the cap, about three rounds): its fixes are each a few lines, carried by
+`kbscroll.test.ts` and the full gate run.
 
 ## 13. What the walk found, and each disposition
 | Find | Disposition |
