@@ -37,6 +37,8 @@ was hardened by: `raptor-port/docs/superpowers/plans/2026-10-19-standby-flies-re
   hand. The lit one on a hand-ticked row takes it off there; the lit one on a shift with B or R typed is not a button — its
   title says to CX the row instead. On Edit Schedule's week the lit chip is shown, not pressed.
 - View-only Sched, a member, the next-week peek: only the lit chip, read only (D1063).
+- On the week (Edit Schedule and View-only Sched) the chip is smaller than the badge and sits under it wherever the two do
+  not fit side by side (his iPhone's width), "✓ FLIES" kept whole; a chip never breaks inside (D1066).
 - Duty desks never carry it.
 
 ## The faint dash (D1065)
