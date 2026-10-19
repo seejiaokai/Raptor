@@ -123,3 +123,9 @@ OWED: Claude's independent plan read after Monday 5 Oct 26, 19:00. Owner product
 **D1036:** SC, AVALON and BB lines get a rally time too, so every wave is the same. Today they are shift lines (START / END); SC alone has an in-time box, on the board only. Where the box sits and what it counts for are put to him with pictures.
 
 **D1037:** the worked-out brief and rally are no longer shown faint in their empty boxes (rarely used; usually only the take-off and landing are typed); a typed brief or rally is used in the timing checks. Put to him: whether this covers every flying formation or only SC, AVALON and BB, and whether an empty box still counts the default behind the scenes for crew rest and the day's start (D592, D1032). Backlog: [RALLY-BOX-CHANGES].
+
+**His answers (19 Oct 26) — the design of record for the build:**
+- **D1038 — a taken suggestion:** the time turns ordinary white at once and the box wears the plain blue ring as a short flash, about a second (not the six seconds of a thing just added).
+- **D1039 — which lines hide the worked-out times:** only SC, AVALON and BB; their empty B and R stay empty. The flying lines keep their faint suggestions.
+- **D1040 — where the box sits:** above B, the same R-over-B column as a flying line, on the week and the board; take-off and landing unchanged.
+- **D1041 — what it counts for:** on SC MAIN it starts the crew's day as SC's in-time box does (crew rest, the long day, work hours, OIL — D606); the earlier of the two starts it when both are typed. On SC SPARE, AVALON and BB it is shown, printed and exported only. An empty box counts for nothing.

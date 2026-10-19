@@ -54,9 +54,13 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
-| D1037 | 19 Oct 26 | The worked-out brief and rally are no longer shown faint in their empty boxes, because they are rarely used and usually only the take-off and landing are typed; a brief or rally that is typed is used in the timing checks. |
-| D1036 | 19 Oct 26 | SC, AVALON and BB lines get a rally time too, as the flying formations have, so every wave is the same. |
-| D1035 | 19 Oct 26 | A suggested brief or rally, once taken, must look plainly different from the suggestion at once — today both are blue; he suggests a flash as the feedback. |
+| D1041 | 19 Oct 26 | A rally typed on an SC MAIN line starts that crew's day as SC's in-time box does today — crew rest, the long day, work hours and OIL; on an SC SPARE, AVALON or BB line, which stay outside the warnings, it is shown, printed and exported only, and an empty box counts for nothing. |
+| D1040 | 19 Oct 26 | On SC, AVALON and BB lines the new rally box sits above B, in the same R-over-B column as a flying line, so every wave looks the same; their take-off and landing boxes stay as they are. |
+| D1039 | 19 Oct 26 | Only SC, AVALON and BB lines stop showing the faint worked-out brief and rally — their empty boxes stay empty; the flying lines keep their faint suggestions, with the clearer mark when one is taken (D1038). |
+| D1038 | 19 Oct 26 | When a suggested brief or rally is taken, the time turns ordinary white at once and the box wears the app's plain blue ring as a short flash — about a second, not the six seconds of a thing just added — so it reads as accepted. |
+| D1037 | 19 Oct 26 | The worked-out brief and rally are no longer shown faint in their empty boxes, because they are rarely used and usually only the take-off and landing are typed; a brief or rally that is typed is used in the timing checks. — changed by D1039 |
+| D1036 | 19 Oct 26 | SC, AVALON and BB lines get a rally time too, as the flying formations have, so every wave is the same. — changed by D1041, D1040 |
+| D1035 | 19 Oct 26 | A suggested brief or rally, once taken, must look plainly different from the suggestion at once — today both are blue; he suggests a flash as the feedback. — changed by D1038 |
 | D1034 | 19 Oct 26 | A typed line that still says RALLY stays a rally, as the app reads it today, and never becomes a formation's in-time: a whole-wave in-time is every formation's in-time, except a formation whose own typed in-time line carries its callsign. |
 | D1032 | 19 Oct 26 | A formation's R box counts exactly as a typed rally did: the earliest applicable in-time or rally starts its report (with no in-time, the rally) for crew rest, OIL and the rest, where it is the man's first event; an empty box's default counts only where no in-time or rally is entered (D592). — changed by D1034 |
 | D1031 | 19 Oct 26 | The default rally uses the Logic page's existing "Nominal report before T/O" setting (3 hours to start), renamed to say it is the default rally; there is no second setting, and "+ In-time" keeps filling in the same time (D510). |
