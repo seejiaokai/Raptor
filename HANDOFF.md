@@ -21,12 +21,11 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/sad-herschel-5682e3 -->
-### `claude/sad-herschel-5682e3` — [STANDBY-FLIES] BUILT, walked, fixes in; the gates and the fresh read running (19 Oct 26) — verify before use
-- **Where it started:** cut from `claude/rally-box-changes`; main (pull request 541, 3d8665eb9) merged in. Beside `claude/keyboard-scroll` (no clash, confirmed both ways). Ruling numbers D1060–D1079 (D1060–D1066 used). He said: compact in this chat for this job.
-- **His rulings:** D1060–D1065; D1066 (on the week the chip is smaller and under the badge where they do not fit — design lesson 11).
-- **Done:** the build; the walk (A desktop 56 PASS / 4 FAIL, B phone 41 / 2, C rules ~50 / 3 — reports `raptor-port/docs/handpass/parts/standby-flies/walker-{A,B,C}.md`); every FAIL fixed with a test or recorded (the sheet §13); the re-walk of the fixes 4/4 PASS on `index-D76eH1xy.js` (`scripts/handpass/sf-rewalk.mjs`); the sheet `raptor-port/docs/handpass/2026-10-19-standby-flies.md` §1–14 written except §11 (gates), §12's read, the Walk line.
-- **At this save:** the first full gate run: smoke 453/0, tfin, rulecheck, docsize PASS; unit and e2e failed only on 5 tests pinning the old placeholder / Logic wording — UPDATED. The fresh read (F1 medium, F2–F4 low) and the narrow read (N1–N3) — ALL FIXED with tests (sheet §12–13). Everything committed and pushed.
-- **Pick up here:** the second full gate run on the final commit (`cd raptor-port && E2E_PORT=4321 node scripts/gatelock.mjs run` — it waits for the lock); fill the sheet's §11 and the Walk line; add the walk-ledger row (`raptor-port/docs/walk-ledger.md`); push; open the pull request against main with the sheet and his look card (§14), unsubscribe; send him the Vercel preview link and the look card.
+### `claude/sad-herschel-5682e3` — [STANDBY-FLIES] BUILT and FULL-checked (19 Oct 26) — pull request 542 waiting for his look and "merge live" — verify before use
+- **Where it started:** cut from `claude/rally-box-changes`; main (pull request 541, 3d8665eb9) merged in. Beside `claude/keyboard-scroll` (no clash). Ruling numbers D1060–D1079 (D1060–D1066 used).
+- **Done:** a standby row that flies (B or R typed on its shift, or ticked by hand) is checked as an SC MAIN, counts as a jet and a sortie (not when nobody is seated), earns OIL by default; the Flies chip (lit on three screens, smaller and under the badge on the week — D1066; the dashed button on the board only); the faint dash; the no-times advisory. FULL check: the sheet `raptor-port/docs/handpass/2026-10-19-standby-flies.md` — designer, three Sonnet walkers, the host's re-walk, one fresh blind Opus read (F1–F4 fixed) and its narrow read (N1–N3 fixed); the gates all green on ca85df32d (unit 11,950, e2e 879, tfin 728/0, smoke 453/0). Preview: https://raptor-lemf64iet-kai-e2f5.vercel.app
+- **Questions waiting for him:** none; his look card is the sheet §14.
+- **Pick up here:** his look on his iPhone, then "merge live" (main has not moved since 3d8665eb9 — if it has by then, bring it in first); after the merge archive [STANDBY-FLIES] by script (homes: the sheet, `engine-rules.md` §A standby row that flies, `ui-contracts.md`, the design note). The pull request is not watched (his rule).
 <!-- /now -->
 
 <!-- now:claude/rally-box-changes -->
