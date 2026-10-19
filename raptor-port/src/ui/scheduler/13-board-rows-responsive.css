@@ -36,8 +36,8 @@
    (board.ts .sb-rb / .sb-tl, their headings .sb-hrb / .sb-htl). On a desktop board each wrapper is display:contents,
    so its two boxes are two grid items and the four times stand in one line, as short as before (the eleven tracks
    above). Where the board puts the pucks on their own row (a phone up to 820 wide, not the desktop layout) each
-   wrapper is one cell with its two boxes stacked (the max-width:820 block below). A standby line has no rally: its
-   empty .sb-rlnone keeps the R place. */
+   wrapper is one cell with its two boxes stacked (the max-width:820 block below). A standby line has its rally box too
+   (D1036, D1040), so every line's cells are the same. */
 .sb-line>.sb-rb,.sb-line>.sb-tl,.sb-lcols>.sb-hrb,.sb-lcols>.sb-htl{display:contents}
 /* …AND ON A NARROWER DESKTOP THE R TRACK MUST NOT EAT THE REMARKS (walker A, 19 Oct 26). From 821 to 1439 wide the fixed
    tracks give back what the R track took: CS 64 → 56, MSN 74 → 64, the four times 52 → 48 (a time is 33px of 11px mono
@@ -715,7 +715,6 @@
   .schedboard:not(.sb-wide) .sb-lcols>.sb-hrb,.schedboard:not(.sb-wide) .sb-lcols>.sb-htl{display:block;line-height:1.25}
   .schedboard:not(.sb-wide) .sb-lcols>.sb-hrb>span,.schedboard:not(.sb-wide) .sb-lcols>.sb-htl>span{display:block}
   .schedboard:not(.sb-wide) .sb-line>.msn,.schedboard:not(.sb-wide) .sb-lcols>:nth-child(3){grid-column:3 / 5}
-  .schedboard:not(.sb-wide) .sb-rlnone{display:block;height:24px}
   /* the flying line's first row is tall — the B cell stacks the blue brief time above
      its box, and the input boxes bottom-align to it — so the marker bottom-aligns too,
      at the boxes' own height, giving a measured grip-centre = box-centre (owner, 31 Aug

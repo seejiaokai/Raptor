@@ -139,8 +139,10 @@ describe('the board carries the week\'s stores interface', () => {
     expect(saLine.children.length, 'eight DOM children — sa hides CONTENT, not the cell (seats share .sb-seatpair, times .sb-rb / .sb-tl)').toBe(8)
     /* a standby line carries no rally (D1026's build): an empty place keeps the R track, and B is still its in-time box */
     const rb = saLine.querySelector(':scope > .sb-rb') as HTMLElement
-    expect(rb.querySelector('[data-bfld$=".rl"]'), 'no R box on a standby line').toBeNull()
-    expect(rb.children.length, 'the empty R place and the B box').toBe(2)
+    const rl = rb.querySelector('[data-bfld$=".rl"]') as HTMLInputElement
+    expect(rl, 'a standby line has its R box too (D1036, D1040)').toBeTruthy()
+    expect(rl.placeholder, 'with no default rally in it (D1039)').toBe('')
+    expect(rb.children.length, 'the R box and the B box').toBe(2)
     const cell = saLine.querySelector('.sb-rcell') as HTMLElement
     expect(cell, 'the remarks cell itself is still there').toBeTruthy()
     expect(cell.querySelector('.nts'), 'remarks stay editable on a standalone line').toBeTruthy()

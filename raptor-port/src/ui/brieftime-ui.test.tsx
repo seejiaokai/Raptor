@@ -375,3 +375,80 @@ describe('RB5 — the R box explains its own timing fault', () => {
     Object.assign(f, keep); w.intimes = keepLines
   })
 })
+
+/* RB9 — a taken suggestion looks taken at once (owner D1038, 19 Oct 26 — "make it shorter so it looks like it's accepted.
+   Like a short flash"): not highlighted (on his iPhone the highlight was the suggestion's own blue), the plain blue ring
+   for about a second; the first change still replaces it, wherever the caret was (D1030) */
+describe('RB9 — a taken suggestion: no highlight, a short flash, the first change replaces it', async () => {
+  const { placeSuggestion, firstChange } = await import('./interactions')
+  it('firstChange: an insertion anywhere keeps only what was put in; a deletion empties; a whole replacement stays', () => {
+    expect(firstChange('09:40', '09:401')).toBe('1')
+    expect(firstChange('09:40', '109:40')).toBe('1')
+    expect(firstChange('09:40', '09:1540')).toBe('15')
+    expect(firstChange('09:40', '09:4')).toBe('')
+    expect(firstChange('09:40', '9:40')).toBe('')
+    expect(firstChange('09:40', '1')).toBeNull()
+    expect(firstChange('09:40', '09:40')).toBeNull()
+    expect(firstChange('09:40', '0940')).toBe('')   // the colon taken out: a deletion
+  })
+  it('on a board box and a week box: placed with the caret after it, nothing highlighted, the flash on, then off', async () => {
+    const inp = document.createElement('input'); inp.placeholder = '09:40'; document.body.appendChild(inp); inp.focus()
+    expect(placeSuggestion(inp)).toBe(true)
+    expect([inp.value, inp.selectionStart, inp.selectionEnd]).toEqual(['09:40', 5, 5])
+    expect(inp.classList.contains('sugtook')).toBe(true)
+    inp.value = '09:4'; inp.dispatchEvent(new Event('input', { bubbles: true }))
+    expect(inp.value, 'a Backspace empties the taken time').toBe('')
+    inp.remove()
+    const box = document.createElement('span'); box.setAttribute('contenteditable', 'true'); box.dataset.ph = '10:20'; document.body.appendChild(box)
+    expect(placeSuggestion(box)).toBe(true)
+    expect(box.textContent).toBe('10:20')
+    expect(String(window.getSelection()), 'nothing highlighted').toBe('')
+    expect(box.classList.contains('sugtook')).toBe(true)
+    await new Promise(r => setTimeout(r, 1300))
+    expect(box.classList.contains('sugtook'), 'the flash is gone after about a second').toBe(false)
+    box.remove()
+  })
+})
+
+/* RB10 — SC, AVALON and BB lines have their own rally box (D1036, D1040): above START on the week and the next-week peek,
+   before B on the board; no worked-out brief or rally in them (D1039); the export and the printed PDF carry the typed
+   rally and the typed brief only */
+describe('RB10 — a standby line\'s rally box on every surface', async () => {
+  const { dayHTML } = await import('./html')
+  const { peekDayHTML } = await import('./peek')
+  const { makeStandalone } = await import('../engine/waves')
+  const add = (kind: string) => { const w: any = makeStandalone(kind); w.formations[0].to = '19:00'; w.formations[0].ld = '07:00'; (DAYS[0] as any).waves.push(w); return { w, gi: (DAYS[0] as any).waves.length - 1 } }
+  it('the week, edited and read: R above START, headed R / START, nothing suggested', () => {
+    for (const kind of ['sc', 'avalon', 'bb']) {
+      const { w, gi } = add(kind)
+      w.formations[0].rl = '17:30'
+      const ed = dayHTML(0, true), ro = dayHTML(0, false)
+      const cell = (h: string) => { const d = document.createElement('div'); d.innerHTML = h; return d.querySelector(`[data-txt="ff:0.${gi}.0.rl"]`) || [...d.querySelectorAll('.form .bto')].find(c => c.textContent!.includes('17:30')) }
+      expect(ed, kind + ': the heading').toContain('R<br>START')
+      const e = cell(ed) as HTMLElement
+      expect(e, kind + ': an editable R box').toBeTruthy()
+      expect(e.textContent).toBe('17:30')
+      expect(e.dataset.ph || '', kind + ': no default rally').toBe('')
+      expect(e.nextElementSibling!.getAttribute('data-txt'), kind + ': START under it').toBe(`ff:0.${gi}.0.to`)
+      expect(ro).toContain('17:30')
+      ;(DAYS[0] as any).waves.pop()
+    }
+  })
+  it('the next-week peek: R above START', () => {
+    const { w } = add('avalon'); w.formations[0].rl = '17:30'
+    const d = document.createElement('div'); d.innerHTML = peekDayHTML(DAYS[0], 0, true)
+    const rl = [...d.querySelectorAll('.form .bto .rl')].find(e => e.textContent === '17:30')!
+    expect(rl, 'the rally drawn').toBeTruthy()
+    expect(rl.nextElementSibling!.textContent).toBe('19:00')
+    expect(d.innerHTML).toContain('R<br>START')
+    ;(DAYS[0] as any).waves.pop()
+  })
+  it('the export: the typed rally; the brief only where typed', () => {
+    const { w } = add('bb'); w.formations[0].cs = 'BBX'
+    const row = () => schedRows().find(r => r[3] === 'BBX')!
+    expect(row().slice(5, 7), 'nothing typed: no rally, no worked-out brief').toEqual(['', ''])
+    w.formations[0].rl = '1730'; w.formations[0].br = '18:00'
+    expect(row().slice(5, 7)).toEqual(['17:30', '18:00'])
+    ;(DAYS[0] as any).waves.pop()
+  })
+})

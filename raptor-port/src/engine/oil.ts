@@ -4,7 +4,7 @@ import { parseHM } from './time'
 import { isStandalone, saExemptKind } from './waves'
 import { PEOPLE, realP, whoId, isSpecial } from './people'
 import { whoArr } from './slots'
-import { parseReportingLines, resolveReporting, scIntime } from './reporting'
+import { parseReportingLines, resolveReporting, scReport } from './reporting'
 /* =====================================================================
    WEEKEND / PUBLIC-HOLIDAY WORK EARNS OIL — Leave War sync wire 4
    (owner, 16-17 Aug 26, REWRITTEN 28 Aug 26: "It will just use the same
@@ -275,7 +275,8 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
          in-time. It is the MAIN's in-time only — "a SPARE reports nowhere, so his B does nothing" (24 Aug 26): a SPARE
          row, switched on, takes the shift's written window (`seatWin` below). A flying line = report → land+debrief */
       const scWin=sc?w2(st,en):null;
-      const scB=scWin&&wv.kind==='sc'?scIntime(f.br,scWin[0],lead):null;
+      /* …or its rally box, the earlier of the two (D1041) */
+      const scB=scWin&&wv.kind==='sc'?scReport(f,scWin[0],lead):null;
       const win=sc?(scWin&&scB!=null&&scB<scWin[0]?[scB,scWin[1]] as [number,number]:scWin)
                   :(st==null||en==null?null
                     :w2(rep!=null?rep:st-lead,(en<st?en+1440:en)+deb));

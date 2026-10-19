@@ -775,11 +775,15 @@ one size (LD's, 11px). The Scheduler Board's line carries two time wrappers, `.s
 display:contents on a desktop board, so R · B · TO · LD stand in one line over eleven tracks (D1029, picture 11);
 where the pucks take their own row (a phone up to 820 wide, not the desktop layout) each is one cell, its two boxes 4px
 apart, the mission spanning the freed track so the pucks and remarks keep their widths (picture 6). The headings follow
-the same wrappers; the phone hides the 6th to 9th heading children (FCP, RCP, Notes, the end place). A standby line has
-no R box: an empty `.sb-rlnone` keeps its place. **A suggested time sits faint inside its own empty box** (D1028,
+the same wrappers; the phone hides the 6th to 9th heading children (FCP, RCP, Notes, the end place). A standby line (SC,
+AVALON, BB) has its R box too (D1036, D1040): before B on the board, above START on the week and the next-week peek
+(`html.ts SA_TIME_HEAD`, "R / START"), with no suggestion in it or in its B (D1039). **A suggested time sits faint inside its own empty box** (D1028,
 D1030 — the suggested brief and the default rally, the take-off less the Logic page's "Default rally before take-off"):
 the week's box by its `data-ph`, the board's by its placeholder, both `.sugbox` in the accent; the old line above B
-(`.bsug`) is gone. One press places it highlighted (`interactions.ts placeSuggestion`), so the next key replaces it;
+(`.bsug`) is gone. One press places it (`interactions.ts placeSuggestion`) — since D1038 NOT highlighted: in a typed time's colour, the caret
+after it, the box wearing the plain blue ring for about a second (`.sugtook`, 12-schedule-editing.css) — and the first
+change still replaces it, wherever the caret was (`firstChange`: an insertion keeps only what was put in, a deletion
+empties it);
 leaving the box saves it (the week by its focusout, the board by a `change` raised when it is left still holding it);
 Escape takes a just-placed one out (each box's own Escape); a Tab passing through fills nothing. The Tab route is
 callsign, mission, rally, brief, take-off, landing (D554, in document order). The export and the printed PDF carry a

@@ -1,4 +1,4 @@
-import { parseReportingLines, resolveReporting, flightBrief, scIntime, type ReportingLine } from './reporting'
+import { parseReportingLines, resolveReporting, flightBrief, scReport, scIntime, type ReportingLine } from './reporting'
 import { DAYS } from './data'
 import { INPUTS, inputLinesOn, inputReadPass, inputOn, inputCoversDate, inputFlags, inputDormant, inputSilent, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel, inpById, isDownchit, isUpchit } from './inputs'
 import { fileAcc, filingActive } from './world'
@@ -233,7 +233,7 @@ function standaloneHits(di:any,id:any,s:any,e:any,selfKey:any,kind:any,seatsOnly
    existing typed-B priority and bounded shift-date rule remain separate. */
 export { intimeTime, intimeFold } from './reporting'
 export function seatIntime(w:any,f:any,toM:any,parsed?:ReportingLine[]){
-  const scIn=(w&&w.kind==='sc')?scIntime(f.br,toM):null;
+  const scIn=(w&&w.kind==='sc')?scReport(f,toM):null;   // its in-time box or its rally box, the earlier (D1041)
   if(scIn!=null)return scIn;
   return resolveReporting(w,f,toM,parsed).report;
 }
@@ -348,6 +348,10 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
            midnight roll. */
         const intime=seatIntime(w,f,toM,im);
         const report=(intime!=null)?intime:stepM;
+        /* an SC line whose report is its RALLY box, not its in-time box (D1041) — so crew rest says "rally" (validate.ts
+           shiftReport); written only when true, so every other event is as it was */
+        const scRl=shiftLine&&w.kind==='sc'?scIntime(f.rl,toM):null, scBr=shiftLine&&w.kind==='sc'?scIntime(f.br,toM):null;
+        const viaRally=scRl!=null&&intime===scRl&&(scBr==null||scRl<scBr);
         const fcps:any[]=[],acs:any[]=[],allCrew:any[]=[],spareCrew:any[]=[],spareAcs:any[]=[];
         f.aircraft.forEach((a:any,ai:any)=>{ if(a.cx)return;
           /* collected BEFORE the spare exemption: a spare crew is not checked
@@ -381,7 +385,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
             if(seat==='FCP')fcps.push(id);
             fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,
               lateShow:!shiftLine&&lateShowOf(a.rmks),   // this crew shows at the brief, not at the in-time
-              shift:shiftLine,label:`${f.cs} ${f.msn}`,key:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
+              shift:shiftLine,...(viaRally?{viaRally:true}:{}),label:`${f.cs} ${f.msn}`,key:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
             /* the slot key this event came off — so the crew picker can ask
                "is he busy at this hour" without counting the very slot it is
                about to plant him into (he occupies it in a swap or a re-test) */

@@ -604,27 +604,47 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
 }
 
 /* ONE TAP PLACES A SUGGESTED TIME IN ITS EMPTY BOX (owner D1030) — the board's <input> (its placeholder is the
-   suggestion) or the week's contenteditable (its data-ph). Placed and selected, so the next key typed replaces it.
-   true when it placed something; false for a box that already holds a time, or carries no suggestion.
-   THE FIRST KEYS REPLACE IT EVEN WHERE THE HIGHLIGHT DID NOT TAKE (the scenario designer's lead, 19 Oct 26): a phone
-   browser may not honour a selection set by script in a box just tapped, and the typing would then land after the
-   placed time ("09:401010", refused as no time). So the first thing typed after a placement is read on its own: a box
-   that now holds the suggestion with more after it keeps only what was typed. Once, then the box is ordinary. */
+   suggestion) or the week's contenteditable (its data-ph). true when it placed something; false for a box that already
+   holds a time, or carries no suggestion.
+   IT LOOKS TAKEN AT ONCE (owner D1038, 19 Oct 26 — "make it shorter so it looks like it's accepted. Like a short
+   flash"): the time is NOT left highlighted — on his iPhone the highlight was blue, the faint suggestion's own colour,
+   so a taken time read as still only suggested. It shows in a typed time's own colour, the caret after it, and the box
+   wears the plain blue ring for about a second (.sugtook, 12-schedule-editing.css).
+   THE FIRST KEY STILL REPLACES IT (D1030 — "the scheduler never deletes it first"; the scenario designer's lead, 19 Oct
+   26: a phone may not honour a selection set by script anyway). So the first change after a placement is read on its
+   own: a box that now holds the suggestion with something put into it, wherever the caret was, keeps only what was put
+   in; one that holds it with something taken out (a Backspace) is emptied; one whose whole value was replaced (a person
+   selected it and typed) keeps what was typed. Once, then the box is ordinary. */
+export function firstChange(sug: string, v: string): string | null {
+  if (v === sug) return null
+  let p = 0
+  while (p < v.length && p < sug.length && v[p] === sug[p]) p++
+  const d = v.length - sug.length
+  if (d > 0 && v.slice(p + d) === sug.slice(p)) return v.slice(p, p + d)
+  if (d < 0 && v.slice(p) === sug.slice(p - d)) return ''
+  return null
+}
 const firstTypingReplaces = (read: () => string, write: (v: string) => void, sug: string) => {
   let first = true
   return () => {
     if (!first) return
     first = false
-    const v = read()
-    if (v.length > sug.length && v.startsWith(sug)) write(v.slice(sug.length))
+    const n = firstChange(sug, read())
+    if (n != null) write(n)
   }
+}
+/* the short flash (D1038): restarted if the same box is taken twice, gone after it has run */
+function flashTaken(el: HTMLElement) {
+  el.classList.remove('sugtook'); void el.offsetWidth; el.classList.add('sugtook')
+  setTimeout(() => el.classList.remove('sugtook'), 1200)
 }
 export function placeSuggestion(el: HTMLElement): boolean {
   if (el instanceof HTMLInputElement) {
     const sug = el.placeholder
     if (!sug || el.value || el.disabled || el.readOnly) return false
     el.value = sug
-    el.select()
+    try { el.setSelectionRange(sug.length, sug.length) } catch (_) { /* a caret is a courtesy */ }
+    flashTaken(el)
     const typed = firstTypingReplaces(() => el.value, v => { el.value = v; el.setSelectionRange(v.length, v.length) }, sug)
     /* the board saves on `change`, which the browser raises only for what was typed: a box left still holding the
        placed suggestion raises it here, so the tap alone accepts (D1030). A typed time raised its own; Escape put the
@@ -649,9 +669,10 @@ export function placeSuggestion(el: HTMLElement): boolean {
   el.textContent = sug
   try {
     el.focus()
-    const r = document.createRange(); r.selectNodeContents(el)
+    const r = document.createRange(); r.selectNodeContents(el); r.collapse(false)
     const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r)
-  } catch (_) { /* a selection is a courtesy — jsdom and odd embedders may refuse */ }
+  } catch (_) { /* a caret is a courtesy — jsdom and odd embedders may refuse */ }
+  flashTaken(el)
   const typed = firstTypingReplaces(() => el.textContent || '', v => {
     el.textContent = v
     try { const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r) } catch (_) { /* as above */ }
@@ -661,16 +682,11 @@ export function placeSuggestion(el: HTMLElement): boolean {
   el.addEventListener('input', typed); el.addEventListener('blur', done)
   return true
 }
-/* the press's own click, landing on a suggestion the focus already placed, highlights it again — a mouse's release in a box
-   puts the caret where it let go, and the highlight is what makes the next key replace it */
+/* the press's own click, landing on a suggestion the focus already placed, leaves it as it is — placed once, flashed once.
+   Wherever a mouse's release puts the caret, the first key still replaces the time (firstChange, D1038). */
 function reselectPlaced(el: HTMLElement): boolean {
   const v = el instanceof HTMLInputElement ? el.value : el.textContent
-  if (!el.dataset.placed || v !== el.dataset.placed) return false
-  try {
-    if (el instanceof HTMLInputElement) el.select()
-    else { const r = document.createRange(); r.selectNodeContents(el); const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r) }
-  } catch (_) { /* a courtesy */ }
-  return true
+  return !!el.dataset.placed && v === el.dataset.placed
 }
 /* …AND A PRESS THAT BRINGS THE FOCUS PLACES IT WHERE THE FOCUS ARRIVES (walker B, F1 — 19 Oct 26). On the phone board a tap
    on B straight after R was placed left B focused and empty: leaving R saved it, the redraw that save starts replaced the
@@ -1082,8 +1098,8 @@ export function routeClick(e: MouseEvent) {
   }
 
   /* A TAP ON AN EMPTY BOX THAT SUGGESTS A TIME PLACES IT (owner D1028, D1030, 19 Oct 26 — the suggested brief and the
-     default rally; before, a blue time above the box was clicked). Placed highlighted, so whatever is typed next
-     replaces it; it is saved the way a typed time is, when the box is left — the week's box by its own focusout
+     default rally; before, a blue time above the box was clicked). Placed in a typed time's colour with a short flash
+     (D1038), and whatever is typed next replaces it; it is saved the way a typed time is, when the box is left — the week's box by its own focusout
      (textedit.ts routeFocusOut), the board's by the `change` placeSuggestion raises when the box is left still holding
      it. Escape before then puts the box back empty and saves nothing (each box's own Escape). A Tab that passes
      through raises no click, so it fills nothing: accepting stays a deliberate act. */

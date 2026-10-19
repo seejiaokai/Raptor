@@ -46,12 +46,13 @@ describe('an SC wave drops the note and the suggestion but keeps the B box', () 
     expect(h).not.toContain('class="asd"')
     expect(h).not.toContain('In-time / Rally ')
   })
-  it('no suggested brief on its lines, and no rally box (D1026: a standby line carries no rally)', () => {
+  it('no suggested brief or rally on its lines, and a rally box above B (D1036, D1039, D1040)', () => {
     const h = boardHTML(0)
     expect(h, 'the SC B box is drawn').toContain('data-bfld="ff:0.0.0.br"')
+    expect(h, 'the SC R box is drawn (D1040)').toContain('data-bfld="ff:0.0.0.rl"')
     expect(h).not.toContain('sugbox')
     expect(h, 'the B box shows no suggested time').not.toMatch(/data-bfld="ff:0\.0\.\d+\.br"[^>]*placeholder=/)
-    expect(h).not.toContain('.rl"')
+    expect(h, 'the R box shows no default rally (D1039)').not.toMatch(/data-bfld="ff:0\.0\.\d+\.rl"[^>]*placeholder=/)
   })
   it('the B box itself is still there to type an in-time into', () => {
     expect(boardHTML(0), 'the SC line keeps its editable B input').toContain('data-bfld="ff:0.0.0.br"')
