@@ -46,3 +46,17 @@ No other finding. B-F1, B-F3 fixed (verified in code); B-F2, A-FAIL (A), A-FAIL 
 - Older, filed or ruled: a take-off moved before a typed R reads as the evening before (D503; worth a line on his look card);
   [LOGIC-WORDS-WORKHOURS]; [LOGIC-DONE-FIRST-PRESS]; [BOARD-NARROW-DESKTOP-REMARKS]; two tabs (the whole-week save).
 - Saved data: the seed carries no `rl`; D56 has nothing to apply to.
+
+## Round 2 — a fresh Opus, the fix commits 231108bce and e540ac14c only
+**N1 (medium):** an in-time typed later than the box's rally ("10:30 IN TIME", R 10:00) — the typed lines went silent and the box
+alone was blamed, though the in-time is always a typed line (D1034) and often the culprit. Fix: the in-time to rally pair keeps the
+in-time's lines and `box:true`; the five typed-lines writers hide only a box fault that names no lines; a test. **N2 (low):** the R box's
+words named only the first of its faults (in-time > rally > brief gives two). Fix: all joined. Checked and fine: the press-to-place
+fix (waits for the arrival's refresh, focus re-checked, Tab / keys clear the note, 1.5 s expiry, member and view-only place
+nothing); the box fault's key, frozen paper (no address), the read-only board, the peek, two formations on a wave. Both FIXED
+(2352cf3df).
+
+## Round 3 — a fresh Opus, the N1 / N2 fix only
+**No findings.** The in-time list can never be empty when that pair fires; all five writers share one filter (no sixth); a box to
+brief fault stays off the typed lines; no message twice. Observations, no failure: in the in-time to rally case a tap lights the R
+box, not the line (one address a warning); a typed rally tying the box on a rally to brief fault stays silent (harmless, the tie).
