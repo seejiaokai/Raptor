@@ -62,6 +62,7 @@ unchanged) when the box is in a window, a sheet or the board. Then keys down: a 
 | A7 | SANS calendar (Inputs page's SANS tab) — "+ Commitment" window, and its ⚙ settings | the remarks box; the "Red from" number |
 | A8 | Logic page (✎ Edit) | the LAST setting box on the page (the page scrolls itself); and the search box at the top (already in sight: must not move) |
 | A9 | Admin → Duty templates | the last role's End time (the window's rows all fit: nothing in it scrolls — the window itself must rise, and go back down with the keys) |
+| A9b | Admin → Duty templates, AVALON tab, "+ Add role" until 14 roles | the last role's End time, scrolled to the window's foot (the window, held to the visible screen while the keys are up, scrolls its own body — the fresh read's F1; its title stays on screen; all put back with the keys down) |
 | A10 | Admin → Wave templates (+ New wave template, + Add line ×3) | the last line's LD box |
 | A11 | Admin → Users — the new person form | its lowest box |
 | A12 | Quals page (Edit) | a cell low in the table |
@@ -110,6 +111,8 @@ empty; (5) Tab INTO the box from the box before it, then type → added to (a Ta
 | B7 | SANS calendar's ⚙ | Yellow / Amber / Red from | "2" → "2"; Save keeps it |
 | B8 | Logic page ✎ Edit | Crew rest (12h), Days in a row, Brief before take-off | "11h" → "11h"; saved (still 11h after leaving and coming back to the page) |
 | B9 | Logic page ✎ Edit | the "+ In-time" WORDS setting (a words box) | NOT replaced: typing adds where the caret is |
+| B5b | Leave War — a figures sheet's balance "Set" (an admin) | the box opened with the focus in it (holds the balance) | one press on "Set", then type "6" → "6" |
+| B3b | Leave War ⚙ → ＋ Counter, "Amber below" — press on the WORDS of its label, not the box | — | typing replaces, as a press on the box does |
 | B10 | Leave War — a Required P cell (phone: its pad) | — | the first pad digit replaces (unchanged, already so) |
 | B11 | the Scheduler Board — a take-off box that holds a time (D1047, regression) | — | "1000" replaces |
 | B12 | a member (`us` / `us`) on the Logic page and the Leave War | — | no ✎ Edit / no counter tools: nothing to arm (record what he sees) |

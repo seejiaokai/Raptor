@@ -806,7 +806,21 @@ numbers (a counter's amber and red numbers, the OIL figure boxes), the SANS sett
 and the Logic page's settings (in ✎ Edit) take a fresh value from the first change after a press, as the time boxes do,
 through the same `interactions.ts armFreshTime`; a second press, an arrow key or a drag of the caret edits a digit. The
 Leave War's Required P and W cells already did (their pad's first digit replaces — `leavewar/ui/FlyEdit.tsx`). Not
-callsign, mission, remarks, nor an input's start and end (the phone's own time wheel).
+callsign, mission, remarks, nor an input's start and end (the phone's own time wheel). A press on a box's label counts as a
+press on its box; a box its screen opens with the focus already in it (the Leave War's balance "Set") is marked
+`data-freshfocus` and armed as it opens. Pinned: `ui/freshbox.test.tsx` KF1–KF5, `e2e/kbscroll.spec.ts` KS5.
+
+**On a phone, the box being typed in shows above the keyboard (owner D1048, 19 Oct 26).** `ui/kbscroll.ts`, installed once
+from `main.tsx`: when a box to type in has the focus and the keyboard has shrunk the visible screen (`visualViewport`, more
+than 120px shorter than the layout, not pinch-zoomed), the box's own scrolling panels are scrolled, nearest first, so its
+bottom sits 8px above the keys — then the page, unless the box is in a fixed layer (a window, a sheet, the board), where the
+page behind never moves (D686). A box still under the keys in a fixed layer raises its window (the CSS `translate`
+property — on a full-screen backdrop, the window on it), never past the visible top; a window taller than the room is held
+to the visible screen's height while the keys are up (an inline `max-height`, never over one the window set itself) and its
+own body scrolls the box into sight. Everything is put back when the typing ends or the keys go down. Only resizes within
+1.5s of the focus act, so a box scrolled away on purpose stays where it was put. The board's own fit to the visible screen
+and the Leave War sheets' keyboard anchoring run first; this measures two frames later. Pinned: `ui/kbscroll.test.ts`,
+`e2e/kbscroll.spec.ts` KS1–KS4 (a stand-in visual viewport — Chromium cannot raise an iPhone keyboard).
 
 **A button pressed straight after a changed box does its job (`[EDIT-BUTTON-AFTER-CHANGE]`, 19 Oct 26).** The press
 takes the focus from the box, the box saves and the redraw replaces the button under the press, so the browser's click
