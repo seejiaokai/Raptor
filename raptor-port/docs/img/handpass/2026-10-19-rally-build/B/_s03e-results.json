@@ -1,0 +1,35 @@
+{
+ "results": [
+  {
+   "id": "S3i-0",
+   "what": "VL TO 13:30 (nominal report 10:30), no R",
+   "expected": "nominal inside rest (clear 10:45): red crew-rest breach",
+   "seen": [
+    "Tight turning — crew rest",
+    "Outlaw — Tight turning — T/O 13:30 puts the 3h report at 10:30, inside 12h. Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45"
+   ],
+   "verdict": "FAIL",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B03i-nomBreach.png"
+  },
+  {
+   "id": "S3i-1",
+   "what": "tap R (placed suggestion 10:30), type 1100 (later than the nominal 10:30, after rest clear 10:45), leave",
+   "expected": "breach gone; a tight-turning advisory appears; RECORD its exact words (does it say \"typed in-time\" beside a rally?)",
+   "seen": {
+    "placed": "10:30",
+    "rl": "11:00",
+    "lines": [
+     "Tight turning — crew rest",
+     "Outlaw — Tight turning — T/O 13:30 puts the 3h report at 10:30, inside 12h. Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45"
+    ],
+    "pucks": [
+     "puck wfoc advf | Outlaw · C · ops wingman · Tight turn | chips:TT:Tight turn",
+     "puck sm wfoc advf | Outlaw · C · ops wingman · Tight turn | chips:TT:Tight turn"
+    ]
+   },
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B03i-typedLater.png"
+  }
+ ],
+ "errors": []
+}

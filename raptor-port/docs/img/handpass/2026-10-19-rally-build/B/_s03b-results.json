@@ -1,0 +1,38 @@
+{
+ "results": [
+  {
+   "id": "S3c",
+   "what": "Tue: Outlaw's puck in VL after R 10:00",
+   "expected": "RECORD: a title/trace naming the rally",
+   "seen": [
+    "puck warn hard boxred | Outlaw · C · ops wingman · Crew rest breach (<12h)",
+    "puck sm warn hard boxred | Outlaw · C · ops wingman · Crew rest breach (<12h)"
+   ],
+   "verdict": "RECORD"
+  },
+  {
+   "id": "S3d",
+   "what": "tap the crew-rest warning row",
+   "expected": "RECORD what lights/ explains",
+   "seen": {
+    "lit": [],
+    "toast": []
+   },
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B03d-warnrow.png"
+  },
+  {
+   "id": "S3e",
+   "what": "open the AIRCREW palette (Tuesday), find Outlaw",
+   "expected": "his entry marked (D1013) with the reason",
+   "seen": {
+    "n": 0,
+    "rows": [],
+    "bodyHasPalette": false
+   },
+   "verdict": "NOT WALKED",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B03e-palette.png"
+  }
+ ],
+ "errors": []
+}

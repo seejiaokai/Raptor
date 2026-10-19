@@ -629,12 +629,19 @@ export function placeSuggestion(el: HTMLElement): boolean {
     /* the board saves on `change`, which the browser raises only for what was typed: a box left still holding the
        placed suggestion raises it here, so the tap alone accepts (D1030). A typed time raised its own; Escape put the
        box back empty first (textedit.ts, D1011) — neither matches. */
+    const save = () => { if (el.isConnected && el.value === sug) el.dispatchEvent(new Event('change', { bubbles: true })) }
+    /* Enter accepts it too, as Enter commits a typed time (walker B, F3): the browser raises no `change` for a value it
+       did not see typed */
+    const enter = (e: KeyboardEvent) => { if (e.key === 'Enter') save() }
     const leave = () => {
-      el.removeEventListener('blur', leave); el.removeEventListener('input', typed)
-      if (el.isConnected && el.value === sug) el.dispatchEvent(new Event('change', { bubbles: true }))
+      el.removeEventListener('blur', leave); el.removeEventListener('input', typed); el.removeEventListener('keydown', enter)
+      delete el.dataset.placed
+      save()
     }
+    el.dataset.placed = sug
     el.addEventListener('blur', leave)
     el.addEventListener('input', typed)
+    el.addEventListener('keydown', enter)
     return true
   }
   const sug = el.dataset.ph
@@ -649,9 +656,36 @@ export function placeSuggestion(el: HTMLElement): boolean {
     el.textContent = v
     try { const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r) } catch (_) { /* as above */ }
   }, sug)
-  const done = () => { el.removeEventListener('input', typed); el.removeEventListener('blur', done) }
+  const done = () => { el.removeEventListener('input', typed); el.removeEventListener('blur', done); delete el.dataset.placed }
+  el.dataset.placed = sug
   el.addEventListener('input', typed); el.addEventListener('blur', done)
   return true
+}
+/* the press's own click, landing on a suggestion the focus already placed, highlights it again — a mouse's release in a box
+   puts the caret where it let go, and the highlight is what makes the next key replace it */
+function reselectPlaced(el: HTMLElement): boolean {
+  const v = el instanceof HTMLInputElement ? el.value : el.textContent
+  if (!el.dataset.placed || v !== el.dataset.placed) return false
+  try {
+    if (el instanceof HTMLInputElement) el.select()
+    else { const r = document.createRange(); r.selectNodeContents(el); const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r) }
+  } catch (_) { /* a courtesy */ }
+  return true
+}
+/* …AND A PRESS THAT BRINGS THE FOCUS PLACES IT WHERE THE FOCUS ARRIVES (walker B, F1 — 19 Oct 26). On the phone board a tap
+   on B straight after R was placed left B focused and empty: leaving R saved it, the redraw that save starts replaced the
+   box under the finger, and the tap's click reached no box. So the press is noted by the box's ADDRESS, and when the
+   focus arrives in a suggesting box at that address — the box pressed, or the one drawn in its place — the suggestion is
+   placed there. A Tab brings the focus with no press: nothing is placed (D1030). */
+let SUG_PRESS: string | null = null
+const sugAddr = (el: Element | null) => { const h = el as HTMLElement | null; return h && h.dataset ? (h.dataset.bfld || h.dataset.txt || null) : null }
+if (typeof document !== 'undefined') {
+  document.addEventListener('pointerdown', e => { const sg = (e.target as any)?.closest?.('.sugbox'); SUG_PRESS = sg ? sugAddr(sg) : null }, true)
+  document.addEventListener('focusin', e => {
+    const el = e.target as HTMLElement, a = SUG_PRESS; SUG_PRESS = null
+    if (!a || !el || !el.classList || !el.classList.contains('sugbox') || sugAddr(el) !== a) return
+    if (canEditSched() && HOOKS.editMode()) placeSuggestion(el)
+  }, true)
 }
 
 export function routeClick(e: MouseEvent) {
@@ -1043,7 +1077,7 @@ export function routeClick(e: MouseEvent) {
      it. Escape before then puts the box back empty and saves nothing (each box's own Escape). A Tab that passes
      through raises no click, so it fills nothing: accepting stays a deliberate act. */
   const sg = t.closest('.sugbox') as HTMLElement | null
-  if (sg && canEditSched() && HOOKS.editMode() && placeSuggestion(sg)) return
+  if (sg && canEditSched() && HOOKS.editMode() && (reselectPlaced(sg) || placeSuggestion(sg))) return
 
   /* the palette drawer tab and the arm-strip cancel */
   if (t.closest('.ros-tab')) { document.body.classList.toggle('ros-open'); e.stopPropagation(); return }

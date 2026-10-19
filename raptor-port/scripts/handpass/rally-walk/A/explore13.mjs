@@ -1,0 +1,10 @@
+import { launch, ctxOpen, SIZES, sleep, go, shot, buildSat, bType, bf, errors, warns } from './lib.mjs'
+console.log('explore13 v1')
+const b = await launch()
+const { ctx, p } = await ctxOpen(b, SIZES.desk, 'x')
+await buildSat(p)
+await p.locator('#schedBoard [data-itadd="5|0"]:visible').first().click(); await sleep(600)
+console.log(await p.evaluate(() => document.querySelector('#schedBoard .itline, #schedBoard [data-itline]')?.outerHTML.slice(0, 500) + '\n' + document.querySelector('#schedBoard [data-itdel]')?.outerHTML))
+await p.locator('#sbInsights').click(); await sleep(1000)
+console.log(await p.evaluate(() => { const m = [...document.querySelectorAll('div')].filter(e => e.offsetParent && /Week insights/.test(e.innerText) && e.innerText.length < 4000).sort((a,b)=>a.innerText.length-b.innerText.length)[0]; return m ? m.className + ' ' + m.tagName + ' len ' + m.innerText.length + ' ' + (m.innerText.match(/Saber[^\n]*\n?[^\n]*/g)||[]).join(' / ') : 'none' }))
+await b.close()

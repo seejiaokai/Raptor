@@ -1,0 +1,32 @@
+{
+ "results": [
+  {
+   "id": "S18a",
+   "what": "Tue wave 2 VL: type R 10:00 (earlier than its typed in-time 12:00 / RU 11:40, TO 14:40)",
+   "expected": "RECORD: whether the wave start/band and the available-crew marks move",
+   "seen": {
+    "rl": "10:00",
+    "wave2hdr": [
+     [
+      "WAVE 1",
+      "WAVE 2"
+     ],
+     [
+      "WAVE 1",
+      "WAVE 2"
+     ]
+    ],
+    "availSectionsChanged": true,
+    "before": [
+     "⠿ AVAILABLE CREW ⌃ 1ST WAVE AM–11:40 · 30 CAN FLY Comet IP Ace A C Saint B Ridge C Vapor D :: Comet,Ace,Saint,Ridge,Vapor,Scope,Cinder,Rune,Reaper,Warden,Drifter,Gambit,Outlaw,Talisman,Basher,Echo,Dash,Hex,Vector,Anvil,Blade,Cobra,Forge,Hunter,Piston,Ranger,Saber,Sidewinder,Trident,Vandal,Nomad,Torch,Diesel,Recon,Wildcard,Ledger,Relay,Cutter,Fable,Ghost"
+    ],
+    "after": [
+     "⠿ AVAILABLE CREW ⌃ 1ST WAVE AM–10:00 · 30 CAN FLY Comet IP Ace A C Saint B Ridge C Vapor D :: Comet,Ace,Saint,Ridge,Vapor,Scope,Cinder,Rune,Reaper,Anvil,Blade,Cobra,Forge,Hunter,Piston,Ranger,Saber,Sidewinder,Trident,Vandal,Nomad,Torch,Diesel,Recon,Wildcard,Ledger,Relay,Cutter,Fable,Ghost,Ryder"
+    ]
+   },
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B18a-avail-after.png"
+  }
+ ],
+ "errors": []
+}

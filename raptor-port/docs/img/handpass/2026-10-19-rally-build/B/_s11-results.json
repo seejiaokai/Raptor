@@ -1,0 +1,104 @@
+{
+ "results": [
+  {
+   "id": "S11-fix",
+   "what": "built a Saturday wave through the board (+ Wave, Flying wave), typed VL, TO 01:30, LD 03:00",
+   "expected": "VL / 01:30 / 03:00",
+   "seen": {
+    "cs": "VL",
+    "to": "01:30",
+    "ld": "03:00"
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "S11a",
+   "what": "board: tap R on a Saturday TO 01:30",
+   "expected": "placed 22:30 (the evening before), highlighted",
+   "seen": {
+    "value": "22:30",
+    "ss": 0,
+    "se": 5,
+    "active": true,
+    "ph": "22:30"
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B11a-placed.png"
+  },
+  {
+   "id": "S11a2",
+   "what": "leave the box; the board",
+   "expected": "R saved 22:30; \"(prev day)\" shown on the board",
+   "seen": {
+    "rl": "22:30",
+    "prevDayText": [
+     "sb-prevday: (prev day)"
+    ]
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B11a2-board-prevday.png"
+  },
+  {
+   "id": "S11a3",
+   "what": "Edit Schedule week, Saturday wave header",
+   "expected": "\"In-time / Rally 22:30 (prev day)\" or similar",
+   "seen": [
+    "DIV.dsec: ⠿Flying waves ⠿WAVE 1 · In-time / Rally 22:30 (prev day) Traffic+ In-timeCSMSNRBTOLDFCP / RCPRMKS VL",
+    "SPAN.asd: WAVE 1 · In-time / Rally 22:30 (prev day)"
+   ],
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B11a3-week-prevday.png"
+  },
+  {
+   "id": "S11a4",
+   "what": "warnings of Saturday and Friday after R 22:30 (crewed man, no Friday flying)",
+   "expected": "RECORD: long-day / crew-rest wording with a prior-day report",
+   "seen": {
+    "sat": [
+     "⚠ 1 issue",
+     "OIL waiting — this day is not published",
+     "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out"
+    ],
+    "fri": []
+   },
+   "verdict": "RECORD"
+  },
+  {
+   "id": "S11b",
+   "what": "Saturday R 09:00, TO 12:00 then TO changed to 08:30",
+   "expected": "RECORD: R 09:00 now reads the day before; header; toast (brief gets a toast, R gets none)",
+   "seen": {
+    "before": {
+     "cs": "VL",
+     "to": "12:00",
+     "ld": "13:30",
+     "rl": "09:00"
+    },
+    "after": {
+     "cs": "VL",
+     "to": "08:30",
+     "ld": "13:30",
+     "rl": "09:00"
+    },
+    "prevDayText": [
+     "(prev day)"
+    ],
+    "toast": []
+   },
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B11b-to-moved-earlier.png"
+  },
+  {
+   "id": "S11b2",
+   "what": "then the week header for the same Saturday wave",
+   "expected": "RECORD",
+   "seen": [
+    "⠿Flying waves ⠿WAVE 1 · In-time / Rally 09:00 (prev day) Traffic+ In-timeCSMSNRBTOLDFCP / RCPRMKS VL",
+    "WAVE 1 · In-time / Rally 09:00 (prev day)"
+   ],
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B11b2-week.png"
+  }
+ ],
+ "errors": []
+}

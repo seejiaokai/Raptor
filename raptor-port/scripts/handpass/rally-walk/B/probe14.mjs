@@ -1,0 +1,11 @@
+console.log('B probe14 v1 (wave bands / availability marks)')
+import { launch, open, sleep, shot, tapFixed } from './lib.mjs'
+const b = await launch()
+const { ctx, p } = await open(b)
+await p.evaluate(() => window.go('editsched')); await sleep(800)
+console.log(await p.evaluate(() => { const set = new Set(); document.querySelectorAll('#eWeek .day[data-day="1"] *').forEach(e => { const c = e.className && e.className.toString(); if (/band|avail|window|win\b|bar/i.test(c)) set.add(e.tagName + '.' + c.slice(0, 40)) }); return [...set].slice(0, 30) }))
+await tapFixed(p, p.getByText('AIRCREW', { exact: true }).first(), 700)
+console.log(await p.evaluate(() => { const set = new Set(); document.querySelectorAll('[class*=pal] *, [class*=crew] *').forEach(e => { const c = e.className && e.className.toString(); if (/band|avail|window|win\b|part|sans|unav/i.test(c)) set.add(e.tagName + '.' + c.slice(0, 50)) }); return [...set].slice(0, 30) }))
+console.log(await p.evaluate(() => [...document.querySelectorAll('.puck')].filter(e => e.getBoundingClientRect().x > 120 && /unavail|SANS|part|from|until/i.test(e.title)).map(e => e.dataset.person + ' | ' + e.className + ' | ' + e.title.slice(0, 120)).slice(0, 15)))
+console.log(await shot(p, 'probe14'))
+await b.close()

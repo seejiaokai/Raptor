@@ -39,6 +39,21 @@ for (const [name, viewport] of [['desktop', { width: 1440, height: 900 }], ['pho
       await expect(r).toHaveText('')
       expect(await page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].rl || '')).toBe('')
     })
+    /* walker B's F1 and F3 (19 Oct 26): on the board, R pressed then B at once — leaving R saves it and the redraw that
+       starts replaced B under the press, so B took the focus EMPTY; and R pressed then Enter saved nothing */
+    test('the board: press R then B at once — both placed and saved; press R then Enter saves it', async ({ page }) => {
+      await login(page); await go(page, 'editsched')
+      await page.evaluate(() => (window as any).openScheduler(0)); await expect(page.locator('#schedBoard')).toBeVisible()
+      const box = (k: string) => page.locator(`#sbBoard [data-bfld="ff:0.0.1.${k}"]:visible`).first()
+      const f = () => page.evaluate(() => { const x = (window as any).DAYS[0].waves[0].formations[1]; return { rl: x.rl || '', br: x.br || '' } })
+      await press(page, box('rl'), phone)
+      await expect(box('rl')).toHaveValue('10:40')
+      await press(page, box('br'), phone)
+      await expect(box('br'), 'B placed by the one press').toHaveValue('11:20')
+      await expect.poll(f, 'R saved when it was left').toEqual({ rl: '10:40', br: '' })
+      await page.keyboard.press('Enter')
+      await expect.poll(f, 'Enter saved the placed B').toEqual({ rl: '10:40', br: '11:20' })
+    })
     test('the board: one line on a desktop, stacked on a phone; Tab through the empty R box fills nothing', async ({ page }) => {
       await login(page); await go(page, 'editsched')
       await page.evaluate(() => (window as any).openScheduler(0)); await expect(page.locator('#schedBoard')).toBeVisible()

@@ -130,7 +130,7 @@
   "n": 13,
   "name": "a tap places the suggestion",
   "file": "src/ui/interactions.ts",
-  "find": "if (sg && canEditSched() && HOOKS.editMode() && placeSuggestion(sg)) return",
+  "find": "if (sg && canEditSched() && HOOKS.editMode() && (reselectPlaced(sg) || placeSuggestion(sg))) return",
   "put": "if (sg && false) return",
   "tests": [
    "src/ui/brieftime-ui.test.tsx"

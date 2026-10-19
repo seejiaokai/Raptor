@@ -63,3 +63,4 @@ export async function swipeUp(p, x = 200, y0 = 600, dy = 250) {
   await c.detach()
 }
 export const finish = async (name) => { const { writeFileSync } = await import('node:fs'); writeFileSync(`${OUT}/_${name}-results.json`, JSON.stringify({ results, errors }, null, 1)); console.log('errors:', errors.length ? errors.join(' || ') : 'none') }
+export async function tapFixed(p, loc, wait = 300) { const b = await loc.boundingBox(); if (!b) throw new Error('no box'); await p.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2); await sleep(wait) }

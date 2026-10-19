@@ -1,0 +1,148 @@
+{
+ "results": [
+  {
+   "id": "S3e",
+   "what": "AIRCREW palette (Tue) with R 10:00 breaching",
+   "expected": "Outlaw's entry marked as a crew-rest breach (D1013)",
+   "seen": [
+    {
+     "x": 138,
+     "cls": "puck warn hard boxred",
+     "title": "Outlaw · C · ops wingman · Crew rest breach (<12h)"
+    },
+    {
+     "x": 498,
+     "cls": "puck sm",
+     "title": "Outlaw · C · ops wingman"
+    },
+    {
+     "x": 1044,
+     "cls": "puck sm",
+     "title": "Outlaw · C · ops wingman"
+    },
+    {
+     "x": 1356,
+     "cls": "puck sm",
+     "title": "Outlaw · C · ops wingman"
+    },
+    {
+     "x": 1668,
+     "cls": "puck sm",
+     "title": "Outlaw · C · ops wingman"
+    },
+    {
+     "x": 2058,
+     "cls": "puck sm",
+     "title": "Outlaw · C · ops wingman"
+    },
+    {
+     "x": 162,
+     "cls": "puck sm warn hard boxred",
+     "title": "Outlaw · C · ops wingman · Crew rest breach (<12h)"
+    }
+   ],
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B03e-palette-breach.png"
+  },
+  {
+   "id": "S3f",
+   "what": "clear the typed R (select all, Delete, leave)",
+   "expected": "the crew-rest warning goes",
+   "seen": {
+    "rl": "",
+    "lines": []
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B03f-cleared.png"
+  },
+  {
+   "id": "S3g",
+   "what": "palette after clearing R",
+   "expected": "Outlaw no longer marked",
+   "seen": [
+    {
+     "x": 138,
+     "cls": "puck dim",
+     "title": "Outlaw · C · ops wingman"
+    },
+    {
+     "x": 498,
+     "cls": "puck sm dim",
+     "title": "Outlaw · C · ops wingman"
+    },
+    {
+     "x": 1044,
+     "cls": "puck sm dim",
+     "title": "Outlaw · C · ops wingman"
+    },
+    {
+     "x": 1356,
+     "cls": "puck sm dim",
+     "title": "Outlaw · C · ops wingman"
+    },
+    {
+     "x": 1668,
+     "cls": "puck sm dim",
+     "title": "Outlaw · C · ops wingman"
+    },
+    {
+     "x": 2058,
+     "cls": "puck sm dim",
+     "title": "Outlaw · C · ops wingman"
+    },
+    {
+     "x": 162,
+     "cls": "puck sm",
+     "title": "Outlaw · C · ops wingman"
+    }
+   ],
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B03g-palette-cleared.png"
+  },
+  {
+   "id": "S3h-1050",
+   "what": "type R 1050 (rest clear at 10:45; nominal report 11:00)",
+   "expected": "RECORD any tight crew-rest advisory and its exact words",
+   "seen": {
+    "rl": "10:50",
+    "lines": [],
+    "full": [
+     "⚠ 3 issues",
+     "· 1 warning",
+     "▲",
+     "Conflict — two events at once",
+     "Saint — VL SAT & APPOINTMENT clash",
+     "No time for the flight brief",
+     "Saint — No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20)",
+     "Long work day",
+     "Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)"
+    ]
+   },
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B03h-1050.png"
+  },
+  {
+   "id": "S3h-1120",
+   "what": "type R 1120 (rest clear at 10:45; nominal report 11:00)",
+   "expected": "RECORD any tight crew-rest advisory and its exact words",
+   "seen": {
+    "rl": "11:20",
+    "lines": [],
+    "full": [
+     "⚠ 3 issues",
+     "· 1 warning",
+     "▲",
+     "Conflict — two events at once",
+     "Saint — VL SAT & APPOINTMENT clash",
+     "No time for the flight brief",
+     "Saint — No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20)",
+     "Long work day",
+     "Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)"
+    ]
+   },
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B03h-1120.png"
+  }
+ ],
+ "errors": []
+}

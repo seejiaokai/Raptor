@@ -1,0 +1,38 @@
+{
+ "results": [
+  {
+   "id": "S21-control",
+   "what": "tab B (opened first, not reloaded) types B on Thu VL after tab A typed R 09:30; then a third fresh tab reads the stored line",
+   "expected": "RECORD whether either save wipes the other (stored R and B)",
+   "seen": {
+    "afterA": {
+     "A": {
+      "to31": "13:00",
+      "msn30": "SAT"
+     },
+     "B": {
+      "to31": "12:45",
+      "msn30": "SAT"
+     }
+    },
+    "afterB": {
+     "A": {
+      "to31": "13:00",
+      "msn30": "SAT"
+     },
+     "B": {
+      "to31": "12:45",
+      "msn30": "XYZ"
+     }
+    },
+    "freshTab": {
+     "to31": "12:45",
+     "msn30": "XYZ"
+    }
+   },
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B21c-tabB.png"
+  }
+ ],
+ "errors": []
+}

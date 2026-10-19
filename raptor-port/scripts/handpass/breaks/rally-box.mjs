@@ -18,7 +18,7 @@ const list = [
   { name: 'the next-week peek draws the R', file: 'src/ui/peek.ts', find: '<span class="rl">${esc(f.rl || \'\')}</span>', put: '', tests: ['src/ui/peek.test.tsx', U] },
   { name: 'the board draws the R box', file: 'src/ui/board.ts', find: 'data-bfld="${fp}.rl"', put: 'data-bfld="${fp}.rlx"', tests: [U, 'src/ui/board-stores.test.tsx'] },
   { name: 'the board’s R placeholder is the default rally', file: 'src/ui/board.ts', find: 'const rlSug = !stoRO && !sa && parseHM(f.rl) == null && rlDefault ? fmtHM(rlDefault) : \'\'', put: 'const rlSug = \'\'', tests: [U] },
-  { name: 'a tap places the suggestion', file: 'src/ui/interactions.ts', find: 'if (sg && canEditSched() && HOOKS.editMode() && placeSuggestion(sg)) return', put: 'if (sg && false) return', tests: [U] },
+  { name: 'a tap places the suggestion', file: 'src/ui/interactions.ts', find: 'if (sg && canEditSched() && HOOKS.editMode() && (reselectPlaced(sg) || placeSuggestion(sg))) return', put: 'if (sg && false) return', tests: [U] },
   { name: 'the first keys replace a placed suggestion without the highlight', file: 'src/ui/interactions.ts', find: 'if (v.length > sug.length && v.startsWith(sug)) write(v.slice(sug.length))', put: '', tests: [U] },
   { name: 'a board box left holding the placed suggestion saves it', file: 'src/ui/interactions.ts', find: "if (el.isConnected && el.value === sug) el.dispatchEvent(new Event('change', { bubbles: true }))", put: '', tests: [U] },
   { name: '"+ In-time" ignores the R box (D1031)', file: 'src/ui/interactions.ts', find: "resolveReporting(w,{ ...f, rl: '' },", put: 'resolveReporting(w,f,', tests: [U] },

@@ -127,6 +127,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Insights and Logic**
 - [LOGIC-REDRAW-DROPS-TYPING] — the Logic page redraws just after it opens and can drop a value being typed.
+- [LOGIC-DONE-FIRST-PRESS] — on the Logic page, the first press of Done straight after a changed setting is lost (older; found 19 Oct 26).
 - [STACK-LEFTOVERS] — four small loose ends from the Codex stack: two Insights edges (with the next change to its role question), a shared wording helper and an old audit script's three checks (with their own jobs), a "back to last published" button (only if he raises it).
 
 **Look, words and the phone (the whole app)**
@@ -1690,6 +1691,15 @@ out of the redraw, as the schedule's text boxes are; (3) a test that types, lets
 still there. The browser test now types again until the app holds the value (`raptor-port/e2e/oilworkstart.spec.ts`,
 `logicLead`) — take that retry out when this is fixed. **Tier:** WALK (the Logic page, a typed value, both sizes).
 **Place (the agent's line):** low — with the next change to the Logic page, and before the database step for the reason above.
+
+### [LOGIC-DONE-FIRST-PRESS] On the Logic page, the first press of Done straight after a changed setting is lost (found 19 Oct 26, the rally box walk, walker B — OLDER than that job; low)
+In edit mode, change "Default rally before take-off" (any setting) and press Done once by finger at 402 wide: the value saves, the page stays in
+edit mode; a second press ends it; with nothing changed, one press works. Pictures `raptor-port/docs/img/handpass/2026-10-19-rally-build/B/B08z-L2.png`,
+`B08z-logic-Done.png`; the walker's table `raptor-port/docs/handpass/parts/rally-box/walker-B.md` (F2). **Not** the schedule's redraw that
+[EDIT-BUTTON-AFTER-CHANGE] fixed: Done is a React button that is never replaced (`ui/LogicPage.tsx` `#lgDone`), so the host's reading is that
+saving the setting moves the button out from under the press (a "rules changed" bar or the Reset button appearing) — reproduce and measure the
+button's position before and after the save first. **Place:** low, with the next change to the Logic page; a browser test that changes a
+setting and presses Done once, by mouse and by finger.
 
 ### [OIL-EARN-DAY-SWITCH-WORDS] OIL Earn's "Nothing today earns" button reads like a status — two walkers took it for one (found 6–7 Oct 26, the walks of `[OIL-WORK-START]`; OLD; LOW, words)
 On the Scheduler Board in OIL Earn mode the bar carries a button labelled "Nothing today earns". It is a SWITCH — pressed, it

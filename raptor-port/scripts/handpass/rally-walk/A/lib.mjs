@@ -167,3 +167,39 @@ export async function lwOil(p, ids, iso = '2026-07-18') {
   await go(p, back || 'editsched')
   return r
 }
+
+/* work hours (Insights, "report to debrief, this week") in minutes, by name; the delta between two readings is the start moving */
+export async function hours(p, names) {
+  await p.locator('#sbInsights').click(); await sleep(900)
+  const txt = await p.evaluate(() => document.body.innerText)
+  const i = txt.indexOf('WORK HOURS')
+  const sec = i >= 0 ? txt.slice(i) : ''
+  const out = {}
+  const L = sec.split(String.fromCharCode(10)).map(x => x.trim())
+  for (const n of names) {
+    const k = L.indexOf(n)
+    const m = k >= 0 ? (L[k + 1] || '').match(/^(?:(\d+)h)?(?:(\d+)m?)?$/) : null
+    out[n] = m ? (Number(m[1] || 0) * 60 + Number(m[2] || 0)) : null
+  }
+  await p.keyboard.press('Escape'); await sleep(300)
+  if (await p.locator('.modal-head').count() && await p.locator('.modal-head').first().isVisible().catch(() => false)) { await p.locator('.modal-head button').first().click().catch(() => {}); await sleep(300) }
+  return out
+}
+export async function setIt(p, di, wi, idx, text) {
+  const el = p.locator(`#schedBoard [data-itline="${di}|${wi}|${idx}"]:visible`).first()
+  await el.evaluate(e => e.scrollIntoView({ block: 'center' })); await sleep(100)
+  await el.click(); await p.keyboard.press('Control+a'); await p.keyboard.type(text); await p.keyboard.press('Tab'); await sleep(100)
+  await p.locator('body').click({ position: { x: 3, y: 3 } }).catch(() => {}); await sleep(400)
+}
+export const delIt = async (p, di, wi, idx) => { await p.locator(`#schedBoard [data-itdel="${di}|${wi}|${idx}"]:visible`).first().click(); await sleep(500) }
+export const addIt = async (p, di, wi) => { await p.locator(`#schedBoard [data-itadd="${di}|${wi}"]:visible`).first().click(); await sleep(500) }
+export const itLines = p => p.evaluate(() => [...document.querySelectorAll('#schedBoard [data-itline]')].map(e => e.innerText.replace(/\s+/g, ' ')))
+export const addLine = async (p, di, wi) => { await p.locator(`#schedBoard [data-gline="${di}.${wi}"]:visible`).first().click(); await sleep(500) }
+
+export async function reload(p) {
+  await p.reload(); await sleep(800)
+  if (await p.locator('#luser').isVisible().catch(() => false)) {
+    await p.fill('#luser', 'ad'); await p.fill('#lpass', 'a'); await p.click('#loginForm button[type=submit]')
+  }
+  await p.waitForSelector('#vWeek .day', { state: 'attached', timeout: 20000 }); await sleep(700)
+}

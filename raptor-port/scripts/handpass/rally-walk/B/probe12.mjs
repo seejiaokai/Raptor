@@ -1,0 +1,10 @@
+console.log('B probe12 v1')
+import { launch, open, sleep, shot, tapFixed, wk, tap } from './lib.mjs'
+const b = await launch()
+const { ctx, p } = await open(b)
+await p.evaluate(() => window.go('editsched')); await sleep(800)
+console.log(await p.locator('#burger').boundingBox())
+await tapFixed(p, p.locator('#burger'), 600)
+console.log(await p.evaluate(() => ({ lo: !!document.getElementById('logout'), vis: document.getElementById('logout')?.offsetParent !== null, bodyCls: document.body.className, navOpen: document.querySelector('#nav,.nav,#menu')?.className })))
+console.log(await shot(p, 'probe12'))
+await b.close()
