@@ -1,0 +1,11 @@
+import { open, go, version, shot, tapBox, scenario } from './kbs-A-lib.mjs'
+version('a7c')
+const { browser, page, errors } = await open()
+await go(page, 'inputs')
+await tapBox(page, page.locator('button.intab', { hasText: 'SANS' }))
+await page.waitForTimeout(700)
+await tapBox(page, page.locator('[data-testid=sc-gear]'))
+await page.waitForTimeout(800)
+await shot(page, 'A7-gear-open')
+await scenario(page, 'A7b', page.locator('[data-testid=sset-red]'), { what: 'SANS settings Red from number', skipLow: true, inWindow: true })
+await browser.close()

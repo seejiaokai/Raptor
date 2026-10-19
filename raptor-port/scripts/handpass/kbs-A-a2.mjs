@@ -1,0 +1,12 @@
+import { open, go, version, scenario } from './kbs-A-lib.mjs'
+version('a2')
+const { browser, page, errors } = await open({ width: 874, height: 402 })
+console.log('vv at start', await page.evaluate(() => [innerWidth, innerHeight, window.__vv.height]))
+await go(page, 'editsched')
+await page.evaluate(() => window.openScheduler(0))
+await page.waitForSelector('#schedBoard'); await page.waitForTimeout(800)
+const box = page.locator('#schedBoard input.tm:visible').nth(6)
+console.log('box value', await box.inputValue())
+await scenario(page, 'A2', box, { what: 'landscape board time box', inWindow: true, kb: 200, ih: 402, lowY: 370 })
+console.log('errors', errors)
+await browser.close()

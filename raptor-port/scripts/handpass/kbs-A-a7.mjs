@@ -1,0 +1,17 @@
+import { open, go, version, shot, tapBox, scenario, keysDown } from './kbs-A-lib.mjs'
+version('a7')
+const { browser, page, errors } = await open()
+await go(page, 'inputs')
+await tapBox(page, page.locator('button.intab', { hasText: 'SANS' }))
+await page.waitForTimeout(700)
+for (let i = 0; i < 3; i++) { await page.locator('#page-inputs button.abtn', { hasText: '‹' }).first().tap(); await page.waitForTimeout(400) }
+const fields = () => page.evaluate(() => [...document.querySelectorAll('input,textarea')].filter(e => e.getBoundingClientRect().width > 0 && e.getBoundingClientRect().top > 0 && e.id !== 'searchE').map(e => `${e.tagName}#${e.id}.${String(e.className).slice(0,20)} ${e.type} tid=${e.getAttribute('data-testid')} top=${Math.round(e.getBoundingClientRect().top)} bot=${Math.round(e.getBoundingClientRect().bottom)}`))
+await tapBox(page, page.locator('[data-testid=sc-day-2026-07-13]'))
+await page.waitForTimeout(900)
+await shot(page, 'A7-day')
+console.log('day buttons', await page.evaluate(() => [...document.querySelectorAll('button')].filter(e => e.getBoundingClientRect().width > 0 && /Commit|\+/.test(e.textContent)).map(e => e.textContent.trim().slice(0, 25) + ' top=' + Math.round(e.getBoundingClientRect().top))))
+await tapBox(page, page.getByRole('button', { name: /Commitment/ }).first())
+await page.waitForTimeout(900)
+await shot(page, 'A7-commit-window')
+console.log('commit fields', await fields())
+await browser.close()

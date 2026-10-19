@@ -1,0 +1,42 @@
+import { open, go, version, shot, tapBox, scenario, keysUp, keysDown, state, record, bringLow } from './kbs-A-lib.mjs'
+version('a9b')
+const { browser, page, errors } = await open()
+await go(page, 'admin')
+await page.evaluate(() => document.getElementById('admDutyTpl').click()); await page.waitForSelector('#tplModal'); await page.waitForTimeout(800)
+await tapBox(page, page.locator('#tplModal button', { hasText: /^AVALON$/i }).first())
+await page.waitForTimeout(600)
+const rows = () => page.locator('#tplModal input.tm').count().then(n => n / 2)
+console.log('AVALON roles at start', await rows())
+for (let i = 0; i < 20 && (await rows()) < 14; i++) {
+  const add = page.locator('#tplModal button', { hasText: /ADD ROLE/i }).first()
+  await bringLow(add, 500).catch(()=>{})
+  await tapBox(page, add); await page.waitForTimeout(300)
+}
+console.log('roles now', await rows())
+await shot(page, 'A9b-14roles')
+const geo = () => page.evaluate(() => {
+  const m = document.querySelector('#tplModal'); const box = m.firstElementChild; const r = box.getBoundingClientRect()
+  const h = [...box.querySelectorAll('*')].find(x => x.children.length === 0 && /Duty templates/.test(x.textContent))
+  const hr = h && h.getBoundingClientRect()
+  const sc = getComputedStyle(box).overflowY === 'auto' ? box : null
+  return { box: [Math.round(r.top), Math.round(r.bottom)], boxTranslate: box.style.translate, title: h && [h.textContent.trim().slice(0, 20), Math.round(hr.top), Math.round(hr.bottom)], scroller: sc && [String(sc.className).slice(0, 25), sc.scrollTop, sc.scrollHeight - sc.clientHeight], boxStyleMaxH: box.style.maxHeight, pageScroll: document.scrollingElement.scrollTop }
+})
+console.log('geo before', JSON.stringify(await geo()))
+const lastEnd = page.locator('#tplModal input.tm').last()
+const low = await bringLow(lastEnd, 800)
+console.log('low', JSON.stringify(low))
+const g0 = await geo(); console.log('geo scrolled to foot', JSON.stringify(g0))
+const sc0 = await state(page, lastEnd)
+await tapBox(page, lastEnd); await page.waitForTimeout(500)
+await shot(page, 'A9b-1-before')
+await keysUp(page); await page.waitForTimeout(600)
+const g1 = await geo(); const s1 = await state(page, lastEnd)
+await shot(page, 'A9b-2-after')
+await keysDown(page); await page.waitForTimeout(600)
+const g2 = await geo(); const s2 = await state(page, lastEnd)
+await shot(page, 'A9b-3-down')
+const ok = s1.focused && s1.rect.bottom <= 531 && s1.rect.top >= 0 && !s1.covered && g1.box[0] >= -1 && g1.box[1] <= 539 && (g1.title && g1.title[1] >= 0 && g1.title[2] <= 538)
+record({ id: 'A9b', what: 'Duty templates AVALON 14 roles: last End at the window foot', geoBefore: g0, geoKeysUp: g1, geoDown: g2, endBefore: sc0.rect, endUp: s1.rect, endDown: s2.rect, covered: s1.covered, focused: s1.focused, pass: !!ok,
+  summary: `A9b ${ok ? 'PASS' : 'FAIL'} End before ${JSON.stringify(sc0.rect)} up ${JSON.stringify(s1.rect)} down ${JSON.stringify(s2.rect)} room 538; window box before ${JSON.stringify(g0.box)} tr ${g0.boxTranslate}; up ${JSON.stringify(g1.box)} tr ${g1.boxTranslate} title ${JSON.stringify(g1.title)} scroller ${JSON.stringify(g1.scroller)}; down ${JSON.stringify(g2.box)} tr ${g2.boxTranslate} scroller ${JSON.stringify(g2.scroller)} covered ${s1.covered}` })
+console.log('errors', errors)
+await browser.close()

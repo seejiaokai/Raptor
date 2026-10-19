@@ -1,0 +1,10 @@
+import { open, go, version, shot, tapBox, bringLow } from './kbs-A-lib.mjs'
+version('explore14b')
+const { browser, page } = await open()
+await go(page, 'leavewar'); await page.waitForTimeout(800)
+await tapBox(page, page.getByRole('button', { name: /OIL/ }).first()); await page.waitForTimeout(900)
+const nm = page.locator('[data-testid="oil-name-dice"]'); await bringLow(nm, 300); await tapBox(page, nm); await page.waitForTimeout(900)
+await shot(page, 'explore14-person')
+console.log(await page.evaluate(() => [...document.querySelectorAll('input,select,textarea')].filter(e => e.getBoundingClientRect().width > 0 && e.getBoundingClientRect().top > 60).map(e => `${e.tagName}#${e.id}[${e.getAttribute('data-testid')}] ${e.type} top=${Math.round(e.getBoundingClientRect().top)} bot=${Math.round(e.getBoundingClientRect().bottom)}`)))
+console.log(await page.evaluate(() => [...document.querySelectorAll('[data-testid]')].filter(e => e.getBoundingClientRect().width > 0 && e.getBoundingClientRect().top > 100 && /oil|fig|credit|add|bal|set/i.test(e.getAttribute('data-testid'))).slice(0, 30).map(e => e.tagName + '[' + e.getAttribute('data-testid') + '] ' + Math.round(e.getBoundingClientRect().top))))
+await browser.close()

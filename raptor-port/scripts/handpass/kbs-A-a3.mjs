@@ -1,0 +1,10 @@
+import { open, go, version, scenario } from './kbs-A-lib.mjs'
+version('a3')
+const { browser, page, errors } = await open()
+await go(page, 'editsched')
+const cells = page.locator('span.ntx.txed[data-txt*=rmks]:visible')
+console.log('visible rmk cells', await cells.count())
+const box = cells.nth(5)
+await scenario(page, 'A3', box, { what: 'edit week remarks cell', inWindow: false, resolve: () => page.evaluateHandle(() => document.activeElement) })
+console.log('errors', errors)
+await browser.close()

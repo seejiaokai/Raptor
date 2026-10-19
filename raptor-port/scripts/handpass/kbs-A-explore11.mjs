@@ -1,0 +1,11 @@
+import { open, go, version, shot, tapBox, bringLow } from './kbs-A-lib.mjs'
+version('explore11')
+const { browser, page } = await open()
+await go(page, 'admin')
+const cards = await page.evaluate(() => [...document.querySelectorAll('#page-admin button, #page-admin [role=button]')].filter(b => b.getBoundingClientRect().width > 0).map(b => b.id + '.' + String(b.className).slice(0,20) + ' "' + b.textContent.trim().slice(0, 25) + '" top=' + Math.round(b.getBoundingClientRect().top)))
+console.log(cards)
+await tapBox(page, page.locator('#page-admin button, #page-admin [role=button]', { hasText: /^Users/ }).first())
+await page.waitForTimeout(900)
+await shot(page, 'explore11-users')
+console.log(await page.evaluate(() => [...document.querySelectorAll('#page-admin input, #page-admin select, #page-admin textarea')].filter(e => e.getBoundingClientRect().width > 0).map(e => `${e.tagName}#${e.id}.${String(e.className).slice(0,20)} ${e.type} ph=${e.placeholder} top=${Math.round(e.getBoundingClientRect().top)} bot=${Math.round(e.getBoundingClientRect().bottom)}`)))
+await browser.close()

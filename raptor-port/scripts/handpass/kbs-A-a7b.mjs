@@ -1,0 +1,16 @@
+import { open, go, version, shot, tapBox, scenario } from './kbs-A-lib.mjs'
+version('a7b')
+const { browser, page, errors } = await open()
+await go(page, 'inputs')
+await tapBox(page, page.locator('button.intab', { hasText: 'SANS' }))
+await page.waitForTimeout(700)
+for (let i = 0; i < 3; i++) { await page.locator('#page-inputs button.abtn', { hasText: '‹' }).first().tap(); await page.waitForTimeout(400) }
+await tapBox(page, page.locator('[data-testid=sc-day-2026-07-13]'))
+await page.waitForTimeout(900)
+await tapBox(page, page.getByRole('button', { name: /Commitment/ }).first())
+await page.waitForTimeout(900)
+await scenario(page, 'A7a', page.locator('#inpEditRmk'), { what: 'SANS + Commitment window remarks', skipLow: true, inWindow: true })
+await page.reload(); await page.waitForTimeout(1500)
+await page.waitForSelector('#vWeek .day', { state: 'attached' }).catch(()=>{})
+console.log('after reload page', await page.evaluate(() => window.CURPAGE))
+await browser.close()

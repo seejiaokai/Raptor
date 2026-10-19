@@ -1,0 +1,22 @@
+/* host probe — [KEYBOARD-SCROLL] walker B's B11: the board's take-off box after a replace and a Tab, against plain typing */
+import { open, version } from './kbs-A-lib.mjs'
+version('host-b11-3')
+const { browser, page } = await open({ width: 1440, height: 900, mobile: false })
+await page.evaluate(() => window.go('editsched')); await page.waitForTimeout(600)
+await page.evaluate(() => window.openScheduler(0)); await page.waitForTimeout(900)
+const to = page.locator('#schedBoard input[data-bfld="ff:0.0.0.to"]:visible').first()
+await to.evaluate(e => e.scrollIntoView({ block: 'center' })); await page.waitForTimeout(300)
+console.log('rect', await to.evaluate(e => JSON.stringify(e.getBoundingClientRect())))
+const click = async () => { const b = await to.boundingBox(); await page.mouse.click(b.x + b.width / 2, b.y + b.height / 2) }
+console.log('start', await to.inputValue())
+await click(); console.log('active', await page.evaluate(() => document.activeElement?.outerHTML?.slice(0, 160))); await page.keyboard.type('1000'); console.log('A typed', await to.inputValue())
+await page.keyboard.press('Tab'); await page.waitForTimeout(600)
+console.log('A after Tab', await to.inputValue(), 'stored', await page.evaluate(() => window.DAYS[0].waves[0].formations[0].to))
+await page.mouse.click(5, 5); await page.waitForTimeout(400)
+console.log('A after click away', await to.inputValue())
+await page.waitForTimeout(700)
+await click(); await page.waitForTimeout(700); await click(); await page.keyboard.press('ControlOrMeta+a'); await page.keyboard.type('1100')
+console.log('B typed', await to.inputValue())
+await page.keyboard.press('Tab'); await page.waitForTimeout(600)
+console.log('B after Tab', await to.inputValue(), 'stored', await page.evaluate(() => window.DAYS[0].waves[0].formations[0].to))
+await browser.close()

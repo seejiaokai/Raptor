@@ -67,6 +67,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [KEYBOARD-SCROLL] — on a phone, a box tapped to type in that the keyboard would cover scrolls to sit just above it — every box in the app (D1048). Its own small job, next.
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
 - [INNERHTML-REPAINT-SWEEP] — eleven screens hand React their markup as a new object every repaint, which React sets again — a box being typed in there is thrown away by any repaint (Quals fixed in [KEYBOARD-SCROLL]); sweep the rest (low).
+- [BOARD-TAB-FOLD] — a time typed on the Scheduler Board and left by Tab shows as typed ("1000") until another press, though 10:00 is saved (found by the D1080 walk; older, low).
 - [STANDBY-FLIES] — an SC, AVALON or BB line that actually flies counts as a real flight (D1042): flying count, Insights, OIL by default, every warning; a "Flies" tick on the row — typed B or R ticks it by itself, an activated row ticked by hand (D1043). Next (the rally box changes are live).
 - [LOOK-PENDING-COUNT] — the 👁 look at the Original shows "1 pending" where the working copy shows "2 pending" (reproduce first).
 - [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
@@ -1983,6 +1984,15 @@ panel to its end). Older than D1048 (the layout of the board's top on a short sc
 `raptor-port/docs/handpass/2026-10-19-keyboard-scroll.md`. **To do:** on a short screen with the keys up, fold the board's
 top to its one bar (the day strip and section headings scroll with the panel). A picture to him first (D853). **Place:**
 low — with the next change to the board's top on a phone.
+
+### [BOARD-TAB-FOLD] A time typed on the Scheduler Board and left by Tab shows as typed until another press (found 19 Oct 26 — the D1080 walk, walker B's B11; low)
+On the Scheduler Board, type "1000" into a take-off, landing or R box and press Tab: the box still reads "1000" (a second
+Tab, or 2.5s later, the same), while 10:00 is saved — it reads 10:00 at once after a press anywhere else, and after leaving
+and coming back. The same with plain typing (a second press, then the whole time chosen and typed over — host probe
+`raptor-port/scripts/handpass/kbs-host-b11.mjs`), so it is older than D1047 / D1080: the board folds a box to hh:mm when it is
+redrawn, and leaving by Tab does not redraw the box left. Walker B's report: `raptor-port/docs/handpass/parts/keyboard-scroll/B.md`.
+**To do:** on a box's `change`, write its folded time back to it (`fmtHM`) even when the focus moved to the next box.
+**Place:** low — with the next change to the board's time boxes.
 
 ### [INNERHTML-REPAINT-SWEEP] A box inside markup React sets again on every repaint loses its caret (found 19 Oct 26 — the D1048 walk, walker A's A12; low)
 React sets a `dangerouslySetInnerHTML` again whenever its object is a new one, not only when the markup differs (probed
