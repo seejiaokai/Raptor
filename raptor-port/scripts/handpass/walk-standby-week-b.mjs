@@ -121,7 +121,9 @@ try {
     const bv = await p.locator(`#schedBoard [data-bfld="ff:0.${sc}.0.br"]:visible`).first().inputValue()
     check('D5', bv === '05:45', `the Scheduler Board's B box for SC AM reads ${bv} — the same box`)
     const hb = await p.evaluate(() => [...document.querySelectorAll('#schedBoard .sb-lcols')].filter(e => e.offsetParent).map(e => e.innerText.replace(/\s+/g, ' ')).find(t => /R/.test(t)) || '')
-    check('D5b', /R/.test(hb) && /TO/.test(hb) && !/START/.test(hb), `the board keeps its own R · B · TO · LD headings ("${hb.slice(0, 40)}")`)
+    /* D1085: a standby wave's third pair reads START / END on the board too; a flying wave keeps TO / LD */
+    const bh = await p.evaluate(() => [...document.querySelectorAll('#schedBoard .sb-lcols .sb-htl')].filter(e => e.firstElementChild.getClientRects().length).map(e => e.innerText.replace(/\s+/g, ' ')))
+    check('D5b', bh.filter(t => t === 'START END').length === 3 && bh.some(t => t === 'TO LD'), `the board's time headings: ${JSON.stringify(bh)} ("${hb.slice(0, 30)}")`)
     const avB = p.locator(`#schedBoard [data-bfld="ff:0.${av}.0.br"]:visible`).first()
     await press(p, avB, false); await p.keyboard.type('1830'); await p.keyboard.press('Enter'); await p.waitForTimeout(400)
     await pic(p, 'desktop-board-standby-b', p.locator(`#schedBoard [data-bfld="ff:0.${av}.0.br"]:visible`).first().locator('xpath=ancestor::*[contains(@class,"sb-wave") or contains(@class,"go")][1]'))

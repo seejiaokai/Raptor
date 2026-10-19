@@ -20,7 +20,7 @@ published record: **YES** — on a published day that B is a pending change and 
 D1083 (the layout, his "2"), D1084 (the phone heading's size), D1040 (the rally box above B — marked ANSWERED by D1083 for
 the week), D1041 (SC MAIN's B is its in-time; elsewhere shown only), D1039 (no worked-out brief or rally on these lines),
 D1065 (the faint dash in an empty R and B), D1045 / D1043 (a typed B flies the shift), D1026 / D1029 (the flying line's
-R / B and TO / LD; the board's R · B · TO · LD — untouched), D178 / D45 (a change on a published day waits for its
+R / B and TO / LD; the board's R · B · TO · LD — kept for flying waves), D1085 (the board's standby waves headed START / END too — his word after the preview, §13), D178 / D45 (a change on a published day waits for its
 amendment), D554 (the Tab route), D487 (no button changes size — none did). The 24 Aug 26 settled entry "the SC in-time
 shows on the board only … raise mirroring only if he asks" — he asked; marked closed by D1083 in `scheduler.md`. No ruling
 contradicted.
@@ -33,7 +33,7 @@ contradicted.
 | View-only Sched, desktop and phone | YES | NO, because it is read only — nothing editable (D7: 0 boxes) | the issued face on a published day (D8c) | walked D7, D8c, P4; RB10 |
 | The next-week peek | YES | NO, because it is inert (read only, no box anywhere) | — | RB10 "the next-week peek" (B2, B2b red); not walked — see §7 |
 | A frozen look at an issued version (👁) | YES — the same builder (`dayHTML`, PV) | NO, because a look is read only | — | the builder's one branch, RB10; not walked — see §7 |
-| The Scheduler Board | must NOT change — keeps R · B · TO · LD (D1029, D1083's reading) | YES, as before; the same box (D5, D6) | — | walked D5, D5b, D6 |
+| The Scheduler Board | YES since D1085 — a standby wave R · B · START · END (stacked on a phone), a flying wave keeps TO / LD; first built keeping TO / LD (D1083's reading) | YES, as before; the same box (D5, D6) | — | walked D5, D6; D5b re-run for D1085 (§13); RB10 "the Scheduler Board" |
 | The changes window's "go to" for a standby B | lands on the week's box, ringed (was "shown on the scheduler board") | — | — | walked D9 (picture 06); histjump.test (B3 red) |
 | The printed schedule and the export | unchanged — they already carried a typed B only | — | — | RB10 "the export" (unchanged) |
 | The Tab route on a standby line | R → B → START → END (D554's order) | — | — | walked D10 |
@@ -60,7 +60,7 @@ page — every width fits, letters a seventh wider too); the peek and the issued
 | D2 | Edit Schedule's week | each headed "R B" / "START END", whole (9.5px) | — |
 | D3 | SC AM's B pressed, 0545 typed, a press elsewhere | the box reads 05:45; R over B, START over END; ✓ FLIES lit on its rows | `f.br` 05:45 |
 | D4 | the top bar's Undo, then Redo | the box empty, then 05:45 | "" then 05:45 |
-| D5 | the board opened | its B box reads 05:45; headings R · B · TO · LD | the same field |
+| D5 | the board opened | its B box reads 05:45; headings R · B · TO · LD (as first built — D1085 since, §13) | the same field |
 | D6 | AVALON's B typed on the board (1830) | the week shows 18:30 under R | — |
 | D7 | View-only Sched | R B / START END on all three, 05:45 and 18:30 shown, 0 editable boxes | — |
 | D8 | Monday published (its sign-offs, Publish); BB's B typed on the week (2000) | the box wears the pending mark; the day reads "1 pending"; View-only Sched still shows BB's B empty | `f.br` 20:00 |
@@ -147,3 +147,14 @@ START / END whole at 7px, a finger takes SC's B, 05:45 saved (picture `walk2/08`
 - The built week at his iPhone's width: his "Ok carry on" to pictures 7–9 (D1084).
 - **To look at on his iPhone:** START / END in its column on SC, AVALON and BB (Apple's letters are wider than the test
   browser's; measured to fit with a seventh to spare).
+
+## 13. D1085 — the board's standby waves headed START / END (his word after the preview, 20 Oct 26)
+*"Since edit schedule is start and end. Make the Scheduler board reflect the same. Instead of TO LD."* Recorded first
+(D1085; D1083's full row marked NARROWED). Built in `board.ts` — a standby wave's third heading pair reads START / END
+(`sb-se` marks it), a flying wave's TO / LD; R and B, CS and MSN as they were. Tier **LOOK** (one surface's two words,
+no new box, no rule read differently); the fit measured, not assumed: `scripts/handpass/standby-board-fit.mjs` — START
+36px in a 46px cell on a phone (320 to 820), 32px in 48–52 on a desktop, letters a seventh wider fit too, at the board's
+own heading size (no smaller letters needed). Pictures `board/` (`scripts/handpass/look-standby-board.mjs`, the built app,
+the headings ringed): phone 402 and desktop 1440, all opened. Tests: RB10 "the Scheduler Board" (break B6 red); the
+board's own unit files 228 passed; the rally box browser file 16/16. The walk's D5b now asserts the new headings; the whole walk re-run on this build (`walk3/`): **27 PASS, 0 FAIL**, 11
+pictures, no error — D5b: the board's headings TO LD, TO LD, START END ×3.

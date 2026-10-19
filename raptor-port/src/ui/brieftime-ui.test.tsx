@@ -516,6 +516,19 @@ describe("RB10 — a standby line's rally box on every surface", async () => {
       await act(async () => { delete SCHED.pending[rk(key)]; (DAYS[0] as any).waves.pop(); notify() })
     }
   })
+  /* D1085 (20 Oct 26 — "Make the Scheduler board reflect the same. Instead of TO LD"): the board heads a standby wave's
+     third pair START / END, as the week does; a flying wave keeps TO / LD; R and B as they are */
+  it('the Scheduler Board: a standby wave headed R · B · START · END, a flying wave R · B · TO · LD', async () => {
+    const { boardHTML } = await import('./board')
+    for (const kind of ['sc', 'avalon', 'bb']) {
+      const { gi } = add(kind)
+      const d = html(boardHTML(0))
+      const heads = [...d.querySelectorAll('.sb-lcols')].map(c => [c.querySelector('.sb-hrb')!.textContent, c.querySelector('.sb-htl')!.textContent, c.querySelector('.sb-htl')!.classList.contains('sb-se')])
+      expect(heads[gi], kind + ': its own heading').toEqual(['RB', 'STARTEND', true])
+      expect(heads[0], kind + ': a flying wave keeps TO / LD').toEqual(['RB', 'TOLD', false])
+      ;(DAYS[0] as any).waves.pop()
+    }
+  })
   it('the next-week peek: R over B, START over END', () => {
     const { w } = add('avalon'); w.formations[0].rl = '17:30'; w.formations[0].br = '18:15'
     const d = html(peekDayHTML(DAYS[0], 0, true))
