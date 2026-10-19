@@ -528,14 +528,65 @@ describe('RB11 — a replaced time is saved; chosen digits are edited; Backspace
     type(i, '13:001', 'insertText'); i.value = '13:00'; i.blur()
     expect(changes, 'Escape put the old time back').toBe(0); i.remove()
   })
-  it('F2: digits chosen with a drag are edited as chosen', () => {
-    const i = box('13:00'); i.setSelectionRange(3, 5)
-    type(i, '13:', 'deleteContentBackward'); expect(i.value).toBe('13:'); expect(i.dataset.fresh || '').toBe(''); i.remove()
+  it('F2: digits chosen with a drag (a press that moved) are edited as chosen', () => {
+    const i = box('13:00')
+    document.dispatchEvent(new PointerEvent('pointerdown', { clientX: 100, clientY: 50 }))
+    document.dispatchEvent(new PointerEvent('pointerup', { clientX: 130, clientY: 50 }))
+    expect(i.dataset.fresh || '', 'a drag gives back ordinary editing').toBe('')
+    i.setSelectionRange(3, 5); type(i, '13:', 'deleteContentBackward'); expect(i.value).toBe('13:'); i.remove()
+  })
+  it('F2: a tap (a press that did not move) stays armed, whatever the browser selected', () => {
+    const i = box('13:00')
+    document.dispatchEvent(new PointerEvent('pointerdown', { clientX: 100, clientY: 50 }))
+    document.dispatchEvent(new PointerEvent('pointerup', { clientX: 102, clientY: 51 }))
+    expect(i.dataset.fresh).toBe('1'); i.remove()
   })
   it('F4: Backspace selects the whole time, so it clears wherever the caret is', () => {
     const i = box('13:00'); i.setSelectionRange(0, 0)
     i.dispatchEvent(new KeyboardEvent('keydown', { key: 'Backspace', bubbles: true }))
     expect([i.selectionStart, i.selectionEnd], 'the whole time selected for the key').toEqual([0, 5])
-    expect(i.dataset.fresh || '', 'the browser does the rest').toBe(''); i.remove()
+    expect(i.dataset.fresh, 'still armed: the clear is read from what the browser deleted (N1)').toBe('1')
+    type(i, '13:0', 'deleteContentBackward')
+    expect(i.value, 'a phone that ignored the selection and took one digit: still cleared').toBe(''); i.remove()
+  })
+})
+
+describe('firstReplace — the browser\'s own word for what was put in wins over the shape', async () => {
+  const { firstReplace } = await import('./interactions')
+  it('"0915" put into "13:00" after "13:0" is 0915, not 9150', () => {
+    expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertText', data: '0915' }), '13:091500')).toBe('0915')
+    expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertText', data: '1' }), '13:001')).toBe('1')
+    expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertText', data: '1' }), '1'), 'a selection typed over: what was typed').toBe('1')
+    expect(firstReplace('09:15', new InputEvent('input', { inputType: 'insertText', data: '1' }), '09:1'), 'a word a single tap left chosen, typed over: a fresh time').toBe('1')
+    expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertCompositionText', data: '001' }), '13:001'), 'an Android composition: read by shape (M1)').toBe('1')
+    expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertReplacementText', data: '1300' }), '13:001'), 'autocorrect: read by shape, not its data (M1)').toBe('1')
+    expect(firstReplace('13:00', new InputEvent('input', { inputType: 'deleteContentBackward' }), '13:0')).toBe('')
+  })
+})
+
+describe('M3 — a scroll started on the armed box keeps it armed; a second tap or a long press does not', async () => {
+  const { armFreshTime } = await import('./interactions')
+  const armed = () => { const i = document.createElement('input'); i.className = 'tm'; i.value = '16:00'; const w = document.createElement('div'); w.id = 'eWeek'; w.appendChild(i); document.body.appendChild(w); i.focus(); armFreshTime(i); return { i, w } }
+  it('pointerdown then a quick pointercancel (a scroll): still armed; pointerdown then pointerup (a tap): disarmed', () => {
+    const { i, w } = armed()
+    i.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 10, clientY: 10 }))
+    document.dispatchEvent(new PointerEvent('pointercancel'))
+    expect(i.dataset.fresh, 'a scroll keeps it').toBe('1')
+    i.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 10, clientY: 10 }))
+    document.dispatchEvent(new PointerEvent('pointerup', { clientX: 10, clientY: 10 }))
+    expect(i.dataset.fresh || '', 'a second tap gives back ordinary editing').toBe('')
+    w.remove()
+  })
+})
+
+describe('M2 pinned — a placed suggestion with digits he chose, typed over, keeps the rest', async () => {
+  const { placeSuggestion } = await import('./interactions')
+  it('choose "20" of 07:20, type 45: 07:45', () => {
+    const inp = document.createElement('input'); inp.placeholder = '07:20'; document.body.appendChild(inp)
+    placeSuggestion(inp)
+    inp.value = '07:4'
+    inp.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: '4' }))
+    expect(inp.value, 'a chosen-digits edit is not a fresh time').toBe('07:4')
+    inp.remove()
   })
 })
