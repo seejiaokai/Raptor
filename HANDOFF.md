@@ -20,17 +20,18 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/rally-box-changes -->
-### `claude/rally-box-changes` — [RALLY-BOX-CHANGES] + D1047 (one tap into a time box then typing replaces it) — pull request 541, waiting for his iPhone look and "merge live" — verify before use
-- **Done:** D1038–D1041 (the taken suggestion's blue flash; SC / AVALON / BB R boxes with no worked-out times; the SC MAIN rally in crew rest and OIL) FULL-checked — the sheet `raptor-port/docs/handpass/2026-10-19-rally-changes.md`; two full gate runs green. After his look: D1047 — every time box on the board and the week: one tap then typing replaces, one tap then Backspace clears (and is saved), a second tap / arrow key / drag edits digits (`raptor-port/src/ui/interactions.ts` `firstReplace`, `firstChange`, `armFreshTime`, `oweChange`, the TIME_PRESS / TIME_DOWN / ARMED_PRESS listeners). A fresh read (F1–F4) and two narrow reads (N1; M1–M3) — all fixed; e2e rallybox + schedule-tab 41/41, unit 35/35.
-- **Reads done:** round 3 (the last) — two small fixes made (a press's pointer matched; a cancelled press arms nothing); its F1 (a long press the browser does not cancel stays armed) left for his iPhone walk. **Owed before "merge live":** the pull request's own checks green on the last push; his iPhone look.
-- **For his iPhone look:** a time tapped then typed replaces it; tapped then Backspace clears it and stays cleared after Done; a scroll started on the box then typing still replaces; a long press (loupe) then typing edits in place; the space-bar caret drag is NOT caught yet (settle on his iPhone first).
-- **Parallel chats (D302), each its own branch and pull request:** [Keyboard scroll and tap-replaces elsewhere](local_a77eea3a-4191-461b-8ff6-0822b82ea52b) — `claude/keyboard-scroll`, D1080–D1089, E2E 4331 — builds on this branch's interactions.ts; [Standby lines that fly](local_6f312ef0-b893-41af-9886-c0ee09d799db) — `claude/sad-herschel-5682e3`, D1060–D1079, E2E 4321 — waiting on his four answers to its Flies-tick picture. This branch keeps D1049–D1059. Tell both before changing interactions.ts again.
-- **Pick up here:** the round-3 narrow read; then his look and "merge live" (this chat's pull request 541); then archive [RALLY-BOX-CHANGES] by script (homes: the sheet, `ui-contracts.md`, `engine-rules.md`). The preview `raptor-rallychg` (4312) may still be up — stop it by its port.
-- **Opening line:** Read `HANDOFF.md` (the `claude/rally-box-changes` block), then run `git fetch origin` and `git switch claude/rally-box-changes` (if refused because another checkout holds it, run `git switch --detach origin/claude/rally-box-changes` and say so). Pull request 541: run the round-3 narrow read it owes, then wait for my iPhone look and "merge live".
+<!-- now:claude/keyboard-scroll -->
+### `claude/keyboard-scroll` — [KEYBOARD-SCROLL] (D1048) and D1080 (one tap then typing replaces, in four more places) — being bug-checked (WALK)
+- **Where it started:** cut from `claude/rally-box-changes`; pull request 541 (the rally box changes and D1047) went LIVE on 19 Oct 26 and `main` is merged in.
+- **Built:** `src/ui/kbscroll.ts` — on a phone, the box being typed in is scrolled just above the keys (its panels, then the page; a window that cannot scroll is raised, one taller than the room held to the visible screen); D1080 — the templates' times, the Leave War's numbers, the SANS and late cut-off numbers and the Logic settings take a fresh value from the first key after a tap (`interactions.ts` `FRESH_ELSEWHERE`). His four places were put to him with pictures (the artifact "One tap, then type"); he picked all four.
+- **Check so far:** the sheet `raptor-port/docs/handpass/2026-10-19-keyboard-scroll.md`; a fresh Opus read (F1–F4 fixed) and a narrow read of those fixes (five more, being fixed); the full gate set green on the merge before the fixes (unit 11,943, e2e 884, tfin 728/0, Tracker smoke 453); two Sonnet walkers on a frozen build.
+- **Owed iPhone checks carried from pull request 541 (its round-3 read):** dragging the caret with the space bar is not caught as a drag; a long press (the loupe) on the iPhone is unconfirmed.
+- **Pick up here:** finish the bug check, push, the pull request with his look card and the preview link; then his "merge live".
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (19 Oct 26, evening):** pull request 541 is LIVE (the rally box changes D1038–D1041 and D1047, one tap into a time box replaces it) → [KEYBOARD-SCROLL] (D1048) with D1080, on `claude/keyboard-scroll` (its block); [STANDBY-FLIES] in its own chat.
 
 **RIGHT NOW (19 Oct 26, later):** pull request 540 is LIVE (the rally box, D1026–D1034) → his three changes to it (a clear mark when a suggested time is taken, SC / AVALON / BB get the rally, the worked-out suggestion hidden), on `claude/rally-box-changes` (its block).
 
