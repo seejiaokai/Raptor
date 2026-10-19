@@ -5,7 +5,7 @@ import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
 import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
 import { INPUTS, idsOf, inputsOn, remarksShown, remarksTyped, tillOf, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
-import { isStandalone, scSpare, dayCount, mColor, saExempt, saFlies, saTyped, SAWAVE } from '../engine/waves'
+import { isStandalone, scSpare, dayCount, mColor, saExempt, saFlies, saAnyFlies, saTyped, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { reportingIssuesForWave,stated,REPORTING_LABEL,REPORT_WORD } from '../engine/reporting'
 import { waveInTime } from '../engine/events'
@@ -1851,7 +1851,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
       const edge=sa?'var(--san)':`var(--${mColor(f0?f0.msn:'')})`;
       h+=`<div class="go ${w.night?'night':''} ${sa?'sa sa-'+(w.kind||'x'):''}"${ed?` data-move="mv:w.${di}.${gi}"`:''} style="border-left-color:${sa?'var(--san)':(w.night?'var(--hard)':edge)}">
         <div class="go-tab">${ed?'<span class="wvgrip" title="Drag to reorder this wave" aria-label="Reorder this wave">⠿</span>':''}<span class="asd">${ted(`wl:${di}.${gi}`,w.label,ed,'ntx')}${waveHeadTail(w)}`
-        +`${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?' · availability, currency and seat checks only':''}</span>`:''}</span>
+        +`${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?((w.formations||[]).some((f:any)=>saAnyFlies(w,f))?' · flies':' · availability, currency and seat checks only'):''}</span>`:''}</span>
         ${sa||isGuest()?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an ${REPORTING_LABEL} line to this wave">+ ${REPORTING_LABEL}</button>`}</div>`;
       /* "+ In time" renders whether or not the wave has lines — the always-there
          add control is the fix for the old trap where deleting the last line

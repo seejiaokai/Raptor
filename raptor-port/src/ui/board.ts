@@ -1815,7 +1815,7 @@ export function waveMenu(anchor: HTMLElement, di: any) {
   const html = dayBtns
     + `<h5${di == null ? '' : ' class="wm-hpen"'}>Add${di == null ? '' : pen}</h5><div class="wm-row">` + kindRow + `</div>`
     + tplRow
-    + (anyStandby ? `<div class="wm-note">SC \u00b7 AVALON \u00b7 BB sit outside the day's flying count \u2014 two waves of four plus an SC reads <b>4 X 4 / 2</b>.</div>` : '')
+    + (anyStandby ? `<div class="wm-note">SC \u00b7 AVALON \u00b7 BB sit outside the day's flying count until they fly \u2014 two waves of four plus an SC standing by reads <b>4 X 4 / 2</b>.</div>` : '')
     + hiddenLine
   let day = (di == null) ? 0 : di
   const box = popMenu(anchor, html, (e: any, close: () => void) => {

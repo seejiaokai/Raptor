@@ -30,7 +30,7 @@
 import { rowPeopleDrawn, inputRowSeveral } from '../engine/grouprows'
 import { PEOPLE, whoId, QCHIP, QCLASS } from '../engine/people'
 import { noteText } from '../engine/note'
-import { isStandalone, saFlies, mColor, dayCount, CURWEEK } from '../engine/waves'
+import { isStandalone, saFlies, saAnyFlies, mColor, dayCount, CURWEEK } from '../engine/waves'
 import { groundOrder } from '../engine/order'
 import { whoArr } from '../engine/slots'
 import { minus, parseHM } from '../engine/time'
@@ -151,7 +151,7 @@ function peekWave(w: any): string {
   const edge = sa ? 'var(--san)' : `var(--${mColor(f0 ? f0.msn : '')})`
   let h = `<div class="go ${w.night ? 'night' : ''} ${sa ? 'sa sa-' + (w.kind || 'x') : ''}" style="border-left-color:${sa ? 'var(--san)' : (w.night ? 'var(--hard)' : edge)}">`
     + `<div class="go-tab"><span class="asd">${esc(w.label || '')}${!sa && w.night && !/night/i.test(w.label || '') ? ' · NIGHT' : ''}`
-    + `${sa ? `<span class="satag">standalone${w.noconf ? ' · availability, currency and seat checks only' : ''}</span>` : ''}</span></div>`
+    + `${sa ? `<span class="satag">standalone${w.noconf ? ((w.formations || []).some((f: any) => saAnyFlies(w, f)) ? ' · flies' : ' · availability, currency and seat checks only') : ''}</span>` : ''}</span></div>`
   h += sa
     ? `<div class="cols formcols"><span>${esc(w.label || '')}<br>SHIFT</span><span class="c-c">${SA_TIME_HEAD}</span><span class="c-c">END</span><span>FCP / RCP</span><span>RMKS</span></div>`
     : `<div class="cols formcols"><span>CS<br>MSN</span><span class="c-c">${WEEK_TIME_HEAD[0]}</span><span class="c-c">${WEEK_TIME_HEAD[1]}</span><span>FCP / RCP</span><span>RMKS</span></div>`

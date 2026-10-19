@@ -114,6 +114,20 @@ describe('SF1 SF3 SF7 — a shift with its R typed flies whole (D1044, D1045, D1
   })
 })
 
+describe('SF4 — an AVALON / BB wave head says it flies, not "checks only" (walker B, 19 Oct 26)', () => {
+  it('the week and the peek: "· flies" once a row flies; the standby words while none does', () => {
+    const av: any = makeStandalone('avalon')!
+    DAYS[0].waves.push(av)
+    try {
+      expect(dayHTML(0, false)).toContain('availability, currency and seat checks only')
+      av.formations[0].rl = '18:30'
+      const h = dayHTML(0, false)
+      expect(h).toMatch(/standalone · flies</)
+      expect(peekDayHTML(DAYS[0], 0, true)).toMatch(/standalone · flies</)
+    } finally { DAYS[0].waves.pop() }
+  })
+})
+
 describe('SF7 — the next-week peek shows a flying row, read only (D1063)', () => {
   it('"✓ FLIES" before the row\'s words; nothing on a row standing by', () => {
     F(0).rl = '06:30'
