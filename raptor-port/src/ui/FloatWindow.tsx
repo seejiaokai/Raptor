@@ -50,7 +50,7 @@
    left, so a long reason is cut short before the title is (22-float-windows.css `.has-mark`). */
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { frontWin, holdPageScroll, phoneLayout, raiseWin, useFloatWin, type FloatBox } from './floatwin'
-import { putBack } from './kbscroll'
+import { putBack, refit } from './kbscroll'
 import { useVersion } from './useStore'
 import { notify } from '../state/store'
 import { placeToast } from './toast'
@@ -167,7 +167,7 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
     pull.current = null
     if (!d) return
     if (n) { n.style.top = ''; n.style.height = ''; n.style.maxHeight = '' }
-    if (!d.moved) return
+    if (!d.moved) { requestAnimationFrame(refit); return }   // a tap, not a pull: back above the keys (kbscroll.ts)
     dragged.current = true
     if (d.top0 - d.top > PULL) setTall(true)
     else if (d.top - d.top0 > PULL) setTall(false)

@@ -18,7 +18,7 @@
    · THE PHONE LAYOUT is the stylesheet's own breakpoint for these windows (≤620px, scheduler.css), asked of the browser,
      so the two can never disagree about which layout a box belongs to (Astra 3). */
 import { useEffect, useLayoutEffect, useRef } from 'react'
-import { putBack } from './kbscroll'
+import { putBack, refit } from './kbscroll'
 
 export type FloatBox = { x: number, y: number, w: number, h: number, phone?: boolean }
 
@@ -205,7 +205,7 @@ export function useFloatWin(opts: {
       setBox({ x: r.left, y: r.top, w: r.width, h: r.height, phone: phoneLayout() })
     }
     drag.current = null
-    if (d && !d.moved) place()
+    if (d && !d.moved) { place(); requestAnimationFrame(refit) }   // a tap, not a drag: back above the keys (kbscroll.ts)
   }
   /* true while a drag started on the bar has moved — a tap on the bar is not a drag (the phone bar's own tap reads it) */
   const dragging = () => !!(drag.current && drag.current.moved)

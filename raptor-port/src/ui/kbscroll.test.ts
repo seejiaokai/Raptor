@@ -98,6 +98,18 @@ describe('room below the page (walker A: A11)', () => {
   })
 })
 
+describe('the narrow read round 2', () => {
+  it('L1: a box taller than the room, the page far from its foot: no block below the page, however often it refits', () => {
+    document.body.innerHTML = '<div id="pg"><textarea id="b"></textarea></div>'
+    const b = document.getElementById('b')!
+    place(b, 300, 500)
+    keepAboveKeyboard(b, vvUp); keepAboveKeyboard(b, vvUp); keepAboveKeyboard(b, vvUp)
+    expect(document.querySelector('[data-kbspacer]')).toBeNull()
+    expect(b.getBoundingClientRect().top).toBe(GAP)
+    dropLifts()
+  })
+})
+
 describe('a window that cannot scroll is raised instead', () => {
   const win = () => {
     document.body.innerHTML = '<div id="bd" style="position:fixed"><div id="w"><input id="b"><input id="t"></div></div>'
@@ -253,6 +265,17 @@ describe('installKbScroll', () => {
     vi.advanceTimersByTime(3000)
     keysUp(); frames()
     expect(p.scrollTop).toBe(0)
+  })
+  it('L2: a pinch zoom while typing leaves a raised window raised (it is not the keys going down)', () => {
+    document.body.innerHTML = '<div id="bd" style="position:fixed"><div id="w"><input id="b"></div></div>'
+    const bd = document.getElementById('bd')!, w = document.getElementById('w')!, b = document.getElementById('b') as HTMLInputElement
+    place(bd, 0, H); place(w, 300, 300); place(b, 560, 30)
+    b.focus(); keysUp(); frames()
+    expect(w.style.translate).not.toBe('')
+    vv.scale = 2; vv.height = (H - KB) / 2; vv.dispatchEvent(new Event('resize')); frames()
+    expect(w.style.translate, 'zoomed: still raised').not.toBe('')
+    vv.scale = 1; vv.height = H; vv.dispatchEvent(new Event('resize'))
+    expect(w.style.translate, 'the keys down: put back').toBe('')
   })
   it('a raised window goes back down when the keys do', () => {
     document.body.innerHTML = '<div id="bd" style="position:fixed"><div id="w"><input id="b"></div></div>'

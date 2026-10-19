@@ -180,11 +180,22 @@ export function keepAboveKeyboard(el: HTMLElement, vv: VV): number {
   const page = document.scrollingElement || document.documentElement
   if (page) {
     moved += lift(page, el, visBot - GAP, visTop + GAP)
-    /* the page at its foot and the box still under the keys: room below it, then the page once more */
-    const short = el.getBoundingClientRect().bottom - (visBot - GAP)
-    if (short > 0.5) { roomBelow(short); moved += lift(page, el, visBot - GAP, visTop + GAP) }
+    /* the page at its foot and the box still under the keys: room below it, then the page once more — only as much as
+       the box can still rise with its top in sight (the narrow read round 2's L1: a box taller than the room had a block
+       added at every refit, the page nowhere near its foot) */
+    const r2 = el.getBoundingClientRect()
+    const want = Math.min(r2.bottom - (visBot - GAP), r2.top - (visTop + GAP))
+    if (want > 0.5) { roomBelow(want); moved += lift(page, el, visBot - GAP, visTop + GAP) }
   }
   return moved
+}
+
+/** Brings the box being typed in above the keys again, now — for a window put back by a tap on its bar that turned out
+    not to be a drag (floatwin.ts, FloatWindow.tsx — the narrow read round 2's L3): no focus arrives to do it. */
+export function refit() {
+  if (typeof document === 'undefined') return
+  const a = document.activeElement, vv = window.visualViewport
+  if (isTypingBox(a) && keyboardUp(vv)) keepAboveKeyboard(a, vv!)
 }
 
 /** Follows the focus and the visual viewport from now on (called once, from main.tsx). Returns the way to stop. */
@@ -214,7 +225,11 @@ export function installKbScroll(): () => void {
   /* read fresh each time: the walk stands a stand-in viewport in after the page has loaded */
   let vvNow: VisualViewport | null = null
   const resize = () => {
-    if (!keyboardUp(window.visualViewport)) { dropLifts(); return }
+    const vv = window.visualViewport
+    /* the keys down — read with the zoom taken out, so a pinch while typing (the narrow read round 2's L2) neither puts the
+       window back nor takes the room below the page away; a zoomed frame itself changes nothing */
+    if (!vv || window.innerHeight - vv.height * (vv.scale || 1) <= KEYBOARD_MIN) { dropLifts(); return }
+    if (vv.scale > 1.01) return
     if (box && Date.now() - at < FOCUS_WINDOW) soon()
   }
   const follow = () => {
