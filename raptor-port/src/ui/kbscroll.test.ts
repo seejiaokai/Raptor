@@ -112,6 +112,36 @@ describe('a window that cannot scroll is raised instead', () => {
     expect(w.dataset.kblift).toBeUndefined()
     expect(t.getBoundingClientRect().top).toBe(320)
   })
+  it('a window taller than the room is held to the visible screen, its top at the top, and its own body scrolls the box into sight (the fresh read\'s F1)', () => {
+    document.body.innerHTML = '<div id="bd" style="position:fixed"><div id="w"><input id="b"></div></div>'
+    const bd = document.getElementById('bd')!, w = document.getElementById('w')!, b = document.getElementById('b') as HTMLInputElement
+    place(bd, 0, H)
+    /* the window: 300–900 tall as its content, and once held to a height, that tall, scrolling the rest */
+    let st = 0
+    w.style.overflowY = 'auto'
+    const wh = () => (w.style.maxHeight ? parseInt(w.style.maxHeight) : 600)
+    Object.defineProperty(w, 'scrollTop', { configurable: true, get: () => st, set: v => { st = Math.max(0, Math.min(600 - wh(), v)) } })
+    Object.defineProperty(w, 'scrollHeight', { configurable: true, get: () => 600 })
+    Object.defineProperty(w, 'clientHeight', { configurable: true, get: () => wh() })
+    w.getBoundingClientRect = () => { const top = 300 - +(w.dataset.kblift || 0); return { top, bottom: top + wh(), left: 0, right: 100, width: 100, height: wh(), x: 0, y: top, toJSON() {} } as DOMRect }
+    place(b, 860, 30)                   // its last row, which rising to the top alone cannot bring above the keys
+    keepAboveKeyboard(b, vvUp)
+    expect(w.style.maxHeight).toBe(`${H - KB - 2 * GAP}px`)
+    expect(w.getBoundingClientRect().top).toBe(GAP)
+    expect(b.getBoundingClientRect().bottom).toBeLessThanOrEqual(H - KB - GAP)
+    expect(b.getBoundingClientRect().top).toBeGreaterThanOrEqual(GAP)
+    dropLifts()
+    expect([w.style.maxHeight, w.style.translate], 'all put back').toEqual(['', ''])
+  })
+  it('a window that sets its own height limit is left to it', () => {
+    const { w, b } = win()
+    w.style.maxHeight = '200px'
+    place(b, 590, 400)
+    keepAboveKeyboard(b, vvUp)
+    expect(w.style.maxHeight).toBe('200px')
+    dropLifts()
+    expect(w.style.maxHeight).toBe('200px')
+  })
   it('put back when the typing ends', () => {
     const { w, b } = win()
     keepAboveKeyboard(b, vvUp)

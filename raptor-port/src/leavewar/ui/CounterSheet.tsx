@@ -402,6 +402,8 @@ export function PersonFiguresSheet({
                     data-testid={`${f.id}-input`}
                     value={balDraft ?? ''}
                     autoFocus
+                    // opened with the focus in it: one tap on "Set", then typing, replaces the balance (D1080)
+                    data-freshfocus=""
                     onChange={e => setBalDraft(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setBalDraft(null) }}
                     aria-label={`${f.label} balance`}

@@ -17,8 +17,8 @@
    smooth scroll measured mid-slide overshoots (D991 — no motion to wait on).
 
    WHEN IT DOES NOTHING. With no keyboard up — the visible screen within KEYBOARD_MIN of the layout's height: a desktop,
-   a phone with a hardware keyboard, an Android phone (whose browser shortens the whole page and scrolls the box into
-   view itself) — and while the page is pinch-zoomed (the board leaves a zoom alone too). A resize long after the
+   a phone with a hardware keyboard (an Android phone's Chrome, since its version 108, shrinks only the visible screen as an
+   iPhone does, so this works there too — not walked) — and while the page is pinch-zoomed (the board leaves a zoom alone too). A resize long after the
    focus (Safari's own bars folding as he scrolls) does not pull the box back: only those within FOCUS_WINDOW of the
    focus act. So nothing changes on a desktop, and a box he scrolled away from on purpose stays where he put it.
 
@@ -71,12 +71,25 @@ function lift(sc: Element, el: HTMLElement, bot: number, top: number): number {
    layout's height (D997), which the keyboard does not shorten, so its lower half can be under the keys with nothing to
    scroll. What is raised is the window itself — inside a backdrop that fills the screen (a .modal), the box on it; else
    the fixed layer — by the CSS `translate` property, which adds to any transform a window is dragged by, never so far
-   that its top leaves the visible screen; and it is put back where it was when the typing ends or the keys go down. */
+   that its top leaves the visible screen; and it is put back where it was when the typing ends or the keys go down.
+   A WINDOW TALLER THAN THE ROOM LEFT (the fresh read's F1, 19 Oct 26: Duty templates with eight roles — risen to the top
+   of the screen, its last rows were still under the keys; its own height limit is the layout's, which the keys do not
+   shorten, so its body had nothing more to scroll): it is held to the visible screen's height for as long as the keys are
+   up, its top at the top, and its own body then scrolls the box into sight — the Leave War's sheets do the same for
+   themselves (leavewar/ui/Sheet.tsx). A window that already sets its own height limit is left to it. */
 const LIFTED = new Set<HTMLElement>()
 const shiftOf = (l: HTMLElement) => +(l.dataset.kblift || 0)
 function setShift(l: HTMLElement, s: number) {
-  if (s > 0.5) { l.style.translate = `0 ${-Math.round(s)}px`; l.dataset.kblift = String(Math.round(s)); LIFTED.add(l) }
-  else { l.style.translate = ''; delete l.dataset.kblift; LIFTED.delete(l) }
+  if (s > 0.5) { l.style.translate = `0 ${-Math.round(s)}px`; l.dataset.kblift = String(Math.round(s)); LIFTED.add(l); return }
+  l.style.translate = ''; delete l.dataset.kblift
+  if (l.dataset.kbcap != null) { l.style.maxHeight = ''; delete l.dataset.kbcap }
+  LIFTED.delete(l)
+}
+/* hold `l` to `h` tall — never over a height limit the window set itself */
+function cap(l: HTMLElement, h: number): boolean {
+  if (l.dataset.kbcap == null) { if (l.style.maxHeight) return false; l.dataset.kbcap = '' }
+  l.style.maxHeight = Math.round(h) + 'px'; LIFTED.add(l)
+  return true
 }
 /** Puts back every window raised for the keys, but the one that holds `keep`. */
 export function dropLifts(keep?: Element | null) {
@@ -96,7 +109,13 @@ function raise(fixedEl: HTMLElement, el: HTMLElement, visTop: number, visBot: nu
   const need = r.bottom - (visBot - GAP)
   /* up by what the box needs, never past the visible top; down again (towards where it stood) when it is higher than it
      need be — a box further up the same window */
-  const d = need > 0 ? Math.min(need, lr.top - (visTop + GAP)) : Math.max(need, -s0)
+  const room = lr.top - (visTop + GAP)
+  if (need > room + 0.5 && cap(layer, visBot - visTop - 2 * GAP)) {
+    /* held to the room, measured again (a window centred on its backdrop re-centres as it shrinks): its top to the top */
+    setShift(layer, Math.max(0, s0 + layer.getBoundingClientRect().top - (visTop + GAP)))
+    return 1
+  }
+  const d = need > 0 ? Math.min(need, room) : Math.max(need, -s0)
   if (Math.abs(d) < 0.5) return 0
   setShift(layer, Math.max(0, s0 + d))
   return Math.abs(shiftOf(layer) - s0)
@@ -108,13 +127,21 @@ function raise(fixedEl: HTMLElement, el: HTMLElement, visTop: number, visBot: nu
 export function keepAboveKeyboard(el: HTMLElement, vv: VV): number {
   const visTop = vv.offsetTop, visBot = vv.offsetTop + vv.height
   let moved = 0, fixed: HTMLElement | null = null
-  for (let a = el.parentElement; a && a !== document.body && a !== document.documentElement; a = a.parentElement) {
-    if (!fixed && getComputedStyle(a).position === 'fixed') fixed = a
-    if (!scrolls(a)) continue
-    const ar = a.getBoundingClientRect()
-    moved += lift(a, el, Math.min(ar.bottom, visBot) - GAP, Math.max(ar.top, visTop) + GAP)
+  const panels = () => {
+    for (let a = el.parentElement; a && a !== document.body && a !== document.documentElement; a = a.parentElement) {
+      if (!fixed && getComputedStyle(a).position === 'fixed') fixed = a
+      if (!scrolls(a)) continue
+      const ar = a.getBoundingClientRect()
+      moved += lift(a, el, Math.min(ar.bottom, visBot) - GAP, Math.max(ar.top, visTop) + GAP)
+    }
   }
-  if (fixed) return moved + raise(fixed, el, visTop, visBot)
+  panels()
+  if (fixed) {
+    const r = raise(fixed, el, visTop, visBot)
+    /* a window raised, or held to the room, may now scroll its own body: the panels once more */
+    if (r) { moved += r; panels() }
+    return moved
+  }
   const page = document.scrollingElement || document.documentElement
   if (page) moved += lift(page, el, visBot - GAP, visTop + GAP)
   return moved

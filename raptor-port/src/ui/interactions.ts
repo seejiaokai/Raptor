@@ -796,7 +796,9 @@ function oweChange(el: HTMLInputElement, shown: string) {
 }
 const selectWhole = (el: HTMLElement) => {
   try {
-    if (el instanceof HTMLInputElement) el.setSelectionRange(0, el.value.length)
+    /* a number box (the Leave War's counts, D1080) has no selection range — setSelectionRange throws there — so select()
+       (the fresh read's F4: Backspace with the caret before the digit deleted nothing) */
+    if (el instanceof HTMLInputElement) { try { el.setSelectionRange(0, el.value.length) } catch (_) { el.select() } }
     else { const r = document.createRange(); r.selectNodeContents(el); const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r) }
   } catch (_) { /* a courtesy */ }
 }
@@ -857,7 +859,10 @@ if (typeof document !== 'undefined') {
     if (a && a.dataset && a.dataset.fresh) a._freshOff?.()
   }, true)
   document.addEventListener('pointerdown', e => {
-    const t = (e.target as any)?.closest?.('input, [contenteditable="true"]')
+    /* a press on a box's label (the SANS colour rows, the cut-off's row, "Amber below") focuses its box: it is a press on
+       the box (the fresh read's F2) */
+    const raw = e.target as any
+    const t = raw?.closest?.('input, [contenteditable="true"]') || raw?.closest?.('label')?.control || null
     if (!isTimeBox(t) && !isFreshElsewhere(t)) { TIME_PRESS = null; return }
     /* a second press on a box already waiting: the caret goes where he pressed, and the box is ordinary */
     if (document.activeElement === t && t.dataset.fresh) { ARMED_PRESS = { el: t, at: Date.now() }; TIME_PRESS = null; return }
@@ -866,6 +871,9 @@ if (typeof document !== 'undefined') {
   document.addEventListener('keydown', () => { TIME_PRESS = null }, true)
   document.addEventListener('focusin', e => {
     const el = e.target as any, p = TIME_PRESS
+    /* a box its screen opens with the focus already in it, after the press on the button that opened it (the Leave War's
+       balance "Set" — the fresh read's F3), marked data-freshfocus: armed as it opens */
+    if (isFreshElsewhere(el) && el.dataset.freshfocus != null) { TIME_PRESS = null; if (boxValue(el).trim()) armFreshTime(el); return }
     if (!p || Date.now() - p.at > 1500) return
     if (isFreshElsewhere(el)) {
       /* these boxes carry no address: the press must have landed on this very box */

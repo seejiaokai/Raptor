@@ -64,6 +64,22 @@ describe('KF2 — what is left alone', () => {
   })
 })
 
+describe('KF5 — the fresh read\'s F2, F3', () => {
+  it('a press on a box\'s label (a SANS colour row) is a press on its box', () => {
+    document.body.innerHTML = '<label class="sset-row"><span id="w">Yellow from</span><input class="sset-num" value="1"></label>'
+    const i = document.querySelector('input') as HTMLInputElement
+    document.getElementById('w')!.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })); i.focus()
+    expect(i.dataset.fresh).toBe('1')
+    type(i, '12'); expect(i.value).toBe('2')
+  })
+  it('a box its screen opens with the focus in it (the balance "Set") is armed as it opens; one with nothing in it is not', () => {
+    let i = mk('<input class="oil-num" data-freshfocus="" value="4.5">'); i.focus()
+    expect(i.dataset.fresh).toBe('1')
+    i = mk('<input class="oil-num" data-freshfocus="" value="">'); i.focus()
+    expect(i.dataset.fresh || '').toBe('')
+  })
+})
+
 describe('KF3 — a second press, an arrow key, Backspace', () => {
   it('a second press on the waiting box gives back ordinary editing', () => {
     const i = mk('<input class="lgin" value="12h">'); press(i)
