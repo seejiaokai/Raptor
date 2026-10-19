@@ -9,13 +9,14 @@
    Pictures 5 and 6: the same, the third heading TO over LD (a flying wave's, and the board's on these lines) — on a
    phone START does not fit the third column (it runs under FCP / RCP in picture 2).
    Run: HP_URL=http://localhost:4183 node scripts/handpass/mock-standby-week-b.mjs
+   BUILT=1 (after D1083 was built): pictures 7–9, the built week itself, its headings and B boxes ringed, nothing drawn in.
    Pictures: docs/img/handpass/2026-10-20-standby-week-b/ */
 import { existsSync, mkdirSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from '@playwright/test'
 
-console.log('mock-standby-week-b v4')
+console.log('mock-standby-week-b v5')
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const BASE = process.env.HP_URL || 'http://localhost:4183'
 const OUT = resolve(ROOT, 'docs/img/handpass/2026-10-20-standby-week-b')
@@ -79,6 +80,19 @@ function ringToday(arg) {
   for (const go of list) {
     const hs = go.querySelector('.cols.formcols').children
     markBox(hs[1], '#ff3b3b'); markBox(hs[2], '#ff3b3b'); n++
+  }
+  return n
+}
+
+/* BUILT (BUILT=1, after D1083): nothing drawn in — the built week's own headings and B boxes ringed */
+function ringBuilt(arg) {
+  const { list } = waves(arg)
+  let n = 0
+  for (const go of list) {
+    const hs = go.querySelector('.cols.formcols').children
+    if (!/B/.test(hs[1].textContent) || !/START/.test(hs[2].textContent)) throw new Error('not the built heading: ' + hs[1].textContent + ' / ' + hs[2].textContent)
+    markBox(hs[1], '#ff9a3c', true); markBox(hs[2], '#ff9a3c', true)
+    for (const b of go.querySelectorAll('.form .bto [data-txt$=".br"], .form .bto b')) { markBox(b, '#ff9a3c', true); n++ }
   }
   return n
 }
@@ -150,6 +164,24 @@ async function shoot(p, gis, name, fn, phone, h3) {
 }
 
 try {
+  if (process.env.BUILT) {
+    {
+      const ctx = await browser.newContext({ viewport: { width: 402, height: 874 }, deviceScaleFactor: 3, isMobile: false, hasTouch: true, colorScheme: 'dark' })
+      const p = await login(ctx); const gis = await setUp(p)
+      await shoot(p, gis, '7-phone-week-built.png', ringBuilt, true)
+      /* the close-up: the SC wave's heading and first line, true pixels at 3x */
+      const box = await p.evaluate(({ DI, gis }) => { const go = document.querySelectorAll('#page-editsched .day')[DI].querySelector(`[data-move="mv:w.${DI}.${gis.sc}"]`); const h = go.querySelector('.cols.formcols').getBoundingClientRect(), f = go.querySelector('.form').getBoundingClientRect(); return { x: h.left + scrollX, y: h.top + scrollY, w: h.width, h: f.top + 70 - h.top } }, { DI, gis })
+      await p.screenshot({ path: resolve(OUT, '8-phone-heading-closeup.png'), clip: { x: Math.max(0, box.x - 6), y: box.y - 8, width: Math.min(box.w * 0.55, 402), height: box.h + 16 }, fullPage: true })
+      await ctx.close()
+    }
+    {
+      const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 2, colorScheme: 'dark' })
+      const p = await login(ctx); const gis = await setUp(p)
+      await shoot(p, gis, '9-desktop-week-built.png', ringBuilt, false)
+      await ctx.close()
+    }
+    process.exitCode = 0
+  } else {
   {
     const ctx = await browser.newContext({ viewport: { width: 402, height: 874 }, deviceScaleFactor: 3, isMobile: false, hasTouch: true, colorScheme: 'dark' })
     const p = await login(ctx); const gis = await setUp(p)
@@ -175,6 +207,7 @@ try {
     const p = await login(ctx); const gis = await setUp(p)
     await shoot(p, gis, '6-desktop-week-proposed-to-ld.png', draw, false, 'TO<br>LD')
     await ctx.close()
+  }
   }
 } finally {
   await browser.close()

@@ -769,16 +769,20 @@ The typed lines are named **In-time** (`REPORTING_LABEL`: the button "+ In-time"
 list, Undo); where the app states WHEN a wave reports — the week's evening-before note and the timings-out-of-order
 warning's title — it still says "In-time / Rally" (`REPORT_WORD`), as a rally may decide it. A flying line's second time
 column is headed R / B (the formation's R box above its B) and the third TO / LD, on Edit Schedule's week, View-only
-Sched and the next-week peek (one heading constant, `html.ts WEEK_TIME_HEAD`); a standalone line keeps START / END. On
+Sched and the next-week peek (one heading constant, `html.ts WEEK_TIME_HEAD`); a standalone line's are R / B and START / END (D1083). On
 View-only Sched an empty R keeps its line, so B stays second in every formation. The desktop week draws the four times at
 one size (LD's, 11px). The Scheduler Board's line carries two time wrappers, `.sb-rb` (R, B) and `.sb-tl` (TO, LD):
 display:contents on a desktop board, so R · B · TO · LD stand in one line over eleven tracks (D1029, picture 11);
 where the pucks take their own row (a phone up to 820 wide, not the desktop layout) each is one cell, its two boxes 4px
 apart, the mission spanning the freed track so the pucks and remarks keep their widths (picture 6). The headings follow
 the same wrappers; the phone hides the 6th to 9th heading children (FCP, RCP, Notes, the end place). A standby line (SC,
-AVALON, BB) has its R box too (D1036, D1040): before B on the board, above START on the week and the next-week peek
-(`html.ts SA_TIME_HEAD`, "R / START"), with no suggestion in it or in its B (D1039) — only a faint dash on the board,
-the box's placeholder in the week's own empty-box grey (`.sadash`, D1065), never a value. On a standby line a typed B or
+AVALON, BB) has its R box too (D1036, D1040): before B on the board; on the week and the next-week peek above the line's
+own B, as a flying line's (`html.ts SA_TIME_HEAD`, R / B then START / END — D1083, 20 Oct 26; until then the week drew R
+above START and no B, so a B typed on the board never showed there). START stands above END in the third column, as a
+flying line's TO above its LD; on a phone the START / END heading is drawn in smaller letters so it fits that column
+(D1083). The B on the week is the same box the board writes (`f.br`; SC's in-time on SC MAIN, D1041). Neither box
+offers a suggestion (D1039) — only a faint dash, the box's placeholder in the week's own empty-box grey (`.sadash`,
+D1065), never a value. On a standby line a typed B or
 R flies the whole shift ([STANDBY-FLIES], D1045). **A suggested time sits faint inside its own empty box** (D1028,
 D1030 — the suggested brief and the default rally, the take-off less the Logic page's "Default rally before take-off"):
 the week's box by its `data-ph`, the board's by its placeholder, both `.sugbox` in the accent; the old line above B
@@ -1158,8 +1162,8 @@ left. As built (`interactions.ts jumpToChange`, `histbubble.ts findSeatRow` / `i
   History pinned open.
 - **A look at an older version is left first, on the board as on the week** — only the look; nothing is loaded.
 - **"Shown on the week, not on the board" / "shown on the scheduler board" are said only where they are TRUE** —
-  of a box the other page alone draws (`onlyOn`: the programme's second line is the week's; a standby line's B box is
-  the board's). Anything else not drawn here says only "That detail is not shown on this page"; a row deleted since
+  of a box the other page alone draws (`onlyOn`: the programme's second line is the week's; a standby line's B box was
+  the board's until D1083 (20 Oct 26) drew it on the week too). Anything else not drawn here says only "That detail is not shown on this page"; a row deleted since
   keeps "That detail is no longer on this day".
 - **The roll-call of any change to "TAP A CHANGE TO GO TO IT"** (the checking guide's §11 — his find costs the method
   a line): every kind of seat a line can name — flying, duty desk and its extras, sim seat, passengers and extras,
@@ -4015,8 +4019,9 @@ so accepting is an ordinary edit — pending mark, next AL, undoable. It is
 never applied silently: the model stays blank until somebody decides, and a
 blank line is still validated against that same suggested time.
 
-**SC is the exception (owner, 24 Aug 26).** On the week an SC line has no B
-column (it shows SHIFT / START / END). On the board it keeps its B input — but
+**SC is the exception (owner, 24 Aug 26).** On the week an SC line had no B
+column (it showed SHIFT / START / END) — until D1083 (20 Oct 26): the week now draws R over B and START over END on SC,
+AVALON and BB, the B the same box the board writes, so the seam named below is closed. On the board it keeps its B input — but
 that box is an **in-time**, not a brief: no blue suggested-brief ghost is
 offered on an SC line, and typing one is read by the engine as the crew's
 report time (`docs/engine-rules.md`, the SC B rule). The board also drops the

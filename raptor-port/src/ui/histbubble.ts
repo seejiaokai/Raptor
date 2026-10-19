@@ -4,7 +4,6 @@ import { ridKey } from '../engine/rowids'
 import { seatRow, iuParts } from '../engine/keys'
 import { rowPlaces, rowRef, slotVal } from '../engine/slots'
 import { rowItemKey } from '../engine/oil'
-import { isStandalone } from '../engine/waves'
 import { DAYS } from '../engine/data'
 import { PEOPLE, whoId } from '../engine/people'
 import { inpById, inpLabel, idsOf, isUnavail } from '../engine/inputs'
@@ -214,8 +213,7 @@ export function weekJumpable(key: any) {
    said now only of a box that IS on the other page and not on this one, and that is decided here, from the KIND of
    box, never from "not found":
      · the week alone draws a Common Programme row's second line (`ap:…​.sub` — board-html.ts keeps the field, not the box);
-     · the board alone draws the B box of a standby line (SC, AVALON, BB) — the week prints such a line with its
-       times only (html.ts, the `sa` branch of a flying line).
+     (until D1083, 20 Oct 26, the board alone drew a standby line's B box — SC, AVALON, BB; the week draws it now.)
    null — both pages draw it, or it is a seat (findSeatRow below), or nothing is known of it: the jump then says only
    that it is not shown here. `key` is positional. The list is PROVED, not vouched for: histjump.test.tsx sets every
    box either page draws, on every day of the demo week and on a day flying all three standby kinds, against what the
@@ -223,8 +221,6 @@ export function weekJumpable(key: any) {
 export function onlyOn(key: any): 'week' | 'board' | null {
   const k = String(key || '')
   if (/^ap:.*\.sub$/.test(k)) return 'week'
-  const m = /^ff:(\d+)\.(\d+)\.\d+\.br$/.exec(k)
-  if (m) { const d: any = (DAYS as any)[+m[1]!], w = d && (d.waves || [])[+m[2]!]; if (w && isStandalone(w)) return 'board' }
   return null
 }
 

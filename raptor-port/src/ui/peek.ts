@@ -120,12 +120,11 @@ function peekFormation(w: any, f: any): string {
   let h = `<div class="form${rowCls(f)}">`
     + `<div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa ? 'var(--san)' : `var(--${mColor(f.msn)})`}"></span>${esc(f.cs || '')}</b>${f.msn ? `<i>${esc(f.msn)}</i>` : ''}</div>`
     + (sa
-      ? `<div class="fcell bto${badCls}"${badAtt} style="${spans}"><span class="rl">${esc(f.rl || '')}</span><span>${esc(f.to || '')}</span></div>`
+      ? `<div class="fcell bto${badCls}"${badAtt} style="${spans}"><span class="rl">${esc(f.rl || '')}</span><b>${esc(f.br || '')}</b></div>`
       : `<div class="fcell bto${badCls}"${badAtt} style="${spans}"><span class="rl">${esc(f.rl || '')}</span><b>${esc(brShown || '')}</b></div>`)
-    /* R above B, TO above LD (D1026) — the week's own layout; a standalone line keeps its TO in the first time cell, under its R (D1040) */
-    + (sa
-      ? `<div class="fcell ld${badCls}"${badAtt} style="${spans}">${esc(f.ld || '')}</div>`
-      : `<div class="fcell ld${badCls}"${badAtt} style="${spans}"><span>${esc(f.to || '')}</span><span>${esc(f.ld || '')}</span></div>`)
+    /* R above B, TO above LD (D1026) — the week's own layout; a standalone line the same, its own typed B only (no
+       worked-out brief, D1039) and START above END (D1083) */
+    + `<div class="fcell ld${badCls}"${badAtt} style="${spans}"><span>${esc(f.to || '')}</span><span>${esc(f.ld || '')}</span></div>`
   ;(f.aircraft || []).forEach((a: any, ai: number) => {
     const acx = (f.cx ? '' : rowCls(a)) + ((sa && a.spare && !saFlies(w, f, a)) ? ' spare' : '')
     const stores = sa ? '' : storesView(a.opts || {})
@@ -153,7 +152,7 @@ function peekWave(w: any): string {
     + `<div class="go-tab"><span class="asd">${esc(w.label || '')}${!sa && w.night && !/night/i.test(w.label || '') ? ' · NIGHT' : ''}`
     + `${sa ? `<span class="satag">standalone${w.noconf ? ((w.formations || []).some((f: any) => saAnyFlies(w, f)) ? ' · flies' : ' · availability, currency and seat checks only') : ''}</span>` : ''}</span></div>`
   h += sa
-    ? `<div class="cols formcols"><span>${esc(w.label || '')}<br>SHIFT</span><span class="c-c">${SA_TIME_HEAD}</span><span class="c-c">END</span><span>FCP / RCP</span><span>RMKS</span></div>`
+    ? `<div class="cols formcols"><span>${esc(w.label || '')}<br>SHIFT</span><span class="c-c">${SA_TIME_HEAD[0]}</span><span class="c-c sa-se">${SA_TIME_HEAD[1]}</span><span>FCP / RCP</span><span>RMKS</span></div>`
     : `<div class="cols formcols"><span>CS<br>MSN</span><span class="c-c">${WEEK_TIME_HEAD[0]}</span><span class="c-c">${WEEK_TIME_HEAD[1]}</span><span>FCP / RCP</span><span>RMKS</span></div>`
   ;(w.formations || []).forEach((f: any) => { h += peekFormation(w, f) })
   h += `</div>`
