@@ -24,7 +24,9 @@ describe('the seed still shows the header note and the suggestion (positive cont
   it('a normal flying day draws at least one blue suggestion (and, since D947, no In-time / Rally note)', () => {
     const h = boardHTML(0)
     expect(h, 'no wave header carries the In-time / Rally · N ac note').not.toContain('class="asd">In-time / Rally')
-    expect(h, 'a blank-B flying line offers the blue suggested brief').toContain('class="bsug"')
+    /* inside its own empty box since D1028 / D1030, never on a line above it */
+    expect(h, 'a blank-B flying line offers the suggested brief inside its box').toMatch(/class="tm sugbox" data-bfld="ff:0\.\d+\.\d+\.br"[^>]* placeholder="\d\d:\d\d"/)
+    expect(h, 'no suggestion on a line of its own').not.toContain('class="bsug"')
   })
 })
 
@@ -44,8 +46,12 @@ describe('an SC wave drops the note and the suggestion but keeps the B box', () 
     expect(h).not.toContain('class="asd"')
     expect(h).not.toContain('In-time / Rally ')
   })
-  it('no blue suggested-brief ghost on its lines', () => {
-    expect(boardHTML(0)).not.toContain('class="bsug"')
+  it('no suggested brief on its lines, and no rally box (D1026: a standby line carries no rally)', () => {
+    const h = boardHTML(0)
+    expect(h, 'the SC B box is drawn').toContain('data-bfld="ff:0.0.0.br"')
+    expect(h).not.toContain('sugbox')
+    expect(h, 'the B box shows no suggested time').not.toMatch(/data-bfld="ff:0\.0\.\d+\.br"[^>]*placeholder=/)
+    expect(h).not.toContain('.rl"')
   })
   it('the B box itself is still there to type an in-time into', () => {
     expect(boardHTML(0), 'the SC line keeps its editable B input').toContain('data-bfld="ff:0.0.0.br"')

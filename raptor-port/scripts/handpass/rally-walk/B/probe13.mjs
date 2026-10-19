@@ -1,0 +1,13 @@
+console.log('B probe13 v1 (add a Saturday wave through the board)')
+import { launch, open, sleep, shot, tap, bfld } from './lib.mjs'
+const b = await launch()
+const { ctx, p } = await open(b)
+await p.evaluate(() => window.go('editsched')); await sleep(800)
+await p.evaluate(() => window.openScheduler(5)); await p.waitForSelector('#schedBoard'); await sleep(900)
+await tap(p, p.locator('#sbBoard [data-wvadd]').first(), { block: 'nearest' }); await sleep(400)
+const t = p.getByText('Flying wave', { exact: true }).first()
+const bb = await t.boundingBox(); await p.touchscreen.tap(bb.x + bb.width / 2, bb.y + bb.height / 2); await sleep(800)
+console.log(await p.evaluate(() => JSON.stringify(window.DAYS[5].waves.map(w => ({ label: w.label, f: w.formations.map(f => ({ cs: f.cs, msn: f.msn, to: f.to, ld: f.ld, ac: f.aircraft.length })) })))))
+console.log(await p.evaluate(() => [...document.querySelectorAll('#sbBoard [data-bfld]')].map(e => e.dataset.bfld + '=' + e.value).join(' ')))
+console.log(await shot(p, 'probe13'))
+await b.close()

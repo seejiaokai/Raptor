@@ -1,0 +1,11 @@
+console.log('B probe6 v1')
+import { launch, open, sleep, shot, elShot, tap } from './lib.mjs'
+const b = await launch()
+const { ctx, p } = await open(b)
+await p.evaluate(() => window.go('editsched')); await sleep(800)
+console.log(await p.evaluate(() => { const P = window.PEOPLE; const arr = Array.isArray(P) ? P : Object.values(P); return JSON.stringify(Object.fromEntries((Array.isArray(P)?P:Object.entries(P).map(([k,v])=>({id:k,...v}))).filter(x=>['casper','shrek','pump','dirty','stiff','freak','nact','glass','rocky','bapster','nick'].includes(x.id||x.key)).map(x=>[x.id||x.key, x.cs||x.callsign||x.name])))}))
+await tap(p, p.locator('#eWeek .day[data-day="1"] .daywarn'))
+await sleep(300)
+console.log(await shot(p, 'probe6-tue-warn'))
+console.log(await p.evaluate(() => { const e = document.querySelector('#eWeek .day[data-day="1"] .dwbox'); return e.innerText.slice(0, 1500) }))
+await b.close()

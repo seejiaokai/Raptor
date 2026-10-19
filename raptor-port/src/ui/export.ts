@@ -4,6 +4,7 @@ import { PEOPLE } from '../engine/people'
 import { hhmm, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { STORE_CFG } from '../engine'
+import { isStandalone } from '../engine/waves'
 import { dayApproved, dayCurVer, daySnapOf, verLabel } from '../engine/publish'
 
 /* Excel does not sniff a .csv for UTF-8: with no byte-order mark it decodes the
@@ -63,8 +64,10 @@ export function dayIssuedLabel(di: number): string {
   const ver = dayCurVer(di)
   return ver == null ? 'Published' : `Published — ${verLabel(ver)}`
 }
+/* the formation's own rally as entered (D1026) — never its suggested default, which is no rally anyone set (D1032) */
+const fmtRally = (f: any) => { const m = parseHM(f.rl); return m == null ? '' : hhmm(m) }
 export function schedRows(days: any[] = DAYS) {
-  const rows = [['Day', 'Date', 'Wave', 'CS', 'Mission', 'Brief', 'TO', 'Land', 'FCP', 'FCP lvl', 'RCP', 'RCP lvl', 'Area', 'Area time', 'Rmks', 'Stores']]
+  const rows = [['Day', 'Date', 'Wave', 'CS', 'Mission', 'Rally', 'Brief', 'TO', 'Land', 'FCP', 'FCP lvl', 'RCP', 'RCP lvl', 'Area', 'Area time', 'Rmks', 'Stores']]
   days.forEach((d: any) => (d.waves || []).forEach((w: any) => w.formations.forEach((f: any) => f.aircraft.forEach((a: any) => {
     const fi = (d as any).faceIssued, pa = (fi && fi.pa) || {}
     const F = { ...(PEOPLE[a.p] || {}), ...(pa[a.p] ? { q: pa[a.p].q } : {}) }, W = { ...(PEOPLE[a.w] || {}), ...(pa[a.w] ? { q: pa[a.w].q } : {}) }, o = a.opts || {}
@@ -75,7 +78,7 @@ export function schedRows(days: any[] = DAYS) {
        that fallback still has to agree with the rule the engine validates
        against, so it stays computed rather than hard-coded. */
     const brief = parseHM(f.br) != null ? f.br : minus(f.to, fi && fi.rv && fi.rv.briefLead != null ? fi.rv.briefLead : VCONF.briefLead)
-    rows.push([d.dow, d.dt, w.label, f.cs, f.msn, brief, f.to, f.ld, F.cs || '', F.q || '', W.cs || '', W.q || '', a.area || '', at, a.rmks || '', st])
+    rows.push([d.dow, d.dt, w.label, f.cs, f.msn, isStandalone(w) ? '' : fmtRally(f), brief, f.to, f.ld, F.cs || '', F.q || '', W.cs || '', W.q || '', a.area || '', at, a.rmks || '', st])
   }))))
   return rows
 }

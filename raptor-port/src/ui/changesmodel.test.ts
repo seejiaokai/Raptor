@@ -96,7 +96,8 @@ describe('THE ITEM of a line — from its row-anchored key, never its words (D34
       [{ key: 'ar:1.0.0', lbl: 'VL · area' }, `${T}|F|0.0`, 'Flying · VL BFM', 'Area'],
       [{ key: 'at:1.0.0', lbl: 'VL · area time' }, `${T}|F|0.0`, 'Flying · VL BFM', 'Area time'],
       [{ key: 'wl:1.1', lbl: 'Wave · WAVE 2' }, `${T}|W|1`, 'Wave · WAVE 2', 'Label'],
-      [{ key: 'it:1.1', lbl: 'WAVE 2 · In-time / Rally' }, `${T}|W|1`, 'Wave · WAVE 2', 'In-time / Rally'],   // W6: one name (D504)
+      [{ key: 'it:1.1', lbl: 'WAVE 2 · In-time' }, `${T}|W|1`, 'Wave · WAVE 2', 'In-time'],   // W6: one name (D504) — "In-time" since D1026
+      [{ key: 'ff:1.0.0.rl', lbl: 'VL · rally' }, `${T}|F|0.0`, 'Flying · VL BFM', 'Rally'],   // the formation's own R box (D1026)
       [{ key: 'tr:1.1', lbl: 'WAVE 2 · traffic' }, `${T}|W|1`, 'Wave · WAVE 2', 'Traffic'],
       [{ key: 'd:1.0.0', lbl: 'Duty · SDO' }, `${T}|D|0.0`, 'Duty · SDO', ''],
       [{ key: 'dr:1.0.0.str', lbl: 'Duty · SDO · start' }, `${T}|D|0.0`, 'Duty · SDO', 'Start'],

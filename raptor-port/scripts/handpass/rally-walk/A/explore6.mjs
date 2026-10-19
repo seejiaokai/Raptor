@@ -1,0 +1,13 @@
+import { launch, ctxOpen, SIZES, sleep, go, shot } from './lib.mjs'
+console.log('explore6 v1')
+const b = await launch()
+const { ctx, p } = await ctxOpen(b, SIZES.desk, 'x')
+await go(p, 'editsched')
+await p.evaluate(() => window.openScheduler(5)); await p.waitForSelector('#schedBoard'); await sleep(900)
+await p.locator('#schedBoard [data-wvadd="5"]:visible').first().click(); await sleep(700)
+const r = await p.evaluate(() => ({ waves: window.DAYS[5].waves.map(w => ({ label: w.label, kind: w.kind, f: w.formations.map(f => ({ cs: f.cs, to: f.to, ld: f.ld, br: f.br, rl: f.rl })) })) }))
+console.log(JSON.stringify(r))
+const btns = await p.evaluate(() => [...document.querySelectorAll('#schedBoard button, #schedBoard [data-bfld], #schedBoard select')].filter(e => e.offsetParent && e.closest('.sb-go, .sb-wave, #sbBoard')).map(e => e.tagName + ':' + (e.innerText || '').trim().slice(0, 20) + '|' + [...e.attributes].filter(a => a.name.startsWith('data-')).map(a => a.name + '=' + a.value).join(',').slice(0, 70)).slice(0, 60))
+console.log(btns.join('\n'))
+await shot(p, 'explore-board-sat2')
+await b.close()

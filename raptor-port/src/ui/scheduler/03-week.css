@@ -552,17 +552,14 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .form .csmsn .mdot{display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:2px;vertical-align:middle}
 .form .bto{font-family:'JetBrains Mono',monospace;text-align:center;line-height:1.25}
 .form .bto b{font-size:9px;color:#F2D699;font-weight:600}
-/* :not(.bsug) — the B suggestion ghost (below) is also a bare child of .bto
-   and would otherwise pick up the TO span's colour/size through this same
-   tag selector. Narrowed the selector rather than the measurements, which
-   is what the reference's TO box still wants unchanged. */
+/* :not(.bsug) — the B suggestion ghost was once a bare child of .bto (gone since D1028: the suggestion is inside its
+   box now); the span this styles is the R box since D1026, the TO having moved above LD. */
 .form .bto span:not(.bsug){font-size:9px;color:var(--ink-2)}
-/* the calculated brief, offered above the (blank) B box — a click accepts it
-   into f.br. Small and dim until hovered so it doesn't outweigh the box it
-   is a suggestion for. */
-.form .bto .bsug{display:block;font-size:7.5px;font-weight:700;color:var(--accent);cursor:pointer;line-height:1.2;letter-spacing:.02em}
-.form .bto .bsug:hover{text-decoration:underline}
-.form .ld{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-2);text-align:center;justify-content:flex-start}
+/* R above B in the second column, TO above LD in the third (owner D1026, 19 Oct 26). The suggested brief no longer
+   sits on a line above its box: it is drawn faint inside the empty box (D1028, 12-schedule-editing.css .sugbox). An
+   empty R on View-only Sched keeps its line, so B stays on the second line in every formation. */
+.form .bto .rl:not(.txed):empty::before{content:'\a0'}
+.form .ld{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-2);text-align:center;justify-content:flex-start;line-height:1.25}
 /* min-height is load-bearing, not cosmetic: CS/MSN and B/TO are stacks in cells
    that span the formation, so a single-aircraft row has to be tall enough to
    hold every line on its own or the last one gets clipped by .fcell's

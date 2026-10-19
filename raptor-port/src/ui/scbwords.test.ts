@@ -42,3 +42,8 @@ describe('the B box’s name in the change history, the changes window and Undo'
     })
   }
 })
+
+/* RB6 — Undo names the formation's own R box "a rally time" (D1026) */
+describe('RB6 — Undo words for the R box', () => {
+  it('says "a rally time"', () => { expect(textLabel('ff:0.0.0.rl')).toBe('a rally time') })
+})

@@ -1,0 +1,10 @@
+console.log('B probe7 v1')
+import { launch, open, sleep, shot, elShot, tap } from './lib.mjs'
+const b = await launch()
+const { ctx, p } = await open(b)
+await p.evaluate(() => window.go('editsched')); await sleep(800)
+await p.evaluate(() => window.openScheduler(1)); await p.waitForSelector('#schedBoard', { timeout: 8000 }); await sleep(900)
+console.log(await shot(p, 'probe7-board'))
+console.log(await p.evaluate(() => { const l = document.querySelector('#sbBoard .sb-line'); return l.outerHTML.slice(0, 2500) }))
+console.log(await p.evaluate(() => [...document.querySelectorAll('#schedBoard button, #schedBoard [id]')].slice(0, 40).map(x => x.id + '|' + x.tagName + '|' + (x.textContent || '').trim().slice(0, 25))))
+await b.close()

@@ -65,8 +65,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [BUBBLE-SMALL-SEEN] — an empty gold pill in an input's row on the phone's Inputs list (the rest done).
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
 - [LOOK-PENDING-COUNT] — the 👁 look at the Original shows "1 pending" where the working copy shows "2 pending" (reproduce first).
-- [EDIT-BUTTON-AFTER-CHANGE] — straight after a changed text box, the first press of a button on the week or the board ("+ In-time / Rally", "+ Line") does nothing.
-- [RALLY-PER-FORMATION] — a rally box for each formation, R above B and TO above LD; the button becomes "+ In-time" (D1026) — a mock-up and his questions first.
+- [EDIT-BUTTON-AFTER-CHANGE] — straight after a changed text box, the first press of a button on the week or the board ("+ In-time / Rally", "+ Line") does nothing. **BUILT and FULL-checked 19 Oct 26 with [RALLY-PER-FORMATION] — waiting for his look and "merge live".**
+- [RALLY-PER-FORMATION] — a rally box for each formation, R above B and TO above LD; the button becomes "+ In-time" (D1026). **BUILT and FULL-checked 19 Oct 26 on `claude/rally-box-mockup-452b95` (sheet `raptor-port/docs/handpass/2026-10-19-rally-box.md`) — waiting for his look and "merge live".**
 - [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
 - [PLAN-BANNER-DOOR] — the preview banner's "Switch to this plan" has no route a person can reach — retire it or give it one: his question.
 - [PDF-PRINT-TWICE] — "Export as PDF" may print twice, first on a blank page — to confirm in real Chrome and on his iPhone.
@@ -127,6 +127,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Insights and Logic**
 - [LOGIC-REDRAW-DROPS-TYPING] — the Logic page redraws just after it opens and can drop a value being typed.
+- [LOGIC-DONE-FIRST-PRESS] — on the Logic page, the first press of Done straight after a changed setting is lost (older; found 19 Oct 26).
+- [LOGIC-WORDS-WORKHOURS] — the Logic page says the long day and Insights hours of a line with nothing entered count from the default rally; they count from take-off less the step — his question, which is right (older; found 19 Oct 26).
+- [BOARD-NARROW-DESKTOP-REMARKS] — the desktop board from 821 to about 1000 wide leaves the remarks 16px and each jet's line 189px tall (older; found 19 Oct 26).
 - [STACK-LEFTOVERS] — four small loose ends from the Codex stack: two Insights edges (with the next change to its role question), a shared wording helper and an old audit script's three checks (with their own jobs), a "back to last published" button (only if he raises it).
 
 **Look, words and the phone (the whole app)**
@@ -1691,6 +1694,32 @@ still there. The browser test now types again until the app holds the value (`ra
 `logicLead`) — take that retry out when this is fixed. **Tier:** WALK (the Logic page, a typed value, both sizes).
 **Place (the agent's line):** low — with the next change to the Logic page, and before the database step for the reason above.
 
+### [LOGIC-DONE-FIRST-PRESS] On the Logic page, the first press of Done straight after a changed setting is lost (found 19 Oct 26, the rally box walk, walker B — OLDER than that job; low)
+In edit mode, change "Default rally before take-off" (any setting) and press Done once by finger at 402 wide: the value saves, the page stays in
+edit mode; a second press ends it; with nothing changed, one press works. Pictures `raptor-port/docs/img/handpass/2026-10-19-rally-build/B/B08z-L2.png`,
+`B08z-logic-Done.png`; the walker's table `raptor-port/docs/handpass/parts/rally-box/walker-B.md` (F2). **Not** the schedule's redraw that
+[EDIT-BUTTON-AFTER-CHANGE] fixed: Done is a React button that is never replaced (`ui/LogicPage.tsx` `#lgDone`), so the host's reading is that
+saving the setting moves the button out from under the press (a "rules changed" bar or the Reset button appearing) — reproduce and measure the
+button's position before and after the save first. **Place:** low, with the next change to the Logic page; a browser test that changes a
+setting and presses Done once, by mouse and by finger.
+
+### [LOGIC-WORDS-WORKHOURS] The Logic page says a line with nothing entered starts its long day and Insights hours at the default rally; the app starts them at take-off less the step (found 19 Oct 26, the rally box walk, walker A — OLDER than that job; a question for him)
+The Logic page's "Default rally before take-off" (renamed by D1031; the sentence itself dates from [LOGIC-PAGE-LAYOUT], D928) says "With no in-time or
+rally entered, a flyer's day starts here: his long day, OIL and Insights hours count from it". Walked: an empty R box, the setting 3h → 2h30 — the
+Insights hours did not move (1510 min both times); a typed R at the default time added 120 min, so with nothing entered the work span starts at the
+take-off less the step (1h). OIL does start at the default rally (D592 (2)); the long day and Insights read the one work span (`engine/validate.ts
+workSpan`, RT8 — "report/work hours … keep separate definitions"). Walker A's table `raptor-port/docs/handpass/parts/rally-box/walker-A.md` (scenario 9).
+**The question for him** (when he says so, D994): with nothing entered, should a flyer's long day and Insights hours start at the default rally
+(3 hours before take-off, as OIL does) or at the step (1 hour)? **Recommended:** the default rally — one start for a day with nothing entered,
+as the Logic page already says and OIL already does; it makes more long-day notes appear. Until he answers, the words are left as they are.
+
+### [BOARD-NARROW-DESKTOP-REMARKS] The desktop board from 821 to about 1000 wide leaves the remarks 16px and each jet's line 189px tall (found 19 Oct 26, the rally box walk, walker A — OLDER than that job; low)
+Walker A: at 821, 900 and 1000 wide (the desktop layout, pucks on the line) the remarks box is 16px and a line 189px tall; measured the same with the
+R box taken away (`raptor-port/scripts/handpass/rally-narrow.mjs`), so it is older than [RALLY-PER-FORMATION] (which keeps the remarks within 2px of
+before from 1100 to 1439 — `13-board-rows-responsive.css`). Picture `raptor-port/docs/img/handpass/2026-10-19-rally-build/A/A15-d821-board.png`.
+**Place:** with the next change to the board's layout — a picture to him first (a visual change, D541): stack the times there as a phone does, or
+let the remarks take a line of their own.
+
 ### [OIL-EARN-DAY-SWITCH-WORDS] OIL Earn's "Nothing today earns" button reads like a status — two walkers took it for one (found 6–7 Oct 26, the walks of `[OIL-WORK-START]`; OLD; LOW, words)
 On the Scheduler Board in OIL Earn mode the bar carries a button labelled "Nothing today earns". It is a SWITCH — pressed, it
 makes nothing on that day earn — and its label does not change with the day's state (only its tooltip does). With a man on the
@@ -1723,7 +1752,7 @@ time column is headed R / B (the rally above the brief) and the third TO / LD (t
 the wave are for the in-time only, their button "+ In-time" — no rally. Full row: `.claude/decisions-full/scheduler.md` D1026; the
 design note `raptor-port/docs/superpowers/specs/2026-10-02-rally-time-design.md`.
 **Today:** a rally is only a typed line above the wave ("19:00H: NIGHT WAVE VL RALLY …"), read for its callsign and clock.
-**First:** a mock-up on the real app at phone and desktop width, and his questions (in the ruling's full row), each with a recommendation.
+**First:** a mock-up on the real app at phone and desktop width, and his questions (in the ruling's full row), each with a recommendation. **Drawn and put to him 19 Oct 26** — the page `raptor-port/docs/mock/rally-box.html` (an Artifact), its pictures and script named in the design note's "The mock-up". While it was drawn he added D1027 (a default rally, take-off less a Logic time, 3 hours to start, selected by the scheduler) and D1028 (a suggested time in its own box's area, never on a line above it — the brief's too). **His answers, 19 Oct 26 (D1029–D1032):** the desktop board keeps R · B · TO · LD in one line, the phone board stacks (picture 11 and 6); a suggestion sits faint inside its box, a tap places it highlighted so typing replaces it; the default rally is the existing 3-hour setting, renamed; the R box counts as a typed rally did, an empty box's default only where no in-time or rally is entered. A typed line still saying RALLY stays a rally, as today (D1034) — the typed lines' reading is unchanged. **Next: the build — FULL tier** (OIL, the published record), from the design note's "His answers" and requirement list; the mock-up script's values are the look. The build's requirements the drawing found: the design note's list.
 **Tier (the agent's reading):** FULL — OIL counts from the earliest in-time or rally (D591), and a published day's record changes.
 **Place (his "Finish this first", D1026):** its own job, after the D994 Schedule and amendments batch's check is finished; it
 touches the same In-time / Rally lines as [INTIME-LINES-DRAG], built in that batch.
@@ -1859,6 +1888,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 | His three follow-ups of 18 Oct 26 — D1019, D1020, D1022 ([LW-CARD-SHORT-WORDS-700], [DATEBOX-ESC-LISTS], [UPCHIT-DELETE-REGROW]), built on `claude/three-small-jobs-1018` | one fresh, blind Opus reader of the finished code (D790, D903); walked 58/58 and gated (FULL — `raptor-port/docs/handpass/2026-10-18-three-small-jobs.md`) | Astra's, and Sol 6.1's for D1022 (saved data, a published day) |
 | [UPCHIT-SHEET-LEAVE-CUT] (D1023) — the upchit sheet lists each leave and bid a give-back will cut, from the save tried and thrown away, built on `claude/upchit-sheet-leave-cut` | one fresh, blind Opus reader of the finished code (D790, D903 — one finding, fixed red first); walked 28/28 and gated (FULL — `raptor-port/docs/handpass/2026-10-18-upchit-sheet-leave-cut.md`) | Astra's, and Sol 6.1's (saved data, a published day — the thrown-away save) |
 | D994's Schedule and amendments small fixes (21 items) on `claude/schedule-amendments-fixes-fffce0`, checked 18–19 Oct 26 | the scenario design and the code read: fresh, blind Opus readers (D790); the fix rounds' narrow reads: fresh Opus readers, rounds 1 and 2 | Astra's scenario design and Astra's and Sol 6.1's reads of the finished code (a published-day change, saved history lines) |
+| [RALLY-PER-FORMATION] with [EDIT-BUTTON-AFTER-CHANGE] — a rally box for each formation (D1026–D1034), built 19 Oct 26 on `claude/rally-box-mockup-452b95` | one fresh, blind Opus reader of the finished code (D790, D903); walked and gated (FULL) | Astra's and Sol 6.1's reads (OIL, the published record) |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.

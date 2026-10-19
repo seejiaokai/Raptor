@@ -40,6 +40,14 @@ which joints are single-funnel (safe to build on) and which are drift-seams
 (where two copies of one rule can fall out of step — the bugs that keep
 recurring in this app).
 
+**Each formation's own rally (D1026–D1034 — built 19 Oct 26):** one stored field, `f.rl`, written through the one text
+path (`ff:di.gi.li.rl`) from the week's R box and the board's; read by ONE body, `reporting.ts resolveReporting`, so
+crew rest, the long day and work hours, OIL, the wave's header and window and the order warning cannot disagree about
+it (the drift-seam it would have opened). Surfaces: Edit Schedule's week, View-only Sched, the next-week peek (its own
+copy of the heading row), a published version's page (the week's builder), the Scheduler Board at both layouts, the
+changes window and the pending list (field word "rally"), Undo ("a rally time"), the export and the printed PDF.
+The default it suggests and the day's nominal start are ONE Logic setting (D1031), so they cannot drift either.
+
 **The In-time / Rally lines' order (D593, D594 — built 19 Oct 26):** a drag on the Scheduler Board, the wave's ⇅ or Sort
 all rewrites one stored list (`it:di.gi`) through the one write path — on a published day one pending change, the
 sign-offs falling; nothing worked out moves (D506: the earliest applicable clock is used whatever the order). Surfaces:

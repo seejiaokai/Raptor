@@ -1,0 +1,29 @@
+{
+ "results": [
+  {
+   "id": "S3j",
+   "what": "tap a Tue VL seat (arm it), open AIRCREW palette, look at Outlaw",
+   "expected": "RECORD: Outlaw barred with the reason",
+   "seen": {
+    "armed": {
+     "bar": ""
+    },
+    "pal": [
+     {
+      "x": 138,
+      "cls": "puck warn hard boxred dim",
+      "title": "Outlaw · C · ops wingman · Crew rest breach (<12h)"
+     },
+     {
+      "x": 162,
+      "cls": "puck sm warn hard boxred dim",
+      "title": "Outlaw · C · ops wingman · Crew rest breach (<12h)"
+     }
+    ]
+   },
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B03j-palette-armed.png"
+  }
+ ],
+ "errors": []
+}

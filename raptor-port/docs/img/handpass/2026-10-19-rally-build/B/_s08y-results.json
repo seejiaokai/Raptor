@@ -1,0 +1,53 @@
+{
+ "results": [
+  {
+   "id": "B4base",
+   "what": "board baseline: \"+ Wave\" then \"Flying wave\", no box changed",
+   "expected": "sheet opens on the first press; exactly one wave added; R saved (after-change case)",
+   "seen": {
+    "sheetOpenedFirstPress": true,
+    "wavesBefore": 2,
+    "wavesAfter": 3
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08y-wave-sheet-baseline.png"
+  },
+  {
+   "id": "B4",
+   "what": "board: change R, then \"+ Wave\" (first press), then the sheet's \"Flying wave\"",
+   "expected": "sheet opens on the first press; exactly one wave added; R saved (after-change case)",
+   "seen": {
+    "sheetOpenedFirstPress": true,
+    "wavesBefore": 2,
+    "wavesAfter": 3,
+    "rl": "09:30"
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08y-wave-sheet-after-change.png"
+  },
+  {
+   "id": "B5base",
+   "what": "board baseline: dots button, then Sort all",
+   "expected": "menu opens on the first press; Sort all acts once and closes the menu; R saved (after-change case)",
+   "seen": {
+    "menuOpenedFirstPress": true,
+    "menuClosedAfterSortAll": true
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08y-more-baseline.png"
+  },
+  {
+   "id": "B5",
+   "what": "board: change R, tap the dots button, then Sort all",
+   "expected": "menu opens on the first press; Sort all acts once and closes the menu; R saved (after-change case)",
+   "seen": {
+    "menuOpenedFirstPress": true,
+    "menuClosedAfterSortAll": true,
+    "rl": "09:30"
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08y-more-after-change.png"
+  }
+ ],
+ "errors": []
+}

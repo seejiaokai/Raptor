@@ -685,7 +685,8 @@ test.describe('a changed time\'s AL tag sits under the time', () => {
           /* one time of each kind, marked as issued in AL1 the way the renderer marks it (the attribute alone) */
           const pick = (q: string) => [...document.querySelectorAll(`${sel} ${q}`)].find(e => /^\d{1,2}:\d{2}$/.test((e.textContent || '').trim())) as HTMLElement | undefined
           const kinds: Record<string, HTMLElement | undefined> = {
-            'take-off': pick('.form .fcell.bto span:not(.bsug)'), landing: pick('.form .fcell.ld span, .form .fcell.ld'),
+            /* TO above LD in the third cell since D1026 (19 Oct 26) — the R box above B in the second */
+            'take-off': pick('.form .fcell.ld > span:first-child'), landing: pick('.form .fcell.ld > span:last-child'),
             'list start': pick('.ah-row .t, .pl-row .t'),
           }
           const out: Record<string, string> = {}
@@ -1672,7 +1673,9 @@ test('board: the flying line keeps its grid-item count with stores present', asy
      seats; a 2-col grid on a phone so they sit side by side). Before that it
      was ten (the reorder grip from 8 Aug plus nine); the pair folds two of
      those ten into one child, leaving nine, with the grid still seeing ten. */
-  expect(n, 'nine DOM children — the two seats share .sb-seatpair, .sb-rcell still exactly one').toBe(9)
+  /* EIGHT since D1026 (19 Oct 26): the four times sit in two wrappers too, R+B and TO+LD (display:contents on a desktop,
+     one stacked cell each on a phone) — the desktop grid sees eleven items, the new R track among them */
+  expect(n, 'eight DOM children — the seats share .sb-seatpair, the times .sb-rb / .sb-tl, .sb-rcell still exactly one').toBe(8)
 })
 
 test('board at 390px: the remarks cell rides beside the seat pucks, and its config button stays reachable', async ({ page }) => {
@@ -2214,7 +2217,8 @@ test('the board\'s flying line is single-row in .sb-wide at phone width, and sta
     /* nine, not ten, since the FCP/RCP seats now share one .sb-seatpair child
        (owner, 14 Aug 26) — display:contents on desktop keeps the grid at ten
        items, a 2-col grid on a phone sits the seats side by side */
-    expect(m.children, `${c.label}: nine DOM children — seats share .sb-seatpair, .sb-rcell still exactly one`).toBe(9)
+    /* eight since D1026: the times in two wrappers, R+B and TO+LD */
+    expect(m.children, `${c.label}: eight DOM children — seats share .sb-seatpair, times .sb-rb / .sb-tl, .sb-rcell still exactly one`).toBe(8)
     if (c.singleRow) {
       expect(m.height, `${c.label}: single row, not exploded into three`).toBeLessThan(90)
     } else {
@@ -2246,14 +2250,16 @@ test('the board flying line carries the brief inline between MSN and TO at phone
     const heads = [...head.children].filter(c => getComputedStyle(c).display !== 'none').map(c => c.textContent).filter(t => t && t.trim())
     const line = document.querySelector('#schedBoard .sb-line') as HTMLElement
     const cs = line.querySelector('.lin') as HTMLElement
-    const bcell = line.querySelector('.sb-bcell') as HTMLElement
+    const bcell = line.querySelector('.sb-rb') as HTMLElement
     const yb = (el: HTMLElement) => Math.round(el.getBoundingClientRect().bottom)
     const cx = (el: HTMLElement) => Math.round(el.getBoundingClientRect().left)
     const msn = line.querySelector('.msn') as HTMLElement
-    // the two visible time inputs after the brief input are TO then LD
-    const times = [...line.querySelectorAll('.tm')] as HTMLElement[]
-    const to = times[1], ld = times[2]   // times[0] is the brief's own .tm input
-    const binp = times[0]
+    /* since D1026 / D1029 (19 Oct 26) the phone board stacks R over B and TO over LD: B and LD on the callsign's row,
+       R and TO above them */
+    const box = (k: string) => line.querySelector(`[data-bfld$=".${k}"]`) as HTMLElement
+    const binp = box('br'), to = line.querySelector('.sb-tl') as HTMLElement, ld = box('ld')
+    const rAboveB = box('rl').getBoundingClientRect().bottom <= binp.getBoundingClientRect().top + 1
+    const toAboveLd = box('to').getBoundingClientRect().bottom <= ld.getBoundingClientRect().top + 1
     return {
       heads,
       /* Read off the brief BOX, by its BOTTOM (17 Sep 26). This used to compare
@@ -2273,12 +2279,14 @@ test('the board flying line carries the brief inline between MSN and TO at phone
          strip-below layout this pins against would land the box a full
          40px row lower and still fails it by a wide margin. */
       briefInlineWithCs: Math.abs(yb(binp) - yb(cs)) < 12,
-      order: cx(msn) < cx(bcell) && cx(bcell) < cx(to) && cx(to) < cx(ld),
+      order: cx(msn) < cx(bcell) && cx(bcell) < cx(to) && cx(to) <= cx(ld),
+      rAboveB, toAboveLd,
     }
   })
-  expect(m.heads, 'the header reads CS MSN B TO LD').toEqual(['CS', 'MSN', 'B', 'TO', 'LD'])
-  expect(m.briefInlineWithCs, 'the brief cell shares row 1 with the callsign, not a strip below it').toBe(true)
-  expect(m.order, 'columns run MSN → B → TO → LD left to right').toBe(true)
+  expect(m.heads, 'the header reads CS MSN R/B TO/LD (D1026, D1029)').toEqual(['CS', 'MSN', 'RB', 'TOLD'])
+  expect(m.briefInlineWithCs, 'the brief box shares row 1\u2019s baseline with the callsign, not a strip below it').toBe(true)
+  expect(m.order, 'columns run MSN → R/B → TO/LD left to right').toBe(true)
+  expect(m.rAboveB && m.toAboveLd, 'R stacked over B, TO over LD').toBe(true)
 })
 
 /* the ▲▼ row nudge was removed 31 Aug 26 (owner) — the grip now shows and drags at
@@ -2355,7 +2363,9 @@ test('the phone board keeps its column layout after the grip is added', async ({
      the wrong body column even though the cell COUNT still happens to match
      the track count. */
   expect(m.c6rLabels).toEqual(['Role', 'Start', 'End'])
-  expect(m.flyLabels).toEqual(['CS', 'MSN', 'B', 'TO', 'LD'])
+  /* R/B and TO/LD stacked headings since D1026 / D1029 (19 Oct 26) — one heading child each, so the visible labels read
+     their two words run together */
+  expect(m.flyLabels).toEqual(['CS', 'MSN', 'RB', 'TOLD'])
 })
 
 /* THE NOTES ROW WAS THE ONE TEMPLATE NEVER RESTATED ON A PHONE (fix round
@@ -4765,31 +4775,33 @@ test('the flying line keeps its five boxes on one baseline on a phone', async ({
   await login(page)
   await go(page, 'editsched')
   await page.evaluate(() => (window as any).openScheduler(1))
-  await page.waitForSelector('#schedBoard .sb-line .bsug')
+  /* since D1028 / D1030 (19 Oct 26) the suggested brief sits faint INSIDE its empty box (its placeholder), and since
+     D1026 / D1029 R stacks over B and TO over LD: CS, MSN, B and LD share the row's bottom edge, R and TO sit above */
+  await page.waitForSelector('#schedBoard .sb-line input.sugbox[data-bfld$=".br"]')
 
   const m = await page.evaluate(() => {
     const line = [...document.querySelectorAll('#schedBoard .sb-line')]
-      .find(l => l.querySelector('.bsug'))
+      .find(l => l.querySelector('input.sugbox[data-bfld$=".br"]'))
     if (!line) return null
     const bottom = (el: Element | null) => el ? el.getBoundingClientRect().bottom : NaN
+    const box = (k: string) => line.querySelector(`[data-bfld$=".${k}"]`)
     const cs = line.querySelector('.lin'), msn = line.querySelector('.msn')
-    const tms = [...line.querySelectorAll(':scope > .tm')] // TO, LD
-    const brief = line.querySelector('.sb-bcell .tm')
-    const bsug = line.querySelector('.bsug')
-    const bots = [cs, msn, tms[0], tms[1], brief].map(bottom)
+    const bots = [cs, msn, box('br'), box('ld')].map(bottom)
     return {
       spread: Math.max(...bots) - Math.min(...bots),
-      briefBottom: bottom(brief),
-      bsugBottom: bottom(bsug),
+      briefBottom: bottom(box('br')),
+      rBottom: bottom(box('rl')), toBottom: bottom(box('to')), ldBottom: bottom(box('ld')),
+      noLineAbove: !line.querySelector('.bsug'),
     }
   })
-  test.skip(!m, 'no brief-suggestion line on the seed board')
+  test.skip(!m, 'no blank-brief line on the seed board')
 
-  /* every box shares one bottom edge (sub-pixel rounding only) */
-  expect(m!.spread, 'the five boxes sit on one baseline').toBeLessThan(1.5)
-  /* and the blue time sits ABOVE the brief box, not beside or below it */
-  expect(m!.bsugBottom, 'the blue brief time rides above the brief box')
-    .toBeLessThan(m!.briefBottom - 4)
+  /* every box of the lower row shares one bottom edge (sub-pixel rounding only) */
+  expect(m!.spread, 'CS, MSN, B and LD sit on one baseline').toBeLessThan(1.5)
+  /* R and TO ride above B and LD; no suggestion on a line of its own */
+  expect(m!.rBottom, 'R rides above B').toBeLessThan(m!.briefBottom - 4)
+  expect(m!.toBottom, 'TO rides above LD').toBeLessThan(m!.ldBottom - 4)
+  expect(m!.noLineAbove).toBe(true)
 })
 
 /* NOTHING ON THE BOARD HIDES UNDER THE PARKED AIRCREW TAB (owner, 16 Aug 26).

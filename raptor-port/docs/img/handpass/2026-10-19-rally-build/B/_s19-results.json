@@ -1,0 +1,92 @@
+{
+ "results": [
+  {
+   "id": "S19a",
+   "what": "week: finger on CS, then Tab x5",
+   "expected": "ff:3.0.0.cs > ff:3.0.0.msn > ff:3.0.0.rl > ff:3.0.0.br > ff:3.0.0.to > ff:3.0.0.ld",
+   "seen": {
+    "seq": [
+     "ff:3.0.0.cs",
+     "ff:3.0.0.msn",
+     "ff:3.0.0.rl",
+     "ff:3.0.0.br",
+     "ff:3.0.0.to",
+     "ff:3.0.0.ld"
+    ],
+    "model": {
+     "cs": "VL",
+     "to": "12:45",
+     "ld": "14:10"
+    },
+    "R": "",
+    "B": ""
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B19a-week-tab.png"
+  },
+  {
+   "id": "S19b",
+   "what": "week: Shift+Tab x5 from LD",
+   "expected": "ff:3.0.0.ld > ff:3.0.0.to > ff:3.0.0.br > ff:3.0.0.rl > ff:3.0.0.msn > ff:3.0.0.cs",
+   "seen": [
+    "ff:3.0.0.ld",
+    "ff:3.0.0.to",
+    "ff:3.0.0.br",
+    "ff:3.0.0.rl",
+    "ff:3.0.0.msn",
+    "ff:3.0.0.cs"
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "id": "S19c",
+   "what": "week: tap R (placed) then Enter",
+   "expected": "RECORD: saved 09:45 and left the box?",
+   "seen": {
+    "rl": "09:45",
+    "active": "BODY."
+   },
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B19c-week-enter.png"
+  },
+  {
+   "id": "S19d",
+   "what": "board: finger on CS, then Tab x5",
+   "expected": "ff:3.0.0.cs > ff:3.0.0.msn > ff:3.0.0.rl > ff:3.0.0.br > ff:3.0.0.to > ff:3.0.0.ld",
+   "seen": {
+    "seq": [
+     "ff:3.0.0.cs",
+     "ff:3.0.0.msn",
+     "ff:3.0.0.rl",
+     "ff:3.0.0.br",
+     "ff:3.0.0.to",
+     "ff:3.0.0.ld"
+    ],
+    "model": {
+     "cs": "VL",
+     "to": "12:45",
+     "ld": "14:10"
+    },
+    "R": "",
+    "B": ""
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B19d-board-tab.png"
+  },
+  {
+   "id": "S19e",
+   "what": "board: Shift+Tab x5 from LD",
+   "expected": "ff:3.0.0.ld > ff:3.0.0.to > ff:3.0.0.br > ff:3.0.0.rl > ff:3.0.0.msn > ff:3.0.0.cs",
+   "seen": [
+    "ff:3.0.0.ld",
+    "ff:3.0.0.to",
+    "ff:3.0.0.br",
+    "ff:3.0.0.rl",
+    "ff:3.0.0.msn",
+    "ff:3.0.0.cs"
+   ],
+   "verdict": "PASS"
+  }
+ ],
+ "errors": []
+}

@@ -117,7 +117,7 @@ describe('OWS7 — a Logic change that would move a published day\'s OIL is one 
     const t = listText(SAT)
     expect(t, 'it is about OIL and the Logic page').toMatch(/OIL/)
     expect(t).toMatch(/Logic/)
-    expect(t, 'the value that changed, old and new').toContain('Nominal report before T/O')
+    expect(t, 'the value that changed, old and new').toContain('Default rally before T/O')   // renamed by D1031 (RB6)
     expect(t).toContain('3h'); expect(t).toContain('2h30')
     expect(t, 'the man whose OIL would move, and how').toContain(moves(FLYER, 'full day · 07:00–13:15', 'half day · 07:30–13:15'))
     expect(t, 'never the long label of the Logic box').not.toContain('button fills in')
@@ -161,7 +161,7 @@ describe('OWS7 — a Logic change that would move a published day\'s OIL is one 
     VCONF.reportLead = 150; validate()
     expect(counts(SAT)).toEqual(ALL(2))
     expect(listText(SAT)).toContain('What this day earns')
-    expect(listText(SAT)).toContain('Nominal report before T/O')
+    expect(listText(SAT)).toContain('Default rally before T/O')
   })
   /* Astra's plan challenge, finding 3: a request edited after publishing folds the day's OIL line into its own line
      ("what the day earns changes with it") — and that fold must not swallow the separate Logic line: its own act, its own

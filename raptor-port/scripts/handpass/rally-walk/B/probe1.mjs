@@ -1,0 +1,12 @@
+console.log('B probe1 v1')
+import { launch, open, sleep, shot } from './lib.mjs'
+const b = await launch()
+const { ctx, p } = await open(b)
+const info = await p.evaluate(() => window.DAYS.map((d, di) => ({ di, name: d.name || d.date, pub: d.published || d.pub, waves: d.waves.map((w, gi) => ({ gi, in: w.inTime || w.it, forms: w.formations.map(f => `${f.cs}|${f.to}|${f.ld}|br${f.br}|rl${f.rl}|${f.type || ''}`) })) })))
+console.log(JSON.stringify(info, null, 0).slice(0, 4000))
+console.log(await p.evaluate(() => Object.keys(window.DAYS[0])))
+console.log(await p.evaluate(() => Object.keys(window.DAYS[0].waves[0])))
+await p.evaluate(() => window.go('editsched')); await sleep(800)
+console.log(await p.evaluate(() => [...document.querySelectorAll('#eWeek .day')].map(d => d.dataset.day + ':' + d.querySelectorAll('[data-txt$=".rl"]').length)))
+console.log(await shot(p, 'probe-week'))
+await b.close()

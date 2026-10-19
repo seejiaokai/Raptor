@@ -1,0 +1,98 @@
+{
+ "results": [
+  {
+   "id": "X1",
+   "what": "board baseline: \"+ Wave\", no box changed",
+   "expected": "one wave added",
+   "seen": {
+    "before": 2,
+    "after": 2
+   },
+   "verdict": "FAIL",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08x-X1.png"
+  },
+  {
+   "id": "X2",
+   "what": "board: change R, press \"+ Wave\", then press it again",
+   "expected": "first press adds one wave",
+   "seen": {
+    "before": 2,
+    "afterFirst": 2,
+    "afterSecond": 2,
+    "rlAfterFirst": "09:30"
+   },
+   "verdict": "FAIL",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08x-X2.png"
+  },
+  {
+   "id": "X3",
+   "what": "board: change R, LEAVE by a heading tap, then \"+ Wave\"",
+   "expected": "one wave added (control)",
+   "seen": {
+    "before": 2,
+    "after": 2
+   },
+   "verdict": "FAIL"
+  },
+  {
+   "id": "X4",
+   "what": "board baseline: tap the dots button, no box changed",
+   "expected": "RECORD what opens (Sort all visible?)",
+   "seen": {
+    "sort": false,
+    "more": "abtn sb-more on",
+    "expanded": "true"
+   },
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08x-X4.png"
+  },
+  {
+   "id": "X5",
+   "what": "board: change R, then tap the dots button",
+   "expected": "same as the baseline",
+   "seen": {
+    "sort": false,
+    "more": "abtn sb-more on",
+    "expanded": "true"
+   },
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B08x-X5.png"
+  },
+  {
+   "id": "X6",
+   "what": "board: change R, Undo once",
+   "expected": "R undone and Redo enabled (the save happened, then one undo)",
+   "seen": {
+    "redoBefore": true,
+    "afterUndo": {
+     "undoDis": true,
+     "redoDis": false
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "X7",
+   "what": "week: change R, Undo once",
+   "expected": "R undone and Redo enabled",
+   "seen": {
+    "afterUndo": {
+     "undoDis": true,
+     "redoDis": false
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "X8",
+   "what": "week: after the Undo, type B 1000 (not left), press Redo",
+   "expected": "RECORD: B saved, Redo does what",
+   "seen": {
+    "br": "10:00",
+    "redoDis": true
+   },
+   "verdict": "RECORD"
+  }
+ ],
+ "errors": []
+}

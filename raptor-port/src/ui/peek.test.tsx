@@ -246,3 +246,16 @@ describe('D1010 — the preview mounts by the key it drew', () => {
     expect(root.dataset.peekKey).toBe(peekKey())
   })
 })
+
+/* RB4 — the next-week peek draws its own copy of the flying table (D1026's requirement 2): R over B, TO over LD */
+describe('RB4 — the peek draws the R box as the week does', () => {
+  const flyDay = (rl: string): any => ({ dt: '13/07/2026', notes: [], sims: { amt: [], oft: [] }, dutywaves: [], ground: [], allhands: [],
+    waves: [{ label: 'WAVE 1', intimes: [], traffic: [], formations: [{ cs: 'VL', msn: 'BFM', to: '12:40', ld: '14:05', br: '', rl, aircraft: [{ p: '', w: '', rmks: '', opts: {} }] }] }] })
+  it('the headings, a typed rally above B, the take-off above the landing', () => {
+    const html = peekDayHTML(flyDay('10:10'), 0, false)
+    expect(html).toContain('<span class="c-c">R<br>B</span><span class="c-c">TO<br>LD</span>')
+    expect(html).toMatch(/<div class="fcell bto[^"]*"[^>]*><span class="rl">10:10<\/span><b>[^<]*<\/b><\/div>/)
+    expect(html).toMatch(/<div class="fcell ld[^"]*"[^>]*><span>12:40<\/span><span>14:05<\/span><\/div>/)
+    expect(peekDayHTML(flyDay(''), 0, false), 'an empty R keeps its place').toContain('<span class="rl"></span>')
+  })
+})

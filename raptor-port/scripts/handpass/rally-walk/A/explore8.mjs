@@ -1,0 +1,12 @@
+import { launch, ctxOpen, SIZES, sleep, go, shot, buildSat, model, bPublish, warns } from './lib.mjs'
+console.log('explore8 v1')
+const b = await launch()
+const { ctx, p } = await ctxOpen(b, SIZES.desk, 'x')
+console.log(JSON.stringify(await buildSat(p)))
+console.log(JSON.stringify(await model(p, 5, 0, 0)))
+console.log(JSON.stringify(await p.evaluate(() => window.DAYS[5].waves[0].formations[0].aircraft.map(a => [a.p, a.w]))))
+console.log((await warns(p)).join(' | '))
+console.log(JSON.stringify(await bPublish(p, 5)))
+console.log(JSON.stringify(await p.evaluate(() => (document.querySelector('#schedBoard .verchip') || {}).innerText)))
+await shot(p, 'explore-sat-pub')
+await b.close()

@@ -296,18 +296,25 @@ export function fillSlot(key:any,id:any):boolean{
      gn:di               ground scheduler-notes block
      ap:di.ri.fld        programme row   (prog|sub|str|end)
      wl:di.gi            wave label
-     ff:di.gi.li.fld     formation       (cs|msn|to|ld|br)
+     ff:di.gi.li.fld     formation       (cs|msn|to|ld|br|rl)
                          br is the BRIEF time the scheduler indicated. Blank
                          means "not indicated" — the engine then briefs off
                          VCONF.briefLead, which is the same value the board
                          offers as a suggestion to accept.
+                         rl is the formation's own RALLY time (D1026). Blank
+                         means none entered — the line then reports at its
+                         in-time, else the nominal report (D592, D1032); the
+                         same take-off less VCONF.reportLead is offered as
+                         the default rally to accept (D1027, D1031). A rally
+                         later than its take-off is the evening before
+                         (D503), so it is never refused here.
      fr:di.gi.li.ai      aircraft remarks
      dl:di.wi            duty-wave label
      dr:di.wi.ri.fld     duty row        (role|str|end)
      sr:di.kind.ri.fld   sim row         (label|str|end)
      gr:di.ri.fld        ground row      (prog|str|end)
    -------------------------------------------------------------------- */
-export const TIME_TXT=/\.(to|ld|br|str|end)$/;
+export const TIME_TXT=/\.(to|ld|br|rl|str|end)$/;
 export function txtRef(path:any){
   const s=String(path),c=s.indexOf(':'); if(c<0)return null;
   const k=s.slice(0,c),a=s.slice(c+1).split('.'),d=DAYS[+a[0]]; if(!d)return null;

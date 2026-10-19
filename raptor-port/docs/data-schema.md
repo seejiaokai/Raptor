@@ -199,7 +199,7 @@ One record per day of the loaded week, Monday first. Times inside a day are
   waves: [{
     label, night: boolean, intimes: string[], traffic: string[],
     formations: [{
-      cs, msn, to, ld,
+      cs, msn, to, ld, rl?,          // rl: the formation's own rally (D1026, 19 Oct 26)
       aircraft: [{ p, w, area, rmks, opts: { tk2, tpod, nav, bombs } }]
     }]
   }],
@@ -233,6 +233,7 @@ seed-walking check never sees them; each with its writer:
 |---|---|---|
 | wave | `standalone`, `kind` (`sc \| avalon \| bb`), `noconf` | `makeStandalone` (`src/engine/waves.ts`), the + Wave picker (`src/ui/board.ts`), a placed template (`src/engine/wavetpl.ts`) |
 | formation | `shift` | `makeStandalone` (`src/engine/waves.ts:51`), a standby template (`src/engine/wavetpl.ts:225`) |
+| formation | `rl` (the formation's own rally, 'HH:MM' or absent — D1026, 19 Oct 26; a flying line's only, a standby wave carries none) | the R box on Edit Schedule's week (`src/ui/html.ts`) and the board (`src/ui/board.ts`) through the `ff:…rl` text key (`src/engine/slots.ts`, a time box like `br`); read by `src/engine/reporting.ts resolveReporting` as a formation-specific rally |
 | formation | `br` (typed SC in-time) | the board's B box (`src/ui/board.ts`) through the `ff:…br` text key (`src/engine/slots.ts`) |
 | formation | `area`, `atime` (the typed-over area strip) | `src/ui/textedit.ts:184`, `:194` |
 | seat pair | `spare`, `role` | `saCrewRow` (`src/engine/waves.ts:40`), a standby template (`src/engine/wavetpl.ts:190`), the MAIN/SPARE badge flip |

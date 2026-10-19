@@ -603,6 +603,102 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
   setTimeout(() => document.addEventListener('click', off), 0)
 }
 
+/* ONE TAP PLACES A SUGGESTED TIME IN ITS EMPTY BOX (owner D1030) — the board's <input> (its placeholder is the
+   suggestion) or the week's contenteditable (its data-ph). Placed and selected, so the next key typed replaces it.
+   true when it placed something; false for a box that already holds a time, or carries no suggestion.
+   THE FIRST KEYS REPLACE IT EVEN WHERE THE HIGHLIGHT DID NOT TAKE (the scenario designer's lead, 19 Oct 26): a phone
+   browser may not honour a selection set by script in a box just tapped, and the typing would then land after the
+   placed time ("09:401010", refused as no time). So the first thing typed after a placement is read on its own: a box
+   that now holds the suggestion with more after it keeps only what was typed. Once, then the box is ordinary. */
+const firstTypingReplaces = (read: () => string, write: (v: string) => void, sug: string) => {
+  let first = true
+  return () => {
+    if (!first) return
+    first = false
+    const v = read()
+    if (v.length > sug.length && v.startsWith(sug)) write(v.slice(sug.length))
+  }
+}
+export function placeSuggestion(el: HTMLElement): boolean {
+  if (el instanceof HTMLInputElement) {
+    const sug = el.placeholder
+    if (!sug || el.value || el.disabled || el.readOnly) return false
+    el.value = sug
+    el.select()
+    const typed = firstTypingReplaces(() => el.value, v => { el.value = v; el.setSelectionRange(v.length, v.length) }, sug)
+    /* the board saves on `change`, which the browser raises only for what was typed: a box left still holding the
+       placed suggestion raises it here, so the tap alone accepts (D1030). A typed time raised its own; Escape put the
+       box back empty first (textedit.ts, D1011) — neither matches. */
+    const save = () => { if (el.isConnected && el.value === sug) el.dispatchEvent(new Event('change', { bubbles: true })) }
+    /* Enter accepts it too, as Enter commits a typed time (walker B, F3): the browser raises no `change` for a value it
+       did not see typed */
+    const enter = (e: KeyboardEvent) => { if (e.key === 'Enter') save() }
+    const leave = () => {
+      el.removeEventListener('blur', leave); el.removeEventListener('input', typed); el.removeEventListener('keydown', enter)
+      delete el.dataset.placed
+      save()
+    }
+    el.dataset.placed = sug
+    el.addEventListener('blur', leave)
+    el.addEventListener('input', typed)
+    el.addEventListener('keydown', enter)
+    return true
+  }
+  const sug = el.dataset.ph
+  if (!sug || (el.textContent || '').trim() || el.getAttribute('contenteditable') !== 'true') return false
+  el.textContent = sug
+  try {
+    el.focus()
+    const r = document.createRange(); r.selectNodeContents(el)
+    const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r)
+  } catch (_) { /* a selection is a courtesy — jsdom and odd embedders may refuse */ }
+  const typed = firstTypingReplaces(() => el.textContent || '', v => {
+    el.textContent = v
+    try { const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r) } catch (_) { /* as above */ }
+  }, sug)
+  const done = () => { el.removeEventListener('input', typed); el.removeEventListener('blur', done); delete el.dataset.placed }
+  el.dataset.placed = sug
+  el.addEventListener('input', typed); el.addEventListener('blur', done)
+  return true
+}
+/* the press's own click, landing on a suggestion the focus already placed, highlights it again — a mouse's release in a box
+   puts the caret where it let go, and the highlight is what makes the next key replace it */
+function reselectPlaced(el: HTMLElement): boolean {
+  const v = el instanceof HTMLInputElement ? el.value : el.textContent
+  if (!el.dataset.placed || v !== el.dataset.placed) return false
+  try {
+    if (el instanceof HTMLInputElement) el.select()
+    else { const r = document.createRange(); r.selectNodeContents(el); const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r) }
+  } catch (_) { /* a courtesy */ }
+  return true
+}
+/* …AND A PRESS THAT BRINGS THE FOCUS PLACES IT WHERE THE FOCUS ARRIVES (walker B, F1 — 19 Oct 26). On the phone board a tap
+   on B straight after R was placed left B focused and empty: leaving R saved it, the redraw that save starts replaced the
+   box under the finger, and the tap's click reached no box. So the press is noted by the box's ADDRESS, and when the
+   focus arrives in a suggesting box at that address — the box pressed, or the one drawn in its place — the suggestion is
+   placed there. A Tab brings the focus with no press: nothing is placed (D1030). */
+let SUG_PRESS: string | null = null
+const sugAddr = (el: Element | null) => { const h = el as HTMLElement | null; return h && h.dataset ? (h.dataset.bfld || h.dataset.txt || null) : null }
+if (typeof document !== 'undefined') {
+  /* …and only for a moment: a press whose focus never came (a drag, a scroll) must not let a later Tab place it (D1030) */
+  let pressAt = 0
+  document.addEventListener('pointerdown', e => { const sg = (e.target as any)?.closest?.('.sugbox'); SUG_PRESS = sg ? sugAddr(sg) : null; pressAt = Date.now() }, true)
+  document.addEventListener('keydown', () => { SUG_PRESS = null }, true)
+  document.addEventListener('focusin', () => { if (SUG_PRESS && Date.now() - pressAt > 1500) SUG_PRESS = null }, true)
+  /* the note waits for ITS box: on the way there the board takes the focus itself for a moment (its own frame, while R
+     saves — probed on the built app, 19 Oct 26), and that passing focus must not use the note up */
+  document.addEventListener('focusin', e => {
+    const el = e.target as HTMLElement, a = SUG_PRESS
+    if (!a || !el || !el.classList || !el.classList.contains('sugbox') || sugAddr(el) !== a) return
+    SUG_PRESS = null
+    /* AFTER the arrival's own refresh: a box the focus arrives in is set from the schedule (textedit.ts
+       refreshTextDestination — it catches the box up after a save), which emptied a suggestion placed here at once
+       (probed on the built app, 19 Oct 26: placed 07:20, then "" a moment later). A click that lands first places it
+       itself, and this then finds the box filled and does nothing. */
+    if (canEditSched() && HOOKS.editMode()) setTimeout(() => { if (document.activeElement === el) placeSuggestion(el) }, 0)
+  }, true)
+}
+
 export function routeClick(e: MouseEvent) {
   const t = e.target as HTMLElement
   if (!t || !t.closest) return
@@ -879,7 +975,9 @@ export function routeClick(e: MouseEvent) {
     const was = (w.intimes || []).join(', ')
     const parsed = parseReportingLines(w)
     const flights = (w.formations || []).filter((f:any) => !f.cx && parseHM(f.to) != null)
-    const reports = flights.map((f:any) => resolveReporting(w,f,parseHM(f.to)!,parsed).report).filter((t:any) => t != null)
+    /* the typed lines alone decide the fill (D510, D600): a formation's own rally box is not an in-time, and
+       "+ In-time" keeps filling the same time it did before the box existed (D1031) */
+    const reports = flights.map((f:any) => resolveReporting(w,{ ...f, rl: '' },parseHM(f.to)!,parsed).report).filter((t:any) => t != null)
     const t0 = reports.length ? Math.min(...reports) : flights.length ? Math.min(...flights.map((f:any) => parseHM(f.to)!)) - VCONF.reportLead : null
     /* hh:mm since 30 Aug 26 — the minted line states its time in the app's one
        colon form, exactly as an edited line commits (intimeFold) */
@@ -983,24 +1081,14 @@ export function routeClick(e: MouseEvent) {
     return
   }
 
-  /* accepting the suggested B (owner spec, 6 Aug 26). A blank formation offers
-     the calculated take-off-minus-briefLead time as a ghost above the box —
-     see html.ts's .bto and board.ts's .sb-bcell, both emit .bsug — and a
-     click there is a deliberate "yes, that's the brief", written through the
-     funnel exactly like typing it would be, rather than landing as an
-     invisible default nobody chose. */
-  const bacc = t.closest('[data-bacc]') as HTMLElement | null
-  if (bacc) {
-    e.stopPropagation()
-    if (!canEditSched()) { HOOKS.toast('Only a scheduler can set the brief time', 'warn'); return }
-    const key = bacc.dataset.bacc!, val = bacc.dataset.bval || ''
-    /* txtSet is the mutation funnel (noteChange → pending); markEdit() below
-       carries NO key because txtSet already marked this one — the same
-       convention textedit.ts's routeFocusOut uses after a successful txtSet. */
-    if (txtSet(key, val)) { markEdit(); view.afterSchedMutate() }
-    notify()
-    return
-  }
+  /* A TAP ON AN EMPTY BOX THAT SUGGESTS A TIME PLACES IT (owner D1028, D1030, 19 Oct 26 — the suggested brief and the
+     default rally; before, a blue time above the box was clicked). Placed highlighted, so whatever is typed next
+     replaces it; it is saved the way a typed time is, when the box is left — the week's box by its own focusout
+     (textedit.ts routeFocusOut), the board's by the `change` placeSuggestion raises when the box is left still holding
+     it. Escape before then puts the box back empty and saves nothing (each box's own Escape). A Tab that passes
+     through raises no click, so it fills nothing: accepting stays a deliberate act. */
+  const sg = t.closest('.sugbox') as HTMLElement | null
+  if (sg && canEditSched() && HOOKS.editMode() && (reselectPlaced(sg) || placeSuggestion(sg))) return
 
   /* the palette drawer tab and the arm-strip cancel */
   if (t.closest('.ros-tab')) { document.body.classList.toggle('ros-open'); e.stopPropagation(); return }

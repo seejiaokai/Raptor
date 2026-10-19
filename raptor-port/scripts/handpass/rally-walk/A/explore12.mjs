@@ -1,0 +1,11 @@
+import { launch, ctxOpen, SIZES, sleep, go, shot, buildSat, bType, bf, errors, warns } from './lib.mjs'
+console.log('explore12 v1')
+const b = await launch()
+const { ctx, p } = await ctxOpen(b, SIZES.desk, 'x')
+await buildSat(p)
+await bType(p, bf(5,0,0,'rl'), '07:00')
+await p.locator('#sbInsights').click(); await sleep(1200)
+const t = await p.evaluate(() => { const el = [...document.querySelectorAll('[role=dialog], .modal, .ins, #insights, [class*=insight]')].filter(e => e.offsetParent); return el.map(e => e.className + ' :: ' + e.innerText.replace(/\s+/g, ' ').slice(0, 700)) })
+console.log(JSON.stringify(t, null, 1))
+await shot(p, 'explore-insights')
+await b.close()

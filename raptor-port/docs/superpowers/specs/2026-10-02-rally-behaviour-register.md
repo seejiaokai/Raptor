@@ -20,7 +20,17 @@ FULL evidence: `../../handpass/2026-10-02-rally-workspan.md`.
 | ITD2 | D594: a new order on a published day is one pending change and the sign-offs fall; dragged back to the issued order it nets to nothing | `engine/intimes-order.test.ts` (the published-day case) |
 | ITD3 | D594: Auto sort (the wave's ⇅) and Sort all order the lines by time — an evening-before clock first, a line with no clock last — Sort all with one history line | `engine/intimes-order.test.ts` (the sort cases); `engine/sort.test.ts` |
 
-ITD1–ITD3 were added 19 Oct 26 with the build of `[INTIME-LINES-DRAG]`. D1026 (19 Oct 26) will move the rally out of these lines into a box of its own on each formation — not built, `[RALLY-PER-FORMATION]`.
+ITD1–ITD3 were added 19 Oct 26 with the build of `[INTIME-LINES-DRAG]`. D1026 (19 Oct 26) moves the rally out of these lines into a box of its own on each formation — built 19 Oct 26, `[RALLY-PER-FORMATION]`, RB1–RB7 below; the typed lines keep their reading (D1034), so RT1–RT8 and ITD1–ITD3 stand.
+
+| # | Behaviour (his rulings) | Named by |
+|---|---|---|
+| RB1 | D1032: a formation's R box counts exactly as a typed rally — one more formation-specific rally, replacing the whole-wave typed RALLY lines (D505) and beside a typed rally naming the formation, the earlier counting (D506); read with the evening-before rule (D503); for crew rest, the long day, OIL, work hours and the wave's report | `engine/rallybox.test.ts` |
+| RB2 | D1034: a whole-wave in-time stays every formation's in-time (06:00 in-time, 07:00 box → 06:00); a typed line still saying RALLY is read as before; a standby line carries no rally | `engine/rallybox.test.ts` |
+| RB3 | D1032, D592: an empty box counts as nothing entered — the nominal report | `engine/rallybox.test.ts` |
+| RB4 | D1026, D1029: the week (Edit Schedule, View-only Sched, the next-week peek) draws R over B and TO over LD; the board R · B · TO · LD in one line on a desktop, R over B and TO over LD where the pucks take their own row (a phone up to 820 wide); the four times one size on the desktop week; the Tab route callsign, mission, rally, brief, take-off, landing (D554) | `ui/brieftime-ui.test.tsx`, `ui/board-stores.test.tsx`, `ui/schedule-tab.test.tsx`, `e2e/rallybox.spec.ts` |
+| RB5 | D1028, D1030: the suggested brief and the default rally sit faint inside their own empty box, never on a line above it; one tap places it highlighted so typing replaces it; leaving the box saves it; Escape takes a just-placed one out; Tab fills nothing; View-only Sched prints an empty brief's suggestion and leaves an empty R blank | `ui/brieftime-ui.test.tsx`, `e2e/rallybox.spec.ts` |
+| RB6 | D1027, D1031: the default rally is the take-off less the Logic page's one setting, renamed "Default rally before take-off"; "+ In-time" fills what it always did, whatever an R box says; the export and the printed PDF carry the typed rally, never the default | `ui/brieftime-ui.test.tsx`, `ui/oilworkstart.test.tsx` |
+| RB7 | D1032, D45: on a published day a changed R box is one pending change, the issued copy keeps its rally, the next amendment carries the new one | `state/rallybox-publish.test.ts` |
 
 The register adds RT1–RT8 to `scripts/rulecheck.mjs`, with no increase in its
 uncovered baseline. A named test is the coverage floor, not a replacement for

@@ -8,7 +8,7 @@ import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId, inputRe
 import { onCommon } from '../engine/grouprows'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
-import { REPORTING_LABEL } from '../engine/reporting'
+import { REPORTING_LABEL, reportingIssuesForWave } from '../engine/reporting'
 import { WARN, validate, WCODE, wlbl, FLT_NO_LEN_SAYS } from '../engine/validate'
 import { shownWarns } from '../engine/warnhide'
 import { hhmm, hm24, fmtHM, minus, parseHM } from '../engine/time'
@@ -22,7 +22,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay, iuParts } from '../engine/keys'
 import { applyMove, sortWave, sortInTimes, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown, sbPrevDay, SB_PREVDAY, boxText } from './html'
+import { rlFaultAtt, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown, sbPrevDay, SB_PREVDAY, boxText } from './html'
 import { onInputRow, rowMark, UNMARKED } from './reqdoor'
 import { setInpField, howMany } from './inputedit'
 import { reqRowText } from './reqrow'
@@ -190,8 +190,15 @@ function boardHTMLBody(di: number, pv?: boolean) {
        (owner, 14 Aug 26 — the board should edit everything the week can). */
     if (w.intimes && w.intimes.length)
       fly += `<div class="intimes${mvRO ? '' : ' iedit itdrag'}" data-warnkey="it:${di}.${gi}"${alAttr(`it:${di}.${gi}`)} ${mvRO ? '' : `data-intimes="${di}|${gi}"`}>${intimesInner(w, mvRO ? null : `${di}|${gi}`, !mvRO)}</div>`
-    fly += `<div class="sb-lcols"><span></span><span>CS</span><span>MSN</span><span>B</span><span>TO</span><span>LD</span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
+    /* R · B · TO · LD (owner D1026, D1029, 19 Oct 26): two wrappers, R+B and TO+LD. On a desktop board they are
+       display:contents, so the four headings stand in a line over four tracks; where the board puts the pucks on their
+       own row (a phone, up to 820 wide, not the desktop layout) each wrapper is ONE cell, its two headings stacked over
+       its two stacked boxes. A standby wave carries no rally, so its R heading is blank. Nine children — the phone's
+       hidden-by-position rule counts them (13-board-rows-responsive.css). */
+    fly += `<div class="sb-lcols"><span></span><span>CS</span><span>MSN</span><span class="sb-hrb"><span>${sa ? '' : 'R'}</span><span>B</span></span><span class="sb-htl"><span>TO</span><span>LD</span></span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
     if (!w.formations.length) fly += `<div class="sb-empty" style="padding:6px 11px">Empty wave — add a line, or remove the wave.</div>`
+    /* the R box's own timing fault (the fresh read's F1): its address and words, as the week's (html.ts rlFaultAtt) */
+    const boxFaults = sa || pv ? [] : reportingIssuesForWave(w, gi).filter((i: any) => i.box)
     w.formations.forEach((f: any, li: number) => {
       const roleAccess=pv && !sa && missionTracking() && canEditSched() && view.CURPAGE==='editsched' && !protectedWeek() && view.DPREV.get(di)===dayCurVer(di) && !f.cx && f.aircraft.some((a:any)=>!a.cx) && resolveMissionRole(f).conditional
       f.aircraft.forEach((a: any, ai: number) => {
@@ -239,9 +246,15 @@ function boardHTMLBody(di: number, pv?: boolean) {
          needed, not a brief to auto-fill (owner, 24 Aug 26 — "we will hardly
          have a brief time"). The box itself stays, so a real in-time can be
          entered; only the blue suggestion goes. */
-      const brSug = (!stoRO && !sc && parseHM(f.br) == null)
-        ? `<span class="bsug" data-bacc="${fp}.br" data-bval="${brief}" title="Click to accept the suggested brief time">${fmtHM(brief)}</span>`
-        : ''
+      /* THE SUGGESTION INSIDE ITS OWN EMPTY BOX (owner D1028, D1030): the box's own placeholder, faint in the accent
+         (.sugbox), never a line above it — one tap places it highlighted (interactions.ts placeSuggestion), so typing
+         replaces it; Tab fills nothing. The brief's is the take-off less the brief lead; the R box's is the default
+         rally, the take-off less the Logic page's report setting (D1027, D1031). Neither on a read-only board, and no
+         brief suggestion on an SC line, whose B is an in-time to be typed when needed. */
+      const brSug = !stoRO && !sc && parseHM(f.br) == null && brief ? fmtHM(brief) : ''
+      const rlDefault = minus(f.to, VCONF.reportLead)
+      const rlSug = !stoRO && !sa && parseHM(f.rl) == null && rlDefault ? fmtHM(rlDefault) : ''
+      const sugAttr = (s: string) => s ? ` placeholder="${esc(s)}"` : ''
       /* sbSlot's own `pv` param means "read-only" to that function, not
          literally "preview" — widened to stoRO below for the same reason
          as `dis` above: the FCP/RCP seats are the "arm/drop targets" the
@@ -297,9 +310,11 @@ function boardHTMLBody(di: number, pv?: boolean) {
              leaving a scheduler on row two wondering why his row has none */
           : boxHTML('lin', `data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis}${oilModeOn(di) ? ' title="Part of the line above — its OIL switch is on the first row"' : ''}`, f.cs, '')}
         ${boxHTML('msn', `data-bfld="${fp}.msn"${alAttr(`${fp}.msn`)}${dis}`, f.msn, '')}
-        <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} value="${esc(fmtHM(f.br))}"></div>
-        <input class="tm${badCls}"${badAtt} data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(fmtHM(f.to))}">
-        <input class="tm${badCls}"${badAtt} data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(fmtHM(f.ld))}">
+        <div class="sb-bcell sb-rb">${sa
+          /* a standby line has no rally: an empty place keeps the R track (desktop) and the stack's top (phone) */
+          ? '<span class="sb-rlnone" aria-hidden="true"></span>'
+          : `<input class="tm${rlSug ? ' sugbox' : ''}" data-bfld="${fp}.rl"${alAttr(`${fp}.rl`)}${dis}${sugAttr(rlSug)}${rlFaultAtt(boxFaults, li, fp)} aria-label="Rally" value="${esc(fmtHM(f.rl))}">`}<input class="tm${brSug ? ' sugbox' : ''}" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis}${sugAttr(brSug)} value="${esc(fmtHM(f.br))}"></div>
+        <div class="sb-bcell sb-tl"><input class="tm${badCls}"${badAtt} data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(fmtHM(f.to))}"><input class="tm${badCls}"${badAtt} data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(fmtHM(f.ld))}"></div>
         <div class="sb-seatpair">${sbSlot(di, key + '.p', 'p', a.p, stoRO)}${sbSlot(di, key + '.w', 'w', a.w, stoRO)}</div>
         <div class="sb-rcell"${alAttr(`st:${key}`)}>
           ${sa ? saRoleHTML(key, a, !stoRO) : ''}

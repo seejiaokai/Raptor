@@ -109,8 +109,8 @@ export const RULE_SPEC:any={
   step:      {t:'Step before take-off',      u:'min', lo:0,  hi:240},
   dekit:     {t:'Dekit after landing',       u:'min', lo:0,  hi:240},
   briefLead: {t:'Flight brief before T/O',   u:'min', lo:0,  hi:480},
-  reportLead:{t:'Nominal report before T/O (also the time the + In-time / Rally button fills in)', u:'min', lo:0,  hi:480},
-  reportText:{t:'Words the + In-time / Rally button fills in (up to 60 characters)',kind:'text',u:'text',maxlen:60},
+  reportLead:{t:'Default rally before T/O (an empty R box suggests it, a day with nothing entered starts at it, and + In-time fills it in)', u:'min', lo:0,  hi:480},
+  reportText:{t:'Words the + In-time button fills in (up to 60 characters)',kind:'text',u:'text',maxlen:60},
   debrief:   {t:'Flight debrief after land', u:'min', lo:0,  hi:480},
   crewRest:  {t:'Crew rest',                 u:'min', lo:240,hi:1440},
   tightTurn: {t:'Tight turn threshold',      u:'min', lo:0,  hi:480},
@@ -167,7 +167,7 @@ export function rulesOffCount(){
   return Object.keys(RULE_SPEC).filter(ruleOff).length
        + Object.keys(KIND_LABEL).filter(kindOff).length;}
 /* W2 (the Codex stack check, 5 Oct 26): the settings a CHECK reads. A text setting (D511 — the words the
-   "+ In-time / Rally" button fills in) is a wording preference no rule reads, so it must not light the RULES MODIFIED
+   "+ In-time" button fills in) is a wording preference no rule reads, so it must not light the RULES MODIFIED
    stamp or the "checked against these values" strip — a squadron that says RALLY would wear the stamp for good and
    could no longer tell when a real rule had changed. rulesOffCount() still counts it for "N off standard" and Reset. */
 export function rulesCheckedOffCount(){

@@ -1,0 +1,11 @@
+console.log('B probe9 v1')
+import { launch, open, sleep } from './lib.mjs'
+const b = await launch()
+const { ctx, p } = await open(b)
+await p.evaluate(() => window.go('editsched')); await sleep(700)
+console.log(await p.evaluate(() => [...document.querySelectorAll('#eWeek .day[data-day="3"] button')].map(x => (x.dataset.act || '') + '|' + Object.keys(x.dataset).join(',') + '|' + x.textContent.trim().slice(0, 20) + '|' + x.id)))
+console.log(await p.evaluate(() => ['undoBtn', 'redoBtn', 'histBtn'].map(i => i + ':' + !!document.getElementById(i))), await p.evaluate(() => [...document.querySelectorAll('.topbar button, header button, #tb button')].slice(0, 12).map(x => x.id + '|' + (x.title || '') + '|' + x.textContent.trim().slice(0, 10))))
+await p.evaluate(() => window.openScheduler(3)); await p.waitForSelector('#schedBoard'); await sleep(900)
+console.log(await p.evaluate(() => [...document.querySelectorAll('#sbBoard button')].filter(x => !x.dataset.lcx && !x.dataset.lflag && !x.dataset.ldel && !x.dataset.stcfg).slice(0, 40).map(x => Object.keys(x.dataset).join(',') + '|' + x.textContent.trim().slice(0, 20) + '|' + x.id + '|vis' + (x.offsetParent !== null))))
+console.log(await p.evaluate(() => { const m = document.getElementById('sbMore'); const s = document.getElementById('sbSortAll'); return { sortVis: s && s.offsetParent !== null, moreVis: m && m.offsetParent !== null } }))
+await b.close()

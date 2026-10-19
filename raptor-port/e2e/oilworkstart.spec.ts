@@ -134,7 +134,7 @@ test.describe('a published day keeps the OIL it went out with (D592)', () => {
     await page.locator('.chgwin:not([hidden]) .win-tab', { hasText: 'To go out' }).first().click()
     const list = page.locator('.chgwin:not([hidden]) .pl-list').first()
     await expect(list).toContainText('OIL on this day')
-    await expect(list).toContainText('Nominal report before T/O')
+    await expect(list).toContainText('Default rally before T/O')   // the setting renamed by D1031 (19 Oct 26)
     await expect(list).toContainText('2h30')
     await expect(list).toContainText("OIL as published, under today's values")
     await expect(list).toContainText('full day · 07:00–13:15')

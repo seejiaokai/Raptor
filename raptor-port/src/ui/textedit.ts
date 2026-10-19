@@ -59,7 +59,7 @@ export function routeReportingInput(e:Event){
   const w=DAYS[di]?.waves?.[gi], feedback=line.closest('.intimes')?.querySelector('[data-reporting-feedback]');
   if(!w||!feedback)return;
   const intimes=[...(w.intimes||[])];intimes[ix]=line.textContent||'';
-  feedback.textContent=reportingIssuesForWave({...w,intimes},gi).map(i=>i.msg).join(' ');
+  feedback.textContent=reportingIssuesForWave({...w,intimes},gi).filter(i=>!(i.box&&!i.lines.length)).map(i=>i.msg).join(' ');
 }
 
 /* [ARCH-STACK] f/u#1 (F-05): a text mutation records SYNCHRONOUSLY through a
@@ -107,6 +107,36 @@ if (typeof document !== 'undefined') {
   /* a finger's lift and the mouse-style events that then move the focus come as separate steps (the walk's phone board,
      19 Oct 26): let go of the box only well after a touch, at once after a mouse */
   document.addEventListener('pointerup', (e: PointerEvent) => { PRESSING = false; if (ARRIVING && document.activeElement !== ARRIVING) setTimeout(letGo, e.pointerType === 'mouse' ? 0 : 600) }, true)
+}
+
+/* A BUTTON PRESSED STRAIGHT AFTER A CHANGED BOX STILL DOES ITS JOB ([EDIT-BUTTON-AFTER-CHANGE], found 19 Oct 26 — the week's
+   "+ In-time", the board's "+ Line"). The press takes the focus from the box, the box saves, and the redraw REPLACES the
+   button under the press; the browser then sends the click to nothing (the element it pressed is gone), so the first
+   press did nothing and a second worked. Not held the way a text box's arrival is (a held block also holds the save's
+   repaint): the press is noted when it lands on a button while a text box has the caret; once the browser has had its
+   chance to click — at once after a mouse, a little later after a finger, whose focus moves only after the lift — a
+   press whose button was replaced and whose click reached no copy of it gives the click to the replacement under the
+   lift: the same button, drawn again. A press the browser clicked, or a button never replaced, is left alone. */
+let PRESSED: { el: HTMLElement, html: string, done: boolean } | null = null
+const buttonOf = (t: any): HTMLElement | null => (t && t.closest ? t.closest('button') as HTMLElement | null : null)
+if (typeof document !== 'undefined') {
+  document.addEventListener('pointerdown', e => {
+    const b = buttonOf(e.target)
+    PRESSED = b && textBoxOf(document.activeElement) ? { el: b, html: b.outerHTML, done: false } : null
+  }, true)
+  document.addEventListener('pointercancel', () => { PRESSED = null }, true)
+  document.addEventListener('click', e => { const b = buttonOf(e.target); if (PRESSED && b && (b === PRESSED.el || b.outerHTML === PRESSED.html)) PRESSED.done = true }, true)
+  document.addEventListener('pointerup', (e: PointerEvent) => {
+    const p = PRESSED; if (!p) return
+    const x = e.clientX, y = e.clientY
+    setTimeout(() => {
+      if (PRESSED !== p) return
+      PRESSED = null
+      if (p.done || p.el.isConnected) return
+      const now = buttonOf(document.elementFromPoint(x, y))
+      if (now && now.outerHTML === p.html) now.click()
+    }, e.pointerType === 'mouse' ? 0 : 400)
+  }, true)
 }
 
 export function routeFocusOut(e: FocusEvent) {
@@ -223,7 +253,7 @@ export function routeFocusOut(e: FocusEvent) {
         const r = line.parentElement
         if (r?.classList.contains('itrow')) r.dataset.move = `mv:it.${di}.${gi}.${index}`
       })
-      if(feedback)feedback.textContent=reportingIssuesForWave(w,+gi!).map(i=>i.msg).join(' ')
+      if(feedback)feedback.textContent=reportingIssuesForWave(w,+gi!).filter(i=>!(i.box&&!i.lines.length)).map(i=>i.msg).join(' ')
       txtCommit()
       return
     }
@@ -240,7 +270,7 @@ export function routeFocusOut(e: FocusEvent) {
     }
     const want = intimeLineHTML(nv); if (!sameInner(il, want)) il.innerHTML = want
     // Escape/no-op blur must also discard any unsaved preview diagnostic.
-    if(feedback)feedback.textContent=reportingIssuesForWave(w,+gi!).map(i=>i.msg).join(' ')
+    if(feedback)feedback.textContent=reportingIssuesForWave(w,+gi!).filter(i=>!(i.box&&!i.lines.length)).map(i=>i.msg).join(' ')
     return
   }
   /* the typed stores text ("bombs…") — opts.bombs lives outside the txt-key

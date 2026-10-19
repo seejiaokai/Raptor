@@ -1355,3 +1355,63 @@ prove each by acting through it after the rollback, not by reading what it shows
 **Suggested improvement:** In the TDD skill: a test of undo, redo or history sets its fixture BEFORE the history takes its baseline (or through the app's own write path), and asserts the state just before the action under test, so a wrong baseline shows as a wrong precondition rather than as a failed fix.
 
 **Principle:** In a test of undo, a fixture written outside the recorded path becomes the baseline it undoes to; set it before the baseline is taken, and check the precondition before the action.
+
+### Observation 642: A ruling made from a picture names the surface in his words; open the picture before drawing
+
+**Status:** OPEN
+**Date:** 19 Oct 26
+**Session context:** the mock-up of [RALLY-PER-FORMATION] (D1026) on the real app
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** The Method, step 1 (before the first picture)
+
+**Issue:** The ruling said "on the week and Edit Schedule", and the chat that recorded it read "Edit Schedule" as the Edit Schedule week ("the five boxes in a line become …"), leaving "whether the Scheduler Board gets the same columns" as an open question. The week has no five boxes in a line; the board does. The picture he ruled from (his own iPhone screenshot, marked by that chat, still in its scratchpad) was the Scheduler Board. Only finding and opening that picture showed which surface his words meant; the mock-up would otherwise have drawn the wrong screen first and asked a question his picture already answered.
+
+**Suggested improvement:** In "The Method", before step 1: "When the decision being drawn was made from a picture (his screenshot, a marked picture), find and open that picture first — the ruling's words name the surface as he calls it, which may not be the app's own name for it. Say on the page which surface you read his words as, and why."
+
+**Principle:** The artifact a decision was made from outranks the words it was recorded in; a user's name for a screen is not the system's name for it.
+
+### Observation 643: The overnight guide stops at 90% weekly; his aim is to use the allowance up before the reset (D1033)
+
+**Status:** OPEN
+**Date:** 19 Oct 26
+**Session context:** the handoff into an /overnight build of [RALLY-PER-FORMATION], weekly allowance at 83%
+**Skill:** overnight
+**Type:** internal
+**Phase/Area:** the run's stop rules ("Stop starting new jobs … when the weekly figure passes 90%")
+
+**Issue:** Told that his weekly allowance was at 83% with the reset about 13 hours away, he answered "I don't mind using up the usage. Thats my objective before the reset" (D1033). The guide's stop at 90% would end the night early and leave allowance unused that resets anyway.
+
+**Suggested improvement:** In the stop rules: "when the weekly figure passes 90% AND the weekly reset is after the run's end; where the reset falls before the run would end, keep starting jobs (D1033) — commit, push and write the block after each step so the limit never strands work." Changed only with its reads (D70).
+
+**Principle:** Allowance that resets unused is not saved; a stop rule for a budget should know when the budget refills.
+
+### Observation 644: A browser-test port held by another chat's old preview silently tests the wrong build
+
+**Status:** OPEN
+**Date:** 19 Oct 26
+**Session context:** /overnight build of [RALLY-PER-FORMATION]; red-first e2e for [EDIT-BUTTON-AFTER-CHANGE]
+**Skill:** overnight (and the walk / gate guidance it points at)
+**Type:** internal
+**Phase/Area:** Part 2 — running the gates and the browser tests
+
+**Issue:** The default browser-test port (4173) and a second one tried (4191) were each held by a vite preview left running by another worktree's chat days earlier. The Playwright config reuses an existing server outside CI, so the "red first" run and the first "green" run both drove the OTHER chat's old build — a red that proved nothing and failures (an R box "not found") that looked like the change's. Only checking the port's owning process showed it. Walker and gate runs then used E2E_PORT=4297 after proving the port free.
+
+**Suggested improvement:** In the overnight guide's step 1 ("Level and look") and before any browser test: list the listeners on 4173/4179/4180 and the walk ports, and either use a free port by E2E_PORT or prove the served bundle's hashed name equals the local build's (walk-scripts.md §1 already says this for walk servers; the gate path has no such check).
+
+**Principle:** A reused server must be proved to serve the build under test before any result from it counts; "reuse an existing server" turns a stale process into a silent false result.
+
+### Observation 645: A tap-to-fill handler fought the app's own focus-arrival refresh
+
+**Status:** OPEN
+**Date:** 19 Oct 26
+**Session context:** [RALLY-PER-FORMATION] walker B's F1 — tap R then B on the phone board
+**Skill:** New skill candidate: none — the bug-check order's §7.0/§8 (probe before fixing)
+**Type:** open-source
+**Phase/Area:** fixing a walker's finding
+
+**Issue:** The first fix for "B stays empty after tap R then B" was written from a reading of the cause (the click lost to a redraw) and passed a test that did not reproduce the walker's exact route (it scrolled B to centre first). The walker's own script, re-run, still failed; a 30-line event probe on the built app then showed the real cause in one run: the box was placed, then the app's focus-arrival refresh set it back from the model.
+
+**Suggested improvement:** For a walker's FAIL, re-run the walker's own script on the fixed build BEFORE trusting a new test, and when the first fix does not cure it, write an event probe (every pointer / focus / change event on the two elements, with their values) before a second guess.
+
+**Principle:** Reproduce on the finder's exact route; when a fix misses, instrument the events rather than re-reason the cause.

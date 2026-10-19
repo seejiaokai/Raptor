@@ -34,7 +34,7 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'
   OIL_NO_TIMES:'No OIL earned — a row has no usable times',
   FLT_NO_LEN:'Flight times — take-off and landing are the same',
   REPORT_ORDER:'In-time / Rally — timings out of order',
-  REPORT_UNRESOLVED:'In-time / Rally — check the reporting instruction',
+  REPORT_UNRESOLVED:'In-time — check the reporting instruction',
   OIL_OLD_BLOCK:'Published before these seats counted — republish to credit them',
   /* the four OIL advisories printed their CODE as the heading ("OIL_UNPUBLISHED — …") —
      [HUMAN-RETEST] amendment re-test, walk W4-F5, 24 Sep 26; pinned in ui/amendretest.test.tsx */
@@ -695,7 +695,7 @@ function validateCore(){
     /* D502: include uncrewed formations; no invented puck penalty.
        These ordinary issued warnings freeze normally. */
     reportingIssuesForDay(DAYS[di]).forEach(issue=>add(issue.blocking?'hard':'adv',issue.code,[],issue.msg,
-      issue.lines.length?`it:${di}.${issue.gi}`:`${di}.${issue.gi}.${issue.li}.0.p`));
+      issue.box?`ff:${di}.${issue.gi}.${issue.li}.rl`:issue.lines.length?`it:${di}.${issue.gi}`:`${di}.${issue.gi}.${issue.li}.0.p`));
     /* An SC / AVALON / BB line is a SHIFT, not a sortie. Its crew still count
        as tasked and are still checked for clashes and qualification, but a
        handover is not a turn, a 12-hour watch is not a long flying day, and a

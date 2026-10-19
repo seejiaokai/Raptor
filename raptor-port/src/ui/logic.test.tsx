@@ -331,6 +331,9 @@ describe('the thresholds are editable, and only by an admin (tfin B52)', () => {
 
   it('a setting has ONE box now (D928 — the duplicates went), and a change to it moves the checks that read it', async () => {
     expect($$('#lgBody input[data-lgset="reportLead"]')).toHaveLength(1)
+    /* RB6 — the one setting, renamed to say it is the default rally (D1031, 19 Oct 26) */
+    expect(setRow('reportLead').textContent, 'its name').toContain('Default rally before take-off')
+    expect(text(), 'the old name is gone').not.toContain('Report before take-off')
     expect($$('#lgBody input[data-lgset="step"]')).toHaveLength(1)
     await setField($('#lgBody input[data-lgset="reportLead"]') as HTMLInputElement, '2h30')
     expect(VCONF.reportLead).toBe(150)

@@ -33,8 +33,13 @@ export function intimeFold(s:any){
 }
 /* W6 (D498, D504; the Codex stack check, 5 Oct 26): the ONE name of the wave's reporting box, wherever it is drawn —
    the box's button and ✕, the wave header, the changes window, the pending list, the change record, the toasts, Undo.
-   The rename reached four of them and left the old plural name on the other four; ui/intimesadd.test.tsx draws every place. */
-export const REPORTING_LABEL='In-time / Rally';
+   The rename reached four of them and left the old plural name on the other four; ui/intimesadd.test.tsx draws every place.
+   "In-time" since D1026 (19 Oct 26): a rally is each formation's own R box now, so the typed lines are named for the
+   in-time alone — though a typed line that still says RALLY is still read as a rally, as before (D1034). */
+export const REPORTING_LABEL='In-time';
+/* …but where the app states WHEN a wave or a formation reports — a time that may come from an in-time line, a typed rally
+   or a formation's own R box (D1026) — it says both: the wave header's evening-before note (html.ts waveHeadTail). */
+export const REPORT_WORD='In-time / Rally';
 type Activity='inTime'|'rally';
 export interface ReportingLine {
   index:number; text:string; clock:number|null; activities:Activity[];
@@ -43,6 +48,8 @@ export interface ReportingLine {
 export interface ReportingIssue {
   gi:number; li:number; lines:number[]; code:'REPORT_ORDER'|'REPORT_UNRESOLVED';
   msg:string; blocking:boolean;
+  /* the fault is the formation's own R box (D1026): its warning points at the box, and the box explains it */
+  box?:boolean;
 }
 const bounded=(term:string)=>new RegExp(`(^|[^A-Za-z0-9])${term}([^A-Za-z0-9]|$)`,'i');
 const inWord=bounded('IN(?:[ \\t-]+TIME|TIME)');
@@ -77,18 +84,29 @@ export function resolveReporting(w:any,f:any,to:number,parsed=parseReportingLine
   };
   // D503 applies to flight reporting. SC's typed-B and shift policy are unchanged.
   const instant=(clock:number)=>clock>to&&(!w.standalone||to-VCONF.reportLead<0)?clock-1440:clock;
-  const pick=(activity:Activity,inTime:number|null)=>{
-    const choices=scope(activity).map(p=>({p,time:p.clock!=null?instant(p.clock):inTime})).filter(c=>c.time!=null);
-    if(!choices.length)return {time:null as number|null,lines:[] as number[]};
+  const pick=(activity:Activity,inTime:number|null,own?:number|null)=>{
+    /* THE FORMATION'S OWN RALLY BOX (owner D1026, D1032, 19 Oct 26): f.rl is that formation's rally, so it is one more
+       formation-specific rally — it replaces the wave-wide typed RALLY lines (D505: a formation's own instruction
+       replaces the general one of the same activity) and stands beside a typed line naming the formation, the earliest
+       counting (D506). Read with the same evening-before rule (D503). Never an in-time: the in-time stays the typed
+       lines' alone, so a whole-wave in-time 06:00 still starts everyone at 06:00 (D1034). */
+    let sc=scope(activity);
+    if(own!=null&&!sc.some(p=>p.targets.some(t=>t.toLowerCase()===cs)))sc=[];
+    const choices=sc.map(p=>({p:p as ReportingLine|null,time:p.clock!=null?instant(p.clock):inTime})).filter(c=>c.time!=null);
+    if(own!=null)choices.push({p:null,time:instant(own)});
+    if(!choices.length)return {time:null as number|null,lines:[] as number[],box:false};
     const time=Math.min(...choices.map(c=>c.time!));
-    return {time,lines:choices.filter(c=>c.time===time).map(c=>c.p.index)};
+    /* box: the time chosen IS the formation's own R box (the fresh read's F1, 19 Oct 26) — so a fault it causes is pointed
+       at the box, never at the typed lines */
+    return {time,lines:choices.filter(c=>c.time===time&&c.p).map(c=>c.p!.index),box:own!=null&&time===instant(own)};
   };
-  const incoming=pick('inTime',null), rally=pick('rally',incoming.time);
+  const box=w.standalone?null:parseHM(f.rl);
+  const incoming=pick('inTime',null), rally=pick('rally',incoming.time,box);
   const stages=[incoming.time,rally.time].filter((t):t is number=>t!=null);
   const unresolved=parsed.filter(p=>!p.targets.length||p.targets.some(t=>t.toLowerCase()===cs))
-    .filter(p=>p.malformed||(scope('rally').includes(p)&&p.immediate&&incoming.time==null));
+    .filter(p=>p.malformed||(scope('rally').includes(p)&&p.immediate&&incoming.time==null&&(box==null||p.targets.length>0)));
   return {inTime:incoming.time,rally:rally.time,report:stages.length?Math.min(...stages):null,
-    sourceLines:[...new Set([...incoming.lines,...rally.lines])], unresolved};
+    sourceLines:[...new Set([...incoming.lines,...rally.lines])], unresolved, rallyBox:rally.box, inTimeLines:incoming.lines};
 }
 /* D594 (5 Oct 26): Auto sort and Sort all order a wave's In-time / Rally lines by time — earliest first, an
    evening-before clock before the same day's, a line with no clock last. The key is the line's clock read with the
@@ -138,7 +156,14 @@ export function reportingIssuesForWave(w:any,gi=0):ReportingIssue[]{
     const ld=parseHM(f.ld); if(ld!=null)stages.push({name:'landing',time:ld<to?ld+1440:ld});
     for(let i=1;i<stages.length;i++){
       const before=stages[i-1],after=stages[i];
-      if(before.time>after.time)issues.push({gi,li,lines:r.sourceLines,code:'REPORT_ORDER',blocking:true,
+      if(before.time<=after.time)continue;
+      /* THE R BOX'S OWN FAULT IS POINTED AT THE BOX (the fresh read's F1, 19 Oct 26): a pair that includes the rally taken
+         from the formation's R box blames the box — no typed line, so the warning's tap lands on the box and the typed lines
+         do not explain a fault that is not theirs (D509: "explained while editing") */
+      const box=r.rallyBox&&(before.name==='rally'||after.name==='rally');
+      /* …but an in-time later than the box's rally is half the typed line's (the narrow read's N1): the in-time is always a
+         typed line (D1034) and often the culprit, so the lines that typed it still explain it — and the box carries it too */
+      issues.push({gi,li,lines:box?(before.name==='in-time'?r.inTimeLines:[]):r.sourceLines,code:'REPORT_ORDER',blocking:true,...(box?{box:true}:{}),
         msg:`${name}: ${before.name} ${stated(before.time)} is later than ${after.name} ${stated(after.time)}.`});
     }
     r.unresolved.forEach(p=>issues.push({gi,li,lines:[p.index],code:'REPORT_UNRESOLVED',blocking:false,

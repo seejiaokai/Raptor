@@ -1,0 +1,50 @@
+{
+ "results": [
+  {
+   "id": "S3h-1050",
+   "what": "R 1050: Outlaw's pucks Mon and Tue",
+   "expected": "RECORD any tight-rest advisory words",
+   "seen": {
+    "rl": "10:50",
+    "pucks": [
+     "0: puck | Outlaw · C · ops wingman",
+     "0: puck sm | Outlaw · C · ops wingman",
+     "1: puck | Outlaw · C · ops wingman",
+     "1: puck sm | Outlaw · C · ops wingman"
+    ]
+   },
+   "verdict": "RECORD"
+  },
+  {
+   "id": "S3h-1100",
+   "what": "R 1100: Outlaw's pucks Mon and Tue",
+   "expected": "RECORD any tight-rest advisory words",
+   "seen": {
+    "rl": "11:00",
+    "pucks": [
+     "0: puck | Outlaw · C · ops wingman",
+     "0: puck sm | Outlaw · C · ops wingman",
+     "1: puck | Outlaw · C · ops wingman",
+     "1: puck sm | Outlaw · C · ops wingman"
+    ]
+   },
+   "verdict": "RECORD"
+  },
+  {
+   "id": "S3h-1120",
+   "what": "R 1120: Outlaw's pucks Mon and Tue",
+   "expected": "RECORD any tight-rest advisory words",
+   "seen": {
+    "rl": "11:20",
+    "pucks": [
+     "0: puck | Outlaw · C · ops wingman",
+     "0: puck sm | Outlaw · C · ops wingman",
+     "1: puck | Outlaw · C · ops wingman",
+     "1: puck sm | Outlaw · C · ops wingman"
+    ]
+   },
+   "verdict": "RECORD"
+  }
+ ],
+ "errors": []
+}

@@ -1,0 +1,52 @@
+import { launch, ctxOpen, SIZES, sleep, shot, buildSat, bType, rlBox, val, model, rec, errors, openBoard } from './lib.mjs'
+console.log('sc05b v1')
+const b = await launch()
+const R = rlBox(5, 0, 0), B = rlBox(5, 0, 0, 'br'), T = rlBox(5, 0, 0, 'to')
+const chg = p => p.evaluate(() => ((document.querySelector('#schedBoard')?.innerText.match(/(\d+) changes?/) || [])[0]) || 'none')
+if (false) {
+  const { ctx, p } = await ctxOpen(b, SIZES.desk, '5g')
+  await buildSat(p)
+  await p.locator(R + ':visible').first().click(); await sleep(200)
+  await p.keyboard.type('0830'); await p.keyboard.press('Enter'); await sleep(400)
+  const m = await model(p, 5, 0, 0); const v = await val(p, R)
+  rec('5f', 'desk', 'click R, type 0830, Enter', 'RECORD: saved? leaves box?', { model: m, box: v }, 'RECORD')
+  // compare with another board box: TO
+  await p.locator(T + ':visible').first().click(); await p.locator(T).first().fill('1215'); await p.keyboard.press('Enter'); await sleep(400)
+  const m2 = await model(p, 5, 0, 0); const v2 = await val(p, T)
+  rec('5f', 'desk', 'for comparison: TO box, type 1215, Enter', 'RECORD (what an old box does on Enter)', { model: m2, box: v2 }, 'RECORD')
+  await ctx.close()
+}
+{
+  const { ctx, p } = await ctxOpen(b, SIZES.desk, '5b2')
+  await buildSat(p)
+  const c0 = await chg(p)
+  await p.locator(R + ':visible').first().click(); await sleep(200)
+  await p.keyboard.press('Escape'); await sleep(400)
+  { const r = await p.locator(R + ':visible').first().boundingBox(); await p.mouse.click(r.x + r.width / 2 + 200, r.y - 28); await sleep(300) }
+  const c1 = await chg(p)
+  await p.locator('#sbUndo').click(); await sleep(500)
+  const wseat = await p.evaluate(() => { const a = window.DAYS[5].waves[0].formations[0].aircraft[0]; return { p: a.p, w: a.w } })
+  rec('5b', 'desk', 'click R, Escape, leave, then ONE Undo', 'Undo takes back the previous real change (the WSO seat), not an empty rally entry', wseat, !wseat.w ? 'PASS' : 'FAIL')
+  await p.locator('#sbRedo').click(); await sleep(400)
+  rec('5b', 'desk', 'click R then Escape; the board header\'s change count before/after', 'no new history entry (count equal)', { c0, c1 }, c0 === c1 ? 'PASS' : 'FAIL')
+  await p.locator(R + ':visible').first().click(); await sleep(200)
+  await p.keyboard.type('0830'); await p.keyboard.press('Tab'); await sleep(300)
+  const c2 = await chg(p)
+  rec('5b', 'desk', 'for contrast: click R, type 0830, Tab', 'count rises by one', { c1, c2 }, c1 !== c2 ? 'PASS' : 'RECORD')
+  await ctx.close()
+}
+{
+  const { ctx, p } = await ctxOpen(b, SIZES.desk, '5e2')
+  await buildSat(p)
+  await p.locator(R + ':visible').first().click(); await sleep(200)
+  const btn = p.locator('#schedBoard button:visible').filter({ hasText: /^Fri/ }).first()
+  const hasBtn = await btn.count()
+  const dayBefore = await p.evaluate(() => window.SBDAY)
+  await btn.click(); await sleep(900)
+  const dayAfter = await p.evaluate(() => window.SBDAY)
+  const m = await model(p, 5, 0, 0)
+  rec('5e', 'desk', 'click R (09:00 placed) then at once the Fri 17 day button', 'RECORD whether the rally was saved before the board changed day', { hasBtn, dayBefore, dayAfter, model: m }, 'RECORD', await shot(p, 'A05e-day-arrow'))
+  await ctx.close()
+}
+console.log('errors', JSON.stringify(errors))
+await b.close()

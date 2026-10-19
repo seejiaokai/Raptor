@@ -116,7 +116,7 @@ function genericLabel(entry: UndoEntry): string {
 
 /* ---- a text box, by its key (the slot-key grammar, raptor-port/CLAUDE.md) ---- */
 const TIME_WORD: Record<string, string> = {
-  to: 'a take-off time', ld: 'a landing time', br: 'a brief time', str: 'a start time', end: 'an end time',
+  to: 'a take-off time', ld: 'a landing time', br: 'a brief time', rl: 'a rally time', str: 'a start time', end: 'an end time',
 }
 const scLineKey = (key: string) => {
   const pk = posKey(key, DAYS), a = String(pk == null ? key : pk).slice(3).split('.')

@@ -352,7 +352,7 @@ export { isPersonKey }
    which the engine cannot import. If a third caller ever wants this, merge
    THAT one into this — not the other way round. */
 export const TXT_FLD: any = {
-  cs: 'callsign', msn: 'mission', to: 'take-off', ld: 'land', br: 'brief',
+  cs: 'callsign', msn: 'mission', to: 'take-off', ld: 'land', br: 'brief', rl: 'rally',
   str: 'start', end: 'end', prog: 'item', sub: 'detail', role: 'role',
   label: 'label', rmks: 'remarks',
 }

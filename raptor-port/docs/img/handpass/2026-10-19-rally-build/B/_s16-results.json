@@ -1,0 +1,55 @@
+{
+ "results": [
+  {
+   "id": "S16a",
+   "what": "member (us), View-only Sched, Thu wave 1 at 402",
+   "expected": "VL typed R 09:30 shows; RU empty R shows no faint suggestion; not editable",
+   "seen": [
+    {
+     "r": "09:30",
+     "rEditable": null,
+     "rBefore": "none",
+     "b": "10:25"
+    },
+    {
+     "r": "",
+     "rEditable": null,
+     "rBefore": "\" \"",
+     "b": "10:25"
+    }
+   ],
+   "verdict": "FAIL",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B16a-member-view.png"
+  },
+  {
+   "id": "S16b",
+   "what": "member: finger tap on the empty R (RU)",
+   "expected": "nothing placed, nothing saved, no toast",
+   "seen": {
+    "before": {
+     "rl": ""
+    },
+    "after": {
+     "rl": "",
+     "shownR": "",
+     "active": "BODY",
+     "toast": []
+    }
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B16b-member-tap.png"
+  },
+  {
+   "id": "S16c",
+   "what": "member: open the read-only board (Thu)",
+   "expected": "typed R 09:30 shown on the first VL line; empty R has no suggestion; boxes not editable",
+   "seen": {
+    "open": false,
+    "page": "viewsched"
+   },
+   "verdict": "NOT WALKED",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B16c-member-board.png"
+  }
+ ],
+ "errors": []
+}

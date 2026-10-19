@@ -764,6 +764,38 @@ delete or preview-feedback controls. No routine previous-day explanation row
 or date control appears. Source-positive tests: `rally-feedback.test.tsx`;
 running-app order/geometry proof is recorded in the Rally FULL evidence sheet.
 
+**Each formation's own rally box — R over B, TO over LD (owner D1026–D1034, 19 Oct 26; `[RALLY-PER-FORMATION]`).**
+The typed lines are named **In-time** (`REPORTING_LABEL`: the button "+ In-time", its ✕, the changes window, the pending
+list, Undo); where the app states WHEN a wave reports — the week's evening-before note and the timings-out-of-order
+warning's title — it still says "In-time / Rally" (`REPORT_WORD`), as a rally may decide it. A flying line's second time
+column is headed R / B (the formation's R box above its B) and the third TO / LD, on Edit Schedule's week, View-only
+Sched and the next-week peek (one heading constant, `html.ts WEEK_TIME_HEAD`); a standalone line keeps START / END. On
+View-only Sched an empty R keeps its line, so B stays second in every formation. The desktop week draws the four times at
+one size (LD's, 11px). The Scheduler Board's line carries two time wrappers, `.sb-rb` (R, B) and `.sb-tl` (TO, LD):
+display:contents on a desktop board, so R · B · TO · LD stand in one line over eleven tracks (D1029, picture 11);
+where the pucks take their own row (a phone up to 820 wide, not the desktop layout) each is one cell, its two boxes 4px
+apart, the mission spanning the freed track so the pucks and remarks keep their widths (picture 6). The headings follow
+the same wrappers; the phone hides the 6th to 9th heading children (FCP, RCP, Notes, the end place). A standby line has
+no R box: an empty `.sb-rlnone` keeps its place. **A suggested time sits faint inside its own empty box** (D1028,
+D1030 — the suggested brief and the default rally, the take-off less the Logic page's "Default rally before take-off"):
+the week's box by its `data-ph`, the board's by its placeholder, both `.sugbox` in the accent; the old line above B
+(`.bsug`) is gone. One press places it highlighted (`interactions.ts placeSuggestion`), so the next key replaces it;
+leaving the box saves it (the week by its focusout, the board by a `change` raised when it is left still holding it);
+Escape takes a just-placed one out (each box's own Escape); a Tab passing through fills nothing. The Tab route is
+callsign, mission, rally, brief, take-off, landing (D554, in document order). The export and the printed PDF carry a
+Rally column before Brief: the typed rally, never the default. Pinned: `ui/brieftime-ui.test.tsx`,
+`ui/board-stores.test.tsx`, `ui/schedule-tab.test.tsx`, `e2e/rallybox.spec.ts` (register RB4–RB6). **A timing fault the R box
+takes part in is the box's** (the code read, 19 Oct 26): its warning is keyed to the R box (`ff:di.gi.li.rl` — a tap lands on it,
+live paper only), the box carries the fault's words (`html.ts rlFaultAtt`, week and board), and the typed lines' red note leaves
+it out — except an in-time later than the box's rally, which the in-time line explains too (the in-time is always typed).
+
+**A button pressed straight after a changed box does its job (`[EDIT-BUTTON-AFTER-CHANGE]`, 19 Oct 26).** The press
+takes the focus from the box, the box saves and the redraw replaces the button under the press, so the browser's click
+reached nothing. `textedit.ts` notes a press that lands on a button while a text box has the caret; once the browser
+has had its chance to click (at once after a mouse, 400ms after a finger), a press whose button was replaced and whose
+click reached no copy of it gives the click to the same button drawn again under the lift. Pinned:
+`e2e/schedule-tab.spec.ts` "one press of a button after a changed box does its job" (red first, phone and desktop).
+
 **Review fixes D509–D511 (3 Oct26):** blank B is named as suggested brief in
 timing messages. Both headers label a previous-day report `(prev day)`; the
 week adds only that exceptional marker beside the wave label, with no routine

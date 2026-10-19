@@ -1,0 +1,50 @@
+{
+ "results": [
+  {
+   "id": "S3-fix",
+   "what": "removed the two Tue wave-1 in-time lines (X), set VL TO 14:00 / LD 15:25 by finger",
+   "expected": "intimes 0; to 14:00; ld 15:25",
+   "seen": {
+    "intimes": 0,
+    "to": "14:00",
+    "ld": "15:25"
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "S3-base",
+   "what": "Tue warnings after the fixture (no R typed)",
+   "expected": "no crew-rest warning for Outlaw (rest clear at 10:45, report 11:00)",
+   "seen": [],
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B03a-clean.png"
+  },
+  {
+   "id": "S3a",
+   "what": "tap R (suggestion), type 1000 (before 10:45), leave",
+   "expected": "placed 11:00; R saved 10:00; red Crew rest warning for Outlaw naming the rally",
+   "seen": {
+    "placed": "11:00",
+    "rl": "10:00",
+    "lines": [
+     "Crew rest (<12h)",
+     "Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 10:00 — only 11h15 rest."
+    ]
+   },
+   "verdict": "PASS",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B03a-breach.png"
+  },
+  {
+   "id": "S3b",
+   "what": "Monday: the landing man Outlaw's puck on Mon night (RU)",
+   "expected": "dotted red ring class (D1013) after the R breach",
+   "seen": [
+    "puck boxdot dim | Outlaw · C · ops wingman · Crew rest — Tuesday is broken by this day: he had to leave by 22:00",
+    "puck sm boxdot dim | Outlaw · C · ops wingman · Crew rest — Tuesday is broken by this day: he had to leave by 22:00"
+   ],
+   "verdict": "RECORD",
+   "pic": "docs/img/handpass/2026-10-19-rally-build/B/B03b-monday-puck.png"
+  }
+ ],
+ "errors": []
+}
