@@ -842,17 +842,26 @@ let TIME_DOWN: { x: number, y: number } | null = null
    tap from a scroll, so a scroll started on the armed box (to see it above the keyboard) must not end the arming. A
    press that ends in pointerup is a second press; one the browser takes over (pointercancel) disarms only when held
    450 ms or longer — a long press, or the loupe moving the caret. */
-let ARMED_PRESS: { el: any, at: number } | null = null
+let ARMED_PRESS: { el: any, at: number, id: number } | null = null   // id: the press's own pointer (round 3's F2)
 if (typeof document !== 'undefined') {
   /* a press that moved more than a few pixels was a drag — a selection he made, or a scroll — so the box it armed goes
      back to ordinary editing (F2) */
-  document.addEventListener('pointerdown', e => { TIME_DOWN = { x: e.clientX, y: e.clientY } }, true)
-  document.addEventListener('pointercancel', () => {
+  document.addEventListener('pointerdown', e => {
+    TIME_DOWN = { x: e.clientX, y: e.clientY }
+    /* a note left by a press whose end never came (a Mac's context menu takes the release — round 3's F2) is dropped by
+       the same pointer's next press */
+    if (ARMED_PRESS && ARMED_PRESS.id === e.pointerId) ARMED_PRESS = null
+  }, true)
+  document.addEventListener('pointercancel', e => {
+    /* a press the browser took over is no tap: it neither arms a box (round 3's F3 — a long press, the iPhone's form arrows
+       after a scroll) nor ends one, but for a long press held 450 ms or more */
+    TIME_PRESS = null
+    if (ARMED_PRESS && ARMED_PRESS.id !== e.pointerId) return
     const p = ARMED_PRESS; ARMED_PRESS = null; TIME_DOWN = null
     if (p && Date.now() - p.at >= 450) p.el._freshOff?.()
   }, true)
   document.addEventListener('pointerup', e => {
-    if (ARMED_PRESS) { ARMED_PRESS.el._freshOff?.(); ARMED_PRESS = null }
+    if (ARMED_PRESS && ARMED_PRESS.id === e.pointerId) { ARMED_PRESS.el._freshOff?.(); ARMED_PRESS = null }
     const d = TIME_DOWN; TIME_DOWN = null
     if (!d || Math.hypot(e.clientX - d.x, e.clientY - d.y) <= 6) return
     const a = document.activeElement as any
@@ -865,7 +874,7 @@ if (typeof document !== 'undefined') {
     const t = raw?.closest?.('input, [contenteditable="true"]') || raw?.closest?.('label')?.control || null
     if (!isTimeBox(t) && !isFreshElsewhere(t)) { TIME_PRESS = null; return }
     /* a second press on a box already waiting: the caret goes where he pressed, and the box is ordinary */
-    if (document.activeElement === t && t.dataset.fresh) { ARMED_PRESS = { el: t, at: Date.now() }; TIME_PRESS = null; return }
+    if (document.activeElement === t && t.dataset.fresh) { ARMED_PRESS = { el: t, at: Date.now(), id: e.pointerId }; TIME_PRESS = null; return }
     TIME_PRESS = { addr: sugAddr(t), box: t, at: Date.now() }
   }, true)
   document.addEventListener('keydown', () => { TIME_PRESS = null }, true)

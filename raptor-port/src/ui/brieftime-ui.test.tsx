@@ -559,6 +559,7 @@ describe('firstReplace — the browser\'s own word for what was put in wins over
     expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertText', data: '1' }), '1'), 'a selection typed over: what was typed').toBe('1')
     expect(firstReplace('09:15', new InputEvent('input', { inputType: 'insertText', data: '1' }), '09:1'), 'a word a single tap left chosen, typed over: a fresh time').toBe('1')
     expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertCompositionText', data: '001' }), '13:001'), 'an Android composition: read by shape (M1)').toBe('1')
+    expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertReplacementText', data: '1300' }), '13:001'), 'autocorrect: read by shape, not its data (M1)').toBe('1')
     expect(firstReplace('13:00', new InputEvent('input', { inputType: 'deleteContentBackward' }), '13:0')).toBe('')
   })
 })
@@ -575,5 +576,17 @@ describe('M3 — a scroll started on the armed box keeps it armed; a second tap 
     document.dispatchEvent(new PointerEvent('pointerup', { clientX: 10, clientY: 10 }))
     expect(i.dataset.fresh || '', 'a second tap gives back ordinary editing').toBe('')
     w.remove()
+  })
+})
+
+describe('M2 pinned — a placed suggestion with digits he chose, typed over, keeps the rest', async () => {
+  const { placeSuggestion } = await import('./interactions')
+  it('choose "20" of 07:20, type 45: 07:45', () => {
+    const inp = document.createElement('input'); inp.placeholder = '07:20'; document.body.appendChild(inp)
+    placeSuggestion(inp)
+    inp.value = '07:4'
+    inp.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: '4' }))
+    expect(inp.value, 'a chosen-digits edit is not a fresh time').toBe('07:4')
+    inp.remove()
   })
 })
