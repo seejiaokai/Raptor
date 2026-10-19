@@ -4513,7 +4513,12 @@ test.describe('the frozen callsign column', () => {
       /* a person's row (the first row is the group heading's) */
       const td = (document.querySelector('#qtbl td.qname') as HTMLElement).parentElement!.lastElementChild as HTMLElement
       td.textContent = 'a remark long enough to widen its column well past where it was before this test'
-      w.scrollLeft = 99999
+      /* scrolled to where the last sortable heading stands — not to the very end: the widened column (the last, with no
+         heading to sort by) now fills a phone's width there, so no heading this test measures would be in view. Until
+         [KEYBOARD-SCROLL] (19 Oct 26) the page's next repaint set the table's markup again and threw this widening away,
+         which hid that; the table now keeps it, as it keeps a real change (QualsPage tableInner) */
+      const last = [...document.querySelectorAll('#qtbl thead th[data-sort]')].pop() as HTMLElement
+      w.scrollLeft = last.offsetLeft - w.clientWidth / 2
       return (w.scrollWidth - w.clientWidth) - before
     })
     expect(grew, 'the table really grew sideways').toBeGreaterThan(50)

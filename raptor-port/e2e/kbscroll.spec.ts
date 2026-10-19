@@ -14,9 +14,9 @@ const stubVV = (page: Page) => page.addInitScript(() => {
   Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => f })
   ;(window as any).__vv = f
 })
-const keysUp = (page: Page) => page.evaluate(kb => {
+const keysUp = (page: Page, kb = KB) => page.evaluate(kb => {
   const v = (window as any).__vv; v.height = innerHeight - kb; v.dispatchEvent(new Event('resize'))
-}, KB)
+}, kb)
 const tap = async (page: Page, loc: Locator) => {
   const b = (await loc.boundingBox())!
   await page.touchscreen.tap(b.x + b.width / 2, b.y + Math.min(b.height / 2, 8))
@@ -114,15 +114,15 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
     /* the lowest box to type in, at the foot of the window's own scroll */
     const box = win.locator('input[type="text"]:visible, input:not([type]):visible, textarea:visible').last()
     await box.evaluate(e => e.scrollIntoView({ block: 'end' }))
-    const was = await bottomOf(box)
-    expect(was, 'the fixture: the box where the keys will come').toBeGreaterThan(H - KB)
+    /* the window stands in the middle of a phone's screen (D996): a keyboard tall enough to cover its lowest box */
+    const was = await bottomOf(box), kb = H - was + 60
     await page.waitForTimeout(600)
     await tap(page, box); await expect(box).toBeFocused()
-    await keysUp(page)
-    await expect.poll(() => bottomOf(box)).toBeLessThanOrEqual(H - KB - GAP + 1)
+    await keysUp(page, kb)
+    await expect.poll(() => bottomOf(box)).toBeLessThanOrEqual(H - kb - GAP + 1)
     await page.keyboard.type('a')
     await page.waitForTimeout(200)
-    expect(await bottomOf(box), 'after a key: still above the keys').toBeLessThanOrEqual(H - KB - GAP + 1)
+    expect(await bottomOf(box), 'after a key: still above the keys').toBeLessThanOrEqual(H - kb - GAP + 1)
     expect(await win.evaluate(e => Math.round(e.getBoundingClientRect().top)), 'its title on the screen').toBeGreaterThanOrEqual(0)
   })
 

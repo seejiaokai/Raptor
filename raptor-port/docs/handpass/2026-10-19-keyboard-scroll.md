@@ -132,7 +132,13 @@ None — no console error, page error or failed request in any walker's run or t
 
 ## 11. The gates
 On the merge before the read fixes (a1e05f887): unit 11,943 · build · tfin 728/0 · e2e 884 passed (61 skipped) · Tracker
-smoke 453 · rulecheck · docsize — all PASS. On the final code: (filled at its close).
+smoke 453 · rulecheck · docsize — all PASS. On the final code (863baa408 and its documents): unit 11,955 · build ·
+tfin 728/0 · Tracker smoke 453 · rulecheck · docsize — PASS; e2e 884 passed, 2 failed, both tests: KS3c's fixture (the
+input window stands in the middle of a phone's screen, D996 — its box was not under a 336px keyboard; now a keyboard
+tall enough to cover it) and geometry's "a column widened while the Quals row is pinned" (its widening had always been
+thrown away by the page's next repaint — the very fault A12 fixed; kept now, the widened last column fills a phone's
+width at the scroll's end, so the test scrolls to where its headings stand — host probe `kbs-host-qpin2.mjs`: every
+pinned heading stands exactly over its column). Both re-run green, with the other pinned-heading tests (6 passed).
 
 ## 12. The code read
 D790 / D903: a fresh, blind Opus read of the finished code (329,608 tokens) — F1 a tall window could only rise to the
