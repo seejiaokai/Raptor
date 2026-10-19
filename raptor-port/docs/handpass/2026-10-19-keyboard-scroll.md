@@ -40,12 +40,33 @@ THE THING: a box to type in on a phone (D1048), and the boxes of the four places
 box brought above a stand-in keyboard; **One tap** — does a tap then typing replace (D1080 places only; the schedule's
 time boxes are D1047's, unchanged); **Over the same pixels** — what else moves the same thing.
 
-| Surface | Lifted | One tap | Over the same pixels |
+| Surface | Lifted (D1048) | One tap (D1080) | Over the same pixels |
 |---|---|---|---|
-| (filled during the walk) | | | |
+| Scheduler Board's panel | YES — A1 (a remarks box 788→505–529), KS1 | not this rule's (D1047's time boxes, unchanged — B11 regression PASS) | the board's own fit to the visible screen (`SchedBoard.tsx`), run first; the lift measures after it |
+| Scheduler Board, phone on its side | NO — A2: the board's top takes 186 of the 202px left; nothing can show. Older layout — filed [BOARD-SIDEWAYS-KEYS] | — | the same fit |
+| Edit Schedule's week (a typing cell) | YES — A3 (the page scrolled 0→217) | not this rule's | — |
+| The input window (board → Personal Inputs; Inputs → "+ Input") | YES — A4a (raised 32px, put back), KS3c (held, a key typed, still above) | NO, because its boxes are not one short value (D1080 lists four places) | the window's own place() on every redraw — the hold is its own property since the narrow read's 1 |
+| Inputs calendar's opened day (title, notes) | YES — A5a/b in sight; A5c ends 1px above the keys (its list at its end): visible, uncovered | NO, because words | the day panel's own fit (`InputsCal.tsx`) |
+| SANS calendar (+ Commitment, ⚙ settings) | YES — A7 (in sight at phone size) | YES — B7 (Yellow / Amber / Red) | the settings window's own drag |
+| Logic page (✎ Edit) | YES — A8a (the last box; the page scrolls itself), KS2; A8b the search box in sight, unmoved | YES — B8 (Crew rest, Days in a row, Brief); B9 the words setting adds, as it must | the page's own refocus after a save |
+| Admin → Duty templates | YES — A9 (raised), A9b (14 roles: held to the screen, its own body scrolled), KS3, KS3b | YES — B1 | — |
+| Admin → Wave templates | YES — A10 | YES — B2 | — |
+| Admin → Users, new person | YES after the fix — A11 (the page at its foot: room below it now; re-run 497–530) | NO, because words | — |
+| Quals (Edit) | YES after the fix — A12 (the cell was thrown away by the table's repaint; fixed) | NO, because words and ticks | the pinned heading (its repaint) |
+| Leave War — ⚙ → + Counter | YES — A13 (the sheet anchors itself; nothing left to do) | YES — B3, B3b (label press) | the sheet's own keyboard anchoring (`Sheet.tsx`) — the hold refuses a window with its own height limit |
+| Leave War — Manning's thresholds | (as + Counter — the same sheet) | YES — B4 | as above |
+| Leave War — OIL figures (credit, bid days, balance Set) | YES — A14 | YES — B5, B5b (Set, armed as it opens) | BalanceBar's own dock |
+| Leave War — Required P / W | — (its own pad on a phone: no keyboard) | already so (B10 PASS, unchanged) | — |
+| Tracker | YES — A15a/b | NO, because not a listed place | the Tracker's own app |
+| Help → report a problem | YES — A16 (in sight) | NO, because words | — |
+| The sign-in page | YES — A17 (in sight) | NO, because words | — |
 
 ## 4. Door check
-(filled during the walk)
+The new behaviour has two doors: a box to type in taking the focus (by a press, Tab or a script) and the visible screen
+shrinking (the keys coming up). Both orders driven: focus then keys up (A1–A17), keys up then focus another box (O1);
+the way out: keys down (every A row's third picture), a tap on blank space (O3), focus into another window (dropLifts).
+For D1080: a press on the box, a press on its label (B3b, KF5), a box opened with the focus in it (B5b), a Tab in
+(arms nothing — the browser's own select-all on a Tab, step 5), a second press (step 3).
 
 ## 5. Sizing the walk (D607 — the five lines)
 1. **The type of change:** C (a new behaviour on a press and when the keys come up) and E (the screen moves — what
@@ -67,19 +88,41 @@ time boxes are D1047's, unchanged); **Over the same pixels** — what else moves
    phone by finger, five steps each, a member, the schedule's time box as a regression, two break tests. The arithmetic
    of how far a box moves is carried by `kbscroll.test.ts` (it calls the measuring function directly — not a proof that
    the screen offers the route, which the walk gives).
-5. **After the walk:** its row in `docs/walk-ledger.md` — (filled at the close).
+5. **After the walk:** its row is in `docs/walk-ledger.md` (19 Oct 26, [KEYBOARD-SCROLL]).
 
 ## 6. Orders
-(filled during the walk)
+| Order | Result | How |
+|---|---|---|
+| a box focused, then the keys up | lifted (A1–A17) | walked |
+| keys up, then a second box lower in the same window | lifted (O1) | walked |
+| a held window, then a box near its top | stays held and pinned (the narrow read's 2) | `kbscroll.test.ts` — calls the measuring function directly |
+| a raised window, then a tap on blank space | put back (O3) | walked |
+| a resize 3s after the focus | nothing moves (O4) | walked |
+| a pinch zoom with the keys up | nothing moves (O6) | walked |
+| the desktop, no keyboard | nothing moves (O5) | walked |
+| a window raised, then dragged by its bar | put back first, then dragged | code (putBack in `floatwin.ts`); not walked — his iPhone |
+| one tap → type → leave → reopen (each place, both sizes) | replaced and kept | walked (B, steps 1–2) |
+| one tap → a second tap → type | added at the caret | walked (B, step 3) |
+| one tap → Backspace | emptied | walked (B, step 4); a number box with the caret before its digit (the fresh read's F4, fixed after the walk) is carried by nothing — jsdom has no selection in a number box — so it is on his look card |
 
 ## 7. Cases carried by a test
-(filled)
+- The arithmetic of how far a box, a panel or a window moves, a hold, room below the page: `src/ui/kbscroll.test.ts`
+  (20) — it calls the measuring function directly, which proves the arithmetic, not that the screen offers the route.
+- The arming of each place, a label press, a box opened with the focus in it, once per opening, a React box keeping the
+  replaced value (red first): `src/ui/freshbox.test.tsx` (KF1–KF5) — markup of each screen's class names, events
+  dispatched; the screens themselves were walked (B).
+- Quals keeping its rows through a repaint (red first): `src/ui/quals.test.tsx`.
+- In a real browser with the stand-in keyboard: `e2e/kbscroll.spec.ts` KS1–KS5, KS3b (red first: 724 under the keys
+  without the hold), KS3c (the input window after a key).
 
 ## 8. Break tests
-(filled)
+Walker A: without the resize event A1's box stays covered (the event drives it); A9's window with its raise taken off
+covers the box again (the raise shows it). Walker B: each place's class taken off the very box → typing adds again (B1,
+B3, B5, B6, B7, B8, both sizes); B8 typed with no press → adds. The board's own break (B11) was inconclusive (without
+`tm` the press does not focus the box) — D1047's own tests carry it.
 
 ## 9. Errors seen
-(filled)
+None — no console error, page error or failed request in any walker's run or the host's probes.
 
 ## 10. What was NOT walked, and why
 - **WebKit — his iPhone's own browser — is not walked.** Chromium cannot raise an iPhone keyboard; the walk stands a
@@ -88,13 +131,44 @@ time boxes are D1047's, unchanged); **Over the same pixels** — what else moves
   his look card.
 
 ## 11. The gates
-(filled)
+On the merge before the read fixes (a1e05f887): unit 11,943 · build · tfin 728/0 · e2e 884 passed (61 skipped) · Tracker
+smoke 453 · rulecheck · docsize — all PASS. On the final code: (filled at its close).
 
 ## 12. The code read
-(filled)
+D790 / D903: a fresh, blind Opus read of the finished code (329,608 tokens) — F1 a tall window could only rise to the
+top (fixed: held to the visible screen, KS3b red first), F2 a label press did not arm (fixed), F3 the balance Set box
+(fixed), F4 Backspace on a number box (fixed). The narrow read of those fixes (271,868 tokens) — 1 a movable window's
+redraw dropped the hold at the first key (HIGH; fixed: the hold is its own property, KS3c), 2 a held window let go on a
+higher box (fixed), 3 a window already at the top never held (fixed), 4 the Set box re-armed on every focus (fixed), 5 a
+second label press disarmed (fixed); and an older cause, a raised window dragged by its bar jumped (fixed: put back
+first). Round 2 of the narrow read: (filled at its close).
 
 ## 13. What the walk found, and each disposition
-(filled)
+| Find | Disposition |
+|---|---|
+| A12 — Quals: a cell being typed in thrown away when the keys came up | FIXED — the table's markup object made once per change (`QualsPage.tsx` `tableInner`), red first in `quals.test.tsx`; re-run on the built app: kept through scrolls of 100–300 and the keys coming up. An older fault (any scroll that pinned the heading did it); the lift met it every time |
+| A11 — Admin → Users: the page at its foot, the last box 5px under the keys | FIXED — room below the page while the keys are up (`kbscroll.ts` roomBelow); re-run on the built app: 497–530 |
+| A2 — a phone on its side: the board's top fills the 202px left | FILED — [BOARD-SIDEWAYS-KEYS], older layout |
+| A5c — the day's last note ends 1px above the keys, not 8 | NOT A FAULT — visible and uncovered; its list at its end |
+| A9b — Duty templates with 14 roles: the title scrolled out of sight | NOT A FAULT — the window's own body scrolls its title with its rows, keys up or not; its top stays on screen (KS3b) |
+| B7 — "Red from" 2 under Amber 3 not kept | NOT A FAULT — Save refuses it and says "each above the last" (host probe `kbs-host-b7.mjs`, picture `walk/host-b7-save-refused.png`) |
+| B11 — the board's time box left by Tab shows "1000" until another press (10:00 saved) | FILED — [BOARD-TAB-FOLD]: the same with plain typing (host probe `kbs-host-b11.mjs`), older than D1047 |
+| B step 5 — a Tab into a box, then typing, replaced | NOT A FAULT — the browser itself selects a box's whole content on a Tab in (a control box not on the list does the same) |
+| In passing — eleven screens hand React a new markup object every repaint | FILED — [INNERHTML-REPAINT-SWEEP] |
 
 ## 14. His look card
-(filled)
+On his iPhone, the preview link from the pull request:
+1. **Scheduler Board**: tap a remarks box low on the screen — it comes up just above the keyboard; type; tap away.
+2. **Admin → Duty templates** (Squadron config): tap the last End time — the window rises above the keyboard; add roles
+   until it is long, tap the last one — the window fills the space above the keys and scrolls to it; close the keyboard —
+   the window goes back.
+3. **Inputs → + Input**: tap the remarks box, type a few letters — it stays above the keys while you type.
+4. **Quals → edit**: tap an initials cell low on the screen, type — the cursor stays in the cell.
+5. **One tap then type** — Logic → ✎ Edit, tap "Crew rest" and type 11h (it replaces 12h); SANS ⚙, tap a colour's words
+   and type a number (it replaces); Leave War → a figures sheet → "Set", type (it replaces the balance); a template time.
+   A second tap still edits one digit.
+6. **Not walked — only his iPhone can show it:** Safari's own scroll when the keys come up (the walk used a stand-in
+   keyboard in Chromium); the word-suggestion bar; the balance "Set" box raising the keys as it opens (if it does not, a
+   tap to raise them counts as a second tap and the box adds instead of replacing); a Leave War counter's number with the
+   cursor put before its digit, then Backspace (it should empty). Carried from pull request 541: a
+   caret dragged with the space bar is not caught as a drag; a long press (the loupe).
