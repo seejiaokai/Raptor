@@ -557,7 +557,23 @@ describe('firstReplace — the browser\'s own word for what was put in wins over
     expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertText', data: '0915' }), '13:091500')).toBe('0915')
     expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertText', data: '1' }), '13:001')).toBe('1')
     expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertText', data: '1' }), '1'), 'a selection typed over: what was typed').toBe('1')
-    expect(firstReplace('09:15', new InputEvent('input', { inputType: 'insertText', data: '1' }), '09:1'), 'a word a double tap selected, typed over: a fresh time').toBe('1')
+    expect(firstReplace('09:15', new InputEvent('input', { inputType: 'insertText', data: '1' }), '09:1'), 'a word a single tap left chosen, typed over: a fresh time').toBe('1')
+    expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertCompositionText', data: '001' }), '13:001'), 'an Android composition: read by shape (M1)').toBe('1')
     expect(firstReplace('13:00', new InputEvent('input', { inputType: 'deleteContentBackward' }), '13:0')).toBe('')
+  })
+})
+
+describe('M3 — a scroll started on the armed box keeps it armed; a second tap or a long press does not', async () => {
+  const { armFreshTime } = await import('./interactions')
+  const armed = () => { const i = document.createElement('input'); i.className = 'tm'; i.value = '16:00'; const w = document.createElement('div'); w.id = 'eWeek'; w.appendChild(i); document.body.appendChild(w); i.focus(); armFreshTime(i); return { i, w } }
+  it('pointerdown then a quick pointercancel (a scroll): still armed; pointerdown then pointerup (a tap): disarmed', () => {
+    const { i, w } = armed()
+    i.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 10, clientY: 10 }))
+    document.dispatchEvent(new PointerEvent('pointercancel'))
+    expect(i.dataset.fresh, 'a scroll keeps it').toBe('1')
+    i.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 10, clientY: 10 }))
+    document.dispatchEvent(new PointerEvent('pointerup', { clientX: 10, clientY: 10 }))
+    expect(i.dataset.fresh || '', 'a second tap gives back ordinary editing').toBe('')
+    w.remove()
   })
 })

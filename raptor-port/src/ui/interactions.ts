@@ -625,9 +625,11 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
    19 Oct 26: "13:091500" was read as "9150") */
 export function firstReplace(was: string, e: Event, v: string): string | null {
   const ie = e as InputEvent, kind = ie.inputType || ''
-  /* …whatever the browser had selected when the key came — a phone's double tap selects a word ("15" of 09:15), and the box
-     was tapped into for a fresh time (the browser test, 19 Oct 26: "09:1300") */
-  if (kind.startsWith('insert') && typeof ie.data === 'string' && ie.data) return ie.data
+  /* …whatever the browser had selected when the key came — a phone's single tap can leave a word chosen ("15" of 09:15),
+     and the box was tapped into for a fresh time (the browser test, 19 Oct 26: "09:1300"). Only for a typed character or a
+     paste: an Android keyboard's composition sends the whole word it is building as `data` (the narrow read's M1), which
+     the shape reading gets right. */
+  if ((kind === 'insertText' || kind === 'insertFromPaste') && typeof ie.data === 'string' && ie.data) return ie.data
   return firstChange(was, v, kind)
 }
 export function firstChange(sug: string, v: string, kind = ''): string | null {
@@ -645,7 +647,8 @@ const firstTypingReplaces = (read: () => string, write: (v: string) => void, sug
   return (e?: Event) => {
     if (!first) return
     first = false
-    const n = e ? firstReplace(sug, e, read()) : firstChange(sug, read())
+    /* a placed suggestion keeps the shape reading (the narrow read's M2): digits he chose in it and typed over keep the rest */
+    const n = firstChange(sug, read(), (e as InputEvent | undefined)?.inputType || '')
     if (n != null) write(n)
   }
 }
@@ -819,11 +822,21 @@ export function armFreshTime(el: HTMLElement) {
 }
 let TIME_PRESS: { addr: string | null, at: number } | null = null
 let TIME_DOWN: { x: number, y: number } | null = null
+/* a press on a box already waiting is decided at its END (the narrow read's M3): a finger lands before the browser knows a
+   tap from a scroll, so a scroll started on the armed box (to see it above the keyboard) must not end the arming. A
+   press that ends in pointerup is a second press; one the browser takes over (pointercancel) disarms only when held
+   450 ms or longer — a long press, or the loupe moving the caret. */
+let ARMED_PRESS: { el: any, at: number } | null = null
 if (typeof document !== 'undefined') {
   /* a press that moved more than a few pixels was a drag — a selection he made, or a scroll — so the box it armed goes
      back to ordinary editing (F2) */
   document.addEventListener('pointerdown', e => { TIME_DOWN = { x: e.clientX, y: e.clientY } }, true)
+  document.addEventListener('pointercancel', () => {
+    const p = ARMED_PRESS; ARMED_PRESS = null; TIME_DOWN = null
+    if (p && Date.now() - p.at >= 450) p.el._freshOff?.()
+  }, true)
   document.addEventListener('pointerup', e => {
+    if (ARMED_PRESS) { ARMED_PRESS.el._freshOff?.(); ARMED_PRESS = null }
     const d = TIME_DOWN; TIME_DOWN = null
     if (!d || Math.hypot(e.clientX - d.x, e.clientY - d.y) <= 6) return
     const a = document.activeElement as any
@@ -833,7 +846,7 @@ if (typeof document !== 'undefined') {
     const t = (e.target as any)?.closest?.('input, [contenteditable="true"]')
     if (!isTimeBox(t)) { TIME_PRESS = null; return }
     /* a second press on a box already waiting: the caret goes where he pressed, and the box is ordinary */
-    if (document.activeElement === t && t.dataset.fresh) { (t as any)._freshOff?.(); TIME_PRESS = null; return }
+    if (document.activeElement === t && t.dataset.fresh) { ARMED_PRESS = { el: t, at: Date.now() }; TIME_PRESS = null; return }
     TIME_PRESS = { addr: sugAddr(t), at: Date.now() }
   }, true)
   document.addEventListener('keydown', () => { TIME_PRESS = null }, true)
