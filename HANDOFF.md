@@ -20,6 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/sad-herschel-5682e3 -->
+### `claude/sad-herschel-5682e3` — [STANDBY-FLIES] the Flies tick DRAWN, waiting for his word before the build (19 Oct 26) — verify before use
+- **Where it started:** cut from `claude/rally-box-changes` (pull request 541, not yet live) — this job builds on its standby R box; once 541 is live, bring `main` in. Runs beside `claude/keyboard-scroll` (D1048). Ruling numbers for this job: D1060–D1079 only.
+- **Done:** the Flies tick drawn on the real app at his iPhone's width (402) and a desktop's, the place marked — the board on both, the Edit Schedule week on the desktop; today beside proposed. Pictures and the page: `raptor-port/docs/img/handpass/2026-10-19-standby-flies/mock/` (`flies-look.html`, published to him as an Artifact page); the script that draws them: `raptor-port/scripts/handpass/look-standby-flies.mjs` (run against a local preview, port 4322).
+- **Questions waiting for him (put 19 Oct 26, each with the agent's recommendation):** (1) the "✓ FLIES" chip beside MAIN / SPARE, as drawn — yes; (2) a hand tick lights one row, not the whole shift — one row; (3) a row with nobody seated on a shift with B or R typed does not count as a jet (an SC AM with R typed and both SPARE rows empty reads 2, not 4) — recommended; (4) View-only Sched and members see the lit chip only, read only — yes. The agent's own calls, told to him: a tick on a published day rides the next amendment; no brief or debrief window for a flying standby row; a flying BB line with no START or END gets an amber line.
+- **Not done:** the build and its FULL bug check; D1041's "shown only" homes rewritten (D201). No ruling recorded yet — his answers are the first.
+- **Pick up here:** record his answers (D1060 on), then build per the red team (`raptor-port/docs/superpowers/plans/2026-10-19-standby-flies-redteam.md`, as narrowed by D1045–D1046 and his answers), FULL check, own pull request.
+<!-- /now -->
+
 <!-- now:claude/rally-box-changes -->
 ### `claude/rally-box-changes` — [RALLY-BOX-CHANGES] BUILT and FULL-checked (19 Oct 26) — waiting for his look and "merge live" — verify before use
 - **Where it started:** pull request 540 (the rally box) LIVE on 19 Oct 26; [RALLY-PER-FORMATION] and [EDIT-BUTTON-AFTER-CHANGE] archived by script. His three changes asked and answered the same day (D1035–D1041).

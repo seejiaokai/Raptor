@@ -1,0 +1,90 @@
+<title>Standby Flies Tick</title>
+<style>
+/* layout: one reading column; each picture pair is one figure with a Proposed / Today switch */
+:root{
+  --bg:#f3f5f6; --card:#ffffff; --fg:#14191d; --mute:#56636c; --line:#d5dde2; --accent:#0e8f85; --mark:#d9701c;
+  --f-body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-label:'Barlow Condensed','Arial Narrow',system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1114;--card:#161c20;--fg:#e6ecef;--mute:#9aa8b1;--line:#2a343b;--accent:#5fc9bd;--mark:#ff9a3c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1114;--card:#161c20;--fg:#e6ecef;--mute:#9aa8b1;--line:#2a343b;--accent:#5fc9bd;--mark:#ff9a3c;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.wrap{max-width:900px;margin:0 auto;padding-inline:16px;padding-block:24px 48px;display:flex;flex-direction:column;gap:28px}
+h1{font-family:var(--f-label);font-size:30px;letter-spacing:.02em;margin:0;text-wrap:balance}
+h2{font-family:var(--f-label);font-size:21px;letter-spacing:.03em;margin:0 0 8px;text-wrap:balance}
+p{margin:0;max-width:68ch}
+.lede{display:flex;flex-direction:column;gap:10px}
+.mark{color:var(--mark);font-weight:600}
+.chip{font-family:var(--f-label);font-weight:700;font-size:13px;letter-spacing:.08em;padding:0 6px;border-radius:3px;border:1px solid var(--accent);white-space:nowrap}
+.chip.hollow{border-style:dashed;border-color:var(--mute);color:var(--mute)}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;max-width:68ch}
+figure{margin:0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px}
+figcaption{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between}
+figcaption b{font-family:var(--f-label);font-size:18px;letter-spacing:.03em}
+.sw{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.sw button{font:inherit;font-size:14px;background:transparent;color:var(--fg);border:0;padding:6px 14px;cursor:pointer}
+.sw button[aria-pressed="true"]{background:var(--accent);color:var(--bg);font-weight:600}
+.sw button:focus-visible{outline:2px solid var(--mark);outline-offset:-2px}
+figure a{display:block}
+figure img{width:100%;height:auto;display:block;border-radius:6px}
+.phone img{max-width:420px;margin:0 auto}
+.q{display:flex;flex-direction:column;gap:14px}
+.q ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:14px;max-width:70ch}
+.rec{color:var(--accent);font-weight:600}
+.small{color:var(--mute);font-size:14px}
+</style>
+
+<div class="wrap">
+  <header class="lede">
+    <h1>Standby Flies Tick</h1>
+    <p>A Saturday with an SC wave. The <b>AM shift has its R typed (06:30)</b>. The <b>PM shift has nothing typed</b>, and its spare Hunter and Ledger have been activated by hand. Everything inside the <span class="mark">orange dashed box</span> is new and drawn in. The rest is the real app as it is today.</p>
+  </header>
+
+  <section class="lede">
+    <h2>What the tick does</h2>
+    <ul>
+      <li><span class="chip">✓ FLIES</span> beside MAIN or SPARE: this row flies. It counts in the day's jets and Insights, earns OIL by default, gets every flying warning, and its day runs from the shift's START (or its R or B, if earlier) to its END.</li>
+      <li><b>AM shift (R typed):</b> every row lights by itself. It cannot be unticked. A row that does not come in gets its own CX.</li>
+      <li><b>PM shift (nothing typed):</b> each row shows a dashed <span class="chip hollow">FLIES</span>. A tap lights that one row (Hunter's spare here); another tap takes it off. The other PM rows stay standby, as today.</li>
+    </ul>
+  </section>
+
+  <figure class="phone">
+    <figcaption><b>1 · Scheduler Board, iPhone width</b>
+      <span class="sw" role="group" aria-label="Picture 1"><button aria-pressed="true" data-src="2-phone-board-flies.png">Proposed</button><button aria-pressed="false" data-src="1-phone-board-today.png">Today</button></span></figcaption>
+    <a href="2-phone-board-flies.png" target="_blank"><img src="2-phone-board-flies.png" alt="Scheduler Board on a phone: SC AM rows with a lit FLIES chip beside MAIN and SPARE; SC PM rows with a dashed FLIES chip, Hunter's SPARE row lit" width="1206" height="3507"></a>
+  </figure>
+
+  <figure>
+    <figcaption><b>2 · Scheduler Board, desktop</b>
+      <span class="sw" role="group" aria-label="Picture 2"><button aria-pressed="true" data-src="4-desktop-board-flies.png">Proposed</button><button aria-pressed="false" data-src="3-desktop-board-today.png">Today</button></span></figcaption>
+    <a href="4-desktop-board-flies.png" target="_blank"><img src="4-desktop-board-flies.png" alt="Scheduler Board on a desktop with the FLIES chips in the notes column" width="2880" height="1086"></a>
+  </figure>
+
+  <figure>
+    <figcaption><b>3 · Edit Schedule week, desktop</b>
+      <span class="sw" role="group" aria-label="Picture 3"><button aria-pressed="true" data-src="6-desktop-week-flies.png">Proposed</button><button aria-pressed="false" data-src="5-desktop-week-today.png">Today</button></span></figcaption>
+    <a href="6-desktop-week-flies.png" target="_blank"><img src="6-desktop-week-flies.png" alt="Edit Schedule week with the FLIES chips beside MAIN and SPARE in the remarks column" width="2880" height="896"></a>
+  </figure>
+
+  <section class="q">
+    <h2>Four questions before I build</h2>
+    <ol>
+      <li><b>The look and the place.</b> A small "✓ FLIES" chip beside MAIN or SPARE, as drawn, on the board and the week? <span class="rec">Recommended: yes, as drawn.</span></li>
+      <li><b>A hand tick lights one row, not the whole shift.</b> Ticking Hunter lights only his row; the PM MAIN rows stay standby. <span class="rec">Recommended: one row</span> (your words: "a spare … is activated").</li>
+      <li><b>An empty row on a shift with R typed.</b> Say the AM shift has R typed but both SPARE rows are empty. Does the day read 2 jets or 4? <span class="rec">Recommended: 2. A row with nobody on it does not count</span>, because there is nobody to fly it. (Ordinary flying lines with nobody on them still count, as you ruled before.)</li>
+      <li><b>View-only Sched and members.</b> They see "✓ FLIES" on the rows that fly, read only; the dashed one is not shown to them. <span class="rec">Recommended: yes.</span></li>
+    </ol>
+    <p class="small">Decided by me, from your rulings: on a published day a tick is a change like any other and goes out with the next amendment. A flying standby row gets no brief or debrief window, because it has no take-off. A BB line that flies with no START or END gets an amber line in the warning list, because its crew rest and OIL need those times.</p>
+  </section>
+</div>
+
+<script>
+document.querySelectorAll('.sw').forEach(sw=>{
+  const fig=sw.closest('figure'), img=fig.querySelector('img'), a=fig.querySelector('a');
+  sw.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    sw.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+    img.src=b.dataset.src; a.href=b.dataset.src;
+  }));
+});
+</script>
