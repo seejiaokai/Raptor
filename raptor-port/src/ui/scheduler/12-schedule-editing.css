@@ -28,8 +28,10 @@ input.tm.sugbox::placeholder{color:var(--accent);opacity:.6}
    accepted. Like a short flash"). The plain blue ring of a thing just added (06-inputs.css inflash, D876), for about a
    second instead of six, on the box itself; the time is already in a typed time's colour (interactions.ts
    placeSuggestion leaves it unhighlighted). A reader who asked for less motion gets the ring steady, then gone. */
-@keyframes sugtook{0%,60%{box-shadow:inset 0 0 0 2px #1E86FF}100%{box-shadow:inset 0 0 0 2px rgba(30,134,255,0)}}
-.sugtook{animation:sugtook 1s ease-out 1 forwards}
+/* …and the box's own focus ring turns the same blue for that second (the walk's picture, 19 Oct 26: a 2px blue line
+   inside the browser's white focus ring read as a thin edge, not a mark), then gives the ring back. */
+@keyframes sugtook{0%,60%{box-shadow:inset 0 0 0 2px #1E86FF;outline-color:#1E86FF}100%{box-shadow:inset 0 0 0 2px rgba(30,134,255,0);outline-color:rgba(30,134,255,0)}}
+.sugtook{outline:2px solid #1E86FF;outline-offset:0;animation:sugtook 1s ease-out 1 forwards}
 @media (prefers-reduced-motion:reduce){.sugtook{animation-timing-function:step-end}}
 .page.editing .go-tab .asd.txed,.page.editing .fcell .txed{min-width:14px;display:inline-block}
 /* FREE TEXT WRAPS, ALWAYS.
