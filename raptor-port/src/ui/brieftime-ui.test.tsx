@@ -504,3 +504,38 @@ describe('RB11 — the first change in a time box tapped into replaces its time'
     i = box('16:00'); i.blur(); type(i, '16:001', 'insertText'); expect(i.value).toBe('16:001'); i.remove()
   })
 })
+
+/* the D1047 read's F1, F2, F4 */
+describe('RB11 — a replaced time is saved; chosen digits are edited; Backspace clears from anywhere', async () => {
+  const { armFreshTime } = await import('./interactions')
+  const box = (v: string) => { const i = document.createElement('input'); i.className = 'tm'; i.value = v; document.body.appendChild(i); i.focus(); armFreshTime(i); return i }
+  const type = (el: HTMLInputElement, v: string, kind: string) => {
+    el.dispatchEvent(new InputEvent('beforeinput', { bubbles: true, inputType: kind }))
+    el.value = v
+    el.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: kind }))
+  }
+  it('F1: the board is told of the replaced time when the box is left (it saves on change)', () => {
+    const i = box('13:00'); let changes = 0; i.addEventListener('change', () => changes++)
+    type(i, '13:001', 'insertText'); expect(i.value).toBe('1')
+    i.blur(); expect(changes, 'one change, owed').toBe(1)
+    i.remove()
+  })
+  it('F1: …and not twice where the browser raised its own; nothing for a box back to what it showed', () => {
+    let i = box('13:00'); let changes = 0; i.addEventListener('change', () => changes++)
+    type(i, '13:001', 'insertText'); i.dispatchEvent(new Event('change', { bubbles: true })); i.blur()
+    expect(changes).toBe(1); i.remove()
+    i = box('13:00'); changes = 0; i.addEventListener('change', () => changes++)
+    type(i, '13:001', 'insertText'); i.value = '13:00'; i.blur()
+    expect(changes, 'Escape put the old time back').toBe(0); i.remove()
+  })
+  it('F2: digits chosen with a drag are edited as chosen', () => {
+    const i = box('13:00'); i.setSelectionRange(3, 5)
+    type(i, '13:', 'deleteContentBackward'); expect(i.value).toBe('13:'); expect(i.dataset.fresh || '').toBe(''); i.remove()
+  })
+  it('F4: Backspace selects the whole time, so it clears wherever the caret is', () => {
+    const i = box('13:00'); i.setSelectionRange(0, 0)
+    i.dispatchEvent(new KeyboardEvent('keydown', { key: 'Backspace', bubbles: true }))
+    expect([i.selectionStart, i.selectionEnd], 'the whole time selected for the key').toEqual([0, 5])
+    expect(i.dataset.fresh || '', 'the browser does the rest').toBe(''); i.remove()
+  })
+})
