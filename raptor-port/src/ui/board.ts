@@ -195,8 +195,12 @@ function boardHTMLBody(di: number, pv?: boolean) {
        display:contents, so the four headings stand in a line over four tracks; where the board puts the pucks on their
        own row (a phone, up to 820 wide, not the desktop layout) each wrapper is ONE cell, its two headings stacked over
        its two stacked boxes. Every wave has its R heading — a standby line has its rally box too (D1040). Nine children — the phone's
-       hidden-by-position rule counts them (13-board-rows-responsive.css). */
-    fly += `<div class="sb-lcols"><span></span><span>CS</span><span>MSN</span><span class="sb-hrb"><span>R</span><span>B</span></span><span class="sb-htl"><span>TO</span><span>LD</span></span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
+       hidden-by-position rule counts them (13-board-rows-responsive.css).
+       A STANDBY WAVE'S THIRD PAIR READS START AND END (owner D1085, 20 Oct 26 — "Since edit schedule is start and end. Make
+       the Scheduler board reflect the same"), as the week's does since D1083: the boxes under it are the shift's start and
+       end, not a take-off and a landing. START fits the board's heading at its own size at every width (36px in 46 on a
+       phone, 32 in 48–52 on a desktop — scripts/handpass/standby-board-fit.mjs), so `sb-se` only marks it; no style. */
+    fly += `<div class="sb-lcols"><span></span><span>CS</span><span>MSN</span><span class="sb-hrb"><span>R</span><span>B</span></span><span class="sb-htl${sa ? ' sb-se' : ''}"><span>${sa ? 'START' : 'TO'}</span><span>${sa ? 'END' : 'LD'}</span></span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
     if (!w.formations.length) fly += `<div class="sb-empty" style="padding:6px 11px">Empty wave — add a line, or remove the wave.</div>`
     /* the R box's own timing fault (the fresh read's F1): its address and words, as the week's (html.ts rlFaultAtt) */
     const boxFaults = sa || pv ? [] : reportingIssuesForWave(w, gi).filter((i: any) => i.box)

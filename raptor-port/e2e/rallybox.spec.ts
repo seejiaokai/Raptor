@@ -129,6 +129,59 @@ for (const [name, viewport] of [['desktop', { width: 1440, height: 900 }], ['pho
       await page.keyboard.type('1700'); await page.keyboard.press('Enter')
       await expect.poll(() => page.evaluate(g => (window as any).DAYS[0].waves[g].formations[0].rl || '', gi)).toBe('17:00')
     })
+    /* RB12 — D1083, D1084 (20 Oct 26): on the week an SC, AVALON or BB line reads as a flying line — R over its own B, START
+       over END — and the START / END heading fits its column (drawn smaller on a phone: START needed 29px where 23 was
+       left). The B is a door: pressed and typed on the week, it is the line's own B, the one the board shows. */
+    test('the week: a standby line reads R over B, START over END, its heading whole; a B typed there is the board\'s', async ({ page }) => {
+      await login(page); await go(page, 'editsched')
+      const gis = await page.evaluate(() => { const W = window as any; for (const k of ['sc', 'avalon', 'bb']) W.addWave(0, k); return ['sc', 'avalon', 'bb'].map(k => W.DAYS[0].waves.findIndex((w: any) => w.kind === k)) })
+      await expect(page.locator(`#eWeek [data-txt="ff:0.${gis[2]}.0.br"]`)).toBeAttached()
+      const geo = await page.evaluate(gs => gs.map(g => {
+        const day = document.querySelector('#eWeek .day[data-day="0"]')!
+        const go = day.querySelector(`[data-move="mv:w.0.${g}"]`)!
+        const hs = go.querySelector('.cols.formcols')!.children as HTMLCollectionOf<HTMLElement>
+        const R = (k: string) => go.querySelector(`[data-txt="ff:0.${g}.0.${k}"]`)!.getBoundingClientRect()
+        const [rl, br, to, ld] = ['rl', 'br', 'to', 'ld'].map(R) as DOMRect[]
+        return { heads: [hs[1]!.innerText.replace(/\s+/g, ' '), hs[2]!.innerText.replace(/\s+/g, ' ')],
+          fits: [hs[1]!, hs[2]!].every(h => h.scrollWidth <= h.clientWidth),
+          rAboveB: rl!.bottom <= br!.top + 1 && Math.abs(rl!.left - br!.left) < 30,
+          startAboveEnd: to!.bottom <= ld!.top + 1 && Math.abs(to!.left - ld!.left) < 30,
+          bLeftOfStart: br!.right <= to!.left + 1,
+          unclipped: [...go.querySelectorAll('.form .fcell')].every(c => c.scrollHeight <= c.clientHeight + 1) }
+      }), gis)
+      for (const [i, g] of geo.entries()) expect(g, ['SC', 'AVALON', 'BB'][i]!).toEqual({ heads: ['R B', 'START END'], fits: true, rAboveB: true, startAboveEnd: true, bLeftOfStart: true, unclipped: true })
+      const b = page.locator(`#eWeek [data-txt="ff:0.${gis[0]}.0.br"]`)
+      await press(page, b, phone); await expect(b).toBeFocused()
+      await page.keyboard.type('0545'); await page.keyboard.press('Tab')
+      await expect.poll(() => page.evaluate(g => (window as any).DAYS[0].waves[g].formations[0].br || '', gis[0])).toBe('05:45')
+      /* a box left by Tab reads as typed until the next press elsewhere — every week box, flying lines too (an older fault,
+         filed with [BOARD-TAB-FOLD]; probe scripts/handpass/standby-week-b-tabfold.mjs) — so the caret is let go first */
+      await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
+      await expect(page.locator(`#eWeek [data-txt="ff:0.${gis[0]}.0.br"]`), 'the week shows it').toHaveText('05:45')
+      await page.evaluate(() => (window as any).openScheduler(0)); await expect(page.locator('#schedBoard')).toBeVisible()
+      await expect(page.locator(`#sbBoard [data-bfld="ff:0.${gis[0]}.0.br"]:visible`).first(), 'the board shows the same B').toHaveValue('05:45')
+    })
+    /* RB13 — the blind read's F1 (20 Oct 26): read only, an empty START must keep its line, or END rises onto the line the
+       heading now calls START (a BB line has no times by default — type END alone and View-only Sched read 07:00 as the
+       start). The same for a flying line's empty TO above its LD. */
+    test('read only: an empty START keeps its line, so END stays on END\'s line', async ({ page }) => {
+      await login(page); await go(page, 'editsched')
+      const g = await page.evaluate(() => { const W = window as any; W.addWave(0, 'bb'); return W.DAYS[0].waves.findIndex((w: any) => w.kind === 'bb') })
+      const end = page.locator(`#eWeek [data-txt="ff:0.${g}.0.ld"]`)
+      await press(page, end, phone); await expect(end).toBeFocused()
+      await page.keyboard.type('0700')
+      await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
+      await expect.poll(() => page.evaluate(i => (window as any).DAYS[0].waves[i].formations[0].ld, g)).toBe('07:00')
+      await go(page, 'viewsched')
+      const geo = await page.evaluate(() => {
+        const go = [...document.querySelectorAll('#vWeek .day[data-day="0"] .go.sa')].pop()!
+        const [st, en] = [...go.querySelector('.form .ld')!.children] as HTMLElement[]
+        const a = st!.getBoundingClientRect(), b = en!.getBoundingClientRect()
+        return { start: st!.textContent, end: en!.textContent, startHeight: Math.round(a.height), endBelowStart: b.top >= a.bottom - 1 }
+      })
+      expect(geo).toMatchObject({ start: '', end: '07:00', endBelowStart: true })
+      expect(geo.startHeight, 'the empty START holds a line').toBeGreaterThan(5)
+    })
     /* walker B's F1 and F3 (19 Oct 26): on the board, R pressed then B at once — leaving R saves it and the redraw that
        starts replaced B under the press, so B took the focus EMPTY; and R pressed then Enter saved nothing */
     test('the board: press R then B at once — both placed and saved; press R then Enter saves it', async ({ page }) => {

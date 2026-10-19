@@ -559,6 +559,11 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    sits on a line above its box: it is drawn faint inside the empty box (D1028, 12-schedule-editing.css .sugbox). An
    empty R on View-only Sched keeps its line, so B stays on the second line in every formation. */
 .form .bto .rl:not(.txed):empty::before{content:'\a0'}
+/* …and the same for the time above another in the third column (the [STANDBY-WEEK-B] blind read's F1, 20 Oct 26): read
+   only, an empty START (TO on a flying line) keeps its line, or the END below rises onto the line the heading calls START —
+   a BB line comes with no times, so END typed alone read as its start. Edit mode keeps its faint dash (.txed). The week's
+   `.tox` and the peek's bare first span alike. Pinned by e2e/rallybox.spec.ts RB13. */
+.form .ld > span:first-child:not(.txed):empty::before{content:'\a0'}
 .form .ld{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-2);text-align:center;justify-content:flex-start;line-height:1.25}
 /* min-height is load-bearing, not cosmetic: CS/MSN and B/TO are stacks in cells
    that span the formation, so a single-aircraft row has to be tall enough to

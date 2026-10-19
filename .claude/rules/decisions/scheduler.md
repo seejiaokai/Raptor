@@ -54,6 +54,9 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1085 | 20 Oct 26 | On the Scheduler Board an SC, AVALON or BB wave's time headings read START and END where they read TO and LD — R · B · START · END in one line on a desktop, R over B and START over END on a phone — as the week does since D1083; a flying wave keeps TO and LD. |
+| D1084 | 20 Oct 26 | On a phone the standby wave's START / END heading stands as built: 7 instead of the headings' 8.5, with no letter spacing, so START fits its column with room for an iPhone's wider letters; a desktop keeps the normal size. |
+| D1083 | 20 Oct 26 | On the week's SC, AVALON and BB lines — Edit Schedule, View-only Sched and the next-week peek — the second time column is R over B and the third START over END, the B box showing the line's own B as the Scheduler Board does; on a phone the START over END heading is drawn in smaller letters so it fits its column. — changed by D1085 |
 | D1081 | 19 Oct 26 | When the keyboard opens or closes, nothing on screen jumps out of place, even for one frame: whatever follows the visible screen — the Scheduler Board, the Leave War's sheets and bars, the calendars' day panels, a window raised for the keys — moves with it smoothly; the same is checked everywhere the app follows the keyboard. |
 | D1080 | 19 Oct 26 | One tap then typing replaces the value, as in the schedule's time boxes (D1047), in four more places: the duty and wave templates' time boxes; the Leave War's typed numbers (a counter's amber and red numbers, the OIL figure boxes); the SANS settings' and the late cut-off's number boxes; and the Logic page's settings. |
 | D1067 | 19 Oct 26 | The three stand as built: the no-times warning's tap outlines its line as every line-anchored warning does; a seatless row of a flying shift keeps its lit "✓ FLIES" though it counts nothing; the Flies chip keeps the badge's size on the board. |
@@ -72,7 +75,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 | D1043 | 19 Oct 26 | A standby row (SC, AVALON, BB) carries a "Flies" tick: typing its B or R ticks it by itself, as a row with a brief or rally typed is planned to fly; a standby row activated later is ticked by hand; the tick, however it was set, is what makes the row count as a flight (D1042). — changed by D1061, D1060, D1044 |
 | D1042 | 19 Oct 26 | An SC, AVALON or BB line that actually flies counts as a real flight — in the day's flying count and Insights' flying load, earning OIL by default, and with every warning an ordinary flying line gets; built as its own job after the rally box changes. — changed by D1043 |
 | D1041 | 19 Oct 26 | A rally typed on an SC MAIN line starts that crew's day as SC's in-time box does today — crew rest, the long day, work hours and OIL; on an SC SPARE, AVALON or BB line, which stay outside the warnings, it is shown, printed and exported only, and an empty box counts for nothing. |
-| D1040 | 19 Oct 26 | On SC, AVALON and BB lines the new rally box sits above B, in the same R-over-B column as a flying line, so every wave looks the same; their take-off and landing boxes stay as they are. |
+| D1040 | 19 Oct 26 | On SC, AVALON and BB lines the new rally box sits above B, in the same R-over-B column as a flying line, so every wave looks the same; their take-off and landing boxes stay as they are. — changed by D1083 |
 | D1039 | 19 Oct 26 | Only SC, AVALON and BB lines stop showing the faint worked-out brief and rally — their empty boxes stay empty; the flying lines keep their faint suggestions, with the clearer mark when one is taken (D1038). — changed by D1065 |
 | D1038 | 19 Oct 26 | When a suggested brief or rally is taken, the time turns ordinary white at once and the box wears the app's plain blue ring as a short flash — about a second, not the six seconds of a thing just added — so it reads as accepted. |
 | D1037 | 19 Oct 26 | The worked-out brief and rally are no longer shown faint in their empty boxes, because they are rarely used and usually only the take-off and landing are typed; a brief or rally that is typed is used in the timing checks. — changed by D1039 |
@@ -404,7 +407,8 @@ Rules: `docs/engine-rules.md` §The late-input mark. Placement: `docs/ui-contrac
   Known seam (documented, don't silently "fix"): the SC in-time shows on the board
   only — the desktop week renders SC as SHIFT/START/END with no B, so a board value
   isn't mirrored to the week. Owner said it'll be rare; raise mirroring only if he
-  asks. Pins: `scintime.test.ts`, `scboard.test.tsx`. Rules: `engine-rules.md`;
+  asks. *[AMENDED 20 Oct 26 by D1083: he asked ([STANDBY-WEEK-B]) — the week now draws R over B and
+  START over END on SC, AVALON and BB, the B the board's own box, so the seam is closed.]* Pins: `scintime.test.ts`, `scboard.test.tsx`. Rules: `engine-rules.md`;
   placement: `ui-contracts.md` §The B box.
 - **Amendment marks are a PUBLISHED-day thing — a draft day shows none** (owner,
   25 Aug 26). `alAttr` emits `data-alp`/`data-aln` only when `dayApproved`; a draft

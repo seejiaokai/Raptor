@@ -192,6 +192,12 @@
   .form .csmsn i{line-height:1.05}
   .fcell{padding:3px 2px 4px}
   .cols.formcols span{padding:3px 4px}
+  /* A STANDBY WAVE'S START / END HEADING IN SMALLER LETTERS (owner D1083, 20 Oct 26 — "2"): the third column is 32px (30px
+     under 375), and START at 8.5px needs 29px where the padding leaves 23 (21). 7px with no spacing and 1px padding sets
+     it about 23px wide in a 29px room (27 under 375), so letters a seventh wider — his iPhone's own font — still fit.
+     Measured: scripts/handpass/standby-week-b-fit.mjs. A desktop (9.5px in a 48px column) fits as it is. The size
+     approved as built, from pictures of it (owner D1084, 20 Oct 26). */
+  .cols.formcols .sa-se{font-size:7px;letter-spacing:0;padding:3px 1px}
   .daydots{display:flex}
   /* Columnar lists (programme / duties / sims / ground / inputs) all render 1:1 too. */
   /* COMMON PROGRAMME now stacks its two times into one TIME column on a phone,

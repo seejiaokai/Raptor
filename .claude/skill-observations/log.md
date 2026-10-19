@@ -980,6 +980,8 @@ Met again 18 Oct 26 (`claude/schedule-amendments-fixes-fffce0`): twice a command
 
 **Principle:** A mark that is a copy of a position goes stale the moment anything moves; a mark carried by the thing itself cannot.
 
+Met again 20 Oct 26 ([STANDBY-WEEK-B] mock-up, `mock-standby-week-b.mjs`): red boxes drawn `position:absolute` at measured coordinates on the DESKTOP week landed a column to the left of their headings — the week was still gliding to the day after the marks were placed; a wait for the day card to stop moving did not cure it, outlines on the elements did. The guard to propose at the next review: the mock-up guide's Method step 3 says marks are outlines on the element, unconditionally (not "unless").
+
 ### Observation 618: A line moved into a fold lost its subject; only the cold read caught it
 
 **Status:** OPEN
@@ -1402,6 +1404,8 @@ prove each by acting through it after the rollback, not by reading what it shows
 **Principle:** A reused server must be proved to serve the build under test before any result from it counts; "reuse an existing server" turns a stale process into a silent false result.
 
 **Met again 19 Oct 26 ([RALLY-BOX-CHANGES], the same day, a different chat):** 4173 was still held by another chat's preview; the rally-box browser test drove it and all 8 checks failed ("element not found") — read as this change's fault until the port's owner was checked; E2E_PORT=4311 (proved free) passed 8/8. **The guard proposed:** an unconditional default rather than a judgment — the config (or the gate-lock `exec` wrapper) refuses to reuse a server it did not start for this checkout (e.g. a probe that the served `index.html` names this build's asset hash), so a stale port fails loudly instead of testing another build.
+
+**Met again 20 Oct 26 ([STANDBY-WEEK-B]):** E2E_PORT=4191 — chosen as "another port" without checking — was held by a 17 Oct worktree's vite preview; 12 of 14 rally-box tests failed, old ones included; 4197 (proved free) passed 14/14. The third time: the guard above (refuse a server this checkout did not start) is now overdue.
 
 ### Observation 645: A tap-to-fill handler fought the app's own focus-arrival refresh
 

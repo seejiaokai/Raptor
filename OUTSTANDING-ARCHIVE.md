@@ -6000,3 +6000,27 @@ His words: a filled brief and rally usually mean the line will fly; AVALON and B
 His words: when he taps anything to type in that sits where the keyboard comes up, the box should show above the keyboard — scrolled to it. Every box in the app, on a phone (his iPhone: Safari's own scroll does not always bring a box inside the board's scrolling panel clear of the keyboard). The how is the agent's: on a press-focused box, once the keyboard has resized the visible screen (`visualViewport`), scroll the box's own scrolling panel so it sits just above it. **Also put to him in this job (D852 — his "not sure where else", 19 Oct 26), each with its picture before anything is built:** D1047's "one tap then typing replaces" on (1) the duty and wave templates' time boxes, (2) the Leave War's typed numbers (required P / W, the flying counts), (3) the SANS settings' and late cut-off's number boxes, (4) the Logic page's settings; not on callsign, mission or remarks, nor an input's start / end (his iPhone's own time wheel). **Tier when built:** WALK (a shared behaviour on every surface; his iPhone is the real test — WebKit is not in the walk). **Place:** its own small job, next (his word), before or beside [STANDBY-FLIES].
 
 
+
+*Moved here 2026-10-20 by backlog-archive.mjs ([STANDBY-WEEK-B]). Forward facts: `raptor-port/docs/handpass/2026-10-20-standby-week-b.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [STANDBY-WEEK-B] The week shows no B on SC, AVALON and BB lines (his question, 20 Oct 26 — "why does SC not have B on edit schedule? Brief. Can u check BB and Avalon as well")
+On Edit Schedule's week (and so View-only Sched and the next-week peek, which share the heading), a standby line's time
+headings read SHIFT · R over START · END: the rally box built for [RALLY-BOX-CHANGES] sits above START and the week draws no
+B at all (`raptor-port/src/ui/html.ts` `SA_TIME_HEAD`, the standby row's builder) — the 24 Aug 26 seam "the SC in-time shows
+on the board only … raise mirroring only if he asks", which he now has. The Scheduler Board already draws R over B and the
+shift's times in the TO / LD column on all three (pictures: `raptor-port/docs/img/handpass/2026-10-19-keyboard-scroll/walk/sa-week-marked.png`,
+the week, the headings ringed; `…/walk/sa-board-bb.png`, the board). D1040's own words: "above B, in the same R-over-B column
+as a flying line, so every wave looks the same" — the agent's reading at the time, "on the week and the board", was not built
+on the week. **To do:** put to him, with a picture of the real week at his iPhone's width and a desktop's, the week's standby
+heading as a flying line's — SHIFT · R over B · START over END (recommended: every wave the same, D1040) — then build it,
+the B box writing the line's own `br` as the board's does (SC's in-time, D1041; shown only on SPARE / AVALON / BB), with the
+faint dash in an empty R and B (D1065). Search D1040, D1041, D1065, D1026 first.
+**Drawn 20 Oct 26 and put to him** (on `claude/standby-week-b`): the real week, today beside proposed, at 402 and 1440 wide —
+`raptor-port/docs/img/handpass/2026-10-20-standby-week-b/` (1–6), drawn by `raptor-port/scripts/handpass/mock-standby-week-b.mjs`.
+Found in the drawing: on a phone the third column is too narrow for "START" — it runs under "FCP / RCP" (picture 2); a desktop
+fits (4). Put to him: the third heading TO over LD everywhere (recommended — a flying wave's, and the board's on these lines;
+pictures 5, 6), START over END with smaller letters on a phone, or START / END on a desktop and TO / LD on a phone. Waiting on
+his answer; nothing built. **His answer, 20 Oct 26:** "2" (D1083), then "Ok carry on" to the built phone heading (D1084).
+**BUILT and FULL-checked the same day** on `claude/standby-week-b` — the sheet `raptor-port/docs/handpass/2026-10-20-standby-week-b.md`; waiting for his look and "merge live".
+**Place:** after [KEYBOARD-SCROLL] goes live, as its own small job (own branch from `main`).
+
