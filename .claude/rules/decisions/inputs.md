@@ -80,7 +80,7 @@ list → The late-input mark (the cut-off's rulings are here: D628, D639); the O
 `oil.md`, **D780–D783, D793**, and who earns from a request's row — **D18, D46, D470**; inputs on a published day — **D174–D178**; the app's one date calendar — **D796, D797,
 D800** (this file keeps the Calendar window's own: D786, D795); the windows of these pages can be dragged and leave the page behind them working — **D641**; every window on a phone —
 **D686, D703, D706**;
-the bell — **D769**; a delete's list — **D710**. In `leave-war.md`: **D891** (a day's notes dragged to reorder show ONE
+the bell — **D769**; one tap then typing replaces the SANS settings' and the late cut-off's numbers, as the schedule's time boxes do — **D1080**; a delete's list — **D710**. In `leave-war.md`: **D891** (a day's notes dragged to reorder show ONE
 landing bar a gap, as the Leave War's lists do — D890). The Leave War's rows the SANS calendar reads, and its event sheet —
 **D634, D636, D637, D640, D642–D645, D665, D668**, in `scheduler.md` too. Settled before the rulings list began (the
 Inputs month calendar's day popover, "no repeat-weeks", Manage users on Admin): `scheduler.md` §Settled before this list

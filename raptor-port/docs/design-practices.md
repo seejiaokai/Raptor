@@ -652,7 +652,7 @@ state nobody drew.
 he may strike or change any. Newest first. Where a lesson meets a general rule above, the lesson wins, and that rule
 points here.*
 
-**Lesson 9 (19 Oct 26, D1047 — "It did not delete the existing timing and continue to type to add it").** A box that holds a short value typed whole — a time — takes a fresh value from the first key after it is tapped into: one tap then typing replaces it, one tap then Backspace clears it; a second tap (or moving the caret) edits it digit by digit. A scheduler retypes a time far more often than he edits one digit of it.
+**Lesson 9 (19 Oct 26, D1047 — "It did not delete the existing timing and continue to type to add it").** A box that holds a short value typed whole — a time — takes a fresh value from the first key after it is tapped into: one tap then typing replaces it, one tap then Backspace clears it; a second tap (or moving the caret) edits it digit by digit. A scheduler retypes a time far more often than he edits one digit of it. *The same, by his D1080 (19 Oct 26), for every box that holds one short value typed whole: the templates' times, the Leave War's numbers, the SANS and late cut-off numbers, the Logic page's settings.*
 
 **Lesson 8 (19 Oct 26, D1038 — "make it shorter so it looks like it's accepted. Like a short flash").** When a suggested value is taken, the screen says so at once: the value takes the ordinary colour of a typed one, and its box wears the plain blue ring only as a short flash, about a second, so it reads as accepted rather than as something just added. A faint suggestion and a taken one never share a colour. *Narrows "One mark, one look" (§4, D876) for a taken suggestion only.*
 

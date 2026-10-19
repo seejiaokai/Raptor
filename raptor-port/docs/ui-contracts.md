@@ -800,6 +800,14 @@ empties it, a selection typed over keeps what was typed — `interactions.ts fir
 second press on the focused box, or an arrow / Home / End key, puts the caret where he wants and the box is ordinary. A Tab
 into a box arms nothing. Pinned: `ui/brieftime-ui.test.tsx` RB11, `e2e/rallybox.spec.ts`.
 
+**The same in four more places (owner D1080, 19 Oct 26 — "1 Template times, 2 Leave War numbers, 3 SANS and cut-off, 4 Logic
+settings").** The duty and wave templates' time boxes (Admin → Duty templates, Wave templates), the Leave War's typed
+numbers (a counter's amber and red numbers, the OIL figure boxes), the SANS settings' and the late cut-off's number boxes,
+and the Logic page's settings (in ✎ Edit) take a fresh value from the first change after a press, as the time boxes do,
+through the same `interactions.ts armFreshTime`; a second press, an arrow key or a drag of the caret edits a digit. The
+Leave War's Required P and W cells already did (their pad's first digit replaces — `leavewar/ui/FlyEdit.tsx`). Not
+callsign, mission, remarks, nor an input's start and end (the phone's own time wheel).
+
 **A button pressed straight after a changed box does its job (`[EDIT-BUTTON-AFTER-CHANGE]`, 19 Oct 26).** The press
 takes the focus from the box, the box saves and the redraw replaces the button under the press, so the browser's click
 reached nothing. `textedit.ts` notes a press that lands on a button while a text box has the caret; once the browser
