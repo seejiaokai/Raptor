@@ -633,10 +633,15 @@ const firstTypingReplaces = (read: () => string, write: (v: string) => void, sug
     if (n != null) write(n)
   }
 }
-/* the short flash (D1038): restarted if the same box is taken twice, gone after it has run */
+/* the short flash (D1038): restarted if the same box is taken twice, gone after it has run — and at once when the taken
+   time is undone or replaced inside that second (walkers A and B, 19 Oct 26: Escape or a Backspace left the ring fading
+   on an empty box, which then read as "taken") */
 function flashTaken(el: HTMLElement) {
   el.classList.remove('sugtook'); void el.offsetWidth; el.classList.add('sugtook')
-  setTimeout(() => el.classList.remove('sugtook'), 1200)
+  const end = () => { el.classList.remove('sugtook'); el.removeEventListener('input', end); el.removeEventListener('keydown', esc) }
+  const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') end() }
+  el.addEventListener('input', end); el.addEventListener('keydown', esc)
+  setTimeout(end, 1200)
 }
 export function placeSuggestion(el: HTMLElement): boolean {
   if (el instanceof HTMLInputElement) {

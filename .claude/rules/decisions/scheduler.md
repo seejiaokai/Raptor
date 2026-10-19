@@ -54,7 +54,8 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
-| D1042 | 19 Oct 26 | An SC, AVALON or BB line that actually flies counts as a real flight — in the day's flying count and Insights' flying load, earning OIL by default, and with every warning an ordinary flying line gets; built as its own job after the rally box changes. |
+| D1043 | 19 Oct 26 | A standby row (SC, AVALON, BB) carries a "Flies" tick: typing its B or R ticks it by itself, as a row with a brief or rally typed is planned to fly; a standby row activated later is ticked by hand; the tick, however it was set, is what makes the row count as a flight (D1042). |
+| D1042 | 19 Oct 26 | An SC, AVALON or BB line that actually flies counts as a real flight — in the day's flying count and Insights' flying load, earning OIL by default, and with every warning an ordinary flying line gets; built as its own job after the rally box changes. — changed by D1043 |
 | D1041 | 19 Oct 26 | A rally typed on an SC MAIN line starts that crew's day as SC's in-time box does today — crew rest, the long day, work hours and OIL; on an SC SPARE, AVALON or BB line, which stay outside the warnings, it is shown, printed and exported only, and an empty box counts for nothing. |
 | D1040 | 19 Oct 26 | On SC, AVALON and BB lines the new rally box sits above B, in the same R-over-B column as a flying line, so every wave looks the same; their take-off and landing boxes stay as they are. |
 | D1039 | 19 Oct 26 | Only SC, AVALON and BB lines stop showing the faint worked-out brief and rally — their empty boxes stay empty; the flying lines keep their faint suggestions, with the clearer mark when one is taken (D1038). |
