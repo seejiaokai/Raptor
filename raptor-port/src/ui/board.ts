@@ -50,6 +50,7 @@ import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, s
 import { rowItemKey } from '../engine/oil'
 import { oilReadPass } from '../engine/oilev'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn, boxHTML } from './board-html'
+import { followVisible } from './vvfollow'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
 const afterSchedMutate = () => view.afterSchedMutate()
@@ -1504,9 +1505,24 @@ function popMenu(anchor: HTMLElement, html: string, onPick: (e: any, close: () =
   box.className = 'wavemenu'
   box.innerHTML = html
   document.body.appendChild(box)
-  const r = anchor.getBoundingClientRect()
-  box.style.left = Math.max(8, Math.min(window.innerWidth - box.offsetWidth - 8, Math.round(r.left))) + 'px'
-  box.style.top = Math.min(window.innerHeight - box.offsetHeight - 8, Math.round(r.bottom + 6)) + 'px'
+  /* IT FOLLOWS ITS BOX, ABOVE A PHONE'S KEYBOARD ([KEYBOARD-SCROLL], his iPhone recording, 19 Oct 26 — the duty role's
+     pick-list stayed where it opened, under the keys, while the board scrolled the role box up above them): placed by
+     the box on every scroll and, frame by frame, while the keys move (vvfollow.ts); below the box where it fits above
+     the visible screen's foot, else above the box. Pinch-zoomed, the layout's own edges, as before. Its listeners go
+     with it the first time it is found gone. */
+  const place = () => {
+    if (!box.isConnected || !anchor.isConnected) { stop(); document.removeEventListener('scroll', place, true); return }
+    const r = anchor.getBoundingClientRect(), vv = window.visualViewport
+    const zoomed = !vv || vv.scale > 1.01
+    const visTop = zoomed ? 0 : vv!.offsetTop, visBot = zoomed ? window.innerHeight : vv!.offsetTop + vv!.height
+    const h = box.offsetHeight
+    let top = r.bottom + 6
+    if (top + h > visBot - 8 && r.top - 6 - h >= visTop + 8) top = r.top - 6 - h
+    box.style.left = Math.max(8, Math.min(window.innerWidth - box.offsetWidth - 8, Math.round(r.left))) + 'px'
+    box.style.top = Math.round(Math.max(visTop + 8, Math.min(visBot - h - 8, top))) + 'px'
+  }
+  const stop = followVisible(place)
+  document.addEventListener('scroll', place, true)
   box.addEventListener('click', (e: any) => onPick(e, () => box.remove()))
   /* deferred by a tick, or the very click that OPENED this box closes it */
   setTimeout(() => document.addEventListener('click', function off() { box.remove(); document.removeEventListener('click', off) }, { once: true }), 0)
