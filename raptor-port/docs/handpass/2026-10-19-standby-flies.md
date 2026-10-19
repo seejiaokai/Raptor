@@ -81,22 +81,70 @@ crew; Undo / Redo; reload; a plan brought out; a template applied.
    `docs/superpowers/briefs/2026-10-19-standby-flies-walk.md`.
 5. **After the walk:** the ledger row is written (`docs/walk-ledger.md`).
 
-## 6. The orders walked
+## 6. The orders walked (reports: `parts/standby-flies/walker-A.md`, `walker-B.md`, `walker-C.md`; the re-walk `scripts/handpass/sf-rewalk.mjs`)
+Walked on bundle `index-BTbomYbk.js` (port 4322); the re-walk on `index-D76eH1xy.js` (the fixes and D1066).
+| Order | Unpublished | Published day | Result |
+|---|---|---|---|
+| hand tick → Undo → Redo → amend; untick after publishing → amend | A 3 | A 1 (pending, sign-offs fall, the tracker waits for the amendment, the earlier version's look without the chip) | PASS; the changes window's words FIXED (A F1, C F1) |
+| tick then type R / R then tick / clear R (the tick kept, a button again) | A 3 | A 3d | PASS |
+| CX a row of a typed shift; tick then CX; CX the shift | A 4 | A 4 | PASS — no chip on a cancelled row, the badge drops it |
+| AVALON overnight with R: four rows on by default, Sunday crew rest from 07:00, long day; cleared | C 2 | C 2 | PASS |
+| a flying SPARE on a sim / ground row in the same hours; MAIN on AM + SPARE on PM | C 6, 17 | — | PASS — hard clashes once it flies, none at 13:00 |
+| local leave / overseas / medical vs flying and standing-by rows; the member files leave | C 7 | — | PASS — local leave warns only once the row flies; one warning, not two |
+| OIL Earn's switch: off then R cleared then retyped (off kept); on while standing by then R | C 12 | C 12 | PASS / RECORD (the scheduler's own off is kept) |
+| Insights sorties / formations / the spares' own counts and hours | C 13 | — | PASS |
+| the empty-row rule (2 jets, not 4) on the badge and Insights | B 5, C | — | PASS |
+| BB with no times: the amber line, then START / END typed | B 8, C | — | PASS — its tap rings the line (as the nought-minute warning's does) |
+| every surface: board desktop / phone, the week edit / view, the peek, a version's look, the member | A 9, B 9, B 21 | A 9 | PASS after the phone week's squeeze was FIXED (B F1, D1066) |
+| the faint dash on every standby box, never on a flying line | A 16, B 16 | — | PASS |
+| the chip by keyboard; two tabs; copies (template, plan, a dragged row); reload | A 14, 15, 20, 22 | A 14 | PASS / RECORD; Enter twice FIXED (A F2) |
 
 ## 7. Cases carried by a test
+What flies, the count, Insights, the checks, OIL, the no-times advisory — `engine/standbyflies.test.ts` (SF1–SF6, SF9); the
+chip on three screens and the peek, the hand tick, the changes window's words, the wave head — `ui/standbyflies.test.tsx`
+(SF2, SF7, SF10); the dash — `ui/scboard.test.tsx` (SF8); the old-rule tests rewritten to D1044–D1046 —
+`engine/oilscintime.test.ts`, `scintime.test.ts`, `scpickerrest.test.ts`, `scrally.test.ts`, `scrole-rules.test.ts`.
 
 ## 8. Break tests
+Junk, a typed dash, "7", "25:90" in a standby R / B (B — 8/8 PASS: the box refuses them; the chip, the badge and OIL agree);
+hammering the chip, a press mid-edit, a ticked wave deleted then Undo, every row ticked then R typed and cleared (A — PASS);
+R later than END, a ticked row dragged across shifts (C — PASS / RECORD).
 
 ## 9. Errors seen
+None — the browser's error list was empty in every run of every walker and the re-walk.
 
 ## 10. What was NOT walked, and why
+WebKit / his iPhone itself (Chromium emulation only — on his look card); the Excel export and the PDF (downloads; MAIN / SPARE
+are not exported today, so no Flies either); a public-holiday weekday (12d — the same OIL path as a weekend, carried by
+`engine/oil*.test.ts`); two tabs live (the app does not sync open tabs; last save wins — older behaviour).
 
 ## 11. Gates
+(filled when the run ends)
 
 ## 12. The model reads
+- **The scenario designer** — a fresh Opus, blind to the build (`parts/standby-flies/scenarios.md`): 22 scenarios, 8 breaks.
+- **The fresh, blind Opus read** — (filled when it reports).
+- No Astra or Sol 6.1 read: ChatGPT is out (D761) — on `[NO-ASTRA-LIST]`. No Fable (D903).
 
 ## 13. Findings and dispositions
+| # | Found by | What | Disposition |
+|---|---|---|---|
+| W-B1 | walker B | on the phone week the chip and the MAIN / SPARE badge squeezed each other into "M/AI/N", "✓/FLI/ES" | FIXED — no word breaks inside a chip; his D1066: the chip smaller and under the badge (re-walk PASS) |
+| W-B3, A F3, C F2 | walkers | the + Wave note, the AVALON / BB wave head and the SC / AVALON / BB notes still said "outside the count", "checks only … nothing else" | FIXED — "until they fly", "standalone · flies", "unless its shift flies"; test |
+| W-A1, C F1 | walkers A, C | the changes window read a tick as "SPARE · SPARE → SPARE · SPARE", headed "stores" | FIXED — "· ticked to fly", headed "standby role"; test; re-walk PASS |
+| W-A2 | walker A | after Enter on the chip the keyboard left it | FIXED — focus kept after the redraw; re-walk PASS (the older MAIN / SPARE badge does the same — not changed) |
+| W-A4, C F2 | walkers A, C | the Logic line "a standby shift earns none" read as if no standby shift earns | FIXED — "a standby shift with no length earns none, flying or not" |
+| W-B2, C F3 | walkers B, C | a tap on the amber no-times line rings its line and does not focus START | RECORD — every line-anchored warning jumps this way (the nought-minute line's too); the design note says so |
+| R-1 | walker B | a lit chip shows on a row with nobody seated (it counts nothing — D1062) | RECORD — the shift flies; the row would fly once seated |
+| R-2 | walker A | OIL Earn shows a pending tick at once; the tracker waits for the amendment | RECORD — as every pending change shows in OIL Earn today (D592 (4)) |
+| R-3 | walkers A, C | a tick does not travel with a day template; it does with a saved plan and a dragged row | RECORD — as designed (the tick is the row's, a template is a clean plan) |
+| R-4 | walker C | the member is told nothing when his leave lands on a flying AVALON SPARE | RECORD — the same for any seat; not this change's |
+| R-5 | walker B | the board's chips are 13 px tall to a finger | RECORD — the badge's own size; sizes stay without his word (D487) |
 
 ## 14. His look — the card
+On his iPhone, at the preview: (1) Add an SC wave on a Saturday and seat its AM shift; type its R — every row shows "✓ FLIES"
+(Scheduler Board, Edit Schedule, View-only Sched), the day's count gains the jets, OIL Earn has the spares on. (2) On the PM
+shift, with nothing typed, tap a spare's dashed FLIES on the Scheduler Board — only that row lights; tap again — it goes. (3)
+The empty R and B boxes of a standby line show a faint dash. Not walked anywhere but here: Safari on his iPhone itself.
 
 ## Walk line
