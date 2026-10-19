@@ -154,7 +154,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [CI-SPLIT-SLOW-JOBS] — split GitHub's slowest checks across more machines while the repo is public (about 9 → 5 minutes, an estimate) — his yes first.
+- [CI-SPLIT-SLOW-JOBS] — split GitHub's slowest checks across more machines while the repo is public (about 9 → 5 minutes, an estimate) — his yes given (D1089); its own job, a fresh chat.
 - [GATELOCK-STALE-PORT] — the lock's full run can test another chat's old build when a preview is left running — it picks a free port itself.
 - [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
 - [LW-WINDOW-PRUNE-FLAKE-2] — the Leave War month-window browser test fails about half the full runs — wait on the grid, not a fixed time.
@@ -228,18 +228,18 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
-### [CI-SPLIT-SLOW-JOBS] Split GitHub's slowest checks across more machines (put to him 20 Oct 26 — his yes awaited)
+### [CI-SPLIT-SLOW-JOBS] Split GitHub's slowest checks across more machines (put to him 20 Oct 26 — his yes given, D1089: "Proceed as recommended")
 His question, 20 Oct 26: *"why the checks take so long? Can It be shortened? I'm thinking the non applicable areas don't need
 to check?"* Measured on pull request 544's run (0f8dac430): every job runs side by side, so the run is its slowest job —
 Leave War browser desktop 8m53s, the scheduler's browser part 2/2 8m13s, unit parts 2–4 about 7½–8m, the Tracker 7m51s,
 Leave War unit 4–6m, build 2m37s. Skipping areas saves almost nothing on GitHub (the scheduler's own jobs take ~8m) and
 risks missing a break across areas; told so. **Recommended:** split the slow jobs further (`.github/workflows/deploy.yml` —
 the Leave War desktop browser set into two, the scheduler's browser and unit sets into more parts, the Tracker's), free
-while the repo is public; measure after. A workflow change: his yes first. When the repo is private again (checks back on
+while the repo is public; measure after. A workflow change — his yes is given (D1089); built as its own job. When the repo is private again (checks back on
 his PC, one after another), skipping truly separate areas would save real time — raise it then.
 **Also watch (a reader's note):** `raptor-port/docs/gates-and-deploy.md` says a documents-only push on a pull request cancels
 its running gate job and starts no new one; `shipping.md` says a notes push on a pull request carrying code re-runs every
-gate — see which on the next closing push (D1088 waits on that run). **Place:** Checks and tooling, on his word.
+gate — see which on the next closing push (D1088 waits on that run). **Place:** Checks and tooling — next, its own job in a fresh chat (D1089).
 
 ### [GATELOCK-STALE-PORT] The lock's full check run tests another chat's old build when a preview is left on 4173 (found 18 Oct 26, `claude/three-small-jobs-1018`) — OPEN
 **Seen:** `gatelock.mjs run` runs `npx playwright test` with no port; `playwright.config.ts` reuses a server already on 4173

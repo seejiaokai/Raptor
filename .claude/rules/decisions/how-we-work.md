@@ -12,6 +12,8 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1090 | 20 Oct 26 | "Auto-fix" stays off on this project's pull requests — the app does not watch them for him — and where it is found switched on, the agent switches it off and says so; his standing rule not to watch pull requests stands. |
+| D1089 | 20 Oct 26 | GitHub's slowest checks are split across more machines while the repo is public — the Leave War desktop browser set into two, the scheduler's browser and unit sets and the Tracker's into more parts — every area still checked on every run; the time is measured after, and areas are not skipped. |
 | D1088 | 20 Oct 26 | On his "merge live" the agent pushes the job's closing records, waits for that one GitHub run, merges once it is green, and confirms the live app — about nine minutes of waiting while the repo is public, in place of the closing push's second full wait. |
 | D1087 | 20 Oct 26 | Work is not held for one merge at the end: two to four related jobs of one area share one branch, one check and one merge on his "merge live"; a job he wants live at once goes on its own. |
 | D1086 | 20 Oct 26 | While the repo is public, GitHub's run of the pull request is a job's full check: the agent opens the pull request as soon as the job is built, so that run goes while the app is walked, and on his PC runs only the tests of what it changes and the build its walk drives; once the repo is private again, the full check is back on his PC (D89). |

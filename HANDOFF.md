@@ -25,13 +25,13 @@ the later merge keeps both (D78).
 - **Done:** his three rulings of 20 Oct 26 recorded and written in: GitHub's run of the pull request is a job's full check while the repo is public (open the pull request into `main` once the job is built; on his PC only the touched tests and the walk's build — D1086, narrowing D902); two to four related jobs of one area per branch and merge, nothing piled to the end (D1087); on "merge live" the closing records, one GitHub run, the merge (D1088). Homes: `.claude/rules/shipping.md` (its line ceiling 115 → 130 in `docsize.mjs`, the reason there), `raptor-port/docs/bug-check-order.md` §5 (the FULL order rewritten), `raptor-port/CLAUDE.md` and `docs/guide-full.md` §Token discipline.
 - **Checked:** a fresh Opus reader of the wording — sound, and eight older sentences that contradicted it, all fixed in this branch; docsize OK. Documents only: GitHub runs its documents guard alone.
 - **Before this:** [STANDBY-WEEK-B] (D1083–D1085) went LIVE on his "merge live" (pull request 544, 20 Oct 26) — main's run green, the live app Ready.
-- **Open, his:** [CI-SPLIT-SLOW-JOBS] — split GitHub's slowest checks across more machines (about 9 → 5 minutes, an estimate); put to him 20 Oct 26, his yes awaited.
+- **His yes given (D1089):** [CI-SPLIT-SLOW-JOBS] — split GitHub's slowest checks across more machines, every area still run; its own job, a fresh chat. **D1090:** "Auto-fix" switched off on pull request 545, as his standing rule says.
 - **Pick up here:** his "merge live" for this pull request; then the standby batch in a fresh chat (the opening line he was given: [BOARD-TAB-FOLD] with the week, [SA-HEAD-CLIP-360], [STANDBY-UNDO-WORDS], [BUBBLE-SMALL-SEEN]) — the first job shipped the D1086 way.
 <!-- /now -->
 
 ## Next, in order
 
-**RIGHT NOW (20 Oct 26, evening):** how work ships while the repo is public (D1086–D1088) on `claude/ship-github-check`, documents only, waiting for his "merge live" (its block) → the standby batch in a fresh chat, shipped that way; [CI-SPLIT-SLOW-JOBS] waits on his yes.
+**RIGHT NOW (20 Oct 26, evening):** how work ships while the repo is public (D1086–D1088) on `claude/ship-github-check`, documents only, waiting for his "merge live" (its block) → the standby batch in a fresh chat, shipped that way; [CI-SPLIT-SLOW-JOBS] next as its own job (D1089, his yes).
 
 **RIGHT NOW (20 Oct 26, later):** pull request 544 is LIVE ([STANDBY-WEEK-B] with D1083–D1085: the week's and the board's SC, AVALON and BB lines read R over B, then START over END) → his next pick from the backlog (D994: the small fixes that need no answer from him; his questions wait until he says so).
 
