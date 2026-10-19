@@ -5,6 +5,7 @@ import type { CounterName, Figure } from '../engine'
 import { figureCtxOf } from '../state/store'
 import { CreditForm } from './CreditForm'
 import { KEYBOARD_MIN } from './Sheet'
+import { followVisible } from '../../ui/vvfollow'
 
 /**
  * The docked bar after a drag down a figure column (owner, 6 Sep 26): "N
@@ -65,9 +66,7 @@ function useDockAboveKeyboard(ref: { current: HTMLDivElement | null }) {
       const covered = window.innerHeight - vv.height - vv.offsetTop
       el.style.bottom = window.innerHeight - vv.height > KEYBOARD_MIN ? `${Math.max(0, covered) + GAP}px` : ''
     }
-    place()
-    vv.addEventListener('resize', place)
-    vv.addEventListener('scroll', place)
-    return () => { vv.removeEventListener('resize', place); vv.removeEventListener('scroll', place) }
+    /* frame by frame while the keys move, not a few frames behind them (D1081) */
+    return followVisible(place)
   }, [ref])
 }

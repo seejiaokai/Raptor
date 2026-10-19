@@ -48,6 +48,7 @@ import { HlIcon } from './icons'
 import { cutParts, dayWord, sansCell, sansMine, sansRoster, type SansCell } from './sanscal-model'
 import { useMedia } from './usemedia'
 import { useVersion } from './useStore'
+import { KEYBOARD_MIN } from './kbscroll'
 
 /** "1–2", "3–4", "5+" — the three colours' ranges, from the figures as set */
 const span = (from: number, below?: number): string => below === undefined ? `${from}+` : below - 1 <= from ? String(from) : `${from}–${below - 1}`
@@ -222,7 +223,10 @@ export function SansCal() {
     if (!el) return
     const fit = () => {
       const vv = window.visualViewport
-      const h = vv ? vv.height : window.innerHeight
+      /* the visible screen, as the browser's bars leave it — but not as a keyboard leaves it: a month that shrank for the
+         keys and grew back as they went jumped twice, behind the box being typed in (D1081); with the keys up the page
+         scrolls to the box instead (kbscroll.ts) */
+      const h = vv && window.innerHeight - vv.height <= KEYBOARD_MIN ? vv.height : window.innerHeight
       const top = el.getBoundingClientRect().top + (window.scrollY || 0)
       el.style.setProperty('--sc-fill', Math.max(0, Math.floor(h - top - 12)) + 'px')
     }

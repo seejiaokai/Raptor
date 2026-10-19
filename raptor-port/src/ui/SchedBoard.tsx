@@ -35,6 +35,7 @@ import { UndoPair, SyncChip, BellButton, globalUndoEngine } from './topbits'
 import { SaveBand } from './SaveStatus'
 import { OilBand } from './OilWaitSheet'
 import { clickedOutside } from './outside'
+import { followVisible } from './vvfollow'
 
 export function SchedBoard() {
   const version = useVersion()
@@ -149,9 +150,9 @@ export function SchedBoard() {
       if (vv.scale > 1.01) return clear()
       r.style.top = Math.round(vv.offsetTop) + 'px'; r.style.bottom = 'auto'; r.style.height = Math.round(vv.height) + 'px'
     }
-    fit()
-    vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit)
-    return () => { vv.removeEventListener('resize', fit); vv.removeEventListener('scroll', fit); clear() }
+    /* frame by frame while the keys move, not a few frames behind them (D1081 — the stutter he filmed as they closed) */
+    const stop = followVisible(fit)
+    return () => { stop(); clear() }
   }, [open])
 
   /* wires HOOKS.closeBoardDialogs — state/view.ts's closeBoardState() calls

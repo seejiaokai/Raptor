@@ -61,6 +61,7 @@ import { edgeAutoScroll, findScroller } from './edgescroll'
 import { bringRowOnScreen, rowOnScreen } from './onscreen'
 import { useVersion } from './useStore'
 import { useMedia } from './usemedia'
+import { KEYBOARD_MIN } from './kbscroll'
 
 const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December']
@@ -627,7 +628,10 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     if (!el) return
     const measure = () => {
       const vv = window.visualViewport
-      const h = vv ? vv.height : window.innerHeight
+      /* the visible screen, as the browser's bars leave it — but not as a keyboard leaves it: a month that shrank for the
+         keys and grew back as they went jumped twice, behind the box being typed in (D1081); with the keys up the page
+         scrolls to the box instead (kbscroll.ts) */
+      const h = vv && window.innerHeight - vv.height <= KEYBOARD_MIN ? vv.height : window.innerHeight
       const top = el.getBoundingClientRect().top + (window.scrollY || 0)
       const next = fitLanes(h - top - 12, weeks.length, sizes)
       setFit(f => (f.row === next.row && f.lanes === next.lanes ? f : next))

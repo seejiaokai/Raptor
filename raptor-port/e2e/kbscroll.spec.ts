@@ -126,6 +126,30 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
     expect(await win.evaluate(e => Math.round(e.getBoundingClientRect().top)), 'its title on the screen').toBeGreaterThanOrEqual(0)
   })
 
+  /* KS6 — D1081: the board follows the visible screen frame by frame as the keys move, not when an iPhone's late event
+     arrives (his recording: three frames a keyboard's height out of place as the keys closed). The stand-in changes its
+     numbers WITHOUT an event, as an iPhone does at the start of the keys' slide; a focus change alone must bring the board
+     with it within a few frames. */
+  test('KS6 the board follows the visible screen as the keys open and close, with no event from it', async ({ page }) => {
+    await login(page); await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(0)); await expect(page.locator('#schedBoard')).toBeVisible()
+    const top = () => page.evaluate(() => Math.round(document.getElementById('schedBoard')!.getBoundingClientRect().top))
+    const box = page.locator('#schedBoard input.tm:visible').nth(6)
+    await lowOnScreen(box)
+    /* the keys open and the screen pans by 200 a fifth of a second after the focus, and nothing says so — the focus is all
+       there is (an iPhone's numbers move as its keys slide; its event comes later) */
+    await page.evaluate(() => setTimeout(() => { const v = (window as any).__vv; v.height = innerHeight - 336; v.offsetTop = 200 }, 200))
+    await tap(page, box)
+    await expect(box).toBeFocused()
+    await expect.poll(top, { timeout: 1000 }).toBe(200)
+    /* the keys close and the pan goes back a fifth of a second after the focus leaves, again with no event */
+    await page.evaluate(() => {
+      setTimeout(() => { const v = (window as any).__vv; v.height = innerHeight; v.offsetTop = 0 }, 200)
+      ;(document.activeElement as HTMLElement).blur()
+    })
+    await expect.poll(top, { timeout: 1000 }).toBe(0)
+  })
+
   test('KS4 a box already above the keys is left where it is', async ({ page }) => {
     await login(page); await go(page, 'logic'); await page.click('#lgEdit')
     const box = page.locator('input.lgin:visible').first()
