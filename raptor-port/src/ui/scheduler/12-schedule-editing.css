@@ -24,6 +24,8 @@
    reason), the board's are <input>s (their placeholder). */
 .txed.sugbox[data-ph]:empty::before{color:var(--accent);opacity:.6}
 input.tm.sugbox::placeholder{color:var(--accent);opacity:.6}
+/* a standby line's empty R and B on the board (owner D1065): the week's own empty-box dash, its grey and strength */
+input.tm.sadash::placeholder{color:var(--ink-3);opacity:.55}
 /* A SUGGESTION JUST TAKEN — THE ONE MARK, AS A SHORT FLASH (owner D1038, 19 Oct 26: "make it shorter so it looks like it's
    accepted. Like a short flash"). The plain blue ring of a thing just added (06-inputs.css inflash, D876), for about a
    second instead of six, on the box itself; the time is already in a typed time's colour (interactions.ts
@@ -216,6 +218,12 @@ input.tm.sugbox::placeholder{color:var(--accent);opacity:.6}
 .sarole.sp{background:transparent;border-style:dashed;border-color:var(--edge);color:var(--ink-3,var(--ink-2));opacity:.85}
 button.sarole:hover{border-color:var(--accent);color:var(--accent);opacity:1}
 .sarole.ro{cursor:default}
+/* THE FLIES CHIP ([STANDBY-FLIES], owner D1060, D1064, 19 Oct 26 — as drawn): the badge's own two recipes, a second chip
+   in the badge's row. Lit = MAIN's solid recipe at full strength (a row that flies); dashed = SPARE's (the board's button
+   that ticks a row by hand). .sabadges holds the pair where the badge alone stood, so the row grows no taller. */
+.sabadges{display:inline-flex;gap:4px;align-items:center;align-self:flex-start}
+.sarole.saflies.on{background:rgba(105,190,180,.16);border-style:solid;border-color:rgba(105,190,180,.35);color:var(--ink-2);opacity:1}
+button.sarole.saflies:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 
 /* ---- red box: "look at this" flag for the next scheduler ---------------- */
 .redbox{box-shadow:inset 0 0 0 2px var(--hard);border-radius:5px;background:rgba(240,85,95,.09)}

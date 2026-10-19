@@ -358,6 +358,9 @@ export type AircraftSeat = RowFlags & {
   spare?: boolean
   /** Mirrors `spare` as the row label — engine/screen. */
   role?: 'MAIN' | 'SPARE'
+  /** Standalone crew row ticked "Flies" by hand — it flies with nothing typed on its shift ([STANDBY-FLIES], D1061);
+   *  written only when set, by the board's Flies chip; a shift with its B or R typed flies without it (waves.ts saFlies). */
+  fly?: boolean
   /** Stable row id — engine (rowids.ts); minted before the first baseline, never printed, optional only in a seed literal. */
   rid?: string
 }

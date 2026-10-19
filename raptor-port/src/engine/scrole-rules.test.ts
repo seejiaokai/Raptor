@@ -121,11 +121,13 @@ describe('SC SPARE — stood by, not cross-checked', () => {
 })
 
 describe('the typed B (the SC in-time) follows the toggle', () => {
-  it('inert while the row is SPARE, the crew-rest anchor the moment it flips MAIN', () => {
+  /* CHANGED 19 Oct 26 ([STANDBY-FLIES], D1044, D1045): a B typed flies the whole shift, the SPARE row included, so it
+     is the crew-rest anchor on a SPARE row too — before and after the flip alike */
+  it('a B typed is the crew-rest anchor on a SPARE row as on a MAIN one, before and after it flips', () => {
     AM().br = '05:00'
     seat(2, 'p', 'stuff')
-    expect(tueWarns('stuff').filter((x: any) => x.code === 'CREW_REST'),
-      'an in-time cannot breach a man who is only standing by').toEqual([])
+    expect(tueWarns('stuff').filter((x: any) => x.code === 'CREW_REST').length,
+      'a flying spare reports at the B').toBe(1)
     flipMain(2)
     const w = tueWarns('stuff').find((x: any) => x.code === 'CREW_REST')
     expect(w, 'flipped MAIN, the 05:00 in-time is his report time').toBeTruthy()

@@ -5,7 +5,7 @@ import { fileAcc, filingActive } from './world'
 import { PEOPLE, isSpecial, whoId, aarNeed } from './people'
 import { toMin, parseHM, win, overlap } from './time'
 import { VCONF, SHIFT_HARD } from './rules'
-import { isStandalone, saExempt, saExemptKind, CURWEEK } from './waves'
+import { isStandalone, saExempt, saExemptKind, saFlies, saAnyFlies, CURWEEK } from './waves'
 import { whoArr, acceptedDay } from './slots'
 import { edgeDate } from './weeks-data'
 import { standsOn } from './overlay'
@@ -233,7 +233,10 @@ function standaloneHits(di:any,id:any,s:any,e:any,selfKey:any,kind:any,seatsOnly
    existing typed-B priority and bounded shift-date rule remain separate. */
 export { intimeTime, intimeFold } from './reporting'
 export function seatIntime(w:any,f:any,toM:any,parsed?:ReportingLine[]){
-  const scIn=(w&&w.kind==='sc')?scReport(f,toM):null;   // its in-time box or its rally box, the earlier (D1041)
+  /* its in-time box or its rally box, the earlier (D1041) — on every standby line now: on AVALON and BB a typed B or R
+     makes the shift fly ([STANDBY-FLIES], D1045), and only a row that flies reaches here (a non-flying one is collected
+     apart, below), so the boxes mean the same report time on all three kinds */
+  const scIn=(w&&(w.standalone||w.kind==='sc'))?scReport(f,toM):null;
   if(scIn!=null)return scIn;
   return resolveReporting(w,f,toM,parsed).report;
 }
@@ -282,6 +285,10 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
       w.formations.forEach((f:any,li:any)=>{
         if(f.cx)return;                                        // cancelled line — nothing to check
         if(saExempt(w,f,null)){                                // AVALON / BB — outside the conflict engine
+          /* …EXCEPT A ROW THAT FLIES ([STANDBY-FLIES], D1045): a shift with its B or R typed flies whole, a row ticked by
+             hand on its own (D1061). Those rows are left out of the standby collection below and go on, after it, to the
+             ordinary path an SC MAIN takes — crew rest, clashes, availability, currency — so no row is looked at twice. */
+          const stands=(a:any)=>!a.cx&&!saFlies(w,f,a);
           /* AVALON'S ONE CHECK (owner, 11 Aug 26). The wave stays noconf — its crew are
              cross-checked against nothing — but the men on it must be on the island and
              fit, so their names and the shift window are collected here for the single
@@ -291,7 +298,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
              with blank times has no window and is skipped — fail closed, inert. */
           if(w.noconf){
             const sTo=toMin(f.to); let sLd=toMin(f.ld||f.to); if(sLd<sTo)sLd+=1440;
-            if(isFinite(sTo)&&isFinite(sLd))f.aircraft.forEach((a:any,ai:any)=>{ if(a.cx)return;
+            if(isFinite(sTo)&&isFinite(sLd))f.aircraft.forEach((a:any,ai:any)=>{ if(!stands(a))return;
               /* the warning names the wave by its FULL label (AVALON), not the
                  formation callsign — that was shortened to "AV" on 25 Aug 26 for
                  the narrow board callsign box, and the LEAVE_FLY/DNIF prose reads
@@ -306,11 +313,11 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
             });
             /* no shift times: no window for the currency, front-seat and two-places looks — still inert — but the
                men are kept for the whole-day absence look (D605; `blank`, above) */
-            else f.aircraft.forEach((a:any,ai:any)=>{ if(a.cx)return;
+            else f.aircraft.forEach((a:any,ai:any)=>{ if(!stands(a))return;
               [['p',a.p],['w',a.w]].forEach(([seat,id]:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))blank.push({id,label:`${w.label} ${f.msn}`,key:`${di}.${gi}.${li}.${ai}.${seat}`,av:true,work:false}); });
             });
           }
-          return;
+          if(!saAnyFlies(w,f))return;
         }
         const toM=toMin(f.to);
         let ldM=toMin(f.ld||f.to); if(ldM<toM)ldM+=1440;      // landed after midnight
@@ -350,12 +357,14 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
         const report=(intime!=null)?intime:stepM;
         /* an SC line whose report is its RALLY box, not its in-time box (D1041) — so crew rest says "rally" (validate.ts
            shiftReport); written only when true, so every other event is as it was */
-        const scRl=shiftLine&&w.kind==='sc'?scIntime(f.rl,toM):null, scBr=shiftLine&&w.kind==='sc'?scIntime(f.br,toM):null;
+        const scRl=shiftLine?scIntime(f.rl,toM):null, scBr=shiftLine?scIntime(f.br,toM):null;   // every standby kind ([STANDBY-FLIES])
         const viaRally=scRl!=null&&intime===scRl&&(scBr==null||scRl<scBr);
         const fcps:any[]=[],acs:any[]=[],allCrew:any[]=[],spareCrew:any[]=[],spareAcs:any[]=[];
         f.aircraft.forEach((a:any,ai:any)=>{ if(a.cx)return;
           /* collected BEFORE the spare exemption: a spare crew is not checked
              against other commitments, but their SC currency still is */
+          /* an AVALON / BB row that does not fly was looked at by the standby collection above — never here too */
+          if(w.noconf&&!saFlies(w,f,a))return;
           [a.p,a.w].forEach((id:any)=>{if(id&&PEOPLE[id]&&!isSpecial(id))allCrew.push(id);});
           if(saExempt(w,f,a)){                                  // SC SPARE — stood by, not cross-checked
             /* ...but still kept, because "not cross-checked against other tasks"
@@ -396,7 +405,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
         /* an SC formation carries its shift window so the SC DAY / SC NIGHT
            currency can be checked against it */
         forms.push({label:`${f.cs} ${f.msn}`,cs:f.cs,fcps,acs,
-          sc:isStandalone(w)&&w.kind==='sc', shift:f.msn||f.shift||'', s:toM, e:ldM,
+          sc:isStandalone(w), shift:f.msn||f.shift||'', s:toM, e:ldM,   // an AVALON / BB shift reaches here only for its rows that fly
           allCrew:[...new Set(allCrew)], spareCrew:[...new Set(spareCrew)],spareAcs,key:`${di}.${gi}.${li}`});
       });
     });

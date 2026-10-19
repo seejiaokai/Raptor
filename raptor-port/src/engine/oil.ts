@@ -1,7 +1,7 @@
 import { VCONF } from './rules'
 import { oilAsks } from './inputs'
 import { parseHM } from './time'
-import { isStandalone, saExemptKind } from './waves'
+import { isStandalone, saExemptKind, saFlies, saAnyFlies } from './waves'
 import { PEOPLE, realP, whoId, isSpecial } from './people'
 import { whoArr } from './slots'
 import { parseReportingLines, resolveReporting, scReport } from './reporting'
@@ -276,7 +276,9 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
          row, switched on, takes the shift's written window (`seatWin` below). A flying line = report → land+debrief */
       const scWin=sc?w2(st,en):null;
       /* …or its rally box, the earlier of the two (D1041) */
-      const scB=scWin&&wv.kind==='sc'?scReport(f,scWin[0],lead):null;
+      /* (on AVALON and BB too since [STANDBY-FLIES]: there a typed B or R makes the shift fly, so it is a report time like
+         SC's — D1045; a non-flying row never reads it, `seatWin` below) */
+      const scB=scWin?scReport(f,scWin[0],lead):null;
       const win=sc?(scWin&&scB!=null&&scB<scWin[0]?[scB,scWin[1]] as [number,number]:scWin)
                   :(st==null||en==null?null
                     :w2(rep!=null?rep:st-lead,(en<st?en+1440:en)+deb));
@@ -286,7 +288,8 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
          hidden here, which is why "SC SPARE offers the switch" had nowhere to
          appear. A line with no readable times still reaches nothing — that is
          D31, and it is the `win` test above, not this one. */
-      reach(item,!exemptWave&&!f.spare);
+      /* a shift with a row that flies earns by default ([STANDBY-FLIES], D1042 — "OIL by default") */
+      reach(item,(!exemptWave&&!f.spare)||saAnyFlies(wv,f));
       (f.aircraft||[]).forEach((ac:any)=>{
         if(ac.cx)return;                                 // a cancelled jet is not work, ever
         /* BOTH SPARE FLAGS (Codex OSE-R2-02). The exclusion this replaces read
@@ -295,7 +298,10 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
            aircraft one — which the first rewrite did — would default every
            occupant of such a shift ON, and credit a spare shift that has never
            been credited. */
-        dflt=!exemptWave&&!f.spare&&!ac.spare;
+        /* A ROW THAT FLIES EARNS BY DEFAULT, SPARE included ([STANDBY-FLIES], D1042, D1044 — "for a SPARE, what counting
+           as a flight changes is its crew rest and its OIL"), from the shift's report (its B or R, the earlier) to its END */
+        const flies=saFlies(wv,f,ac);
+        dflt=flies||(!exemptWave&&!f.spare&&!ac.spare);
         /* THE NON-EXPANDING BELT, and it is the bare `put` on purpose (D33/D36,
            Fable M4.5). A placeholder is refused in a cockpit at every door, but
            data can arrive by COPY — a captured day template or a parked plan
@@ -304,7 +310,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
            hours wider each side than availability: handing it to the expander
            would gather the men the squadron deliberately schedules around an ops
            brief (D36, plan §5a) and credit every one of them. */
-        const seatWin=scWin&&(f.spare||ac.spare)?scWin:win;   // D606: the B is the MAIN's in-time, never a SPARE's
+        const seatWin=scWin&&!flies&&(exemptWave||f.spare||ac.spare)?scWin:win;   // D606: a standing-by row reports nowhere — its written window
         [ac.p,ac.w].forEach((v:any)=>put(v,seatWin));
       });
     });

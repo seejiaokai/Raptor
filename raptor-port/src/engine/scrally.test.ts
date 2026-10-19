@@ -4,6 +4,8 @@
 // to be specific is it SC main only?": yes. On an SC MAIN line a typed rally starts the crew's day exactly as the SC
 // in-time box (its B) does — crew rest, the long day, work hours and OIL — the earlier of the two counting where both are
 // typed; on an SC SPARE row, an AVALON or a BB line it is shown, printed and exported only. An empty box counts nothing.
+// CHANGED 19 Oct 26 ([STANDBY-FLIES], D1044, D1045 narrow D1041): a typed rally on ANY standby line flies its whole shift,
+// SPARE rows included — so on a SPARE, AVALON or BB row it now starts the day as on SC MAIN (the tests below say so).
 // The crew-rest sentence names which box it was ("SC AM's rally is 05:00").
 // Register: docs/superpowers/specs/2026-10-02-rally-behaviour-register.md (RB8).
 
@@ -87,7 +89,7 @@ const one = (kind: string, to: string, ld: string, box: any = {}, spare = false)
   return w
 }
 
-describe('RB8 — OIL reads an SC MAIN line\'s rally box; SPARE, AVALON and BB keep their written window', () => {
+describe('RB8 — OIL reads a standby line\'s rally box: SC MAIN, and since [STANDBY-FLIES] SPARE, AVALON and BB too', () => {
   const SAVE = { reportLead: VCONF.reportLead }
   afterEach(() => Object.assign(VCONF, SAVE))
   it('SC MAIN 07:00–13:00 with a rally 06:00: from 06:00; with both, from the earlier', () => {
@@ -99,16 +101,17 @@ describe('RB8 — OIL reads an SC MAIN line\'s rally box; SPARE, AVALON and BB k
     expect(dayOilSpans(day([one('sc', '07:00', '13:00', { rl: '' })])).bane).toEqual([[h(7), h(13)]])
     expect(dayOilSpans(day([one('sc', '07:00', '13:00', { rl: '08:00' })])).bane).toEqual([[h(7), h(13)]])
   })
-  it('a SPARE row on the same shift keeps the written window', () => {
+  it('a SPARE row on the same shift flies with it: from the rally, on by default (D1044, D1045)', () => {
     const work = dayOilWork(day([one('sc', '07:00', '13:00', { rl: '06:00' }, true)]), { expandAll: () => [] })
-    expect(work.bane.map(x => [x.s, x.e])).toEqual([[h(6), h(13)]])
-    expect(work.stiff.map(x => [x.s, x.e])).toEqual([[h(7), h(13)]])
+    expect(work.bane.map(x => [x.s, x.e, x.dflt])).toEqual([[h(6), h(13), true]])
+    expect(work.stiff.map(x => [x.s, x.e, x.dflt])).toEqual([[h(6), h(13), true]])
   })
-  it('AVALON and BB: a typed rally moves nothing', () => {
+  it('AVALON and BB: a typed rally flies the shift — from the rally, on by default; an empty box leaves it standing by (D1045)', () => {
     for (const kind of ['avalon', 'bb']) {
       const plain = dayOilWork(day([one(kind, '07:00', '19:00')]), { expandAll: () => [] })
       const withRl = dayOilWork(day([one(kind, '07:00', '19:00', { rl: '05:00' })]), { expandAll: () => [] })
-      expect(withRl, kind).toEqual(plain)
+      expect(plain.bane.map(x => [x.s, x.e, x.dflt]), kind).toEqual([[h(7), h(19), false]])
+      expect(withRl.bane.map(x => [x.s, x.e, x.dflt]), kind).toEqual([[h(5), h(19), true]])
     }
   })
 })

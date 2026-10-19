@@ -328,6 +328,17 @@ const RULES = {
   ON14: 'the holiday\'s Undo takes its notices; its Redo brings them back unread (D780)',
   ON15: 'the bell line counts what is left, read live; at nothing left it is gone; one line a holiday (D781, D783)',
   ON16: 'the line opens the one list; a scheduler is not sent to a single question the line covers (D782, D769)',
+  /* [STANDBY-FLIES] — D1042–D1046, D1060–D1065; docs/superpowers/specs/2026-10-19-standby-flies-behaviour-register.md */
+  SF1: 'a standby shift with its B or R typed flies whole, SPARE rows included (D1044, D1045)',
+  SF2: 'a row ticked Flies by hand flies alone, never its shift; a second tap takes the tick off (D1061)',
+  SF3: 'a cancelled shift or row never flies; a row of a typed shift is taken out by its own CX, never unticked (D1045, D1046)',
+  SF4: 'a flying row is checked as an SC MAIN is, its day from the earliest of R, B and START to END, nothing added (D1045)',
+  SF5: 'a flying row counts as a jet and a sortie; a row with nobody seated does not (D1045, D1062)',
+  SF6: 'a flying row earns OIL by default (D1042)',
+  SF7: 'the lit Flies chip on all three screens, the dashed one a button on the Scheduler Board only (D1060, D1063, D1064)',
+  SF8: 'a faint dash in the empty R and B of a standby line on the board (D1065)',
+  SF9: 'a standby shift that flies with no START or END says so, as an advisory',
+  SF10: 'a hand tick on a published day waits for the next amendment',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set

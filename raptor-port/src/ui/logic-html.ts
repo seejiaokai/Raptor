@@ -164,7 +164,10 @@ export function lgChecks(): LgGroup<LgChk>[] {
       { id: 'kind-avalon', sev: 'note', name: 'AVALON', line: () => esc(kindNote('avalon')) },
       { id: 'kind-bb', sev: 'note', name: 'BB', line: () => esc(kindNote('bb')) },
       { id: 'shifthours', sev: 'note', name: 'A shift\'s hours', line: () => 'A standby shift takes exactly its written hours: no step, dekit, brief or debrief.' },
-      { id: 'scintime', sev: 'adv', code: 'SC_INTIME', line: () => 'A typed B (the crew\'s in-time) or R (its rally) on an SC MAIN, whichever is earlier, and something sits between it and the shift start. It also starts his crew rest, his long day and his OIL from that time. A SPARE\'s B and R do nothing.' },   // R since D1041
+      /* [STANDBY-FLIES] (owner D1042–D1046, D1061, D1062, 19 Oct 26) */
+      { id: 'saflies', sev: 'note', name: 'A standby row that flies', line: () => 'A shift with its B or R typed flies, every row on it; a row ticked FLIES on the Scheduler Board flies on its own. A row that flies is checked as an SC MAIN is, counts as a jet and a sortie, and earns OIL by default. A row with nobody on it counts nothing; one that does not come in is cancelled with CX.' },
+      { id: 'saflynotime', sev: 'adv', code: 'SA_FLY_NO_TIME', line: () => 'A standby shift that flies has no START or END, so its crew rest and OIL cannot be worked out.' },
+      { id: 'scintime', sev: 'adv', code: 'SC_INTIME', line: () => 'A standby row that flies has a typed B (the crew\'s in-time) or R (its rally), whichever is earlier, and something sits between it and the shift start. That time also starts his crew rest, his long day and his OIL.' },   // R since D1041; every row of a flying shift since [STANDBY-FLIES]
       { id: 'scarm', sev: 'note', name: 'Arming an SC seat', line: () => 'The crew list judges each man against that shift\'s hours only.' },
     ] },
     { g: 'Leave, downchits and inputs', items: [
@@ -174,7 +177,7 @@ export function lgChecks(): LgGroup<LgChk>[] {
       { id: 'inputfly', sev: 'hard', code: 'INPUT_FLY', line: () => 'Any other input clashes with a planned slot: a course, a meeting, an appointment, overseas duty.' },
       { id: 'notimes', sev: 'note', name: 'A seat with no times', line: () => 'Still checked against an absence covering the whole day; a part-day absence waits until the seat has times.' },
       { id: 'halfdays', sev: 'note', name: 'Half days', line: () => 'Leave and medical can be AM (to 12:00), PM (from 12:01) or all day, and a half day closes only its own half. A sortie counts from its step (Step before take-off), so AM leave still clashes with a wave that steps before noon.' },
-      { id: 'spare', sev: 'note', name: 'Standing SC SPARE', line: () => 'A man on local leave may still stand SC SPARE. Overseas leave or duty (OL, OD) or a medical code (HL, OML, ATT C, ATT B) may not: that is a warning.' },
+      { id: 'spare', sev: 'note', name: 'Standing SC SPARE', line: () => 'A man on local leave may still stand SC SPARE. Overseas leave or duty (OL, OD) or a medical code (HL, OML, ATT C, ATT B) may not: that is a warning. A row that flies has no such allowance.' },
       { id: 'sansavail', sev: 'adv', code: 'SANS_AVAIL', line: () => 'A SANS man planned outside the event or the hours he filed. Filing nothing raises nothing.' },
       { id: 'late', sev: 'note', name: 'LATE', line: () => 'An input last changed after its cut-off (Inputs late cut-off) wears LATE: a mark, never a warning. Downchits never do.' },
     ] },
@@ -185,7 +188,7 @@ export function lgChecks(): LgGroup<LgChk>[] {
           `A man's day runs from his first report to his last end, gaps included: ${lgV(ruleFmt('oilFullMin', VCONF.oilFullMin))} or more is a full day (FO), less is a half (HO).`,
           'A flight runs from its in-time (or Default rally before take-off, where neither an in-time nor a rally is entered) to landing plus the debrief.',
           'A row with no times, or no end time, earns nothing. An Off day earns nothing.',
-          'SC SPARE, AVALON and BB earn only if switched on in OIL Earn.',
+          'SC SPARE, AVALON and BB rows that do not fly earn only if switched on in OIL Earn. A row that flies earns by default, from its B or R (the earlier) to its END.',
           'A Duty & commitments input earns once its OIL question is answered yes.',
           'A published day keeps its OIL until it is published again.',
         ] },

@@ -1,7 +1,7 @@
 import { PEOPLE } from './people'
 import { validate, issuedWorld, workSpan } from './validate'
 import { shownWarns } from './warnhide'
-import { isStandalone } from './waves'
+import { isStandalone, saFlies, saSeated } from './waves'
 import { CURWEEK } from './waves'
 import { HOOKS } from './hooks'
 import { resolveMissionRole, encodeRoleId } from './mission-role'
@@ -38,6 +38,13 @@ export function computeInsights(){
        Before this, sorties/forms/fc (and idle, which is derived from fc) counted
        both while dayStats.warns/hard — read straight off WARN, which already
        skips cancelled and exempt lines — did not: one object, two rules. */
+    /* A STANDBY ROW THAT FLIES IS A SORTIE ([STANDBY-FLIES], D1042, D1045 — "SPARE rows included"): each row with
+       somebody seated (D1062) counts one, and its shift one formation; the rows that only stand by count nothing, as
+       before. A standby line has no mission, so its sortie joins no blue / red count — the man's bar splits on his other
+       sorties, the standby ones left plain (the agent's call: there is no question to answer for them). */
+    (d.waves||[]).forEach((w:any)=>{if(!isStandalone(w))return;(w.formations||[]).forEach((f:any)=>{
+      const fl=(f.aircraft||[]).filter((a:any)=>saFlies(w,f,a)&&saSeated(a)); if(!fl.length)return; forms++;df++;
+      fl.forEach((a:any)=>{sorties++;ds++;[a.p,a.w].forEach((id:any)=>{if(id&&PEOPLE[id]&&!PEOPLE[id].special)fc[id]=(fc[id]||0)+1;});});});});
     (d.waves||[]).forEach((w:any)=>{if(isStandalone(w))return;w.formations.forEach((f:any)=>{if(f.cx)return;forms++;df++;
       const source=tracking?resolveMissionRole(f,context=>{
         const date=dayIso(CURWEEK,di);let id:string;

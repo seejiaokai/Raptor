@@ -38,7 +38,7 @@ import { withDaySnap, lateMates } from './html'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu, switchDraft, SBWOPEN } from './board'
 import { findInputCell, hideHistBub, pinHistBubAt, findHistCell, findSeatRow, isSeatKey, onlyOn } from './histbubble'
 import { pickRosDay } from './pan'
-import { isStandalone, CURWEEK } from '../engine/waves'
+import { isStandalone, saTyped, CURWEEK } from '../engine/waves'
 import { WARN } from '../engine/validate'
 import { hm24,parseHM } from '../engine/time'
 import { parseReportingLines,resolveReporting,REPORTING_LABEL } from '../engine/reporting'
@@ -1845,6 +1845,25 @@ export function routeClick(e: MouseEvent) {
       HOOKS.toast(a.spare
         ? 'Line is SPARE now: standing by, checked for availability and currency only'
         : 'Line is MAIN now: fully cross-checked', 'ok')
+    }
+    e.stopPropagation(); return
+  }
+
+  /* THE FLIES CHIP — a standby row ticked to fly by hand ([STANDBY-FLIES], owner D1061, D1064, 19 Oct 26). The board
+     draws it as a button only where the tick is the row's own (a shift with its B or R typed flies whole and its chip is
+     no button — D1046: such a row is taken out with CX). One tap ticks, another takes it off. Written as the MAIN/SPARE
+     flip above is — an engine-visible change, through afterSchedMutate, marked on the row's st: key so a published day
+     reads pending and it rides the next amendment (restore.ts carries a.fly in the row's composite). No passing note:
+     the chip itself, lit or dashed, is the feedback (D850). */
+  const sf = t.closest('[data-safly]') as HTMLElement | null
+  if (sf && HOOKS.editMode() && canEditSched()) {
+    const [di, gi, li, ai] = sf.dataset.safly!.split('.').map(Number)
+    const w = DAYS[di!]?.waves[gi!], f = w?.formations[li!], a = f?.aircraft[ai!]
+    if (a && w && isStandalone(w) && !saTyped(f)) {
+      const was = a.fly ? 'Flies' : 'Standing by'
+      if (a.fly) delete a.fly; else a.fly = true
+      markEdit(`st:${di}.${gi}.${li}.${ai}`, was, a.fly ? 'Flies' : 'Standing by')
+      view.afterSchedMutate(); notify()
     }
     e.stopPropagation(); return
   }

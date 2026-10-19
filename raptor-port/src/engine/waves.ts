@@ -8,7 +8,11 @@
      BB      — same as AVALON, but with no fixed shift times
    Crew on any of them still count as tasked and still drop out of the
    available-crew pool: they ARE flying, they just aren't cross-checked.
+   A ROW THAT FLIES IS THE EXCEPTION ([STANDBY-FLIES], owner D1042–D1046, D1060–D1064, 19 Oct 26): a shift with its B or
+   R typed flies whole, SPARE rows included, and a row ticked by hand flies on its own — such a row is checked as an SC
+   MAIN is (saExempt below is false for it), counts in the day's flying count and Insights, and earns OIL by default.
    ===================================================================== */
+import { parseHM } from './time'
 /* Every shift comes up the same way: TWO main lines and TWO spare lines, each
    labelled, so the shape on screen matches the shape on the board and the
    scheduler only has to fill in names. `main` / `spare` are the counts. */
@@ -29,9 +33,25 @@ export function isStandalone(w:any){return !!(w&&w.standalone);}
    (events.ts), the crew picker (avail.ts) and OIL (oil.ts) — so a third such
    kind is exempt everywhere or nowhere, never half (reviewer, 7 Sep 26). */
 export function saExemptKind(k:any){return !!(k&&SAWAVE[k]&&SAWAVE[k].all);}
-/* a line the conflict engine must leave alone */
+/* A STANDBY ROW THAT FLIES ([STANDBY-FLIES]). A shift (formation) with its B or R typed flies whole — "When time like
+   brief and rally is typed it's treated like a jet that's flying" (D1045), every row on it, SPARE included (D1044) — and
+   that is READ from the typed times, never stored, so clearing them takes it back. A row activated with nothing typed is
+   ticked by hand: `a.fly`, the row's own mark, which lights that row only, never its shift (D1061). A cancelled shift or
+   row never flies (D1045, D1046 — a row that does not come in is cancelled with its own CX). The ONE body every reader
+   asks — the checks (saExempt), the events, OIL, the day's count, Insights, the chip — so they cannot disagree. */
+export function saTyped(f:any){return !!(f&&(parseHM(f.br)!=null||parseHM(f.rl)!=null));}
+export function saFlies(w:any,f:any,a:any){
+  if(!w||!w.standalone||!f||f.cx||(a&&a.cx))return false;
+  return saTyped(f)||!!(a&&a.fly);
+}
+/* does any row of this shift fly — the shift-level question (a whole shift by its typed times, or one row by hand) */
+export function saAnyFlies(w:any,f:any){return !!(w&&w.standalone&&f&&!f.cx&&(saTyped(f)||(f.aircraft||[]).some((a:any)=>!a.cx&&a.fly)));}
+/* a row with somebody on it — a row with nobody seated is no jet and no sortie even when its shift flies (D1062) */
+export function saSeated(a:any){return !!(a&&(a.p||a.w));}
+/* a line the conflict engine must leave alone — never a row that flies, which is checked as an SC MAIN is ([STANDBY-FLIES]) */
 export function saExempt(w:any,f:any,a:any){
   if(!w||!w.standalone)return false;
+  if(a&&saFlies(w,f,a))return false;
   if(w.noconf)return true;                       // AVALON / BB — the whole wave
   return !!((f&&f.spare)||(a&&a.spare));         // SC — the SPARE line only
 }
@@ -119,10 +139,16 @@ export function dayCount(d:any){
      SC's AM and PM shifts are two aircraft all day, not four — and a SPARE crew
      is standing by, not another airframe. So: most aircraft on any one shift,
      spares excluded. */
-  const sn=(w:any)=>(w.formations||[]).reduce((mx:any,f:any)=>f.cx?mx:Math.max(mx,(f.aircraft||[]).filter((a:any)=>!a.cx&&!a.spare).length),0);
+  const sn=(w:any)=>(w.formations||[]).reduce((mx:any,f:any)=>f.cx?mx:Math.max(mx,(f.aircraft||[]).filter((a:any)=>!a.cx&&!a.spare&&!saFlies(w,f,a)).length),0);
   const sa=ws.filter(isStandalone).reduce((t:any,w:any)=>t+sn(w),0);
-  if(!main.length&&!sa)return d.wc||'';
-  const head=main.length?main.map(n).join(' X '):'0';
+  /* A STANDBY ROW THAT FLIES IS A JET IN THE FLYING COUNT ([STANDBY-FLIES], D1045 — "SPARE rows included"): each such
+     wave adds one more "X n" term, n its flying rows with somebody seated (D1062 — an empty row is no jet), every shift
+     counted — a flying AM and a flying PM are two launches, not the same jets handed over. The rows that fly leave the
+     standby figure after the slash, which keeps counting the rows that only stand by, as before. */
+  const fl=ws.filter(isStandalone).map((w:any)=>(w.formations||[]).reduce((t:any,f:any)=>t+(f.aircraft||[]).filter((a:any)=>saFlies(w,f,a)&&saSeated(a)).length,0)).filter((k:any)=>k>0);
+  const terms=main.map(n).concat(fl);
+  if(!terms.length&&!sa)return d.wc||'';
+  const head=terms.length?terms.join(' X '):'0';
   return head+(sa?` / ${sa}`:'');
 }
 /* ---- weeks ---- */
@@ -137,4 +163,4 @@ export const MTYPE:any={BFM:'flight',ACM:'flight',SAT:'flight',SA:'flight',INST:
 export const mColor=(m:any)=>{if(!m)return'flight';if(MTYPE[m])return MTYPE[m];const b=m.split('-')[0];return MTYPE[b]||'flight'};
 /* a name on an SC SPARE line — standing by, and free to be planned for anything
    else on the day. Kept separate from "tasked" so the palette can say so. */
-export function scSpare(w:any,f:any,a:any){return !!(w&&w.standalone&&!w.noconf&&((f&&f.spare)||(a&&a.spare)));}
+export function scSpare(w:any,f:any,a:any){return !!(w&&w.standalone&&!w.noconf&&((f&&f.spare)||(a&&a.spare))&&!(a&&saFlies(w,f,a)));}

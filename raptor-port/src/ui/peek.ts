@@ -30,7 +30,7 @@
 import { rowPeopleDrawn, inputRowSeveral } from '../engine/grouprows'
 import { PEOPLE, whoId, QCHIP, QCLASS } from '../engine/people'
 import { noteText } from '../engine/note'
-import { isStandalone, mColor, dayCount, CURWEEK } from '../engine/waves'
+import { isStandalone, saFlies, mColor, dayCount, CURWEEK } from '../engine/waves'
 import { groundOrder } from '../engine/order'
 import { whoArr } from '../engine/slots'
 import { minus, parseHM } from '../engine/time'
@@ -134,7 +134,8 @@ function peekFormation(w: any, f: any): string {
        surfaces' .sarole badge — a peek column is inert and dimmed, and the
        one-line text keeps its DOM under the perf ceiling. Label body shared
        with saRoleHTML via saRoleText so the two spellings cannot drift. */
-    const rmkTxt = a.rmks || (sa ? saRoleText(a) : '')
+    /* a standby row that flies says so first, read only, as View-only Sched's lit chip does ([STANDBY-FLIES], D1063) */
+    const rmkTxt = (sa && saFlies(w, f, a) ? '✓ FLIES · ' : '') + (a.rmks || (sa ? saRoleText(a) : ''))
     h += `<div class="acrow${ai ? '' : ' r1'}${acx}" style="--gr:${ai + 1}">${peekPucks(a)}</div>`
       + `<div class="rmkcell${ai ? '' : ' r1'}${acx}${rmkE}" style="--gr:${ai + 1}">${cxTag(a)}${flagTag(a)}<span class="ntx">${esc(rmkTxt)}</span>${stores}</div>`
   })
