@@ -2002,6 +2002,12 @@ on the week. **To do:** put to him, with a picture of the real week at his iPhon
 heading as a flying line's — SHIFT · R over B · START over END (recommended: every wave the same, D1040) — then build it,
 the B box writing the line's own `br` as the board's does (SC's in-time, D1041; shown only on SPARE / AVALON / BB), with the
 faint dash in an empty R and B (D1065). Search D1040, D1041, D1065, D1026 first.
+**Drawn 20 Oct 26 and put to him** (on `claude/standby-week-b`): the real week, today beside proposed, at 402 and 1440 wide —
+`raptor-port/docs/img/handpass/2026-10-20-standby-week-b/` (1–6), drawn by `raptor-port/scripts/handpass/mock-standby-week-b.mjs`.
+Found in the drawing: on a phone the third column is too narrow for "START" — it runs under "FCP / RCP" (picture 2); a desktop
+fits (4). Put to him: the third heading TO over LD everywhere (recommended — a flying wave's, and the board's on these lines;
+pictures 5, 6), START over END with smaller letters on a phone, or START / END on a desktop and TO / LD on a phone. Waiting on
+his answer; nothing built.
 **Place:** after [KEYBOARD-SCROLL] goes live, as its own small job (own branch from `main`).
 
 ### [BOARD-TAB-FOLD] A time typed on the Scheduler Board and left by Tab shows as typed until another press (found 19 Oct 26 — the D1080 walk, walker B's B11; low)
