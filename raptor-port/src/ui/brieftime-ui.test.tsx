@@ -375,3 +375,218 @@ describe('RB5 — the R box explains its own timing fault', () => {
     Object.assign(f, keep); w.intimes = keepLines
   })
 })
+
+/* RB9 — a taken suggestion looks taken at once (owner D1038, 19 Oct 26 — "make it shorter so it looks like it's accepted.
+   Like a short flash"): not highlighted (on his iPhone the highlight was the suggestion's own blue), the plain blue ring
+   for about a second; the first change still replaces it, wherever the caret was (D1030) */
+describe('RB9 — a taken suggestion: no highlight, a short flash, the first change replaces it', async () => {
+  const { placeSuggestion, firstChange } = await import('./interactions')
+  it('firstChange: an insertion anywhere keeps only what was put in; a deletion empties; a whole replacement stays', () => {
+    expect(firstChange('09:40', '09:401')).toBe('1')
+    expect(firstChange('09:40', '109:40')).toBe('1')
+    expect(firstChange('09:40', '09:1540')).toBe('15')
+    expect(firstChange('09:40', '09:4')).toBe('')
+    expect(firstChange('09:40', '9:40')).toBe('')
+    expect(firstChange('09:40', '1')).toBeNull()
+    expect(firstChange('09:40', '09:40')).toBeNull()
+    expect(firstChange('09:40', '0940')).toBe('')   // the colon taken out: a deletion
+  })
+  it('the browser\'s kind of change decides where it is given (the fresh read\'s F1): a selection typed over is kept', () => {
+    expect(firstChange('10:40', '1', 'insertText'), 'select-all, then "1" of 1100 — not a Backspace').toBeNull()
+    expect(firstChange('09:40', '0940', 'insertFromPaste'), 'a paste over the selection — kept').toBeNull()
+    expect(firstChange('09:40', '09:4', 'deleteContentBackward')).toBe('')
+    expect(firstChange('09:40', '09:401', 'insertText')).toBe('1')
+    expect(firstChange('09:40', '09:401', 'deleteContentBackward'), 'a deletion is never read as an insertion').toBeNull()
+  })
+  it('a second take inside the second gets its own whole ring (the fresh read\'s F2)', async () => {
+    const inp = document.createElement('input'); inp.placeholder = '09:40'; document.body.appendChild(inp); inp.focus()
+    placeSuggestion(inp)
+    await new Promise(r => setTimeout(r, 600))
+    inp.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); inp.value = ''
+    placeSuggestion(inp)
+    await new Promise(r => setTimeout(r, 900))
+    expect(inp.classList.contains('sugtook'), 'still on 0.9 s into the second take (1.5 s after the first)').toBe(true)
+    await new Promise(r => setTimeout(r, 450))
+    expect(inp.classList.contains('sugtook')).toBe(false)
+    inp.remove()
+  })
+  it('on a board box and a week box: placed with the caret after it, nothing highlighted, the flash on, then off', async () => {
+    const inp = document.createElement('input'); inp.placeholder = '09:40'; document.body.appendChild(inp); inp.focus()
+    expect(placeSuggestion(inp)).toBe(true)
+    expect([inp.value, inp.selectionStart, inp.selectionEnd]).toEqual(['09:40', 5, 5])
+    expect(inp.classList.contains('sugtook')).toBe(true)
+    inp.value = '09:4'; inp.dispatchEvent(new Event('input', { bubbles: true }))
+    expect(inp.value, 'a Backspace empties the taken time').toBe('')
+    expect(inp.classList.contains('sugtook'), '…and the ring goes with it (walkers A, B)').toBe(false)
+    inp.value = ''; placeSuggestion(inp)
+    expect(inp.classList.contains('sugtook')).toBe(true)
+    inp.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    expect(inp.classList.contains('sugtook'), 'Escape inside the second ends the ring at once').toBe(false)
+    inp.remove()
+    const box = document.createElement('span'); box.setAttribute('contenteditable', 'true'); box.dataset.ph = '10:20'; document.body.appendChild(box)
+    expect(placeSuggestion(box)).toBe(true)
+    expect(box.textContent).toBe('10:20')
+    expect(String(window.getSelection()), 'nothing highlighted').toBe('')
+    expect(box.classList.contains('sugtook')).toBe(true)
+    await new Promise(r => setTimeout(r, 1300))
+    expect(box.classList.contains('sugtook'), 'the flash is gone after about a second').toBe(false)
+    box.remove()
+  })
+})
+
+/* RB10 — SC, AVALON and BB lines have their own rally box (D1036, D1040): above START on the week and the next-week peek,
+   before B on the board; no worked-out brief or rally in them (D1039); the export and the printed PDF carry the typed
+   rally and the typed brief only */
+describe('RB10 — a standby line\'s rally box on every surface', async () => {
+  const { dayHTML } = await import('./html')
+  const { peekDayHTML } = await import('./peek')
+  const { makeStandalone } = await import('../engine/waves')
+  const add = (kind: string) => { const w: any = makeStandalone(kind); w.formations[0].to = '19:00'; w.formations[0].ld = '07:00'; (DAYS[0] as any).waves.push(w); return { w, gi: (DAYS[0] as any).waves.length - 1 } }
+  it('the week, edited and read: R above START, headed R / START, nothing suggested', () => {
+    for (const kind of ['sc', 'avalon', 'bb']) {
+      const { w, gi } = add(kind)
+      w.formations[0].rl = '17:30'
+      const ed = dayHTML(0, true), ro = dayHTML(0, false)
+      const cell = (h: string) => { const d = document.createElement('div'); d.innerHTML = h; return d.querySelector(`[data-txt="ff:0.${gi}.0.rl"]`) || [...d.querySelectorAll('.form .bto')].find(c => c.textContent!.includes('17:30')) }
+      expect(ed, kind + ': the heading').toContain('R<br>START')
+      const e = cell(ed) as HTMLElement
+      expect(e, kind + ': an editable R box').toBeTruthy()
+      expect(e.textContent).toBe('17:30')
+      expect(e.dataset.ph || '', kind + ': no default rally').toBe('')
+      expect(e.nextElementSibling!.getAttribute('data-txt'), kind + ': START under it').toBe(`ff:0.${gi}.0.to`)
+      expect(ro).toContain('17:30')
+      ;(DAYS[0] as any).waves.pop()
+    }
+  })
+  it('the next-week peek: R above START', () => {
+    const { w } = add('avalon'); w.formations[0].rl = '17:30'
+    const d = document.createElement('div'); d.innerHTML = peekDayHTML(DAYS[0], 0, true)
+    const rl = [...d.querySelectorAll('.form .bto .rl')].find(e => e.textContent === '17:30')!
+    expect(rl, 'the rally drawn').toBeTruthy()
+    expect(rl.nextElementSibling!.textContent).toBe('19:00')
+    expect(d.innerHTML).toContain('R<br>START')
+    ;(DAYS[0] as any).waves.pop()
+  })
+  it('the export: the typed rally; the brief only where typed', () => {
+    const { w } = add('bb'); w.formations[0].cs = 'BBX'
+    const row = () => schedRows().find(r => r[3] === 'BBX')!
+    expect(row().slice(5, 7), 'nothing typed: no rally, no worked-out brief').toEqual(['', ''])
+    w.formations[0].rl = '1730'; w.formations[0].br = '18:00'
+    expect(row().slice(5, 7)).toEqual(['17:30', '18:00'])
+    ;(DAYS[0] as any).waves.pop()
+  })
+})
+
+/* RB11 — one tap into a time box, then typing, replaces its time (owner D1047, 19 Oct 26): the first change after a press is
+   read on its own — typed digits replace, Backspace clears, a selection typed over keeps what was typed; an arrow key (or a
+   second press — e2e) gives back ordinary editing */
+describe('RB11 — the first change in a time box tapped into replaces its time', async () => {
+  const { armFreshTime } = await import('./interactions')
+  const type = (el: HTMLInputElement, v: string, kind: string) => {
+    el.dispatchEvent(new InputEvent('beforeinput', { bubbles: true, inputType: kind }))
+    el.value = v
+    el.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: kind }))
+  }
+  const box = (v: string) => { const i = document.createElement('input'); i.className = 'tm'; i.value = v; document.body.appendChild(i); i.focus(); armFreshTime(i); return i }
+  it('typed after the time, or in its middle: only what was typed', () => {
+    let i = box('16:00'); type(i, '16:001', 'insertText'); expect(i.value).toBe('1')
+    type(i, '16', 'insertText'); expect(i.value, 'once only: then ordinary').toBe('16'); i.remove()
+    i = box('16:00'); type(i, '16:4500', 'insertText'); expect(i.value).toBe('45'); i.remove()
+  })
+  it('Backspace clears the time; a selection typed over keeps what was typed', () => {
+    let i = box('16:00'); type(i, '16:0', 'deleteContentBackward'); expect(i.value).toBe(''); i.remove()
+    i = box('16:00'); type(i, '1', 'insertText'); expect(i.value).toBe('1'); i.remove()
+  })
+  it('an arrow key or leaving the box gives back ordinary editing', () => {
+    let i = box('16:00')
+    i.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }))
+    type(i, '16:030', 'insertText'); expect(i.value, 'a digit edited in place').toBe('16:030'); i.remove()
+    i = box('16:00'); i.blur(); type(i, '16:001', 'insertText'); expect(i.value).toBe('16:001'); i.remove()
+  })
+})
+
+/* the D1047 read's F1, F2, F4 */
+describe('RB11 — a replaced time is saved; chosen digits are edited; Backspace clears from anywhere', async () => {
+  const { armFreshTime } = await import('./interactions')
+  const box = (v: string) => { const i = document.createElement('input'); i.className = 'tm'; i.value = v; document.body.appendChild(i); i.focus(); armFreshTime(i); return i }
+  const type = (el: HTMLInputElement, v: string, kind: string) => {
+    el.dispatchEvent(new InputEvent('beforeinput', { bubbles: true, inputType: kind }))
+    el.value = v
+    el.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: kind }))
+  }
+  it('F1: the board is told of the replaced time when the box is left (it saves on change)', () => {
+    const i = box('13:00'); let changes = 0; i.addEventListener('change', () => changes++)
+    type(i, '13:001', 'insertText'); expect(i.value).toBe('1')
+    i.blur(); expect(changes, 'one change, owed').toBe(1)
+    i.remove()
+  })
+  it('F1: …and not twice where the browser raised its own; nothing for a box back to what it showed', () => {
+    let i = box('13:00'); let changes = 0; i.addEventListener('change', () => changes++)
+    type(i, '13:001', 'insertText'); i.dispatchEvent(new Event('change', { bubbles: true })); i.blur()
+    expect(changes).toBe(1); i.remove()
+    i = box('13:00'); changes = 0; i.addEventListener('change', () => changes++)
+    type(i, '13:001', 'insertText'); i.value = '13:00'; i.blur()
+    expect(changes, 'Escape put the old time back').toBe(0); i.remove()
+  })
+  it('F2: digits chosen with a drag (a press that moved) are edited as chosen', () => {
+    const i = box('13:00')
+    document.dispatchEvent(new PointerEvent('pointerdown', { clientX: 100, clientY: 50 }))
+    document.dispatchEvent(new PointerEvent('pointerup', { clientX: 130, clientY: 50 }))
+    expect(i.dataset.fresh || '', 'a drag gives back ordinary editing').toBe('')
+    i.setSelectionRange(3, 5); type(i, '13:', 'deleteContentBackward'); expect(i.value).toBe('13:'); i.remove()
+  })
+  it('F2: a tap (a press that did not move) stays armed, whatever the browser selected', () => {
+    const i = box('13:00')
+    document.dispatchEvent(new PointerEvent('pointerdown', { clientX: 100, clientY: 50 }))
+    document.dispatchEvent(new PointerEvent('pointerup', { clientX: 102, clientY: 51 }))
+    expect(i.dataset.fresh).toBe('1'); i.remove()
+  })
+  it('F4: Backspace selects the whole time, so it clears wherever the caret is', () => {
+    const i = box('13:00'); i.setSelectionRange(0, 0)
+    i.dispatchEvent(new KeyboardEvent('keydown', { key: 'Backspace', bubbles: true }))
+    expect([i.selectionStart, i.selectionEnd], 'the whole time selected for the key').toEqual([0, 5])
+    expect(i.dataset.fresh, 'still armed: the clear is read from what the browser deleted (N1)').toBe('1')
+    type(i, '13:0', 'deleteContentBackward')
+    expect(i.value, 'a phone that ignored the selection and took one digit: still cleared').toBe(''); i.remove()
+  })
+})
+
+describe('firstReplace — the browser\'s own word for what was put in wins over the shape', async () => {
+  const { firstReplace } = await import('./interactions')
+  it('"0915" put into "13:00" after "13:0" is 0915, not 9150', () => {
+    expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertText', data: '0915' }), '13:091500')).toBe('0915')
+    expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertText', data: '1' }), '13:001')).toBe('1')
+    expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertText', data: '1' }), '1'), 'a selection typed over: what was typed').toBe('1')
+    expect(firstReplace('09:15', new InputEvent('input', { inputType: 'insertText', data: '1' }), '09:1'), 'a word a single tap left chosen, typed over: a fresh time').toBe('1')
+    expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertCompositionText', data: '001' }), '13:001'), 'an Android composition: read by shape (M1)').toBe('1')
+    expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertReplacementText', data: '1300' }), '13:001'), 'autocorrect: read by shape, not its data (M1)').toBe('1')
+    expect(firstReplace('13:00', new InputEvent('input', { inputType: 'deleteContentBackward' }), '13:0')).toBe('')
+  })
+})
+
+describe('M3 — a scroll started on the armed box keeps it armed; a second tap or a long press does not', async () => {
+  const { armFreshTime } = await import('./interactions')
+  const armed = () => { const i = document.createElement('input'); i.className = 'tm'; i.value = '16:00'; const w = document.createElement('div'); w.id = 'eWeek'; w.appendChild(i); document.body.appendChild(w); i.focus(); armFreshTime(i); return { i, w } }
+  it('pointerdown then a quick pointercancel (a scroll): still armed; pointerdown then pointerup (a tap): disarmed', () => {
+    const { i, w } = armed()
+    i.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 10, clientY: 10 }))
+    document.dispatchEvent(new PointerEvent('pointercancel'))
+    expect(i.dataset.fresh, 'a scroll keeps it').toBe('1')
+    i.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 10, clientY: 10 }))
+    document.dispatchEvent(new PointerEvent('pointerup', { clientX: 10, clientY: 10 }))
+    expect(i.dataset.fresh || '', 'a second tap gives back ordinary editing').toBe('')
+    w.remove()
+  })
+})
+
+describe('M2 pinned — a placed suggestion with digits he chose, typed over, keeps the rest', async () => {
+  const { placeSuggestion } = await import('./interactions')
+  it('choose "20" of 07:20, type 45: 07:45', () => {
+    const inp = document.createElement('input'); inp.placeholder = '07:20'; document.body.appendChild(inp)
+    placeSuggestion(inp)
+    inp.value = '07:4'
+    inp.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: '4' }))
+    expect(inp.value, 'a chosen-digits edit is not a fresh time').toBe('07:4')
+    inp.remove()
+  })
+})

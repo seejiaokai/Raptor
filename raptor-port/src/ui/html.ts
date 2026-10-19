@@ -1320,6 +1320,9 @@ export function rlFaultAtt(faults:any[],li:number,fp:string){
   return `${PV?'':` data-warnkey="${fp}.rl"`} title="${esc(xs.map((i:any)=>i.msg).join(' '))}"`;
 }
 export const WEEK_TIME_HEAD=['R<br>B','TO<br>LD'] as const;
+/* a standby line (SC, AVALON, BB) keeps START and END, and has its rally box above START, as a flying line's is above its
+   B (owner D1036, D1040, 19 Oct 26) — the week draws no B on a standby line. One constant for the week and the peek. */
+export const SA_TIME_HEAD='R<br>START';
 /* `extra` — attributes a caller adds as they are (already escaped): the R box's fault address and words (D1026) */
 export function ted(path:any,val:any,ed:any,cls:any,tag?:any,ph?:any,extra?:string){
   tag=tag||'span';
@@ -1833,7 +1836,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
       if(w.intimes&&w.intimes.length)
         h+=`<div class="intimes${ed?' iedit':''}" data-warnkey="it:${di}.${gi}"${alAttr(`it:${di}.${gi}`)} ${ed?`data-intimes="${di}|${gi}"`:''}>${intimesInner(w,ed?`${di}|${gi}`:null)}</div>`;
       h+=sa
-        ? `<div class="cols formcols"><span>${esc(w.label||'')}<br>SHIFT</span><span class="c-c">START</span><span class="c-c">END</span><span>FCP / RCP</span><span>RMKS</span></div>`
+        ? `<div class="cols formcols"><span>${esc(w.label||'')}<br>SHIFT</span><span class="c-c">${SA_TIME_HEAD}</span><span class="c-c">END</span><span>FCP / RCP</span><span>RMKS</span></div>`
         : `<div class="cols formcols"><span>CS<br>MSN</span><span class="c-c">${WEEK_TIME_HEAD[0]}</span><span class="c-c">${WEEK_TIME_HEAD[1]}</span><span>FCP / RCP</span><span>RMKS</span></div>`;
       /* a timing fault the R box causes is the BOX's (the fresh read's F1): it carries the warning's address — a tap on the
          warning lands on it, live paper only, as the D49 mark below — and the fault in its own words */
@@ -1863,11 +1866,12 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
         const brShown=editableBr?f.br:(brTyped?f.br:brief);
         /* THE SUGGESTION SITS INSIDE ITS OWN EMPTY BOX (owner D1028, D1030, 19 Oct 26): faint, where the time will go —
            never on a line above the box, so the row's boxes stay level and the row grows no taller. One tap places it,
-           highlighted, so whatever is typed next replaces it (interactions.ts placeSuggestion); Tab passing through
+           not highlighted, with a short ring (D1038), and whatever is typed next replaces it (interactions.ts placeSuggestion); Tab passing through
            fills nothing; Escape takes a just-placed one back out (textedit.ts — the box's own restore). The brief's
            suggestion is the take-off less the brief lead, as before; the R box's is the default rally, the take-off less
            the Logic page's report setting (D1027, D1031 — the same time "+ In-time" fills and an empty box reports at,
-           D592). View-only Sched still prints an empty brief's suggested time (D509) and leaves an empty R blank. */
+           D592). View-only Sched still prints an empty brief's suggested time (D509) and leaves an empty R blank. A standby line (SC,
+           AVALON, BB) offers neither suggestion (owner D1039 — "rarely used"): its R box sits above START, empty until typed. */
         const rlTyped=parseHM(f.rl)!=null, rlDefault=minus(f.to,VCONF.reportLead);
         const brCls=editableBr&&!brTyped&&brief?'sugbox':'', rlCls='rl'+(editableBr&&!rlTyped&&rlDefault?' sugbox':'');
         /* Grid placement is handed to CSS through custom properties rather than
@@ -1908,7 +1912,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
         h+=`<div class="form${rowCls(f)}"${HOOKS.missionRoleEnabled()?` data-role-formation="${esc(f.rid||'')}" data-role-day="${di}"`:''}>
           <div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa?'var(--san)':`var(--${mColor(f.msn)})`}"></span>${ted(fp+'.cs',f.cs,ed,'ntx')}</b>${ted(fp+'.msn',f.msn,ed,'','i')}</div>
           ${sa
-            ? `<div class="fcell bto${badCls}"${badAtt} style="${spans}">${ted(fp+'.to',f.to,ed,'ntx','span')}</div>`
+            ? `<div class="fcell bto${badCls}"${badAtt} style="${spans}">${ted(fp+'.rl',f.rl,ed,'rl','span')}${ted(fp+'.to',f.to,ed,'ntx','span')}</div>`
             : `<div class="fcell bto${badCls}"${badAtt} style="${spans}">${ted(fp+'.rl',f.rl,ed,rlCls,'span',rlCls.includes('sugbox')?rlDefault:'',rlFaultAtt(boxFaults,li,fp))}${ted(fp+'.br',brShown,ed,brCls,'b',brCls?brief:'')}</div>`}
           ${sa
             ? `<div class="fcell ld${badCls}"${badAtt} style="${spans}">${ted(fp+'.ld',f.ld,ed,'ntx')}</div>`

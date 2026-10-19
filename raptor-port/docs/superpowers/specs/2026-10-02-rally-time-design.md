@@ -115,3 +115,17 @@ OWED: Claude's independent plan read after Monday 5 Oct 26, 19:00. Owner product
 - **D1030 — a suggested time in its box:** faint inside its own empty box (the brief's and the default rally's); one tap places it highlighted, so whatever is typed next replaces it; Escape takes a just-placed one out; Tab fills nothing; View-only Sched still prints an empty brief's suggested time. The blue line above B goes.
 - **D1031 — the setting:** the default rally is the Logic page's existing "Nominal report before T/O" (3 hours), renamed to say so; no second setting; "+ In-time" keeps filling the same time.
 - **D1032 — what the rally counts for:** exactly as a typed rally did — the earliest applicable in-time or rally starts the formation's report (with no in-time, the rally does) for crew rest, OIL, the long-day warning and work hours, where it is the man's first event; an empty box's default counts only where no in-time or rally is entered for the formation (today's nominal report, D592), so nothing moves until a time is typed or taken; a change on a published day waits for the next amendment. **D1034:** a typed line still saying RALLY stays a rally, as the app reads it today, never a formation's in-time — a whole-wave in-time 06:00 and a rally 07:00 means everyone reports at 06:00; an in-time for one formation is a typed in-time line with its callsign. The build leaves the reading of typed lines unchanged.
+
+## His three changes — D1035–D1037, 19 Oct 26 (after the build went live)
+
+**D1035:** a suggested brief or rally, once taken, must look plainly different from the suggestion at once — on his iPhone both read blue (the faint suggestion, and the taken time still highlighted for typing over). He suggests a flash. Recommended to him: the time turns the ordinary white the moment it is taken and the box wears the app's one just-added mark, the plain blue ring for about six seconds (D876 — a new kind of flash is his to rule).
+
+**D1036:** SC, AVALON and BB lines get a rally time too, so every wave is the same. Today they are shift lines (START / END); SC alone has an in-time box, on the board only. Where the box sits and what it counts for are put to him with pictures.
+
+**D1037:** the worked-out brief and rally are no longer shown faint in their empty boxes (rarely used; usually only the take-off and landing are typed); a typed brief or rally is used in the timing checks. Put to him: whether this covers every flying formation or only SC, AVALON and BB, and whether an empty box still counts the default behind the scenes for crew rest and the day's start (D592, D1032). Backlog: [RALLY-BOX-CHANGES].
+
+**His answers (19 Oct 26) — the design of record for the build:**
+- **D1038 — a taken suggestion:** the time turns ordinary white at once and the box wears the plain blue ring as a short flash, about a second (not the six seconds of a thing just added).
+- **D1039 — which lines hide the worked-out times:** only SC, AVALON and BB; their empty B and R stay empty. The flying lines keep their faint suggestions.
+- **D1040 — where the box sits:** above B, the same R-over-B column as a flying line, on the week and the board; take-off and landing unchanged.
+- **D1041 — what it counts for:** on SC MAIN it starts the crew's day as SC's in-time box does (crew rest, the long day, work hours, OIL — D606); the earlier of the two starts it when both are typed. On SC SPARE, AVALON and BB it is shown, printed and exported only. An empty box counts for nothing.

@@ -223,7 +223,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   order check (a box after the brief is the red "rally … is later than brief", never blocking — D507, D509) — counts it as
   it counted a typed rally (D1032). An empty box is nothing entered: the nominal report, the take-off less `reportLead`
   (D592) — the time the empty box SUGGESTS as its default rally (D1027, D1031) and the time "+ In-time" fills (D510,
-  which reads the typed lines alone, never the box). A standalone wave carries no rally (a stray `rl` there is never read).
+  which reads the typed lines alone, never the box). A standalone wave's box is never read by this reader: on an SC MAIN line `reporting.ts scReport` reads it beside the
+  in-time box, the earlier counting, for crew rest (the sentence says "rally"), the long day, work hours and OIL (D1041,
+  `engine/scrally.test.ts`, RB8); on an SC SPARE row, AVALON and BB it is shown, printed and exported only.
   `rl` is a time key (`slots.ts TIME_TXT`): a time or nothing, folded to hh:mm; a rally later than the take-off is the
   evening before, so it is never refused, and a take-off moved earlier leaves it alone. It rides `restore.ts dayKeys`
   as `ff:di.gi.li.rl`, so on a published day a changed rally is one pending change and waits for the next amendment (D45).

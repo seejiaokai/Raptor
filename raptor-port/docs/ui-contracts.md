@@ -685,7 +685,7 @@ line PRESSED is the one that moves (a press on the emptied line's own grip start
 only in a band a sixth of its height (at most 52px — `rowdrag.ts rowEdge`). Pins: `rowdrag.test.tsx`, `engine/intimes-order.test.ts`,
 `e2e/schedule-tab.spec.ts` (the rows' left edge and width at 1440 and 390); the drag itself by mouse and finger is walked
 (`docs/handpass/2026-10-19-schedule-amendments-fixes.md`).
-**Changing (D1026, 19 Oct 26 — not built, `[RALLY-PER-FORMATION]`):** a formation's rally moves to a box of its own on the
+**Changed (D1026, live 19 Oct 26, pull request 540 — `[RALLY-PER-FORMATION]`, archived):** a formation's rally moves to a box of its own on the
 flying row (R above B, TO above LD); these typed lines become the in-time only and their button "+ In-time".
 
 "Allow me to input lines at the top of each wave where I can reflect the in
@@ -775,11 +775,15 @@ one size (LD's, 11px). The Scheduler Board's line carries two time wrappers, `.s
 display:contents on a desktop board, so R · B · TO · LD stand in one line over eleven tracks (D1029, picture 11);
 where the pucks take their own row (a phone up to 820 wide, not the desktop layout) each is one cell, its two boxes 4px
 apart, the mission spanning the freed track so the pucks and remarks keep their widths (picture 6). The headings follow
-the same wrappers; the phone hides the 6th to 9th heading children (FCP, RCP, Notes, the end place). A standby line has
-no R box: an empty `.sb-rlnone` keeps its place. **A suggested time sits faint inside its own empty box** (D1028,
+the same wrappers; the phone hides the 6th to 9th heading children (FCP, RCP, Notes, the end place). A standby line (SC,
+AVALON, BB) has its R box too (D1036, D1040): before B on the board, above START on the week and the next-week peek
+(`html.ts SA_TIME_HEAD`, "R / START"), with no suggestion in it or in its B (D1039). **A suggested time sits faint inside its own empty box** (D1028,
 D1030 — the suggested brief and the default rally, the take-off less the Logic page's "Default rally before take-off"):
 the week's box by its `data-ph`, the board's by its placeholder, both `.sugbox` in the accent; the old line above B
-(`.bsug`) is gone. One press places it highlighted (`interactions.ts placeSuggestion`), so the next key replaces it;
+(`.bsug`) is gone. One press places it (`interactions.ts placeSuggestion`) — since D1038 NOT highlighted: in a typed time's colour, the caret
+after it, the box wearing the plain blue ring for about a second (`.sugtook`, 12-schedule-editing.css) — and the first
+change still replaces it, wherever the caret was (`firstChange`: an insertion keeps only what was put in, a deletion
+empties it);
 leaving the box saves it (the week by its focusout, the board by a `change` raised when it is left still holding it);
 Escape takes a just-placed one out (each box's own Escape); a Tab passing through fills nothing. The Tab route is
 callsign, mission, rally, brief, take-off, landing (D554, in document order). The export and the printed PDF carry a
@@ -788,6 +792,13 @@ Rally column before Brief: the typed rally, never the default. Pinned: `ui/brief
 takes part in is the box's** (the code read, 19 Oct 26): its warning is keyed to the R box (`ff:di.gi.li.rl` — a tap lands on it,
 live paper only), the box carries the fault's words (`html.ts rlFaultAtt`, week and board), and the typed lines' red note leaves
 it out — except an in-time later than the box's rally, which the in-time line explains too (the in-time is always typed).
+
+**One tap into a time box, then typing, replaces its time (owner D1047, 19 Oct 26).** Every time box on the Scheduler Board
+(`input.tm`, `input.atm`) and the week (a `[data-txt]` box whose key is a time, `slots.ts TIME_TXT`) that already holds a
+value: focused by a press, its FIRST change replaces the value (an insertion anywhere keeps only what was put in, a deletion
+empties it, a selection typed over keeps what was typed — `interactions.ts firstChange`, read on `beforeinput` / `input`); a
+second press on the focused box, or an arrow / Home / End key, puts the caret where he wants and the box is ordinary. A Tab
+into a box arms nothing. Pinned: `ui/brieftime-ui.test.tsx` RB11, `e2e/rallybox.spec.ts`.
 
 **A button pressed straight after a changed box does its job (`[EDIT-BUTTON-AFTER-CHANGE]`, 19 Oct 26).** The press
 takes the focus from the box, the box saves and the redraw replaces the button under the press, so the browser's click

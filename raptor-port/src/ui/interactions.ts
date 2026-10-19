@@ -3,7 +3,7 @@
    blank-space clear), with the state halves in src/state/view.ts and the
    repaint replaced by the store's notify() (the week re-renders and the
    highlight pass re-runs from ViewWeek's effect). */
-import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay } from '../engine/slots'
+import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay, TIME_TXT } from '../engine/slots'
 import { CmdRefused } from '../command'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { standsOn } from '../engine/overlay'
@@ -604,27 +604,77 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
 }
 
 /* ONE TAP PLACES A SUGGESTED TIME IN ITS EMPTY BOX (owner D1030) — the board's <input> (its placeholder is the
-   suggestion) or the week's contenteditable (its data-ph). Placed and selected, so the next key typed replaces it.
-   true when it placed something; false for a box that already holds a time, or carries no suggestion.
-   THE FIRST KEYS REPLACE IT EVEN WHERE THE HIGHLIGHT DID NOT TAKE (the scenario designer's lead, 19 Oct 26): a phone
-   browser may not honour a selection set by script in a box just tapped, and the typing would then land after the
-   placed time ("09:401010", refused as no time). So the first thing typed after a placement is read on its own: a box
-   that now holds the suggestion with more after it keeps only what was typed. Once, then the box is ordinary. */
+   suggestion) or the week's contenteditable (its data-ph). true when it placed something; false for a box that already
+   holds a time, or carries no suggestion.
+   IT LOOKS TAKEN AT ONCE (owner D1038, 19 Oct 26 — "make it shorter so it looks like it's accepted. Like a short
+   flash"): the time is NOT left highlighted — on his iPhone the highlight was blue, the faint suggestion's own colour,
+   so a taken time read as still only suggested. It shows in a typed time's own colour, the caret after it, and the box
+   wears the plain blue ring for about a second (.sugtook, 12-schedule-editing.css).
+   THE FIRST KEY STILL REPLACES IT (D1030 — "the scheduler never deletes it first"; the scenario designer's lead, 19 Oct
+   26: a phone may not honour a selection set by script anyway). So the first change after a placement is read on its
+   own: a box that now holds the suggestion with something put into it, wherever the caret was, keeps only what was put
+   in; one that holds it with something taken out (a Backspace) is emptied; one whose whole value was replaced (a person
+   selected it and typed) keeps what was typed. Once, then the box is ordinary.
+   THE KIND OF CHANGE DECIDES, NOT ITS SHAPE (the fresh read's F1, 19 Oct 26): a select-all of 10:40 replaced by "1" leaves
+   "1", which by shape alone looks like 10:40 with "0:40" deleted — read as a Backspace, the box was emptied and "1100"
+   saved as 01:00. So the browser's own word for the change (`inputType`) is used where it is given: an insertion is
+   read only as an insertion, a deletion only as a deletion, and an insertion that left the box shorter replaced a
+   selection — kept as typed. With no word (an older browser), the shape alone, as before. */
+/* …and where the browser says WHAT was put in (`data` of an insertion that added exactly that much), that is the answer — the
+   shape alone cannot tell where "0915" went into "13:00" when its digits match the old ones around it (the browser test,
+   19 Oct 26: "13:091500" was read as "9150") */
+export function firstReplace(was: string, e: Event, v: string): string | null {
+  const ie = e as InputEvent, kind = ie.inputType || ''
+  /* …whatever the browser had selected when the key came — a phone's single tap can leave a word chosen ("15" of 09:15),
+     and the box was tapped into for a fresh time (the browser test, 19 Oct 26: "09:1300"). Only for a typed character or a
+     paste: an Android keyboard's composition sends the whole word it is building as `data` (the narrow read's M1), which
+     the shape reading gets right. */
+  if ((kind === 'insertText' || kind === 'insertFromPaste') && typeof ie.data === 'string' && ie.data) return ie.data
+  return firstChange(was, v, kind)
+}
+export function firstChange(sug: string, v: string, kind = ''): string | null {
+  if (v === sug) return null
+  let p = 0
+  while (p < v.length && p < sug.length && v[p] === sug[p]) p++
+  const d = v.length - sug.length
+  const ins = !kind || kind.startsWith('insert'), del = !kind || kind.startsWith('delete')
+  if (ins && d > 0 && v.slice(p + d) === sug.slice(p)) return v.slice(p, p + d)
+  if (del && d < 0 && v.slice(p) === sug.slice(p - d)) return ''
+  return null
+}
 const firstTypingReplaces = (read: () => string, write: (v: string) => void, sug: string) => {
   let first = true
-  return () => {
+  return (e?: Event) => {
     if (!first) return
     first = false
-    const v = read()
-    if (v.length > sug.length && v.startsWith(sug)) write(v.slice(sug.length))
+    /* a placed suggestion keeps the shape reading (the narrow read's M2): digits he chose in it and typed over keep the rest */
+    const n = firstChange(sug, read(), (e as InputEvent | undefined)?.inputType || '')
+    if (n != null) write(n)
   }
+}
+/* the short flash (D1038): restarted if the same box is taken twice, gone after it has run — and at once when the taken
+   time is undone or replaced inside that second (walkers A and B, 19 Oct 26: Escape or a Backspace left the ring fading
+   on an empty box, which then read as "taken") */
+function flashTaken(el: HTMLElement) {
+  /* a flash still running on this box is ended first, timer and all, so its timer cannot cut the new one short (the
+     fresh read's F2: tap, Escape, tap again inside the second) */
+  const prev = (el as any)._sugEnd; if (prev) prev()
+  el.classList.remove('sugtook'); void el.offsetWidth; el.classList.add('sugtook')
+  const end = () => {
+    clearTimeout(t); el.classList.remove('sugtook'); el.removeEventListener('input', end); el.removeEventListener('keydown', esc)
+    if ((el as any)._sugEnd === end) delete (el as any)._sugEnd
+  }
+  const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') end() }
+  el.addEventListener('input', end); el.addEventListener('keydown', esc)
+  const t = setTimeout(end, 1200); (el as any)._sugEnd = end
 }
 export function placeSuggestion(el: HTMLElement): boolean {
   if (el instanceof HTMLInputElement) {
     const sug = el.placeholder
     if (!sug || el.value || el.disabled || el.readOnly) return false
     el.value = sug
-    el.select()
+    try { el.setSelectionRange(sug.length, sug.length) } catch (_) { /* a caret is a courtesy */ }
+    flashTaken(el)
     const typed = firstTypingReplaces(() => el.value, v => { el.value = v; el.setSelectionRange(v.length, v.length) }, sug)
     /* the board saves on `change`, which the browser raises only for what was typed: a box left still holding the
        placed suggestion raises it here, so the tap alone accepts (D1030). A typed time raised its own; Escape put the
@@ -649,9 +699,10 @@ export function placeSuggestion(el: HTMLElement): boolean {
   el.textContent = sug
   try {
     el.focus()
-    const r = document.createRange(); r.selectNodeContents(el)
+    const r = document.createRange(); r.selectNodeContents(el); r.collapse(false)
     const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r)
-  } catch (_) { /* a selection is a courtesy — jsdom and odd embedders may refuse */ }
+  } catch (_) { /* a caret is a courtesy — jsdom and odd embedders may refuse */ }
+  flashTaken(el)
   const typed = firstTypingReplaces(() => el.textContent || '', v => {
     el.textContent = v
     try { const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r) } catch (_) { /* as above */ }
@@ -661,16 +712,11 @@ export function placeSuggestion(el: HTMLElement): boolean {
   el.addEventListener('input', typed); el.addEventListener('blur', done)
   return true
 }
-/* the press's own click, landing on a suggestion the focus already placed, highlights it again — a mouse's release in a box
-   puts the caret where it let go, and the highlight is what makes the next key replace it */
+/* the press's own click, landing on a suggestion the focus already placed, leaves it as it is — placed once, flashed once.
+   Wherever a mouse's release puts the caret, the first key still replaces the time (firstChange, D1038). */
 function reselectPlaced(el: HTMLElement): boolean {
   const v = el instanceof HTMLInputElement ? el.value : el.textContent
-  if (!el.dataset.placed || v !== el.dataset.placed) return false
-  try {
-    if (el instanceof HTMLInputElement) el.select()
-    else { const r = document.createRange(); r.selectNodeContents(el); const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r) }
-  } catch (_) { /* a courtesy */ }
-  return true
+  return !!el.dataset.placed && v === el.dataset.placed
 }
 /* …AND A PRESS THAT BRINGS THE FOCUS PLACES IT WHERE THE FOCUS ARRIVES (walker B, F1 — 19 Oct 26). On the phone board a tap
    on B straight after R was placed left B focused and empty: leaving R saved it, the redraw that save starts replaced the
@@ -678,7 +724,7 @@ function reselectPlaced(el: HTMLElement): boolean {
    focus arrives in a suggesting box at that address — the box pressed, or the one drawn in its place — the suggestion is
    placed there. A Tab brings the focus with no press: nothing is placed (D1030). */
 let SUG_PRESS: string | null = null
-const sugAddr = (el: Element | null) => { const h = el as HTMLElement | null; return h && h.dataset ? (h.dataset.bfld || h.dataset.txt || null) : null }
+const sugAddr = (el: Element | null) => { const h = el as HTMLElement | null; return h && h.dataset ? (h.dataset.bfld || h.dataset.txt || h.dataset.ifld || h.dataset.inp || null) : null }
 if (typeof document !== 'undefined') {
   /* …and only for a moment: a press whose focus never came (a drag, a scroll) must not let a later Tab place it (D1030) */
   let pressAt = 0
@@ -696,6 +742,131 @@ if (typeof document !== 'undefined') {
        (probed on the built app, 19 Oct 26: placed 07:20, then "" a moment later). A click that lands first places it
        itself, and this then finds the box filled and does nothing. */
     if (canEditSched() && HOOKS.editMode()) setTimeout(() => { if (document.activeElement === el) placeSuggestion(el) }, 0)
+  }, true)
+}
+
+/* ONE TAP INTO A TIME BOX, THEN TYPING, REPLACES ITS TIME (owner D1047, 19 Oct 26 — his iPhone picture: a B box reading
+   "…01645", the old time kept and the new digits added after it; "Yes, every time box"). Every time box on the Scheduler
+   Board (input.tm / input.atm) and the week (a contenteditable whose key is a time, slots.ts TIME_TXT) that already holds
+   a value: focused by a PRESS, its first change is read on its own, as a taken suggestion's is (firstChange, D1038) — an
+   insertion anywhere keeps only what was put in, a deletion (Backspace) empties it, a selection typed over keeps what was
+   typed. The value before the change is read on `beforeinput`, so the arrival's own refresh of the box (textedit.ts) can
+   never make the reading wrong. A second press on the box while it waits, an arrow / Home / End key, or leaving it puts
+   it back to ordinary editing — "what if the user wants to edit specific numbers?": a second tap. A Tab arms nothing; an
+   empty box is the suggestion's (placeSuggestion), never this. Noted by the box's ADDRESS, as SUG_PRESS is, so a box the
+   board draws again under the press is the one armed. */
+const isTimeBox = (el: any): el is HTMLElement => {
+  if (!el || !el.closest || !el.closest('#schedBoard, #eWeek')) return false
+  if (el instanceof HTMLInputElement) return el.classList.contains('tm') || el.classList.contains('atm') ? !el.disabled && !el.readOnly : false
+  /* …and an input's own start and end on the week (data-inp, html.ts cell()) — the board's are atm boxes (the D1047 read's F3) */
+  return !!el.getAttribute && el.getAttribute('contenteditable') === 'true' && (TIME_TXT.test((el as HTMLElement).dataset.txt || '') || /.(str|end)$/.test((el as HTMLElement).dataset.inp || ''))
+}
+const boxValue = (el: HTMLElement) => el instanceof HTMLInputElement ? el.value : (el.textContent || '')
+function setBoxValue(el: HTMLElement, v: string) {
+  if (el instanceof HTMLInputElement) { el.value = v; try { el.setSelectionRange(v.length, v.length) } catch (_) { /* a courtesy */ } return }
+  el.textContent = v
+  try { const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r) } catch (_) { /* a courtesy */ }
+}
+/* THE BOARD SAVES ON `change`, WHICH THE BROWSER RAISES ONLY FOR WHAT IT SAW TYPED (the D1047 read's F1): a value rewritten by
+   script while the box has the focus resets the browser's own baseline, so leaving the box or Enter raised nothing — the box
+   showed the new time and the schedule kept the old one. So the rewrite owes the board its `change`, paid on Enter or on
+   leaving unless the browser raised its own, and never for a box back to what it showed (Escape puts the old time back
+   first) — as placeSuggestion owes its save. The week saves on leaving by reading the box, so it owes nothing. */
+function oweChange(el: HTMLInputElement, shown: string) {
+  let paid = false
+  const native = () => { paid = true }
+  const pay = () => { if (!paid && el.isConnected && el.value !== shown) { paid = true; el.dispatchEvent(new Event('change', { bubbles: true })) } }
+  const enter = (k: KeyboardEvent) => { if (k.key === 'Enter') setTimeout(pay, 0) }
+  const leave = () => { pay(); el.removeEventListener('change', native); el.removeEventListener('keydown', enter); el.removeEventListener('blur', leave) }
+  el.addEventListener('change', native); el.addEventListener('keydown', enter); el.addEventListener('blur', leave)
+}
+const selectWhole = (el: HTMLElement) => {
+  try {
+    if (el instanceof HTMLInputElement) el.setSelectionRange(0, el.value.length)
+    else { const r = document.createRange(); r.selectNodeContents(el); const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r) }
+  } catch (_) { /* a courtesy */ }
+}
+export function armFreshTime(el: HTMLElement) {
+  if (el.dataset.fresh) return
+  el.dataset.fresh = '1'
+  let was: string | null = null
+  /* digits he chose with a DRAG are his to edit (the D1047 read's F2): a press that moved is told apart by the pointer,
+     never by the selection — a phone's tap can leave a word selected (the browser test, 19 Oct 26), and that tap is a
+     tap. The document's pointerup below ends the arming of a press that moved. */
+  const before = () => { was = boxValue(el) }
+  const after = (e: Event) => {
+    const w = was; off()
+    if (!w) return
+    const n = firstReplace(w, e, boxValue(el))
+    if (n == null) return
+    setBoxValue(el, n)
+    if (el instanceof HTMLInputElement) oweChange(el, w)
+  }
+  const key = (e: KeyboardEvent) => {
+    if (/^(Arrow|Home$|End$)/.test(e.key)) { off(); return }
+    /* Backspace or Delete clears the whole time wherever the caret landed — a caret before the first digit deleted
+       nothing (the D1047 read's F4): the time is selected and the key goes on, and the box STAYS armed (the narrow read's
+       N1), so the clear is read from what the browser really deleted — a phone that ignores a selection made during the
+       key deletes one digit, and the first-change reading still empties it. Digits he chose himself are left to the key
+       (F2) by the pointer: a press that moved never stays armed (the pointerup below). */
+    if (e.key === 'Backspace' || e.key === 'Delete') selectWhole(el)
+  }
+  const off = () => {
+    delete el.dataset.fresh; (el as any)._freshOff = null
+    el.removeEventListener('beforeinput', before); el.removeEventListener('input', after)
+    el.removeEventListener('keydown', key); el.removeEventListener('blur', off)
+  }
+  el.addEventListener('beforeinput', before); el.addEventListener('input', after)
+  el.addEventListener('keydown', key); el.addEventListener('blur', off)
+  ;(el as any)._freshOff = off
+}
+let TIME_PRESS: { addr: string | null, at: number } | null = null
+let TIME_DOWN: { x: number, y: number } | null = null
+/* a press on a box already waiting is decided at its END (the narrow read's M3): a finger lands before the browser knows a
+   tap from a scroll, so a scroll started on the armed box (to see it above the keyboard) must not end the arming. A
+   press that ends in pointerup is a second press; one the browser takes over (pointercancel) disarms only when held
+   450 ms or longer — a long press, or the loupe moving the caret. */
+let ARMED_PRESS: { el: any, at: number, id: number } | null = null   // id: the press's own pointer (round 3's F2)
+if (typeof document !== 'undefined') {
+  /* a press that moved more than a few pixels was a drag — a selection he made, or a scroll — so the box it armed goes
+     back to ordinary editing (F2) */
+  document.addEventListener('pointerdown', e => {
+    TIME_DOWN = { x: e.clientX, y: e.clientY }
+    /* a note left by a press whose end never came (a Mac's context menu takes the release — round 3's F2) is dropped by
+       the same pointer's next press */
+    if (ARMED_PRESS && ARMED_PRESS.id === e.pointerId) ARMED_PRESS = null
+  }, true)
+  document.addEventListener('pointercancel', e => {
+    /* a press the browser took over is no tap: it neither arms a box (round 3's F3 — a long press, the iPhone's form arrows
+       after a scroll) nor ends one, but for a long press held 450 ms or more */
+    TIME_PRESS = null
+    if (ARMED_PRESS && ARMED_PRESS.id !== e.pointerId) return
+    const p = ARMED_PRESS; ARMED_PRESS = null; TIME_DOWN = null
+    if (p && Date.now() - p.at >= 450) p.el._freshOff?.()
+  }, true)
+  document.addEventListener('pointerup', e => {
+    if (ARMED_PRESS && ARMED_PRESS.id === e.pointerId) { ARMED_PRESS.el._freshOff?.(); ARMED_PRESS = null }
+    const d = TIME_DOWN; TIME_DOWN = null
+    if (!d || Math.hypot(e.clientX - d.x, e.clientY - d.y) <= 6) return
+    const a = document.activeElement as any
+    if (a && a.dataset && a.dataset.fresh) a._freshOff?.()
+  }, true)
+  document.addEventListener('pointerdown', e => {
+    const t = (e.target as any)?.closest?.('input, [contenteditable="true"]')
+    if (!isTimeBox(t)) { TIME_PRESS = null; return }
+    /* a second press on a box already waiting: the caret goes where he pressed, and the box is ordinary */
+    if (document.activeElement === t && t.dataset.fresh) { ARMED_PRESS = { el: t, at: Date.now(), id: e.pointerId }; TIME_PRESS = null; return }
+    TIME_PRESS = { addr: sugAddr(t), at: Date.now() }
+  }, true)
+  document.addEventListener('keydown', () => { TIME_PRESS = null }, true)
+  document.addEventListener('focusin', e => {
+    const el = e.target as any, p = TIME_PRESS
+    if (!p || !isTimeBox(el) || Date.now() - p.at > 1500 || sugAddr(el) !== p.addr) return
+    TIME_PRESS = null
+    if (!canEditSched() || !HOOKS.editMode()) return
+    /* at once, so the first key can never come before it (the browser test typed in the same moment); a box that holds
+       nothing is the suggestion's, and the arrival's own refresh cannot spoil it — the value is read on beforeinput */
+    if (!el.dataset.placed && boxValue(el).trim()) armFreshTime(el)
   }, true)
 }
 
@@ -1082,8 +1253,8 @@ export function routeClick(e: MouseEvent) {
   }
 
   /* A TAP ON AN EMPTY BOX THAT SUGGESTS A TIME PLACES IT (owner D1028, D1030, 19 Oct 26 — the suggested brief and the
-     default rally; before, a blue time above the box was clicked). Placed highlighted, so whatever is typed next
-     replaces it; it is saved the way a typed time is, when the box is left — the week's box by its own focusout
+     default rally; before, a blue time above the box was clicked). Placed in a typed time's colour with a short flash
+     (D1038), and whatever is typed next replaces it; it is saved the way a typed time is, when the box is left — the week's box by its own focusout
      (textedit.ts routeFocusOut), the board's by the `change` placeSuggestion raises when the box is left still holding
      it. Escape before then puts the box back empty and saves nothing (each box's own Escape). A Tab that passes
      through raises no click, so it fills nothing: accepting stays a deliberate act. */

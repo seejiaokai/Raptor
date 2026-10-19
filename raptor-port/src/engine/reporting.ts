@@ -11,6 +11,15 @@ export function scIntime(br:any,toM:number,lead?:number|null){
   const t=parseHM(br); if(t==null)return null;
   return toM-(lead==null?VCONF.reportLead:lead)<0&&t>toM?t-1440:t;
 }
+/* AN SC LINE'S REPORT — ITS IN-TIME BOX OR ITS RALLY BOX, THE EARLIER (owner D1041, 19 Oct 26: SC, AVALON and BB get the
+   rally box, D1036, D1040; on SC MAIN a typed rally starts the crew's day as the in-time box does — "SC main only").
+   Each box read by scIntime's own rule; the earlier one counts, as the earliest in-time or rally does on a flying line
+   (D1032). Crew rest (events.ts seatIntime) and OIL (oil.ts) read the line through this one body. A SPARE line has no
+   event stream and OIL gives it its written window, so neither box counts there; AVALON and BB are never read. */
+export function scReport(f:any,toM:number,lead?:number|null){
+  const c=[scIntime(f&&f.br,toM,lead),scIntime(f&&f.rl,toM,lead)].filter((v):v is number=>v!=null);
+  return c.length?Math.min(...c):null;
+}
 export function intimeTime(s:any){
   const re=/(?:^|[^A-Za-z0-9])(?:(\d{1,2}):(\d{2})|(\d{3,4}))\s*[HL]?(?![A-Za-z0-9])/gi;
   let m:any;

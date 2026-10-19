@@ -536,7 +536,8 @@ function validateCore(){
          shift's start — the crew-rest sentence names it so ("SC AM's in-time is 05:00"); "starts" stays for the start */
       const shiftReport=(legs:any[],instructed:number)=>{const sl=legs.filter((e:any)=>e.shift)[0];
         const viaB=sl.intime!=null&&isFinite(sl.intime)&&!(sl.to<=sl.intime)&&insOf(sl)===instructed;
-        return `${sl.label}${viaB?`'s in-time is`:' starts'} ${stated(instructed)}`;};
+        /* …and "'s rally is" where that report is its rally box (D1041) */
+        return `${sl.label}${viaB?(sl.viaRally?`'s rally is`:`'s in-time is`):' starts'} ${stated(instructed)}`;};
       Object.keys(byR).forEach((id:any)=>{
         if(probe&&id!==probe.id)return;
         /* Personnel (ground crew) hold no crew-rest rule — an incentive ride

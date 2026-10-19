@@ -64,7 +64,7 @@ export function dayIssuedLabel(di: number): string {
   const ver = dayCurVer(di)
   return ver == null ? 'Published' : `Published — ${verLabel(ver)}`
 }
-/* the formation's own rally as entered (D1026) — never its suggested default, which is no rally anyone set (D1032) */
+/* the formation's own rally as entered (D1026; a standby line's too, D1036) — never its suggested default, which is no rally anyone set (D1032) */
 const fmtRally = (f: any) => { const m = parseHM(f.rl); return m == null ? '' : hhmm(m) }
 export function schedRows(days: any[] = DAYS) {
   const rows = [['Day', 'Date', 'Wave', 'CS', 'Mission', 'Rally', 'Brief', 'TO', 'Land', 'FCP', 'FCP lvl', 'RCP', 'RCP lvl', 'Area', 'Area time', 'Rmks', 'Stores']]
@@ -77,8 +77,9 @@ export function schedRows(days: any[] = DAYS) {
        one; live VCONF.briefLead is only the fallback for a blank line, and
        that fallback still has to agree with the rule the engine validates
        against, so it stays computed rather than hard-coded. */
-    const brief = parseHM(f.br) != null ? f.br : minus(f.to, fi && fi.rv && fi.rv.briefLead != null ? fi.rv.briefLead : VCONF.briefLead)
-    rows.push([d.dow, d.dt, w.label, f.cs, f.msn, isStandalone(w) ? '' : fmtRally(f), brief, f.to, f.ld, F.cs || '', F.q || '', W.cs || '', W.q || '', a.area || '', at, a.rmks || '', st])
+    /* a standby line (SC, AVALON, BB) carries no worked-out brief (owner D1039, 19 Oct 26): its typed B alone */
+    const brief = parseHM(f.br) != null ? f.br : isStandalone(w) ? '' : minus(f.to, fi && fi.rv && fi.rv.briefLead != null ? fi.rv.briefLead : VCONF.briefLead)
+    rows.push([d.dow, d.dt, w.label, f.cs, f.msn, fmtRally(f), brief, f.to, f.ld, F.cs || '', F.q || '', W.cs || '', W.q || '', a.area || '', at, a.rmks || '', st])
   }))))
   return rows
 }

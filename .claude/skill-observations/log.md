@@ -1401,6 +1401,8 @@ prove each by acting through it after the rollback, not by reading what it shows
 
 **Principle:** A reused server must be proved to serve the build under test before any result from it counts; "reuse an existing server" turns a stale process into a silent false result.
 
+**Met again 19 Oct 26 ([RALLY-BOX-CHANGES], the same day, a different chat):** 4173 was still held by another chat's preview; the rally-box browser test drove it and all 8 checks failed ("element not found") — read as this change's fault until the port's owner was checked; E2E_PORT=4311 (proved free) passed 8/8. **The guard proposed:** an unconditional default rather than a judgment — the config (or the gate-lock `exec` wrapper) refuses to reuse a server it did not start for this checkout (e.g. a probe that the served `index.html` names this build's asset hash), so a stale port fails loudly instead of testing another build.
+
 ### Observation 645: A tap-to-fill handler fought the app's own focus-arrival refresh
 
 **Status:** OPEN

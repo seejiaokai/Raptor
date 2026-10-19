@@ -34,10 +34,100 @@ for (const [name, viewport] of [['desktop', { width: 1440, height: 900 }], ['pho
       expect(ghost).toEqual({ text: '', ph: '09:40', color: 'rgb(59, 198, 232)', content: '"09:40"' })
       await press(page, r, phone)
       await expect(r).toHaveText('09:40')
-      expect(await page.evaluate(() => String(window.getSelection())), 'placed highlighted').toBe('09:40')
+      /* D1038: taken, it is NOT highlighted (the highlight was the suggestion's own blue on his iPhone) — it wears the plain
+         blue ring for about a second, then nothing */
+      const took = await r.evaluate(e => ({ sel: String(window.getSelection()), cls: e.classList.contains('sugtook'), anim: getComputedStyle(e).animationName }))
+      expect(took, 'placed unhighlighted, wearing the short flash').toEqual({ sel: '', cls: true, anim: 'sugtook' })
+      await expect(r, 'the flash is gone after about a second').not.toHaveClass(/sugtook/, { timeout: 2500 })
       await page.keyboard.press('Escape')
       await expect(r).toHaveText('')
       expect(await page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].rl || '')).toBe('')
+      /* …and the first key still replaces the taken time, with nothing highlighted (D1030, D1038) */
+      await press(page, r, phone)
+      await expect(r).toHaveText('09:40')
+      await page.keyboard.type('0915')
+      await expect(r, 'what was typed, not appended to the taken time').toHaveText('0915')
+      await page.keyboard.press('Escape')
+      await expect(r).toHaveText('')
+    })
+    /* D1047: one press into a time box that holds a time, then typing, replaces it; Backspace clears it; a second press
+       edits digit by digit — his iPhone picture showed "…01645", the old time kept and the new digits added */
+    test('a time box tapped into: typing replaces its time, Backspace clears it, a second press edits in place', async ({ page }) => {
+      await login(page); await go(page, 'editsched')
+      await page.evaluate(() => (window as any).openScheduler(0)); await expect(page.locator('#schedBoard')).toBeVisible()
+      const to = page.locator('#sbBoard [data-bfld="ff:0.0.0.to"]:visible').first()
+      const f = () => page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].to)
+      const was = await f()
+      await press(page, to, phone); await expect(to).toBeFocused()   // a finger cannot type before the tap has moved the focus
+      await expect.poll(() => to.evaluate((e: any) => e.dataset.fresh || '')).toBe('1')
+      await page.keyboard.type('1300')
+      await expect(to, 'the old time replaced, not added to').toHaveValue('1300')
+      await page.keyboard.press('Enter')
+      await expect.poll(f).toBe('13:00')
+      await page.keyboard.press('Tab')   // leave it
+      await press(page, to, phone); await expect(to).toBeFocused()   // a finger cannot type before the tap has moved the focus
+      await expect.poll(() => to.evaluate((e: any) => e.dataset.fresh || '')).toBe('1')
+      await page.keyboard.press('Backspace')
+      await expect(to, 'Backspace clears the whole time').toHaveValue('')
+      await page.keyboard.press('Tab')
+      await expect.poll(f, 'the cleared time is saved when the box is left (the D1047 read F1)').toBe('')
+      await press(page, to, phone); await expect(to).toBeFocused()   // a finger cannot type before the tap has moved the focus
+      await page.keyboard.type('1300'); await page.keyboard.press('Enter')
+      await expect.poll(f).toBe('13:00')
+      await page.keyboard.press('Tab')
+      await press(page, to, phone); await expect(to).toBeFocused()   // a finger cannot type before the tap has moved the focus
+      await page.keyboard.insertText('0915')   // one insertion, as a paste or autofill gives — rewritten by the box itself
+      await expect(to).toHaveValue('0915')
+      await page.keyboard.press('Tab')
+      await expect.poll(f, 'a time put in by one insertion, then Tab: saved (the owed change paid)').toBe('09:15')
+      await press(page, to, phone); await expect(to).toBeFocused()   // a finger cannot type before the tap has moved the focus
+      await page.keyboard.type('1300'); await expect(to).toHaveValue('1300'); await page.keyboard.press('Enter')
+      await expect.poll(f).toBe('13:00')
+      await page.keyboard.press('Tab')
+      await press(page, to, phone); await expect(to).toBeFocused()   // a finger cannot type before the tap has moved the focus
+      await page.keyboard.type('9')
+      await page.keyboard.press('Escape')
+      await expect.poll(f, 'Escape puts the time back').toBe('13:00')
+      await expect(to).toHaveValue('13:00')
+      await press(page, to, phone); await expect(to).toBeFocused()   // a finger cannot type before the tap has moved the focus
+      await press(page, to, phone, false)   // a second press: ordinary editing
+      await expect.poll(() => to.evaluate((e: any) => e.dataset.fresh || '')).toBe('')
+      await page.keyboard.press('End'); await page.keyboard.press('Backspace'); await page.keyboard.type('5')
+      await expect(to, 'one digit edited in place').toHaveValue('13:05')
+      await page.keyboard.press('Enter')
+      await expect.poll(f).toBe('13:05')
+    })
+    test('the week: a time box tapped into, then typing, replaces its time (D1047)', async ({ page }) => {
+      await login(page); await go(page, 'editsched')
+      const was = await page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].to)
+      const wto = page.locator('#eWeek .day[data-day="0"] [data-txt="ff:0.0.0.to"]')
+      await expect(wto).toBeVisible()
+      await press(page, wto, phone)
+      await page.keyboard.type('1400')
+      await expect(wto).toHaveText('1400')
+      await page.keyboard.press('Escape')
+      await page.evaluate(w => { (window as any).DAYS[0].waves[0].formations[0].to = w }, was)
+    })
+    /* D1036, D1039, D1040: an SC, AVALON or BB line has its R box too — above B on the board, above START on the week —
+       with no worked-out time in it or in its B */
+    test('a standby line: its own R box, no suggestion in R or B; a typed rally saves', async ({ page }) => {
+      await login(page); await go(page, 'editsched')
+      await page.evaluate(() => (window as any).openScheduler(0)); await expect(page.locator('#schedBoard')).toBeVisible()
+      const gi = await page.evaluate(() => { (window as any).addWave(0, 'avalon'); return (window as any).DAYS[0].waves.findIndex((w: any) => w.kind === 'avalon') })
+      const box = (k: string) => page.locator(`#sbBoard [data-bfld="ff:0.${gi}.0.${k}"]:visible`).first()
+      await expect(box('rl')).toBeVisible()
+      expect(await box('rl').evaluate((e: any) => [e.placeholder, e.classList.contains('sugbox')]), 'no default rally').toEqual(['', false])
+      expect(await box('br').evaluate((e: any) => [e.placeholder, e.classList.contains('sugbox')]), 'no worked-out brief').toEqual(['', false])
+      const geo = await page.evaluate(g => {
+        const R = (k: string) => document.querySelector(`#sbBoard [data-bfld="ff:0.${g}.0.${k}"]`)!.getBoundingClientRect()
+        const [rl, br] = [R('rl'), R('br')]
+        return { stacked: rl.bottom <= br.top + 1 && Math.abs(rl.left - br.left) < 2, oneLine: Math.abs(rl.top - br.top) < 2 && rl.left < br.left }
+      }, gi)
+      expect(phone ? geo.stacked : geo.oneLine, 'R before B, as on a flying line').toBe(true)
+      await press(page, box('rl'), phone)
+      await expect(box('rl'), 'a tap on an empty standby R places nothing').toHaveValue('')
+      await page.keyboard.type('1700'); await page.keyboard.press('Enter')
+      await expect.poll(() => page.evaluate(g => (window as any).DAYS[0].waves[g].formations[0].rl || '', gi)).toBe('17:00')
     })
     /* walker B's F1 and F3 (19 Oct 26): on the board, R pressed then B at once — leaving R saves it and the redraw that
        starts replaced B under the press, so B took the focus EMPTY; and R pressed then Enter saved nothing */

@@ -770,8 +770,8 @@ export function faceRuleVals(d:any):any{
 /* …and whether a change of it is a change the admin must see (Fable's second read #1): only where the SCHEDULE prints
    a suggested brief — a blank B on a flying line. A standby line (SC / AVALON / BB) prints no brief on the face, and a
    blank B there is its normal state (24 Aug 26), so one Logic-page change would otherwise make every published day with a
-   standby wave pending for nothing visible. The CSV does print a computed brief on a standby line; `rv` keeps it frozen
-   there all the same (it is stored whenever any line is blank), so nothing moves silently. */
+   standby wave pending for nothing visible. The CSV printed a computed brief on a standby line until D1039 (19 Oct 26) — it prints
+   only a typed one now. */
 export function faceRuleValsCompared(d:any):boolean{
   return ((d&&d.waves)||[]).some((w:any)=>!isStandalone(w)&&blankB(w));}
 /* person id → the callsign a slice's warnings name him by */
