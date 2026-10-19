@@ -106,6 +106,26 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
     await expect.poll(() => win.evaluate(e => [(e as HTMLElement).style.maxHeight, (e as HTMLElement).style.translate].join('|'))).toBe('|')
   })
 
+  test('KS3c the input window (a movable window, redrawn on every key): its box stays above the keys after a key is typed', async ({ page }) => {
+    await login(page); await go(page, 'inputs')
+    await page.click('#inListBtn'); await page.click('#inNew')
+    const win = page.locator('[data-testid="win-inputedit"]')
+    await expect(win).toBeVisible()
+    /* the lowest box to type in, at the foot of the window's own scroll */
+    const box = win.locator('input[type="text"]:visible, input:not([type]):visible, textarea:visible').last()
+    await box.evaluate(e => e.scrollIntoView({ block: 'end' }))
+    const was = await bottomOf(box)
+    expect(was, 'the fixture: the box where the keys will come').toBeGreaterThan(H - KB)
+    await page.waitForTimeout(600)
+    await tap(page, box); await expect(box).toBeFocused()
+    await keysUp(page)
+    await expect.poll(() => bottomOf(box)).toBeLessThanOrEqual(H - KB - GAP + 1)
+    await page.keyboard.type('a')
+    await page.waitForTimeout(200)
+    expect(await bottomOf(box), 'after a key: still above the keys').toBeLessThanOrEqual(H - KB - GAP + 1)
+    expect(await win.evaluate(e => Math.round(e.getBoundingClientRect().top)), 'its title on the screen').toBeGreaterThanOrEqual(0)
+  })
+
   test('KS4 a box already above the keys is left where it is', async ({ page }) => {
     await login(page); await go(page, 'logic'); await page.click('#lgEdit')
     const box = page.locator('input.lgin:visible').first()

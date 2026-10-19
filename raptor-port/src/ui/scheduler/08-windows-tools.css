@@ -6,6 +6,9 @@
 .modal{position:fixed;inset:0;z-index:470;background:rgba(4,7,10,.7);display:flex;align-items:center;justify-content:center;padding:22px}
 .modal[hidden]{display:none}
 .modal-box{background:var(--panel);border:1px solid var(--edge);border-radius:16px;width:460px;max-width:100%;max-height:84vh;max-height:84dvh;overflow:auto}
+/* a window held to the visible screen while a phone's keys are up (ui/kbscroll.ts, D1048): the hold outranks the window's
+   own height limit, inline or not, and goes with the keys */
+[data-kbcap]{max-height:var(--kbcap) !important}
 .modal-head{padding:14px 16px;border-bottom:1px solid var(--edge);display:flex;align-items:center}
 .modal-head b{font-size:16px;font-weight:700}
 .modal-head .x{margin-left:auto;background:none;border:none;color:var(--ink-2);cursor:pointer;font-size:18px;line-height:1}

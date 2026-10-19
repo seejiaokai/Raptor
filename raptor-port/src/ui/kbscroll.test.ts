@@ -119,19 +119,43 @@ describe('a window that cannot scroll is raised instead', () => {
     /* the window: 300–900 tall as its content, and once held to a height, that tall, scrolling the rest */
     let st = 0
     w.style.overflowY = 'auto'
-    const wh = () => (w.style.maxHeight ? parseInt(w.style.maxHeight) : 600)
+    /* the hold is --kbcap, read by the stylesheet's [data-kbcap] rule (jsdom has no stylesheet: read it here) */
+    const wh = () => (w.dataset.kbcap != null ? parseInt(w.style.getPropertyValue('--kbcap')) : 600)
     Object.defineProperty(w, 'scrollTop', { configurable: true, get: () => st, set: v => { st = Math.max(0, Math.min(600 - wh(), v)) } })
     Object.defineProperty(w, 'scrollHeight', { configurable: true, get: () => 600 })
     Object.defineProperty(w, 'clientHeight', { configurable: true, get: () => wh() })
     w.getBoundingClientRect = () => { const top = 300 - +(w.dataset.kblift || 0); return { top, bottom: top + wh(), left: 0, right: 100, width: 100, height: wh(), x: 0, y: top, toJSON() {} } as DOMRect }
     place(b, 860, 30)                   // its last row, which rising to the top alone cannot bring above the keys
     keepAboveKeyboard(b, vvUp)
-    expect(w.style.maxHeight).toBe(`${H - KB - 2 * GAP}px`)
+    expect(w.style.getPropertyValue('--kbcap')).toBe(`${H - KB - 2 * GAP}px`)
+    expect(w.style.maxHeight, 'the own height limit of the window untouched').toBe('')
     expect(w.getBoundingClientRect().top).toBe(GAP)
     expect(b.getBoundingClientRect().bottom).toBeLessThanOrEqual(H - KB - GAP)
     expect(b.getBoundingClientRect().top).toBeGreaterThanOrEqual(GAP)
+    /* the window redraws and writes its own limit (floatwin.ts place()): the hold is a property of its own, untouched */
+    w.style.maxHeight = ''
+    expect(w.dataset.kbcap).toBe('')
+    /* a box higher in the held window (the narrow read's 2): still held, still pinned at the top */
+    const t = document.createElement('input'); w.appendChild(t); place(t, 320, 30)
+    keepAboveKeyboard(t, vvUp)
+    expect([w.dataset.kbcap, w.getBoundingClientRect().top]).toEqual(['', GAP])
     dropLifts()
-    expect([w.style.maxHeight, w.style.translate], 'all put back').toEqual(['', ''])
+    expect([w.style.getPropertyValue('--kbcap'), w.dataset.kbcap, w.style.translate], 'all put back').toEqual(['', undefined, ''])
+  })
+  it('a window already at the top is held all the same (the narrow read: 3)', () => {
+    document.body.innerHTML = '<div id="w" style="position:fixed"><input id="b"></div>'
+    const w = document.getElementById('w')!, b = document.getElementById('b') as HTMLInputElement
+    let st = 0
+    w.style.overflowY = 'auto'
+    const wh = () => (w.dataset.kbcap != null ? parseInt(w.style.getPropertyValue('--kbcap')) : 700)
+    Object.defineProperty(w, 'scrollTop', { configurable: true, get: () => st, set: v => { st = Math.max(0, Math.min(700 - wh(), v)) } })
+    Object.defineProperty(w, 'scrollHeight', { configurable: true, get: () => 700 })
+    Object.defineProperty(w, 'clientHeight', { configurable: true, get: () => wh() })
+    w.getBoundingClientRect = () => ({ top: GAP, bottom: GAP + wh(), left: 0, right: 100, width: 100, height: wh(), x: 0, y: GAP, toJSON() {} }) as DOMRect
+    place(b, 650, 30)
+    keepAboveKeyboard(b, vvUp)
+    expect(w.dataset.kbcap).toBe('')
+    expect(b.getBoundingClientRect().bottom).toBeLessThanOrEqual(H - KB - GAP)
   })
   it('a window that sets its own height limit is left to it', () => {
     const { w, b } = win()

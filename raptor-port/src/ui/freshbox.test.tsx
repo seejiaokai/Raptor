@@ -78,6 +78,21 @@ describe('KF5 — the fresh read\'s F2, F3', () => {
     i = mk('<input class="oil-num" data-freshfocus="" value="">'); i.focus()
     expect(i.dataset.fresh || '').toBe('')
   })
+  it('…once per opening: coming back to it later (another app and back, a Tab) arms nothing (the narrow read: 4)', () => {
+    const i = mk('<input class="oil-num" data-freshfocus="" value="4.5">'); i.focus()
+    i.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })); i.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }))
+    expect(i.dataset.fresh || '', 'a second press: ordinary').toBe('')
+    i.blur(); i.focus()
+    expect(i.dataset.fresh || '').toBe('')
+  })
+  it('a second press on the LABEL of an armed box leaves it armed — it put no caret anywhere (the narrow read: 5)', () => {
+    document.body.innerHTML = '<label class="sset-row"><span id="w">Yellow from</span><input class="sset-num" value="1"></label>'
+    const i = document.querySelector('input') as HTMLInputElement, w = document.getElementById('w')!
+    w.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })); i.focus()
+    w.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })); w.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }))
+    expect(i.dataset.fresh).toBe('1')
+    type(i, '15'); expect(i.value).toBe('5')
+  })
 })
 
 describe('KF3 — a second press, an arrow key, Backspace', () => {

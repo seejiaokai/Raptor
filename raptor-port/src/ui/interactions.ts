@@ -874,7 +874,8 @@ if (typeof document !== 'undefined') {
     const t = raw?.closest?.('input, [contenteditable="true"]') || raw?.closest?.('label')?.control || null
     if (!isTimeBox(t) && !isFreshElsewhere(t)) { TIME_PRESS = null; return }
     /* a second press on a box already waiting: the caret goes where he pressed, and the box is ordinary */
-    if (document.activeElement === t && t.dataset.fresh) { ARMED_PRESS = { el: t, at: Date.now(), id: e.pointerId }; TIME_PRESS = null; return }
+    /* …a press on the box itself; one on its label puts no caret anywhere, so the box stays armed (the narrow read's 5) */
+    if (document.activeElement === t && t.dataset.fresh) { if (t.contains(raw)) ARMED_PRESS = { el: t, at: Date.now(), id: e.pointerId }; TIME_PRESS = null; return }
     TIME_PRESS = { addr: sugAddr(t), box: t, at: Date.now() }
   }, true)
   document.addEventListener('keydown', () => { TIME_PRESS = null }, true)
@@ -882,7 +883,12 @@ if (typeof document !== 'undefined') {
     const el = e.target as any, p = TIME_PRESS
     /* a box its screen opens with the focus already in it, after the press on the button that opened it (the Leave War's
        balance "Set" — the fresh read's F3), marked data-freshfocus: armed as it opens */
-    if (isFreshElsewhere(el) && el.dataset.freshfocus != null) { TIME_PRESS = null; if (boxValue(el).trim()) armFreshTime(el); return }
+    if (isFreshElsewhere(el) && el.dataset.freshfocus != null) {
+      /* once per opening (the narrow read's 4): coming back to the box later — another app and back, a Tab — arms nothing */
+      TIME_PRESS = null; delete el.dataset.freshfocus
+      if (boxValue(el).trim()) armFreshTime(el)
+      return
+    }
     if (!p || Date.now() - p.at > 1500) return
     if (isFreshElsewhere(el)) {
       /* these boxes carry no address: the press must have landed on this very box */

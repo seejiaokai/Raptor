@@ -76,24 +76,41 @@ function lift(sc: Element, el: HTMLElement, bot: number, top: number): number {
    of the screen, its last rows were still under the keys; its own height limit is the layout's, which the keys do not
    shorten, so its body had nothing more to scroll): it is held to the visible screen's height for as long as the keys are
    up, its top at the top, and its own body then scrolls the box into sight — the Leave War's sheets do the same for
-   themselves (leavewar/ui/Sheet.tsx). A window that already sets its own height limit is left to it. */
+   themselves (leavewar/ui/Sheet.tsx). A window that already sets its own height limit is left to it.
+   THE HOLD IS ITS OWN PROPERTY (the narrow read's 1, 19 Oct 26): a movable window writes its own inline max-height on
+   every redraw (floatwin.ts place() — and the input window redraws on every key), which wiped a hold written there, so
+   the box fell back under the keys at the first key. The hold is the custom property --kbcap, read by one rule
+   (`[data-kbcap]`, 08-windows-tools.css) that outranks the window's own. AND IT STAYS HELD (the narrow read's 2, 3): a box
+   higher in a held window, or a window already at the top, never lets the hold go while the keys are up — only the typing
+   ending, the keys going down or the focus leaving the window put it back (putBack). */
 const LIFTED = new Set<HTMLElement>()
 const shiftOf = (l: HTMLElement) => +(l.dataset.kblift || 0)
+const held = (l: HTMLElement) => l.dataset.kbcap != null
 function setShift(l: HTMLElement, s: number) {
   if (s > 0.5) { l.style.translate = `0 ${-Math.round(s)}px`; l.dataset.kblift = String(Math.round(s)); LIFTED.add(l); return }
   l.style.translate = ''; delete l.dataset.kblift
-  if (l.dataset.kbcap != null) { l.style.maxHeight = ''; delete l.dataset.kbcap }
-  LIFTED.delete(l)
+  if (!held(l)) LIFTED.delete(l)
 }
 /* hold `l` to `h` tall — never over a height limit the window set itself */
 function cap(l: HTMLElement, h: number): boolean {
-  if (l.dataset.kbcap == null) { if (l.style.maxHeight) return false; l.dataset.kbcap = '' }
-  l.style.maxHeight = Math.round(h) + 'px'; LIFTED.add(l)
+  if (!held(l)) { if (l.style.maxHeight) return false; l.dataset.kbcap = '' }
+  l.style.setProperty('--kbcap', Math.round(h) + 'px'); LIFTED.add(l)
   return true
+}
+/** Puts one window back where it stood, unheld — also for a window about to be dragged by its bar (floatwin.ts). */
+export function putBack(l: HTMLElement) {
+  l.style.translate = ''; delete l.dataset.kblift
+  l.style.removeProperty('--kbcap'); delete l.dataset.kbcap
+  LIFTED.delete(l)
 }
 /** Puts back every window raised for the keys, but the one that holds `keep`. */
 export function dropLifts(keep?: Element | null) {
-  for (const l of [...LIFTED]) if (!keep || !l.contains(keep)) setShift(l, 0)
+  for (const l of [...LIFTED]) if (!keep || !l.contains(keep)) putBack(l)
+}
+/* a held window: held to the room again (the room may have changed), its top at the top */
+function pin(l: HTMLElement, s0: number, visTop: number, visBot: number) {
+  cap(l, visBot - visTop - 2 * GAP)
+  setShift(l, Math.max(0, s0 + l.getBoundingClientRect().top - (visTop + GAP)))
 }
 function raise(fixedEl: HTMLElement, el: HTMLElement, visTop: number, visBot: number): number {
   const fr = fixedEl.getBoundingClientRect()
@@ -105,14 +122,17 @@ function raise(fixedEl: HTMLElement, el: HTMLElement, visTop: number, visBot: nu
     if (!c) return 0
     layer = c as HTMLElement
   }
-  const s0 = shiftOf(layer), r = el.getBoundingClientRect(), lr = layer.getBoundingClientRect()
+  const s0 = shiftOf(layer)
+  /* a held window stays held and pinned while the keys are up — its own body scrolls to whichever box he taps */
+  if (held(layer)) { pin(layer, s0, visTop, visBot); return 1 }
+  const r = el.getBoundingClientRect(), lr = layer.getBoundingClientRect()
   const need = r.bottom - (visBot - GAP)
   /* up by what the box needs, never past the visible top; down again (towards where it stood) when it is higher than it
      need be — a box further up the same window */
   const room = lr.top - (visTop + GAP)
   if (need > room + 0.5 && cap(layer, visBot - visTop - 2 * GAP)) {
     /* held to the room, measured again (a window centred on its backdrop re-centres as it shrinks): its top to the top */
-    setShift(layer, Math.max(0, s0 + layer.getBoundingClientRect().top - (visTop + GAP)))
+    pin(layer, s0, visTop, visBot)
     return 1
   }
   const d = need > 0 ? Math.min(need, room) : Math.max(need, -s0)

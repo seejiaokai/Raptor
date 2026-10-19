@@ -50,6 +50,7 @@
    left, so a long reason is cut short before the title is (22-float-windows.css `.has-mark`). */
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { frontWin, holdPageScroll, phoneLayout, raiseWin, useFloatWin, type FloatBox } from './floatwin'
+import { putBack } from './kbscroll'
 import { useVersion } from './useStore'
 import { notify } from '../state/store'
 import { placeToast } from './toast'
@@ -146,6 +147,7 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
     const n = el.current
     dragged.current = false
     if (!n || (e.target as HTMLElement).closest('.win-x, .win-tools')) return
+    putBack(n)   // raised or held for the keys: the pull starts from where it really stands
     const top = n.getBoundingClientRect().top
     pull.current = { y0: e.clientY, top0: top, top, moved: false }
     try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId) } catch { /* jsdom */ }
