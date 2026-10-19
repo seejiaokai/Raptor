@@ -8,7 +8,7 @@ import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId, inputRe
 import { onCommon } from '../engine/grouprows'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
-import { REPORTING_LABEL } from '../engine/reporting'
+import { REPORTING_LABEL, reportingIssuesForWave } from '../engine/reporting'
 import { WARN, validate, WCODE, wlbl, FLT_NO_LEN_SAYS } from '../engine/validate'
 import { shownWarns } from '../engine/warnhide'
 import { hhmm, hm24, fmtHM, minus, parseHM } from '../engine/time'
@@ -22,7 +22,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay, iuParts } from '../engine/keys'
 import { applyMove, sortWave, sortInTimes, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown, sbPrevDay, SB_PREVDAY, boxText } from './html'
+import { rlFaultAtt, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown, sbPrevDay, SB_PREVDAY, boxText } from './html'
 import { onInputRow, rowMark, UNMARKED } from './reqdoor'
 import { setInpField, howMany } from './inputedit'
 import { reqRowText } from './reqrow'
@@ -197,6 +197,8 @@ function boardHTMLBody(di: number, pv?: boolean) {
        hidden-by-position rule counts them (13-board-rows-responsive.css). */
     fly += `<div class="sb-lcols"><span></span><span>CS</span><span>MSN</span><span class="sb-hrb"><span>${sa ? '' : 'R'}</span><span>B</span></span><span class="sb-htl"><span>TO</span><span>LD</span></span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
     if (!w.formations.length) fly += `<div class="sb-empty" style="padding:6px 11px">Empty wave — add a line, or remove the wave.</div>`
+    /* the R box's own timing fault (the fresh read's F1): its address and words, as the week's (html.ts rlFaultAtt) */
+    const boxFaults = sa || pv ? [] : reportingIssuesForWave(w, gi).filter((i: any) => i.box)
     w.formations.forEach((f: any, li: number) => {
       const roleAccess=pv && !sa && missionTracking() && canEditSched() && view.CURPAGE==='editsched' && !protectedWeek() && view.DPREV.get(di)===dayCurVer(di) && !f.cx && f.aircraft.some((a:any)=>!a.cx) && resolveMissionRole(f).conditional
       f.aircraft.forEach((a: any, ai: number) => {
@@ -311,7 +313,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
         <div class="sb-bcell sb-rb">${sa
           /* a standby line has no rally: an empty place keeps the R track (desktop) and the stack's top (phone) */
           ? '<span class="sb-rlnone" aria-hidden="true"></span>'
-          : `<input class="tm${rlSug ? ' sugbox' : ''}" data-bfld="${fp}.rl"${alAttr(`${fp}.rl`)}${dis}${sugAttr(rlSug)} aria-label="Rally" value="${esc(fmtHM(f.rl))}">`}<input class="tm${brSug ? ' sugbox' : ''}" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis}${sugAttr(brSug)} value="${esc(fmtHM(f.br))}"></div>
+          : `<input class="tm${rlSug ? ' sugbox' : ''}" data-bfld="${fp}.rl"${alAttr(`${fp}.rl`)}${dis}${sugAttr(rlSug)}${rlFaultAtt(boxFaults, li, fp)} aria-label="Rally" value="${esc(fmtHM(f.rl))}">`}<input class="tm${brSug ? ' sugbox' : ''}" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis}${sugAttr(brSug)} value="${esc(fmtHM(f.br))}"></div>
         <div class="sb-bcell sb-tl"><input class="tm${badCls}"${badAtt} data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(fmtHM(f.to))}"><input class="tm${badCls}"${badAtt} data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(fmtHM(f.ld))}"></div>
         <div class="sb-seatpair">${sbSlot(di, key + '.p', 'p', a.p, stoRO)}${sbSlot(di, key + '.w', 'w', a.w, stoRO)}</div>
         <div class="sb-rcell"${alAttr(`st:${key}`)}>

@@ -117,3 +117,21 @@ describe('the box is a time box like B, TO and LD', () => {
     expect(dayKeys(DAYS[0], 0).get('ff:0.0.0.rl'), 'folded as a time, like B').toBe('07:00')
   })
 })
+
+/* the fresh read's F1 (19 Oct 26): a timing fault the R box causes is the BOX's — pointed at it, never at the typed lines */
+describe('RB1 — a timing fault caused by the R box is pointed at the box', () => {
+  it('box-only and beside a typed in-time line: box:true, no lines blamed, the warning keyed to ff:..rl', () => {
+    const alone = reportingIssuesForWave(flight([], f('12:00', '13:00', '10:00', '10:30')))
+    expect(alone).toEqual([expect.objectContaining({ code: 'REPORT_ORDER', box: true, lines: [] })])
+    const beside = reportingIssuesForWave(flight(['06:00 IN TIME'], f('12:00', '13:00', '10:00', '10:30')))
+    expect(beside).toEqual([expect.objectContaining({ code: 'REPORT_ORDER', box: true, lines: [] })])
+    DAYS[0].waves = [flight(['06:00 IN TIME'], f('12:00', '13:00', '10:00', '10:30'))]
+    const w = validate().all.find((x: any) => x.di === 0 && x.code === 'REPORT_ORDER')
+    expect(w.key).toBe('ff:0.0.0.rl')
+  })
+  it('a fault of the typed lines alone still blames the lines', () => {
+    const typed = reportingIssuesForWave(flight(['10:30 RALLY'], f('12:00', '13:00', '10:00')))
+    expect(typed).toEqual([expect.objectContaining({ code: 'REPORT_ORDER', lines: [0] })])
+    expect(typed[0]!.box).toBeUndefined()
+  })
+})

@@ -1240,7 +1240,7 @@ export function refreshWaveReports(root:ParentNode|null|undefined):void{
     const [di,gi]=String(blk.dataset.intimes).split('|').map(Number), w=DAYS[di!]&&DAYS[di!].waves&&DAYS[di!].waves[gi!];
     const note=blk.querySelector('[data-reporting-feedback]');
     if(!w||!note)return;
-    const want=reportingIssuesForWave(w,gi).map(i=>i.msg).join(' ');
+    const want=reportingIssuesForWave(w,gi).filter(i=>!i.box).map(i=>i.msg).join(' ');
     if(note.textContent!==want)note.textContent=want;
   });
   root.querySelectorAll<HTMLElement>('[data-move^="mv:w."]').forEach(go=>{
@@ -1283,7 +1283,7 @@ export function intimesInner(w:any,ek?:any,grip?:boolean){
       +`<button class="itx" data-itdel="${ek}|${i}" title="Remove this ${REPORTING_LABEL} line" aria-label="Remove this ${REPORTING_LABEL} line">✕</button>`;
     return grip?`<div class="itrow" data-move="mv:it.${ek.replace('|','.')}.${i}"><span class="sb-grip" title="Drag to move this line">⠿</span>${pair}</div>`:pair;
   }).join('')
-    + (ek?`<span class="reporting-feedback" data-reporting-feedback data-warnkey="it:${ek.replace('|','.')}" role="status">${esc(reportingIssuesForWave(w).map(i=>i.msg).join(' '))}</span>`:'');}
+    + (ek?`<span class="reporting-feedback" data-reporting-feedback data-warnkey="it:${ek.replace('|','.')}" role="status">${esc(reportingIssuesForWave(w).filter(i=>!i.box).map(i=>i.msg).join(' '))}</span>`:'');}
 /* AREA and TIME are not the model fields they are edited through. Until a
    scheduler types over them they READ OFF THE AIRCRAFT: the distinct area codes on
    the formation, and the formation's own TO–LD. Both surfaces have to agree on that
@@ -1313,11 +1313,17 @@ export let SCRATCH:any=null;
 /* THE FLYING TABLE'S TWO TIME HEADINGS (owner D1026, 19 Oct 26): the rally above the brief, the take-off above the
    landing. One constant for every builder that draws the heading row — the week below and the next-week peek (peek.ts),
    which draws its own copy of it. */
+/* the R box's own timing fault, as attributes (week and board alike — board.ts) */
+export function rlFaultAtt(faults:any[],li:number,fp:string){
+  const x=faults.find((i:any)=>i.li===li); if(!x)return '';
+  return `${PV?'':` data-warnkey="${fp}.rl"`} title="${esc(x.msg)}"`;
+}
 export const WEEK_TIME_HEAD=['R<br>B','TO<br>LD'] as const;
-export function ted(path:any,val:any,ed:any,cls:any,tag?:any,ph?:any){
+/* `extra` — attributes a caller adds as they are (already escaped): the R box's fault address and words (D1026) */
+export function ted(path:any,val:any,ed:any,cls:any,tag?:any,ph?:any,extra?:string){
   tag=tag||'span';
   const t=TIME_TXT.test(String(path))?fmtT(val):esc(val==null?'':val);
-  const a=alAttr(path)+(ph?` data-ph="${esc(ph)}"`:'');
+  const a=alAttr(path)+(ph?` data-ph="${esc(ph)}"`:'')+(extra||'');
   if(!ed||!canEditSched())return `<${tag} class="${cls||''}"${a}>${t}</${tag}>`;
   return `<${tag} class="${cls||''} txed" contenteditable="true" spellcheck="false" data-txt="${path}"${a}>${t}</${tag}>`;
 }
@@ -1828,6 +1834,9 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
       h+=sa
         ? `<div class="cols formcols"><span>${esc(w.label||'')}<br>SHIFT</span><span class="c-c">START</span><span class="c-c">END</span><span>FCP / RCP</span><span>RMKS</span></div>`
         : `<div class="cols formcols"><span>CS<br>MSN</span><span class="c-c">${WEEK_TIME_HEAD[0]}</span><span class="c-c">${WEEK_TIME_HEAD[1]}</span><span>FCP / RCP</span><span>RMKS</span></div>`;
+      /* a timing fault the R box causes is the BOX's (the fresh read's F1): it carries the warning's address — a tap on the
+         warning lands on it, live paper only, as the D49 mark below — and the fault in its own words */
+      const boxFaults=sa?[]:reportingIssuesForWave(w,gi).filter(i=>i.box);
       w.formations.forEach((f:any,li:any)=>{
         /* the brief lead is a rule the squadron edits on the Logic page, and
            validate() already reads it live (VCONF.briefLead). Hard-coding 140
@@ -1899,7 +1908,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
           <div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa?'var(--san)':`var(--${mColor(f.msn)})`}"></span>${ted(fp+'.cs',f.cs,ed,'ntx')}</b>${ted(fp+'.msn',f.msn,ed,'','i')}</div>
           ${sa
             ? `<div class="fcell bto${badCls}"${badAtt} style="${spans}">${ted(fp+'.to',f.to,ed,'ntx','span')}</div>`
-            : `<div class="fcell bto${badCls}"${badAtt} style="${spans}">${ted(fp+'.rl',f.rl,ed,rlCls,'span',rlCls.includes('sugbox')?rlDefault:'')}${ted(fp+'.br',brShown,ed,brCls,'b',brCls?brief:'')}</div>`}
+            : `<div class="fcell bto${badCls}"${badAtt} style="${spans}">${ted(fp+'.rl',f.rl,ed,rlCls,'span',rlCls.includes('sugbox')?rlDefault:'',rlFaultAtt(boxFaults,li,fp))}${ted(fp+'.br',brShown,ed,brCls,'b',brCls?brief:'')}</div>`}
           ${sa
             ? `<div class="fcell ld${badCls}"${badAtt} style="${spans}">${ted(fp+'.ld',f.ld,ed,'ntx')}</div>`
             : `<div class="fcell ld${badCls}"${badAtt} style="${spans}">${ted(fp+'.to',f.to,ed,'tox','span')}${ted(fp+'.ld',f.ld,ed,'ntx')}</div>`}`;

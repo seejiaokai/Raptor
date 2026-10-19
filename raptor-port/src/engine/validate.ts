@@ -695,7 +695,7 @@ function validateCore(){
     /* D502: include uncrewed formations; no invented puck penalty.
        These ordinary issued warnings freeze normally. */
     reportingIssuesForDay(DAYS[di]).forEach(issue=>add(issue.blocking?'hard':'adv',issue.code,[],issue.msg,
-      issue.lines.length?`it:${di}.${issue.gi}`:`${di}.${issue.gi}.${issue.li}.0.p`));
+      issue.box?`ff:${di}.${issue.gi}.${issue.li}.rl`:issue.lines.length?`it:${di}.${issue.gi}`:`${di}.${issue.gi}.${issue.li}.0.p`));
     /* An SC / AVALON / BB line is a SHIFT, not a sortie. Its crew still count
        as tasked and are still checked for clashes and qualification, but a
        handover is not a turn, a 12-hour watch is not a long flying day, and a

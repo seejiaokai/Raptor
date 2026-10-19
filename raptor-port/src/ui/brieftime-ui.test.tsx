@@ -358,3 +358,20 @@ describe('RB5 — typing replaces a placed suggestion without the highlight', as
     inp.remove()
   })
 })
+
+/* the fresh read's F1: the R box carries its own timing fault — the warning's address and its words; the typed lines do not */
+describe('RB5 — the R box explains its own timing fault', () => {
+  it('week and board: data-warnkey and the message on the R box; nothing under the typed lines', async () => {
+    const { dayHTML } = await import('./html')
+    const { boardHTML } = await import('./board')
+    const f: any = firstForm()!, idx = idxOf(f), keep = { rl: f.rl, br: f.br }, gi = +idx.split('.')[1]!
+    const w: any = DAYS[0].waves[gi], keepLines = w.intimes.slice()
+    f.br = ''; f.rl = minus(f.to, 30)   // a rally later than the suggested brief
+    w.intimes = ['00:10 IN TIME']
+    for (const h of [dayHTML(0, true), boardHTML(0)]) {
+      expect(h).toMatch(new RegExp(`data-(txt|bfld)="ff:${idx.replace(/\./g, '\.')}\.rl"[^>]*data-warnkey="ff:${idx.replace(/\./g, '\.')}\.rl" title="[^"]*rally [0-9:]+ is later than suggested brief`))
+    }
+    expect(dayHTML(0, true), 'the typed lines do not explain the box’s fault').not.toMatch(/data-reporting-feedback[^>]*>[^<]*rally [0-9:]+ is later than/)
+    Object.assign(f, keep); w.intimes = keepLines
+  })
+})

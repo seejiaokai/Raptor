@@ -48,6 +48,8 @@ export interface ReportingLine {
 export interface ReportingIssue {
   gi:number; li:number; lines:number[]; code:'REPORT_ORDER'|'REPORT_UNRESOLVED';
   msg:string; blocking:boolean;
+  /* the fault is the formation's own R box (D1026): its warning points at the box, and the box explains it */
+  box?:boolean;
 }
 const bounded=(term:string)=>new RegExp(`(^|[^A-Za-z0-9])${term}([^A-Za-z0-9]|$)`,'i');
 const inWord=bounded('IN(?:[ \\t-]+TIME|TIME)');
@@ -92,9 +94,11 @@ export function resolveReporting(w:any,f:any,to:number,parsed=parseReportingLine
     if(own!=null&&!sc.some(p=>p.targets.some(t=>t.toLowerCase()===cs)))sc=[];
     const choices=sc.map(p=>({p:p as ReportingLine|null,time:p.clock!=null?instant(p.clock):inTime})).filter(c=>c.time!=null);
     if(own!=null)choices.push({p:null,time:instant(own)});
-    if(!choices.length)return {time:null as number|null,lines:[] as number[]};
+    if(!choices.length)return {time:null as number|null,lines:[] as number[],box:false};
     const time=Math.min(...choices.map(c=>c.time!));
-    return {time,lines:choices.filter(c=>c.time===time&&c.p).map(c=>c.p!.index)};
+    /* box: the time chosen IS the formation's own R box (the fresh read's F1, 19 Oct 26) — so a fault it causes is pointed
+       at the box, never at the typed lines */
+    return {time,lines:choices.filter(c=>c.time===time&&c.p).map(c=>c.p!.index),box:own!=null&&time===instant(own)};
   };
   const box=w.standalone?null:parseHM(f.rl);
   const incoming=pick('inTime',null), rally=pick('rally',incoming.time,box);
@@ -102,7 +106,7 @@ export function resolveReporting(w:any,f:any,to:number,parsed=parseReportingLine
   const unresolved=parsed.filter(p=>!p.targets.length||p.targets.some(t=>t.toLowerCase()===cs))
     .filter(p=>p.malformed||(scope('rally').includes(p)&&p.immediate&&incoming.time==null&&(box==null||p.targets.length>0)));
   return {inTime:incoming.time,rally:rally.time,report:stages.length?Math.min(...stages):null,
-    sourceLines:[...new Set([...incoming.lines,...rally.lines])], unresolved};
+    sourceLines:[...new Set([...incoming.lines,...rally.lines])], unresolved, rallyBox:rally.box};
 }
 /* D594 (5 Oct 26): Auto sort and Sort all order a wave's In-time / Rally lines by time — earliest first, an
    evening-before clock before the same day's, a line with no clock last. The key is the line's clock read with the
@@ -152,7 +156,12 @@ export function reportingIssuesForWave(w:any,gi=0):ReportingIssue[]{
     const ld=parseHM(f.ld); if(ld!=null)stages.push({name:'landing',time:ld<to?ld+1440:ld});
     for(let i=1;i<stages.length;i++){
       const before=stages[i-1],after=stages[i];
-      if(before.time>after.time)issues.push({gi,li,lines:r.sourceLines,code:'REPORT_ORDER',blocking:true,
+      if(before.time<=after.time)continue;
+      /* THE R BOX'S OWN FAULT IS POINTED AT THE BOX (the fresh read's F1, 19 Oct 26): a pair that includes the rally taken
+         from the formation's R box blames the box — no typed line, so the warning's tap lands on the box and the typed lines
+         do not explain a fault that is not theirs (D509: "explained while editing") */
+      const box=r.rallyBox&&(before.name==='rally'||after.name==='rally');
+      issues.push({gi,li,lines:box?[]:r.sourceLines,code:'REPORT_ORDER',blocking:true,...(box?{box:true}:{}),
         msg:`${name}: ${before.name} ${stated(before.time)} is later than ${after.name} ${stated(after.time)}.`});
     }
     r.unresolved.forEach(p=>issues.push({gi,li,lines:[p.index],code:'REPORT_UNRESOLVED',blocking:false,
