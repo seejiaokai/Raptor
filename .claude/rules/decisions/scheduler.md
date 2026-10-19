@@ -54,6 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1067 | 19 Oct 26 | The three stand as built: the no-times warning's tap outlines its line as every line-anchored warning does; a seatless row of a flying shift keeps its lit "✓ FLIES" though it counts nothing; the Flies chip keeps the badge's size on the board. |
 | D1066 | 19 Oct 26 | On Edit Schedule's week and View-only Sched the Flies chip is drawn smaller than the MAIN / SPARE badge and sits under it wherever the two do not fit side by side, its word kept whole as "✓ FLIES"; a chip never breaks inside; rows that only stand by are unchanged, and the Scheduler Board's tap button keeps its size. |
 | D1065 | 19 Oct 26 | On SC, AVALON and BB lines every empty R and B box shows a faint dash in the app's grey ghost (the colour of the faint "Remarks"), so a new user sees they are normally left blank and the shift's START and END carry its times; typing replaces it, a typed time shows as today, and the flying lines keep their faint suggested times. |
 | D1064 | 19 Oct 26 | The dashed "FLIES" chip — the way to tick a standby row by hand — shows only on the Scheduler Board; Edit Schedule's week and View-only Sched show nothing on a row that does not fly, and all three screens show the lit "✓ FLIES" on a row that flies. |

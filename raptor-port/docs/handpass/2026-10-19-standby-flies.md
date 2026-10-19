@@ -155,6 +155,8 @@ and the old Logic line (G-1).
 | N2 | the narrow read | every fr: change on a standby row was headed "remarks and standby role" | FIXED — headed by what changed; test |
 | G-1 | the first gate run | three unit / two browser tests pinned the old empty placeholder and the old Logic line | UPDATED to D1065 and the corrected line |
 
+**His word on the three recorded items (19 Oct 26, D1067):** W-B2 / C F3, R-1 and R-5 stand as built — "as recommended".
+
 ## 14. His look — the card
 On his iPhone, at the preview: (1) Add an SC wave on a Saturday and seat its AM shift; type its R — every row shows "✓ FLIES"
 (Scheduler Board, Edit Schedule, View-only Sched), the day's count gains the jets, OIL Earn has the spares on. (2) On the PM
