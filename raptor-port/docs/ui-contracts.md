@@ -826,10 +826,13 @@ runs first; this measures two frames later. **The Scheduler Board is page conten
 `position:absolute` at the top of the document, which is held to that one screen at its top while the board is open
 (`html.sb-board-up` — an iPhone scrolls a document that can scroll to show a box, and leaves it scrolled: the board rose at
 every tap, his picture of 19 Oct 26 16:13), its place given back on the close; clipped (`overflow:clip`, so the crew drawer off its edge never widens the page), the page behind unpainted; nothing places
-it by script after that, and `data-kblayer` keeps it a whole screen of its own to the lift above, as a
-window is. A finger's tap on a low box in a layer lifts its panels on the touch itself, before the keys. The keys count
+it by script after that. `data-kblayer` keeps it a layer of its own to the lift above, but it is never raised or held as
+a window is: a box its list cannot scroll up far enough gets room at the foot of that list while the keys are up
+(`--kbroom`, `[data-kbroom]` in `08-windows-tools.css` — his report of 19 Oct 26 16:49: the raised body slid over the
+board's bar at every tap and, the iPhone panning too, ended above the keys). Nothing is lifted on the press itself — on
+his iPhone a focus given at the end of the touch never took (his recording of 19 Oct 26 16:59); the tap is the browser's. The keys count
 as up against the tallest visible screen seen at this width with nothing typed in (never one read taller than the layout). Pinned: `ui/kbscroll.test.ts`,
-`ui/amendbatch-app.test.tsx` (the board as page content), `e2e/kbscroll.spec.ts` KS1–KS6 (a stand-in visual viewport —
+`ui/amendbatch-app.test.tsx` (the board as page content), `e2e/kbscroll.spec.ts` KS1–KS7 (a stand-in visual viewport —
 Chromium cannot raise an iPhone keyboard).
 
 **A button pressed straight after a changed box does its job (`[EDIT-BUTTON-AFTER-CHANGE]`, 19 Oct 26).** The press

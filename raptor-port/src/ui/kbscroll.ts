@@ -136,6 +136,7 @@ function roomBelow(px: number) {
     typing has ended (no `keep`) — taken away between two boxes, the page would jump back and forth. */
 export function dropLifts(keep?: Element | null) {
   for (const l of [...LIFTED]) if (!keep || !l.contains(keep)) putBack(l)
+  for (const p of [...ROOMED]) if (!keep || !p.contains(keep)) unroom(p)
   if (!keep && SPACER) { SPACER.remove(); SPACER = null }
 }
 /* a held window: held to the room again (the room may have changed), its top at the top */
@@ -172,6 +173,30 @@ function raise(fixedEl: HTMLElement, el: HTMLElement, visTop: number, visBot: nu
   return Math.abs(shiftOf(layer) - s0)
 }
 
+/* ROOM AT THE FOOT OF THE BOARD'S OWN LIST (his seventh report, 19 Oct 26 16:49 — "the screen jumps abit for every tap",
+   "sometimes bottom black screen"; three pictures): a box near the end of the Scheduler Board's list had nothing left to
+   scroll it up by, so the board's body was raised and held like a window — it slid up over the board's own bar (the day,
+   ✓ Done) at every tap, and when the iPhone then panned the screen as well, the held body ended above the keys with the
+   board's empty background below it. The board is never raised or held now: its nearest scrolling list is given room
+   below its end while the keys are up (padding, the custom property --kbroom read by one rule, 08-windows-tools.css), as
+   much as the box still has to rise with its top in sight, and scrolled; the bar stays, nothing else moves. The room
+   goes when the typing ends, the keys go down or the focus leaves that list (dropLifts). */
+const ROOMED = new Set<HTMLElement>()
+const scroller = (a: Element) => /^(auto|scroll|overlay)$/.test(getComputedStyle(a).overflowY)
+function unroom(p: HTMLElement) { delete p.dataset.kbroom; p.style.removeProperty('--kbroom'); ROOMED.delete(p) }
+function panelRoom(el: HTMLElement, layer: Element, visTop: number, visBot: number): number {
+  let p = el.parentElement
+  while (p && p !== layer && !scroller(p)) p = p.parentElement
+  if (!p || p === layer) return 0
+  const r = el.getBoundingClientRect(), pr = p.getBoundingClientRect()
+  const bot = Math.min(pr.bottom, visBot) - GAP, top = Math.max(pr.top, visTop) + GAP
+  const want = Math.min(r.bottom - bot, r.top - top)
+  if (want <= 0.5) return 0
+  const base = ROOMED.has(p) ? parseFloat(p.style.getPropertyValue('--kbroom')) || 0 : parseFloat(getComputedStyle(p).paddingBottom) || 0
+  p.dataset.kbroom = ''; p.style.setProperty('--kbroom', Math.ceil(base + want) + 'px'); ROOMED.add(p)
+  return lift(p, el, bot, top)
+}
+
 /* A LAYER over the page: anything position:fixed, and the Scheduler Board, which stands as page content while it is open
    (data-kblayer — SchedBoard.tsx, owner D1081: an iPhone draws a fixed full-screen layer out of place for a frame as the
    keys close) but is still a whole screen of its own, raised and held as it was while it was fixed. */
@@ -192,6 +217,8 @@ export function keepAboveKeyboard(el: HTMLElement, vv: VV): number {
     }
   }
   panels()
+  /* the board is never raised: room at the foot of its own list instead (below) */
+  if (fixed && (fixed as HTMLElement).hasAttribute('data-kblayer')) return moved + panelRoom(el, fixed, visTop, visBot)
   if (fixed) {
     const r = raise(fixed, el, visTop, visBot)
     /* a window raised, or held to the room, may now scroll its own body: the panels once more */
@@ -211,25 +238,12 @@ export function keepAboveKeyboard(el: HTMLElement, vv: VV): number {
   return moved
 }
 
-/* ON THE PRESS, BEFORE THE KEYS (owner D1081, 19 Oct 26): an iPhone that finds the box it is focusing low on the screen
-   pans the whole screen to show it, and pans back the moment the keys go down — the jump he filmed. So a finger's tap
-   on a box in a window, a sheet or the board scrolls that box's own panels up first, by the height the keys took last
-   time (else about 42% of the screen), so the iPhone finds it already clear and pans nothing. Panels only: no window is
-   raised and no page scrolled before the keys are really up. */
-export function liftPanels(el: HTMLElement, vv: VV): number {
-  const visTop = vv.offsetTop, visBot = vv.offsetTop + vv.height
-  let moved = 0
-  for (let a = el.parentElement; a && a !== document.body && a !== document.documentElement; a = a.parentElement) {
-    if (!scrolls(a)) continue
-    const ar = a.getBoundingClientRect()
-    moved += lift(a, el, Math.min(ar.bottom, visBot) - GAP, Math.max(ar.top, visTop) + GAP)
-  }
-  return moved
-}
-const inFixedLayer = (el: Element) => {
-  for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) if (isLayer(a)) return true
-  return false
-}
+/* NO LIFT ON THE PRESS (his recording, 19 Oct 26 16:59 — "everytime I click on SC it doesn't select the CS text box but
+   the screen snaps down"): a finger's tap on a low box used to scroll its panels up at the end of the touch, before the
+   keys, cancel the touch's own click and give the box the focus itself. On his iPhone that focus never took: the board
+   moved and no box was chosen. Chromium takes such a focus, so no check saw it. The tap is left to the browser now; the
+   box is brought above the keys once they are up (below), and since the board is page content (SchedBoard.tsx, D1081)
+   the iPhone's own pan to a box carries the board with it in the same frame. */
 
 /** Brings the box being typed in above the keys again, now — for a window put back by a tap on its bar that turned out
     not to be a drag (floatwin.ts, FloatWindow.tsx — the narrow read round 2's L3): no focus arrives to do it. */
@@ -265,31 +279,9 @@ export function installKbScroll(): () => void {
   const focusout = (e: FocusEvent) => { if (!e.relatedTarget) requestAnimationFrame(() => { if (!isTypingBox(document.activeElement)) dropLifts() }) }
   /* read fresh each time: the walk stands a stand-in viewport in after the page has loaded */
   let vvNow: VisualViewport | null = null
-  /* the press (above), on the touch itself: its start, and the keys' last height. A box lifted at the end of the touch is
-     no longer under the finger, so the touch's own click and mouse events are cancelled (preventDefault on touchend) and
-     the box is given the focus here — a focus inside the touch, which still raises an iPhone's keys. */
-  let down: { x: number, y: number } | null = null, lastKb = 0
-  const tstart = (e: TouchEvent) => { const p = e.touches[0]; down = e.touches.length === 1 && p ? { x: p.clientX, y: p.clientY } : null }
-  const tend = (e: TouchEvent) => {
-    const d = down; down = null
-    const p = e.changedTouches[0]
-    if (!d || !p || Math.hypot(p.clientX - d.x, p.clientY - d.y) > 6) return
-    const raw = e.target as any
-    const t = raw?.closest?.('input, textarea, select, [contenteditable="true"]') || raw?.closest?.('label')?.control || null
-    if (!isTypingBox(t) || t instanceof HTMLSelectElement || document.activeElement === t || !inFixedLayer(t)) return
-    const vv = window.visualViewport
-    if (!vv || vv.scale > 1.01 || keyboardUp(vv)) return
-    const kb = lastKb || Math.round(window.innerHeight * 0.42)
-    if (!liftPanels(t, { height: window.innerHeight - kb, offsetTop: 0, scale: 1 })) return
-    e.preventDefault()
-    t.focus({ preventScroll: true })
-  }
-  document.addEventListener('touchstart', tstart, { capture: true, passive: true })
-  document.addEventListener('touchend', tend, { capture: true, passive: false })
   const resize = () => {
     noteFullHeight()
     const vv = window.visualViewport
-    if (vv && keyboardUp(vv)) lastKb = window.innerHeight - vv.height
     /* the keys down — read with the zoom taken out, so a pinch while typing (the narrow read round 2's L2) neither puts the
        window back nor takes the room below the page away; a zoomed frame itself changes nothing */
     if (!vv || Math.max(window.innerHeight, BASE.w === window.innerWidth ? BASE.h : 0) - vv.height * (vv.scale || 1) <= KEYBOARD_MIN) { dropLifts(); return }
@@ -309,7 +301,6 @@ export function installKbScroll(): () => void {
   return () => {
     document.removeEventListener('focusin', focusAlso, true)
     document.removeEventListener('focusout', focusout, true)
-    document.removeEventListener('touchstart', tstart, true); document.removeEventListener('touchend', tend, true)
     dropLifts()
     vvNow?.removeEventListener('resize', resize)
     if (raf) cancelAnimationFrame(raf)

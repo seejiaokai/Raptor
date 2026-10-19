@@ -154,8 +154,8 @@ export function SchedBoard() {
      runs, so anything placed by script is a frame behind it. The board is left at the layout's full size
      (position:fixed, inset:0), so it moves with the iPhone's own scroll, never behind it; the visible slice always lies
      inside it, and the page behind stays unpainted (the second half above, which alone answers his 25 Sep 26 gap). The
-     box being typed in is brought above the keys by its own panel's scroll (kbscroll.ts), on the press itself where it
-     can, so the iPhone has nothing to pan.
+     box being typed in is brought above the keys by its own list's scroll once they are up (kbscroll.ts — never on the
+     press: on his iPhone that ate the tap, his recording of 19 Oct 26 16:59).
      AND NOT A FIXED LAYER (his fifth report, 19 Oct 26, Chrome on his iPhone, frame by frame: with nothing placing it by
      script, the iPhone itself drew the fixed board a keyboard's height lower on the first frame of the keys closing). So
      while it is open the board is ordinary page content — position:absolute at the top of the document, a screen tall

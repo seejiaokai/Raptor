@@ -131,15 +131,22 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
      it keeps the layout's full size whatever the visible screen does, so it moves with the iPhone's own scroll. And a
      finger's tap on a box low in it scrolls the box up on the press, before any keyboard, so the iPhone has nothing to
      pan. */
-  test('KS6 the board is never moved by script; a tap lifts a low box before the keys come', async ({ page }) => {
+  /* D1081 and his recording of 19 Oct 26 16:59 ("everytime I click on SC it doesn't select the CS text box but the screen
+     snaps down"): a tap on a low box used to lift its list at the end of the touch and cancel the touch's own click — on
+     his iPhone the box then never took the caret. The tap is the browser's: its own click reaches the box, nothing moves
+     under the finger before the keys come, and the board itself is never moved by script. */
+  test("KS6 a tap on a low box is the browser's own: its click reaches the box, nothing moves before the keys; the board is never moved by script", async ({ page }) => {
     await login(page); await go(page, 'editsched')
     await page.evaluate(() => (window as any).openScheduler(0)); await expect(page.locator('#schedBoard')).toBeVisible()
     const rect = () => page.evaluate(() => { const r = document.getElementById('schedBoard')!.getBoundingClientRect(); return [Math.round(r.top), Math.round(r.height)] })
+    await page.waitForTimeout(400)   // the board's opening slide done
     const box = page.locator('#schedBoard input.tm:visible').nth(6)
     const was = await lowOnScreen(box)
     expect(was).toBeGreaterThan(H * 0.58)
+    await box.evaluate(e => { (window as any).__clicked = false; e.addEventListener('click', () => { (window as any).__clicked = true }, { once: true }) })
     await tap(page, box); await expect(box).toBeFocused()
-    expect(await bottomOf(box), 'lifted on the press, above where the keys will come').toBeLessThanOrEqual(Math.round(H * 0.58) - GAP + 1)
+    expect(await page.evaluate(() => (window as any).__clicked), "the tap's own click reached the box").toBe(true)
+    expect(await bottomOf(box), 'nothing moved under the finger before the keys').toBe(was)
     const before = await rect()
     expect(before[1], 'the board at the full height of the layout').toBeGreaterThan(H - 8)
     await page.evaluate(() => { const v = (window as any).__vv; v.height = innerHeight - 336; v.offsetTop = 120; v.dispatchEvent(new Event('resize')); v.dispatchEvent(new Event('scroll')) })
@@ -155,6 +162,30 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
     await page.waitForTimeout(100)
     expect(await page.evaluate(() => document.scrollingElement!.scrollTop), 'the document cannot be scrolled under the board').toBe(0)
     expect(Math.abs((await rect())[0]), 'the board still fills the screen from its top').toBeLessThanOrEqual(3)
+  })
+
+  /* his seventh report (19 Oct 26 16:49, three pictures — "the screen jumps abit for every tap", "sometimes bottom black
+     screen"): a box at the very end of the board's list had nothing left to scroll it by, so the board's body was raised
+     and held like a window — over the board's own bar, and ending above the keys once the iPhone panned as well. The board
+     is never raised: its list gets room at its foot while the keys are up. */
+  test("KS7 the board's last box: its list gets room below and scrolls it above the keys; the bar stays, nothing is raised; the room goes with the keys", async ({ page }) => {
+    await login(page); await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(0)); await expect(page.locator('#schedBoard')).toBeVisible()
+    const box = page.locator('#schedBoard textarea:visible, #schedBoard input:visible').last()
+    await box.evaluate(e => { let s = e.parentElement; while (s && !(/(auto|scroll)/.test(getComputedStyle(s).overflowY) && s.scrollHeight > s.clientHeight + 1)) s = s.parentElement; if (s) s.scrollTop = s.scrollHeight })
+    await page.waitForTimeout(400)   // the board's opening slide done
+    /* the bar is seen, not covered: what stands at its middle is the bar itself */
+    const bar = () => page.evaluate(() => { const r = document.querySelector('#schedBoard .sb-top')!.getBoundingClientRect(); return !!document.elementFromPoint(r.left + 40, (r.top + r.bottom) / 2)?.closest('.sb-top') })
+    expect(await bar(), 'the fixture: the bar in sight').toBe(true)
+    expect(await bottomOf(box), 'the fixture: the last box under where the keys come').toBeGreaterThan(H - KB)
+    await tap(page, box); await expect(box).toBeFocused()
+    await keysUp(page)
+    await expect.poll(() => bottomOf(box)).toBeLessThanOrEqual(H - KB - GAP + 1)
+    expect(await bar(), "the board's bar is not covered").toBe(true)
+    expect(await page.locator('#schedBoard [data-kblift], #schedBoard [data-kbcap]').count(), 'nothing of the board raised or held').toBe(0)
+    expect(await page.locator('#schedBoard [data-kbroom]').count(), 'its list has room below').toBe(1)
+    await page.evaluate(() => { const v = (window as any).__vv; v.height = innerHeight; v.dispatchEvent(new Event('resize')) })
+    await expect.poll(() => page.locator('[data-kbroom]').count(), 'the room goes with the keys').toBe(0)
   })
 
   test('KS4 a box already above the keys is left where it is', async ({ page }) => {
