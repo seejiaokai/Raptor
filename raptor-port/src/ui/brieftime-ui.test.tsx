@@ -329,3 +329,32 @@ describe('RB4 RB5 RB6 — the R box (D1026)', () => {
     f.rl = keep
   })
 })
+
+/* RB5 — the first keys after a tap replace the placed suggestion even where the phone ignored the highlight (iOS may not
+   honour a selection set by script in a box just tapped): the box keeps only what was typed */
+describe('RB5 — typing replaces a placed suggestion without the highlight', async () => {
+  const { placeSuggestion } = await import('./interactions')
+  it('on a board box and a week box', () => {
+    const inp = document.createElement('input'); inp.placeholder = '09:40'; document.body.appendChild(inp)
+    expect(placeSuggestion(inp)).toBe(true)
+    expect(inp.value).toBe('09:40')
+    inp.value = '09:401010'; inp.dispatchEvent(new Event('input', { bubbles: true }))
+    expect(inp.value, 'only what was typed').toBe('1010')
+    inp.value = '10105'; inp.dispatchEvent(new Event('input', { bubbles: true }))
+    expect(inp.value, 'once only: then the box is ordinary').toBe('10105')
+    inp.remove()
+    const box = document.createElement('span'); box.setAttribute('contenteditable', 'true'); box.dataset.ph = '10:20'; document.body.appendChild(box)
+    expect(placeSuggestion(box)).toBe(true)
+    expect(box.textContent).toBe('10:20')
+    box.textContent = '10:200955'; box.dispatchEvent(new Event('input', { bubbles: true }))
+    expect(box.textContent).toBe('0955')
+    box.remove()
+  })
+  it('a typed replacement that IS the selection behaviour leaves the value alone', () => {
+    const inp = document.createElement('input'); inp.placeholder = '09:40'; document.body.appendChild(inp)
+    placeSuggestion(inp)
+    inp.value = '1'; inp.dispatchEvent(new Event('input', { bubbles: true }))
+    expect(inp.value).toBe('1')
+    inp.remove()
+  })
+})

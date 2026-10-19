@@ -605,21 +605,36 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
 
 /* ONE TAP PLACES A SUGGESTED TIME IN ITS EMPTY BOX (owner D1030) — the board's <input> (its placeholder is the
    suggestion) or the week's contenteditable (its data-ph). Placed and selected, so the next key typed replaces it.
-   true when it placed something; false for a box that already holds a time, or carries no suggestion. */
+   true when it placed something; false for a box that already holds a time, or carries no suggestion.
+   THE FIRST KEYS REPLACE IT EVEN WHERE THE HIGHLIGHT DID NOT TAKE (the scenario designer's lead, 19 Oct 26): a phone
+   browser may not honour a selection set by script in a box just tapped, and the typing would then land after the
+   placed time ("09:401010", refused as no time). So the first thing typed after a placement is read on its own: a box
+   that now holds the suggestion with more after it keeps only what was typed. Once, then the box is ordinary. */
+const firstTypingReplaces = (read: () => string, write: (v: string) => void, sug: string) => {
+  let first = true
+  return () => {
+    if (!first) return
+    first = false
+    const v = read()
+    if (v.length > sug.length && v.startsWith(sug)) write(v.slice(sug.length))
+  }
+}
 export function placeSuggestion(el: HTMLElement): boolean {
   if (el instanceof HTMLInputElement) {
     const sug = el.placeholder
     if (!sug || el.value || el.disabled || el.readOnly) return false
     el.value = sug
     el.select()
+    const typed = firstTypingReplaces(() => el.value, v => { el.value = v; el.setSelectionRange(v.length, v.length) }, sug)
     /* the board saves on `change`, which the browser raises only for what was typed: a box left still holding the
        placed suggestion raises it here, so the tap alone accepts (D1030). A typed time raised its own; Escape put the
        box back empty first (textedit.ts, D1011) — neither matches. */
     const leave = () => {
-      el.removeEventListener('blur', leave)
+      el.removeEventListener('blur', leave); el.removeEventListener('input', typed)
       if (el.isConnected && el.value === sug) el.dispatchEvent(new Event('change', { bubbles: true }))
     }
     el.addEventListener('blur', leave)
+    el.addEventListener('input', typed)
     return true
   }
   const sug = el.dataset.ph
@@ -630,6 +645,12 @@ export function placeSuggestion(el: HTMLElement): boolean {
     const r = document.createRange(); r.selectNodeContents(el)
     const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r)
   } catch (_) { /* a selection is a courtesy — jsdom and odd embedders may refuse */ }
+  const typed = firstTypingReplaces(() => el.textContent || '', v => {
+    el.textContent = v
+    try { const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r) } catch (_) { /* as above */ }
+  }, sug)
+  const done = () => { el.removeEventListener('input', typed); el.removeEventListener('blur', done) }
+  el.addEventListener('input', typed); el.addEventListener('blur', done)
   return true
 }
 
