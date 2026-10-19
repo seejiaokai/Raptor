@@ -1,0 +1,25 @@
+import { launch, proveBundle, phone, openBoard, wait, tapEl, typeBox, scrollTo, openWarn, shot } from './sf-B-lib.mjs'
+console.log('sf-B-probe11 v1')
+await proveBundle()
+const browser = await launch()
+try {
+  const { ctx, page: p, errors } = await phone(browser, 'a')
+  const SEL = '#schedBoard'
+  await p.evaluate(() => window.go('editsched')); await wait(p, 600)
+  await p.evaluate(() => { window.addWave(5, 'bb'); const ids = Object.keys(window.PEOPLE).filter(i => !window.PEOPLE[i].special); const F = ids.filter(i => window.PEOPLE[i].seat === 'FCP'); window.fillSlot('5.0.0.0.p', F[10]); window.fillSlot('5.0.0.1.p', F[11]) })
+  await openBoard(p, 5)
+  await typeBox(p, p.locator(`${SEL} [data-bfld="ff:5.0.0.rl"]`), '0800')
+  await p.evaluate(() => window.scrollTo(0, 0))
+  await openWarn(p)
+  console.log(await p.evaluate(() => [...document.querySelectorAll('#sbWarn > *, #sbWarn .wrow, #sbWarn li, #sbWarn [data-wk], #sbWarn [data-warn]')].map(e => e.tagName + '.' + e.className + ' [' + [...e.attributes].filter(a => a.name.startsWith('data')).map(a => a.name + '=' + a.value).join(',') + '] ' + (e.innerText || '').slice(0, 40).replace(/\n/g, ' ')).join('\n')))
+  const st = async t => console.log(t, JSON.stringify(await p.evaluate(() => { const b = document.querySelector('#schedBoard [data-bfld="ff:5.0.0.to"]'); const r = b.getBoundingClientRect(); return { y: scrollY, act: document.activeElement && (document.activeElement.getAttribute('data-bfld') || document.activeElement.tagName), startTop: Math.round(r.top), startCls: b.className, sel: window.SBDAY, sbscroll: [...document.querySelectorAll('*')].filter(e => e.scrollTop > 0).map(e => e.tagName + '.' + e.className + ':' + e.scrollTop).slice(0, 3) } })))
+  await st('before')
+  await tapEl(p, p.locator('#sbWarn .wln.adv').first(), { label: 'amber' }); await wait(p, 900)
+  await st('after real tap on the amber line')
+  await shot(p, 'probe-amber-tap', { scale: 'css' })
+  const bx = await p.locator('#sbWarn .wln.adv').first().boundingBox(); console.log('line box', JSON.stringify(bx))
+  await p.mouse.click(bx.x + 60, bx.y + bx.height / 2); await wait(p, 900); await st('after a MOUSE click on the amber line')
+  await p.evaluate(() => window.scrollTo(0, 0)); await wait(p, 300)
+  await tapEl(p, p.locator('#sbWarn .wln.hard').first(), { label: 'hard' }); await wait(p, 900); await st('after tap on the hard line')
+  console.log('errors', errors)
+} finally { await browser.close() }

@@ -1,0 +1,17 @@
+import * as L from './sf-C-lib.mjs'
+const { launch, ctxOpen, openBoard, closeBoard, bPut, bType, bf, sleep, shot, go, warnLines, chipLine } = L
+const b = await launch()
+const { p } = await ctxOpen(b, {})
+await go(p, 'editsched'); await p.evaluate(() => window.addWave(5, 'bb')); await sleep(500)
+await openBoard(p, 5)
+await bPut(p, 5, 0, 0, 2, 'p', ['bane'])
+await p.locator('#schedBoard [data-safly="5.0.0.2"]:visible').first().click(); await sleep(700)
+await p.evaluate(() => window.scrollTo(0, 99999)); await sleep(300)
+const lines = await p.evaluate(() => [...document.querySelectorAll('#sbSide *')].filter(e => e.children.length === 0 && /BB SHIFT flies/.test(e.textContent)).map(e => e.tagName + '|' + e.className + '|' + e.parentElement.className + '|' + JSON.stringify(e.parentElement.dataset) + '|' + JSON.stringify(e.dataset)))
+console.log(lines)
+const el = p.locator('#sbSide').getByText(/BB SHIFT flies but has no START or END/).first()
+await el.click(); await sleep(900)
+const r = await p.evaluate(() => { const a = document.activeElement; const t = document.querySelector('[data-bfld="ff:5.0.0.to"]'); const r = t && t.getBoundingClientRect(); return { active: a && (a.tagName + ' ' + (a.dataset.bfld || a.className)), toBox: r && [Math.round(r.top), Math.round(r.left)], cls: t && t.className, scrollY: window.scrollY, flash: [...document.querySelectorAll('.flash, .jump, [class*=flash]')].slice(0, 3).map(e => e.className) } })
+console.log(JSON.stringify(r))
+await shot(p, 'x25-after-tap')
+await b.close()

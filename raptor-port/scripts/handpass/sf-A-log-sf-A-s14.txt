@@ -1,0 +1,4 @@
+[14a] RECORD | save Saturday (SC AM R 06:30 typed, AVALON row 3 ticked by hand) as a day template, apply to Sunday | exp: R travels as before; RECORD whether the hand tick travels | seen: Sunday SC AM lit LLLL R="06:30"; AVALON lit dddd, stored ticks [false,false,false,false] | A/A-14a-1-applied-AVALON.png
+[14c] PASS | + Wave → SC on Monday | exp: no tick, dashed chips, the faint dash in R and B | seen: lit dddd; R/B placeholder/value ["—/","—/"] | A/A-14c-new-SC-wave.png
+[14e] RECORD | press the "+" on an AVALON row (add another aircraft row) when row 3 is ticked | exp: RECORD whether the ticked row copies: the new row dashed | seen: lit before ddLd, after ddLdd; rows now 5 | A/A-14e-plus-row.png
+[14d] PASS | leave the week and come back, then reload | exp: every tick and every lit chip survives (SC AM LLLL; AVALON row 3 lit) | seen: after returning {"sc":"LLLL","av":"ddLdd"}; after reload {"sc":"LLLL","av":"ddLdd"} | A/A-14d-after-reload.png

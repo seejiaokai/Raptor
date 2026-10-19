@@ -1,0 +1,16 @@
+import * as L from './sf-C-lib.mjs'
+const { launch, ctxOpen, openBoard, closeBoard, bPut, bType, bf, sleep, shot, go, errors } = L
+const b = await launch()
+const { p } = await ctxOpen(b, {})
+await go(p, 'editsched'); await p.evaluate(() => window.addWave(5, 'sc')); await sleep(500)
+await openBoard(p, 5)
+for (const [ai, pid] of [[0, 'stiff'], [1, 'bane'], [2, 'slipway'], [3, 'dj']]) await bPut(p, 5, 0, 0, ai, 'p', [pid])
+await bType(p, bf(5, 0, 0, 'rl'), '06:30')
+await closeBoard(p); await go(p, 'editsched')
+await p.locator('#insightBtn').click(); await sleep(1200)
+await shot(p, 'x20-insights')
+const t = await p.evaluate(() => { const m = document.querySelector('#insightModal'); return m ? m.innerText.replace(/\s+/g, ' ').slice(0, 3000) : 'no modal' })
+console.log(t)
+const tabs = await p.evaluate(() => [...document.querySelectorAll('#insightModal button, #insightModal [role=tab]')].filter(e => e.offsetParent).map(e => e.id + '|' + e.innerText.trim().slice(0, 25) + '|' + JSON.stringify(e.dataset)).slice(0, 30))
+console.log(tabs.join('\n'))
+await b.close()

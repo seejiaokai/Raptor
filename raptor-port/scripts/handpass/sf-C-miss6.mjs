@@ -1,0 +1,41 @@
+import * as L from './sf-C-lib.mjs'
+const { launch, ctxOpen, openBoard, closeBoard, bPut, bType, bf, sleep, shot, rec, go, errors, chipLine } = L
+const S = 'T'
+const b = await launch()
+const { p } = await ctxOpen(b, {})
+await go(p, 'editsched'); await p.evaluate(() => { window.addWave(5, 'sc'); window.addWave(5, 'avalon') }); await sleep(500)
+await openBoard(p, 5)
+await bPut(p, 5, 0, 0, 0, 'p', ['dice']); await bPut(p, 5, 0, 1, 2, 'p', ['bane']); await bPut(p, 5, 1, 0, 2, 'p', ['nact'])
+await bType(p, bf(5, 0, 0, 'rl'), '06:30')
+await p.locator('#schedBoard [data-safly="5.0.1.2"]:visible').first().click(); await sleep(500)   // PM SPARE ticked by hand
+await p.locator('#schedBoard [data-safly="5.1.0.2"]:visible').first().click(); await sleep(500)   // AVALON SPARE ticked by hand
+const c0 = await chipLine(p)
+rec(S, 'set-up on Sat: SC AM R 06:30; SC PM SPARE ticked; AVALON SPARE ticked', 'lit', c0, 'RECORD')
+await p.getByRole('button', { name: 'Templates' }).first().click(); await sleep(600)
+await p.getByText('Save this day as a template').first().click(); await sleep(700)
+const dlg = await p.evaluate(() => [...document.querySelectorAll('input[type=text], input:not([type]), [role=dialog] input')].filter(e => e.offsetParent && !e.dataset.bfld && !e.dataset.txt).map(e => e.id + '|' + e.placeholder + '|' + e.className))
+console.log('inputs after save click', dlg)
+await shot(p, 'T-1-save-dialog')
+await p.locator('input.tpl-name').first().fill('SF tick day'); await p.locator('input.tpl-name').first().press('Enter'); await sleep(900)
+await shot(p, 'T-2-after-save')
+await p.locator('#daytplModal').getByRole('button', { name: 'Done' }).click(); await sleep(500)
+await openBoard(p, 4)
+await p.locator('#sbTpl').click(); await sleep(700)
+await p.getByText('SF tick day').first().click(); await sleep(900)
+const conf = await p.evaluate(() => [...document.querySelectorAll('button')].filter(e => e.offsetParent && /apply|replace|yes|ok|confirm/i.test(e.innerText)).map(e => e.innerText.trim()))
+console.log('after click buttons', conf)
+if (conf.length) { await p.getByRole('button', { name: /^(Apply|Replace|Yes|OK|Confirm)/ }).first().click().catch(() => {}); await sleep(900) }
+const cF = await chipLine(p)
+const model = await p.evaluate(() => window.DAYS[4].waves.map(w => w.kind + ':' + w.formations.map(f => 'rl=' + (f.rl || '') + ' fly=' + f.aircraft.map(a => a.fly ? 1 : 0).join('')).join(' / ')))
+await shot(p, 'T-4-after-apply')
+rec(S, 'apply the saved day template to Friday (unpublished)', 'RECORD: R travels as it did before; does the hand tick travel? (design silent)', { cF, model }, 'RECORD', 'C-T-4-after-apply.png')
+// + Line inside the SC wave on Sat: copy of a ticked row?
+await openBoard(p, 5)
+const nBefore = await p.evaluate(() => window.DAYS[5].waves[0].formations.length)
+await p.locator('#schedBoard [data-gline="5.0"]:visible').first().click(); await sleep(700)
+const nAfter = await p.evaluate(() => window.DAYS[5].waves[0].formations.length + ' ; new: ' + JSON.stringify(window.DAYS[5].waves[0].formations.slice(-1).map(f => ({ cs: f.cs, rl: f.rl, fly: f.aircraft.map(a => a.fly ? 1 : 0).join('') }))))
+const cL = await chipLine(p)
+rec(S, '+ Line inside the SC wave (Sat, with a ticked PM SPARE and R on AM)', 'RECORD: the new line carries no tick', { nBefore, nAfter, cL }, 'RECORD')
+// Alt plan on Sat? (unpublished day: plans menu)
+rec(S, 'browser error list', 'empty', errors, errors.length ? 'FAIL' : 'PASS')
+await b.close()
