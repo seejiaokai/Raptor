@@ -54,7 +54,6 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
-| D1082 | 19 Oct 26 | A hidden readout of the screen's keyboard numbers is added to the keyboard-scroll job, shown only when the app is opened with ?kbdebug=1 on its link, for his iPhone screenshots of the black band and the missed tap; nobody else ever sees it, and it is taken out before the job goes live. |
 | D1081 | 19 Oct 26 | When the keyboard opens or closes, nothing on screen jumps out of place, even for one frame: whatever follows the visible screen — the Scheduler Board, the Leave War's sheets and bars, the calendars' day panels, a window raised for the keys — moves with it smoothly; the same is checked everywhere the app follows the keyboard. |
 | D1080 | 19 Oct 26 | One tap then typing replaces the value, as in the schedule's time boxes (D1047), in four more places: the duty and wave templates' time boxes; the Leave War's typed numbers (a counter's amber and red numbers, the OIL figure boxes); the SANS settings' and the late cut-off's number boxes; and the Logic page's settings. |
 | D1067 | 19 Oct 26 | The three stand as built: the no-times warning's tap outlines its line as every line-anchored warning does; a seatless row of a flying shift keeps its lit "✓ FLIES" though it counts nothing; the Flies chip keeps the badge's size on the board. |

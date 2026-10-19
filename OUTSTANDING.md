@@ -64,9 +64,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Schedule and amendments**
 - [BUBBLE-SMALL-SEEN] — an empty gold pill in an input's row on the phone's Inputs list (the rest done).
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
-- [KEYBOARD-SCROLL] — on a phone, a box tapped to type in that the keyboard would cover scrolls to sit just above it — every box in the app (D1048). Its own small job, next.
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
 - [INNERHTML-REPAINT-SWEEP] — eleven screens hand React their markup as a new object every repaint, which React sets again — a box being typed in there is thrown away by any repaint (Quals fixed in [KEYBOARD-SCROLL]); sweep the rest (low).
+- [IPHONE-CARET-CHECKS] — two checks only his iPhone can make, carried from the one-tap time boxes (D1047): dragging the caret with the space bar, and a long press (the loupe).
 - [STANDBY-WEEK-B] — on Edit Schedule's week (and View-only Sched) SC, AVALON and BB lines show no B: the rally box sits above START, not above B as D1040 says and as the board draws it (his question, 20 Oct 26).
 - [BOARD-TAB-FOLD] — a time typed on the Scheduler Board and left by Tab shows as typed ("1000") until another press, though 10:00 is saved (found by the D1080 walk; older, low).
 - [LOOK-PENDING-COUNT] — the 👁 look at the Original shows "1 pending" where the working copy shows "2 pending" (reproduce first).
@@ -1882,7 +1882,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 | D994's Schedule and amendments small fixes (21 items) on `claude/schedule-amendments-fixes-fffce0`, checked 18–19 Oct 26 | the scenario design and the code read: fresh, blind Opus readers (D790); the fix rounds' narrow reads: fresh Opus readers, rounds 1 and 2 | Astra's scenario design and Astra's and Sol 6.1's reads of the finished code (a published-day change, saved history lines) |
 | [RALLY-PER-FORMATION] with [EDIT-BUTTON-AFTER-CHANGE] — a rally box for each formation (D1026–D1034), built 19 Oct 26 on `claude/rally-box-mockup-452b95` | one fresh, blind Opus reader of the finished code (D790, D903); walked and gated (FULL) | Astra's and Sol 6.1's reads (OIL, the published record) |
 | [RALLY-BOX-CHANGES] — his three changes to the rally box (D1038–D1041): a taken suggestion's short flash, SC / AVALON / BB rally boxes, their worked-out times hidden, the SC MAIN rally in crew rest and OIL; built 19 Oct 26 on `claude/rally-box-changes` | one fresh, blind Opus reader of the finished code and one narrow Opus read of its fixes (D790, D903); walked and gated (FULL) | Astra's and Sol 6.1's reads (OIL, the published record) |
-| [KEYBOARD-SCROLL] with D1080 — the box being typed in lifted above a phone's keyboard; one tap then typing replaces in four more places; built 19 Oct 26 on `claude/keyboard-scroll` | one fresh, blind Opus reader of the finished code and two narrow Opus reads of its fixes (D790, D903); walked and gated (WALK) | Astra's read (a shared behaviour on every surface) |
+| [KEYBOARD-SCROLL] with D1080 — the box being typed in lifted above a phone's keyboard; one tap then typing replaces in four more places; built 19 Oct 26 on `claude/keyboard-scroll` | one fresh, blind Opus reader of the finished code and two narrow Opus reads of its fixes (D790, D903); walked and gated (WALK) | Astra's read (a shared behaviour on every surface); the board's hardenings of 19 Oct 26 were built by Fable on his call and read by the host (Opus) only |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.
@@ -1972,12 +1972,9 @@ short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not c
 ### [NOTICE-RETENTION] The bell's notices are kept for good — a retention rule at the database step (the one-rule build's step 7, 12 Oct 26 — deferred)
 **DEFERRED — for the database step.** Each notice is one saved record (`notices/<id>`), made inside the change that owes it and never pruned: a person's list shows his newest thirty, the rest stay stored. In this build that is demo data, cleared before the database (D56); in the database it grows with every change to a shared input. **Why it is not pruned now:** a notice is part of its maker's Undo step — a prune inside someone else's command would advance its revision and refuse that Undo, the fault the plan's F9 names for reading (`raptor-port/docs/undo-contract.md` §4). **At the database step:** how long a notice is kept is the organisation's retention rule, with the change history's (D351) — a server-side sweep by age, outside any person's command; and each person's read record (`settings/noticeseen:<pid>`) drops the ids of swept notices with it. `raptor-port/docs/data-model.md` §Notice says the same.
 
-### [KEYBOARD-SCROLL] On a phone, the box being typed in shows above the keyboard (D1048, 19 Oct 26)
-His words: when he taps anything to type in that sits where the keyboard comes up, the box should show above the keyboard — scrolled to it. Every box in the app, on a phone (his iPhone: Safari's own scroll does not always bring a box inside the board's scrolling panel clear of the keyboard). The how is the agent's: on a press-focused box, once the keyboard has resized the visible screen (`visualViewport`), scroll the box's own scrolling panel so it sits just above it. **Also put to him in this job (D852 — his "not sure where else", 19 Oct 26), each with its picture before anything is built:** D1047's "one tap then typing replaces" on (1) the duty and wave templates' time boxes, (2) the Leave War's typed numbers (required P / W, the flying counts), (3) the SANS settings' and late cut-off's number boxes, (4) the Logic page's settings; not on callsign, mission or remarks, nor an input's start / end (his iPhone's own time wheel). **Tier when built:** WALK (a shared behaviour on every surface; his iPhone is the real test — WebKit is not in the walk). **Place:** its own small job, next (his word), before or beside [STANDBY-FLIES].
-
-
 ### [BOARD-SIDEWAYS-KEYS] A phone on its side with the keys up: the Scheduler Board's heading fills what is left (found 19 Oct 26 — the D1048 walk, walker A's A2; low)
-With the phone on its side (874 × 402) and a keyboard of about 200px up, the board follows the visible screen (its fit to
+*(Since 19–20 Oct 26 the board no longer follows the visible screen — it is page content, D1081 — so look again on a phone on
+its side before building.)* With the phone on its side (874 × 402) and a keyboard of about 200px up, the board follows the visible screen (its fit to
 `visualViewport`, `SchedBoard.tsx`) and is 202px tall; its bar, day strip and headings take 186px of it, leaving a 16px
 strip to scroll in — a time box tapped low ends under the keys, and none can be brought up (`kbscroll.ts` scrolls the
 panel to its end). Older than D1048 (the layout of the board's top on a short screen). Pictures:
@@ -1985,6 +1982,13 @@ panel to its end). Older than D1048 (the layout of the board's top on a short sc
 `raptor-port/docs/handpass/2026-10-19-keyboard-scroll.md`. **To do:** on a short screen with the keys up, fold the board's
 top to its one bar (the day strip and section headings scroll with the panel). A picture to him first (D853). **Place:**
 low — with the next change to the board's top on a phone.
+
+### [IPHONE-CARET-CHECKS] Two checks of the one-tap time boxes only his iPhone can make (carried from pull request 541's round-3 read; filed 20 Oct 26)
+D1047: one tap into a time box then typing replaces its time; a second tap, dragging the caret or an arrow key puts the
+caret where he wants it. Chromium cannot show two iPhone gestures: (1) dragging the caret with the space bar held — it is
+not caught as a drag, so the box may still be armed and the next key replace the time; (2) a long press (the loupe) on the
+box. **To do:** at his next iPhone look at a time box, ask him to try both; fix whichever arms wrongly (`interactions.ts`
+armFreshTime). **Place:** low — with the next iPhone look at the board.
 
 ### [STANDBY-WEEK-B] The week shows no B on SC, AVALON and BB lines (his question, 20 Oct 26 — "why does SC not have B on edit schedule? Brief. Can u check BB and Avalon as well")
 On Edit Schedule's week (and so View-only Sched and the next-week peek, which share the heading), a standby line's time

@@ -13,7 +13,7 @@ not yet live). Two changes, one check (D485):
 ## Questions waiting for him
 None.
 
-**The readout (D1082, 19 Oct 26 — his "Add the readout"):** `src/ui/kbdebug.ts`, shown only with `?kbdebug=1` on the link (and `?kbdebug=0` turns it off), for his iPhone screenshots of the black band and the missed tap. **It is taken out before "merge live"** — the file, its install line in `main.tsx`, its test and its row in `docs/file-map.md`.
+**The readout (D1082, 19 Oct 26 — his "Add the readout"):** `src/ui/kbdebug.ts`, shown only with `?kbdebug=1` on the link (and `?kbdebug=0` turns it off), for his iPhone screenshots of the black band and the missed tap. **Taken out on his "merge live" (20 Oct 26)** — the file, its install line in `main.tsx`, its test and its row in `docs/file-map.md`; D1082 spent.
 
 ## 1. The eight questions and the tier
 1. Money (OIL) — NO: no OIL arithmetic or record changes; the Leave War's OIL figure boxes save what the box shows, by
@@ -203,3 +203,15 @@ On his iPhone, the preview link from the pull request:
 | 7 (16:49, three pictures) — "jumps abit for every tap", "sometimes bottom black screen", a second box needing a second tap | No board bar in any picture; the board's body ending above the keys, its dark background below | A box at the end of the board's list was lifted by raising and holding the board's body like a window — over its own bar (by 67px) and, once the iPhone panned as well, ending above the keys (host probe `kbs-host-raise.mjs`). The board is never raised now: its list gets room at its foot while the keys are up (`kbscroll.ts` panelRoom, `[data-kbroom]`). KS7 (red on the old code: the bar covered). Going from one box to the next: `kbs-host-hop.mjs` (the second box takes the caret, nothing moves) |
 | 6 (16:13, a picture; "the bottom of the page black out") — the board higher at every tap | The board ended at 594 of 874, the page's empty foot below (reproduced on the pushed build: host probe `kbs-host-drift.mjs`, the document scrolled 400 under the board — picture `walk/host-drift-before.png`) | An iPhone scrolls a document that can scroll to show the box being typed in, and leaves it scrolled. The document is held to one screen at its top while the board is open (`html.sb-board-up`), its place given back on the close; after: the document cannot scroll, the board 0–874 (`walk/host-drift-after.png`), pinned in KS6. Board browser tests: 369 passed |
 | 5 (15:31, Chrome on his iPhone) — the jump remains; "works then stops" after another app and back | With nothing placing it by script, the iPhone itself drew the fixed board a keyboard's height lower on the first closing frame | (a) The board is no longer a fixed layer while it is open: page content, `position:absolute` over exactly the screen the document stands at, clipped (`10-board-history.css`, offsets from `SchedBoard.tsx`), so the iPhone moves it with its own scroll in the same frame; it stays a whole screen to the lift (`data-kblayer`). A first try held the whole document to one screen: it sent the week behind to the top and the crew drawer widened the page (10 browser tests red) — replaced. Board browser tests (19 files): 369 passed. (b) The keys are counted as up from the tallest visible screen seen at this width with nothing typed in, not the layout's height, which a browser back from another app can shorten (`kbscroll.ts` BASE) — never a reading taller than the layout (KS3b found the stand-in keyboard's start-up reading kept the keys up for good; red first in `kbscroll.test.ts`). Both need his iPhone: Chromium draws no keyboard |
+
+## 16. His look, and the close (20 Oct 26)
+His iPhone, the preview of 27d3f00d1 with the readout: *"Good now scheduler board works as it should"*; Edit Schedule's
+"1 frame stutter" as the keys closed was the readout itself (placed by script, two frames behind — the schedule's rows did
+not move in any frame of his recording); with it off, *"Looks good"*; then *"Merge live"*. GitHub's full check of 27d3f00d1:
+green. The readout taken out (D1082 spent); the touched unit tests and typecheck re-run.
+Filed from this job: [STANDBY-WEEK-B] (his question: the week shows no B on SC, AVALON and BB lines), [IPHONE-CARET-CHECKS]
+(the two iPhone checks carried from pull request 541), [BOARD-SIDEWAYS-KEYS], [BOARD-TAB-FOLD], [INNERHTML-REPAINT-SWEEP].
+
+Walk: two Sonnet walkers (A 29 pass, B 236 pass) and the host's probes on the built app at his iPhone's width, a stand-in
+keyboard in Chromium; his iPhone (nine recordings and pictures, 19–20 Oct 26) for what Chromium cannot show — pictures in
+`docs/img/handpass/2026-10-19-keyboard-scroll/`; WebKit itself not walked.

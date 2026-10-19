@@ -14,7 +14,6 @@ import { bootApp, BootConfigError } from './boot'
 import { bootPolicyFrom } from './bootpolicy'
 import { installDotRing } from './ui/dotring'
 import { installKbScroll } from './ui/kbscroll'
-import { installKbDebug } from './ui/kbdebug'
 
 /* THE COMPOSITION ROOT. It chooses the two things only a page can: the backend (storage/boot.ts chooseBackend) and
    the boot policy ([DB-READINESS] group A, phase 5 — src/bootpolicy.ts: the demo, or a shared store that nothing demo
@@ -44,8 +43,6 @@ async function boot(): Promise<void> {
   installDotRing()
   /* on a phone, the box being typed in is scrolled clear of the keyboard ([KEYBOARD-SCROLL], D1048) */
   installKbScroll()
-  /* the hidden readout of the keyboard's numbers, only with ?kbdebug=1 on the link (D1082 — taken out before "merge live") */
-  installKbDebug()
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <App />
