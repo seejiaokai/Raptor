@@ -46,8 +46,21 @@ export function isTypingBox(el: any): el is HTMLElement {
 }
 
 type VV = { height: number, offsetTop: number, scale: number }
+/* THE SCREEN'S FULL HEIGHT, AS SEEN WITH NO BOX BEING TYPED IN (his iPhone, 19 Oct 26 — "I go to another screen on my phone
+   then back to chrome … initially works then it doesn't"): a browser that comes back from another app can shorten its
+   LAYOUT for the keys too, and then the layout's height no longer tells a keyboard; the tallest visible screen seen at
+   this width with nothing being typed in still does. */
+let BASE = { w: 0, h: 0 }
+export function noteFullHeight() {
+  const vv = typeof window !== 'undefined' ? window.visualViewport : null
+  if (!vv || vv.scale > 1.01 || isTypingBox(document.activeElement)) return
+  if (BASE.w !== window.innerWidth) BASE = { w: window.innerWidth, h: 0 }
+  BASE.h = Math.max(BASE.h, vv.height)
+}
 export function keyboardUp(vv: VV | null | undefined): boolean {
-  return !!vv && !(vv.scale > 1.01) && window.innerHeight - vv.height > KEYBOARD_MIN
+  if (!vv || vv.scale > 1.01) return false
+  const full = Math.max(window.innerHeight, BASE.w === window.innerWidth ? BASE.h : 0)
+  return full - vv.height > KEYBOARD_MIN
 }
 
 const scrolls = (a: Element) => {
@@ -266,11 +279,12 @@ export function installKbScroll(): () => void {
   document.addEventListener('touchstart', tstart, { capture: true, passive: true })
   document.addEventListener('touchend', tend, { capture: true, passive: false })
   const resize = () => {
+    noteFullHeight()
     const vv = window.visualViewport
     if (vv && keyboardUp(vv)) lastKb = window.innerHeight - vv.height
     /* the keys down — read with the zoom taken out, so a pinch while typing (the narrow read round 2's L2) neither puts the
        window back nor takes the room below the page away; a zoomed frame itself changes nothing */
-    if (!vv || window.innerHeight - vv.height * (vv.scale || 1) <= KEYBOARD_MIN) { dropLifts(); return }
+    if (!vv || Math.max(window.innerHeight, BASE.w === window.innerWidth ? BASE.h : 0) - vv.height * (vv.scale || 1) <= KEYBOARD_MIN) { dropLifts(); return }
     if (vv.scale > 1.01) return
     if (box && Date.now() - at < FOCUS_WINDOW) soon()
   }
@@ -280,7 +294,7 @@ export function installKbScroll(): () => void {
     vvNow?.removeEventListener('resize', resize)
     vvNow = vv; vvNow?.addEventListener('resize', resize)
   }
-  follow()
+  follow(); noteFullHeight()
   const focusAlso = (e: FocusEvent) => { follow(); focusin(e) }
   document.addEventListener('focusin', focusAlso, true)
   document.addEventListener('focusout', focusout, true)
