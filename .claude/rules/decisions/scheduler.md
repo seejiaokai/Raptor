@@ -54,6 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1042 | 19 Oct 26 | An SC, AVALON or BB line that actually flies counts as a real flight — in the day's flying count and Insights' flying load, earning OIL by default, and with every warning an ordinary flying line gets; built as its own job after the rally box changes. |
 | D1041 | 19 Oct 26 | A rally typed on an SC MAIN line starts that crew's day as SC's in-time box does today — crew rest, the long day, work hours and OIL; on an SC SPARE, AVALON or BB line, which stay outside the warnings, it is shown, printed and exported only, and an empty box counts for nothing. |
 | D1040 | 19 Oct 26 | On SC, AVALON and BB lines the new rally box sits above B, in the same R-over-B column as a flying line, so every wave looks the same; their take-off and landing boxes stay as they are. |
 | D1039 | 19 Oct 26 | Only SC, AVALON and BB lines stop showing the faint worked-out brief and rally — their empty boxes stay empty; the flying lines keep their faint suggestions, with the clearer mark when one is taken (D1038). |
@@ -204,7 +205,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 | D519 | 3 Oct 26 | Do not add a red indicator to schedule lines for Insights' mission role; the scheduler's remarks are enough. |
 | D518 | 3 Oct 26 | When blue/red tracking is enabled, missions DS, red and red air count red without a question. For other missions, DS or red in remarks triggers a blue/red mission-role question; the remarks do not decide the answer. — changed by D531, D529, D521, D520 |
 | D517 | 3 Oct 26 | Blue/red mission role applies to the whole formation; its aircraft are not on different sides. |
-| D516 | 3 Oct 26 | SC, AVALON and BB standby duties do not count as flying load. SC main counts towards work hours. |
+| D516 | 3 Oct 26 | SC, AVALON and BB standby duties do not count as flying load. SC main counts towards work hours. — changed by D1042 |
 | D514 | 3 Oct 26 | DS for another formation means our flight is red air for them. DS wording may also name another formation supporting us, so a DS mention in remarks alone does not settle our blue/red category. |
 | D513 | 3 Oct 26 | Insights initially shows the first twelve flying people, with a show all option for the rest. |
 | D512 | 3 Oct 26 | When tracking is on and all a person's sortie roles are resolved, split their weekly bar into blue/red; mixed shows both. DS/red/red air are red; other missions are blue except D518's conditional answer. Any unanswered role keeps their ordinary total bar (D523). — changed by D523, D521, D518 |

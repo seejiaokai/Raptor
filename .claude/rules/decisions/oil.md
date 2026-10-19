@@ -82,7 +82,7 @@ work, already loaded: **D54** (an issued weekend carrying a placeholder raises t
 | D28 | 22 Sep 26 | One principle instead of an allow-list: every seat can earn, its default decides whether it does, and the admin can always override; the placeholder pucks default on wherever they land (D43); a seat with nothing to measure offers no switch and says why (D31). — changed by D43, D31 |
 | D26 | 22 Sep 26 | Leave the OIL mode's phone tap targets as they are — he settles OIL on his phone easily; do not re-open it or re-file it as a defect; nothing to build. |
 | D25 | 22 Sep 26 | OIL is earned leave, not pay — say it that way. |
-| D24 | 22 Sep 26 | The exempt kinds — SC SPARE, AVALON flying lines and duty desks, BB flying lines — become creditable: they offer the OIL switch in the mode, defaulting off, so an activated one can be credited (on a published day through an ordinary amendment). Supersedes D15 and D20 in part. |
+| D24 | 22 Sep 26 | The exempt kinds — SC SPARE, AVALON flying lines and duty desks, BB flying lines — become creditable: they offer the OIL switch in the mode, defaulting off, so an activated one can be credited (on a published day through an ordinary amendment). Supersedes D15 and D20 in part. — changed by D1042 |
 | D21 | 22 Sep 26 | An "Off day" does not earn OIL. Settled; do not reopen. |
 | D19 | 22 Sep 26 | A weekend or holiday that no Leave War period covers must NAME the reason and offer the way out, not just refuse. |
 | D15 | 21 Sep 26 | The feature's acceptance criteria, in his words: flying lines, SC MAIN, Common Programme, Standard and SC-shift duty desks and ground rows earn; SC SPARE, AVALON/BB lines and desks and ⓘ rows do not by default — SC SPARE, AVALON and BB offer the switch (D24). — changed by D24 |
