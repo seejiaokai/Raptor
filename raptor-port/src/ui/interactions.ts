@@ -38,7 +38,7 @@ import { withDaySnap, lateMates } from './html'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu, switchDraft, SBWOPEN } from './board'
 import { findInputCell, hideHistBub, pinHistBubAt, findHistCell, findSeatRow, isSeatKey, onlyOn } from './histbubble'
 import { pickRosDay } from './pan'
-import { isStandalone, saTyped, CURWEEK } from '../engine/waves'
+import { isStandalone, saTyped, saFlies, CURWEEK } from '../engine/waves'
 import { WARN } from '../engine/validate'
 import { hm24,parseHM } from '../engine/time'
 import { parseReportingLines,resolveReporting,REPORTING_LABEL } from '../engine/reporting'
@@ -1842,8 +1842,10 @@ export function routeClick(e: MouseEvent) {
       a.role = a.spare ? 'SPARE' : 'MAIN'
       markEdit(`st:${di}.${gi}.${li}.${ai}`, was, a.role)
       view.afterSchedMutate(); notify()
+      /* a row that flies stays fully checked as either role ([STANDBY-FLIES], D1045) — the note must not say otherwise */
+      const fl = saFlies(DAYS[di!].waves[gi!], DAYS[di!].waves[gi!].formations[li!], a)
       HOOKS.toast(a.spare
-        ? 'Line is SPARE now: standing by, checked for availability and currency only'
+        ? (fl ? 'Line is SPARE now: it flies, so it is still fully cross-checked' : 'Line is SPARE now: standing by, checked for availability and currency only')
         : 'Line is MAIN now: fully cross-checked', 'ok')
     }
     e.stopPropagation(); return

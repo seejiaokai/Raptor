@@ -1393,6 +1393,9 @@ export function saRoleHTML(key:any,a:any,ed:any){
      seat, carry the four standby checks only. The wave is read off the key
      (di.gi…), the same model saExempt reads. */
   const kp=String(key).split('.'), wv=(((DAYS[+kp[0]]||{}).waves||[])[+kp[1]]), whole=!!(wv&&wv.noconf);
+  /* a row that FLIES is checked in full whatever its role ([STANDBY-FLIES], D1045) — say so, not the standby checks */
+  const fl=!!(wv&&saFlies(wv,(wv.formations||[])[+kp[2]],a));
+  if(fl)return `<button class="sarole${sp?' sp':''}" data-sarole="${key}" title="${role} — this row flies, so it is fully cross-checked. Click to make this line ${sp?'MAIN':'SPARE'}.">${esc(role)}</button>`;
   const four=(who:any)=>`${who}checked for availability, SC currency, the front seat and another ${whole?'seat or the desk':'SC seat or the SC desk'} in the same hours only.`;
   const title=sp?`SPARE — standing by; ${four('')} Click to make this line MAIN.`
     :whole?`MAIN — ${four('')} Click to make this line SPARE.`
@@ -1951,7 +1954,8 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
               +`<button class="stcfg" data-stcfg="${key}" title="Stores configuration">C</button>`
               +`<span class="bombs${stSavedOn(key)?' stsaved':''}" contenteditable="true" data-bombs="${key}">${esc(o.bombs||'')}</span></span>`
             : storesView(o);
-          const acx=(f.cx?'':rowCls(a))+((sa&&a.spare)?' spare':'');   // a cancelled formation already fades the whole block
+          /* a SPARE that flies is no longer faded as standing by ([STANDBY-FLIES]) */
+          const acx=(f.cx?'':rowCls(a))+((sa&&a.spare&&!saFlies(w,f,a))?' spare':'');   // a cancelled formation already fades the whole block
           /* marks "nothing at all to say about this jet". RMKS is a real column again so
              the empty cell just stays blank rather than being hidden, but the class is
              kept as the hook anything later needs to spot a silent aircraft. */

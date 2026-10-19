@@ -14,8 +14,10 @@ export function scIntime(br:any,toM:number,lead?:number|null){
 /* AN SC LINE'S REPORT — ITS IN-TIME BOX OR ITS RALLY BOX, THE EARLIER (owner D1041, 19 Oct 26: SC, AVALON and BB get the
    rally box, D1036, D1040; on SC MAIN a typed rally starts the crew's day as the in-time box does — "SC main only").
    Each box read by scIntime's own rule; the earlier one counts, as the earliest in-time or rally does on a flying line
-   (D1032). Crew rest (events.ts seatIntime) and OIL (oil.ts) read the line through this one body. A SPARE line has no
-   event stream and OIL gives it its written window, so neither box counts there; AVALON and BB are never read. */
+   (D1032). Crew rest (events.ts seatIntime) and OIL (oil.ts) read the line through this one body. CHANGED 19 Oct 26
+   ([STANDBY-FLIES], D1044, D1045 narrow D1041): a typed B or R on ANY standby line flies its whole shift, SPARE rows
+   included, so the same reading starts every row's day there — SC SPARE, AVALON and BB too. A row that only stands by
+   (nothing typed on its shift, no hand tick) has no event stream and OIL gives it its written window, as before. */
 export function scReport(f:any,toM:number,lead?:number|null){
   const c=[scIntime(f&&f.br,toM,lead),scIntime(f&&f.rl,toM,lead)].filter((v):v is number=>v!=null);
   return c.length?Math.min(...c):null;

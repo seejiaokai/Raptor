@@ -127,7 +127,7 @@ function peekFormation(w: any, f: any): string {
       ? `<div class="fcell ld${badCls}"${badAtt} style="${spans}">${esc(f.ld || '')}</div>`
       : `<div class="fcell ld${badCls}"${badAtt} style="${spans}"><span>${esc(f.to || '')}</span><span>${esc(f.ld || '')}</span></div>`)
   ;(f.aircraft || []).forEach((a: any, ai: number) => {
-    const acx = (f.cx ? '' : rowCls(a)) + ((sa && a.spare) ? ' spare' : '')
+    const acx = (f.cx ? '' : rowCls(a)) + ((sa && a.spare && !saFlies(w, f, a)) ? ' spare' : '')
     const stores = sa ? '' : storesView(a.opts || {})
     const rmkE = (!(a.rmks || '').trim() && !stores && !a.cx && !a.flag) ? ' rmk-e' : ''
     /* the preview keeps the role as compact fallback TEXT, not the live

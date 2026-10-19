@@ -271,9 +271,10 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
       /* SC shift = its written window, started at its typed B — the crew's in-time — where that is EARLIER (owner, D606,
          7 Oct 26: "SC B if filled u can count it as work hours as well and OIL earned"; the one body crew rest reads it
          with, on the lead this walk was handed, so a published day's evening-before reading is its own — D592 (4)). A
-         later B shortens nothing, a shift that measures nothing still measures nothing, and AVALON / BB have no
-         in-time. It is the MAIN's in-time only — "a SPARE reports nowhere, so his B does nothing" (24 Aug 26): a SPARE
-         row, switched on, takes the shift's written window (`seatWin` below). A flying line = report → land+debrief */
+         later B shortens nothing and a shift that measures nothing still measures nothing. Since [STANDBY-FLIES]
+         (D1044, D1045, 19 Oct 26) a typed B or R flies the whole shift, SPARE rows and AVALON / BB included, so every row of
+         it starts there; a row that only stands by — "a SPARE reports nowhere" (24 Aug 26) — still takes the shift's
+         written window when switched on (`seatWin` below). A flying line = report → land+debrief */
       const scWin=sc?w2(st,en):null;
       /* …or its rally box, the earlier of the two (D1041) */
       /* (on AVALON and BB too since [STANDBY-FLIES]: there a typed B or R makes the shift fly, so it is a report time like
