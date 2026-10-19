@@ -2017,6 +2017,10 @@ and coming back. The same with plain typing (a second press, then the whole time
 `raptor-port/scripts/handpass/kbs-host-b11.mjs`), so it is older than D1047 / D1080: the board folds a box to hh:mm when it is
 redrawn, and leaving by Tab does not redraw the box left. Walker B's report: `raptor-port/docs/handpass/parts/keyboard-scroll/B.md`.
 **To do:** on a box's `change`, write its folded time back to it (`fmtHM`) even when the focus moved to the next box.
+**The week too (met 20 Oct 26, [STANDBY-WEEK-B]'s browser test):** on Edit Schedule's week a time typed and left by Tab
+reads as typed ("0610") until a press elsewhere, while 06:10 is saved — a flying line's B and take-off as well as the new
+standby B (probe `raptor-port/scripts/handpass/standby-week-b-tabfold.mjs`): the week's commit defers its redraw while the
+caret is in another box (`html.ts` TXTQ). The same fix there: fold the box left, not only the model.
 **Place:** low — with the next change to the board's time boxes.
 
 ### [INNERHTML-REPAINT-SWEEP] A box inside markup React sets again on every repaint loses its caret (found 19 Oct 26 — the D1048 walk, walker A's A12; low)

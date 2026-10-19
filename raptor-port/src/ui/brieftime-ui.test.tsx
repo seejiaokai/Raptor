@@ -434,37 +434,103 @@ describe('RB9 — a taken suggestion: no highlight, a short flash, the first cha
   })
 })
 
-/* RB10 — SC, AVALON and BB lines have their own rally box (D1036, D1040): above START on the week and the next-week peek,
-   before B on the board; no worked-out brief or rally in them (D1039); the export and the printed PDF carry the typed
-   rally and the typed brief only */
-describe('RB10 — a standby line\'s rally box on every surface', async () => {
+/* RB10 — SC, AVALON and BB lines have their own rally box (D1036, D1040), and since D1083 (20 Oct 26 — his "2") the week
+   reads them as a flying line: R over B, then START over END, on Edit Schedule, View-only Sched and the next-week peek; the
+   B is the line's own `f.br` (the box the board writes); before B on the board; no worked-out brief or rally in them
+   (D1039); the export and the printed PDF carry the typed rally and the typed brief only */
+describe("RB10 — a standby line's rally box on every surface", async () => {
   const { dayHTML } = await import('./html')
   const { peekDayHTML } = await import('./peek')
   const { makeStandalone } = await import('../engine/waves')
   const add = (kind: string) => { const w: any = makeStandalone(kind); w.formations[0].to = '19:00'; w.formations[0].ld = '07:00'; (DAYS[0] as any).waves.push(w); return { w, gi: (DAYS[0] as any).waves.length - 1 } }
-  it('the week, edited and read: R above START, headed R / START, nothing suggested', () => {
+  const html = (h: string) => { const d = document.createElement('div'); d.innerHTML = h; return d }
+  it('the week, edited: headed R / B and START / END; R over its own B, START over END; nothing suggested', () => {
     for (const kind of ['sc', 'avalon', 'bb']) {
       const { w, gi } = add(kind)
-      w.formations[0].rl = '17:30'
-      const ed = dayHTML(0, true), ro = dayHTML(0, false)
-      const cell = (h: string) => { const d = document.createElement('div'); d.innerHTML = h; return d.querySelector(`[data-txt="ff:0.${gi}.0.rl"]`) || [...d.querySelectorAll('.form .bto')].find(c => c.textContent!.includes('17:30')) }
-      expect(ed, kind + ': the heading').toContain('R<br>START')
-      const e = cell(ed) as HTMLElement
-      expect(e, kind + ': an editable R box').toBeTruthy()
-      expect(e.textContent).toBe('17:30')
-      expect(e.dataset.ph || '', kind + ': no default rally').toBe('')
-      expect(e.nextElementSibling!.getAttribute('data-txt'), kind + ': START under it').toBe(`ff:0.${gi}.0.to`)
-      expect(ro).toContain('17:30')
+      w.formations[0].rl = '17:30'; w.formations[0].br = '18:15'
+      const ed = dayHTML(0, true), d = html(ed)
+      const head = [...d.querySelectorAll('.go.sa .cols.formcols')].pop()!.children
+      expect(head[1].innerHTML, kind + ': the second heading').toBe('R<br>B')
+      expect(head[2].innerHTML, kind + ': the third heading').toBe('START<br>END')
+      expect(head[2].classList.contains('sa-se'), kind + ': the third heading can be drawn smaller on a phone').toBe(true)
+      expect(ed, kind + ': the old heading is gone').not.toContain('R<br>START')
+      const r = d.querySelector(`[data-txt="ff:0.${gi}.0.rl"]`) as HTMLElement
+      expect(r, kind + ': an editable R box').toBeTruthy()
+      expect(r.textContent).toBe('17:30')
+      expect(r.dataset.ph || '', kind + ': no default rally').toBe('')
+      const b = r.nextElementSibling as HTMLElement
+      expect(b.getAttribute('data-txt'), kind + ': its own B under R').toBe(`ff:0.${gi}.0.br`)
+      expect(b.getAttribute('contenteditable'), kind + ': the B can be typed in').toBe('true')
+      expect(b.textContent, kind + ": the line's own B").toBe('18:15')
+      expect(b.closest('.fcell')!.classList.contains('bto')).toBe(true)
+      const ld = d.querySelector(`[data-txt="ff:0.${gi}.0.ld"]`)!.closest('.fcell')!
+      expect([...ld.querySelectorAll('[data-txt]')].map(e => e.getAttribute('data-txt')), kind + ': START over END').toEqual([`ff:0.${gi}.0.to`, `ff:0.${gi}.0.ld`])
+      expect(ld.textContent).toBe('19:0007:00')
+      /* an empty B: no suggestion, no placeholder of its own — the week's faint dash for an empty box (.txed:empty, D1065) */
+      w.formations[0].br = ''
+      const e = html(dayHTML(0, true)).querySelector(`[data-txt="ff:0.${gi}.0.br"]`) as HTMLElement
+      expect(e.textContent, kind + ': an empty B is empty').toBe('')
+      expect(e.classList.contains('sugbox') || e.hasAttribute('data-ph'), kind + ': no worked-out brief in it (D1039)').toBe(false)
+      expect(e.classList.contains('txed'), kind + ': the editable box the faint dash is drawn in').toBe(true)
       ;(DAYS[0] as any).waves.pop()
     }
   })
-  it('the next-week peek: R above START', () => {
-    const { w } = add('avalon'); w.formations[0].rl = '17:30'
-    const d = document.createElement('div'); d.innerHTML = peekDayHTML(DAYS[0], 0, true)
+  it('the week, read only (View-only Sched): the same columns, the typed B shown, an empty one blank', () => {
+    for (const kind of ['sc', 'avalon', 'bb']) {
+      const { w, gi } = add(kind)
+      w.formations[0].rl = '17:30'; w.formations[0].br = '18:15'
+      const d = html(dayHTML(0, false))
+      const go = [...d.querySelectorAll('.go.sa')].pop()!
+      expect(go.querySelector('.cols.formcols')!.children[1].innerHTML).toBe('R<br>B')
+      expect(go.querySelector('.cols.formcols')!.children[2].innerHTML).toBe('START<br>END')
+      const bto = go.querySelector('.form .bto')!
+      expect([...bto.children].map(c => c.textContent), kind + ': R over B').toEqual(['17:30', '18:15'])
+      expect([...go.querySelector('.form .ld')!.children].map(c => c.textContent), kind + ': START over END').toEqual(['19:00', '07:00'])
+      expect(bto.querySelector('[contenteditable]'), kind + ': nothing editable on the read-only week').toBeNull()
+      w.formations[0].br = ''
+      const b2 = [...html(dayHTML(0, false)).querySelectorAll('.go.sa')].pop()!.querySelector('.form .bto')!.children[1]
+      expect(b2.textContent, kind + ': an empty B prints nothing — no worked-out brief on a standby line (D1039)').toBe('')
+      ;(DAYS[0] as any).waves.pop()
+      void gi
+    }
+  })
+  /* the B drawn on the week is a door, not a picture (D1083): typed there it is the board's own box — saved through the
+     week's commit, pending like any other box, and it flies the shift as a B typed on the board does ([STANDBY-FLIES],
+     D1045); on SC MAIN the same f.br is the crew's in-time (D1041 — the engine's read is pinned by scintime.test.ts) */
+  it("a standby B typed on Edit Schedule's week is saved as the line's own B and flies the shift", async () => {
+    const { saFlies } = await import('../engine/waves')
+    for (const kind of ['sc', 'avalon', 'bb']) {
+      let w: any, gi = 0
+      await act(async () => { ({ w, gi } = add(kind)); notify() })
+      const f = w.formations[0], key = `ff:0.${gi}.0.br`
+      expect(saFlies(w, f, f.aircraft[0]), kind + ': nothing typed, the shift stands by').toBe(false)
+      const box = $(`#eWeek [data-txt="${key}"]`)
+      expect(box, kind + ': the B box is on the week').toBeTruthy()
+      await act(async () => { box.textContent = '1815'; box.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
+      await settle()
+      expect(f.br, kind + ": saved as the line's own B, folded to hh:mm").toBe('18:15')
+      expect(txtGet(key)).toBe('18:15')
+      expect(SCHED.pending[rk(key)], kind + ': a change like any other box').toBe(1)
+      expect(saFlies(w, f, f.aircraft[0]), kind + ': a typed B flies the shift').toBe(true)
+      expect($(`#eWeek [data-txt="${key}"]`).textContent, kind + ': the week shows it').toBe('18:15')
+      await act(async () => { delete SCHED.pending[rk(key)]; (DAYS[0] as any).waves.pop(); notify() })
+    }
+  })
+  it('the next-week peek: R over B, START over END', () => {
+    const { w } = add('avalon'); w.formations[0].rl = '17:30'; w.formations[0].br = '18:15'
+    const d = html(peekDayHTML(DAYS[0], 0, true))
     const rl = [...d.querySelectorAll('.form .bto .rl')].find(e => e.textContent === '17:30')!
     expect(rl, 'the rally drawn').toBeTruthy()
-    expect(rl.nextElementSibling!.textContent).toBe('19:00')
-    expect(d.innerHTML).toContain('R<br>START')
+    expect(rl.nextElementSibling!.textContent, 'its own B under it').toBe('18:15')
+    const form = rl.closest('.form')!
+    expect([...form.querySelector('.ld')!.children].map(c => c.textContent), 'START over END').toEqual(['19:00', '07:00'])
+    expect(d.innerHTML).toContain('R<br>B')
+    expect(d.innerHTML).toContain('START<br>END')
+    expect(d.innerHTML).not.toContain('R<br>START')
+    w.formations[0].br = ''
+    const d2 = html(peekDayHTML(DAYS[0], 0, true))
+    const rl2 = [...d2.querySelectorAll('.form .bto .rl')].find(e => e.textContent === '17:30')!
+    expect(rl2.nextElementSibling!.textContent, 'an empty B prints nothing on the peek').toBe('')
     ;(DAYS[0] as any).waves.pop()
   })
   it('the export: the typed rally; the brief only where typed', () => {

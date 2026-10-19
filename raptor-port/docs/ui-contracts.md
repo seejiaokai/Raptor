@@ -780,7 +780,7 @@ AVALON, BB) has its R box too (D1036, D1040): before B on the board; on the week
 own B, as a flying line's (`html.ts SA_TIME_HEAD`, R / B then START / END — D1083, 20 Oct 26; until then the week drew R
 above START and no B, so a B typed on the board never showed there). START stands above END in the third column, as a
 flying line's TO above its LD; on a phone the START / END heading is drawn in smaller letters so it fits that column
-(D1083). The B on the week is the same box the board writes (`f.br`; SC's in-time on SC MAIN, D1041). Neither box
+(D1083; that size, 7 for 8.5, approved as built — D1084). The B on the week is the same box the board writes (`f.br`; SC's in-time on SC MAIN, D1041). Neither box
 offers a suggestion (D1039) — only a faint dash, the box's placeholder in the week's own empty-box grey (`.sadash`,
 D1065), never a value. On a standby line a typed B or
 R flies the whole shift ([STANDBY-FLIES], D1045). **A suggested time sits faint inside its own empty box** (D1028,
