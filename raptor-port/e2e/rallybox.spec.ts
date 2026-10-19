@@ -58,29 +58,38 @@ for (const [name, viewport] of [['desktop', { width: 1440, height: 900 }], ['pho
       const to = page.locator('#sbBoard [data-bfld="ff:0.0.0.to"]:visible').first()
       const f = () => page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].to)
       const was = await f()
-      await press(page, to, phone)
+      await press(page, to, phone); await expect(to).toBeFocused()   // a finger cannot type before the tap has moved the focus
       await expect.poll(() => to.evaluate((e: any) => e.dataset.fresh || '')).toBe('1')
       await page.keyboard.type('1300')
       await expect(to, 'the old time replaced, not added to').toHaveValue('1300')
       await page.keyboard.press('Enter')
       await expect.poll(f).toBe('13:00')
       await page.keyboard.press('Tab')   // leave it
-      await press(page, to, phone)
+      await press(page, to, phone); await expect(to).toBeFocused()   // a finger cannot type before the tap has moved the focus
       await expect.poll(() => to.evaluate((e: any) => e.dataset.fresh || '')).toBe('1')
       await page.keyboard.press('Backspace')
       await expect(to, 'Backspace clears the whole time').toHaveValue('')
       await page.keyboard.press('Tab')
       await expect.poll(f, 'the cleared time is saved when the box is left (the D1047 read F1)').toBe('')
-      await press(page, to, phone)
+      await press(page, to, phone); await expect(to).toBeFocused()   // a finger cannot type before the tap has moved the focus
       await page.keyboard.type('1300'); await page.keyboard.press('Enter')
       await expect.poll(f).toBe('13:00')
       await page.keyboard.press('Tab')
-      await press(page, to, phone)
+      await press(page, to, phone); await expect(to).toBeFocused()   // a finger cannot type before the tap has moved the focus
+      await page.keyboard.insertText('0915')   // one insertion, as a paste or autofill gives — rewritten by the box itself
+      await expect(to).toHaveValue('0915')
+      await page.keyboard.press('Tab')
+      await expect.poll(f, 'a time put in by one insertion, then Tab: saved (the owed change paid)').toBe('09:15')
+      await press(page, to, phone); await expect(to).toBeFocused()   // a finger cannot type before the tap has moved the focus
+      await page.keyboard.type('1300'); await expect(to).toHaveValue('1300'); await page.keyboard.press('Enter')
+      await expect.poll(f).toBe('13:00')
+      await page.keyboard.press('Tab')
+      await press(page, to, phone); await expect(to).toBeFocused()   // a finger cannot type before the tap has moved the focus
       await page.keyboard.type('9')
       await page.keyboard.press('Escape')
       await expect.poll(f, 'Escape puts the time back').toBe('13:00')
       await expect(to).toHaveValue('13:00')
-      await press(page, to, phone)
+      await press(page, to, phone); await expect(to).toBeFocused()   // a finger cannot type before the tap has moved the focus
       await press(page, to, phone, false)   // a second press: ordinary editing
       await expect.poll(() => to.evaluate((e: any) => e.dataset.fresh || '')).toBe('')
       await page.keyboard.press('End'); await page.keyboard.press('Backspace'); await page.keyboard.type('5')

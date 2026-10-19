@@ -528,14 +528,36 @@ describe('RB11 — a replaced time is saved; chosen digits are edited; Backspace
     type(i, '13:001', 'insertText'); i.value = '13:00'; i.blur()
     expect(changes, 'Escape put the old time back').toBe(0); i.remove()
   })
-  it('F2: digits chosen with a drag are edited as chosen', () => {
-    const i = box('13:00'); i.setSelectionRange(3, 5)
-    type(i, '13:', 'deleteContentBackward'); expect(i.value).toBe('13:'); expect(i.dataset.fresh || '').toBe(''); i.remove()
+  it('F2: digits chosen with a drag (a press that moved) are edited as chosen', () => {
+    const i = box('13:00')
+    document.dispatchEvent(new PointerEvent('pointerdown', { clientX: 100, clientY: 50 }))
+    document.dispatchEvent(new PointerEvent('pointerup', { clientX: 130, clientY: 50 }))
+    expect(i.dataset.fresh || '', 'a drag gives back ordinary editing').toBe('')
+    i.setSelectionRange(3, 5); type(i, '13:', 'deleteContentBackward'); expect(i.value).toBe('13:'); i.remove()
+  })
+  it('F2: a tap (a press that did not move) stays armed, whatever the browser selected', () => {
+    const i = box('13:00')
+    document.dispatchEvent(new PointerEvent('pointerdown', { clientX: 100, clientY: 50 }))
+    document.dispatchEvent(new PointerEvent('pointerup', { clientX: 102, clientY: 51 }))
+    expect(i.dataset.fresh).toBe('1'); i.remove()
   })
   it('F4: Backspace selects the whole time, so it clears wherever the caret is', () => {
     const i = box('13:00'); i.setSelectionRange(0, 0)
     i.dispatchEvent(new KeyboardEvent('keydown', { key: 'Backspace', bubbles: true }))
     expect([i.selectionStart, i.selectionEnd], 'the whole time selected for the key').toEqual([0, 5])
-    expect(i.dataset.fresh || '', 'the browser does the rest').toBe(''); i.remove()
+    expect(i.dataset.fresh, 'still armed: the clear is read from what the browser deleted (N1)').toBe('1')
+    type(i, '13:0', 'deleteContentBackward')
+    expect(i.value, 'a phone that ignored the selection and took one digit: still cleared').toBe(''); i.remove()
+  })
+})
+
+describe('firstReplace — the browser\'s own word for what was put in wins over the shape', async () => {
+  const { firstReplace } = await import('./interactions')
+  it('"0915" put into "13:00" after "13:0" is 0915, not 9150', () => {
+    expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertText', data: '0915' }), '13:091500')).toBe('0915')
+    expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertText', data: '1' }), '13:001')).toBe('1')
+    expect(firstReplace('13:00', new InputEvent('input', { inputType: 'insertText', data: '1' }), '1'), 'a selection typed over: what was typed').toBe('1')
+    expect(firstReplace('09:15', new InputEvent('input', { inputType: 'insertText', data: '1' }), '09:1'), 'a word a double tap selected, typed over: a fresh time').toBe('1')
+    expect(firstReplace('13:00', new InputEvent('input', { inputType: 'deleteContentBackward' }), '13:0')).toBe('')
   })
 })
