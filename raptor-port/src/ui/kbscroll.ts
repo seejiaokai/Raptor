@@ -190,6 +190,26 @@ export function keepAboveKeyboard(el: HTMLElement, vv: VV): number {
   return moved
 }
 
+/* ON THE PRESS, BEFORE THE KEYS (owner D1081, 19 Oct 26): an iPhone that finds the box it is focusing low on the screen
+   pans the whole screen to show it, and pans back the moment the keys go down — the jump he filmed. So a finger's tap
+   on a box in a window, a sheet or the board scrolls that box's own panels up first, by the height the keys took last
+   time (else about 42% of the screen), so the iPhone finds it already clear and pans nothing. Panels only: no window is
+   raised and no page scrolled before the keys are really up. */
+export function liftPanels(el: HTMLElement, vv: VV): number {
+  const visTop = vv.offsetTop, visBot = vv.offsetTop + vv.height
+  let moved = 0
+  for (let a = el.parentElement; a && a !== document.body && a !== document.documentElement; a = a.parentElement) {
+    if (!scrolls(a)) continue
+    const ar = a.getBoundingClientRect()
+    moved += lift(a, el, Math.min(ar.bottom, visBot) - GAP, Math.max(ar.top, visTop) + GAP)
+  }
+  return moved
+}
+const inFixedLayer = (el: Element) => {
+  for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) if (getComputedStyle(a).position === 'fixed') return true
+  return false
+}
+
 /** Brings the box being typed in above the keys again, now — for a window put back by a tap on its bar that turned out
     not to be a drag (floatwin.ts, FloatWindow.tsx — the narrow read round 2's L3): no focus arrives to do it. */
 export function refit() {
@@ -224,8 +244,30 @@ export function installKbScroll(): () => void {
   const focusout = (e: FocusEvent) => { if (!e.relatedTarget) requestAnimationFrame(() => { if (!isTypingBox(document.activeElement)) dropLifts() }) }
   /* read fresh each time: the walk stands a stand-in viewport in after the page has loaded */
   let vvNow: VisualViewport | null = null
+  /* the press (above), on the touch itself: its start, and the keys' last height. A box lifted at the end of the touch is
+     no longer under the finger, so the touch's own click and mouse events are cancelled (preventDefault on touchend) and
+     the box is given the focus here — a focus inside the touch, which still raises an iPhone's keys. */
+  let down: { x: number, y: number } | null = null, lastKb = 0
+  const tstart = (e: TouchEvent) => { const p = e.touches[0]; down = e.touches.length === 1 && p ? { x: p.clientX, y: p.clientY } : null }
+  const tend = (e: TouchEvent) => {
+    const d = down; down = null
+    const p = e.changedTouches[0]
+    if (!d || !p || Math.hypot(p.clientX - d.x, p.clientY - d.y) > 6) return
+    const raw = e.target as any
+    const t = raw?.closest?.('input, textarea, select, [contenteditable="true"]') || raw?.closest?.('label')?.control || null
+    if (!isTypingBox(t) || t instanceof HTMLSelectElement || document.activeElement === t || !inFixedLayer(t)) return
+    const vv = window.visualViewport
+    if (!vv || vv.scale > 1.01 || keyboardUp(vv)) return
+    const kb = lastKb || Math.round(window.innerHeight * 0.42)
+    if (!liftPanels(t, { height: window.innerHeight - kb, offsetTop: 0, scale: 1 })) return
+    e.preventDefault()
+    t.focus({ preventScroll: true })
+  }
+  document.addEventListener('touchstart', tstart, { capture: true, passive: true })
+  document.addEventListener('touchend', tend, { capture: true, passive: false })
   const resize = () => {
     const vv = window.visualViewport
+    if (vv && keyboardUp(vv)) lastKb = window.innerHeight - vv.height
     /* the keys down — read with the zoom taken out, so a pinch while typing (the narrow read round 2's L2) neither puts the
        window back nor takes the room below the page away; a zoomed frame itself changes nothing */
     if (!vv || window.innerHeight - vv.height * (vv.scale || 1) <= KEYBOARD_MIN) { dropLifts(); return }
@@ -245,6 +287,7 @@ export function installKbScroll(): () => void {
   return () => {
     document.removeEventListener('focusin', focusAlso, true)
     document.removeEventListener('focusout', focusout, true)
+    document.removeEventListener('touchstart', tstart, true); document.removeEventListener('touchend', tend, true)
     dropLifts()
     vvNow?.removeEventListener('resize', resize)
     if (raf) cancelAnimationFrame(raf)

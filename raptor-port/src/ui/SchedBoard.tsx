@@ -35,7 +35,6 @@ import { UndoPair, SyncChip, BellButton, globalUndoEngine } from './topbits'
 import { SaveBand } from './SaveStatus'
 import { OilBand } from './OilWaitSheet'
 import { clickedOutside } from './outside'
-import { followVisible } from './vvfollow'
 
 export function SchedBoard() {
   const version = useVersion()
@@ -141,19 +140,14 @@ export function SchedBoard() {
      could only ever show the board's own background. A pinch zoom (scale > 1) is left alone: the board zooms with the
      page, as it always has. Chromium cannot raise an iPhone keyboard, so the real proof is his phone (the look card);
      the walk shrinks the visual viewport by script. */
-  useEffect(() => {
-    if (!open) return
-    const vv = (window as any).visualViewport, r = rootRef.current
-    if (!vv || !r) return
-    const clear = () => { r.style.top = ''; r.style.bottom = ''; r.style.height = '' }
-    const fit = () => {
-      if (vv.scale > 1.01) return clear()
-      r.style.top = Math.round(vv.offsetTop) + 'px'; r.style.bottom = 'auto'; r.style.height = Math.round(vv.height) + 'px'
-    }
-    /* frame by frame while the keys move, not a few frames behind them (D1081 — the stutter he filmed as they closed) */
-    const stop = followVisible(fit)
-    return () => { stop(); clear() }
-  }, [open])
+  /* NO LONGER FOLLOWED (owner D1081, 19 Oct 26 — his two iPhone recordings: the board stood a keyboard's height out of
+     place for a frame or three as the keys closed, first when it followed on the visual viewport's events and still
+     when it followed frame by frame): an iPhone moves its screen back the moment the keys start down, before any script
+     runs, so anything placed by script is a frame behind it. The board is left at the layout's full size
+     (position:fixed, inset:0), so it moves with the iPhone's own scroll, never behind it; the visible slice always lies
+     inside it, and the page behind stays unpainted (the second half above, which alone answers his 25 Sep 26 gap). The
+     box being typed in is brought above the keys by its own panel's scroll (kbscroll.ts), on the press itself where it
+     can, so the iPhone has nothing to pan. */
 
   /* wires HOOKS.closeBoardDialogs — state/view.ts's closeBoardState() calls
      it, but the board's own dialog state (CXT, SORTALL) lives here, in the

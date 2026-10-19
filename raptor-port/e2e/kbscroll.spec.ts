@@ -126,28 +126,28 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
     expect(await win.evaluate(e => Math.round(e.getBoundingClientRect().top)), 'its title on the screen').toBeGreaterThanOrEqual(0)
   })
 
-  /* KS6 — D1081: the board follows the visible screen frame by frame as the keys move, not when an iPhone's late event
-     arrives (his recording: three frames a keyboard's height out of place as the keys closed). The stand-in changes its
-     numbers WITHOUT an event, as an iPhone does at the start of the keys' slide; a focus change alone must bring the board
-     with it within a few frames. */
-  test('KS6 the board follows the visible screen as the keys open and close, with no event from it', async ({ page }) => {
+  /* KS6 — D1081 (his recordings: the board a frame or three out of place as the keys closed, first when it followed the
+     visible screen on its events, still when it followed frame by frame). The board is no longer placed by script at all:
+     it keeps the layout's full size whatever the visible screen does, so it moves with the iPhone's own scroll. And a
+     finger's tap on a box low in it scrolls the box up on the press, before any keyboard, so the iPhone has nothing to
+     pan. */
+  test('KS6 the board is never moved by script; a tap lifts a low box before the keys come', async ({ page }) => {
     await login(page); await go(page, 'editsched')
     await page.evaluate(() => (window as any).openScheduler(0)); await expect(page.locator('#schedBoard')).toBeVisible()
-    const top = () => page.evaluate(() => Math.round(document.getElementById('schedBoard')!.getBoundingClientRect().top))
+    const rect = () => page.evaluate(() => { const r = document.getElementById('schedBoard')!.getBoundingClientRect(); return [Math.round(r.top), Math.round(r.height)] })
     const box = page.locator('#schedBoard input.tm:visible').nth(6)
-    await lowOnScreen(box)
-    /* the keys open and the screen pans by 200 a fifth of a second after the focus, and nothing says so — the focus is all
-       there is (an iPhone's numbers move as its keys slide; its event comes later) */
-    await page.evaluate(() => setTimeout(() => { const v = (window as any).__vv; v.height = innerHeight - 336; v.offsetTop = 200 }, 200))
-    await tap(page, box)
-    await expect(box).toBeFocused()
-    await expect.poll(top, { timeout: 1000 }).toBe(200)
-    /* the keys close and the pan goes back a fifth of a second after the focus leaves, again with no event */
-    await page.evaluate(() => {
-      setTimeout(() => { const v = (window as any).__vv; v.height = innerHeight; v.offsetTop = 0 }, 200)
-      ;(document.activeElement as HTMLElement).blur()
-    })
-    await expect.poll(top, { timeout: 1000 }).toBe(0)
+    const was = await lowOnScreen(box)
+    expect(was).toBeGreaterThan(H * 0.58)
+    await tap(page, box); await expect(box).toBeFocused()
+    expect(await bottomOf(box), 'lifted on the press, above where the keys will come').toBeLessThanOrEqual(Math.round(H * 0.58) - GAP + 1)
+    const before = await rect()
+    expect(before[1], 'the board at the full height of the layout').toBeGreaterThan(H - 8)
+    await page.evaluate(() => { const v = (window as any).__vv; v.height = innerHeight - 336; v.offsetTop = 120; v.dispatchEvent(new Event('resize')); v.dispatchEvent(new Event('scroll')) })
+    await page.waitForTimeout(200)
+    /* the board's own opening settles a couple of pixels; what matters is that it did not follow the 120px pan */
+    const after = await rect()
+    expect(Math.abs(after[0] - before[0]), 'the visible screen moved 120px: the board did not').toBeLessThanOrEqual(3)
+    expect(after[1]).toBe(before[1])
   })
 
   test('KS4 a box already above the keys is left where it is', async ({ page }) => {
