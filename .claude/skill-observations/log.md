@@ -1417,3 +1417,18 @@ prove each by acting through it after the rollback, not by reading what it shows
 **Suggested improvement:** For a walker's FAIL, re-run the walker's own script on the fixed build BEFORE trusting a new test, and when the first fix does not cure it, write an event probe (every pointer / focus / change event on the two elements, with their values) before a second guess.
 
 **Principle:** Reproduce on the finder's exact route; when a fix misses, instrument the events rather than re-reason the cause.
+
+### Observation 647: Two scripted taps at one spot within a moment are a double tap that selects a word
+
+**Status:** OPEN
+**Date:** 19 Oct 26
+**Session context:** [KEYBOARD-SCROLL] / D1080 browser test — tap a template time box, type, leave, tap it again, type
+**Skill:** walk scripts guide (raptor-port/docs/walk-scripts.md §4) — not a skill file
+**Type:** open-source
+**Phase/Area:** writing a walk or browser-test step on a phone (touch emulation)
+
+**Issue:** A test tapped a box, typed four digits and left it, then tapped the same spot again and typed. The second tap landed a few milliseconds after the first (scripted typing is instant), so Chromium's touch emulation read the pair as a double tap and SELECTED the word under the finger ("00"); the typed digit replaced only that selection and the step failed as if the feature were broken. Only a probe printing the selection after the tap (3–5 selected) showed it. (Numbered past 646 to leave room for a parallel chat's entry — standby-flies.)
+
+**Suggested improvement:** Add to walk-scripts.md §4's traps: two taps at one point closer than about half a second are a double tap; wait ~600ms between taps on the same box unless the step is about a second tap, and print the box's selection after a tap when a typing step fails.
+
+**Principle:** A scripted gesture sequence runs faster than a person can; check that its timing does not turn two gestures into a different one before blaming the app.
