@@ -193,7 +193,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
     /* R · B · TO · LD (owner D1026, D1029, 19 Oct 26): two wrappers, R+B and TO+LD. On a desktop board they are
        display:contents, so the four headings stand in a line over four tracks; where the board puts the pucks on their
        own row (a phone, up to 820 wide, not the desktop layout) each wrapper is ONE cell, its two headings stacked over
-       its two stacked boxes. A standby wave carries no rally, so its R heading is blank. Nine children — the phone's
+       its two stacked boxes. Every wave has its R heading — a standby line has its rally box too (D1040). Nine children — the phone's
        hidden-by-position rule counts them (13-board-rows-responsive.css). */
     fly += `<div class="sb-lcols"><span></span><span>CS</span><span>MSN</span><span class="sb-hrb"><span>R</span><span>B</span></span><span class="sb-htl"><span>TO</span><span>LD</span></span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
     if (!w.formations.length) fly += `<div class="sb-empty" style="padding:6px 11px">Empty wave — add a line, or remove the wave.</div>`
@@ -247,8 +247,8 @@ function boardHTMLBody(di: number, pv?: boolean) {
          have a brief time"). The box itself stays, so a real in-time can be
          entered; only the blue suggestion goes. */
       /* THE SUGGESTION INSIDE ITS OWN EMPTY BOX (owner D1028, D1030): the box's own placeholder, faint in the accent
-         (.sugbox), never a line above it — one tap places it highlighted (interactions.ts placeSuggestion), so typing
-         replaces it; Tab fills nothing. The brief's is the take-off less the brief lead; the R box's is the default
+         (.sugbox), never a line above it — one tap places it, not highlighted, with a short ring (D1038; interactions.ts
+         placeSuggestion), and typing replaces it; Tab fills nothing. The brief's is the take-off less the brief lead; the R box's is the default
          rally, the take-off less the Logic page's report setting (D1027, D1031). Neither on a read-only board, and no
          brief suggestion on an SC line, whose B is an in-time to be typed when needed.
          NONE ON ANY STANDBY LINE (owner D1039, 19 Oct 26 — SC, AVALON and BB: "don't show the auto calculated brief and

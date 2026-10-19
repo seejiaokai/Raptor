@@ -391,6 +391,25 @@ describe('RB9 — a taken suggestion: no highlight, a short flash, the first cha
     expect(firstChange('09:40', '09:40')).toBeNull()
     expect(firstChange('09:40', '0940')).toBe('')   // the colon taken out: a deletion
   })
+  it('the browser\'s kind of change decides where it is given (the fresh read\'s F1): a selection typed over is kept', () => {
+    expect(firstChange('10:40', '1', 'insertText'), 'select-all, then "1" of 1100 — not a Backspace').toBeNull()
+    expect(firstChange('09:40', '0940', 'insertFromPaste'), 'a paste over the selection — kept').toBeNull()
+    expect(firstChange('09:40', '09:4', 'deleteContentBackward')).toBe('')
+    expect(firstChange('09:40', '09:401', 'insertText')).toBe('1')
+    expect(firstChange('09:40', '09:401', 'deleteContentBackward'), 'a deletion is never read as an insertion').toBeNull()
+  })
+  it('a second take inside the second gets its own whole ring (the fresh read\'s F2)', async () => {
+    const inp = document.createElement('input'); inp.placeholder = '09:40'; document.body.appendChild(inp); inp.focus()
+    placeSuggestion(inp)
+    await new Promise(r => setTimeout(r, 600))
+    inp.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); inp.value = ''
+    placeSuggestion(inp)
+    await new Promise(r => setTimeout(r, 900))
+    expect(inp.classList.contains('sugtook'), 'still on 0.9 s into the second take (1.5 s after the first)').toBe(true)
+    await new Promise(r => setTimeout(r, 450))
+    expect(inp.classList.contains('sugtook')).toBe(false)
+    inp.remove()
+  })
   it('on a board box and a week box: placed with the caret after it, nothing highlighted, the flash on, then off', async () => {
     const inp = document.createElement('input'); inp.placeholder = '09:40'; document.body.appendChild(inp); inp.focus()
     expect(placeSuggestion(inp)).toBe(true)

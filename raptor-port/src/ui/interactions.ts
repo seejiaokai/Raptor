@@ -614,22 +614,28 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
    26: a phone may not honour a selection set by script anyway). So the first change after a placement is read on its
    own: a box that now holds the suggestion with something put into it, wherever the caret was, keeps only what was put
    in; one that holds it with something taken out (a Backspace) is emptied; one whose whole value was replaced (a person
-   selected it and typed) keeps what was typed. Once, then the box is ordinary. */
-export function firstChange(sug: string, v: string): string | null {
+   selected it and typed) keeps what was typed. Once, then the box is ordinary.
+   THE KIND OF CHANGE DECIDES, NOT ITS SHAPE (the fresh read's F1, 19 Oct 26): a select-all of 10:40 replaced by "1" leaves
+   "1", which by shape alone looks like 10:40 with "0:40" deleted — read as a Backspace, the box was emptied and "1100"
+   saved as 01:00. So the browser's own word for the change (`inputType`) is used where it is given: an insertion is
+   read only as an insertion, a deletion only as a deletion, and an insertion that left the box shorter replaced a
+   selection — kept as typed. With no word (an older browser), the shape alone, as before. */
+export function firstChange(sug: string, v: string, kind = ''): string | null {
   if (v === sug) return null
   let p = 0
   while (p < v.length && p < sug.length && v[p] === sug[p]) p++
   const d = v.length - sug.length
-  if (d > 0 && v.slice(p + d) === sug.slice(p)) return v.slice(p, p + d)
-  if (d < 0 && v.slice(p) === sug.slice(p - d)) return ''
+  const ins = !kind || kind.startsWith('insert'), del = !kind || kind.startsWith('delete')
+  if (ins && d > 0 && v.slice(p + d) === sug.slice(p)) return v.slice(p, p + d)
+  if (del && d < 0 && v.slice(p) === sug.slice(p - d)) return ''
   return null
 }
 const firstTypingReplaces = (read: () => string, write: (v: string) => void, sug: string) => {
   let first = true
-  return () => {
+  return (e?: Event) => {
     if (!first) return
     first = false
-    const n = firstChange(sug, read())
+    const n = firstChange(sug, read(), (e as InputEvent | undefined)?.inputType || '')
     if (n != null) write(n)
   }
 }
@@ -637,11 +643,17 @@ const firstTypingReplaces = (read: () => string, write: (v: string) => void, sug
    time is undone or replaced inside that second (walkers A and B, 19 Oct 26: Escape or a Backspace left the ring fading
    on an empty box, which then read as "taken") */
 function flashTaken(el: HTMLElement) {
+  /* a flash still running on this box is ended first, timer and all, so its timer cannot cut the new one short (the
+     fresh read's F2: tap, Escape, tap again inside the second) */
+  const prev = (el as any)._sugEnd; if (prev) prev()
   el.classList.remove('sugtook'); void el.offsetWidth; el.classList.add('sugtook')
-  const end = () => { el.classList.remove('sugtook'); el.removeEventListener('input', end); el.removeEventListener('keydown', esc) }
+  const end = () => {
+    clearTimeout(t); el.classList.remove('sugtook'); el.removeEventListener('input', end); el.removeEventListener('keydown', esc)
+    if ((el as any)._sugEnd === end) delete (el as any)._sugEnd
+  }
   const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') end() }
   el.addEventListener('input', end); el.addEventListener('keydown', esc)
-  setTimeout(end, 1200)
+  const t = setTimeout(end, 1200); (el as any)._sugEnd = end
 }
 export function placeSuggestion(el: HTMLElement): boolean {
   if (el instanceof HTMLInputElement) {

@@ -81,3 +81,38 @@ finger), the first key, Backspace, Escape before and after the ring has gone, En
    The designer's list: `docs/handpass/parts/rally-changes/scenarios.md` (22 scenarios, 7 breaks); none set aside. The
    common brief: `docs/superpowers/briefs/2026-10-19-rally-changes-walk.md`.
 5. **After the walk:** the ledger row is written (`docs/walk-ledger.md`, 19 Oct 26, [RALLY-BOX-CHANGES]).
+
+## 6. The orders walked (reports: `parts/rally-changes/walker-A.md`, `walker-B.md`, `walker-C.md`)
+| Order | Unpublished | Published day | Result |
+|---|---|---|---|
+| SC MAIN R typed → publish; publish → R typed → amend; → Undo; R and B both (the earlier) | A 1a, 1d | A 1b (pending, sign-offs fall, the tracker held until AL1, the Original's look keeps R empty), A 1c | PASS |
+| SC SPARE / AVALON / BB R typed; SPARE switched on in OIL Earn; the MAIN/SPARE badge flipped | A 2 | A 2, C (the flip raises pending) | PASS — written window only; the flip starts and stops R counting |
+| crew rest from an SC MAIN R — "rally is" / "in-time is" / cleared → "starts" | B 3 (phone) | — | PASS |
+| tap a faint flying R / B → the time in ordinary ink + ~1s ring → type replaces; Escape; Backspace; Enter; leave | A 5, 9; B 6, 7, 9 | — | PASS, after the fix below (Escape / a change inside the second now ends the ring) |
+| tap R then B at once; tap then ✓ Done / a day arrow; a redraw mid-ring | B 7; A 8 (forced redraws — two tabs did not sync live) | — | PASS / RECORD |
+| standby R by Tab / Shift+Tab / Enter / Escape (board, week) | A 11 | — | PASS — as a flying R |
+| one value on board, week, View-only Sched, peek, Excel, print | A 13, 14 | A 14 (a pending R is not exported until amended) | PASS |
+| two SC shifts, one man on both; long day and Insights from R; an empty R | C 4, 16, 18, break 6 | — | PASS |
+| copies: a day template carries the standby R; a saved plan brought out → AL1; "+ Wave" standby waves empty with no faint time | C 20 | C 20 (plan → AL1, R marked) | PASS / RECORD (the template carries R, as it carries B) |
+| a member's view (us / us) | B 19 | — | PASS — typed R shown, no faint times, a tap places nothing |
+| reload; the error list | A 22, B, C | — | PASS — no browser errors in any run |
+
+## 7. Cases carried by a test
+The arithmetic of `scReport` (both boxes, the earlier, the evening-before roll), crew rest's "rally is" words, the long day,
+OIL for MAIN / SPARE / AVALON / BB — `engine/scrally.test.ts` (RB8); the placement's no-highlight, caret, ring, first-change
+rule — `ui/brieftime-ui.test.tsx` RB9 and `e2e/rallybox.spec.ts`; the standby R on the week, peek and export —
+`ui/brieftime-ui.test.tsx` RB10, `ui/scboard.test.tsx`, `ui/board-stores.test.tsx`, `e2e/rallybox.spec.ts`.
+
+## 8. Break tests
+Junk text, 25:90, a rally later than START, R typed then START cleared (A breaks 1, 2, 3, 7 — PASS; `24:00` accepted as on a
+flying R — RECORD); clearing a box (B break 5 — PASS); overnight AVALON R 17:00 / 01:00 (C — shown only, nothing counts, PASS);
+one man on two SC shifts (C break 6 — PASS); **overnight SC MAIN 19:00–07:00 with R 01:00 (C break 4 — see §13 C-1).**
+
+## 9. Errors seen
+None — the browser's error list was empty in every run of every walker.
+
+## 10. What was NOT walked, and why
+WebKit / his iPhone itself (Chromium touch emulation only — his look card asks him); a live two-tab sync replacing a box mid-ring
+(the two tabs did not update each other in 12 s — forced redraws walked instead); the real print dialog (the print document was
+read); the light theme (none found); scenario 3's desktop part and arming a seat (carried by `engine/scrally.test.ts`); a
+member's read-only board (a member has no route to the board); break 6's SPARE variant (time).

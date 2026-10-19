@@ -52,7 +52,7 @@ describe('RB1 RB2 RB3 — the R box in the one reporting reader (D1032, D1034)',
   it('a box later than the take-off is the evening before (D503)', () => {
     expect(rep(flight([], f('01:30', '03:00', '23:10', '22:00')))).toMatchObject({ rally: -120, report: -120 })
   })
-  it('a standalone wave carries no rally: a stray value there is never read', () => {
+  it("the flying-line reader ignores a standalone wave's rally (an SC line's is read by scReport, D1041)", () => {
     const w: any = makeStandalone('sc'); w.formations[0].to = '08:00'; w.formations[0].rl = '05:00'
     expect(resolveReporting(w, w.formations[0], 480).rally).toBeNull()
   })

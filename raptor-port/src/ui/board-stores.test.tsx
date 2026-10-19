@@ -137,7 +137,7 @@ describe('the board carries the week\'s stores interface', () => {
     const saLine = lines[lines.length - 1]
     expect(saLine, 'the SC line was added').toBeTruthy()
     expect(saLine.children.length, 'eight DOM children — sa hides CONTENT, not the cell (seats share .sb-seatpair, times .sb-rb / .sb-tl)').toBe(8)
-    /* a standby line carries no rally (D1026's build): an empty place keeps the R track, and B is still its in-time box */
+    /* a standby line has its own R box since D1036 / D1040 (no default rally in it, D1039), and B is still its in-time box */
     const rb = saLine.querySelector(':scope > .sb-rb') as HTMLElement
     const rl = rb.querySelector('[data-bfld$=".rl"]') as HTMLInputElement
     expect(rl, 'a standby line has its R box too (D1036, D1040)').toBeTruthy()

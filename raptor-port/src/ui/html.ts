@@ -1866,7 +1866,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
         const brShown=editableBr?f.br:(brTyped?f.br:brief);
         /* THE SUGGESTION SITS INSIDE ITS OWN EMPTY BOX (owner D1028, D1030, 19 Oct 26): faint, where the time will go —
            never on a line above the box, so the row's boxes stay level and the row grows no taller. One tap places it,
-           highlighted, so whatever is typed next replaces it (interactions.ts placeSuggestion); Tab passing through
+           not highlighted, with a short ring (D1038), and whatever is typed next replaces it (interactions.ts placeSuggestion); Tab passing through
            fills nothing; Escape takes a just-placed one back out (textedit.ts — the box's own restore). The brief's
            suggestion is the take-off less the brief lead, as before; the R box's is the default rally, the take-off less
            the Logic page's report setting (D1027, D1031 — the same time "+ In-time" fills and an empty box reports at,
