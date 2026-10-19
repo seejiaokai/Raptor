@@ -88,7 +88,8 @@ describe('the MAIN/SPARE badge on an SC line', () => {
     expect(a.spare, 'the flag flipped').toBe(false)
     expect(a.role, 'the label followed').toBe('MAIN')
     expect(scSpare(w, f, a), 'the engine stops exempting the line').toBe(false)
-    expect(SCHED.pending[rk(`st:0.${WI}.0.${ai}`)], 'the line key is pending for the next AL').toBeTruthy()
+    /* on the row's fr: address since [STANDBY-FLIES] (the fresh read's F1): the role lives in the row's fr: composite, and an st: mark was reconciled away on a published day */
+    expect(SCHED.pending[rk(`fr:0.${WI}.0.${ai}`)], 'the line key is pending for the next AL').toBeTruthy()
     /* and back — the flip is symmetric */
     await click($(`#eWeek [data-sarole="0.${WI}.0.${ai}"]`))
     expect(a.spare).toBe(true)

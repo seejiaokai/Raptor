@@ -353,6 +353,8 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
            The body lives in seatIntime above (26 Aug 26) so slotRules' SANS
            window reads the identical clock — same SC-B precedence, same
            midnight roll. */
+        /* a standby line is named by its wave's FULL label in every warning (AVALON NIGHT, never the board's short AV) */
+        const lineLbl=shiftLine&&w.noconf?`${w.label} ${f.msn}`:`${f.cs} ${f.msn}`;
         const intime=seatIntime(w,f,toM,im);
         const report=(intime!=null)?intime:stepM;
         /* an SC line whose report is its RALLY box, not its in-time box (D1041) — so crew rest says "rally" (validate.ts
@@ -394,11 +396,11 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
             if(seat==='FCP')fcps.push(id);
             fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,
               lateShow:!shiftLine&&lateShowOf(a.rmks),   // this crew shows at the brief, not at the in-time
-              shift:shiftLine,...(viaRally?{viaRally:true}:{}),label:`${f.cs} ${f.msn}`,key:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
+              shift:shiftLine,...(viaRally?{viaRally:true}:{}),label:lineLbl,key:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
             /* the slot key this event came off — so the crew picker can ask
                "is he busy at this hour" without counting the very slot it is
                about to plant him into (he occupies it in a swap or a re-test) */
-            events.push({id,s:stepM,e:dekitM,to:toM,ld:ldM,report,brief:briefM,label:`${f.cs} ${f.msn}`,
+            events.push({id,s:stepM,e:dekitM,to:toM,ld:ldM,report,brief:briefM,label:lineLbl,
               kind:shiftLine?'shift':'fly',slot:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
           });
         });

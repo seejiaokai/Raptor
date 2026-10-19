@@ -1882,7 +1882,7 @@ export function routeClick(e: MouseEvent) {
       const was = a.role || (a.spare ? 'SPARE' : 'MAIN')
       a.spare = !a.spare
       a.role = a.spare ? 'SPARE' : 'MAIN'
-      markEdit(`st:${di}.${gi}.${li}.${ai}`, was, a.role)
+      markEdit(`fr:${di}.${gi}.${li}.${ai}`, was, a.role)   // fr:, not st: — the role lives in the row's fr: composite (restore.ts); st: is reconciled away on a published day (the read's F1)
       view.afterSchedMutate(); notify()
       /* a row that flies stays fully checked as either role ([STANDBY-FLIES], D1045) — the note must not say otherwise */
       const fl = saFlies(DAYS[di!].waves[gi!], DAYS[di!].waves[gi!].formations[li!], a)
@@ -1906,7 +1906,7 @@ export function routeClick(e: MouseEvent) {
     if (a && w && isStandalone(w) && !saTyped(f)) {
       const was = a.fly ? 'Flies' : 'Standing by'
       if (a.fly) delete a.fly; else a.fly = true
-      markEdit(`st:${di}.${gi}.${li}.${ai}`, was, a.fly ? 'Flies' : 'Standing by')
+      markEdit(`fr:${di}.${gi}.${li}.${ai}`, was, a.fly ? 'Flies' : 'Standing by')   // the tick lives in the row's fr: composite (the read's F1)
       view.afterSchedMutate(); notify()
       /* the redraw replaces the chip: a keyboard press keeps the keyboard on it (walker A, 19 Oct 26 — a second Enter
          needed a re-Tab); a mouse or finger press (detail > 0) leaves focus where the browser puts it */

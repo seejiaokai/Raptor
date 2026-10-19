@@ -182,3 +182,22 @@ describe('SF6 — OIL: a flying row earns by default (D1042)', () => {
     expect(work.stiff.map((x: any) => [x.s, x.e, x.dflt])).toEqual([[h(8), h(16), false]])
   })
 })
+
+/* THE FRESH READ'S FINDINGS (19 Oct 26 — docs/handpass/parts/standby-flies/read.md), each red before its fix */
+describe('SF4 — the fresh read: a flying AVALON row in the crew list and the warning words', () => {
+  it('F2: the crew list bars a man already on another place of the same flying AVALON shift', () => {
+    const w: any = makeStandalone('avalon'); const gi = addTue(w)
+    w.formations[0].rl = '18:30'; w.formations[0].aircraft[0].p = 'split'
+    validate()
+    expect(slotBar('split', `${TUE}.${gi}.0.1.p`)).toMatch(/already on/)
+  })
+  it('F4: a flying AVALON row is named "AVALON NIGHT" in its warnings, never the board\'s short "AV"', () => {
+    const w: any = makeStandalone('avalon'); const gi = addTue(w)
+    w.formations[0].rl = '18:30'; w.formations[0].aircraft[0].p = 'split'
+    INPUTS.push({ person: 'split', date: 'Jul 14', allday: true, type: 'OL', remarks: '' })
+    const ws = tueWarns('split', 'LEAVE_FLY', gi)
+    expect(ws.length).toBe(1)
+    expect(ws[0].msg).toMatch(/AVALON NIGHT/)
+    expect(ws[0].msg).not.toMatch(/\bAV NIGHT/)
+  })
+})

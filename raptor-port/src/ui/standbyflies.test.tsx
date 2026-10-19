@@ -14,7 +14,8 @@ import { initStore, setSession, notify, setPage } from '../state/store'
 import { DAYS } from '../engine/data'
 import { ridKey } from '../engine/rowids'
 import { makeStandalone, saFlies } from '../engine/waves'
-import { SCHED } from '../engine/publish'
+import { SCHED, signOf, setDayApproved } from '../engine/publish'
+import { validate } from '../engine/validate'
 import { dayHTML } from './html'
 import { boardHTML, openScheduler } from './board'
 import { peekDayHTML } from './peek'
@@ -86,7 +87,7 @@ describe('SF2 SF7 SF10 — a hand tick (D1061)', () => {
     const f = F(1)
     expect(f.aircraft[2].fly).toBe(true)
     expect(f.aircraft.map((a: any) => saFlies(DAYS[0].waves[WI], f, a))).toEqual([false, false, true, false])
-    expect(SCHED.pending[rk(`st:0.${WI}.1.2`)], 'an ordinary change, held for the next amendment').toBeTruthy()
+    expect(SCHED.pending[rk(`fr:0.${WI}.1.2`)], 'an ordinary change, held for the next amendment').toBeTruthy()
     const b2 = document.querySelector(`[data-safly="0.${WI}.1.2"]`) as HTMLElement
     expect(b2.textContent).toBe('✓ FLIES')
     expect(b2.getAttribute('aria-pressed')).toBe('true')
@@ -146,5 +147,24 @@ describe('SF7 — the next-week peek shows a flying row, read only (D1063)', () 
       expect(count(h, /✓ FLIES · /g)).toBe(4)
     } finally { F(0).rl = '' }
     expect(peekDayHTML(DAYS[0], 0, true)).not.toContain('FLIES')
+  })
+})
+
+/* the fresh read's F1: on a PUBLISHED day the tick's change mark was dropped by the reconcile (it sat on the row's st:
+   address; the tick lives in the fr: composite) — the row wore no mark and the amendment never coloured it */
+describe('SF10 — a hand tick on a published day keeps its change mark (the read, F1)', () => {
+  it('pending on the row fr: address after the redraw; the day reads a change', async () => {
+    const g: any = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    setDayApproved(0, true); validate()
+    await edit()
+    await act(async () => { openScheduler(0); notify() })
+    const key = `0.${WI}.1.3`
+    const btn = document.querySelector(`[data-safly="${key}"]`) as HTMLElement
+    await click(btn)
+    expect(F(1).aircraft[3].fly).toBe(true)
+    expect(SCHED.pending[rk(`fr:${key}`)], 'the row is marked for the next amendment').toBeTruthy()
+    await click(document.querySelector(`[data-safly="${key}"]`))
+    expect(F(1).aircraft[3].fly).toBeUndefined()
+    expect(SCHED.pending[rk(`fr:${key}`)], 'back to what went out: no mark').toBeFalsy()
   })
 })

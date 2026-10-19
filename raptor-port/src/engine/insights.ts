@@ -44,7 +44,9 @@ export function computeInsights(){
        sorties, the standby ones left plain (the agent's call: there is no question to answer for them). */
     (d.waves||[]).forEach((w:any)=>{if(!isStandalone(w))return;(w.formations||[]).forEach((f:any)=>{
       const fl=(f.aircraft||[]).filter((a:any)=>saFlies(w,f,a)&&saSeated(a)); if(!fl.length)return; forms++;df++;
-      fl.forEach((a:any)=>{sorties++;ds++;[a.p,a.w].forEach((id:any)=>{if(id&&PEOPLE[id]&&!PEOPLE[id].special)fc[id]=(fc[id]||0)+1;});});});});
+      fl.forEach((a:any)=>{sorties++;ds++;[a.p,a.w].forEach((id:any)=>{if(id&&PEOPLE[id]&&!PEOPLE[id].special){fc[id]=(fc[id]||0)+1;
+        /* its own plain part of the split bar (the read's F3) — never 'unresolved', which would hold back the split */
+        if(tracking){const mix=mixes[id]||(mixes[id]={blue:0,red:0,unresolved:0,standby:0});mix.standby=(mix.standby||0)+1;}}});});});});
     (d.waves||[]).forEach((w:any)=>{if(isStandalone(w))return;w.formations.forEach((f:any)=>{if(f.cx)return;forms++;df++;
       const source=tracking?resolveMissionRole(f,context=>{
         const date=dayIso(CURWEEK,di);let id:string;
@@ -53,7 +55,7 @@ export function computeInsights(){
       }):null;
       const role=source?.role;
       f.aircraft.forEach((a:any)=>{if(a.cx)return;sorties++;ds++;[a.p,a.w].forEach((id:any)=>{if(id){fc[id]=(fc[id]||0)+1;
-        if(tracking){const mix=mixes[id]||(mixes[id]={blue:0,red:0,unresolved:0});mix[role||'unresolved']++;}
+        if(tracking){const mix=mixes[id]||(mixes[id]={blue:0,red:0,unresolved:0,standby:0});mix[role||'unresolved']++;}
       }});});});});
     const ev=EVD[di]||{};
     Object.keys(ev).forEach((id:any)=>{

@@ -250,6 +250,8 @@ export function slotRules(key:any){
        events.ts — saExempt is false for it): no standby carve-outs, and its currency asked the SC way, below */
     const flyRow=!!(wv&&f&&ac&&saFlies(wv,f,ac));
     if(f&&wv&&isStandalone(wv)&&wv.noconf&&!flyRow)out.avJet=true;
+    /* a flying AVALON / BB row still asks the AVALON places walk (the read's F2): its other AVALON seat or desk is no event */
+    if(f&&wv&&isStandalone(wv)&&wv.noconf&&flyRow)out.avFly=true;
     if(f){ const st=parseHM(f.to); let en=parseHM(f.ld);
       if(st!=null){ if(en==null)en=st; if(en<st)en+=1440;
         const sh=wv&&isStandalone(wv);
@@ -424,7 +426,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
      avSeatHit, the body the validator's DOUBLE_BOOK reads after a drop.
      Nothing on AVALON is an event (noconf), so the busy scan below is blind
      to it — and spare-like seats skip that scan anyway. */
-  if((r.avJet||r.avDuty)&&r.slotStart!=null&&r.slotEnd!=null&&r.di>=0){
+  if((r.avJet||r.avDuty||r.avFly)&&r.slotStart!=null&&r.slotEnd!=null&&r.di>=0){
     const hit=avSeatHit(r.di,id,r.slotStart,r.slotEnd,selfKeys,!!r.avDuty);   // a desk asks about seats only
     if(hit)return `already on ${hit.what} ${hm24(hit.s)}–${hm24(hit.e)}`;
   }

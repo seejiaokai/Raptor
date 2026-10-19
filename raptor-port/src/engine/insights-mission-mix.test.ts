@@ -47,3 +47,18 @@ describe('D512 D516 D517 D523 D531 — one same traversal for total and formatio
     expect(on.hours).toEqual(off.hours)
   })
 })
+
+/* [STANDBY-FLIES] the fresh read's F3: a standby sortie (no mission, no side) is its own plain part of the split, so the
+   bar is never drawn short of the man's count — and it holds back nothing ('unresolved' stays 0) */
+describe('a standby row that flew in the blue / red split', () => {
+  it('counts as "standby", not "unresolved", and the parts add up to the man's sorties', () => {
+    const w: any = makeStandalone('sc')
+    w.formations[0].rl = '06:30'; w.formations[0].aircraft[0].p = 'split'
+    ;(DAYS[5] as any).waves.push(w)
+    const I: any = computeInsights()
+    const f = I.flyers.find((x: any) => x.id === 'split')
+    expect(f.roleMix.standby).toBe(1)
+    expect(f.roleMix.unresolved).toBe(0)
+    expect(f.roleMix.blue + f.roleMix.red + f.roleMix.standby + f.roleMix.unresolved).toBe(f.n)
+  })
+})
