@@ -793,6 +793,13 @@ takes part in is the box's** (the code read, 19 Oct 26): its warning is keyed to
 live paper only), the box carries the fault's words (`html.ts rlFaultAtt`, week and board), and the typed lines' red note leaves
 it out — except an in-time later than the box's rally, which the in-time line explains too (the in-time is always typed).
 
+**One tap into a time box, then typing, replaces its time (owner D1047, 19 Oct 26).** Every time box on the Scheduler Board
+(`input.tm`, `input.atm`) and the week (a `[data-txt]` box whose key is a time, `slots.ts TIME_TXT`) that already holds a
+value: focused by a press, its FIRST change replaces the value (an insertion anywhere keeps only what was put in, a deletion
+empties it, a selection typed over keeps what was typed — `interactions.ts firstChange`, read on `beforeinput` / `input`); a
+second press on the focused box, or an arrow / Home / End key, puts the caret where he wants and the box is ordinary. A Tab
+into a box arms nothing. Pinned: `ui/brieftime-ui.test.tsx` RB11, `e2e/rallybox.spec.ts`.
+
 **A button pressed straight after a changed box does its job (`[EDIT-BUTTON-AFTER-CHANGE]`, 19 Oct 26).** The press
 takes the focus from the box, the box saves and the redraw replaces the button under the press, so the browser's click
 reached nothing. `textedit.ts` notes a press that lands on a button while a text box has the caret; once the browser
