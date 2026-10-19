@@ -13,6 +13,8 @@ not yet live). Two changes, one check (D485):
 ## Questions waiting for him
 None.
 
+**The readout (D1082, 19 Oct 26 — his "Add the readout"):** `src/ui/kbdebug.ts`, shown only with `?kbdebug=1` on the link (and `?kbdebug=0` turns it off), for his iPhone screenshots of the black band and the missed tap. **It is taken out before "merge live"** — the file, its install line in `main.tsx`, its test and its row in `docs/file-map.md`.
+
 ## 1. The eight questions and the tier
 1. Money (OIL) — NO: no OIL arithmetic or record changes; the Leave War's OIL figure boxes save what the box shows, by
    their own unchanged save; only how the first key edits the box's text changes, and the box shows it before any save.
