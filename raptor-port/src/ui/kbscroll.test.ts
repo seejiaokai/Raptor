@@ -79,6 +79,25 @@ describe('keepAboveKeyboard', () => {
   })
 })
 
+describe('room below the page (walker A: A11)', () => {
+  afterEach(() => dropLifts())
+  it('the page at its foot: an empty block after it, as tall as is missing, then the page once more; gone when the typing ends', () => {
+    document.body.innerHTML = '<div id="pg"><input id="b"></div>'
+    const b = document.getElementById('b') as HTMLInputElement
+    /* the page can scroll 30px, plus whatever is put after it */
+    const room = () => 30 + (parseFloat((document.querySelector('[data-kbspacer]') as HTMLElement | null)?.style.height || '0') || 0)
+    Object.defineProperty(document.documentElement, 'scrollTop', { configurable: true, get: () => pageST, set: v => { pageST = Math.max(0, Math.min(room(), v)) } })
+    place(b, 700, 30)
+    keepAboveKeyboard(b, vvUp)
+    expect(b.getBoundingClientRect().bottom).toBe(H - KB - GAP)
+    expect(document.querySelector('[data-kbspacer]')).toBeTruthy()
+    dropLifts(b)
+    expect(document.querySelector('[data-kbspacer]'), 'kept between two boxes').toBeTruthy()
+    dropLifts()
+    expect(document.querySelector('[data-kbspacer]')).toBeNull()
+  })
+})
+
 describe('a window that cannot scroll is raised instead', () => {
   const win = () => {
     document.body.innerHTML = '<div id="bd" style="position:fixed"><div id="w"><input id="b"><input id="t"></div></div>'

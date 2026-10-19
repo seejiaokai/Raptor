@@ -2,7 +2,7 @@
    builder; the tick/untick handlers keep the reference's invariants: NAAR
    is signed off after DAAR, SC NIGHT after SC DAY, and withdrawing the day
    qualification takes the night one with it. */
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { rowOnScreen } from './onscreen'
 import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME } from '../engine/people'
 import { validate } from '../engine/validate'
@@ -274,7 +274,7 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
 }
 
 export function QualsPage() {
-  useVersion()
+  const ver = useVersion()
   const [qSeatView, setSeat] = useState('FCP')
   const [qSort, setSort] = useState({ key: 'cs', dir: 1 })
   const [qEditing, setEditing] = useState(false)
@@ -364,6 +364,16 @@ export function QualsPage() {
      person`, which puts someone on the roster, and EDIT QUALS, which decides
      which qualifications the whole squadron's LoX carries. */
   const canEditQuals = () => admin && qEditing && qualsEdit
+  /* THE TABLE IS DRAWN AGAIN ONLY WHEN WHAT IT SHOWS CHANGED ([KEYBOARD-SCROLL] walker A's A12, 19 Oct 26): React sets a
+     `dangerouslySetInnerHTML` again whenever its OBJECT is a new one — not only when the markup differs (probed on the built
+     app: the same 48,350 characters set again) — so every repaint of the page, the pinned heading coming and going as
+     the page scrolls among them (setStuck), threw away the cell being typed in: a cell scrolled up (by hand, or above a
+     phone's keyboard, D1048) lost its caret and what was typed next went nowhere. The markup, and the object that carries
+     it, are made once per change of the store or of the page's own choices. */
+  const canEdit = canEditQuals()
+  const tableInner = useMemo(() => ({ __html: qualsTable(cols, qSeatView, qSort, qEditing, qSearch, canEdit, armDel) }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- cols is the store's list, read afresh: `ver` moves with it
+    [ver, qSeatView, qSort, qEditing, qSearch, canEdit, armDel])
 
   /* remove a column. WIRED ones arm first — see the note beside WIRED. */
   const delQual = (k: string) => {
@@ -817,7 +827,7 @@ export function QualsPage() {
       ))}
       <div className={'qwrap' + (sdaActive ? ' q-sda' : '')} ref={wrapRef}>
         <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')} id="qtbl" ref={tblRef}
-          dangerouslySetInnerHTML={{ __html: qualsTable(cols, qSeatView, qSort, qEditing, qSearch, canEditQuals(), armDel) }} />
+          dangerouslySetInnerHTML={tableInner} />
         {/* THE LIFT FRAME (owner, 6 Sep 26): one box round a picked-up column,
             and the flash where it lands — src/ui/lift.ts. Inside the scroll
             wrap so it travels with the table sideways; a constant className, so

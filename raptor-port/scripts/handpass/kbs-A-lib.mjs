@@ -11,7 +11,7 @@ export const RESULTS = path.join(ROOT, 'scripts/handpass/kbs-A-results.jsonl')
 mkdirSync(SHOTS, { recursive: true })
 const CH = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 const launchOptions = existsSync(CH) ? { executablePath: CH } : {}
-export const BASE = 'http://localhost:4333/'
+export const BASE = process.env.HP_URL || 'http://localhost:4333/'
 export const KB = 336, GAP = 8
 
 export const stubInit = () => {
@@ -34,6 +34,7 @@ export async function open({ width = 402, height = 874, mobile = true, stub = tr
   page.on('response', r => { if (r.status() >= 400) errors.push('HTTP ' + r.status() + ' ' + r.url()) })
   await page.goto(BASE)
   await page.addStyleTag({ content: '*{scroll-behavior:auto !important}' })
+  if (stub) await page.evaluate(() => { const v = window.__vv; v.width = innerWidth; v.height = innerHeight })
   if (login) await signIn(page, who)
   return { browser, ctx, page, errors }
 }
@@ -64,6 +65,7 @@ export const keysDown = async (page) => {
 
 /** state of the page: scroll, vv, window translates up the ancestors of `el` (a handle) */
 export async function state(page, handle) {
+  const eh = handle ? (handle.elementHandle ? await handle.elementHandle() : handle) : null
   return page.evaluate((e) => {
     const r = e ? e.getBoundingClientRect() : null
     const tr = []
@@ -82,7 +84,7 @@ export async function state(page, handle) {
       active: document.activeElement ? (document.activeElement.tagName + '#' + document.activeElement.id + '.' + String(document.activeElement.className).slice(0, 30)) : null,
       covered, coverBy: top ? (top.tagName + '#' + top.id + '.' + String(top.className).slice(0, 30)) : null,
     }
-  }, handle ? await handle.elementHandle() : null)
+  }, eh)
 }
 
 /** find the scrolling ancestor of a box and scroll so its centre sits at y (default innerHeight-60) */
@@ -123,4 +125,31 @@ export function judge(st, { ih = 874, kb = KB, tall = false, pageBefore = null, 
 export function record(obj) {
   appendFileSync(RESULTS, JSON.stringify(obj) + '\n')
   console.log('RESULT', JSON.stringify(obj))
+}
+
+/** Run one standard scenario: low -> record -> tap -> shot before -> keys up -> shot after -> judge -> keys down. */
+export async function scenario(page, id, handle, { what = '', tall = false, inWindow = false, lowY = 800, skipLow = false, keepUp = false, resolve = null,  kb = KB, ih = 874 } = {}) {
+  const out = { id, what }
+  if (!skipLow) out.low = await bringLow(handle, lowY)
+  await page.waitForTimeout(200)
+  out.before = await state(page, handle)
+  const pageBefore = out.before.pageScroll
+  await tapBox(page, handle)
+  await page.waitForTimeout(500)
+  if (resolve) { handle = await resolve() }
+  out.tapped = await state(page, handle)
+  await shot(page, `${id}-1-before`)
+  await keysUp(page, kb)
+  await page.waitForTimeout(500)
+  out.after = await state(page, handle)
+  await shot(page, `${id}-2-after`)
+  out.verdict = judge(out.after, { ih, kb, tall, pageBefore, inWindow })
+  if (!keepUp) {
+    await keysDown(page)
+    out.down = await state(page, handle)
+    await shot(page, `${id}-3-down`)
+  }
+  out.pass = out.verdict.ok
+  record({ ...out, summary: `${id} ${out.pass ? 'PASS' : 'FAIL'} before=${JSON.stringify(out.before.rect)} tapped=${out.tapped.rect && out.tapped.rect.bottom} after=${JSON.stringify(out.after.rect)} room=${ih - kb} page ${pageBefore}->${out.after.pageScroll} tr_after=${JSON.stringify(out.after.translatesAny)} tr_down=${out.down ? JSON.stringify(out.down.translatesAny) : 'n/a'} down_rect=${out.down && JSON.stringify(out.down.rect)} notes=${out.verdict.notes.join(';')}` })
+  return out
 }

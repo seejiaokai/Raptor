@@ -103,9 +103,24 @@ export function putBack(l: HTMLElement) {
   l.style.removeProperty('--kbcap'); delete l.dataset.kbcap
   LIFTED.delete(l)
 }
-/** Puts back every window raised for the keys, but the one that holds `keep`. */
+/* ROOM BELOW THE PAGE (walker A's A11, 19 Oct 26: Admin → Users, the new person's last box — the page already at its
+   foot, the box 5px under the keys): the keys cover the page's last few hundred pixels and the page cannot scroll past
+   its own end, so an empty block, as tall as is missing, is put after it while the keys are up — nothing shows in it,
+   it sits under the keys — and taken away when the typing ends or the keys go down. */
+let SPACER: HTMLElement | null = null
+function roomBelow(px: number) {
+  if (!SPACER || !SPACER.isConnected) {
+    SPACER = document.createElement('div')
+    SPACER.setAttribute('data-kbspacer', ''); SPACER.setAttribute('aria-hidden', 'true')
+    document.body.appendChild(SPACER)
+  }
+  SPACER.style.height = Math.ceil((parseFloat(SPACER.style.height) || 0) + px) + 'px'
+}
+/** Puts back every window raised for the keys, but the one that holds `keep`; the room below the page only when the
+    typing has ended (no `keep`) — taken away between two boxes, the page would jump back and forth. */
 export function dropLifts(keep?: Element | null) {
   for (const l of [...LIFTED]) if (!keep || !l.contains(keep)) putBack(l)
+  if (!keep && SPACER) { SPACER.remove(); SPACER = null }
 }
 /* a held window: held to the room again (the room may have changed), its top at the top */
 function pin(l: HTMLElement, s0: number, visTop: number, visBot: number) {
@@ -163,7 +178,12 @@ export function keepAboveKeyboard(el: HTMLElement, vv: VV): number {
     return moved
   }
   const page = document.scrollingElement || document.documentElement
-  if (page) moved += lift(page, el, visBot - GAP, visTop + GAP)
+  if (page) {
+    moved += lift(page, el, visBot - GAP, visTop + GAP)
+    /* the page at its foot and the box still under the keys: room below it, then the page once more */
+    const short = el.getBoundingClientRect().bottom - (visBot - GAP)
+    if (short > 0.5) { roomBelow(short); moved += lift(page, el, visBot - GAP, visTop + GAP) }
+  }
   return moved
 }
 
