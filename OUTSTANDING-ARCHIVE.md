@@ -6197,3 +6197,17 @@ LOGIN page: the sign-in form had not rendered before the fill timed out. Run on 
 six seconds. Same cause, same shape — a fixed wall-clock wait on a loaded box — so the fix is the
 same one, and it belongs to the Leave War e2e suite rather than to any branch.
 
+
+*Moved here 2026-10-20 by backlog-archive.mjs ([LW-WINDOW-PRUNE-FLAKE-2]). Forward facts: `raptor-port/docs/handpass/2026-10-20-shaky-tests.md`.*
+
+### [LW-WINDOW-PRUNE-FLAKE-2] The month-window browser test's OTHER branch timed out once inside the full run — test-only (filed 30 Sep 26)
+`raptor-port/e2e/leavewar.spec.ts` "the grid draws a window of months over year-wide placeholders, keeps every row aligned,
+and draws in place" (lw-desktop) failed once in the full gate run on `claude/db-readiness-table-shaping-4094f6` (phase 4,
+557 of 558): January was NOT drawn when its button was pressed, and the 5-second poll for December to leave the drawn
+months ran out. The first fix (`[LW-WINDOW-PRUNE-FLAKE]`, archived 29 Sep 26) made the premise exact; this branch still
+waits a fixed 5 seconds for a prune that happens only when the PC is idle (`state/idle.ts`) — a busy PC outlasts it. Alone
+3 / 3 straight after; phase 4 does not touch the grid. **Do (D87):** wait on the idle signal or the window's settled state,
+not a fixed time. **Place:** test-only, low, any time. **Seen again 9 Oct 26** (`claude/inputs-sans-calendar`, the final gate run after the shared input's date door — a change to the input editor only): the same branch, the same 5-second wait; alone 3 / 3 and its whole group 186 / 0 straight after.
+**Met again the night of 15 Oct 26** (`claude/drag-edge-scroll-elsewhere-51bfc4`, the full run at `7e9e98724`): the same branch (January undrawn, December still drawn after the jump) — and ALONE it failed 1 of 3 (2 passed), the first time it has failed outside a full run. That job touches nothing of the Leave War (`src/leavewar` unchanged; `select.ts` reads only edge numbers that did not change). **The agent's placing:** steady it as a job of its own — it is no longer only load (D87: wait on what the step needs).
+**Carried 18 Oct 26 from the archived [LW-REQ-PICK-MONTH-UNSTEADY] (its 13 Oct 26 note):** the phone test "Undo and Redo leave the grid where it is…" failed once at its month-button landing step, under load; it still waits a fixed 350 ms before its last month-button check (`raptor-port/e2e/leavewar.spec.ts`, about lines 4315–4321). Steady it with this item — wait on the grid having settled (D87). **Seen again 19 Oct 26** in the D994 batch's second full run (`claude/schedule-amendments-fixes-fffce0`, which touches nothing of the Leave War): the same step, 163 px off; alone under the lock, 2 of 3.
+
