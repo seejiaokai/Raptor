@@ -340,8 +340,13 @@ for (const [label, size] of [['1440×900', PREVIEW_DESK], ['1440×700', { width:
       if (sel === '.availwin') {
         await page.click('#sbDone')   // the board's one exit since D349 (its Close went, 28 Sep 26)
         await page.waitForTimeout(250)
-        expect((await rectOf(page, sel)).top, 'the board closed: back in its corner').toBe(96)
-        expect(await page.evaluate(s => (document.querySelector(s) as HTMLElement).style.maxHeight, sel), 'and no height cap left').toBe('')
+        /* "its corner" is under the top bar where the bar is two lines ([FLOATWIN-TWO-LINE-BAR], 21 Oct 26) — and at
+           1440 it is two lines on GitHub's Linux machines, one on his PC: so the corner is read off the bar */
+        const top = (await rectOf(page, sel)).top
+        const barFoot = await page.evaluate(() => Math.round(document.getElementById('burger')!.closest('.topbar')!.getBoundingClientRect().bottom))
+        expect(top, 'the board closed: back in its corner, or just under a two-line bar').toBe(Math.max(96, barFoot + 8))
+        expect(await page.evaluate(s => (document.querySelector(s) as HTMLElement).style.maxHeight, sel), 'and no height cap left but the bar\'s own')
+          .toBe(top === 96 ? '' : `${size.height - top - 12}px`)
       }
     })
   }

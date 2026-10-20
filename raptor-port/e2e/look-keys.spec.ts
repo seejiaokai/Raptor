@@ -61,8 +61,10 @@ test.describe('[FLOATWIN-TWO-LINE-BAR] a window he has not moved opens clear of 
     expect(m.inBar && !m.inWin, "the bar's last 3px are the bar's").toBe(true)
   })
 
-  test('1440 wide, the bar on one line: the windows keep the corner they always had', async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 })
+  /* 1920, not 1440: where the bar runs to a second line depends on the letters' widths — at 1440 it is one line on his PC
+     and two on GitHub's Linux machines (the read's finding 1, 21 Oct 26) — and at 1920 it is one line on both */
+  test('1920 wide, the bar on one line: the windows keep the corner they always had', async ({ page }) => {
+    await page.setViewportSize({ width: 1920, height: 1000 })
     await login(page); await go(page, 'editsched')
     expect(await page.locator(TOPBAR).evaluate(b => b.getBoundingClientRect().height), 'one line').toBeLessThan(70)
     await page.locator('#histBtn').click()
@@ -86,6 +88,28 @@ test.describe('[FLOATWIN-TWO-LINE-BAR] a window he has not moved opens clear of 
     /* the two-line top bar is under the board here, not under the window: the corner stands. (It lies over the right
        end of the board's own bar — a look put to him, OUTSTANDING.md [FLOATWIN-BOARD-BAR]; not changed here.) */
     expect(Math.round((await against(page, '.availwin', TOPBAR)).top)).toBe(96)
+  })
+
+  /* TWO WINDOWS HE HAS NOT MOVED, OPEN TOGETHER (the read's finding 2, 21 Oct 26): each asked what lies under its own top
+     edge, met the OTHER window there and never the bar, so neither moved down. Opened together where the bar is one
+     line, the screen then narrowed until the bar takes two (the read's other route — the board closed under both — is
+     not one a mouse can take while the windows cover the board's ✓ Done: [FLOATWIN-BOARD-BAR]). */
+  test('both windows open together at 1920, the screen narrowed to 1200: both move under the two-line top bar', async ({ page }) => {
+    await page.setViewportSize({ width: 1920, height: 900 })
+    await login(page); await go(page, 'editsched')
+    await allAvailOnMonday(page)
+    await page.locator('#eWeek [data-oilsent]:visible').first().click()
+    await expect(page.locator('.availwin:not([hidden])')).toBeVisible()
+    await page.locator('#histBtn').click()
+    await expect(page.locator('.chgwin:not([hidden])')).toBeVisible()
+    await page.setViewportSize({ width: 1200, height: 800 })
+    await page.waitForTimeout(300)
+    for (const sel of ['.availwin', '.chgwin']) {
+      await expect(page.locator(`${sel}:not([hidden])`), `${sel} still open`).toBeVisible()
+      const m = await against(page, sel, TOPBAR)
+      expect(m.barH, 'the premise: two lines at 1200').toBeGreaterThan(90)
+      expect(Math.round(m.top), `${sel}'s top, the bar's foot at ${m.barBottom}`).toBe(Math.round(m.barBottom + 8))
+    }
   })
 
   test("1200 wide, a window of the shell (the Inputs list's ⚙ settings) opens under the two-line bar too", async ({ page }) => {
@@ -202,6 +226,18 @@ test.describe('[BATCH-14OCT-LEFTOVERS] (a) the board\'s Cancel sheet by keyboard
       expect(f.ring, `${f.name} in the edit list, reached by Tab`).toBe(`solid 2px ${CYAN}`)
     }
     expect(got, 'the edit list\'s buttons were reached').toBeGreaterThan(0)
+    /* …and the ring is WHOLE: the list scrolls, and a ring 2px off a button reaches 4px past it — the list must not cut it
+       (the read's finding 4, 21 Oct 26: the ✕'s right side, the first row's top, the last row's bottom) */
+    const cut = await page.evaluate(() => {
+      const list = document.querySelector('#cxEdit .cxedit-list') as HTMLElement, l = list.getBoundingClientRect()
+      return [...list.querySelectorAll('.cxedit-mv:not([disabled]), .cxedit-del')].map(b => {
+        const r = b.getBoundingClientRect(), o = 4
+        const sides = [r.left - o < l.left - 0.5 && 'left', r.right + o > l.left + list.clientWidth + 0.5 && 'right',
+          r.top - o < l.top - 0.5 && 'top', r.bottom + o > l.top + list.clientHeight + 0.5 && 'bottom'].filter(Boolean)
+        return sides.length ? `${b.getAttribute('aria-label')}: ${sides.join(', ')}` : ''
+      }).filter(Boolean)
+    })
+    expect(cut, 'rings the edit list would cut').toEqual([])
     /* a click is not a keyboard: no ring after a mouse press on a chip */
     await page.locator('#cxEdit [data-cxdone]').click()
     await page.locator('#cxQuick [data-cxq]').first().click()

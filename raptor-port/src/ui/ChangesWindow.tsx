@@ -152,7 +152,7 @@ export function ChangesWindow() {
   /* A NOTE ALREADY UP WHEN THE WINDOW OPENS MOVES OFF IT ([BUBBLE-SMALL-SEEN] (3) — an Undo's note still showing as the window
      opens on a phone sat over its first lines; the batch's check, 19 Oct 26). The shell's windows do it as they open
      (FloatWindow.tsx); a note raised while this one is up is placed by toast() itself. */
-  useEffect(() => { placeToast() }, [!!w])
+  useEffect(() => { if (w) placeToast() }, [!!w])   // as it opens — never as it closes: a note is not moved while it is read (the look-and-keys read, 21 Oct 26)
   /* the phone's slim bar sits where the stylesheet puts it — at the bottom — whatever height the panel was dragged to:
      it is there so the change behind can be seen, so it hands the box back for the bar and takes it again when the
      panel comes back ([DRAFT-PENDING], Fable P8 — the bar floated mid-screen at the dragged panel's top) */

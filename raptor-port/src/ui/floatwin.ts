@@ -97,7 +97,9 @@ function barsUnder(n: HTMLElement, r: DOMRect): Element[] {
     const q = bar.getBoundingClientRect()
     if (!(q.height > 0 && q.width > 0) || r.top >= q.bottom || r.bottom <= q.top || q.left >= r.right || q.right <= r.left) return false
     const x = Math.min(Math.max(r.left + r.width / 2, q.left), q.right - 1, window.innerWidth - 1), y = (Math.max(r.top, q.top) + q.bottom) / 2
-    const under = document.elementsFromPoint(x, y).find(e => e !== n && !n.contains(e))
+    /* every movable window is left out, not only this one: two of them open together each met the OTHER there, and
+       neither moved (the look-and-keys read, finding 2); each places itself */
+    const under = document.elementsFromPoint(x, y).find(e => !e.closest('.floatwin, .chgwin, .availwin'))
     return !!under && bar.contains(under)
   })
 }

@@ -83,6 +83,18 @@ describe('D731 (1) — on a phone, while a window is open, the passing note is s
       expect(face().dataset.at, 'the note it found there moved to the top').toBe('top')
     } finally { await act(async () => { setChgWin(null) }) }
   })
+  /* …and NOT when it closes: a note is not moved about while it is being read (ui/toast.ts placeToast — the
+     look-and-keys read, finding 5: the window's own placing ran on its close too) */
+  it('a phone: a note at the top while the changes window is up stays there when the window closes', async () => {
+    asPhone(true)
+    initStore(); setSession({ user: 'a', role: 'admin' })
+    await act(async () => { setChgWin({ day: 'week', tab: 'all', group: 'item' }); root.render(<ChangesWindow />) })
+    toast('Undid: a take-off time', 'ok')
+    expect(face().dataset.at).toBe('top')
+    await act(async () => { setChgWin(null); root.render(<ChangesWindow />) })
+    expect(document.querySelector('.chgwin:not([hidden])'), 'the window has closed (or this test proves nothing)').toBeNull()
+    expect(face().dataset.at, 'the note stays where it is being read').toBe('top')
+  })
   it('a phone with NO window up: at the foot, as before', () => {
     asPhone(true)
     toast('CSV downloaded', 'ok')

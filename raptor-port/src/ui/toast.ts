@@ -187,7 +187,9 @@ export function toast(msg:any,kind:any,part?:ToastPart){
      message: the flat time as a floor, then reading time on top, capped so a
      runaway message cannot park a toast on screen for ever. */
   const hold=Math.min(12000,Math.max(tint?4200:2600,String(msg).length*60+1200));
-  if(toastT)clearTimeout(toastT); toastT=setTimeout(()=>t.style.opacity='0',hold);
+  if(toastT)clearTimeout(toastT); toastT=setTimeout(()=>{ t.style.opacity='0';
+    /* the reader's copy goes with it, where it is still this note's — no stale words for a reader to meet later */
+    const r=$('srSay'); if(r&&r.textContent===String(msg==null?'':msg))r.textContent='' },hold);
 }
 /* A SIGN-IN OR SIGN-OUT TAKES THE TOAST DOWN ([ACCOUNTS], 26 Sep 26 — found by the walk):
    a message raised by one person ("viper@mail can sign in now") held for its full

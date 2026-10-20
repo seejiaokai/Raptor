@@ -112,7 +112,8 @@
 .topbar > .savestat.failed button, .saveband button{flex:0 0 auto;margin:0;padding:4px 14px;border-radius:9px;border:1px solid currentColor;
   background:rgba(229,194,74,.12);color:inherit;font:inherit;font-weight:700;cursor:pointer}
 /* on the board the band is the LAST line of the board's own bar (inside .sb-top, so --sb-topH follows it), let out to
-   the bar's edges past its padding; in the two calendars it is a line of the column, between the head and the body */
+   the bar's edges past its padding; in the Medical view opened full (its column is `.inpcal` — no screen opens it so
+   today) and the Leave War's OIL tracker it is a line of the column, between the head and the body */
 .sb-top > .saveband{flex:0 0 auto;order:99;width:calc(100% + 32px);margin:2px -16px -10px}
 /* …the OIL band after it, the bar's last line. Where both are up the warning gives up the pull that set IT on the bar's
    bottom edge (its -10px), so the two lie one under the other and only the last one reaches the edge. */

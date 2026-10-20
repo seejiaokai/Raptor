@@ -91,7 +91,7 @@ export function AvailWindow() {
   })
   /* a note already up when the window opens moves off it, as the changes window's does (ChangesWindow.tsx — the
      look-and-keys walk, 21 Oct 26); a note raised while it is up is placed by toast() itself */
-  useEffect(() => { placeToast() }, [!!open])
+  useEffect(() => { if (open) placeToast() }, [!!open])   // as it opens — never as it closes, mid-read
 
   if (!open) return <div className="availwin" hidden />
 

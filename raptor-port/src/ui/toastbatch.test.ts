@@ -207,6 +207,16 @@ describe('the passing note is told to a screen reader', () => {
       delete (document.documentElement as any).getBoundingClientRect
     }
   })
+  it('the words go when their note fades, and a newer note’s words are left alone', () => {
+    toast('Monday published', undefined); vi.advanceTimersByTime(40)
+    expect(region()!.textContent).toBe('Monday published')
+    vi.advanceTimersByTime(13000)
+    expect(face()!.style.opacity, 'the note has faded').toBe('0')
+    expect(region()!.textContent, 'its words with it — no stale note for a reader to meet later').toBe('')
+    toast('A', undefined); vi.advanceTimersByTime(40)
+    toast('a longer note that holds the screen for longer than the first one did', undefined); vi.advanceTimersByTime(2700)
+    expect(region()!.textContent, 'the second note still stands').toBe('a longer note that holds the screen for longer than the first one did')
+  })
   it('a sign-in or sign-out takes the words down with the note', () => {
     toast('viper@mail can sign in now', undefined); vi.advanceTimersByTime(40)
     clearToast()

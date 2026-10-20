@@ -17,8 +17,9 @@
      · nothing is laid out at all                      → the note, at once: a hidden page shows nothing (and a unit
                                                          test's page is never laid out, so there every save still
                                                          says its words in the same breath as before).
-     · ANOTHER NOTE WAS RAISED WHILE THIS ONE WAITED   → that note keeps the screen; these words go to a screen
-                                                         reader only. A save's own after-pass raises its warning a
+     · ANOTHER NOTE WAS RAISED WHILE THIS ONE WAITED   → that note keeps the screen, and a screen reader's ear: every
+                                                         note is told to the reader (ui/toast.ts sayToReader — 21 Oct
+                                                         26), so these words, told after it, would replace it there. A save's own after-pass raises its warning a
                                                          beat after the save returns, precisely so that it stands
                                                          over the window's plain line (state/holderbase.ts: "LL does
                                                          not go on the Ground Programme — its row has been removed");
@@ -78,13 +79,16 @@ export function noteUnlessSeen(iid: string, words: string, kind?: any): void {
   region()
   /* the note, come late — unless another has been raised since the save asked (the head of this file) */
   const at = toastCount()
-  const say = () => { if (toastCount() !== at) tell(words); else HOOKS.toast(words, kind) }
+  /* …and the reader's region too: the note raised since was told, and the late words would replace it (the look-and-keys
+     read, finding 3, 21 Oct 26 — a reader hearing only the latest polite words never heard the warning) */
+  const since = () => toastCount() !== at
+  const say = () => { if (!since()) HOOKS.toast(words, kind) }
   later(SEEN_FIRST_MS, () => {
     const first = marked(iid)
-    if (first.some(inView)) { tell(words); return }
+    if (first.some(inView)) { if (!since()) tell(words); return }
     /* nothing wears it, or nothing that wears it has a box: no scroll can bring it — said now, not after a wait */
     if (!first.some(el => { const b = el.getBoundingClientRect(); return b.width > 0 && b.height > 0 })) { say(); return }
-    later(SEEN_SETTLE_MS, () => { if (marked(iid).some(inView)) tell(words); else say() })
+    later(SEEN_SETTLE_MS, () => { if (marked(iid).some(inView)) { if (!since()) tell(words) } else say() })
   })
 }
 
