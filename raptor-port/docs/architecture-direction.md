@@ -153,6 +153,8 @@ his id, and a guest from another community is shown with his community beside hi
 the squadrons of one aircraft type; on a puck a small colour mark, never text that hides the callsign). Nothing here
 is built before the database step (`OUTSTANDING.md` `[XFER]`).
 
+**One app for every squadron and aircraft type; detachments; lending a man (owner, 21 Oct 26 — D1100).** The app will serve F-15, F-16 and F-35 squadrons from ONE code base: a change is made once, and each squadron configures the app inside it. An **aircraft-type setting** brings its own settings, the rule checks included — rules common to every type are shared, each squadron keeps its quirks (a single-seat jet's rules and the back-seat switch, D1099, are among them). A **detachment** — a squadron split across two places for operations — has its own schedule, its people moved to it, so its scheduler sees only who is with him. The two F-15 squadrons may **share one app**: each sees the other's schedule, and a man may be lent to the other squadron for a day or a period as its manpower — flying with one in the morning and teaching academics at the other in the afternoon, so clashes and crew rest are checked across both. **Undecided, his:** whether every squadron sits in one shared system or they are split apart, since combining too much raises the security classification. **When:** at the end, after the F-15 app's faults are fixed; until then, new work keeps squadron- and aircraft-specific choices as settings, never fixed in the code, so none of it is redone.
+
 ## 4. The order of work
 
 Each stage is independently deployable and reversible; none needs the next.

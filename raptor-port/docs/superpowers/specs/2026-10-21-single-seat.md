@@ -14,7 +14,8 @@ on their app. So just FCP only pilots."*
 2. **An F-16 squadron flies a mixed fleet** (some jets single-seat, some two-seat); **an F-35 squadron is all
    single-seat.** The app must serve both, beside today's two-seat squadron.
 3. **His idea, not yet designed:** an admin setting that switches the back seat (RCP) off for a squadron, so its
-   schedule shows front-seat pilots only.
+   schedule shows front-seat pilots only. Since D1100 (21 Oct 26) it is one of the aircraft-type settings that carry a type's
+   rules (`docs/architecture-direction.md` §3).
 
 ## What already bears on it
 

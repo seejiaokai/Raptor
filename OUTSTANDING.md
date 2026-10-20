@@ -441,6 +441,7 @@ person move between squadrons with data intact.
   app-wide; a future F-16 community reuses them, and its men may fly with us as guests (tagged "Viper · F-16",
   picked from a guest list, never by typing a bare callsign). **D289:** a community = the squadrons of one aircraft
   type; a guest always marked — on a puck an orange corner (D296, option A of `docs/mock/post-out.html` §8).
+- **D1100 (21 Oct 26) — one app for every squadron and aircraft type, detachments, lending a man:** an aircraft-type setting carrying its rules; a detachment with its own schedule and its people moved to it; the two F-15 squadrons sharing one app and lending a man for a day or a period (one squadron's morning, the other's afternoon); one shared system or split apart is his question (security classification). At the end, after the F-15 app's faults are fixed (`docs/architecture-direction.md` §3).
 
 ### [TRK-DISK] Tracker migration/rename "safety check" reads memory, not disk — Decision A — OPEN
 On upgrade or a course/syllabus rename, the app copies records, checks the copy in

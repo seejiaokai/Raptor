@@ -68,6 +68,7 @@ scrolls it sideways: `inputs.md` (D893).
 
 | # | Date | The rule |
 |---|---|---|
+| D1100 | 21 Oct 26 | One app is built for every squadron and aircraft type (F-15, F-16, F-35), each squadron configuring it inside the app, with an aircraft-type setting that carries its rules; detachments and squadrons sharing people by day or period come at the end, after the F-15 app's faults are fixed, and work before then avoids what would have to be redone. |
 | D993 | 18 Oct 26 | Quals' pinned header row follows the table sideways by the browser itself, as the Leave War's pinned date row does, so it keeps up with the table on his iPhone; only that row changes, and the Leave War's is left as it is. |
 | D937 | 16 Oct 26 | On a phone, Quals' "Save changes" reads "Save" so the filter keeps room to type on the smallest phones while editing; and Quals opens at its top — its row of buttons in sight — wherever it is opened from, as the Inputs page does. |
 | D935 | 16 Oct 26 | Quals' row of buttons is built as drawn: one row at 36 — the date box that does nothing removed, "Export to Excel" reading "Export" on a phone — and the paragraph under it ("similar to a LoX…", with its links) is deleted whole. |
@@ -105,7 +106,7 @@ scrolls it sideways: `inputs.md` (D893).
 | D284 | 26 Sep 26 | A man back from overseas returns as he was — his Quals kept — and the app prompts the admin to update them. |
 | D283 | 26 Sep 26 | A man posted out as SANS: on the posting-out date he becomes SANS. With "Show SANS" off, the Leave War still shows him, marked posted out, and does not track his leave; with "Show SANS" on, he moves into the SANS group that day and his leave is tracked there. |
 | D282 | 26 Sep 26 | Neighbouring squadrons plan each other's people as a matter of course — not only while a man is being posted. |
-| D281 | 26 Sep 26 | A posting to another squadron will be a transfer — future, with the multi-squadron database; neighbouring squadrons may plan each other's people as a matter of course (D282), while his leave, quals and account stay his own squadron's. — changed by D282 |
+| D281 | 26 Sep 26 | A posting to another squadron will be a transfer — future, with the multi-squadron database; neighbouring squadrons may plan each other's people as a matter of course (D282), while his leave, quals and account stay his own squadron's. — changed by D1100, D282 |
 | D280 | 26 Sep 26 | An account can be suspended and enabled again (a man away, then back) and deleted (a man who leaves flying for good) — a delete now takes the person too (D287). — changed by D287 |
 | D229 | 26 Sep 26 | A posting out has four outcomes; the admin picks one and the app does it on the posting-out date: overseas to another squadron → archived, account suspended (D280); leaving flying for good → deleted, person and account (D287); another workplace but still flies → SANS (D283); transferred to another squadron → future (D281). — changed by D287, D283 |
 | D227 | 26 Sep 26 | Each admin's bell is his own (D216's "he" read per admin). |

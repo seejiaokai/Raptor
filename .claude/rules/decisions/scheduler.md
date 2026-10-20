@@ -54,7 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
-| D1099 | 21 Oct 26 | A flying line with only its front seat (FCP) filled works as fully as a two-seat line, its checks, marks, counts and pages included, so the app can serve F-16 squadrons (some jets single-seat) and F-35 squadrons (all single-seat); an admin switch hiding the back seat (RCP) is his idea, designed with him first. |
+| D1099 | 21 Oct 26 | A flying line with only its front seat (FCP) filled works as fully as a two-seat line, its checks, marks, counts and pages included, so the app can serve F-16 squadrons (some jets single-seat) and F-35 squadrons (all single-seat); a switch hiding the back seat (RCP), one of the aircraft-type settings (D1100), is his idea, designed with him first. — changed by D1100 |
 | D1098 | 21 Oct 26 | The yellow RULES MODIFIED tag no longer shows on View Schedule or Edit Schedule when a Logic setting is changed from the squadron standard: changing the rules is normal for every squadron, so it is not flagged on the schedule; the Logic page keeps its own strip naming how many settings are changed. |
 | D1085 | 20 Oct 26 | On the Scheduler Board an SC, AVALON or BB wave's time headings read START and END where they read TO and LD — R · B · START · END in one line on a desktop, R over B and START over END on a phone — as the week does since D1083; a flying wave keeps TO and LD. |
 | D1084 | 20 Oct 26 | On a phone the standby wave's START / END heading stands as built: 7 instead of the headings' 8.5, with no letter spacing, so START fits its column with room for an iPhone's wider letters; a desktop keeps the normal size. |
