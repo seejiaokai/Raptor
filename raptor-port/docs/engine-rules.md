@@ -2384,7 +2384,7 @@ were `FS`/`HS` until the 28 Aug 26 rename.
     place that prints the sentence reads `validate.ts fltNoLenSays` (the warning,
     and the marked box's own words on the week, the board and the next-week peek).
     Today's Logic values, as every warning reads them. Pinned:
-    `engine/oilflighttimes.test.ts`.
+    `engine/oilflighttimes.test.ts`. The sentence is his of record since D1094 (20 Oct 26).
 
 ### The ALL / ALL AVAIL expansion and the input ask
 

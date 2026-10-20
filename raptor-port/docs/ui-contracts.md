@@ -146,7 +146,7 @@ carries no boxed "Draft" (its DRAFT tag says it once — the view-week compare l
   armed button's title reads "Withdraw AL1 on Saturday. The Original comes back and credits less OIL, and some of AL1’s OIL is
   already spent on the Leave War. Tap to confirm." — the Original keeps N4 and N2 (D837), its armed title "…Its OIL credits are already
   spent on the Leave War, and republishing restores them…" ("bid against" gone, as N4's). Pinned:
-  `leavewar/unpublish-al-oil.test.tsx`. **Two notes of a
+  `leavewar/unpublish-al-oil.test.tsx`. These amendment words are his of record since D1094 (20 Oct 26). **Two notes of a
   publish that name the SAME day say it once** (`toast.ts` `ToastPart`): "Monday 13 Jul published and approved. The Common
   Programme has no usable times, so nobody on it earns OIL." — every other pair is joined by the dot as before. Pinned by `ui/toastbatch.test.ts`; walked `scripts/handpass/sf/sf-d1-toast.mjs`.
 - **The phone day-head is two fixed rows on every day** (owner, 25 Aug 26 —
