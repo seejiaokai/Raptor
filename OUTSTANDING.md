@@ -125,12 +125,10 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [STACK-LEFTOVERS] — four small loose ends from the Codex stack: two Insights edges (with the next change to its role question), a shared wording helper and an old audit script's three checks (with their own jobs), a "back to last published" button (only if he raises it).
 
 **Look, words and the phone (the whole app)**
-- [FLOATWIN-TWO-LINE-BAR] — the two movable windows open over the bottom of a two-line top bar.
+- [FLOATWIN-BOARD-BAR] — over the Scheduler Board the ALL AVAIL and changes windows cover the right end of the board's own bar (✓ Done at 1200) — a question for him, with its picture.
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
 - [BATCH-14OCT-LEFTOVERS] — older small faults found by the three builds' check (not caused by them): the Cancel-item sheet's chips wear the browser's ring, a raw id in a clash note, notes a screen reader is not told, stale comments, a test on the real clock.
 - [WINDOWS-KEEP-KEYS] — the larger windows let Tab walk into the page behind them.
-- [OG-TAG-OVER-COUNT] — the "OG" tag sits over the top edge of an ALL AVAIL count.
-- [INP-OIL-CHIP-PHONE] — the green OIL chip once covered a request card's date on a phone; the card has been rebuilt since — look, then close or fix.
 - [SHELL-SIDEWAYS-BAR] — the top bar takes 149 of 390 px on a sideways phone — his look.
 - [VH-SHEETS-IPHONE] — some phone pop-ups may be cut off by the browser's own bars — only after his iPhone look.
 - [COUNT-CHIP-PHONE-TAP] — a finger tap on an ALL AVAIL count: fixed in the test browser; his iPhone look owed.
@@ -741,14 +739,17 @@ Tracker's own fold, D373, was built). A shell layout question, and a visual one:
 *(5 Oct 26, `[SAVE-NOTE-COVERS]`: while a save has failed the warning's band adds 36px to it — 185 of 390px on a
 sideways phone, until the save lands.)*
 
-### [FLOATWIN-TWO-LINE-BAR] The two movable windows open over the bottom of a two-line top bar (filed 5 Oct 26)
-**Place:** low — with the next change to the changes window or the ALL AVAIL window. Found while building
-`[SAVE-NOTE-COVERS]`: both open at a fixed spot, 96px down the right edge, whatever the top bar's height. Where the bar
-is two lines (Edit Schedule at about 1400px wide and under: 103px) the window's top edge lies over the bar's last 7px,
-on `main` too. With a failed save showing it now opens lower by the warning's band, so it stands where it stood — still
-those 7px over the band's lower edge; Retry's middle stays clear and a real press reaches it (tested). **Do:** measure
-the opening spot from the bar's bottom, as the failed-save warning does (`raptor-port/src/ui/floatwin.ts`,
-`raptor-port/src/ui/SaveStatus.tsx`).
+### [FLOATWIN-BOARD-BAR] Over the Scheduler Board the ALL AVAIL and changes windows open over the right end of the board's own bar (found 21 Oct 26, the look-and-keys check)
+On a desktop a window he has not moved opens 96px down the right edge. Over the Scheduler Board — which covers the app's top
+bar — that spot lies on the board's OWN bar at every desktop width: its foot is at 106 at 1366 and wider, 145 at 1200 (two
+rows) and 186 at 1024 (measured 21 Oct 26, `raptor-port/scripts/handpass/lk-win.mjs`). At 1200 the ALL AVAIL window covers
+the bell, Insights and ✓ Done (the walk's W10: a press at each one's middle lands on the window — picture
+`raptor-port/docs/img/handpass/2026-10-21-look-keys/walk/w10-board-bar-covered-1200.png`, the covered end marked); to leave the
+board the window must first be closed or moved. Older than tonight; not `[FLOATWIN-TWO-LINE-BAR]`'s (the top bar). The same
+rule would fix it — a first build did — but it moves where D41's window opens on the board, which he approved as drawn, so it
+is put to him. **Question for him (the picture above):** should the windows open just under the board's own bar, as they now
+open under the top bar? **Recommended: yes** — the same rule, about 15 minutes, and the three browser tests that pin the corner
+over the board (`e2e/availwin.spec.ts`, `e2e/look-keys.spec.ts`) change with it. **Place:** small, on his answer.
 
 ### [GUEST-SAVE-WARNING] Does a guest's own page ever need the failed-save warning? — a check (filed 5 Oct 26)
 **Place:** low — check first, with the next change to the guest's pages. Astra's second read of `[SAVE-NOTE-COVERS]`
@@ -784,7 +785,7 @@ checks of the older "adapted audit" script failed the same way before and after 
 moves, an issued key rewritten, where an input's Undo lands) — written down then as limits of the script, not faults; look
 again when that script is next run. (4) **Discard marks — not ruled, his to raise:** a button that puts a published day
 back to its last published version (`[DISCARD-MARKS-REMOVE]`, D488). The second cheaper-model trial — one small fix built
-by a Sonnet helper — lives in `[OG-TAG-OVER-COUNT]`. **Place (the agent's line):** (1) with the next change to Insights'
+by a Sonnet helper — ran 21 Oct 26 on `[OG-TAG-OVER-COUNT]` (archived; the verdict: `raptor-port/docs/handpass/2026-10-21-look-keys.md` §12). **Place (the agent's line):** (1) with the next change to Insights'
 role question; (2) and (3) with their own jobs; (4) only if he raises it.
 **Seen 10 Oct 26, not corrected (a helper's scan of the backlog's own status lines):** `[INSIGHTS-CLOSE-STAYS-VISIBLE]`, `[LOGIC-STICKY-SEARCH-COMPACT]` and `[TRK-FLIGHT-LABEL-READABILITY]` still say "owner look and Claude reads pending" although the workflow UI pass is live (PR #481, 6 Oct 26) — read each, then archive it or say what is left; `[ITFLOW-OIL-RESHOOT]` waits on a merge that has happened (PR #469).
 
@@ -1626,13 +1627,6 @@ picture `raptor-port/docs/img/handpass/2026-10-06-oil-work-start/E/dk-08-E03-oil
 as the action it is, and say the day's state apart from it — a product wording choice, so a picture and his word first.
 **Tier:** WALK (a control's label on the board, both sizes). **Place (the agent's line):** low — with the next change to OIL Earn.
 
-### [INP-OIL-CHIP-PHONE] On a phone the green OIL chip is painted over a request card's date and time (found 5 Oct 26, the Codex stack check)
-Inputs page at phone width (390): the card of a request that carries an OIL answer (walked: Torch, Training, 18 Jul 11:00–12:00) draws its
-green "OIL" chip over the date and time — about 37 × 12 px of overlap. Walker E's picture:
-`raptor-port/docs/img/handpass/2026-10-05-codex-stack/E/oilchip-phone-torch-row.png`. Older than the Codex stack: nothing in the stack
-touched the Inputs page or its stylesheet part. **Place (the agent's line):** low — with the next change to the Inputs page; a browser
-test that the chip and the date do not overlap at 390 and 320.
-
 ### [START-CONTEXT-AUDIT] A new chat starts at about 30% of its context — measure what it loads, then cut it to what a job needs (owner, D602, 6 Oct 26)
 **DONE 7 Oct 26 under his ruling, on `claude/docs-tidy-7-oct` — options 1 to 6 (what each did and saved: the foot of the
 spec named below); 7 found nothing to do; the document check is green. Still open, why this item stays: step (4)'s check
@@ -1790,6 +1784,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 **Small faults, filed — (f) added by the leftovers' own walk:** (f) the passing note is not spoken to a screen reader (it never was — `raptor-port/src/ui/toast.ts` draws a plain box): where a note IS shown, a screen reader hears nothing; the leftovers batch tells one the words only where the note is left unsaid (`raptor-port/src/ui/seen.ts`). To fix: the note's box a polite live region, with a look at whether a long published-day note is then read whole. (a) the board's "Cancel this item" sheet: its reason chips (WX, OPS, LOGS) and "Edit" show the browser's own white ring, not the app's cyan one — K10's list did not hold them. (b) Quals: the links "Set which quals your squadron uses" and "Admin page" do nothing; and a member who presses "Add qualifications" lands on Admin's refusal (`raptor-port/src/ui/QualsPage.tsx`). (c) A clash for a person with no Leave War row prints his raw id in the note (`raptor-port/src/leavewar/ui/Chrome.tsx` `whoOf`). (d) The Medical view's two bands (the save warning's and the OIL bar's) are code no screen can reach — it is a tab of the Inputs page since D620; the head comments of `raptor-port/src/ui/SaveStatus.tsx` and `raptor-port/src/ui/OilWaitSheet.tsx` still name it as a full-screen surface. (e) The unit suite reads the real clock in places: two files were held on 14 Oct (`placeholderlist`, `sharedline`); the whole suite was then run with the clock moved on: 20 days on, every test passes (11310 of 11310) — nothing else is about to come due; 200 days on (May 2027), three tests of `raptor-port/src/ui/inputs.test.tsx` fail ("the date window › opens on today → the default window…", "…keeps a span that began before today but has not ended", "a new input announces itself › rides the top row…") — a longer fuse of the same fault; that file wants the same hold (the recipe: the read's report, `raptor-port/docs/superpowers/briefs/2026-10-14-three-builds-read.md`, R1 and its last section).
 **For the whole-app words pass (D808) — sentences met on the way, not on his list, left as they are:** "Fable is recorded as working 08:00–18:00 on 18 Jul — this LL is filed anyway and flagged for someone to resolve" (`raptor-port/src/leavewar/inputgate.ts`); the day bar's hover title "Nothing on this day earns — the day blanket is on" (`raptor-port/src/ui/oilmode.ts` — "day blanket" is the code's word, not the screen's); on a desktop a two-line note's words are left-aligned where the phone's are centred; the OIL line's second form and the two lines that can ride behind it (`raptor-port/src/leavewar/sync.ts`); the several-days form of the OIL question; "common programme" in small letters wherever the day's own warning says it.
 **Delete candidates by his rule of 14 Oct 26 (D846; the guide's §1, its wording approved — D847) — DONE the same day on his word (D848 — "Delete all three"):** "Choose Keep or Remove for each entry above" (the upchit question), "Choose for each clash above" and the small print under the answers (the medical-clash question) are deleted; the one fact he asked to keep, that a day holds one status, is that sheet's heading now ("A day holds one status: choose who holds these days" — shown to him as built, his to change). Kept, and why: "What is left goes to the schedulers' bells" in the day's one list of OIL questions (a consequence he cannot see), the several-days form's "No days selected — tap the highlighted days to credit them" (an instruction for a gesture nothing else suggests). The first whole-app look under D808 lists the rest.
+**The night of 21 Oct 26 (the look-and-keys job, pull request 558 — the check `raptor-port/docs/handpass/2026-10-21-look-keys.md`): (a), (d), (e) and (f) BUILT; (b) was already DONE (the Quals links went with D930 / D935).** (a) the Cancel sheet's reason chips, "✎ Edit" and the edit list's ▲ ▼ ✕ wear the app's ring (`raptor-port/src/ui/scheduler/12-schedule-editing.css`; pin `raptor-port/e2e/look-keys.spec.ts`); (d) the comments corrected (`SaveStatus.tsx`, `OilWaitSheet.tsx`, `17-save-status.css`, `MedicalView.tsx`, `e2e/save-note.spec.ts`); (e) the three tests hold the day — 74 of 74 with the clock at 0, 20 and 200 days on (`raptor-port/src/ui/inputs.test.tsx`); (f) every passing note is told to the one polite region (`raptor-port/src/ui/toast.ts sayToReader`; the contract `raptor-port/docs/ui-contracts.md`, "Every note is told to a screen reader"). (c) is pull request 556's. **Once both are on `main` this item is archived whole** (whichever merges second).
 **Why it is filed and not built:** D830's and D838's lists are his; a wording or a look he has not been shown is not changed unasked (the design guide's §1). His answers come first (D541 for the two that change a look).
 
 ### [PROMPT-AUDIT] He runs Claude Code's guide check, `/doctor prompt-audit`, in a terminal next time (his D886, 15 Oct 26) — OPEN, his step
@@ -1920,13 +1915,6 @@ The mode's general behaviour, older than phase 7. D31 says a seat with nothing t
 mode's phone tap targets as they are) is about the targets, not this silence. **To do, if he wants it:** a tap on an inert
 puck in the mode says its reason (the app's own message line), selecting nothing. **Place:** low — with the next OIL Earn change;
 a question for him first.
-
-### [OG-TAG-OVER-COUNT] The "OG" new-to-you tag sits over the top edge of an ALL AVAIL count (walk find, 1 Oct 26)
-Walker A's O3 (pictures `…/2026-10-01-dbr-phase7/a/R4b-*.png`, `R4-1.png`): on the member's View-only Sched, the dotted "OG" tag on
-a changed seat overlaps the count chip's top edge; the number stays legible close up, crowded at normal size. The admin's view
-is clean. Cosmetic, older than phase 7 (D172's tag, D37's chip). **Place:** low — with the next change to the tag or the chip;
-measure both at phone width. **It is also Trial 2 of D588 (not started):** ONE Sonnet 5.5 helper builds this fix to a precise spec; Opus reads
-its diff and tests, decides what that model takes, and tells him what it decided and why (D595).
 
 ### [MEMBER-EDITPAGE-CHECK] A member sent to Edit Schedule by the developer bridge sees live-looking Amendments buttons — a check (walk note, 1 Oct 26)
 Walker A's O5 (picture `…/2026-10-01-dbr-phase7/a/R4-4.png`). No control leads a member to Edit Schedule; reached through the
