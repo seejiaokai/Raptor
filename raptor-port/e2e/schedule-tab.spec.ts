@@ -1,9 +1,27 @@
-import { test, expect, type Page, type Locator } from '@playwright/test'
+import { test, expect, type Page, type Locator, type ElementHandle } from '@playwright/test'
 import { login, go } from './app'
 
 const typing = '[data-txt],[data-inp],[data-bfld],[data-ifld],[data-itline],[data-bombs],[data-area],[data-atime]'
 const field = (page: Page, surface: string, key: string, n = 0) => page.locator(`${surface} [${surface === '#sbBoard' ? 'data-bfld' : 'data-txt'}="${key}"]`).nth(n)
 async function focused(el: Locator) { await expect(el).toBeFocused(); expect(await el.evaluate(e => e.isConnected)).toBe(true) }
+/* THE BOXES A PERSON CAN TYPE IN ON A SURFACE, FOUND IN ONE CALL TO THE PAGE ([CI-E2E-FLAKES-1020], 20 Oct 26). Each test
+   used to ask the browser about every one of a surface's 210-odd typing elements twice (is it visible? can it be typed
+   in?) — some 860 round trips before the D555 test pressed its first key — and on GitHub's slower machines that test ran
+   29.4 s of its 30 (main's run of 20 Oct 26), and over it on the run that failed. The same two questions, asked inside the
+   page: Playwright's own reading of "visible" (a computed visibility of visible and a box with width and height) and the
+   same "can be typed in"; `ownOnly` leaves out a box inside a role question, a frozen look or a window (D597's last box).
+   Document order, as the handles were. */
+async function typeable(page: Page, surface: string, ownOnly = false): Promise<ElementHandle<HTMLElement>[]> {
+  const list = await page.evaluateHandle(([sur, sel, own]) => {
+    const vis = (e: HTMLElement) => { if (e.checkVisibility && !e.checkVisibility()) return false; if (getComputedStyle(e).visibility !== 'visible') return false; const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 }
+    const ok = (e: HTMLElement) => e instanceof HTMLInputElement || e instanceof HTMLTextAreaElement ? !e.disabled && !e.readOnly : e.getAttribute('contenteditable') === 'true'
+    return [...document.querySelectorAll(sur as string)].flatMap(root => [...root.querySelectorAll<HTMLElement>(sel as string)])
+      .filter(e => vis(e) && (!own || !e.closest('[data-role-ui],[data-role-remarks],.pv-frozen,[role="dialog"]')) && ok(e))
+  }, [surface, typing, ownOnly] as const)
+  const out = [...(await list.getProperties()).values()].map(h => h.asElement() as ElementHandle<HTMLElement>)
+  await list.dispose()
+  return out
+}
 async function flight(page: Page, surface: string) {
   const routes: Locator[] = [], details = ['cs','msn','rl','br','to','ld']   // D554's route, the R box before B (D1026)
   if (surface === '#sbBoard') for (let ai = 0; ai < 2; ai++) {
@@ -33,14 +51,16 @@ for (const [name, viewport] of [['desktop',{width:1440,height:900}],['phone',{wi
       expect(await page.evaluate(() => JSON.stringify([(window as any).DAYS,(window as any).INPUTS,(window as any).SCHED]))).toBe(before)
       await expect(page.locator('.mission-role-question')).toHaveCount(0)
     })
-    test('D555 every open text family follows displayed order; closed inputs stay closed', async ({ page }) => {
+    /* ONE TEST A PAGE ([CI-E2E-FLAKES-1020], 20 Oct 26): the week and the board were one test of some 270 key presses, each
+       Tab a real walk of the day's boxes in the app — 29.4 s of the 30 on main's GitHub run of 20 Oct 26 and over it on
+       pull request 550's. Nothing waited on a fixed time; it was simply the work of two pages in one test's time. */
+    for (const surface of ['#eWeek .day[data-day="0"]', '#sbBoard']) test(`D555 every open text family follows displayed order; closed inputs stay closed — ${surface === '#sbBoard' ? 'the board' : 'the week'}`, async ({ page }) => {
       await login(page); await go(page, 'editsched')
-      for (const surface of ['#eWeek .day[data-day="0"]', '#sbBoard']) {
+      {
         if (surface === '#sbBoard') await openBoard(page)
         const toggle = page.locator(`${surface} [data-pitog="0"]`)
         await toggle.click()
-        const all = await page.locator(surface).locator(typing).elementHandles(), eligible = []
-        for (const el of all) if (await el.isVisible() && await el.evaluate(e => e instanceof HTMLInputElement || e instanceof HTMLTextAreaElement ? !e.disabled && !e.readOnly : e.getAttribute('contenteditable') === 'true')) eligible.push(el)
+        const eligible = await typeable(page, surface)
         expect(eligible.length).toBeGreaterThan(40)
         await eligible[0]!.focus()
         for (let i = 1; i < eligible.length; i++) {
@@ -76,9 +96,7 @@ for (const [name, viewport] of [['desktop',{width:1440,height:900}],['phone',{wi
       await login(page); await go(page, 'editsched')
       const sig = () => page.evaluate(() => { const a = document.activeElement as HTMLElement | null; return a && a !== document.body ? a.tagName + JSON.stringify({ ...a.dataset }) : null })
       const lastOf = async (surface: string) => {
-        const all = await page.locator(surface).locator(typing).elementHandles(); let last = null
-        for (const el of all) if (await el.isVisible() && await el.evaluate(e => !e.closest('[data-role-ui],[data-role-remarks],.pv-frozen,[role="dialog"]') && (e instanceof HTMLInputElement || e instanceof HTMLTextAreaElement ? !e.disabled && !e.readOnly : e.getAttribute('contenteditable') === 'true'))) last = el
-        return last!
+        return (await typeable(page, surface, true)).at(-1)!
       }
       const day = '#eWeek .day[data-day="0"]'
       const last = await lastOf(day)
@@ -119,8 +137,7 @@ for (const [name, viewport] of [['desktop',{width:1440,height:900}],['phone',{wi
       await to.fill('1255'); await page.keyboard.press('Tab')
       expect(await page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].to)).toBe('12:55')
       const seq = await page.evaluate(() => (window as any).commandStreamLen())
-      const all = await page.locator('#sbBoard').locator(typing).elementHandles(); let last = null
-      for (const el of all) if (await el.isVisible() && await el.evaluate(e => e instanceof HTMLInputElement || e instanceof HTMLTextAreaElement ? !e.disabled && !e.readOnly : e.getAttribute('contenteditable') === 'true')) last = el
+      const last = (await typeable(page, '#sbBoard')).at(-1)
       await last!.focus()
       const mark = () => page.evaluate(() => { const a = document.activeElement as HTMLElement | null; return a && a !== document.body ? a.tagName + JSON.stringify({ ...a.dataset }) : null })
       const at = await mark(), scroll = await page.evaluate(() => [window.scrollY, document.querySelector('#schedBoard')!.scrollTop, document.querySelector('#sbBoard')!.scrollTop])
@@ -248,8 +265,7 @@ test('week TO→Tab leaves derived Area time live; in-time deletion readdresses 
 test('week Tab reveals a destination covered by the fixed week navigation arrow', async ({ page }) => {
   await page.setViewportSize({width:1440,height:1000})
   await login(page); await go(page, 'editsched')
-  const fields=await page.locator('#eWeek .day[data-day="0"]').locator(typing).elementHandles(), eligible=[]
-  for(const el of fields)if(await el.isVisible()&&await el.evaluate(e=>e instanceof HTMLInputElement||e instanceof HTMLTextAreaElement?!e.disabled&&!e.readOnly:e.getAttribute('contenteditable')==='true'))eligible.push(el)
+  const eligible=await typeable(page,'#eWeek .day[data-day="0"]')
   await eligible[0]!.focus()
   for(let i=1;i<4;i++){
     await page.keyboard.press('Tab')
@@ -260,8 +276,7 @@ test('week Tab reveals a destination covered by the fixed week navigation arrow'
 test('phone Desktop Board keeps each destination reachable through the visible part of wide boxes', async ({ page }) => {
   await page.setViewportSize({width:390,height:844});await login(page);await go(page,'editsched');await openBoard(page)
   await page.locator('#sbMore').click();await page.locator('#sbMoreWide').click()
-  const fields=await page.locator('#sbBoard').locator(typing).elementHandles(), eligible=[]
-  for(const el of fields)if(await el.isVisible()&&await el.evaluate(e=>e instanceof HTMLInputElement||e instanceof HTMLTextAreaElement?!e.disabled&&!e.readOnly:e.getAttribute('contenteditable')==='true'))eligible.push(el)
+  const eligible=await typeable(page,'#sbBoard')
   expect(eligible.length).toBeGreaterThan(40);await eligible[0]!.focus()
   for(let i=1;i<eligible.length;i++){
     await page.keyboard.press('Tab')
@@ -291,8 +306,7 @@ test('the last box\'s Tab, when the save replaces the whole day: the keyboard is
   const di = await page.evaluate(() => [0, 1, 2, 3, 4, 5, 6].find(i => { const d = document.querySelector(`#eWeek .day[data-day="${i}"]`); return d && !d.querySelector('.dwbox') }))
   expect(di, 'the demo week has a day with no warning').toBeDefined()
   const day = page.locator(`#eWeek .day[data-day="${di}"]`)
-  const boxes = await day.locator(typing).elementHandles(); let last = null
-  for (const el of boxes) if (await el.isVisible() && await el.evaluate(e => !e.closest('[data-role-ui],[data-role-remarks],.pv-frozen,[role="dialog"]') && (e instanceof HTMLInputElement || e instanceof HTMLTextAreaElement ? !e.disabled && !e.readOnly : e.getAttribute('contenteditable') === 'true'))) last = el
+  const last = (await typeable(page, `#eWeek .day[data-day="${di}"]`, true)).at(-1)
   expect(last).toBeTruthy()
   const firstDay = await day.elementHandle()
   await last!.evaluate((el, DI) => el.addEventListener('blur', () => {
