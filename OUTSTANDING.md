@@ -64,7 +64,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Schedule and amendments**
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
-- [INNERHTML-REPAINT-SWEEP] — eleven screens hand React their markup as a new object every repaint, which React sets again — a box being typed in there is thrown away by any repaint (Quals fixed in [KEYBOARD-SCROLL]); sweep the rest (low).
 - [IPHONE-CARET-CHECKS] — two checks only his iPhone can make, carried from the one-tap time boxes (D1047): dragging the caret with the space bar, and a long press (the loupe).
 - [LOOK-PENDING-COUNT] — the 👁 look at the Original shows "1 pending" where the working copy shows "2 pending" (reproduce first).
 - [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
@@ -128,6 +127,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [FLOATWIN-TWO-LINE-BAR] — the two movable windows open over the bottom of a two-line top bar.
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
 - [BATCH-14OCT-LEFTOVERS] — older small faults found by the three builds' check (not caused by them): the Cancel-item sheet's chips wear the browser's ring, a raw id in a clash note, notes a screen reader is not told, stale comments, a test on the real clock.
+- [TRAFFIC-WIN-COVERS-UNDO] — with the Traffic window open the top bar's Undo cannot be pressed (older; found 21 Oct 26).
 - [WINDOWS-KEEP-KEYS] — the larger windows let Tab walk into the page behind them.
 - [OG-TAG-OVER-COUNT] — the "OG" tag sits over the top edge of an ALL AVAIL count.
 - [INP-OIL-CHIP-PHONE] — the green OIL chip once covered a request card's date on a phone; the card has been rebuilt since — look, then close or fix.
@@ -213,6 +213,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [TRAFFIC-WIN-COVERS-UNDO] With the Traffic window open, the top bar's Undo cannot be pressed (found 21 Oct 26 by the walk of the schedule pages; older; low)
+The airspace Traffic window's backdrop lies over the top bar, so a press on Undo / Redo does nothing while it is open (a real click timed out at both sizes) and Ctrl+Z inside the window does nothing either; Undo works after Done. Older behaviour, not caused by [INNERHTML-REPAINT-SWEEP]. **To do:** decide with the window rules (D641 — a window leaves the page behind it working) whether the top bar stays pressable over this window. **Place:** the agent's; with the next windows job. **Evidence:** `raptor-port/docs/handpass/2026-10-21-schedule-pages.md` §4.
 
 ### [CI-UNIT-SHARE-2-6] One unit share sets GitHub's check time (found 20 Oct 26, pull request 548's run; low)
 **Seen:** with the Tracker smoke in two (pull request 548), the run is 5m33s and its slowest leg `unit (raptor 2/6)` 5m29s (the next, `unit (raptor 5/6)`, 4m31s; the Tracker parts 4m19s and less). Vitest's `--shard` splits the file list by a hash of each path, not by time, so one share carries the heavy files. **To do:** measure each raptor unit file's time on GitHub; then either more shares (the plan's 20 side by side is already exceeded by one with the Docs guard — merge two short legs first) or a split by time (a list of the heavy files spread by hand). **Place:** Checks and tooling — low, with the next change to the checks file.
@@ -1172,6 +1175,7 @@ it, on whichever side) with a self-test — in a docs-only change of its own, ne
 the PR that trips it). **Place:** low; with the next document-gate change.
 
 ### [ITFLOW-OIL-RESHOOT] Re-shoot the IT flow guide's Leave War pictures once the OIL words change (29 Sep 26)
+**Also for the next re-shoot (21 Oct 26 — D1098):** J14's picture settings-4 framed the RULES MODIFIED tag on View-only Sched, which is gone; its script now frames the Logic page's strip and its words say so (`scripts/itflow/j/settings.mjs`, `content.mjs`) — the deck's picture is re-shot with the rest.
 **Also for the next re-shoot (12 Oct 26 — D773; Fable's second read of the one-rule job, finding 3):** the deck's "Print, export and data" slide still pictures the Inputs List's "Export to Excel", a button that is removed. Its sources are corrected (`raptor-port/scripts/itflow/j/export.mjs`, `content.mjs` — the shot is gone, the Admin → Data step is step 3); the built deck keeps the old slide until he asks for a re-shoot (D403).
 The IT flow guide (`raptor-port/docs/it-flow-guide/`, archived `[IT-FLOW-GUIDE]`) pictures the Leave War as it was on 29 Sep 26. The OIL
 award chat (`claude/award-earned-vs-granted-2ed66d`, `[OIL-AWARD-IS-A-GRANT]`, D402) changes the war's OIL words ("earned" / "awarded")
@@ -1870,15 +1874,6 @@ not caught as a drag, so the box may still be armed and the next key replace the
 box. **To do:** at his next iPhone look at a time box, ask him to try both; fix whichever arms wrongly (`interactions.ts`
 armFreshTime). **Place:** low — with the next iPhone look at the board.
 
-### [INNERHTML-REPAINT-SWEEP] A box inside markup React sets again on every repaint loses its caret (found 19 Oct 26 — the D1048 walk, walker A's A12; low)
-React sets a `dangerouslySetInnerHTML` again whenever its object is a new one, not only when the markup differs (probed
-on the built app, 19 Oct 26: the same Quals table set again on a repaint that changed nothing). A screen that writes
-`dangerouslySetInnerHTML={{ __html: … }}` therefore throws its markup away on every repaint, with any box being typed in
-inside it. Quals was fixed in [KEYBOARD-SCROLL] (the object made once per change — `QualsPage.tsx` `tableInner`, pinned
-by `quals.test.tsx`). The rest: `ALPanel`, `AvailWindow`, `ChangesWindow`, `InputsCal`, `LogicPage`, `MedicalView`,
-`Modals`, `PeoplePick`, `SansCal`, `SansDay`, `Shell` — most hold no box to type in; the walk met no lost caret on the
-Inputs calendar, the SANS day or the Logic page. **To do:** for each, does its markup hold a box to type in, and does it
-repaint while one has the caret; where both, make the object once per change. **Place:** low — a sweep of its own.
 ### [LOOK-PENDING-COUNT] The 👁 look at the Original shows "1 pending" in its head while the working copy shows "2 pending" (walker D, the D605 walk, 6 Oct 26 — OLD; low)
 A published Tuesday; a man seated on a new line and a leave filed for him afterwards: the working copy's head reads
 "2 pending" ("Vandal · LL filed", "WAVE 3 added"), and the 👁 look at the Original, opened at the same moment, reads

@@ -4,7 +4,7 @@
    then THE CHECKS, every warning, advisory and note the app raises, four with a folded "How it works". Its two lists
    and their words: ui/logic-html.ts. The admin's edit mode is as it was: a value is parsed, bounded and applied live,
    the clash grading toggles, "Reset to standard" puts them all back — and now each changed value carries its own
-   Reset while editing (the mock-up's per-setting Reset). The RULES MODIFIED stamp is as it was. */
+   Reset while editing (the mock-up's per-setting Reset). The RULES MODIFIED stamp on the schedule pages went in D1098 (21 Oct 26); the strip here is the only mark. */
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { VCONF, SHIFT_HARD, RULE_SPEC, RULE_STD, KIND_LABEL, ruleFmt, ruleParse, ruleOff, kindOff, rulesOffCount, rulesCheckedOffCount, rulesSave, rulesReset } from '../engine/rules'
 import { WARN, validate, lgFired } from '../engine/validate'
@@ -191,12 +191,11 @@ export function LogicPage() {
      object is made once per change of the words. Pin: logic.test.tsx, e2e/logicedit.spec.ts. */
   const bodyHTML = useMemo(() => ({ __html: b.html }), [b.html])
   const off = rulesOffCount()
-  /* W2: the stamp and the strip speak of RULES — the settings a check reads; Reset speaks of every setting */
+  /* W2: the strip speaks of RULES — the settings a check reads; Reset speaks of every setting */
   const checkedOff = rulesCheckedOffCount()
 
-  /* a modified rule set is never silent: the body class drives the
-     RULES MODIFIED stamp on the week banner */
-  useEffect(() => { document.body.classList.toggle('page-rules-off', !!checkedOff) })
+  /* the RULES MODIFIED stamp on the schedule pages is gone (D1098, 21 Oct 26): a changed setting is
+     said here, by the strip below, and nowhere on the schedule */
 
   /* THE FILTER MENU closes on a press outside it (the app's popup rule, 4 Sep 26), on Escape (the keyboard back on its
      button — the guide §2) and on a pick; it opens with the keyboard on the picked filter */

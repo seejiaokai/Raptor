@@ -6283,3 +6283,15 @@ saving the setting moves the button out from under the press (a "rules changed" 
 button's position before and after the save first. **Place:** low, with the next change to the Logic page; a browser test that changes a
 setting and presses Done once, by mouse and by finger.
 
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([INNERHTML-REPAINT-SWEEP]). Forward facts: `raptor-port/docs/handpass/2026-10-21-schedule-pages.md`.*
+
+### [INNERHTML-REPAINT-SWEEP] A box inside markup React sets again on every repaint loses its caret (found 19 Oct 26 — the D1048 walk, walker A's A12; low)
+React sets a `dangerouslySetInnerHTML` again whenever its object is a new one, not only when the markup differs (probed
+on the built app, 19 Oct 26: the same Quals table set again on a repaint that changed nothing). A screen that writes
+`dangerouslySetInnerHTML={{ __html: … }}` therefore throws its markup away on every repaint, with any box being typed in
+inside it. Quals was fixed in [KEYBOARD-SCROLL] (the object made once per change — `QualsPage.tsx` `tableInner`, pinned
+by `quals.test.tsx`). The rest: `ALPanel`, `AvailWindow`, `ChangesWindow`, `InputsCal`, `LogicPage`, `MedicalView`,
+`Modals`, `PeoplePick`, `SansCal`, `SansDay`, `Shell` — most hold no box to type in; the walk met no lost caret on the
+Inputs calendar, the SANS day or the Logic page. **To do:** for each, does its markup hold a box to type in, and does it
+repaint while one has the caret; where both, make the object once per change. **Place:** low — a sweep of its own.

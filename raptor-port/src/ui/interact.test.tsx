@@ -193,11 +193,7 @@ describe('blank areas of the week chrome clear the selection', () => {
     await click($('#eWeek .puck[data-person="bane"]'))
     expect($$('#eWeek .puck.sel').length, 'bane is lit on the edit week').toBeGreaterThan(0)
   }
-  it('a blank click on the DRAFT banner clears', async () => {
-    await selBane()
-    await click($('#eBanner'))
-    expect($$('#eWeek .puck.sel').length, 'the banner clears').toBe(0)
-  })
+  /* the DRAFT banner's blank-click case went with the banner itself (D1098, 21 Oct 26) */
   it('a blank click on the day header clears', async () => {
     await selBane()
     await click($('#eWeek .day[data-day="0"] .day-head'))

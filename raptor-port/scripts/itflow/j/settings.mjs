@@ -1,5 +1,6 @@
 /* J14 — squadron settings and rules (admin): Admin → Squadron config (the default arrangement, the three template
-   editors), the Logic page's Edit rules, and the "RULES MODIFIED" stamp it leaves on the schedule; then the three
+   editors), the Logic page's Edit rules, and the strip it shows while a setting differs from the standard (the
+   schedule pages carry no tag since D1098, 21 Oct 26); then the three
    other doors to the same template editors, from Edit Schedule and the scheduler board. */
 import { go } from '../lib.mjs'
 
@@ -27,9 +28,10 @@ export default async function ({ fresh, shot, around }) {
     { n: 4, sel: '#lgSearch' }, { n: 5, sel: '#lgEdit:visible, #lgDone:visible', pos: 'b' }, { n: 6, sel: cell },
     { see: true, sel: '#lgOff' },
   ])
+  /* the RULES MODIFIED tag on the schedule pages went in D1098 (21 Oct 26): the Logic page's own strip is the one
+     place a changed setting is said, so the shot frames that strip before Done */
+  await shot(page, 'settings-4', await around(page, '#lgOff', 640, 480, 0.4, 0.2), [{ see: true, sel: '#lgOff' }])
   await page.click('#lgDone'); await page.waitForTimeout(300)
-  await go(page, 'viewsched')
-  await shot(page, 'settings-4', await around(page, '#vBanner', 640, 480, 0.4, 0.2), [{ see: true, sel: '#vBanner.rules-off' }])
   await page.context().close()
 
   // the other doors to the same editors
