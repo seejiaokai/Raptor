@@ -2372,6 +2372,19 @@ were `FS`/`HS` until the 28 Aug 26 rename.
     same `OIL_NO_TIMES` warning the duty desks have carried since 20 Sep 26.
     That one genuinely earns nobody anything, so it keeps those words; the
     nought-minute line must never borrow them, because it pays.
+  - **Unless nothing is round it ([OIL-ZERO-SPAN-SORTIE], 20 Oct 26).** The half
+    day is the report before the sortie and the debrief after it. With neither —
+    the formation's entered in-time / rally IS the take-off and the Logic page's
+    "Flight debrief after land" is zero, or both Logic leads are zero — the line
+    measures nothing and earns nothing (D31: credit follows the times written).
+    Then the advisory says so ("…with no report before it and no debrief after it,
+    the line earns nobody any OIL until it is fixed") and the day's `OIL_NO_TIMES`
+    names it ("the RAP 1 line"). One body decides both and the credit:
+    `engine/oil.ts fltOilWin` (the line's window) → `fltMeasuresNothing`; every
+    place that prints the sentence reads `validate.ts fltNoLenSays` (the warning,
+    and the marked box's own words on the week, the board and the next-week peek).
+    Today's Logic values, as every warning reads them. Pinned:
+    `engine/oilflighttimes.test.ts`.
 
 ### The ALL / ALL AVAIL expansion and the input ask
 
@@ -3434,7 +3447,14 @@ amendment re-test, per D90: the day header's **Unpublish** button (`unpublishDay
 working copy, the version under it becomes current, the withdrawn issuance is kept in `SCHED.retired`, and
 republishing reissues the SAME label; undo of a just-published day runs the same unpublish. What survives of
 the sentence: an issuance is never ERASED or edited in place. The rules, with their dates:
-`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md` AM4, AM32–AM37c.)* Publishing is per-day; there is
+`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md` AM4, AM32–AM37c.)*
+**The OIL warning before an Unpublish reckons what the day earns AFTER it** ([UNPUB-WARN-AL-RESTORES], 20 Oct 26). The
+button asks twice only when taking the day's credit away would leave a credited man's OIL below zero (§6.6 —
+`leavewar/sync.ts oilCreditBidAgainst`). Withdrawing the Original leaves a draft, which earns nothing (D2); withdrawing an
+amendment makes the version before it the issued schedule again, and its OIL pays (D142) — so the balance is rebuilt with
+THAT version's credit in place of today's (`engine/publish.ts unpublishBackTo` names it; `desiredOilCells` reads it from
+its own kept evidence and Logic values; `leavewar/engine/oiltracker.ts` `OilOmit` may answer the days it is worth
+instead). A withdrawal that puts back as much or more never warns. Publishing is per-day; there is
 deliberately no "publish all days".
 
 Edits only become AL changes on a day that is already published — edits to
