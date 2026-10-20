@@ -203,8 +203,12 @@ const DEBIT_RANK: Record<OilDebitSource, number> = { opening: 0, taken: 1, corre
  *  balance is NOT the same question — expiry and FIFO are not linear, so a
  *  credit that has already expired unused is worth nothing to subtract, while
  *  removing a live one can strand a later debit that had drawn on it. The
- *  honest answer is to build the ledger again with that credit left out. */
-export type OilOmit = (c: OilCredit) => boolean
+ *  honest answer is to build the ledger again with that credit left out.
+ *  AND WITH ANOTHER IN ITS PLACE ([UNPUB-WARN-AL-RESTORES], 20 Oct 26): withdrawing
+ *  an AMENDMENT does not leave the day earning nothing — the version before it is
+ *  the issued schedule again and its OIL pays. So the answer may also be a NUMBER:
+ *  the days the credit is worth instead (0 leaves it out, as `true` does). */
+export type OilOmit = (c: OilCredit) => boolean | number
 
 export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy, asOf: string, omit?: OilOmit): OilLedger {
   const credits: OilCredit[] = []
@@ -261,7 +265,12 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
      in-place empty-and-refill would be emptying the very array it is about
      to read back — the same reference — and lose every credit. */
   if (omit) {
-    const kept = credits.filter(c => !omit(c))
+    const kept: OilCredit[] = []
+    for (const c of credits) {
+      const o = omit(c)
+      if (o === true || o === 0) continue
+      kept.push(typeof o === 'number' ? { ...c, amount: o, left: o } : c)
+    }
     credits.length = 0
     credits.push(...kept)
   }

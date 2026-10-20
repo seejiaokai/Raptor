@@ -11,7 +11,7 @@ import { INPUTS, DATES, inpId, inpLabel, defaultAllday, isLateInput, idsOf, lead
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, whoId } from '../engine/people'
 import { hideDetail } from '../engine/warnhide'
-import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq, daySnapOf, rowsLeftOut } from '../engine/publish'
+import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq, daySnapOf, rowsLeftOut, unpublishBackTo } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { posKey } from '../engine/rowids'
 import { closePendList } from './pendlist'
@@ -1430,12 +1430,22 @@ export function routeClick(e: MouseEvent) {
        the day underneath does not move. Staying in it afterwards would leave
        every figure on it describing a document that has just been taken back. */
     view.setOilDay(null)
+    /* the version the press leaves as the issued schedule — none when the Original comes off and the day is a draft
+       again; the version before it when an amendment comes off, whose OIL pays again ([UNPUB-WARN-AL-RESTORES]) */
+    const back = unpublishBackTo(di)
+    const verName = (v: any) => (verLabel(v) === 'Original' ? 'the Original' : verLabel(v))
     if (oilCreditBidAgainst(di) && !view.unpubArmed(di)) {
       view.setUnpubArm(di)
       /* (owner D837 + D839, 14 Oct 26 — N4. "Heads up —" was an announcement and went; "are bid against" was not
          something anyone says and had two readings. "Already spent" is what the check above asks: taking this day's
-         credit away would put a credited person's OIL balance below zero — leavewar/sync.ts oilCreditBidAgainst.) */
-      HOOKS.toast(`Some of ${DAYS[di]?.dow || 'this day'}’s OIL credits are already spent on the Leave War. Unpublishing withdraws them until you republish. Tap again to confirm.`, 'warn')
+         credit away would put a credited person's OIL balance below zero — leavewar/sync.ts oilCreditBidAgainst.)
+         N4 is the Original's: the day becomes a draft and its credits go. An AMENDMENT withdrawn does not take the day's
+         OIL away — the version before it pays again — so it says that, and warns only because that version credits less
+         than has been spent ([UNPUB-WARN-AL-RESTORES], 20 Oct 26; N4's words kept whole for the case they describe). */
+      const dow = DAYS[di]?.dow || 'this day', wl = verLabel(dayCurVer(di))
+      HOOKS.toast(back == null
+        ? `Some of ${DAYS[di]?.dow || 'this day'}’s OIL credits are already spent on the Leave War. Unpublishing withdraws them until you republish. Tap again to confirm.`
+        : `Withdrawing ${wl} brings back ${verName(back)}’s OIL for ${dow}. Some of ${wl}’s OIL credits are already spent on the Leave War, and ${verName(back)} credits less. Tap again to confirm.`, 'warn')
       notify(); return
     }
     const armedWithdraw = oilCreditBidAgainst(di)       // the two-tap path: its OIL credits leave the war too
@@ -1458,7 +1468,9 @@ export function routeClick(e: MouseEvent) {
       HOOKS.toast((verSeq(was) === 0 || now == null
         ? `${dow} unpublished. It is a draft again, and publishing reissues the ${wl}.`
         : `${dow}: ${wl} withdrawn. Its changes are back on the working copy as pending, and ${verLabel(now)} is the issued schedule. Publishing reissues ${wl}.`)
-        + (armedWithdraw ? ' Its OIL credits are withdrawn from the Leave War until it is republished.' : ''))
+        + (!armedWithdraw ? '' : back == null
+          ? ' Its OIL credits are withdrawn from the Leave War until it is republished.'
+          : ` The Leave War credits ${verName(back)}’s OIL for the day until ${wl} is republished.`))
     }
     notify(); return
   }

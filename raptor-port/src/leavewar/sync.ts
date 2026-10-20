@@ -30,7 +30,7 @@ import { SESSION } from '../state/auth'
 import { persistPeopleProjection, commitPeopleEdit } from '../state/people-settings-commit'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { SCHED, dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf, amFormatOf } from '../engine/publish'
+import { SCHED, dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf, amFormatOf, unpublishBackTo } from '../engine/publish'
 import { blindDesks, dayOilBlind, dayOilWork, inputOilAmt, oilWorkWhy, type OilWork } from '../engine/oil'
 import { oilEarnedWork, oilAmount, oilWorkSpans as workSpans, type OilEvidence } from '../engine/oilev'
 import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
@@ -128,6 +128,7 @@ import { absencesAt, setAbsenceRows, type MergedWar } from './state/merge'
 import { validIso, planFor, monthAnswers, type DayFacts, type DayAnswer } from '../state/flyplan-model'
 import { getFlyPlan, getTones, sansFly } from '../state/flyplan'
 import { MAX_CARRIED_REMARK } from './engine/warrecs'
+import { codeWorth } from './engine/credit'
 import { cs, dm, installInputGate } from './inputgate'
 import { projectPeople, qualCatalogue } from './state/raptorRoster'
 import {
@@ -1173,7 +1174,10 @@ function creditFrom(day: any, iso: string, add: (p: string, iso: string, sp: Oil
   return true
 }
 
-function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: Set<string> } {
+/* `back` reads one loaded-week day from ANOTHER version — the one an Unpublish would leave as the issued schedule, or a
+   draft (`ver` null), which earns nothing — so the warning before an Unpublish asks this same body what the war would
+   be owed afterwards ([UNPUB-WARN-AL-RESTORES], 20 Oct 26). Read only: nothing here writes. */
+function desiredOilCells(back?: { di: number; ver: string | null }): { desired: Map<string, DesiredOil>; protectedDates: Set<string> } {
   const protectedDates = new Set<string>()
   /* HIDING A MAN MUST NOT DESTROY HIS MONEY (owner, 21 Sep 26 — "There's no way
      to credit OIL to SANs even when they are hidden?"), and neither must
@@ -1245,9 +1249,11 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
     if (!iso) continue
     if (liveUnsupported) { protectedDates.add(iso); continue }
     if (!dayApproved(di)) continue
+    const swapped = !!back && back.di === di
+    if (swapped && back!.ver == null) continue            // withdrawn to a draft: it earns nothing
     /* only ever credit from the RESOLVED ISSUED snapshot — never the live draft.
        No snapshot (an orphaned approved day) → protect it (P2-IMPL-01). */
-    const snap = daySnapOf(di, dayCurVer(di))
+    const snap = daySnapOf(di, swapped ? back!.ver : dayCurVer(di))
     if (!snap || !snap.d) { protectedDates.add(iso); continue }
     if (!creditFrom(snap.d, iso, add, blocks)) protectedDates.add(iso)
   }
@@ -1437,11 +1443,21 @@ export function publishFlagsBids(di: number): void {
    put their balance negative, a bid placed against it surfaces as a clash in the gap.
    True when withdrawing di's credit would push any credited person's OIL balance
    below zero — the "credits already bid against" case the button warns on. Read-only:
-   safe to call from the click handler before running the forward unpublish. */
+   safe to call from the click handler before running the forward unpublish.
+   WITHDRAWING AN AMENDMENT IS NOT WITHDRAWING THE DAY ([UNPUB-WARN-AL-RESTORES] — Astra's F2 on
+   [OIL-WORK-START], 6 Oct 26; built 20 Oct 26). The Original withdrawn makes the day a draft and it earns nothing; an
+   ALn withdrawn makes the version before it the issued schedule again, and THAT version's OIL pays — read from its own
+   kept evidence and Logic values, through the same desiredOilCells the pass lands credits from. So the balance is
+   rebuilt with the credit the day will carry AFTERWARDS in place of today's (none, for a draft): a withdrawal that puts
+   back a full day where AL1 cut it to a half raises his balance and no longer warns. */
 export function oilCreditBidAgainst(di: number): boolean {
   const iso = labelToISO(DATES[di])
   if (!iso) return false
   const { desired } = desiredOilCells()
+  const after = desiredOilCells({ di, ver: unpublishBackTo(di) })
+  /* a date the pass would PROTECT afterwards keeps its landed credit as it is (desiredOilCells' P2-IMPL-01) — nothing
+     of today's balance moves, so nothing can be stranded */
+  if (after.protectedDates.has(iso)) return false
   for (const [key, d] of desired) {
     const bar = key.indexOf('|')
     if (key.slice(bar + 1) !== iso) continue
@@ -1468,7 +1484,9 @@ export function oilCreditBidAgainst(di: number): boolean {
        the tracker reads, so the two cannot diverge on the figure OR the date.
        Only the SCHEDULE'S credit goes; an award on the same day stays in the
        balance and is none of this button's business (N16). */
-    const without = oilLedgerOf(figureCtxOf(), person, c => c.date === iso && c.source === 'auto')
+    const stays = after.desired.get(key)
+    const worth = stays ? codeWorth(stays.code) : 0          // an automatic credit is its code's own worth (engine/credit.ts)
+    const without = oilLedgerOf(figureCtxOf(), person, c => (c.date === iso && c.source === 'auto' ? worth : false))
     if (without.balance < 0) return true
   }
   return false
