@@ -154,7 +154,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [CI-SPLIT-SLOW-JOBS] — split GitHub's slowest checks across more machines while the repo is public (about 9 → 5 minutes, an estimate) — his yes given (D1089); its own job, a fresh chat.
+- [CI-SPLIT-SLOW-JOBS] — GitHub's checks 9–10 → 6 minutes (measured): pictures not downloaded (D1091), slow legs split (D1089) — BUILT, pull request 546, waiting for his "merge live".
 - [GATELOCK-STALE-PORT] — the lock's full run can test another chat's old build when a preview is left running — it picks a free port itself.
 - [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
 - [LW-WINDOW-PRUNE-FLAKE-2] — the Leave War month-window browser test fails about half the full runs — wait on the grid, not a fixed time.
@@ -240,6 +240,7 @@ his PC, one after another), skipping truly separate areas would save real time �
 **Also watch (a reader's note):** `raptor-port/docs/gates-and-deploy.md` says a documents-only push on a pull request cancels
 its running gate job and starts no new one; `shipping.md` says a notes push on a pull request carrying code re-runs every
 gate — see which on the next closing push (D1088 waits on that run). **Place:** Checks and tooling — next, its own job in a fresh chat (D1089).
+**BUILT 20 Oct 26** (pull request 546, `claude/ci-split-slow-jobs-standby-9e987d`): every GitHub leg checks out without the four picture folders (D1091, his word: "don't download the photos to save time" — 4.7 GB → 79 MB a machine), the raptor unit set in six, its browser set in four, the Leave War desktop browser set in two; the Tracker smoke stays one leg (its second half uses helpers its first half defines). **Measured:** 5m53s end to end, against 8m53s–10m04s before; every leg green, nineteen side by side. Detail: `raptor-port/docs/gates-and-deploy.md` (20 Oct 26). Waiting for his "merge live".
 
 ### [GATELOCK-STALE-PORT] The lock's full check run tests another chat's old build when a preview is left on 4173 (found 18 Oct 26, `claude/three-small-jobs-1018`) — OPEN
 **Seen:** `gatelock.mjs run` runs `npx playwright test` with no port; `playwright.config.ts` reuses a server already on 4173
