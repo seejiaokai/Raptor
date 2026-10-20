@@ -93,6 +93,9 @@ export function SettingsSheet({
   // "Really reset?" met again on coming back would reset on one tap the person no longer knows was the second
   // ([LW-SETTINGS-SMALL]). The page's own on-screen signal (a listener set, not the store — nothing re-renders the grid).
   useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) setArmOrder(false) }), [])
+  /* …and when the line greys under it (the grid scrolled to months where the order is the default, an Undo): an armed
+     question never waits on a greyed line to fire on one tap when it lights again (the blind read's L2) */
+  useEffect(() => { if (!handOrder) setArmOrder(false) }, [handOrder])
   const chosen = groupsInOrder()
   const offered = offerableGroupList()
   const priority = groupPriorityIds()

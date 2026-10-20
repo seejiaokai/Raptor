@@ -10,7 +10,7 @@ import { storeBackend } from '../../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../../engine/people'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../../state/store'
 import { accountsLoad, signIn, sessionFor } from '../../state/accounts'
-import { getState, initStore as lwInitStore, setPeople } from '../state/store'
+import { getState, initStore as lwInitStore, setPeople, setPostIn } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { projectPeople } from '../state/raptorRoster'
 import { postOut, undoPostOut, wireLeaveWarSync } from '../sync'
@@ -113,6 +113,18 @@ describe('[PO-MOVE-DATE-DELETE-ASK] a Delete posting\'s date moved to today asks
     pickDate(screen.getByTestId('postout-date'), '2026-07-28')
     expect(screen.queryByTestId('postout-delete-go')).toBeNull()
     expect(war('rocky')!.to).toBe('2026-07-27')
+    expect(P('rocky').deleted).toBeFalsy()
+  })
+  /* the blind read's L1 (21 Oct 26): "Tap again to delete" is never offered for a date the save would refuse */
+  it('a date before his post-in is refused at once — no question, nothing saved', () => {
+    expect(setPostIn('rocky', '2026-07-12')).toBe(true)
+    expect(postOut('rocky', LATER, 'delete')).toBe(true)
+    openSheet()
+    pickDate(screen.getByTestId('postout-date'), '2026-07-10')
+    expect(screen.queryByTestId('postout-delete-go'), 'no question').toBeNull()
+    expect(screen.getByTestId('postout-err').textContent).toMatch(/12 Jul/)
+    expect(boxValue(screen.getByTestId('postout-date'))).toBe(LATER)
+    expect(war('rocky')!.to).toBe('2026-07-19')
     expect(P('rocky').deleted).toBeFalsy()
   })
   it('a posting that is not a Delete still saves a past date at once (only a delete asks)', () => {

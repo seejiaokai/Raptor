@@ -500,4 +500,25 @@ describe('⚙ Settings — Reset order', () => {
     render(<SettingsSheet {...props} shown={() => true} />)
     expect(btn().disabled, 'with him drawn, it is a hand order').toBe(false)
   })
+  /* the blind read's L2 (21 Oct 26): an armed question never waits on a greyed line — the grid scrolled to months where
+     the order is the default, then back, must not leave one tap to reset */
+  it('an armed "Really reset?" is taken back when the line greys under it', () => {
+    const ids = displayRoster().map(p => p.id)
+    let a = ''
+    for (let i = 0; i + 1 < ids.length && !a; i++) {
+      setRosterOrder([...ids.slice(0, i), ids[i + 1]!, ids[i]!, ...ids.slice(i + 2)])
+      if (!rosterFollowsDefault()) a = ids[i]!
+    }
+    const props = { onClose: () => {}, onAddCounter: () => {}, onDays: () => {} }
+    const { rerender } = render(<SettingsSheet {...props} shown={() => true} />)
+    fireEvent.click(btn())
+    expect(btn().textContent).toBe('Really reset?')
+    rerender(<SettingsSheet {...props} shown={p => p.id !== a} />)          // scrolled to months that do not draw him
+    expect(btn().disabled).toBe(true)
+    rerender(<SettingsSheet {...props} shown={() => true} />)               // and back
+    expect(btn().textContent).toMatch(/Reset order/)
+    const order = getState().rosterOrder.slice()
+    fireEvent.click(btn())
+    expect(getState().rosterOrder, 'one tap only asks again').toEqual(order)
+  })
 })

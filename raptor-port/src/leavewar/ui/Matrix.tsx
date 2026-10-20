@@ -4004,6 +4004,7 @@ export function Matrix() {
           lockedWhy={postingLocked(open.id)}
           /* a Delete's date moved to today or earlier asks twice before it is saved (D1102) — on the pass's own clock */
           deletesNow={postingRunsBy}
+          refusedAt={d => postOutProblem(open.id, 'delete') || postingProblem(open.id, 'out', d)}
           onChange={(from, outcome) => postOutOr(open.id, from, outcome)}
           /* the archive the Post out made goes too (W5-F1); refused, with where to go, when a man on the roster now holds
              his callsign (D286 (1) — Fable's scenario 2: it closed and did nothing) */

@@ -989,6 +989,7 @@ export function PostOutSheet({
   blockedFor,
   lockedWhy,
   deletesNow,
+  refusedAt,
   onChange,
   onUndo,
   onPlace,
@@ -1010,6 +1011,9 @@ export function PostOutSheet({
   /** would a posting dated this day run NOW — today or earlier (sync.ts postingRunsBy)? A Delete's date moved there
    *  deletes him at once, so it asks twice first (D1102) */
   deletesNow?: (poDate: string) => boolean
+  /** why a posting dated this day would be refused, or null — asked BEFORE the date question, so "Tap again to delete"
+   *  is never offered for a delete the save would refuse (the blind read's L1) */
+  refusedAt?: (poDate: string) => string | null
   /** Re-post with a new date and/or outcome. Commits on change — the
    *  sheet stays up so the admin can see the grid move behind it. */
   onChange: (fromDate: string, outcome: PostOutcome) => string | void
@@ -1058,7 +1062,11 @@ export function PostOutSheet({
           value={shownFrom} disabled={locked}
           onChange={v => {
             setDelArm(false); setErr('')
-            if (outcome === 'delete' && deletesNow?.(v)) { setAskDate(v === poFrom ? null : v); return }
+            if (outcome === 'delete' && deletesNow?.(v)) {
+              const why = v === poFrom ? null : refusedAt?.(v) ?? null
+              if (why) { setAskDate(null); setErr(why); return }   // refused: said at once, nothing asked, nothing saved
+              setAskDate(v === poFrom ? null : v); return
+            }
             setAskDate(null)
             if (v !== poFrom) setErr(onChange(v, outcome) || '')
           }} />
