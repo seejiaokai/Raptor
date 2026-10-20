@@ -13,7 +13,7 @@ import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-console.log('inputs-small-fixes-walk v6')
+console.log('inputs-small-fixes-walk v7')
 const HERE = dirname(fileURLToPath(import.meta.url))
 const OUT = process.argv[2] || join(HERE, '../../docs/img/handpass/2026-10-20-inputs-small-fixes')
 rmSync(OUT, { recursive: true, force: true }); mkdirSync(OUT, { recursive: true })
@@ -442,7 +442,9 @@ for (const [size, opts, tap] of SIZES) {
     const sheet = await text(page, '[data-testid="medclash-0"]')
     const keep = await page.evaluate(() => { const b = [...document.querySelectorAll('button')].find(x => /^Keep /.test((x.textContent || '').trim()) && x.getBoundingClientRect().height > 0); return b ? b.textContent.trim() : null })
     check('desktop M1: the medical sheet prints the ATT C day first, two-digit year — "10 Feb 27 – 15 Feb 27"', /10 Feb 27 – 15 Feb 27/.test(sheet || '') && !/2027/.test(sheet || '') && !/Feb 1[05]/.test(sheet || ''), sheet)
-    check('desktop M1: its keep button reads "Keep ATT C till 15 Feb 27"', keep === 'Keep ATT C till 15 Feb 27', keep)
+    /* (no keep button here by design: the ATT C covers the whole new ATT B, so it is replaced — medclash.test.tsx) */
+    const head = await text(page, '.medclash-pop .airpop-head b, [data-testid="medclash"] .airpop-head b')
+    check('desktop M1: the sheet’s title prints its dates day first, two-digit year — "12 Feb 27 – 13 Feb 27"', /12 Feb 27 – 13 Feb 27/.test(head || '') && !/2027/.test(head || ''), { head, keep })
     await mark(page, '[data-testid="medclash-0"]'); await shot(page, 'desktop-M1-medclash-next-year')
   } catch (e) { results.push(`ERROR desktop M1: ${e.message.split('\n')[0]}`); console.log('ERROR', e.message); await shot(page, 'desktop-M1-error') }
   await ctx.close()

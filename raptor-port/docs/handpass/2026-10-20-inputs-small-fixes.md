@@ -94,10 +94,28 @@ on the plain demo (Thursday published, no input added) reads the same straight a
 version's; nothing pending. Not a finding.
 
 ## 5. The read
-*(the fresh, blind Opus read — below, once it reports)*
+One fresh, blind Opus reader of `93bba2a5d` and `c8a6c31d9` (D790, D903), given this sheet and the finder brief, D56 said.
+| # | Its claim | Disposition |
+|---|---|---|
+| F1 (low–medium, speed) | The printed remark is STORED on a request's row and its issued copy; with the year read from the loaded week, a published December week read from the first week of January differed by the year alone, so the cross-week check (`weekctx.ts windowDiverges`) ran the official pass on every edit that week — reproduced through the app's doors | **Confirmed, new with this change; fixed:** `overlay.ts viewOfWeek` writes each week's rows in that week's own year (`tillOf`'s `base`), so a week reads the same from any other. Red first: `ui/newyear-till.test.tsx` (break 8). §0's "nothing stores the key text" was true of `inpDetailKey` only — corrected here. |
+| F2 (low, older) | The medical clash sheet printed its own dates from the kept labels (month first, the year by the row's anchor) | **Confirmed, older; fixed under D1096:** `MedClashConfirm` prints day first by the loaded week's rule — the body (break 13) and, found on the re-walk, its title (`inputedit.tsx`, two doors; `medclash.test.tsx`, red first). |
+| F3 (test honesty) | `oilaskhead.test.tsx` case 2's comment named a route its set-up does not take | **Confirmed; fixed:** the comment says the state is written directly and that the walk's O2 drives the route. |
+| Notes | The card corner's own year rule; the Leave War's day list reads the loaded week; a box's fallback could one day save "Ski 2027" | The corner now prints two digits (break 15). The day list: cosmetic, as the reader said. The fallback cannot arise today (every standing row is re-made each pass) — no change. |
+Its missing scenarios, walked on the re-walk: the New Year week (N1–N3), the question asked again from the bar (O3), the medical sheet in another year (M1). Not walked: the Inputs calendar's drag on a phone (§3).
+**Re-walk** (`…/rewalk/`, script v7, build `index-BgX70vBx`): **49 PASS · 0 FAIL · 0 browser errors**, 28 pictures — the two-digit years at both sizes, N1 "till 8 Jan 27", N2 "Jan 1 27", N3 published and back after a reload with nothing pending (one validate in the week of 4 Jan: 6 ms), O3, M1. Its own faults on the way, each fixed in the script: the multi-day OIL question's buttons, a heading read with its count, words and date read as one piece, an unanswered "no document" question, a stray character, a quote mark. Seen, as built and not a fault: a request lands on its FIRST day only, so a course from 30 Dec draws no row in the week of 4 Jan.
+
+## 10. His D1095 / D1096 — every printed year two digits (found and changed)
+The till date (`tillOf`, `tillOfISO`); a day's own date on the week, the board, the day window, the peek, the OIL mode
+(`shortYear`); `fmtDay` (the Inputs list, the Medical tab, ranges); `oilDayLabel`; the LATE note; the phone list's day
+heading; the dates button's year test; the card corner; the date boxes, the Calendar window's lines and Admin's range
+(`sayDateYY` — a screen reader keeps four); the input window's title and date line; the medical sheet; the Holidays
+warning. **Left four digits, on purpose:** every KEPT label (`fmt`, `weekLabels`, the war's, `sansDateLabel`); a year alone
+("No leave period covers 2031"); a month title ("Nov 2026"); the CSV export (a data file). The Leave War already printed
+two ("15 Jun 26"). Tests re-expressed: 35 unit, 7 browser; GitHub's run of `b5dda663d` failed on three browser shares still
+reading four digits — fixed in `5e0404648`.
 
 ## 6. The break tests (`scripts/handpass/breaks/inputs-small-fixes.json`)
-**7 of 7 caught.** 1 `tillOf` with no year — `tilldate`, `latepub` red; 2 `tillOfISO` with no year — `tilldate` red; 3 the
+**7 of 7 caught**, then **17 of 17** with D1096 and F1 (breaks 8–17; break 15, the card corner, had no test until one was written). 1 `tillOf` with no year — `tilldate`, `latepub` red; 2 `tillOfISO` with no year — `tilldate` red; 3 the
 year printed in the loaded year too — `tilldate` red; 4 `oilFirst` ignoring the door's `who`; 5 the drag passing none; 6 the
 hand-over passing none; 7 the hand-over heading the people BEFORE the swap — each `oilaskhead` red. Break 7 was found
 unguarded before the run, by reading the test: its newcomer left the same first name A to Z either way ("Nomad +2"), so

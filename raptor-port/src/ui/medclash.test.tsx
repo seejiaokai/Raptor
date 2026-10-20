@@ -73,6 +73,8 @@ describe('the clash sheet gates a different-type overlap', () => {
     expect(rows('ATT B'), 'nothing written yet').toHaveLength(0)
     expect(($('[data-testid="medclash-save"]') as HTMLButtonElement).disabled, 'unanswered clash blocks the save').toBe(true)
     expect($('[data-testid="medclash-0"]')!.textContent).toContain('13 Jul – 15 Jul')
+    /* the title prints the new entry's dates as the body does — day first (D1096: a year, where one shows, two digits) */
+    expect($('[data-testid="medclash"] .airpop-head b')!.textContent).toContain('13 Jul – 18 Jul')
     await click($('.upconf-foot .abtn.ghost'))
     expect($('[data-testid="medclash"]'), 'sheet gone').toBeFalsy()
     expect(rows('ATT B'), 'Cancel wrote nothing').toHaveLength(0)

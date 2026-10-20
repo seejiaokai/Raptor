@@ -1397,7 +1397,7 @@ export function medAskFor(r: any, draft: any): MedAsk | null | 'refused' {
   const clashes = medClashes(draft.person, draft.type, a, b, r)
   if (!clashes.length) return null
   return { kind: 'clash', who, newType: draft.type,
-    span: fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' – ' + fmt(draft.end) : ''), clashes, a, b }
+    span: fmtDay(draft.start) + (draft.end && draft.end !== draft.start ? ' – ' + fmtDay(draft.end) : ''), clashes, a, b }
 }
 
 /** The clash sheet's Save for an EDIT: the edited row becomes the first kept segment, the rest are minted as
@@ -2755,7 +2755,8 @@ export function InputEditor() {
         setMedConf({
           who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person || ''),
           newType: draft.type,
-          span: fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' – ' + fmt(draft.end) : ''),
+          /* printed as the sheet's body prints its dates: day first, the year two digits where it is another (D1096) */
+          span: fmtDay(draft.start) + (draft.end && draft.end !== draft.start ? ' – ' + fmtDay(draft.end) : ''),
           clashes, a, b,
         })
         return
