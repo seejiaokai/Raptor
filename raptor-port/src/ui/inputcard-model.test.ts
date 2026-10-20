@@ -141,6 +141,8 @@ describe('when it is', () => {
   it('one that runs on past the day it is shown under says the day it runs till', () => {
     expect(cardWhen(rec({ allday: true }), '2026-07-20', '2026-07-18')).toBe('till 20 Jul')
     expect(cardWhen(rec({ s: 600, e: 660 }), '2026-07-20', '2026-07-18')).toBe('10:00–11:00 · till 20 Jul')
+    /* a last day in another year than the day the card is shown under: its year, two digits (owner D1096 — "All 27 instead") */
+    expect(cardWhen(rec({ allday: true }), '2027-01-02', '2026-12-31')).toBe('till 2 Jan 27')
   })
   it('shown under its last day it says its hours', () => {
     expect(cardWhen(rec({ allday: true }), '2026-07-20', '2026-07-20')).toBe('All day')

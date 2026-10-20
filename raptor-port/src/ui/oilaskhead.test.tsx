@@ -53,8 +53,9 @@ describe('the waiting OIL question is headed for everyone in an input of several
 
   it('one man of several replaced on an Unavailable row: headed for the people it will hold', () => {
     const r = three('Jul 17')
-    /* moved to Saturday by the calendar and answered there; then its answer is taken away by the scheduler's own
-       "Not earning" — so a hand-over now finds a weekend input nobody has answered (the read's way in (b)) */
+    /* THE STATE IS WRITTEN DIRECTLY HERE, not reached by a route: a weekend input of three nobody has answered. The app
+       reaches it by making its day a holiday and leaving the OIL list for later — the walk's O2 drives that route
+       (docs/handpass/2026-10-20-inputs-small-fixes.md); what this test proves is the heading the hand-over then puts. */
     writeInputsBatch(() => { const x = INPUTS.find((i: any) => i.iid === r.iid)!; x.date = 'Jul 18'; delete x.oil })
     /* the newcomer (Blade) sorts before all three, so the heading says whether he was counted in Bane's place */
     expect(az(['slash', 'pike', 'split']), 'the newcomer changes who leads the heading').not.toBe(az(['bane', 'pike', 'split']))

@@ -20,7 +20,7 @@ describe('the Inputs page date helpers', () => {
   it('fmtDay reads day-first, and keeps a year only when it is not this one', () => {
     expect(fmtDay('2026-07-13')).toBe('13 Jul')
     expect(fmtDay('2026-01-03')).toBe('3 Jan')
-    expect(fmtDay('2027-01-03')).toBe('3 Jan 2027')
+    expect(fmtDay('2027-01-03')).toBe('3 Jan 27')
     expect(fmtDay('')).toBe('')
   })
   it('fmtDMY is day-month-two-digit-year, reads a today stamp as "now", passes legacy "now" and blanks through', () => {

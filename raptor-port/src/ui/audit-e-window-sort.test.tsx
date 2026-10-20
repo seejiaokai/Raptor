@@ -253,7 +253,7 @@ describe('a next year leave approved on the Leave War', () => {
     const all = rowTexts()
     const iNext = all.findIndex(t => t.includes('NY-WAR-LEAVE')), iThis = all.findIndex(t => t.includes('NY-THIS-YEAR'))
     expect(iNext, 'listed under All dates').toBeGreaterThanOrEqual(0)
-    expect(all[iNext], 'printed with its year').toMatch(/20 Jul 2027/)
+    expect(all[iNext], 'printed with its year').toMatch(/20 Jul 27/)
     expect(iNext, 'after this year\'s 30 Dec').toBeGreaterThan(iThis)
     clean('NY-')
   })

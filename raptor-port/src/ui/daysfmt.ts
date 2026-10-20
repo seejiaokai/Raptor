@@ -17,5 +17,8 @@ export const isoToday = (): string => {
 export const sayDate = (iso: string): string => `${WD[weekdayOf(iso)]} ${+iso.slice(8, 10)} ${MONTHS[+iso.slice(5, 7) - 1].slice(0, 3)}`
 /** "Mon 2 Nov 2026" */
 export const sayDateY = (iso: string): string => `${sayDate(iso)} ${iso.slice(0, 4)}`
+/** "Mon 2 Nov 26" — the PRINTED form (owner D1096: a year printed after a date is two digits); sayDateY stays for a
+ *  screen reader's label, which reads a whole year better than two digits */
+export const sayDateYY = (iso: string): string => `${sayDate(iso)} ${iso.slice(2, 4)}`
 /** the first such weekday (0 = Monday) on or after a date — the date itself, when it is one */
 export const firstWeekdayFrom = (wd: number, iso: string): string => addDays(iso, (wd - weekdayOf(iso) + 7) % 7)

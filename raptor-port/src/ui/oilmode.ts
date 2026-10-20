@@ -45,7 +45,7 @@
    reader the issued schedule's green edge shares.
    ===================================================================== */
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId, inpWin, inpMeta, inpLabel, inpKindTag, inputOn, oilAsks } from '../engine/inputs'
+import { INPUTS, inpId, inpWin, inpMeta, inpLabel, inpKindTag, inputOn, oilAsks, shortYear } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
@@ -933,7 +933,7 @@ export function oilItemLabel(di: any, item: string): { name: string, when: strin
     return t.length === 4 ? `${t.slice(0, 2)}:${t.slice(2)}` : t }
   const span = (a: any, b: any) => { const x = hhmm(a), y = hhmm(b)
     return x && y ? `${x}–${y}` : x || y || '' }
-  const dayLbl = String(d.dt || d.dow || '').trim()
+  const dayLbl = shortYear(String(d.dt || d.dow || '').trim())
   /* THE EVENT'S WINDOW IN MINUTES, as well as its words: [ALL-AVAIL-WINDOW]
      asks whether it sits inside a crowd man's own brief or debrief (D38). An
      open end is left open rather than guessed — a row with no end time cannot

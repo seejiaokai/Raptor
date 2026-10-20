@@ -876,6 +876,11 @@ const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov',
    itself, so a week change re-derives on the very next call — it cannot serve
    a stale year — and the derivation is byte-identical to the original. */
 let byWk:any, byY=0;
+/* A YEAR PRINTED AFTER A DATE IS TWO DIGITS (owner D1096, 20 Oct 26 — "All 27 instead"; D1095 the till date): the
+   label a day or an input KEEPS carries its year in four (weeks-data.ts weekLabels, ui/inputedit.tsx fmt — what dateOrd,
+   the covers and the published compare read), and only what is PRINTED drops the century: "Jan 1 2027" → "Jan 1 27".
+   Never feed a printed date back to dateOrd — "27" would read as the year 27 (his question, "Like 2127"). */
+export const shortYear=(s:any):string=>String(s??'').replace(/ \d{2}(\d{2})$/,' $1');
 export function baseYear(){
   if(CURWEEK!==byWk||byWk===undefined){byWk=CURWEEK;const y=+String(weekStartISO()).slice(0,4);byY=isFinite(y)&&y?y:2026;}
   return byY;
@@ -1271,19 +1276,21 @@ export function tillSettle(rec:any):boolean{
      stay hidden there and come back on a retype out (the scenario designer's 9, 17 Oct 26) */
   if(typeof rec.till==='boolean'&&rec.till!==tillDefault(rec)&&!isSansAvail(rec.type)&&!isUpchit(rec.type))return false;
   delete rec.till;return true;}
-/* a last day in another year than the loaded week's carries its year — "till 15 Feb 2027" — the convention every label
-   in the app follows (weeks-data.ts weekLabels; lateNote below). Its year is the label's own, else the row's anchor `yr`
-   (dateOrd). The published-day compare reads this text too (inpDetailKey), and works out both sides with the same loaded
-   week, so the year never reads as a change on its own ([TILL-NEXT-YEAR], found 17 Oct 26 — "till 15 Feb" under a
-   2027 date). */
-const yearTail=(y:any)=>y&&y!==baseYear()?` ${y}`:'';
+/* a last day in another year than the week it is read in carries its year, in two digits — "till 15 Feb 27" (owner
+   D1095, 20 Oct 26 — "Make it 27 instead of 2027?"; [TILL-NEXT-YEAR], found 17 Oct 26 — "till 15 Feb" under a 2027 date).
+   Its year is the label's own, else the row's anchor `yr` (dateOrd). The week is the loaded one (baseYear), but for a
+   schedule row: that is written in its OWN week's year (`base`, overlay.ts viewOfWeek), so the row a week holds reads the
+   same whichever week is on screen — a neighbour week read for the cross-week checks never differs from its issued self
+   by the year alone (the fresh read's F1, 20 Oct 26: the week after New Year ran the official check twice). The
+   published-day compare (inpDetailKey) works out both sides in one call, so the year never reads as a change by itself. */
+const yearTail=(y:any,base?:any)=>y&&y!==(base||baseYear())?` ${String(y).slice(-2)}`:'';
 /* "till <its last day>", from its dates — '' for an input that prints none (unticked — D953), or has no date yet */
-export function tillOf(inp:any):string{
+export function tillOf(inp:any,base?:any):string{
   if(!inp||isSansAvail(inp.type)||isUpchit(inp.type)||!tillShown(inp))return '';
   const lbl=inp.endDate||inp.date, w=dayWords(lbl);
   if(!w)return '';
   const o=dateOrd(lbl,inp.yr);
-  return `till ${w}${yearTail(o==null?0:Math.floor(o/10000))}`;}
+  return `till ${w}${yearTail(o==null?0:Math.floor(o/10000),base)}`;}
 /* …the same from two ISO dates, for a window whose dates are still being picked ('' with no start). The window shows it
    whether or not it is ticked — struck through when it is not (D953) — so it asks no tick here. */
 export function tillOfISO(type:any,startISO:any,endISO:any):string{
@@ -1291,18 +1298,19 @@ export function tillOfISO(type:any,startISO:any,endISO:any):string{
   const last=isISO(endISO)?endISO:startISO;
   return `till ${isoLabel(last)}${yearTail(+String(last).slice(0,4))}`;}
 /* WHAT EVERY SCREEN PRINTS FOR AN INPUT'S REMARK: the typed words, then the date — "Las Vegas till 17 Jul", or the date
-   alone where nothing was typed. SANS availability and an upchit: as typed. */
-export function remarksShown(inp:any):string{
+   alone where nothing was typed. SANS availability and an upchit: as typed. `base`: the year of the week it is printed
+   in, where that is not the loaded week's (a schedule row of another week — overlay.ts requestRowFields). */
+export function remarksShown(inp:any,base?:any):string{
   if(!inp)return '';
   if(isSansAvail(inp.type)||isUpchit(inp.type))return String(inp.remarks||'').trim();
-  const t=remarksTyped(inp.remarks,inp), d=tillOf(inp);
+  const t=remarksTyped(inp.remarks,inp), d=tillOf(inp,base);
   return t&&d?`${t} ${d}`:(t||d);}
 /* what the mark says when you hover it — plain enough for the squadron */
 export function lateNote(inp:any){
   if(!isLateInput(inp))return '';
   /* dates outside the loaded week's own year carry it — 'Jan 4 2027' — the
      same convention every label in the app follows (weekLabels, fmt) */
-  const lbl=(iso:any)=>{const l=isoLabel(iso); const y=+String(iso).slice(0,4); return l&&y!==baseYear()?`${l} ${y}`:l;};
+  const lbl=(iso:any)=>{const l=isoLabel(iso); const y=+String(iso).slice(0,4); return l&&y!==baseYear()?`${l} ${String(y).slice(-2)}`:l;};   // two digits (D1096)
   return `Late input — last changed ${lbl(inputStampISO(inp))}, after the ${lbl(inputOwnDueISO(inp))} deadline for its week of ${lbl(inputWeekStartISO(inp))}.`;
 }
 

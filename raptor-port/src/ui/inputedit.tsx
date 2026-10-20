@@ -105,7 +105,8 @@ export const fmtDay = (iso: any) => {
   const [y, m, da] = String(iso).split('-')
   if (!m) return String(iso)
   const lbl = String(+da) + ' ' + MON[+m]
-  return +y === baseYear() ? lbl : lbl + ' ' + y
+  /* (printed, so the year is two digits — owner D1096; fmt above KEEPS four, being a stored label) */
+  return +y === baseYear() ? lbl : lbl + ' ' + y.slice(-2)
 }
 /* ISO 'yyyy-mm-dd' → a 'day month year' STAMP with a two-digit year
    ('2026-07-06' → '6 Jul 26'), matching the app's own week voice ('13 Jul 26').
@@ -832,7 +833,7 @@ export function oilSummary(row: any): string {
    answered yet" lines and the desktop row's "OIL?" chip (ui/InputsPage.tsx). */
 export function oilDayLabel(iso: any): string {
   const s = isoLabel(iso)
-  return s && +String(iso).slice(0, 4) !== baseYear() ? `${s} ${String(iso).slice(0, 4)}` : s
+  return s && +String(iso).slice(0, 4) !== baseYear() ? `${s} ${String(iso).slice(2, 4)}` : s   // two digits (D1096)
 }
 
 /* The default type a board panel's + Add opens on — a personal (activity) type

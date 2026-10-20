@@ -46,6 +46,7 @@ import { dayHidesIn, officialDaysOf } from '../engine/weekctx'
 import { HOOKS } from '../engine/hooks'
 import { viewOfWeek, deletedSig, requestsSig } from '../engine/overlay'
 import { DAYS } from '../engine/data'
+import { shortYear } from '../engine/inputs'
 /* the loaded week's request rows (their ids and days) — the peek's landing reads them */
 const loadedSrcSig = () => DAYS.map((d: any) => ((d && d.ground) || []).map((g: any) => (g && g.src) || '').join(',')).join('/')
 
@@ -258,7 +259,7 @@ export function peekDayHTML(d: any, i: number, first: boolean): string {
   PEEK_DI = i; PEEK_HID = PEEK_WK != null ? dayHidesIn(PEEK_WK, i) : new Set()
   let h = `<section class="day peek" data-peek-day="${i}">`
   h += `<div class="day-head">${first ? `<span class="peek-nextwk">Next week: click a day to load it</span>` : ''}`
-    + `<span class="dow">${esc(d.dow || '')}</span><span class="dt">${esc(d.dt || '')}</span>`
+    + `<span class="dow">${esc(d.dow || '')}</span><span class="dt">${esc(shortYear(d.dt || ''))}</span>`
     + `<span class="badge">${esc(dayCount(d))}</span></div>`
   h += `<div class="day-body">`
   h += peekCommon(d)

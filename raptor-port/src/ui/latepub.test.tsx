@@ -612,13 +612,13 @@ describe('Fable\'s code read: an input change reads pending only where the day\'
     validate()
     publishDay(FRI); signBound(FRI)
     const inp = INPUTS.find((r: any) => r.remarks === 'LONG HAUL')!
-    expect(remarksShown(inp), 'it prints its year').toBe('LONG HAUL till 5 Jan 2027')
+    expect(remarksShown(inp), 'it prints its year').toBe('LONG HAUL till 5 Jan 27')
     expect(dayPendingItems(FRI).length, 'nothing waits on the day it went out on').toBe(0)
     expect(daySigned(FRI), 'its sign-offs hold').toBe(true)
     expect(commitInputEdit(inp, { ...draftOf(inp), end: '2027-01-06' })).toBeTruthy()
     validate()
     expect(dayPendingItems(FRI).length, 'its printed last day moved — one change').toBe(1)
-    expect(listText(FRI)).toMatch(/LONG HAUL till 5 Jan 2027.*LONG HAUL till 6 Jan 2027/)
+    expect(listText(FRI)).toMatch(/LONG HAUL till 5 Jan 27.*LONG HAUL till 6 Jan 27/)
   })
 })
 

@@ -70,11 +70,11 @@ const az = (a: string, b: string) => a.localeCompare(b, undefined, { sensitivity
    "till" for another day — somebody's own words — is left alone. The record is not changed: the schedule's row, the
    desktop list's Remarks column and the input's window read the whole remark, as before.
    `corner` is the card's corner as it is printed (cardWhen, below): "till 17 Jul", "10:00–11:00 · till 17 Jul", or —
-   for an input that runs into another year — "till 1 Jan 2027", where the remark's own words carry no year. A card
+   for an input that runs into another year — "till 1 Jan 27" (D1096), where the remark's own words carry no year. A card
    whose corner says no "till" (a one-day input; an input shown under its last day) keeps its remark whole. */
 const SEP = '[\\s,·—–-]'
 export function remarkOnce(remark: string, corner: string): string {
-  const m = /\btill (\d{1,2}) ([A-Za-z]{3})(?: (\d{4}))?/.exec(corner || '')
+  const m = /\btill (\d{1,2}) ([A-Za-z]{3})(?: (\d{2}|\d{4})\b)?/.exec(corner || '')   // the corner's year: two digits since D1096
   if (!m || !remark) return remark
   /* the corner's year, where it says one, may follow the words; any other year after them was typed, and is his */
   const tok = new RegExp(`${SEP}*\\btill\\s+${m[1]}\\s+${m[2]}\\b${m[3] ? `(?:\\s+${m[3]}\\b)?` : ''}(?!\\s+\\d{4}\\b)`, 'i')
@@ -123,7 +123,7 @@ export function cardOf(rows: readonly any[], people: Record<string, any> = PEOPL
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 /* '2026-07-20' → '20 Jul'; a day in another year than the one it is shown under keeps its year */
 const dayMon = (iso: string, under: string) =>
-  `${+iso.slice(8, 10)} ${MON[+iso.slice(5, 7) - 1]}` + (iso.slice(0, 4) !== under.slice(0, 4) ? ' ' + iso.slice(0, 4) : '')
+  `${+iso.slice(8, 10)} ${MON[+iso.slice(5, 7) - 1]}` + (iso.slice(0, 4) !== under.slice(0, 4) ? ' ' + iso.slice(2, 4) : '')   // two digits (D1096)
 
 /** WHEN it is, as the card's right corner says it: its hours, "All day", a half day — or, for one that runs on past
  *  the day it is shown under (`iso`: the opened day; on the list, its own first day), the day it runs till (`last`). */

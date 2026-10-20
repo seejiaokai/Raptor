@@ -72,7 +72,7 @@ describe('the clash sheet gates a different-type overlap', () => {
     expect($('[data-testid="medclash"]'), 'the clash sheet is up').toBeTruthy()
     expect(rows('ATT B'), 'nothing written yet').toHaveLength(0)
     expect(($('[data-testid="medclash-save"]') as HTMLButtonElement).disabled, 'unanswered clash blocks the save').toBe(true)
-    expect($('[data-testid="medclash-0"]')!.textContent).toContain('Jul 13 – Jul 15')
+    expect($('[data-testid="medclash-0"]')!.textContent).toContain('13 Jul – 15 Jul')
     await click($('.upconf-foot .abtn.ghost'))
     expect($('[data-testid="medclash"]'), 'sheet gone').toBeFalsy()
     expect(rows('ATT B'), 'Cancel wrote nothing').toHaveLength(0)
@@ -97,7 +97,7 @@ describe('the clash sheet gates a different-type overlap', () => {
     await openMedAdd('ATT B', 'Jul 13', 'Jul 18')
     await click($('#inpEditSave'))
     const keep = $('[data-testid="medclash-0"] .upconf-ans').querySelectorAll('button')[1]
-    expect(keep.textContent, 'the keep button says what survives').toBe('Keep ATT C till Jul 15')
+    expect(keep.textContent, 'the keep button says what survives').toBe('Keep ATT C till 15 Jul')
     await click(keep)
     await click($('[data-testid="medclash-save"]'))
     expect(c.endDate, 'the kept status is untouched').toBe('Jul 15')
@@ -126,7 +126,7 @@ describe('the clash sheet gates a different-type overlap', () => {
     const pills = $('[data-testid="medclash-0"] .upconf-ans').querySelectorAll('button')
     expect(pills, 'one pill only — keeping whole would swallow the entry').toHaveLength(1)
     expect(pills[0].className, 'and it is pre-selected').toContain('on-keep')
-    expect($('[data-testid="medclash-tail-0"]')!.textContent, 'the leftover is up at once').toContain('Jul 15 – Jul 20')
+    expect($('[data-testid="medclash-tail-0"]')!.textContent, 'the leftover is up at once').toContain('15 Jul – 20 Jul')
     expect(($('[data-testid="medclash-save"]') as HTMLButtonElement).disabled, 'nothing left to answer').toBe(false)
     await click($('[data-testid="medclash-save"]'))
     expect(c.endDate, 'the head survives, trimmed to the day before').toBe('Jul 12')
@@ -144,7 +144,7 @@ describe('the clash sheet gates a different-type overlap', () => {
        leftover question is up without a click */
     expect($('[data-testid="medclash-0"] .upconf-ans').querySelectorAll('button')).toHaveLength(1)
     expect($('[data-testid="medclash-tail-0"]'), 'the leftover is asked at once').toBeTruthy()
-    expect($('[data-testid="medclash-tail-0"]')!.textContent).toContain('Jul 14 – Jul 15')
+    expect($('[data-testid="medclash-tail-0"]')!.textContent).toContain('14 Jul – 15 Jul')
     expect($('[data-testid="medclash-tail-0"]')!.textContent, 'the removal is shown, not silent').toContain('will be removed')
     expect(($('[data-testid="medclash-save"]') as HTMLButtonElement).disabled, 'the leftover default lets Save go').toBe(false)
     await click($('[data-testid="medclash-save"]'))
@@ -171,7 +171,7 @@ describe('the clash sheet gates a different-type overlap', () => {
     expect($('[data-testid="medclash-0"] .upconf-ans').querySelectorAll('button')).toHaveLength(2)
     expect($('[data-testid="medclash-tail-0"]'), 'no leftover until the new entry takes the days').toBeFalsy()
     await click($('[data-testid="medclash-0"] .upconf-ans button'))               // "ATT B replaces" → leftover appears
-    expect($('[data-testid="medclash-tail-0"]')!.textContent).toContain('Jul 14 – Jul 15')
+    expect($('[data-testid="medclash-tail-0"]')!.textContent).toContain('14 Jul – 15 Jul')
     await click($('[data-testid="medclash-0"] .upconf-ans').querySelectorAll('button')[1])   // switch to "Keep ATT C till Jul 15"
     expect($('[data-testid="medclash-tail-0"]'), 'no leftover when the old status is kept whole').toBeFalsy()
   })
@@ -187,7 +187,7 @@ describe('the clash sheet gates a different-type overlap', () => {
     // clash 0 = ATT C covers the whole entry → replace is FORCED, its
     // leftover question up without a click; KEEP that leftover
     expect($('[data-testid="medclash-0"] .upconf-ans').querySelectorAll('button')).toHaveLength(1)
-    expect($('[data-testid="medclash-tail-0"]')!.textContent, 'the leftover is past the ENTRY end').toContain('Jul 21 – Jul 25')
+    expect($('[data-testid="medclash-tail-0"]')!.textContent, 'the leftover is past the ENTRY end').toContain('21 Jul – 25 Jul')
     await click($('[data-testid="medclash-tail-0"] .upconf-ans').querySelectorAll('button')[1])   // Keep them
     // clash 1 = OML: keep it in the middle (splits the new ATT B around it)
     await click($('[data-testid="medclash-1"] .upconf-ans').querySelectorAll('button')[1])

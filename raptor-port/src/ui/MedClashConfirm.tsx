@@ -34,7 +34,9 @@
    keepTail list (ui/inputedit.tsx). Reuses the upconf-* recipe: one visual
    language for the two medical confirms. */
 import { useEffect, useState, useRef } from 'react'
-import { ordLabel, medTailBeyond } from '../engine/medical'
+import { medTailBeyond } from '../engine/medical'
+import { dateOrd } from '../engine/inputs'
+import { fmtDay } from './inputedit'
 import { clickedSurround } from './outside'
 import { useSheetFocus } from './sheetfocus'
 
@@ -58,14 +60,18 @@ export function MedClashConfirm({ who, newType, span, clashes, aOrd, bOrd, onSav
   const forced = (c: any) => c.loOrd === aOrd && c.hiOrd === bOrd
   const choiceOf = (i: number) => forced(clashes[i]) ? 'new' : choice[i]
   const ready = clashes.every((_: any, i: number) => !!choiceOf(i))
-  const rowSpan = (r: any) => r.date + (r.endDate ? ' – ' + r.endDate : '')
-  const win = (c: any) => ordLabel(c.loOrd, c.row.yr) + (c.hiOrd > c.loOrd ? ' – ' + ordLabel(c.hiOrd, c.row.yr) : '')
+  /* every date here PRINTED, as the rest of the Inputs pages print one: day first, the year only where it is not the loaded
+     week's, two digits (owner D1096) — never the kept label, which is month first and keeps its year by the row's own
+     anchor (the fresh read of 20 Oct 26, F2: "Keep LL till Feb 15" where the list said "till 15 Feb 27") */
+  const day = (o: any) => o == null ? '' : fmtDay(`${Math.floor(o / 10000)}-${String(Math.floor(o / 100) % 100).padStart(2, '0')}-${String(o % 100).padStart(2, '0')}`)
+  const rowSpan = (r: any) => day(dateOrd(r.date, r.yr)) + (r.endDate ? ' – ' + day(dateOrd(r.endDate, r.yr)) : '')
+  const win = (c: any) => day(c.loOrd) + (c.hiOrd > c.loOrd ? ' – ' + day(c.hiOrd) : '')
   /* the keep button's label, the owner's wording — the date names what "keep"
      leaves standing, since the kept status always survives to its own end */
-  const keepLabel = (r: any) => 'Keep ' + r.type + (r.endDate ? ' till ' + r.endDate : '')
+  const keepLabel = (r: any) => 'Keep ' + r.type + (r.endDate ? ' till ' + day(dateOrd(r.endDate, r.yr)) : '')
   /* the leftover span past the new entry, only when the new entry takes the days */
   const leftover = (c: any, i: number) => choiceOf(i) === 'new' ? medTailBeyond(c.row, bOrd) : null
-  const tailLabel = (c: any, tl: any) => ordLabel(tl.startOrd, c.row.yr) + (tl.endOrd > tl.startOrd ? ' – ' + ordLabel(tl.endOrd, c.row.yr) : '')
+  const tailLabel = (c: any, tl: any) => day(tl.startOrd) + (tl.endOrd > tl.startOrd ? ' – ' + day(tl.endOrd) : '')
   /* its own Escape = cancel THIS sheet only; a parent dialog's handler
      branches on the sheet being open (the upchit sheet's idiom) */
   useEffect(() => {

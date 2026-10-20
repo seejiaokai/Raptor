@@ -34,7 +34,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type SyntheticEvent } fro
 import { createPortal } from 'react-dom'
 import { DateCal } from './DateCal'
 import { phoneLayout } from './floatwin'
-import { sayDateY } from './daysfmt'
+import { sayDateY, sayDateYY } from './daysfmt'
 import { validIso } from '../state/flyplan-model'
 
 const GAP = 6
@@ -123,7 +123,7 @@ export function DateBox(p: {
         disabled={p.disabled}
         onClick={e => { if (open) close(); else { setOpen(true); if (e.detail > 0) standPatch({ x: e.clientX, y: e.clientY }); else dropPatch() } }}
       >
-        <span className="datebox-txt">{has ? (p.noWeekday ? sayDateY(p.value).replace(/^\S+ /, '') : sayDateY(p.value)) : 'Pick a date'}</span>
+        <span className="datebox-txt">{has ? (p.noWeekday ? sayDateYY(p.value).replace(/^\S+ /, '') : sayDateYY(p.value)) : 'Pick a date'}</span>
         <span className="datebox-v" aria-hidden="true">&#9662;</span>
       </button>
       {open && !p.disabled && createPortal(

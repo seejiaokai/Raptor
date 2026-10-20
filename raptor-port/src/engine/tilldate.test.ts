@@ -86,19 +86,19 @@ describe('tillOf / remarksShown — what every screen prints', () => {
 describe('tillOf / tillOfISO — a last day in another year carries its year', () => {
   it('the loaded week is 2026 here', () => { expect(baseYear()).toBe(2026) })
   it('an input of next year: "till 15 Feb 2027" — its year from its own anchor', () => {
-    expect(tillOf(leave({ date: 'Feb 10', endDate: 'Feb 15', yr: 2027 }))).toBe('till 15 Feb 2027')
-    expect(remarksShown(leave({ date: 'Feb 10', endDate: 'Feb 15', yr: 2027, remarks: 'Ski trip' }))).toBe('Ski trip till 15 Feb 2027')
+    expect(tillOf(leave({ date: 'Feb 10', endDate: 'Feb 15', yr: 2027 }))).toBe('till 15 Feb 27')
+    expect(remarksShown(leave({ date: 'Feb 10', endDate: 'Feb 15', yr: 2027, remarks: 'Ski trip' }))).toBe('Ski trip till 15 Feb 27')
   })
   it('a span that runs into the next year: its last day’s label carries the year', () => {
-    expect(tillOf(leave({ date: 'Dec 28', endDate: 'Jan 3 2027' }))).toBe('till 3 Jan 2027')
+    expect(tillOf(leave({ date: 'Dec 28', endDate: 'Jan 3 2027' }))).toBe('till 3 Jan 27')
   })
   it('a last day in the loaded year prints as it always did; a one-day input of another year carries it', () => {
     expect(tillOf(leave())).toBe('till 14 Aug')
-    expect(tillOf(leave({ date: 'Jan 3 2027', endDate: undefined, yr: 2026 })), 'a one-day input, a year off').toBe('till 3 Jan 2027')
+    expect(tillOf(leave({ date: 'Jan 3 2027', endDate: undefined, yr: 2026 })), 'a one-day input, a year off').toBe('till 3 Jan 27')
   })
   it('the window’s grey date, from its ISO days, the same', () => {
-    expect(tillOfISO('LL', '2027-02-10', '2027-02-15')).toBe('till 15 Feb 2027')
-    expect(tillOfISO('LL', '2026-12-28', '2027-01-03')).toBe('till 3 Jan 2027')
+    expect(tillOfISO('LL', '2027-02-10', '2027-02-15')).toBe('till 15 Feb 27')
+    expect(tillOfISO('LL', '2026-12-28', '2027-01-03')).toBe('till 3 Jan 27')
     expect(tillOfISO('LL', '2026-08-10', '2026-08-14')).toBe('till 14 Aug')
   })
 })

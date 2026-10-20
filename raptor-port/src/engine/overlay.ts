@@ -177,7 +177,9 @@ export function overlayDeletedWeek(v: string, days: any[], book?: { sign?: any; 
    changes the INPUT, through its door (ui/reqdoor.ts), and the row follows by the re-make rule. `more` is written only
    where there is someone to put in it (the re-make takes the key away where there is not). The old entry mark
    (`srcg`, one row a man drawn as one) is gone: a row is a row. */
-export function requestRowFields(inp: any) {
+/** `year`: the year of the week the row stands in, where it is not the loaded week (viewOfWeek) — its printed "till" date
+ *  takes its year from there (engine/inputs.ts tillOf, D1095) */
+export function requestRowFields(inp: any, year?: number) {
   const f: any = {
     prog: inpLabel(inp).toUpperCase(),
     str: inp.allday ? '' : hhmm(inp.s), end: inp.allday ? '' : hhmm(inp.e),
@@ -186,7 +188,7 @@ export function requestRowFields(inp: any) {
        row is the schedule's copy, so its words are what the day prints, freeze with it when it is published, and read
        "1 pending" when the input is stretched or cut (D189). Its box still sends what is typed to the input alone
        (ui/reqrow.ts → setInpField, which takes the date back out). */
-    rmks: remarksShown(inp), srcType: inp.type,
+    rmks: remarksShown(inp, year), srcType: inp.type,
   }
   const rest = idsOf(inp).slice(1)
   if (rest.length) f.more = rest
@@ -238,8 +240,8 @@ export const issuedRowOf = (snap: any, id: any): any =>
    request's now — owner D739, D740; requestOfBox below — so a typed time or remark moves the request, and with it
    `srcv`.)* Not canonical (restore.ts dayKeys never names it): it moves no digest,
    count or signature. */
-export function srcvOf(inp: any): string {
-  const f = requestRowFields(inp)
+export function srcvOf(inp: any, year?: number): string {
+  const f = requestRowFields(inp, year)
   /* EVERYTHING the request writes, people included — and a mark of the build that made the row a whole copy (`2`), so
      every row made before it is re-made ONCE, at its first read: whoever a scheduler had put on an old request's row
      without putting him in the input comes off it then (stored demo rows only — D56; told to him, the plan's R6). */
@@ -338,6 +340,8 @@ export type ViewCtx = {
   issued: (di: number) => any
   /* the book to strip a deleted man from (the week on screen's sign-offs and plans) */
   book?: { sign?: any; signBind?: any; drafts?: any }
+  /* the year of the week's Monday — set by viewOfWeek: its rows print their "till" date in their own week's year */
+  year?: number
 }
 
 /* ---- reconcile: each row with `src`, against its request (plan §3 (c) rules 1–7) ---- */
@@ -367,9 +371,9 @@ function reconcileRequestRows(days: any[], info: ViewDayInfo[], ctx: ViewCtx): v
       first.add(id)
       keep.push(row)
       if (r.acc === 'r') continue                                                                                 // 4.
-      const sv = srcvOf(r)
+      const sv = srcvOf(r, ctx.year)
       /* (the same people as went out, in the order they went out in — asIssuedOrder, above) */
-      const f: any = asIssuedOrder(requestRowFields(r), issuedRowOf(ctx.issued(di), id))
+      const f: any = asIssuedOrder(requestRowFields(r, ctx.year), issuedRowOf(ctx.issued(di), id))
       const shows = (x: any) => JSON.stringify([x.prog, x.str, x.end, whoId(x.who) || x.who || '', x.rmks, x.srcType, (x.more || []).map((v: any) => whoId(v) || v || '').filter(Boolean), !!x.cx, x.cx ? String(x.cxr || '') : '', !!x.flag, !!x.info])
       /* LEFT ALONE ONLY WHERE IT IS WHAT THE REQUEST WRITES — its "made from" mark AND the row itself (the one-rule job's
          check, 12 Oct 26 — the Opus trial read, claim 11, reproduced red in state/reqorphan.test.ts). The mark alone was
@@ -441,7 +445,7 @@ function landRequests(days: any[], ctx: ViewCtx, info: ViewDayInfo[], taken?: Se
        check, Astra's final read #3) */
     if (snap && (((snap.d && snap.d.ground) || []).some((g: any) => g && String(g.src || '') === id && !g.kept) || (snap.fil || {})[id] === 'r')) continue
     const d = days[di]
-    placeRequestRow(d, { ...requestRowFields(r), src: id, srcv: srcvOf(r), rid: landedRid(id, days, taken) })
+    placeRequestRow(d, { ...requestRowFields(r, ctx.year), src: id, srcv: srcvOf(r, ctx.year), rid: landedRid(id, days, taken) })
     info[di].landed.push(id); info[di].reqChanged = true
   }
 }
@@ -453,9 +457,12 @@ export function viewOfWeek(v: string, days: any[], ctx: ViewCtx): ViewDayInfo[] 
   if (!Array.isArray(days)) return info
   const taken = new Set<string>()
   for (const d of days) for (const r of rowsOf(d || {})) if (r && r.rid) taken.add(String(r.rid))
-  reconcileRequestRows(days, info, ctx)
+  /* every row is written in its OWN week's year (D1095 — the fresh read's F1, 20 Oct 26): a week read while another is on
+     screen comes out as it does when it is loaded itself */
+  const own = { ...ctx, year: +String(v).split('/')[2] || undefined }
+  reconcileRequestRows(days, info, own)
   overlayDeletedWeek(String(v), days, ctx.book)
-  landRequests(days, ctx, info, taken)
+  landRequests(days, own, info, taken)
   return info
 }
 /* would a week read need the view's landing — some activity request, not taken off or filed, starts on one of its days.

@@ -4,6 +4,7 @@
    own delegated handlers are attached to #sbBoard. */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { DAYS } from '../engine/data'
+import { shortYear } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { SBDAY, CURPAGE, DPREV, HISTMODE, esc, restArmed, HLSET, SEARCH, HLOPEN, toggleHlOpen, setSearch, ARM, navGen } from '../state/view'
 import { toggleChanges } from './changesopen'
@@ -410,7 +411,7 @@ export function SchedBoard() {
               desktop still reads "Wednesday" and there is one markup path.
               Three letters is what the day strip and `dowShort` already use —
               "Wed", "Tue", "Thu" — so the bar and the dots agree. */}
-          <b id="sbDay">{d ? d.dow.slice(0, 3) : ''}<span className="bl">{d ? d.dow.slice(3) : ''}</span></b> <span className="mono" id="sbDate">{d ? d.dt : ''}</span>
+          <b id="sbDay">{d ? d.dow.slice(0, 3) : ''}<span className="bl">{d ? d.dow.slice(3) : ''}</span></b> <span className="mono" id="sbDate">{d ? shortYear(d.dt) : ''}</span>
           {d && d.today ? <i className="sb-today" title="today" /> : null}
           <span className="bl"> · scheduler board</span>
         </div>

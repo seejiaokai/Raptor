@@ -149,9 +149,9 @@ describe("the deadline runs with the input's own week", () => {
   it("the note names the input's own week, with its year when it is not the loaded one", () => {
     /* week of Mon 4 Jan 2027, due 21 Dec 2026, stamped 2 Jan 2027 — late */
     const n = lateNote({ person: 'yeti', date: 'Jan 4 2027', allday: true, type: 'LL', yr: 2026, mod: '2027-01-02' })
-    expect(n).toContain('2 Jan 2027')     // when it was last changed
+    expect(n).toContain('2 Jan 27')     // when it was last changed
     expect(n).toContain('21 Dec')         // the deadline it missed (2026 = the loaded year, bare)
-    expect(n).toContain('4 Jan 2027')     // the week it is for
+    expect(n).toContain('4 Jan 27')     // the week it is for
   })
 })
 

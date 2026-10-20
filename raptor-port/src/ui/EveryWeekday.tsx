@@ -16,7 +16,7 @@ import { FloatWin } from './FloatWindow'
 import { MoonIcon, SunIcon } from './icons'
 import { getFlyPlan, removeFlyRule, setFlyRule, type FlySave } from '../state/flyplan'
 import { validIso, type FlyCls, type FlyRule } from '../state/flyplan-model'
-import { WD_LONG, sayDateY } from './daysfmt'
+import { WD_LONG, sayDateY, sayDateYY } from './daysfmt'
 import { DateBox } from './DateBox'
 
 type Cls = 'day' | 'night' | 'nf'
@@ -50,7 +50,7 @@ export function EveryWeekday({ wd, from: from0, onClose }: {
   /* this weekday's rules, in date order (the plan keeps its rules sorted by start). Read at every paint: this window is
      drawn by Days, which repaints on the scheduler's signal — so the list follows a Remove, an Undo, a Save */
   const mine = getFlyPlan().rules.filter(r => r.wd === wd)
-  const said = (r: FlyRule) => `${LEAD[r.cls]} · from ${sayDateY(r.from)} · ${r.until ? 'until ' + sayDateY(r.until) : 'no end'}`
+  const said = (r: FlyRule) => `${LEAD[r.cls]} · from ${sayDateYY(r.from)} · ${r.until ? 'until ' + sayDateYY(r.until) : 'no end'}`
 
   const done = (then: () => void) => (r: FlySave) => { if (r.ok) then(); else setErr(r.message || 'This change could not be saved.') }
   const run = (r: FlySave, then: () => void) => { if (r.pending) void r.pending.then(done(then)); else done(then)(r) }
@@ -61,8 +61,8 @@ export function EveryWeekday({ wd, from: from0, onClose }: {
     run(setFlyRule(ends ? { wd, cls, from, until } : { wd, cls, from }), onClose)
   }
 
-  const fromSaid = validIso(from) ? sayDateY(from) : '…'
-  const untilSaid = validIso(until) ? sayDateY(until) : '…'
+  const fromSaid = validIso(from) ? sayDateYY(from) : '…'
+  const untilSaid = validIso(until) ? sayDateYY(until) : '…'
   return (
     <FloatWin id="everywd" title={`Every ${name}`} testid="win-every" className="everywin" onClose={onClose}>
       <div className="every-lab" id="everyClsLab">Flying</div>

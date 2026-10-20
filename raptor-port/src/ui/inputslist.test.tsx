@@ -144,7 +144,7 @@ describe('on a phone the list is the input card under a heading a day (D718, D72
   it('a heading in another year than this one carries its year', async () => {
     await mount(true)
     await file({ date: 'Jan 5', yr: 2027 })
-    expect($('[data-testid="inl-day"] b')!.textContent).toBe('Tue 5 Jan 2027')
+    expect($('[data-testid="inl-day"] b')!.textContent).toBe('Tue 5 Jan 27')
   })
   it('a card carries no pencil, no cross, no OIL chip and no date of its own — the heading says the day', async () => {
     await mount(true)
@@ -562,17 +562,17 @@ describe('D910 — on the narrowest phones the dates button’s words are shorte
   it('a date in another year keeps its year — never merged into the other date’s month', async () => {
     await open(true)
     await pick(['2026-12-28', '2027-01-04'])
-    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 28 Dec–4 Jan 2027')
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 28 Dec–4 Jan 27')
   })
   it('on any phone a window that prints a year takes the short form too — "28 Dec–11 Jan 2027" (the read of 15 Oct 26)', async () => {
     await open(false)   // a phone 390 wide — not the narrowest
     await pick(['2026-12-28', '2027-01-11'])
-    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 28 Dec–11 Jan 2027')
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 28 Dec–11 Jan 27')
   })
   it('two months of the same other year name the year once — "4 Jan–1 Feb 2027" (the second read of 15 Oct 26)', async () => {
     await open(false)
     await pick(['2027-01-04', '2027-02-01'])
-    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 4 Jan–1 Feb 2027')
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 4 Jan–1 Feb 27')
   })
   it('a phone: opening the filters closes the dates pop-up, by keyboard too (no tap outside to close it)', async () => {
     await open(false)
