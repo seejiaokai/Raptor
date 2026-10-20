@@ -21,6 +21,7 @@ import { notify } from '../state/store'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { canEditSched } from '../state/auth'
 import { fmtTxt, intimeLineHTML, areaText, atimeText, boxText } from './html'
+import { fmtHM } from '../engine/time'
 import { routeScheduleTab } from './schedule-tab'
 
 let SCRATCH: any = null
@@ -204,8 +205,10 @@ export function routeFocusOut(e: FocusEvent) {
     const shown = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)
     if (String(ip.textContent || '').trim() === String(shown).trim()) return
     const ok = setInpField(inp, field as any, ip.textContent, who)
-    /* an input's start / end left after a save reads the time as saved ([BOARD-TAB-FOLD]; the blind read's F2) */
-    if (ok) { if (field !== 'rmks' && document.activeElement !== ip) heal(ip, inpTimeText(inp, field)); txtCommit() }
+    /* an input's start / end left after a save reads the time as saved ([BOARD-TAB-FOLD]; the blind read's F2) — the time
+       typed, folded, never read back off `inp`: one man's row of a shared input saves into a record of his own (the
+       shaky-tests batch's blind read, F1, 20 Oct 26; board.ts boardChange the same) */
+    if (ok) { if (field !== 'rmks' && document.activeElement !== ip) heal(ip, fmtHM(String(ip.textContent || '').trim())); txtCommit() }
     else heal(ip, field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field))
     return
   }

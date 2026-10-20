@@ -63,7 +63,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Schedule and amendments**
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
-- [BOARD-TAB-FOLD-BOARD] — on the Scheduler Board a time typed and left by Tab still shows as typed ("1000") until another press; the fix was built and taken back out (it turned GitHub's D1047 phone test red on Linux only) — find why first (low).
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
 - [INNERHTML-REPAINT-SWEEP] — eleven screens hand React their markup as a new object every repaint, which React sets again — a box being typed in there is thrown away by any repaint (Quals fixed in [KEYBOARD-SCROLL]); sweep the rest (low).
 - [IPHONE-CARET-CHECKS] — two checks only his iPhone can make, carried from the one-tap time boxes (D1047): dragging the caret with the space bar, and a long press (the loupe).
@@ -148,11 +147,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [CI-E2E-FLAKES-1020] — two browser tests failed on GitHub only on 20 Oct 26 and passed on a re-run: the D555 Tab-order test (desktop, timed out) and the R box phone test (D1047, Enter after typing saved nothing) — find why first; the second may be a real fault (low).
 - [CI-UNIT-SHARE-2-6] — GitHub's check is now 5m33s, set by one unit share (raptor 2/6, 5m29s; the next 4m31s): the split is by a hash of each file's path, not by time — rebalance (more shares, or a time-based split) for about a minute (low).
 - [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
-- [LW-WINDOW-PRUNE-FLAKE-2] — the Leave War month-window browser test fails about half the full runs — wait on the grid, not a fixed time.
-- [LW-SCRUBBER-FLAKY] — a Leave War browser test times out on a busy PC — a fixed wait to replace.
 - [LW-HARNESS-VIEWER-PIN] — in the Leave War browser tests a role switch quietly undoes the pinned viewer.
 - [SAVE-NOTE-TEST-GAPS] — two soft spots in the failed-save warning's browser test.
 - [DOCSIZE-MERGE-CEILING] — the document check wrongly flags a merge of `main` that carried a size-marker move.
@@ -222,14 +218,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
-### [CI-E2E-FLAKES-1020] Two browser tests failed on GitHub only, then passed on a re-run (found 20 Oct 26, pull request 550 and `main` after it; low)
-**Seen:** (1) pull request 550's last run (`geometry (raptor 4/4)`, attempt 1): `e2e/schedule-tab.spec.ts:36` "schedule Tab desktop › D555 every open text family follows displayed order; closed inputs stay closed" hit the 30-second test limit twice (first try and its retry) inside a key press; the leg passed on a re-run. (2) `main`'s run after the merge (the same leg, attempt 1): `e2e/rallybox.spec.ts:55` "the R box phone › a time box tapped into …" — a cleared take-off, "1300" typed, Enter, and the save stayed empty (line 76, expected 13:00, got nothing), on both tries; passed on a re-run. Neither is touched by the OIL batch; neither has failed on his PC. **Why it matters:** (2) is the exact failure that took the Scheduler Board's Tab fold back out ([BOARD-TAB-FOLD-BOARD]) — now met on `main` without that fold, so the fold may not have been the cause, and the one-tap time box on a phone may really lose a typed time on Enter now and then (a real fault, not only a test). **To do:** for (2), reproduce on Linux (a debug branch's GitHub run with the trace kept), find the step that loses the save, fix the app if it is the app; for (1), find what the 30 seconds are spent on (a wait on a fixed time, or a box never reached) and make the test wait on what it needs (D87). A re-run is the standing answer to one such failure (D84) — this item is for the cause. **Place:** Checks and tooling — low; (2) with [BOARD-TAB-FOLD-BOARD].
-
 ### [CI-UNIT-SHARE-2-6] One unit share sets GitHub's check time (found 20 Oct 26, pull request 548's run; low)
 **Seen:** with the Tracker smoke in two (pull request 548), the run is 5m33s and its slowest leg `unit (raptor 2/6)` 5m29s (the next, `unit (raptor 5/6)`, 4m31s; the Tracker parts 4m19s and less). Vitest's `--shard` splits the file list by a hash of each path, not by time, so one share carries the heavy files. **To do:** measure each raptor unit file's time on GitHub; then either more shares (the plan's 20 side by side is already exceeded by one with the Docs guard — merge two short legs first) or a split by time (a list of the heavy files spread by hand). **Place:** Checks and tooling — low, with the next change to the checks file.
-
-### [BOARD-TAB-FOLD-BOARD] The Scheduler Board's half of [BOARD-TAB-FOLD]: a time box left by Tab shows as typed (re-filed 20 Oct 26, the night; low)
-**Seen:** the board saves a time box on its `change` and the box left keeps the digits typed ("1000") until a press elsewhere, though 10:00 is saved (the archived [BOARD-TAB-FOLD]; the week's half is LIVE with pull request 547). **Tried:** in `board.ts boardChange`, after a save, `f.value = fmtHM(txtGet(p))` (and the input's own boxes from `inpTimeText`), then guarded `document.activeElement !== f`. Both turned GitHub's D1047 phone test red on three of four runs (`e2e/rallybox.spec.ts:55` "a time box tapped into …": a cleared take-off, "1300" typed, Enter → the save stayed empty), never on `main`, never on his PC (16 of 16; 6 of 6 with the browser slowed six times). Suspects: the one-tap arming and its owed `change` (`interactions.ts armFreshTime`, `oweChange`) beside a box written by script after a blur, on Linux's headless Chromium. **To do:** reproduce on Linux (a GitHub run of a debug branch with the test's trace kept as an artifact), find the step that loses the save, then fold the box without writing `.value` behind the browser's back (e.g. after the next repaint, or through the board's own redraw of that one box). **Place:** low — with the next change to the board's time boxes. **Met again 20 Oct 26:** the same D1047 phone test failed the same way on `main`'s run after pull request 550, with no fold in the app — the suspect above is likely wrong; see [CI-E2E-FLAKES-1020].
 
 ### [HIST-JUMP-SEEN] Older small finds met by the check of the tap on a change (10 Oct 26) — none caused by that job; filed, not fixed
 Met by `[HIST-JUMP-EMPTY-SEAT]`'s build and walk (`raptor-port/docs/handpass/2026-10-10-hist-jump-empty-seat.md` §8); each is older than that change and on `main`. His to place; low. **(1) On the Scheduler Board, the lines about the area strip and the In-time / Rally are listed but cannot be tapped** — the board draws those boxes since it gained them, but the list that says "the board cannot show this" was never updated (`raptor-port/src/ui/histbubble.ts` `NO_BOARD_CELL`; a test, `histlist.test.tsx` "a detail the board cannot draw…", pins the old answer). One line and its test. **(2) An extra man put under a desk and taken off again reads "Static moved place 2 → place 2"** in the changes window (`raptor-port/src/ui/changesmodel.ts` — the two lines are folded into one "move"); it should read as put on, then taken off. Words. **(3) With the board looking at an older version, a tap on a "warning hidden" line stays on the older version** (`raptor-port/src/ui/interactions.ts jumpToWarnLine` — the same gap the tap on a change had; its own door, its own test). **(4) On a phone the passing note lies over the changes bar's "Show" for its two seconds** — every note does; on `claude/day-window-compact` D731 (1) moves the note to the top while a WINDOW is up, and the bar is not a window. **(5) Two limits of the new landing, told to him (the sheet's §0):** on View-only Sched a row nobody is left on has nothing to ring, so the sentence alone is said; a read-only page would need each row to carry its own address to do better — and the printed week must stay byte for byte the reference's. **As filed:** each small.
@@ -619,24 +609,6 @@ real names/IDs/DOB/next-of-kin/rank), and the stores, mission and area vocabular
 terms and compass points). The only `RESTRICTED` is the stamp the app PRINTS on schedules it
 generates (`src/ui/printpdf.ts`) — the product working, not a trace of anything received.
 `tracker.css`'s `.restricted` banner is dead style, rendered nowhere. **That check never opened the Tracker's SYLLABUS data** (222 events of course content) — and he has since ruled it out of scope (D62): leave it, never flag it again. Every other mention of the aircraft type is now "fighter squadron" or the bare "F-15" (D63, D64) — only that syllabus data keeps it.
-### [LW-SCRUBBER-FLAKY] Leave War e2e tests time out on a saturated machine — pre-existing (21 Sep 26)
-`e2e/leavewar.spec.ts` "the bottom scrollbar is a year-wide scrubber", lw-desktop only. Under a full
-parallel run it sometimes times out after the SEP month button is clicked: the grid has not scrolled
-within 4s, so the bar's fraction still reads 0. Checked the way the OIL handoff demanded — the SAME
-full run on `main` (bdd51cc) FAILED it (446 passed, 1 failed) while `claude/oil-auto-remove-design`
-PASSED it (447 passed, 0 failed). **Pre-existing; not the OIL branch's.** It also passes in isolation
-(287/0 for the Leave War projects alone). The fault is the test's, not the app's: a fixed 4s poll on
-a year-wide grid redraw. Fix by waiting for the grid's own scroll to settle instead of a wall clock,
-or raise that poll and the twelve-months one beside it. Low priority — it bites only a loaded dev
-box; CI runs three workers with one retry. Logs from both runs are in the 21 Sep evidence sheet,
-`raptor-port/docs/handpass/2026-09-21-oil.md`.
-
-**WIDENED 22 Sep 26 — it is a FAMILY, not one test.** The overnight run on this branch failed a
-different one, `e2e/step4-leavewar.spec.ts` "leave during a course", lw-desktop, and it failed on the
-LOGIN page: the sign-in form had not rendered before the fill timed out. Run on its own it passes in
-six seconds. Same cause, same shape — a fixed wall-clock wait on a loaded box — so the fix is the
-same one, and it belongs to the Leave War e2e suite rather than to any branch.
-
 ### [BACKLOG-ORDER] The backlog proper, in the owner's order (21 Sep 26)
 After the hunt. Recorded here because he gave the ORDER, which the individual items do not carry:
 1. **[PUB-UNAVAIL]** — a published day's "not available" list changes silently. File a new absence
@@ -1142,17 +1114,6 @@ documented ceiling of 1,048,576 characters for a multi-line text column (to conf
 raised to the proposal itself. **Was to ask (answered above):** an example
 of the format he wants the tables written in (one table, his way), the publisher prefix and naming rule, and what exactly the
 2,000 limit is.
-
-### [LW-WINDOW-PRUNE-FLAKE-2] The month-window browser test's OTHER branch timed out once inside the full run — test-only (filed 30 Sep 26)
-`raptor-port/e2e/leavewar.spec.ts` "the grid draws a window of months over year-wide placeholders, keeps every row aligned,
-and draws in place" (lw-desktop) failed once in the full gate run on `claude/db-readiness-table-shaping-4094f6` (phase 4,
-557 of 558): January was NOT drawn when its button was pressed, and the 5-second poll for December to leave the drawn
-months ran out. The first fix (`[LW-WINDOW-PRUNE-FLAKE]`, archived 29 Sep 26) made the premise exact; this branch still
-waits a fixed 5 seconds for a prune that happens only when the PC is idle (`state/idle.ts`) — a busy PC outlasts it. Alone
-3 / 3 straight after; phase 4 does not touch the grid. **Do (D87):** wait on the idle signal or the window's settled state,
-not a fixed time. **Place:** test-only, low, any time. **Seen again 9 Oct 26** (`claude/inputs-sans-calendar`, the final gate run after the shared input's date door — a change to the input editor only): the same branch, the same 5-second wait; alone 3 / 3 and its whole group 186 / 0 straight after.
-**Met again the night of 15 Oct 26** (`claude/drag-edge-scroll-elsewhere-51bfc4`, the full run at `7e9e98724`): the same branch (January undrawn, December still drawn after the jump) — and ALONE it failed 1 of 3 (2 passed), the first time it has failed outside a full run. That job touches nothing of the Leave War (`src/leavewar` unchanged; `select.ts` reads only edge numbers that did not change). **The agent's placing:** steady it as a job of its own — it is no longer only load (D87: wait on what the step needs).
-**Carried 18 Oct 26 from the archived [LW-REQ-PICK-MONTH-UNSTEADY] (its 13 Oct 26 note):** the phone test "Undo and Redo leave the grid where it is…" failed once at its month-button landing step, under load; it still waits a fixed 350 ms before its last month-button check (`raptor-port/e2e/leavewar.spec.ts`, about lines 4315–4321). Steady it with this item — wait on the grid having settled (D87). **Seen again 19 Oct 26** in the D994 batch's second full run (`claude/schedule-amendments-fixes-fffce0`, which touches nothing of the Leave War): the same step, 163 px off; alone under the lock, 2 of 3.
 
 ### [TRK-ASYNC-STALE] Once storage is truly slow, a Tracker job must re-check its person and target after every wait (filed 28 Sep 26)
 **Place:** with `[DB-READINESS]` — it cannot happen before the shared database. Found by Astra's final read of the

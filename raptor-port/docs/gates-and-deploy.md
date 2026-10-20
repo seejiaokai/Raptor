@@ -137,6 +137,15 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
 
 ## How the gates lie — moved whole from `HANDOFF.md` §Gate status (24 Sep 26)
 
+**A simulated finger can focus an empty box without its caret (20 Oct 26, [CI-E2E-FLAKES-1020]).** On some of GitHub's
+Linux machines Playwright's `touchscreen.tap` on an EMPTY text box gave it the focus but left the typing caret in the box
+the focus came from; the keys that followed reached no box at all (keydown and keypress, no input), so a test's "typed,
+Enter" saved nothing. It followed the machine (a failing machine often failed both tries; 9 tries on 6 of 24 machines), never
+on his PC, and the caret never came by waiting. Found with an event log of the page printed for the failing test (a debug
+branch's workflow — not traces, which slowed a whole share enough to time out seven other tests). The R box tests' tap
+(`e2e/rallybox.spec.ts caretFollows`) now puts the caret where the tap should have, only when it is missing. A browser
+test that taps a box and then types elsewhere can meet the same: check the caret, not only the focus.
+
 **A browser-test port someone else is already serving (27 Sep 26 — a whole e2e run lost).** Before passing `E2E_PORT` (or
 a walk's `HP_URL`), check the port is free: `netstat -ano | grep ":<port> "`. On this PC the presentation deck's server
 (`hyperframes present … --port 4186`, started 23 Sep 26) has kept 4186 — and a second one 4187 — listening for days; a run

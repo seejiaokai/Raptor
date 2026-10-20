@@ -20,24 +20,29 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/oil-live-records-1020 -->
-### 20 Oct 26, afternoon — the OIL batch (D994) LIVE: pull request 550 merged on his "merge live" (D1094); this records pull request, documents only, waits for his "merge live"
-- **LIVE:** pull request 550 (`claude/oil-small-fixes-1020`) merged 20 Oct 26; `main`'s own GitHub run green (one leg on a re-run —
-  below). In it: [UNPUB-WARN-AL-RESTORES] (the warning before an Unpublish reckons the OIL the day earns after the press — an
-  amendment withdrawn brings the earlier version's OIL back), [OIL-ZERO-SPAN-SORTIE] (a same-time line with no report and no
-  debrief earns nobody OIL and says so), [LW-OIL-DATECHIP-HIDDEN] (not reproduced, now pinned by a test). Its new words stand as
-  built (D1094). Evidence: `raptor-port/docs/handpass/2026-10-20-oil-batch.md`. Its reads owed are on `[NO-ASTRA-LIST]`.
-- **Two GitHub-only browser-test flakes the same day, each passing on a re-run, filed as [CI-E2E-FLAKES-1020]:** the Tab-order
-  test of Edit Schedule (D555, desktop) timed out on pull request 550's last run; the R box phone test (D1047 — a cleared take-off,
-  "1300" typed, Enter, the save stayed empty) failed on `main`'s run after the merge. The second is the very failure that took
-  the board's Tab fold back out on 20 Oct 26 — now seen on `main` without that fold, so [BOARD-TAB-FOLD-BOARD]'s suspect is
-  likely wrong (a line added to that item).
-- **This branch:** `claude/oil-live-records-1020`, from `main` — this block, the backlog item, documents only.
-- **Pick up here:** this pull request's "merge live" (documents only). Then his next pick from D994's small fixes by area —
-  recommended in this chat's closing report.
+<!-- now:claude/shaky-tests-batch-ea7fc2 -->
+### 20 Oct 26, evening — the shaky-tests batch (D994, Checks and tooling), `claude/shaky-tests-batch-ea7fc2`, pull request 552 — his "merge live" GIVEN (20 Oct 26), merging
+- **His pick:** the shaky-tests batch as one job from `main` (D994), the R box first — "find out whether the app really
+  loses the time" — with a picture of the R box on a phone first (sent; `docs/img/handpass/2026-10-20-shaky-tests/01-…`).
+  (The OIL batch and its records, pull requests 550 and 551, are LIVE — their block removed here; [CI-E2E-FLAKES-1020] it filed is this job.)
+- **[CI-E2E-FLAKES-1020]** — the R box phone test's lost save is NOT the app: an event log on 24 GitHub Linux machines showed
+  the simulated tap on an empty box focusing it without moving the caret into it, so the keys reached no box; the test's tap
+  now puts the caret there only then (`e2e/rallybox.spec.ts caretFollows`). The D555 Tab test was its own work (~860 round
+  trips, 29.4 s of 30): boxes found in one call (`typeable`), one test a page. Trap written in `gates-and-deploy.md`.
+- **[BOARD-TAB-FOLD-BOARD]** — the board's Tab fold put back as built (`board.ts boardChange`; RB15, the unit test).
+- **[LW-WINDOW-PRUNE-FLAKE-2]** (a late poll met December legitimately drawn back — read at the jump's own draw now) and
+  **[LW-SCRUBBER-FLAKY]** (its waits' 4 / 9 s caps lifted).
+- **Checked:** the sheet `raptor-port/docs/handpass/2026-10-20-shaky-tests.md` — WALK, sized small: walk 10 / 10, 8 pictures;
+  the touched tests on his PC; 15 GitHub jobs on separate machines, retries off, green; GitHub's run of pull request 552 green;
+  one fresh, blind Opus read (the sheet §5).
+- **Left over:** none — the throwaway branch `claude/debug-rbox-linux` deleted on his word (20 Oct 26).
+- **Pick up here:** if this block is still here, check pull request 552 merged and the live app is READY (D1088); then remove
+  this block and take his next pick (D994).
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (20 Oct 26, evening):** pull requests 550 and 551 LIVE (the OIL batch) → his pick, the shaky-tests batch (D994), BUILT and WALK-checked on `claude/shaky-tests-batch-ea7fc2` (pull request 552, this chat's block) → his "merge live" GIVEN → his next pick from the backlog.
 
 **RIGHT NOW (20 Oct 26, afternoon, later):** pull request 550 LIVE (the OIL batch, D994; D1094) → this records pull request (documents only) → his next pick from D994's small fixes by area.
 

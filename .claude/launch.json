@@ -597,6 +597,23 @@
         "--strictPort"
       ],
       "port": 4312
+    },
+    {
+      "name": "raptor-shaky",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-shaky",
+        "--port",
+        "4321",
+        "--strictPort"
+      ],
+      "port": 4321
     }
   ]
 }
