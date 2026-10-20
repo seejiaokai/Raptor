@@ -562,6 +562,20 @@ describe('B8 — Undo says what came back', () => {
       }
     } finally { w0.kind = had.kind; w0.standalone = had.standalone; HOOKS.editMode = was }
   })
+  /* [BOARD-TAB-FOLD] (20 Oct 26): a time typed "1000" on the Scheduler Board and left by Tab is saved 10:00, but the box
+     kept reading "1000" until a press elsewhere — the box left now reads the time as saved */
+  it('a time box on the board left after typing reads the time as saved, hh:mm', () => {
+    const was = HOOKS.editMode; HOOKS.editMode = () => true
+    try {
+      for (const [key, typed, want] of [['ff:0.0.0.to', '1000', '10:00'], ['ff:0.0.0.ld', '1135', '11:35'], ['ff:0.0.0.br', '845', '08:45'], ['ff:0.0.0.rl', '0715', '07:15']]) {
+        const el = document.createElement('input'); el.dataset.bfld = key; el.value = typed; document.body.append(el)
+        try { boardChange({ target: el } as any); expect(el.value, key).toBe(want); expect(txtGet(key), key).toBe(want) } finally { el.remove() }
+      }
+      /* a box that is not a time keeps what was typed */
+      const cs = document.createElement('input'); cs.dataset.bfld = 'ff:0.0.0.cs'; cs.value = 'Vl'; document.body.append(cs)
+      try { boardChange({ target: cs } as any); expect(cs.value).toBe('Vl') } finally { cs.remove() }
+    } finally { HOOKS.editMode = was }
+  })
   /* [BOARD-TAB-FOLD]'s week half (20 Oct 26, met by [STANDBY-WEEK-B]'s browser test): on Edit Schedule's week a time typed
      and left by Tab for the next box kept reading as typed ("0610") — the repaint waits while the caret is in another box */
   it('a time box on the week left by Tab for another box reads the time as saved, hh:mm', () => {
@@ -593,13 +607,17 @@ describe('B8 — Undo says what came back', () => {
       } finally { box.remove(); bin.remove() }
     } finally { HOOKS.editMode = was }
   })
-  /* the blind read's F2 (20 Oct 26): an input's own start / end on the week kept the typed digits after Tab too, though the
-     time was saved (the board's half came back out with the board's fold — [BOARD-TAB-FOLD-BOARD]) */
-  it('an input’s start and end left after typing read the time as saved on the week', () => {
+  /* the blind read's F2 (20 Oct 26): an input's own start / end — the Scheduler Board's Personal Inputs boxes and the
+     week's input cells — kept the typed digits after Tab too, though the time was saved */
+  it('an input’s start and end left after typing read the time as saved, on the board and the week', () => {
     const was = HOOKS.editMode; HOOKS.editMode = () => true
     try {
       writeInputsBatch(() => { INPUTS.push({ person: 'bane', type: 'Meeting', date: 'Jul 13', yr: 2026, rmk: '', iid: 'ifold1', s: 540, e: 600, allday: false } as any) })
+      const el = document.createElement('input'); el.dataset.ifld = 'ifold1.str'; el.value = '1015'; document.body.append(el)
+      try { boardChange({ target: el } as any) } finally { el.remove() }
       const r: any = INPUTS.find((x: any) => x.iid === 'ifold1')
+      expect(r.s, 'saved').toBe(615)
+      expect(el.value, 'the board box').toBe('10:15')
       const cell = document.createElement('span'); cell.setAttribute('contenteditable', 'true'); cell.dataset.inp = 'ifold1.end'; cell.textContent = '1130'; document.body.append(cell)
       try { routeFocusOut({ target: cell, relatedTarget: null } as any) } finally { cell.remove() }
       expect(r.e, 'saved').toBe(690)

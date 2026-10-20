@@ -11,6 +11,28 @@ const press = async (page: Page, loc: Locator, phone: boolean, scroll = true) =>
   if (scroll) await loc.evaluate(e => e.scrollIntoView({ block: 'center' }))
   const b = (await loc.boundingBox())!
   if (phone) await page.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2); else await page.mouse.click(b.x + b.width / 2, b.y + b.height / 2)
+  if (phone) await caretFollows(page, loc)
+}
+/* THE SIMULATED FINGER'S MISSING CARET ([CI-E2E-FLAKES-1020], 20 Oct 26). On some of GitHub's Linux machines a simulated
+   tap on an EMPTY time box gave it the focus but left the typing caret in the box before it (the landing, LD): the keys
+   then typed nowhere — no input reached the box, so nothing could be saved ("1300", Enter, the save stayed ""). Proved by
+   an event log of the page on 18 runs over six machines (the branch claude/debug-rbox-linux): one machine in three, both
+   tries; a 4-second wait showed the caret never came; the identical events passed on the same machine's next try; and
+   between the tap and the keys the app ran NO script that moves a caret, a focus or a value. On his PC, in 40 repeats on
+   Linux alone and in every non-empty box (where the app's own arrival writes the box and the caret with it) it never
+   happens. So it is the simulated touch, not the app: where the browser's tap focused the box without putting the caret
+   in it, the caret is put at the box's end, as the tap would have — never a second press, which would change the box's
+   one-tap state (D1047). It touches nothing when the tap did its job, which is nearly always. */
+async function caretFollows(page: Page, loc: Locator) {
+  const placed = await loc.evaluate(async (e: any) => {
+    const inIt = () => { const g = document.getSelection(); const n: any = g && g.anchorNode; return !!n && (n === e || e.contains(n) || (n.childNodes && n.childNodes[g!.anchorOffset] === e)) }
+    for (let i = 0; i < 20 && document.activeElement === e && !inIt(); i++) await new Promise(r => requestAnimationFrame(r))
+    if (document.activeElement !== e || inIt()) return false
+    if (e instanceof HTMLInputElement) { const n = e.value.length; e.setSelectionRange(n, n) }
+    else { const r = document.createRange(); r.selectNodeContents(e); r.collapse(false); const g = document.getSelection()!; g.removeAllRanges(); g.addRange(r) }
+    return true
+  })
+  if (placed) console.log('[CI-E2E-FLAKES-1020] the simulated tap focused the box without its caret: caret placed')
 }
 for (const [name, viewport] of [['desktop', { width: 1440, height: 900 }], ['phone', { width: 402, height: 874 }]] as const) {
   test.describe(`the R box ${name}`, () => {
@@ -186,6 +208,18 @@ for (const [name, viewport] of [['desktop', { width: 1440, height: 900 }], ['pho
         return { text: h.innerText.replace(/\s+/g, ' '), fits: h.scrollWidth <= h.clientWidth }
       }, gis[1])
       expect(long, 'renamed, 320 wide').toEqual({ text: 'AVALON NIGHT 2 SHIFT', fits: true })
+    })
+    /* RB15 — [BOARD-TAB-FOLD] (20 Oct 26): on the Scheduler Board a time typed "1000" and left by Tab read "1000" until a
+       press elsewhere, though 10:00 was saved; the box left reads 10:00 at once */
+    test('the board: a time typed and left by Tab reads hh:mm at once', async ({ page }) => {
+      await login(page); await go(page, 'editsched')
+      await page.evaluate(() => (window as any).openScheduler(0)); await expect(page.locator('#schedBoard')).toBeVisible()
+      const to = page.locator('#sbBoard [data-bfld="ff:0.0.0.to"]:visible').first()
+      await press(page, to, phone); await expect(to).toBeFocused()
+      await page.keyboard.type('1000'); await page.keyboard.press('Tab')
+      await expect.poll(() => page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].to)).toBe('10:00')
+      await expect(to, 'the box left reads the time as saved').toHaveValue('10:00')
+      await expect(to, 'the caret went on').not.toBeFocused()
     })
     /* RB13 — the blind read's F1 (20 Oct 26): read only, an empty START must keep its line, or END rises onto the line the
        heading now calls START (a BB line has no times by default — type END alone and View-only Sched read 07:00 as the
