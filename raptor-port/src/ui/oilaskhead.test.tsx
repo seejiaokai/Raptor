@@ -56,11 +56,13 @@ describe('the waiting OIL question is headed for everyone in an input of several
     /* moved to Saturday by the calendar and answered there; then its answer is taken away by the scheduler's own
        "Not earning" — so a hand-over now finds a weekend input nobody has answered (the read's way in (b)) */
     writeInputsBatch(() => { const x = INPUTS.find((i: any) => i.iid === r.iid)!; x.date = 'Jul 18'; delete x.oil })
-    expect(reassignInput(r.iid, 'divot')).toBe(false)
+    /* the newcomer (Blade) sorts before all three, so the heading says whether he was counted in Bane's place */
+    expect(az(['slash', 'pike', 'split']), 'the newcomer changes who leads the heading').not.toBe(az(['bane', 'pike', 'split']))
+    expect(reassignInput(r.iid, 'slash')).toBe(false)
     expect(OILWAIT && OILWAIT.kind, 'the question waits, nobody handed over').toBe('swap')
-    expect(OILWAIT!.gate.who, 'headed for the three it will hold, the newcomer among them').toBe(az(['divot', 'pike', 'split']))
+    expect(OILWAIT!.gate.who, 'headed for the three it will hold, the newcomer among them').toBe(az(['slash', 'pike', 'split']))
     expect(answerOilWait({ '2026-07-18': 1 })).toBe(true)
-    expect(idsOf(INPUTS.find((i: any) => i.iid === r.iid)).map(String).sort()).toEqual(['divot', 'pike', 'split'])
+    expect(idsOf(INPUTS.find((i: any) => i.iid === r.iid)).map(String).sort()).toEqual(['pike', 'slash', 'split'])
   })
 
   it('an input of ONE is still headed with its one man — the gate’s own heading, as before', () => {

@@ -1,0 +1,23 @@
+[
+  { "n": 1, "name": "[TILL-NEXT-YEAR] tillOf prints no year", "file": "src/engine/inputs.ts",
+    "find": "return `till ${w}${yearTail(o==null?0:Math.floor(o/10000))}`;}", "put": "return `till ${w}`;}",
+    "tests": ["src/engine/tilldate.test.ts", "src/ui/latepub.test.tsx"] },
+  { "n": 2, "name": "[TILL-NEXT-YEAR] the window's grey date (tillOfISO) prints no year", "file": "src/engine/inputs.ts",
+    "find": "return `till ${isoLabel(last)}${yearTail(+String(last).slice(0,4))}`;}", "put": "return `till ${isoLabel(last)}`;}",
+    "tests": ["src/engine/tilldate.test.ts"] },
+  { "n": 3, "name": "[TILL-NEXT-YEAR] the year printed always, even in the loaded year", "file": "src/engine/inputs.ts",
+    "find": "const yearTail=(y:any)=>y&&y!==baseYear()?` ${y}`:'';", "put": "const yearTail=(y:any)=>y?` ${y}`:'';",
+    "tests": ["src/engine/tilldate.test.ts"] },
+  { "n": 4, "name": "[OIL-ASK-HEAD-SEVERAL] oilFirst ignores the door's who", "file": "src/ui/inputedit.tsx",
+    "find": "gate: { who: (o.who && now ? o.who(now) : '') || g.who,", "put": "gate: { who: g.who,",
+    "tests": ["src/ui/oilaskhead.test.tsx"] },
+  { "n": 5, "name": "[OIL-ASK-HEAD-SEVERAL] the calendar drag passes no who", "file": "src/ui/caldrag.ts",
+    "find": "...(whole ? { who: (x: any) => inputWho(x) } : {}),", "put": "",
+    "tests": ["src/ui/oilaskhead.test.tsx"] },
+  { "n": 6, "name": "[OIL-ASK-HEAD-SEVERAL] the hand-over passes no who", "file": "src/ui/inputedit.tsx",
+    "find": "who: x => inputWho({ people: idsOf(x).map(String).map(p => p === String(from) ? personId : p).map(p => ({ p })) }),", "put": "",
+    "tests": ["src/ui/oilaskhead.test.tsx"] },
+  { "n": 7, "name": "[OIL-ASK-HEAD-SEVERAL] the hand-over heads the people BEFORE the swap", "file": "src/ui/inputedit.tsx",
+    "find": "who: x => inputWho({ people: idsOf(x).map(String).map(p => p === String(from) ? personId : p).map(p => ({ p })) }),", "put": "who: x => inputWho(x),",
+    "tests": ["src/ui/oilaskhead.test.tsx"] }
+]
