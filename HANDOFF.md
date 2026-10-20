@@ -30,7 +30,10 @@ the later merge keeps both (D78).
   twice in January), **F2** (`MedClashConfirm` prints its dates day first), **F3** (a test comment). [INP-TILL-STALE] closed
   (gone since D948); [CAL-UNDO-OTHERS] refiled to the Database step (not reachable today).
 - **Checked:** unit suite 12,045 / 12,045 under the lock (before the window-line fix; the touched files after it); breaks
-  17 / 17 (`scripts/handpass/breaks/inputs-small-fixes.json`); the first walk 33 / 33; GitHub's run green on `b5dda663d`.
+  17 / 17 (`scripts/handpass/breaks/inputs-small-fixes.json`); the first walk 33 / 33. GitHub's run of `b5dda663d` FAILED
+  three browser shares on tests still reading four-digit years — fixed in `5e0404648` (and the Holidays warning's year,
+  `HolidaysPanel.tsx`); the six named browser tests 10 / 10 under the lock. **Push `5e0404648` once the run of `cde330fed`
+  has finished (D151), then read GitHub's run before anything else.**
 - **Next, in order:** (1) `cd raptor-port && npm run build`, serve it (preview "raptor-walk", :4173 — prove the bundle name),
   then `node scripts/handpass/inputs-small-fixes-walk.mjs docs/img/handpass/2026-10-20-inputs-small-fixes/rewalk` (v4: the
   two-digit years, the New Year week N1–N3, O3 the question asked again, M1 the medical sheet of two kinds in 2027); open
