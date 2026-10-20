@@ -1,0 +1,75 @@
+{
+ "results": [
+  {
+   "id": 6,
+   "size": "desktop",
+   "verdict": "PASS",
+   "seen": "asked with today (true); then picked 2026-11-10 (today + 20): box \"Tue 10 Nov 26\n▾\", data-value 2026-11-10, ask \"null\", Hex deleted=false, Admin → Users: [\"Hex | hex | · WSO · CAT C | POSTING OUT 10 NOV · DELETE\"] — the future date IS saved with no ask and no delete",
+   "pic": "w1-desktop-s6-future-while-asked.png"
+  },
+  {
+   "id": "7a",
+   "size": "desktop",
+   "verdict": "PASS",
+   "seen": "asked with today (true); first Overseas tap: ask gone=true, box 2026-10-31, outcome still Delete (line \"On 31 Oct: deleted with his account. Days he flew keep his puck.\"); second tap: date 2026-10-31, outcome Overseas (line \"On 31 Oct: archived, account suspended.\")",
+   "pic": "w1-desktop-s7a-overseas-while-asked.png, w1-desktop-s7a-overseas-second-tap.png"
+  },
+  {
+   "id": "11b",
+   "size": "desktop",
+   "verdict": "PASS",
+   "seen": "Delete chip tapped on an Overseas posting: \"Tap again\" showed=true; after leaving the page and returning: sheet still up: {\"date\":\"2026-10-31\",\"box\":\"Sat 31 Oct 26\\n▾\",\"line\":\"On 31 Oct: archived, account suspended.\",\"go\":null,\"chips\":{\"overseas\":true,\"delete\":false,\"sans\":false},\"err\":null}; Hex deleted=false; reopened: outcome Overseas, ask null",
+   "pic": "w1-desktop-s11b-delete-armed.png, w1-desktop-s11b-back.png"
+  },
+  {
+   "id": "7bc",
+   "size": "desktop",
+   "verdict": "PASS",
+   "seen": "selected Delete chip while asked: ask gone, date back to 2026-10-31, outcome still Delete -> true; SANS while asked: ask gone, date 2026-10-31, outcome Delete -> true",
+   "pic": "w1-desktop-s7b-delete-chip-while-asked.png, w1-desktop-s7c-sans-while-asked.png"
+  },
+  {
+   "id": 9,
+   "size": "desktop",
+   "verdict": "NOT WALKED",
+   "seen": "script stopped: TimeoutError: locator.click: Timeout 30000ms exceeded.",
+   "pic": ""
+  },
+  {
+   "id": 14,
+   "size": "desktop",
+   "verdict": "NOT WALKED",
+   "seen": "script stopped: Error: Post out sheet did not open for rocky 2026-10-31",
+   "pic": ""
+  },
+  {
+   "id": 17,
+   "size": "desktop",
+   "verdict": "NOT WALKED",
+   "seen": "script stopped: TimeoutError: locator.click: Timeout 30000ms exceeded.",
+   "pic": ""
+  },
+  {
+   "id": 19,
+   "size": "desktop",
+   "verdict": "PASS",
+   "seen": "signed in as us (member), same world; Hex's struck day 2026-10-31 (struck=false) tapped: Post out sheet false, PO controls []; his own row dragged over days: controls shown [\"bid-window\",\"bid-box\",\"select-sheet\",\"sel-who\",\"sel-span\",\"sel-cancel\",\"sel-portion-full\",\"sel-portion-am\",\"sel-portion-pm\",\"sel-LL\",\"sel-OL\",\"sel-OIL\",\"sel-CCL\",\"sel-FCL\",\"sel-PL\",\"sel-EL\",\"sel-CL\"] (no PO among them=true); page errors []",
+   "pic": "w1-desktop-s19-member-tap-hex, w1-desktop-s19-member-drag"
+  },
+  {
+   "id": 20,
+   "size": "desktop",
+   "verdict": "NOT WALKED",
+   "seen": "script stopped: TimeoutError: locator.click: Timeout 30000ms exceeded.",
+   "pic": ""
+  },
+  {
+   "id": 4,
+   "size": "desktop",
+   "verdict": "NOT WALKED",
+   "seen": "script stopped: TimeoutError: locator.click: Timeout 30000ms exceeded.",
+   "pic": ""
+  }
+ ],
+ "errors": []
+}

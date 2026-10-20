@@ -31,7 +31,7 @@ import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
 import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
-import { leaveInputAt, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem } from '../sync'
+import { leaveInputAt, openDays, postOut, postOutProblem, postingRunsBy, undoPostOut, undoPostOutProblem } from '../sync'
 import { columnInView } from './inview'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
@@ -1210,6 +1210,15 @@ export function Matrix() {
      everything on it, vanished until another month was pressed. The row filter reads THIS note, written at every
      measure without a repaint; the state stays the repaint trigger, so the scroll gate's saving is kept. */
   const visWinRef = useRef('')
+  /* THE ROW SET AS DRAWN ([LW-PHONE-AWAY-ROW-MISSING], the night of 21 Oct 26). The signature the measure compares with
+     used to be the one it last WROTE — so a roster that changed while the grid was not being measured (a man archived
+     and restored on Admin → Users, the page away) left it describing rows nobody drew: on a phone, which measures one
+     month, a man added for October, archived, then restored for November read "already drawn" when November was
+     pressed — the same ids as October's last measure — and his row stayed missing until another month was pressed.
+     Recorded after EVERY render from the rows that render drew, so the measure always compares with the screen; and the
+     write below always repaints (a counter beside the months), since the months alone can repeat a value the state
+     already holds while the rows drawn under it are another month's. */
+  const visSeqRef = useRef(0)
   // Where a named day column sat the instant the row set changed, so the
   // repaint can put it back. Removing (or restoring) a row lets the table's
   // auto layout re-narrow every column that row's chips had widened — all of
@@ -2244,7 +2253,7 @@ export function Matrix() {
           // residual on screen).
           anchorRef.current = anchorNow(wrap)
           visSigRef.current = sig
-          setVisWindow(win)
+          setVisWindow(`${win}#${++visSeqRef.current}`)
         }
       }
     }
@@ -2607,6 +2616,10 @@ export function Matrix() {
     const shift = cell.getBoundingClientRect().left - a.left
     if (Math.abs(shift) > 1) wrap.scrollLeft += shift
   }, [visWindow, colWin?.lo, colWin?.hi])
+  /* the row set this render drew, for the measure to compare with (visSeqRef above) — the same test the rows are drawn by */
+  useLayoutEffect(() => {
+    visSigRef.current = people.filter(p => rowInWindow(p, visWinRef.current, rowSpans)).map(p => p.id).join(',')
+  })
 
   // Reserve exactly the month strip's own height on its sticky cell, so the
   // wrapped rows (three on a phone, more at a high zoom) never overflow into
@@ -3122,7 +3135,7 @@ export function Matrix() {
   //
   // Deciding needs an existing bid to decide: a course, a sick day and an
   // empty cell are all things nobody asked for.
-  // "Does a tap here open something" lives in `cellOpenable` (module level, the
+  // "Does a tap here open something" lives in `MatrixRows.tsx cellOpenable` (the
   // row's own body) — the comment block above is its rationale.
 
   // A day the squadron may not bid on, drawn as such. Without this the window
@@ -3989,6 +4002,9 @@ export function Matrix() {
           /* [ONE-DOOR] (Fable F1 / Astra 2): archived on Admin → Users — Restore there is the one way back; the store's
              lock, installed by the sync, as the account and block lookups are (the war never reads Raptor's people) */
           lockedWhy={postingLocked(open.id)}
+          /* a Delete's date moved to today or earlier asks twice before it is saved (D1102) — on the pass's own clock */
+          deletesNow={postingRunsBy}
+          refusedAt={d => postOutProblem(open.id, 'delete') || postingProblem(open.id, 'out', d)}
           onChange={(from, outcome) => postOutOr(open.id, from, outcome)}
           /* the archive the Post out made goes too (W5-F1); refused, with where to go, when a man on the roster now holds
              his callsign (D286 (1) — Fable's scenario 2: it closed and did nothing) */
@@ -4175,6 +4191,9 @@ export function Matrix() {
           draggingId={draggingId}
           dragOver={dragOver}
           dragAfter={dragAfter}
+          // Reset order judges the men the grid DRAWS — the same test the rows below are filtered by
+          // ([LW-SETTINGS-SMALL]); a changed window re-renders this component, so the sheet follows it
+          shown={p => rowInWindow(p, visWinRef.current, rowSpans)}
         />
       )}
       {/* a member may bid CLEARING leave after their own posting-out (owner

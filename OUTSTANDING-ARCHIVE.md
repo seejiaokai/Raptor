@@ -6283,3 +6283,70 @@ saving the setting moves the button out from under the press (a "rules changed" 
 button's position before and after the save first. **Place:** low, with the next change to the Logic page; a browser test that changes a
 setting and presses Done once, by mouse and by finger.
 
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([LW-SEL-HALF-LABELS]). Forward facts: `raptor-port/docs/handpass/2026-10-21-leavewar-small.md`.*
+
+### [LW-SEL-HALF-LABELS] The drag-selection sheet labels its half-day leave buttons in the stored notation — "FCL*" — where the one-day sheet shows "<FCL" / "FCL>" (filed 29 Sep 26)
+Seen by `[LW-DRAG-BELOW-ZERO]`'s walk (picture `raptor-port/docs/img/handpass/2026-09-29-lw-drag-below-zero/D7-afternoon-beside-morning.png`):
+with How much on AM or PM, the drag sheet's Which leave buttons read `*LL`, `LL*`… (`SelectSheet.tsx` prints `formatCell`),
+while the one-day sheet's read `<LL`, `LL>` — what the box on the grid will show (`BidPicker.tsx` prints `displayCell`). D264 says
+the two sheets share one format and one look. Not caused by that change (on `main` too). **To do:** print `displayCell(formatCell(…))`
+on the drag sheet's chips, as the one-day sheet does, the write still speaking the stored grammar; a test beside
+`movestandard.test.tsx`'s one-look checks. **Place:** low; with the next Leave War batch.
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([LW-SETTINGS-SMALL]). Forward facts: `raptor-port/docs/handpass/2026-10-21-leavewar-small.md`.*
+
+### [LW-SETTINGS-SMALL] Two small ⚙ Settings edges in the Leave War (filed 26 Sep 26)
+From the five-flags batch (Fable's read F4, W2's walk): (1) Reset order judges "the default" over the WHOLE roster while
+the grid draws only the men in the visible months, so a hand order that differs only for a posted-out man lights the
+line while the grid looks default (a press clears it, harmlessly, with an Undo step); (2) an armed "Really reset?" (either
+reset) survives a page switch while the sheet stays open. **Do, if wanted:** give `rosterFollowsDefault` the grid's window
+predicate; disarm both on leaving the page. **Place:** low, any time.
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([LW-HARNESS-VIEWER-PIN]). Forward facts: `raptor-port/docs/handpass/2026-10-21-leavewar-small.md`.*
+
+### [LW-HARNESS-VIEWER-PIN] In the Leave War browser tests, switching the role quietly undoes the pinned viewer (filed 27 Sep 26)
+Found by the `[LW-MOVE-CI-RED]` investigation, confirmed in the running bundle: the test bridge's `raptorRole()` →
+`setEffectiveRole()` (`raptor-port/src/state/auth.ts`) REPLACES the session object, and the viewer pin `lwSetViewer` sets
+(`raptor-port/src/leavewar/sync.ts` ~1428–1430) is tied to that object — so after `lwRole('admin')` the next Raptor refresh
+re-lights the signed-in man's row (`row-bane`) instead of the pinned one. Not the cause of the red Move tests (the fill
+triggers no such refresh within 1.5 s), but a test that pins a viewer and then switches role is testing a different man
+than it thinks. **Do:** tie the pin to the sign-in rather than the session object, or re-pin inside the bridge's
+`raptorRole` (the bridge is the developer's PC only since `[ACCOUNTS]`); a test that pins, switches role and asserts the
+pinned row. **Place:** low, test-only — with the next Leave War test change.
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([LW-ROWS-STALE-NOTES]). Forward facts: `raptor-port/docs/handpass/2026-10-21-leavewar-small.md`.*
+
+### [LW-ROWS-STALE-NOTES] A few notes and comments still name `Matrix.tsx` for code that moved to `MatrixRows.tsx` (13 Oct 26) — OPEN, documents only
+
+**Found by the two reads of `[LW-ROWS-SPLIT]`, partly fixed.** Five were corrected with the move (`ui-contracts.md` twice, `CountRows.tsx`, `FigureCell.tsx`, one backlog line). The readers tabled more, each with its correction: `raptor-port/docs/handpass/parts/lwrows/read-opus.md` (its table of 13) and `read-fable.md` (F4). Left: the ones in `raptor-port/docs/performance.md` (ledger entries — a record of past work, which named the file as it was: judge each, do not rewrite history), `raptor-port/docs/leavewar/known-gaps.md`, and comments in other Leave War files. A documents-only pass; no check beyond the document check.
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([LW-DOZE-GUARDS]). Forward facts: `raptor-port/docs/handpass/2026-10-21-leavewar-small.md`.*
+
+### [LW-DOZE-GUARDS] Do the Leave War's measurement guards ever run while its page dozes? (filed 28 Sep 26)
+**Place:** low — check before building anything. Found by Fable's read of the Tracker leftovers plan (F12): the
+`.page.doze` comment in `raptor-port/src/ui/scheduler.css` said a dozing page's insides "read 0×0 … which is what every
+Matrix measurement guard already checks for"; measured 28 Sep 26 (the leftovers' baseline walk, O), they do NOT — a dozing
+section is 0 tall but its insides keep their last boxes, unpainted. The comment is corrected (on
+`claude/tracker-leftovers-f79d36`). **Do:** check whether `raptor-port/src/leavewar/ui/Matrix.tsx`'s guards on
+`width === 0` (~2285, ~3133, ~3135) can run while the Leave War page dozes; if one can, it would measure stale boxes —
+switch it to the section's `.on` / `.doze`. Nothing on screen is known to be wrong.
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([LW-PHONE-AWAY-ROW-MISSING]). Forward facts: `raptor-port/docs/handpass/2026-10-21-leavewar-small.md`.*
+
+### [LW-PHONE-AWAY-ROW-MISSING] On a phone, a man archived and restored with a later post-in has no row on the Leave War (seen 13 Oct 26 by `[ONE-DATE-CALENDAR]`'s walk) — OPEN, to reproduce first
+
+**Seen (W2, scenarios 2 and 13 — `raptor-port/docs/handpass/parts/odc/w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-13-one-date-calendar/w2/phone-s12-s2-leavewar-row.png`, `phone-s2-probe-nov-his-row-missing.png`, beside `desktop-s12-s2-leavewar-row.png`):** a man added with a post-in ten days on, archived the same day, then restored with a post-in three weeks on: at 390 × 844 the Leave War draws 49 rows, not 50 — he has none, on October or November, and across a reload; at 1440 × 900 the same world draws him, hatched until his post-in. **Not `[ONE-DATE-CALENDAR]`'s doing (the host's reading, not yet reproduced):** the date box handed the same date at both sizes and the desktop's grid is right; that job's diff touches nothing of the war's roster, stints or grid. It looks like the phone grid's own answer to "is he here in the months drawn" for a man with two stays. **To do:** reproduce on `main`; then a failing test; the fix is the Leave War's. **Place (the agent's):** with the next Leave War batch.
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([PO-MOVE-DATE-DELETE-ASK]). Forward facts: `raptor-port/docs/handpass/2026-10-21-leavewar-small.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [PO-MOVE-DATE-DELETE-ASK] The Post out sheet takes a moved date at one tap — does a posting whose outcome is Delete then delete him without its second ask? (raised 13 Oct 26 by the read of `[ONE-DATE-CALENDAR]`; older code) — OPEN, to reproduce first
+
+**Raised, not traced (`raptor-port/docs/handpass/parts/odc/read-opus.md` §5):** on the Leave War's Post out sheet a date picked is committed at once (as the phone's date box committed it). Where the posting's stored outcome is Delete and the date now picked has already come, does the delete run at that tap — without the second ask a Delete is owed (D287)? **Not `[ONE-DATE-CALENDAR]`'s doing** — the box hands on the same date the phone's did; but the app's calendar makes a past date one tap. **To do:** a test on `main`'s behaviour first (a posting out with Delete at a date to come; move the date to today). If it deletes at the tap: a question for him with a safe interim, and it bears on the tick he kept as a fallback (D801). **Place (the agent's):** before the Tracker's date boxes are built, since the same question — is one tap enough — is asked there.
+

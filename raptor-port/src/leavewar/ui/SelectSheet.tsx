@@ -29,8 +29,8 @@
 // still cancels the MOVE (D262) — that is the move, not this panel. The war's other windows keep blocking
 // (`OUTSTANDING.md` `[LW-WINDOWS-NONBLOCKING]`).
 
-import { useState } from 'react'
-import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
+import { useEffect, useState } from 'react'
+import { displayCell, formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
 import { awardsIn, clearCells, deletableIn, movableCells, postingBlocked, setBidStates, setCells } from '../state/store'
@@ -39,6 +39,7 @@ import { awardsClause } from './awardwords'
 import { belowZeroAsk, goesBelow, type BalanceAfter, type BelowZero } from './belowzero'
 import { Sheet } from './Sheet'
 import { DateBox } from '../../ui/DateBox'
+import { isLwOnScreen, subLwScreen } from '../state/screen'
 import { useCloseOnCellClick } from './gridclick'
 import { shortDate, shortSpan } from './dates'
 import type { Selection } from './select'
@@ -102,6 +103,10 @@ export function SelectSheet({
   /* [POST-OUT-OUTCOMES]: which posting it is (D229) — Overseas Sqn by default; a Delete asks twice (D287 (3)) */
   const [poOutcome, setPoOutcome] = useState<PostOutcome>('overseas')
   const [delArmed, setDelArmed] = useState(false)
+  /* a "Tap again to delete" left armed is taken back when the Leave War leaves the screen — the page is kept mounted, so
+     this sheet can wait open across a page switch for a tap from someone who no longer knows it was the second (the
+     reason D1102's date ask is taken back there too) */
+  useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) setDelArmed(false) }), [])
   useCloseOnCellClick(onClose)
 
   const nPeople = sel.people.length
@@ -247,7 +252,9 @@ export function SelectSheet({
             {LEAVE_TYPES.map(t => (
               <button key={t.type} data-testid={`sel-${t.type}`} className="tchip" title={t.label}
                 onClick={() => fill(formatCell({ type: t.type, portion }))}>
-                {formatCell({ type: t.type, portion })}
+                {/* the one-day sheet's words (D264 — one format and one look): a half day reads "<LL" / "LL>", never
+                    the stored "LL*" / "*LL" ([LW-SEL-HALF-LABELS]); what is saved is the stored code, as before */}
+                {displayCell(formatCell({ type: t.type, portion }))}
               </button>
             ))}
             {note && noteAt === 'leave' && <span className="note warn" data-testid="sel-note">{note}</span>}

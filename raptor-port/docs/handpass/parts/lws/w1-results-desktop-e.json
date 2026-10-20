@@ -1,0 +1,12 @@
+{
+ "results": [
+  {
+   "id": 17,
+   "size": "desktop",
+   "verdict": "PASS",
+   "seen": "Probey added with post-in 2026-10-24, posted out Delete on 2026-10-31; picked yesterday (2026-10-20, before his post-in): ask shown true (\"Tap again to delete Probey\"), box \"Tue 20 Oct 26\"; after the tap: sheet still up, refusal sentence \"Posted in on 24 Oct 26 — the post-out has to be after that day.\", box 2026-10-31, ask now \"null\"; Probey deleted=false archived=false",
+   "pic": "w1-desktop-s17-asked-before-post-in.png, w1-desktop-s17-after-tap.png"
+  }
+ ],
+ "errors": []
+}

@@ -2449,9 +2449,12 @@ export function resetRosterOrder(): void {
  *  saved (Fable's scenario F10, 26 Sep 26): a man dragged away and back leaves a saved order that draws exactly the
  *  default, and Reset order there would be a press that changes nothing on screen yet leaves an Undo step behind. The
  *  ⚙ Settings line is greyed while this is true. (A saved order equal to today's default still differs later — a man
- *  who joins sinks to the end of his seat — and the line lights again the moment it does.) */
-export function rosterFollowsDefault(): boolean {
-  const now = displayRoster(), dflt = displayRoster([])
+ *  who joins sinks to the end of his seat — and the line lights again the moment it does.)
+ *  `shown` is the grid's own "does his row ride the months on screen" test ([LW-SETTINGS-SMALL], Fable's F4): the grid
+ *  draws only the men in the visible months, so a hand order that differs only for a man posted out before them draws
+ *  exactly the default there, and must read as the default — both orders are compared over the men the grid draws. */
+export function rosterFollowsDefault(shown: (p: Person) => boolean = () => true): boolean {
+  const now = displayRoster().filter(shown), dflt = displayRoster([]).filter(shown)
   return now.length === dflt.length && now.every((p, i) => p.id === dflt[i]!.id)
 }
 

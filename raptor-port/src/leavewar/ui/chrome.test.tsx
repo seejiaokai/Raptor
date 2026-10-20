@@ -72,8 +72,11 @@ describe('the colour/mark legend', () => {
     expect(text).toContain('Ack')
     expect(text).toContain('Refused')
     expect(text).toContain('Filed on the Inputs page')
-    expect(text).toContain('AM (before the code)')
-    expect(text).toContain('PM (after the code)')
+    /* the half days as every box and both sheets draw them — "<LL" / "LL>", never the stored "*LL" / "LL*"
+       ([LW-SEL-HALF-LABELS]; the blind read's L3, 21 Oct 26) */
+    expect(text).toContain('<LLAM (the arrow before the code)')
+    expect(text).toContain('LL>PM (the arrow after the code)')
+    expect(text).not.toMatch(/\*LL|LL\*/)
     // The moved row appears only once bidding has closed — at `open` no cell
     // can wear the stripe (movedShown), and a legend advertising a mark the
     // grid cannot show sends readers hunting for it (27 Aug 26).

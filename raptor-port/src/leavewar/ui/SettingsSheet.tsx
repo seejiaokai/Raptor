@@ -22,6 +22,7 @@ import { Fragment, useEffect, useState } from 'react'
 import {
   assignGroup,
   groupLabel,
+  type Person,
   matchesGroup,
   OTHER_LABEL,
   SANS_GROUP_ID,
@@ -47,6 +48,7 @@ import {
   setGroupDefs,
   setShowSans,
 } from '../state/store'
+import { subLwScreen, isLwOnScreen } from '../state/screen'
 import { Sheet } from './Sheet'
 import { PALETTE, groupColorOf, isColourable } from './groupColor'
 import './bidpicker.css'
@@ -60,6 +62,7 @@ export function SettingsSheet({
   draggingId,
   dragOver,
   dragAfter,
+  shown,
 }: {
   onClose: () => void
   /** Open the counter builder (Matrix owns the form + its `counterEdit` state). */
@@ -76,13 +79,23 @@ export function SettingsSheet({
   /** The pointer is in the hovered row's LOWER half — the drop lands after it,
    *  so the bar is drawn on its bottom edge (the roster rows' `.after`). */
   dragAfter?: boolean
+  /** The grid's "does his row ride the months on screen" test (Matrix's rowInWindow over its measured window): Reset
+   *  order judges the order of the men the grid DRAWS, not of the whole roster ([LW-SETTINGS-SMALL]). */
+  shown?: (p: Person) => boolean
 }) {
   const { people, qualCatalog, eventRows, showSans, groupColors } = getState()
   // the roster, as drawn, is out of the default order — Reset order has something to do (judged by what the grid
   // SHOWS, so a drag away and back reads as the default: rosterFollowsDefault)
-  const handOrder = !rosterFollowsDefault()
+  const handOrder = !rosterFollowsDefault(shown)
   // Reset order ARMS first; local, so closing the sheet takes the question back
   const [armOrder, setArmOrder] = useState(false)
+  // …and so does leaving the Leave War: the page is kept mounted, so an open sheet survives a page switch, and a
+  // "Really reset?" met again on coming back would reset on one tap the person no longer knows was the second
+  // ([LW-SETTINGS-SMALL]). The page's own on-screen signal (a listener set, not the store — nothing re-renders the grid).
+  useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) setArmOrder(false) }), [])
+  /* …and when the line greys under it (the grid scrolled to months where the order is the default, an Undo): an armed
+     question never waits on a greyed line to fire on one tap when it lights again (the blind read's L2) */
+  useEffect(() => { if (!handOrder) setArmOrder(false) }, [handOrder])
   const chosen = groupsInOrder()
   const offered = offerableGroupList()
   const priority = groupPriorityIds()

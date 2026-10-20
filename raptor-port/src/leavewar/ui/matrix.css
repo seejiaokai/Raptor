@@ -810,7 +810,7 @@
 
 /* Half-day fill: a hard-edged divider echoing the asterisk's position, not a
    second store of it. `parseCell` is the only place that reads the
-   asterisk — Matrix.tsx derives `.am`/`.pm` from its result cell-by-cell, so
+   asterisk — MatrixRows.tsx (`PersonMonth`) derives `.am`/`.pm` from its result cell-by-cell, so
    this class can never drift out of sync with the text it decorates. The
    filled half sits where the asterisk sits (left for a leading `*`, i.e.
    morning; right for a trailing one, i.e. afternoon), so the two cues always
@@ -963,7 +963,7 @@
    its row's plain cells), and the open-bidding box (z-index 1) stays above
    the rows and under the frozen columns as before. It does not cheapen a
    MONTH draw (every row changes then) — that is what the placeholder inline
-   widths and the per-month row memo in Matrix.tsx are for. */
+   widths and the per-month row memo in MatrixRows.tsx are for. */
 .mx tbody tr { position: relative; }
 
 /* THE PLACEHOLDER COLUMNS (colwindow.ts, owner 5 Sep 26 — "do the

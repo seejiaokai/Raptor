@@ -6522,7 +6522,16 @@ suspended." — the account named only when he has one; "archived on Quals" unti
 the chosen chip again un-chooses it — "off the manpower, nothing else" (the agent's call, on his look card). **A Delete
 asks twice** (D287 (3)): the bid sheet's button turns into "Tap again to delete <callsign>"; on the Post out sheet (which
 commits on each change) the Delete chip arms a second button, `postout-delete-go`, and tapping the armed chip again
-backs out without changing the posting. A deleted man (`gone` on the war) has no posting door — his posting is final.
+backs out without changing the posting. **The date that sets a Delete off asks twice too (D1102, 21 Oct 26 —
+`[PO-MOVE-DATE-DELETE-ASK]`):** on the Post out sheet, a posting whose outcome is already Delete, its date moved to today
+or earlier (`leavewar/sync.ts postingRunsBy` — the pass's own clock), is NOT saved: the box and the line show the date
+picked and the same `postout-delete-go` "Tap again to delete <callsign>" is drawn; its tap saves the date and the delete
+runs. A date still to come deletes no one at once and is saved as before, with no ask — picked while the question waits
+too (reading (1)); backing out — any chip, the ✕, leaving the Leave War — leaves the posting and its date as they were,
+and a posting changed under the question (an Undo, another tab) takes it away. **Every armed "Tap again to delete" — this
+sheet's, the bid sheet's PO and the drag selection's PO — is taken back when the Leave War leaves the screen** (the page is
+kept mounted, so a sheet can wait open across a page switch). Pinned: `leavewar/ui/postout-date-delete.test.tsx`.
+A deleted man (`gone` on the war) has no posting door — his posting is final.
 **On the date** (`leavewar/sync.ts runPoOutcomes`, the calendar date — the one clock): Overseas Sqn → archived (Admin →
 Users' Archived group) and his account suspended; Delete → his person and account deleted (the hidden mark; days he flew keep his puck); SANS →
 ticked SANS (D283: with "Show SANS" OFF the war keeps his row in its old group, posted out, untracked; with it ON his
@@ -6666,7 +6675,7 @@ first bullet.)*
   Raptor's "View as"). For a member the drag's row list is that one row, so the
   rectangle only ever covers their own row — a date RANGE along it still selects
   freely — and a single tap opens the editing sheet only on their own row
-  (`Matrix.tsx` `openable` / the drag `order`). An admin's selection spans
+  (`MatrixRows.tsx cellOpenable` / the drag `order`). An admin's selection spans
   everyone. This is not just an affordance: `canEditRow` (engine/stages.ts)
   refuses another row at the WRITE path too (`setCell`, the batch writers, move
   and shift), so nothing — not a batch, not a keyboard path — can put one

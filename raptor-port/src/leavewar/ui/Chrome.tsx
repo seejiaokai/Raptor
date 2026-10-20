@@ -6,7 +6,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { biddingClosed, canReopen, evaluatePeriod, FIGURES, isBiddable, isDuty, nextStage, previousStage, stageLabel } from '../engine'
 import { CODE_GLOSSARY } from '../engine/codes'
-import { getClashes, getClashVersion, openInputWindow, subscribeClashes, type ClashWayOut, type SyncClash } from '../sync'
+import { getClashes, getClashVersion, openInputWindow, rosterCallsign, subscribeClashes, type ClashWayOut, type SyncClash } from '../sync'
 import {
   advanceStage,
   clearBidWindow,
@@ -251,7 +251,9 @@ export function StageBar() {
      the rule again — one open, several closed (D827). */
   useEffect(() => { if (clashes.length === 0) setClashPick(null) }, [clashes.length])
   const clashOpen = clashPick ?? clashes.length === 1
-  const whoOf = (id: string) => people.find(p => p.id === id)?.callsign ?? id
+  /* the war's row names him; a man with no row there is named by the roster's callsign, as everywhere else — never by his
+     hidden id ([BATCH-14OCT-LEFTOVERS] (c)) */
+  const whoOf = (id: string) => people.find(p => p.id === id)?.callsign ?? rosterCallsign(id) ?? id
   /* the day as the day's own sheets say it — "Sat 18 Jul" — with its year only where that is not the year on screen */
   const yearHere = period.days[0]?.date.slice(0, 4)
   const clashDay = (date: string) => `${dayLabel(date)}${date.slice(0, 4) !== yearHere ? ` ${date.slice(2, 4)}` : ''}`
@@ -600,9 +602,11 @@ export function StageBar() {
               <div className="leg-row"><span className="leg-sw appr legmk">LL<i className="lmk more">+1</i></span><span className="leg-t">More on this day — tap to see every entry</span></div>
               <div className="leg-row"><span className="leg-sw appr legmk">LL<i className="lmk warn">!</i></span><span className="leg-t">Something on this day needs an admin — tap to see</span></div>
               <div className="leg-row"><span className="leg-sw appr legmk">LL<i className="lmk po">PO</i></span><span className="leg-t">Leave after a posting-out — not counted for manning</span></div>
-              <div className="leg-sec">The <b>*</b> — a half day</div>
-              <div className="leg-row"><span className="leg-sw plain">*LL</span><span className="leg-t">AM (before the code)</span></div>
-              <div className="leg-row"><span className="leg-sw plain">LL*</span><span className="leg-t">PM (after the code)</span></div>
+              {/* the half days as every box and both sheets draw them — "<LL" / "LL>" (D264); it taught the stored "*LL" /
+                  "LL*", which nothing on screen shows ([LW-SEL-HALF-LABELS], the blind read's L3) */}
+              <div className="leg-sec">The arrow — a half day</div>
+              <div className="leg-row"><span className="leg-sw plain">&lt;LL</span><span className="leg-t">AM (the arrow before the code)</span></div>
+              <div className="leg-row"><span className="leg-sw plain">LL&gt;</span><span className="leg-t">PM (the arrow after the code)</span></div>
               {/* The figures (owner, 6 Sep 26): the colours the boxes and the
                   column titles wear, then what each column counts — read off
                   the figure catalogue so this can never drift from the grid. */}

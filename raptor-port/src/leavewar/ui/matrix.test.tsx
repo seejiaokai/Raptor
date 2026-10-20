@@ -363,7 +363,7 @@ describe('bid state on a cell', () => {
   // against every bid class rather than just for their own, so a cascade
   // that added `tbc` alongside `sc` would fail here.
   //
-  // This does NOT prove the branch ORDER in Matrix.tsx — duty codes carry
+  // This does NOT prove the branch ORDER in MatrixRows.tsx (`chipState`) — duty codes carry
   // `bid: false`, so `isDuty` and `isBiddable` are disjoint and reordering
   // them changes nothing. Reading duty first is for the reader, not a guard.
   it('never lets duty or medical take a bid colour', () => {

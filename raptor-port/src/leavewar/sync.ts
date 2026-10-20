@@ -719,6 +719,12 @@ export type ClashWayOut = 'bid' | 'war' | 'war-published' | 'inputs'
 /** A leave input asking for a date the squadron already bid differently on.
  *  The system never overwrites a bid — it raises the clash and a human
  *  decides (Leave War's rule); this list is that surface's data. */
+/* a man's callsign as the roster has it — for a clash about a man with NO row on the war (a SANS man with Show SANS
+   off, an archived man), whom the war's own roster cannot name; never his hidden id ([BATCH-14OCT-LEFTOVERS] (c)) */
+export function rosterCallsign(id: string): string | null {
+  const b: any = (PEOPLE as any)[id]
+  return b && b.cs ? String(b.cs) : null
+}
 export interface SyncClash {
   person: string
   date: string
@@ -1755,6 +1761,9 @@ export function postingHeldNote(id: string): string | null {
   const d = poDueNow(id, effectiveToday())
   return d ? poHeldReason(id, d.outcome, d.poDate) : null
 }
+/* would a posting dated `poDate` run NOW — on the pass's own clock (poDueNow: today on or after the date)? The Post out
+   sheet asks before it saves a Delete's date that answers yes (D1102 — [PO-MOVE-DATE-DELETE-ASK]) */
+export function postingRunsBy(poDate: string): boolean { return poDate <= effectiveToday() }
 export function runPoOutcomes(): void {
   if (SYNCING) return
   const today = effectiveToday()
@@ -2164,6 +2173,13 @@ export function postOut(id: string, from: string, archive: boolean | PostOutcome
    outlive the person who set it. No production caller. */
 let VIEWER_PIN: { v: string | null; s: unknown } | null = null
 export function pinViewer(v: string | null): void { VIEWER_PIN = { v, s: SESSION }; setViewer(v) }
+/* …and a role changed IN PLACE is the same sign-in ([LW-HARNESS-VIEWER-PIN], 27 Sep 26): setEffectiveRole replaces the
+   session object with a copy, so the bridge's raptorRole quietly ended the pin and the next repaint lit the signed-in
+   man's row, not the pinned one — a test that pinned a viewer and then switched role tested a different man. The bridge
+   hands the session it replaced; a pin keyed to it moves to the copy. A real sign-in (resetSession) still ends it. */
+export function carryViewerPin(from: unknown): void {
+  if (VIEWER_PIN && VIEWER_PIN.s === from && from !== SESSION) VIEWER_PIN = { v: VIEWER_PIN.v, s: SESSION }
+}
 const mirroredViewer = (): string | null => (VIEWER_PIN && VIEWER_PIN.s === SESSION ? VIEWER_PIN.v : viewerId())
 /* and the signed-in person's callsign beside it, read off Raptor's whole roster (the war's own
    roster may not hold him — a SANS or archived callsign): the approver stamp's fallback */

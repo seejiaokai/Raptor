@@ -711,7 +711,8 @@ this. As of 30 Aug 26 he has closed it.
   (3 Sep 26, Phase 2 of the speed work).** `ui/colwindow.ts` is the
   arithmetic, `Matrix.tsx` the measuring; `HANDOFF.md` §Known issues (the
   Leave War speed entry) carries the measured before/after and what is still
-  open. Two things to keep: the ROW memo contract (a `PersonRow` is a pure
+  open. Two things to keep: the ROW memo contract (`MatrixRows.tsx` since
+  13 Oct 26 — `[LW-ROWS-SPLIT]`; a `PersonRow` is a pure
   function of its props, every prop a primitive or an object whose identity
   changes only with the store `version`, handlers through the one `rowApi`
   ref — a per-render object or function prop silently brings back the

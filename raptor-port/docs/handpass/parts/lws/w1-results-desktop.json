@@ -1,0 +1,19 @@
+{
+ "results": [
+  {
+   "id": 6,
+   "size": "desktop",
+   "verdict": "PASS",
+   "seen": "asked with today (true); then picked 2026-11-10 (today + 20): box \"Tue 10 Nov 26\n▾\", data-value 2026-11-10, ask \"null\", Hex deleted=false, Admin → Users: [\"Hex | hex | · WSO · CAT C | POSTING OUT 10 NOV · DELETE\"] — the future date IS saved with no ask and no delete",
+   "pic": "w1-desktop-s6-future-while-asked.png"
+  },
+  {
+   "id": "7a",
+   "size": "desktop",
+   "verdict": "NOT WALKED",
+   "seen": "script stopped: Error: no cell [data-testid=\"cell-rocky-2026-11-01\"] {\"row\":false,\"cells\":null,\"first\":null,\"rows\":48}",
+   "pic": ""
+  }
+ ],
+ "errors": []
+}

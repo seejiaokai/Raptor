@@ -259,6 +259,18 @@ describe('the drag-selection sheet, in order A (D331)', () => {
     isDeleteChip(screen.getByTestId('sel-delete'))
     expect(screen.getByTestId('sel-postout').textContent).toBe('PO')
   })
+
+  it('[LW-SEL-HALF-LABELS] a half day reads as the one-day sheet reads it — "<LL" / "LL>", never "LL*" / "*LL" (D264)', () => {
+    render(<SelectSheet sel={sel} people={id => id} role="admin" canDecide={true} onDone={() => {}} onMove={() => {}} onPostOut={() => {}} onClose={() => {}} />)
+    fireEvent.click(screen.getByTestId('sel-portion-am'))
+    expect(screen.getByTestId('sel-LL').textContent).toBe('<LL')
+    fireEvent.click(screen.getByTestId('sel-portion-pm'))
+    expect(screen.getByTestId('sel-LL').textContent).toBe('LL>')
+    fireEvent.click(screen.getByTestId('sel-portion-full'))
+    expect(screen.getByTestId('sel-LL').textContent).toBe('LL')
+    /* the one-day sheet's own button for the same choice, for the same words */
+    expect(screen.getAllByTestId(/^sel-/).every(b => !/\*/.test(b.textContent || ''))).toBe(true)
+  })
 })
 
 describe('the block offers Move and Delete only where they would do something (D332; the break test B18 found no test)', () => {
