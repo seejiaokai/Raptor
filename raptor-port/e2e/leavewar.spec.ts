@@ -5694,6 +5694,32 @@ test('every label and reason on an OIL credit box reads in full, at every zoom s
   expect(steps).toEqual(['0.6', '0.8', '1', '1.2', '1.4'])
 })
 
+// [LW-OIL-DATECHIP-HIDDEN] (filed 30 Sep 26 — the group-A walk's W3 finding 3): a correction's date calendar in the
+// OIL tracker opened BEHIND the rows below it, so a correction's date could not be changed through the app. Since step
+// two of the one date calendar (D901, 15 Oct 26) the date box's calendar floats on the page; this pins it on top of the
+// tracker's rows at both widths (bug-check order §6: the element under its middle and corners is the calendar), and the
+// day pressed in it is the date the correction is saved with. Re-checked on the exact build, 20 Oct 26 — not reproduced.
+test('a correction\'s date calendar in the OIL tracker opens on top, and the day pressed is saved', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const corr = page.locator('[data-testid="oil-list"] [data-testid="oil-entry-dol-3"]')   // the demo's own correction
+  await expect(corr.locator('.l2')).toHaveText('Correction: double credit · correction')
+  await corr.scrollIntoViewIfNeeded()
+  await corr.click()
+  const box = page.locator('[data-testid="oil-edit-date"]')
+  const was = (await box.getAttribute('data-value'))!
+  const iso = was.slice(0, 8) + (was.endsWith('-10') ? '12' : '10')
+  await box.click()
+  await calendarOnTop(page, 'the correction\'s date')
+  await tapCalendarDate(page, iso)
+  await expect(box).toHaveAttribute('data-value', iso)
+  await page.locator('[data-testid="oil-edit-save"]').click()
+  await expect(box).toHaveCount(0)
+  await corr.click()
+  await expect(page.locator('[data-testid="oil-edit-date"]'), 'saved with the day pressed').toHaveAttribute('data-value', iso)
+})
+
 // Owner, 6 Sep 26: with the zoom gone from the strip, the twelve months sit on
 // ONE line on a phone (they always did on a desktop), inside the viewport.
 test('the month strip is one line of twelve, inside the viewport', async ({ page }) => {
