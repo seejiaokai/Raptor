@@ -3122,7 +3122,7 @@ export function Matrix() {
   //
   // Deciding needs an existing bid to decide: a course, a sick day and an
   // empty cell are all things nobody asked for.
-  // "Does a tap here open something" lives in `cellOpenable` (module level, the
+  // "Does a tap here open something" lives in `MatrixRows.tsx cellOpenable` (the
   // row's own body) — the comment block above is its rationale.
 
   // A day the squadron may not bid on, drawn as such. Without this the window

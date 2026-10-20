@@ -805,7 +805,7 @@ truth: a flying spare would be standing by on one screen and flying on another. 
   member writes only their own row (the `viewer` — since `[ACCOUNTS]` the SIGNED-IN person, D166 (4)), an admin
   any; `canEditRow(role, viewer, personId)` (engine/stages.ts) is read at the
   write path (`setCell`, the range/batch writers, `moveCells`/`isMovableSource`,
-  `shiftBid` *(retired 28 Sep 26 — every move goes through `moveRecords`, [LW-SPARE-MOVE-DOORS])*) AND the grid affordance (`Matrix.tsx` `openable`, the drag `order`
+  `shiftBid` *(retired 28 Sep 26 — every move goes through `moveRecords`, [LW-SPARE-MOVE-DOORS])*) AND the grid affordance (`MatrixRows.tsx cellOpenable`, the drag `order`
   restricted to the viewer, the BidPicker's edit gate) — the same drift-seam
   rule as `canEditCell`: whatever the grid stops offering, the store must
   independently refuse. `viewer === null` (raw store / tests only — production

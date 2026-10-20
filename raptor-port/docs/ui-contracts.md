@@ -6666,7 +6666,7 @@ first bullet.)*
   Raptor's "View as"). For a member the drag's row list is that one row, so the
   rectangle only ever covers their own row — a date RANGE along it still selects
   freely — and a single tap opens the editing sheet only on their own row
-  (`Matrix.tsx` `openable` / the drag `order`). An admin's selection spans
+  (`MatrixRows.tsx cellOpenable` / the drag `order`). An admin's selection spans
   everyone. This is not just an affordance: `canEditRow` (engine/stages.ts)
   refuses another row at the WRITE path too (`setCell`, the batch writers, move
   and shift), so nothing — not a batch, not a keyboard path — can put one
