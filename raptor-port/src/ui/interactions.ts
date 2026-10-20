@@ -1470,7 +1470,7 @@ export function routeClick(e: MouseEvent) {
         : `${dow}: ${wl} withdrawn. Its changes are back on the working copy as pending, and ${verLabel(now)} is the issued schedule. Publishing reissues ${wl}.`)
         + (!armedWithdraw ? '' : back == null
           ? ' Its OIL credits are withdrawn from the Leave War until it is republished.'
-          : ` The Leave War credits ${verName(back)}’s OIL for the day until ${wl} is republished.`))
+          : ` The Leave War credits ${verLabel(back)}’s OIL for the day until ${wl} is republished.`))   // the label as N3 names it, the sentence before (the read's F-1)
     }
     notify(); return
   }

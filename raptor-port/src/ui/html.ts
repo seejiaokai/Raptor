@@ -1679,7 +1679,7 @@ export function dayStatHTML(di:any,ed:any){
     const back=ok&&unpubArmed(+di)?unpublishBackTo(di):null, backName=back&&(verLabel(back)==='Original'?'The Original':verLabel(back));   // it starts a sentence
     const unpub=(ed&&ok&&!DPREV.has(+di)&&!protectedWeek())
       ? (unpubArmed(+di)
-          ? `<button class="dbeak dunpub warn" data-unpub="${di}" title="${back?`Withdraw ${esc(verLabel(cv))} on ${d.dow}. ${esc(backName)}’s OIL comes back, and some of ${esc(verLabel(cv))}’s is already spent on the Leave War. Tap to confirm.`:`Withdraw ${esc(verLabel(cv))} on ${d.dow}. Its OIL credits are already spent on the Leave War, and republishing restores them. Tap to confirm.`}">Withdraw — confirm</button>`
+          ? `<button class="dbeak dunpub warn" data-unpub="${di}" title="${back?`Withdraw ${esc(verLabel(cv))} on ${d.dow}. ${esc(backName)} comes back and credits less OIL, and some of ${esc(verLabel(cv))}’s OIL is already spent on the Leave War. Tap to confirm.`:`Withdraw ${esc(verLabel(cv))} on ${d.dow}. Its OIL credits are already spent on the Leave War, and republishing restores them. Tap to confirm.`}">Withdraw — confirm</button>`
           : `<button class="dbeak dunpub" data-unpub="${di}" title="Unpublish ${d.dow} — pull ${esc(verLabel(cv))} back to a working copy to correct it; republishing reissues the same version">Unpublish</button>`)
       : '';
     /* the ⓘ chip is the ONLY way into the day panel on the view page, and it opens a

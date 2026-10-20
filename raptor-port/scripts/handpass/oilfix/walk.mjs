@@ -182,8 +182,8 @@ const CASES = [
     after: 'FO' },
   { name: 'al-lower', orig: HALF, origCell: 'HO', al: FULL, alCell: 'FO', warns: true,
     warn: 'Withdrawing AL1 brings back the Original’s OIL for Saturday. Some of AL1’s OIL credits are already spent on the Leave War, and the Original credits less. Tap again to confirm.',
-    armed: 'Withdraw AL1 on Saturday. The Original’s OIL comes back, and some of AL1’s is already spent on the Leave War. Tap to confirm.',
-    done: 'Saturday: AL1 withdrawn. Its changes are back on the working copy as pending, and Original is the issued schedule. Publishing reissues AL1. The Leave War credits the Original’s OIL for the day until AL1 is republished.',
+    armed: 'Withdraw AL1 on Saturday. The Original comes back and credits less OIL, and some of AL1’s OIL is already spent on the Leave War. Tap to confirm.',
+    done: 'Saturday: AL1 withdrawn. Its changes are back on the working copy as pending, and Original is the issued schedule. Publishing reissues AL1. The Leave War credits Original’s OIL for the day until AL1 is republished.',
     after: 'HO' },
 ]
 

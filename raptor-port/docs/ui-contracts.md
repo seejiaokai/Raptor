@@ -142,9 +142,9 @@ carries no boxed "Draft" (its DRAFT tag says it once — the view-week compare l
   amendment withdrawn is not the day's OIL taken away** ([UNPUB-WARN-AL-RESTORES], 20 Oct 26 — the version before it pays
   again, engine-rules.md): its first tap, where it must ask, says "Withdrawing AL1 brings back the Original’s OIL for
   Saturday. Some of AL1’s OIL credits are already spent on the Leave War, and the Original credits less. Tap again to
-  confirm.", its done note ends "The Leave War credits the Original’s OIL for the day until AL1 is republished.", and the
-  armed button's title reads "Withdraw AL1 on Saturday. The Original’s OIL comes back, and some of AL1’s is already spent on
-  the Leave War. Tap to confirm." — the Original keeps N4 and N2 (D837), its armed title "…Its OIL credits are already
+  confirm.", its done note ends "The Leave War credits Original’s OIL for the day until AL1 is republished." (the label as N3 just named it), and the
+  armed button's title reads "Withdraw AL1 on Saturday. The Original comes back and credits less OIL, and some of AL1’s OIL is
+  already spent on the Leave War. Tap to confirm." — the Original keeps N4 and N2 (D837), its armed title "…Its OIL credits are already
   spent on the Leave War, and republishing restores them…" ("bid against" gone, as N4's). Pinned:
   `leavewar/unpublish-al-oil.test.tsx`. **Two notes of a
   publish that name the SAME day say it once** (`toast.ts` `ToastPart`): "Monday 13 Jul published and approved. The Common

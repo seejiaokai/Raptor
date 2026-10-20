@@ -89,9 +89,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [SANS-PREVIOUS-REPORT-OFFER] — a previous evening's availability is not combined with the day's — his rule first; with caps and ops limits.
 
 **OIL**
-- [LW-OIL-DATECHIP-HIDDEN] — the OIL tracker's correction date calendar opens hidden behind the rows above.
-- [OIL-ZERO-SPAN-SORTIE] — a line whose take-off equals its landing, with the debrief at zero, earns nothing, yet the day's note says it earns.
-- [UNPUB-WARN-AL-RESTORES] — the Unpublish warning says the day's OIL goes, when withdrawing an amendment puts the earlier version's OIL back.
 - [OIL-EARN-DAY-SWITCH-WORDS] — OIL Earn's "Nothing today earns" button reads like a status — new words are his, with a picture.
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 
@@ -900,13 +897,6 @@ told and re-reads; only the stand-in store, with no row versions, lets the later
 split the template libraries into a row per template (`WaveTemplate`, `DutyTemplate`, `DayTemplate`) — a table-shape
 change, so tell IT first.
 
-### [LW-OIL-DATECHIP-HIDDEN] The OIL tracker's correction date calendar opens hidden behind the rows above (filed 30 Sep 26)
-**Place:** low — with the next OIL tracker change. Seen by the group-A FULL walk (W3 finding 3,
-`docs/img/handpass/2026-09-30-dbrA/W3/I8-correction-date-chip-open.png`): open the OIL tracker, give Warden a −1
-correction, tap its box, tap "📅 30 Sep 26 ▾" — the chip reads open but nothing is drawn; the day it would show sits under
-another row's box, so a correction's date cannot be changed through the app. Not a storage matter; not compared with
-`main`. **Do:** draw the calendar above the tracker's rows, with the bug-check order's §6 layering test.
-
 ### [SHARED-OPENS-DEMO-WEEK] A shared store opens on the demo's week (13 Jul 26), not this week (filed 30 Sep 26)
 **Place:** before the first real deployment. Seen by the group-A FULL walk (W4 observation 2): on the shared-store build
 the schedule opens on the week of 13 Jul 26 and the Inputs form's calendar on July 2026 — the demo's boot week
@@ -1648,17 +1638,6 @@ saved-data reading (the report's §4) is looked at again at `[DB-STEP]`, which r
 
 **Found by the two reads of `[LW-ROWS-SPLIT]`, partly fixed.** Five were corrected with the move (`ui-contracts.md` twice, `CountRows.tsx`, `FigureCell.tsx`, one backlog line). The readers tabled more, each with its correction: `raptor-port/docs/handpass/parts/lwrows/read-opus.md` (its table of 13) and `read-fable.md` (F4). Left: the ones in `raptor-port/docs/performance.md` (ledger entries — a record of past work, which named the file as it was: judge each, do not rewrite history), `raptor-port/docs/leavewar/known-gaps.md`, and comments in other Leave War files. A documents-only pass; no check beyond the document check.
 
-### [OIL-ZERO-SPAN-SORTIE] A take-off-equals-landing line whose report is also its take-off, with the debrief setting at zero, earns nothing — and the day's advisory still says it "earns from the report and debrief" (found 6 Oct 26, the plan challenge of `[OIL-WORK-START]` — Astra's finding 4; LOW)
-A flying line typed with the SAME take-off and landing earns from the report before it and the debrief after it (D49). Where
-there is neither — the Logic page's "Flight debrief after land" set to zero AND the line's entered in-time equal to its
-take-off (or, as before this build, both the debrief and "Nominal report before T/O" set to zero) — the line measures nothing
-and its crew earn nothing: correct by the standing rule that OIL comes only from written times (D31), and pinned as built in
-`raptor-port/src/engine/oilworkstart.test.ts`. What is wrong is the WORDS: the day's "Flight times — the same" advisory still
-tells the scheduler the line "still earns from the report and debrief", and the day's "no usable times" list does not name it.
-Reached only with a debrief of zero, which no squadron sets. **To build:** word the advisory from what the line actually
-measures, and name the line in the "no usable times" list when it measures nothing. **Tier:** WALK (the warning list).
-**Place (the agent's line):** low — with the next change to the OIL warnings.
-
 ### [LOGIC-REDRAW-DROPS-TYPING] The Logic page redraws its rules about half a second after it opens — a value being typed into a box at that instant is dropped (found 6 Oct 26 by `[OIL-WORK-START]`'s browser test; OLD, not that job's doing; LOW)
 **Seen:** the browser test of `[OIL-WORK-START]` failed once in two full runs on the busy PC at one step — Logic opened with
 "Edit rules" already on, "Nominal report before T/O" typed, Tab — and the box read the OLD value afterwards, the setting
@@ -1711,23 +1690,6 @@ without seeing each other's work, each reported it as the app contradicting itse
 picture `raptor-port/docs/img/handpass/2026-10-06-oil-work-start/E/dk-08-E03-oilearn-board.png`). **To build:** word the button
 as the action it is, and say the day's state apart from it — a product wording choice, so a picture and his word first.
 **Tier:** WALK (a control's label on the board, both sizes). **Place (the agent's line):** low — with the next change to OIL Earn.
-
-### [UNPUB-WARN-AL-RESTORES] The Unpublish warning assumes the day's OIL disappears — when withdrawing an AMENDMENT puts the earlier version's OIL back (found 6 Oct 26, the scenario read of `[OIL-WORK-START]` — Astra's F2; OLD, the same on the live app; low-medium)
-Unpublish on a published weekend warns when taking the day's OIL away would leave a man who has already spent it below
-zero (`leavewar/sync.ts oilCreditBidAgainst`, asked by the Unpublish button — `ui/interactions.ts`). It works that out by
-rebuilding his OIL with the day's credit left out. That is right for withdrawing an ORIGINAL (the day becomes a draft and
-earns nothing). It is wrong for withdrawing an AMENDMENT: the version before it becomes the published one again
-(`engine/publish.ts unpublishDay`) and its OIL pays — so withdrawing a half-day amendment that restores a full-day
-original RAISES his balance, and the warning still says the withdrawal would strand his leave. It errs toward warning,
-never toward silence. **Seen on screen (the walk of `[OIL-WORK-START]`, walker C, S02):** the first tap said "Heads up —
-Saturday's OIL credits are bid against on the Leave War. Unpublishing withdraws them until you republish"; the second,
-"AL1 withdrawn … its OIL credits leave the Leave War until it is published again" — while the Original's full day came
-back and his balance went from 0 to 0.5. Both sentences are wrong for an amendment. Astra's steps: find the version that survives the withdrawal; work out its OIL records from its own
-kept evidence and values; rebuild the man's OIL with THAT in place of today's; warn only if the real result goes below
-zero; and word the warning and the done-message for "back to a draft" and "back to the earlier version" apart. Checks: an
-ORIGINAL withdrawn; an AL withdrawn to a higher, a lower and an equal credit; a credit that never landed.
-**Tier:** FULL (OIL, the published record). **Place (the agent's line):** low-medium — with the next change to Unpublish or
-to the OIL tracker.
 
 ### [INP-OIL-CHIP-PHONE] On a phone the green OIL chip is painted over a request card's date and time (found 5 Oct 26, the Codex stack check)
 Inputs page at phone width (390): the card of a request that carries an OIL answer (walked: Torch, Training, 18 Jul 11:00–12:00) draws its
@@ -1867,6 +1829,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 | `[CI-SPLIT-SLOW-JOBS]` — GitHub’s checks split across more machines and the walk pictures not downloaded (D1089, D1091); LIVE 20 Oct 26 (pull request 546) | no reader — a change to the checks file only; proved by its own run: the same 676 unit files and 12,004 unit tests, 893 browser tests and 453 Tracker checks as main’s last run (`raptor-port/docs/gates-and-deploy.md`, 20 Oct 26) | Astra’s read of the checks file (none was required by the bug-check order — no app code changed)|
 | The standby batch — `[BOARD-TAB-FOLD]` with the week's half, `[SA-HEAD-CLIP-360]`, `[STANDBY-UNDO-WORDS]`, `[BUBBLE-SMALL-SEEN]` (D994); LIVE 20 Oct 26 (pull request 547) | one fresh, blind Opus reader of the finished code (D790, D903) — 3 low, all fixed; walked and gated (`raptor-port/docs/handpass/2026-10-20-standby-batch.md`) | Astra's code read (D353) |
 | The night of 20 Oct 26 — the Tracker smoke in two, `[GATELOCK-STALE-PORT]`, the lazy pages loaded up front in three test files (D1092); LIVE on his advance word once green | one fresh, blind Opus reader of the finished branch (D790, D903); proved by the counts (the same 453 Tracker checks by name) and the tests | Astra's read of a checks-and-tooling change |
+| The OIL batch — `[UNPUB-WARN-AL-RESTORES]`, `[OIL-ZERO-SPAN-SORTIE]`, `[LW-OIL-DATECHIP-HIDDEN]` (D994); built 20 Oct 26 on `claude/oil-small-fixes-1020` (pull request 550) | a fresh, blind Opus scenario designer and one fresh, blind Opus reader of the finished code (D790, D903); walked and gated (`raptor-port/docs/handpass/2026-10-20-oil-batch.md`) | Astra's scenario design (D353); Astra's and Sol 6.1's two code reads (OIL and the published record — rank 2) |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.

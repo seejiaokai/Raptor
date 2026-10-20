@@ -82,11 +82,11 @@ describe('Unpublish of an amendment whose OIL is spent', () => {
     press()
     expect(verLabel(dayCurVer(SAT)), 'the first tap only warns').toBe('AL1')
     expect(said).toEqual(['Withdrawing AL1 brings back the Original’s OIL for Saturday. Some of AL1’s OIL credits are already spent on the Leave War, and the Original credits less. Tap again to confirm.'])
-    expect(armedTitle(), 'the armed button says the same case').toBe('Withdraw AL1 on Saturday. The Original’s OIL comes back, and some of AL1’s is already spent on the Leave War. Tap to confirm.')
+    expect(armedTitle(), 'the armed button says the same case').toBe('Withdraw AL1 on Saturday. The Original comes back and credits less OIL, and some of AL1’s OIL is already spent on the Leave War. Tap to confirm.')
     said = []
     press()
     expect(verLabel(dayCurVer(SAT))).toBe('Original')
-    expect(said).toEqual(['Saturday: AL1 withdrawn. Its changes are back on the working copy as pending, and Original is the issued schedule. Publishing reissues AL1. The Leave War credits the Original’s OIL for the day until AL1 is republished.'])
+    expect(said).toEqual(['Saturday: AL1 withdrawn. Its changes are back on the working copy as pending, and Original is the issued schedule. Publishing reissues AL1. The Leave War credits Original’s OIL for the day until AL1 is republished.'])
     runOilPass()
     expect(cell(), 'the half day the warning reckoned').toBe('HO')
   })
