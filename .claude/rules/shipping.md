@@ -79,10 +79,10 @@ half).
 - **While the repo is public, GitHub's run of the pull request is a job's full check (D1086, 20 Oct 26 — "Yes agreed").**
   Open the pull request into `main` as soon as the job is built — a branch pushed with no pull request, or a pull request
   based on another branch, starts no checks — so GitHub's
-  run (about 9 minutes, the same set as his PC's: build, the original's 728, unit, browser, the Tracker's, the rule and
+  run (about 6 minutes since D1089 — 5m53s measured 20 Oct 26 — the same set as his PC's: build, the original's 728, unit, browser, the Tracker's, the rule and
   document checks) goes while the app is walked. On his PC run only the tests of what you change and the build the walk
   drives; no full gate run there. Nothing merges until GitHub's run is green and he has said "merge live"; a red run is
-  fixed before his look is asked for; its slowest checks are split across more machines, every area still run (D1089). The run that counts is the one on the branch's last pushed commit; fixes found during
+  fixed before his look is asked for; its slowest checks are split across more machines, every area still run (D1089). GitHub's machines download the project without the walks' pictures, which no check reads (D1091). The run that counts is the one on the branch's last pushed commit; fixes found during
   the walk are batched and pushed only once the run in progress has finished (D151). Once the repo is private again (D106 ended), the full check is back on his PC (D89).
 - **A small follow-up fix on an open pull request whose whole set has already passed (D902, 15 Oct 26 — his "Ok")** runs only the
   tests it touches before the push; GitHub's run of the pull request is its full check, and nothing merges until it is green.
