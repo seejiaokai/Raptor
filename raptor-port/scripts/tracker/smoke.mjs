@@ -151,6 +151,14 @@ pg.on('pageerror', e => errs.push(e.message));
 pg.on('response', r => { if (r.status() >= 400) bad4xx.push(r.status() + ' ' + r.url()); });
 
 console.log(`\n=== ${URL} (Tracker tab) ===\n`);
+/* TWO PARTS, ONE SCRIPT (D1089 — the night of 20 Oct 26): SMOKE_PART=1 runs the checks up to the clean slate below,
+   SMOKE_PART=2 the checks from it on, each in its own browser, so GitHub runs them on two machines side by side; unset,
+   the whole suite runs in order as it always did (`npm run smoke:tracker`, his PC's runner). Part 2 starts where the
+   suite already wiped the store and reopened the Tracker, so it needs nothing part 1 leaves behind — only the helpers,
+   which sit above both parts. The two parts' counts add up to the whole run's. */
+const PART = process.env.SMOKE_PART || '';
+if (PART && PART !== '1' && PART !== '2') { console.error(`SMOKE_PART must be 1 or 2, not ${PART}`); await teardown(); process.exit(2); }
+if (PART !== '2') {
 await openTracker(pg);
 
 const nBalls = await pg.locator('#flowSvg .ball').count();
@@ -3047,6 +3055,8 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(300);
 }
 
+}
+if (PART !== '1') {
 /* Back to a clean slate: the checks below are about baked data, not this residue. */
 await pg.evaluate(() => localStorage.clear());
 await openTracker(pg);
@@ -4632,6 +4642,7 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   await pg.evaluate(() => { delete window.__pickOpenForTests; });
 }
 
+}
 console.log(`\n${pass} passed, ${fail} failed\n`);
 await teardown();
 if (KEEP && server) console.log(`preview left running at ${URL} (pid ${server.pid})`);

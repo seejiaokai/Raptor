@@ -20,6 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/checks-tooling-night -->
+### THE NIGHT OF 20 Oct 26 — `claude/checks-tooling-night` (cut from main at 3257fd64a; no pull request yet) — the full plan is in `claude/standby-batch-1020`'s block (pull request 547)
+- **After a compaction: re-read this block, 547's block, the overnight guide (`.claude/skills/overnight/SKILL.md`) and the files of the step in hand before the next change; note the compaction here with its time.** Compactions: none yet.
+- **D1092** (his advance "merge live" for these three jobs once each is done — bug check passed, read clean or fixed, the whole GitHub run green). Guard off (`--away`), keep-awake asked.
+- **Done (committed):** job 3 [GATELOCK-STALE-PORT] — `raptor-port/scripts/gatelock.mjs` (`portBusy`, `freePort`, `browserPorts`, `runsBrowser`; `run` and `exec` of a browser run), `src/testing/gatelock-port.test.ts` (5 green); hand-checked: a busy set port refused, a non-browser command untouched. Job 2 — `trk-nocourse`, `availwin`, `lwkeepalive` .test.tsx load the two lazy pages in `beforeAll` (68 green); `boot-walk` left (its first-boot test breaks — 2 red).
+- **In hand:** job 1 — `raptor-port/scripts/tracker/smoke.mjs` wrapped: `SMOKE_PART` 1 / 2 / unset (whole), the cut at "Back to a clean slate" (part A lines 154–3049, part B to the summary). NEXT: run part 2 alone against the served build (`$SCRATCH/dist-night`, `APP_URL`) through `gatelock.mjs exec` — ReferenceErrors name the helpers part B borrows from part A: hoist each whole definition above both parts; then parts 1 + 2 must count 453 together, all passing, and the whole run unchanged; then `.github/workflows/deploy.yml`'s tracker job → a matrix of two (`SMOKE_PART`), the PC job unchanged; records (`gates-and-deploy.md`, `file-map.md`, the backlog). Then the bug check (tooling only — tests, the counts, one fresh Opus read), the pull request, and D1092's merge.
+- **547:** its board half came out (`f64154336`); its GitHub run going — when green, merge it (his earlier word), then bring main into this branch (this block and 547's both live in `## Now`).
+- Questions waiting for him: none.
+<!-- /now -->
 <!-- now:claude/ship-github-check -->
 ### `claude/ship-github-check` — how work ships while the repo is public (D1086–D1088), documents only — LIVE on his "merge live" (pull request 545, 20 Oct 26)
 - **Done:** his three rulings of 20 Oct 26 recorded and written in: GitHub's run of the pull request is a job's full check while the repo is public (open the pull request into `main` once the job is built; on his PC only the touched tests and the walk's build — D1086, narrowing D902); two to four related jobs of one area per branch and merge, nothing piled to the end (D1087); on "merge live" the closing records, one GitHub run, the merge (D1088). Homes: `.claude/rules/shipping.md` (its line ceiling 115 → 130 in `docsize.mjs`, the reason there), `raptor-port/docs/bug-check-order.md` §5 (the FULL order rewritten), `raptor-port/CLAUDE.md` and `docs/guide-full.md` §Token discipline.

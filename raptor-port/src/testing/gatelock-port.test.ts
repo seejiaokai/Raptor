@@ -5,7 +5,6 @@
    one real listener proves the real busy test sees it. */
 import { describe, expect, it } from 'vitest'
 import { createServer } from 'node:net'
-// @ts-expect-error — a plain .mjs script, no types
 import { browserPorts, freePort, portBusy, runsBrowser } from '../../scripts/gatelock.mjs'
 
 describe('the lock chooses the browser tests’ port', () => {
