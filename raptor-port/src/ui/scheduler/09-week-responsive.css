@@ -324,6 +324,14 @@
   .plist.one .pl-cols,.plist.one .pl-row{grid-template-columns:110px 30px calc(var(--puck-w) + 2px) minmax(0,1fr)}
   .plist .pl-row .rmk{font-size:8px;padding-top:2px}
   .plist .pl-row .t{font-size:9px}
+  /* A STANDBY WAVE'S FIRST HEADING, ITS NAME WHOLE ([SA-HEAD-CLIP-360], 20 Oct 26): the column is 36px here (above), and
+     "AVALON" over "SHIFT" at 8.5px needs 44 where the padding leaves 27 — it showed "AVALOI". The same smaller letters as
+     START / END beside it (D1084: 7px, no spacing, 1px padding) set it about 30 wide in a 34px room; a name longer than
+     the room wraps rather than being cut, as a callsign does (D367 — the name always whole): the heading row's own nowrap
+     (03-week.css) is lifted for this one cell, or the wrap could never happen (the blind read's F1 — a renamed wave). Picked by the START / END
+     heading it shares a row with, so the markup — and the view week's reference compare — is untouched. SC, AVALON and
+     BB alike; at 375 and wider it fits as it is. Measured: scripts/handpass/standby-batch-shots.mjs (05, 06). */
+  .cols.formcols:has(.sa-se)>span:first-child{font-size:7px;letter-spacing:0;padding:3px 1px;white-space:normal;overflow-wrap:anywhere}
 }
 /* ===== DESKTOP density + horizontal scroll (mobile above is untouched) ===== */
 @media (min-width:821px){

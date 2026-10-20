@@ -205,7 +205,11 @@ export function itemOf(r: ELogRow, day?: string | null): Item {
       const detail = pfx === '' ? (f ? `${jet}${SEAT[parts[4]!] || String(parts[4] || '').toUpperCase()}` : tail(r.lbl))
         /* an SC line's B box is its crew's in-time (owner, 24 Aug 26; [SC-B-CHANGE-SAYS-BRIEF]) — a row gone since keeps the
            word its frozen label was written with */
-        : pfx === 'ff' ? (parts[3] === 'br' && (f ? live(() => day.waves[+pp![1]!].kind) === 'sc' : tail(r.lbl) === 'in-time') ? 'In-time' : fieldWord(parts[3]))
+        : pfx === 'ff' ? (parts[3] === 'br' && (f ? live(() => day.waves[+pp![1]!].kind) === 'sc' : tail(r.lbl) === 'in-time') ? 'In-time'
+          /* a standby line's TO / LD are its shift's START / END, as the week and the board head them ([STANDBY-UNDO-WORDS], 20 Oct 26)
+             — a row gone since keeps the word its frozen label was written with, as the in-time does */
+          : (parts[3] === 'to' || parts[3] === 'ld') && (f ? live(() => day.waves[+pp![1]!].standalone) : /^(start|end)$/.test(tail(r.lbl))) ? (parts[3] === 'to' ? 'Start' : 'End')
+          : fieldWord(parts[3]))
         /* a standby row has no stores: its st: change is the MAIN / SPARE badge or the Flies tick ([STANDBY-FLIES]; walker C,
            19 Oct 26 — "Standing by → Flies" was headed "stores") */
         /* a standby row's badge flip and Flies tick are logged on its fr: address too (the fresh read's F1): headed by what

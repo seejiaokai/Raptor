@@ -1348,7 +1348,7 @@ by a test; pv-suppressed) · overall notes · overall programme · flying waves
 · **Duties** (`.sb-panel.duty`) · **Sims** (`.simr`, AMT/OFT rows, its
 planning note inside the panel) · **Ground Programme** (`.grnd`; the `· scheduler` qualifier was dropped 22 Aug 26)
 · **Personal Inputs** (`.pinp`, with the accept controls) · **Unavailable**
-(`.unav`). **Every time reads hh:mm** (`08:00` — owner, 30 Aug 26, reversing
+(`.unav`). **A time box left reads hh:mm at once** (20 Oct 26, `[BOARD-TAB-FOLD]`): "1000" typed on Edit Schedule's week and left by Tab or a press on the next box shows 10:00 straight away — an input's own start / end too — though the redraw waits while the caret is in another box (`textedit.ts routeFocusOut`); never rewritten while it still holds the caret. Pins: `undo-wire.test.ts`, `e2e/rallybox.spec.ts` RB12. **The Scheduler Board does not yet** — its half was built and taken back out (it turned GitHub's D1047 phone test red on Linux only): [BOARD-TAB-FOLD-BOARD]. **Under 375 wide a standby wave's first heading** takes START / END's 7px and wraps a longer name whole (`[SA-HEAD-CLIP-360]`, `09-week-responsive.css`; RB14). **Every time reads hh:mm** (`08:00` — owner, 30 Aug 26, reversing
 the short-lived 16/29 Aug 4-digit passes: "most of the timing format is 08:00 …
 make sure everything follows that format consistently"). hh:mm is the app's
 native form (the read-only reference gate pins `fmtT`/`fmtTxt`/`hhmm` to it;

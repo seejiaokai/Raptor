@@ -35,6 +35,12 @@ const pairOnBar = () => ({
 })
 
 beforeAll(async () => {
+  /* THE TWO PAGES THE APP LOADS ON FIRST VISIT (Shell.tsx — the Leave War and the Tracker, `lazy`) LOADED UP FRONT
+     ([TOPBAR-PAIR-TEARDOWN-LOG], 20 Oct 26): on GitHub's slower machine their loading finished after this file's last
+     test, and React's "a suspended resource finished loading" warning reached a console already torn down —
+     `unit (raptor 3/6)` red twice with every test green ("Closing rpc while onUserConsoleLog was pending"). Loaded here,
+     each first visit below finds its page ready inside its own act(). */
+  await Promise.all([import('../leavewar/LeaveWarPage'), import('../tracker/TrackerPage')])
   initStore(); accountsLoad()
   host = document.createElement('div')
   document.body.appendChild(host)

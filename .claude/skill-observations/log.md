@@ -1451,3 +1451,17 @@ prove each by acting through it after the rollback, not by reading what it shows
 **Suggested improvement:** Add to walk-scripts.md §4's traps: two taps at one point closer than about half a second are a double tap; wait ~600ms between taps on the same box unless the step is about a second tap, and print the box's selection after a tap when a typing step fails.
 
 **Principle:** A scripted gesture sequence runs faster than a person can; check that its timing does not turn two gestures into a different one before blaming the app.
+
+### Observation 648: Two jobs in one checkout — `git add -A` sweeps the other job's untracked files into a commit
+**Status:** OPEN
+**Date:** 20 Oct 26
+**Session context:** two jobs one after the other in one worktree ([CI-SPLIT-SLOW-JOBS] on its branch, then the standby batch on a branch from main), switching branches in the one checkout (the one-checkout-per-session rule)
+**Skill:** New skill candidate: none — belongs in raptor-port/docs/gates-and-deploy.md or the session workflow notes
+**Type:** open-source
+**Phase/Area:** committing after a branch switch
+
+**Issue:** The second job's before-pictures and script were untracked files when I switched back to the first job's branch to commit its records; `git add -A` committed them into the first job's branch. Caught by reading the commit's file list, undone with a soft reset and a commit of named paths.
+
+**Suggested improvement:** When one checkout carries more than one job, stage by named paths, never `git add -A` / `git add .`; read `git show --stat HEAD` after every commit made right after a branch switch.
+
+**Principle:** Untracked files follow a branch switch; a whole-tree stage after a switch commits another job's work. Stage what this commit is about, by name.

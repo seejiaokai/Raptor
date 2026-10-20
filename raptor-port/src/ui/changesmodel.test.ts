@@ -529,4 +529,20 @@ describe('a standby row on the changes window', () => {
       expect(itemOf(row({ key, from: '', to: 'late show' })).detail).toMatch(/remarks$/)
     } finally { DAYS_SF[1].waves.pop() }
   })
+  /* [STANDBY-UNDO-WORDS] (20 Oct 26): an SC, AVALON or BB line's TO / LD boxes are its shift's START / END (the week's and
+     the board's headings, D1083, D1085) — the changes window said "Take-off" / "Land"; a row gone since keeps its word */
+  it('a standby line’s start and end are named Start and End, live and gone; a flying line keeps Take-off', () => {
+    for (const kind of ['sc', 'avalon', 'bb']) {
+      const w: any = makeStandalone(kind); DAYS_SF[1].waves.push(w); const gi = DAYS_SF[1].waves.length - 1
+      try {
+        expect(itemOf(row({ key: ridKeySF(`ff:1.${gi}.0.to`, DAYS_SF), lbl: 'AV · start' })).detail, kind).toBe('Start')
+        expect(itemOf(row({ key: ridKeySF(`ff:1.${gi}.0.ld`, DAYS_SF), lbl: 'AV · end' })).detail, kind).toBe('End')
+        expect(itemOf(row({ key: ridKeySF(`ff:1.${gi}.0.br`, DAYS_SF), lbl: 'AV · brief' })).detail, kind).toBe(kind === 'sc' ? 'In-time' : 'Brief')
+      } finally { DAYS_SF[1].waves.pop() }
+    }
+    expect(itemOf(row({ key: 'ff:1.9.0.to', lbl: 'AV · start' })).detail, 'a standby row gone since').toBe('Start')
+    expect(itemOf(row({ key: 'ff:1.9.0.ld', lbl: 'AV · end' })).detail, 'a standby row gone since').toBe('End')
+    expect(itemOf(row({ key: 'ff:1.9.0.to', lbl: 'VL · take-off' })).detail, 'a flying row gone since').toBe('Take-off')
+    expect(itemOf(row({ key: 'ff:1.0.0.to', lbl: 'VL · take-off' })).detail, 'a live flying row').toBe('Take-off')
+  })
 })

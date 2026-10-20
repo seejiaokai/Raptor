@@ -24,6 +24,7 @@ import { parseHideDetail } from '../engine/hidedetail'
 import { REPORTING_LABEL } from '../engine/reporting'
 import { DAYS } from '../engine/data'
 import { posKey } from '../engine/rowids'
+import { isStandalone } from '../engine/waves'
 
 /* a person's callsign by id, for the Leave War's records (its ids carry the person, not his name) — installed by the
    app (state/undo-wire.ts), read LIVE when the entry is recorded; null when none is installed (tests). `defaultOf` —
@@ -118,10 +119,16 @@ function genericLabel(entry: UndoEntry): string {
 const TIME_WORD: Record<string, string> = {
   to: 'a take-off time', ld: 'a landing time', br: 'a brief time', rl: 'a rally time', str: 'a start time', end: 'an end time',
 }
-const scLineKey = (key: string) => {
+/* the wave a formation key sits in, read live (a rid key resolved to its place first) */
+const waveOfKey = (key: string): any => {
   const pk = posKey(key, DAYS), a = String(pk == null ? key : pk).slice(3).split('.')
-  return ((DAYS as any)[+a[0]!]?.waves?.[+a[1]!]?.kind) === 'sc'
+  return (DAYS as any)[+a[0]!]?.waves?.[+a[1]!]
 }
+const scLineKey = (key: string) => waveOfKey(key)?.kind === 'sc'
+/* A STANDBY LINE'S TIMES ARE ITS SHIFT'S START AND END ([STANDBY-UNDO-WORDS], 20 Oct 26): on an SC, AVALON or BB line the
+   week heads those two boxes START / END (D1083) and the board START / END (D1085), so Undo says so — not "a take-off
+   time" / "a landing time"; AVALON's and BB's B stays "a brief time", SC's "an in-time" (above) */
+const STANDBY_TIME_WORD: Record<string, string> = { to: 'a start time', ld: 'an end time' }
 export function textLabel(key: string | undefined): string | null {
   if (!key) return null
   const c = key.indexOf(':')
@@ -129,6 +136,7 @@ export function textLabel(key: string | undefined): string | null {
   const pre = key.slice(0, c), last = key.slice(c + 1).split('.').pop() || ''
   /* an SC line's B box is its crew's in-time, not a brief (owner, 24 Aug 26; [SC-B-CHANGE-SAYS-BRIEF]) */
   if (pre === 'ff' && last === 'br' && scLineKey(key)) return 'an in-time'
+  if (pre === 'ff' && STANDBY_TIME_WORD[last] && isStandalone(waveOfKey(key))) return STANDBY_TIME_WORD[last]
   if ((pre === 'ff' || pre === 'dr' || pre === 'sr' || pre === 'gr' || pre === 'ap') && TIME_WORD[last]) return TIME_WORD[last]
   switch (pre) {
     case 'dn': return 'a day note'

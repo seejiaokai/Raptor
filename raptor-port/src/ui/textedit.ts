@@ -177,7 +177,11 @@ export function routeFocusOut(e: FocusEvent) {
       const v = boxText(p); heal(tx, TIME_TXT.test(p) ? fmtTxt(v) : String(v == null ? '' : v))
       return
     }
-    if (txtSet(p, tx.textContent)) { commitText(p, () => markEdit()); txtCommit() }
+    /* the box left shows the time as saved ([BOARD-TAB-FOLD]'s week half, 20 Oct 26): "0610" typed and left by Tab is
+       saved 06:10, but txtCommit's repaint waits while the caret is in another box, so the box kept reading "0610" until
+       a press elsewhere — it is healed to the folded time now, as an unchanged clock is above; not while the caret is still in
+       it (the window lost the focus — the blind read's F3: the place being typed would be lost) */
+    if (txtSet(p, tx.textContent)) { commitText(p, () => markEdit()); if (TIME_TXT.test(p) && document.activeElement !== tx) heal(tx, fmtTxt(txtGet(p))); txtCommit() }
     else { const v = txtGet(p); heal(tx, TIME_TXT.test(p) ? fmtTxt(v) : String(v == null ? '' : v)) }
     return
   }
@@ -200,7 +204,8 @@ export function routeFocusOut(e: FocusEvent) {
     const shown = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)
     if (String(ip.textContent || '').trim() === String(shown).trim()) return
     const ok = setInpField(inp, field as any, ip.textContent, who)
-    if (ok) txtCommit()
+    /* an input's start / end left after a save reads the time as saved ([BOARD-TAB-FOLD]; the blind read's F2) */
+    if (ok) { if (field !== 'rmks' && document.activeElement !== ip) heal(ip, inpTimeText(inp, field)); txtCommit() }
     else heal(ip, field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field))
     return
   }
