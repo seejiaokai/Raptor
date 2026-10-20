@@ -1,0 +1,22 @@
+import { launch, login, go, shot } from './common.mjs'
+const size = process.argv[2] || 'desktop'
+const tag = size === 'phone' ? 'ph' : 'dk'
+const { browser, page, errors } = await launch(size)
+await login(page); await go(page, 'editsched')
+await page.locator('.airbtn[data-air]:visible').first().click(); await page.waitForTimeout(400)
+const box = page.locator('#airBody [data-airi]').first()
+await box.click(); await page.keyboard.press('End'); await page.keyboard.type(' ABC', { delay: 40 })
+const st = () => page.evaluate(() => { const a = document.activeElement; return `active=${a && a.tagName} airi=${a && a.dataset && a.dataset.airi} caret=${a && a.selectionStart}/${a && a.value && a.value.length} value="${a && a.value}"` })
+console.log('before', await st())
+await page.evaluate(() => { window.__air = document.querySelector('#airBody [data-airi]'); window.__mut = 0; new MutationObserver(r => { window.__mut += r.length }).observe(document.querySelector('#airpop'), { childList: true, subtree: true, attributes: true, characterData: true }); window.__w0 = document.querySelector('#eWeek').innerHTML; window.__badge0 = document.body.innerText.match(/\d+ issues/g)?.join(',') })
+// CONTROL repaint that changes visible data: the crew-rest setting through the page's own apply hook (validate + notify)
+await page.evaluate(() => { window.VCONF.crewRest = 60 * 24; window.ruleApply() })
+await page.waitForTimeout(800)
+const r = await page.evaluate(() => ({ weekChanged: window.__w0 !== document.querySelector('#eWeek').innerHTML, issuesBefore: window.__badge0, issuesAfter: document.body.innerText.match(/\d+ issues/g)?.join(','), winMut: window.__mut, same: window.__air === document.querySelector('#airBody [data-airi]') }))
+console.log('control repaint:', JSON.stringify(r))
+console.log('after', await st())
+await shot(page, `B5-${tag}-traffic-after-real-repaint`)
+await page.keyboard.type('Q', { delay: 30 }); console.log('typed Q ->', await st())
+await page.evaluate(() => { window.VCONF.crewRest = 720; window.ruleApply() })
+console.log('ERRORS', JSON.stringify(errors))
+await browser.close()

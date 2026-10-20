@@ -206,6 +206,9 @@ describe('the five fields that write their own model', () => {
     expect($('[data-airi="0"]'), 'the same box is still on screen').toBe(box)
     expect(document.activeElement, 'the caret is still in it').toBe(box)
     expect(box.value).toBe('1 X A / B / C / DX')
+    /* a change behind the window that keeps the row count (an undo, a sync) still reaches the boxes */
+    await act(async () => { w.traffic[1] = 'CHANGED'; notify() })
+    expect(($('[data-airi="1"]') as HTMLInputElement).value).toBe('CHANGED')
     /* a row added still redraws the list */
     await click($('#airAdd'))
     expect($$('[data-airi]').length).toBe(3)

@@ -508,7 +508,7 @@ describe('the Logic page keeps the typing and the keyboard through a repaint; Do
 })
 
 /* W2 (the Codex stack check, 5 Oct 26): the button's WORDS are a squadron's wording preference (D511), not a rule
-   any check reads — so they never light the RULES MODIFIED stamp or the "schedule is checked against them" strip;
+   any check reads — so they never light the "changed from the squadron standard" strip;
    the row's own mark and Reset to standard still know them. */
 describe('W2 the words the + In-time / Rally button fills in are not a modified RULE', () => {
   it('words alone: no strip, Reset still offered; a number brings the strip back', async () => {
@@ -539,7 +539,6 @@ describe('D1098: a changed rule puts no RULES MODIFIED tag on View-only Sched or
       await click($$('.nav a[data-page]').find(a => a.dataset.page === pg)!)
       expect(document.querySelector('.schedbanner, #vBanner, #eBanner'), pg + ' draws no banner').toBeNull()
       expect(document.body.classList.contains('page-rules-off'), pg + ' sets no stamp mark').toBe(false)
-      expect(document.body.textContent || '', pg + ' shows no tag').not.toContain('RULES MODIFIED')
     }
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'logic')!)
     expect(($('#lgOff') as HTMLElement).hidden).toBe(false)
