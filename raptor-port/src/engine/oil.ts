@@ -173,6 +173,32 @@ export const rowItemKey=(rid:any)=>rid?`r:${rid}`:'';
 /* a ground row's item: the input it came from, else the row itself */
 export const groundItemKey=(g:any)=>(g&&g.src)?inputItemKey(g.src):rowItemKey(g&&g.rid);
 
+/* A FLYING LINE'S OIL WINDOW, ONE BODY ([OIL-ZERO-SPAN-SORTIE], 20 Oct 26): its report — the earliest applicable entered
+   in-time / Rally, the evening before when the clock is later than the take-off (D503), else the nominal lead before the
+   take-off (D591, D592) — to its landing plus the debrief. Null when that measures nothing. The credit (dayOilWork below)
+   and the screen's words about a line whose take-off is its landing (fltMeasuresNothing, validate.ts FLT_NO_LEN_SAYS) both
+   read this, so a line the screen says earns can never be one the credit pays nothing for, nor the other way round. */
+export function fltOilWin(wv:any,f:any,lead:number,deb:number,lines?:any):[number,number]|null{
+  const st=parseHM(f.to),en=parseHM(f.ld);
+  if(st==null||en==null)return null;
+  const rep=resolveReporting(wv,f,st,lines||parseReportingLines({...wv,intimes:Array.isArray(wv.intimes)?wv.intimes:[]})).report;
+  const s=rep!=null?rep:st-lead;let e=(en<st?en+1440:en)+deb;
+  if(e<s)e+=1440;
+  return e>s?[s,e]:null;   // a zero-length window measures nothing and mints nothing
+}
+/* A SORTIE THAT MEASURES NOTHING (Astra's finding 4 on [OIL-WORK-START], 6 Oct 26 — [OIL-ZERO-SPAN-SORTIE]). D49: a line
+   typed with the SAME take-off and landing still earns, from the report before it and the debrief after it. With neither —
+   the entered in-time IS the take-off and the Logic page's debrief is zero, or both leads at zero — it measures nothing and
+   its crew earn nothing (D31: credit follows the times written). The day then says so: the advisory stops promising the
+   report and debrief, and the "no usable times" list names the line. Today's Logic values, as every warning reads them.
+   A standalone wave is not a sortie — its own rule is the zero shift (dayOilBlind). */
+export function fltMeasuresNothing(wv:any,f:any):boolean{
+  if(!f||f.cx||isStandalone(wv))return false;
+  const st=parseHM(f.to),en=parseHM(f.ld);
+  if(st==null||en==null)return false;
+  return fltOilWin(wv,f,VCONF.reportLead,VCONF.debrief)==null;
+}
+
 /* every person's work for one day blob, each span tagged with its kind:
    id -> {s,e,src}[]. The envelope of a person's spans is the day's measure.
    opts.expandAll resolves a sentinel puck (ALL / ALL AVAIL) into the people it
@@ -266,8 +292,8 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
       item=rowItemKey(f.rid);                            // the LINE is the item a scheduler taps
       const st=parseHM(f.to),en=parseHM(f.ld);
       /* the line's report: its earliest applicable entered in-time / Rally — the evening before when the clock is later
-         than the take-off (D503), which lengthens THIS day's span and no other's (D42) — else the nominal time (D592) */
-      const rep=sc||st==null||en==null?null:resolveReporting(wv,f,st,lines!).report;
+         than the take-off (D503), which lengthens THIS day's span and no other's (D42) — else the nominal time (D592);
+         worked out in fltOilWin above, the one body the screen's words about the line read too ([OIL-ZERO-SPAN-SORTIE]) */
       /* SC shift = its written window, started at its typed B — the crew's in-time — where that is EARLIER (owner, D606,
          7 Oct 26: "SC B if filled u can count it as work hours as well and OIL earned"; the one body crew rest reads it
          with, on the lead this walk was handed, so a published day's evening-before reading is its own — D592 (4)). A
@@ -282,7 +308,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
       const scB=scWin?scReport(f,scWin[0],lead):null;
       const win=sc?(scWin&&scB!=null&&scB<scWin[0]?[scB,scWin[1]] as [number,number]:scWin)
                   :(st==null||en==null?null
-                    :w2(rep!=null?rep:st-lead,(en<st?en+1440:en)+deb));
+                    :fltOilWin(wv,f,lead,deb,lines));
       if(!win)return;
       /* A SPARE LINE IS CAPABLE NOW, so the switch is drawn on it (D24/D32:
          wherever a puck may land the switch must be offered). It used to be
@@ -462,7 +488,7 @@ export function dayOilBlind(day:any):string[]{
   (day.waves||[]).forEach((wv:any)=>{
     (wv.formations||[]).forEach((f:any)=>{
       if(f.cx)return;
-      if(readable(f.to,f.ld)&&!zeroShift(wv,f))return;
+      if(readable(f.to,f.ld)&&!zeroShift(wv,f)&&!fltMeasuresNothing(wv,f))return;
       const crew:any[]=[];
       (f.aircraft||[]).forEach((ac:any)=>{if(!ac.cx){crew.push(ac.p);crew.push(ac.w);}});
       if(!named(crew))return;

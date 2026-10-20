@@ -33,14 +33,15 @@
      those are the only days that earn.
 
    AN OVERNIGHT LINE IS NOT A MISTAKE (D42) and must stay silent. */
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { INPUTS } from './inputs'
 import { HOOKS } from './hooks'
 import { SCHED } from './publish'
 import { ensureRowIds } from './rowids'
 import { dayOilWork, dayOilCredits, dayOilBlind, blindDesks, oilCapableItems, rowItemKey } from './oil'
-import { validate } from './validate'
+import { validate, fltNoLenSays } from './validate'
+import { VCONF } from './rules'
 import { makeStandalone } from './waves'
 
 const DSNAP = JSON.stringify(DAYS)
@@ -337,5 +338,61 @@ describe('the day names a flying row as a flying row, and says what is actually 
     ensureRowIds(DAYS)
     expect(dayOilBlind(DAYS[SAT])).toEqual(['SDO'])
     expect(blindDesks(['SDO']).desk, 'the wrapper still fits a bare role name').toBe(true)
+  })
+})
+
+/* [OIL-ZERO-SPAN-SORTIE] (Astra's finding 4 on [OIL-WORK-START], 6 Oct 26 — built 20 Oct 26). D49's sortie earns from
+   the report before it and the debrief after it. Take both away — its entered in-time IS the take-off and the Logic
+   page's debrief is zero, or both Logic leads at zero — and it measures nothing and earns nothing (D31, pinned as built in
+   oilworkstart.test.ts). What was wrong was the WORDS: the advisory still said "the day still earns from the report and
+   debrief", and the day's "no usable times" list did not name the line. Every place that prints the sentence reads one
+   body (validate.ts fltNoLenSays) and the list reads the credit's own window (oil.ts fltOilWin), so both are pinned here. */
+describe('a nought-minute sortie with no report and no debrief says it earns nothing', () => {
+  const save = { reportLead: VCONF.reportLead, debrief: VCONF.debrief }
+  afterEach(() => { VCONF.reportLead = save.reportLead; VCONF.debrief = save.debrief })
+  const zeroSortie = () => {
+    const f = onlyLine(SAT, '09:00', '09:00')
+    ;(DAYS[SAT] as any).waves[0].intimes = ['IN TIME 0900']   // he reports at the take-off itself
+    VCONF.debrief = 0                                          // and the Logic page has no debrief after landing
+    return f
+  }
+
+  it('THE FACT, unchanged: it credits nobody', () => {
+    zeroSortie()
+    expect(credits(SAT).bane, 'nothing written to measure — D31').toBeUndefined()
+  })
+
+  it('the advisory no longer promises the report and debrief it has not got', () => {
+    const f = zeroSortie()
+    const w = advOn(SAT, 'FLT_NO_LEN')
+    expect(w, 'the times are still plainly wrong, so it is still flagged').toHaveLength(1)
+    expect(w[0].msg).not.toContain('still earns from the report and debrief')
+    expect(w[0].msg).toMatch(/earns nobody any OIL/)
+    expect(fltNoLenSays(f, (DAYS[SAT] as any).waves[0]), 'the marked box\'s own words are the warning\'s').toBe(w[0].msg.replace(/^RAP 1 /, ''))
+  })
+
+  it('and the day names the line in its "no usable times" list', () => {
+    zeroSortie()
+    expect(dayOilBlind(DAYS[SAT])).toEqual(['the RAP 1 line'])
+    expect((validate().byDay[SAT]?.warns ?? []).some((x: any) => x.code === 'OIL_NO_TIMES' && /RAP 1/.test(x.msg))).toBe(true)
+  })
+
+  it('both Logic leads at zero and no in-time: the same', () => {
+    onlyLine(SAT, '09:00', '09:00')
+    VCONF.reportLead = 0; VCONF.debrief = 0
+    expect(credits(SAT).bane).toBeUndefined()
+    expect(advOn(SAT, 'FLT_NO_LEN')[0].msg).toMatch(/earns nobody any OIL/)
+    expect(dayOilBlind(DAYS[SAT])).toEqual(['the RAP 1 line'])
+  })
+
+  it('THE CONTROLS: any report before it, or any debrief after it, keeps D49 whole', () => {
+    zeroSortie(); VCONF.debrief = 1                             // one minute of debrief
+    expect(credits(SAT).bane).toBe(0.5)
+    expect(advOn(SAT, 'FLT_NO_LEN')[0].msg).toContain('still earns from the report and debrief')
+    expect(dayOilBlind(DAYS[SAT])).toEqual([])
+    ;(DAYS[SAT] as any).waves[0].intimes = ['IN TIME 0859']; VCONF.debrief = 0   // one minute of report
+    expect(credits(SAT).bane).toBe(0.5)
+    expect(advOn(SAT, 'FLT_NO_LEN')[0].msg).toContain('still earns from the report and debrief')
+    expect(dayOilBlind(DAYS[SAT])).toEqual([])
   })
 })

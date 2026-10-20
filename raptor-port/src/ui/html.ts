@@ -15,7 +15,7 @@ import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 /* RANK left with the focus-scoped trace: ranking the CR chip against the day's
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
-import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, FLT_NO_LEN_SAYS, versionFaceWarn, withVersionWarn } from '../engine/validate'
+import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, fltNoLenSays, versionFaceWarn, withVersionWarn } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass } from '../engine/publish'
 import { verSeq } from '../engine/verid'
@@ -1937,7 +1937,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
            emits nothing for a warning to resolve into. Emitting it everywhere
            broke both — a focused live warning lit a box inside last week's
            paper, and the tap could scroll into one. */
-        const badAtt=noLen?`${PV?'':` data-warnkey="${fp}.ld"`} title="${esc((f.cs||w.label||'A flying line')+' '+FLT_NO_LEN_SAYS(parseHM(f.to),sa))}"`:'';
+        const badAtt=noLen?`${PV?'':` data-warnkey="${fp}.ld"`} title="${esc((f.cs||w.label||'A flying line')+' '+fltNoLenSays(f,w))}"`:'';
         h+=`<div class="form${rowCls(f)}"${HOOKS.missionRoleEnabled()?` data-role-formation="${esc(f.rid||'')}" data-role-day="${di}"`:''}>
           <div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa?'var(--san)':`var(--${mColor(f.msn)})`}"></span>${ted(fp+'.cs',f.cs,ed,'ntx')}</b>${ted(fp+'.msn',f.msn,ed,'','i')}</div>
           ${sa

@@ -10,7 +10,7 @@ import { seedRunIn, datedRestSeed, dayHidesIn, nextMondayWorked, nextMondayHides
 import { setWorld, setFiling, clearFiling } from './world'
 import { CURWEEK, isStandalone, saExempt, saAnyFlies } from './waves'
 import { DAYS } from './data'
-import { dayOilBlind, blindDesks } from './oil'
+import { dayOilBlind, blindDesks, fltMeasuresNothing } from './oil'
 import { oilWouldEarn, oilOldBlockCrowd, oilEvidenceOf } from './oilev'
 import { keyDay, seatRow } from './keys'
 import { rowPlaces } from './slots'
@@ -289,14 +289,20 @@ export function fltNoLen(f:any):boolean{
    AVALON, BB — has no such padding; its window IS the written window, so typed
    08:00–08:00 it measures nothing and pays nobody. Telling a scheduler that
    shift "still earns from the report and debrief" was false, on the wave the
-   squadron works most weekends, about money. */
-export const FLT_NO_LEN_SAYS=(st:any,sa?:any)=>`takes off and lands at the same time (${hm24(st)}) — one of the two is wrong; ${sa?'a shift with no length earns nobody any OIL until it is fixed':'the day still earns from the report and debrief'}`;
+   squadron works most weekends, about money.
+   AND A SORTIE WITH NOTHING ROUND IT ([OIL-ZERO-SPAN-SORTIE], 20 Oct 26): its entered in-time the take-off and the
+   Logic page's debrief zero (or both leads zero), the sortie has no report and no debrief either, so it earns nobody any
+   OIL — said so, and named in the day's "no usable times" list (oil.ts fltMeasuresNothing). `none` is that fact. */
+export const FLT_NO_LEN_SAYS=(st:any,sa?:any,none?:any)=>`takes off and lands at the same time (${hm24(st)}) — one of the two is wrong; ${sa?'a shift with no length earns nobody any OIL until it is fixed':none?'with no report before it and no debrief after it, the line earns nobody any OIL until it is fixed':'the day still earns from the report and debrief'}`;
+/* the sentence's tail for one line, the facts read off the line and its wave — what every marked box's title and the
+   warning both print, so no caller works out "is it a shift" or "does it measure anything" for itself */
+export const fltNoLenSays=(f:any,wv:any)=>FLT_NO_LEN_SAYS(parseHM(f.to),isStandalone(wv),fltMeasuresNothing(wv,f));
 /* the 7-day run's sentence — one body for the warning and for the dotted mark that points at it from the days before
    (the mark carries the words its warning will have, so a hide of that warning is found — [WARN-HIDE-KEPT]) */
 const runSays=(id:any,n:any)=>`${PEOPLE[id]?PEOPLE[id].cs:id} is on the programme ${n} days in a row — ${VCONF.maxRun} is the limit, so a break day is due`;
 /* a nought-minute line's sentence — one body for the warning and for the next-week preview, which draws the line's red
    time box without a warning list and asks whether THAT warning is hidden (ui/peek.ts) */
-export const fltNoLenMsg=(f:any,wv:any)=>`${f.cs||wv.label||'A flying line'} ${FLT_NO_LEN_SAYS(parseHM(f.to),isStandalone(wv))}`;
+export const fltNoLenMsg=(f:any,wv:any)=>`${f.cs||wv.label||'A flying line'} ${fltNoLenSays(f,wv)}`;
 /* a ring is the worst of a man's warnings, a chip the highest — the two merges every mark goes through (the day loop and
    shownOf's replay share them) */
 const markWorse=(m:any,di:any,id:any,s:any)=>{m[di]=m[di]||{}; const c=m[di][id]; if(!c||SEVR[s]>SEVR[c])m[di][id]=s;};

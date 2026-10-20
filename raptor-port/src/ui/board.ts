@@ -9,7 +9,7 @@ import { onCommon } from '../engine/grouprows'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { REPORTING_LABEL, reportingIssuesForWave } from '../engine/reporting'
-import { WARN, validate, WCODE, wlbl, FLT_NO_LEN_SAYS } from '../engine/validate'
+import { WARN, validate, WCODE, wlbl, fltNoLenSays } from '../engine/validate'
 import { shownWarns } from '../engine/warnhide'
 import { hhmm, hm24, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
@@ -240,7 +240,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
         /* the ADDRESS only on live paper, like the week's (ui/html.ts): a
            frozen version preview keeps the MARK — the line went out that way —
            but answers to no live warning. */
-        ? `${pv ? '' : ` data-warnkey="${fp}.ld"`} title="${esc((f.cs || w.label || 'A flying line') + ' ' + FLT_NO_LEN_SAYS(parseHM(f.to), sa))}"`
+        ? `${pv ? '' : ` data-warnkey="${fp}.ld"`} title="${esc((f.cs || w.label || 'A flying line') + ' ' + fltNoLenSays(f, w))}"`
         : ''
       /* stoRO, not !pv (reviewer-found residual, 9 Aug 26): the ghost is a
          SEPARATE clickable element from the .tm brief input right next to
