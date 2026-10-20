@@ -46,7 +46,7 @@
 # docs/handpass, docs/mock, scripts/handpass), none of which a gate reads (checked:
 # the unit tests read only written guides in raptor-port/docs - data-model.md,
 # engine-rules.md, remarks-vocabulary.md - which stay). So every GitHub leg now
-# checks out WITHOUT those four folders (a sparse checkout; actions/checkout then
+# checks out WITHOUT those four folders (his word, D1091: "don't download the photos to save time"; a sparse checkout; actions/checkout then
 # fetches only the files it lays down, 79 MB), and the slow legs are split again:
 # the scheduler's unit set in SIX, its browser set in FOUR, the Leave War desktop
 # browser set in TWO. Nineteen legs run at once - inside the free plan's twenty
