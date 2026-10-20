@@ -68,7 +68,8 @@ scrolls it sideways: `inputs.md` (D893).
 
 | # | Date | The rule |
 |---|---|---|
-| D1100 | 21 Oct 26 | One app is built for every squadron and aircraft type (F-15, F-16, F-35), each squadron configuring it inside the app, with an aircraft-type setting that carries its rules; detachments and squadrons sharing people by day or period come at the end, after the F-15 app's faults are fixed, and work before then avoids what would have to be redone. |
+| D1101 | 21 Oct 26 | The app is deployed separately for each aircraft type — F-15, F-16, F-35 — each with its own database; one code base still serves them all (D1100), and the squadrons of one type, with their detachments, share that type's database. |
+| D1100 | 21 Oct 26 | One app is built for every squadron and aircraft type (F-15, F-16, F-35), each squadron configuring it inside the app, with an aircraft-type setting that carries its rules; detachments and squadrons sharing people by day or period come at the end, after the F-15 app's faults are fixed, and work before then avoids what would have to be redone. — changed by D1101 |
 | D993 | 18 Oct 26 | Quals' pinned header row follows the table sideways by the browser itself, as the Leave War's pinned date row does, so it keeps up with the table on his iPhone; only that row changes, and the Leave War's is left as it is. |
 | D937 | 16 Oct 26 | On a phone, Quals' "Save changes" reads "Save" so the filter keeps room to type on the smallest phones while editing; and Quals opens at its top — its row of buttons in sight — wherever it is opened from, as the Inputs page does. |
 | D935 | 16 Oct 26 | Quals' row of buttons is built as drawn: one row at 36 — the date box that does nothing removed, "Export to Excel" reading "Export" on a phone — and the paragraph under it ("similar to a LoX…", with its links) is deleted whole. |

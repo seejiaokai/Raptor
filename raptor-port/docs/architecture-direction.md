@@ -78,7 +78,7 @@ would turn every one of those into a distributed-consistency problem. Rule of
 thumb: one team, one deploy, one database, until a measured reason appears.
 
 **(c) A modular monolith on the front end, one backend service, one database
-(recommended).** Keep the three modules in one codebase and one deploy, with
+(recommended).** *(One of each for every aircraft type's deployment — D1101, §3.)* Keep the three modules in one codebase and one deploy, with
 the seams they already have, and add the missing half: a single backend that
 owns the data and the rules that must hold regardless of which screen writes.
 Each module gets a written API contract; no module reads another module's
@@ -154,6 +154,8 @@ the squadrons of one aircraft type; on a puck a small colour mark, never text th
 is built before the database step (`OUTSTANDING.md` `[XFER]`).
 
 **One app for every squadron and aircraft type; detachments; lending a man (owner, 21 Oct 26 — D1100).** The app will serve F-15, F-16 and F-35 squadrons from ONE code base: a change is made once, and each squadron configures the app inside it. An **aircraft-type setting** brings its own settings, the rule checks included — rules common to every type are shared, each squadron keeps its quirks (a single-seat jet's rules and the back-seat switch, D1099, are among them). A **detachment** — a squadron split across two places for operations — has its own schedule, its people moved to it, so its scheduler sees only who is with him. The two F-15 squadrons may **share one app**: each sees the other's schedule, and a man may be lent to the other squadron for a day or a period as its manpower — flying with one in the morning and teaching academics at the other in the afternoon, so clashes and crew rest are checked across both. **Undecided, his:** whether every squadron sits in one shared system or they are split apart, since combining too much raises the security classification. **When:** at the end, after the F-15 app's faults are fixed; until then, new work keeps squadron- and aircraft-specific choices as settings, never fixed in the code, so none of it is redone.
+
+**Split by aircraft type — a database for each (owner, 21 Oct 26 — D1101, his leaning).** The one code base is deployed separately for each aircraft type, each deployment with its own database: the F-15 squadrons (and their detachments) share the F-15 one, and the F-16 and F-35 squadrons have theirs. "One database" elsewhere in this guide means one for the three modules of a deployment. Two things then cross between databases — a guest flyer from another type (D288, D289) and a man moving from one type to another — and how they do is his question at the database step. One type's deployment holds several squadrons — so far at most two (his word, 21 Oct 26).
 
 ## 4. The order of work
 
