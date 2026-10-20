@@ -560,12 +560,8 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
   background:rgba(59,198,232,.16);color:rgba(59,198,232,.62);border-color:rgba(59,198,232,.3)}
 .dbeak.locked{border-style:dashed}
 .dbeak.locked::before{content:'🔒 ';font-size:9px}
-/* THE WEEK BANNER IS GONE (owner, 15 Sep 26 — item 2): no status text, no AL roll.
-   The #vBanner/#eBanner elements survive ONLY to host the RULES MODIFIED stamp
-   (::after above), so the banner is display:none unless rules are modified, when
-   `.rules-off` reveals just that stamp. */
-.schedbanner{margin:0 20px 8px;display:none}
-.schedbanner.rules-off{display:block;margin-bottom:8px}
+/* THE WEEK BANNER IS GONE (owner, 15 Sep 26 — item 2), and with it, since D1098 (21 Oct 26),
+   the RULES MODIFIED stamp it was left holding. */
 /* ---- AL amendment marks: ONLY the changed item is coloured ----
    Keep in step with AL_COLORS in engine/publish.ts — the banner reads its tint
    from there, everything else from these rules, and the two drifting apart shows

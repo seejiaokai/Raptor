@@ -231,13 +231,13 @@ describe('the thresholds are editable, and only by an admin (tfin B52)', () => {
     })
   }
 
-  it('Edit opens live fields, a change reaches the engine, and the stamp goes up', async () => {
+  it('Edit opens live fields, a change reaches the engine, and the strip goes up', async () => {
     await click($('#lgEdit'))
     const f = $('#lgBody input[data-lgset="crewRest"]') as HTMLInputElement
     expect(f).toBeTruthy()
     await setField(f, '10h')
     expect(VCONF.crewRest).toBe(600)
-    expect(document.body.classList.contains('page-rules-off')).toBe(true)
+    expect(($('#lgOff') as HTMLElement).hidden).toBe(false)
     /* the changed value says so on its own row: its standard, and its own Reset while editing */
     expect(setRow('crewRest').classList.contains('off')).toBe(true)
     expect(setRow('crewRest').querySelector('.lgstd')!.textContent).toContain('Standard 12h')
@@ -373,7 +373,7 @@ describe('the thresholds are editable, and only by an admin (tfin B52)', () => {
     await click($('#lgReset'))
     expect(VCONF.crewRest).toBe(720)
     expect(SHIFT_HARD.ground).toBe(false)
-    expect(document.body.classList.contains('page-rules-off')).toBe(false)
+    expect(($('#lgOff') as HTMLElement).hidden).toBe(true)
     await click($('#lgDone'))
   })
 
@@ -511,38 +511,39 @@ describe('the Logic page keeps the typing and the keyboard through a repaint; Do
    any check reads — so they never light the RULES MODIFIED stamp or the "schedule is checked against them" strip;
    the row's own mark and Reset to standard still know them. */
 describe('W2 the words the + In-time / Rally button fills in are not a modified RULE', () => {
-  it('words alone: no stamp, no strip, Reset still offered; a number brings both back', async () => {
+  it('words alone: no strip, Reset still offered; a number brings the strip back', async () => {
     const { VCONF, rulesReset } = await import('../engine/rules')
     await click($$('.nav a[data-page]').find(a=>a.dataset.page==='logic')!)
     await act(async () => { rulesReset(); VCONF.reportText = 'RALLY'; notify() })
-    expect(document.body.classList.contains('page-rules-off')).toBe(false)
     expect(($('#lgOff') as HTMLElement).hidden).toBe(true)
     expect(($('#lgReset') as HTMLElement).hidden).toBe(false)
     expect(setRow('reportText').classList.contains('off')).toBe(true)
-    await click($$('.nav a[data-page]').find(a=>a.dataset.page==='viewsched')!)
-    expect(document.body.classList.contains('page-rules-off')).toBe(false)
-    expect($('#vBanner').classList.contains('rules-off')).toBe(false)
     await act(async () => { VCONF.crewRest = 600; notify() })
-    expect(document.body.classList.contains('page-rules-off')).toBe(true)
-    expect($('#vBanner').classList.contains('rules-off')).toBe(true)
     await click($$('.nav a[data-page]').find(a=>a.dataset.page==='logic')!)
     expect(($('#lgOff') as HTMLElement).hidden).toBe(false)
     expect($('#lgOff').textContent).toContain('1 setting changed')
     /* the strip's old "not the published ones" was untrue (D928): a published day keeps its printed B and its OIL */
     expect($('#lgOff').textContent).toContain('A published day keeps its printed B and its OIL until it is published again')
     await act(async () => { rulesReset(); notify() })
-    expect(document.body.classList.contains('page-rules-off')).toBe(false)
+    expect(($('#lgOff') as HTMLElement).hidden).toBe(true)
   })
 })
 
-describe('the stamp does not need the Logic page (audit2 #6)', () => {
-  it('a modified rule stamps the body from the banner path, on any page', async () => {
-    const { VCONF } = await import('../engine/rules')
+describe('D1098: a changed rule puts no RULES MODIFIED tag on View-only Sched or Edit Schedule', () => {
+  it('with crew rest changed, neither schedule page carries the tag or its banner; the Logic strip still says it', async () => {
+    const { VCONF, rulesCheckedOffCount } = await import('../engine/rules')
     const was = VCONF.crewRest
     await act(async () => { VCONF.crewRest = 600; notify() })
-    expect(document.body.classList.contains('page-rules-off')).toBe(true)
+    expect(rulesCheckedOffCount()).toBeGreaterThan(0)
+    for (const pg of ['viewsched', 'editsched']) {
+      await click($$('.nav a[data-page]').find(a => a.dataset.page === pg)!)
+      expect(document.querySelector('.schedbanner, #vBanner, #eBanner'), pg + ' draws no banner').toBeNull()
+      expect(document.body.classList.contains('page-rules-off'), pg + ' sets no stamp mark').toBe(false)
+      expect(document.body.textContent || '', pg + ' shows no tag').not.toContain('RULES MODIFIED')
+    }
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'logic')!)
+    expect(($('#lgOff') as HTMLElement).hidden).toBe(false)
     await act(async () => { VCONF.crewRest = was; notify() })
-    expect(document.body.classList.contains('page-rules-off')).toBe(false)
   })
 })
 

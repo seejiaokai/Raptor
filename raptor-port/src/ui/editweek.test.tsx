@@ -66,7 +66,7 @@ describe('the edit page (tfin)', () => {
     /* the DRAFT/PART-PUBLISHED/APPROVED week-status text is retired (owner, 15
        Sep 26) — the per-day green/DRAFT title tags carry it now. The banner keeps
        only the amendment (AL) roll, which is empty on a fully-draft week. */
-    expect($('#eBanner').textContent!.trim()).toBe('')
+    expect(document.querySelector('#eBanner'), 'the week banner is gone (D1098)').toBeNull()
     expect($$('#eWeek .day:not(.peek) .verchip.draft').length).toBe($$('#eWeek .day:not(.peek)').length)
   })
 
@@ -124,7 +124,7 @@ describe('the edit page (tfin)', () => {
     expect(/ORIG/.test($(`#eWeek .day[data-day="0"] .verchip`)!.textContent!)).toBe(true)
     expect([...$$(`#eWeek .day[data-day="0"] select[data-sign]`)].every((s: any) => s.value === '')).toBe(true)
     /* the PART-PUBLISHED week banner is gone — the day's own tag carries it */
-    expect($('#eBanner').textContent).not.toContain('PART-PUBLISHED')
+    expect(document.querySelector('#eBanner'), 'the week banner is gone (D1098)').toBeNull()
   })
 
   it('an edit on the published day grows a per-day AL button, gated on signing', async () => {
@@ -142,7 +142,7 @@ describe('the edit page (tfin)', () => {
     expect(SCHED.als.length).toBe(1)
     /* the week banner's AL roll is gone (owner, 15 Sep 26 — item 2); the day's own
        green title tag names the issued version now, coloured by AL number (item 3). */
-    expect($('#eBanner').textContent!.trim()).toBe('')
+    expect(document.querySelector('#eBanner'), 'the week banner is gone (D1098)').toBeNull()
     expect(/AL1/.test($(`#eWeek .day[data-day="0"] .verchip`)!.textContent!)).toBe(true)
     expect($$('#eWeek [data-alc="1"]').length).toBeGreaterThanOrEqual(1)
     expect(/AL1/.test($('#alPanel').textContent!)).toBe(true)

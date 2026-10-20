@@ -8,7 +8,6 @@ import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
 import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon } from './icons'
-import { rulesCheckedOffCount } from '../engine/rules'
 import { isAdmin, me, mayViewAsMember } from '../state/perms'
 import { toggleChanges } from './changesopen'
 import { weekNew } from './changesmodel'
@@ -75,10 +74,10 @@ import { UndoPair, SyncChip, BellButton, BellList, globalUndoEngine, trackerUndo
 /* THE WEEK BANNER IS GONE (owner, 15 Sep 26 — item 2). First the week-STATUS
    text went (each day wears its own green issued-version tag / dashed DRAFT tag);
    now the amendment ROLL (.sb-als — one chip per issued AL) goes too, finishing
-   the removal. The only thing the banner still carries is the RULES MODIFIED
-   stamp (::after in scheduler.css), so the #vBanner/#eBanner elements stay as its
-   host — collapsed (display:none) unless rules are modified, when a `.rules-off`
-   class shows just that stamp. No AL roll, no status colour, nothing else. */
+   the removal. The RULES MODIFIED stamp the banner was left holding went too
+   (owner, D1098, 21 Oct 26 — every squadron changes the rules to fit its own, so
+   a changed setting is not flagged on the schedule); the #vBanner/#eBanner holders
+   went with it. The Logic page's own strip still says how many settings differ. */
 
 /* The HL_CHIPS lists moved to ui/hlchips.tsx (23 Aug 26) — one definition,
    three surfaces (view week, edit week, board), the drift-seam doctrine. */
@@ -261,11 +260,6 @@ export function Shell() {
      page switches), DEFERRED — its call sites are setTimeout(hsSync,0), so
      the layout reads never land inside the paint being measured */
   useEffect(() => { const t = setTimeout(updateWeekNav, 0); return () => clearTimeout(t) })
-  /* the RULES MODIFIED stamp rides with the banner, not with the Logic page —
-     the reference's renderStatus comment records the bug: "the stamp used to
-     be set only by renderLogic(), so a reload with saved overrides showed a
-     clean banner until someone happened to open Logic" (audit2 probe #6) */
-  useEffect(() => { document.body.classList.toggle('page-rules-off', !!rulesCheckedOffCount()) })
   /* NO validate() here: the reference never validates during a repaint — every
      mutation path has already validated, and a second engine pass per paint is
      what blew the phone budget */
@@ -303,7 +297,6 @@ export function Shell() {
      so a memoized parent never starves them. */
   const legend = legendHTML()
   const hlSig = [...HLSET].sort().join(',')
-  const rulesOff = rulesCheckedOffCount()
 
   /* computed ONCE per render — the bell's class and the memo deps both read
      it (bug pass, 28 Aug 26: two full INPUTS scans per render was waste);
@@ -524,7 +517,6 @@ export function Shell() {
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div>
           </div>
         </div>
-        <div className={'schedbanner' + (rulesCheckedOffCount() ? ' rules-off' : '')} id="vBanner" />
         <details className="legendbox" id="vLegendBox">
           <summary className="legend-sum">Legend — colours &amp; flags</summary>
           <div className="legend" id="vLegend" dangerouslySetInnerHTML={{ __html: legendHTML() }} />
@@ -538,7 +530,7 @@ export function Shell() {
      lit state render here, so a fold or a search that changes without either
      in the list would paint stale (SEARCH is the toggle's other lit source —
      spec'd as HLOPEN alone, added for the same staleness reason). */
-  ), [page, hlSig, HLOPEN, HLGROUP, SEARCH, rulesOff, legend, CURWEEK])
+  ), [page, hlSig, HLOPEN, HLGROUP, SEARCH, legend, CURWEEK])
 
   /* .editing rides unconditionally with the page since the Edit-mode toggle
      went (owner, 9 Aug 26): being on Edit Schedule IS the edit mode. */
@@ -604,7 +596,6 @@ export function Shell() {
               to this prototype" title was removed (owner, 22 Aug 26) on both
               widths — it carried a stale hardcoded date and being on Edit
               Schedule already says it is the edit surface. */}
-          <div className={'schedbanner' + (rulesCheckedOffCount() ? ' rules-off' : '')} id="eBanner" />
           <ALPanel />
           <details className="legendbox" id="eLegendBox">
             <summary className="legend-sum">Legend — colours &amp; flags</summary>
@@ -632,7 +623,7 @@ export function Shell() {
      without hlSig the chips' .on state would go stale the moment a chip was
      toggled on another surface, and without HLOPEN/SEARCH the fold and the
      toggle's lit state would freeze (same reasoning as the view page's). */
-  ), [page, rulesOff, HIST.ix, HIST.stack.length, hlSig, HLOPEN, HLGROUP, SEARCH, legend, CURWEEK])
+  ), [page, HIST.ix, HIST.stack.length, hlSig, HLOPEN, HLGROUP, SEARCH, legend, CURWEEK])
 
   return (
     /* .save-failed here as well as on the bar: the two movable windows are drawn OUTSIDE the shell (ui/App.tsx), and their
