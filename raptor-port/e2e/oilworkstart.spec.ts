@@ -77,10 +77,10 @@ async function logicLead(page: Page, value: string, minutes: number) {
   const f = page.locator('input[data-lgset="reportLead"]').first()
   if (!(await f.isVisible().catch(() => false))) await page.locator('#lgEdit').click()
   await expect(f).toBeVisible()
-  await expect(async () => {
-    await f.scrollIntoViewIfNeeded(); await f.fill(value); await f.press('Tab')
-    expect(await page.evaluate(() => (window as any).VCONF.reportLead)).toBe(minutes)
-  }).toPass({ timeout: 15_000 })
+  /* typed once: the page no longer redraws its rules under a box being typed in ([LOGIC-REDRAW-DROPS-TYPING], fixed
+     21 Oct 26 — the retry that stood here until then is gone) */
+  await f.scrollIntoViewIfNeeded(); await f.fill(value); await f.press('Tab')
+  await expect.poll(() => page.evaluate(() => (window as any).VCONF.reportLead)).toBe(minutes)
   await go(page, 'editsched')
 }
 const pendChip = (page: Page) => page.locator(`${day} .dpend:not(.dnew):not(.dchg)`).first()

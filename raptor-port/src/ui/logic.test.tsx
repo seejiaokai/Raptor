@@ -385,6 +385,90 @@ describe('the thresholds are editable, and only by an admin (tfin B52)', () => {
   })
 })
 
+/* [LOGIC-REDRAW-DROPS-TYPING] and [LOGIC-DONE-FIRST-PRESS] (21 Oct 26): the rule list was drawn again on every repaint of
+   the app — the same words, new boxes — so a value half typed went with the old box; a save's redraw ran before the
+   keyboard reached the next box, so Tab lost it; and a press on Done saved the box first, which moved Done from under the
+   press. The real browser's half — the late repaint after the page opens, a finger on Done at a phone's width — is
+   e2e/logicedit.spec.ts. */
+describe('the Logic page keeps the typing and the keyboard through a repaint; Done takes one press', () => {
+  const box = (k: string) => $(`#lgBody input[data-lgset="${k}"]`) as HTMLInputElement
+  const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+  const wait = () => act(async () => { await new Promise(r => setTimeout(r, 5)) })
+  const change = (f: HTMLInputElement) => f.dispatchEvent(new Event('change', { bubbles: true }))
+  const putBack = async () => {
+    ;(document.activeElement as HTMLElement | null)?.blur?.()
+    await act(async () => { rulesReset(); notify() }); await wait()
+  }
+
+  it('a repaint with nothing changed keeps the very box, and what is half typed in it', async () => {
+    if (!box('crewRest')) await click($('#lgEdit'))
+    const f = box('crewRest')
+    f.focus(); setter.call(f, '11')
+    await act(async () => { notify() }); await wait()
+    expect(box('crewRest'), 'the same box, not one drawn again').toBe(f)
+    expect(f.value).toBe('11')
+    expect(document.activeElement).toBe(f)
+    setter.call(f, ruleFmt('crewRest', VCONF.crewRest))
+    await putBack()
+  })
+
+  it('a repaint that does change the words carries the half-typed value, the caret and the keyboard to the box drawn in its place', async () => {
+    const f = box('debrief')
+    f.focus(); setter.call(f, '1h4'); f.setSelectionRange(3, 3)
+    await act(async () => { VCONF.simLen = 100; notify() }); await wait()   // a setting changed elsewhere: the words move
+    const g = box('debrief')
+    expect(g, 'the list was drawn again').not.toBe(f)
+    expect(g.value, 'the typing came across').toBe('1h4')
+    expect(document.activeElement).toBe(g)
+    expect([g.selectionStart, g.selectionEnd]).toEqual([3, 3])
+    expect(VCONF.debrief, 'nothing saved until the box is left').toBe(120)
+    setter.call(g, ruleFmt('debrief', VCONF.debrief))
+    await putBack()
+  })
+
+  it('a value saved by Tab: the keyboard lands on the next box, not back on the one left, whole-selected', async () => {
+    const a = box('crewRest'), b = box('debrief')
+    a.focus(); setter.call(a, '11h')
+    /* the browser's Tab: the box left raises its change, then the keyboard arrives in the next box */
+    await act(async () => { change(a); b.focus() })
+    await wait()
+    expect(VCONF.crewRest).toBe(660)
+    expect(box('crewRest'), 'the save drew the list again').not.toBe(a)
+    const d = box('debrief')
+    expect(document.activeElement, 'the keyboard is on the next box').toBe(d)
+    expect([d.selectionStart, d.selectionEnd], 'selected whole, so typing replaces it (D1080)').toEqual([0, d.value.length])
+    await putBack()
+  })
+
+  it('a value saved by a press outside the list: the keyboard is not pulled back into it', async () => {
+    const a = box('crewRest')
+    a.focus(); setter.call(a, '10h')
+    await act(async () => { change(a); a.blur() })
+    await wait()
+    expect(VCONF.crewRest).toBe(600)
+    expect($('#lgBody').contains(document.activeElement), 'the keyboard stays where it went').toBe(false)
+    await putBack()
+  })
+
+  it('Done saves what the box holds and ends editing on ONE press — the press leaves the box alone until it is complete', async () => {
+    if (!box('reportLead')) await click($('#lgEdit'))
+    const f = box('reportLead')
+    f.focus(); setter.call(f, '2h30')
+    /* the browser raises a typed box's change as it loses the keyboard; jsdom does not, so the test does it for it */
+    f.addEventListener('blur', () => change(f), { once: true })
+    const down = new MouseEvent('mousedown', { bubbles: true, cancelable: true })
+    $('#lgDone').dispatchEvent(down)
+    expect(down.defaultPrevented, 'the press does not take the keyboard from the box').toBe(true)
+    expect(document.activeElement).toBe(f)
+    await click($('#lgDone'))
+    await wait()
+    expect(VCONF.reportLead, 'the value is saved').toBe(150)
+    expect(($('#lgDone') as HTMLElement).hidden, 'and editing ended').toBe(true)
+    expect(($('#lgEdit') as HTMLElement).hidden).toBe(false)
+    await putBack()
+  })
+})
+
 /* W2 (the Codex stack check, 5 Oct 26): the button's WORDS are a squadron's wording preference (D511), not a rule
    any check reads — so they never light the RULES MODIFIED stamp or the "schedule is checked against them" strip;
    the row's own mark and Reset to standard still know them. */
