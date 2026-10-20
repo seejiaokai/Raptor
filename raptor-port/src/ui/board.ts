@@ -1305,6 +1305,11 @@ export function boardChange(e: Event) {
     schedWrite(SCHED_TYPES.text, () => { reconcileIssuedMarks(); markEdit() }, { key: p })
     afterSchedMutate()
     notify()
+    /* THE BOX LEFT SHOWS THE TIME AS SAVED ([BOARD-TAB-FOLD], 20 Oct 26): a time typed "1000" is saved 10:00, but the box
+       left by Tab kept reading "1000" until a press elsewhere — the redraw leaves standing the block the caret moved on
+       to, and this box with it. So the box itself is set to the time as the board draws it (fmtHM, the one fold). Only a
+       time box: anything else already shows what was typed. */
+    if (TIME_TXT.test(p) && f.isConnected) f.value = fmtHM(txtGet(p))
   }
   else f.value = txtGet(p)
 }

@@ -154,12 +154,40 @@ for (const [name, viewport] of [['desktop', { width: 1440, height: 900 }], ['pho
       await press(page, b, phone); await expect(b).toBeFocused()
       await page.keyboard.type('0545'); await page.keyboard.press('Tab')
       await expect.poll(() => page.evaluate(g => (window as any).DAYS[0].waves[g].formations[0].br || '', gis[0])).toBe('05:45')
-      /* a box left by Tab reads as typed until the next press elsewhere — every week box, flying lines too (an older fault,
-         filed with [BOARD-TAB-FOLD]; probe scripts/handpass/standby-week-b-tabfold.mjs) — so the caret is let go first */
-      await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
-      await expect(page.locator(`#eWeek [data-txt="ff:0.${gis[0]}.0.br"]`), 'the week shows it').toHaveText('05:45')
+      /* the box left by Tab reads the time as saved at once, the caret still in the next box ([BOARD-TAB-FOLD]'s week half,
+         20 Oct 26 — it read "0545" until a press elsewhere; probe scripts/handpass/standby-week-b-tabfold.mjs) */
+      await expect(page.locator(`#eWeek [data-txt="ff:0.${gis[0]}.0.br"]`), 'the week shows it, folded, after Tab alone').toHaveText('05:45')
+      expect(await page.evaluate(() => document.activeElement?.getAttribute('data-txt') || ''), 'the caret went on to the next box').not.toBe(`ff:0.${gis[0]}.0.br`)
       await page.evaluate(() => (window as any).openScheduler(0)); await expect(page.locator('#schedBoard')).toBeVisible()
       await expect(page.locator(`#sbBoard [data-bfld="ff:0.${gis[0]}.0.br"]:visible`).first(), 'the board shows the same B').toHaveValue('05:45')
+    })
+    /* RB14 — [SA-HEAD-CLIP-360] (20 Oct 26): under 375 wide the first column is 36px, and AVALON's heading showed
+       "AVALOI"; it is drawn in START / END's smaller letters there, the name whole — SC, AVALON and BB, at 360 and 320 */
+    test('under 375 wide a standby wave’s first heading shows its whole name', async ({ page }) => {
+      test.skip(!phone, 'a phone width')
+      await login(page); await go(page, 'editsched')
+      const gis = await page.evaluate(() => { const W = window as any; for (const k of ['sc', 'avalon', 'bb']) W.addWave(0, k); return ['sc', 'avalon', 'bb'].map(k => W.DAYS[0].waves.findIndex((w: any) => w.kind === k)) })
+      for (const width of [360, 320]) {
+        await page.setViewportSize({ width, height: 780 })
+        await expect(page.locator(`#eWeek [data-txt="ff:0.${gis[2]}.0.br"]`)).toBeAttached()
+        const heads = await page.evaluate(gs => gs.map(g => {
+          const h = document.querySelector(`#eWeek .day[data-day="0"] [data-move="mv:w.0.${g}"] .cols.formcols`)!.children[0] as HTMLElement
+          return { text: h.innerText.replace(/\s+/g, ' '), fits: h.scrollWidth <= h.clientWidth }
+        }), gis)
+        expect(heads, `${width} wide`).toEqual([{ text: 'SC SHIFT', fits: true }, { text: 'AVALON SHIFT', fits: true }, { text: 'BB SHIFT', fits: true }])
+      }
+    })
+    /* RB15 — [BOARD-TAB-FOLD] (20 Oct 26): on the Scheduler Board a time typed "1000" and left by Tab read "1000" until a
+       press elsewhere, though 10:00 was saved; the box left reads 10:00 at once */
+    test('the board: a time typed and left by Tab reads hh:mm at once', async ({ page }) => {
+      await login(page); await go(page, 'editsched')
+      await page.evaluate(() => (window as any).openScheduler(0)); await expect(page.locator('#schedBoard')).toBeVisible()
+      const to = page.locator('#sbBoard [data-bfld="ff:0.0.0.to"]:visible').first()
+      await press(page, to, phone); await expect(to).toBeFocused()
+      await page.keyboard.type('1000'); await page.keyboard.press('Tab')
+      await expect.poll(() => page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].to)).toBe('10:00')
+      await expect(to, 'the box left reads the time as saved').toHaveValue('10:00')
+      await expect(to, 'the caret went on').not.toBeFocused()
     })
     /* RB13 — the blind read's F1 (20 Oct 26): read only, an empty START must keep its line, or END rises onto the line the
        heading now calls START (a BB line has no times by default — type END alone and View-only Sched read 07:00 as the

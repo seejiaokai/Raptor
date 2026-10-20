@@ -177,7 +177,10 @@ export function routeFocusOut(e: FocusEvent) {
       const v = boxText(p); heal(tx, TIME_TXT.test(p) ? fmtTxt(v) : String(v == null ? '' : v))
       return
     }
-    if (txtSet(p, tx.textContent)) { commitText(p, () => markEdit()); txtCommit() }
+    /* the box left shows the time as saved ([BOARD-TAB-FOLD]'s week half, 20 Oct 26): "0610" typed and left by Tab is
+       saved 06:10, but txtCommit's repaint waits while the caret is in another box, so the box kept reading "0610" until
+       a press elsewhere — it is healed to the folded time now, as an unchanged clock is above */
+    if (txtSet(p, tx.textContent)) { commitText(p, () => markEdit()); if (TIME_TXT.test(p)) heal(tx, fmtTxt(txtGet(p))); txtCommit() }
     else { const v = txtGet(p); heal(tx, TIME_TXT.test(p) ? fmtTxt(v) : String(v == null ? '' : v)) }
     return
   }

@@ -408,7 +408,8 @@ export function keyLabel(key: any, days: any[] = DAYS): string {
     if (p === 'wl') return `Wave · ${d.waves[+a[1]].label || 'label'}`
     const f = () => d.waves[+a[1]].formations[+a[2]]
     /* on an SC line the B box is the crew's in-time, not a brief (owner, 24 Aug 26; [SC-B-CHANGE-SAYS-BRIEF]) */
-    if (p === 'ff') return `${f().cs || 'Line'}${a[3] === 'br' && d.waves[+a[1]].kind === 'sc' ? ' · in-time' : fld(3)}`
+    /* a standby line's TO / LD are its shift's start and end ([STANDBY-UNDO-WORDS], 20 Oct 26 — D1083, D1085) */
+    if (p === 'ff') return `${f().cs || 'Line'}${a[3] === 'br' && d.waves[+a[1]].kind === 'sc' ? ' · in-time' : d.waves[+a[1]].standalone && (a[3] === 'to' || a[3] === 'ld') ? (a[3] === 'to' ? ' · start' : ' · end') : fld(3)}`
     /* fr: and st: are per-AIRCRAFT (…li.ai), unlike ff:/ar:/at: above and
        below, which address the formation — so these two carry the jet */
     if (p === 'fr') return `${f().cs || 'Line'} · ${jetOf(f(), a[3])}remarks`

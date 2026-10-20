@@ -29,6 +29,7 @@ import { addWaveTpl, delWaveTpl, setWaveHidden, waveTplSave, WAVETPL_CFG, WAVEHI
 import { installGlobalUndo, _snapView } from './undo-wire'
 import { setDayRemark } from './plan'
 import { boardChange } from '../ui/board'
+import { routeFocusOut } from '../ui/textedit'
 import { HIST } from './history'
 
 
@@ -541,6 +542,52 @@ describe('B8 — Undo says what came back', () => {
       ;(DAYS[0] as any).waves[0].kind = 'sc'
       box('ff:0.0.0.br', '05:10')
       expect(undoState().undoLabel).toBe('an in-time')
+    } finally { HOOKS.editMode = was }
+  })
+  /* [STANDBY-UNDO-WORDS] (20 Oct 26): an SC, AVALON or BB line's TO / LD are its shift's START / END (D1083, D1085) —
+     Undo said "a take-off time" / "a landing time"; AVALON's and BB's B stays a brief, SC's an in-time */
+  it('a standby line’s start and end are named "a start time" / "an end time"', () => {
+    const was = HOOKS.editMode; HOOKS.editMode = () => true
+    const w0: any = (DAYS[0] as any).waves[0], had = { kind: w0.kind, standalone: w0.standalone }
+    try {
+      const box = (key: string, v: string) => { const el = document.createElement('input'); el.dataset.bfld = key; el.value = v; document.body.append(el); try { boardChange({ target: el } as any) } finally { el.remove() } }
+      for (const kind of ['avalon', 'bb', 'sc']) {
+        w0.kind = kind; w0.standalone = true
+        box('ff:0.0.0.to', kind === 'bb' ? '07:05' : '07:15')
+        expect(undoState().undoLabel, kind).toBe('a start time')
+        box('ff:0.0.0.ld', kind === 'bb' ? '13:05' : '13:15')
+        expect(undoState().undoLabel, kind).toBe('an end time')
+        box('ff:0.0.0.br', kind === 'bb' ? '06:05' : '06:15')
+        expect(undoState().undoLabel, kind).toBe(kind === 'sc' ? 'an in-time' : 'a brief time')
+      }
+    } finally { w0.kind = had.kind; w0.standalone = had.standalone; HOOKS.editMode = was }
+  })
+  /* [BOARD-TAB-FOLD] (20 Oct 26): a time typed "1000" on the Scheduler Board and left by Tab is saved 10:00, but the box
+     kept reading "1000" until a press elsewhere — the box left now reads the time as saved */
+  it('a time box on the board left after typing reads the time as saved, hh:mm', () => {
+    const was = HOOKS.editMode; HOOKS.editMode = () => true
+    try {
+      for (const [key, typed, want] of [['ff:0.0.0.to', '1000', '10:00'], ['ff:0.0.0.ld', '1135', '11:35'], ['ff:0.0.0.br', '845', '08:45'], ['ff:0.0.0.rl', '0715', '07:15']]) {
+        const el = document.createElement('input'); el.dataset.bfld = key; el.value = typed; document.body.append(el)
+        try { boardChange({ target: el } as any); expect(el.value, key).toBe(want); expect(txtGet(key), key).toBe(want) } finally { el.remove() }
+      }
+      /* a box that is not a time keeps what was typed */
+      const cs = document.createElement('input'); cs.dataset.bfld = 'ff:0.0.0.cs'; cs.value = 'Vl'; document.body.append(cs)
+      try { boardChange({ target: cs } as any); expect(cs.value).toBe('Vl') } finally { cs.remove() }
+    } finally { HOOKS.editMode = was }
+  })
+  /* [BOARD-TAB-FOLD]'s week half (20 Oct 26, met by [STANDBY-WEEK-B]'s browser test): on Edit Schedule's week a time typed
+     and left by Tab for the next box kept reading as typed ("0610") — the repaint waits while the caret is in another box */
+  it('a time box on the week left by Tab for another box reads the time as saved, hh:mm', () => {
+    const was = HOOKS.editMode; HOOKS.editMode = () => true
+    try {
+      const next = document.createElement('span'); next.setAttribute('contenteditable', 'true'); next.dataset.txt = 'ff:0.0.0.to'; document.body.append(next)
+      const box = document.createElement('span'); box.setAttribute('contenteditable', 'true'); box.dataset.txt = 'ff:0.0.0.br'; box.textContent = '0610'; document.body.append(box)
+      try {
+        routeFocusOut({ target: box, relatedTarget: next } as any)
+        expect(txtGet('ff:0.0.0.br')).toBe('06:10')
+        expect(box.textContent).toBe('06:10')
+      } finally { box.remove(); next.remove() }
     } finally { HOOKS.editMode = was }
   })
   it('a Quals tick names the man and what changed; a rule names the Logic page', () => {
