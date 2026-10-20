@@ -1,0 +1,83 @@
+import { L, snap, sideWarn } from './h.mjs'
+import fs from 'node:fs'
+console.log('full1 v1')
+const W = 'C:/Users/User/AppData/Local/Temp/claude/job3/walk'
+const { browser, ctx, page, errors } = await L.open({ width: 1400, height: 900 })
+const res = []
+const note = (s, v, p) => { res.push([s, v, p]); console.log('RESULT', s, v, p || '') }
+await L.board(page, 4)
+await L.tap(page, '[data-wvadd="4"]'); await page.waitForTimeout(400)
+await page.getByRole('button', { name: 'Flying wave' }).click(); await page.waitForTimeout(800)
+const fillLine = async (f, cs, to, ld) => {
+  await L.type(page, `[data-bfld="ff:4.0.${f}.cs"]`, cs)
+  await L.type(page, `[data-bfld="ff:4.0.${f}.msn"]`, 'BFM')
+  await L.type(page, `[data-bfld="ff:4.0.${f}.to"]`, to)
+  await L.type(page, `[data-bfld="ff:4.0.${f}.ld"]`, ld)
+}
+const LINE = (f, a) => `.sb-line:has([data-slot="4.0.${f}.${a}.p"])`
+await fillLine(0, 'VL', '09:00', '10:30')
+console.log('put F0', await L.put(page, '[data-slot="4.0.0.0.p"]', ['salsa']))
+note('S1 board warnings', await sideWarn(page))
+await snap(page, 's1-board-line-rcp-door', { clip: LINE(0, 0), pad: 24, marks: ['[data-slot="4.0.0.0.w"]'] })
+await snap(page, 's1-board-warnings-clean', { scrollTo: LINE(0, 0), marks: ['txt:#sbSide::No conflicts flagged for Friday'] })
+await page.evaluate(() => document.querySelector('#sbDone')?.click()); await page.waitForTimeout(800)
+await L.go(page, 'editsched')
+await snap(page, 's1-week-line-rcp-door', { clip: '#eWeek .go:has([data-slot="4.0.0.0.p"])', pad: 20, marks: ['#eWeek [data-slot="4.0.0.0.w"]'] })
+note('S1 week puck class', await page.evaluate(() => document.querySelector('#eWeek [data-slot="4.0.0.0.p"] .puck')?.className))
+await page.getByRole('button', { name: 'View-only Sched' }).click(); await page.waitForTimeout(800)
+await page.locator('#vWeek [data-slot="4.0.0.0.p"]').first().scrollIntoViewIfNeeded()
+await snap(page, 's1-viewonly-line-no-rcp', { clip: '#vWeek .go:has([data-slot="4.0.0.0.p"])', pad: 20, marks: ['rest:#vWeek [data-slot="4.0.0.0.p"]'] })
+// S2
+await L.go(page, 'quals')
+await page.getByRole('button', { name: 'Enable editing' }).click(); await page.waitForTimeout(400)
+await page.getByRole('button', { name: 'Edit quals' }).click(); await page.waitForTimeout(400)
+await page.locator('#page-quals td[data-q="salsa|daar"]').click(); await page.waitForTimeout(300)
+await snap(page, 's2-quals-saint-daar-off', { marks: ['#page-quals td[data-q="salsa|daar"]'], scrollTo: '#page-quals td[data-q="salsa|daar"]' })
+const sv = page.getByRole('button', { name: /Save changes/ }); if (await sv.count()) { await sv.click(); await page.waitForTimeout(600) }
+await L.board(page, 4)
+await L.type(page, '[data-bfld="fr:4.0.0.0"]', 'AAR'); await page.waitForTimeout(500)
+note('S2 board warnings', await sideWarn(page))
+await snap(page, 's2-aar-front-seat-only', { scrollTo: LINE(0, 0), marks: ['txt:#sbSide::not DAAR', '[data-slot="4.0.0.0.p"] .puck'] })
+// S3: Recon (OCU pilot, no sim that day)
+await L.tap(page, '[data-gline="4.0"]'); await page.waitForTimeout(600)
+await fillLine(1, 'RU', '11:00', '12:30')
+console.log('put F1', await L.put(page, '[data-slot="4.0.1.0.p"]', ['prism']))
+note('S3 board warnings', await sideWarn(page))
+await snap(page, 's3-ocu-alone', { scrollTo: LINE(1, 0), marks: ['txt:#sbSide::OCU in', '[data-slot="4.0.1.0.p"] .puck'] })
+// S4
+await L.tap(page, '[data-gline="4.0"]'); await page.waitForTimeout(600)
+await fillLine(2, 'TX', '13:00', '14:30')
+console.log('put F2a', await L.put(page, '[data-slot="4.0.2.0.p"]', ['ignite']))
+await L.tap(page, '[data-lac="4.0.2"]'); await page.waitForTimeout(600)
+console.log('put F2b', await L.put(page, '[data-slot="4.0.2.1.p"]', ['dice']))
+await L.type(page, '[data-bfld="fr:4.0.2.0"]', 'IRT'); await page.waitForTimeout(500)
+note('S4 board warnings', await sideWarn(page))
+await snap(page, 's4-irt-one-jet', { scrollTo: LINE(2, 0), marks: ['txt:#sbSide::IRT', '[data-slot="4.0.2.0.p"] .puck', '[data-slot="4.0.2.1.p"] .puck'] })
+// S5: publish
+console.log('publish', JSON.stringify(await L.publish(page, 4)))
+await page.locator('[data-planmenu="4"]:visible').click(); await page.waitForTimeout(400)
+await page.getByText('Original').filter({ hasText: 'read-only' }).first().click(); await page.waitForTimeout(800)
+await snap(page, 's5-board-published-rcp-empty', { scrollTo: '#schedBoard .itxt:has-text("RCP empty")', marks: ['union:#schedBoard .sb-line .itxt'] })
+await ctx.storageState({ path: `${W}/state-pub2.json` })
+// export pdf + csv
+await page.evaluate(() => document.querySelector('#sbDone')?.click()); await page.waitForTimeout(800)
+await L.go(page, 'editsched')
+await page.evaluate(() => { window.__srcdocs = []; const o = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, 'srcdoc'); Object.defineProperty(HTMLIFrameElement.prototype, 'srcdoc', { set(v) { window.__srcdocs.push(v); o.set.call(this, v) }, get() { return o.get.call(this) } }) })
+await page.locator('#exportPdf').click(); await page.waitForTimeout(2500)
+const docs = await page.evaluate(() => window.__srcdocs); fs.writeFileSync(`${W}/print.html`, docs[0] || '')
+const [dl] = await Promise.all([page.waitForEvent('download', { timeout: 8000 }).catch(() => null), page.locator('#exportSched').click()])
+if (dl) await dl.saveAs(`${W}/export.csv`)
+note('S5 print doc captured', String(docs.length) + ' ; csv ' + (dl ? dl.suggestedFilename() : 'none'))
+const p2 = await ctx.newPage(); await p2.setViewportSize({ width: 1100, height: 700 })
+await p2.setContent(docs[0]); await p2.emulateMedia({ media: 'print' })
+await p2.evaluate(() => { const t = [...document.querySelectorAll('table')].pop(); t.id = 'fri' })
+await snap(p2, 's5-print-pdf-empty-rcp', { clip: '#fri', pad: 60, scrollTo: '#fri', marks: ['union:#fri th:nth-child(8), #fri td:nth-child(8)'] })
+// csv as a table
+const rows = fs.readFileSync(`${W}/export.csv`, 'utf8').replace(/^\uFEFF/, '').trim().split(/\r?\n/).map(l => l.match(/"([^"]*)"/g).map(c => c.slice(1, -1)))
+const head = rows[0], fri = rows.filter(r => r[0] === 'Friday')
+const html = `<body style="font:13px Arial;padding:16px"><p><b>142-schedule.csv</b> (what Export to Excel saves) — header and the Friday rows</p><table border=1 cellpadding=4 style="border-collapse:collapse"><tr>${head.map(h => `<th>${h}</th>`).join('')}</tr>${fri.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</table></body>`
+const p3 = await ctx.newPage(); await p3.setViewportSize({ width: 1500, height: 300 }); await p3.setContent(html)
+await snap(p3, 's5-export-csv-empty-rcp', { marks: ['union:table tr > :nth-child(12), table tr > :nth-child(13)'] })
+fs.writeFileSync(`${W}/results1.json`, JSON.stringify(res, null, 1))
+console.log('ERRORS', JSON.stringify(errors))
+await browser.close()

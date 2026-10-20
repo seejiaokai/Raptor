@@ -238,7 +238,10 @@ const RULING_BYTES = [
   /* how-we-work 39500 -> 42000 (16 Oct 26, the documents tidy after pull request 519): 40,313 bytes with D902-D906, D926 and
      D911, D921 (the small-fix checks, the readers, when he is told and shown) - live; none is trimmed (D136).
      [RULINGS-SPENT-PASS] still brings it down. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 42000],
+  /* how-we-work 42000 -> 44000 (21 Oct 26, the night's records): 42,205 bytes with D1097, D1103 and D1104 — how an
+     overnight run is worked (a fresh helper per job; Low or Medium); every one a live rule every chat works by, nothing
+     replaced or spent to archive (D136). */
+  ['.claude/rules/decisions/how-we-work.md', 0, 44000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,

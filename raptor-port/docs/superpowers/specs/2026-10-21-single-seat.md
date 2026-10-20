@@ -32,6 +32,7 @@ on their app. So just FCP only pilots."*
 
 1. **The check (no change to the app):** every place the app reads the back seat, and what each does when only the front
    seat is filled — read in the code and walked on screen — written up as a list for him: what already works, what
-   breaks, and the questions the design needs. Filed as [SINGLE-SEAT].
+   breaks, and the questions the design needs. Filed as [SINGLE-SEAT]. **Done the night of 21 Oct 26:**
+   `2026-10-21-single-seat-check.md` (44 places, 8 questions, a walk with marked pictures).
 2. **His answers** — rounds of at most four questions, each with a recommended answer and a picture (D853).
 3. **The build**, on his word.

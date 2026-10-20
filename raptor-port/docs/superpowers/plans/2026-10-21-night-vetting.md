@@ -7,6 +7,10 @@ Each reader checked its items on `main` at `b3db0675f`: still open, needs him or
 
 From job 2 on, each job is built and checked in a fresh session of its own, started by the night's chat one after another; the night's chat only coordinates, checks each result and writes the morning report. The weekly figure is read at the start and in the morning to measure it. If it works, the overnight guide is changed to say so — while he is awake, read before his approval (D70): filed as [OVERNIGHT-SESSION-PER-JOB].
 
+**As run (02:40):** the app refused a separate session from his phone, and will not start one on a turn a finished job wakes; so each job runs in a fresh Opus helper inside the night's chat (the same saving).
+
+**Low or Medium (D1104, his words that night):** this night is **Low** — the fewest helpers the checks need, one after another (one builder, one Sonnet walker, one fresh Opus reader a job), caches kept warm, the night's chat never idle past about an hour; efficiency judged by the weekly figure (13% at 02:07). Job 2's brief went out before the word, so it used a scenario designer and two walkers.
+
 ## Reader 1 — the Leave War and the Tracker
 
 No ruling names any of these items, except LW-LOCKMARK in D147's work order. None is archived as done.

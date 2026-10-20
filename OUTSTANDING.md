@@ -62,7 +62,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
 **Schedule and amendments**
-- [SINGLE-SEAT] — a line with only its front seat filled must work fully, for F-16 and F-35 squadrons (D1099): first a check of every place that reads the back seat, then his answers, then the build; a switch to hide the back seat is his idea.
+- [SINGLE-SEAT] — a line with only its front seat filled must work fully, for F-16 and F-35 squadrons (D1099): the check is done (21 Oct 26); his answers to its 8 questions next, then the build.
 - [RULES-TAG-OFF] — take the yellow RULES MODIFIED tag off View and Edit Schedule (D1098, his word 21 Oct 26); the Logic page's own strip stays.
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
@@ -95,6 +95,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-LOCKMARK] — the war still locks a day with an old marker; per-record checks replace it.
 - [LW-OFFER-ONLY-TAKEABLE] — two war sheets offer a choice the war then refuses — with [LW-LOCKMARK].
 - [LW-SEL-HALF-LABELS] — the drag-selection sheet shows half-day leave as "FCL*" where the one-day sheet shows "<FCL".
+- [LW-GROUPS-STALE-AFTER-ARCHIVE] — the war's groups keep archived men until a reload (found 21 Oct 26).
 - [LW-SETTINGS-SMALL] — two small ⚙ Settings edges: Reset order judges the whole roster; an armed "Really reset?" survives a page switch.
 - [LW-DOZE-GUARDS] — a check: do the war's measuring guards run while its page is asleep?
 - [LW-MONTH-MEMO-UNPINNED] — one cell changed redraws every month of every row, and no test pins the month's redraw guard.
@@ -157,7 +158,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [MAIN-CHECKOUT-STALE] — step 2 left: a guide line to bring the main folder level after a merge that touches settings, hooks or skills.
 - [REPO-TIDY] — clear the old worktrees (47 today) after safety checks; moving the walk pictures out is his call.
 - [COMPACT-WHEN-MOD] — two of the compaction set-up's four checks still unseen — they need a chat that reaches 80%.
-- [OVERNIGHT-SESSION-PER-JOB] — tried the night of 21 Oct 26 (D1103): one fresh session per job; if it worked, the overnight guide says so — written while he is awake, read before his approval.
+- [OVERNIGHT-SESSION-PER-JOB] — tried the night of 21 Oct 26 (D1103, D1104): a fresh helper per job, and the "Low or Medium?" question; if it worked, the overnight guide says so — written while he is awake, read before his approval.
 - [OVERNIGHT-RETRY-TRIAL] — the next /overnight night tries the keep-retrying setting (D885).
 - [PROMPT-AUDIT] — he runs the guide check in a terminal and brings its list back (D886).
 - [CI-FAIL-PICTURES] — GitHub's browser-test jobs keep no pictures of a failure — his call.
@@ -218,7 +219,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ## Items
 
 ### [SINGLE-SEAT] Single-seat jets — the app works with only the front seat filled (his intent, 21 Oct 26 — D1099)
-**What:** a flying line with only its FCP filled must work as fully as a two-seat line — every check, mark, count and page — for F-16 squadrons (mixed fleet) and F-35 squadrons (all single-seat); an admin switch to hide the RCP is his idea, not designed. **Steps:** (1) the check — every place that reads the back seat and what it does with only the front seat filled, in the code and on screen, written up for him with the design questions (nothing in the app changes); (2) his answers, in rounds of four with pictures; (3) the build, on his word. **Design note:** `raptor-port/docs/superpowers/specs/2026-10-21-single-seat.md`.
+**What:** a flying line with only its FCP filled must work as fully as a two-seat line — every check, mark, count and page — for F-16 squadrons (mixed fleet) and F-35 squadrons (all single-seat); an admin switch to hide the RCP is his idea, not designed. **Steps:** (1) the check — every place that reads the back seat and what it does with only the front seat filled, in the code and on screen, written up for him with the design questions (nothing in the app changes); (2) his answers, in rounds of four with pictures; (3) the build, on his word. **Design note:** `raptor-port/docs/superpowers/specs/2026-10-21-single-seat.md`. **Step 1 done (the night of 21 Oct 26):** `raptor-port/docs/superpowers/specs/2026-10-21-single-seat-check.md` — 44 places; three rules wrong for a real single-seat jet (AAR training, an IRT in one jet's remarks, OCU solo); the app cannot tell single-seat from a back seat not yet filled; 8 questions for him with marked pictures — put to him when he says (D994).
 
 ### [RULES-TAG-OFF] Take the RULES MODIFIED tag off View and Edit Schedule (his word, 21 Oct 26 — D1098)
 **What:** when a Logic setting is changed from the squadron standard, a yellow RULES MODIFIED tag shows above the Legend
@@ -231,7 +232,10 @@ picture script that look for the tag (`scripts/handpass/`, `scripts/itflow/j/set
 desktop, with a setting changed. The original app (`reference/`) is read-only and keeps its tag.
 
 ### [OVERNIGHT-SESSION-PER-JOB] The overnight run starts each job in a fresh session (his word, 21 Oct 26 — D1103)
-**What:** tried on the night of 21 Oct 26 — the night's chat starts each job in a session of its own, one after another, and only coordinates. **Next:** the morning report says whether it worked (the weekly figure before and after, whether every session was started on time); if it did, the overnight guide (`.claude/skills/overnight/`) is changed to say so, while he is awake, read before his approval (D70). **Record:** `raptor-port/docs/superpowers/plans/2026-10-21-night-vetting.md` §The night's way of working.
+**What:** tried on the night of 21 Oct 26 — the night's chat starts each job in a session of its own, one after another, and only coordinates. **Next:** the morning report says whether it worked (the weekly figure before and after, whether every session was started on time); if it did, the overnight guide (`.claude/skills/overnight/`) is changed to say so, while he is awake, read before his approval (D70) — with D1104's "Low or Medium?" question beside the hours, and what Low and Medium each mean; and what that night found: a separate session cannot be started from his phone or on a turn a finished job wakes, so a fresh helper per job is the default. **Record:** `raptor-port/docs/superpowers/plans/2026-10-21-night-vetting.md` §The night's way of working.
+
+### [LW-GROUPS-STALE-AFTER-ARCHIVE] The Leave War's groups keep archived men until a reload (found 21 Oct 26 by the single-seat walk; low)
+With every WSO archived through Admin → Users, in the same session the Leave War still read IWSO 5 and OPS W 12; after a reload the empty groups were gone (an empty group draws no heading). The grid did not refresh its groups after the archives. **To do:** reproduce with one man archived; find why the roster projection does not regroup. **Place:** the agent's; with the next Leave War batch. **Evidence:** the night's single-seat check (`raptor-port/docs/superpowers/specs/2026-10-21-single-seat-check.md`).
 
 ### [CI-UNIT-SHARE-2-6] One unit share sets GitHub's check time (found 20 Oct 26, pull request 548's run; low)
 **Seen:** with the Tracker smoke in two (pull request 548), the run is 5m33s and its slowest leg `unit (raptor 2/6)` 5m29s (the next, `unit (raptor 5/6)`, 4m31s; the Tracker parts 4m19s and less). Vitest's `--shard` splits the file list by a hash of each path, not by time, so one share carries the heavy files. **To do:** measure each raptor unit file's time on GitHub; then either more shares (the plan's 20 side by side is already exceeded by one with the Docs guard — merge two short legs first) or a split by time (a list of the heavy files spread by hand). **Place:** Checks and tooling — low, with the next change to the checks file.

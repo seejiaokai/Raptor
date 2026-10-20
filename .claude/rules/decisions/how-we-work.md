@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1104 | 21 Oct 26 | An overnight run asks "Low or Medium?" first: Low, with plenty of time, runs the fewest helpers the checks need, one after another, caches kept warm; Medium, with less time, uses helpers as needed, several at once; efficiency is judged by the weekly usage figure, not a token count, and no work is cut to save allowance (D1033). |
 | D1103 | 21 Oct 26 | On an overnight run each job is built and checked in a fresh session of its own, started by the night's chat one after another, which only coordinates, checks each result and writes the morning report; if it works, the overnight guide is changed to say so, read before he approves it. |
 | D1097 | 21 Oct 26 | The agent sends him a phone notification whenever it stops and needs him — the work finished and waiting on his next step, or a question, an answer, a look or any other input from him — and not for progress. |
 | D1093 | 20 Oct 26 | When he gives "auto merge live" for a night or a run, it covers everything that run produces, its closing records pull request included: each merges once its checks are green, with nothing held back for a second word; work outside that run still waits for his "merge live". |
