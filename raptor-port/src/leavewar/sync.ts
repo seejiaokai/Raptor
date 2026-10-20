@@ -2164,6 +2164,13 @@ export function postOut(id: string, from: string, archive: boolean | PostOutcome
    outlive the person who set it. No production caller. */
 let VIEWER_PIN: { v: string | null; s: unknown } | null = null
 export function pinViewer(v: string | null): void { VIEWER_PIN = { v, s: SESSION }; setViewer(v) }
+/* …and a role changed IN PLACE is the same sign-in ([LW-HARNESS-VIEWER-PIN], 27 Sep 26): setEffectiveRole replaces the
+   session object with a copy, so the bridge's raptorRole quietly ended the pin and the next repaint lit the signed-in
+   man's row, not the pinned one — a test that pinned a viewer and then switched role tested a different man. The bridge
+   hands the session it replaced; a pin keyed to it moves to the copy. A real sign-in (resetSession) still ends it. */
+export function carryViewerPin(from: unknown): void {
+  if (VIEWER_PIN && VIEWER_PIN.s === from && from !== SESSION) VIEWER_PIN = { v: VIEWER_PIN.v, s: SESSION }
+}
 const mirroredViewer = (): string | null => (VIEWER_PIN && VIEWER_PIN.s === SESSION ? VIEWER_PIN.v : viewerId())
 /* and the signed-in person's callsign beside it, read off Raptor's whole roster (the war's own
    roster may not hold him — a SANS or archived callsign): the approver stamp's fallback */

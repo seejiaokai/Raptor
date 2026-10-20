@@ -40,13 +40,13 @@ import { commandStream } from './command'
 import { resyncSchedBaseline, schedBaselineClean } from './state/sched-commit'
 import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
-import { setLgEdit, setEffectiveRole, setMe } from './state/auth'
+import { setLgEdit, setEffectiveRole as setRoleOnly, setMe, SESSION } from './state/auth'
 import { roleOf } from './state/perms'
 import { notify, loadWeek, moveSection, moveSectionTo, writeInputs } from './state/store'
 import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
 import { setRole as lwSetRole, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut, saveManningRule as lwSaveManningRule, getState as lwGetState, setDayEvent as lwSetDayEvent, createWar as lwCreateWar } from './leavewar/state/store'
-import { pinViewer, dayFacts as lwDayFacts, flyAnswer } from './leavewar/sync'
+import { pinViewer, carryViewerPin, dayFacts as lwDayFacts, flyAnswer } from './leavewar/sync'
 import { setFlyDays, setFlyRun, setFlyRule } from './state/flyplan'
 
 /* the hosts the bridge is installed on ([ACCOUNTS], 26 Sep 26): this PC only — the
@@ -57,6 +57,9 @@ export function isLocalHost(): boolean {
   const h = location.hostname
   return h === 'localhost' || h === '127.0.0.1' || h === '[::1]' || h === '::1'
 }
+/* the role in place, as signing in would set it — and a Leave War viewer pinned on this sign-in stays pinned: the role
+   switch copies the session object the pin is keyed to ([LW-HARNESS-VIEWER-PIN]; leavewar/sync.ts carryViewerPin) */
+function setEffectiveRole(r: any): void { const was = SESSION; setRoleOnly(r); carryViewerPin(was) }
 export function installProbeBridge() {
   /* the whole bridge, and every global it hangs on window, exists on the developer's PC only —
      asked here as well as by its one caller (main.tsx), so no future caller can install it on a
