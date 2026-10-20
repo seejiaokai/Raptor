@@ -17,7 +17,7 @@ import { frontWin, holdPageScroll } from './floatwin'
 import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, tillOfISO, tillDefaultISO, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, upchitDeletePlan, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel, firstEndIso, firstEndOrd } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -2854,7 +2854,8 @@ export function InputEditor() {
      edit's stay on the row — and so does the TITLE's date, which says what is saved, while the line under the picker
      says what a Save would write */
   const when = !r ? '' : (isNew && draft && draft.start)
-    ? fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' → ' + fmt(draft.end) : '')
+    /* (printed: the kept label's year in two digits — owner D1096) */
+    ? shortYear(fmt(draft.start)) + (draft.end && draft.end !== draft.start ? ' → ' + shortYear(fmt(draft.end)) : '')
     /* the stored month-first labels said day-first, as the rest of the Inputs page speaks ([LW-ISO-DATES], 28 Sep 26 —
        the window's title read "Tally · Jul 24") */
     : fmtDay(unfmt(r.date, r.yr)) + (r.endDate ? ' → ' + fmtDay(unfmt(r.endDate, r.yr)) : '')
@@ -3072,7 +3073,7 @@ export function InputEditor() {
                   if (datesHere) { setMidPick(!e2); setDatesPicked(true); setDraft({ ...draft, start: s2, end: e2 }); return }
                   setDraft({ ...draft, start: s2, end: e2 })
                 }} />
-              <div className="rc-read">{draft.start ? (fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' → ' + fmt(draft.end) : '')) : 'pick a start date'}</div>
+              <div className="rc-read">{draft.start ? (shortYear(fmt(draft.start)) + (draft.end && draft.end !== draft.start ? ' → ' + shortYear(fmt(draft.end)) : '')) : 'pick a start date'}</div>
             </div>
           </div>}
           {/* REVISE A RECORDED OIL ANSWER (owner, 29 Aug 26 — a mistaken "No

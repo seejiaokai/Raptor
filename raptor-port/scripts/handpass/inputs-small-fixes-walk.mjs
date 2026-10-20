@@ -13,7 +13,7 @@ import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-console.log('inputs-small-fixes-walk v2')
+console.log('inputs-small-fixes-walk v4')
 const HERE = dirname(fileURLToPath(import.meta.url))
 const OUT = process.argv[2] || join(HERE, '../../docs/img/handpass/2026-10-20-inputs-small-fixes')
 rmSync(OUT, { recursive: true, force: true }); mkdirSync(OUT, { recursive: true })
@@ -104,7 +104,8 @@ async function fileOn(page, tap, iso, spec) {
   if (spec.beforeSave) await spec.beforeSave()
   await press(page, tap, '#inpEditSave')
   await page.waitForTimeout(400)
-  if (await tid(page, 'oilconf').count()) { await press(page, tap, '[data-testid="oil-yes"]'); await press(page, tap, '[data-testid="oilconf-save"]') }
+  /* the OIL question: one day — Yes; several days — All days */
+  if (await tid(page, 'oilconf').count()) { await press(page, tap, (await tid(page, 'oil-all').count()) ? '[data-testid="oil-all"]' : '[data-testid="oil-yes"]'); await press(page, tap, '[data-testid="oilconf-save"]') }
   if (await tid(page, 'win-inputsday-x').count()) await press(page, tap, '[data-testid="win-inputsday-x"]')
   const made = await page.evaluate(b => window.INPUTS.map(r => String(r.iid)).filter(x => !b.includes(x)), before)
   return made.length === 1 ? made[0] : null
@@ -135,39 +136,45 @@ for (const [size, opts, tap] of SIZES) {
     else {
       const row = `#inBody [data-iid="${iid}"], #inList [data-iid="${iid}"]`
       const t = await text(page, row)
-      if (size === 'desktop') check(`${size} T1: the Inputs list's row prints "till 15 Feb 2027"`, /till 15 Feb 2027/.test(t || ''), t)
-      else check(`${size} T1: the phone's card carries no till date (D728 — its heading says the date)`, !/till 15 Feb/.test(t || ''), t)
+      if (size === 'desktop') check(`${size} T1: the Inputs list's row prints "till 15 Feb 27"`, /till 15 Feb 27/.test(t || ''), t)
+      else {
+        check(`${size} T1: the phone's card carries no till date (D728 — its heading says the date)`, !/till 15 Feb/.test(t || ''), t)
+        const h = await page.evaluate(iid => { const c = document.querySelector(`#inList [data-iid="${iid}"]`); let e = c && c.previousElementSibling
+          while (e && !e.classList.contains('icard-day')) e = e.previousElementSibling; return e ? (e.textContent || '').replace(/\s+/g, ' ').trim() : null }, iid)
+        check(`${size} T1: its day heading reads the year in two digits (D1096)`, /15 Feb 27/.test(h || '') && !/2027/.test(h || ''), h)
+      }
       await mark(page, row); await shot(page, `${size}-T1-list-next-year`)
       /* T2 its own window: the grey date after the remarks box */
       await page.evaluate(sel => { const e = [...document.querySelectorAll(sel)].find(x => x.getBoundingClientRect().height > 0); e && e.style.removeProperty('outline') }, row)
       await press(page, tap, page.locator(row).filter({ visible: true }))
       await page.locator('[data-testid="win-inputedit"]').waitFor({ timeout: 5000 })
       const g = await text(page, '[data-testid="inped-till"]')
-      check(`${size} T2: its window's grey date reads "till 15 Feb 2027"`, g === 'till 15 Feb 2027', g)
+      check(`${size} T2: its window's grey date reads "till 15 Feb 27"`, g === 'till 15 Feb 27', g)
       await mark(page, '[data-testid="inped-till"]'); await shot(page, `${size}-T2-window-next-year`)
       await page.keyboard.press('Escape'); await page.waitForTimeout(300)
     }
     /* T3 a leave filed on Friday 17 Jul 2026 running to Tuesday 5 Jan 2027, through the calendar's "+ Input" — desktop
        files it; the phone reads the same world in its own session, so it files its own */
     const [who] = await freeMen(page, 1)
-    let grey = null
+    let grey = null, wtitle = null
     const lid = await fileOn(page, tap, '2026-07-17', { type: 'OL', people: [who], end: '2027-01-05', remarks: 'Walk leave',
-      beforeSave: async () => { grey = await text(page, '[data-testid="inped-till"]'); await mark(page, '[data-testid="inped-till"]'); await shot(page, `${size}-T3-window-before-save`) } })
-    check(`${size} T3: picked 17 Jul → 5 Jan, the window's grey date reads "till 5 Jan 2027"`, grey === 'till 5 Jan 2027', grey)
+      beforeSave: async () => { grey = await text(page, '[data-testid="inped-till"]'); wtitle = await text(page, '[data-testid="win-inputedit"] .rc-read'); await mark(page, '[data-testid="inped-till"]'); await shot(page, `${size}-T3-window-before-save`) } })
+    check(`${size} T3: picked 17 Jul → 5 Jan, the window's grey date reads "till 5 Jan 27"`, grey === 'till 5 Jan 27', grey)
+    check(`${size} T3: the line under its calendar reads "Jul 17 → Jan 5 27" (D1096)`, wtitle === 'Jul 17 → Jan 5 27', wtitle)
     if (!lid) { notWalked(`${size} T4–T7`, 'the leave was not filed (no new input)'); throw new Error('stop T') }
     const shown = await page.evaluate(id => { const r = window.INPUTS.find(x => String(x.iid) === id); return r && { date: r.date, end: r.endDate, yr: r.yr, remarks: r.remarks } }, lid)
-    check(`${size} T3: saved 17 Jul → 5 Jan 2027, its remark only what was typed`, !!shown && shown.remarks === 'Walk leave' && /Jan 5/.test(shown.end || ''), shown)
+    check(`${size} T3: saved 17 Jul → 5 Jan 2027 — the KEPT label four digits ('Jan 5 2027'), its remark only what was typed`, !!shown && shown.remarks === 'Walk leave' && shown.end === 'Jan 5 2027', shown)
     /* T4 Edit Schedule's week, Friday: the leave's line under Unavailable */
     await go(page, 'editsched'); await dayCard(page, '#eWeek', 4); await page.waitForTimeout(300)
-    const wk = await holds(page, '#eWeek .day[data-day="4"]', 'till 5 Jan 2027')
-    check(`${size} T4: Edit Schedule's Friday prints "till 5 Jan 2027"`, wk.length > 0, wk)
-    await page.evaluate(() => { const e = [...document.querySelectorAll('#eWeek .day[data-day="4"] *')].find(x => x.children.length === 0 && (x.textContent || '').includes('till 5 Jan 2027')); if (e) { e.scrollIntoView({ block: 'center' }); e.style.outline = '3px solid #ff3b6b' } })
+    const wk = await holds(page, '#eWeek .day[data-day="4"]', 'till 5 Jan 27')
+    check(`${size} T4: Edit Schedule's Friday prints "till 5 Jan 27"`, wk.length > 0, wk)
+    await page.evaluate(() => { const e = [...document.querySelectorAll('#eWeek .day[data-day="4"] *')].find(x => x.children.length === 0 && (x.textContent || '').includes('till 5 Jan 27')); if (e) { e.scrollIntoView({ block: 'center' }); e.style.outline = '3px solid #ff3b6b' } })
     await shot(page, `${size}-T4-week-friday`)
     /* T5 the Scheduler Board, Friday */
     await board(page, 4)
-    const bd = await holds(page, '#schedBoard', 'till 5 Jan 2027')
-    check(`${size} T5: the Scheduler Board's Friday prints "till 5 Jan 2027"`, bd.length > 0, bd)
-    await page.evaluate(() => { const e = [...document.querySelectorAll('#schedBoard *')].find(x => x.children.length === 0 && x.getBoundingClientRect().height > 1 && (x.textContent || '').includes('till 5 Jan 2027')); if (e) { e.scrollIntoView({ block: 'center' }); e.style.outline = '3px solid #ff3b6b' } })
+    const bd = await holds(page, '#schedBoard', 'till 5 Jan 27')
+    check(`${size} T5: the Scheduler Board's Friday prints "till 5 Jan 27"`, bd.length > 0, bd)
+    await page.evaluate(() => { const e = [...document.querySelectorAll('#schedBoard *')].find(x => x.children.length === 0 && x.getBoundingClientRect().height > 1 && (x.textContent || '').includes('till 5 Jan 27')); if (e) { e.scrollIntoView({ block: 'center' }); e.style.outline = '3px solid #ff3b6b' } })
     await shot(page, `${size}-T5-board-friday`)
     /* T6 published (desktop: signed and published through the board's own controls), then nothing waits on it */
     if (size === 'desktop') {
@@ -191,17 +198,17 @@ for (const [size, opts, tap] of SIZES) {
         await page.addStyleTag({ content: '*{scroll-behavior:auto !important} *,*::before,*::after{transition:none !important;animation:none !important}' })
         await board(page, 4)
         const chip2 = await text(page, '#schedBoard .dpend:not(.dnew):not(.dchg)')
-        const bd2 = await holds(page, '#schedBoard', 'till 5 Jan 2027')
-        check(`${size} T6: after a reload — still nothing pending, still "till 5 Jan 2027"`, !chip2 && bd2.length > 0, { chip2, bd2 })
+        const bd2 = await holds(page, '#schedBoard', 'till 5 Jan 27')
+        check(`${size} T6: after a reload — still nothing pending, still "till 5 Jan 27"`, !chip2 && bd2.length > 0, { chip2, bd2 })
         await shot(page, `${size}-T6-after-reload`)
       }
     }
     await closeBoard(page)
     /* T7 View-only Sched, Friday */
     await go(page, 'viewsched'); await dayCard(page, '#vWeek', 4); await page.waitForTimeout(300)
-    const vw = await holds(page, '#vWeek .day[data-day="4"]', 'till 5 Jan 2027')
-    check(`${size} T7: View-only Sched's Friday prints "till 5 Jan 2027"`, vw.length > 0, vw)
-    await page.evaluate(() => { const e = [...document.querySelectorAll('#vWeek .day[data-day="4"] *')].find(x => x.children.length === 0 && (x.textContent || '').includes('till 5 Jan 2027')); if (e) { e.scrollIntoView({ block: 'center' }); e.style.outline = '3px solid #ff3b6b' } })
+    const vw = await holds(page, '#vWeek .day[data-day="4"]', 'till 5 Jan 27')
+    check(`${size} T7: View-only Sched's Friday prints "till 5 Jan 27"`, vw.length > 0, vw)
+    await page.evaluate(() => { const e = [...document.querySelectorAll('#vWeek .day[data-day="4"] *')].find(x => x.children.length === 0 && (x.textContent || '').includes('till 5 Jan 27')); if (e) { e.scrollIntoView({ block: 'center' }); e.style.outline = '3px solid #ff3b6b' } })
     await shot(page, `${size}-T7-viewonly-friday`)
   } catch (e) { if (e.message !== 'stop T') { results.push(`ERROR ${size} T: ${e.message.split('\n')[0]}`); console.log('ERROR', e.message); await shot(page, `${size}-T-error`) } }
   await ctx.close()
@@ -316,6 +323,123 @@ for (const [size, opts, tap] of SIZES) {
     const made = await page.evaluate(b => window.INPUTS.filter(r => !b.includes(String(r.iid))).map(r => ({ date: r.date, end: r.endDate || '', remarks: r.remarks })), before)
     check(`${size} S1: saved as one day, 19 Jul, its remark "Bangkok"`, made.length === 1 && made[0].remarks === 'Bangkok' && (!made[0].end || made[0].end === made[0].date), made)
   } catch (e) { results.push(`ERROR ${size} S1: ${e.message.split('\n')[0]}`); console.log('ERROR', e.message); await shot(page, `${size}-S1-error`) }
+  await ctx.close()
+}
+
+/* ============================== N — the week that spans New Year (the fresh read's F1 and its scenario 1) ============================== */
+for (const [size, opts, tap] of SIZES) {
+  const { ctx, page } = await session(opts)
+  try {
+    /* the week of 28 Dec 2026, reached by the probe bridge (navigation only — the week strip's arrows walk there too) */
+    await page.evaluate(() => { window.loadWeek('28/12/2026') }); await go(page, 'inputs')
+    const [who] = await freeMen(page, 1, [2, 3, 4])
+    const id = await fileOn(page, tap, '2026-12-30', { type: 'CSE', people: [who], end: '2027-01-08', remarks: 'Walk course' })
+    if (!id) throw new Error('the course was not filed')
+    const kept = await page.evaluate(id => { const r = window.INPUTS.find(x => String(x.iid) === id); return r && r.endDate }, id)
+    check(`${size} N1: filed 30 Dec → 8 Jan; the kept label keeps four digits`, kept === 'Jan 8 2027', kept)
+    await go(page, 'editsched'); await dayCard(page, '#eWeek', 2); await page.waitForTimeout(300)
+    const wed = await holds(page, '#eWeek .day[data-day="2"]', 'Walk course till 8 Jan 27')
+    check(`${size} N1: Wednesday 30 Dec prints "Walk course till 8 Jan 27"`, wed.length > 0, wed)
+    await page.evaluate(() => { const e = [...document.querySelectorAll('#eWeek .day[data-day="2"] *')].find(x => x.children.length === 0 && (x.textContent || '').includes('till 8 Jan 27')); if (e) { e.scrollIntoView({ block: 'center' }); e.style.outline = '3px solid #ff3b6b' } })
+    await shot(page, `${size}-N1-wednesday-30-dec`)
+    await dayCard(page, '#eWeek', 4); await page.waitForTimeout(300)
+    const fri = await text(page, '#eWeek .day[data-day="4"] .day-head .dt')
+    check(`${size} N2: Friday's own heading reads "Jan 1 27" — no four-digit year`, /Jan 1 27/.test(fri || '') && !/2027/.test(fri || ''), fri)
+    await mark(page, '#eWeek .day[data-day="4"] .day-head .dt'); await shot(page, `${size}-N2-friday-heading`)
+    if (size === 'desktop') {
+      /* N3 Wednesday published on the board, then the next week by the week strip, back, and a reload */
+      await board(page, 2)
+      const sels = page.locator('#schedBoard .sb-sign select:visible, #schedBoard [data-sign] select:visible')
+      for (let i = 0, k = await sels.count(); i < k; i++) { const o = await sels.nth(i).locator('option').evaluateAll(os => os.map(x => x.value).filter(v => v && v !== '—')); await sels.nth(i).selectOption(o[Math.min(i, o.length - 1)]) }
+      const beak = page.locator('#schedBoard [data-beak="2"]:visible')
+      if (!(await beak.count()) || await beak.first().isDisabled()) notWalked(`${size} N3`, 'no enabled Publish on Wednesday')
+      else {
+        await beak.first().click(); await page.waitForTimeout(800)
+        const sbDate = await text(page, '#sbDate')
+        check(`${size} N3: published; the board's date line prints no four-digit year`, !/20\d\d/.test(sbDate || ''), sbDate)
+        await closeBoard(page)
+        const nxt = page.locator('[data-wk="04/01/2027"]').filter({ visible: true })
+        if (!(await nxt.count())) notWalked(`${size} N3`, 'no week-strip button for 4 Jan 2027')
+        else {
+          await nxt.first().click(); await page.waitForTimeout(600)
+          const t0 = Date.now(); await page.evaluate(() => window.validate && window.validate()); const ms = Date.now() - t0
+          const jan = await holds(page, '#eWeek', 'Walk course till 8 Jan')
+          check(`${size} N3: the week of 4 Jan prints "Walk course till 8 Jan" (its own year — no year)`, jan.length > 0 && jan.every(x => !/8 Jan 27/.test(x)), jan)
+          results.push(`INFO ${size} N3: one validate in the week of 4 Jan took ${ms} ms`)
+          await page.evaluate(() => { const e = [...document.querySelectorAll('#eWeek *')].find(x => x.children.length === 0 && x.getBoundingClientRect().height > 1 && (x.textContent || '').includes('till 8 Jan')); if (e) { e.scrollIntoView({ block: 'center' }); e.style.outline = '3px solid #ff3b6b' } })
+          await shot(page, `${size}-N3-week-of-4-jan`)
+          await page.locator('[data-wk="28/12/2026"]').filter({ visible: true }).first().click(); await page.waitForTimeout(600)
+          await page.reload(); await page.waitForSelector('#vWeek .day, #luser', { state: 'attached' }); await page.waitForTimeout(500)
+          if (await page.locator('#luser').count()) { await page.fill('#luser', 'ad'); await page.fill('#lpass', 'a'); await page.click('#loginForm button[type=submit]'); await page.waitForSelector('#vWeek .day', { state: 'attached' }) }
+          await page.addStyleTag({ content: '*{scroll-behavior:auto !important} *,*::before,*::after{transition:none !important;animation:none !important}' })
+          const wk = await page.evaluate(() => window.CURWEEK)
+          if (wk !== '28/12/2026') await page.evaluate(() => { window.loadWeek('28/12/2026') })
+          await board(page, 2)
+          const chip = await text(page, '#schedBoard .dpend:not(.dnew):not(.dchg)')
+          const still = await holds(page, '#schedBoard', 'Walk course till 8 Jan 27')
+          check(`${size} N3: back in December after a reload — Wednesday nothing pending, still "till 8 Jan 27"`, !chip && still.length > 0, { chip, still })
+          await shot(page, `${size}-N3-back-after-reload`)
+          await closeBoard(page)
+        }
+      }
+    }
+  } catch (e) { results.push(`ERROR ${size} N: ${e.message.split('\n')[0]}`); console.log('ERROR', e.message); await shot(page, `${size}-N-error`) }
+  await ctx.close()
+}
+
+/* ============================== O3 — the question asked again from the bar keeps its heading (the read's scenario 4) ============================== */
+{
+  const { ctx, page } = await session(SIZES[0][1])
+  try {
+    const three = await freeMen(page, 3)
+    if (three.length < 3) throw new Error(`only ${three.length} free men`)
+    const id = await fileOn(page, false, '2026-07-17', { type: 'Training', people: three, from: '09:00', to: '10:00', title: 'Walk brief 2' })
+    if (!id) throw new Error('not filed')
+    await go(page, 'inputs'); await incalMonth(page, false, 2026, 7)
+    const bar = page.locator(`#inpCal .ib-bar[data-iid="${id}"]`).first(), sat = page.locator('#inpCal [data-icday="2026-07-18"]').first()
+    await bar.scrollIntoViewIfNeeded()
+    const b = await bar.boundingBox(), s = await sat.boundingBox()
+    await page.mouse.move(b.x + Math.min(20, b.width / 2), b.y + b.height / 2); await page.mouse.down()
+    for (let i = 1; i <= 12; i++) await page.mouse.move(b.x + 20 + (s.x + s.width / 2 - b.x - 20) * i / 12, b.y + b.height / 2 + (s.y + s.height * 0.75 - b.y - b.height / 2) * i / 12)
+    await page.waitForTimeout(120); await page.mouse.up(); await page.waitForTimeout(500)
+    const want = `OIL: ${await azHead(page, three)}, Walk brief 2`
+    await tid(page, 'oilconf-cancel').click(); await page.waitForTimeout(400)
+    const barUp = await tid(page, 'oilbar').count()
+    check('desktop O3: "Don’t move" — the bar stays', barUp > 0, barUp)
+    const again = page.locator('[data-testid="oilbar"] button').filter({ hasText: /Answer OIL/ })
+    if (!(await again.count())) notWalked('desktop O3', 'no "Answer OIL" on the bar')
+    else {
+      await again.first().click(); await page.waitForTimeout(400)
+      const head = await text(page, '[data-testid="oilconf"] .airpop-head b')
+      check(`desktop O3: asked again from the bar — still headed "${want}"`, head === want, head)
+      await mark(page, '[data-testid="oilconf"] .airpop-head'); await shot(page, 'desktop-O3-asked-again')
+    }
+  } catch (e) { results.push(`ERROR desktop O3: ${e.message.split('\n')[0]}`); console.log('ERROR', e.message); await shot(page, 'desktop-O3-error') }
+  await ctx.close()
+}
+
+/* ============================== M — the medical sheet for a leave of another year (the read's F2) ============================== */
+{
+  const { ctx, page } = await session(SIZES[0][1])
+  try {
+    const [who] = await freeMen(page, 1)
+    /* the sheet is for two medical kinds overlapping (a sick day over a leave just trims the leave — "sick cuts leave") */
+    const ll = await fileOn(page, false, '2027-02-10', { type: 'ATT C', people: [who], end: '2027-02-15', remarks: 'Walk ATT C',
+      beforeSave: async () => {} })
+    if (await tid(page, 'docconf-nodoc').count()) { await tid(page, 'docconf-nodoc').click(); await page.waitForTimeout(400) }
+    if (!(await page.evaluate(w => window.INPUTS.some(r => r.type === 'ATT C' && JSON.stringify(r).includes(`"${w}"`) && r.date === 'Feb 10'), who))) throw new Error('the ATT C was not filed')
+    await go(page, 'inputs'); await incalMonth(page, false, 2027, 2); await openDay(page, '2027-02-12')
+    await page.locator('#icPopAdd').click(); await page.locator('#inpEditPop #inpEditType').waitFor()
+    await page.selectOption('#inpEditPop #inpEditType', 'ATT B'); await page.selectOption('#inpEditPop #inpEditPerson', who)
+    await page.locator('#inpEdCal [data-iso="2027-02-13"]').click()
+    await page.locator('#inpEditSave').click(); await page.waitForTimeout(500)
+    if (await tid(page, 'docconf-nodoc').count()) { await tid(page, 'docconf-nodoc').click(); await page.waitForTimeout(400) }
+    const sheet = await text(page, '[data-testid="medclash-0"]')
+    const keep = await page.evaluate(() => { const b = [...document.querySelectorAll('button')].find(x => /^Keep /.test((x.textContent || '').trim()) && x.getBoundingClientRect().height > 0); return b ? b.textContent.trim() : null })
+    check('desktop M1: the medical sheet prints the ATT C day first, two-digit year — "10 Feb 27 – 15 Feb 27"', /10 Feb 27 – 15 Feb 27/.test(sheet || '') && !/2027/.test(sheet || '') && !/Feb 1[05]/.test(sheet || ''), sheet)
+    check('desktop M1: its keep button reads "Keep ATT C till 15 Feb 27"', keep === 'Keep ATT C till 15 Feb 27', keep)
+    await mark(page, '[data-testid="medclash-0"]'); await shot(page, 'desktop-M1-medclash-next-year')
+  } catch (e) { results.push(`ERROR desktop M1: ${e.message.split('\n')[0]}`); console.log('ERROR', e.message); await shot(page, 'desktop-M1-error') }
   await ctx.close()
 }
 

@@ -21,22 +21,27 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/inputs-small-fixes -->
-### 20 Oct 26, night — the Inputs batch (D994, Inputs and calendars), `claude/inputs-small-fixes`, pull request 553 — built, walked, gated; the code read running
-- **His pick:** "Inputs" — the agent's recommendation of the area's four small items needing no answer from him (D994).
-  (The shaky-tests batch, pull request 552, is LIVE — its block removed on this branch.)
-- **[TILL-NEXT-YEAR]** — "till 15 Feb 2027": `engine/inputs.ts tillOf` / `tillOfISO` print the last day's year where it is not
-  the loaded week's own; a published day's compare works out both sides under one loaded week, so the year alone is never
-  a change (`latepub.test.tsx`).
-- **[OIL-ASK-HEAD-SEVERAL]** — `ui/inputedit.tsx oilFirst` takes the door's `who`: the calendar's drag of an input of several
-  and the Unavailable row's hand-over of one man of several head the question "<first A to Z> +2" (`ui/oilaskhead.test.tsx`).
-- **[INP-TILL-STALE]** closed (gone since D948 — walked); **[CAL-UNDO-OTHERS]** not reachable today (a second person in one
-  browser needs a sign-in, which ends the first's Undo list); its holiday half refiled to the Database step group.
-- **Checked:** the sheet `raptor-port/docs/handpass/2026-10-20-inputs-small-fixes.md` — FULL (the published day's printed
-  remark), sized SMALL: walk 33 / 33, 19 pictures, phone and desktop; breaks 7 / 7; GitHub's run of 553 green on the fixes.
-- **Left:** the fresh, blind Opus read (running when this was written) → fix red-first what it finds → re-walk → archive the
-  three items (`backlog-archive.mjs`) → his look and "merge live" (D1088).
-- **Pick up here:** if the read's result is not in the sheet's §5, run it again (the brief is in this chat's history only:
-  the finder wording of the checking order §4, D56's exclusion, the two commits `93bba2a5d`, `c8a6c31d9`).
+### 20 Oct 26, late — the Inputs batch (D994, Inputs and calendars), `claude/inputs-small-fixes`, pull request 553 — built, read, fixed; the re-walk next
+- **His pick:** "Inputs" (D994). The shaky-tests batch (pull request 552) is LIVE — its block removed on this branch.
+- **Built:** [TILL-NEXT-YEAR] (the till date carries its year); [OIL-ASK-HEAD-SEVERAL] (`oilFirst` takes the door's `who`);
+  his **D1095 / D1096** — every year PRINTED after a date is two digits ("till 15 Feb 27", "Jan 1 27"), the kept labels keep
+  four (`engine/inputs.ts shortYear`; `fmt`, `weekLabels`, the war's labels untouched; guarded by `ui/newyear-till.test.tsx`);
+  the fresh read's **F1** (`overlay.ts viewOfWeek` writes a week's rows in its own year — the cross-week check no longer runs
+  twice in January), **F2** (`MedClashConfirm` prints its dates day first), **F3** (a test comment). [INP-TILL-STALE] closed
+  (gone since D948); [CAL-UNDO-OTHERS] refiled to the Database step (not reachable today).
+- **Checked:** unit suite 12,045 / 12,045 under the lock (before the window-line fix; the touched files after it); breaks
+  17 / 17 (`scripts/handpass/breaks/inputs-small-fixes.json`); the first walk 33 / 33; GitHub's run green on `b5dda663d`.
+- **Next, in order:** (1) `cd raptor-port && npm run build`, serve it (preview "raptor-walk", :4173 — prove the bundle name),
+  then `node scripts/handpass/inputs-small-fixes-walk.mjs docs/img/handpass/2026-10-20-inputs-small-fixes/rewalk` (v4: the
+  two-digit years, the New Year week N1–N3, O3 the question asked again, M1 the medical sheet of two kinds in 2027); open
+  the pictures. (2) The sheet: §5 the read's findings and dispositions (F1 fixed, F2 fixed, F3 fixed; its notes — the card
+  corner now two digits, the Leave War's day list cosmetic), §4 the re-walk, §6 the breaks 17 / 17, §10 the D1096 places
+  (day headings of the week, board, day window, peek, OIL mode; fmtDay; oilDayLabel; the LATE note; the phone list heading;
+  the card corner; the date boxes and the Calendar window's lines via `sayDateYY` — a screen reader keeps four; the window's
+  date line; the medical sheet. Left four: the CSV export, a data file). (3) Archive [TILL-NEXT-YEAR],
+  [OIL-ASK-HEAD-SEVERAL], [INP-TILL-STALE] (`node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>`). (4) Push,
+  GitHub green, the preview link and pictures to him with his look card (§9 of the sheet), then his "merge live" (D1088).
+- **Auto-fix** was switched on by the app on 553 and switched off (D1090).
 <!-- /now -->
 
 ## Next, in order

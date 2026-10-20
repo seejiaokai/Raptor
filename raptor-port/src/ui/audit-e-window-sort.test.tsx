@@ -227,6 +227,17 @@ describe('a new input\'s calendar and the List\'s dates picker do not share stat
     expect($('#inRangeBtn').textContent, 'the List’s dates are untouched').toContain('20 Jul')
     await click(D('#inpEditCancel'))
     await showAllDates()
+  })  /* a pick that runs into another year: the line under the window's calendar prints its year in two digits (owner D1096 —
+     "All 27 instead"); the kept label keeps four */
+  it('a new input picked into next year: the line under its calendar reads "Dec 30 → Jan 8 27"', async () => {
+    await click($('#inNew'))
+    const D = (sel: string) => document.querySelector(sel) as HTMLElement
+    for (let i = 0; i < 12 && !D('#inpEdCal [data-iso="2026-12-30"]'); i++) await click(D('#inpEdCal button[aria-label="Next month"]'))
+    await click(D('#inpEdCal [data-iso="2026-12-30"]'))
+    for (let i = 0; i < 3 && !D('#inpEdCal [data-iso="2027-01-08"]'); i++) await click(D('#inpEdCal button[aria-label="Next month"]'))
+    await click(D('#inpEdCal [data-iso="2027-01-08"]'))
+    expect(D('#inpEditPop .rc-read').textContent).toBe('Dec 30 → Jan 8 27')
+    await click(D('#inpEditCancel'))
   })
 })
 
