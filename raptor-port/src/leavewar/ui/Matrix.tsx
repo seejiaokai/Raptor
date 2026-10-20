@@ -4175,6 +4175,9 @@ export function Matrix() {
           draggingId={draggingId}
           dragOver={dragOver}
           dragAfter={dragAfter}
+          // Reset order judges the men the grid DRAWS — the same test the rows below are filtered by
+          // ([LW-SETTINGS-SMALL]); a changed window re-renders this component, so the sheet follows it
+          shown={p => rowInWindow(p, visWinRef.current, rowSpans)}
         />
       )}
       {/* a member may bid CLEARING leave after their own posting-out (owner

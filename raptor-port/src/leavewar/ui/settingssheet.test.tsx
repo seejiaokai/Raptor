@@ -1,10 +1,12 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { displayRoster, getState, groupsInOrder, initStore, setRole, setRosterOrder } from '../state/store'
+import { displayRoster, getState, groupsInOrder, initStore, rosterFollowsDefault, setRole, setRosterOrder } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
 import { LIFT_LAND_MS } from '../../ui/lift'
 import { Matrix } from './Matrix'
+import { SettingsSheet } from './SettingsSheet'
+import { setLwOnScreen } from '../state/screen'
 
 beforeEach(() => {
   initStore(memoryBackend())
@@ -466,5 +468,36 @@ describe('⚙ Settings — Reset order', () => {
     fireEvent.click(screen.getByTestId('settings-open'))
     expect(btn().textContent).toMatch(/Reset order/)
     expect(getState().rosterOrder).toEqual(['ramp', 'ace'])
+  })
+  /* [LW-SETTINGS-SMALL] (2): the Leave War is kept mounted, so the sheet stays open across a page switch — an armed
+     question must not wait there for one tap that would reset fifty rows */
+  it('leaving the Leave War takes the question back, the sheet still open', () => {
+    act(() => setLwOnScreen(true))
+    setRosterOrder(['ramp', 'ace'])
+    open()
+    fireEvent.click(btn())
+    expect(btn().textContent).toBe('Really reset?')
+    act(() => setLwOnScreen(false))                                  // another page in front
+    act(() => setLwOnScreen(true))                                   // and back
+    expect(btn().textContent).toMatch(/Reset order/)
+    fireEvent.click(btn())
+    expect(getState().rosterOrder, 'the first tap after coming back only asks again').toEqual(['ramp', 'ace'])
+  })
+  /* [LW-SETTINGS-SMALL] (1): the line is judged over the men the grid draws (Matrix hands the sheet its row test) */
+  it('a hand order that differs only for a man the grid does not draw is greyed, and lights once he is drawn', () => {
+    /* two neighbours whose swap the grid draws (one group, one seat): the first adjacent pair whose swap is a hand order */
+    const ids = displayRoster().map(p => p.id)
+    let a = ''
+    for (let i = 0; i + 1 < ids.length && !a; i++) {
+      setRosterOrder([...ids.slice(0, i), ids[i + 1]!, ids[i]!, ...ids.slice(i + 2)])
+      if (!rosterFollowsDefault()) a = ids[i]!
+    }
+    expect(a, 'a swap the grid draws').not.toBe('')
+    const props = { onClose: () => {}, onAddCounter: () => {}, onDays: () => {} }
+    const { unmount } = render(<SettingsSheet {...props} shown={p => p.id !== a} />)
+    expect(btn().disabled, 'without him the grid draws the default').toBe(true)
+    unmount()
+    render(<SettingsSheet {...props} shown={() => true} />)
+    expect(btn().disabled, 'with him drawn, it is a hand order').toBe(false)
   })
 })
