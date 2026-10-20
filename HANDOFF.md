@@ -34,16 +34,20 @@ the later merge keeps both (D78).
   three browser shares on tests still reading four-digit years — fixed in `5e0404648` (and the Holidays warning's year,
   `HolidaysPanel.tsx`); the six named browser tests 10 / 10 under the lock. **Push `5e0404648` once the run of `cde330fed`
   has finished (D151), then read GitHub's run before anything else.**
-- **Next, in order:** (1) `cd raptor-port && npm run build`, serve it (preview "raptor-walk", :4173 — prove the bundle name),
-  then `node scripts/handpass/inputs-small-fixes-walk.mjs docs/img/handpass/2026-10-20-inputs-small-fixes/rewalk` (v4: the
-  two-digit years, the New Year week N1–N3, O3 the question asked again, M1 the medical sheet of two kinds in 2027); open
-  the pictures. (2) The sheet: §5 the read's findings and dispositions (F1 fixed, F2 fixed, F3 fixed; its notes — the card
-  corner now two digits, the Leave War's day list cosmetic), §4 the re-walk, §6 the breaks 17 / 17, §10 the D1096 places
+- **Re-walk (v6, build `index-CiubYdkh`):** 47 PASS; the only open line is M1 (the medical sheet of two kinds in Feb 2027):
+  its set-up check had a stray backspace in a pattern — fixed in the script, **not yet re-run**. Found on the way, as built
+  and not a fault: a request lands on its FIRST day only, so a course from 30 Dec draws no row in the week of 4 Jan.
+  Pictures `raptor-port/docs/img/handpass/2026-10-20-inputs-small-fixes/rewalk/` (opened: N3, M1 error).
+- **Next, in order:** (1) re-run `node scripts/handpass/inputs-small-fixes-walk.mjs docs/img/handpass/2026-10-20-inputs-small-fixes/rewalk`
+  on a fresh `npm run build` served at :4173 (prove the bundle name); open M1's picture. (2) The sheet: §5 the read's
+  findings — F1 fixed (`overlay.ts viewOfWeek`), F2 fixed (`MedClashConfirm`), F3 fixed (a comment); its notes (card corner
+  two digits now; the Leave War's day list cosmetic); §4 the re-walk; §6 breaks 17 / 17; §7 GitHub; §10 the D1096 places
   (day headings of the week, board, day window, peek, OIL mode; fmtDay; oilDayLabel; the LATE note; the phone list heading;
   the card corner; the date boxes and the Calendar window's lines via `sayDateYY` — a screen reader keeps four; the window's
-  date line; the medical sheet. Left four: the CSV export, a data file). (3) Archive [TILL-NEXT-YEAR],
-  [OIL-ASK-HEAD-SEVERAL], [INP-TILL-STALE] (`node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>`). (4) Push,
-  GitHub green, the preview link and pictures to him with his look card (§9 of the sheet), then his "merge live" (D1088).
+  date line; the medical sheet; the Holidays warning. Left four: the CSV export, a data file; a year alone; a month title).
+  (3) Archive [TILL-NEXT-YEAR], [OIL-ASK-HEAD-SEVERAL], [INP-TILL-STALE] (`node raptor-port/scripts/backlog-archive.mjs <ID>
+  --homes <file>`). (4) Push, read GitHub's run of the last commit, then the preview link, before/after pictures and the look
+  card (sheet §9) to him; his "merge live" (D1088).
 - **Auto-fix** was switched on by the app on 553 and switched off (D1090).
 <!-- /now -->
 

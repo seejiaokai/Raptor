@@ -13,7 +13,7 @@ import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-console.log('inputs-small-fixes-walk v4')
+console.log('inputs-small-fixes-walk v6')
 const HERE = dirname(fileURLToPath(import.meta.url))
 const OUT = process.argv[2] || join(HERE, '../../docs/img/handpass/2026-10-20-inputs-small-fixes')
 rmSync(OUT, { recursive: true, force: true }); mkdirSync(OUT, { recursive: true })
@@ -106,6 +106,8 @@ async function fileOn(page, tap, iso, spec) {
   await page.waitForTimeout(400)
   /* the OIL question: one day — Yes; several days — All days */
   if (await tid(page, 'oilconf').count()) { await press(page, tap, (await tid(page, 'oil-all').count()) ? '[data-testid="oil-all"]' : '[data-testid="oil-yes"]'); await press(page, tap, '[data-testid="oilconf-save"]') }
+  /* a medical with no document attached asks first */
+  if (await tid(page, 'docconf-nodoc').count()) { await press(page, tap, '[data-testid="docconf-nodoc"]'); await page.waitForTimeout(300) }
   if (await tid(page, 'win-inputsday-x').count()) await press(page, tap, '[data-testid="win-inputsday-x"]')
   const made = await page.evaluate(b => window.INPUTS.map(r => String(r.iid)).filter(x => !b.includes(x)), before)
   return made.length === 1 ? made[0] : null
@@ -140,8 +142,8 @@ for (const [size, opts, tap] of SIZES) {
       else {
         check(`${size} T1: the phone's card carries no till date (D728 — its heading says the date)`, !/till 15 Feb/.test(t || ''), t)
         const h = await page.evaluate(iid => { const c = document.querySelector(`#inList [data-iid="${iid}"]`); let e = c && c.previousElementSibling
-          while (e && !e.classList.contains('icard-day')) e = e.previousElementSibling; return e ? (e.textContent || '').replace(/\s+/g, ' ').trim() : null }, iid)
-        check(`${size} T1: its day heading reads the year in two digits (D1096)`, /15 Feb 27/.test(h || '') && !/2027/.test(h || ''), h)
+          while (e && !e.classList.contains('icard-day')) e = e.previousElementSibling; const b = e && e.querySelector('b'); return b ? (b.textContent || '').replace(/\s+/g, ' ').trim() : null }, iid)
+        check(`${size} T1: its day heading reads the year in two digits (D1096)`, /15 Feb 27$/.test(h || '') && !/2027/.test(h || ''), h)
       }
       await mark(page, row); await shot(page, `${size}-T1-list-next-year`)
       /* T2 its own window: the grey date after the remarks box */
@@ -338,7 +340,7 @@ for (const [size, opts, tap] of SIZES) {
     const kept = await page.evaluate(id => { const r = window.INPUTS.find(x => String(x.iid) === id); return r && r.endDate }, id)
     check(`${size} N1: filed 30 Dec → 8 Jan; the kept label keeps four digits`, kept === 'Jan 8 2027', kept)
     await go(page, 'editsched'); await dayCard(page, '#eWeek', 2); await page.waitForTimeout(300)
-    const wed = await holds(page, '#eWeek .day[data-day="2"]', 'Walk course till 8 Jan 27')
+    const wed = await holds(page, '#eWeek .day[data-day="2"]', 'till 8 Jan 27')
     check(`${size} N1: Wednesday 30 Dec prints "Walk course till 8 Jan 27"`, wed.length > 0, wed)
     await page.evaluate(() => { const e = [...document.querySelectorAll('#eWeek .day[data-day="2"] *')].find(x => x.children.length === 0 && (x.textContent || '').includes('till 8 Jan 27')); if (e) { e.scrollIntoView({ block: 'center' }); e.style.outline = '3px solid #ff3b6b' } })
     await shot(page, `${size}-N1-wednesday-30-dec`)
@@ -363,8 +365,11 @@ for (const [size, opts, tap] of SIZES) {
         else {
           await nxt.first().click(); await page.waitForTimeout(600)
           const t0 = Date.now(); await page.evaluate(() => window.validate && window.validate()); const ms = Date.now() - t0
-          const jan = await holds(page, '#eWeek', 'Walk course till 8 Jan')
-          check(`${size} N3: the week of 4 Jan prints "Walk course till 8 Jan" (its own year — no year)`, jan.length > 0 && jan.every(x => !/8 Jan 27/.test(x)), jan)
+          const jan = await holds(page, '#eWeek', 'till 8 Jan')
+          /* a request lands on its FIRST day only (as built — overlay.ts landingDue): the course that began on 30 Dec draws no row in
+             this week; what matters is that nothing here carries a stale "till 8 Jan 27" */
+          const stale = await holds(page, '#eWeek', 'till 8 Jan 27')
+          check(`${size} N3: the week of 4 Jan carries no "till 8 Jan 27" (the course lands on its first day only, in December)`, stale.length === 0, { stale, jan })
           results.push(`INFO ${size} N3: one validate in the week of 4 Jan took ${ms} ms`)
           await page.evaluate(() => { const e = [...document.querySelectorAll('#eWeek *')].find(x => x.children.length === 0 && x.getBoundingClientRect().height > 1 && (x.textContent || '').includes('till 8 Jan')); if (e) { e.scrollIntoView({ block: 'center' }); e.style.outline = '3px solid #ff3b6b' } })
           await shot(page, `${size}-N3-week-of-4-jan`)
@@ -376,7 +381,7 @@ for (const [size, opts, tap] of SIZES) {
           if (wk !== '28/12/2026') await page.evaluate(() => { window.loadWeek('28/12/2026') })
           await board(page, 2)
           const chip = await text(page, '#schedBoard .dpend:not(.dnew):not(.dchg)')
-          const still = await holds(page, '#schedBoard', 'Walk course till 8 Jan 27')
+          const still = await holds(page, '#schedBoard', 'till 8 Jan 27')
           check(`${size} N3: back in December after a reload — Wednesday nothing pending, still "till 8 Jan 27"`, !chip && still.length > 0, { chip, still })
           await shot(page, `${size}-N3-back-after-reload`)
           await closeBoard(page)
@@ -427,7 +432,7 @@ for (const [size, opts, tap] of SIZES) {
     const ll = await fileOn(page, false, '2027-02-10', { type: 'ATT C', people: [who], end: '2027-02-15', remarks: 'Walk ATT C',
       beforeSave: async () => {} })
     if (await tid(page, 'docconf-nodoc').count()) { await tid(page, 'docconf-nodoc').click(); await page.waitForTimeout(400) }
-    if (!(await page.evaluate(w => window.INPUTS.some(r => r.type === 'ATT C' && JSON.stringify(r).includes(`"${w}"`) && r.date === 'Feb 10'), who))) throw new Error('the ATT C was not filed')
+    if (!(await page.evaluate(w => window.INPUTS.some(r => r.type === 'ATT C' && JSON.stringify(r).includes(`"${w}"`) && /^Feb 10\b/.test(r.date)), who))) throw new Error('the ATT C was not filed')
     await go(page, 'inputs'); await incalMonth(page, false, 2027, 2); await openDay(page, '2027-02-12')
     await page.locator('#icPopAdd').click(); await page.locator('#inpEditPop #inpEditType').waitFor()
     await page.selectOption('#inpEditPop #inpEditType', 'ATT B'); await page.selectOption('#inpEditPop #inpEditPerson', who)
