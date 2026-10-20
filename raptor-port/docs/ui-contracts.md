@@ -6526,9 +6526,11 @@ backs out without changing the posting. **The date that sets a Delete off asks t
 `[PO-MOVE-DATE-DELETE-ASK]`):** on the Post out sheet, a posting whose outcome is already Delete, its date moved to today
 or earlier (`leavewar/sync.ts postingRunsBy` — the pass's own clock), is NOT saved: the box and the line show the date
 picked and the same `postout-delete-go` "Tap again to delete <callsign>" is drawn; its tap saves the date and the delete
-runs. A date still to come deletes no one at once and is saved as before, with no ask; backing out — any chip, the ✕, a
-date still to come, leaving the Leave War — leaves the posting and its date as they were (an armed Delete chip is taken
-back on leaving the Leave War too). Pinned: `leavewar/ui/postout-date-delete.test.tsx`.
+runs. A date still to come deletes no one at once and is saved as before, with no ask — picked while the question waits
+too (reading (1)); backing out — any chip, the ✕, leaving the Leave War — leaves the posting and its date as they were,
+and a posting changed under the question (an Undo, another tab) takes it away. **Every armed "Tap again to delete" — this
+sheet's, the bid sheet's PO and the drag selection's PO — is taken back when the Leave War leaves the screen** (the page is
+kept mounted, so a sheet can wait open across a page switch). Pinned: `leavewar/ui/postout-date-delete.test.tsx`.
 A deleted man (`gone` on the war) has no posting door — his posting is final.
 **On the date** (`leavewar/sync.ts runPoOutcomes`, the calendar date — the one clock): Overseas Sqn → archived (Admin →
 Users' Archived group) and his account suspended; Delete → his person and account deleted (the hidden mark; days he flew keep his puck); SANS →

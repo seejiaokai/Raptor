@@ -175,6 +175,10 @@ export function BidPicker({
      tap arms it (D287 (3): it asks twice) */
   const [poOutcome, setPoOutcome] = useState<PostOutcome>('overseas')
   const [delArmed, setDelArmed] = useState(false)
+  /* a "Tap again to delete" left armed is taken back when the Leave War leaves the screen — the page is kept mounted, so
+     this sheet can wait open across a page switch for a tap from someone who no longer knows it was the second (the
+     reason D1102's date ask is taken back there too) */
+  useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) setDelArmed(false) }), [])
   // The post-IN controls, folded the same way and for the same reason. No
   // archive switch: arriving has no counterpart to it — the Quals archive is
   // something a person LEAVES the roster into.
@@ -1022,14 +1026,18 @@ export function PostOutSheet({
   const [delArm, setDelArm] = useState(false)
   /* …and neither does the DATE of a posting that is already a Delete, moved to today or earlier — the tap that would
      delete him at once (D1102, 21 Oct 26 — [PO-MOVE-DATE-DELETE-ASK]): the date picked waits here, shown in the box and
-     the line, until the same "Tap again to delete Hex" is pressed; backing out — a chip, the ✕, a date still to come —
-     leaves the posting and its date as they were. A date still to come deletes no one now and is saved at once. */
+     the line, until the same "Tap again to delete Hex" is pressed; backing out — a chip, the ✕, leaving the Leave War —
+     leaves the posting and its date as they were. A date still to come deletes no one now and is saved at once — picked
+     while the question waits too (D1102's reading (1)). */
   const [askDate, setAskDate] = useState<string | null>(null)
   const armed = delArm || askDate !== null
   const shownFrom = askDate ?? poFrom
   /* the Leave War is kept mounted, so this sheet survives a page switch: a question to delete is never left waiting for
      one tap from someone who no longer knows it was the second ([LW-SETTINGS-SMALL]'s reason, met here too) */
   useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) { setDelArm(false); setAskDate(null) } }), [])
+  /* …and when the posting under it changes — an Undo, another tab, the date or outcome moved — the question is about a
+     posting that no longer stands: it goes, never to delete at the date it was asked about */
+  useEffect(() => { setAskDate(null) }, [poFrom, outcome])
   const locked = !!lockedWhy
   return (
     <Sheet testid="postout-sheet" label="Posted out" onClose={onClose}>

@@ -4,7 +4,7 @@
    asks twice (D287 (3)). D1102: the date that sets a delete off asks the same tap-twice question before it is saved; a
    date still to come deletes no one at once and is saved as before; backing out leaves the posting and its date as they
    were. Driven through the real sheet in the wired world (the sync's posting pass carries the delete out). */
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { storeBackend } from '../../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../../engine/people'
@@ -13,10 +13,11 @@ import { accountsLoad, signIn, sessionFor } from '../../state/accounts'
 import { getState, initStore as lwInitStore, setPeople } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { projectPeople } from '../state/raptorRoster'
-import { postOut, wireLeaveWarSync } from '../sync'
+import { postOut, undoPostOut, wireLeaveWarSync } from '../sync'
 import { setLwOnScreen } from '../state/screen'
 import { boxValue, pickDate } from '../../ui/datecal-testkit'
 import { Matrix } from './Matrix'
+import { SelectSheet } from './SelectSheet'
 
 const TODAY = '2026-07-15'
 const LATER = '2026-07-20'          // the posting's date, still to come
@@ -120,5 +121,56 @@ describe('[PO-MOVE-DATE-DELETE-ASK] a Delete posting\'s date moved to today asks
     pickDate(screen.getByTestId('postout-date'), TODAY)
     expect(screen.queryByTestId('postout-delete-go')).toBeNull()
     expect(war('rocky')!.to).toBe('2026-07-14')
+  })
+  it('leaving the Leave War while asked takes the question back — one tap on coming back deletes no one', () => {
+    openSheet()
+    pickDate(screen.getByTestId('postout-date'), TODAY)
+    expect(screen.getByTestId('postout-delete-go')).toBeTruthy()
+    act(() => setLwOnScreen(false))
+    act(() => setLwOnScreen(true))
+    expect(screen.queryByTestId('postout-delete-go')).toBeNull()
+    expect(boxValue(screen.getByTestId('postout-date'))).toBe(LATER)
+    expect(P('rocky').deleted).toBeFalsy()
+  })
+  it('the posting changed under the question (taken back elsewhere, then a Delete again): the question goes', () => {
+    openSheet()
+    pickDate(screen.getByTestId('postout-date'), TODAY)
+    expect(screen.getByTestId('postout-delete-go')).toBeTruthy()
+    act(() => { expect(postOut('rocky', '2026-07-22', 'delete')).toBe(true) })   // another tab moves it to the 22nd
+    expect(screen.queryByTestId('postout-delete-go'), 'no question about a posting that no longer stands').toBeNull()
+    expect(boxValue(screen.getByTestId('postout-date'))).toBe('2026-07-22')
+    expect(P('rocky').deleted).toBeFalsy()
+  })
+})
+
+/* the other two doors that ask "Tap again to delete" (D287 (3)) — the bid sheet's PO and the drag selection's PO — take
+   an armed question back when the Leave War leaves the screen, as the Post out sheet's does */
+describe('an armed "Tap again to delete" on the other posting doors is taken back on leaving the Leave War', () => {
+  it('the bid sheet PO', () => {
+    expect(undoPostOut('rocky')).toBe(true)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-rocky-${STRUCK}`))
+    fireEvent.click(screen.getByTestId('bid-postout'))
+    fireEvent.click(screen.getByTestId('po-delete'))
+    fireEvent.click(screen.getByTestId('po-confirm'))
+    expect(screen.getByTestId('po-confirm').textContent).toBe('Tap again to delete Hex')
+    act(() => setLwOnScreen(false))
+    act(() => setLwOnScreen(true))
+    expect(screen.getByTestId('po-confirm').textContent).toBe('Post out')
+    expect(P('rocky').deleted).toBeFalsy()
+  })
+  it('the drag selection PO', () => {
+    const posted: string[] = []
+    const sel = { people: ['rocky'], from: STRUCK, to: STRUCK, cells: [{ personId: 'rocky', date: STRUCK }] }
+    render(<SelectSheet sel={sel} people={() => 'Hex'} role="admin" canDecide={true} onDone={() => {}} onMove={() => {}}
+      onPostOut={(_id, d, o) => { posted.push(`${d}:${o}`) }} onClose={() => {}} />)
+    fireEvent.click(screen.getByTestId('sel-postout'))
+    fireEvent.click(screen.getByTestId('sel-po-delete'))
+    fireEvent.click(screen.getByTestId('sel-po-confirm'))
+    expect(screen.getByTestId('sel-po-confirm').textContent).toBe('Tap again to delete Hex')
+    act(() => setLwOnScreen(false))
+    act(() => setLwOnScreen(true))
+    expect(screen.getByTestId('sel-po-confirm').textContent).toBe('Post out')
+    expect(posted).toEqual([])
   })
 })
