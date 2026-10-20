@@ -31,7 +31,7 @@ import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
 import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
-import { leaveInputAt, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem } from '../sync'
+import { leaveInputAt, openDays, postOut, postOutProblem, postingRunsBy, undoPostOut, undoPostOutProblem } from '../sync'
 import { columnInView } from './inview'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
@@ -3989,6 +3989,8 @@ export function Matrix() {
           /* [ONE-DOOR] (Fable F1 / Astra 2): archived on Admin → Users — Restore there is the one way back; the store's
              lock, installed by the sync, as the account and block lookups are (the war never reads Raptor's people) */
           lockedWhy={postingLocked(open.id)}
+          /* a Delete's date moved to today or earlier asks twice before it is saved (D1102) — on the pass's own clock */
+          deletesNow={postingRunsBy}
           onChange={(from, outcome) => postOutOr(open.id, from, outcome)}
           /* the archive the Post out made goes too (W5-F1); refused, with where to go, when a man on the roster now holds
              his callsign (D286 (1) — Fable's scenario 2: it closed and did nothing) */

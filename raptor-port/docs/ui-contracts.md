@@ -6522,7 +6522,14 @@ suspended." — the account named only when he has one; "archived on Quals" unti
 the chosen chip again un-chooses it — "off the manpower, nothing else" (the agent's call, on his look card). **A Delete
 asks twice** (D287 (3)): the bid sheet's button turns into "Tap again to delete <callsign>"; on the Post out sheet (which
 commits on each change) the Delete chip arms a second button, `postout-delete-go`, and tapping the armed chip again
-backs out without changing the posting. A deleted man (`gone` on the war) has no posting door — his posting is final.
+backs out without changing the posting. **The date that sets a Delete off asks twice too (D1102, 21 Oct 26 —
+`[PO-MOVE-DATE-DELETE-ASK]`):** on the Post out sheet, a posting whose outcome is already Delete, its date moved to today
+or earlier (`leavewar/sync.ts postingRunsBy` — the pass's own clock), is NOT saved: the box and the line show the date
+picked and the same `postout-delete-go` "Tap again to delete <callsign>" is drawn; its tap saves the date and the delete
+runs. A date still to come deletes no one at once and is saved as before, with no ask; backing out — any chip, the ✕, a
+date still to come, leaving the Leave War — leaves the posting and its date as they were (an armed Delete chip is taken
+back on leaving the Leave War too). Pinned: `leavewar/ui/postout-date-delete.test.tsx`.
+A deleted man (`gone` on the war) has no posting door — his posting is final.
 **On the date** (`leavewar/sync.ts runPoOutcomes`, the calendar date — the one clock): Overseas Sqn → archived (Admin →
 Users' Archived group) and his account suspended; Delete → his person and account deleted (the hidden mark; days he flew keep his puck); SANS →
 ticked SANS (D283: with "Show SANS" OFF the war keeps his row in its old group, posted out, untracked; with it ON his

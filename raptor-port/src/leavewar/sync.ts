@@ -1755,6 +1755,9 @@ export function postingHeldNote(id: string): string | null {
   const d = poDueNow(id, effectiveToday())
   return d ? poHeldReason(id, d.outcome, d.poDate) : null
 }
+/* would a posting dated `poDate` run NOW — on the pass's own clock (poDueNow: today on or after the date)? The Post out
+   sheet asks before it saves a Delete's date that answers yes (D1102 — [PO-MOVE-DATE-DELETE-ASK]) */
+export function postingRunsBy(poDate: string): boolean { return poDate <= effectiveToday() }
 export function runPoOutcomes(): void {
   if (SYNCING) return
   const today = effectiveToday()
