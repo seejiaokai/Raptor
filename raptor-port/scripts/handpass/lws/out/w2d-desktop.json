@@ -1,0 +1,32 @@
+{
+ "allResults": [
+  {
+   "id": "34-tap",
+   "size": "desktop",
+   "verdict": "PASS",
+   "seen": "tapping the archived man's row went to: {\"dayList\":\"Piston Sat 18 Jul ✕ Two of these can’t both stand on the same time — an admin needs to change one. HO — OIL earned (Duty\",\"oneDay\":null,\"dialogs\":[\"daylist-sheet: Piston Sat 18 Jul ✕ Two of these can’t both stand on the same time — an admin needs to change one. H\"],\"page\":\"leavewar\"}",
+   "pic": "w2-s34-desktop-after-tap.png"
+  },
+  {
+   "id": "34-name-nov-view",
+   "size": "desktop",
+   "verdict": "PASS",
+   "seen": "Nov view (Piston drawn 0): names [\"Piston\",\"Saber\"]",
+   "pic": "w2-s34-desktop-note-nov.png"
+  },
+  {
+   "id": "34-setup",
+   "size": "desktop",
+   "verdict": "OK",
+   "seen": "before the archive the note found 1: [{\"text\":\"Piston · Sat 18 Jul · Weekend/PH work earns *HO, but the day holds LL. Decide the bid ›\",\"who\":\"Piston\"},{\"text\":\"Saber · Sat 18 Jul · Weekend/PH work earns *HO, but the day holds LL. Decide the bid ›\",\"who\":\"Saber\"}]",
+   "pic": ""
+  },
+  {
+   "id": "34-name",
+   "size": "desktop",
+   "verdict": "PASS",
+   "seen": "after archiving Piston (his row drawn 1 in Jul): note found 1; names [\"Piston\",\"Saber\"]",
+   "pic": "w2-s34-desktop-note-archived.png"
+  }
+ ]
+}

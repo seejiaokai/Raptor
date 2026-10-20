@@ -1,0 +1,12 @@
+{
+ "results": [
+  {
+   "id": 4,
+   "size": "desktop",
+   "verdict": "PASS",
+   "seen": "asked with today (true); tapped \"Tap again to delete Hex\": sheet gone=true, Hex flags deleted=true archived=true; his row on the war: October still drawn, November gone; cell classes around the date {\"10-18\":\"weekend act\",\"10-19\":\"act\",\"10-20\":\"act pofin\",\"10-21\":\"gone act\",\"10-22\":\"gone act\",\"10-24\":\"gone weekend act\"}; Admin → Users active [], archived null; sign-in before true, after false; schedule week Jul 13,Jul 14,Jul 15,Jul 16,Jul 17,Jul 18,Jul 19: Hex id occurrences 4, pucks reading Hex on the Edit Schedule page 12; top-bar Undo disabled (nothing to undo): Hex deleted=true, Admin → Users []",
+   "pic": "w1-desktop-s4-asked-today.png, w1-desktop-s4-asked-final.png, w1-desktop-s4-after-delete.png, w1-desktop-s4-war-november.png, w1-desktop-s4-admin-users.png, w1-desktop-s4-schedule-week.png, w1-desktop-s4-after-undo.png"
+  }
+ ],
+ "errors": []
+}

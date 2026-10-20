@@ -1,0 +1,19 @@
+{
+ "results": [
+  {
+   "id": 1,
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "before: date start 2026-10-31 no ask (pre true); picked today: box \"Wed 21 Oct 26\n▾\" data-value 2026-10-21, line \"On 21 Oct: deleted with his account. Days he flew keep his puck.\", button \"Tap again to delete Hex\", Hex deleted=false; after ✕ and reopen: date 2026-10-31, ask null; Admin → Users Hex line (people count 61): [\"Hex | hex | · Member | · WSO · CAT C | POSTING OUT 31 OCT · DELETE\"], archived list: null",
+   "pic": "w1-phone-s1-asked.png, w1-phone-s1-reopened.png, w1-phone-s1-admin-users.png"
+  },
+  {
+   "id": 2,
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "yesterday: box \"2026-10-20\" -> sheet date asked=true; tomorrow: data-value 2026-10-22, box \"Thu 22 Oct 26\n▾\", line \"On 22 Oct: deleted with his account. Days he flew keep his puck.\", ask null, Hex deleted=false; Admin → Users: [\"Hex | hex | · Member | · WSO · CAT C | POSTING OUT 22 OCT · DELETE\"]; reopened sheet after tomorrow saved: 2026-10-22; put back: 2026-10-31, ask null",
+   "pic": "w1-phone-s2-yesterday-asked.png, w1-phone-s2-tomorrow-saved.png, w1-phone-s2-admin-tomorrow.png, w1-phone-s2-back-to-d10.png"
+  }
+ ],
+ "errors": []
+}
