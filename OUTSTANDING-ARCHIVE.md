@@ -6099,3 +6099,24 @@ opening clears the bubble or sits above it; the window likewise; find what the e
 **Place:** low; any time.
 **(4) FOUND ALREADY GONE 20 Oct 26** (the standby batch, pull request 547): the Inputs list was redesigned since (D723's card on a phone); a LATE leave the admin files for himself in the member view shows LATE, "All day", the name, the kind and the remark — no empty pill, on a phone or a desktop (pictures `raptor-port/docs/img/handpass/2026-10-20-standby-batch/before/07`, `08`). The item closes on that "merge live".
 
+
+*Moved here 2026-10-20 by backlog-archive.mjs ([GATELOCK-STALE-PORT]). Forward facts: `raptor-port/docs/gates-and-deploy.md`.*
+
+### [GATELOCK-STALE-PORT] The lock's full check run tests another chat's old build when a preview is left on 4173 (found 18 Oct 26, `claude/three-small-jobs-1018`) — OPEN
+**Seen:** `gatelock.mjs run` runs `npx playwright test` with no port; `playwright.config.ts` reuses a server already on 4173
+outside CI (`reuseExistingServer: !process.env.CI`). Three old previews were still up (4173 from `trk-chart-fps-8028f8`,
+4174, 4180 from older night chats), so the browser tests ran against an old bundle: seven failed on this branch and the same
+seven on `main`'s copy — none of them about the change. The re-run on `E2E_PORT=4191` met a FOURTH old preview there (from `d949-d952-till-date-switch-f9a168`; others on 4174, 4180, 4182): 29 failed, an old build again. A port checked free first (4207) gave the real result. The walk scripts' default (`SPF_URL` 4174) meets the same trap. The trap
+is written in `raptor-port/docs/gates-and-deploy.md` ("if a preview is ALREADY running on 4173 …"); nothing enforces it.
+**Fix:** in `gatelock.mjs` `run` (and `exec` when the command is `test:e2e` / `playwright test`), set `E2E_PORT` to a port
+found free at that moment when none is set (refuse a set one that is already answering), and print it; one unit test of the choice. **Place:** a small tooling job of its
+own, read by one fresh reader (a script that runs the checks).
+
+
+*Moved here 2026-10-20 by backlog-archive.mjs ([TOPBAR-PAIR-TEARDOWN-LOG]). Forward facts: `raptor-port/docs/gates-and-deploy.md`.*
+
+### [TOPBAR-PAIR-TEARDOWN-LOG] A unit share red with every test green — a console line after `topbar-pair.test.tsx` ended (met 20 Oct 26, pull request 546; low)
+**Seen:** `unit (raptor 3/6)` on the records push of pull request 546 (run 39354269643 — 86 files, 1,444 of 1,444 passed, then `Errors 1`): `EnvironmentTeardownError: [vitest-worker]: Closing rpc while "onUserConsoleLog" was pending — originated in src/ui/topbar-pair.test.tsx`. The same code had passed on the run before; green on its one re-run (re-run before this item was filed — the order of `raptor-port/docs/gates-and-deploy.md` was not kept, said so to him). The shape `gates-and-deploy.md` §the `unit (raptor)` row names: something in the file, or a production timer it starts, writes to the console after the file has finished. **To do:** find what `topbar-pair.test.tsx` leaves running (a timer, a deferred log — `Shell.tsx`'s poll and `view.ts flashAdded` were the last two), stop it at teardown or make it return with no `window`; run the file 20 times under `--shard` to see it stays quiet. **Place:** Checks and tooling — low, a small job of its own.
+**Met again and FIXED for this file, 20 Oct 26** (pull request 547's records run, the same share, 1,445 of 1,445 green): the cause, caught by a probe that watched the console after the file's last test — the two pages the app loads on first visit (`Shell.tsx` `lazy`: the Leave War and the Tracker) finished loading after the test that opened them, and React wrote "a suspended resource finished loading" (14) and "an update … not wrapped in act" (49) after the file had ended. `topbar-pair.test.tsx` now loads both pages in its `beforeAll`: the probe then saw nothing. **Left:** four other files render the whole app and open those pages (`boot-walk.test.tsx`, `trk-nocourse.test.tsx`, `availwin.test.tsx`, `lwkeepalive.test.tsx`) — the same one line each if one ever goes red this way.
+**The other four (the night of 20 Oct 26):** `trk-nocourse`, `availwin` and `lwkeepalive` load both pages up front too; `boot-walk.test.tsx` cannot (its test is what an empty first boot stores — loading the pages first changes that, 2 red) and is left: if it ever goes red this way, its own fix is a wait for the lazy pages before its last test.
+

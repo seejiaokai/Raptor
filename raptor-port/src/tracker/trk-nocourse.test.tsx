@@ -21,6 +21,9 @@ const tick = () => new Promise(r => setTimeout(r, 0))
 let wb: Whiteboard, host: HTMLDivElement, root: Root
 
 beforeAll(async () => {
+  /* the two pages the app loads on first visit (Shell.tsx lazy) loaded up front, so none finishes loading after this file's
+     last test and writes into a closed console (a unit share red with every test green — [TOPBAR-PAIR-TEARDOWN-LOG]) */
+  await Promise.all([import('../leavewar/LeaveWarPage'), import('./TrackerPage')])
   wb = new Whiteboard()
   useStorageImpl(trackerTarget(wb))
   C.setTrackerSeedDemo(false)

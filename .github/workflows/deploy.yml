@@ -47,12 +47,13 @@
 # the unit tests read only written guides in raptor-port/docs - data-model.md,
 # engine-rules.md, remarks-vocabulary.md - which stay). So every GitHub leg now
 # checks out WITHOUT those four folders (his word, D1091: "don't download the photos to save time"; a sparse checkout; actions/checkout then
-# fetches only the files it lays down, 79 MB), and the slow legs are split again:
+# fetches only the files it lays down, 79 MB), and the slow legs are split again (and on the night of 20 Oct 26 the Tracker smoke in TWO — its second half starts at its own clean slate, the helpers moved above both halves; twenty legs, and the Docs guard makes 21 against the free plan's 20 side by side, so one leg waits a minute or two for a machine):
 # the scheduler's unit set in SIX, its browser set in FOUR, the Leave War desktop
-# browser set in TWO. Nineteen legs run at once - inside the free plan's twenty
-# side by side. The Tracker smoke stays ONE leg: it is one serial script whose
-# second half uses helpers its first half defines, so cutting it means
-# restructuring it - a job of its own if it proves the slowest leg.
+# browser set in TWO. Nineteen legs ran at once - inside the free plan's twenty
+# side by side - with the Tracker smoke ONE leg (its second half used helpers its
+# first half defined), and it proved the slowest leg (5m50s). Split in two the
+# next night (above): twenty legs and the Docs guard - one over the plan's 20, so
+# one leg queues briefly; a further split should merge two legs first.
 # The PC job below is unchanged: its runner keeps its clone between runs.
 name: Deploy to GitHub Pages
 
@@ -408,13 +409,19 @@ jobs:
   # runs beside the geometry legs rather than after them; it builds and
   # serves the bundle itself like they do.
   tracker:
-    name: tracker (smoke)
+    name: tracker (smoke ${{ matrix.part }}/2)
     if: >-
       vars.CI_ON_GITHUB == 'true'
       || !github.event.repository.private
       || github.actor != github.repository_owner
       || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)
     runs-on: ubuntu-latest
+    # two machines since the night of 20 Oct 26 (D1089, D1092): the suite's own clean slate cuts it in two — part 1 310
+    # checks, part 2 143, the same 453 by name as the whole run (unset SMOKE_PART: the whole, as on his PC's runner)
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [1, 2]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -445,6 +452,8 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Tracker smoke
         working-directory: raptor-port
+        env:
+          SMOKE_PART: ${{ matrix.part }}
         run: npm run smoke:tracker
 
   # Publishes only when every gate above is green: a failed or cancelled

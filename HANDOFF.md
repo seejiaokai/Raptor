@@ -20,6 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/checks-tooling-night -->
+### THE NIGHT OF 20 Oct 26 — `claude/checks-tooling-night` (cut from main at 3257fd64a; no pull request yet) — the full plan is in `claude/standby-batch-1020`'s block (pull request 547)
+- **After a compaction: re-read this block, 547's block, the overnight guide (`.claude/skills/overnight/SKILL.md`) and the files of the step in hand before the next change; note the compaction here with its time.** Compactions: none yet.
+- **D1092** (his advance "merge live" for these three jobs once each is done — bug check passed, read clean or fixed, the whole GitHub run green). Guard off (`--away`), keep-awake asked.
+- **Done (committed):** job 3 [GATELOCK-STALE-PORT] — `raptor-port/scripts/gatelock.mjs` (`portBusy`, `freePort`, `browserPorts`, `runsBrowser`; `run` and `exec` of a browser run), `src/testing/gatelock-port.test.ts` (5 green); hand-checked: a busy set port refused, a non-browser command untouched. Job 2 — `trk-nocourse`, `availwin`, `lwkeepalive` .test.tsx load the two lazy pages in `beforeAll` (68 green); `boot-walk` left (its first-boot test breaks — 2 red).
+- **Done (committed):** job 1 — `smoke.mjs` SMOKE_PART 1 / 2 / unset (part 1 310, part 2 143, the whole 453 — the same names), `deploy.yml` the tracker job a matrix of two. Records: gates-and-deploy.md, file-map.md; [GATELOCK-STALE-PORT] and [TOPBAR-PAIR-TEARDOWN-LOG] archived; the no-ChatGPT list row. **Then:** pull request 548 opened; GitHub's first run green; the blind Opus read — M1 (part 1's catch-all checks), L1 (21 jobs with the Docs guard), L2 (the port chosen before the lock) — all fixed; part 1 recounted 312; sheet `raptor-port/docs/handpass/2026-10-20-night-checks-tooling.md`. **In hand:** GitHub's run of the fixes → D1092's merge → the live app → the morning report (one notification; guard `--back`; `git switch --detach`).
+- **547:** LIVE — merged 6b774b6ca (the board half out, re-filed [BOARD-TAB-FOLD-BOARD]); main brought into this branch.
+- Questions waiting for him: none.
+<!-- /now -->
 <!-- now:claude/standby-batch-1020 -->
 ### THE NIGHT OF 20 Oct 26 (/overnight, 3 hours, from about 02:10 UTC) — this chat; before it, pull requests 546 (LIVE) and 547 (red, being fixed)
 - **After a compaction: re-read this block, the overnight guide (`.claude/skills/overnight/SKILL.md`) and the files of the step in hand before the next change; note the compaction here with its time.** Compactions: none yet.

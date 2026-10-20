@@ -151,6 +151,100 @@ pg.on('pageerror', e => errs.push(e.message));
 pg.on('response', r => { if (r.status() >= 400) bad4xx.push(r.status() + ' ' + r.url()); });
 
 console.log(`\n=== ${URL} (Tracker tab) ===\n`);
+/* (a helper both parts use, moved above them — the night of 20 Oct 26) */
+const boxDay = async sel => (await pg.locator(sel).first().getAttribute('data-value')) || '';
+
+/* (a helper both parts use, moved above them — the night of 20 Oct 26) */
+async function pickDay(sel, iso) {
+  await pg.locator(sel).first().click();
+  await pg.waitForSelector('[data-testid="dcal-card"]');
+  const want = +iso.slice(0, 4) * 12 + +iso.slice(5, 7);
+  for (let i = 0; i < 480; i++) {
+    const at = await pg.locator('[data-testid="dcal"]').getAttribute('data-month');
+    const d = want - (+at.slice(0, 4) * 12 + +at.slice(5, 7));
+    if (!d) break;
+    await pg.click(d > 0 ? '[data-testid="dcal-next"]' : '[data-testid="dcal-prev"]');
+  }
+  await pg.click(`[data-testid="dcal-day-${iso}"]`);
+  await pg.waitForSelector('[data-testid="dcal-card"]', { state: 'detached' });
+}
+
+/* (a helper both parts use, moved above them — the night of 20 Oct 26) */
+const clickBall = id => pg.evaluate(i => {
+  const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === i);
+  g.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+}, id);
+
+/* (a helper both parts use, moved above them — the night of 20 Oct 26) */
+const row = id => pg.locator('.sarow').filter({ has: pg.locator('.sid', { hasText: new RegExp(`^${id}$`) }) }).first();
+
+/* (a helper both parts use, moved above them — the night of 20 Oct 26) */
+const meta = async id => ((await row(id).locator('.smeta').textContent()) || '').replace(/\s+/g, ' ').trim();
+
+/* (a helper both parts use, moved above them — the night of 20 Oct 26) */
+const set = async (label, val) => {
+  const l = pg.locator('.saedit label').filter({ hasText: label }).first();
+  await l.locator('input, textarea').first().fill(val);
+};
+
+/* (a helper both parts use, moved above them — the night of 20 Oct 26) */
+const resetRow = async id => {
+  await row(id).locator('button.sedit').click(); await pg.waitForSelector('.saedit');
+  await pg.locator('.saedit-btns button', { hasText: 'Reset to doc' }).click(); await pg.waitForTimeout(300);
+  await pg.locator('.saedit-btns button.primary').click(); await pg.waitForTimeout(400);
+};
+
+/* (a helper both parts use, moved above them — the night of 20 Oct 26) */
+const openShowAll = async () => {
+  await pg.click('#showAllBtn'); await pg.waitForSelector('#showAllPanel.on');
+};
+
+/* (a helper both parts use, moved above them — the night of 20 Oct 26) */
+const viaMenu = async (menu, item) => {
+  await pg.click(`#${menu}MenuBtn`); await pg.waitForTimeout(120);
+  await pg.click(item);
+};
+
+/* (a helper both parts use, moved above them — the night of 20 Oct 26) */
+const arr = async (page = pg) => {
+  try { await page.click('#sylMenuBtn'); await page.waitForTimeout(120); await page.click('#arrangeBtn'); } catch { /* already in the wanted state */ }
+};
+
+/* (a helper both parts use, moved above them — the night of 20 Oct 26) */
+const addStudent = async name => {
+  await pg.click('#addStu'); await pg.waitForSelector('#dlgInput');
+  await pg.fill('#dlgInput', name);
+  /* CONFIRM the value actually LANDED before clicking OK. The dialog input is a
+     controlled field; a store notify (an async save, a hint flash) landing between
+     the fill and the click can re-render it back to stale React state, submitting a
+     BLANK and making the add a silent no-op — the residual behind the intermittent
+     TRK-SMOKE timeout after the reset-on-render fix closed the open-time clear.
+     Waiting on the DOM value closes that window deterministically: if it were ever
+     wiped, this fails HERE (proving the app clear) rather than 15s later at the
+     option wait with no clue why. */
+  await pg.waitForFunction(v => document.querySelector('#dlgInput')?.value === v, name, { timeout: 5000 });
+  await pg.click('#dlgOk');
+  /* wait for the roster to SHOW the name, not a fixed 700ms: the add itself now
+     waits for any syllabus load still in flight, and on a slow runner that took
+     longer than the pause (9 Sep 26 — one student where two were added).
+     30s, raised from 15s: on a machine already loaded (e.g. the smoke run straight
+     after the e2e suite) that in-flight load can exceed 15s and lose a good run to
+     pure contention. The add still completes — give it the room rather than flake.
+     The name is the option's TEXT since stable ids — its value is the minted
+     enrolment id, which this helper cannot know and would never match. */
+  await pg.waitForFunction(n => [...document.querySelectorAll('#activeSel option')].some(o => o.textContent === n),
+    name.trim().toUpperCase(), { timeout: 30000 });
+  await pg.waitForTimeout(300);
+};
+
+/* TWO PARTS, ONE SCRIPT (D1089 — the night of 20 Oct 26): SMOKE_PART=1 runs the checks up to the clean slate below,
+   SMOKE_PART=2 the checks from it on, each in its own browser, so GitHub runs them on two machines side by side; unset,
+   the whole suite runs in order as it always did (`npm run smoke:tracker`, his PC's runner). Part 2 starts where the
+   suite already wiped the store and reopened the Tracker, so it needs nothing part 1 leaves behind — only the helpers,
+   which sit above both parts. The two parts' counts add up to the whole run's. */
+const PART = process.env.SMOKE_PART || '';
+if (PART && PART !== '1' && PART !== '2') { console.error(`SMOKE_PART must be 1 or 2, not ${PART}`); await teardown(); process.exit(2); }
+if (PART !== '2') {
 await openTracker(pg);
 
 const nBalls = await pg.locator('#flowSvg .ball').count();
@@ -271,38 +365,17 @@ ok('one hover enter per ball crossing (no bubble flicker)', enters === 1, `${ent
 }
 
 /* ---- inline editing in the Show All list ---- */
-const row = id => pg.locator('.sarow').filter({ has: pg.locator('.sid', { hasText: new RegExp(`^${id}$`) }) }).first();
-const meta = async id => ((await row(id).locator('.smeta').textContent()) || '').replace(/\s+/g, ' ').trim();
-const set = async (label, val) => {
-  const l = pg.locator('.saedit label').filter({ hasText: label }).first();
-  await l.locator('input, textarea').first().fill(val);
-};
 /* "Reset to doc" puts the document's wording back in the BOXES and Save keeps
    it ([HUMAN-RETEST] w3-F4, 23 Sep 26 — it used to save on the press, so the
    Cancel beside it cancelled nothing, and this helper pressed Cancel after it) */
-const resetRow = async id => {
-  await row(id).locator('button.sedit').click(); await pg.waitForSelector('.saedit');
-  await pg.locator('.saedit-btns button', { hasText: 'Reset to doc' }).click(); await pg.waitForTimeout(300);
-  await pg.locator('.saedit-btns button.primary').click(); await pg.waitForTimeout(400);
-};
 
 /* Show All is a plain button in the bar again (2 Sep): the View menu that held
    it had one other item, Reorder crew, which now lives in the Students card. */
-const openShowAll = async () => {
-  await pg.click('#showAllBtn'); await pg.waitForSelector('#showAllPanel.on');
-};
 /* Same for the grouped actions: open the owning menu, then press the button. */
-const viaMenu = async (menu, item) => {
-  await pg.click(`#${menu}MenuBtn`); await pg.waitForTimeout(120);
-  await pg.click(item);
-};
 /* "Edit chart layout" lives inside the Syllabus ✎ menu now (owner, 9 Sep 26):
    open the pencil, then toggle the item. Defensive (swallows) so it stands in
    for the old `pg.click('#arrangeBtn').catch(()=>{})` exits too — every call
    site is a paired on/off toggle, so a swallowed miss keeps the parity. */
-const arr = async (page = pg) => {
-  try { await page.click('#sylMenuBtn'); await page.waitForTimeout(120); await page.click('#arrangeBtn'); } catch { /* already in the wanted state */ }
-};
 await openShowAll();
 await row('ST-01').locator('button.sedit').click();
 await pg.waitForSelector('.saedit');
@@ -453,24 +526,6 @@ await pg.click('#saClose'); await pg.waitForTimeout(200);
    tick). A check that once TYPED a day into the phone's date box opens the box's calendar, turns to the month by its
    arrows — reading the calendar's own month each time — and taps the day; a check that read a box's value reads the
    day the box holds (`data-value`, '' when it holds none). */
-const boxDay = async sel => (await pg.locator(sel).first().getAttribute('data-value')) || '';
-async function pickDay(sel, iso) {
-  await pg.locator(sel).first().click();
-  await pg.waitForSelector('[data-testid="dcal-card"]');
-  const want = +iso.slice(0, 4) * 12 + +iso.slice(5, 7);
-  for (let i = 0; i < 480; i++) {
-    const at = await pg.locator('[data-testid="dcal"]').getAttribute('data-month');
-    const d = want - (+at.slice(0, 4) * 12 + +at.slice(5, 7));
-    if (!d) break;
-    await pg.click(d > 0 ? '[data-testid="dcal-next"]' : '[data-testid="dcal-prev"]');
-  }
-  await pg.click(`[data-testid="dcal-day-${iso}"]`);
-  await pg.waitForSelector('[data-testid="dcal-card"]', { state: 'detached' });
-}
-const clickBall = id => pg.evaluate(i => {
-  const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === i);
-  g.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-}, id);
 await clickBall('ST-01'); await pg.waitForTimeout(300);
 await pg.click('#popEditInfo'); await pg.waitForSelector('#infoModal');
 const m = await pg.evaluate(() => {
@@ -2027,31 +2082,6 @@ ok('the lull calendar is shut until it is asked for', await pg.locator('#lullCal
    the whole complaint about the old start-mode / end-mode pair. */
 /* Two students or the per-student checks below quietly skip themselves — the
    whole point of this package is that one student's periods are not another's. */
-const addStudent = async name => {
-  await pg.click('#addStu'); await pg.waitForSelector('#dlgInput');
-  await pg.fill('#dlgInput', name);
-  /* CONFIRM the value actually LANDED before clicking OK. The dialog input is a
-     controlled field; a store notify (an async save, a hint flash) landing between
-     the fill and the click can re-render it back to stale React state, submitting a
-     BLANK and making the add a silent no-op — the residual behind the intermittent
-     TRK-SMOKE timeout after the reset-on-render fix closed the open-time clear.
-     Waiting on the DOM value closes that window deterministically: if it were ever
-     wiped, this fails HERE (proving the app clear) rather than 15s later at the
-     option wait with no clue why. */
-  await pg.waitForFunction(v => document.querySelector('#dlgInput')?.value === v, name, { timeout: 5000 });
-  await pg.click('#dlgOk');
-  /* wait for the roster to SHOW the name, not a fixed 700ms: the add itself now
-     waits for any syllabus load still in flight, and on a slow runner that took
-     longer than the pause (9 Sep 26 — one student where two were added).
-     30s, raised from 15s: on a machine already loaded (e.g. the smoke run straight
-     after the e2e suite) that in-flight load can exceed 15s and lose a good run to
-     pure contention. The add still completes — give it the room rather than flake.
-     The name is the option's TEXT since stable ids — its value is the minted
-     enrolment id, which this helper cannot know and would never match. */
-  await pg.waitForFunction(n => [...document.querySelectorAll('#activeSel option')].some(o => o.textContent === n),
-    name.trim().toUpperCase(), { timeout: 30000 });
-  await pg.waitForTimeout(300);
-};
 
 /* ---- the person → Tracker link (9 Sep 26) ----
    Raptor's squadron roster reaches the + Add dialog through the people bridge
@@ -3047,6 +3077,16 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(300);
 }
 
+/* run alone, part 1 makes the suite's two catch-all checks itself: they sit in part 2, so a split run would never read part 1's
+   page errors and failed requests (the night's blind read, M1) */
+if (PART === '1') {
+  ok('no uncaught page errors (part 1)', errs.length === 0, errs.slice(0, 2).join(' | '));
+  ok('no unexpected failed requests (part 1)', bad4xx.length === 0, [...new Set(bad4xx)].slice(0, 3).join(' | '));
+}
+}
+if (PART !== '1') {
+/* run alone, part 2 opens the app itself first: its first step reads the page's storage */
+if (PART === '2') await pg.goto(URL, { waitUntil: 'networkidle' });
 /* Back to a clean slate: the checks below are about baked data, not this residue. */
 await pg.evaluate(() => localStorage.clear());
 await openTracker(pg);
@@ -4632,6 +4672,7 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   await pg.evaluate(() => { delete window.__pickOpenForTests; });
 }
 
+}
 console.log(`\n${pass} passed, ${fail} failed\n`);
 await teardown();
 if (KEEP && server) console.log(`preview left running at ${URL} (pid ${server.pid})`);
