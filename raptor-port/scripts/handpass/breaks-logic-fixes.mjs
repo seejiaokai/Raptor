@@ -8,16 +8,24 @@ const F = 'src/ui/LogicPage.tsx'
 const orig = readFileSync(F, 'utf8')
 const BREAKS = [
   ['B1 the markup object made afresh every repaint (no memo)', 'dangerouslySetInnerHTML={bodyHTML}', 'dangerouslySetInnerHTML={{ __html: b.html }}'],
-  ['B2 a box\'s change applied at once (not once the keyboard has landed)', 'setTimeout(() => { VCONF[k] = v; ruleApply() }, 0)', 'VCONF[k] = v; ruleApply()'],
+  ['B2 a box\'s change applied at once (not once the keyboard has landed)', 'PENDING.set(k, { v, t: setTimeout(() => { PENDING.delete(k); VCONF[k] = v; ruleApply() }, 0) })', 'VCONF[k] = v; ruleApply()'],
   ['B3 the half-typed value not carried across a redraw', 'was.value !== was.defaultValue && was.value !== el.value', 'false'],
   ['B4 Done\'s press takes the keyboard from the box first', 'onMouseDown={e => e.preventDefault()}', ''],
   ['B5 Done does not save the box itself', 'onClick={() => { finishBox(); setLgEdit(false); notify() }}', 'onClick={() => { setLgEdit(false); notify() }}'],
   ['B6 the keeper never puts the keyboard back', 'if (!k || !host || k.el.isConnected) return', 'return'],
+  /* the fresh code read's three (21 Oct 26) */
+  ['B8 Reset to standard does not apply a waiting value first (F1)', 'flushRuleApply()   // a value still waiting', '// a value still waiting'],
+  ['B9 a row\'s Reset leaves the retyped box as typed (F2)', 'if (a?.dataset?.lgset && r.dataset.lgreset!.split(\',\').includes(a.dataset.lgset)) a.value = a.defaultValue', ''],
+  ['B11 the carry ignores a setting changed underneath (F2, second guard — alone)', ' && was.defaultValue === el.defaultValue) {', ') {'],
+  ['B9+B11 both guards of F2 broken together', ["if (a?.dataset?.lgset && r.dataset.lgreset!.split(',').includes(a.dataset.lgset)) a.value = a.defaultValue", ''], [' && was.defaultValue === el.defaultValue) {', ') {']],
+  ['B10 a carried value owes no change (F3)', '      oweChange(el, el.defaultValue)', ''],
 ]
 try {
-  for (const [name, from, to] of BREAKS) {
-    if (orig.split(from).length !== 2) { console.log(`NOT RUN ${name} — its line is not found exactly once`); continue }
-    writeFileSync(F, orig.replace(from, () => to))
+  for (const [name, ...rest] of BREAKS) {
+    /* a break is one pair (from, to), or several pairs broken together */
+    const pairs = Array.isArray(rest[0]) ? rest : [rest]
+    if (pairs.some(([from]) => orig.split(from).length !== 2)) { console.log(`NOT RUN ${name} — its line is not found exactly once`); continue }
+    writeFileSync(F, pairs.reduce((txt, [from, to]) => txt.replace(from, () => to), orig))
     let red = false, out = ''
     try { out = execSync('npx vitest run src/ui/logic.test.tsx', { encoding: 'utf8', stdio: 'pipe' }) } catch (e) { red = true; out = String(e.stdout || '') }
     const failed = (out.match(/×[^\n]*/g) || []).map(s => s.slice(2, 110))

@@ -61,7 +61,9 @@ half).
   it is green, then confirm the live app as below — nothing else is pushed between his word and the merge. His "auto merge live" for a run covers all it produces, its records pull request too (D1093).
 - **Tell him when you are done, with `PushNotification`** — when the work is genuinely finished, and when you
   are BLOCKED waiting on his answer. One line, plainly. Not for progress, not for a quick reply he is clearly
-  watching, never twice for the same work.
+  watching, never twice for the same work. **Since D1097 (21 Oct 26): every stop that waits on him** — the work done
+  and his next step due, a question, an answer, a look or any other input — gets its one notification, whether or
+  not he seems to be watching; an unattended run keeps its one at the end (D596).
 - **A green check is not done, and a merged PR is not done.** Once he has said "merge live" — never before —
   carry it the whole way without checking in: merge when the PR's checks are green → `main`'s own run goes green
   (on GitHub's machines while the repo is public, on his PC once it is private) → Vercel reports the live app READY (the Production deployment for that `main` commit —

@@ -450,6 +450,44 @@ describe('the Logic page keeps the typing and the keyboard through a repaint; Do
     await putBack()
   })
 
+  /* the fresh code read's three (21 Oct 26) */
+  it('F1 Reset to standard pressed while a typed value is still waiting a beat: the value goes first, then the reset — standard wins', async () => {
+    await act(async () => { VCONF.debrief = 90; notify() }); await wait()   // something changed, so Reset to standard is offered
+    const a = box('crewRest')
+    a.focus(); setter.call(a, '11h')
+    change(a)                                    // the box left — its value waits a beat …
+    await click($('#lgReset'))                   // … and Reset to standard is pressed in that beat
+    await wait()
+    expect(VCONF.crewRest, 'the typed value did not land on top of the reset').toBe(720)
+    expect(VCONF.debrief).toBe(120)
+    await putBack()
+  })
+
+  it("F2 a row's Reset pressed while that row's box is being retyped: the row shows its standard, and the typing goes", async () => {
+    const a = box('crewRest')
+    a.focus(); setter.call(a, '11h'); await act(async () => { change(a) }); await wait()
+    expect(VCONF.crewRest).toBe(660)
+    const b = box('crewRest')
+    b.focus(); setter.call(b, '13')
+    const r = setRow('crewRest').querySelector('[data-lgreset]') as HTMLElement
+    r.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }))
+    await click(r); await wait()
+    expect(VCONF.crewRest).toBe(720)
+    expect(box('crewRest').value, 'the box shows the standard, not the typing').toBe('12h')
+    await putBack()
+  })
+
+  it('F3 a half-typed value carried across a redraw is saved when its box is left, as any typed value is', async () => {
+    const f = box('debrief')
+    f.focus(); setter.call(f, '1h4')
+    await act(async () => { VCONF.simLen = 100; notify() }); await wait()   // a setting changed elsewhere: the list is drawn again
+    const g = box('debrief')
+    expect(g.value).toBe('1h4')
+    await act(async () => { g.blur() }); await wait()   // left — jsdom raises no change of its own; the box owes it
+    expect(VCONF.debrief, 'saved on leaving').toBe(64)
+    await putBack()
+  })
+
   it('Done saves what the box holds and ends editing on ONE press — the press leaves the box alone until it is complete', async () => {
     if (!box('reportLead')) await click($('#lgEdit'))
     const f = box('reportLead')

@@ -16,6 +16,7 @@ import { notify } from '../state/store'
 import { useVersion } from './useStore'
 import { lgSettings, lgChecks, lgChkName, lgKinds, LG_TIER, type LgSet, type LgChk } from './logic-html'
 import { setInpSet, setSansSet } from './pops'
+import { oweChange } from './interactions'
 import { missionTracking, setMissionTracking } from '../engine/insights-config'
 
 /* the reference's ruleApply: write, persist, re-run the engine, repaint */
@@ -31,8 +32,21 @@ function ruleApply() {
    the whole app, which repaints), the browser found the box it was leaving gone, and gave the move up: Tab left the
    keyboard in the box just left, every time (probed on the built app). The value is taken from the box at once and
    applied once the keyboard has landed; the page then puts the keyboard back where it landed (keep, below). */
+const PENDING = new Map<string, { v: any, t: ReturnType<typeof setTimeout> }>()
 function ruleApplyLater(k: string, v: any) {
-  setTimeout(() => { VCONF[k] = v; ruleApply() }, 0)
+  const was = PENDING.get(k); if (was) clearTimeout(was.t)
+  PENDING.set(k, { v, t: setTimeout(() => { PENDING.delete(k); VCONF[k] = v; ruleApply() }, 0) })
+}
+/* the value a box last asked for — waiting, or applied */
+const ruleNow = (k: string) => PENDING.has(k) ? PENDING.get(k)!.v : VCONF[k]
+/* a press that acts on the settings themselves (Reset to standard, a row's Reset) applies what is still waiting FIRST, so
+   the order is the person's — the typed value, then the reset — and a value waiting a beat never lands on top of a reset
+   (the fresh code read, 21 Oct 26, F1: a tap on "Reset all" with a value still in its box) */
+function flushRuleApply() {
+  if (!PENDING.size) return
+  PENDING.forEach(({ v, t }, k) => { clearTimeout(t); VCONF[k] = v })
+  PENDING.clear()
+  ruleApply()
 }
 
 /* the one control in the list that has the keyboard, by a mark that survives a redraw — a box by its place in the list
@@ -221,10 +235,15 @@ export function LogicPage() {
     if (!el) { keep.current = null; return }
     const was = k.el
     const typing = (x: Element): x is HTMLInputElement => x instanceof HTMLInputElement && x.type !== 'checkbox'
-    if (typing(was) && typing(el) && was.value !== was.defaultValue && was.value !== el.value) {
+    /* carried only while the setting under it is as it was when the typing began (a row's Reset, or a change made
+       elsewhere, to THIS setting wins over half a value — the fresh code read's F2) */
+    if (typing(was) && typing(el) && was.value !== was.defaultValue && was.value !== el.value && was.defaultValue === el.defaultValue) {
       el.value = was.value
       el.focus({ preventScroll: true })
       try { el.setSelectionRange(was.selectionStart, was.selectionEnd) } catch (_) { /* a caret is a courtesy */ }
+      /* a value written by script is not one the browser saw typed: leaving the box would raise no change and save
+         nothing (F3) — the box owes its change, paid on Enter or on leaving, unless the browser raises its own */
+      oweChange(el, el.defaultValue)
     } else {
       el.focus({ preventScroll: true })
       if (typing(el)) el.select()
@@ -241,12 +260,21 @@ export function LogicPage() {
     }
     /* leaving the list forgets — but a control taken away by a rebuild is not leaving. Chrome tells a control it lost the
        keyboard as a rebuild takes it off the page, while it is still on it (probed on the built app, 21 Oct 26), so the
-       question is asked a moment later: a control still on the page was really left; one gone was taken. */
+       question is asked a moment later, once the rebuild's own keeper (above) has put the keyboard back and noted the
+       control drawn in its place: still the one that left means the keyboard really left. */
     const onFocusOut = (e: FocusEvent) => {
-      const t = e.target as HTMLElement, to = e.relatedTarget as Node | null
+      const to = e.relatedTarget as Node | null
       if (to && host.contains(to)) return   // moving within the list: the arrival notes the new control
       const was = keep.current
-      queueMicrotask(() => { if (t.isConnected && keep.current === was) keep.current = null })
+      queueMicrotask(() => {
+        if (keep.current === was) keep.current = null
+        /* …and the page's text cursor is not left parked in a box the keyboard has left: a box blurred by script keeps
+           it, and a box focused next by a tap that places no caret (a window's number box, on a phone) then took no
+           typing at all — the keys went to the cursor's box, which no longer listened (kbscroll.spec.ts KS5, 21 Oct 26;
+           the list's old repaint-every-time used to throw that box, and the stray cursor, away) */
+        const s = window.getSelection?.()
+        if (s?.anchorNode && host.contains(s.anchorNode) && !host.contains(document.activeElement)) s.removeAllRanges()
+      })
     }
     const onChange = (e: Event) => {
       const t = e.target as HTMLElement
@@ -265,7 +293,7 @@ export function LogicPage() {
           i.value = ruleFmt(k, VCONF[k])
           return HOOKS.toast(`${spec.t} must be between ${ruleFmt(k, spec.lo)} and ${ruleFmt(k, spec.hi)}`, 'warn')
         }
-        if (v === VCONF[k]) { i.classList.remove('bad'); i.value=ruleFmt(k,v); return }
+        if (v === ruleNow(k)) { i.classList.remove('bad'); i.value=ruleFmt(k,v); return }
         /* no passing note (owner D936, 16 Oct 26): the row shows the new value, and its standard where it differs (D850).
            The box shows it in the squadron's spelling at once, as the redraw will (a "150" reads 2h30). */
         i.classList.remove('bad'); i.value = ruleFmt(k, v); ruleApplyLater(k, v)
@@ -302,6 +330,11 @@ export function LogicPage() {
       const r = el.closest('[data-lgreset]') as HTMLElement | null
       if (r) {
         if (!isAdmin() || !lgCanEdit()) return
+        flushRuleApply()
+        /* what is half typed in this row's own box goes with the Reset (the press keeps the keyboard in the box, so its
+           change never came) — the row shows its standard, not the typing (F2) */
+        const a = document.activeElement as HTMLInputElement | null
+        if (a?.dataset?.lgset && r.dataset.lgreset!.split(',').includes(a.dataset.lgset)) a.value = a.defaultValue
         if (r.dataset.lgreset === 'kinds') Object.keys(KIND_LABEL).forEach(k => { SHIFT_HARD[k] = RULE_STD.s[k] })
         else r.dataset.lgreset!.split(',').forEach(k => { if (RULE_SPEC[k]) VCONF[k] = RULE_STD.v[k] })
         ruleApply()
@@ -363,6 +396,7 @@ export function LogicPage() {
         <button type="button" className="abtn ghost" id="lgReset" hidden={!admin || !off}
           onClick={() => {
             if (!isAdmin()) return
+            flushRuleApply()   // a value still waiting is applied first, then everything is reset (F1)
             const n = rulesOffCount(); if (!n) return
             rulesReset(); ruleApply()
             HOOKS.toast(`${n} rule${n > 1 ? 's' : ''} back to squadron standard`)
