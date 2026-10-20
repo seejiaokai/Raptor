@@ -6245,13 +6245,22 @@ test('the grid draws a window of months over year-wide placeholders, keeps every
   // correctly — and a 5-second wait for December to leave ran out. Reproduced by pausing 9s here: all twelve drawn.
   // So the premise is read in the SAME synchronous page task as the press (no fill beat can land between the two), and
   // each outcome is asserted for what it is (D87 — wait on what the step needs, never a fixed time).
-  const janWasDrawn = await page.evaluate(() => {
-    const drawn = !!document.querySelector('.mx-wrap .mxhead [data-testid="head-2026-01-01"]')
-    document.querySelector<HTMLElement>('[data-testid="month-JAN"]')!.click()
-    return drawn
-  })
+  // [LW-WINDOW-PRUNE-FLAKE-2] (20 Oct 26): the drop is read AT THE JUMP'S OWN DRAW, never polled for afterwards. A jump
+  // to an undrawn month replaces the window in ONE commit (Matrix.tsx jumpTo → windowAround): January in, December out.
+  // On the desktop the fill then grows the window back toward the whole year, a month a beat, so December comes BACK
+  // a moment later — correctly. A poll that started late (the test process starved on a busy PC) met December redrawn
+  // and waited for a drop that had already come and gone. A MutationObserver's callback runs right after the commit's
+  // DOM writes, before any fill beat (a later task), so it sees exactly what the jump drew.
+  const jump = await page.evaluate(() => new Promise<{ janWasDrawn: boolean, decWithJan?: boolean }>(resolve => {
+    const has = (d: string) => !!document.querySelector(`.mx-wrap .mxhead [data-testid="head-${d}"]`)
+    const btn = document.querySelector<HTMLElement>('[data-testid="month-JAN"]')!
+    if (has('2026-01-01')) { btn.click(); resolve({ janWasDrawn: true }); return }
+    const mo = new MutationObserver(() => { if (has('2026-01-01')) { mo.disconnect(); resolve({ janWasDrawn: false, decWithJan: has('2026-12-01') }) } })
+    mo.observe(document.querySelector('.mx-wrap')!, { childList: true, subtree: true })
+    btn.click()
+  }))
   await expect(page.locator('[data-testid="head-2026-01-01"]')).toHaveCount(1)
-  if (!janWasDrawn) await expect.poll(async () => (await read()).months.includes('2026-12')).toBe(false)
+  if (!jump.janWasDrawn) expect(jump.decWithJan, 'the jump drew January and dropped December in the same draw').toBe(false)
   else expect((await read()).months.length).toBe(12)   // the fill finished the year first: the jump only scrolled
   expect((await read()).misaligned).toBe(0)
 })
@@ -6278,7 +6287,10 @@ test('the bottom scrollbar is a year-wide scrubber; the desktop grid fills the w
   expect(await bar.evaluate(el => el.clientWidth / el.scrollWidth)).toBeLessThan(0.3)
 
   // The background fill draws the whole year (twelve months) a beat after open.
-  await expect.poll(async () => (await drawnMonths()).length, { timeout: 9000 }).toBe(12)
+  // [LW-SCRUBBER-FLAKY] (20 Oct 26, D87): every wait in this test is on its condition alone — `timeout: 0` lifts the
+  // poll's own 4- or 9-second cap, so only the test's limit bounds it. Those caps were the wall clock that a saturated
+  // PC outlasted (21 Sep 26): the year's fill and the thumb's catch-up do arrive, only later.
+  await expect.poll(async () => (await drawnMonths()).length, { timeout: 0 }).toBe(12)
 
   // Once the year is drawn the bar SLIDES the grid: a drag to a fraction moves
   // the grid's own scroll to the same fraction of its range, immediately (no
@@ -6303,7 +6315,7 @@ test('the bottom scrollbar is a year-wide scrubber; the desktop grid fills the w
   await dragTo(0)
   expect(await gridFrac()).toBeLessThan(0.05)
   // January is at the frozen edge again.
-  await expect.poll(() => page.locator('[data-testid="head-2026-01-01"]').count(), { timeout: 4000 }).toBe(1)
+  await expect.poll(() => page.locator('[data-testid="head-2026-01-01"]').count(), { timeout: 0 }).toBe(1)
 
   // Reverse: driving the grid by the month strip moves the thumb to match —
   // September sits about three-quarters along the year.
@@ -6334,7 +6346,7 @@ test('the bottom scrollbar is a year-wide scrubber; the desktop grid fills the w
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))
     document.querySelector<HTMLElement>('[data-testid="month-SEP"]')!.click()
   })
-  await expect.poll(() => bar.evaluate(el => (el.scrollLeft / (el.scrollWidth - el.clientWidth))), { timeout: 4000 })
+  await expect.poll(() => bar.evaluate(el => (el.scrollLeft / (el.scrollWidth - el.clientWidth))), { timeout: 0 })
     .toBeGreaterThan(0.6)
   const f = await bar.evaluate(el => el.scrollLeft / (el.scrollWidth - el.clientWidth))
   expect(f).toBeLessThan(0.85)
