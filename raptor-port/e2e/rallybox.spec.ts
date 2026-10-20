@@ -18,9 +18,8 @@ const press = async (page: Page, loc: Locator, phone: boolean, scroll = true) =>
    then typed nowhere — no input reached the box, so nothing could be saved ("1300", Enter, the save stayed ""). Proved by
    an event log of the page on 18 runs over six machines (the branch claude/debug-rbox-linux): one machine in three, both
    tries; a 4-second wait showed the caret never came; the identical events passed on the same machine's next try; and
-   between the tap and the keys the app ran NO script that moves a caret, a focus or a value. On his PC, in 40 repeats on
-   Linux alone and in every non-empty box (where the app's own arrival writes the box and the caret with it) it never
-   happens. So it is the simulated touch, not the app: where the browser's tap focused the box without putting the caret
+   between the tap and the keys the app ran NO script that moves a caret, a focus or a value. It never happened on his PC,
+   nor in 40 repeats of this test alone on Linux, nor, in the runs logged, in a box that already held a time. So it is the simulated touch, not the app: where the browser's tap focused the box without putting the caret
    in it, the caret is put at the box's end, as the tap would have — never a second press, which would change the box's
    one-tap state (D1047). It touches nothing when the tap did its job, which is nearly always. */
 async function caretFollows(page: Page, loc: Locator) {

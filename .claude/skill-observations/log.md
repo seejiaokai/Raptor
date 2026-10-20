@@ -1480,3 +1480,31 @@ prove each by acting through it after the rollback, not by reading what it shows
 **Suggested improvement:** In walk-scripts.md's layering section, one line: elementFromPoint proves a surface that takes presses (a window, a calendar, a button); for one that does not (a passing note, a mark), prove it by its box inside the screen and its computed visibility / opacity, and open the picture. And: read a grid cell's text once on screen before writing its expected value.
 
 **Principle:** A check's method must fit the thing checked; a "hit test" only sees what can be hit. Before calling a scripted FAIL a fault, open its picture.
+
+### Observation 650: A flaky check that polls for a state the app legitimately leaves again
+**Status:** OPEN
+**Date:** 2026-10-20
+**Session context:** The shaky-tests batch — [LW-WINDOW-PRUNE-FLAKE-2], a Leave War browser test that failed about one full run in two.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** Phase 1 (root cause) for an intermittent test failure
+
+**Issue:** The test pressed a month button and then polled for the far month to leave the drawn window. The app drops it in the jump's own draw and then, on the desktop, grows the window back toward the whole year a beat at a time — so the dropped state was a transient. The filed theory ("the prune waits for an idle PC") was wrong; a 3-second pause inserted after the press made the old poll fail 2 of 2, which proved the real cause in one local run. The fix read the state at the moment of the draw (a MutationObserver installed in the same page task as the press).
+
+**Suggested improvement:** In systematic-debugging's flaky-test guidance: before raising a wait, ask whether the asserted state is permanent or a transient the app moves on from; prove it by delaying the check on purpose (a pause before the assertion) — if a later check fails, the assertion must be taken at the event, not polled after it.
+
+**Principle:** "Wait on what it needs" assumes the awaited state stays once reached. When the app legitimately passes through a state, a later look can miss it on a slow machine; delaying the check on purpose is the cheap experiment that tells a transient from a slow arrival.
+
+### Observation 651: Turning traces on across a whole CI share to chase one flake changes the share
+**Status:** OPEN
+**Date:** 2026-10-20
+**Session context:** The shaky-tests batch — [CI-E2E-FLAKES-1020], a browser test that failed only on GitHub's Linux machines.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** Phase 1 (gather evidence) on a remote CI machine
+
+**Issue:** A debug branch ran the failing test's whole share three times with `--trace=retain-on-failure` to catch the failure with a trace. Recording traces made every step slower, seven unrelated heavy tests timed out on every loop, and the flake itself never showed — the run measured the tracing, not the app. An in-page event log printed only when a test fails (focus, keys, input, change, value writes, node replacement) costs almost nothing and was the useful instrument.
+
+**Suggested improvement:** In systematic-debugging, under evidence gathering for CI-only failures: instrument the one test with a cheap in-page event log dumped in afterEach on failure; reserve tracing for that single test, never a whole share; and since such failures follow the machine (both tries on one machine failed, a re-run passed), spread the repeats over several machines (a matrix) rather than many loops on one.
+
+**Principle:** An instrument heavy enough to change timing changes a timing bug. Instrument narrowly and cheaply, and sample across machines when the failure follows the machine.
