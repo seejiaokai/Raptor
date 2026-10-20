@@ -91,6 +91,20 @@ describe('Unpublish of an amendment whose OIL is spent', () => {
     expect(cell(), 'the half day the warning reckoned').toBe('HO')
   })
 
+  it('an arm is for the version it warned about: AL2 published since, the next tap is not a confirm', () => {
+    publishTwice(['0800', '1200'], ['0800', '1800'])
+    spendOneDay(); said = []
+    press()
+    expect(said[0], 'AL1 armed').toMatch(/^Withdrawing AL1/)
+    times('0700', '1800'); sign(SAT); commitPublishALDay(SAT); runOilPass()
+    expect(verLabel(dayCurVer(SAT))).toBe('AL2')
+    const h = document.createElement('div'); h.innerHTML = dayStatHTML(SAT, true)
+    expect(h.querySelector('[data-unpub]')!.textContent, 'the button is not left on "Withdraw — confirm"').toBe('Unpublish')
+    said = []
+    press()
+    expect(said, 'AL2 withdrawn on its own reckoning: back to AL1, as much OIL, no warning').toEqual(['Saturday: AL2 withdrawn. Its changes are back on the working copy as pending, and AL1 is the issued schedule. Publishing reissues AL2.'])
+  })
+
   it('the Original withdrawn keeps N4 and N2\'s words, as ruled', () => {
     times('0800', '1800'); sign(SAT); setDayApproved(SAT, true); runOilPass()
     spendOneDay(); said = []

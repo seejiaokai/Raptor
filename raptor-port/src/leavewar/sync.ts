@@ -1486,8 +1486,12 @@ export function oilCreditBidAgainst(di: number): boolean {
        balance and is none of this button's business (N16). */
     const stays = after.desired.get(key)
     const worth = stays ? codeWorth(stays.code) : 0          // an automatic credit is its code's own worth (engine/credit.ts)
-    const without = oilLedgerOf(figureCtxOf(), person, c => (c.date === iso && c.source === 'auto' ? worth : false))
-    if (without.balance < 0) return true
+    const ctx = figureCtxOf()
+    const without = oilLedgerOf(ctx, person, c => (c.date === iso && c.source === 'auto' ? worth : false))
+    /* …and only a press that LOWERS him warns (the scenario designer's U-12, 20 Oct 26): a man already below zero for
+       other reasons — the demo's DECAL starts at −4.5 — is not stranded by a withdrawal that puts back as much as it
+       takes, so it says nothing; one that takes more than it puts back still warns. */
+    if (without.balance < 0 && without.balance < oilLedgerOf(ctx, person).balance) return true
   }
   return false
 }

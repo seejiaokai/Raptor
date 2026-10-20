@@ -121,6 +121,18 @@ describe('oilCreditBidAgainst — an AMENDMENT withdrawn puts the earlier versio
     expect(oilCreditBidAgainst(SAT_DI)).toBe(true)
   })
 
+  it('a man ALREADY below zero is not warned about a withdrawal that puts back as much (U-12)', () => {
+    publishTwice(FULL, FULL2)
+    spendOneDay(); setCell('plasma', '2026-07-21', 'OIL'); setBidState('plasma', '2026-07-21', 'approved')   // 1 − 2: −1 already
+    expect(oilCreditBidAgainst(SAT_DI), 'the press strands nothing he holds').toBe(false)
+  })
+
+  it('…while one that takes more than it puts back still warns him', () => {
+    publishTwice(HALF, FULL)
+    spendOneDay(); setCell('plasma', '2026-07-21', 'OIL'); setBidState('plasma', '2026-07-21', 'approved')   // 1 − 2: −1, → −1.5
+    expect(oilCreditBidAgainst(SAT_DI)).toBe(true)
+  })
+
   it('and the withdrawal itself lands what the warning reckoned: the Original\'s full day', () => {
     publishTwice(FULL, HALF)
     spendOneDay()
