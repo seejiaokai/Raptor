@@ -81,6 +81,12 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   button (13 Oct 26: a tap on a date box "opened nothing"; the Inputs calendar built before that job did the same
   under the same script). And a swipe that must BEGIN on a control starts at that control's centre, not half the
   swipe's length to one side of it. Worked example: `swipe()` in `scripts/handpass/odc-look.mjs`.
+- **One finger of several is lifted by a touch-end that NAMES it** (met 21 Oct 26, `[TRK-PINCH-OLD-EDGES]`). Over
+  Chromium's touch input (`Input.dispatchTouchEvent`) a move that leaves a finger out of its list does NOT lift it; a
+  `touchEnd` listing a point lifts that finger only, and an empty list lifts them all. The 18 Oct 26 walk's "the finger
+  left down after a pinch" step lifted its second finger by leaving it out of a move, so it never lifted it. And a third
+  finger's tap presses nothing while two others are down (no click is made): press a control under a held pinch with a
+  mouse click. Worked example: `scripts/handpass/trk-small-walk.mjs` (P4, P7).
 - **Navigate by reading the screen's own heading** until it says the wanted month, day or tab — never by a fixed
   number of steps — and write what was reached into the run's log ("calendar on: July 2026").
 - **Every sentence a script prints is built from what it just read**, or is a plain description of the action. A typed
