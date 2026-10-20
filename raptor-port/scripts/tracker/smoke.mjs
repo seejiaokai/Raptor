@@ -3077,6 +3077,12 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(300);
 }
 
+/* run alone, part 1 makes the suite's two catch-all checks itself: they sit in part 2, so a split run would never read part 1's
+   page errors and failed requests (the night's blind read, M1) */
+if (PART === '1') {
+  ok('no uncaught page errors (part 1)', errs.length === 0, errs.slice(0, 2).join(' | '));
+  ok('no unexpected failed requests (part 1)', bad4xx.length === 0, [...new Set(bad4xx)].slice(0, 3).join(' | '));
+}
 }
 if (PART !== '1') {
 /* run alone, part 2 opens the app itself first: its first step reads the page's storage */

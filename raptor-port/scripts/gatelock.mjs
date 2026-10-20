@@ -158,12 +158,13 @@ function runOne(cmd, args, cwd, file, env = process.env) {
 async function runAll(from, logs) {
   mkdirSync(logs, { recursive: true })
   const who = `${process.env.GATELOCK_WHO || branchName(from)} — the full gate set`
-  const ports = await browserPorts(process.env)
-  console.log(`gatelock: the browser runs on ${ports.said}`)
   await take(who, { holderPid: process.pid })
   releaseOnSignal()
   let bad = 0
   try {
+    /* the port is chosen once the lock is ours, not before a wait behind another chat (the night's blind read, L2) */
+    const ports = await browserPorts(process.env)
+    console.log(`gatelock: the browser runs on ${ports.said}`)
     for (const [name, cmd, args] of GATES) {
       const t = Date.now(), file = join(logs, `gate-${name}.log`)
       const code = await runOne(cmd, args, from, file, ports.env)
@@ -207,16 +208,17 @@ if (isMain) {
     // one word after "--" is a whole command line, run as written; several are words, each kept whole
     const parts = rest.slice(rest.indexOf('--') + 1)
     const cmd = parts.length === 1 ? parts[0] : parts.map(a => /[\s"&|;<>]/.test(a) ? `"${a.replace(/"/g, '\\"')}"` : a).join(' ')
-    let env = process.env
-    if (runsBrowser(cmd)) {
-      try { const ports = await browserPorts(process.env); env = ports.env; console.log(`gatelock: the browser runs on ${ports.said}`) }
-      catch (e) { console.log(String(e && e.message || e)); process.exit(1) }
-    }
     await take(rest[0], { holderPid: process.pid })
     releaseOnSignal()
     let code = 1
     try {
-      code = await new Promise(res => {
+      /* the port is chosen once the lock is ours (the night's blind read, L2); a refusal still releases it (finally) */
+      let env = process.env
+      if (runsBrowser(cmd)) {
+        try { const ports = await browserPorts(process.env); env = ports.env; console.log(`gatelock: the browser runs on ${ports.said}`) }
+        catch (e) { console.log(String(e && e.message || e)); env = null }
+      }
+      if (env) code = await new Promise(res => {
         const p = child = spawn(cmd, { shell: true, stdio: 'inherit', env }); noteChild(p)
         p.on('close', c => res(c ?? 1)); p.on('error', () => res(1))
       })
