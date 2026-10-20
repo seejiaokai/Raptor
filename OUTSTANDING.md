@@ -107,8 +107,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-SORT-BY-FLIGHT] — sort the war by flight — his idea, not designed (D1001).
 
 **Tracker**
-- [TRK-PINCH-OLD-EDGES] — two older edges of the chart's pinch: a throw in Edit chart layout, a stale zoom label.
-- [TRK-REFUSALS-UNTESTED] — tests only: several of the chart editor's refusals have no test.
+- [TRK-PINCH-MORE-EDGES] — three more older edges of the chart's pinch, all low (a third finger, a mouse after a lost lift, a sign-out mid-pinch).
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
@@ -1191,13 +1190,6 @@ the two sheets share one format and one look. Not caused by that change (on `mai
 on the drag sheet's chips, as the one-day sheet does, the write still speaking the stored grammar; a test beside
 `movestandard.test.tsx`'s one-look checks. **Place:** low; with the next Leave War batch.
 
-### [TRK-REFUSALS-UNTESTED] Some of the Tracker chart editor's refusals have no gate test (found 29 Sep 26)
-Found by the IT flow guide's research into the Tracker (D414): no test in the gates drives → Connect or its refusals ("That link
-would create a loop", "That link already exists.", "A link can't start and end on the same event."), nor Edit poke-ball's link refusals
-("No such event", "cannot be its own prerequisite", "Those links would create a loop"), the course-name refusals (a name already
-used, a colon) or "Keep at least one course." Each was seen working in the running app; only the proof is missing. **To do:** add them
-to `scripts/tracker/smoke.mjs` (or `src/tracker/*.test.tsx`), one check each. **Place:** low; with the next Tracker batch.
-
 ### [PDF-PRINT-TWICE] Edit Schedule's "Export as PDF" asks the browser to print twice — the first time on a blank page (found 29 Sep 26)
 Found by the IT flow guide's research (`[IT-FLOW-GUIDE]`), with the browser's print stubbed and each call recorded: one press of
 `#exportPdf` prints first an empty frame (`about:blank`), then the report (`about:srcdoc`). The frame's load handler fires when the
@@ -1828,8 +1820,8 @@ short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not c
 ### [QUALS-PINNED-COLS-REFLOW] Quals' pinned header row keeps its measured column widths when a column reflows inside a table of the same width (met by the D993 read, 18 Oct 26) — OPEN, low
 **Older than D993, not changed by it.** On a desktop wider than the table (or a phone while the table sits at its least width), an undo of a remark or a rename, or a change arriving from elsewhere, can change one column's width while the table keeps its total width: nothing re-pins the row, so each pinned heading stands a few pixels off its column until the page is next scrolled back up and down. The sideways follow itself stays right (the table's range is unchanged); a change of the table's own width is caught (D993's read, F1). **To do:** watch the real header's cells as well (`QualsPage` `pin`), with a guard that skips a re-render when nothing moved; a test that reflows one column on a desktop. **Place (the agent's):** with the next Quals job.
 
-### [TRK-PINCH-OLD-EDGES] Two older edges of the Tracker chart's pinch, met by the code reads of [TRK-CHART-FPS] (18 Oct 26) — OPEN, low
-**Found by reading, not by him; older than D992, not changed by it.** (1) Edit chart layout switched on while a pinch runs (only with a third finger, through the menu) throws in the pinch's move: its start was taken for the other mode (`enablePinchZoom`, `raptor-port/src/tracker/app/core.js`). (2) A pinch ended by a lift lost to a redraw settles its zoom but leaves the zoom's % label stale and does not mark the zoom as his, so the next redraw fits the chart to the phone's width again. **To do:** a failing test for each, then end the pinch in the mode it began in, and run the ordinary end (`zoomIsMine`, `notify`) on the lost-lift path. **Place (the agent's):** with the next Tracker batch.
+### [TRK-PINCH-MORE-EDGES] Three more older edges of the Tracker chart's pinch, met by the code read of [TRK-PINCH-OLD-EDGES] (21 Oct 26) — OPEN, low
+**Found by reading, not by him; older behaviour, not changed or made worse by that job (its fix read said so).** In `enablePinchZoom` (`raptor-port/src/tracker/app/core.js`): (1) a third finger landing during a pinch, then one of the first two lifting: the remaining pair carries on against the first pair's starting spread and midpoint (`start.d`, `start.m0`), so the zoom jumps — re-take the start whenever the pair of fingers changes; (2) after a lift lost on an iPad (Safari only), a mouse or trackpad press never clears the pinch — the mouse returns before the lost-lift check — so the chart's mouse handlers ignore presses until the next touch; run the lost-lift recovery before the mouse's early return; (3) a sign-out during a pinch on the ordinary chart leaves it running, and its lift marks the zoom as the next person's (`zoomIsMine` is not reset at the session end) — end a running pinch at the session end. **To do:** a failing test for each, then the fix; a walk with real fingers for (1). **Place (the agent's):** with the next Tracker batch. The read: `raptor-port/docs/handpass/2026-10-21-tracker-small.md` §The code read.
 
 ### [LW-PHONE-AWAY-ROW-MISSING] On a phone, a man archived and restored with a later post-in has no row on the Leave War (seen 13 Oct 26 by `[ONE-DATE-CALENDAR]`'s walk) — OPEN, to reproduce first
 

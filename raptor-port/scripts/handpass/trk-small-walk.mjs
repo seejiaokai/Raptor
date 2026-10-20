@@ -15,14 +15,15 @@ process.env.HP_OUT ||= resolve(HERE, '../../docs/handpass/parts/trk-small')
 mkdirSync(process.env.HP_SHOTS, { recursive: true })
 for (const f of readdirSync(process.env.HP_SHOTS)) if (f.endsWith('.png')) rmSync(resolve(process.env.HP_SHOTS, f))
 if (!process.env.HP_URL) { console.error('HP_URL not set'); process.exit(2) }
-const VERSION = 'trk-small-walk v5'
+const VERSION = 'trk-small-walk v6 (re-walk)'
+const ONLY = process.env.ONLY ? new Set(process.env.ONLY.split(',')) : null
 console.log(VERSION, '-', process.env.HP_URL)
 /* THE BUILD IT DRIVES IS PROVED FIRST */
 const served = ((await (await fetch(process.env.HP_URL + '/')).text()).match(/assets\/index-[^"']+\.js/) || [])[0]
 const localDist = resolve(HERE, '../../dist/assets')
 const local = existsSync(localDist) ? readdirSync(localDist).find(f => /^index-.*\.js$/.test(f)) : null
 console.log('build proof: served', served, '/ local dist', local ? 'assets/' + local : '(none)')
-if (served !== 'assets/index-B0xwe99_.js') { console.error('not the expected build'); process.exit(2) }
+if (served !== (process.env.EXPECT_BUILD || 'assets/index-B0xwe99_.js')) { console.error('not the expected build'); process.exit(2) }
 const { login, toTracker, shot, save, core, dlg, SHOTS } = await import('./trk-lib.mjs')
 const { mark, unmark, chartAt, ballAt } = await import('./trk-pinch.mjs')
 
@@ -137,6 +138,7 @@ async function pressUnderPinch(page, cdp, held, sel, arrangeAfter, log) {
 
 /* ---------- one scenario ---------- */
 async function scenario(id, name, expected, env, fn, recoverFn) {
+  if (ONLY && !ONLY.has(id)) return
   const { page, errors } = env, e0 = errors.length
   curPics = []
   let r
@@ -318,6 +320,40 @@ async function d134(env, pre) {
   return { pass: held && sc0.max > 200 && s3.st !== s0.st, detail: `finger moved 150px after the other lifted: board scroll ${s0.st}/${s0.sl} -> during ${s1.st}/${s1.sl} -> after lift ${s2.st}/${s2.sl}; popup ${s1.pop}/${s2.pop}; board can scroll (max ${sc0.max}px); next ordinary drag scrolled ${s2.st} -> ${s3.st}`, measured: { sc0, sLifted, s0, s1, s2, s3 } }
 }
 
+/* P8: the mode switched on and straight off again under a pinch, the fingers held still */
+async function onThenOffHeld(env, pre) {
+  const { page, cdp } = env, checks = []
+  const ck = (n, ok, v) => checks.push({ n, ok: !!ok, v })
+  await page.tap('#fzReset'); await wait(600)
+  const b = await ballSpot(page, null, 110)
+  if (!b) return { pass: false, detail: 'no ball in view' }
+  const m = { x: b.x, y: b.y }
+  const s0 = await S(page)
+  await mark(page, m); await pic(page, `${pre}-1-before`); await unmark(page)
+  await fingersDown(cdp, m, 60); await fingersMove(cdp, { m, d: 60 }, { m, d: 100 }, 6)
+  const sDown = await S(page)
+  await pic(page, `${pre}-2-two-fingers-spread-chart-stretched`)
+  ck('the chart was stretched under the fingers (positive proof)', /scale\(/.test(sDown.wt || ''), `wrap transform "${sDown.wt}"`)
+  const click = async sel => { const c = await centre(page, sel); await page.mouse.click(c.x, c.y); await wait(450) }
+  await click('#sylMenuBtn'); await click('#arrangeBtn')
+  const sOn = await S(page)
+  await pic(page, `${pre}-3-edit-chart-layout-on-fingers-held-still`)
+  ck('first press switched Edit chart layout on', sOn.arrange === true, `arrange=${sOn.arrange}`)
+  await click('#sylMenuBtn'); await click('#arrangeBtn')
+  await wait(400)
+  const sA = await S(page)
+  await pic(page, `${pre}-4-switched-off-again-fingers-still-held`)
+  ck('second press brought the ordinary chart back', sA.arrange === false && sA.btn === '✎ Edit chart layout', `arrange=${sA.arrange} btn="${sA.btn}"`)
+  await fingersLift(cdp)
+  const sL = await S(page)
+  await pic(page, `${pre}-5-after-the-lift`)
+  ck('zoom unchanged by the lift', sL.z === sA.z, `zoom ${sA.z} -> ${sL.z} (zoom before the pinch ${s0.z})`)
+  ck('label unchanged by the lift and = round(zoom*100)', sL.pct === sA.pct && pctOk(sL), `label ${sA.pct} -> ${sL.pct}, zoom ${sL.z}`)
+  ck('no inline transform left on the chart', sL.wt === '', `"${sL.wt}"`)
+  ck('still the ordinary chart', sL.arrange === false, `arrange=${sL.arrange}`)
+  return { pass: checks.every(c => c.ok), detail: checks.map(c => (c.ok ? 'ok ' : 'FAIL ') + c.n + ' [' + c.v + ']').join(' | '), measured: { s0, sDown, sOn, sA, sL, checks } }
+}
+
 /* real tabs (phone) or a viewport nudge (desktop without the tab bar) */
 async function tabsRoundTrip(page) {
   if (await page.locator('button[data-view="info"]').isVisible()) {
@@ -355,6 +391,7 @@ async function tabsRoundTrip(page) {
   await scenario('P4', 'phone: Edit chart layout switched ON under a pinch', 'no page error; Edit chart layout on; #viewport does not change during the moves after the switch nor at the lift; a fresh pinch zooms the canvas; Done brings back the ordinary chart with label = zoom', env, () => underPinch(env, 'on', 'P4'), recover)
   await scenario('P5', 'phone: Edit chart layout switched OFF under a pinch', 'no page error; ordinary chart back; label and zoom do not change during the moves after the switch nor at the lift; a fresh ordinary pinch works', env, () => underPinch(env, 'off', 'P5'), recover)
   await scenario('P6', 'phone: the lost lift (synthetic, because Chromium never loses a lift: bug-check order 7.9)', 'after the next first finger the zoom is about doubled, label = round(zoom*100), no inline stretch; unchanged after Info->Flow and after a marking pop-up round trip; no page error', env, () => lostLift(env, 'P6', () => tabsRoundTrip(page), async () => { await page.tap('#fzReset'); await wait(600) }), recover)
+  await scenario('P8', 'phone: Edit chart layout switched on and straight off again under a pinch, fingers held still', 'no page error; after the lift label and zoom equal what they were after the second press; no inline transform left', env, () => onThenOffHeld(env, 'P8'), recover)
   await scenario('P7', 'phone: D134, lift one finger of a pinch and move the other 150px', 'the chart does not scroll and nothing opens during that move; no page error', env, () => d134(env, 'P7'), recover)
   await browser.close()
 }

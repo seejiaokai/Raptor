@@ -129,7 +129,8 @@ and proves D134 on this build.
 |---|---|---|---|
 | The lost-lift end: the zoom reached, the % label, no re-fit on the next redraw | `trk-pinch-edges.test.tsx` "settles its zoom as the person's own…" | the label (the real zoom bar component) reads the zoom reached; a redraw keeps it | pointer events on the board (jsdom); the redraw called directly |
 | The mode switched on under a pinch: no throw, the canvas not zoomed by the old pinch, the next pinch works | `trk-pinch-edges.test.tsx` "the pinch's moves do not throw…" | the moves and the lift after the switch change nothing; the next pinch doubles the zoom | pointer events; the switch called directly |
-| The mode switched on and off again under one pinch | `trk-pinch-edges.test.tsx` "the pinch stays over…" | the zoom the switch back set stands | the same |
+| The mode switched on and off again under one pinch, a move between | `trk-pinch-edges.test.tsx` "the pinch stays over…" | the zoom the switch back set stands | the same |
+| The same with the fingers held still between the switches (the read's finding 1) | `trk-pinch-edges.test.tsx` "no move between the two switches…" | the lift settles nothing | the same (also walked: P8 of the re-walk) |
 | → Connect: a link that exists; a loop | `trk-refusals.test.tsx` | the words; chart, save mark, undo unchanged | clicks on the balls (jsdom) |
 | Edit lines: a line's end on the same event; on a link that exists; into a loop | `trk-refusals.test.tsx` | the hint's words; chart unchanged | pointer events on the line's end (jsdom) |
 | Edit poke-ball: no such event; its own prerequisite; a loop | `trk-refusals.test.tsx` | the returned words; the box stays open; chart unchanged | the box's save function called directly |
@@ -148,6 +149,7 @@ and proves D134 on this build.
 | A line's end "would create a loop" guard switched off | `trk-refusals.test.tsx` (1 red) |
 | The pinch fix itself, before it was written | `trk-pinch-edges.test.tsx` — both tests red on the old code (the label read 43% for 86%; the moves threw "Cannot read properties of undefined") |
 | The mode switched back before the lift (the first fix settled the old pinch's zoom then) | `trk-pinch-edges.test.tsx` third test — red (2.58 for 1.72) until the lift's settle checked the mode too |
+| The mode switched on and straight off with no move between (the read's finding 1, on the fix before it) | `trk-pinch-edges.test.tsx` fourth test — red (0.645 for 0.43) until the switches were counted |
 
 ## Errors seen
 
@@ -161,10 +163,64 @@ None — no page error, console error, network error or native dialog in any of 
 
 ## The code read
 
-*(the reader's report, saved as it arrived — below)*
+ONE fresh, blind Opus reader (D790), given this sheet and asked for absences as well as errors, told D56 and D489. It
+read the whole of `enablePinchZoom` and everything it shares state with, and ran both new test files (3/3, 5/5). Its
+report, saved as it arrived:
+
+**Finding 1 (low) — Edit chart layout switched on and straight off again under a pinch is caught only if a finger moves in
+between.** *Failure:* two fingers spread a little on the ordinary chart, then held still; ✎ Edit chart layout pressed,
+then ✓ Done editing chart (the same place — a mouse double-click does it); the fingers lifted: the chart jumps to the
+zoom the pinch had reached before the switch, scrolled by the pinch's out-of-date measurements, and that zoom is marked
+as his — against the comment and this sheet ("even if the mode is switched back before the lift"). Nothing throws.
+*Cause:* `sameMode` noticed a changed mode only when called while the mode differed; its callers are the pinch's move and
+end, and a still finger sends no move — the third test passed only because it sent a move between the two switches.
+*Fix:* count the switches (`arrangeFlips`, raised at the three places the mode is set), note the count at the pinch's
+start, compare it; a test with no move between the switches.
+
+No other findings.
+
+**Met in passing (older behaviour, not changed or made worse by this job), each low:** (a) a third finger landing during
+a pinch, then one of the first two lifting: the remaining pair carries on against the first pair's starting spread and
+midpoint, so the zoom jumps; (b) after a lift lost on an iPad, a mouse or trackpad press never clears the pinch (the
+mouse returns before the lost-lift check), so the chart's mouse handlers ignore presses until the next touch (Safari
+only); (c) a session end during an ordinary pinch leaves it running, and its lift marks the zoom as the next person's.
+
+**Checked and sound (the reader's list, shortened):** the ordinary pinch with no switch runs the old lift's exact steps
+in the old order; the lost-lift end now marks the zoom, flushes the view and tells the label, and redraws nothing; the
+cancel and the pointer leaving share the one end; the picture's inline stretch is cleared on the old chart in every end;
+the drawing-speed mark (`perf`) never lingers; pointer capture rides the board, which a redraw never replaces; a session
+end during an Edit chart layout pinch no longer throws; moves after a switch still hold the phone's own scroll off; D134
+and D992 untouched; the pinch tests fail on the old code for real reasons (the board's width is stubbed so the phone fit
+is real); every refusal the backlog lists is asserted by its own words (→ Connect has no "same event" refusal of its own
+— the same ball twice cancels; that message lives on a line's end, tested), each with "nothing changed"; the roll-call is
+complete. Confidence: high.
 
 ## Fixes after the read
 
+| Finding | Disposition |
+|---|---|
+| 1 (low) — switched on and straight off with still fingers | **Fixed** as the reader proposed: the switches are counted (`arrangeFlips`, raised at the three places the mode is set — the session end and both halves of `toggleArrange`), a pinch notes the count at its start and compares it. Red first (the fourth test, 0.645 for 0.43). **The fix's own narrow read** (the same fresh reader, given only the fix commit and the finding — round one, the last): no findings; the count is raised at every writer of the mode, the ordinary pinch is unchanged, the test is red for the right reason; `start.arrange` is now only a label (left). |
+| Met in passing (a), (b), (c) | **Filed** as `[TRK-PINCH-MORE-EDGES]` in `OUTSTANDING.md` (the fix read confirmed none is made worse by this job). |
+
+**The re-walk** (the same walker, `trk-small-walk v6`, on the rebuilt app — the served page named the new bundle): P1, P4,
+P5, D2 again and a new P8 (two fingers spread on the ordinary chart, held still while ✎ Edit chart layout and then ✓ Done
+editing chart are pressed, then lifted): **5 of 5 PASS**, no error; P8 kept 40% (the pinch's own ~67% was not laid out).
+Report `docs/handpass/parts/trk-small/rewalk/rewalk-report.md`; 30 pictures in
+`docs/img/handpass/2026-10-21-tracker-small/rewalk/` (the host opened P8-5: 40%, the ordinary chart, no stretch).
+
 ## Gates
 
+- **His PC (only what the job changes, D1086):** the Tracker's unit tests, `npx vitest run src/tracker` — 28 files, 544 of
+  544 (after the read's fix); the two new files alone 4 / 4 and 5 / 5; `npm run build` for each walk.
+- **GitHub's run of pull request 557 (the full set while the repo is public, D1086):** on the first pushed commit, every
+  check green — build, the browser geometry sets (Leave War desktop 1/2 and 2/2, Leave War phone, the scheduler 1–4), the
+  Tracker suite (1/2, 2/2), the unit sets (Leave War 1–4, the scheduler 1–6), the documents guard. The run on the last
+  pushed commit: see the closing report.
+- `npm run docsize`: OK — `Docs: OUTSTANDING 123 items (+1 −2, −2 all in ARCHIVE) · DECISIONS D1–D1097 · homes OK` ·
+  `docsize: OVER by 2, deferred (D29)` (the over-size is `.claude/rules/shipping.md`'s, known and fixed elsewhere).
+
 ## Closing lines
+
+`Walk: docs/handpass/2026-10-21-tracker-small.md · 84 pictures (54 + 30 re-walk) · 5 surfaces · 9 orders · MISSING: none (the read's 1 finding fixed red-first; 3 older filed [TRK-PINCH-MORE-EDGES])`
+
+Rulings: none this job (D994's small fixes, no answer or look from him).
