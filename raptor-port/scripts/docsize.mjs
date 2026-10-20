@@ -812,16 +812,29 @@ const rowsOf = src => new Map([...src.matchAll(ROW_RE)].map(m => [m[1], +m[3]]))
 const sameRows = (a, b) => a.size === b.size && [...a].every(([f, c]) => b.get(f) === c)
 
 /* A ceiling may move only in a commit that touches no src — checked commit by commit, and for
-   the uncommitted change as a whole. */
+   the uncommitted change as a whole.
+   A MERGE is judged apart ([DOCSIZE-MERGE-CEILING], 21 Oct 26): compared with its first parent, a merge of main that
+   carried main's own docs-only ceiling move beside main's code read as "a ceiling moved with code" (29 Sep 26). So the
+   ordinary commits are walked without the merges (each move judged in the commit that made it — --full-history, so
+   neither side of a merge is pruned from the walk), and a merge fails only for a ceiling it set ITSELF — a row whose
+   value is neither parent's (written while resolving it) — when it brings code. */
 function ceilingMovedWithCode(paths) {
   const bad = []
   if (BASE) {
-    const commits = (tryGit('log', '--format=%H', `${BASE}..HEAD`, '--', SELF) || '').split('\n').filter(Boolean)
+    const commits = (tryGit('log', '--full-history', '--no-merges', '--format=%H', `${BASE}..HEAD`, '--', SELF) || '').split('\n').filter(Boolean)
     for (const c of commits) {
       const files = (tryGit('show', '--name-only', '--format=', c) || '').split('\n')
       if (!touchesSrc(files)) continue
       const before = tryGit('show', `${c}~1:${SELF}`) || '', after = tryGit('show', `${c}:${SELF}`) || ''
       if (!sameRows(rowsOf(before), rowsOf(after))) bad.push(`commit ${c.slice(0, 8)}`)
+    }
+    for (const l of (tryGit('log', '--merges', '--format=%H %P', `${BASE}..HEAD`) || '').split('\n').filter(Boolean)) {
+      const [c, ...parents] = l.split(' ')
+      const after = rowsOf(tryGit('show', `${c}:${SELF}`) || '')
+      const sides = parents.map(p => rowsOf(tryGit('show', `${p}:${SELF}`) || ''))
+      const keys = new Set([...after.keys(), ...sides.flatMap(s => [...s.keys()])])
+      if (![...keys].some(f => !sides.some(s => s.get(f) === after.get(f)))) continue
+      if (touchesSrc((tryGit('diff', '--name-only', parents[0], c) || '').split('\n'))) bad.push(`merge ${c.slice(0, 8)}`)
     }
   }
   const dirty = (tryGit('status', '--porcelain') || '').split('\n').map(l => l.slice(3).trim()).filter(Boolean)
