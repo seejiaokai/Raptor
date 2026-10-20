@@ -124,7 +124,7 @@ typing replaces …", the step that types 1300 into a cleared take-off and press
 retry; green on `main`'s last four runs, so it is this change. Not reproduced on his PC (16 of 16, on either version). The
 likeliest cause, and the one difference that matters: Enter in a board box saves while the caret is still in it, and the
 first version rewrote the box under the caret; the read's F3 guard (never rewrite a box that holds the caret) removes
-exactly that. GitHub's run of the second commit: _(filled when it ends)_.
+exactly that. GitHub's run of the second commit (b2d3208ef): **green**, every leg — the D1047 phone test passed on its first try.
 
 ## 11. The code read
 A fresh, blind Opus reader (never the chat that wrote it — D790), given the commit and asked for absences; read only. No high
