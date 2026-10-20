@@ -191,6 +191,27 @@ describe('the five fields that write their own model', () => {
     w.traffic = was
     await act(async () => { setAirKey(null); notify() })
   })
+
+  it('[INNERHTML-REPAINT-SWEEP] a repaint while a traffic line is typed in keeps the box, its caret and the typing', async () => {
+    await goEdit()
+    const w = DAYS[0].waves[0]
+    const was = (w.traffic || []).slice()
+    w.traffic = ['1 X A / B / C / D', '2 X E / F / G / H']
+    await act(async () => { setAirKey('0|0'); notify() })
+    const box = $('[data-airi="0"]') as HTMLInputElement
+    box.focus()
+    box.value = '1 X A / B / C / DX'
+    await act(async () => { box.dispatchEvent(new Event('input', { bubbles: true })) })
+    await act(async () => { notify() })
+    expect($('[data-airi="0"]'), 'the same box is still on screen').toBe(box)
+    expect(document.activeElement, 'the caret is still in it').toBe(box)
+    expect(box.value).toBe('1 X A / B / C / DX')
+    /* a row added still redraws the list */
+    await click($('#airAdd'))
+    expect($$('[data-airi]').length).toBe(3)
+    w.traffic = was
+    await act(async () => { setAirKey(null); notify() })
+  })
 })
 
 describe('the three actions that carried no key at all', () => {
