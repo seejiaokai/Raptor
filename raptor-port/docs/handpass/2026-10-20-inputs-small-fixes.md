@@ -14,6 +14,8 @@ no answer or look from him (D994).
 
 **His word after the first build (D1095, 20 Oct 26 — "Make it 27 instead of 2027?"):** the year after "till" is two digits —
 "till 15 Feb 27". Built after the code read (§5), with its own tests and re-walk.
+**And (D1096, the same evening — "All 27 instead"):** every date printed with its year, two digits — the Inputs list's date
+column, its phone day headings, the LATE mark's note, and any other place found (§10).
 
 ## 1. The tier — the eight questions (the order's §5)
 1. Money (OIL): **NO** — the OIL heading names who the answer is for; the answer, who it is written for and what earns
