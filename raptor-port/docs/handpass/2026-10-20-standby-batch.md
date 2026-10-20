@@ -144,6 +144,6 @@ of a fix round is for logic rewritten, more than a one-line guard).
 `docs/img/handpass/2026-10-20-standby-batch/walk2/` (01–11).
 
 ## 12. His look
-_(waiting)_
+The before / after pictures and both preview links put to him; his word, 20 Oct 26: "merge live — both pull requests, the faster checks first, then the standby batch." Merged after pull request 546, `main` brought in first (D78).
 
 Walk: host, scripted, 26 PASS / 0 FAIL, then the re-walk 29 PASS / 0 FAIL; desktop 1440 + phone 402 / 360 / 320; 8 + 11 pictures and 18 before / after; browser errors none.

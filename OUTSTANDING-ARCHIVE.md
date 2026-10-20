@@ -6041,3 +6041,61 @@ its running gate job and starts no new one; `shipping.md` says a notes push on a
 gate — see which on the next closing push (D1088 waits on that run). **Place:** Checks and tooling — next, its own job in a fresh chat (D1089).
 **BUILT 20 Oct 26** (pull request 546, `claude/ci-split-slow-jobs-standby-9e987d`): every GitHub leg checks out without the four picture folders (D1091, his word: "don't download the photos to save time" — 4.7 GB → 79 MB a machine), the raptor unit set in six, its browser set in four, the Leave War desktop browser set in two; the Tracker smoke stays one leg (its second half uses helpers its first half defines). **Measured:** 5m53s end to end, against 8m53s–10m04s before; every leg green, nineteen side by side; every area still run — the same 676 unit files and 12,004 unit tests, 893 browser tests and 453 Tracker checks as main’s last run. Detail: `raptor-port/docs/gates-and-deploy.md` (20 Oct 26). Waiting for his "merge live".
 
+
+*Moved here 2026-10-20 by backlog-archive.mjs ([BOARD-TAB-FOLD]). Forward facts: `raptor-port/docs/handpass/2026-10-20-standby-batch.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [BOARD-TAB-FOLD] A time typed on the Scheduler Board and left by Tab shows as typed until another press (found 19 Oct 26 — the D1080 walk, walker B's B11; low)
+On the Scheduler Board, type "1000" into a take-off, landing or R box and press Tab: the box still reads "1000" (a second
+Tab, or 2.5s later, the same), while 10:00 is saved — it reads 10:00 at once after a press anywhere else, and after leaving
+and coming back. The same with plain typing (a second press, then the whole time chosen and typed over — host probe
+`raptor-port/scripts/handpass/kbs-host-b11.mjs`), so it is older than D1047 / D1080: the board folds a box to hh:mm when it is
+redrawn, and leaving by Tab does not redraw the box left. Walker B's report: `raptor-port/docs/handpass/parts/keyboard-scroll/B.md`.
+**To do:** on a box's `change`, write its folded time back to it (`fmtHM`) even when the focus moved to the next box.
+**The week too (met 20 Oct 26, [STANDBY-WEEK-B]'s browser test):** on Edit Schedule's week a time typed and left by Tab
+reads as typed ("0610") until a press elsewhere, while 06:10 is saved — a flying line's B and take-off as well as the new
+standby B (probe `raptor-port/scripts/handpass/standby-week-b-tabfold.mjs`): the week's commit defers its redraw while the
+caret is in another box (`html.ts` TXTQ). The same fix there: fold the box left, not only the model.
+**Place:** low — with the next change to the board's time boxes.
+**BUILT 20 Oct 26** (the standby batch, pull request 547): the box left reads hh:mm at once on the board and the week, and an input's own start / end too (the blind read's F2); never rewritten while it still holds the caret (F3). Evidence `raptor-port/docs/handpass/2026-10-20-standby-batch.md`.
+
+
+*Moved here 2026-10-20 by backlog-archive.mjs ([SA-HEAD-CLIP-360]). Forward facts: `raptor-port/docs/handpass/2026-10-20-standby-batch.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [SA-HEAD-CLIP-360] Under 375 wide, a standby wave's first heading cuts "AVALON" (met 20 Oct 26 — the [STANDBY-WEEK-B] re-walk at 360; older, low)
+On Edit Schedule's week and View-only Sched below 375 wide the first column is 36px (`09-week-responsive.css`, the 374px
+block — D367's measure for a flying line's callsign), and a standby wave's heading there reads its label over SHIFT: "AVALON"
+does not fit and shows as "AVALOI" (picture `raptor-port/docs/img/handpass/2026-10-20-standby-week-b/walk2/08-phone-360-edit-week-sc.png`);
+SC and BB fit. The column is untouched by [STANDBY-WEEK-B]. **To do:** let that heading wrap or shrink as the callsign does
+(D367 — the name always whole), measured at 320 and 360. **Place:** low — with the next change to the week on a phone.
+**BUILT 20 Oct 26** (the standby batch, pull request 547): under 375 the heading takes START / END's 7px, and a longer name wraps whole (RB14 at 360 and 320).
+
+
+*Moved here 2026-10-20 by backlog-archive.mjs ([STANDBY-UNDO-WORDS]). Forward facts: `raptor-port/docs/handpass/2026-10-20-standby-batch.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [STANDBY-UNDO-WORDS] A standby line's START and END are named as a take-off and a landing (found 20 Oct 26 — the [STANDBY-WEEK-B] blind code read; older, low)
+On an SC, AVALON or BB line, Undo's words ("Undo — a take-off time") and the changes window name the shift's START box "a
+take-off time" and its END "a landing time" (`raptor-port/src/undo/describe.ts` `TIME_WORD`, read for every `ff:` key;
+`changesmodel.ts` the same idea) — only SC's B has its own word ("an in-time"). Since D1083 the week heads those boxes
+START and END, so the words disagree with the screen. **To do:** on a standby line (`isStandalone` of the key's wave, as
+`scLineKey` does for SC) say "a start time" / "an end time" for `.to` / `.ld`; AVALON's and BB's B stay "a brief
+time" (their B box is a brief, D1065). **Place:** low — with the next Schedule and amendments small fixes.
+**BUILT 20 Oct 26** (the standby batch, pull request 547): Undo "a start time" / "an end time"; the change history's label "· start" / "· end"; the changes window and "To go out" Start / End, live and gone.
+
+
+*Moved here 2026-10-20 by backlog-archive.mjs ([BUBBLE-SMALL-SEEN]). Forward facts: `raptor-port/docs/handpass/2026-10-20-standby-batch.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [BUBBLE-SMALL-SEEN] Two small things about the message bubble, found by the change-recording walk (29 Sep 26)
+**(2) and (3) DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): the offer is drawn above the bubble, and a note already up when the changes window opens on a phone goes to the top. **(1)** was done 28 Sep 26 (`[AMEND-SMALL-SEEN]` item 1). **Left: (4)** the empty gold pill.
+Both the same on `main` (the Phase A pictures, taken on `main`, show them): (1) **Unpublish says nothing** — pressed on a
+day, the day goes back as it should, but the bubble still reads the PUBLISH's words ("Published AL1 · 1 item on Sat only ·
+approved by Anvil") for its few seconds, the opposite of what just happened (`a1/<w>/pub-09`). (2) **A bubble covers the
+"Use this section order as the default for every day?" offer** — a section dragged within a few seconds of an Undo /
+Redo shows the offer under the lingering bubble, hiding "Set as default" and, on a phone, "Not now" (`a1/phone/struct-19`).
+(3) **A lingering bubble covers the changes window** — on a phone, an Undo / Redo's bubble still up when the window opens
+sits over its first lines (`a2-rewalk/phone/lw-24`). (4) **An empty gold pill in an input's row** on the Inputs list, on a
+phone, beside the remarks of a LATE leave the admin filed for himself in the member view (`a2/phone/roles-05`, the same on
+the re-walk). **To do:** Unpublish says what it did ("Taken back: <day> — its changes wait on the working copy"); the offer
+opening clears the bubble or sits above it; the window likewise; find what the empty pill is meant to hold. LOOK tier.
+**Place:** low; any time.
+**(4) FOUND ALREADY GONE 20 Oct 26** (the standby batch, pull request 547): the Inputs list was redesigned since (D723's card on a phone); a LATE leave the admin files for himself in the member view shows LATE, "All day", the name, the kind and the remark — no empty pill, on a phone or a desktop (pictures `raptor-port/docs/img/handpass/2026-10-20-standby-batch/before/07`, `08`). The item closes on that "merge live".
+
