@@ -20,27 +20,23 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/shaky-tests-batch-ea7fc2 -->
-### 20 Oct 26, evening — the shaky-tests batch (D994, Checks and tooling), `claude/shaky-tests-batch-ea7fc2`, pull request 552 — his "merge live" GIVEN (20 Oct 26), merging
-- **His pick:** the shaky-tests batch as one job from `main` (D994), the R box first — "find out whether the app really
-  loses the time" — with a picture of the R box on a phone first (sent; `docs/img/handpass/2026-10-20-shaky-tests/01-…`).
-  (The OIL batch and its records, pull requests 550 and 551, are LIVE — their block removed here; [CI-E2E-FLAKES-1020] it filed is this job.)
-- **[CI-E2E-FLAKES-1020]** — the R box phone test's lost save is NOT the app: an event log on 24 GitHub Linux machines showed
-  the simulated tap on an empty box focusing it without moving the caret into it, so the keys reached no box; the test's tap
-  now puts the caret there only then (`e2e/rallybox.spec.ts caretFollows`). The D555 Tab test was its own work (~860 round
-  trips, 29.4 s of 30): boxes found in one call (`typeable`), one test a page. Trap written in `gates-and-deploy.md`.
-- **[BOARD-TAB-FOLD-BOARD]** — the board's Tab fold put back as built (`board.ts boardChange`; RB15, the unit test).
-- **[LW-WINDOW-PRUNE-FLAKE-2]** (a late poll met December legitimately drawn back — read at the jump's own draw now) and
-  **[LW-SCRUBBER-FLAKY]** (its waits' 4 / 9 s caps lifted).
-- **Checked:** the sheet `raptor-port/docs/handpass/2026-10-20-shaky-tests.md` — WALK, sized small: walk 10 / 10, 8 pictures;
-  the touched tests on his PC; 15 GitHub jobs on separate machines, retries off, green; GitHub's run of pull request 552 green;
-  one fresh, blind Opus read (the sheet §5).
-- **Left over:** none — the throwaway branch `claude/debug-rbox-linux` deleted on his word (20 Oct 26).
-- **Pick up here:** if this block is still here, check pull request 552 merged and the live app is READY (D1088); then remove
+<!-- now:claude/inputs-small-fixes -->
+### 20 Oct 26, late — the Inputs batch (D994, Inputs and calendars), `claude/inputs-small-fixes`, pull request 553 — his "merge live" GIVEN (20 Oct 26), merging
+- **His pick:** "Inputs" (D994). The shaky-tests batch (pull request 552) is LIVE — its block removed on this branch.
+- **Built:** [TILL-NEXT-YEAR], [OIL-ASK-HEAD-SEVERAL] (both archived); his **D1095 / D1096** — every year PRINTED after a date
+  is two digits, the kept labels keep four (the places: the sheet §10); the fresh read's F1 (a week's rows in its own year),
+  F2 and the title (the medical sheet day first), F3. [INP-TILL-STALE] archived (gone since D948); [CAL-UNDO-OTHERS] refiled
+  to the Database step.
+- **Checked:** `raptor-port/docs/handpass/2026-10-20-inputs-small-fixes.md` — FULL, sized SMALL: walk 33 / 33, re-walk 49 / 49
+  (both sizes, 28 pictures); breaks 17 / 17; unit 12,045 / 12,045 under the lock (touched files after); one fresh blind
+  Opus read, its three findings fixed; GitHub's run green on `bf4193368` (the last push's run to read).
+- **Pick up here:** if this block is still here, check pull request 553 merged and the live app is READY (D1088); then remove
   this block and take his next pick (D994).
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (20 Oct 26, night):** pull request 552 LIVE (the shaky-tests batch, D994 — its block removed) → his pick, the Inputs batch (D994), on `claude/inputs-small-fixes` (pull request 553, this chat's block).
 
 **RIGHT NOW (20 Oct 26, evening):** pull requests 550 and 551 LIVE (the OIL batch) → his pick, the shaky-tests batch (D994), BUILT and WALK-checked on `claude/shaky-tests-batch-ea7fc2` (pull request 552, this chat's block) → his "merge live" GIVEN → his next pick from the backlog.
 

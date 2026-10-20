@@ -3,7 +3,7 @@
 import { DAYS } from '../engine/data'
 import { requestOfBox } from '../engine/overlay'
 import { rowPeopleDrawn, inputRowSeveral } from '../engine/grouprows'
-import { INPUTS, inputsOn, remarksShown, remarksTyped, tillOf, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, oilAsks, sansBadge, facesOf, facesDrawn, iuTail } from '../engine/inputs'
+import { INPUTS, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, oilAsks, sansBadge, facesOf, facesDrawn, iuTail } from '../engine/inputs'
 import { PEOPLE, whoId } from '../engine/people'
 import { noteText } from '../engine/note'
 import { hhmm, fmtHM, parseHM } from '../engine/time'
@@ -134,7 +134,7 @@ function sbiRmk(inp:any,dt?:any){
    data). Kept as a pure builder because probe-bridge still exposes it. */
 export function sbInputsHTML(d:any,di:any){
   const rows=inputsOn(d.dt).flatMap((r:any)=>facesOf(r));
-  let h=`<div class="sbi-h"><b>Inputs · ${esc(d.dow)} ${esc(d.dt)}</b>`
+  let h=`<div class="sbi-h"><b>Inputs · ${esc(d.dow)} ${esc(shortYear(d.dt))}</b>`
    +`<span class="sbi-n">${rows.length} entr${rows.length===1?'y':'ies'} · morning → late</span></div>`;
   if(!rows.length)return h+`<div class="sbi-empty">No personal inputs submitted for this day.</div>`;
   const row=(inp:any)=>{

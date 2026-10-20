@@ -1414,7 +1414,7 @@ for (const [w, h] of [[390, 844], [375, 667]] as const) {
         await page.locator(`#inRangePop [data-iso="${iso}"]`).tap()
       }
       await page.keyboard.press('Escape')
-      await expect(page.locator('#inRangeBtn')).toContainText('28 Dec–11 Jan 2027')
+      await expect(page.locator('#inRangeBtn')).toContainText('28 Dec–11 Jan 27')
       const r1 = await row()
       expect(new Set(r1.tops).size, 'all five on ONE line').toBe(1)
       expect(r1.lefts, 'the switch, the filter and the gear where they were').toEqual(r0.lefts)

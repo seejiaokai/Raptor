@@ -17,7 +17,7 @@ import { frontWin, holdPageScroll } from './floatwin'
 import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, tillOfISO, tillDefaultISO, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, upchitDeletePlan, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel, firstEndIso, firstEndOrd } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -105,7 +105,8 @@ export const fmtDay = (iso: any) => {
   const [y, m, da] = String(iso).split('-')
   if (!m) return String(iso)
   const lbl = String(+da) + ' ' + MON[+m]
-  return +y === baseYear() ? lbl : lbl + ' ' + y
+  /* (printed, so the year is two digits — owner D1096; fmt above KEEPS four, being a stored label) */
+  return +y === baseYear() ? lbl : lbl + ' ' + y.slice(-2)
 }
 /* ISO 'yyyy-mm-dd' → a 'day month year' STAMP with a two-digit year
    ('2026-07-06' → '6 Jul 26'), matching the app's own week voice ('13 Jul 26').
@@ -832,7 +833,7 @@ export function oilSummary(row: any): string {
    answered yet" lines and the desktop row's "OIL?" chip (ui/InputsPage.tsx). */
 export function oilDayLabel(iso: any): string {
   const s = isoLabel(iso)
-  return s && +String(iso).slice(0, 4) !== baseYear() ? `${s} ${String(iso).slice(0, 4)}` : s
+  return s && +String(iso).slice(0, 4) !== baseYear() ? `${s} ${String(iso).slice(2, 4)}` : s   // two digits (D1096)
 }
 
 /* The default type a board panel's + Add opens on — a personal (activity) type
@@ -1396,7 +1397,7 @@ export function medAskFor(r: any, draft: any): MedAsk | null | 'refused' {
   const clashes = medClashes(draft.person, draft.type, a, b, r)
   if (!clashes.length) return null
   return { kind: 'clash', who, newType: draft.type,
-    span: fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' – ' + fmt(draft.end) : ''), clashes, a, b }
+    span: fmtDay(draft.start) + (draft.end && draft.end !== draft.start ? ' – ' + fmtDay(draft.end) : ''), clashes, a, b }
 }
 
 /** The clash sheet's Save for an EDIT: the edited row becomes the first kept segment, the rest are minted as
@@ -1496,6 +1497,12 @@ export function oilFirst(o: {
   places: string[]
   /** this door asked afresh — the bar's "Answer OIL"; true: made */
   again: () => boolean
+  /** who the waiting question is HEADED for, on the record as it stands — everyone the one answer is written for (owner
+   *  D762), as the row's door heads it (ui/reqdoor.ts `gated`). The gate's own heading names the draft's one person, so a
+   *  door that changes an input of several says who it will hold ([OIL-ASK-HEAD-SEVERAL] — the narrow read's FX-1,
+   *  13 Oct 26: a drag on the Inputs calendar and a hand-over on the Unavailable row headed it with one man). '' or
+   *  absent: the gate's. */
+  who?: (r: any) => string
 }): boolean {
   const find = () => INPUTS.find((x: any) => String(x.iid) === String(o.iid))
   const run = (oil?: Record<string, number>): string => { const r = find(); return !r || !o.same(r) ? 'none' : o.make(r, oil) ? 'done' : 'refused' }
@@ -1516,9 +1523,10 @@ export function oilFirst(o: {
     else notify()                                    // every screen reads its records again after the thrown-away save
     return a === 'done'
   }
+  const now = find()                                   // a tried save puts every record back as a new object
   holdForOil({
     kind: o.kind, lead: o.lead, places: o.places,
-    gate: { who: g.who, typeLabel: g.typeLabel, plan: g.plan, prev: g.prev },
+    gate: { who: (o.who && now ? o.who(now) : '') || g.who, typeLabel: g.typeLabel, plan: g.plan, prev: g.prev },
     redo: oil => run(oil),
     ask: () => { const x = find(); if (!x || !o.same(x)) return 'none'; return o.again() ? 'done' : OILWAIT ? 'asked' : 'refused' },
   })
@@ -1604,6 +1612,9 @@ export function reassignInput(iid: any, personId: any): boolean {
         return true
       },
       gate: x => oilGate(draftOf(x), x),
+      /* headed for everyone the one answer is written for — the people it will hold, the newcomer in his place (D762,
+         [OIL-ASK-HEAD-SEVERAL]; the same list the row's door builds, ui/reqdoor.ts) */
+      who: x => inputWho({ people: idsOf(x).map(String).map(p => p === String(from) ? personId : p).map(p => ({ p })) }),
       places: [`sel:[data-inpseat="${String(iid)}"]`],
       again: () => !!reassignInput(iid, personId),
     })
@@ -2744,7 +2755,8 @@ export function InputEditor() {
         setMedConf({
           who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person || ''),
           newType: draft.type,
-          span: fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' – ' + fmt(draft.end) : ''),
+          /* printed as the sheet's body prints its dates: day first, the year two digits where it is another (D1096) */
+          span: fmtDay(draft.start) + (draft.end && draft.end !== draft.start ? ' – ' + fmtDay(draft.end) : ''),
           clashes, a, b,
         })
         return
@@ -2843,7 +2855,8 @@ export function InputEditor() {
      edit's stay on the row — and so does the TITLE's date, which says what is saved, while the line under the picker
      says what a Save would write */
   const when = !r ? '' : (isNew && draft && draft.start)
-    ? fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' → ' + fmt(draft.end) : '')
+    /* (printed: the kept label's year in two digits — owner D1096) */
+    ? shortYear(fmt(draft.start)) + (draft.end && draft.end !== draft.start ? ' → ' + shortYear(fmt(draft.end)) : '')
     /* the stored month-first labels said day-first, as the rest of the Inputs page speaks ([LW-ISO-DATES], 28 Sep 26 —
        the window's title read "Tally · Jul 24") */
     : fmtDay(unfmt(r.date, r.yr)) + (r.endDate ? ' → ' + fmtDay(unfmt(r.endDate, r.yr)) : '')
@@ -3061,7 +3074,7 @@ export function InputEditor() {
                   if (datesHere) { setMidPick(!e2); setDatesPicked(true); setDraft({ ...draft, start: s2, end: e2 }); return }
                   setDraft({ ...draft, start: s2, end: e2 })
                 }} />
-              <div className="rc-read">{draft.start ? (fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' → ' + fmt(draft.end) : '')) : 'pick a start date'}</div>
+              <div className="rc-read">{draft.start ? (shortYear(fmt(draft.start)) + (draft.end && draft.end !== draft.start ? ' → ' + shortYear(fmt(draft.end)) : '')) : 'pick a start date'}</div>
             </div>
           </div>}
           {/* REVISE A RECORDED OIL ANSWER (owner, 29 Aug 26 — a mistaken "No

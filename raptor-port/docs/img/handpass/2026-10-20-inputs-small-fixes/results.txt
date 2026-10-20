@@ -1,0 +1,33 @@
+PASS desktop T1: the Inputs list's row prints "till 15 Feb 2027" — saw "Trident15 Feb 2027OILtill 15 Feb 20271 Jan 26"
+PASS desktop T2: its window's grey date reads "till 15 Feb 2027" — saw "till 15 Feb 2027"
+PASS desktop T3: picked 17 Jul → 5 Jan, the window's grey date reads "till 5 Jan 2027" — saw "till 5 Jan 2027"
+PASS desktop T3: saved 17 Jul → 5 Jan 2027, its remark only what was typed — saw {"date":"Jul 17","end":"Jan 5 2027","yr":2026,"remarks":"Walk leave"}
+PASS desktop T4: Edit Schedule's Friday prints "till 5 Jan 2027" — saw ["LATEWalk leavetill 5 Jan 2027"]
+PASS desktop T5: the Scheduler Board's Friday prints "till 5 Jan 2027" — saw ["Walk leavetill 5 Jan 2027"]
+PASS desktop T6: Friday published with the leave on it — no "pending" chip — saw {"pend":null,"approved":true,"chip":null}
+PASS desktop T6: after a reload — still nothing pending, still "till 5 Jan 2027" — saw {"chip2":null,"bd2":["Walk leavetill 5 Jan 2027"]}
+PASS desktop T7: View-only Sched's Friday prints "till 5 Jan 2027" — saw ["LATEWalk leave till 5 Jan 2027"]
+PASS phone T1: the phone's card carries no till date (D728 — its heading says the date) — saw "All dayTridentOIL"
+PASS phone T2: its window's grey date reads "till 15 Feb 2027" — saw "till 15 Feb 2027"
+PASS phone T3: picked 17 Jul → 5 Jan, the window's grey date reads "till 5 Jan 2027" — saw "till 5 Jan 2027"
+PASS phone T3: saved 17 Jul → 5 Jan 2027, its remark only what was typed — saw {"date":"Jul 17","end":"Jan 5 2027","yr":2026,"remarks":"Walk leave"}
+PASS phone T4: Edit Schedule's Friday prints "till 5 Jan 2027" — saw ["LATEWalk leavetill 5 Jan 2027"]
+PASS phone T5: the Scheduler Board's Friday prints "till 5 Jan 2027" — saw ["Walk leavetill 5 Jan 2027"]
+PASS phone T7: View-only Sched's Friday prints "till 5 Jan 2027" — saw ["LATEWalk leave till 5 Jan 2027"]
+PASS desktop O1: the bar of three dragged onto Saturday — the question waits, headed "OIL: Drifter +2, Walk brief" — saw "OIL: Drifter +2, Walk brief"
+PASS desktop O1: nothing moved while it waits — saw "Jul 17"
+PASS desktop O1: answered — moved to Saturday — saw "Jul 18"
+PASS desktop O2: set-up — the overseas duty of three on a holiday, its OIL question unanswered — saw null
+PASS desktop O2: one of three handed over — the question waits, headed "OIL: Hunter +2, Walk OD" — saw {"head":"OIL: Hunter +2, Walk OD","tapped":"imvgqlsiwwoa8vw~slipway","out":[],"handedFrom":3}
+PASS desktop O2: nobody handed over while it waits — saw ["slipway","prowler","pump"]
+PASS desktop O2: answered — the newcomer holds the place — saw ["harpoon","prowler","pump"]
+PASS phone O2: set-up — the overseas duty of three on a holiday, its OIL question unanswered — saw null
+PASS phone O2: one of three handed over — the question waits, headed "OIL: Hunter +2, Walk OD" — saw {"head":"OIL: Hunter +2, Walk OD","tapped":"imvgqlxig7wgl5v~slipway","out":[],"handedFrom":3}
+PASS phone O2: nobody handed over while it waits — saw ["slipway","prowler","pump"]
+PASS phone O2: answered — the newcomer holds the place — saw ["harpoon","prowler","pump"]
+PASS desktop S1: 18 Jul, then 19 Jul, then 19 Jul again — the grey date follows each pick — saw ["till 18 Jul","till 19 Jul","till 19 Jul"]
+PASS desktop S1: the remarks box holds only what was typed — saw "Bangkok"
+PASS desktop S1: saved as one day, 19 Jul, its remark "Bangkok" — saw [{"date":"Jul 19","end":"","remarks":"Bangkok"}]
+PASS phone S1: 18 Jul, then 19 Jul, then 19 Jul again — the grey date follows each pick — saw ["till 18 Jul","till 19 Jul","till 19 Jul"]
+PASS phone S1: the remarks box holds only what was typed — saw "Bangkok"
+PASS phone S1: saved as one day, 19 Jul, its remark "Bangkok" — saw [{"date":"Jul 19","end":"","remarks":"Bangkok"}]

@@ -38,7 +38,7 @@ function Box(p: { value0?: string; onChange?: (v: string) => void; min?: string;
 describe('the box', () => {
   it('reads its date in words, and "Pick a date" when it has none', () => {
     const a = render(<Box />)
-    expect(t('box').textContent).toContain('Thu 5 Nov 2026')
+    expect(t('box').textContent).toContain('Thu 5 Nov 26')
     expect(boxValue(t('box'))).toBe('2026-11-05')
     a.unmount()
     render(<Box value0="" />)
@@ -72,7 +72,7 @@ describe('the box', () => {
   })
   it('a narrow box leaves the weekday out of its words, never out of what it says aloud', () => {
     render(<DateBox testid="nb" label="End date A" value="2026-10-28" noWeekday onChange={() => {}} />)
-    expect(t('nb').querySelector('.datebox-txt')!.textContent).toBe('28 Oct 2026')
+    expect(t('nb').querySelector('.datebox-txt')!.textContent).toBe('28 Oct 26')
     expect(t('nb').getAttribute('aria-label')).toBe('End date A: Wed 28 Oct 2026')
     expect(boxValue(t('nb'))).toBe('2026-10-28')
   })
@@ -129,7 +129,7 @@ describe('picking', () => {
     expect(onChange).toHaveBeenCalledTimes(1)
     expect(onChange).toHaveBeenCalledWith('2026-11-19')
     expect(layer()).toBeNull()
-    expect(t('box').textContent).toContain('Thu 19 Nov 2026')
+    expect(t('box').textContent).toContain('Thu 19 Nov 26')
     expect(t('box').getAttribute('aria-expanded')).toBe('false')
   })
   it('a tap on the date already picked changes nothing and still closes', () => {

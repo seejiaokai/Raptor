@@ -104,7 +104,7 @@ describe('R1 — a medical entry moved across a year is asked about in the year 
     await click(day('2026-01-16')); await click(day('2026-01-17'))
     await click($('#inpEditSave'))
     expect($('[data-testid="medclash"]'), 'the question is asked').toBeTruthy()
-    expect($('[data-testid="medclash"]')!.textContent, 'about the days of 2026').toMatch(/Jan 16/)
+    expect($('[data-testid="medclash"]')!.textContent, 'about the days of 2026 (printed day first, as the sheet prints its dates — D1096)').toMatch(/16 Jan/)
     expect([live(attb.iid).date, live(attb.iid).endDate], 'the other medical entry is untouched until he chooses').toEqual(['Jan 15', 'Jan 19'])
     expect([live(attc.iid).date, live(attc.iid).yr], 'and so is the one being moved').toEqual(['Jan 10', 2027])
     expect(INPUTS.filter((r: any) => holds(r, who) && r.type === 'ATT B'), 'nothing was split').toHaveLength(1)

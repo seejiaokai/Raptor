@@ -77,13 +77,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [EOD] — End-of-Day "record actuals": designed on paper, nothing built — his word.
 
 **Inputs and calendars**
-- [TILL-NEXT-YEAR] — an input of another year prints "till <date>" without its year.
-- [OIL-ASK-HEAD-SEVERAL] — at two older doors the OIL question for an input of several people is headed with one man.
-- [CAL-UNDO-OTHERS] — Undo after another person's change does not say who, and a holiday on another date blocks it (reproduce first).
 - [TITLE-CHECK-SEEN] — three older small finds left: one line a man in "To go out", a re-accepted request read as a words change, a long OIL Earn name cut on a phone.
 - [ALLAVAIL-CHECK-SEEN] — the ALL AVAIL / Event check's older small finds, none fixed.
 - [CAL-CHECK-SEEN] — the calendar job's small finds still open: a phone on its side, two gesture finds, the windows' five, each man's LATE tag on a shared card.
-- [INP-TILL-STALE] — a "till" date left in remarks: tested on 5 Oct 26 and not reproduced; Claude's look at that, then close.
 - [INPUTS-LIVE-LEFT] — what the Inputs pages' work left: readings he has not answered, his iPhone looks, three unconfirmed observations.
 - [SANS-PREVIOUS-REPORT-OFFER] — a previous evening's availability is not combined with the day's — his rule first; with caps and ops limits.
 
@@ -206,6 +202,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [TRK-IMPORT-ONE-GROUP] — a Tracker Import is saved as many groups, not one (D983).
 - [TRK-FIRST-ORDER-PLACE] — a stale tab can undo the first save of the chart order (D983).
 - [TRK-ASYNC-STALE] — once storage is slow, a Tracker job re-checks its person and target after every wait.
+- [CAL-UNDO-OTHERS] — every holiday of one war is saved in the war's one record, so in a shared database another man's holiday would block an Undo of a different one; how finely the war's records are saved is decided with the database (20 Oct 26 — not reachable today).
 
 **Features he means to add — each on his word**
 - [CAPS-OPS-LIMITS] — caps and ops limits: next in his order (D495); its questions, plan and build.
@@ -1415,6 +1412,7 @@ waive owed reads or authorize a live merge.
 **Current direction — D585, 5 Oct 26:** Inputs/SANS calendar is on hold; preserve the completed preview and context. No more design/build/Claude vetting until owner resumes. Other outstanding tasks may be discussed; no new batch starts automatically. Existing D495 later order remains Tracker progress graph → caps/ops limits → whole-app check, with database connection at the end; this pause does not approve another build.
 
 ### [CAL-UNDO-OTHERS] Undo after another person's change: the refusal does not say who, and a holiday on another date blocks it (the calendar job's bug check, 8 Oct 26)
+**Checked 20 Oct 26 (the Inputs batch, `raptor-port/docs/handpass/2026-10-20-inputs-small-fixes.md` §0) — NOT reachable in the running app today; (b) kept for the database step.** Walker H made both by changing the signed-in person IN PLACE through the developer's bridge. In the app another person must sign in, which ends the first person's Undo list (D148, `undo/timeline.ts endUndoSession`), and no second tab shares changes. Another person's change will reach the list only from the shared database, as a "remote" step, and that path already refuses naming who (`undo/timeline.ts outOfBandWords`, pinned by `undo/timeline-cr.test.ts`) — so (a) is closed. (b) stands for that future: `leavewar/state/store.ts holidayRun` saves every holiday of a war inside the war's own period record, so one man's new holiday would refuse another's Undo of a different holiday of the same war — decide how finely the war's records are saved, with `[DB-STEP]`. **Place:** the Database step group.
 **Found, not fixed — reported by one walker, not yet seen by the host: reproduce first.** Walker H (X-10), `raptor-port/docs/handpass/parts/cal-H.md`, scripts `raptor-port/scripts/handpass/cal-H-*.mjs`, pictures `raptor-port/docs/img/handpass/2026-10-08-inputs-sans-calendar-check/H/x10-*.png`. (a) Saber files a meeting for three; a second admin changes its remark; Saber's Undo is refused with "A later change touches the same thing — undo that first" — D148 has the refusal say WHO; the same line for a holiday renamed and a Required cell retyped by the other. (b) Saber adds a holiday on 12 Aug, the other admin adds one on 19 Aug, Saber's Undo of his own is refused — a different date is not "the same thing" (a different Required day and a different group input DO undo cleanly). Likely place: how the Leave War's holiday commands name what they touch for the Undo's "changed since" test. **As filed:** medium-low — an Undo that refuses too readily loses nothing. The sheet: `raptor-port/docs/handpass/2026-10-08-inputs-sans-calendar-check.md` §7.
 
 ### [TITLE-CHECK-SEEN] Older small finds met by the title's check (9 Oct 26) — none caused by the title; filed, not fixed
@@ -1512,16 +1510,6 @@ Each line is a place where a tool allowed a mistake that a guide now only warns 
 
 **Place:** his to place. The agent's recommendation: one small tools job, any time, its own branch; the gates and a
 fresh Opus read of the scripts; no walk (nothing of the app changes).
-
-### [TILL-NEXT-YEAR] An input of another year prints its "till <date>" without the year (found 17 Oct 26)
-
-**Status: OPEN — small; found by [INPUTS-LIST-NEXT-YEAR]'s walk.** On the Inputs list (loaded week in 2026), the demo's
-15 Feb 2027 OIL input reads "15 Feb 2027" in its date column but "till 15 Feb" in its remark: the "till <date>" every
-screen prints comes from `raptor-port/src/engine/inputs.ts tillOf` (`dayWords(endDate || date)`), which ignores the row's
-own year. Harmless on the schedule (a 2027 week loads with 2027 as its year), misleading wherever a screen shows another
-year's input. **Not a quick fix:** `tillOf` also feeds the published-day compare of the till date (D948, `engine/tilldate`)
-— adding a year there could mark published days "1 pending" — so it is its own job: the reader of the year, a test of the
-published compare, a look at the list and a card. **Place:** with the next Inputs batch; no question for him.
 
 ### [LW-WINDOWS-NONBLOCKING] The Leave War's other windows: stay up, and let the grid behind them work (D641, D642 — 7 Oct 26)
 Every Leave War window blocks the grid behind it and closes on a click outside (`src/leavewar/ui/Sheet.tsx`). D641 asked that the
@@ -1721,6 +1709,7 @@ D609 (the start-of-chat measure of 7 Oct 26), D70 (a working-guide change is rea
 stay readable by other models). **Place:** next, after pull request 524.
 
 ### [UI-SLEEK-PASS] The interface made more minimal, intuitive and sleek — fewer words, button placement, motion, colour meaning, icons, flow; the Raptor look kept, never at a cost of speed (his direction, D765, 12 Oct 26 — AFTER the one-rule build; his to place)
+**Suggested 20 Oct 26 under D852 (his D1095 — the till date's year in two digits, the design guide's lesson 13), not changed:** the desktop Inputs list's date column and the phone list's day heading print "15 Feb 2027", and the LATE mark's note "Jan 4 2027" — the same two-digit year there is his to say. **Answered the same evening, D1096 ("All 27 instead") — built with the Inputs batch.**
 **BUILT 17 Oct 26 — D949, D950, D951 + D953 on `claude/whole-app-words-pass-1b-6cfe51` (pull request 522), FULL-checked (`raptor-port/docs/handpass/2026-10-17-tick-r2.md`): LIVE 17 Oct 26 (pull request 522 merged on his "merge live").** **D953 (17 Oct 26) — D952 drawn and answered ("1B 2-5 yes"): a tick box before the grey date, like the window's "all day" tick; readings 2–5 as drawn. To build with D949–D951.** **D952 (17 Oct 26) — draw first, then build with D949–D951:** a switch on every input for its "till <date>" (the grey date in its window), on by default except a one-day duty or other commitment; the default follows the dates; the person can still turn it.
 **D951 (17 Oct 26) — to build with D949, D950:** a one-day duty or other commitment prints no "till <date>" anywhere it is printed (the window still shows it while picking); one-day leave and medical wait for his answer.
 **D950 (17 Oct 26) — to build with D949:** round 2 — View-only Sched's boxed "Draft" goes; the peek reads "Next week: click a day to load it"; "· accepted" / "· rejected" once a row, after the name; "Placeholders · drag in" → "Placeholders".
@@ -1795,13 +1784,10 @@ stay readable by other models). **Place:** next, after pull request 524.
 | The standby batch — `[BOARD-TAB-FOLD]` with the week's half, `[SA-HEAD-CLIP-360]`, `[STANDBY-UNDO-WORDS]`, `[BUBBLE-SMALL-SEEN]` (D994); LIVE 20 Oct 26 (pull request 547) | one fresh, blind Opus reader of the finished code (D790, D903) — 3 low, all fixed; walked and gated (`raptor-port/docs/handpass/2026-10-20-standby-batch.md`) | Astra's code read (D353) |
 | The night of 20 Oct 26 — the Tracker smoke in two, `[GATELOCK-STALE-PORT]`, the lazy pages loaded up front in three test files (D1092); LIVE on his advance word once green | one fresh, blind Opus reader of the finished branch (D790, D903); proved by the counts (the same 453 Tracker checks by name) and the tests | Astra's read of a checks-and-tooling change |
 | The OIL batch — `[UNPUB-WARN-AL-RESTORES]`, `[OIL-ZERO-SPAN-SORTIE]`, `[LW-OIL-DATECHIP-HIDDEN]` (D994); built 20 Oct 26 on `claude/oil-small-fixes-1020` (pull request 550) | a fresh, blind Opus scenario designer and one fresh, blind Opus reader of the finished code (D790, D903); walked and gated (`raptor-port/docs/handpass/2026-10-20-oil-batch.md`) | Astra's scenario design (D353); Astra's and Sol 6.1's two code reads (OIL and the published record — rank 2) |
+| The Inputs batch — `[TILL-NEXT-YEAR]`, `[OIL-ASK-HEAD-SEVERAL]`, `[INP-TILL-STALE]`, `[CAL-UNDO-OTHERS]` (D994); built 20 Oct 26 on `claude/inputs-small-fixes` (pull request 553) | one fresh, blind Opus reader of the finished code, asked for missing scenarios too (D790, D903); walked and gated (`raptor-port/docs/handpass/2026-10-20-inputs-small-fixes.md`) | Astra's scenario design (D353); Sol 6.1's second read (the published record: the printed till date a published day compares) |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.
-
-### [OIL-ASK-HEAD-SEVERAL] At two older doors the OIL question for an input of several is headed with one man (the narrow read of the Inputs batch's fixes, 13 Oct 26) — OPEN, low
-
-**Found by reading, not fixed — older code, a heading only.** Where the OIL question waits before a change, its sheet is headed for everyone the one answer is written for — "OIL — Bane +2, Sports day" (D762) — at the row's door, the Inputs list and, since 13 Oct 26, the put-back. Two older doors still head it with the input's first person alone: an input of several DRAGGED on the Inputs calendar onto a weekend or a holiday, and one man of several REPLACED on an Unavailable row. The answer is written for everyone either way; only the heading is short. **The build (the read gives it, with two tests first):** `raptor-port/src/ui/inputedit.tsx oilFirst` takes a `who` as `ui/reqdoor.ts gated` does, and `ui/caldrag.ts` and `reassignInput` pass `inputWho`. **Place:** the agent's — with the next Inputs batch (D490). The read: `raptor-port/docs/handpass/parts/ib/read-fixes-opus.md` FX-1.
 
 ### [MERGE-ONCE-RECORDS] Merge finished jobs as ONE pull request, and make the record files merge without clashing (his ruling D822, 13 Oct 26) — OPEN, the agent's to work out; from the next job on
 
@@ -1943,22 +1929,6 @@ Independent bounded cause/disposition: `raptor-port/docs/superpowers/plans/2026-
 
 ### [SANS-PREVIOUS-REPORT-OFFER] Prior-date availability is not combined across a previous-evening reporting window (characterized 3 Oct 26)
 Actual I2 walk on the Rally review-fix snapshot: Tuesday01:00–11:00 flying reportsMonday22:00, dekitTuesday11:30. Kraken's MondayPM Fly offer gives the actual armed picker "no availability filed for today"; accepted placement has no persistent SANS_AVAIL warning under the existing none-offer rule. Adding TuesdayAM Fly gives picker00:00–12:00-only and the same placed advisory: the target-day window cannot cover report−120 through690. The two date-specific offers are not combined. This characterizes the prior-date gap named unproven in Claude's small review; it does not assert cross-date support, invent coverage policy, or treat live writes as stored-demo harm. Evidence: `raptor-port/docs/handpass/2026-10-02-rally-workspan.md`, downstream07 results/pictures in this round's portable proof. **Place:** caps and ops limits with availability under D490/D495; owner policy/design and a scoped independently challenged plan precede any repair. No source change or owner acceptance here; the final Rally inspector judges this explicit scope.
-
-### [INP-TILL-STALE] The Inputs editor leaves "till <date>" in the remarks when a range is taken back to one day (walk find, 1 Oct 26)
-**Characterized 5 Oct, Inputs/SANS batch:** the exact18→18–19→single19 sequence
-passes both incumbent List and shared calendar editor doors: one matching
-`till 19 Jul`, user prose Bangkok, one-day saved dates and durable reload.
-The established one-day till wording is valid; no token-removal policy/fix is
-invented. Evidence/forward facts: `raptor-port/docs/handpass/2026-10-05-inputs-sans-calendar.md`.
-Original report below is retained for Claude's later review; its described sequence
-does not demonstrate a currently stale date. No source change made for this item.
-Found by walker A of the `[DB-READINESS]` phase 7 walk (its O4; picture `raptor-port/docs/img/handpass/2026-10-01-dbr-phase7/a/A10x.png`),
-outside that batch. **Steps:** Inputs page, the editor of a one-day request on 18 Jul; click 19 Jul in its calendar (dates read
-"18 Jul → 19 Jul", the remarks gain "till 19 Jul"); click 19 Jul again (dates "19 Jul") — the remarks keep "till 19 Jul"; Save
-stores it and the row prints it. New data, not stored-only (so not D56). The app owns that token (`engine/inputs.ts
-withRemarksTail`) and D189 counts it on a published day. **To do:** the editor's re-pick rewrites or drops the token on every
-change of the span, the collapse to one day included; a test that drives the editor's own calendar. **Tier:** WALK (the
-published day's words). **Place:** low — with the next Inputs change.
 
 ### [OIL-INERT-TAP-SILENT] In OIL Earn a tap on a puck that cannot earn says nothing (walk find, 1 Oct 26)
 Walker A's O1 (pictures `…/2026-10-01-dbr-phase7/a/A3r-phone-1.png`, `A3r-desk-1.png`). A puck with nothing to earn from its row

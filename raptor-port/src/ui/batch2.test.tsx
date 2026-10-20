@@ -263,17 +263,17 @@ describe('A4 — the desktop row’s paperclip and OIL chips are buttons', () =>
 describe('A5 — an OIL day in another year carries its year', () => {
   it('the label itself: this year’s day is bare, another year’s says the year', () => {
     expect(oilDayLabel('2026-10-17')).toBe('17 Oct')
-    expect(oilDayLabel('2027-01-09')).toBe('9 Jan 2027')
+    expect(oilDayLabel('2027-01-09')).toBe('9 Jan 27')
   })
   it('a duty on Saturday 9 Jan 2027, unanswered: the window’s line, the question and the row’s chip all say 2027', async () => {
     const r = await single({ type: 'Duty', date: 'Jan 9', yr: 2027, allday: true, s: 0, e: 1439 })
     await openOn(r)
-    expect(tid('oil-unanswered')!.textContent).toMatch(/Not answered yet — 9 Jan 2027/)
+    expect(tid('oil-unanswered')!.textContent).toMatch(/Not answered yet — 9 Jan 27/)
     await click(tid('oil-answer'))
-    expect($('[data-testid="oilconf-ask"]')!.textContent).toMatch(/9 Jan 2027/)
+    expect($('[data-testid="oilconf-ask"]')!.textContent).toMatch(/9 Jan 27/)
     await click($('[data-testid="oilconf"] .abtn.ghost'))
     await closeWin(); await toList()
-    expect((tr(r)!.querySelector('[data-oilask]') as HTMLElement).title).toMatch(/9 Jan 2027/)
+    expect((tr(r)!.querySelector('[data-oilask]') as HTMLElement).title).toMatch(/9 Jan 27/)
   })
   it('THE CONTROL — a day of this year is named as before', async () => {
     const r = await single({ ...SAT })

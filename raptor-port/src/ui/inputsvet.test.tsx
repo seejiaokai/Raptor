@@ -253,8 +253,8 @@ describe('the empty list says which dates, in few words (V5)', () => {
   it('rangeWords: two days of one month share the month; otherwise each says its own; a day outside this year keeps its year', () => {
     expect(rangeWords('2026-10-10', '2026-10-24')).toBe('10–24 Oct')
     expect(rangeWords('2026-10-28', '2026-11-03')).toBe('28 Oct – 3 Nov')
-    expect(rangeWords('2026-12-28', '2027-01-03')).toBe('28 Dec – 3 Jan 2027')
-    expect(rangeWords('2027-01-03', '2027-01-09')).toBe('3 Jan 2027 – 9 Jan 2027')
+    expect(rangeWords('2026-12-28', '2027-01-03')).toBe('28 Dec – 3 Jan 27')
+    expect(rangeWords('2027-01-03', '2027-01-09')).toBe('3 Jan 27 – 9 Jan 27')
     expect(rangeWords('2026-10-10', '2026-10-10')).toBe('10–10 Oct')
     expect(rangeWords('2026-10-10', '')).toBe('from 10 Oct')
   })

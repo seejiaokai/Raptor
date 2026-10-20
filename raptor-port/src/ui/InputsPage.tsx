@@ -508,7 +508,8 @@ export function InputsPage() {
     if (ay === by) return am === bm ? `${ad}–${bd} ${bm}${yr}` : `${ad} ${am}–${bd} ${bm}${yr}`
     return `${a}–${b}`
   }
-  const short = tight || (phone && /\d{4}/.test(fmtDay(range.from) + fmtDay(range.to)))
+  /* (a label that prints a year: fmtDay's three words — its year is two digits since D1096, so never a 4-digit test) */
+  const short = tight || (phone && (fmtDay(range.from).split(' ').length > 2 || fmtDay(range.to).split(' ').length > 2))
   const rangeLabel = (!range.from && !range.to) ? RANGE_ALL
     : short && range.from && range.to ? fromTo(fmtDay(range.from), fmtDay(range.to))
     : (range.from ? fmtDay(range.from) : '…') + ' → ' + (range.to ? fmtDay(range.to) : '…')
@@ -705,7 +706,7 @@ export function InputsPage() {
             {dayGroups.map(g => (
               <Fragment key={g.key}>
                 <div className="icard-day" data-testid="inl-day" data-iso={g.iso}>
-                  <b>{dayWord(g.iso) + (+g.iso.slice(0, 4) !== baseYear() ? ' ' + g.iso.slice(0, 4) : '')}</b>
+                  <b>{dayWord(g.iso) + (+g.iso.slice(0, 4) !== baseYear() ? ' ' + g.iso.slice(2, 4) : '')}</b>
                   <i>{g.rows.length} input{g.rows.length > 1 ? 's' : ''}</i>
                 </div>
                 {g.rows.map((r: any) => {

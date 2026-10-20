@@ -20,7 +20,7 @@
    so it is unit-testable on its own and reusable by anything that ever wants
    to redate a chip without a drag (a keyboard move, say).
    --------------------------------------------------------------------------- */
-import { draftOf, commitInputEdit, commitInput, fmtDay, oilFirst, oilGate, medAskFor, sharedRefusal } from './inputedit'
+import { draftOf, commitInputEdit, commitInput, fmtDay, oilFirst, oilGate, medAskFor, sharedRefusal, inputWho } from './inputedit'
 import { oilWaitThen } from './oilwait'
 import { OILWAIT } from '../state/view'
 import { movePlanPuck, planMoveBlock } from '../state/plan'
@@ -165,6 +165,9 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
       return !!ok
     },
     gate: x => oilGate(whole ? d : { ...d, person: idsOf(x)[0] }, x),
+    /* an input of several: the waiting question is headed for everyone its one answer is written for (D762 —
+       [OIL-ASK-HEAD-SEVERAL]), "Ace +2", as its row's door heads it; one man's keeps the gate's own */
+    ...(whole ? { who: (x: any) => inputWho(x) } : {}),
     places: [`sel:#inpCal [data-iid="${String(r.iid)}"]`],
     again: () => commitChipMove(entry, fromIso, toIso),
   })

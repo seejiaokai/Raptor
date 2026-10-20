@@ -1,0 +1,177 @@
+[
+  {
+    "n": 1,
+    "name": "[TILL-NEXT-YEAR] tillOf prints no year",
+    "file": "src/engine/inputs.ts",
+    "find": "  return `till ${w}${yearTail(o==null?0:Math.floor(o/10000),base)}`;}",
+    "put": "  return `till ${w}`;}",
+    "tests": [
+      "src/engine/tilldate.test.ts",
+      "src/ui/latepub.test.tsx"
+    ]
+  },
+  {
+    "n": 2,
+    "name": "[TILL-NEXT-YEAR] the window's grey date (tillOfISO) prints no year",
+    "file": "src/engine/inputs.ts",
+    "find": "return `till ${isoLabel(last)}${yearTail(+String(last).slice(0,4))}`;}",
+    "put": "return `till ${isoLabel(last)}`;}",
+    "tests": [
+      "src/engine/tilldate.test.ts"
+    ]
+  },
+  {
+    "n": 3,
+    "name": "[TILL-NEXT-YEAR] the year printed always, even in the loaded year",
+    "file": "src/engine/inputs.ts",
+    "find": "const yearTail=(y:any,base?:any)=>y&&y!==(base||baseYear())?",
+    "put": "const yearTail=(y:any,base?:any)=>y?",
+    "tests": [
+      "src/engine/tilldate.test.ts"
+    ]
+  },
+  {
+    "n": 4,
+    "name": "[OIL-ASK-HEAD-SEVERAL] oilFirst ignores the door's who",
+    "file": "src/ui/inputedit.tsx",
+    "find": "gate: { who: (o.who && now ? o.who(now) : '') || g.who,",
+    "put": "gate: { who: g.who,",
+    "tests": [
+      "src/ui/oilaskhead.test.tsx"
+    ]
+  },
+  {
+    "n": 5,
+    "name": "[OIL-ASK-HEAD-SEVERAL] the calendar drag passes no who",
+    "file": "src/ui/caldrag.ts",
+    "find": "...(whole ? { who: (x: any) => inputWho(x) } : {}),",
+    "put": "",
+    "tests": [
+      "src/ui/oilaskhead.test.tsx"
+    ]
+  },
+  {
+    "n": 6,
+    "name": "[OIL-ASK-HEAD-SEVERAL] the hand-over passes no who",
+    "file": "src/ui/inputedit.tsx",
+    "find": "who: x => inputWho({ people: idsOf(x).map(String).map(p => p === String(from) ? personId : p).map(p => ({ p })) }),",
+    "put": "",
+    "tests": [
+      "src/ui/oilaskhead.test.tsx"
+    ]
+  },
+  {
+    "n": 7,
+    "name": "[OIL-ASK-HEAD-SEVERAL] the hand-over heads the people BEFORE the swap",
+    "file": "src/ui/inputedit.tsx",
+    "find": "who: x => inputWho({ people: idsOf(x).map(String).map(p => p === String(from) ? personId : p).map(p => ({ p })) }),",
+    "put": "who: x => inputWho(x),",
+    "tests": [
+      "src/ui/oilaskhead.test.tsx"
+    ]
+  },
+  {
+    "n": 8,
+    "name": "F1 a week read off screen is written in the loaded week's year",
+    "file": "src/engine/overlay.ts",
+    "find": "  const own = { ...ctx, year: +String(v).split('/')[2] || undefined }",
+    "put": "  const own = ctx",
+    "tests": [
+      "src/ui/newyear-till.test.tsx"
+    ]
+  },
+  {
+    "n": 9,
+    "name": "D1095 the till date's year in four digits",
+    "file": "src/engine/inputs.ts",
+    "find": "?` ${String(y).slice(-2)}`:'';",
+    "put": "?` ${y}`:'';",
+    "tests": [
+      "src/engine/tilldate.test.ts",
+      "src/ui/newyear-till.test.tsx"
+    ]
+  },
+  {
+    "n": 10,
+    "name": "D1096 a day's printed date keeps four digits",
+    "file": "src/engine/inputs.ts",
+    "find": "export const shortYear=(s:any):string=>String(s??'').replace(/ \\d{2}(\\d{2})$/,' $1');",
+    "put": "export const shortYear=(s:any):string=>String(s??'');",
+    "tests": [
+      "src/ui/newyear-till.test.tsx"
+    ]
+  },
+  {
+    "n": 11,
+    "name": "D1096 fmtDay's year in four digits",
+    "file": "src/ui/inputedit.tsx",
+    "find": "lbl + ' ' + y.slice(-2)",
+    "put": "lbl + ' ' + y",
+    "tests": [
+      "src/ui/inputsfmt.test.tsx",
+      "src/ui/inputslist.test.tsx"
+    ]
+  },
+  {
+    "n": 12,
+    "name": "D1096 the dates button misses a two-digit year",
+    "file": "src/ui/InputsPage.tsx",
+    "find": "(fmtDay(range.from).split(' ').length > 2 || fmtDay(range.to).split(' ').length > 2)",
+    "put": "/\\d{4}/.test(fmtDay(range.from) + fmtDay(range.to))",
+    "tests": [
+      "src/ui/inputslist.test.tsx"
+    ]
+  },
+  {
+    "n": 13,
+    "name": "F2 the medical sheet prints the kept label",
+    "file": "src/ui/MedClashConfirm.tsx",
+    "find": "(r.endDate ? ' till ' + day(dateOrd(r.endDate, r.yr)) : '')",
+    "put": "(r.endDate ? ' till ' + r.endDate : '')",
+    "tests": [
+      "src/ui/medclash.test.tsx"
+    ]
+  },
+  {
+    "n": 14,
+    "name": "D1096 the date box prints four digits",
+    "file": "src/ui/daysfmt.ts",
+    "find": "export const sayDateYY = (iso: string): string => `${sayDate(iso)} ${iso.slice(2, 4)}`",
+    "put": "export const sayDateYY = (iso: string): string => `${sayDate(iso)} ${iso.slice(0, 4)}`",
+    "tests": [
+      "src/ui/datebox.test.tsx",
+      "src/ui/everyweekday.test.tsx",
+      "src/ui/adminclear.test.tsx"
+    ]
+  },
+  {
+    "n": 15,
+    "name": "D1096 the card corner's year in four digits",
+    "file": "src/ui/inputcard-model.ts",
+    "find": "' ' + iso.slice(2, 4) : '')   // two digits (D1096)",
+    "put": "' ' + iso.slice(0, 4) : '')",
+    "tests": [
+      "src/ui/inputcard-model.test.ts"
+    ]
+  },
+  {
+    "n": 16,
+    "name": "D1096 the LATE note's year in four digits",
+    "file": "src/engine/inputs.ts",
+    "find": "`${l} ${String(y).slice(-2)}`:l;};",
+    "put": "`${l} ${y}`:l;};",
+    "tests": [
+      "src/engine/lateinput.test.ts"
+    ]
+  },
+  {
+    "n": 17,
+    "name": "D1096 the OIL day's year in four digits",
+    "file": "src/ui/inputedit.tsx",
+    "find": "`${s} ${String(iso).slice(2, 4)}` : s   // two digits (D1096)",
+    "put": "`${s} ${String(iso).slice(0, 4)}` : s",
+    "tests": [
+      "src/ui/batch2.test.tsx"
+    ]
+  }
+]

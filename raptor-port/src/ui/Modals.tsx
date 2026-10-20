@@ -4,6 +4,7 @@
    ui/AdminPage.tsx. */
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
+import { shortYear } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { dayCount } from '../engine/waves'
 import { lgT } from '../engine/time'
@@ -35,7 +36,7 @@ export function DayPop() {
        (Codex CRP-I2-002): a view-page day that shows OFFICIAL flags — a published
        day, or a draft day carrying a published-neighbour breach — must not have its
        details panel report "clean" off the working copy. Aliased = a no-op. */
-    return { title: `${d.dow} · ${d.dt}` + (wc ? ` · ${wc}` : ''), body: dayInfoHTML(di) }
+    return { title: `${d.dow} · ${shortYear(d.dt)}` + (wc ? ` · ${wc}` : ''), body: dayInfoHTML(di) }
   }
   const face = issuedFaceVer(di)
   /* …and beside a LOOK at a published version on Edit Schedule or the board, the version on screen — its tasking, its

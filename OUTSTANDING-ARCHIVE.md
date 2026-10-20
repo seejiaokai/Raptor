@@ -6211,3 +6211,42 @@ not a fixed time. **Place:** test-only, low, any time. **Seen again 9 Oct 26** (
 **Met again the night of 15 Oct 26** (`claude/drag-edge-scroll-elsewhere-51bfc4`, the full run at `7e9e98724`): the same branch (January undrawn, December still drawn after the jump) — and ALONE it failed 1 of 3 (2 passed), the first time it has failed outside a full run. That job touches nothing of the Leave War (`src/leavewar` unchanged; `select.ts` reads only edge numbers that did not change). **The agent's placing:** steady it as a job of its own — it is no longer only load (D87: wait on what the step needs).
 **Carried 18 Oct 26 from the archived [LW-REQ-PICK-MONTH-UNSTEADY] (its 13 Oct 26 note):** the phone test "Undo and Redo leave the grid where it is…" failed once at its month-button landing step, under load; it still waits a fixed 350 ms before its last month-button check (`raptor-port/e2e/leavewar.spec.ts`, about lines 4315–4321). Steady it with this item — wait on the grid having settled (D87). **Seen again 19 Oct 26** in the D994 batch's second full run (`claude/schedule-amendments-fixes-fffce0`, which touches nothing of the Leave War): the same step, 163 px off; alone under the lock, 2 of 3.
 
+
+*Moved here 2026-10-20 by backlog-archive.mjs ([TILL-NEXT-YEAR]). Forward facts: `raptor-port/docs/handpass/2026-10-20-inputs-small-fixes.md`.*
+
+### [TILL-NEXT-YEAR] An input of another year prints its "till <date>" without the year (found 17 Oct 26)
+
+**Status: OPEN — small; found by [INPUTS-LIST-NEXT-YEAR]'s walk.** On the Inputs list (loaded week in 2026), the demo's
+15 Feb 2027 OIL input reads "15 Feb 2027" in its date column but "till 15 Feb" in its remark: the "till <date>" every
+screen prints comes from `raptor-port/src/engine/inputs.ts tillOf` (`dayWords(endDate || date)`), which ignores the row's
+own year. Harmless on the schedule (a 2027 week loads with 2027 as its year), misleading wherever a screen shows another
+year's input. **Not a quick fix:** `tillOf` also feeds the published-day compare of the till date (D948, `engine/tilldate`)
+— adding a year there could mark published days "1 pending" — so it is its own job: the reader of the year, a test of the
+published compare, a look at the list and a card. **Place:** with the next Inputs batch; no question for him.
+
+
+*Moved here 2026-10-20 by backlog-archive.mjs ([OIL-ASK-HEAD-SEVERAL]). Forward facts: `raptor-port/docs/handpass/2026-10-20-inputs-small-fixes.md`.*
+
+### [OIL-ASK-HEAD-SEVERAL] At two older doors the OIL question for an input of several is headed with one man (the narrow read of the Inputs batch's fixes, 13 Oct 26) — OPEN, low
+
+**Found by reading, not fixed — older code, a heading only.** Where the OIL question waits before a change, its sheet is headed for everyone the one answer is written for — "OIL — Bane +2, Sports day" (D762) — at the row's door, the Inputs list and, since 13 Oct 26, the put-back. Two older doors still head it with the input's first person alone: an input of several DRAGGED on the Inputs calendar onto a weekend or a holiday, and one man of several REPLACED on an Unavailable row. The answer is written for everyone either way; only the heading is short. **The build (the read gives it, with two tests first):** `raptor-port/src/ui/inputedit.tsx oilFirst` takes a `who` as `ui/reqdoor.ts gated` does, and `ui/caldrag.ts` and `reassignInput` pass `inputWho`. **Place:** the agent's — with the next Inputs batch (D490). The read: `raptor-port/docs/handpass/parts/ib/read-fixes-opus.md` FX-1.
+
+
+*Moved here 2026-10-20 by backlog-archive.mjs ([INP-TILL-STALE]). Forward facts: `raptor-port/docs/handpass/2026-10-20-inputs-small-fixes.md`.*
+
+### [INP-TILL-STALE] The Inputs editor leaves "till <date>" in the remarks when a range is taken back to one day (walk find, 1 Oct 26)
+**Characterized 5 Oct, Inputs/SANS batch:** the exact18→18–19→single19 sequence
+passes both incumbent List and shared calendar editor doors: one matching
+`till 19 Jul`, user prose Bangkok, one-day saved dates and durable reload.
+The established one-day till wording is valid; no token-removal policy/fix is
+invented. Evidence/forward facts: `raptor-port/docs/handpass/2026-10-05-inputs-sans-calendar.md`.
+Original report below is retained for Claude's later review; its described sequence
+does not demonstrate a currently stale date. No source change made for this item.
+Found by walker A of the `[DB-READINESS]` phase 7 walk (its O4; picture `raptor-port/docs/img/handpass/2026-10-01-dbr-phase7/a/A10x.png`),
+outside that batch. **Steps:** Inputs page, the editor of a one-day request on 18 Jul; click 19 Jul in its calendar (dates read
+"18 Jul → 19 Jul", the remarks gain "till 19 Jul"); click 19 Jul again (dates "19 Jul") — the remarks keep "till 19 Jul"; Save
+stores it and the row prints it. New data, not stored-only (so not D56). The app owns that token (`engine/inputs.ts
+withRemarksTail`) and D189 counts it on a published day. **To do:** the editor's re-pick rewrites or drops the token on every
+change of the span, the collapse to one day included; a test that drives the editor's own calendar. **Tier:** WALK (the
+published day's words). **Place:** low — with the next Inputs change.
+

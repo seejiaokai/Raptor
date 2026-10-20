@@ -117,7 +117,7 @@ describe('what it starts with', () => {
     expect(boxValue(t('every-from'))).toBe('2026-11-05')
     expect(pressed('every-until-none')).toBe('true'); expect(pressed('every-until-date')).toBe('false')
     expect(q('every-until')).toBeNull()
-    expect(t('every-says').textContent).toBe('Every Thursday from Thu 5 Nov 2026 onward is a no-fly day, until you change it here. A single Thursday can still be set by itself.')
+    expect(t('every-says').textContent).toBe('Every Thursday from Thu 5 Nov 26 onward is a no-fly day, until you change it here. A single Thursday can still be set by itself.')
   })
   it('on the month today is in, it starts from the next such day — today counts', () => {
     openEvery(3, '2026-10-08')
@@ -133,7 +133,7 @@ describe('what it starts with', () => {
   it('a Saturday: day flying lit — a Saturday has no flying set until he says so', () => {
     openEvery(5)
     expect(pressed('every-cls-day')).toBe('true')
-    expect(t('every-says').textContent).toBe('Every Saturday from Sat 7 Nov 2026 onward is a day-flying day, until you change it here. A single Saturday can still be set by itself.')
+    expect(t('every-says').textContent).toBe('Every Saturday from Sat 7 Nov 26 onward is a day-flying day, until you change it here. A single Saturday can still be set by itself.')
   })
 })
 
@@ -156,7 +156,7 @@ describe('Save', () => {
     fireEvent.click(t('every-cls-night'))
     setDate('every-from', '2026-11-19')
     expect(pressed('every-cls-night')).toBe('true'); expect(pressed('every-cls-nf')).toBe('false')
-    expect(t('every-says').textContent).toBe('Every Thursday from Thu 19 Nov 2026 onward is a night-flying day, until you change it here. A single Thursday can still be set by itself.')
+    expect(t('every-says').textContent).toBe('Every Thursday from Thu 19 Nov 26 onward is a night-flying day, until you change it here. A single Thursday can still be set by itself.')
     fireEvent.click(t('every-save'))
     expect(flyAnswer('2026-11-12').cls).toBe('day'); expect(flyAnswer('2026-11-19').cls).toBe('night'); expect(flyAnswer('2027-02-04').cls).toBe('night')
   })
@@ -165,7 +165,7 @@ describe('Save', () => {
     fireEvent.click(t('every-until-date'))
     expect(pressed('every-until-date')).toBe('true'); expect(pressed('every-until-none')).toBe('false')
     setDate('every-until', '2026-11-19')
-    expect(t('every-says').textContent).toBe('Every Thursday from Thu 5 Nov 2026 to Thu 19 Nov 2026 is a no-fly day. A single Thursday can still be set by itself.')
+    expect(t('every-says').textContent).toBe('Every Thursday from Thu 5 Nov 26 to Thu 19 Nov 26 is a no-fly day. A single Thursday can still be set by itself.')
     fireEvent.click(t('every-save'))
     expect(rules()[0].until).toBe('2026-11-19')
     expect(flyAnswer('2026-11-19').cls).toBe('nf'); expect(flyAnswer('2026-11-26').cls).toBe('day')
@@ -228,7 +228,7 @@ describe('Save', () => {
     fireEvent.click(t('every-until-date'))
     expect(t('win-every').querySelector('input[type="date"]')).toBeNull()
     expect(t('every-from').tagName).toBe('BUTTON'); expect(t('every-until').tagName).toBe('BUTTON')
-    expect(t('every-from').textContent).toContain('Thu 5 Nov 2026')
+    expect(t('every-from').textContent).toContain('Thu 5 Nov 26')
     expect(t('every-until').textContent).toContain('Pick a date')
     expect(t('every-from').getAttribute('aria-label')).toBe('From: Thu 5 Nov 2026')
     expect(t('every-until').getAttribute('aria-label')).toBe('The date it ends: no date picked')
@@ -259,7 +259,7 @@ describe('Save', () => {
     expect(t('dcal-day-2026-11-12').classList.contains('is-mk')).toBe(true)
     fireEvent.click(t('dcal-day-2026-11-10'))             // a Tuesday
     expect(boxValue(t('every-from'))).toBe('2026-11-10')
-    expect(t('every-says').textContent).toContain('from Tue 10 Nov 2026 onward')
+    expect(t('every-says').textContent).toContain('from Tue 10 Nov 26 onward')
     /* a Monday's window marks Monday */
     fireEvent.click(t('days-wd-0')); fireEvent.click(t('every-from'))
     expect([...t('dcal-dow').children].findIndex(e => e.classList.contains('is-mk'))).toBe(0)
@@ -294,7 +294,7 @@ describe('the rules already made for that weekday', () => {
     act(() => { setFlyRule({ wd: 0, cls: 'nf', from: '2026-11-02' }) })
     openEvery(3)
     const lines = [...t('every-list').querySelectorAll('.every-rule-txt')].map(n => n.textContent)
-    expect(lines).toEqual(['No fly · from Thu 5 Nov 2026 · no end', 'Night flying · from Thu 7 Jan 2027 · until Thu 28 Jan 2027'])
+    expect(lines).toEqual(['No fly · from Thu 5 Nov 26 · no end', 'Night flying · from Thu 7 Jan 27 · until Thu 28 Jan 27'])
     expect(t('every-list').textContent).toContain('Already set for Thursdays')
   })
   it('Remove takes one away in one Undo step; the window stays and the month follows', () => {

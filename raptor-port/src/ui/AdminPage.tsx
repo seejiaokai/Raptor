@@ -35,7 +35,7 @@ import { useVersion } from './useStore'
 import { UsersIcon, SlidersIcon, DatabaseIcon } from './icons'
 import { DateBox } from './DateBox'
 import { DateCal } from './DateCal'
-import { sayDateY } from './daysfmt'
+import { sayDateYY } from './daysfmt'
 
 /* The rail is data-driven so a new settings category is one row here plus its
    panel below — nothing else in the layout moves. */
@@ -105,7 +105,7 @@ export function ClearControl(props: {
           <div className="dcal-inline" id={props.idp + 'Run'} data-from={a} data-to={b}>
             <DateCal mode="run" tid={props.idp + 'Run'} from={a} to={b}
               onRun={(f, t) => { setA(f); setB(t); setArmed(-1) }}
-              foot={!a ? 'Tap the first day, then the last.' : a === b || !b ? sayDateY(a) : `${sayDateY(a)} to ${sayDateY(b)}`} />
+              foot={!a ? 'Tap the first day, then the last.' : a === b || !b ? sayDateYY(a) : `${sayDateYY(a)} to ${sayDateYY(b)}`} />
           </div>
         </div>
       : date(mode === 'before' ? 'Older than' : 'Date', a, setA, props.idp + 'Date')}
