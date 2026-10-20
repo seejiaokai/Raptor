@@ -4,7 +4,7 @@
    developer's-PC bridge (w.raptorRole) quietly ended the viewer pinned with w.lwSetViewer: the switch copies the session
    object the pin was keyed to, so the next repaint lit the signed-in man's row instead of the pinned one. Driven through
    the bridge's own globals, as the browser tests drive them. */
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { installProbeBridge } from './probe-bridge'
 import { initStore as raptorInitStore, resetSession, notify } from './state/store'
 import { initStore as lwInitStore, getState, setPeople } from './leavewar/state/store'
@@ -13,6 +13,12 @@ import { projectPeople } from './leavewar/state/raptorRoster'
 import { wireLeaveWarSync } from './leavewar/sync'
 
 const w = window as any
+/* the bridge loads seven modules lazily; loaded here first, so none of them is still arriving when the test world is torn
+   down (an unhandled teardown error otherwise) */
+beforeAll(async () => {
+  await Promise.all([import('./ui/board'), import('./engine/wavetpl'), import('./ui/html'), import('./ui/pan'), import('./ui/drag'),
+    import('./ui/palette-html'), import('./ui/board-html')])
+}, 60000)
 beforeEach(() => {
   raptorInitStore()
   lwInitStore(memoryBackend())
