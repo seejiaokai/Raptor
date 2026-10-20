@@ -260,8 +260,9 @@ barely more than one.
   and prefer a 2-line `curl | grep` over a full API object when checking one
   field. Never read `reference/` whole (6.6k lines) — `grep` it; same for any
   file over ~300 lines (Grep or offset/limit Reads). While iterating run only
-  the affected test file (`npx vitest run <file>`); the full gate set ONCE,
-  before the PR — not between the sub-changes of a batch. Four full passes is
+  the affected test file (`npx vitest run <file>`); the full gate set ONCE a job
+  — GitHub's run of the pull request while the repo is public (D1086), on his PC once it is private — not between the
+  sub-changes of a batch. Four full passes is
   ~20 wasted minutes, and that is a real reading from 10 Aug 26, not a
   caution. Trust this index instead of re-exploring. Prefer a fresh session
   per task; a long conversation re-sends itself every turn.

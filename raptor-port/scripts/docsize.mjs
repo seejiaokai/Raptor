@@ -118,7 +118,7 @@ const FILES = [
   /* NEW 24 Sep 26 (owner, D140 + D143): the two rule files every chat carries so the structure and the way a
      change ships are in force before any project file is read. Ceilings set at what they hold plus room. */
   ['.claude/rules/doc-structure.md',     0,  100],
-  ['.claude/rules/shipping.md',          0,  115],
+  ['.claude/rules/shipping.md',          0,  130],   // 115 → 130 (20 Oct 26): D1086–D1088 — which machine runs the full check, batches by area, the one run after "merge live"; rules every chat ships by
   /* 961 -> 1000, 23 Sep 26 ([DOCS-GUARD] step 1). Already at 969: the two OIL merges (#424, #425)
      added lines inside code changes, which is exactly what F3 now allows and defers. HANDOFF must
      accept a known-issue entry during a fix (CLAUDE.md), so it carries declared headroom. */

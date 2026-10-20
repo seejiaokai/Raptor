@@ -464,9 +464,15 @@ never fixed and checked just before a feature changes the same screens, which pa
 people now (a wrong published record, wrong earned leave, lost data) is still fixed at once. Once the features are in, and
 before the database step (D473), ONE check of the whole app is run; its shape is designed when it is due.
 
-**Order of steps in FULL:** build → gates → roll-call and door check → **the sizing step (§7.0)** → walk, and fix what it finds
-→ gates → the two reads, *with the evidence sheet in their hands* → fix → re-walk only what the
-fixes touched → gates → finish the sheet → the owner's look → his "merge live".
+**Which machine runs the gates (owner D1086, 20 Oct 26):** while the repo is public, GitHub's run of the pull request is
+the gate set — the pull request opened once the job is built, so it runs during the walk; on his PC only the touched tests
+and the walk's build. Once the repo is private again, the gates run on his PC (`.claude/rules/shipping.md` §The checks).
+
+**Order of steps in FULL:** build → open the pull request into `main` (GitHub's run is the gates; it goes during the walk)
+→ roll-call and door check → **the sizing step (§7.0)** → walk, and fix what it finds (the touched tests on his PC; the
+fixes pushed once the run in progress has finished, D151) → the two reads, *with the evidence sheet in their hands* → fix
+→ re-walk only what the fixes touched → GitHub's run green on the last pushed commit → finish the sheet → the owner's look
+→ his "merge live". Once the repo is private again, each "gates" step is the full set on his PC (D1086).
 
 The walk goes **before** the reads, so the reviewers read the final code and can check the
 roll-call for gaps — reading for absence works when there is a list in hand.

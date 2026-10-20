@@ -18,7 +18,10 @@ whole in `raptor-port/docs/archive/raptor-claude-md-2026-09-24.md`. The rulings 
   the later one merges `main` in first and renumbers its own clashing rulings (D78).
 
 ## The loop, change by change (owner, 2 Sep 26 and 24 Aug 26)
-- change → the gates green locally → commit and push to the session branch (one open PR accumulates the lot) →
+- **Not held to the end (D1087, 20 Oct 26 — "Yes agreed"):** two to four related jobs of one area share one branch, one
+  check and one merge on his "merge live"; a job he wants live at once goes on its own; nothing is piled up for one merge
+  at the end (D485, D822).
+- change → its own tests green locally (the whole gate set too once the repo is private again — §The checks) → commit and push to the session branch (one open PR accumulates the lot) →
   once the work is READY FOR HIS LOOK (built and checked) and its Vercel preview is Ready, send him the link — not
   after every push of unfinished work (D905, 15 Oct 26: "u are still working no need for a link as its not done yet");
   the link and the pictures come whenever you need him to review something, and when the work is done (D906);
@@ -45,19 +48,23 @@ whole in `raptor-port/docs/archive/raptor-claude-md-2026-09-24.md`. The rulings 
   for every push, untested, so a red preview is still just a preview — correctness rides the gates.
 
 ## Ship once per session, at the end (owner, 10 Aug 26)
-Build and verify everything locally as you go, then ONE PR carries the lot. **Shipping is not how you test**:
+Build and verify everything locally as you go. **Shipping is not how you test**:
 `npm run build && npx vite preview` is the same bundle that deploys, so every check — driving it in a browser
-included — happens before the PR. Prefer batches: most of the cost is loading this app into context (measured
+included — happens before his look and his "merge live"; while the repo is public the pull request is opened once the
+job is built, so GitHub's run goes during the walk (D1086). One branch and one pull request carry two to four related
+jobs of one area (D1087). Prefer batches: most of the cost is loading this app into context (measured
 10 Aug 26: fifteen changes in one pass ran ~6 min each, where a single change shipped alone took an hour and a
 half).
 
 ## "Done" means LIVE — and live means ON VERCEL (owner, 10 and 12 Aug 26; D143, 24 Sep 26)
+- **On his "merge live" (D1088, 20 Oct 26):** push the job's closing records, wait for that one GitHub run, merge once
+  it is green, then confirm the live app as below — nothing else is pushed between his word and the merge.
 - **Tell him when you are done, with `PushNotification`** — when the work is genuinely finished, and when you
   are BLOCKED waiting on his answer. One line, plainly. Not for progress, not for a quick reply he is clearly
   watching, never twice for the same work.
 - **A green check is not done, and a merged PR is not done.** Once he has said "merge live" — never before —
-  carry it the whole way without checking in: merge when the PR's checks are green → `main`'s own run on his PC
-  goes green → Vercel reports the live app READY (the Production deployment for that `main` commit —
+  carry it the whole way without checking in: merge when the PR's checks are green → `main`'s own run goes green
+  (on GitHub's machines while the repo is public, on his PC once it is private) → Vercel reports the live app READY (the Production deployment for that `main` commit —
   `gh api repos/<owner>/<repo>/deployments?environment=Production`, then its statuses) → ONE notification, with
   the link. **His look on his phone replaces the live-page look** the agent used to do on GitHub Pages (gone
   since D59; D343): the live app sits behind his sign-in, and the agent is never given a login to it (D143).
@@ -69,12 +76,20 @@ half).
   building".
 
 ## The checks
+- **While the repo is public, GitHub's run of the pull request is a job's full check (D1086, 20 Oct 26 — "Yes agreed").**
+  Open the pull request into `main` as soon as the job is built — a branch pushed with no pull request, or a pull request
+  based on another branch, starts no checks — so GitHub's
+  run (about 9 minutes, the same set as his PC's: build, the original's 728, unit, browser, the Tracker's, the rule and
+  document checks) goes while the app is walked. On his PC run only the tests of what you change and the build the walk
+  drives; no full gate run there. Nothing merges until GitHub's run is green and he has said "merge live"; a red run is
+  fixed before his look is asked for; its slowest checks are split across more machines, every area still run (D1089). The run that counts is the one on the branch's last pushed commit; fixes found during
+  the walk are batched and pushed only once the run in progress has finished (D151). Once the repo is private again (D106 ended), the full check is back on his PC (D89).
 - **A small follow-up fix on an open pull request whose whole set has already passed (D902, 15 Oct 26 — his "Ok")** runs only the
   tests it touches before the push; GitHub's run of the pull request is its full check, and nothing merges until it is green.
-  A job's first push keeps the whole set on his PC.
+  A job's first push keeps the whole set on his PC — except while the repo is public, when GitHub's run is that check too (D1086, above).
 - **While the repo is public for a short period (D106, 25 Sep 26)** the checks run on GitHub's machines (the workflow sends a
   public repo there by itself) and his PC's runner stays STOPPED; when it goes private again, the runner starts again.
-- **They run on HIS PC** (D89): one job, a Windows service, the `pc` job in `.github/workflows/deploy.yml`; the
+- **Once the repo is private: they run on HIS PC** (D89): one job, a Windows service, the `pc` job in `.github/workflows/deploy.yml`; the
   way back to GitHub's own machines is the repo variable `CI_ON_GITHUB=true`. Never two full gate runs at once,
   and never a full local run while his PC's runner is mid-run (D86).
 - **Parallel chats take turns through ONE lock on his PC (D228, 26 Sep 26 — "why not both? and deconflict the full
@@ -106,7 +121,7 @@ half).
 
 ## Pull requests
 
-- **Do NOT watch PRs** (owner, 15 Aug 26). The harness auto-watches an opened PR
+- **Do NOT watch PRs** (owner, 15 Aug 26; the app's "Auto-fix" too: found on, switch it off and say so — D1090). The harness auto-watches an opened PR
   and floods the owner's phone with CI/review/Vercel `<wake>` blocks for little
   gain (gates + live page are checked before the PR opens; he leaves no review
   comments). Call `unsubscribe_pr_activity` immediately after opening any PR;
