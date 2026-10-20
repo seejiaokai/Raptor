@@ -21,7 +21,7 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/insights-logic-fixes-3416c8 -->
-### 21 Oct 26 — the Insights and Logic small fixes (D994), `claude/insights-logic-fixes-3416c8`, pull request 554 — BUILT and WALK-checked
+### 21 Oct 26 — the Insights and Logic small fixes (D994), `claude/insights-logic-fixes-3416c8`, pull request 554 — his "merge live" GIVEN (21 Oct 26), merging
 - **His pick:** [LOGIC-REDRAW-DROPS-TYPING] and [LOGIC-DONE-FIRST-PRESS] (D994; both archived). The Inputs batch (pull request
   553) is LIVE — its block removed on this branch. His new ruling **D1097** (a phone notification at every stop that waits
   on him) is filed, its home `.claude/rules/shipping.md`.
@@ -32,13 +32,15 @@ the later merge keeps both (D78).
 - **Checked:** `raptor-port/docs/handpass/2026-10-21-logic-fixes.md` — WALK: walk 36 / 36, re-walk 39 / 39 (both sizes);
   breaks all red (unit and browser); unit 104 / 104 and browser 16 / 16 on the touched files; two fresh Opus reads (4
   findings, all fixed — the sheet §7); final re-walk 39 / 39. GitHub's run green on `95104b353`; on `e829a9f91` it was running.
-- **Pick up here:** read GitHub's run on `e829a9f91` (a red one is fixed first); push the local commits (the look pictures,
-  these records) once no run of the branch is going (D151); then his look on the preview and his "merge live" (D1088).
+- **His "merge live":** given 21 Oct 26, after the look pictures were sent; these closing records pushed, their one GitHub run
+  waited for, then the merge (D1088).
+- **Pick up here:** if this block is still here, check pull request 554 merged and the live app is READY (D1088); then remove
+  this block and take his next pick (D994).
 <!-- /now -->
 
 ## Next, in order
 
-**RIGHT NOW (21 Oct 26):** pull request 553 LIVE (the Inputs batch, D994 — its block removed) → his pick, the Insights and Logic small fixes (D994), on `claude/insights-logic-fixes-3416c8` (this chat's block).
+**RIGHT NOW (21 Oct 26):** pull request 553 LIVE (the Inputs batch, D994 — its block removed) → his pick, the Insights and Logic small fixes (D994), on `claude/insights-logic-fixes-3416c8` (pull request 554, this chat's block) → his "merge live" GIVEN → his next pick from the backlog.
 
 **RIGHT NOW (20 Oct 26, night):** pull request 552 LIVE (the shaky-tests batch, D994 — its block removed) → his pick, the Inputs batch (D994), on `claude/inputs-small-fixes` (pull request 553, this chat's block).
 
