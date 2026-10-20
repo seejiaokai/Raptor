@@ -73,22 +73,55 @@ value (D13) · D12 a value typed, then Edit Schedule by the top bar: saved (D14)
 typed across the late repaint, a tap on the next box (P01) · P2 one tap on Done: saved, editing ended, Reset all offered
 (P02 before, P03 after; Done stood at x=338) · P3 a row's Reset and Reset all by finger, Done with nothing changed (P04, P05).
 
-## 6. The tests and the break tests
-- Unit, `src/ui/logic.test.tsx`: 5 new; 4 of them FAIL on the old page (run against `HEAD`'s file, put back), the fifth
-  guards the fix's own reach (a press outside the list is not pulled back). The Logic page's four test files: 82 / 82.
-- Browser, `e2e/logicedit.spec.ts` LE1–LE3 (new) and `e2e/oilworkstart.spec.ts` (its retry gone): 5 / 5 under the PC lock.
-- Breaks, `scripts/handpass/breaks-logic-fixes.mjs`: six wires each broken alone, **6 / 6 red** (the memo; the apply a
-  beat later; the half-typed value carried; Done's press; Done's own save; the keeper). Browser breaks,
-  `breaks-logic-fixes-browser.mjs`: **2 / 2 red** against LE1 (the apply at once — the abandoned Tab; a removed box counted
-  as left). Bytes put back each time (`git diff --stat` clean).
-- GitHub's run of the pull request: see §8.
+**The re-walk** (after the fixes of §6a and §7): `WALK_DIR=rewalk node scripts/handpass/walk-logic-fixes.mjs 4290` —
+**39 PASS · 0 FAIL · 0 errors**, pictures `docs/img/handpass/2026-10-21-logic-fixes/rewalk/`, opened. The walk's 36 again,
+and the code read's F1 and F2 as checks: D14 a row's Reset pressed while that row's box is retyped — 12h, the box shows
+12h (D16) · P4 a value still in its box and "Reset all" tapped at once — both settings standard (P06).
 
-## 7. The code read
-One fresh, blind Opus read (D790) — not required at WALK; taken because the change is about timing. *(filled in below
-when it reports)*
+## 6. The tests and the break tests
+- Unit, `src/ui/logic.test.tsx`: 8 new; 4 of the first 5 FAIL on the old page (run against `HEAD`'s file, put back), the
+  fifth guards the fix's own reach (a press outside the list is not pulled back); F1–F3 for the code read. The Logic page's
+  test files with `freshbox.test.tsx`: 104 / 104.
+- Browser, `e2e/logicedit.spec.ts` LE1–LE3 (new), `e2e/oilworkstart.spec.ts` (its retry gone) and `e2e/kbscroll.spec.ts`:
+  15 / 15 under the PC lock.
+- Breaks, `scripts/handpass/breaks-logic-fixes.mjs`: each wire broken alone — the memo, the apply a beat later, the
+  half-typed value carried, Done's press, Done's own save, the keeper, the flush before a reset (F1), the carried value's
+  owed change (F3) — **all red**; F2's two guards (the row's Reset clearing its box; the carry refused when the setting
+  changed underneath) each stay green alone and are **red together** — the second guard is pinned with the first (the
+  walk-scripts guide §9, reading 4). Browser breaks, `breaks-logic-fixes-browser.mjs`: **3 / 3 red** — the apply at once
+  (LE1: the abandoned Tab), the leaving decided before the rebuild's keeper (LE1), the parked cursor not cleared (KS5).
+  One break of the first browser set stayed green: a guard that a removed box is not "left" — the rebuild's keeper always
+  runs first, so the line decided nothing on screen; it was deleted (reading 4) and the delay itself is what is pinned.
+  Bytes put back each time (`git diff --stat` clean).
+
+## 6a. GitHub's first run — a fault the touched tests on his PC did not run
+GitHub's run of `044904c81` failed one browser test, `e2e/kbscroll.spec.ts` KS5 ("one tap then typing replaces" — D1080 —
+on a Logic setting, then a number in the SANS settings window opened from Logic): the "2" typed into the window's box was
+never typed. Reproduced here; passes with the old page; each part of the fix undone alone (`scripts/handpass/bisect-ks5.mjs`)
+— only undoing "drawn again only when its words change" made it pass. Traced (`scripts/handpass/logic-repro-ks5.mjs`): the
+test blurs the Logic box by script, so the page's text cursor stayed parked inside it; the window's box, focused next by a
+tap that placed no caret, then took no typing. The old page threw that box (and the stray cursor) away at the next repaint.
+**Fixed:** when the keyboard really leaves the Logic list, a cursor parked in it is cleared (break B12 pins it). The lesson
+for the next check: a change to a page's boxes runs every browser test that drives those boxes — found by searching the
+browser tests for the page's own selectors — not only the page's own file (logged in the skill notes).
+
+## 7. The code reads
+**Read 1 — one fresh, blind Opus read (D790)**, not required at WALK; taken because the change is about timing. Three
+findings, all real, all fixed and walked or tested:
+| # | Finding | Disposition |
+|---|---|---|
+| F1 | "Reset to standard" tapped while a typed value was still waiting its beat: the value landed after the reset | Fixed — values waiting are applied first (`flushRuleApply`), in Reset to standard and a row's Reset; unit F1, re-walk P4 |
+| F2 | A row's Reset pressed while that row's box was being retyped: the typing was carried into the reset box (and could be saved over the Reset) | Fixed — the row's Reset clears its own box; typing is carried only while the setting under it is unchanged; unit F2, re-walk D14 |
+| F3 | A carried half-typed value was written by script, so leaving the box saved nothing | Fixed — the carried box owes its change (`oweChange`, shared with the board); unit F3 |
+Its older notes: on an iPhone a keyboard put back by a redraw may drop (filed as [LOGIC-IOS-REFOCUS], a check on his
+phone); a row's Reset lands by the setting's key, not its place (no setting is drawn twice since D928 — left); a refused
+box's red edge now stays until the next real redraw rather than the next repaint (cosmetic — left).
+
+**Read 2 — a fresh Opus read of the fix round alone** (the order §5, "a fix is new code"), handed only the fix commit and
+the findings it answers. *(filled in below when it reports)*
 
 ## 8. Gates
 *(GitHub's run on the last pushed commit — filled in at the end.)*
 
 **Walk:** 36 checks at desktop 1440 (mouse, keys) and phone 402 (finger), 0 FAIL, 0 errors, 20 pictures opened —
-`docs/img/handpass/2026-10-21-logic-fixes/walk/`.
+`docs/img/handpass/2026-10-21-logic-fixes/walk/`; re-walk after the fixes 39 / 39, 22 pictures opened — `…/rewalk/`.

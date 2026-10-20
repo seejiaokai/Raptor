@@ -1509,3 +1509,26 @@ prove each by acting through it after the rollback, not by reading what it shows
 **Suggested improvement:** In systematic-debugging, under evidence gathering for CI-only failures: instrument the one test with a cheap in-page event log dumped in afterEach on failure; reserve tracing for that single test, never a whole share; and since such failures follow the machine (both tries on one machine failed, a re-run passed), spread the repeats over several machines (a matrix) rather than many loops on one.
 
 **Principle:** An instrument heavy enough to change timing changes a timing bug. Instrument narrowly and cheaply, and sample across machines when the failure follows the machine.
+
+### Observation 652: A change to a page's boxes runs every browser test that drives those boxes, not only the page's own file
+
+**Status:** OPEN
+**Date:** 2026-10-21
+**Session context:** Raptor — the Logic page fixes ([LOGIC-REDRAW-DROPS-TYPING], [LOGIC-DONE-FIRST-PRESS]), pull request 554
+**Skill:** verification-before-completion (and the project's bug-check order, `raptor-port/docs/bug-check-order.md` §5 "between fix rounds")
+**Type:** open-source
+**Phase/Area:** choosing which tests to run locally before the first push
+
+**Issue:** The fix stopped a page rebuilding its list of boxes on every repaint. Locally only the page's own unit and
+browser test files were run (all green). GitHub's full run then failed a browser test in ANOTHER file (a keyboard test)
+that also drives those same boxes: with the list no longer thrown away, a box blurred by script kept the page's text
+cursor, and a box in a window opened next took no typing. A search of the browser tests for the page's own selectors
+(`input.lgin`, `#lgEdit`) would have found that file in seconds.
+
+**Suggested improvement:** In the "touched tests" step before a push (verification-before-completion, and the bug-check
+order's "run the touched surface's own suite"), add: grep the browser/e2e tests for the changed component's selectors and
+ids, and run every file that matches — a component's tests are wherever it is driven, not the file named after it.
+
+**Principle:** The tests that cover a component are found by searching for how tests reach it (its selectors), not by
+file name; a change that alters a component's lifecycle (when it is rebuilt, what it keeps) can break tests written for a
+different feature that merely pass through it.

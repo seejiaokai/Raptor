@@ -119,8 +119,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [RECALL] — bringing an archived man back fresh into Quals — a future feature, his word.
 
 **Insights and Logic**
-- [LOGIC-REDRAW-DROPS-TYPING] — the Logic page redraws just after it opens and can drop a value being typed.
-- [LOGIC-DONE-FIRST-PRESS] — on the Logic page, the first press of Done straight after a changed setting is lost (older; found 19 Oct 26).
+- [LOGIC-IOS-REFOCUS] — on his iPhone, does the keyboard stay up when a Logic setting is saved by tapping the next box? (a check on his phone; found 21 Oct 26).
 - [LOGIC-WORDS-WORKHOURS] — the Logic page says the long day and Insights hours of a line with nothing entered count from the default rally; they count from take-off less the step — his question, which is right (older; found 19 Oct 26).
 - [BOARD-NARROW-DESKTOP-REMARKS] — the desktop board from 821 to about 1000 wide leaves the remarks 16px and each jet's line 189px tall (older; found 19 Oct 26).
 - [STACK-LEFTOVERS] — four small loose ends from the Codex stack: two Insights edges (with the next change to its role question), a shared wording helper and an old audit script's three checks (with their own jobs), a "back to last published" button (only if he raises it).
@@ -1591,32 +1590,15 @@ saved-data reading (the report's §4) is looked at again at `[DB-STEP]`, which r
 
 **Found by the two reads of `[LW-ROWS-SPLIT]`, partly fixed.** Five were corrected with the move (`ui-contracts.md` twice, `CountRows.tsx`, `FigureCell.tsx`, one backlog line). The readers tabled more, each with its correction: `raptor-port/docs/handpass/parts/lwrows/read-opus.md` (its table of 13) and `read-fable.md` (F4). Left: the ones in `raptor-port/docs/performance.md` (ledger entries — a record of past work, which named the file as it was: judge each, do not rewrite history), `raptor-port/docs/leavewar/known-gaps.md`, and comments in other Leave War files. A documents-only pass; no check beyond the document check.
 
-### [LOGIC-REDRAW-DROPS-TYPING] The Logic page redraws its rules about half a second after it opens — a value being typed into a box at that instant is dropped (found 6 Oct 26 by `[OIL-WORK-START]`'s browser test; OLD, not that job's doing; LOW)
-**Seen:** the browser test of `[OIL-WORK-START]` failed once in two full runs on the busy PC at one step — Logic opened with
-"Edit rules" already on, "Nominal report before T/O" typed, Tab — and the box read the OLD value afterwards, the setting
-unchanged. Traced with a watcher on the page's body: shortly after the page opens (about half a second on a free machine) the
-list of rules is replaced by the same markup — new boxes, nothing visibly different — and whatever sits half-typed in a box
-goes with the old box. With a pause put between the typing and the Tab it happens every time; in a second trace the box lost
-its place about two seconds after "Edit rules" was pressed and the value was SAVED without a Tab. **Not traced:** what asks
-for that redraw (a late re-check of the week after the page change is the likely cause — the page redraws whenever the app's
-state moves, and its body is rebuilt as one piece), and whether anything can set it off LATER, while a person is typing —
-that is the question that decides whether this matters outside a test. A person's hands cannot reach the half-second after
-opening. **Why it may matter later:** once the app is in the database, other people's changes arrive by themselves every 30
-seconds (D356); if such an arrival redraws this page, a value being typed is dropped with no message. **To do:** (1) find
-what asks for the redraw; (2) either stop the page redrawing when nothing in it changed, or keep a box that is being typed in
-out of the redraw, as the schedule's text boxes are; (3) a test that types, lets the app's state move, and finds the typing
-still there. The browser test now types again until the app holds the value (`raptor-port/e2e/oilworkstart.spec.ts`,
-`logicLead`) — take that retry out when this is fixed. **Tier:** WALK (the Logic page, a typed value, both sizes).
-**Place (the agent's line):** low — with the next change to the Logic page, and before the database step for the reason above.
-
-### [LOGIC-DONE-FIRST-PRESS] On the Logic page, the first press of Done straight after a changed setting is lost (found 19 Oct 26, the rally box walk, walker B — OLDER than that job; low)
-In edit mode, change "Default rally before take-off" (any setting) and press Done once by finger at 402 wide: the value saves, the page stays in
-edit mode; a second press ends it; with nothing changed, one press works. Pictures `raptor-port/docs/img/handpass/2026-10-19-rally-build/B/B08z-L2.png`,
-`B08z-logic-Done.png`; the walker's table `raptor-port/docs/handpass/parts/rally-box/walker-B.md` (F2). **Not** the schedule's redraw that
-[EDIT-BUTTON-AFTER-CHANGE] fixed: Done is a React button that is never replaced (`ui/LogicPage.tsx` `#lgDone`), so the host's reading is that
-saving the setting moves the button out from under the press (a "rules changed" bar or the Reset button appearing) — reproduce and measure the
-button's position before and after the save first. **Place:** low, with the next change to the Logic page; a browser test that changes a
-setting and presses Done once, by mouse and by finger.
+### [LOGIC-IOS-REFOCUS] On his iPhone, does the keyboard stay up when a Logic setting is saved by tapping the next box? (found 21 Oct 26 by the fresh code read of the Insights and Logic fixes — OLDER than that job; a check on his device)
+In ✎ Edit, type a new value into one setting and tap the next setting's box. The save redraws the list a beat later, and
+the page puts the keyboard back on the box drawn in place of the one tapped (`ui/LogicPage.tsx`, the keeper) — a `focus()`
+from the redraw, not from the tap itself. iOS normally raises the keyboard only for a focus inside a tap, so the keyboard
+may drop and a second tap be needed. The page did the same before the fix (a timer's `focus()` after a redraw at once);
+Chromium's phone emulation cannot show it (`e2e/logicedit.spec.ts` passes there). **To do:** try it on his iPhone first;
+if the keyboard drops, keep the tapped box itself through the save (draw the list again row by row, leaving rows whose
+markup did not change — `ui/dayswap.ts` is the week's own pattern) instead of rebuilding it. **Place:** low, with the
+Logic page's next change; it needs his phone.
 
 ### [LOGIC-WORDS-WORKHOURS] The Logic page says a line with nothing entered starts its long day and Insights hours at the default rally; the app starts them at take-off less the step (found 19 Oct 26, the rally box walk, walker A — OLDER than that job; a question for him)
 The Logic page's "Default rally before take-off" (renamed by D1031; the sentence itself dates from [LOGIC-PAGE-LAYOUT], D928) says "With no in-time or

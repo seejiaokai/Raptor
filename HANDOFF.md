@@ -21,10 +21,19 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/insights-logic-fixes-3416c8 -->
-### 21 Oct 26 — the Insights and Logic small fixes (D994), `claude/insights-logic-fixes-3416c8` — IN HAND
-- **His pick:** [LOGIC-REDRAW-DROPS-TYPING] and [LOGIC-DONE-FIRST-PRESS] (D994). The Inputs batch (pull request 553) is LIVE —
-  its block removed on this branch.
-- **Pick up here:** reproduce and trace both, fix, walk the Logic page at both sizes.
+### 21 Oct 26 — the Insights and Logic small fixes (D994), `claude/insights-logic-fixes-3416c8`, pull request 554 — BUILT and WALK-checked
+- **His pick:** [LOGIC-REDRAW-DROPS-TYPING] and [LOGIC-DONE-FIRST-PRESS] (D994; both archived). The Inputs batch (pull request
+  553) is LIVE — its block removed on this branch. His new ruling **D1097** (a phone notification at every stop that waits
+  on him) is filed, its home `.claude/rules/shipping.md`.
+- **Built:** the Logic page's rule list drawn again only when its words change; a box's save applied once the keyboard has
+  landed (Tab no longer left it in the box just left); the keyboard and any half-typed value put back after a redraw; Done
+  one press at both sizes; the code read's F1–F3 and GitHub's KS5 (a parked text cursor) fixed. Filed: [LOGIC-IOS-REFOCUS]
+  (a check on his iPhone). Auto-fix was switched on by the app on the pull request and switched off (D1090).
+- **Checked:** `raptor-port/docs/handpass/2026-10-21-logic-fixes.md` — WALK: walk 36 / 36, re-walk 39 / 39 (both sizes);
+  breaks all red (unit and browser); unit 104 / 104 and browser 15 / 15 on the touched files; one fresh blind Opus read (3
+  findings, fixed); a second fresh read of the fix round — see the sheet §7.
+- **Pick up here:** read the sheet §7 (read 2) and §8 (GitHub's run on the last pushed commit); when both are clean, his look
+  and his "merge live".
 <!-- /now -->
 
 ## Next, in order
