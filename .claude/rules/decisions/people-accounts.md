@@ -68,6 +68,7 @@ scrolls it sideways: `inputs.md` (D893).
 
 | # | Date | The rule |
 |---|---|---|
+| D1102 | 21 Oct 26 | On the Post out sheet, changing the date of a posting whose outcome is Delete to today or earlier asks the same tap-twice question as the Delete button before he is deleted; the date is not saved until the second tap. |
 | D1101 | 21 Oct 26 | The app is deployed separately for each aircraft type — F-15, F-16, F-35 — each with its own database; one code base still serves them all (D1100), and the squadrons of one type, with their detachments, share that type's database. |
 | D1100 | 21 Oct 26 | One app is built for every squadron and aircraft type (F-15, F-16, F-35), each squadron configuring it inside the app, with an aircraft-type setting that carries its rules; detachments and squadrons sharing people by day or period come at the end, after the F-15 app's faults are fixed, and work before then avoids what would have to be redone. — changed by D1101 |
 | D993 | 18 Oct 26 | Quals' pinned header row follows the table sideways by the browser itself, as the Leave War's pinned date row does, so it keeps up with the table on his iPhone; only that row changes, and the Leave War's is left as it is. |
@@ -101,7 +102,7 @@ scrolls it sideways: `inputs.md` (D893).
 | D290 | 27 Sep 26 | A man deleted for leaving flying for good (D287) is kept underneath as a hidden "deleted" mark — never erased. |
 | D289 | 27 Sep 26 | A community is the squadrons flying one aircraft type (F-15, F-16), and a guest from another community is always marked as one. |
 | D288 | 27 Sep 26 | Callsigns are unique within a community, not across the app. |
-| D287 | 26 Sep 26 | A man who leaves flying for good is deleted — his account and his person, from every list and every day still to come — while every day he already flew keeps his puck (D297) and the past keeps his record (D299); he is kept underneath as a hidden mark (D290); the delete asks twice. — changed by D299, D297, D290 |
+| D287 | 26 Sep 26 | A man who leaves flying for good is deleted — his account and his person, from every list and every day still to come — while every day he already flew keeps his puck (D297) and the past keeps his record (D299); he is kept underneath as a hidden mark (D290); the delete asks twice. — changed by D1102, D299, D297, D290 |
 | D286 | 26 Sep 26 | An archived man's callsign may be given to a new person. If the archived man is later restored while his callsign is in use, one of the two must be renamed first. |
 | D285 | 26 Sep 26 | The account buttons read "Suspend" / "Enable" and "Delete account". |
 | D284 | 26 Sep 26 | A man back from overseas returns as he was — his Quals kept — and the app prompts the admin to update them. |

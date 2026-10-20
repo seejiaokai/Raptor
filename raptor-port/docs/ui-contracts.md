@@ -6523,7 +6523,7 @@ suspended." — the account named only when he has one; "archived on Quals" unti
 the chosen chip again un-chooses it — "off the manpower, nothing else" (the agent's call, on his look card). **A Delete
 asks twice** (D287 (3)): the bid sheet's button turns into "Tap again to delete <callsign>"; on the Post out sheet (which
 commits on each change) the Delete chip arms a second button, `postout-delete-go`, and tapping the armed chip again
-backs out without changing the posting. A deleted man (`gone` on the war) has no posting door — his posting is final.
+backs out without changing the posting. **The date that sets a Delete off asks twice too (D1102, 21 Oct 26):** on the Post out sheet, moving the date of a posting whose outcome is Delete to today or earlier asks the same tap-twice question before the date is saved; a future date is saved at once. A deleted man (`gone` on the war) has no posting door — his posting is final.
 **On the date** (`leavewar/sync.ts runPoOutcomes`, the calendar date — the one clock): Overseas Sqn → archived (Admin →
 Users' Archived group) and his account suspended; Delete → his person and account deleted (the hidden mark; days he flew keep his puck); SANS →
 ticked SANS (D283: with "Show SANS" OFF the war keeps his row in its old group, posted out, untracked; with it ON his

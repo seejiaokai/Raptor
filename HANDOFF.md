@@ -20,8 +20,27 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/night-records-1021 -->
+### THE NIGHT OF 21 OCT 26 — /overnight, 14 hours (started about 22:30), `claude/night-records-1021` (records) and one branch a job
+- **After a compaction: re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time.**
+- **His word tonight:** 14 hours; jobs 1–6 (his "make it 14 hours … add more jobs", then his answer to the one question — read as "go" for the six, said to him); compact by itself through the night (D667, D872). **New rulings tonight:** D1098 (the RULES MODIFIED tag off View and Edit Schedule), D1099 (single-seat lines work fully — F-16, F-35), D1100 (one app for every squadron and aircraft type; detachments; lending a man), D1101 (a deployment and a database for each aircraft type, two squadrons at most so far), D1102 (the Post out date that sets a Delete off asks twice).
+- **The vetting of every candidate:** `raptor-port/docs/superpowers/plans/2026-10-21-night-vetting.md`.
+- **The jobs, in order** (each: its own branch cut from `main`, the bug-check order in full, a pull request when its check closes so GitHub's run is its full check — D1086, the repo public; one fresh, blind Opus read of the finished code — D790, D903; on `[NO-ASTRA-LIST]`):
+  1. **Schedule pages** — `claude/schedule-pages-1021`: [RULES-TAG-OFF] (D1098 — the tag and its banner off View and Edit Schedule; the Logic page's strip stays) + [INNERHTML-REPAINT-SWEEP] (ALPanel, AvailWindow, ChangesWindow, InputsCal, MedicalView, Modals, PeoplePick, SansCal, SansDay, Shell — Quals and Logic done). WALK. ~2.5–3 h.
+  2. **Leave War small fixes** — `claude/leavewar-small-1021`: [LW-SEL-HALF-LABELS], [LW-SETTINGS-SMALL], [LW-HARNESS-VIEWER-PIN], [LW-ROWS-STALE-NOTES] (no rulings-file `paths:` edit, no full-row edit — named to him), [LW-DOZE-GUARDS] (check, fix or close), [LW-PHONE-AWAY-ROW-MISSING] (reproduce, fix or close), [PO-MOVE-DATE-DELETE-ASK] (a test on main first; if the one-tap delete is real, build D1102; if not, close with the test), [BATCH-14OCT-LEFTOVERS] (c) (a clash note's raw id → the callsign). WALK (FULL if D1102 is built — saved data: a person deleted). ~3.5–4 h.
+  3. **Single-seat check** — on this records branch, nothing in the app changes: every place that reads the back seat and what it does with only the front seat filled, in the code and on screen; written up for him with the design questions ([SINGLE-SEAT], D1099–D1101). ~1.5–2 h.
+  4. **Tracker small fixes** — `claude/tracker-small-1021`: [TRK-PINCH-OLD-EDGES] (failing tests first), [TRK-REFUSALS-UNTESTED]. WALK (touch). ~2–2.5 h.
+  5. **Look and keyboard small fixes** — `claude/look-keys-1021`: [FLOATWIN-TWO-LINE-BAR] (measure first), [OG-TAG-OVER-COUNT] (D588/D595's Sonnet trial, read by Opus), [INP-OIL-CHIP-PHONE] (look, test, fix or close), [BATCH-14OCT-LEFTOVERS] (a) (d) (e) (f), (b) closed as done. WALK. ~3 h — the first to be left if the night runs short.
+  6. **The checks themselves** — `claude/checks-1021`: [CI-UNIT-SHARE-2-6], [DEPLOY-DOCS] (deploy.yml's comments; the workflow name kept), [RULINGS-LF-PIN]; and [DOCSIZE-MERGE-CEILING] documents-only on this records branch. Nothing in the app changes. ~2 h, mostly while other jobs wait on GitHub.
+- **Not tonight (named in the morning):** [READONLY-WEEK-WORDS] (new words), [WINDOWS-KEEP-KEYS] (his word), [BOARD-NARROW-DESKTOP-REMARKS] and [BOARD-SIDEWAYS-KEYS] (pictures first), [GATELOCK-STALE-LIVE] (a hook change), [LW-LOCKMARK] with [LW-OFFER-ONLY-TAKEABLE] (a night of their own), the single-seat build (his answers first). Stale records found by the vetting go in the morning report.
+- **Allowance at the start:** weekly 13%, this chat 29% full.
+- **Questions waiting for him:** none yet.
+- **Where the night stands:** the plan written; job 1 next.
+<!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (21 Oct 26, night):** pull request 554 LIVE (the Insights and Logic fixes — its block removed) → the night's six jobs (this chat's block, D994) → his look and "merge live" in the morning.
 
 **RIGHT NOW (21 Oct 26):** pull request 553 LIVE (the Inputs batch, D994 — its block removed) → his pick, the Insights and Logic small fixes (D994), on `claude/insights-logic-fixes-3416c8` (pull request 554, this chat's block) → his "merge live" GIVEN → his next pick from the backlog.
 
