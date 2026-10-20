@@ -36,7 +36,7 @@ the later merge keeps both (D78).
 - **Allowance at the start:** weekly 13%, this chat 29% full.
 - **Questions waiting for him:** none yet.
 - **His word, 02:30 (D1103):** from job 2 on, each job runs in a fresh session of its own, started from this chat one after another; this chat coordinates, checks each result and writes the morning report.
-- **Where the night stands:** job 1 built (pull request 555; Auto-fix found on and switched off, D1090), its walk running; job 2 started on `claude/leavewar-small-1021` ([LW-SEL-HALF-LABELS] committed) and handed to its own session.
+- **Where the night stands (05:30):** job 1 DONE — pull request 555, GitHub green on `759e5e949`, its read's fixes pushed on `d6c1c0e15` (run to read), sheet `raptor-port/docs/handpass/2026-10-21-schedule-pages.md`; job 2 DONE by its helper — pull request 556, GitHub green on `7ddd8ff41`, D1102 built (the one-tap delete was real), sheet `…/2026-10-21-leavewar-small.md`; job 3 DONE — `raptor-port/docs/superpowers/specs/2026-10-21-single-seat-check.md` on this branch; job 4 (Tracker) next, then 5, then 6. Auto-fix found on for 555 and 556, switched off each time (D1090). The weekly figure 13% → 16% after jobs 1–3. A wrong-folder slip at 04:10: a `git switch` ran in his main folder (`C:/Users/User/projects/Raptor`) and moved it to job 1's branch; put back on `main` at once, nothing lost (no uncommitted work there). **Low (D1104):** one builder, one Sonnet walker, one fresh Opus reader a job, one after another; every command names the night's copy by its full path.
 <!-- /now -->
 
 ## Next, in order
