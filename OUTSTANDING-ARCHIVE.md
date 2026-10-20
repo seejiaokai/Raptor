@@ -6120,3 +6120,47 @@ own, read by one fresh reader (a script that runs the checks).
 **Met again and FIXED for this file, 20 Oct 26** (pull request 547's records run, the same share, 1,445 of 1,445 green): the cause, caught by a probe that watched the console after the file's last test — the two pages the app loads on first visit (`Shell.tsx` `lazy`: the Leave War and the Tracker) finished loading after the test that opened them, and React wrote "a suspended resource finished loading" (14) and "an update … not wrapped in act" (49) after the file had ended. `topbar-pair.test.tsx` now loads both pages in its `beforeAll`: the probe then saw nothing. **Left:** four other files render the whole app and open those pages (`boot-walk.test.tsx`, `trk-nocourse.test.tsx`, `availwin.test.tsx`, `lwkeepalive.test.tsx`) — the same one line each if one ever goes red this way.
 **The other four (the night of 20 Oct 26):** `trk-nocourse`, `availwin` and `lwkeepalive` load both pages up front too; `boot-walk.test.tsx` cannot (its test is what an empty first boot stores — loading the pages first changes that, 2 red) and is left: if it ever goes red this way, its own fix is a wait for the lazy pages before its last test.
 
+
+*Moved here 2026-10-20 by backlog-archive.mjs ([LW-OIL-DATECHIP-HIDDEN]). Forward facts: `raptor-port/docs/handpass/2026-10-20-oil-batch.md`.*
+
+### [LW-OIL-DATECHIP-HIDDEN] The OIL tracker's correction date calendar opens hidden behind the rows above (filed 30 Sep 26)
+**Place:** low — with the next OIL tracker change. Seen by the group-A FULL walk (W3 finding 3,
+`docs/img/handpass/2026-09-30-dbrA/W3/I8-correction-date-chip-open.png`): open the OIL tracker, give Warden a −1
+correction, tap its box, tap "📅 30 Sep 26 ▾" — the chip reads open but nothing is drawn; the day it would show sits under
+another row's box, so a correction's date cannot be changed through the app. Not a storage matter; not compared with
+`main`. **Do:** draw the calendar above the tracker's rows, with the bug-check order's §6 layering test.
+
+
+*Moved here 2026-10-20 by backlog-archive.mjs ([OIL-ZERO-SPAN-SORTIE]). Forward facts: `raptor-port/docs/handpass/2026-10-20-oil-batch.md`.*
+
+### [OIL-ZERO-SPAN-SORTIE] A take-off-equals-landing line whose report is also its take-off, with the debrief setting at zero, earns nothing — and the day's advisory still says it "earns from the report and debrief" (found 6 Oct 26, the plan challenge of `[OIL-WORK-START]` — Astra's finding 4; LOW)
+A flying line typed with the SAME take-off and landing earns from the report before it and the debrief after it (D49). Where
+there is neither — the Logic page's "Flight debrief after land" set to zero AND the line's entered in-time equal to its
+take-off (or, as before this build, both the debrief and "Nominal report before T/O" set to zero) — the line measures nothing
+and its crew earn nothing: correct by the standing rule that OIL comes only from written times (D31), and pinned as built in
+`raptor-port/src/engine/oilworkstart.test.ts`. What is wrong is the WORDS: the day's "Flight times — the same" advisory still
+tells the scheduler the line "still earns from the report and debrief", and the day's "no usable times" list does not name it.
+Reached only with a debrief of zero, which no squadron sets. **To build:** word the advisory from what the line actually
+measures, and name the line in the "no usable times" list when it measures nothing. **Tier:** WALK (the warning list).
+**Place (the agent's line):** low — with the next change to the OIL warnings.
+
+
+*Moved here 2026-10-20 by backlog-archive.mjs ([UNPUB-WARN-AL-RESTORES]). Forward facts: `raptor-port/docs/handpass/2026-10-20-oil-batch.md`.*
+
+### [UNPUB-WARN-AL-RESTORES] The Unpublish warning assumes the day's OIL disappears — when withdrawing an AMENDMENT puts the earlier version's OIL back (found 6 Oct 26, the scenario read of `[OIL-WORK-START]` — Astra's F2; OLD, the same on the live app; low-medium)
+Unpublish on a published weekend warns when taking the day's OIL away would leave a man who has already spent it below
+zero (`leavewar/sync.ts oilCreditBidAgainst`, asked by the Unpublish button — `ui/interactions.ts`). It works that out by
+rebuilding his OIL with the day's credit left out. That is right for withdrawing an ORIGINAL (the day becomes a draft and
+earns nothing). It is wrong for withdrawing an AMENDMENT: the version before it becomes the published one again
+(`engine/publish.ts unpublishDay`) and its OIL pays — so withdrawing a half-day amendment that restores a full-day
+original RAISES his balance, and the warning still says the withdrawal would strand his leave. It errs toward warning,
+never toward silence. **Seen on screen (the walk of `[OIL-WORK-START]`, walker C, S02):** the first tap said "Heads up —
+Saturday's OIL credits are bid against on the Leave War. Unpublishing withdraws them until you republish"; the second,
+"AL1 withdrawn … its OIL credits leave the Leave War until it is published again" — while the Original's full day came
+back and his balance went from 0 to 0.5. Both sentences are wrong for an amendment. Astra's steps: find the version that survives the withdrawal; work out its OIL records from its own
+kept evidence and values; rebuild the man's OIL with THAT in place of today's; warn only if the real result goes below
+zero; and word the warning and the done-message for "back to a draft" and "back to the earlier version" apart. Checks: an
+ORIGINAL withdrawn; an AL withdrawn to a higher, a lower and an equal credit; a credit that never landed.
+**Tier:** FULL (OIL, the published record). **Place (the agent's line):** low-medium — with the next change to Unpublish or
+to the OIL tracker.
+

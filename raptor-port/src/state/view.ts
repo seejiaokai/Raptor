@@ -8,7 +8,7 @@ import { slotVal, setSlotVal, fillSlot, lastFilled, armTargetExists, sentinelSea
 import { popReorderedDay } from '../engine/reorder'
 import { slotBar, personCount, rowTwice } from '../engine/avail'
 import { validate, WARN, officialWarn, versionFaceWarn, workingWarn } from '../engine/validate'
-import { markEdit, daySnapOf, dayApproved } from '../engine/publish'
+import { markEdit, daySnapOf, dayApproved, dayCurVer } from '../engine/publish'
 import { curDraftId, reconcileIssuedMarks, isDraftVer } from '../engine/drafts'
 import { isLead, isInstr, isOcu, isSpecial } from '../engine/people'
 import { HOOKS, runSchedEpilogue } from '../engine/hooks'
@@ -1029,10 +1029,15 @@ export function setDayPreview(di:any,ver:any){ RESTARM=null; UNPUBARM=null; if(v
 /* [GLOBAL-UNDO] §6.6 — the Unpublish confirm arm (see the registry entry above). A
    day whose OIL credits are bid against takes two taps to unpublish: the first arms
    this + warns, the second (while armed) commits. A day with no clash unpublishes on
-   one tap and never arms. */
+   one tap and never arms.
+   THE ARM IS FOR ONE VERSION ([UNPUB-WARN-AL-RESTORES], 20 Oct 26 — the scenario designer's find): it remembers the
+   version it warned about, and a day that has since issued another (AL2 published while AL1's warning stood) is no
+   longer armed — so the next tap warns afresh, worked out for the version it would withdraw, never commits on the old
+   warning. */
 export let UNPUBARM:any=null
-export function setUnpubArm(di:any){ UNPUBARM = di==null?null:+di }
-export function unpubArmed(di:any){ return UNPUBARM!=null && UNPUBARM===+di }
+let UNPUBVER:any=null
+export function setUnpubArm(di:any){ UNPUBARM = di==null?null:+di; UNPUBVER = di==null?null:dayCurVer(+di) }
+export function unpubArmed(di:any){ return UNPUBARM!=null && UNPUBARM===+di && UNPUBVER===dayCurVer(+di) }
 /* drop any preview whose snapshot no longer exists — undo across a publish,
    unpublishAL, a week switch: without this the day would render the live model
    while its header claims to show history. daySnapOf resolves 'd:<id>' draft

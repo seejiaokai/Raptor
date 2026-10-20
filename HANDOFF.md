@@ -20,16 +20,31 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/night-records-1020 -->
-### 20 Oct 26, day and night — four pull requests LIVE (546, 547, 548 merged; this one, documents only, waits for his "merge live")
-- **546 [CI-SPLIT-SLOW-JOBS]** (D1089, D1091): GitHub's legs check out without the walk pictures (4.7 GB → 79 MB), the slow sets split; 8m53s–10m04s → 5m53s, the same tests counted. His PC: 11 GB of half-finished downloads cleared.
-- **547 the standby batch** (D994): the week's time box reads hh:mm after Tab (and its input cells), the narrow-phone standby heading whole (a renamed wave wraps), Undo / the changes window say Start / End on a standby line, the empty gold pill found already gone. **The Scheduler Board's half of the Tab fold came back out** — it turned GitHub's D1047 phone test red on Linux only (4 of 5 runs), never on his PC even slowed six times: re-filed [BOARD-TAB-FOLD-BOARD]. Also fixed: [TOPBAR-PAIR-TEARDOWN-LOG] (a test page loading after its file ended).
-- **548 the night** (/overnight, his "go 1-3"; merged on his advance word D1092): the Tracker smoke in two parts (312 + 143 = the same 453 checks by name), the check lock picks a free port ([GATELOCK-STALE-PORT]), three more test files load the lazy pages up front. A blind Opus read: 1 medium, 2 low, all fixed. GitHub's check now 5m33s; **the slowest leg is unit (raptor 2/6), 5m29s** — the next easy gain is rebalancing the unit shares (filed with [CI-UNIT-SHARE-2-6]).
-- **Evidence:** `raptor-port/docs/handpass/2026-10-20-standby-batch.md`, `…/2026-10-20-night-checks-tooling.md`, `raptor-port/docs/gates-and-deploy.md` (20 Oct 26).
-- **Pick up here:** nothing open from this chat but this pull request's "merge live" (documents only). Next: his pick from the backlog (D994's small fixes by area); [BOARD-TAB-FOLD-BOARD] and [CI-UNIT-SHARE-2-6] are small and his to place.
+<!-- now:claude/oil-small-fixes-1020 -->
+### 20 Oct 26, afternoon — the OIL batch (D994), `claude/oil-small-fixes-1020`, pull request 550 — BUILT and FULL-checked, waiting for his look and "merge live"
+- **His pick:** "Oil batch start here" — D994's next area, three items, one branch, one check (D1087). (The night's records block,
+  pull request 549, is LIVE and its two leftovers filed — [BOARD-TAB-FOLD-BOARD], [CI-UNIT-SHARE-2-6] — so it is removed here.)
+- **[UNPUB-WARN-AL-RESTORES]** — the warning before an Unpublish reckons what the day earns AFTER the press (`engine/publish.ts
+  unpublishBackTo`, `leavewar/sync.ts desiredOilCells(back)` / `oilCreditBidAgainst`, `oiltracker.ts OilOmit` a worth): an
+  amendment withdrawn brings the earlier version's OIL back; warns only when the press LOWERS a man below zero; the arm is for
+  one version (`state/view.ts`); the amendment's own words (warning, done note, armed title — `interactions.ts`, `html.ts`);
+  the Original keeps N2 / N4 (D837).
+- **[OIL-ZERO-SPAN-SORTIE]** — `engine/oil.ts fltOilWin` / `fltMeasuresNothing`, `validate.ts fltNoLenSays`: a same-time line
+  with no report and no debrief says it earns nobody any OIL, is named in "no usable times", and the Logic line says so (D932).
+- **[LW-OIL-DATECHIP-HIDDEN]** — not reproduced (fixed by D901's calendar); pinned by an `e2e/leavewar.spec.ts` test.
+- **Checked:** the sheet `raptor-port/docs/handpass/2026-10-20-oil-batch.md` — FULL; a fresh Opus scenario designer (38
+  scenarios; 3 real finds, fixed red-first); the host's walk 76/76 + 16/16, re-walk 56/56, 44 pictures; one fresh, blind Opus
+  read: 2 low (wording), fixed. The touched tests on his PC (215 files, 4,587 tests); GitHub's run is the full check (D1086).
+  On `[NO-ASTRA-LIST]`.
+- **Waiting on him:** his look at the preview (the card is the sheet's §14 — new words, his to strike) and "merge live".
+- **Pick up here:** if he says "merge live" — D1088: push the local records (his look's marked pictures, a skill note — documents only), wait for that one GitHub run, merge, confirm the live app.
+  If he changes a wording: change it, its test (`leavewar/unpublish-al-oil.test.tsx`, `engine/oilflighttimes.test.ts`), the
+  words in `raptor-port/docs/ui-contracts.md` / `engine-rules.md`, record his ruling (OIL area). Then his next pick (D994).
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (20 Oct 26, afternoon):** pull request 549 LIVE → his pick, the OIL batch (D994), BUILT and FULL-checked on `claude/oil-small-fixes-1020` (pull request 550, this chat's block) → his look and "merge live" → his next pick from the backlog.
 
 **RIGHT NOW (20 Oct 26, the night):** pull requests 546, 547 and 548 LIVE (the faster checks, the standby batch, the night's checks and tooling — this chat's block) → his next pick from the backlog.
 

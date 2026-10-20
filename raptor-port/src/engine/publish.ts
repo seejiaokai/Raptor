@@ -1370,6 +1370,12 @@ function priorVerId(di:any,seq:any):any{di=+di;
   let top=0; (SCHED.als||[]).forEach((a:any)=>{if(+a.di===di){const s=+a.seq; if(s!==+seq&&Number.isSafeInteger(s)&&s>top)top=s;}});
   if(top>0){const a=(SCHED.als||[]).find((x:any)=>+x.di===di&&+x.seq===top); return a&&a.id;}
   const o=(SCHED.orig||{})[di]; return o&&o.id;}
+/* THE VERSION AN UNPUBLISH LEAVES AS THE ISSUED SCHEDULE, read only — for the warning asked before it, which must know
+   what the day will earn afterwards ([UNPUB-WARN-AL-RESTORES], 20 Oct 26): an amendment withdrawn hands the day back to
+   the version before it (priorVerId, exactly as unpublishDay does); the Original withdrawn leaves a draft — null. */
+export function unpublishBackTo(di:any):any{di=+di;
+  const id=dayCurVer(di); if(id==null)return null;
+  const seq=verSeq(id); return seq===0?null:(priorVerId(di,seq)||null);}
 /* ONE retired entry, built from the issued record `rec` and the retraction's own facts (`at`, `by`, `restoreSeq`,
    `logged`) — shared by retireIssued and by the saved week's reader, which joins an issuance row and its retraction
    row back into this entry (state/weekrows.ts; [DB-READINESS] group A, phase 1 — plan §2.9, R2-04). It keeps the

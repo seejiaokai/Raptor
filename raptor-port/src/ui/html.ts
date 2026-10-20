@@ -15,9 +15,9 @@ import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 /* RANK left with the focus-scoped trace: ranking the CR chip against the day's
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
-import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, FLT_NO_LEN_SAYS, versionFaceWarn, withVersionWarn } from '../engine/validate'
+import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, fltNoLenSays, versionFaceWarn, withVersionWarn } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
-import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass } from '../engine/publish'
+import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass, unpublishBackTo } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
@@ -1671,11 +1671,15 @@ export function dayStatHTML(di:any,ed:any){
        a quarantined week (C10 — never show only to refuse; the command re-checks all
        of this). Two-tap ONLY when the day's OIL credits are bid against (§6.6): the
        first tap arms + warns via the click handler, the armed state paints the
-       confirm face here; a day with no clash unpublishes on the single tap. */
+       confirm face here; a day with no clash unpublishes on the single tap.
+       The armed face's words follow the warning's two cases ([UNPUB-WARN-AL-RESTORES], 20 Oct 26 — ui/interactions.ts):
+       the Original withdrawn takes the day's credits away; an amendment withdrawn brings the version before it back, whose
+       OIL pays — "already spent", the word the warning uses since D837 (N4), not "bid against". */
     const cv=ok?dayCurVer(di):null;
+    const back=ok&&unpubArmed(+di)?unpublishBackTo(di):null, backName=back&&(verLabel(back)==='Original'?'The Original':verLabel(back));   // it starts a sentence
     const unpub=(ed&&ok&&!DPREV.has(+di)&&!protectedWeek())
       ? (unpubArmed(+di)
-          ? `<button class="dbeak dunpub warn" data-unpub="${di}" title="Withdraw ${esc(verLabel(cv))} on ${d.dow} — its OIL credits are bid against on the Leave War; republish to restore them. Tap to confirm.">Withdraw — confirm</button>`
+          ? `<button class="dbeak dunpub warn" data-unpub="${di}" title="${back?`Withdraw ${esc(verLabel(cv))} on ${d.dow}. ${esc(backName)} comes back and credits less OIL, and some of ${esc(verLabel(cv))}’s OIL is already spent on the Leave War. Tap to confirm.`:`Withdraw ${esc(verLabel(cv))} on ${d.dow}. Its OIL credits are already spent on the Leave War, and republishing restores them. Tap to confirm.`}">Withdraw — confirm</button>`
           : `<button class="dbeak dunpub" data-unpub="${di}" title="Unpublish ${d.dow} — pull ${esc(verLabel(cv))} back to a working copy to correct it; republishing reissues the same version">Unpublish</button>`)
       : '';
     /* the ⓘ chip is the ONLY way into the day panel on the view page, and it opens a
@@ -1937,7 +1941,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
            emits nothing for a warning to resolve into. Emitting it everywhere
            broke both — a focused live warning lit a box inside last week's
            paper, and the tap could scroll into one. */
-        const badAtt=noLen?`${PV?'':` data-warnkey="${fp}.ld"`} title="${esc((f.cs||w.label||'A flying line')+' '+FLT_NO_LEN_SAYS(parseHM(f.to),sa))}"`:'';
+        const badAtt=noLen?`${PV?'':` data-warnkey="${fp}.ld"`} title="${esc((f.cs||w.label||'A flying line')+' '+fltNoLenSays(f,w))}"`:'';
         h+=`<div class="form${rowCls(f)}"${HOOKS.missionRoleEnabled()?` data-role-formation="${esc(f.rid||'')}" data-role-day="${di}"`:''}>
           <div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa?'var(--san)':`var(--${mColor(f.msn)})`}"></span>${ted(fp+'.cs',f.cs,ed,'ntx')}</b>${ted(fp+'.msn',f.msn,ed,'','i')}</div>
           ${sa

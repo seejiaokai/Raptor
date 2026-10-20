@@ -40,7 +40,7 @@ import { stashDays, stashGenOf } from '../engine/weekstash'
 import { shiftWeek } from './weeknav'
 import { esc } from '../state/view'
 import { fmtT, storesView, rowCls, cxTag, flagTag, fyiTag, plCols, areaText, atimeText, lCell, saRoleText, rowKindTag, onCommon, commonOrder, WEEK_TIME_HEAD, SA_TIME_HEAD } from './html'
-import { fltNoLen, fltNoLenMsg, FLT_NO_LEN_SAYS } from '../engine/validate'
+import { fltNoLen, fltNoLenMsg, fltNoLenSays } from '../engine/validate'
 import { hideKey } from '../engine/warnhide'
 import { dayHidesIn, officialDaysOf } from '../engine/weekctx'
 import { HOOKS } from '../engine/hooks'
@@ -116,7 +116,7 @@ function peekFormation(w: any, f: any): string {
      (fltNoLenMsg is the one body for the sentence). */
   const noLen = fltNoLen(f) && !PEEK_HID.has(hideKey({ di: PEEK_DI, code: 'FLT_NO_LEN', who: [], msg: fltNoLenMsg(f, w) }))
   const badCls = noLen ? ' badtm' : ''
-  const badAtt = noLen ? ` title="${esc((f.cs || w.label || 'A flying line') + ' ' + FLT_NO_LEN_SAYS(parseHM(f.to), sa))}"` : ''
+  const badAtt = noLen ? ` title="${esc((f.cs || w.label || 'A flying line') + ' ' + fltNoLenSays(f, w))}"` : ''
   let h = `<div class="form${rowCls(f)}">`
     + `<div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa ? 'var(--san)' : `var(--${mColor(f.msn)})`}"></span>${esc(f.cs || '')}</b>${f.msn ? `<i>${esc(f.msn)}</i>` : ''}</div>`
     + (sa

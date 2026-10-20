@@ -138,7 +138,15 @@ carries no boxed "Draft" (its DRAFT tag says it once — the view-week compare l
   one (`ui/toast.ts toastBatch`). Only a publish batches — every other toast still replaces the last. **Unpublish says
   what it did** (`interactions.ts`; the words of record D837, 14 Oct 26): "Sat: AL2 withdrawn. Its changes are back on the
   working copy as pending, and AL1 is the issued schedule. Publishing reissues AL2.", or for the Original "Sat unpublished. It
-  is a draft again, and publishing reissues the Original.", with the OIL credits sentence when there is one. **Two notes of a
+  is a draft again, and publishing reissues the Original.", with the OIL credits sentence when there is one. **An
+  amendment withdrawn is not the day's OIL taken away** ([UNPUB-WARN-AL-RESTORES], 20 Oct 26 — the version before it pays
+  again, engine-rules.md): its first tap, where it must ask, says "Withdrawing AL1 brings back the Original’s OIL for
+  Saturday. Some of AL1’s OIL credits are already spent on the Leave War, and the Original credits less. Tap again to
+  confirm.", its done note ends "The Leave War credits Original’s OIL for the day until AL1 is republished." (the label as N3 just named it), and the
+  armed button's title reads "Withdraw AL1 on Saturday. The Original comes back and credits less OIL, and some of AL1’s OIL is
+  already spent on the Leave War. Tap to confirm." — the Original keeps N4 and N2 (D837), its armed title "…Its OIL credits are already
+  spent on the Leave War, and republishing restores them…" ("bid against" gone, as N4's). Pinned:
+  `leavewar/unpublish-al-oil.test.tsx`. These amendment words are his of record since D1094 (20 Oct 26). **Two notes of a
   publish that name the SAME day say it once** (`toast.ts` `ToastPart`): "Monday 13 Jul published and approved. The Common
   Programme has no usable times, so nobody on it earns OIL." — every other pair is joined by the dot as before. Pinned by `ui/toastbatch.test.ts`; walked `scripts/handpass/sf/sf-d1-toast.mjs`.
 - **The phone day-head is two fixed rows on every day** (owner, 25 Aug 26 —
