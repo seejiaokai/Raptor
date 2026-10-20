@@ -62,14 +62,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
 **Schedule and amendments**
-- [BUBBLE-SMALL-SEEN] — an empty gold pill in an input's row on the phone's Inputs list (the rest done).
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
+- [BOARD-TAB-FOLD-BOARD] — on the Scheduler Board a time typed and left by Tab still shows as typed ("1000") until another press; the fix was built and taken back out (it turned GitHub's D1047 phone test red on Linux only) — find why first (low).
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
 - [INNERHTML-REPAINT-SWEEP] — eleven screens hand React their markup as a new object every repaint, which React sets again — a box being typed in there is thrown away by any repaint (Quals fixed in [KEYBOARD-SCROLL]); sweep the rest (low).
 - [IPHONE-CARET-CHECKS] — two checks only his iPhone can make, carried from the one-tap time boxes (D1047): dragging the caret with the space bar, and a long press (the loupe).
-- [BOARD-TAB-FOLD] — a time typed on the Scheduler Board and left by Tab shows as typed ("1000") until another press, though 10:00 is saved (found by the D1080 walk; older, low).
-- [SA-HEAD-CLIP-360] — under 375 wide the week's standby heading cuts "AVALON" to "AVALOI" in its 36px first column (met by the [STANDBY-WEEK-B] walk; older, low).
-- [STANDBY-UNDO-WORDS] — Undo and the changes window call a standby line's START "a take-off time" and its END "a landing time" (found by the [STANDBY-WEEK-B] code read; older, low).
 - [LOOK-PENDING-COUNT] — the 👁 look at the Original shows "1 pending" where the working copy shows "2 pending" (reproduce first).
 - [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
 - [PLAN-BANNER-DOOR] — the preview banner's "Switch to this plan" has no route a person can reach — retire it or give it one: his question.
@@ -177,6 +174,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [CODE-TIDY-AUDIT] — tests that no longer apply and the skipped browser tests — his to confirm; one leftover for the database step, one put to him only if a later feature needs it.
 - [RULING-HOME-HOOK] — only if a chat is seen acting on a ruling's short line alone.
 - [REPO-PRIVATE] — the repo is public for a short period (D106; public on 18 Oct 26): making it private again, and restarting his PC's check runner, is his step; the sharing half (adding developers) is his call — the checks runner comes off first.
+- [TOPBAR-PAIR-TEARDOWN-LOG] — a unit share red with every test green (a page loaded late, React's warning after the file ended) — fixed for `topbar-pair.test.tsx` 20 Oct 26; four other whole-app test files share the shape (low).
 - [NO-ASTRA-LIST] — the jobs that went ahead without a ChatGPT reader — put to him when it is back (D761).
 - [OPUS-SECOND-READ-GUIDE] — the checking guide's line on when a second, blind Opus read is run: decided (D595), not written — it waits for Astra's and Sol's reads (D70) when ChatGPT is back, then his approval; and whether it still earns its place then.
 
@@ -226,6 +224,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [BOARD-TAB-FOLD-BOARD] The Scheduler Board's half of [BOARD-TAB-FOLD]: a time box left by Tab shows as typed (re-filed 20 Oct 26, the night; low)
+**Seen:** the board saves a time box on its `change` and the box left keeps the digits typed ("1000") until a press elsewhere, though 10:00 is saved (the archived [BOARD-TAB-FOLD]; the week's half is LIVE with pull request 547). **Tried:** in `board.ts boardChange`, after a save, `f.value = fmtHM(txtGet(p))` (and the input's own boxes from `inpTimeText`), then guarded `document.activeElement !== f`. Both turned GitHub's D1047 phone test red on three of four runs (`e2e/rallybox.spec.ts:55` "a time box tapped into …": a cleared take-off, "1300" typed, Enter → the save stayed empty), never on `main`, never on his PC (16 of 16; 6 of 6 with the browser slowed six times). Suspects: the one-tap arming and its owed `change` (`interactions.ts armFreshTime`, `oweChange`) beside a box written by script after a blur, on Linux's headless Chromium. **To do:** reproduce on Linux (a GitHub run of a debug branch with the test's trace kept as an artifact), find the step that loses the save, then fold the box without writing `.value` behind the browser's back (e.g. after the next repaint, or through the board's own redraw of that one box). **Place:** low — with the next change to the board's time boxes.
 
 ### [GATELOCK-STALE-PORT] The lock's full check run tests another chat's old build when a preview is left on 4173 (found 18 Oct 26, `claude/three-small-jobs-1018`) — OPEN
 **Seen:** `gatelock.mjs run` runs `npx playwright test` with no port; `playwright.config.ts` reuses a server already on 4173
@@ -1294,20 +1295,6 @@ deferral; then the restore checks a person's add / archive / restore needs (the 
 used). A Delete stays dead (D287). FULL tier. **Place:** after the change-recording re-test; beside `[DB-READINESS]` if not
 sooner — his call.
 
-### [BUBBLE-SMALL-SEEN] Two small things about the message bubble, found by the change-recording walk (29 Sep 26)
-**(2) and (3) DONE 19 Oct 26** on `claude/schedule-amendments-fixes-fffce0` (evidence `raptor-port/docs/handpass/2026-10-19-schedule-amendments-fixes.md`): the offer is drawn above the bubble, and a note already up when the changes window opens on a phone goes to the top. **(1)** was done 28 Sep 26 (`[AMEND-SMALL-SEEN]` item 1). **Left: (4)** the empty gold pill.
-Both the same on `main` (the Phase A pictures, taken on `main`, show them): (1) **Unpublish says nothing** — pressed on a
-day, the day goes back as it should, but the bubble still reads the PUBLISH's words ("Published AL1 · 1 item on Sat only ·
-approved by Anvil") for its few seconds, the opposite of what just happened (`a1/<w>/pub-09`). (2) **A bubble covers the
-"Use this section order as the default for every day?" offer** — a section dragged within a few seconds of an Undo /
-Redo shows the offer under the lingering bubble, hiding "Set as default" and, on a phone, "Not now" (`a1/phone/struct-19`).
-(3) **A lingering bubble covers the changes window** — on a phone, an Undo / Redo's bubble still up when the window opens
-sits over its first lines (`a2-rewalk/phone/lw-24`). (4) **An empty gold pill in an input's row** on the Inputs list, on a
-phone, beside the remarks of a LATE leave the admin filed for himself in the member view (`a2/phone/roles-05`, the same on
-the re-walk). **To do:** Unpublish says what it did ("Taken back: <day> — its changes wait on the working copy"); the offer
-opening clears the bubble or sits above it; the window likewise; find what the empty pill is meant to hold. LOOK tier.
-**Place:** low; any time.
-
 ### [HIST-PER-PAGE] A changes button on the Leave War and Quals, showing that page's changes — an idea, filed (D349, 28 Sep 26)
 His question during the D347 mock-up: *"should i have a edit history button too for each page thats applicable"* — answered
 not in the change-recording build, and filed on his "ok" (D349). Today the one changes window (Edit Schedule's clock, the
@@ -1843,6 +1830,10 @@ stay readable by other models). **Place:** next, after pull request 524.
 **What it cannot give, and where that comes from instead:** the words. That is D726's rule and Impeccable's `clarify` and `distill` passes — every label, hint and sentence earns its place or goes, the same information in fewer words.
 **How the job would run (the agent's proposal, for his word):** (1) record the Raptor look as it is — the project has no design record yet, which is why the design skill starts every session blind (`/impeccable init`, then `document`; the record lives under `raptor-port/docs/`); (2) a critique of the screens he uses most, as a short list with pictures; (3) his picks, in rounds of at most four (D541); (4) built area by area, each with its own check, timings before and after. **Place:** his — after `[ALL-AVAIL-AS-MEMBER]` merges. **Meanwhile:** the one-rule build keeps every NEW word it adds as short as it can be understood (D765 reading 5) and redesigns nothing it does not otherwise touch.
 
+### [TOPBAR-PAIR-TEARDOWN-LOG] A unit share red with every test green — a console line after `topbar-pair.test.tsx` ended (met 20 Oct 26, pull request 546; low)
+**Seen:** `unit (raptor 3/6)` on the records push of pull request 546 (run 39354269643 — 86 files, 1,444 of 1,444 passed, then `Errors 1`): `EnvironmentTeardownError: [vitest-worker]: Closing rpc while "onUserConsoleLog" was pending — originated in src/ui/topbar-pair.test.tsx`. The same code had passed on the run before; green on its one re-run (re-run before this item was filed — the order of `raptor-port/docs/gates-and-deploy.md` was not kept, said so to him). The shape `gates-and-deploy.md` §the `unit (raptor)` row names: something in the file, or a production timer it starts, writes to the console after the file has finished. **To do:** find what `topbar-pair.test.tsx` leaves running (a timer, a deferred log — `Shell.tsx`'s poll and `view.ts flashAdded` were the last two), stop it at teardown or make it return with no `window`; run the file 20 times under `--shard` to see it stays quiet. **Place:** Checks and tooling — low, a small job of its own.
+**Met again and FIXED for this file, 20 Oct 26** (pull request 547's records run, the same share, 1,445 of 1,445 green): the cause, caught by a probe that watched the console after the file's last test — the two pages the app loads on first visit (`Shell.tsx` `lazy`: the Leave War and the Tracker) finished loading after the test that opened them, and React wrote "a suspended resource finished loading" (14) and "an update … not wrapped in act" (49) after the file had ended. `topbar-pair.test.tsx` now loads both pages in its `beforeAll`: the probe then saw nothing. **Left:** four other files render the whole app and open those pages (`boot-walk.test.tsx`, `trk-nocourse.test.tsx`, `availwin.test.tsx`, `lwkeepalive.test.tsx`) — the same one line each if one ever goes red this way.
+
 ### [NO-ASTRA-LIST] The jobs that went ahead without a ChatGPT reader (Astra or Sol 6.1) — the ONE list, kept for when his subscription is back (D761, 11 Oct 26)
 **His word (D761):** *"take note of the tasks we did not have Astra involved. I may only get my subscription on 1st November onwards."* His ChatGPT allowance ran out on 11 Oct 26; wherever a record says "after 14 Oct 26", read "when ChatGPT is back — not before 1 Nov 26". **A list to put to him, not a promise:** when ChatGPT is back he says which of these reads he still wants. Add a line here in the same change that lets a job go ahead on one reader; a line leaves only when its read is done or he says it is not wanted.
 **16 Oct 26 (the night):** round 1b of the words pass (D945, D947) and the till date (D948, [TILL-FROM-DATES]) on `claude/whole-app-words-pass-1b-6cfe51` — read by one fresh, blind Opus reader (D790, D903); without Astra and Sol 6.1.
@@ -1886,6 +1877,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 | [KEYBOARD-SCROLL] with D1080 — the box being typed in lifted above a phone's keyboard; one tap then typing replaces in four more places; built 19 Oct 26 on `claude/keyboard-scroll` | one fresh, blind Opus reader of the finished code and two narrow Opus reads of its fixes (D790, D903); walked and gated (WALK) | Astra's read (a shared behaviour on every surface); the board's hardenings of 19 Oct 26 were built by Fable on his call and read by the host (Opus) only |
 | `[STANDBY-WEEK-B]` — the week's and the board's standby lines read R over B, then START over END (D1083–D1085); LIVE 20 Oct 26 (pull request 544) | one fresh, blind Opus reader of the finished code (D790, D903); walked and gated (`raptor-port/docs/handpass/2026-10-20-standby-week-b.md`) | Astra's scenario design and code read (D353); Sol 6.1's second read (money and the published record: the week's new door to SC MAIN's in-time and to a standby shift flying) |
 | `[CI-SPLIT-SLOW-JOBS]` — GitHub’s checks split across more machines and the walk pictures not downloaded (D1089, D1091); LIVE 20 Oct 26 (pull request 546) | no reader — a change to the checks file only; proved by its own run: the same 676 unit files and 12,004 unit tests, 893 browser tests and 453 Tracker checks as main’s last run (`raptor-port/docs/gates-and-deploy.md`, 20 Oct 26) | Astra’s read of the checks file (none was required by the bug-check order — no app code changed)|
+| The standby batch — `[BOARD-TAB-FOLD]` with the week's half, `[SA-HEAD-CLIP-360]`, `[STANDBY-UNDO-WORDS]`, `[BUBBLE-SMALL-SEEN]` (D994); LIVE 20 Oct 26 (pull request 547) | one fresh, blind Opus reader of the finished code (D790, D903) — 3 low, all fixed; walked and gated (`raptor-port/docs/handpass/2026-10-20-standby-batch.md`) | Astra's code read (D353) |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.
@@ -1992,34 +1984,6 @@ caret where he wants it. Chromium cannot show two iPhone gestures: (1) dragging 
 not caught as a drag, so the box may still be armed and the next key replace the time; (2) a long press (the loupe) on the
 box. **To do:** at his next iPhone look at a time box, ask him to try both; fix whichever arms wrongly (`interactions.ts`
 armFreshTime). **Place:** low — with the next iPhone look at the board.
-
-### [SA-HEAD-CLIP-360] Under 375 wide, a standby wave's first heading cuts "AVALON" (met 20 Oct 26 — the [STANDBY-WEEK-B] re-walk at 360; older, low)
-On Edit Schedule's week and View-only Sched below 375 wide the first column is 36px (`09-week-responsive.css`, the 374px
-block — D367's measure for a flying line's callsign), and a standby wave's heading there reads its label over SHIFT: "AVALON"
-does not fit and shows as "AVALOI" (picture `raptor-port/docs/img/handpass/2026-10-20-standby-week-b/walk2/08-phone-360-edit-week-sc.png`);
-SC and BB fit. The column is untouched by [STANDBY-WEEK-B]. **To do:** let that heading wrap or shrink as the callsign does
-(D367 — the name always whole), measured at 320 and 360. **Place:** low — with the next change to the week on a phone.
-
-### [STANDBY-UNDO-WORDS] A standby line's START and END are named as a take-off and a landing (found 20 Oct 26 — the [STANDBY-WEEK-B] blind code read; older, low)
-On an SC, AVALON or BB line, Undo's words ("Undo — a take-off time") and the changes window name the shift's START box "a
-take-off time" and its END "a landing time" (`raptor-port/src/undo/describe.ts` `TIME_WORD`, read for every `ff:` key;
-`changesmodel.ts` the same idea) — only SC's B has its own word ("an in-time"). Since D1083 the week heads those boxes
-START and END, so the words disagree with the screen. **To do:** on a standby line (`isStandalone` of the key's wave, as
-`scLineKey` does for SC) say "a start time" / "an end time" for `.to` / `.ld`; AVALON's and BB's B stay "a brief
-time" (their B box is a brief, D1065). **Place:** low — with the next Schedule and amendments small fixes.
-
-### [BOARD-TAB-FOLD] A time typed on the Scheduler Board and left by Tab shows as typed until another press (found 19 Oct 26 — the D1080 walk, walker B's B11; low)
-On the Scheduler Board, type "1000" into a take-off, landing or R box and press Tab: the box still reads "1000" (a second
-Tab, or 2.5s later, the same), while 10:00 is saved — it reads 10:00 at once after a press anywhere else, and after leaving
-and coming back. The same with plain typing (a second press, then the whole time chosen and typed over — host probe
-`raptor-port/scripts/handpass/kbs-host-b11.mjs`), so it is older than D1047 / D1080: the board folds a box to hh:mm when it is
-redrawn, and leaving by Tab does not redraw the box left. Walker B's report: `raptor-port/docs/handpass/parts/keyboard-scroll/B.md`.
-**To do:** on a box's `change`, write its folded time back to it (`fmtHM`) even when the focus moved to the next box.
-**The week too (met 20 Oct 26, [STANDBY-WEEK-B]'s browser test):** on Edit Schedule's week a time typed and left by Tab
-reads as typed ("0610") until a press elsewhere, while 06:10 is saved — a flying line's B and take-off as well as the new
-standby B (probe `raptor-port/scripts/handpass/standby-week-b-tabfold.mjs`): the week's commit defers its redraw while the
-caret is in another box (`html.ts` TXTQ). The same fix there: fold the box left, not only the model.
-**Place:** low — with the next change to the board's time boxes.
 
 ### [INNERHTML-REPAINT-SWEEP] A box inside markup React sets again on every repaint loses its caret (found 19 Oct 26 — the D1048 walk, walker A's A12; low)
 React sets a `dangerouslySetInnerHTML` again whenever its object is a new one, not only when the markup differs (probed

@@ -20,16 +20,17 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/ship-github-check -->
-### `claude/ship-github-check` — how work ships while the repo is public (D1086–D1088), documents only — LIVE on his "merge live" (pull request 545, 20 Oct 26)
-- **Done:** his three rulings of 20 Oct 26 recorded and written in: GitHub's run of the pull request is a job's full check while the repo is public (open the pull request into `main` once the job is built; on his PC only the touched tests and the walk's build — D1086, narrowing D902); two to four related jobs of one area per branch and merge, nothing piled to the end (D1087); on "merge live" the closing records, one GitHub run, the merge (D1088). Homes: `.claude/rules/shipping.md` (its line ceiling 115 → 130 in `docsize.mjs`, the reason there), `raptor-port/docs/bug-check-order.md` §5 (the FULL order rewritten), `raptor-port/CLAUDE.md` and `docs/guide-full.md` §Token discipline.
-- **Checked:** a fresh Opus reader of the wording — sound, and eight older sentences that contradicted it, all fixed in this branch; docsize OK. Documents only: GitHub runs its documents guard alone.
-- **Before this:** [STANDBY-WEEK-B] (D1083–D1085) went LIVE on his "merge live" (pull request 544, 20 Oct 26) — main's run green, the live app Ready.
-- **His yes given (D1089):** [CI-SPLIT-SLOW-JOBS] — split GitHub's slowest checks across more machines, every area still run; its own job, a fresh chat. **D1090:** "Auto-fix" switched off on pull request 545, as his standing rule says.
-- **Pick up here:** nothing open on this branch; remove this block at the next handoff. Next: [CI-SPLIT-SLOW-JOBS] (D1089), then the standby batch in a fresh chat (the opening line he was given: [BOARD-TAB-FOLD] with the week, [SA-HEAD-CLIP-360], [STANDBY-UNDO-WORDS], [BUBBLE-SMALL-SEEN]) — the first job shipped the D1086 way.
+<!-- now:claude/standby-batch-1020 -->
+### THE NIGHT OF 20 Oct 26 (/overnight, 3 hours, from about 02:10 UTC) — this chat; before it, pull requests 546 (LIVE) and 547 (red, being fixed)
+- **After a compaction: re-read this block, the overnight guide (`.claude/skills/overnight/SKILL.md`) and the files of the step in hand before the next change; note the compaction here with its time.** Compactions: none yet.
+- **His selection ("Go 1-3 … auto compact. And auto merge live if required" / "Or auto merge live after it's done" — D1092):** on ONE new branch from `main` once 547 is in, `claude/checks-tooling-night`, one check (checks and tooling — D1087): **1** the Tracker's browser check split in two (`raptor-port/scripts/tracker/smoke.mjs`, `.github/workflows/deploy.yml` tracker job) — the same 453 checks counted on GitHub; **2** the four other whole-app test files load the Leave War and the Tracker up front ([TOPBAR-PAIR-TEARDOWN-LOG]'s "Left": `boot-walk`, `trk-nocourse`, `availwin`, `lwkeepalive` .test.tsx); **3** [GATELOCK-STALE-PORT] — `gatelock.mjs run` / `exec` pick a free port. Reads: one fresh blind Opus read of the finished branch (no Fable — D903). **D1092: once done — bug check passed, read clean or fixed, the whole GitHub run green — merge it and confirm the live app; anything doubtful waits for his look.** Questions waiting for him: none yet.
+- **547 first (his earlier "merge live"):** the D1047 phone test went red on three of four GitHub runs with the board's fold in (never on main, never on his PC, not even slowed six times). Not proved cured, so the BOARD's half came back out (`board.ts` is main's again; re-filed [BOARD-TAB-FOLD-BOARD]); the week's fold, the words, the heading stay. Then: GitHub green → merge 547, confirm the live app → the night's branch from main.
+- **Done before the night:** 546 LIVE (merged 3257fd64a, main's run green). The standby batch's records (items archived, sheet, ui-contracts) are on 547's branch.
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (20 Oct 26, night):** pull requests 546 ([CI-SPLIT-SLOW-JOBS] — GitHub's check 9–10 → 6 minutes, no pictures downloaded, D1091) and 547 (the standby batch, D994) LIVE on his "merge live" (this chat's block) → his next pick from the backlog.
 
 **RIGHT NOW (20 Oct 26, evening):** how work ships while the repo is public (D1086–D1088) LIVE (pull request 545, his "merge live") → the standby batch in a fresh chat, shipped that way; [CI-SPLIT-SLOW-JOBS] next as its own job (D1089, his yes).
 

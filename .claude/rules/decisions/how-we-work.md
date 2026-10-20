@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1092 | 20 Oct 26 | For the night of 20 Oct 26 his "merge live" is given in advance for the three checks-and-tooling jobs he selected: once each is done — its bug check passed, its code read clean or fixed, its whole GitHub run green — the agent merges it and confirms the live app; anything doubtful waits for his look. |
 | D1091 | 20 Oct 26 | GitHub's check machines download the project without the walks' pictures and saved looks (the four picture folders), since no check reads them — 4.7 GB down to 79 MB a machine, 2 to 4 minutes saved on each; the pictures stay in the project and its history, nothing deleted. |
 | D1090 | 20 Oct 26 | "Auto-fix" stays off on this project's pull requests — the app does not watch them for him — and where it is found switched on, the agent switches it off and says so; his standing rule not to watch pull requests stands. |
 | D1089 | 20 Oct 26 | GitHub's slowest checks are split across more machines while the repo is public — the Leave War desktop browser set into two, the scheduler's browser and unit sets and the Tracker's into more parts — every area still checked on every run; the time is measured after, and areas are not skipped. |
