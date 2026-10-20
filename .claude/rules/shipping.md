@@ -58,7 +58,7 @@ half).
 
 ## "Done" means LIVE — and live means ON VERCEL (owner, 10 and 12 Aug 26; D143, 24 Sep 26)
 - **On his "merge live" (D1088, 20 Oct 26):** push the job's closing records, wait for that one GitHub run, merge once
-  it is green, then confirm the live app as below — nothing else is pushed between his word and the merge.
+  it is green, then confirm the live app as below — nothing else is pushed between his word and the merge. His "auto merge live" for a run covers all it produces, its records pull request too (D1093).
 - **Tell him when you are done, with `PushNotification`** — when the work is genuinely finished, and when you
   are BLOCKED waiting on his answer. One line, plainly. Not for progress, not for a quick reply he is clearly
   watching, never twice for the same work.
