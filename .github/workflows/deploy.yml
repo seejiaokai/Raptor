@@ -37,6 +37,23 @@
 # the slowest leg by seven minutes. So the Leave War unit leg is FOUR shards
 # too. A pull request now shows SEVENTEEN passing checks, not eleven.
 # No larger runner is used: they are billed by the minute even on a public repo.
+#
+# AND AGAIN ON 20 Oct 26 (owner D1089 - "Proceed as recommended": split the slowest
+# legs, every area still run on every run, the time measured after). Measured on
+# the four runs of 19 Oct 26: 8m53s to 10m04s end to end, and in EVERY leg the
+# checkout alone took 2 to 4 minutes - the repository is 4.7 GB at one commit,
+# 4.4 GB of it the walks' pictures and saved looks (raptor-port/docs/img,
+# docs/handpass, docs/mock, scripts/handpass), none of which a gate reads (checked:
+# the unit tests read only written guides in raptor-port/docs - data-model.md,
+# engine-rules.md, remarks-vocabulary.md - which stay). So every GitHub leg now
+# checks out WITHOUT those four folders (a sparse checkout; actions/checkout then
+# fetches only the files it lays down, 79 MB), and the slow legs are split again:
+# the scheduler's unit set in SIX, its browser set in FOUR, the Leave War desktop
+# browser set in TWO. Nineteen legs run at once - inside the free plan's twenty
+# side by side. The Tracker smoke stays ONE leg: it is one serial script whose
+# second half uses helpers its first half defines, so cutting it means
+# restructuring it - a job of its own if it proves the slowest leg.
+# The PC job below is unchanged: its runner keeps its clone between runs.
 name: Deploy to GitHub Pages
 
 # Docs-only changes skip the whole workflow (15 Aug 26): nothing under these
@@ -222,6 +239,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          # the walk pictures stay behind (20 Oct 26, D1089 - see the header)
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/raptor-port/docs/img/
+            !/raptor-port/docs/handpass/
+            !/raptor-port/docs/mock/
+            !/raptor-port/scripts/handpass/
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -260,15 +285,20 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # four shards since 13 Oct 26 (D822): one runner took 17 to 19 minutes for 473 files
+          # four shards since 13 Oct 26 (D822): one runner took 17 to 19 minutes for 473 files; six since 20 Oct 26
+          # (D1089): the four ran 3 to 6 1/2 minutes of tests each, the slowest of the run's test legs
           - project: raptor
-            shard: 1/4
+            shard: 1/6
           - project: raptor
-            shard: 2/4
+            shard: 2/6
           - project: raptor
-            shard: 3/4
+            shard: 3/6
           - project: raptor
-            shard: 4/4
+            shard: 4/6
+          - project: raptor
+            shard: 5/6
+          - project: raptor
+            shard: 6/6
           # the Leave War in four too (13 Oct 26, the first run with the split above): its heavier half took 15m28s on that
           # run - 4 to 8 minutes on the day's earlier ones - and was the slowest leg by seven minutes
           - project: leavewar
@@ -283,6 +313,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          # the walk pictures stay behind (20 Oct 26, D1089 - see the header)
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/raptor-port/docs/img/
+            !/raptor-port/docs/handpass/
+            !/raptor-port/docs/mock/
+            !/raptor-port/scripts/handpass/
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -317,17 +355,33 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # two shards since 13 Oct 26 (D822): the raptor project alone ran 9 to 10 minutes
+          # two shards since 13 Oct 26 (D822): the raptor project alone ran 9 to 10 minutes; four since 20 Oct 26
+          # (D1089), and the Leave War desktop set in two: each ran 4 to 6 1/2 minutes of tests
           - project: raptor
-            shard: 1/2
+            shard: 1/4
           - project: raptor
-            shard: 2/2
+            shard: 2/4
+          - project: raptor
+            shard: 3/4
+          - project: raptor
+            shard: 4/4
           - project: lw-phone
           - project: lw-desktop
+            shard: 1/2
+          - project: lw-desktop
+            shard: 2/2
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          # the walk pictures stay behind (20 Oct 26, D1089 - see the header)
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/raptor-port/docs/img/
+            !/raptor-port/docs/handpass/
+            !/raptor-port/docs/mock/
+            !/raptor-port/scripts/handpass/
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -365,6 +419,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          # the walk pictures stay behind (20 Oct 26, D1089 - see the header)
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/raptor-port/docs/img/
+            !/raptor-port/docs/handpass/
+            !/raptor-port/docs/mock/
+            !/raptor-port/scripts/handpass/
       - uses: actions/setup-node@v4
         with:
           node-version: 22
