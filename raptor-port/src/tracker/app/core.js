@@ -3727,9 +3727,23 @@ function enablePinchZoom(el) {
   function settlePicture(s) {
     if (!s || !s.c) return;
     if (s.w) { s.w.style.transform = ''; s.w.style.transformOrigin = ''; s.w.style.willChange = ''; }
-    if (arrangeMode || (s.zz === s.z && s.m === s.m0)) return;   /* fingers that never moved changed nothing */
+    if (!sameMode(s) || arrangeMode || (s.zz === s.z && s.m === s.m0)) return;   /* a changed mode, or fingers that never moved: nothing */
     flowZoom = s.zz; applyFlowZoom();
     placeChartPoint(el, s.c, s.m.x - s.r.left, s.m.y - s.r.top);
+  }
+  /* THE PINCH BELONGS TO THE MODE IT BEGAN IN ([TRK-PINCH-OLD-EDGES], 21 Oct 26). Edit chart layout can be switched on
+     or off while two fingers are down (a third finger, through the menu); the switch redraws the chart and sets its own
+     zoom, so the pinch's start, taken for the other mode, no longer fits: its moves threw. Once the mode has changed
+     under it, the pinch does nothing more — its moves are passed over and its lift settles nothing; the switch's own
+     zoom stands, even if the mode is switched back before the lift. `s.arrange` is the mode it began in. */
+  const sameMode = s => { if (s && s.arrange !== arrangeMode) s.lost = true; return !!s && !s.lost; };
+  /* The pinch's one end — the ordinary lift, and a lift lost to a redraw found at the next first finger: a pinch is the
+     user taking the zoom over, the same as pressing + or −, so it is marked as his (without the flag a rotate or the
+     next redraw on a phone snapped it back to fit) and the % label is told (notify). */
+  function endPinch(s) {
+    pinching = false; settlePicture(s);
+    if (sameMode(s)) { if (!arrangeMode) zoomIsMine = true; flushView(); }
+    perfOff(); notify();
   }
   /* TWO FINGERS ARE THE PINCH'S, NOT THE PHONE'S SCROLL (D992). The board leaves one finger to the browser, which scrolls
      it (touch-action, tracker.css; dragScroll); a second finger's touch is cancelled here, so the browser neither scrolls
@@ -3773,7 +3787,7 @@ function enablePinchZoom(el) {
        a lift to the element the finger landed on even after a redraw has removed it,
        where the board never hears it). Without this, one lost lift made every later
        touch read as a pinch until a reload. What that finger did stands. */
-    if (e.isPrimary && pts.size) { const s = start; pts.clear(); start = null; if (pinching) { pinching = false; settlePicture(s); perfOff(); } releaseFirstFinger(); }
+    if (e.isPrimary && pts.size) { const s = start; pts.clear(); start = null; if (pinching) endPinch(s); releaseFirstFinger(); }
     pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
     /* ...and so the lift is listened for on that element too (a second hearing is
        harmless: `drop` ignores a finger it no longer counts) */
@@ -3789,7 +3803,7 @@ function enablePinchZoom(el) {
          (a pinch makes no click, so nothing is taken from a ball) */
       for (const id of pts.keys()) { try { el.setPointerCapture(id); } catch (_) {} }
       perfOn();
-      start = { d: dist(a) || 1, k: view.k, z: flowZoom };
+      start = { d: dist(a) || 1, k: view.k, z: flowZoom, arrange: arrangeMode };
       if (arrangeMode) {
         start.o = canvasOrigin();
         start.p = canvasPointAt(m.x, m.y, start.o);
@@ -3816,6 +3830,7 @@ function enablePinchZoom(el) {
     pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pts.size !== 2 || !start) return;
     e.preventDefault();
+    if (!sameMode(start)) return;   /* the mode changed under the pinch: it does nothing more */
     const a = [...pts.values()], m = mid(a);
     const f = (dist(a) || 1) / start.d;
     if (arrangeMode) {
@@ -3833,9 +3848,7 @@ function enablePinchZoom(el) {
     if (!pts.size) releaseFirstFinger();
     if (pts.size < 2) {
       const s = start; start = null;
-      /* A pinch is the user taking the zoom over, the same as pressing + or −:
-         without the flag a rotate afterwards snapped their zoom back to fit. */
-      if (pinching) { pinching = false; settlePicture(s); if (!arrangeMode) zoomIsMine = true; flushView(); perfOff(); notify(); }
+      if (pinching) endPinch(s);
     }
   };
   /* pointerleave stays a plain listener: it does not bubble, so in the capture
