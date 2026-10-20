@@ -21,7 +21,7 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/inputs-small-fixes -->
-### 20 Oct 26, late — the Inputs batch (D994, Inputs and calendars), `claude/inputs-small-fixes`, pull request 553 — built, read, walked; his look next
+### 20 Oct 26, late — the Inputs batch (D994, Inputs and calendars), `claude/inputs-small-fixes`, pull request 553 — his "merge live" GIVEN (20 Oct 26), merging
 - **His pick:** "Inputs" (D994). The shaky-tests batch (pull request 552) is LIVE — its block removed on this branch.
 - **Built:** [TILL-NEXT-YEAR], [OIL-ASK-HEAD-SEVERAL] (both archived); his **D1095 / D1096** — every year PRINTED after a date
   is two digits, the kept labels keep four (the places: the sheet §10); the fresh read's F1 (a week's rows in its own year),
@@ -30,8 +30,8 @@ the later merge keeps both (D78).
 - **Checked:** `raptor-port/docs/handpass/2026-10-20-inputs-small-fixes.md` — FULL, sized SMALL: walk 33 / 33, re-walk 49 / 49
   (both sizes, 28 pictures); breaks 17 / 17; unit 12,045 / 12,045 under the lock (touched files after); one fresh blind
   Opus read, its three findings fixed; GitHub's run green on `bf4193368` (the last push's run to read).
-- **Next:** GitHub's run of the last push green → his look (the preview link, before / after pictures, the look card §9)
-  → his "merge live" (D1088).
+- **Pick up here:** if this block is still here, check pull request 553 merged and the live app is READY (D1088); then remove
+  this block and take his next pick (D994).
 <!-- /now -->
 
 ## Next, in order
