@@ -62,14 +62,14 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
 **Schedule and amendments**
-- [BUBBLE-SMALL-SEEN] — an empty gold pill in an input's row on the phone's Inputs list (the rest done).
+- [BUBBLE-SMALL-SEEN] — an empty gold pill in an input's row on the phone's Inputs list (the rest done) — FOUND ALREADY GONE 20 Oct 26 (the redesigned list; pictured, phone and desktop), closes with the standby batch, pull request 547.
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
 - [INNERHTML-REPAINT-SWEEP] — eleven screens hand React their markup as a new object every repaint, which React sets again — a box being typed in there is thrown away by any repaint (Quals fixed in [KEYBOARD-SCROLL]); sweep the rest (low).
 - [IPHONE-CARET-CHECKS] — two checks only his iPhone can make, carried from the one-tap time boxes (D1047): dragging the caret with the space bar, and a long press (the loupe).
-- [BOARD-TAB-FOLD] — a time typed on the Scheduler Board and left by Tab shows as typed ("1000") until another press, though 10:00 is saved (found by the D1080 walk; older, low).
-- [SA-HEAD-CLIP-360] — under 375 wide the week's standby heading cuts "AVALON" to "AVALOI" in its 36px first column (met by the [STANDBY-WEEK-B] walk; older, low).
-- [STANDBY-UNDO-WORDS] — Undo and the changes window call a standby line's START "a take-off time" and its END "a landing time" (found by the [STANDBY-WEEK-B] code read; older, low).
+- [BOARD-TAB-FOLD] — a time typed on the Scheduler Board and left by Tab shows as typed ("1000") until another press, though 10:00 is saved (found by the D1080 walk; older, low) — BUILT 20 Oct 26 with the standby batch (pull request 547, `claude/standby-batch-1020`), waiting for his "merge live"; evidence `raptor-port/docs/handpass/2026-10-20-standby-batch.md`.
+- [SA-HEAD-CLIP-360] — under 375 wide the week's standby heading cuts "AVALON" to "AVALOI" in its 36px first column (met by the [STANDBY-WEEK-B] walk; older, low) — BUILT 20 Oct 26 with the standby batch (pull request 547, `claude/standby-batch-1020`), waiting for his "merge live"; evidence `raptor-port/docs/handpass/2026-10-20-standby-batch.md`.
+- [STANDBY-UNDO-WORDS] — Undo and the changes window call a standby line's START "a take-off time" and its END "a landing time" (found by the [STANDBY-WEEK-B] code read; older, low) — BUILT 20 Oct 26 with the standby batch (pull request 547, `claude/standby-batch-1020`), waiting for his "merge live"; evidence `raptor-port/docs/handpass/2026-10-20-standby-batch.md`.
 - [LOOK-PENDING-COUNT] — the 👁 look at the Original shows "1 pending" where the working copy shows "2 pending" (reproduce first).
 - [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
 - [PLAN-BANNER-DOOR] — the preview banner's "Switch to this plan" has no route a person can reach — retire it or give it one: his question.
@@ -1321,6 +1321,7 @@ phone, beside the remarks of a LATE leave the admin filed for himself in the mem
 the re-walk). **To do:** Unpublish says what it did ("Taken back: <day> — its changes wait on the working copy"); the offer
 opening clears the bubble or sits above it; the window likewise; find what the empty pill is meant to hold. LOOK tier.
 **Place:** low; any time.
+**(4) FOUND ALREADY GONE 20 Oct 26** (the standby batch, pull request 547): the Inputs list was redesigned since (D723's card on a phone); a LATE leave the admin files for himself in the member view shows LATE, "All day", the name, the kind and the remark — no empty pill, on a phone or a desktop (pictures `raptor-port/docs/img/handpass/2026-10-20-standby-batch/before/07`, `08`). The item closes on that "merge live".
 
 ### [HIST-PER-PAGE] A changes button on the Leave War and Quals, showing that page's changes — an idea, filed (D349, 28 Sep 26)
 His question during the D347 mock-up: *"should i have a edit history button too for each page thats applicable"* — answered
@@ -2012,6 +2013,7 @@ block — D367's measure for a flying line's callsign), and a standby wave's hea
 does not fit and shows as "AVALOI" (picture `raptor-port/docs/img/handpass/2026-10-20-standby-week-b/walk2/08-phone-360-edit-week-sc.png`);
 SC and BB fit. The column is untouched by [STANDBY-WEEK-B]. **To do:** let that heading wrap or shrink as the callsign does
 (D367 — the name always whole), measured at 320 and 360. **Place:** low — with the next change to the week on a phone.
+**BUILT 20 Oct 26** (the standby batch, pull request 547): under 375 the heading takes START / END's 7px, and a longer name wraps whole (RB14 at 360 and 320).
 
 ### [STANDBY-UNDO-WORDS] A standby line's START and END are named as a take-off and a landing (found 20 Oct 26 — the [STANDBY-WEEK-B] blind code read; older, low)
 On an SC, AVALON or BB line, Undo's words ("Undo — a take-off time") and the changes window name the shift's START box "a
@@ -2020,6 +2022,7 @@ take-off time" and its END "a landing time" (`raptor-port/src/undo/describe.ts` 
 START and END, so the words disagree with the screen. **To do:** on a standby line (`isStandalone` of the key's wave, as
 `scLineKey` does for SC) say "a start time" / "an end time" for `.to` / `.ld`; AVALON's and BB's B stay "a brief
 time" (their B box is a brief, D1065). **Place:** low — with the next Schedule and amendments small fixes.
+**BUILT 20 Oct 26** (the standby batch, pull request 547): Undo "a start time" / "an end time"; the change history's label "· start" / "· end"; the changes window and "To go out" Start / End, live and gone.
 
 ### [BOARD-TAB-FOLD] A time typed on the Scheduler Board and left by Tab shows as typed until another press (found 19 Oct 26 — the D1080 walk, walker B's B11; low)
 On the Scheduler Board, type "1000" into a take-off, landing or R box and press Tab: the box still reads "1000" (a second
@@ -2033,6 +2036,7 @@ reads as typed ("0610") until a press elsewhere, while 06:10 is saved — a flyi
 standby B (probe `raptor-port/scripts/handpass/standby-week-b-tabfold.mjs`): the week's commit defers its redraw while the
 caret is in another box (`html.ts` TXTQ). The same fix there: fold the box left, not only the model.
 **Place:** low — with the next change to the board's time boxes.
+**BUILT 20 Oct 26** (the standby batch, pull request 547): the box left reads hh:mm at once on the board and the week, and an input's own start / end too (the blind read's F2); never rewritten while it still holds the caret (F3). Evidence `raptor-port/docs/handpass/2026-10-20-standby-batch.md`.
 
 ### [INNERHTML-REPAINT-SWEEP] A box inside markup React sets again on every repaint loses its caret (found 19 Oct 26 — the D1048 walk, walker A's A12; low)
 React sets a `dangerouslySetInnerHTML` again whenever its object is a new one, not only when the markup differs (probed

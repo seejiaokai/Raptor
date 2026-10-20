@@ -20,16 +20,17 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/ship-github-check -->
-### `claude/ship-github-check` — how work ships while the repo is public (D1086–D1088), documents only — LIVE on his "merge live" (pull request 545, 20 Oct 26)
-- **Done:** his three rulings of 20 Oct 26 recorded and written in: GitHub's run of the pull request is a job's full check while the repo is public (open the pull request into `main` once the job is built; on his PC only the touched tests and the walk's build — D1086, narrowing D902); two to four related jobs of one area per branch and merge, nothing piled to the end (D1087); on "merge live" the closing records, one GitHub run, the merge (D1088). Homes: `.claude/rules/shipping.md` (its line ceiling 115 → 130 in `docsize.mjs`, the reason there), `raptor-port/docs/bug-check-order.md` §5 (the FULL order rewritten), `raptor-port/CLAUDE.md` and `docs/guide-full.md` §Token discipline.
-- **Checked:** a fresh Opus reader of the wording — sound, and eight older sentences that contradicted it, all fixed in this branch; docsize OK. Documents only: GitHub runs its documents guard alone.
-- **Before this:** [STANDBY-WEEK-B] (D1083–D1085) went LIVE on his "merge live" (pull request 544, 20 Oct 26) — main's run green, the live app Ready.
-- **His yes given (D1089):** [CI-SPLIT-SLOW-JOBS] — split GitHub's slowest checks across more machines, every area still run; its own job, a fresh chat. **D1090:** "Auto-fix" switched off on pull request 545, as his standing rule says.
-- **Pick up here:** nothing open on this branch; remove this block at the next handoff. Next: [CI-SPLIT-SLOW-JOBS] (D1089), then the standby batch in a fresh chat (the opening line he was given: [BOARD-TAB-FOLD] with the week, [SA-HEAD-CLIP-360], [STANDBY-UNDO-WORDS], [BUBBLE-SMALL-SEEN]) — the first job shipped the D1086 way.
+<!-- now:claude/standby-batch-1020 -->
+### Two jobs, two pull requests (20 Oct 26): `claude/ci-split-slow-jobs-standby-9e987d` — faster GitHub checks (546); `claude/standby-batch-1020` — the standby batch (547)
+- **546, [CI-SPLIT-SLOW-JOBS] (D1089, D1091):** every GitHub leg checks out without the four picture folders (4.7 GB → 79 MB; his word "don't download the photos to save time" — D1091), the raptor unit set in six, its browser set in four, the Leave War desktop browser set in two. **Measured 5m53s** end to end (8m53s–10m04s before), every leg green. The Tracker smoke stays one leg (its second half uses its first half's helpers) — it and the raptor unit share 2/6 are now the slowest, ~5½ min; splitting further would save under a minute. **A commit of records is held on his PC, not pushed** ("Measured on pull request 546's run…"): gates-and-deploy.md, shipping.md's run time, the backlog item — push it on his "merge live" (D1088), then the one run, the merge. His PC: 11 GB of half-finished downloads cleared from the project's store (16 → 4.9 GB), on his word.
+- **547, the standby batch (D994):** [BOARD-TAB-FOLD] with the week's half (and an input's own start / end — the read's F2), [SA-HEAD-CLIP-360] (and a renamed wave wraps — F1), [STANDBY-UNDO-WORDS], [BUBBLE-SMALL-SEEN] (4) found already gone. WALK tier: walk 26 PASS, re-walk 29 PASS, a blind Opus read (3 low, all fixed red-first), evidence `raptor-port/docs/handpass/2026-10-20-standby-batch.md`, before / after pictures `raptor-port/docs/img/handpass/2026-10-20-standby-batch/`. GitHub's first run had ONE red — the D1047 phone test (Enter in a board box saves with the caret in it; the first fold rewrote it) — not reproduced on his PC; the read's F3 guard is the cure, pushed; **read that second run's result** before asking for his look.
+- **Owed:** his look and "merge live" on each (546 first — 547's branch is from main, so it runs the old, slower check set until 546 is in). On "merge live": the closing records (archive the items by script, the sheet's §12, the no-ChatGPT list's row), one run, merge, the live app confirmed.
+- **Pick up here:** read 547's second GitHub run; then his look. Nothing else open.
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (20 Oct 26, night):** pull request 546 ([CI-SPLIT-SLOW-JOBS] — GitHub's check 9–10 → 6 minutes, no pictures downloaded, D1091) and pull request 547 (the standby batch, D994) BUILT and checked, waiting for his look and "merge live" (this chat's block) → his next pick from the backlog.
 
 **RIGHT NOW (20 Oct 26, evening):** how work ships while the repo is public (D1086–D1088) LIVE (pull request 545, his "merge live") → the standby batch in a fresh chat, shipped that way; [CI-SPLIT-SLOW-JOBS] next as its own job (D1089, his yes).
 
