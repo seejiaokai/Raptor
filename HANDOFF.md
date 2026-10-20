@@ -37,7 +37,7 @@ the later merge keeps both (D78).
   read: 2 low (wording), fixed. The touched tests on his PC (215 files, 4,587 tests); GitHub's run is the full check (D1086).
   On `[NO-ASTRA-LIST]`.
 - **Waiting on him:** his look at the preview (the card is the sheet's §14 — new words, his to strike) and "merge live".
-- **Pick up here:** if he says "merge live" — D1088: push nothing more, wait for GitHub's run, merge, confirm the live app.
+- **Pick up here:** if he says "merge live" — D1088: push the local records (his look's marked pictures, a skill note — documents only), wait for that one GitHub run, merge, confirm the live app.
   If he changes a wording: change it, its test (`leavewar/unpublish-al-oil.test.tsx`, `engine/oilflighttimes.test.ts`), the
   words in `raptor-port/docs/ui-contracts.md` / `engine-rules.md`, record his ruling (OIL area). Then his next pick (D994).
 <!-- /now -->
