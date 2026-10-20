@@ -21,7 +21,7 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/shaky-tests-batch-ea7fc2 -->
-### 20 Oct 26, evening — the shaky-tests batch (D994, Checks and tooling), `claude/shaky-tests-batch-ea7fc2`, pull request 552 — BUILT and WALK-checked, waiting for his look and "merge live"
+### 20 Oct 26, evening — the shaky-tests batch (D994, Checks and tooling), `claude/shaky-tests-batch-ea7fc2`, pull request 552 — his "merge live" GIVEN (20 Oct 26), merging
 - **His pick:** the shaky-tests batch as one job from `main` (D994), the R box first — "find out whether the app really
   loses the time" — with a picture of the R box on a phone first (sent; `docs/img/handpass/2026-10-20-shaky-tests/01-…`).
   (The OIL batch and its records, pull requests 550 and 551, are LIVE — their block removed here; [CI-E2E-FLAKES-1020] it filed is this job.)
@@ -35,15 +35,14 @@ the later merge keeps both (D78).
 - **Checked:** the sheet `raptor-port/docs/handpass/2026-10-20-shaky-tests.md` — WALK, sized small: walk 10 / 10, 8 pictures;
   the touched tests on his PC; 15 GitHub jobs on separate machines, retries off, green; GitHub's run of pull request 552 green;
   one fresh, blind Opus read (the sheet §5).
-- **Left over:** the throwaway branch `claude/debug-rbox-linux` (its debug workflow runs only on pushes to itself) — delete
-  it on his word; nothing else depends on it.
-- **Pick up here:** if he says "merge live" — D1088: push the closing records, wait for that one run, merge, confirm the live
-  app. Then his next pick (D994).
+- **Left over:** none — the throwaway branch `claude/debug-rbox-linux` deleted on his word (20 Oct 26).
+- **Pick up here:** if this block is still here, check pull request 552 merged and the live app is READY (D1088); then remove
+  this block and take his next pick (D994).
 <!-- /now -->
 
 ## Next, in order
 
-**RIGHT NOW (20 Oct 26, evening):** pull requests 550 and 551 LIVE (the OIL batch) → his pick, the shaky-tests batch (D994), BUILT and WALK-checked on `claude/shaky-tests-batch-ea7fc2` (pull request 552, this chat's block) → his look and "merge live" → his next pick from the backlog.
+**RIGHT NOW (20 Oct 26, evening):** pull requests 550 and 551 LIVE (the OIL batch) → his pick, the shaky-tests batch (D994), BUILT and WALK-checked on `claude/shaky-tests-batch-ea7fc2` (pull request 552, this chat's block) → his "merge live" GIVEN → his next pick from the backlog.
 
 **RIGHT NOW (20 Oct 26, afternoon, later):** pull request 550 LIVE (the OIL batch, D994; D1094) → this records pull request (documents only) → his next pick from D994's small fixes by area.
 

@@ -70,4 +70,6 @@ re-walked (below), and read by no second reader: the order's narrow re-read is f
 
 **The re-walk** (`WALK_DIR=walk2`, the fixed build): 10 PASS / 0 FAIL, no browser errors.
 
+**His look:** the preview link and the before / after pictures of the board's take-off box sent; his word, 20 Oct 26: "Merge live, delete the debug branch" — both done (the debug branch deleted the same turn).
+
 Walk: host, scripted, 10 PASS / 0 FAIL, then the re-walk 10 PASS / 0 FAIL; desktop 1440 + phone 402; 8 + 8 pictures and the standby batch's before picture; browser errors none.
