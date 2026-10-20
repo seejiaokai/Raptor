@@ -62,6 +62,8 @@ const publishTwice = (orig: [string, string], al: [string, string]) => {
 }
 const spendOneDay = () => { setCell('plasma', '2026-07-20', 'OIL'); setBidState('plasma', '2026-07-20', 'approved') }
 const cell = () => getState().wars[0].grid['plasma']?.['2026-07-18']
+/* the armed button's own words (its title — html.ts), read off the day header the click route draws */
+const armedTitle = () => { const h = document.createElement('div'); h.innerHTML = dayStatHTML(SAT, true); return h.querySelector('[data-unpub]')!.getAttribute('title') }
 
 describe('Unpublish of an amendment whose OIL is spent', () => {
   it('to a version that credits more: one tap, no warning, and the Original\'s full day is credited again', () => {
@@ -80,6 +82,7 @@ describe('Unpublish of an amendment whose OIL is spent', () => {
     press()
     expect(verLabel(dayCurVer(SAT)), 'the first tap only warns').toBe('AL1')
     expect(said).toEqual(['Withdrawing AL1 brings back the Original’s OIL for Saturday. Some of AL1’s OIL credits are already spent on the Leave War, and the Original credits less. Tap again to confirm.'])
+    expect(armedTitle(), 'the armed button says the same case').toBe('Withdraw AL1 on Saturday. The Original’s OIL comes back, and some of AL1’s is already spent on the Leave War. Tap to confirm.')
     said = []
     press()
     expect(verLabel(dayCurVer(SAT))).toBe('Original')
@@ -93,6 +96,7 @@ describe('Unpublish of an amendment whose OIL is spent', () => {
     spendOneDay(); said = []
     press()
     expect(said).toEqual(['Some of Saturday’s OIL credits are already spent on the Leave War. Unpublishing withdraws them until you republish. Tap again to confirm.'])
+    expect(armedTitle()).toBe('Withdraw Original on Saturday. Its OIL credits are already spent on the Leave War, and republishing restores them. Tap to confirm.')
     said = []
     press()
     expect(said).toEqual(['Saturday unpublished. It is a draft again, and publishing reissues the Original. Its OIL credits are withdrawn from the Leave War until it is republished.'])
