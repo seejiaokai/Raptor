@@ -6283,3 +6283,19 @@ saving the setting moves the button out from under the press (a "rules changed" 
 button's position before and after the save first. **Place:** low, with the next change to the Logic page; a browser test that changes a
 setting and presses Done once, by mouse and by finger.
 
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([TRK-PINCH-OLD-EDGES]). Forward facts: `raptor-port/docs/handpass/2026-10-21-tracker-small.md`, `raptor-port/docs/file-map.md`.*
+
+### [TRK-PINCH-OLD-EDGES] Two older edges of the Tracker chart's pinch, met by the code reads of [TRK-CHART-FPS] (18 Oct 26) — OPEN, low
+**Found by reading, not by him; older than D992, not changed by it.** (1) Edit chart layout switched on while a pinch runs (only with a third finger, through the menu) throws in the pinch's move: its start was taken for the other mode (`enablePinchZoom`, `raptor-port/src/tracker/app/core.js`). (2) A pinch ended by a lift lost to a redraw settles its zoom but leaves the zoom's % label stale and does not mark the zoom as his, so the next redraw fits the chart to the phone's width again. **To do:** a failing test for each, then end the pinch in the mode it began in, and run the ordinary end (`zoomIsMine`, `notify`) on the lost-lift path. **Place (the agent's):** with the next Tracker batch.
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([TRK-REFUSALS-UNTESTED]). Forward facts: `raptor-port/docs/handpass/2026-10-21-tracker-small.md`, `raptor-port/docs/file-map.md`.*
+
+### [TRK-REFUSALS-UNTESTED] Some of the Tracker chart editor's refusals have no gate test (found 29 Sep 26)
+Found by the IT flow guide's research into the Tracker (D414): no test in the gates drives → Connect or its refusals ("That link
+would create a loop", "That link already exists.", "A link can't start and end on the same event."), nor Edit poke-ball's link refusals
+("No such event", "cannot be its own prerequisite", "Those links would create a loop"), the course-name refusals (a name already
+used, a colon) or "Keep at least one course." Each was seen working in the running app; only the proof is missing. **To do:** add them
+to `scripts/tracker/smoke.mjs` (or `src/tracker/*.test.tsx`), one check each. **Place:** low; with the next Tracker batch.
+
