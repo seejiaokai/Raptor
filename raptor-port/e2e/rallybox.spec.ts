@@ -176,6 +176,16 @@ for (const [name, viewport] of [['desktop', { width: 1440, height: 900 }], ['pho
         }), gis)
         expect(heads, `${width} wide`).toEqual([{ text: 'SC SHIFT', fits: true }, { text: 'AVALON SHIFT', fits: true }, { text: 'BB SHIFT', fits: true }])
       }
+      /* a wave renamed longer than the room wraps, the name whole (D367; the blind read's F1 — the row's nowrap kept it cut) */
+      const wl = page.locator(`#eWeek [data-txt="wl:0.${gis[1]}"]`)
+      await press(page, wl, phone); await page.keyboard.press('ControlOrMeta+a'); await page.keyboard.type('AVALON NIGHT 2')
+      await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
+      await expect.poll(() => page.evaluate(g => (window as any).DAYS[0].waves[g].label, gis[1])).toBe('AVALON NIGHT 2')
+      const long = await page.evaluate(g => {
+        const h = document.querySelector(`#eWeek .day[data-day="0"] [data-move="mv:w.0.${g}"] .cols.formcols`)!.children[0] as HTMLElement
+        return { text: h.innerText.replace(/\s+/g, ' '), fits: h.scrollWidth <= h.clientWidth }
+      }, gis[1])
+      expect(long, 'renamed, 320 wide').toEqual({ text: 'AVALON NIGHT 2 SHIFT', fits: true })
     })
     /* RB15 — [BOARD-TAB-FOLD] (20 Oct 26): on the Scheduler Board a time typed "1000" and left by Tab read "1000" until a
        press elsewhere, though 10:00 was saved; the box left reads 10:00 at once */

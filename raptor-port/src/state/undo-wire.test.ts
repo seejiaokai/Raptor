@@ -590,6 +590,40 @@ describe('B8 — Undo says what came back', () => {
       } finally { box.remove(); next.remove() }
     } finally { HOOKS.editMode = was }
   })
+  /* the blind read's F3 (20 Oct 26): the window losing the focus saves the box too, with the caret still in it — the box
+     is NOT rewritten then, or the place being typed is lost ("600" saved 06:00 and rewritten under the caret) */
+  it('a time saved while the caret is still in its box (the window lost the focus) is left as typed', () => {
+    const was = HOOKS.editMode; HOOKS.editMode = () => true
+    try {
+      const box = document.createElement('span'); box.setAttribute('contenteditable', 'true'); box.tabIndex = 0; box.dataset.txt = 'ff:0.0.0.br'; box.textContent = '600'; document.body.append(box)
+      const bin = document.createElement('input'); bin.dataset.bfld = 'ff:0.0.0.ld'; bin.value = '1140'; document.body.append(bin)
+      try {
+        box.focus(); routeFocusOut({ target: box, relatedTarget: null } as any)
+        expect(txtGet('ff:0.0.0.br')).toBe('06:00')
+        expect(box.textContent, 'the week box keeps what is being typed').toBe('600')
+        bin.focus(); boardChange({ target: bin } as any)
+        expect(txtGet('ff:0.0.0.ld')).toBe('11:40')
+        expect(bin.value, 'the board box keeps what is being typed').toBe('1140')
+      } finally { box.remove(); bin.remove() }
+    } finally { HOOKS.editMode = was }
+  })
+  /* the blind read's F2 (20 Oct 26): an input's own start / end — the Scheduler Board's Personal Inputs boxes and the
+     week's input cells — kept the typed digits after Tab too, though the time was saved */
+  it('an input’s start and end left after typing read the time as saved, on the board and the week', () => {
+    const was = HOOKS.editMode; HOOKS.editMode = () => true
+    try {
+      writeInputsBatch(() => { INPUTS.push({ person: 'bane', type: 'Meeting', date: 'Jul 13', yr: 2026, rmk: '', iid: 'ifold1', s: 540, e: 600, allday: false } as any) })
+      const el = document.createElement('input'); el.dataset.ifld = 'ifold1.str'; el.value = '1015'; document.body.append(el)
+      try { boardChange({ target: el } as any) } finally { el.remove() }
+      const r: any = INPUTS.find((x: any) => x.iid === 'ifold1')
+      expect(r.s, 'saved').toBe(615)
+      expect(el.value, 'the board box').toBe('10:15')
+      const cell = document.createElement('span'); cell.setAttribute('contenteditable', 'true'); cell.dataset.inp = 'ifold1.end'; cell.textContent = '1130'; document.body.append(cell)
+      try { routeFocusOut({ target: cell, relatedTarget: null } as any) } finally { cell.remove() }
+      expect(r.e, 'saved').toBe(690)
+      expect(cell.textContent, 'the week cell').toBe('11:30')
+    } finally { HOOKS.editMode = was }
+  })
   it('a Quals tick names the man and what changed; a rule names the Logic page', () => {
     expect(updatePersonField('rocky', { tick: 'nvg' })).toBe(null)
     expect(undoState().undoLabel).toBe('Hex’s quals')
