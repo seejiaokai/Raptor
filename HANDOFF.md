@@ -20,26 +20,18 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/checks-tooling-night -->
-### THE NIGHT OF 20 Oct 26 — `claude/checks-tooling-night` (cut from main at 3257fd64a; no pull request yet) — the full plan is in `claude/standby-batch-1020`'s block (pull request 547)
-- **After a compaction: re-read this block, 547's block, the overnight guide (`.claude/skills/overnight/SKILL.md`) and the files of the step in hand before the next change; note the compaction here with its time.** Compactions: none yet.
-- **D1092** (his advance "merge live" for these three jobs once each is done — bug check passed, read clean or fixed, the whole GitHub run green). Guard off (`--away`), keep-awake asked.
-- **Done (committed):** job 3 [GATELOCK-STALE-PORT] — `raptor-port/scripts/gatelock.mjs` (`portBusy`, `freePort`, `browserPorts`, `runsBrowser`; `run` and `exec` of a browser run), `src/testing/gatelock-port.test.ts` (5 green); hand-checked: a busy set port refused, a non-browser command untouched. Job 2 — `trk-nocourse`, `availwin`, `lwkeepalive` .test.tsx load the two lazy pages in `beforeAll` (68 green); `boot-walk` left (its first-boot test breaks — 2 red).
-- **Done (committed):** job 1 — `smoke.mjs` SMOKE_PART 1 / 2 / unset (part 1 310, part 2 143, the whole 453 — the same names), `deploy.yml` the tracker job a matrix of two. Records: gates-and-deploy.md, file-map.md; [GATELOCK-STALE-PORT] and [TOPBAR-PAIR-TEARDOWN-LOG] archived; the no-ChatGPT list row. **Then:** pull request 548 opened; GitHub's first run green; the blind Opus read — M1 (part 1's catch-all checks), L1 (21 jobs with the Docs guard), L2 (the port chosen before the lock) — all fixed; part 1 recounted 312; sheet `raptor-port/docs/handpass/2026-10-20-night-checks-tooling.md`. **In hand:** GitHub's run of the fixes → D1092's merge → the live app → the morning report (one notification; guard `--back`; `git switch --detach`).
-- **547:** LIVE — merged 6b774b6ca (the board half out, re-filed [BOARD-TAB-FOLD-BOARD]); main brought into this branch.
-- Questions waiting for him: none.
-<!-- /now -->
-<!-- now:claude/standby-batch-1020 -->
-### THE NIGHT OF 20 Oct 26 (/overnight, 3 hours, from about 02:10 UTC) — this chat; before it, pull requests 546 (LIVE) and 547 (red, being fixed)
-- **After a compaction: re-read this block, the overnight guide (`.claude/skills/overnight/SKILL.md`) and the files of the step in hand before the next change; note the compaction here with its time.** Compactions: none yet.
-- **His selection ("Go 1-3 … auto compact. And auto merge live if required" / "Or auto merge live after it's done" — D1092):** on ONE new branch from `main` once 547 is in, `claude/checks-tooling-night`, one check (checks and tooling — D1087): **1** the Tracker's browser check split in two (`raptor-port/scripts/tracker/smoke.mjs`, `.github/workflows/deploy.yml` tracker job) — the same 453 checks counted on GitHub; **2** the four other whole-app test files load the Leave War and the Tracker up front ([TOPBAR-PAIR-TEARDOWN-LOG]'s "Left": `boot-walk`, `trk-nocourse`, `availwin`, `lwkeepalive` .test.tsx); **3** [GATELOCK-STALE-PORT] — `gatelock.mjs run` / `exec` pick a free port. Reads: one fresh blind Opus read of the finished branch (no Fable — D903). **D1092: once done — bug check passed, read clean or fixed, the whole GitHub run green — merge it and confirm the live app; anything doubtful waits for his look.** Questions waiting for him: none yet.
-- **547 first (his earlier "merge live"):** the D1047 phone test went red on three of four GitHub runs with the board's fold in (never on main, never on his PC, not even slowed six times). Not proved cured, so the BOARD's half came back out (`board.ts` is main's again; re-filed [BOARD-TAB-FOLD-BOARD]); the week's fold, the words, the heading stay. Then: GitHub green → merge 547, confirm the live app → the night's branch from main.
-- **Done before the night:** 546 LIVE (merged 3257fd64a, main's run green). The standby batch's records (items archived, sheet, ui-contracts) are on 547's branch.
+<!-- now:claude/night-records-1020 -->
+### 20 Oct 26, day and night — four pull requests LIVE (546, 547, 548 merged; this one, documents only, waits for his "merge live")
+- **546 [CI-SPLIT-SLOW-JOBS]** (D1089, D1091): GitHub's legs check out without the walk pictures (4.7 GB → 79 MB), the slow sets split; 8m53s–10m04s → 5m53s, the same tests counted. His PC: 11 GB of half-finished downloads cleared.
+- **547 the standby batch** (D994): the week's time box reads hh:mm after Tab (and its input cells), the narrow-phone standby heading whole (a renamed wave wraps), Undo / the changes window say Start / End on a standby line, the empty gold pill found already gone. **The Scheduler Board's half of the Tab fold came back out** — it turned GitHub's D1047 phone test red on Linux only (4 of 5 runs), never on his PC even slowed six times: re-filed [BOARD-TAB-FOLD-BOARD]. Also fixed: [TOPBAR-PAIR-TEARDOWN-LOG] (a test page loading after its file ended).
+- **548 the night** (/overnight, his "go 1-3"; merged on his advance word D1092): the Tracker smoke in two parts (312 + 143 = the same 453 checks by name), the check lock picks a free port ([GATELOCK-STALE-PORT]), three more test files load the lazy pages up front. A blind Opus read: 1 medium, 2 low, all fixed. GitHub's check now 5m33s; **the slowest leg is unit (raptor 2/6), 5m29s** — the next easy gain is rebalancing the unit shares (filed with [CI-UNIT-SHARE-2-6]).
+- **Evidence:** `raptor-port/docs/handpass/2026-10-20-standby-batch.md`, `…/2026-10-20-night-checks-tooling.md`, `raptor-port/docs/gates-and-deploy.md` (20 Oct 26).
+- **Pick up here:** nothing open from this chat but this pull request's "merge live" (documents only). Next: his pick from the backlog (D994's small fixes by area); [BOARD-TAB-FOLD-BOARD] and [CI-UNIT-SHARE-2-6] are small and his to place.
 <!-- /now -->
 
 ## Next, in order
 
-**RIGHT NOW (20 Oct 26, night):** pull requests 546 ([CI-SPLIT-SLOW-JOBS] — GitHub's check 9–10 → 6 minutes, no pictures downloaded, D1091) and 547 (the standby batch, D994) LIVE on his "merge live" (this chat's block) → his next pick from the backlog.
+**RIGHT NOW (20 Oct 26, the night):** pull requests 546, 547 and 548 LIVE (the faster checks, the standby batch, the night's checks and tooling — this chat's block) → his next pick from the backlog.
 
 **RIGHT NOW (20 Oct 26, evening):** how work ships while the repo is public (D1086–D1088) LIVE (pull request 545, his "merge live") → the standby batch in a fresh chat, shipped that way; [CI-SPLIT-SLOW-JOBS] next as its own job (D1089, his yes).
 
