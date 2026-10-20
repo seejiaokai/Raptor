@@ -51,6 +51,12 @@ carries no boxed "Draft" (its DRAFT tag says it once — the view-week compare l
   rebuild keeps no chunks, so a day's FIRST change after it re-derives them
   from the previous string (one extra parse, once per day). Pinned in
   `ui/dayswap.test.ts`.
+- **A built-markup body that React holds (`dangerouslySetInnerHTML`) gets its object made once per change of its
+  string** (21 Oct 26, `[LOGIC-REDRAW-DROPS-TYPING]`; Quals' table, 19 Oct 26). React 19 sets the markup again whenever
+  the `{ __html }` OBJECT is new, not only when the words differ, so an inline object rebuilds the body on every repaint
+  of the app — the same characters, new nodes — and a box being typed in, its caret and anything hung on the old nodes
+  go with it. `useMemo(() => ({ __html: s }), [s])` (Logic) or on the store's version and the page's own choices
+  (Quals). A body that holds no box to type in (a puck, the legend) may stay inline.
 - The week keeps its scroll through any edit; the palette keeps its scroll;
   wave blocks keep swipe offset.
 - Only the page on screen re-renders (CURPAGE gates in the week effects);
@@ -9489,6 +9495,20 @@ sticky as below; a Filter other than All shows only the checks; the search reach
 edits, its own Reset; a check is named as the warning list names it; four folds of key points, kept open across a
 repaint; every number read from its setting (D932). The "chips", "Edit rules" (now ✎ Edit) and "rule count" of the passage
 below are gone.
+
+**The keyboard in ✎ Edit (21 Oct 26 — `[LOGIC-REDRAW-DROPS-TYPING]`, `[LOGIC-DONE-FIRST-PRESS]`; `ui/LogicPage.tsx`):** the list
+is drawn again only when its words change (Rendering, above). A box's `change` — raised as the keyboard LEAVES it, before it
+has moved — shows the value in the squadron's spelling at once and is APPLIED a beat later (`ruleApplyLater`): applied there
+and then, the save repainted the list under the browser's own Tab, and Chrome gave the move up. After any rebuild the page
+puts the keyboard back on the control drawn in its place (a box by its place in the list, `data-lgi`; a toggle, the switch, a
+row's Reset, a door, a fold by their own marks), carrying a half-typed value and its caret, or selecting a clean box whole
+(D1080). The control is remembered as the keyboard arrives and forgotten when it really leaves the list — asked a moment
+later, since Chrome tells a box it lost the keyboard while a rebuild is removing it — and raises a typed box's own `change`
+then too, so a change raised while the page is rebuilding its list saves nothing: the typing is carried, and the carried box
+owes its change, raised by the page on Enter or once the box is really left. **Done takes one press:** its press
+leaves the box alone (`mousedown` default prevented), and Done itself blurs the box — its change saves or refuses as ever —
+then ends editing; on a phone the save used to bring "Reset all" up and move Done 77 px from under the finger. Pins:
+`ui/logic.test.tsx`, `e2e/logicedit.spec.ts`.
 
 **D561/D563, 4 Oct 26 — built on codex/workflow-ui, owner look and remaining reads pending:** keep the search box in view while scrolling,
 alongside the controls already kept visible: All, Warnings, Advisories, Notes, Fired this week, Edit rules

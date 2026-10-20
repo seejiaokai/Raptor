@@ -6250,3 +6250,36 @@ withRemarksTail`) and D189 counts it on a published day. **To do:** the editor's
 change of the span, the collapse to one day included; a test that drives the editor's own calendar. **Tier:** WALK (the
 published day's words). **Place:** low — with the next Inputs change.
 
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([LOGIC-REDRAW-DROPS-TYPING]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-21-logic-fixes.md`.*
+
+### [LOGIC-REDRAW-DROPS-TYPING] The Logic page redraws its rules about half a second after it opens — a value being typed into a box at that instant is dropped (found 6 Oct 26 by `[OIL-WORK-START]`'s browser test; OLD, not that job's doing; LOW)
+**Seen:** the browser test of `[OIL-WORK-START]` failed once in two full runs on the busy PC at one step — Logic opened with
+"Edit rules" already on, "Nominal report before T/O" typed, Tab — and the box read the OLD value afterwards, the setting
+unchanged. Traced with a watcher on the page's body: shortly after the page opens (about half a second on a free machine) the
+list of rules is replaced by the same markup — new boxes, nothing visibly different — and whatever sits half-typed in a box
+goes with the old box. With a pause put between the typing and the Tab it happens every time; in a second trace the box lost
+its place about two seconds after "Edit rules" was pressed and the value was SAVED without a Tab. **Not traced:** what asks
+for that redraw (a late re-check of the week after the page change is the likely cause — the page redraws whenever the app's
+state moves, and its body is rebuilt as one piece), and whether anything can set it off LATER, while a person is typing —
+that is the question that decides whether this matters outside a test. A person's hands cannot reach the half-second after
+opening. **Why it may matter later:** once the app is in the database, other people's changes arrive by themselves every 30
+seconds (D356); if such an arrival redraws this page, a value being typed is dropped with no message. **To do:** (1) find
+what asks for the redraw; (2) either stop the page redrawing when nothing in it changed, or keep a box that is being typed in
+out of the redraw, as the schedule's text boxes are; (3) a test that types, lets the app's state move, and finds the typing
+still there. The browser test now types again until the app holds the value (`raptor-port/e2e/oilworkstart.spec.ts`,
+`logicLead`) — take that retry out when this is fixed. **Tier:** WALK (the Logic page, a typed value, both sizes).
+**Place (the agent's line):** low — with the next change to the Logic page, and before the database step for the reason above.
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([LOGIC-DONE-FIRST-PRESS]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-21-logic-fixes.md`.*
+
+### [LOGIC-DONE-FIRST-PRESS] On the Logic page, the first press of Done straight after a changed setting is lost (found 19 Oct 26, the rally box walk, walker B — OLDER than that job; low)
+In edit mode, change "Default rally before take-off" (any setting) and press Done once by finger at 402 wide: the value saves, the page stays in
+edit mode; a second press ends it; with nothing changed, one press works. Pictures `raptor-port/docs/img/handpass/2026-10-19-rally-build/B/B08z-L2.png`,
+`B08z-logic-Done.png`; the walker's table `raptor-port/docs/handpass/parts/rally-box/walker-B.md` (F2). **Not** the schedule's redraw that
+[EDIT-BUTTON-AFTER-CHANGE] fixed: Done is a React button that is never replaced (`ui/LogicPage.tsx` `#lgDone`), so the host's reading is that
+saving the setting moves the button out from under the press (a "rules changed" bar or the Reset button appearing) — reproduce and measure the
+button's position before and after the save first. **Place:** low, with the next change to the Logic page; a browser test that changes a
+setting and presses Done once, by mouse and by finger.
+

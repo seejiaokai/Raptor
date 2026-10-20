@@ -20,21 +20,27 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/inputs-small-fixes -->
-### 20 Oct 26, late — the Inputs batch (D994, Inputs and calendars), `claude/inputs-small-fixes`, pull request 553 — his "merge live" GIVEN (20 Oct 26), merging
-- **His pick:** "Inputs" (D994). The shaky-tests batch (pull request 552) is LIVE — its block removed on this branch.
-- **Built:** [TILL-NEXT-YEAR], [OIL-ASK-HEAD-SEVERAL] (both archived); his **D1095 / D1096** — every year PRINTED after a date
-  is two digits, the kept labels keep four (the places: the sheet §10); the fresh read's F1 (a week's rows in its own year),
-  F2 and the title (the medical sheet day first), F3. [INP-TILL-STALE] archived (gone since D948); [CAL-UNDO-OTHERS] refiled
-  to the Database step.
-- **Checked:** `raptor-port/docs/handpass/2026-10-20-inputs-small-fixes.md` — FULL, sized SMALL: walk 33 / 33, re-walk 49 / 49
-  (both sizes, 28 pictures); breaks 17 / 17; unit 12,045 / 12,045 under the lock (touched files after); one fresh blind
-  Opus read, its three findings fixed; GitHub's run green on `bf4193368` (the last push's run to read).
-- **Pick up here:** if this block is still here, check pull request 553 merged and the live app is READY (D1088); then remove
+<!-- now:claude/insights-logic-fixes-3416c8 -->
+### 21 Oct 26 — the Insights and Logic small fixes (D994), `claude/insights-logic-fixes-3416c8`, pull request 554 — his "merge live" GIVEN (21 Oct 26), merging
+- **His pick:** [LOGIC-REDRAW-DROPS-TYPING] and [LOGIC-DONE-FIRST-PRESS] (D994; both archived). The Inputs batch (pull request
+  553) is LIVE — its block removed on this branch. His new ruling **D1097** (a phone notification at every stop that waits
+  on him) is filed, its home `.claude/rules/shipping.md`.
+- **Built:** the Logic page's rule list drawn again only when its words change; a box's save applied once the keyboard has
+  landed (Tab no longer left it in the box just left); the keyboard and any half-typed value put back after a redraw; Done
+  one press at both sizes; the code read's F1–F3 and GitHub's KS5 (a parked text cursor) fixed. Filed: [LOGIC-IOS-REFOCUS]
+  (a check on his iPhone). Auto-fix was switched on by the app on the pull request and switched off (D1090).
+- **Checked:** `raptor-port/docs/handpass/2026-10-21-logic-fixes.md` — WALK: walk 36 / 36, re-walk 39 / 39 (both sizes);
+  breaks all red (unit and browser); unit 104 / 104 and browser 16 / 16 on the touched files; two fresh Opus reads (4
+  findings, all fixed — the sheet §7); final re-walk 39 / 39. GitHub's run green on `95104b353`; on `e829a9f91` it was running.
+- **His "merge live":** given 21 Oct 26, after the look pictures were sent; these closing records pushed, their one GitHub run
+  waited for, then the merge (D1088).
+- **Pick up here:** if this block is still here, check pull request 554 merged and the live app is READY (D1088); then remove
   this block and take his next pick (D994).
 <!-- /now -->
 
 ## Next, in order
+
+**RIGHT NOW (21 Oct 26):** pull request 553 LIVE (the Inputs batch, D994 — its block removed) → his pick, the Insights and Logic small fixes (D994), on `claude/insights-logic-fixes-3416c8` (pull request 554, this chat's block) → his "merge live" GIVEN → his next pick from the backlog.
 
 **RIGHT NOW (20 Oct 26, night):** pull request 552 LIVE (the shaky-tests batch, D994 — its block removed) → his pick, the Inputs batch (D994), on `claude/inputs-small-fixes` (pull request 553, this chat's block).
 

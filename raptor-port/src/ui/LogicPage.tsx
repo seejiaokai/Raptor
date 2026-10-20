@@ -5,7 +5,7 @@
    and their words: ui/logic-html.ts. The admin's edit mode is as it was: a value is parsed, bounded and applied live,
    the clash grading toggles, "Reset to standard" puts them all back — and now each changed value carries its own
    Reset while editing (the mock-up's per-setting Reset). The RULES MODIFIED stamp is as it was. */
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { VCONF, SHIFT_HARD, RULE_SPEC, RULE_STD, KIND_LABEL, ruleFmt, ruleParse, ruleOff, kindOff, rulesOffCount, rulesCheckedOffCount, rulesSave, rulesReset } from '../engine/rules'
 import { WARN, validate, lgFired } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
@@ -23,6 +23,43 @@ function ruleApply() {
   rulesSave()
   validate()
   notify()
+}
+
+/* …and a box's own change is applied a beat later ([LOGIC-REDRAW-DROPS-TYPING]'s neighbour, 21 Oct 26). A box saves on
+   `change`, which the browser raises as the keyboard LEAVES it — by Tab, or by a press on the next box — before the
+   keyboard has moved. Applied there and then, the save redrew the list at once (writing the setting announces itself to
+   the whole app, which repaints), the browser found the box it was leaving gone, and gave the move up: Tab left the
+   keyboard in the box just left, every time (probed on the built app). The value is taken from the box at once and
+   applied once the keyboard has landed; the page then puts the keyboard back where it landed (keep, below). */
+const PENDING = new Map<string, { v: any, t: ReturnType<typeof setTimeout> }>()
+function ruleApplyLater(k: string, v: any) {
+  const was = PENDING.get(k); if (was) clearTimeout(was.t)
+  PENDING.set(k, { v, t: setTimeout(() => { PENDING.delete(k); VCONF[k] = v; ruleApply() }, 0) })
+}
+/* the value a box last asked for — waiting, or applied */
+const ruleNow = (k: string) => PENDING.has(k) ? PENDING.get(k)!.v : VCONF[k]
+/* a press that acts on the settings themselves (Reset to standard, a row's Reset) applies what is still waiting FIRST, so
+   the order is the person's — the typed value, then the reset — and a value waiting a beat never lands on top of a reset
+   (the fresh code read, 21 Oct 26, F1: a tap on "Reset all" with a value still in its box) */
+function flushRuleApply() {
+  if (!PENDING.size) return
+  PENDING.forEach(({ v, t }, k) => { clearTimeout(t); VCONF[k] = v })
+  PENDING.clear()
+  ruleApply()
+}
+
+/* the one control in the list that has the keyboard, by a mark that survives a redraw — a box by its place in the list
+   (a key could render on several rows), a toggle or button by its own mark */
+function focusMark(el: Element | null): string | null {
+  const h = el as HTMLElement | null
+  if (!h || !h.dataset) return null
+  if (h.dataset.lgi != null) return `[data-lgi="${h.dataset.lgi}"]`
+  if (h.dataset.lgkind) return `[data-lgkind="${h.dataset.lgkind}"]`
+  if (h.dataset.lgmix) return '[data-lgmix]'
+  if (h.dataset.lgreset) return `[data-lgreset="${h.dataset.lgreset}"]`
+  if (h.dataset.lgopen) return `[data-lgopen="${h.dataset.lgopen}"]`
+  const how = h.tagName === 'SUMMARY' ? (h.parentElement as HTMLElement | null)?.dataset.how : undefined
+  return how ? `details[data-how="${how}"] > summary` : null
 }
 
 /* which "How it works" folds are open. The checks are one built string swapped in whole whenever it changes (a value
@@ -147,6 +184,12 @@ export function LogicPage() {
   const admin = isAdmin()
   const editing = lgCanEdit()
   const b = logicBody(LGQ, LGF)
+  /* THE RULE LIST IS DRAWN AGAIN ONLY WHEN ITS WORDS CHANGE ([LOGIC-REDRAW-DROPS-TYPING], 21 Oct 26). React sets a
+     `dangerouslySetInnerHTML` again whenever its OBJECT is a new one, not only when the markup differs (as Quals found,
+     19 Oct 26) — so every repaint of the app rebuilt the whole list with the same 32,832 characters (probed on the built
+     app: a late recheck about 1.3s after the page opens), and a value half typed into a box went with the old box. The
+     object is made once per change of the words. Pin: logic.test.tsx, e2e/logicedit.spec.ts. */
+  const bodyHTML = useMemo(() => ({ __html: b.html }), [b.html])
   const off = rulesOffCount()
   /* W2: the stamp and the strip speak of RULES — the settings a check reads; Reset speaks of every setting */
   const checkedOff = rulesCheckedOffCount()
@@ -174,26 +217,91 @@ export function LogicPage() {
     items[(i + (e.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length]?.focus()
   }
 
-  /* the reference's change/pointerdown listeners on #lgBody, verbatim logic —
+  /* THE KEYBOARD STAYS WHERE THE PERSON PUT IT (21 Oct 26). When the words do change — a value saved, a toggle flipped, a
+     setting changed by someone else — the list is rebuilt and the control with the keyboard goes with it. The control is
+     remembered as the keyboard arrives (focusin, below); after a rebuild that took it, the keyboard goes to the one drawn
+     in its place, and a value half typed there is carried across, caret and all. A box arrived at clean is selected
+     whole, so typing replaces it (D1080). Remembered only while the keyboard is in the list: leaving it for anywhere
+     else forgets it, so a press outside never pulls the keyboard back. This replaces the press-remembering the page
+     had, which a Tab never updated (it sent the keyboard back to the box just left). */
+  const keep = useRef<{ mark: string, el: HTMLElement } | null>(null)
+  /* THE LIST IS BEING REBUILT: from the render that brings new words until the rebuild's own keeper has run. Chrome raises
+     a typed box's `change` as a rebuild takes it off the page (LE4: a half-typed "1h4" saved as 1h04 by a setting changed
+     elsewhere) — that is not the person leaving the box, so it saves nothing: the keeper carries the typing to the box
+     drawn in its place, owed, and it is saved when the box is really left. */
+  const shown = useRef<object | null>(null)
+  const rebuilding = useRef(false)
+  if (shown.current !== bodyHTML) rebuilding.current = true
+  useLayoutEffect(() => {
+    shown.current = bodyHTML; rebuilding.current = false
+    const k = keep.current, host = bodyRef.current
+    if (!k || !host || k.el.isConnected) return
+    const a = document.activeElement
+    if (a && a !== document.body && a.isConnected) return
+    const el = host.querySelector(k.mark) as HTMLElement | null
+    if (!el) { keep.current = null; return }
+    const was = k.el
+    const typing = (x: Element): x is HTMLInputElement => x instanceof HTMLInputElement && x.type !== 'checkbox'
+    /* carried only while the setting under it is as it was when the typing began (a row's Reset, or a change made
+       elsewhere, to THIS setting wins over half a value — the fresh code read's F2) */
+    if (typing(was) && typing(el) && was.value !== was.defaultValue && was.value !== el.value && was.defaultValue === el.defaultValue) {
+      el.value = was.value
+      el.focus({ preventScroll: true })
+      try { el.setSelectionRange(was.selectionStart, was.selectionEnd) } catch (_) { /* a caret is a courtesy */ }
+      /* a value written by script is not one the browser saw typed: leaving the box would raise no change and save
+         nothing (F3). The box is marked, and the page raises its change on Enter or once the keyboard has really left it
+         (owedChange, below) — never as a later rebuild takes it away (the fix round's read: Chrome's "lost the keyboard"
+         on a rebuild would have saved the half-typed value) */
+      el.dataset.lgowed = '1'
+    } else {
+      el.focus({ preventScroll: true })
+      if (typing(el)) el.select()
+    }
+  }, [bodyHTML])
+
+  /* the reference's change listeners on #lgBody, verbatim logic —
      native listeners, since the fields live inside the built markup */
   useEffect(() => {
     const host = bodyRef.current!
-    let LGNEXT: any = null
-    const lgReapply = () => {
-      const want = LGNEXT; LGNEXT = null
-      ruleApply()
-      if (!want) return
-      /* the repaint lands after React commits — put the pointer back then */
-      setTimeout(() => {
-        const el = host.querySelector(`[data-${want[0]}="${want[1]}"]`) as any
-        if (el) { el.focus(); if (el.select) el.select() }
-      }, 0)
+    const onFocusIn = (e: Event) => {
+      const t = e.target as HTMLElement, mark = focusMark(t)
+      keep.current = mark ? { mark, el: t } : null
+    }
+    /* leaving the list forgets — but a control taken away by a rebuild is not leaving. Chrome tells a control it lost the
+       keyboard as a rebuild takes it off the page, while it is still on it (probed on the built app, 21 Oct 26), so the
+       question is asked a moment later, once the rebuild's own keeper (above) has put the keyboard back and noted the
+       control drawn in its place: still the one that left means the keyboard really left. */
+    /* a carried value's change, raised by the page once the box is really left (a box a rebuild took is off the page, and
+       a change raised there never reaches the list's listener — its value went on to the box drawn in its place). A second
+       change (the browser's own, after more typing) is absorbed: the value is already the one asked for (ruleNow). */
+    const owedChange = (t: HTMLInputElement) => {
+      if (!t.dataset.lgowed) return
+      delete t.dataset.lgowed
+      if (t.value !== t.defaultValue) t.dispatchEvent(new Event('change', { bubbles: true }))
+    }
+    const onKeyDown = (e: KeyboardEvent) => { if (e.key === 'Enter') owedChange(e.target as HTMLInputElement) }
+    const onFocusOut = (e: FocusEvent) => {
+      const t = e.target as HTMLInputElement
+      if (t.dataset?.lgowed) queueMicrotask(() => owedChange(t))
+      const to = e.relatedTarget as Node | null
+      if (to && host.contains(to)) return   // moving within the list: the arrival notes the new control
+      const was = keep.current
+      queueMicrotask(() => {
+        if (keep.current === was) keep.current = null
+        /* …and the page's text cursor is not left parked in a box the keyboard has left: a box blurred by script keeps
+           it, and a box focused next by a tap that places no caret (a window's number box, on a phone) then took no
+           typing at all — the keys went to the cursor's box, which no longer listened (kbscroll.spec.ts KS5, 21 Oct 26;
+           the list's old repaint-every-time used to throw that box, and the stray cursor, away) */
+        const s = window.getSelection?.()
+        if (s?.anchorNode && host.contains(s.anchorNode) && !host.contains(document.activeElement)) s.removeAllRanges()
+      })
     }
     const onChange = (e: Event) => {
       const t = e.target as HTMLElement
       const i = t.closest('[data-lgset]') as HTMLInputElement | null
       if (i) {
         if (!isAdmin()) return
+        if (rebuilding.current) return   // taken off the page by a rebuild, not left — the keeper carries the typing
         const k = i.dataset.lgset!, spec = RULE_SPEC[k], v = ruleParse(k, i.value)
         if (v == null || (spec.kind!=='text' && (v < spec.lo || v > spec.hi))) {
           /* put the LIVE value back, the way every other refusing path in the
@@ -206,35 +314,28 @@ export function LogicPage() {
           i.value = ruleFmt(k, VCONF[k])
           return HOOKS.toast(`${spec.t} must be between ${ruleFmt(k, spec.lo)} and ${ruleFmt(k, spec.hi)}`, 'warn')
         }
-        if (v === VCONF[k]) { i.classList.remove('bad'); i.value=ruleFmt(k,v); return }
-        /* no passing note (owner D936, 16 Oct 26): the row shows the new value, and its standard where it differs (D850) */
-        VCONF[k] = v; lgReapply()
+        if (v === ruleNow(k)) { i.classList.remove('bad'); i.value=ruleFmt(k,v); return }
+        /* no passing note (owner D936, 16 Oct 26): the row shows the new value, and its standard where it differs (D850).
+           The box shows it in the squadron's spelling at once, as the redraw will (a "150" reads 2h30). */
+        i.classList.remove('bad'); i.value = ruleFmt(k, v); ruleApplyLater(k, v)
         return
       }
       const c = t.closest('[data-lgkind]') as HTMLInputElement | null
       if (c) {
         if (!isAdmin()) return
         const k = c.dataset.lgkind!
-        SHIFT_HARD[k] = c.checked; lgReapply()
+        SHIFT_HARD[k] = c.checked; ruleApply()   // a toggle keeps the keyboard where it is; the page puts it back after the redraw
         HOOKS.toast(`A shift against ${KIND_LABEL[k]} is now ${c.checked ? 'a Warning' : 'an Advisory'}`)
         return
       }
       /* the Insights switch, while editing (D521) */
       const m = t.closest('[data-lgmix]') as HTMLInputElement | null
       if (m && lgCanEdit()) {
-        /* the switch's markup is redrawn by the change it makes — put the keyboard back on it (the fresh code read, 15 Oct 26) */
-        const had = document.activeElement === m
+        /* the switch's markup is redrawn by the change it makes; the keyboard, if it was on it, is put back on it by the
+           page's keeper (the fresh code read, 15 Oct 26) */
         setMissionTracking(m.checked)
         notify()   // its On / Off is in the built markup: redraw it
-        if (had) setTimeout(() => (host.querySelector('[data-lgmix]') as HTMLElement | null)?.focus(), 0)
       }
-    }
-    const onPointerDown = (e: Event) => {
-      const t = (e.target as HTMLElement).closest('[data-lgset],[data-lgkind]') as HTMLElement | null
-      /* prefer the ordinal — a key could render on several rows, and the
-         key selector alone re-focused the first of them */
-      LGNEXT = t ? (t.dataset.lgi != null ? ['lgi', t.dataset.lgi]
-        : t.dataset.lgset ? ['lgset', t.dataset.lgset] : ['lgkind', t.dataset.lgkind]) : null
     }
     const onClick = (e: Event) => {
       const el = e.target as HTMLElement
@@ -250,6 +351,11 @@ export function LogicPage() {
       const r = el.closest('[data-lgreset]') as HTMLElement | null
       if (r) {
         if (!isAdmin() || !lgCanEdit()) return
+        flushRuleApply()
+        /* what is half typed in this row's own box goes with the Reset (the press keeps the keyboard in the box, so its
+           change never came) — the row shows its standard, not the typing (F2) */
+        const a = document.activeElement as HTMLInputElement | null
+        if (a?.dataset?.lgset && r.dataset.lgreset!.split(',').includes(a.dataset.lgset)) a.value = a.defaultValue
         if (r.dataset.lgreset === 'kinds') Object.keys(KIND_LABEL).forEach(k => { SHIFT_HARD[k] = RULE_STD.s[k] })
         else r.dataset.lgreset!.split(',').forEach(k => { if (RULE_SPEC[k]) VCONF[k] = RULE_STD.v[k] })
         ruleApply()
@@ -269,11 +375,23 @@ export function LogicPage() {
     const onMouseDown = (e: Event) => { if ((e.target as HTMLElement).closest('[data-lgreset],[data-lgopen]')) e.preventDefault() }
     host.addEventListener('mousedown', onMouseDown)
     host.addEventListener('change', onChange)
-    host.addEventListener('pointerdown', onPointerDown)
+    host.addEventListener('focusin', onFocusIn)
+    host.addEventListener('focusout', onFocusOut)
+    host.addEventListener('keydown', onKeyDown)
     host.addEventListener('click', onClick)
     host.addEventListener('toggle', onToggle, true)
-    return () => { host.removeEventListener('mousedown', onMouseDown); host.removeEventListener('change', onChange); host.removeEventListener('pointerdown', onPointerDown); host.removeEventListener('click', onClick); host.removeEventListener('toggle', onToggle, true) }
+    return () => { host.removeEventListener('mousedown', onMouseDown); host.removeEventListener('change', onChange); host.removeEventListener('focusin', onFocusIn); host.removeEventListener('focusout', onFocusOut); host.removeEventListener('keydown', onKeyDown); host.removeEventListener('click', onClick); host.removeEventListener('toggle', onToggle, true) }
   }, [])
+
+  /* DONE TAKES ONE PRESS ([LOGIC-DONE-FIRST-PRESS], 21 Oct 26). A press on Done used to take the keyboard out of the box
+     first, which saved its changed value, and the save brought "Reset to standard" up beside Done — on a phone (402 wide)
+     Done moved 77px left between the finger going down and coming up, so the press landed on nothing and the page stayed
+     in editing. The press now leaves the box alone until it is complete; Done itself saves what the box holds, then
+     ends editing. */
+  const finishBox = () => {
+    const a = document.activeElement as HTMLElement | null
+    if (a && bodyRef.current?.contains(a)) a.blur()   // its change is raised here, and saves (or refuses) as ever
+  }
 
   return (
     <>
@@ -295,10 +413,12 @@ export function LogicPage() {
         <button type="button" className="abtn" id="lgEdit" hidden={!admin || editing}
           onClick={() => { setLgEdit(true); notify(); HOOKS.toast('Editing rules — the schedule rechecks as you type') }}>✎ Edit</button>
         <button type="button" className="abtn primary" id="lgDone" hidden={!admin || !editing}
-          onClick={() => { setLgEdit(false); notify() }}>Done</button>
+          onMouseDown={e => e.preventDefault()}
+          onClick={() => { finishBox(); setLgEdit(false); notify() }}>Done</button>
         <button type="button" className="abtn ghost" id="lgReset" hidden={!admin || !off}
           onClick={() => {
             if (!isAdmin()) return
+            flushRuleApply()   // a value still waiting is applied first, then everything is reset (F1)
             const n = rulesOffCount(); if (!n) return
             rulesReset(); ruleApply()
             HOOKS.toast(`${n} rule${n > 1 ? 's' : ''} back to squadron standard`)
@@ -315,7 +435,7 @@ export function LogicPage() {
           {` The schedule is checked against ${checkedOff > 1 ? 'them' : 'it'} now.`} A published day keeps its printed B and its OIL until it is published again.
           {admin ? '' : ' Only an admin can change them.'}</> : null}
       </div>
-      <div className="lgwrap" id="lgBody" ref={bodyRef} dangerouslySetInnerHTML={{ __html: b.html }} />
+      <div className="lgwrap" id="lgBody" ref={bodyRef} dangerouslySetInnerHTML={bodyHTML} />
     </>
   )
 }

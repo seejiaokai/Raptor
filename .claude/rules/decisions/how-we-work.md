@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1097 | 21 Oct 26 | The agent sends him a phone notification whenever it stops and needs him — the work finished and waiting on his next step, or a question, an answer, a look or any other input from him — and not for progress. |
 | D1093 | 20 Oct 26 | When he gives "auto merge live" for a night or a run, it covers everything that run produces, its closing records pull request included: each merges once its checks are green, with nothing held back for a second word; work outside that run still waits for his "merge live". |
 | D1091 | 20 Oct 26 | GitHub's check machines download the project without the walks' pictures and saved looks (the four picture folders), since no check reads them — 4.7 GB down to 79 MB a machine, 2 to 4 minutes saved on each; the pictures stay in the project and its history, nothing deleted. |
 | D1090 | 20 Oct 26 | "Auto-fix" stays off on this project's pull requests — the app does not watch them for him — and where it is found switched on, the agent switches it off and says so; his standing rule not to watch pull requests stands. |
