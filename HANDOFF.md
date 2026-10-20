@@ -30,10 +30,10 @@ the later merge keeps both (D78).
   one press at both sizes; the code read's F1–F3 and GitHub's KS5 (a parked text cursor) fixed. Filed: [LOGIC-IOS-REFOCUS]
   (a check on his iPhone). Auto-fix was switched on by the app on the pull request and switched off (D1090).
 - **Checked:** `raptor-port/docs/handpass/2026-10-21-logic-fixes.md` — WALK: walk 36 / 36, re-walk 39 / 39 (both sizes);
-  breaks all red (unit and browser); unit 104 / 104 and browser 15 / 15 on the touched files; one fresh blind Opus read (3
-  findings, fixed); a second fresh read of the fix round — see the sheet §7.
-- **Pick up here:** read the sheet §7 (read 2) and §8 (GitHub's run on the last pushed commit); when both are clean, his look
-  and his "merge live".
+  breaks all red (unit and browser); unit 104 / 104 and browser 16 / 16 on the touched files; two fresh Opus reads (4
+  findings, all fixed — the sheet §7); final re-walk 39 / 39. GitHub's run green on `95104b353`; on `e829a9f91` it was running.
+- **Pick up here:** read GitHub's run on `e829a9f91` (a red one is fixed first); push the local commits (the look pictures,
+  these records) once no run of the branch is going (D151); then his look on the preview and his "merge live" (D1088).
 <!-- /now -->
 
 ## Next, in order

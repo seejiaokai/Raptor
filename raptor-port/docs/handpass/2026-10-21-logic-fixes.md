@@ -133,7 +133,9 @@ carried by LE4, its break, and the final re-walk.
 **The final re-walk** (after R2-1): `WALK_DIR=rewalk2` — **39 PASS · 0 FAIL · 0 errors**, pictures `…/rewalk2/`, opened.
 
 ## 8. Gates
-*(GitHub's run on the last pushed commit — filled in at the end.)*
+GitHub's run (the full check while the repo is public, D1086): `044904c81` red (KS5 — §6a); `95104b353` **green** (KS5's fix
+in); `e829a9f91` (read 2's fix) running when this was written — the next chat reads it before his "merge live". On his PC: the
+touched tests only (unit 104 / 104, browser 16 / 16, under the lock). His look: `docs/img/handpass/2026-10-21-logic-fixes/look/`.
 
 **Walk:** 36 checks at desktop 1440 (mouse, keys) and phone 402 (finger), 0 FAIL, 0 errors, 20 pictures opened —
 `docs/img/handpass/2026-10-21-logic-fixes/walk/`; re-walks after the fixes 39 / 39 and, after the last, 39 / 39 — `…/rewalk/`,
