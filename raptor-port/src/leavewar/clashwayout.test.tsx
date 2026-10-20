@@ -134,6 +134,29 @@ describe('every clash line names where it can be undone — the words of record 
   })
 })
 
+/* [BATCH-14OCT-LEFTOVERS] (c), found 14 Oct 26: a clash for a man with no row on the war (a SANS man with Show SANS off,
+   an archived man) printed his hidden id — "plasma" — where every other place names him by the roster's callsign */
+describe('a clash for a man with no war row names him by his callsign, never his hidden id', () => {
+  it('the desktop strip and the phone list both read "Fable", not "plasma"', () => {
+    inputsLeave()
+    setPeople(projectPeople().filter(p => p.id !== 'plasma'))          // no row of his on the war
+    expect(getState().people.some(p => p.id === 'plasma')).toBe(false)
+    expect(getClashes().some(c => c.person === 'plasma'), 'the clash is still raised').toBe(true)
+    const strip = render(<StageBar />)
+    const rows = [...strip.container.querySelectorAll('[data-testid="sync-clashes"] .row')].map(flat)
+    strip.unmount()
+    expect(rows.some(t => t.startsWith('Fable · Sat 18 Jul · ')), rows.join(' | ')).toBe(true)
+    expect(rows.some(t => /^plasma/.test(t))).toBe(false)
+    asPhone()
+    const phone = render(<StageBar />)
+    expect(phone.getByTestId('clash-line').getAttribute('aria-expanded'), 'the list opens with the page').toBe('true')
+    const who = [...phone.container.querySelectorAll('[data-testid^="clash-row-"] .clash-who')].map(flat)
+    expect(who).toContain('Fable')
+    expect(who).not.toContain('plasma')
+    phone.unmount()
+  })
+})
+
 describe('a tap on a clash goes where its instruction says (D827)', () => {
   it('"Decide the bid": the grid is asked for that day AND to open it for that person — once', () => {
     aBid()

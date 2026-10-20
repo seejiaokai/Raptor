@@ -719,6 +719,12 @@ export type ClashWayOut = 'bid' | 'war' | 'war-published' | 'inputs'
 /** A leave input asking for a date the squadron already bid differently on.
  *  The system never overwrites a bid — it raises the clash and a human
  *  decides (Leave War's rule); this list is that surface's data. */
+/* a man's callsign as the roster has it — for a clash about a man with NO row on the war (a SANS man with Show SANS
+   off, an archived man), whom the war's own roster cannot name; never his hidden id ([BATCH-14OCT-LEFTOVERS] (c)) */
+export function rosterCallsign(id: string): string | null {
+  const b: any = (PEOPLE as any)[id]
+  return b && b.cs ? String(b.cs) : null
+}
 export interface SyncClash {
   person: string
   date: string
