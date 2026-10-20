@@ -602,6 +602,24 @@ describe('Fable\'s code read: an input change reads pending only where the day\'
     expect(dayPendingItems(WED).length, 'Wednesday prints what it went out with').toBe(0)
     expect(listText(WED), 'one edit — not "moved off" and "filed"').not.toMatch(/moved off|filed/)
   })
+
+  /* [TILL-NEXT-YEAR]: a last day in another year prints its year ("till 5 Jan 2027"). The published-day compare reads the
+     printed words (inpDetailKey, D189 / D948 (3)) — the year must never read as a change by itself, and a real move of
+     that last day still must */
+  it('a leave running into next year: its published Friday reads nothing pending; stretched a day, ONE change naming both dates with their year', () => {
+    const who = loner()
+    expect(commitNewInput({ ...leaveDraft(who, '2026-07-17', 'LONG HAUL'), end: '2027-01-05' })).toBe(true)
+    validate()
+    publishDay(FRI); signBound(FRI)
+    const inp = INPUTS.find((r: any) => r.remarks === 'LONG HAUL')!
+    expect(remarksShown(inp), 'it prints its year').toBe('LONG HAUL till 5 Jan 2027')
+    expect(dayPendingItems(FRI).length, 'nothing waits on the day it went out on').toBe(0)
+    expect(daySigned(FRI), 'its sign-offs hold').toBe(true)
+    expect(commitInputEdit(inp, { ...draftOf(inp), end: '2027-01-06' })).toBeTruthy()
+    validate()
+    expect(dayPendingItems(FRI).length, 'its printed last day moved — one change').toBe(1)
+    expect(listText(FRI)).toMatch(/LONG HAUL till 5 Jan 2027.*LONG HAUL till 6 Jan 2027/)
+  })
 })
 
 /* THE NEXT AL TAKES A RULE CHANGE IN (the Logic walker's "not walked"): a warning that freezes, moved by a rule, reads

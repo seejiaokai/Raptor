@@ -8,7 +8,7 @@
    · inpDetailKey — a published day compares the PRINTED remark, so a stretched or cut input reads pending where its date
      moved (D189, kept by D948 (3)), and a remark saved with the date in it reads the same as the words alone. */
 import { describe, expect, it } from 'vitest'
-import { remarksTyped, remarksShown, tillOf, tillOfISO, inpDetailKey } from './inputs'
+import { remarksTyped, remarksShown, tillOf, tillOfISO, inpDetailKey, baseYear } from './inputs'
 
 const leave = (o: any = {}) => ({ person: 'bane', type: 'LL', date: 'Aug 10', endDate: 'Aug 14', yr: 2026, allday: true, remarks: '', ...o })
 
@@ -77,6 +77,29 @@ describe('tillOf / remarksShown — what every screen prints', () => {
     expect(remarksShown({ type: 'SANS Availability', date: 'Aug 10', remarks: 'AM only' })).toBe('AM only')
     expect(tillOf({ type: 'Upchit', date: 'Aug 10' })).toBe('')
     expect(tillOfISO('LL', '', '')).toBe('')
+  })
+})
+
+/* [TILL-NEXT-YEAR] (found 17 Oct 26 by [INPUTS-LIST-NEXT-YEAR]'s walk): an input of another year printed "till 15 Feb" — its
+   year dropped — where its date column read "15 Feb 2027". The date words now carry the year where it is not the loaded
+   week's own, the convention every label in the app follows (weeks-data.ts weekLabels; inputs.ts lateNote). */
+describe('tillOf / tillOfISO — a last day in another year carries its year', () => {
+  it('the loaded week is 2026 here', () => { expect(baseYear()).toBe(2026) })
+  it('an input of next year: "till 15 Feb 2027" — its year from its own anchor', () => {
+    expect(tillOf(leave({ date: 'Feb 10', endDate: 'Feb 15', yr: 2027 }))).toBe('till 15 Feb 2027')
+    expect(remarksShown(leave({ date: 'Feb 10', endDate: 'Feb 15', yr: 2027, remarks: 'Ski trip' }))).toBe('Ski trip till 15 Feb 2027')
+  })
+  it('a span that runs into the next year: its last day’s label carries the year', () => {
+    expect(tillOf(leave({ date: 'Dec 28', endDate: 'Jan 3 2027' }))).toBe('till 3 Jan 2027')
+  })
+  it('a last day in the loaded year prints as it always did; a one-day input of another year carries it', () => {
+    expect(tillOf(leave())).toBe('till 14 Aug')
+    expect(tillOf(leave({ date: 'Jan 3 2027', endDate: undefined, yr: 2026 })), 'a one-day input, a year off').toBe('till 3 Jan 2027')
+  })
+  it('the window’s grey date, from its ISO days, the same', () => {
+    expect(tillOfISO('LL', '2027-02-10', '2027-02-15')).toBe('till 15 Feb 2027')
+    expect(tillOfISO('LL', '2026-12-28', '2027-01-03')).toBe('till 3 Jan 2027')
+    expect(tillOfISO('LL', '2026-08-10', '2026-08-14')).toBe('till 14 Aug')
   })
 })
 

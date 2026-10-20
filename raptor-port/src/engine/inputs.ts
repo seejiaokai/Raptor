@@ -1271,16 +1271,25 @@ export function tillSettle(rec:any):boolean{
      stay hidden there and come back on a retype out (the scenario designer's 9, 17 Oct 26) */
   if(typeof rec.till==='boolean'&&rec.till!==tillDefault(rec)&&!isSansAvail(rec.type)&&!isUpchit(rec.type))return false;
   delete rec.till;return true;}
+/* a last day in another year than the loaded week's carries its year — "till 15 Feb 2027" — the convention every label
+   in the app follows (weeks-data.ts weekLabels; lateNote below). Its year is the label's own, else the row's anchor `yr`
+   (dateOrd). The published-day compare reads this text too (inpDetailKey), and works out both sides with the same loaded
+   week, so the year never reads as a change on its own ([TILL-NEXT-YEAR], found 17 Oct 26 — "till 15 Feb" under a
+   2027 date). */
+const yearTail=(y:any)=>y&&y!==baseYear()?` ${y}`:'';
 /* "till <its last day>", from its dates — '' for an input that prints none (unticked — D953), or has no date yet */
 export function tillOf(inp:any):string{
   if(!inp||isSansAvail(inp.type)||isUpchit(inp.type)||!tillShown(inp))return '';
-  const w=dayWords(inp.endDate||inp.date);
-  return w?`till ${w}`:'';}
+  const lbl=inp.endDate||inp.date, w=dayWords(lbl);
+  if(!w)return '';
+  const o=dateOrd(lbl,inp.yr);
+  return `till ${w}${yearTail(o==null?0:Math.floor(o/10000))}`;}
 /* …the same from two ISO dates, for a window whose dates are still being picked ('' with no start). The window shows it
    whether or not it is ticked — struck through when it is not (D953) — so it asks no tick here. */
 export function tillOfISO(type:any,startISO:any,endISO:any):string{
   if(isSansAvail(type)||isUpchit(type)||!isISO(startISO))return '';
-  return `till ${isoLabel(isISO(endISO)?endISO:startISO)}`;}
+  const last=isISO(endISO)?endISO:startISO;
+  return `till ${isoLabel(last)}${yearTail(+String(last).slice(0,4))}`;}
 /* WHAT EVERY SCREEN PRINTS FOR AN INPUT'S REMARK: the typed words, then the date — "Las Vegas till 17 Jul", or the date
    alone where nothing was typed. SANS availability and an upchit: as typed. */
 export function remarksShown(inp:any):string{

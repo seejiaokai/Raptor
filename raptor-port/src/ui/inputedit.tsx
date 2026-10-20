@@ -1496,6 +1496,12 @@ export function oilFirst(o: {
   places: string[]
   /** this door asked afresh — the bar's "Answer OIL"; true: made */
   again: () => boolean
+  /** who the waiting question is HEADED for, on the record as it stands — everyone the one answer is written for (owner
+   *  D762), as the row's door heads it (ui/reqdoor.ts `gated`). The gate's own heading names the draft's one person, so a
+   *  door that changes an input of several says who it will hold ([OIL-ASK-HEAD-SEVERAL] — the narrow read's FX-1,
+   *  13 Oct 26: a drag on the Inputs calendar and a hand-over on the Unavailable row headed it with one man). '' or
+   *  absent: the gate's. */
+  who?: (r: any) => string
 }): boolean {
   const find = () => INPUTS.find((x: any) => String(x.iid) === String(o.iid))
   const run = (oil?: Record<string, number>): string => { const r = find(); return !r || !o.same(r) ? 'none' : o.make(r, oil) ? 'done' : 'refused' }
@@ -1516,9 +1522,10 @@ export function oilFirst(o: {
     else notify()                                    // every screen reads its records again after the thrown-away save
     return a === 'done'
   }
+  const now = find()                                   // a tried save puts every record back as a new object
   holdForOil({
     kind: o.kind, lead: o.lead, places: o.places,
-    gate: { who: g.who, typeLabel: g.typeLabel, plan: g.plan, prev: g.prev },
+    gate: { who: (o.who && now ? o.who(now) : '') || g.who, typeLabel: g.typeLabel, plan: g.plan, prev: g.prev },
     redo: oil => run(oil),
     ask: () => { const x = find(); if (!x || !o.same(x)) return 'none'; return o.again() ? 'done' : OILWAIT ? 'asked' : 'refused' },
   })
@@ -1604,6 +1611,9 @@ export function reassignInput(iid: any, personId: any): boolean {
         return true
       },
       gate: x => oilGate(draftOf(x), x),
+      /* headed for everyone the one answer is written for — the people it will hold, the newcomer in his place (D762,
+         [OIL-ASK-HEAD-SEVERAL]; the same list the row's door builds, ui/reqdoor.ts) */
+      who: x => inputWho({ people: idsOf(x).map(String).map(p => p === String(from) ? personId : p).map(p => ({ p })) }),
       places: [`sel:[data-inpseat="${String(iid)}"]`],
       again: () => !!reassignInput(iid, personId),
     })
