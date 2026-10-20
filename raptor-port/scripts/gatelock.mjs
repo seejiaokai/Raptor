@@ -12,7 +12,9 @@
  *   node raptor-port/scripts/gatelock.mjs release              give it back (only when this run is over)
  *   node raptor-port/scripts/gatelock.mjs run [--from raptor-port] [--logs <dir>]
  *        take it, run the whole gate set in order into log files, print one line per gate, ALWAYS release.
- *        The browser tests use E2E_PORT from the environment (each parallel chat its own port).
+ *        The browser tests use E2E_PORT from the environment (each parallel chat its own port); with none set, a port
+ *        found free at that moment is used and printed, and a set one that is already answering is refused
+ *        ([GATELOCK-STALE-PORT]) — the Tracker smoke's SMOKE_PORT the same.
  *   node raptor-port/scripts/gatelock.mjs exec "<who — what>" -- <command …>
  *        take it (waiting while another chat holds it), run that one command in this folder with its output shown,
  *        ALWAYS release, and exit with the command's code. The push-and-lock guard ([PUSH-LOCK-GUARD], D976) points
@@ -25,6 +27,7 @@ import { spawn, spawnSync } from 'node:child_process'
 import { join, resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { homedir, tmpdir } from 'node:os'
+import { createServer, connect } from 'node:net'
 
 export const LOCK = process.env.RAPTOR_GATE_LOCK || join(homedir(), '.raptor-gates-lock')
 export const STALE_MS = 2 * 60 * 60 * 1000
@@ -94,6 +97,45 @@ export async function take(who, { lock = LOCK, everyMs = 30_000, log = console.l
   }
 }
 
+/* A PORT NOBODY IS ANSWERING ON ([GATELOCK-STALE-PORT], 18 Oct 26 — built the night of 20 Oct 26). Outside CI the browser
+ * tests REUSE a server already on their port (playwright.config.ts reuseExistingServer), so a preview another chat left on
+ * 4173 had the whole check run test that chat's old build: seven false failures one night, twenty-nine the next. A port is
+ * taken as busy when anything answers a connection on localhost, or when it cannot be listened on. */
+export function portAnswering(port, host = '127.0.0.1', ms = 400) {
+  return new Promise(res => {
+    const s = connect({ port, host }); let done = false
+    const end = v => { if (!done) { done = true; s.destroy(); res(v) } }
+    s.once('connect', () => end(true)); s.once('error', () => end(false)); s.setTimeout(ms, () => end(false))
+  })
+}
+export function portListenable(port) {
+  return new Promise(res => {
+    const srv = createServer(); srv.once('error', () => res(false))
+    srv.listen(port, () => srv.close(() => res(true)))
+  })
+}
+export async function portBusy(port) {
+  return (await portAnswering(port)) || (await portAnswering(port, '::1')) || !(await portListenable(port))
+}
+export async function freePort(from = 4300, to = 4399, busy = portBusy) {
+  for (let p = from; p <= to; p++) if (!(await busy(p))) return p
+  throw new Error(`gatelock: no free port between ${from} and ${to}`)
+}
+/* the ports the browser runs use: a set one must be free (a busy one would be REUSED — another build tested), an unset one is
+ * chosen free; returns the env to run with, or throws with the reason */
+export async function browserPorts(env, busy = portBusy) {
+  const out = { ...env }, said = []
+  for (const [name, from] of [['E2E_PORT', 4300], ['SMOKE_PORT', 4350]]) {
+    if (out[name]) {
+      if (await busy(Number(out[name]))) throw new Error(`gatelock: ${name}=${out[name]} is already answering — another chat's preview would be tested instead of this build. Stop it, or unset ${name} and a free port is chosen.`)
+      said.push(`${name}=${out[name]}`)
+    } else { out[name] = String(await freePort(from, from + 49, busy)); said.push(`${name}=${out[name]} (free)`) }
+  }
+  return { env: out, said: said.join(', ') }
+}
+/* a command that serves the bundle for browser tests */
+export const runsBrowser = cmd => /playwright\s+test|test:e2e|smoke:tracker|smoke\.mjs/.test(cmd)
+
 /* the gate set, in the order raptor-port/CLAUDE.md §Build & verify gives */
 const GATES = [
   ['unit', 'npx', ['vitest', 'run']],
@@ -104,10 +146,10 @@ const GATES = [
   ['rulecheck', 'node', ['scripts/rulecheck.mjs']],
   ['docsize', 'node', ['scripts/docsize.mjs']],
 ]
-function runOne(cmd, args, cwd, file) {
+function runOne(cmd, args, cwd, file, env = process.env) {
   return new Promise(res => {
     const out = createWriteStream(file)
-    const p = child = spawn(cmd, args, { cwd, shell: process.platform === 'win32', env: process.env }); noteChild(p)
+    const p = child = spawn(cmd, args, { cwd, shell: process.platform === 'win32', env }); noteChild(p)
     p.stdout.pipe(out); p.stderr.pipe(out)
     p.on('close', code => { out.end(); res(code ?? 1) })
     p.on('error', () => { out.end(); res(1) })
@@ -116,13 +158,15 @@ function runOne(cmd, args, cwd, file) {
 async function runAll(from, logs) {
   mkdirSync(logs, { recursive: true })
   const who = `${process.env.GATELOCK_WHO || branchName(from)} — the full gate set`
+  const ports = await browserPorts(process.env)
+  console.log(`gatelock: the browser runs on ${ports.said}`)
   await take(who, { holderPid: process.pid })
   releaseOnSignal()
   let bad = 0
   try {
     for (const [name, cmd, args] of GATES) {
       const t = Date.now(), file = join(logs, `gate-${name}.log`)
-      const code = await runOne(cmd, args, from, file)
+      const code = await runOne(cmd, args, from, file, ports.env)
       if (code !== 0) bad++
       console.log(`${code === 0 ? 'PASS' : 'FAIL'} ${name} (${Math.round((Date.now() - t) / 1000)} s) → ${file}`)
     }
@@ -158,17 +202,22 @@ if (isMain) {
   else if (verb === 'run') {
     const from = resolve(opt('--from') || join(dirname(fileURLToPath(import.meta.url)), '..'))
     const logs = resolve(opt('--logs') || join(tmpdir(), 'raptor-gates'))
-    process.exitCode = (await runAll(from, logs)) ? 1 : 0
+    try { process.exitCode = (await runAll(from, logs)) ? 1 : 0 } catch (e) { console.log(String(e && e.message || e)); process.exitCode = 1 }
   } else if (verb === 'exec' && rest.indexOf('--') > 0 && rest.length > rest.indexOf('--') + 1) {
     // one word after "--" is a whole command line, run as written; several are words, each kept whole
     const parts = rest.slice(rest.indexOf('--') + 1)
     const cmd = parts.length === 1 ? parts[0] : parts.map(a => /[\s"&|;<>]/.test(a) ? `"${a.replace(/"/g, '\\"')}"` : a).join(' ')
+    let env = process.env
+    if (runsBrowser(cmd)) {
+      try { const ports = await browserPorts(process.env); env = ports.env; console.log(`gatelock: the browser runs on ${ports.said}`) }
+      catch (e) { console.log(String(e && e.message || e)); process.exit(1) }
+    }
     await take(rest[0], { holderPid: process.pid })
     releaseOnSignal()
     let code = 1
     try {
       code = await new Promise(res => {
-        const p = child = spawn(cmd, { shell: true, stdio: 'inherit', env: process.env }); noteChild(p)
+        const p = child = spawn(cmd, { shell: true, stdio: 'inherit', env }); noteChild(p)
         p.on('close', c => res(c ?? 1)); p.on('error', () => res(1))
       })
     } finally { release() }
