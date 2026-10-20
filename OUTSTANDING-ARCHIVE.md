@@ -6024,3 +6024,20 @@ his answer; nothing built. **His answer, 20 Oct 26:** "2" (D1083), then "Ok carr
 **BUILT and FULL-checked the same day** on `claude/standby-week-b` — the sheet `raptor-port/docs/handpass/2026-10-20-standby-week-b.md`; waiting for his look and "merge live".
 **Place:** after [KEYBOARD-SCROLL] goes live, as its own small job (own branch from `main`).
 
+
+*Moved here 2026-10-20 by backlog-archive.mjs ([CI-SPLIT-SLOW-JOBS]). Forward facts: `raptor-port/docs/gates-and-deploy.md`.*
+
+### [CI-SPLIT-SLOW-JOBS] Split GitHub's slowest checks across more machines (put to him 20 Oct 26 — his yes given, D1089: "Proceed as recommended")
+His question, 20 Oct 26: *"why the checks take so long? Can It be shortened? I'm thinking the non applicable areas don't need
+to check?"* Measured on pull request 544's run (0f8dac430): every job runs side by side, so the run is its slowest job —
+Leave War browser desktop 8m53s, the scheduler's browser part 2/2 8m13s, unit parts 2–4 about 7½–8m, the Tracker 7m51s,
+Leave War unit 4–6m, build 2m37s. Skipping areas saves almost nothing on GitHub (the scheduler's own jobs take ~8m) and
+risks missing a break across areas; told so. **Recommended:** split the slow jobs further (`.github/workflows/deploy.yml` —
+the Leave War desktop browser set into two, the scheduler's browser and unit sets into more parts, the Tracker's), free
+while the repo is public; measure after. A workflow change — his yes is given (D1089); built as its own job. When the repo is private again (checks back on
+his PC, one after another), skipping truly separate areas would save real time — raise it then.
+**Also watch (a reader's note):** `raptor-port/docs/gates-and-deploy.md` says a documents-only push on a pull request cancels
+its running gate job and starts no new one; `shipping.md` says a notes push on a pull request carrying code re-runs every
+gate — see which on the next closing push (D1088 waits on that run). **Place:** Checks and tooling — next, its own job in a fresh chat (D1089).
+**BUILT 20 Oct 26** (pull request 546, `claude/ci-split-slow-jobs-standby-9e987d`): every GitHub leg checks out without the four picture folders (D1091, his word: "don't download the photos to save time" — 4.7 GB → 79 MB a machine), the raptor unit set in six, its browser set in four, the Leave War desktop browser set in two; the Tracker smoke stays one leg (its second half uses helpers its first half defines). **Measured:** 5m53s end to end, against 8m53s–10m04s before; every leg green, nineteen side by side; every area still run — the same 676 unit files and 12,004 unit tests, 893 browser tests and 453 Tracker checks as main’s last run. Detail: `raptor-port/docs/gates-and-deploy.md` (20 Oct 26). Waiting for his "merge live".
+

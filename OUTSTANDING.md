@@ -154,7 +154,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [CI-SPLIT-SLOW-JOBS] — split GitHub's slowest checks across more machines while the repo is public (about 9 → 5 minutes, an estimate) — his yes given (D1089); its own job, a fresh chat.
 - [GATELOCK-STALE-PORT] — the lock's full run can test another chat's old build when a preview is left running — it picks a free port itself.
 - [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
 - [LW-WINDOW-PRUNE-FLAKE-2] — the Leave War month-window browser test fails about half the full runs — wait on the grid, not a fixed time.
@@ -227,19 +226,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
-
-### [CI-SPLIT-SLOW-JOBS] Split GitHub's slowest checks across more machines (put to him 20 Oct 26 — his yes given, D1089: "Proceed as recommended")
-His question, 20 Oct 26: *"why the checks take so long? Can It be shortened? I'm thinking the non applicable areas don't need
-to check?"* Measured on pull request 544's run (0f8dac430): every job runs side by side, so the run is its slowest job —
-Leave War browser desktop 8m53s, the scheduler's browser part 2/2 8m13s, unit parts 2–4 about 7½–8m, the Tracker 7m51s,
-Leave War unit 4–6m, build 2m37s. Skipping areas saves almost nothing on GitHub (the scheduler's own jobs take ~8m) and
-risks missing a break across areas; told so. **Recommended:** split the slow jobs further (`.github/workflows/deploy.yml` —
-the Leave War desktop browser set into two, the scheduler's browser and unit sets into more parts, the Tracker's), free
-while the repo is public; measure after. A workflow change — his yes is given (D1089); built as its own job. When the repo is private again (checks back on
-his PC, one after another), skipping truly separate areas would save real time — raise it then.
-**Also watch (a reader's note):** `raptor-port/docs/gates-and-deploy.md` says a documents-only push on a pull request cancels
-its running gate job and starts no new one; `shipping.md` says a notes push on a pull request carrying code re-runs every
-gate — see which on the next closing push (D1088 waits on that run). **Place:** Checks and tooling — next, its own job in a fresh chat (D1089).
 
 ### [GATELOCK-STALE-PORT] The lock's full check run tests another chat's old build when a preview is left on 4173 (found 18 Oct 26, `claude/three-small-jobs-1018`) — OPEN
 **Seen:** `gatelock.mjs run` runs `npx playwright test` with no port; `playwright.config.ts` reuses a server already on 4173
@@ -1899,6 +1885,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 | [RALLY-BOX-CHANGES] — his three changes to the rally box (D1038–D1041): a taken suggestion's short flash, SC / AVALON / BB rally boxes, their worked-out times hidden, the SC MAIN rally in crew rest and OIL; built 19 Oct 26 on `claude/rally-box-changes` | one fresh, blind Opus reader of the finished code and one narrow Opus read of its fixes (D790, D903); walked and gated (FULL) | Astra's and Sol 6.1's reads (OIL, the published record) |
 | [KEYBOARD-SCROLL] with D1080 — the box being typed in lifted above a phone's keyboard; one tap then typing replaces in four more places; built 19 Oct 26 on `claude/keyboard-scroll` | one fresh, blind Opus reader of the finished code and two narrow Opus reads of its fixes (D790, D903); walked and gated (WALK) | Astra's read (a shared behaviour on every surface); the board's hardenings of 19 Oct 26 were built by Fable on his call and read by the host (Opus) only |
 | `[STANDBY-WEEK-B]` — the week's and the board's standby lines read R over B, then START over END (D1083–D1085); LIVE 20 Oct 26 (pull request 544) | one fresh, blind Opus reader of the finished code (D790, D903); walked and gated (`raptor-port/docs/handpass/2026-10-20-standby-week-b.md`) | Astra's scenario design and code read (D353); Sol 6.1's second read (money and the published record: the week's new door to SC MAIN's in-time and to a standby shift flying) |
+| `[CI-SPLIT-SLOW-JOBS]` — GitHub’s checks split across more machines and the walk pictures not downloaded (D1089, D1091); LIVE 20 Oct 26 (pull request 546) | no reader — a change to the checks file only; proved by its own run: the same 676 unit files and 12,004 unit tests, 893 browser tests and 453 Tracker checks as main’s last run (`raptor-port/docs/gates-and-deploy.md`, 20 Oct 26) | Astra’s read of the checks file (none was required by the bug-check order — no app code changed)|
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.
