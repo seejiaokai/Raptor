@@ -35,7 +35,7 @@
    exactly where the note is still owed. */
 import { HOOKS } from '../engine/hooks'
 import { VIEW_RESET } from '../state/view'
-import { toastCount } from './toast'
+import { readerRegion, sayToReader, toastCount } from './toast'
 
 /** the first look: after the page has drawn the save (its reveal is two commits and an effect) */
 export const SEEN_FIRST_MS = 80
@@ -61,28 +61,13 @@ const laidOut = () => typeof document !== 'undefined' && typeof document.element
 /* everything wearing the mark for this input — compared in script, so an id never has to be written into a selector */
 const marked = (iid: string) => Array.from(document.querySelectorAll('[data-fresh]')).filter(el => el.getAttribute('data-fresh') === iid)
 
-/* WHAT THE MARK SAYS, IN WORDS, FOR A SCREEN READER — one polite region, made once. It is emptied first and filled a
-   beat later, so the same words said twice running ("Input updated", "Input updated") are read twice. */
-let sayT: ReturnType<typeof setTimeout> | null = null
-/* the region, made the moment a save asks — a beat before anything is put in it: one made and filled in the same
-   breath is often not read the first time */
-function region(): HTMLElement {
-  let el = document.getElementById('srSay')
-  if (!el) {
-    el = document.createElement('div'); el.id = 'srSay'
-    el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite')
-    el.style.cssText = 'position:fixed;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0'
-    document.body.appendChild(el)
-  }
-  return el
-}
-function tell(words: string): void {
-  const el = region()
-  el.textContent = ''
-  if (sayT) clearTimeout(sayT)
-  const live = el
-  sayT = setTimeout(() => { sayT = null; live.textContent = words }, 30)
-}
+/* WHAT THE MARK SAYS, IN WORDS, FOR A SCREEN READER — one polite region, made once, the same one every passing note is
+   told to (ui/toast.ts sayToReader — [BATCH-14OCT-LEFTOVERS] (f), 21 Oct 26). It is emptied first and filled a beat
+   later, so the same words said twice running ("Input updated", "Input updated") are read twice. It is made the moment
+   a save asks — a beat before anything is put in it: one made and filled in the same breath is often not read the
+   first time. */
+const region = readerRegion
+const tell = sayToReader
 
 const waits = new Set<ReturnType<typeof setTimeout>>()
 const later = (ms: number, fn: () => void) => { const t = setTimeout(() => { waits.delete(t); fn() }, ms); waits.add(t) }
@@ -106,5 +91,5 @@ export function noteUnlessSeen(iid: string, words: string, kind?: any): void {
 /* a sign-in or sign-out ends what was waiting to be said, as it takes the note itself down (ui/toast.ts clearToast) */
 VIEW_RESET.push({
   name: 'SEEN', scopes: ['session'],
-  reset: () => { waits.forEach(t => clearTimeout(t)); waits.clear(); if (sayT) { clearTimeout(sayT); sayT = null } },
+  reset: () => { waits.forEach(t => clearTimeout(t)); waits.clear() },   // the words waiting to be told end with the note (ui/toast.ts clearToast)
 })

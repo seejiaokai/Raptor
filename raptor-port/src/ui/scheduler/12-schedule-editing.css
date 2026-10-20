@@ -181,6 +181,9 @@ input.tm.sadash::placeholder{color:var(--ink-3);opacity:.55}
    not read as one more preset to pick */
 .cxquick .cxq-edit{border-style:dashed;border-color:var(--edge-2);color:var(--ink-3);margin-left:auto}
 .cxquick .cxq-edit:hover{border-color:var(--accent);color:var(--accent)}
+/* the app's ring on the Cancel sheet's reason chips, "✎ Edit" and the edit list's ▲ ▼ ✕ — they wore the browser's own
+   ([BATCH-14OCT-LEFTOVERS] (a), 21 Oct 26; the design look's K10, owner D830 — its list had not held them) */
+.cxquick button:focus-visible,.cxedit-mv:focus-visible,.cxedit-del:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 /* the inline template editor (add / rename / reorder / delete / reset) */
 .abtn.sm{padding:4px 9px;font-size:11px}
 .cxedit{margin-top:9px;border:1px solid var(--edge);border-radius:10px;padding:9px 10px;background:var(--bg)}

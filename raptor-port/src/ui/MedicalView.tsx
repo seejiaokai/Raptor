@@ -245,7 +245,8 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
           warning cannot be seen from here ([SAVE-NOTE-COVERS], D587; ui/SaveStatus.tsx) */}
       {/* a failed save's warning under this surface's own bar — ONLY where it lies over the top bar (opened with a close
           cross of its own). As a TAB of the Inputs page (D620, D626) it sits in the page, under the tabs: the top bar is
-          in view and carries the warning itself, as it does for the Inputs calendar ([SAVE-NOTE-COVERS], D587). */}
+          in view and carries the warning itself, as it does for the Inputs calendar ([SAVE-NOTE-COVERS], D587). No screen
+          passes `onClose` today — the tab is the only way the view opens ([BATCH-14OCT-LEFTOVERS] (d), 21 Oct 26). */}
       {onClose && <SaveBand />}
       {/* …and the bar that waits on an OIL answer, where one is up behind this view (D831) */}
       {onClose && <OilBand />}

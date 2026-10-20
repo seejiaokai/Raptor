@@ -19,8 +19,10 @@
    sentence broken in two, over the names in Available crew that he might tap next (the design look's L6). It is the
    same kind of thing as the failed-save warning — news that stays until he acts — so it lives where that lives (D587;
    ui/SaveStatus.tsx, 17-save-status.css): a line along the bottom of the top bar, the page moved down by it and nothing
-   covered; and under the bar of a full-screen surface that lies over the top bar (the Scheduler Board, the Medical
-   view opened full) — `OilBand`, in that surface's own flow, exactly as `SaveBand` is. Its words, its two buttons and
+   covered; and under the bar of a full-screen surface that lies over the top bar (the Scheduler Board) — `OilBand`, in
+   that surface's own flow, exactly as `SaveBand` is. (The Medical view is a tab of the Inputs page, under the top bar,
+   since D620; its band is drawn only for a full-screen opening with its own ✕, which no screen makes today —
+   [BATCH-14OCT-LEFTOVERS] (d), 21 Oct 26.) Its words, its two buttons and
    its staying until tapped are as ruled (D783); where a save has also failed, "Not saved" is the line above it. */
 import { useEffect, useLayoutEffect, useRef, useSyncExternalStore } from 'react'
 import { OILWAIT, OILBAR } from '../state/view'

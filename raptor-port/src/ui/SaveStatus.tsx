@@ -8,8 +8,11 @@
    pages (a phone tap on the box pressed Retry), the Tracker's ✓ Save changes (a click on it pressed Retry), Quals'
    filter, the Leave War's "+ New". Now the top bar grows by one line while a save has failed (`.topbar.save-failed`,
    set by Shell from `useSaveFailed`) and the warning fills that line, so the page moves down and nothing is covered.
-   A full-screen surface that lies over the top bar — the scheduler board, the Inputs calendar, the Medical view —
-   carries the same warning under its own bar (`SaveBand`), because there the bar's cannot be seen. A window, a sheet
+   A full-screen surface that lies over the top bar — the scheduler board, the Leave War's OIL tracker — carries the same
+   warning under its own bar (`SaveBand`), because there the bar's cannot be seen. (The Inputs calendar and the Medical
+   view were such surfaces once; both are part of the Inputs page now — D620, D626 — under the top bar, which carries the
+   warning for them. MedicalView.tsx keeps its band only for a full-screen opening with its own ✕, which no screen makes
+   today — [BATCH-14OCT-LEFTOVERS] (d), 21 Oct 26.) A window, a sheet
    or the phone's menu is a short visit and has none: the bar's is there when it closes (D587).
    Pinned by e2e/save-note.spec.ts; the contract: docs/ui-contracts.md §The failed-save warning. */
 import { useEffect, useLayoutEffect, useRef, useSyncExternalStore } from 'react'

@@ -95,6 +95,35 @@ export function placeToast(){
   t.style.top=up?'calc(env(safe-area-inset-top, 0px) + 10px)':'';
   t.style.bottom=up?'auto':'26px';
 }
+/* A NOTE IS TOLD TO A SCREEN READER TOO ([BATCH-14OCT-LEFTOVERS] (f), 21 Oct 26 — found by the leftovers' own walk,
+   14 Oct 26): the note's box was a plain box, so where a note was shown a screen reader heard nothing. Every note's words
+   now go to ONE polite region (`#srSay`, hidden from the eye, `aria-atomic` so a long published-day note is read whole,
+   never only its changed end) — the same region that tells a reader what the just-added mark shows where no note is
+   raised (ui/seen.ts). One region, so a note and the mark's words can never be read twice over: each save either raises
+   its note or tells its words, never both (seen.ts noteUnlessSeen). The box the eye reads is hidden from a reader, who
+   has the region's copy. The region is emptied first and filled a beat later, so the same words said twice running are
+   read twice; a region made and filled in the same breath is often not read the first time, so it is made when first
+   asked and filled a beat after. */
+let sayT:ReturnType<typeof setTimeout>|null=null;
+/** the reader's region, made once (ui/seen.ts makes it the moment a save asks, a beat before anything is put in it) */
+export function readerRegion():HTMLElement{
+  let el=$('srSay');
+  if(!el){
+    el=document.createElement('div'); el.id='srSay';
+    el.setAttribute('role','status'); el.setAttribute('aria-live','polite'); el.setAttribute('aria-atomic','true');
+    el.style.cssText='position:fixed;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0';
+    document.body.appendChild(el);
+  }
+  return el;
+}
+/** tell a screen reader these words, politely, whole */
+export function sayToReader(words:string):void{
+  if(typeof document==='undefined')return;
+  const el=readerRegion();
+  el.textContent='';
+  if(sayT)clearTimeout(sayT);
+  sayT=setTimeout(()=>{ sayT=null; el.textContent=words },30);
+}
 /* kind==='warn' tints the toast amber — used when something was allowed but is
    not right, e.g. dropping crew who are not current for the shift. */
 /* how many notes have been SHOWN — a note that is waiting to be said asks it, so as not to replace one raised since
@@ -116,8 +145,11 @@ export function toast(msg:any,kind:any,part?:ToastPart){
        in and the timeout's opacity='0' fades out instead of snapping. The
        blanket reduced-motion rule in scheduler.css kills it (its !important
        beats an inline style), so no JS gate is needed for this half. */
-    t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:540;pointer-events:none;background:var(--panel-2);border:1px solid var(--edge-2);color:var(--ink);padding:10px 16px;border-radius:10px;font-size:12.5px;box-shadow:0 20px 50px -20px rgba(0,0,0,.8);transition:opacity .22s ease';document.body.appendChild(t);}
+    t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:540;pointer-events:none;background:var(--panel-2);border:1px solid var(--edge-2);color:var(--ink);padding:10px 16px;border-radius:10px;font-size:12.5px;box-shadow:0 20px 50px -20px rgba(0,0,0,.8);transition:opacity .22s ease';
+    /* the reader hears the region's copy (sayToReader, above), never this box as well */
+    t.setAttribute('aria-hidden','true');document.body.appendChild(t);}
   t.textContent=msg; t.style.opacity='1';
+  sayToReader(String(msg==null?'':msg));
   placeToast();
   /* 'hard' (5 Sep 26) — the drop delta's colour for a breach the validator
      raised at hard severity: same red as the puck's own ring, same hold as
@@ -160,5 +192,5 @@ export function toast(msg:any,kind:any,part?:ToastPart){
    reading time and was still on screen when the next person signed in on the same
    browser. Every other transient already ends at the session reset (VIEW_RESET
    'session', ui/pops.ts); the toast joins them. */
-export function clearToast(){ if(toastT){clearTimeout(toastT);toastT=null} if(typeof document==='undefined')return; const t=$('toastEl'); if(t)t.style.opacity='0' }   // no DOM in the node tests that sign in and out
+export function clearToast(){ if(toastT){clearTimeout(toastT);toastT=null} if(sayT){clearTimeout(sayT);sayT=null} if(typeof document==='undefined')return; const t=$('toastEl'); if(t)t.style.opacity='0'; const r=$('srSay'); if(r)r.textContent='' }   // no DOM in the node tests that sign in and out; the reader's copy goes with the note, so the next person to sign in never finds the last one's words
 VIEW_RESET.push({ name: 'TOAST', scopes: ['session'], reset: clearToast })

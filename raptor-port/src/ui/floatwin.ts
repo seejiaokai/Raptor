@@ -78,6 +78,27 @@ export const BOARD_BAR = {
   watch: (): Element | null => document.getElementById('sbWarn'),
 }
 
+/* THE TOP BAR A WINDOW OPENS UNDER ([FLOATWIN-TWO-LINE-BAR], 21 Oct 26). The stylesheet's corner (top 96) clears a
+   one-line top bar, 57–58 tall; but on the schedule pages and the Inputs page the bar runs to two lines at most desktop
+   widths between about 900 and 1366 — 103–104 tall, measured 21 Oct 26 — and every window lay over its last 7px. So a
+   window he has not placed opens 8px below the bar's REAL bottom — measured, as the failed-save band follows the bar
+   (SaveStatus.tsx) — and the bar re-places it when its height changes (below). Only where the bar is what lies under
+   the window's top edge, asked of the browser with the window itself left out: under the open Scheduler Board — a
+   full-screen surface laid over the top bar — the bar is covered, and the window keeps its corner. (That corner lies
+   over the right end of the board's OWN bar at every desktop width; whether the windows should open under that bar
+   too is a look put to him, not built here — OUTSTANDING.md [FLOATWIN-BOARD-BAR].) */
+const BARS = (): Element[] => [document.getElementById('burger')?.closest('.topbar')].filter((b): b is Element => !!b)
+function barsUnder(n: HTMLElement, r: DOMRect): Element[] {
+  if (typeof document.elementsFromPoint !== 'function') return []
+  return BARS().filter(bar => {
+    const q = bar.getBoundingClientRect()
+    if (!(q.height > 0 && q.width > 0) || r.top >= q.bottom || r.bottom <= q.top || q.left >= r.right || q.right <= r.left) return false
+    const x = Math.min(Math.max(r.left + r.width / 2, q.left), q.right - 1, window.innerWidth - 1), y = (Math.max(r.top, q.top) + q.bottom) / 2
+    const under = document.elementsFromPoint(x, y).find(e => e !== n && !n.contains(e))
+    return !!under && bar.contains(under)
+  })
+}
+
 /* `open` — whether the window is up; `getBox`/`setBox` — the caller's module box; `deps` — what makes a NEW window
    (the observers are re-armed on it); `closeSel` — the bar's close button, which never starts a drag; `clear`/`watch`
    — what a window he has not placed opens clear of, and where that thing is rewritten (BOARD_BAR above) */
@@ -106,18 +127,22 @@ export function useFloatWin(opts: {
     n.toggleAttribute('data-placed', !!b && !b.phone && !phone)
     if (!b || !!b.phone !== phone) {
       n.style.left = n.style.top = n.style.right = n.style.bottom = n.style.width = n.style.height = n.style.maxHeight = ''
-      /* HIS PLACE IS HIS; THE STYLESHEET'S CORNER YIELDS TO THE PREVIEW BAR. Only a window he has not placed, on a
-         desktop: when the bar is shown and the corner overlaps it, the window starts just below it, and is capped to
+      /* HIS PLACE IS HIS; THE STYLESHEET'S CORNER YIELDS TO THE TOP BAR AND THE PREVIEW BAR. Only a window he has not
+         placed, on a desktop: when the top bar lies under the corner (barsUnder, above), or the board's preview bar is
+         shown and the corner overlaps it, the window starts just below the lower of the two, and is capped to
          end on the screen. Only `top` and `max-height` are written — never width or height — so the ResizeObserver
          below never mistakes this for a size he chose, and the next place() with no bar clears both again. */
-      const c = !phone && opts.clear ? opts.clear() : null
-      if (c) {
-        const r = n.getBoundingClientRect(), q = c.getBoundingClientRect()
-        if (q.left < r.right && q.right > r.left && q.top < r.bottom && q.bottom > r.top) {
-          const top = Math.round(q.bottom + 8)
-          n.style.top = top + 'px'
-          n.style.maxHeight = Math.max(0, window.innerHeight - top - 12) + 'px'
-        }
+      if (phone) return
+      const r = n.getBoundingClientRect()
+      let top = 0
+      for (const c of [...barsUnder(n, r), opts.clear ? opts.clear() : null]) {
+        if (!c) continue
+        const q = c.getBoundingClientRect()
+        if (q.left < r.right && q.right > r.left && q.top < r.bottom && q.bottom > r.top) top = Math.max(top, Math.round(q.bottom + 8))
+      }
+      if (top) {
+        n.style.top = top + 'px'
+        n.style.maxHeight = Math.max(0, window.innerHeight - top - 12) + 'px'
       }
       return
     }
@@ -156,6 +181,15 @@ export function useFloatWin(opts: {
     const mo = new MutationObserver(() => placeRef.current())
     mo.observe(w, { childList: true })
     return () => mo.disconnect()
+  }, deps)
+  /* …AND THE TOP BAR'S HEIGHT ([FLOATWIN-TWO-LINE-BAR]): a page change, the failed-save band or the bar that waits on
+     an OIL answer takes the bar from one line to two, or back, with no resize of the screen */
+  useEffect(() => {
+    const bars = open ? BARS() : []
+    if (!bars.length || typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(() => placeRef.current())
+    bars.forEach(b => ro.observe(b))
+    return () => ro.disconnect()
   }, deps)
 
   useEffect(() => {
