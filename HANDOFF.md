@@ -21,34 +21,17 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/inputs-small-fixes -->
-### 20 Oct 26, late — the Inputs batch (D994, Inputs and calendars), `claude/inputs-small-fixes`, pull request 553 — built, read, fixed; the re-walk next
+### 20 Oct 26, late — the Inputs batch (D994, Inputs and calendars), `claude/inputs-small-fixes`, pull request 553 — built, read, walked; his look next
 - **His pick:** "Inputs" (D994). The shaky-tests batch (pull request 552) is LIVE — its block removed on this branch.
-- **Built:** [TILL-NEXT-YEAR] (the till date carries its year); [OIL-ASK-HEAD-SEVERAL] (`oilFirst` takes the door's `who`);
-  his **D1095 / D1096** — every year PRINTED after a date is two digits ("till 15 Feb 27", "Jan 1 27"), the kept labels keep
-  four (`engine/inputs.ts shortYear`; `fmt`, `weekLabels`, the war's labels untouched; guarded by `ui/newyear-till.test.tsx`);
-  the fresh read's **F1** (`overlay.ts viewOfWeek` writes a week's rows in its own year — the cross-week check no longer runs
-  twice in January), **F2** (`MedClashConfirm` prints its dates day first), **F3** (a test comment). [INP-TILL-STALE] closed
-  (gone since D948); [CAL-UNDO-OTHERS] refiled to the Database step (not reachable today).
-- **Checked:** unit suite 12,045 / 12,045 under the lock (before the window-line fix; the touched files after it); breaks
-  17 / 17 (`scripts/handpass/breaks/inputs-small-fixes.json`); the first walk 33 / 33. GitHub's run of `b5dda663d` FAILED
-  three browser shares on tests still reading four-digit years — fixed in `5e0404648` (and the Holidays warning's year,
-  `HolidaysPanel.tsx`); the six named browser tests 10 / 10 under the lock. **Push `5e0404648` once the run of `cde330fed`
-  has finished (D151), then read GitHub's run before anything else.**
-- **Re-walk (v6, build `index-CiubYdkh`):** 47 PASS; the only open line is M1 (the medical sheet of two kinds in Feb 2027):
-  its set-up check had a stray backspace in a pattern — fixed in the script, **not yet re-run**. Found on the way, as built
-  and not a fault: a request lands on its FIRST day only, so a course from 30 Dec draws no row in the week of 4 Jan.
-  Pictures `raptor-port/docs/img/handpass/2026-10-20-inputs-small-fixes/rewalk/` (opened: N3, M1 error).
-- **Next, in order:** (1) re-run `node scripts/handpass/inputs-small-fixes-walk.mjs docs/img/handpass/2026-10-20-inputs-small-fixes/rewalk`
-  on a fresh `npm run build` served at :4173 (prove the bundle name); open M1's picture. (2) The sheet: §5 the read's
-  findings — F1 fixed (`overlay.ts viewOfWeek`), F2 fixed (`MedClashConfirm`), F3 fixed (a comment); its notes (card corner
-  two digits now; the Leave War's day list cosmetic); §4 the re-walk; §6 breaks 17 / 17; §7 GitHub; §10 the D1096 places
-  (day headings of the week, board, day window, peek, OIL mode; fmtDay; oilDayLabel; the LATE note; the phone list heading;
-  the card corner; the date boxes and the Calendar window's lines via `sayDateYY` — a screen reader keeps four; the window's
-  date line; the medical sheet; the Holidays warning. Left four: the CSV export, a data file; a year alone; a month title).
-  (3) Archive [TILL-NEXT-YEAR], [OIL-ASK-HEAD-SEVERAL], [INP-TILL-STALE] (`node raptor-port/scripts/backlog-archive.mjs <ID>
-  --homes <file>`). (4) Push, read GitHub's run of the last commit, then the preview link, before/after pictures and the look
-  card (sheet §9) to him; his "merge live" (D1088).
-- **Auto-fix** was switched on by the app on 553 and switched off (D1090).
+- **Built:** [TILL-NEXT-YEAR], [OIL-ASK-HEAD-SEVERAL] (both archived); his **D1095 / D1096** — every year PRINTED after a date
+  is two digits, the kept labels keep four (the places: the sheet §10); the fresh read's F1 (a week's rows in its own year),
+  F2 and the title (the medical sheet day first), F3. [INP-TILL-STALE] archived (gone since D948); [CAL-UNDO-OTHERS] refiled
+  to the Database step.
+- **Checked:** `raptor-port/docs/handpass/2026-10-20-inputs-small-fixes.md` — FULL, sized SMALL: walk 33 / 33, re-walk 49 / 49
+  (both sizes, 28 pictures); breaks 17 / 17; unit 12,045 / 12,045 under the lock (touched files after); one fresh blind
+  Opus read, its three findings fixed; GitHub's run green on `bf4193368` (the last push's run to read).
+- **Next:** GitHub's run of the last push green → his look (the preview link, before / after pictures, the look card §9)
+  → his "merge live" (D1088).
 <!-- /now -->
 
 ## Next, in order
