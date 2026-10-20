@@ -1465,3 +1465,18 @@ prove each by acting through it after the rollback, not by reading what it shows
 **Suggested improvement:** When one checkout carries more than one job, stage by named paths, never `git add -A` / `git add .`; read `git show --stat HEAD` after every commit made right after a branch switch.
 
 **Principle:** Untracked files follow a branch switch; a whole-tree stage after a switch commits another job's work. Stage what this commit is about, by name.
+
+### Observation 649: A layering check by elementFromPoint fails on a surface that takes no presses
+
+**Status:** OPEN
+**Date:** 2026-10-20
+**Session context:** The OIL batch's walk (`raptor-port/scripts/handpass/oilfix/walk.mjs`) — checking the passing note after Unpublish was drawn on top, on the week and over the Scheduler Board.
+**Skill:** New skill candidate: none — the walk-scripts guide (`raptor-port/docs/walk-scripts.md`), the project's reference for writing walk scripts
+**Type:** internal
+**Phase/Area:** walk scripts — proving a floating surface is on top (bug-check order §6)
+
+**Issue:** The order's §6 test for a floating surface — the element under its middle is the surface — was applied to the passing note (`#toastEl`), which takes no presses (pointer-events none). elementFromPoint skips such an element and returns what lies beneath, so 11 checks failed while the pictures showed the note drawn on top. A second false failure in the same walk: the Leave War cell reads "FO*" (the grid's own star after an earned code), and the script compared "FO".
+
+**Suggested improvement:** In walk-scripts.md's layering section, one line: elementFromPoint proves a surface that takes presses (a window, a calendar, a button); for one that does not (a passing note, a mark), prove it by its box inside the screen and its computed visibility / opacity, and open the picture. And: read a grid cell's text once on screen before writing its expected value.
+
+**Principle:** A check's method must fit the thing checked; a "hit test" only sees what can be hit. Before calling a scripted FAIL a fault, open its picture.
