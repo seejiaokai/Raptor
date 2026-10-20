@@ -1269,10 +1269,7 @@ export function boardChange(e: Event) {
     if (!inp) return notify()                    // deleted or undone underneath it
     const back = () => { inf.value = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field) }
     if (RO) return back()
-    /* an input's start / end left after a save reads the time as saved too ([BOARD-TAB-FOLD]; the blind read's F2,
-       20 Oct 26) — the panel holding the caret is held back from repainting, so "1015" stayed on screen; not while the
-       caret is still in the box (the window lost the focus, the read's F3) */
-    if (setInpField(inp, field as any, inf.value, at ? at.person : null)) { notify(); if (field !== 'rmks' && inf.isConnected && document.activeElement !== inf) inf.value = inpTimeText(inp, field) }
+    if (setInpField(inp, field as any, inf.value, at ? at.person : null)) notify()
     else back()
     return
   }
@@ -1308,12 +1305,6 @@ export function boardChange(e: Event) {
     schedWrite(SCHED_TYPES.text, () => { reconcileIssuedMarks(); markEdit() }, { key: p })
     afterSchedMutate()
     notify()
-    /* THE BOX LEFT SHOWS THE TIME AS SAVED ([BOARD-TAB-FOLD], 20 Oct 26): a time typed "1000" is saved 10:00, but the box
-       left by Tab kept reading "1000" until a press elsewhere — the redraw leaves standing the block the caret moved on
-       to, and this box with it. So the box itself is set to the time as the board draws it (fmtHM, the one fold). Only a
-       time box: anything else already shows what was typed. Not while the caret is still in the box — the window losing
-       the focus saves it too, and rewriting the box under the caret would lose the place being typed (the blind read's F3). */
-    if (TIME_TXT.test(p) && f.isConnected && document.activeElement !== f) f.value = fmtHM(txtGet(p))
   }
   else f.value = txtGet(p)
 }

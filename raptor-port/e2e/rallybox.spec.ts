@@ -187,18 +187,6 @@ for (const [name, viewport] of [['desktop', { width: 1440, height: 900 }], ['pho
       }, gis[1])
       expect(long, 'renamed, 320 wide').toEqual({ text: 'AVALON NIGHT 2 SHIFT', fits: true })
     })
-    /* RB15 — [BOARD-TAB-FOLD] (20 Oct 26): on the Scheduler Board a time typed "1000" and left by Tab read "1000" until a
-       press elsewhere, though 10:00 was saved; the box left reads 10:00 at once */
-    test('the board: a time typed and left by Tab reads hh:mm at once', async ({ page }) => {
-      await login(page); await go(page, 'editsched')
-      await page.evaluate(() => (window as any).openScheduler(0)); await expect(page.locator('#schedBoard')).toBeVisible()
-      const to = page.locator('#sbBoard [data-bfld="ff:0.0.0.to"]:visible').first()
-      await press(page, to, phone); await expect(to).toBeFocused()
-      await page.keyboard.type('1000'); await page.keyboard.press('Tab')
-      await expect.poll(() => page.evaluate(() => (window as any).DAYS[0].waves[0].formations[0].to)).toBe('10:00')
-      await expect(to, 'the box left reads the time as saved').toHaveValue('10:00')
-      await expect(to, 'the caret went on').not.toBeFocused()
-    })
     /* RB13 — the blind read's F1 (20 Oct 26): read only, an empty START must keep its line, or END rises onto the line the
        heading now calls START (a BB line has no times by default — type END alone and View-only Sched read 07:00 as the
        start). The same for a flying line's empty TO above its LD. */

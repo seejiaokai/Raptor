@@ -143,6 +143,16 @@ of a fix round is for logic rewritten, more than a one-line guard).
 → 16:45; P7 AVALON renamed by finger "AVALON NIGHT 2" at 320 → the heading "AVALON NIGHT 2 SHIFT", whole. Pictures
 `docs/img/handpass/2026-10-20-standby-batch/walk2/` (01–11).
 
+## 11b. The board's half taken back out (the night of 20 Oct 26)
+GitHub's runs of this pull request failed the D1047 phone test (`e2e/rallybox.spec.ts:55` — a cleared board take-off, "1300"
+typed, Enter: the save stayed empty) on three of four runs, with the board's fold in and with it guarded (F3); it never fails on
+`main`, and could not be made to fail on his PC — 16 of 16 at full speed, 6 of 6 with the browser slowed six times. Not proved
+cured, so **the board's half came back out**: `board.ts` is `main`'s again (the time box and the input's own boxes on the
+board), its unit test and RB15 removed. What stays: the week's fold and the week's input cells, the words, the heading. The
+walk's board steps that asserted "reads at once" (D2, D6, D7, D8 the landing and the duty start, D20, P1) describe the
+build before this — the board box again reads as typed until a press elsewhere, as on `main`; their Undo words still hold.
+Re-filed: [BOARD-TAB-FOLD-BOARD].
+
 ## 12. His look
 The before / after pictures and both preview links put to him; his word, 20 Oct 26: "merge live — both pull requests, the faster checks first, then the standby batch." Merged after pull request 546, `main` brought in first (D78).
 

@@ -63,6 +63,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Schedule and amendments**
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
+- [BOARD-TAB-FOLD-BOARD] — on the Scheduler Board a time typed and left by Tab still shows as typed ("1000") until another press; the fix was built and taken back out (it turned GitHub's D1047 phone test red on Linux only) — find why first (low).
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
 - [INNERHTML-REPAINT-SWEEP] — eleven screens hand React their markup as a new object every repaint, which React sets again — a box being typed in there is thrown away by any repaint (Quals fixed in [KEYBOARD-SCROLL]); sweep the rest (low).
 - [IPHONE-CARET-CHECKS] — two checks only his iPhone can make, carried from the one-tap time boxes (D1047): dragging the caret with the space bar, and a long press (the loupe).
@@ -223,6 +224,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [BOARD-TAB-FOLD-BOARD] The Scheduler Board's half of [BOARD-TAB-FOLD]: a time box left by Tab shows as typed (re-filed 20 Oct 26, the night; low)
+**Seen:** the board saves a time box on its `change` and the box left keeps the digits typed ("1000") until a press elsewhere, though 10:00 is saved (the archived [BOARD-TAB-FOLD]; the week's half is LIVE with pull request 547). **Tried:** in `board.ts boardChange`, after a save, `f.value = fmtHM(txtGet(p))` (and the input's own boxes from `inpTimeText`), then guarded `document.activeElement !== f`. Both turned GitHub's D1047 phone test red on three of four runs (`e2e/rallybox.spec.ts:55` "a time box tapped into …": a cleared take-off, "1300" typed, Enter → the save stayed empty), never on `main`, never on his PC (16 of 16; 6 of 6 with the browser slowed six times). Suspects: the one-tap arming and its owed `change` (`interactions.ts armFreshTime`, `oweChange`) beside a box written by script after a blur, on Linux's headless Chromium. **To do:** reproduce on Linux (a GitHub run of a debug branch with the test's trace kept as an artifact), find the step that loses the save, then fold the box without writing `.value` behind the browser's back (e.g. after the next repaint, or through the board's own redraw of that one box). **Place:** low — with the next change to the board's time boxes.
 
 ### [GATELOCK-STALE-PORT] The lock's full check run tests another chat's old build when a preview is left on 4173 (found 18 Oct 26, `claude/three-small-jobs-1018`) — OPEN
 **Seen:** `gatelock.mjs run` runs `npx playwright test` with no port; `playwright.config.ts` reuses a server already on 4173
