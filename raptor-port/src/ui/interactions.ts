@@ -786,7 +786,7 @@ function setBoxValue(el: HTMLElement, v: string) {
    showed the new time and the schedule kept the old one. So the rewrite owes the board its `change`, paid on Enter or on
    leaving unless the browser raised its own, and never for a box back to what it showed (Escape puts the old time back
    first) — as placeSuggestion owes its save. The week saves on leaving by reading the box, so it owes nothing. */
-export function oweChange(el: HTMLInputElement, shown: string) {
+function oweChange(el: HTMLInputElement, shown: string) {
   let paid = false
   const native = () => { paid = true }
   const pay = () => { if (!paid && el.isConnected && el.value !== shown) { paid = true; el.dispatchEvent(new Event('change', { bubbles: true })) } }

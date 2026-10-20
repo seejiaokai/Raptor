@@ -9503,7 +9503,9 @@ and then, the save repainted the list under the browser's own Tab, and Chrome ga
 puts the keyboard back on the control drawn in its place (a box by its place in the list, `data-lgi`; a toggle, the switch, a
 row's Reset, a door, a fold by their own marks), carrying a half-typed value and its caret, or selecting a clean box whole
 (D1080). The control is remembered as the keyboard arrives and forgotten when it really leaves the list — asked a moment
-later, since Chrome tells a box it lost the keyboard while a rebuild is removing it. **Done takes one press:** its press
+later, since Chrome tells a box it lost the keyboard while a rebuild is removing it — and raises a typed box's own `change`
+then too, so a change raised while the page is rebuilding its list saves nothing: the typing is carried, and the carried box
+owes its change, raised by the page on Enter or once the box is really left. **Done takes one press:** its press
 leaves the box alone (`mousedown` default prevented), and Done itself blurs the box — its change saves or refuses as ever —
 then ends editing; on a phone the save used to bring "Reset all" up and move Done 77 px from under the finger. Pins:
 `ui/logic.test.tsx`, `e2e/logicedit.spec.ts`.

@@ -16,7 +16,6 @@ import { notify } from '../state/store'
 import { useVersion } from './useStore'
 import { lgSettings, lgChecks, lgChkName, lgKinds, LG_TIER, type LgSet, type LgChk } from './logic-html'
 import { setInpSet, setSansSet } from './pops'
-import { oweChange } from './interactions'
 import { missionTracking, setMissionTracking } from '../engine/insights-config'
 
 /* the reference's ruleApply: write, persist, re-run the engine, repaint */
@@ -226,7 +225,15 @@ export function LogicPage() {
      else forgets it, so a press outside never pulls the keyboard back. This replaces the press-remembering the page
      had, which a Tab never updated (it sent the keyboard back to the box just left). */
   const keep = useRef<{ mark: string, el: HTMLElement } | null>(null)
+  /* THE LIST IS BEING REBUILT: from the render that brings new words until the rebuild's own keeper has run. Chrome raises
+     a typed box's `change` as a rebuild takes it off the page (LE4: a half-typed "1h4" saved as 1h04 by a setting changed
+     elsewhere) — that is not the person leaving the box, so it saves nothing: the keeper carries the typing to the box
+     drawn in its place, owed, and it is saved when the box is really left. */
+  const shown = useRef<object | null>(null)
+  const rebuilding = useRef(false)
+  if (shown.current !== bodyHTML) rebuilding.current = true
   useLayoutEffect(() => {
+    shown.current = bodyHTML; rebuilding.current = false
     const k = keep.current, host = bodyRef.current
     if (!k || !host || k.el.isConnected) return
     const a = document.activeElement
@@ -242,8 +249,10 @@ export function LogicPage() {
       el.focus({ preventScroll: true })
       try { el.setSelectionRange(was.selectionStart, was.selectionEnd) } catch (_) { /* a caret is a courtesy */ }
       /* a value written by script is not one the browser saw typed: leaving the box would raise no change and save
-         nothing (F3) — the box owes its change, paid on Enter or on leaving, unless the browser raises its own */
-      oweChange(el, el.defaultValue)
+         nothing (F3). The box is marked, and the page raises its change on Enter or once the keyboard has really left it
+         (owedChange, below) — never as a later rebuild takes it away (the fix round's read: Chrome's "lost the keyboard"
+         on a rebuild would have saved the half-typed value) */
+      el.dataset.lgowed = '1'
     } else {
       el.focus({ preventScroll: true })
       if (typing(el)) el.select()
@@ -262,7 +271,18 @@ export function LogicPage() {
        keyboard as a rebuild takes it off the page, while it is still on it (probed on the built app, 21 Oct 26), so the
        question is asked a moment later, once the rebuild's own keeper (above) has put the keyboard back and noted the
        control drawn in its place: still the one that left means the keyboard really left. */
+    /* a carried value's change, raised by the page once the box is really left (a box a rebuild took is off the page, and
+       a change raised there never reaches the list's listener — its value went on to the box drawn in its place). A second
+       change (the browser's own, after more typing) is absorbed: the value is already the one asked for (ruleNow). */
+    const owedChange = (t: HTMLInputElement) => {
+      if (!t.dataset.lgowed) return
+      delete t.dataset.lgowed
+      if (t.value !== t.defaultValue) t.dispatchEvent(new Event('change', { bubbles: true }))
+    }
+    const onKeyDown = (e: KeyboardEvent) => { if (e.key === 'Enter') owedChange(e.target as HTMLInputElement) }
     const onFocusOut = (e: FocusEvent) => {
+      const t = e.target as HTMLInputElement
+      if (t.dataset?.lgowed) queueMicrotask(() => owedChange(t))
       const to = e.relatedTarget as Node | null
       if (to && host.contains(to)) return   // moving within the list: the arrival notes the new control
       const was = keep.current
@@ -281,6 +301,7 @@ export function LogicPage() {
       const i = t.closest('[data-lgset]') as HTMLInputElement | null
       if (i) {
         if (!isAdmin()) return
+        if (rebuilding.current) return   // taken off the page by a rebuild, not left — the keeper carries the typing
         const k = i.dataset.lgset!, spec = RULE_SPEC[k], v = ruleParse(k, i.value)
         if (v == null || (spec.kind!=='text' && (v < spec.lo || v > spec.hi))) {
           /* put the LIVE value back, the way every other refusing path in the
@@ -356,9 +377,10 @@ export function LogicPage() {
     host.addEventListener('change', onChange)
     host.addEventListener('focusin', onFocusIn)
     host.addEventListener('focusout', onFocusOut)
+    host.addEventListener('keydown', onKeyDown)
     host.addEventListener('click', onClick)
     host.addEventListener('toggle', onToggle, true)
-    return () => { host.removeEventListener('mousedown', onMouseDown); host.removeEventListener('change', onChange); host.removeEventListener('focusin', onFocusIn); host.removeEventListener('focusout', onFocusOut); host.removeEventListener('click', onClick); host.removeEventListener('toggle', onToggle, true) }
+    return () => { host.removeEventListener('mousedown', onMouseDown); host.removeEventListener('change', onChange); host.removeEventListener('focusin', onFocusIn); host.removeEventListener('focusout', onFocusOut); host.removeEventListener('keydown', onKeyDown); host.removeEventListener('click', onClick); host.removeEventListener('toggle', onToggle, true) }
   }, [])
 
   /* DONE TAKES ONE PRESS ([LOGIC-DONE-FIRST-PRESS], 21 Oct 26). A press on Done used to take the keyboard out of the box

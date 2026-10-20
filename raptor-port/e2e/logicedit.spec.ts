@@ -56,6 +56,25 @@ test.describe('the Logic page — desktop', () => {
   })
 })
 
+test('LE4 — desktop: a value half typed survives two rebuilds caused elsewhere, is not saved by either, and is saved once the box is left', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await login(page)
+  await openEdit(page)
+  const box = page.locator('#lgBody input[data-lgset="debrief"]')
+  await box.click(); await page.keyboard.press('Control+A'); await page.keyboard.type('1h4')
+  /* a setting changed elsewhere, twice — each rebuilds the list (the fix round's read: Chrome tells the box it lost the
+     keyboard as the second rebuild removes it, which must not save the half-typed value) */
+  for (const len of [100, 101]) {
+    await page.evaluate(n => { const w = window as any; w.VCONF.simLen = n; w.ruleApply() }, len)
+    await page.waitForTimeout(300)
+  }
+  expect(await page.evaluate(() => (window as any).VCONF.debrief), 'nothing saved yet').toBe(120)
+  await expect(box).toHaveValue('1h4')
+  await expect(box).toBeFocused()
+  await page.keyboard.type('5'); await page.keyboard.press('Tab')
+  await expect.poll(() => page.evaluate(() => (window as any).VCONF.debrief)).toBe(105)
+})
+
 test.describe('the Logic page — phone', () => {
   test.use({ viewport: { width: 402, height: 874 }, isMobile: true, hasTouch: true })
 

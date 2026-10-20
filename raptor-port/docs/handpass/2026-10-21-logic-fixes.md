@@ -82,14 +82,18 @@ and the code read's F1 and F2 as checks: D14 a row's Reset pressed while that ro
 - Unit, `src/ui/logic.test.tsx`: 8 new; 4 of the first 5 FAIL on the old page (run against `HEAD`'s file, put back), the
   fifth guards the fix's own reach (a press outside the list is not pulled back); F1–F3 for the code read. The Logic page's
   test files with `freshbox.test.tsx`: 104 / 104.
-- Browser, `e2e/logicedit.spec.ts` LE1–LE3 (new), `e2e/oilworkstart.spec.ts` (its retry gone) and `e2e/kbscroll.spec.ts`:
-  15 / 15 under the PC lock.
+- Browser, `e2e/logicedit.spec.ts` LE1–LE4 (new), `e2e/oilworkstart.spec.ts` (its retry gone) and `e2e/kbscroll.spec.ts`:
+  16 / 16 under the PC lock.
 - Breaks, `scripts/handpass/breaks-logic-fixes.mjs`: each wire broken alone — the memo, the apply a beat later, the
   half-typed value carried, Done's press, Done's own save, the keeper, the flush before a reset (F1), the carried value's
   owed change (F3) — **all red**; F2's two guards (the row's Reset clearing its box; the carry refused when the setting
   changed underneath) each stay green alone and are **red together** — the second guard is pinned with the first (the
-  walk-scripts guide §9, reading 4). Browser breaks, `breaks-logic-fixes-browser.mjs`: **3 / 3 red** — the apply at once
-  (LE1: the abandoned Tab), the leaving decided before the rebuild's keeper (LE1), the parked cursor not cleared (KS5).
+  walk-scripts guide §9, reading 4). Browser breaks, `breaks-logic-fixes-browser.mjs`: **4 / 4 red** — the apply at once
+  (LE1: the abandoned Tab), the leaving decided before the rebuild's keeper (LE1), a change raised as a rebuild takes a box
+  saved (LE4), the parked cursor not cleared (KS5). A second guard of the owed change ("only for a box still on the page")
+  stayed green — a change raised on a removed box never reaches the list — so it was deleted too (reading 4).
+  One slip: a command meant only to check the break script's syntax ran it once outside the PC lock; it put the file back
+  as designed, and no other chat was running checks.
   One break of the first browser set stayed green: a guard that a removed box is not "left" — the rebuild's keeper always
   runs first, so the line decided nothing on screen; it was deleted (reading 4) and the delay itself is what is pinned.
   Bytes put back each time (`git diff --stat` clean).
@@ -118,10 +122,19 @@ phone); a row's Reset lands by the setting's key, not its place (no setting is d
 box's red edge now stays until the next real redraw rather than the next repaint (cosmetic — left).
 
 **Read 2 — a fresh Opus read of the fix round alone** (the order §5, "a fix is new code"), handed only the fix commit and
-the findings it answers. *(filled in below when it reports)*
+the findings it answers. F1, F2, the parked-cursor clear and the removed guard: right and complete. One finding:
+| # | Finding | Disposition |
+|---|---|---|
+| R2-1 | A carried value could be saved half-typed: a second rebuild while the box still had the keyboard made Chrome raise "lost the keyboard" on it while it was still on the page, and the owed change (the board's shared helper) paid there | Fixed in the Logic page alone (the board's helper back as on `main`): the page owes the carried box its change itself and raises it on Enter or once the keyboard has really left. The new browser test LE4 then showed more: **Chrome raises a typed box's own change as a rebuild removes it** — "1h4" saved as 1h04 before any owed change. Fixed: a change raised while the page is rebuilding its list saves nothing (the typing is carried, owed, and saved when the box is left). LE4 pins both; break B14 red |
+Its older note — a box armed by a tap (D1080) owing its change could pay it as a rebuild removes it — is closed by the same
+rebuilding guard (the change is ignored while the list is rebuilt). This is the last round of reads: the fix of R2-1 is
+carried by LE4, its break, and the final re-walk.
+
+**The final re-walk** (after R2-1): `WALK_DIR=rewalk2` — **39 PASS · 0 FAIL · 0 errors**, pictures `…/rewalk2/`, opened.
 
 ## 8. Gates
 *(GitHub's run on the last pushed commit — filled in at the end.)*
 
 **Walk:** 36 checks at desktop 1440 (mouse, keys) and phone 402 (finger), 0 FAIL, 0 errors, 20 pictures opened —
-`docs/img/handpass/2026-10-21-logic-fixes/walk/`; re-walk after the fixes 39 / 39, 22 pictures opened — `…/rewalk/`.
+`docs/img/handpass/2026-10-21-logic-fixes/walk/`; re-walks after the fixes 39 / 39 and, after the last, 39 / 39 — `…/rewalk/`,
+`…/rewalk2/`, opened.

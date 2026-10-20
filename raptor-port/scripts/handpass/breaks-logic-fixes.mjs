@@ -18,7 +18,7 @@ const BREAKS = [
   ['B9 a row\'s Reset leaves the retyped box as typed (F2)', 'if (a?.dataset?.lgset && r.dataset.lgreset!.split(\',\').includes(a.dataset.lgset)) a.value = a.defaultValue', ''],
   ['B11 the carry ignores a setting changed underneath (F2, second guard — alone)', ' && was.defaultValue === el.defaultValue) {', ') {'],
   ['B9+B11 both guards of F2 broken together', ["if (a?.dataset?.lgset && r.dataset.lgreset!.split(',').includes(a.dataset.lgset)) a.value = a.defaultValue", ''], [' && was.defaultValue === el.defaultValue) {', ') {']],
-  ['B10 a carried value owes no change (F3)', '      oweChange(el, el.defaultValue)', ''],
+  ['B10 a carried value owes no change (F3)', "      el.dataset.lgowed = '1'", ''],
 ]
 try {
   for (const [name, ...rest] of BREAKS) {

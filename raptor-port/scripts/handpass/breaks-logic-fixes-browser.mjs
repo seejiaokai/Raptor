@@ -13,6 +13,7 @@ const KS5 = 'npx playwright test --project=raptor e2e/kbscroll.spec.ts -g KS5 --
 const BREAKS = [
   ['B2 a box\'s change applied at once (not once the keyboard has landed)', LE, 'PENDING.set(k, { v, t: setTimeout(() => { PENDING.delete(k); VCONF[k] = v; ruleApply() }, 0) })', 'VCONF[k] = v; ruleApply()'],
   ['B7 the leaving decided at once, before the rebuild\'s keeper has run (no second look)', LE, 'queueMicrotask(() => {\n        if (keep.current === was) keep.current = null', 'void [0].map(() => {\n        if (keep.current === was) keep.current = null'],
+  ['B14 a change raised on a box as a rebuild takes it is saved (no rebuilding guard)', LE, "        if (rebuilding.current) return   // taken off the page", "        // taken off the page"],
   ['B12 the text cursor left parked in the list when the keyboard leaves it', KS5, 'if (s?.anchorNode && host.contains(s.anchorNode) && !host.contains(document.activeElement)) s.removeAllRanges()', ''],
 ]
 try {
