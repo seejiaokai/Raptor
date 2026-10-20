@@ -165,6 +165,14 @@ const toastText = page => page.evaluate(() => document.getElementById('toastEl')
   await page.locator('#lgReset').click(); await page.waitForTimeout(300)
   check(`${P}13`, await V(page, 'step') === 60 && await V(page, 'crewRest') === 720 && await V(page, 'reportLead') === 180, 'everything back to standard', [await V(page, 'step'), await V(page, 'crewRest'), await V(page, 'reportLead')])
   await shot(page, `${P}15-reset-all`)
+
+  /* D14 — the code read's F2: a row's Reset pressed while that row's box is being retyped — the row shows its standard */
+  await box(page, 'crewRest').click(); await page.keyboard.press('Control+A'); await page.keyboard.type('11h'); await page.keyboard.press('Tab'); await page.waitForTimeout(300)
+  await box(page, 'crewRest').click(); await page.keyboard.press('Control+A'); await page.keyboard.type('13')
+  await page.locator('#lgBody [data-lgreset="crewRest"]').click(); await page.waitForTimeout(400)
+  check(`${P}14a`, await V(page, 'crewRest') === 720, 'crew rest back to 12h', await V(page, 'crewRest'))
+  check(`${P}14b`, await box(page, 'crewRest').inputValue() === '12h', 'the box shows the standard, not the typing', await box(page, 'crewRest').inputValue())
+  await shot(page, `${P}16-row-reset-while-typing`)
   await ctx.close()
 }
 
@@ -211,6 +219,15 @@ const toastText = page => page.evaluate(() => document.getElementById('toastEl')
   await press(page, page.locator('#lgDone'), true); await page.waitForTimeout(200)
   check(`${P}3c`, !(await editing(page)), 'Done by one tap with nothing changed', await editing(page))
   await shot(page, `${P}05-reset-all-done`)
+
+  /* P4 — the code read's F1: a value typed and, straight away, "Reset all" tapped — the reset wins */
+  await press(page, page.locator('#lgEdit'), true); await page.waitForTimeout(200)
+  const b4 = box(page, 'debrief'); await b4.scrollIntoViewIfNeeded(); await press(page, b4, true); await b4.fill('1h30')
+  await press(page, page.locator('.lgttl'), true); await page.waitForTimeout(300)   // one saved, so "Reset all" is offered
+  const b5 = box(page, 'crewRest'); await b5.scrollIntoViewIfNeeded(); await press(page, b5, true); await b5.fill('11h')
+  await press(page, page.locator('#lgReset'), true); await page.waitForTimeout(400)
+  check(`${P}4`, await V(page, 'crewRest') === 720 && await V(page, 'debrief') === 120, 'Reset all with a value still in its box: everything standard', [await V(page, 'crewRest'), await V(page, 'debrief')])
+  await shot(page, `${P}06-reset-all-while-typing`)
   await ctx.close()
 }
 
