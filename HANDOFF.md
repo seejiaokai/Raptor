@@ -20,10 +20,28 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/inputs-small-fixes -->
+### 20 Oct 26, night — the Inputs batch (D994, Inputs and calendars), `claude/inputs-small-fixes`, pull request 553 — built, walked, gated; the code read running
+- **His pick:** "Inputs" — the agent's recommendation of the area's four small items needing no answer from him (D994).
+  (The shaky-tests batch, pull request 552, is LIVE — its block removed on this branch.)
+- **[TILL-NEXT-YEAR]** — "till 15 Feb 2027": `engine/inputs.ts tillOf` / `tillOfISO` print the last day's year where it is not
+  the loaded week's own; a published day's compare works out both sides under one loaded week, so the year alone is never
+  a change (`latepub.test.tsx`).
+- **[OIL-ASK-HEAD-SEVERAL]** — `ui/inputedit.tsx oilFirst` takes the door's `who`: the calendar's drag of an input of several
+  and the Unavailable row's hand-over of one man of several head the question "<first A to Z> +2" (`ui/oilaskhead.test.tsx`).
+- **[INP-TILL-STALE]** closed (gone since D948 — walked); **[CAL-UNDO-OTHERS]** not reachable today (a second person in one
+  browser needs a sign-in, which ends the first's Undo list); its holiday half refiled to the Database step group.
+- **Checked:** the sheet `raptor-port/docs/handpass/2026-10-20-inputs-small-fixes.md` — FULL (the published day's printed
+  remark), sized SMALL: walk 33 / 33, 19 pictures, phone and desktop; breaks 7 / 7; GitHub's run of 553 green on the fixes.
+- **Left:** the fresh, blind Opus read (running when this was written) → fix red-first what it finds → re-walk → archive the
+  three items (`backlog-archive.mjs`) → his look and "merge live" (D1088).
+- **Pick up here:** if the read's result is not in the sheet's §5, run it again (the brief is in this chat's history only:
+  the finder wording of the checking order §4, D56's exclusion, the two commits `93bba2a5d`, `c8a6c31d9`).
+<!-- /now -->
 
 ## Next, in order
 
-**RIGHT NOW (20 Oct 26, night):** pull request 552 LIVE (the shaky-tests batch, D994 — its block removed) → his next pick from D994's small fixes by area.
+**RIGHT NOW (20 Oct 26, night):** pull request 552 LIVE (the shaky-tests batch, D994 — its block removed) → his pick, the Inputs batch (D994), on `claude/inputs-small-fixes` (pull request 553, this chat's block).
 
 **RIGHT NOW (20 Oct 26, evening):** pull requests 550 and 551 LIVE (the OIL batch) → his pick, the shaky-tests batch (D994), BUILT and WALK-checked on `claude/shaky-tests-batch-ea7fc2` (pull request 552, this chat's block) → his "merge live" GIVEN → his next pick from the backlog.
 
