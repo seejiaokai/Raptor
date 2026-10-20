@@ -3988,7 +3988,7 @@ test('a weekday’s heading on Days sets every such day from a date onward, and 
   /* from Thu 15 Jan 2026 on, no end */
   /* picked on the calendar the box opens, as a person does (it was typed into the phone's date box until 13 Oct 26) */
   await pickDate(page, '[data-testid="every-from"]', '2026-01-15', isPhone())
-  await expect(tid('every-says')).toHaveText('Every Thursday from Thu 15 Jan 2026 onward is a no-fly day, until you change it here. A single Thursday can still be set by itself.')
+  await expect(tid('every-says')).toHaveText('Every Thursday from Thu 15 Jan 26 onward is a no-fly day, until you change it here. A single Thursday can still be set by itself.')
   await press(tid('every-save'))
   await expect(win).toHaveCount(0)
   await expect(tid('win-days')).toBeVisible()
@@ -4011,7 +4011,7 @@ test('a weekday’s heading on Days sets every such day from a date onward, and 
 
   /* the heading again: the rule is listed beneath, and Remove takes it away */
   await press(head)
-  await expect(tid('every-list')).toContainText('No fly · from Thu 15 Jan 2026 · no end')
+  await expect(tid('every-list')).toContainText('No fly · from Thu 15 Jan 26 · no end')
   const rm = tid('every-list').locator('button')
   expect((await rect(rm)).h).toBeGreaterThanOrEqual(36)
   await press(rm)
@@ -4209,7 +4209,7 @@ test('a holiday on dates no leave period covers waits: the Leave War’s New-per
   for (let i = 0; i < 8 && (await tid('hol-year').textContent()) !== '2031'; i++) await press(tid('hol-next'))
   await expect(tid('hol-year')).toHaveText('2031')
   /* the list says which dates are left out, and offers the way to cover them */
-  await expect(tid('hol-nocover')).toContainText('No leave period covers 1 Apr – 31 Dec 2031 yet.')
+  await expect(tid('hol-nocover')).toContainText('No leave period covers 1 Apr – 31 Dec 31 yet.')
   await expect(tid('hol-create-year')).toHaveCount(0)
   const gapBtn = tid('hol-new-period-2031-04-01')
   await expect(gapBtn).toHaveText('Add a period for 1 Apr – 31 Dec…')
@@ -6457,7 +6457,7 @@ test('the posting dates are the app’s own date boxes: the calendar opens on to
   await tapCalendarDate(page, '2026-07-20', touch)
   await expect(sheet, 'picking a date closed the sheet').toBeVisible()
   expect(await dateBoxValue(page, '[data-testid="po-date"]')).toBe('2026-07-20')
-  await expect(page.locator('[data-testid="po-date"]')).toContainText('Mon 20 Jul 2026')
+  await expect(page.locator('[data-testid="po-date"]')).toContainText('Mon 20 Jul 26')
 
   /* THE SAME TAP MADE TWICE DOES NOTHING MORE (the read's F1): on this sheet the calendar opens over the sheet's own
      leave chips and its shade — a double-click on a date must leave the sheet up, the date in its box, and no bid placed */

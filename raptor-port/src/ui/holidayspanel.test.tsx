@@ -182,13 +182,13 @@ describe('a year no leave period covers', () => {
   it('in part: it names the dates left out, and offers no whole-year button', () => {
     createWar('Q1', `${FREE}-01-01`, `${FREE}-03-31`)
     open(`${FREE}-03-01`)
-    expect(t('hol-nocover').textContent).toContain(`No leave period covers 1 Apr – 31 Dec ${FREE} yet.`)
+    expect(t('hol-nocover').textContent).toContain(`No leave period covers 1 Apr – 31 Dec ${String(FREE).slice(-2)} yet.`)
     expect(q('hol-create-year')).toBeNull()
   })
   it('two holes are both named', () => {
     createWar('Mid', `${FREE}-04-01`, `${FREE}-09-30`)
     open(`${FREE}-03-01`)
-    expect(t('hol-nocover').textContent).toContain(`No leave period covers 1 Jan – 31 Mar or 1 Oct – 31 Dec ${FREE} yet.`)
+    expect(t('hol-nocover').textContent).toContain(`No leave period covers 1 Jan – 31 Mar or 1 Oct – 31 Dec ${String(FREE).slice(-2)} yet.`)
   })
   it('in part: each run left out has a button that asks the Leave War for its own New-period sheet on those dates', () => {
     createWar('Mid', `${FREE}-04-01`, `${FREE}-09-30`)

@@ -98,7 +98,8 @@ export function HolidaysPanel({ year, setYear, onOpen }: {
         <div className="hol-nocover" data-testid="hol-nocover" role="status">
           <span>{none
             ? `No leave period covers ${year} yet.`
-            : `No leave period covers ${gaps.map(gapSaid).join(' or ')} ${year} yet.`}</span>
+            /* a date's year, printed after it: two digits (owner D1096); a year alone, above, keeps four */
+            : `No leave period covers ${gaps.map(gapSaid).join(' or ')} ${String(year).slice(-2)} yet.`}</span>
           {none && <button type="button" className="abtn" data-testid="hol-create-year" onClick={createYear}>Create it</button>}
           {/* covered in part: the Leave War's own New-period sheet, on each run left out */}
           {!none && gaps.map(g => (
