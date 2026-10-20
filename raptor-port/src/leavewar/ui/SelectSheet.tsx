@@ -30,7 +30,7 @@
 // (`OUTSTANDING.md` `[LW-WINDOWS-NONBLOCKING]`).
 
 import { useState } from 'react'
-import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
+import { displayCell, formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
 import { awardsIn, clearCells, deletableIn, movableCells, postingBlocked, setBidStates, setCells } from '../state/store'
@@ -247,7 +247,9 @@ export function SelectSheet({
             {LEAVE_TYPES.map(t => (
               <button key={t.type} data-testid={`sel-${t.type}`} className="tchip" title={t.label}
                 onClick={() => fill(formatCell({ type: t.type, portion }))}>
-                {formatCell({ type: t.type, portion })}
+                {/* the one-day sheet's words (D264 — one format and one look): a half day reads "<LL" / "LL>", never
+                    the stored "LL*" / "*LL" ([LW-SEL-HALF-LABELS]); what is saved is the stored code, as before */}
+                {displayCell(formatCell({ type: t.type, portion }))}
               </button>
             ))}
             {note && noteAt === 'leave' && <span className="note warn" data-testid="sel-note">{note}</span>}
