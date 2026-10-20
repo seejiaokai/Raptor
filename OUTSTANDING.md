@@ -157,6 +157,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [MAIN-CHECKOUT-STALE] — step 2 left: a guide line to bring the main folder level after a merge that touches settings, hooks or skills.
 - [REPO-TIDY] — clear the old worktrees (47 today) after safety checks; moving the walk pictures out is his call.
 - [COMPACT-WHEN-MOD] — two of the compaction set-up's four checks still unseen — they need a chat that reaches 80%.
+- [OVERNIGHT-SESSION-PER-JOB] — tried the night of 21 Oct 26 (D1103): one fresh session per job; if it worked, the overnight guide says so — written while he is awake, read before his approval.
 - [OVERNIGHT-RETRY-TRIAL] — the next /overnight night tries the keep-retrying setting (D885).
 - [PROMPT-AUDIT] — he runs the guide check in a terminal and brings its list back (D886).
 - [CI-FAIL-PICTURES] — GitHub's browser-test jobs keep no pictures of a failure — his call.
@@ -228,6 +229,9 @@ goes too. **Stays:** the Logic page's own strip ("N settings changed from the sq
 anything else reads it (check first). **Check:** the Logic tests that pin the mark; the walk scripts and the IT guide's
 picture script that look for the tag (`scripts/handpass/`, `scripts/itflow/j/settings.mjs`); a walk of both pages, phone and
 desktop, with a setting changed. The original app (`reference/`) is read-only and keeps its tag.
+
+### [OVERNIGHT-SESSION-PER-JOB] The overnight run starts each job in a fresh session (his word, 21 Oct 26 — D1103)
+**What:** tried on the night of 21 Oct 26 — the night's chat starts each job in a session of its own, one after another, and only coordinates. **Next:** the morning report says whether it worked (the weekly figure before and after, whether every session was started on time); if it did, the overnight guide (`.claude/skills/overnight/`) is changed to say so, while he is awake, read before his approval (D70). **Record:** `raptor-port/docs/superpowers/plans/2026-10-21-night-vetting.md` §The night's way of working.
 
 ### [CI-UNIT-SHARE-2-6] One unit share sets GitHub's check time (found 20 Oct 26, pull request 548's run; low)
 **Seen:** with the Tracker smoke in two (pull request 548), the run is 5m33s and its slowest leg `unit (raptor 2/6)` 5m29s (the next, `unit (raptor 5/6)`, 4m31s; the Tracker parts 4m19s and less). Vitest's `--shard` splits the file list by a hash of each path, not by time, so one share carries the heavy files. **To do:** measure each raptor unit file's time on GitHub; then either more shares (the plan's 20 side by side is already exceeded by one with the Docs guard — merge two short legs first) or a split by time (a list of the heavy files spread by hand). **Place:** Checks and tooling — low, with the next change to the checks file.

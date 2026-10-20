@@ -3,6 +3,10 @@
 Each reader checked its items on `main` at `b3db0675f`: still open, needs him or not, size, type of change
 (`docs/walk-ledger.md`). Saved as they arrived, condensed only by dropping repetition; every verdict and line kept.
 
+## The night's way of working — one fresh session per job (D1103, his "Ok yes", 21 Oct 26)
+
+From job 2 on, each job is built and checked in a fresh session of its own, started by the night's chat one after another; the night's chat only coordinates, checks each result and writes the morning report. The weekly figure is read at the start and in the morning to measure it. If it works, the overnight guide is changed to say so — while he is awake, read before his approval (D70): filed as [OVERNIGHT-SESSION-PER-JOB].
+
 ## Reader 1 — the Leave War and the Tracker
 
 No ruling names any of these items, except LW-LOCKMARK in D147's work order. None is archived as done.

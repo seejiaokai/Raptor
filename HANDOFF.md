@@ -21,7 +21,7 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/night-records-1021 -->
-### THE NIGHT OF 21 OCT 26 — /overnight, 14 hours (started about 22:30), `claude/night-records-1021` (records) and one branch a job
+### THE NIGHT OF 21 OCT 26 — /overnight, 14 hours (started 02:07, until about 16:00), `claude/night-records-1021` (records) and one branch a job
 - **After a compaction: re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time.**
 - **His word tonight:** 14 hours; jobs 1–6 (his "make it 14 hours … add more jobs", then his answer to the one question — read as "go" for the six, said to him); compact by itself through the night (D667, D872). **New rulings tonight:** D1098 (the RULES MODIFIED tag off View and Edit Schedule), D1099 (single-seat lines work fully — F-16, F-35), D1100 (one app for every squadron and aircraft type; detachments; lending a man), D1101 (a deployment and a database for each aircraft type, two squadrons at most so far), D1102 (the Post out date that sets a Delete off asks twice).
 - **The vetting of every candidate:** `raptor-port/docs/superpowers/plans/2026-10-21-night-vetting.md`.
@@ -35,7 +35,8 @@ the later merge keeps both (D78).
 - **Not tonight (named in the morning):** [READONLY-WEEK-WORDS] (new words), [WINDOWS-KEEP-KEYS] (his word), [BOARD-NARROW-DESKTOP-REMARKS] and [BOARD-SIDEWAYS-KEYS] (pictures first), [GATELOCK-STALE-LIVE] (a hook change), [LW-LOCKMARK] with [LW-OFFER-ONLY-TAKEABLE] (a night of their own), the single-seat build (his answers first). Stale records found by the vetting go in the morning report.
 - **Allowance at the start:** weekly 13%, this chat 29% full.
 - **Questions waiting for him:** none yet.
-- **Where the night stands:** the plan written; job 1 next.
+- **His word, 02:30 (D1103):** from job 2 on, each job runs in a fresh session of its own, started from this chat one after another; this chat coordinates, checks each result and writes the morning report.
+- **Where the night stands:** job 1 built (pull request 555; Auto-fix found on and switched off, D1090), its walk running; job 2 started on `claude/leavewar-small-1021` ([LW-SEL-HALF-LABELS] committed) and handed to its own session.
 <!-- /now -->
 
 ## Next, in order
