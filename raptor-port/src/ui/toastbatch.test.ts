@@ -172,7 +172,9 @@ describe('the passing note is told to a screen reader', () => {
   it('the same words twice running are told twice; a batch is told once, as the one line the eye reads', async () => {
     toast('Input added', undefined); vi.advanceTimersByTime(40)
     const h = heard(); h.watch()
-    toast('Input added', undefined); vi.advanceTimersByTime(40); await Promise.resolve()
+    toast('Input added', undefined)
+    expect(region()!.textContent, 'emptied first, so a reader hears the same words again').toBe('')
+    vi.advanceTimersByTime(40); await Promise.resolve()
     toastBatch(() => { toast('Published AL1 · 3 items on Sat only', undefined); toast('the SXO desk has no usable times', 'warn') })
     vi.advanceTimersByTime(40); await Promise.resolve()
     h.stop()

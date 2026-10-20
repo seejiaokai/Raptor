@@ -82,7 +82,10 @@ export const BOARD_BAR = {
    one-line top bar, 57–58 tall; but on the schedule pages and the Inputs page the bar runs to two lines at most desktop
    widths between about 900 and 1366 — 103–104 tall, measured 21 Oct 26 — and every window lay over its last 7px. So a
    window he has not placed opens 8px below the bar's REAL bottom — measured, as the failed-save band follows the bar
-   (SaveStatus.tsx) — and the bar re-places it when its height changes (below). Only where the bar is what lies under
+   (SaveStatus.tsx). When the bar's height changes the window is placed again by what changed it: a failed save's band
+   or the OIL bar arriving sends a resize (ui/Shell.tsx), the store's change re-draws the window, and a page change
+   closes it. (A watch on the bar's own height was tried and dropped: breaking it turned no test red and no route was
+   found by which the bar changes height with the window open and none of those three — the night's break test 3.) Only where the bar is what lies under
    the window's top edge, asked of the browser with the window itself left out: under the open Scheduler Board — a
    full-screen surface laid over the top bar — the bar is covered, and the window keeps its corner. (That corner lies
    over the right end of the board's OWN bar at every desktop width; whether the windows should open under that bar
@@ -181,15 +184,6 @@ export function useFloatWin(opts: {
     const mo = new MutationObserver(() => placeRef.current())
     mo.observe(w, { childList: true })
     return () => mo.disconnect()
-  }, deps)
-  /* …AND THE TOP BAR'S HEIGHT ([FLOATWIN-TWO-LINE-BAR]): a page change, the failed-save band or the bar that waits on
-     an OIL answer takes the bar from one line to two, or back, with no resize of the screen */
-  useEffect(() => {
-    const bars = open ? BARS() : []
-    if (!bars.length || typeof ResizeObserver === 'undefined') return
-    const ro = new ResizeObserver(() => placeRef.current())
-    bars.forEach(b => ro.observe(b))
-    return () => ro.disconnect()
   }, deps)
 
   useEffect(() => {
