@@ -16,8 +16,8 @@ const press = async (page: Page, loc: Locator, phone: boolean, scroll = true) =>
 /* THE SIMULATED FINGER'S MISSING CARET ([CI-E2E-FLAKES-1020], 20 Oct 26). On some of GitHub's Linux machines a simulated
    tap on an EMPTY time box gave it the focus but left the typing caret in the box before it (the landing, LD): the keys
    then typed nowhere — no input reached the box, so nothing could be saved ("1300", Enter, the save stayed ""). Proved by
-   an event log of the page on 18 runs over six machines (the branch claude/debug-rbox-linux): one machine in three, both
-   tries; a 4-second wait showed the caret never came; the identical events passed on the same machine's next try; and
+   an event log of the page on 24 machines, each running the test's share twice (the branch claude/debug-rbox-linux): 9
+   failed tries, on 6 of the machines, a failing machine often failing both; a 4-second wait showed the caret never came; the identical events passed on the same machine's next try; and
    between the tap and the keys the app ran NO script that moves a caret, a focus or a value. It never happened on his PC,
    nor in 40 repeats of this test alone on Linux, nor, in the runs logged, in a box that already held a time. So it is the simulated touch, not the app: where the browser's tap focused the box without putting the caret
    in it, the caret is put at the box's end, as the tap would have — never a second press, which would change the box's

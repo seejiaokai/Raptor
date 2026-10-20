@@ -6164,3 +6164,36 @@ ORIGINAL withdrawn; an AL withdrawn to a higher, a lower and an equal credit; a 
 **Tier:** FULL (OIL, the published record). **Place (the agent's line):** low-medium — with the next change to Unpublish or
 to the OIL tracker.
 
+
+*Moved here 2026-10-20 by backlog-archive.mjs ([CI-E2E-FLAKES-1020]). Forward facts: `raptor-port/docs/gates-and-deploy.md`, `raptor-port/docs/handpass/2026-10-20-shaky-tests.md`.*
+
+### [CI-E2E-FLAKES-1020] Two browser tests failed on GitHub only, then passed on a re-run (found 20 Oct 26, pull request 550 and `main` after it; low)
+**Seen:** (1) pull request 550's last run (`geometry (raptor 4/4)`, attempt 1): `e2e/schedule-tab.spec.ts:36` "schedule Tab desktop › D555 every open text family follows displayed order; closed inputs stay closed" hit the 30-second test limit twice (first try and its retry) inside a key press; the leg passed on a re-run. (2) `main`'s run after the merge (the same leg, attempt 1): `e2e/rallybox.spec.ts:55` "the R box phone › a time box tapped into …" — a cleared take-off, "1300" typed, Enter, and the save stayed empty (line 76, expected 13:00, got nothing), on both tries; passed on a re-run. Neither is touched by the OIL batch; neither has failed on his PC. **Why it matters:** (2) is the exact failure that took the Scheduler Board's Tab fold back out ([BOARD-TAB-FOLD-BOARD]) — now met on `main` without that fold, so the fold may not have been the cause, and the one-tap time box on a phone may really lose a typed time on Enter now and then (a real fault, not only a test). **To do:** for (2), reproduce on Linux (a debug branch's GitHub run with the trace kept), find the step that loses the save, fix the app if it is the app; for (1), find what the 30 seconds are spent on (a wait on a fixed time, or a box never reached) and make the test wait on what it needs (D87). A re-run is the standing answer to one such failure (D84) — this item is for the cause. **Place:** Checks and tooling — low; (2) with [BOARD-TAB-FOLD-BOARD].
+
+
+*Moved here 2026-10-20 by backlog-archive.mjs ([BOARD-TAB-FOLD-BOARD]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-20-shaky-tests.md`.*
+
+### [BOARD-TAB-FOLD-BOARD] The Scheduler Board's half of [BOARD-TAB-FOLD]: a time box left by Tab shows as typed (re-filed 20 Oct 26, the night; low)
+**Seen:** the board saves a time box on its `change` and the box left keeps the digits typed ("1000") until a press elsewhere, though 10:00 is saved (the archived [BOARD-TAB-FOLD]; the week's half is LIVE with pull request 547). **Tried:** in `board.ts boardChange`, after a save, `f.value = fmtHM(txtGet(p))` (and the input's own boxes from `inpTimeText`), then guarded `document.activeElement !== f`. Both turned GitHub's D1047 phone test red on three of four runs (`e2e/rallybox.spec.ts:55` "a time box tapped into …": a cleared take-off, "1300" typed, Enter → the save stayed empty), never on `main`, never on his PC (16 of 16; 6 of 6 with the browser slowed six times). Suspects: the one-tap arming and its owed `change` (`interactions.ts armFreshTime`, `oweChange`) beside a box written by script after a blur, on Linux's headless Chromium. **To do:** reproduce on Linux (a GitHub run of a debug branch with the test's trace kept as an artifact), find the step that loses the save, then fold the box without writing `.value` behind the browser's back (e.g. after the next repaint, or through the board's own redraw of that one box). **Place:** low — with the next change to the board's time boxes. **Met again 20 Oct 26:** the same D1047 phone test failed the same way on `main`'s run after pull request 550, with no fold in the app — the suspect above is likely wrong; see [CI-E2E-FLAKES-1020].
+
+
+*Moved here 2026-10-20 by backlog-archive.mjs ([LW-SCRUBBER-FLAKY]). Forward facts: `raptor-port/docs/handpass/2026-10-20-shaky-tests.md`.*
+
+### [LW-SCRUBBER-FLAKY] Leave War e2e tests time out on a saturated machine — pre-existing (21 Sep 26)
+`e2e/leavewar.spec.ts` "the bottom scrollbar is a year-wide scrubber", lw-desktop only. Under a full
+parallel run it sometimes times out after the SEP month button is clicked: the grid has not scrolled
+within 4s, so the bar's fraction still reads 0. Checked the way the OIL handoff demanded — the SAME
+full run on `main` (bdd51cc) FAILED it (446 passed, 1 failed) while `claude/oil-auto-remove-design`
+PASSED it (447 passed, 0 failed). **Pre-existing; not the OIL branch's.** It also passes in isolation
+(287/0 for the Leave War projects alone). The fault is the test's, not the app's: a fixed 4s poll on
+a year-wide grid redraw. Fix by waiting for the grid's own scroll to settle instead of a wall clock,
+or raise that poll and the twelve-months one beside it. Low priority — it bites only a loaded dev
+box; CI runs three workers with one retry. Logs from both runs are in the 21 Sep evidence sheet,
+`raptor-port/docs/handpass/2026-09-21-oil.md`.
+
+**WIDENED 22 Sep 26 — it is a FAMILY, not one test.** The overnight run on this branch failed a
+different one, `e2e/step4-leavewar.spec.ts` "leave during a course", lw-desktop, and it failed on the
+LOGIN page: the sign-in form had not rendered before the fill timed out. Run on its own it passes in
+six seconds. Same cause, same shape — a fixed wall-clock wait on a loaded box — so the fix is the
+same one, and it belongs to the Leave War e2e suite rather than to any branch.
+

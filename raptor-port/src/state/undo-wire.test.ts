@@ -624,6 +624,25 @@ describe('B8 — Undo says what came back', () => {
       expect(cell.textContent, 'the week cell').toBe('11:30')
     } finally { HOOKS.editMode = was }
   })
+  /* the shaky-tests batch's blind read, F1 (20 Oct 26): ONE man's row of an input that holds two (iid~person, on the
+     Unavailable list) saves his time into a record of his own, cut out of the shared one — so the box read the SHARED
+     record's old time back (10:00), not the 11:30 saved for him. The box left reads what was saved: the typed time, folded */
+  it('one man’s row of a shared input: his start / end left after typing read HIS saved time, on the board and the week', () => {
+    const was = HOOKS.editMode; HOOKS.editMode = () => true
+    try {
+      writeInputsBatch(() => { INPUTS.push({ people: [{ p: 'bane' }, { p: 'joker' }], type: 'Meeting', date: 'Jul 13', yr: 2026, remarks: '', iid: 'ifold2', s: 540, e: 600, allday: false, acc: 'u' } as any) })
+      const mine = () => INPUTS.find((x: any) => x.iid !== 'ifold2' && (x.people || [{ p: x.person }]).some((e: any) => e.p === 'bane') && x.date === 'Jul 13' && x.type === 'Meeting') as any
+      const el = document.createElement('input'); el.dataset.ifld = 'ifold2~bane.end'; el.value = '1130'; document.body.append(el)
+      try { boardChange({ target: el } as any) } finally { el.remove() }
+      expect(mine()?.e, 'saved for him alone').toBe(690)
+      expect((INPUTS.find((x: any) => x.iid === 'ifold2') as any).e, 'the shared record kept its time').toBe(600)
+      expect(el.value, 'the board box reads his saved time').toBe('11:30')
+      writeInputsBatch(() => { INPUTS.push({ people: [{ p: 'bane' }, { p: 'joker' }], type: 'Meeting', date: 'Jul 14', yr: 2026, remarks: '', iid: 'ifold3', s: 540, e: 600, allday: false, acc: 'u' } as any) })
+      const cell = document.createElement('span'); cell.setAttribute('contenteditable', 'true'); cell.dataset.inp = 'ifold3~joker.str'; cell.textContent = '0815'; document.body.append(cell)
+      try { routeFocusOut({ target: cell, relatedTarget: null } as any) } finally { cell.remove() }
+      expect(cell.textContent, 'the week cell reads his saved time').toBe('08:15')
+    } finally { HOOKS.editMode = was }
+  })
   it('a Quals tick names the man and what changed; a rule names the Logic page', () => {
     expect(updatePersonField('rocky', { tick: 'nvg' })).toBe(null)
     expect(undoState().undoLabel).toBe('Hex’s quals')

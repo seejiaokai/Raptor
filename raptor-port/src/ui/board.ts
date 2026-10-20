@@ -1271,8 +1271,11 @@ export function boardChange(e: Event) {
     if (RO) return back()
     /* an input's start / end left after a save reads the time as saved too ([BOARD-TAB-FOLD]; the blind read's F2,
        20 Oct 26) — the panel holding the caret is held back from repainting, so "1015" stayed on screen; not while the
-       caret is still in the box (the window lost the focus, the read's F3) */
-    if (setInpField(inp, field as any, inf.value, at ? at.person : null)) { notify(); if (field !== 'rmks' && inf.isConnected && document.activeElement !== inf) inf.value = inpTimeText(inp, field) }
+       caret is still in the box (the window lost the focus, the read's F3). THE TIME TYPED, FOLDED — what setInpField saved
+       (hhmm of what was typed; an emptied box, all day, reads empty) — never read back off `inp`: one man's row of an input
+       that holds several saves into a record of his own, cut out of this one, so `inp` still holds the old shared time
+       (the shaky-tests batch's blind read, F1, 20 Oct 26) */
+    if (setInpField(inp, field as any, inf.value, at ? at.person : null)) { notify(); if (field !== 'rmks' && inf.isConnected && document.activeElement !== inf) inf.value = fmtHM(String(inf.value).trim()) }
     else back()
     return
   }
