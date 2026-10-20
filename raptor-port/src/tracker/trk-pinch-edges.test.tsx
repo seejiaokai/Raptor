@@ -121,3 +121,20 @@ describe('[TRK-PINCH-OLD-EDGES] — Edit chart layout switched on and off again 
     expect(C.flowZoom, 'the zoom the switch back set stands').toBe(z)
   })
 })
+
+describe('[TRK-PINCH-OLD-EDGES] — switched on and straight off again with the fingers held still (the code read\'s finding 1)', () => {
+  it('no move between the two switches: the lift still settles nothing', async () => {
+    errors.length = 0
+    await act(async () => { C.resetFlowZoom() })
+    await send('pointerdown', 51, 100, 100, true)
+    await send('pointerdown', 52, 200, 100)
+    await send('pointermove', 52, 250, 100)          /* the chart stretched */
+    await act(async () => { C.toggleArrange() })
+    await act(async () => { C.toggleArrange() })     /* and back, before any finger moved */
+    const z = C.flowZoom
+    await send('pointerup', 52, 250, 100)
+    await send('pointerup', 51, 100, 100, true)
+    expect(errors).toEqual([])
+    expect(C.flowZoom, 'the zoom the switch back set stands').toBe(z)
+  })
+})
