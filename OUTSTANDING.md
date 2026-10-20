@@ -151,6 +151,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
+- [CI-UNIT-SHARE-2-6] — GitHub's check is now 5m33s, set by one unit share (raptor 2/6, 5m29s; the next 4m31s): the split is by a hash of each file's path, not by time — rebalance (more shares, or a time-based split) for about a minute (low).
 - [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
 - [LW-WINDOW-PRUNE-FLAKE-2] — the Leave War month-window browser test fails about half the full runs — wait on the grid, not a fixed time.
 - [LW-SCRUBBER-FLAKY] — a Leave War browser test times out on a busy PC — a fixed wait to replace.
@@ -222,6 +223,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [CI-UNIT-SHARE-2-6] One unit share sets GitHub's check time (found 20 Oct 26, pull request 548's run; low)
+**Seen:** with the Tracker smoke in two (pull request 548), the run is 5m33s and its slowest leg `unit (raptor 2/6)` 5m29s (the next, `unit (raptor 5/6)`, 4m31s; the Tracker parts 4m19s and less). Vitest's `--shard` splits the file list by a hash of each path, not by time, so one share carries the heavy files. **To do:** measure each raptor unit file's time on GitHub; then either more shares (the plan's 20 side by side is already exceeded by one with the Docs guard — merge two short legs first) or a split by time (a list of the heavy files spread by hand). **Place:** Checks and tooling — low, with the next change to the checks file.
 
 ### [BOARD-TAB-FOLD-BOARD] The Scheduler Board's half of [BOARD-TAB-FOLD]: a time box left by Tab shows as typed (re-filed 20 Oct 26, the night; low)
 **Seen:** the board saves a time box on its `change` and the box left keeps the digits typed ("1000") until a press elsewhere, though 10:00 is saved (the archived [BOARD-TAB-FOLD]; the week's half is LIVE with pull request 547). **Tried:** in `board.ts boardChange`, after a save, `f.value = fmtHM(txtGet(p))` (and the input's own boxes from `inpTimeText`), then guarded `document.activeElement !== f`. Both turned GitHub's D1047 phone test red on three of four runs (`e2e/rallybox.spec.ts:55` "a time box tapped into …": a cleared take-off, "1300" typed, Enter → the save stayed empty), never on `main`, never on his PC (16 of 16; 6 of 6 with the browser slowed six times). Suspects: the one-tap arming and its owed `change` (`interactions.ts armFreshTime`, `oweChange`) beside a box written by script after a blur, on Linux's headless Chromium. **To do:** reproduce on Linux (a GitHub run of a debug branch with the test's trace kept as an artifact), find the step that loses the save, then fold the box without writing `.value` behind the browser's back (e.g. after the next repaint, or through the board's own redraw of that one box). **Place:** low — with the next change to the board's time boxes.
