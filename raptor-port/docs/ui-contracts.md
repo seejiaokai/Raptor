@@ -1260,8 +1260,9 @@ buttons, and Publish AL is hidden under a preview (A3). RETIRED by this redesign
 `verSelHTML`/`dverSelectHTML`/`verSelBoardHTML`, the `<select data-dver>` on edit
 surfaces, the green `.livebtn` "Live copy" pill, the `.ddraft` "Publishes …"
 chip, and the week-status banner text (`Shell.tsx` `banner()` keeps only the AL
-roll — *stale: the AL roll went too, 15 Sep 26 follow-up 2; the banner holds only the rules modified
-stamp (marked 24 Sep 26, register AM22)*). Plans are lettered A/B/C (`drafts.ts` `nextName`, C1 — lowest unused
+roll — *stale: the AL roll went too, 15 Sep 26 follow-up 2; the banner held only the rules modified
+stamp (marked 24 Sep 26, register AM22), and that stamp goes from View and Edit Schedule too (D1098, 21 Oct 26 —
+changing the rules is normal for a squadron; the Logic page keeps its own strip)*). Plans are lettered A/B/C (`drafts.ts` `nextName`, C1 — lowest unused
 letter); deleting down to ONE clears the day's plans back to "Live working copy"
 (B1). **The VIEW page keeps its own pickers unchanged** (`viewDraftSelHTML`
 `data-dver` + the `d:` frozen preview, and `viewVerSelHTML` `data-vwork`) — the

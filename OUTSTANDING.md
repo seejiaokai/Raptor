@@ -62,6 +62,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
 **Schedule and amendments**
+- [SINGLE-SEAT] — a line with only its front seat filled must work fully, for F-16 and F-35 squadrons (D1099): first a check of every place that reads the back seat, then his answers, then the build; a switch to hide the back seat is his idea.
+- [RULES-TAG-OFF] — take the yellow RULES MODIFIED tag off View and Edit Schedule (D1098, his word 21 Oct 26); the Logic page's own strip stays.
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
 - [INNERHTML-REPAINT-SWEEP] — eleven screens hand React their markup as a new object every repaint, which React sets again — a box being typed in there is thrown away by any repaint (Quals fixed in [KEYBOARD-SCROLL]); sweep the rest (low).
@@ -213,6 +215,19 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [SINGLE-SEAT] Single-seat jets — the app works with only the front seat filled (his intent, 21 Oct 26 — D1099)
+**What:** a flying line with only its FCP filled must work as fully as a two-seat line — every check, mark, count and page — for F-16 squadrons (mixed fleet) and F-35 squadrons (all single-seat); an admin switch to hide the RCP is his idea, not designed. **Steps:** (1) the check — every place that reads the back seat and what it does with only the front seat filled, in the code and on screen, written up for him with the design questions (nothing in the app changes); (2) his answers, in rounds of four with pictures; (3) the build, on his word. **Design note:** `raptor-port/docs/superpowers/specs/2026-10-21-single-seat.md`.
+
+### [RULES-TAG-OFF] Take the RULES MODIFIED tag off View and Edit Schedule (his word, 21 Oct 26 — D1098)
+**What:** when a Logic setting is changed from the squadron standard, a yellow RULES MODIFIED tag shows above the Legend
+on View Schedule and Edit Schedule. His word: every squadron changes the rules to fit its own, so the tag goes from both
+pages. **Where:** the tag is drawn by the schedule pages' banner (`Shell.tsx` sets the page mark; `scheduler/01-logic.css`
+draws the words; `scheduler/04-pucks-sections.css` shows the banner only for it) — the banner holds nothing else, so it
+goes too. **Stays:** the Logic page's own strip ("N settings changed from the squadron standard"), and the page mark if
+anything else reads it (check first). **Check:** the Logic tests that pin the mark; the walk scripts and the IT guide's
+picture script that look for the tag (`scripts/handpass/`, `scripts/itflow/j/settings.mjs`); a walk of both pages, phone and
+desktop, with a setting changed. The original app (`reference/`) is read-only and keeps its tag.
 
 ### [CI-UNIT-SHARE-2-6] One unit share sets GitHub's check time (found 20 Oct 26, pull request 548's run; low)
 **Seen:** with the Tracker smoke in two (pull request 548), the run is 5m33s and its slowest leg `unit (raptor 2/6)` 5m29s (the next, `unit (raptor 5/6)`, 4m31s; the Tracker parts 4m19s and less). Vitest's `--shard` splits the file list by a hash of each path, not by time, so one share carries the heavy files. **To do:** measure each raptor unit file's time on GitHub; then either more shares (the plan's 20 side by side is already exceeded by one with the Docs guard — merge two short legs first) or a split by time (a list of the heavy files spread by hand). **Place:** Checks and tooling — low, with the next change to the checks file.
