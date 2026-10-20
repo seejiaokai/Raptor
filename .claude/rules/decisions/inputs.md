@@ -92,6 +92,7 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 
 | # | Date | The rule |
 |---|---|---|
+| D1095 | 20 Oct 26 | Where an input's "till <date>" carries its year, the year is two digits — "till 15 Feb 27", not "till 15 Feb 2027" — on every screen and in the input's own window; a last day in the loaded week's own year still carries no year. |
 | D1025 | 18 Oct 26 | The amber edge down the left of each cut line on the upchit sheet stays as built, and the design checker keeps skipping it there; it is the app's own warning-row mark, not a stripe to remove. |
 | D1023 | 18 Oct 26 | Before an upchit moved later or deleted gives a downchit its days back, the upchit sheet also lists each leave and each bid of his that the days given back will cut, one line each, before anything changes; nothing about the cut itself changes. |
 | D1022 | 18 Oct 26 | A deleted upchit gives the downchit it cut its days back, as a moved one does (D999): the downchit grows back to the end it had before the cut, never past it and never into another medical of his in the gap; the save sheet says so before anything changes. |
