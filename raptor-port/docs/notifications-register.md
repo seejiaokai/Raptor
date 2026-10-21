@@ -49,6 +49,10 @@ they are built.
 | P5 | the admins | a new request waits for approval (the Approvals count rises — D1152) | ***Approvals*** *Ranger · LL Mon 26 – Tue 27 Jan* — one line a request, or one line a day when many arrive | the Approvals list | the full mock-up (picture 10) |
 | P6 | ~~a member~~ | ~~a leave of his filed on the Inputs page is decided in Approvals (if Q6 is answered yes)~~ — **struck 21 Oct 26 (D1166):** Inputs-page leave is never decided in Approvals; it lands approved | — | — | the full mock-up (Q6) |
 | P7 | every member | bidding closes: an open stretch is closed or shortened, or its last day passes (round 3's question 5, his question on a closed stretch, 21 Oct 26) | ***Leave War*** *bidding closed · 1 Apr – 30 Jun · Saber* | the Leave War, the chip's list ("Last open 1 Apr – 30 Jun · closed by Saber, 15 Mar") | the full mock-up (Q5), proposed |
+| P8 | a member who has read the approval | an admin's Undo takes back an approval the bell already told him of (the red team, 22 Oct 26 — today the line is withdrawn silently, D148) | ***Your leave*** *Tue 10 – Wed 11 Feb · approval of LL taken back · Saber* | the grid, at that day | the design note §10.3 Q11, his to answer |
+| P9 | the admins | a member withdraws a waiting bid, or files leave on the Inputs page that lands on the war (the red team, 22 Oct 26 — today neither tells an admin) | shown in Approvals' "Also since you last looked" group, not as a bell line — the agent's reading (D1199 option A) | the grid, at that day | the design note §10.1, D1199 |
+
+*Put to him on the page as questions (22 Oct 26):* P4 with P7 as Q8 (a member's bell told when bidding opens or closes), P8 as Q11.
 
 *Open with each proposed line, for its design:* whether the admins' line (P5) is one a request or one a day; whether
 P4 goes to everyone or only to members with nothing waiting; the exact words, read cold before any is built.
