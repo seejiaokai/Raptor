@@ -115,6 +115,22 @@ describe('the unit tests split across GitHub’s machines by time', () => {
     expect(specKey('/home/runner/work/Raptor/Raptor/raptor-port', '/home/runner/work/Raptor/Raptor/raptor-port/src/a.test.ts')).toBe('src/a.test.ts')
   })
 
+  it('on a share the longest files start first; without --shard the order is vitest’s own; nothing is added or lost', async () => {
+    const proj = { name: 'raptor', config: { sequence: { groupOrder: 0 }, isolate: true } }
+    const cache = { getFileTestResults: () => undefined, getFileStats: () => undefined }
+    const paths = [...files.raptor.slice(0, 40), 'src/zz-new-one.test.ts']
+    const specs = paths.map(p => ({ moduleId: `${PORT}/${p}`, project: proj }) as unknown as TestSpecification)
+    const sortWith = async (shard: unknown) =>
+      (await new TimedSequencer({ config: { root: PORT, shard }, cache } as unknown as Vitest).sort(specs)).map(s => specKey(PORT, s.moduleId))
+    const plain = await sortWith(undefined)
+    expect(plain, 'his PC: vitest’s own order (no times in the cache: the list as given)').toEqual(paths)
+    const onShare = await sortWith({ index: 1, count: 6 })
+    expect([...onShare].sort()).toEqual([...paths].sort())
+    const known = onShare.filter(p => p in UNIT_TIMES)
+    expect(known.map(p => UNIT_TIMES[p]), 'the known files, longest first').toEqual(known.map(p => UNIT_TIMES[p]).sort((a, b) => b - a))
+    expect(onShare[onShare.length - 1], 'a file the times do not know comes after them').toBe('src/zz-new-one.test.ts')
+  })
+
   it('a share count below 1 is refused, not silently run as nothing', () => {
     expect(() => planShards(['src/a.test.ts'], {}, 0)).toThrow(/at least 1/)
   })
