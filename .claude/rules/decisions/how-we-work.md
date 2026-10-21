@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1222 | 22 Oct 26 | A picture put to him for a question shows only what that question is about — cut to that area, or everything else dimmed — with the change named in plain words on the picture, so he sees at a glance what he is asked; a whole screen is shown only when the question is about the whole screen. |
 | D1195 | 21 Oct 26 | A session he starts from a handoff — the button or a pasted opening line — has Remote Control on by default. |
 | D1138 | 21 Oct 26 | Help's and Admin's titles take the size and weight of Logic's page name and keep their place; the pages without a title stay without one. |
 | D1134 | 21 Oct 26 | Every pencil in the app is one design, the solid pencil of his picture (filled, eraser at the top left, tip at the bottom right), drawn by the app so every device shows it alike, never the ✏ emoji, the line pencil included; only a ✎ inside help text, or after an edited chart's name in the Tracker's Syllabus list, stays typed. |

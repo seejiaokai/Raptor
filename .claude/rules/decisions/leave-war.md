@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1223 | 22 Oct 26 | The URHO who runs the Leave War is given an admin account; the app gets no Leave-War-only role. |
 | D1221 | 22 Oct 26 | In the Leave War's Settings, SANS men are put on the war by "+ SANS" among the groups and taken off by that group's ✕, in place of the Show SANS switch; never added, they stay off (D1215). |
 | D1220 | 22 Oct 26 | The admin locks every member's balances at once with one switch, "Lock balances", in the Leave War's Settings; locked, every person window shows a small padlock and a member's figures read only; there is no lock per person. |
 | D1219 | 22 Oct 26 | There is no setting to turn on notifications of new Leave War requests for the admin: what waits is seen only on the Approvals count when he opens the Leave War — no bell line, no phone ping, no switch. |
