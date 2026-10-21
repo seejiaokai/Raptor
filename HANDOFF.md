@@ -20,6 +20,12 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/board-side-width -->
+### 21 Oct 26 — the right-panel job, `claude/board-side-width` (from `main` after pull request 561) — recorded, not started; a fresh chat starts it
+- **What it is:** [BOARD-SIDE-WIDTH] — D1113 (the board's right panel dragged wider on a desktop, two equal columns kept, and his idea: a struck puck's reason beside it once there is room — his example picture in the item), D1114 (the ATT B man's look in the crew list with no seat picked — recommended full colour with a small "can't fly" mark), D1115 (a look over every state the crew list draws — findings to him first), D1116 (Edit Schedule's AIRCREW heading with its ‹ day › picker kept in sight on scroll).
+- **First:** the design questions with pictures, in rounds of at most four; then build, the bug-check order, a fresh Opus read.
+- **Known:** the document check fails on a notes-only change from `main` (`.claude/rules/shipping.md` 2 lines over its ceiling — older); a change that touches `raptor-port/src` defers it. Pull request 561 (pinch zoom) is LIVE; its block below can go at the next handoff once [BOARD-PHONE-PINCH-ZOOM] is archived (it lives on the unmerged `claude/night-records-1021`).
+<!-- /now -->
 <!-- now:claude/board-pinch-zoom -->
 ### 21 Oct 26 — pinch to zoom on a phone (the board's desktop layout and Quals), `claude/board-pinch-zoom`, pull request 561 — his "merge live" GIVEN (21 Oct 26), merging
 - **Done this chat:** (1) D1106 on pull request 558 — **LIVE** (his "merge live", 21 Oct 26). (2) The pinch-zoom questions with pictures; his "Yes to all" → **D1109** (`scheduler.md`), **D1110** (`people-accounts.md`). (3) Built: `ui/pinchzoom.ts` (one pinch body), the board's desktop layout under the phone's own bar, the edge scroll (`ui/drag.ts tdWideLoop`), Quals' table and pinned row. Two fresh Opus reads (9 + 2 findings), all fixed. (4) His look round 1 on his iPhone → **D1111** (the sign-off scrolls away in the desktop layout) and **D1112** (the side column is the desktop's — the issues list's margins, the crew list's columns), both built (`13-board-rows-responsive.css`, the last block).

@@ -54,6 +54,9 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1116 | 21 Oct 26 | On Edit Schedule's week on a desktop, the AIRCREW panel's heading with its day picker (‹ Monday ›) stays in sight while the page scrolls down, so the day the crew list is for can always be seen and changed. |
+| D1115 | 21 Oct 26 | The right-panel job ([BOARD-SIDE-WIDTH]) also looks over the whole crew list — every look a puck can wear there, its reason, the counts and the order, with and without a seat picked — to check each is correct and makes sense; the findings go to him with pictures before anything changes. |
+| D1114 | 21 Oct 26 | How an ATT B man (grounded but able to work) looks in the crew list with no seat picked is one of the right-panel job's design questions, drawn for him with pictures — recommended: full colour with a small "can't fly" mark, not the faded look of a man already tasked. |
 | D1113 | 21 Oct 26 | On a desktop, the Scheduler Board's right panel keeps its pilots and WSOs as two equal columns, and its left edge becomes a grip he can drag to widen it, from today's 320 up to about 40% of the screen, remembered on that computer; built as its own job, its questions and a picture first. |
 | D1112 | 21 Oct 26 | In the Scheduler Board's desktop layout on a phone, the side column is laid out as on a desktop: the issues list uses the column's width with the desktop's margins, and the crew list's two columns share the column's width as on a desktop, so its reasons wrap no narrower. |
 | D1111 | 21 Oct 26 | In the Scheduler Board's desktop layout on a phone, the sign-off box scrolls away with the day as it does on a desktop, never frozen above it. |
