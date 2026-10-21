@@ -56,9 +56,10 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1184 | 21 Oct 26 | The Approvals list's date choices cover the whole Leave War period on view — the one he created, usually a year — not only a few months. |
 | D1183 | 21 Oct 26 | In the Leave War's bid windows each leave button wears its kind's colour of look F (D1175) — LL light amber, OL deep amber, OIL green, the other leave blue — so the button and the box it places on the grid look alike. |
-| D1182 | 21 Oct 26 | In the admin's bid window the "Approve what I enter" tick leaves its row of its own with an empty label, and is placed where it lines up with the window's other rows; where, is drawn for him and put with a recommendation. |
-| D1181 | 21 Oct 26 | In the Leave War's Approvals list each request's balance reads "LVE bal", not "LVE after". |
+| D1182 | 21 Oct 26 | In the admin's bid window the "Approve what I enter" tick is moved out of its odd place, drawn alone on a row with an empty label, to where it sits neatly in line with the window's other rows; where, is drawn for him and put with a recommendation. |
+| D1181 | 21 Oct 26 | In the Leave War's Approvals list each request's balance reads "LVE Bal", not "LVE after". |
 | D1180 | 21 Oct 26 | In the Leave War's Approvals list each request shows its kind as the grid's coloured box (look F, D1175 — LL light amber, OL deep amber, OIL green…) and the person as his own puck — pilot or WSO by its colour, his CAT on its chip, a SANS man's purple edge — not as plain words. |
 | D1178 | 21 Oct 26 | In the Leave War's Approvals list a request that carries a document shows a document icon on its line, and a tap on it opens the document for the admin to review before he decides, as the colleague's app shows its files. |
 | D1177 | 21 Oct 26 | The Leave War's stages (draft, open for bidding, bidding closed, published) go: members bid only on the open dates the admin sets in the "Open for bidding" window; nothing is open until he opens it, and with nothing open the chip reads "Bidding closed". |
