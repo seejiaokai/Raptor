@@ -284,6 +284,7 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **Q12 → A (D1200):** "12 A" — a Management tick column on Quals, added as a group standing first; D1149 marked. This branch takes **D1200–D1209** (checked 21 Oct 26: nothing from D1200 on any branch).
 - **D1201:** "can u design it such that u show all the balances of the user and also optimise the space to show as much leave data taken etc. And the balances can be editable" — the person window redesigned: every balance at once, editable (an admin's), his leave one line a request; drawn (`../../mock/lw-overhaul/full/r5-person-*.png`, script `full-r5.mjs`).
 - **Q13 → A (D1202):** "13 yes" — red on Avail P / W a setting beside amber, "+ 0" by default.
+- **D1203:** "By the members until the admin locks it" — a member edits his own balances until the admin locks them; whether the lock is one for everyone (recommended) or per person, drawn with D1201.
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
   `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (his question "in what scenario": the clash rules allow only leave during a course or overseas duty, leave beside
   ATT B, and an FO given by hand on a leave day; recommended now C — the leave fills the cell, the other a strip down its right
