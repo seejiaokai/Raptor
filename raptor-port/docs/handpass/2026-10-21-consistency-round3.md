@@ -119,3 +119,53 @@ GitHub's run of pull request 564 is the full check while the repo is public (D10
   [UI-CONSISTENCY-LOOK] in round 3's note.
 - **Finding 18 (found building round 3):** the Tracker's Info panel ("⧉ Copy to…", a lull's ×) and Edit chart layout's tools (✋ —
   an emoji on an iPhone — ▣, →, 🗑, ╱, ❐) keep typed marks — for round 4 with finding 17.
+
+## 8. Answers 5–7 (D1138, D1139, D1170) — built, walked, read
+
+His *"yes all"* to questions 5–7. **The eight questions:** as §1 — no money, record, saved data, role or warning; 4 YES (the
+Tracker's bar rule is one rule over every button on the bar); 5 and 6 NO. **Tier: WALK.**
+
+**Built.** D1138: Help's and Admin's titles 24px → Logic's page name — 18px, 700, its .01em spacing; 16px at 820 and under, Logic's
+own break (`15-admin-help.css`). D1139: `.inputs-listtools` buttons 44 → 36 (`25-inputs-calendar.css`). D1170: the bar's own
+buttons — named by where they sit (`header .controls>button.sm`, a menu's toggle, the search's, the save corner's) — 30 tall, 26 at
+1050 and under; a menu's items and the flex window's Cancel / Save keep theirs (`tracker.css`). **One thing beyond the contract
+line, on another ruling:** the bar's search box was 25 beside its own 30-tall ✕, and D1127 says a search box is as tall as the
+buttons beside it — made 30 / 26 too.
+
+**The roll-call — every control on the Tracker's bar:** Crew, Course, Syllabus (the dropdowns, the measure); the Course and
+Syllabus pencils, ⓘ, Show All (desktop), Legend, File, the search box and its ✕ (desktop; the phone's strip), 🔍 (phone), the gear,
+Hide, "✓ Save changes" (when the chart has unsaved edits — probed by a bar button put in its slot), the standalone Tracker's own
+↶ ↷ (not drawn inside Raptor, so not walked: direct children of the bar, the same rule reaches them) — the rest each 30 / 26, measured. Must not change: the menus' items and the flex
+window's buttons — measured unchanged (the Course menu's items 20; the flex window's 40, their own rule); the hidden bar's
+strip sits outside the bar, untouched by the rule (pressed, it brings the bar back). No MISSING.
+
+**Sizing (§7.0):** type E; what only a walk finds here is a control the rule missed, a row that grows, a control that stops
+working at its new height. The host alone, the round 3 walk extended (`sizes57`, the break test): 134 checks, 49 pictures
+(`walk57/`), the key ones opened (`22`–`25`, `34`–`39`, `43`).
+
+**What the walk found.** (1) The search box short of its ✕ — above. (2) **The bar's height** against a build of the old look at
+nine widths (`cr3-barheights.mjs` → `bar-before.json`, `bar-after.json`): no taller at 1536 (51), 1440, 1300, 1050 (37.5) and on a
+phone at 402, 375 and 320 (69.5, 69.5, 101.5); **2 taller (86.9 → 89) at about 1051–1200**, where a narrow desktop wraps the bar
+onto two rows and the second row holds no dropdown, so it was as tall as its 23-tall buttons and is now 30. A closer row gap was
+tried first to hold it: once the true before was measured it made the phone's bar 3 shorter, moving its rows, so it was dropped.
+**Put to him** (the ruling says the bar grows no taller): leave the 2 there, or close that row gap on a narrow desktop only.
+
+**Pressed at the new heights:** Admin's categories; the dates button (its pop-up) and "+ Input" (the window); the Course menu,
+Legend, the gear, ⓘ, the search (typed, found, ✕ cleared), Show All, Hide and the strip back — at 1536 and by touch at 402.
+
+**Walk:** 134/134 PASS, 49 pictures (`walk57/`), 1536 and 402 by touch, the bar at nine widths against a build of the old look;
+two finds (the search box; the narrow desktop's 2px, put to him). Tests: `e2e/consistency-heights.spec.ts` (5, both widths) and
+the inputs calendar's spec green (64); the Tracker's suite 453/0; touched unit tests 200/200.
+
+**The code read.** One fresh, blind Opus read (D790), given the diff and the measured facts, asked for absences first. It found
+the selectors catch every control on the bar and nothing off it (menu items, the flex window, the Legend pop-out, the hidden
+bar's strip, the empty Tracker, Edit chart layout's tools), the cascade sound, D1138 and D1139 right. Two findings, both taken:
+
+| # | Finding | Disposition |
+|---|---|---|
+| 1 | The dropdowns' height came from the browser's own drawing, the buttons' from a fixed number — on a device that draws a dropdown shorter (Safari on his iPhone, unproved here) the buttons would stand taller than the dropdowns | Fixed: the bar's dropdowns held at the same 30 / 26 (`tracker.css`). Checked here: Chromium draws them 30 in Segoe UI, Arial and Times alike, so nothing changes on screen here; on his iPhone it makes "as tall as" hold whatever Safari's dropdown would have been |
+| 2 | The list's two buttons, now 36, lost the larger press area the row above's 36-tall buttons have on a desktop (46 — D698, D1125, for a touch laptop or an iPad on its side) | Fixed: the same press area (`25-inputs-calendar.css`); the spec and the walk check a press 3px above each meets it |
+
+Each fix is one rule, so no second read of the fixes. **Re-walk**, the whole script into `rewalk57/`: **136/136** (the press-area
+check new). The spec 6 green with the inputs calendar's (64); the Tracker's suite 453/0 again. Not proved: Safari's own drawing of
+the bar on his iPhone — his look. Test gap the read named, left: the standalone Tracker's own ↶ ↷ (never drawn inside Raptor).

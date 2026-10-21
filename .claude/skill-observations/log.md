@@ -1684,3 +1684,18 @@ different feature that merely pass through it.
 **Suggested improvement:** In `raptor-port/docs/walk-scripts.md`: when a text mark becomes a drawn icon, assert its PLACE as well as its presence — the icon's box beside the words (its right edge at or before the words' left, their middles within a few px) and the control's height unchanged; and a crop helper that takes several selectors must box all of them, not the first.
 
 **Principle:** An assertion of presence cannot catch a layout fault; check the relation the person sees (beside, same line, same height), and make every picture show the thing it is named for.
+
+### Observation 669: A "before" worked out by undoing styles on the page is not the before — measure a build of the old look
+
+**Status:** OPEN
+**Date:** 2026-10-21
+**Session context:** Raptor round 3's answers 5–7 — the Tracker bar's controls made one height; the ruling also said the bar must grow no taller (numbered past 668, held by `claude/leave-war-overhaul`)
+**Skill:** New skill candidate: none — the walk-scripts guide (`raptor-port/docs/walk-scripts.md`) and the bug-check order's walk
+**Type:** open-source
+**Phase/Area:** walking a size change; comparing before and after
+
+**Issue:** To check "the bar grows no taller", the walk first computed the old height by injecting a style that undid the new sizes on the live page. Its numbers disagreed with a hand measure in another browser pane (different fonts) and with each other (a phone bar "70 → 67"), and a fix (a closer row gap) was built on the pane's numbers. Building the app once with the old stylesheet and measuring it with the same script at nine widths gave the true before: the fix was not needed and in fact moved the phone's rows; it was dropped. Separately, a fresh code read caught that one side of the "as tall as" was fixed while the other was drawn by the browser (a dropdown) — true here, unproved on an iPhone — so both were pinned to the same number.
+
+**Suggested improvement:** In `walk-scripts.md`: when a ruling says something "does not grow / does not move", record the before from a BUILD of the old look (swap the one stylesheet back, build, measure with the same script into a file, restore), and compare the after against that file; never against numbers from another browser or a style undone on the page. And when making two things "as tall as" each other, set both to the number, not one.
+
+**Principle:** A comparison is only as good as its baseline; measure the old state the same way, in the same browser, as the new — and a match between a fixed size and a computed one is a match on one device only.

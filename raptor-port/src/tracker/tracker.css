@@ -174,6 +174,9 @@ header .saveslot>button.sm{height:30px;box-sizing:border-box}
 /* ...and the search box with them: it is a control on the bar too, and a search box is as tall as the buttons beside it
    (D1127) — at 25 it stood short of its own ✕ */
 header .findbox{height:30px;box-sizing:border-box}
+/* ...and the dropdowns held at the same number: they took their height from their font's line, 30 only with Windows'
+   Segoe UI — on his iPhone's font they came out about 24, under the buttons' fixed 30 / 26 (the fresh read's finding 1) */
+header .controls select{height:30px;box-sizing:border-box}
 /* ↶ ↷ on the bar are greyed while there is nothing to take back — a live
    button that does nothing reads as broken. */
 button:disabled{opacity:.38;cursor:default}
@@ -776,7 +779,7 @@ small.hint{color:var(--muted);font-size:11px}
  .controls button.sm{padding:3px 6px}
  /* the bar's one height on a phone: its dropdowns' 26 (owner D1170) — the same buttons as the desktop's rule above */
  header .controls>button.sm,header .controls>.menu>button.sm,header .findwrap>button.sm,header .findpanel>button.sm,
- header .saveslot>button.sm,header .findbox{height:26px}
+ header .saveslot>button.sm,header .findbox,header .controls select{height:26px}
  /* A 132px box in a 390px row leaves nothing for anything else, so the phone
     gets a 🔍 button and a full-width strip under the bar. position:fixed, not
     absolute: the header scrolls sideways, and an overflow container clips its

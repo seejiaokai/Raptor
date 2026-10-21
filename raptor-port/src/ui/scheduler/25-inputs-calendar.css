@@ -85,6 +85,10 @@
 /* the list's own two buttons, "+ Input" and the dates button, are 36 tall as on a phone and as the rest of the Inputs page
    (owner D1139, 21 Oct 26 — they were 44 here); the words and their places stay */
 .inputs-listtools>.abtn,.inputs-listtools .inrange>.abtn{min-height:36px}
+/* ...and pressed 46, as the row above's 36-tall buttons are on a desktop (D698, D1125 — a touch laptop or an iPad on its side;
+   the fresh read's finding 2): the list row is shown on a desktop only */
+.inputs-listtools>.abtn,.inputs-listtools .inrange>.abtn{position:relative}
+.inputs-listtools>.abtn::after,.inputs-listtools .inrange>.abtn::after{content:'';position:absolute;inset:-5px 0}
 /* the dates button's line calendar (owner D1137, 21 Oct 26 — in place of the 📅 emoji) sits beside its dates, as in the
    phone's row (.inputs-top .abtn): the desktop's row of the list's own two buttons is not .inputs-top, and the drawing is a
    block (.btnglyph), so without this it stood above the dates and the button grew two lines tall */

@@ -57,6 +57,11 @@ test('desktop: the Inputs list\'s "+ Input" and dates button are 36 tall, as the
     return g.top >= r.top && g.bottom <= r.bottom
   })
   expect(oneLine, 'the dates button is one line').toBe(true)
+  /* drawn 36, pressed 46, as the row above's buttons (D698, D1125): a press 3px above each still meets it */
+  for (const id of ['inNew', 'inRangeBtn']) {
+    const meets = await page.evaluate(id => { const b = document.getElementById(id)!, r = b.getBoundingClientRect(), h = document.elementFromPoint(r.left + r.width / 2, r.top - 3); return !!h && (h === b || b.contains(h)) }, id)
+    expect(meets, `a press 3px above #${id} meets it`).toBe(true)
+  }
 })
 
 for (const [name, vp, h] of [['desktop', DESK, 30], ['phone', PHONE, 26]] as const) {

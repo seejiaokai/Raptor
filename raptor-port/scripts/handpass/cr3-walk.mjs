@@ -290,6 +290,8 @@ async function sizes57(page, tag, touch, barH) {
   ok(`${tag} the Inputs list's "+ Input" and dates button are 36 tall, as its other buttons`, hs['#inNew'] === 36 && hs['#inRangeBtn'] === 36 && hs['#inCalBtn'] === 36, JSON.stringify(hs))
   const one = await page.evaluate(() => { const b = document.querySelector('#inRangeBtn'), s = b.querySelector('svg').getBoundingClientRect(), t = b.querySelector('.inrange-t').getBoundingClientRect(); return s.right <= t.left + 1 && Math.abs((s.top + s.bottom) / 2 - (t.top + t.bottom) / 2) <= 3 })
   ok(`${tag} the dates button stays one line, its calendar beside the dates`, one)
+  const reach = await page.evaluate(() => ['inNew', 'inRangeBtn'].map(id => { const b = document.getElementById(id), r = b.getBoundingClientRect(), h = document.elementFromPoint(r.left + r.width / 2, r.top - 3); return !!h && (h === b || b.contains(h)) }))
+  ok(`${tag} the two buttons pressed 46: a press 3px above each still meets it`, reach.every(Boolean), JSON.stringify(reach))
   await shot(page, `${tag}-q6-inputs-list`, { x: 0, y: 40, width: Math.min(page.viewportSize().width, 1536), height: touch ? 140 : 170 })
   await press(page, '#inRangeBtn', touch)
   ok(`${tag} the dates button pressed: its pop-up opens under it`, await visible(page, '#inRangePop'))

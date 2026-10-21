@@ -2,7 +2,7 @@
    bar after the change beside the bar before it. Run once against a build of the old look (the baseline) and the walk
    compares (`cr3-walk.mjs`, its break test, reads CR3_BAR_BASE). Each width: the bar's height, how many rows it wraps to,
    and every control's height on it.
-   Run: HP_URL=http://localhost:<port> node scripts/handpass/cr3-barheights.mjs <out.json> */
+   Run (CR3_FONT=Arial and CR3_OLD=1 optional — above): HP_URL=http://localhost:<port> node scripts/handpass/cr3-barheights.mjs <out.json> */
 import { existsSync, writeFileSync } from 'node:fs'
 import { chromium } from '@playwright/test'
 const { BASE, login, go } = await import('./lib.mjs')
@@ -30,6 +30,11 @@ if (process.argv[1] && process.argv[1].endsWith('cr3-barheights.mjs')) {
     const page = await ctx.newPage()
     await page.goto(BASE + '/'); await login(page, 'a')
     await go(page, 'tracker'); await page.waitForSelector('#flowSvg .ball', { timeout: 20000 }); await page.waitForTimeout(600)
+    /* CR3_FONT=Arial: the bar's controls in another font (an iPhone has no Segoe UI — its line is shorter); CR3_OLD=1: the old
+       sizes put back on the page (no fixed height on the buttons, the search box or the dropdowns) */
+    if (process.env.CR3_FONT) await page.addStyleTag({ content: '#page-tracker header select,#page-tracker header button,#page-tracker header input{font-family:' + process.env.CR3_FONT + '!important}' })
+    if (process.env.CR3_OLD) await page.addStyleTag({ content: '#page-tracker header button.sm,#page-tracker header .findbox,#page-tracker header select{height:auto!important}' })
+    if (process.env.CR3_FONT || process.env.CR3_OLD) await page.waitForTimeout(200)
     res[w] = await barNow(page)
     console.log(w, JSON.stringify(res[w]))
     await ctx.close()
