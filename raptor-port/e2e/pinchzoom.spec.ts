@@ -197,6 +197,17 @@ test.describe('Quals on a phone pinches (D1110)', () => {
       expect(Math.abs(l - line!.mir[i][0]), `heading ${i + 1} left`).toBeLessThanOrEqual(2)
       expect(Math.abs(w - line!.mir[i][1]), `heading ${i + 1} width`).toBeLessThanOrEqual(2)
     })
+    /* MID-PINCH, scrolled sideways and pinned: the headings stay over their columns while the fingers move (the fix
+       round's read, finding 1 - the browser's follow is held during the pinch) */
+    await touch(cdp, 'touchStart', [[150, 500]]); await sleep(30)
+    await touch(cdp, 'touchStart', [[150, 500], [250, 500]]); await sleep(30)
+    for (let i = 1; i <= 6; i++) { await touch(cdp, 'touchMove', [[150 - 6 * i, 500], [250 + 6 * i, 500]]); await sleep(20) }
+    const midLine = await page.evaluate(() => {
+      const at = (sel: string) => [...document.querySelectorAll(sel)].slice(2, 7).map(t => Math.round(t.getBoundingClientRect().left))
+      return { real: at('#qtbl thead tr:last-child > th'), mir: at('[data-testid="qsticky-head"] .qfixed-scroll thead tr:last-child > th') }
+    })
+    await touch(cdp, 'touchEnd', []); await sleep(400)
+    midLine.real.forEach((l, i) => expect(Math.abs(l - midLine.mir[i]), `mid-pinch heading ${i + 3}`).toBeLessThanOrEqual(3))
     await go(page, 'editsched'); await go(page, 'quals'); await sleep(300)
     expect((await q()).z, 'back on Quals: today\'s size').toBe(1)
     expect(errs).toEqual([])

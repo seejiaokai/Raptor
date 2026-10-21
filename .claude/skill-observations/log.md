@@ -1547,3 +1547,18 @@ different feature that merely pass through it.
 **Suggested improvement:** the archive command removes the priority-list line with the section (or refuses and names it), and the document check fails on a priority-list line whose item is archived.
 
 **Principle:** A move that has two homes for one item must move both, and the check that guards the move must look in both places.
+
+### Observation 658: A new test's precondition must be shown to happen before its break test means anything
+
+**Status:** OPEN
+**Date:** 2026-10-21
+**Session context:** the pinch-zoom job (numbered past 656 on `claude/night-records-1021`); two new browser tests ("a pinch on a wave grip moves no wave", "a pinch on a Quals heading moves no column") passed with their fixes taken out
+**Skill:** New skill candidate: none — the bug-check order's break tests (`raptor-port/docs/bug-check-order.md` §8)
+**Type:** open-source
+**Phase/Area:** writing a regression test for a guard
+
+**Issue:** Both tests asserted "nothing moved" after a pinch. With the guard removed they still passed: in the test browser a finger never picked the heading up at all, and the board's row moved but the test compared positional addresses that do not change. Only the break test exposed it; the board's test was rewritten to observe the guard's own effect mid-gesture (no row held), the Quals one removed and the older fault behind it filed.
+
+**Suggested improvement:** in the break-test step, a test of the form "X did not happen" first asserts that its precondition did happen without the guard (the thing was picked up, the drag was live) — or is written to observe the guard's direct effect instead of the absence of a downstream change.
+
+**Principle:** A negative assertion proves nothing until the test has shown the harness can produce the positive case; check the precondition, or assert the guard's own effect.

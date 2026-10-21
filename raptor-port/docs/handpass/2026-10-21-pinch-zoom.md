@@ -54,7 +54,7 @@ Type E (a gesture on a shared machine) and C (one layout rule). **SIZED SMALL by
 by real fingers over CDP (two-finger pinches, a held puck) at his iPhone's size (402 × 874), the board's desktop and phone
 layouts and Quals; every press a real touch; pictures each step.
 
-## 5. The walk — 33 PASS, 0 FAIL, no browser error (`scripts/handpass/pz-walk.mjs`)
+## 5. The walk — 29 PASS, 0 FAIL, no browser error (`scripts/handpass/pz-walk.mjs`)
 Pictures in `docs/img/handpass/2026-10-21-pinch-zoom/walk/` (opened: b1, b2, b7, q4).
 - B1 the bar is the screen's width; ✓ Done, the next-day arrow and the calendar take a press at once; the day opens at 1.
 - B2 a pinch out stops where the whole day fits (0.341, nothing left to slide); the stretch gone at the lift; the bar 402 × 75; ✓ Done pressable.
@@ -67,20 +67,44 @@ Pictures in `docs/img/handpass/2026-10-21-pinch-zoom/walk/` (opened: b1, b2, b7,
 - Q1 Quals opens at 1. Q2 a pinch out fits the whole table (after the re-measure — it was 372 for 362 first); the buttons and the switch unchanged. Q3 in to 2. Q4 scrolled down and sideways at 1.24: the pinned headings over their columns, the name column at the left. Q5 WSOs keeps it. Q6 back on Quals: 1.
 - Found by the walk: the swipe dead end (B6, fixed — §1); the table's fit 10px wide (Q2, fixed); a second finger landing off the table never started a pinch (fixed: a pinch starts on the first move of two fingers too).
 
-## 6. Break tests — 5 of 5 caught (`e2e/pinchzoom.spec.ts`)
+## 6. Break tests — 9 of 10 caught (`e2e/pinchzoom.spec.ts`)
 The bar rule taken out (2 tests red); the sideways overscroll fix taken out (1); the edge loop not started (1); the hold
-not let go by a second finger (1); Quals' pinned widths not divided by the zoom (1). Each put back; all 5 green.
+not let go by a second finger (1); Quals' pinned widths not divided by the zoom (1). After the read's fixes: a pinch on a
+wave grip no longer letting the grip go (1); the zoom applied at every width, the phone turned on its side (1). After the second read: the follow not held mid-pinch (1); the pinned row's box
+stretched instead of its contents (1). Each put back; all green. **Not caught: Quals' heading let go by a pinch** — a finger over CDP never picks a heading up in this
+browser at all (its press stays held by the heading's words, an older fault filed as [QUALS-HEAD-FINGER-CAPTURE]), so a
+test there would pass either way; it was taken out rather than kept, and the fix stands on the read (the board's twin is pinned).
 
 ## 7. Gates
-Unit: `src/ui/pinchzoom.test.ts` 9 new; the touched files (drag, kbscroll, quals, board, rowdrag, interact and 15 more) 589 green.
-Browser: `e2e/pinchzoom.spec.ts` 5, with geometry, save-note, schedule-tab, kbscroll — 262 green. The full set: GitHub's run of
+Unit: `src/ui/pinchzoom.test.ts` 12 new; the touched files (drag, dayswap, kbscroll, quals, board, rowdrag, interact and 20 more) 606 green
+(5 Quals heading-drag tests went red on the fix round — jsdom's presses carry no first-finger flag — and the guard was narrowed to a press that
+is a second finger; 73/73). Browser: `e2e/pinchzoom.spec.ts` 7, with geometry, save-note, schedule-tab, kbscroll — green. The full set:
+GitHub's run of pull request 561, green on the build (`ac941f9fc`, 23 checks); the fix round's run below. The full set: GitHub's run of
 pull request 561 (D1086).
 
 ## 8. The code read
-A fresh, blind Opus reader of the build commit — see §9 for its findings and each disposition.
+A fresh, blind Opus reader of the build commit (`0d20547e2`): 9 findings, none severe, every one fixed (`a0b85ac74`). The fix
+commit then read by a second fresh Opus reader, given only the fix and the findings (the order's §5, "a fix is new code") — §9.
 
 ## 9. Found, and each disposition
-(filled after the read)
+**The walk's three** (§5): fixed. **The read's nine** (all fixed in `a0b85ac74`):
+1. A zoom stuck when the phone is turned on its side past 820 (nothing there can change it) → the zoom is a variable the stylesheet applies only up to 820; turned back, the zoom he pinched returns. Pinned (the phone on its side).
+2. Two fingers swallowed wider than a phone (Quals, an iPad) → kept from the browser only where the pinch is the page's, or a picked-up puck holds them. Pinned (unit).
+3. A pinch whose first finger pressed a row, wave or section grip — or a Quals heading in Edit quals — dropped that drag at the lift → the pinch lets every grip drag and the heading drag go; a second finger never starts a heading drag. Pinned for the board; Quals by reading (§6).
+4. The picture jumping sideways mid-pinch near the right end → a one-pixel spacer holds the scroll box's width until the lift.
+5. The picture snapping back when pinched at a limit → the spot is put back under the fingers at the lift either way.
+6. A pinch left hanging when a finger lifts off the day or table → the pinch listens on the page until it ends. Pinned (unit).
+7. Quals' pinned headings drifting mid-pinch → they stretch with the table. Pinned (unit).
+8. A box being typed in held in the wrong place inside the zoom when a panel above is rewritten → the move is in the zoom's units.
+9. React not holding the zoom it did not write (a rare sign-out without a redraw) → the board is drawn again on each zoom.
+Plus, from its caution on older Safari (a zoomed box measured unzoomed): the Quals fit stops if the measured scale disagrees with the asked zoom.
+**Found in passing, not fixed:** [QUALS-HEAD-FINGER-CAPTURE] (older; a check on his phone first).
+**The fix round's read** (a second fresh Opus reader, the fix commit and the findings only): 2 findings, both fixed — (1) on a
+browser with the scroll-driven follow (his iPhone on iOS 26) Quals' pinned headings slid off their columns mid-pinch when
+the table was scrolled sideways (the table's stretch grows the scroll range, the follow reads the scroll over the range) →
+the follow is held while the fingers move (`onEnd`, `animationPlayState`), pinned mid-gesture in the browser test; (2) the
+pinned row's box spilled over the page's 20px margins mid-pinch → its contents stretch, not its box. Its nit (the spacer
+widened by the layout's `min-width`) fixed. Both break-tested (caught). Last round; the re-walk 29 PASS on the final build.
 
 ## 10. His look
 On his iPhone (the walk cannot copy an iPhone's touch and scrolling — Safari's own pinch, its zoom, its keyboard): the

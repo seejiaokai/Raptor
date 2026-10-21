@@ -82,6 +82,8 @@ export type PinchOpts = {
   /** called the moment two fingers make a pinch, before anything is stretched (a pending puck hold, a heading or row
    *  drag pressed by the first finger — each let go, so the pinch moves nothing at its lift) */
   onStart?: () => void
+  /** called once the pinch has ended, on every path (the lift, a cancel, the clean-up) — before the zoom is written */
+  onEnd?: () => void
   /** other boxes drawn over the zoomed thing that must stretch with it while the fingers move — Quals' pinned heading
    *  row (unzoomed boxes, stretched about the same screen point, from their own top) */
   also?: () => (HTMLElement | null)[]
@@ -125,7 +127,7 @@ export function wirePinch(opts: PinchOpts): () => void {
       if (cs.position === 'static' || n.scrollWidth <= n.clientWidth) return null
       const sp = document.createElement('div')
       sp.setAttribute('aria-hidden', 'true')
-      sp.style.cssText = `position:absolute;left:${n.scrollWidth - 1}px;top:0;width:1px;height:1px;pointer-events:none;visibility:hidden`
+      sp.style.cssText = `position:absolute;left:${n.scrollWidth - 1}px;top:0;width:1px;min-width:0;height:1px;pointer-events:none;visibility:hidden`
       n.appendChild(sp)
       return sp
     }
@@ -138,6 +140,7 @@ export function wirePinch(opts: PinchOpts): () => void {
     l.spacer?.remove()
     document.removeEventListener('touchend', end, true)
     document.removeEventListener('touchcancel', cancel, true)
+    opts.onEnd?.()
   }
   const start = (e: TouchEvent) => {
     if (e.touches.length !== 2 || live) return

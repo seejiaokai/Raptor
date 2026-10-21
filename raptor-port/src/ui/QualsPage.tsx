@@ -659,9 +659,21 @@ export function QualsPage() {
         setQz(z)
       },
       canStart: () => !!window.matchMedia && window.matchMedia(PHONE_Q).matches,
-      onStart: () => cancelColDrag.current?.(),
-      /* the pinned heading row stretches with the table while the fingers move (the code read's finding 7) */
-      also: () => [document.querySelector<HTMLElement>('#page-quals .qfixed')],
+      /* the pinned row's browser follow is held while the fingers move (the fix round's read, finding 1): the table's
+         stretch grows the scroll box's range while its scroll stands still, so the follow — the scroll over the range —
+         slid the row short of its columns; nothing scrolls mid-pinch, so the held row is right, and it follows again after */
+      onStart: () => {
+        cancelColDrag.current?.()
+        const a = document.querySelector<HTMLElement>('#page-quals .qfixed-anim')
+        if (a) a.style.animationPlayState = 'paused'
+      },
+      onEnd: () => {
+        const a = document.querySelector<HTMLElement>('#page-quals .qfixed-anim')
+        if (a) a.style.animationPlayState = ''
+      },
+      /* the pinned heading row's CONTENTS stretch with the table while the fingers move (the code read's finding 7), not
+         its box: the box keeps the table's edges and clips them, as the table's own box does (the fix round's finding 2) */
+      also: () => [...document.querySelectorAll<HTMLElement>('#page-quals .qfixed > .qfixed-scroll, #page-quals .qfixed > .qfixed-frozen')],
     })
   }, [])
 
