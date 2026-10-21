@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1211 | 22 Oct 26 | On the Leave War a member never bids on a day before today, even inside an open month; an admin may. A member may still correct a wrong input of his for a past day on the Inputs page, and the scheduler then publishes another end-of-day version to bring the published schedule up to date. |
 | D1210 | 22 Oct 26 | A leave request on the Leave War has a place for remarks, as an input on the Inputs page has, so a request still waiting can say why — for example, information the member has not yet given. |
 | D1209 | 22 Oct 26 | A member cannot type his own OIL figure in his person window: OIL stays what the published schedule earns and what an admin awards; a tap on OIL opens the OIL tracker. |
 | D1208 | 22 Oct 26 | The person running the Leave War is not flooded with notifications of new leave requests — not while bidding is open (he closes the bids, then approves) and not afterwards, when ad-hoc leave is daily operations. |
