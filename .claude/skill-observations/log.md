@@ -1654,3 +1654,18 @@ different feature that merely pass through it.
 **Suggested improvement:** One line in the guide's coding conventions (or gates-and-deploy.md): source-scanning tests (inputs-readers, perms-scan, …) read comments too — never write a store's name (INPUTS, PEOPLE, DAYS…) in capitals in prose; and when touching a new file, run the scan tests (`npx vitest run src/engine/inputs-readers.test.ts src/state/perms-scan.test.ts`) with the touched ones.
 
 **Principle:** When tests scan source text, any file change is a change those tests touch; include them in the "touched tests" set by default.
+
+### Observation 665: A look's picture script should tag the mark, not assume where it lives
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** Round 3 of the consistency look: picturing every typed pencil in the app, today and drawn.
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** drawing a proposed change on the running app
+
+**Issue:** A source search listed a typed pencil on the Tracker's Students card, but the running app already drew it as a line icon (the character hidden by a style). Grepping source would have put a finding to the owner that was already fixed. Tagging every visible element whose own text holds the mark, then ringing those, found the true set on screen; the empty result for that place was the signal.
+
+**Suggested improvement:** In mockups-on-the-real-app.md, one line: when a look covers "every X", find X by what the running page shows (visible elements whose own text or icon is X), not by a source search; a place the source lists but the screen does not show is reported as "already done", not pictured.
+
+**Principle:** What the person sees is the inventory; source text is only a lead to check against the running screen.

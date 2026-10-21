@@ -20,13 +20,11 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/consistency-round2 -->
-### 21 Oct 26 — round 2 of the consistency look, `claude/consistency-round2`, pull request 563 — his "merge live" GIVEN (21 Oct 26), merging
-- **His rulings:** D1129–D1132 ("1 yes, 2 yes, 3 yes, 4 yes" to round 2 — Quals' Edit quals plain; the board's own Undo / Redo / History / sync to 1599; the board's highlighter mark on a desktop; the Tracker's line icons and joined phone tabs). Homed in `ui-contracts.md` and the code. This branch holds D1129–D1139; the Leave War overhaul chat (`claude/leave-war-overhaul`) holds D1140–D1159.
-- **Checked (sheet `raptor-port/docs/handpass/2026-10-21-consistency-round2.md`):** WALK tier; the walk 100/100, re-walk 105/105 (`scripts/handpass/cr2-walk.mjs`); one fresh blind Opus read — two screen-reader gaps (Undo / Redo's spoken name, the sync dot's state; both older on the top bar) fixed on both bars; GitHub green on `d50327cc1`, the fixes' run last. Auto-fix was found on for 563 and switched off (D1090). Two document tripwires raised with reasons (both over on main before this branch).
-- **His pencil question → D1133** (every pencil tips bottom right: the drawn pencil mirrored, the Tracker and the input title box; design lesson 18). Built, pictured, tested.
-- **His look:** the page https://claude.ai/artifact/5VUi1FHQTvcHPBdxZvXWMU (a "Built" section at its top); the preview https://raptor-git-claude-consistency-round2-kai-e2f5.vercel.app. Not proved here: Safari's look of the icons on his iPhone.
-- **Pick up here:** on his "merge live" (D1088): push the closing records, wait for that run, merge, confirm Production. Then round 3 of [UI-CONSISTENCY-LOOK] — findings 6, 7, 8, 9 and 16 (the Tracker's other typed marks, found walking) — pictured with `scripts/handpass/cr2-look.mjs`'s pattern; round 4 (10, 12, 15) after the Leave War plan.
+<!-- now:claude/sharp-spence-adf59e -->
+### 21 Oct 26 — round 3 of the consistency look, `claude/sharp-spence-adf59e` (from `main` after pull request 563) — FOUR QUESTIONS PUT TO HIM, nothing built
+- **Before:** round 2 (D1129–D1133, pull request 563) is merged and live; its block is removed. Ruling numbers: D1134–D1139 are this job's; the Leave War overhaul chats hold D1140–D1159.
+- **Put to him:** the page https://claude.ai/artifact/UT34rbwMNC9Zs8M4vdYP24 — Q1 every typed pencil drawn (finding 16, D1133's follow-up), Q2 the Tracker's menu marks as line icons (16), Q3 the Tracker's labels in small spaced capitals (6), Q4 "+ Medical" first at the left, no frame, the dates button's emoji a line calendar (7 — changes D965's place). Pictures and page: `raptor-port/docs/img/handpass/2026-10-21-consistency-round3/`, drawn by `raptor-port/scripts/handpass/cr3-look.mjs` (served build on port 4237). The backlog item [UI-CONSISTENCY-LOOK] holds each question's detail and the new finding 17.
+- **Pick up here:** record his answers (D1134 onward), then put findings 8 (page titles) and 9 (button heights) as round 3's second half, with pictures; then build what he approved, walk and check it on this branch. Round 4 (10, 12, 15, 17) after the Leave War overhaul's plan.
 <!-- /now -->
 <!-- now:claude/board-pinch-zoom -->
 ### 21 Oct 26 — pinch to zoom on a phone (the board's desktop layout and Quals), `claude/board-pinch-zoom`, pull request 561 — his "merge live" GIVEN (21 Oct 26), merging

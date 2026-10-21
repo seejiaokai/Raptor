@@ -1,0 +1,174 @@
+<title>Matching Rows Round 3</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column of numbered questions, each a short statement, its pictures (today, then the drawn proposal), then the recommendation. The same page as rounds 1 and 2, so the three read as one series. */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --ink:#14181d; --ink-2:#4a5560; --edge:#d6dce2; --accent:#0e7fa3; --ring:#c77700; --tag:#e9eef2;
+  --f-body:"Inter Tight","Segoe UI",system-ui,-apple-system,sans-serif; --f-head:"Barlow Condensed","Arial Narrow","Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0d1014;--panel:#161b21;--ink:#e8edf2;--ink-2:#9aa7b3;--edge:#2a323b;--accent:#4cc3e6;--ring:#ffb020;--tag:#1f262e;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1014;--panel:#161b21;--ink:#e8edf2;--ink-2:#9aa7b3;--edge:#2a323b;--accent:#4cc3e6;--ring:#ffb020;--tag:#1f262e;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+main{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1{font:700 30px/1.1 var(--f-head);letter-spacing:.02em;text-transform:uppercase;margin:0;text-wrap:balance}
+h2{font:700 22px/1.2 var(--f-head);letter-spacing:.02em;margin:0;text-wrap:balance;display:flex;gap:10px;align-items:baseline}
+h2 .n{background:var(--ring);color:#000;border-radius:7px;padding:0 9px;font-size:18px}
+h3{font:700 15px/1.3 var(--f-body);margin:4px 0 0}
+p{margin:0;max-width:68ch}
+.lead{color:var(--ink-2)}
+section{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:18px max(16px,2vw);display:flex;flex-direction:column;gap:14px;min-width:0}
+figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+figure img{width:100%;height:auto;border-radius:8px;border:1px solid var(--edge);cursor:zoom-in;display:block}
+figure.sm img{width:auto;max-width:100%}
+figcaption{font-size:13px;color:var(--ink-2)}
+.tag{display:inline-block;font:600 11px/1.6 var(--f-body);letter-spacing:.06em;text-transform:uppercase;background:var(--tag);border-radius:5px;padding:0 6px;margin-right:6px;color:var(--ink)}
+.tag.drawn{background:var(--accent);color:var(--bg)}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px;align-items:start}
+.phones{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px;align-items:start}
+.rec{background:var(--tag);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.rec b{color:var(--accent)}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.answer{border:2px dashed var(--accent)}
+.zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;z-index:20;padding:env(safe-area-inset-top,0px) max(8px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(8px,env(safe-area-inset-left,0px));overflow:auto;cursor:zoom-out}
+.zoom img{max-width:none;width:min(1600px,200vw);height:auto}
+@media (max-width:600px){.zoom img{width:220vw}}
+</style>
+
+<main>
+  <header style="display:flex;flex-direction:column;gap:10px">
+    <h1>Matching rows — round 3</h1>
+    <p class="lead">Four more places where the app draws the same thing two ways. Questions 1 and 2 are about pencils and the Tracker's typed marks. Question 3 is about the small labels before a box. Question 4 is about the Medical tab's top row. Nothing has changed in the app yet.</p>
+    <p class="lead">In every picture the amber ring marks the place. A picture tagged <span class="tag">Today</span> is the app as it is. A picture tagged <span class="tag drawn">Drawn</span> is the change drawn on the real app. Tap any picture to enlarge it.</p>
+  </header>
+
+  <section>
+    <h2><span class="n">1</span> Every pencil drawn the same way</h2>
+    <p>The app draws its pencil two ways. In an input window's title box and on the Tracker's bar it is a drawing (your rulings of 15 Oct and 21 Oct), tip bottom right. In ten other places it is still a typed character, ✎. One of them, a note in a day on the Inputs calendar, uses a different one, ✏, which your iPhone draws as a coloured emoji. (This test browser has no emoji, so it shows as a white bar.)</p>
+    <div class="pair">
+      <figure><img src="q1-drawn-tracker.png" alt="The Tracker's bar: the drawn pencils"><figcaption><span class="tag">Today</span>The drawn pencil, on the Tracker's bar</figcaption></figure>
+      <figure><img src="q1-inputs-note-today.png" alt="A note in a day on the Inputs calendar: its pencil button is the emoji ✏"><figcaption><span class="tag">Today</span>Inputs calendar, a note in a day: the ✏ emoji</figcaption></figure>
+    </div>
+    <h3>The typed pencils, today and drawn</h3>
+    <div class="pair">
+      <figure><img src="q1-quals-today.png" alt="Quals: ✎ Edit"><figcaption><span class="tag">Today</span>Quals: "✎ Edit" (Logic's is the same)</figcaption></figure>
+      <figure><img src="q1-quals-proposed.png" alt="Quals: Edit with the drawn pencil"><figcaption><span class="tag drawn">Drawn</span>Quals: the drawn pencil</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q1-board-cx-today.png" alt="The Scheduler Board's cancel window: ✎ Edit"><figcaption><span class="tag">Today</span>Scheduler Board, a row's CX window: "✎ Edit"</figcaption></figure>
+      <figure><img src="q1-board-cx-proposed.png" alt="The cancel window with the drawn pencil"><figcaption><span class="tag drawn">Drawn</span>The same, drawn pencil</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q1-board-templates-today.png" alt="The board's Templates menu: ✎ Manage templates"><figcaption><span class="tag">Today</span>Scheduler Board, Templates: "✎ Manage templates"</figcaption></figure>
+      <figure><img src="q1-board-templates-proposed.png" alt="Manage templates with the drawn pencil"><figcaption><span class="tag drawn">Drawn</span>The same, drawn pencil</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q1-board-stores-today.png" alt="A jet's stores list: its ✎ button"><figcaption><span class="tag">Today</span>A jet's stores list: the ✎ that edits the list</figcaption></figure>
+      <figure><img src="q1-board-stores-proposed.png" alt="The stores list with the drawn pencil"><figcaption><span class="tag drawn">Drawn</span>The same, drawn pencil</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q1-inputs-defwindow-today.png" alt="The Inputs list's dates pop-up: ✎ Default window"><figcaption><span class="tag">Today</span>Inputs list, dates pop-up: "✎ Default window" (admin only)</figcaption></figure>
+      <figure><img src="q1-inputs-defwindow-proposed.png" alt="Default window with the drawn pencil"><figcaption><span class="tag drawn">Drawn</span>The same, drawn pencil</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q1-inputs-note-proposed.png" alt="The Inputs calendar note with the drawn pencil"><figcaption><span class="tag drawn">Drawn</span>Inputs calendar note: the drawn pencil in place of ✏</figcaption></figure>
+      <figure><img src="q1-trk-pop-today.png" alt="The Tracker's marking pop-up: ✎ Edit details"><figcaption><span class="tag">Today</span>Tracker, a ball's pop-up: "✎ Edit details"</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q1-trk-pop-proposed.png" alt="Edit details with the drawn pencil"><figcaption><span class="tag drawn">Drawn</span>The same, drawn pencil</figcaption></figure>
+      <div class="phones">
+        <figure class="sm"><img src="q1-trk-tools-today.png" alt="Edit chart layout's ✎ Text tool"><figcaption><span class="tag">Today</span>Edit chart layout: "✎ Text"</figcaption></figure>
+        <figure class="sm"><img src="q1-trk-tools-proposed.png" alt="The Text tool with the drawn pencil"><figcaption><span class="tag drawn">Drawn</span>Drawn pencil</figcaption></figure>
+      </div>
+    </div>
+    <p>Not pictured: the board's plans menu ("✎ Manage plans", and a ✎ beside each saved plan). It looks like "Manage templates" above, but the demo has no saved plan, so it does not show. The Tracker's Course and Syllabus menus are in question 2's pictures.</p>
+    <div class="rec">
+      <p><b>Recommended:</b> every typed pencil becomes the drawn pencil, tip bottom right. Nothing moves, and no button changes what it does. Two places keep the typed ✎ because a drawing cannot go there: inside a sentence of help text, and after an edited chart's name in the Tracker's Syllabus list.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span> The Tracker's menus: line icons</h2>
+    <p>In round 2 the Tracker's bar got the app's line icons. Inside its menus and on its Students card the marks are still typed: ⇅ Reorder, ⧉ Duplicate, ⇪ Import, ⤓ Export, × on each student, and 🗑 Delete. Your iPhone draws 🗑 as a coloured emoji.</p>
+    <div class="pair">
+      <figure><img src="q2-trk-sylmenu-today.png" alt="The Syllabus menu today"><figcaption><span class="tag">Today</span>Syllabus menu (the pencil ✎ items are question 1's)</figcaption></figure>
+      <figure><img src="q2-trk-sylmenu-proposed.png" alt="The Syllabus menu with line icons"><figcaption><span class="tag drawn">Drawn</span>Line icons, and question 1's drawn pencil</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q2-trk-coursemenu-today.png" alt="The Course menu today"><figcaption><span class="tag">Today</span>Course menu</figcaption></figure>
+      <figure><img src="q2-trk-coursemenu-proposed.png" alt="The Course menu with line icons"><figcaption><span class="tag drawn">Drawn</span>Course menu</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q2-trk-filemenu-today.png" alt="The File menu today"><figcaption><span class="tag">Today</span>File menu</figcaption></figure>
+      <figure><img src="q2-trk-filemenu-proposed.png" alt="The File menu with line icons"><figcaption><span class="tag drawn">Drawn</span>File menu: Import's arrow matches File's own</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q2-trk-students-today.png" alt="The Students card today"><figcaption><span class="tag">Today</span>Students card: ⇅ Reorder and × on each name (their pencils are already drawn)</figcaption></figure>
+      <figure><img src="q2-trk-students-proposed.png" alt="The Students card with line icons"><figcaption><span class="tag drawn">Drawn</span>Students card</figcaption></figure>
+    </div>
+    <div class="phones">
+      <figure><img src="q2-phone-sylmenu-today.png" alt="Phone: the Syllabus menu today"><figcaption><span class="tag">Today</span>Phone: Syllabus menu</figcaption></figure>
+      <figure><img src="q2-phone-sylmenu-proposed.png" alt="Phone: the Syllabus menu with line icons"><figcaption><span class="tag drawn">Drawn</span>Phone: Syllabus menu</figcaption></figure>
+    </div>
+    <p>Not pictured: the empty Tracker's "⇪ Import a file…", which shows only when there is no course. It would get the same arrow as Import.</p>
+    <div class="rec">
+      <p><b>Recommended:</b> the line icons, as drawn. Nothing moves, and no button changes what it does.</p>
+      <p>One thing to know: the Scheduler Board ("⇅ Sort all", "▤ Templates") and the Leave War ("⇅ Rearrange", "◷ OIL tracker") use typed marks too. If you say yes here, the Tracker's ⇅ is drawn while the board's and the Leave War's stay typed for a while. I've kept those two for round 4, with the Leave War's other items, after the Leave War overhaul's plan.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span> The labels before a box</h2>
+    <p>Quals, the Leave War, Help and Admin put small spaced capitals before a box or a row of buttons: "VIEWING", "PERIOD", "STAGE", "CATEGORY". Only the Tracker uses ordinary grey words: "Crew", "Course", "Syllabus". On a phone the Tracker shows no labels, so this is the desktop only.</p>
+    <div class="pair">
+      <figure><img src="q3-tracker-today.png" alt="The Tracker's bar: Crew, Course, Syllabus in ordinary words"><figcaption><span class="tag">Today</span>Tracker: ordinary grey words</figcaption></figure>
+      <figure><img src="q3-tracker-proposed.png" alt="The Tracker's bar with small spaced capitals"><figcaption><span class="tag drawn">Drawn</span>Tracker: small spaced capitals, as Quals'</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q3-quals.png" alt="Quals: VIEWING"><figcaption><span class="tag">Today</span>Quals: "VIEWING"</figcaption></figure>
+      <figure><img src="q3-help.png" alt="Help: CATEGORY and WHAT HAPPENED"><figcaption><span class="tag">Today</span>Help: "CATEGORY", "WHAT HAPPENED"</figcaption></figure>
+    </div>
+    <figure><img src="q3-leavewar.png" alt="The Leave War: PERIOD, STAGE, BIDDING ON, UNDER-MANNED"><figcaption><span class="tag">Today</span>Leave War: "PERIOD", "STAGE", "BIDDING ON", "UNDER-MANNED"</figcaption></figure>
+    <div class="rec">
+      <p><b>Recommended:</b> the Tracker's three labels take the small spaced capitals, in the same size, weight and grey as Quals' "VIEWING". The words stay the same, and nothing on the bar moves.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span> The Medical tab's top row</h2>
+    <p>The Inputs list and the Medical tab each have one filled button that adds something, but they stand at opposite ends. "+ Input" is first, at the left (your answer of 10 Oct). "+ Medical" is at the right end (your answer of 17 Oct). They also differ in two smaller ways. The Medical tab sits inside a bordered frame (3) that the Inputs list does not have. And the Inputs list's dates button (2) wears a coloured 📅 emoji, while Medical's "as of" wears the app's line calendar.</p>
+    <div class="pair">
+      <figure><img src="q4-list-today.png" alt="The Inputs list: + Input first, then the dates button with an emoji"><figcaption><span class="tag">Today</span>Inputs list: 1 "+ Input" first, 2 the dates button's 📅 emoji</figcaption></figure>
+      <figure><img src="q4-list-proposed.png" alt="The Inputs list with the line calendar on the dates button"><figcaption><span class="tag drawn">Drawn</span>Inputs list: the line calendar, as Medical's</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q4-medical-today.png" alt="The Medical tab: + Medical at the right end, a frame round the tab"><figcaption><span class="tag">Today</span>Medical: 1 "+ Medical" at the right end, 3 the frame</figcaption></figure>
+      <figure><img src="q4-medical-proposed.png" alt="The Medical tab: + Medical first, no frame"><figcaption><span class="tag drawn">Drawn</span>Medical: "+ Medical" first, as "+ Input"; no frame</figcaption></figure>
+    </div>
+    <div class="phones">
+      <figure><img src="q4-phone-list-today.png" alt="Phone: the Inputs list's row"><figcaption><span class="tag">Today</span>Phone: Inputs list</figcaption></figure>
+      <figure><img src="q4-phone-medical-today.png" alt="Phone: the Medical tab's row"><figcaption><span class="tag">Today</span>Phone: Medical</figcaption></figure>
+      <figure><img src="q4-phone-medical-proposed.png" alt="Phone: the Medical tab, + Medical first, no frame"><figcaption><span class="tag drawn">Drawn</span>Phone: Medical</figcaption></figure>
+    </div>
+    <div class="rec">
+      <p><b>Recommended:</b> one place for the add button on all the Inputs page's tabs. "+ Medical" stands first, at the left, where "+ Input" stands. This changes your 17 Oct answer for the button's place only: its look, its size and the window it opens stay the same. The frame round the Medical tab goes; its three sections keep their own boxes. The Inputs list's dates button wears the line calendar in place of the emoji.</p>
+    </div>
+  </section>
+
+  <section class="answer">
+    <h2>How to answer</h2>
+    <p>Reply in one line, for example "1 yes, 2 yes, 3 yes, 4 yes", or tell me what to change for any one.</p>
+    <p class="lead">Still to come in round 3, after these: the page titles (Help and Admin have a large title, Logic a smaller one on its row, the other pages none) and the height of the buttons in each page's top row. Round 4, after the Leave War overhaul's plan: the Leave War's gear colour, the legends, the Inputs calendar's gear at 1366 wide, and the board's and the Leave War's typed marks.</p>
+  </section>
+</main>
+
+<script>
+document.addEventListener('click', e => {
+  const z = document.querySelector('.zoom')
+  if (z) { z.remove(); return }
+  const img = e.target.closest('figure img'); if (!img) return
+  const d = document.createElement('div'); d.className = 'zoom'
+  const big = document.createElement('img'); big.src = img.src; big.alt = img.alt
+  d.appendChild(big); document.body.appendChild(d)
+})
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelector('.zoom')?.remove() })
+</script>
