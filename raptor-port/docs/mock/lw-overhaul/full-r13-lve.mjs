@@ -141,8 +141,8 @@ const fit = p => p.evaluate(() => {
 const say = (p, sel, n, prefer) => mk(p, sel, n, { prefer, off: 2 })
 const key = (p, items) => p.evaluate(items => {
   const g = document.querySelector('.zz-balgrid').getBoundingClientRect()
-  const k = document.createElement('div'); k.className = 'r13-key'; k.style.top = Math.round(g.bottom + 12) + 'px'
-  k.innerHTML = items.map(([n, t]) => `<span class="n">${n}</span><span>${t}</span>`).join(''); document.body.appendChild(k)
+  const k = document.createElement('div'); k.className = 'r13-key'; k.style.top = Math.round(g.bottom + 7) + 'px'
+  k.innerHTML = items.map(([n, t]) => `${n ? `<span class="n">${n}</span>` : "<span></span>"}<span>${t}</span>`).join(''); document.body.appendChild(k)
 }, items)
 
 if (want('unlocked')) {
@@ -151,10 +151,14 @@ if (want('unlocked')) {
   console.log('unlocked', JSON.stringify(await fit(p)))
   await shot(p, 'r13-lve-unlocked-clean', { clip: await clipOf(p) })
   await caption(p, 'Unlocked:', 'a box means you can type it')
-  await say(p, '[data-zk="app"]', 'from the leave app', ['n2', 'n', 'ne'])
-  await say(p, '[data-zk="cfbox"]', 'yours to type too', ['e', 'se'])
-  await say(p, '[data-zk="war"] .r7-fig', 'after pending: 17 − 2½', ['s', 'sw', 'se'])
-  await say(p, '[data-zk="OIL"] .r7-fr', 'never typed: opens OIL tracker', ['s', 'sr', 'sl'])
+  await say(p, '[data-zk="app"]', '1', ['nw', 'w', 'ne'])
+  await say(p, '[data-zk="cf"]', '2', ['e', 'in'])
+  await say(p, '[data-zk="war"] .r7-fig', '3', ['nw', 'ne', 'n'])
+  await say(p, '[data-zk="OIL"] .r7-fr', '4', ['s', 'sr', 'sl'])
+  await key(p, [['1', '<b>App bal</b>: what the leave app shows. Tap the box to type it.'],
+    ['2', '<b>Carried fwd</b>: the part of App bal from last year, used first, gone after 31 Dec. Typed too.'],
+    ['3', '<b>War bal</b>: App bal less the 2½ days pending, the figure the grid shows. Worked out, never typed.'],
+    ['4', '<b>OIL</b>: never typed. A tap opens the OIL tracker.']])
   console.log('unlocked marked', JSON.stringify(await fit(p)))
   await shot(p, 'r13-lve-unlocked', { clip: await clipOf(p) })
   await ctx.close()
@@ -166,27 +170,32 @@ if (want('locked')) {
   console.log('locked', JSON.stringify(await fit(p)))
   await shot(p, 'r13-lve-locked-clean', { clip: await clipOf(p) })
   await caption(p, 'Locked:', 'no boxes anywhere, figures read only')
-  await say(p, '[data-zk="lock"]', 'the admin locked all', ['e', 'ne'])
-  await say(p, '[data-zk="app"]', 'no box', ['n2', 'n', 'ne'])
-  await say(p, '[data-zk="cfbox"]', 'no box', ['e', 'se'])
-  await say(p, '[data-zk="CCL"] .r7-fr', 'no boxes', ['s', 'sr'])
+  await say(p, '[data-zk="lock"]', '1', ['e', 'ne'])
+  await say(p, '[data-zk="lve"]', '2', ['nw', 'sw'])
+  await say(p, '.zz-balgrid > [data-zk="CCL"]', '3', ['ne', 'e'])
+  await key(p, [['1', '<b>Locked by admin</b>: one switch locks everyone’s balances.'],
+    ['2', 'The same figures in the same places, with <b>no boxes</b>: nothing he can type.'],
+    ['3', 'CCL, FCL, PL, EL and CL lose their boxes too.']])
   await shot(p, 'r13-lve-locked', { clip: await clipOf(p) })
   await ctx.close()
 }
 
 if (want('edit')) {
   // two moments: he has typed 18 in App bal (War bal follows: 15.5); then he is in carried fwd, typing 5
-  for (const [n, o, head, rest, marks] of [
-    ['a', { lve: { app: '18', war: '15.5', ed: 'app' } }, '1  Typing App bal:', 'War bal follows as he types',
-      [['[data-zk="app"]', 'typing 18', ['n2', 'n', 'ne']], ['[data-zk="war"] .r7-fig', 'now 18 − 2½', ['s', 'sw', 'se']]]],
-    ['b', { lve: { app: '18', war: '15.5', cf: '5', ed: 'cf' } }, '2  Then carried fwd:', 'the date comes from the year',
-      [['[data-zk="cfbox"]', 'typing 5', ['e', 'se']]]],
+  for (const [n, o, head, rest, marks, keys] of [
+    ['a', { lve: { app: '18', war: '15.5', ed: 'app' } }, 'First, App bal:', 'he types 18',
+      [['[data-zk="app"]', '1', ['nw', 'w']], ['[data-zk="war"] .r7-fig', '2', ['nw', 'ne']]],
+      [['1', 'The box he tapped takes the cyan ring; the number keys come up.'], ['2', '<b>War bal follows as he types</b>: 18 less 2½ pending is 15.5.']]],
+    ['b', { lve: { app: '18', war: '15.5', cf: '5', ed: 'cf' } }, 'Then carried fwd:', 'he types 5',
+      [['[data-zk="cf"]', '1', ['e', 'in']]],
+      [['1', 'The next box. "till 31 Dec" is not typed: it comes from the year.'], ['', 'Nothing in the window moves while he types.']]],
   ]) {
     const { ctx, p } = await newPage(browser, 390, 844, true, state); await signIn(p, 'member')
     await scene(p, o)
     console.log('edit', n, JSON.stringify(await fit(p)))
     await caption(p, head, rest)
     for (const [sel, w, pr] of marks) await say(p, sel, w, pr)
+    await key(p, keys)
     await shot(p, 'r13-lve-editing-' + n, { clip: await clipOf(p) })
     await ctx.close()
   }
@@ -210,7 +219,7 @@ if (want('ba')) {
   const lab = (t, s) => `<div style="height:34px;display:flex;align-items:center;gap:8px;padding:0 14px;color:#f1f4f7;font:700 13.5px system-ui;border-bottom:1px solid #2a313a"><i style="width:8px;height:8px;border-radius:50%;background:#ff2d95"></i>${t}<span style="font-weight:500;color:#b6c0cb">${s}</span></div>`
   await p.setContent(`<body style="margin:0;background:#0b0d10;display:flex;gap:20px;align-items:flex-start;font-family:system-ui">
     <div style="width:390px">${lab('Today (round 10):', 'LVE taller than its row, 4 small lines')}
-      <div style="height:${process.env.R13_BH || 268}px;overflow:hidden"><img src="${img(r10)}" style="width:390px;display:block;margin-top:-${process.env.R13_BT || 372}px"></div></div>
+      <div style="height:${process.env.R13_BH || 278}px;overflow:hidden"><img src="${img(r10)}" style="width:390px;display:block;margin-top:-${process.env.R13_BT || 372}px"></div></div>
     <div style="width:390px">${lab('Proposed:', 'every tile the same height, 3 rows')}
       <img src="${img(join(OUT, 'r13-lve-unlocked-clean.png'))}" style="width:390px;display:block"></div></body>`)
   await p.waitForTimeout(200)

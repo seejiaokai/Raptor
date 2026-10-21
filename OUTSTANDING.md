@@ -255,6 +255,7 @@ pinch body); the grid's window of months and its pinned rows (`raptor-port/docs/
 change. **Then:** build, the bug-check order (a gesture: WALK at least, real two-finger touch over CDP). **Place:** its own
 job, a fresh chat (his word) — after or beside [BOARD-SIDE-WIDTH], his order.
 **From the overhaul's red team (22 Oct 26, fix A7a):** a pinch's first finger held 180 ms arms a selection today (`leavewar/ui/select.ts`, its hold and slow-slide timers) — a second finger must cancel a selection that is arming or armed; built with this job (the overhaul's build plan names it here).
+**22 Oct 26 — D1228:** no − / + buttons on either; a pinch on a phone; on a desktop Ctrl+scroll or a trackpad pinch over the grid zooms the grid only; the opening sizes stay (D159).
 
 ### [ARM-STRIP-STALE-TITLE] The strip over the crew list keeps an old title (found 21 Oct 26 by the blind read of [BOARD-SIDE-WIDTH]; older)
 **Seen (by reading):** the "Planning FCP · VL BFM" strip takes its words once, when the seat is picked (`raptor-port/src/state/view.ts` armSlot sets `ARM.title` from `slotTitle`), so a callsign or mission typed on that line afterwards does not show until the seat is picked again. **Fix:** draw the strip's title from `slotTitle(ARM.key)` at paint (`palette-html.ts armStripHTML`), with a test that types a callsign after picking. **Place:** small, with the next change to the crew list.

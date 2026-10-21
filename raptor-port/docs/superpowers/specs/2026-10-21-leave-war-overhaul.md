@@ -308,6 +308,7 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **Q5 → A (D1225):** a member may delete his own pending bid on a closed day; D1176 and D1177 narrowed.
 - **D1226:** the request's remarks carry the till-date tick, working exactly as on the Inputs page (D952, D953, D1095).
 - **Q9 → as recommended (D1227):** a member's My leave in line 1, Manning folded and remembered; a bid that turns a row amber or red opens Manning by itself with a bubble naming the row; D1141, D678 narrowed.
+- **Q12 → as recommended (D1228):** no zoom buttons on either; pinch on a phone, Ctrl+scroll / trackpad pinch on a desktop, the grid only; D1117 narrowed.
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
   `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (his question "in what scenario": the clash rules allow only leave during a course or overseas duty, leave beside
   ATT B, and an FO given by hand on a leave day; recommended now C — the leave fills the cell, the other a strip down its right
