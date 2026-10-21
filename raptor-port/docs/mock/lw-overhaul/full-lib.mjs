@@ -41,7 +41,13 @@ export async function mark(p, sel, label, opts = {}) {
     const r = el.getBoundingClientRect()
     const tag = document.createElement('div'); tag.className = 'zz-tag'; tag.textContent = label
     const fixed = getComputedStyle(el).position === 'fixed' || el.closest('[role=dialog],.bidsheet,.zz-fixed')
-    Object.assign(tag.style, { position: fixed ? 'fixed' : 'absolute', left: Math.max(4, r.left + (fixed ? 0 : scrollX) - (o.off ?? 2)) + 'px', top: Math.max(2, (o.below ? r.bottom + 6 : r.top - 26) + (fixed ? 0 : scrollY)) + 'px', background: PINK, color: '#fff', font: '700 13px/1 system-ui,sans-serif', padding: '5px 8px', borderRadius: '6px', whiteSpace: 'nowrap', zIndex: 2147483647, pointerEvents: 'none', maxWidth: '92vw', overflow: 'hidden', textOverflow: 'ellipsis' })
+    Object.assign(tag.style, { position: fixed ? 'fixed' : 'absolute', left: (o.num ? Math.min(innerWidth - 22, r.right - 12) : o.right ? r.right + 10 : Math.max(4, r.left - (o.off ?? 2))) + (fixed ? 0 : scrollX) + 'px', top: Math.max(2, (o.num ? r.top - 10 : o.right ? r.top + r.height / 2 - 12 : o.below ? r.bottom + 6 : r.top - 26) + (fixed ? 0 : scrollY)) + 'px', borderRadius: o.num ? '11px' : '6px', minWidth: o.num ? '12px' : '', textAlign: 'center', boxShadow: '0 0 0 2px #0b0d10', background: PINK, color: '#fff', font: '700 13px/1 system-ui,sans-serif', padding: o.num ? '4px 6px' : '5px 8px', whiteSpace: 'nowrap', zIndex: 2147483647, pointerEvents: 'none', maxWidth: '92vw', overflow: 'hidden', textOverflow: 'ellipsis' })
+    // inside the phone's zoomed grid a rect reads unzoomed: the tag rides inside the element instead
+    if (el.closest('.mx-wrap, .mxband')) {
+      if (getComputedStyle(el).position === 'static') el.style.position = 'relative'
+      Object.assign(tag.style, { position: 'absolute', left: o.num ? 'auto' : '-3px', right: o.num ? '-8px' : 'auto', top: o.below ? 'calc(100% + 4px)' : '-22px' })
+      el.appendChild(tag); return true
+    }
     document.body.appendChild(tag); return true
   }, [sel, label, PINK, opts])
   if (!ok) console.warn('MARK MISSED:', sel, label)
@@ -49,3 +55,25 @@ export async function mark(p, sel, label, opts = {}) {
 }
 export const unmark = p => p.evaluate(() => { document.querySelectorAll('.zz-tag').forEach(n => n.remove()); document.querySelectorAll('.zz-marked').forEach(n => { n.style.outline = ''; n.style.outlineOffset = ''; n.classList.remove('zz-marked') }) })
 export const shot = async (p, name, opts = {}) => { await p.waitForTimeout(250); await p.screenshot({ path: join(OUT, name + '.png'), ...opts }); console.log('shot', name) }
+export const toDay = (p, id, inline = 'center') => p.evaluate(([id, inline]) => { const e = document.querySelector(`[data-testid="${id}"]`); e?.scrollIntoView({ block: 'nearest', inline }); window.scrollTo(0, 0) }, [id, inline])
+// the grid's own horizontal scroller, set so a date sits just right of the frozen columns
+export const gridTo = async (p, date, row = 'bane') => {
+  // the year's own sideways scroller (.mx-wrap): a rect inside the phone's zoomed grid is read unzoomed, so the frozen
+  // band's right edge (drawn outside the zoom) is divided by the zoom before comparing
+  let d = 999
+  for (let i = 0; i < 6 && Math.abs(d) > 2; i++) {
+    d = await p.evaluate(([date, row]) => {
+      const c = document.querySelector(`[data-testid="cell-${row}-${date}"]`); if (!c) return 0
+      const s = c.closest('.mx-wrap'); const z = parseFloat(getComputedStyle(c.closest('table')).zoom) || 1
+      const band = document.querySelector('.mxband')
+      const fr = band && getComputedStyle(band).display !== 'none' ? band.getBoundingClientRect().right / z
+        : [...c.parentElement.children].filter(td => getComputedStyle(td).position === 'sticky').reduce((m, td) => Math.max(m, td.getBoundingClientRect().right), 0)
+      const dd = c.getBoundingClientRect().left - fr - 1
+      s.scrollLeft += dd
+      return dd
+    }, [date, row])
+    await p.waitForTimeout(400)
+  }
+  await p.mouse.move(2, 2); await p.waitForTimeout(150)
+  return Math.round(d)
+}

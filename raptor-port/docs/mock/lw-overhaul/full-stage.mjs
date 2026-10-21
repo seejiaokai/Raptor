@@ -15,6 +15,7 @@ const block = async (who, a, b, how) => { await dragCells(p, `cell-${who}-${a}`,
 // Ranger's LVE, as round 1 (the person window's Set)
 await p.click(q('person-bane')); await p.waitForTimeout(400)
 await p.click(q('lve-edit')); await p.fill(q('lve-input'), '20'); await p.click(q('lve-save')); await p.waitForTimeout(300); await esc(p)
+for (const [who, n] of [['stiff', '18']]) { await p.click(q('person-' + who)); await p.waitForTimeout(400); await p.click(q('lve-edit')); await p.fill(q('lve-input'), n); await p.click(q('lve-save')); await p.waitForTimeout(300); await esc(p) }
 await p.click(q('person-dice')); await p.waitForTimeout(400)
 await p.click(q('lve-edit')); await p.fill(q('lve-input'), '18'); await p.click(q('lve-save')); await p.waitForTimeout(300); await esc(p)
 
