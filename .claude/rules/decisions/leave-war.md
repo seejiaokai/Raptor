@@ -56,8 +56,9 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1172 | 21 Oct 26 | In the "Open for bidding" window each open stretch's line carries a calendar icon, not a pencil, since what it opens is the calendar for exact days. |
 | D1169 | 21 Oct 26 | In the "Open for bidding" window, a hold and drag across the month buttons opens every month it passes over, as one stretch. |
-| D1168 | 21 Oct 26 | The "Open for bidding" window carries the period's months as quick buttons: a tap opens a whole month, first day to last; exact days, the rare case, stay behind the pencil and the calendar. |
+| D1168 | 21 Oct 26 | The "Open for bidding" window carries the period's months as quick buttons: a tap opens a whole month, first day to last; exact days, the rare case, stay behind the pencil and the calendar. — changed by D1172 |
 | D1167 | 21 Oct 26 | Two whole-day entries on one Leave War day are drawn side by side, each the full height of the cell, each in its own colour and letters; with a full day of leave and an HO, the HO takes its own half of the right side (the top for a morning, the bottom for an afternoon). |
 | D1166 | 21 Oct 26 | The Leave War's locks stop only bidding on the Leave War; leave filed or changed on the Inputs page is never stopped by them and lands approved, as today — a member who wants to change his leave once the war is closed gets management's verbal approval, then files or edits it on the Inputs page himself, and the Leave War follows by itself. |
 | D1165 | 21 Oct 26 | A Leave War cell's colour says what kind of leave it is (question 2, look E): filled is approved, hollow and dashed is waiting, grey and struck through is refused; his colours are drawn for him to confirm — local leave and overseas leave two shades of amber, OIL green. |

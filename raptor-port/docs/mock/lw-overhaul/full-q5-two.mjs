@@ -1,0 +1,45 @@
+// Question 5 — the main page with two stretches open (21 Oct 26, his ask: "how would it look like on the app if 2
+// periods are opened … main page"). Drawn over the REAL desktop picture of today's Leave War: the stage row replaced by
+// the open dates, today's one green outline replaced by one round each open stretch, the closed days between dimmed with
+// a lock. Pictures to OUT.
+import { writeFileSync } from 'node:fs'
+import { join, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { chromium, OUT, errs, PINK } from './full-lib.mjs'
+const HERE = dirname(fileURLToPath(import.meta.url))
+const LOCK = '<svg viewBox="0 0 10 12" width="11" height="13" aria-hidden="true"><rect x="1.5" y="5" width="7" height="6" rx="1.2" fill="currentColor"/><path d="M3 5V3.6a2 2 0 0 1 4 0V5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>'
+const at = (l, t, w, h, inner = '', cls = '') => `<div class="ov ${cls}" style="left:${l}%;top:${t}%;width:${w}%;height:${h}%">${inner}</div>`
+const mark = (l, t, w, h, n) => `<span class="mk" style="left:${l}%;top:${t}%;width:${w}%;height:${h}%"><b>${n}</b></span>`
+// the picture is 1920 x 1075; positions in % of it
+const over =
+  at(1, 13.6, 42.6, 4.6, `<span class="lab">OPEN FOR BIDDING</span><span class="chip">11 – 23 Jan</span><span class="chip">9 – 18 Feb</span>`, 'top') +
+  at(30.1, 40.9, 68.7, 0.8, '', 'cover') +
+  at(31.15, 43.6, 23.2, 53.2, '', 'open') +
+  at(54.35, 45.6, 27.25, 51.2, `<span class="shut">${LOCK} closed</span>`, 'dim') +
+  at(81.6, 43.6, 17.1, 53.2, '', 'open') +
+  mark(1, 13.4, 42.6, 5, 'A') + mark(31.15, 43.6, 23.2, 53.2, 'B') + mark(54.35, 45.6, 27.25, 51.2, 'C')
+const CSS = `
+:root{color-scheme:dark}body{margin:0;background:#0b0d10;color:#f1f4f7;font-family:system-ui,sans-serif}
+.wrap{padding:12px 16px}
+.pic{position:relative;width:100%;container-type:inline-size}.pic img{width:100%;display:block;border-radius:8px;border:1px solid #2a323c}
+.ov{position:absolute;box-sizing:border-box}
+.top{background:#0d1117;display:flex;align-items:center;gap:.9cqw;padding-left:.4cqw}
+.lab{font:600 .78cqw system-ui;letter-spacing:.14em;color:#8a96a3;margin-right:.6cqw}
+.chip{display:inline-flex;align-items:center;height:2.2cqw;padding:0 .9cqw;border-radius:.6cqw;border:1px solid rgba(87,201,122,.75);color:#8FE0A8;font:700 .9cqw system-ui}
+.cover{background:#0f1318}
+.open{border:2px solid rgba(74,140,100,.85);border-radius:4px}
+.dim{background:rgba(6,8,11,.55);display:flex;justify-content:center;align-items:flex-start}
+.shut{display:inline-flex;gap:.4cqw;align-items:center;margin-top:.5cqw;padding:.2cqw .7cqw;border-radius:.5cqw;background:#161b22;border:1px solid #2f3a46;color:#9aa5b1;font:600 .8cqw system-ui}
+.mk{position:absolute;box-sizing:border-box;border:2.5px solid ${PINK};border-radius:7px;pointer-events:none}
+.mk b{position:absolute;top:-11px;left:-11px;width:20px;height:20px;border-radius:50%;background:${PINK};color:#fff;font:800 11px/20px system-ui;text-align:center}
+ul{margin:10px 0 0;padding-left:16px;font:500 13px/1.5 system-ui;color:#c9d1d9}
+`
+const html = `<!doctype html><html><head><meta charset="utf-8"><title>Two stretches open</title><style>${CSS}</style></head><body><div class="wrap" id="two"><div class="pic"><img src="full/t-desk-admin.png" alt="">${over}</div>
+<ul><li><b>A</b> The stage row now says what is open: one chip a stretch. On a phone it shows the first and "+1"; a tap lists both.</li><li><b>B</b> Each open stretch wears its own green outline, as the bidding dates do today.</li><li><b>C</b> The days between are closed: dimmed, with a lock. Members cannot bid on them.</li></ul></div></body></html>`
+writeFileSync(join(HERE, 'q5-two.html'), html)
+const browser = await chromium.launch()
+const ctx = await browser.newContext({ viewport: { width: 1200, height: 900 }, deviceScaleFactor: 2 })
+const p = await ctx.newPage(); p.on('pageerror', e => errs.push(String(e)))
+await p.goto('file:///' + join(HERE, 'q5-two.html').split(String.fromCharCode(92)).join('/')); await p.waitForTimeout(400)
+await p.locator('#two').screenshot({ path: join(OUT, 'p5-two-desk.png') })
+await browser.close(); console.log('errors:', errs)

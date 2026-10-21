@@ -9,7 +9,7 @@ const HERE = dirname(fileURLToPath(import.meta.url))
 
 const box = (l, t, w, h, inner, extra = '') => `<div class="ov" style="left:${l}%;top:${t}%;width:${w}%;height:${h}%;${extra}">${inner}</div>`
 const mark = (l, t, w, h, n) => `<span class="mk" style="left:${l}%;top:${t}%;width:${w}%;height:${h}%"><b>${n}</b></span>`
-const PEN = '<svg viewBox="0 0 14 14" width="12" height="12" aria-hidden="true"><path d="M2 12l1-3.5L9.5 2l2.5 2.5L5.5 11z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>'
+const PEN = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M2 6.5h12M5 1.6v3M11 1.6v3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'
 // the top row as proposed: the stage button gone; one chip says what is open
 const topRow = (dates, more) => box(0, 10.9, 100, 3.3, `<div class="row"><span class="chip open"><i>Open</i>${dates}${more ? `<em>${more}</em>` : ''}</span><span class="chip">Under <b>0</b> days</span><span class="sp"></span><span class="chip">Legend</span></div>`, 'background:#0d1117')
 // the window, in the style of today's "Open bidding on" window
@@ -26,10 +26,10 @@ const STEPS = [
   ['1', 'Tap the open dates', 'full/t-phone-admin.png', topRow('1 Apr – 30 Jun') + mark(1.8, 10.8, 36.5, 3.6, 'A'),
     ['<b>A</b> The stage button is gone. One chip says what is open; on your phone it sits where the stage was. Tap it.']],
   ['2', 'Tap the months to open them', 'full/t-phone-admin.png', topRow('1 Apr – 30 Jun') + sheet([['1 Apr – 30 Jun', '91 days']], true, 'CD', [[3, 4, 5], [], 'B']),
-    ['<b>B</b> Your quick way: tap a month to open it whole, first day to last; tap it again to close it. April, May and June tapped here.', '<b>C</b> Months next to each other become one line. Its pencil is for the rare exact days.', '<b>D</b> "+ Open more dates" adds a stretch of exact days.', 'With nothing open, the window says "Nothing is open. Members cannot bid."']],
+    ['<b>B</b> Your quick way: tap a month to open it whole, first day to last; tap it again to close it. April, May and June tapped here.', '<b>C</b> Months next to each other become one line. Its calendar icon is for the rare exact days.', '<b>D</b> "+ Open more dates" adds a stretch of exact days.', 'With nothing open, the window says "Nothing is open. Members cannot bid."']],
   ['2b', 'A stretch of exact days, mid-month', 'full/t-phone-admin.png', topRow('15 Apr – 14 Jul') + sheet([['15 Apr – 14 Jul', '91 days']], true, '', [[4, 5], [3, 6], 'E']),
     ['<b>E</b> April and July are open only in part, so their buttons wear a dotted edge. A tap on one opens it whole.']],
-  ['3', 'Exact days: the pencil opens the calendar', 'full/t-bid-dates-phone.png',
+  ['3', 'Exact days: the calendar icon opens the calendar', 'full/t-bid-dates-phone.png',
     topRow('6 Apr – 8 May') + box(10, 38.6, 80, 3.6, '<div class="ttl">OPEN FOR BIDDING<em>6 APR – 8 MAY</em></div>', 'background:#161b22') +
     box(27.6, 88, 37.6, 4.4, '<div class="btn">Save dates</div>', 'background:#161b22') +
     box(5, 92.7, 90, 4.6, '<div class="del">Remove these dates</div>', 'background:#161b22') +
@@ -38,7 +38,7 @@ const STEPS = [
   ['4', 'The grid shows it', 'full/t-phone-admin.png', topRow('1 Apr – 30 Jun') + mark(1.8, 10.8, 36.5, 3.6, 'G') + mark(27.2, 33.8, 70, 1.4, 'H'),
     ['<b>G</b> The chip shows the open dates; with two stretches it adds "+1".', '<b>H</b> The open days wear today\'s green outline; closed days dim, with a small lock.']],
   ['5', 'What a member sees', 'full/t-phone-admin.png', topRow('1 Apr – 30 Jun') + sheet([['1 Apr – 30 Jun', '91 days']], false) + mark(1.8, 10.8, 36.5, 3.6, 'I'),
-    ['<b>I</b> The same chip. A tap shows the open dates, read only: no pencil, nothing to add.']],
+    ['<b>I</b> The same chip. A tap shows the open dates, read only: no calendar icon, nothing to add.']],
 ]
 const CSS = `
 :root{color-scheme:dark}body{margin:0;background:#0b0d10;color:#f1f4f7;font-family:system-ui,-apple-system,sans-serif}

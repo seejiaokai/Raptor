@@ -256,6 +256,7 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **Q4b → A (D1167):** "4b i decided A" — two whole-day entries side by side, each the full height (the agent had recommended C, a strip, as three letters are cramped in a half-width box on a phone — told him); a full day of leave with an HO, the HO in its half of the right side. Narrows D1146.
 - **His idea on Q5 (D1168):** the "Open for bidding" window gets the period's months as quick buttons — a tap opens or closes a whole month; exact days stay behind the pencil (design lesson 22); drawn (`../../mock/lw-overhaul/full-q5-flow.mjs`).
 - **And (D1169):** "also allow hold and drag to select months" — a hold and drag across the month buttons opens every month it passes over, as one stretch.
+- **And (D1172):** "perhaps instead of an edit icon put a calendar icon" — each open stretch's line carries a calendar icon, not a pencil. He also asked how the main page looks with two stretches open — drawn (`../../mock/lw-overhaul/full-q5-two.mjs`).
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
   `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (his question "in what scenario": the clash rules allow only leave during a course or overseas duty, leave beside
   ATT B, and an FO given by hand on a leave day; recommended now C — the leave fills the cell, the other a strip down its right
