@@ -45,7 +45,7 @@ function Resizer() {
 
 function ViewTabs({ tab, setTab }) {
   return (
-    /* ONE JOINED BOX, AS THE INPUTS / SANS / MEDICAL TABS ARE (owner D1132, 21 Oct 26): the three sit in one bordered
+    /* One joined box, as the Inputs / SANS / Medical tabs are (owner D1132, 21 Oct 26): the three sit in one bordered
        box (`.vt-seg`), the picked one ringed in the accent; their marks are the app's line icons, never the 🗺 emoji. */
     <div className="viewtabs" id="viewtabs">
       <div className="vt-seg">
