@@ -11237,8 +11237,10 @@ board's ⋯ menu hangs from its button's right edge when the left-hung menu woul
   GitHub's Linux machines, whose letters are wider) a window still at its default spot — the changes window, the ALL
   AVAIL window, every window of the shell — opens 8px under the bar's real bottom, wherever the bar is what lies under the
   window's top edge (`ui/floatwin.ts barsUnder`, every movable window left out of that question; `[FLOATWIN-TWO-LINE-BAR]`,
-  21 Oct 26). Over the Scheduler Board, which covers the top bar, the corner stands — it lies over the right end of the
-  board's own bar, a question put to him (`[FLOATWIN-BOARD-BAR]`). Pins `e2e/look-keys.spec.ts`, `e2e/availwin.spec.ts`.
+  21 Oct 26). **Over the Scheduler Board** — which covers the top bar — such a window opens 8px under the BOARD's own bar
+  by the same rule (owner D1106, 21 Oct 26, `[FLOATWIN-BOARD-BAR]`; it narrows D41's corner there): the corner lay over
+  that bar's right end at every desktop width (its foot 106 at 1366 and wider, 145 at 1200, 186 at 1024), so the bell,
+  Insights and ✓ Done take a press with a window open. Pins `e2e/look-keys.spec.ts`, `e2e/availwin.spec.ts`.
 - **The cost, accepted:** the page shifts down one line ONCE, at the moment a save fails, and back when it lands. A
   failed save stays failed until it lands (`storage/postman.ts`), so this is not a per-change twitch; the top bar's own
   buttons do not move.

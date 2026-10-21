@@ -77,7 +77,7 @@ test.describe('[FLOATWIN-TWO-LINE-BAR] a window he has not moved opens clear of 
     expect(Math.round((await against(page, '.availwin', TOPBAR)).top)).toBe(96)
   })
 
-  test("1200 wide, over the Scheduler Board: the top bar is covered, so the window keeps its corner", async ({ page }) => {
+  test("1200 wide, over the Scheduler Board: the window opens under the board's own bar, its bell, Insights and ✓ Done reachable (D1106)", async ({ page }) => {
     await page.setViewportSize({ width: 1200, height: 800 })
     await login(page); await go(page, 'editsched')
     await allAvailOnMonday(page)
@@ -85,15 +85,24 @@ test.describe('[FLOATWIN-TWO-LINE-BAR] a window he has not moved opens clear of 
     await page.waitForSelector('#schedBoard:not([hidden])')
     await page.locator('#schedBoard [data-oilsent]:visible').first().click()
     await expect(page.locator('.availwin:not([hidden])')).toBeVisible()
-    /* the two-line top bar is under the board here, not under the window: the corner stands. (It lies over the right
-       end of the board's own bar — a look put to him, OUTSTANDING.md [FLOATWIN-BOARD-BAR]; not changed here.) */
-    expect(Math.round((await against(page, '.availwin', TOPBAR)).top)).toBe(96)
+    /* the two-line top bar is under the board here; what lies under the window is the board's OWN bar, two rows at 1200
+       (its foot 145, measured 21 Oct 26). D41's corner (top 96) covered its right end — the bell, Insights and ✓ Done
+       ([FLOATWIN-BOARD-BAR], answered by D1106): the window opens 8px below it, and each of the three takes a press */
+    const m = await against(page, '.availwin', '#schedBoard:not([hidden]) .sb-top')
+    expect(m.barH, 'the premise: the board bar is two rows at 1200').toBeGreaterThan(70)
+    expect(Math.round(m.top), `the window's top, the board bar's foot at ${m.barBottom}`).toBe(Math.round(m.barBottom + 8))
+    expect(m.inBar && !m.inWin, "the board bar's last 3px are the bar's").toBe(true)
+    expect(m.foot, 'and its foot is on the screen').toBeLessThanOrEqual(m.vh)
+    for (const id of ['#sbBell', '#sbInsights', '#sbDone']) {
+      const hit = await page.locator(id).evaluate(b => { const q = b.getBoundingClientRect(); const at = document.elementFromPoint(q.left + q.width / 2, q.top + q.height / 2); return !!at && (at === b || b.contains(at)) })
+      expect(hit, `${id} takes a press with the window open`).toBe(true)
+    }
   })
 
   /* TWO WINDOWS HE HAS NOT MOVED, OPEN TOGETHER (the read's finding 2, 21 Oct 26): each asked what lies under its own top
      edge, met the OTHER window there and never the bar, so neither moved down. Opened together where the bar is one
      line, the screen then narrowed until the bar takes two (the read's other route — the board closed under both — is
-     not one a mouse can take while the windows cover the board's ✓ Done: [FLOATWIN-BOARD-BAR]). */
+     not tested here: since D1106 the windows open under the board's bar, so ✓ Done takes a press with them open). */
   test('both windows open together at 1920, the screen narrowed to 1200: both move under the two-line top bar', async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 900 })
     await login(page); await go(page, 'editsched')

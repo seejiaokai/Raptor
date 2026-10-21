@@ -87,10 +87,12 @@ export const BOARD_BAR = {
    closes it. (A watch on the bar's own height was tried and dropped: breaking it turned no test red and no route was
    found by which the bar changes height with the window open and none of those three — the night's break test 3.) Only where the bar is what lies under
    the window's top edge, asked of the browser with the window itself left out: under the open Scheduler Board — a
-   full-screen surface laid over the top bar — the bar is covered, and the window keeps its corner. (That corner lies
-   over the right end of the board's OWN bar at every desktop width; whether the windows should open under that bar
-   too is a look put to him, not built here — OUTSTANDING.md [FLOATWIN-BOARD-BAR].) */
-const BARS = (): Element[] => [document.getElementById('burger')?.closest('.topbar')].filter((b): b is Element => !!b)
+   full-screen surface laid over the top bar — the bar is covered, and the board's OWN bar is what lies there instead.
+   THE BOARD'S BAR (owner D1106, 21 Oct 26 — [FLOATWIN-BOARD-BAR]): the corner lay over its right end at every desktop
+   width (its foot 106 at 1366 and wider, 145 at 1200, 186 at 1024), covering the bell, Insights and ✓ Done; so over
+   the open board a window he has not placed opens 8px below the board's bar, by the same rule as the top bar's. */
+const BARS = (): Element[] => [document.getElementById('burger')?.closest('.topbar'), document.querySelector('#schedBoard:not([hidden]) .sb-top')]
+  .filter((b): b is Element => !!b)
 function barsUnder(n: HTMLElement, r: DOMRect): Element[] {
   if (typeof document.elementsFromPoint !== 'function') return []
   return BARS().filter(bar => {

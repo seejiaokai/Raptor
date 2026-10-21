@@ -107,6 +107,10 @@ test('the window sits above the board and below every dialog layer', async ({ pa
 /* ---- WHERE THE WINDOW SITS (Fable S8, S11, S15) ------------------------------
    The window's position is the one part of it that is pure geometry: jsdom
    reports every rect as 0x0, so none of this can be pinned anywhere else. */
+/* over the open board a window he has not moved opens 8px below the board's OWN bar (owner D1106, 21 Oct 26 —
+   [FLOATWIN-BOARD-BAR]); D41's corner (right 16, top 96) lay over that bar's right end, its bell, Insights and ✓ Done */
+const boardBarFoot = (page: Page) => page.evaluate(() =>
+  Math.round(document.querySelector('#schedBoard:not([hidden]) .sb-top')!.getBoundingClientRect().bottom))
 const winRect = (page: Page) => page.evaluate(() => {
   const r = (document.querySelector('.availwin:not([hidden])') as HTMLElement).getBoundingClientRect()
   return { left: Math.round(r.left), top: Math.round(r.top), right: Math.round(r.right), bottom: Math.round(r.bottom), width: Math.round(r.width), height: Math.round(r.height) }
@@ -140,14 +144,14 @@ test('phone: the window opens as the full-width bottom panel of the approved des
   expect(Math.abs(r.height - Math.round(PHONE.height * 0.62)), '62% of the screen tall').toBeLessThanOrEqual(1)
 })
 
-test('desktop: the window opens skinny in the top-right corner, 212 wide (D40)', async ({ page }) => {
+test("desktop: the window opens skinny in the top-right corner, 212 wide (D40), just under the board's bar (D1106)", async ({ page }) => {
   await page.setViewportSize(DESK)
   await boardWithChip(page)
   await openFromBoard(page)
   const r = await winRect(page)
   expect(r.width, 'the skinny default').toBe(212)
   expect(DESK.width - r.right, 'the corner').toBe(16)
-  expect(r.top).toBe(96)
+  expect(r.top, "8px below the board's own bar").toBe(await boardBarFoot(page) + 8)
 })
 
 /* S11 — every window starts where the stylesheet puts it. A drag used to leave
@@ -168,7 +172,7 @@ test('desktop: a window dragged, closed and opened again comes back to its corne
   await openFromBoard(page)
   const again = await winRect(page)
   expect(DESK.width - again.right, 'the new window opens in the corner, not where the last was dragged').toBe(16)
-  expect(again.top).toBe(96)
+  expect(again.top, "just under the board's bar (D1106)").toBe(await boardBarFoot(page) + 8)
 })
 
 /* S15 — a shrink must never strand it. The window has no scrim and no Escape:
@@ -325,10 +329,10 @@ for (const [label, size] of [['1440×900', PREVIEW_DESK], ['1440×700', { width:
       for (const h of b.hits) expect(h, 'every button of the bar is reachable').toMatch(/reachable$/)
       expect(w.top, 'the window starts below the bar').toBeGreaterThanOrEqual(Math.round(b.bar![3]))
       expect(w.bottom, 'and ends on the screen').toBeLessThanOrEqual(size.height)
-      /* back to live: no bar, so the window goes back to the stylesheet's corner */
+      /* back to live: no preview bar, so the window goes back to its corner — just under the board's own bar (D1106) */
       await page.click('#schedBoard .dprev-bar [data-golive]')
       await page.waitForTimeout(250)
-      expect((await rectOf(page, sel)).top, 'with no bar it is back in its corner').toBe(96)
+      expect((await rectOf(page, sel)).top, "with no preview bar it is back under the board's bar").toBe(await boardBarFoot(page) + 8)
       /* a preview started UNDER the open window: it moves clear on its own, the same moment */
       await previewOriginal(page)
       await page.waitForTimeout(250)

@@ -6318,3 +6318,18 @@ green "OIL" chip over the date and time — about 37 × 12 px of overlap. Walker
 touched the Inputs page or its stylesheet part. **Place (the agent's line):** low — with the next change to the Inputs page; a browser
 test that the chip and the date do not overlap at 390 and 320.
 
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([FLOATWIN-BOARD-BAR]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-21-look-keys.md`.*
+
+### [FLOATWIN-BOARD-BAR] Over the Scheduler Board the ALL AVAIL and changes windows open over the right end of the board's own bar (found 21 Oct 26, the look-and-keys check)
+On a desktop a window he has not moved opens 96px down the right edge. Over the Scheduler Board — which covers the app's top
+bar — that spot lies on the board's OWN bar at every desktop width: its foot is at 106 at 1366 and wider, 145 at 1200 (two
+rows) and 186 at 1024 (measured 21 Oct 26, `raptor-port/scripts/handpass/lk-win.mjs`). At 1200 the ALL AVAIL window covers
+the bell, Insights and ✓ Done (the walk's W10: a press at each one's middle lands on the window — picture
+`raptor-port/docs/img/handpass/2026-10-21-look-keys/walk/w10-board-bar-covered-1200.png`, the covered end marked); to leave the
+board the window must first be closed or moved. Older than tonight; not `[FLOATWIN-TWO-LINE-BAR]`'s (the top bar). The same
+rule would fix it — a first build did — but it moves where D41's window opens on the board, which he approved as drawn, so it
+is put to him. **Question for him (the picture above):** should the windows open just under the board's own bar, as they now
+open under the top bar? **Recommended: yes** — the same rule, about 15 minutes, and the three browser tests that pin the corner
+over the board (`e2e/availwin.spec.ts`, `e2e/look-keys.spec.ts`) change with it. **Place:** small, on his answer.
+
