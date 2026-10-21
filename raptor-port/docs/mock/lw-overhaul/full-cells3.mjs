@@ -100,6 +100,13 @@ td.cell{position:relative;width:27px;min-width:27px;height:26.6px;padding:0;box-
 .es-wait{background:transparent;color:rgb(var(--h));outline:1px dashed rgba(var(--h),.95);outline-offset:-1px}
 .es-ref{background:transparent;color:#7d8894;box-shadow:inset 0 0 0 1px #4a5560}
 .es-ref b{text-decoration:line-through}
+.cat th{padding:8px 4px;font-size:9px;letter-spacing:.06em}
+.cat td.lab{max-width:190px}
+/* each box at a real cell's size, whatever the column's width */
+.cat td.cell{width:auto;min-width:0;padding:0 6px}
+.cat .cb{width:27px;margin:0 auto}
+td.cell.na{background:#0c0f13}
+.dash{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#3b4550;font:600 11px system-ui}
 .grid{border-collapse:separate;border-spacing:0;background:#0f1318;border:1px solid #26303a;border-radius:8px;overflow:hidden;margin-top:6px}
 .grid th{font:700 8.5px/1.1 system-ui,sans-serif;color:#8a96a3;padding:4px 2px;border-bottom:1px solid rgba(70,81,94,.8);border-right:1px solid rgba(70,81,94,.8);text-align:center}
 .grid td.nm{font:600 11px/1 "Inter Tight",system-ui,sans-serif;color:#b6c0cb;padding:0 6px;border-bottom:1px solid rgba(70,81,94,.8);border-right:1px solid rgba(70,81,94,.8);white-space:nowrap;background:#141a21;height:26.6px;box-sizing:border-box}
@@ -148,6 +155,31 @@ function key() {
       return `${sw(c, 'appr')}${decided ? '<span></span><span></span>' : sw(c, 'wait') + sw(c, 'ref')}<span><b>${codes}</b> · ${word}${decided ? ' <i style="color:#8a96a3;font-style:normal">(from the Inputs page)</i>' : ''}</span>`
     }).join('') + `</div>`
 }
+// every input the war shows, in every state it can be in (his ask, 21 Oct 26: "show me every single input")
+const ALL = [
+  ['LL', 'local leave', 'leave'], ['OL', 'overseas leave', 'leave'], ['OIL', 'off in lieu', 'leave'],
+  ['CCL', 'child care leave', 'leave'], ['FCL', 'family care leave', 'leave'], ['PL', 'paternity leave', 'leave'],
+  ['EL', 'embarkation leave', 'leave'], ['CL', 'compassionate leave', 'leave'],
+  ['B', 'ATT B: no flying, may still work', 'med'], ['C', 'ATT C', 'med'], ['OML', 'outpatient medical leave', 'med'], ['HL', 'hospitalisation leave', 'med'],
+  ['CSE', 'course', 'whole'], ['OD', 'overseas duty', 'whole'],
+  ['FO', 'a day of OIL credited', 'fo'], ['HO', 'half a day of OIL credited', 'ho'],
+]
+const NONE = '<td class="cell na"><div class="cb"><span class="dash">–</span></div></td>'
+function catalogue() {
+  const cols = ['Approved', 'Waiting', 'Refused', 'AM', 'PM', 'Inputs<br>page']
+  const head = `<tr><th style="text-align:left;padding-left:10px">Input</th>${cols.map(c => `<th>${c}</th>`).join('')}</tr>`
+  const rows = ALL.map(([code, word, kind]) => {
+    const c = (st, half, m) => cell([[code, st, half]], m || [], 'E')
+    let tds
+    if (kind === 'leave') tds = [c('appr'), c('wait'), c('ref'), c('appr', 'am'), c('appr', 'pm'), c('appr', null, ['raptor'])]
+    else if (kind === 'med') tds = [c('info', null, ['raptor']), NONE, NONE, c('info', 'am', ['raptor']), c('info', 'pm', ['raptor']), c('info', null, ['raptor'])]
+    else if (kind === 'whole') tds = [c('appr', null, ['raptor']), NONE, NONE, NONE, NONE, c('appr', null, ['raptor'])]
+    else if (kind === 'fo') tds = [c('sc'), NONE, NONE, NONE, NONE, NONE]
+    else tds = [NONE, NONE, NONE, c('sc', 'am'), c('sc', 'pm'), NONE]
+    return `<tr><td class="lab"><b>${code}</b> · ${word}</td>${tds.join('')}</tr>`
+  }).join('')
+  return `<table class="st cat">${head}${rows}</table>`
+}
 function page(phone) {
   const z = phone ? 0.8 : 1
   const at = phone ? 'at your phone\'s zoom (0.8), real size' : 'at desktop size'
@@ -156,6 +188,7 @@ function page(phone) {
 <div class="looks"><div><div class="cap">A · the colour is where it stands</div><div class="zoom" style="--z:${z}">${week('A')}</div></div>
 <div><div class="cap rec">E · a colour for each kind of leave <i>(recommended)</i></div><div class="zoom" style="--z:${z}">${week('E')}</div></div></div></section>
 <section id="key" style="margin-top:22px"><h1>E's colours</h1><p class="sub">Each kind of leave keeps its colour; how it stands is the fill.</p><div class="zoom" style="--z:${z}">${key()}</div></section>
+<section id="all" style="margin-top:22px"><h1>Every input, look E</h1><p class="sub">Each kind the Leave War shows, in every state it can be in, ${at}. A dash: it cannot be in that state. Medical, courses and overseas duty come from the Inputs page, so they wear its cyan edge and are never waiting or refused. FO is always a whole day, HO always a half.</p><div class="zoom" style="--z:${z}">${catalogue()}</div></section>
 <section id="st" style="margin-top:22px"><h1>Every state, A beside E</h1><p class="sub">${at}.</p><div class="zoom" style="--z:${z}">${statesTable()}</div></section>
 </div></body></html>`
 }
@@ -169,7 +202,7 @@ for (const [n, w, dpr, phone] of [['p4c-phone', 390, 3, true], ['p4c-desk', 900,
   await p.waitForTimeout(300)
   const over = await p.evaluate(() => [...document.querySelectorAll('.f')].filter(f => f.querySelector('b').scrollWidth > f.clientWidth + 0.5).map(f => f.textContent))
   console.log(n, 'overflow:', JSON.stringify(over), 'width', await p.evaluate(() => document.documentElement.scrollWidth))
-  for (const s of ['wk', 'key', 'st']) await p.locator('#' + s).screenshot({ path: join(OUT, `${n}-${s}.png`) })
+  for (const s of ['wk', 'key', 'all', 'st']) await p.locator('#' + s).screenshot({ path: join(OUT, `${n}-${s}.png`) })
   await ctx.close()
 }
 await browser.close(); console.log('errors:', errs)
