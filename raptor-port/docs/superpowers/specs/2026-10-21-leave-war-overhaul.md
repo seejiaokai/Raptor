@@ -264,6 +264,19 @@ Batches by area (D1087), each its own branch, bug check and "merge live":
    count (the groups invariant, `.claude/rules/decisions/leave-war.md` §Settled).
 5. **Balances over years, manning** — round 4, with `[LEAVE-YEAR]` and `[LW-COMMIT-MANNING]`.
 
+**Added by the full mock-up (§9) — each a new stored record and a permission row, changed together (D200, D473):**
+6. **Locks in place of the stages** — FULL: the lock list stored per period; the stage dropped; who may write a day asks
+   the locks at the war's write path AND at the one inputs gate (Q6); the period that opens, the clash note's words, the
+   moved mark, remarks and Undo per Q5's table; `perms.ts` and `data-model.md` §11 together.
+7. **The cell** — the halves and two entries stacked, the waiting look and Ack's removal (Q2–Q4): the grid's speed rules
+   (`../../performance.md` §E) measured before and after; the Legend rewritten.
+8. **The scheduler's side** — Approvals with its dates filter and Approve all (one command, one undo, a refused line
+   reported), "Approve what I enter", who placed a request and when (a new stored field).
+9. **Documents on every entry** — a document list on the war's request record, carried to the Input on approval; the
+   leave's document ask on the Inputs page; the reminder the day before (the register).
+10. **Events and holidays** — the events list on the war; Export / Import on the Holidays list (one record, D638).
+11. **Management** — per Q12's answer (a Quals column, or a picked list stored on the war).
+
 **What it touches across the app (the standing order, `../../feature-impact.md`):** the bell is shared by every page; the
 Inputs page carries the same leave once approved; the database's table list grows by the notices and any new field; a
 member already sees every row and figure of the war (D1008).
@@ -295,3 +308,157 @@ its full row: fine; its second half (rounds of four, pictures) is the standing m
 
 Round 1, published for him as a page with the pictures today beside proposed, tap to zoom — link in `HANDOFF.md`'s block
 for this branch.
+
+## 9. The full mock-up — the plan (21 Oct 26, his ask after the 22 points)
+
+*His words: "Create a full mock up on what u think the app should change into … use the design skill to help think what
+is the best interface to go with. easy and simple to understand".* Shaped with the design skill (`/impeccable shape`,
+D819): an **extension of an established look**, not a new one — the Raptor look stays (D765), the new parts are drawn
+with the app's own pieces (its window, chip, row and button styles), and no colour is spent that the design guide's §4
+table already gives a meaning. The skill's discovery questions were not put to him: his 17 rulings answer them, and a
+design question without a picture would break D853 — the agent's call, said in its first report.
+
+### 9.1 What the new Leave War is, in one paragraph
+
+**One grid, read at a glance; one list to decide; a lock instead of stages.** The year grid stays the heart of the page.
+A member opens it on his phone and sees, without scrolling, his own line ("My leave" — D1141); a tap on a date gives that
+day (D1143), a tap on a name gives that person's leave by year (D1148). Each day's cell says what is booked and where it
+stands: the morning in the top half, the afternoon in the bottom half (D1145), two entries one above the other (D1146).
+An admin decides from one Approvals list with a count (D1152), or on the grid as today; "Approve what I enter" saves him
+the second step on his own entries (D1147). The cycle of stages (draft, bidding, closed, published) gives way to **lock
+dates** (D1156): a lock, with its reason, is the only thing that stops a member adding, changing or removing leave, and
+every request shows its state live. Documents ride on every entry (D1150); the bell tells a member every decision
+(D1142); holidays come in by file and events have a list (D1155); Management is a group at the top (D1149).
+
+### 9.2 The pictures — today beside proposed
+
+Drawn into the real local build (the clock held at Thu 8 Jan 26, the demo squadron staged through the app's own controls:
+Ranger the member, Saber the admin), at his iPhone's size (390 wide, 3x, the grid at its phone zoom of 0.8) and a desktop's
+(1536 at his 125%); a screen that does not exist today is drawn in the app's own style; the cell's every state is drawn on
+one page in the app's own chip styles (the design guide's §7). Every new part is marked and numbered. Scripts:
+`../../mock/lw-overhaul/full-*.mjs`.
+
+| # | Screen | Today | Proposed | Built in / asked |
+|---|---|---|---|---|
+| 1 | The page, member, phone | two lines; the stage chip and the bidding dates | three lines: period · viewing as; locks · under-manned · Legend; My leave; the new cells; "Balances" | D1141, Q2, Q5, Q8 |
+| 2 | The page, admin, phone | the same two lines | the second line: Approvals · locks · under-manned · Legend; My leave third | Q10 |
+| 3 | The page, admin, desktop | the stage row | Approvals · Lock dates · under-manned · Legend, My leave at its free end; Management first | D1141, D1152, Q5, Q12 |
+| 4 | Every state of a cell, on one page | `<LL` / `LL>`, "+1", waiting plain, Ack purple, the Inputs edge, moved, the clash corner, the PO tag | the AM top / PM bottom halves; two entries stacked; HO; three records; each look of Q2; both of Q4's sizes | D1145, D1146, Q2, Q3, Q4 |
+| 5 | Year or month | the year grid | ours beside the colleague's month | Q1 |
+| 6 | A person's leave | "every figure" | balances, then his leave by year with each state; a year picker | D1141, D1148, D1153 |
+| 7 | The bid window | leave buttons; Ack · Approve · Refuse | balance on each button, the stacked day line (D1144), "Approve what I enter", a document; Ack gone | D1144, D1147, D1150, Q3, Q9 |
+| 8 | An entry already placed | decide, move, delete | + who placed it and when, who decided, its documents | D1150 |
+| 9 | The day panel | (no tap today) | its manning rows stacked; a locked day's reason as its first line | D1143, Q11 |
+| 10 | Approvals | (none) | one list, a line a run; a dates filter and "Approve all"; empty; a line the clash rules refuse; a balance below zero | D1152, Q7 |
+| 11 | Lock dates | the stage strip; the out-of-window dim | the list of locks with reasons; a new period locked whole and opened by shortening its lock; the dim + a lock on the date heading; a member trying the Inputs page | D1156, Q5, Q6 |
+| 12 | Events, and holidays by file | the Event rows; the Calendar window's Holidays list | an events list on the war; Export / Import on the Holidays list, with a preview | D1155 |
+| 13 | Available P / W | the row's window (crew, CAT, holding, without — built, D640) | the same, and one line on how the SANS calendar uses it | D1154 |
+| 14 | Management | Quals' columns; ⚙ "Add a group" | a Management tick on Quals; added as a group, standing first | D1149, Q12 |
+| 15 | Inputs page: a leave | the medical window's document ask | the same ask for a leave, never a stop | D1150 |
+
+### 9.3 His open questions — each with a recommendation and its picture
+
+Rounds of at most four, one decision a question, none waiting on another's answer (D853, D921); nothing he has ruled is
+asked again (D53); a question names each ruling its answer would change (D754).
+
+**Round 2 — how the grid looks**
+- **Q1 (his 1) — the month or the year?** *Recommended: keep the year grid.* A leave runs across a month's end, a bidding
+  stretch over months, and the manning rows are read across weeks; a month at a time pages them apart. The phone gets its
+  day panel (D1143) and pinch to zoom (D1117) for the close look. B: a month at a time, as the colleague's — it changes
+  §Settled's year grid and its window of months. Picture 5.
+- **Q2 (his 6 and 9 — one question, because the waiting look depends on what the colour means) — how a cell shows its
+  type and where it stands.** *Recommended A: the colour is where it stands (green approved, red refused), a waiting one
+  wears a dashed outline in its letters' colour, the letters say the type, and an Inputs-page entry keeps its accent left
+  edge.* A colour in this app means a status (design guide §4): a colour per type would spend green (a public holiday,
+  OIL earned), red (a clash), amber (a manning row running short) and orange (a No Leave day). B: as today, waiting plain.
+  C: a soft tint per leave family (leave, OIL, medical, course and duty), where it stands by its edge (solid, dashed,
+  struck through). D: the colleague's, a colour per type, waiting outlined with a dot. A dashed outline is a new kind of
+  mark, his to rule (§4); it is drawn beside the dotted "moved" edge on one chip. It changes the Legend. Picture 4.
+- **Q3 (his 11) — Ack goes?** *Recommended: yes.* It says only "seen"; it tells the member nothing (D1142 leaves it out of
+  the bell), and the Approvals list shows what waits. It changes D331's Decide row (Ack · Approve · Refuse → Approve ·
+  Refuse) and the Legend; purple is left to "this is you". Picture 7.
+- **Q4 (D1145's room) — a half day's letters.** A row is 22 high, and on a phone the grid opens at 0.8 (§Settled), so a
+  half is about 9 points tall. A: every row grows to fit two lines of letters (fewer people on a screen). B: rows stay; a
+  half's letters are drawn smaller, a whole day's as today. *The recommendation is written once both are drawn and
+  measured at his phone's size.* Picture 4.
+
+**Round 3 — how it runs**
+- **Q5 (his 17) — the stages go, and what takes each one's place.** *Recommended: they go, each replaced as below; a
+  member sees every request's state live, and a locked stretch's reason in the day panel — no separate "being bid / being
+  approved" label.*
+
+  | What the stages do today | What takes its place (recommended) |
+  |---|---|
+  | members bid only inside the bidding window, while the war is open | a member adds, changes or removes his own leave on any date not locked and not yet past; an admin at any time |
+  | the bidding dates chip (1 Jan – 31 Mar) | the lock list; a new period starts locked whole ("Not open yet") and the admin opens months by shortening that lock |
+  | the green outline round the bidding dates (§Settled, D881) | gone; a locked day keeps today's quiet dim, with a small lock on its date heading |
+  | the admin decides in every stage but draft (D418) | the admin decides at any time |
+  | a published war's approved leave offers only its remarks, frozen even for the admin (D418) | an approved leave is never moved or deleted by the member himself (he asks); the admin may change it at any time and the member is told (D1142) |
+  | a member adds remarks to his approved leave only once published | at any time |
+  | a member moves his own bid while bidding is open (D333) | while it waits and its days are not locked |
+  | the dotted "moved" mark, only after bidding closes | on any move of a leave already approved |
+  | Undo takes back a stage move (D352) | Undo takes back adding, changing or removing a lock |
+  | the war opens on the war being bid on (§Settled) | it opens on the first date from today a member may bid on, in whichever period holds it; with none open, on today |
+  | the clash note's "Step the war back to Bidding Closed" (D827) | "Change the approved leave" (the admin may at any time) — its words put through §1b before the build |
+  | his own flow, D413: create → open → bid → close → publish → remarks | create (locked whole) → open months (shorten the lock) → bid and decide live → lock "Approvals in progress" if wanted → he texts the squadron |
+  | a No Leave day colours its column only (his choice, so urgent leave goes through) | unchanged; a lock is how bids are stopped |
+  | the stage stored on the period, and its permission | dropped; the locks stored instead |
+
+  Pictures 1, 2, 3, 11.
+- **Q6 (the red team's first finding) — a leave filed on the Inputs page, under a lock and in Approvals.** Today a leave
+  filed on the Inputs page lands on the war already approved (the 19 Sep 26 arrangement — "asked verbally, told yes"), and
+  the one inputs gate checks no stage, so a lock would not hold there and the Approvals count would miss it. *Recommended:
+  a member's leave filed on the Inputs page obeys the locks and waits in Approvals as a bid does; an admin's lands approved,
+  as "Approve what I enter" does.* It changes the 19 Sep 26 arrangement and D413's "later changes mainly by the member
+  through inputs"; D1152's "counter increases for any new inputs that is not approved" is his own word for it. B: as
+  today. Picture 11.
+- **Q7 (his 10) — quick approve, or approve all for a period.** *Recommended: no quick-approve switch (§3); the Approvals
+  list gets a dates filter, and "Approve all" approves what it shows* — "approve all for a selected period"; the grid's
+  drag-select stays. Picture 10.
+- **Q8 (his 18 and 19 — one question, one place) — the balances list.** The list he asks about is already there: the
+  "Figures" drawer above the names (every figure for everyone). *Recommended: no second list; the drawer, its heading and
+  the person window's line are called "Balances"* — the days-used columns stay inside it, as today. B: keep "Figures". C:
+  a Balances window of its own. Picture 1.
+
+**Round 4 — the agent's readings he has not yet seen drawn**
+- **Q9 — "Approve what I enter" (D1147).** *Recommended: off each time the window opens.* Picture 7.
+- **Q10 — where Approvals and Lock dates open (D1152, D1156).** *Recommended: chips in the row where the stage was — on a
+  phone its second line — so no line is added* (D678, D679, D1141 named). Pictures 2, 3.
+- **Q11 — the day panel (D1143, lesson 18).** *Recommended: its manning rows stacked one a line, names in one column and
+  figures in a second; a locked day's reason as its first line.* Picture 9.
+- **Q12 — Management (D1149): a tick on Quals, or picked on the war?** The war's groups today come from Quals' columns (⚙
+  "Add a group"). *Recommended: a Management tick column on Quals, added as a group on the war and standing first* — Quals
+  stays the one place a man's facts change (D460, D461); a man in Management still counts in his own seat (a group never
+  moves a count, §Settled — not asked). B: a list of people picked on the war itself. Picture 14.
+
+**The agent's readings, said with the pictures (he may strike any):** a leave's document is opened by whoever can open the
+entry, as a medical one is (D211); a bid's document goes with it when it is approved (the bid becomes the Input) and stays
+when it is put back or refused; documents stay in each browser, as the medical ones do, until the shared database (D1150);
+Approvals is the admins' — a member sees his own waiting requests in "My leave"; the holiday import lives on the Calendar
+window's Holidays list and writes the same record as the war's Event row (D638), and the events list is new on the war's
+⚙; the holiday sheet is a CSV file that opens in Excel, its columns in plain words (date, last date, name, short form),
+and the import lists what it will add and what it skips before anything changes (D1155); "Available P / W" need no new
+form (D640, D1154) — one line on how the SANS calendar reads them is new.
+
+### 9.4 What the drawing is not
+
+Nothing is built into the app and nothing merges. What his 22 points did not reach stays for a later round: the
+"Show ▾" filter, sorting by flight (D1001), a way to today, yearly balances ([LEAVE-YEAR] — the person window lists leave
+by year, its balances one figure each until then), and whole-day commitments in manning (D998).
+
+### 9.5 The red team of this plan (21 Oct 26 — a fresh, blind Opus reader)
+
+| # | Finding | Done |
+|---|---|---|
+| 1 | Leave filed on the Inputs page lands approved and passes the inputs gate, so it would slip past a lock and the Approvals count | Q6 added, naming the 19 Sep 26 arrangement, D413 and D1152; picture 11 shows a member trying it |
+| 2 | "The stages go" gave no replacement for several things they do, and missed some (frozen approved leave, remarks, the moved mark, the clash note's words, D413, which war opens, past dates) | Q5's table: each thing, what takes its place, recommended |
+| 3 | A tap on a date heading is the day panel (D1143), and a hatch is already the posted-out and not-drawn-yet look | the lock's reason is the day panel's first line; a locked day keeps today's dim plus a small lock |
+| 4 | Today's halves read `<LL` / `LL>` (a trailing `*` is an app-earned OIL credit); two whole-day records, HO, three records and the corner marks were unspecified; a half is ~9 points on a phone | picture 4 draws every case at his phone's zoom; Q4 asks the room |
+| 5 | The waiting look depends on the colour question; a dashed outline sits beside the dotted moved edge | Q2 holds both; one chip drawn waiting, moved and filed on the Inputs page |
+| 6 | The balances answer said columns sort by a figure (they do not); the list he asks for is the Figures drawer | Q8 rests on the drawer |
+| 7 | The Management question re-asked a settled rule (a group never moves a count); groups come from Quals columns | Q12 asks Quals tick or picked on the war, naming D460, D461 |
+| 8 | The old No Leave question vanished | a row of Q5's table: unchanged, a lock does the stopping |
+| 9 | The admin's phone top was never drawn | picture 2 |
+| 10 | The notification register was not scheduled | written with this mock-up (`../../notifications-register.md`), its new entries put to him |
+| 11 | Ack's removal changes D331 and the Legend; the month view changes §Settled | named in Q3 and Q1 |
+| 12 | Missing states: Approvals' empty, refused-by-clash, undo, below zero, who sees it; documents' viewers and their fate on approval; where the import lives; §6 out of date | picture 10's states; the readings above; §6 extended |
