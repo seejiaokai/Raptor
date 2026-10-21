@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1175 | 21 Oct 26 | The Leave War's cell colours are look F as drawn: local leave light amber, overseas leave deep amber, OIL, FO and HO green, other leave (CCL, FCL, PL, CL, EL) blue, a course lilac, overseas duty grey, medical (B, C, OML, HL) rose; filled is approved, hollow and dashed is waiting, grey and struck through is refused. |
 | D1174 | 21 Oct 26 | The Leave War's period picker is labelled "View" — "View JAN – DEC 26" — not "Period", on a desktop and now on a phone too. |
 | D1173 | 21 Oct 26 | The Leave War's "Viewing as <callsign>" chip goes, on a desktop and a phone: the name badge at the top right already says who is signed in, and "My leave" (D1141) carries his own figures. |
 | D1172 | 21 Oct 26 | In the "Open for bidding" window each open stretch's line carries a calendar icon, not a pencil, since what it opens is the calendar for exact days. |

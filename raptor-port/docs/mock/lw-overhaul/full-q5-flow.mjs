@@ -12,6 +12,10 @@ const mark = (l, t, w, h, n) => `<span class="mk" style="left:${l}%;top:${t}%;wi
 const PEN = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M2 6.5h12M5 1.6v3M11 1.6v3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'
 // the top row as proposed: the stage button gone; one chip says what is open
 const topRow = (dates, more) => box(0, 10.9, 100, 3.3, `<div class="row"><span class="chip open"><i>Open</i>${dates}${more ? `<em>${more}</em>` : ''}</span><span class="chip">Under <b>0</b> days</span><span class="sp"></span><span class="chip">Legend</span></div>`, 'background:#0d1117')
+// after bidding closes (his question): nothing open — the chip says so, the grid shows as normal (nothing to dim
+// against), and a member's tap on a day to bid is answered with where to go instead (D1166)
+const topRowClosed = () => box(0, 10.9, 100, 3.3, '<div class="row"><span class="chip shutc">Bidding closed</span><span class="chip">Under <b>0</b> days</span><span class="sp"></span><span class="chip">Legend</span></div>', 'background:#0d1117')
+const closedNote = () => box(6, 56, 88, 16, '<div class="sh cn"><b>Bidding is closed</b><span>To change your leave, ask management, then file it on the Inputs page. Your approved leave updates here by itself.</span><div class="ok">OK</div></div>')
 // the window, in the style of today's "Open bidding on" window
 // D1168 (his idea): the period's months as quick buttons — a tap opens or closes a whole month; on = whole month open,
 // part = opened only in part (mid-month), dotted edge
@@ -37,6 +41,8 @@ const STEPS = [
     ['<b>D</b> The calendar you have today: tap the first day, then the last. Any day to any day.', '<b>E</b> "Save dates". The window shows the new line.', '<b>F</b> "Remove these dates" closes that stretch. Undo brings it back.']],
   ['4', 'The grid shows it', 'full/t-phone-admin.png', topRow('1 Apr – 30 Jun') + mark(1.8, 10.8, 36.5, 3.6, 'G') + mark(27.2, 33.8, 70, 1.4, 'H'),
     ['<b>G</b> The chip shows the open dates; with two stretches it adds "+1".', '<b>H</b> The open days wear today\'s green outline; closed days dim, with a small lock.']],
+  ['6', 'After bidding closes: what a member sees', 'full/t-phone-member.png', box(57, 6.1, 42.5, 4.3, '', 'background:#0d1117') + topRowClosed() + closedNote() + mark(1.8, 10.8, 31, 3.6, 'J') + mark(6, 56, 88, 16, 'K'),
+    ['<b>J</b> The chip says "Bidding closed". A tap on it says the same, with nothing listed.', 'The grid shows as normal: everyone\'s leave in its colours, nothing dimmed, since no day is open to set apart.', '<b>K</b> A tap on a day to bid says where to go instead. A tap on his own approved leave still opens its remarks and documents.']],
   ['5', 'What a member sees', 'full/t-phone-admin.png', topRow('1 Apr – 30 Jun') + sheet([['1 Apr – 30 Jun', '91 days']], false) + mark(1.8, 10.8, 36.5, 3.6, 'I'),
     ['<b>I</b> The same chip. A tap shows the open dates, read only: no calendar icon, nothing to add.']],
 ]
@@ -62,6 +68,11 @@ const CSS = `
 .mb{display:flex;align-items:center;justify-content:center;height:7.6cqw;border-radius:2cqw;border:1px solid #2f3a46;background:#0f1318;font:700 3.2cqw system-ui;color:#9aa5b1}
 .mb.on{border-color:rgba(87,201,122,.75);background:rgba(87,201,122,.16);color:#8FE0A8}
 .mb.part{border:1.5px dashed rgba(87,201,122,.8);color:#8FE0A8}
+.chip.shutc{border-color:#4a5560;color:#c9d1d9}
+.cn{gap:2cqw;justify-content:center}
+.cn b{font:700 3.8cqw system-ui;color:#f1f4f7}
+.cn span{font:500 3.3cqw/1.4 system-ui;color:#c9d1d9}
+.cn .ok{align-self:flex-end;padding:1.2cqw 4cqw;border-radius:2cqw;border:1px solid #2f3a46;color:#e6edf3;font:600 3.3cqw system-ui}
 .add{align-self:flex-start;font:600 3.4cqw system-ui;color:#5fd0e6;padding:0 1cqw}
 .empty{font:500 3.4cqw system-ui;color:#9aa5b1}
 .note{margin-top:auto;font:500 3cqw/1.4 system-ui;color:#8a96a3}
@@ -80,5 +91,5 @@ const browser = await chromium.launch()
 const ctx = await browser.newContext({ viewport: { width: 390, height: 900 }, deviceScaleFactor: 3 })
 const p = await ctx.newPage(); p.on('pageerror', e => errs.push(String(e)))
 await p.goto('file:///' + join(HERE, 'q5-flow.html').split(String.fromCharCode(92)).join('/')); await p.waitForTimeout(400)
-for (const n of ['1', '2', '2b', '3', '4', '5']) await p.locator('#s' + n).screenshot({ path: join(OUT, `p5-flow${n}.png`) })
+for (const n of ['1', '2', '2b', '3', '4', '5', '6']) await p.locator('#s' + n).screenshot({ path: join(OUT, `p5-flow${n}.png`) })
 await browser.close(); console.log('errors:', errs)

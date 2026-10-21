@@ -258,6 +258,7 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **And (D1169):** "also allow hold and drag to select months" — a hold and drag across the month buttons opens every month it passes over, as one stretch.
 - **And (D1172):** "perhaps instead of an edit icon put a calendar icon" — each open stretch's line carries a calendar icon, not a pencil. He also asked how the main page looks with two stretches open — drawn (`../../mock/lw-overhaul/full-q5-two.mjs`).
 - **And (D1173, D1174):** the "Viewing as <callsign>" chip goes (only a label on the war — the admin / member switch is the name badge, D292; replaces D365, narrows D678); the period picker is labelled "View" ("View JAN – DEC 26"), on a phone too. To draw with round 4's Q10 (the top row).
+- **Q2 confirmed (D1175):** "2 f" — look F as drawn, every input.
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
   `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (his question "in what scenario": the clash rules allow only leave during a course or overseas duty, leave beside
   ATT B, and an FO given by hand on a leave day; recommended now C — the leave fills the cell, the other a strip down its right
