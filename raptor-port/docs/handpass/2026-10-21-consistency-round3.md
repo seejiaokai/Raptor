@@ -148,7 +148,7 @@ nine widths (`cr3-barheights.mjs` → `bar-before.json`, `bar-after.json`): no t
 phone at 402, 375 and 320 (69.5, 69.5, 101.5); **2 taller (86.9 → 89) at about 1051–1200**, where a narrow desktop wraps the bar
 onto two rows and the second row holds no dropdown, so it was as tall as its 23-tall buttons and is now 30. A closer row gap was
 tried first to hold it: once the true before was measured it made the phone's bar 3 shorter, moving its rows, so it was dropped.
-**Put to him** (the ruling says the bar grows no taller): leave the 2 there, or close that row gap on a narrow desktop only.
+**Put to him** (the ruling says the bar grows no taller): leave the 2 there, or close that row gap on a narrow desktop only. **His answer: "8 leave it" — D1171, as built.**
 
 **Pressed at the new heights:** Admin's categories; the dates button (its pop-up) and "+ Input" (the window); the Course menu,
 Legend, the gear, ⓘ, the search (typed, found, ✕ cleared), Show All, Hide and the strip back — at 1536 and by touch at 402.

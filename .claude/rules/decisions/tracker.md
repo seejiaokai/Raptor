@@ -45,7 +45,8 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
-| D1170 | 21 Oct 26 | Every control on the Tracker's bar is as tall as its dropdowns — 30 on a desktop, 26 on a phone; the bar grows no taller and nothing moves. |
+| D1171 | 21 Oct 26 | Where a narrow desktop wraps the Tracker's bar onto two lines, the bar may be 2 taller than before, as built; its lines are not moved closer to hold the old height. |
+| D1170 | 21 Oct 26 | Every control on the Tracker's bar is as tall as its dropdowns — 30 on a desktop, 26 on a phone; the bar grows no taller and nothing moves, except where a narrow desktop wraps it (D1171). — changed by D1171 |
 | D1136 | 21 Oct 26 | On a desktop the Tracker's labels "Crew", "Course" and "Syllabus" are drawn in the small spaced capitals of Quals' "Viewing" — its size, weight, spacing and grey; the words stay and nothing on the bar moves. |
 | D1135 | 21 Oct 26 | The Tracker's menu items and Students card wear line icons in place of their typed marks — Reorder, Duplicate, Import (and the empty Tracker's "Import a file…"), Export, Delete and the × on each student — in the style of the bar's (D1132); nothing moves and no button changes what it does. |
 | D1132 | 21 Oct 26 | The Tracker's buttons wear the app's line icons in place of typed marks — ⓘ, ☰, ⇪ before File, the bar's ^, the phone tab's map — its pencils the app's solid pencil (D1134); on a phone its Flow chart / Info / Show All tabs sit joined in one box, as the Inputs tabs do; nothing moves and no button changes what it does. — changed by D1134 |
