@@ -7,7 +7,8 @@ import { login, go } from './app'
    pressed Retry) and its syllabus edit button, Quals' filter, the Leave War's "+ New". It also kept its old height after
    a page change (at 1366 it landed on the account button and Logout), and on the full-screen board — which lies over
    the top bar — it could not be seen at all. It has a band of its own now: the top bar grows by one line and the page
-   moves down (D587), and the board, the Inputs calendar and the Medical view carry the same band under their own bars.
+   moves down (D587), and the board carries the same band under its own bar — the Inputs calendar and the Medical view,
+   part of the Inputs page now (D620, D626), lie under the top bar and leave the warning to it (the test below).
 
    Unit tests cannot see any of this (no layout, no stylesheet), so it is asked here, in a real browser, the way a
    person meets it: storage refuses every write (what a full disk or a locked-down browser does), one change is made,
@@ -183,7 +184,7 @@ for (const [label, viewport, touch] of SIZES) {
       await expect.poll(() => page.locator(TOPBAR).evaluate(b => Math.round(b.getBoundingClientRect().height))).toBe(bar0.h)
     })
 
-    test('the full-screen board, the Inputs calendar and the Medical view each show it under their own bar', async ({ page }) => {
+    test('the full-screen board shows it under its own bar; the Inputs calendar and the Medical tab leave it to the top bar', async ({ page }) => {
       await login(page)
       await go(page, 'editsched')
       await failSaves(page)

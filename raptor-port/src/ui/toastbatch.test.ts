@@ -4,9 +4,10 @@
    only" was never seen (the amendment re-test's walker W1). The publish command now says both, in one line
    (ui/toast.ts toastBatch through HOOKS.toastBatch, state/sched-commit.ts commitPublish). Scoped: every other toast keeps
    "the last one wins" — a rolled-back save must never read "… removed · That did not save" (Astra 03). */
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { toast, toastBatch, clearToast } from './toast'
 import { HOOKS } from '../engine/hooks'
+import { noteUnlessSeen, SEEN_FIRST_MS } from './seen'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { SCHED, signOf } from '../engine/publish'
@@ -134,5 +135,91 @@ describe('the publish says what it published AND what the OIL check found — on
     commitSetDayApproved(5, true)
     expect(text()).not.toContain(' · nobody')
     expect(text().length).toBeGreaterThan(0)
+  })
+})
+
+/* A NOTE IS TOLD TO A SCREEN READER ([BATCH-14OCT-LEFTOVERS] (f), 21 Oct 26 — found by the leftovers' own walk, 14 Oct
+   26: the note's box was a plain box, so where a note was shown a reader heard nothing). Every note's words go to the
+   one polite region the just-added mark already tells (ui/seen.ts), whole; the box the eye reads is hidden from a
+   reader, so nothing is heard twice; and a save the screen shows tells its words once — never a note and the words. */
+describe('the passing note is told to a screen reader', () => {
+  beforeEach(() => { vi.useFakeTimers() })
+  afterEach(() => { clearToast(); vi.useRealTimers(); document.body.innerHTML = '' })
+  const region = () => document.getElementById('srSay')
+  /* every time the region is FILLED (an emptying is not read) — what a reader would hear */
+  const heard = () => {
+    const got: string[] = []
+    const mo = new MutationObserver(() => { const t = region()?.textContent || ''; if (t) got.push(t) })
+    return { got, watch: () => mo.observe(region()!, { childList: true, characterData: true, subtree: true }), stop: () => mo.disconnect() }
+  }
+
+  it('a note shown is told, politely and whole, from a region of its own; the box the eye reads is hidden from a reader', () => {
+    toast('Monday published', undefined)
+    const r = region()!
+    expect(r, 'the region is made').toBeTruthy()
+    expect([r.getAttribute('role'), r.getAttribute('aria-live'), r.getAttribute('aria-atomic')]).toEqual(['status', 'polite', 'true'])
+    vi.advanceTimersByTime(40)
+    expect(r.textContent).toBe('Monday published')
+    expect(face()!.getAttribute('aria-hidden'), 'the box itself is not read as well').toBe('true')
+    expect(face()!.textContent, 'and the eye still reads it').toBe('Monday published')
+  })
+  it('a long note — a published day with its OIL line — is told whole, not cut', () => {
+    const long = 'Saturday 18 Jul published. The SXO desk has no usable times, so nobody on it earns OIL · ' + 'Published AL1 · 14 items on Sat only · '.repeat(6)
+    toast(long, 'warn')
+    vi.advanceTimersByTime(40)
+    expect(region()!.textContent).toBe(long)
+  })
+  it('the same words twice running are told twice; a batch is told once, as the one line the eye reads', async () => {
+    toast('Input added', undefined); vi.advanceTimersByTime(40)
+    const h = heard(); h.watch()
+    toast('Input added', undefined)
+    expect(region()!.textContent, 'emptied first, so a reader hears the same words again').toBe('')
+    vi.advanceTimersByTime(40); await Promise.resolve()
+    toastBatch(() => { toast('Published AL1 · 3 items on Sat only', undefined); toast('the SXO desk has no usable times', 'warn') })
+    vi.advanceTimersByTime(40); await Promise.resolve()
+    h.stop()
+    expect(h.got).toEqual(['Input added', 'Published AL1 · 3 items on Sat only · the SXO desk has no usable times'])
+  })
+  it('a save the screen shows tells its words once, and raises no note; one it cannot show raises the note, told once', async () => {
+    const was = HOOKS.toast
+    HOOKS.toast = toast as any
+    try {
+      /* laid out, the saved input's card in view: the mark is the sign, and the words are told */
+      const card = document.createElement('div'); card.setAttribute('data-fresh', 'x1'); document.body.appendChild(card)
+      const rect = (r: any) => () => ({ ...r, right: r.left + r.width, bottom: r.top + r.height, x: r.left, y: r.top, toJSON() {} })
+      ;(card as any).getBoundingClientRect = rect({ top: 100, left: 20, width: 300, height: 40 })
+      ;(document.documentElement as any).getBoundingClientRect = rect({ top: 0, left: 0, width: 390, height: 844 })
+      ;(document as any).elementFromPoint = () => card
+      noteUnlessSeen('x1', 'Input added')
+      const h = heard(); h.watch()
+      vi.advanceTimersByTime(SEEN_FIRST_MS + 60); await Promise.resolve()
+      expect(h.got, 'in view: told once').toEqual(['Input added'])
+      expect(text(), 'and no note raised').toBe('')
+      /* nothing wears the mark: the note is raised, and told once — not the note AND the words */
+      noteUnlessSeen('x2', 'Input updated')
+      vi.advanceTimersByTime(SEEN_FIRST_MS + 60); await Promise.resolve()
+      h.stop()
+      expect(text(), 'the note is shown').toBe('Input updated')
+      expect(h.got, 'and told once').toEqual(['Input added', 'Input updated'])
+    } finally {
+      HOOKS.toast = was
+      delete (document as any).elementFromPoint
+      delete (document.documentElement as any).getBoundingClientRect
+    }
+  })
+  it('the words go when their note fades, and a newer note’s words are left alone', () => {
+    toast('Monday published', undefined); vi.advanceTimersByTime(40)
+    expect(region()!.textContent).toBe('Monday published')
+    vi.advanceTimersByTime(13000)
+    expect(face()!.style.opacity, 'the note has faded').toBe('0')
+    expect(region()!.textContent, 'its words with it — no stale note for a reader to meet later').toBe('')
+    toast('A', undefined); vi.advanceTimersByTime(40)
+    toast('a longer note that holds the screen for longer than the first one did', undefined); vi.advanceTimersByTime(2700)
+    expect(region()!.textContent, 'the second note still stands').toBe('a longer note that holds the screen for longer than the first one did')
+  })
+  it('a sign-in or sign-out takes the words down with the note', () => {
+    toast('viper@mail can sign in now', undefined); vi.advanceTimersByTime(40)
+    clearToast()
+    expect(region()!.textContent).toBe('')
   })
 })

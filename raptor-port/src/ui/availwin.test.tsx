@@ -32,6 +32,7 @@ import { openScheduler } from './board'
 import { setOilDay } from '../state/view'
 import * as view from '../state/view'
 import { AVAILWIN, setAvailWin } from './pops'
+import { toast as realToast, clearToast } from './toast'
 import { availableFor } from '../leavewar/sync'
 import { loadWeek, resetSession } from '../state/store'
 import { CURWEEK } from '../engine/waves'
@@ -969,5 +970,25 @@ describe('closing it', () => {
     expect(AVAILWIN, 'the model forgot it').toBeNull()
     await act(async () => { notify() })
     expect($('.availwin:not([hidden])'), 'and it stays shut through a re-render').toBeFalsy()
+  })
+})
+
+/* A NOTE IS NOT MOVED WHILE IT IS BEING READ (ui/toast.ts placeToast — the look-and-keys read, finding 5, 21 Oct 26): on a
+   phone a note raised while the ALL AVAIL window is up stands at the top; the window's own placing of the note ran on its
+   close too, and sent the note to the foot mid-read. */
+describe('the passing note and the ALL AVAIL window on a phone', () => {
+  it('a note at the top while the window is up stays there when the window closes', async () => {
+    const mm = (window as any).matchMedia
+    ;(window as any).matchMedia = (q: string) => ({ matches: /max-width:\s*620px/.test(q), addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} })
+    try {
+      await act(async () => { setAvailWin({ di: SAT, item: 'x', ver: '', name: 'X', when: '', tab: 'who' }); notify() })
+      expect(document.querySelector('.availwin:not([hidden])'), 'the window is up (or this test proves nothing)').toBeTruthy()
+      realToast('ALL AVAIL planned', 'ok')
+      const t = document.getElementById('toastEl') as HTMLElement
+      expect(t.dataset.at).toBe('top')
+      await act(async () => { setAvailWin(null); notify() })
+      expect(document.querySelector('.availwin:not([hidden])'), 'the window has closed').toBeNull()
+      expect(t.dataset.at, 'the note stays where it is being read').toBe('top')
+    } finally { (window as any).matchMedia = mm; clearToast() }
   })
 })

@@ -954,6 +954,11 @@ Astra DP-11). Decided in the one function that marks a slot (`publish.ts alAttr`
 `HOOKS.newToMe` (`ui/changesmodel.ts` installs it; headless, false — byte-identical HTML). On the edit week, the board
 and View-only Sched's live draft of a day not yet published; never on a published day (its ALn tags say it), never for a
 guest, never in print or CSV. "Mark all as seen" takes it away. The day headings are unchanged (D172).
+**A seat that also holds the ALL AVAIL / ALL count** (`.seat:has(> .oilcount)`) wears its tag — OG, the waiting ALn and the
+issued ALn alike — on the PUCK's own corner, its right edge 3px past the puck's (`left: calc(var(--puck-w) + 3px)` and a
+shift back by its own width), not the seat's: the seat's corner there is the count's, and the tag lay over the count's
+top edge (`[OG-TAG-OVER-COUNT]`, 21 Oct 26 — D588's Sonnet building trial; `scheduler/20-changes-quals.css`; pin
+`e2e/og-tag-count.spec.ts`, OG / waiting / issued at 1440 and 390; the check `docs/handpass/2026-10-21-look-keys.md`).
 
 **Words and lines the D994 batch put right (19 Oct 26):** an SC line's B box is named "in-time" — in the change
 history's label, so "To go out", in the window's detail and in Undo ("an in-time"); a flying, AVALON or BB line keeps
@@ -10663,7 +10668,16 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
     (`ui/FloatWindow.tsx`) stands on the foot of a phone's screen with its buttons at its own foot — where the note was
     drawn. `ui/toast.ts placeToast` asks "a phone, and a window up?" when a note is said and again when a window opens
     (a note already showing moves clear); never when one closes. A desktop, and a phone with no window up: the foot, as
-    before. "A window" is the shell's — the Leave War's sheets and the schedule's dialogs keep the note at the foot.
+    before. "A window" is the shell's — the Leave War's sheets and the schedule's dialogs keep the note at the foot —
+    and the two windows at the foot of a phone, the changes window and (since 21 Oct 26, met by the look-and-keys walk)
+    the ALL AVAIL window; each moves a note already showing as it opens, never as it closes.
+  - **Every note is told to a screen reader ([BATCH-14OCT-LEFTOVERS] (f), 21 Oct 26).** `ui/toast.ts sayToReader`: the
+    note's words go to ONE polite region (`#srSay`, role status, `aria-atomic` — a long note read whole), the same region
+    that tells a reader what the just-added mark shows (`ui/seen.ts`), emptied first and filled a beat later (the same
+    words twice are read twice); the box the eye reads is `aria-hidden`. The region's words go when their note fades and
+    at a sign-out. A save tells its words once — its note, or the region where the mark shows it, never both — and where
+    another note was raised while it waited, that note keeps the region as it keeps the screen. Pins
+    `ui/toastbatch.test.ts`, `ui/seen.test.ts`.
   - **A day whose inputs a filter hides says so (D731 (2)).** A day opened on the Inputs calendar with nothing listed
     WHILE it has inputs when no filter is asked reads "No inputs match on this day." with "Clear filters" beside it —
     the page's own clearing (`InputsPage.tsx clearFilters`). A day with no inputs at all reads "No inputs on this day.
@@ -11219,6 +11233,14 @@ board's ⋯ menu hangs from its button's right edge when the left-hung menu woul
   person has moved or resized carries `data-placed` (`ui/floatwin.ts`) and keeps its own box — capped by the stylesheet,
   its shrunken height would be recorded as the size he chose. Where he puts it is his, over the warning included. **A new thing pinned at a fixed height near
   the top must do the same**, or be measured from the bar.
+- **…and under a two-line top bar** (the schedule pages and the Inputs page, about 900–1366 wide on his PC; at 1440 too on
+  GitHub's Linux machines, whose letters are wider) a window still at its default spot — the changes window, the ALL
+  AVAIL window, every window of the shell — opens 8px under the bar's real bottom, wherever the bar is what lies under the
+  window's top edge (`ui/floatwin.ts barsUnder`, every movable window left out of that question; `[FLOATWIN-TWO-LINE-BAR]`,
+  21 Oct 26). **Over the Scheduler Board** — which covers the top bar — such a window opens 8px under the BOARD's own bar
+  by the same rule (owner D1106, 21 Oct 26, `[FLOATWIN-BOARD-BAR]`; it narrows D41's corner there): the corner lay over
+  that bar's right end at every desktop width (its foot 106 at 1366 and wider, 145 at 1200, 186 at 1024), so the bell,
+  Insights and ✓ Done take a press with a window open. Pins `e2e/look-keys.spec.ts`, `e2e/availwin.spec.ts`.
 - **The cost, accepted:** the page shifts down one line ONCE, at the moment a save fails, and back when it lands. A
   failed save stays failed until it lands (`storage/postman.ts`), so this is not a per-change twitch; the top bar's own
   buttons do not move.

@@ -1,0 +1,9 @@
+[
+  { "n": 1, "name": "toast: a note is told to the reader's region", "file": "src/ui/toast.ts", "find": "  sayToReader(String(msg==null?'':msg));", "put": "", "tests": ["src/ui/toastbatch.test.ts"] },
+  { "n": 2, "name": "toast: the box the eye reads is hidden from a reader", "file": "src/ui/toast.ts", "find": "t.setAttribute('aria-hidden','true');", "put": "", "tests": ["src/ui/toastbatch.test.ts"] },
+  { "n": 3, "name": "toast: the region reads a note whole (aria-atomic)", "file": "src/ui/toast.ts", "find": "el.setAttribute('aria-atomic','true');", "put": "", "tests": ["src/ui/toastbatch.test.ts"] },
+  { "n": 4, "name": "toast: the region is emptied before it is filled", "file": "src/ui/toast.ts", "find": "  el.textContent='';\n", "put": "", "tests": ["src/ui/toastbatch.test.ts"] },
+  { "n": 5, "name": "toast: a sign-out takes the reader's copy down", "file": "src/ui/toast.ts", "find": "const r=$('srSay'); if(r)r.textContent=''", "put": "", "tests": ["src/ui/toastbatch.test.ts"] },
+  { "n": 6, "name": "seen: the mark's words go to the region", "file": "src/ui/seen.ts", "find": "const tell = sayToReader", "put": "const tell = (_w: string) => {}", "tests": ["src/ui/seen.test.ts", "src/ui/toastbatch.test.ts"] },
+  { "n": 7, "name": "toast: the note at the top while the ALL AVAIL window is up on a phone", "file": "src/ui/toast.ts", "find": ", .availwin:not([hidden])'", "put": "'", "tests": ["src/ui/toastplace.test.tsx"] }
+]

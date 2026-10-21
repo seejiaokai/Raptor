@@ -6283,3 +6283,53 @@ saving the setting moves the button out from under the press (a "rules changed" 
 button's position before and after the save first. **Place:** low, with the next change to the Logic page; a browser test that changes a
 setting and presses Done once, by mouse and by finger.
 
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([FLOATWIN-TWO-LINE-BAR]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-21-look-keys.md`.*
+
+### [FLOATWIN-TWO-LINE-BAR] The two movable windows open over the bottom of a two-line top bar (filed 5 Oct 26)
+**DONE 21 Oct 26 (the look-and-keys job, pull request 558).** Measured first: the top bar is still two lines at about 900–1366 wide on the schedule pages and the Inputs page (103–104 tall; at 1440 too on GitHub's Linux machines). A window he has not moved now opens 8px under the bar's real bottom wherever the bar lies under it — the changes window, the ALL AVAIL window and every window of the shell (`raptor-port/src/ui/floatwin.ts barsUnder`; pins `raptor-port/e2e/look-keys.spec.ts`, `e2e/availwin.spec.ts`; the contract `raptor-port/docs/ui-contracts.md`, "…and under a two-line top bar"); over the Scheduler Board the corner stands — its own bar is `[FLOATWIN-BOARD-BAR]`, a question for him. The check: `raptor-port/docs/handpass/2026-10-21-look-keys.md`.
+**Place:** low — with the next change to the changes window or the ALL AVAIL window. Found while building
+`[SAVE-NOTE-COVERS]`: both open at a fixed spot, 96px down the right edge, whatever the top bar's height. Where the bar
+is two lines (Edit Schedule at about 1400px wide and under: 103px) the window's top edge lies over the bar's last 7px,
+on `main` too. With a failed save showing it now opens lower by the warning's band, so it stands where it stood — still
+those 7px over the band's lower edge; Retry's middle stays clear and a real press reaches it (tested). **Do:** measure
+the opening spot from the bar's bottom, as the failed-save warning does (`raptor-port/src/ui/floatwin.ts`,
+`raptor-port/src/ui/SaveStatus.tsx`).
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([OG-TAG-OVER-COUNT]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-21-look-keys.md`.*
+
+### [OG-TAG-OVER-COUNT] The "OG" new-to-you tag sits over the top edge of an ALL AVAIL count (walk find, 1 Oct 26)
+**DONE 21 Oct 26 (the look-and-keys job, pull request 558) — Trial 2 of D588 run:** a Sonnet 5.5 helper built it to a precise spec, read by Opus (the verdict: the sheet's §12). The corner tag — OG, the waiting ALn and the issued ALn — of a seat holding the count stands on the puck's own corner (`raptor-port/src/ui/scheduler/20-changes-quals.css`; pin `raptor-port/e2e/og-tag-count.spec.ts`; the contract `raptor-port/docs/ui-contracts.md` §The OG tag). The check: `raptor-port/docs/handpass/2026-10-21-look-keys.md`.
+Walker A's O3 (pictures `…/2026-10-01-dbr-phase7/a/R4b-*.png`, `R4-1.png`): on the member's View-only Sched, the dotted "OG" tag on
+a changed seat overlaps the count chip's top edge; the number stays legible close up, crowded at normal size. The admin's view
+is clean. Cosmetic, older than phase 7 (D172's tag, D37's chip). **Place:** low — with the next change to the tag or the chip;
+measure both at phone width. **It is also Trial 2 of D588 (not started):** ONE Sonnet 5.5 helper builds this fix to a precise spec; Opus reads
+its diff and tests, decides what that model takes, and tells him what it decided and why (D595).
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([INP-OIL-CHIP-PHONE]). Forward facts: `raptor-port/e2e/look-keys.spec.ts`, `raptor-port/docs/handpass/2026-10-21-look-keys.md`.*
+
+### [INP-OIL-CHIP-PHONE] On a phone the green OIL chip is painted over a request card's date and time (found 5 Oct 26, the Codex stack check)
+**CLOSED 21 Oct 26 (the look-and-keys job, pull request 558) — nothing to fix:** the card was rebuilt (D723, D777); on a phone its only OIL mark is the "OIL?" tag in the corner row beside LATE and the hours; measured at 390 and 320 (and the desktop row at 821 and 1024), nothing overlaps. The browser test the item named pins it (`raptor-port/e2e/look-keys.spec.ts`); the check `raptor-port/docs/handpass/2026-10-21-look-keys.md`.
+Inputs page at phone width (390): the card of a request that carries an OIL answer (walked: Torch, Training, 18 Jul 11:00–12:00) draws its
+green "OIL" chip over the date and time — about 37 × 12 px of overlap. Walker E's picture:
+`raptor-port/docs/img/handpass/2026-10-05-codex-stack/E/oilchip-phone-torch-row.png`. Older than the Codex stack: nothing in the stack
+touched the Inputs page or its stylesheet part. **Place (the agent's line):** low — with the next change to the Inputs page; a browser
+test that the chip and the date do not overlap at 390 and 320.
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([FLOATWIN-BOARD-BAR]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-21-look-keys.md`.*
+
+### [FLOATWIN-BOARD-BAR] Over the Scheduler Board the ALL AVAIL and changes windows open over the right end of the board's own bar (found 21 Oct 26, the look-and-keys check)
+On a desktop a window he has not moved opens 96px down the right edge. Over the Scheduler Board — which covers the app's top
+bar — that spot lies on the board's OWN bar at every desktop width: its foot is at 106 at 1366 and wider, 145 at 1200 (two
+rows) and 186 at 1024 (measured 21 Oct 26, `raptor-port/scripts/handpass/lk-win.mjs`). At 1200 the ALL AVAIL window covers
+the bell, Insights and ✓ Done (the walk's W10: a press at each one's middle lands on the window — picture
+`raptor-port/docs/img/handpass/2026-10-21-look-keys/walk/w10-board-bar-covered-1200.png`, the covered end marked); to leave the
+board the window must first be closed or moved. Older than tonight; not `[FLOATWIN-TWO-LINE-BAR]`'s (the top bar). The same
+rule would fix it — a first build did — but it moves where D41's window opens on the board, which he approved as drawn, so it
+is put to him. **Question for him (the picture above):** should the windows open just under the board's own bar, as they now
+open under the top bar? **Recommended: yes** — the same rule, about 15 minutes, and the three browser tests that pin the corner
+over the board (`e2e/availwin.spec.ts`, `e2e/look-keys.spec.ts`) change with it. **Place:** small, on his answer.
+
