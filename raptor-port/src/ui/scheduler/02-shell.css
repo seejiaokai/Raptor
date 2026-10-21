@@ -301,6 +301,8 @@
 .searchbox .btnglyph{width:15px;height:15px;flex:0 0 auto;color:var(--ink-3)}
 .searchbox input{background:transparent;border:none;color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;width:150px}
 .searchbox input:focus{outline:none}
+/* the box itself shows where the keyboard is (the input inside draws no ring of its own) — a fresh reader's find, 21 Oct 26 */
+.searchbox:focus-within{border-color:var(--accent)}
 .filters .right{margin-left:auto;display:flex;gap:6px;align-items:center}
 
 .title{display:flex;align-items:baseline;gap:14px;padding:16px 20px 4px;flex-wrap:wrap}

@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import * as core from '../app/core.js';
 import { isComposing } from './keys.js';
 import { DateBox } from './DateBox.jsx';
+import { SrchGlyph } from './SrchGlyph.jsx';
 import { edgeAutoScroll } from '../../ui/edgescroll';
 import { markLand, paintLand } from '../../ui/lift';
 
@@ -135,7 +136,8 @@ export function DlgModal() {
         {list && (
           <>
             {d.listTitle && <div className="mini dlg-listtitle">{d.listTitle}</div>}
-            {d.filter && (
+            {/* one search box (owner D1127): the app's line magnifier inside it, as every search box */}
+            {d.filter && (<span className="findbox dlg-findbox"><SrchGlyph />
               <input id="dlgFilter" ref={filterRef} type="search" placeholder="Search by callsign" value={q}
                 onChange={e => setQ(e.target.value)}
                 /* Enter on the search box picks the one entry left — the keyboard
@@ -145,7 +147,7 @@ export function DlgModal() {
                   if (e.key !== 'Enter' || isComposing(e)) return;
                   if (shown.length === 1) { e.preventDefault(); pick(shown[0].key); }
                   else if (searchAsNew) { e.preventDefault(); ok(); }
-                }} />
+                }} /></span>
             )}
             <div id="dlgList" role="listbox">
               {shown.map(it => (

@@ -603,6 +603,8 @@ export function InputsPage() {
   )
   const tools = tab !== 'inputs' ? null : (<>
     <span className="inputs-spring" />
+    {/* the switch after the spring in the page as well as on screen, so the keyboard meets it where it is drawn (D1125) */}
+    {views}
     <button className="abtn" id="inFiltersBtn" title="Filters" aria-label={appliedFilters.length ? `Filters, ${appliedFilters.length} set` : 'Filters'} aria-expanded={filtersOpen} aria-controls="inFilters" onClick={()=>{ if (phone) setCalOpen(false); setFiltersOpen(o=>!o) }}><FilterIcon /><span className="inv-t">Filters</span>{appliedFilters.length>0&&<span className="inputs-filter-count">{appliedFilters.length}</span>}</button>
     {/* NO WORDS OVER THE THREE BOXES (D729 — V5; D726): "Person", "Type" and "Search" stood over them on a phone, where
         the boxes already read "Everyone", "All types" and "Search inputs". Each keeps its name for a screen reader. */}
@@ -712,7 +714,7 @@ export function InputsPage() {
       {/* ON A DESKTOP THE SANS CALENDAR TAKES THE TABS INTO ITS OWN MONTH ROW, as the Inputs calendar does (owner D1125,
           21 Oct 26 — one row on both, the arrows, month and Today in the same place); a phone keeps the tabs on their own
           line above SANS's month row, which already matched the Inputs calendar's (D705) */}
-      {!calUp && !(sansUp && !phone) && <div className="inputs-top">{tabsRow}{phone && listTools}{listUp && !phone && navGhost}{views}{tools}</div>}
+      {!calUp && !(sansUp && !phone) && <div className="inputs-top">{tabsRow}{phone && listTools}{listUp && !phone && navGhost}{tools}</div>}
       {!calUp && filterSummary}
       <div className="infilter inputs-listtools" hidden={!listUp || phone}>
         {!phone && listTools}
@@ -937,7 +939,7 @@ export function InputsPage() {
           that has to rebuild the list from scratch */}
       {sansUp && <SansCal lead={phone ? undefined : tabsRow} />}
       {calUp && <InputsCal fPerson={fPerson} fType={fType} fSearch={fSearch} lit={flash} litAt={relit}
-        seedIso={range.from || isoOf(new Date())} lead={<>{tabsRow}{views}</>} tools={tools} under={filterSummary} onClearFilters={clearFilters} />}
+        seedIso={range.from || isoOf(new Date())} lead={tabsRow} tools={tools} under={filterSummary} onClearFilters={clearFilters} />}
       {tab === 'med' && <MedicalView />}
       {/* the OIL ask (owner, 28 Aug 26) — the desktop row's OIL chip: Save runs the
           stashed commit with the day decisions, Cancel writes nothing */}

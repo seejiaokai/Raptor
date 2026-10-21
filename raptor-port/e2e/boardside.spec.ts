@@ -204,8 +204,17 @@ test.describe('round 1 of the consistency look (D1125–D1128)', () => {
     await go(page, 'admin'); await sleep(300); seen.admin = await look('#accFind')
     await go(page, 'inputs'); await sleep(300); await page.locator('#inListBtn').click(); await sleep(300); seen.inputs = await look('#inFSearch'); await page.locator('#inCalBtn').click()
     await go(page, 'tracker'); await sleep(600); seen.tracker = await look('#hSearch')
+    /* and the Tracker's two others (a fresh reader's find): Show All's filter and the + Add window's search */
+    await page.locator('#showAllBtn').click(); await sleep(300); seen.trackerAll = await look('#saSearch'); await page.locator('#saClose').click(); await sleep(200)
+    await page.locator('#addStu:visible').first().click(); await sleep(300); seen.trackerAdd = await look('#dlgFilter'); await page.keyboard.press('Escape'); await sleep(200)
     await board(page); seen.board = await look('#searchB')
-    expect(seen).toEqual({ week: 'line', quals: 'line', logic: 'line', admin: 'line', inputs: 'line', tracker: 'line', board: 'line' })
+    expect(seen).toEqual({ week: 'line', quals: 'line', logic: 'line', admin: 'line', inputs: 'line', tracker: 'line', trackerAll: 'line', trackerAdd: 'line', board: 'line' })
+    /* the box itself shows where the keyboard is (a fresh reader's find): its border takes the accent while focused */
+    await go(page, 'admin'); await sleep(300); await page.locator('#accFind').focus()
+    const ring = await page.evaluate(() => { const b = document.querySelector('#accFind')!.parentElement!; return getComputedStyle(b).borderColor })
+    await page.locator('#accFind').blur()
+    const rest = await page.evaluate(() => getComputedStyle(document.querySelector('#accFind')!.parentElement!).borderColor)
+    expect(ring, 'focused, the box shows it').not.toBe(rest)
   })
   test('D1128: Quals reads "✎ Edit" plain, then "Done" blue — as Logic does', async ({ page }) => {
     await login(page)

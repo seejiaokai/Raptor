@@ -28,5 +28,8 @@ describe('the top bar: Edit Schedule’s tint and the phone’s sync dot are two
     expect(block).not.toBe(null)
     expect(block![1]).toMatch(/\.topbar \.tb-hist \.bl\{display:none\}/)
     expect(block![1]).toMatch(/\.topbar\.has-undo \.fastsync \.synclbl\{display:none\}/)
+    /* narrower, never shorter: the sides only — `padding:0` stood the pair 17 tall beside the bar's 28 (found 21 Oct 26) */
+    expect(block![1]).toMatch(/\.hbtn\{[^}]*padding-left:0;padding-right:0/)
+    expect(block![1]).not.toMatch(/\.hbtn\{[^}]*padding:0[;}]/)
   })
 })

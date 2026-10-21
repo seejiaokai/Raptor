@@ -1,3 +1,4 @@
+import { SrchGlyph } from './SrchGlyph.jsx';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { trackerHosted } from '../undo-bridge.js';
 import * as core from '../app/core.js';
@@ -84,14 +85,6 @@ function FindRow({ id, on, i, pick }) {
   );
 }
 
-/* the app's line magnifier (ui/icons.tsx SrchIcon, the same drawing) — the Tracker draws its own, as it draws its other glyphs */
-function SrchGlyph() {
-  return (
-    <svg className="srchglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />
-    </svg>
-  );
-}
 function HeaderSearch() {
   const [open, setOpen] = useState(false);
   const [at, setAt] = useState(null);

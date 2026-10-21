@@ -529,7 +529,10 @@ svg.perf .edgehit{pointer-events:none}
 /* The + Add dialog's roster picker: search box, then a scrolling list of
    plain rows (the base button recipe is reset — these are list entries, not
    buttons), then the free-text box the dialog always had. */
-#dlgFilter{width:100%;margin-bottom:8px}
+.dlg-findbox{display:flex;width:100%;box-sizing:border-box;margin-bottom:8px}
+#dlgFilter{width:100%;flex:1 1 auto;padding:0;border:0;background:transparent;min-width:0}
+#dlgFilter:focus,#saSearch:focus{outline:none}
+#saSearch{padding:0;border:0;background:transparent;min-width:0}
 .dlg-listtitle{margin-bottom:6px}
 /* the course start above the roster (D1018, 5-add-box) */
 .dlg-date{margin:0 0 10px}
@@ -771,5 +774,7 @@ small.hint{color:var(--muted);font-size:11px}
     would only repeat it and cost the two-row bar 80px. */
  #showAllBtn{display:none}
  .satl{display:none}
+ /* the filter wears the line magnifier now (D1127), so on a phone its field is narrower — the title stays one line */
+ #showAllPanel #saSearch{width:84px !important}
 }
 }

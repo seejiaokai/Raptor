@@ -41,6 +41,9 @@
   .inputs-top .ic-nav #icPrev,.inputs-top .ic-nav #icNext,.inputs-top .ic-nav .ic-ga,.sanscal .sc-head .sc-nav{width:40px;min-width:40px;padding:0;font-size:20px;line-height:1}
   .inputs-top .ic-nav #icToday,.inputs-top .ic-nav .ic-gt,.sanscal .sc-head .sc-today{font-size:12px;padding:0 10px}
   .inputs-top .abtn.inputs-gear,.sanscal .sc-head .abtn.sc-gear{width:40px;min-width:40px}
+  /* drawn 36, pressed 46 — the phone's rule (D698) on a desktop too, for a touch laptop or an iPad on its side */
+  .inputs-top .abtn:where(:not(.inrange-pop .abtn)):not(.intab),.sanscal .sc-head .abtn{position:relative}
+  .inputs-top .abtn:where(:not(.inrange-pop .abtn)):not(.intab)::after,.sanscal .sc-head .abtn::after{content:'';position:absolute;inset:-5px 0}
   /* the List's invisible copy of the month controls (InputsPage.tsx navGhost — D687 at every width) */
   .inputs-top .ic-nav-ghost{visibility:hidden;pointer-events:none}
   .inputs-top .ic-nav-ghost .ic-mon{font-size:18px;text-align:center;font-variant-numeric:tabular-nums}

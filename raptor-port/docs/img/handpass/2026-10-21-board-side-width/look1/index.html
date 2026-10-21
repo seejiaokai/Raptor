@@ -24,7 +24,7 @@ figcaption{font-size:13px;color:var(--ink-2)}
 .pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px}
 .phones{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px}
 .thumbs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px}
-.rec{border-left:3px solid var(--accent);padding:4px 0 4px 12px;display:flex;flex-direction:column;gap:6px}
+.rec{background:var(--tag);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
 .rec b{color:var(--accent)}
 .ask{font-weight:600}
 ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
@@ -36,9 +36,36 @@ ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
 <main>
   <header style="display:flex;flex-direction:column;gap:10px">
     <h1>Matching rows — round 1</h1>
-    <p class="lead">I pictured the top of every page at your PC's size and your iPhone's: Edit Schedule, View-only Sched, the Scheduler Board, Inputs (calendar and list), SANS, Medical, Quals, Logic, Leave War, Tracker, Help and Admin. Twelve things are drawn differently where they should match. These are the four that matter most; the other eight come in the next rounds. The orange ring marks the place. <span class="tag drawn">Drawn</span> pictures are the proposal drawn on the real app; nothing is built yet. Tap any picture to enlarge it.</p>
-    <p class="ask">Answer by number, for example: "1 yes, 2 yes, 3 yes, 4 yes".</p>
+    <p class="lead">I pictured the top of every page at your PC's size and your iPhone's: Edit Schedule, View-only Sched, the Scheduler Board, Inputs (calendar and list), SANS, Medical, Quals, Logic, Leave War, Tracker, Help and Admin. Twelve things are drawn differently where they should match. These are the four that matter most; the other eight come in the next rounds. The orange ring marks the place. <span class="tag drawn">Drawn</span> pictures are the proposal drawn on the real app; the Built section just below shows the result of your answers. Tap any picture to enlarge it.</p>
   </header>
+
+  <section>
+    <h2>Built — your four answers</h2>
+    <p>You answered all four as recommended. These pictures are the built app, not drawings. The pictures further down this page show how it was before.</p>
+    <div class="pair">
+      <figure><img src="b-d1125-1536-inputs.png" alt="Built: Inputs calendar row"><figcaption><span class="tag">Built</span>1 · Inputs at your PC's width</figcaption></figure>
+      <figure><img src="b-d1125-1536-sans.png" alt="Built: SANS calendar row, one line"><figcaption><span class="tag">Built</span>1 · SANS, one row, the month in the same place</figcaption></figure>
+    </div>
+    <figure><img src="b-d1125-1536-list.png" alt="Built: Inputs list, the switch in the same place"><figcaption><span class="tag">Built</span>1 · The List: the Calendar | List switch where it is on the calendar (checked at four screen widths)</figcaption></figure>
+    <div class="phones">
+      <figure><img src="b-d1125-phone402-sans.png" alt="Built: SANS on a phone, the Inputs month letters"><figcaption><span class="tag">Built</span>1 · Phone: SANS's month in the Inputs letters</figcaption></figure>
+    </div>
+    <figure><img src="b-d1126-1536-editsched.png" alt="Built: Edit Schedule's top bar on one line"><figcaption><span class="tag">Built</span>2 · Edit Schedule's top bar on one line at your width</figcaption></figure>
+    <div class="thumbs">
+      <figure><img src="b-d1127-pc-quals.png" alt="Built: Quals search with the line magnifier"><figcaption><span class="tag">Built</span>3 · Quals</figcaption></figure>
+      <figure><img src="b-d1127-pc-admin.png" alt="Built: Admin search with the line magnifier"><figcaption><span class="tag">Built</span>3 · Admin</figcaption></figure>
+      <figure><img src="b-d1127-pc-board.png" alt="Built: Scheduler Board search with the line magnifier"><figcaption><span class="tag">Built</span>3 · Scheduler Board</figcaption></figure>
+      <figure><img src="b-d1127-phone-tracker.png" alt="Built: Tracker search on a phone with the line magnifier"><figcaption><span class="tag">Built</span>3 · Tracker, phone</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="b-d1128-pc-quals-rest.png" alt="Built: Quals, Edit"><figcaption><span class="tag">Built</span>4 · Quals: "✎ Edit"</figcaption></figure>
+      <figure><img src="b-d1128-pc-quals-editing.png" alt="Built: Quals while editing — Done and Edit quals both blue"><figcaption><span class="tag">Built</span>4 · While editing: "Done" and "Edit quals" are both bright blue</figcaption></figure>
+    </div>
+    <div class="rec">
+      <p><b>Found while building, fixed:</b> at laptop widths (1366 and 1024) the Inputs row wraps, and the Calendar | List switch jumped on the List. The List now keeps the calendar's spacing, so the switch never moves. Undo and Redo had also shrunk to about half height whenever they showed only their arrows. They keep their full height now.</p>
+      <p class="ask">One question: while editing Quals, "Done" and "Edit quals" are both bright blue (last picture), because your 5 Aug rule makes "Edit quals" blue until it's pressed. I recommend "Edit quals" plain until pressed, so "Done" is the one blue. It's in round 2 with the others.</p>
+    </div>
+  </section>
 
   <section>
     <h2><span class="n">1</span>Inputs and SANS top rows</h2>
