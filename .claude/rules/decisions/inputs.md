@@ -92,6 +92,7 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 
 | # | Date | The rule |
 |---|---|---|
+| D1139 | 21 Oct 26 | On a desktop the Inputs list's "+ Input" and dates button are 36 tall, as on a phone and as the rest of the Inputs page; nothing moves and the words stay. |
 | D1137 | 21 Oct 26 | On the Medical tab "+ Medical" stands first, at the left of its row, where "+ Input" stands on the Inputs list; the frame round the Medical tab goes, its three sections keeping their own boxes; and the Inputs list's dates button wears the app's line calendar in place of the 📅 emoji. |
 | D1125 | 21 Oct 26 | The Inputs and SANS calendars' top rows are built as drawn: on a desktop one row — the tabs, then ‹ month › and Today in the same place on both, then at the right end Inputs' Calendar / List, filters and gear, or SANS' Highlight and gear; the month's name in the Inputs style on both, desktop and phone; the buttons drawn 36 tall. |
 | D1123 | 21 Oct 26 | The Inputs and SANS calendars' top rows are laid out alike, on a desktop as on a phone: the tabs, the month's ‹ name › and Today, and the buttons at the right end in the same places and the same look on both, the month's name in one style; how it is drawn is put to him with pictures before it is built. — changed by D1125 |
