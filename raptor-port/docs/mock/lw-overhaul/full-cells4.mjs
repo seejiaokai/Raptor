@@ -57,7 +57,13 @@ function box([code, st], look, marks, pos) {
   // a wide three-letter code (OML) takes letters a step smaller so it never spills out of its box
   return `<span class="${cls}"><b${/M|W/.test(code) && code.length > 2 ? ' class="wide"' : ''}>${code}</b></span>`
 }
-function cell(e, marks, look) {
+function cell(e, marks, look, two) {
+  if (two && e.length === 2 && !e[0][2] && !e[1][2]) {
+    // C: the first fills the cell; the second is a strip down the right edge in its own colour (both listed on a tap)
+    if (two === 'strip') return `<td class="cell"><div class="cb">${box(e[0], look, marks[0] || [], 'whole strip')}<span class="stripe ${box(e[1], look, [], 'x').match(/e-[a-z]+/)[0]}"></span></div></td>`
+    const inner = two === 'side' ? box(e[0], look, marks[0] || [], 'left') + box(e[1], look, marks[1] || [], 'right') : box(e[0], look, marks[0] || [], 'top') + box(e[1], look, marks[1] || [], 'bot')
+    return `<td class="cell"><div class="cb">${inner}</div></td>`
+  }
   const am = e.find(x => x[2] === 'am'), pm = e.find(x => x[2] === 'pm')
   const inner = am || pm ? (am ? box(am, look, marks, 'top') : '') + (pm ? box(pm, look, marks, 'bot') : '') : box(e[0], look, marks, 'whole')
   return `<td class="cell"><div class="cb">${inner}${marksHTML(marks)}</div></td>`
@@ -83,6 +89,11 @@ td.cell{position:relative;width:27px;min-width:27px;height:26.6px;padding:0;box-
 .f.whole b.wide{font-size:8.5px;letter-spacing:-.01em}
 .f.top{left:2px;right:2px;top:2px;bottom:calc(50% + .5px);border-radius:4px 4px 2px 2px}
 .f.bot{left:2px;right:2px;top:calc(50% + .5px);bottom:2px;border-radius:2px 2px 4px 4px}
+.f.left{top:2px;bottom:2px;left:2px;right:calc(50% + .5px);border-radius:4px 2px 2px 4px}
+.f.right{top:2px;bottom:2px;left:calc(50% + .5px);right:2px;border-radius:2px 4px 4px 2px}
+.f.whole.strip{right:6px}
+.stripe{position:absolute;top:2px;bottom:2px;right:2px;width:3px;border-radius:2px;background:rgb(var(--h))}
+.f.left b,.f.right b{font-size:7.5px;letter-spacing:0}
 .f.top b,.f.bot b{font-size:7.5px;letter-spacing:0}
 /* the two edge marks, drawn on top so a waiting outline never hides them */
 .f.raptor::before,.f.moved::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;z-index:1}
@@ -191,6 +202,20 @@ function catalogue() {
   }).join('')
   return `<table class="st cat">${head}${rows}</table>`
 }
+// the three real cases (the app's clash rules, 20 Sep 26: leave is allowed during a course or overseas duty, beside
+// ATT B, and an OIL award given by hand never flags a leave day — D80), beside a real morning and afternoon
+const TWO = [
+  ['Cinch', 'leave during a course', { e: [['LL', 'appr'], ['CSE', 'appr']], m: [[], ['raptor']] }],
+  ['Basher', 'leave while ATT B', { e: [['LL', 'appr'], ['B', 'info']], m: [[], ['raptor']] }],
+  ['Warden', 'an FO given on a leave day', { e: [['LL', 'appr'], ['FO', 'sc']], m: [[], []] }],
+  ['Ranger', 'for comparison: a real morning and afternoon', { e: [['LL', 'appr', 'am'], ['OIL', 'appr', 'pm']], m: [] }],
+]
+function twoGrid(how) {
+  return `<table class="grid"><tr><th></th><th>MON<br>19</th><th style="text-align:left;padding-left:8px">the case</th></tr>${TWO.map(([n, why, c]) => {
+    const td = c.e[0][2] ? cell(c.e, c.m, 'F') : cell(c.e, c.m, 'F', how)
+    return `<tr><td class="nm">${n}</td>${td}<td class="nm" style="font-weight:500;color:#8a96a3;background:#0f1318">${why}</td></tr>`
+  }).join('')}</table>`
+}
 function page(phone) {
   const z = phone ? 0.8 : 1
   const at = phone ? 'at your phone\'s zoom (0.8), real size' : 'at desktop size'
@@ -200,6 +225,10 @@ function page(phone) {
 <div><div class="cap rec">F · your colours</div><div class="zoom" style="--z:${z}">${week('F')}</div></div></div></section>
 <section id="key" style="margin-top:22px"><h1>Your colours (F)</h1><p class="sub">Each kind of leave keeps its colour; how it stands is the fill.</p><div class="zoom" style="--z:${z}">${key()}</div></section>
 <section id="all" style="margin-top:22px"><h1>Every input, your colours (F)</h1><p class="sub">Each kind the Leave War shows, in every state it can be in, ${at}. A dash: it cannot be in that state. Medical, courses and overseas duty come from the Inputs page, so they wear its cyan edge and are never waiting or refused. FO is always a whole day, HO always a half.</p><div class="zoom" style="--z:${z}">${catalogue()}</div></section>
+<section id="q4b" style="margin-top:22px"><h1>Two whole-day entries on one day</h1><p class="sub">The three cases the app's rules allow, in your colours, ${at}.</p>
+<div class="looks"><div><div class="cap">A · side by side, each the full height <i>(three letters do not fit)</i></div><div class="zoom" style="--z:${z}">${twoGrid('side')}</div></div>
+<div><div class="cap">B · one above the other <i>(reads like morning and afternoon)</i></div><div class="zoom" style="--z:${z}">${twoGrid('stack')}</div></div>
+<div><div class="cap rec">C · the leave fills the cell, the other a strip down its right edge <i>(recommended)</i></div><div class="zoom" style="--z:${z}">${twoGrid('strip')}</div></div></div></section>
 <section id="st" style="margin-top:22px"><h1>Every state, E beside F</h1><p class="sub">${at}.</p><div class="zoom" style="--z:${z}">${statesTable()}</div></section>
 </div></body></html>`
 }
@@ -213,7 +242,7 @@ for (const [n, w, dpr, phone] of [['p4d-phone', 390, 3, true], ['p4d-desk', 900,
   await p.waitForTimeout(300)
   const over = await p.evaluate(() => [...document.querySelectorAll('.f')].filter(f => f.querySelector('b').scrollWidth > f.clientWidth + 0.5).map(f => f.textContent))
   console.log(n, 'overflow:', JSON.stringify(over), 'width', await p.evaluate(() => document.documentElement.scrollWidth))
-  for (const s of ['wk', 'key', 'all', 'st']) await p.locator('#' + s).screenshot({ path: join(OUT, `${n}-${s}.png`) })
+  for (const s of ['wk', 'key', 'all', 'q4b', 'st']) await p.locator('#' + s).screenshot({ path: join(OUT, `${n}-${s}.png`) })
   await ctx.close()
 }
 await browser.close(); console.log('errors:', errs)

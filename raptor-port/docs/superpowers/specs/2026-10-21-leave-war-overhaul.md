@@ -252,8 +252,9 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **And the same evening (D1163, D1164):** Gryphon's SC is not taken over, since OIL earned is credited as FO and HO; an HO is drawn in a half of its day (morning or afternoon) like a half day's leave — the half the admin picks, or for one the app credits, the half the work fell in (the agent's reading, said with the picture).
 - **Q2 → E, his colours (D1165):** "for 2E how about LL and OL is different shades of amber, OIL is green" — a cell's colour is its kind of leave (filled approved, hollow waiting, grey struck refused); LL and OL two ambers, OIL green; drawn as look F (`../../mock/lw-overhaul/full-cells3.mjs`, pictures `full/p4d-*.png`) for him to confirm.
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
-  `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (recommended: two whole-day entries side by
-  side, each the full height — it would narrow D1146's "one above the other" for whole-day pairs), Q5, Q6; round 4 — Q7
+  `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (his question "in what scenario": the clash rules allow only leave during a course or overseas duty, leave beside
+  ATT B, and an FO given by hand on a leave day; recommended now C — the leave fills the cell, the other a strip down its right
+  edge in its own colour — since three letters do not fit side by side; any answer narrows D1146), Q5, Q6; round 4 — Q7
   to Q10; round 5 — Q11, Q12, then the readings and P1–P6 to strike. Put on the published page, version 2.
 
 **His open questions, to answer on the full mock-up with a recommendation each:** 1 the month or the year view; 6 colour
