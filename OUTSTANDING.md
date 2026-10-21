@@ -62,7 +62,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
 **Schedule and amendments**
-- [BOARD-SIDE-WIDTH] — the board's right panel: the gap between the pilots and WSOs columns, and whether it can be dragged wider — his questions of 21 Oct 26, a recommendation put to him with pictures.
+- [BOARD-SIDE-WIDTH] — the board's right panel dragged wider (D1113, his yes): its questions and a picture first, then the build — with his idea of a struck puck's reason beside it once there is room.
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
 - [INNERHTML-REPAINT-SWEEP] — eleven screens hand React their markup as a new object every repaint, which React sets again — a box being typed in there is thrown away by any repaint (Quals fixed in [KEYBOARD-SCROLL]); sweep the rest (low).
@@ -223,7 +223,7 @@ about 50 stands empty between the pilots' pucks and the WSOs' column — that ro
 two equal columns (moving the WSOs in beside the pilots would squeeze every reason into a puck's width, two or three lines
 taller), and YES to a panel he can drag wider — its left edge a grip like the one between the issues and the crew list,
 from 320 up to about 40% of the screen, remembered on that computer; the extra width goes to both columns and the issues
-list. A new control: its questions and a picture before it is built, as its own small job. **Place:** on his answer.
+list. A new control: its questions and a picture before it is built, as its own small job. **His answer, 21 Oct 26 — D1113: "Yes as recommended for the right panel".** And his question for the design: *"if I drag left enough would the words below the pucks when I click on an item on the schedule show on the right of the pucks instead? If there becomes enough space?"* — recommended yes: once a crew column is wide enough for the puck and its reason side by side, the reason stands to the puck's right; narrower, it stays under. His example ("This for example"): `raptor-port/docs/img/handpass/2026-10-21-pinch-zoom/his-reasons-under-pucks.png` — the crossed-out pucks of both columns with their reasons wrapped under them. Drawn for him at three widths with the job's questions. **Place:** the next job, a fresh chat.
 
 ### [QUALS-HEAD-FINGER-CAPTURE] In Edit quals a heading dragged by a finger may never reach another column (found 21 Oct 26, the pinch-zoom job; older)
 **Seen (the test browser, a finger over CDP):** in Edit quals a finger pressed on a heading's words and slid across the

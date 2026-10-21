@@ -43,6 +43,51 @@ a:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
     <p class="lead">Four questions, each with my recommendation. Pictures are your iPhone's size (402 wide). <span class="tag real">REAL</span> is the app today; <span class="tag drawn">DRAWN</span> is the real app with only the zoom applied on top. Tap a picture to see it full size. The phone layout and the desktop are not changed.</p>
   </header>
 
+  <section class="card" style="border-color:#3a2c12">
+    <div class="qnum" style="color:var(--amber)">Your look, round 1 — fixed, and your two questions</div>
+    <h2>Fixed on the same preview (reload it)</h2>
+    <ol class="opts">
+      <li><b>The sign-off box now scrolls away</b> with the day in the desktop layout, as on the desktop.</li>
+      <li><b>The issues list and the crew list are laid out as on the desktop.</b> On the phone they were still using the phone's narrower margins and columns (issues text 259 wide instead of 295; crew columns 74 instead of 144).</li>
+    </ol>
+    <h2>Your questions — my recommendation</h2>
+    <div class="shots">
+      <figure style="max-width:520px;flex-basis:320px"><a href="img/side-desk1440.png" target="_blank"><img src="img/side-desk1440.png" alt="The desktop board's right panel"><span class="mark" style="left:85.2%;top:47%;width:3.6%;height:50%"></span><span class="note" style="left:84%;top:43%">gap</span><span class="mark" style="left:77.4%;top:12%;width:1%;height:86%;border-color:var(--cyan)"></span><span class="note" style="left:66%;top:8%;background:var(--cyan)">drag here?</span></a>
+        <figcaption><span class="tag real">REAL</span>The desktop board at 1440: the right panel is 320 wide.</figcaption></figure>
+    </div>
+    <ol class="opts">
+      <li><b>The gap between pilots and WSOs (amber):</b> <span class="rec">keep the two equal columns.</span> The gap is the room the reason under a crossed-out puck wraps in ("already on OPS-O duty 06:00–14:00"). Moving the WSOs in beside the pilots would squeeze every reason into a puck's width, two or three lines taller.</li>
+      <li><b>A right panel you can drag wider (blue):</b> <span class="rec">yes.</span> Its left edge becomes a grip, like the one between the issues and the crew list. It drags from today's 320 up to about 40% of the screen, and is remembered on that computer. The extra width goes to both crew columns and the issues list. It is a new control, so it gets its own small job: questions and a picture first.</li>
+    </ol>
+  </section>
+
+  <section class="card" style="border-color:#234b33">
+    <div class="qnum" style="color:var(--green)">Built — your look</div>
+    <h2>Try it on your iPhone</h2>
+    <p>Your four answers ("Yes to all") are built. Open the preview on your phone, sign in as usual, then:</p>
+    <ol class="opts">
+      <li><b>Board:</b> Edit Schedule → open a day → ⋯ → Desktop layout. Pinch out until the whole day fits, then back in. ✓ Done and the day arrows stay at the top the whole time.</li>
+      <li>Change day with › — the zoom stays. Press ✓ Done and open the board again — it is back to normal.</li>
+      <li>Hold a crew puck and carry it to the left edge of the screen: the day slides back; drop it where you like.</li>
+      <li><b>Quals:</b> pinch the table out until every column fits; scroll down — the headings stay over their columns.</li>
+    </ol>
+    <p><b>Preview:</b> <span style="user-select:all">https://raptor-git-claude-board-pinch-zoom-kai-e2f5.vercel.app</span></p>
+    <div class="shots">
+      <figure><a href="img/after-b1-opens.png" target="_blank"><img src="img/after-b1-opens.png" alt="Desktop layout opened, phone bar on top"></a>
+        <figcaption><span class="tag real">REAL</span>Desktop layout opens at today's size, under the phone's bar.</figcaption></figure>
+      <figure><a href="img/after-b2-fit.png" target="_blank"><img src="img/after-b2-fit.png" alt="The whole day fitted"></a>
+        <figcaption><span class="tag real">REAL</span>Pinched right out: the whole day on one screen.</figcaption></figure>
+      <figure><a href="img/after-b7-edge.png" target="_blank"><img src="img/after-b7-edge.png" alt="A puck carried to the left edge"></a>
+        <figcaption><span class="tag real">REAL</span>A puck held at the left edge: the day slid back to its start.</figcaption></figure>
+      <figure><a href="img/after-q2-fit.png" target="_blank"><img src="img/after-q2-fit.png" alt="Quals fitted"></a>
+        <figcaption><span class="tag real">REAL</span>Quals pinched out: every column; the buttons unchanged.</figcaption></figure>
+      <figure><a href="img/after-q4-pinned.png" target="_blank"><img src="img/after-q4-pinned.png" alt="Quals pinned headings"></a>
+        <figcaption><span class="tag real">REAL</span>Quals zoomed in and scrolled: the headings over their columns.</figcaption></figure>
+    </div>
+    <p class="lead">Also fixed on the way: in the desktop layout a sideways swipe on the day itself never slid it (only a swipe on the bar did). Not tested here: Safari's own touch on a real iPhone — that is what your look is for.</p>
+  </section>
+
+
   <section class="card">
     <div class="qnum">Today</div>
     <h2>What you see now</h2>
@@ -121,6 +166,6 @@ a:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
   </section>
 
   <section class="answer">
-    <p><b>To answer:</b> reply "yes to all" for the four recommendations, or give the number you would change (for example "Q3 option 2").</p>
+    <p><b>Answered 21 Oct 26:</b> "Yes to all" — built as recommended (above).</p>
   </section>
 </main>

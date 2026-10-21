@@ -115,6 +115,7 @@ widened by the layout's `min-width`) fixed. Both break-tested (caught). Last rou
   columns, and a resizable right panel — filed as [BOARD-SIDE-WIDTH].
 
 ## 10. His look
+**His "merge live": given 21 Oct 26** after his second look (round 1's fixes); merged on GitHub's run of these closing records (D1088).
 On his iPhone (the walk cannot copy an iPhone's touch and scrolling — Safari's own pinch, its zoom, its keyboard): the
 board's desktop layout — pinch out to the whole day and back in, ✓ Done always in reach, a puck carried to the edge; Quals —
 pinch, scroll down, the headings over their columns.

@@ -54,6 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1113 | 21 Oct 26 | On a desktop, the Scheduler Board's right panel keeps its pilots and WSOs as two equal columns, and its left edge becomes a grip he can drag to widen it, from today's 320 up to about 40% of the screen, remembered on that computer; built as its own job, its questions and a picture first. |
 | D1112 | 21 Oct 26 | In the Scheduler Board's desktop layout on a phone, the side column is laid out as on a desktop: the issues list uses the column's width with the desktop's margins, and the crew list's two columns share the column's width as on a desktop, so its reasons wrap no narrower. |
 | D1111 | 21 Oct 26 | In the Scheduler Board's desktop layout on a phone, the sign-off box scrolls away with the day as it does on a desktop, never frozen above it. |
 | D1109 | 21 Oct 26 | On a phone, in the Scheduler Board's desktop layout a pinch zooms the day only, never the bar: the bar is the phone layout's own, at its phone size, so ✓ Done and the day arrows stay in reach; it zooms out until the whole day's width fits the screen and in to twice normal; it opens at today's size and keeps its zoom across days until ✓ Done. |
