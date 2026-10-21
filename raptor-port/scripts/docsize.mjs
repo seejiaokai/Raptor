@@ -293,7 +293,11 @@ const RULING_BYTES = [
   ['.claude/rules/decisions/oil.md',     2, 15500],
   /* leave-war 37000 -> 39000 (15 Oct 26, night): 37,040 bytes with D890-D892 (one landing line a gap, the other lists,
      a drag held at the edge scrolls - his finds on his iPhone) - live; none is trimmed (D136). Room, not a target. */
-  ['.claude/rules/decisions/leave-war.md', 2, 39000],
+  /* leave-war 39000 -> 44000 (21 Oct 26): 39,630 bytes with D1140-D1143 (the Leave War overhaul, D1140, and his answers
+     to its round 1 - "My leave", the bell, the day panel) and the narrowed lines of D678, D679, D1000. The overhaul has
+     three more rounds of his questions to come (claude/leave-war-overhaul holds D1140-D1159), all Leave War rulings; none
+     is trimmed (D136). Room for them, not a target. */
+  ['.claude/rules/decisions/leave-war.md', 2, 44000],
   /* tracker 19000 -> 20500 (15 Oct 26, night): 19,067 bytes with D899 (the Tracker chart's drags pan at its edge, fixed
      that night - his answer on /overnight); none is trimmed (D136). Room for the next rulings, not a target. */
   /* tracker 20500 -> 23500 (17 Oct 26): 21,868 bytes with D979-D985 (the Tracker batch's answers, the landing, the glide);
