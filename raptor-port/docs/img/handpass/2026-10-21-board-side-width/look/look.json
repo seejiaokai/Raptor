@@ -1,0 +1,7986 @@
+{
+ "days": {
+  "0": {
+   "arm": "",
+   "sections": [
+    {
+     "head": "Placeholders",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "ALL AVAIL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL AVAIL — a placeholder, never validated"
+      },
+      {
+       "cs": "ALL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL — a placeholder, never validated"
+      }
+     ]
+    },
+    {
+     "head": "Pilots · 5 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "CometIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Comet"
+      },
+      {
+       "cs": "NomadC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Nomad"
+      },
+      {
+       "cs": "ReaperIR",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Reaper"
+      },
+      {
+       "cs": "SaintB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saint"
+      },
+      {
+       "cs": "VandalIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vandal"
+      },
+      {
+       "cs": "AceA",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Ace — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "AnvilIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Anvil — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "BladeIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Blade — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "CinchIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Cinch — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "CobraIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Cobra — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "DieselD",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Diesel — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "DrifterA",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Drifter — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "ForgeIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Forge — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "HavocIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Havoc — grounded today: no flying, but a duty desk, a sim seat or a ground row is still open to him"
+      },
+      {
+       "cs": "HunterIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Hunter — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "ROutlawC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Outlaw — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "CPistonIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Piston — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "CRangerIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Ranger — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "ReconO",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Recon — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "RidgeC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Ridge — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "CSaberIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Saber — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "SidewinderIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Sidewinder — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "TalismanO",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Talisman — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "TorchC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Torch — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "TridentIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Trident — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "VaporD",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Vapor — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "WardenIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Warden — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "CPWildcardO",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Wildcard — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "CGambitC",
+       "look": "struck",
+       "why": "flying with another squadron (Fly with) — Keen for any wave",
+       "shown": "",
+       "title": "Gambit — flying with another squadron (Fly with) — Keen for any wave"
+      }
+     ]
+    },
+    {
+     "head": "WSOs · 5 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "CinderB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinder"
+      },
+      {
+       "cs": "DashC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Dash"
+      },
+      {
+       "cs": "FableC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Fable"
+      },
+      {
+       "cs": "RuneB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Rune"
+      },
+      {
+       "cs": "RyderC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ryder"
+      },
+      {
+       "cs": "BasherIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Basher — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "CutterC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Cutter — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "DTEchoIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Echo — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "GhostC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Ghost — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "HexC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Hex — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "LedgerIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Ledger — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "QuillIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Quill — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "DTRelayIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Relay — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "ScopeIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Scope — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "StaticIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Static — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "WispC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Wisp — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "CGritC",
+       "look": "struck",
+       "why": "medically down — cannot report to work (ATT C) — Medically down till 17 Jul",
+       "shown": "",
+       "title": "Grit — medically down — cannot report to work (ATT C) — Medically down till 17 Jul"
+      },
+      {
+       "cs": "CVectorC",
+       "look": "struck",
+       "why": "ordinary medical leave (OML) — Medical leave 13 Jul",
+       "shown": "",
+       "title": "Vector — ordinary medical leave (OML) — Medical leave 13 Jul"
+      }
+     ]
+    },
+    {
+     "head": "SANS Avail",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BoltC",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Bolt — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "JesterB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Jester — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "KrakenD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Kraken — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "MarlinA",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Marlin — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "OtterD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Otter — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "PixelD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Pixel — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "RebelB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Rebel — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ScribeD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Scribe — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "CPTallyO",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Tally — already tasked today, but you can still plan him",
+       "badge": "F · PM",
+       "remark": ""
+      },
+      {
+       "cs": "ZenithC",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Zenith — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZuluO",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Zulu — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      }
+     ]
+    },
+    {
+     "head": "Personnel · 3 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "Cotter",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cotter"
+      },
+      {
+       "cs": "Ratchet",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ratchet"
+      },
+      {
+       "cs": "Widget",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Widget"
+      }
+     ]
+    }
+   ]
+  },
+  "1": {
+   "arm": "",
+   "sections": [
+    {
+     "head": "Placeholders",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "ALL AVAIL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL AVAIL — a placeholder, never validated"
+      },
+      {
+       "cs": "ALL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL — a placeholder, never validated"
+      }
+     ]
+    },
+    {
+     "head": "Pilots · 16 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "AnvilIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Anvil"
+      },
+      {
+       "cs": "BladeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Blade"
+      },
+      {
+       "cs": "CobraIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cobra"
+      },
+      {
+       "cs": "DieselD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Diesel"
+      },
+      {
+       "cs": "ForgeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Forge"
+      },
+      {
+       "cs": "HunterIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Hunter"
+      },
+      {
+       "cs": "NomadC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Nomad"
+      },
+      {
+       "cs": "PistonIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Piston"
+      },
+      {
+       "cs": "RangerIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ranger"
+      },
+      {
+       "cs": "ReconO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Recon"
+      },
+      {
+       "cs": "SaberIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saber"
+      },
+      {
+       "cs": "SidewinderIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Sidewinder"
+      },
+      {
+       "cs": "TorchC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Torch"
+      },
+      {
+       "cs": "TridentIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Trident"
+      },
+      {
+       "cs": "VandalIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vandal"
+      },
+      {
+       "cs": "WildcardO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wildcard"
+      },
+      {
+       "cs": "AceA",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Ace — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "CinchIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Cinch — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "CometIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Comet — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "DrifterA",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Drifter — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "GambitC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Gambit — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "HavocIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Havoc — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "ROutlawC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Outlaw — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "ReaperIR",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Reaper — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "RidgeC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Ridge — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "CSaintB",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Saint — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "TalismanO",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Talisman — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "VaporD",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Vapor — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "WardenIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Warden — already tasked today, but you can still plan him"
+      }
+     ]
+    },
+    {
+     "head": "WSOs · 6 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "CutterC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cutter"
+      },
+      {
+       "cs": "FableC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Fable"
+      },
+      {
+       "cs": "GhostC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ghost"
+      },
+      {
+       "cs": "LedgerIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ledger"
+      },
+      {
+       "cs": "RelayIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Relay"
+      },
+      {
+       "cs": "RyderC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ryder"
+      },
+      {
+       "cs": "BasherIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Basher — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "CinderB",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Cinder — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "DashC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Dash — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "EchoIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Echo — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "HexC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Hex — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "RuneB",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Rune — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "ScopeIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Scope — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "LStaticIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Static — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "VectorC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Vector — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "GritC",
+       "look": "struck",
+       "why": "medically down — cannot report to work (ATT C) — Medically down till 17 Jul",
+       "shown": "",
+       "title": "Grit — medically down — cannot report to work (ATT C) — Medically down till 17 Jul"
+      },
+      {
+       "cs": "QuillIW",
+       "look": "struck",
+       "why": "local leave (LL) — Local leave",
+       "shown": "",
+       "title": "Quill — local leave (LL) — Local leave"
+      },
+      {
+       "cs": "WispC",
+       "look": "struck",
+       "why": "off in lieu (OIL) — OIL — CO approved, post-detachment",
+       "shown": "",
+       "title": "Wisp — off in lieu (OIL) — OIL — CO approved, post-detachment"
+      }
+     ]
+    },
+    {
+     "head": "SANS Avail",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BoltC",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Bolt — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "JesterB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Jester — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "KrakenD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Kraken — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "MarlinA",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Marlin — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "OtterD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Otter — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "PixelD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Pixel — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "RebelB",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Rebel — already tasked today, but you can still plan him",
+       "badge": "F",
+       "remark": ""
+      },
+      {
+       "cs": "ScribeD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Scribe — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "TallyO",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Tally — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZenithC",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Zenith — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZuluO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Zulu",
+       "badge": "F/O/A",
+       "remark": ""
+      }
+     ]
+    },
+    {
+     "head": "Personnel · 3 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "Cotter",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cotter"
+      },
+      {
+       "cs": "Ratchet",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ratchet"
+      },
+      {
+       "cs": "Widget",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Widget"
+      }
+     ]
+    }
+   ]
+  },
+  "2": {
+   "arm": "",
+   "sections": [
+    {
+     "head": "Placeholders",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "ALL AVAIL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL AVAIL — a placeholder, never validated"
+      },
+      {
+       "cs": "ALL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL — a placeholder, never validated"
+      }
+     ]
+    },
+    {
+     "head": "Pilots · 18 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BladeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Blade"
+      },
+      {
+       "cs": "CinchIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinch"
+      },
+      {
+       "cs": "CometIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Comet"
+      },
+      {
+       "cs": "DieselD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Diesel"
+      },
+      {
+       "cs": "DrifterA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Drifter"
+      },
+      {
+       "cs": "ForgeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Forge"
+      },
+      {
+       "cs": "HunterIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Hunter"
+      },
+      {
+       "cs": "OutlawC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Outlaw"
+      },
+      {
+       "cs": "PistonIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Piston"
+      },
+      {
+       "cs": "RangerIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ranger"
+      },
+      {
+       "cs": "ReaperIR",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Reaper"
+      },
+      {
+       "cs": "RidgeC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ridge"
+      },
+      {
+       "cs": "SaberIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saber"
+      },
+      {
+       "cs": "SaintB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saint"
+      },
+      {
+       "cs": "TalismanO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Talisman"
+      },
+      {
+       "cs": "VandalIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vandal"
+      },
+      {
+       "cs": "WardenIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Warden"
+      },
+      {
+       "cs": "WildcardO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wildcard"
+      },
+      {
+       "cs": "AceA",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Ace — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "AnvilIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Anvil — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "HavocIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Havoc — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "ReconO",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Recon — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "SidewinderIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Sidewinder — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "TorchC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Torch — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "TTTridentIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Trident — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "VaporD",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Vapor — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "CobraIP",
+       "look": "struck",
+       "why": "overseas leave (OL) — Overseas leave — off island",
+       "shown": "",
+       "title": "Cobra — overseas leave (OL) — Overseas leave — off island"
+      },
+      {
+       "cs": "CGambitC",
+       "look": "struck",
+       "why": "off in lieu (OIL)",
+       "shown": "",
+       "title": "Gambit — off in lieu (OIL)"
+      },
+      {
+       "cs": "CNomadC",
+       "look": "struck",
+       "why": "overseas duty (OD) — Overseas duty — exercise, off island",
+       "shown": "",
+       "title": "Nomad — overseas duty (OD) — Overseas duty — exercise, off island"
+      }
+     ]
+    },
+    {
+     "head": "WSOs · 9 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BasherIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Basher"
+      },
+      {
+       "cs": "CinderB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinder"
+      },
+      {
+       "cs": "DashC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Dash"
+      },
+      {
+       "cs": "EchoIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Echo"
+      },
+      {
+       "cs": "GhostC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ghost"
+      },
+      {
+       "cs": "LedgerIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ledger"
+      },
+      {
+       "cs": "RuneB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Rune"
+      },
+      {
+       "cs": "ScopeIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Scope"
+      },
+      {
+       "cs": "StaticIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Static"
+      },
+      {
+       "cs": "CutterC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Cutter — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "FableC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Fable — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "HexC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Hex — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "QuillIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Quill — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "TTRelayIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Relay — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "RyderC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Ryder — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "VectorC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Vector — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "WispC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Wisp — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "GritC",
+       "look": "struck",
+       "why": "medically down — cannot report to work (ATT C) — Medically down till 17 Jul",
+       "shown": "",
+       "title": "Grit — medically down — cannot report to work (ATT C) — Medically down till 17 Jul"
+      }
+     ]
+    },
+    {
+     "head": "SANS Avail",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BoltC",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Bolt — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "JesterB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Jester — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "CPKrakenD",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Kraken — already tasked today, but you can still plan him",
+       "badge": "F",
+       "remark": ""
+      },
+      {
+       "cs": "MarlinA",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Marlin — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "CPOtterD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Otter — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "CPPixelD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Pixel — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "RebelB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Rebel — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ScribeD",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Scribe — already tasked today, but you can still plan him",
+       "badge": "O · AM",
+       "remark": ""
+      },
+      {
+       "cs": "TallyO",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Tally — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZenithC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Zenith — already tasked today, but you can still plan him",
+       "badge": "F",
+       "remark": ""
+      },
+      {
+       "cs": "ZuluO",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Zulu — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      }
+     ]
+    },
+    {
+     "head": "Personnel · 3 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "Cotter",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cotter"
+      },
+      {
+       "cs": "Ratchet",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ratchet"
+      },
+      {
+       "cs": "Widget",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Widget"
+      }
+     ]
+    }
+   ]
+  },
+  "3": {
+   "arm": "",
+   "sections": [
+    {
+     "head": "Placeholders",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "ALL AVAIL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL AVAIL — a placeholder, never validated"
+      },
+      {
+       "cs": "ALL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL — a placeholder, never validated"
+      }
+     ]
+    },
+    {
+     "head": "Pilots · 14 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "CinchIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinch"
+      },
+      {
+       "cs": "CobraIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cobra"
+      },
+      {
+       "cs": "DrifterA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Drifter"
+      },
+      {
+       "cs": "HavocIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Havoc"
+      },
+      {
+       "cs": "HunterIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Hunter"
+      },
+      {
+       "cs": "OutlawC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Outlaw"
+      },
+      {
+       "cs": "PistonIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Piston"
+      },
+      {
+       "cs": "ReaperIR",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Reaper"
+      },
+      {
+       "cs": "ReconO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Recon"
+      },
+      {
+       "cs": "SaberIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saber"
+      },
+      {
+       "cs": "SidewinderIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Sidewinder"
+      },
+      {
+       "cs": "TridentIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Trident"
+      },
+      {
+       "cs": "VandalIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vandal"
+      },
+      {
+       "cs": "VaporD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vapor"
+      },
+      {
+       "cs": "CAceA",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Ace — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "AnvilIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Anvil — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "BladeIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Blade — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "CometIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Comet — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "DieselD",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Diesel — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "ForgeIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Forge — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "CRangerIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Ranger — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "RidgeC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Ridge — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "SaintB",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Saint — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "TalismanO",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Talisman — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "TorchC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Torch — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "WardenIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Warden — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "CPWildcardO",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Wildcard — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "GambitC",
+       "look": "struck",
+       "why": "off in lieu (OIL)",
+       "shown": "",
+       "title": "Gambit — off in lieu (OIL)"
+      },
+      {
+       "cs": "NomadC",
+       "look": "struck",
+       "why": "overseas duty (OD) — Overseas duty — exercise, off island",
+       "shown": "",
+       "title": "Nomad — overseas duty (OD) — Overseas duty — exercise, off island"
+      }
+     ]
+    },
+    {
+     "head": "WSOs · 7 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "CinderB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinder"
+      },
+      {
+       "cs": "CutterC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cutter"
+      },
+      {
+       "cs": "GhostC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ghost"
+      },
+      {
+       "cs": "RelayIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Relay"
+      },
+      {
+       "cs": "RuneB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Rune"
+      },
+      {
+       "cs": "RyderC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ryder"
+      },
+      {
+       "cs": "WispC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wisp"
+      },
+      {
+       "cs": "BasherIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Basher — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "DashC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Dash — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "EchoIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Echo — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "FableC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Fable — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "HexC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Hex — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "LedgerIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Ledger — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "QuillIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Quill — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "ScopeIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Scope — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "StaticIW",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Static — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "VectorC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Vector — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "GritC",
+       "look": "struck",
+       "why": "medically down — cannot report to work (ATT C) — Medically down till 17 Jul",
+       "shown": "",
+       "title": "Grit — medically down — cannot report to work (ATT C) — Medically down till 17 Jul"
+      }
+     ]
+    },
+    {
+     "head": "SANS Avail",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BoltC",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Bolt — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "JesterB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Jester — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "KrakenD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Kraken — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "MarlinA",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Marlin — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "OtterD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Otter — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "CPPixelD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Pixel — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "RebelB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Rebel — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ScribeD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Scribe — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "TallyO",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Tally — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZenithC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Zenith — already tasked today, but you can still plan him",
+       "badge": "F",
+       "remark": ""
+      },
+      {
+       "cs": "ZuluO",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Zulu — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      }
+     ]
+    },
+    {
+     "head": "Personnel · 3 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "Cotter",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cotter"
+      },
+      {
+       "cs": "Ratchet",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ratchet"
+      },
+      {
+       "cs": "Widget",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Widget"
+      }
+     ]
+    }
+   ]
+  },
+  "4": {
+   "arm": "",
+   "sections": [
+    {
+     "head": "Placeholders",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "ALL AVAIL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL AVAIL — a placeholder, never validated"
+      },
+      {
+       "cs": "ALL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL — a placeholder, never validated"
+      }
+     ]
+    },
+    {
+     "head": "Pilots · 24 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "AceA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ace"
+      },
+      {
+       "cs": "BladeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Blade"
+      },
+      {
+       "cs": "CinchIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinch"
+      },
+      {
+       "cs": "CobraIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cobra"
+      },
+      {
+       "cs": "CometIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Comet"
+      },
+      {
+       "cs": "DieselD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Diesel"
+      },
+      {
+       "cs": "DrifterA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Drifter"
+      },
+      {
+       "cs": "ForgeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Forge"
+      },
+      {
+       "cs": "GambitC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Gambit"
+      },
+      {
+       "cs": "HavocIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Havoc"
+      },
+      {
+       "cs": "HunterIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Hunter"
+      },
+      {
+       "cs": "OutlawC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Outlaw"
+      },
+      {
+       "cs": "PistonIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Piston"
+      },
+      {
+       "cs": "RangerIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ranger"
+      },
+      {
+       "cs": "ReaperIR",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Reaper"
+      },
+      {
+       "cs": "ReconO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Recon"
+      },
+      {
+       "cs": "SaintB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saint"
+      },
+      {
+       "cs": "SidewinderIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Sidewinder"
+      },
+      {
+       "cs": "TalismanO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Talisman"
+      },
+      {
+       "cs": "TorchC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Torch"
+      },
+      {
+       "cs": "TridentIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Trident"
+      },
+      {
+       "cs": "VandalIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vandal"
+      },
+      {
+       "cs": "VaporD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vapor"
+      },
+      {
+       "cs": "WardenIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Warden"
+      },
+      {
+       "cs": "AnvilIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Anvil — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "RidgeC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Ridge — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "SaberIP",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Saber — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "WildcardO",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Wildcard — already tasked today, but you can still plan him"
+      },
+      {
+       "cs": "NomadC",
+       "look": "struck",
+       "why": "overseas duty (OD) — Overseas duty — exercise, off island",
+       "shown": "",
+       "title": "Nomad — overseas duty (OD) — Overseas duty — exercise, off island"
+      }
+     ]
+    },
+    {
+     "head": "WSOs · 17 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BasherIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Basher"
+      },
+      {
+       "cs": "CinderB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinder"
+      },
+      {
+       "cs": "CutterC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cutter"
+      },
+      {
+       "cs": "DashC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Dash"
+      },
+      {
+       "cs": "EchoIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Echo"
+      },
+      {
+       "cs": "FableC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Fable"
+      },
+      {
+       "cs": "GhostC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ghost"
+      },
+      {
+       "cs": "HexC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Hex"
+      },
+      {
+       "cs": "LedgerIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ledger"
+      },
+      {
+       "cs": "QuillIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Quill"
+      },
+      {
+       "cs": "RelayIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Relay"
+      },
+      {
+       "cs": "RuneB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Rune"
+      },
+      {
+       "cs": "RyderC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ryder"
+      },
+      {
+       "cs": "ScopeIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Scope"
+      },
+      {
+       "cs": "StaticIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Static"
+      },
+      {
+       "cs": "VectorC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vector"
+      },
+      {
+       "cs": "WispC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wisp"
+      },
+      {
+       "cs": "GritC",
+       "look": "struck",
+       "why": "medically down — cannot report to work (ATT C) — Medically down till 17 Jul",
+       "shown": "",
+       "title": "Grit — medically down — cannot report to work (ATT C) — Medically down till 17 Jul"
+      }
+     ]
+    },
+    {
+     "head": "SANS Avail",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BoltC",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Bolt — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "JesterB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Jester — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "KrakenD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Kraken — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "MarlinA",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Marlin — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "OtterD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Otter — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "PixelD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Pixel — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "RebelB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Rebel — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ScribeD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Scribe — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "TallyO",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Tally — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZenithC",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Zenith — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZuluO",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Zulu — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      }
+     ]
+    },
+    {
+     "head": "Personnel · 3 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "Cotter",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cotter"
+      },
+      {
+       "cs": "Ratchet",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ratchet"
+      },
+      {
+       "cs": "Widget",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Widget"
+      }
+     ]
+    }
+   ]
+  },
+  "5": {
+   "arm": "",
+   "sections": [
+    {
+     "head": "Placeholders",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "ALL AVAIL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL AVAIL — a placeholder, never validated"
+      },
+      {
+       "cs": "ALL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL — a placeholder, never validated"
+      }
+     ]
+    },
+    {
+     "head": "Pilots · 29 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "AceA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ace"
+      },
+      {
+       "cs": "AnvilIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Anvil"
+      },
+      {
+       "cs": "BladeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Blade"
+      },
+      {
+       "cs": "CinchIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinch"
+      },
+      {
+       "cs": "CobraIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cobra"
+      },
+      {
+       "cs": "CometIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Comet"
+      },
+      {
+       "cs": "DieselD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Diesel"
+      },
+      {
+       "cs": "DrifterA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Drifter"
+      },
+      {
+       "cs": "ForgeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Forge"
+      },
+      {
+       "cs": "GambitC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Gambit"
+      },
+      {
+       "cs": "HavocIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Havoc"
+      },
+      {
+       "cs": "HunterIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Hunter"
+      },
+      {
+       "cs": "NomadC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Nomad"
+      },
+      {
+       "cs": "OutlawC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Outlaw"
+      },
+      {
+       "cs": "PistonIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Piston"
+      },
+      {
+       "cs": "RangerIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ranger"
+      },
+      {
+       "cs": "ReaperIR",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Reaper"
+      },
+      {
+       "cs": "ReconO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Recon"
+      },
+      {
+       "cs": "RidgeC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ridge"
+      },
+      {
+       "cs": "SaberIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saber"
+      },
+      {
+       "cs": "SaintB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saint"
+      },
+      {
+       "cs": "SidewinderIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Sidewinder"
+      },
+      {
+       "cs": "TalismanO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Talisman"
+      },
+      {
+       "cs": "TorchC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Torch"
+      },
+      {
+       "cs": "TridentIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Trident"
+      },
+      {
+       "cs": "VandalIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vandal"
+      },
+      {
+       "cs": "VaporD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vapor"
+      },
+      {
+       "cs": "WardenIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Warden"
+      },
+      {
+       "cs": "WildcardO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wildcard"
+      }
+     ]
+    },
+    {
+     "head": "WSOs · 17 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BasherIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Basher"
+      },
+      {
+       "cs": "CinderB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinder"
+      },
+      {
+       "cs": "CutterC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cutter"
+      },
+      {
+       "cs": "DashC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Dash"
+      },
+      {
+       "cs": "EchoIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Echo"
+      },
+      {
+       "cs": "GhostC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ghost"
+      },
+      {
+       "cs": "GritC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Grit"
+      },
+      {
+       "cs": "HexC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Hex"
+      },
+      {
+       "cs": "LedgerIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ledger"
+      },
+      {
+       "cs": "QuillIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Quill"
+      },
+      {
+       "cs": "RelayIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Relay"
+      },
+      {
+       "cs": "RuneB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Rune"
+      },
+      {
+       "cs": "RyderC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ryder"
+      },
+      {
+       "cs": "ScopeIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Scope"
+      },
+      {
+       "cs": "StaticIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Static"
+      },
+      {
+       "cs": "VectorC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vector"
+      },
+      {
+       "cs": "WispC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wisp"
+      },
+      {
+       "cs": "FableC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Fable — already tasked today, but you can still plan him"
+      }
+     ]
+    },
+    {
+     "head": "SANS Avail",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BoltC",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Bolt — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "JesterB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Jester — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "KrakenD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Kraken — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "MarlinA",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Marlin — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "OtterD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Otter — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "PixelD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Pixel — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "RebelB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Rebel — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ScribeD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Scribe — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "TallyO",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Tally — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZenithC",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Zenith — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZuluO",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Zulu — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      }
+     ]
+    },
+    {
+     "head": "Personnel · 3 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "Cotter",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cotter"
+      },
+      {
+       "cs": "Ratchet",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ratchet"
+      },
+      {
+       "cs": "Widget",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Widget"
+      }
+     ]
+    }
+   ]
+  },
+  "6": {
+   "arm": "",
+   "sections": [
+    {
+     "head": "Placeholders",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "ALL AVAIL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL AVAIL — a placeholder, never validated"
+      },
+      {
+       "cs": "ALL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL — a placeholder, never validated"
+      }
+     ]
+    },
+    {
+     "head": "Pilots · 29 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "AceA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ace"
+      },
+      {
+       "cs": "AnvilIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Anvil"
+      },
+      {
+       "cs": "BladeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Blade"
+      },
+      {
+       "cs": "CinchIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinch"
+      },
+      {
+       "cs": "CobraIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cobra"
+      },
+      {
+       "cs": "CometIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Comet"
+      },
+      {
+       "cs": "DieselD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Diesel"
+      },
+      {
+       "cs": "DrifterA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Drifter"
+      },
+      {
+       "cs": "ForgeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Forge"
+      },
+      {
+       "cs": "GambitC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Gambit"
+      },
+      {
+       "cs": "HavocIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Havoc"
+      },
+      {
+       "cs": "HunterIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Hunter"
+      },
+      {
+       "cs": "NomadC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Nomad"
+      },
+      {
+       "cs": "OutlawC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Outlaw"
+      },
+      {
+       "cs": "PistonIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Piston"
+      },
+      {
+       "cs": "RangerIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ranger"
+      },
+      {
+       "cs": "ReaperIR",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Reaper"
+      },
+      {
+       "cs": "ReconO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Recon"
+      },
+      {
+       "cs": "RidgeC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ridge"
+      },
+      {
+       "cs": "SaberIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saber"
+      },
+      {
+       "cs": "SaintB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saint"
+      },
+      {
+       "cs": "SidewinderIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Sidewinder"
+      },
+      {
+       "cs": "TalismanO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Talisman"
+      },
+      {
+       "cs": "TorchC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Torch"
+      },
+      {
+       "cs": "TridentIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Trident"
+      },
+      {
+       "cs": "VandalIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vandal"
+      },
+      {
+       "cs": "VaporD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vapor"
+      },
+      {
+       "cs": "WardenIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Warden"
+      },
+      {
+       "cs": "WildcardO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wildcard"
+      }
+     ]
+    },
+    {
+     "head": "WSOs · 17 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BasherIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Basher"
+      },
+      {
+       "cs": "CinderB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinder"
+      },
+      {
+       "cs": "CutterC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cutter"
+      },
+      {
+       "cs": "EchoIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Echo"
+      },
+      {
+       "cs": "FableC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Fable"
+      },
+      {
+       "cs": "GhostC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ghost"
+      },
+      {
+       "cs": "GritC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Grit"
+      },
+      {
+       "cs": "HexC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Hex"
+      },
+      {
+       "cs": "LedgerIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ledger"
+      },
+      {
+       "cs": "QuillIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Quill"
+      },
+      {
+       "cs": "RelayIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Relay"
+      },
+      {
+       "cs": "RuneB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Rune"
+      },
+      {
+       "cs": "RyderC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ryder"
+      },
+      {
+       "cs": "ScopeIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Scope"
+      },
+      {
+       "cs": "StaticIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Static"
+      },
+      {
+       "cs": "VectorC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vector"
+      },
+      {
+       "cs": "WispC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wisp"
+      },
+      {
+       "cs": "DashC",
+       "look": "faded",
+       "why": "",
+       "shown": "",
+       "title": "Dash — already tasked today, but you can still plan him"
+      }
+     ]
+    },
+    {
+     "head": "SANS Avail",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BoltC",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Bolt — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "JesterB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Jester — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "KrakenD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Kraken — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "MarlinA",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Marlin — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "OtterD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Otter — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "PixelD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Pixel — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "RebelB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Rebel — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ScribeD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Scribe — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "TallyO",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Tally — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZenithC",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Zenith — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZuluO",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "",
+       "title": "Zulu — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      }
+     ]
+    },
+    {
+     "head": "Personnel · 3 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "Cotter",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cotter"
+      },
+      {
+       "cs": "Ratchet",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ratchet"
+      },
+      {
+       "cs": "Widget",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Widget"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "arms": {
+  "front": {
+   "key": "0.0.2.0.p",
+   "armed": "0.0.2.0.p",
+   "arm": "Planning FCP · ✕",
+   "sections": [
+    {
+     "head": "Placeholders",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "ALL AVAIL",
+       "look": "struck",
+       "why": "cannot crew a jet; name the people flying it",
+       "shown": "cannot crew a jet; name the people flying it",
+       "title": "ALL AVAIL — cannot crew a jet; name the people flying it"
+      },
+      {
+       "cs": "ALL",
+       "look": "struck",
+       "why": "cannot crew a jet; name the people flying it",
+       "shown": "cannot crew a jet; name the people flying it",
+       "title": "ALL — cannot crew a jet; name the people flying it"
+      }
+     ]
+    },
+    {
+     "head": "Pilots · 27 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "AceA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ace"
+      },
+      {
+       "cs": "AnvilIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Anvil"
+      },
+      {
+       "cs": "BladeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Blade"
+      },
+      {
+       "cs": "CinchIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinch"
+      },
+      {
+       "cs": "CobraIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cobra"
+      },
+      {
+       "cs": "CometIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Comet"
+      },
+      {
+       "cs": "DieselD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Diesel"
+      },
+      {
+       "cs": "DrifterA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Drifter"
+      },
+      {
+       "cs": "ForgeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Forge"
+      },
+      {
+       "cs": "HunterIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Hunter"
+      },
+      {
+       "cs": "NomadC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Nomad"
+      },
+      {
+       "cs": "ROutlawC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Outlaw"
+      },
+      {
+       "cs": "CPistonIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Piston"
+      },
+      {
+       "cs": "CRangerIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ranger"
+      },
+      {
+       "cs": "ReaperIR",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Reaper"
+      },
+      {
+       "cs": "ReconO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Recon"
+      },
+      {
+       "cs": "RidgeC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ridge"
+      },
+      {
+       "cs": "CSaberIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saber"
+      },
+      {
+       "cs": "SaintB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saint"
+      },
+      {
+       "cs": "SidewinderIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Sidewinder"
+      },
+      {
+       "cs": "TalismanO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Talisman"
+      },
+      {
+       "cs": "TorchC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Torch"
+      },
+      {
+       "cs": "TridentIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Trident"
+      },
+      {
+       "cs": "VandalIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vandal"
+      },
+      {
+       "cs": "VaporD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vapor"
+      },
+      {
+       "cs": "WardenIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Warden"
+      },
+      {
+       "cs": "CPWildcardO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wildcard"
+      },
+      {
+       "cs": "CGambitC",
+       "look": "struck",
+       "why": "flying with another squadron (Fly with) — Keen for any wave",
+       "shown": "flying with another squadron (Fly with) — Keen for any wave",
+       "title": "Gambit — flying with another squadron (Fly with) — Keen for any wave"
+      },
+      {
+       "cs": "HavocIP",
+       "look": "struck",
+       "why": "medically down — no flying, may still work (ATT B) — Medically down",
+       "shown": "medically down — no flying, may still work (ATT B) — Medically down",
+       "title": "Havoc — medically down — no flying, may still work (ATT B) — Medically down"
+      }
+     ]
+    },
+    {
+     "head": "WSOs · 0 free",
+     "colWhy": "WSO — cannot fly front seat",
+     "items": [
+      {
+       "cs": "BasherIW",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Basher — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "CinderB",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Cinder — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "CutterC",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Cutter — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "DashC",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Dash — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "DTEchoIW",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Echo — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "FableC",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Fable — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "GhostC",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Ghost — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "CGritC",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Grit — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "HexC",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Hex — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "LedgerIW",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Ledger — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "QuillIW",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Quill — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "DTRelayIW",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Relay — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "RuneB",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Rune — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "RyderC",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Ryder — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "ScopeIW",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Scope — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "StaticIW",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Static — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "CVectorC",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Vector — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "WispC",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Wisp — WSO — cannot fly front seat"
+      }
+     ]
+    },
+    {
+     "head": "SANS Avail",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BoltC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Bolt",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "JesterB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Jester",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "KrakenD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Kraken",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "MarlinA",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "WSO — cannot fly front seat",
+       "title": "Marlin — WSO — cannot fly front seat",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "OtterD",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "WSO — cannot fly front seat",
+       "title": "Otter — WSO — cannot fly front seat",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "PixelD",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "WSO — cannot fly front seat",
+       "title": "Pixel — WSO — cannot fly front seat",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "RebelB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Rebel",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ScribeD",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "WSO — cannot fly front seat",
+       "title": "Scribe — WSO — cannot fly front seat",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "CPTallyO",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "WSO — cannot fly front seat",
+       "title": "Tally — WSO — cannot fly front seat",
+       "badge": "F · PM",
+       "remark": ""
+      },
+      {
+       "cs": "ZenithC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Zenith",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZuluO",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "WSO — cannot fly front seat",
+       "title": "Zulu — WSO — cannot fly front seat",
+       "badge": "",
+       "remark": ""
+      }
+     ]
+    },
+    {
+     "head": "Personnel · 0 free",
+     "colWhy": "ground crew — rear seat only, cannot fly front seat",
+     "items": [
+      {
+       "cs": "Cotter",
+       "look": "struck",
+       "why": "ground crew — rear seat only, cannot fly front seat",
+       "shown": "",
+       "title": "Cotter — ground crew — rear seat only, cannot fly front seat"
+      },
+      {
+       "cs": "Ratchet",
+       "look": "struck",
+       "why": "ground crew — rear seat only, cannot fly front seat",
+       "shown": "",
+       "title": "Ratchet — ground crew — rear seat only, cannot fly front seat"
+      },
+      {
+       "cs": "Widget",
+       "look": "struck",
+       "why": "ground crew — rear seat only, cannot fly front seat",
+       "shown": "",
+       "title": "Widget — ground crew — rear seat only, cannot fly front seat"
+      }
+     ]
+    }
+   ]
+  },
+  "back": {
+   "key": "0.0.2.0.w",
+   "armed": "0.0.2.0.w",
+   "arm": "Planning RCP · ✕",
+   "sections": [
+    {
+     "head": "Placeholders",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "ALL AVAIL",
+       "look": "struck",
+       "why": "cannot crew a jet; name the people flying it",
+       "shown": "cannot crew a jet; name the people flying it",
+       "title": "ALL AVAIL — cannot crew a jet; name the people flying it"
+      },
+      {
+       "cs": "ALL",
+       "look": "struck",
+       "why": "cannot crew a jet; name the people flying it",
+       "shown": "cannot crew a jet; name the people flying it",
+       "title": "ALL — cannot crew a jet; name the people flying it"
+      }
+     ]
+    },
+    {
+     "head": "Pilots · 27 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "AceA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ace"
+      },
+      {
+       "cs": "AnvilIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Anvil"
+      },
+      {
+       "cs": "BladeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Blade"
+      },
+      {
+       "cs": "CinchIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinch"
+      },
+      {
+       "cs": "CobraIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cobra"
+      },
+      {
+       "cs": "CometIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Comet"
+      },
+      {
+       "cs": "DieselD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Diesel"
+      },
+      {
+       "cs": "DrifterA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Drifter"
+      },
+      {
+       "cs": "ForgeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Forge"
+      },
+      {
+       "cs": "HunterIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Hunter"
+      },
+      {
+       "cs": "NomadC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Nomad"
+      },
+      {
+       "cs": "ROutlawC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Outlaw"
+      },
+      {
+       "cs": "CPistonIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Piston"
+      },
+      {
+       "cs": "CRangerIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ranger"
+      },
+      {
+       "cs": "ReaperIR",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Reaper"
+      },
+      {
+       "cs": "ReconO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Recon"
+      },
+      {
+       "cs": "RidgeC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ridge"
+      },
+      {
+       "cs": "CSaberIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saber"
+      },
+      {
+       "cs": "SaintB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saint"
+      },
+      {
+       "cs": "SidewinderIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Sidewinder"
+      },
+      {
+       "cs": "TalismanO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Talisman"
+      },
+      {
+       "cs": "TorchC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Torch"
+      },
+      {
+       "cs": "TridentIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Trident"
+      },
+      {
+       "cs": "VandalIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vandal"
+      },
+      {
+       "cs": "VaporD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vapor"
+      },
+      {
+       "cs": "WardenIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Warden"
+      },
+      {
+       "cs": "CPWildcardO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wildcard"
+      },
+      {
+       "cs": "CGambitC",
+       "look": "struck",
+       "why": "flying with another squadron (Fly with) — Keen for any wave",
+       "shown": "flying with another squadron (Fly with) — Keen for any wave",
+       "title": "Gambit — flying with another squadron (Fly with) — Keen for any wave"
+      },
+      {
+       "cs": "HavocIP",
+       "look": "struck",
+       "why": "medically down — no flying, may still work (ATT B) — Medically down",
+       "shown": "medically down — no flying, may still work (ATT B) — Medically down",
+       "title": "Havoc — medically down — no flying, may still work (ATT B) — Medically down"
+      }
+     ]
+    },
+    {
+     "head": "WSOs · 16 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BasherIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Basher"
+      },
+      {
+       "cs": "CinderB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinder"
+      },
+      {
+       "cs": "CutterC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cutter"
+      },
+      {
+       "cs": "DashC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Dash"
+      },
+      {
+       "cs": "DTEchoIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Echo"
+      },
+      {
+       "cs": "FableC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Fable"
+      },
+      {
+       "cs": "GhostC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ghost"
+      },
+      {
+       "cs": "HexC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Hex"
+      },
+      {
+       "cs": "LedgerIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ledger"
+      },
+      {
+       "cs": "QuillIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Quill"
+      },
+      {
+       "cs": "DTRelayIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Relay"
+      },
+      {
+       "cs": "RuneB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Rune"
+      },
+      {
+       "cs": "RyderC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ryder"
+      },
+      {
+       "cs": "ScopeIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Scope"
+      },
+      {
+       "cs": "StaticIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Static"
+      },
+      {
+       "cs": "WispC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wisp"
+      },
+      {
+       "cs": "CGritC",
+       "look": "struck",
+       "why": "medically down — cannot report to work (ATT C) — Medically down till 17 Jul",
+       "shown": "medically down — cannot report to work (ATT C) — Medically down till 17 Jul",
+       "title": "Grit — medically down — cannot report to work (ATT C) — Medically down till 17 Jul"
+      },
+      {
+       "cs": "CVectorC",
+       "look": "struck",
+       "why": "ordinary medical leave (OML) — Medical leave 13 Jul",
+       "shown": "ordinary medical leave (OML) — Medical leave 13 Jul",
+       "title": "Vector — ordinary medical leave (OML) — Medical leave 13 Jul"
+      }
+     ]
+    },
+    {
+     "head": "SANS Avail",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BoltC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Bolt",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "JesterB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Jester",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "KrakenD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Kraken",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "MarlinA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Marlin",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "OtterD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Otter",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "PixelD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Pixel",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "RebelB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Rebel",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ScribeD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Scribe",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "CPTallyO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Tally",
+       "badge": "F · PM",
+       "remark": ""
+      },
+      {
+       "cs": "ZenithC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Zenith",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZuluO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Zulu",
+       "badge": "",
+       "remark": ""
+      }
+     ]
+    },
+    {
+     "head": "Personnel · 3 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "Cotter",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cotter"
+      },
+      {
+       "cs": "Ratchet",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ratchet"
+      },
+      {
+       "cs": "Widget",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Widget"
+      }
+     ]
+    }
+   ]
+  },
+  "desk": {
+   "key": "d:0.0.0.+",
+   "armed": "d:0.0.0.+",
+   "arm": "Planning Duty · SDO✕",
+   "sections": [
+    {
+     "head": "Placeholders",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "ALL AVAIL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL AVAIL — a placeholder, never validated"
+      },
+      {
+       "cs": "ALL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL — a placeholder, never validated"
+      }
+     ]
+    },
+    {
+     "head": "Pilots · 12 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "AnvilIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Anvil"
+      },
+      {
+       "cs": "BladeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Blade"
+      },
+      {
+       "cs": "CometIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Comet"
+      },
+      {
+       "cs": "ForgeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Forge"
+      },
+      {
+       "cs": "HavocIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Havoc"
+      },
+      {
+       "cs": "NomadC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Nomad"
+      },
+      {
+       "cs": "ROutlawC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Outlaw"
+      },
+      {
+       "cs": "ReaperIR",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Reaper"
+      },
+      {
+       "cs": "ReconO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Recon"
+      },
+      {
+       "cs": "SaintB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saint"
+      },
+      {
+       "cs": "VandalIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vandal"
+      },
+      {
+       "cs": "CPWildcardO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wildcard"
+      },
+      {
+       "cs": "AceA",
+       "look": "struck",
+       "why": "already on HQ ENGAGEMENT 08:45–16:30",
+       "shown": "already on HQ ENGAGEMENT 08:45–16:30",
+       "title": "Ace — already on HQ ENGAGEMENT 08:45–16:30"
+      },
+      {
+       "cs": "CinchIP",
+       "look": "struck",
+       "why": "already on Sim EP-4 12:00–13:30",
+       "shown": "already on Sim EP-4 12:00–13:30",
+       "title": "Cinch — already on Sim EP-4 12:00–13:30"
+      },
+      {
+       "cs": "CobraIP",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30",
+       "shown": "already on Sim BOX 11:30–12:30",
+       "title": "Cobra — already on Sim BOX 11:30–12:30"
+      },
+      {
+       "cs": "DieselD",
+       "look": "struck",
+       "why": "already on MEDICAL APPT 10:30–12:30",
+       "shown": "already on MEDICAL APPT 10:30–12:30",
+       "title": "Diesel — already on MEDICAL APPT 10:30–12:30"
+      },
+      {
+       "cs": "DrifterA",
+       "look": "struck",
+       "why": "already on RU BFM 12:40–15:35",
+       "shown": "already on RU BFM 12:40–15:35",
+       "title": "Drifter — already on RU BFM 12:40–15:35"
+      },
+      {
+       "cs": "CGambitC",
+       "look": "struck",
+       "why": "flying with another squadron (Fly with) — Keen for any wave",
+       "shown": "flying with another squadron (Fly with) — Keen for any wave",
+       "title": "Gambit — flying with another squadron (Fly with) — Keen for any wave"
+      },
+      {
+       "cs": "HunterIP",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30",
+       "shown": "already on Sim BOX 11:30–12:30",
+       "title": "Hunter — already on Sim BOX 11:30–12:30"
+      },
+      {
+       "cs": "CPistonIP",
+       "look": "struck",
+       "why": "already on RU BFM 12:40–15:35",
+       "shown": "already on RU BFM 12:40–15:35",
+       "title": "Piston — already on RU BFM 12:40–15:35"
+      },
+      {
+       "cs": "CRangerIP",
+       "look": "struck",
+       "why": "already on VL BFM 11:40–14:35",
+       "shown": "already on VL BFM 11:40–14:35",
+       "title": "Ranger — already on VL BFM 11:40–14:35"
+      },
+      {
+       "cs": "RidgeC",
+       "look": "struck",
+       "why": "already on SXO duty 06:00–13:00",
+       "shown": "already on SXO duty 06:00–13:00",
+       "title": "Ridge — already on SXO duty 06:00–13:00"
+      },
+      {
+       "cs": "CSaberIP",
+       "look": "struck",
+       "why": "already on VL BFM 11:40–14:35",
+       "shown": "already on VL BFM 11:40–14:35",
+       "title": "Saber — already on VL BFM 11:40–14:35"
+      },
+      {
+       "cs": "SidewinderIP",
+       "look": "struck",
+       "why": "already on SDO duty 07:00–13:00 · not added twice",
+       "shown": "already on SDO duty 07:00–13:00 · not added twice",
+       "title": "Sidewinder — already on SDO duty 07:00–13:00 · not added twice"
+      },
+      {
+       "cs": "TalismanO",
+       "look": "struck",
+       "why": "already on Sim EP-4 08:00–09:30",
+       "shown": "already on Sim EP-4 08:00–09:30",
+       "title": "Talisman — already on Sim EP-4 08:00–09:30"
+      },
+      {
+       "cs": "TorchC",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30",
+       "shown": "already on Sim BOX 11:30–12:30",
+       "title": "Torch — already on Sim BOX 11:30–12:30"
+      },
+      {
+       "cs": "TridentIP",
+       "look": "struck",
+       "why": "already on WPNS & TACTICS SYNC 11:30–12:00",
+       "shown": "already on WPNS & TACTICS SYNC 11:30–12:00",
+       "title": "Trident — already on WPNS & TACTICS SYNC 11:30–12:00"
+      },
+      {
+       "cs": "VaporD",
+       "look": "struck",
+       "why": "already on STAFF MTG @ HQ 09:30–11:00",
+       "shown": "already on STAFF MTG @ HQ 09:30–11:00",
+       "title": "Vapor — already on STAFF MTG @ HQ 09:30–11:00"
+      },
+      {
+       "cs": "WardenIP",
+       "look": "struck",
+       "why": "already on MET + NOTAM BRIEF 08:15–08:30",
+       "shown": "already on MET + NOTAM BRIEF 08:15–08:30",
+       "title": "Warden — already on MET + NOTAM BRIEF 08:15–08:30"
+      }
+     ]
+    },
+    {
+     "head": "WSOs · 8 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "CinderB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinder"
+      },
+      {
+       "cs": "DashC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Dash"
+      },
+      {
+       "cs": "FableC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Fable"
+      },
+      {
+       "cs": "GhostC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ghost"
+      },
+      {
+       "cs": "RuneB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Rune"
+      },
+      {
+       "cs": "RyderC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ryder"
+      },
+      {
+       "cs": "ScopeIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Scope"
+      },
+      {
+       "cs": "WispC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wisp"
+      },
+      {
+       "cs": "BasherIW",
+       "look": "struck",
+       "why": "already on OPS-O duty 06:00–14:00",
+       "shown": "already on OPS-O duty 06:00–14:00",
+       "title": "Basher — already on OPS-O duty 06:00–14:00"
+      },
+      {
+       "cs": "CutterC",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30",
+       "shown": "already on Sim BOX 11:30–12:30",
+       "title": "Cutter — already on Sim BOX 11:30–12:30"
+      },
+      {
+       "cs": "DTEchoIW",
+       "look": "struck",
+       "why": "already on VL BFM 11:40–14:35",
+       "shown": "already on VL BFM 11:40–14:35",
+       "title": "Echo — already on VL BFM 11:40–14:35"
+      },
+      {
+       "cs": "CGritC",
+       "look": "struck",
+       "why": "medically down — cannot report to work (ATT C) — Medically down till 17 Jul",
+       "shown": "medically down — cannot report to work (ATT C) — Medically down till 17 Jul",
+       "title": "Grit — medically down — cannot report to work (ATT C) — Medically down till 17 Jul"
+      },
+      {
+       "cs": "HexC",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30",
+       "shown": "already on Sim BOX 11:30–12:30",
+       "title": "Hex — already on Sim BOX 11:30–12:30"
+      },
+      {
+       "cs": "LedgerIW",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30",
+       "shown": "already on Sim BOX 11:30–12:30",
+       "title": "Ledger — already on Sim BOX 11:30–12:30"
+      },
+      {
+       "cs": "QuillIW",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30",
+       "shown": "already on Sim BOX 11:30–12:30",
+       "title": "Quill — already on Sim BOX 11:30–12:30"
+      },
+      {
+       "cs": "DTRelayIW",
+       "look": "struck",
+       "why": "already on RU BFM 12:40–15:35",
+       "shown": "already on RU BFM 12:40–15:35",
+       "title": "Relay — already on RU BFM 12:40–15:35"
+      },
+      {
+       "cs": "StaticIW",
+       "look": "struck",
+       "why": "already on VL BFM 11:40–14:35",
+       "shown": "already on VL BFM 11:40–14:35",
+       "title": "Static — already on VL BFM 11:40–14:35"
+      },
+      {
+       "cs": "CVectorC",
+       "look": "struck",
+       "why": "ordinary medical leave (OML) — Medical leave 13 Jul",
+       "shown": "ordinary medical leave (OML) — Medical leave 13 Jul",
+       "title": "Vector — ordinary medical leave (OML) — Medical leave 13 Jul"
+      }
+     ]
+    },
+    {
+     "head": "SANS Avail",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BoltC",
+       "look": "struck",
+       "why": "already on APPOINTMENT 10:00–11:00",
+       "shown": "already on APPOINTMENT 10:00–11:00",
+       "title": "Bolt — already on APPOINTMENT 10:00–11:00",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "JesterB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Jester",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "KrakenD",
+       "look": "struck",
+       "why": "already on DENTAL APPT 12:00–13:30",
+       "shown": "already on DENTAL APPT 12:00–13:30",
+       "title": "Kraken — already on DENTAL APPT 12:00–13:30",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "MarlinA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Marlin",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "OtterD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Otter",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "PixelD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Pixel",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "RebelB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Rebel",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ScribeD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Scribe",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "CPTallyO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Tally",
+       "badge": "F · PM",
+       "remark": ""
+      },
+      {
+       "cs": "ZenithC",
+       "look": "struck",
+       "why": "already on MEETING 09:00–17:00",
+       "shown": "already on MEETING 09:00–17:00",
+       "title": "Zenith — already on MEETING 09:00–17:00",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZuluO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Zulu",
+       "badge": "",
+       "remark": ""
+      }
+     ]
+    },
+    {
+     "head": "Personnel · 3 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "Cotter",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cotter"
+      },
+      {
+       "cs": "Ratchet",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ratchet"
+      },
+      {
+       "cs": "Widget",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Widget"
+      }
+     ]
+    }
+   ]
+  },
+  "sim": {
+   "key": "s:0.amt.1.+",
+   "armed": "s:0.amt.1.+",
+   "arm": "Planning Sim · AMT BOX✕",
+   "sections": [
+    {
+     "head": "Placeholders",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "ALL AVAIL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL AVAIL — a placeholder, never validated"
+      },
+      {
+       "cs": "ALL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL — a placeholder, never validated"
+      }
+     ]
+    },
+    {
+     "head": "Pilots · 17 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "AnvilIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Anvil"
+      },
+      {
+       "cs": "BladeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Blade"
+      },
+      {
+       "cs": "CometIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Comet"
+      },
+      {
+       "cs": "DrifterA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Drifter"
+      },
+      {
+       "cs": "ForgeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Forge"
+      },
+      {
+       "cs": "HavocIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Havoc"
+      },
+      {
+       "cs": "NomadC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Nomad"
+      },
+      {
+       "cs": "ROutlawC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Outlaw"
+      },
+      {
+       "cs": "CPistonIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Piston"
+      },
+      {
+       "cs": "ReaperIR",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Reaper"
+      },
+      {
+       "cs": "ReconO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Recon"
+      },
+      {
+       "cs": "SaintB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saint"
+      },
+      {
+       "cs": "TalismanO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Talisman"
+      },
+      {
+       "cs": "VandalIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vandal"
+      },
+      {
+       "cs": "VaporD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vapor"
+      },
+      {
+       "cs": "WardenIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Warden"
+      },
+      {
+       "cs": "CPWildcardO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wildcard"
+      },
+      {
+       "cs": "AceA",
+       "look": "struck",
+       "why": "already on HQ ENGAGEMENT 08:45–16:30",
+       "shown": "already on HQ ENGAGEMENT 08:45–16:30",
+       "title": "Ace — already on HQ ENGAGEMENT 08:45–16:30"
+      },
+      {
+       "cs": "CinchIP",
+       "look": "struck",
+       "why": "already on Sim EP-4 12:00–13:30",
+       "shown": "already on Sim EP-4 12:00–13:30",
+       "title": "Cinch — already on Sim EP-4 12:00–13:30"
+      },
+      {
+       "cs": "CobraIP",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30 · not added twice",
+       "shown": "already on Sim BOX 11:30–12:30 · not added twice",
+       "title": "Cobra — already on Sim BOX 11:30–12:30 · not added twice"
+      },
+      {
+       "cs": "DieselD",
+       "look": "struck",
+       "why": "already on MEDICAL APPT 10:30–12:30",
+       "shown": "already on MEDICAL APPT 10:30–12:30",
+       "title": "Diesel — already on MEDICAL APPT 10:30–12:30"
+      },
+      {
+       "cs": "CGambitC",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30 · not added twice",
+       "shown": "already on Sim BOX 11:30–12:30 · not added twice",
+       "title": "Gambit — already on Sim BOX 11:30–12:30 · not added twice"
+      },
+      {
+       "cs": "HunterIP",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30 · not added twice",
+       "shown": "already on Sim BOX 11:30–12:30 · not added twice",
+       "title": "Hunter — already on Sim BOX 11:30–12:30 · not added twice"
+      },
+      {
+       "cs": "CRangerIP",
+       "look": "struck",
+       "why": "already on VL BFM 11:40–14:35",
+       "shown": "already on VL BFM 11:40–14:35",
+       "title": "Ranger — already on VL BFM 11:40–14:35"
+      },
+      {
+       "cs": "RidgeC",
+       "look": "struck",
+       "why": "already on SXO duty 06:00–13:00",
+       "shown": "already on SXO duty 06:00–13:00",
+       "title": "Ridge — already on SXO duty 06:00–13:00"
+      },
+      {
+       "cs": "CSaberIP",
+       "look": "struck",
+       "why": "already on VL BFM 11:40–14:35",
+       "shown": "already on VL BFM 11:40–14:35",
+       "title": "Saber — already on VL BFM 11:40–14:35"
+      },
+      {
+       "cs": "SidewinderIP",
+       "look": "struck",
+       "why": "already on SDO duty 07:00–13:00",
+       "shown": "already on SDO duty 07:00–13:00",
+       "title": "Sidewinder — already on SDO duty 07:00–13:00"
+      },
+      {
+       "cs": "TorchC",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30 · not added twice",
+       "shown": "already on Sim BOX 11:30–12:30 · not added twice",
+       "title": "Torch — already on Sim BOX 11:30–12:30 · not added twice"
+      },
+      {
+       "cs": "TridentIP",
+       "look": "struck",
+       "why": "already on WPNS & TACTICS SYNC 11:30–12:00",
+       "shown": "already on WPNS & TACTICS SYNC 11:30–12:00",
+       "title": "Trident — already on WPNS & TACTICS SYNC 11:30–12:00"
+      }
+     ]
+    },
+    {
+     "head": "WSOs · 9 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "CinderB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinder"
+      },
+      {
+       "cs": "DashC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Dash"
+      },
+      {
+       "cs": "FableC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Fable"
+      },
+      {
+       "cs": "GhostC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ghost"
+      },
+      {
+       "cs": "DTRelayIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Relay"
+      },
+      {
+       "cs": "RuneB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Rune"
+      },
+      {
+       "cs": "RyderC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ryder"
+      },
+      {
+       "cs": "ScopeIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Scope"
+      },
+      {
+       "cs": "WispC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wisp"
+      },
+      {
+       "cs": "BasherIW",
+       "look": "struck",
+       "why": "already on OPS-O duty 06:00–14:00",
+       "shown": "already on OPS-O duty 06:00–14:00",
+       "title": "Basher — already on OPS-O duty 06:00–14:00"
+      },
+      {
+       "cs": "CutterC",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30 · not added twice",
+       "shown": "already on Sim BOX 11:30–12:30 · not added twice",
+       "title": "Cutter — already on Sim BOX 11:30–12:30 · not added twice"
+      },
+      {
+       "cs": "DTEchoIW",
+       "look": "struck",
+       "why": "already on VL BFM 11:40–14:35",
+       "shown": "already on VL BFM 11:40–14:35",
+       "title": "Echo — already on VL BFM 11:40–14:35"
+      },
+      {
+       "cs": "CGritC",
+       "look": "struck",
+       "why": "medically down — cannot report to work (ATT C) — Medically down till 17 Jul",
+       "shown": "medically down — cannot report to work (ATT C) — Medically down till 17 Jul",
+       "title": "Grit — medically down — cannot report to work (ATT C) — Medically down till 17 Jul"
+      },
+      {
+       "cs": "HexC",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30 · not added twice",
+       "shown": "already on Sim BOX 11:30–12:30 · not added twice",
+       "title": "Hex — already on Sim BOX 11:30–12:30 · not added twice"
+      },
+      {
+       "cs": "LedgerIW",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30 · not added twice",
+       "shown": "already on Sim BOX 11:30–12:30 · not added twice",
+       "title": "Ledger — already on Sim BOX 11:30–12:30 · not added twice"
+      },
+      {
+       "cs": "QuillIW",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30 · not added twice",
+       "shown": "already on Sim BOX 11:30–12:30 · not added twice",
+       "title": "Quill — already on Sim BOX 11:30–12:30 · not added twice"
+      },
+      {
+       "cs": "StaticIW",
+       "look": "struck",
+       "why": "already on VL BFM 11:40–14:35",
+       "shown": "already on VL BFM 11:40–14:35",
+       "title": "Static — already on VL BFM 11:40–14:35"
+      },
+      {
+       "cs": "CVectorC",
+       "look": "struck",
+       "why": "ordinary medical leave (OML) — Medical leave 13 Jul",
+       "shown": "ordinary medical leave (OML) — Medical leave 13 Jul",
+       "title": "Vector — ordinary medical leave (OML) — Medical leave 13 Jul"
+      }
+     ]
+    },
+    {
+     "head": "SANS Avail",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BoltC",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Bolt — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "JesterB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Jester — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "KrakenD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Kraken — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "MarlinA",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Marlin — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "OtterD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Otter — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "PixelD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Pixel — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "RebelB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Rebel — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ScribeD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Scribe — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "CPTallyO",
+       "look": "struck",
+       "why": "SANS — not offering AMT",
+       "shown": "SANS — not offering AMT",
+       "title": "Tally — SANS — not offering AMT",
+       "badge": "F · PM",
+       "remark": ""
+      },
+      {
+       "cs": "ZenithC",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Zenith — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZuluO",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Zulu — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      }
+     ]
+    },
+    {
+     "head": "Personnel · 3 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "Cotter",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cotter"
+      },
+      {
+       "cs": "Ratchet",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ratchet"
+      },
+      {
+       "cs": "Widget",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Widget"
+      }
+     ]
+    }
+   ]
+  },
+  "simpax": {
+   "key": "s:0.amt.1.pax.8",
+   "armed": "s:0.amt.1.pax.8",
+   "arm": "Planning Sim · AMT BOX✕",
+   "sections": [
+    {
+     "head": "Placeholders",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "ALL AVAIL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL AVAIL — a placeholder, never validated"
+      },
+      {
+       "cs": "ALL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL — a placeholder, never validated"
+      }
+     ]
+    },
+    {
+     "head": "Pilots · 17 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "AnvilIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Anvil"
+      },
+      {
+       "cs": "BladeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Blade"
+      },
+      {
+       "cs": "CometIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Comet"
+      },
+      {
+       "cs": "DrifterA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Drifter"
+      },
+      {
+       "cs": "ForgeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Forge"
+      },
+      {
+       "cs": "HavocIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Havoc"
+      },
+      {
+       "cs": "NomadC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Nomad"
+      },
+      {
+       "cs": "ROutlawC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Outlaw"
+      },
+      {
+       "cs": "CPistonIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Piston"
+      },
+      {
+       "cs": "ReaperIR",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Reaper"
+      },
+      {
+       "cs": "ReconO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Recon"
+      },
+      {
+       "cs": "SaintB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saint"
+      },
+      {
+       "cs": "TalismanO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Talisman"
+      },
+      {
+       "cs": "VandalIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vandal"
+      },
+      {
+       "cs": "VaporD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vapor"
+      },
+      {
+       "cs": "WardenIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Warden"
+      },
+      {
+       "cs": "CPWildcardO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wildcard"
+      },
+      {
+       "cs": "AceA",
+       "look": "struck",
+       "why": "already on HQ ENGAGEMENT 08:45–16:30",
+       "shown": "already on HQ ENGAGEMENT 08:45–16:30",
+       "title": "Ace — already on HQ ENGAGEMENT 08:45–16:30"
+      },
+      {
+       "cs": "CinchIP",
+       "look": "struck",
+       "why": "already on Sim EP-4 12:00–13:30",
+       "shown": "already on Sim EP-4 12:00–13:30",
+       "title": "Cinch — already on Sim EP-4 12:00–13:30"
+      },
+      {
+       "cs": "CobraIP",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30 · not added twice",
+       "shown": "already on Sim BOX 11:30–12:30 · not added twice",
+       "title": "Cobra — already on Sim BOX 11:30–12:30 · not added twice"
+      },
+      {
+       "cs": "DieselD",
+       "look": "struck",
+       "why": "already on MEDICAL APPT 10:30–12:30",
+       "shown": "already on MEDICAL APPT 10:30–12:30",
+       "title": "Diesel — already on MEDICAL APPT 10:30–12:30"
+      },
+      {
+       "cs": "CGambitC",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30 · not added twice",
+       "shown": "already on Sim BOX 11:30–12:30 · not added twice",
+       "title": "Gambit — already on Sim BOX 11:30–12:30 · not added twice"
+      },
+      {
+       "cs": "HunterIP",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30 · not added twice",
+       "shown": "already on Sim BOX 11:30–12:30 · not added twice",
+       "title": "Hunter — already on Sim BOX 11:30–12:30 · not added twice"
+      },
+      {
+       "cs": "CRangerIP",
+       "look": "struck",
+       "why": "already on VL BFM 11:40–14:35",
+       "shown": "already on VL BFM 11:40–14:35",
+       "title": "Ranger — already on VL BFM 11:40–14:35"
+      },
+      {
+       "cs": "RidgeC",
+       "look": "struck",
+       "why": "already on SXO duty 06:00–13:00",
+       "shown": "already on SXO duty 06:00–13:00",
+       "title": "Ridge — already on SXO duty 06:00–13:00"
+      },
+      {
+       "cs": "CSaberIP",
+       "look": "struck",
+       "why": "already on VL BFM 11:40–14:35",
+       "shown": "already on VL BFM 11:40–14:35",
+       "title": "Saber — already on VL BFM 11:40–14:35"
+      },
+      {
+       "cs": "SidewinderIP",
+       "look": "struck",
+       "why": "already on SDO duty 07:00–13:00",
+       "shown": "already on SDO duty 07:00–13:00",
+       "title": "Sidewinder — already on SDO duty 07:00–13:00"
+      },
+      {
+       "cs": "TorchC",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30 · not added twice",
+       "shown": "already on Sim BOX 11:30–12:30 · not added twice",
+       "title": "Torch — already on Sim BOX 11:30–12:30 · not added twice"
+      },
+      {
+       "cs": "TridentIP",
+       "look": "struck",
+       "why": "already on WPNS & TACTICS SYNC 11:30–12:00",
+       "shown": "already on WPNS & TACTICS SYNC 11:30–12:00",
+       "title": "Trident — already on WPNS & TACTICS SYNC 11:30–12:00"
+      }
+     ]
+    },
+    {
+     "head": "WSOs · 9 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "CinderB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinder"
+      },
+      {
+       "cs": "DashC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Dash"
+      },
+      {
+       "cs": "FableC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Fable"
+      },
+      {
+       "cs": "GhostC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ghost"
+      },
+      {
+       "cs": "DTRelayIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Relay"
+      },
+      {
+       "cs": "RuneB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Rune"
+      },
+      {
+       "cs": "RyderC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ryder"
+      },
+      {
+       "cs": "ScopeIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Scope"
+      },
+      {
+       "cs": "WispC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wisp"
+      },
+      {
+       "cs": "BasherIW",
+       "look": "struck",
+       "why": "already on OPS-O duty 06:00–14:00",
+       "shown": "already on OPS-O duty 06:00–14:00",
+       "title": "Basher — already on OPS-O duty 06:00–14:00"
+      },
+      {
+       "cs": "CutterC",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30 · not added twice",
+       "shown": "already on Sim BOX 11:30–12:30 · not added twice",
+       "title": "Cutter — already on Sim BOX 11:30–12:30 · not added twice"
+      },
+      {
+       "cs": "DTEchoIW",
+       "look": "struck",
+       "why": "already on VL BFM 11:40–14:35",
+       "shown": "already on VL BFM 11:40–14:35",
+       "title": "Echo — already on VL BFM 11:40–14:35"
+      },
+      {
+       "cs": "CGritC",
+       "look": "struck",
+       "why": "medically down — cannot report to work (ATT C) — Medically down till 17 Jul",
+       "shown": "medically down — cannot report to work (ATT C) — Medically down till 17 Jul",
+       "title": "Grit — medically down — cannot report to work (ATT C) — Medically down till 17 Jul"
+      },
+      {
+       "cs": "HexC",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30 · not added twice",
+       "shown": "already on Sim BOX 11:30–12:30 · not added twice",
+       "title": "Hex — already on Sim BOX 11:30–12:30 · not added twice"
+      },
+      {
+       "cs": "LedgerIW",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30 · not added twice",
+       "shown": "already on Sim BOX 11:30–12:30 · not added twice",
+       "title": "Ledger — already on Sim BOX 11:30–12:30 · not added twice"
+      },
+      {
+       "cs": "QuillIW",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30 · not added twice",
+       "shown": "already on Sim BOX 11:30–12:30 · not added twice",
+       "title": "Quill — already on Sim BOX 11:30–12:30 · not added twice"
+      },
+      {
+       "cs": "StaticIW",
+       "look": "struck",
+       "why": "already on VL BFM 11:40–14:35",
+       "shown": "already on VL BFM 11:40–14:35",
+       "title": "Static — already on VL BFM 11:40–14:35"
+      },
+      {
+       "cs": "CVectorC",
+       "look": "struck",
+       "why": "ordinary medical leave (OML) — Medical leave 13 Jul",
+       "shown": "ordinary medical leave (OML) — Medical leave 13 Jul",
+       "title": "Vector — ordinary medical leave (OML) — Medical leave 13 Jul"
+      }
+     ]
+    },
+    {
+     "head": "SANS Avail",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BoltC",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Bolt — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "JesterB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Jester — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "KrakenD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Kraken — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "MarlinA",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Marlin — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "OtterD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Otter — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "PixelD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Pixel — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "RebelB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Rebel — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ScribeD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Scribe — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "CPTallyO",
+       "look": "struck",
+       "why": "SANS — not offering AMT",
+       "shown": "SANS — not offering AMT",
+       "title": "Tally — SANS — not offering AMT",
+       "badge": "F · PM",
+       "remark": ""
+      },
+      {
+       "cs": "ZenithC",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Zenith — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZuluO",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Zulu — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      }
+     ]
+    },
+    {
+     "head": "Personnel · 3 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "Cotter",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cotter"
+      },
+      {
+       "cs": "Ratchet",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ratchet"
+      },
+      {
+       "cs": "Widget",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Widget"
+      }
+     ]
+    }
+   ]
+  },
+  "ground": {
+   "key": "g:0.0.+",
+   "armed": "g:0.0.+",
+   "arm": "Planning Ground · HQ ENGAGEMENT✕",
+   "sections": [
+    {
+     "head": "Placeholders",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "ALL AVAIL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL AVAIL — a placeholder, never validated"
+      },
+      {
+       "cs": "ALL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL — a placeholder, never validated"
+      }
+     ]
+    },
+    {
+     "head": "Pilots · 9 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "AnvilIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Anvil"
+      },
+      {
+       "cs": "CometIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Comet"
+      },
+      {
+       "cs": "HavocIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Havoc"
+      },
+      {
+       "cs": "NomadC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Nomad"
+      },
+      {
+       "cs": "ROutlawC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Outlaw"
+      },
+      {
+       "cs": "ReaperIR",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Reaper"
+      },
+      {
+       "cs": "SaintB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saint"
+      },
+      {
+       "cs": "VandalIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vandal"
+      },
+      {
+       "cs": "WardenIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Warden"
+      },
+      {
+       "cs": "AceA",
+       "look": "struck",
+       "why": "already on HQ ENGAGEMENT 08:45–16:30 · not added twice",
+       "shown": "already on HQ ENGAGEMENT 08:45–16:30 · not added twice",
+       "title": "Ace — already on HQ ENGAGEMENT 08:45–16:30 · not added twice"
+      },
+      {
+       "cs": "BladeIP",
+       "look": "struck",
+       "why": "already on OPS/LOGS @ EXT SQN 14:00–15:30",
+       "shown": "already on OPS/LOGS @ EXT SQN 14:00–15:30",
+       "title": "Blade — already on OPS/LOGS @ EXT SQN 14:00–15:30"
+      },
+      {
+       "cs": "CinchIP",
+       "look": "struck",
+       "why": "already on Sim EP-4 12:00–13:30",
+       "shown": "already on Sim EP-4 12:00–13:30",
+       "title": "Cinch — already on Sim EP-4 12:00–13:30"
+      },
+      {
+       "cs": "CobraIP",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30",
+       "shown": "already on Sim BOX 11:30–12:30",
+       "title": "Cobra — already on Sim BOX 11:30–12:30"
+      },
+      {
+       "cs": "DieselD",
+       "look": "struck",
+       "why": "already on MEDICAL APPT 10:30–12:30",
+       "shown": "already on MEDICAL APPT 10:30–12:30",
+       "title": "Diesel — already on MEDICAL APPT 10:30–12:30"
+      },
+      {
+       "cs": "DrifterA",
+       "look": "struck",
+       "why": "already on RU BFM 12:40–15:35",
+       "shown": "already on RU BFM 12:40–15:35",
+       "title": "Drifter — already on RU BFM 12:40–15:35"
+      },
+      {
+       "cs": "ForgeIP",
+       "look": "struck",
+       "why": "already on SDO duty 13:00–21:30",
+       "shown": "already on SDO duty 13:00–21:30",
+       "title": "Forge — already on SDO duty 13:00–21:30"
+      },
+      {
+       "cs": "CGambitC",
+       "look": "struck",
+       "why": "flying with another squadron (Fly with) — Keen for any wave",
+       "shown": "flying with another squadron (Fly with) — Keen for any wave",
+       "title": "Gambit — flying with another squadron (Fly with) — Keen for any wave"
+      },
+      {
+       "cs": "HunterIP",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30",
+       "shown": "already on Sim BOX 11:30–12:30",
+       "title": "Hunter — already on Sim BOX 11:30–12:30"
+      },
+      {
+       "cs": "CPistonIP",
+       "look": "struck",
+       "why": "already on RU BFM 12:40–15:35",
+       "shown": "already on RU BFM 12:40–15:35",
+       "title": "Piston — already on RU BFM 12:40–15:35"
+      },
+      {
+       "cs": "CRangerIP",
+       "look": "struck",
+       "why": "already on VL BFM 11:40–14:35",
+       "shown": "already on VL BFM 11:40–14:35",
+       "title": "Ranger — already on VL BFM 11:40–14:35"
+      },
+      {
+       "cs": "ReconO",
+       "look": "struck",
+       "why": "already on Sim EP-6 15:00–16:30",
+       "shown": "already on Sim EP-6 15:00–16:30",
+       "title": "Recon — already on Sim EP-6 15:00–16:30"
+      },
+      {
+       "cs": "RidgeC",
+       "look": "struck",
+       "why": "already on SXO duty 06:00–13:00",
+       "shown": "already on SXO duty 06:00–13:00",
+       "title": "Ridge — already on SXO duty 06:00–13:00"
+      },
+      {
+       "cs": "CSaberIP",
+       "look": "struck",
+       "why": "already on VL BFM 11:40–14:35",
+       "shown": "already on VL BFM 11:40–14:35",
+       "title": "Saber — already on VL BFM 11:40–14:35"
+      },
+      {
+       "cs": "SidewinderIP",
+       "look": "struck",
+       "why": "already on SDO duty 07:00–13:00",
+       "shown": "already on SDO duty 07:00–13:00",
+       "title": "Sidewinder — already on SDO duty 07:00–13:00"
+      },
+      {
+       "cs": "TalismanO",
+       "look": "struck",
+       "why": "already on Sim EP-4 08:00–09:30",
+       "shown": "already on Sim EP-4 08:00–09:30",
+       "title": "Talisman — already on Sim EP-4 08:00–09:30"
+      },
+      {
+       "cs": "TorchC",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30",
+       "shown": "already on Sim BOX 11:30–12:30",
+       "title": "Torch — already on Sim BOX 11:30–12:30"
+      },
+      {
+       "cs": "TridentIP",
+       "look": "struck",
+       "why": "already on WPNS & TACTICS SYNC 11:30–12:00",
+       "shown": "already on WPNS & TACTICS SYNC 11:30–12:00",
+       "title": "Trident — already on WPNS & TACTICS SYNC 11:30–12:00"
+      },
+      {
+       "cs": "VaporD",
+       "look": "struck",
+       "why": "already on STAFF MTG @ HQ 09:30–11:00",
+       "shown": "already on STAFF MTG @ HQ 09:30–11:00",
+       "title": "Vapor — already on STAFF MTG @ HQ 09:30–11:00"
+      },
+      {
+       "cs": "CPWildcardO",
+       "look": "struck",
+       "why": "already on OCU PROGRESS REVIEW 14:45–15:30",
+       "shown": "already on OCU PROGRESS REVIEW 14:45–15:30",
+       "title": "Wildcard — already on OCU PROGRESS REVIEW 14:45–15:30"
+      }
+     ]
+    },
+    {
+     "head": "WSOs · 7 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "CinderB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinder"
+      },
+      {
+       "cs": "DashC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Dash"
+      },
+      {
+       "cs": "FableC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Fable"
+      },
+      {
+       "cs": "GhostC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ghost"
+      },
+      {
+       "cs": "RuneB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Rune"
+      },
+      {
+       "cs": "RyderC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ryder"
+      },
+      {
+       "cs": "WispC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wisp"
+      },
+      {
+       "cs": "BasherIW",
+       "look": "struck",
+       "why": "already on OPS-O duty 06:00–14:00",
+       "shown": "already on OPS-O duty 06:00–14:00",
+       "title": "Basher — already on OPS-O duty 06:00–14:00"
+      },
+      {
+       "cs": "CutterC",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30",
+       "shown": "already on Sim BOX 11:30–12:30",
+       "title": "Cutter — already on Sim BOX 11:30–12:30"
+      },
+      {
+       "cs": "DTEchoIW",
+       "look": "struck",
+       "why": "already on VL BFM 11:40–14:35",
+       "shown": "already on VL BFM 11:40–14:35",
+       "title": "Echo — already on VL BFM 11:40–14:35"
+      },
+      {
+       "cs": "CGritC",
+       "look": "struck",
+       "why": "medically down — cannot report to work (ATT C) — Medically down till 17 Jul",
+       "shown": "medically down — cannot report to work (ATT C) — Medically down till 17 Jul",
+       "title": "Grit — medically down — cannot report to work (ATT C) — Medically down till 17 Jul"
+      },
+      {
+       "cs": "HexC",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30",
+       "shown": "already on Sim BOX 11:30–12:30",
+       "title": "Hex — already on Sim BOX 11:30–12:30"
+      },
+      {
+       "cs": "LedgerIW",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30",
+       "shown": "already on Sim BOX 11:30–12:30",
+       "title": "Ledger — already on Sim BOX 11:30–12:30"
+      },
+      {
+       "cs": "QuillIW",
+       "look": "struck",
+       "why": "already on Sim BOX 11:30–12:30",
+       "shown": "already on Sim BOX 11:30–12:30",
+       "title": "Quill — already on Sim BOX 11:30–12:30"
+      },
+      {
+       "cs": "DTRelayIW",
+       "look": "struck",
+       "why": "already on RU BFM 12:40–15:35",
+       "shown": "already on RU BFM 12:40–15:35",
+       "title": "Relay — already on RU BFM 12:40–15:35"
+      },
+      {
+       "cs": "ScopeIW",
+       "look": "struck",
+       "why": "already on OPS-O duty 14:00–21:30",
+       "shown": "already on OPS-O duty 14:00–21:30",
+       "title": "Scope — already on OPS-O duty 14:00–21:30"
+      },
+      {
+       "cs": "StaticIW",
+       "look": "struck",
+       "why": "already on VL BFM 11:40–14:35",
+       "shown": "already on VL BFM 11:40–14:35",
+       "title": "Static — already on VL BFM 11:40–14:35"
+      },
+      {
+       "cs": "CVectorC",
+       "look": "struck",
+       "why": "ordinary medical leave (OML) — Medical leave 13 Jul",
+       "shown": "ordinary medical leave (OML) — Medical leave 13 Jul",
+       "title": "Vector — ordinary medical leave (OML) — Medical leave 13 Jul"
+      }
+     ]
+    },
+    {
+     "head": "SANS Avail",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BoltC",
+       "look": "struck",
+       "why": "already on SXO duty 13:00–21:30",
+       "shown": "already on SXO duty 13:00–21:30",
+       "title": "Bolt — already on SXO duty 13:00–21:30",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "JesterB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Jester",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "KrakenD",
+       "look": "struck",
+       "why": "already on DENTAL APPT 12:00–13:30",
+       "shown": "already on DENTAL APPT 12:00–13:30",
+       "title": "Kraken — already on DENTAL APPT 12:00–13:30",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "MarlinA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Marlin",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "OtterD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Otter",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "PixelD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Pixel",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "RebelB",
+       "look": "struck",
+       "why": "already on INTEL UPDATE 16:00–16:20",
+       "shown": "already on INTEL UPDATE 16:00–16:20",
+       "title": "Rebel — already on INTEL UPDATE 16:00–16:20",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ScribeD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Scribe",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "CPTallyO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Tally",
+       "badge": "F · PM",
+       "remark": ""
+      },
+      {
+       "cs": "ZenithC",
+       "look": "struck",
+       "why": "already on MEETING 09:00–17:00",
+       "shown": "already on MEETING 09:00–17:00",
+       "title": "Zenith — already on MEETING 09:00–17:00",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZuluO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Zulu",
+       "badge": "",
+       "remark": ""
+      }
+     ]
+    },
+    {
+     "head": "Personnel · 3 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "Cotter",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cotter"
+      },
+      {
+       "cs": "Ratchet",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ratchet"
+      },
+      {
+       "cs": "Widget",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Widget"
+      }
+     ]
+    }
+   ]
+  },
+  "programme": {
+   "key": "a:0.0.+",
+   "armed": "a:0.0.+",
+   "arm": "Planning Programme · SODB✕",
+   "sections": [
+    {
+     "head": "Placeholders",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "ALL AVAIL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL AVAIL — a placeholder, never validated"
+      },
+      {
+       "cs": "ALL",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "ALL — a placeholder, never validated"
+      }
+     ]
+    },
+    {
+     "head": "Pilots · 24 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "AceA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ace"
+      },
+      {
+       "cs": "AnvilIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Anvil"
+      },
+      {
+       "cs": "BladeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Blade"
+      },
+      {
+       "cs": "CinchIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinch"
+      },
+      {
+       "cs": "CobraIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cobra"
+      },
+      {
+       "cs": "CometIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Comet"
+      },
+      {
+       "cs": "DieselD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Diesel"
+      },
+      {
+       "cs": "DrifterA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Drifter"
+      },
+      {
+       "cs": "ForgeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Forge"
+      },
+      {
+       "cs": "HavocIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Havoc"
+      },
+      {
+       "cs": "HunterIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Hunter"
+      },
+      {
+       "cs": "NomadC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Nomad"
+      },
+      {
+       "cs": "ROutlawC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Outlaw"
+      },
+      {
+       "cs": "CPistonIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Piston"
+      },
+      {
+       "cs": "CRangerIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ranger"
+      },
+      {
+       "cs": "ReaperIR",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Reaper"
+      },
+      {
+       "cs": "ReconO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Recon"
+      },
+      {
+       "cs": "SaintB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saint"
+      },
+      {
+       "cs": "TorchC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Torch"
+      },
+      {
+       "cs": "TridentIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Trident"
+      },
+      {
+       "cs": "VandalIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vandal"
+      },
+      {
+       "cs": "VaporD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vapor"
+      },
+      {
+       "cs": "WardenIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Warden"
+      },
+      {
+       "cs": "CPWildcardO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wildcard"
+      },
+      {
+       "cs": "CGambitC",
+       "look": "struck",
+       "why": "flying with another squadron (Fly with) — Keen for any wave",
+       "shown": "flying with another squadron (Fly with) — Keen for any wave",
+       "title": "Gambit — flying with another squadron (Fly with) — Keen for any wave"
+      },
+      {
+       "cs": "RidgeC",
+       "look": "struck",
+       "why": "already on SXO duty 06:00–13:00",
+       "shown": "already on SXO duty 06:00–13:00",
+       "title": "Ridge — already on SXO duty 06:00–13:00"
+      },
+      {
+       "cs": "CSaberIP",
+       "look": "struck",
+       "why": "already on Sim EP-4 08:00–09:30",
+       "shown": "already on Sim EP-4 08:00–09:30",
+       "title": "Saber — already on Sim EP-4 08:00–09:30"
+      },
+      {
+       "cs": "SidewinderIP",
+       "look": "struck",
+       "why": "already on SDO duty 07:00–13:00",
+       "shown": "already on SDO duty 07:00–13:00",
+       "title": "Sidewinder — already on SDO duty 07:00–13:00"
+      },
+      {
+       "cs": "TalismanO",
+       "look": "struck",
+       "why": "already on Sim EP-4 08:00–09:30",
+       "shown": "already on Sim EP-4 08:00–09:30",
+       "title": "Talisman — already on Sim EP-4 08:00–09:30"
+      }
+     ]
+    },
+    {
+     "head": "WSOs · 15 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "CinderB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cinder"
+      },
+      {
+       "cs": "CutterC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cutter"
+      },
+      {
+       "cs": "DashC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Dash"
+      },
+      {
+       "cs": "DTEchoIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Echo"
+      },
+      {
+       "cs": "FableC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Fable"
+      },
+      {
+       "cs": "GhostC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ghost"
+      },
+      {
+       "cs": "HexC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Hex"
+      },
+      {
+       "cs": "LedgerIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ledger"
+      },
+      {
+       "cs": "QuillIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Quill"
+      },
+      {
+       "cs": "DTRelayIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Relay"
+      },
+      {
+       "cs": "RuneB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Rune"
+      },
+      {
+       "cs": "RyderC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ryder"
+      },
+      {
+       "cs": "ScopeIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Scope"
+      },
+      {
+       "cs": "StaticIW",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Static"
+      },
+      {
+       "cs": "WispC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Wisp"
+      },
+      {
+       "cs": "BasherIW",
+       "look": "struck",
+       "why": "already on OPS-O duty 06:00–14:00",
+       "shown": "already on OPS-O duty 06:00–14:00",
+       "title": "Basher — already on OPS-O duty 06:00–14:00"
+      },
+      {
+       "cs": "CGritC",
+       "look": "struck",
+       "why": "medically down — cannot report to work (ATT C) — Medically down till 17 Jul",
+       "shown": "medically down — cannot report to work (ATT C) — Medically down till 17 Jul",
+       "title": "Grit — medically down — cannot report to work (ATT C) — Medically down till 17 Jul"
+      },
+      {
+       "cs": "CVectorC",
+       "look": "struck",
+       "why": "ordinary medical leave (OML) — Medical leave 13 Jul",
+       "shown": "ordinary medical leave (OML) — Medical leave 13 Jul",
+       "title": "Vector — ordinary medical leave (OML) — Medical leave 13 Jul"
+      }
+     ]
+    },
+    {
+     "head": "SANS Avail",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BoltC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Bolt",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "JesterB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Jester",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "KrakenD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Kraken",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "MarlinA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Marlin",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "OtterD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Otter",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "PixelD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Pixel",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "RebelB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Rebel",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ScribeD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Scribe",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "CPTallyO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Tally",
+       "badge": "F · PM",
+       "remark": ""
+      },
+      {
+       "cs": "ZenithC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Zenith",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZuluO",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Zulu",
+       "badge": "",
+       "remark": ""
+      }
+     ]
+    },
+    {
+     "head": "Personnel · 3 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "Cotter",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Cotter"
+      },
+      {
+       "cs": "Ratchet",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ratchet"
+      },
+      {
+       "cs": "Widget",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Widget"
+      }
+     ]
+    }
+   ]
+  },
+  "flypax": {
+   "missing": true
+  },
+  "sc": {
+   "key": "0.2.0.0.p",
+   "armed": "0.2.0.0.p",
+   "arm": "Planning FCP · SC AMSC DAY current only · shift 07:00–13:00✕",
+   "sections": [
+    {
+     "head": "Placeholders",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "ALL AVAIL",
+       "look": "struck",
+       "why": "cannot crew a jet; name the people flying it",
+       "shown": "cannot crew a jet; name the people flying it",
+       "title": "ALL AVAIL — cannot crew a jet; name the people flying it"
+      },
+      {
+       "cs": "ALL",
+       "look": "struck",
+       "why": "cannot crew a jet; name the people flying it",
+       "shown": "cannot crew a jet; name the people flying it",
+       "title": "ALL — cannot crew a jet; name the people flying it"
+      }
+     ]
+    },
+    {
+     "head": "Pilots · 14 free",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "AceA",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Ace"
+      },
+      {
+       "cs": "AnvilIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Anvil"
+      },
+      {
+       "cs": "BladeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Blade"
+      },
+      {
+       "cs": "CometIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Comet"
+      },
+      {
+       "cs": "DieselD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Diesel"
+      },
+      {
+       "cs": "ForgeIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Forge"
+      },
+      {
+       "cs": "NomadC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Nomad"
+      },
+      {
+       "cs": "ROutlawC",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Outlaw"
+      },
+      {
+       "cs": "ReaperIR",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Reaper"
+      },
+      {
+       "cs": "SaintB",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Saint"
+      },
+      {
+       "cs": "TridentIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Trident"
+      },
+      {
+       "cs": "VandalIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vandal"
+      },
+      {
+       "cs": "VaporD",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Vapor"
+      },
+      {
+       "cs": "WardenIP",
+       "look": "free",
+       "why": "",
+       "shown": "",
+       "title": "Warden"
+      },
+      {
+       "cs": "CinchIP",
+       "look": "struck",
+       "why": "on Sim EP-4 12:00–13:30 — inside this shift",
+       "shown": "on Sim EP-4 12:00–13:30 — inside this shift",
+       "title": "Cinch — on Sim EP-4 12:00–13:30 — inside this shift"
+      },
+      {
+       "cs": "CobraIP",
+       "look": "struck",
+       "why": "on Sim BOX 11:30–12:30 — inside this shift",
+       "shown": "on Sim BOX 11:30–12:30 — inside this shift",
+       "title": "Cobra — on Sim BOX 11:30–12:30 — inside this shift"
+      },
+      {
+       "cs": "DrifterA",
+       "look": "struck",
+       "why": "on RU BFM 12:40–15:35 — inside this shift",
+       "shown": "on RU BFM 12:40–15:35 — inside this shift",
+       "title": "Drifter — on RU BFM 12:40–15:35 — inside this shift"
+      },
+      {
+       "cs": "CGambitC",
+       "look": "struck",
+       "why": "on Sim BOX 11:30–12:30 — inside this shift",
+       "shown": "on Sim BOX 11:30–12:30 — inside this shift",
+       "title": "Gambit — on Sim BOX 11:30–12:30 — inside this shift"
+      },
+      {
+       "cs": "HavocIP",
+       "look": "struck",
+       "why": "medically down — no flying, may still work (ATT B) — Medically down",
+       "shown": "medically down — no flying, may still work (ATT B) — Medically down",
+       "title": "Havoc — medically down — no flying, may still work (ATT B) — Medically down"
+      },
+      {
+       "cs": "HunterIP",
+       "look": "struck",
+       "why": "on Sim BOX 11:30–12:30 — inside this shift",
+       "shown": "on Sim BOX 11:30–12:30 — inside this shift",
+       "title": "Hunter — on Sim BOX 11:30–12:30 — inside this shift"
+      },
+      {
+       "cs": "CPistonIP",
+       "look": "struck",
+       "why": "on RU BFM 12:40–15:35 — inside this shift",
+       "shown": "on RU BFM 12:40–15:35 — inside this shift",
+       "title": "Piston — on RU BFM 12:40–15:35 — inside this shift"
+      },
+      {
+       "cs": "CRangerIP",
+       "look": "struck",
+       "why": "on VL BFM 11:40–14:35 — inside this shift",
+       "shown": "on VL BFM 11:40–14:35 — inside this shift",
+       "title": "Ranger — on VL BFM 11:40–14:35 — inside this shift"
+      },
+      {
+       "cs": "RidgeC",
+       "look": "struck",
+       "why": "on SXO duty 06:00–13:00 — inside this shift",
+       "shown": "on SXO duty 06:00–13:00 — inside this shift",
+       "title": "Ridge — on SXO duty 06:00–13:00 — inside this shift"
+      },
+      {
+       "cs": "CSaberIP",
+       "look": "struck",
+       "why": "on VL BFM 11:40–14:35 — inside this shift",
+       "shown": "on VL BFM 11:40–14:35 — inside this shift",
+       "title": "Saber — on VL BFM 11:40–14:35 — inside this shift"
+      },
+      {
+       "cs": "SidewinderIP",
+       "look": "struck",
+       "why": "on SDO duty 07:00–13:00 — inside this shift",
+       "shown": "on SDO duty 07:00–13:00 — inside this shift",
+       "title": "Sidewinder — on SDO duty 07:00–13:00 — inside this shift"
+      },
+      {
+       "cs": "TorchC",
+       "look": "struck",
+       "why": "on Sim BOX 11:30–12:30 — inside this shift",
+       "shown": "on Sim BOX 11:30–12:30 — inside this shift",
+       "title": "Torch — on Sim BOX 11:30–12:30 — inside this shift"
+      }
+     ]
+    },
+    {
+     "head": "WSOs · 0 free",
+     "colWhy": "WSO — cannot fly front seat",
+     "items": [
+      {
+       "cs": "BasherIW",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Basher — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "CinderB",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Cinder — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "CutterC",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Cutter — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "DashC",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Dash — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "DTEchoIW",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Echo — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "FableC",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Fable — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "GhostC",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Ghost — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "CGritC",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Grit — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "HexC",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Hex — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "LedgerIW",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Ledger — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "QuillIW",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Quill — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "DTRelayIW",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Relay — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "RuneB",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Rune — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "RyderC",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Ryder — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "ScopeIW",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Scope — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "StaticIW",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Static — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "CVectorC",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Vector — WSO — cannot fly front seat"
+      },
+      {
+       "cs": "WispC",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "",
+       "title": "Wisp — WSO — cannot fly front seat"
+      }
+     ]
+    },
+    {
+     "head": "SANS Avail",
+     "colWhy": "",
+     "items": [
+      {
+       "cs": "BoltC",
+       "look": "struck",
+       "why": "on APPOINTMENT 10:00–11:00 — inside this shift",
+       "shown": "on APPOINTMENT 10:00–11:00 — inside this shift",
+       "title": "Bolt — on APPOINTMENT 10:00–11:00 — inside this shift",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "JesterB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Jester — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "KrakenD",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Kraken — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "MarlinA",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "WSO — cannot fly front seat",
+       "title": "Marlin — WSO — cannot fly front seat",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "OtterD",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "WSO — cannot fly front seat",
+       "title": "Otter — WSO — cannot fly front seat",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "PixelD",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "WSO — cannot fly front seat",
+       "title": "Pixel — WSO — cannot fly front seat",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "RebelB",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Rebel — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ScribeD",
+       "look": "struck",
+       "why": "WSO — cannot fly front seat",
+       "shown": "WSO — cannot fly front seat",
+       "title": "Scribe — WSO — cannot fly front seat",
+       "badge": "",
+       "remark": ""
+      },
+      {
+       "cs": "ZenithC",
+       "look": "struck",
+       "why": "SANS — no availability filed for today",
+       "shown": "SANS — no availability filed for today",
+       "title": "Zenith — SANS — no availability filed for today",
+       "badge": "",
+       "remark": ""
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "targets": [
+  "a:0.0.+",
+  "a:0.1.+",
+  "a:0.2.+",
+  "a:0.3.+",
+  "a:0.4.+",
+  "a:0.5.+",
+  "a:0.6.+",
+  "a:0.7.+",
+  "a:0.8.+",
+  "a:0.9.+",
+  "0.0.2.0.p",
+  "0.0.2.0.w",
+  "d:0.0.0.+",
+  "d:0.0.1.+",
+  "d:0.0.2.+",
+  "d:0.1.0.+",
+  "d:0.1.1.+",
+  "d:0.1.2.+",
+  "s:0.amt.1.+",
+  "s:0.amt.1.pax.8",
+  "s:0.amt.1.pax.9",
+  "s:0.oft.0.+",
+  "s:0.oft.0.x0",
+  "s:0.oft.0.x1",
+  "s:0.oft.1.+",
+  "s:0.oft.1.x0",
+  "s:0.oft.1.x1",
+  "s:0.oft.2.+",
+  "s:0.oft.3.+",
+  "s:0.oft.3.w",
+  "s:0.oft.4.+",
+  "g:0.0.+",
+  "g:0.7.+",
+  "g:0.1.+",
+  "g:0.6.+",
+  "g:0.2.+",
+  "g:0.3.+",
+  "g:0.5.+",
+  "g:0.4.+",
+  "g:0.8.+"
+ ],
+ "sc": {
+  "gi": 2,
+  "rows": [
+   "0.2.0.0",
+   "0.2.0.1",
+   "0.2.0.2",
+   "0.2.0.3",
+   "0.2.1.0",
+   "0.2.1.1",
+   "0.2.1.2",
+   "0.2.1.3"
+  ]
+ },
+ "standby": {
+  "spareKey": "0.2.1.3.p",
+  "put": "beams",
+  "inSeat": "beams",
+  "arm": "",
+  "sections": [
+   {
+    "head": "Placeholders",
+    "colWhy": "",
+    "items": [
+     {
+      "cs": "ALL AVAIL",
+      "look": "free",
+      "why": "",
+      "shown": "",
+      "title": "ALL AVAIL — a placeholder, never validated"
+     },
+     {
+      "cs": "ALL",
+      "look": "free",
+      "why": "",
+      "shown": "",
+      "title": "ALL — a placeholder, never validated"
+     }
+    ]
+   },
+   {
+    "head": "Pilots · 5 free",
+    "colWhy": "",
+    "items": [
+     {
+      "cs": "CometIP",
+      "look": "standby",
+      "why": "",
+      "shown": "",
+      "title": "Comet — SC spare, standing by and free for anything else"
+     },
+     {
+      "cs": "NomadC",
+      "look": "free",
+      "why": "",
+      "shown": "",
+      "title": "Nomad"
+     },
+     {
+      "cs": "ReaperIR",
+      "look": "free",
+      "why": "",
+      "shown": "",
+      "title": "Reaper"
+     },
+     {
+      "cs": "SaintB",
+      "look": "free",
+      "why": "",
+      "shown": "",
+      "title": "Saint"
+     },
+     {
+      "cs": "VandalIP",
+      "look": "free",
+      "why": "",
+      "shown": "",
+      "title": "Vandal"
+     },
+     {
+      "cs": "AceA",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Ace — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "AnvilIP",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Anvil — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "BladeIP",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Blade — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "CinchIP",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Cinch — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "CobraIP",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Cobra — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "DieselD",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Diesel — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "DrifterA",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Drifter — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "ForgeIP",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Forge — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "HavocIP",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Havoc — grounded today: no flying, but a duty desk, a sim seat or a ground row is still open to him"
+     },
+     {
+      "cs": "HunterIP",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Hunter — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "ROutlawC",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Outlaw — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "CPistonIP",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Piston — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "CRangerIP",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Ranger — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "ReconO",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Recon — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "RidgeC",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Ridge — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "CSaberIP",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Saber — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "SidewinderIP",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Sidewinder — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "TalismanO",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Talisman — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "TorchC",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Torch — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "TridentIP",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Trident — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "VaporD",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Vapor — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "WardenIP",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Warden — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "CPWildcardO",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Wildcard — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "CGambitC",
+      "look": "struck",
+      "why": "flying with another squadron (Fly with) — Keen for any wave",
+      "shown": "",
+      "title": "Gambit — flying with another squadron (Fly with) — Keen for any wave"
+     }
+    ]
+   },
+   {
+    "head": "WSOs · 5 free",
+    "colWhy": "",
+    "items": [
+     {
+      "cs": "CinderB",
+      "look": "free",
+      "why": "",
+      "shown": "",
+      "title": "Cinder"
+     },
+     {
+      "cs": "DashC",
+      "look": "free",
+      "why": "",
+      "shown": "",
+      "title": "Dash"
+     },
+     {
+      "cs": "FableC",
+      "look": "free",
+      "why": "",
+      "shown": "",
+      "title": "Fable"
+     },
+     {
+      "cs": "RuneB",
+      "look": "free",
+      "why": "",
+      "shown": "",
+      "title": "Rune"
+     },
+     {
+      "cs": "RyderC",
+      "look": "free",
+      "why": "",
+      "shown": "",
+      "title": "Ryder"
+     },
+     {
+      "cs": "BasherIW",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Basher — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "CutterC",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Cutter — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "DTEchoIW",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Echo — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "GhostC",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Ghost — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "HexC",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Hex — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "LedgerIW",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Ledger — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "QuillIW",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Quill — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "DTRelayIW",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Relay — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "ScopeIW",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Scope — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "StaticIW",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Static — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "WispC",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Wisp — already tasked today, but you can still plan him"
+     },
+     {
+      "cs": "CGritC",
+      "look": "struck",
+      "why": "medically down — cannot report to work (ATT C) — Medically down till 17 Jul",
+      "shown": "",
+      "title": "Grit — medically down — cannot report to work (ATT C) — Medically down till 17 Jul"
+     },
+     {
+      "cs": "CVectorC",
+      "look": "struck",
+      "why": "ordinary medical leave (OML) — Medical leave 13 Jul",
+      "shown": "",
+      "title": "Vector — ordinary medical leave (OML) — Medical leave 13 Jul"
+     }
+    ]
+   },
+   {
+    "head": "SANS Avail",
+    "colWhy": "",
+    "items": [
+     {
+      "cs": "BoltC",
+      "look": "struck",
+      "why": "SANS — no availability filed for today",
+      "shown": "",
+      "title": "Bolt — SANS — no availability filed for today",
+      "badge": "",
+      "remark": ""
+     },
+     {
+      "cs": "JesterB",
+      "look": "struck",
+      "why": "SANS — no availability filed for today",
+      "shown": "",
+      "title": "Jester — SANS — no availability filed for today",
+      "badge": "",
+      "remark": ""
+     },
+     {
+      "cs": "KrakenD",
+      "look": "struck",
+      "why": "SANS — no availability filed for today",
+      "shown": "",
+      "title": "Kraken — SANS — no availability filed for today",
+      "badge": "",
+      "remark": ""
+     },
+     {
+      "cs": "MarlinA",
+      "look": "struck",
+      "why": "SANS — no availability filed for today",
+      "shown": "",
+      "title": "Marlin — SANS — no availability filed for today",
+      "badge": "",
+      "remark": ""
+     },
+     {
+      "cs": "OtterD",
+      "look": "struck",
+      "why": "SANS — no availability filed for today",
+      "shown": "",
+      "title": "Otter — SANS — no availability filed for today",
+      "badge": "",
+      "remark": ""
+     },
+     {
+      "cs": "PixelD",
+      "look": "struck",
+      "why": "SANS — no availability filed for today",
+      "shown": "",
+      "title": "Pixel — SANS — no availability filed for today",
+      "badge": "",
+      "remark": ""
+     },
+     {
+      "cs": "RebelB",
+      "look": "struck",
+      "why": "SANS — no availability filed for today",
+      "shown": "",
+      "title": "Rebel — SANS — no availability filed for today",
+      "badge": "",
+      "remark": ""
+     },
+     {
+      "cs": "ScribeD",
+      "look": "struck",
+      "why": "SANS — no availability filed for today",
+      "shown": "",
+      "title": "Scribe — SANS — no availability filed for today",
+      "badge": "",
+      "remark": ""
+     },
+     {
+      "cs": "CPTallyO",
+      "look": "faded",
+      "why": "",
+      "shown": "",
+      "title": "Tally — already tasked today, but you can still plan him",
+      "badge": "F · PM",
+      "remark": ""
+     },
+     {
+      "cs": "ZenithC",
+      "look": "struck",
+      "why": "SANS — no availability filed for today",
+      "shown": "",
+      "title": "Zenith — SANS — no availability filed for today",
+      "badge": "",
+      "remark": ""
+     },
+     {
+      "cs": "ZuluO",
+      "look": "struck",
+      "why": "SANS — no availability filed for today",
+      "shown": "",
+      "title": "Zulu — SANS — no availability filed for today",
+      "badge": "",
+      "remark": ""
+     }
+    ]
+   },
+   {
+    "head": "Personnel · 3 free",
+    "colWhy": "",
+    "items": [
+     {
+      "cs": "Cotter",
+      "look": "free",
+      "why": "",
+      "shown": "",
+      "title": "Cotter"
+     },
+     {
+      "cs": "Ratchet",
+      "look": "free",
+      "why": "",
+      "shown": "",
+      "title": "Ratchet"
+     },
+     {
+      "cs": "Widget",
+      "look": "free",
+      "why": "",
+      "shown": "",
+      "title": "Widget"
+     }
+    ]
+   }
+  ]
+ },
+ "errors": []
+}

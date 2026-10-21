@@ -11,7 +11,7 @@ import { toggleChanges } from './changesopen'
 import { weekDates } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
 import { setWeekCal, setInsights } from './pops'
-import { CalIcon, HistIcon, HlIcon } from './icons'
+import { CalIcon, HistIcon, HlIcon, SrchIcon } from './icons'
 import { HlChips } from './hlchips'
 import { oilShown, oilModeOn, toggleOilMode } from './oilmode'
 import { wireHistBubble, hideHistBub, histBubRecheck, refreshHistDots } from './histbubble'
@@ -25,7 +25,7 @@ import { useSheetFocus } from './sheetfocus'
 import { reconcileMissionRoleOffer } from './mission-role-offer'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
-import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, setCxt, SBWIDE, SBZOOM, setBoardZoom, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, boardWeekStep, wireDayDots, wireParkedRosScroll, wireWarnSplit, dayTplMenu } from './board'
+import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, setCxt, SBWIDE, SBZOOM, setBoardZoom, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, boardWeekStep, wireDayDots, wireParkedRosScroll, wireWarnSplit, wireSideGrip, SIDE_MIN, dayTplMenu } from './board'
 import { CXR_CFG, addCxReason, delCxReason, renameCxReason, moveCxReason, cxReasonsSave, cxReasonsReset, cxrAreStandard } from '../engine/cxreasons'
 import { canEditSched } from '../state/auth'
 import { refreshHighlights } from './highlights'
@@ -244,9 +244,11 @@ export function SchedBoard() {
     /* the desktop grip that resizes the checks panel against the roster below it
        (owner, Aug 26) — a no-op until dragged, phone grip is display:none */
     const offSplit = sideRef.current ? wireWarnSplit(sideRef.current) : () => {}
+    /* and the panel's own width, by its left edge (D1113, D1118 — board.ts wireSideGrip) */
+    const offSide = sideRef.current ? wireSideGrip(sideRef.current) : () => {}
     return () => {
       el.removeEventListener('click', boardMbtn); el.removeEventListener('click', boardArmClick)
-      el.removeEventListener('change', boardChange); offDrag(); offDots(); offRos(); offHist(); offSplit()
+      el.removeEventListener('change', boardChange); offDrag(); offDots(); offRos(); offHist(); offSplit(); offSide()
     }
   }, [])
 
@@ -508,7 +510,7 @@ export function SchedBoard() {
                 onClick={() => { setMoreOpen(false); toggleWide(); notify() }}><span className="bi">{SBWIDE ? '📱' : '🖥'}</span> {SBWIDE ? 'Phone layout' : 'Desktop layout'}</button>
             </div>}
           </span>
-          <div className="searchbox sb-search">🔍<input id="searchB" placeholder="name / callsign"
+          <div className="searchbox sb-search"><SrchIcon /><input id="searchB" placeholder="name / callsign"
             onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div>
           <button className="abtn sb-arrow" id="sbNextDay" title="Next day"
             disabled={SBDAY == null}
@@ -693,6 +695,9 @@ export function SchedBoard() {
             tapping any slot slides it open, exactly like the week. The
             desktop column and .sb-wide are unchanged (both restate). */}
         <div className="sb-side" id="sbSide" ref={sideRef}>
+          {/* the panel's width grip, on its left edge (D1113, D1118) — desktop only; see wireSideGrip / .sb-sidegrip */}
+          <div className="sb-sidegrip" data-sidegrip role="separator" aria-orientation="vertical" aria-label="Crew panel width"
+            aria-valuemin={SIDE_MIN} tabIndex={0} title="Drag to widen the panel. Double-click puts it back." />
           <div className="sb-warn" id="sbWarn" ref={warnRef} />
           {/* the drag grip between the checks and the roster (owner, Aug 26) —
               desktop only; see wireWarnSplit / .sb-wsplit */}

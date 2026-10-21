@@ -1546,7 +1546,7 @@ board), it just makes the checks list answer the selection.
 
 ## The board on a phone is ONE window (owner, 8 Aug 26)
 
-**The desktop layout pinches (owner D1107, D1109, 21 Oct 26 — `[BOARD-PHONE-PINCH-ZOOM]`; `ui/pinchzoom.ts`, `SchedBoard.tsx`, `drag.ts tdWideLoop`; pins `e2e/pinchzoom.spec.ts`, `src/ui/pinchzoom.test.ts`):** on a phone, in the board's desktop layout, a pinch zooms the day only — the bar is the phone layout's own, at its phone size; out until the whole day's width fits the screen, in to twice normal; it opens at today's size and keeps its zoom across days until ✓ Done; a puck held near the screen's edge scrolls the day that way at the Leave War's edge distance and speed (D895). The phone layout and the desktop are unchanged. **The sign-off scrolls away (D1111):** in the desktop layout on a phone the whole board column scrolls — the sign-off, the issues bar and the panels together — as on a desktop; it is never frozen above the day. **The right panel on a desktop (D1113, to build — [BOARD-SIDE-WIDTH]):** two equal columns kept; a grip on its left edge widens it from 320 to about 40% of the screen, remembered on that computer. **Its side column is the desktop's (D1112):** the issues list with the desktop's margins (not the phone drawer's 30), the crew list's two columns sharing the column's width (not the phone's puck-wide ones). While the fingers move the day is stretched as a picture (a transform); at the lift its CSS zoom is written once and the spot under the fingers kept — inside the zoom a list's own pixels are not the screen's (`pinchzoom.ts scaleOf`), so whatever scrolls a list there by a screen distance divides by it (the keyboard lift does). The day's sideways overscroll is not contained here, so a swipe on the day slides the board (it was a dead end before, 21 Oct 26).
+**The desktop layout pinches (owner D1107, D1109, 21 Oct 26 — `[BOARD-PHONE-PINCH-ZOOM]`; `ui/pinchzoom.ts`, `SchedBoard.tsx`, `drag.ts tdWideLoop`; pins `e2e/pinchzoom.spec.ts`, `src/ui/pinchzoom.test.ts`):** on a phone, in the board's desktop layout, a pinch zooms the day only — the bar is the phone layout's own, at its phone size; out until the whole day's width fits the screen, in to twice normal; it opens at today's size and keeps its zoom across days until ✓ Done; a puck held near the screen's edge scrolls the day that way at the Leave War's edge distance and speed (D895). The phone layout and the desktop are unchanged. **The sign-off scrolls away (D1111):** in the desktop layout on a phone the whole board column scrolls — the sign-off, the issues bar and the panels together — as on a desktop; it is never frozen above the day. **The Leave War grid pinches on a phone too (D1117, to build — [LW-PHONE-PINCH-ZOOM]):** the same pinch body (`ui/pinchzoom.ts`), its questions first. **Edit Schedule's AIRCREW panel heading (D1116, to build — [BOARD-SIDE-WIDTH]):** with its ‹ day › picker, stays in sight while the week page scrolls on a desktop; its › never moves as the day's name changes — the name has the room "WEDNESDAY" needs (D1122, to build — [ARROWS-STAY-PUT]). **The crew list (D1114 answered by D1118, to build; D1115, the look, in hand — [BOARD-SIDE-WIDTH]):** with no seat picked, an ATT B man with nothing else that day shows in full colour with the list's own small grey words "ATT B: no flying", straight after the free men and not counted in "N free" (today faded, as a man already tasked); a struck man's reason stands beside his puck where 92 is free beside it, under it where not (the ALL AVAIL window's rule, D40); the strike crosses the puck only, never the empty column (D1118); a man whose only task that day is standing by — an SC SPARE line, an AVALON or BB line that does not fly, an AVALON or BB desk — is never faded as tasked: the standby look, counted in "N free" (D1120, to build); the SANS section runs free first, then crossed out, its heading counting its free men ("SANS Avail · 8 free"), and the strip over the list reads "Planning FCP" with no dot when the picked line has no callsign or mission yet (D1119, to build); a reason says each fact once — the kind's meaning and the man's remark not both where they say the same (D1121, a later job of its own — [CREW-REASON-TWICE]); the look over every state the list draws was done (D1115, answered by D1119). **The right panel on a desktop (D1113, D1118, to build — [BOARD-SIDE-WIDTH]):** two equal columns kept; a grip on its left edge — the issues/crew grip's look turned on its side, a short bar at the edge's middle — widens it from 320 to 40% of the screen, remembered on that computer; a double-click on the edge puts it back to 320. **Its side column is the desktop's (D1112):** the issues list with the desktop's margins (not the phone drawer's 30), the crew list's two columns sharing the column's width (not the phone's puck-wide ones). While the fingers move the day is stretched as a picture (a transform); at the lift its CSS zoom is written once and the spot under the fingers kept — inside the zoom a list's own pixels are not the screen's (`pinchzoom.ts scaleOf`), so whatever scrolls a list there by a screen distance divides by it (the keyboard lift does). The day's sideways overscroll is not contained here, so a swipe on the day slides the board (it was a dead end before, 21 Oct 26).
 
 Comp approved before build. Below 820px the board used to be three stacked
 zones — the panels, then a bottom-pinned sheet holding `Live checks` and the
@@ -4861,6 +4861,8 @@ Pins: `ui/inputcx.test.tsx`, `ui/inputmarks-scenarios.test.tsx`.*
 > `docs/mock/undo-topbar.html` v4). The section's old name said "while editing, undo/redo"; the pair is no longer the edit
 > page's only. What it is now is the third bullet below; the "Undo / redo / Edit history" bullet under it is the Aug 26
 > text, kept for its history and marked where it no longer holds.
+>
+> **Widened 21 Oct 26 — D1126:** the laptop look (Undo and Redo as their arrows only, their names on hover; the sync pill its dot alone, `02-shell.css`) runs from 821 up to 1599 wide on every page, not only to 1499 — Edit Schedule's bar, which carries the changes clock too, broke onto a second line at 1500–1550 (his PC is 1536 wide).
 
 Two additions to the sticky top bar (`ui/Shell.tsx`), both desktop-and-phone
 except where noted:
@@ -5044,6 +5046,7 @@ restore and delete are on Admin → Users (D310). Pins: `quals.test.tsx` "D935",
 **And (owner D937, 16 Oct 26 — "As recommended"):** on a phone "Save changes" reads "Save" (its full words kept for a
 screen reader, as Export's), so the filter keeps room to type at 320 while editing; and the page opens at its top — the
 row in sight — however the Quals tab is opened, as the Inputs page does. Pins: `quals.test.tsx` "D937", `e2e/geometry.spec.ts` "D937".
+**Then (owner D1128, 21 Oct 26 — round 1 of the consistency look):** the buttons read as Logic's — "✎ Edit" in plain grey to start, "Done" in the bright blue while editing — in place of "Enable editing" and "Save changes" / "Save"; what each does is unchanged (each change is kept as it is made; the button only ends editing). D937's phone "Save" goes with it.
 
 ## The Quals page's columns, sorting and View (owner, 5 Aug 26)
 
@@ -5540,6 +5543,10 @@ Three ways they leaked, all now closed, and all three are the checklist for
    the strip's colour — flat rather than the gradient because a 6–12px slice of
    a ramp spanning six RGB points cannot show a seam, and a pseudo-element per
    pin is two more nodes on the phone's tightest bars.
+
+## One search box, everywhere (owner D1127, 21 Oct 26)
+
+Every search box looks like the Edit Schedule week's: a grey line magnifier inside the box on the left (the app's own drawn magnifier, never the coloured emoji), the box as tall as the buttons beside it; each keeps its own words — the Scheduler Board, Quals, Logic, Admin → Users, the Inputs list and the Tracker. The Tracker's ✕ that clears its search stays.
 
 ## A small search on the phone's view-only schedule (owner, 20 Aug 26)
 
@@ -10442,6 +10449,8 @@ A shared store starts with nothing demo (`src/bootpolicy.ts`), so two tabs must 
 
 ## The SANS calendar — its month, its day, its gear (the Inputs / SANS job, step 4, 8 Oct 26; D617–D651, D664)
 
+**One row with the Inputs calendar's (owner D1125, 21 Oct 26 — answering D1123; [INPUTS-SANS-HEAD-SAME]):** on a desktop the three tabs, ‹ month › and Today, then Highlight and the gear at the right end stand on ONE row, the arrows, month and Today in the same place as on the Inputs calendar; the month's name in the Inputs month's style (18px, weight 700 on a desktop; 16px on a phone); the row's buttons drawn 36 tall (a finger's press area kept). The phone's rows were already alike (D705) — only the month's letters change there. Where a line below says otherwise of the head, this one wins.
+
 The SANS tab of Inputs is ONE screen, `ui/SansCal.tsx`, with no Calendar | List pair, no filters and no list (D620).
 **It works nothing out.** A day's class, its required pilots and WSOs, how many more are needed and its colour are the
 ONE resolver's answer (`leavewar/sync.ts flyMonth` / `flyAnswer` → `state/flyplan-model.ts planFor`); who has committed
@@ -10506,6 +10515,8 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
 `ui/sanscal-model.test.ts`; in a browser `e2e/inputs-sans-calendar.spec.ts`. Pictures: `scripts/handpass/sans-look.mjs`.
 
 ## The Inputs calendar — its tabs, its month of bars, its day, its gear, the editor as a window (the Inputs / SANS job, step 5, 8 Oct 26; D620, D621, D626, D627, D629, D632, D639, D641, D646, D653, D664, D672)
+
+**Its top row on a desktop (owner D1125, 21 Oct 26):** the tabs, then ‹ month › and Today — in the same place as on the SANS calendar — then at the right end the Calendar / List switch, the filters and the gear; the switch stands there on the Calendar and on the List alike, so it never moves (D687), as on the phone (D705); the row's buttons drawn 36 tall. Where a line below puts the switch first on a desktop, this one wins.
 
 `ui/InputsPage.tsx`, `ui/InputsCal.tsx`, `ui/inputscal-model.ts`, `ui/InputsSettings.tsx`, `ui/inputedit.tsx`; styles
 `ui/scheduler/25-inputs-calendar.css`. The plan: `docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.6–§3.9.

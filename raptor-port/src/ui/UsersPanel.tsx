@@ -23,6 +23,7 @@
    Restore — they write the war too), each checking the permission itself and saying why when it refuses; this panel
    only asks and toasts. The words read as the database-era app will (25 Aug 26); the prototype truths live in
    state/accounts.ts, not on screen. */
+import { SrchIcon } from './icons'
 import { useEffect, useRef, useState } from 'react'
 import { PEOPLE, nameToId, archivedHolders } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
@@ -469,8 +470,9 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number } = {}) {
       <hr className="adm-sep" />
       <div className="od-head">
         <h4 className="adm-sub">People · {onRoster.length}</h4>
-        <input className="od-find" id="accFind" type="search" value={find} placeholder="Find a callsign or sign-in"
-          aria-label="Find a callsign or sign-in" onChange={e => { setFind(e.target.value); setArchOpen(null) }} />
+        {/* the app's line magnifier, as in every search box (owner D1127, 21 Oct 26 — never the coloured emoji) */}
+        <div className="searchbox od-find"><SrchIcon /><input id="accFind" type="search" value={find} placeholder="Find a callsign or sign-in"
+          aria-label="Find a callsign or sign-in" onChange={e => { setFind(e.target.value); setArchOpen(null) }} /></div>
       </div>
       <div className="acc-list od-list" id="accList">
         <Cols />

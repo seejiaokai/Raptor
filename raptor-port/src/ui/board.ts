@@ -562,6 +562,15 @@ export function boardWarnHTML(di: number, look = false) {
    that leaves the 7px grip still tracks and still ends. Written straight to the
    DOM (a CSS var + a class on the persistent .sb-side), never through React
    state, so a panel re-hang mid-session does not throw the size away. */
+/* A DRAG OF A GRIP ENDS WITH A CLICK THAT IS NOT A CLICK. The press began on the grip and the button came up wherever
+   the pointer was let go — over the day, or further down the column — so the browser sends the click to what holds them
+   both, which the board reads as a click on blank space: the seat being planned and the selection were dropped (the
+   walk of 21 Oct 26, [BOARD-SIDE-WIDTH]). After a drag that moved, that one click is swallowed before anything sees it. */
+function swallowNextClick() {
+  const swallow = (ev: Event) => { ev.stopPropagation(); ev.preventDefault() }
+  document.addEventListener('click', swallow, { capture: true, once: true })
+  setTimeout(() => document.removeEventListener('click', swallow, true), 0)
+}
 export function wireWarnSplit(side: HTMLElement) {
   const down = (e: PointerEvent) => {
     const grip = (e.target as HTMLElement).closest('[data-wsplit]')
@@ -584,6 +593,7 @@ export function wireWarnSplit(side: HTMLElement) {
       document.removeEventListener('pointermove', move)
       document.removeEventListener('pointerup', up)
       document.removeEventListener('pointercancel', up)
+      if (moved) swallowNextClick()
     }
     document.addEventListener('pointermove', move)
     document.addEventListener('pointerup', up)
@@ -591,6 +601,65 @@ export function wireWarnSplit(side: HTMLElement) {
   }
   side.addEventListener('pointerdown', down)
   return () => side.removeEventListener('pointerdown', down)
+}
+
+/* THE RIGHT PANEL WIDENS BY ITS LEFT EDGE (owner D1113, D1118, 21 Oct 26 — "Yes as recommended for the right panel";
+   round 1 "yes to all"). A grip on the side column's left edge (.sb-sidegrip) drags the panel from 320 up to 40% of the
+   window; its two crew columns and the issues list share the width, the day narrows. A double-click puts it back to 320;
+   with the keyboard on the grip, ← widens and → narrows by 20, Home is 320 and End the widest. The width is REMEMBERED ON
+   THIS COMPUTER — a view preference, straight to localStorage under its own key outside the app's shared prefix, never
+   through the whiteboard or the settings command (the Tracker's ocuLocal precedent, docs/data-schema.md): it is nobody
+   else's business how wide one scheduler's panel is. The width he asked for is kept; what is drawn is clamped to the
+   window, so a smaller window shows less and a larger one gives it back. Written straight to the DOM (a CSS variable on
+   the persistent .sb-side, as wireWarnSplit does), so a repaint of the board keeps it. Desktop only: the grip is
+   display:none at a phone's width, where the column is the drawer. */
+export const SIDE_MIN = 320
+export const SIDE_KEY = 'raptorLocal:sbSideW'
+export const sideMax = () => Math.max(SIDE_MIN, Math.round(window.innerWidth * 0.4))
+const readSideW = () => { try { const v = Number(window.localStorage.getItem(SIDE_KEY) || ''); return v > 0 ? v : SIDE_MIN } catch { return SIDE_MIN } }
+const saveSideW = (w: number) => { try { if (w > SIDE_MIN) window.localStorage.setItem(SIDE_KEY, String(Math.round(w))); else window.localStorage.removeItem(SIDE_KEY) } catch { } }
+export function wireSideGrip(side: HTMLElement) {
+  const grip = side.querySelector('[data-sidegrip]') as HTMLElement | null
+  if (!grip) return () => { }
+  let want = readSideW()
+  const apply = (w: number) => {
+    const c = Math.max(SIDE_MIN, Math.min(sideMax(), Math.round(w)))
+    if (c > SIDE_MIN) side.style.setProperty('--sb-sideW', c + 'px'); else side.style.removeProperty('--sb-sideW')
+    grip.setAttribute('aria-valuenow', String(c)); grip.setAttribute('aria-valuemax', String(sideMax()))
+    return c
+  }
+  apply(want)
+  const set = (w: number) => { want = apply(w); saveSideW(want) }
+  const down = (e: PointerEvent) => {
+    if (e.button != null && e.button !== 0) return
+    e.preventDefault()
+    const x0 = e.clientX, w0 = side.getBoundingClientRect().width
+    try { grip.releasePointerCapture(e.pointerId) } catch { }
+    grip.classList.add('drag'); document.body.classList.add('sbside-drag')
+    let moved = false
+    const move = (ev: PointerEvent) => { if (!moved && Math.abs(ev.clientX - x0) < 3) return; moved = true; want = apply(w0 + (x0 - ev.clientX)); ev.preventDefault() }
+    const up = () => {
+      document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); document.removeEventListener('pointercancel', up)
+      grip.classList.remove('drag'); document.body.classList.remove('sbside-drag')
+      saveSideW(want)
+      if (moved) swallowNextClick()
+    }
+    document.addEventListener('pointermove', move); document.addEventListener('pointerup', up); document.addEventListener('pointercancel', up)
+  }
+  const dbl = () => set(SIDE_MIN)
+  const key = (e: KeyboardEvent) => {
+    const now = side.getBoundingClientRect().width
+    const to = e.key === 'ArrowLeft' ? now + 20 : e.key === 'ArrowRight' ? now - 20 : e.key === 'Home' ? SIDE_MIN : e.key === 'End' ? sideMax() : null
+    if (to == null) return
+    e.preventDefault(); set(to)
+  }
+  const resize = () => apply(want)
+  grip.addEventListener('pointerdown', down); grip.addEventListener('dblclick', dbl); grip.addEventListener('keydown', key)
+  window.addEventListener('resize', resize)
+  return () => {
+    grip.removeEventListener('pointerdown', down); grip.removeEventListener('dblclick', dbl); grip.removeEventListener('keydown', key)
+    window.removeEventListener('resize', resize)
+  }
 }
 
 export function dayTabsHTML(di: number) {
@@ -603,7 +672,9 @@ export function dayTabsHTML(di: number) {
      carry ('Jan 1 2027' — weeks-data.ts weekLabels): the chip has room for
      'Fri 1', not 'Fri 1 2027' */
   const dayNum = (dt: string) => dt.replace(/^\S+\s+/, '').replace(/\s+\d{4}$/, '')
-  const chips = DAYS.map((x: any, i: number) => `<span class="sbday ${i === di ? 'on' : ''}" data-sbtab="${i}">${esc(x.dow.slice(0, 3))} ${esc(dayNum(x.dt))}</span>`).join('')
+  /* data-fit: the chip's room is its weekday with a two-digit date ("Wed 30"), measured in whatever font draws it, so the
+     › after the chips stays put from week to week (owner D1122; the figures are of one width — 10-board-history.css) */
+  const chips = DAYS.map((x: any, i: number) => { const dw = esc(x.dow.slice(0, 3)); return `<span class="sbday ${i === di ? 'on' : ''}" data-sbtab="${i}" data-fit="${dw} 30">${dw} ${esc(dayNum(x.dt))}</span>` }).join('')
   /* WEEK ARROWS FLANK THE DAY CHIPS ON DESKTOP (owner, 23 Aug 26 — "in
      scheduler board i cant go between weeks except through the calendar").
      They live INSIDE #sbDays, which is display:flex on a desktop and

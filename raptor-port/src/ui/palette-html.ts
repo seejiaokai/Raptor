@@ -27,6 +27,18 @@ const groundedOnly=(id:any,di:any)=>{
   const away=inputLinesOn(d.dt).filter((i:any)=>isAway(i)&&awayAllDay(i)&&i.person===id);
   return away.length>0&&away.every((i:any)=>canWork(i.type));
 };
+/* the kind that grounds him (ATT B today — canWork's one type), named on his line in the list (D1118) */
+const groundedType=(id:any,di:any)=>{
+  const d=DAYS[di]; if(!d)return '';
+  const x=inputLinesOn(d.dt).find((i:any)=>isAway(i)&&awayAllDay(i)&&i.person===id&&canWork(i.type));
+  return x?String(x.type):'';
+};
+/* why this man is crossed out of the list, or '' — one body for his puck (rosterPuck) and the SANS section's order */
+function whyOf(id:any,di:any,armKey:any,off:any,rules:any,grounded:any){
+  return armKey?slotBar(id,armKey,rules)
+    :((off&&off.has(id)&&!grounded)?offReason(id,di)
+      :((PEOPLE[id].san&&di>=0&&DAYS[di]&&!sansAvailOn(id,DAYS[di].dt))?'SANS — no availability filed for today':''));
+}
 export function rosterPuck(id:any,di:any,armKey:any,eng:any,off:any,sby:any,rules:any,hideWhy?:any){
   const grounded=!armKey&&!!(off&&off.has(id))&&groundedOnly(id,di);
   /* RECORD-LESS SANS ARE STRUCK BY DEFAULT (owner bug report, 14 Aug 26) — with
@@ -40,16 +52,21 @@ export function rosterPuck(id:any,di:any,armKey:any,eng:any,off:any,sby:any,rule
      `p.special` placeholders never reach rosterPuck (specialRowHTML draws
      them separately) and a non-SANS man never has `.san`, so both are
      untouched by construction, not by an extra guard here. */
-  const why=armKey?slotBar(id,armKey,rules)
-    :((off&&off.has(id)&&!grounded)?offReason(id,di)
-      :((PEOPLE[id].san&&di>=0&&DAYS[di]&&!sansAvailOn(id,DAYS[di].dt))?'SANS — no availability filed for today':''));
-  const standby=!!(sby&&sby.has(id));
-  const cls=why?'no':((grounded||(eng&&eng.has(id)))?'busy':(standby?'standby':''));
+  const why=whyOf(id,di,armKey,off,rules,grounded);
+  const standby=!!(sby&&sby.has(id)), tasked=!!(eng&&eng.has(id));
+  /* GROUNDED BUT FREE READS FREE (owner D1118, 21 Oct 26 — D1114's question, "yes as drawn"): with no place picked, a
+     man whose only absence is ATT B and who has nothing else that day is drawn in full colour, his line saying what he
+     cannot do ("ATT B: no flying") — the fade means "already tasked", and he is not. Tasked elsewhere too, he stays
+     faded, as before. Picking a place still judges him by slotBar above. */
+  const gFree=grounded&&!tasked&&!why;   // a SANS man on ATT B with no record is struck for that, never drawn free (blind read F3)
+  const cls=why?'no':(gFree?'grounded':((grounded||tasked)?'busy':(standby?'standby':'')));
+  const sbyKind=standby&&sby.get?sby.get(id):'SC';
   const note=why?`${PEOPLE[id].cs} — ${why}`
     :grounded?`${PEOPLE[id].cs} — grounded today: no flying, but a duty desk, a sim seat or a ground row is still open to him`
-    :(eng&&eng.has(id))?`${PEOPLE[id].cs} — already tasked today, but you can still plan him`
-    :standby?`${PEOPLE[id].cs} — SC spare, standing by and free for anything else`
+    :tasked?`${PEOPLE[id].cs} — already tasked today, but you can still plan him`
+    :standby?(sbyKind==='SC'?`${PEOPLE[id].cs} — SC spare, standing by and free for anything else`:`${PEOPLE[id].cs} — ${sbyKind} standby, free for anything else`)
     :PEOPLE[id].cs;
+  const gWhy=gFree?`${groundedType(id,di)||'Grounded'}: no flying`:'';
   /* WHILE A SLOT IS ARMED the reason is PRINTED under a crossed-out name, not
      only carried on the title — a phone has no hover, and the owner's rule
      (13 Aug 26) is that the scheduler sees the problem BEFORE the tap, never
@@ -58,11 +75,11 @@ export function rosterPuck(id:any,di:any,armKey:any,eng:any,off:any,sby:any,rule
      shares one reason, paletteHTML prints it once under the header, or a
      front-seat arm would print "WSO — cannot fly front seat" fifteen times. */
   const showWhy=!!(armKey&&why&&!hideWhy);
-  return `<span class="rpuck ${cls}${showWhy?' haswhy':''}" data-drag="1" data-person="${id}"`
+  return `<span class="rpuck ${cls}${(showWhy||gWhy)?' haswhy':''}" data-drag="1" data-person="${id}"`
     +(why?` data-why="${esc(why)}"`:'')+` title="${esc(note)}"`
     /* the seat's four marks (D1013, D1017): the day that breaks tomorrow's crew rest rings dotted here too, a sanctioned
        late show dashed, with the seat's own chip — the crew list is never drawn inside a published face, so the live read */
-    +`>${(m=>puck(id,m.sev,true,m.flag,m.dash,m.trace))(di>=0?puckMarks(di,id):{sev:null,flag:null,dash:false,trace:null})}${showWhy?`<span class="rwhy">${esc(why)}</span>`:''}</span>`;
+    +`>${(m=>puck(id,m.sev,true,m.flag,m.dash,m.trace))(di>=0?puckMarks(di,id):{sev:null,flag:null,dash:false,trace:null})}${showWhy?`<span class="rwhy">${esc(why)}</span>`:(gWhy?`<span class="rwhy">${esc(gWhy)}</span>`:'')}</span>`;
 }
 /* Why this man's DAY is closed. Only ever asked about someone dayOff() has
    already named, so it must look at the same absences dayOff does — whole-day
@@ -95,8 +112,9 @@ function paletteHTMLBody(di:any,opts?:any){
      row check, [CROWD-SWAP-SAYS-BUSY] W3's walk: a man already in the crowd struck from its own "+ add"); slotRules
      strips the `.+` itself, and nothing else here reads more than whether a slot is armed */
   const armKey=ARM?String(ARM.key):'';
-  const eng0=d.dow?dayEngaged(d):new Set(), off=d.dow?dayOff(d):new Set();
-  const sby0=d.dow?dayStandby(d):new Set();
+  /* a man only standing by is not "tasked" in this list (owner D1120) — dayEngaged asked to leave standby rows out */
+  const eng0=d.dow?dayEngaged(d,true):new Set(), off=d.dow?dayOff(d):new Set();
+  const sby0=d.dow?dayStandby(d):new Map();
   /* AN ARMED SLOT CHANGES WHAT THE PALETTE IS SAYING.
      Ordinarily the pucks are faded by whether the man is tasked anywhere on the
      day. That is the wrong question once a slot is armed: the scheduler is
@@ -111,7 +129,7 @@ function paletteHTMLBody(di:any,opts?:any){
      shift's currency. The everyday, unarmed palette keeps its fades. */
   const arules=armKey?slotRules(armKey):null;
   const scArm=!!(arules&&arules.sc);
-  const eng=armKey?new Set():eng0, sby=armKey?new Set():sby0;
+  const eng=armKey?new Set():eng0, sby=armKey?new Map():sby0;
   const ok=(id:any)=>!PEOPLE[id].archived&&(!scArm||scQualOK(id,arules.sc));
   /* rank 2 = cannot be planned here, 1 = tasked but plannable, 0 = free. The
      off set (leave / downchit) is drawn struck-through but used to be ranked 0,
@@ -121,8 +139,10 @@ function paletteHTMLBody(di:any,opts?:any){
      and drops him out of the "N free" count. A grounded-only man (ATT B) is
      rank 1 — tasked-but-plannable — for the same reason rosterPuck no longer
      strikes him: he is unavailable for a jet, not for the day. */
+  /* .5 = grounded but otherwise free (D1118): drawn in full colour, sorted straight after the free men, and still out
+     of "N free" — the count is of men who can fly */
   const rank=(id:any)=>(armKey?(slotBar(id,armKey,arules)?2:0)
-                       :((off&&off.has(id))?(groundedOnly(id,di)?1:2):0))||(eng.has(id)?1:0);
+                       :((off&&off.has(id))?(groundedOnly(id,di)?(eng.has(id)?1:.5):2):0))||(eng.has(id)?1:0);
   const bySort=(a:any,b:any)=>rank(a)-rank(b)||PEOPLE[a].cs.localeCompare(PEOPLE[b].cs);
   /* SANS members are no longer split into a per-column sub-band (owner, 14 Aug
      26) — they move into ONE full-width section below, sansAvailHTML, so
@@ -220,22 +240,29 @@ export function specialRowHTML(di:any){
    and the badge, not decide who is barred.
    `ok()` is the SAME archived/SC-currency filter paletteHTML's own columns
    apply, recomputed here rather than threaded through as a parameter: this
-   is a standalone exported function (palette.test.ts and board-html.ts both
-   call it directly), and arules already carries everything ok() needs. */
+   is a standalone exported function (palette.test.ts calls it directly), and arules already carries everything ok() needs. */
 export function sansAvailHTML(di:any,armKey:any,eng:any,off:any,sby:any,arules:any){
   const scArm=!!(arules&&arules.sc);
   const ok=(id:any)=>!PEOPLE[id].archived&&(!scArm||scQualOK(id,arules.sc));
+  /* ORDERED AS THE PILOTS AND WSOs ARE, AND COUNTED (owner D1119, 21 Oct 26 — round 2 of the look, "yes to both"):
+     free first, then grounded-but-free, then tasked, then crossed out, callsign order within each; the heading counts
+     the free men as the columns' do. Each man's rank is read from the same reason his puck prints (whyOf). */
+  const rk=(id:any)=>{const g=!armKey&&!!(off&&off.has(id))&&groundedOnly(id,di);
+    if(whyOf(id,di,armKey,off,arules,g))return 2;
+    const t=!!(eng&&eng.has(id));return g?(t?1:.5):(t?1:0);};
   const ids=Object.keys(PEOPLE).filter((id:any)=>ok(id)&&PEOPLE[id].san)
-    .sort((a:any,b:any)=>PEOPLE[a].cs.localeCompare(PEOPLE[b].cs));
+    .map((id:any)=>[id,rk(id)] as [any,number])
+    .sort((a:any,b:any)=>a[1]-b[1]||PEOPLE[a[0]].cs.localeCompare(PEOPLE[b[0]].cs));
   if(!ids.length)return '';
+  const free=ids.filter(([,r])=>!r).length;
   const d=DAYS[di]||{};
   /* each row prints its OWN reason (rosterPuck's hideWhy left off, unlike
      col()'s colWhy dedup) — a shared reason only makes sense where a whole
      column is barred for one structural cause (e.g. every WSO); here eleven
      different people can each be barred for a different SANS record, or none
      at all, and folding those into one line would just be wrong. */
-  return `<div class="rall rsans"><div class="rh2">SANS Avail</div>`
-    +ids.map((id:any)=>{
+  return `<div class="rall rsans"><div class="rh2">SANS Avail · ${free} free</div>`
+    +ids.map(([id]:any)=>{
       const badge=sansBadge(id,d.dt);
       /* the record's own remarks, ellipsized (owner, 14 Aug 26) — a sibling of
          the badge, same reasoning as .rsans-b's own comment: never nested

@@ -1,0 +1,635 @@
+[
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "1536: the switch where it was, Calendar → List (D687)",
+  "got": [
+   857.3,
+   73,
+   857.3,
+   73
+  ]
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "1536: ‹, month, ›, Today in the same places on Inputs and SANS",
+  "got": {
+   "inputs": [
+    348.9,
+    394.9,
+    574.5,
+    620.5
+   ],
+   "sans": [
+    348.9,
+    394.9,
+    574.5,
+    620.5
+   ]
+  }
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "1536: the tabs at the same height on both",
+  "got": [
+   73,
+   73
+  ]
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "1536: one month style",
+  "got": [
+   "18px",
+   "700",
+   "18px",
+   "700"
+  ]
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "1536: lines in the rows (Inputs calendar, List, SANS)",
+  "got": [
+   1,
+   1,
+   1
+  ]
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "1366: the switch where it was, Calendar → List (D687)",
+  "got": [
+   735.3,
+   73,
+   735.3,
+   73
+  ]
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "1366: ‹, month, ›, Today in the same places on Inputs and SANS",
+  "got": {
+   "inputs": [
+    348.9,
+    394.9,
+    574.5,
+    620.5
+   ],
+   "sans": [
+    348.9,
+    394.9,
+    574.5,
+    620.5
+   ]
+  }
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "1366: the tabs at the same height on both",
+  "got": [
+   73,
+   73
+  ]
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "1366: one month style",
+  "got": [
+   "18px",
+   "700",
+   "18px",
+   "700"
+  ]
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "1366: lines in the rows (Inputs calendar, List, SANS)",
+  "got": [
+   2,
+   2,
+   1
+  ]
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "1024: the switch where it was, Calendar → List (D687)",
+  "got": [
+   854.3,
+   119,
+   854.3,
+   119
+  ]
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "1024: ‹, month, ›, Today in the same places on Inputs and SANS",
+  "got": {
+   "inputs": [
+    348.9,
+    394.9,
+    574.5,
+    620.5
+   ],
+   "sans": [
+    348.9,
+    394.9,
+    574.5,
+    620.5
+   ]
+  }
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "1024: the tabs at the same height on both",
+  "got": [
+   119,
+   119
+  ]
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "1024: one month style",
+  "got": [
+   "18px",
+   "700",
+   "18px",
+   "700"
+  ]
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "1024: lines in the rows (Inputs calendar, List, SANS)",
+  "got": [
+   2,
+   2,
+   1
+  ]
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "900: the switch where it was, Calendar → List (D687)",
+  "got": [
+   730.3,
+   119,
+   730.3,
+   119
+  ]
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "900: ‹, month, ›, Today in the same places on Inputs and SANS",
+  "got": {
+   "inputs": [
+    348.9,
+    394.9,
+    574.5,
+    620.5
+   ],
+   "sans": [
+    348.9,
+    394.9,
+    574.5,
+    620.5
+   ]
+  }
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "900: the tabs at the same height on both",
+  "got": [
+   119,
+   119
+  ]
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "900: one month style",
+  "got": [
+   "18px",
+   "700",
+   "18px",
+   "700"
+  ]
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "900: lines in the rows (Inputs calendar, List, SANS)",
+  "got": [
+   2,
+   2,
+   1
+  ]
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "phone 402: ‹, month, ›, Today in the same places (D705, kept; the 1–2px between the two rows' tops is older)",
+  "got": {
+   "inputs": [
+    [
+     8,
+     106
+    ],
+    [
+     43,
+     115
+    ],
+    [
+     142,
+     106
+    ],
+    [
+     177,
+     106
+    ]
+   ],
+   "sans": [
+    [
+     8,
+     107
+    ],
+    [
+     43,
+     116
+    ],
+    [
+     142,
+     107
+    ],
+    [
+     177,
+     107
+    ]
+   ]
+  }
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "phone 402: one month style",
+  "got": [
+   "16px",
+   "700",
+   "16px",
+   "700"
+  ]
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "phone 320: ‹, month, ›, Today in the same places (D705, kept; the 1–2px between the two rows' tops is older)",
+  "got": {
+   "inputs": [
+    [
+     8,
+     105
+    ],
+    [
+     41,
+     114
+    ],
+    [
+     132,
+     105
+    ],
+    [
+     165,
+     105
+    ]
+   ],
+   "sans": [
+    [
+     8,
+     107
+    ],
+    [
+     41,
+     116
+    ],
+    [
+     132,
+     107
+    ],
+    [
+     165,
+     107
+    ]
+   ]
+  }
+ },
+ {
+  "id": "D1125",
+  "ok": true,
+  "what": "phone 320: one month style",
+  "got": [
+   "16px",
+   "700",
+   "16px",
+   "700"
+  ]
+ },
+ {
+  "id": "D1126",
+  "ok": true,
+  "what": "1280: every page's top bar the same height — one line from 1344 up (below it every page takes two, as before)",
+  "got": {
+   "editsched": 104,
+   "viewsched": 103,
+   "inputs": 103,
+   "quals": 103,
+   "logic": 103,
+   "leavewar": 103,
+   "tracker": 103,
+   "help": 103,
+   "admin": 103
+  }
+ },
+ {
+  "id": "D1126",
+  "ok": true,
+  "what": "1536: every page's top bar the same height — one line from 1344 up (below it every page takes two, as before)",
+  "got": {
+   "editsched": 58,
+   "viewsched": 57,
+   "inputs": 57,
+   "quals": 57,
+   "logic": 57,
+   "leavewar": 57,
+   "tracker": 57,
+   "help": 57,
+   "admin": 57
+  }
+ },
+ {
+  "id": "D1126",
+  "ok": true,
+  "what": "1600: every page's top bar the same height — one line from 1344 up (below it every page takes two, as before)",
+  "got": {
+   "editsched": 58,
+   "viewsched": 57,
+   "inputs": 57,
+   "quals": 57,
+   "logic": 57,
+   "leavewar": 57,
+   "tracker": 57,
+   "help": 57,
+   "admin": 57
+  }
+ },
+ {
+  "id": "D1127",
+  "ok": true,
+  "what": "pc week: the line magnifier inside on the left, no emoji (box 26 tall)",
+  "got": {
+   "glyph": true,
+   "emoji": false,
+   "h": 26,
+   "x": 1323,
+   "y": 68,
+   "w": 193
+  }
+ },
+ {
+  "id": "D1127",
+  "ok": true,
+  "what": "pc quals: the line magnifier inside on the left, no emoji (box 36 tall)",
+  "got": {
+   "glyph": true,
+   "emoji": false,
+   "h": 36,
+   "x": 1316,
+   "y": 65,
+   "w": 200
+  }
+ },
+ {
+  "id": "D1127",
+  "ok": true,
+  "what": "pc logic: the line magnifier inside on the left, no emoji (box 36 tall)",
+  "got": {
+   "glyph": true,
+   "emoji": false,
+   "h": 36,
+   "x": 70.015625,
+   "y": 65,
+   "w": 420
+  }
+ },
+ {
+  "id": "D1127",
+  "ok": true,
+  "what": "pc admin: the line magnifier inside on the left, no emoji (box 36 tall)",
+  "got": {
+   "glyph": true,
+   "emoji": false,
+   "h": 36,
+   "x": 971,
+   "y": 209.5,
+   "w": 220
+  }
+ },
+ {
+  "id": "D1127",
+  "ok": true,
+  "what": "pc inputs: the line magnifier inside on the left, no emoji (box 36 tall)",
+  "got": {
+   "glyph": true,
+   "emoji": false,
+   "h": 36,
+   "x": 1289,
+   "y": 73,
+   "w": 187
+  }
+ },
+ {
+  "id": "D1127",
+  "ok": true,
+  "what": "pc tracker: the line magnifier inside on the left, no emoji (box 25 tall)",
+  "got": {
+   "glyph": true,
+   "emoji": false,
+   "h": 25,
+   "x": 802.984375,
+   "y": 69.5,
+   "w": 151
+  }
+ },
+ {
+  "id": "D1127",
+  "ok": true,
+  "what": "pc board: the line magnifier inside on the left, no emoji (box 26 tall)",
+  "got": {
+   "glyph": true,
+   "emoji": false,
+   "h": 26,
+   "x": 1033.34375,
+   "y": 12.5,
+   "w": 193
+  }
+ },
+ {
+  "id": "D1127",
+  "ok": true,
+  "what": "phone quals: the line magnifier inside on the left, no emoji (box 36 tall)",
+  "got": {
+   "glyph": true,
+   "emoji": false,
+   "h": 36,
+   "x": 144.015625,
+   "y": 57,
+   "w": 245.984375
+  }
+ },
+ {
+  "id": "D1127",
+  "ok": true,
+  "what": "phone logic: the line magnifier inside on the left, no emoji (box 36 tall)",
+  "got": {
+   "glyph": true,
+   "emoji": false,
+   "h": 36,
+   "x": 58.90625,
+   "y": 57,
+   "w": 207.75
+  }
+ },
+ {
+  "id": "D1127",
+  "ok": true,
+  "what": "phone admin: the line magnifier inside on the left, no emoji (box 36 tall)",
+  "got": {
+   "glyph": true,
+   "emoji": false,
+   "h": 36,
+   "x": 37,
+   "y": 232.5,
+   "w": 328
+  }
+ },
+ {
+  "id": "D1127",
+  "ok": true,
+  "what": "phone inputs: the line magnifier inside on the left, no emoji (box 44 tall)",
+  "got": {
+   "glyph": true,
+   "emoji": false,
+   "h": 44,
+   "x": 8,
+   "y": 199,
+   "w": 386
+  }
+ },
+ {
+  "id": "D1127",
+  "ok": true,
+  "what": "phone tracker: the line magnifier inside on the left, no emoji (box 25 tall)",
+  "got": {
+   "glyph": true,
+   "emoji": false,
+   "h": 25,
+   "x": 15,
+   "y": 130,
+   "w": 337
+  }
+ },
+ {
+  "id": "D1127",
+  "ok": true,
+  "what": "phone tracker: the search button shows the line magnifier",
+  "got": {
+   "svg": true,
+   "emoji": false
+  }
+ },
+ {
+  "id": "D1128",
+  "ok": true,
+  "what": "pc: Quals' pair is Logic's — ✎ Edit plain, Done blue",
+  "got": {
+   "quals": [
+    [
+     "✎ Edit",
+     false
+    ],
+    [
+     "Done",
+     true
+    ]
+   ],
+   "logic": [
+    [
+     "✎ Edit",
+     false
+    ],
+    [
+     "Done",
+     true
+    ]
+   ]
+  }
+ },
+ {
+  "id": "D1128",
+  "ok": true,
+  "what": "pc: Done ends editing",
+  "got": true
+ },
+ {
+  "id": "D1128",
+  "ok": true,
+  "what": "phone: Quals' pair is Logic's — ✎ Edit plain, Done blue",
+  "got": {
+   "quals": [
+    [
+     "✎ Edit",
+     false
+    ],
+    [
+     "Done",
+     true
+    ]
+   ],
+   "logic": [
+    [
+     "✎ Edit",
+     false
+    ],
+    [
+     "Done",
+     true
+    ]
+   ]
+  }
+ },
+ {
+  "id": "D1128",
+  "ok": true,
+  "what": "phone: Done ends editing",
+  "got": true
+ },
+ {
+  "id": "ALL",
+  "ok": true,
+  "what": "no page error or console error on the way",
+  "got": []
+ }
+]

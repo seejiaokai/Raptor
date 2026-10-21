@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import * as core from '../app/core.js';
 import { groupByCategory, filterEvents } from '../app/eventOrder.js';
 import { isComposing } from './keys.js';
+import { SrchGlyph } from './SrchGlyph.jsx';
 
 /* Compact in-place editor for one row of the Show All list — same five fields as the
    pop-up editor, so there is no need to open a modal on top of this panel. */
@@ -112,7 +113,8 @@ export default function ShowAllPanel() {
           {/* The tail is dropped on a phone, where it wrapped onto three lines
               and pushed the first event down to a third of the screen. */}
           <h2>All events<span className="satl"> — name, crew &amp; prerequisites</span></h2>
-          <input id="saSearch" placeholder="filter…" style={{ width: 150 }} value={q} onChange={e => setQ(e.target.value)} />
+          {/* one search box (owner D1127): the app's line magnifier inside it */}
+          <span className="findbox"><SrchGlyph /><input id="saSearch" placeholder="filter…" style={{ width: 150 }} value={q} onChange={e => setQ(e.target.value)} /></span>
           <button id="saClose" onClick={core.closeShowAll}>Close</button>
         </div>
         <div id="saBody">{blocks.length ? blocks : <div className="mini">No matches.</div>}</div>

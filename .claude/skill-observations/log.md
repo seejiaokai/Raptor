@@ -1562,3 +1562,78 @@ different feature that merely pass through it.
 **Suggested improvement:** in the break-test step, a test of the form "X did not happen" first asserts that its precondition did happen without the guard (the thing was picked up, the drag was live) — or is written to observe the guard's direct effect instead of the absence of a downstream change.
 
 **Principle:** A negative assertion proves nothing until the test has shown the harness can produce the positive case; check the precondition, or assert the guard's own effect.
+
+### Observation 659: A mock-up's picked state must show the thing being asked about
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** [BOARD-SIDE-WIDTH] — drawing "a crossed-out man's reason beside his puck" on the Scheduler Board's crew list
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** "Judging the Proposal" — the busy state
+
+**Issue:** The first drawing picked a flying FRONT seat to show reasons beside the pucks. With a front seat picked, every pilot is plannable and every WSO shares one column-wide reason, so the list printed NO per-person reason at all — three pictures of a change that was not visible. The script passed and measured "10 reasons" (placeholders), which hid it until the pictures were opened. A duty desk (each man struck for his own reason) was the state that showed it.
+
+**Suggested improvement:** Under "Include one BUSY state by default", add: before drawing, list which app states make the proposed change VISIBLE and pick one where it shows on most rows; have the script assert a count of the exact element the change touches (here per-man reasons inside the two crew columns), not a looser selector that other rows also match.
+
+**Principle:** A state chosen for convenience can make the proposal invisible; choose the state by what it displays, and assert on the exact element the change touches.
+
+### Observation 660: A walk check over a list passes when the list is empty — and the touched tests miss the stylesheet tests
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** [BOARD-SIDE-WIDTH] — the walk of the board's right panel, then GitHub's run
+**Skill:** (project guide) raptor-port/docs/walk-scripts.md; raptor-port/docs/bug-check-order.md §5 "the touched tests"
+**Type:** open-source
+**Phase/Area:** walk assertions; choosing the local tests to run
+
+**Issue:** (1) The walk asserted "every crossed-out man's reason stands beside his puck" with `rs.every(...)`. A real fault had dropped the picked seat, so the list was EMPTY and the check PASSED ("0 of 0") — the fault was caught only by a neighbouring check that happened to fail. The same shape sat in the browser test (`forEach` over an empty list). (2) The local "tests of what you change" were chosen by grepping the test files for the changed functions' names; the tests that read the stylesheets name no function, so a new CSS rule that broke a speed rule (`body.<class> *`) went to GitHub and came back red.
+
+**Suggested improvement:** walk-scripts.md: "every check over a list asserts the list's size first (more than N, or exactly the expected count), and its premise (the seat still picked) — a check over an empty list passes". The order's §5 / shipping's "the tests of what you change": "a change to a stylesheet runs every test that reads the stylesheets (grep the tests for `.css` / readFileSync), whatever functions it touches".
+
+**Principle:** A universal claim over a collection is vacuously true when the collection is empty; assert the collection's size and the premise that fills it. And select tests by what they READ, not only by the names they call.
+
+### Observation 661: A fixed room sized from one machine's fonts fails on another's
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** [ARROWS-STAY-PUT] (D1122) — keeping arrows still around changing words
+**Skill:** (project guide) raptor-port/docs/design-practices.md §6; mockups-on-the-real-app.md "A fit drawn in the test browser's letters…"
+**Type:** open-source
+**Phase/Area:** sizing a label's room
+
+**Issue:** Each label got a fixed width measured from the longest value in this PC's fallback font. Locally every pair measured still and the row fit; on GitHub's Linux machines the fallback font is wider: one arrow still moved 3px and a toolbar row wrapped. The app loads no fonts, so every device draws its own.
+
+**Suggested improvement:** reserve a label's room by the real font on the device: stack every value the label can take in one grid cell (all but the current hidden), never a number measured on one machine; where a fixed number is unavoidable, measure it in the CI browser too before pushing.
+
+**Principle:** A width measured in one font is a guess on every other device; let the layout measure the real text in place.
+
+### Observation 662: A stand-in font must pass what the real one passed before it can judge a new case
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** [ARROWS-STAY-PUT] — sizing labels by the real font so GitHub's Linux checks go green (applies Observation 661)
+**Skill:** (project guide) raptor-port/docs/walk-scripts.md; mockups-on-the-real-app.md "A fit drawn in the test browser's letters…"
+**Type:** open-source
+**Phase/Area:** reproducing a CI-only layout failure locally
+
+**Issue:** The CI machines draw a font this PC does not have. A wider font forced on the page (Verdana) was used to predict whether a toolbar row would wrap there. It wrapped — but it also wrapped in the older state that CI had passed, so the stand-in was harsher than the real font and said nothing about the new state. A first measurement also counted "needed width" as the sum of the items, which always equals the room when one item stretches.
+
+**Suggested improvement:** before trusting a stand-in font, run it on a known-good state (one the real environment passed) and a known-bad one; it can judge only if it passes the first and fails the second. Measure spare room by growing a margin until the row's height changes, not by adding item widths. Where no stand-in qualifies, the real environment's run is the check — say so.
+
+**Principle:** A proxy environment is calibrated against known outcomes of the real one before its verdict on a new case is believed.
+
+### Observation 663: A part moved out of its box in a mock-up loses the box's styles
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** [INPUTS-SANS-HEAD-SAME] (D1123) — drawing two calendars' top rows as one, on the running app
+**Skill:** brainstorming/mockups-on-the-real-app.md — "Traps When Injecting Into a Live Page"
+**Type:** open-source
+**Phase/Area:** applying the one named transform (moving existing nodes)
+
+**Issue:** To draw a page's second row joined to its first, the second row's controls were moved up into the first row's container. The page's styles were scoped under the second row's own container, so the moved month name lost its font and size and the right-hand buttons lost the rule that pushed them to the row's end. The script raised no error; only looking at the picture showed it. Moving the first row's tabs DOWN into the second row's container instead kept every scoped style, and drew the same arrangement faithfully.
+
+**Suggested improvement:** add a trap line: when a transform moves nodes between containers, move the part whose styles are global into the container whose styles are scoped — never out of it; then measure the moved part's computed font size and position against the original before taking the picture.
+
+**Principle:** In a live-page mock-up, a node's look can depend on where it sits; relocate the side that does not.

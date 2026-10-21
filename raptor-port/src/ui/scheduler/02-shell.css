@@ -98,13 +98,17 @@
 /* the .bi glyph slot: HistIcon's svg is display:block (.btnglyph), so the span
    around it must be a flex box or the icon drops below the button's baseline */
 .tb-hist .bi{display:inline-flex;align-items:center}
-/* [UNDO-TOPBAR] laptop widths (821–1499px): the pair on every page where a change is made (D347, D349) put the bar on a
+/* [UNDO-TOPBAR] laptop widths (821–1599px since D1126): the pair on every page where a change is made (D347, D349) put the bar on a
    second line at 1366 and 1440 on six pages that fitted one — the plan's rule is no page's bar taller than today. So
    between the phone and a wide screen the pair goes icon-only, the phone's look, and the sync pill keeps its dot alone
    on a page that carries the pair; the hover still names the step. Every page's pair looks the same (D347). Measured:
-   scripts/handpass/cr-c-barheights.mjs. */
-@media (min-width:821px) and (max-width:1499px){
-  .topbar .tb-hist .abtn.hbtn{width:34px;min-width:0;padding:0;justify-content:center}
+   scripts/handpass/cr-c-barheights.mjs. WIDENED TO 1599 (owner D1126, 21 Oct 26 — round 1 of the consistency look): it
+   stopped at 1499, and Edit Schedule's bar — which carries the changes clock too — broke onto a second line from 1500 to
+   about 1550, his PC's 1536 among them, while every other page held one line; the page under it dropped 46px. */
+@media (min-width:821px) and (max-width:1599px){
+  /* the sides only (found 21 Oct 26 building D1126): `padding:0` took the top and bottom too, and the pair stood 17 tall
+     beside the bar's 28-tall buttons — narrower, never shorter */
+  .topbar .tb-hist .abtn.hbtn{width:34px;min-width:0;padding-left:0;padding-right:0;justify-content:center}
   .topbar .tb-hist .bl{display:none}
   .topbar.has-undo .fastsync .synclbl{display:none}
   .topbar.has-undo .fastsync .dot{margin:0}
@@ -204,6 +208,8 @@
 .wk{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);padding:6px 14px;border-radius:11px;cursor:pointer;font-size:12px;font-weight:500}
 .wk:hover{border-color:var(--edge-2);color:var(--ink)}
 .wk.on{background:rgba(87,201,122,.14);color:#A8E6BC;border-color:rgba(87,201,122,.55);font-weight:600}
+/* one room a week button ("Sep 28", the picked one in bold): pressed again and again, the next one never moves (owner D1122) */
+.wk[data-wk]{min-width:6em;text-align:center;font-variant-numeric:tabular-nums}
 /* the calendar-icon button that ends the rolling week strip, and the accent dot
    marking whichever button is the week the notional today falls in */
 .wk-cal{display:inline-flex;align-items:center;justify-content:center;padding:6px 10px}
@@ -295,6 +301,8 @@
 .searchbox .btnglyph{width:15px;height:15px;flex:0 0 auto;color:var(--ink-3)}
 .searchbox input{background:transparent;border:none;color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;width:150px}
 .searchbox input:focus{outline:none}
+/* the box itself shows where the keyboard is (the input inside draws no ring of its own) — a fresh reader's find, 21 Oct 26 */
+.searchbox:focus-within{border-color:var(--accent)}
 .filters .right{margin-left:auto;display:flex;gap:6px;align-items:center}
 
 .title{display:flex;align-items:baseline;gap:14px;padding:16px 20px 4px;flex-wrap:wrap}

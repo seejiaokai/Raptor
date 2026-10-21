@@ -97,9 +97,21 @@
 .sanscal .sc-head{position:relative;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .sanscal .sc-head .abtn{min-height:36px;display:inline-flex;align-items:center;justify-content:center;font-size:13px}
 .sanscal .sc-nav{min-width:40px;font-size:20px;line-height:1;padding:4px 10px}
-/* a fixed room for the month's name, so › does not move under a finger as the names change length */
-.sanscal .sc-month{flex:0 0 172px;text-align:center;font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
-  letter-spacing:.05em;font-size:20px;font-weight:800;color:var(--ink);white-space:nowrap}
+/* one room for the month's name, so › does not move under a finger as the names change length (owner D1122): the widest of
+   the twelve, measured in the device's own font (data-fit, SansCal.tsx) — a fixed 172px, then 11.6em, were each sized on one
+   computer's letters; the figures of one width so the year never changes it; the phone's own 96px below stands (D705) */
+.sanscal .sc-month{flex:0 0 auto;width:auto;min-width:0;text-align:center;font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.05em;font-size:18px;font-weight:700;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+/* THE MONTH'S NAME IN THE INPUTS MONTH'S STYLE (owner D1125, 21 Oct 26): 18px, weight 700 (it was 20px, 800) — the same letters
+   on both calendars; and ON A DESKTOP THE TABS STAND FIRST IN THIS ROW (InputsPage.tsx hands them in as `lead`), the row as
+   the Inputs calendar's: its top margin, 8px from the tabs to the first arrow, every button 12px words (the shared sizes:
+   25-inputs-calendar.css, the D1125 block). */
+@media (min-width:821px){
+  .sanscal .sc-month{padding:0 2px}
+  .sanscal .sc-head-tabs{margin-top:12px}
+  .sanscal .sc-head-tabs>.inputs-tabs{margin-right:2px}
+  .sanscal .sc-head .abtn{font-size:12px}
+}
 .sanscal .sc-sub{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:28px;margin:6px 0 6px}
 .sanscal .sc-legend{margin-left:auto;display:inline-flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:12px;color:var(--ink-3)}
 .sanscal .sc-key{display:inline-flex;align-items:center;gap:5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
@@ -262,7 +274,7 @@
      arrow and Today stand still from month to month and in the same places as on the Inputs calendar (owner D705,
      9 Oct 26; the arrows 32px, Today 52px, 3px apart, on both). The Highlight button — whose words may be a long
      callsign — takes what is left and shortens itself with an ellipsis */
-  .sanscal .sc-month{flex:0 0 96px;width:96px;padding:0;font-size:16px;letter-spacing:.03em}
+  .sanscal .sc-month{flex:0 0 96px;width:96px;padding:0;font-size:16px;letter-spacing:.05em}
   .sanscal .sc-spring{display:none}
   .sanscal .sc-hlwrap{flex:1 1 0;min-width:0}
   /* "Highlight" must read whole at 390px in every month (the last look found "Highli…"): the room comes from the
@@ -289,6 +301,6 @@
    the name's box 88px (its letters a size smaller, so the widest month still reads whole), Today 46px. */
 @media (max-width:389px){
   .sanscal .sc-nav{width:30px;min-width:30px}
-  .sanscal .sc-month{flex-basis:88px;width:88px;font-size:15px;letter-spacing:.01em}
+  .sanscal .sc-month{flex-basis:88px;width:88px}   /* the Inputs month's 16px kept here too (D1125: one style; its lighter 700 fits 88) */
   .sanscal .sc-head .sc-today{width:46px;min-width:46px}
 }

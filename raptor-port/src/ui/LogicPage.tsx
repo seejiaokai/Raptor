@@ -5,6 +5,7 @@
    and their words: ui/logic-html.ts. The admin's edit mode is as it was: a value is parsed, bounded and applied live,
    the clash grading toggles, "Reset to standard" puts them all back — and now each changed value carries its own
    Reset while editing (the mock-up's per-setting Reset). The RULES MODIFIED stamp is as it was. */
+import { SrchIcon } from './icons'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { VCONF, SHIFT_HARD, RULE_SPEC, RULE_STD, KIND_LABEL, ruleFmt, ruleParse, ruleOff, kindOff, rulesOffCount, rulesCheckedOffCount, rulesSave, rulesReset } from '../engine/rules'
 import { WARN, validate, lgFired } from '../engine/validate'
@@ -397,7 +398,7 @@ export function LogicPage() {
     <>
       <div className="lgbar" ref={barRef}>
         <h1 className="lgttl">Logic</h1>
-        <div className="searchbox">🔍<input id="lgSearch" placeholder="Search" aria-label="Search the rules"
+        <div className="searchbox"><SrchIcon /><input id="lgSearch" placeholder="Search" aria-label="Search the rules"
           value={LGQ} onChange={e => setLGQ(e.target.value)} /></div>
         <span className="lgfilt">
           <button type="button" ref={fBtnRef} className={'abtn' + (LGF !== 'all' ? ' on' : '')} id="lgFilterBtn"

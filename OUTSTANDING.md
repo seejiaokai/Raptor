@@ -62,7 +62,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
 **Schedule and amendments**
-- [BOARD-SIDE-WIDTH] — the board's right panel dragged wider (D1113, his yes): its questions and a picture first, then the build — with his idea of a struck puck's reason beside it once there is room.
+- [ARM-STRIP-STALE-TITLE] — the "Planning …" strip keeps the title the line had when its seat was picked; a callsign typed after does not show (older; low).
+- [CREW-REASON-TWICE] — a crossed-out man's reason says each fact once, not the kind's meaning and his remark both (D1121) — a later job of its own, its words put to him first.
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
 - [INNERHTML-REPAINT-SWEEP] — eleven screens hand React their markup as a new object every repaint, which React sets again — a box being typed in there is thrown away by any repaint (Quals fixed in [KEYBOARD-SCROLL]); sweep the rest (low).
@@ -78,6 +79,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [EOD] — End-of-Day "record actuals": designed on paper, nothing built — his word.
 
 **Inputs and calendars**
+- [UI-CONSISTENCY-LOOK] — the whole app looked over, desktop and phone, for the same thing drawn differently where it should match (D1124) — round 1 answered and live (D1125–D1128); rounds 2 and 3 (thirteen: ten from the sweep, three found building) to put to him, with pictures, in a fresh chat.
 - [TITLE-CHECK-SEEN] — three older small finds left: one line a man in "To go out", a re-accepted request read as a words change, a long OIL Earn name cut on a phone.
 - [ALLAVAIL-CHECK-SEEN] — the ALL AVAIL / Event check's older small finds, none fixed.
 - [CAL-CHECK-SEEN] — the calendar job's small finds still open: a phone on its side, two gesture finds, the windows' five, each man's LATE tag on a shared card.
@@ -89,6 +91,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 
 **Leave War**
+- [LW-PHONE-PINCH-ZOOM] — on a phone the Leave War grid pinches to zoom (D1117) — its own job in a fresh chat, questions and pictures first.
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
 - [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK], then [LW-WEEKDAY-WORK], then the database.
 - [LW-LOCKMARK] — the war still locks a day with an old marker; per-record checks replace it.
@@ -213,17 +216,25 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
-### [BOARD-SIDE-WIDTH] The board's right panel — the pilots / WSOs gap and a panel he can drag wider (his questions, 21 Oct 26)
-**His words** (with a desktop picture of the side column): *"on the desktop the pilot and wso are spaced slightly apart.
-not sure which is the best position for both to standardise so it can optimise the available space"*, then *"And for the
-desktop should i allow the right panel to be sizable?"* **What is there (measured 21 Oct 26, `raptor-port/scripts/handpass/pz-side.mjs`):**
-the right panel is 320 wide at every desktop width; its crew list is two equal columns of 144, the pucks about 95 wide, so
-about 50 stands empty between the pilots' pucks and the WSOs' column — that room is what the reason under a struck puck
-("already on OPS-O duty 06:00–14:00") wraps in. **Recommended (put to him with a marked picture, the look page):** keep the
-two equal columns (moving the WSOs in beside the pilots would squeeze every reason into a puck's width, two or three lines
-taller), and YES to a panel he can drag wider — its left edge a grip like the one between the issues and the crew list,
-from 320 up to about 40% of the screen, remembered on that computer; the extra width goes to both columns and the issues
-list. A new control: its questions and a picture before it is built, as its own small job. **His answer, 21 Oct 26 — D1113: "Yes as recommended for the right panel".** And his question for the design: *"if I drag left enough would the words below the pucks when I click on an item on the schedule show on the right of the pucks instead? If there becomes enough space?"* — recommended yes: once a crew column is wide enough for the puck and its reason side by side, the reason stands to the puck's right; narrower, it stays under. His example ("This for example"): `raptor-port/docs/img/handpass/2026-10-21-pinch-zoom/his-reasons-under-pucks.png` — the crossed-out pucks of both columns with their reasons wrapped under them. Drawn for him at three widths with the job's questions. **Place:** the next job, a fresh chat.
+### [UI-CONSISTENCY-LOOK] The whole app looked over for the same thing drawn differently (his D1124, 21 Oct 26)
+**His words** (after D1123): *"can u check elsewhere on the app that have these inconsistensies"* — *"Desktop and phone"*. **To do:** picture every page's and window's top rows at a desktop and his iPhone's size — Edit Schedule, View-only Sched, the Scheduler Board, the Inputs / SANS / Medical tabs, Quals, Logic, the Leave War, the Tracker, Help, Admin, the Calendar window and the app's calendars, the floating windows — and measure what should match (a month's name and its arrows, Today, tabs, a gear, a title bar, button heights); each mismatch put to him with its picture marked and a recommended way to match, in rounds of at most four (the design guide's rule 7); nothing changed before his answer. A difference his rulings made on purpose is named as such. **Place:** the look's pictures and findings with the evidence sheet of `claude/board-side-width` (`raptor-port/docs/handpass/2026-10-21-board-side-width.md` §7d). **The sweep (21 Oct 26, `raptor-port/scripts/handpass/bsw-consistency.mjs`, 13 screens at 1536 × 864 and 402 × 874, pictures `raptor-port/docs/img/handpass/2026-10-21-board-side-width/look1/sweep/`) found 12.** **Round 1, put to him 21 Oct 26** (the page https://claude.ai/artifact/PftDJpeNxNvqxWsJPmAkFC, drawn by `bsw-consistency-look.mjs`): (1) the Inputs and SANS top rows ([INPUTS-SANS-HEAD-SAME]); (2) Edit Schedule's top bar on two lines at 1500–1550 wide, his PC's 1536 among them (its changes clock; the laptop rule in `02-shell.css` stops at 1499) — recommended: that rule up to 1599 on every page; (3) search boxes four ways (the week's line magnifier; an emoji magnifier on the board, Quals, Logic; none on Admin, Inputs; the Tracker's with a separate ✕) — recommended: the week's everywhere; (4) Quals' "Enable editing" (blue) / "Save changes" (plain) against Logic's "✎ Edit" (plain) / "Done" (blue) — recommended: Logic's pair on both (Quals keeps each change as made; its button only ends editing). **Rounds 2 and 3, not yet put to him (their pictures are in `sweep/`):** (5) the highlight button three ways — boxed icon on the board, a bare icon on the week, "Highlight" with a word on SANS; (6) the labels before fields — small spaced capitals on the Leave War and Quals ("PERIOD", "STAGE", "VIEWING"), ordinary grey words on the Tracker ("Crew", "Course", "Syllabus"); (7) the Medical tab's controls inside a bordered panel, and "+ Medical" at its right end where the Inputs list's "+ Input" stands at the left of a second row; (8) page titles — Help and Admin a large title, Logic its name on its row (approved, D928 — name it as such), the rest none; (9) the tool rows' button heights — the schedule pages 28–30, Quals and Logic 36, Inputs 44, the Tracker 22–30 (a size change is his word, D487); (10) the gear's colour — the Leave War's cyan, the others white; (11) the Tracker's emoji icons (map, magnifier, ⇪, ⓘ, ^) and its separate-box view buttons, against the app's line icons and joined tabs; (12) the legends — a fold on the schedule, a button on the Leave War and the Tracker, a key in the row on Inputs and SANS (the Leave War's "Legend" pop-out is settled — name it as such); (13, found building round 1) the Scheduler Board's own bar keeps "Undo" / "Redo" in words at every desktop width while the top bar shows their arrows to 1599 (D1126); (14, found building round 1) while editing Quals, "Done" (blue, D1128) and "Edit quals" (blue at rest — his 5 Aug 26 rule) stand side by side, two bright-blue buttons — recommended: "Edit quals" plain until pressed, so Done is the one blue. (15, found building round 1) on the Inputs calendar at 1366 wide the row wraps and the gear stands alone on a second line (older; letting the filters narrow first held one line, but at 1280 put the gear under an open input window's corner, so it was taken back) — to draw for him with the window in the picture. **His answers to round 1 (21 Oct 26): all four as recommended — D1125–D1128, built on `claude/board-side-width` (the sheet §7e).**
+
+### [LW-PHONE-PINCH-ZOOM] On a phone the Leave War grid pinches to zoom (his word, 21 Oct 26 — D1117)
+**What:** as on the Scheduler Board's desktop layout and Quals (D1109, D1110, live with pull request 561), a pinch on a phone
+zooms the Leave War grid. **First:** what a pinch zooms (the grid only — not the war's top, the month strip, which already
+cancels the grid's zoom, or the pinned columns' alignment), how far, and whether the pinch and the − / + buttons share one
+zoom (recommended: one zoom, the buttons stepping it), with pictures at his iPhone's size. **How:** the one pinch body,
+`raptor-port/src/ui/pinchzoom.ts` (a stretch while the fingers move, laid out once at the lift); the grid's zoom today is
+`raptor-port/src/leavewar/ui/Matrix.tsx` (`zoom`, "Stepped +/− buttons rather than pinch" — that note is answered by the
+pinch body); the grid's window of months and its pinned rows (`raptor-port/docs/performance.md` §E) must follow a zoom
+change. **Then:** build, the bug-check order (a gesture: WALK at least, real two-finger touch over CDP). **Place:** its own
+job, a fresh chat (his word) — after or beside [BOARD-SIDE-WIDTH], his order.
+
+### [ARM-STRIP-STALE-TITLE] The strip over the crew list keeps an old title (found 21 Oct 26 by the blind read of [BOARD-SIDE-WIDTH]; older)
+**Seen (by reading):** the "Planning FCP · VL BFM" strip takes its words once, when the seat is picked (`raptor-port/src/state/view.ts` armSlot sets `ARM.title` from `slotTitle`), so a callsign or mission typed on that line afterwards does not show until the seat is picked again. **Fix:** draw the strip's title from `slotTitle(ARM.key)` at paint (`palette-html.ts armStripHTML`), with a test that types a callsign after picking. **Place:** small, with the next change to the crew list.
+
+### [CREW-REASON-TWICE] A crossed-out man's reason says each fact once (his D1121, 21 Oct 26; a later job)
+**His words** (to round 2 of [BOARD-SIDE-WIDTH], whose "checked and left" item showed Grit's reason): *"Yeah we shouldnt have the reason explained twice. we can do that job later too"*. **What is there:** with a place picked, a man struck for an absence reads the kind's meaning, then his own remark — "medically down — cannot report to work (ATT C) — Medically down till 17 Jul", "ordinary medical leave (OML) — Medical leave 13 Jul" (`raptor-port/src/engine/avail.ts` slotBar and `inputs.ts` offWord build it; the same sentence is the note a tap raises and the ALL AVAIL window's reason). Picture: `raptor-port/docs/img/handpass/2026-10-21-board-side-width/look/crop-reason-repeat.png`. **To do:** a wording that keeps the kind's fact where his remark does not say it ("cannot report to work") and drops the repeat; put to him before and after, read cold first (`design-practices.md` §1a); the design guide's lesson 15. **Place:** a job of its own after [BOARD-SIDE-WIDTH], or with the words pass ([UI-SLEEK-PASS], D808) — his to place.
 
 ### [QUALS-HEAD-FINGER-CAPTURE] In Edit quals a heading dragged by a finger may never reach another column (found 21 Oct 26, the pinch-zoom job; older)
 **Seen (the test browser, a finger over CDP):** in Edit quals a finger pressed on a heading's words and slid across the

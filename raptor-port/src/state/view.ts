@@ -1340,7 +1340,10 @@ export function slotTitle(key:any){
   const k=String(key);
   if(k.indexOf(':')<0){const a=k.split('.');
     const f=(((DAYS[+a[0]]||{}).waves||[])[+a[1]]||{formations:[]}).formations[+a[2]]||{};
-    return `${a[4]==='p'?'FCP':'RCP'} · <span class="mono" style="color:var(--ink-3)">${esc(f.cs||'')} ${esc(f.msn||'')}</span>`;}
+    /* a line with no callsign or mission yet (every new line is blank) names the seat alone — "Planning FCP", never a
+       dangling "FCP ·" (owner D1119, 21 Oct 26) */
+    const lbl=[f.cs,f.msn].map((x:any)=>String(x||'').trim()).filter(Boolean);
+    return `${a[4]==='p'?'FCP':'RCP'}`+(lbl.length?` · <span class="mono" style="color:var(--ink-3)">${esc(lbl.join(' '))}</span>`:'');}
   const p=k.slice(0,k.indexOf(':')), a=k.slice(k.indexOf(':')+1).split('.');
   /* the reassign-a-puck arm (inputedit.tsx's reassignInput) — 'iu:<iid>',
      no day component, since one input can be filed on several loaded days at
