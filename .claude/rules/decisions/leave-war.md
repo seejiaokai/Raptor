@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1220 | 22 Oct 26 | The admin locks every member's balances at once with one switch, "Lock balances", in the Leave War's Settings; locked, every person window shows a small padlock and a member's figures read only; there is no lock per person. |
 | D1219 | 22 Oct 26 | There is no setting to turn on notifications of new Leave War requests for the admin: what waits is seen only on the Approvals count when he opens the Leave War — no bell line, no phone ping, no switch. |
 | D1218 | 22 Oct 26 | The Leave War reflects carried-forward leave as the official leave system keeps it: a year's unused annual leave carries forward for one year, and carried-forward leave not used by the start of the year after that is gone. |
 | D1217 | 22 Oct 26 | A leave request not yet decided is called "pending", not "waiting", on the Leave War; and the person window names its two LVE figures plainly — the balance the official leave app shows, and the Leave War's balance after the days pending — with the days pending counted in days (2½), never in requests. |
@@ -72,7 +73,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 | D1206 | 21 Oct 26 | The overhaul's mock-up page ends with the whole planned change: every screen of the Leave War as it will be after the overhaul, carrying every detail he has ruled, each change from today marked — drawn after the red team (D1204) so it shows the design as it will be built. |
 | D1205 | 21 Oct 26 | The Leave War's Settings window is redesigned to be clean, intuitive and far less wordy — the same settings, fewer words, a clearer layout — drawn for him first and built with the overhaul. |
 | D1204 | 21 Oct 26 | Before the Leave War overhaul is built, its whole design is red-teamed with Impeccable, the design guide and a fresh reader: its pieces work together, down to gestures, each screen's layout, taps to reach a place, where buttons sit and line up, and what can be edited; what-ifs are tried, and the build plan is written from it. |
-| D1203 | 21 Oct 26 | A member edits his own balances, every kind but OIL (D1209), in his person window until the admin locks them; once locked, only the admin changes them. — changed by D1209 |
+| D1203 | 21 Oct 26 | A member edits his own balances, every kind but OIL (D1209), in his person window until the admin locks them; once locked, only the admin changes them. — changed by D1220, D1209 |
 | D1202 | 21 Oct 26 | The Available P and W rows' red point is a setting too, beside amber, set the same way — a number plus or minus that day's Required — "+ 0" by default, which is today's rule (red under Required). |
 | D1201 | 21 Oct 26 | A person's window on the Leave War shows all his balances at once, every kind of leave with what is left and what is taken, and fits as much of his leave as it can, each balance editable but OIL (D1209); designed the app's own way and drawn for him before it is built. — changed by D1209 |
 | D1200 | 21 Oct 26 | The Leave War's Management group comes from a Management tick column on Quals: added as a group like any Quals column, it stands first on the war; a man in Management still counts in his own seat. |
