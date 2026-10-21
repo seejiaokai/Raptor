@@ -58,10 +58,12 @@ function box([code, st], look, marks, pos) {
   return `<span class="${cls}"><b${/M|W/.test(code) && code.length > 2 ? ' class="wide"' : ''}>${code}</b></span>`
 }
 function cell(e, marks, look, two) {
-  if (two && e.length === 2 && !e[0][2] && !e[1][2]) {
+  if (two && e.length === 2 && !e[0][2]) {
+    // the second may be a half (an HO, D1164): it keeps to its own half of the right side
+    const h2 = e[1][2] ? '-' + e[1][2] : ''
     // C: the first fills the cell; the second is a strip down the right edge in its own colour (both listed on a tap)
-    if (two === 'strip') return `<td class="cell"><div class="cb">${box(e[0], look, marks[0] || [], 'whole strip')}<span class="stripe ${box(e[1], look, [], 'x').match(/e-[a-z]+/)[0]}"></span></div></td>`
-    const inner = two === 'side' ? box(e[0], look, marks[0] || [], 'left') + box(e[1], look, marks[1] || [], 'right') : box(e[0], look, marks[0] || [], 'top') + box(e[1], look, marks[1] || [], 'bot')
+    if (two === 'strip') return `<td class="cell"><div class="cb">${box(e[0], look, marks[0] || [], 'whole strip')}<span class="stripe s${h2} ${box(e[1], look, [], 'x').match(/e-[a-z]+/)[0]}"></span></div></td>`
+    const inner = two === 'side' ? box(e[0], look, marks[0] || [], 'left') + box(e[1], look, marks[1] || [], 'right' + h2) : box(e[0], look, marks[0] || [], e[1][2] === 'am' ? 'bot' : 'top') + box(e[1], look, marks[1] || [], e[1][2] === 'am' ? 'top' : 'bot')
     return `<td class="cell"><div class="cb">${inner}</div></td>`
   }
   const am = e.find(x => x[2] === 'am'), pm = e.find(x => x[2] === 'pm')
@@ -93,6 +95,11 @@ td.cell{position:relative;width:27px;min-width:27px;height:26.6px;padding:0;box-
 .f.right{top:2px;bottom:2px;left:calc(50% + .5px);right:2px;border-radius:2px 4px 4px 2px}
 .f.whole.strip{right:6px}
 .stripe{position:absolute;top:2px;bottom:2px;right:2px;width:3px;border-radius:2px;background:rgb(var(--h))}
+.f.right-am{top:2px;bottom:calc(50% + .5px);left:calc(50% + .5px);right:2px;border-radius:2px 4px 2px 2px}
+.f.right-pm{top:calc(50% + .5px);bottom:2px;left:calc(50% + .5px);right:2px;border-radius:2px 2px 4px 2px}
+.f.right-am b,.f.right-pm b{font-size:6.5px;letter-spacing:0}
+.stripe.s-am{bottom:calc(50% + .5px)}
+.stripe.s-pm{top:calc(50% + .5px)}
 .f.left b,.f.right b{font-size:7.5px;letter-spacing:0}
 .f.top b,.f.bot b{font-size:7.5px;letter-spacing:0}
 /* the two edge marks, drawn on top so a waiting outline never hides them */
@@ -208,6 +215,8 @@ const TWO = [
   ['Cinch', 'leave during a course', { e: [['LL', 'appr'], ['CSE', 'appr']], m: [[], ['raptor']] }],
   ['Basher', 'leave while ATT B', { e: [['LL', 'appr'], ['B', 'info']], m: [[], ['raptor']] }],
   ['Warden', 'an FO given on a leave day', { e: [['LL', 'appr'], ['FO', 'sc']], m: [[], []] }],
+  ['Viper', 'a full day of leave and an HO in the afternoon', { e: [['LL', 'appr'], ['HO', 'sc', 'pm']], m: [[], []] }],
+  ['Slick', 'a full day of leave and an HO in the morning', { e: [['LL', 'appr'], ['HO', 'sc', 'am']], m: [[], []] }],
   ['Ranger', 'for comparison: a real morning and afternoon', { e: [['LL', 'appr', 'am'], ['OIL', 'appr', 'pm']], m: [] }],
 ]
 function twoGrid(how) {
@@ -225,7 +234,7 @@ function page(phone) {
 <div><div class="cap rec">F · your colours</div><div class="zoom" style="--z:${z}">${week('F')}</div></div></div></section>
 <section id="key" style="margin-top:22px"><h1>Your colours (F)</h1><p class="sub">Each kind of leave keeps its colour; how it stands is the fill.</p><div class="zoom" style="--z:${z}">${key()}</div></section>
 <section id="all" style="margin-top:22px"><h1>Every input, your colours (F)</h1><p class="sub">Each kind the Leave War shows, in every state it can be in, ${at}. A dash: it cannot be in that state. Medical, courses and overseas duty come from the Inputs page, so they wear its cyan edge and are never waiting or refused. FO is always a whole day, HO always a half.</p><div class="zoom" style="--z:${z}">${catalogue()}</div></section>
-<section id="q4b" style="margin-top:22px"><h1>Two whole-day entries on one day</h1><p class="sub">The three cases the app's rules allow, in your colours, ${at}.</p>
+<section id="q4b" style="margin-top:22px"><h1>Two whole-day entries on one day</h1><p class="sub">The three cases the app's rules allow, then a full day of leave with an HO, in your colours, ${at}.</p>
 <div class="looks"><div><div class="cap">A · side by side, each the full height <i>(three letters do not fit)</i></div><div class="zoom" style="--z:${z}">${twoGrid('side')}</div></div>
 <div><div class="cap">B · one above the other <i>(reads like morning and afternoon)</i></div><div class="zoom" style="--z:${z}">${twoGrid('stack')}</div></div>
 <div><div class="cap rec">C · the leave fills the cell, the other a strip down its right edge <i>(recommended)</i></div><div class="zoom" style="--z:${z}">${twoGrid('strip')}</div></div></div></section>
