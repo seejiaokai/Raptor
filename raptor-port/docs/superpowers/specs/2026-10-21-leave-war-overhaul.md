@@ -207,7 +207,10 @@ Each to be drawn on the real app with lettered options and a worked example befo
   squadron given the eleven counters the tests use, a real bid by Ranger on Wed 28 Jan measured — it moves 5 of the 11 (IP
   16→15, IP + IWSO 23→22, FL P 19→18, SXO 12→11, SC D 7.7→7.5), none to amber or red. Put as A every counter (four lines),
   A2 only those it moves (three lines), **A3 only a counter it turns amber or red, else one calm line — recommended**; the
-  balance on each leave button stays in all three. Waiting on his answer.
+  balance on each leave button stays in all three. **→ A with A3 (D1144):** *"A3 And can u place it neatly with each
+  counter flushed to the left if there are multiple counters affected"* — each row the bid turns amber or red on its own
+  line, flush left, names in one column and figures in a second; none turned, one calm line. Drawn:
+  `../../mock/lw-overhaul/r1q4-a3-stacked.png`. The agent's reading of his point is the design guide's lesson 18; whether the day panel (D1143) stacks its manning rows the same way is put to him with its picture.
 - **He has more questions of his own** (21 Oct 26, "hold on i have alot more questions but u can continue to suggest") —
   taken next, before round 2 is put.
 

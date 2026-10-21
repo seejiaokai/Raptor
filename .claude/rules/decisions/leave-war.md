@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1144 | 21 Oct 26 | Both Leave War bid windows show what is left on each leave button, and at the top one line for the day — Available P before and after the bid, and only a manning row the bid would turn amber or red; where several would, each stands on its own line, flush left, one under another; where none would, the line says so. |
 | D1143 | 21 Oct 26 | On the Leave War, phone and desktop, a tap on a date's heading opens that day from the foot, as the Inputs and SANS calendars' day does: ‹ › to step, its figures (Available P and W, the squadron's manning rows with their amber or red), and who is away with his leave's letters and whether approved or waiting — never a remark. |
 | D1142 | 21 Oct 26 | A member is told by the app's bell when the Leave War decides his leave — one line a decision, naming who made it: a bid approved or refused, an approved leave put back to a bid, moved or deleted, and a bid replaced by a clashing input; an Ack tells nothing; days decided together are one line; a tap takes the grid to it. |
 | D1141 | 21 Oct 26 | The person signed in sees "My leave" on the Leave War — LVE left (less his waiting bids), OIL, bids waiting, next leave; on a phone a third line under the top's two, on a desktop the free end of the stage row, no new line; a tap lists his own leave, one line a request with its state, and a tap on one takes the grid there. |
