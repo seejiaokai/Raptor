@@ -1744,7 +1744,7 @@ different feature that merely pass through it.
 
 **Principle:** Every layer that reads escapes (shell, Python string, JS) can rewrite a backslash; text that must arrive byte for byte should cross no layer that interprets it.
 
-- Met again 22 Oct 26 (the Leave War overhaul's overnight run): a `cat > file <<'EOF'` holding `/\/g` in a regex arrived as `//g` and the script failed to parse; rewritten with the Write tool. A third meeting — the guard proposed above (scripts are always written with the Write tool, never a heredoc) is still the fix.
+- Met again 22 Oct 26 (the Leave War overhaul's overnight run): a `cat > file <<'EOF'` holding a regex with a doubled backslash lost one backslash on the way (and this very note lost another when written by a script), and the script failed to parse; rewritten with the Write tool. A third meeting — the guard proposed above (scripts are always written with the Write tool, never a heredoc) is still the fix.
 
 ### Observation 670: A cross-branch search for the next free ruling number skipped every branch's area file without a word — the same Git Bash path rewrite the numbering rule warns of
 
