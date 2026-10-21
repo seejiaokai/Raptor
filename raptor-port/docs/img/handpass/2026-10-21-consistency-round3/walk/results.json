@@ -1,6 +1,6 @@
 {
- "pass": 71,
- "total": 71,
+ "pass": 73,
+ "total": 73,
  "results": [
   {
    "name": "pc Quals \"Edit\": the solid pencil, no typed mark",
@@ -101,6 +101,11 @@
    "name": "pc the Inputs list's dates button wears the line calendar, no emoji",
    "pass": true,
    "detail": "13 Jul → 27 Jul"
+  },
+  {
+   "name": "pc the dates button's calendar sits beside its dates, one line, as tall as \"+ Input\"",
+   "pass": true,
+   "detail": "{\"beside\":true,\"mid\":0,\"h\":44,\"nh\":44}"
   },
   {
    "name": "pc the dates button pressed: its pop-up opens",
@@ -301,6 +306,11 @@
    "name": "phone the Inputs list's dates button: the line calendar, one row with + Input and the switch",
    "pass": true,
    "detail": "tops within 0px, 36 tall"
+  },
+  {
+   "name": "phone the dates button's calendar sits beside its dates, one line",
+   "pass": true,
+   "detail": "{\"beside\":true,\"mid\":0}"
   },
   {
    "name": "phone a calendar note's pencil: the solid pencil, no typed mark",

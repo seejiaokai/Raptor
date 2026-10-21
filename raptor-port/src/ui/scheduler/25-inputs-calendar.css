@@ -83,6 +83,11 @@
   border:1px solid var(--edge);border-radius:8px;color:var(--ink);font:inherit;font-size:13px}
 .inputs-workspace .inputs-listtools{gap:8px;padding:8px 0}
 .inputs-listtools>.abtn,.inputs-listtools .inrange>.abtn{min-height:44px}
+/* the dates button's line calendar (owner D1137, 21 Oct 26 — in place of the 📅 emoji) sits beside its dates, as in the
+   phone's row (.inputs-top .abtn): the desktop's row of the list's own two buttons is not .inputs-top, and the drawing is a
+   block (.btnglyph), so without this it stood above the dates and the button grew two lines tall */
+.inputs-listtools .inrange>.abtn{display:inline-flex;align-items:center;gap:6px}
+.inputs-listtools .inrange>.abtn .btnglyph{width:15px;height:15px;color:currentColor;flex-shrink:0}
 
 /* MEDICAL IS A TAB, IN THE PAGE (D620, D626). It used to lie over the whole screen, with a close cross of its own; a
    tab is left by choosing another, so the three tabs must stay in reach above it — it sits under them, as tall as what

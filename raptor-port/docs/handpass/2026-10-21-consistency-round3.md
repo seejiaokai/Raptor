@@ -78,10 +78,15 @@ script's own selectors (the input window's kind box, the Students card's chips),
 stood 16px right of "+ Input" on a desktop and 10px on a phone (the Medical row kept its own padding and band), and 9px lower on a
 phone — not "where + Input stands"; the row's padding and band went in the tab form only (`25-inputs-calendar.css`), measured again
 level. **The pencil set beside the typed ✎ (`walk/20`)** came out a little thinner with a sharper tip; it was made chunkier with a
-rounder cap and a short blunt tip, and walked again. **Last run 71/71.** No page error, console error or failed request.
+rounder cap and a short blunt tip, and walked again. **Second fault, found by a picture, not by the walk:** taking round 3b's
+pictures (`q6-list-today.png`, first take) showed the desktop Inputs list's dates button with its new line calendar ABOVE the dates,
+the button two lines — that row is not `.inputs-top`, whose buttons lay an icon beside its words, and the drawing is a block. The
+walk had checked only that the icon was there. Fixed (`25-inputs-calendar.css`, the list row's dates button laid out as the
+phone's), and the walk now checks the icon sits beside the words on one line, as tall as "+ Input", at both sizes. **Last run
+73/73.** No page error, console error or failed request.
 
-**Walk:** 71/71 PASS, 26 pictures (`walk/`), desktop 1536 and phone 402 by touch, every pencil place seen and pressed; one fault
-found and fixed (the Medical row's place).
+**Walk:** 73/73 PASS, 26 pictures (`walk/`), desktop 1536 and phone 402 by touch, every pencil place seen and pressed; two faults
+found and fixed (the Medical row's place; the desktop dates button's icon stacked above its words — the second by a picture).
 
 ## 5. The code read
 

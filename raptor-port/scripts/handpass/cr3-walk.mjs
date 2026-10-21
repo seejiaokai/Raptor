@@ -131,6 +131,9 @@ const around = async (page, name, sel, pad = 16) => { const b = await boxOf(page
   await press(page, '#inListBtn', false)
   const rb = await page.evaluate(() => { const b = document.querySelector('#inRangeBtn'); return { svg: !!b.querySelector('svg.btnglyph'), emoji: /📅/.test(b.textContent), text: b.textContent.trim() } })
   ok(`${tag} the Inputs list's dates button wears the line calendar, no emoji`, rb.svg && !rb.emoji, rb.text)
+  /* and beside its words, on one line — the first build stacked it above them on a desktop (found picturing round 3b) */
+  const side = await page.evaluate(() => { const b = document.querySelector('#inRangeBtn'), s = b.querySelector('svg').getBoundingClientRect(), t = b.querySelector('.inrange-t').getBoundingClientRect(); return { beside: s.right <= t.left + 1, mid: Math.round(Math.abs((s.top + s.height / 2) - (t.top + t.height / 2))), h: Math.round(b.getBoundingClientRect().height), nh: Math.round(document.querySelector('#inNew').getBoundingClientRect().height) } })
+  ok(`${tag} the dates button's calendar sits beside its dates, one line, as tall as "+ Input"`, side.beside && side.mid <= 3 && side.h === side.nh, JSON.stringify(side))
   await around(page, 'pc-inputs-list-row', '#inNew, #inRangeBtn', 14)
   await press(page, '#inRangeBtn', false)
   ok(`${tag} the dates button pressed: its pop-up opens`, await visible(page, '#inRangePop'))
@@ -268,6 +271,8 @@ const around = async (page, name, sel, pad = 16) => { const b = await boxOf(page
   const rb = await page.evaluate(() => { const b = document.querySelector('#inRangeBtn'); return { svg: !!b.querySelector('svg.btnglyph'), emoji: /📅/.test(b.textContent), r: Math.round(b.getBoundingClientRect().right), h: Math.round(b.getBoundingClientRect().height) } })
   const row = await page.evaluate(() => { const ids = ['#inNew', '#inRangeBtn', '#inCalBtn', '#inListBtn']; const rs = ids.map(s => document.querySelector(s)?.getBoundingClientRect()).filter(Boolean); return Math.round(Math.max(...rs.map(r => r.top)) - Math.min(...rs.map(r => r.top))) })
   ok(`${tag} the Inputs list's dates button: the line calendar, one row with + Input and the switch`, rb.svg && !rb.emoji && row <= 2, `tops within ${row}px, ${rb.h} tall`)
+  const side = await page.evaluate(() => { const b = document.querySelector('#inRangeBtn'), s = b.querySelector('svg').getBoundingClientRect(), t = b.querySelector('.inrange-t').getBoundingClientRect(); return { beside: s.right <= t.left + 1, mid: Math.round(Math.abs((s.top + s.height / 2) - (t.top + t.height / 2))) } })
+  ok(`${tag} the dates button's calendar sits beside its dates, one line`, side.beside && side.mid <= 3, JSON.stringify(side))
   await shot(page, 'phone-inputs-list', { x: 0, y: 50, width: 402, height: 130 })
   await press(page, '#inCalBtn', true)
   await page.locator('#inpCal [data-icday="2026-07-16"]').tap({ position: { x: 8, y: 8 } }); await sleep(600)

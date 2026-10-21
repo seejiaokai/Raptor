@@ -271,6 +271,37 @@ async function penPair(page, name, scope, region, vp, pad = 20) {
       await sleep(200)
       await ring(page, [['#medNew', '1'], ['#medCalBtn', '2']]); await strip(page, 'q4-medical-proposed', 56, 300, PC); await unring(page) })
   }
+  /* ---- round 3, second half (after his answers to q1–q4, which are built: these pictures show the built app) ---- */
+  if (want('q5')) { /* finding 8 — page titles: Help and Admin a large title, Logic its name on its row, the rest none */
+    await tryQ('q5 logic', async () => { await go(page, 'logic'); await sleep(500)
+      await ring(page, [['#page-logic h1', '']]); await strip(page, 'q5-logic', 56, 70, PC, 0, 900); await unring(page) })
+    const logicStyle = await page.evaluate(() => { const c = getComputedStyle(document.querySelector('#page-logic h1')); return { fontSize: c.fontSize, fontWeight: c.fontWeight, letterSpacing: c.letterSpacing, lineHeight: c.lineHeight } })
+    console.log('Logic name style', JSON.stringify(logicStyle))
+    for (const pg of ['help', 'admin']) await tryQ('q5 ' + pg, async () => {
+      await go(page, pg); await sleep(500)
+      const sel = `#page-${pg} h2`
+      await ring(page, [[sel, '']]); await strip(page, `q5-${pg}-today`, 56, 150, PC, 300, 900); await unring(page)
+      await page.evaluate(([sel, st]) => Object.assign(document.querySelector(sel).style, st), [sel, logicStyle]); await sleep(150)
+      await ring(page, [[sel, '']]); await strip(page, `q5-${pg}-proposed`, 56, 150, PC, 300, 900); await unring(page)
+      await go(page, 'quals'); await go(page, pg) })
+  }
+  if (want('q6')) { /* finding 9 — the desktop Inputs list's "+ Input" and dates button 44 tall; the rest of the page 36 */
+    await tryQ('q6 list', async () => { await go(page, 'inputs'); await sleep(500); await press(page, '#inListBtn', false)
+      await ring(page, [['#inNew, #inRangeBtn', '44'], ['#inCalBtn, #inListBtn, #inFPerson, #inFType, #inGear', '36']]); await strip(page, 'q6-list-today', 56, 150, PC); await unring(page)
+      await page.addStyleTag({ content: '#inNew,#inRangeBtn{min-height:36px!important;height:36px!important;padding-top:0!important;padding-bottom:0!important}' }); await sleep(150)
+      await ring(page, [['#inNew, #inRangeBtn', '36'], ['#inCalBtn, #inListBtn, #inFPerson, #inFType, #inGear', '36']]); await strip(page, 'q6-list-proposed', 56, 150, PC); await unring(page)
+      await page.evaluate(() => document.querySelectorAll('style').forEach(s => { if (s.textContent.includes('#inNew,#inRangeBtn{min-height:36px')) s.remove() }))
+      await press(page, '#inCalBtn', false) })
+  }
+  if (want('q7')) { /* finding 9 — the Tracker's bar: dropdowns 30, buttons 23, Legend 20, the gear 22 */
+    await tryQ('q7 tracker', async () => { await go(page, 'tracker'); await sleep(900)
+      const hb = await boxOf(page, '#activeSel, #barHideBtn')
+      await ring(page, [['#activeSel, #courseSel, #sylSel', '30'], ['#courseMenuBtn, #sylMenuBtn, #detailsBtn, #showAllBtn, #fileMenuBtn', '23'], ['#legendBtn', '20'], ['#flexBtn', '22']])
+      await strip(page, 'q7-tracker-today', hb.y - 30, hb.b - hb.y + 50, PC, 0, 1150); await unring(page)
+      await page.addStyleTag({ content: '#page-tracker header .controls button.sm{height:30px!important;min-height:30px!important;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center}' }); await sleep(150)
+      await ring(page, [['#activeSel, #courseSel, #sylSel, #courseMenuBtn, #sylMenuBtn, #detailsBtn, #showAllBtn, #legendBtn, #fileMenuBtn, #flexBtn, #barHideBtn, #hSearchClear', '30']])
+      await strip(page, 'q7-tracker-proposed', hb.y - 30, hb.b - hb.y + 50, PC, 0, 1150); await unring(page) })
+  }
   await ctx.close()
 }
 
@@ -297,6 +328,18 @@ async function penPair(page, name, scope, region, vp, pad = 20) {
       await page.evaluate(() => { const add = document.querySelector('#medNew'), cal = document.querySelector('#medCalBtn'); cal.parentElement.insertBefore(add, cal); const f = document.querySelector('.zz-frame'); if (f) Object.assign(f.style, { border: '0', background: 'transparent', boxShadow: 'none' }) })
       await sleep(200)
       await ring(page, [['#medNew', '1'], ['#medCalBtn', '2']]); await strip(page, 'q4-phone-medical-proposed', 50, 330, PHONE); await unring(page) })
+  }
+  if (want('q5')) { /* a phone's top bar names no page: the titles there */
+    for (const pg of ['admin', 'logic', 'quals']) await tryQ('q5 phone ' + pg, async () => { await go(page, pg); await sleep(500)
+      await ring(page, [[`#page-${pg} h1, #page-${pg} h2`, '']]).catch(() => {}); await strip(page, `q5-phone-${pg}`, 0, 190, PHONE); await unring(page) })
+  }
+  if (want('q7')) {
+    await tryQ('q7 phone tracker', async () => { await go(page, 'tracker'); await sleep(900)
+      await ring(page, [['#activeSel, #courseSel, #sylSel', '26'], ['#courseMenuBtn, #sylMenuBtn, #detailsBtn, #fileMenuBtn, #hSearchBtn, #barHideBtn', '23'], ['#legendBtn', '20'], ['#flexBtn', '22']])
+      await strip(page, 'q7-phone-tracker-today', 40, 130, PHONE); await unring(page)
+      await page.addStyleTag({ content: '#page-tracker header .controls button.sm{height:26px!important;min-height:26px!important;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center}' }); await sleep(150)
+      await ring(page, [['#activeSel, #courseSel, #sylSel, #courseMenuBtn, #sylMenuBtn, #detailsBtn, #legendBtn, #fileMenuBtn, #hSearchBtn, #flexBtn, #barHideBtn', '26']])
+      await strip(page, 'q7-phone-tracker-proposed', 40, 130, PHONE); await unring(page) })
   }
   await ctx.close()
 }
