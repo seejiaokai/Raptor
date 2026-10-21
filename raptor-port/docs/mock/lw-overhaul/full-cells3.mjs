@@ -19,7 +19,7 @@ const FAMILY = {
 }
 const KEY = [
   ['ll', 'LL', 'local leave'], ['ol', 'OL', 'overseas leave'], ['oil', 'OIL · FO · HO', 'off in lieu'],
-  ['care', 'CCL · FCL · PL · CL · EL', 'other leave'], ['cse', 'CSE', 'course'], ['od', 'OD', 'overseas duty'], ['med', 'C · B …', 'medical'],
+  ['care', 'CCL · FCL · PL · CL · EL', 'other leave'], ['cse', 'CSE', 'course'], ['od', 'OD', 'overseas duty'], ['med', 'B · C · OML · HL', 'medical'],
 ]
 const CASES = [
   ['A whole day, approved', [['LL', 'appr']]],
@@ -30,7 +30,10 @@ const CASES = [
   ['Child care leave, approved', [['CCL', 'appr']]],
   ['A course (from the Inputs page)', [['CSE', 'appr']], ['raptor']],
   ['Overseas duty (from the Inputs page)', [['OD', 'appr']], ['raptor']],
-  ['Medical (from the Inputs page)', [['C', 'info']], ['raptor']],
+  ['Medical ATT C (from the Inputs page)', [['C', 'info']], ['raptor']],
+  ['Medical ATT B: no flying, may still work', [['B', 'info']], ['raptor']],
+  ['Outpatient medical leave (OML)', [['OML', 'info']], ['raptor']],
+  ['Hospitalisation leave (HL)', [['HL', 'info']], ['raptor']],
   ['FO: a day of OIL given by hand', [['FO', 'sc']]],
   ['HO: half a day of OIL credited, in the half it was earned', [['HO', 'sc', 'pm']]],
   ['AM LL approved + PM HO', [['LL', 'appr', 'am'], ['HO', 'sc', 'pm']]],
@@ -45,7 +48,8 @@ function box([code, st], look, marks, pos) {
   else cls += ' e-' + FAMILY[code] + ' es-' + (st === 'info' || st === 'sc' ? 'appr' : st)
   if (marks.includes('raptor')) cls += ' raptor'
   if (marks.includes('moved')) cls += ' moved'
-  return `<span class="${cls}"><b>${code}</b></span>`
+  // a wide three-letter code (OML) takes letters a step smaller so it never spills out of its box
+  return `<span class="${cls}"><b${/M|W/.test(code) && code.length > 2 ? ' class="wide"' : ''}>${code}</b></span>`
 }
 function cell(e, marks, look) {
   const am = e.find(x => x[2] === 'am'), pm = e.find(x => x[2] === 'pm')
@@ -70,6 +74,7 @@ td.cell{position:relative;width:27px;min-width:27px;height:26.6px;padding:0;box-
 .f{position:absolute;display:flex;align-items:center;justify-content:center;box-sizing:border-box;border-radius:4px;overflow:hidden}
 .f b{font-weight:700;letter-spacing:.02em;white-space:nowrap;font-size:10px}
 .f.whole{inset:2px}
+.f.whole b.wide{font-size:8.5px;letter-spacing:-.01em}
 .f.top{left:2px;right:2px;top:2px;bottom:calc(50% + .5px);border-radius:4px 4px 2px 2px}
 .f.bot{left:2px;right:2px;top:calc(50% + .5px);bottom:2px;border-radius:2px 2px 4px 4px}
 .f.top b,.f.bot b{font-size:7.5px;letter-spacing:0}
@@ -117,6 +122,7 @@ const WEEK = [
   ['Sidewinder', [R('OIL', 'wait'), R('HO', 'sc', 'am'), R('CCL', 'appr'), R('CCL', 'appr'), null, null, null]],
   ['Warden', [R('C', 'info', null, ['raptor']), R('C', 'info', null, ['raptor']), null, null, R('FO', 'sc'), null, null]],
   ['Drifter', [null, null, R('OD', 'appr', null, ['raptor']), R('OD', 'appr', null, ['raptor']), R('OD', 'appr', null, ['raptor']), null, null]],
+  ['Basher', [R('OML', 'info', null, ['raptor']), null, R('HL', 'info', null, ['raptor']), R('HL', 'info', null, ['raptor']), R('B', 'info', null, ['raptor']), null, null]],
   ['Piston', [null, R('OIL', 'appr'), null, R('PL', 'wait'), R('PL', 'wait'), null, null]],
 ]
 const DAYS = ['MON 19', 'TUE 20', 'WED 21', 'THU 22', 'FRI 23', 'SAT 24', 'SUN 25']
@@ -146,7 +152,7 @@ function page(phone) {
   const z = phone ? 0.8 : 1
   const at = phone ? 'at your phone\'s zoom (0.8), real size' : 'at desktop size'
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Leave War colours</title><style>${CSS}</style></head><body><div class="wrap">
-<section id="wk"><h1>One week, two ways to colour it</h1><p class="sub">Mon 19 – Sun 25 Jan, eight people, ${at}. A: the colour says where it stands. E: the colour says what kind of leave; filled is approved, hollow is waiting.</p>
+<section id="wk"><h1>One week, two ways to colour it</h1><p class="sub">Mon 19 – Sun 25 Jan, nine people, ${at}. A: the colour says where it stands. E: the colour says what kind of leave; filled is approved, hollow is waiting.</p>
 <div class="looks"><div><div class="cap">A · the colour is where it stands</div><div class="zoom" style="--z:${z}">${week('A')}</div></div>
 <div><div class="cap rec">E · a colour for each kind of leave <i>(recommended)</i></div><div class="zoom" style="--z:${z}">${week('E')}</div></div></div></section>
 <section id="key" style="margin-top:22px"><h1>E's colours</h1><p class="sub">Each kind of leave keeps its colour; how it stands is the fill.</p><div class="zoom" style="--z:${z}">${key()}</div></section>
