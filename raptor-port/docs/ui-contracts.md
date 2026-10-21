@@ -1757,6 +1757,10 @@ edit week now:
   flips `HLOPEN` (`.open`, the filters-row sideways-scroller recipe, `order:3` so
   it lands under the day row) — the phone fold is untouched by the desktop move,
   both scoped by `@media`.
+  **Since 21 Oct 26 (owner D1131 — round 2 of the consistency look) the desktop board has no `#sbHl` button:** on a
+  desktop it folded nothing (the strip is always open there), so a press did nothing visible. The strip leads with the
+  highlighter mark as a plain label, as the week's row does (`.hl-lab`); on a phone `#sbHl` stays, folding the strip.
+  SANS's "Highlight" button is another job (one man, his callsign shown) and stays as it is.
   **`#searchB` is the `#searchV` idiom exactly** — uncontrolled, wiped by the
   blank-click clear — which includes the week-cross idiom: crossing a week
   with the arrows leaves the box's TEXT standing while the filter keeps
@@ -4863,6 +4867,8 @@ Pins: `ui/inputcx.test.tsx`, `ui/inputmarks-scenarios.test.tsx`.*
 > text, kept for its history and marked where it no longer holds.
 >
 > **Widened 21 Oct 26 — D1126:** the laptop look (Undo and Redo as their arrows only, their names on hover; the sync pill its dot alone, `02-shell.css`) runs from 821 up to 1599 wide on every page, not only to 1499 — Edit Schedule's bar, which carries the changes clock too, broke onto a second line at 1500–1550 (his PC is 1536 wide).
+>
+> **And the Scheduler Board's own bar — D1130 (21 Oct 26, round 2 of the consistency look):** up to 1599 wide its Undo, Redo and History draw as their icons only, their names on hover, and its sync pill its dot alone — the same look as every page's top bar; wider, the words come back on both. The board on a phone is left as it is.
 
 Two additions to the sticky top bar (`ui/Shell.tsx`), both desktop-and-phone
 except where noted:
@@ -5178,6 +5184,11 @@ The button reads the way `Enable editing` does (owner, 5 Aug 26): **blue
 while it is the thing to press**, then plain dark and labelled `✕ Edit
 quals` once you are inside the mode. It shows the way OUT rather than
 lighting up to say where you already are.
+
+**Replaced for this button 21 Oct 26 (owner D1129 — round 2 of the consistency look):** "Edit quals" is plain grey
+until pressed, as "✎ Edit" is, so "Done" (D1128) is the one bright-blue button while editing — two blues side by side
+said neither was the way out. Pressed, it still reads `✕ Edit quals`, plain; what it does is unchanged. The blue-at-rest
+reading above is history.
 
 While it is on the heading stops being a sort button and becomes the column:
 it carries `data-col` and **no `data-sort` at all**, so a drag can never land
@@ -9536,6 +9547,12 @@ D563 ends collection and authorizes this three-request batch; numbered pictures 
 Both reference photos remain private. Filed as [LOGIC-STICKY-SEARCH-COMPACT] in the workflow UI batch.
 
 ## The Tracker tab (7 Sep 26)
+
+**D1132, 21 Oct 26 — the app's line icons (round 2 of the consistency look):** the Tracker's buttons wear the app's
+line icons (Lucide shapes, as `src/ui/icons.tsx` draws them) in place of typed marks — the pencils, ⓘ, ☰ before Show
+All, ⇪ before File, the bar's ^ and the phone tab's 🗺 — and on a phone its Flow chart / Info / Show All tabs sit
+joined in one box, as the Inputs / SANS / Medical tabs (`.inputs-tabs`) do. Nothing moves; no button changes what it
+does. The icons live in the Tracker's own `components/Glyphs.jsx`, so a standalone export carries them.
 
 **D566, 4 Oct 26 — chosen picture accepted:** "Yes, use this tapered wing" selects the specifically
 shown D565 option4, with tapered straight leading edges, curved lower wings and existing nose/tail. Implement it

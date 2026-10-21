@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import * as core from './app/core.js';
 import Header from './components/Header.jsx';
+import { InfoGlyph, ListGlyph, MapGlyph, DownGlyph } from './components/Glyphs.jsx';
 import ArrangeTools from './components/ArrangeTools.jsx';
 import SidePanel from './components/SidePanel.jsx';
 import Pop from './components/Pop.jsx';
@@ -44,10 +45,14 @@ function Resizer() {
 
 function ViewTabs({ tab, setTab }) {
   return (
+    /* ONE JOINED BOX, AS THE INPUTS / SANS / MEDICAL TABS ARE (owner D1132, 21 Oct 26): the three sit in one bordered
+       box (`.vt-seg`), the picked one ringed in the accent; their marks are the app's line icons, never the 🗺 emoji. */
     <div className="viewtabs" id="viewtabs">
-      <button data-view="flow" className={tab === 'flow' ? 'active' : ''} onClick={() => setTab('flow')}>🗺 Flow chart</button>
-      <button data-view="info" className={tab === 'info' ? 'active' : ''} onClick={() => setTab('info')}>ⓘ Info</button>
-      <button id="showAllTab" onClick={core.openShowAll}>☰ Show All</button>
+      <div className="vt-seg">
+        <button data-view="flow" className={tab === 'flow' ? 'active' : ''} onClick={() => setTab('flow')}><MapGlyph /> Flow chart</button>
+        <button data-view="info" className={tab === 'info' ? 'active' : ''} onClick={() => setTab('info')}><InfoGlyph /> Info</button>
+        <button id="showAllTab" onClick={core.openShowAll}><ListGlyph /> Show All</button>
+      </div>
     </div>
   );
 }
@@ -178,7 +183,7 @@ export default function App({ active = true }) {
           the Flow/Info tabs are not drawn and this is the only handle. */}
       {core.barHidden
         ? <button className="barpeek" id="barShowBtn" title="Show the bar" onClick={core.toggleBar}>
-            <span className="barpeek-chev" aria-hidden="true">⌄</span>
+            <span className="barpeek-chev" aria-hidden="true"><DownGlyph /></span>
             <span className="barpeek-who">{core.nameOf(core.active)}</span>
             <span className="barpeek-lbl">Show bar</span>
           </button>

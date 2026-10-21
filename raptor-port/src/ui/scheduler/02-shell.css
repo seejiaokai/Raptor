@@ -112,6 +112,14 @@
   .topbar .tb-hist .bl{display:none}
   .topbar.has-undo .fastsync .synclbl{display:none}
   .topbar.has-undo .fastsync .dot{margin:0}
+  /* THE SCHEDULER BOARD'S OWN BAR, THE SAME LOOK (owner D1130, 21 Oct 26 — round 2 of the consistency look): it wrote
+     "Undo", "Redo", "History" and "Sync · slow" out at every desktop width while the top bar behind it showed their
+     icons to 1599. Now its Undo, Redo and History are their icons (each button's title still names it on hover) and
+     its sync pill its dot, in this same width band; wider, the words come back on both. A phone (≤820) is untouched. */
+  #sbUndo,#sbRedo,#sbHist{width:34px;min-width:0;padding-left:0;padding-right:0;justify-content:center}
+  #sbUndo .bl,#sbRedo .bl,#sbHist .bl{display:none}
+  #sbSync .synclbl{display:none}
+  #sbSync .dot{margin:0}
 }
 /* the notification bell — an icon button beside Insights, on every page and
    both widths; lights (.on) for the current view + view-as person */

@@ -45,6 +45,7 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D1132 | 21 Oct 26 | The Tracker's buttons wear the app's line icons in place of its typed marks — the pencils, ⓘ, ☰ before Show All, ⇪ before File, the bar's ^, and the map on the phone's "Flow chart" tab — and on a phone its Flow chart / Info / Show All tabs sit joined in one box, as the Inputs tabs do; nothing moves and no button changes what it does. |
 | D1018 | 18 Oct 26 | The Tracker's down days, flex settings and legend are built as drawn: course start set in "+ Add" and the Info panel; the down-days window only shows; "—" before a course start; a running input counts to today; only the six "From" flex days are typed; a member sees the settings read-only; "Legend" sits beside Show All. |
 | D1015 | 18 Oct 26 | When the Tracker's import refuses student marks because their chart is in neither the file nor the Tracker, it says: "Student marks not brought in: they belong to a chart this file doesn't carry. Export a fresh backup that includes its charts, and import that." |
 | D1014 | 18 Oct 26 | The Tracker's flex settings — its figures and its on / off switch (D1006) — open from a settings icon in the Tracker's top bar, and only an admin can change them. |

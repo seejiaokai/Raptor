@@ -658,7 +658,11 @@ export function SchedBoard() {
             (3) comment in scheduler.css's min-width:821px block; display:none
             on a phone, where the fold makes its own geometry. */}
         <i className="sb-break" aria-hidden="true"></i>
-        <div className={'sb-hl' + (HLOPEN ? ' open' : '')} id="sbHlStrip"><HlChips /></div>
+        {/* THE HIGHLIGHTER MARK LEADS THE STRIP ON A DESKTOP, AS ON THE WEEK (owner D1131, 21 Oct 26 — round 2 of the
+            consistency look): a quiet label, the week's own `.lab.hl-lab`; the #sbHl toggle by the search, which folds
+            nothing at a desktop's width (the strip is always open there), is hidden there and stays the phone's fold
+            (10-board-history.css). */}
+        <div className={'sb-hl' + (HLOPEN ? ' open' : '')} id="sbHlStrip"><span className="lab hl-lab" title="Highlight"><HlIcon /></span><HlChips /></div>
         {/* A FAILED SAVE'S WARNING ([SAVE-NOTE-COVERS], D587): the board lies over the top bar, so the bar's own
             warning cannot be seen from here — the board carries it, on a line of its own at the bottom of its bar.
             INSIDE .sb-top like the strip above, so --sb-topH follows it and nothing below is covered. */}

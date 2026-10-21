@@ -123,10 +123,24 @@ describe('the header: one bar for every login (D121 — it hid the File menu fro
     /* ...and NOT a bar control any more */
     const bar = document.querySelector('header .controls')!
     expect([...bar.children].some(e => (e as HTMLElement).id === 'arrangeBtn'), 'arrange is not a bar button').toBe(false)
-    /* the menu buttons are glyph pencils, the info toggle a lone ⓘ */
-    expect($('#courseMenuBtn')!.textContent!.trim()).toBe('✎')
-    expect($('#sylMenuBtn')!.textContent!.trim()).toBe('✎')
-    expect($('#detailsBtn')!.textContent!.trim()).toBe('ⓘ')
+    /* the menu buttons are pencils, the info toggle a lone info mark — the app's line icons since D1132 (21 Oct 26),
+       never a typed character (an iPhone draws some as coloured emoji) */
+    for (const id of ['#courseMenuBtn', '#sylMenuBtn', '#detailsBtn', '#barHideBtn']) {
+      expect($(id)!.querySelector('svg.trkglyph'), `${id} wears a line icon`).toBeTruthy()
+      expect($(id)!.textContent!.trim(), `${id} carries no typed mark`).toBe('')
+    }
+  })
+
+  it('D1132: Show All, File and the view tabs wear the line icons, and no typed mark is left on them', async () => {
+    await render()
+    expect($('#showAllBtn')!.querySelector('svg.trkglyph')).toBeTruthy()
+    expect($('#showAllBtn')!.textContent!.trim()).toBe('Show All')
+    expect($('#fileMenuBtn')!.querySelector('svg.trkglyph')).toBeTruthy()
+    expect($('#fileMenuBtn')!.textContent!.replace(/\s+/g, ' ').trim()).toBe('File ▾')
+    /* (the phone's view tabs are App's, not the bar's — the walk, scripts/handpass/cr2-walk.mjs, checks their box) */
+    const typed = /[✎ⓘ☰⇪⌃⌄🗺]/u
+    for (const sel of ['#courseMenuBtn', '#sylMenuBtn', '#detailsBtn', '#showAllBtn', '#fileMenuBtn', '#barHideBtn'])
+      expect(typed.test($(sel)!.textContent!), `${sel} has no typed mark`).toBe(false)
   })
 
   it('Save changes watches flow edits only, and no longer touches a file', () => {

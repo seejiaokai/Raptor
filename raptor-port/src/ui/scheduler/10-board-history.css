@@ -95,6 +95,12 @@ body.dw-lock{overflow:hidden}
 /* the divider inside HlChips styles itself off .filters elsewhere; restated
    here because this strip is not a .filters row */
 .sb-hl .div{width:1px;align-self:stretch;background:var(--edge);margin:0 4px}
+/* THE MARK LEADS THE STRIP ON A DESKTOP; THE TOGGLE IS THE PHONE'S (owner D1131, 21 Oct 26): the label in the week's
+   look (`.filters .lab`'s grey, 02-shell.css — restated because this strip is not a .filters row); the #sbHl toggle
+   folds nothing above 820, so it shows only on a phone, where the label goes instead (the toggle carries the mark). */
+.sb-hl .hl-lab{color:var(--ink-3);margin-right:2px;flex:0 0 auto}
+@media (min-width:821px){ #sbHl{display:none} }
+@media (max-width:820px){ .sb-hl .hl-lab{display:none} }
 /* the today dot — "· today" cost 46px of a 125px title on a phone and
    ellipsised the DATE, which is the one thing the owner asked the bar to keep
    (11 Aug 26). It says the same in 5px, and reads on desktop too. */
