@@ -68,9 +68,10 @@ scrolls it sideways: `inputs.md` (D893).
 
 | # | Date | The rule |
 |---|---|---|
+| D1128 | 21 Oct 26 | Quals' edit buttons read as Logic's: "✎ Edit" in plain grey to start, "Done" in the bright blue while editing — in place of "Enable editing" (blue) and "Save changes" ("Save" on a phone, plain); what each does is unchanged. |
 | D1110 | 21 Oct 26 | On a phone a pinch on Quals zooms the table only: the top bar, Enable editing, Export, the filter and the Pilots · WSOs · Personnel · All switch stay as they are; the heading row and the name column stay pinned and lined up; it zooms out until the whole table's width fits and in to twice normal, and keeps its zoom while he stays on Quals. |
 | D993 | 18 Oct 26 | Quals' pinned header row follows the table sideways by the browser itself, as the Leave War's pinned date row does, so it keeps up with the table on his iPhone; only that row changes, and the Leave War's is left as it is. |
-| D937 | 16 Oct 26 | On a phone, Quals' "Save changes" reads "Save" so the filter keeps room to type on the smallest phones while editing; and Quals opens at its top — its row of buttons in sight — wherever it is opened from, as the Inputs page does. |
+| D937 | 16 Oct 26 | Quals opens at its top — its row of buttons in sight — wherever it is opened from, as the Inputs page does; its phone "Save" gave way to "Done" (D1128). — changed by D1128 |
 | D935 | 16 Oct 26 | Quals' row of buttons is built as drawn: one row at 36 — the date box that does nothing removed, "Export to Excel" reading "Export" on a phone — and the paragraph under it ("similar to a LoX…", with its links) is deleted whole. |
 | D329 | 28 Sep 26 | An archived man's row says how he came to be archived and when |
 | D328 | 28 Sep 26 | An earlier stint's dates are read-only on the Leave War, as built |

@@ -4861,6 +4861,8 @@ Pins: `ui/inputcx.test.tsx`, `ui/inputmarks-scenarios.test.tsx`.*
 > `docs/mock/undo-topbar.html` v4). The section's old name said "while editing, undo/redo"; the pair is no longer the edit
 > page's only. What it is now is the third bullet below; the "Undo / redo / Edit history" bullet under it is the Aug 26
 > text, kept for its history and marked where it no longer holds.
+>
+> **Widened 21 Oct 26 — D1126:** the laptop look (Undo and Redo as their arrows only, their names on hover; the sync pill its dot alone, `02-shell.css`) runs from 821 up to 1599 wide on every page, not only to 1499 — Edit Schedule's bar, which carries the changes clock too, broke onto a second line at 1500–1550 (his PC is 1536 wide).
 
 Two additions to the sticky top bar (`ui/Shell.tsx`), both desktop-and-phone
 except where noted:
@@ -5044,6 +5046,7 @@ restore and delete are on Admin → Users (D310). Pins: `quals.test.tsx` "D935",
 **And (owner D937, 16 Oct 26 — "As recommended"):** on a phone "Save changes" reads "Save" (its full words kept for a
 screen reader, as Export's), so the filter keeps room to type at 320 while editing; and the page opens at its top — the
 row in sight — however the Quals tab is opened, as the Inputs page does. Pins: `quals.test.tsx` "D937", `e2e/geometry.spec.ts` "D937".
+**Then (owner D1128, 21 Oct 26 — round 1 of the consistency look):** the buttons read as Logic's — "✎ Edit" in plain grey to start, "Done" in the bright blue while editing — in place of "Enable editing" and "Save changes" / "Save"; what each does is unchanged (each change is kept as it is made; the button only ends editing). D937's phone "Save" goes with it.
 
 ## The Quals page's columns, sorting and View (owner, 5 Aug 26)
 
@@ -5540,6 +5543,10 @@ Three ways they leaked, all now closed, and all three are the checklist for
    the strip's colour — flat rather than the gradient because a 6–12px slice of
    a ramp spanning six RGB points cannot show a seam, and a pseudo-element per
    pin is two more nodes on the phone's tightest bars.
+
+## One search box, everywhere (owner D1127, 21 Oct 26)
+
+Every search box looks like the Edit Schedule week's: a grey line magnifier inside the box on the left (the app's own drawn magnifier, never the coloured emoji), the box as tall as the buttons beside it; each keeps its own words — the Scheduler Board, Quals, Logic, Admin → Users, the Inputs list and the Tracker. The Tracker's ✕ that clears its search stays.
 
 ## A small search on the phone's view-only schedule (owner, 20 Aug 26)
 
@@ -10442,7 +10449,7 @@ A shared store starts with nothing demo (`src/bootpolicy.ts`), so two tabs must 
 
 ## The SANS calendar — its month, its day, its gear (the Inputs / SANS job, step 4, 8 Oct 26; D617–D651, D664)
 
-**Waiting for its build — D1123 (21 Oct 26):** on a desktop this calendar's top row and the Inputs calendar's are to be laid out alike — the tabs, ‹ month › and Today, and the buttons at the right end in the same places, the month's name in one style — as drawn for him and picked ([INPUTS-SANS-HEAD-SAME]); until then the rows below describe what is built.
+**One row with the Inputs calendar's (owner D1125, 21 Oct 26 — answering D1123; [INPUTS-SANS-HEAD-SAME]):** on a desktop the three tabs, ‹ month › and Today, then Highlight and the gear at the right end stand on ONE row, the arrows, month and Today in the same place as on the Inputs calendar; the month's name in the Inputs month's style (18px, weight 700 on a desktop; 16px on a phone); the row's buttons drawn 36 tall (a finger's press area kept). The phone's rows were already alike (D705) — only the month's letters change there. Where a line below says otherwise of the head, this one wins.
 
 The SANS tab of Inputs is ONE screen, `ui/SansCal.tsx`, with no Calendar | List pair, no filters and no list (D620).
 **It works nothing out.** A day's class, its required pilots and WSOs, how many more are needed and its colour are the
@@ -10508,6 +10515,8 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
 `ui/sanscal-model.test.ts`; in a browser `e2e/inputs-sans-calendar.spec.ts`. Pictures: `scripts/handpass/sans-look.mjs`.
 
 ## The Inputs calendar — its tabs, its month of bars, its day, its gear, the editor as a window (the Inputs / SANS job, step 5, 8 Oct 26; D620, D621, D626, D627, D629, D632, D639, D641, D646, D653, D664, D672)
+
+**Its top row on a desktop (owner D1125, 21 Oct 26):** the tabs, then ‹ month › and Today — in the same place as on the SANS calendar — then at the right end the Calendar / List switch, the filters and the gear; the switch stands there on the Calendar and on the List alike, so it never moves (D687), as on the phone (D705); the row's buttons drawn 36 tall. Where a line below puts the switch first on a desktop, this one wins.
 
 `ui/InputsPage.tsx`, `ui/InputsCal.tsx`, `ui/inputscal-model.ts`, `ui/InputsSettings.tsx`, `ui/inputedit.tsx`; styles
 `ui/scheduler/25-inputs-calendar.css`. The plan: `docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.6–§3.9.

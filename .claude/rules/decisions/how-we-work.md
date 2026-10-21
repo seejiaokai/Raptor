@@ -12,6 +12,8 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1126 | 21 Oct 26 | On every page the top bar's compact look reaches up to 1599 wide — Undo and Redo as their arrows only, their names on hover, and the sync pill its dot alone — so Edit Schedule's top bar, which carries the changes clock too, stays on one line at his PC's 1536 like every other page. |
+| D1127 | 21 Oct 26 | Every search box in the app looks like the Edit Schedule week's: a grey line magnifier inside the box on the left, the box as tall as the buttons beside it; each keeps its own words, because each finds something different. |
 | D1124 | 21 Oct 26 | The whole app is looked over, on a desktop and on a phone, for the same kind of thing drawn differently on pages or windows that should match — a top row, a month's name and its arrows, tabs, a gear, a title bar — and each mismatch found is put to him with pictures, the place marked and a recommended way to match, before anything changes. |
 | D1122 | 21 Oct 26 | Arrows on either side of words that change — a day, a month, a count — keep their place as the words change: the words get the room their longest value needs, so the arrow pressed again and again never moves; first Edit Schedule's crew panel ‹ day ›, then every such place in the app, found and fixed. |
 | D1097 | 21 Oct 26 | The agent sends him a phone notification whenever it stops and needs him — the work finished and waiting on his next step, or a question, an answer, a look or any other input from him — and not for progress. |
