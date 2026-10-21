@@ -25,6 +25,9 @@ const myleave = (who, mk) => {
 const band = (t, b, inner, cls = '') => `<div class="band ${cls}" style="top:${t}px;height:${b - t + 1}px">${inner}</div>`
 // copy a clean strip of the same picture over a spot (to lift an old tag off the card's edge)
 const line = y => `<div class="line" style="top:${y}px"></div>`
+// the drawer's heading lifted from the round-2 desktop picture, where it already reads BALANCES (question 8)
+const BAL = pic('p-desk-admin.png')
+const balances = y => `<div class="patch" style="left:30px;top:${y}px;width:110px;height:22px;background:url(${BAL}) -30px -447px no-repeat"></div>`
 const patch = (img, sx, x, y, w, h) => `<div class="patch" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;background:url(${img}) -${sx}px -${y}px no-repeat"></div>`
 
 function desk(variant, admin = true) {
@@ -73,13 +76,13 @@ const JOBS = []
 { const i = pic('p-desk-admin.png'); JOBS.push(['r4-desk-admin-A', i, 1920, 1075, 'desk', desk('A') + DESK_TAGS(i)], ['r4-desk-admin-B', i, 1920, 1075, 'desk', desk('B') + DESK_TAGS(i)]) }
 { const i = pic('p-phone-admin.png'); for (const v of ['A', 'B']) JOBS.push([`r4-phone-admin-${v}`, i, 1170, 2532, 'phone', phone(v, 'admin', 3, [147, 269, 387, 0, 0, 505]), 1300]) }
 { const i = pic('p-phone-member.png'); JOBS.push(['r4-phone-member', i, 1170, 2532, 'phone', phone('A', 'member', 3, [147, 269, 372, 0, 0, 490])]) }
-{ const i = pic('p-w10-desk-approvals.png'); JOBS.push(['r4-w10-desk-approvals', i, 1920, 1075, 'desk', desk('A').replace(/ data-mk="[A-D]"/g, '')]) }
+{ const i = pic('p-w10-desk-approvals.png'); JOBS.push(['r4-w10-desk-approvals', i, 1920, 1075, 'desk', desk('A').replace(/ data-mk="[A-D]"/g, '') + balances(447)]) }
 { const i = pic('p-w10-phone-approvals.png'); JOBS.push(['r4-w10-phone-approvals', i, 1170, 2532, 'phone', phone('A', 'admin', 2, [147, 269, 372, 0, 0, 0]).replace(/ data-mk="[A-D]"/g, '')]) }
 {
   const i = pic('p-w7-desk-admin-new.png')
   // the window's document row: the drawn paper clip replaced by the app's one Document button (D1159)
   const doc = `<div class="doc" style="left:733px;top:1003px;width:192px;height:42px;background:#161b22"><span class="chip" style="--ch:30">${UP} Document</span></div>`
-  JOBS.push(['r4-w7-desk-admin-new', i, 1920, 1075, 'desk', band(71, 137, `<div class="row">${view(false)}<span class="chip">+ New</span>${appr()}</div>`) + band(140, 196, `<div class="row">${open(false)}${under(false)}<span class="chip">Legend</span><span class="sp"></span>${myleave('admin')}</div>`, 'flat') + doc])
+  JOBS.push(['r4-w7-desk-admin-new', i, 1920, 1075, 'desk', band(71, 137, `<div class="row">${view(false)}<span class="chip">+ New</span>${appr()}</div>`) + band(140, 196, `<div class="row">${open(false)}${under(false)}<span class="chip">Legend</span><span class="sp"></span>${myleave('admin')}</div>`, 'flat') + doc + balances(445)])
 }
 
 const browser = await chromium.launch()

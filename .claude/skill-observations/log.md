@@ -1682,3 +1682,18 @@ different feature that merely pass through it.
 **Suggested improvement:** Make the default unconditional: script edits go through the Edit tool or a script file written with the Write tool, never a code string passed through a shell; when a helper "finds nothing", `cat -A` the line first.
 
 **Principle:** Every layer that reads escapes (shell, Python string, JS) can rewrite a backslash; text that must arrive byte for byte should cross no layer that interprets it.
+
+### Observation 670: A cross-branch search for the next free ruling number skipped every branch's area file without a word — the same Git Bash path rewrite the numbering rule warns of
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** Leave War overhaul round 4 — finding the next free D-number across every branch before recording his answers
+**Skill:** record-decisions (the "take the next free number" step) / task-observer numbering rule 4 (same trap)
+**Type:** internal
+**Phase/Area:** checking other branches for numbers
+
+**Issue:** A loop of `git show "$b:.claude/rules/decisions/leave-war.md" 2>/dev/null` across 100+ remote branches returned nothing for that file on every branch (Git Bash rewrote `rev:path` into a Windows path), while the same loop's other files, run with MSYS_NO_PATHCONV=1, worked. The silence read as "no numbers there", and the loop also took over two minutes. One `git grep -o -E "^\| D11[7-9][0-9] \|" $(git branch -r ...) -- .claude/rules/decisions .claude/decisions-full DECISIONS-ARCHIVE.md` answered in seconds, with no path rewrite. (Number 670: 669 exists on another branch.)
+
+**Suggested improvement:** In record-decisions.md / DECISIONS.md step 1, give the one command for "the next free number on every branch": `git grep` over all refs, never a `git show rev:path` loop; and say a check that prints nothing must first be run where the answer is known (the current branch) to prove it works.
+
+**Principle:** A search across refs is one `git grep` over the refs, not a loop of `git show rev:path` — on Git Bash the latter can fail silently, and silence reads as "none".

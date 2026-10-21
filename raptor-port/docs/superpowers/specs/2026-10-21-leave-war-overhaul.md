@@ -260,6 +260,8 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **And (D1173, D1174):** the "Viewing as <callsign>" chip goes (only a label on the war — the admin / member switch is the name badge, D292; replaces D365, narrows D678); the period picker is labelled "View" ("View JAN – DEC 26"), on a phone too. To draw with round 4's Q10 (the top row).
 - **Q2 confirmed (D1175):** "2 f" — look F as drawn, every input.
 - **And (D1176):** the closed note's words — "Bidding is closed. To change your leave, seek management's approval, then file it on the Inputs page. Your approved leave updates here by itself."
+- **The fresh Opus read of round 3's records (21 Oct 26), its marks taken:** D678 and D679 narrowed by D1177 (D679 by D1173, D1174 too); D1173's reason corrected — the name badge is hidden on a phone, where the name is the menu's "Signed in as" line; D1141 marked by D1173; D418 without a published war (remarks at any time, the leave itself changed on the Inputs page); D413 ends with the admin texting the squadron; D1176's trigger (a tap on any day not open) marked as the agent's; D1168, D1166, D333, D352 restated; D1177's readings gain the moved mark on any move of approved leave and remarks at any time; the two §Settled entries that read the stage marked.
+- **Round 4 put (21 Oct 26, the page's version 21):** Q7–Q10 with the top redrawn in every picture — the open-dates chip where the stages were (D1177), "View" (D1174), no "Viewing as" (D1173); Q10 re-cut (§9.3). Round 3 folded into a list of his answers on the page.
 - **Q5 → open (D1177):** the stages go; the "Open for bidding" window (chip, list, month buttons, calendar icon) is the one switch; nothing open until he opens it. Replaces D1156; narrows D1166, D418, D333, D352, D827, D679, D1141, D413. Round 3 is answered.
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
   `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (his question "in what scenario": the clash rules allow only leave during a course or overseas duty, leave beside
@@ -457,7 +459,12 @@ asked again (D53); a question names each ruling its answer would change (D754).
 **Round 4 — the agent's readings he has not yet seen drawn**
 - **Q9 — "Approve what I enter" (D1147).** *Recommended: off each time the window opens.* Picture 7.
 - **Q10 — where Approvals and Lock dates open (D1152, D1156).** *Recommended: chips in the row where the stage was — on a
-  phone its second line — so no line is added* (D678, D679, D1141 named). Pictures 2, 3.
+  phone its second line — so no line is added* (D678, D679, D1141 named). Pictures 2, 3. **Re-cut for round 4 (21 Oct 26,
+  after D1177 — no Lock dates chip):** where Approvals opens. *Recommended A: where "Viewing as" was (D1173) — the top line,
+  after "+ New", on a desktop and a phone — so the second line (the open dates, under-manned, Legend) is the same for
+  everyone.* B: first on the second line, beside the open dates — fits a desktop; on a phone the line overflows by about 29
+  points (measured on the drawing) and Legend leaves the screen. Pictures `../../mock/lw-overhaul/full/r4-*-admin-{A,B}.png`,
+  script `full-r4.mjs`.
 - **Q11 — the day panel (D1143, lesson 18).** *Recommended: its manning rows stacked one a line, names in one column and
   figures in a second; a locked day's reason as its first line.* Picture 9.
 - **Q12 — Management (D1149): a tick on Quals, or picked on the war?** The war's groups today come from Quals' columns (⚙
