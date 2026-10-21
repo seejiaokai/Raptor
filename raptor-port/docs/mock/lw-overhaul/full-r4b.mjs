@@ -93,7 +93,7 @@ const CSS = u => `
 .lbtn small{font:600 12px system-ui;opacity:.85}.lbtn.zero{opacity:.5}
 .cover{position:absolute}
 .tick{position:absolute;display:inline-flex;align-items:center;gap:10px;height:38px;padding:0 14px;border-radius:8px;border:1px solid #2f3a46;background:#12161b;color:#e6edf3;font:600 15.5px system-ui;white-space:nowrap}
-.tick i{width:17px;height:17px;border:2px solid #9aa5b1;border-radius:3px}
+.tick i{width:17px;height:17px;border:2px solid #9aa5b1;border-radius:3px;font-style:normal}.tick i.on{background:#3bc6e8;border-color:#3bc6e8;color:#0b0d10;display:grid;place-items:center;font:900 12px/1 system-ui}
 .wlab{position:absolute;font:600 13px system-ui;letter-spacing:.14em;color:#8a96a3}
 .tag{position:absolute;background:${PINK};color:#fff;font:700 15px/1 system-ui;padding:6px 9px;border-radius:7px;white-space:nowrap}
 .inl{position:absolute;left:0;right:0;font-size:calc(14*var(--u));color:#e6edf3}
@@ -125,7 +125,7 @@ JOBS.push({ name: 'r4b-win-A', img: pic('full/r4-w7-desk-admin-new.png'), W: 192
 JOBS.push({ name: 'r4b-win-B', img: pic('full/r4-w7-desk-admin-new.png'), W: 1920, H: 1075, u: 1.25, sample: [1270, 760], clip: [604, 604, 702, 414],
   over: winBase() + `<div class="cover" style="left:612px;top:806px;width:694px;height:270px;background:url(${pic('full/r4-w7-desk-admin-new.png')}) -612px -852px no-repeat"></div>` +
     `<div class="cover" style="left:616px;top:800px;width:690px;height:101px;background:var(--bg)"></div>${leaveButtons(-46)}<span class="wlab" style="left:627px;top:822px">WHICH LEAVE</span>` +
-    `<div class="cover" style="left:1000px;top:616px;width:270px;height:36px;background:var(--bg)"></div><span class="tick" style="left:1040px;top:614px;height:34px;font-size:14.5px" data-mk="A"><i></i>Approve what I enter</span>` })
+    `<div class="cover" style="left:1000px;top:616px;width:270px;height:36px;background:var(--bg)"></div><span class="tick" style="left:1040px;top:614px;height:34px;font-size:14.5px" data-mk="A"><i class="on">✓</i>Approve what I enter</span>` })
 // 5, 6 — the Inputs list: the type filter's families as choices; the list on "All leave", who has a document and who not
 const LISTPIC = pic('../../img/handpass/2026-10-21-board-side-width/look1/sweep/pc-inputs-list.png')
 const ROWS = [['Anvil', '13 Jul', '17 Jul', 'OL', 'Overseas leave', 1], ['Quill', '14 Jul', '', 'LL', 'Local leave', 0], ['Cinch', '20 Jul', '', 'CCL', 'Child care leave', 0], ['Tally', '24 Jul', '', 'LL', 'Local leave', 1], ['Ranger', '27 Jul', '31 Jul', 'OL', 'Overseas leave · Bali', 2]]
