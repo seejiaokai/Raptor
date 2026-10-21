@@ -1757,6 +1757,10 @@ edit week now:
   flips `HLOPEN` (`.open`, the filters-row sideways-scroller recipe, `order:3` so
   it lands under the day row) — the phone fold is untouched by the desktop move,
   both scoped by `@media`.
+  **Since 21 Oct 26 (owner D1131 — round 2 of the consistency look) the desktop board has no `#sbHl` button:** on a
+  desktop it folded nothing (the strip is always open there), so a press did nothing visible. The strip leads with the
+  highlighter mark as a plain label, as the week's row does (`.hl-lab`); on a phone `#sbHl` stays, folding the strip.
+  SANS's "Highlight" button is another job (one man, his callsign shown) and stays as it is.
   **`#searchB` is the `#searchV` idiom exactly** — uncontrolled, wiped by the
   blank-click clear — which includes the week-cross idiom: crossing a week
   with the arrows leaves the box's TEXT standing while the filter keeps
@@ -4863,6 +4867,8 @@ Pins: `ui/inputcx.test.tsx`, `ui/inputmarks-scenarios.test.tsx`.*
 > text, kept for its history and marked where it no longer holds.
 >
 > **Widened 21 Oct 26 — D1126:** the laptop look (Undo and Redo as their arrows only, their names on hover; the sync pill its dot alone, `02-shell.css`) runs from 821 up to 1599 wide on every page, not only to 1499 — Edit Schedule's bar, which carries the changes clock too, broke onto a second line at 1500–1550 (his PC is 1536 wide).
+>
+> **And the Scheduler Board's own bar — D1130 (21 Oct 26, round 2 of the consistency look):** up to 1599 wide its Undo, Redo and History draw as their icons only, their names on hover, and its sync pill its dot alone — the same look as every page's top bar; wider, the words come back on both. The board on a phone is left as it is.
 
 Two additions to the sticky top bar (`ui/Shell.tsx`), both desktop-and-phone
 except where noted:
@@ -5178,6 +5184,11 @@ The button reads the way `Enable editing` does (owner, 5 Aug 26): **blue
 while it is the thing to press**, then plain dark and labelled `✕ Edit
 quals` once you are inside the mode. It shows the way OUT rather than
 lighting up to say where you already are.
+
+**Replaced for this button 21 Oct 26 (owner D1129 — round 2 of the consistency look):** "Edit quals" is plain grey
+until pressed, as "✎ Edit" is, so "Done" (D1128) is the one bright-blue button while editing — two blues side by side
+said neither was the way out. Pressed, it still reads `✕ Edit quals`, plain; what it does is unchanged. The blue-at-rest
+reading above is history.
 
 While it is on the heading stops being a sort button and becomes the column:
 it carries `data-col` and **no `data-sort` at all**, so a drag can never land
@@ -5543,6 +5554,20 @@ Three ways they leaked, all now closed, and all three are the checklist for
    the strip's colour — flat rather than the gradient because a 6–12px slice of
    a ramp spanning six RGB points cannot show a seam, and a pseudo-element per
    pin is two more nodes on the phone's tightest bars.
+
+## One pencil, one design, pointing one way (owner D1133, D1134 — 21 Oct 26)
+
+Every pencil in the app is ONE design, his choice (D1134 — he sent the typed ✎ as his PC draws it: *"i like this pencil
+better"*): a solid pencil, eraser at the top left, tip at the bottom right (D1133's direction), drawn by the app as a
+filled shape so it looks the same on every device — never a typed ✎ (each device's font draws its own) and never the ✏
+emoji. One drawing, `ui/icons.tsx PenIcon`, and its Tracker copy `tracker/components/Glyphs.jsx PenGlyph` (the Tracker
+draws its own so a standalone export carries it). It replaces the line pencil (D919's title box, D1132's Tracker bar and
+Students card) and every typed ✎ / ✏ a person pressed: Quals' and Logic's "✎ Edit", the Scheduler Board's "✎ Manage
+templates", "✎ Manage plans" and each saved plan's ✎, the "Add a duty block" heading's ✎, a row's CX window "✎ Edit",
+a jet's stores list ✎, the Inputs list's "✎ Default window", a note's ✏ in a day opened on the Inputs calendar, and the
+Tracker's Course and Syllabus menu items, "✎ Edit details" and Edit chart layout's "✎ Text". **Kept typed:** a ✎ inside a
+sentence of help text, and the ✎ after an edited chart's name in the Tracker's Syllabus list (a list's option holds text
+only). The app's other icons stay line icons (the agent's reading of D1134, told to him).
 
 ## One search box, everywhere (owner D1127, 21 Oct 26)
 
@@ -6033,6 +6058,8 @@ outright, 22 Aug 26. See `.claude/rules/decisions/scheduler.md` §Settled → In
 
 ## The Admin page (owner, 23 Aug 26)
 
+**D1138, 21 Oct 26 (built):** its title ("Admin") takes the size, weight and spacing of Logic's page name — 18px, 700 on a desktop, 16px on a phone (the same 820px break) — in its place; as Help's (`15-admin-help.css`; pinned by `e2e/consistency-heights.spec.ts`).
+
 The seventh tab, and it is always last in both navs — the tools tab after
 the work tabs (`ui/AdminPage.tsx`; the topnav entry in `Shell.tsx`, the
 drawer item in `Drawer.tsx`, both admin-hidden like the Edit tab). The nav
@@ -6122,6 +6149,8 @@ The three category panels:
   live in the code comments beside them. Pins: `ui/wipe.test.tsx`.
 
 ## The Help page (owner, 25 Aug 26)
+
+**D1138, 21 Oct 26 (built):** its title ("Help") takes the size, weight and spacing of Logic's page name, in its place; as Admin's.
 
 The EIGHTH tab (`#page-help`, `ui/HelpPage.tsx`), for EVERYONE — "allows
 anyone to type in Bug reports. In which admin can view them". It sits after
@@ -6258,8 +6287,9 @@ typed remark wraps inside the card and never widens it (`.medcard-r` takes no wi
 pages say a range (`ui/InputsPage.tsx rangeWords`), since D960 (it was "till <date>"). **Nothing on a card says who
 placed the entry or when** (D960 — the input's window says it). Only Upchit Complete's heading carries a grey line ("the
 past 30 days, newest first"): Medically Down's and Pending Upchit's went with the words pass, round 3 (D959). **"+
-Medical"** (`#medNew`, owner D963 — in place of D962's title pointing to the Inputs tab — D964, D965; 17 Oct 26) is the row's one filled cyan button, at its right end after
-the stretching gap, 36 tall like "as of" (a finger's 44 on a phone); it opens the SAME window as the Inputs tab's "+
+Medical"** (`#medNew`, owner D963 — in place of D962's title pointing to the Inputs tab — D964, D965; 17 Oct 26) is the row's one filled cyan button, **first, at
+the row's left, before "as of"** — where "+ Input" stands on the Inputs list (D1137, 21 Oct 26; it stood at the right end
+until then, D965), 36 tall like "as of" (a finger's 44 on a phone); it opens the SAME window as the Inputs tab's "+
 Input" (`newInputSeed`: the signed-in person, no date yet) set to ATT C, the most common medical kind (D968; the first of the list where a squadron has no ATT C); the
 window, and who may file for whom in it (D655), are unchanged, and a save leaves the Medical tab in front, the new card
 on it. Pins: `ui/medicalview.test.tsx`, `e2e/medical.spec.ts`. Every section has a real empty state. Cards size to content and
@@ -9537,6 +9567,24 @@ Both reference photos remain private. Filed as [LOGIC-STICKY-SEARCH-COMPACT] in 
 
 ## The Tracker tab (7 Sep 26)
 
+**D1132, 21 Oct 26 — the app's line icons (round 2 of the consistency look):** the Tracker's buttons wear the app's
+line icons (Lucide shapes, as `src/ui/icons.tsx` draws them) in place of typed marks — the pencils, ⓘ, ☰ before Show
+All, ⇪ before File, the bar's ^ and the phone tab's 🗺 — and on a phone its Flow chart / Info / Show All tabs sit
+joined in one box, as the Inputs / SANS / Medical tabs (`.inputs-tabs`) do. Nothing moves; no button changes what it
+does. The icons live in the Tracker's own `components/Glyphs.jsx`, so a standalone export carries them. *(Its pencils
+are the app's one solid pencil since D1134 — §One pencil.)*
+
+**D1135, 21 Oct 26 — its menus' icons (round 3):** the Course, Syllabus and File menus and the Students card wear line
+icons in the same style in place of typed marks — Reorder (up and down arrows), Duplicate (two pages), Import (the File
+button's upload arrow; the empty Tracker's "Import a file…" too), Export (a download arrow), Delete (a bin, in place of
+the 🗑 emoji) and the × that removes a student. Nothing moves; no button changes what it does.
+
+**D1170, 21 Oct 26 — one height on its bar (round 3, built):** every control on the bar as tall as its dropdowns, 30 on a desktop and 26 on a phone (1050 and under) — the pencils, ⓘ, Show All, Legend, File, the search's ✕, the gear and Hide (they were 20–23), and the search box itself (25 — a search box is as tall as the buttons beside it, D1127); the dropdowns held at the same number, so the match holds on a device that draws a dropdown shorter (his iPhone); only the bar's own buttons, named by where they sit, so a menu's items and the flex window's buttons keep their size (`tracker.css`). The bar is no taller at his 1536, at 1050 and on a phone; where a narrow desktop (about 1051–1200) wraps it onto two rows, the second row holds no dropdown and is 2 taller (87 → 89) — left so on his word (D1171, 21 Oct 26: "8 leave it") — measured against a build of the old look, `cr3-barheights.mjs`; pinned by `e2e/consistency-heights.spec.ts`.
+
+**D1136, 21 Oct 26 — its labels (round 3):** on a desktop the bar's "Crew", "Course" and "Syllabus" (`.lbltx`) are drawn
+in the small spaced capitals of Quals' "Viewing" — 10px, weight 700, 1px spacing, upper case, the grey `--dim` — as the
+Leave War, Help and Admin draw a label before a box. The phone shows no labels there.
+
 **D566, 4 Oct 26 — chosen picture accepted:** "Yes, use this tapered wing" selects the specifically
 shown D565 option4, with tapered straight leading edges, curved lower wings and existing nose/tail. Implement it
 with clear label backing and all existing size/palette/font/chart/data/hit constraints. Current implementation uses the exact centre-relative SVG path; combined current evidence is
@@ -10659,6 +10707,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   button lit and nothing appeared, once the List's add form no longer stood above the row (D729). Pin:
   `e2e/inputs-calendar.spec.ts` "the dates button opens its calendar on screen" — the page not scrolled, the whole
   calendar inside the screen, pressed by a finger at a point. The record: `docs/handpass/2026-10-10-list-dates-picker.md`.
+- **D1139, 21 Oct 26 (built):** on a desktop the list's own two buttons, "+ Input" and the dates button, are 36 tall as on a phone and as the rest of the Inputs page (they were 44 — `25-inputs-calendar.css`, `.inputs-listtools`), pressed over 46 as the row above's 36-tall buttons are (D698, D1125).
 - **The Inputs list on a phone — one row of controls (owner D907, D910, 15 Oct 26 — "All as recommended"; built in the
   calendar job, `docs/handpass/2026-10-15-calendar-step-two.md`).** On a phone the List's "+ Input" and dates button stand
   in the row of the calendar / list switch, the filter and the gear — where the Calendar's month arrows, month and Today

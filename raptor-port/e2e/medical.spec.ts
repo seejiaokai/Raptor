@@ -279,7 +279,7 @@ test.describe('the medical view renders and fits', () => {
      finger's 44 on a phone; it opens the Inputs tab's own window set to a medical kind — by mouse and by keyboard (Tab to
      it, Enter opens, Escape closes and the keyboard is back on the button) — for an admin and for a member. */
   for (const [name, viewport, who] of [['phone admin', PHONE, 'a'], ['phone member', PHONE, 'user'], ['desktop admin', DESK, 'a'], ['desktop member', DESK, 'user']] as const)
-    test(`D965 "+ Medical" opens the input window on a medical kind — ${name}`, async ({ page }) => {
+    test(`D965 D1137 "+ Medical", first in its row, opens the input window on a medical kind — ${name}`, async ({ page }) => {
       await page.setViewportSize(viewport)
       await login(page, who)
       await go(page, 'inputs')
@@ -289,12 +289,14 @@ test.describe('the medical view renders and fits', () => {
       const geo = await page.evaluate(() => {
         const b = document.querySelector('#medNew')!.getBoundingClientRect(), c = document.querySelector('#medCalBtn')!.getBoundingClientRect()
         const head = document.querySelector('#medView .ic-head') as HTMLElement, hr = head.getBoundingClientRect()
-        const pad = parseFloat(getComputedStyle(head).paddingRight)
-        return { h: Math.round(b.height), mid: Math.abs((b.top + b.height / 2) - (c.top + c.height / 2)), rightGap: Math.round(hr.right - pad - b.right), inRow: b.right <= hr.right + 0.5 }
+        /* D1137 (21 Oct 26): first, on the tabs' left edge where "+ Input" stands, "as of" after it */
+        const tabs = document.querySelector('.inputs-tabs')!.getBoundingClientRect()
+        return { h: Math.round(b.height), mid: Math.abs((b.top + b.height / 2) - (c.top + c.height / 2)), leftGap: Math.round(Math.abs(b.left - tabs.left)), before: b.right <= c.left, inRow: b.right <= hr.right + 0.5 }
       })
       expect(geo.h, 'the row height').toBe(36)
       expect(geo.mid, 'one row with "as of"').toBeLessThanOrEqual(1)
-      expect(geo.rightGap, 'at the right end of the row').toBeLessThanOrEqual(1)
+      expect(geo.leftGap, 'first, on the tabs\' left edge (D1137 — it stood at the right end until 21 Oct 26)').toBeLessThanOrEqual(1)
+      expect(geo.before, 'before "as of"').toBe(true)
       expect(geo.inRow, 'inside the row').toBe(true)
       /* by mouse */
       await btn.click()
@@ -304,9 +306,10 @@ test.describe('the medical view renders and fits', () => {
       await page.keyboard.press('Escape')
       await expect(win).toHaveCount(0)
       await expect(page.locator('#medView'), 'still on the Medical tab').toBeVisible()
-      /* by keyboard: from "as of", Tab reaches it; Enter opens; Escape closes and gives the keyboard back to it */
+      /* by keyboard: it stands before "as of" since D1137, so the keys reach it in that order — Shift+Tab from "as of";
+         Enter opens; Escape closes and gives the keyboard back to it */
       await page.locator('#medCalBtn').focus()
-      await page.keyboard.press('Tab')
+      await page.keyboard.press('Shift+Tab')
       expect(await page.evaluate(() => document.activeElement && document.activeElement.id)).toBe('medNew')
       await page.keyboard.press('Enter')
       await expect(win).toBeVisible()

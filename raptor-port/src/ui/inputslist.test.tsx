@@ -548,31 +548,33 @@ describe('D910 — on the narrowest phones the dates button’s words are shorte
   it('one month: "15–29 Oct", where a wider phone reads "15 Oct → 29 Oct"', async () => {
     await open(true)
     await pick(['2026-10-15', '2026-10-29'])
-    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 15–29 Oct')
+    /* D1137 (21 Oct 26): the app's line calendar, not the 📅 emoji */
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('15–29 Oct')
+    expect($('#inRangeBtn svg.btnglyph'), 'the line calendar').toBeTruthy()
     await act(async () => { root.unmount() }); host.remove()
     await open(false)
     await pick(['2026-10-15', '2026-10-29'])
-    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 15 Oct → 29 Oct')
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('15 Oct → 29 Oct')
   })
   it('across two months both are named: "28 Sep–12 Oct"', async () => {
     await open(true)
     await pick(['2026-09-28', '2026-10-12'])
-    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 28 Sep–12 Oct')
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('28 Sep–12 Oct')
   })
   it('a date in another year keeps its year — never merged into the other date’s month', async () => {
     await open(true)
     await pick(['2026-12-28', '2027-01-04'])
-    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 28 Dec–4 Jan 27')
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('28 Dec–4 Jan 27')
   })
   it('on any phone a window that prints a year takes the short form too — "28 Dec–11 Jan 2027" (the read of 15 Oct 26)', async () => {
     await open(false)   // a phone 390 wide — not the narrowest
     await pick(['2026-12-28', '2027-01-11'])
-    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 28 Dec–11 Jan 27')
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('28 Dec–11 Jan 27')
   })
   it('two months of the same other year name the year once — "4 Jan–1 Feb 2027" (the second read of 15 Oct 26)', async () => {
     await open(false)
     await pick(['2027-01-04', '2027-02-01'])
-    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 4 Jan–1 Feb 27')
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('4 Jan–1 Feb 27')
   })
   it('a phone: opening the filters closes the dates pop-up, by keyboard too (no tap outside to close it)', async () => {
     await open(false)
@@ -585,7 +587,7 @@ describe('D910 — on the narrowest phones the dates button’s words are shorte
   it('a one-day window reads its day once', async () => {
     await open(true)
     await pick(['2026-10-15', '2026-10-15'])
-    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 15 Oct')
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('15 Oct')
   })
   it('a phone: opening the dates closes the open filter fields, so nothing stands between the button and its pop-up (the read of 15 Oct 26)', async () => {
     await open(false)
@@ -604,6 +606,6 @@ describe('D910 — on the narrowest phones the dates button’s words are shorte
     await open(true)
     if (!$('#inRangePop')) await click($('#inRangeBtn'))
     await click($('#inRangeAll'))
-    expect($('#inRangeBtn')!.textContent!.trim()).toBe('📅 All dates')
+    expect($('#inRangeBtn')!.textContent!.trim()).toBe('All dates')
   })
 })

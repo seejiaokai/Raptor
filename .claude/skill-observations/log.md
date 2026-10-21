@@ -696,6 +696,8 @@ Met again 15 Oct 26 (`[LW-REARRANGE-EDGE-SCROLL]`), worse: CODE under `raptor-po
 
 **Principle:** A push is done when the remote says so, not when the command exits; any quiet or filtered push needs a read-back of the remote head.
 
+met again 2026-10-21: the handoff's pasted opening line for round 2 of the consistency look said `git switch -c claude/consistency-round2 origin/main` - the new branch tracked `origin/main` (`branch.<b>.merge = refs/heads/main`), and with this repo's push.default=upstream a plain `git push` would have gone to MAIN. Caught by the memory note, unset at once. The guard to propose: the opening-line template ends with `--no-track` (an unconditional default, not a condition to judge).
+
 ### Observation 600: In the desktop app a worktree chat takes its settings, hooks and skills from the MAIN checkout, so a merged change to them is dead until that folder is brought to main
 
 **Status:** OPEN
@@ -1638,7 +1640,66 @@ different feature that merely pass through it.
 
 **Principle:** In a live-page mock-up, a node's look can depend on where it sits; relocate the side that does not.
 
-### Observation 664: A shared claude.ai app draws nothing without its database — run its saved source locally against a stand-in store to picture it
+### Observation 664: A comment heading in capitals tripped a test that scans the source for a name
+
+**Status:** OPEN
+**Date:** 2026-10-21
+**Session context:** Round 2 of the consistency look — a new comment in the Tracker's App.jsx, written in this repo's capitals-heading style ("ONE JOINED BOX, AS THE INPUTS / SANS / MEDICAL TABS ARE"), turned GitHub's unit share red: inputs-readers.test.ts lists every file whose text holds the store's name INPUTS, comments included, and demands each be classified.
+**Skill:** New skill candidate: none — raptor-executor / the project guide's coding conventions
+**Type:** internal
+**Phase/Area:** Writing code comments; running only the touched tests before a push
+
+**Issue:** The local run covered only the touched test files, so a source-wide scan test the change never "touched" went unrun until GitHub. The word in capitals was prose, not a reference — but the scan cannot tell.
+
+**Suggested improvement:** One line in the guide's coding conventions (or gates-and-deploy.md): source-scanning tests (inputs-readers, perms-scan, …) read comments too — never write a store's name (INPUTS, PEOPLE, DAYS…) in capitals in prose; and when touching a new file, run the scan tests (`npx vitest run src/engine/inputs-readers.test.ts src/state/perms-scan.test.ts`) with the touched ones.
+
+**Principle:** When tests scan source text, any file change is a change those tests touch; include them in the "touched tests" set by default.
+
+### Observation 665: A look's picture script should tag the mark, not assume where it lives
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** Round 3 of the consistency look: picturing every typed pencil in the app, today and drawn.
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** drawing a proposed change on the running app
+
+**Issue:** A source search listed a typed pencil on the Tracker's Students card, but the running app already drew it as a line icon (the character hidden by a style). Grepping source would have put a finding to the owner that was already fixed. Tagging every visible element whose own text holds the mark, then ringing those, found the true set on screen; the empty result for that place was the signal.
+
+**Suggested improvement:** In mockups-on-the-real-app.md, one line: when a look covers "every X", find X by what the running page shows (visible elements whose own text or icon is X), not by a source search; a place the source lists but the screen does not show is reported as "already done", not pictured.
+
+**Principle:** What the person sees is the inventory; source text is only a lead to check against the running screen.
+
+### Observation 666: A walk that checks an icon is "there" passes an icon in the wrong place
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** Round 3 of the consistency look: swapping typed marks for drawn icons in many buttons, then walking them.
+**Skill:** New skill candidate / bug-check order (walk-scripts.md)
+**Type:** open-source
+**Phase/Area:** writing a walk's assertions for an icon swap
+
+**Issue:** The walk asserted "the button wears the svg and no typed mark" and passed 71/71, while on a desktop one button now showed its new icon ABOVE its words (the icon is a block element; that row's buttons were not flex). The walk's picture of that row was cropped to the first matching element, so the button was not even in it. A later picture for another question showed the fault; the fresh code read found it too.
+
+**Suggested improvement:** In `raptor-port/docs/walk-scripts.md`: when a text mark becomes a drawn icon, assert its PLACE as well as its presence — the icon's box beside the words (its right edge at or before the words' left, their middles within a few px) and the control's height unchanged; and a crop helper that takes several selectors must box all of them, not the first.
+
+**Principle:** An assertion of presence cannot catch a layout fault; check the relation the person sees (beside, same line, same height), and make every picture show the thing it is named for.
+
+### Observation 669: A "before" worked out by undoing styles on the page is not the before — measure a build of the old look
+
+**Status:** OPEN
+**Date:** 2026-10-21
+**Session context:** Raptor round 3's answers 5–7 — the Tracker bar's controls made one height; the ruling also said the bar must grow no taller (numbered past 668, held by `claude/leave-war-overhaul`)
+**Skill:** New skill candidate: none — the walk-scripts guide (`raptor-port/docs/walk-scripts.md`) and the bug-check order's walk
+**Type:** open-source
+**Phase/Area:** walking a size change; comparing before and after
+
+**Issue:** To check "the bar grows no taller", the walk first computed the old height by injecting a style that undid the new sizes on the live page. Its numbers disagreed with a hand measure in another browser pane (different fonts) and with each other (a phone bar "70 → 67"), and a fix (a closer row gap) was built on the pane's numbers. Building the app once with the old stylesheet and measuring it with the same script at nine widths gave the true before: the fix was not needed and in fact moved the phone's rows; it was dropped. Separately, a fresh code read caught that one side of the "as tall as" was fixed while the other was drawn by the browser (a dropdown) — true here, unproved on an iPhone — so both were pinned to the same number.
+
+**Suggested improvement:** In `walk-scripts.md`: when a ruling says something "does not grow / does not move", record the before from a BUILD of the old look (swap the one stylesheet back, build, measure with the same script into a file, restore), and compare the after against that file; never against numbers from another browser or a style undone on the page. And when making two things "as tall as" each other, set both to the number, not one.
+
+**Principle:** A comparison is only as good as its baseline; measure the old state the same way, in the same browser, as the new — and a match between a fixed size and a computed one is a match on one device only.
+### Observation 671: A shared claude.ai app draws nothing without its database — run its saved source locally against a stand-in store to picture it
 
 **Status:** OPEN
 **Date:** 21 Oct 26

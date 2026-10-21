@@ -60,6 +60,7 @@ import { landOn, markLand, paintLand } from './lift'
 import { edgeAutoScroll, findScroller } from './edgescroll'
 import { bringRowOnScreen, rowOnScreen } from './onscreen'
 import { useVersion } from './useStore'
+import { PenIcon } from './icons'
 import { useMedia } from './usemedia'
 import { KEYBOARD_MIN } from './kbscroll'
 
@@ -1006,7 +1007,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
                   const tools = sched && <>
                     {!ppl && <button type="button" data-pkadd={p.id} className="ic-note-ppl" aria-label="Add people to this note" title="Add people" onClick={pick}>+</button>}
                     <button type="button" data-ppedit={p.id} aria-label={words ? 'Edit note' : 'Add words to this note'} title={words ? 'Edit' : 'Add words'}
-                      onClick={() => { setPopPuckEdit(p.id); setPuckDraft(words) }}>✏</button>
+                      onClick={() => { setPopPuckEdit(p.id); setPuckDraft(words) }}><PenIcon solo /></button>
                     <button type="button" data-ppdel={p.id} aria-label="Delete note" title="Delete this note"
                       onClick={() => writeInputs(() => removePlanPuck(p.id))}>✕</button>
                   </>

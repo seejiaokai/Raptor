@@ -11,7 +11,7 @@ import { toggleChanges } from './changesopen'
 import { weekDates } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
 import { setWeekCal, setInsights } from './pops'
-import { CalIcon, HistIcon, HlIcon, SrchIcon } from './icons'
+import { CalIcon, HistIcon, HlIcon, PenIcon, SrchIcon } from './icons'
 import { HlChips } from './hlchips'
 import { oilShown, oilModeOn, toggleOilMode } from './oilmode'
 import { wireHistBubble, hideHistBub, histBubRecheck, refreshHistDots } from './histbubble'
@@ -658,7 +658,11 @@ export function SchedBoard() {
             (3) comment in scheduler.css's min-width:821px block; display:none
             on a phone, where the fold makes its own geometry. */}
         <i className="sb-break" aria-hidden="true"></i>
-        <div className={'sb-hl' + (HLOPEN ? ' open' : '')} id="sbHlStrip"><HlChips /></div>
+        {/* THE HIGHLIGHTER MARK LEADS THE STRIP ON A DESKTOP, AS ON THE WEEK (owner D1131, 21 Oct 26 — round 2 of the
+            consistency look): a quiet label, the week's own `.lab.hl-lab`; the #sbHl toggle by the search, which folds
+            nothing at a desktop's width (the strip is always open there), is hidden there and stays the phone's fold
+            (10-board-history.css). */}
+        <div className={'sb-hl' + (HLOPEN ? ' open' : '')} id="sbHlStrip"><span className="lab hl-lab" title="Highlight"><HlIcon /></span><HlChips /></div>
         {/* A FAILED SAVE'S WARNING ([SAVE-NOTE-COVERS], D587): the board lies over the top bar, so the bar's own
             warning cannot be seen from here — the board carries it, on a line of its own at the bottom of its bar.
             INSIDE .sb-top like the strip above, so --sb-topH follows it and nothing below is covered. */}
@@ -763,7 +767,7 @@ export function CxDialog() {
           {!editing
             ? <div className="cxquick" id="cxQuick">
                 {CXR_CFG.map((q, i) => <button key={i + ':' + q} type="button" data-cxq={q} onClick={() => { if (inRef.current) inRef.current.value = q }}>{q}</button>)}
-                {canEdit && <button type="button" className="cxq-edit" data-cxedit onClick={() => setEditing(true)} title="Add, rename or remove the quick reasons">✎ Edit</button>}
+                {canEdit && <button type="button" className="cxq-edit" data-cxedit onClick={() => setEditing(true)} title="Add, rename or remove the quick reasons"><PenIcon />Edit</button>}
               </div>
             : <div className="cxedit" id="cxEdit">
                 <div className="cxedit-h"><b>Cancel reasons</b><button type="button" className="abtn sm" data-cxdone onClick={() => { setEditing(false); setArmReset(false) }}>Done</button></div>

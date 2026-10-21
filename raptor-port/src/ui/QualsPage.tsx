@@ -2,7 +2,7 @@
    builder; the tick/untick handlers keep the reference's invariants: NAAR
    is signed off after DAAR, SC NIGHT after SC DAY, and withdrawing the day
    qualification takes the night one with it. */
-import { SrchIcon } from './icons'
+import { PenIcon, SrchIcon } from './icons'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { wirePinch } from './pinchzoom'
 import { rowOnScreen } from './onscreen'
@@ -839,19 +839,19 @@ export function QualsPage() {
             start, "Done" in the bright blue while editing — as Logic's #lgEdit / #lgDone — in place of "Enable editing" (blue)
             and "Save changes" ("Save" on a phone, D937). What each does is unchanged: every tick is kept as it is made, and
             Done only ends editing (it still says "Quals saved"). */}
-        <button className="abtn" id="qEdit" hidden={qEditing} onClick={() => setEditing(true)}>✎ Edit</button>
+        <button className="abtn" id="qEdit" hidden={qEditing} onClick={() => setEditing(true)}><PenIcon />Edit</button>
         <button className="abtn primary" id="qSave" hidden={!qEditing}
           onClick={() => { setEditing(false); setQualsEdit(false); setArmDel(''); HOOKS.toast('Quals saved') }}>Done</button>
         {/* the second mode, inside edit mode and admin-only (owner, 5 Aug 26):
             which qualifications the LoX carries, and in which order. Off by
             default every time editing is switched on — reshaping the table is
             a deliberate act, not the state you land in to tick a box. */}
-        {/* it reads the way Enable editing did (owner, 5 Aug 26; Enable editing is "✎ Edit" since D1128): BLUE while
-            it is the thing to press, then plain dark with a ✕ once you are
-            inside it, so the button always shows the way OUT rather than
-            lighting up to say where you already are. */}
+        {/* PLAIN GREY, BEFORE AND AFTER IT IS PRESSED (owner D1129, 21 Oct 26 — round 2 of the consistency look): it
+            was blue while it was the thing to press (his 5 Aug 26 rule), which put two bright-blue buttons side by
+            side once "Done" took the blue (D1128) — neither read as the way out. Now "Done" is the one blue; this
+            button reads "Edit quals" to start and "✕ Edit quals" once you are inside the mode, plain both times. */}
         {admin && qEditing &&
-          <button className={'abtn' + (qualsEdit ? '' : ' primary')} id="qEditQuals"
+          <button className="abtn" id="qEditQuals"
             aria-pressed={qualsEdit}
             onClick={() => { setQualsEdit(v => !v); setArmDel('') }}>{qualsEdit ? '✕ Edit quals' : 'Edit quals'}</button>}
         {/* ONE ROW, AT 36 (owner D935, 16 Oct 26 — built as drawn; the design guide §3, "A page's controls are one

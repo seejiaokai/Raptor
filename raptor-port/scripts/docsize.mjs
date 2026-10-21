@@ -118,7 +118,7 @@ const FILES = [
   /* NEW 24 Sep 26 (owner, D140 + D143): the two rule files every chat carries so the structure and the way a
      change ships are in force before any project file is read. Ceilings set at what they hold plus room. */
   ['.claude/rules/doc-structure.md',     0,  100],
-  ['.claude/rules/shipping.md',          0,  130],   // 115 → 130 (20 Oct 26): D1086–D1088 — which machine runs the full check, batches by area, the one run after "merge live"; rules every chat ships by
+  ['.claude/rules/shipping.md',          0,  135],   // 130 → 135 (21 Oct 26): D1093 (his "auto merge live" covers a run) and D1097 (a notification at every stop that waits on him) — live rules every chat ships by, none moved out; 115 → 130 (20 Oct 26): D1086–D1088 — which machine runs the full check, batches by area, the one run after "merge live"; rules every chat ships by
   /* 961 -> 1000, 23 Sep 26 ([DOCS-GUARD] step 1). Already at 969: the two OIL merges (#424, #425)
      added lines inside code changes, which is exactly what F3 now allows and defers. HANDOFF must
      accept a known-issue entry during a fix (CLAUDE.md), so it carries declared headroom. */
@@ -238,7 +238,10 @@ const RULING_BYTES = [
   /* how-we-work 39500 -> 42000 (16 Oct 26, the documents tidy after pull request 519): 40,313 bytes with D902-D906, D926 and
      D911, D921 (the small-fix checks, the readers, when he is told and shown) - live; none is trimmed (D136).
      [RULINGS-SPENT-PASS] still brings it down. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 42000],
+  /* how-we-work 42000 -> 44000 (21 Oct 26, round 2 of the consistency look): 42,803 bytes with D1124, D1126, D1127 (the
+     consistency look, the top bar to 1599, one search box) and D1086-D1097 - live; none is trimmed (D136).
+     [RULINGS-SPENT-PASS] still brings it down. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 44000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,

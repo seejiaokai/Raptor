@@ -5,6 +5,8 @@
    calendar. the time button doesn't look like a history button"). Both are
    Lucide-style line glyphs sized by `.btnglyph`. */
 
+import { PEN_INNER } from './pen'
+
 /** A day-grid calendar: two binding posts, a header divider, and date dots —
  *  unmistakable at 16–20px where a plain rounded rectangle was not. */
 export function CalIcon() {
@@ -202,15 +204,12 @@ export function FilterIcon() {
   )
 }
 
-/** A pencil — the input's title box says it can be typed over (owner D918, D919: inside the box at its right end).
- *  Drawn as the other glyphs here are, never the ✏ character, which an iPhone draws as a coloured emoji. Sized by
- *  `.inped-pen svg`, not `.btnglyph`: it sits inside a box, not on a toolbar button. */
-export function PenIcon() {
+/** The app's one pencil (owner D1134, 21 Oct 26 — his solid pencil, tip at the bottom right, D1133; the drawing and
+ *  why it is drawn, never typed: `ui/pen.ts`). Used on every button that edits, and inside an input's title box (D919:
+ *  inside the box at its right end — there sized by `.inped-pen svg`). `solo` where it is the button's only mark. */
+export function PenIcon({ solo = false }: { solo?: boolean } = {}) {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none"
-      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 20h9" />
-      <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
-    </svg>
+    <svg className={'pen-ic' + (solo ? ' solo' : '')} viewBox="0 0 24 24" aria-hidden="true"
+      dangerouslySetInnerHTML={{ __html: PEN_INNER }} />
   )
 }

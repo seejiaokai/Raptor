@@ -24,7 +24,7 @@ import { notify } from '../state/store'
 import { INPVIEW, setInpView, INPMODE, setInpMode, INPREVEAL, clearInpReveal } from '../state/view'
 import { inputsInMode } from './sans-calendar-model'
 import { setDocView, setInpSet, setInpEdit } from './pops'
-import { CalIcon, ClipIcon, FilterIcon, ListIcon, MedIcon, SrchIcon, UsersIcon } from './icons'
+import { CalIcon, ClipIcon, FilterIcon, ListIcon, MedIcon, PenIcon, SrchIcon, UsersIcon } from './icons'
 import { MedicalView } from './MedicalView'
 import { medDownAsOf, pendingUpchits } from '../engine/medical'
 import { TODAY, keyToIso } from './weeknav'
@@ -648,7 +648,7 @@ export function InputsPage() {
     {/* the window of dates, picked on a two-click calendar: first click is the from-date, second the to-date */}
     <div className="inrange" hidden={!listUp} ref={rangeRef}>
       <button className={'abtn' + (calOpen ? ' primary' : '')} id="inRangeBtn"
-        aria-expanded={calOpen} onClick={() => { if (phone) setFiltersOpen(false); setCalOpen(o => !o) }}>📅 <span className="inrange-t">{rangeLabel}</span></button>
+        aria-expanded={calOpen} onClick={() => { if (phone) setFiltersOpen(false); setCalOpen(o => !o) }}><CalIcon /><span className="inrange-t">{rangeLabel}</span></button>
       {calOpen && (
         <div className="inrange-pop" id="inRangePop">
           <RangeCal idPrefix="inRange" start={range.from} end={range.to}
@@ -670,7 +670,7 @@ export function InputsPage() {
             <div className="inrange-cfg" id="inRangeCfg">
               {!lookEdit && (
                 <button className="abtn ghost" id="inRangeEdit" onClick={() => { setLookWeeks(String(LOOK_CFG.weeks)); setLookSun(LOOK_CFG.toSunday); setLookEdit(true) }}>
-                  ✎ Default window
+                  <PenIcon />Default window
                 </button>
               )}
               {lookEdit && (

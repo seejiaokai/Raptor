@@ -54,6 +54,8 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1131 | 21 Oct 26 | On a desktop the Scheduler Board's highlighter mark is drawn as the week's is — a plain mark leading its CAT / TYPE / QUALS row — and the boxed button by its search, which folds nothing at that width, goes; on a phone both pages keep their button, which folds the row away; SANS's "Highlight" button stays, another job (one man, his callsign shown). |
+| D1130 | 21 Oct 26 | On a desktop up to 1599 wide the Scheduler Board's own bar draws Undo, Redo and History as their icons only, their names on hover, and the sync pill its dot alone — as every page's top bar does (D1126); wider, the words come back on both; the board on a phone is left as it is. |
 | D1121 | 21 Oct 26 | A crossed-out man's reason in the crew list says each fact once: where the kind's meaning and his own remark repeat a fact it is said once, and a fact only one of them carries stays; done later, not in the right-panel job, on its own or with the words pass, his to place. |
 | D1120 | 21 Oct 26 | In the crew list a man whose only task that day is standing by — on an SC SPARE line, an AVALON or BB line that does not fly, or that standby's desk — is never faded as tasked: the standby look, counted in "N free"; the day's figures and the Leave War are not changed. |
 | D1119 | 21 Oct 26 | The crew list's SANS section is ordered as the pilots and WSOs are — free first, then crossed out, callsign order within each — and its heading carries its count ("SANS Avail · 8 free"); the strip over the list drops its dot when the picked line has no callsign or mission yet ("Planning FCP"). |
