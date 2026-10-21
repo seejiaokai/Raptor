@@ -13,24 +13,31 @@ const PEN = '<svg viewBox="0 0 14 14" width="12" height="12" aria-hidden="true">
 // the top row as proposed: the stage button gone; one chip says what is open
 const topRow = (dates, more) => box(0, 10.9, 100, 3.3, `<div class="row"><span class="chip open"><i>Open</i>${dates}${more ? `<em>${more}</em>` : ''}</span><span class="chip">Under <b>0</b> days</span><span class="sp"></span><span class="chip">Legend</span></div>`, 'background:#0d1117')
 // the window, in the style of today's "Open bidding on" window
-const sheet = (lines, admin, mk) => box(3.2, 36.5, 93.6, admin ? 21 : 17, `<div class="sh"><div class="sht"><span class="grip">⠿</span>OPEN FOR BIDDING<em>JAN – DEC 26</em><span class="x">✕</span></div>
+// D1168 (his idea): the period's months as quick buttons — a tap opens or closes a whole month; on = whole month open,
+// part = opened only in part (mid-month), dotted edge
+const MON = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+const months = (on = [], part = [], mk) => `<div class="mos${mk ? ' mkd' : ''}" data-n="${mk || ''}">${MON.map((m, i) => `<span class="mb ${on.includes(i) ? 'on' : part.includes(i) ? 'part' : ''}">${m}</span>`).join('')}</div>`
+const sheet = (lines, admin, mk, mo) => box(3.2, 36.5, 93.6, admin ? (mo ? 30 : 21) : 17, `<div class="sh"><div class="sht"><span class="grip">⠿</span>OPEN FOR BIDDING<em>JAN – DEC 26</em><span class="x">✕</span></div>
+${mo ? months(mo[0], mo[1], mo[2]) : ''}
 ${lines.length ? lines.map(([d, n]) => `<div class="ln${mk ? ' mkd' : ''}" data-n="${mk ? mk[0] : ''}"><b>${d}</b><span>${n}</span>${admin ? `<i>${PEN}</i>` : ''}</div>`).join('') : '<div class="empty">Nothing is open. Members cannot bid.</div>'}
 ${admin ? `<div class="add${mk ? ' mkd' : ''}" data-n="${mk ? mk[1] : ''}">+ Open more dates</div>` : ''}<div class="note">${admin ? 'Closed days dim on the grid, with a small lock.' : 'You can bid on these dates. The rest of the year is closed.'}</div></div>`)
 
 const STEPS = [
-  ['1', 'Tap the open dates', 'full/t-phone-admin.png', topRow('6 Apr – 8 May') + mark(1.8, 10.8, 36.5, 3.6, 'A'),
+  ['1', 'Tap the open dates', 'full/t-phone-admin.png', topRow('1 Apr – 30 Jun') + mark(1.8, 10.8, 36.5, 3.6, 'A'),
     ['<b>A</b> The stage button is gone. One chip says what is open; on your phone it sits where the stage was. Tap it.']],
-  ['2', 'The window lists what is open', 'full/t-phone-admin.png', topRow('6 Apr – 8 May') + sheet([['6 Apr – 8 May', '33 days']], true, 'BC'),
-    ['<b>B</b> Each open stretch is one line. Tap it, or its pencil, to change or remove it.', '<b>C</b> "+ Open more dates" adds another stretch, if you ever need two.', 'With nothing open, the window says "Nothing is open. Members cannot bid."']],
-  ['3', 'Change the dates on the calendar', 'full/t-bid-dates-phone.png',
+  ['2', 'Tap the months to open them', 'full/t-phone-admin.png', topRow('1 Apr – 30 Jun') + sheet([['1 Apr – 30 Jun', '91 days']], true, 'CD', [[3, 4, 5], [], 'B']),
+    ['<b>B</b> Your quick way: tap a month to open it whole, first day to last; tap it again to close it. April, May and June tapped here.', '<b>C</b> Months next to each other become one line. Its pencil is for the rare exact days.', '<b>D</b> "+ Open more dates" adds a stretch of exact days.', 'With nothing open, the window says "Nothing is open. Members cannot bid."']],
+  ['2b', 'A stretch of exact days, mid-month', 'full/t-phone-admin.png', topRow('15 Apr – 14 Jul') + sheet([['15 Apr – 14 Jul', '91 days']], true, '', [[4, 5], [3, 6], 'E']),
+    ['<b>E</b> April and July are open only in part, so their buttons wear a dotted edge. A tap on one opens it whole.']],
+  ['3', 'Exact days: the pencil opens the calendar', 'full/t-bid-dates-phone.png',
     topRow('6 Apr – 8 May') + box(10, 38.6, 80, 3.6, '<div class="ttl">OPEN FOR BIDDING<em>6 APR – 8 MAY</em></div>', 'background:#161b22') +
     box(27.6, 88, 37.6, 4.4, '<div class="btn">Save dates</div>', 'background:#161b22') +
     box(5, 92.7, 90, 4.6, '<div class="del">Remove these dates</div>', 'background:#161b22') +
     mark(6.6, 43.4, 86.8, 42.5, 'D') + mark(27.6, 88, 37.6, 4.4, 'E') + mark(26, 92.6, 48, 4.6, 'F'),
     ['<b>D</b> The calendar you have today: tap the first day, then the last. Any day to any day.', '<b>E</b> "Save dates". The window shows the new line.', '<b>F</b> "Remove these dates" closes that stretch. Undo brings it back.']],
-  ['4', 'The grid shows it', 'full/t-phone-admin.png', topRow('6 Apr – 8 May') + mark(1.8, 10.8, 36.5, 3.6, 'G') + mark(27.2, 33.8, 70, 1.4, 'H'),
+  ['4', 'The grid shows it', 'full/t-phone-admin.png', topRow('1 Apr – 30 Jun') + mark(1.8, 10.8, 36.5, 3.6, 'G') + mark(27.2, 33.8, 70, 1.4, 'H'),
     ['<b>G</b> The chip shows the open dates; with two stretches it adds "+1".', '<b>H</b> The open days wear today\'s green outline; closed days dim, with a small lock.']],
-  ['5', 'What a member sees', 'full/t-phone-admin.png', topRow('6 Apr – 8 May') + sheet([['6 Apr – 8 May', '33 days']], false) + mark(1.8, 10.8, 36.5, 3.6, 'I'),
+  ['5', 'What a member sees', 'full/t-phone-admin.png', topRow('1 Apr – 30 Jun') + sheet([['1 Apr – 30 Jun', '91 days']], false) + mark(1.8, 10.8, 36.5, 3.6, 'I'),
     ['<b>I</b> The same chip. A tap shows the open dates, read only: no pencil, nothing to add.']],
 ]
 const CSS = `
@@ -51,6 +58,10 @@ const CSS = `
 .ln b{color:#8FE0A8;font-weight:700}.ln i{color:#5fd0e6;display:flex}
 .mkd{position:relative;outline:2.5px solid ${PINK};outline-offset:2px;border-radius:2cqw}
 .mkd::before{content:attr(data-n);position:absolute;top:-12px;left:-12px;width:20px;height:20px;border-radius:50%;background:${PINK};color:#fff;font:800 11px/20px system-ui;text-align:center}
+.mos{display:grid;grid-template-columns:repeat(6,1fr);gap:1.6cqw}
+.mb{display:flex;align-items:center;justify-content:center;height:7.6cqw;border-radius:2cqw;border:1px solid #2f3a46;background:#0f1318;font:700 3.2cqw system-ui;color:#9aa5b1}
+.mb.on{border-color:rgba(87,201,122,.75);background:rgba(87,201,122,.16);color:#8FE0A8}
+.mb.part{border:1.5px dashed rgba(87,201,122,.8);color:#8FE0A8}
 .add{align-self:flex-start;font:600 3.4cqw system-ui;color:#5fd0e6;padding:0 1cqw}
 .empty{font:500 3.4cqw system-ui;color:#9aa5b1}
 .note{margin-top:auto;font:500 3cqw/1.4 system-ui;color:#8a96a3}
@@ -69,5 +80,5 @@ const browser = await chromium.launch()
 const ctx = await browser.newContext({ viewport: { width: 390, height: 900 }, deviceScaleFactor: 3 })
 const p = await ctx.newPage(); p.on('pageerror', e => errs.push(String(e)))
 await p.goto('file:///' + join(HERE, 'q5-flow.html').split(String.fromCharCode(92)).join('/')); await p.waitForTimeout(400)
-for (const n of ['1', '2', '3', '4', '5']) await p.locator('#s' + n).screenshot({ path: join(OUT, `p5-flow${n}.png`) })
+for (const n of ['1', '2', '2b', '3', '4', '5']) await p.locator('#s' + n).screenshot({ path: join(OUT, `p5-flow${n}.png`) })
 await browser.close(); console.log('errors:', errs)
