@@ -1592,3 +1592,18 @@ different feature that merely pass through it.
 **Suggested improvement:** walk-scripts.md: "every check over a list asserts the list's size first (more than N, or exactly the expected count), and its premise (the seat still picked) — a check over an empty list passes". The order's §5 / shipping's "the tests of what you change": "a change to a stylesheet runs every test that reads the stylesheets (grep the tests for `.css` / readFileSync), whatever functions it touches".
 
 **Principle:** A universal claim over a collection is vacuously true when the collection is empty; assert the collection's size and the premise that fills it. And select tests by what they READ, not only by the names they call.
+
+### Observation 661: A fixed room sized from one machine's fonts fails on another's
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** [ARROWS-STAY-PUT] (D1122) — keeping arrows still around changing words
+**Skill:** (project guide) raptor-port/docs/design-practices.md §6; mockups-on-the-real-app.md "A fit drawn in the test browser's letters…"
+**Type:** open-source
+**Phase/Area:** sizing a label's room
+
+**Issue:** Each label got a fixed width measured from the longest value in this PC's fallback font. Locally every pair measured still and the row fit; on GitHub's Linux machines the fallback font is wider: one arrow still moved 3px and a toolbar row wrapped. The app loads no fonts, so every device draws its own.
+
+**Suggested improvement:** reserve a label's room by the real font on the device: stack every value the label can take in one grid cell (all but the current hidden), never a number measured on one machine; where a fixed number is unavoidable, measure it in the CI browser too before pushing.
+
+**Principle:** A width measured in one font is a guess on every other device; let the layout measure the real text in place.
