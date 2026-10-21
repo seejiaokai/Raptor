@@ -149,7 +149,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
 - [LW-HARNESS-VIEWER-PIN] — in the Leave War browser tests a role switch quietly undoes the pinned viewer.
 - [SAVE-NOTE-TEST-GAPS] — two soft spots in the failed-save warning's browser test.
-- [DOCSIZE-MERGE-CEILING] — the document check wrongly flags a merge of `main` that carried a size-marker move.
 - [RULINGS-LF-PIN] — pin the rulings folders to LF line endings — with the next change that runs the full checks.
 - [DEPLOY-DOCS] — the deploy workflow's header still describes the old Pages site.
 - [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check; a few comments to look at.
@@ -1185,16 +1184,6 @@ line of them at once — a whole-file diff is where a destroyed record hides. Th
 today (checked 24 Sep 26 with `git ls-files --eol`). Add them — a pattern for the folder covers a new area file too.
 **Place:** ride the next change that starts the full checks on his PC anyway: `.gitattributes` is not on the deploy
 workflow's docs-only skip list, so a change to it alone starts a full run (D89, D151), which a docs pass must not do.
-
-### [DOCSIZE-MERGE-CEILING] The document check's ceiling rule fires on a MERGE of `main` that carried a ceiling move (found 29 Sep 26)
-`npm run docsize` on `claude/small-fixes-batch-d223f6` (after `main` #464 was taken in) fails: "a ceiling in raptor-port/scripts/docsize.mjs
-changed in commit 593c357e, which also touches raptor-port/src". 593c357e is the MERGE of `main` #459–#462; the ceiling moved on
-`main` in the guide step's own docs-only commit (D391), and the merge merely carried it beside the Tracker's code. The rule
-(`docsize.mjs` `ceilingMovedWithCode`) walks `git log BASE..HEAD -- docsize.mjs` and compares each commit with its FIRST parent, so
-a merge reads as a commit that moved the ceiling with code. The same HEAD passed the Docs guard on GitHub (72cf61e7), so it did
-not block the PR. **To do:** skip merge commits in that walk (`--no-merges`: every ceiling move is judged in the commit that made
-it, on whichever side) with a self-test — in a docs-only change of its own, never inside a code PR (the gate is not edited to pass
-the PR that trips it). **Place:** low; with the next document-gate change.
 
 ### [ITFLOW-OIL-RESHOOT] Re-shoot the IT flow guide's Leave War pictures once the OIL words change (29 Sep 26)
 **Also for the next re-shoot (12 Oct 26 — D773; Fable's second read of the one-rule job, finding 3):** the deck's "Print, export and data" slide still pictures the Inputs List's "Export to Excel", a button that is removed. Its sources are corrected (`raptor-port/scripts/itflow/j/export.mjs`, `content.mjs` — the shot is gone, the Admin → Data step is step 3); the built deck keeps the old slide until he asks for a re-shoot (D403).

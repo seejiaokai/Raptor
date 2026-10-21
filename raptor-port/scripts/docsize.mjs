@@ -839,8 +839,14 @@ function ceilingMovedWithCode(paths) {
   }
   const dirty = (tryGit('status', '--porcelain') || '').split('\n').map(l => l.slice(3).trim()).filter(Boolean)
   if (dirty.includes(SELF) && touchesSrc(dirty)) {
-    const head = tryGit('show', `HEAD:${SELF}`) || ''
-    if (!sameRows(rowsOf(head), rowsOf(readNow(SELF)))) bad.push('the uncommitted change')
+    const head = rowsOf(tryGit('show', `HEAD:${SELF}`) || ''), now = rowsOf(readNow(SELF))
+    /* a merge still being made is judged as a committed one (the reader of [DOCSIZE-MERGE-CEILING], 21 Oct 26): a
+       ceiling the other side brought is not a move; only a value neither side has is */
+    if (isCommit('MERGE_HEAD')) {
+      const sides = [head, rowsOf(tryGit('show', `MERGE_HEAD:${SELF}`) || '')]
+      const keys = new Set([...now.keys(), ...sides.flatMap(s => [...s.keys()])])
+      if ([...keys].some(f => !sides.some(s => s.get(f) === now.get(f)))) bad.push('the merge in progress')
+    } else if (!sameRows(head, now)) bad.push('the uncommitted change')
   }
   return bad
 }

@@ -6283,3 +6283,16 @@ saving the setting moves the button out from under the press (a "rules changed" 
 button's position before and after the save first. **Place:** low, with the next change to the Logic page; a browser test that changes a
 setting and presses Done once, by mouse and by finger.
 
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([DOCSIZE-MERGE-CEILING]). Forward facts: `raptor-port/scripts/docsize.mjs`, `raptor-port/scripts/docsize-selftest.mjs`.*
+
+### [DOCSIZE-MERGE-CEILING] The document check's ceiling rule fires on a MERGE of `main` that carried a ceiling move (found 29 Sep 26)
+`npm run docsize` on `claude/small-fixes-batch-d223f6` (after `main` #464 was taken in) fails: "a ceiling in raptor-port/scripts/docsize.mjs
+changed in commit 593c357e, which also touches raptor-port/src". 593c357e is the MERGE of `main` #459–#462; the ceiling moved on
+`main` in the guide step's own docs-only commit (D391), and the merge merely carried it beside the Tracker's code. The rule
+(`docsize.mjs` `ceilingMovedWithCode`) walks `git log BASE..HEAD -- docsize.mjs` and compares each commit with its FIRST parent, so
+a merge reads as a commit that moved the ceiling with code. The same HEAD passed the Docs guard on GitHub (72cf61e7), so it did
+not block the PR. **To do:** skip merge commits in that walk (`--no-merges`: every ceiling move is judged in the commit that made
+it, on whichever side) with a self-test — in a docs-only change of its own, never inside a code PR (the gate is not edited to pass
+the PR that trips it). **Place:** low; with the next document-gate change.
+
