@@ -181,6 +181,14 @@ JOBS.push({ name: 'r4b-desk-pairs', img: pic('full/r4-desk-admin-A.png'), W: 192
   over: tint([[282, 25, OL], [307, 26, GR], [334, 27, OL], [362, 26, GR]], 28, 1867) })
 JOBS.push({ name: 'r4b-phone-pairs', img: pic('full/r4-phone-admin-A.png'), W: 1170, H: 2532, u: 3, sample: [600, 2300], clip: [0, 520, 1170, 520],
   over: tint([[680, 53, OL], [734, 53, GR], [788, 53, OL], [842, 51, GR]], 33, 1105) })
+// 13 — a phone's card with several counters amber or red (D1192)
+const STACKED = [
+  ['Cinch', 'pilot', 'IP', 'sxo', 'LL', 'Thu 22 – Fri 23 Jan', '2 days', -2, 'P 24.5', 'Cinch, 3 Jan', 0, null, 'red', null, null, ['', '', '', '', 'A']],
+  ['Anvil', 'pilot', 'IP', 'sxo', 'LL', 'Tue 27 Jan', '1 day', -1.5, 'P 23', 'Anvil, 5 Jan', 0, null, 'amb', '<b class="amb">IP 3</b><b class="red">SXO 1</b><b class="amb">FL P 18</b>', null, ['', '', '', '', 'B', 'C']],
+  ['Gambit', 'pilot', 'C', 'c', 'LL', 'Fri 23 Jan, AM', '½ day', 8, 'P 24.5', 'Gambit, 3 Jan', 1],
+]
+JOBS.push({ name: 'r4b-phone-approvals-stack', img: pic('full/r4-w10-phone-approvals.png'), W: 1170, H: 2532, u: 3, sample: [600, 2300], clip: [0, 640, 1170, 1560],
+  over: `<div class="cover" style="left:46px;top:700px;width:1080px;height:1765px;background:var(--bg)"></div><div class="body ph" style="left:76px;top:704px;width:1020px;height:1758px"><div class="dates"><span class="lab">DATES</span>${months(true)}<div class="dr2"><span class="mb pick">Pick dates…</span><span class="sp"></span><span class="apall">Approve all 15</span></div></div>${STACKED.map((r, i) => line(r, i, true)).join('')}</div>` })
 const browser = await chromium.launch()
 for (const j of JOBS) {
   const html = `<!doctype html><html><head><meta charset="utf-8"><style>${CSS(j.u)}</style></head><body><div class="pic" id="pic" style="width:${j.W}px;height:${j.H}px"><img id="base" src="${j.img}" alt="">${j.over}</div></body></html>`
