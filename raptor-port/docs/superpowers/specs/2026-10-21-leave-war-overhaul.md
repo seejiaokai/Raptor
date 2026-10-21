@@ -260,6 +260,7 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **And (D1173, D1174):** the "Viewing as <callsign>" chip goes (only a label on the war — the admin / member switch is the name badge, D292; replaces D365, narrows D678); the period picker is labelled "View" ("View JAN – DEC 26"), on a phone too. To draw with round 4's Q10 (the top row).
 - **Q2 confirmed (D1175):** "2 f" — look F as drawn, every input.
 - **And (D1176):** the closed note's words — "Bidding is closed. To change your leave, seek management's approval, then file it on the Inputs page. Your approved leave updates here by itself."
+- **Q5 → open (D1177):** the stages go; the "Open for bidding" window (chip, list, month buttons, calendar icon) is the one switch; nothing open until he opens it. Replaces D1156; narrows D1166, D418, D333, D352, D827, D679, D1141, D413. Round 3 is answered.
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
   `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (his question "in what scenario": the clash rules allow only leave during a course or overseas duty, leave beside
   ATT B, and an FO given by hand on a leave day; recommended now C — the leave fills the cell, the other a strip down its right
