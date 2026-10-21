@@ -1744,6 +1744,8 @@ different feature that merely pass through it.
 
 **Principle:** Every layer that reads escapes (shell, Python string, JS) can rewrite a backslash; text that must arrive byte for byte should cross no layer that interprets it.
 
+- Met again 22 Oct 26 (the Leave War overhaul's overnight run): a `cat > file <<'EOF'` holding `/\/g` in a regex arrived as `//g` and the script failed to parse; rewritten with the Write tool. A third meeting — the guard proposed above (scripts are always written with the Write tool, never a heredoc) is still the fix.
+
 ### Observation 670: A cross-branch search for the next free ruling number skipped every branch's area file without a word — the same Git Bash path rewrite the numbering rule warns of
 
 **Status:** OPEN
@@ -1758,3 +1760,18 @@ different feature that merely pass through it.
 **Suggested improvement:** In record-decisions.md / DECISIONS.md step 1, give the one command for "the next free number on every branch": `git grep` over all refs, never a `git show rev:path` loop; and say a check that prints nothing must first be run where the answer is known (the current branch) to prove it works.
 
 **Principle:** A search across refs is one `git grep` over the refs, not a loop of `git show rev:path` — on Git Bash the latter can fail silently, and silence reads as "none".
+
+### Observation 672: Design lessons are numbered in one sequence, so two branches adding lessons collide at the merge — as rulings would without their ranges
+
+**Status:** OPEN
+**Date:** 22 Oct 26
+**Session context:** the Leave War overhaul's overnight run merged `main` into `claude/leave-war-overhaul`.
+**Skill:** New skill candidate / the design guide's §9 rule (D941) and `record-decisions.md`
+**Type:** internal
+**Phase/Area:** numbering of the design guide's lessons (§9 of `raptor-port/docs/design-practices.md`)
+
+**Issue:** The branch had added lessons 18–28 while `main` (another chat) added its own 18 and 19 (the pencils). The merge conflicted in the guide, and the branch's eleven lessons had to be renumbered 20–30 in the guide, the Leave War rulings (short and full), the design note and the handoff — and the owner's page still says "lesson 28" for what is now 30. Rulings avoid this by each branch taking a range of D-numbers before it starts; lessons have no such rule.
+
+**Suggested improvement:** In the design guide's §9 head (D941's rule), and in `record-decisions.md`'s parallel-branch line: a branch that will add lessons takes a range (or names lessons by their ruling, "the lesson of D1194", and numbers them only at the merge). Until then, a merge that renumbers lessons does so by a script that touches only the branch's own side, and the closing report tells him the old and new numbers.
+
+**Principle:** Any sequence that parallel branches append to needs the same collision rule as the main one — a reserved range, or an identity that is not a position.
