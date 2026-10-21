@@ -204,6 +204,8 @@
 .wk{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);padding:6px 14px;border-radius:11px;cursor:pointer;font-size:12px;font-weight:500}
 .wk:hover{border-color:var(--edge-2);color:var(--ink)}
 .wk.on{background:rgba(87,201,122,.14);color:#A8E6BC;border-color:rgba(87,201,122,.55);font-weight:600}
+/* one room a week button ("Sep 28", the picked one in bold): pressed again and again, the next one never moves (owner D1122) */
+.wk[data-wk]{min-width:6em;text-align:center;font-variant-numeric:tabular-nums}
 /* the calendar-icon button that ends the rolling week strip, and the accent dot
    marking whichever button is the week the notional today falls in */
 .wk-cal{display:inline-flex;align-items:center;justify-content:center;padding:6px 10px}

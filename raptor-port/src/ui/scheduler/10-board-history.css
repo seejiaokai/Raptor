@@ -66,6 +66,9 @@ body.dw-lock{overflow:hidden}
    the browser then blinked. Covers .sbweek too (it is a .sbday). */
 .sb-days .sbday{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:8px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer;user-select:none;-webkit-user-select:none}
 .sb-days .sbday.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+/* one room a day chip ("Wed 30"), figures of one width: the › week arrow after them never moves as the dates change
+   (owner D1122, 21 Oct 26 — a fresh reader's find: 22 Feb → 1 Mar slid it 47px) */
+.sb-days .sbday[data-sbtab]{min-width:6em;text-align:center;font-variant-numeric:tabular-nums}
 /* THE WEEK-JUMP ARROWS flanking the day chips (board.ts dayTabsHTML). Chip-
    shaped so they read as part of the strip, but glyph-only and muted, so the
    dated days stay the emphasis; a hair of margin sets each off from the row it

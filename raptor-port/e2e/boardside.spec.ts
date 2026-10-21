@@ -138,3 +138,17 @@ test.describe('arrows around changing words stay put (D1122)', () => {
     expect(await travel(page, '[data-testid="sc-prev"]', '[data-testid="sc-next"]', 12)).toBeLessThan(0.6)
   })
 })
+
+test.describe('the board\'s week arrow and the week buttons stay put (D1122)', () => {
+  test.use({ viewport: DESK })
+  test('eight weeks on, the board\'s › is where it was; every week button is one width', async ({ page }) => {
+    await login(page); await board(page)
+    const xs: number[] = []
+    for (let i = 0; i < 8; i++) { xs.push(await page.evaluate(() => document.querySelector('#schedBoard [data-sbweek="1"]')!.getBoundingClientRect().left)); await page.locator('#schedBoard [data-sbweek="1"]').click(); await sleep(250) }
+    expect(Math.max(...xs) - Math.min(...xs)).toBeLessThan(0.6)
+    await page.evaluate(() => (document.querySelector('#sbDone') as HTMLElement | null)?.click()); await sleep(400)
+    await go(page, 'editsched'); await sleep(300)
+    const w = await page.evaluate(() => [...document.querySelectorAll('.wk[data-wk]')].filter(e => (e as HTMLElement).offsetParent).map(e => Math.round(e.getBoundingClientRect().width)))
+    expect(w.length).toBeGreaterThan(2); expect(new Set(w).size).toBe(1)
+  })
+})

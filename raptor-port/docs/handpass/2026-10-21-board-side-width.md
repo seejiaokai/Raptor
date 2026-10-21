@@ -125,12 +125,15 @@ arrow itself, at 1536 and 402 (touch). Before: `arrows/`; after: `arrows-after/`
 | Inputs calendar ‹ month ›, desktop | › moved 35.7px (SEPTEMBER 2026 past its 138px) | still | one room, 10.6em (`25-inputs-calendar.css`) |
 | SANS calendar ‹ month ›, desktop | › moved 38.7px (172px too small) | still | 11.6em (`24-sans-calendar.css`) |
 | Inputs, SANS, crew panel on a phone | still | still | — |
-| Leave War flying-day pad: day, then ‹ › | by reading: the arrows follow the day's words | one room, 6.4em, figures of one width (`matrix.css`) | not walked: its fixture is the Leave War's flying figures |
+| Desktop board ‹ days › week arrows (the fresh reader's find) | › moved 38.5px over eight weeks ("Mon 3" against "Mon 13") | still | each day chip one room, 6em, figures of one width (`10-board-history.css`) |
+| The week buttons above the schedule (the reader's find) | 62 / 64px (the picked one bold) | all 72px; the next one stays at one spot over six presses (`bsw-weekstrip.mjs`) | 6em, figures of one width (`02-shell.css`) |
+| Leave War flying-day pad: day, then ‹ › | already still — the strip is a grid whose last column holds the arrows (the reader's correction: my first rule changed nothing and widened the strip on a 320 phone) | — | the rule taken out |
 | Document viewer ‹ n of N › | by reading: "10 of 12" one character wider than "9 of 12" | 8ch, centred (`16-medical.css`) | not walked: needs two documents on one input |
 | Held already, by reading: the Medical as-of calendar (title fills the row), the Calendar window (150px room; the phone's fills its row), Holidays' year (46px, figures of one width), the one date calendar (both arrows together at the right), the Tracker's side calendar (arrows at the row's two ends) | still | — | — |
 
-Browser test: `e2e/boardside.spec.ts` "arrows around changing words stay put" (7 / 7 with the rest); red with the crew panel's
-old rule. The design guide's lesson 16, and a fresh reader of it and of these fixes (§7a style, `read-arrows.md`).
+Browser test: `e2e/boardside.spec.ts` — "arrows around changing words stay put" and "the board's week arrow and the week
+buttons stay put" (8 / 8 with the rest); red with the crew panel's old rule. The fresh reader (`read-arrows.md`): lesson 16 OK
+but one date (fixed); 2 places not covered (fixed, above); the pad's rule a no-op (removed). The design guide's lesson 16, and a fresh reader of it and of these fixes (§7a style, `read-arrows.md`).
 
 ## 8. Gates
 

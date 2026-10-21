@@ -2,7 +2,7 @@
    left edge (and the first's) across the values the words take, pressed by the arrow itself. A pair is STILL when the
    arrow's left edge never moves by more than half a pixel. Desktop 1536 × 864 and his iPhone's 402 × 874 (touch).
    Run: HP_URL=http://localhost:<port> HP_SHOTS=<folder> node scripts/handpass/bsw-arrows.mjs  → <folder>/arrows/arrows.json */
-console.log('bsw-arrows v1')
+console.log('bsw-arrows v2')
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { chromium } from '@playwright/test'
 const { BASE, SHOTS, login, go } = await import('./lib.mjs')
@@ -49,6 +49,13 @@ for (const [vp, touch, tag] of [[{ width: 1536, height: 864 }, false, 'pc'], [{ 
   const sansTab = page.locator('#inSansMode').first()
   if (await sansTab.count()) { if (touch) await sansTab.tap(); else await sansTab.click(); await sleep(500)
     await pair(page, `${tag}-sans-month`, '[data-testid="sc-prev"]', '[data-testid="sc-next"]', '[data-testid="sc-month"]', 12, touch, '.sc-head') }
+  if (!touch) {
+    /* the desktop board's ‹ days › week arrows, eight weeks on (one-digit and two-digit dates); the bar's height checked */
+    await go(page, 'editsched'); await page.locator('#eWeek [data-sbday="0"]:visible').first().click(); await page.waitForSelector('#schedBoard'); await sleep(500)
+    await pair(page, 'pc-board-week', '#schedBoard [data-sbweek="-1"]', '#schedBoard [data-sbweek="1"]', '#schedBoard .sbday.on', 8, false, '#sbDays')
+    await page.evaluate(() => (document.querySelector('#sbDone') || [...document.querySelectorAll('#schedBoard button')].find(b => /Done|Close/.test(b.textContent)))?.click()); await sleep(500)
+    /* the week strip is measured by bsw-weekstrip.mjs */
+  }
   await ctx.close()
 }
 writeFileSync(`${OUT}/arrows.json`, JSON.stringify(out, null, 1))
