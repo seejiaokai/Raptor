@@ -1532,3 +1532,18 @@ ids, and run every file that matches — a component's tests are wherever it is 
 **Principle:** The tests that cover a component are found by searching for how tests reach it (its selectors), not by
 file name; a change that alters a component's lifecycle (when it is rebuilt, what it keeps) can break tests written for a
 different feature that merely pass through it.
+
+### Observation 657: The backlog's archive command leaves the item's line in the priority list, and the document check passes it
+
+**Status:** OPEN
+**Date:** 2026-10-21
+**Session context:** D1106 built on the look-and-keys branch; `backlog-archive.mjs FLOATWIN-BOARD-BAR --homes …` moved the item's section to the archive (numbered past 656, the highest on the night-records branch)
+**Skill:** New skill candidate: none — project tooling (`raptor-port/scripts/backlog-archive.mjs`, `docsize.mjs`)
+**Type:** internal
+**Phase/Area:** closing a backlog item
+
+**Issue:** After the archive command ran, the item's one-line entry in OUTSTANDING.md's priority list was still there, and `npm run docsize` reported "every record accounted for". Found only by grepping the item's id afterwards; removed by hand.
+
+**Suggested improvement:** the archive command removes the priority-list line with the section (or refuses and names it), and the document check fails on a priority-list line whose item is archived.
+
+**Principle:** A move that has two homes for one item must move both, and the check that guards the move must look in both places.
