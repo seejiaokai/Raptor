@@ -39,9 +39,9 @@ const REQ = [
 ]
 const bal = (v, k) => `<span class="lab2">${k === 'OIL' ? 'OIL' : 'LVE'} Bal</span> <b class="${v < 0 ? 'neg' : ''}">${v}</b>`
 const line = (r, i, phone) => {
-  const [cs, seat, cat, chip, k, dates, days, v, own, by, nd, bk] = r
-  const m = i === 0 ? ['A', 'B', 'C', 'D'] : []
-  const detail = `${days} · <span${m[2] ? ` data-mk="${m[2]}"` : ''}>${bal(v, bk)}</span> · lowest Avail ${own} · placed by ${by}`
+  const [cs, seat, cat, chip, k, dates, days, v, own, by, nd, bk, tone, extra, label, mks] = r
+  const m = mks || (i === 0 ? ['A', 'B', 'C', 'D'] : [])
+  const detail = `${days} · <span${m[2] ? ` data-mk="${m[2]}"` : ''}>${bal(v, bk)}</span> · <span${m[4] ? ` data-mk="${m[4]}"` : ''}>lowest ${label || 'Avail ' + own.split(' ')[0]} <b class="${tone || ''}">${own.split(' ')[1]}</b></span>${extra ? ` · <span${m[5] ? ` data-mk="${m[5]}"` : ''}>${extra}</span>` : ''} · placed by ${by}`
   return phone
     ? `<div class="card"><div class="l1">${puck(cs, seat, cat, chip, m[0])}${box(k, m[1])}<span class="dt">${dates}</span><span class="sp"></span>${doc(nd, m[3])}</div><div class="l2">${detail}</div><div class="l3"><span class="ap">Approve</span><span class="rf">Refuse</span></div></div>`
     : `<div class="row">${puck(cs, seat, cat, chip, m[0])}${box(k, m[1])}<span class="dt">${dates}</span><span class="det">${detail}</span>${doc(nd, m[3])}<span class="ap">Approve</span><span class="rf">Refuse</span></div>`
@@ -79,7 +79,7 @@ const CSS = u => `
 .kb{display:inline-flex;align-items:center;justify-content:center;flex:none;width:calc(30*var(--u));height:calc(22*var(--u));border-radius:calc(3*var(--u));outline:1px dashed rgba(var(--h),.95);outline-offset:-1px;color:rgb(var(--h));font:800 calc(9.5*var(--u)) system-ui}
 .dt{width:calc(150*var(--u));flex:none;color:#e6edf3;font-weight:600}
 .det{flex:1;overflow:hidden;text-overflow:ellipsis;color:#9aa5b1;font-size:calc(12.5*var(--u))}
-.det b,.l2 b{color:#fff}.neg{color:#ff8a92!important}
+.det b,.l2 b{color:#fff}.neg,.red{color:#ff8a92!important}.amb{color:#F2C879!important}
 .doc{display:inline-flex;align-items:center;justify-content:center;gap:1px;width:calc(30*var(--u));height:calc(26*var(--u));flex:none;border-radius:calc(6*var(--u));color:#c9d1d9}
 .doc:not(.none){border:1px solid #2f3a46;background:#12161b}.doc em{font-style:normal;font:700 calc(10*var(--u)) system-ui}
 .ap,.rf{display:inline-flex;align-items:center;justify-content:center;flex:none;height:calc(30*var(--u));border-radius:calc(7*var(--u));font:700 calc(13*var(--u)) system-ui}
@@ -141,6 +141,15 @@ JOBS.push({ name: 'r4b-desk-balances', img: pic('full/r4-desk-admin-A.png'), W: 
   over: '<div class="cover" style="left:27px;top:438px;width:238px;height:34px;background:var(--bg)"></div><span class="bal" style="left:32px;top:443px" data-mk="A"><i>▾</i>Balances</span>' })
 JOBS.push({ name: 'r4b-phone-balances', img: pic('full/r4-phone-member.png'), W: 1170, H: 2532, u: 3, sample: [150, 1012], clip: [0, 0, 1170, 1300],
   over: '<div class="cover" style="left:34px;top:970px;width:282px;height:62px;background:var(--bg)"></div><span class="bal" style="left:44px;top:978px" data-mk="D"><i>▸</i>Balances</span>' })
+// 9 — his question (21 Oct 26): the lowest Avail figure red where it is under that day's Required, as the grid's cell is
+// (the row has no amber of its own); a manning row amber or red on the request's days named after it; a renamed row
+const COLOURED = [
+  ['Cinch', 'pilot', 'IP', 'sxo', 'LL', 'Thu 22 – Fri 23 Jan', '2 days', -2, 'P 24.5', 'Cinch, 3 Jan', 0, null, 'red', null, null, ['', '', '', '', 'A']],
+  ['Anvil', 'pilot', 'IP', 'sxo', 'LL', 'Tue 27 Jan', '1 day', -1.5, 'P 23', 'Anvil, 5 Jan', 0, null, '', '<b class="amb">IP 3</b>', null, ['', '', '', '', '', 'B']],
+  ['Drifter', 'pilot', 'A', 'sxo', 'OL', 'Tue 27 Jan', '1 day', 25, 'P 21', 'Drifter, 6 Jan', 1, null, '', null, 'Pilots w/o OCU', ['', '', '', '', 'C']],
+]
+JOBS.push({ name: 'r4b-desk-approvals-colours', img: pic('full/r4-w10-desk-approvals.png'), W: 1920, H: 1075, u: 1.25, sample: [1000, 1040], clip: [350, 280, 1225, 305],
+  over: `<div class="cover" style="left:356px;top:328px;width:1210px;height:726px;background:var(--bg)"></div><div class="body" style="left:364px;top:330px;width:1192px;height:722px"><div class="dates"><span class="lab">DATES</span>${months(false)}<span class="sp"></span><span class="apall">Approve all 15</span></div>${COLOURED.map((r, i) => line(r, i, false)).join('')}</div>` })
 const browser = await chromium.launch()
 for (const j of JOBS) {
   const html = `<!doctype html><html><head><meta charset="utf-8"><style>${CSS(j.u)}</style></head><body><div class="pic" id="pic" style="width:${j.W}px;height:${j.H}px"><img id="base" src="${j.img}" alt="">${j.over}</div></body></html>`
