@@ -63,6 +63,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Schedule and amendments**
 - [SINGLE-SEAT] — a line with only its front seat filled must work fully, for F-16 and F-35 squadrons (D1099): the check is done (21 Oct 26); his answers to its 8 questions next, then the build.
+- [BOARD-PHONE-PINCH-ZOOM] — NEXT (his word, D1107): the board's desktop layout on a phone pinches to zoom, and a dragged puck at the edge scrolls the board; design questions with pictures first.
 - [RULES-TAG-OFF] — BUILT on pull request 555 (D1098): the tag off View and Edit Schedule; archive once it merges.
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
@@ -233,6 +234,9 @@ desktop, with a setting changed. The original app (`reference/`) is read-only an
 
 ### [OVERNIGHT-SESSION-PER-JOB] The overnight run starts each job in a fresh session (his word, 21 Oct 26 — D1103)
 **What:** tried on the night of 21 Oct 26 — the night's chat starts each job in a session of its own, one after another, and only coordinates. **Next:** the morning report says whether it worked (the weekly figure before and after, whether every session was started on time); if it did, the overnight guide (`.claude/skills/overnight/`) is changed to say so, while he is awake, read before his approval (D70) — with D1104's "Low or Medium?" question beside the hours, and what Low and Medium each mean; and what that night found: a separate session cannot be started from his phone or on a turn a finished job wakes, so a fresh helper per job is the default. **Record:** `raptor-port/docs/superpowers/plans/2026-10-21-night-vetting.md` §The night's way of working.
+
+### [BOARD-PHONE-PINCH-ZOOM] The board's desktop layout on a phone: pinch to zoom, and a drag that follows the edge (his word, 21 Oct 26 — D1107)
+**What:** on a phone, with the Scheduler Board in its desktop layout, a pinch zooms the board in and out; a puck dragged to the edge of what is on screen scrolls the board that way so it can land anywhere (design guide §5A, D895). His picture: the board wider than his iPhone's screen, the crew list at the right. **First:** what a pinch zooms (the board only, not the top bar), how far, whether the zoom is kept — put to him with pictures (D541, D853), in one round; the phone layout is untouched (D548). **Then:** build, the bug-check order (a gesture: WALK at least, real two-finger touch over CDP, §7.8 and §7.9 — his iPhone sends touches Safari's way). **Place:** the next job, in a fresh chat (his word).
 
 ### [PO-AUTO-DELETE-WORDS] The Delete posting says it is automatic (his word, 21 Oct 26 — D1105)
 **What:** on the Post out sheet (every posting door), the Delete outcome's line reads "On <date> the app deletes him automatically, with his account. Days he flew keep his puck."; until the date his row reads "posting out <date> · auto delete" (the pending words, `leavewar/sync.ts` `postingPendingTag` / `OUTCOME_WORD` — Admin → Users and the Leave War); the button stays "Delete" (D298). **Check:** the line on every door, the row before and after the date, phone and desktop. **Place:** with the next Leave War batch (after pull request 556 merges). **Picture:** the sheet with the two places marked, sent to him 21 Oct 26.

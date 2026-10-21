@@ -6512,6 +6512,11 @@ picker (`#viewAs`) and the drawer's View-as chips (`#drawerViewAs`) stay GONE (D
 section said the chip "is an inert `<span>` for everyone" — D166 (3)'s "no preview as a member", replaced by D292.)*
 Pinned in `ui/accounts-ui.test.tsx` (AC10) and `ui/memberview.test.tsx`.
 
+## Two rulings of 21 Oct 26 to build (D1106, D1107)
+
+- **A window over the Scheduler Board opens below the board's bar (D1106):** a window not yet moved — the changes window, the ALL AVAIL window and the other windows that open below the top bar — opens just below the board's own bar, as elsewhere below the app's top bar, so the bell, Insights and ✓ Done stay in reach; to build on `claude/look-keys-1021` (pull request 558), [FLOATWIN-BOARD-BAR].
+- **The board's desktop layout on a phone pinches, and its drag follows the edge (D1107):** pinch to zoom in and out; a puck carried to the edge of what is on screen scrolls the board that way (the design guide §5A, D895). Its design questions go to him with pictures first; [BOARD-PHONE-PINCH-ZOOM].
+
 ## A posting out — four chips, one line, "Post out" (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D229, D294, D298, D300)
 
 The approved mock-up `docs/mock/post-out.html` §1 is the design of record (D299). On EVERY posting door — the bid sheet's
