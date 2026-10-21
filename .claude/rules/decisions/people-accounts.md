@@ -68,6 +68,7 @@ scrolls it sideways: `inputs.md` (D893).
 
 | # | Date | The rule |
 |---|---|---|
+| D1108 | 21 Oct 26 | On a phone, Quals can be pinched to zoom in and out, as the Scheduler Board's desktop layout can (D1107), so its wide table can be seen whole or read close. |
 | D1105 | 21 Oct 26 | A posting out with Delete chosen says plainly that the app deletes him by itself on the date: the sheet's line reads "On <date> the app deletes him automatically, with his account. Days he flew keep his puck.", and until the date his row reads "posting out <date> · auto delete"; the button stays "Delete" (D298). |
 | D1102 | 21 Oct 26 | On the Post out sheet, changing the date of a posting whose outcome is Delete to today or earlier asks the same tap-twice question as the Delete button before he is deleted; the date is not saved until the second tap. |
 | D1101 | 21 Oct 26 | The app is deployed separately for each aircraft type — F-15, F-16, F-35 — each with its own database; one code base still serves them all (D1100), and the squadrons of one type, with their detachments, share that type's database. |
