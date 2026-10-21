@@ -125,6 +125,14 @@ option cannot hold a drawing (noted with finding 16); the view tabs show no hove
 GitHub's run of pull request 563 (D1086 — the repo is public): the first push RED — one unit file, `inputs-readers.test.ts`, found the capital word INPUTS in a new comment in `tracker/App.jsx` (its scan reads comments too); the comment reworded, nothing else. **Green on `d50327cc1`** (the whole set). The code read's fixes (attributes only, their tests green on his PC) pushed after it; their run is the last. On his PC: `quals.test.tsx`, `boardnav.test.tsx`,
 `tracker.test.tsx`, then the eight files that touch the changed buttons (`topbar-pair`, `boardnav`, `editweek`, `odds`, `oilundo-button`, `undo-caret`, `tracker`, `inputs-readers`) — 179 green; `npm run build` green; `npm run docsize` OK.
 
+## 7a. His pencil question — D1133 (21 Oct 26)
+
+He asked why the Tracker's new pencils lean bottom left; every typed ✎ in the app leans bottom right. The one drawn pencil
+(`ui/icons.tsx PenIcon`, the input window's title box, D919) and its Tracker copy (`Glyphs.jsx PenGlyph`) are mirrored —
+tip at the bottom right. Pictures: `pencil/` (a–e the question, f–h built). Pin: `tracker.test.tsx` (the tip's side, and
+PenIcon the same drawing). A drawing's direction only — no control, size or press changes; seen on both places in the built
+app (`cr2-pencil-built.mjs`). The design guide's lesson 18, checked by one fresh reader (D941), its two marks taken.
+
 ## 7. Not proved here
 
 - Safari on his iPhone: the icons' look in Apple's font beside the words, and that no mark is drawn as an emoji — the walk ran

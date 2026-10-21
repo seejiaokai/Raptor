@@ -5555,6 +5555,13 @@ Three ways they leaked, all now closed, and all three are the checklist for
    a ramp spanning six RGB points cannot show a seam, and a pseudo-element per
    pin is two more nodes on the phone's tightest bars.
 
+## One pencil, pointing one way (owner D1133, 21 Oct 26)
+
+Every pencil in the app points the same way, tip at the bottom right, as the typed ✎ has always pointed. The one drawn
+pencil — `ui/icons.tsx PenIcon` (inside an input window's title box, D919) and its Tracker copy
+(`tracker/components/Glyphs.jsx PenGlyph`, D1132) — is the Lucide pencil mirrored left to right (its tip at 21,20, its
+underline from 3 to 12). The typed ✎ / ✏ still printed elsewhere becomes the drawn one in round 3 of the consistency look.
+
 ## One search box, everywhere (owner D1127, 21 Oct 26)
 
 Every search box looks like the Edit Schedule week's: a grey line magnifier inside the box on the left (the app's own drawn magnifier, never the coloured emoji), the box as tall as the buttons beside it; each keeps its own words — the Scheduler Board, Quals, Logic, Admin → Users, the Inputs list and the Tracker. The Tracker's ✕ that clears its search stays.

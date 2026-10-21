@@ -137,6 +137,13 @@ describe('the header: one bar for every login (D121 — it hid the File menu fro
     expect($('#showAllBtn')!.textContent!.trim()).toBe('Show All')
     expect($('#fileMenuBtn')!.querySelector('svg.trkglyph')).toBeTruthy()
     expect($('#fileMenuBtn')!.textContent!.replace(/\s+/g, ' ').trim()).toBe('File ▾')
+    /* D1133 (21 Oct 26): every pencil points one way, tip at the bottom right as the typed ✎ — the Tracker's drawn pencil
+       and the app's own (ui/icons.tsx PenIcon) are the same mirrored drawing; its tip is the path's far-right corner */
+    const tipX = (d: string) => Math.max(...[...d.matchAll(/L(\d+(?:\.\d+)?) (\d+)/g)].map(m => +m[1]))
+    const pen = $('#courseMenuBtn')!.querySelectorAll('svg.trkglyph path')[1].getAttribute('d')!
+    expect(tipX(pen), 'the Tracker pencil leans to the bottom right').toBeGreaterThan(12)
+    const icons = readFileSync(join(__dirname, '../ui/icons.tsx'), 'utf8')
+    expect(icons, 'PenIcon is the same mirrored drawing').toContain(pen)
     /* (the phone's view tabs are App's, not the bar's — the walk, scripts/handpass/cr2-walk.mjs, checks their box) */
     const typed = /[✎ⓘ☰⇪⌃⌄🗺]/u
     for (const sel of ['#courseMenuBtn', '#sylMenuBtn', '#detailsBtn', '#showAllBtn', '#fileMenuBtn', '#barHideBtn'])
