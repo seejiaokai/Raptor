@@ -63,7 +63,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Schedule and amendments**
 - [SINGLE-SEAT] — a line with only its front seat filled must work fully, for F-16 and F-35 squadrons (D1099): the check is done (21 Oct 26); his answers to its 8 questions next, then the build.
-- [RULES-TAG-OFF] — take the yellow RULES MODIFIED tag off View and Edit Schedule (D1098, his word 21 Oct 26); the Logic page's own strip stays.
+- [RULES-TAG-OFF] — BUILT on pull request 555 (D1098): the tag off View and Edit Schedule; archive once it merges.
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
 - [INNERHTML-REPAINT-SWEEP] — eleven screens hand React their markup as a new object every repaint, which React sets again — a box being typed in there is thrown away by any repaint (Quals fixed in [KEYBOARD-SCROLL]); sweep the rest (low).

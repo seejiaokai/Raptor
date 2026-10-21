@@ -1532,3 +1532,64 @@ ids, and run every file that matches — a component's tests are wherever it is 
 **Principle:** The tests that cover a component are found by searching for how tests reach it (its selectors), not by
 file name; a change that alters a component's lifecycle (when it is rebuilt, what it keeps) can break tests written for a
 different feature that merely pass through it.
+
+
+### Observation 653: An overnight run can hand each job to a fresh helper — a separate session cannot be started from the phone or from a woken turn
+
+**Status:** OPEN
+**Date:** 2026-10-21
+**Session context:** /overnight, 14 hours, six jobs; the owner asked mid-run for "a new chat per job" to cut weekly usage.
+**Skill:** overnight
+**Type:** internal
+**Phase/Area:** Part 2 — through the night (how jobs are run); Part 1 step 6 (the questions)
+
+**Issue:** The app refused `start_session` because the owner's messages came from his phone over Remote Control, and it refuses a start on any turn a finished job or a timer wakes — so a chain of sessions cannot run overnight. A fresh Opus helper per job (Agent tool, background), with its own Sonnet walker and fresh Opus reader, did the same job in a clean context; the night's chat stayed a coordinator and woke itself every 45 minutes (a background timer) to keep its cache warm. Weekly usage 13% → 16% for jobs 1–3. The owner then named two modes, Low (time to spare: fewest helpers, one after another) and Medium (less time: helpers as needed, in parallel) — D1104.
+
+**Suggested improvement:** Part 1 asks "Low or Medium?" beside the hours; Part 2 runs each job as one fresh helper with a complete brief (branch, items, the check, Low's helper limit, push by explicit refspec, Auto-fix off, no HANDOFF edits), the coordinator checks each report, keeps the records, and re-arms a <1-hour wake timer while it waits. Filed as [OVERNIGHT-SESSION-PER-JOB] (D1103, D1104) — a guide change read before his approval.
+
+**Principle:** When a long unattended run must keep its main context small, delegate each self-contained job to a fresh worker with a complete brief and keep the main thread as a coordinator; check first which delegation mechanisms the host actually permits from an unattended turn.
+
+### Observation 654: `cd ..` from a worktree's root lands outside the repo, and a bare `git` there acts on the main checkout
+
+**Status:** OPEN
+**Date:** 2026-10-21
+**Session context:** the overnight run; switching the night's worktree to job 1's branch.
+**Skill:** overnight (and every worktree session)
+**Type:** internal
+**Phase/Area:** shell commands in a worktree
+
+**Issue:** The shell's working folder had been reset to the worktree's root; `cd .. && git switch …` landed in `.claude/worktrees/`, which is not a repository, so git walked up to the owner's main checkout and switched it from `main` to a night branch. Caught by the next command (the branch "already used by worktree at C:/Users/User/projects/Raptor"), reverted at once, nothing lost. Every later command used `git -C <full path>` and every helper's brief said so.
+
+**Suggested improvement:** In worktree sessions, never `cd ..` before git; always `git -C "<worktree path>"`. Worth a guard: the push-and-lock hook could refuse a `git switch`/`checkout` whose resolved top level is not the session's worktree.
+
+**Principle:** In a nested checkout, relative navigation can silently change which repository a command acts on; name the repository explicitly on every state-changing command.
+
+### Observation 655: The push guard judges the project's main folder, not the worktree — push by explicit refspec
+
+**Status:** OPEN
+**Date:** 2026-10-21
+**Session context:** the overnight run; pushing job 1's records from the night's worktree.
+**Skill:** overnight; `.claude/hooks/push-guard.mjs`
+**Type:** internal
+**Phase/Area:** pushing a branch
+
+**Issue:** A plain `git push` in the worktree was refused ("this checkout is on main") because the guard read the branch of `$CLAUDE_PROJECT_DIR` (the main folder, on main), not the worktree's; the refusal stopped the whole compound command, so its earlier steps did not run either. `git push origin HEAD:refs/heads/<branch>` passed.
+
+**Suggested improvement:** The guard should resolve the branch from the folder the command runs in (`git -C` / the cwd), or the overnight guide should say: always push by explicit refspec, alone in its own command.
+
+**Principle:** A guard that decides from a fixed project path misjudges commands run in another checkout; resolve the target from where the command acts.
+
+### Observation 656: The app turns Auto-fix on for every new pull request in the session
+
+**Status:** OPEN
+**Date:** 2026-10-21
+**Session context:** the overnight run; five pull requests opened (555–559).
+**Skill:** overnight; shipping.md (D1090)
+**Type:** internal
+**Phase/Area:** opening a pull request
+
+**Issue:** Each pull request a helper opened was bound to the night's session with Auto-fix ON (the app's ci-monitor event announced it); D1090 says switch it off and say so. Five times in one night, each costing a wake-up.
+
+**Suggested improvement:** The overnight guide: after every pull request opens, `set_monitor auto_fix:false` at once (the helper may not have the tool — the coordinator does it when the event arrives). And put to the owner, while awake, whether the app's own setting can be switched off once (a setting change is his).
+
+**Principle:** A default the host re-applies per item needs a standing step at the moment each item is created, not a one-off fix.
