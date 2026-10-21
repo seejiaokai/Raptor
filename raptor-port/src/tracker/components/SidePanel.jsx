@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { PenGlyph, ReorderGlyph, XGlyph } from './Glyphs.jsx';
 import * as core from '../app/core.js';
 import { DateBox } from './DateBox.jsx';
 
@@ -284,7 +285,7 @@ export default function SidePanel({ zoom }) {
             {/* Same heading as the full card, so the buttons do not jump about
                 as students come and go; Reorder simply has nothing to do yet. */}
             <h3>Students <span className="hbtns">
-              <button className="sm" id="ordCrew" disabled title="Nobody to reorder yet">⇅ Reorder</button>
+              <button className="sm" id="ordCrew" disabled title="Nobody to reorder yet"><ReorderGlyph /> Reorder</button>
               <button className="sm" id="addStu" onClick={core.addStudent}>+ Add</button></span></h3>
             <div className="mini">No students on this course yet. Add one to start tracking progress.</div>
           </div>
@@ -336,7 +337,7 @@ export default function SidePanel({ zoom }) {
             menu, two clicks away and nowhere near the students it moves. */}
         <h3>Students <span className="hbtns">
           <button className="sm" id="ordCrew" disabled={core.roster.length < 2}
-            title="Change the order crew appear in the dropdown and which slice of every ball is theirs" onClick={core.openOrdCrew}>⇅ Reorder</button>
+            title="Change the order crew appear in the dropdown and which slice of every ball is theirs" onClick={core.openOrdCrew}><ReorderGlyph /> Reorder</button>
           <button className="sm" id="addStu" onClick={core.addStudent}>+ Add</button></span></h3>
         <div className="chips">
           {/* A student linked to Raptor's roster (9 Sep 26) wears a dot and
@@ -345,7 +346,7 @@ export default function SidePanel({ zoom }) {
             const p = core.linkedPerson(r.id);
             return (
               <span key={r.id} className={p ? 'chip linked' : 'chip'} title={p ? 'On the squadron roster as ' + p.cs : undefined}>
-                <b>{i + 1}</b> {r.name} <span className="ren" data-ren={r.id} title="Rename this student" onClick={() => core.renameStudent(r.id)}>✎</span> <span className="x" data-rm={r.id} onClick={() => core.removeStudent(r.id)}>×</span></span>
+                <b>{i + 1}</b> {r.name} <span className="ren" data-ren={r.id} title="Rename this student" onClick={() => core.renameStudent(r.id)}><PenGlyph solo /></span> <span className="x" data-rm={r.id} onClick={() => core.removeStudent(r.id)}><XGlyph /></span></span>
             );
           })}
         </div>

@@ -10,8 +10,24 @@ const G = ({ children }) => (
     {children}
   </svg>
 );
-/* the pencil mirrored (owner D1133, 21 Oct 26): its tip at the bottom right, as every typed ✎ in the app and PenIcon */
-export const PenGlyph = () => <G><path d="M3 20h9" /><path d="M7.5 3.5a2.1 2.1 0 0 0-3 3L17 19l4 1-1-4Z" /></G>;
+/* THE APP'S ONE PENCIL (owner D1134, 21 Oct 26 — his solid pencil, tip at the bottom right, D1133): a copy of
+   ui/pen.ts PEN_INNER — the Tracker draws its own so a standalone export carries it; tracker.test.tsx keeps the two the
+   same. Filled, not a line drawing. `solo` where it is the button's only mark (no gap after it). */
+export const PenGlyph = ({ solo = false } = {}) => (
+  <svg className={'trkglyph trkpen' + (solo ? ' solo' : '')} viewBox="0 0 24 24" aria-hidden="true">
+    <g transform="rotate(-45 12 12)" fill="currentColor">
+      <rect x="9" y="1" width="6" height="4.2" rx="1.6" />
+      <rect x="9" y="6.3" width="6" height="11.2" rx=".4" />
+      <path d="M9 18.7h6l-2.4 3.7a.7.7 0 0 1-1.2 0Z" />
+    </g>
+  </svg>
+);
+/* the menus' and Students card's marks (owner D1135, 21 Oct 26 — round 3): Lucide shapes in the bar's line style */
+export const ReorderGlyph = () => <G><path d="m21 16-4 4-4-4" /><path d="M17 20V4" /><path d="m3 8 4-4 4 4" /><path d="M7 4v16" /></G>;
+export const CopyGlyph = () => <G><rect x="8" y="8" width="14" height="14" rx="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></G>;
+export const TrashGlyph = () => <G><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></G>;
+export const DownloadGlyph = () => <G><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5" /><path d="M12 15V3" /></G>;
+export const XGlyph = () => <G><path d="M18 6 6 18" /><path d="m6 6 12 12" /></G>;
 export const InfoGlyph = () => <G><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></G>;
 export const ListGlyph = () => <G><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" /></G>;
 export const UploadGlyph = () => <G><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m17 8-5-5-5 5" /><path d="M12 3v12" /></G>;

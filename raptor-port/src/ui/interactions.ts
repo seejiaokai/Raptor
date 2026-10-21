@@ -44,6 +44,7 @@ import { hm24,parseHM } from '../engine/time'
 import { parseReportingLines,resolveReporting,REPORTING_LABEL } from '../engine/reporting'
 import { VCONF } from '../engine/rules'
 import { shiftWeek } from './weeknav'
+import { penSvg } from './pen'
 
 /* Focus a warning clicked from somewhere that is NOT an already-open day box —
    the board's issue list, or a chip on a puck. Both have to open the box
@@ -357,7 +358,7 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
   let needPlace = false
   const paint = () => {
     box.innerHTML = `<h5>Stores configuration`
-      + `<button class="st-pen${pen ? ' on' : ''}" title="${pen ? 'Done editing the list' : 'Edit the list'}">✎</button></h5>`
+      + `<button class="st-pen${pen ? ' on' : ''}" title="${pen ? 'Done editing the list' : 'Edit the list'}">${penSvg(true)}</button></h5>`
       + (pen
         ? `<div class="st-elist">`
           + STORE_CFG.map(([k, lab], i) =>

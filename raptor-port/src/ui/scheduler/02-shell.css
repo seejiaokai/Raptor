@@ -222,6 +222,10 @@
    marking whichever button is the week the notional today falls in */
 .wk-cal{display:inline-flex;align-items:center;justify-content:center;padding:6px 10px}
 .btnglyph{width:16px;height:16px;display:block;color:var(--ink-2)}
+/* the app's one pencil (owner D1134 — ui/pen.ts): as big as the letters beside it, sitting on their line as the typed ✎
+   did, a small gap before the word; .solo where it is the button's only mark */
+.pen-ic{width:1.05em;height:1.05em;display:inline-block;vertical-align:-.16em;flex:0 0 auto;margin-right:.32em;color:currentColor}
+.pen-ic.solo{margin-right:0}
 .wk-cal:hover .btnglyph{color:var(--accent)}
 .wk.todaywk{position:relative}
 .wk.todaywk::after{content:'';position:absolute;top:3px;right:4px;width:5px;height:5px;border-radius:50%;background:var(--accent)}

@@ -76,10 +76,13 @@ describe('the Medical view', () => {
   /* D927 (15 Oct 26, built as drawn — D912): the row under the tabs carries no "Medical" heading — it repeated the tab
      picked just above it — and the as-of button is the row's first control. Its 36 height is a browser's to measure
      (e2e/inputs-calendar.spec.ts, "D927"). */
-  it('D927 the row under the tabs has no heading: the as-of button leads it', () => {
+  /* RESTATED 21 Oct 26 (owner D1137, round 3 of the consistency look): "+ Medical" now stands first, where "+ Input"
+     stands on the Inputs list (D729), and the as-of button right after it */
+  it('D927 D1137 the row under the tabs has no heading: "+ Medical" leads it, the as-of button next', () => {
     const head = $('#medView .ic-head')
     expect(head.querySelector('.med-title'), 'the heading is gone').toBeNull()
-    expect(head.firstElementChild?.id, 'the as-of button stands first in the row').toBe('medCalBtn')
+    expect(head.firstElementChild?.id, '"+ Medical" stands first in the row (D1137)').toBe('medNew')
+    expect(head.firstElementChild?.nextElementSibling?.id, 'the as-of button stands next').toBe('medCalBtn')
     /* the one "Medical" the row carries is its own door, "+ Medical" (D963, D965 — which took the place of a title) */
     expect((head.textContent || '').replace($('#medCalBtn').textContent || '', '').replace($('#medNew').textContent || '', ''), 'no other word "Medical" in the row').not.toMatch(/Medical/)
   })
@@ -233,7 +236,7 @@ describe('the Medical view', () => {
     const head = $('#medView .ic-head'), btn = $('#medNew')
     expect(btn.textContent).toBe('+ Medical')
     expect(btn.classList.contains('primary'), "filled, the row's one main button").toBe(true)
-    expect(head.lastElementChild, "at the row's right end").toBe(btn)
+    expect(head.firstElementChild, "first, at the row's left (D1137 — it stood at the right end until 21 Oct 26)").toBe(btn)
     const adminMe = me()
     const member = Object.keys(PEOPLE).find(k => PEOPLE[k].cs && !PEOPLE[k].archived && !PEOPLE[k].special && k !== adminMe)!
     try {

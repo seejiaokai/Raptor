@@ -88,8 +88,10 @@
    tab is left by choosing another, so the three tabs must stay in reach above it — it sits under them, as tall as what
    it holds, and the PAGE scrolls (found by reading the stylesheet after the cross was taken away: the view would have
    covered the only way out). */
-.inpcal.medview.in-page{position:relative;inset:auto;z-index:auto;overflow:visible;background:transparent;border:1px solid var(--edge);border-radius:12px}
-.medview.in-page .ic-head{border-radius:11px 11px 0 0}
+/* no frame round the Medical TAB (owner D1137, 21 Oct 26): the Inputs list draws none, so neither does it; its three
+   sections keep their own boxes. The window form (a cross to close it) keeps its own look. */
+.inpcal.medview.in-page{position:relative;inset:auto;z-index:auto;overflow:visible;background:transparent;border:0;border-radius:0}
+.medview.in-page .ic-head{border-radius:0}
 .medview.in-page .med-body{flex:0 0 auto;overflow:visible}
 
 /* the month's own arrows, its name and Today — one group, so they never part across two lines */

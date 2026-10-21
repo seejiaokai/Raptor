@@ -216,14 +216,15 @@ test.describe('round 1 of the consistency look (D1125–D1128)', () => {
     const rest = await page.evaluate(() => getComputedStyle(document.querySelector('#accFind')!.parentElement!).borderColor)
     expect(ring, 'focused, the box shows it').not.toBe(rest)
   })
-  test('D1128: Quals reads "✎ Edit" plain, then "Done" blue — as Logic does', async ({ page }) => {
+  test('D1128: Quals reads "Edit" (D1134's drawn pencil) plain, then "Done" blue — as Logic does', async ({ page }) => {
     await login(page)
-    const btn = (sel: string) => page.evaluate(s => { const b = document.querySelector(s)!; return [b.textContent!.trim(), b.classList.contains('primary')] }, sel)
+    /* the words, whether it is the bright blue, and whether it wears the app's one drawn pencil (D1134) */
+    const btn = (sel: string) => page.evaluate(s => { const b = document.querySelector(s)!; return [b.textContent!.trim(), b.classList.contains('primary'), !!b.querySelector('svg.pen-ic')] }, sel)
     await go(page, 'quals'); await sleep(300)
     const q1 = await btn('#qEdit'); await page.locator('#qEdit').click(); const q2 = await btn('#qSave'); await page.locator('#qSave').click()
     await go(page, 'logic'); await sleep(300)
     const l1 = await btn('#lgEdit'); await page.locator('#lgEdit').click(); const l2 = await btn('#lgDone'); await page.locator('#lgDone').click()
     expect([q1, q2]).toEqual([l1, l2])
-    expect([q1, q2]).toEqual([['✎ Edit', false], ['Done', true]])
+    expect([q1, q2]).toEqual([['Edit', false, true], ['Done', true, false]])
   })
 })

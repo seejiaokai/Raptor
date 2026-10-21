@@ -107,6 +107,12 @@ header{display:flex;align-items:center;gap:14px;padding:10px 16px;border-bottom:
 .barpeek-lbl{margin-left:auto;font-size:11px;flex:0 0 auto}
 header h1{font-size:16px;margin:0;letter-spacing:.5px}
 .sub{color:var(--muted);font-size:12px}
+/* the bar's labels — Crew, Course, Syllabus — in the small spaced capitals Quals' "Viewing" wears (owner D1136, 21 Oct 26 —
+   round 3 of the consistency look; 05-quals.css .qtablehead .seglab): 10px, 700, .1em, upper case, the grey (--muted is
+   the app's --ink-3). The phone hides them (.controls .lbltx, the last @media block). */
+.lbltx{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+/* the Students card's rename pencil and remove ✕ (D1134, D1135) as big as the chip's 11px letters */
+.chip .ren .trkglyph,.chip .x .trkglyph{width:11px;height:11px;vertical-align:-1px}
 /* The bar now starts with Crew and ends with the save slot, with .hspacer
    holding the two groups apart. margin-left:auto moved onto the spacer, so the
    left group can sit next to the title instead of the whole bar being pushed
