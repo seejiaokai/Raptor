@@ -23,6 +23,15 @@
         ],
         "createdAt": "2026-10-18T10:49:28.237Z",
         "reason": "owner D1025 (18 Oct 26, 'Keep it'): the amber left edge on the upchit sheet's cut lines (D1023) is the app's own status mark for a warning row (D747, the Scheduler Board's late-input line), not a side stripe to remove"
+      },
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "raptor-port/docs/mock/lw-overhaul/full-page.html"
+        ],
+        "createdAt": "2026-10-21T11:18:30.321Z",
+        "reason": "agent: the tap-to-zoom image's src is set by the page's script when a picture is tapped; hidden until then"
       }
     ]
   },

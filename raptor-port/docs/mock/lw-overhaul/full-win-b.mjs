@@ -61,8 +61,8 @@ async function approvalsScene() {
   await proposeTop(p, { admin: true, phone: false, waiting: runs.length, locks: 2, myLeave: { lve: '17', oil: 0, waiting: 0, next: 'LL Fri 30 Jan', nextShort: '30 Jan' } })
   await shell(p, false, 980); await fill(p, approvalsHTML(runs, false)); await p.waitForTimeout(200)
   await shot(p, 'p-w10-desk-approvals-clean')
-  await mark(p, '.zz-filter', '1 dates filter — "approve all for a period" (Q7)', { below: false })
-  await mark(p, '.zz-all', '2 Approve all: what the list shows', { right: false, below: true })
+  await mark(p, '.zz-filter .pchip:last-of-type', '1 dates filter: approve all for a period (Q7)', { below: true })
+  await mark(p, '.zz-all', '2 Approve all: what it shows', { right: true })
   await mark(p, '.zz-alist .zz-aline', '3 one line a request: its cost and the day\'s lowest manning', { below: true, nth: 2 })
   await shot(p, 'p-w10-desk-approvals'); await unmark(p)
   await fill(p, approvalsHTML(runs, false, 'after')); await p.waitForTimeout(200)
@@ -95,7 +95,7 @@ function locksHTML(admin, editing) {
 }
 async function locksScene() {
   let { ctx, p } = await newPage(browser, 1536, 860, false, state); await signIn(p, 'admin'); await injectCss(p)
-  await proposeTop(p, { admin: true, phone: false, waiting: 16, locks: 2, myLeave: { lve: '17', oil: 0, waiting: 0, next: 'LL Fri 30 Jan', nextShort: '30 Jan' } })
+  await proposeTop(p, { admin: true, phone: false, waiting: 15, locks: 2, myLeave: { lve: '17', oil: 0, waiting: 0, next: 'LL Fri 30 Jan', nextShort: '30 Jan' } })
   await gridTo(p, '2026-01-01'); await p.evaluate(() => window.scrollTo(0, 0)); await lockDays(p, LOCKED, false)
   await shell(p, false, 720); await fill(p, locksHTML(true, false)); await p.waitForTimeout(200)
   await shot(p, 'p-w11-desk-locks-clean')
@@ -138,22 +138,24 @@ async function eventsScene() {
   await p.locator('button:has-text("Calendar…")').first().click(); await p.waitForTimeout(800)
   await shot(p, 't-w12-desk-holidays')
   await p.evaluate(() => {
-    const add = [...document.querySelectorAll('button')].find(b => b.textContent.trim() === '+ Add' && b.getBoundingClientRect().width); if (!add) return
     const today = [...document.querySelectorAll('button')].find(b => b.textContent.trim() === 'Today')
-    for (const t of ['Import', 'Export']) { const n = (today || add).cloneNode(true); n.textContent = t; n.classList.add('zz-io'); n.style.marginRight = '6px'; add.before(n) }
+    const line = [...document.querySelectorAll('*')].find(e => !e.children.length && /Public holidays and Off days/.test(e.textContent)); if (!line || !today) return
+    const row = document.createElement('div'); row.className = 'zz-new zz-iorow'; row.style.cssText = 'display:flex;gap:8px;margin:8px 0 10px'
+    for (const t of ['Export the year', 'Import a sheet']) { const n = today.cloneNode(true); n.textContent = t; n.classList.add('zz-io'); row.appendChild(n) }
+    line.after(row)
   })
-  await mark(p, '.zz-io', '4 NEW holidays by file', { below: true }); await shot(p, 'p-w12-desk-holidays'); await unmark(p)
+  await mark(p, '.zz-iorow', '4 NEW holidays by file', { below: true }); await shot(p, 'p-w12-desk-holidays'); await unmark(p)
   // the import's preview, before anything changes
   await p.evaluate(([LOCK]) => {
     const box = document.createElement('div'); box.className = 'bidsheet zz-new zz-imp'
-    Object.assign(box.style, { position: 'fixed', left: '50%', top: '140px', transform: 'translateX(-50%)', width: '720px', zIndex: 200 })
+    Object.assign(box.style, { position: 'fixed', right: '30px', top: '330px', width: '700px', zIndex: 2147483000, boxShadow: '0 18px 50px rgba(0,0,0,.6)', background: '#161b22', border: '1px solid #30363d', borderRadius: '14px', padding: '12px 16px 14px', color: '#e6edf3' })
     const rows = [['Fri 3 Apr', 'Good Friday', 'PH', 'Adds'], ['Fri 1 May', 'Labour Day', 'PH', 'Adds'], ['Sun 9 Aug', 'National Day', 'PH', 'Already there'], ['Sun 8 – Mon 9 Nov', 'Deepavali (and observed)', 'PH', 'Adds, 2 days'], ['Fri 25 Dec', 'Christmas Day', 'PH', 'Already there']]
-    box.innerHTML = `<div class="bidsheet-hd"><span class="who">Import holidays</span><span class="dt">holidays-2026.csv · sample sheet</span><button class="x">✕</button></div>` +
+    box.innerHTML = `<div style="display:flex;align-items:baseline;gap:12px;padding:2px 2px 10px;border-bottom:1px solid #26303a"><b style="font:800 15px system-ui;letter-spacing:.06em">Import holidays</b><span style="font:500 13px system-ui;color:#8a96a3">holidays-2026.csv · a sample sheet</span><span style="margin-left:auto;color:#8a96a3">✕</span></div>` +
       rows.map(([d, n, s, w]) => `<div style="display:grid;grid-template-columns:170px 1fr 50px 130px;gap:10px;align-items:center;padding:8px 4px;border-top:1px solid #26303a;font:600 14px system-ui;color:#e6edf3"><span style="color:#c9d1d9">${d}</span><span>${n}</span><span class="c info" style="color:#c9d1d9;box-shadow:inset 0 0 0 1px #3a4552;justify-self:start">${s}</span><span style="font:600 12.5px system-ui;color:${w.startsWith('Adds') ? '#8FE0A8' : '#8a96a3'}">${w}</span></div>`).join('') +
-      `<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="dchip approve">Import 3</button><button class="dchip">Cancel</button></div>`
+      `<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button style="padding:8px 16px;border-radius:9px;border:0;background:#3bc6e8;color:#0b1116;font:700 14px system-ui">Import 3</button><button style="padding:8px 16px;border-radius:9px;border:1px solid #30363d;background:transparent;color:#e6edf3;font:700 14px system-ui">Cancel</button></div>`
     document.body.appendChild(box)
   }, [LOCK_SVG])
-  await mark(p, '.zz-imp', '5 what it adds and skips, before anything changes', { below: false }); await shot(p, 'p-w12-desk-import')
+  await mark(p, '.zz-imp', '5 what it adds and skips, before anything changes', { below: true }); await shot(p, 'p-w12-desk-import')
   await ctx.close()
 }
 
@@ -193,13 +195,16 @@ async function mgmtScene() {
     const n = sxo.cloneNode(true); n.classList.add('zz-new', 'zz-mgrow')
     const walker = document.createTreeWalker(n, NodeFilter.SHOW_TEXT); let t
     while ((t = walker.nextNode())) { if (t.textContent.trim() === 'SXO') t.textContent = 'Management'; else if (t.textContent.trim() === '12') t.textContent = '2'; else if (t.textContent.trim() === 'CAT') t.textContent = 'QUALS' }
-    const sw = [...n.querySelectorAll('*')].find(e => /background/.test(e.getAttribute('style') || '') || /gsw|swatch|dot/.test(e.className)); if (sw) sw.style.background = '#d7dde4'
     sxo.before(n)
+    const amber = getComputedStyle([...sxo.querySelectorAll('*')].find(e => e.getBoundingClientRect().width < 20 && e.getBoundingClientRect().width > 4) || sxo).backgroundColor
+    for (const e of n.querySelectorAll('*')) if (getComputedStyle(e).backgroundColor === amber && e.getBoundingClientRect().width < 20) e.style.background = '#d7dde4'
     const add = [...document.querySelectorAll('button')].find(b => /\+ Scheduler/.test(b.textContent)); if (add) { const m = add.cloneNode(true); m.textContent = '+ MGMT'; m.classList.add('zz-mgadd'); add.before(m) }
   })
   await mark(p, '.zz-mgrow', '2 Management, first: its people still count in their own seat', { right: true })
-  await mark(p, '.zz-mgadd', '3 added like any Quals column', { below: true })
-  await shot(p, 'p-w14-desk-groups'); await ctx.close()
+  await shot(p, 'p-w14-desk-groups'); await unmark(p)
+  await p.evaluate(() => document.querySelector('.zz-mgadd')?.scrollIntoView({ block: 'center' })); await p.waitForTimeout(300)
+  await mark(p, '.zz-mgadd', '3 added like any Quals column', { right: true })
+  await shot(p, 'p-w14-desk-groups-add'); await ctx.close()
 }
 
 await approvalsScene()

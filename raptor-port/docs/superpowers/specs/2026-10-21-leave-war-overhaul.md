@@ -307,7 +307,8 @@ its full row: fine; its second half (rounds of four, pictures) is the standing m
 ## 8. His page of pictures
 
 Round 1, published for him as a page with the pictures today beside proposed, tap to zoom — link in `HANDOFF.md`'s block
-for this branch.
+for this branch. **The full mock-up (§9)** is a page of its own: source `../../mock/lw-overhaul/full-page.html`, its pictures
+`../../mock/lw-overhaul/full/`, its link in `HANDOFF.md`'s block. The notifications register it fed: `../../notifications-register.md`.
 
 ## 9. The full mock-up — the plan (21 Oct 26, his ask after the 22 points)
 
@@ -393,7 +394,7 @@ asked again (D53); a question names each ruling its answer would change (D754).
   | the bidding dates chip (1 Jan – 31 Mar) | the lock list; a new period starts locked whole ("Not open yet") and the admin opens months by shortening that lock |
   | the green outline round the bidding dates (§Settled, D881) | gone; a locked day keeps today's quiet dim, with a small lock on its date heading |
   | the admin decides in every stage but draft (D418) | the admin decides at any time |
-  | a published war's approved leave offers only its remarks, frozen even for the admin (D418) | an approved leave is never moved or deleted by the member himself (he asks); the admin may change it at any time and the member is told (D1142) |
+  | while bidding is open a member may re-bid even his own approved day (his tap opens the bid window, "NOW LL" — checked 21 Oct 26); a published war's approved leave offers only its remarks, frozen even for the admin (D418) | an approved leave is never moved or deleted by the member himself (he asks); the admin may change it at any time and the member is told (D1142) |
   | a member adds remarks to his approved leave only once published | at any time |
   | a member moves his own bid while bidding is open (D333) | while it waits and its days are not locked |
   | the dotted "moved" mark, only after bidding closes | on any move of a leave already approved |

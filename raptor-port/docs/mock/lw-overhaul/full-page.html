@@ -1,0 +1,322 @@
+<title>Leave War Mock-up</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column. First the new page in one look, then his questions in rounds of four (each with its
+   pictures in a row, today → proposed → theirs), then everything else his 22 points built in. Raptor's own dark look,
+   cyan for what you press, green for a recommendation, pink only for the marks drawn on the pictures. */
+:root{
+  --bg:#0d1117; --panel:#161b22; --line:#2a323c; --ink:#e6edf3; --muted:#9aa7b3; --accent:#5fd0e6; --rec:#58c48a; --mark:#ff2d95; --their:#ffb27a; --deep:#0b1f26;
+  --f-body:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body);margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:26px}
+h1{font-size:26px;margin:0;letter-spacing:.02em;text-wrap:balance}
+h2{font-size:19px;margin:0;text-wrap:balance}
+h3{font-size:13px;margin:0;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+p{margin:0;max-width:72ch}
+.lede{color:var(--muted)}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.round{display:flex;flex-direction:column;gap:14px}
+.round > header{display:flex;flex-direction:column;gap:4px}
+.q{scroll-margin-top:12px}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
+.qn{display:inline-block;min-width:34px;margin-right:8px;padding:1px 8px;border-radius:999px;background:var(--deep);color:var(--accent);font-size:14px;font-weight:800;text-align:center;font-variant-numeric:tabular-nums}
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opts li{border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
+.opts li.rec{border-color:var(--rec)}
+.opts b{color:var(--ink)}
+.rec-pill{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;color:var(--bg);background:var(--rec);border-radius:999px;padding:1px 8px;vertical-align:1px}
+.note{border-left:3px solid var(--line);padding-left:12px;color:var(--muted);font-size:14px}
+.shots{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px}
+figure{margin:0;flex:0 0 auto;width:220px;display:flex;flex-direction:column;gap:6px}
+figure.wide{width:460px}
+figure img{width:100%;border-radius:8px;border:1px solid var(--line);cursor:zoom-in;display:block;background:#000}
+figcaption{font-size:12.5px;color:var(--muted);line-height:1.35}
+.k{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.k.t{color:var(--muted)} .k.n{color:var(--mark)} .k.c{color:var(--their)}
+table.swap{border-collapse:collapse;width:100%;font-size:13.5px}
+.tablewrap{overflow-x:auto}
+table.swap th,table.swap td{border-top:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+table.swap th{color:var(--muted);font-weight:600;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+table.swap td:last-child{color:var(--ink)}
+table.swap td:first-child{color:var(--muted);width:46%}
+ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px}
+.answer{border:1px dashed var(--accent);border-radius:12px;padding:14px 16px;font-size:15px}
+.answer code{background:var(--deep);color:var(--accent);border-radius:6px;padding:2px 6px;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:calc(14px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 14px max(12px,env(safe-area-inset-left,0px));z-index:50;cursor:zoom-out}
+#zoom img{max-width:100%;height:auto;border-radius:8px}
+#zoom[hidden]{display:none!important}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:560px){figure{width:170px} figure.wide{width:310px}}
+</style>
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <span class="tag">Leave War overhaul · the full mock-up</span>
+    <h1>What the Leave War becomes</h1>
+    <p class="lede">Your 22 points and your round 1 answers, all drawn into the real app. "Today" pictures are the app as it is; "proposed" pictures are the same real screen with the new parts drawn in, marked and numbered in pink. The sample squadron was set up through the app's own buttons, with the clock held at Thu 8 Jan. Your colleague's app is shown on made-up people, its squadron name replaced. Tap any picture to enlarge it. A second reviewer checked this plan against your rulings before you see it.</p>
+  </header>
+
+  <section class="box">
+    <h2>In one minute</h2>
+    <ul class="plain">
+      <li><b>One grid, read at a glance.</b> The year grid stays. A day's cell shows the morning in its top half and the afternoon in its bottom half, and two entries one above the other.</li>
+      <li><b>Your own leave first.</b> "My leave" sits on the top of the page; tap a name for that person's leave by year; tap a date for that day.</li>
+      <li><b>One list to decide.</b> An Approvals list with its count; "Approve what I enter" for your own entries.</li>
+      <li><b>Locks instead of stages.</b> Draft, bidding, closed and published go. A lock with its reason is the only thing that stops a member, and every request shows where it stands, live.</li>
+      <li><b>Also:</b> a document on every entry, a Management group, holidays by file, a list of events, and the bell telling a member every decision.</li>
+    </ul>
+  </section>
+
+  <section class="box" id="page">
+    <h2>The new page</h2>
+    <div class="shots">
+      <figure><img src="full/t-phone-member.png" alt="Today, a member's phone"><figcaption><span class="k t">Today · member's phone</span></figcaption></figure>
+      <figure><img src="full/p-phone-member.png" alt="Proposed, a member's phone"><figcaption><span class="k n">Proposed</span> · 1 the locks, where the stage was · 2 My leave · 3 Balances · 4 a morning half · 5 waiting, dashed</figcaption></figure>
+      <figure><img src="full/p-phone-member-busy.png" alt="Proposed, the busy rows"><figcaption><span class="k n">Proposed</span> · the busy rows, unmarked</figcaption></figure>
+      <figure><img src="full/t-phone-admin.png" alt="Today, an admin's phone"><figcaption><span class="k t">Today · admin's phone</span></figcaption></figure>
+      <figure><img src="full/p-phone-admin.png" alt="Proposed, an admin's phone"><figcaption><span class="k n">Proposed</span> · 1 Approvals 15 · 2 locks · 3 My leave · 4 Balances</figcaption></figure>
+    </div>
+    <div class="shots">
+      <figure class="wide"><img src="full/t-desk-admin.png" alt="Today, the desktop"><figcaption><span class="k t">Today · desktop, admin</span></figcaption></figure>
+      <figure class="wide"><img src="full/p-desk-admin.png" alt="Proposed, the desktop"><figcaption><span class="k n">Proposed</span> · Approvals and Lock dates where the stage was, My leave at the row's free end, Management first, the halves, waiting dashed, a small lock on 9–13 Feb</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="round" id="round2">
+    <header><span class="tag">Round 2 of 4 · how the grid looks</span><p class="lede">Four questions. Each has my recommendation; nothing you ruled before is asked again.</p></header>
+
+    <section class="box q" id="q1">
+      <h2><span class="qn">1</span>A month at a time, or the year? <span class="k t">your point 1</span></h2>
+      <ul class="opts">
+        <li class="rec"><b>A · keep the year grid</b><span class="rec-pill">recommended</span><br>A leave runs across a month's end, a bidding stretch runs over months, and the manning rows are read across weeks. A month at a time pages them apart. On a phone the day panel and pinch-to-zoom give the close look.</li>
+        <li><b>B · one month at a time</b>, as your colleague's. It changes your settled rule that the grid is the whole year.</li>
+      </ul>
+      <div class="shots">
+        <figure class="wide"><img src="full/t-desk-admin.png" alt="Ours, the year"><figcaption><span class="k t">Ours · the year</span> · 19 Jan to 18 Feb in one view</figcaption></figure>
+        <figure class="wide"><img src="theirs-desk-calendar.png" alt="Theirs, a month"><figcaption><span class="k c">Theirs · a month</span> · a leave on 30 Oct – 2 Nov sits on two pages</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="box q" id="q2">
+      <h2><span class="qn">2</span>How a cell shows its type and where it stands <span class="k t">your points 6 and 9</span></h2>
+      <p class="note">One question, because the waiting look depends on what the colour means.</p>
+      <ul class="opts">
+        <li class="rec"><b>A · the colour is where it stands</b><span class="rec-pill">recommended</span><br>Green approved, red refused, a waiting one in a dashed outline; the letters say the type; leave filed on the Inputs page keeps its cyan left edge. In this app a colour means a status: a colour per leave type would spend green (holiday, OIL earned), red (a clash), amber (a manning row short) and orange (a No Leave day).</li>
+        <li><b>B · as today</b>, a waiting one in plain letters.</li>
+        <li><b>C · a soft tint per leave family</b> (leave, OIL, medical, course), where it stands by its edge: solid, dashed, struck through.</li>
+        <li><b>D · your colleague's</b>: a colour per type, a waiting one outlined with a dot.</li>
+      </ul>
+      <p class="note">The dashed outline is a new kind of mark. One chip is drawn waiting and moved at once, so you can see the two edges together. The Legend changes with your answer.</p>
+      <div class="shots">
+        <figure><img src="full/p4-cells-phone-q2.png" alt="Every state of a cell, phone"><figcaption><span class="k n">Every state · phone size</span> · today, then A to D</figcaption></figure>
+        <figure class="wide"><img src="full/p4-cells-desk-q2.png" alt="Every state of a cell, desktop"><figcaption><span class="k n">Every state · desktop size</span></figcaption></figure>
+      </div>
+    </section>
+
+    <section class="box q" id="q3">
+      <h2><span class="qn">3</span>Does Ack go? <span class="k t">your point 11</span></h2>
+      <ul class="opts">
+        <li class="rec"><b>A · yes</b><span class="rec-pill">recommended</span><br>It only says "seen". It tells the member nothing (your bell ruling leaves it out), and the Approvals list now shows what waits. Decide becomes Approve · Refuse; purple stays "this is you". It changes the bid window's Decide row and the Legend.</li>
+        <li><b>B · keep it.</b></li>
+      </ul>
+      <div class="shots">
+        <figure class="wide"><img src="full/t-w7-desk-admin-waiting.png" alt="Today, Ack Approve Refuse"><figcaption><span class="k t">Today</span> · Ack · Approve · Refuse</figcaption></figure>
+        <figure class="wide"><img src="full/p-w7-desk-admin-waiting.png" alt="Proposed, Approve Refuse"><figcaption><span class="k n">Proposed</span> · 1 who placed it and when · 2 Approve · Refuse · 3 a document</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="box q" id="q4">
+      <h2><span class="qn">4</span>Room for a half day's letters <span class="k t">from your AM-top / PM-bottom ruling</span></h2>
+      <p>A row is 22 points tall, and on a phone the grid opens a step zoomed out, so a half is about 9 points. Measured on the drawing: with rows as they are, a half day's letters come out at <b>6 points</b> on your iPhone; with rows grown to 30, at <b>7.2</b>.</p>
+      <ul class="opts">
+        <li class="rec"><b>A · every row grows to 30</b><span class="rec-pill">recommended</span><br>The halves read. The cost: about a quarter fewer people on one screen.</li>
+        <li><b>B · rows stay</b>; a half's letters are drawn smaller (a whole day's stay as today). They need pinch-to-zoom to read.</li>
+      </ul>
+      <div class="shots">
+        <figure><img src="full/p4-cells-phone-q4.png" alt="A and B at phone size"><figcaption><span class="k n">Phone, real size</span> · A above, B below</figcaption></figure>
+        <figure class="wide"><img src="full/p4-cells-desk-q4.png" alt="A and B at desktop size"><figcaption><span class="k n">Desktop</span></figcaption></figure>
+      </div>
+    </section>
+
+    <div class="answer">Reply with your picks, for example <code>1A 2A 3A 4A</code>, or with anything you want changed.</div>
+  </section>
+
+  <section class="round" id="round3">
+    <header><span class="tag">Round 3 of 4 · how it runs</span><p class="lede">After round 2. Shown now so you can see the whole picture.</p></header>
+
+    <section class="box q" id="q5">
+      <h2><span class="qn">5</span>The stages go, and what takes each one's place <span class="k t">your point 17</span></h2>
+      <p><b>Recommended: they go.</b> A member sees every request's state live, and a locked stretch's reason in the day panel. No separate "being bid / being approved" label: the lock's reason says it.</p>
+      <div class="tablewrap"><table class="swap">
+        <tr><th>What the stages do today</th><th>What takes its place</th></tr>
+        <tr><td>members bid only inside the bidding window, while the war is open</td><td>a member adds, changes or removes his own leave on any date not locked and not yet past; an admin at any time</td></tr>
+        <tr><td>the bidding dates (1 Jan – 31 Mar)</td><td>the lock list; a new period starts locked whole ("Not open yet") and you open months by shortening that lock</td></tr>
+        <tr><td>the green outline round the bidding dates</td><td>gone; a locked day keeps today's quiet dim, with a small lock on its date</td></tr>
+        <tr><td>an admin decides in every stage but draft</td><td>an admin decides at any time</td></tr>
+        <tr><td>while bidding is open a member can re-bid even his own approved day; once published, approved leave is frozen even for an admin</td><td>a member never moves or deletes his approved leave himself (he asks); an admin can change it any time, and the member is told by the bell</td></tr>
+        <tr><td>a member adds remarks to his approved leave only once published</td><td>at any time</td></tr>
+        <tr><td>a member moves his own bid while bidding is open</td><td>while it waits and its days are not locked</td></tr>
+        <tr><td>the dotted "moved" mark, only after bidding closes</td><td>on any move of a leave already approved</td></tr>
+        <tr><td>Undo takes back a stage move</td><td>Undo takes back adding, changing or removing a lock</td></tr>
+        <tr><td>the page opens on the war being bid on</td><td>it opens on the first date from today a member may bid on; with none open, on today</td></tr>
+        <tr><td>the clash note says "Step the war back to Bidding Closed"</td><td>"Change the approved leave" (an admin can at any time)</td></tr>
+        <tr><td>your flow: create → open → bid → close → publish → remarks</td><td>create (locked whole) → open months → bid and decide live → lock "Approvals in progress" if you want → text the squadron</td></tr>
+        <tr><td>a No Leave day only colours its column (your choice, so urgent leave goes through)</td><td>unchanged; a lock is how bids are stopped</td></tr>
+      </table></div>
+      <div class="shots">
+        <figure class="wide"><img src="full/p-w11-desk-locks.png" alt="Lock dates window"><figcaption><span class="k n">Lock dates</span> · 1 each lock and its reason · 2 add one, or lock the whole period · 3 the locked days on the grid</figcaption></figure>
+        <figure class="wide"><img src="full/p-w11-desk-locks-open.png" alt="Opening months"><figcaption><span class="k n">Opening April to June</span> · shorten "Not open yet"</figcaption></figure>
+        <figure><img src="full/p-w11-phone-grid-locked.png" alt="Locked days on a member's phone"><figcaption><span class="k n">A member's phone</span> · 9–13 Feb locked</figcaption></figure>
+        <figure><img src="full/p-w11-phone-locks.png" alt="A member's list of locks"><figcaption><span class="k n">Tap "2 locked"</span> · the locks, read only</figcaption></figure>
+        <figure><img src="full/p-w9-phone-locked.png" alt="Day panel on a locked day"><figcaption><span class="k n">Tap a locked date</span> · its reason first</figcaption></figure>
+        <figure class="wide"><img src="full/th-desk-locks.png" alt="Theirs, lock dates"><figcaption><span class="k c">Theirs</span> · lock dates</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="box q" id="q6">
+      <h2><span class="qn">6</span>Leave filed on the Inputs page: under the locks, and in Approvals? <span class="k t">found by the reviewer</span></h2>
+      <p>Today a leave filed on the Inputs page lands on the war already approved ("asked verbally, told yes"). So a member stopped by a lock could file the same leave there, and it would never reach your Approvals count.</p>
+      <ul class="opts">
+        <li class="rec"><b>A · a member's Inputs-page leave obeys the locks and waits in Approvals, like a bid</b><span class="rec-pill">recommended</span><br>An admin's lands approved, as "Approve what I enter" does. It changes the 19 Sep 26 arrangement and your flow's "later changes mainly by the member through inputs"; your point 13 asked for the count to rise "for any new inputs that is not approved".</li>
+        <li><b>B · as today</b>: Inputs-page leave lands approved and is not stopped by a lock.</li>
+      </ul>
+      <div class="shots">
+        <figure><img src="full/p-w15-phone-locked.png" alt="Inputs page refusing a locked day"><figcaption><span class="k n">A</span> · 3 the Inputs page says why</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="box q" id="q7">
+      <h2><span class="qn">7</span>Quick approve, or approve all for a period? <span class="k t">your point 10</span></h2>
+      <ul class="opts">
+        <li class="rec"><b>A · no quick-approve switch; the Approvals list gets a dates filter, and "Approve all" approves what it shows</b><span class="rec-pill">recommended</span><br>That is "approve all for a selected period". The grid's drag-select stays. A switch that makes a tap approve is easy to leave on, and then a tap meant to open a cell approves it.</li>
+        <li><b>B · add the quick-approve switch</b> as well.</li>
+      </ul>
+      <div class="shots">
+        <figure class="wide"><img src="full/p-w10-desk-approvals.png" alt="Approvals"><figcaption><span class="k n">Approvals</span> · 1 the dates · 2 Approve all · 3 a line a request: its cost and the lowest Available P on its days; a balance below zero in red</figcaption></figure>
+        <figure class="wide"><img src="full/p-w10-desk-approvals-after.png" alt="After Approve all"><figcaption><span class="k n">After Approve all</span> · the note, and one Undo for all</figcaption></figure>
+        <figure class="wide"><img src="full/p-w10-desk-approvals-empty.png" alt="Nothing waiting"><figcaption><span class="k n">Nothing waiting</span></figcaption></figure>
+        <figure><img src="full/p-w10-phone-approvals.png" alt="Approvals on a phone"><figcaption><span class="k n">On a phone</span></figcaption></figure>
+        <figure class="wide"><img src="theirs-desk-approvals.png" alt="Theirs, approvals"><figcaption><span class="k c">Theirs</span></figcaption></figure>
+      </div>
+    </section>
+
+    <section class="box q" id="q8">
+      <h2><span class="qn">8</span>The balances list, and its name <span class="k t">your points 18 and 19</span></h2>
+      <p>The list you ask about is already there: the "Figures" drawer above the names, every figure for everyone.</p>
+      <ul class="opts">
+        <li class="rec"><b>A · no second list; the drawer, its heading and the person window are called "Balances"</b><span class="rec-pill">recommended</span><br>The columns of days used stay inside it, as today.</li>
+        <li><b>B · keep the name "Figures".</b></li>
+        <li><b>C · a Balances window of its own</b>, as your colleague's tab.</li>
+      </ul>
+      <div class="shots">
+        <figure><img src="full/p-phone-member.png" alt="Balances heading"><figcaption><span class="k n">A</span> · 3 "Balances"</figcaption></figure>
+        <figure class="wide"><img src="full/p-desk-admin.png" alt="Balances on a desktop"><figcaption><span class="k n">A · desktop</span> · the drawer open</figcaption></figure>
+      </div>
+    </section>
+  </section>
+
+  <section class="round" id="round4">
+    <header><span class="tag">Round 4 of 4 · my readings you haven't seen drawn</span></header>
+    <section class="box q" id="q9">
+      <h2><span class="qn">9</span>"Approve what I enter": off each time the window opens? <span class="k t">your point 5</span></h2>
+      <ul class="opts"><li class="rec"><b>A · off each time</b><span class="rec-pill">recommended</span><br>So entering a member's request for him stays a normal waiting request unless you tick it.</li><li><b>B · it remembers your last choice.</b></li></ul>
+      <div class="shots"><figure class="wide"><img src="full/t-w7-desk-admin-new.png" alt="Today"><figcaption><span class="k t">Today</span></figcaption></figure><figure class="wide"><img src="full/p-w7-desk-admin-new.png" alt="Proposed"><figcaption><span class="k n">Proposed</span> · 1 the day before you bid · 2 the tick · 3 what is left on each button · 4 a document</figcaption></figure></div>
+    </section>
+    <section class="box q" id="q10">
+      <h2><span class="qn">10</span>Where Approvals and Lock dates open</h2>
+      <ul class="opts"><li class="rec"><b>A · as chips in the row where the stage was</b><span class="rec-pill">recommended</span><br>On a phone in its second line, so no line is added.</li><li><b>B · behind the ⚙</b>, out of the top row.</li></ul>
+      <div class="shots"><figure><img src="full/p-phone-admin.png" alt="Phone"><figcaption><span class="k n">Phone</span> · 1, 2</figcaption></figure><figure class="wide"><img src="full/p-desk-admin.png" alt="Desktop"><figcaption><span class="k n">Desktop</span> · 1, 2</figcaption></figure></div>
+    </section>
+    <section class="box q" id="q11">
+      <h2><span class="qn">11</span>The day panel's rows stacked, one a line</h2>
+      <ul class="opts"><li class="rec"><b>A · yes</b><span class="rec-pill">recommended</span><br>Names in one column and figures in a second, as you asked for the bid window; a locked day's reason as its first line.</li><li><b>B · in one row</b>, as round 1 drew it.</li></ul>
+      <div class="shots"><figure><img src="full/p-w9-phone-day.png" alt="Day panel, phone"><figcaption><span class="k n">Phone</span> · 1 tap a date · 2 its figures, stacked</figcaption></figure><figure class="wide"><img src="full/p-w9-desk-day.png" alt="Day panel, desktop"><figcaption><span class="k n">Desktop</span></figcaption></figure></div>
+    </section>
+    <section class="box q" id="q12">
+      <h2><span class="qn">12</span>Management: a tick on Quals, or picked on the Leave War? <span class="k t">your point 8</span></h2>
+      <ul class="opts"><li class="rec"><b>A · a Management tick column on Quals, added as a group on the war and standing first</b><span class="rec-pill">recommended</span><br>Quals stays the one place a man's facts change, and the war's groups already come from Quals' columns. A man in Management still counts in his own seat.</li><li><b>B · a list of people picked on the war itself.</b></li></ul>
+      <div class="shots"><figure class="wide"><img src="full/p-w14-desk-quals.png" alt="Quals with MGMT"><figcaption><span class="k n">A · Quals</span> · 1 the MGMT tick</figcaption></figure><figure class="wide"><img src="full/p-w14-desk-groups.png" alt="Groups with Management first"><figcaption><span class="k n">A · ⚙ groups</span> · 2 Management first</figcaption></figure><figure class="wide"><img src="full/p-w14-desk-groups-add.png" alt="Add a group"><figcaption><span class="k n">A</span> · 3 added like any Quals column</figcaption></figure><figure class="wide"><img src="full/t-w14-desk-quals.png" alt="Quals today"><figcaption><span class="k t">Today · Quals</span></figcaption></figure></div>
+    </section>
+  </section>
+
+  <section class="box" id="built">
+    <h2>Built in from your points, nothing to answer</h2>
+    <h3>A person's leave, by year · points 7, 22</h3>
+    <div class="shots">
+      <figure><img src="full/t-w6-phone-member.png" alt="Today"><figcaption><span class="k t">Today</span> · every figure</figcaption></figure>
+      <figure><img src="full/p-w6-phone-member.png" alt="Proposed"><figcaption><span class="k n">Proposed</span> · 1 balances · 2 the year · 3 his leave, one line a request</figcaption></figure>
+      <figure><img src="full/p-w6-phone-member-years.png" alt="Year menu"><figcaption><span class="k n">Past years</span> · kept, picked here</figcaption></figure>
+      <figure class="wide"><img src="full/p-w6-desk-admin.png" alt="Desktop"><figcaption><span class="k n">An admin's view</span> · Set stays</figcaption></figure>
+      <figure class="wide"><img src="full/th-desk-person.png" alt="Theirs"><figcaption><span class="k c">Theirs</span></figcaption></figure>
+    </div>
+    <h3>Placing leave · your round 1 answer 4, point 12</h3>
+    <div class="shots">
+      <figure><img src="full/t-w7-phone-member.png" alt="Today"><figcaption><span class="k t">Today</span></figcaption></figure>
+      <figure><img src="full/p-w7-phone-member.png" alt="Proposed"><figcaption><span class="k n">Proposed</span> · 1 the day · 2 what is left · 3 a document</figcaption></figure>
+      <figure><img src="full/t-w8-phone-member.png" alt="Today, approved leave"><figcaption><span class="k t">Today · his approved day</span> · it opens to re-bid</figcaption></figure>
+      <figure><img src="full/p-w8-phone-member.png" alt="Proposed, approved leave"><figcaption><span class="k n">Proposed</span> · 1 who placed and decided it · 2 its document · 3 changed by a scheduler</figcaption></figure>
+    </div>
+    <h3>A document on every entry · point 12</h3>
+    <div class="shots">
+      <figure><img src="full/t-w15-phone-medical.png" alt="Today, medical"><figcaption><span class="k t">Today · a medical</span> · its Document button</figcaption></figure>
+      <figure><img src="full/p-w15-phone-leave.png" alt="A leave with a document"><figcaption><span class="k n">A leave</span> · 1 the same button</figcaption></figure>
+      <figure><img src="full/p-w15-phone-leave-ask.png" alt="The ask"><figcaption><span class="k n">At Add</span> · 2 the ask, never a stop</figcaption></figure>
+    </div>
+    <h3>Events, and holidays by file · point 16</h3>
+    <div class="shots">
+      <figure class="wide"><img src="full/p-w12-desk-settings.png" alt="Events in settings"><figcaption><span class="k n">⚙</span> · 1 Events…</figcaption></figure>
+      <figure class="wide"><img src="full/p-w12-desk-events.png" alt="Events list"><figcaption><span class="k n">Events</span> · 2 kinds · 3 several days allowed (sample events)</figcaption></figure>
+      <figure class="wide"><img src="full/p-w12-desk-holidays.png" alt="Holidays list"><figcaption><span class="k n">The Calendar window</span> · 4 export the year, import a sheet</figcaption></figure>
+      <figure class="wide"><img src="full/p-w12-desk-import.png" alt="Import preview"><figcaption><span class="k n">Import</span> · 5 what it adds and skips, before anything changes (sample rows, dates not checked)</figcaption></figure>
+      <figure class="wide"><img src="full/th-desk-holidays.png" alt="Theirs"><figcaption><span class="k c">Theirs</span></figcaption></figure>
+    </div>
+    <h3>Available P and W · point 15</h3>
+    <p class="note">Already built: tap "Available P" and its window chooses exactly what it counts (crew, CAT, holding, without). Only one line is new.</p>
+    <div class="shots">
+      <figure class="wide"><img src="full/t-w13-desk-availp.png" alt="Today"><figcaption><span class="k t">Today</span></figcaption></figure>
+      <figure class="wide"><img src="full/p-w13-desk-availp.png" alt="Proposed"><figcaption><span class="k n">Proposed</span> · 1 how the SANS calendar uses it</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="box" id="readings">
+    <h2>My readings, yours to strike</h2>
+    <ul class="plain">
+      <li>A leave's document is opened by whoever can open the entry, as a medical one is today.</li>
+      <li>A bid's document goes with it when it is approved, and stays when it is put back or refused.</li>
+      <li>Documents stay in each browser, as medical ones do, until the shared database.</li>
+      <li>Approvals is for admins; a member sees his own waiting requests in "My leave".</li>
+      <li>The holiday sheet is a CSV file that opens in Excel, its columns in plain words (date, last date, name, short form).</li>
+      <li>The holiday import sits on the Calendar window's Holidays list and writes the same record as the war's Event row; the events list is new, behind the war's ⚙.</li>
+    </ul>
+  </section>
+
+  <section class="box" id="notify">
+    <h2>New notifications, yours to strike</h2>
+    <p>Your notifications list is written (point 12). It holds the 11 the bell sends today, your round 1 ruling, and these six I propose:</p>
+    <ul class="plain">
+      <li><b>P1</b> · the day before a leave starts with no document: <i>Your leave · Mon 19 Jan · LL · no form attached yet</i></li>
+      <li><b>P2</b> · an admin enters leave on a member's row, ticked approved: <i>Your leave · Mon 9 Mar · LL added and approved · Saber</i></li>
+      <li><b>P3</b> · a lock is laid over a member's waiting request: <i>Your leave · Tue 10 Feb · LL waiting · locked: Exercise week</i></li>
+      <li><b>P4</b> · months are opened for leave: <i>Leave War · Apr – Jun open for leave · Saber</i></li>
+      <li><b>P5</b> · a new request waits (to the admins): <i>Approvals · Ranger · LL Mon 26 – Tue 27 Jan</i></li>
+      <li><b>P6</b> · if question 6 is yes, Inputs-page leave decided in Approvals tells him as a bid does.</li>
+    </ul>
+  </section>
+</div>
+<div id="zoom" hidden role="dialog" aria-label="Enlarged picture" tabindex="-1"><img id="zimg" alt=""></div>
+<script>
+(function(){
+  var z=document.getElementById('zoom'),zi=document.getElementById('zimg'),last=null;
+  document.addEventListener('click',function(e){
+    var im=e.target.closest('figure img');
+    if(im){last=im;zi.src=im.src;zi.alt=im.alt;z.hidden=false;z.scrollTop=0;z.focus();return}
+    if(!z.hidden&&z.contains(e.target)){z.hidden=true;if(last)last.focus()}
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!z.hidden){z.hidden=true;if(last)last.focus()}});
+  document.querySelectorAll('figure img').forEach(function(i){i.tabIndex=0;i.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();i.click()}})});
+})();
+</script>

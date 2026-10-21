@@ -239,8 +239,8 @@ should work … I want u to automatically see which areas needs a notification a
 I want to reject"*. **What:** one document — every place a notification should go out, who gets it, when, what it says,
 what a tap opens, and whether it is built. The first entry: a reminder to attach a leave's document one day before it
 starts (D1150). The bell's notices already built are listed in it too. Kept by the agent: any job that finds a place that
-needs one adds a line and names it in its closing report; he may strike any. **Where:** a reference document under
-`raptor-port/docs/` with its row in the project guide's map. **Place:** the Leave War overhaul's next chat ([LW-OVERHAUL]).
+needs one adds a line and names it in its closing report; he may strike any. **Where:** `raptor-port/docs/notifications-register.md`
+(its row in the project guide's map). **21 Oct 26:** written — 11 built, 1 ruled (D1142), 6 proposed by the full mock-up (P1–P6), put to him to strike; the item stays open while proposed lines wait.
 
 ### [LW-PHONE-PINCH-ZOOM] On a phone the Leave War grid pinches to zoom (his word, 21 Oct 26 — D1117)
 **What:** as on the Scheduler Board's desktop layout and Quals (D1109, D1110, live with pull request 561), a pinch on a phone

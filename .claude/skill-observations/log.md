@@ -1652,3 +1652,33 @@ different feature that merely pass through it.
 **Suggested improvement:** In the mock-up guide, a short "Picturing someone else's app" note: read the source whole (the summary of a script-drawn page is empty); never open its live data; run it locally against a stand-in store with invented records; replace identifying names in the HTML before capture; do not commit the stand-in if it carries their storage keys or names.
 
 **Principle:** To study a data-driven reference app, run its code against invented data in a sandbox rather than reading its live data or trusting a summary of its empty shell.
+
+### Observation 667: In a zoomed grid a rect reads unzoomed, and a copied column table hides behind the real one — a mock-up's moves and marks go wrong silently
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** the Leave War overhaul's full mock-up, drawn into the real build (claude/leave-war-overhaul). Numbered 667 past main's and consistency round 2's 664.
+**Skill:** brainstorming (`mockups-on-the-real-app.md` — Traps When Injecting Into a Live Page)
+**Type:** open-source
+**Phase/Area:** injecting into a live page
+
+**Issue:** Three traps cost a redraw each. (1) The phone's grid is drawn at CSS zoom 0.8: `getBoundingClientRect` inside it returned unzoomed values, so a scroll computed from it overshot by days and a tag placed from it sat off its cell. (2) The app keeps second copies of rows (a desktop "figures drawer" table, a phone frozen band) beside the year table: moving a person's rows in one copy left his balance figures in the other, showing the wrong man's numbers. (3) A window drawn outside the page's styled scope (appended to body) lost every scoped style and rendered transparent over the dialog behind it. Each passed its script with no error.
+
+**Suggested improvement:** Add to the traps: "Inside a zoomed subtree, compare rects only after dividing by the zoom (or place tags as children of the element); before moving rows, list every table holding a copy of them and move each by position from a shared anchor row; append a new window inside the page's scoped container, or style it fully inline — then look at the picture."
+
+**Principle:** A live page often draws one thing in several places and under several coordinate systems; a transform that touches one copy, or measures in one system, leaves a picture that looks plausible and is wrong.
+
+### Observation 668: A shell edit turned `\b` in a regex into a backspace character, twice — the trap the memory names for `node -e` hits Python and here-docs too
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** editing the mock-up's drawing scripts by Python inside a bash here-doc and by `python -c`.
+**Skill:** task-observer (repo memory notes: "node -e in Git Bash loses escapes", "Python edits turn LF into CRLF")
+**Type:** open-source
+**Phase/Area:** editing files from a shell
+
+**Issue:** A JS regex `/\bSXO\b/` written through a Python string in a here-doc came out as `/<BS>SXO<BS>/` (Python read `\b` as a backspace); the replacement meant to fix it did the same again. The helper silently matched nothing, and three debugging runs passed before `cat -A` showed the control characters. The apostrophe trap in here-docs struck the same session.
+
+**Suggested improvement:** Make the default unconditional: script edits go through the Edit tool or a script file written with the Write tool, never a code string passed through a shell; when a helper "finds nothing", `cat -A` the line first.
+
+**Principle:** Every layer that reads escapes (shell, Python string, JS) can rewrite a backslash; text that must arrive byte for byte should cross no layer that interprets it.
