@@ -135,6 +135,25 @@ Browser test: `e2e/boardside.spec.ts` — "arrows around changing words stay put
 buttons stay put" (8 / 8 with the rest); red with the crew panel's old rule. The fresh reader (`read-arrows.md`): lesson 16 OK
 but one date (fixed); 2 places not covered (fixed, above); the pad's rule a no-op (removed). The design guide's lesson 16, and a fresh reader of it and of these fixes (§7a style, `read-arrows.md`).
 
+## 7c. The rooms sized by the device's real font (GitHub's run red on `0927e925f`)
+
+**Why:** §7b's fixed rooms (the day chips' 6em, the Inputs month's 10.6em, the SANS month's 11.6em) were sized in Windows'
+letters. GitHub's Linux font is wider: the board's › moved 3.25px there, and the Inputs tools row wrapped at 1440.
+**Fix:** one shared rule (`data-fit`, `00-foundation-login.css`): the label carries every value it can take, one a line, in a
+hidden zero-height line box under it, so its room is its widest value in whatever font draws it. Day chips: weekday + "30";
+the months: all twelve with the year; figures of one width. Phones keep their fixed widths (D705 — no `data-fit` there).
+**Tier WALK** — a shared rule used by three labels (question 4); the other seven NO (no OIL, record, saved data, new
+control, new surface, role or warning). **Roll-call:** the board's day chips (desktop; hidden on a phone — must not change,
+because `#sbDays` is `display:none` there); the Inputs month (desktop has it; phone must not, D705); the SANS month (the
+same); the Medical as-of calendar's month (must not — it shares the `.ic-mon` name but sits outside `.ib`, no `data-fit`).
+**Walk** (`scripts/handpass/bsw-fonts.mjs`, the built app, the app's font and Verdana — a wider stand-in for Linux's DejaVu
+Sans; pictures `fonts/`): every › still — the board at 1440 and 1024 over eight weeks (0px), the Inputs and SANS months over
+thirteen months (0–0.1px). The day strip one line at 1024 and 1440. The Inputs row's spare room at 1440 on October: 77px in
+the app's font (101px with October's own words). In Verdana the row wraps whatever the month's room — it wraps with
+October's own words too, which GitHub passed before §7b, so Verdana is harsher than GitHub's font and cannot settle it:
+GitHub's run is the check — **green on `21b0de3f6`** (both groups that were red now pass). **Tests:** unit 256/256 (inputscal, sanscal, inputsmonth, inputs-calendar-flow, board);
+`e2e/boardside.spec.ts` + `e2e/inputs-calendar.spec.ts` 67/67 on this PC.
+
 ## 8. Gates
 
 GitHub's run of pull request 562 is the gate set (D1086). Its result on the last pushed commit: see the closing report.

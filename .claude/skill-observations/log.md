@@ -1607,3 +1607,18 @@ different feature that merely pass through it.
 **Suggested improvement:** reserve a label's room by the real font on the device: stack every value the label can take in one grid cell (all but the current hidden), never a number measured on one machine; where a fixed number is unavoidable, measure it in the CI browser too before pushing.
 
 **Principle:** A width measured in one font is a guess on every other device; let the layout measure the real text in place.
+
+### Observation 662: A stand-in font must pass what the real one passed before it can judge a new case
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** [ARROWS-STAY-PUT] — sizing labels by the real font so GitHub's Linux checks go green (applies Observation 661)
+**Skill:** (project guide) raptor-port/docs/walk-scripts.md; mockups-on-the-real-app.md "A fit drawn in the test browser's letters…"
+**Type:** open-source
+**Phase/Area:** reproducing a CI-only layout failure locally
+
+**Issue:** The CI machines draw a font this PC does not have. A wider font forced on the page (Verdana) was used to predict whether a toolbar row would wrap there. It wrapped — but it also wrapped in the older state that CI had passed, so the stand-in was harsher than the real font and said nothing about the new state. A first measurement also counted "needed width" as the sum of the items, which always equals the room when one item stretches.
+
+**Suggested improvement:** before trusting a stand-in font, run it on a known-good state (one the real environment passed) and a known-bad one; it can judge only if it passes the first and fails the second. Measure spare room by growing a margin until the row's height changes, not by adding item widths. Where no stand-in qualifies, the real environment's run is the check — say so.
+
+**Principle:** A proxy environment is calibrated against known outcomes of the real one before its verdict on a new case is believed.
