@@ -269,6 +269,7 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **And (D1183):** "Perhaps also include the colour coding of the leave etc we agreed on just now" — the bid windows' leave buttons wear look F's colours (design lesson 23 applied); drawn with question 9.
 - **And (D1184):** "also just to confirm the dates will be for the period of the calendar i created yeah? which is usually yearly" — yes: the Approvals list's date choices are the whole period's months, as the "Open for bidding" window's month buttons, a month with nothing waiting dimmed; redrawn with question 7.
 - **Q8 → A, and (D1185):** "8A Make balances more obvious to click on" — no second list; "Figures" becomes "Balances"; its heading drawn as a button like "Manning" (▸ / ▾) — design lesson 25.
+- **Q9 answered (21 Oct 26): 9a → B (D1187)** — "the approve what i enter at the tile looks better something like this screen shot": the tick in the title bar; **9b → on by default (D1186)** — "9b it should default to enable" (he chose against the agent's "off each time"; told what it costs). D1147 and D1182 marked.
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
   `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (his question "in what scenario": the clash rules allow only leave during a course or overseas duty, leave beside
   ATT B, and an FO given by hand on a leave day; recommended now C — the leave fills the cell, the other a strip down its right
