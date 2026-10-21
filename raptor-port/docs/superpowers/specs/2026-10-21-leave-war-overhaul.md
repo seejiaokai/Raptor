@@ -293,6 +293,9 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **Q4 → No (D1209):** "4 no" — a member cannot type his own OIL figure; OIL stays earned or awarded (D400, D402), a tap opens the OIL tracker. Narrows D1203 to the other kinds of leave.
 - **D1210:** his reply to Q5 — "it should also allow a place to input remarks … in the event that its still pending because info is not updated by the user": a leave request carries remarks, as an Inputs-page input does; Q5 itself and his "follows the input area … till date check box" asked again. This branch now takes **D1210–D1219** (checked 22 Oct 26: nothing above D1209 on any branch).
 - **Q6 → as recommended (D1211):** a member never bids on the Leave War before today, an admin may; on the Inputs page a member may still correct a wrong past input, and the scheduler publishes another EOD (as D178 already has it).
+- **D1212:** "instead of how many change it to DATE. then How much change it to DURATION. Make sure the rest of the app that does it also changes to match it." — the bid window's rows read "Date" and "Duration", the drag-selection sheet's "Duration", the Inputs window's "When" becomes "Duration" (the agent's reading); lesson 31.
+- **Q7 → yes (D1213):** Available P / W at amber or red count as under-manned, in the chip and the bid window's line; the architecture note amended.
+- **Q8 → yes (D1214):** a member's bell is told when bidding opens or closes; a tap opens the Leave War with that bidding period in view (the register's P4 and P7 ruled in).
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
   `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (his question "in what scenario": the clash rules allow only leave during a course or overseas duty, leave beside
   ATT B, and an FO given by hand on a leave day; recommended now C — the leave fills the cell, the other a strip down its right
