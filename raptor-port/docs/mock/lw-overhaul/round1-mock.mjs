@@ -92,8 +92,13 @@ async function addStrip(p, lve, phone = false) {
   }, [STRIP(lve, phone)])
   await p.waitForTimeout(200)
 }
-await addStrip(p, LVE)
-await mark(p, '.zz-strip', '1 · NEW: my leave, one line', 2)
+await p.evaluate(([lve]) => {
+  const ref = document.querySelector('[data-testid="bid-window"]'), row = ref.closest('.filters') || ref.parentElement
+  const c = document.createElement('button'); c.className = ref.className + ' zz-desk'; c.style.marginLeft = 'auto'
+  c.innerHTML = `<span style="opacity:.7;letter-spacing:.1em;font-size:11px">MY LEAVE</span>&nbsp; <b>LVE ${lve}</b> · OIL 0 · 2 waiting · next LL Mon 19 Jan ›`
+  row.appendChild(c)
+}, [LVE])
+await mark(p, '.zz-desk', '1 · NEW: in the stage row, no new line', 2)
 await p.screenshot({ path: join(OUT, 'r1q1-ours-desk-mock.png') })
 await ctx.close()
 
@@ -134,7 +139,7 @@ await p.evaluate(([lve]) => {
   host.innerHTML = ''; host.style.display = 'flex'; host.style.flexDirection = 'column'; host.style.gap = '8px'
   const keys = [...sh.querySelectorAll('*')].filter(e => /balance left/.test(e.textContent) && !e.querySelector('button')).sort((a, b) => b.textContent.length - a.textContent.length)
   if (keys[0]) keys[0].style.display = 'none'
-  const L = [['LL · Mon 19 – Wed 21 Jan', 'Approved', '#58c48a', '3 days · tap to see it on the grid'], ['LL · Mon 26 – Tue 27 Jan', 'Waiting', '#e6edf3', '2 days · bid on Thu 8 Jan'], ['LL · Mon 2 Feb', 'Refused', '#ff6b6b', '1 day'], ['LVE left', String(lve), '#e6edf3', 'after the 2 waiting · 5 used this year']]
+  const L = [['LL · Mon 19 – Wed 21 Jan', 'Approved', '#58c48a', '3 days · tap to see it on the grid'], ['LL · Mon 26 – Tue 27 Jan', 'Waiting', '#e6edf3', '2 days'], ['LL · Mon 2 Feb', 'Refused', '#ff6b6b', '1 day'], ['LVE left', String(lve), '#e6edf3', 'already less the 2 waiting · 20 given']]
   for (const [t, st, col, d] of L) {
     const b = tpl.cloneNode(false); b.style.display = 'block'; b.style.width = '100%'; b.style.textAlign = 'left'
     b.innerHTML = `<span style="display:flex;justify-content:space-between;align-items:baseline;width:100%;${tStyle}"><span>${t}</span><span style="color:${col}">${st}</span></span><span style="display:block;margin-top:4px;${dStyle}">${d}</span>`
@@ -153,7 +158,7 @@ await p.evaluate(() => {
   const list = document.querySelector('.bell-list'); if (!list) return
   list.querySelector('.bl-empty')?.remove()
   const line = (name, day, what, ago) => `<button type="button" class="bl-line unread"><span class="bl-dot"></span><span class="bl-main"><span class="bl-t"><b class="bl-name">${name}</b><i class="bl-day">${day}</i></span><span class="bl-what">${what}</span></span><span class="bl-ago">${ago}</span></button>`
-  list.insertAdjacentHTML('afterbegin', line('Your leave', 'Mon 2 Feb', 'LL refused · Leave War', '1h') + line('Your leave', 'Mon 19 – Wed 21 Jan', 'LL approved · Leave War', '1h'))
+  list.insertAdjacentHTML('afterbegin', line('Your leave', 'Mon 2 Feb', 'LL refused · Saber', '1h') + line('Your leave', 'Mon 19 – Wed 21 Jan', 'LL approved · Saber', '1h'))
   document.querySelector('.belldot')?.classList.add('on')
 })
 await mark(p, '.bell-list', '2 · NEW: the bell tells him', 2)
@@ -190,14 +195,32 @@ await p.evaluate(([lve]) => {
   const lvN = parseFloat(lve) || 0
   const line = document.createElement('div'); line.className = 'zz-eff'
   Object.assign(line.style, { margin: '10px 0 2px', padding: '9px 10px', borderRadius: '8px', background: 'rgba(255,255,255,.04)', color: '#c9d1d9', font: '500 14px/1.4 system-ui' })
-  line.innerHTML = `<b style="color:#e6edf3">LVE ${lvN} left</b> — a whole day takes 1 · Avail P that day 28 → 27`
+  line.innerHTML = `<b style="color:#e6edf3">Wed 28 Jan</b> · Avail P that day 28 → 27 if you bid`
+  const bal = { LL: lvN, OL: lvN, OIL: 0, CCL: 0, FCL: 0, PL: 0, CL: 0 }
+  for (const [t, v] of Object.entries(bal)) { const c = sh.querySelector(`[data-testid="bid-${t}"]`); if (c) { c.insertAdjacentHTML('beforeend', `<small class="zz-bal" style="margin-left:6px;opacity:.75;font-weight:600">${v}</small>`) } }
   // above HOW MANY: what he has and what a bid costs, before the one tap that places it
   const head = [...sh.querySelectorAll('*')].find(e => !e.children.length && /HOW MANY/i.test(e.textContent))
   const row = head ? head.closest('div:not([role=dialog])') : null
   if (row && row.parentElement) row.parentElement.insertBefore(line, row); else sh.appendChild(line)
 }, [LVE])
-await mark(p, '.zz-eff', '4 · NEW: what this bid does', 2)
+await mark(p, '.zz-eff', '4 · NEW: the day, before he bids', 2)
+await p.evaluate(() => { const c = document.querySelector('[data-testid="bid-LL"]'); const row = c && c.parentElement; if (row) row.classList.add('zz-row') })
+await mark(p, '.zz-row', 'A · what is left, on each button', 3)
 await p.screenshot({ path: join(OUT, 'r1q4-ours-phone-mock.png') })
+await unmark(p)
+// option B: pick, then confirm — LL lit, a line with what it does and a button that places it
+await p.evaluate(([lve]) => {
+  const sh = document.querySelector('[data-testid="bid-picker"]'); sh.querySelectorAll('.zz-bal').forEach(n => n.remove())
+  const ll = sh.querySelector('[data-testid="bid-LL"]'), lit = sh.querySelector('[aria-pressed="true"], .on, .picked') || ll
+  if (ll && lit) ll.className = lit.className
+  const n = parseFloat(lve) || 0, box = document.createElement('div'); box.className = 'zz-conf'
+  Object.assign(box.style, { margin: '10px 0 2px', padding: '9px 10px', borderRadius: '8px', background: 'rgba(255,255,255,.04)', color: '#c9d1d9', font: '500 14px/1.4 system-ui', display: 'flex', alignItems: 'center', gap: '10px' })
+  const ref = sh.querySelector('[data-testid="span-one"]')
+  box.innerHTML = `<span style="flex:1"><b style="color:#e6edf3">LL Wed 28 Jan:</b> LVE ${n} → ${n - 1}</span><button class="${ref ? ref.className : ''}">Place bid</button>`
+  sh.appendChild(box)
+}, [LVE])
+await mark(p, '.zz-conf', 'B · pick, then confirm (one more tap)', 2)
+await p.screenshot({ path: join(OUT, 'r1q4-ours-phone-mockB.png') })
 await ctx.close()
 
 // ---------- 7. theirs, marked ----------

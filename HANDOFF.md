@@ -20,6 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/leave-war-overhaul -->
+### 21 Oct 26 — the Leave War overhaul, planning (D1140), `claude/leave-war-overhaul` — round 1 of his questions out; nothing built
+- **His wish:** a major overhaul of the Leave War taking the good things from a colleague's leave app (**D1140**, `leave-war.md`; backlog `[LW-OVERHAUL]`). Planning only until he says to build.
+- **Done:** the colleague's app read whole from its saved source and run locally on made-up people (never its live data; its unit name replaced in every picture); our war inventoried; the design note `raptor-port/docs/superpowers/specs/2026-10-21-leave-war-overhaul.md` — §2 the side-by-side (24 ideas, each a verdict), §3 what is left and why, §4 four rounds of questions (round 1: a member's own leave — Q1 "My leave" line, Q2 told by the bell, Q3 a day panel, Q4 the bid window's cost line), §6 the build batches. Round 1's pictures drawn on the real app: `raptor-port/docs/mock/lw-overhaul/` (script `round1-mock.mjs` — the member state staged through the app's own controls, clock held at 8 Jan 26; the colleague's local copy and its stand-in data stay out of the repo).
+- **Red team:** a fresh, blind Opus reader, ten findings, every one acted on before round 1 went out (the note's §7) — among them: a No Leave day not blocking a bid was his deliberate choice (round 2 now names it); Q1 names D678 / D679 / D1000 / D365 and on a desktop uses the stage row's free room; Q2 covers every decision, not Ack, and its bell line names who decided (D769); Q4 redrawn as "what's left on each leave button" (A) or "pick, then confirm" (B). D1140's line read against its full row and tightened.
+- **His page, round 1:** https://claude.ai/artifact/QcbaMs6TKV2xcySMXiGXYH (its source and pictures: `raptor-port/docs/mock/lw-overhaul/round1-page.html`; republish from the scratchpad copy, or from the repo copy with its pictures). He answers in one line, e.g. "1A 2A 3A 4A".
+- **Pick up here:** record his round-1 answers as rulings (D1141 onward; this chat holds D1140–D1159 — consistency round 2 holds D1129–D1139) and in the note's §5; then draw and put round 2 (the scheduler's side, §4) the same way; rounds 3 and 4 after. Nothing is built before all four rounds are answered and the plan red-teamed again where answers changed it.
+- **Not mine, known:** the document check's two size tripwires are over on `main` (shipping.md, how-we-work.md) — raised on `claude/consistency-round2`.
+<!-- /now -->
 <!-- now:claude/board-side-width -->
 ### 21 Oct 26 — the right panel, [ARROWS-STAY-PUT], the font fix and round 1 of the consistency look, `claude/board-side-width`, pull request 562 — his "merge live" GIVEN (21 Oct 26), merging
 - **His rulings this chat:** D1118–D1122 (the right panel, the crew list, arrows that keep their place), D1123–D1128 (the consistency look: one Inputs / SANS top row, the whole app looked over, the top bar on one line to 1599, one search box, Quals' ✎ Edit / Done). All homed; the design guide's lessons 14–17 read by fresh readers.
