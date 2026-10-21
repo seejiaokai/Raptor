@@ -5,3 +5,9 @@ OUTSTANDING.md          text eol=lf
 OUTSTANDING-ARCHIVE.md  text eol=lf
 DECISIONS.md            text eol=lf
 HANDOFF.md              text eol=lf
+# [RULINGS-LF-PIN] (21 Oct 26): the rulings split (D137) and the one-line form (D390) added these — every
+# area file, every full-row file and the archive, LF in the repository when pinned; a folder pattern
+# covers a new area's file too.
+DECISIONS-ARCHIVE.md            text eol=lf
+.claude/rules/decisions/**      text eol=lf
+.claude/decisions-full/**       text eol=lf
