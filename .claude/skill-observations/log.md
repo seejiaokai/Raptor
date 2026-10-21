@@ -1622,3 +1622,18 @@ different feature that merely pass through it.
 **Suggested improvement:** before trusting a stand-in font, run it on a known-good state (one the real environment passed) and a known-bad one; it can judge only if it passes the first and fails the second. Measure spare room by growing a margin until the row's height changes, not by adding item widths. Where no stand-in qualifies, the real environment's run is the check — say so.
 
 **Principle:** A proxy environment is calibrated against known outcomes of the real one before its verdict on a new case is believed.
+
+### Observation 663: A part moved out of its box in a mock-up loses the box's styles
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** [INPUTS-SANS-HEAD-SAME] (D1123) — drawing two calendars' top rows as one, on the running app
+**Skill:** brainstorming/mockups-on-the-real-app.md — "Traps When Injecting Into a Live Page"
+**Type:** open-source
+**Phase/Area:** applying the one named transform (moving existing nodes)
+
+**Issue:** To draw a page's second row joined to its first, the second row's controls were moved up into the first row's container. The page's styles were scoped under the second row's own container, so the moved month name lost its font and size and the right-hand buttons lost the rule that pushed them to the row's end. The script raised no error; only looking at the picture showed it. Moving the first row's tabs DOWN into the second row's container instead kept every scoped style, and drew the same arrangement faithfully.
+
+**Suggested improvement:** add a trap line: when a transform moves nodes between containers, move the part whose styles are global into the container whose styles are scoped — never out of it; then measure the moved part's computed font size and position against the original before taking the picture.
+
+**Principle:** In a live-page mock-up, a node's look can depend on where it sits; relocate the side that does not.
