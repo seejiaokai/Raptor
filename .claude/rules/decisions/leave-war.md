@@ -56,6 +56,8 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1174 | 21 Oct 26 | The Leave War's period picker is labelled "View" — "View JAN – DEC 26" — not "Period", on a desktop and now on a phone too. |
+| D1173 | 21 Oct 26 | The Leave War's "Viewing as <callsign>" chip goes, on a desktop and a phone: the name badge at the top right already says who is signed in, and "My leave" (D1141) carries his own figures. |
 | D1172 | 21 Oct 26 | In the "Open for bidding" window each open stretch's line carries a calendar icon, not a pencil, since what it opens is the calendar for exact days. |
 | D1169 | 21 Oct 26 | In the "Open for bidding" window, a hold and drag across the month buttons opens every month it passes over, as one stretch. |
 | D1168 | 21 Oct 26 | The "Open for bidding" window carries the period's months as quick buttons: a tap opens a whole month, first day to last; exact days, the rare case, stay behind the pencil and the calendar. — changed by D1172 |
@@ -103,7 +105,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 | D823 | 13 Oct 26 | On a phone the Leave War's clash note is the slim full-width line under the two rows that opens its list in place (option a of the design page) — with the list's parts lined up in columns and every row the same shape; the neater drawing is put to him before it is built. |
 | D805 | 13 Oct 26 | On a phone the Leave War's "clashes with the schedule" note is redesigned — its layout and where it sits: never a narrow box squeezed at the right of the top row; a picture is put to him before anything is built. |
 | D679 | 8 Oct 26 | On a desktop the top of the Leave War stays as it is — two lines, every label and button as today, but for the "My leave" chip in the stage row's free end (D1141); only the phone takes the two-line layout of D678. — changed by D1141 |
-| D678 | 8 Oct 26 | On a phone the top of the Leave War is two lines, as drawn in idea A: the period, "+" and "viewing as" on the first; the stage (its two moves behind the stage button), the bidding dates, under-manned and legend on the second; and a third, "My leave" (D1141). — changed by D1141 |
+| D678 | 8 Oct 26 | On a phone the top of the Leave War is two lines, as drawn in idea A: the period picker, labelled "View", and "+" on the first ("viewing as" gone — D1173, D1174); the stage (its two moves behind the stage button), the bidding dates, under-manned and legend on the second; and a third, "My leave" (D1141). — changed by D1174, D1173, D1141 |
 | D677 | 8 Oct 26 | The two ways of deleting a counter stay as they are: the cross in Rearrange deletes at once and asks nothing (undo brings the counter back), and "Delete counter" in the counter's own window still asks "Really delete?". |
 | D676 | 8 Oct 26 | In Rearrange a counter row's delete cross is red — as "Delete counter" is in the counter's own window. |
 | D674 | 8 Oct 26 | In Rearrange a counter row can be dropped anywhere among the four fixed rows (required P and W, available P and W) — above them, between any two of them, or below all four. |
@@ -114,7 +116,6 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 | D460 | 30 Sep 26 | The SXO tick he keeps on Quals is the one source the app reads (his setting, not a claim about the official qualification): the Leave War cannot make anyone SXO — it shows what Quals says, read only, and counts him as SXO only if Quals does; nothing on the war (its person sheet, a move into a category) ticks SXO. — changed by D461 |
 | D418 | 29 Sep 26 | The Leave War stays as built on three counts — an approved leave reaches inputs at approve; the admin decides bids in every stage but draft; a published war's approved leave offers only its remarks — and a drag across days that goes below zero must ask first, as a one-day bid does. |
 | D352 | 28 Sep 26 | The one undo takes back a Leave War stage move, as today — and says so. |
-| D365 | 29 Sep 26 | On a phone the Leave War's "Viewing as" chip takes a line of its own under the picker, words kept — as built; a tablet and a desktop keep the one line. — changed by D678 |
 | D335 | 27 Sep 26 | The one-day sheet keeps "how many" (Just this day / Pick a range), at its top. |
 | D334 | 27 Sep 26 | The Move button is the grey chip with a teal arrow before the word ("⇄ Move") — on every sheet that offers it. |
 | D333 | 27 Sep 26 | A member gets move on his own bid while bidding is open — on the one-day sheet and the day's list, as the drag already lets him. |
