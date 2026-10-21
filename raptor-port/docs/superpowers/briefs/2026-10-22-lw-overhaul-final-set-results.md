@@ -100,3 +100,28 @@ requests carry a document; the IP and SXO counters on Anvil's line; the two "Als
 
 **Not drawn as §10 says:** the bid window's day line shows Available P only (the demo has no Manning counters; the stack
 is shown in Approvals); Q9 only partly (Manning stays open in this member picture).
+
+## The consistency pass (after the look, `2026-10-22-lw-overhaul-final-set-look.md`)
+
+One helper redrew all three parts to one set of choices (shared parts and one mark placer in `full-r7-one.mjs`); 34
+pictures now (r7-07b added: the Legend scrolled to its end). Every picture opened after the final run.
+
+**How the look's 14 points were settled:** 1 one tint rule (pilots olive, WSOs green) on every picture with those rows ·
+2 a member's top: My leave in line 1's right half, Manning folded; "● 3 new" up to r7-10, gone from r7-20; Q9 marked
+only in r7-01 · 3 Balances the r4b button everywhere (▸ / ▾) · 4 magnifiers everywhere; Q12 marked in r7-01, r7-02 ·
+5 Required P 24 on every weekday not a public holiday, in every picture; Available P amber under 26, red under 24; only
+Tue 27 Jan (23) red, so "Under 1 day" everywhere (Q7) · 6 Approvals "● 3 new" on r7-02/03/06/11/12/13; r7-14 is the
+opening; r7-15, r7-16 keep the window's "New 3" · 7 Ranger's one story: r7-13 "Decided: Approved · Saber · Thu 8 Jan,
+08:40"; the bell's unread lines are exactly r7-20's three new rows; Q11's line is about his 26–27 Jan, waiting in his
+list and on the grid; Q8's line "Bidding open 1 Jan – 31 Mar"; the "moved" and "replaced by a course" lines gone ·
+8 Good Friday in both lists; SP, EX and PH in the grid's Event rows where in view · 9 Management (Reaper, Anvil) first on
+every grid, SXO 10, Settings counts the same · 10 windows: on a desktop Approvals, the person, bid and entry windows dock
+right, the day panel bottom-right; Settings, Open for bidding, the row windows, Events and Calendar stand in the middle;
+on a phone the Leave War's windows stand at the foot with the tapped cell scrolled above (A5), Settings too · 11 the
+rename cue on the Required / Available names for the admin only · 12 the Legend's place as is · 13 numbered circles only,
+none covering content (accepted: r7-02 mark 9 and r7-26's two 4s over a "–" in Required W; r7-01's Q1 beside Q9) · 14 the
+Legend split into r7-07 and r7-07b.
+
+**Invented (said on the page):** Required P 24 on weekdays; Good Friday; SP on Fri 23 Jan and EX on 9–13 Feb; the
+holiday names in the Calendar's list; Reaper and Anvil in Management; Saber's approval at Thu 8 Jan 08:40; Ranger's
+26–27 Jan approval taken back on Mon 5 Jan; r7-19's second clash is Reaper's approved OL; r7-09's 1 Apr bid.

@@ -1,7 +1,7 @@
 // The final set (D1206, night of 21-22 Oct 26), part 1: the Leave War PAGE as it will be built, and what a tap on a date
 // opens. Drawn INTO THE REAL LOCAL BUILD on the staged squadron (clock Thu 8 Jan 26; <LWMOCK_OUT>/out/state.json, copied
 // from the person helper's scratch). Every ruling D1141-D1207 in, the red team's fixes (design note §10.2) in, each open
-// question of §10.3 drawn with its recommended answer and marked "Q<n> — your answer first". Nothing here is built.
+// question of §10.3 drawn with its recommended answer and marked with a small "Q<n>" circle (the words are the write-up's; the shared parts and the marks: full-r7-one.mjs). Nothing here is built.
 //   cd raptor-port ; LWMOCK_OUT=<scratch> node docs/mock/lw-overhaul/full-r7-page.mjs        (R7_ONLY=01,05 for a few)
 // Pictures: r7-01 member phone (lands, and one swipe on) · r7-02 admin phone · r7-03 admin desktop · r7-04 every state of
 // a cell · r7-05 / r7-06 the day panel · r7-07 the Legend · r7-08 / r7-09 a member's tap on a day not open.
@@ -9,16 +9,14 @@
 // it), and in r7-09 his waiting LL on Wed 1 Apr (a bid placed while April was open, the dates since closed).
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { chromium, newPage, signIn, shot, mark, unmark, q, errs, OUT, gridTo } from './full-lib.mjs'
+import { chromium, newPage, signIn, shot, q, errs, OUT, gridTo } from './full-lib.mjs'
+import { oneStage, oneFold, mk, unmk } from './full-r7-one.mjs'
 const ONLY = (process.env.R7_ONLY || '').split(',').filter(Boolean)
 const want = n => !ONLY.length || ONLY.includes(n)
 const browser = await chromium.launch()
 const state = JSON.parse(readFileSync(join(OUT, 'state.json'), 'utf8'))
 
-const CHEV = '<svg viewBox="0 0 12 8" width="1em" height=".7em" aria-hidden="true"><path d="M1 1.5l5 5 5-5" fill="none" stroke="#57c97a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-const DOT = '<i class="zd" aria-hidden="true"></i>'
 const UP = '<svg viewBox="0 0 16 16" width="1.05em" height="1.05em" aria-hidden="true"><path d="M8 11V2.5M4.5 6L8 2.5 11.5 6M2.5 10.5v2.2c0 .5.4.8.8.8h9.4c.4 0 .8-.3.8-.8v-2.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-const MAG = sign => `<svg viewBox="0 0 18 18" width="15" height="15" aria-hidden="true"><circle cx="7.5" cy="7.5" r="5.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11.4 11.4 16 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M5 7.5h5${sign === '+' ? 'M7.5 5v5' : ''}" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`
 
 // look F (D1175) — the families of full-cells4.mjs, his colours
 export const FAM = { LL: 'fll', OL: 'fol', OIL: 'foil', FO: 'foil', HO: 'foil', CCL: 'care', FCL: 'care', PL: 'care', CL: 'care', EL: 'care', CSE: 'fcse', OD: 'od', C: 'med', B: 'med', HL: 'med', OML: 'med', MED: 'med' }
@@ -66,38 +64,6 @@ export function cellHTML(es, clash) {
 }
 
 const CSS = LOOKF_CSS + `
-/* the overhauled top (round 4 / round 6 drawings), the app's own sizes */
-#page-leavewar .zrow{display:flex;align-items:center;gap:8px;width:100%;white-space:nowrap}
-.zsp{flex:1}
-.zlab{font:600 11px system-ui;letter-spacing:.14em;color:#8a96a3}
-.zchip{display:inline-flex;align-items:center;gap:6px;height:var(--ch);padding:0 10px;border-radius:7px;border:1px solid #2a323c;background:#12161b;color:#e6edf3;font:600 var(--fs) system-ui;white-space:nowrap}
-.zchip b{font-weight:700;color:#fff}
-.zchip .n{font-style:normal;font:700 calc(var(--fs) - 1px) system-ui;color:#5fd0e6;background:#16303b;border-radius:9px;padding:1px 7px}
-.zchip.pick{border-color:rgba(87,201,122,.55);background:#0f1d15;font-weight:700;height:28px;font-size:var(--pf)}
-.zchip.sq{width:28px;height:28px;justify-content:center;padding:0;font-size:18px;font-weight:400;color:#c9d1d9}
-.zchip.open{border-color:rgba(87,201,122,.7);background:#0f1d15}.zchip.open b{color:#8FE0A8}
-.zml{display:flex;align-items:center;gap:5px;height:var(--mh);padding:0 12px;border-radius:8px;border:1px solid #2a323c;background:#1a1f26;color:#e6edf3;font:600 var(--fs) system-ui;white-space:nowrap}
-.zml b{font-weight:800}.zml .zlab{margin-right:4px}
-.zrow>.zml:only-child{flex:1}
-.zrow3{display:flex;align-items:center;padding:6px 10px;border-bottom:1px solid #2a313a}
-.zd{display:inline-block;flex:none;width:7px;height:7px;border-radius:50%;background:#3bc6e8;font-style:normal}
-.znw{display:inline-flex;align-items:center;gap:4px;color:#5fd0e6;font:700 var(--fs) system-ui}
-.zchip .znw{margin-left:2px;font-size:calc(var(--fs) - 1px)}
-/* Q9: "My leave" in the right half of a member's first line, two short lines */
-.zml2{flex:1;min-width:0;display:flex;align-items:center;gap:6px;height:36px;padding:0 8px 0 10px;border-radius:8px;border:1px solid #2a323c;background:#1a1f26;color:#e6edf3;font-family:system-ui}
-.zml2 .st{display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:0;flex:1}
-.zml2 .a{display:flex;align-items:center;gap:6px;font:700 9px/1 system-ui;letter-spacing:.12em;color:#8a96a3}
-.zml2 .a .znw{font:700 9.5px/1 system-ui;letter-spacing:0;gap:3px;margin-left:auto}
-.zml2 .a .zd{width:6px;height:6px}
-.zml2 .b{font:600 11.5px/1 system-ui;white-space:nowrap}
-.zml2 .a .nx{letter-spacing:0;font:600 10px/1 system-ui;color:#c9d1d9;margin-left:-2px}
-.zml2 .b b{font-weight:800}
-.zml2 .chev{color:#9aa5b1;font:600 13px system-ui}
-/* Balances as a button (D1185, lesson 27) — the look of "Manning" */
-#page-leavewar .figbar.zz-btn{display:inline-flex;align-items:center;gap:5px;border:1px solid #39424D;border-radius:7px;padding:3px 9px;background:#12161b;color:#e6edf3;font:700 11.5px/1.2 system-ui;letter-spacing:.02em;text-transform:none}
-/* the Required / Available pairs tinted (D1194, lesson 30): pilots olive, WSOs green */
-#page-leavewar .mx tr.zz-tp > td, #page-leavewar tr.zz-tp > td.fr{background-image:linear-gradient(rgba(150,140,50,.15),rgba(150,140,50,.15))!important}
-#page-leavewar .mx tr.zz-tw > td, #page-leavewar tr.zz-tw > td.fr{background-image:linear-gradient(rgba(40,160,110,.15),rgba(40,160,110,.15))!important}
 /* the pucks, for the day panel and the windows (lesson 25) */
 .zpk{display:inline-flex;align-items:center;gap:4px;flex:none}
 .zpk .cs{padding:2px 8px;border-radius:4px;font:600 13px system-ui}
@@ -116,7 +82,7 @@ const CSS = LOOKF_CSS + `
 .zday .pair{display:grid;grid-template-columns:1fr auto;row-gap:2px;padding:6px 10px;border-radius:8px}
 .zday .pair.p{background:rgba(150,140,50,.13)}.zday .pair.w{background:rgba(40,160,110,.13)}
 .zday .pair span{font:600 13.5px/1.6 system-ui;color:#c9d1d9}.zday .pair b{font:800 14px/1.6 system-ui;text-align:right;font-variant-numeric:tabular-nums;color:#f1f4f7}
-.zday .pair b.red{color:#ff8a8a}
+.zday .pair b.red{color:#FF7A82}.zday .pair b.amb{color:#F2B84B}
 .zday .calm{margin:6px 2px 0;font:500 13px system-ui;color:#8a96a3}
 .zday .ln{display:grid;grid-template-columns:var(--pkw,104px) 30px minmax(0,1fr) 64px;align-items:center;gap:8px;min-height:38px;border-top:1px solid #222a33}
 .zday .ln .d{font:600 13px system-ui;color:#e6edf3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -133,20 +99,6 @@ const CSS = LOOKF_CSS + `
 .leglist .leg-row{align-items:center;padding-top:3px;padding-bottom:3px}
 `
 
-// the top, overhauled — phone: View · picker · (admin + · Approvals) / open · under · Legend / My leave
-function topPhone(o) {
-  const ml1 = o.member
-    ? `<span class="zml2" data-zk="ml"><span class="st"><span class="a">MY LEAVE<span class="nx">· ${o.next}</span>${o.mlNew ? `<span class="znw" data-zk="mlnew">${DOT}${o.mlNew} new</span>` : ''}</span><span class="b"><b>LVE ${o.lve}</b> · OIL ${o.oil} · ${o.waiting} waiting</span></span><span class="chev">›</span></span>` : ''
-  const r1 = `<div class="zrow"><span class="zlab" data-zk="viewlab">VIEW</span><span class="zchip pick" data-zk="pick">JAN - DEC 26 ${CHEV}</span>${o.member ? ml1 : `<span class="zchip sq">+</span><span class="zchip" data-zk="appr">Approvals <i class="n">15</i><span class="znw" data-zk="apnew">${DOT}3 new</span></span><span class="zsp"></span>`}</div>`
-  const r2 = `<div class="zrow"><span class="zchip open" data-zk="open"><span>Open</span><b>1 Jan – 31 Mar</b></span><span class="zchip">Under <b>0</b> days</span><span class="zsp"></span><span class="zchip" data-zk="legend">Legend</span></div>`
-  const r3 = o.member ? '' : `<div class="zrow"><span class="zml" data-zk="ml"><span class="zlab">MY LEAVE</span><b>LVE ${o.lve}</b> · OIL ${o.oil} · ${o.waiting} waiting · next ${o.next}<span class="zsp"></span>›</span></div>`
-  return [r1, r2, r3]
-}
-function topDesk(o) {
-  const r1 = `<div class="zrow"><span class="zlab" data-zk="viewlab">VIEW</span><span class="zchip pick" data-zk="pick">JAN - DEC 26 ${CHEV}</span><span class="zchip">+ New</span><span class="zchip" data-zk="appr">Approvals <i class="n">15</i><span class="znw" data-zk="apnew">${DOT}3 new</span></span></div>`
-  const r2 = `<div class="zrow"><span class="zchip open" data-zk="open"><span>Open for bidding</span><b>1 Jan – 31 Mar</b></span><span class="zlab">UNDER-MANNED</span><span class="zchip"><b>0</b> days</span><span class="zchip" data-zk="legend">Legend</span><span class="zsp"></span><span class="zml" data-zk="ml"><span class="zlab">MY LEAVE</span><b>LVE ${o.lve}</b> · OIL ${o.oil} · ${o.waiting} waiting · next ${o.next} ›</span></div>`
-  return [r1, r2, '']
-}
 
 // the staged squadron's cells that hold two entries behind a "+1" today (read from the app's day list): Ace's Mon 19 Jan
 // (an FO award and a refused OL bid — two whole days side by side, D1167) and Warden's Fri 23 Jan (a morning OIL bid and
@@ -161,20 +113,12 @@ async function setup(kind, who, o = {}) {
   const { ctx, p } = phone ? await newPage(browser, 390, 844, true, state) : await newPage(browser, 1536, 860, false, state)
   await signIn(p, who)
   const member = who === 'member'
-  const fig = member ? { lve: '14.5', oil: '0', waiting: 2, next: phone ? '19 Jan' : '19 Jan' } : { lve: '17', oil: '0', waiting: 0, next: '30 Jan' }
-  Object.assign(fig, o.fig || {})
-  if (member && phone) fig.next = 'next ' + fig.next
-  const rows = phone ? topPhone({ member, mlNew: 3, ...fig }) : topDesk({ member, ...fig })
-  // Q9: a member's Manning opens folded (remembered per person) — fold it through the app's own button
-  if (member && phone) { await p.tap(q('counts-toggle')); await p.waitForTimeout(400) }
-  await p.evaluate(([css, rows, phone, member, EXTRA, FAM, cellSrc, MAGM, MAGP, extraCells]) => {
+  // Q9: a member's Manning opens folded (remembered per person) — fold it through the app's own button first
+  if (member) await oneFold(p)
+  await p.evaluate(([css, EXTRA, FAM, cellSrc, extraCells]) => {
     window.FAM = FAM; const cellHTML = new Function('return ' + cellSrc)(); window.__cellHTML = cellHTML
     const st = document.createElement('style'); st.id = 'zzcss'; st.textContent = css; document.head.appendChild(st)
-    const pg = document.querySelector('#page-leavewar'), top = pg.querySelector('.topbar'), fil = pg.querySelector('.filters')
-    pg.style.setProperty('--ch', phone ? '23px' : '32px'); pg.style.setProperty('--fs', phone ? '11.2px' : '13.5px')
-    pg.style.setProperty('--pf', phone ? '12.6px' : '13.5px'); pg.style.setProperty('--mh', phone ? '25px' : '34px')
-    top.innerHTML = rows[0]; fil.innerHTML = rows[1]
-    if (rows[2]) { const r = document.createElement('div'); r.className = 'zrow3'; r.innerHTML = rows[2]; fil.after(r) }
+    const pg = document.querySelector('#page-leavewar')
     // look F on every cell (D1175, D1160, D1167); waiting = no decision (an Ack counts as waiting — D1158)
     const stOf = c => /\bref\b/.test(c) ? 'ref' : /\b(appr|info|sc)\b/.test(c) ? 'appr' : 'wait'
     for (const td of pg.querySelectorAll('td[data-testid^="cell-"]')) {
@@ -188,21 +132,11 @@ async function setup(kind, who, o = {}) {
       chips.forEach(c => c.remove()); td.querySelector(':scope > .mk.more')?.remove()
       td.classList.add('zfc'); td.insertAdjacentHTML('beforeend', cellHTML(es))
     }
-    // "Balances" a button (D1185, lesson 27)
-    const fb = pg.querySelector('[data-testid="figures-toggle"]')
-    if (fb) { fb.classList.add('zz-btn'); fb.textContent = (fb.getAttribute('aria-expanded') === 'true' ? '▾' : '▸') + ' Balances' }
-    // Q12: the zoom pair become magnifiers
-    const zo = pg.querySelector('[data-testid="lw-zoom-out"]'), zi = pg.querySelector('[data-testid="lw-zoom-in"]')
-    if (zo) zo.innerHTML = MAGM; if (zi) zi.innerHTML = MAGP
-    // the Required / Available pairs tinted (D1194); Required P / W renamable, drawn as the Available rows' names (D1193, A12)
-    for (const [t, c] of [['req-p', 'zz-tp'], ['avail-p', 'zz-tp'], ['req-w', 'zz-tw'], ['avail-w', 'zz-tw']]) pg.querySelector(`[data-testid="fly-row-${t}"]`)?.classList.add(c)
-    for (const t of ['req-p', 'req-w']) {
-      const w = pg.querySelector(`[data-testid="fly-row-${t}"] td.who`); if (!w || w.querySelector('.flyname')) continue
-      const b = document.createElement('button'); b.type = 'button'; b.className = 'flyname'; b.dataset.zk = 'rn-' + t
-      while (w.firstChild) b.appendChild(w.firstChild); w.appendChild(b)
-    }
-    // the "Viewing as" chip has gone with the old top (D1173); the stage chips too (D1177)
-  }, [CSS, rows, phone, member, EXTRA, FAM, cellHTML.toString(), MAG('-'), MAG('+'), o.cells || {}])
+  }, [CSS, EXTRA, FAM, cellHTML.toString(), o.cells || {}])
+  // the parts every picture shares — the top rows (no "Viewing as", D1173; no stage chips, D1177), Balances, the
+  // magnifiers, the tints, Required P 24, Management, the events — drawn one way (full-r7-one.mjs). Every picture of
+  // this part comes before he opens My leave (r7-20) or Approvals (r7-14), so "● 3 new" stands on both.
+  await oneStage(p, { phone, member, mlNew: true, apNew: true, fig: o.fig })
   await p.waitForTimeout(300)
   return { ctx, p, phone, member }
 }
@@ -236,58 +170,36 @@ const puckFn = `(id) => {
   return '<span class="zpk"><span class="cs" style="background:' + a.backgroundColor + ';color:' + a.color + '">' + cs.textContent + '</span><i style="background:' + b.backgroundColor + ';color:' + b.color + '">' + ch.textContent + '</i></span>'
 }`
 
-// a pink label placed by hand in a free part of the screen (a question's "your answer first"; the thing it is about
-// wears the same "Q<n>" pill) — the same look as full-lib's marks, removed by unmark()
-const ftag = (p, text, x, y) => p.evaluate(([text, x, y, PINK]) => {
-  const t = document.createElement('div'); t.className = 'zz-tag'; t.textContent = text
-  Object.assign(t.style, { position: 'fixed', left: x + 'px', top: y + 'px', background: PINK, color: '#fff', font: '700 13px/1 system-ui,sans-serif', padding: '5px 8px', borderRadius: '6px', boxShadow: '0 0 0 2px #0b0d10', zIndex: 2147483647, whiteSpace: 'nowrap', pointerEvents: 'none' })
-  document.body.appendChild(t)
-}, [text, x, y, '#ff2d95'])
-// a numbered pill pinned by hand to an element's corner (fixed, so a dimmed cell never dims it; the phone grid's zoom is
-// read off the table so the pill lands where the cell is drawn)
-const pill = (p, sel, text, at = 'tr', ring = true) => p.evaluate(([sel, text, at, ring, PINK]) => {
-  const el = document.querySelector(sel); if (!el) return console.warn('PILL MISSED', sel)
-  const r = el.getBoundingClientRect()
-  if (ring) { el.style.outline = '3px solid ' + PINK; el.style.outlineOffset = '1px'; el.classList.add('zz-marked') }
-  const t = document.createElement('div'); t.className = 'zz-tag'; t.textContent = text
-  Object.assign(t.style, { position: 'fixed', background: PINK, color: '#fff', font: '800 13px/1 system-ui,sans-serif', padding: '4px 6px', borderRadius: '11px', minWidth: '12px', textAlign: 'center', boxShadow: '0 0 0 2px #0b0d10', zIndex: 2147483647, whiteSpace: 'nowrap', pointerEvents: 'none' })
-  document.body.appendChild(t)
-  const w = t.offsetWidth
-  const x = at === 'tam' ? r.left + 20 : at === 'b' ? r.left - 20 : at === 'r' ? r.right + 4 : at === 'tl' || at === 'bl' ? r.left - 8 : Math.min(innerWidth - w - 3, r.right - w / 2)
-  const y = at === 'r' ? r.top + r.height / 2 - 11 : at === 'bl' ? r.bottom - 10 : at === 'ta' || at === 'tam' ? r.top - 26 : at === 'b' ? r.bottom + 14 : r.top - 12
-  t.style.left = Math.max(3, x) + 'px'; t.style.top = Math.max(2, y) + 'px'
-}, [sel, text, at, ring, '#ff2d95'])
-const rowsOverflow = p => p.evaluate(() => [...document.querySelectorAll('#page-leavewar .zrow, .zml2 .b, .zml2 .a')].map(r => r.scrollWidth - r.clientWidth))
+// Every mark is a small numbered circle ("1", "Q9") set where it covers nothing (full-r7-one.mjs mk); the words are the
+// write-up's. A question drawn with its recommended answer wears "Q<n>".
 
 // ======================= r7-01 — the member on his phone, as he lands =======================
 if (want('01')) {
   const { ctx, p } = await setup('phone', 'member')
   await pastClosed(p)
   await gridTo(p, '2026-01-06', 'bane')
-  console.log('r7-01 overflow', await rowsOverflow(p))
   await shot(p, 'r7-01-page-phone-clean')
-  await mark(p, '[data-zk="pick"]', '1', { num: true })
-  await pill(p, '[data-zk="ml"]', 'Q9', 'tam')
-  await pill(p, '[data-zk="mlnew"]', 'Q1', 'ta')
-  await mark(p, '[data-zk="open"]', '2', { num: true })
-  await mark(p, '[data-testid="counts-toggle"]', 'Q9', { num: true })
-  await mark(p, '[data-testid="lw-zoom"]', 'Q12', { num: true })
-  await mark(p, '[data-testid="figures-toggle"]', '3', { num: true })
-  await pill(p, '[data-testid="head-2026-01-08"]', '4', 'tl', false)
-  await pill(p, '[data-testid="head-2026-01-06"]', 'Q6', 'tl', false)
-  const y0 = await p.evaluate(() => document.querySelector('[data-testid="person-dice"]').getBoundingClientRect().top)
-  for (const [i, t] of ['Q9 — your answer first', 'Q1 — your answer first', 'Q12 — your answer first', 'Q6 — your answer first'].entries()) await ftag(p, t, 112, y0 + 4 + i * 31)
+  await mk(p, '[data-zk="pick"]', '1')
+  await mk(p, '[data-zk="ml"]', 'Q9', { prefer: ['n'] })
+  await mk(p, '[data-zk="mlnew"]', 'Q1', { off: 1 })
+  await mk(p, '[data-zk="open"]', '2')
+  await mk(p, '[data-zk="under"]', 'Q7')
+  await mk(p, '[data-testid="counts-toggle"]', 'Q9')
+  await mk(p, '[data-testid="lw-zoom"]', 'Q12')
+  await mk(p, '[data-testid="figures-toggle"]', '3')
+  await mk(p, '[data-testid="head-2026-01-08"]', '4', { ring: false, prefer: ['s', 'se'] })
+  await mk(p, '[data-testid="head-2026-01-06"]', 'Q6', { ring: false, prefer: ['s', 'sw'] })
   await shot(p, 'r7-01-page-phone')
   // one swipe on: his own leave, and his neighbours', in look F
-  await unmark(p)
-  await gridTo(p, '2026-01-18', 'bane')
-  await mark(p, '[data-testid="cell-bane-2026-01-19"]', '5', { num: true })
-  await mark(p, '[data-testid="cell-bane-2026-01-26"]', '6', { num: true })
-  await pill(p, '[data-testid="cell-shaft-2026-01-20"]', '7', 'bl')
-  await mark(p, '[data-testid="cell-nact-2026-01-23"]', '7', { num: true })
-  await mark(p, '[data-testid="cell-pump-2026-01-28"]', '8', { num: true })
-  await mark(p, '[data-testid="cell-bane-2026-02-02"]', '9', { num: true })
-  await mark(p, '[data-testid="cell-dj-2026-01-19"]', '7', { num: true })
+  await unmk(p)
+  // from Thu 22 Jan, so his refused Mon 2 Feb is in view too (Ace's two side by side, Mon 19 Jan, sit below the screen
+  // since Management stands first: they are drawn in r7-04)
+  await gridTo(p, '2026-01-22', 'bane')
+  await mk(p, '[data-testid="cell-pump-2026-01-26"]', '5')
+  await mk(p, '[data-testid="cell-bane-2026-01-26"]', '6')
+  await mk(p, '[data-testid="cell-nact-2026-01-23"]', '7')
+  await mk(p, '[data-testid="cell-pump-2026-01-28"]', '8')
+  await mk(p, '[data-testid="cell-bane-2026-02-02"]', '9')
   await shot(p, 'r7-01-page-phone-2')
   await ctx.close()
 }
@@ -296,20 +208,19 @@ if (want('01')) {
 if (want('02')) {
   const { ctx, p } = await setup('phone', 'admin')
   await gridTo(p, '2026-01-18', 'bane')
-  console.log('r7-02 overflow', await rowsOverflow(p))
   await shot(p, 'r7-02-page-phone-clean')
-  await mark(p, '[data-zk="pick"]', '1', { num: true })
-  await mark(p, '[data-zk="appr"]', '2', { num: true })
-  await pill(p, '[data-zk="apnew"]', 'Q1', 'b')
-  await mark(p, '[data-zk="open"]', '3', { num: true })
-  await mark(p, '[data-zk="ml"]', '4', { num: true })
-  await mark(p, '[data-testid="lw-zoom"]', 'Q12', { num: true })
-  await pill(p, '[data-zk="rn-req-p"]', '5', 'r')
-  await pill(p, '[data-testid="fly-name-avail-p"]', '5', 'r')
-  await mark(p, '[data-testid="figures-toggle"]', '6', { num: true })
-  await mark(p, '[data-testid="cell-dj-2026-01-19"]', '7', { num: true })
-  const y0 = await p.evaluate(() => document.querySelector('[data-testid="person-slash"]').getBoundingClientRect().top)
-  for (const [i, t] of ['Q1 — your answer first', 'Q12 — your answer first'].entries()) await ftag(p, t, 112, y0 + 4 + i * 31)
+  await mk(p, '[data-zk="pick"]', '1')
+  await mk(p, '[data-zk="appr"]', '2', { prefer: ['nw', 'n'] })
+  await mk(p, '[data-zk="apnew"]', 'Q1', { off: 1, prefer: ['s', 'se'] })
+  await mk(p, '[data-zk="open"]', '3')
+  await mk(p, '[data-zk="ml"]', '4')
+  await mk(p, '[data-testid="lw-zoom"]', 'Q12')
+  await mk(p, '[data-zk="rn-req-p"]', '5', { off: 1, prefer: ['e'] })
+  await mk(p, '[data-testid="fly-name-avail-p"]', '5', { off: 1 })
+  await mk(p, '[data-testid="figures-toggle"]', '6')
+  await mk(p, '[data-testid="cell-nact-2026-01-23"]', '7')
+  await mk(p, '[data-zk="mgmt"] .gname', '8')
+  await mk(p, '[data-testid="avail-p-2026-01-27"]', '9', { off: 0 })
   await shot(p, 'r7-02-page-phone')
   await ctx.close()
 }
@@ -317,21 +228,21 @@ if (want('02')) {
 // ======================= r7-03 — the admin at a desktop =======================
 if (want('03')) {
   const { ctx, p } = await setup('desk', 'admin')
-  console.log('r7-03 overflow', await rowsOverflow(p))
   await shot(p, 'r7-03-page-desk-clean')
-  await mark(p, '[data-zk="pick"]', '1', { num: true })
-  await mark(p, '[data-zk="appr"]', '2', { num: true })
-  await mark(p, '[data-zk="apnew"]', 'Q1 — your answer first', { right: true })
-  await mark(p, '[data-zk="open"]', '3', { num: true })
-  await mark(p, '[data-zk="ml"]', '4', { num: true })
-  await mark(p, '[data-testid="lw-zoom"]', 'Q12 — your answer first', { right: true })
-  await pill(p, '[data-zk="rn-req-p"]', '5', 'r')
-  await pill(p, '[data-testid="fly-name-avail-w"]', '5', 'r')
-  await mark(p, '[data-testid="figures-toggle"]', '6', { num: true })
-  await mark(p, '[data-testid="cell-nact-2026-01-23"]', '7', { num: true })
-  await mark(p, '[data-testid="cell-bane-2026-01-29"]', '7', { num: true })
-  await mark(p, '[data-testid="cell-pump-2026-01-26"]', '8', { num: true })
-  await mark(p, '[data-testid="cell-bane-2026-02-02"]', '9', { num: true })
+  await mk(p, '[data-zk="pick"]', '1')
+  await mk(p, '[data-zk="appr"]', '2', { prefer: ['nw', 'n'] })
+  await mk(p, '[data-zk="apnew"]', 'Q1', { off: 1, prefer: ['e'] })
+  await mk(p, '[data-zk="open"]', '3')
+  await mk(p, '[data-zk="ml"]', '4')
+  await mk(p, '[data-zk="rn-req-p"]', '5', { off: 1, prefer: ['e'] })
+  await mk(p, '[data-testid="fly-name-avail-w"]', '5', { off: 1 })
+  await mk(p, '[data-testid="figures-toggle"]', '6')
+  await mk(p, '[data-testid="cell-nact-2026-01-23"]', '7')
+  await mk(p, '[data-testid="cell-bane-2026-01-29"]', '7')
+  await mk(p, '[data-testid="cell-pump-2026-01-26"]', '8')
+  await mk(p, '[data-testid="cell-bane-2026-02-02"]', '9')
+  await mk(p, '[data-zk="mgmt"] .gname', '10')
+  await mk(p, '[data-testid="avail-p-2026-01-27"]', '11', { off: 0 })
   await shot(p, 'r7-03-page-desk')
   await ctx.close()
 }
@@ -413,11 +324,16 @@ async function dayPanel(p, o) {
     const box = (code, st, raptor) => `<span class="zkb"><span class="zf whole e-${o.FAM[code]} es-${st}${raptor ? ' raptor' : ''}"><b>${code}</b></span></span>`
     const SW = { appr: 'Approved', wait: 'Waiting', ref: 'Refused' }
     const d = document.createElement('div'); d.className = 'zday'
+    // a desktop's day panel docks to the grid card's bottom-right corner, so the column tapped stays in view (A5)
+    if (o.dock) { const card = document.querySelector('#page-leavewar .mx-outer').parentElement.getBoundingClientRect(); o.pos = { right: Math.round(innerWidth - card.right + 6) + 'px', width: o.dock + 'px', bottom: '0px' } }
     Object.assign(d.style, o.pos)
+    // Available P against Required P 24 (the one demo setup): red under 24, amber under 26 (D1191, D1202)
+    const tone = v => { const n = parseFloat(v); return isNaN(n) ? '' : n < 24 ? 'red' : n < 26 ? 'amb' : '' }
+    const short = tone(o.av[0])
     d.innerHTML = `<div class="grab"></div><div class="hd"><span class="gr">⠿</span><span class="ar">‹</span><span class="t">${o.title}</span><span class="ar">›</span><span class="x">✕</span></div>`
       + (o.closed ? `<div class="closed" data-zk="closed">Not open for bidding</div>` : '')
-      + `<div class="sec">MANNING</div><div class="figs" data-zk="figs"><div class="pair p"><span>${o.names[0]}</span><b>${o.req[0]}</b><span>${o.names[1]}</span><b>${o.av[0]}</b></div><div class="pair w"><span>${o.names[2]}</span><b>${o.req[1]}</b><span>${o.names[3]}</span><b>${o.av[1]}</b></div></div>`
-      + `<div class="calm">No manning row is short</div>`
+      + `<div class="sec">MANNING</div><div class="figs" data-zk="figs"><div class="pair p"><span>${o.names[0]}</span><b>${o.req[0]}</b><span>${o.names[1]}</span><b class="${short}">${o.av[0]}</b></div><div class="pair w"><span>${o.names[2]}</span><b>${o.req[1]}</b><span>${o.names[3]}</span><b>${o.av[1]}</b></div></div>`
+      + (short ? '' : `<div class="calm">No manning row is short</div>`)
       + `<div class="sec">AWAY · ${o.away.length}</div><div data-zk="away" style="--pkw:${o.pkw || 104}px">`
       + o.away.map(([id, code, st, dates, raptor]) => `<div class="ln">${puck(id)}${box(code, st, raptor)}<span class="d">${dates}</span><span class="s${st === 'wait' ? ' w' : ''}">${SW[st]}</span></div>`).join('') + `</div>`
     document.body.appendChild(d)
@@ -428,17 +344,18 @@ if (want('05')) {
   const { ctx, p } = await setup('phone', 'member')
   await pastClosed(p)
   await gridTo(p, '2026-01-19', 'bane')
-  // Manning is folded on his phone (Q9), so the day's figures are read from the admin's grid of the same build: 23 and 17
+  // Manning is folded on his phone (Q9), so the day's figures are read from the admin's grid of the same build: 23 and 17;
+  // Required P 24 (the one demo setup, invented), so Available P 23 is red — the day the under-manned chip counts
   await dayPanel(p, {
-    date: '2026-01-27', title: 'TUE 27 JAN', FAM, req: ['–', '–'], av: ['23', '17'], names: ['Req P', 'Avail P', 'Req W', 'Avail W'],
+    date: '2026-01-27', title: 'TUE 27 JAN', FAM, req: ['24', '–'], av: ['23', '17'], names: ['Req P', 'Avail P', 'Req W', 'Avail W'],
     pos: { left: '6px', right: '6px', bottom: '0px' },
     away: [['dice', 'LL', 'wait', '27 Jan'], ['shaft', 'LL', 'wait', '27 Jan'], ['pump', 'LL', 'appr', '26 – 28 Jan', 1], ['bane', 'LL', 'wait', '26 – 27 Jan'], ['slipway', 'LL', 'wait', '27 Jan'], ['glass', 'LL', 'wait', '27 Jan']],
   })
   await shot(p, 'r7-05-day-phone-clean')
-  await mark(p, '[data-zk="head"]', '1', { num: true })
-  await mark(p, '.zday .hd', '2', { num: true })
-  await mark(p, '[data-zk="figs"]', '3', { num: true })
-  await mark(p, '[data-zk="away"]', '4', { num: true })
+  await mk(p, '[data-zk="head"]', '1')
+  await mk(p, '.zday .hd', '2')
+  await mk(p, '[data-zk="figs"]', '3')
+  await mk(p, '[data-zk="away"]', '4')
   await shot(p, 'r7-05-day-phone')
   await ctx.close()
 }
@@ -452,15 +369,15 @@ if (want('06')) {
   const avp = String(Number(av[0] || 28) - 1)
   await p.evaluate(v => { const c = document.querySelector('[data-testid="avail-p-2026-04-02"]'); if (c) c.textContent = v }, avp)
   await dayPanel(p, {
-    date: '2026-04-02', title: 'THU 2 APR', FAM, req: ['–', '–'], av: [avp, av[1] || '18'], names: ['Required P', 'Available P', 'Required W', 'Available W'], closed: true, pkw: 120,
-    pos: { left: '880px', width: '520px', bottom: '0px' },
+    date: '2026-04-02', title: 'THU 2 APR', FAM, req: ['24', '–'], av: [avp, av[1] || '18'], names: ['Required P', 'Available P', 'Required W', 'Available W'], closed: true, pkw: 120,
+    dock: 520,
     away: [['bane', 'CCL', 'appr', 'Thu 2 Apr']],
   })
   await shot(p, 'r7-06-day-desk-clean')
-  await pill(p, '[data-zk="head"]', '1', 'tr', false)
-  await mark(p, '[data-zk="closed"]', '2', { num: true })
-  await mark(p, '[data-zk="figs"]', '3', { num: true })
-  await mark(p, '[data-zk="away"]', '4', { num: true })
+  await mk(p, '[data-zk="head"]', '1', { ring: false })
+  await mk(p, '[data-zk="closed"]', '2')
+  await mk(p, '[data-zk="figs"]', '3')
+  await mk(p, '[data-zk="away"]', '4')
   await shot(p, 'r7-06-day-desk')
   await ctx.close()
 }
@@ -502,11 +419,21 @@ if (want('07')) {
   const fit = await p.evaluate(() => { const r = document.querySelector('.leglist').getBoundingClientRect(); return [r.top, r.bottom, innerHeight] })
   console.log('legend box', fit)
   await shot(p, 'r7-07-legend-phone-clean')
-  await mark(p, '[data-zk="kinds"]', '1', { num: true, off: -1 })
-  await mark(p, '[data-zk="fill"]', '2', { num: true, off: -1 })
-  await mark(p, '[data-zk="size"]', '3', { num: true, off: -1 })
-  await mark(p, '[data-zk="dates"]', '4', { num: true, off: -1 })
+  const legMarks = async () => {
+    for (const [k, n] of [['kinds', '1'], ['fill', '2'], ['size', '3'], ['dates', '4']]) {
+      const vis = await p.evaluate(k => { const e = document.querySelector(`[data-zk="${k}"]`), b = document.querySelector('.leglist-body').getBoundingClientRect(), r = e.getBoundingClientRect(); return r.top >= b.top - 2 && r.bottom <= b.bottom + 2 }, k)
+      if (vis) await mk(p, `[data-zk="${k}"]`, n, { off: -1, prefer: ['in'] })
+    }
+  }
+  await legMarks()
   await shot(p, 'r7-07-legend-phone')
+  // the Legend is taller than his phone: its body scrolls inside the window — r7-07b is the same window scrolled to its end
+  await unmk(p)
+  await p.evaluate(() => { const b = document.querySelector('.leglist-body'); b.scrollTop = b.scrollHeight })
+  await p.waitForTimeout(250)
+  await shot(p, 'r7-07b-legend-phone-clean')
+  await legMarks()
+  await shot(p, 'r7-07b-legend-phone')
   await ctx.close()
 }
 
@@ -527,8 +454,7 @@ async function closedTap(name, o) {
   if (o.bal) await p.evaluate(([v, u]) => document.querySelectorAll('[data-testid="bal-bane"], td.bal[data-person="bane"], td.bal[title^="Ranger:"]').forEach(c => { if (!c.querySelector('.fb')) return; c.querySelector('.fb').textContent = v; const b = c.querySelector('.fu b'); if (b) b.textContent = u }), o.bal)
   await p.waitForTimeout(300)
   await shot(p, name + '-clean')
-  for (const [sel, n, mo] of o.marks) await (sel === '[data-zk="cell"]' ? pill(p, sel, n, 'tr', false) : mark(p, sel, n, mo || { num: true }))
-  for (const [t, x, y] of o.tags || []) await ftag(p, t, x, y)
+  for (const [sel, n, mo] of o.marks) await mk(p, sel, n, sel === '[data-zk="cell"]' ? { ring: false } : (mo || {}))
   await shot(p, name)
   await ctx.close()
 }
@@ -549,7 +475,6 @@ if (want('09')) {
       + `<div class="zz-note" data-zk="note">Your bid waits for a decision. Delete it if you no longer want it.</div>`
       + `<div class="bidsheet-row"><span class="lab">Selected</span><button class="dchip del" data-zk="del">Delete</button><button class="pchip" data-zk="doc" style="display:inline-flex;align-items:center;gap:6px">${UP} Document</button></div>`,
     marks: [['[data-zk="cell"]', '1'], ['[data-zk="bid"] .zkb', '2'], ['[data-zk="note"]', 'Q5'], ['[data-zk="del"]', 'Q5'], ['[data-zk="doc"]', '3']],
-    tags: [['Q5 — your answer first', 112, 396]],
   })
 }
 

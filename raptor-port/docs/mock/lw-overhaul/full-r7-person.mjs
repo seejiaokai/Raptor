@@ -1,6 +1,6 @@
 // The FINAL SET (D1206, night of 21–22 Oct 26), part 3 of 3: a person's own leave, and the admin's settings, AS THEY
 // WILL BE BUILT — every ruling D1141–D1207 in, the red team's fixes (design note §10.2) in, each open question of §10.3
-// drawn with its recommended answer and marked "Q<n> — your answer first". Pictures r7-20 … r7-29.
+// drawn with its recommended answer and marked with a small "Q<n>" circle (shared parts and marks: full-r7-one.mjs). Pictures r7-20 … r7-29.
 // Drawn INTO the real local build (clock Thu 8 Jan 26, the staged squadron): the top rows are the overhauled ones
 // (View · picker · + New / + · Approvals; the open-dates chip · under-manned · Legend · My leave), the cells look F
 // (D1175), "Balances" a button (D1185), the Required / Available rows tinted in pairs (D1194) and all four named as
@@ -10,7 +10,8 @@
 // Needs <scratch>/out/state.json (the staged squadron). Nothing here is built into the app.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { chromium, newPage, signIn, shot, mark, unmark, q, errs, OUT, gridTo } from './full-lib.mjs'
+import { chromium, newPage, signIn, shot, q, errs, OUT, gridTo } from './full-lib.mjs'
+import { oneStage, mk, unmk, MGMT } from './full-r7-one.mjs'
 import { LOCK_SVG, CLIP_SVG } from './full-propose.mjs'
 import { H, fill } from './full-win-a-lib.mjs'
 const browser = await chromium.launch()
@@ -157,34 +158,15 @@ const CSS = `
 .r7-evh{display:grid;grid-template-columns:170px 1fr 130px 44px;gap:10px;padding:6px 4px 6px;font:700 9.5px system-ui;letter-spacing:.12em;color:#6b7785}
 `
 
-// ===== the top rows, as they will be (the brief's §"as it will be") =====
-function topRows(phone, s) {
-  const ap = s.admin ? `<span class="zchip" data-zk="appr">Approvals <i class="n">15</i></span>` : ''
-  const ml = `<span class="zml" data-zk="ml"><span class="zlab">MY LEAVE</span><b>LVE ${s.lve}</b> · OIL ${s.oil} · ${s.waiting} waiting · next ${s.next}${phone ? '<span class="zsp"></span>' : ''}${s.mlNew ? `<span class="znw">${DOT}${s.mlNew} new</span>` : ''} ›</span>`
-  if (phone) return [
-    `<div class="zrow"><span class="zlab">VIEW</span><span class="zchip pick">JAN - DEC 26 ${CHEV}</span>${s.admin ? '<span class="zchip sq">+</span>' : ''}${ap}<span class="zsp"></span></div>`,
-    `<div class="zrow"><span class="zchip open"><span>Open</span><b>1 Jan – 31 Mar</b></span><span class="zchip">Under <b>0</b> days</span><span class="zsp"></span><span class="zchip">Legend</span></div>`,
-    `<div class="zrow">${ml}</div>`]
-  return [
-    `<div class="zrow"><span class="zlab">VIEW</span><span class="zchip pick">JAN - DEC 26 ${CHEV}</span><span class="zchip">+ New</span>${ap}</div>`,
-    `<div class="zrow"><span class="zchip open"><span>Open for bidding</span><b>1 Jan – 31 Mar</b></span><span class="zlab">UNDER-MANNED</span><span class="zchip"><b>0</b> days</span><span class="zchip">Legend</span><span class="zsp"></span>${ml}</div>`]
-}
-const ME = { member: { lve: '14.5', oil: '0', waiting: '2', next: '19 Jan' }, admin: { lve: '17', oil: '0', waiting: '0', next: '30 Jan', admin: true } }
-
+// the top rows, Balances, the magnifiers, the tints, Required P 24, Management and the events: full-r7-one.mjs.
+// Every picture of this part comes after he opened My leave (r7-20) and Approvals (r7-14): no "● 3 new" on either.
+const ME = { member: { member: true }, admin: {} }
 async function stage(p, phone, s) {
-  await p.evaluate(([css, rows, phone]) => {
-    if (!document.getElementById('r7css')) { const st = document.createElement('style'); st.id = 'r7css'; st.textContent = css; document.head.appendChild(st) }
-    const pg = document.querySelector('#page-leavewar'), top = pg.querySelector('.topbar'), fil = pg.querySelector('.filters')
-    pg.style.setProperty('--ch', phone ? '23px' : '32px'); pg.style.setProperty('--fs', phone ? '11.2px' : '13.5px')
-    pg.style.setProperty('--pf', phone ? '12.6px' : '13.5px'); pg.style.setProperty('--mh', phone ? '25px' : '34px')
-    top.innerHTML = rows[0]; fil.innerHTML = rows[1]
-    pg.querySelector('.zrow3')?.remove()
-    if (rows[2]) { const r = document.createElement('div'); r.className = 'zrow3'; r.innerHTML = rows[2]; fil.after(r) }
-  }, [CSS, topRows(phone, s), phone])
-  await p.waitForTimeout(250)
+  await p.evaluate(css => { if (!document.getElementById('r7css')) { const st = document.createElement('style'); st.id = 'r7css'; st.textContent = css; document.head.appendChild(st) } }, CSS)
+  return oneStage(p, { phone, ...s })
 }
 
-// the grid as it will be: look F cells, "Balances" a button, the pairs tinted, all four rows named as buttons
+// the grid as it will be: look F cells
 async function gridAsBuilt(p) {
   await p.evaluate(KIND => {
     for (const td of document.querySelectorAll('#page-leavewar td[data-testid^="cell-"]')) {
@@ -200,13 +182,6 @@ async function gridAsBuilt(p) {
       if (es.length === 1) mk(es[0], /\bam\b/.test(es[0].cls) ? 'am' : /\bpm\b/.test(es[0].cls) ? 'pm' : '')
       else { mk(es[0], /\bam\b/.test(es[0].cls) ? 'am' : 'l'); mk(es[1], /\bpm\b/.test(es[1].cls) ? 'pm' : 'r') }
     }
-    for (const [id, c] of [['req-p', 'r7-tp'], ['avail-p', 'r7-tp'], ['req-w', 'r7-tw'], ['avail-w', 'r7-tw']]) document.querySelector(`[data-testid="fly-row-${id}"]`)?.classList.add(c)
-    for (const id of ['req-p', 'req-w']) {
-      const who = document.querySelector(`[data-testid="fly-row-${id}"] td.who`)
-      if (who && !who.querySelector('button')) who.innerHTML = `<button type="button" class="flyname" data-zk="name-${id}">${who.innerHTML}</button>`
-    }
-    const fb = document.querySelector('[data-testid="figures-toggle"]')
-    if (fb) { fb.classList.add('r7-bal'); fb.textContent = fb.getAttribute('aria-expanded') === 'true' ? '▾ Balances' : '▸ Balances' }
   }, KIND)
 }
 async function foldBalances(p) {
@@ -284,49 +259,18 @@ async function dock(p, w = 560) {
   }, w)
 }
 const out = (name, p, clip) => shot(p, name, clip ? { clip } : {})
-// a pink mark: an outline on the element, its tag pinned in the screen's own frame where it covers nothing it names —
-// 'num' (a numbered badge on the top-right corner), 'right', 'left', 'below', 'above', 'inright' (inside, at the
-// right), 'edge' (right-aligned across the bottom edge); o.leftOf puts the tag left of another element (a window)
-async function mk(p, sel, label, pos = 'num', o = {}) {
-  const ok = await p.evaluate(([sel, label, pos, o]) => {
-    const el = [...document.querySelectorAll(sel)].filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 })[o.nth || 0]
-    if (!el) return false
-    el.classList.add('zz-marked'); el.style.outline = '3px solid #ff2d95'; el.style.outlineOffset = (o.off ?? 2) + 'px'
-    const r = el.getBoundingClientRect(), num = pos === 'num'
-    const t = document.createElement('div'); t.className = 'zz-tag'; t.textContent = label
-    Object.assign(t.style, { position: 'fixed', zIndex: 2147483647, background: '#ff2d95', color: '#fff', font: `700 ${o.fs || 13}px/1 system-ui,sans-serif`, padding: num ? '4px 6px' : '5px 8px', borderRadius: num ? '11px' : '6px', minWidth: num ? '12px' : '', textAlign: 'center', boxShadow: '0 0 0 2px #0b0d10', whiteSpace: 'nowrap', pointerEvents: 'none' })
-    document.body.appendChild(t)
-    const w = t.offsetWidth, h = t.offsetHeight
-    let x = r.left, y = r.top - h - 6
-    if (num) { x = r.right - 12; y = r.top - 10 }
-    else if (pos === 'right') { x = r.right + 10; y = r.top + r.height / 2 - h / 2 }
-    else if (pos === 'left') { x = r.left - w - 10; y = r.top + r.height / 2 - h / 2 }
-    else if (pos === 'below') { y = r.bottom + 6 }
-    else if (pos === 'inright') { x = r.right - w - 6; y = r.top + r.height / 2 - h / 2 }
-    else if (pos === 'tedge') { x = r.right - w - (o.dx ?? 50); y = r.top - h / 2 }
-    else if (pos === 'inbr') { x = r.right - w - 4; y = r.bottom - h - 5 }
-    else if (pos === 'edge') { x = r.right - w - 8; y = r.bottom - h / 2 }
-    if (o.leftOf) { const a = document.querySelector(o.leftOf).getBoundingClientRect(); x = a.left - w - 10; y = r.top + r.height / 2 - h / 2 }
-    x += o.dx2 || 0; y += o.dy || 0
-    x = Math.max(2, Math.min(innerWidth - w - 2, x)); y = Math.max(2, Math.min(innerHeight - h - 2, y))
-    Object.assign(t.style, { left: x + 'px', top: y + 'px' })
-    return true
-  }, [sel, label, pos, o])
-  if (!ok) console.warn('MARK MISSED:', sel, label)
-}
-
 // ---------- r7-20 "My leave": his own window, one window (A1) ----------
 {
   const { ctx, p } = await newPage(browser, 390, 844, true, state); await signIn(p, 'member')
-  await stage(p, true, { ...ME.member, mlNew: 3 }); await gridAsBuilt(p)
+  await stage(p, true, ME.member); await gridAsBuilt(p)
   await openPerson(p, true, 'bane', personHTML('bane', { edit: true, visit: true })); await placePhone(p)
   await out('r7-20-myleave-phone-clean', p)
   await mk(p, '[data-zk="ml"]', '1')
   await mk(p, '.zz-balgrid', '2')
-  await mk(p, '.zz-lve .r7-fig', '3', 'num', { off: 1 })
-  await mk(p, '.zz-oil', 'Q4 — your answer first', 'above')
+  await mk(p, '.zz-lve .r7-fig', '3', { off: 1 })
+  await mk(p, '.zz-oil', 'Q4')
   await mk(p, '.zz-year', '4')
-  await mk(p, '[data-zk="n1"]', 'Q1 — your answer first', 'inbr', { fs: 11, dy: 9 })
+  await mk(p, '.zz-new3', 'Q1', { off: 1 })
   await mk(p, '[data-zk="del"]', '5')
   await out('r7-20-myleave-phone', p)
   await ctx.close()
@@ -345,10 +289,10 @@ async function mk(p, sel, label, pos = 'num', o = {}) {
   const kh = await p.evaluate(() => document.querySelector('.zz-kbd').getBoundingClientRect().height)
   await placePhone(p, Math.round(kh))
   await out('r7-21-myleave-edit-phone-clean', p)
-  await mk(p, '.zz-lve .r7-fig', '1', 'num', { off: 3 })
-  await mk(p, '.zz-note', 'Q3 — your answer first', 'inright')
+  await mk(p, '.zz-lve .r7-fig', '1', { off: 3, prefer: ['e', 'w'] })
+  await mk(p, '.zz-note', 'Q3', { prefer: ['in'] })
   await mk(p, '.zz-oil', '2')
-  await mk(p, '.zz-kbd .acc', '3', 'num', { off: -3 })
+  await mk(p, '.zz-kbd .acc', '3', { off: -3, prefer: ['in'] })
   await out('r7-21-myleave-edit-phone', p)
   await ctx.close()
 }
@@ -361,10 +305,11 @@ async function mk(p, sel, label, pos = 'num', o = {}) {
   await openPerson(p, false, 'bane', personHTML('bane', { edit: true, locked: true })); await dock(p)
   await p.mouse.move(2, 2)
   await out('r7-22-person-admin-desk-clean', p)
-  await mk(p, '.bidsheet-hd', '1 docked to the grid’s right edge, still draggable (fix A5)', 'left', { leftOf: '.r7-dock' })
-  await mk(p, '.zz-lk', '2 locked for members · Q2 — your answer first', 'left', { leftOf: '.r7-dock' })
-  await mk(p, '.zz-lve .r7-fig', '3 the admin still edits, locked or not (D1203)', 'left', { leftOf: '.r7-dock', off: 1 })
-  await mk(p, '[data-testid="cell-bane-2026-01-19"]', '4 his dates stay in view beside it', 'below')
+  await mk(p, '.bidsheet-hd', '1')
+  await mk(p, '.zz-lk', '2', { prefer: ['e'] })
+  await mk(p, '.zz-lk', 'Q2', { ring: false, prefer: ['e2', 'n'] })
+  await mk(p, '.zz-lve .r7-fig', '3', { off: 1 })
+  await mk(p, '[data-testid="cell-bane-2026-01-19"]', '4')
   await out('r7-22-person-admin-desk', p)
   await ctx.close()
 }
@@ -374,7 +319,7 @@ async function mk(p, sel, label, pos = 'num', o = {}) {
   await stage(p, true, ME.member); await gridAsBuilt(p)
   await openPerson(p, true, 'shaft', personHTML('shaft', { locked: true })); await placePhone(p)
   await out('r7-23-person-other-phone-clean', p)
-  await mk(p, '.zz-lk', 'Q2 — your answer first', 'right')
+  await mk(p, '.zz-lk', 'Q2', { prefer: ['e'] })
   await mk(p, '.zz-balgrid', '1')
   await mk(p, '.zz-list', '2')
   await out('r7-23-person-other-phone', p)
@@ -387,11 +332,6 @@ async function settings(touch) {
   const { ctx, p } = await newPage(browser, w, h, touch, state); await signIn(p, 'admin')
   if (!touch) await foldBalances(p)
   await stage(p, touch, ME.admin); await gridAsBuilt(p)
-  const sxo = await p.evaluate(() => {
-    let g = '', o = []
-    for (const tr of document.querySelectorAll('tr[data-testid]')) { const t = tr.dataset.testid; if (t.startsWith('group-')) g = t.slice(6); else if (t.startsWith('row-') && g === 'SXO') o.push(tr.querySelector('.cs')?.textContent.trim()) }
-    return o
-  })
   await (touch ? p.tap(q('settings-open')) : p.click(q('settings-open'))); await p.waitForTimeout(600)
   await p.evaluate(([LOCK, PEN, mgmt, phone]) => {
     const s = document.querySelector('[data-testid="settings-sheet"]')
@@ -426,7 +366,7 @@ async function settings(touch) {
       `<div class="zz-foot" data-zz="foot"><button class="rtbtn set-order" disabled>↺ Reset order</button><span class="st">In default order</span><span class="sp"></span><button class="creset">Back to the standard groups</button></div>`
     ;[...s.children].forEach(c => { if (c !== hd) c.remove() })
     hd.insertAdjacentHTML('afterend', html)
-  }, [LOCKI, PEN, sxo.slice(0, 2), touch])
+  }, [LOCKI, PEN, MGMT, touch])
   await p.waitForTimeout(250)
   if (!touch) await p.evaluate(() => {
     const s = document.querySelector('[data-testid="settings-sheet"]'); const r = s.getBoundingClientRect()
@@ -434,7 +374,8 @@ async function settings(touch) {
   })
   if (touch) await p.evaluate(() => {
     const s = document.querySelector('[data-testid="settings-sheet"]'); s.style.maxHeight = (innerHeight - 24) + 'px'; s.style.height = 'auto'; s.style.bottom = 'auto'
-    const hgt = s.getBoundingClientRect().height; s.style.top = Math.max(12, Math.round((innerHeight - hgt) / 2)) + 'px'
+    // the Leave War's windows on a phone stand at the foot (the set's rule, fix A5)
+    const hgt = s.getBoundingClientRect().height; s.style.top = Math.max(12, Math.round(innerHeight - hgt)) + 'px'
   })
   await p.waitForTimeout(200)
   const fit = await p.evaluate(() => { const s = document.querySelector('[data-testid="settings-sheet"]'); return [Math.round(s.getBoundingClientRect().top), Math.round(s.getBoundingClientRect().height), s.scrollHeight, s.clientHeight, innerHeight] })
@@ -449,11 +390,9 @@ async function settings(touch) {
   for (const [sel, n] of M) await mk(p, sel, n)
   // the other three names carry the same mark (2), outlined only
   await p.evaluate(() => { for (const i of [1, 2, 3]) { const e = document.querySelector(`[data-zz="mr${i}"]`); e.classList.add('zz-marked'); e.style.outline = '3px solid #ff2d95'; e.style.outlineOffset = '2px' } })
-  await mk(p, '[data-zz="lock"]', 'Q2 — your answer first', 'right')
-  await mk(p, '.zz-addh', '4')
-  await mk(p, '[data-zz="sans"]', 'Q10 — your answer first', 'inright', { off: 2 })
-  // the Q10 tag stands at the right of the "Add a group" heading's row, over nothing
-  await p.evaluate(() => { const t = [...document.querySelectorAll('.zz-tag')].pop(), h = document.querySelector('.zz-addh').getBoundingClientRect(); t.style.top = (h.top + h.height / 2 - t.offsetHeight / 2 + 2) + 'px'; t.style.left = (h.right - t.offsetWidth - 34) + 'px' })
+  await mk(p, '[data-zz="lock"]', 'Q2', { prefer: ['e'] })
+  await mk(p, '.zz-addh', '4', { prefer: ['in'] })
+  await mk(p, '[data-zz="sans"]', 'Q10', { off: 2 })
   await out(name, p)
   await ctx.close()
 }
@@ -464,16 +403,7 @@ await settings(true); await settings(false)
   const { ctx, p } = await newPage(browser, 1536, 860, false, state); await signIn(p, 'admin')
   await foldBalances(p)
   await stage(p, false, ME.admin); await gridAsBuilt(p)
-  // a Required P figure typed on 19–23 and 29 Jan (invented, to show the points at work): 27 needed against 28
-  // available is amber at "+ 2" (one to spare); 29 needed against 28 is red at "+ 0"
-  await p.evaluate(() => {
-    const set = (d, v) => { const r = document.querySelector(`[data-testid="req-p-${d}"]`); if (r) { r.textContent = v; r.classList.remove('none') } }
-    // amber under Required + 2, red under Required + 0 (the window's two points below)
-    const judge = (d, req) => { set(d, String(req)); const a = document.querySelector(`[data-testid="avail-p-${d}"]`); if (!a) return; const v = +a.textContent; if (v < req) a.classList.add('r7-red'); else if (v < req + 2) a.classList.add('r7-amb') }
-    for (const d of ['19', '20', '21', '22', '23']) judge('2026-01-' + d, 25)
-    judge('2026-01-29', 29)
-  })
-  await gridTo(p, '2026-01-12', 'bane')
+  await gridTo(p, '2026-01-19', 'bane')
   await p.click(q('fly-name-avail-p')); await p.waitForTimeout(500)
   await p.evaluate(() => {
     const d = [...document.querySelectorAll('.bidsheet,[role=dialog]')].filter(e => e.getBoundingClientRect().width).pop()
@@ -488,14 +418,17 @@ await settings(true); await settings(false)
     const nameRow = [...d.querySelectorAll('.bidsheet-row, label, div')].find(e => /^NAME/i.test(e.textContent.trim()) && e.querySelector('input')); nameRow?.setAttribute('data-zk', 'name')
   })
   await p.waitForTimeout(200)
+  // a row window is not about one date: it stands in the middle of the screen (the set's rule)
+  await p.evaluate(() => { const d = document.querySelector('.zz-availwin'); const r = d.getBoundingClientRect(); Object.assign(d.style, { top: Math.max(8, Math.round((innerHeight - r.height) / 2)) + 'px', bottom: 'auto', left: Math.round((innerWidth - r.width) / 2) + 'px', right: 'auto', transform: 'none' }) })
   const box = await p.evaluate(() => { const r = document.querySelector('.zz-availwin').getBoundingClientRect(); return [r.x, r.y, r.width, r.height] })
   console.log('avail window', box)
   await p.mouse.move(2, 2)
   await out('r7-26-availp-desk-clean', p)
-  await mk(p, '[data-zk="name"]', '1 its name (D1193)', 'right')
-  await mk(p, '[data-zk="amb"]', '2 amber: Required plus or minus a number (D1190, D1191)', 'right')
-  await mk(p, '[data-zk="red"]', '3 red, set the same way, + 0 by default (D1202)', 'right')
-  await mk(p, '[data-testid="avail-p-2026-01-19"]', '4 the row at work: amber, then red', 'below', { off: 1, dx2: 190, dy: 24 })
+  await mk(p, '[data-zk="name"]', '1')
+  await mk(p, '[data-zk="amb"]', '2')
+  await mk(p, '[data-zk="red"]', '3')
+  await mk(p, '[data-testid="avail-p-2026-01-23"]', '4', { off: 0 })
+  await mk(p, '[data-testid="avail-p-2026-01-27"]', '4', { off: 0 })
   await out('r7-26-availp-desk', p)
   await ctx.close()
 }
@@ -519,15 +452,15 @@ await settings(true); await settings(false)
     const inp = nameEl?.querySelector('input'); if (inp) { inp.value = 'Required P'; inp.setAttribute('value', 'Required P') }
     nameEl?.setAttribute('data-zk', 'name')
     // it opens from the row's name, where the Available rows' window opens from theirs
-    const rr = document.querySelector('[data-testid="fly-row-req-p"]').getBoundingClientRect()
-    Object.assign(d.style, { top: (rr.bottom + 8) + 'px', left: '230px', bottom: 'auto', transform: 'none', width: '560px', height: 'auto', maxHeight: 'none', minHeight: '0', overflow: 'visible' })
+    Object.assign(d.style, { bottom: 'auto', transform: 'none', width: '560px', height: 'auto', maxHeight: 'none', minHeight: '0', overflow: 'visible' })
+    const hh = d.getBoundingClientRect().height; Object.assign(d.style, { top: Math.round((innerHeight - hh) / 2) + 'px', left: Math.round((innerWidth - 560) / 2) + 'px', right: 'auto' })
     return [!!nameEl, !!foot]
   })
   console.log('req window name/foot found', r)
   await p.mouse.move(2, 2)
   await out('r7-27-reqp-desk-clean', p)
-  await mk(p, '[data-zk="name-req-p"]', '1 the row’s name opens its window (D1193)', 'right', { off: 1 })
-  await mk(p, '.zz-reqwin [data-zk="name"]', '2 its name only; the figures stay typed in the cells', 'right')
+  await mk(p, '[data-zk="rn-req-p"]', '1', { off: 1, prefer: ['e'] })
+  await mk(p, '.zz-reqwin [data-zk="name"]', '2')
   await out('r7-27-reqp-desk', p)
   await ctx.close()
 }
@@ -542,22 +475,23 @@ await settings(true); await settings(false)
     list.querySelector('.bl-empty')?.remove()
     const line = (unread, name, day, what, ago, k) => `<button type="button" class="bl-line${unread ? ' unread' : ''}"${k ? ` data-zk="${k}"` : ''}><span class="bl-dot"></span><span class="bl-main"><span class="bl-t"><b class="bl-name">${name}</b><i class="bl-day">${day}</i></span><span class="bl-what">${what}</span></span><span class="bl-ago">${ago}</span></button>`
     list.insertAdjacentHTML('afterbegin',
-      line(1, 'Leave War', '1 Apr – 30 Jun', 'Bidding open · Saber', '5m', 'open') +
-      line(1, 'Your leave', 'Tue 10 – Wed 11 Feb', 'Approval of LL taken back · Saber', '1h', 'back') +
-      line(0, 'Your leave', 'Mon 19 – Wed 21 Jan', 'LL approved · Saber', '1d', 'ok') +
-      line(0, 'Your leave', 'Mon 2 Feb', 'LL refused · Saber', '1d') +
-      line(0, 'Your leave', 'Mon 9 Feb', 'LL deleted · Saber', '2d') +
-      line(0, 'Your leave', 'Thu 12 Mar', 'LL moved to Thu 19 Mar · Saber', '3d') +
-      line(0, 'Your leave', 'Mon 23 Feb', 'LL bid replaced by a course · Hex', '4d'))
+      line(1, 'Your leave', 'Mon 19 – Wed 21 Jan', 'LL approved · Saber', '20m', 'ok') +
+      line(1, 'Your leave', 'Mon 2 Feb', 'LL refused · Saber', '20m') +
+      line(1, 'Your leave', 'Mon 9 Feb', 'LL deleted · Saber', '1d') +
+      // Q11: an approval taken back — his Mon 26 – Tue 27 Jan, waiting again in his list and on the grid (invented: it was
+      // approved, then put back on Mon 5 Jan; his "2 waiting" already counts it)
+      line(0, 'Your leave', 'Mon 26 – Tue 27 Jan', 'Approval of LL taken back · Saber', '3d', 'back') +
+      // Q8: the open dates the chip shows, opened before his leave was placed
+      line(0, 'Leave War', '1 Jan – 31 Mar', 'Bidding open · Saber', '3w', 'bopen'))
     if (!list.querySelector('.bl-foot')) list.insertAdjacentHTML('beforeend', '<div class="bl-foot"><button type="button" class="abtn sm ghost">Mark all read</button></div>')
     document.querySelector('.bellbtn')?.classList.add('on')
     list.classList.add('zz-bell')
   })
   await p.waitForTimeout(200)
   await out('r7-28-bell-phone-clean', p)
-  await mk(p, '[data-zk="open"]', 'Q8 — your answer first', 'tedge', { off: -2, fs: 11 })
-  await mk(p, '[data-zk="back"]', 'Q11 — your answer first', 'tedge', { off: -2, fs: 11 })
-  await mk(p, '[data-zk="ok"]', '1', 'num', { off: -2 })
+  await mk(p, '[data-zk="ok"]', '1', { off: -2, prefer: ['in'] })
+  await mk(p, '[data-zk="back"]', 'Q11', { off: -2, prefer: ['in'] })
+  await mk(p, '[data-zk="bopen"]', 'Q8', { off: -2, prefer: ['in'] })
   await out('r7-28-bell-phone', p)
   await ctx.close()
 }
@@ -577,14 +511,14 @@ await settings(true); await settings(false)
     H.row('Show', ['All', 'Public holidays', 'Exercises', 'Other'].map((t, i) => `<button class="pchip${i === 0 ? ' on' : ''}">${t}</button>`).join('') + '<button class="rtbtn" data-zk="add" style="margin-left:auto">＋ Event</button>', 'zz-evf') +
     `<div class="r7-evh"><span>DATES</span><span>EVENT</span><span>KIND</span><span>ROW</span></div>` +
     `<div class="zz-evl">` + EVENTS.map(([d, n, k, s, m]) => `<div class="r7-ev"${m ? ' data-zk="multi"' : ''}><span style="color:#c9d1d9">${d}</span><span>${n}</span><span class="k">${k}</span><span class="t">${s}</span></div>`).join('') + `</div>`)
-  await p.evaluate(() => { const d = [...document.querySelectorAll('.bidsheet')].filter(e => e.getBoundingClientRect().width).pop(); Object.assign(d.style, { width: '760px', maxWidth: '760px', left: 'calc(50% - 380px)', right: 'auto', top: '200px', bottom: 'auto', transform: 'none', height: 'auto' }) })
+  await p.evaluate(() => { const d = [...document.querySelectorAll('.bidsheet')].filter(e => e.getBoundingClientRect().width).pop(); Object.assign(d.style, { width: '760px', maxWidth: '760px', left: 'calc(50% - 380px)', right: 'auto', top: '200px', bottom: 'auto', transform: 'none', height: 'auto' }); d.style.top = Math.round((innerHeight - d.getBoundingClientRect().height) / 2) + 'px' })
   await p.mouse.move(2, 2); await p.waitForTimeout(200)
   await out('r7-29-events-desk-clean', p)
-  await mk(p, '.zz-evl', '1 the squadron’s events, each with its kind (D1155)', 'right')
-  await mk(p, '[data-zk="multi"]', '2 several days allowed', 'left', { leftOf: '.zz-new', off: -2 })
-  await mk(p, '[data-zk="add"]', '3 the one way to add', 'right')
+  await mk(p, '.zz-evl', '1')
+  await mk(p, '[data-zk="multi"]', '2', { off: -2 })
+  await mk(p, '[data-zk="add"]', '3')
   await out('r7-29-events-desk', p)
-  await unmark(p); await p.keyboard.press('Escape'); await p.waitForTimeout(400)
+  await unmk(p); await p.keyboard.press('Escape'); await p.waitForTimeout(400)
   // the Calendar window's Holidays list: Export and Import beside + Add (D1155)
   await p.click(q('settings-open')); await p.waitForTimeout(400)
   await p.locator('button:has-text("Calendar…")').first().click(); await p.waitForTimeout(900)
@@ -596,12 +530,22 @@ await settings(true); await settings(false)
     // at the foot of the Holidays column, under its list (the list's own box keeps its place)
     const last = [...document.querySelectorAll('*')].find(e => !e.children.length && /^Fri 25 Dec$/.test(e.textContent.trim()))
     let col = line.parentElement; while (col && last && !col.contains(last)) col = col.parentElement
-    ;(col || line.parentElement).appendChild(row); return col ? 'ok' : 'fallback'
+    ;(col || line.parentElement).appendChild(row)
+    // Good Friday (invented, as the events list has it) between Chinese New Year and National Day; each holiday named
+    // as the events list names it (the demo saves them nameless, "PH")
+    const aug = document.querySelector('.hol-list .hol-line[data-from="2026-08-09"]')
+    if (aug && !document.querySelector('.hol-line[data-from="2026-04-03"]')) { const c = aug.cloneNode(true); c.dataset.from = '2026-04-03'; c.querySelector('.hol-when').textContent = 'Fri 3 Apr'; aug.before(c) }
+    const NAMES = { '2026-01-01': "New Year's Day", '2026-02-17': 'Chinese New Year', '2026-04-03': 'Good Friday', '2026-08-09': 'National Day', '2026-12-25': 'Christmas Day' }
+    for (const [d, n] of Object.entries(NAMES)) { const nm = document.querySelector(`.hol-line[data-from="${d}"] .hol-name`); if (nm) nm.textContent = n }
+    // the Calendar window stands in the middle of the screen (not about one date on the grid)
+    let w = line; while (w && getComputedStyle(w).position !== 'fixed') w = w.parentElement
+    if (w) { const b = w.getBoundingClientRect(); Object.assign(w.style, { left: Math.round((innerWidth - b.width) / 2) + 'px', right: 'auto', transform: 'none' }) }
+    return col ? 'ok' : 'fallback'
   }, [UP, DOWN])
   console.log('holidays row', ok)
   await p.mouse.move(2, 2); await p.waitForTimeout(200)
   await out('r7-29-holidays-desk-clean', p)
-  await mk(p, '.zz-iorow', '4 holidays by file (D1155)', 'below')
+  await mk(p, '.zz-iorow', '4')
   await out('r7-29-holidays-desk', p)
   await ctx.close()
 }

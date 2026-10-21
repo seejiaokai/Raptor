@@ -9,12 +9,12 @@
 //   cd raptor-port ; LWMOCK_OUT=<scratch> node docs/mock/lw-overhaul/full-r7-decide.mjs   (needs <scratch>/out/state.json)
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { chromium, newPage, signIn, shot, mark, q, errs, OUT, gridTo } from './full-lib.mjs'
+import { chromium, newPage, signIn, shot, q, errs, OUT, gridTo } from './full-lib.mjs'
+import { oneStage, oneFold, mk, UNDER } from './full-r7-one.mjs'
 const browser = await chromium.launch()
 const state = JSON.parse(readFileSync(join(OUT, 'state.json'), 'utf8'))
 
 // ---------------------------------------------------------------- shared pieces
-const CHEV = '<svg viewBox="0 0 12 8" width="1em" height=".7em" aria-hidden="true"><path d="M1 1.5l5 5 5-5" fill="none" stroke="#57c97a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 const DOT = '<i class="zd" aria-hidden="true"></i>'
 const UP = '<svg viewBox="0 0 16 16" width="1.05em" height="1.05em" aria-hidden="true"><path d="M8 11V2.5M4.5 6L8 2.5 11.5 6M2.5 10.5v2.2c0 .5.4.8.8.8h9.4c.4 0 .8-.3.8-.8v-2.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 const CLIP = '<svg viewBox="0 0 16 16" width="1.2em" height="1.2em" aria-hidden="true"><path d="M10.5 4.5l-5 5a1.6 1.6 0 0 0 2.3 2.3l5.6-5.6a2.9 2.9 0 0 0-4.1-4.1L3.7 7.7a4.2 4.2 0 0 0 5.9 5.9l4.4-4.4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'
@@ -31,23 +31,10 @@ const CHIP = { sxo: ['#E5B53B', '#2a1e02'], ins: ['#9F4ADF', '#fff'], c: ['#3BC6
 const puck = (cs, seat, cat, chip) => `<span class="zpk ${seat}"><span class="cs">${cs}</span><i style="background:${CHIP[chip][0]};color:${CHIP[chip][1]}">${cat}</i></span>`
 
 const CSS = `
-#page-leavewar .zrow{display:flex;align-items:center;gap:8px;width:100%;white-space:nowrap}
 .zsp{flex:1}
 .zlab{font:600 11px system-ui;letter-spacing:.14em;color:#8a96a3}
-.zchip{display:inline-flex;align-items:center;gap:6px;height:var(--ch);padding:0 10px;border-radius:7px;border:1px solid #2a323c;background:#12161b;color:#e6edf3;font:600 var(--fs) system-ui;white-space:nowrap}
-.zchip b{font-weight:700;color:#fff}
-.zchip .n{font-style:normal;font:700 calc(var(--fs) - 1px) system-ui;color:#5fd0e6;background:#16303b;border-radius:9px;padding:1px 7px}
-.zchip.pick{border-color:rgba(87,201,122,.55);background:#0f1d15;font-weight:700;height:28px;font-size:var(--pf)}
-.zchip.sq{width:28px;height:28px;justify-content:center;padding:0;font-size:18px;font-weight:400;color:#c9d1d9}
-.zchip.open{border-color:rgba(87,201,122,.7);background:#0f1d15}.zchip.open b{color:#8FE0A8}.zchip.open em{font-style:normal;color:#8a96a3;font-weight:600}
-.zchip.shut{border-color:#4a5560;color:#c9d1d9}
-.zchip .amb{color:#F2C879}
-.zml{display:flex;align-items:center;gap:5px;height:var(--mh);padding:0 12px;border-radius:8px;border:1px solid #2a323c;background:#1a1f26;color:#e6edf3;font:600 var(--fs) system-ui;white-space:nowrap}
-.zml b{font-weight:800}.zml .zlab{margin-right:4px}
-.zrow>.zml:only-child{flex:1}
 .zd{display:inline-block;flex:none;width:7px;height:7px;border-radius:50%;background:#3bc6e8;font-style:normal}
 .znw{display:inline-flex;align-items:center;gap:4px;color:#5fd0e6;font:700 calc(var(--fs) - 1px) system-ui;margin-left:2px}
-.zrow3{display:flex;align-items:center;padding:6px 10px;border-bottom:1px solid #2a313a}
 /* look F on the grid (D1175) */
 #page-leavewar .zf{position:absolute;left:2px;right:2px;top:2px;bottom:2px;display:flex;align-items:center;justify-content:center;border-radius:4px;z-index:2;pointer-events:none;box-sizing:border-box}
 #page-leavewar .zf b{font:700 10px/1 system-ui;letter-spacing:.02em;white-space:nowrap}
@@ -58,9 +45,6 @@ const CSS = `
 #page-leavewar .zf.wt{color:rgb(var(--h));outline:1px dashed rgba(var(--h),.95);outline-offset:-1px}
 #page-leavewar .zf.rf{color:#7d8894;box-shadow:inset 0 0 0 1px #4a5560}#page-leavewar .zf.rf b{text-decoration:line-through}
 #page-leavewar .zf.rp::before{content:'';position:absolute;left:0;top:0;bottom:0;border-left:2px solid #3bc6e8}
-#page-leavewar tr.zpair-p td{background-image:linear-gradient(rgba(120,112,40,.22),rgba(120,112,40,.22))}
-#page-leavewar tr.zpair-w td{background-image:linear-gradient(rgba(30,110,78,.24),rgba(30,110,78,.24))}
-#page-leavewar .zbalb{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:6px;border:1px solid #3a4652;background:#141a21;color:#e6edf3!important;font-weight:700;letter-spacing:.06em}
 /* the window pieces (inside the app's own .bidsheet) */
 .bidsheet .zt-tick{margin-left:auto;display:inline-flex;align-items:center;gap:7px;align-self:center;height:28px;padding:0 10px;border-radius:7px;border:1px solid #2f3a46;background:#12161b;color:#e6edf3;font:600 calc(var(--zf) * 1) system-ui;white-space:nowrap;cursor:pointer}
 .bidsheet .zt-tick i{width:14px;height:14px;border:2px solid #9aa5b1;border-radius:3px;font-style:normal;display:grid;place-items:center;box-sizing:border-box}
@@ -153,32 +137,11 @@ const CSS = `
 .zapw.ph .l2 .av{display:flex;flex-direction:column;gap:1px}
 .zapw.ph .r{min-height:0}
 `
-// ---------------------------------------------------------------- the top, as the final set draws it
-const topPhone = s => {
-  const open = s.closed ? '<span class="zchip shut">Bidding closed</span>' : `<span class="zchip open"><span>Open</span><b>1 Jan – 31 Mar</b>${s.more ? `<em>+${s.more}</em>` : ''}</span>`
-  const r1 = `<div class="zrow"><span class="zlab">VIEW</span><span class="zchip pick">JAN - DEC 26 ${CHEV}</span>${s.admin ? `<span class="zchip sq">+</span><span class="zchip">Approvals <i class="n">15</i></span>` : ''}<span class="zsp"></span></div>`
-  const r2 = `<div class="zrow">${open}<span class="zchip zz-under">Under <b class="${s.under ? 'amb' : ''}">${s.under}</b> days</span><span class="zsp"></span><span class="zchip">Legend</span></div>`
-  const ml = s.admin ? '<b>LVE 17</b> · OIL 0 · 0 waiting · next 30 Jan' : '<b>LVE 14.5</b> · OIL 0 · 2 waiting · next 19 Jan'
-  const r3 = `<div class="zrow"><span class="zml"><span class="zlab">MY LEAVE</span>${ml}<span class="zsp"></span>›</span></div>`
-  return [r1, r2, r3]
-}
-const topDesk = s => {
-  const open = s.closed ? '<span class="zchip shut">Bidding closed</span>' : `<span class="zchip open"><span>Open for bidding</span><b>1 Jan – 31 Mar</b>${s.more ? `<em>+${s.more}</em>` : ''}</span>`
-  const r1 = `<div class="zrow"><span class="zlab">VIEW</span><span class="zchip pick">JAN - DEC 26 ${CHEV}</span><span class="zchip">+ New</span><span class="zchip zz-appr">Approvals <i class="n">15</i>${s.apNew ? `<span class="znw">${DOT}${s.apNew} new</span>` : ''}</span></div>`
-  const r2 = `<div class="zrow">${open}<span class="zlab">UNDER-MANNED</span><span class="zchip zz-under"><b class="${s.under ? 'amb' : ''}">${s.under}</b> days</span><span class="zchip">Legend</span><span class="zsp"></span><span class="zml"><span class="zlab">MY LEAVE</span><b>LVE 17</b> · OIL 0 · 0 waiting · next 30 Jan ›</span></div>`
-  return [r1, r2]
-}
+// s: { member, apNew, mlNew, closed, more } — the cells here; the top rows, Balances, the magnifiers, the tints, Required P
+// 24 with its amber and red, Management and the events through the one set of choices (full-r7-one.mjs)
 async function stage(p, phone, s) {
-  await p.evaluate(([css, rows, phone, KF, FAM]) => {
+  await p.evaluate(([css, KF, FAM]) => {
     if (!document.getElementById('zzcss')) { const st = document.createElement('style'); st.id = 'zzcss'; st.textContent = css; document.head.appendChild(st) }
-    const pg = document.querySelector('#page-leavewar'), top = pg.querySelector('.topbar'), fil = pg.querySelector('.filters')
-    pg.style.setProperty('--ch', phone ? '23px' : '32px'); pg.style.setProperty('--fs', phone ? '11.2px' : '13.5px')
-    pg.style.setProperty('--pf', phone ? '12.6px' : '13.5px'); pg.style.setProperty('--mh', phone ? '25px' : '34px')
-    // an open window rendered inside these rows is kept, and put back
-    const keep = [...top.querySelectorAll('.bidsheet'), ...fil.querySelectorAll('.bidsheet')]
-    top.innerHTML = rows[0]; fil.innerHTML = rows[1]; keep.forEach(k => fil.appendChild(k))
-    pg.querySelector('.zrow3')?.remove()
-    if (rows[2]) { const r = document.createElement('div'); r.className = 'zrow3'; r.innerHTML = rows[2]; fil.after(r) }
     // look F on every cell (D1175): filled approved, hollow dashed waiting, grey struck refused, a half its half (D1160)
     for (const td of document.querySelectorAll('#page-leavewar td[data-testid^="cell-"]')) {
       const cs = [...td.querySelectorAll(':scope > .c')]; if (!cs.length || td.querySelector('.zf')) continue
@@ -196,36 +159,11 @@ async function stage(p, phone, s) {
         b.innerHTML = `<b>${e.code}</b>`; td.appendChild(b)
       })
     }
-    // the Required / Available pairs tinted (D1194); "Figures" is the Balances button (D1185)
-    document.querySelector('[data-testid="fly-row-req-p"]')?.classList.add('zpair-p'); document.querySelector('[data-testid="fly-row-avail-p"]')?.classList.add('zpair-p')
-    document.querySelector('[data-testid="fly-row-req-w"]')?.classList.add('zpair-w'); document.querySelector('[data-testid="fly-row-avail-w"]')?.classList.add('zpair-w')
-    const fb = document.querySelector('[data-testid="figures-toggle"]')
-    if (fb && !fb.querySelector('.zbalb')) { const open = /▾|expanded/.test(fb.textContent) || fb.getAttribute('aria-expanded') === 'true'; fb.innerHTML = `<span class="zbalb">${open ? '▾' : '▸'} Balances</span>` }
-    // question 12's recommended answer, as the rest of the final set draws it: the zoom pair become magnifiers
-    const mag = s => `<svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><circle cx="7" cy="7" r="4.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.4 10.4L14 14M5 7h4${s === '+' ? 'M7 5v4' : ''}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`
-    for (const b of document.querySelectorAll('#page-leavewar button')) {
-      if (b.closest('.topbar,.filters,.bidsheet')) continue
-      const z = b.dataset.testid; if (z === 'lw-zoom-in' || z === 'lw-zoom-out') b.innerHTML = mag(z === 'lw-zoom-in' ? '+' : '-')
-    }
-  }, [CSS, phone ? topPhone(s) : topDesk(s), phone, KF, FAM])
+  }, [CSS, KF, FAM])
+  const r = await oneStage(p, { phone, ...s })
   await p.waitForTimeout(250)
+  return r
 }
-// INVENTED, said so: Required P typed as 24 on every weekday that is not a holiday, so the Available P row's amber
-// (Required + 2) and red (Required + 0, today's rule — D1191, D1202) show; the demo squadron types no Required figure.
-const required = p => p.evaluate(() => {
-  const isWork = iso => { const d = new Date(iso + 'T12:00:00').getDay(); return d > 0 && d < 6 && !['2026-02-17', '2026-02-18'].includes(iso) }
-  const tdOf = (row, iso) => document.querySelector(`[data-testid="fly-row-${row}"] td[data-testid$="${iso}"]`)
-  let under = 0
-  for (const td of document.querySelectorAll('[data-testid="fly-row-req-p"] td[data-testid]')) {
-    const iso = td.dataset.testid.slice(-10); if (!/^\d{4}-\d\d-\d\d$/.test(iso) || !isWork(iso)) continue
-    td.textContent = '24'; td.classList.remove('none')
-    const a = tdOf('avail-p', iso); if (!a) continue
-    const v = parseFloat(a.textContent); if (isNaN(v)) continue
-    if (v < 24) a.classList.add('under'); else if (v < 26) a.style.color = '#F2C879'
-    if (v < 26 && iso >= '2026-01-01' && iso <= '2026-03-31') under++
-  }
-  return under
-})
 // the app's own figure under a window's font
 const zfOf = p => p.evaluate(() => { const c = document.querySelector('.bidsheet .pchip'); const f = c ? parseFloat(getComputedStyle(c).fontSize) : 12; document.querySelectorAll('.bidsheet').forEach(s => s.style.setProperty('--zf', f + 'px')); return f })
 const fill = (p, html, sel = '.bidsheet') => p.evaluate(([html, sel]) => { const d = [...document.querySelectorAll(sel)].filter(e => e.getBoundingClientRect().width).pop(); if (!d) return 'none'; d.innerHTML = html; d.classList.add('zz-new'); return 'ok' }, [html, sel])
@@ -269,7 +207,7 @@ const bidHTML = o => H.hd(o.who || 'Ranger', 'Fri 23 Jan', o.admin ? tick(o.tick
 // an entry already placed: Ranger's approved LL, Mon 19 – Wed 21 Jan (the app's own); INVENTED, said so: who placed it
 // and when, who decided and when, and its leave form — the app keeps none of the three today
 const entryHTML = () => H.hd('Ranger', 'Mon 19 Jan', '<span class="cur">now LL</span>') +
-  `<div class="zz-who">${H.row('Placed', '<span class="zval">Ranger <em>· Mon 5 Jan, 09:12</em></span>')}${H.row('Decided', '<span class="zval"><span class="ok">Approved</span> · Saber <em>· Tue 6 Jan, 14:30</em></span>')}</div>` +
+  `<div class="zz-who">${H.row('Placed', '<span class="zval">Ranger <em>· Mon 5 Jan, 09:12</em></span>')}${H.row('Decided', '<span class="zval"><span class="ok">Approved</span> · Saber <em>· Thu 8 Jan, 08:40</em></span>')}</div>` +
   H.row('How many', '<button class="pchip on">Just this day</button><button class="pchip">Pick a range</button>', 'zrule') +
   H.row('Decide', '<button class="dchip approve zon" aria-pressed="true">Approve</button><button class="dchip refuse">Refuse</button>', 'zz-decide') +
   H.row('Selected', '<button class="dchip move"><span class="mvarr">⇄</span>Move</button><button class="dchip del">Delete</button>') +
@@ -381,32 +319,34 @@ async function scene(w, h, touch, who) {
   return { ctx, p }
 }
 const tapOrClick = (p, touch, sel) => touch ? p.tap(sel) : p.click(sel)
-const M = (p, touch) => async (sel, n, o = {}) => mark(p, sel, String(n), { ...(touch ? { num: true } : { num: true }), ...o })
-const Qm = (p) => async (sel, label, o = {}) => mark(p, sel, label, o)
-let UNDER = 0
+// every mark a small circle where it covers nothing (full-r7-one.mjs mk)
+const M = p => (sel, n, o = {}) => mk(p, sel, String(n), o)
+
+
 
 // 0 — read the figures once, on a desktop (the whole year is drawn there)
 let FIGS
 {
   const { ctx, p } = await scene(1536, 860, false, 'admin')
-  UNDER = await required(p)
+  const red = (await stage(p, false, {})).red
+  if (red !== UNDER) console.warn('RED AVAILABLE P DAYS', red, 'BUT THE CHIP SAYS', UNDER)
   FIGS = await readFigs(p)
-  console.log('under-manned (amber or red, Jan–Mar):', UNDER, JSON.stringify(FIGS))
+  console.log('red Available P days:', red, JSON.stringify(FIGS))
   await ctx.close()
 }
 
 // r7-10 — the member's bid window on his phone: a tap on his own empty day, Fri 23 Jan
 {
-  const { ctx, p } = await scene(390, 844, true, 'member')
+  const { ctx, p } = await scene(390, 844, true, 'member'); await oneFold(p)
   await gridTo(p, '2026-01-19', 'bane'); await p.tap(q('cell-bane-2026-01-23')); await p.waitForTimeout(600)
-  await stage(p, true, { under: UNDER }); await required(p)
+  await stage(p, true, { member: true, mlNew: true })
   await zfOf(p); await fill(p, bidHTML({ admin: false, phone: true })); await p.waitForTimeout(200)
   console.log('reveal', await reveal(p, 'cell-bane-2026-01-23')); await ring(p, 'cell-bane-2026-01-23')
   await shot(p, 'r7-10-bid-member-phone-clean')
-  const m = M(p, true), qm = Qm(p)
-  await qm('.zz-day .fg', 'Q7 — your answer first', { right: true }); await m('.zz-day', 1)
+  const m = M(p, true)
+  await m('.zz-day', 1); await m('.zz-day .fg', 'Q7', { ring: false })
   await m('.zz-doc', 2); await m('.zz-leaves', 3); await m('[data-testid="cell-bane-2026-01-23"]', 4)
-  await m('.zz-under', 'Q7')
+  await m('[data-zk="under"]', 'Q7')
   await shot(p, 'r7-10-bid-member-phone')
   await ctx.close()
 }
@@ -415,7 +355,7 @@ let FIGS
   const { ctx, p } = await scene(1536, 860, false, 'admin')
   LEFT = LEFTS.Anvil
   await gridTo(p, '2026-01-12', 'shaft'); await p.click(q('cell-shaft-2026-01-23')); await p.waitForTimeout(600)
-  await stage(p, false, { under: UNDER }); await required(p)
+  await stage(p, false, { apNew: true })
   await zfOf(p); await fill(p, bidHTML({ admin: true, tick: true, who: 'Anvil' })); await dock(p); await p.waitForTimeout(200)
   await ring(p, 'cell-shaft-2026-01-23')
   await shot(p, 'r7-11-bid-admin-desk-clean')
@@ -428,7 +368,7 @@ let FIGS
 {
   const { ctx, p } = await scene(390, 844, true, 'admin')
   await gridTo(p, '2026-01-19', 'shaft'); await p.tap(q('cell-shaft-2026-01-23')); await p.waitForTimeout(600)
-  await stage(p, true, { admin: true, under: UNDER }); await required(p)
+  await stage(p, true, { apNew: true })
   await zfOf(p); await fill(p, bidHTML({ admin: true, tick: false, phone: true, who: 'Anvil' })); await p.waitForTimeout(200)
   console.log('reveal', await reveal(p, 'cell-shaft-2026-01-23')); await ring(p, 'cell-shaft-2026-01-23')
   const fit = await p.evaluate(() => { const h = document.querySelector('.bidsheet-hd'); return [h.scrollWidth, h.clientWidth] }); console.log('phone title bar fit', fit)
@@ -443,7 +383,7 @@ let FIGS
   const { ctx, p } = await scene(1536, 860, false, 'admin')
   LEFT = LEFTS.Ranger
   await gridTo(p, '2026-01-12', 'bane'); await p.click(q('cell-bane-2026-01-19')); await p.waitForTimeout(600)
-  await stage(p, false, { under: UNDER }); await required(p)
+  await stage(p, false, { apNew: true })
   await zfOf(p); await fill(p, entryHTML()); await dock(p); await p.waitForTimeout(200)
   await ring(p, 'cell-bane-2026-01-19')
   await shot(p, 'r7-13-entry-desk-clean')
@@ -457,13 +397,13 @@ for (const v of ['new', 'armed']) {
   const { ctx, p } = await scene(1536, 860, false, 'admin')
   if (await p.locator(q('figures-toggle')).count()) { await p.click(q('figures-toggle')); await p.waitForTimeout(400) }
   await gridTo(p, '2026-01-19', 'bane')
-  await stage(p, false, { under: UNDER, apNew: v === 'new' ? 3 : 0 }); await required(p)
+  await stage(p, false, {})
   console.log('approvals overflow', await approvals(p, apDesk(FIGS, v === 'new' ? { newOnly: true } : { armed: true, cut: true }), false))
   const name = v === 'new' ? 'r7-14-approvals-desk' : 'r7-15-approvals-armed-desk'
   await shot(p, name + '-clean')
-  const m = M(p, false), qm = Qm(p)
+  const m = M(p, false)
   if (v === 'new') {
-    await m('.zz-apw', 1, { off: -3 }); await m('.zz-new3', 2); await qm('.zz-sub', 'Q1 — your answer first', { right: true }); await m('.zz-also', 9)
+    await m('.zz-apw', 1, { off: -3 }); await m('.zz-new3', 2); await m('.zz-sub', 'Q1'); await m('.zz-also', 9)
     await m('.zz-months', 3); await m('.zz-cols', 4); await m('.zz-first .zpk', 5); await m('.zz-doci', 6)
     await m('.zz-apall', 7); await m('.zz-ap', 8); await m('.zz-rf', 8)
   } else {
@@ -475,7 +415,7 @@ for (const v of ['new', 'armed']) {
 // r7-16 — Approvals on a phone: each request two lines, the column headings drawn once
 {
   const { ctx, p } = await scene(390, 844, true, 'admin')
-  await stage(p, true, { admin: true, under: UNDER }); await required(p)
+  await stage(p, true, {})
   console.log('phone approvals overflow', await approvals(p, apPhone(FIGS, {}), true))
   await shot(p, 'r7-16-approvals-phone-clean')
   const m = M(p, true)
@@ -488,14 +428,14 @@ for (const v of ['new', 'armed']) {
 for (const v of ['drag', 'none']) {
   const { ctx, p } = await scene(390, 844, true, 'admin')
   await p.tap(q('bid-window')); await p.waitForTimeout(600)
-  await stage(p, true, { admin: true, under: UNDER, closed: v === 'none' })
-  await required(p); if (v === "none") await p.evaluate(() => document.querySelectorAll(".lw-bidbox").forEach(b => { b.style.display = "none" }))
+  await stage(p, true, { closed: v === 'none' })
+  if (v === "none") await p.evaluate(() => document.querySelectorAll(".lw-bidbox").forEach(b => { b.style.display = "none" }))
   await zfOf(p)
   await fill(p, openHTML(v === 'none' ? { on: [], lines: [] } : { on: [0, 1, 2], drag: [4, 5, 6, 7], lines: [['1 Jan – 31 Mar', '90 days']] }))
   if (v !== 'none') await finger(p, 4, 7)
   const name = v === 'none' ? 'r7-17b-open-none-phone' : 'r7-17-open-phone'
   await shot(p, name + '-clean')
-  const m = M(p, true), qm = Qm(p)
+  const m = M(p, true)
   if (v === 'none') { await m('.zchip.shut', 1); await m('.zz-empty', 2) }
   else { await m('.zz-mos', 1); await m('.zmb.drag', 2, { nth: 3 }); await m('.zz-line', 3) }
   await shot(p, name)
@@ -505,9 +445,11 @@ for (const v of ['drag', 'none']) {
 {
   const { ctx, p } = await scene(1536, 860, false, 'admin')
   await p.click(q('bid-window')); await p.waitForTimeout(600)
-  await stage(p, false, { under: UNDER, more: 1 }); await required(p)
+  await stage(p, false, { more: 1 })
   await zfOf(p)
   await fill(p, openHTML({ one: true, on: [0, 1, 2, 4, 5, 6, 7], lines: [['1 Jan – 31 Mar', '90 days'], ['1 May – 31 Aug', '123 days']] }))
+  // on a desktop a window not about one date on the grid stands in the middle of the screen (the set's rule)
+  await p.evaluate(() => { const d = [...document.querySelectorAll('.bidsheet')].filter(e => e.getBoundingClientRect().width).pop(); const r = d.getBoundingClientRect(); d.classList.add('zz-centre'); const st = document.createElement('style'); st.textContent = `.bidsheet.zz-centre{top:${Math.round((innerHeight - r.height) / 2)}px!important;bottom:auto!important;left:${Math.round((innerWidth - r.width) / 2)}px!important;right:auto!important;transform:none!important;margin:0!important}`; document.head.appendChild(st) })
   await shot(p, 'r7-18-open-desk-clean')
   const m = M(p, false)
   await m('.zz-mos', 1); await m('.zz-line', 2); await m('.zchip.open', 3)
@@ -518,11 +460,12 @@ for (const v of ['drag', 'none']) {
 // said so: the three clashes (the demo holds none); the names and dates are the demo squadron's.
 {
   const { ctx, p } = await scene(390, 844, true, 'admin')
-  await stage(p, true, { admin: true, under: UNDER }); await required(p)
+  await stage(p, true, {})
   await p.evaluate(() => {
     const rows = [
       ['Basher', 'Tue 27 Jan', 'Decide the bid', 'The input is OML, but the bid is LL', ''],
-      ['Ranger', 'Mon 19 Jan', 'Change the approved leave', 'The input is HL, but the bid is approved LL', 'zz-new1'],
+      // Reaper's approved OL on Mon 19 Jan is on the grid (Ranger's own story is r7-20's list, so he is not used here)
+      ['Reaper', 'Mon 19 Jan', 'Change the approved leave', 'The input is HL, but the bid is approved OL', 'zz-new1'],
       ['Cinch', 'Thu 22 Jan', 'Change the leave on Inputs', 'The input is C, but the bid is LL', ''],
     ]
     const names = [...document.querySelectorAll('[data-testid^="person-"]')].map(e => e.textContent.replace(/(IR|IP|IW|OCU|GND|A|B|C|D)\s*$/, '').trim())
@@ -533,7 +476,7 @@ for (const v of ['drag', 'none']) {
   await p.waitForTimeout(250)
   await shot(p, 'r7-19-clash-phone-clean')
   const m = M(p, true)
-  await m('.zz-new1', 1, { off: 3 }); await p.evaluate(() => { const t = [...document.querySelectorAll('.zz-tag')].pop(); t.style.top = (parseFloat(t.style.top) - 9) + 'px' })
+  await m('.zz-new1', 1, { off: 3 })
   await shot(p, 'r7-19-clash-phone')
   await ctx.close()
 }
