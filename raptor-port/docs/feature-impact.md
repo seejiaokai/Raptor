@@ -1278,6 +1278,8 @@ agree — name it here so the next session knows to check both.
   a plain-pool credit is corrected with a negative entry
   (`docs/leavewar/known-gaps.md` §What balances do not yet do).
 
+- **Inside a pinch zoom, a list's pixels are not the screen's** (`[BOARD-PHONE-PINCH-ZOOM]`, D1109, D1110, 21 Oct 26). The board's day in its desktop layout on a phone, and Quals' table, carry a CSS zoom; inside them `scrollTop` and a list's size are in the zoomed box's own pixels while every `getBoundingClientRect` is the screen's. Code that scrolls a list there by a distance measured on the screen divides by `ui/pinchzoom.ts scaleOf` (the keyboard lift, the drag's edge loop do); code that copies a measured width into another table (Quals' pinned row) writes it in that table's own pixels. A new scroller or mirror inside either is checked at a zoom other than 1.
+
 ## Inputs and SANS calendars — D580 build
 
 **SINCE STEP 4 OF THE REDESIGN (8 Oct 26) THE SANS TAB IS ITS OWN SCREEN** (`ui-contracts.md` "The SANS calendar"); what
