@@ -536,3 +536,95 @@ by year, its balances one figure each until then), and whole-day commitments in 
 | 10 | The notification register was not scheduled | written with this mock-up (`../../notifications-register.md`), its new entries put to him |
 | 11 | Ack's removal changes D331 and the Legend; the month view changes §Settled | named in Q3 and Q1 |
 | 12 | Missing states: Approvals' empty, refused-by-clash, undo, below zero, who sees it; documents' viewers and their fate on approval; where the import lives; §6 out of date | picture 10's states; the readings above; §6 extended |
+
+## 10. The red team of the whole design (D1204 — night of 21–22 Oct 26)
+
+*His words: "red team the total design … make sure they interact properly. Down to the minute details on like gestures,
+how the screen set up should be, does it take a lot of taps to get to one place … the position of the buttons,
+alignment, edit ability. Red team some what ifs."* Run after tonight's three drawings (§10.1): two fresh, blind Opus
+readers, each without the other's report — **A, the design** (Impeccable's critique on the design guide, every task's
+taps counted) and **B, the what-ifs** (each tried against the real stores where it could be). Their reports, whole:
+`../briefs/2026-10-22-lw-overhaul-red-team-A.md`, `…-B.md`; the brief `../briefs/2026-10-22-lw-overhaul-red-team.md`.
+
+### 10.1 Tonight's drawings
+
+- **The person window (D1201, D1203)** — `../../mock/lw-overhaul/full/r6-person-*.png`, script `full-r6-person.mjs`:
+  every balance in one grid (LVE across two, OIL, CCL, FCL; PL, EL, CL, MED across two — the same grid on a desktop),
+  left large and used small, each code its look-F box; a tap on a figure turns it into a box; his leave one line a
+  request in lined-up columns; the year picker; locked, the member's figures read only under a small lock; the admin
+  edits locked or not; a member opening another man's window reads it all (as today, D1008). The lock drawn both ways:
+  one switch for everyone, per man.
+- **"Since your last visit" (D1199)** — `full/r6-visit-*.png`, script `full-r6-visit.mjs`: **A** (recommended) "● 3 new"
+  on "My leave" (the member) and on Approvals (an admin), the new lines dotted with the bell's own unread dot, fed by the
+  bell's lines so reading in one place clears both; **B** a dot on each changed cell; **C** the bell alone.
+- **The Settings window (D1205)** — `full/r6-settings-*.png`, script `full-r6-settings.mjs`: labelled rows (Year ·
+  Manning · Event rows · Balances · Groups), every explaining sentence gone (the list of words removed is in
+  `../briefs/2026-10-22-lw-overhaul-night-drawings-results.md` §3), a group's count a button that shows who is in it,
+  Management first, "Everyone else" a pinned last row, the two resets together at the foot. Found: the pink
+  "1 NEW Events…" in his phone picture was round 2's mock-up mark, not the app.
+- The helpers' reports, whole: `../briefs/2026-10-22-lw-overhaul-night-drawings-results.md`.
+
+### 10.2 What the red team found, and what is done with each
+
+**Settled by the agent** (a technical or a design-guide point — drawn into the final set, §10.4, and carried by the build
+plan; he may strike any):
+
+| # | What goes wrong | The fix |
+|---|---|---|
+| A1 | "My leave"'s list (tall cards) and the person window (one-line rows) draw one man's leave two ways | one window: a tap on "My leave" opens his own person window; its one-line rows; a row new since his last visit wears the bell's dot and a muted "who, when" line; a deleted leave shows struck through for that visit; the day panel's "Away" list uses the same row |
+| A2 | the bid window's Document button cannot be reached — a tap on a leave writes the bid and closes the window | Document stands above "Which leave"; a file picked first goes onto the bid the tap writes |
+| A4 | "Approve all" approves 15 people and rings 15 bells in one tap, in green (green already means approved / open) | the app's own "tap again" inside the button ("Approve 15 — tap again"), one Undo; the line buttons plain, Refuse with red words; Approve all in the main-button look |
+| A5 | desktop windows open over the very dates their lines name; on a phone the bid window can cover the tapped row | desktop: Approvals and the person window open docked to the grid's right edge, still draggable (D641); phone: the grid first scrolls the tapped cell above the window |
+| A7 | a pinch's first finger can arm a selection (held 180 ms); a drag across the month buttons on a phone's two rows passes months it should not | a second finger cancels an arming or armed selection; a month drag runs in calendar order from the first month to the one under the finger, never along the path |
+| A8 | with "Approve what I enter" ticked a tap approves and rings a bell, but the buttons look the same either way | the leave buttons are filled (approved look) while ticked, hollow and dashed (waiting look) when not — and always hollow for a member |
+| A9 | the admin's desktop bid window wraps (CL alone; +OIL · PO · PI an unlabelled row) | two even rows of four, as on the phone (lesson 28); the admin's three labelled "Also" |
+| A11 | a phone Approvals line is four lines tall, three a screen | two lines: puck · box · dates · paperclip · Approve · Refuse; then the figures under column headings drawn once |
+| A12 | smaller: Settings lost its way to Rearrange; Required P / W not marked as renamable; the day panel lists plain names; two pictures give Ranger two figures; "+ SANS" under "Add from Quals" | a "⇅ Rearrange" button in Settings' Groups heading; the rows' names drawn as the Available rows' are; pucks in the day panel (lesson 25); one figure; the heading stays "Add a group" |
+| B1 | the bell would tell a member twice, once wrongly — the war's put-back, move and delete of approved leave already ring "dates now…" / "deleted" through the Inputs door | while the war's own door writes, the Inputs door's notice skips war-placed leave and the war writes its one line (D1142); Inputs-page changes keep telling him |
+| B2 | the code reads "no open dates" as the whole year open — the opposite of D1177 | empty means closed; one rule answers "is this day open" everywhere (the cell, the dim, the outline, the landing day); a test pins "a new period takes no member bid" |
+| B3 | a day's openness is asked of the period on screen, the bid written into the period holding the date (a range 30 Dec – 5 Jan wrote five days into the 2027 period) | ask the period holding each date |
+| B6 | a member's own balance edit (D1203) would be refused by today's permissions, leave no history line, and accept 12.3 | a member may write only his own balances, only while the lock is off — read when saved, his Undo after a lock refused alike; a history line "LVE balance 18 → 20 · Ranger"; halves only |
+| B8 | the permission check knows nothing of open days; two admins could decide the same request from two screens | the open-days check joins the war's permission; a decision taken from a state since changed is refused ("Already refused by Hex"); `../../data-model.md` §11 with it (D200) |
+| B9 | a document is lost when an approved leave is put back to a bid | the carried record holds its documents; deleting one day never deletes a document another day still names |
+| B10 | Management does not stand first — today a qualification group is added after TF or NVG if they are shown | Management goes first, on the page and in "Who wins" |
+| B12 | a man with no row (SANS, Show SANS off): "takes the grid there" goes nowhere · a drag across months must be one command (one Undo, one repaint) · a posted-out man's waiting bids · "No leave period yet" still says "starts in draft" · a renamed Available row on the SANS day | open his person window instead · one command on release · his line carries his posting tag · the words follow D1177 · D626 stands on the SANS day ("Available") |
+
+**Questions for him** (each changes what a ruling means, so none is applied — §10.3).
+
+### 10.3 Questions waiting for him (in rounds of four, each with its picture in the final set)
+
+Round 6 — his own leave and balances:
+1. **"Since your last visit" (D1199): A, B or C?** *Recommended A*, drawn into the one window (A1).
+2. **The balance lock (D1203): one switch for everyone, or one per man?** *Recommended one for everyone*, its switch in
+   Settings' Balances row, a small padlock on every person window's Balances heading.
+3. **What a member types into his balance.** "Left" already takes off his waiting bids (D1153), so copying his official
+   figure would give his waiting days back (A3, B7). *Recommended:* while he edits, the box shows and takes his
+   official figure — the balance before waiting bids — with "left after your 2 waiting: 9.5" under it; at rest one
+   figure as today; "used" counts the year picked, not every year.
+4. **May a member type his own OIL figure?** *Recommended no* — OIL is earned from the published schedule or awarded by
+   an admin (D400, D402); a tap on OIL opens the OIL tracker.
+
+Round 7 — bidding:
+5. **May a member delete his own waiting bid on a day since closed?** (B4) *Recommended yes* — it gives leave back and
+   raises manning; that day's note: "Your bid waits for a decision. Delete it if you no longer want it."
+6. **Past days:** *recommended* a member never bids on a day before today; an admin may (B5).
+7. **Do Available P and W at amber or red count as under-manned** — in the under-manned chip and the bid window's line?
+   (B11) *Recommended yes.*
+8. **Is a member's bell told when bidding opens or closes?** (the visit helper's Q2) *Recommended yes* — one line, "Bidding
+   open 1 Apr – 30 Jun · Saber".
+
+Round 8 — the screen:
+9. **A member's phone shows the first name 54% of the way down** (A6). *Recommended:* the Manning fold is remembered for
+   each person and a member's opens folded; "My leave" fills the empty right half of the first line on a member's phone
+   (narrows D1141, D678).
+10. **Show SANS as "+ SANS" among the groups, hidden by its ✕**, in place of its switch (the Settings helper's Q1;
+    changes the switch whose look D882 ruled). *Recommended yes.*
+11. **Undo of an approval he has already read:** *recommended* the bell keeps "Approval of LL 10–11 Feb taken back ·
+    Saber" (B12).
+12. **On a phone two "+" sit three rows apart** (a new period, zoom in). *Recommended:* the zoom pair become magnifiers.
+
+### 10.4 Every screen as it will be (D1206)
+
+The page ends with every Leave War screen as it will be built — every ruling and §10.2's fixes in, each question of
+§10.3 drawn with its recommended answer and marked "your answer first". Pictures `full/r7-*.png`, scripts
+`full-r7-*.mjs`.
