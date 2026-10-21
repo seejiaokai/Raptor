@@ -2023,7 +2023,10 @@ export function routeClick(e: MouseEvent) {
     + '.fchip,.puck,.seat,.rpuck,.ros-tab,.ros-arm,.sb-slot,[data-fill],[data-slot],'
     + '.dwbox,.pillbtn,.sb-open,.dinfobtn,.airpop,.alpanel,'
     + '.sb-top,.hscroll,.week-nav,.modal,.drawer,'
-    + '[data-crewday],[data-dayinfo],.sgn')) {
+    /* the side column's two grips — its width (D1113) and the issues / crew split — are controls, not blank space: letting
+       go of a drag on them must not drop the seat being planned or the selection (the walk of 21 Oct 26 —
+       [BOARD-SIDE-WIDTH]; the split's grip had the same gap since it was built) */
+    + '[data-crewday],[data-dayinfo],.sgn,[data-sidegrip],[data-wsplit]')) {
     let any = false
     if (view.ARM) { view.disarmSlot(); any = true }
     if (view.SELID || view.WFOCUS || view.PFOCUS || view.DWOPEN.size) {

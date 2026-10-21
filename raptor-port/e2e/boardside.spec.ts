@@ -61,7 +61,10 @@ test.describe('the board\'s right panel on a desktop (D1113, D1118)', () => {
     expect(r.length).toBeGreaterThan(5)
     r.forEach(x => { expect(x.under).toBe(true); expect(Math.round(x.strike)).toBe(Math.round(x.puck) - 6) })
     await dragGrip(page, -300)
+    /* the drag is a control, not a click on blank space: the desk is still the one being planned (the walk's find) */
+    expect(await page.evaluate(() => (window as any).ARM && (window as any).ARM.key)).toBe('d:0.0.0.+')
     r = await reasons(page)
+    expect(r.length).toBeGreaterThan(5)
     r.forEach(x => { expect(x.beside).toBe(true); expect(Math.round(x.strike)).toBe(Math.round(x.puck) - 6) })
   })
 })

@@ -180,7 +180,8 @@ body.dw-lock{overflow:hidden}
 .sb-sidegrip::before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:3px;height:34px;border-radius:3px;background:var(--edge-2)}
 .sb-sidegrip:hover::before,.sb-sidegrip.drag::before,.sb-sidegrip:focus-visible::before{background:var(--accent)}
 .sb-sidegrip:focus-visible::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:9px;height:42px;border-radius:5px;border:2px solid var(--accent)}
-body.sbside-drag,body.sbside-drag *{cursor:ew-resize!important;user-select:none}
+/* while the panel is dragged: the page body only — a `body.<class> *` rule would restyle every element (css-invalidation.test.ts) */
+body.sbside-drag{cursor:ew-resize;user-select:none}
 @media (max-width:820px){.sb-sidegrip{display:none}}
 /* the aircrew drawer's wrapper is invisible on desktop — .sb-warn and
    .sb-roster stay direct flex items of the side column, exactly as before

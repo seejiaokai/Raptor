@@ -562,6 +562,15 @@ export function boardWarnHTML(di: number, look = false) {
    that leaves the 7px grip still tracks and still ends. Written straight to the
    DOM (a CSS var + a class on the persistent .sb-side), never through React
    state, so a panel re-hang mid-session does not throw the size away. */
+/* A DRAG OF A GRIP ENDS WITH A CLICK THAT IS NOT A CLICK. The press began on the grip and the button came up wherever
+   the pointer was let go — over the day, or further down the column — so the browser sends the click to what holds them
+   both, which the board reads as a click on blank space: the seat being planned and the selection were dropped (the
+   walk of 21 Oct 26, [BOARD-SIDE-WIDTH]). After a drag that moved, that one click is swallowed before anything sees it. */
+function swallowNextClick() {
+  const swallow = (ev: Event) => { ev.stopPropagation(); ev.preventDefault() }
+  document.addEventListener('click', swallow, { capture: true, once: true })
+  setTimeout(() => document.removeEventListener('click', swallow, true), 0)
+}
 export function wireWarnSplit(side: HTMLElement) {
   const down = (e: PointerEvent) => {
     const grip = (e.target as HTMLElement).closest('[data-wsplit]')
@@ -584,6 +593,7 @@ export function wireWarnSplit(side: HTMLElement) {
       document.removeEventListener('pointermove', move)
       document.removeEventListener('pointerup', up)
       document.removeEventListener('pointercancel', up)
+      if (moved) swallowNextClick()
     }
     document.addEventListener('pointermove', move)
     document.addEventListener('pointerup', up)
@@ -626,11 +636,13 @@ export function wireSideGrip(side: HTMLElement) {
     const x0 = e.clientX, w0 = side.getBoundingClientRect().width
     try { grip.releasePointerCapture(e.pointerId) } catch { }
     grip.classList.add('drag'); document.body.classList.add('sbside-drag')
-    const move = (ev: PointerEvent) => { want = apply(w0 + (x0 - ev.clientX)); ev.preventDefault() }
+    let moved = false
+    const move = (ev: PointerEvent) => { if (!moved && Math.abs(ev.clientX - x0) < 3) return; moved = true; want = apply(w0 + (x0 - ev.clientX)); ev.preventDefault() }
     const up = () => {
       document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); document.removeEventListener('pointercancel', up)
       grip.classList.remove('drag'); document.body.classList.remove('sbside-drag')
       saveSideW(want)
+      if (moved) swallowNextClick()
     }
     document.addEventListener('pointermove', move); document.addEventListener('pointerup', up); document.addEventListener('pointercancel', up)
   }
