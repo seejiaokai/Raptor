@@ -6,8 +6,11 @@
    Tracker's bar, Course / Syllabus / File menus, a ball's pop-up, Edit chart layout's tools and the Students card; the
    Tracker's labels against Quals' "Viewing"; the Medical row and the Inputs list's dates button. Desktop 1536 × 864 (his
    PC) and a phone 402 × 874 by touch.
+   Answers 5–7 (D1138, D1139, D1170 — sizes57 and the break test): Help's and Admin's titles against Logic's page name, the
+   Inputs list's two buttons 36, every control on the Tracker's bar as tall as its dropdowns at nine widths, its height set
+   beside a build of the old look (bar-before.json, by cr3-barheights.mjs), each control pressed at its new height.
    Run: HP_URL=http://localhost:<port> HP_SHOTS=<folder> node scripts/handpass/cr3-walk.mjs → <folder>/walk/ (CR3_WALK_DIR) */
-import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { chromium } from '@playwright/test'
 const { BASE, SHOTS, login, go } = await import('./lib.mjs')
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
@@ -259,7 +262,88 @@ const around = async (page, name, sel, pad = 16) => { const b = await boxOf(page
   await page.evaluate(() => { const d = document.createElement('div'); d.id = 'zzPair'; d.style.cssText = 'position:fixed;left:20px;top:200px;z-index:99999;background:#14181D;padding:14px 18px;border-radius:10px;color:#F1F4F7;font:600 40px/1 "Segoe UI Symbol","Segoe UI",sans-serif;display:flex;gap:28px;align-items:center'; d.innerHTML = '<span>✎</span>' + document.querySelector('#courseMenuBtn svg').outerHTML.replace('class="', 'style="width:40px;height:40px" class="'); document.body.appendChild(d) })
   await around(page, 'pc-pencil-closeup', '#zzPair', 6)
   await page.evaluate(() => document.querySelector('#zzPair')?.remove())
+  await sizes57(page, tag, false, 30)
   await ctx.close()
+}
+
+/* ---- round 3's answers 5–7 (D1138, D1139, D1170), measured and pressed at each width ---- */
+async function sizes57(page, tag, touch, barH) {
+  const font = sel => page.evaluate(s => { const e = document.querySelector(s); if (!e || !e.getClientRects().length) return null; const c = getComputedStyle(e); return { size: c.fontSize, weight: c.fontWeight, spacing: c.letterSpacing } }, sel)
+  /* D1138 — Help's and Admin's titles at Logic's page name's size and weight, each in its own place */
+  await go(page, 'logic'); await sleep(400)
+  const lg = await font('#page-logic h1')
+  for (const [pg, sel] of [['help', '#page-help h2'], ['admin', '#page-admin .adm-rail h2']]) {
+    await page.evaluate(p => window.go(p), pg); await page.waitForFunction(p => window.CURPAGE === p, pg); await sleep(450)
+    const t = await font(sel), b = await boxOf(page, sel)
+    ok(`${tag} ${pg}'s title: Logic's page name's size and weight`, t && lg && t.size === lg.size && t.weight === lg.weight && t.spacing === lg.spacing, `${t && t.size} ${t && t.weight} vs Logic ${lg && lg.size} ${lg && lg.weight}`)
+    ok(`${tag} ${pg}'s title: in its place, top left of the page's column`, b && b.y < 140 && b.h < 30, b ? `at ${Math.round(b.x)},${Math.round(b.y)}, ${Math.round(b.h)} tall` : 'not found')
+    await shot(page, `${tag}-q5-${pg}-title`, { x: 0, y: 40, width: Math.min(page.viewportSize().width, 1000), height: 180 })
+  }
+  /* Admin's rail still works: a category opens its pane (on a phone, the drill-in) */
+  await press(page, '#page-admin .adm-cat:not(.on)', touch)
+  ok(`${tag} Admin: a category pressed opens its pane`, await visible(page, '#page-admin .adm-pane'))
+  /* D1139 — the desktop Inputs list's "+ Input" and dates button 36 tall; a phone keeps its 36 (D910) */
+  await go(page, 'inputs'); await sleep(500)
+  await press(page, '#inMemberMode', touch)
+  await press(page, '#inListBtn', touch)
+  const hs = await page.evaluate(() => Object.fromEntries(['#inNew', '#inRangeBtn', '#inCalBtn', '#inListBtn', '#inGear'].map(s => [s, Math.round((document.querySelector(s)?.getBoundingClientRect().height || 0) * 10) / 10])))
+  ok(`${tag} the Inputs list's "+ Input" and dates button are 36 tall, as its other buttons`, hs['#inNew'] === 36 && hs['#inRangeBtn'] === 36 && hs['#inCalBtn'] === 36, JSON.stringify(hs))
+  const one = await page.evaluate(() => { const b = document.querySelector('#inRangeBtn'), s = b.querySelector('svg').getBoundingClientRect(), t = b.querySelector('.inrange-t').getBoundingClientRect(); return s.right <= t.left + 1 && Math.abs((s.top + s.bottom) / 2 - (t.top + t.bottom) / 2) <= 3 })
+  ok(`${tag} the dates button stays one line, its calendar beside the dates`, one)
+  await shot(page, `${tag}-q6-inputs-list`, { x: 0, y: 40, width: Math.min(page.viewportSize().width, 1536), height: touch ? 140 : 170 })
+  await press(page, '#inRangeBtn', touch)
+  ok(`${tag} the dates button pressed: its pop-up opens under it`, await visible(page, '#inRangePop'))
+  await esc(page)
+  await press(page, '#inNew', touch)
+  ok(`${tag} "+ Input" pressed: the input window opens`, await visible(page, '#inpEditType'))
+  await esc(page); await esc(page)
+  await press(page, '#inCalBtn', touch)
+  /* D1170 — every control on the Tracker's bar as tall as its dropdowns */
+  await go(page, 'tracker'); await sleep(900)
+  const bar = await page.evaluate(() => { const hd = document.querySelector('#page-tracker header')
+    return { hd: Math.round(hd.getBoundingClientRect().height), c: [...hd.querySelectorAll('select, button, .findbox')].filter(b => b.getClientRects().length && !b.closest('.menupanel')).map(b => ({ id: b.id || b.className, h: Math.round(b.getBoundingClientRect().height * 10) / 10, w: Math.round(b.getBoundingClientRect().width) })) } })
+  const off = bar.c.filter(c => c.h !== barH)
+  ok(`${tag} the Tracker's bar: every control ${barH} tall, as its dropdowns`, bar.c.length >= 8 && off.length === 0, off.length ? JSON.stringify(off) : bar.c.map(c => c.id + ' ' + c.h).join(', '))
+  await shot(page, `${tag}-q7-tracker-bar`, { x: 0, y: 40, width: Math.min(page.viewportSize().width, 1536), height: touch ? 110 : 70 })
+  /* a menu's items keep their own size, and each control still does its job at its new height */
+  await press(page, '#courseMenuBtn', touch)
+  const item = await page.evaluate(() => Math.round(document.querySelector('#addCourse').getBoundingClientRect().height))
+  ok(`${tag} the Course menu's items keep their size (not stretched to the bar)`, item > 0 && item < barH, `${item} tall`)
+  await around(page, `${tag}-q7-coursemenu`, '#courseMenuBtn, #delCourse', 10)
+  await esc(page)
+  await press(page, '#legendBtn', touch)
+  ok(`${tag} Legend pressed: its pop-out opens`, await visible(page, '#trkLegend'))
+  await esc(page)
+  await press(page, '#flexBtn', touch)
+  ok(`${tag} the gear pressed: the flex settings open`, await visible(page, '#trkFlexWin'))
+  const fb = await page.evaluate(() => [...document.querySelectorAll('#trkFlexWin button.sm')].map(b => Math.round(b.getBoundingClientRect().height)))
+  ok(`${tag} the flex window's own buttons keep their size (40, their own rule)`, fb.length > 0 && fb.every(h => h === 40), JSON.stringify(fb))
+  await esc(page)
+  await press(page, '#detailsBtn', touch)
+  ok(`${tag} ⓘ pressed: on`, await page.evaluate(() => document.querySelector('#detailsBtn').getAttribute('aria-pressed') === 'true'))
+  await press(page, '#detailsBtn', touch)
+  if (touch) {
+    await press(page, '#hSearchBtn', touch)
+    const sp = await page.evaluate(() => ['.findbox', '#hSearchClear'].map(s => Math.round(document.querySelector(s).getBoundingClientRect().height)))
+    ok(`${tag} the search strip: its box and ✕ as tall as the bar's controls`, sp.every(h => h === barH), JSON.stringify(sp))
+    await shot(page, `${tag}-q7-search-strip`, { x: 0, y: 40, width: page.viewportSize().width, height: 150 })
+    await esc(page)
+  } else {
+    await page.locator('#hSearch').fill('ST'); await sleep(400)
+    ok(`${tag} the search typed: it finds`, await page.evaluate(() => /match|of/.test(document.querySelector('#hSearchStat').textContent)))
+    await press(page, '#hSearchClear', touch)
+    ok(`${tag} the search's ✕ pressed: cleared`, await page.evaluate(() => document.querySelector('#hSearch').value === ''))
+    await press(page, '#showAllBtn', touch)
+    ok(`${tag} Show All pressed: its panel opens`, await visible(page, '#showAllPanel'))
+    await esc(page)
+  }
+  await press(page, '#barHideBtn', touch)
+  ok(`${tag} Hide pressed: the bar hides, its strip in its place`, await visible(page, '#barShowBtn') && !(await visible(page, '#page-tracker header')))
+  await press(page, '#barShowBtn', touch)
+  ok(`${tag} the strip pressed: the bar is back`, await visible(page, '#page-tracker header'))
+  /* the save corner's button takes the bar's height too (probed: a bar button put in the slot, as "✓ Save changes" sits) */
+  const sv = await page.evaluate(() => { const s = document.querySelector('#page-tracker .saveslot'); const b = document.createElement('button'); b.className = 'sm dirty'; b.textContent = '✓ Save changes ●'; s.appendChild(b); const h = Math.round(b.getBoundingClientRect().height); b.remove(); return h })
+  ok(`${tag} the save corner's "✓ Save changes" takes the bar's height`, sv === barH, `${sv} tall`)
 }
 
 /* ================= the phone ================= */
@@ -317,6 +401,24 @@ const around = async (page, name, sel, pad = 16) => { const b = await boxOf(page
   await esc(page)
   await shot(page, 'phone-tracker-bar', { x: 0, y: 40, width: 402, height: 120 })
   ok(`${tag} the Tracker: no typed pencil left on screen`, (await typedLeft(page)).length === 0, (await typedLeft(page)).join(' | '))
+  await sizes57(page, tag, true, 26)
+  await ctx.close()
+}
+
+/* break test: the Tracker's bar either side of its 1050 break — a narrow desktop where the bar wraps keeps 30, a tablet 26 */
+const { barNow } = await import('./cr3-barheights.mjs')
+const BAR_BASE = existsSync(SHOTS + '/bar-before.json') ? JSON.parse(readFileSync(SHOTS + '/bar-before.json', 'utf8')) : null
+for (const [w, barH, grow] of [[1536, 30, 0], [1440, 30, 0], [1300, 30, 0], [1100, 30, 2], [1051, 30, 2], [1050, 26, 0], [402, 26, 0], [375, 26, 0], [320, 26, 0]]) {
+  const { ctx, page } = await world({ width: w, height: 800 }, w < 600)
+  await go(page, 'tracker'); await sleep(900)
+  const c = await page.evaluate(() => [...document.querySelector('#page-tracker header').querySelectorAll('select, button, .findbox')].filter(b => b.getClientRects().length && !b.closest('.menupanel')).map(b => ({ id: b.id || b.className, h: Math.round(b.getBoundingClientRect().height * 10) / 10 })))
+  const off = c.filter(x => x.h !== barH)
+  ok(`${w} wide: every control on the Tracker's bar ${barH} tall`, c.length >= 8 && off.length === 0, off.length ? JSON.stringify(off) : `${c.length} controls`)
+  /* the bar's height against the old look, measured on a build of it (cr3-barheights.mjs → bar-before.json): where the bar is
+     one row, and on a phone, it is no taller; where a narrow desktop wraps it, its second row (no dropdown on it) is 2 taller */
+  const was = BAR_BASE && BAR_BASE[w], now = await barNow(page)
+  ok(`${w} wide: the bar grows ${grow ? 'at most ' + grow : 'no taller'} (${now.rows} row${now.rows > 1 ? 's' : ''})`, was && now.h <= was.h + grow + 0.2 && now.rows === was.rows, was ? `${was.h} → ${now.h}` : 'no baseline')
+  await shot(page, `w${w}-q7-tracker-bar`, { x: 0, y: 40, width: w, height: 110 })
   await ctx.close()
 }
 

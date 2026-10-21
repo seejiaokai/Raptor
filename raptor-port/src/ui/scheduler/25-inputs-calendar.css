@@ -82,7 +82,9 @@
 .inputs-filterfields input,.inputs-filterfields select{width:100%;min-width:0;box-sizing:border-box;min-height:44px;padding:8px 10px;background:var(--bg);
   border:1px solid var(--edge);border-radius:8px;color:var(--ink);font:inherit;font-size:13px}
 .inputs-workspace .inputs-listtools{gap:8px;padding:8px 0}
-.inputs-listtools>.abtn,.inputs-listtools .inrange>.abtn{min-height:44px}
+/* the list's own two buttons, "+ Input" and the dates button, are 36 tall as on a phone and as the rest of the Inputs page
+   (owner D1139, 21 Oct 26 — they were 44 here); the words and their places stay */
+.inputs-listtools>.abtn,.inputs-listtools .inrange>.abtn{min-height:36px}
 /* the dates button's line calendar (owner D1137, 21 Oct 26 — in place of the 📅 emoji) sits beside its dates, as in the
    phone's row (.inputs-top .abtn): the desktop's row of the list's own two buttons is not .inputs-top, and the drawing is a
    block (.btnglyph), so without this it stood above the dates and the button grew two lines tall */

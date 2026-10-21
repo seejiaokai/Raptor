@@ -6058,7 +6058,7 @@ outright, 22 Aug 26. See `.claude/rules/decisions/scheduler.md` §Settled → In
 
 ## The Admin page (owner, 23 Aug 26)
 
-**D1138, 21 Oct 26 (to be built):** its title ("Admin") takes the size and weight of Logic's page name — 18px, 700 on a desktop, 16px on a phone — in its place; as Help's.
+**D1138, 21 Oct 26 (built):** its title ("Admin") takes the size, weight and spacing of Logic's page name — 18px, 700 on a desktop, 16px on a phone (the same 820px break) — in its place; as Help's (`15-admin-help.css`; pinned by `e2e/consistency-heights.spec.ts`).
 
 The seventh tab, and it is always last in both navs — the tools tab after
 the work tabs (`ui/AdminPage.tsx`; the topnav entry in `Shell.tsx`, the
@@ -6150,7 +6150,7 @@ The three category panels:
 
 ## The Help page (owner, 25 Aug 26)
 
-**D1138, 21 Oct 26 (to be built):** its title ("Help") takes the size and weight of Logic's page name, in its place; as Admin's.
+**D1138, 21 Oct 26 (built):** its title ("Help") takes the size, weight and spacing of Logic's page name, in its place; as Admin's.
 
 The EIGHTH tab (`#page-help`, `ui/HelpPage.tsx`), for EVERYONE — "allows
 anyone to type in Bug reports. In which admin can view them". It sits after
@@ -9579,7 +9579,7 @@ icons in the same style in place of typed marks — Reorder (up and down arrows)
 button's upload arrow; the empty Tracker's "Import a file…" too), Export (a download arrow), Delete (a bin, in place of
 the 🗑 emoji) and the × that removes a student. Nothing moves; no button changes what it does.
 
-**D1170, 21 Oct 26 — one height on its bar (round 3, to be built):** every control on the bar as tall as its dropdowns, 30 on a desktop and 26 on a phone — the pencils, ⓘ, Show All, Legend, File, the search's ✕, the gear and Hide (they were 20–23).
+**D1170, 21 Oct 26 — one height on its bar (round 3, built):** every control on the bar as tall as its dropdowns, 30 on a desktop and 26 on a phone (1050 and under) — the pencils, ⓘ, Show All, Legend, File, the search's ✕, the gear and Hide (they were 20–23), and the search box itself (25 — a search box is as tall as the buttons beside it, D1127); only the bar's own buttons, named by where they sit, so a menu's items and the flex window's buttons keep their size (`tracker.css`). The bar is no taller at his 1536, at 1050 and on a phone; where a narrow desktop (about 1051–1200) wraps it onto two rows, the second row holds no dropdown and is 2 taller (87 → 89) — measured against a build of the old look, `cr3-barheights.mjs`; pinned by `e2e/consistency-heights.spec.ts`.
 
 **D1136, 21 Oct 26 — its labels (round 3):** on a desktop the bar's "Crew", "Course" and "Syllabus" (`.lbltx`) are drawn
 in the small spaced capitals of Quals' "Viewing" — 10px, weight 700, 1px spacing, upper case, the grey `--dim` — as the
@@ -10707,7 +10707,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   button lit and nothing appeared, once the List's add form no longer stood above the row (D729). Pin:
   `e2e/inputs-calendar.spec.ts` "the dates button opens its calendar on screen" — the page not scrolled, the whole
   calendar inside the screen, pressed by a finger at a point. The record: `docs/handpass/2026-10-10-list-dates-picker.md`.
-- **D1139, 21 Oct 26 (to be built):** on a desktop the list's own two buttons, "+ Input" and the dates button, are 36 tall as on a phone and as the rest of the Inputs page (they were 44 — `25-inputs-calendar.css`, `.inputs-listtools`).
+- **D1139, 21 Oct 26 (built):** on a desktop the list's own two buttons, "+ Input" and the dates button, are 36 tall as on a phone and as the rest of the Inputs page (they were 44 — `25-inputs-calendar.css`, `.inputs-listtools`).
 - **The Inputs list on a phone — one row of controls (owner D907, D910, 15 Oct 26 — "All as recommended"; built in the
   calendar job, `docs/handpass/2026-10-15-calendar-step-two.md`).** On a phone the List's "+ Input" and dates button stand
   in the row of the calendar / list switch, the filter and the gear — where the Calendar's month arrows, month and Today
