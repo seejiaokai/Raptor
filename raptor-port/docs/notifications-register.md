@@ -47,7 +47,7 @@ they are built.
 | P3 | a member with a waiting request | a lock is laid over its days (D1156), so he can no longer change it | ***Your leave*** *Tue 10 Feb · LL waiting · locked: Exercise week* | the day panel | the full mock-up (picture 9 — Drifter's OIL on a locked day) |
 | P4 | everyone | the admin opens months for leave (shortens a "Not open yet" lock — Q5) | ***Leave War*** *Apr – Jun open for leave · Saber* | the grid, at the first open day | the full mock-up (picture 11) |
 | P5 | the admins | a new request waits for approval (the Approvals count rises — D1152) | ***Approvals*** *Ranger · LL Mon 26 – Tue 27 Jan* — one line a request, or one line a day when many arrive | the Approvals list | the full mock-up (picture 10) |
-| P6 | a member | a leave of his filed on the Inputs page is decided in Approvals (if Q6 is answered yes) | as R1 | as R1 | the full mock-up (Q6) |
+| P6 | ~~a member~~ | ~~a leave of his filed on the Inputs page is decided in Approvals (if Q6 is answered yes)~~ — **struck 21 Oct 26 (D1166):** Inputs-page leave is never decided in Approvals; it lands approved | — | — | the full mock-up (Q6) |
 
 *Open with each proposed line, for its design:* whether the admins' line (P5) is one a request or one a day; whether
 P4 goes to everyone or only to members with nothing waiting; the exact words, read cold before any is built.
