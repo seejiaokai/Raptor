@@ -296,6 +296,8 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **D1212:** "instead of how many change it to DATE. then How much change it to DURATION. Make sure the rest of the app that does it also changes to match it." — the bid window's rows read "Date" and "Duration", the drag-selection sheet's "Duration", the Inputs window's "When" becomes "Duration" (the agent's reading); lesson 31.
 - **Q7 → yes (D1213):** Available P / W at amber or red count as under-manned, in the chip and the bid window's line; the architecture note amended.
 - **Q8 → yes (D1214):** a member's bell is told when bidding opens or closes; a tap opens the Leave War with that bidding period in view (the register's P4 and P7 ruled in).
+- **D1215:** on Q10 — "i want an option to exclude SANS which is the main way we operate": SANS stay off the Leave War unless put on, never in "Everyone else" (checked in the code: dropped from the roster before any group is drawn); Q10 itself asked again.
+- **Q11 → as recommended (D1216):** the bell keeps "Approval of … taken back · Saber" when an Undo reverses a decision he has read; an unread one goes with the Undo; D1142 narrowed, P8 ruled.
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
   `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (his question "in what scenario": the clash rules allow only leave during a course or overseas duty, leave beside
   ATT B, and an FO given by hand on a leave day; recommended now C — the leave fills the cell, the other a strip down its right
