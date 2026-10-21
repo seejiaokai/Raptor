@@ -275,6 +275,7 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **And (D1190):** "Perhaps I should have an amber criteria to set in the rows of avail P and W for now." / "Like in a setting" — the Available rows get an amber point he sets (in the row's own window — the agent's reading); what it measures (a margin above Required, recommended, or a fixed number) put to him with a picture. This branch now takes **D1190–D1199** (checked 21 Oct 26: nothing above D1189 on any branch).
 - **And (D1191):** "like a number +/- the stated number" — the amber point is set as a number plus or minus the day's Required; drawn in the Available P window with red beside it as the same kind of setting (Required + 0 by default, today's rule) — the agent's proposal, his to confirm; "+2" means amber when under Required + 2 (one or none to spare). D640 marked.
 - **And (D1192):** "If the input causes multiple counters to go amber or red, it will show on the lowest avail" — every Manning row the request turns amber or red shows in the "Lowest Avail" column, each on its own line (lesson 18); drawn.
+- **And (D1193):** "Take note the required P and W should also be allowed to be edited" / "The name of it" — Required P and W may be renamed, only their name (narrows D668); the build changes `leavewar/ui/FlyRows.tsx`, whose names are fixed today.
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
   `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (his question "in what scenario": the clash rules allow only leave during a course or overseas duty, leave beside
   ATT B, and an FO given by hand on a leave day; recommended now C — the leave fills the cell, the other a strip down its right
@@ -319,7 +320,7 @@ Batches by area (D1087), each its own branch, bug check and "merge live":
    *(Written "Locks in place of the stages" until 21 Oct 26 — corrected by the D201 sweep of D1177.)*
 7. **The cell** — the halves and two entries stacked, the waiting look and Ack's removal (Q2–Q4): the grid's speed rules
    (`../../performance.md` §E) measured before and after; the Legend rewritten; "Figures" renamed "Balances", its heading a
-   button (D1185).
+   button (D1185); the Available rows' amber and red settings (D1190, D1191) and the Required rows' names (D1193).
 8. **The scheduler's side** — Approvals with its dates filter (the whole period's months, D1184) and Approve all (one
    command, one undo, a refused line reported); each line the person's puck, the kind's coloured box, "LVE Bal", his own
    seat's lowest figure and a document icon (D1178, D1180, D1181); "Approve what I enter" in line with the window's rows
