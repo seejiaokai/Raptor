@@ -298,6 +298,9 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **Q8 → yes (D1214):** a member's bell is told when bidding opens or closes; a tap opens the Leave War with that bidding period in view (the register's P4 and P7 ruled in).
 - **D1215:** on Q10 — "i want an option to exclude SANS which is the main way we operate": SANS stay off the Leave War unless put on, never in "Everyone else" (checked in the code: dropped from the roster before any group is drawn); Q10 itself asked again.
 - **Q11 → as recommended (D1216):** the bell keeps "Approval of … taken back · Saber" when an Undo reverses a decision he has read; an unread one goes with the Undo; D1142 narrowed, P8 ruled.
+- **D1217:** his correction of Q3's drawing — "pending", not "waiting"; the days pending in days (2½), not requests; the two LVE figures named plainly ("LVE app BAL vs LVE war BAL" — drawn as "App bal" and "War bal").
+- **D1218:** carried-forward leave as the official leave system keeps it — a year's unused leave carries one year, then is gone; [LEAVE-YEAR] joins the overhaul.
+- **N → no option (D1219):** no setting turns on admin notifications of new requests; the Approvals count is the one signal. This branch's range D1210–D1219 is now used; the next chat checks every branch for the next free number.
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
   `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (his question "in what scenario": the clash rules allow only leave during a course or overseas duty, leave beside
   ATT B, and an FO given by hand on a leave day; recommended now C — the leave fills the cell, the other a strip down its right
