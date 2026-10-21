@@ -80,7 +80,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [EOD] — End-of-Day "record actuals": designed on paper, nothing built — his word.
 
 **Inputs and calendars**
-- [UI-CONSISTENCY-LOOK] — the whole app looked over, desktop and phone, for the same thing drawn differently where it should match (D1124) — round 1 answered and live (D1125–D1128); round 2 answered, built and merged on his "merge live" (D1129–D1133, pull request 563, 21 Oct 26); round 3's first four answered (D1134–D1137) and built on pull request 564; (8) and (9) answered as questions 5–7 ("yes all" — D1138, D1139, D1170) and built on the same pull request, his answer to the one small question it left (8: the bar 2 taller on a narrow desktop) "leave it" — D1171; round 4 (10, 12, 15, 17, 18) after.
+- [UI-CONSISTENCY-LOOK] — the whole app looked over, desktop and phone, for the same thing drawn differently where it should match (D1124) — round 1 answered and live (D1125–D1128); round 2 answered, built and merged on his "merge live" (D1129–D1133, pull request 563, 21 Oct 26); round 3 answered, built and merged on his "merge live" (D1134–D1139, D1170, D1171, pull request 564, 21 Oct 26); round 4 (10, 12, 15, 17, 18) after.
 - [TITLE-CHECK-SEEN] — three older small finds left: one line a man in "To go out", a re-accepted request read as a words change, a long OIL Earn name cut on a phone.
 - [ALLAVAIL-CHECK-SEEN] — the ALL AVAIL / Event check's older small finds, none fixed.
 - [CAL-CHECK-SEEN] — the calendar job's small finds still open: a phone on its side, two gesture finds, the windows' five, each man's LATE tag on a shared card.
