@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1185 | 21 Oct 26 | No second balances list on the Leave War: the "Figures" drawer, its heading and the person window's line are called "Balances", the days-used columns staying inside it — and the Balances heading is made plainly clickable, not a faint label. |
 | D1184 | 21 Oct 26 | The Approvals list's date choices cover the whole Leave War period on view — the one he created, usually a year — not only a few months. |
 | D1183 | 21 Oct 26 | In the Leave War's bid windows each leave button wears its kind's colour of look F (D1175) — LL light amber, OL deep amber, OIL green, the other leave blue — so the button and the box it places on the grid look alike. |
 | D1182 | 21 Oct 26 | In the admin's bid window the "Approve what I enter" tick is moved out of its odd place, drawn alone on a row with an empty label, to where it sits neatly in line with the window's other rows; where, is drawn for him and put with a recommendation. |

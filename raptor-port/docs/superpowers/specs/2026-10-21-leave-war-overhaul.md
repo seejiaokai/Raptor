@@ -267,6 +267,7 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **And (D1182):** "The approve what i enter is in a very odd place. could u find space to put it nicely with good alignment" — the tick leaves its unlabelled row; drawn two ways for question 9 (A: its own row with a label in the label column, "APPROVE ☐ What I enter", above Which leave; B: in the window's title bar, before ✕) — design lesson 24.
 - **And (D1183):** "Perhaps also include the colour coding of the leave etc we agreed on just now" — the bid windows' leave buttons wear look F's colours (design lesson 23 applied); drawn with question 9.
 - **And (D1184):** "also just to confirm the dates will be for the period of the calendar i created yeah? which is usually yearly" — yes: the Approvals list's date choices are the whole period's months, as the "Open for bidding" window's month buttons, a month with nothing waiting dimmed; redrawn with question 7.
+- **Q8 → A, and (D1185):** "8A Make balances more obvious to click on" — no second list; "Figures" becomes "Balances"; its heading drawn as a button like "Manning" (▸ / ▾) — design lesson 25.
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
   `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (his question "in what scenario": the clash rules allow only leave during a course or overseas duty, leave beside
   ATT B, and an FO given by hand on a leave day; recommended now C — the leave fills the cell, the other a strip down its right
@@ -304,15 +305,22 @@ Batches by area (D1087), each its own branch, bug check and "merge live":
 5. **Balances over years, manning** — round 4, with `[LEAVE-YEAR]` and `[LW-COMMIT-MANNING]`.
 
 **Added by the full mock-up (§9) — each a new stored record and a permission row, changed together (D200, D473):**
-6. **Locks in place of the stages** — FULL: the lock list stored per period; the stage dropped; who may write a day asks
-   the locks at the war's write path AND at the one inputs gate (Q6); the period that opens, the clash note's words, the
-   moved mark, remarks and Undo per Q5's table; `perms.ts` and `data-model.md` §11 together.
+6. **Open dates in place of the stages (D1177)** — FULL: the open stretches stored per period (the "Open for bidding" window,
+   its month buttons and calendar icon — D1168, D1169, D1172); the stage dropped; who may bid on a day asks the open dates at
+   the war's write path only — the Inputs page is never stopped (D1166); the closed note (D1176); the period that opens, the
+   clash note's words, the moved mark, remarks and Undo per D1177's readings; `perms.ts` and `data-model.md` §11 together.
+   *(Written "Locks in place of the stages" until 21 Oct 26 — corrected by the D201 sweep of D1177.)*
 7. **The cell** — the halves and two entries stacked, the waiting look and Ack's removal (Q2–Q4): the grid's speed rules
-   (`../../performance.md` §E) measured before and after; the Legend rewritten.
-8. **The scheduler's side** — Approvals with its dates filter and Approve all (one command, one undo, a refused line
-   reported), "Approve what I enter", who placed a request and when (a new stored field).
+   (`../../performance.md` §E) measured before and after; the Legend rewritten; "Figures" renamed "Balances", its heading a
+   button (D1185).
+8. **The scheduler's side** — Approvals with its dates filter (the whole period's months, D1184) and Approve all (one
+   command, one undo, a refused line reported); each line the person's puck, the kind's coloured box, "LVE Bal", his own
+   seat's lowest figure and a document icon (D1178, D1180, D1181); "Approve what I enter" in line with the window's rows
+   (D1182) and the leave buttons in their colours (D1183); who placed a request and when (a new stored field — the list's
+   oldest-first order rests on it).
 9. **Documents on every entry** — a document list on the war's request record, carried to the Input on approval; the
-   leave's document ask on the Inputs page; the reminder the day before (the register).
+   leave's document ask on the Inputs page; the reminder the day before (the register); the Inputs page's type filter
+   picking a whole family, with "No document" on a leave or medical row without one (D1179 — a view setting, no record).
 10. **Events and holidays** — the events list on the war; Export / Import on the Holidays list (one record, D638).
 11. **Management** — per Q12's answer (a Quals column, or a picked list stored on the war).
 
