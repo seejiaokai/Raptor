@@ -68,6 +68,7 @@ scrolls it sideways: `inputs.md` (D893).
 
 | # | Date | The rule |
 |---|---|---|
+| D1105 | 21 Oct 26 | A posting out with Delete chosen says plainly that the app deletes him by itself on the date: the sheet's line reads "On <date> the app deletes him automatically, with his account. Days he flew keep his puck.", and until the date his row reads "posting out <date> · auto delete"; the button stays "Delete" (D298). |
 | D1102 | 21 Oct 26 | On the Post out sheet, changing the date of a posting whose outcome is Delete to today or earlier asks the same tap-twice question as the Delete button before he is deleted; the date is not saved until the second tap. |
 | D1101 | 21 Oct 26 | The app is deployed separately for each aircraft type — F-15, F-16, F-35 — each with its own database; one code base still serves them all (D1100), and the squadrons of one type, with their detachments, share that type's database. |
 | D1100 | 21 Oct 26 | One app is built for every squadron and aircraft type (F-15, F-16, F-35), each squadron configuring it inside the app, with an aircraft-type setting that carries its rules; detachments and squadrons sharing people by day or period come at the end, after the F-15 app's faults are fixed, and work before then avoids what would have to be redone. — changed by D1101 |
@@ -90,7 +91,7 @@ scrolls it sideways: `inputs.md` (D893).
 | D306 | 27 Sep 26 | A posting that would leave no admin able to sign in waits, whole, until another admin can |
 | D304 | 27 Sep 26 | A delete counts from the real calendar date, as built. |
 | D303 | 27 Sep 26 | A posting with no chip chosen stays: "off the manpower, nothing else". |
-| D300 | 27 Sep 26 | The post-out sheet says each thing once: the date in its box, one line for what happens on it ("On 14 Oct: archived on Quals, account suspended."), and a button that reads just "Post out". |
+| D300 | 27 Sep 26 | The post-out sheet says each thing once: the date in its box, one line for what happens on it ("On 14 Oct: archived on Quals, account suspended."), and a button that reads just "Post out". — changed by D1105 |
 | D299 | 27 Sep 26 | A delete takes him out of today and the future while the past keeps its record of him — his pucks on days flown, his past leave and OIL, his inputs and signatures, the history; the post-out mock-up, trimmed to say each thing once (D300), is the design of record for [POST-OUT-OUTCOMES]. — changed by D981, D300 |
 | D298 | 27 Sep 26 | The post-out chip reads "Delete", not "Fully delete". |
 | D297 | 27 Sep 26 | A man deleted for leaving flying for good keeps his puck on every day he already flew — published or not — and is taken off every day still to come |

@@ -95,6 +95,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-LOCKMARK] — the war still locks a day with an old marker; per-record checks replace it.
 - [LW-OFFER-ONLY-TAKEABLE] — two war sheets offer a choice the war then refuses — with [LW-LOCKMARK].
 - [LW-SEL-HALF-LABELS] — the drag-selection sheet shows half-day leave as "FCL*" where the one-day sheet shows "<FCL".
+- [PO-AUTO-DELETE-WORDS] — the Delete posting says the app deletes him by itself on the date: its line, and "· auto delete" on his row (D1105); with the next Leave War batch.
 - [LW-GROUPS-STALE-AFTER-ARCHIVE] — the war's groups keep archived men until a reload (found 21 Oct 26).
 - [LW-SETTINGS-SMALL] — two small ⚙ Settings edges: Reset order judges the whole roster; an armed "Really reset?" survives a page switch.
 - [LW-DOZE-GUARDS] — a check: do the war's measuring guards run while its page is asleep?
@@ -232,6 +233,9 @@ desktop, with a setting changed. The original app (`reference/`) is read-only an
 
 ### [OVERNIGHT-SESSION-PER-JOB] The overnight run starts each job in a fresh session (his word, 21 Oct 26 — D1103)
 **What:** tried on the night of 21 Oct 26 — the night's chat starts each job in a session of its own, one after another, and only coordinates. **Next:** the morning report says whether it worked (the weekly figure before and after, whether every session was started on time); if it did, the overnight guide (`.claude/skills/overnight/`) is changed to say so, while he is awake, read before his approval (D70) — with D1104's "Low or Medium?" question beside the hours, and what Low and Medium each mean; and what that night found: a separate session cannot be started from his phone or on a turn a finished job wakes, so a fresh helper per job is the default. **Record:** `raptor-port/docs/superpowers/plans/2026-10-21-night-vetting.md` §The night's way of working.
+
+### [PO-AUTO-DELETE-WORDS] The Delete posting says it is automatic (his word, 21 Oct 26 — D1105)
+**What:** on the Post out sheet (every posting door), the Delete outcome's line reads "On <date> the app deletes him automatically, with his account. Days he flew keep his puck."; until the date his row reads "posting out <date> · auto delete" (the pending words, `leavewar/sync.ts` `postingPendingTag` / `OUTCOME_WORD` — Admin → Users and the Leave War); the button stays "Delete" (D298). **Check:** the line on every door, the row before and after the date, phone and desktop. **Place:** with the next Leave War batch (after pull request 556 merges). **Picture:** the sheet with the two places marked, sent to him 21 Oct 26.
 
 ### [LW-GROUPS-STALE-AFTER-ARCHIVE] The Leave War's groups keep archived men until a reload (found 21 Oct 26 by the single-seat walk; low)
 With every WSO archived through Admin → Users, in the same session the Leave War still read IWSO 5 and OPS W 12; after a reload the empty groups were gone (an empty group draws no heading). The grid did not refresh its groups after the archives. **To do:** reproduce with one man archived; find why the roster projection does not regroup. **Place:** the agent's; with the next Leave War batch. **Evidence:** the night's single-seat check (`raptor-port/docs/superpowers/specs/2026-10-21-single-seat-check.md`).
