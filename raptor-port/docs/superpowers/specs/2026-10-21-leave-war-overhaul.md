@@ -305,6 +305,8 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **Q10 → as recommended (D1221):** "+ SANS" among the groups in place of the Show SANS switch; D882 narrowed.
 - **R → admin (D1223):** the URHO who runs the Leave War is made an admin; no Leave-War-only role.
 - **D1224:** leave always comes off the carried-forward days first (his answer to the check on D1218); Q3's layout to be reworked with Impeccable, the locked state showing no boxes (his point).
+- **Q5 → A (D1225):** a member may delete his own pending bid on a closed day; D1176 and D1177 narrowed.
+- **D1226:** the request's remarks carry the till-date tick, working exactly as on the Inputs page (D952, D953, D1095).
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
   `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (his question "in what scenario": the clash rules allow only leave during a course or overseas duty, leave beside
   ATT B, and an FO given by hand on a leave day; recommended now C — the leave fills the cell, the other a strip down its right
