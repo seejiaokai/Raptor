@@ -696,6 +696,8 @@ Met again 15 Oct 26 (`[LW-REARRANGE-EDGE-SCROLL]`), worse: CODE under `raptor-po
 
 **Principle:** A push is done when the remote says so, not when the command exits; any quiet or filtered push needs a read-back of the remote head.
 
+met again 2026-10-21: the handoff's pasted opening line for round 2 of the consistency look said `git switch -c claude/consistency-round2 origin/main` - the new branch tracked `origin/main` (`branch.<b>.merge = refs/heads/main`), and with this repo's push.default=upstream a plain `git push` would have gone to MAIN. Caught by the memory note, unset at once. The guard to propose: the opening-line template ends with `--no-track` (an unconditional default, not a condition to judge).
+
 ### Observation 600: In the desktop app a worktree chat takes its settings, hooks and skills from the MAIN checkout, so a merged change to them is dead until that folder is brought to main
 
 **Status:** OPEN
