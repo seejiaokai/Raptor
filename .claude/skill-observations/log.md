@@ -1562,3 +1562,18 @@ different feature that merely pass through it.
 **Suggested improvement:** in the break-test step, a test of the form "X did not happen" first asserts that its precondition did happen without the guard (the thing was picked up, the drag was live) — or is written to observe the guard's direct effect instead of the absence of a downstream change.
 
 **Principle:** A negative assertion proves nothing until the test has shown the harness can produce the positive case; check the precondition, or assert the guard's own effect.
+
+### Observation 659: A mock-up's picked state must show the thing being asked about
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** [BOARD-SIDE-WIDTH] — drawing "a crossed-out man's reason beside his puck" on the Scheduler Board's crew list
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** "Judging the Proposal" — the busy state
+
+**Issue:** The first drawing picked a flying FRONT seat to show reasons beside the pucks. With a front seat picked, every pilot is plannable and every WSO shares one column-wide reason, so the list printed NO per-person reason at all — three pictures of a change that was not visible. The script passed and measured "10 reasons" (placeholders), which hid it until the pictures were opened. A duty desk (each man struck for his own reason) was the state that showed it.
+
+**Suggested improvement:** Under "Include one BUSY state by default", add: before drawing, list which app states make the proposed change VISIBLE and pick one where it shows on most rows; have the script assert a count of the exact element the change touches (here per-man reasons inside the two crew columns), not a looser selector that other rows also match.
+
+**Principle:** A state chosen for convenience can make the proposal invisible; choose the state by what it displays, and assert on the exact element the change touches.
