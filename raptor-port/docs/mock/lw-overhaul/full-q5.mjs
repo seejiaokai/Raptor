@@ -67,7 +67,7 @@ const MID = sheet('Open for bidding', [['15 Apr – 14 Jul', 'open', 'go']], '+ 
   '<div class="cal">' + [['Apr', 3], ['May', 4], ['Jun', 5], ['Jul', 6]].map(([n, m]) => monthRow(n, m, 415, 714)).join('') + '</div>'
 function page(phone) {
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Leave War bidding</title><style>${CSS}</style></head><body><div class="wrap">
-<section id="q5"><h1>Opening the next three months, two ways</h1><p class="sub">The same year. First you open April to June; once everyone is approved, you move on to July to September. Green: members may bid. Dim with a lock: they may not. Pink: what you have to change.</p>
+<section id="q5"><h1>Opening the next three months, two ways</h1><p class="sub">The same year. First you open April to June; once everyone is approved, you move on to July to September. The row of twelve months is only a summary drawn here, not part of the screen: green, members may bid; dim with a lock, they may not. Pink: what you have to change.</p>
 <div class="cols">
 <div class="col rec"><div class="ct">1 · Say what is open <i>(your app today, without the stages · recommended)</i></div>
 ${step(1, 'Open April to June: one line.')}${OPEN_A}${strip([3, 4, 5])}
