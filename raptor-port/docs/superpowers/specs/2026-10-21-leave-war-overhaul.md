@@ -214,6 +214,33 @@ Each to be drawn on the real app with lettered options and a worked example befo
 - **He has more questions of his own** (21 Oct 26, "hold on i have alot more questions but u can continue to suggest") —
   taken next, before round 2 is put.
 
+**His list of 22 points (21 Oct 26, after round 1)** — his own read of the colleague's app, with *"Create a full mock up
+on what u think the app should change into … use the design skill … easy and simple to understand"*. Recorded:
+- **D1145** (points 2, 3, 20): AM and PM half days stay, which half always chosen; the cell draws AM in its top half, PM in
+  its bottom half.
+- **D1146** (4): two entries on a day both show in the cell, one above the other.
+- **D1147** (5): an admin's "Approve what I enter" tick — answers round 2's question on an admin's entries.
+- **D1148** (7, 22): a tap on a person opens his balances and upcoming leave with its state, by year, past years kept
+  under a drop-down.
+- **D1149** (8): a Management group the admin makes, at the top by default.
+- **D1150** (12): photos and PDFs on every input, any time, even after locking; a leave on the Inputs page asks for its
+  document as medical does, never a hard stop.
+- **D1151** (12): one register of every notification the app should send, kept by the agent ([NOTIFY-REGISTER]).
+- **D1152** (13): an Approvals list with a rising count and Approve all — round 2's Q5 and Q6 decided.
+- **D1153** (14): a bid takes its leave off at once; no "after pending" figure.
+- **D1154** (15): Available P and W set up as any counter, one row each; the SANS calendar follows them.
+- **D1155** (16): holidays brought in by file (export, fill offline, import); a list of squadron events with types,
+  several days allowed.
+- **D1156** (17): lock dates adopted; whether the stages go is put to him on the full mock-up (his lean: they go).
+- Point 21 (pinch to zoom on a phone) is already ruled — D1117, `[LW-PHONE-PINCH-ZOOM]`.
+
+**His open questions, to answer on the full mock-up with a recommendation each:** 1 the month or the year view; 6 colour
+by leave type, and marking what came from the Inputs page (D1145 decides the halves, not the colours); 9 the waiting look
+(ours, or theirs' outline with an orange dot); 10 a quick approve, or approve all for a selected period; 11 whether Ack
+goes; 17 what members see of the periods being bid or approved, if the stages go; 18 whether a Balances list is needed
+beside the figures; 19 whether "Figures" is renamed "Balances". **Rounds 2 to 4 of §4 are folded into the full mock-up**:
+what his list already answered is not asked again.
+
 ## 6. The build, once he has answered
 
 Batches by area (D1087), each its own branch, bug check and "merge live":

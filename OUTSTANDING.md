@@ -92,6 +92,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Leave War**
 - [LW-OVERHAUL] — the Leave War's major overhaul, taking the good things from a colleague's app (D1140) — planning: his answers, round by round.
+- [NOTIFY-REGISTER] — one register of every notification the app should send, kept by the agent (D1151) — written in the overhaul's next chat.
 - [LW-PHONE-PINCH-ZOOM] — on a phone the Leave War grid pinches to zoom (D1117) — its own job in a fresh chat, questions and pictures first.
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
 - [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK], then [LW-WEEKDAY-WORK], then the database.
@@ -230,7 +231,16 @@ by a fresh, blind Opus reader before anything is built. **The design note:**
 build batches). **It decides together:** [LEAVE-YEAR] (yearly balances), [LW-SORT-BY-FLIGHT] (D1001), [LW-PHONE-PINCH-ZOOM]
 (D1117), [LW-COMMIT-MANNING] (parked, D998) — each stays its own item until the note says otherwise. **Branch:**
 `claude/leave-war-overhaul` (planning only). **Place:** his rounds of questions first; the build in batches by area (D1087),
-each with its own bug check.
+each with its own bug check. **21 Oct 26:** round 1 answered (D1141-D1144); his list of 22 points recorded (D1145-D1156); next, a full mock-up of the new Leave War in a fresh chat, with the design skill.
+
+### [NOTIFY-REGISTER] One register of every notification the app should send (his word, 21 Oct 26 — D1151)
+**His words:** *"Can u create a document to note down all the areas in which we should have a notification and how it
+should work … I want u to automatically see which areas needs a notification and automatically fill it in and tell me if
+I want to reject"*. **What:** one document — every place a notification should go out, who gets it, when, what it says,
+what a tap opens, and whether it is built. The first entry: a reminder to attach a leave's document one day before it
+starts (D1150). The bell's notices already built are listed in it too. Kept by the agent: any job that finds a place that
+needs one adds a line and names it in its closing report; he may strike any. **Where:** a reference document under
+`raptor-port/docs/` with its row in the project guide's map. **Place:** the Leave War overhaul's next chat ([LW-OVERHAUL]).
 
 ### [LW-PHONE-PINCH-ZOOM] On a phone the Leave War grid pinches to zoom (his word, 21 Oct 26 — D1117)
 **What:** as on the Scheduler Board's desktop layout and Quals (D1109, D1110, live with pull request 561), a pinch on a phone
