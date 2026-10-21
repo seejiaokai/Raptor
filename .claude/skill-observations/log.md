@@ -1637,3 +1637,18 @@ different feature that merely pass through it.
 **Suggested improvement:** add a trap line: when a transform moves nodes between containers, move the part whose styles are global into the container whose styles are scoped — never out of it; then measure the moved part's computed font size and position against the original before taking the picture.
 
 **Principle:** In a live-page mock-up, a node's look can depend on where it sits; relocate the side that does not.
+
+### Observation 664: A shared claude.ai app draws nothing without its database — run its saved source locally against a stand-in store to picture it
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** [LW-OVERHAUL] (D1140) — comparing a colleague's leave app (a claude.ai artifact from another organisation) with our Leave War, pictures of both for the owner. Parallel branch claude/consistency-round2 was at 663 when this was written.
+**Skill:** brainstorming (`mockups-on-the-real-app.md`); impeccable (shape — studying a reference product)
+**Type:** open-source
+**Phase/Area:** gathering evidence about a reference app before a design comparison
+
+**Issue:** The Artifact read of the colleague's page returned an empty summary ("only a title"), because the page builds every screen in script from its runtime database and sign-in. Opening the live page would have shown another squadron's real data. What worked: read the saved raw source whole, then serve a local copy with a small stand-in for the page's `window.claude.use('db' | 'user' | 'assets')` that feeds made-up people (snapshot listeners, set/update/delete with null-deletes), the clock held, the other unit's name replaced before any picture. Every screen then drew and could be driven like any page — tabs, its form's live preview, a drag — with zero errors, and nothing touched their real store.
+
+**Suggested improvement:** In the mock-up guide, a short "Picturing someone else's app" note: read the source whole (the summary of a script-drawn page is empty); never open its live data; run it locally against a stand-in store with invented records; replace identifying names in the HTML before capture; do not commit the stand-in if it carries their storage keys or names.
+
+**Principle:** To study a data-driven reference app, run its code against invented data in a sandbox rather than reading its live data or trusting a summary of its empty shell.

@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1140 | 21 Oct 26 | The Leave War gets a major overhaul, planned in its own chat, taking the good things from a colleague's leave app: what it does better is listed beside what ours already does or he has ruled against, and each product choice is put to him in rounds of four with pictures before anything is built. |
 | D1117 | 21 Oct 26 | On a phone the Leave War grid can be pinched to zoom in and out, as the board's desktop layout and Quals can; built as its own job in a fresh chat, its questions and pictures first. |
 | D1019 | 18 Oct 26 | From 431 to 700 wide the Leave War grid card's buttons use the phone's short words ("⇅", "OIL") as drawn at 440, so "−" and "+" stay on the first line; the grid's columns are unchanged. |
 | D1016 | 18 Oct 26 | The Leave War's shorter two-line top up to 700 wide is built as drawn at 440 and 600: the wide gap in each line at 600 is accepted, and from 431 to 700 the top keeps the grid card's 20px edge so the two line up; the grid card is unchanged but for its buttons' short words (D1019). — changed by D1019 |
