@@ -89,6 +89,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 
 **Leave War**
+- [LW-PHONE-PINCH-ZOOM] — on a phone the Leave War grid pinches to zoom (D1117) — its own job in a fresh chat, questions and pictures first.
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
 - [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK], then [LW-WEEKDAY-WORK], then the database.
 - [LW-LOCKMARK] — the war still locks a day with an old marker; per-record checks replace it.
@@ -212,6 +213,17 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [LW-PHONE-PINCH-ZOOM] On a phone the Leave War grid pinches to zoom (his word, 21 Oct 26 — D1117)
+**What:** as on the Scheduler Board's desktop layout and Quals (D1109, D1110, live with pull request 561), a pinch on a phone
+zooms the Leave War grid. **First:** what a pinch zooms (the grid only — not the war's top, the month strip, which already
+cancels the grid's zoom, or the pinned columns' alignment), how far, and whether the pinch and the − / + buttons share one
+zoom (recommended: one zoom, the buttons stepping it), with pictures at his iPhone's size. **How:** the one pinch body,
+`raptor-port/src/ui/pinchzoom.ts` (a stretch while the fingers move, laid out once at the lift); the grid's zoom today is
+`raptor-port/src/leavewar/ui/Matrix.tsx` (`zoom`, "Stepped +/− buttons rather than pinch" — that note is answered by the
+pinch body); the grid's window of months and its pinned rows (`raptor-port/docs/performance.md` §E) must follow a zoom
+change. **Then:** build, the bug-check order (a gesture: WALK at least, real two-finger touch over CDP). **Place:** its own
+job, a fresh chat (his word) — after or beside [BOARD-SIDE-WIDTH], his order.
 
 ### [BOARD-SIDE-WIDTH] The board's right panel — the pilots / WSOs gap and a panel he can drag wider (his questions, 21 Oct 26)
 **His words** (with a desktop picture of the side column): *"on the desktop the pilot and wso are spaced slightly apart.
