@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1192 | 21 Oct 26 | In the Leave War's Approvals list, every Manning row a request turns amber or red shows in the line's "Lowest Avail" column, in its colour — not only one. |
 | D1191 | 21 Oct 26 | The Available P and W rows' amber point is set as a number plus or minus that day's Required figure, not as a fixed number — so it follows each day's need. |
 | D1190 | 21 Oct 26 | The Available P and Available W rows get an amber point he sets in a setting, so a day running short shows amber before it turns red under Required. |
 | D1189 | 21 Oct 26 | In the Leave War's Approvals list each line's figures stand in columns that line up from line to line — how long, the balance, the lowest Available, when it was placed — not run together in one sentence in the middle. |
