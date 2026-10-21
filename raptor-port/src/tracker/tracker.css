@@ -122,7 +122,13 @@ header h1{font-size:16px;margin:0;letter-spacing:.5px}
 /* Desktop: the box is simply in the bar and the 🔍 button is not needed. */
 .findwrap{position:relative;display:inline-flex}
 .findpanel{display:inline-flex;align-items:center;gap:5px}
-#hSearch{width:112px;padding:4px 8px;font-size:12px}
+/* one search box (owner D1127): the line magnifier inside the box, the input inside it unboxed — the box the app's inputs' */
+.findbox{display:inline-flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:4px 8px;min-width:0}
+.srchglyph{width:15px;height:15px;flex:0 0 auto;color:var(--muted)}
+#hSearch{width:112px;padding:0;font-size:12px;border:0;background:transparent;min-width:0}
+#hSearch:focus{outline:none}
+.findbox:focus-within{border-color:var(--accent)}
+#hSearchBtn .srchglyph{color:currentColor}
 #hSearchBtn{display:none}
 #hSearchClear{padding:3px 6px}
 /* No reserved width: the bar has to hold Save changes as well, and 52px of
@@ -748,6 +754,7 @@ small.hint{color:var(--muted);font-size:11px}
    background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:6px 8px;
    box-shadow:0 8px 26px rgba(0,0,0,.5)}
  .findpanel.on{display:flex}
+ .findbox{flex:1 1 auto}
  #hSearch{flex:1 1 auto;min-width:0;width:auto}
  /* The strip is position:fixed, so the list hangs off IT, full width. */
  .findpanel .findlist{left:0;right:0;max-width:none}

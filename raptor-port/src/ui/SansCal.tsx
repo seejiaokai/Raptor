@@ -27,7 +27,7 @@
    THE SAVED-ROW REVEAL (state/view.ts INPREVEAL — kept whole from the first calendar): a commitment just saved, or
    brought back by Undo, opens its own day on its own month, ONCE; closing that day, opening another or leaving the
    calendar spends it, so a second visit does not open it again (Opus's read of the first build, step 0). */
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
 import { INPUTS, isSansAvail } from '../engine/inputs'
 import { getTones, sansCommittedOn } from '../state/flyplan'
 import { addDays } from '../state/flyplan-model'
@@ -106,7 +106,8 @@ function Highlight({ people, hi }: { people: string[]; hi: string | null }) {
   )
 }
 
-export function SansCal() {
+/* `lead`: the Inputs page's three tabs, handed in on a desktop so they stand first in the month row (owner D1125) */
+export function SansCal({ lead }: { lead?: ReactNode } = {}) {
   useVersion()
   useWarFacts()
   const gridRef = useRef<HTMLDivElement>(null)
@@ -256,7 +257,8 @@ export function SansCal() {
   return (
     <div className="sanscal" id="sansCal" data-testid="sanscal">
       <div className="sc-top" ref={topRef}>
-        <div className="sc-head">
+        <div className={'sc-head' + (lead ? ' sc-head-tabs' : '')}>
+          {lead}
           <button type="button" className="abtn sc-nav" data-testid="sc-prev" aria-label="Previous month" onClick={() => step(-1)}>&#8249;</button>
           {/* data-fit on a desktop: the name's room is the widest month in the device's own font, so › stays put (D1122);
               the phone keeps its own 96px (D705) */}

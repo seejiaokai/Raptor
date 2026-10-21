@@ -158,6 +158,23 @@ GitHub's run is the check — **green on `21b0de3f6`** (both groups that were re
 
 **What was looked at:** the top rows of Edit Schedule, View-only Sched, the Scheduler Board, Inputs (calendar, list), SANS, Medical, Quals, Logic, the Leave War, the Tracker, Help and Admin, at 1536 × 864 and 402 × 874 by touch (`scripts/handpass/bsw-consistency.mjs`; pictures `look1/sweep/`, measurements `look1/sweep/consistency.json`), and the top bar's height on five pages from 1920 down to 1200 wide. **Not looked at:** windows, sheets and the app's calendars (the Calendar window, the one date calendar, the floating windows); a member's view — both for a later round if he wants them. **Found:** 12 mismatches, listed in the backlog item [UI-CONSISTENCY-LOOK]. **Round 1** (four) put to him on https://claude.ai/artifact/PftDJpeNxNvqxWsJPmAkFC, its page `look1/index.html`, drawn by `scripts/handpass/bsw-consistency-look.mjs`: the drawn Inputs / SANS row measured — the arrows, month and Today within 6px on the two pages (one shared style in the build makes them equal), the Calendar | List switch at x 874 on the Calendar and on the List; the drawn top bar at 1536 one line (58px, from 104). **Two drawing faults caught before he saw them** (the mock-up guide's "look at every picture"): SANS's parts moved out of its own box lost their styles — redrawn by moving the tabs into the SANS row instead; a tab-box change slipped into the drawing, taken out.
 
+## 7e. Round 1 built — his D1125–D1128 ("1 yes, 2 yes, 3 yes, 4 yes")
+
+**Tier WALK** — question 4 YES (a shared drawer: the top bar's rule on every page, the one search box on seven, the two calendars' shared row sizes); 5 and 6 NO (no new control, gesture or surface — existing ones restyled or moved); 1, 2, 3, 7, 8 NO (nothing of OIL, the published record, saved data, roles or warnings; what each button does is unchanged). **Sizing (§7.0):** type E (layout or look) on several surfaces, one builder — the host alone, one scripted walk as assertions (`scripts/handpass/bsw-round1-walk.mjs`), desktop widths 1536 / 1366 / 1024 / 900 and phones 402 / 320 by touch, every search box typed into, both edit pairs pressed. **Roll-call:**
+
+| Where | D1125 row | D1126 bar | D1127 search | D1128 buttons |
+|---|---|---|---|---|
+| Inputs calendar, desktop | HAS — one row, switch at the right end | HAS | n/a (its filters fold on the list too) | n/a |
+| Inputs list, desktop / phone | HAS — the switch where it was on the calendar (D687) | HAS | HAS — its search box | n/a |
+| SANS, desktop | HAS — the tabs in its month row | HAS | n/a (no search; Highlight is its finder) | n/a |
+| Inputs calendar and SANS, phone | MUST NOT change but the SANS month's letters, because the phone already matched (D705) | n/a (the phone's own bar) | n/a | n/a |
+| Medical tab and its as-of calendar | MUST NOT change, because D1125 names the Inputs and SANS rows only (its month is not under `.ib`) | HAS | n/a | n/a |
+| Edit Schedule, View-only Sched, Quals, Logic, Leave War, Tracker, Help, Admin — the top bar | n/a | HAS — one line to 1599 | — | — |
+| The Scheduler Board's own bar | n/a | MUST NOT change, because D1126 is the top bar's rule; the board's Undo / Redo kept their words below 1500 already — filed for round 2 as a 13th mismatch | HAS — its search box | n/a |
+| Edit Schedule week search | n/a | — | HAS already — the model | n/a |
+| Quals, Logic, Admin → Users, Tracker (desktop box, phone button) | n/a | — | HAS | Quals HAS; Logic MUST NOT change, because it is the model |
+| Quals while editing, "Edit quals" | n/a | — | — | MUST NOT change, because his 5 Aug 26 rule sets its look — but two blue buttons now stand side by side: put to him (round 2) |
+
 ## 8. Gates
 
 GitHub's run of pull request 562 is the gate set (D1086). Its result on the last pushed commit: see the closing report.

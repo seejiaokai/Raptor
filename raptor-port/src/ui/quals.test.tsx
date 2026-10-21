@@ -1158,14 +1158,16 @@ describe('D935 — Quals: one row, no paragraph under it', () => {
     for (const id of ['#qAddQual', '#qUses', '#qAdminLink']) expect($(id), id).toBeFalsy()
     expect(host.textContent).not.toMatch(/Similar to a LoX|integrated with the board|Archive, restore and delete are on/)
   })
-  /* owner D937, 16 Oct 26 ("As recommended"): on a phone "Save changes" reads "Save" too, so the filter keeps room to
-     type on the smallest phones while editing; the full words stay its name for a screen reader */
-  it('D937: Save changes keeps its full words for a screen reader, and has a short form for a phone', async () => {
-    await click($('#qEdit'))
+  /* owner D1128, 21 Oct 26 (round 1 of the consistency look): Logic's pair on Quals too — "✎ Edit" plain to start, "Done"
+     in the bright blue while editing; it replaced "Enable editing" and "Save changes" (D937's phone "Save" with it) */
+  it('D1128: "✎ Edit" plain to start, "Done" blue while editing — as Logic’s; Done still ends editing', async () => {
+    const e = $('#qEdit')
+    expect(e.textContent).toBe('✎ Edit')
+    expect(e.className, 'plain to start').not.toContain('primary')
+    await click(e)
     const b = $('#qSave')
-    expect(b.querySelector('.qx-long')!.textContent).toBe('Save changes')
-    expect(b.querySelector('.qx-short')!.textContent).toBe('Save')
-    expect(b.querySelector('.qx-short')!.getAttribute('aria-hidden'), 'read once, not twice').toBe('true')
+    expect(b.textContent).toBe('Done')
+    expect(b.className, 'the bright blue while editing').toContain('primary')
     await click(b)
     expect($('#qEdit'), 'pressing it still ends editing').toBeTruthy()
   })

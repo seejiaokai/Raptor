@@ -2,6 +2,7 @@
    builder; the tick/untick handlers keep the reference's invariants: NAAR
    is signed off after DAAR, SC NIGHT after SC DAY, and withdrawing the day
    qualification takes the night one with it. */
+import { SrchIcon } from './icons'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { wirePinch } from './pinchzoom'
 import { rowOnScreen } from './onscreen'
@@ -834,17 +835,18 @@ export function QualsPage() {
   return (
     <>
       <div className="qbar">
-        <button className="abtn primary" id="qEdit" hidden={qEditing} onClick={() => setEditing(true)}>Enable editing</button>
-        <button className="abtn" id="qSave" hidden={!qEditing}
-          onClick={() => { setEditing(false); setQualsEdit(false); setArmDel(''); HOOKS.toast('Quals saved') }}>
-          {/* "Save" on a phone (owner D937, 16 Oct 26), as Export below: on the smallest phones the row ran out of room
-              while editing and the filter was left its magnifier alone; the full words stay its name */}
-          <span className="qx-long">Save changes</span><span className="qx-short" aria-hidden="true">Save</span></button>
+        {/* LOGIC'S PAIR ON BOTH PAGES (owner D1128, 21 Oct 26 — round 1 of the consistency look, "4 yes"): "✎ Edit" plain to
+            start, "Done" in the bright blue while editing — as Logic's #lgEdit / #lgDone — in place of "Enable editing" (blue)
+            and "Save changes" ("Save" on a phone, D937). What each does is unchanged: every tick is kept as it is made, and
+            Done only ends editing (it still says "Quals saved"). */}
+        <button className="abtn" id="qEdit" hidden={qEditing} onClick={() => setEditing(true)}>✎ Edit</button>
+        <button className="abtn primary" id="qSave" hidden={!qEditing}
+          onClick={() => { setEditing(false); setQualsEdit(false); setArmDel(''); HOOKS.toast('Quals saved') }}>Done</button>
         {/* the second mode, inside edit mode and admin-only (owner, 5 Aug 26):
             which qualifications the LoX carries, and in which order. Off by
             default every time editing is switched on — reshaping the table is
             a deliberate act, not the state you land in to tick a box. */}
-        {/* it reads the way Enable editing does (owner, 5 Aug 26): BLUE while
+        {/* it reads the way Enable editing did (owner, 5 Aug 26; Enable editing is "✎ Edit" since D1128): BLUE while
             it is the thing to press, then plain dark with a ✕ once you are
             inside it, so the button always shows the way OUT rather than
             lighting up to say where you already are. */}
@@ -862,7 +864,7 @@ export function QualsPage() {
         {/* Enable editing and Export stay up here (owner, 15 Aug 26); the View
             switch moved down to sit directly above the table it filters. */}
         <div className="grow"></div>
-        <div className="searchbox">🔍<input id="qFilter" placeholder="filter" value={qSearch} onChange={e => setQSearch(e.target.value)} /></div>
+        <div className="searchbox"><SrchIcon /><input id="qFilter" placeholder="filter" value={qSearch} onChange={e => setQSearch(e.target.value)} /></div>
       </div>
       {/* only while the mode is on: adding a qualification, and the sentence
           that says what the headings do while it is on. Both live here rather

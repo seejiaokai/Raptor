@@ -40,7 +40,9 @@ tr.back-hl > td.qname::after{box-shadow:inset 0 2px 0 #3cc6e6,inset 0 -2px 0 #3c
    the folded Archived group. The app's own tokens (scheduler.css :root); nothing new in colour. */
 #page-admin .od-head{display:flex;align-items:center;gap:10px;margin:0 0 10px}
 #page-admin .od-head .adm-sub{margin:0}
-#page-admin .od-find{margin-left:auto;flex:0 1 220px;min-width:0;background:var(--bg);border:1px solid var(--edge);color:var(--ink);font:13px 'Inter Tight',sans-serif;padding:7px 10px;border-radius:9px}
+/* the shared search box (02-shell.css .searchbox — owner D1127: one look, the line magnifier inside) */
+#page-admin .od-find{margin-left:auto;flex:0 1 220px;min-width:0;height:36px;box-sizing:border-box}
+#page-admin .od-find input{width:100%;min-width:0;font-size:13px}
 #page-admin .od-list{border-top:none}
 #page-admin .od-cols{display:flex;gap:6px 10px;align-items:center;padding:0 0 6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600;border-bottom:1px solid var(--edge)}
 #page-admin .od-cols .od-grow{flex:1 1 0}

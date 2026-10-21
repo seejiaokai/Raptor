@@ -1007,10 +1007,10 @@ for (const [name, vp, touch] of [['a phone', { width: 390, height: 844 }, true],
       const mids = await page.evaluate(() => ['#inCalBtn', '#icPrev', '#icToday', '#inGear'].map(s => { const r = document.querySelector(s)!.getBoundingClientRect(); return Math.round(r.top + r.height / 2) }))
       expect(Math.max(...mids) - Math.min(...mids), 'one line').toBeLessThanOrEqual(2)
       expect(await page.evaluate(() => document.documentElement.scrollWidth), 'nothing runs off sideways').toBeLessThanOrEqual(vp.width)
-      /* a desktop: the switch, then the arrows, then Today. A phone (owner D705, 9 Oct 26): the arrows and Today first, where
-         the SANS calendar has them, and the switch to their right */
-      const order = await page.evaluate(phone => { const x = (s: string) => document.querySelector(s)!.getBoundingClientRect().left; return phone ? x('#icPrev') < x('#icToday') && x('#icToday') < x('#inCalBtn') : x('#inCalBtn') < x('#icPrev') && x('#icPrev') < x('#icToday') }, touch)
-      expect(order, touch ? 'the arrows, then Today, then the switch (D705)' : 'the switch, then the arrows, then Today').toBe(true)
+      /* the arrows and Today first, where the SANS calendar has them, and the switch to their right — on a phone (owner D705,
+         9 Oct 26) and, since D1125 (21 Oct 26), on a desktop too */
+      const order = await page.evaluate(() => { const x = (s: string) => document.querySelector(s)!.getBoundingClientRect().left; return x('#icPrev') < x('#icToday') && x('#icToday') < x('#inCalBtn') })
+      expect(order, 'the arrows, then Today, then the switch (D705, D1125)').toBe(true)
       await press('#inListBtn')
       await expect(page.locator('#inpCal')).toHaveCount(0)
       expect(await box(), 'on the List the switch has not moved').toEqual(onCal)

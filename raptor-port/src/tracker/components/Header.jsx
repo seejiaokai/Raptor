@@ -84,6 +84,14 @@ function FindRow({ id, on, i, pick }) {
   );
 }
 
+/* the app's line magnifier (ui/icons.tsx SrchIcon, the same drawing) — the Tracker draws its own, as it draws its other glyphs */
+function SrchGlyph() {
+  return (
+    <svg className="srchglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />
+    </svg>
+  );
+}
 function HeaderSearch() {
   const [open, setOpen] = useState(false);
   const [at, setAt] = useState(null);
@@ -124,9 +132,11 @@ function HeaderSearch() {
   return (
     <span className="findwrap" ref={wrap}>
       <button className="sm" id="hSearchBtn" title="Find an event on the chart"
-        onClick={() => { setOpen(o => !o); setTimeout(() => input.current && input.current.focus(), 0); }}>🔍</button>
+        onClick={() => { setOpen(o => !o); setTimeout(() => input.current && input.current.focus(), 0); }} aria-label="Find an event"><SrchGlyph /></button>
       <span className={'findpanel' + (open ? ' on' : '')} id="hSearchPanel"
         style={at ? { top: at.top + 'px' } : undefined}>
+        {/* one search box (owner D1127, 21 Oct 26): the app's line magnifier inside the box, as in every other search box */}
+        <span className="findbox"><SrchGlyph />
         <input id="hSearch" ref={input} placeholder="Find event…" value={core.searchQ}
           role="combobox" aria-autocomplete="list" aria-expanded={showList} aria-controls="hSearchList"
           autoComplete="off"
@@ -139,7 +149,7 @@ function HeaderSearch() {
             /* Not stopPropagation: Escape still has to reach the app's own
                handler, it simply clears the box first. */
             if (e.key === 'Escape') { core.clearSearch(); e.currentTarget.blur(); setOpen(false); }
-          }} />
+          }} /></span>
         <button className="sm" id="hSearchClear" title="Clear the search"
           onClick={() => { core.clearSearch(); if (input.current) input.current.focus(); }}>✕</button>
         <span className="findstat" id="hSearchStat">{stat}</span>

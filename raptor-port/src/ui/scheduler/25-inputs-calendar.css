@@ -22,6 +22,29 @@
 .inputs-top .abtn:where(:not(.inrange-pop .abtn)){min-height:44px;min-width:44px;padding:8px 10px;font-size:12px;display:inline-flex;align-items:center;justify-content:center;gap:6px}
 .inputs-top .abtn:where(:not(.inrange-pop .abtn)) .btnglyph{width:15px;height:15px;color:currentColor;flex-shrink:0}
 .inputs-spring{flex:1 1 0;min-width:0}
+/* ONE ROW, ONE ORDER, EVERY WIDTH (owner D1125, 21 Oct 26 — round 1 of the consistency look, "1 yes"): the tabs, the month's
+   ‹ name › and Today, then the Calendar / List switch, the filters and the gear at the right end — the order the phone
+   already had (D705) and the SANS calendar's row has. The switch stands after the spring on the Calendar and on the List,
+   so it never moves between them (D687). */
+.inputs-top .ic-nav{order:1}
+.inputs-top .inputs-spring{order:2}
+.inputs-top .inputs-views{order:3}
+.inputs-top #inFiltersBtn,.inputs-top .inputs-filterfields{order:4}
+.inputs-top .inputs-gear{order:5}
+/* ONE LOOK FOR THE TWO CALENDARS' ROW ON A DESKTOP (owner D1125): every button drawn 36 tall, as the tabs are (D698 — his
+   "yes" to the 36 was his word for this size, D487), and the month's arrows, Today and the gear the same sizes on the
+   Inputs and SANS rows, so they stand in the same places (the SANS rows: 24-sans-calendar.css `.sc-head-tabs`). */
+@media (min-width:821px){
+  .inputs-top .abtn:where(:not(.inrange-pop .abtn)){min-height:36px;padding-top:0;padding-bottom:0}
+  .inputs-top .inputs-filterfields select{min-height:36px;padding-top:4px;padding-bottom:4px}
+  .inputs-top .inputs-filterfields label.searchbox{min-height:36px}
+  .inputs-top .ic-nav #icPrev,.inputs-top .ic-nav #icNext,.inputs-top .ic-nav .ic-ga,.sanscal .sc-head .sc-nav{width:40px;min-width:40px;padding:0;font-size:20px;line-height:1}
+  .inputs-top .ic-nav #icToday,.inputs-top .ic-nav .ic-gt,.sanscal .sc-head .sc-today{font-size:12px;padding:0 10px}
+  .inputs-top .abtn.inputs-gear,.sanscal .sc-head .abtn.sc-gear{width:40px;min-width:40px}
+  /* the List's invisible copy of the month controls (InputsPage.tsx navGhost — D687 at every width) */
+  .inputs-top .ic-nav-ghost{visibility:hidden;pointer-events:none}
+  .inputs-top .ic-nav-ghost .ic-mon{font-size:18px;text-align:center;font-variant-numeric:tabular-nums}
+}
 
 .inputs-tabs{display:flex;gap:2px;padding:3px;border:1px solid var(--edge);border-radius:11px;background:var(--panel);flex:0 0 auto;min-width:0}
 .intab{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;min-width:0;padding:4px 14px;border:1px solid transparent;
@@ -44,6 +67,10 @@
 .inputs-top .inputs-filterfields{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;padding:0;flex:0 1 auto;min-width:0}
 .inputs-top .inputs-filterfields label{flex:0 1 150px;min-width:96px}
 .inputs-top .inputs-filterfields label.inputs-search{flex:0 1 220px}
+/* the search is the app's one search box (owner D1127): the line magnifier inside, the box as tall as the two selects
+   beside it (44 on a phone, 36 on a desktop — the D1125 block); the input inside carries no box of its own */
+.inputs-filterfields label.searchbox{flex-direction:row;align-items:center;gap:6px;min-height:44px;box-sizing:border-box;padding:0 10px}
+.inputs-filterfields label.searchbox input{min-height:0;height:auto;padding:0;border:0;background:transparent;width:100%;min-width:0;font-size:13px}
 /* (the three boxes carry no words over them since D729 — "Person", "Type", "Search" went; each box names itself) */
 .inputs-filter-summary{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:var(--ink-2);font-size:12px;min-width:0}
 .inputs-filter-summary>span{flex:1;min-width:0;overflow-wrap:anywhere}
@@ -80,7 +107,7 @@
   /* THE MONTH'S ARROWS, ITS NAME AND TODAY FIRST, WHERE THE SANS CALENDAR HAS THEM; THE SWITCH AT THE ROW'S RIGHT END
      (owner D705, 9 Oct 26 — from his iPhone: "I see sans, the month and arrows and today are on the left. Can u make
      inputs calander the same position? Then shift the calendar and list buttons to somewhere right of it"). `order`
-     re-draws the row on a phone only — a desktop keeps the tabs and the tools on one line, the switch after the tabs.
+     re-draws the row on a phone (since D1125 the same order runs on a desktop too — the rules at the head of this file).
      The switch stands beside the filter button and the gear, pushed right by its own margin, so the List — which has
      no arrows — keeps it in the same place (D687). The arrows are 32px, the name's box 96px, Today 52px, 3px apart:
      the SANS head's own figures (24-sans-calendar.css), so the four stand in the same places on both tabs, and the

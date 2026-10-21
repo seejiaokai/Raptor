@@ -152,3 +152,69 @@ test.describe('the board\'s week arrow and the week buttons stay put (D1122)', (
     expect(w.length).toBeGreaterThan(2); expect(new Set(w).size).toBe(1)
   })
 })
+
+/* ROUND 1 OF THE CONSISTENCY LOOK (owner D1125–D1128, 21 Oct 26 — "1 yes, 2 yes, 3 yes, 4 yes"): the Inputs and SANS top rows
+   alike, the top bar one line at his PC's width on every page, one search box, Quals' Edit / Done as Logic's. */
+test.describe('round 1 of the consistency look (D1125–D1128)', () => {
+  test.use({ viewport: DESK })
+  test('D1125: on a desktop the Inputs and SANS rows are one line each, the arrows, month and Today in the same places, one month style; the switch stays put', async ({ page }) => {
+    await login(page); await go(page, 'inputs'); await sleep(400)
+    const read = (sel: string[]) => page.evaluate(sels => sels.map(s => { const e = document.querySelector(s)!, r = e.getBoundingClientRect(), cs = getComputedStyle(e); return { l: r.left, w: r.width, mid: r.top + r.height / 2, h: r.height, fs: cs.fontSize, fw: cs.fontWeight } }), sel)
+    const inp = await read(['#inMemberMode', '#icPrev', '.ic-mon', '#icNext', '#icToday', '#inGear'])
+    const cal = (await page.locator('#inCalBtn').boundingBox())!
+    await page.locator('#inSansMode').click(); await sleep(400)
+    const sans = await read(['#inMemberMode', '[data-testid=sc-prev]', '[data-testid=sc-month]', '[data-testid=sc-next]', '[data-testid=sc-today]', '[data-testid=sc-gear]'])
+    for (const [i, name] of ['the tabs', '‹', 'the month', '›', 'Today', 'the gear'].entries()) {
+      expect(Math.abs(inp[i].l - sans[i].l), `${name}: the same place on both`).toBeLessThan(1.5)
+      expect(Math.abs(inp[i].w - sans[i].w), `${name}: the same width on both`).toBeLessThan(1.5)
+    }
+    for (const row of [inp, sans]) expect(Math.max(...row.map(r => r.mid)) - Math.min(...row.map(r => r.mid)), 'one line').toBeLessThanOrEqual(2)
+    for (const i of [1, 3, 4, 5]) { expect(inp[i].h, 'drawn 36 tall').toBe(36); expect(sans[i].h, 'drawn 36 tall').toBe(36) }
+    expect([sans[2].fs, sans[2].fw], 'one month style').toEqual([inp[2].fs, inp[2].fw])
+    await page.locator('#inMemberMode').click(); await sleep(300)
+    await page.locator('#inListBtn').click(); await sleep(400)
+    const lst = (await page.locator('#inCalBtn').boundingBox())!
+    expect(Math.abs(lst.x - cal.x), 'the switch where it was on the Calendar (D687)').toBeLessThan(0.6)
+    await page.locator('#inCalBtn').click(); await sleep(300)
+    /* and where the row is narrower and wraps (1366, 1024) — the List keeps the Calendar's month controls' room
+       (an invisible copy), so the two rows wrap alike and the switch still never moves */
+    for (const w of [1366, 1024]) {
+      await page.setViewportSize({ width: w, height: 864 }); await sleep(300)
+      const c = (await page.locator('#inCalBtn').boundingBox())!
+      await page.locator('#inListBtn').click(); await sleep(350)
+      const l = (await page.locator('#inCalBtn').boundingBox())!
+      expect([Math.round(l.x * 10) / 10, Math.round(l.y * 10) / 10], `${w}: the switch where it was`).toEqual([Math.round(c.x * 10) / 10, Math.round(c.y * 10) / 10])
+      await page.locator('#inCalBtn').click(); await sleep(300)
+    }
+  })
+  test('D1126: at his PC\'s 1536 the top bar is one line on Edit Schedule as on every page', async ({ page }) => {
+    await login(page)
+    const hs: Record<string, number> = {}
+    for (const p of ['editsched', 'viewsched', 'quals', 'inputs', 'leavewar', 'logic']) { await go(page, p); await sleep(250); hs[p] = await page.evaluate(() => Math.round(document.querySelector('.topbar')!.getBoundingClientRect().height)) }
+    expect(Math.max(...Object.values(hs)) - Math.min(...Object.values(hs)), 'every page the same height (Edit Schedule’s bar has always been 1px taller) ' + JSON.stringify(hs)).toBeLessThanOrEqual(1)
+    expect(hs.editsched, 'one line').toBeLessThan(80)
+  })
+  test('D1127: every search box wears the app\'s line magnifier, never the emoji', async ({ page }) => {
+    await login(page)
+    const look = (sel: string) => page.evaluate(s => { const i = document.querySelector(s) as HTMLElement | null; if (!i) return 'missing'; const box = i.parentElement!; return (box.querySelector('svg') ? 'line' : 'none') + (/\u{1F50D}/u.test(box.textContent || '') ? '+emoji' : '') }, sel)
+    const seen: Record<string, string> = {}
+    await go(page, 'editsched'); await sleep(300); seen.week = await look('#searchE')
+    await go(page, 'quals'); await sleep(300); seen.quals = await look('#qFilter')
+    await go(page, 'logic'); await sleep(300); seen.logic = await look('#lgSearch')
+    await go(page, 'admin'); await sleep(300); seen.admin = await look('#accFind')
+    await go(page, 'inputs'); await sleep(300); await page.locator('#inListBtn').click(); await sleep(300); seen.inputs = await look('#inFSearch'); await page.locator('#inCalBtn').click()
+    await go(page, 'tracker'); await sleep(600); seen.tracker = await look('#hSearch')
+    await board(page); seen.board = await look('#searchB')
+    expect(seen).toEqual({ week: 'line', quals: 'line', logic: 'line', admin: 'line', inputs: 'line', tracker: 'line', board: 'line' })
+  })
+  test('D1128: Quals reads "✎ Edit" plain, then "Done" blue — as Logic does', async ({ page }) => {
+    await login(page)
+    const btn = (sel: string) => page.evaluate(s => { const b = document.querySelector(s)!; return [b.textContent!.trim(), b.classList.contains('primary')] }, sel)
+    await go(page, 'quals'); await sleep(300)
+    const q1 = await btn('#qEdit'); await page.locator('#qEdit').click(); const q2 = await btn('#qSave'); await page.locator('#qSave').click()
+    await go(page, 'logic'); await sleep(300)
+    const l1 = await btn('#lgEdit'); await page.locator('#lgEdit').click(); const l2 = await btn('#lgDone'); await page.locator('#lgDone').click()
+    expect([q1, q2]).toEqual([l1, l2])
+    expect([q1, q2]).toEqual([['✎ Edit', false], ['Done', true]])
+  })
+})

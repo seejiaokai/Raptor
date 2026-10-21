@@ -9,6 +9,7 @@
    window, as a day on the calendar does. What the form did and where each thing is in the window:
    docs/superpowers/plans/2026-10-10-inputs-vet-plan.md §2 — the three it alone did were moved first (the "?" beside
    Type → ui/TypeLegend.tsx; an admin's posted-out people for a NEW input; the just-saved row lit). */
+import { MONTHS } from './daysfmt'
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { bringRowOnScreen, rowOnScreen } from './onscreen'
 import { INPUTS, inputLines, inpLabel, inpKindTag, isLateInput, lateNote, isSansAvail, sansLetters, baseYear, dateOrd, nowStamp, idsOf, facesOf, remarksShown } from '../engine/inputs'
@@ -23,7 +24,7 @@ import { notify } from '../state/store'
 import { INPVIEW, setInpView, INPMODE, setInpMode, INPREVEAL, clearInpReveal } from '../state/view'
 import { inputsInMode } from './sans-calendar-model'
 import { setDocView, setInpSet, setInpEdit } from './pops'
-import { CalIcon, ClipIcon, FilterIcon, ListIcon, MedIcon, UsersIcon } from './icons'
+import { CalIcon, ClipIcon, FilterIcon, ListIcon, MedIcon, SrchIcon, UsersIcon } from './icons'
 import { MedicalView } from './MedicalView'
 import { medDownAsOf, pendingUpchits } from '../engine/medical'
 import { TODAY, keyToIso } from './weeknav'
@@ -576,13 +577,28 @@ export function InputsPage() {
      THE SWITCH KEEPS ITS PLACE (owner D687, 9 Oct 26 — from his iPhone: "the calander/list button jumps to the left when I
      click on the list. Can it remain in the same position?"; his standing rule of 2 Sep 26: a control tapped
      repeatedly must not move). It stood AFTER the month's arrows and "Today", which the List does not have — so it
-     slid left the moment "List" was pressed. It is its own piece now, drawn straight after the tabs on both: on the
-     Calendar the month's arrows follow it (ui/InputsCal.tsx puts `lead` before them), on the List nothing does. */
+     slid left the moment "List" was pressed. It is its own piece, and since D1125 (21 Oct 26) it stands at the row's right
+     end on every width, beside the filters and the gear (25-inputs-calendar.css `order`), on the Calendar and the List alike —
+     the month's arrows and Today follow the tabs, in the same place as on the SANS calendar. */
   const views = tab !== 'inputs' ? null : (
     <div className="inputs-views" role="group" aria-label="Show inputs as">
       <button className="abtn" id="inCalBtn" title="Calendar — a whole month at a glance" aria-label="Calendar"
         aria-pressed={INPVIEW==='cal'} onClick={() => { setInpView('cal'); notify() }}><CalIcon /><span className="inv-t">Calendar</span></button>
       <button className="abtn" id="inListBtn" title="List" aria-label="List" aria-pressed={INPVIEW==='table'} onClick={()=>{setInpView('table');notify()}}><ListIcon /><span className="inv-t">List</span></button>
+    </div>
+  )
+  /* THE CALENDAR'S MONTH CONTROLS' ROOM, KEPT ON THE LIST (owner D687, D1125): on a desktop the switch stands at the row's right
+     end, so the List — which has no month arrows — keeps an invisible copy of them where the Calendar has them; the two rows
+     are then the same widths and wrap the same way at every width, and the switch never moves between them (without it, at
+     1366 and 1024 the Calendar's row wrapped and the List's did not, and the switch jumped). Hidden from sight, from a
+     screen reader and from the keyboard (inert); the same classes size it as the real ones (25-inputs-calendar.css). */
+  const ghostYear = new Date().getFullYear()
+  const navGhost = (
+    <div className="ic-nav ic-nav-ghost" aria-hidden="true" inert>
+      {/* real buttons, so their words are drawn exactly as the Calendar's (a span's letters ran 2.6px narrower) */}
+      <button type="button" className="abtn ic-ga" tabIndex={-1}>‹</button>
+      <span className="ic-mon" data-fit={MONTHS.map(m => `${m} ${ghostYear}`).join('\n')}>{MONTHS[0]} {ghostYear}</span>
+      <button type="button" className="abtn ic-ga" tabIndex={-1}>›</button><button type="button" className="abtn ic-gt" tabIndex={-1}>Today</button>
     </div>
   )
   const tools = tab !== 'inputs' ? null : (<>
@@ -601,7 +617,7 @@ export function InputsPage() {
       <label><select id="inFType" aria-label="Type" value={fType} onChange={e => { unpin(); setFType(e.target.value); notify() }}>
         <option value="all">All types</option>{typeOptions(notSans)}
       </select></label>
-      <label className="inputs-search"><input id="inFSearch" type="search" aria-label="Search inputs" placeholder="Search inputs" value={fSearch} onChange={e => { unpin(); setFSearch(e.target.value) }} /></label>
+      <label className="inputs-search searchbox"><SrchIcon /><input id="inFSearch" type="search" aria-label="Search inputs" placeholder="Search inputs" value={fSearch} onChange={e => { unpin(); setFSearch(e.target.value) }} /></label>
     </div>
     {/* THE GEAR (D635, D639): the app's own cog — the Leave War's settings button — never a drawing with rays. Admins
         only. It opens the Inputs calendar's settings window: the late cut-off for inputs, the members' switch, and the
@@ -693,7 +709,10 @@ export function InputsPage() {
       {/* the Inputs calendar draws the tabs and the tools in its OWN top row, beside the month's arrows — one row of
           controls above the month on a desktop, the tabs and ONE tools row on a phone (the plan §3.6: "four rows of
           buttons above the month" was a fault seen while drawing) */}
-      {!calUp && <div className="inputs-top">{tabsRow}{phone && listTools}{views}{tools}</div>}
+      {/* ON A DESKTOP THE SANS CALENDAR TAKES THE TABS INTO ITS OWN MONTH ROW, as the Inputs calendar does (owner D1125,
+          21 Oct 26 — one row on both, the arrows, month and Today in the same place); a phone keeps the tabs on their own
+          line above SANS's month row, which already matched the Inputs calendar's (D705) */}
+      {!calUp && !(sansUp && !phone) && <div className="inputs-top">{tabsRow}{phone && listTools}{listUp && !phone && navGhost}{views}{tools}</div>}
       {!calUp && filterSummary}
       <div className="infilter inputs-listtools" hidden={!listUp || phone}>
         {!phone && listTools}
@@ -916,7 +935,7 @@ export function InputsPage() {
       {/* the table stays mounted underneath — closing the calendar is then a
           free round trip, scroll position and all, rather than a re-navigate
           that has to rebuild the list from scratch */}
-      {sansUp && <SansCal />}
+      {sansUp && <SansCal lead={phone ? undefined : tabsRow} />}
       {calUp && <InputsCal fPerson={fPerson} fType={fType} fSearch={fSearch} lit={flash} litAt={relit}
         seedIso={range.from || isoOf(new Date())} lead={<>{tabsRow}{views}</>} tools={tools} under={filterSummary} onClearFilters={clearFilters} />}
       {tab === 'med' && <MedicalView />}
