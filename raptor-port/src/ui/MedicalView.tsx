@@ -143,6 +143,10 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
   const asOf = MEDASOF || todayIso
   const ord = isoOrd(asOf)
   const [calOpen, setCalOpen] = useState(false)
+  /* where the as-of picker hangs: under its own button. Since D1137 "+ Medical" stands first, so the picker's fixed left
+     (12px) put it under "+ Medical" (the code read of 21 Oct 26, finding 2); measured at the press, kept on the row's width
+     (a phone's 100vw less 24, at most 340, as .med-cal's own width) */
+  const [calLeft, setCalLeft] = useState(0)
   const [cal, setCal] = useState({ y: +asOf.slice(0, 4), m: +asOf.slice(5, 7) })
 
   /* byCrew assumes roster members; a record restored for a body since
@@ -198,19 +202,24 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
             alone in the row under the tabs, as tall as that row's buttons on Inputs and SANS (36 — 16-medical.css). */}
         {/* the as-of control: which day the three sections describe. A pick
             answers "who was down then"; Today returns the view to now. */}
+        {/* THE TAB'S OWN DOOR FOR A MEDICAL INPUT (owner D963, D965 — 17 Oct 26: two doors, one window; a filled "+ Medical"
+            as tall as the row's "as of"). FIRST, AT THE ROW'S LEFT (owner D1137, 21 Oct 26 — round 3 of the consistency
+            look): where "+ Input" stands on the Inputs list (D729), so the Inputs page's tabs keep their add button in one
+            place; it stood at the row's right end until then. It opens the SAME window as the Inputs tab's "+ Input" — the
+            same seed (ui/inputedit.tsx newInputSeed: the signed-in person, no date yet) with ATT C, the most common medical
+            kind, already set (D968); the window itself, and who may file for whom in it (D655), are unchanged. */}
+        <button type="button" className="abtn primary" id="medNew" onClick={openNew}>+ Medical</button>
         <button type="button" className={'abtn' + (calOpen ? ' on' : '')} id="medCalBtn"
           title="See the medical state as of another date"
-          onClick={() => { setCal({ y: +asOf.slice(0, 4), m: +asOf.slice(5, 7) }); setCalOpen(o => !o) }}>
+          onClick={e => {
+            const b = e.currentTarget, rowW = (b.offsetParent as HTMLElement | null)?.clientWidth || 0
+            setCalLeft(Math.max(0, Math.min(b.offsetLeft, rowW - Math.min(340, window.innerWidth - 24))))
+            setCal({ y: +asOf.slice(0, 4), m: +asOf.slice(5, 7) }); setCalOpen(o => !o)
+          }}>
           <CalIcon /> as of {fmtDay(asOf)}
         </button>
         {MEDASOF && <button type="button" className="abtn" id="medToday" onClick={() => pick(todayIso)}>Today</button>}
         <span style={{ flex: 1 }}></span>
-        {/* THE TAB'S OWN DOOR FOR A MEDICAL INPUT (owner D963, D965 — 17 Oct 26: two doors, one window; look B, a filled
-            "+ Medical" at the row's right end, as tall as the row's "as of"). It opens the SAME window as the Inputs tab's
-            "+ Input" — the same seed (ui/inputedit.tsx newInputSeed: the signed-in person, no date yet) with ATT C, the most
-            common medical kind, already set (D968); the window itself, and who may file for whom in it (D655),
-            are unchanged. */}
-        <button type="button" className="abtn primary" id="medNew" onClick={openNew}>+ Medical</button>
         {/* no cross where Medical is a TAB of the Inputs page (D626): a tab is left by choosing another */}
         {onClose && <button type="button" className="abtn" id="medClose" aria-label="Back to list"
           title="Back to list" onClick={onClose}>✕</button>}
@@ -222,7 +231,7 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
         {calOpen && <>
           <button type="button" className="med-cal-scrim" aria-label="Close the date picker"
             onClick={() => setCalOpen(false)} />
-          <div className="med-cal" role="dialog" aria-label="Pick the as-of date">
+          <div className="med-cal" role="dialog" aria-label="Pick the as-of date" style={{ left: calLeft }}>
             <div className="med-cal-head">
               <button type="button" className="abtn" id="medCalPrev" aria-label="Previous month"
                 onClick={() => setCal(c => c.m === 1 ? { y: c.y - 1, m: 12 } : { y: c.y, m: c.m - 1 })}>‹</button>

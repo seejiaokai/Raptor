@@ -1,5 +1,5 @@
 import { SrchGlyph } from './SrchGlyph.jsx';
-import { PenGlyph, InfoGlyph, ListGlyph, UploadGlyph, UpGlyph } from './Glyphs.jsx';
+import { PenGlyph, InfoGlyph, ListGlyph, UploadGlyph, UpGlyph, ReorderGlyph, CopyGlyph, TrashGlyph, DownloadGlyph } from './Glyphs.jsx';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { trackerHosted } from '../undo-bridge.js';
 import * as core from '../app/core.js';
@@ -202,10 +202,10 @@ export default function Header() {
         </label>
         <Menu id="course" label={<PenGlyph />} icon title="Edit courses — add, rename, reorder or delete">
           <button className="sm" id="addCourse" onClick={core.addCourse}>+ Add course</button>
-          <button className="sm" id="renCourse" title="Rename the current course" onClick={core.renCourse}>✎ Rename course</button>
-          <button className="sm" id="ordCourse" title="Change the order courses appear in the dropdown" onClick={core.openOrdCourse}>⇅ Reorder courses</button>
+          <button className="sm" id="renCourse" title="Rename the current course" onClick={core.renCourse}><PenGlyph /> Rename course</button>
+          <button className="sm" id="ordCourse" title="Change the order courses appear in the dropdown" onClick={core.openOrdCourse}><ReorderGlyph /> Reorder courses</button>
           <div className="msep" />
-          <button className="sm" id="delCourse" title="Delete the current course" onClick={core.delCourse}>🗑 Delete course</button>
+          <button className="sm" id="delCourse" title="Delete the current course" onClick={core.delCourse}><TrashGlyph /> Delete course</button>
         </Menu>
 
         {/* Syllabus: pick from the dropdown; the ✎ pencil beside it now ALSO
@@ -220,18 +220,18 @@ export default function Header() {
           </select>
         </label>
         <Menu id="syl" label={<PenGlyph />} icon active={core.arrangeMode} title="Edit the syllabus — chart layout, duplicate, rename, reorder or delete">
-          <button className="sm" id="arrangeBtn" title="Draw and move events, prerequisites and lines on the chart" onClick={core.toggleArrange}>{core.arrangeMode ? '✓ Done editing chart' : '✎ Edit chart layout'}</button>
+          <button className="sm" id="arrangeBtn" title="Draw and move events, prerequisites and lines on the chart" onClick={core.toggleArrange}>{core.arrangeMode ? '✓ Done editing chart' : <><PenGlyph /> Edit chart layout</>}</button>
           <div className="msep" />
           {/* The words say what the two do since 13 Sep 26 ("keep charts, reset
               marks"): a duplicate is the flow and layout with NO students, and
               + Add syllabus is an empty sheet. They had promised marks and "the
               current structure" ([HUMAN-RETEST] F2/F3, 23 Sep 26). */}
-          <button className="sm" id="dupSyl" title="Make a copy of the current syllabus — the same events, lines and layout — with no students or marks" onClick={core.dupSyl}>⧉ Duplicate syllabus</button>
+          <button className="sm" id="dupSyl" title="Make a copy of the current syllabus — the same events, lines and layout — with no students or marks" onClick={core.dupSyl}><CopyGlyph /> Duplicate syllabus</button>
           <button className="sm" id="addSyl" title="Create a new, empty syllabus — no events, no marks — to draw from scratch" onClick={core.addSyl}>+ Add syllabus</button>
-          <button className="sm" id="renSyl" title="Rename the current syllabus (built-ins included)" onClick={core.renSyl}>✎ Rename syllabus</button>
-          <button className="sm" id="ordSyl" title="Change the order syllabi appear in the dropdown" onClick={core.openOrd}>⇅ Reorder syllabi</button>
+          <button className="sm" id="renSyl" title="Rename the current syllabus (built-ins included)" onClick={core.renSyl}><PenGlyph /> Rename syllabus</button>
+          <button className="sm" id="ordSyl" title="Change the order syllabi appear in the dropdown" onClick={core.openOrd}><ReorderGlyph /> Reorder syllabi</button>
           <div className="msep" />
-          <button className="sm" id="delSyl" title="Delete the current syllabus, built-in or custom. Deleted built-ins can be restored from Reorder." onClick={core.delSyl}>🗑 Delete syllabus</button>
+          <button className="sm" id="delSyl" title="Delete the current syllabus, built-in or custom. Deleted built-ins can be restored from Reorder." onClick={core.delSyl}><TrashGlyph /> Delete syllabus</button>
         </Menu>
 
         {/* Info mode (was "Details mode"): a compact ⓘ icon now, sitting right
@@ -269,8 +269,8 @@ export default function Header() {
             handover. One Import, not an Import + a Restore (owner, same day:
             "is it possible to just have 1 button?"). */}
         <Menu id="file" label={<><UploadGlyph /> File</>} title="Bring a file in, or export a copy">
-          <button className="sm" id="importFileBtn" title="Bring flow charts in from a file — and, if it holds them, students & marks (it asks first)" onClick={core.importClick}>⇪ Import…</button>
-          <button className="sm" id="exportBtn" title="Save a copy of the Tracker's data to a file — a backup, or a chart to hand over" onClick={core.openCopy}>⤓ Export…</button>
+          <button className="sm" id="importFileBtn" title="Bring flow charts in from a file — and, if it holds them, students & marks (it asks first)" onClick={core.importClick}><UploadGlyph /> Import…</button>
+          <button className="sm" id="exportBtn" title="Save a copy of the Tracker's data to a file — a backup, or a chart to hand over" onClick={core.openCopy}><DownloadGlyph /> Export…</button>
         </Menu>
 
         {/* Find event moved to the far right of the choose/act group (owner,

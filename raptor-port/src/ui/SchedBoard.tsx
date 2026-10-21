@@ -11,7 +11,7 @@ import { toggleChanges } from './changesopen'
 import { weekDates } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
 import { setWeekCal, setInsights } from './pops'
-import { CalIcon, HistIcon, HlIcon, SrchIcon } from './icons'
+import { CalIcon, HistIcon, HlIcon, PenIcon, SrchIcon } from './icons'
 import { HlChips } from './hlchips'
 import { oilShown, oilModeOn, toggleOilMode } from './oilmode'
 import { wireHistBubble, hideHistBub, histBubRecheck, refreshHistDots } from './histbubble'
@@ -767,7 +767,7 @@ export function CxDialog() {
           {!editing
             ? <div className="cxquick" id="cxQuick">
                 {CXR_CFG.map((q, i) => <button key={i + ':' + q} type="button" data-cxq={q} onClick={() => { if (inRef.current) inRef.current.value = q }}>{q}</button>)}
-                {canEdit && <button type="button" className="cxq-edit" data-cxedit onClick={() => setEditing(true)} title="Add, rename or remove the quick reasons">✎ Edit</button>}
+                {canEdit && <button type="button" className="cxq-edit" data-cxedit onClick={() => setEditing(true)} title="Add, rename or remove the quick reasons"><PenIcon />Edit</button>}
               </div>
             : <div className="cxedit" id="cxEdit">
                 <div className="cxedit-h"><b>Cancel reasons</b><button type="button" className="abtn sm" data-cxdone onClick={() => { setEditing(false); setArmReset(false) }}>Done</button></div>

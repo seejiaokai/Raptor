@@ -82,14 +82,32 @@
 .inputs-filterfields input,.inputs-filterfields select{width:100%;min-width:0;box-sizing:border-box;min-height:44px;padding:8px 10px;background:var(--bg);
   border:1px solid var(--edge);border-radius:8px;color:var(--ink);font:inherit;font-size:13px}
 .inputs-workspace .inputs-listtools{gap:8px;padding:8px 0}
-.inputs-listtools>.abtn,.inputs-listtools .inrange>.abtn{min-height:44px}
+/* the list's own two buttons, "+ Input" and the dates button, are 36 tall as on a phone and as the rest of the Inputs page
+   (owner D1139, 21 Oct 26 — they were 44 here); the words and their places stay */
+.inputs-listtools>.abtn,.inputs-listtools .inrange>.abtn{min-height:36px}
+/* ...and pressed 46, as the row above's 36-tall buttons are on a desktop (D698, D1125 — a touch laptop or an iPad on its side;
+   the fresh read's finding 2): the list row is shown on a desktop only */
+.inputs-listtools>.abtn,.inputs-listtools .inrange>.abtn{position:relative}
+.inputs-listtools>.abtn::after,.inputs-listtools .inrange>.abtn::after{content:'';position:absolute;inset:-5px 0}
+/* the dates button's line calendar (owner D1137, 21 Oct 26 — in place of the 📅 emoji) sits beside its dates, as in the
+   phone's row (.inputs-top .abtn): the desktop's row of the list's own two buttons is not .inputs-top, and the drawing is a
+   block (.btnglyph), so without this it stood above the dates and the button grew two lines tall */
+.inputs-listtools .inrange>.abtn{display:inline-flex;align-items:center;gap:6px}
+.inputs-listtools .inrange>.abtn .btnglyph{width:15px;height:15px;color:currentColor;flex-shrink:0}
 
 /* MEDICAL IS A TAB, IN THE PAGE (D620, D626). It used to lie over the whole screen, with a close cross of its own; a
    tab is left by choosing another, so the three tabs must stay in reach above it — it sits under them, as tall as what
    it holds, and the PAGE scrolls (found by reading the stylesheet after the cross was taken away: the view would have
    covered the only way out). */
-.inpcal.medview.in-page{position:relative;inset:auto;z-index:auto;overflow:visible;background:transparent;border:1px solid var(--edge);border-radius:12px}
-.medview.in-page .ic-head{border-radius:11px 11px 0 0}
+/* no frame round the Medical TAB (owner D1137, 21 Oct 26): the Inputs list draws none, so neither does it; its three
+   sections keep their own boxes. The window form (a cross to close it) keeps its own look. */
+.inpcal.medview.in-page{position:relative;inset:auto;z-index:auto;overflow:visible;background:transparent;border:0;border-radius:0}
+.medview.in-page .ic-head{border-radius:0}
+/* ...and its row stands where the Inputs list's does: "+ Medical" on "+ Input"'s left edge (D1137 — measured, it sat 16px in
+   on a desktop and 10px on a phone, inside the row's own band), on the page's own ground as the list's row is */
+.medview.in-page > .ic-head{padding-left:0;padding-right:0;background:transparent}
+/* on a phone its top too: the list's row stands right under the tabs (measured: "+ Input" 106, "+ Medical" 115 at 402) */
+@media(max-width:820px){.medview.in-page > .ic-head{padding-top:0}}
 .medview.in-page .med-body{flex:0 0 auto;overflow:visible}
 
 /* the month's own arrows, its name and Today — one group, so they never part across two lines */

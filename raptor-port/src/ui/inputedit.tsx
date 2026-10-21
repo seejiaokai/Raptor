@@ -2968,7 +2968,7 @@ export function InputEditor() {
                 onChange={e => setDraft({ ...draft, title: e.target.value })}
                 onFocus={e => { if (draft.title == null) e.target.select() }}
                 onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); save(false) } }} />
-              {!readOnly && <span className="inped-pen" aria-hidden="true"><PenIcon /></span>}
+              {!readOnly && <span className="inped-pen" aria-hidden="true"><PenIcon solo /></span>}
             </span>
           </label>}
           {/* an upchit is ONE date (the write path refuses a range), picked

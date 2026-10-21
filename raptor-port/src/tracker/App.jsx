@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import * as core from './app/core.js';
 import Header from './components/Header.jsx';
-import { InfoGlyph, ListGlyph, MapGlyph, DownGlyph } from './components/Glyphs.jsx';
+import { InfoGlyph, ListGlyph, MapGlyph, DownGlyph, UploadGlyph } from './components/Glyphs.jsx';
 import ArrangeTools from './components/ArrangeTools.jsx';
 import SidePanel from './components/SidePanel.jsx';
 import Pop from './components/Pop.jsx';
@@ -162,7 +162,7 @@ export default function App({ active = true }) {
           <p>Add the first course, or bring charts and students in from a file.</p>
           <div className="nocourse-acts">
             <button className="primary" data-testid="trk-first-course" onClick={core.addCourse}>+ Add a course</button>
-            <button data-testid="trk-first-import" onClick={core.importClick}>⇪ Import a file…</button>
+            <button data-testid="trk-first-import" onClick={core.importClick}><UploadGlyph /> Import a file…</button>
           </div>
         </div>
         <DlgModal />

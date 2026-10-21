@@ -2,7 +2,7 @@
    builder; the tick/untick handlers keep the reference's invariants: NAAR
    is signed off after DAAR, SC NIGHT after SC DAY, and withdrawing the day
    qualification takes the night one with it. */
-import { SrchIcon } from './icons'
+import { PenIcon, SrchIcon } from './icons'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { wirePinch } from './pinchzoom'
 import { rowOnScreen } from './onscreen'
@@ -839,7 +839,7 @@ export function QualsPage() {
             start, "Done" in the bright blue while editing — as Logic's #lgEdit / #lgDone — in place of "Enable editing" (blue)
             and "Save changes" ("Save" on a phone, D937). What each does is unchanged: every tick is kept as it is made, and
             Done only ends editing (it still says "Quals saved"). */}
-        <button className="abtn" id="qEdit" hidden={qEditing} onClick={() => setEditing(true)}>✎ Edit</button>
+        <button className="abtn" id="qEdit" hidden={qEditing} onClick={() => setEditing(true)}><PenIcon />Edit</button>
         <button className="abtn primary" id="qSave" hidden={!qEditing}
           onClick={() => { setEditing(false); setQualsEdit(false); setArmDel(''); HOOKS.toast('Quals saved') }}>Done</button>
         {/* the second mode, inside edit mode and admin-only (owner, 5 Aug 26):

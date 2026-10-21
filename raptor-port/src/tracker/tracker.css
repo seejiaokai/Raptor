@@ -107,6 +107,12 @@ header{display:flex;align-items:center;gap:14px;padding:10px 16px;border-bottom:
 .barpeek-lbl{margin-left:auto;font-size:11px;flex:0 0 auto}
 header h1{font-size:16px;margin:0;letter-spacing:.5px}
 .sub{color:var(--muted);font-size:12px}
+/* the bar's labels — Crew, Course, Syllabus — in the small spaced capitals Quals' "Viewing" wears (owner D1136, 21 Oct 26 —
+   round 3 of the consistency look; 05-quals.css .qtablehead .seglab): 10px, 700, .1em, upper case, the grey (--muted is
+   the app's --ink-3). The phone hides them (.controls .lbltx, the last @media block). */
+.lbltx{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+/* the Students card's rename pencil and remove ✕ (D1134, D1135) as big as the chip's 11px letters */
+.chip .ren .trkglyph,.chip .x .trkglyph{width:11px;height:11px;vertical-align:-1px}
 /* The bar now starts with Crew and ends with the save slot, with .hspacer
    holding the two groups apart. margin-left:auto moved onto the spacer, so the
    left group can sit next to the title instead of the whole bar being pushed
@@ -158,6 +164,19 @@ button.sm{padding:3px 7px;font-size:11px}
 /* The Course / Syllabus edit pencils and the ⓘ info toggle are glyph-only: a
    touch bigger than the 11px .sm text so the icon reads, and centred. */
 button.sm.icon{font-size:14px;padding:3px 8px;line-height:1}
+/* ONE HEIGHT ON THE BAR (owner D1170, 21 Oct 26 — round 3 of the consistency look): every control on the bar is as tall
+   as its dropdowns, 30 here (the selects' 6px padding round 12.5px words) and 26 on a phone (the last @media block). The
+   pencils, ⓘ, Show All, File and the search's ✕ were 23, the gear 22 and Legend 20. Only the bar's own buttons — named by
+   where they sit, so a menu's items and the flex window's Cancel / Save keep their size. A button centres its content,
+   so a height alone does it: no width changes and nothing moves; the bar stays as tall as its dropdowns made it. */
+header .controls>button.sm,header .controls>.menu>button.sm,header .findwrap>button.sm,header .findpanel>button.sm,
+header .saveslot>button.sm{height:30px;box-sizing:border-box}
+/* ...and the search box with them: it is a control on the bar too, and a search box is as tall as the buttons beside it
+   (D1127) — at 25 it stood short of its own ✕ */
+header .findbox{height:30px;box-sizing:border-box}
+/* ...and the dropdowns held at the same number: they took their height from their font's line, 30 only with Windows'
+   Segoe UI — on his iPhone's font they came out about 24, under the buttons' fixed 30 / 26 (the fresh read's finding 1) */
+header .controls select{height:30px;box-sizing:border-box}
 /* ↶ ↷ on the bar are greyed while there is nothing to take back — a live
    button that does nothing reads as broken. */
 button:disabled{opacity:.38;cursor:default}
@@ -758,6 +777,9 @@ small.hint{color:var(--muted);font-size:11px}
     (D226) reads whole — at 124px it read 12 of 14 (the leftovers' walk, F4) */
  @media(min-width:600px){ .controls #activeSel{max-width:176px} }
  .controls button.sm{padding:3px 6px}
+ /* the bar's one height on a phone: its dropdowns' 26 (owner D1170) — the same buttons as the desktop's rule above */
+ header .controls>button.sm,header .controls>.menu>button.sm,header .findwrap>button.sm,header .findpanel>button.sm,
+ header .saveslot>button.sm,header .findbox,header .controls select{height:26px}
  /* A 132px box in a 390px row leaves nothing for anything else, so the phone
     gets a 🔍 button and a full-width strip under the bar. position:fixed, not
     absolute: the header scrolls sideways, and an overflow container clips its

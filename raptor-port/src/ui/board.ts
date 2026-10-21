@@ -40,6 +40,7 @@ import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
 import { openAvailWinFrom } from './AvailWindow'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
+import { penSvg } from './pen'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { esc } from '../state/view'
@@ -1633,7 +1634,7 @@ export function blockMenu(anchor: HTMLElement, di: any) {
      the stores Config popup (owner, 26 Aug 26 \u2014 "how the config places the edit
      icon on the top right \u2026 do the same for \u2026 duties, not how it is at the
      bottom currently"). Same data-blkedit hook, only relocated. */
-  const html = `<h5 class="wm-hpen">Add a duty block<button class="wm-pen" data-blkedit="1" title="Edit the duty templates">\u270e</button></h5><div class="wm-row" style="flex-direction:column;align-items:stretch">`
+  const html = `<h5 class="wm-hpen">Add a duty block<button class="wm-pen" data-blkedit="1" title="Edit the duty templates">${penSvg(true)}</button></h5><div class="wm-row" style="flex-direction:column;align-items:stretch">`
     + DUTYTPL_CFG.map((t: any) => `<button class="wm" data-blktpl="${esc(t.id)}">${esc(t.title || 'Untitled')}<span class="wm-sub">${t.rows.length} role${t.rows.length === 1 ? '' : 's'}${t.wave ? ` · ${String(t.wave).toUpperCase()} desk` : ''}</span></button>`).join('')
     + `<button class="wm" data-blktpl="">Empty block</button></div>`
   popMenu(anchor, html, (e, close) => {
@@ -1672,7 +1673,7 @@ export function dayTplMenu(anchor: HTMLElement, di: any) {
       : `<div class="wm-note">No saved templates yet — save this day to start the library.</div>`)
     + `</div><div class="wm-row" style="flex-direction:column;align-items:stretch">`
     + `<button class="wm" data-daytplsave="1">+ Save this day as a template</button></div>`
-    + `<div class="wm-note"><button class="wm-edit" data-daytpledit="1">✎ Manage templates</button></div>`
+    + `<div class="wm-note"><button class="wm-edit" data-daytpledit="1">${penSvg()}Manage templates</button></div>`
   popMenu(anchor, html, (e, close) => {
     if (e.target.closest('[data-daytpledit]')) { close(); setDayTplEdit(true); notify(); e.stopPropagation(); return }
     if (e.target.closest('[data-daytplsave]')) {
@@ -1811,7 +1812,7 @@ export function planMenu(anchor: HTMLElement, di: any) {
     const sub = isLive ? (previewing ? 'tap to return to your live working copy' : liveSub) : 'tap to make it the live day'
     return `<div style="display:flex;gap:4px;align-items:stretch">`
       + `<button class="wm${isLive && !previewing ? ' sa' : ''}" style="flex:1"${act}>${esc(name)}${mark}<span class="wm-sub">${sub}</span></button>`
-      + (id && !ro ? `<button class="wm-edit" data-planedit="${esc(id)}" title="Rename or delete ${esc(name)}">✎</button>` : '')
+      + (id && !ro ? `<button class="wm-edit" data-planedit="${esc(id)}" title="Rename or delete ${esc(name)}">${penSvg(true)}</button>` : '')
       + `</div>`
   }
   const copies = list.length
@@ -1830,7 +1831,7 @@ export function planMenu(anchor: HTMLElement, di: any) {
     + `<div class="wm-row" style="flex-direction:column;align-items:stretch">${copies}</div>`
     + issuedRows
     + (ro ? '' : `<div class="wm-row" style="flex-direction:column;align-items:stretch"><button class="wm" data-plandup="1">+ Alt Plan</button></div>`)
-    + (list.length && !ro ? `<div class="wm-note"><button class="wm-edit" data-planmanage="1">✎ Manage plans</button></div>` : '')
+    + (list.length && !ro ? `<div class="wm-note"><button class="wm-edit" data-planmanage="1">${penSvg()}Manage plans</button></div>` : '')
   popMenu(anchor, html, (e, close) => {
     const pencil = e.target.closest('[data-planedit]')
     if (pencil) { close(); setDraftsEdit({ di, id: pencil.dataset.planedit }); notify(); e.stopPropagation(); return }

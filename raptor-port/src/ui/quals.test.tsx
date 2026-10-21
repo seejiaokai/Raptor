@@ -1163,7 +1163,9 @@ describe('D935 — Quals: one row, no paragraph under it', () => {
      in the bright blue while editing; it replaced "Enable editing" and "Save changes" (D937's phone "Save" with it) */
   it('D1128: "✎ Edit" plain to start, "Done" blue while editing — as Logic’s; Done still ends editing', async () => {
     const e = $('#qEdit')
-    expect(e.textContent).toBe('✎ Edit')
+    /* D1134 (21 Oct 26): its pencil is the app's one drawn pencil, never the typed ✎ */
+    expect(e.textContent).toBe('Edit')
+    expect(e.querySelector('svg.pen-ic'), 'the drawn pencil').toBeTruthy()
     expect(e.className, 'plain to start').not.toContain('primary')
     await click(e)
     const b = $('#qSave')

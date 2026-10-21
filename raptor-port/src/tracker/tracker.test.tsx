@@ -137,17 +137,44 @@ describe('the header: one bar for every login (D121 — it hid the File menu fro
     expect($('#showAllBtn')!.textContent!.trim()).toBe('Show All')
     expect($('#fileMenuBtn')!.querySelector('svg.trkglyph')).toBeTruthy()
     expect($('#fileMenuBtn')!.textContent!.replace(/\s+/g, ' ').trim()).toBe('File ▾')
-    /* D1133 (21 Oct 26): every pencil points one way, tip at the bottom right as the typed ✎ — the Tracker's drawn pencil
-       and the app's own (ui/icons.tsx PenIcon) are the same mirrored drawing; its tip is the path's far-right corner */
-    const tipX = (d: string) => Math.max(...[...d.matchAll(/L(\d+(?:\.\d+)?) (\d+)/g)].map(m => +m[1]))
-    const pen = $('#courseMenuBtn')!.querySelectorAll('svg.trkglyph path')[1].getAttribute('d')!
-    expect(tipX(pen), 'the Tracker pencil leans to the bottom right').toBeGreaterThan(12)
-    const icons = readFileSync(join(__dirname, '../ui/icons.tsx'), 'utf8')
-    expect(icons, 'PenIcon is the same mirrored drawing').toContain(pen)
+    /* D1134 (21 Oct 26 — his solid pencil, tip at the bottom right, D1133): the Tracker's pencil is the app's one pencil,
+       a filled drawing turned -45° (cap up-left, tip down-right) — the same shapes as ui/pen.ts PEN_INNER, which the
+       Tracker copies so a standalone export carries it */
+    const g = $('#courseMenuBtn')!.querySelector('svg.trkpen g')!
+    expect(g.getAttribute('transform'), 'turned so the tip points to the bottom right').toBe('rotate(-45 12 12)')
+    expect(g.getAttribute('fill'), 'solid, not a line drawing').toBe('currentColor')
+    const shapes = (s: string) => [...s.matchAll(/<(rect|path)\b[^>]*?\/?>/g)].map(m => m[0].replace(/\s*\/?>$/, '').replace(/\s+/g, ' '))
+    const pen = readFileSync(join(__dirname, '../ui/pen.ts'), 'utf8')
+    expect(shapes(g.innerHTML), 'the same shapes as the app\'s one pencil').toEqual(shapes(pen))
     /* (the phone's view tabs are App's, not the bar's — the walk, scripts/handpass/cr2-walk.mjs, checks their box) */
     const typed = /[✎ⓘ☰⇪⌃⌄🗺]/u
     for (const sel of ['#courseMenuBtn', '#sylMenuBtn', '#detailsBtn', '#showAllBtn', '#fileMenuBtn', '#barHideBtn'])
       expect(typed.test($(sel)!.textContent!), `${sel} has no typed mark`).toBe(false)
+  })
+
+  it('D1134, D1135: the menus\' items and the Students card wear drawn icons — no typed ✎ ⇅ ⧉ 🗑 ⇪ ⤓ or × left on them', async () => {
+    await render()
+    const typed = /[✎✏⇅⧉🗑⇪⤓×]/u
+    const items: [string, string][] = [['#renCourse', 'trkpen'], ['#ordCourse', 'trkglyph'], ['#delCourse', 'trkglyph'],
+      ['#arrangeBtn', 'trkpen'], ['#dupSyl', 'trkglyph'], ['#renSyl', 'trkpen'], ['#ordSyl', 'trkglyph'], ['#delSyl', 'trkglyph'],
+      ['#importFileBtn', 'trkglyph'], ['#exportBtn', 'trkglyph']]
+    /* the Students card (its ⇅ Reorder, each name's pencil and ✕) is the side panel's, not drawn by this render — its
+       source is checked here, its screen by the walk (scripts/handpass/cr3-walk.mjs) */
+    const side = readFileSync(join(__dirname, 'components/SidePanel.jsx'), 'utf8')
+    expect(side, 'Reorder wears the drawn arrows').toMatch(/<ReorderGlyph \/> Reorder<\/button>/)
+    expect(side, 'a name\'s rename is the solid pencil').toMatch(/className="ren"[^\n]*?><PenGlyph solo \/><\/span>/)
+    expect(side, 'a name\'s remove is the drawn ✕').toMatch(/className="x"[^\n]*?><XGlyph \/><\/span>/)
+    for (const [sel, cls] of items) {
+      const b = $(sel)!
+      expect(b, sel + ' is there').toBeTruthy()
+      expect(b.querySelector('svg.' + cls), sel + ' wears its drawn icon').toBeTruthy()
+      expect(typed.test(b.textContent!), sel + ' has no typed mark').toBe(false)
+    }
+    for (const chip of document.querySelectorAll('.chips .chip')) {
+      expect(chip.querySelector('.ren svg.trkpen'), 'each student\'s rename is the solid pencil').toBeTruthy()
+      expect(chip.querySelector('.x svg.trkglyph'), 'each student\'s remove is the drawn ✕').toBeTruthy()
+      expect(typed.test(chip.textContent!), 'no typed mark on a student').toBe(false)
+    }
   })
 
   it('Save changes watches flow edits only, and no longer touches a file', () => {
