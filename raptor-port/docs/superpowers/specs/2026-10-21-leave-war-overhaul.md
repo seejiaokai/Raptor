@@ -283,6 +283,7 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **D1198:** "ok remove 11" — question 11 removed, lessons 18 and 27 decide the day panel. **D1199:** "We could also do this to show what has changed since the last visit" / "But design ur own way" — a "since your last visit" view, the app's own design, drawn before it is built; it must not repeat the bell (D1142). To design next, with question 12 and 13's answers.
 - **Q12 → A (D1200):** "12 A" — a Management tick column on Quals, added as a group standing first; D1149 marked. This branch takes **D1200–D1209** (checked 21 Oct 26: nothing from D1200 on any branch).
 - **D1201:** "can u design it such that u show all the balances of the user and also optimise the space to show as much leave data taken etc. And the balances can be editable" — the person window redesigned: every balance at once, editable (an admin's), his leave one line a request; drawn (`../../mock/lw-overhaul/full/r5-person-*.png`, script `full-r5.mjs`).
+- **Q13 → A (D1202):** "13 yes" — red on Avail P / W a setting beside amber, "+ 0" by default.
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
   `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (his question "in what scenario": the clash rules allow only leave during a course or overseas duty, leave beside
   ATT B, and an FO given by hand on a leave day; recommended now C — the leave fills the cell, the other a strip down its right
