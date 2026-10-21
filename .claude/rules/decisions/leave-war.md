@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1194 | 21 Oct 26 | The Leave War's Required and Available rows are tinted faintly so each Required row reads as the pair of its Available row — the pilots' pair one tint, the WSOs' pair another. |
 | D1193 | 21 Oct 26 | The Required P and Required W rows can be renamed too, as the Available rows can; only their name — the figures stay typed in their cells, as today. |
 | D1192 | 21 Oct 26 | In the Leave War's Approvals list, every Manning row a request turns amber or red shows in the line's "Lowest Avail" column, in its colour — not only one. |
 | D1191 | 21 Oct 26 | The Available P and W rows' amber point is set as a number plus or minus that day's Required figure, not as a fixed number — so it follows each day's need. |
