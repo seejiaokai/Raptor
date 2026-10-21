@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1195 | 21 Oct 26 | A session he starts from a handoff — the button or a pasted opening line — has Remote Control on by default. |
 | D1126 | 21 Oct 26 | On every page the top bar's compact look reaches up to 1599 wide — Undo and Redo as their arrows only, their names on hover, and the sync pill its dot alone — so Edit Schedule's top bar, which carries the changes clock too, stays on one line at his PC's 1536 like every other page. |
 | D1127 | 21 Oct 26 | Every search box in the app looks like the Edit Schedule week's: a grey line magnifier inside the box on the left, the box as tall as the buttons beside it; each keeps its own words, because each finds something different. |
 | D1124 | 21 Oct 26 | The whole app is looked over, on a desktop and on a phone, for the same kind of thing drawn differently on pages or windows that should match — a top row, a month's name and its arrows, tabs, a gear, a title bar — and each mismatch found is put to him with pictures, the place marked and a recommended way to match, before anything changes. |

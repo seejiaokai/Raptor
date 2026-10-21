@@ -62,7 +62,7 @@ He works until the context is full, then hands off to a fresh chat; he seldom co
 on his "merge live"; he sometimes runs two worktrees in parallel and merges both (D140).
 - **The handoff** is the step that matters: the session-handoff skill rewrites this chat's `## Now` block, files
   what is open, removes merged blocks, and gives him a ready-to-paste opening line that names `HANDOFF.md` and the
-  branch. **He picks nothing — he only pastes (D975, 17 Oct 26, replacing D368): the new-chat screen has no branch or
+  branch, and Remote Control is on in the new chat (D1195 — the app's setting already connects it; where it is off, the new chat switches it on). **He picks nothing — he only pastes (D975, 17 Oct 26, replacing D368): the new-chat screen has no branch or
   worktree picker, so the outgoing chat releases its branch as its last step and the opening line switches the new chat
   to it, with what to do if the switch is refused** — a new job: level with `main`; an unmerged branch continuing: that
   `claude/<name>` branch; a just-merged branch: never. Compaction, if it happens, is the same: persist first.
