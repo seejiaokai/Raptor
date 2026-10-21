@@ -846,12 +846,12 @@ export function QualsPage() {
             which qualifications the LoX carries, and in which order. Off by
             default every time editing is switched on — reshaping the table is
             a deliberate act, not the state you land in to tick a box. */}
-        {/* it reads the way Enable editing did (owner, 5 Aug 26; Enable editing is "✎ Edit" since D1128): BLUE while
-            it is the thing to press, then plain dark with a ✕ once you are
-            inside it, so the button always shows the way OUT rather than
-            lighting up to say where you already are. */}
+        {/* PLAIN GREY, BEFORE AND AFTER IT IS PRESSED (owner D1129, 21 Oct 26 — round 2 of the consistency look): it
+            was blue while it was the thing to press (his 5 Aug 26 rule), which put two bright-blue buttons side by
+            side once "Done" took the blue (D1128) — neither read as the way out. Now "Done" is the one blue; this
+            button reads "Edit quals" to start and "✕ Edit quals" once you are inside the mode, plain both times. */}
         {admin && qEditing &&
-          <button className={'abtn' + (qualsEdit ? '' : ' primary')} id="qEditQuals"
+          <button className="abtn" id="qEditQuals"
             aria-pressed={qualsEdit}
             onClick={() => { setQualsEdit(v => !v); setArmDel('') }}>{qualsEdit ? '✕ Edit quals' : 'Edit quals'}</button>}
         {/* ONE ROW, AT 36 (owner D935, 16 Oct 26 — built as drawn; the design guide §3, "A page's controls are one

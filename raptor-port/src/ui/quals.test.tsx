@@ -810,16 +810,17 @@ describe('Edit quals', () => {
     await click($('#qEdit'))
     expect($('#qEditQuals')).toBeTruthy()
     expect($('#qEditQuals').getAttribute('aria-pressed'), 'off until it is pressed').toBe('false')
-    /* blue while it is the thing to press, dark with a ✕ once you are in it —
-       the button shows the way OUT, exactly as Enable editing / Save changes
-       do beside it (owner, 5 Aug 26) */
-    expect($('#qEditQuals').className).toContain('primary')
+    /* D1129 (21 Oct 26): plain grey before and after it is pressed — "Done" beside it is the one bright-blue button
+       while editing (D1128); a ✕ once you are inside the mode shows the way out of it. (It was blue at rest, his
+       5 Aug 26 rule, until D1129.) */
+    expect($('#qEditQuals').className, 'D1129: plain at rest').not.toContain('primary')
+    expect($('#qSave').className, 'D1129: Done is the one blue').toContain('primary')
     expect($('#qEditQuals').textContent).toBe('Edit quals')
     await click($('#qEditQuals'))
-    expect($('#qEditQuals').className, 'the same dark button once it is on').not.toContain('primary')
+    expect($('#qEditQuals').className, 'the same plain button once it is on').not.toContain('primary')
     expect($('#qEditQuals').textContent).toBe('✕ Edit quals')
     await click($('#qEditQuals'))
-    expect($('#qEditQuals').className).toContain('primary')
+    expect($('#qEditQuals').className).not.toContain('primary')
     await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
     expect($('#qEditQuals'), 'a member never sees it').toBeFalsy()
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })

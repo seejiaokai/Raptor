@@ -125,6 +125,12 @@ header h1{font-size:16px;margin:0;letter-spacing:.5px}
 /* one search box (owner D1127): the line magnifier inside the box, the input inside it unboxed — the box the app's inputs' */
 .findbox{display:inline-flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:4px 8px;min-width:0}
 .srchglyph{width:15px;height:15px;flex:0 0 auto;color:var(--muted)}
+/* the app's line icons on the Tracker's buttons (owner D1132, 21 Oct 26 — components/Glyphs.jsx): drawn at the bar's
+   text size, in the button's own colour, sitting on the words' line */
+.trkglyph{width:15px;height:15px;flex:0 0 auto;display:inline-block;vertical-align:-3px;color:currentColor}
+button.sm .trkglyph{margin-right:1px}
+button.sm.icon .trkglyph{margin-right:0}
+.barpeek-chev .trkglyph{vertical-align:-2px}
 #hSearch{width:112px;padding:0;font-size:12px;border:0;background:transparent;min-width:0}
 #hSearch:focus{outline:none}
 .findbox:focus-within{border-color:var(--accent)}
@@ -183,6 +189,11 @@ button:disabled:hover{border-color:var(--line)}
 .viewtabs{display:none;gap:6px;padding:6px 10px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:35}
 .viewtabs button{flex:1;padding:8px;font-size:13px}
 .viewtabs button.active{background:var(--on);border-color:var(--accent)}
+/* one joined box, as the Inputs / SANS / Medical tabs are (owner D1132, 21 Oct 26): the box bordered, its tabs borderless
+   until picked; the picked one ringed in the accent */
+.vt-seg{display:flex;flex:1;gap:2px;padding:3px;border:1px solid var(--line);border-radius:11px;background:var(--panel);min-width:0}
+.vt-seg button{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-color:transparent;background:transparent;border-radius:8px;min-width:0}
+.vt-seg button.active{border-color:var(--accent);background:var(--on)}
 @media(max-width:1050px){
  .layout{grid-template-columns:1fr}
  .resizer{display:none}

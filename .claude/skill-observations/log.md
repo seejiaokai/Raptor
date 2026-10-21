@@ -696,6 +696,8 @@ Met again 15 Oct 26 (`[LW-REARRANGE-EDGE-SCROLL]`), worse: CODE under `raptor-po
 
 **Principle:** A push is done when the remote says so, not when the command exits; any quiet or filtered push needs a read-back of the remote head.
 
+met again 2026-10-21: the handoff's pasted opening line for round 2 of the consistency look said `git switch -c claude/consistency-round2 origin/main` - the new branch tracked `origin/main` (`branch.<b>.merge = refs/heads/main`), and with this repo's push.default=upstream a plain `git push` would have gone to MAIN. Caught by the memory note, unset at once. The guard to propose: the opening-line template ends with `--no-track` (an unconditional default, not a condition to judge).
+
 ### Observation 600: In the desktop app a worktree chat takes its settings, hooks and skills from the MAIN checkout, so a merged change to them is dead until that folder is brought to main
 
 **Status:** OPEN
@@ -1637,3 +1639,18 @@ different feature that merely pass through it.
 **Suggested improvement:** add a trap line: when a transform moves nodes between containers, move the part whose styles are global into the container whose styles are scoped — never out of it; then measure the moved part's computed font size and position against the original before taking the picture.
 
 **Principle:** In a live-page mock-up, a node's look can depend on where it sits; relocate the side that does not.
+
+### Observation 664: A comment heading in capitals tripped a test that scans the source for a name
+
+**Status:** OPEN
+**Date:** 2026-10-21
+**Session context:** Round 2 of the consistency look — a new comment in the Tracker's App.jsx, written in this repo's capitals-heading style ("ONE JOINED BOX, AS THE INPUTS / SANS / MEDICAL TABS ARE"), turned GitHub's unit share red: inputs-readers.test.ts lists every file whose text holds the store's name INPUTS, comments included, and demands each be classified.
+**Skill:** New skill candidate: none — raptor-executor / the project guide's coding conventions
+**Type:** internal
+**Phase/Area:** Writing code comments; running only the touched tests before a push
+
+**Issue:** The local run covered only the touched test files, so a source-wide scan test the change never "touched" went unrun until GitHub. The word in capitals was prose, not a reference — but the scan cannot tell.
+
+**Suggested improvement:** One line in the guide's coding conventions (or gates-and-deploy.md): source-scanning tests (inputs-readers, perms-scan, …) read comments too — never write a store's name (INPUTS, PEOPLE, DAYS…) in capitals in prose; and when touching a new file, run the scan tests (`npx vitest run src/engine/inputs-readers.test.ts src/state/perms-scan.test.ts`) with the touched ones.
+
+**Principle:** When tests scan source text, any file change is a change those tests touch; include them in the "touched tests" set by default.
