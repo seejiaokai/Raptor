@@ -56,11 +56,12 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1224 | 22 Oct 26 | Leave taken on the Leave War always comes off the carried-forward days first, then this year's annual leave — as the official leave system does. |
 | D1223 | 22 Oct 26 | The URHO who runs the Leave War is given an admin account; the app gets no Leave-War-only role. |
 | D1221 | 22 Oct 26 | In the Leave War's Settings, SANS men are put on the war by "+ SANS" among the groups and taken off by that group's ✕, in place of the Show SANS switch; never added, they stay off (D1215). |
 | D1220 | 22 Oct 26 | The admin locks every member's balances at once with one switch, "Lock balances", in the Leave War's Settings; locked, every person window shows a small padlock and a member's figures read only; there is no lock per person. |
 | D1219 | 22 Oct 26 | There is no setting to turn on notifications of new Leave War requests for the admin: what waits is seen only on the Approvals count when he opens the Leave War — no bell line, no phone ping, no switch. |
-| D1218 | 22 Oct 26 | The Leave War reflects carried-forward leave as the official leave system keeps it: a year's unused annual leave carries forward for one year, and carried-forward leave not used by the start of the year after that is gone. |
+| D1218 | 22 Oct 26 | The Leave War reflects carried-forward leave as the official leave system keeps it: a year's unused annual leave carries forward for one year, and carried-forward leave not used by the start of the year after that is gone. — changed by D1224 |
 | D1217 | 22 Oct 26 | A leave request not yet decided is called "pending", not "waiting", on the Leave War; and the person window names its two LVE figures plainly — the balance the official leave app shows, and the Leave War's balance after the days pending — with the days pending counted in days (2½), never in requests. |
 | D1216 | 22 Oct 26 | When an admin's Undo takes back a Leave War decision the member has already read in his bell, the bell keeps a line saying it was taken back and by whom; a line he has not read yet simply goes with the Undo. |
 | D1215 | 22 Oct 26 | SANS men are off the Leave War unless the admin puts them on — the squadron's main way of working — and they never fall into "Everyone else": however the control is drawn, leaving SANS out stays the default and one tap away. |
