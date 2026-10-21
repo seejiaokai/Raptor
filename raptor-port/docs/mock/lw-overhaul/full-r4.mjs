@@ -38,7 +38,7 @@ function desk(variant, admin = true) {
 function phone(variant, who, rows = 3, ys) {
   const admin = who === 'admin'
   const [a1, a2, l2, b2, l3, b3] = ys
-  const r1 = `<div class="row">${view(true, 'A')}${admin ? '<span class="chip sq">+</span>' : ''}<span class="sp"></span>${admin && variant === 'A' ? appr('B') : ''}</div>`
+  const r1 = `<div class="row">${view(true, 'A')}${admin ? '<span class="chip sq">+</span>' : ''}${admin && variant === 'A' ? appr('B') : ''}<span class="sp"></span></div>`
   const r2 = `<div class="row${variant === 'B' && admin ? ' tight' : ''}">${admin && variant === 'B' ? appr('B') : ''}${open(true, admin ? 'C' : 'B')}${under(true)}<span class="sp"></span><span class="chip">Legend</span></div>`
   const r3 = `<div class="row">${myleave(who, admin ? 'D' : 'C')}</div>`
   return band(a1, a2, r1) + line(a2 + 1) + band(a2 + 4, l2 - 1, r2) + line(l2) + (rows === 3 ? band(l2 + 3, b3, r3) : '')
