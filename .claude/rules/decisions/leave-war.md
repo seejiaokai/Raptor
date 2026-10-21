@@ -56,6 +56,8 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1207 | 21 Oct 26 | On the night of 21 Oct 26, once the overhaul's design work (D1204–D1206) is done, the agent may build the parts of the Leave War overhaul that need no answer or look from him and are safe — on a branch, fully checked, nothing merged — and the chat may compact by itself. |
+| D1206 | 21 Oct 26 | The overhaul's mock-up page ends with the whole planned change: every screen of the Leave War as it will be after the overhaul, carrying every detail he has ruled, each change from today marked — drawn after the red team (D1204) so it shows the design as it will be built. |
 | D1205 | 21 Oct 26 | The Leave War's Settings window is redesigned to be clean, intuitive and far less wordy — the same settings, fewer words, a clearer layout — drawn for him first and built with the overhaul. |
 | D1204 | 21 Oct 26 | Before the Leave War overhaul is built, its whole design is red-teamed with Impeccable, the design guide and a fresh reader: its pieces work together, down to gestures, each screen's layout, taps to reach a place, where buttons sit and line up, and what can be edited; what-ifs are tried, and the build plan is written from it. |
 | D1203 | 21 Oct 26 | A member edits his own balances in his person window until the admin locks them; once locked, only the admin changes them. |
