@@ -56,7 +56,11 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
-| D1160 | 21 Oct 26 | The Leave War's rows stay their height; a whole day's box fills its whole cell and a half day's box fills its half — the morning the top half, the afternoon the bottom — its letters smaller, so a half reads as half at a glance by its size. |
+| D1164 | 21 Oct 26 | An HO — half a day of OIL credited — is drawn in a half of its day's cell, the morning or the afternoon, as a half day's leave is, not as a whole-day box; an FO stays a whole-day box. |
+| D1163 | 21 Oct 26 | The colleague's app's SC is not taken over: OIL earned is already credited as FO (a whole day) and HO (half a day). |
+| D1162 | 21 Oct 26 | On the Leave War OD means overseas duty, as the app already has it; the colleague's app's OD, other duty, is not taken over with its colours. |
+| D1161 | 21 Oct 26 | To him a Leave War grid where every leave is the same green is boring and mundane to see; question 2 (what a cell's colour says) is drawn again with a colour for each kind of leave, as the colleague's app he showed does, and put to him with a recommendation. |
+| D1160 | 21 Oct 26 | The Leave War's rows stay their height; a whole day's box fills its whole cell and a half day's box fills its half — the morning the top half, the afternoon the bottom — its letters smaller, so a half reads as half at a glance by its size; an HO is drawn in a half too (D1164). — changed by D1164 |
 | D1159 | 21 Oct 26 | Wherever the Leave War overhaul lets a person add a document — the bid window, an entry already placed, a leave filed on the Inputs page — it uses the app's one Document button as the input window has it: the upload arrow and "Document", "Add" once a file is there, each file a chip with its ✕ — not a button of its own. |
 | D1158 | 21 Oct 26 | The Leave War's Ack goes: the bid windows' Decide row is Approve · Refuse, a bid simply waits until it is decided, and the Legend loses Ack's purple, which stays "this is you". |
 | D1157 | 21 Oct 26 | The Leave War keeps its year grid — the whole period in one grid — not a month at a time as the colleague's app has; on a phone the close look is the day panel (D1143) and pinch to zoom (D1117). |

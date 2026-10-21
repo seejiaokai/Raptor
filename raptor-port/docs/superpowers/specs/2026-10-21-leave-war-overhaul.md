@@ -248,6 +248,8 @@ this instead for document to standardise it. 4 how about u keep it as B and make
   (AM top, PM bottom), its letters smaller — so size says how much of the day; narrows D1145; design lesson 19. The one
   case it leaves open — two whole-day entries on one day (D1146 says one above the other, which would now read as AM
   and PM) — is put to him with its picture (Q4b).
+- **His point on Q2 (D1161), before answering round 3:** a grid all one green is "boring and mundane"; with the colleague's app's grid (Gryphon; a colour for each kind of leave) he asked which is more intuitive. **And (D1162):** OD stays overseas duty, as the app has it — Gryphon's OD is "other duty", not taken over. Q2 is drawn again with a colour for each kind of leave (`../../mock/lw-overhaul/full-cells3.mjs`) and put with a recommendation.
+- **And the same evening (D1163, D1164):** Gryphon's SC is not taken over, since OIL earned is credited as FO and HO; an HO is drawn in a half of its day (morning or afternoon) like a half day's leave — the half the admin picks, or for one the app credits, the half the work fell in (the agent's reading, said with the picture).
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
   `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (recommended: two whole-day entries side by
   side, each the full height — it would narrow D1146's "one above the other" for whole-day pairs), Q5, Q6; round 4 — Q7
