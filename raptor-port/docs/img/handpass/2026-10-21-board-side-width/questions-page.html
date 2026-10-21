@@ -37,9 +37,62 @@ a:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
 
 <main>
   <header style="display:flex;flex-direction:column;gap:8px">
-    <h1>The Scheduler Board's right panel: round 1</h1>
-    <p class="lead">Four questions, each with my recommendation, and one fix you already ruled on. Pictures are your PC's size (a desktop at 125%), on the demo's Monday. <span class="tag real">REAL</span> is the app today; <span class="tag drawn">DRAWN</span> is the real app with only the proposed change put on top. Tap a picture to see it full size.</p>
+    <h1>The Scheduler Board's right panel</h1>
+    <p class="lead">Round 2 first: the look over every way the crew list draws a man (D1115), with two small findings for you. Round 1 is below, answered "yes to all" (D1118). <span class="tag real">REAL</span> is the app today; <span class="tag drawn">DRAWN</span> is the real app with only the proposed change put on top. Tap a picture to see it full size.</p>
   </header>
+
+  <section class="card">
+    <div class="qnum">Round 2 · what was looked at</div>
+    <p>The crew list on all seven days of the demo week with no seat picked, and on Monday with each kind of place picked: a front seat, a back seat, a duty desk, a sim seat, a sim passenger seat, a ground row, a programme row, and an SC seat (an SC wave added for it, with a man on its SPARE line so the standby look shows). For every one I recorded each man's look, his reason, the order and the counts.</p>
+    <ul>
+      <li><b>Right everywhere:</b> every "N free" count matches the men drawn free; pilots and WSOs always run free, then faded, then crossed out; every crossed-out man shows his reason once a place is picked, or the reason is said once under the heading where the whole column shares it ("WSO — cannot fly front seat"); an SC seat cuts the list to the SC-current men and gives "inside this shift" reasons; the weekend lists everyone free.</li>
+      <li><b>Not looked at:</b> a passenger seat on a jet (none on the demo Monday), AVALON and BB seats, the phone's crew drawer, and Edit Schedule's own crew panel (the same list, drawn one puck wide).</li>
+      <li><b>Text to delete:</b> none found. The list's words are its headings and its reasons.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <div class="qnum">Round 2 · finding 1 · the SANS section</div>
+    <h2>List the SANS men free first, and give the section its count?</h2>
+    <p>The SANS section is the only part of the crew list not ordered free first: its men stay in callsign order, so free and crossed-out men are mixed, and it has no "N free" in its heading. With a duty desk picked on Monday, Bolt (crossed out) comes before Jester (free), and you count the free ones by eye. Drawn: the same order as the pilots and WSOs (free first, then crossed out, callsign order within each), and the heading "SANS AVAIL · 8 FREE".</p>
+    <p><span class="rec">Recommended: yes, as drawn.</span></p>
+    <div class="shots">
+      <figure><a href="img/look/arm-desk-sans.png" target="_blank"><img src="img/look/arm-desk-sans.png" alt="Today: the SANS section with free and crossed-out men mixed"><span class="mark" style="left:3%;top:57%;width:50%;height:34%"></span></a>
+        <figcaption><span class="tag real">REAL</span><b>Today</b>: mixed, no count.</figcaption></figure>
+      <figure><a href="img/look/sans-proposed.png" target="_blank"><img src="img/look/sans-proposed.png" alt="Drawn: the SANS section with free men first and the heading SANS Avail 8 free"><span class="mark" style="left:3%;top:57%;width:50%;height:34%"></span></a>
+        <figcaption><span class="tag drawn">DRAWN</span><b>Free first</b>, and "· 8 FREE" in the heading.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="qnum">Round 2 · finding 2 · the strip over the list</div>
+    <h2>Drop the dangling dot in "Planning FCP ·" when the line has no callsign yet?</h2>
+    <p>When you pick a seat on a line that has no callsign or mission yet (every new line starts blank), the strip over the crew list reads "Planning FCP ·" with nothing after the dot. Drawn: "Planning FCP". A line that has its callsign keeps it after the dot, as today.</p>
+    <p><span class="rec">Recommended: yes, as drawn.</span></p>
+    <div class="shots">
+      <figure class="half"><a href="img/look/strip-today.png" target="_blank"><img src="img/look/strip-today.png" alt="Today: Planning FCP with a dot and nothing after it"></a>
+        <figcaption><span class="tag real">REAL</span><b>Today</b>: "Planning FCP ·".</figcaption></figure>
+      <figure class="half"><a href="img/look/strip-proposed.png" target="_blank"><img src="img/look/strip-proposed.png" alt="Drawn: Planning FCP"></a>
+        <figcaption><span class="tag drawn">DRAWN</span><b>"Planning FCP"</b>.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="qnum">Round 2 · checked and left as they are</div>
+    <div class="shots">
+      <figure><a href="img/look/crop-reason-repeat.png" target="_blank"><img src="img/look/crop-reason-repeat.png" alt="Grit's reason: medically down, cannot report to work (ATT C), Medically down till 17 Jul"></a>
+        <figcaption><b>A reason that seems to say it twice.</b> The first half is what his kind of input means; the second is his own remark. Both carry a fact, and the same sentence is the note a tap raises, so it's left for the whole-app words job (D808).</figcaption></figure>
+      <figure><a href="img/look/crop-standby.png" target="_blank"><img src="img/look/crop-standby.png" alt="Comet on SC spare: almost like a free man, with a thin green left edge"><span class="mark" style="left:3%;top:38%;width:25%;height:7%"></span></a>
+        <figcaption><b>The standby look.</b> Comet, on an SC SPARE line, looks almost like a free man, with a thin green left edge. That is on purpose: he is free for anything else. Its green was kept apart from OIL's bar when OIL Earn was built.</figcaption></figure>
+      <figure><a href="img/look/crop-name-cut.png" target="_blank"><img src="img/look/crop-name-cut.png" alt="Wildcard's name fading at the puck's end"></a>
+        <figcaption><b>A long name fades at the puck's end</b> (Wildcard). That is the puck's own fade, the same on every screen, since pucks never wrap.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="card" style="border-color:#234b33">
+    <div class="qnum" style="color:var(--green)">Round 1 · answered "yes to all" (D1118)</div>
+    <p>Built as drawn below: the grip and its double-click, the reasons beside the pucks, the ATT B look, the line across the puck only, and the AIRCREW heading kept under the top bar.</p>
+  </section>
 
   <section class="card">
     <div class="qnum">Question 1 · dragging the panel wider (D1113)</div>
