@@ -1168,6 +1168,7 @@ documented ceiling of 1,048,576 characters for a multi-line text column (to conf
 raised to the proposal itself. **Was to ask (answered above):** an example
 of the format he wants the tables written in (one table, his way), the publisher prefix and naming rule, and what exactly the
 2,000 limit is.
+**Questions for the IT side on notifications (22 Oct 26, from the Leave War overhaul — D1208, D1214, D1219):** (1) may a Power Automate flow, triggered when a notice row is added in Dataverse, send a Teams message to ONE named person (a member told his leave was decided), and what does it need to find him — his work email on his person record? (2) may it post to a Teams group chat (every member told bidding opened or closed; the admins told of an access request — D216)? (3) can a Teams message carry a link that opens the app on the right page (the Leave War, that period in view — D1214)? (4) any daily limit on messages a flow may send? The app's own bell works without any of these; Teams is the push on top.
 
 ### [TRK-ASYNC-STALE] Once storage is truly slow, a Tracker job must re-check its person and target after every wait (filed 28 Sep 26)
 **Place:** with `[DB-READINESS]` — it cannot happen before the shared database. Found by Astra's final read of the
