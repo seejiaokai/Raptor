@@ -56,14 +56,16 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1210 | 22 Oct 26 | A leave request on the Leave War has a place for remarks, as an input on the Inputs page has, so a request still waiting can say why — for example, information the member has not yet given. |
+| D1209 | 22 Oct 26 | A member cannot type his own OIL figure in his person window: OIL stays what the published schedule earns and what an admin awards; a tap on OIL opens the OIL tracker. |
 | D1208 | 22 Oct 26 | The person running the Leave War is not flooded with notifications of new leave requests — not while bidding is open (he closes the bids, then approves) and not afterwards, when ad-hoc leave is daily operations. |
 | D1207 | 21 Oct 26 | On the night of 21 Oct 26, once the overhaul's design work (D1204–D1206) is done, the agent may build the parts of the Leave War overhaul that need no answer or look from him and are safe — on a branch, fully checked, nothing merged — and the chat may compact by itself. |
 | D1206 | 21 Oct 26 | The overhaul's mock-up page ends with the whole planned change: every screen of the Leave War as it will be after the overhaul, carrying every detail he has ruled, each change from today marked — drawn after the red team (D1204) so it shows the design as it will be built. |
 | D1205 | 21 Oct 26 | The Leave War's Settings window is redesigned to be clean, intuitive and far less wordy — the same settings, fewer words, a clearer layout — drawn for him first and built with the overhaul. |
 | D1204 | 21 Oct 26 | Before the Leave War overhaul is built, its whole design is red-teamed with Impeccable, the design guide and a fresh reader: its pieces work together, down to gestures, each screen's layout, taps to reach a place, where buttons sit and line up, and what can be edited; what-ifs are tried, and the build plan is written from it. |
-| D1203 | 21 Oct 26 | A member edits his own balances in his person window until the admin locks them; once locked, only the admin changes them. |
+| D1203 | 21 Oct 26 | A member edits his own balances, every kind but OIL (D1209), in his person window until the admin locks them; once locked, only the admin changes them. — changed by D1209 |
 | D1202 | 21 Oct 26 | The Available P and W rows' red point is a setting too, beside amber, set the same way — a number plus or minus that day's Required — "+ 0" by default, which is today's rule (red under Required). |
-| D1201 | 21 Oct 26 | A person's window on the Leave War shows all his balances at once — every kind of leave with what is left and what is taken — and fits as much of his leave as it can, each balance editable; designed the app's own way and drawn for him before it is built. |
+| D1201 | 21 Oct 26 | A person's window on the Leave War shows all his balances at once, every kind of leave with what is left and what is taken, and fits as much of his leave as it can, each balance editable but OIL (D1209); designed the app's own way and drawn for him before it is built. — changed by D1209 |
 | D1200 | 21 Oct 26 | The Leave War's Management group comes from a Management tick column on Quals: added as a group like any Quals column, it stands first on the war; a man in Management still counts in his own seat. |
 | D1199 | 21 Oct 26 | The Leave War shows a person what has changed for him since his last visit — designed the app's own way, not copied from the colleague's band — drawn for him before anything is built. |
 | D1198 | 21 Oct 26 | Question 11 is removed: the Leave War's day panel lays out its figures as his design lessons 20 and 29 already say — each on its own line, names in one column and figures in another, lined up — with no question put. |
