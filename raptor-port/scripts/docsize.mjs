@@ -304,7 +304,11 @@ const RULING_BYTES = [
      full mock-up - the year grid kept, Ack gone, the one Document button, a half day's box filling its half) and the
      narrowed lines of D331 and D1145. Two more rounds of the overhaul's questions are to come (the branch now holds
      D1140-D1169), all Leave War rulings; none is trimmed (D136). Room for them, not a target. */
-  ['.claude/rules/decisions/leave-war.md', 2, 50000],
+  /* leave-war 50000 -> 60000 (21 Oct 26, night): 53,927 bytes with rounds 3 to 5 of the overhaul's questions
+     (D1172-D1203: the open-for-bidding window, Approvals in columns, the Available rows' amber and red settings, the
+     person window) and their narrowed lines. The overhaul's build will retire the rulings it replaces; until then none
+     is trimmed (D136). Room for the night's last answers, not a target. */
+  ['.claude/rules/decisions/leave-war.md', 2, 60000],
   /* tracker 19000 -> 20500 (15 Oct 26, night): 19,067 bytes with D899 (the Tracker chart's drags pan at its edge, fixed
      that night - his answer on /overnight); none is trimmed (D136). Room for the next rulings, not a target. */
   /* tracker 20500 -> 23500 (17 Oct 26): 21,868 bytes with D979-D985 (the Tracker batch's answers, the landing, the glide);

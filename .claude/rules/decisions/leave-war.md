@@ -56,6 +56,8 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1205 | 21 Oct 26 | The Leave War's Settings window is redesigned to be clean, intuitive and far less wordy — the same settings, fewer words, a clearer layout — drawn for him first and built with the overhaul. |
+| D1204 | 21 Oct 26 | Before the Leave War overhaul is built, its whole design is red-teamed with Impeccable, the design guide and a fresh reader: its pieces work together, down to gestures, each screen's layout, taps to reach a place, where buttons sit and line up, and what can be edited; what-ifs are tried, and the build plan is written from it. |
 | D1203 | 21 Oct 26 | A member edits his own balances in his person window until the admin locks them; once locked, only the admin changes them. |
 | D1202 | 21 Oct 26 | The Available P and W rows' red point is a setting too, beside amber, set the same way — a number plus or minus that day's Required — "+ 0" by default, which is today's rule (red under Required). |
 | D1201 | 21 Oct 26 | A person's window on the Leave War shows all his balances at once — every kind of leave with what is left and what is taken — and fits as much of his leave as it can, each balance editable; designed the app's own way and drawn for him before it is built. |
