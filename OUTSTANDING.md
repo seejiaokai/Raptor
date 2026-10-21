@@ -62,6 +62,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
 **Schedule and amendments**
+- [BOARD-SIDE-WIDTH] — the board's right panel: the gap between the pilots and WSOs columns, and whether it can be dragged wider — his questions of 21 Oct 26, a recommendation put to him with pictures.
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
 - [INNERHTML-REPAINT-SWEEP] — eleven screens hand React their markup as a new object every repaint, which React sets again — a box being typed in there is thrown away by any repaint (Quals fixed in [KEYBOARD-SCROLL]); sweep the rest (low).
@@ -211,6 +212,18 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [BOARD-SIDE-WIDTH] The board's right panel — the pilots / WSOs gap and a panel he can drag wider (his questions, 21 Oct 26)
+**His words** (with a desktop picture of the side column): *"on the desktop the pilot and wso are spaced slightly apart.
+not sure which is the best position for both to standardise so it can optimise the available space"*, then *"And for the
+desktop should i allow the right panel to be sizable?"* **What is there (measured 21 Oct 26, `raptor-port/scripts/handpass/pz-side.mjs`):**
+the right panel is 320 wide at every desktop width; its crew list is two equal columns of 144, the pucks about 95 wide, so
+about 50 stands empty between the pilots' pucks and the WSOs' column — that room is what the reason under a struck puck
+("already on OPS-O duty 06:00–14:00") wraps in. **Recommended (put to him with a marked picture, the look page):** keep the
+two equal columns (moving the WSOs in beside the pilots would squeeze every reason into a puck's width, two or three lines
+taller), and YES to a panel he can drag wider — its left edge a grip like the one between the issues and the crew list,
+from 320 up to about 40% of the screen, remembered on that computer; the extra width goes to both columns and the issues
+list. A new control: its questions and a picture before it is built, as its own small job. **Place:** on his answer.
 
 ### [QUALS-HEAD-FINGER-CAPTURE] In Edit quals a heading dragged by a finger may never reach another column (found 21 Oct 26, the pinch-zoom job; older)
 **Seen (the test browser, a finger over CDP):** in Edit quals a finger pressed on a heading's words and slid across the

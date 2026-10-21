@@ -975,3 +975,17 @@
 .schedboard.sb-wide .sb-acols.c6r>:nth-child(2){grid-column:auto}
 .schedboard.sb-wide .sbi-row{grid-template-columns:96px var(--puck-w) 112px 1fr;gap:9px}
 .schedboard.sb-wide .sbi-row .sbi-rm{grid-column:auto;font-size:11px}
+
+/* THE DESKTOP LAYOUT IS THE DESKTOP'S, ON A PHONE TOO (owner D1111, D1112, 21 Oct 26 — his iPhone pictures of pull request
+   561's preview: "the desktop sign off section can be scrolled off but the phone shows that this section is frozen";
+   "can the width of the warnings be wider"; "this is slightly different from the desktop"). Three of the phone's rules
+   still reached inside it. Placed last, so they win over the phone block and the wide block above:
+   · the whole board column scrolls, the sign-off with it, as on a desktop (10-board-history.css (2)) — not an inner list
+     under a still sign-off;
+   · the issues list takes the desktop's margins, not the phone drawer's 30 (its text was 259 wide, the desktop's 295);
+   · the crew list's two columns share the side column as on a desktop, not the phone's puck-wide 74 (the desktop's 144),
+     so the reasons under struck pucks wrap no narrower. */
+.schedboard.sb-wide .sb-boardwrap{overflow-y:auto}
+.schedboard.sb-wide .sb-board{flex:none;overflow:visible}
+.schedboard.sb-wide .sb-warn{padding:10px 12px;border-bottom:1px solid var(--edge)}
+.schedboard.sb-wide .sb-roster .rcol{flex:1;width:auto}

@@ -54,6 +54,8 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1112 | 21 Oct 26 | In the Scheduler Board's desktop layout on a phone, the side column is laid out as on a desktop: the issues list uses the column's width with the desktop's margins, and the crew list's two columns share the column's width as on a desktop, so its reasons wrap no narrower. |
+| D1111 | 21 Oct 26 | In the Scheduler Board's desktop layout on a phone, the sign-off box scrolls away with the day as it does on a desktop, never frozen above it. |
 | D1109 | 21 Oct 26 | On a phone, in the Scheduler Board's desktop layout a pinch zooms the day only, never the bar: the bar is the phone layout's own, at its phone size, so ✓ Done and the day arrows stay in reach; it zooms out until the whole day's width fits the screen and in to twice normal; it opens at today's size and keeps its zoom across days until ✓ Done. |
 | D1085 | 20 Oct 26 | On the Scheduler Board an SC, AVALON or BB wave's time headings read START and END where they read TO and LD — R · B · START · END in one line on a desktop, R over B and START over END on a phone — as the week does since D1083; a flying wave keeps TO and LD. |
 | D1084 | 20 Oct 26 | On a phone the standby wave's START / END heading stands as built: 7 instead of the headings' 8.5, with no letter spacing, so START fits its column with room for an iPhone's wider letters; a desktop keeps the normal size. |

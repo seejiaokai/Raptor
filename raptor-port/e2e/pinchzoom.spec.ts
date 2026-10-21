@@ -76,6 +76,18 @@ test.describe('the board\'s desktop layout on a phone pinches (D1109)', () => {
     await context.close()
   })
 
+  test('the sign-off box scrolls away with the day, as on a desktop - never frozen (D1111)', async ({ browser, baseURL }) => {
+    const { context, page, cdp } = await phone(browser, baseURL)
+    await wideBoard(page)
+    const top0 = await page.evaluate(() => Math.round(document.getElementById('sbSign')!.getBoundingClientRect().top))
+    await touch(cdp, 'touchStart', [[200, 700]])
+    for (let i = 1; i <= 12; i++) { await touch(cdp, 'touchMove', [[200, 700 - 40 * i]]); await sleep(16) }
+    await touch(cdp, 'touchEnd', []); await sleep(600)
+    const m = await page.evaluate(() => ({ sign: Math.round(document.getElementById('sbSign')!.getBoundingClientRect().bottom), bar: Math.round(document.querySelector('#schedBoard .sb-top')!.getBoundingClientRect().bottom) }))
+    expect(m.sign, `the sign-off (its top was ${top0}) has gone up under the bar`).toBeLessThanOrEqual(m.bar)
+    await context.close()
+  })
+
   test('one finger still slides the day sideways', async ({ browser, baseURL }) => {
     const { context, page, cdp } = await phone(browser, baseURL)
     await wideBoard(page)

@@ -106,6 +106,14 @@ the follow is held while the fingers move (`onEnd`, `animationPlayState`), pinne
 pinned row's box spilled over the page's 20px margins mid-pinch → its contents stretch, not its box. Its nit (the spacer
 widened by the layout's `min-width`) fixed. Both break-tested (caught). Last round; the re-walk 29 PASS on the final build.
 
+## 9a. His look, round 1 (21 Oct 26, on his iPhone) — two corrections built
+- **D1111** the sign-off froze above the day in the desktop layout → the whole board column scrolls, as on a desktop.
+- **D1112** the side column differed from the desktop (the issues list's phone margins: text 259 wide against 295; the
+  crew list's puck-wide columns: 74 against 144) → the desktop's (`scripts/handpass/pz-side.mjs`, pictures `…/side/`).
+  Browser test: the sign-off scrolls up under the bar (`e2e/pinchzoom.spec.ts`); the set 279 green; the re-walk 29 PASS.
+- **His two questions, answered with a recommendation (not built):** the gap between the desktop's pilots and WSOs
+  columns, and a resizable right panel — filed as [BOARD-SIDE-WIDTH].
+
 ## 10. His look
 On his iPhone (the walk cannot copy an iPhone's touch and scrolling — Safari's own pinch, its zoom, its keyboard): the
 board's desktop layout — pinch out to the whole day and back in, ✓ Done always in reach, a puck carried to the edge; Quals —
