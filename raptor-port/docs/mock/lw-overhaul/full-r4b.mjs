@@ -48,7 +48,7 @@ const line = (r, i, phone) => {
   const [who, when] = by.split(', ')
   const placed = who === cs ? when : `${when} · by ${who}`
   const [seatL, num] = own.split(' ')
-  const avail = `<span${m[4] ? ` data-mk="${m[4]}"` : ''}>${label || seatL} <b class="${tone || ''}">${num}</b></span>${extra ? ` <span${m[5] ? ` data-mk="${m[5]}"` : ''}>· ${extra}</span>` : ''}`
+  const avail = `<span${m[4] ? ` data-mk="${m[4]}"` : ''}>${label || seatL} <b class="${tone || ''}">${num}</b></span>${extra ? `<span class="xtra"${m[5] ? ` data-mk="${m[5]}"` : ''}>${extra}</span>` : ''}`
   const balC = `<span${m[2] ? ` data-mk="${m[2]}"` : ''}>${bk === 'OIL' ? '<small>OIL</small> ' : ''}${balv(v)}</span>`
   return phone
     ? `<div class="card"><div class="l1">${puck(cs, seat, cat, chip, m[0])}${box(k, m[1])}<span class="dt">${dates}</span><span class="sp"></span>${doc(nd, m[3])}</div><div class="l2g"><span><small>DAYS</small>${days}</span><span><small>LVE BAL</small>${balC}</span><span><small>LOWEST AVAIL</small>${avail}</span><span><small>PLACED</small>${placed}</span></div><div class="l3"><span class="ap">Approve</span><span class="rf">Refuse</span></div></div>`
@@ -79,7 +79,7 @@ const CSS = u => `
 .dr2{display:flex;align-items:center;gap:calc(8*var(--u))}
 .apall{display:inline-flex;align-items:center;height:calc(30*var(--u));padding:0 calc(14*var(--u));border-radius:calc(8*var(--u));border:1px solid rgba(87,201,122,.6);background:#183224;color:#8FE0A8;font:700 calc(13*var(--u)) system-ui;white-space:nowrap}
 .sp{flex:1}
-.row{display:flex;align-items:center;gap:calc(10*var(--u));height:calc(48.8*var(--u));border-bottom:1px solid #222a33;white-space:nowrap}
+.row{display:flex;align-items:center;gap:calc(10*var(--u));min-height:calc(48.8*var(--u));border-bottom:1px solid #222a33;white-space:nowrap}
 .pk{display:inline-flex;align-items:center;gap:calc(4*var(--u));width:calc(112*var(--u));flex:none}
 .pk .cs{flex:1;padding:calc(2*var(--u)) calc(8*var(--u));border-radius:calc(4*var(--u));font:600 calc(12.5*var(--u)) system-ui;overflow:hidden;text-overflow:ellipsis}
 .pk.pilot .cs{background:#423F1C;color:#FBFAF0}.pk.wso .cs{background:#13402F;color:#EAFBF3}
@@ -87,7 +87,7 @@ const CSS = u => `
 .kb{display:inline-flex;align-items:center;justify-content:center;flex:none;width:calc(30*var(--u));height:calc(22*var(--u));border-radius:calc(3*var(--u));outline:1px dashed rgba(var(--h),.95);outline-offset:-1px;color:rgb(var(--h));font:800 calc(9.5*var(--u)) system-ui}
 .dt{width:calc(150*var(--u));flex:none;color:#e6edf3;font-weight:600}
 .det{flex:1;overflow:hidden;text-overflow:ellipsis;color:#9aa5b1;font-size:calc(12.5*var(--u))}
-.c{flex:none;color:#c9d1d9;font-size:calc(12.5*var(--u))}.c.dy{width:calc(52*var(--u))}.c.bl{width:calc(64*var(--u));text-align:right;padding-right:calc(14*var(--u))}.c.av{width:calc(150*var(--u))}.c.pl{width:calc(92*var(--u));color:#9aa5b1}
+.c{flex:none;color:#c9d1d9;font-size:calc(12.5*var(--u))}.c.dy{width:calc(52*var(--u))}.c.bl{width:calc(64*var(--u));text-align:right;padding-right:calc(14*var(--u))}.c.av{width:calc(150*var(--u));display:flex;flex-direction:column;align-items:flex-start;gap:calc(2*var(--u))}.xtra{display:flex;flex-direction:column;gap:calc(2*var(--u))}.c.pl{width:calc(92*var(--u));color:#9aa5b1}
 .c b,.l2g b{color:#fff;font-weight:700}.c small,.l2g small{color:#8a96a3;font-size:calc(10*var(--u))}
 .row.hdr{height:calc(26*var(--u));border-bottom:1px solid #2a323c;font:600 calc(9.5*var(--u)) system-ui;letter-spacing:.12em;color:#8a96a3}.row.hdr>*{font:inherit;color:inherit;background:none}.row.hdr .kbh{width:calc(30*var(--u));flex:none}.row.hdr .c.bl{text-align:right}
 .l2g{display:grid;grid-template-columns:.8fr .9fr 1.4fr 1fr;gap:calc(6*var(--u));font-size:calc(12.5*var(--u));color:#c9d1d9}.l2g>span{display:flex;flex-direction:column;align-items:flex-start;gap:calc(1*var(--u))}.l2g small{letter-spacing:.1em;font-weight:600}
@@ -160,10 +160,10 @@ JOBS.push({ name: 'r4b-phone-balances', img: pic('full/r4-phone-member.png'), W:
 // (the row has no amber of its own); a manning row amber or red on the request's days named after it; a renamed row
 const COLOURED = [
   ['Cinch', 'pilot', 'IP', 'sxo', 'LL', 'Thu 22 – Fri 23 Jan', '2 days', -2, 'P 24.5', 'Cinch, 3 Jan', 0, null, 'red', null, null, ['', '', '', '', 'A']],
-  ['Anvil', 'pilot', 'IP', 'sxo', 'LL', 'Tue 27 Jan', '1 day', -1.5, 'P 23', 'Anvil, 5 Jan', 0, null, 'amb', '<b class="amb">IP 3</b>', null, ['', '', '', '', 'B', 'D']],
+  ['Anvil', 'pilot', 'IP', 'sxo', 'LL', 'Tue 27 Jan', '1 day', -1.5, 'P 23', 'Anvil, 5 Jan', 0, null, 'amb', '<b class="amb">IP 3</b><b class="red">SXO 1</b>', null, ['', '', '', '', 'B', 'D']],
   ['Drifter', 'pilot', 'A', 'sxo', 'OL', 'Tue 27 Jan', '1 day', 25, 'P 21', 'Drifter, 6 Jan', 1, null, '', null, 'Pilots w/o OCU', ['', '', '', '', 'C']],
 ]
-JOBS.push({ name: 'r4b-desk-approvals-colours', img: pic('full/r4-w10-desk-approvals.png'), W: 1920, H: 1075, u: 1.25, sample: [1000, 1040], clip: [350, 280, 1225, 322],
+JOBS.push({ name: 'r4b-desk-approvals-colours', img: pic('full/r4-w10-desk-approvals.png'), W: 1920, H: 1075, u: 1.25, sample: [1000, 1040], clip: [350, 280, 1225, 385],
   over: `<div class="cover" style="left:356px;top:328px;width:1210px;height:726px;background:var(--bg)"></div><div class="body" style="left:364px;top:330px;width:1192px;height:722px"><div class="dates"><span class="lab">DATES</span>${months(false)}<span class="sp"></span><span class="apall">Approve all 15</span></div>${header()}${COLOURED.map((r, i) => line(r, i, false)).join('')}</div>` })
 // 10 — the Available P window with its amber and red settings, each a number plus or minus that day's Required (D1190,
 // D1191); red at "+ 0" is today's rule (under Required). Drawn over the round-2 picture of the window.
@@ -174,6 +174,13 @@ JOBS.push({ name: 'r4b-availp-amber', img: pic('full/p-w13-desk-availp.png'), W:
     '<span class="wnote" style="left:627px;top:990px">SANS people are never counted here. The SANS calendar reads this row, so it cannot be deleted.</span>' +
     '<span class="wnote" style="left:627px;top:1014px">The SANS calendar: still needed = Required P − Available P − the SANS who offer to fly.</span>' +
     '<span class="btnS" style="left:644px;top:1046px">Save</span><span class="btnC" style="left:724px;top:1046px">Cancel</span>' })
+// 11, 12 — the Required / Available pairs tinted faintly (D1194): pilots olive, WSOs green, the name bars' own colours
+const tint = (bands, x, w) => bands.map(([y, h, c]) => `<div class="ov" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;background:${c};mix-blend-mode:screen"></div>`).join('')
+const OL = 'rgba(110,104,40,.30)', GR = 'rgba(30,110,78,.32)'
+JOBS.push({ name: 'r4b-desk-pairs', img: pic('full/r4-desk-admin-A.png'), W: 1920, H: 1075, u: 1.25, sample: [1000, 1040], clip: [0, 200, 1920, 250],
+  over: tint([[282, 25, OL], [307, 26, GR], [334, 27, OL], [362, 26, GR]], 28, 1867) })
+JOBS.push({ name: 'r4b-phone-pairs', img: pic('full/r4-phone-admin-A.png'), W: 1170, H: 2532, u: 3, sample: [600, 2300], clip: [0, 520, 1170, 520],
+  over: tint([[680, 53, OL], [734, 53, GR], [788, 53, OL], [842, 51, GR]], 33, 1105) })
 const browser = await chromium.launch()
 for (const j of JOBS) {
   const html = `<!doctype html><html><head><meta charset="utf-8"><style>${CSS(j.u)}</style></head><body><div class="pic" id="pic" style="width:${j.W}px;height:${j.H}px"><img id="base" src="${j.img}" alt="">${j.over}</div></body></html>`
