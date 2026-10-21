@@ -12,6 +12,8 @@ import { dayEngaged, dayOff, dayStandby, slotRules } from '../engine/avail'
 import { validate } from '../engine/validate'
 import { SCHED } from '../engine/publish'
 import { rosterPuck, paletteHTML, sansAvailHTML, specialRowHTML } from './palette-html'
+import { makeStandalone } from '../engine/waves'
+import { slotTitle } from '../state/view'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -146,7 +148,7 @@ describe('the SANS Availability palette section', () => {
     /* one "SANS Avail" heading — the full-width band, never a per-column
        sub-band beside "Pilots"/"WSOs" (renamed from "SANS Availability",
        owner 24 Aug 26) */
-    expect((html.match(/>SANS Avail</g) || []).length).toBe(1)
+    expect((html.match(/>SANS Avail · \d+ free</g) || []).length).toBe(1)
     /* the three seat columns sit in .rcols, BEFORE the full-width band —
        isolate that slice and confirm no SANS id's puck (which itself
        carries data-person twice, on the .rpuck wrapper and the inner
@@ -203,5 +205,131 @@ describe('an armed crowd strikes a man already in it', () => {
       expect(m, 'Ranger struck').toBeTruthy()
       expect(m![1]).toBe('already on FLIGHT SAFETY STAND-DOWN 08:30–09:00 · not added twice')
     } finally { view.disarmSlot() }
+  })
+})
+
+/* [BOARD-SIDE-WIDTH] — the right panel's rulings of 21 Oct 26 (D1118, D1119, D1120) */
+const seq = (html: string, from: string, to?: string) => {
+  const a = html.indexOf(from), b = to ? html.indexOf(to, a) : html.length
+  return [...html.slice(a, b).matchAll(/<span class="rpuck ([^"]*)" data-drag="1" data-person="([^"]+)"/g)].map(m => ({ cls: m[1], id: m[2] }))
+}
+const freeId = () => {
+  /* a pilot with nothing at all on Monday: not tasked, not away, not SANS */
+  const d = DAYS[0], eng = dayEngaged(d), off = dayOff(d)
+  return Object.keys(PEOPLE).find(id => PEOPLE[id].seat === 'FCP' && !PEOPLE[id].san && !PEOPLE[id].archived && !PEOPLE[id].special && !eng.has(id) && !off.has(id))!
+}
+
+describe('D1118 — the ATT B man with nothing else that day, no place picked', () => {
+  it('is drawn in full colour with "ATT B: no flying", straight after the free men, and not counted free', () => {
+    const id = freeId()
+    const before = paletteHTML(0)
+    const n0 = Number((before.match(/Pilots · (\d+) free/) || [])[1])
+    INPUTS.push({ person: id, date: 'Jul 13', allday: true, type: 'ATT B', remarks: 'Medically down', mod: '' })
+    const html = paletteHTML(0)
+    const pilots = seq(html, '>Pilots ·', '<div class="rcol">' + '<div class="rh">WSOs')
+    const me = pilots.findIndex(p => p.id === id)
+    expect(pilots[me].cls).toContain('grounded')
+    expect(pilots[me].cls).not.toContain('busy')
+    expect(pilots[me].cls).not.toContain('no')
+    expect(html).toContain('ATT B: no flying')
+    /* every man above him is free, and the next one is not */
+    pilots.slice(0, me).forEach(p => expect(p.cls.trim(), p.id).toMatch(/^(standby)?$/))
+    expect(pilots[me + 1].cls).not.toMatch(/^\s*$/)
+    expect(Number((html.match(/Pilots · (\d+) free/) || [])[1])).toBe(n0 - 1)
+  })
+  it('a seat picked still judges him by the seat — struck for a jet', () => {
+    const id = freeId()
+    INPUTS.push({ person: id, date: 'Jul 13', allday: true, type: 'ATT B', remarks: '', mod: '' })
+    const d = DAYS[0], key = '0.0.0.0.p'
+    const html = rosterPuck(id, 0, key, new Set(), dayOff(d), new Map(), slotRules(key))
+    expect(html).toContain('rpuck no')
+    expect(html).not.toContain('ATT B: no flying')
+  })
+  it('tasked elsewhere too, he stays faded as today', () => {
+    INPUTS.push({ person: 'nasty', date: 'Jul 13', allday: true, type: 'ATT B', remarks: '', mod: '' })
+    if (!dayEngaged(DAYS[0]).has('nasty')) return
+    expect(unarmed('nasty')).toContain('rpuck busy')
+  })
+})
+
+describe('D1119 — the SANS section is ordered free first and counted; the strip drops its dot', () => {
+  it('free first, then the rest, callsign order within; the heading counts the free men', () => {
+    /* the two SANS men LAST by callsign file a record for Monday, so they are free — and must lead the section */
+    const last2 = Object.keys(PEOPLE).filter(id => PEOPLE[id].san && !PEOPLE[id].archived)
+      .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs)).slice(-2)
+    last2.forEach(id => INPUTS.push({ person: id, date: DAYS[0].dt, allday: true, type: 'SANS Availability', sans: { f: true }, mod: 'now' }))
+    const html = paletteHTML(0)
+    const rows = seq(html, '<div class="rall rsans">', '<div class="rall rpers">')
+    const rank = (c: string) => c.includes('no') ? 2 : (c.includes('busy') ? 1 : 0)
+    const ranks = rows.map(r => rank(r.cls))
+    expect(ranks).toEqual([...ranks].sort((a, b) => a - b))
+    for (let i = 1; i < rows.length; i++) if (ranks[i] === ranks[i - 1])
+      expect(PEOPLE[rows[i - 1].id].cs.localeCompare(PEOPLE[rows[i].id].cs)).toBeLessThan(0)
+    const n = Number((html.match(/SANS Avail · (\d+) free/) || [])[1])
+    expect(n).toBe(ranks.filter(r => r === 0).length)
+    expect(n).toBeGreaterThanOrEqual(2)
+    expect(rows.slice(0, 2).map(r => r.id).sort()).toEqual([...last2].sort())
+  })
+  it('a line with no callsign or mission names the seat alone', () => {
+    const f = DAYS[0].waves[0].formations[0]
+    f.cs = ''; f.msn = ''
+    expect(slotTitle('0.0.0.0.p')).toBe('FCP')
+    f.cs = 'VL'
+    expect(slotTitle('0.0.0.0.w')).toMatch(/^RCP · <span class="mono"[^>]*>VL<\/span>$/)
+  })
+})
+
+describe('D1120 — a man only standing by (SC SPARE, AVALON, BB) is not faded as tasked', () => {
+  const addWave = (kind: string, id: string, ai = 0) => {
+    const w: any = makeStandalone(kind)
+    w.formations[0].aircraft[ai].p = id
+    DAYS[0].waves.push(w)
+    return w
+  }
+  for (const kind of ['avalon', 'bb']) {
+    it(`a man on a ${kind.toUpperCase()} line reads standing by, counted free`, () => {
+      const id = freeId()
+      addWave(kind, id)
+      const d = DAYS[0]
+      expect(dayEngaged(d).has(id), "the day's own tasked list is unchanged").toBe(true)
+      expect(dayEngaged(d, true).has(id)).toBe(false)
+      expect(dayStandby(d).get(id)).toBe(kind.toUpperCase())
+      const html = paletteHTML(0)
+      const me = seq(html, '>Pilots ·', '<div class="rh">WSOs').find(p => p.id === id)!
+      expect(me.cls.trim()).toBe('standby')
+      expect(html).toContain(`${kind.toUpperCase()} standby, free for anything else`)
+    })
+  }
+  it('a standby line that flies (its B typed) is a task: faded', () => {
+    const id = freeId()
+    const w = addWave('avalon', id)
+    w.formations[0].br = '10:00'
+    const d = DAYS[0]
+    expect(dayStandby(d).has(id)).toBe(false)
+    expect(dayEngaged(d, true).has(id)).toBe(true)
+  })
+  it('a man on a standby line AND a sim stays faded', () => {
+    const id = freeId()
+    addWave('avalon', id)
+    const sim = (DAYS[0].sims.amt || [])[0]
+    sim.p = id
+    expect(dayEngaged(DAYS[0], true).has(id)).toBe(true)
+  })
+  it("an AVALON desk (a block carrying the wave's noconf) stands by too; a plain desk does not", () => {
+    const id = freeId()
+    DAYS[0].dutywaves = DAYS[0].dutywaves || []
+    DAYS[0].dutywaves.push({ label: 'AVALON duties', sa: 'avalon', noconf: true, rows: [{ role: 'AV', id, str: '08:00', end: '16:00' }] })
+    expect(dayEngaged(DAYS[0], true).has(id)).toBe(false)
+    expect(dayStandby(DAYS[0]).get(id)).toBe('AVALON')
+    DAYS[0].dutywaves[DAYS[0].dutywaves.length - 1].noconf = false
+    expect(dayEngaged(DAYS[0], true).has(id)).toBe(true)
+  })
+  it('an SC SPARE keeps its own words', () => {
+    const id = freeId()
+    const w: any = makeStandalone('sc')
+    const ai = w.formations[0].aircraft.findIndex((a: any) => a.spare)
+    w.formations[0].aircraft[ai].p = id
+    DAYS[0].waves.push(w)
+    expect(paletteHTML(0)).toContain('SC spare, standing by and free for anything else')
   })
 })

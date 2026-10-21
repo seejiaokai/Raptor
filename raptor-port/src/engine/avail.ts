@@ -47,21 +47,31 @@ export function personBusy(d:any,id:any){
   return out;
 }
 /* engaged = tasked anywhere that day; off = leave/DNIF that day */
-export function dayStandby(d:any){const s=new Set();
+/* STANDING BY IS NOT A TASK, IN THE CREW LIST (owner D1120, 21 Oct 26 — "If the person is planned to be on standby which
+   is SC spare, BB, avalon, they should not be faded as they are available to be planned"). A row that only stands by:
+   an SC SPARE (scSpare), or any row of an AVALON / BB wave (standalone + noconf) — never one that flies (its B or R typed,
+   or its Flies tick: saFlies), which is a flight and so a task. An AVALON / BB desk (a duty block minted from that wave's
+   template carries its noconf, waves.ts) is that standby's desk and stands by too. dayStandby maps each such man to the
+   kind he stands by for (the list's hover words); dayEngaged leaves those rows out only when asked (`standbyFree`, the
+   crew list's call) — the day's figures and the Leave War read the full "tasked" list, as before. */
+export function standbyRow(w:any,f:any,a:any){return scSpare(w,f,a)||!!(w&&w.standalone&&w.noconf&&!(f&&f.cx)&&!(a&&a.cx)&&!saFlies(w,f,a));}
+export function dayStandby(d:any){const s=new Map();
   (d.waves||[]).forEach((w:any)=>(w.formations||[]).forEach((f:any)=>{if(f.cx)return;
-    (f.aircraft||[]).forEach((a:any)=>{if(a.cx||!scSpare(w,f,a))return;
-      [a.p,a.w].forEach((id:any)=>{if(id&&PEOPLE[id]&&!PEOPLE[id].special)s.add(id);});});}));
+    (f.aircraft||[]).forEach((a:any)=>{if(a.cx||!standbyRow(w,f,a))return;
+      [a.p,a.w].forEach((id:any)=>{if(id&&PEOPLE[id]&&!PEOPLE[id].special&&!s.has(id))s.set(id,String(w.kind||'sc').toUpperCase());});});}));
+  (d.dutywaves||[]).forEach((dw:any)=>{if(!dw.noconf)return;(dw.rows||[]).forEach((r:any)=>{if(r.cx)return;
+    [r.id,...((r&&r.more)||[])].forEach((id:any)=>{if(id&&PEOPLE[id]&&!PEOPLE[id].special&&!s.has(id))s.set(id,String(dw.sa||'avalon').toUpperCase());});});});
   return s;}
-export function dayEngaged(d:any){const s=new Set(),add=(id:any)=>{if(id&&PEOPLE[id]&&!PEOPLE[id].special)s.add(id);};
+export function dayEngaged(d:any,standbyFree?:any){const s=new Set(),add=(id:any)=>{if(id&&PEOPLE[id]&&!PEOPLE[id].special)s.add(id);};
   /* an SC SPARE is deliberately NOT counted as tasked: he is standing by and may
      be planned for anything else, so he must read as free in the palette. */
   (d.waves||[]).forEach((w:any)=>w.formations.forEach((f:any)=>{if(f.cx)return;f.aircraft.forEach((a:any)=>{
-    if(a.cx||scSpare(w,f,a))return;add(a.p);add(a.w);});}));
+    if(a.cx||scSpare(w,f,a)||(standbyFree&&standbyRow(w,f,a)))return;add(a.p);add(a.w);});}));
   const sm=d.sims||{}; ['amt','oft'].forEach((k:any)=>(sm[k]||[]).forEach((o:any)=>{if(o.cx)return;add(o.p);add(o.w);(o.pax||[]).forEach(add);}));   // sim who is free text (1C), not a person
   /* the extras dropped under a row are tasked exactly as much as the person in
      its primary seat — they used to be counted as free all day */
   const more=(r:any)=>((r&&r.more)||[]).forEach(add);
-  (d.dutywaves||[]).forEach((dw:any)=>dw.rows.forEach((r:any)=>{if(!r.cx){add(r.id);more(r);}}));
+  (d.dutywaves||[]).forEach((dw:any)=>{if(standbyFree&&dw.noconf)return;dw.rows.forEach((r:any)=>{if(!r.cx){add(r.id);more(r);}});});
   /* crew on ONLY an ⓘ info-only row stay un-greyed in the palette — being
      listed for information is not being tasked (owner, 1 Sep 26) */
   (d.ground||[]).forEach((g:any)=>{if(!g.cx&&!g.info){add(whoId(g.who));more(g);}});

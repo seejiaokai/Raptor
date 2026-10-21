@@ -48,7 +48,10 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
    (the strip clips its own box), so stacking the aside above those pucks
    changes no pixel. Keep it under the fixed chrome (week-nav 150, rail 151,
    hscroll 185); the narrow-screen drawer below sets its own 190. */
-.edit-board .eroster{flex:0 0 auto;width:max-content;align-self:stretch;position:sticky;top:8px;z-index:5;
+/* top: HELD UNDER THE TOP BAR, not behind it (owner D1116, 21 Oct 26 — "when i scroll down … i cant see the day pick on
+   the right panel"): the bar is sticky too (z 60) and 58 to 67 tall on a desktop, so a panel held 8 from the window's top
+   sat under it with its "AIRCREW · ‹ MONDAY ›" heading hidden. --topbar-h is the bar's live height (ui/topbarvar.ts). */
+.edit-board .eroster{flex:0 0 auto;width:max-content;align-self:stretch;position:sticky;top:calc(var(--topbar-h,0px) + 8px);z-index:5;
   max-height:calc(100vh - 118px);overflow-y:auto;overflow-x:hidden;
   border:1px solid var(--edge);border-right:none;border-radius:11px 0 0 11px;
   background:var(--panel);margin:2px 0 0 4px;padding:8px 8px 10px}
@@ -117,7 +120,7 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
      fills down to just above the board's bottom scroll bar, so it reads as one
      solid opaque panel top-to-bottom with nothing showing through beside it. */
   .edit-board .eroster{transition:transform .24s ease;background:var(--bg);
-    max-height:calc(100vh - 44px);box-shadow:-16px 0 34px -22px rgba(0,0,0,.92)}
+    max-height:calc(100vh - 44px - var(--topbar-h,0px));box-shadow:-16px 0 34px -22px rgba(0,0,0,.92)}
   /* a slim BLUE "CREW" tab, styled off the phone drawer's accent tab and sat
      HIGH on the right edge rather than mid-height (owner, 26 Aug 26 — "make it
      like a blue side panel similar to the mobile one, labeled as crew … put it
@@ -243,7 +246,9 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .rpuck.busy .puck{background-image:linear-gradient(rgba(128,128,128,.45),rgba(128,128,128,.45));background-blend-mode:saturation;box-shadow:inset 2px 0 0 var(--ink-3)}
 .rpuck.no{opacity:.5;position:relative}
 .rpuck.no .puck{background-image:linear-gradient(rgba(128,128,128,.3),rgba(128,128,128,.3));background-blend-mode:saturation}
-.rpuck.no::after{content:'';position:absolute;left:3px;right:3px;top:50%;height:1px;
+/* the strike crosses the PUCK only, never the empty column beside it — nor a reason standing beside the puck (owner
+   D1118, 21 Oct 26 — round 1's question 4, "yes to all") */
+.rpuck.no::after{content:'';position:absolute;left:3px;width:calc(var(--puck-w) - 6px);top:50%;height:1px;
   background:var(--ink-3);transform:translateY(-.5px);pointer-events:none}
 .rpuck.no,.rpuck.no:active{cursor:not-allowed}
 /* An ARMED list prints the reason under a crossed-out name (owner, 13 Aug 26
@@ -263,6 +268,10 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .rpuck.no.haswhy .puck{opacity:.45;flex:0 0 var(--puck-h)!important}
 .rpuck.no.haswhy::after{top:calc(var(--puck-h)/2)}
 .rpuck.no.haswhy,.rpuck.no.haswhy:active{cursor:pointer}
+/* GROUNDED BUT FREE (owner D1118): full colour, his line ("ATT B: no flying") under the puck in the list's own reason
+   words — the same little column as a struck entry, without the fade or the strike */
+.rpuck.grounded.haswhy{flex-direction:column;align-items:stretch;gap:1px}
+.rpuck.grounded.haswhy .puck{flex:0 0 var(--puck-h)!important}
 /* the reason line lives under a single name OR once under a column header,
    whichever paletteHTML decided — same look either way */
 .eroster .rwhy{font-size:8.5px;color:var(--ink-2);opacity:.75;line-height:1.2;padding:0 1px 1px}
