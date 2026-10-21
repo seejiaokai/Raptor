@@ -56,6 +56,8 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1199 | 21 Oct 26 | The Leave War shows a person what has changed for him since his last visit — designed the app's own way, not copied from the colleague's band — drawn for him before anything is built. |
+| D1198 | 21 Oct 26 | Question 11 is removed: the Leave War's day panel lays out its figures as his design lessons 18 and 27 already say — each on its own line, names in one column and figures in another, lined up — with no question put. |
 | D1197 | 21 Oct 26 | The Leave War gets no quick-approve switch: the Approvals list's dates choose a period, and "Approve all" approves exactly what the list shows — his "approve all for a selected period"; the grid's drag-select stays. |
 | D1196 | 21 Oct 26 | The Leave War's Approvals button stands on the top line, right after "+ New" on a desktop and "+" on a phone; the second line — the open dates, under-manned, Legend — is the same for everyone. |
 | D1194 | 21 Oct 26 | The Leave War's Required and Available rows are tinted faintly so each Required row reads as the pair of its Available row — the pilots' pair one tint, the WSOs' pair another. |
