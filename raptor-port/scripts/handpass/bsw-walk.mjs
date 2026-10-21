@@ -18,7 +18,7 @@ const check = (id, ok, saw) => { res.push({ id, ok: !!ok, saw }); console.log((o
 const errors = []
 
 async function world(vp, touch) {
-  const ctx = await browser.newContext({ viewport: vp, deviceScaleFactor: touch ? 3 : 1, ...(touch ? { isMobile: true, hasTouch: true } : {}) })
+  const ctx = await browser.newContext({ viewport: vp, deviceScaleFactor: touch ? 3 : Number(process.env.DPR || 1), ...(touch ? { isMobile: true, hasTouch: true } : {}) })
   await ctx.clock.install({ time: new Date('2026-07-13T09:00:00') })
   const page = await ctx.newPage()
   page.on('pageerror', e => errors.push(`${vp.width}: PAGEERROR ${e.message}`))

@@ -1577,3 +1577,18 @@ different feature that merely pass through it.
 **Suggested improvement:** Under "Include one BUSY state by default", add: before drawing, list which app states make the proposed change VISIBLE and pick one where it shows on most rows; have the script assert a count of the exact element the change touches (here per-man reasons inside the two crew columns), not a looser selector that other rows also match.
 
 **Principle:** A state chosen for convenience can make the proposal invisible; choose the state by what it displays, and assert on the exact element the change touches.
+
+### Observation 660: A walk check over a list passes when the list is empty — and the touched tests miss the stylesheet tests
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** [BOARD-SIDE-WIDTH] — the walk of the board's right panel, then GitHub's run
+**Skill:** (project guide) raptor-port/docs/walk-scripts.md; raptor-port/docs/bug-check-order.md §5 "the touched tests"
+**Type:** open-source
+**Phase/Area:** walk assertions; choosing the local tests to run
+
+**Issue:** (1) The walk asserted "every crossed-out man's reason stands beside his puck" with `rs.every(...)`. A real fault had dropped the picked seat, so the list was EMPTY and the check PASSED ("0 of 0") — the fault was caught only by a neighbouring check that happened to fail. The same shape sat in the browser test (`forEach` over an empty list). (2) The local "tests of what you change" were chosen by grepping the test files for the changed functions' names; the tests that read the stylesheets name no function, so a new CSS rule that broke a speed rule (`body.<class> *`) went to GitHub and came back red.
+
+**Suggested improvement:** walk-scripts.md: "every check over a list asserts the list's size first (more than N, or exactly the expected count), and its premise (the seat still picked) — a check over an empty list passes". The order's §5 / shipping's "the tests of what you change": "a change to a stylesheet runs every test that reads the stylesheets (grep the tests for `.css` / readFileSync), whatever functions it touches".
+
+**Principle:** A universal claim over a collection is vacuously true when the collection is empty; assert the collection's size and the premise that fills it. And select tests by what they READ, not only by the names they call.
