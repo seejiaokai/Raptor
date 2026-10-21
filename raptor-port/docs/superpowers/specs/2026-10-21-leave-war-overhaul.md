@@ -234,6 +234,25 @@ on what u think the app should change into … use the design skill … easy and
 - **D1156** (17): lock dates adopted; whether the stages go is put to him on the full mock-up (his lean: they go).
 - Point 21 (pinch to zoom on a phone) is already ruled — D1117, `[LW-PHONE-PINCH-ZOOM]`.
 
+**Round 2 of the full mock-up (21 Oct 26 — his reply "1A 2 I cant really tell if its a half day or not … 3 yes maybe use
+this instead for document to standardise it. 4 how about u keep it as B and make the pucks fill the grid …"):**
+- **Q1 → A (D1157):** the year grid stays; nothing changes.
+- **Q2 → open, redrawn:** he could not tell a half day from a whole day ("the size of the half day and full day is very
+  similar") and asked what "Filed on the Inputs page, waiting (Q6)" is. His answer to Q4 settles the size; Q2 (what the
+  box's colour says) is put to him again on cells drawn his way, with the Q6 row explained in words.
+- **Q3 → yes (D1158):** Ack goes — Decide is Approve · Refuse (narrows D331); the Legend loses Ack's purple. **And
+  (D1159):** every document the overhaul adds uses the app's one Document button, as the input window has it — the
+  upload arrow and "Document", then "Add", each file a chip with its ✕ — not the drawn "Add a photo or PDF"; design
+  lesson 20.
+- **Q4 → B, his way (D1160):** rows keep their height; a whole day's box fills its cell, a half day's box fills its half
+  (AM top, PM bottom), its letters smaller — so size says how much of the day; narrows D1145; design lesson 19. The one
+  case it leaves open — two whole-day entries on one day (D1146 says one above the other, which would now read as AM
+  and PM) — is put to him with its picture (Q4b).
+- **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
+  `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (recommended: two whole-day entries side by
+  side, each the full height — it would narrow D1146's "one above the other" for whole-day pairs), Q5, Q6; round 4 — Q7
+  to Q10; round 5 — Q11, Q12, then the readings and P1–P6 to strike. Put on the published page, version 2.
+
 **His open questions, to answer on the full mock-up with a recommendation each:** 1 the month or the year view; 6 colour
 by leave type, and marking what came from the Inputs page (D1145 decides the halves, not the colours); 9 the waiting look
 (ours, or theirs' outline with an orange dot); 10 a quick approve, or approve all for a selected period; 11 whether Ack

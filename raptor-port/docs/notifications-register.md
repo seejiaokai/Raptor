@@ -36,7 +36,7 @@ they are built.
 
 | # | Who is told | When | What the line says | A tap | Ruled |
 |---|---|---|---|---|---|
-| R1 | a member | the Leave War decides his leave: a bid approved or refused, an approved leave put back to a bid, moved or deleted, a bid replaced by a clashing input; days decided together are one line; an Ack tells nothing | ***Your leave*** *Mon 19 – Wed 21 Jan · LL approved · Saber* | the grid, at that day | D1142 |
+| R1 | a member | the Leave War decides his leave: a bid approved or refused, an approved leave put back to a bid, moved or deleted, a bid replaced by a clashing input; days decided together are one line; an Ack tells nothing (Ack goes with the overhaul — D1158) | ***Your leave*** *Mon 19 – Wed 21 Jan · LL approved · Saber* | the grid, at that day | D1142 |
 
 ## Proposed — the agent's, his to strike
 

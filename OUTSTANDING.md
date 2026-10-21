@@ -231,7 +231,7 @@ by a fresh, blind Opus reader before anything is built. **The design note:**
 build batches). **It decides together:** [LEAVE-YEAR] (yearly balances), [LW-SORT-BY-FLIGHT] (D1001), [LW-PHONE-PINCH-ZOOM]
 (D1117), [LW-COMMIT-MANNING] (parked, D998) — each stays its own item until the note says otherwise. **Branch:**
 `claude/leave-war-overhaul` (planning only). **Place:** his rounds of questions first; the build in batches by area (D1087),
-each with its own bug check. **21 Oct 26:** round 1 answered (D1141-D1144); his list of 22 points recorded (D1145-D1156); next, a full mock-up of the new Leave War in a fresh chat, with the design skill.
+each with its own bug check. **21 Oct 26:** round 1 answered (D1141-D1144); his list of 22 points recorded (D1145-D1156); next, a full mock-up of the new Leave War in a fresh chat, with the design skill. **21 Oct 26, later:** the full mock-up published (https://claude.ai/artifact/6xaVkA1QHg7UmevMBRFaT9); round 2 answered (D1157-D1160: the year grid kept, Ack gone, the one Document button, a half day's box filling its half), question 2 redrawn his way and put again with 4b (two whole-day entries on one day), 5 and 6 as round 3.
 
 ### [NOTIFY-REGISTER] One register of every notification the app should send (his word, 21 Oct 26 — D1151)
 **His words:** *"Can u create a document to note down all the areas in which we should have a notification and how it

@@ -6861,7 +6861,7 @@ first bullet.)*
   - **One format and look for the two sheets** (owner, D264; his answers to the
     mock-up `docs/mock/lw-move-standard.html`, D331–D335, 27 Sep 26): the one-day
     sheet (`BidPicker`) and the drag-selection sheet (`SelectSheet`) show the same
-    rows in the same order — **Decide** (Ack · Approve · Refuse — the admin's, a
+    rows in the same order — **Decide** (Ack · Approve · Refuse *[Ack goes with the Leave War overhaul, D1158 — Approve · Refuse; to be built, [LW-OVERHAUL]]* — the admin's, a
     bid there) → **Selected** (**Move** · **Delete**) → **How much** → **Which
     leave** → the admin's +OIL / PO / PI (one-day) or **PO** (a one-person block;
     it read "Post out (PO)…"). The one-day sheet keeps **How many** at its top
@@ -6876,7 +6876,7 @@ first bullet.)*
     teal); **Delete** the one word (D332 — the one-day sheet's and the list's
     "Clear" became Delete; its confirms read "Delete also takes … — tap Delete
     again") in a dashed grey edge, never red (beside Refuse on the list). The
-    list's buttons follow the sheets' order: Ack · Approve · Refuse · Move ·
+    list's buttons follow the sheets' order *[Ack goes with the overhaul, D1158]*: Ack · Approve · Refuse · Move ·
     Delete.
     **While a move is on** (the chip's, the drag-selection's
     "Move…" and the event move alike — one `wireMove`): **the grid scrolls at its
