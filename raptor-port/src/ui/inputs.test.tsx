@@ -1028,41 +1028,55 @@ const lblDay = (iso: string) => {
 const seed = (o: any) => { INPUTS.unshift({ allday: true, s: 0, e: 1439, type: 'LL', mod: '', ...o }); notify() }
 const startsShown = () => $$('#inBody tr td:nth-child(2)').map(td => td.textContent!.trim())
 
+/* THE DAY IS HELD for the tests below that read "today" ([BATCH-14OCT-LEFTOVERS] (e), 21 Oct 26). The List opens on a
+   window that starts today, and these fixtures are labelled month-and-day with no year ("May 12"), which the app reads
+   in its own year, 2026: with the clock run on 200 days (May 2027) they landed a year before the window, and the three
+   tests went red with nothing changed (found 14 Oct 26 — docs/superpowers/briefs/2026-10-14-three-builds-read.md R1;
+   reproduced 21 Oct 26). A held day also keeps a "150 days on" label inside its own year. Only the date is held, as ui/placeholderlist.test.tsx and ui/sharedline.test.tsx hold it: every real timer still
+   runs. Local noon is the same day in any time zone. */
+const holdDay = (y: number, m: number, d: number) => { vi.useFakeTimers({ toFake: ['Date'] }); vi.setSystemTime(new Date(y, m, d, 12, 0, 0)) }
+
 describe('the date window', () => {
   /* The quick button applies the SQUADRON'S look-ahead since 28 Aug 26 (an
      admin sets it; the standard is the same fortnight as before), so this
      no longer says "+2 months" — it says "the default window". */
   it('opens on today → the default window, and hides what is outside it', async () => {
-    const n = INPUTS.length
-    await act(async () => {
-      seed({ person: 'bane', date: lbl(isoIn(-40)), remarks: 'WELL BEHIND' })
-      seed({ person: 'bane', date: lbl(isoIn(3)), remarks: 'THIS WEEK' })
-      seed({ person: 'bane', date: lbl(isoIn(150)), remarks: 'FAR AHEAD' })
-    })
-    await useDefaultRange()
-    const shown = () => $$('#inBody tr').map(tr => tr.textContent || '')
-    expect(shown().some(t => t.includes('THIS WEEK')), 'inside the window').toBe(true)
-    expect(shown().some(t => t.includes('WELL BEHIND')), 'before today').toBe(false)
-    expect(shown().some(t => t.includes('FAR AHEAD')), 'beyond the window').toBe(false)
+    holdDay(2026, 5, 1)   // 1 Jun 26: forty days back and a hundred and fifty on stay inside one year
+    try {
+      const n = INPUTS.length
+      await act(async () => {
+        seed({ person: 'bane', date: lbl(isoIn(-40)), remarks: 'WELL BEHIND' })
+        seed({ person: 'bane', date: lbl(isoIn(3)), remarks: 'THIS WEEK' })
+        seed({ person: 'bane', date: lbl(isoIn(150)), remarks: 'FAR AHEAD' })
+      })
+      await useDefaultRange()
+      const shown = () => $$('#inBody tr').map(tr => tr.textContent || '')
+      expect(shown().some(t => t.includes('THIS WEEK')), 'inside the window').toBe(true)
+      expect(shown().some(t => t.includes('WELL BEHIND')), 'before today').toBe(false)
+      expect(shown().some(t => t.includes('FAR AHEAD')), 'beyond the window').toBe(false)
 
-    /* the readout names the window rather than leaving the user to guess */
-    expect($('#inRangeBtn').textContent).toContain(lblDay(isoIn(0)))
-    /* and an empty table under a window says it is the window */
-    expect($('#inEmpty').textContent).toContain('All dates')
+      /* the readout names the window rather than leaving the user to guess */
+      expect($('#inRangeBtn').textContent).toContain(lblDay(isoIn(0)))
+      /* and an empty table under a window says it is the window */
+      expect($('#inEmpty').textContent).toContain('All dates')
 
-    await act(async () => { INPUTS.splice(0, INPUTS.length - n); notify() })
-    await showAllDates()
+      await act(async () => { INPUTS.splice(0, INPUTS.length - n); notify() })
+      await showAllDates()
+    } finally { vi.useRealTimers() }
   })
 
   /* an input that STARTED before the window but is still running is exactly
      the one a scheduler must not lose sight of */
   it('keeps a span that began before today but has not ended', async () => {
-    const n = INPUTS.length
-    await act(async () => { seed({ person: 'bane', date: lbl(isoIn(-10)), endDate: lbl(isoIn(10)), remarks: 'STILL RUNNING' }) })
-    await useDefaultRange()
-    expect($$('#inBody tr').some(tr => (tr.textContent || '').includes('STILL RUNNING'))).toBe(true)
-    await act(async () => { INPUTS.splice(0, INPUTS.length - n); notify() })
-    await showAllDates()
+    holdDay(2026, 5, 1)
+    try {
+      const n = INPUTS.length
+      await act(async () => { seed({ person: 'bane', date: lbl(isoIn(-10)), endDate: lbl(isoIn(10)), remarks: 'STILL RUNNING' }) })
+      await useDefaultRange()
+      expect($$('#inBody tr').some(tr => (tr.textContent || '').includes('STILL RUNNING'))).toBe(true)
+      await act(async () => { INPUTS.splice(0, INPUTS.length - n); notify() })
+      await showAllDates()
+    } finally { vi.useRealTimers() }
   })
 
   it('All dates puts everything back', async () => {
@@ -1234,18 +1248,21 @@ describe('a new input announces itself', () => {
   }
 
   it('rides the top row even when the filter and the window both exclude it', async () => {
-    const n = INPUTS.length
-    await useDefaultRange()          // Jul 2026 is behind us — outside the window
-    await setFType('OML')            // and the add below is a duty, not an OML
-    await addOne('SHOUTS FROM THE TOP')
-    expect(INPUTS.length).toBe(n + 1)
-    expect($$('#inBody tr')[0].textContent).toContain('SHOUTS FROM THE TOP')
-    /* it is the only thing in there that is not an OML — the pin is one
-       row riding above the filter, not the filter being cancelled */
-    expect($$('#inBody .intag').filter(x => x.textContent !== 'OML').length).toBe(1)
-    await act(async () => { undo() })
-    await reset()
-    expect(INPUTS.length).toBe(n)
+    holdDay(2026, 9, 14)   // 14 Oct 26 (the date window's tests above hold the day the same way)
+    try {
+      const n = INPUTS.length
+      await useDefaultRange()          // Jul 2026 is behind us — outside the window
+      await setFType('OML')            // and the add below is a duty, not an OML
+      await addOne('SHOUTS FROM THE TOP')
+      expect(INPUTS.length).toBe(n + 1)
+      expect($$('#inBody tr')[0].textContent).toContain('SHOUTS FROM THE TOP')
+      /* it is the only thing in there that is not an OML — the pin is one
+         row riding above the filter, not the filter being cancelled */
+      expect($$('#inBody .intag').filter(x => x.textContent !== 'OML').length).toBe(1)
+      await act(async () => { undo() })
+      await reset()
+      expect(INPUTS.length).toBe(n)
+    } finally { vi.useRealTimers() }
   })
 
   it('lets go the moment the table is re-arranged', async () => {

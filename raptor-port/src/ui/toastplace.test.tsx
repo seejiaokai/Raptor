@@ -56,6 +56,20 @@ describe('D731 (1) — on a phone, while a window is open, the passing note is s
       expect(face().dataset.at, 'the open changes window is').toBe('top')
     } finally { cw.remove() }
   })
+  /* …AND THE ALL AVAIL WINDOW, the changes window's twin at the foot of a phone (D997) — the look-and-keys walk, 21 Oct 26:
+     "ALL AVAIL planned" stood over the window's last lines (docs/img/handpass/2026-10-21-look-keys/walk/w11-avail-phone.png).
+     Its placeholder is always mounted, hidden: that one is no window either. */
+  it('a phone with the ALL AVAIL window up: the note is at the top; its hidden placeholder alone changes nothing', () => {
+    asPhone(true)
+    const aw = document.createElement('div'); aw.className = 'availwin'; aw.hidden = true; document.body.append(aw)
+    try {
+      toast('ALL AVAIL planned', 'ok')
+      expect(face().dataset.at, 'the hidden placeholder is no window').toBe('foot')
+      aw.hidden = false
+      toast('ALL AVAIL planned', 'ok')
+      expect(face().dataset.at, 'the open ALL AVAIL window is').toBe('top')
+    } finally { aw.remove() }
+  })
   /* …and the backlog's own order: the note is ALREADY up (an Undo's) when the changes window opens — the window moves it
      (the batch's check, 19 Oct 26 — the scenario designer's S3-03: the test above raised the note after the window) */
   it('a phone: a note already up when the changes window opens goes to the top', async () => {
@@ -68,6 +82,18 @@ describe('D731 (1) — on a phone, while a window is open, the passing note is s
       expect(document.querySelector('.chgwin:not([hidden])'), 'the window is up (or this test proves nothing)').toBeTruthy()
       expect(face().dataset.at, 'the note it found there moved to the top').toBe('top')
     } finally { await act(async () => { setChgWin(null) }) }
+  })
+  /* …and NOT when it closes: a note is not moved about while it is being read (ui/toast.ts placeToast — the
+     look-and-keys read, finding 5: the window's own placing ran on its close too) */
+  it('a phone: a note at the top while the changes window is up stays there when the window closes', async () => {
+    asPhone(true)
+    initStore(); setSession({ user: 'a', role: 'admin' })
+    await act(async () => { setChgWin({ day: 'week', tab: 'all', group: 'item' }); root.render(<ChangesWindow />) })
+    toast('Undid: a take-off time', 'ok')
+    expect(face().dataset.at).toBe('top')
+    await act(async () => { setChgWin(null); root.render(<ChangesWindow />) })
+    expect(document.querySelector('.chgwin:not([hidden])'), 'the window has closed (or this test proves nothing)').toBeNull()
+    expect(face().dataset.at, 'the note stays where it is being read').toBe('top')
   })
   it('a phone with NO window up: at the foot, as before', () => {
     asPhone(true)

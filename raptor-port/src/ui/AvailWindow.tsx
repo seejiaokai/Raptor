@@ -23,7 +23,9 @@
    scheduler sees the overlap and judges it. The availability window stays
    narrow precisely because the app's job here is to SURFACE the clash, not to
    remove him from the list. Do not let this drift into filtering him out. */
+import { useEffect } from 'react'
 import { useFloatWin, frontWin, raiseWin, BOARD_BAR } from './floatwin'
+import { placeToast } from './toast'
 import { notify } from '../state/store'
 import { PEOPLE } from '../engine/people'
 import { seatShown, byCrewShown } from '../engine/faceattrs'
@@ -87,6 +89,9 @@ export function AvailWindow() {
     open: !!open, getBox: () => AVAILWIN_BOX, setBox: setAvailWinBox, deps: [open && open.di, open && open.item],
     ...BOARD_BAR,                           // never over the board's preview bar ([AVAILWIN-PREVIEW-BAR])
   })
+  /* a note already up when the window opens moves off it, as the changes window's does (ChangesWindow.tsx — the
+     look-and-keys walk, 21 Oct 26); a note raised while it is up is placed by toast() itself */
+  useEffect(() => { if (open) placeToast() }, [!!open])   // as it opens — never as it closes, mid-read
 
   if (!open) return <div className="availwin" hidden />
 

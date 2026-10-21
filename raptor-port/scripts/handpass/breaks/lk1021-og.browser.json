@@ -1,0 +1,3 @@
+{ "spec": "e2e/og-tag-count.spec.ts", "grep": "corner tag", "port": 4297, "breaks": [
+  { "n": 6, "name": "the corner tag of a seat with a count stands on the puck's corner", "file": "src/ui/scheduler/20-changes-quals.css", "find": ".seat:has(> .oilcount):is([data-og],[data-alc],[data-aln])::after", "put": ".seat:has(> .oilcountx):is([data-og],[data-alc],[data-aln])::after" }
+] }
