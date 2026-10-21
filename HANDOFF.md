@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/board-pinch-zoom -->
+### 21 Oct 26 — pinch to zoom on a phone (the board's desktop layout and Quals), `claude/board-pinch-zoom`, pull request 561 — built and walked; the fresh read and his look next
+- **Done this chat:** (1) D1106 built on pull request 558 (over the Scheduler Board a window opens under the board's own bar) — his "merge live" given, **558 is LIVE** (main green, Vercel production ready). (2) The pinch-zoom questions put to him with pictures (the page `raptor-port/docs/img/handpass/2026-10-21-pinch-zoom/questions-page.html`, published https://claude.ai/artifact/CToLxASKAPs16wkGokL3K2); his "Yes to all" recorded as **D1109** (the board, `scheduler.md`) and **D1110** (Quals, `people-accounts.md`). (3) Built on this branch: `ui/pinchzoom.ts` (one pinch body), the board's desktop layout under the phone's own bar, the edge scroll in `ui/drag.ts`, Quals' table and its pinned row zoomed. Found and fixed on the way: a sideways swipe on the day itself never slid the desktop layout (older, on `main`).
+- **Checked:** unit 9 new + the touched files green; browser `e2e/pinchzoom.spec.ts` 5 with geometry, save-note, schedule-tab, kbscroll green; the walk by real fingers (`scripts/handpass/pz-walk.mjs`) all PASS; break tests 5 of 5. Sheet `raptor-port/docs/handpass/2026-10-21-pinch-zoom.md`. Auto-fix found on for 561 and switched off (D1090).
+- **Records waiting on another branch:** the rulings D1098–D1108 and the backlog item [BOARD-PHONE-PINCH-ZOOM] live on `claude/night-records-1021` (not yet merged) — archive [BOARD-PHONE-PINCH-ZOOM] once both are on `main`. D1109 and D1110 sit on this branch beside that gap (the document check allows it).
+- **Not proved here:** an iPhone's own touch, Safari's pinch and zoom and its keyboard — his look on his phone.
+- **Pick up here:** the fresh blind Opus read's findings (sheet §9), fix and re-walk; GitHub's run of 561 green on its last commit; then the preview link and pictures for his look; "merge live" his word.
+<!-- /now -->
 <!-- now:claude/insights-logic-fixes-3416c8 -->
 ### 21 Oct 26 — the Insights and Logic small fixes (D994), `claude/insights-logic-fixes-3416c8`, pull request 554 — his "merge live" GIVEN (21 Oct 26), merging
 - **His pick:** [LOGIC-REDRAW-DROPS-TYPING] and [LOGIC-DONE-FIRST-PRESS] (D994; both archived). The Inputs batch (pull request
