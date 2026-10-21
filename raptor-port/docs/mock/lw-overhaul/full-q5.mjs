@@ -48,9 +48,23 @@ h1{font:700 15px/1.3 "Inter Tight",system-ui,sans-serif;letter-spacing:.06em;tex
 .ln.go b{color:#8FE0A8}
 .ln.chg{border-color:#ff2d95;box-shadow:0 0 0 1px #ff2d95}
 .ft{font:600 11.5px system-ui;color:#5fd0e6}
+.cal{display:flex;flex-direction:column;gap:4px;margin-top:8px;max-width:520px}
+.mr{display:grid;grid-template-columns:34px 1fr;gap:6px;align-items:center}
+.mn{font:700 10.5px system-ui;color:#8a96a3;text-transform:uppercase;letter-spacing:.06em}
+.dd{display:grid;grid-template-columns:repeat(31,1fr);gap:2px}
+.dd i{height:18px;border-radius:3px;background:rgba(6,8,11,.6);box-shadow:inset 0 0 0 1px #222b35;font:700 7.5px/18px system-ui;font-style:normal;text-align:center;color:#56616d}
+.dd i.o{background:rgba(87,201,122,.18);box-shadow:inset 0 0 0 1px rgba(87,201,122,.6);color:#8FE0A8}
 .tally{font:600 11.5px/1.4 system-ui;color:#e6edf3;border-top:1px solid #26303a;padding-top:8px}
 .tally span{color:#8a96a3;font-weight:500}
 `
+// his follow-up: "open specific periods like mid month to mid month" — the open dates are any start and end day
+function days(y, m) { return new Date(Date.UTC(y, m + 1, 0)).getUTCDate() }
+function monthRow(name, m, from, to) {
+  const n = days(2026, m)
+  return `<div class="mr"><span class="mn">${name}</span><div class="dd">${Array.from({ length: n }, (_, i) => { const d = (m + 1) * 100 + i + 1; return `<i class="${d >= from && d <= to ? 'o' : ''}">${i + 1 === 1 || i + 1 === 15 || i + 1 === n ? i + 1 : ''}</i>` }).join('')}</div></div>`
+}
+const MID = sheet('Open for bidding', [['15 Apr – 14 Jul', 'open', 'go']], '+ Open more dates') +
+  '<div class="cal">' + [['Apr', 3], ['May', 4], ['Jun', 5], ['Jul', 6]].map(([n, m]) => monthRow(n, m, 415, 714)).join('') + '</div>'
 function page(phone) {
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Leave War bidding</title><style>${CSS}</style></head><body><div class="wrap">
 <section id="q5"><h1>Opening the next three months, two ways</h1><p class="sub">The same year. First you open April to June; once everyone is approved, you move on to July to September. Green: members may bid. Dim with a lock: they may not. Pink: what you have to change.</p>
@@ -64,6 +78,7 @@ ${step(1, 'Open April to June: lock everything else, two lines.')}${LOCK_A}${str
 ${step(2, 'Move on to July to September: change both lines.')}${LOCK_B}${strip([6, 7, 8])}
 <div class="tally">Lines to keep right: <b>2</b> <span>· forget one and a stretch is open, or shut, that should not be</span></div></div>
 </div></section>
+<section id="mid" style="margin-top:22px"><h1>Any dates: mid-month to mid-month</h1><p class="sub">The open dates take any first and last day, picked on the app's date calendar. Here 15 April to 14 July: green days are open for bidding.</p>${MID}</section>
 </div></body></html>`
 }
 writeFileSync(join(HERE, 'q5-phone.html'), page(true))
@@ -76,6 +91,7 @@ for (const [n, w, dpr, phone] of [['p5-phone', 390, 3, true], ['p5-desk', 900, 2
   await p.waitForTimeout(200)
   console.log(n, 'width', await p.evaluate(() => document.documentElement.scrollWidth))
   await p.locator('#q5').screenshot({ path: join(OUT, `${n}.png`) })
+  await p.locator('#mid').screenshot({ path: join(OUT, `${n}-mid.png`) })
   await ctx.close()
 }
 await browser.close(); console.log('errors:', errs)
