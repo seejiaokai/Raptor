@@ -63,7 +63,10 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
 .eroster .er-h .er-daynav{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;padding:0;margin:0 1px;vertical-align:middle;border:1px solid var(--edge);border-radius:4px;background:transparent;color:var(--accent);font-size:13px;line-height:1;cursor:pointer}
 .eroster .er-h .er-daynav:hover{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .eroster .er-h .er-daynav:disabled{opacity:.3;cursor:default;background:transparent;color:var(--ink-3);border-color:var(--edge)}
-.eroster .er-h .er-dayname{margin:0 2px}
+/* THE › STAYS PUT (owner D1122, 21 Oct 26 — "i keep having to chase the arrow when the words change"): the day's name has
+   the room its longest needs — WEDNESDAY, 64px at 11px, with a seventh more for an iPhone's wider letters — so the
+   arrow after it never moves as the day changes (measured: 21.5px of travel before) */
+.eroster .er-h .er-dayname{margin:0 2px;display:inline-block;width:6.6em;text-align:center}
 /* the edge hint — a fixed bubble over the aircrew panel, shown once a session
    when the week jams against its right end with days still off the front. */
 /* two vertical columns: pilots left, WSOs right — each exactly one puck wide */

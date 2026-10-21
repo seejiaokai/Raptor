@@ -1531,6 +1531,9 @@
 }
 .flyedit-strip b { color: var(--accent); font-weight: 800; letter-spacing: .02em; }
 .flyedit-day, .flypad-day { color: var(--ink); font-weight: 700; }
+/* the pad's ‹ › come after the day: the day has one room, its longest ("Wed 30 Sep") with a little to spare and figures
+   of one width, so the arrows never move as the day steps (owner D1122, 21 Oct 26) */
+.flypad-day { display: inline-block; min-width: 6.4em; font-variant-numeric: tabular-nums; }
 .flyedit-mode { display: inline-flex; gap: 4px; }
 .flyedit-mode button {
   font: inherit;

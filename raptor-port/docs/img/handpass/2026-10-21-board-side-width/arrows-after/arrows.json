@@ -1,0 +1,380 @@
+[
+ {
+  "name": "pc-crew-day",
+  "still": true,
+  "spread": 0,
+  "pspread": 0,
+  "rows": [
+   {
+    "words": "Monday",
+    "prev": 1348.3,
+    "next": 1444.9
+   },
+   {
+    "words": "Tuesday",
+    "prev": 1348.3,
+    "next": 1444.9
+   },
+   {
+    "words": "Wednesday",
+    "prev": 1348.3,
+    "next": 1444.9
+   },
+   {
+    "words": "Thursday",
+    "prev": 1348.3,
+    "next": 1444.9
+   },
+   {
+    "words": "Friday",
+    "prev": 1348.3,
+    "next": 1444.9
+   },
+   {
+    "words": "Saturday",
+    "prev": 1348.3,
+    "next": 1444.9
+   },
+   {
+    "words": "Sunday",
+    "prev": 1348.3,
+    "next": 1444.9
+   }
+  ]
+ },
+ {
+  "name": "pc-inputs-month",
+  "still": true,
+  "spread": 0,
+  "pspread": 0,
+  "rows": [
+   {
+    "words": "July 2026",
+    "prev": 514.6,
+    "next": 761.4
+   },
+   {
+    "words": "August 2026",
+    "prev": 514.6,
+    "next": 761.4
+   },
+   {
+    "words": "September 2026",
+    "prev": 514.6,
+    "next": 761.4
+   },
+   {
+    "words": "October 2026",
+    "prev": 514.6,
+    "next": 761.4
+   },
+   {
+    "words": "November 2026",
+    "prev": 514.6,
+    "next": 761.4
+   },
+   {
+    "words": "December 2026",
+    "prev": 514.6,
+    "next": 761.4
+   },
+   {
+    "words": "January 2027",
+    "prev": 514.6,
+    "next": 761.4
+   },
+   {
+    "words": "February 2027",
+    "prev": 514.6,
+    "next": 761.4
+   },
+   {
+    "words": "March 2027",
+    "prev": 514.6,
+    "next": 761.4
+   },
+   {
+    "words": "April 2027",
+    "prev": 514.6,
+    "next": 761.4
+   },
+   {
+    "words": "May 2027",
+    "prev": 514.6,
+    "next": 761.4
+   },
+   {
+    "words": "June 2027",
+    "prev": 514.6,
+    "next": 761.4
+   },
+   {
+    "words": "July 2027",
+    "prev": 514.6,
+    "next": 761.4
+   }
+  ]
+ },
+ {
+  "name": "pc-sans-month",
+  "still": true,
+  "spread": 0,
+  "pspread": 0,
+  "rows": [
+   {
+    "words": "July 2027",
+    "prev": 12,
+    "next": 296
+   },
+   {
+    "words": "August 2027",
+    "prev": 12,
+    "next": 296
+   },
+   {
+    "words": "September 2027",
+    "prev": 12,
+    "next": 296
+   },
+   {
+    "words": "October 2027",
+    "prev": 12,
+    "next": 296
+   },
+   {
+    "words": "November 2027",
+    "prev": 12,
+    "next": 296
+   },
+   {
+    "words": "December 2027",
+    "prev": 12,
+    "next": 296
+   },
+   {
+    "words": "January 2028",
+    "prev": 12,
+    "next": 296
+   },
+   {
+    "words": "February 2028",
+    "prev": 12,
+    "next": 296
+   },
+   {
+    "words": "March 2028",
+    "prev": 12,
+    "next": 296
+   },
+   {
+    "words": "April 2028",
+    "prev": 12,
+    "next": 296
+   },
+   {
+    "words": "May 2028",
+    "prev": 12,
+    "next": 296
+   },
+   {
+    "words": "June 2028",
+    "prev": 12,
+    "next": 296
+   },
+   {
+    "words": "July 2028",
+    "prev": 12,
+    "next": 296
+   }
+  ]
+ },
+ {
+  "name": "phone-crew-day",
+  "still": true,
+  "spread": 0,
+  "pspread": 0,
+  "rows": [
+   {
+    "words": "Monday",
+    "prev": 238.3,
+    "next": 334.9
+   },
+   {
+    "words": "Tuesday",
+    "prev": 238.3,
+    "next": 334.9
+   },
+   {
+    "words": "Wednesday",
+    "prev": 238.3,
+    "next": 334.9
+   },
+   {
+    "words": "Thursday",
+    "prev": 238.3,
+    "next": 334.9
+   },
+   {
+    "words": "Friday",
+    "prev": 238.3,
+    "next": 334.9
+   },
+   {
+    "words": "Saturday",
+    "prev": 238.3,
+    "next": 334.9
+   },
+   {
+    "words": "Sunday",
+    "prev": 238.3,
+    "next": 334.9
+   }
+  ]
+ },
+ {
+  "name": "phone-inputs-month",
+  "still": true,
+  "spread": 0,
+  "pspread": 0,
+  "rows": [
+   {
+    "words": "Jul 2026",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Aug 2026",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Sep 2026",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Oct 2026",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Nov 2026",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Dec 2026",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Jan 2027",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Feb 2027",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Mar 2027",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Apr 2027",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "May 2027",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Jun 2027",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Jul 2027",
+    "prev": 8,
+    "next": 142
+   }
+  ]
+ },
+ {
+  "name": "phone-sans-month",
+  "still": true,
+  "spread": 0,
+  "pspread": 0,
+  "rows": [
+   {
+    "words": "Jul 2027",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Aug 2027",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Sep 2027",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Oct 2027",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Nov 2027",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Dec 2027",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Jan 2028",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Feb 2028",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Mar 2028",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Apr 2028",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "May 2028",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Jun 2028",
+    "prev": 8,
+    "next": 142
+   },
+   {
+    "words": "Jul 2028",
+    "prev": 8,
+    "next": 142
+   }
+  ]
+ }
+]

@@ -116,3 +116,25 @@ test.describe('Edit Schedule\'s AIRCREW heading stays in sight (D1116)', () => {
     expect(m.onHead).toBe(true)
   })
 })
+
+/* [ARROWS-STAY-PUT] (D1122) — arrows around changing words keep their place: pressed again and again, the › is where it
+   was, whatever the day's or the month's name */
+test.describe('arrows around changing words stay put (D1122)', () => {
+  test.use({ viewport: DESK })
+  const travel = async (page: Page, prev: string, next: string, n: number) => {
+    const xs: number[] = []
+    for (let i = 0; i <= n; i++) {
+      xs.push(await page.evaluate(([p, q]) => document.querySelector(q)!.getBoundingClientRect().left + document.querySelector(p)!.getBoundingClientRect().left / 1e6, [prev, next]))
+      if (i < n) { await page.locator(next).first().click(); await sleep(120) }
+    }
+    return Math.max(...xs) - Math.min(...xs)
+  }
+  test('Edit Schedule crew panel ‹ day ›, the Inputs and SANS calendars ‹ month ›', async ({ page }) => {
+    await login(page); await go(page, 'editsched'); await sleep(300)
+    expect(await travel(page, '.edit-board .eroster [data-crewstep="-1"]', '.edit-board .eroster [data-crewstep="1"]', 6)).toBeLessThan(0.6)
+    await go(page, 'inputs'); await sleep(400)
+    expect(await travel(page, '#icPrev', '#icNext', 12)).toBeLessThan(0.6)
+    await page.locator('#inSansMode').click(); await sleep(400)
+    expect(await travel(page, '[data-testid="sc-prev"]', '[data-testid="sc-next"]', 12)).toBeLessThan(0.6)
+  })
+})
