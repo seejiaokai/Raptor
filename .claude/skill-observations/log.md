@@ -1669,3 +1669,18 @@ different feature that merely pass through it.
 **Suggested improvement:** In mockups-on-the-real-app.md, one line: when a look covers "every X", find X by what the running page shows (visible elements whose own text or icon is X), not by a source search; a place the source lists but the screen does not show is reported as "already done", not pictured.
 
 **Principle:** What the person sees is the inventory; source text is only a lead to check against the running screen.
+
+### Observation 666: A walk that checks an icon is "there" passes an icon in the wrong place
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** Round 3 of the consistency look: swapping typed marks for drawn icons in many buttons, then walking them.
+**Skill:** New skill candidate / bug-check order (walk-scripts.md)
+**Type:** open-source
+**Phase/Area:** writing a walk's assertions for an icon swap
+
+**Issue:** The walk asserted "the button wears the svg and no typed mark" and passed 71/71, while on a desktop one button now showed its new icon ABOVE its words (the icon is a block element; that row's buttons were not flex). The walk's picture of that row was cropped to the first matching element, so the button was not even in it. A later picture for another question showed the fault; the fresh code read found it too.
+
+**Suggested improvement:** In `raptor-port/docs/walk-scripts.md`: when a text mark becomes a drawn icon, assert its PLACE as well as its presence — the icon's box beside the words (its right edge at or before the words' left, their middles within a few px) and the control's height unchanged; and a crop helper that takes several selectors must box all of them, not the first.
+
+**Principle:** An assertion of presence cannot catch a layout fault; check the relation the person sees (beside, same line, same height), and make every picture show the thing it is named for.
