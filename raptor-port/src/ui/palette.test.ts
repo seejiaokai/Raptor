@@ -245,6 +245,13 @@ describe('D1118 — the ATT B man with nothing else that day, no place picked', 
     expect(html).toContain('rpuck no')
     expect(html).not.toContain('ATT B: no flying')
   })
+  it('a SANS man on ATT B with no record filed is struck for that, never drawn free (blind read F3)', () => {
+    const id = Object.keys(PEOPLE).find(k => PEOPLE[k].san && !PEOPLE[k].archived && !dayEngaged(DAYS[0]).has(k))!
+    INPUTS.push({ person: id, date: 'Jul 13', allday: true, type: 'ATT B', remarks: '', mod: '' })
+    const html = unarmed(id)
+    expect(html).toContain('rpuck no')
+    expect(html).not.toContain('ATT B: no flying')
+  })
   it('tasked elsewhere too, he stays faded as today', () => {
     INPUTS.push({ person: 'nasty', date: 'Jul 13', allday: true, type: 'ATT B', remarks: '', mod: '' })
     if (!dayEngaged(DAYS[0]).has('nasty')) return

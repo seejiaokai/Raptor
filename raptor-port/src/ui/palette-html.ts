@@ -58,7 +58,7 @@ export function rosterPuck(id:any,di:any,armKey:any,eng:any,off:any,sby:any,rule
      man whose only absence is ATT B and who has nothing else that day is drawn in full colour, his line saying what he
      cannot do ("ATT B: no flying") — the fade means "already tasked", and he is not. Tasked elsewhere too, he stays
      faded, as before. Picking a place still judges him by slotBar above. */
-  const gFree=grounded&&!tasked;
+  const gFree=grounded&&!tasked&&!why;   // a SANS man on ATT B with no record is struck for that, never drawn free (blind read F3)
   const cls=why?'no':(gFree?'grounded':((grounded||tasked)?'busy':(standby?'standby':'')));
   const sbyKind=standby&&sby.get?sby.get(id):'SC';
   const note=why?`${PEOPLE[id].cs} — ${why}`
@@ -240,8 +240,7 @@ export function specialRowHTML(di:any){
    and the badge, not decide who is barred.
    `ok()` is the SAME archived/SC-currency filter paletteHTML's own columns
    apply, recomputed here rather than threaded through as a parameter: this
-   is a standalone exported function (palette.test.ts and board-html.ts both
-   call it directly), and arules already carries everything ok() needs. */
+   is a standalone exported function (palette.test.ts calls it directly), and arules already carries everything ok() needs. */
 export function sansAvailHTML(di:any,armKey:any,eng:any,off:any,sby:any,arules:any){
   const scArm=!!(arules&&arules.sc);
   const ok=(id:any)=>!PEOPLE[id].archived&&(!scArm||scQualOK(id,arules.sc));

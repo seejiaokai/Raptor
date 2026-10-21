@@ -99,7 +99,20 @@ Re-walk: **37 / 37 PASS** (`rewalk/walk.json`), errors in the browser: none.
 
 ## 7a. The code read
 
-(One fresh, blind Opus read of the finished code, given this sheet — its findings and their dispositions go here.)
+One fresh, blind Opus read (Opus 5.5, a helper that wrote nothing here), given this sheet and the rulings: 4 findings, a
+question and a risk, none false. Each fixed with a test that is red without it.
+
+| # | Finding | Disposition |
+|---|---|---|
+| F1 (medium) | Edit Schedule's heading goes back under the bar when the "Not saved" band or the OIL bar shows: they grow the bar by its PADDING, which a watch on its content box never sees | fixed — the bar's border box watched, and a window resize re-measures (`topbarvar.ts`); `sidegrip.test.ts` (resize) |
+| F2 (medium-low) | a SANS row's entry could shrink below its puck, a long remark lying over it | fixed — `min-width: var(--puck-w)` |
+| F3 (low) | a SANS man on ATT B with no record, nothing picked: struck, but under "ATT B: no flying" | fixed — the ATT B look only where nothing strikes him (`gFree … && !why`); `palette.test.ts`, red without it |
+| F4 (low) | the desktop layout on a window past 820 showed a grip that changed nothing | fixed — no grip in `.sb-wide`; `boardside.spec.ts` |
+| Risk | Edit Schedule's crew panel wears the board's `.sb-roster` class, so the "board only" rules reached it | fixed — the rules written for `#sbRoster`; `boardside.spec.ts` ("its own layout"), red with the old selector |
+| Question | a man on ATT B who is ONLY standing by: the ATT B look or the standby look? (neither ruling decides) | the agent's call, told to him: the ATT B look — "ATT B: no flying" is the fact that changes what he may be given, and standing by is already shown on the line he stands by on |
+| Older | the strip keeps the title it had when the seat was picked (a callsign typed after does not show); a stale comment | filed [ARM-STRIP-STALE-TITLE]; the comment corrected |
+
+Re-walk after the fixes: 37 / 37 (`final/`, sharp pictures); browser test 6 / 6; the touched tests green.
 
 ## 8. Gates
 

@@ -10,8 +10,12 @@ export function wireTopbarVar(bar: HTMLElement | null) {
   const root = document.documentElement
   const set = () => root.style.setProperty('--topbar-h', Math.round(bar.getBoundingClientRect().height) + 'px')
   set()
-  if (typeof ResizeObserver !== 'function') return () => { }
+  /* the BORDER box: the "Not saved" band and the OIL bar make the bar taller by its padding alone, which a watch on the
+     content box never sees (the blind read of 21 Oct 26, F1); and a window resize as well, the way the Shell itself
+     answers the bands */
+  window.addEventListener('resize', set)
+  if (typeof ResizeObserver !== 'function') return () => window.removeEventListener('resize', set)
   const ro = new ResizeObserver(set)
-  ro.observe(bar)
-  return () => ro.disconnect()
+  ro.observe(bar, { box: 'border-box' })
+  return () => { ro.disconnect(); window.removeEventListener('resize', set) }
 }

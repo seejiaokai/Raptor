@@ -69,6 +69,26 @@ test.describe('the board\'s right panel on a desktop (D1113, D1118)', () => {
   })
 })
 
+test.describe('where the new layout must not reach (the blind read)', () => {
+  test.use({ viewport: DESK })
+  test('the desktop layout (sb-wide) on a wide window has no grip', async ({ page }) => {
+    await login(page); await board(page)
+    await page.evaluate(() => document.getElementById('schedBoard')!.classList.add('sb-wide'))
+    await expect(page.locator('#schedBoard [data-sidegrip]')).toBeHidden()
+  })
+  test("Edit Schedule's crew panel keeps its own layout: the words under the puck", async ({ page }) => {
+    /* an ATT B man with nothing else on Monday wears his words ("ATT B: no flying") on BOTH lists: under his puck on
+       Edit Schedule's (its own layout), as the board's rules are the board's alone */
+    await login(page)
+    await page.evaluate(() => { const P = (window as any).PEOPLE, id = Object.keys(P).find(k => P[k].cs === 'Havoc');
+      (window as any).fileInput({ person: id, date: 'Jul 13', allday: true, type: 'ATT B', remarks: '', mod: '2026-07-10' }) })
+    await go(page, 'editsched'); await sleep(400)
+    const m = await page.evaluate(() => { const e = document.querySelector('.edit-board .eroster .rpuck.grounded.haswhy') as HTMLElement | null
+      return e ? { dir: getComputedStyle(e).flexDirection, words: e.querySelector('.rwhy')?.textContent } : null })
+    expect(m).toEqual({ dir: 'column', words: 'ATT B: no flying' })
+  })
+})
+
 test('on a phone the panel has no grip', async ({ browser, baseURL }) => {
   const context = await browser.newContext({ baseURL, viewport: { width: 402, height: 874 }, isMobile: true, hasTouch: true })
   const page = await context.newPage()

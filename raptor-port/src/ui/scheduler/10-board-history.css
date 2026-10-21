@@ -183,6 +183,9 @@ body.dw-lock{overflow:hidden}
 /* while the panel is dragged: the page body only — a `body.<class> *` rule would restyle every element (css-invalidation.test.ts) */
 body.sbside-drag{cursor:ew-resize;user-select:none}
 @media (max-width:820px){.sb-sidegrip{display:none}}
+/* the desktop layout (a phone's, kept on a window widened past 820, or a tablet turned) holds its column at 320: no grip
+   there (the blind read, F4) */
+.schedboard.sb-wide .sb-sidegrip{display:none}
 /* the aircrew drawer's wrapper is invisible on desktop — .sb-warn and
    .sb-roster stay direct flex items of the side column, exactly as before
    the phone drawer existed. The aside carries .eroster so the week's tab
@@ -267,14 +270,17 @@ body.sbside-drag{cursor:ew-resize;user-select:none}
 /* A REASON STANDS BESIDE ITS PUCK WHERE THERE IS ROOM (owner D1118 — his question to D1113, "yes to all"): the ALL AVAIL
    window's own rule (D40, 19-availability.css .availwin .rwhy): the reason's basis is 92, so beside the puck where 92 is
    free and wrapped under it where not — at 320 under, from about 400 wide beside. The strike stays on the puck (03-week).
-   Desktop only: the phone's crew drawer sizes itself to what it holds, and keeps today's reasons under the pucks. */
+   Desktop only: the phone's crew drawer sizes itself to what it holds, and keeps today's reasons under the pucks. The
+   BOARD's list only (#sbRoster): Edit Schedule's crew panel wears the same .sb-roster class (EditWeek.tsx), and its
+   panel is as wide as what it holds, so it keeps today's layout (the blind read of 21 Oct 26). */
 @media (min-width:821px){
-  .sb-roster .rpuck.no.haswhy,.sb-roster .rpuck.grounded.haswhy{flex-direction:row;flex-wrap:wrap;align-items:flex-start;column-gap:6px}
-  .sb-roster .rpuck.no.haswhy .puck,.sb-roster .rpuck.grounded.haswhy .puck{flex:0 0 var(--puck-w)!important}
-  .sb-roster .rpuck.haswhy .rwhy{flex:1 1 92px;min-width:0}
+  #sbRoster .rpuck.no.haswhy,#sbRoster .rpuck.grounded.haswhy{flex-direction:row;flex-wrap:wrap;align-items:flex-start;column-gap:6px}
+  #sbRoster .rpuck.no.haswhy .puck,#sbRoster .rpuck.grounded.haswhy .puck{flex:0 0 var(--puck-w)!important}
+  #sbRoster .rpuck.haswhy .rwhy{flex:1 1 92px;min-width:0}
   /* a SANS row holds its puck beside its badge and remark: the puck's entry shrinks to the row, so its reason wraps
-     under rather than pushing the row past the panel */
-  .sb-roster .rsans-row>.rpuck{flex:0 1 auto;min-width:0}
+     under rather than pushing the row past the panel — never below the puck's own width, or a long remark would lie
+     over the puck (the blind read, F2) */
+  #sbRoster .rsans-row>.rpuck{flex:0 1 auto;min-width:var(--puck-w)}
 }
 /* go / line board */
 /* the board's wave blocks carry the same coloured left stripe the week's `.go`

@@ -21,11 +21,12 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/board-side-width -->
-### 21 Oct 26 — the right-panel job, `claude/board-side-width`, pull request 562 — BUILT and walked; the fresh Opus read in hand
+### 21 Oct 26 — the right-panel job, `claude/board-side-width`, pull request 562 — BUILT, walked, read; waiting on his look
 - **His rulings this chat:** D1118 (round 1 "yes to all": the grip to 40% with a double-click back, reasons beside the pucks where 92 is free, the ATT B look, the strike on the puck), D1119 (round 2 "yes to both": the SANS section free first and counted, no dangling dot in "Planning FCP"), D1120 (a man only standing by — SC SPARE, AVALON, BB — is not faded), D1121 (a reason says each fact once — a later job, [CREW-REASON-TWICE]); D1113–D1115 marked answered; the design guide's lessons 14 and 15 (D941).
 - **Built:** `board.ts wireSideGrip` (+ `swallowNextClick` for both grips), `SchedBoard.tsx`, `palette-html.ts`, `avail.ts standbyRow / dayStandby (a map) / dayEngaged(d, standbyFree)`, `view.ts slotTitle`, `topbarvar.ts` + `Shell.tsx`, `interactions.ts` (the grips are controls), CSS `03-week.css`, `10-board-history.css`; the width is a per-browser view preference `raptorLocal:sbSideW` (`data-schema.md`).
 - **Checked:** WALK tier — sheet `raptor-port/docs/handpass/2026-10-21-board-side-width.md`; walk 32/35 (1 real fault: a grip drag dropped the picked seat — fixed; 2 the script's), re-walk 37/37; unit `palette.test.ts` 29, `sidegrip.test.ts` 7, the touched area 204 files / 5,288 and the stylesheet tests 34 / 737; browser `e2e/boardside.spec.ts` 4; break tests 8 of 8 red. GitHub's run on `962020a15` red (one CSS speed rule, fixed); on `b0214c0cc` it was running.
-- **Owed:** the fresh Opus code read and the fresh reader of D1118–D1121's lines and lessons 14–15 (both started); his look (preview link and pictures on the question page https://claude.ai/artifact/5YTBaxwvtx5mHxxBAdaGvk); then his "merge live". Auto-fix was switched on by the app and switched off (D1090).
+- **Read:** the blind Opus code read — 4 findings and a risk, all fixed red-first (sheet §7a); the fresh reader of D1118–D1121's lines and lessons 14–15 — 5 rewordings, taken. Re-walk 37/37 (`final/`), browser 6/6. GitHub green on `b0214c0cc`.
+- **Owed:** his look (preview link and pictures on the question page https://claude.ai/artifact/5YTBaxwvtx5mHxxBAdaGvk); then his "merge live". Auto-fix was switched on by the app and switched off (D1090).
 - **Next after this:** [LW-PHONE-PINCH-ZOOM] (D1117), a fresh chat.
 - **Known:** the document check's one failure is older (`.claude/rules/shipping.md` 2 lines over) — a change touching `raptor-port/src` defers it.
 <!-- /now -->
