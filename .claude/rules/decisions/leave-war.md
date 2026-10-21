@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1200 | 21 Oct 26 | The Leave War's Management group comes from a Management tick column on Quals: added as a group like any Quals column, it stands first on the war; a man in Management still counts in his own seat. |
 | D1199 | 21 Oct 26 | The Leave War shows a person what has changed for him since his last visit — designed the app's own way, not copied from the colleague's band — drawn for him before anything is built. |
 | D1198 | 21 Oct 26 | Question 11 is removed: the Leave War's day panel lays out its figures as his design lessons 18 and 27 already say — each on its own line, names in one column and figures in another, lined up — with no question put. |
 | D1197 | 21 Oct 26 | The Leave War gets no quick-approve switch: the Approvals list's dates choose a period, and "Approve all" approves exactly what the list shows — his "approve all for a selected period"; the grid's drag-select stays. |
@@ -101,7 +102,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 | D1152 | 21 Oct 26 | The Leave War gets an Approvals list: everything awaiting approval in one list, its count rising with each new request not yet approved, with Approve on each line and an Approve all. |
 | D1151 | 21 Oct 26 | One document lists every place in the app that should send a notification and how each works, starting with the reminder to attach a leave's document a day before it starts; the agent adds to it by itself whenever work shows a place that needs one, tells him, and he may strike any. |
 | D1150 | 21 Oct 26 | Every input, on the Leave War and the Inputs page, can carry photos and PDFs, added or seen at any time, even after its dates are locked, so a leave shows it was applied and approved in the official leave system; a leave filed on the Inputs page asks for its document as a medical one does, never as a hard stop. |
-| D1149 | 21 Oct 26 | The Leave War's groups can include a Management group that the admin makes and fills by picking its people, placed at the top of the war by default. |
+| D1149 | 21 Oct 26 | The Leave War's groups can include a Management group, placed at the top of the war by default — filled from a Management tick column on Quals (D1200). — changed by D1200 |
 | D1148 | 21 Oct 26 | A tap on a person on the Leave War opens his leave: his balances and his upcoming leave, each with its state; a year picker shows this year and ahead by default, and a past year's leave stays kept and shows when that year is picked from the drop-down. |
 | D1147 | 21 Oct 26 | An admin's bid window carries an "Approve what I enter" tick: whatever he places, on any row, is approved as it is placed (on by default, in the title bar — D1186, D1187). — changed by D1187, D1186 |
 | D1146 | 21 Oct 26 | A Leave War day holding two entries shows both in its cell, not one code with a "+n" corner: two halves one above the other, as the colleague's entry 1 and entry 2 do; two whole days side by side (D1167). — changed by D1167 |
