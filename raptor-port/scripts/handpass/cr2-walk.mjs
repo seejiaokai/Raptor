@@ -76,6 +76,10 @@ for (const w of [1366, 1536, 1599, 1600, 1920]) {
     ok(`${w} board ${id}: ${compact ? 'its icon only, 34 wide' : 'its word back'}, its name on hover`,
       b?.shown && (compact ? (!bl?.shown && b.w <= 36) : bl?.shown) && b.title.length > 0, `w=${b?.w} word=${bl?.shown} title="${b?.title.slice(0, 30)}"`)
   }
+  /* the blind read's two (21 Oct 26): each still says what it is where only its icon shows */
+  const names = await page.evaluate(() => ['#sbUndo', '#sbRedo', '#undoBtn', '#redoBtn'].map(s => document.querySelector(s)?.getAttribute('aria-label')))
+  const syncP = await page.evaluate(() => ['#sbSync', '#fastSync'].map(s => document.querySelector(s)?.getAttribute('aria-pressed')))
+  ok(`${w} board and top bar: Undo / Redo named for a screen reader, the sync dot says on or off`, names.join() === 'Undo,Redo,Undo,Redo' && syncP.every(p => p === 'true' || p === 'false'), `${names.join()} · ${syncP.join()}`)
   const sl = await seen(page, '#sbSync .synclbl')
   ok(`${w} board sync: ${compact ? 'its dot alone' : 'its words back'}`, compact ? !sl?.shown : sl?.shown)
   ok(`${w} board and top bar agree: Undo's word ${compact ? 'hidden' : 'shown'} on both, sync the same`,

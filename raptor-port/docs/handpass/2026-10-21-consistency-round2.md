@@ -95,17 +95,35 @@ because the sync dot (21 tall) is shorter than the buttons (29–30) and centres
 31 × 21 (measured on the same page), so it is the app's look, not a fault. The check was rewritten to the buttons' middles.
 **Second run 100/100.** No page error, console error or failed request.
 
-**Walk:** 100/100 PASS, 22 pictures (`walk/`), the bar at five desktop widths, the mark and the Tracker at desktop and phone,
+**Walk:** 100/100 PASS, then the re-walk after the code read's two fixes 105/105 (`rewalk/`), 22 pictures each (`walk/`), the bar at five desktop widths, the mark and the Tracker at desktop and phone,
 every changed control pressed; no fault found by the walk; one finding filed (the Tracker's other typed marks).
 
 ## 5. The code read
 
-(to be filled when the fresh, blind Opus read returns)
+One fresh, blind Opus reader (D790), given the diff, the rulings, the walk's results and the D56 exclusion, asked for
+absences. **Nothing blocking; two findings, both a screen reader's, both older on the top bar and copied onto the board by D1130:**
+
+1. **Undo / Redo had no spoken name where only the arrow shows (821–1599)** — the name came from the button's words, now hidden;
+   the title is a description. **Fixed:** `aria-label="Undo"` / `"Redo"` on the one pair (`ui/topbits.tsx UndoPair`) — both bars.
+2. **The sync dot told on / off by colour alone there** — **fixed:** `aria-pressed` on the one chip (`SyncChip`) — both bars.
+
+Also taken while there: the Tracker's ⓘ (now icon-only) says on / off (`aria-pressed`, `Header.jsx`). Pins:
+`topbar-pair.test.tsx` (both bars' names and the dot's state, on and off). The fixes add attributes only (no logic rewritten),
+so no fix-round read (§5, "a fix is new code").
+
+**Cleared by reading (the reader's list):** every new rule beats the older ones on the same elements (named); the board's
+desktop layout on a phone keeps the phone's bar (≤820), so the toggle and fold are as before; a landscape phone (844) gets the
+desktop look and loses nothing; nothing focuses `#sbHl` or writes into the strip; the Tracker's `Menu` only renders its label;
+no script reads these buttons' text for logic; every icon-only button keeps a title; the new styles stay under `#page-tracker`.
+**Older, met in passing (not this change):** the syllabus dropdown adds a typed " ✎" to a syllabus with its own chart — an
+option cannot hold a drawing (noted with finding 16); the view tabs show no hover ring at 821–1050 (cosmetic).
+
+**The re-walk** (`walk` → `rewalk/`, the same script with the two checks added): **105/105 PASS** on the rebuilt bundle.
 
 ## 6. The gates
 
-GitHub's run of pull request 563 (D1086 — the repo is public): (to be filled). On his PC: `quals.test.tsx`, `boardnav.test.tsx`,
-`tracker.test.tsx` — 194 + 41 green; `npm run build` green; `npm run docsize` OK.
+GitHub's run of pull request 563 (D1086 — the repo is public): the first push RED — one unit file, `inputs-readers.test.ts`, found the capital word INPUTS in a new comment in `tracker/App.jsx` (its scan reads comments too); the comment reworded, nothing else. **Green on `d50327cc1`** (the whole set). The code read's fixes (attributes only, their tests green on his PC) pushed after it; their run is the last. On his PC: `quals.test.tsx`, `boardnav.test.tsx`,
+`tracker.test.tsx`, then the eight files that touch the changed buttons (`topbar-pair`, `boardnav`, `editweek`, `odds`, `oilundo-button`, `undo-caret`, `tracker`, `inputs-readers`) — 179 green; `npm run build` green; `npm run docsize` OK.
 
 ## 7. Not proved here
 

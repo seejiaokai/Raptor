@@ -238,7 +238,7 @@ export default function Header() {
             after the syllabus pencil (owner, 9 Sep 26 — "change it to i icon").
             Turn it on and hovering an event (tapping on a phone) pops its
             title, type, crew & prerequisites; marking is off while it is on. */}
-        <button className={'sm icon' + (core.showDetails ? ' primary' : '')} id="detailsBtn" title="Show each event's title, type, crew & prerequisites on hover (tap on a phone) — marking is off while this is on" onClick={core.toggleDetails}><InfoGlyph /></button>
+        <button className={'sm icon' + (core.showDetails ? ' primary' : '')} id="detailsBtn" aria-pressed={!!core.showDetails} title="Show each event's title, type, crew & prerequisites on hover (tap on a phone) — marking is off while this is on" onClick={core.toggleDetails}><InfoGlyph /></button>
 
         {/* ↶ Undo / ↷ Redo, on the bar for everyone (owner, 9 Sep 26 — "not
             only isolated to under edit"). They take back a mark, a failure
