@@ -92,6 +92,7 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 
 | # | Date | The rule |
 |---|---|---|
+| D1179 | 21 Oct 26 | The Inputs page's type filter can pick a whole family — every kind of leave at once, and every kind of medical — so in one view an admin sees which inputs carry their document and which do not. |
 | D1125 | 21 Oct 26 | The Inputs and SANS calendars' top rows are built as drawn: on a desktop one row — the tabs, then ‹ month › and Today in the same place on both, then at the right end Inputs' Calendar / List, filters and gear, or SANS' Highlight and gear; the month's name in the Inputs style on both, desktop and phone; the buttons drawn 36 tall. |
 | D1123 | 21 Oct 26 | The Inputs and SANS calendars' top rows are laid out alike, on a desktop as on a phone: the tabs, the month's ‹ name › and Today, and the buttons at the right end in the same places and the same look on both, the month's name in one style; how it is drawn is put to him with pictures before it is built. — changed by D1125 |
 | D1096 | 20 Oct 26 | Wherever the app prints a date with its year, the year is two digits — "15 Feb 27" — as the till date does (D1095): the Inputs list's date column and its phone day headings and the LATE mark's note first, and any other place found printing a four-digit year after a date. |
