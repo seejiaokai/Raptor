@@ -15,7 +15,7 @@ const topRow = (dates, more) => box(0, 10.9, 100, 3.3, `<div class="row"><span c
 // after bidding closes (his question): nothing open — the chip says so, the grid shows as normal (nothing to dim
 // against), and a member's tap on a day to bid is answered with where to go instead (D1166)
 const topRowClosed = () => box(0, 10.9, 100, 3.3, '<div class="row"><span class="chip shutc">Bidding closed</span><span class="chip">Under <b>0</b> days</span><span class="sp"></span><span class="chip">Legend</span></div>', 'background:#0d1117')
-const closedNote = () => box(6, 56, 88, 16, '<div class="sh cn"><b>Bidding is closed</b><span>To change your leave, ask management, then file it on the Inputs page. Your approved leave updates here by itself.</span><div class="ok">OK</div></div>')
+const closedNote = () => box(6, 56, 88, 16, '<div class="sh cn"><b>Bidding is closed</b><span>To change your leave, seek management’s approval, then file it on the Inputs page. Your approved leave updates here by itself.</span><div class="ok">OK</div></div>')
 // the window, in the style of today's "Open bidding on" window
 // D1168 (his idea): the period's months as quick buttons — a tap opens or closes a whole month; on = whole month open,
 // part = opened only in part (mid-month), dotted edge
