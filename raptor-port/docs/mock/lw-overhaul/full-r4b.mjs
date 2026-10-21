@@ -37,19 +37,27 @@ const REQ = [
   ['Reaper', 'pilot', 'IR', 'sxo', 'LL', 'Tue 27 Jan', '1 day', 12, 'P 23', 'Reaper, 7 Jan', 0],
   ['Ranger', 'pilot', 'IP', 'sxo', 'LL', 'Thu 29 Jan, AM', '½ day', 14.5, 'P 27.5', 'Ranger, 7 Jan', 0],
 ]
-const bal = (v, k) => `<span class="lab2">${k === 'OIL' ? 'OIL' : 'LVE'} Bal</span> <b class="${v < 0 ? 'neg' : ''}">${v}</b>`
+// D1189 — the figures in columns that line up from line to line, each with a small heading; numbers on their right edge;
+// "placed" shows the date only where he placed it himself. On a phone: a small grid of four labelled cells.
+const balv = v => `<b class="${v < 0 ? 'neg' : ''}">${v}</b>`
+const COLS = ['NAME', 'KIND', 'DATES', 'DAYS', 'LVE BAL', 'LOWEST AVAIL', 'PLACED']
+const header = () => `<div class="row hdr"><span class="pk">NAME</span><span class="kbh">KIND</span><span class="dt">DATES</span><span class="c dy">DAYS</span><span class="c bl">LVE BAL</span><span class="c av">LOWEST AVAIL</span><span class="c pl">PLACED</span><span class="doc none"></span><span class="sp"></span></div>`
 const line = (r, i, phone) => {
   const [cs, seat, cat, chip, k, dates, days, v, own, by, nd, bk, tone, extra, label, mks] = r
   const m = mks || (i === 0 ? ['A', 'B', 'C', 'D'] : [])
-  const detail = `${days} · <span${m[2] ? ` data-mk="${m[2]}"` : ''}>${bal(v, bk)}</span> · <span${m[4] ? ` data-mk="${m[4]}"` : ''}>lowest ${label || 'Avail ' + own.split(' ')[0]} <b class="${tone || ''}">${own.split(' ')[1]}</b></span>${extra ? ` · <span${m[5] ? ` data-mk="${m[5]}"` : ''}>${extra}</span>` : ''} · placed by ${by}`
+  const [who, when] = by.split(', ')
+  const placed = who === cs ? when : `${when} · by ${who}`
+  const [seatL, num] = own.split(' ')
+  const avail = `<span${m[4] ? ` data-mk="${m[4]}"` : ''}>${label || seatL} <b class="${tone || ''}">${num}</b></span>${extra ? ` <span${m[5] ? ` data-mk="${m[5]}"` : ''}>· ${extra}</span>` : ''}`
+  const balC = `<span${m[2] ? ` data-mk="${m[2]}"` : ''}>${bk === 'OIL' ? '<small>OIL</small> ' : ''}${balv(v)}</span>`
   return phone
-    ? `<div class="card"><div class="l1">${puck(cs, seat, cat, chip, m[0])}${box(k, m[1])}<span class="dt">${dates}</span><span class="sp"></span>${doc(nd, m[3])}</div><div class="l2">${detail}</div><div class="l3"><span class="ap">Approve</span><span class="rf">Refuse</span></div></div>`
-    : `<div class="row">${puck(cs, seat, cat, chip, m[0])}${box(k, m[1])}<span class="dt">${dates}</span><span class="det">${detail}</span>${doc(nd, m[3])}<span class="ap">Approve</span><span class="rf">Refuse</span></div>`
+    ? `<div class="card"><div class="l1">${puck(cs, seat, cat, chip, m[0])}${box(k, m[1])}<span class="dt">${dates}</span><span class="sp"></span>${doc(nd, m[3])}</div><div class="l2g"><span><small>DAYS</small>${days}</span><span><small>LVE BAL</small>${balC}</span><span><small>LOWEST AVAIL</small>${avail}</span><span><small>PLACED</small>${placed}</span></div><div class="l3"><span class="ap">Approve</span><span class="rf">Refuse</span></div></div>`
+    : `<div class="row">${puck(cs, seat, cat, chip, m[0])}${box(k, m[1])}<span class="dt">${dates}</span><span class="c dy">${days}</span><span class="c bl">${balC}</span><span class="c av">${avail}</span><span class="c pl">${placed}</span>${doc(nd, m[3])}<span class="sp"></span><span class="ap">Approve</span><span class="rf">Refuse</span></div>`
 }
 const months = (phone, mk) => `<div class="mos${phone ? ' ph' : ''}"${mk ? ` data-mk="${mk}"` : ''}><span class="mb on">All</span>${MON.map(m => `<span class="mb${WAITING.includes(m) ? '' : ' dim'}">${m}</span>`).join('')}${phone ? '' : '<span class="mb pick">Pick dates…</span>'}</div>`
 const sheetBody = phone => phone
   ? `<div class="body ph"><div class="dates"><span class="lab">DATES</span>${months(true, 'E')}<div class="dr2"><span class="mb pick">Pick dates…</span><span class="sp"></span><span class="apall">Approve all 15</span></div></div>${REQ.slice(0, 5).map((r, i) => line(r, i, true)).join('')}</div>`
-  : `<div class="body"><div class="dates"><span class="lab">DATES</span>${months(false, 'E')}<span class="sp"></span><span class="apall">Approve all 15</span></div>${REQ.map((r, i) => line(r, i, false)).join('')}</div>`
+  : `<div class="body"><div class="dates"><span class="lab">DATES</span>${months(false, 'E')}<span class="sp"></span><span class="apall">Approve all 15</span></div>${header()}${REQ.map((r, i) => line(r, i, false)).join('')}</div>`
 
 // the admin's bid window: the leave buttons in their colours (D1183)
 const LB = [['LL', '14.5', 735, 855, 78], ['OL', '14.5', 820, 855, 76], ['OIL', '0', 905, 855, 66], ['CCL', '0', 980, 855, 69], ['FCL', '0', 1057, 855, 68], ['PL', '0', 1133, 855, 48], ['EL', '0', 1190, 855, 69], ['CL', '0', 628, 900, 60]]
@@ -79,6 +87,10 @@ const CSS = u => `
 .kb{display:inline-flex;align-items:center;justify-content:center;flex:none;width:calc(30*var(--u));height:calc(22*var(--u));border-radius:calc(3*var(--u));outline:1px dashed rgba(var(--h),.95);outline-offset:-1px;color:rgb(var(--h));font:800 calc(9.5*var(--u)) system-ui}
 .dt{width:calc(150*var(--u));flex:none;color:#e6edf3;font-weight:600}
 .det{flex:1;overflow:hidden;text-overflow:ellipsis;color:#9aa5b1;font-size:calc(12.5*var(--u))}
+.c{flex:none;color:#c9d1d9;font-size:calc(12.5*var(--u))}.c.dy{width:calc(52*var(--u))}.c.bl{width:calc(64*var(--u));text-align:right;padding-right:calc(14*var(--u))}.c.av{width:calc(150*var(--u))}.c.pl{width:calc(92*var(--u));color:#9aa5b1}
+.c b,.l2g b{color:#fff;font-weight:700}.c small,.l2g small{color:#8a96a3;font-size:calc(10*var(--u))}
+.row.hdr{height:calc(26*var(--u));border-bottom:1px solid #2a323c;font:600 calc(9.5*var(--u)) system-ui;letter-spacing:.12em;color:#8a96a3}.row.hdr>*{font:inherit;color:inherit;background:none}.row.hdr .kbh{width:calc(30*var(--u));flex:none}.row.hdr .c.bl{text-align:right}
+.l2g{display:grid;grid-template-columns:.8fr .9fr 1.4fr 1fr;gap:calc(6*var(--u));font-size:calc(12.5*var(--u));color:#c9d1d9}.l2g>span{display:flex;flex-direction:column;align-items:flex-start;gap:calc(1*var(--u))}.l2g small{letter-spacing:.1em;font-weight:600}
 .det b,.l2 b{color:#fff}.neg,.red{color:#ff8a92!important}.amb{color:#F2C879!important}
 .doc{display:inline-flex;align-items:center;justify-content:center;gap:1px;width:calc(30*var(--u));height:calc(26*var(--u));flex:none;border-radius:calc(6*var(--u));color:#c9d1d9}
 .doc:not(.none){border:1px solid #2f3a46;background:#12161b}.doc em{font-style:normal;font:700 calc(10*var(--u)) system-ui}
@@ -102,6 +114,9 @@ const CSS = u => `
 .irow .pill{display:inline-flex;align-items:center;height:calc(19*var(--u));padding:0 calc(9*var(--u));border-radius:calc(10*var(--u));border:1px solid #2f3a46;background:#161c23;font:800 calc(10*var(--u)) system-ui;color:#c9d1d9}
 .irow .nod{font:500 calc(10.5*var(--u)) system-ui;color:#6b7785;font-style:italic}
 .irow .clip{color:#c9d1d9}
+.setr{position:absolute;display:inline-flex;align-items:center;gap:10px;height:38px;color:#c9d1d9;font:500 15px system-ui}.setr i{width:10px;height:10px;border-radius:50%}
+.setr .num{display:inline-flex;align-items:center;justify-content:center;width:64px;height:36px;border-radius:7px;border:1px solid #3a4652;background:#0d1117;color:#fff;font:700 16px system-ui}
+.wnote{position:absolute;color:#c9d1d9;font:500 13px system-ui}.btnS,.btnC{position:absolute;display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 18px;border-radius:9px;font:700 14px system-ui}.btnS{background:#3bc6e8;color:#04222b}.btnC{border:1px solid #2f3a46;color:#e6edf3;background:#12161b}
 .bal{position:absolute;display:inline-flex;align-items:center;gap:calc(6*var(--u));height:calc(22*var(--u));padding:0 calc(10*var(--u));border-radius:calc(6*var(--u));border:1px solid #3a4652;background:#141a21;color:#e6edf3;font:700 calc(12*var(--u)) system-ui;white-space:nowrap}.bal i{font-style:normal;color:#9aa5b1;font-size:calc(10*var(--u))}
 .dd{position:absolute;background:#1b2027;border:1px solid #3a4450;border-radius:calc(4*var(--u));padding:calc(3*var(--u)) 0;font:500 calc(13*var(--u)) system-ui;color:#e6edf3;box-shadow:0 10px 30px rgba(0,0,0,.6)}
 .dd div{padding:calc(2.5*var(--u)) calc(12*var(--u))}.dd .fam{font-weight:800;padding-left:calc(8*var(--u))}.dd .sel{background:#c2d6f5;color:#0b0d10}.dd .k{padding-left:calc(24*var(--u))}
@@ -145,11 +160,20 @@ JOBS.push({ name: 'r4b-phone-balances', img: pic('full/r4-phone-member.png'), W:
 // (the row has no amber of its own); a manning row amber or red on the request's days named after it; a renamed row
 const COLOURED = [
   ['Cinch', 'pilot', 'IP', 'sxo', 'LL', 'Thu 22 – Fri 23 Jan', '2 days', -2, 'P 24.5', 'Cinch, 3 Jan', 0, null, 'red', null, null, ['', '', '', '', 'A']],
-  ['Anvil', 'pilot', 'IP', 'sxo', 'LL', 'Tue 27 Jan', '1 day', -1.5, 'P 23', 'Anvil, 5 Jan', 0, null, '', '<b class="amb">IP 3</b>', null, ['', '', '', '', '', 'B']],
+  ['Anvil', 'pilot', 'IP', 'sxo', 'LL', 'Tue 27 Jan', '1 day', -1.5, 'P 23', 'Anvil, 5 Jan', 0, null, 'amb', '<b class="amb">IP 3</b>', null, ['', '', '', '', 'B', 'D']],
   ['Drifter', 'pilot', 'A', 'sxo', 'OL', 'Tue 27 Jan', '1 day', 25, 'P 21', 'Drifter, 6 Jan', 1, null, '', null, 'Pilots w/o OCU', ['', '', '', '', 'C']],
 ]
-JOBS.push({ name: 'r4b-desk-approvals-colours', img: pic('full/r4-w10-desk-approvals.png'), W: 1920, H: 1075, u: 1.25, sample: [1000, 1040], clip: [350, 280, 1225, 305],
-  over: `<div class="cover" style="left:356px;top:328px;width:1210px;height:726px;background:var(--bg)"></div><div class="body" style="left:364px;top:330px;width:1192px;height:722px"><div class="dates"><span class="lab">DATES</span>${months(false)}<span class="sp"></span><span class="apall">Approve all 15</span></div>${COLOURED.map((r, i) => line(r, i, false)).join('')}</div>` })
+JOBS.push({ name: 'r4b-desk-approvals-colours', img: pic('full/r4-w10-desk-approvals.png'), W: 1920, H: 1075, u: 1.25, sample: [1000, 1040], clip: [350, 280, 1225, 322],
+  over: `<div class="cover" style="left:356px;top:328px;width:1210px;height:726px;background:var(--bg)"></div><div class="body" style="left:364px;top:330px;width:1192px;height:722px"><div class="dates"><span class="lab">DATES</span>${months(false)}<span class="sp"></span><span class="apall">Approve all 15</span></div>${header()}${COLOURED.map((r, i) => line(r, i, false)).join('')}</div>` })
+// 10 — the Available P window with its amber and red settings, each a number plus or minus that day's Required (D1190,
+// D1191); red at "+ 0" is today's rule (under Required). Drawn over the round-2 picture of the window.
+const setRow = (y, lab, dot, v, mk) => `<span class="wlab" style="left:627px;top:${y + 12}px">${lab}</span><span class="setr" style="left:735px;top:${y}px"${mk ? ` data-mk="${mk}"` : ''}><i style="background:${dot}"></i>when under Required <span class="num">${v}</span></span>`
+JOBS.push({ name: 'r4b-availp-amber', img: pic('full/p-w13-desk-availp.png'), W: 1920, H: 1120, u: 1.25, sample: [1100, 990], clip: [612, 540, 700, 580],
+  over: `<div class="cover" style="left:614px;top:890px;width:694px;height:230px;background:var(--bg);border-radius:0 0 12px 12px;border:1px solid #2a323c;border-top:0"></div>` +
+    setRow(894, 'AMBER', '#E5A83B', '+ 2', 'A') + setRow(940, 'RED', '#F0555F', '+ 0', 'B') +
+    '<span class="wnote" style="left:627px;top:990px">SANS people are never counted here. The SANS calendar reads this row, so it cannot be deleted.</span>' +
+    '<span class="wnote" style="left:627px;top:1014px">The SANS calendar: still needed = Required P − Available P − the SANS who offer to fly.</span>' +
+    '<span class="btnS" style="left:644px;top:1046px">Save</span><span class="btnC" style="left:724px;top:1046px">Cancel</span>' })
 const browser = await chromium.launch()
 for (const j of JOBS) {
   const html = `<!doctype html><html><head><meta charset="utf-8"><style>${CSS(j.u)}</style></head><body><div class="pic" id="pic" style="width:${j.W}px;height:${j.H}px"><img id="base" src="${j.img}" alt="">${j.over}</div></body></html>`

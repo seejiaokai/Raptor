@@ -31,7 +31,7 @@
           "raptor-port/docs/mock/lw-overhaul/full-page.html"
         ],
         "createdAt": "2026-10-21T11:18:30.321Z",
-        "reason": "agent: the tap-to-zoom image's src is set by the page's script when a picture is tapped; hidden until then"
+        "reason": "agent: the tap-to-enlarge overlay's img gets its src from the page's script when a picture is tapped; empty by design until then"
       }
     ]
   },
