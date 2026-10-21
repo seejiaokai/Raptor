@@ -3,6 +3,7 @@
    is signed off after DAAR, SC NIGHT after SC DAY, and withdrawing the day
    qualification takes the night one with it. */
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { wirePinch } from './pinchzoom'
 import { rowOnScreen } from './onscreen'
 import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME } from '../engine/people'
 import { validate } from '../engine/validate'
@@ -343,6 +344,32 @@ export function QualsPage() {
   const qLiftRef = useRef<HTMLDivElement | null>(null)
   const qLandRef = useRef<string | null>(null)
   const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
+  /* PINCH TO ZOOM THE TABLE ON A PHONE (owner D1108, D1110, 21 Oct 26 — [BOARD-PHONE-PINCH-ZOOM]). Two fingers on the table
+     zoom the table only — the top bar, the buttons and the Pilots · WSOs · Personnel · All switch stay as they are; out
+     until the whole table's width fits, in to twice normal (ui/pinchzoom.ts, the board's body too). The zoom is the
+     table's CSS zoom, kept while he stays on Quals (component state: leaving the page unmounts it, so he comes back at
+     today's size) — a change of view or filter keeps it. The pinned heading row is the same table drawn again, so it
+     wears the same zoom, and its measured widths (screen pixels) are written as its own pixels: divided by the zoom. */
+  const [qz, setQz] = useState(1)
+  /* THE ZOOM IS A PHONE'S ONLY (the code read's finding 1): the stylesheet applies `--qz` up to 820 wide (05-quals.css),
+     so a phone turned on its side past that shows the table at today's size, never stuck small; `phone` follows that
+     same width, and the pinned row's widths and travel use the zoom only while it applies (qzEff) */
+  const PHONE_Q = '(max-width:820px)'
+  const [phone, setPhone] = useState(() => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia(PHONE_Q).matches)
+  useEffect(() => {
+    if (!window.matchMedia) return
+    const mq = window.matchMedia(PHONE_Q)
+    const on = () => setPhone(mq.matches)
+    mq.addEventListener?.('change', on)
+    return () => mq.removeEventListener?.('change', on)
+  }, [])
+  const qzEff = phone ? qz : 1
+  const qzRef = useRef(1)
+  qzRef.current = qz
+  const qzEffRef = useRef(1)
+  qzEffRef.current = qzEff
+  /* a heading drag pressed by a pinch's first finger is let go when the pinch starts (the code read's finding 3) */
+  const cancelColDrag = useRef<(() => void) | null>(null)
   /* THE PINNED HEADER FOLLOWS BY THE BROWSER (owner D993, 18 Oct 26 — "Could u try to just fix the quals pinned header
      with the 120 frames fix"): where the browser can drive an animation from a scroll (CSS scroll-driven animations),
      the pinned row's table is moved sideways by the table's own scroll timeline, off the page's code — the Leave War's
@@ -514,6 +541,7 @@ export function QualsPage() {
       if (th !== over) { clear(); over = th; th.classList.add('qdrop') }
     }
     const onDown = (e: any) => {
+      if (e.isPrimary === false) return   // a second finger is a pinch, never a column drag
       if (!live.current.canEditQuals()) return
       const th = (e.target as HTMLElement).closest('th[data-col]') as HTMLElement | null
       if (!th || (e.target as HTMLElement).closest('[data-del]')) return
@@ -558,6 +586,13 @@ export function QualsPage() {
       tbl.querySelectorAll('.qdragging').forEach(x => x.classList.remove('qdragging'))
       clear(); from = ''
     }
+    cancelColDrag.current = () => {
+      if (!from) return
+      auto?.stop(); auto = null
+      frameLift(qLiftRef.current, null)
+      tbl.querySelectorAll('.qdragging').forEach(x => x.classList.remove('qdragging'))
+      clear(); from = ''
+    }
     tbl.addEventListener('click', onClick)
     tbl.addEventListener('change', onChange)
     tbl.addEventListener('pointerdown', onDown)
@@ -590,6 +625,56 @@ export function QualsPage() {
       document.removeEventListener('pointerup', onUp); document.removeEventListener('pointercancel', onUp)
       wrap.removeEventListener('scroll', onXScroll)
     }
+  }, [])
+
+  useEffect(() => {
+    const wrap = wrapRef.current
+    if (!wrap) return
+    return wirePinch({
+      surface: wrap,
+      target: () => tblRef.current,
+      get: () => qzRef.current,
+      min: () => {
+        const w = wrapRef.current, t = tblRef.current
+        return w && t && t.offsetWidth ? Math.min(1, w.clientWidth / t.offsetWidth) : 1
+      },
+      apply: z => {
+        const t = tblRef.current, w = wrapRef.current
+        if (t) t.style.setProperty('--qz', String(z))
+        /* zoomed right out the table lays itself out a little wider than the zoom alone gives (its text and lines do not
+           shrink exactly in step — measured 21 Oct 26: 372 for 362 at about a third), so at the fit it is measured again
+           and brought in until its whole width is on the screen */
+        /* and only while the browser really draws it at the zoom asked (an older Safari measured a zoomed box unzoomed —
+           the code read's caution), never below nine tenths of the fit */
+        if (t && w && z < 1) for (let i = 0; i < 3; i++) {
+          const over = t.getBoundingClientRect().width
+          if (over <= w.clientWidth + 0.5 || z > w.clientWidth / t.offsetWidth + 0.02) break
+          if (!t.offsetWidth || Math.abs(over / t.offsetWidth - z) > z * 0.05) break
+          const next = z * w.clientWidth / over
+          if (next < z * 0.9) break
+          z = next
+          t.style.setProperty('--qz', String(z))
+        }
+        qzRef.current = z
+        setQz(z)
+      },
+      canStart: () => !!window.matchMedia && window.matchMedia(PHONE_Q).matches,
+      /* the pinned row's browser follow is held while the fingers move (the fix round's read, finding 1): the table's
+         stretch grows the scroll box's range while its scroll stands still, so the follow — the scroll over the range —
+         slid the row short of its columns; nothing scrolls mid-pinch, so the held row is right, and it follows again after */
+      onStart: () => {
+        cancelColDrag.current?.()
+        const a = document.querySelector<HTMLElement>('#page-quals .qfixed-anim')
+        if (a) a.style.animationPlayState = 'paused'
+      },
+      onEnd: () => {
+        const a = document.querySelector<HTMLElement>('#page-quals .qfixed-anim')
+        if (a) a.style.animationPlayState = ''
+      },
+      /* the pinned heading row's CONTENTS stretch with the table while the fingers move (the code read's finding 7), not
+         its box: the box keeps the table's edges and clips them, as the table's own box does (the fix round's finding 2) */
+      also: () => [...document.querySelectorAll<HTMLElement>('#page-quals .qfixed > .qfixed-scroll, #page-quals .qfixed > .qfixed-frozen')],
+    })
   }, [])
 
   /* THE FROZEN HEADER — the same fixed-mirror mechanism Leave War uses
@@ -673,7 +758,7 @@ export function QualsPage() {
     /* re-measure (drop the stuck bar so the next scroll re-pins with fresh
        widths) whenever the column set, the view, the filter, or either edit mode
        could have changed a column's width or the header's own markup. */
-  }, [cols, qSeatView, qSearch, qEditing, qualsEdit])
+  }, [cols, qSeatView, qSearch, qEditing, qualsEdit, qzEff])
 
   /* start the mirror at the grid's current sideways position the instant it
      mounts, so its first painted frame is already in step (Leave War's own
@@ -689,7 +774,8 @@ export function QualsPage() {
     if (sdaActive) {
       /* the browser's follow (D993): the row's table runs from 0 to minus the table's whole sideways travel across the
          scroll's range, so the travel is told it here, measured whenever the row is pinned or re-measured (a rotate) */
-      m.style.setProperty('--qx-max', String(Math.max(0, w.scrollWidth - w.clientWidth)))
+      /* in the row's own pixels: a zoomed row's travel is drawn at its zoom (D1110) */
+      m.style.setProperty('--qx-max', String(Math.max(0, w.scrollWidth - w.clientWidth) / qzEffRef.current))
       /* ...and the row is held where the table is until the browser has STARTED the animation: one created this frame
          is not applied on it, so a table scrolled sideways would flash its first columns (the Leave War's lesson,
          measured there). The hold is the animation's own value at this scroll; once it runs it outranks the inline
@@ -697,7 +783,7 @@ export function QualsPage() {
       const anim = m.querySelector<HTMLElement>('.qfixed-anim')
       const run = anim?.getAnimations?.()[0]
       if (anim && run) {
-        anim.style.transform = `translateX(${-w.scrollLeft}px)`
+        anim.style.transform = `translateX(${-w.scrollLeft / qzEffRef.current}px)`
         run.ready.then(() => { anim.style.transform = '' }, () => { anim.style.transform = '' })
       }
     } else m.scrollLeft = w.scrollLeft
@@ -827,6 +913,7 @@ export function QualsPage() {
       ))}
       <div className={'qwrap' + (sdaActive ? ' q-sda' : '')} ref={wrapRef}>
         <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')} id="qtbl" ref={tblRef}
+          style={{ ['--qz' as any]: qz }}
           dangerouslySetInnerHTML={tableInner} />
         {/* THE LIFT FRAME (owner, 6 Sep 26): one box round a picked-up column,
             and the flash where it lands — src/ui/lift.ts. Inside the scroll
@@ -853,10 +940,10 @@ export function QualsPage() {
           }}>
           <div className={'qfixed-scroll' + (sdaActive ? ' qfixed-track' : '')} ref={mirrorRef}>
             <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '') + (sdaActive ? ' qfixed-anim' : '')}
-              style={{ tableLayout: 'fixed', width: stuck.cols.reduce((a, b) => a + b, 0), minWidth: 0 }}
+              style={{ tableLayout: 'fixed', width: stuck.cols.reduce((a, b) => a + b, 0) / qzEff, minWidth: 0, ['--qz' as any]: qz }}
               aria-hidden="true"
               dangerouslySetInnerHTML={{ __html:
-                `<colgroup>${stuck.cols.map(w => `<col style="width:${w}px">`).join('')}</colgroup>`
+                `<colgroup>${stuck.cols.map(w => `<col style="width:${w / qzEff}px">`).join('')}</colgroup>`
                 /* Only the COLUMN HEADERS freeze — NOT the "Assigned pilots · N"
                    group row (owner, 30 Aug 26 — "there isn't a need to freeze this
                    bar. Applicable to the rest as well", covering every seat view's
@@ -874,9 +961,9 @@ export function QualsPage() {
                heading's own edge, on the same background */
             <div className="qfixed-frozen" aria-hidden="true" style={{ width: stuck.cols[0] + 1 }}>
               <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')}
-                style={{ tableLayout: 'fixed', width: stuck.cols.reduce((a, b) => a + b, 0), minWidth: 0 }}
+                style={{ tableLayout: 'fixed', width: stuck.cols.reduce((a, b) => a + b, 0) / qzEff, minWidth: 0, ['--qz' as any]: qz }}
                 dangerouslySetInnerHTML={{ __html:
-                  `<colgroup>${stuck.cols.map(w => `<col style="width:${w}px">`).join('')}</colgroup>`
+                  `<colgroup>${stuck.cols.map(w => `<col style="width:${w / qzEff}px">`).join('')}</colgroup>`
                   + qualsHead(cols, qSeatView, qSort, canEditQuals(), armDel) }} />
             </div>
           )}

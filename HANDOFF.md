@@ -20,6 +20,16 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/board-pinch-zoom -->
+### 21 Oct 26 — pinch to zoom on a phone (the board's desktop layout and Quals), `claude/board-pinch-zoom`, pull request 561 — his "merge live" GIVEN (21 Oct 26), merging
+- **Done this chat:** (1) D1106 on pull request 558 — **LIVE** (his "merge live", 21 Oct 26). (2) The pinch-zoom questions with pictures; his "Yes to all" → **D1109** (`scheduler.md`), **D1110** (`people-accounts.md`). (3) Built: `ui/pinchzoom.ts` (one pinch body), the board's desktop layout under the phone's own bar, the edge scroll (`ui/drag.ts tdWideLoop`), Quals' table and pinned row. Two fresh Opus reads (9 + 2 findings), all fixed. (4) His look round 1 on his iPhone → **D1111** (the sign-off scrolls away in the desktop layout) and **D1112** (the side column is the desktop's — the issues list's margins, the crew list's columns), both built (`13-board-rows-responsive.css`, the last block).
+- **Checked:** unit `pinchzoom.test.ts` 12 + the touched files; browser `e2e/pinchzoom.spec.ts` 8 with save-note, geometry, schedule-tab, kbscroll, availwin — 279 green; the walk (`scripts/handpass/pz-walk.mjs`) 29 PASS; break tests 9 of 10 (the Quals heading one cannot be pinned in this browser — filed [QUALS-HEAD-FINGER-CAPTURE]). GitHub's run green on `cfeccc270`; `ab879c818` (round 1) pushed, its run going. Sheet `raptor-port/docs/handpass/2026-10-21-pinch-zoom.md`. Auto-fix switched off for 561 (D1090).
+- **His look page:** https://claude.ai/artifact/CToLxASKAPs16wkGokL3K2 (round 1's fixes, his two questions with a marked picture); the preview https://raptor-git-claude-board-pinch-zoom-kai-e2f5.vercel.app. The page's local copy is in the scratchpad; the repo's `raptor-port/docs/img/handpass/2026-10-21-pinch-zoom/questions-page.html` is version 1 — copy the live page in with the closing records.
+- **Answered:** [BOARD-SIDE-WIDTH] — his "Yes as recommended" (**D1113**): equal columns kept; the right panel draggable wider, its own job (questions and a picture first), with his idea of a struck puck's reason beside it once there is room (his example picture is in the item).
+- **Records on another branch:** D1098–D1108 and [BOARD-PHONE-PINCH-ZOOM] live on `claude/night-records-1021` (unmerged) — archive [BOARD-PHONE-PINCH-ZOOM] once both are on `main`.
+- **Not proved here:** Safari's own touch, pinch, zoom and keyboard on his iPhone — his look.
+- **Pick up here:** confirm 561 live (main green, Vercel Production ready); then [BOARD-SIDE-WIDTH] in a fresh chat — its questions and pictures first (D1113).
+<!-- /now -->
 <!-- now:claude/insights-logic-fixes-3416c8 -->
 ### 21 Oct 26 — the Insights and Logic small fixes (D994), `claude/insights-logic-fixes-3416c8`, pull request 554 — his "merge live" GIVEN (21 Oct 26), merging
 - **His pick:** [LOGIC-REDRAW-DROPS-TYPING] and [LOGIC-DONE-FIRST-PRESS] (D994; both archived). The Inputs batch (pull request

@@ -62,6 +62,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
 **Schedule and amendments**
+- [BOARD-SIDE-WIDTH] — the board's right panel dragged wider (D1113, his yes): its questions and a picture first, then the build — with his idea of a struck puck's reason beside it once there is room.
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
 - [INNERHTML-REPAINT-SWEEP] — eleven screens hand React their markup as a new object every repaint, which React sets again — a box being typed in there is thrown away by any repaint (Quals fixed in [KEYBOARD-SCROLL]); sweep the rest (low).
@@ -113,6 +114,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **People, accounts and Quals**
 - [QUALS-PINNED-COLS-REFLOW] — Quals' pinned header row can sit a few pixels off its column after a column changes width.
+- [QUALS-HEAD-FINGER-CAPTURE] — in Edit quals a finger pressed on a heading's words may never reach another column (the press stays held by the words) — a check on his phone, then a one-line fix.
 - [MEMBER-EDITPAGE-CHECK] — a check: a member sent to Edit Schedule by the developer bridge sees live-looking Amendments buttons.
 - [GUEST-SAVE-WARNING] — a check: does anything a guest does get saved through the app's saver? If not, close it with the reason.
 - [UNDO-POSTING-RECORD] — Undo for adding, archiving and restoring a person and for postings (D350) — his word.
@@ -210,6 +212,29 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [BOARD-SIDE-WIDTH] The board's right panel — the pilots / WSOs gap and a panel he can drag wider (his questions, 21 Oct 26)
+**His words** (with a desktop picture of the side column): *"on the desktop the pilot and wso are spaced slightly apart.
+not sure which is the best position for both to standardise so it can optimise the available space"*, then *"And for the
+desktop should i allow the right panel to be sizable?"* **What is there (measured 21 Oct 26, `raptor-port/scripts/handpass/pz-side.mjs`):**
+the right panel is 320 wide at every desktop width; its crew list is two equal columns of 144, the pucks about 95 wide, so
+about 50 stands empty between the pilots' pucks and the WSOs' column — that room is what the reason under a struck puck
+("already on OPS-O duty 06:00–14:00") wraps in. **Recommended (put to him with a marked picture, the look page):** keep the
+two equal columns (moving the WSOs in beside the pilots would squeeze every reason into a puck's width, two or three lines
+taller), and YES to a panel he can drag wider — its left edge a grip like the one between the issues and the crew list,
+from 320 up to about 40% of the screen, remembered on that computer; the extra width goes to both columns and the issues
+list. A new control: its questions and a picture before it is built, as its own small job. **His answer, 21 Oct 26 — D1113: "Yes as recommended for the right panel".** And his question for the design: *"if I drag left enough would the words below the pucks when I click on an item on the schedule show on the right of the pucks instead? If there becomes enough space?"* — recommended yes: once a crew column is wide enough for the puck and its reason side by side, the reason stands to the puck's right; narrower, it stays under. His example ("This for example"): `raptor-port/docs/img/handpass/2026-10-21-pinch-zoom/his-reasons-under-pucks.png` — the crossed-out pucks of both columns with their reasons wrapped under them. Drawn for him at three widths with the job's questions. **Place:** the next job, a fresh chat.
+
+### [QUALS-HEAD-FINGER-CAPTURE] In Edit quals a heading dragged by a finger may never reach another column (found 21 Oct 26, the pinch-zoom job; older)
+**Seen (the test browser, a finger over CDP):** in Edit quals a finger pressed on a heading's words and slid across the
+row moved no column; every move was reported on the words the press began on. **Cause, by reading:** a finger's press is
+held by the element it lands on (the browser's own hold for touch), which is the heading's inner words, while the drag
+lets go of the HEADING's hold (`raptor-port/src/ui/QualsPage.tsx`, the heading drag's `onDown`, `th.releasePointerCapture`),
+so the moves keep naming the first heading — the new one is only found by the edge scroll's re-read. A press on the
+heading's padding may work. **Check first** on his iPhone (Safari's hold may differ); **the fix, if it is real:** also let
+go of the pressed element's own hold — `(e.target as Element).releasePointerCapture?.(e.pointerId)` — with a browser test
+that drags a heading by a finger. Not changed in the pinch job (a different gesture). **Place:** small, with the next Quals
+change.
 
 ### [CI-UNIT-SHARE-2-6] One unit share sets GitHub's check time (found 20 Oct 26, pull request 548's run; low)
 **Seen:** with the Tracker smoke in two (pull request 548), the run is 5m33s and its slowest leg `unit (raptor 2/6)` 5m29s (the next, `unit (raptor 5/6)`, 4m31s; the Tracker parts 4m19s and less). Vitest's `--shard` splits the file list by a hash of each path, not by time, so one share carries the heavy files. **To do:** measure each raptor unit file's time on GitHub; then either more shares (the plan's 20 side by side is already exceeded by one with the Docs guard — merge two short legs first) or a split by time (a list of the heavy files spread by hand). **Place:** Checks and tooling — low, with the next change to the checks file.

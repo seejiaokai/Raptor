@@ -1546,6 +1546,8 @@ board), it just makes the checks list answer the selection.
 
 ## The board on a phone is ONE window (owner, 8 Aug 26)
 
+**The desktop layout pinches (owner D1107, D1109, 21 Oct 26 — `[BOARD-PHONE-PINCH-ZOOM]`; `ui/pinchzoom.ts`, `SchedBoard.tsx`, `drag.ts tdWideLoop`; pins `e2e/pinchzoom.spec.ts`, `src/ui/pinchzoom.test.ts`):** on a phone, in the board's desktop layout, a pinch zooms the day only — the bar is the phone layout's own, at its phone size; out until the whole day's width fits the screen, in to twice normal; it opens at today's size and keeps its zoom across days until ✓ Done; a puck held near the screen's edge scrolls the day that way at the Leave War's edge distance and speed (D895). The phone layout and the desktop are unchanged. **The sign-off scrolls away (D1111):** in the desktop layout on a phone the whole board column scrolls — the sign-off, the issues bar and the panels together — as on a desktop; it is never frozen above the day. **The right panel on a desktop (D1113, to build — [BOARD-SIDE-WIDTH]):** two equal columns kept; a grip on its left edge widens it from 320 to about 40% of the screen, remembered on that computer. **Its side column is the desktop's (D1112):** the issues list with the desktop's margins (not the phone drawer's 30), the crew list's two columns sharing the column's width (not the phone's puck-wide ones). While the fingers move the day is stretched as a picture (a transform); at the lift its CSS zoom is written once and the spot under the fingers kept — inside the zoom a list's own pixels are not the screen's (`pinchzoom.ts scaleOf`), so whatever scrolls a list there by a screen distance divides by it (the keyboard lift does). The day's sideways overscroll is not contained here, so a swipe on the day slides the board (it was a dead end before, 21 Oct 26).
+
 Comp approved before build. Below 820px the board used to be three stacked
 zones — the panels, then a bottom-pinned sheet holding `Live checks` and the
 roster, split by a drag-grip (the B25 machine, now deleted). It matches the
@@ -3347,6 +3349,8 @@ reads as content passing under a pinned column, not a stray fragment. Gated in
 `e2e/geometry.spec.ts` (jsdom has no sticky), not jsdom.
 
 ## The Quals HEADER freezes on scroll (owner, 29 Aug 26)
+
+**Quals on a phone pinches (owner D1108, D1110, 21 Oct 26 — `[BOARD-PHONE-PINCH-ZOOM]`; `QualsPage.tsx`; pins `e2e/pinchzoom.spec.ts`):** a pinch zooms the table only — the top bar, the buttons and the Pilots · WSOs · Personnel · All switch stay as they are; the heading row and the name column stay pinned and lined up; out until the whole table's width fits, in to twice normal; kept while he stays on Quals. The pinned row is the same table drawn again with the same zoom: its live-measured widths and its sideways travel (`--qx-max`) are written in its own pixels, divided by the zoom; at the smallest zoom the table is measured again (it lays out a little wider than the zoom alone gives).
 
 The column headings (CALLSIGN … REMARKS) and the group row (`Assigned pilots ·
 N`) stay put when the page scrolls down — "freeze like the leave war top bar …

@@ -66,6 +66,11 @@ export function landSel(from: string, to: string): string {
 /* the band at a scroller's top and foot where a held row scrolls it: a sixth of the pane each, at most 72px (every pane
    taller than 432px keeps the 72 it always had) */
 export const rowEdge = (top: number, bot: number) => Math.min(72, Math.max(0, bot - top) / 6)
+/* A PINCH LETS A GRIP GO (the pinch-zoom code read's finding 3, 21 Oct 26): a row, wave or section drag starts on the
+   press, so a pinch whose first finger landed on a grip was also carrying that row, and dropped it at the lift. The
+   board's pinch (SchedBoard.tsx, ui/pinchzoom.ts onStart) calls this to drop every live grip drag, moving nothing. */
+const LIVE_CLEARS = new Set<() => void>()
+export function cancelRowDrags() { LIVE_CLEARS.forEach(c => c()) }
 export function wireRowDrag(el: HTMLElement) {
   let from = ''          // an mv: address (row or wave), '' when not an mv drag
   let fromSec = ''       // a data-secmove value ("di.key"), '' when not a section drag
@@ -301,6 +306,7 @@ export function wireRowDrag(el: HTMLElement) {
     }
   }
 
+  LIVE_CLEARS.add(clear)
   el.addEventListener('pointerdown', onDown)
   /* pointermove/up on the document, not the container: the drag deliberately
      releases pointer capture (see the header) so the target tracks the finger,
@@ -315,6 +321,7 @@ export function wireRowDrag(el: HTMLElement) {
   document.addEventListener('pointerup', onUp)
   document.addEventListener('pointercancel', onUp)
   return () => {
+    LIVE_CLEARS.delete(clear)
     el.removeEventListener('pointerdown', onDown)
     document.removeEventListener('pointermove', onMove)
     document.removeEventListener('pointerup', onUp)
