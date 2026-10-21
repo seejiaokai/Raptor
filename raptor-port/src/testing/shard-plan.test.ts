@@ -78,7 +78,7 @@ describe('the unit tests split across GitHub’s machines by time', () => {
     for (const [project, { count }] of shares) await provePartition(files[project as 'raptor' | 'leavewar'], count)
   })
 
-  it('a new file the times do not know lands in exactly one share — its hash’s — and moves no other unknown file', async () => {
+  it('a new file the times do not know lands in exactly one share — its hash’s', async () => {
     const extra = ['src/zz-new-one.test.ts', 'src/ui/zz-new-two.test.tsx']
     for (const p of extra) expect(UNIT_TIMES[p]).toBeUndefined()
     const count = shares.get('raptor')!.count

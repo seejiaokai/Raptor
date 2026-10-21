@@ -6283,3 +6283,34 @@ saving the setting moves the button out from under the press (a "rules changed" 
 button's position before and after the save first. **Place:** low, with the next change to the Logic page; a browser test that changes a
 setting and presses Done once, by mouse and by finger.
 
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([CI-UNIT-SHARE-2-6]). Forward facts: `raptor-port/docs/gates-and-deploy.md`, `raptor-port/docs/handpass/2026-10-21-checks.md`.*
+
+### [CI-UNIT-SHARE-2-6] One unit share sets GitHub's check time (found 20 Oct 26, pull request 548's run; low)
+**Seen:** with the Tracker smoke in two (pull request 548), the run is 5m33s and its slowest leg `unit (raptor 2/6)` 5m29s (the next, `unit (raptor 5/6)`, 4m31s; the Tracker parts 4m19s and less). Vitest's `--shard` splits the file list by a hash of each path, not by time, so one share carries the heavy files. **To do:** measure each raptor unit file's time on GitHub; then either more shares (the plan's 20 side by side is already exceeded by one with the Docs guard — merge two short legs first) or a split by time (a list of the heavy files spread by hand). **Place:** Checks and tooling — low, with the next change to the checks file.
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([DEPLOY-DOCS]). Forward facts: `.github/workflows/deploy.yml`, `raptor-port/docs/handpass/2026-10-21-checks.md`.*
+
+### [DEPLOY-DOCS] The Pages-era deploy text is stale since the repo went private (D59, 23 Sep 26)
+**STATUS 24 Sep 26: the DOCS half is DONE** in the spring clean — the Pages-era text of `raptor-port/CLAUDE.md` and
+`HANDOFF.md` moved whole to `raptor-port/docs/archive/`; the live rules are `.claude/rules/shipping.md` and
+`raptor-port/docs/gates-and-deploy.md` (its Now block); "done" means live on Vercel (D143); the "site is public"
+sentences corrected. **Left** (Astra's red team, finding 12): the header and comments of
+`.github/workflows/deploy.yml` and `raptor-port/scripts/handpass/live-check.mjs`, which still describe a Pages
+deploy — files that start the gates, so their own small change.
+
+`raptor-port/CLAUDE.md` §Build & verify and §How to work here, and `HANDOFF.md` §Deploy, still describe GitHub Pages as the official live site, the "done means live" chain ending at Pages, and `seejiaokai.github.io/Raptor` as the page to check. All of it stopped being true on 23 Sep 26: Pages is gone, the publish job is off, Vercel is the only viewer. Marked SUPERSEDED in place at the two most misleading lines; the proper rewrite is its own docs pass (D29 — never trim inside another change). **Tier: NONE.** Do it with `[DOC-TRIM]`, which owns the same two files.
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([RULINGS-LF-PIN]). Forward facts: `.gitattributes`, `raptor-port/docs/handpass/2026-10-21-checks.md`.*
+
+### [RULINGS-LF-PIN] Pin the rulings files to LF line endings, with the next change that runs the checks (filed 24 Sep 26)
+A leftover of `[DOC-TRIM]` (archived 24 Sep 26). `.gitattributes` pins `OUTSTANDING.md`, `OUTSTANDING-ARCHIVE.md`,
+`DECISIONS.md` and `HANDOFF.md` to LF ([DOCS-GUARD] F4, 23 Sep 26), so no script or editor setting can rewrite every
+line of them at once — a whole-file diff is where a destroyed record hides. The rulings split (D137) added
+`DECISIONS-ARCHIVE.md` and the area files under `.claude/rules/decisions/` — and, since D390, the full rows under `.claude/decisions-full/` — which are NOT pinned; all of them are LF
+today (checked 24 Sep 26 with `git ls-files --eol`). Add them — a pattern for the folder covers a new area file too.
+**Place:** ride the next change that starts the full checks on his PC anyway: `.gitattributes` is not on the deploy
+workflow's docs-only skip list, so a change to it alone starts a full run (D89, D151), which a docs pass must not do.
+

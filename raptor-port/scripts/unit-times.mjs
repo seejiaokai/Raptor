@@ -57,9 +57,13 @@ const times = Object.fromEntries([...seen].sort(([a], [b]) => (a < b ? -1 : 1))
 
 if (check) {
   const { planShards, PER_FILE_MS } = await import('../src/testing/shard-plan.ts').catch(() => {
-    throw new Error('--check needs a Node that runs .ts files (22.6+ with type stripping)')
+    throw new Error('--check needs a Node that runs .ts files by itself (22.18+ or 23.6+)')
   })
-  for (const [project, count] of [['raptor', 6], ['leavewar', 4]]) {
+  /* each project's share count as the checks file's unit matrix lists it */
+  const { readFileSync } = await import('node:fs')
+  const wf = readFileSync(join(here, '..', '..', '.github', 'workflows', 'deploy.yml'), 'utf8').replace(/\r\n/g, '\n')
+  const counts = new Map([...wf.slice(wf.indexOf('\n  unit:\n'), wf.indexOf('\n  geometry:\n')).matchAll(/- project: (\S+)\n\s+shard: \d+\/(\d+)/g)].map(m => [m[1], Number(m[2])]))
+  for (const [project, count] of counts) {
     const paths = [...projectOf].filter(([, pr]) => pr === project).map(([p]) => p)
     const plan = planShards(paths, times, count)
     console.log(project, plan.map(s => `${s.length} files ${Math.round(s.reduce((t, p) => t + times[p] + PER_FILE_MS, 0) / 1000)}s`).join(' · '))

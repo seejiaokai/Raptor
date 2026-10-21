@@ -110,8 +110,10 @@ on:
 permissions:
   contents: read
 
-# A push to main runs in the single serialized "pages" group (named when this workflow
-# still published to Pages; the name stays — see the header). Pull request runs get a
+# A push to main runs in the single "pages" group (named when this workflow still
+# published to Pages; the name stays — see the header): a newer push to main CANCELS the
+# older main run still going (cancel-in-progress), it does not queue behind it — so of two
+# merges a minute apart only the second's main run finishes. Pull request runs get a
 # group per pull request instead of joining it, so a new push to one pull request
 # cancels only that pull request's older run, never main's.
 concurrency:

@@ -2,9 +2,11 @@
    Vitest's own `--shard` cuts the file list into equal COUNTS by a hash of each path, so one share drew the heavy files
    (raptor 2/6 ran 5m19s to 5m28s while 1/6 ran under 2 minutes). This plan spreads the files by their measured time
    instead: the heaviest first, each to the share carrying the least so far. The times are `unit-times.ts`, written by
-   `scripts/unit-times.mjs` from a GitHub run; a file the times do not know (a new one) goes to the share its path's
-   hash names, so the known files' places do not move when one is added. Every path lands in exactly one share — the
-   proof is `shard-plan.test.ts`. No imports, so the test configuration and the tests can both read it. */
+   `scripts/unit-times.mjs` from a GitHub run; a file the times do not know (a new one) has its share fixed by its
+   path's hash, and the known files are re-planned around it — a file added or removed can move many known files to
+   other shares, which is safe because every leg of one run plans from the same commit's list, so the split stays
+   exact. Every path lands in exactly one share — the proof is `shard-plan.test.ts`. No imports, so the test
+   configuration and the tests can both read it. */
 
 /** What one file costs beyond its tests' own time — loading, its page world; measured ~1 s a file on GitHub. */
 export const PER_FILE_MS = 1000
