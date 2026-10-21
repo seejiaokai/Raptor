@@ -8,8 +8,14 @@ import { join } from 'node:path'
 import { PEN_INNER, penSvg } from './pen'
 
 const src = (f: string) => readFileSync(join(__dirname, f), 'utf8')
-/* a typed pencil printed as a button's own mark: right after a tag's ">" (JSX or a markup string), or the escaped one */
-const PRINTED = />\s*(?:[✎✏]|\\u270[ef])/u
+/* the source without its comments (which name the old marks freely), and without the one kept on purpose: the ✎ after an
+   edited chart's name in the Tracker's Syllabus list (an <option> holds text only — D1134) */
+const KEPT = "(core.sylHasOwnDef(id) ? ' ✎' : '')"
+const code = (f: string) => src(f).replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '').split(KEPT).join('')
+/* a typed pencil printed as a button's own mark: right after a tag's ">" (JSX or a markup string), or the escaped one —
+   or opening a quoted label ('✎ Text', '✎ Edit chart layout': the forms a ternary or a tool list printed, the code read of
+   21 Oct 26, finding 4) */
+const PRINTED = />\s*(?:[✎✏]|\\u270[ef])|['"`]\s*[✎✏]/u
 
 describe('one pencil (D1134)', () => {
   it('is solid and turned so its tip points to the bottom right (D1133)', () => {
@@ -23,7 +29,7 @@ describe('one pencil (D1134)', () => {
     for (const f of ['board.ts', 'interactions.ts', 'QualsPage.tsx', 'LogicPage.tsx', 'SchedBoard.tsx', 'InputsPage.tsx',
       'InputsCal.tsx', 'inputedit.tsx', '../tracker/components/Header.jsx', '../tracker/components/Pop.jsx',
       '../tracker/components/SidePanel.jsx', '../tracker/components/ArrangeTools.jsx', '../tracker/App.jsx'])
-      expect(PRINTED.test(src(f)), f + ' prints no typed pencil').toBe(false)
+      expect(PRINTED.test(code(f)), f + ' prints no typed pencil').toBe(false)
   })
   it('the Tracker draws the same pencil as the rest of the app', () => {
     const shapes = (s: string) => [...s.matchAll(/<(rect|path)\b[^>]*?\/?>/g)].map(m => m[0].replace(/\s*\/?>$/, '').replace(/\s+/g, ' '))

@@ -90,7 +90,20 @@ found and fixed (the Medical row's place; the desktop dates button's icon stacke
 
 ## 5. The code read
 
-(Filled in below once the fresh, blind Opus read returns.)
+One fresh, blind Opus read (D790), given the diff and this sheet: "overall the change is sound" — every pencil a person presses
+prints the drawing; the two kept typed are right; no markup lands where only text goes (titles, toasts, the option); the title box
+keeps its 16px (`.inped-pen svg` outranks `.pen-ic`); the Medical CSS is scoped to the tab form, the only one any screen draws.
+Four findings, all taken:
+
+| # | Finding | Disposition |
+|---|---|---|
+| 1 | The desktop dates button's calendar stacked above the dates | Already found by the picture (§4) and fixed with the same rule, before the read returned |
+| 2 | The as-of picker hung under "+ Medical" (its left was fixed at 12px, right when "as of" stood first) | Fixed: measured at the press, under its own button, kept inside the row (`MedicalView.tsx`); walked at 1536 and 402 (`rewalk/13`, the phone's) |
+| 3 | A student's remove ✕ lost its only spoken name (the "×" text) | Fixed: `title` and `aria-label` "Remove this student" (`SidePanel.jsx`); walked |
+| 4 | `onepencil.test.ts` caught a ✎ only right after a tag, not a quoted label (`'✎ Text'`) | Fixed: the quoted form too, comments left out, the Syllabus option named as the one kept |
+
+Each fix is one or two lines, so no second read of the fixes (§5's "a fix is new code" is for rewritten logic). **Re-walk** of what
+the fixes touched, the whole script again into `rewalk/`: **76/76** (the three new checks among them).
 
 ## 6. The gates
 

@@ -143,6 +143,10 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
   const asOf = MEDASOF || todayIso
   const ord = isoOrd(asOf)
   const [calOpen, setCalOpen] = useState(false)
+  /* where the as-of picker hangs: under its own button. Since D1137 "+ Medical" stands first, so the picker's fixed left
+     (12px) put it under "+ Medical" (the code read of 21 Oct 26, finding 2); measured at the press, kept on the row's width
+     (a phone's 100vw less 24, at most 340, as .med-cal's own width) */
+  const [calLeft, setCalLeft] = useState(0)
   const [cal, setCal] = useState({ y: +asOf.slice(0, 4), m: +asOf.slice(5, 7) })
 
   /* byCrew assumes roster members; a record restored for a body since
@@ -207,7 +211,11 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
         <button type="button" className="abtn primary" id="medNew" onClick={openNew}>+ Medical</button>
         <button type="button" className={'abtn' + (calOpen ? ' on' : '')} id="medCalBtn"
           title="See the medical state as of another date"
-          onClick={() => { setCal({ y: +asOf.slice(0, 4), m: +asOf.slice(5, 7) }); setCalOpen(o => !o) }}>
+          onClick={e => {
+            const b = e.currentTarget, rowW = (b.offsetParent as HTMLElement | null)?.clientWidth || 0
+            setCalLeft(Math.max(0, Math.min(b.offsetLeft, rowW - Math.min(340, window.innerWidth - 24))))
+            setCal({ y: +asOf.slice(0, 4), m: +asOf.slice(5, 7) }); setCalOpen(o => !o)
+          }}>
           <CalIcon /> as of {fmtDay(asOf)}
         </button>
         {MEDASOF && <button type="button" className="abtn" id="medToday" onClick={() => pick(todayIso)}>Today</button>}
@@ -223,7 +231,7 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
         {calOpen && <>
           <button type="button" className="med-cal-scrim" aria-label="Close the date picker"
             onClick={() => setCalOpen(false)} />
-          <div className="med-cal" role="dialog" aria-label="Pick the as-of date">
+          <div className="med-cal" role="dialog" aria-label="Pick the as-of date" style={{ left: calLeft }}>
             <div className="med-cal-head">
               <button type="button" className="abtn" id="medCalPrev" aria-label="Previous month"
                 onClick={() => setCal(c => c.m === 1 ? { y: c.y - 1, m: 12 } : { y: c.y, m: c.m - 1 })}>‹</button>
