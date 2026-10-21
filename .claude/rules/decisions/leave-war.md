@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1189 | 21 Oct 26 | In the Leave War's Approvals list each line's figures stand in columns that line up from line to line — how long, the balance, the lowest Available, when it was placed — not run together in one sentence in the middle. |
 | D1188 | 21 Oct 26 | A button stands in the same place on a phone as on a desktop — not on the left of one and the right of the other — so question 10's Approvals is redrawn in one place on both. |
 | D1187 | 21 Oct 26 | In the admin's bid window the "Approve what I enter" tick sits in the window's title bar, at its right end before ✕, as drawn in 9a's B. |
 | D1186 | 21 Oct 26 | The admin's "Approve what I enter" tick is on by default, so what he places is approved as he places it unless he unticks it (ticked each time the window opens — the agent's reading). |
