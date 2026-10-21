@@ -1541,6 +1541,8 @@ board), it just makes the checks list answer the selection.
 
 ## The board on a phone is ONE window (owner, 8 Aug 26)
 
+**The desktop layout pinches (owner D1107, D1109, 21 Oct 26 — `[BOARD-PHONE-PINCH-ZOOM]`, TO BUILD):** on a phone, in the board's desktop layout, a pinch zooms the day only — the bar is the phone layout's own, at its phone size; out until the whole day's width fits the screen, in to twice normal; it opens at today's size and keeps its zoom across days until ✓ Done; a puck held near the screen's edge scrolls the day that way at the Leave War's edge distance and speed (D895). The phone layout and the desktop are unchanged.
+
 Comp approved before build. Below 820px the board used to be three stacked
 zones — the panels, then a bottom-pinned sheet holding `Live checks` and the
 roster, split by a drag-grip (the B25 machine, now deleted). It matches the
@@ -3342,6 +3344,8 @@ reads as content passing under a pinned column, not a stray fragment. Gated in
 `e2e/geometry.spec.ts` (jsdom has no sticky), not jsdom.
 
 ## The Quals HEADER freezes on scroll (owner, 29 Aug 26)
+
+**Quals on a phone pinches (owner D1108, D1110, 21 Oct 26 — `[BOARD-PHONE-PINCH-ZOOM]`, TO BUILD):** a pinch zooms the table only — the top bar, the buttons and the Pilots · WSOs · Personnel · All switch stay as they are; the heading row and the name column stay pinned and lined up; out until the whole table's width fits, in to twice normal; kept while he stays on Quals.
 
 The column headings (CALLSIGN … REMARKS) and the group row (`Assigned pilots ·
 N`) stay put when the page scrolls down — "freeze like the leave war top bar …

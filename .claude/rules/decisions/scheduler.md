@@ -54,6 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1109 | 21 Oct 26 | On a phone, in the Scheduler Board's desktop layout a pinch zooms the day only, never the bar: the bar is the phone layout's own, at its phone size, so ✓ Done and the day arrows stay in reach; it zooms out until the whole day's width fits the screen and in to twice normal; it opens at today's size and keeps its zoom across days until ✓ Done. |
 | D1085 | 20 Oct 26 | On the Scheduler Board an SC, AVALON or BB wave's time headings read START and END where they read TO and LD — R · B · START · END in one line on a desktop, R over B and START over END on a phone — as the week does since D1083; a flying wave keeps TO and LD. |
 | D1084 | 20 Oct 26 | On a phone the standby wave's START / END heading stands as built: 7 instead of the headings' 8.5, with no letter spacing, so START fits its column with room for an iPhone's wider letters; a desktop keeps the normal size. |
 | D1083 | 20 Oct 26 | On the week's SC, AVALON and BB lines — Edit Schedule, View-only Sched and the next-week peek — the second time column is R over B and the third START over END, the B box showing the line's own B as the Scheduler Board does; on a phone the START over END heading is drawn in smaller letters so it fits its column. — changed by D1085 |
