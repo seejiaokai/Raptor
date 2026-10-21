@@ -21,7 +21,7 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/consistency-round2 -->
-### 21 Oct 26 — round 2 of the consistency look, `claude/consistency-round2`, pull request 563 — BUILT and checked, waiting on his look and "merge live"
+### 21 Oct 26 — round 2 of the consistency look, `claude/consistency-round2`, pull request 563 — his "merge live" GIVEN (21 Oct 26), merging
 - **His rulings:** D1129–D1132 ("1 yes, 2 yes, 3 yes, 4 yes" to round 2 — Quals' Edit quals plain; the board's own Undo / Redo / History / sync to 1599; the board's highlighter mark on a desktop; the Tracker's line icons and joined phone tabs). Homed in `ui-contracts.md` and the code. This branch holds D1129–D1139; the Leave War overhaul chat (`claude/leave-war-overhaul`) holds D1140–D1159.
 - **Checked (sheet `raptor-port/docs/handpass/2026-10-21-consistency-round2.md`):** WALK tier; the walk 100/100, re-walk 105/105 (`scripts/handpass/cr2-walk.mjs`); one fresh blind Opus read — two screen-reader gaps (Undo / Redo's spoken name, the sync dot's state; both older on the top bar) fixed on both bars; GitHub green on `d50327cc1`, the fixes' run last. Auto-fix was found on for 563 and switched off (D1090). Two document tripwires raised with reasons (both over on main before this branch).
 - **His pencil question → D1133** (every pencil tips bottom right: the drawn pencil mirrored, the Tracker and the input title box; design lesson 18). Built, pictured, tested.
