@@ -452,6 +452,7 @@ asked again (D53); a question names each ruling its answer would change (D754).
   measured at his phone's size.* Picture 4.
 
 **Round 3 — how it runs**
+- *(The table below is the lock-era draft — written for lock dates, D1156, since archived; his answer D1177 decides instead: the green outline stays round the open dates, nothing is open until he opens it, Undo takes back opening or closing dates. The build takes its rules from D1177's full row and the narrowed D418, D333, D352, D1166 — the build plan §3, batch 1.)*
 - **Q5 (his 17) — the stages go, and what takes each one's place.** *Recommended: they go, each replaced as below; a
   member sees every request's state live, and a locked stretch's reason in the day panel — no separate "being bid / being
   approved" label.*
