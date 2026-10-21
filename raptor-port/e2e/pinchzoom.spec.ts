@@ -41,7 +41,7 @@ async function wideBoard(page: Page) {
 const board = (page: Page) => page.evaluate(() => {
   const b = document.getElementById('schedBoard')!, m = b.querySelector('.sb-main') as HTMLElement, t = b.querySelector('.sb-top')!
   const r = t.getBoundingClientRect()
-  return { z: parseFloat(m.style.zoom || '1'), sw: b.scrollWidth, cw: b.clientWidth, sl: b.scrollLeft, barW: Math.round(r.width), barL: Math.round(r.left), barH: Math.round(r.height), tf: m.style.transform }
+  return { z: parseFloat(getComputedStyle(m).zoom || '1'), sw: b.scrollWidth, cw: b.clientWidth, sl: b.scrollLeft, barW: Math.round(r.width), barL: Math.round(r.left), barH: Math.round(r.height), tf: m.style.transform }
 })
 const pressable = (page: Page, sel: string) => page.evaluate(s => {
   const b = document.querySelector(s); if (!b || !b.getClientRects().length) return false
@@ -133,15 +133,48 @@ test.describe('the board\'s desktop layout on a phone pinches (D1109)', () => {
     expect((await board(page)).z, 'it zoomed in').toBeGreaterThan(z0)
     await context.close()
   })
+  test('a phone turned on its side past 820 shows the day at full size; turned back, the zoom is still there (the code read, finding 1)', async ({ browser, baseURL }) => {
+    const { context, page, cdp } = await phone(browser, baseURL)
+    await wideBoard(page)
+    await pinch(cdp, 200, 450, 220, 40)
+    const z = (await board(page)).z
+    expect(z).toBeLessThan(0.5)
+    await page.setViewportSize({ width: 874, height: 402 }); await sleep(400)
+    expect((await board(page)).z, 'sideways, wider than a phone: full size').toBe(1)
+    await page.setViewportSize(PHONE); await sleep(400)
+    expect((await board(page)).z, 'upright again: the zoom he pinched').toBeCloseTo(z, 3)
+    await context.close()
+  })
+
+  test('a pinch whose first finger lands on a wave grip moves no wave (the code read, finding 3)', async ({ browser, baseURL }) => {
+    const { context, page, cdp } = await phone(browser, baseURL)
+    await wideBoard(page)
+    await pinch(cdp, 200, 450, 100, 60)
+    const order = () => page.evaluate(() => [...document.querySelectorAll('#schedBoard .sb-board [data-move^="mv:w"], #schedBoard .sb-board .wvgrip')].map(e => (e.closest('[data-move]') as HTMLElement | null)?.dataset.move + ':' + ((e.closest('.sb-wave, .wv, section, div') as HTMLElement | null)?.textContent || '').slice(0, 30)).join('|'))
+    const g = await page.evaluate(() => { const e = [...document.querySelectorAll('#schedBoard .sb-board .wvgrip, #schedBoard .sb-board .sb-grip')].find(e => { const r = e.getBoundingClientRect(); return r.width && r.left > 2 && r.right < innerWidth - 150 && r.top > 150 && r.bottom < innerHeight - 60 }); if (!e) return null; const r = e.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 } })
+    expect(g, 'a grip in view').not.toBeNull()
+    const before = await order(), z0 = (await board(page)).z
+    await touch(cdp, 'touchStart', [[g!.x, g!.y]]); await sleep(40)
+    await touch(cdp, 'touchStart', [[g!.x, g!.y], [g!.x + 90, g!.y]]); await sleep(30)
+    for (let i = 1; i <= 10; i++) { await touch(cdp, 'touchMove', [[g!.x - 2 * i, g!.y + 14 * i], [g!.x + 90 + 10 * i, g!.y + 14 * i]]); await sleep(20) }
+    expect(await page.evaluate(() => !!document.querySelector('#schedBoard .rowdrag, #schedBoard .secdrag')), 'mid-pinch, no row or wave is held').toBe(false)
+    await touch(cdp, 'touchEnd', []); await sleep(500)
+    expect(await order(), 'the waves and rows in the order they were').toBe(before)
+    expect((await board(page)).z, 'it zoomed').toBeGreaterThan(z0)
+    await context.close()
+  })
 })
 
 test.describe('Quals on a phone pinches (D1110)', () => {
+  /* a pinch whose first finger lands on a heading in Edit quals lets the heading go (the code read, finding 3 —
+     QualsPage cancelColDrag): not pinned here, because a finger over CDP never picks a heading up in this browser (its
+     press is held by the heading's words; OUTSTANDING [QUALS-HEAD-FINGER-CAPTURE]) — the board's twin is pinned above */
   test('the table zooms, the buttons stay; the pinned heading row lines up; a second finger off the table still pinches', async ({ browser, baseURL }) => {
     const { context, page, errs, cdp } = await phone(browser, baseURL)
     await go(page, 'quals'); await sleep(400)
     const q = () => page.evaluate(() => {
       const w = document.querySelector('#page-quals .qwrap') as HTMLElement, t = document.getElementById('qtbl') as HTMLElement
-      return { z: parseFloat(t.style.zoom || '1'), ww: w.clientWidth, sw: w.scrollWidth, bar: Math.round(document.querySelector('.qbar')!.getBoundingClientRect().height), seg: Math.round(document.querySelector('.segview')!.getBoundingClientRect().width) }
+      return { z: parseFloat(getComputedStyle(t).zoom || '1'), ww: w.clientWidth, sw: w.scrollWidth, bar: Math.round(document.querySelector('.qbar')!.getBoundingClientRect().height), seg: Math.round(document.querySelector('.segview')!.getBoundingClientRect().width) }
     })
     const q0 = await q()
     /* the right finger lands past the table's right edge, on the page's margin */

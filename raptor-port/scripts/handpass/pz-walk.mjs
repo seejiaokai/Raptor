@@ -53,7 +53,7 @@ if (ONLY !== 'quals') {
   await page.locator('#sbMore').tap(); await page.locator('#sbMoreWide').tap(); await sleep(600)
   const B = () => page.evaluate(() => {
     const b = document.getElementById('schedBoard'), m = b.querySelector('.sb-main'), t = b.querySelector('.sb-top')
-    const z = parseFloat(m.style.zoom || '1')
+    const z = parseFloat(getComputedStyle(m).zoom || '1')
     return { z, sw: b.scrollWidth, cw: b.clientWidth, sl: b.scrollLeft, barW: Math.round(t.getBoundingClientRect().width), barH: Math.round(t.getBoundingClientRect().height), barL: Math.round(t.getBoundingClientRect().left), mainW: Math.round(m.getBoundingClientRect().width), tf: m.style.transform }
   })
   let s = await B()
@@ -156,8 +156,8 @@ if (ONLY !== 'quals') {
   /* B10 the phone layout: a pinch changes nothing (no zoom of its own), and the page never zooms */
   await page.locator('#sbMore').tap(); await page.locator('#sbMoreWide').tap(); await sleep(500)
   await pinch(200, 450, 200, 60)
-  const ph = await page.evaluate(() => ({ z: document.querySelector('#schedBoard .sb-main').style.zoom, wide: document.getElementById('schedBoard').classList.contains('sb-wide'), vv: window.visualViewport ? visualViewport.scale : 1 }))
-  check(!ph.wide && !ph.z, 'B10 the phone layout keeps no zoom of its own', JSON.stringify(ph))
+  const ph = await page.evaluate(() => ({ z: getComputedStyle(document.querySelector('#schedBoard .sb-main')).zoom, wide: document.getElementById('schedBoard').classList.contains('sb-wide'), vv: window.visualViewport ? visualViewport.scale : 1 }))
+  check(!ph.wide && parseFloat(ph.z) === 1, 'B10 the phone layout keeps no zoom of its own', JSON.stringify(ph))
   await page.locator('#sbDone').tap(); await sleep(400)
 }
 
@@ -166,7 +166,7 @@ if (ONLY !== 'board') {
   await go(page, 'quals'); await sleep(600)
   const Q = () => page.evaluate(() => {
     const w = document.querySelector('#page-quals .qwrap'), t = document.getElementById('qtbl')
-    return { z: parseFloat(t.style.zoom || '1'), tw: Math.round(t.getBoundingClientRect().width), ww: w.clientWidth, sw: w.scrollWidth, bar: Math.round(document.querySelector('.qbar').getBoundingClientRect().height), seg: Math.round(document.querySelector('.segview').getBoundingClientRect().width), tf: t.style.transform }
+    return { z: parseFloat(getComputedStyle(t).zoom || '1'), tw: Math.round(t.getBoundingClientRect().width), ww: w.clientWidth, sw: w.scrollWidth, bar: Math.round(document.querySelector('.qbar').getBoundingClientRect().height), seg: Math.round(document.querySelector('.segview').getBoundingClientRect().width), tf: t.style.transform }
   })
   /* the middle of the table where it is on the screen: a pinch must land on the table */
   const mid = () => page.evaluate(() => { const r = document.getElementById('qtbl').getBoundingClientRect(); return [Math.round(Math.min(Math.max(r.left + r.width / 2, 120), innerWidth - 120)), Math.round(Math.min(Math.max(r.top + Math.min(r.height, 400) / 2, 300), innerHeight - 100))] })

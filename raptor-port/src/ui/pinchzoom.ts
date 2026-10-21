@@ -73,20 +73,31 @@ export type PinchOpts = {
   /** the smallest zoom: its whole width fits */
   min: () => number
   max?: number
-  /** write the new zoom (CSS zoom on the target, and the caller's own record of it); laid out on return */
+  /** write the new zoom (the target's zoom, and the caller's own record of it); laid out on return */
   apply: (z: number) => void
-  /** false while something else owns the fingers (a picked-up puck) */
+  /** false where there is no pinch here (wider than a phone) or something else owns the fingers (a picked-up puck) */
   canStart?: () => boolean
-  /** called the moment two fingers make a pinch, before anything is stretched (a pending puck hold is let go) */
+  /** true while two fingers must still be kept from the browser although no pinch starts (a picked-up puck) */
+  blockTwo?: () => boolean
+  /** called the moment two fingers make a pinch, before anything is stretched (a pending puck hold, a heading or row
+   *  drag pressed by the first finger — each let go, so the pinch moves nothing at its lift) */
   onStart?: () => void
+  /** other boxes drawn over the zoomed thing that must stretch with it while the fingers move — Quals' pinned heading
+   *  row (unzoomed boxes, stretched about the same screen point, from their own top) */
+  also?: () => (HTMLElement | null)[]
 }
 
-type Live = { z0: number; d0: number; sx: number; sy: number; cx: number; cy: number; k: number; anchor: Element | null; fx: number; fy: number; ox: number; oy: number }
+type Live = {
+  z0: number; d0: number; sx: number; sy: number; cx: number; cy: number; k: number
+  anchor: Element | null; fx: number; fy: number; ox: number; oy: number
+  spacer: HTMLElement | null; also: { el: HTMLElement; ox: number }[]
+}
 
 /** Wire a pinch on `opts.surface`. Returns the clean-up. */
 export function wirePinch(opts: PinchOpts): () => void {
   const max = opts.max ?? PINCH_MAX
   let live: Live | null = null
+  const may = () => !opts.canStart || opts.canStart()
 
   const two = (e: TouchEvent) => {
     const a = e.touches[0], b = e.touches[1]
@@ -98,10 +109,39 @@ export function wirePinch(opts: PinchOpts): () => void {
     /* the spot first under the fingers, scaled about itself and carried to where the fingers are now */
     t.style.transformOrigin = `${live.ox}px ${live.oy}px`
     t.style.transform = `translate(${(live.cx - live.sx) / s}px, ${(live.cy - live.sy) / s}px) scale(${live.k})`
+    for (const a of live.also) {
+      a.el.style.transformOrigin = `${a.ox}px 0px`
+      a.el.style.transform = `translateX(${live.cx - live.sx}px) scale(${live.k})`
+    }
+  }
+  /* THE SIDEWAYS SCROLL HELD STILL WHILE THE PICTURE SHRINKS (the code read's finding 4, 21 Oct 26): a transform counts in
+     the scroll box's width, so a pinch out near the right end shrank the box under the fingers and the browser pulled the
+     scroll back mid-gesture — the picture jumped sideways until the lift put it right. A one-pixel spacer at the box's
+     old far edge keeps its width until the lift. */
+  const holdWidth = (t: HTMLElement): HTMLElement | null => {
+    for (let n = t.parentElement; n && n !== document.body; n = n.parentElement) {
+      const cs = getComputedStyle(n)
+      if (cs.overflowX !== 'auto' && cs.overflowX !== 'scroll') continue
+      if (cs.position === 'static' || n.scrollWidth <= n.clientWidth) return null
+      const sp = document.createElement('div')
+      sp.setAttribute('aria-hidden', 'true')
+      sp.style.cssText = `position:absolute;left:${n.scrollWidth - 1}px;top:0;width:1px;height:1px;pointer-events:none;visibility:hidden`
+      n.appendChild(sp)
+      return sp
+    }
+    return null
+  }
+  const unstretch = (l: Live) => {
+    const t = opts.target()
+    if (t) { t.style.transform = ''; t.style.transformOrigin = ''; t.style.willChange = '' }
+    for (const a of l.also) { a.el.style.transform = ''; a.el.style.transformOrigin = '' }
+    l.spacer?.remove()
+    document.removeEventListener('touchend', end, true)
+    document.removeEventListener('touchcancel', cancel, true)
   }
   const start = (e: TouchEvent) => {
     if (e.touches.length !== 2 || live) return
-    if (opts.canStart && !opts.canStart()) return
+    if (!may()) return
     const t = opts.target(); if (!t) return
     opts.onStart?.()
     const p = two(e)
@@ -117,8 +157,13 @@ export function wirePinch(opts: PinchOpts): () => void {
       fx = q.width ? (p.x - q.left) / q.width : 0.5
       fy = q.height ? (p.y - q.top) / q.height : 0.5
     }
-    live = { z0, d0: Math.max(1, p.d), sx: p.x, sy: p.y, cx: p.x, cy: p.y, k: 1, anchor, fx, fy, ox: (p.x - r.left) / z0, oy: (p.y - r.top) / z0 }
+    const also = (opts.also ? opts.also() : []).filter((x): x is HTMLElement => !!x).map(el => ({ el, ox: p.x - el.getBoundingClientRect().left }))
+    live = { z0, d0: Math.max(1, p.d), sx: p.x, sy: p.y, cx: p.x, cy: p.y, k: 1, anchor, fx, fy, ox: (p.x - r.left) / z0, oy: (p.y - r.top) / z0, spacer: holdWidth(t), also }
     t.style.willChange = 'transform'
+    /* a finger that landed off the surface lifts off it too: its touchend goes there, so the pinch listens on the page
+       until it ends (the code read's finding 6) */
+    document.addEventListener('touchend', end, true)
+    document.addEventListener('touchcancel', cancel, true)
     if (e.cancelable) e.preventDefault()
   }
   const move = (e: TouchEvent) => {
@@ -134,18 +179,20 @@ export function wirePinch(opts: PinchOpts): () => void {
       stretch()
       return
     }
-    /* two fingers that did not make a pinch here (one landed on a picked-up puck) — never let the page zoom */
-    if (e.touches.length >= 2 && e.cancelable) e.preventDefault()
+    /* two fingers that did not make a pinch here: kept from the browser only where the pinch is this page's (a phone) or
+       a picked-up puck holds them — wider than a phone the browser's own two-finger zoom is left alone (the code read's
+       finding 2) */
+    if (e.touches.length >= 2 && e.cancelable && (may() || (opts.blockTwo && opts.blockTwo()))) e.preventDefault()
   }
   const finish = () => {
     const l = live; live = null
-    const t = opts.target()
-    if (!l || !t) return
-    t.style.transform = ''; t.style.transformOrigin = ''; t.style.willChange = ''
+    if (!l) return
+    unstretch(l)
+    if (!opts.target()) return
     const z1 = clamp(l.z0 * l.k, opts.min(), max)
-    if (Math.abs(z1 - l.z0) < 0.001) return
-    opts.apply(z1)
-    /* bring the remembered spot back under where the fingers lifted */
+    if (Math.abs(z1 - l.z0) >= 0.001) opts.apply(z1)
+    /* bring the remembered spot back under where the fingers lifted — at a limit too, where the zoom did not change but
+       the fingers carried the picture (the code read's finding 5) */
     if (l.anchor && l.anchor.isConnected) {
       const q = l.anchor.getBoundingClientRect()
       scrollChain(l.anchor, 'x', q.left + l.fx * q.width - l.cx)
@@ -153,12 +200,12 @@ export function wirePinch(opts: PinchOpts): () => void {
       scrollChain(l.anchor, 'y', q2.top + l.fy * q2.height - l.cy)
     }
   }
-  const end = (e: TouchEvent) => {
+  function end(e: TouchEvent) {
     if (live && e.touches.length < 2) finish()
   }
-  const cancel = () => { if (live) finish() }
-  /* iPhone: Safari's own pinch rides gesture events as well as touches */
-  const gesture = (e: Event) => e.preventDefault()
+  function cancel() { if (live) finish() }
+  /* iPhone: Safari's own pinch rides gesture events as well as touches — held off where the pinch is this page's */
+  const gesture = (e: Event) => { if (may() || (opts.blockTwo && opts.blockTwo())) e.preventDefault() }
 
   const s = opts.surface
   s.addEventListener('touchstart', start, { passive: false })
@@ -168,7 +215,7 @@ export function wirePinch(opts: PinchOpts): () => void {
   s.addEventListener('gesturestart', gesture as any)
   s.addEventListener('gesturechange', gesture as any)
   return () => {
-    if (live) { const t = opts.target(); if (t) { t.style.transform = ''; t.style.transformOrigin = ''; t.style.willChange = '' } live = null }
+    if (live) { unstretch(live); live = null }
     s.removeEventListener('touchstart', start)
     s.removeEventListener('touchmove', move)
     s.removeEventListener('touchend', end)
@@ -177,4 +224,3 @@ export function wirePinch(opts: PinchOpts): () => void {
     s.removeEventListener('gesturechange', gesture as any)
   }
 }
-

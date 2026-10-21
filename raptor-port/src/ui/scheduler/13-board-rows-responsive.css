@@ -900,7 +900,7 @@
      sideways: the day is the board's width exactly, so it has nothing to scroll itself, and contain kept a sideways swipe
      on it from ever reaching the board that slides (found by the walk of 21 Oct 26: only a swipe on the bar moved it).
      Up and down stays contained. */
-  .schedboard.sb-wide>.sb-main{touch-action:pan-x pan-y;overscroll-behavior-x:auto}
+  .schedboard.sb-wide>.sb-main{touch-action:pan-x pan-y;overscroll-behavior-x:auto;zoom:var(--sbz,1)}
 }
 .schedboard.sb-wide{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
 .schedboard.sb-wide>*{min-width:1180px}

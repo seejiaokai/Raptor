@@ -29,7 +29,7 @@ import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardC
 import { CXR_CFG, addCxReason, delCxReason, renameCxReason, moveCxReason, cxReasonsSave, cxReasonsReset, cxrAreStandard } from '../engine/cxreasons'
 import { canEditSched } from '../state/auth'
 import { refreshHighlights } from './highlights'
-import { wireRowDrag } from './rowdrag'
+import { wireRowDrag, cancelRowDrags } from './rowdrag'
 import { editingText, textCaret, CARET_GONE } from './textedit'
 import { useBoardVersion, useVersion, useUndoVersion } from './useStore'
 import { UndoPair, SyncChip, BellButton, globalUndoEngine } from './topbits'
@@ -113,6 +113,7 @@ export function SchedBoard() {
      screen, in to twice normal (ui/pinchzoom.ts). The zoom is the day's CSS zoom, kept in SBZOOM across days and
      dropped whenever the board closes — ✓ Done or a page change — so the next open is at today's size. Only on a phone
      (the layout switch is offered only up to 820 wide); the phone layout has no pinch of its own. */
+  const [, setZoomTick] = useState(0)
   useEffect(() => {
     if (!open) { setBoardZoom(1); return }
     const main = mainRef.current
@@ -125,13 +126,17 @@ export function SchedBoard() {
         const r = rootRef.current, m = mainRef.current
         return r && m && m.offsetWidth ? Math.min(1, r.clientWidth / m.offsetWidth) : 1
       },
+      /* the zoom is a variable the stylesheet applies only up to 820 wide (13-board-rows-responsive.css): a phone turned
+         on its side past that shows the day at today's size, never stuck at a zoom nothing there can change (the code
+         read's finding 1); the board is drawn again so React holds what was written (its finding 9) */
       apply: z => {
         setBoardZoom(z)
-        const m = mainRef.current
-        if (m) m.style.zoom = z === 1 ? '' : String(z)
+        mainRef.current?.style.setProperty('--sbz', String(z))
+        setZoomTick(t => t + 1)
       },
       canStart: () => !touchDragArmed() && !!window.matchMedia && window.matchMedia('(max-width:820px)').matches,
-      onStart: cancelTouchHold,
+      blockTwo: touchDragArmed,
+      onStart: () => { cancelTouchHold(); cancelRowDrags() },
     })
   }, [open, SBWIDE])
 
@@ -660,7 +665,7 @@ export function SchedBoard() {
             failed-save warning where both are up — for the same reason: from here the top bar's cannot be seen. */}
         <OilBand active={open} />
       </div>
-      <div className="sb-main" ref={mainRef} style={SBWIDE && SBZOOM !== 1 ? { zoom: SBZOOM } : undefined}>
+      <div className="sb-main" ref={mainRef} style={SBWIDE ? { ['--sbz' as any]: SBZOOM } : undefined}>
         <div className={'sb-boardwrap' + (HISTMODE ? ' hist-on' : '')} ref={wrapRef}>
           {/* the sign-off heads the board column. On a PHONE .sb-boardwrap goes
               display:contents (see scheduler.css), so #sbSign, #sbWarn and

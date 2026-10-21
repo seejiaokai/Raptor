@@ -113,6 +113,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **People, accounts and Quals**
 - [QUALS-PINNED-COLS-REFLOW] — Quals' pinned header row can sit a few pixels off its column after a column changes width.
+- [QUALS-HEAD-FINGER-CAPTURE] — in Edit quals a finger pressed on a heading's words may never reach another column (the press stays held by the words) — a check on his phone, then a one-line fix.
 - [MEMBER-EDITPAGE-CHECK] — a check: a member sent to Edit Schedule by the developer bridge sees live-looking Amendments buttons.
 - [GUEST-SAVE-WARNING] — a check: does anything a guest does get saved through the app's saver? If not, close it with the reason.
 - [UNDO-POSTING-RECORD] — Undo for adding, archiving and restoring a person and for postings (D350) — his word.
@@ -210,6 +211,17 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [QUALS-HEAD-FINGER-CAPTURE] In Edit quals a heading dragged by a finger may never reach another column (found 21 Oct 26, the pinch-zoom job; older)
+**Seen (the test browser, a finger over CDP):** in Edit quals a finger pressed on a heading's words and slid across the
+row moved no column; every move was reported on the words the press began on. **Cause, by reading:** a finger's press is
+held by the element it lands on (the browser's own hold for touch), which is the heading's inner words, while the drag
+lets go of the HEADING's hold (`raptor-port/src/ui/QualsPage.tsx`, the heading drag's `onDown`, `th.releasePointerCapture`),
+so the moves keep naming the first heading — the new one is only found by the edge scroll's re-read. A press on the
+heading's padding may work. **Check first** on his iPhone (Safari's hold may differ); **the fix, if it is real:** also let
+go of the pressed element's own hold — `(e.target as Element).releasePointerCapture?.(e.pointerId)` — with a browser test
+that drags a heading by a finger. Not changed in the pinch job (a different gesture). **Place:** small, with the next Quals
+change.
 
 ### [CI-UNIT-SHARE-2-6] One unit share sets GitHub's check time (found 20 Oct 26, pull request 548's run; low)
 **Seen:** with the Tracker smoke in two (pull request 548), the run is 5m33s and its slowest leg `unit (raptor 2/6)` 5m29s (the next, `unit (raptor 5/6)`, 4m31s; the Tracker parts 4m19s and less). Vitest's `--shard` splits the file list by a hash of each path, not by time, so one share carries the heavy files. **To do:** measure each raptor unit file's time on GitHub; then either more shares (the plan's 20 side by side is already exceeded by one with the Docs guard — merge two short legs first) or a split by time (a list of the heavy files spread by hand). **Place:** Checks and tooling — low, with the next change to the checks file.

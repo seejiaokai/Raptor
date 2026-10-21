@@ -67,7 +67,7 @@
 .qwrap{padding:6px 0 40px;margin:0 20px;overflow-x:auto;position:relative}
 /* on a phone two fingers on the table zoom the table (owner D1110, 21 Oct 26 — QualsPage, ui/pinchzoom.ts): pan-x pan-y leaves
    one finger to scroll both ways and keeps the browser's own pinch off it, so the page around it never zooms */
-@media (max-width:820px){.qwrap{touch-action:pan-x pan-y}}
+@media (max-width:820px){.qwrap{touch-action:pan-x pan-y} #qtbl,.qfixed .qtbl{zoom:var(--qz,1)}}
 .qwrap .lift-frame{z-index:2}
 /* THE FROZEN QUALS HEADER (owner, 29 Aug 26 — "the quals top bar should also
    freeze like the leave war top bar … desktop and mobile … same mechanism").
