@@ -154,6 +154,10 @@ October's own words too, which GitHub passed before §7b, so Verdana is harsher 
 GitHub's run is the check — **green on `21b0de3f6`** (both groups that were red now pass). **Tests:** unit 256/256 (inputscal, sanscal, inputsmonth, inputs-calendar-flow, board);
 `e2e/boardside.spec.ts` + `e2e/inputs-calendar.spec.ts` 67/67 on this PC.
 
+## 7d. The consistency look — his D1123, D1124 (a look: it changes nothing)
+
+**What was looked at:** the top rows of Edit Schedule, View-only Sched, the Scheduler Board, Inputs (calendar, list), SANS, Medical, Quals, Logic, the Leave War, the Tracker, Help and Admin, at 1536 × 864 and 402 × 874 by touch (`scripts/handpass/bsw-consistency.mjs`; pictures `look1/sweep/`, measurements `look1/sweep/consistency.json`), and the top bar's height on five pages from 1920 down to 1200 wide. **Not looked at:** windows, sheets and the app's calendars (the Calendar window, the one date calendar, the floating windows); a member's view — both for a later round if he wants them. **Found:** 12 mismatches, listed in the backlog item [UI-CONSISTENCY-LOOK]. **Round 1** (four) put to him on https://claude.ai/artifact/PftDJpeNxNvqxWsJPmAkFC, its page `look1/index.html`, drawn by `scripts/handpass/bsw-consistency-look.mjs`: the drawn Inputs / SANS row measured — the arrows, month and Today within 6px on the two pages (one shared style in the build makes them equal), the Calendar | List switch at x 874 on the Calendar and on the List; the drawn top bar at 1536 one line (58px, from 104). **Two drawing faults caught before he saw them** (the mock-up guide's "look at every picture"): SANS's parts moved out of its own box lost their styles — redrawn by moving the tabs into the SANS row instead; a tab-box change slipped into the drawing, taken out.
+
 ## 8. Gates
 
 GitHub's run of pull request 562 is the gate set (D1086). Its result on the last pushed commit: see the closing report.

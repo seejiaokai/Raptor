@@ -10442,6 +10442,8 @@ A shared store starts with nothing demo (`src/bootpolicy.ts`), so two tabs must 
 
 ## The SANS calendar — its month, its day, its gear (the Inputs / SANS job, step 4, 8 Oct 26; D617–D651, D664)
 
+**Waiting for its build — D1123 (21 Oct 26):** on a desktop this calendar's top row and the Inputs calendar's are to be laid out alike — the tabs, ‹ month › and Today, and the buttons at the right end in the same places, the month's name in one style — as drawn for him and picked ([INPUTS-SANS-HEAD-SAME]); until then the rows below describe what is built.
+
 The SANS tab of Inputs is ONE screen, `ui/SansCal.tsx`, with no Calendar | List pair, no filters and no list (D620).
 **It works nothing out.** A day's class, its required pilots and WSOs, how many more are needed and its colour are the
 ONE resolver's answer (`leavewar/sync.ts flyMonth` / `flyAnswer` → `state/flyplan-model.ts planFor`); who has committed
