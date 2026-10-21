@@ -19,6 +19,8 @@ import { oilWaitThen, oilWaitAlso } from './oilwait'
 import { OIL_NO_MOVE } from './oilmode'
 import { landOn, liftOn, markLand } from './lift'
 import { DBG, initDragDbg } from './dragdbg'
+import { edgeStep, TOUCH_EDGE } from './edgescroll'
+import { scaleOf } from './pinchzoom'
 
 const editMode = () => HOOKS.editMode()
 
@@ -643,6 +645,7 @@ const TD_SLOP = 8, TD_GIVEUP = 26, TD_HOLD = 180, TD_EDGE = 52, TD_SPEED = 16, T
 function tdClear() {
   if (!TD) return
   clearTimeout(TD.timer)
+  if (TD.raf) cancelAnimationFrame(TD.raf)
   if (TD.ghost && TD.ghost.parentNode) TD.ghost.parentNode.removeChild(TD.ghost)
   if (TD.armed) { document.body.classList.remove('tdrag', 'mdrag'); dndOff(); DRAG = null }
   TD = null
@@ -657,6 +660,11 @@ function tdClear() {
    guard: a finger landing on a puck mid-scrub is non-primary, and
    onPointerDown already refuses those. */
 export function touchDragBusy() { return !!TD }
+/* A PINCH AND A HELD PUCK (D1109, ui/pinchzoom.ts): a puck already picked up owns its finger, so no pinch starts over
+   it (touchDragArmed); a second finger landing while the hold is still counting is a pinch, not a pick-up, so the hold
+   is let go before it arms (cancelTouchHold) — otherwise the puck would lift out from under a zoom. */
+export function touchDragArmed() { return !!(TD && TD.armed) }
+export function cancelTouchHold() { if (TD && !TD.armed) tdClear() }
 function tdScrollerFor(el: any) {
   let n = el
   while (n && n !== document.body && n !== document.documentElement) {
@@ -710,7 +718,50 @@ function tdOver(x: any, y: any) {
     TD.over = t
     hoverWhy(t)
   }
-  tdAutoScroll(y)
+  if (!TD.wide) tdAutoScroll(y)
+}
+/* CARRIED TO THE EDGE, THE DAY FOLLOWS — the board's desktop layout on a phone (owner D1107, 21 Oct 26 — "when I drag
+   the puck to drop, when I hit the edge of the zoom it should auto scroll"; the design guide's drag rule, D895). There the
+   day is wider than the screen and slides sideways, and a puck held at the screen's left or right edge had nothing to
+   move it there — it could only land on what was already in view. While a finger carries a puck over that layout, a
+   frame loop (not the moves: a finger held still at the edge must keep it going) slides the board sideways near the
+   screen's left and right edges, and the list under the finger — the day, or a list of the side column — near its top
+   and foot, at the feel of the app's other edge scrolls (ui/edgescroll.ts: the finger's band and ramp). The band the
+   puck was picked up in stays dead until the finger has left it, as there. After a frame that moved anything the target
+   under the finger is read again (tdOver). Speeds are in screen pixels: inside the zoomed day a list's own pixels are
+   smaller (ui/pinchzoom.ts scaleOf). The phone layout and a mouse keep the drag's own scroll (tdAutoScroll). */
+function tdYScroller(from: Element | null, stop: Element): HTMLElement | null {
+  for (let n = from; n && n !== stop; n = n.parentElement) {
+    const cs = getComputedStyle(n)
+    if (/auto|scroll/.test(cs.overflowY) && n.scrollHeight > n.clientHeight + 1) return n as HTMLElement
+  }
+  return null
+}
+function tdWideLoop() {
+  const band = (p: number, lo: number, hi: number): -1 | 0 | 1 => (p < lo + TOUCH_EDGE ? -1 : p > hi - TOUCH_EDGE ? 1 : 0)
+  const heldX = { b: band(TD.x, 0, window.innerWidth) }
+  let heldY: { el: HTMLElement | null, b: -1 | 0 | 1 } = { el: null, b: 0 }
+  const first = tdYScroller(underPoint(TD.x, TD.y, TD.ghost), TD.wide)
+  if (first) { const r = first.getBoundingClientRect(); heldY = { el: first, b: band(TD.y, r.top, r.bottom) } }
+  const step = () => {
+    if (!TD || !TD.armed || !TD.wide) return
+    let moved = false
+    const b = TD.wide as HTMLElement
+    const w = window.innerWidth
+    if (heldX.b && band(TD.x, 0, w) !== heldX.b) heldX.b = 0
+    const dx = heldX.b ? 0 : edgeStep(TD.x, 0, w, true)
+    if (dx) { const was = b.scrollLeft; b.scrollLeft = was + dx; moved = b.scrollLeft !== was }
+    const sc = tdYScroller(underPoint(TD.x, TD.y, TD.ghost), b)
+    if (sc) {
+      const r = sc.getBoundingClientRect()
+      if (heldY.b && (sc !== heldY.el || band(TD.y, r.top, r.bottom) !== heldY.b)) heldY.b = 0
+      const dy = heldY.b ? 0 : edgeStep(TD.y, r.top, r.bottom, true)
+      if (dy) { const was = sc.scrollTop; sc.scrollTop = was + dy / scaleOf(sc); moved = moved || sc.scrollTop !== was }
+    }
+    if (moved) tdOver(TD.x, TD.y)
+    TD.raf = requestAnimationFrame(step)
+  }
+  TD.raf = requestAnimationFrame(step)
 }
 function tdArm() {
   if (!TD || TD.armed) return
@@ -718,6 +769,7 @@ function tdArm() {
   DRAG = d; TD.armed = true
   DBG.arm()
   TD.scroller = tdScrollerFor(TD.src)
+  TD.wide = !TD.mouse ? TD.src.closest('#schedBoard.sb-wide') : null
   /* BOTH ghosts are the PUCK alone, never the [data-drag] shell round it. The
      mouse's always was — pinned where the press landed inside it, clamped to
      the puck so a press on the shell's padding still reads as a corner grab.
@@ -749,6 +801,7 @@ function tdArm() {
   if (TD.mouse) document.body.classList.add('mdrag')
   dndOn(TD.src)
   tdOver(TD.x, TD.y)
+  if (TD.wide) tdWideLoop()
   if (!TD.mouse && navigator.vibrate) try { navigator.vibrate(12) } catch (_) {}
 }
 function onPointerDown(e: PointerEvent) {

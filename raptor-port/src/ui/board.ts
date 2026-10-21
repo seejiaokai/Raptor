@@ -1890,13 +1890,19 @@ export function addWaveFromTpl(di: any, id: string) {
 
 /* the board layout choice survives closing and reopening it within a session */
 export let SBWIDE = false
+/* THE DESKTOP LAYOUT'S ZOOM ON A PHONE (owner D1109, 21 Oct 26 — [BOARD-PHONE-PINCH-ZOOM]): what a pinch has set the day
+   to (1 = the size it opens at), kept across days and dropped whenever the board closes (✓ Done, a page change — SchedBoard.tsx), by a change of layout and by
+   a sign-in or sign-out. Module state like SBWIDE; the pinch itself is ui/pinchzoom.ts, wired in SchedBoard.tsx. */
+export let SBZOOM = 1
+export function setBoardZoom(z: number) { SBZOOM = z }
 export function toggleWide() {
   SBWIDE = !SBWIDE
+  SBZOOM = 1
   toast(SBWIDE ? 'Desktop layout: pan sideways to read the whole day' : 'Phone layout')
 }
 /* …but not into the next person's: a sign-in or sign-out puts the standard layout back
    ([ACCOUNTS] — what the next person inherits; Astra's code read, 26 Sep 26) */
-view.VIEW_RESET.push({ name: 'SBWIDE', scopes: ['session'], reset: () => { SBWIDE = false } })
+view.VIEW_RESET.push({ name: 'SBWIDE', scopes: ['session'], reset: () => { SBWIDE = false; SBZOOM = 1 } })
 
 /* the phone board's Live checks fold (owner, 8 Aug 26): module state like
    SBWIDE, collapsed afresh on every openScheduler — a board visit starts

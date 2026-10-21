@@ -28,6 +28,8 @@
    Chromium cannot raise an iPhone's keyboard, so the browser test and the walk stand a stand-in visual viewport in
    for it (scripts/handpass/am/b3-03-keyboard.mjs's way); his iPhone is the real test (the look card). */
 
+import { scaleOf } from './pinchzoom'
+
 /* the same threshold as the Leave War's sheets (leavewar/ui/Sheet.tsx KEYBOARD_MIN): a visible screen this much
    shorter than the layout means a keyboard is up — the address bar alone never takes this much */
 export const KEYBOARD_MIN = 120
@@ -80,9 +82,12 @@ function lift(sc: Element, el: HTMLElement, bot: number, top: number): number {
   if (d <= 0) return 0
   d = Math.min(d, r.top - top)
   if (d <= 0) return 0
+  /* in screen pixels, both ways: inside the board's zoomed day (D1109) a list's own pixels are drawn smaller or larger
+     (ui/pinchzoom.ts scaleOf — 1 everywhere else) */
+  const k = scaleOf(sc)
   const was = sc.scrollTop
-  sc.scrollTop = was + Math.ceil(d)
-  return sc.scrollTop - was
+  sc.scrollTop = was + Math.ceil(d / k)
+  return (sc.scrollTop - was) * k
 }
 
 /* A WINDOW THAT CANNOT SCROLL IS RAISED INSTEAD (the walk's KS3, 19 Oct 26: Admin → Duty templates on a phone — its rows
