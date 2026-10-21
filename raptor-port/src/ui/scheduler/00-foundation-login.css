@@ -71,6 +71,12 @@ body{
   font-size:13px;-webkit-font-smoothing:antialiased;letter-spacing:-.005em;padding-bottom:120px;
 }
 .mono{font-family:'JetBrains Mono',monospace}
+/* A LABEL WHOSE WORDS CHANGE (a month's name, a day chip) takes the room of its WIDEST value, in the font the device really
+   draws — never a fixed em width sized on one computer (owner D1122: the arrow after it never moves; a 10.6em room sized in
+   Windows' letters was too small in GitHub's Linux ones). data-fit holds every value the label can take, one a line; the
+   hidden, zero-height line box under the label is as wide as the widest of them, so the label is too. textContent unchanged. */
+[data-fit]{display:inline-flex;flex-direction:column;align-items:stretch}
+[data-fit]::after{content:attr(data-fit);white-space:pre;height:0;overflow:hidden;visibility:hidden;pointer-events:none}
 button{font-family:'Inter Tight',sans-serif}
 a{color:var(--accent)}
 

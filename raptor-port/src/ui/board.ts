@@ -672,7 +672,9 @@ export function dayTabsHTML(di: number) {
      carry ('Jan 1 2027' — weeks-data.ts weekLabels): the chip has room for
      'Fri 1', not 'Fri 1 2027' */
   const dayNum = (dt: string) => dt.replace(/^\S+\s+/, '').replace(/\s+\d{4}$/, '')
-  const chips = DAYS.map((x: any, i: number) => `<span class="sbday ${i === di ? 'on' : ''}" data-sbtab="${i}">${esc(x.dow.slice(0, 3))} ${esc(dayNum(x.dt))}</span>`).join('')
+  /* data-fit: the chip's room is its weekday with a two-digit date ("Wed 30"), measured in whatever font draws it, so the
+     › after the chips stays put from week to week (owner D1122; the figures are of one width — 10-board-history.css) */
+  const chips = DAYS.map((x: any, i: number) => { const dw = esc(x.dow.slice(0, 3)); return `<span class="sbday ${i === di ? 'on' : ''}" data-sbtab="${i}" data-fit="${dw} 30">${dw} ${esc(dayNum(x.dt))}</span>` }).join('')
   /* WEEK ARROWS FLANK THE DAY CHIPS ON DESKTOP (owner, 23 Aug 26 — "in
      scheduler board i cant go between weeks except through the calendar").
      They live INSIDE #sbDays, which is display:flex on a desktop and

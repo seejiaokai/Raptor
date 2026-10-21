@@ -1252,7 +1252,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
           {lead}
           <div className="ic-nav">
             <button type="button" className="abtn" id="icPrev" aria-label="Previous month" onClick={() => step(-1)}>‹</button>
-            <span className="ic-mon" aria-live="polite" aria-label={`${MON[cur.m - 1]} ${cur.y}`}>{narrow ? MON[cur.m - 1].slice(0, 3) : MON[cur.m - 1]} {cur.y}</span>
+            {/* data-fit on a desktop: the name's room is the widest month in the device's own font, so › stays put (D1122);
+                the phone keeps its own fixed width (D705) */}
+            <span className="ic-mon" aria-live="polite" aria-label={`${MON[cur.m - 1]} ${cur.y}`} data-fit={narrow ? undefined : MON.map(m => `${m} ${cur.y}`).join('\n')}>{narrow ? MON[cur.m - 1].slice(0, 3) : MON[cur.m - 1]} {cur.y}</span>
             <button type="button" className="abtn" id="icNext" aria-label="Next month" onClick={() => step(1)}>›</button>
             <button type="button" className="abtn" id="icToday" onClick={goToday}>Today</button>
           </div>

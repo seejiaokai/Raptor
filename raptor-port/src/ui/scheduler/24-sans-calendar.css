@@ -97,10 +97,11 @@
 .sanscal .sc-head{position:relative;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .sanscal .sc-head .abtn{min-height:36px;display:inline-flex;align-items:center;justify-content:center;font-size:13px}
 .sanscal .sc-nav{min-width:40px;font-size:20px;line-height:1;padding:4px 10px}
-/* a fixed room for the month's name, so › does not move under a finger as the names change length — 172 was too small:
-   SEPTEMBER 2027 is about 211 at 20px and pushed › 39px (measured 21 Oct 26, owner D1122); now its room with a tenth to spare */
-.sanscal .sc-month{flex:0 0 11.6em;width:11.6em;min-width:0;text-align:center;font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
-  letter-spacing:.05em;font-size:20px;font-weight:800;color:var(--ink);white-space:nowrap}
+/* one room for the month's name, so › does not move under a finger as the names change length (owner D1122): the widest of
+   the twelve, measured in the device's own font (data-fit, SansCal.tsx) — a fixed 172px, then 11.6em, were each sized on one
+   computer's letters; the figures of one width so the year never changes it; the phone's own 96px below stands (D705) */
+.sanscal .sc-month{flex:0 0 auto;width:auto;min-width:0;text-align:center;font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.05em;font-size:20px;font-weight:800;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
 .sanscal .sc-sub{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:28px;margin:6px 0 6px}
 .sanscal .sc-legend{margin-left:auto;display:inline-flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:12px;color:var(--ink-3)}
 .sanscal .sc-key{display:inline-flex;align-items:center;gap:5px;color:var(--ink-2);font-variant-numeric:tabular-nums}

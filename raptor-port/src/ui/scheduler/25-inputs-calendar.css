@@ -151,9 +151,10 @@
 body.in-cal{padding-bottom:0}
 .inpcal.ib{position:relative;inset:auto;z-index:auto;display:block;height:auto;background:transparent;overflow:hidden}
 .ib .ic-head{padding:0;border:0;background:transparent}
-/* one room for every month (owner D1122 — the › never moves): SEPTEMBER 2026 is 174px at 18px, with a tenth more
-   for wider letters; the phone's own width below stands (D705) */
-.ib .ic-mon{font-size:18px;flex:0 0 10.6em;width:10.6em;min-width:0;text-align:center}
+/* one room for every month (owner D1122 — the › never moves): the widest of the twelve names, measured in the device's own
+   font (data-fit, InputsCal.tsx) — a fixed 10.6em sized in Windows' letters wrapped the row in GitHub's Linux ones; the
+   figures of one width so the year never changes it; the phone's own width below stands (D705) */
+.ib .ic-mon{font-size:18px;flex:0 0 auto;width:auto;min-width:0;text-align:center;font-variant-numeric:tabular-nums}
 .ib-dow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border:1px solid var(--edge);border-bottom:0;border-radius:12px 12px 0 0;background:var(--panel)}
 .ib-dow span{text-align:center;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);padding:6px 0 5px}
 .ib-dow span.is-we{color:var(--ink-3)}
