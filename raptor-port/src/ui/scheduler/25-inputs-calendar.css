@@ -92,6 +92,11 @@
    sections keep their own boxes. The window form (a cross to close it) keeps its own look. */
 .inpcal.medview.in-page{position:relative;inset:auto;z-index:auto;overflow:visible;background:transparent;border:0;border-radius:0}
 .medview.in-page .ic-head{border-radius:0}
+/* ...and its row stands where the Inputs list's does: "+ Medical" on "+ Input"'s left edge (D1137 — measured, it sat 16px in
+   on a desktop and 10px on a phone, inside the row's own band), on the page's own ground as the list's row is */
+.medview.in-page > .ic-head{padding-left:0;padding-right:0;background:transparent}
+/* on a phone its top too: the list's row stands right under the tabs (measured: "+ Input" 106, "+ Medical" 115 at 402) */
+@media(max-width:820px){.medview.in-page > .ic-head{padding-top:0}}
 .medview.in-page .med-body{flex:0 0 auto;overflow:visible}
 
 /* the month's own arrows, its name and Today — one group, so they never part across two lines */

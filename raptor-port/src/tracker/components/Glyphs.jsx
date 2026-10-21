@@ -16,9 +16,9 @@ const G = ({ children }) => (
 export const PenGlyph = ({ solo = false } = {}) => (
   <svg className={'trkglyph trkpen' + (solo ? ' solo' : '')} viewBox="0 0 24 24" aria-hidden="true">
     <g transform="rotate(-45 12 12)" fill="currentColor">
-      <rect x="9" y="1" width="6" height="4.2" rx="1.6" />
-      <rect x="9" y="6.3" width="6" height="11.2" rx=".4" />
-      <path d="M9 18.7h6l-2.4 3.7a.7.7 0 0 1-1.2 0Z" />
+      <rect x="8.5" y="1" width="7" height="4.6" rx="2.4" />
+      <rect x="8.5" y="6.4" width="7" height="12.2" rx=".3" />
+      <path d="M8.5 19.4h7l-2.6 3.1a1.2 1.2 0 0 1-1.8 0Z" />
     </g>
   </svg>
 );

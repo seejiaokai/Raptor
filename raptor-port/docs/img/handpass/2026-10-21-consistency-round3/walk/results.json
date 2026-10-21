@@ -1,0 +1,362 @@
+{
+ "pass": 71,
+ "total": 71,
+ "results": [
+  {
+   "name": "pc Quals \"Edit\": the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "13px, \"Edit\""
+  },
+  {
+   "name": "pc Quals \"Edit\" pressed: editing, Done shown",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc Quals: Done ends editing, \"Edit\" back",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc Logic \"Edit\": the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "13px, \"Edit\""
+  },
+  {
+   "name": "pc Logic \"Edit\" pressed: editing, Done shown",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc Logic: the row stays one line",
+   "pass": true,
+   "detail": "Edit 36 tall"
+  },
+  {
+   "name": "pc board Templates \"Manage templates\": the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "12px, \"Manage templates\""
+  },
+  {
+   "name": "pc \"Manage templates\" pressed: the day templates window opens",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc board \"+ Block\" menu's heading pencil: the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "12px, \"\""
+  },
+  {
+   "name": "pc the \"+ Block\" pencil pressed: the duty templates window opens",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc board plans menu: a plan's pencil: the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "12px, \"\""
+  },
+  {
+   "name": "pc board plans menu: \"Manage plans\": the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "12px, \"Manage plans\""
+  },
+  {
+   "name": "pc \"Manage plans\" pressed: the plans window opens",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc the CX window's \"Edit\": the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "12px, \"Edit\""
+  },
+  {
+   "name": "pc the CX \"Edit\" pressed: the reasons list opens",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc a jet's stores list pencil: the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "12px, \"\""
+  },
+  {
+   "name": "pc the stores pencil pressed: the list is in edit (lit)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc pressed again: out of edit",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc the board: no typed pencil left on screen",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc the Inputs list's dates button wears the line calendar, no emoji",
+   "pass": true,
+   "detail": "13 Jul → 27 Jul"
+  },
+  {
+   "name": "pc the dates button pressed: its pop-up opens",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc the dates pop-up's \"Default window\": the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "13px, \"Default window\""
+  },
+  {
+   "name": "pc \"Default window\" pressed: its weeks box shows",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc a calendar note's pencil (was the ✏ emoji): the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "14px, \"\""
+  },
+  {
+   "name": "pc the note's pencil pressed: its words open to type",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc the input window's title box: the solid pencil inside it",
+   "pass": true,
+   "detail": "16px"
+  },
+  {
+   "name": "pc Medical: \"+ Medical\" first, at the left, before \"as of\"",
+   "pass": true,
+   "detail": "+ Medical x 12, as of x 100"
+  },
+  {
+   "name": "pc Medical: \"+ Medical\" on the tabs' left edge, where \"+ Input\" stands",
+   "pass": true,
+   "detail": "+ Medical 12, tabs 12"
+  },
+  {
+   "name": "pc Medical: no frame round the tab, the sections keep their boxes",
+   "pass": true,
+   "detail": "frame 0px, boxed sections 3"
+  },
+  {
+   "name": "pc Medical: \"+ Medical\" the same height as \"as of\"",
+   "pass": true,
+   "detail": "36 / 36"
+  },
+  {
+   "name": "pc \"+ Medical\" pressed: the input window opens on ATT C",
+   "pass": true,
+   "detail": "ATT C"
+  },
+  {
+   "name": "pc the Tracker bar's course pencil: the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "15px, \"\""
+  },
+  {
+   "name": "pc the Tracker bar's syllabus pencil: the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "15px, \"\""
+  },
+  {
+   "name": "pc the Tracker's three labels wear Quals' \"Viewing\" style",
+   "pass": true,
+   "detail": "Crew, Course, Syllabus · 10px|700|1px|uppercase|rgb(138, 150, 163)"
+  },
+  {
+   "name": "pc the Tracker's bar stays one line",
+   "pass": true,
+   "detail": "middles within 0px, bar 51 tall"
+  },
+  {
+   "name": "pc Course menu \"Rename course\": the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "15px, \"Rename course\""
+  },
+  {
+   "name": "pc Course menu \"Reorder courses\": a line icon, no typed mark",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc Course menu \"Delete course\": a line icon, no typed mark",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc \"Reorder courses\" pressed: its window opens",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc Syllabus menu \"Edit chart layout\": the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "15px, \"Edit chart layout\""
+  },
+  {
+   "name": "pc Syllabus menu \"Rename syllabus\": the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "15px, \"Rename syllabus\""
+  },
+  {
+   "name": "pc Syllabus menu \"Duplicate syllabus\": a line icon, no typed mark",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc Syllabus menu \"Reorder syllabi\": a line icon, no typed mark",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc Syllabus menu \"Delete syllabus\": a line icon, no typed mark",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc \"Edit chart layout\" pressed: the chart tools show",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc Edit chart layout's \"Text\" tool: the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "15px, \"Text\""
+  },
+  {
+   "name": "pc the Text tool pressed: it is the tool in use",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc \"Done editing chart\": out of chart layout",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc File menu \"Import…\": a line icon, no typed mark",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc File menu \"Export…\": a line icon, no typed mark",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc \"Export…\" pressed: its window opens",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc a ball's pop-up \"Edit details\": the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "15px, \"Edit details\""
+  },
+  {
+   "name": "pc \"Edit details\" pressed: the details window opens",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc Students card: each name's rename is the solid pencil and its remove the drawn ✕",
+   "pass": true,
+   "detail": "[{\"pen\":true,\"x\":true,\"typed\":false,\"pw\":11},{\"pen\":true,\"x\":true,\"typed\":false,\"pw\":11}]"
+  },
+  {
+   "name": "pc Students card \"Reorder\": the line icon",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc \"Reorder\" pressed: the crew order window opens",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc the Tracker: no typed pencil left on screen",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone Quals \"Edit\": the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "13px, \"Edit\""
+  },
+  {
+   "name": "phone Quals \"Edit\" tapped: editing",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone the Inputs list's dates button: the line calendar, one row with + Input and the switch",
+   "pass": true,
+   "detail": "tops within 0px, 36 tall"
+  },
+  {
+   "name": "phone a calendar note's pencil: the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "14px, \"\""
+  },
+  {
+   "name": "phone the note's pencil tapped: its words open",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone Medical: \"+ Medical\" first, then \"as of\", one row",
+   "pass": true,
+   "detail": "8 / 92"
+  },
+  {
+   "name": "phone Medical: no frame round the tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone \"+ Medical\" tapped: the window opens on ATT C",
+   "pass": true,
+   "detail": "ATT C"
+  },
+  {
+   "name": "phone the Tracker bar's course pencil: the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "15px, \"\""
+  },
+  {
+   "name": "phone the Tracker's labels stay hidden on a phone",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone Syllabus menu \"Rename syllabus\": the solid pencil, no typed mark",
+   "pass": true,
+   "detail": "15px, \"Rename syllabus\""
+  },
+  {
+   "name": "phone Syllabus menu's other items: line icons",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone the Tracker: no typed pencil left on screen",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "no page error, console error or failed request",
+   "pass": true,
+   "detail": ""
+  }
+ ],
+ "errors": []
+}

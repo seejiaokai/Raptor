@@ -216,7 +216,7 @@ test.describe('round 1 of the consistency look (D1125–D1128)', () => {
     const rest = await page.evaluate(() => getComputedStyle(document.querySelector('#accFind')!.parentElement!).borderColor)
     expect(ring, 'focused, the box shows it').not.toBe(rest)
   })
-  test('D1128: Quals reads "Edit" (D1134's drawn pencil) plain, then "Done" blue — as Logic does', async ({ page }) => {
+  test('D1128: Quals reads "Edit" (the drawn pencil, D1134) plain, then "Done" blue — as Logic does', async ({ page }) => {
     await login(page)
     /* the words, whether it is the bright blue, and whether it wears the app's one drawn pencil (D1134) */
     const btn = (sel: string) => page.evaluate(s => { const b = document.querySelector(s)!; return [b.textContent!.trim(), b.classList.contains('primary'), !!b.querySelector('svg.pen-ic')] }, sel)
