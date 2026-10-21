@@ -196,6 +196,21 @@ Each to be drawn on the real app with lettered options and a worked example befo
 
 *(Written here as he gives them, each recorded as a ruling first — D13. This chat's numbers: D1140–D1159.)*
 
+**Round 1 (21 Oct 26):**
+- **Q1 → A (D1141):** "My leave" for the person signed in — a third line on a phone, the stage row's free end on a desktop;
+  a tap lists his own leave. Narrows D678, D1000 and D679; D365 stands.
+- **Q2 → A (D1142):** the bell tells him, one line a decision naming who made it — approve, refuse, put back, move,
+  delete, replaced; never an Ack.
+- **Q3 → A (D1143):** a tap on a date opens that day from the foot, on a phone and a desktop.
+- **Q4 → open:** he leans to A and asked *"what if there are more counters at the top how would it look like"*. Drawn
+  (his page, "Your question on 4"; `../../mock/lw-overhaul/r1q4-more-*.png`, script `round1-q4-counters.mjs`): the
+  squadron given the eleven counters the tests use, a real bid by Ranger on Wed 28 Jan measured — it moves 5 of the 11 (IP
+  16→15, IP + IWSO 23→22, FL P 19→18, SXO 12→11, SC D 7.7→7.5), none to amber or red. Put as A every counter (four lines),
+  A2 only those it moves (three lines), **A3 only a counter it turns amber or red, else one calm line — recommended**; the
+  balance on each leave button stays in all three. Waiting on his answer.
+- **He has more questions of his own** (21 Oct 26, "hold on i have alot more questions but u can continue to suggest") —
+  taken next, before round 2 is put.
+
 ## 6. The build, once he has answered
 
 Batches by area (D1087), each its own branch, bug check and "merge live":
