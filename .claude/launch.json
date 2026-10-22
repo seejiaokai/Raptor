@@ -765,6 +765,40 @@
         "--strictPort"
       ],
       "port": 4262
+    },
+    {
+      "name": "lw-m2-scroll",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-scroll",
+        "--port",
+        "4264",
+        "--strictPort"
+      ],
+      "port": 4264
+    },
+    {
+      "name": "lw-m2-fix",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-fix2",
+        "--port",
+        "4265",
+        "--strictPort"
+      ],
+      "port": 4265
     }
   ]
 }

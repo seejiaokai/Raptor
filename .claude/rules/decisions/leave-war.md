@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1270 | 23 Oct 26 | On a phone the Leave War's ⚙ Settings window never scrolls sideways: everything in it — its words, its lists, its buttons — fits the window's width, the words wrapping and a row's parts shortening as they must. |
 | D1269 | 23 Oct 26 | On the Leave War grid the green open-bidding outline marks only the open days from today, for the admin as for a member: a stretch wholly past has no outline, and one that began before today is outlined from today; the "Open for bidding" window still lists a past stretch, reading "past". |
 | D1268 | 23 Oct 26 | In the "Open for bidding" window a month wholly before today is dimmed with the grid's small padlock and cannot be pressed, for the admin as for everyone; a stretch wholly past reads "past" in place of its day count; and the admin's chip counts from today, as a member's does, reading "Bidding closed" when only past dates are open. — changed by D1269 |
 | D1267 | 23 Oct 26 | A member's closed days are dimmed with a small lock on their date only while some dates are open for him; with nothing open for him his grid draws as normal and the chip reads "Bidding closed". |
