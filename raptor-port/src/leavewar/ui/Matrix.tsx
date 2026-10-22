@@ -2002,8 +2002,9 @@ export function Matrix() {
       ))}
       {/* The column's heading: LVE, the one figure it shows (D1245). Frozen beside the callsign, so the figure stays on
           screen however far the grid scrolls. */}
-      {!drawer && <th className="bal" data-testid={testids ? 'counter-head' : undefined}>
-        <span className="cpick" aria-label={`${shown.label} balance`}>
+      {/* the spoken name on the heading CELL, which a screen reader honours (a plain span's aria-label may be skipped) */}
+      {!drawer && <th className="bal" data-testid={testids ? 'counter-head' : undefined} aria-label={`${shown.label} balance`}>
+        <span className="cpick">
           <span className="cname" data-testid={testids ? 'counter-name' : undefined}>{shown.title}</span>
         </span>
       </th>}

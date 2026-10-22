@@ -198,7 +198,7 @@ describe('the counter column', () => {
   it('names the figure for a screen reader, not just in the chip', () => {
     render(<Matrix />)
     const head = screen.getByTestId('counter-head')
-    const label = head.querySelector('.cpick')!.getAttribute('aria-label')!
+    const label = head.getAttribute('aria-label')!   // on the heading cell, which a screen reader honours
     expect(label).toContain('LVE')
     expect(head.querySelector('button')).toBeNull()
     expect(screen.queryByTestId('counter-pick')).toBeNull()
