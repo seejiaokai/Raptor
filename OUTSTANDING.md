@@ -706,7 +706,7 @@ scenario tester) — the global undo timeline's own item.
 Today each person has ONE running balance per counter; leave on 1 Jan simply comes off it, and a new
 year is handled by the admin's "Reset counters". Decide next session: separate balances per year/war,
 carry-over rules, and which year a leave crossing 31 Dec charges. Context: clash catalogue Q10.
-**22 Oct 26 — D1218:** his ruling on carry-over: a year's unused annual leave carries forward one year, and carried-forward leave not used by the start of the year after that is gone (his official leave app: "Carried forward leave … valid to 31 Dec 2026"; "Annual leave … valid to 31 Dec 2027"). This item now joins [LW-OVERHAUL] (the person window, M5); which days a leave uses first: the carried-forward days (D1224); still to rule: which year a leave crossing 31 Dec charges.
+**22 Oct 26 — D1218:** his ruling on carry-over: a year's unused annual leave carries forward one year, and carried-forward leave not used by the start of the year after that is gone (his official leave app: "Carried forward leave … valid to 31 Dec 2026"; "Annual leave … valid to 31 Dec 2027"). This item now joins [LW-OVERHAUL] (the person window, M5); which days a leave uses first: the carried-forward days (D1224); each person's leave grade adds the year's annual leave on 1 January by itself (D1229); one page sets everyone's balances and grades (D1230); still to rule: which year a leave crossing 31 Dec charges.
 
 ### [DB-STEP] The shared-database step (Dataverse) — at the end (D473, 1 Oct 26; "starts now", D354, is replaced)
 **At the end (D473, 1 Oct 26 — "Database at the end."):** the app goes into Dataverse once its features are built — the IT side's

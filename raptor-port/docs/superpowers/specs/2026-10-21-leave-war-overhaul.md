@@ -309,6 +309,8 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **D1226:** the request's remarks carry the till-date tick, working exactly as on the Inputs page (D952, D953, D1095).
 - **Q9 → as recommended (D1227):** a member's My leave in line 1, Manning folded and remembered; a bid that turns a row amber or red opens Manning by itself with a bubble naming the row; D1141, D678 narrowed.
 - **Q12 → as recommended (D1228):** no zoom buttons on either; pinch on a phone, Ctrl+scroll / trackpad pinch on a desktop, the grid only; D1117 narrowed.
+- **D1229:** a leave grade per person, set by hand (Senior pilot 36, Junior pilot 33, Senior WSO 21, Junior WSO 18, Ops A 14); the year's annual leave added by grade every 1 January, by itself.
+- **D1230:** one page for an admin to enter everyone's balances and grades, designed with Impeccable from the colleague's version, drawn first. (This branch takes **D1230–D1239**, checked 22 Oct 26: nothing above D1228 on any branch.)
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
   `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (his question "in what scenario": the clash rules allow only leave during a course or overseas duty, leave beside
   ATT B, and an FO given by hand on a leave day; recommended now C — the leave fills the cell, the other a strip down its right
