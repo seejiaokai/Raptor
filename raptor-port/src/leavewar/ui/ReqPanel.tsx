@@ -19,7 +19,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { dropFlyRun, flyAnswer, getFlyPlan, setFlyDays, setFlyRun, usePlanVersion, useWarFacts, type FlyDayPatch, type FlySave } from '../sync'
 import { dayLabel, shortSpan } from './dates'
-import { liftAbove, REQ_NAME, REQ_SHORT } from './FlyEdit'
+import { liftAbove, REQ_NAME, reqName, reqShort } from './FlyEdit'
 import { useCloseOnCellClick } from './gridclick'
 import { planPick } from './reqpick'
 import type { ReqSelection } from './select'
@@ -75,7 +75,11 @@ export function ReqPanel({ pick, include, onInclude, onClose }: {
   const plan = planPick(pick.dates, flyAnswer, include)
   const both = pick.rows.length === 2
   const one = pick.rows[0] === 'p' ? 'req-p' : 'req-w'
-  const title = phone ? (both ? 'Req P and W' : REQ_SHORT[one]) : (both ? 'Required P and W' : REQ_NAME[one])
+  /* the rows' own names (D1193); the short and joined forms only while both still read as they started */
+  const std = reqName('req-p') === REQ_NAME['req-p'] && reqName('req-w') === REQ_NAME['req-w']
+  const title = both
+    ? (std ? (phone ? 'Req P and W' : 'Required P and W') : `${reqName('req-p')} and ${reqName('req-w')}`)
+    : (phone ? reqShort(one) : reqName(one))
   const cells = plan.take.length * pick.rows.length
   const stored = getFlyPlan()
   const seatPatch = <T,>(v: T): { p?: T; w?: T } => ({ ...(pick.rows.includes('p') ? { p: v } : {}), ...(pick.rows.includes('w') ? { w: v } : {}) })
