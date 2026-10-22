@@ -639,10 +639,25 @@ export function setInputReplayCheck(fn: ReplayCheck | null): void { REPLAY = fn 
    member may delete his own pending bid on a day that has since closed") or a replaced-bid notice he has seen — never
    add or change a record. Whether a day is open is the Leave War's to say (its store installs the probe: the pure rule
    `leavewar/engine/access.ts canEditCell`, asked of the period holding the date); with no war wired every day reads
-   open, as before. An Undo or Redo of his own step passes, image for image (the replay check, as the inputs'). */
+   open, as before. Undo and Redo: D1263, below. */
 type LwDayOpen = (cellId: string) => boolean
 let LW_DAY_OPEN: LwDayOpen | null = null
 export function setLwDayOpenProbe(fn: LwDayOpen | null): void { LW_DAY_OPEN = fn }
+/* D1263 (22 Oct 26, his "no" — [LW-REDO-ONTO-CLOSED]): a member's Undo or Redo never puts a bid of his back on a day closed
+   for him since; the one exception is his Undo of a step he made on that day while it was ALREADY closed — deleting his
+   own pending bid there (D1225, the walk's B-F1), or an Inputs-page half day that cut his bid there (D1166). The timeline
+   vouches for such a restore, record by record (undo/timeline.ts verifiedWarRestore, installed by state/undo-wire.ts);
+   anything else that would add or change a war record on a closed day is refused, whatever calls itself a restore.
+   `lwClosedKeys` is what the timeline keeps on each step as it is recorded: the war records a member's step changed on a
+   day not open for him at that moment. */
+let LW_RESTORE: ReplayCheck | null = null
+export function setLwRestoreCheck(fn: ReplayCheck | null): void { LW_RESTORE = fn }
+export function lwClosedKeys(changes: Change[], actor: CommitEnvelope['actor'] | null | undefined): string[] {
+  if (!LW_DAY_OPEN || !actor || actor.role !== 'member') return []
+  const out: string[] = []
+  for (const c of changes) if (c.collection === 'lw.cell' && !LW_DAY_OPEN(c.id)) out.push(`${c.collection}/${c.id}`)
+  return out
+}
 function onlyTakesPending(before: unknown, after: unknown): boolean {
   const b: any[] = Array.isArray(before) ? before : []
   const a: any[] = Array.isArray(after) ? after : []
@@ -758,6 +773,7 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system' || a.role === 'admin') return null
   let replayed: ((c: Change) => boolean) | null | undefined
+  let warRestore: ((c: Change) => boolean) | null | undefined
   for (const c of env.changes) {
     const where = `${c.collection}/${c.id}`
     if (a.role !== 'member') {
@@ -791,15 +807,14 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
       case 'lw.cell': {
         const parts = c.id.split(':')
         if (parts[parts.length - 2] !== pid) return `another person's war row (${where})`
-        /* …and his Undo of such a delete puts back exactly what it took (the walk's find, 22 Oct 26: the Undo was refused):
-           a restore that only ADDS BACK pending bids of his — the same check, read the other way. RULED NARROWER, D1263
-           (22 Oct 26, to build — [LW-REDO-ONTO-CLOSED]): only his Undo of a delete made on a day already closed may put a
-           bid back; a Redo, or the Undo of a delete made while the day was open, is refused. Today this lets both through. */
+        /* …and his Undo of such a step puts back exactly what it took (the walk's B-F1, 22 Oct 26: the Undo was refused) —
+           but ONLY that (D1263): an Undo the timeline vouches for, of his own step made on the day already closed, image
+           for image. A Redo, the Undo of a step made while the day was open, or a command that only calls itself a
+           restore puts nothing back on a closed day. (Taking his own pending bid away passes above, Undo or not.) */
         const after = c.op === 'delete' ? [] : c.after
-        if (LW_DAY_OPEN && !LW_DAY_OPEN(c.id) && !onlyTakesPending(c.before, after)
-          && !(env.origin === 'restore' && onlyTakesPending(after, c.before))) {
-          if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
-          if (!(replayed && replayed(c))) return `a war day not open for bidding (${where})`
+        if (LW_DAY_OPEN && !LW_DAY_OPEN(c.id) && !onlyTakesPending(c.before, after)) {
+          if (warRestore === undefined) warRestore = env.origin === 'restore' && LW_RESTORE ? LW_RESTORE(env) : null
+          if (!(warRestore && warRestore(c))) return `a war day not open for bidding (${where})`
         }
         break
       }

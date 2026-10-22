@@ -90,6 +90,10 @@ export interface UndoHooks {
      into) an input he shares (state/perms.ts ownPart; the one-rule plan §4.9, Fable F5)? None installed: the record's
      one `person`, as before. */
   ownPart?(cur: Actor, before: unknown, after: unknown): boolean
+  /* D1263 — WHICH RECORDS THE STEP CHANGED ON A DAY ALREADY CLOSED FOR ITS MAKER (a member's Leave War day not open for
+     him: state/perms.ts lwClosedKeys). Asked once, as the step is recorded, and kept on the entry: only an Undo of such a
+     step may put a bid back on a closed day (verifiedWarRestore). None installed: none. */
+  closedAtStep?(changes: Change[], actor: Actor): string[]
 }
 let hooks: UndoHooks = {}
 export function setUndoHooks(h: UndoHooks): void { hooks = h }
@@ -292,6 +296,13 @@ function advanceExpectedNoBarrier(env: CommitEnvelope): void {
   for (const key of Object.keys(revs)) expected.set(key, revs[key])
 }
 
+/* D1263 — the step's records on a day already closed for its maker, read NOW, as the step lands (the day may open or
+   close later; what counts is how it stood when he acted) */
+function closedAtOf(forward: Change[], actor: Actor): { closedAt?: string[] } {
+  const keys = hooks.closedAtStep ? hooks.closedAtStep(forward, actor) : []
+  return keys.length ? { closedAt: keys } : {}
+}
+
 /* record a fresh user action as a new entry (its projection children fold in as
    they arrive, later in the same synchronous drain). */
 function recordEntry(env: CommitEnvelope): void {
@@ -309,6 +320,7 @@ function recordEntry(env: CommitEnvelope): void {
     revs: { ...(env.revs || {}) },
     boundary: env.boundary,
     ...(env.detail ? { detail: env.detail } : {}),
+    ...closedAtOf(forward, env.actor),
     eligible: false,      // recomputed lazily (modules may cut over after record)
     undone: false,
   }
@@ -500,7 +512,7 @@ export function mayReverse(entry: UndoEntry, cur: Actor): boolean {
    right now (`origin: 'restore'`, caused by the step), the step was made by the same person, and the record is, image
    for image, what the step recorded — its before-image on an Undo, its after-image on a Redo. A command that merely
    calls itself `undo.restore` is not being applied here, so it gains nothing. */
-let APPLYING: { entry: UndoEntry; changes: Change[] } | null = null
+let APPLYING: { entry: UndoEntry; changes: Change[]; dir: 'undo' | 'redo' } | null = null
 const landed = (x: unknown): unknown => {
   const o: any = inputOf(x)
   if (!o || o.acc !== 'g') return x
@@ -518,6 +530,30 @@ export function verifiedReplay(env: { origin: string; type: string; causedBy?: n
     if (!w) return false
     if (w.op === 'delete') return c.op === 'delete'
     return c.op === 'put' && deepEqual(landed(w.after), landed(c.after))
+  }
+}
+
+/* D1263 (22 Oct 26, his "no" — [LW-REDO-ONTO-CLOSED]): A MEMBER'S RESTORE ON A LEAVE WAR DAY CLOSED FOR HIM. Undo and Redo
+   cannot tell "back" from "new" by the records alone, so the commit gate (state/perms.ts, the `lw.cell` case) asks here.
+   It vouches for a war record only when the restore THIS module is applying is an UNDO of the same person's step, the
+   step changed that record on a day already closed for him when he made it (`closedAt`, kept as it was recorded), and the
+   record is, image for image, what the step found there. So his Undo of deleting his own pending bid on a closed day
+   puts it back (B-F1), and his Undo of an Inputs-page half day that cut his bid there gives the bid its whole day back;
+   a Redo, or the Undo of a step he made while the day was open, is never vouched for. */
+export function verifiedWarRestore(env: { origin: string; type: string; causedBy?: number; actor: Actor }): ((c: Change) => boolean) | null {
+  const a = APPLYING
+  if (!a || a.dir !== 'undo' || env.origin !== 'restore' || env.type !== 'undo.restore' || env.causedBy !== a.entry.seq) return null
+  if ((a.entry.actor.personId ?? null) !== (env.actor.personId ?? null)) return null
+  const closed = new Set(a.entry.closedAt ?? [])
+  if (!closed.size) return null
+  const want = new Map<string, Change>()
+  for (const ch of a.changes) if (ch.collection === 'lw.cell') want.set(ch.id, ch)
+  return (c: Change): boolean => {
+    if (c.collection !== 'lw.cell' || !closed.has(recordKey(c))) return false
+    const w = want.get(c.id)
+    if (!w) return false
+    if (w.op === 'delete') return c.op === 'delete'
+    return c.op === 'put' && deepEqual(w.after, c.after)
   }
 }
 
@@ -695,7 +731,7 @@ function applyRestore(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo')
   const cur = currentActor()
   const pulledBack = pulledBackDays(entry)   // read BEFORE the apply, from the timeline as it stands
   /* this restore, named for the commit gate's question (verifiedReplay) — for exactly as long as it is being applied */
-  APPLYING = { entry, changes }
+  APPLYING = { entry, changes, dir }
   let r: ReturnType<typeof commitAs>
   try { r = restoreCommit(entry, changes, dir, byStore, expectedRevs, cur, pulledBack) } finally { APPLYING = null }
   /* a DELIBERATE refusal raised inside (CmdRefused — a restore rule's second check, B5 §11.3) keeps its own sentence */
@@ -752,6 +788,9 @@ function plainRestoreReason(reason?: string, entry?: UndoEntry): string {
   if (reason && /^REFUSE: /.test(reason)) return reason.slice(8)
   /* B6.6 — a stale revision can never succeed on a retry: say what happened, never "Try again" (Fable 3c-5) */
   if (reason && /stale revision/.test(reason)) return OUT_OF_BAND
+  /* D1263 — a member's Undo or Redo that would put his bid back on a Leave War day closed for him since (state/perms.ts,
+     the `lw.cell` case): say why, in the closed note's own words, never "couldn't be completed just now" */
+  if (reason && /war day not open for bidding/.test(reason)) return 'Bidding is closed on that day, so your bid can’t go back on it.'
   /* "this week" only for a week's records (Fable 3c-5 — it read "this week" for a war or roster record) */
   const onWeek = !entry || entry.forward.some(c => weekOf(c.collection, c.id) != null)
   return onWeek ? 'That couldn’t be completed just now — something else changed on this week.' : 'That couldn’t be completed just now.'

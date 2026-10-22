@@ -206,13 +206,14 @@ describe('B8 — a member\'s bid on a closed day is refused at the commit, not o
     expect(ownershipViolation(env('2026-02-10', [], [bid('n1')]))).toBeNull()                 // an open day
   })
 
-  /* the break tests' gap 17b: B-F1 proves his Undo of a delete goes through; nothing proved a restore bringing anything
-     ELSE onto a closed day is still refused. What passes: a restore that only adds back pending bids of his (B-F1 — and,
-     read the same way, his Redo of a bid made while the day was open — which D1263 rules OUT, to build: [LW-REDO-ONTO-CLOSED]). What
-     does not: a restore that changes a bid, brings an approved or refused record, or takes someone else's. */
-  it('a restore on a closed day passes only when it adds back his pending bids; a change or anything else is refused', () => {
+  /* the break tests' gap 17b, as D1263 (22 Oct 26) narrowed it: what puts a bid back on a closed day is ONLY his Undo of a
+     step he made there while it was already closed, vouched for by the timeline (B-F1 and the D1263 block below). A command
+     that merely calls itself a restore — nothing the timeline is applying — adds or changes nothing there: not his pending
+     bid added back, not a change, not an approved or refused record. Taking his own pending bid away still passes. */
+  it('a restore the timeline is not applying adds or changes nothing on a closed day; taking his pending bid still passes', () => {
     const restore = (before: WarRec[], after: WarRec[]): CommitEnvelope => ({ ...env('2026-06-10', before, after), origin: 'restore' } as CommitEnvelope)
-    expect(ownershipViolation(restore([], [bid('n1')]))).toBeNull()
+    expect(ownershipViolation(restore([], [bid('n1')]))).toMatch(/not open for bidding/)
+    expect(ownershipViolation(restore([bid('n1')], []))).toBeNull()
     expect(ownershipViolation(restore([bid('n1')], [bid('n1', 'OL')]))).toMatch(/not open for bidding/)
     expect(ownershipViolation(restore([], [{ ...bid('n1'), state: 'approved' } as unknown as WarRec]))).toMatch(/not open for bidding/)
     expect(ownershipViolation(restore([], [{ ...bid('n1'), state: 'refused' } as WarRec]))).toMatch(/not open for bidding/)
@@ -324,6 +325,81 @@ describe('B-F1 — his Undo of deleting his own pending bid on a closed day puts
     expect(requests(pid, '2026-02-10').map(r => [r.code, r.state])).toEqual([['LL', 'pending']])
     expect(globalRedo().ok).toBe(true)
     expect(requests(pid, '2026-02-10')).toHaveLength(0)
+  })
+})
+
+/* D1263 (22 Oct 26, his "no" — [LW-REDO-ONTO-CLOSED]): a member's Undo or Redo never puts a bid of his back on a day closed
+   for him since; the one exception is his Undo of a step he made on the day while it was ALREADY closed (B-F1, above). Both
+   code readers of M1 (Fable F2, Opus scenario 6) found the commit letting any restore through that only added back pending
+   bids. The admin's closing sits on the one shared timeline above the member's step, so in one browser that order cannot be
+   reached through the "Open for bidding" window; a day that closes for him because it has PASSED (D1211 — the same rule,
+   `canEditCell`) can, and is what these drive. */
+describe('D1263 — a member\'s Undo or Redo never puts his bid back on a day closed since', () => {
+  const ISNAP = JSON.stringify(INPUTS)
+  const pid = 'bane'
+  const day = '2026-02-10'
+  beforeEach(() => {
+    INPUTS.length = 0; JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
+    setSession({ user: 'us', role: 'main' }); setMe(pid)
+    raptorInitStore(); initStore(memoryBackend()); setPeople(projectPeople()); wireLeaveWarSync()
+    _resetTimeline(); lwHistInit(); installGlobalUndo()
+    setRole('member'); setViewer(pid)
+    setMemberTodayForTests('2026-02-01')
+    expect(canBidOn(pid, day)).toBe(true)
+  })
+  afterEach(() => { _resetTimeline(); setSession(null); setMe(null as any); setMemberTodayForTests('2000-01-01') })
+  const closeByTime = () => { setMemberTodayForTests('2026-02-15'); expect(canBidOn(pid, day)).toBe(false) }
+
+  it('bid while open, the day closes, his Undo takes the bid off; his Redo is refused and the day stays empty', () => {
+    expect(setCell(pid, day, 'LL')).toBe(true)
+    closeByTime()
+    expect(globalUndo().ok).toBe(true)                                     // D1225: taking his own pending bid
+    expect(requests(pid, day)).toHaveLength(0)
+    expect(globalRedo()).toMatchObject({ ok: false, reason: 'Bidding is closed on that day, so your bid can’t go back on it.' })
+    expect(requests(pid, day)).toHaveLength(0)
+  })
+
+  it('bid and Undo while open, the day closes: his Redo is refused', () => {
+    expect(setCell(pid, day, 'LL')).toBe(true)
+    expect(globalUndo().ok).toBe(true)
+    closeByTime()
+    expect(globalRedo().ok).toBe(false)
+    expect(requests(pid, day)).toHaveLength(0)
+  })
+
+  it('a delete made while the day was open is not undone onto it once closed', () => {
+    expect(setCell(pid, day, 'LL')).toBe(true)
+    const own = requests(pid, day)
+    expect(clearRecordById(pid, day, own[0]!.id)).toBe(true)
+    closeByTime()
+    expect(globalUndo()).toMatchObject({ ok: false, reason: 'Bidding is closed on that day, so your bid can’t go back on it.' })
+    expect(requests(pid, day)).toHaveLength(0)
+  })
+
+  it('a delete made on the day already closed (by time) is undone: the bid is back; Redo takes it again', () => {
+    expect(setCell(pid, day, 'LL')).toBe(true)
+    closeByTime()
+    const own = ownPendingOnClosedDay(pid, day)
+    expect(own).toHaveLength(1)
+    expect(clearRecordById(pid, day, own[0]!.id)).toBe(true)
+    expect(globalUndo().ok).toBe(true)
+    expect(requests(pid, day).map(r => [r.code, r.state])).toEqual([['LL', 'pending']])
+    expect(globalRedo().ok).toBe(true)
+    expect(requests(pid, day)).toHaveLength(0)
+  })
+
+  /* M1's H1 fix let his Inputs-page half day cut his whole-day bid to its free half on a closed day (D1166); the Undo of
+     that filing puts the cut back — the same kind of step: made on the closed day, its Undo restoring exactly what it took */
+  it('his Inputs-page morning over his whole-day bid on a closed day: Undo takes the leave away and gives the bid its whole day back', () => {
+    expect(setCell(pid, day, 'LL')).toBe(true)
+    closeByTime()
+    const row: any = { iid: 'd1263-h1', person: pid, type: 'OL', date: 'Feb 10', yr: 2026, half: 'am', s: 0, e: 720, remarks: '', mod: '2026-02-15' }
+    expect(writeInputs(() => { INPUTS.unshift(row) })).toBe(true)
+    expect(requests(pid, day).map(r => r.code)).toEqual(['LL*'])
+    const u = globalUndo()
+    expect(u.ok, JSON.stringify(u)).toBe(true)
+    expect(INPUTS.some((r: any) => r.iid === 'd1263-h1')).toBe(false)
+    expect(requests(pid, day).map(r => [r.code, r.state])).toEqual([['LL', 'pending']])
   })
 })
 
