@@ -654,6 +654,8 @@ state nobody drew.
 he may strike or change any. Newest first. Where a lesson meets a general rule above, the lesson wins, and that rule
 points here.*
 
+**Lesson 39 (22 Oct 26, D1252 — "standardise … the numbers on 1 side and the words on the other … the pending should be not amber, which follows the rest of the text of the title").** Lines that pair a word with a figure, stacked, read as a small list: the words down one side, the figures down the other, lined up; and a word is a label, coloured like every other label — only the figure carries a status colour. Space under a heading is not left empty: the content sits close under it. *(That the figures go to the right, is the agent's reading.)* *Other places, named under D852 and not changed:* the day panel's figures (lesson 20); the Approvals line on a phone.
+
 **Lesson 38 (22 Oct 26, D1251 — "pending is amber, why dont the lve pending follow it too?").** One meaning, one colour: where a figure is pending in one place and drawn in a colour, every pending figure beside it takes the same colour. *(That this holds wherever "pending" is shown, is the agent's reading, not his words.)* *Other places, named under D852 and not changed:* the Approvals list's count; My leave's "0 pending"; the person window's leave list ("Pending").
 
 **Lesson 37 (22 Oct 26, D1246 — "the 3b should write half as .5").** A half is written as .5 (14.5, 2.5), the way the grid already writes it, never as ½. *(That a whole number stays whole and that it holds for every figure of days in the app, are the agent's readings, not his words.)* *Other places, named under D852 and not changed:* the OIL tracker's figures; Insights' hours; the Inputs page's durations.
