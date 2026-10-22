@@ -143,8 +143,9 @@ The scenario designer's 13 cuts (its §3) and five for the walk's fixes — 23 c
 checkout on 543ed46bc, one test file at a time, each source put back: **19 red, 4 gaps.** The gaps, each now a test: 5b
 (`deletableIn` — a dragged block of his pending bids on closed days keeps its Delete; a refused one not counted), 5d (his
 pending half beside Inputs-page leave on a closed day: Delete takes the bid, the leave stays), 7 (a drag in the window is
-ONE Undo step — proved red with the drag cut month by month), 17b (what a restore on a closed day may and may not bring —
-it found approved leave passing as "his pending bid": tightened to undecided bids). Its note A (the "before today" render
+ONE Undo step — proved red with the drag cut month by month), 17b (what a restore on a closed day may and may not bring;
+its "approved" record is a state a war record cannot hold today — approved leave is an input — so the check now names the
+two undecided states rather than "not refused", and nothing reachable changed). Its note A (the "before today" render
 test never moved his today) is a real before-today test now. Every fix after the reads was red without it, green with it.
 
 ## 10. Errors seen

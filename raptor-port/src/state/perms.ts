@@ -656,8 +656,9 @@ function onlyTakesPending(before: unknown, after: unknown): boolean {
   const kept = new Set(a.map(r => String(r?.id)))
   for (const r of b) {
     if (kept.has(String(r?.id))) continue
-    /* his UNDECIDED bid, taken (D1225 — "his own pending bid"): approved leave and a refused bid are decided records, never
-       his to take on a closed day (the break tests' 17b case showed approved leave passing here) */
+    /* his UNDECIDED bid, taken (D1225 — "his own pending bid"): named as the two undecided states rather than "not
+       refused", so a state added to a war record later is never taken by default (the break tests' 17b case — a war
+       record cannot be approved today: approved leave is an input) */
     if (r?.kind === 'request' && (r.state === 'pending' || r.state === 'acknowledged')) continue
     if (r?.kind === 'notice') continue                                                    // a notice he has seen
     return false

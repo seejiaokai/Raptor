@@ -214,9 +214,9 @@ describe('B8 — a member\'s bid on a closed day is refused at the commit, not o
     const restore = (before: WarRec[], after: WarRec[]): CommitEnvelope => ({ ...env('2026-06-10', before, after), origin: 'restore' } as CommitEnvelope)
     expect(ownershipViolation(restore([], [bid('n1')]))).toBeNull()
     expect(ownershipViolation(restore([bid('n1')], [bid('n1', 'OL')]))).toMatch(/not open for bidding/)
-    expect(ownershipViolation(restore([], [{ ...bid('n1'), state: 'approved' } as WarRec]))).toMatch(/not open for bidding/)
+    expect(ownershipViolation(restore([], [{ ...bid('n1'), state: 'approved' } as unknown as WarRec]))).toMatch(/not open for bidding/)
     expect(ownershipViolation(restore([], [{ ...bid('n1'), state: 'refused' } as WarRec]))).toMatch(/not open for bidding/)
-    expect(ownershipViolation(restore([bid('n1')], [{ ...bid('n1'), state: 'approved' } as WarRec]))).toMatch(/not open for bidding/)
+    expect(ownershipViolation(restore([bid('n1')], [{ ...bid('n1'), state: 'approved' } as unknown as WarRec]))).toMatch(/not open for bidding/)
   })
 
   it('a member command that writes a bid onto a closed day around the store\'s check is rolled back whole', () => {
@@ -416,7 +416,7 @@ describe('H1 — his Inputs-page half day over his own whole-day pending bid lan
     expect(ownershipViolation(env([{ ...bid, code: '*LL' } as WarRec]))).toBeNull()
     expect(ownershipViolation(env([{ ...bid, code: 'OL' } as WarRec]))).toMatch(/not open for bidding/)
     expect(ownershipViolation(env([{ ...bid, code: '*OL' } as WarRec]))).toMatch(/not open for bidding/)
-    expect(ownershipViolation(env([{ ...bid, code: 'LL*', state: 'approved' } as WarRec]))).toMatch(/not open for bidding/)
+    expect(ownershipViolation(env([{ ...bid, code: 'LL*', state: 'approved' } as unknown as WarRec]))).toMatch(/not open for bidding/)
   })
 })
 
