@@ -5,6 +5,8 @@
 //   r20-real-today-<dev>     round 19's order: Manning rows, months, a JAN band, dates, three Event rows
 //   r20-real-new-<dev>       G1–G3: months, dates (the day's first event under the date, "+2" for more), Manning rows
 //   r20-real-folded-<dev>    G1–G3 with Manning folded: the red count stays on the button
+//   r20-real-fold-phone / -foldopen-phone   G3b (his "on the phone there's no way I can bring out the event fold?"): an
+//     "Events" fold line under the dates, shut (the dates keep their tags) and open (the three Event rows back), Manning folded
 //   cd raptor-port ; LWMOCK_OUT=<scratch> node docs/mock/lw-overhaul/full-r20-real.mjs
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -25,6 +27,9 @@ const CSS = `
 #page-leavewar th.day .zz-evt{position:relative}
 #page-leavewar th.day .zz-evt i{position:absolute;right:-7px;top:-6px;min-width:12px;height:12px;border-radius:6px;background:#5fd0e6;color:#04222b;font:800 8px/12px system-ui;font-style:normal;text-align:center}
 #page-leavewar th.day .zz-evt.none{visibility:hidden}
+#page-leavewar .zz-evfold td{height:24px;padding:0;border-bottom:1px solid #2a313a;background:#10151b}
+#page-leavewar .zz-evfold td.zz-evf-l{font:700 11px/24px system-ui;letter-spacing:.06em;color:#c9d1d9;padding-left:10px;white-space:nowrap}
+#page-leavewar .zz-evfold td.zz-evf-l em{font-style:normal;color:#8a96a3;font-weight:600}
 `
 // the load: six counters, three Event rows (dates in Jan 2026, where the grid opens)
 const COUNTERS = [['IP', -14], ['SXO', -18], ['IWSO', -22], ['OPS P', -12], ['OPS W', -6], ['FL P', -9]]
@@ -60,8 +65,8 @@ async function load_(p) {
     return 'ok'
   }, [CSS, COUNTERS, EVENTS])
 }
-async function reorder(p) {
-  return p.evaluate(EVENTS => {
+async function reorder(p, fold) {
+  return p.evaluate(([EVENTS, fold]) => {
     const pg = document.querySelector('#page-leavewar'), t = pg.querySelector('table.mx')
     const tb = c => t.querySelector(':scope > tbody.' + c)
     const counts = tb('counts'), strip = tb('mstripe'), head = tb('mxhead'), ev = tb('events')
@@ -74,9 +79,18 @@ async function reorder(p) {
     ev.style.display = 'none'
     const band = head.querySelector('tr.mbrak'); if (band) band.style.display = 'none'
     const first = t.querySelector(':scope > tbody'); t.insertBefore(strip, first); t.insertBefore(head, strip.nextSibling); if (counts) t.insertBefore(counts, head.nextSibling)
+    // G3b: an "Events" fold line under the dates; open, the three Event rows come back under it
+    if (fold) {
+      const tbf = document.createElement('tbody'); tbf.className = 'zz-evfold'
+      const tr = ev.rows[0].cloneNode(true); tr.querySelectorAll('[data-testid]').forEach(e => e.removeAttribute('data-testid'))
+      ;[...tr.cells].forEach((c, i) => { c.textContent = ''; c.className = i ? 'zz-evf-c' : 'zz-evf-l' })
+      tr.cells[0].innerHTML = (fold === 'open' ? '▾' : '▸') + ' Events <em>· 3</em>'
+      tbf.appendChild(tr); t.insertBefore(tbf, head.nextSibling)
+      if (fold === 'open') { ev.style.display = ''; t.insertBefore(ev, tbf.nextSibling) }
+    }
     for (const o of pg.querySelectorAll('.lw-bidbox')) o.style.display = 'none'
     return 'ok'
-  }, EVENTS)
+  }, [EVENTS, fold])
 }
 const firstPerson = p => p.evaluate(() => {
   const rows = [...document.querySelectorAll('#page-leavewar [data-testid^="row-"]')].map(e => e.getBoundingClientRect()).filter(r => r.height)
@@ -84,13 +98,13 @@ const firstPerson = p => p.evaluate(() => {
 })
 const out = {}
 for (const [w, h, touch, dev] of [[390, 844, true, 'phone'], [1536, 860, false, 'desk']]) {
-  for (const v of ['today', 'new', 'folded']) {
+  for (const v of (dev === 'phone' ? ['today', 'new', 'folded', 'fold', 'foldopen'] : ['today', 'new', 'folded'])) {
     const { ctx, p } = await N.page(w, h, touch, 'admin')
     await N.draw(p, touch, false)
     { const fb = p.locator('[data-testid="figures-toggle"]'); if (await fb.count() && /(^| )on( |$)/.test(await fb.getAttribute('class') || '')) { await fb.click({ force: true }); await p.waitForTimeout(500) } }
-    if (v === 'folded') { const m = p.locator('[data-testid="counts-toggle"]'); if ((await m.getAttribute('aria-expanded')) !== 'false') { await m.click({ force: true }); await p.waitForTimeout(500) } }
+    if (v === 'folded' || v === 'fold' || v === 'foldopen') { const m = p.locator('[data-testid="counts-toggle"]'); if ((await m.getAttribute('aria-expanded')) !== 'false') { await m.click({ force: true }); await p.waitForTimeout(500) } }
     await load_(p)
-    if (v !== 'today') await reorder(p)
+    if (v !== 'today') await reorder(p, v === 'fold' ? 'shut' : v === 'foldopen' ? 'open' : '')
     await p.waitForTimeout(300)
     const r = await firstPerson(p); out[`${v}-${dev}`] = r
     console.log(v, dev, JSON.stringify(r))
