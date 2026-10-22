@@ -2580,7 +2580,14 @@ export function manningRedDays(dates: readonly string[], verdicts: Record<string
     if (!m) { m = flyMonth(+k.slice(0, 4), +k.slice(5, 7)); months.set(k, m) }
     return m[iso] ?? flyAnswer(iso)
   }
-  return redDays(dates, verdicts, iso => (validIso(iso) ? availRedAt(iso, answer(iso)) : []))
+  /* the two rows read once for the whole run of dates, not once a day (the strip repaints on every war notify) */
+  const rules = availRules()
+  const req = (a: DayAnswer, s: 'p' | 'w') => (a.reqFrom[s] === 'nf' ? null : a.req[s])
+  return redDays(dates, verdicts, iso => {
+    if (!validIso(iso)) return []
+    const a = answer(iso), f = dayFacts(iso)
+    return availRedLines(rules, { p: { have: f.availP, required: req(a, 'p') }, w: { have: f.availW, required: req(a, 'w') } })
+  })
 }
 
 /** THE WAR'S DOOR TO DAYS (the plan §3.3 — the "Days…" line in the war's ⚙ Settings). Days is the scheduler's window
