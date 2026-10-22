@@ -55,20 +55,23 @@ const isDeleteChip = (el: HTMLElement) => {
 describe('the one-day sheet, in order A (D331, D335)', () => {
   beforeEach(() => { setCell(P, '2026-02-11', 'LL') })
 
+  /* the Decide row is found by its Approve where it was found by its Ack — Ack is gone (D1158) */
   it('How many → Decide → Selected (Move · Delete) → How much → Which leave → +OIL / PO / PI', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-11`))
-    expect(above('span-one', 'decide-ack')).toBe(true)
-    expect(above('decide-ack', 'decide-shift')).toBe(true)
+    expect(screen.queryByTestId('decide-ack')).toBeNull()
+    expect(within(rowOf('decide-approve')).getAllByRole('button').map(b => b.textContent)).toEqual(['Approve', 'Refuse'])
+    expect(above('span-one', 'decide-approve')).toBe(true)
+    expect(above('decide-approve', 'decide-shift')).toBe(true)
     expect(above('decide-shift', 'portion-full')).toBe(true)
     expect(above('portion-full', `bid-LL`)).toBe(true)
     expect(above('bid-LL', 'bid-postout')).toBe(true)
     // Move and Delete share the Selected row; Move is no longer on the decision row, Delete no longer a leave chip
     expect(rowOf('decide-shift')).toBe(rowOf('bid-clear'))
-    expect(rowOf('decide-shift')).not.toBe(rowOf('decide-ack'))
+    expect(rowOf('decide-shift')).not.toBe(rowOf('decide-approve'))
     expect(rowOf('bid-clear')).not.toBe(rowOf('bid-LL'))
     expect(within(rowOf('decide-shift')).getByText('Selected')).toBeTruthy()
-    expect(within(rowOf('decide-ack')).getByText('Decide')).toBeTruthy()
+    expect(within(rowOf('decide-approve')).getByText('Decide')).toBeTruthy()
   })
 
   it('Move is the one Move look, Delete the one Delete look', () => {
@@ -81,7 +84,8 @@ describe('the one-day sheet, in order A (D331, D335)', () => {
   it('an EMPTY day has no Decide and no Selected row — it opens on the leave, as before', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-12`))
-    expect(screen.queryByTestId('decide-ack')).toBeNull()
+    expect(screen.queryByTestId('decide-approve')).toBeNull()   // no Decide row — read off Approve since Ack went (D1158)
+    expect(screen.queryByTestId('decide-refuse')).toBeNull()
     expect(screen.queryByTestId('decide-shift')).toBeNull()
     expect(screen.queryByTestId('bid-clear')).toBeNull()
     expect(screen.getByTestId('bid-LL')).toBeTruthy()
@@ -120,11 +124,12 @@ describe('Pick a range widens what the one-day sheet acts on (D335)', () => {
     expect(bidsAt(P, '2026-02-11')).toHaveLength(0)
   })
 
+  /* answered with Refuse where it was Ack — Ack is gone (D1158) */
   it('Decide answers every day in the range', () => {
     render(<Matrix />)
     pickRange()
-    fireEvent.click(screen.getByTestId('decide-ack'))
-    expect(['2026-02-11', '2026-02-12', '2026-02-13'].map(d => bidsAt(P, d)[0]?.state)).toEqual(['acknowledged', 'acknowledged', 'acknowledged'])
+    fireEvent.click(screen.getByTestId('decide-refuse'))
+    expect(['2026-02-11', '2026-02-12', '2026-02-13'].map(d => bidsAt(P, d)[0]?.state)).toEqual(['refused', 'refused', 'refused'])
   })
 
   it('Delete takes every day in the range', () => {
@@ -225,7 +230,7 @@ describe('a bid beside an OIL award — the day’s list (D265, D266)', () => {
     const bid = bidsAt(P, '2026-02-11')[0]!
     const line = screen.getByTestId(`dl-r-${bid.id}`)
     const names = within(line).getAllByRole('button').map(b => b.textContent)
-    expect(names).toEqual(['Ack', 'Approve', 'Refuse', '⇄Move', 'Delete'])
+    expect(names).toEqual(['Approve', 'Refuse', '⇄Move', 'Delete'])   // Ack gone from the list's line (D1158)
     isMoveChip(within(line).getByTestId(`dl-move-${bid.id}`))
     isDeleteChip(within(line).getByTestId(`dl-clear-${bid.id}`))
     const award = awardsOnDay(P, '2026-02-11')[0]!
@@ -300,7 +305,8 @@ describe('a member moves his own bid while bidding is open (D333)', () => {
     expect(setCell(P, date, 'LL')).toBe(true)
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${date}`))
-    expect(screen.queryByTestId('decide-ack')).toBeNull()        // a member never decides
+    expect(screen.queryByTestId('decide-approve')).toBeNull()    // a member never decides (read off Approve since Ack went, D1158)
+    expect(screen.queryByTestId('decide-refuse')).toBeNull()
     isMoveChip(screen.getByTestId('decide-shift'))
     isDeleteChip(screen.getByTestId('bid-clear'))
     fireEvent.click(screen.getByTestId('decide-shift'))
@@ -333,12 +339,13 @@ describe('FR4 — Decide over a picked range, from a day with no bid (Fable 4, A
     setCell(P, '2026-02-13', 'LL')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-12`))
-    expect(screen.queryByTestId('decide-ack')).toBeNull()               // the one day: nothing to decide
+    expect(screen.queryByTestId('decide-approve')).toBeNull()           // the one day: nothing to decide
     fireEvent.click(screen.getByTestId('span-range'))
     fireEvent.click(screen.getByTestId('span-day-2026-02-11'))
     fireEvent.click(screen.getByTestId('span-day-2026-02-13'))
-    fireEvent.click(screen.getByTestId('decide-ack'))
-    expect([bidsAt(P, '2026-02-11')[0]?.state, bidsAt(P, '2026-02-13')[0]?.state]).toEqual(['acknowledged', 'acknowledged'])
+    /* answered with Refuse where it was Ack — Ack is gone (D1158) */
+    fireEvent.click(screen.getByTestId('decide-refuse'))
+    expect([bidsAt(P, '2026-02-11')[0]?.state, bidsAt(P, '2026-02-13')[0]?.state]).toEqual(['refused', 'refused'])
   })
   it('a range holding nothing to decide (an award) draws no Decide', () => {
     setDayAward(P, '2026-02-21', 1)
@@ -346,7 +353,8 @@ describe('FR4 — Decide over a picked range, from a day with no bid (Fable 4, A
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-20`))
     fireEvent.click(screen.getByTestId('span-range'))
     fireEvent.click(screen.getByTestId('span-day-2026-02-21'))
-    expect(screen.queryByTestId('decide-ack')).toBeNull()
+    expect(screen.queryByTestId('decide-approve')).toBeNull()   // read off Approve since Ack went (D1158)
+    expect(screen.queryByTestId('decide-refuse')).toBeNull()
   })
 })
 

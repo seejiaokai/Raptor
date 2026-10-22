@@ -16,14 +16,30 @@ const D = '2026-02-11'
 const cell = () => screen.getByTestId(`cell-${P}-${D}`)
 
 describe('the corner mark', () => {
-  it('morning LL + afternoon OIL: the box reads <LL, with a grey +1', () => {
+  /* WAS "morning LL + afternoon OIL: the box reads <LL, with a grey +1". Look F (D1146, D1160, D1145): a day's two
+     entries BOTH show — the morning's box in the top half, the afternoon's in the bottom, each its bare code (no arrow)
+     — so the "+1" corner has nothing more to say and is dropped. */
+  it('morning LL + afternoon OIL: two boxes, LL on top and OIL below, and no +1', () => {
     fileAbsence(P, '*LL', D, D, { lw: true })
     fileAbsence(P, 'OIL*', D, D, { lw: true })
     render(<Matrix />)
-    // `<LL` on screen, `*LL` in the record — one fold, `displayCell`
-    expect(cell().textContent).toContain('<LL')
+    const boxes = [...cell().querySelectorAll('.c')]
+    expect(boxes.map(b => b.textContent)).toEqual(['LL', 'OIL'])
+    expect(boxes[0]!.className).toBe('c k-ll s-a top')
+    expect(boxes[1]!.className).toBe('c k-oil s-a bot wide')
+    expect(cell().className).toContain('hasc')
+    expect(screen.queryByTestId(`mark-${P}-${D}`)).toBeNull()
+  })
+
+  /* …and three or more keep ONE box and the grey "+n" corner, which opens the day's list (D1146) */
+  it('three entries keep one box and a grey +2', () => {
+    fileAbsence(P, 'CSE', D)
+    fileAbsence(P, 'OD', D)
+    fileAbsence(P, 'LL', D)
+    render(<Matrix />)
+    expect(cell().querySelectorAll('.c')).toHaveLength(1)
     const mk = screen.getByTestId(`mark-${P}-${D}`)
-    expect(mk.textContent).toBe('+1')
+    expect(mk.textContent).toBe('+2')
     expect(mk.className).toContain('more')
   })
 

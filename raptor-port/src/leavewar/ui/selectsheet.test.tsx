@@ -100,12 +100,13 @@ describe('the selection sheet', () => {
     expect(getState().states.ramp['2026-01-07'].state).toBe('approved')
   })
 
-  it('the acknowledge decision uses the app word — "Ack"', () => {
-    /* One word for one state (owner, 21 Sep 26, renaming his own 27 Aug
-       "Pending"): the bulk button, the single-cell window and the legend all
-       say Ack. The stored token is still 'acknowledged'. */
+  /* WAS "the acknowledge decision uses the app word — Ack". Ack is gone (D1158, 21 Oct 26): the drag-selection's
+     Decide row is Approve · Refuse, the same as the one-day window's, and nothing records "seen". */
+  it('the Decide row is Approve · Refuse — no Ack (D1158)', () => {
     mount(rampTwo, { canDecide: true })
-    expect(screen.getByTestId('sel-pending').textContent).toBe('Ack')
+    expect(screen.queryByTestId('sel-pending')).toBeNull()
+    const row = screen.getByTestId('sel-approve').closest('.bidsheet-row')!
+    expect([...row.querySelectorAll('button')].map(b => b.textContent)).toEqual(['Approve', 'Refuse'])
   })
 
   it('no Medical row for anyone, and no Decide row for a member', () => {
@@ -243,7 +244,7 @@ describe('the ask before a drag takes anyone below zero (D418)', () => {
     setRole('admin'); closeDates('2026-01-01', '2026-12-31')
     mount(rampTwo, { canDecide: true, wouldLeave: zero({ ramp: 0 }) })
     fireEvent.click(screen.getByTestId('sel-CCL'))
-    fireEvent.click(screen.getByTestId('sel-pending'))               // Ack the one bid — a partial decision keeps the sheet
+    fireEvent.click(screen.getByTestId('sel-refuse'))                // refuse the one bid (Ack, here before, is gone — D1158) — a partial decision keeps the sheet
     fireEvent.click(screen.getByTestId('sel-CCL'))
     expect(getState().grid.ramp['2026-01-07']).toBeUndefined()
     expect(screen.getByTestId('sel-note').textContent).toContain('Tap the same leave again')
