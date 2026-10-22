@@ -3310,7 +3310,7 @@ test('the range calendar paints the open stretch it shows', async ({ page }) => 
 /* …AND TWO TAPS MAKE A STRETCH OF EXACT DAYS (D1172: "what it opens is the calendar for exact days"). "+ Open more
    dates" opens the calendar for a new stretch; the first tap is its first day, the second its last — the calendar's own
    run rule (ui/DateCal.tsx: "two taps make a run") — and the window then names the new stretch and counts its days. */
-test('exact days: two taps on the calendar open a stretch of days, which the window then lists', async ({ page }) => {
+test('exact days: two taps on the calendar and its Open button open a stretch of days, which the window then lists', async ({ page }) => {
   await lwRole(page, 'admin')
   await openDatesWindow(page)
   await page.locator('[data-testid="od-more"]').click()
@@ -3321,6 +3321,9 @@ test('exact days: two taps on the calendar open a stretch of days, which the win
   await page.locator('[data-testid="od-new-day-2026-05-11"]').click()
   await expect(cal, 'the first tap is the stretch\'s first day — the calendar waits for its last').toBeVisible()
   await page.locator('[data-testid="od-new-day-2026-05-15"]').click()
+  /* the picked days are a draft until the window's own button opens them (a first tap alone was a one-day stretch) */
+  await expect(page.locator('[data-testid="od-apply"]')).toHaveText('Open 11 May – 15 May')
+  await page.locator('[data-testid="od-apply"]').click()
   await expect(page.locator('[data-testid="od-line-2026-05-11"]')).toContainText('11 May – 15 May')
   await expect(page.locator('[data-testid="od-line-2026-05-11"]')).toContainText('5 days')
   await expect(page.locator('[data-testid="od-month-2026-05"]')).toHaveAttribute('data-state', 'part')
