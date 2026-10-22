@@ -380,7 +380,10 @@ test('the page itself never scrolls sideways — only the grid does', async ({ p
 // of a 390px screen inside a row that scrolled sideways. The row then wrapped, the chip on a line of its own (D365);
 // since D678 (8 Oct 26) a phone's row is ONE line again with the chip at its right — what gives is the callsign, which
 // ends in "…" (the two-line tests further down). This test's three rules hold through both.
-test('the VIEWING AS chip stays inside the screen, its words whole, and the top row never scrolls sideways', async ({ page }) => {
+// SKIPPED, D1173 (21 Oct 26 — built in the overhaul's M2): the "Viewing as" chip is gone, on a desktop and a phone (the
+// person signed in knows who he is; My leave carries his figures). Its third rule — the top's rows never scroll
+// sideways — is held for every row of the new top by the tests below (`expectTopLines`, and the desktop's).
+test.skip('the VIEWING AS chip stays inside the screen, its words whole, and the top row never scrolls sideways', async ({ page }) => {
   await lwView(page, 'slipway')   // the harness runs unscoped; a sign-in always names its person (D166 (4)), and the chip names him
   const chip = page.locator('[data-testid="lw-viewing"]')
   await expect(chip).toBeVisible()
@@ -480,6 +483,79 @@ async function expectTwoLines(page: Page, line1: string[], line2: string[], what
 }
 const PHONES: [number, number][] = [[390, 844], [360, 740]]
 
+/* ---- THE TOP SINCE THE OVERHAUL'S M2 (D1254, 22 Oct 26 — the navigation as drawn in round 19, narrowing D678, D679 and
+   D1141). The helpers above measured the D678 top — the period, "+" and "Viewing as" on line 1, the open dates,
+   under-manned and Legend on line 2 — and are kept for the two tests of the "Viewing as" chip, skipped by D1173. Now:
+   · the page's TAB ROW — Grid · OIL (Approvals and Balances join with their pages) — with ⚙ at its right end, an admin's;
+   · then "View" (never "Period" — D1174), the period picker ("+ New period" its last line, an admin's — D1244) and My leave
+     (D1141 — only for a person with a row on the war): on a phone a second line under the tabs, on a desktop the same row;
+   · the grid's OWN BAR on the grid card — [▸ Manning | n red ›] · the open dates · … · the zoom pair · Legend — the same for
+     everyone; the red count is gone at 0 (D1243). On a phone it takes a second line rather than cut a chip (M2's walk).
+   No "Viewing as" (D1173). ---- */
+const TABS_ADMIN = ['lw-tab-grid', 'oil-tracker', 'settings-open'], TABS_MEMBER = ['lw-tab-grid', 'oil-tracker']
+const VIEW_LINE = ['war-picker', 'my-leave'], BAR = ['counts-toggle', 'open-chip', 'legend-open']
+const TOP_IDS = ['lw-tab-grid', 'oil-tracker', 'settings-open', 'war-picker', 'my-leave', 'lw-viewing', 'counts-toggle', 'undermanned', 'open-chip', 'lw-zoom', 'legend-open']
+/** The top as it is painted since M2: the controls' boxes, the label words in sight, how far any of the three rows runs
+ *  sideways, the period list's last line, and which of the grid bar's chips are cut. */
+async function topNow(page: Page) {
+  return page.evaluate(ids => {
+    const pg = document.querySelector('#page-leavewar')!
+    const tb = pg.querySelector(':scope > .topbar') as HTMLElement
+    const vl = pg.querySelector(':scope > .lw-viewline') as HTMLElement | null
+    const gb = pg.querySelector('.card-hd .lw-gridbar') as HTMLElement
+    const boxes: Record<string, { l: number; t: number; r: number; b: number; text: string; tag: string }> = {}
+    for (const id of ids) {
+      const el = pg.querySelector(`[data-testid="${id}"]`) as HTMLElement | null
+      if (!el) continue
+      const r = el.getBoundingClientRect()
+      if (!r.width || !r.height) continue
+      boxes[id] = { l: r.left, t: r.top, r: r.right, b: r.bottom, text: (el.textContent || '').trim(), tag: el.tagName }
+    }
+    const rows = [tb, vl, gb].filter(Boolean) as HTMLElement[]
+    const picker = pg.querySelector('[data-testid="war-picker"]') as HTMLSelectElement
+    return {
+      boxes, vw: innerWidth, vh: innerHeight,
+      labs: rows.flatMap(r => [...r.querySelectorAll('.lab')]).filter(el => (el as HTMLElement).getBoundingClientRect().width > 0).map(el => (el.textContent || '').trim()),
+      viewLine: !!vl,
+      rowOver: Math.max(...rows.map(r => r.scrollWidth - r.clientWidth)),
+      pageOver: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      lastOption: (picker.options[picker.options.length - 1]?.textContent || '').trim(),
+      cut: ['counts-toggle', 'undermanned', 'open-chip', 'legend-open'].filter(id => {
+        const el = gb.querySelector(`[data-testid="${id}"]`) as HTMLElement | null
+        return !!el && el.scrollWidth > el.clientWidth + 1
+      }),
+    }
+  }, TOP_IDS)
+}
+/** The phone's top as D1254 draws it, for whoever is looking: the tab row, the View line under it, the grid card's bar
+ *  under that; nothing over anything, nothing past the screen, nothing scrolling sideways, no chip of the bar cut.
+ *  `bar` names the bar's controls that must share one line (null on a phone at 360, where it may take a second). */
+async function expectTopLines(page: Page, line1: string[], line2: string[], bar: string[] | null, what: string) {
+  const m = await topNow(page)
+  expect(m.labs, `${what}: the one label word is "View" (D1174)`).toEqual(['View'])
+  expect(m.viewLine, `${what}: a phone's View line is a line of its own`).toBe(true)
+  expectOneLine(m.boxes, line1, `${what}, the tab row`); expectApart(m.boxes, line1, `${what}, the tab row`)
+  expectOneLine(m.boxes, line2, `${what}, the View line`); expectApart(m.boxes, line2, `${what}, the View line`)
+  const foot1 = Math.max(...line1.map(id => m.boxes[id]!.b)), top2 = Math.min(...line2.map(id => m.boxes[id]!.t))
+  expect(top2, `${what}: the View line is not under the tab row`).toBeGreaterThanOrEqual(foot1)
+  for (const id of BAR) expect(m.boxes[id], `${what}: "${id}" is not on the grid's bar`).toBeTruthy()
+  const foot2 = Math.max(...line2.map(id => m.boxes[id]!.b)), topBar = Math.min(...BAR.map(id => m.boxes[id]!.t))
+  expect(topBar, `${what}: the grid's bar is not under the View line`).toBeGreaterThanOrEqual(foot2)
+  if (bar) { expectOneLine(m.boxes, bar, `${what}, the grid's bar`); expectApart(m.boxes, bar, `${what}, the grid's bar`) }
+  /* Manning at the bar's left, Legend at its right end (D1254), whatever line Legend lands on */
+  expect(m.boxes['counts-toggle']!.l, `${what}: Manning starts the grid's bar`).toBeLessThan(m.boxes['open-chip']!.l)
+  expect(m.cut, `${what}: a chip of the grid's bar is cut — it takes a second line instead`).toEqual([])
+  for (const [id, b] of Object.entries(m.boxes)) {
+    expect(b.l, `${what}: "${id}" starts off the screen`).toBeGreaterThanOrEqual(0)
+    expect(b.r, `${what}: "${id}" runs past the screen's edge`).toBeLessThanOrEqual(m.vw + 0.5)
+  }
+  expect(m.rowOver, `${what}: a row scrolls sideways`).toBeLessThanOrEqual(1)
+  expect(m.pageOver, `${what}: the page scrolls sideways`).toBeLessThanOrEqual(1)
+  expect(m.boxes['lw-viewing'], `${what}: "Viewing as" is gone (D1173)`).toBeUndefined()
+  return m
+}
+
+// RE-EXPRESSED, D1254 (the overhaul's M2): the two lines are now the tab row (⚙ at its end) and the View line; the open dates, red count and Legend are on the grid card's bar.
 test('the top of the Leave War on a phone is two lines, nothing overlapping or off the screen at 390 and 360 wide', async ({ page }) => {
   test.skip(!isPhone(), 'a phone-size rule (D678); the desktop has its own test below (D679)')
   await lwRole(page, 'admin')
@@ -489,53 +565,65 @@ test('the top of the Leave War on a phone is two lines, nothing overlapping or o
      would show here or at 431 in the desktop's test. */
   /* D1000, D1016 (18 Oct 26): up to about 700 wide — the biggest iPhones at 440, a small tablet at 600 — the top takes
      the same two lines, and from 431 its edge stays the grid card's 20px so the two line up */
+  /* RE-EXPRESSED FOR THE OVERHAUL'S M2 (D1254, 22 Oct 26): the two lines are now the tab row (Grid · OIL, ⚙ at its right
+     end) and the View line (View, the period picker, My leave); the open dates, the red count and Legend moved to the grid
+     card's own bar, under them (`expectTopLines`). Every rule below still stands, in its new place. */
   for (const [width, height] of [...PHONES, [430, 932], [440, 956], [600, 960], [700, 900]] as [number, number][]) {
     await page.setViewportSize({ width, height })
     await page.waitForTimeout(200)
-    const m = await expectTwoLines(page, LINE1, LINE2, `admin, ${width} wide`)
+    /* the grid's bar may take a second line on a phone rather than cut a chip; from 431 to 700 its buttons stay on one
+       line (D1019 — "−" and "+" on the head's one line) */
+    const m = await expectTopLines(page, TABS_ADMIN, VIEW_LINE, width > 430 ? [...BAR, 'lw-zoom'] : null, `admin, ${width} wide`)
     if (width > 430) {
+      /* D1016 (18 Oct 26, not changed by D1254): from 431 to 700 the top keeps the grid card's 20px edge so the two line
+         up. Soft, so the rest of the widths are still measured if it does not hold. */
       const edge = await page.evaluate(() => {
         const pg = document.querySelector('#page-leavewar')!
         const cs = (sel: string) => getComputedStyle(pg.querySelector(sel)!)
-        return [cs(':scope > .topbar').paddingLeft, cs(':scope > .filters').paddingLeft]
+        return [cs(':scope > .topbar').paddingLeft, cs(':scope > .lw-viewline').paddingLeft]
       })
-      expect(edge, `${width}: the top's edge lines up with the grid card's 20px (D1016)`).toEqual(['20px', '20px'])
-      /* the top only (D1000): the grid card keeps its padding — but its buttons take the phone's short words up to 700
-         (D1019, 18 Oct 26): "⇅" and "◷ OIL", so "−" and "+" stay on the head's one line */
+      expect.soft(edge, `${width}: the top's edge lines up with the grid card's 20px (D1016)`).toEqual(['20px', '20px'])
+      /* the top only (D1000): the grid card keeps the wider screens' padding. Its buttons whose words D1019 shortened — "⇅"
+         and "◷ OIL" — left its bar (OIL is a tab, Rearrange a line in ⚙ — D1254); what stays is that its buttons sit on
+         one line (the bar's one line, above). */
       const card = await page.evaluate(() => {
         const pg = document.querySelector('#page-leavewar')!
-        const tail = pg.querySelector('.card-hd .rtlbl') as HTMLElement | null
         const stage = pg.querySelector('.stage') as HTMLElement | null
         const hd = pg.querySelector('.card-hd') as HTMLElement | null
         /* each button's middle — buttons a hair apart in height sit a pixel apart at the top on the same line */
         const tops = hd ? [...hd.querySelectorAll<HTMLElement>('.rtbtn')].filter(b => b.offsetParent).map(b => { const r = b.getBoundingClientRect(); return Math.round(r.top + r.height / 2) }) : []
-        return { tail: tail ? getComputedStyle(tail).display : 'absent', stagePad: stage ? getComputedStyle(stage).paddingLeft : 'absent', tops }
+        return { stagePad: stage ? getComputedStyle(stage).paddingLeft : 'absent', tops }
       })
-      expect(card.tail, `${width}: the grid card's button words are the phone's short ones (D1019)`).toBe('none')
       expect(Math.max(...card.tops) - Math.min(...card.tops), `${width}: the grid card's buttons are on one line (their middles ${JSON.stringify(card.tops)})`).toBeLessThanOrEqual(2)
       expect(card.stagePad, `${width}: the grid card's padding is the wider screens'`).not.toBe('10px')
     }
-    /* the words, as he was shown them — the dates in the phone's short words, with no year (D678, D1177) */
-    expect(m.boxes['war-new']!.text).toBe('+')
+    /* the words, as he was shown them — the dates in the phone's short words, with no year (D678, D1177); "+ New period"
+       the period list's last line (D1244); no red day in the seed, so no red count (D1243 — gone at 0) */
+    expect(m.lastOption).toBe('+ New period')
     expect(m.boxes['open-chip']!.text).toBe('Open 1 Jan – 31 Mar')
     expect(m.boxes['open-chip']!.tag, 'the open dates are a button — they open the window').toBe('BUTTON')
-    expect(m.boxes['undermanned']!.text).toBe('Under 0 days')
+    expect(m.boxes['undermanned'], `${width}: no red day, no red count (D1243)`).toBeUndefined()
     expect(m.boxes['legend-open']!.text).toBe('Legend')
-    await expect(page.locator('[data-testid="lw-viewing"]')).toContainText('Viewing as')
-    expect(m.whoCut, `${width}: an ordinary callsign is cut short`).toBe(false)
+    expect(m.boxes['my-leave']!.text).toContain('My leave')
     /* the stage, its two moves and its menu are not on the strip, nor anywhere — they went with the stages */
     await expectNoStage(page, `${width} wide`)
-    /* Legend ends the line at the right; "Viewing as" ends the line above it there — at the phone's 10px edge, or from
-       431 to 700 at the grid card's 20px (D1016) */
+    /* ⚙ ends the tab row at the right; My leave ends the View line there — at the phone's edge, or from 431 to 700 at
+       the grid card's 20px (D1016); Legend ends the grid's bar, right of everything else on it */
     const edge = m.vw > 430 ? 24 : 14
-    expect(m.boxes['legend-open']!.r).toBeGreaterThan(m.vw - edge)
-    expect(m.boxes['lw-viewing']!.r).toBeGreaterThan(m.vw - edge)
-    /* the three chips of line 2 are one height — the open chip no taller than its neighbours */
-    const tall = LINE2.map(id => Math.round((m.boxes[id]!.b - m.boxes[id]!.t) * 2) / 2)
-    expect(new Set(tall).size, `${width}: line 2's chips are of different heights (${tall.join(', ')})`).toBe(1)
+    expect(m.boxes['settings-open']!.r).toBeGreaterThan(m.vw - edge)
+    expect(m.boxes['my-leave']!.r).toBeGreaterThan(m.vw - edge)
+    /* at 360 the bar takes a second line and Legend lands on it, under the zoom pair, right-aligned with it */
+    for (const id of ['counts-toggle', 'open-chip', 'lw-zoom']) {
+      expect(m.boxes['legend-open']!.r, `${width}: Legend ends the bar, at its right`).toBeGreaterThanOrEqual(m.boxes[id]!.r - 0.5)
+      expect(m.boxes['legend-open']!.t, `${width}: Legend is on the bar's last line`).toBeGreaterThanOrEqual(m.boxes[id]!.t - 3)
+    }
+    /* the bar's chips are one height — the open chip no taller than Legend */
+    const tall = ['open-chip', 'legend-open'].map(id => Math.round((m.boxes[id]!.b - m.boxes[id]!.t) * 2) / 2)
+    expect(new Set(tall).size, `${width}: the bar's chips are of different heights (${tall.join(', ')})`).toBe(1)
   }
 })
 
+// RE-EXPRESSED, D1254 (the overhaul's M2): the window's own steps unchanged; the top it leaves behind is measured as M2 draws it (`expectTopLines`).
 test('on a phone the open chip opens the "Open for bidding" window as a full page from the top (D1264); its ✕ and Escape close it and change nothing; a month is one tap each way', async ({ page }) => {
   test.skip(!isPhone(), 'a phone-size control (D678, D1177)')
   await lwRole(page, 'admin')
@@ -597,10 +685,11 @@ test('on a phone the open chip opens the "Open for bidding" window as a full pag
     await expect(page.locator('[data-testid="od-month-2026-03"]')).toHaveAttribute('data-state', 'closed')
     await closeDatesWindow(page)
     await expect(chip).toHaveText('Open 1 Jan – 28 Feb')
-    await expectTwoLines(page, ['war-picker', 'war-new'], LINE2, `March closed, ${width} wide`)
-    /* everything shut: "Bidding closed", still one line */
+    /* the top as M2 draws it (D1254): the tab row, the View line (the war unscoped here, so no My leave), the grid's bar */
+    await expectTopLines(page, TABS_ADMIN, ['war-picker'], null, `March closed, ${width} wide`)
+    /* everything shut: "Bidding closed", nothing cut, nothing off the screen */
     await closeBidding(page)
-    await expectTwoLines(page, ['war-picker', 'war-new'], LINE2, `bidding closed, ${width} wide`)
+    await expectTopLines(page, TABS_ADMIN, ['war-picker'], null, `bidding closed, ${width} wide`)
     /* and the three months opened again, one tap each */
     await openMonths(page, ['2026-01', '2026-02', '2026-03'])
     await expect(chip).toHaveText('Open 1 Jan – 31 Mar')
@@ -613,22 +702,28 @@ test('on a phone the open chip opens the "Open for bidding" window as a full pag
    third line — the pull request's own check on GitHub's machines failed exactly so, 9 Oct 26. The one thing on the
    line that gives way is the open chip's dates (the stage's name was, until the stages went — D1177): cut with "…",
    and the line holds. Wide letters are forced here so this PC sees what another device would. */
+// RE-EXPRESSED, D1254 (the overhaul's M2): the tab row and View line hold with wide letters; the grid's bar may take a second line, never cutting a chip.
 test('with wide letters the top of the Leave War on a phone is still two lines: the open dates give way, nothing wraps or leaves the screen', async ({ page }) => {
   test.skip(!isPhone(), 'a phone-size rule (D678)')
   await lwRole(page, 'admin')
   await lwView(page, 'slipway')
   await page.addStyleTag({ content: '#page-leavewar, #page-leavewar * { font-family: Verdana, "DejaVu Sans", sans-serif !important }' })
+  /* RE-EXPRESSED FOR THE OVERHAUL'S M2 (D1254): the two lines are the tab row and the View line (`expectTopLines`); the
+     open dates moved to the grid card's own bar, which since M2's walk takes a second line rather than cut a chip (walker
+     2: "Bidding cl…" beside a red count). So with wide letters the two lines still hold, the bar may wrap, no chip is
+     cut, and nothing runs off the screen or scrolls sideways. */
   for (const [width, height] of PHONES) {
     await page.setViewportSize({ width, height })
     await page.waitForTimeout(200)
-    const m = await expectTwoLines(page, LINE1, LINE2, `admin, wide letters, ${width} wide`)
-    expect(m.boxes['open-chip']!.text, 'the words are all there for a reader; only their drawing is cut').toBe('Open 1 Jan – 31 Mar')
+    const m = await expectTopLines(page, TABS_ADMIN, VIEW_LINE, null, `admin, wide letters, ${width} wide`)
+    expect(m.boxes['open-chip']!.text, 'the words are all there for a reader').toBe('Open 1 Jan – 31 Mar')
   }
   await lwRole(page, 'member')
   await page.waitForTimeout(200)
-  await expectTwoLines(page, ['war-picker', 'lw-viewing'], LINE2, 'a member, wide letters, 360 wide')
+  await expectTopLines(page, TABS_MEMBER, VIEW_LINE, null, 'a member, wide letters, 360 wide')
 })
 
+// RE-EXPRESSED, D1254, D1244 (the overhaul's M2): a member's tab row has no ⚙, his period list no "+ New period"; the window's steps unchanged.
 test('a member on a phone has the same two lines with no "+", and the open chip opens the dates to read, with nothing to press', async ({ page }) => {
   test.skip(!isPhone(), 'a phone-size rule (D678)')
   await lwRole(page, 'member')
@@ -636,8 +731,11 @@ test('a member on a phone has the same two lines with no "+", and the open chip 
   for (const [width, height] of PHONES) {
     await page.setViewportSize({ width, height })
     await page.waitForTimeout(200)
+    /* no "+ New period" in his list (D1244 — an admin's only), and no ⚙ on his tab row (D1254) */
     await expect(page.locator('[data-testid="war-new"]')).toHaveCount(0)
-    const m = await expectTwoLines(page, ['war-picker', 'lw-viewing'], LINE2, `member, ${width} wide`)
+    await expect(page.locator('[data-testid="settings-open"]')).toHaveCount(0)
+    /* the top as M2 draws it (D1254): the tab row, the View line with his My leave, the grid's bar */
+    const m = await expectTopLines(page, TABS_MEMBER, VIEW_LINE, null, `member, ${width} wide`)
     expect(m.boxes['open-chip']!.tag, 'a button for him too — it opens the dates for him to read (D1177)').toBe('BUTTON')
     expect(m.boxes['open-chip']!.text).toBe('Open 1 Jan – 31 Mar')
     await expectNoStage(page, `member, ${width} wide`)
@@ -654,7 +752,9 @@ test('a member on a phone has the same two lines with no "+", and the open chip 
   }
 })
 
-test('on a phone a long callsign in "Viewing as" ends in "…": the words stay whole, the period keeps its name, nothing leaves the screen', async ({ page }) => {
+// SKIPPED, D1173 (21 Oct 26 — built in the overhaul's M2): the "Viewing as" chip is gone, so no callsign stands on the top
+// to give way; My leave carries the signed-in person's own figures, with no callsign in it.
+test.skip('on a phone a long callsign in "Viewing as" ends in "…": the words stay whole, the period keeps its name, nothing leaves the screen', async ({ page }) => {
   test.skip(!isPhone(), 'a phone-size rule (D678)')
   await lwRole(page, 'admin')
   await lwView(page, 'slipway')
@@ -684,53 +784,61 @@ test('on a phone a long callsign in "Viewing as" ends in "…": the words stay w
    overrides. (They are the stylesheet's, so they hold on any machine; a box's width in pixels would not, the app
    loads no font of its own.) The measured boxes before and after the build were compared whole, once, by
    scripts/handpass/lw-phone-head-measure.mjs — the bug check's evidence sheet has the result. */
+// RE-EXPRESSED, D679 as narrowed by D1254 (the overhaul's M2): one row — tabs, View, My leave, ⚙ — over the grid's own bar; no phone rule reaches 768 or 701.
 test('on a tablet and a desktop the top of the Leave War is as it was: its labels, "+ New", the open dates in their longer words', async ({ page }) => {
   test.skip(isPhone(), 'the wider sizes (D679); the phone has its own tests above (D678)')
   await lwRole(page, 'admin')
   await lwView(page, 'slipway')
+  /* RE-EXPRESSED FOR THE OVERHAUL'S M2 (D679 as narrowed by D1254, D1174, D1244, D1173, D1243): on a tablet and a desktop
+     the top is ONE row — the tabs, View and the period picker, My leave, ⚙ at its right end — and the grid card's own bar
+     carries Manning, the open dates in their longer words, the zoom pair and Legend. The paddings and type sizes "as they
+     were" are now those of the desktop's own 1440 (read there first): a phone rule reaching 768 or 701 would change them. */
+  const paintOf = () => page.evaluate(() => {
+    const pg = document.querySelector('#page-leavewar')!
+    const cs = (sel: string) => getComputedStyle(pg.querySelector(sel)!)
+    const one = (sel: string) => { const c = cs(sel); return `${c.paddingTop} ${c.paddingRight} ${c.paddingBottom} ${c.paddingLeft} / ${c.fontSize}` }
+    return {
+      topbar: one(':scope > .topbar'), gridbar: one('.card-hd .lw-gridbar'), topbarWrap: cs(':scope > .topbar').flexWrap,
+      /* not the tabs' side padding: the tab row is the Inputs page's own (D1254 — one look for the two pages), and that look
+         narrows its tabs up to 820 wide on both pages (25-inputs-calendar.css) — the Inputs page's rule, not the Leave War's
+         phone layout, which ends at 700 (D1000) */
+      tabFont: cs('[data-testid="lw-tab-grid"]').fontSize, picker: one('[data-testid="war-picker"]'), myLeave: one('[data-testid="my-leave"]'),
+      gear: one('[data-testid="settings-open"]'), open: one('[data-testid="open-chip"]'), manning: one('[data-testid="counts-toggle"]'),
+      legend: one('[data-testid="legend-open"]'), label: cs('[data-testid="period-label"]').fontSize,
+      /* the open dates stand on the grid card's own bar (D1254), not the page's top */
+      openOnBar: !!pg.querySelector('[data-testid="open-chip"]')!.closest('.card-hd .lw-gridbar'),
+    }
+  })
+  let desk: Awaited<ReturnType<typeof paintOf>> | null = null
   for (const [width, height] of [[1440, 900], [768, 1024], [701, 900]] as const) {
     await page.setViewportSize({ width, height })
     await page.waitForTimeout(200)
-    const m = await head(page)
-    expect(m.labs, `${width}: the label words`).toEqual(['Period', 'Under-manned'])
-    expect(m.boxes['war-new']!.text, `${width}`).toBe('+ New')
+    const m = await topNow(page)
+    expect(m.labs, `${width}: the label words`).toEqual(['View'])
+    expect(m.viewLine, `${width}: no View line of its own — View sits in the one row`).toBe(false)
+    expect(m.lastOption, `${width}: "+ New period" is the period list's last line (D1244)`).toBe('+ New period')
     expect(m.boxes['open-chip']!.tag, `${width}: the open dates are a button`).toBe('BUTTON')
     expect(m.boxes['open-chip']!.text, `${width}`).toBe('Open for bidding 1 Jan – 31 Mar')
-    expect(m.boxes['undermanned']!.text, `${width}`).toBe('0 days')
+    expect(m.boxes['undermanned'], `${width}: no red day, no red count (D1243)`).toBeUndefined()
+    expect(m.boxes['lw-viewing'], `${width}: "Viewing as" is gone (D1173)`).toBeUndefined()
     expect(m.pageOver, `${width}: the page scrolls sideways`).toBeLessThanOrEqual(1)
     await expectNoStage(page, `${width} wide`)
-    /* the paddings and type sizes of today, control by control */
-    const paint = await page.evaluate(() => {
-      const pg = document.querySelector('#page-leavewar')!
-      const cs = (sel: string) => getComputedStyle(pg.querySelector(sel)!)
-      const one = (sel: string) => { const c = cs(sel); return `${c.paddingTop} ${c.paddingRight} ${c.paddingBottom} ${c.paddingLeft} / ${c.fontSize}` }
-      return {
-        topbar: one(':scope > .topbar'), filters: one(':scope > .filters'),
-        topbarWrap: cs(':scope > .topbar').flexWrap, springWrap: cs(':scope > .topbar .spring').flexWrap,
-        picker: one('[data-testid="war-picker"]'), plus: one('[data-testid="war-new"]'), plusWidth: cs('[data-testid="war-new"]').width,
-        viewing: one('[data-testid="lw-viewing"]'), open: one('[data-testid="open-chip"]'),
-        under: one('[data-testid="undermanned"]'), legend: one('[data-testid="legend-open"]'),
-        legendPush: cs('[data-testid="legend-open"]').marginLeft, label: cs(':scope > .filters > .lab').fontSize,
-        openParent: (pg.querySelector('[data-testid="open-chip"]')!.parentElement as HTMLElement).className,
-      }
-    })
-    expect(paint, `${width}: a phone rule reached this size`).toMatchObject({
-      topbar: '12px 20px 12px 20px / 13px', filters: '8px 20px 8px 20px / 13px',
-      topbarWrap: 'wrap', springWrap: 'wrap',
-      picker: '6px 32px 6px 14px / 12px', plus: '6px 11px 6px 11px / 12px',
-      viewing: '5px 11px 5px 11px / 13px', open: '6px 11px 6px 11px / 12px',
-      under: '6px 11px 6px 11px / 12px', legend: '6px 11px 6px 11px / 12px',
-      legendPush: '0px', label: '10px', openParent: 'filters',
-    })
-    expect(parseFloat(paint.plusWidth), `${width}: "+ New" was squeezed to the phone's square`).toBeGreaterThan(40)
+    /* ONE row (D679 as narrowed), and the grid's bar one line, at every one of these sizes; nothing past the screen */
+    expectOneLine(m.boxes, [...TABS_ADMIN, 'war-picker', 'my-leave'], `${width}, the one row`)
+    expectApart(m.boxes, [...TABS_ADMIN, 'war-picker', 'my-leave'], `${width}, the one row`)
+    expectOneLine(m.boxes, [...BAR, 'lw-zoom'], `${width}, the grid's bar`)
+    for (const [id, b] of Object.entries(m.boxes)) {
+      expect(b.l, `${width}: "${id}" starts off the screen`).toBeGreaterThanOrEqual(0)
+      expect(b.r, `${width}: "${id}" runs past the screen's edge`).toBeLessThanOrEqual(m.vw + 0.5)
+    }
+    /* the paddings and type sizes, control by control: the desktop's own at 1440, and the same at the smaller two */
+    const paint = await paintOf()
+    expect(paint.openOnBar, `${width}: the open dates are on the grid's bar`).toBe(true)
+    if (!desk) desk = paint
+    else expect(paint, `${width}: a phone rule reached this size`).toEqual(desk)
     /* a press on the dates opens the window at this size too, and its ✕ closes it */
     await openDatesWindow(page)
     await closeDatesWindow(page)
-    /* on the desktop itself each of the two lines IS one line, as it was */
-    if (width === 1440) {
-      expectOneLine(m.boxes, ['war-picker', 'war-new', 'lw-viewing'], 'desktop, the Period line')
-      expectOneLine(m.boxes, ['open-chip', 'undermanned', 'legend-open'], 'desktop, the dates line')
-    }
   }
   /* and a month closed in the window changes the chip's words at once; opened again, they come back */
   await page.setViewportSize({ width: 1440, height: 900 })
@@ -792,6 +900,7 @@ test('a half day fills its half of the cell — the morning the top — and a wh
   expect(whole.h).toBeGreaterThan(whole.cellH * 0.75)             // the whole cell
 })
 
+// RE-EXPRESSED, D1245 (the overhaul's M2): the two ceilings stand; the drawer's half becomes "no drawer is drawn".
 test('the matrix stays within a sane DOM size', async ({ page }) => {
   // 16 people x 90 days plus counts and headers. Measured 2227 nodes on
   // 2026-08-09, before the Raptor restyle. The chip-span wrapper the
@@ -906,27 +1015,14 @@ test('the matrix stays within a sane DOM size', async ({ page }) => {
   // 31700-class ceiling plus the sheet's few dozen nodes.
   expect(all).toBeLessThan(31900)
 
-  // ...and once more with the FIGURES DRAWER out, which is the desktop's own
-  // resting state and one tap away on a phone. Measured on the built bundle,
-  // 6 Sep 26: the drawer's own subtree is 958 nodes on BOTH projects (it draws
-  // one box per person per figure, so it scales with the roster and the figure
-  // list, never with the screen — and one of the 958 is its own `table.mx`
-  // wrapper, see the ceiling note above), taking `.mx` to 12054 on the phone
-  // and 28794 on the desktop — the largest this grid gets, and what the ceiling
-  // above is set from. The drawer's own count is asserted separately because
-  // the whole-grid figure moves with the column window's runway and this one
-  // does not.
+  // The third half measured the grid with the FIGURES DRAWER out (958 nodes of
+  // its own, 6 Sep 26). The drawer is switched off since the overhaul's M2
+  // (D1245 — beside each name the grid shows LVE alone; the drawer's code leaves
+  // whole with M5), so there is no drawer to open: what stands in its place is
+  // that neither it nor its toggle is drawn, and the ceilings above stand.
   await page.locator('[data-testid="bid-cancel"]').click()
-  const bar = page.locator('[data-testid="figures-toggle"]')
-  if ((await bar.getAttribute('aria-expanded')) === 'false') await bar.click()
-  await expect(page.locator('[data-testid="figdrawer"]')).toBeVisible()
-  const withDrawer = await page.evaluate(() => ({
-    mx: document.querySelectorAll('.mx *').length,
-    drawer: document.querySelectorAll('.mxdrawer *').length,
-  }))
-  expect(withDrawer.drawer).toBeGreaterThan(700)
-  expect(withDrawer.drawer).toBeLessThan(1100)
-  expect(withDrawer.mx).toBeLessThan(31700)
+  await expect(page.locator('[data-testid="figures-toggle"]')).toHaveCount(0)
+  expect(await page.locator('.mxdrawer').count(), 'no figures drawer is drawn (D1245)').toBe(0)
 })
 
 // A year is ~13,600px of grid. Reaching September by dragging is not a thing
@@ -1576,7 +1672,10 @@ test('a drag-select parked at the counter column auto-scrolls the grid left', as
   expect(parked, 'the year ran left under the parked cursor').toBeLessThan(before)
 })
 
-test('with the figures drawer open the band starts at the DRAWER\'s edge', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('with the figures drawer open the band starts at the DRAWER\'s edge', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -1586,19 +1685,20 @@ test('with the figures drawer open the band starts at the DRAWER\'s edge', async
 
 /* The phone's own path: a REAL touch through CDP (the hold-then-drag recipe —
    Playwright's mouse cannot arm the 180ms hold, and DOM touch events scroll
-   nothing). The drawer is open, which is the case that mattered on his iPhone:
-   the drawer covers most of the width there, so the days start well inside the
-   wrap and the old band was unreachable by a wide margin. */
+   nothing). It was proved with the drawer open, the case that mattered on his
+   iPhone (the days started well inside the wrap). The drawer is switched off
+   since the overhaul's M2 (D1245 — beside each name the grid shows LVE alone),
+   so the band now starts at the frozen pair's edge — the names and LVE — and the
+   held finger is proved against that edge, every other step as it was. */
+// RE-EXPRESSED, D1245 (the overhaul's M2): no drawer to open — the held finger is proved at the frozen names-and-LVE edge.
 test('a held finger dragged to the drawer\'s edge auto-scrolls the grid left', async ({ page }) => {
   test.skip(!isPhone(), 'the CDP touch path')
   await lwRole(page, 'admin')
-  await openDrawer(page)
   const before = await parkMidYear(page)
   const [p1] = await threeInARow(page)
   const edge = await dayAreaLeft(page, p1!)
   // Clear of the LEFT band by construction: a press INSIDE it would be held
-  // (the 2 Sep rule) and could never scroll, and the drawer leaves only ~115px
-  // of day area on this viewport — so the press goes in its right-hand third.
+  // (the 2 Sep rule) and could never scroll — so the press goes 80px past it.
   const box = (await page.locator(`[data-testid="${await cellRightOf(page, edge + 80)}"]`).boundingBox())!
   const y = box.y + box.height / 2
   const x0 = box.x + box.width / 2, x1 = edge + 20
@@ -1684,7 +1784,11 @@ test('the frozen bar is in step with the grid the moment it appears', async ({ p
 // localhost probe, and named for what it proves: ANY content change that widens
 // a column, not the bid gesture itself. Desktop, where the whole year is drawn
 // first — so no later month draw can re-measure the bar for us.
-test('a column that widens while the dates are frozen re-measures the frozen bar', async ({ page }) => {
+// SKIPPED, D1175 (look F — built in the overhaul's M2): a cell holding a box is the box's fixed frame (the old chip's width),
+// so a three-letter code no longer widens its column — "*OIL" leaves March's column as it was (measured 28.7 before and
+// after, 23 Oct 26). No change of a cell's content widens a column while the dates are frozen; the bar's re-measures on a
+// zoom, a resize and a scroll are pinned by the frozen-bar tests around this one.
+test.skip('a column that widens while the dates are frozen re-measures the frozen bar', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await page.locator('[data-testid="month-MAR"]').click()
@@ -1731,37 +1835,49 @@ test('a column that widens while the dates are frozen re-measures the frozen bar
 // (It was the manning ARCHIVE opening that pushed the header down. The Archive went with the eye — D669, 8 Oct 26 — and
 // what changes the rows above the dates now is a counter deleted with the cross, or made; the outline must follow
 // just the same. The app starts with no counters, so the test makes the eleven it then deletes one of.)
+// RE-EXPRESSED, D1254 and D1256 (the overhaul's M2): Rearrange is reached through ⚙; the Manning rows sit under the dates, so the outline's foot follows them.
 test('the open-bidding outline moves with the rows when a counter is deleted in Rearrange', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await elevenCounters(page)
   await expect.poll(() => page.evaluate(() => new Set([...document.querySelectorAll<HTMLElement>('#page-leavewar .mx-wrap .mxhead th[data-testid^="head-"]')]
     .map(e => e.dataset.testid!.slice(5, 12))).size), { timeout: 9000 }).toBe(12)
-  await page.locator('[data-testid="roster-arrange"]').click()
+  /* Rearrange is a line in ⚙ since the overhaul's M2 (D1254 — "⇅ Rearrange the grid"; the grid's bar then carries
+     "⇅ Done", the one way out), no longer a toggle on the grid card's bar */
+  await page.locator('[data-testid="settings-open"]').click()
+  await page.locator('[data-testid="settings-rearrange"]').click()
   await expect(page.locator('[data-testid="manning-delete-ip"]')).toBeVisible()
   await expect(page.locator('[data-testid="manning-archive"], [data-testid^="manning-hide-"]')).toHaveCount(0)
-  // where the outline's top sits against the dates header's (0 = on it)
+  /* SINCE THE GRID'S ORDER CHANGED (D1256, 22 Oct 26 — the overhaul's M2) the Manning rows sit straight UNDER the dates,
+     so a counter deleted no longer pushes the header: it shortens what lies below it. The outline runs from the dates
+     header to the roster's foot, so the edge that must follow the rows is now its FOOT — its top stays on the header. */
+  // where the outline's top sits against the dates header's, and its foot against the grid's own foot (0 = on it)
   const gap = () => page.evaluate(() => {
     const box = document.querySelector('[data-testid="bid-box"]')?.getBoundingClientRect()
     const head = document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')?.getBoundingClientRect()
-    return box && head ? box.top - head.top : null
+    const table = document.querySelector('#page-leavewar .mx-wrap table.mx')?.getBoundingClientRect()
+    return box && head && table ? { top: box.top - head.top, foot: box.bottom - table.bottom } : null
   })
   const before = await gap()
   expect(before, 'the war is open for bidding, so the outline is drawn').not.toBeNull()
-  expect(Math.abs(before!)).toBeLessThanOrEqual(1)
-  const headTop = () => page.evaluate(() => document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')!.getBoundingClientRect().top)
-  const top0 = await headTop()
+  expect(Math.abs(before!.top)).toBeLessThanOrEqual(1)
+  expect(Math.abs(before!.foot)).toBeLessThanOrEqual(1)
+  const footOf = () => page.evaluate(() => document.querySelector('#page-leavewar .mx-wrap table.mx')!.getBoundingClientRect().bottom)
+  const foot0 = await footOf()
   await page.locator('[data-testid="manning-delete-ip"]').click()                 // the cross: no question asked
   await expect(page.locator('[data-testid="count-ip"]')).toHaveCount(0)
-  expect(await headTop(), 'the header moved up by the deleted row').toBeLessThan(top0 - 5)
+  expect(await footOf(), 'the grid lost the deleted row').toBeLessThan(foot0 - 5)
   const after = await gap()
   expect(after).not.toBeNull()
-  expect(Math.abs(after!), 'the outline follows the header up').toBeLessThanOrEqual(1)
+  expect(Math.abs(after!.top), 'the outline stays on the header').toBeLessThanOrEqual(1)
+  expect(Math.abs(after!.foot), 'the outline\'s foot follows the rows up').toBeLessThanOrEqual(1)
   /* and Undo brings the counter back — which is why the cross asks nothing — the outline following it down again */
   await page.locator('#undoBtn').click()
   await expect(page.locator('[data-testid="count-ip"]')).toBeVisible()
-  expect(Math.abs((await headTop()) - top0)).toBeLessThanOrEqual(1)
-  expect(Math.abs((await gap())!), 'the outline follows the header down').toBeLessThanOrEqual(1)
+  expect(Math.abs((await footOf()) - foot0)).toBeLessThanOrEqual(1)
+  const back = (await gap())!
+  expect(Math.abs(back.top), 'the outline stays on the header').toBeLessThanOrEqual(1)
+  expect(Math.abs(back.foot), 'the outline\'s foot follows the rows down').toBeLessThanOrEqual(1)
 })
 
 // Remarks editing on an approved leave (owner, 27 Aug 26 — it was the published stage's). Since the stages went
@@ -1898,7 +2014,10 @@ test('the counter column does not eat the grid on a phone', async ({ page }) => 
   expect((m.who + m.bal) / m.wrap).toBeLessThan(0.4)
 })
 
-test('the counter column changes every row at once', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('the counter column changes every row at once', async ({ page }) => {
   // The header chip wears the figure's SIGNED title now (6 Sep 26): `+` a
   // balance, `−` a total. The box under it is TWO LINES, so a cell's own
   // textContent runs the balance and its used numbers together — the top
@@ -1947,7 +2066,10 @@ test('the date headers are square, the .day leak overridden', async ({ page }) =
 // and EVERY row's make-up in the figure's own words (6 Sep 26 — the thirteen
 // figures captioned only the two aggregates; the eight caption all of them,
 // out of the one catalogue the column titles and the page Legend also read).
-test('the figure picker doubles as the legend, every figure spelled out', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('the figure picker doubles as the legend, every figure spelled out', async ({ page }) => {
   await openPicker(page)
   const key = page.locator('[data-testid="counter-legend"]')
   await expect(key).toContainText('balance left')
@@ -1964,7 +2086,10 @@ test('the figure picker doubles as the legend, every figure spelled out', async 
 // The figures reorder through the ▲▼ each row carries — management's alone
 // since 17 Aug 26 ("normal user should not have authority to change the
 // leave war column arrangement") — and Reset restores the catalogue order.
-test('the figures reorder, and Reset restores the default order', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('the figures reorder, and Reset restores the default order', async ({ page }) => {
   // A member sees no reorder controls at all.
   await openPicker(page)
   await expect(page.locator('[data-testid="figrow-lve"]')).toBeVisible()
@@ -1996,7 +2121,10 @@ async function openDrawer(page: Page) {
   await expect(page.locator('[data-testid="figdrawer"]')).toBeVisible()
 }
 
-test('the drawer opens closed on a phone and open on a desktop', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('the drawer opens closed on a phone and open on a desktop', async ({ page }) => {
   // Re-opened from scratch, because the shared beforeEach deliberately puts the
   // drawer away and this is the one test that has to see the state the page
   // OPENS in. A desktop has room for eight columns AND the days; a phone does
@@ -2009,7 +2137,10 @@ test('the drawer opens closed on a phone and open on a desktop', async ({ page }
   else await expect(page.locator('[data-testid="figdrawer"]')).toBeVisible()
 })
 
-test('the drawer sits beside the names, its rows level with the days, and closing restores the header', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('the drawer sits beside the names, its rows level with the days, and closing restores the header', async ({ page }) => {
   const bar = figBar(page)
   const headRow = page.locator('.mx-wrap .mxhead tr:last-child')
   const headBefore = (await headRow.boundingBox())!
@@ -2063,7 +2194,10 @@ test('the drawer sits beside the names, its rows level with the days, and closin
   expect(Math.abs(headAfter.height - headBefore.height)).toBeLessThan(1.5)
 })
 
-test('a drawer box opens that person\'s breakdown of that figure; a title says what it counts', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('a drawer box opens that person\'s breakdown of that figure; a title says what it counts', async ({ page }) => {
   await openDrawer(page)
   const drawer = page.locator('[data-testid="figdrawer"]')
   // THE TITLE POP-UP GOES FIRST, and that order is load-bearing. The pop-up is
@@ -2086,7 +2220,10 @@ test('a drawer box opens that person\'s breakdown of that figure; a title says w
   await expect(page.locator('[data-testid="figure-breakdown"]')).toHaveCount(0)
 })
 
-test('the stuck header carries the drawer titles, the switch and the month once the roster has scrolled', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('the stuck header carries the drawer titles, the switch and the month once the roster has scrolled', async ({ page }) => {
   await openDrawer(page)
   await page.evaluate(() => window.scrollBy(0, 700))
   await page.waitForTimeout(300)
@@ -2140,7 +2277,11 @@ test('the stuck header carries the drawer titles, the switch and the month once 
   }
 })
 
-test('the corner switch fills its cell — the whole corner is the tap target', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// The corner's switch was the drawer's way in and out.
+test.skip('the corner switch fills its cell — the whole corner is the tap target', async ({ page }) => {
   // The type is small on purpose; the TARGET must not be. In flow the button
   // was its own 15px line inside a 22px cell, so a third of the corner did
   // nothing when pressed — and on a phone that corner is the only way in and
@@ -2157,7 +2298,11 @@ test('the corner switch fills its cell — the whole corner is the tap target', 
   expect(bb.width).toBeGreaterThan(cb.width - 2)
 })
 
-test('the corner covers the month rail all the way to the drawer\'s edge', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// The month rail over the dates went too (D1257).
+test.skip('the corner covers the month rail all the way to the drawer\'s edge', async ({ page }) => {
   // The month BRACKET's top edge belongs to the month whose first columns now
   // sit UNDER the drawer, and the frozen corner is only the name + counter
   // columns wide — so with the figures open a length of rail ran across the
@@ -2183,7 +2328,11 @@ test('the corner covers the month rail all the way to the drawer\'s edge', async
   expect(hit.corner, 'the corner reaches to the drawer\'s edge').toBe(true)
 })
 
-test('a month jump lands the month clear of the drawer, not under it', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// The plain month-jump tests still pin the jump itself.
+test.skip('a month jump lands the month clear of the drawer, not under it', async ({ page }) => {
   // The jump measures a "frozen width" to know where the visible day strip
   // begins, and with the drawer out the frozen part IS the drawer — eight
   // columns, not one. Reading the closed pair instead put 1 September nine
@@ -2204,7 +2353,10 @@ test('a month jump lands the month clear of the drawer, not under it', async ({ 
   expect(head.x + head.width).toBeLessThanOrEqual(wrapBox.x + wrapBox.width + 1)
 })
 
-test('a day beside the open drawer still takes a tap', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('a day beside the open drawer still takes a tap', async ({ page }) => {
   // "The days keep working beside it" (the design's own words) is a claim about
   // the days being USABLE, not merely visible — and usable is the half that
   // broke: 24 of the 28 desktop failures this suite opened with were taps
@@ -2236,7 +2388,10 @@ test('a day beside the open drawer still takes a tap', async ({ page }) => {
   await expect(figBar(page)).toHaveAttribute('aria-expanded', 'true')
 })
 
-test('the month strip reads from the drawer\'s edge, not the closed column\'s', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('the month strip reads from the drawer\'s edge, not the closed column\'s', async ({ page }) => {
   // The strip answers "which month is most of what I can see", and it measures
   // from the FROZEN EDGE — which the drawer moves. That number is CACHED
   // (`stripGeoRef.current.frozen`) and re-measured only by the layout effect
@@ -2309,7 +2464,10 @@ test('the month strip reads from the drawer\'s edge, not the closed column\'s', 
   await expect.poll(() => litMonths(page), { timeout: 5000 }).toEqual(['FEB'])
 })
 
-test('the month strip follows the drawer WIDENING while it is already out', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('the month strip follows the drawer WIDENING while it is already out', async ({ page }) => {
   // The sibling above proves the cached frozen edge follows the drawer opening
   // and closing. This one proves it follows the drawer CHANGING WIDTH with
   // `figuresOpen` never moving — which is the case a dep list of hand-named
@@ -2360,7 +2518,11 @@ test('the month strip follows the drawer WIDENING while it is already out', asyn
   await expect.poll(() => litMonths(page), { timeout: 5000 }).toEqual(['FEB'])
 })
 
-test('the column follows the leave just entered to the balance it comes off', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// The column stays on LVE: it no longer jumps to the balance a write comes off.
+test.skip('the column follows the leave just entered to the balance it comes off', async ({ page }) => {
   await lwRole(page, 'admin')
   await pickCounter(page, 'medtot')
   await expect(page.locator('[data-testid="counter-name"]')).toHaveText('−MED TOT')
@@ -2386,7 +2548,10 @@ test('the box whose number changed flashes, once', async ({ page }) => {
   ).toBe('lw-figflash')
 })
 
-test('an admin hides a figure and the drawer loses that column; a member has no eye', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('an admin hides a figure and the drawer loses that column; a member has no eye', async ({ page }) => {
   await openPicker(page)
   await expect(page.locator('[data-testid="figeye-pl"]')).toHaveCount(0)
   await page.locator('[data-testid="counter-cancel"]').click()
@@ -2464,7 +2629,11 @@ async function threeInARow(page: Page): Promise<string[]> {
 const drawerBox = (page: Page, fig: string, person: string) =>
   page.locator(`[data-testid="figdrawer"] td.figbox[data-fig="${fig}"][data-person="${person}"]`)
 
-test('a drag down a drawer column lights the run, on that pool only', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// A run of people was picked down a drawer column; with no drawer there is no run to pick.
+test.skip('a drag down a drawer column lights the run, on that pool only', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -2482,7 +2651,10 @@ test('a drag down a drawer column lights the run, on that pool only', async ({ p
   expect(await page.evaluate(() => window.scrollY)).toBe(0)
 })
 
-test('a drag on a total, or by a member, lights nothing', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('a drag on a total, or by a member, lights nothing', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -2513,7 +2685,10 @@ test('a drag on a total, or by a member, lights nothing', async ({ page }) => {
   await expect(page.locator('[data-testid="figure-breakdown"]')).toBeVisible()
 })
 
-test('the band lets a press through to the drawer once the grid has scrolled', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('the band lets a press through to the drawer once the grid has scrolled', async ({ page }) => {
   test.skip(!isPhone(), 'the band is a phone-only creature')
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -2546,7 +2721,10 @@ test('the band lets a press through to the drawer once the grid has scrolled', a
   expect(onName).toBe(true)
 })
 
-test('a finger\'s hold-and-drag down the drawer lights the run and does not scroll the page', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('a finger\'s hold-and-drag down the drawer lights the run and does not scroll the page', async ({ page }) => {
   test.skip(!isPhone(), 'the touch gesture')
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -2608,7 +2786,11 @@ async function keyAmount(page: Page, amount: string) {
   await amt.press('Enter')
 }
 
-test('the bar takes one number for the run, the boxes flash, and one Undo takes it all back', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// The balance bar opened from a run picked down a drawer column.
+test.skip('the bar takes one number for the run, the boxes flash, and one Undo takes it all back', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -2651,7 +2833,11 @@ test('the bar takes one number for the run, the boxes flash, and one Undo takes 
   }
 })
 
-test('-1.5 subtracts; 0, abc and 1.25 are refused and the run stays', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// The balance bar opened from a run picked down a drawer column.
+test.skip('-1.5 subtracts; 0, abc and 1.25 are refused and the run stays', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -2682,7 +2868,11 @@ test('-1.5 subtracts; 0, abc and 1.25 are refused and the run stays', async ({ p
   }
 })
 
-test('OIL from the grid is the tracker\'s own credit', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// The balance bar opened from a run picked down a drawer column; an OIL credit is made in the OIL tracker (the OIL tab).
+test.skip('OIL from the grid is the tracker\'s own credit', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -2718,7 +2908,11 @@ test('OIL from the grid is the tracker\'s own credit', async ({ page }) => {
   await expect(row).toContainText('Det')
 })
 
-test('a tap outside clears the bar, the drawer toggle clears it, and a sideways scroll does not', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// The balance bar opened from a run picked down a drawer column.
+test.skip('a tap outside clears the bar, the drawer toggle clears it, and a sideways scroll does not', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -2769,7 +2963,11 @@ test('a member never sees the bar', async ({ page }) => {
   expect(await page.locator('[data-figsel]').count()).toBe(0)
 })
 
-test('on a phone the bar comes up whole, clear of the bottom edge', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// The balance bar opened from a run picked down a drawer column.
+test.skip('on a phone the bar comes up whole, clear of the bottom edge', async ({ page }) => {
   test.skip(!isPhone(), 'the touch gesture')
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -2806,12 +3004,16 @@ test('on a phone the bar comes up whole, clear of the bottom edge', async ({ pag
 // list had no visible way out (owner, 17 Aug 26, from the deployed page).
 // The header is stuck to the sheet's top now: scroll to the floor of the
 // list and the close button still sits inside the viewport, clickable.
+// It was proved on the figure picker's sheet; the picker is gone since the overhaul's M2 (D1245 — beside each name the
+// grid shows LVE alone), so it is proved on the figure sheet that stays: a person's every figure, opened from his name —
+// the same sheet chassis, the same stuck header and ✕.
+// RE-EXPRESSED, D1245 (the overhaul's M2): proved on a person's figure sheet — the figure picker's sheet is gone.
 test('a scrolled sheet keeps its header and its close button', async ({ page }) => {
-  await openPicker(page)
-  const sheet = page.locator('[data-testid="counter-sheet"]')
+  await page.locator('[data-testid="person-slipway"]').click()
+  const sheet = page.locator('[data-testid="person-figures"]')
   await expect(sheet).toBeVisible()
   await sheet.evaluate(el => { el.scrollTop = el.scrollHeight })
-  const x = page.locator('[data-testid="counter-cancel"]')
+  const x = page.locator('[data-testid="pfig-close"]')
   await expect(x).toBeVisible()
   const box = (await x.boundingBox())!
   const vp = page.viewportSize()!
@@ -2831,10 +3033,11 @@ test('a scrolled sheet keeps its header and its close button', async ({ page }) 
 // `overscroll-behavior: contain` in bidpicker.css — unchanged, not re-asserted
 // here since it only bites when the list overflows, which a fitting sheet does
 // not.)
+// RE-EXPRESSED, D1245 (the overhaul's M2): proved on a person's figure sheet — the figure picker's sheet is gone.
 test('the page scrolls behind an open sheet, and the panel stays put', async ({ page }) => {
   await page.evaluate(() => window.scrollTo(0, 0))
-  await openPicker(page)
-  const sheet = page.locator('[data-testid="counter-sheet"]')
+  await page.locator('[data-testid="person-slipway"]').click()
+  const sheet = page.locator('[data-testid="person-figures"]')
   await expect(sheet).toBeVisible()
   const topBefore = (await sheet.boundingBox())!.y
 
@@ -2975,10 +3178,11 @@ test('a finger behind an open sheet scrolls the grid itself; a tap on a cell clo
 /* And on a fine pointer the scrim is still what a press lands on: the mouse
    drag-to-pan and the click-to-dismiss the desktop has had since 28 Aug go
    through it, and a hover never reaches the grid. Desktop project only. */
+// RE-EXPRESSED, D1245 (the overhaul's M2): proved on a person's figure sheet — the figure picker's sheet is gone.
 test('on a desktop the scrim stays in the way of the mouse', async ({ page }) => {
   test.skip(isPhone(), 'the fine-pointer half')
-  await openPicker(page)
-  await expect(page.locator('[data-testid="counter-sheet"]')).toBeVisible()
+  await page.locator('[data-testid="person-slipway"]').click()
+  await expect(page.locator('[data-testid="person-figures"]')).toBeVisible()
   expect(await page.evaluate(() => matchMedia('(pointer: coarse)').matches)).toBe(false)
   const under = await page.evaluate(() => {
     const el = document.elementFromPoint(200, 300)
